@@ -41,8 +41,8 @@
 
 int hw_io_init(void)
 {
-    tihw.io0Bit2=1; 
-    tihw.io0Bit7=1;
+    //tihw.io0Bit2=1; 
+    //tihw.io0Bit7=1;
 }
 
 int hw_io_reset(void)
@@ -55,28 +55,31 @@ int hw_io_exit(void)
     return 0;
 }
 
-#define bit_get(i,b)	(((b) & (1 << i)) >> i)
-#define bit_set(i,b)	((b) &  (1 << i))
-#define bit_clr(i,b)	((b) | ~(1 << i))
+#define bit_tst(i,b)	(((b) & (1 << i)) >> i)
+
+//#define bit_get(i,b)	((b) &  (1 << i))
+#define bit_set(i,b)	((b) |  (1 << i))
+#define bit_clr(i,b)	((b) & ~(1 << i))
 
 void io_put_byte(CPTR adr, UBYTE arg)
 {
     switch(adr) 
     {
         case 0x00:	// rw <76...2..>
-            tihw.contrast=(tihw.contrast&(~1))|((arg>>5)&1);
+			// bit 0 of contrast
+            tihw.contrast = bit_clr(0, tihw.contrast) | bit_tst(5, arg);
+
+			// update contrast
             if(tihw.calc_type != TI92)
 	            cb_set_contrast(tihw.contrast); // avoid flickering with 92
-            tihw.io0Bit7=(arg>>7)&1;
-            tihw.io0Bit2=(arg>>2)&1;
         break;
         case 0x01:	// rw <.....2.0>
 			// clr: interleave RAM (allows use of 256K of RAM)
-			tihw.ram256 = bit_get(0, arg);
+			tihw.ram256 = bit_tst(0, arg);
 			//mem_mask[0] = tihw.ram256 ? 0x1fffff : 0x3fffff;
 
 			// set: protected memory violation triggered when memory below [$000120] is written
-			tihw.mem_prot = bit_get(2, arg);
+			tihw.mem_prot = bit_tst(2, arg);
 	    break;
 	    case 0x02:	// ??
 	    break;
@@ -86,13 +89,18 @@ void io_put_byte(CPTR adr, UBYTE arg)
         break;
         case 0x05:	// -w <...43210>
         	// set: 000000..1FFFFF mapped to 200000..3FFFFF
-			tihw.ram_wrap = bit_get(3, arg);
+			tihw.ram_wrap = bit_tst(3, arg);
             //mem_tab[2] = mem_tab[0];
             //mem_tab[3] = mem_tab[1];
             
 			if (!(arg&0x10)) specialflags |= SPCFLAG_STOP; 
             break;
-        case 0x06: case 0x07: case 0x08: case 0x09: case 0x0a: case 0x0b:
+        case 0x06: 
+		case 0x07: 
+		case 0x08: 
+		case 0x09: 
+		case 0x0a: 
+		case 0x0b:
         break;
         case 0x0c:	// rw <765.3210>
             lc_raw_access=(arg>>6)&1;
@@ -114,13 +122,12 @@ void io_put_byte(CPTR adr, UBYTE arg)
             break;
         case 0x10: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8
-            tihw.lcd_addr = (((tihw.lcd_addr >> 3) & 0xff) | 
-						((arg & 0xff) << 8)) << 3;
+			if(tihw.hw_type == 1)
+				tihw.lcd_addr = (((tihw.lcd_addr >> 3) & 0x00ff) | ((arg & 0xff) << 8)) << 3;
         break;
         case 0x11: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8
-            tihw.lcd_addr=(((tihw.lcd_addr >> 3) & 0xff00) |
-						(arg & 0xff)) << 3;
+            tihw.lcd_addr = (((tihw.lcd_addr >> 3) & 0xff00) | (arg & 0xff)) << 3;
         break;
         case 0x12:	// -w <76543210>
         break;
@@ -146,8 +153,8 @@ void io_put_byte(CPTR adr, UBYTE arg)
         	// Write any value to $60001B to acknowledge this interrupt (AutoInt2)
         break;
         case 0x1c:	// -w <..5432..>
-            tihw.lcd_off=(arg&0x80)>>7;
-            if((arg&0x80)>>7)
+            tihw.lcd_off = bit_tst(7, arg);
+            if(tihw.lcd_off)
 	        {
 	            specialflags |= SPCFLAG_STOP;
 	            cb_screen_on_off(0);
@@ -156,7 +163,12 @@ void io_put_byte(CPTR adr, UBYTE arg)
 	            cb_screen_on_off(!0);
         break;
         case 0x1d:	// -w <7..43210>
-            tihw.contrast=(tihw.contrast&1)|((arg&15)<<1);
+			// bits <5> of contrast (hw2)
+			if(tihw.hw_type == 2)
+				tihw.contrast = bit_clr(5, tihw.contrast) | (bit_tst(4, arg) << 1);
+
+			// bits <.4321.> of contrast
+            tihw.contrast = (tihw.contrast & 1) | ((arg & 15) << 1);
             cb_set_contrast(tihw.contrast);
         break;
         case 0x1e:
@@ -187,8 +199,8 @@ UBYTE io_get_byte(CPTR adr)
     switch(adr) 
     {
         case 0x00:	// rw <76...2..>
-            v=((tihw.contrast&1)<<5)|(tihw.io0Bit7<<7)|(tihw.io0Bit2<<2);
-            tihw.io0Bit2=1;
+            v=((tihw.contrast&1)<<5);	//|(tihw.io0Bit7<<7)|(tihw.io0Bit2<<2);
+            //tihw.io0Bit2=1;
             return v|0x4;
         case 0x01:	// rw <.....2.0>
 			// interleave RAM (allows use of 256K of RAM)
