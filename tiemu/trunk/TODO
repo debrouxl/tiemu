@@ -28,7 +28,7 @@ pas ce problème.
 Ok. En fait il manque aussi 'dbra', 'dbne', etc. Il y est sur VTI, et il y
 était dans la version précédente de TiEmu. Je trouvais ça pratique.
 
-- Je viens de me rendre compte de quelque chose d'un peu gênant, je ne sais
+O Je viens de me rendre compte de quelque chose d'un peu gênant, je ne sais
 pas si ça peut être corrigé : lorsqu'on laisse F7 appuyé pour faire une
 série de 'step' rapidement,  la sélection en vert ne passe que sur
 instruction sur 5 environ, on s'y perd un peu, ça saute un peu partout. Je

@@ -206,8 +206,6 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
         g_free(str);
     }
 
-    printf("<%i %i>\n", offset, found);
-
 	// pc not found, erase and populate
     if(!found && reload)
     {
@@ -407,6 +405,9 @@ on_step1_activate                      (GtkMenuItem     *menuitem,
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
     dbgmem_refresh_window();
+
+    // force refresh !
+    while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
 }
 
 

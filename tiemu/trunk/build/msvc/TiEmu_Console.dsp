@@ -494,19 +494,11 @@ SOURCE=..\..\ChangeLog
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\..\..\..\Gtk2Dev\include\gtk-2.0\gdk\gdkkeysyms.h"
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\README
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\TODO
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\..\..\..\Program Files\Microsoft Visual Studio\VC98\Include\WINUSER.H"
 # End Source File
 # End Group
 # End Target

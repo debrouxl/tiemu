@@ -44,7 +44,7 @@
 		      <accelerator key="F5" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image84">
+			<widget class="GtkImage" id="image104">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-yes</property>
 			  <property name="icon_size">1</property>
@@ -67,7 +67,7 @@
 		      <accelerator key="F7" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image85">
+			<widget class="GtkImage" id="image105">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-jump-to</property>
 			  <property name="icon_size">1</property>
@@ -90,7 +90,7 @@
 		      <accelerator key="F8" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image86">
+			<widget class="GtkImage" id="image106">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-redo</property>
 			  <property name="icon_size">1</property>
@@ -123,7 +123,7 @@
 		      <accelerator key="F4" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image87">
+			<widget class="GtkImage" id="image107">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-goto-last</property>
 			  <property name="icon_size">1</property>
@@ -145,7 +145,7 @@
 		      <accelerator key="F11" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image88">
+			<widget class="GtkImage" id="image108">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-no</property>
 			  <property name="icon_size">1</property>
@@ -268,7 +268,7 @@
 		      <accelerator key="Q" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image89">
+			<widget class="GtkImage" id="image109">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-quit</property>
 			  <property name="icon_size">1</property>
