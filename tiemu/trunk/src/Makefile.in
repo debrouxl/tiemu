@@ -64,7 +64,8 @@ core_tihw_OBJ = \
 core_tisw_OBJ = \
 	core/ti_sw/handles.o	\
 	core/ti_sw/registers.o	\
-	core/ti_sw/romcalls.o
+	core/ti_sw/romcalls.o	\
+	core/ti_sw/timem.o
 
 core_OBJ = 			\
 	core/engine.o		\
@@ -72,14 +73,15 @@ core_OBJ = 			\
 	core/images.o 		\
 	core/interface.o	\
 	core/state.o		\
-	core/type2str.o
+	core/type2str.o		\
+	core/hwpm.o
 
 core_dbg_OBJ = \
 	core/dbg/bkpts.o	\
 	core/dbg/debug.o	\
 	core/dbg/disasm.o	\
-	core/dbg/m68kdasm.o \
-	core/dbg/fpudasm.o
+	core/dbg/fpudasm.o	\
+	core/dbg/m68kdasm.o
 
 misc_OBJ = \
 	misc/cmdline.o 	\
@@ -120,7 +122,6 @@ gui_OBJ = \
 	gui/dboxes.o							\
 	gui/filesel.o							\
 	gui/fs_misc.o							\
-	gui/help.o	 						\
 	gui/infos.o							\
 	gui/main.o							\
 	gui/manpage.o							\
