@@ -17,7 +17,7 @@
  */
 
 /*
-  M68K management (wrapper for the UAE engine)
+    M68K management (wrapper for the UAE engine)
 */
 
 #include "uae.h"

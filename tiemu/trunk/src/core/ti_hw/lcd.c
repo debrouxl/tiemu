@@ -17,7 +17,7 @@
  */
 
 /*
-    TI screen (LCD) management
+    LCD management
 */
 
 #include "ti68k_def.h"

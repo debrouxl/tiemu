@@ -17,7 +17,7 @@
  */
 
 /*
-  TI linkport management (D-bus serial input/output)
+    Linkport management (D-bus serial input/output)
 */
 
 #include <stdlib.h>
@@ -31,7 +31,6 @@
 
 #include "tilibs.h"
 #include "ti68k_err.h"
-//#include "params.h"
 #include "ti68k_def.h"
 #include "ti68k_int.h"
 

@@ -18,7 +18,7 @@
  */
 
 /*
-  TI memory space management: RAM, PROM/FLASH, I/O ports
+    TI memory space management: RAM, PROM/FLASH, I/O ports
 */
 
 #include <stdlib.h>

@@ -17,7 +17,7 @@
  */
 
 /*
-  TI ASIC management: glue logic for screen, keyboard, linkport, timers.
+    TI's ASIC management: memory mapped I/O ports
 */
 
 #include <stdlib.h>

@@ -17,8 +17,7 @@
  */
 
 /*
-  TI hardware management (ASIC).
-  -> screen, keyboard, linkport, timers.
+    TI's ASIC management: glue logic for screen, keyboard, linkport, timers.
 */
 
 #include <stdlib.h>
@@ -28,80 +27,12 @@
 #include <time.h>
 
 #include "uae.h"
-#include "images.h"
-#include "memory.h"
-#include "lcd.h"
-#include "keyboard.h"
 #include "dbus.h"
-#include "ti68k_def.h"
-#include "timer.h"
-#include "ioports.h"
 #include "callbacks.h"
-#include "m68k.h"
-
-int init_int_tab_offset;
+#include "ti68k_def.h"
 
 int cycle_instr = 640;
 int cycle_count = 0;
-
-
-/* This function should be called everytime the counter increases */
-void update_hardware()
-{
-  /* Auto-int 5: timer */
-  if(tihw.timer_value++ == 0)
-    {
-      tihw.timer_value = tihw.timer_init;
-      specialflags |= SPCFLAG_INT;
-      if(currIntLev < 5)
-	currIntLev = 5;
-    }
-  else
-    tihw.timer_value &= 0xff;
-
-  /* Auto-int 1: 1/4 of timer rate */
-  if(!(tihw.timer_value&3)) 
-    {
-      specialflags |= SPCFLAG_INT;
-      currIntLev = 1;
-    }
-
-  /* Auto-int 2: keyboard scan */
-  if(!(tihw.timer_value & 2))
-    {
-    }
-
-  /* Link status */
-  if(linkport_checkread())
-    tihw.io[0xc] |= 0x2;
-
-  /* Link interrupt */ 
-  if(tihw.io[0xc]&0x2) 
-    {
-      specialflags |= SPCFLAG_INT;
-      currIntLev = 4;
-    }
-  
-  /* LCD is refreshed every 16th time */
-  if(!(tihw.timer_value&15))
-    {
-      if(lc_internal) 
-	{
-	  if(lc_timeout++ >= TO_VALUE) 
-	    {
-	      DISPLAY("Warning: internal link timeout !!!\n");
-	      lc_internal = 0;
-	      lc_timeout = 0;
-	    }
-	}
-
-      hw_kbd_update();
-
-      if(!params.sync_one)
-	cb_update_screen();
-    }
-}
-
 
 /*
 	Init hardware...
@@ -140,3 +71,63 @@ int hw_exit(void)
 	hw_io_exit();
 	hw_mem_exit();
 }
+
+/* This function should be called everytime the counter increases */
+void hw_update()
+{
+    /* Auto-int 5: timer */
+    if(tihw.timer_value++ == 0)
+    {
+        tihw.timer_value = tihw.timer_init;
+        specialflags |= SPCFLAG_INT;
+        
+        if(currIntLev < 5)
+	        currIntLev = 5;
+    }
+    else
+        tihw.timer_value &= 0xff;
+
+    /* Auto-int 1: 1/4 of timer rate */
+    if(!(tihw.timer_value&3)) 
+    {
+        specialflags |= SPCFLAG_INT;
+        currIntLev = 1;
+    }
+
+  
+    /* Auto-int 2: keyboard scan */
+    if(!(tihw.timer_value & 2))
+    {
+    }
+
+    /* Link status */
+    if(linkport_checkread())
+        tihw.io[0xc] |= 0x2;
+
+    /* Link interrupt */ 
+    if(tihw.io[0xc]&0x2) 
+    {
+        specialflags |= SPCFLAG_INT;
+        currIntLev = 4;
+    }
+  
+    /* LCD is refreshed every 16th time */
+    if(!(tihw.timer_value&15))
+    {
+        if(lc_internal) 
+	    {
+	        if(lc_timeout++ >= TO_VALUE) 
+	        {
+	            DISPLAY("Warning: internal link timeout !!!\n");
+	            lc_internal = 0;
+	            lc_timeout = 0;
+	        }
+	    }
+
+        hw_kbd_update();
+
+        if(!params.sync_one)
+	        cb_update_screen();
+    }
+}
+

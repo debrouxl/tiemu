@@ -48,7 +48,7 @@ static void INLINE do_cycles(void)
 {
   if(cycle_count++ >= cycle_instr) 
     {
-      update_hardware();
+      hw_update();
       cycle_count = 0;
     }
 }

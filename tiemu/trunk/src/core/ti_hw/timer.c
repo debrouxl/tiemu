@@ -17,7 +17,7 @@
  */
 
 /*
-    ASIC timers management
+    Timers management (ASIC)
 */
 
 #include <stdlib.h>

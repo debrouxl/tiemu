@@ -17,7 +17,7 @@
  */
 
 /*
-  TI keyboard management
+    Keyboard management
 */
 
 #include <stdlib.h>
