@@ -1,0 +1,15 @@
+# List of source files containing translatable strings.
+
+src/boxes_cb.c
+src/boxes_intf.c
+src/gtksdl.c
+src/main.c
+src/main_cb.c
+src/main_intf.c
+src/prop_cb.c
+src/prop_intf.c
+src/rubberbox.c
+src/skinops.c
+src/support.c
+src/utils.c
+src/vti_export.c
