@@ -23,6 +23,8 @@ To do:
 	- save FLASH segment which have been written/erased
 	- added FPU dis-assembler
 	- fixed/improved some endianess issues
+	- pedrom tibs are now placed in the 'pedrom' folder. The wizard let you import them 
+		automatically.
 
 - 07/02/2005, version 1.80m: roms
 	- dbus architecture improved (reset)

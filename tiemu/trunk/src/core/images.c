@@ -735,10 +735,10 @@ int ti68k_load_upgrade(const char *filename)
 }
 
 /*
-    Search for ROM dumps in a given directory and
-    converts them into images.
+    Search for ROM dumps or FLASH upgrades in a given directory 
+	and converts them into images (note: original file is deleted !).
 */
-int ti68k_scan_files(const char *src_dir, const char *dst_dir)
+int ti68k_scan_files(const char *src_dir, const char *dst_dir, int erase)
 {
     GDir *dir;
 	GError *error = NULL;
@@ -747,7 +747,7 @@ int ti68k_scan_files(const char *src_dir, const char *dst_dir)
     int ret;
     gchar *dstname;
 
-    // Search for *.rom files and convert them
+    // Search for  files and convert them
 	dir = g_dir_open(src_dir, 0, &error);
 	if (dir == NULL) 
 	{
@@ -765,8 +765,24 @@ int ti68k_scan_files(const char *src_dir, const char *dst_dir)
         if(ti68k_is_a_rom_file(dirent))
         {
             ret = ti68k_convert_rom_to_image(path, dst_dir, &dstname);
-            if(!ret)
+			if(ret)
+				return ret;
+
+            if(erase)
                 unlink(path);
+
+            g_free(dstname);
+        }
+
+		if(ti68k_is_a_tib_file(dirent))
+        {
+            ret = ti68k_convert_tib_to_image(path, dst_dir, &dstname);
+			if(ret)
+				return ret;
+
+            if(erase)
+                unlink(path);
+
             g_free(dstname);
         }
 
@@ -851,9 +867,6 @@ int ti68k_scan_images(const char *dirname, const char *filename)
         }
 
 		nlines = 0;
-		/*fprintf(file, "%s\t%s\t%s\t%s\t%s\t%s\n", 
-						"filename", "calctype", "version", 
-						"memtype", "size", "boot");*/
     }  
 
   	// List all files available in the directory
@@ -889,18 +902,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 			}
 			else
 			{
-				/*
-				if(ti68k_is_a_tib_file(path))
-				{
-					memset(&img, 0, sizeof(IMG_INFO));
-					ret = ti68k_get_tib_infos(path, &img, 0);
-					if(ret)
-					{
-						fprintf(stderr, _("Can not get ROM/update info: <%s>\n"), path);
-						break;
-					}
-				}
-				else*/ if(ti68k_is_a_img_file(path))
+				if(ti68k_is_a_img_file(path))
 				{
 					memset(&img, 0, sizeof(IMG_INFO));
 					ret = ti68k_get_img_infos(path, &img);

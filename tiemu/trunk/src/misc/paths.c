@@ -65,7 +65,9 @@ static void init_linux_paths(void)
 	inst_paths.home_dir =
 		g_strconcat(g_get_home_dir(), "/", NULL);
 	inst_paths.img_dir = 
-            g_strconcat(inst_paths.home_dir, CONF_DIR, "images/", NULL);
+        g_strconcat(inst_paths.home_dir, CONF_DIR, "images/", NULL);
+	inst_paths.rom_dir =
+		g_strconcat(inst_paths.base_dir, "pedrom/", NULL);
 
 #if defined(__MINGW32__)
 	tmp = g_strconcat(inst_paths.home_dir, CONF_DIR, NULL);
@@ -123,8 +125,10 @@ static void init_win32_paths(void)
 	inst_paths.home_dir = 
 	    g_strconcat(inst_paths.base_dir, "", NULL);
 	inst_paths.img_dir = 
-            g_strconcat(inst_paths.home_dir, CONF_DIR, "images\\", NULL);
+        g_strconcat(inst_paths.home_dir, CONF_DIR, "images\\", NULL);
 	_mkdir(inst_paths.img_dir);
+	inst_paths.rom_dir =
+		g_strconcat(inst_paths.base_dir, "pedrom\\", NULL);
 
 #ifdef ENABLE_NLS
 	inst_paths.locale_dir =

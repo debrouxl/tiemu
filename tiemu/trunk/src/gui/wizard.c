@@ -45,7 +45,7 @@
 gchar *wizard_rom = NULL;
 gint wizard_ok = FALSE;
 
-static gint action = 1;
+static gint action = 0;
 
 static gint display_step1_dbox(void);
 gint display_wz_rom_dbox(void);
@@ -60,7 +60,6 @@ static gint display_msg_dbox(void)
 {
     GladeXML *xml;
 	GtkWidget *dbox;
-//	GtkWidget *data;
 	gint result;
 
     xml = glade_xml_new
@@ -84,7 +83,8 @@ static gint display_step1_dbox(void)
     GladeXML *xml;
 	GtkWidget *dbox;
 	GtkWidget *data;
-	gint result;
+	gint result = 0;
+	GtkWidget *dialog;
 
     xml = glade_xml_new
 	    (tilp_paths_build_glade("wizard-2.glade"), "step1_dbox", PACKAGE);
@@ -101,15 +101,30 @@ static gint display_step1_dbox(void)
     //data = glade_xml_get_widget(xml, "okbutton1");
     //gtk_button_set_label(data, "Next =>");
 
+	action = 1;	// default button
     result = gtk_dialog_run(GTK_DIALOG(dbox));
+
     if(result == GTK_RESPONSE_OK)
     {
         switch(action)
         {
             case 1: 
-                gtk_widget_destroy(dbox);
-                display_msg_dbox();
-            break;
+				dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+						GTK_MESSAGE_INFO,
+						GTK_BUTTONS_CLOSE, _("Importing TIBs. Please wait..."));
+				g_signal_connect_swapped(GTK_OBJECT(dialog), "response",
+						G_CALLBACK(gtk_widget_destroy),
+						GTK_OBJECT(dialog));
+				gtk_widget_show_all(GTK_WIDGET(dialog));
+				while(gtk_events_pending()) gtk_main_iteration();
+				
+				ti68k_scan_files(inst_paths.rom_dir, inst_paths.img_dir, 0);
+
+				gtk_widget_destroy(dialog);
+				gtk_widget_destroy(dbox);
+
+				wizard_ok = 2;
+			break;
             case 2: 
                 gtk_widget_destroy(dbox);
                 display_wz_tib_dbox();
@@ -118,8 +133,12 @@ static gint display_step1_dbox(void)
                 gtk_widget_destroy(dbox);
                 display_wz_rom_dbox();
             break;
+			case 4: 
+                gtk_widget_destroy(dbox);
+                display_msg_dbox();
+            break;
             default:
-        break;
+			break;
         }
 	}
     else
@@ -203,7 +222,7 @@ gint display_wz_rom_dbox(void)
 	int err;
 
     // get filename
-	filename = (char *)create_fsel2("", "*.rom", FALSE);
+	filename = (char *)create_fsel2(inst_paths.rom_dir, "*.rom", FALSE);
 	if (filename == NULL)
 	{
 		display_step1_dbox();
@@ -234,7 +253,7 @@ gint display_wz_tib_dbox(void)
 	int err;
 
     // get filename
-	filename = (char *)create_fsel2("", "*.89u;*.9xu;*.v2u;*.tib", FALSE);
+	filename = (char *)create_fsel2(inst_paths.rom_dir, "*.89u;*.9xu;*.v2u;*.tib", FALSE);
 	if (filename == NULL)
 	{
 		display_step1_dbox();
@@ -278,4 +297,11 @@ step1_on_radiobutton3_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
   action = 3;
+}
+
+GLADE_CB void
+step1_on_radiobutton4_toggled          (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+  action = 4;
 }

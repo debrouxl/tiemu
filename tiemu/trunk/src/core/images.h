@@ -78,7 +78,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 int ti68k_load_image(const char *filename);
 int ti68k_load_upgrade(const char *filename);
 
-int ti68k_scan_files(const char *src_dir, const char *dst_dir);
+int ti68k_scan_files(const char *src_dir, const char *dst_dir, int erase);
 int ti68k_scan_images(const char *dirname, const char *filename);
 
 int ti68k_find_image(const char *dirname, char **filename);

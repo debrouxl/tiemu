@@ -41,7 +41,10 @@ The first run appears in the following cases:<br>
 - the tiemu.ini file doesn't exist yet.<br>
 <br>
 At startup, TiEmu will scan the <span style="font-style: italic;">images</span>
-folder to search for TiEmu images.<br>
+folder to search for various files :<br>
+- FLASH upgrades or ROM dumps : they will be automatically converted
+into an image and <span style="font-style: italic;">deleted</span>,<br>
+- TiEmu images : they will be listed/cached.<br>
 If images are found, this box let you choose the image you want to run :<br>
 <br>
 <div style="text-align: center;"><img alt="" src="romversion.png"
@@ -53,16 +56,20 @@ Else, you will get the wizard box :<br>
  style="width: 313px; height: 261px;"><br>
 </div>
 <br>
-You have 3 choices:<br>
-- TiEmu does not provide a built-in ROM dumper. You will have to get a
-ROM dump with TiLP and re-run TiEmu.<br>
-- you can download a FLASH OS upgrade (AMS) from the <a
+You have 4 choices:<br>
+- use PedRom (GPL'ed replacement OS shipped with TiEmu),<br>
+- download a FLASH OS upgrade (AMS) from the <a
  href="http://education.ti.com/">TI web site</a>. You will enter the
-filename on the next step.<br>
-- you already have a ROM dump and choose it on the next step.<br>
+filename on the next step,<br>
+- you already have a ROM dump and choose it on the next step,<br>
+- get informations on how to get a ROM dump because TiEmu does not have
+a built-in ROM dumper. For instance, you can use TiLP to get one and
+re-run TiEmu later.<br>
 <br>
-<span style="font-weight: bold;">Please note that redistribution of ROM
+<div style="text-align: center;"><span style="font-weight: bold;">Please
+note that redistribution of ROM
 dumps is illegal; they are copyrighted by TI.</span><br>
+</div>
 <hr>
 </body>
 </html>

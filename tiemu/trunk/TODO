@@ -27,12 +27,6 @@ Ce problème est apparemment causée par le fait qu'une touche (ENTER) est appuyée
 où on entre dans le débogueur. (Le BP sur le trap 11 s'active au moment où ENTER est encore 
 appuyé.)
 
-* Ensuite, un truc que je n'ai pas remarqué avant parce que je le lançais à chaque fois avec 
-une collection de ROMs déjà existante, mais il n'y a aucun moyen simple d'importer le PedroM 
-livré avec TiEmu tout de suite, il y a le ROM wizard qui s'ouvre, mais quoiqu'on choisisse, 
-on se retrouve avec les instructions comment faire un ROM dump et c'est terminé. Il ne trouve 
-pas les tibs livrés avec.
-
 
 Lionel
 ======

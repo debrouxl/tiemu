@@ -63,6 +63,7 @@ typedef struct
   char *skin_dir;		// skins
   char *glade_dir;		// GUI files
   char *home_dir;		// $HOME
+  char *rom_dir;		// PedRom tib location
 
   char current_dir[1024];	// current working directory
 } TiemuInstPaths;

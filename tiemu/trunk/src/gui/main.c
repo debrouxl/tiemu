@@ -30,10 +30,12 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
+/*
 #ifdef __WIN32__
 #define _WIN32_WINNT 0x0400
 #include <windows.h>
 #endif
+*/
 
 #include "intl.h"
 #include "tilibs.h"
@@ -149,7 +151,7 @@ int main(int argc, char **argv)
         Search for dumps or upgrades to convert (in the image directory)
     */
     splash_screen_set_label(_("Searching for ROM dumps..."));
-    err = ti68k_scan_files(inst_paths.img_dir, inst_paths.img_dir);
+    err = ti68k_scan_files(inst_paths.img_dir, inst_paths.img_dir, !0);
 	handle_error();
 
 	/*
@@ -161,6 +163,7 @@ int main(int argc, char **argv)
 		err = ti68k_load_image(params.rom_file);
 		if(err) 
 		{
+	rescan:
 			if(ti68k_find_image(inst_paths.img_dir, NULL))
 			{
 				// search for an available image to use
@@ -171,9 +174,12 @@ int main(int argc, char **argv)
 			{
 				// launch wizard
 	wizard:
-				display_wizard_dbox();
+				printf("ret = %i\n", display_wizard_dbox());
 				while(!wizard_ok)
 					GTK_REFRESH();
+
+				if(wizard_ok == 2)
+					goto rescan;
 			
 				g_free(params.rom_file);
 				params.rom_file = g_strdup(wizard_rom);
