@@ -552,7 +552,6 @@ static int hid_update_keys(void)
 		      //SDL_WaitEvent(&event); // flush event
 			//gui_popup_menu();
 		      popup_menu = !0;
-              printf("popup !\n");
 		}
 	      else
 		hid_switch_windowed();
