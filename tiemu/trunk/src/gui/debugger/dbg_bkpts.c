@@ -580,6 +580,7 @@ on_treeview2_button_press_event        (GtkWidget       *widget,
 
 			sscanf(row_text[COL_START], "%x", &old_addr);
 			new_addr = old_addr;
+
 			if(display_dbgmem_address(&new_addr) == -1)
 				return TRUE;
 
@@ -590,14 +591,33 @@ on_treeview2_button_press_event        (GtkWidget       *widget,
 		{
 			uint32_t old_min, old_max;
 			uint32_t new_min, new_max;
-			uint32_t mode;
+			uint32_t new_type;
+			uint32_t old_mode, new_mode;
 
-            mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
-			printf("<%s %s> %i %i\n", row_text[COL_TYPE], row_text[COL_MODE], type, mode);
+            old_mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
             sscanf(row_text[COL_START], "%x", &old_min);
             sscanf(row_text[COL_END], "%x", &old_max);
-            
-			dbgdata_display_dbox(mode, type, old_min, old_max);
+
+            new_type = type; new_mode = old_mode; new_min = old_min; new_max = old_max;
+			if(dbgdata_display_dbox(&new_mode, &new_type, &new_min, &new_max) == -1)
+				return TRUE;
+
+			if(type != new_type)
+				return TRUE;
+
+			if(new_type == BK_TYPE_ACCESS)
+			{
+				ti68k_bkpt_del_access(old_min, old_mode);
+				ti68k_bkpt_add_access(new_min, new_mode);
+				//ti68k_bkpt_set_access(old_min, mode, new_min);
+			}
+			else if(new_type = BK_TYPE_RANGE)
+			{
+				ti68k_bkpt_del_range(old_min, old_max, old_mode);
+				ti68k_bkpt_add_range(new_min, new_max, new_mode);
+				//ti68k_bkpt_set_range(old_min, old_max, mode, new_min, new_max);
+			}
+			dbgbkpts_refresh_window();
 		}
 
 		g_strfreev(row_text);
@@ -613,7 +633,20 @@ GLADE_CB void
 dbgbkpts_data_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	dbgdata_display_dbox(-1, -1, -1, -1);
+	uint32_t mode, type=-1, min, max;
+
+	// fill infos
+	if(dbgdata_display_dbox(&mode, &type, &min, &max) != 0)
+		return;
+
+	// add breakpoint
+	if(type == BK_TYPE_ACCESS)
+		ti68k_bkpt_add_access(min, mode) ;
+	else if(type == BK_TYPE_RANGE)
+		ti68k_bkpt_add_range(min, max, mode);
+
+	// and refresh
+	dbgbkpts_display_window();
 }
 
 

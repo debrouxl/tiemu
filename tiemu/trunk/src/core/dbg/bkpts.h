@@ -29,7 +29,6 @@
 #ifndef __TI68K_BKPTS__
 #define __TI68K_BKPTS__
 
-#include <glib.h>
 #include <stdint.h>
 
 /* Macros: addresses are 24-bits. We use the MSB to encode 

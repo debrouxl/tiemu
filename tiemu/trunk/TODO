@@ -147,10 +147,10 @@ problème à la sélection de la ROM.
 * Quand on édite avec l'éditeur hexa dans la mémoire correspondant à
 la pile, la fenêtre Stack Frame n'est pas rafraîchie.
 
-* Le mode 'either' des data breakpoints ne semble pas être pris en
++ Le mode 'either' des data breakpoints ne semble pas être pris en
 compte (la colonne 'Mode' est toujours mise à 'read')
 
-* Il est parfois impossible d'enlever un data breakpoint en cliquant
++ Il est parfois impossible d'enlever un data breakpoint en cliquant
 sur le moins ('-'), ça n'a aucun effet.
 
 * J'ai aussi plusieurs crash de cause difficile à déterminer en
