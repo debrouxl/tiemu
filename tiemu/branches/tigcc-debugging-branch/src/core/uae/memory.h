@@ -12,7 +12,9 @@
   *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
   */
 
+#ifndef BUILD_UAE
 #include "../ti_hw/mem.h"
+#endif
 
 //wrappers
 #define get_byte(addr)	hw_get_byte(addr)

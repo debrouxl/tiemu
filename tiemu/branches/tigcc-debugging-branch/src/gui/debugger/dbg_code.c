@@ -171,6 +171,24 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
     }
 }
 
+static GtkWidget *lbl1, *lbl2;
+
+static void cyccnt_refresh(GtkWidget *l1, GtkWidget *l2)
+{
+	int count, diff;
+	gchar *str1, *str2;
+
+	count = ti68k_get_cycle_count(0, &diff);
+	str1 = g_strdup_printf("%i", count);
+	str2 = g_strdup_printf("%i", diff);
+
+	gtk_label_set_text(GTK_LABEL(l1), str1);
+	gtk_label_set_text(GTK_LABEL(l2), str2);
+
+	g_free(str1);
+	g_free(str2);
+}
+
 static void clist_refresh(GtkListStore *store, gboolean reload)
 {
     GtkTreeModel *model = GTK_TREE_MODEL(store);
@@ -255,6 +273,9 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
         g_free(str);
 		g_object_unref(pix);
     }
+
+	// update cycle counter
+	cyccnt_refresh(lbl1, lbl2);
 }
 
 static GtkWidget *list;
@@ -351,6 +372,9 @@ GtkWidget* dbgcode_create_window(void)
 	combo = glade_xml_get_widget(xml, "comboboxentry1");
 	dbgromcall_create_window(combo);
 	dbgromcall_refresh_window(combo);
+
+	lbl1 = glade_xml_get_widget(xml, "label3");
+	lbl2 = glade_xml_get_widget(xml, "label4");
 
 	already_open = !0;
 
@@ -615,6 +639,15 @@ dbgcode_button7_clicked                     (GtkButton       *button,
     //dbgmem_refresh_window();
     dbgbkpts_refresh_window();
 	dbgstack_refresh_window();
+}
+
+// Reset cycle counter
+GLADE_CB void
+dbgcode_button8_clicked                     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	ti68k_get_cycle_count(!0, NULL);
+	gtk_label_set_text(GTK_LABEL(lbl1), "0");
 }
 
 /***** Popup menu *****/

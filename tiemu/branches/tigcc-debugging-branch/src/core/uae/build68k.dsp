@@ -54,7 +54,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Desc=Building CPU definitions...
-PostBuild_Cmds=build68k.exe >cpudefs.c
+PostBuild_Cmds=build68k <table68k >cpudefs.c
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "build68k - Win32 Debug"
@@ -83,7 +83,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Desc=Building CPU definitions...
-PostBuild_Cmds=build68k.exe >cpudefs.c
+PostBuild_Cmds=build68k.exe <table68k >cpudefs.c
 # End Special Build Tool
 
 !ENDIF 

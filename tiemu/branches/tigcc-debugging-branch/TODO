@@ -56,10 +56,8 @@ roms
 
 * console mode (Win32)
 
-* use a single debugger window
-
-*  Bon, déjà ça dépend du matériel, le HW2 se comporte différemment du HW3. Le fonctionnement de l'horloge sur HW3 est très peu connu. Sur HW2, il devrait marcher...
-
+*  Bon, déjà ça dépend du matériel, le HW2 se comporte différemment du HW3. Le 
+fonctionnement de l'horloge sur HW3 est très peu connu. Sur HW2, il devrait marcher...
 Regarde si tous les ports liés à l'auto-int 3 sont émulés correctement sur HW2.
 
 -------------

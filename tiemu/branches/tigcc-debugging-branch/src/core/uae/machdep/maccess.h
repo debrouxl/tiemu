@@ -29,10 +29,10 @@ static __inline__ void do_put_mem_long(uae_u32 *a, uae_u32 v)
 {
     uae_u8 *b = (uae_u8 *)a;
     
-    *b = v >> 24;
-    *(b+1) = v >> 16;    
-    *(b+2) = v >> 8;
-    *(b+3) = v;
+    *b = (uae_u8)(v >> 24);
+    *(b+1) = (uae_u8)(v >> 16);    
+    *(b+2) = (uae_u8)(v >> 8);
+    *(b+3) = (uae_u8)(v);
 }
 
 static __inline__ void do_put_mem_word(uae_u16 *a, uae_u16 v)
@@ -40,7 +40,7 @@ static __inline__ void do_put_mem_word(uae_u16 *a, uae_u16 v)
     uae_u8 *b = (uae_u8 *)a;
     
     *b = v >> 8;
-    *(b+1) = v;
+    *(b+1) = (uae_u8)(v);
 }
 
 static __inline__ void do_put_mem_byte(uae_u8 *a, uae_u8 v)

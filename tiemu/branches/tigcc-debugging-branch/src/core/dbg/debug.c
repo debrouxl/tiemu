@@ -116,7 +116,7 @@ int ti68k_debug_step_over(void)
 	g_free(output);	
 
 	// check current instruction
-	if(!is_bsr_inst(curriword()))
+	if(!is_bsr_inst((uint16_t)curriword()))
 	{
 		printf("single step !\n");
 		ti68k_debug_step();
@@ -158,7 +158,7 @@ int ti68k_debug_step_out(void)
 		hw_m68k_run(1);
 
 		//printf("$%06x: %06x\n", m68k_getpc(), curriword());
-		if(is_ret_inst(curriword()))
+		if(is_ret_inst((uint16_t)curriword()))
 		{
 			hw_m68k_run(1);
 			return 0;
