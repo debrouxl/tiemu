@@ -25,10 +25,6 @@ Ce problème est apparemment causée par le fait qu'une touche (ENTER) est appuyée
 où on entre dans le débogueur. (Le BP sur le trap 11 s'active au moment où ENTER est encore 
 appuyé.)
 
-* Je me demande si c'est un problème de PedroM ou de TiEmu. Les vecteurs ne
-sont pas du tout initialisés (tout est à 0), donc je suspecte un problème
-quelque part dans la gestion des TIBs Titanium dans TiEmu.
-
 
 Lionel
 ======
@@ -45,10 +41,60 @@ certificate).
         * aller dans la fenêtre de debug: TIEmu est parti
 dans le décor, je ne sais pas s'il exécute ou pas
 
+
 PPhd
 ====
 
-* 
+* The following loop freeze on tiemu whereas it doesn"t on Vti and/or Real calc (extract from
+PedroM/process.asm) :
+ 
+ lea	$600000,a3
+ 		move.w	(a3),-(a7)
+ 		move.b	$C(a3),-(a7)
+ 		move.w	$E(a3),-(a7)
+ 		move.w	$14(a3),-(a7)
+ 		move.w	$18(a3),-(a7)
+ 		\LoopHardCpt1:	move.b	$17(a3),d1
+ 				bne.s	\LoopHardCpt1
+ 		\LoopHardCpt2:	move.b	$17(a3),d1
+ 				beq.s	\LoopHardCpt2
+
+* I am sorry I can"t send any files to TIEMU.
+ The "Send Files to TIEMU" doesn"t provide any "Input File Name" field, and
+ it doesn"t select any TI file , but only folders (ie the files .9xz, 89z, etc are not
+ listed).
+ 
+ By the way, it has been said you can select your "Open File" dialog box by editing the
+ tiemu.ini file. Where is this file? It is not in $HOME/.tiemu,
+ and not in $prefix/. Neither in the source files.
+
+* For the moment, the only way to remove an image is to edit .tiemu/image directory.
+  Did you plan to add a way to remove the images using tiemu?
+
+* For the handle which are archived on PedroM, the display size is wrong. 
+ Fix in heap_get_block_size:
+  if (!pedrom)
+  --> 
+  if (!pedrom || addr > rom_base) 
+ By the way, it would be a good idea to factorize this code (It is duplicated 4 times).
+
+* It is nothing real annoying (in facts, it has helped me), but the interrupts are not
+handled exactly like on real
+ calculators. In fact, there was a bug in PedroM 0.80: the completion fails sometimes. It
+sends a KEY_ENTER
+ instead of the command. 
+ It never happens on VTI. It happens rarely on real calc. And it always happen on tiemu :)
+ 
+ The bug was due to the fact than int1 is not called inside a long loop of code, which is
+perfectly possible but quite 
+ rarely.
+ 
+ So it isn"t really a bug report, just a notice of difference between tiemu and real
+calculators.
+
+* When you import a new ROM, it replaces the previous image if it existed, but it doesn"t
+  update the other information (Version, etc).
+  For example, when I import pedrom89.tib, it still displays v0.80 instead of v0.81
 
 
 roms
