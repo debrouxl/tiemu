@@ -111,6 +111,8 @@ typedef struct
     UBYTE	*io;
     int     initial_pc;
 
+	int		ram256;
+
     // timer.c
     int     timer_value;
     int     timer_init;

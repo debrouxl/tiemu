@@ -58,7 +58,7 @@ ULONG mem_mask[8] = { 0 };
 int rom_changed[32]; // FLASH segments which have been (re)programmed
 
 int memprotect;
-int ram128;
+//int ram128;
 int mem_and;
 int ram_wrap;
 
@@ -95,7 +95,6 @@ int hw_mem_init(void)
 	}
 
   /* Init vars */
-  ram128 = (tihw.ram_size == 128);
   memprotect=0;
   ram_wrap=0; 
   mem_and=0x1ffff;

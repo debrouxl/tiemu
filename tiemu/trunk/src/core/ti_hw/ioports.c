@@ -39,20 +39,25 @@
 #include "callbacks.h"
 #include "ti68k_def.h"
 
+#define bit(i,b)	((b) & (1 << i))
+
 void io_put_byte(CPTR adr, UBYTE arg) 
 {
     switch(adr) 
     {
-        case 0x00: 
+        case 0x00:
             tihw.contrast=(tihw.contrast&(~1))|((arg>>5)&1);
             if(tihw.calc_type != TI92)
 	            cb_set_contrast(tihw.contrast); // avoid flickering with 92
             tihw.io0Bit7=(arg>>7)&1;
             tihw.io0Bit2=(arg>>2)&1;
         break;
-        case 0x01: 
-            ram128=arg&1; memprotect=(arg>>2)&1;
-            mem_and=(ram_wrap)?0x1ffff:(ram128?0x1ffff:0x3ffff);
+        case 0x01:
+			// interleave RAM (allows use of 256K of RAM)
+			tihw.ram256 = bit(0, arg);
+
+			memprotect=(arg>>2)&1;
+            mem_and=(ram_wrap)?0x1ffff:(!tihw.ram256?0x1ffff:0x3ffff);
             //mem_mask[0] = (mem_and==0x1fffff) ? (128*1024) : (256 * 1024);
 	    break;
         case 0x04: // bit 3 set: 000000..1FFFFF mapped to 200000..3FFFFF
@@ -128,7 +133,8 @@ UBYTE io_get_byte(CPTR adr)
             tihw.io0Bit2=1;
             return v|0x4;
         case 0x01:
-            return (memprotect<<2)|ram128;
+			// interleave RAM (allows use of 256K of RAM)
+            return (memprotect<<2) | tihw.ram256;
         case 2: case 4: case 6: case 8: case 0xa: return 0x14;
         case 3: case 5: case 7: case 9: case 0xb: return 1;      
         case 0x0c: //link status
