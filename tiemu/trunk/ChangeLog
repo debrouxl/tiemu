@@ -10,7 +10,8 @@ SubVersion: $Id$
 	- pb with Alpha key: fixed
 	- no key auto-repeat: fixed
 	- long names with the ROM version box: fixed
-	- disasm listing (mv2sr instead of move xx,sr): fixed
+	- disasm listing (mv2sr instead of move xx,sr): fixed but mvmel (movem) seems to be
+		badly dis-assembled (0x24b90c TI92 1.11).
 	- SR flags (VTi emulation): fixed
 
 	Fixes:

@@ -196,8 +196,8 @@ static const char* instr[] = {
 	"MV2SR.B", "MV2SR.W",	/* MOVE to SR <ea>,SR		*/
 	"MVR2USP.L",			/* MOVE An,USP	*/
 	"MVUSP2R.L",			/* MOVE USP,An	*/
-	"MOVEC2",				/* MOVEC Rc,Rn */
-	"MOVE2C",				/* MOVEC Rn,Rc */
+    "MVMEL.W", "MVMEL.L",   /* MOVEM < ea > , < list >  */
+    "MVMLE.W", "MVMLE.L",   /* MOVEM < list > , < ea >  */
 	NULL
 };
 
@@ -216,6 +216,8 @@ static int match_opcode(const char *opcode)
 
 	return -1;
 }
+
+// TRAP need to be splitted
 
 uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 {
@@ -345,16 +347,22 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 			g_free(split[2]);
 			split[2] = tmp;
 			break;
-		case 12:	/* MOVEC Rc,Rn */
-			break;
-		case 13:	/* MOVEC Rn,Rc */
-			break;
+        case 12:    /* MOVEM <ea>,<list>  */
+        case 14:    /* MOVEM <list>,<ea>  */
+            g_free(split[1]);
+			split[1] = g_strdup("MOVEM.W");
+            break;
+        case 13:    /* MOVEM <ea>,<list>  */
+        case 15:    /* MOVEM <list>,<ea>  */
+            g_free(split[1]);
+			split[1] = g_strdup("MOVEM.L");
+            break;
 		default:
 			break;
 		}
 	}
 	
-	*line = g_strdup_printf("%s %s %s\n", 
+	*line = g_strdup_printf("%s %s %s", 
 			split[0] ? split[0] : "", 
 			split[1] ? split[1] : "",
 			split[2] ? split[2] : "");

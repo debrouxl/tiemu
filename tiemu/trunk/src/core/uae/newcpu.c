@@ -297,7 +297,8 @@ static void ShowEA(int reg, amodes mode, wordsizes size,char *output)
 	strcat(output,temp);
 	break;
      default:
-	abort();
+	//abort();
+         break;
     }
 }
 
