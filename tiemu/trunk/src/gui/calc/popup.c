@@ -384,7 +384,6 @@ on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem
 {
 	gchar *basename;
 	gchar *dot;
-	gchar *path;
 
 	// build name
 	basename = g_path_get_basename(params.rom_file);
@@ -393,15 +392,12 @@ on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem
 		*dot = '\0';
 
 	// set path
-	path = g_strconcat(inst_paths.home_dir, basename, ".sav", NULL);
+	g_free(params.sav_file);
+	params.sav_file = g_strconcat(inst_paths.home_dir, basename, ".sav", NULL);
 	g_free(basename);
 
-	// save state and and path
+	// save state and and config
 	ti68k_state_save(params.sav_file);
-	rcfile_read();
-	g_free(params.sav_file);
-	params.sav_file = g_strdup(path);
-	g_free(path);
     rcfile_write();
 
 	// exits

@@ -885,8 +885,18 @@ int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
 			sprintf (buffer, "DIVU.W   %s,D%d", ea, rhi);
 			break;
 		case 0x8100: case 0x8300: case 0x8500: case 0x8700: case 0x8900: case 0x8b00: case 0x8d00: case 0x8f00:
-			ea = MakeEA (lo, p, 1, &count); p += count;
-			sprintf (buffer, "OR.B     D%d,%s", rhi, ea);
+			if ((lo & 0x30) == 0)
+			{
+				if (lo & 0x08)
+					sprintf (buffer, "SBCD.B   -(A%d),-(A%d)", rlo, rhi);
+				else
+					sprintf (buffer, "SBCD.B   D%d,D%d", rlo, rhi);
+			}
+			else
+			{
+				ea = MakeEA (lo, p, 1, &count); p += count;
+				sprintf (buffer, "OR.B    D%d,%s", rhi, ea);
+			}
 			break;
 		case 0x8140: case 0x8340: case 0x8540: case 0x8740: case 0x8940: case 0x8b40: case 0x8d40: case 0x8f40:
 			ea = MakeEA (lo, p, 2, &count); p += count;

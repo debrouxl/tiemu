@@ -8,6 +8,7 @@ SubVersion: $Id$
 	- improved popup menu (slow down)
 	- popup menu available when debugger is opened
 	- rebuilt under Linux
+	- fixed bug with SDCB in the VTi's disassembler
 
 	To do:
 	- Run to cursor s'arrête au mauvais endroit s'il y a des JSR.
