@@ -29,17 +29,13 @@ NULL=nul
 
 OUTDIR=.\Release
 INTDIR=.\Release
-# Begin Custom Macros
-OutDir=.\Release
-# End Custom Macros
 
-ALL : "$(OUTDIR)\SkinEdit_console.exe"
+ALL : ".\SkinEdit.exe"
 
 
 CLEAN :
 	-@erase "$(INTDIR)\boxes_cb.obj"
 	-@erase "$(INTDIR)\boxes_intf.obj"
-	-@erase "$(INTDIR)\gtksdl.obj"
 	-@erase "$(INTDIR)\main.obj"
 	-@erase "$(INTDIR)\main_cb.obj"
 	-@erase "$(INTDIR)\main_intf.obj"
@@ -51,13 +47,13 @@ CLEAN :
 	-@erase "$(INTDIR)\utils.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vti_export.obj"
-	-@erase "$(OUTDIR)\SkinEdit_console.exe"
+	-@erase ".\SkinEdit.exe"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"$(INTDIR)\SkinEdit_console.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "__WIN32__" /Fp"$(INTDIR)\SkinEdit_console.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -95,11 +91,10 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\SkinEdit_console.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\SkinEdit_console.pdb" /machine:I386 /out:"$(OUTDIR)\SkinEdit_console.exe" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\SkinEdit.pdb" /machine:I386 /out:"SkinEdit.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\boxes_cb.obj" \
 	"$(INTDIR)\boxes_intf.obj" \
-	"$(INTDIR)\gtksdl.obj" \
 	"$(INTDIR)\main.obj" \
 	"$(INTDIR)\main_cb.obj" \
 	"$(INTDIR)\main_intf.obj" \
@@ -119,11 +114,9 @@ LINK32_OBJS= \
 	"..\..\..\..\..\Gtk2Dev\lib\gmodule-2.0.lib" \
 	"..\..\..\..\..\Gtk2Dev\lib\pango-1.0.lib" \
 	"..\..\..\..\..\Gtk2Dev\lib\libglade-2.0.lib" \
-	"..\..\..\..\..\Gtk2Dev\lib\atk-1.0.lib" \
-	"..\..\..\..\..\SDL-1.2.7\lib\SDL.lib" \
-	"..\..\..\..\..\Gtk2Dev\lib\libjpeg.lib"
+	"..\..\..\..\..\Gtk2Dev\lib\atk-1.0.lib"
 
-"$(OUTDIR)\SkinEdit_console.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+".\SkinEdit.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
@@ -136,13 +129,12 @@ INTDIR=.\Debug
 OutDir=.\Debug
 # End Custom Macros
 
-ALL : "$(OUTDIR)\SkinEdit_console.exe"
+ALL : "$(OUTDIR)\SkinEdit.exe"
 
 
 CLEAN :
 	-@erase "$(INTDIR)\boxes_cb.obj"
 	-@erase "$(INTDIR)\boxes_intf.obj"
-	-@erase "$(INTDIR)\gtksdl.obj"
 	-@erase "$(INTDIR)\main.obj"
 	-@erase "$(INTDIR)\main_cb.obj"
 	-@erase "$(INTDIR)\main_intf.obj"
@@ -155,9 +147,9 @@ CLEAN :
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vc60.pdb"
 	-@erase "$(INTDIR)\vti_export.obj"
-	-@erase "$(OUTDIR)\SkinEdit_console.exe"
-	-@erase "$(OUTDIR)\SkinEdit_console.ilk"
-	-@erase "$(OUTDIR)\SkinEdit_console.pdb"
+	-@erase "$(OUTDIR)\SkinEdit.exe"
+	-@erase "$(OUTDIR)\SkinEdit.ilk"
+	-@erase "$(OUTDIR)\SkinEdit.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -201,11 +193,10 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\SkinEdit_console.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\SkinEdit_console.pdb" /debug /machine:I386 /out:"$(OUTDIR)\SkinEdit_console.exe" /pdbtype:sept 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\SkinEdit.pdb" /debug /machine:I386 /out:"$(OUTDIR)\SkinEdit.exe" /pdbtype:sept 
 LINK32_OBJS= \
 	"$(INTDIR)\boxes_cb.obj" \
 	"$(INTDIR)\boxes_intf.obj" \
-	"$(INTDIR)\gtksdl.obj" \
 	"$(INTDIR)\main.obj" \
 	"$(INTDIR)\main_cb.obj" \
 	"$(INTDIR)\main_intf.obj" \
@@ -225,11 +216,9 @@ LINK32_OBJS= \
 	"..\..\..\..\..\Gtk2Dev\lib\gmodule-2.0.lib" \
 	"..\..\..\..\..\Gtk2Dev\lib\pango-1.0.lib" \
 	"..\..\..\..\..\Gtk2Dev\lib\libglade-2.0.lib" \
-	"..\..\..\..\..\Gtk2Dev\lib\atk-1.0.lib" \
-	"..\..\..\..\..\SDL-1.2.7\lib\SDL.lib" \
-	"..\..\..\..\..\Gtk2Dev\lib\libjpeg.lib"
+	"..\..\..\..\..\Gtk2Dev\lib\atk-1.0.lib"
 
-"$(OUTDIR)\SkinEdit_console.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+"$(OUTDIR)\SkinEdit.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
@@ -256,12 +245,6 @@ SOURCE=..\..\src\boxes_cb.c
 SOURCE=..\..\src\boxes_intf.c
 
 "$(INTDIR)\boxes_intf.obj" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=..\..\src\gtksdl.c
-
-"$(INTDIR)\gtksdl.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
