@@ -284,9 +284,9 @@ dans la fenêtre ASCII de la memory view (Win ME ?).
 me/moi
 ======
 
-* bug de contraste avec pedrom en rev $695 ou 696 ou 697.
+* le clavier ne fonctionne plus sur PedRom en rev $697 (idle).
 
-* Titanium boot seems to be broken after tiemu-1.80-041024 release...
+* don't save LCD state
 
 -------------
 + done
