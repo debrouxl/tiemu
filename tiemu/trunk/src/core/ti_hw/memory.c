@@ -33,10 +33,8 @@
 #include "bkpts.h"
 #include "ti68k_def.h"
 
-/* Memory blocks */
-
-UBYTE *ti_int_rom;
-UBYTE *ti_ext_rom;
+const int rom_sizes[] = { 1*MB, 2*MB, 2*MB, 4*MB };	// 92, 89, 92+, V200
+const int ram_sizes[] = { 128*KB, 256*KB, 256*KB, 256*KB };
 
 UBYTE *mem_tab[8] = 
 {
@@ -48,12 +46,10 @@ UBYTE *mem_tab[8] =
   0,
   0,
   0
-}; 
+};
 ULONG mem_mask[8] = {0,0,0,0,0,0,0,0};
 
 int rom_changed[32]; // FLASH segments which have been (re)programmed
-
-UBYTE* mem[256];
 
 int memprotect;
 int ram128;
@@ -71,14 +67,9 @@ static IMG_INFO *cri = &img_infos; // a shortcut
 
 /* Mem init/exit */
 
-static int mem_initialized = 0;
-
 int hw_mem_init(void)
 {
   int i;
-
-  if(mem_initialized) 
-    hw_mem_exit();
 
   /* Init vars */
   ram128 = (tihw.ram_size == 128);
@@ -95,8 +86,6 @@ int hw_mem_init(void)
   rom_ret_or = 0;
   flash_protect = 0;
 
-  mem_initialized = !0;
-
   /* Initialize bkpts */
   listBkptAsRB = listBkptAsRW = listBkptAsRL = NULL;
   listBkptAsWB = listBkptAsWW = listBkptAsWL = NULL;
@@ -104,8 +93,9 @@ int hw_mem_init(void)
 
   /* Allocate memory */  
   tihw.ram     = malloc(RAM_SIZE+4);
-  ti_int_rom = malloc(ROM_SIZE+4);
-  ti_ext_rom = malloc(ROM_SIZE+4);
+  tihw.rom = malloc(ROM_SIZE+4);
+  //ti_int_rom = malloc(ROM_SIZE+4);
+  //ti_ext_rom = malloc(ROM_SIZE+4);
   tihw.io      = malloc(IO_SIZE+4);
 
   /* Clear RAM/ROM/IO */
@@ -114,12 +104,14 @@ int hw_mem_init(void)
   for (i=0; i<2048*1024; i++)
     {
       if (i&1) { 
-	ti_int_rom[i]=0x00; 
-	ti_ext_rom[i]=0x00; 
+	tihw.rom[i] = 0x00;
+	//ti_int_rom[i]=0x00; 
+	//ti_ext_rom[i]=0x00; 
       }      
       else { 
-	ti_int_rom[i]=0x14; 
-	ti_ext_rom[i]=0x14; 
+	tihw.rom[i] = 0x14;
+	//ti_int_rom[i]=0x14; 
+	//ti_ext_rom[i]=0x14; 
       }
     }
 
@@ -133,25 +125,27 @@ int hw_mem_init(void)
   mem_mask[0] = RAM_SIZE-1;
 
   /* Map ROM in two places */
-  mem_tab[1] = ti_int_rom;
+  mem_tab[1] = tihw.rom;	//ti_int_rom;
   mem_mask[1] = ROM_SIZE-1;
-  mem_tab[2] = ti_ext_rom;
+  mem_tab[2] = tihw.rom;	//ti_ext_rom;
   mem_mask[2] = ROM_SIZE-1;
 
   /* Map IO */
   mem_tab[3] = tihw.io;
   mem_mask[3] = IO_SIZE-1;
 
+  /*
   if(cri->internal)
     tihw.rom = ti_int_rom;
   else
     tihw.rom = ti_ext_rom;
+	*/
   
   // blit ROM
   memcpy(tihw.rom, cri->data, cri->size);
   free(cri->data);
 
-  return (tihw.ram && ti_int_rom && ti_ext_rom && tihw.io);
+  return (tihw.ram && tihw.rom /*ti_int_rom && ti_ext_rom*/ && tihw.io);
 }
 
 int hw_mem_reset(void)
@@ -164,6 +158,9 @@ int hw_mem_exit(void)
     free(tihw.ram); 
   tihw.ram=NULL;
   
+  if(tihw.rom)
+	  free(tihw.rom);
+  /*
   if(ti_int_rom) 
     free(ti_int_rom); 
   ti_int_rom=NULL;
@@ -171,12 +168,10 @@ int hw_mem_exit(void)
   if(ti_ext_rom) 
     free(ti_ext_rom); 
   ti_ext_rom=NULL;
-  
+  */
   if(tihw.io)  
     free(tihw.io);  
   tihw.io=NULL;
-  
-  mem_initialized = 0;
 
   return 0;
 }

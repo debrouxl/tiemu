@@ -54,6 +54,9 @@
 #define EPROM_ROM	0
 #define FLASH_ROM 	2
 
+#define KB			(1024)
+#define MB			(1024*KB)
+
 /* Structures */
 
 typedef struct 
@@ -100,12 +103,9 @@ typedef struct
     TicableLinkParam lc;
 
     // memory.c
-    UBYTE	*int_rom;
-    UBYTE	*ext_rom;
     UBYTE	*rom;
     UBYTE	*ram;
     UBYTE	*io;
-    UBYTE	*garbage;
 
     // timer.c
     int     timer_value;
