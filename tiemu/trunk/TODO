@@ -23,6 +23,37 @@ Ce problème est apparemment causée par le fait qu'une touche (ENTER) est appuyée
 où on entre dans le débogueur. (Le BP sur le trap 11 s'active au moment où ENTER est encore 
 appuyé.)
 
+* Je me demande si c'est un problème de PedroM ou de TiEmu. Les vecteurs ne
+sont pas du tout initialisés (tout est à 0), donc je suspecte un problème
+quelque part dans la gestion des TIBs Titanium dans TiEmu.
+
+* Un autre truc, c'est que AMS distingue 2 types de HANDLE:
+	- les handles alloués avec HeapAlloc ou HeapAllocHigh, qui ont seulement la
+	taille devant
+	- les handles alloués avec HeapAllocPtr, pour lesquels AMS fait ça:
+	HANDLE handle=HeapAllocHigh(size);
+	short *ptr=HeapDeref(handle);
+	*(ptr++)=handle;
+	return ptr;
+	Donc le pointeur est en fait 2 octets dans le handle. PpHd a refusé
+	d'implémenter ça correctement dans PedroM, ce qui donne cette structure
+	bizarre:
+	> > ;       + SIZE.l    = Size of the block (in bytes)
+	> > ;       + HANDLE.w  = Corresponding Handle + Bit 15 if locked
+
+* > comment faire la distinction entre les 2 formes ?
+
+Tu n'es pas obligé de faire la distinction. Regarde mieux le code: les
+handles HeapAllocPtr sont "contenus dans" des handles HeapAlloc. Les 2
+octets à HeapDeref(handle) sont le numéro du handle, et HeapAllocPtr
+retourne HeapDeref(handle)+2. Mais cela ne concerne que le programme ayant
+appelé HeapAllocPtr. En interne, les 2 octets contenant le numéro ne sont
+que les 2 premiers octets de données. Ton code pour afficher la taille du
+handle fonctionne aussi pour les handles HeapAllocPtr. (Cela dit, un
+HeapAllocPtr(n) implique un HeapAlloc(n+2), afin d'accomoder le numéro du
+handle, donc la taille sera de 2 octets plus grande que celle donnée à
+HeapAllocPtr. Mais c'est normal.)
+
 
 Lionel
 ======

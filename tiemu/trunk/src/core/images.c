@@ -725,7 +725,7 @@ int ti68k_load_upgrade(const char *filename)
 	err = ti68k_get_tib_infos(filename, &tib, !0);
 	if(err)
     {
-free(img->data);
+		free(img->data);
       	DISPLAY(_("Unable to get informations on FLASH upgrade: %s\n"), filename);
       	return err;
     }
@@ -759,9 +759,7 @@ int ti68k_unload_image_or_upgrade(void)
 	if(!img_loaded)
 		return -1;
 
-	if(img->data != NULL)
-		free(img->data);
-
+	img->data = NULL;
 	img_loaded = 0;
 
 	return 0;
