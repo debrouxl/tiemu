@@ -64,7 +64,6 @@ int hw_flash_nblocks(void)
 	for(i = 0; i < wsm.nblocks; i++)
 		if(wsm.changed[i])
 			n++;
-	printf("n = %i\n", n);
 
 	return n;
 }
