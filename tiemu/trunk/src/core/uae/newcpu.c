@@ -575,23 +575,13 @@ void op_illg(ULONG opcode)
   
   if ((opcode & 0xF000) == 0xF000) 
     {
-      if ((opcode & 0xE00) == 0x200)
-	Exception(0xB);
-      else 
-	switch (opcode & 0x1FF) 
-	  {
-	  case 0x17:
-	    regs.pc_p+=4;
-	    break;
-	  default:
-	    regs.pc_p+=2;
-	  }
-      return;
+	    Exception(0xB);
+        return;
     }
   if ((opcode & 0xF000) == 0xA000) 
     {
-      Exception(0xA);
-      return;
+        Exception(0xA);
+        return;
     }
   
   fprintf(stderr, "UAE: illegal instruction: %04x at $%06x (intel = 0x%08x) %08x\n", 

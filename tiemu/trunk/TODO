@@ -2,7 +2,7 @@ List of stuffs to do:
 
 ExtendeD:
 
-- Mais il semble y avoir un problème avec certaines instructions, c'est
+O Mais il semble y avoir un problème avec certaines instructions, c'est
 assez bizarre : le scroll n'incrémente pas l'adresse de l'instruction du
 bas, mais incrémente celle de la première instruction (scroll n'importe où d
 ans l'AMS, tu devrais tomber sur ce bug).
@@ -107,7 +107,7 @@ d'aplomb.
 O TIEmu n'apprécie pas la ROM de V200 modifiée pour
 VTI par ExtendeD, il crashe.
 
-- clic en dehors du popup menu: je n'ai pas ce pb. 
+O clic en dehors du popup menu: je n'ai pas ce pb. 
 Tu l'avais sous ton Me ou sous XP ?
 Les deux (TIEmu 1.75)
 

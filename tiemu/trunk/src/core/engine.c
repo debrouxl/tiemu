@@ -156,7 +156,7 @@ void ti68k_engine_start(void)
 {
     printf("starting engine... ");
 
-    //while(gtk_events_pending()) gtk_main_iteration();
+    //while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
 
 	G_LOCK(running);
 	if(!running)
@@ -165,8 +165,6 @@ void ti68k_engine_start(void)
 		thread = g_thread_create(ti68k_engine, NULL, TRUE, &error);
         running = 1;
 	}
-    else
-        printf("warning: engine is already running... ");
 	G_UNLOCK(running);
     printf("done.\n");
 }

@@ -12,6 +12,8 @@ To do:
 	- stack frame display 1 word on 2
 	- fixed step over: works on DBcc
 	- PC highlight lost when scrolling: fixed
+	- restart engine when clicking outside of the popup menu
+	- important bug: FLINE instructions were not executed !
 
 - 13/08/2004, version 1.78: roms
 	- changed keyboard mapping to pure VTi mapping

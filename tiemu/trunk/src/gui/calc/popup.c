@@ -63,6 +63,7 @@ on_popup_menu_cancel                   (GtkMenuShell    *menushell,
     ti68k_engine_release();
 }
 
+extern GtkWidget *main_wnd;
 
 GLADE_CB gboolean
 on_popup_menu_button_press_event       (GtkWidget       *widget,
@@ -71,18 +72,18 @@ on_popup_menu_button_press_event       (GtkWidget       *widget,
 {
 	GtkAllocation *alloc = &(widget->allocation);
 
-    DISPLAY("on_popup_menu_button_press_event\n");
+    //DISPLAY("on_popup_menu_button_press_event: %p %p %p\n", event->window, widget->window, main_wnd->window);
     //DISPLAY("%i %i %i %i\n", (gint)event->x, (gint)event->y, (gint)event->x_root, (gint)event->y_root);
     //DISPLAY("%i %i %i %i\n", alloc->x, alloc->y, alloc->width, alloc->height);
-    if((event->x > alloc->width) || (event->y > alloc->height) ||
+
+    if((event->window == main_wnd->window) ||        
+        (event->x > alloc->width) || (event->y > alloc->height) ||
         (event->x < alloc->x) || (event->y < alloc->y)) 
     {
-        printf("release engine !\n");
         ti68k_engine_release();
     }
 
   	return TRUE;
-    //return FALSE;
 }
 
 
@@ -253,7 +254,6 @@ on_7_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     params.grayplanes = 7;
-    printf("hello !\n");
     ti68k_engine_release();
 }
 
@@ -481,6 +481,7 @@ GtkWidget* display_popup_menu(void)
     {
     case VIEW_NORMAL:
         data = glade_xml_get_widget(xml, "normal_view1");
+        printf("data = %p\n", data);
         g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_normal_view1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
         g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_normal_view1_activate, NULL);
