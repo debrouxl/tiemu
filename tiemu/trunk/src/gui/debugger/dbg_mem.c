@@ -895,8 +895,9 @@ gint display_dbgmem_address(uint32_t *addr)
 	glade_xml_signal_autoconnect(xml);
 	
 	entry = glade_xml_get_widget(xml, "entry1");
-	gtk_entry_set_text(GTK_ENTRY(entry), "000000");
-	*addr = 0;
+	str = g_strdup_printf("%06x", *addr);
+	gtk_entry_set_text(GTK_ENTRY(entry), str);
+	g_free(str);
 	
 	dbox = glade_xml_get_widget(xml, "dbgmem_address");	
 	result = gtk_dialog_run(GTK_DIALOG(dbox));

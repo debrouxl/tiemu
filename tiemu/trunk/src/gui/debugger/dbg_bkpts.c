@@ -534,6 +534,74 @@ dbgbkpts_button5_clicked                     (GtkButton       *button,
     }
 }
 
+GLADE_CB gboolean
+on_treeview2_button_press_event        (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data)
+{
+	GtkTreeView *view = GTK_TREE_VIEW(widget);
+    GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkTreePath *path;
+	GtkTreeViewColumn *column;
+    GtkTreeIter iter;
+    gboolean ret;
+    gchar *spath;
+
+    if (event->type != GDK_2BUTTON_PRESS)	// double-click ?
+		return FALSE;
+	else
+	{
+		// retrieve selection
+		gint tx = (gint) event->x;
+	    gint ty = (gint) event->y;
+	    gint cx, cy;
+		gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
+		uint32_t type;
+		
+        ret = gtk_tree_view_get_path_at_pos(view, tx, ty, &path, &column, &cx, &cy);
+        if(ret == FALSE)
+            return FALSE;
+
+		if (!gtk_tree_model_get_iter(model, &iter, path))
+		    return FALSE;
+        gtk_tree_path_free(path);
+
+        gtk_tree_model_get(model, &iter, 
+            COL_SYMBOL, &row_text[COL_SYMBOL], 
+            COL_TYPE, &row_text[COL_TYPE], 
+            COL_START, &row_text[COL_START], 
+            COL_END, &row_text[COL_END],
+            COL_MODE, &row_text[COL_MODE],
+            -1);
+		
+        type = ti68k_string_to_bkpt_type(row_text[COL_TYPE]);
+		if(type == BK_TYPE_CODE)
+		{
+			uint32_t old_addr, new_addr;
+
+			sscanf(row_text[COL_START], "%x", &old_addr);
+			new_addr = old_addr;
+			if(display_dbgmem_address(&new_addr) == -1)
+				return TRUE;
+			printf("addr = %x\n", new_addr);
+
+			ti68k_bkpt_del_address(old_addr);
+	        ti68k_bkpt_add_address(new_addr);
+			
+			dbgbkpts_refresh_window();
+		}
+		if((type == BK_TYPE_RANGE) ||(type == BK_TYPE_ACCESS))
+		{
+		}
+
+		g_strfreev(row_text);
+                
+		return TRUE;
+    }
+
+    return FALSE;
+}
+
 
 GLADE_CB void
 dbgbkpts_data_activate                    (GtkMenuItem     *menuitem,
