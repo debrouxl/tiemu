@@ -23,12 +23,6 @@ extern unsigned long specialflags;
 #define SPCFLAG_DELAY 1024
 #define SPCFLAG_ADRERR 2048
 
-//tiemu begin
-extern int breakCause; 
-extern int speedyLink;
-extern int delayTime;
-//tiemu end
-
 extern int areg_byteinc[];
 extern int imm8_table[];
 
@@ -111,6 +105,9 @@ static INLINE_DECLARATION ULONG nextilong(void)
 {
     return (nextiword()<<16) | nextiword();
 }
+
+//roms
+extern unsigned char* hw_get_real_address(unsigned long adr);
 
 static INLINE_DECLARATION void m68k_setpc(CPTR newpc)
 {

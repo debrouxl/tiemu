@@ -25,6 +25,8 @@
 #ifndef __TI68K_MEMORY__
 #define __TI68K_MEMORY__
 
+#include "stdint.h"
+
 /* Functions */
 
 int hw_mem_init(void);
@@ -32,20 +34,20 @@ int hw_mem_reset(void);
 int hw_mem_exit(void);
 
 // defs similar to UAE's memory.h (interface)
-extern UBYTE get_byte(CPTR adr);
-extern UWORD get_word(CPTR adr);
-extern ULONG get_long(CPTR adr);
+extern uint8_t  hw_get_byte(uint32_t addr);
+extern uint16_t hw_get_word(uint32_t addr);
+extern uint32_t hw_get_long(uint32_t addr);
 
-extern void put_long(CPTR adr, ULONG arg);
-extern void put_word(CPTR adr, UWORD arg);
-extern void put_byte(CPTR adr, UBYTE arg);
+extern void hw_put_long(uint32_t addr, uint32_t arg);
+extern void hw_put_word(uint32_t addr, uint16_t arg);
+extern void hw_put_byte(uint32_t addr, uint8_t  arg);
 
-extern UBYTE *get_real_address(CPTR adr);
+extern uint8_t* hw_get_real_address(uint32_t addr);
 
 /* Variables */
 
-extern UBYTE *mem_tab[];
-extern ULONG mem_mask[];
+extern uint8_t  *mem_tab[];
+extern uint32_t mem_mask[];
 
 /* Defines */
 

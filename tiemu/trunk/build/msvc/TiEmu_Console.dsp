@@ -346,6 +346,10 @@ SOURCE=..\..\src\gui\main.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=..\..\src\core\uae\memory.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\uae\newcpu.h
 # End Source File
 # Begin Source File

@@ -45,8 +45,8 @@ static IMG_INFO *img = &img_infos; // a shortcut
 const int rom_base[] = { 0x400000, 0x200000, 0x400000, 0x800000 };
 const int io_size = 32;
 
-UBYTE *mem_tab[16];     // 1MB per banks
-ULONG mem_mask[16];		// pseudo chip-select (allow wrapping / ghost space)
+uint8_t *mem_tab[16];     // 1MB per banks
+uint32_t mem_mask[16];		// pseudo chip-select (allow wrapping / ghost space)
 
 // 000000-0fffff : RAM (128 or 256 KB)
 // 100000-1fffff : 
@@ -235,12 +235,12 @@ int hw_mem_exit(void)
 #define lput(adr, arg) { wput((adr), (arg)>>16); wput((adr)+2, (arg)&0xffff); }
 
 #define bget(adr) (mem_tab[(adr)>>20][(adr)&mem_mask[(adr)>>20]])
-#define wget(adr) ((UWORD)(((UWORD)bget(adr))<< 8 | bget((adr)+1)))
-#define lget(adr) ((ULONG)(((ULONG)wget(adr))<<16 | wget((adr)+2)))
+#define wget(adr) ((uint16_t)(((uint16_t)bget(adr))<< 8 | bget((adr)+1)))
+#define lget(adr) ((uint32_t)(((uint32_t)wget(adr))<<16 | wget((adr)+2)))
 
 static void FlashWriteByte(int addr,int v);
 
-ULONG get_long(CPTR adr) 
+uint32_t hw_get_long(uint32_t adr) 
 {
     GList* l;
   
@@ -251,7 +251,7 @@ ULONG get_long(CPTR adr)
         bkpts.id = 0;
         while (l) 
 	    {
-	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
+	        if ((uint32_t)GPOINTER_TO_INT(l->data) == adr) 
 	        {
 				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_READ_LONG; 
@@ -327,7 +327,7 @@ ULONG get_long(CPTR adr)
         return 0;
 }
 
-UWORD get_word(CPTR adr) 
+uint16_t hw_get_word(uint32_t adr) 
 {
     GList* l;
 	
@@ -338,7 +338,7 @@ UWORD get_word(CPTR adr)
         bkpts.id = 0;
         while (l) 
 	    {
-	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
+	        if ((uint32_t)GPOINTER_TO_INT(l->data) == adr) 
 	        {
 				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_READ_WORD;
@@ -387,7 +387,7 @@ UWORD get_word(CPTR adr)
     if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
     {
         tihw.flash_prot = 1;
-        return lget(adr);
+        return wget(adr);
     }
 
     // The certificate memory ($210000-$211FFF) is read protected.
@@ -414,7 +414,7 @@ UWORD get_word(CPTR adr)
         return 0;
 }
 
-UBYTE get_byte(CPTR adr) 
+uint8_t hw_get_byte(uint32_t adr) 
 {
     GList* l;
   
@@ -424,7 +424,7 @@ UBYTE get_byte(CPTR adr)
     {
         bkpts.id = 0;
         while (l) {
-	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
+	        if ((uint32_t)GPOINTER_TO_INT(l->data) == adr) 
 	        {
 				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_READ_BYTE;
@@ -468,7 +468,7 @@ UBYTE get_byte(CPTR adr)
     if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
     {
         tihw.flash_prot = 1;
-        return lget(adr);
+        return bget(adr);
     }
 
     // The certificate memory ($210000-$211FFF) is read protected.
@@ -495,7 +495,7 @@ UBYTE get_byte(CPTR adr)
         return 0;
 }
 
-void put_long(CPTR adr, ULONG arg) 
+void hw_put_long(uint32_t adr, uint32_t arg) 
 {
     GList* l;
 
@@ -506,7 +506,7 @@ void put_long(CPTR adr, ULONG arg)
         bkpts.id = 0;
         while (l) 
 	    {
-	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
+	        if ((uint32_t)GPOINTER_TO_INT(l->data) == adr) 
 	        {
 				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_WRITE_LONG;
@@ -590,7 +590,7 @@ void put_long(CPTR adr, ULONG arg)
         lput(adr, arg);
 }
 
-void put_word(CPTR adr, UWORD arg) 
+void hw_put_word(uint32_t adr, uint16_t arg) 
 {
     GList* l;
 	
@@ -601,7 +601,7 @@ void put_word(CPTR adr, UWORD arg)
         bkpts.id = 0;
         while (l) 
 	    {
-	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
+	        if ((uint32_t)GPOINTER_TO_INT(l->data) == adr) 
 	        {
 				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_WRITE_WORD;
@@ -674,7 +674,7 @@ void put_word(CPTR adr, UWORD arg)
 		wput(adr, arg);
 }
 
-void put_byte(CPTR adr, UBYTE arg) 
+void hw_put_byte(uint32_t adr, uint8_t arg) 
 {
     GList* l;
 	
@@ -685,7 +685,7 @@ void put_byte(CPTR adr, UBYTE arg)
         bkpts.id = 0;
         while (l) 
 	    {
-	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
+	        if ((uint32_t)GPOINTER_TO_INT(l->data) == adr) 
 	        {
 				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_WRITE_BYTE;
@@ -760,7 +760,7 @@ void put_byte(CPTR adr, UBYTE arg)
 }
 
 // Use: converts m68k address into PC-mapped address
-UBYTE *get_real_address(CPTR adr) 
+uint8_t* hw_get_real_address(uint32_t adr) 
 {
     return &mem_tab[(adr>>20)&0xf][adr&mem_mask[(adr>>20)&0xf]];
 }
@@ -768,7 +768,7 @@ UBYTE *get_real_address(CPTR adr)
 // not reworked yet (from Corvazier)
 static void FlashWriteByte(int addr, int v)
 {
-    UBYTE *rom = mem_tab[2];
+    uint8_t *rom = mem_tab[2];
     int i;
 
     // map ROM accesses
@@ -888,5 +888,5 @@ static int find_pc()
 // Used to read/modify/write memory directly from debugger
 uint8_t* ti68k_get_real_address(uint32_t addr)
 {
-	return get_real_address(addr);
+	return hw_get_real_address(addr);
 }
