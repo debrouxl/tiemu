@@ -36,10 +36,13 @@ model.
 A link to the most recent version of this document and other interesting
 stuff can be found at Olle's site >>>  http://alh.dhs.org/ti89/
 
-Updated by Romain Lievin for the TiEmu project from ExtendeD's informations.
-
 -- 
 Johan Eilert <johei804@student.liu.se>
+
+--
+Updated by Romain Lievin <roms@tilp.info> from ExtendeD's informations 
+(7000xx_ports.zip). Needed by the TiEmu project.
+CVS: $Id$ <http://svn.technologeek.org/cgi-bin/viewcvs.cgi/tiemu/trunk/docs/ti_hw/misc/J89hw.txt?rev=774&root=tiemu&view=auto>
 
 
 ===========================================================================
