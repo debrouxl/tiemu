@@ -316,7 +316,7 @@ uint8_t io_get_byte(uint32_t addr)
         break;
         case 0x0d:	// r- <76543210>
 			// linkport status
-			v |= (hw_dbus_byteavail() ? 0x60 : 0x40);	// needed, why ?
+			v |= (hw_dbus_byteavail() ? 0x60 : 0x40);
 			
 			// reading the DBus status register resets that register
 			tihw.io[0x0d] = 0x00;

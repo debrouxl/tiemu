@@ -287,9 +287,6 @@ static int ilp_put(uint8_t data)
   	f2t_data = data; 
   	f2t_flag = 1;
 
-	//io_bit_set(0x0d,5);		// rx buffer full
-	//io_bit_set(0x0d,3);		// link activity
-
 	toSTART(clk);
   	while(f2t_flag) 
     { 
@@ -315,9 +312,6 @@ static int ilp_get(uint8_t *data)
     
   	*data = t2f_data;
   	t2f_flag = 0;
-
-	//io_bit_set(0x0d,6);		// tx buffer empty
-	//io_bit_set(0x0d,3);		// link activity
   
 	return 0;
 }
@@ -369,8 +363,7 @@ static int init_linkfile(void)
   	ticalc_set_update(&iu, ilp_start, ilp_stop, ilp_refresh,
 		    ilp_pbar, ilp_label);
 
-    t2f_flag = 0;
-    f2t_flag = 0;
+    t2f_flag = f2t_flag = 0;
 
   	return 0;
 }
@@ -380,6 +373,8 @@ static int exit_linkfile(void)
     if(ilc != NULL)
 	    free(ilc);
     ilc = NULL;
+
+	t2f_flag = f2t_flag = 0;
 
     return 0;
 }
