@@ -39,6 +39,11 @@
 #include "ti68k_int.h"
 #include "ti68k_err.h"
 
+//#define UAE_DISASM
+#define MAME_DISASM
+
+#ifdef UAE_DISASM
+
 // some instructions use a weird naming scheme, remap !
 static const char* instr[] = { 
 	"ORSR.B", "ORSR.W",		/* ORI  #<data>,SR		*/
@@ -239,3 +244,34 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 
 	return (next - addr);
 }
+
+#else
+
+int Dasm68000 (unsigned char *pBase, char *buffer, int _pc);
+
+uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
+{
+	uint8_t *mem;
+	char output[256];
+	uint32_t offset;
+	gchar **split;
+	gchar *p;
+
+	mem = (uint8_t *)ti68k_get_real_address(addr);
+
+	offset = Dasm68000(mem, output, addr);
+	split = g_strsplit(output, " ", 2);
+	printf("<%06x: %s>\n", addr, output);
+
+	if(split[1])
+		for(p = split[1]; *p == ' '; p++);
+	else
+		p = "";
+
+	*line = g_strdup_printf("%06x: %s %s", addr, split[0] ? split[0] : "", p);
+	g_strfreev(split);
+
+	return offset;
+}
+
+#endif

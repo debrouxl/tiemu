@@ -22,6 +22,9 @@ SubVersion: $Id$
 		direct file loading is now broken.
 	- fixed ON key (works and set on/off LCD screen).
 
+	Improvements:
+	- added VTi-style disassembly view
+
 - 05/05/2004, version 1.70: roms
 	Rework in progress.	
 

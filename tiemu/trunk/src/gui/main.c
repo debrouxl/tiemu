@@ -237,6 +237,29 @@ int main(int argc, char **argv)
 	ti68k_engine_unhalt();
     splash_screen_stop();
 
+	//test
+#if 0
+	{
+		uint32_t addr = 0x200100;
+		char str[256];
+		uint16_t offset;
+		uint8_t buf[256];
+		uint8_t *src;
+		int i, j;
+
+		src = (uint8_t *)ti68k_get_real_address(addr);
+		memcpy(buf, src, 256);
+
+		for(i = 0, j = 0; i < 8; i++)
+		{
+			offset = Dasm68000(buf+j, str, addr+j);
+			j += offset;
+
+			printf("<%s>\n", str);
+		}
+	}
+#endif
+
 	/*
 		Surprisingly, using gtk_main_iteration is less CPU intensive than 
         gtk_main() and the hid_update_key in a gtk_idle function.
