@@ -48,4 +48,10 @@ int romcalls_load_from_file(const char* filename);
 int romcalls_unload(void);
 int romcalls_is_loaded(void);
 
+int romcalls_is_address(uint32_t addr);
+int romcalls_is_name(const char *name);
+const char* romcalls_get_name(int id);
+uint32_t romcalls_get_addr(int id);
+const char* romcalls_get_addr_name(uint32_t addr);
+
 #endif

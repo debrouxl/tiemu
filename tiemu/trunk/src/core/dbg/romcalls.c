@@ -36,7 +36,7 @@
 #define TBL_SIZE	0x800
 
 static ROM_CALL list[TBL_SIZE];
-static int loaded;
+static int		loaded;
 
 static int old_ct = -1;		// previous calc type for reloading
 
@@ -117,7 +117,8 @@ int romcalls_load_from_file(const char* filename)
 
 		list[i].addr = rd_long(&tihw.rom[(addr & 0x0fffff) + (i << 2)]); 
 
-		//printf("tios::%s (0x%03x) => $%06x\n", list[i].name, i, list[i].addr);
+		if(list[i].addr == 0x46af0a)
+			printf("tios::%s (0x%03x) => $%06x\n", list[i].name, i, list[i].addr);
 	}
 
 	printf("Done !\n");
@@ -143,3 +144,59 @@ memset(romFuncAddr,0,sizeof(int)*0x800);
         romFuncAddr[i]=getmem_dword(getmem_dword(0xc8)+(i<<2));
         */
 
+// cache last search
+static int last_id = 0;	
+
+// returns id or -1
+int romcalls_is_address(uint32_t addr)
+{
+	int i;
+
+	for(i = 0; i < TBL_SIZE; i++)
+	{
+		if(addr == list[i].addr)
+			return last_id = i;
+	}
+
+	return -1;
+}
+
+// returns id or -1
+int romcalls_is_name(const char *name)
+{
+	int i;
+
+	for(i = 0; i < TBL_SIZE; i++)
+	{
+		if(!strcmp(name, list[i].name))
+			return i;
+	}
+
+	return -1;
+}
+
+const char* romcalls_get_name(int id)
+{
+	return list[id].name;
+}
+
+uint32_t romcalls_get_addr(int id)
+{
+	return list[id].addr;
+}
+
+const char* romcalls_get_addr_name(uint32_t addr)
+{
+	int id;
+
+	if(addr == list[last_id].addr)
+		return list[last_id].name;
+
+	id = romcalls_is_address(addr);
+	if(id == -1)
+		return NULL;
+	else
+		return romcalls_get_name(id);
+	
+	return NULL;
+}

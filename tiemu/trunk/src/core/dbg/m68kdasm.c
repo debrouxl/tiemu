@@ -16,6 +16,8 @@
 #include <string.h>
 #include <glib.h>	// GUINT16_SWAP_LE_BE
 
+#include "romcalls.h"
+
 #ifdef __WIN32__
 #pragma warning( disable : 4244 )
 #pragma warning( disable : 4761 )
@@ -25,104 +27,27 @@ static char *ccodes[16] = { "T ", "F ", "HI", "LS", "CC", "CS", "NE", "EQ", "VC"
 static int pc;
 
 #define PARAM_WORD(v) ((v) = GUINT16_SWAP_LE_BE(*(unsigned short *)&p[0]), p += 2)
-#define PARAM_LONG(v) ((v) = GUINT16_SWAP_LE_BE((*(unsigned short *)&p[0] << 16) + *(unsigned short *)&p[2]), p += 4)
+#define PARAM_LONG(v) ((v) = ((GUINT16_SWAP_LE_BE(*(unsigned short *)&p[0]) << 16) + GUINT16_SWAP_LE_BE(*(unsigned short *)&p[2])), p += 4)
 
 static char tmpStr[64];
 
-int /*inline*/ IsROMAddr(int addr)
+int IsROMAddr(int addr)
 {
-	/*
-    if (addr==0) return 0;
-    if (romFuncs)
-    {
-        for (int i=0;romFuncs[i].name;i++)
-        {
-            if (addr==romFuncAddr[i])
-                return 1;
-        }
-    }
-    if ((calc!=89)&&(calc!=94))
-        return 0;
-    for (int i=0;i<db92Count;i++)
-    {
-        DWORD base=hw->getmem_dword(db92Addr[i])+2;
-        WORD ptr=db92VarOfs[i];
-        for (;;)
-        {
-            if (!hw->getmem_word(base+ptr))
-                break;
-            WORD fileAddr=ptr+hw->getmem_word(base+ptr);
-            if (((DWORD)fileAddr+base)==addr)
-                return 1;
-            ptr+=hw->getmem_word(base+ptr+2)+2;
-        }
-        ptr=db92LblOfs[i];
-        for (;;)
-        {
-            if (!hw->getmem_word(base+ptr))
-                break;
-            WORD fileAddr=ptr+hw->getmem_word(base+ptr);
-            if (((DWORD)fileAddr+base)==addr)
-                return 1;
-            ptr+=hw->getmem_word(base+ptr+2)+2;
-        }
-    }
-	*/
-    return 0;
+	return romcalls_is_address(addr) == -1 ? 0 : 1;
 }
 
-char /*inline*/ *ROMAddrName(int addr)
+char *ROMAddrName(int addr)
 {
-	/*
-    if (romFuncs)
-    {
-        for (int i=0;romFuncs[i].name;i++)
-        {
-            if (addr==romFuncAddr[i])
-            {
-                sprintf(tmpStr,"tios::%s",romFuncs[i].name);
-                return tmpStr;
-            }
-        }
-    }
-    if ((calc!=89)&&(calc!=94))
-        return "Internal Error";
-    for (int i=0;i<db92Count;i++)
-    {
-        DWORD base=hw->getmem_dword(db92Addr[i])+2;
-        WORD ptr=db92VarOfs[i];
-        for (;;)
-        {
-            if (!hw->getmem_word(base+ptr))
-                break;
-            WORD fileAddr=ptr+hw->getmem_word(base+ptr);
-            if (((DWORD)fileAddr+base)==addr)
-            {
-                memset(tmpStr,0,64);
-                for (int j=0;j<(hw->getmem_word(base+ptr+2)-3);j++)
-                    tmpStr[j]=hw->getmem(base+ptr+5+j);
-                return tmpStr;
-            }
-            ptr+=hw->getmem_word(base+ptr+2)+2;
-        }
-        ptr=db92LblOfs[i];
-        for (;;)
-        {
-            if (!hw->getmem_word(base+ptr))
-                break;
-            WORD fileAddr=ptr+hw->getmem_word(base+ptr);
-            if (((DWORD)fileAddr+base)==addr)
-            {
-                memset(tmpStr,0,64);
-                for (int j=0;j<(hw->getmem_word(base+ptr+2)-2);j++)
-                    tmpStr[j]=hw->getmem(base+ptr+4+j);
-                return tmpStr;
-            }
-            ptr+=hw->getmem_word(base+ptr+2)+2;
-        }
-    }
-	*/
-    return "Internal Error";
+	const char *s;
+
+	s = romcalls_get_addr_name(addr);
+
+	if(s != NULL)
+		sprintf(tmpStr,"tios::%s", s);
+	else
+		strcpy(tmpStr, "Internal Error");
+
+    return tmpStr;
 }
 
 static char *MakeEA (int lo, unsigned char *pBase, int size, int *count)
