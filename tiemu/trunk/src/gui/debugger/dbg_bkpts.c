@@ -243,9 +243,7 @@ gint display_dbgbkpts_window(void)
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
 
-	//gtk_window_resize(GTK_WINDOW(dbox), 350, 120);
-	gtk_widget_set_usize(GTK_WIDGET(dbox), options3.bkpts.w, options3.bkpts.h);
-	gtk_widget_set_uposition(GTK_WIDGET(dbox), options3.bkpts.x, options3.bkpts.y);
+	gtk_window_resize(GTK_WINDOW(dbox), options3.bkpts.w, options3.bkpts.h);
     gtk_widget_show(GTK_WIDGET(dbox));
 
 	already_open = !0;
