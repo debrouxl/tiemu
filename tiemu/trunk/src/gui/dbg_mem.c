@@ -6,6 +6,7 @@
 #include <glade/glade.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <ctype.h>
 
 #include "intl.h"
 #include "paths.h"
@@ -36,8 +37,6 @@ static void renderer_edited(GtkCellRendererText * cell,
 
 	if (!gtk_tree_model_get_iter(model, &iter, path))
 		return;
-
-	printf("path = <%s>\n", path_string);
 
 	gtk_tree_model_get(model, &iter, COLUMN_ADDR, &value, -1);
 
@@ -133,14 +132,12 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
     int i;
     gchar *str;
     char ascii[17];
-    uint32_t addr = start;
-        
-	const uint8_t sample[16] = { 
-		'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 
-			'A', 'B', 'C', 'D', 'E', 'F' };
+    uint32_t addr;
 
-    for(addr = 0x000000; addr < start+length; addr += 0x10)
+    for(addr = start; addr < start+length; addr += 0x10)
     {
+		uint8_t *mem_ptr;
+
         gtk_list_store_append(store, &iter);
 
 		str = g_strdup_printf("0x%06x", addr);
@@ -149,16 +146,21 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 
 		for(i = COLUMN_0; i <= COLUMN_F; i++)
 		{
-			str = g_strdup_printf("%02x", sample[i-1]);
-			ascii[i-1] = isascii(sample[i-1]) ? sample[i-1] : ' ';
+			mem_ptr = ti68k_get_real_address(addr + (i-COLUMN_0));
+
+			str = g_strdup_printf("%02x", *mem_ptr);
+			ascii[i-COLUMN_0] = (isprint(*mem_ptr) ? *mem_ptr : '.');
+
 			gtk_list_store_set(store, &iter, 
 				i, str, 
-				i + CLIST_NVCOLS - 1, TRUE, 
+				i + CLIST_NVCOLS - COLUMN_0, TRUE, 
 				-1);
+
 			g_free(str);
         }
 		
 		ascii[16] = '\0';
+		printf("<%s>\n", ascii);
 		gtk_list_store_set(store, &iter, COLUMN_ASCII, ascii, -1);
     }
 }
@@ -168,6 +170,7 @@ static void notebook_add_tab(GtkWidget *notebook, const char* tab_name)
 	GtkWidget *label;
 	GtkWidget *child;
 	gint current_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
+	uint32_t addr;
 	
 	label = gtk_label_new(tab_name);
 	gtk_widget_show(label);
@@ -175,11 +178,20 @@ static void notebook_add_tab(GtkWidget *notebook, const char* tab_name)
     child = clist_create(&store);
     if(!strcmp(tab_name, _("STACK")))
     {
-    	clist_populate(store, 0x000000, 64);
+		// display stack
+		uint32_t sp_start, sp_end;
+		uint32_t *mem_ptr = (uint32_t *)ti68k_get_real_address(0x000000);
+
+		sp_start = *mem_ptr;
+		sp_end = ti68k_register_get_sp();
+    	clist_populate(store, sp_start, sp_end - sp_start);
+		//clist_populate(store, 0x000000, 64);
     }
     else
     {
-    	clist_populate(store, 0x000000, 64);
+		// display normal
+		sscanf(tab_name, "0x%06x", &addr);
+    	clist_populate(store, addr, 64);
     }
 	gtk_widget_show(child);
 
