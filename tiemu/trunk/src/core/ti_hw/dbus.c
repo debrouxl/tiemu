@@ -310,7 +310,7 @@ static void ilp_pbar()    { }
 static void ilp_label()   { }
 
 /* Initialize a pseudo link cable to be connected with HW */
-int init_linkfile()
+static int init_linkfile()
 {
   	ilc = (TicableLinkCable *)malloc(sizeof(TicableLinkCable));
   	if(ilc == NULL)
@@ -347,7 +347,7 @@ int init_linkfile()
   	return 0;
 }
 
-int exit_linkfile(void)
+static int exit_linkfile(void)
 {
     if(ilc != NULL)
 	    free(ilc);
@@ -389,51 +389,61 @@ int send_ti_file(const char *filename)
     // FLASH APP file ?
     if(tifiles_is_a_flash_file(filename) && !strcmp(tifiles_flash_app_file_ext(), tifiles_get_extension(filename)))
     {
+        map_to_directfile();
         tihw.lc_speedy = 1;
         tihw.lc_file = 1;  
         itc.send_flash(filename, MODE_APPS);
         tihw.lc_file = 0;
         tihw.lc_speedy = 0;
+        map_to_linkport();
     }
 
     // FLASH OS file ?
     if(tifiles_is_a_flash_file(filename) && !strcmp(tifiles_flash_os_file_ext(), tifiles_get_extension(filename)))
     {
+        map_to_directfile();
         tihw.lc_speedy = 1;
         tihw.lc_file = 1;  
         itc.send_flash(filename, MODE_AMS);
         tihw.lc_file = 0;
         tihw.lc_speedy = 0;
+        map_to_linkport();
     }
   
     // Backup file ?
     else if(tifiles_is_a_backup_file(filename))
     {
+        map_to_directfile();
         tihw.lc_speedy = 1;
         tihw.lc_file = 1;  
         itc.send_backup(filename, MODE_NORMAL);
         tihw.lc_file = 0;
         tihw.lc_speedy = 0;
+        map_to_linkport();
     }
 
     // Group file ?
     else if(tifiles_is_a_group_file(filename))
     {
+        map_to_directfile();
         tihw.lc_speedy = 1;
         tihw.lc_file = 1;  
         itc.send_var(filename, MODE_NORMAL, NULL);
         tihw.lc_file = 0;
         tihw.lc_speedy = 0;
+        map_to_linkport();
     }
 
     // Single file
     else if(tifiles_is_a_single_file(filename))
     {
+        map_to_directfile();
         tihw.lc_speedy = 1;
         tihw.lc_file = 1;  
         itc.send_var(filename, MODE_NORMAL, NULL);
         tihw.lc_file = 0;
         tihw.lc_speedy = 0;
+        map_to_linkport();
     }
 
   return 0;
