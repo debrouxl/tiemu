@@ -193,7 +193,7 @@
       <property name="visible">True</property>
       <property name="label" translatable="yes">Data</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="dbgbkpts_data_activate" object="treeview1" last_modification_time="Fri, 04 Jun 2004 12:55:32 GMT"/>
+      <signal name="activate" handler="dbgbkpts_data_activate" last_modification_time="Fri, 04 Jun 2004 12:55:32 GMT"/>
     </widget>
   </child>
 
@@ -202,7 +202,16 @@
       <property name="visible">True</property>
       <property name="label" translatable="yes">Vectors</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="dbgbkpts_vector_activate" object="treeview1" last_modification_time="Fri, 04 Jun 2004 12:54:23 GMT"/>
+      <signal name="activate" handler="dbgbkpts_vector_activate" last_modification_time="Fri, 04 Jun 2004 12:54:23 GMT"/>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="prgm_entry1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">Prgm entry</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_prgm_entry1_activate" last_modification_time="Tue, 22 Feb 2005 22:41:34 GMT"/>
     </widget>
   </child>
 </widget>

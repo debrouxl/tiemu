@@ -15,3 +15,4 @@ gchar *s = N_("Double-click a row to edit breakpoint values.");
 gchar *s = N_("Breakpoint context:");
 gchar *s = N_("Data");
 gchar *s = N_("Vectors");
+gchar *s = N_("Prgm entry");

@@ -1,0 +1,28 @@
+/*
+ * Chaînes de caractères à traduire générées par
+ * Glade. Ajouter ce fichier au fichier POTFILE.in
+ * de votre projet. NE PAS compiler ce fichier
+ * avec le reste de votre application.
+ */
+
+gchar *s = N_("Memory");
+gchar *s = N_("Add tab");
+gchar *s = N_("Remove tab");
+gchar *s = N_("Up");
+gchar *s = N_("Down");
+gchar *s = N_("Refresh tab");
+gchar *s = N_("Enter Address");
+gchar *s = N_("000000");
+gchar *s = N_("*");
+gchar *s = N_("HEX address");
+gchar *s = N_("Find");
+gchar *s = N_("Find _next");
+gchar *s = N_("Go to _address");
+gchar *s = N_("_Dissassemble");
+gchar *s = N_("Search");
+gchar *s = N_("Find _Next");
+gchar *s = N_("Find:");
+gchar *s = N_("*");
+gchar *s = N_("Hexadecimal strings must have 2 chars per byte and can be with or without space: FE ED or FEED.");
+gchar *s = N_("_ASCII");
+gchar *s = N_("_Case sensitive");
