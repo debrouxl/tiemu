@@ -96,6 +96,15 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\newcpu.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
