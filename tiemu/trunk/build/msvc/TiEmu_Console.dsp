@@ -435,10 +435,6 @@ SOURCE=..\..\src\core\ti_hw\timer.c
 
 SOURCE=..\..\src\gui\main.c
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\ticables\src\win32\win32_detect.c
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
