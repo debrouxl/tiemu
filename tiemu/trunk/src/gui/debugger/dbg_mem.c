@@ -236,6 +236,9 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 		uint32_t addr = a & 0xffffff;
 		uint8_t *mem_ptr;
 
+		char *utf;
+		gsize bw;
+
         gtk_list_store_append(store, &iter);
 
 		str = g_strdup_printf("%06x", addr);
@@ -260,10 +263,11 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 
 			g_free(str);
         }
-		
+	 
 		ascii[16] = '\0';
+		utf = g_locale_to_utf8(ascii, -1, NULL, &bw, NULL);
 		gtk_list_store_set(store, &iter, 
-			COL_ASCII, ascii, 
+			COL_ASCII, utf, 
 			COL_COLOR, &color,
 			-1);
     }
