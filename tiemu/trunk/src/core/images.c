@@ -509,9 +509,11 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	}
 	hwpb.bootMajor = hwpb.bootRevision = hwpb.bootBuild = 1;
 	hwpb.gateArray = img.hw_type;
+	ti68k_put_hw_param_block(img.data, img.rom_base, &hwpb);
 
 	// write filler
 	fputc(0xfe, f); fputc(0xed, f); fputc(0xba, f); fputc(0xbe, f);
+	//fwrite(&hwpb, 1hwpb.len+2, f);
 
 	// write address (pointer)
     fputc(0x00, f);
@@ -692,12 +694,22 @@ int ti68k_load_image(const char *filename)
       	fprintf(stderr, "Unable to open this file: <%s>\n", filename);
       	return ERR_CANT_OPEN;
     }
+
 	// Read pure data
     fseek(f, img->header_size, SEEK_SET);
 	img->data = malloc(img->size + 4);
 	if(img->data == NULL)
 		return ERR_MALLOC;
     fread(img->data, 1, img->size, f);
+
+	/*
+	{
+		HW_PARM_BLOCK hwblock;
+
+		ti68k_get_hw_param_block(img->data, img->rom_base, &hwblock);
+        ti68k_display_hw_param_block(&hwblock);
+	}
+	*/
  
   	img_loaded = 1;
   	return 0;

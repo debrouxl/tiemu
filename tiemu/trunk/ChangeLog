@@ -6,7 +6,7 @@ To do:
 	- stealth I/O and mem protect (done but not enabled)
 
 - 25/02/2005, version 1.80o: roms
-	- ...
+	- fixed bug in ti68k_get_hw_param_block (wrong search/replace)
 
 - 18/02/2005, version 1.80n: roms
 	- fixed FLASH writes with HW3 patch

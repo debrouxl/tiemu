@@ -45,6 +45,7 @@
 
 #include "intl.h"
 #include "hwpm.h"
+#include "timem.h"
 #include "ti68k_def.h"
 
 /* -- */
@@ -89,27 +90,27 @@ int ti68k_get_hw_param_block(uint8_t *rom_data, uint8_t rom_base, HW_PARM_BLOCK 
     addr &= 0x000fffff;
 
     memset(s, 0, sizeof(HW_PARM_BLOCK));
-    s->len = GUINT16_FROM_BE(&(rom_data[addr+0]));
+    s->len = rd_word(&(rom_data[addr+0]));
 	if(s->len > 2+(4*i++))
-		s->hardwareID = GUINT32_FROM_BE(&(rom_data[addr+2]));
+		s->hardwareID = rd_long(&(rom_data[addr+2]));
 	if(s->len > 2+(4*i++))
-		s->hardwareRevision = GUINT32_FROM_BE(&(rom_data[addr+6]));
+		s->hardwareRevision = rd_long(&(rom_data[addr+6]));
 	if(s->len > 2+(4*i++))
-		s->bootMajor = GUINT32_FROM_BE(&(rom_data[addr+10]));
+		s->bootMajor = rd_long(&(rom_data[addr+10]));
 	if(s->len > 2+(4*i++))
-		s->bootRevision = GUINT32_FROM_BE(&(rom_data[addr+14]));
+		s->bootRevision = rd_long(&(rom_data[addr+14]));
 	if(s->len > 2+(4*i++))
-		s->bootBuild = GUINT32_FROM_BE(&(rom_data[addr+18]));
+		s->bootBuild = rd_long(&(rom_data[addr+18]));
 	if(s->len > 2+(4*i++))
-		s->gateArray = GUINT32_FROM_BE(&(rom_data[addr+22]));
+		s->gateArray = rd_long(&(rom_data[addr+22]));
 	if(s->len > 2+(4*i++))
-		s->physDisplayBitsWide = GUINT32_FROM_BE(&(rom_data[addr+26]));
+		s->physDisplayBitsWide = rd_long(&(rom_data[addr+26]));
 	if(s->len > 2+(4*i++))
-		s->physDisplayBitsTall = GUINT32_FROM_BE(&(rom_data[addr+30]));
+		s->physDisplayBitsTall = rd_long(&(rom_data[addr+30]));
 	if(s->len > 2+(4*i++))
-		s->LCDBitsWide = GUINT32_FROM_BE(&(rom_data[addr+34]));
+		s->LCDBitsWide = rd_long(&(rom_data[addr+34]));
 	if(s->len > 2+(4*i++))
-		s->LCDBitsTall = GUINT32_FROM_BE(&(rom_data[addr+38]));
+		s->LCDBitsTall = rd_long(&(rom_data[addr+38]));
 
     if((s->hardwareID == HWID_V200) && (rom_base == 0x40))
     {
@@ -127,7 +128,7 @@ int ti68k_get_hw_param_block(uint8_t *rom_data, uint8_t rom_base, HW_PARM_BLOCK 
 }
 
 /*
-    Read hardware parameter block from image.
+    Write hardware parameter block into image.
 */
 int ti68k_put_hw_param_block(uint8_t *rom_data, uint8_t rom_base, const HW_PARM_BLOCK *s)
 {
