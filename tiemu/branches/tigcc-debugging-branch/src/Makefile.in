@@ -13,6 +13,9 @@ kde       = @kde@
 
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	LDFLAGS += -lcomdlg32
+	GDBLIBS = -luser32 -lwsock32 -lpsapi -lpdcurses
+else
+	GDBLIBS = -lcurses
 endif
 
 INSTALL         = @INSTALL@
@@ -176,7 +179,7 @@ gdb:
 tiemu: $(tiemu_OBJ)
 #	$(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) -o tiemu $(LDFLAGS) $(CFLAGS)
 	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) \
-	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries) -lcurses
+	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries) $(GDBLIBS)
 
 .c.o:
 	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) $< -o $@

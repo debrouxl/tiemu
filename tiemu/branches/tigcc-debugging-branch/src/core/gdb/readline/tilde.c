@@ -43,7 +43,11 @@
 #endif /* HAVE_STDLIB_H */
 
 #include <sys/types.h>
+#ifndef __MINGW32__
 #include <pwd.h>
+#else
+#include <windows.h>
+#endif
 
 #include "tilde.h"
 
@@ -306,7 +310,12 @@ tilde_expand_word (filename)
 {
   char *dirname, *expansion, *username;
   int user_len;
+#if !defined (__MINGW32__)
   struct passwd *user_entry;
+#else /* __MINGW32__ */
+  char UserName[256];
+  unsigned long UserLen = 256;
+#endif /* __MINGW32__ */
 
   if (filename == 0)
     return ((char *)NULL);
@@ -347,6 +356,7 @@ tilde_expand_word (filename)
   /* No preexpansion hook, or the preexpansion hook failed.  Look in the
      password database. */
   dirname = (char *)NULL;
+#if !defined (__MINGW32__)
   user_entry = getpwnam (username);
   if (user_entry == 0)
     {
@@ -374,6 +384,16 @@ tilde_expand_word (filename)
     }
 
   endpwent ();
+#else /* __MINGW32__ */
+  if (GetUserName (UserName, &UserLen))
+    {
+      if (!stricmp (username, UserName))
+	dirname = glue_prefix_and_suffix (sh_get_home_dir (), filename, user_len);
+      else if (dirname == 0)
+	dirname = savestring (filename);
+    }
+  free (username);
+#endif /* __MINGW32__ */
   return (dirname);
 }
 

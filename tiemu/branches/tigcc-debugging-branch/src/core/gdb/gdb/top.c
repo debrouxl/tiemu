@@ -46,6 +46,11 @@
 #include "doublest.h"
 #include "gdb_assert.h"
 
+#ifdef __MINGW32__
+  /* MinGW does not yet (mingw-runtime-2.2) define SIGQUIT */
+  #define SIGQUIT 3
+#endif
+
 /* readline include files */
 #include "readline/readline.h"
 #include "readline/history.h"

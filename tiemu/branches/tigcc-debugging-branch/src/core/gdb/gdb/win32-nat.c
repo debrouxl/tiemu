@@ -24,8 +24,6 @@
 
 /* Originally by Steve Chamberlain, sac@cygnus.com */
 
-/* We assume we're being built with and will be used for cygwin.  */
-
 #include "defs.h"
 #include "frame.h"		/* required by inferior.h */
 #include "inferior.h"
@@ -41,7 +39,10 @@
 #include <stdlib.h>
 #include <windows.h>
 #include <imagehlp.h>
+
+#if defined (__CYGWIN__)
 #include <sys/cygwin.h>
+#endif /* __CYGWIN__ */
 
 #include "buildsym.h"
 #include "symfile.h"
@@ -50,6 +51,9 @@
 #include "gdbthread.h"
 #include "gdbcmd.h"
 #include <sys/param.h>
+#ifdef __MINGW32__
+  #define MAXPATHLEN PATH_MAX
+#endif
 #include <unistd.h>
 #include "exec.h"
 
@@ -66,7 +70,65 @@ enum
     CONTEXT_DEBUGGER = (CONTEXT_FULL | CONTEXT_FLOATING_POINT)
   };
 #endif
-#include <sys/procfs.h>
+#ifndef __MINGW32__
+  #include <sys/procfs.h>
+#else
+  #define	NOTE_INFO_PROCESS	1
+  #define	NOTE_INFO_THREAD	2
+  #define	NOTE_INFO_MODULE	3
+
+  struct win32_core_process_info
+  {
+    DWORD pid;
+    int signal;
+    int command_line_size;
+    char command_line[1];
+  }
+  #ifdef __GNUC__
+    __attribute__ ((packed))
+  #endif
+  ;
+
+  struct win32_core_thread_info
+  {
+    DWORD tid;
+    BOOL is_active_thread;
+    CONTEXT thread_context;
+  }
+  #ifdef __GNUC__
+    __attribute__ ((packed))
+  #endif
+  ;
+
+  struct win32_core_module_info
+  {
+    void* base_address;
+    int module_name_size;
+    char module_name[1];
+  }
+  #ifdef __GNUC__
+    __attribute__ ((packed))
+  #endif
+  ;
+
+  struct win32_pstatus
+  {
+    unsigned long data_type;
+    union
+      {
+        struct win32_core_process_info process_info;
+        struct win32_core_thread_info thread_info;
+        struct win32_core_module_info module_info;
+      } data ;
+  }
+  #ifdef __GNUC__
+    __attribute__ ((packed))
+  #endif
+  ;
+
+  typedef struct win32_pstatus win32_pstatus_t ;
+
+#endif
 #include <psapi.h>
 
 #define CONTEXT_DEBUGGER_DR CONTEXT_DEBUGGER | CONTEXT_DEBUG_REGISTERS \
@@ -88,6 +150,7 @@ static int debug_registers_used;
 
 static void child_stop (void);
 static int win32_child_thread_alive (ptid_t);
+static char *win32_pid_to_str (ptid_t ptid);
 void child_kill_inferior (void);
 
 static enum target_signal last_sig = TARGET_SIGNAL_0;
@@ -127,9 +190,9 @@ static int saw_create;
 static int new_console = 0;
 static int new_group = 1;
 static int debug_exec = 0;		/* show execution */
-static int debug_events = 0;		/* show events from kernel */
+static int debug_events = 1;	/* show events from kernel */
 static int debug_memory = 0;		/* show target memory accesses */
-static int debug_exceptions = 0;	/* show target exceptions */
+static int debug_exceptions = 1;	/* show target exceptions */
 static int useshell = 0;		/* use shell for subprocesses */
 
 /* This vector maps GDB's idea of a register's number into an address
@@ -219,8 +282,29 @@ static void
 check (BOOL ok, const char *file, int line)
 {
   if (!ok)
-    printf_filtered ("error return %s:%d was %lu\n", file, line,
-		     GetLastError ());
+  {
+    LPVOID lpMsgBuf;
+    DWORD  last_error = GetLastError ();
+    if (!FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+                       FORMAT_MESSAGE_FROM_SYSTEM | 
+                       FORMAT_MESSAGE_IGNORE_INSERTS,
+                       NULL,
+                       last_error,
+                       MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                       (LPTSTR) &lpMsgBuf,
+                       0,
+                       NULL))
+    {
+      printf_filtered ("error return %s:%d was %lu\n", file, line,
+                       last_error);
+    }
+    else
+    {
+      printf_filtered ("error return %s:%d: [%lu] %s\n", file, line,
+                       last_error, (LPCTSTR) lpMsgBuf);
+      LocalFree (lpMsgBuf);
+    }
+  }
 }
 
 /* Find a thread record given a thread id.
@@ -290,7 +374,6 @@ child_init_thread_list (void)
 {
   thread_info *th = &thread_head;
 
-  DEBUG_EVENTS (("gdb: child_init_thread_list\n"));
   init_thread_list ();
   while (th->next != NULL)
     {
@@ -299,6 +382,7 @@ child_init_thread_list (void)
       (void) CloseHandle (here->h);
       xfree (here);
     }
+  main_thread_id = 0;
 }
 
 /* Delete a thread from the list of threads */
@@ -609,7 +693,12 @@ register_loaded_dll (const char *name, DWORD load_addr)
 	}
     }
 
+#ifdef __CYGWIN__
   cygwin_conv_to_posix_path (buf, ppath);
+#else
+  strcpy( ppath, buf);
+#endif
+
   so = (struct so_stuff *) xmalloc (sizeof (struct so_stuff) + strlen (ppath) + 8 + 1);
   so->loaded = 0;
   so->load_addr = load_addr;
@@ -1430,6 +1519,9 @@ do_initial_child_stuff (DWORD pid)
   extern int stop_after_trap;
   int i;
 
+  DEBUG_EVENTS (("gdb: do_initial_child_stuff: %s\n",
+                 target_pid_to_str (pid_to_ptid (pid))));
+  
   last_sig = TARGET_SIGNAL_0;
   event_count = 0;
   exception_count = 0;
@@ -1591,6 +1683,7 @@ child_attach (char *args, int from_tty)
 
   if (!ok)
     {
+#ifdef __CYGWIN__
       /* Try fall back to Cygwin pid */
       pid = cygwin_internal (CW_CYGWIN_PID_TO_WINPID, pid);
 
@@ -1598,6 +1691,7 @@ child_attach (char *args, int from_tty)
 	ok = DebugActiveProcess (pid);
 
       if (!ok)
+#endif /* __CYGWIN__ */
 	error ("Can't attach to process.");
     }
 
@@ -1657,13 +1751,14 @@ child_detach (char *args, int from_tty)
 char *
 child_pid_to_exec_file (int pid)
 {
+  static char path[MAX_PATH + 1];
+  char *path_ptr = NULL;
+#ifdef __CYGWIN__
   /* Try to find the process path using the Cygwin internal process list
      pid isn't a valid pid, unfortunately.  Use current_event.dwProcessId
      instead.  */
   /* TODO: Also find native Windows processes using CW_GETPINFO_FULL.  */
 
-  static char path[MAX_PATH + 1];
-  char *path_ptr = NULL;
   int cpid;
   struct external_pinfo *pinfo;
 
@@ -1681,7 +1776,14 @@ child_pid_to_exec_file (int pid)
        }
     }
   cygwin_internal (CW_UNLOCK_PINFO);
-  return path_ptr; 
+#else
+  if (!GetModuleFileNameEx (current_process_handle, NULL, path, MAX_PATH))
+    printf_unfiltered ("error reading the process's file name: %lu",
+                       GetLastError ());
+  else
+    path_ptr = path;
+#endif
+  return path_ptr;
 }
 
 /* Print status information about what we're accessing.  */
@@ -1721,9 +1823,17 @@ child_create_inferior (char *exec_file, char *allargs, char **env,
   char *toexec;
   char shell[MAX_PATH + 1]; /* Path to shell */
   const char *sh;
+#if defined (__MINGW32__)
+  /* BEGIN: Fragment of Al Stevens's patch for GDB on Win9x */
+  HANDLE hStdInput = 0;
+  HANDLE hStdOutput = 0;
+  HANDLE hStdError = 0;
+  /* END: Fragment of Al Stevens's patch for GDB on Win9x */
+#else /* !__MINGW32__ */
   int tty;
   int ostdin, ostdout, ostderr;
-
+#endif /* !__MINGW32__ */
+  
   if (!exec_file)
     error ("No executable specified, use `target exec'.\n");
 
@@ -1733,7 +1843,11 @@ child_create_inferior (char *exec_file, char *allargs, char **env,
   if (!useshell)
     {
       flags = DEBUG_ONLY_THIS_PROCESS;
+#ifdef __CYGWIN__
       cygwin_conv_to_win32_path (exec_file, real_path);
+#else
+      strcpy (real_path, exec_file);
+#endif
       toexec = real_path;
     }
   else
@@ -1742,7 +1856,11 @@ child_create_inferior (char *exec_file, char *allargs, char **env,
       sh = getenv ("SHELL");
       if (!sh)
 	sh = "/bin/sh";
+#ifdef __CYGWIN__
       cygwin_conv_to_win32_path (sh, shell);
+#else
+      strcpy (shell, sh);
+#endif
       newallargs = alloca (sizeof (" -c 'exec  '") + strlen (exec_file)
 			   + strlen (allargs) + 2);
       sprintf (newallargs, " -c 'exec %s %s'", exec_file, allargs);
@@ -1793,10 +1911,12 @@ child_create_inferior (char *exec_file, char *allargs, char **env,
 	    len = strlen (conv_path_names[j]);
 	    if (strncmp (conv_path_names[j], env[i], len) == 0)
 	      {
+#ifdef __CYGWIN__
 		if (cygwin_posix_path_list_p (env[i] + len))
 		  envlen += len
 		    + cygwin_posix_to_win32_path_list_buf_size (env[i] + len);
 		else
+#endif
 		  envlen += strlen (env[i]) + 1;
 		break;
 	      }
@@ -1817,12 +1937,14 @@ child_create_inferior (char *exec_file, char *allargs, char **env,
 	    len = strlen (conv_path_names[j]);
 	    if (strncmp (conv_path_names[j], env[i], len) == 0)
 	      {
+#ifdef __CYGWIN__
 		if (cygwin_posix_path_list_p (env[i] + len))
 		  {
 		    memcpy (temp, env[i], len);
 		    cygwin_posix_to_win32_path_list (env[i] + len, temp + len);
 		  }
 		else
+#endif
 		  strcpy (temp, env[i]);
 		break;
 	      }
@@ -1837,6 +1959,20 @@ child_create_inferior (char *exec_file, char *allargs, char **env,
     *temp = 0;
   }
 
+#if defined (__MINGW32__)
+  /* BEGIN: Fragment of Al Stevens's patch for GDB on Win9x */
+  if ( new_console)
+    {
+      hStdInput = GetStdHandle( STD_INPUT_HANDLE);
+      hStdOutput = GetStdHandle( STD_OUTPUT_HANDLE);
+      hStdError = GetStdHandle( STD_ERROR_HANDLE);
+
+      SetStdHandle( STD_INPUT_HANDLE, INVALID_HANDLE_VALUE);
+      SetStdHandle( STD_OUTPUT_HANDLE, INVALID_HANDLE_VALUE);
+      SetStdHandle( STD_ERROR_HANDLE, INVALID_HANDLE_VALUE);
+    }
+  /* END: Fragment of Al Stevens's patch for GDB on Win9x */
+#else /* !__MINGW32__ */
   if (!inferior_io_terminal)
     tty = ostdin = ostdout = ostderr = -1;
   else
@@ -1857,7 +1993,8 @@ child_create_inferior (char *exec_file, char *allargs, char **env,
 	  dup2 (tty, 2);
 	}
     }
-
+#endif /* !__MINGW32__ */
+  
   ret = CreateProcess (0,
 		       args,	/* command line */
 		       NULL,	/* Security */
@@ -1868,6 +2005,16 @@ child_create_inferior (char *exec_file, char *allargs, char **env,
 		       NULL,	/* current directory */
 		       &si,
 		       &pi);
+#if defined (__MINGW32__)
+  /* BEGIN: Fragment of Al Stevens's patch for GDB on Win9x */
+  if ( new_console)
+    {
+      SetStdHandle( STD_INPUT_HANDLE, hStdInput);
+      SetStdHandle( STD_OUTPUT_HANDLE, hStdOutput);
+      SetStdHandle( STD_ERROR_HANDLE, hStdError);
+    }
+  /* END: Fragment of Al Stevens's patch for GDB on Win9x */
+#else /* !__MINGW32__ */
   if (tty >= 0)
     {
       close (tty);
@@ -1878,7 +2025,7 @@ child_create_inferior (char *exec_file, char *allargs, char **env,
       close (ostdout);
       close (ostderr);
     }
-
+#endif /* !__MINGW32__ */
   if (!ret)
     error ("Error creating process %s, (error %d)\n", exec_file, (unsigned) GetLastError ());
 
@@ -2035,6 +2182,10 @@ child_resume (ptid_t ptid, int step, enum target_signal sig)
 	       FIXME: should we set dr6 also ?? */
 	      th->context.Dr7 = dr[7];
 	    }
+    
+    DEBUG_EVENTS (("gdb: child_resume.SetThreadContext: %s\n",
+                   target_pid_to_str (pid_to_ptid (th->id))));
+  
 	  CHECK (SetThreadContext (th->h, &th->context));
 	  th->context.ContextFlags = 0;
 	}
@@ -2063,6 +2214,10 @@ child_close (int x)
 {
   DEBUG_EVENTS (("gdb: child_close, inferior_ptid=%d\n",
 		PIDGET (inferior_ptid)));
+  child_init_thread_list ();
+  disable_breakpoints_in_shlibs (1);
+  child_clear_solibs ();
+  clear_proceed_status ();
 }
 
 static void
@@ -2095,7 +2250,7 @@ init_child_ops (void)
   deprecated_child_ops.to_mourn_inferior = child_mourn_inferior;
   deprecated_child_ops.to_can_run = child_can_run;
   deprecated_child_ops.to_thread_alive = win32_child_thread_alive;
-  deprecated_child_ops.to_pid_to_str = cygwin_pid_to_str;
+  deprecated_child_ops.to_pid_to_str = win32_pid_to_str;
   deprecated_child_ops.to_stop = child_stop;
   deprecated_child_ops.to_stratum = process_stratum;
   deprecated_child_ops.to_has_all_memory = 1;
@@ -2233,7 +2388,7 @@ win32_child_thread_alive (ptid_t ptid)
 
 /* Convert pid to printable format. */
 char *
-cygwin_pid_to_str (ptid_t ptid)
+win32_pid_to_str (ptid_t ptid)
 {
   static char buf[80];
   int pid = PIDGET (ptid);

@@ -66,6 +66,10 @@
 
 #include "readline/readline.h"
 
+#if defined (__MINGW32__)
+#include <windows.h>
+#endif
+
 #ifdef NEED_DECLARATION_MALLOC
 extern PTR malloc ();		/* OK: PTR */
 #endif
@@ -823,8 +827,10 @@ further debugging may prove unreliable.", file, line, problem->name, msg);
     {
       if (dump_core_p)
 	{
+#ifndef CANT_FORK
 	  if (fork () == 0)
 	    abort ();		/* NOTE: GDB has only three calls to abort().  */
+#endif
 	}
     }
 
@@ -1669,6 +1675,7 @@ init_page_info (void)
       lines_per_page = rows;
       chars_per_line = cols;
 
+#if !defined (__MINGW32__)
       /* Readline should have fetched the termcap entry for us.  */
       if (tgetnum ("li") < 0 || getenv ("EMACS"))
 	{
@@ -1677,7 +1684,8 @@ init_page_info (void)
 	     not useful (e.g. emacs shell window), so disable paging.  */
 	  lines_per_page = UINT_MAX;
 	}
-
+#endif
+      
       /* FIXME: Get rid of this junk.  */
 #if defined(SIGWINCH) && defined(SIGWINCH_HANDLER)
       SIGWINCH_HANDLER (SIGWINCH);

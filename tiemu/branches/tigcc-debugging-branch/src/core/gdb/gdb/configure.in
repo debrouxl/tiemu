@@ -338,7 +338,7 @@ case $host_os in
       LIBS="../libtermcap/libtermcap.a $LIBS"
       ac_cv_search_tgetent="../libtermcap/libtermcap.a"
     fi ;;
-  go32* | *djgpp*)
+  go32* | *djgpp* | mingw*)
     ac_cv_search_tgetent="none required"
     ;;
 esac
@@ -1196,21 +1196,30 @@ AC_CACHE_CHECK([for cygwin], gdb_cv_os_cygwin,
 lose
 #endif],[gdb_cv_os_cygwin=yes],[gdb_cv_os_cygwin=no])])
 
+# Ditto for MinGW
+AC_CACHE_CHECK([for mingw], gdb_cv_os_mingw,
+[AC_EGREP_CPP(lose, [
+#if defined (__MINGW__) || defined (__MINGW32__)
+lose
+#endif],[gdb_cv_os_mingw=yes],[gdb_cv_os_mingw=no])])
 
 dnl Figure out which of the many generic ser-*.c files the _host_ supports.
 SER_HARDWIRE="ser-unix.o ser-pipe.o ser-tcp.o"
 case ${host} in
   *go32* ) SER_HARDWIRE=ser-go32.o ;;
   *djgpp* ) SER_HARDWIRE=ser-go32.o ;;
+  *mingw* ) SER_HARDWIRE="ser-mingw.o ser-tcp.o" ;;
 esac
 AC_SUBST(SER_HARDWIRE)
 
 # libreadline needs libuser32.a in a cygwin environment
 WIN32LIBS=
-if test x$gdb_cv_os_cygwin = xyes; then
+if test x$gdb_cv_os_cygwin = xyes || test x$gdb_cv_os_mingw = xyes; then
     WIN32LIBS="-luser32"
     case "${target}" in
 	*cygwin*) WIN32LIBS="$WIN32LIBS -limagehlp"
+	;;
+	*mingw*) WIN32LIBS="$WIN32LIBS -lwsock32 -lpsapi"
 	;;
     esac
 fi

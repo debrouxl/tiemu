@@ -544,7 +544,7 @@ SFILES = ada-exp.y ada-lang.c ada-typeprint.c ada-valprint.c  \
 	regcache.c reggroups.c remote.c remote-fileio.c \
 	scm-exp.c scm-lang.c scm-valprint.c \
 	sentinel-frame.c \
-	serial.c ser-unix.c source.c \
+	serial.c ser-mingw.c ser-unix.c source.c \
 	stabsread.c stack.c std-regs.c symfile.c symfile-mem.c symmisc.c \
 	symtab.c \
 	target.c thread.c top.c tracepoint.c \
@@ -756,6 +756,7 @@ scm_lang_h = scm-lang.h $(scm_tags_h)
 scm_tags_h = scm-tags.h
 sentinel_frame_h = sentinel-frame.h
 serial_h = serial.h
+ser_mingw_h = ser-mingw.h
 ser_unix_h = ser-unix.h
 shnbsd_tdep_h = shnbsd-tdep.h
 sh_tdep_h = sh-tdep.h
@@ -1378,6 +1379,7 @@ ALLDEPFILES = \
 	i386v4-nat.c i386ly-tdep.c i386-cygwin-tdep.c \
 	i386bsd-nat.c i386bsd-tdep.c i386fbsd-nat.c i386fbsd-tdep.c \
 	i386nbsd-nat.c i386nbsd-tdep.c i386obsd-nat.c i386obsd-tdep.c \
+	i386-win32-nat.c \
 	i387-tdep.c \
 	i386-linux-tdep.c i386-nat.c \
 	i386gnu-nat.c i386gnu-tdep.c \
@@ -2048,6 +2050,8 @@ i386v4-nat.o: i386v4-nat.c $(defs_h) $(value_h) $(inferior_h) $(regcache_h) \
 i386v-nat.o: i386v-nat.c $(defs_h) $(frame_h) $(inferior_h) $(language_h) \
 	$(gdbcore_h) $(gdb_stat_h) $(floatformat_h) $(target_h) \
 	$(i386_tdep_h)
+i386-win32-tdep.o: i386-win32-tdep.c $(defs_h) $(osabi_h) $(gdb_string_h) \
+	$(i386_tdep_h)
 i387-tdep.o: i387-tdep.c $(defs_h) $(doublest_h) $(floatformat_h) $(frame_h) \
 	$(gdbcore_h) $(inferior_h) $(language_h) $(regcache_h) $(value_h) \
 	$(gdb_assert_h) $(gdb_string_h) $(i386_tdep_h) $(i387_tdep_h)
@@ -2459,6 +2463,8 @@ sentinel-frame.o: sentinel-frame.c $(defs_h) $(regcache_h) \
 ser-e7kpc.o: ser-e7kpc.c $(defs_h) $(serial_h) $(gdb_string_h)
 ser-go32.o: ser-go32.c $(defs_h) $(gdbcmd_h) $(serial_h) $(gdb_string_h)
 serial.o: serial.c $(defs_h) $(serial_h) $(gdb_string_h) $(gdbcmd_h)
+ser-mingw.o: ser-mingw.c $(defs_h) $(serial_h) $(ser_mingw_h) $(terminal_h) \
+	$(gdb_string_h) $(event_loop_h)
 ser-pipe.o: ser-pipe.c $(defs_h) $(serial_h) $(ser_unix_h) $(gdb_vfork_h) \
 	$(gdb_string_h)
 ser-tcp.o: ser-tcp.c $(defs_h) $(serial_h) $(ser_unix_h) $(gdb_string_h)

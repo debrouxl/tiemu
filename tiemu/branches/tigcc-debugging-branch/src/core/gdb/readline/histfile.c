@@ -48,7 +48,7 @@
 #  include <unistd.h>
 #endif
 
-#if defined (__EMX__) || defined (__CYGWIN__)
+#if defined (__EMX__) || defined (__CYGWIN__) || defined (__MINW32__)
 #  undef HAVE_MMAP
 #endif
 
@@ -69,18 +69,22 @@
 
 #endif /* HAVE_MMAP */
 
+#ifdef __MINGW32__
+#include <io.h>
+#endif
+
 /* If we're compiling for __EMX__ (OS/2) or __CYGWIN__ (cygwin32 environment
    on win 95/98/nt), we want to open files with O_BINARY mode so that there
    is no \n -> \r\n conversion performed.  On other systems, we don't want to
    mess around with O_BINARY at all, so we ensure that it's defined to 0. */
-#if defined (__EMX__) || defined (__CYGWIN__)
+#if defined (__EMX__) || defined (__CYGWIN__) || defined (__MINGW32__)
 #  ifndef O_BINARY
 #    define O_BINARY 0
 #  endif
-#else /* !__EMX__ && !__CYGWIN__ */
+#else /* !__EMX__ && !__CYGWIN__ && !__MINGW32__ */
 #  undef O_BINARY
 #  define O_BINARY 0
-#endif /* !__EMX__ && !__CYGWIN__ */
+#endif /* !__EMX__ && !__CYGWIN__ && !__MINGW32__ */
 
 #include <errno.h>
 #if !defined (errno)
@@ -92,6 +96,10 @@ extern int errno;
 
 #include "rlshell.h"
 #include "xmalloc.h"
+
+#ifdef __MINGW32__
+#include "rldefs.h"
+#endif
 
 /* Return the string that should be used in the place of this
    filename.  This only matters when you don't specify the
@@ -113,6 +121,12 @@ history_filename (filename)
 
   if (home == 0)
     {
+#if defined (__MINGW32__) && defined (INITFILES_IN_REGISTRY)
+      return_val = _rl_get_user_registry_string (READLINE_REGKEY, HISTFILE_REGVAL);
+      if (return_val)
+        return (return_val);
+      free (return_val);
+#endif	/* __MINGW32__ ... */
       home = ".";
       home_len = 1;
     }

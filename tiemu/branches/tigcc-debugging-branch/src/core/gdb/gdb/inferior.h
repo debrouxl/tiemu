@@ -145,7 +145,7 @@ extern int inferior_ignoring_leading_exec_events;
 
 /* Inferior environment. */
 
-extern struct environ *inferior_environ;
+extern struct gdb_environ *inferior_environ;
 
 extern void clear_proceed_status (void);
 

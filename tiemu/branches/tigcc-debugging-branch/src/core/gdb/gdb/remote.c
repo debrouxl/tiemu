@@ -44,6 +44,15 @@
 #include <ctype.h>
 #include <sys/time.h>
 
+#if defined (__MINGW32__)
+/*
+ * Select and fd support only works for sockets. MinGW currently
+ * only support remote sockets so this works until serial ports
+ * are supported.
+ */
+#include <winsock2.h>
+#endif /* __MINGW32__ */
+
 #include "event-loop.h"
 #include "event-top.h"
 #include "inf-loop.h"

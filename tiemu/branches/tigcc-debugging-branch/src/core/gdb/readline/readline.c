@@ -829,8 +829,10 @@ readline_initialize_everything ()
      inputrc file. */
   rl_set_keymap_from_edit_mode ();
 
+#if defined (__MINGW32__)
   /* Try to bind a common arrow key prefix, if not already bound. */
   bind_arrow_keys ();
+#endif
 
   /* Enable the meta key, if this terminal has one. */
   if (_rl_enable_meta)
@@ -851,6 +853,7 @@ readline_default_bindings ()
   rl_tty_set_default_bindings (_rl_keymap);
 }
 
+#if defined (__MINGW32__)
 /* Bind some common arrow key sequences in MAP. */
 static void
 bind_arrow_keys_internal (map)
@@ -898,6 +901,7 @@ bind_arrow_keys ()
   bind_arrow_keys_internal (vi_insertion_keymap);
 #endif
 }
+#endif /* !__MINGW32__ */
 
 /* **************************************************************** */
 /*								    */

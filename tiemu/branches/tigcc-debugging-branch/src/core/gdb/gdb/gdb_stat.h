@@ -71,4 +71,21 @@
 #define S_IROTH	S_IREAD
 #endif
 
+/* MinGW does not define all the POSIX file modes. */
+#ifndef S_IRGRP
+#define S_IRGRP S_IREAD
+#endif
+#ifndef S_IWGRP
+#define S_IWGRP S_IWRITE
+#endif
+#ifndef S_IXGRP
+#define S_IXGRP S_IEXEC
+#endif
+#ifndef S_IWOTH
+#define S_IWOTH S_IWRITE
+#endif
+#ifndef S_IXOTH
+#define S_IXOTH S_IEXEC
+#endif
+
 #endif /* !defined(GDB_STAT_H) */

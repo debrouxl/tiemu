@@ -43,12 +43,19 @@
 
 #include <stdio.h>
 
+#ifdef __MINGW32__
+# include <windows.h>
+# include <io.h>
+#endif
+
 #include <errno.h>
 #if !defined (errno)
 extern int errno;
 #endif /* !errno */
 
+#ifndef __MINGW32__
 #include <pwd.h>
+#endif
 
 #include "posixdir.h"
 #include "posixstat.h"
@@ -1646,7 +1653,12 @@ rl_username_completion_function (text, state)
   return (char *)NULL;
 #else /* !__WIN32__ && !__OPENNT) */
   static char *username = (char *)NULL;
+#ifndef __MINGW32__
   static struct passwd *entry;
+#else
+  char user_name[128];
+  unsigned user_len;
+#endif
   static int namelen, first_char, first_char_loc;
   char *value;
 
@@ -1659,9 +1671,12 @@ rl_username_completion_function (text, state)
 
       username = savestring (&text[first_char_loc]);
       namelen = strlen (username);
+#ifndef __MINGW32__
       setpwent ();
+#endif
     }
 
+#ifndef __MINGW32__
   while (entry = getpwent ())
     {
       /* Null usernames should result in all users as possible completions. */
@@ -1687,6 +1702,21 @@ rl_username_completion_function (text, state)
 
       return (value);
     }
+#else /* __MINGW32__ */
+  if (GetUserName (user_name, &user_len))
+    {
+      if (namelen == 0 || (!strnicmp (username, user_name, name_len)))
+	{
+	  value = (char *)xmalloc (2 + strlen (user_name));
+	  *value = *text;
+	  strcpy (value + first_char_loc, user_name);
+	  if (first_char == '~')
+	    rl_filename_completion_desired = 1;
+	  return (value);
+	}
+    }
+  return ((char *)NULL);
+#endif /* __MINGW32__ */
 #endif /* !__WIN32__ && !__OPENNT */
 }
 
@@ -1699,14 +1729,22 @@ rl_filename_completion_function (text, state)
      const char *text;
      int state;
 {
+#ifdef __MINGW32__
+  static WIN32_FIND_DATA entry;
+  static HANDLE directory = NULL;
+  static BOOL found = 0;
+  char tmp[MAX_PATH];
+# define DIR void
+#else
+  struct dirent *entry;
   static DIR *directory = (DIR *)NULL;
+#endif
   static char *filename = (char *)NULL;
   static char *dirname = (char *)NULL;
   static char *users_dirname = (char *)NULL;
   static int filename_len;
   char *temp;
   int dirlen;
-  struct dirent *entry;
 
   /* If we don't have any state, then do some initialization. */
   if (state == 0)
@@ -1775,7 +1813,18 @@ rl_filename_completion_function (text, state)
 	  users_dirname = savestring (dirname);
 	}
 
+#ifdef __MINGW32__
+      strcpy (tmp, dirname);
+      if (tmp[strlen (tmp) - 1] == '/')
+	strcat (tmp, "*");
+      else
+	strcat (tmp, "/*");
+	
+      directory = FindFirstFile (tmp, &entry);
+      found = 1;
+#else  
       directory = opendir (dirname);
+#endif
       filename_len = strlen (filename);
 
       rl_filename_completion_desired = 1;
@@ -1788,21 +1837,24 @@ rl_filename_completion_function (text, state)
   /* *** UNIMPLEMENTED *** */
 
   /* Now that we have some state, we can read the directory. */
-
+#ifndef __MINGW32__
   entry = (struct dirent *)NULL;
   while (directory && (entry = readdir (directory)))
+#else
+  while (directory != INVALID_HANDLE_VALUE && directory && found)
+#endif
     {
       /* Special case for no filename.  If the user has disabled the
          `match-hidden-files' variable, skip filenames beginning with `.'.
 	 All other entries except "." and ".." match. */
       if (filename_len == 0)
 	{
-	  if (_rl_match_hidden_files == 0 && HIDDEN_FILE (entry->d_name))
+	  if (_rl_match_hidden_files == 0 && HIDDEN_FILE (FILENAME (entry)))
 	    continue;
 
-	  if (entry->d_name[0] != '.' ||
-	       (entry->d_name[1] &&
-		 (entry->d_name[1] != '.' || entry->d_name[2])))
+	  if (FILENAME (entry)[0] != '.' ||
+	       (FILENAME (entry)[1] &&
+		 (FILENAME (entry)[1] != '.' || FILENAME (entry)[2])))
 	    break;
 	}
       else
@@ -1811,22 +1863,29 @@ rl_filename_completion_function (text, state)
 	     it is a match. */
 	  if (_rl_completion_case_fold)
 	    {
-	      if ((_rl_to_lower (entry->d_name[0]) == _rl_to_lower (filename[0])) &&
+	      if ((_rl_to_lower (FILENAME (entry)[0]) == _rl_to_lower (filename[0])) &&
 		  (((int)D_NAMLEN (entry)) >= filename_len) &&
-		  (_rl_strnicmp (filename, entry->d_name, filename_len) == 0))
+		  (_rl_strnicmp (filename, FILENAME (entry), filename_len) == 0))
 		break;
 	    }
 	  else
 	    {
-	      if ((entry->d_name[0] == filename[0]) &&
+	      if ((FILENAME (entry)[0] == filename[0]) &&
 		  (((int)D_NAMLEN (entry)) >= filename_len) &&
-		  (strncmp (filename, entry->d_name, filename_len) == 0))
+		  (strncmp (filename, FILENAME (entry), filename_len) == 0))
 		break;
 	    }
 	}
+#ifdef __MINGW32__
+      found = FindNextFile (directory, &entry);
+#endif    
     }
 
+#ifdef __MINGW32__
+  if (!found)
+#else
   if (entry == 0)
+#endif
     {
       if (directory)
 	{
@@ -1879,11 +1938,14 @@ rl_filename_completion_function (text, state)
 		temp[dirlen++] = '/';
 	    }
 
-	  strcpy (temp + dirlen, entry->d_name);
+	  strcpy (temp + dirlen, FILENAME (entry));
 	}
       else
-	temp = savestring (entry->d_name);
+	temp = savestring (FILENAME (entry));
 
+#ifdef __MINGW32__
+      found = FindNextFile (directory, &entry);
+#endif
       return (temp);
     }
 }

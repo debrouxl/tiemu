@@ -82,12 +82,13 @@ int
 _rl_init_eightbit ()
 {
 /* If we have setlocale(3), just check the current LC_CTYPE category
-   value, and go into eight-bit mode if it's not C or POSIX. */
+   value, and go into eight-bit mode if it's not C or POSIX or MinGW. */
 #if defined (HAVE_SETLOCALE)
   char *t;
 
   /* Set the LC_CTYPE locale category from environment variables. */
   t = setlocale (LC_CTYPE, "");
+#if !defined (__MINGW32__)
   if (t && *t && (t[0] != 'C' || t[1]) && (STREQ (t, "POSIX") == 0))
     {
       _rl_meta_flag = 1;
@@ -96,6 +97,7 @@ _rl_init_eightbit ()
       return (1);
     }
   else
+#endif
     return (0);
 
 #else /* !HAVE_SETLOCALE */

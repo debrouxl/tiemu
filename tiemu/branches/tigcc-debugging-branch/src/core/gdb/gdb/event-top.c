@@ -28,6 +28,10 @@
 #include "event-top.h"
 #include "interps.h"
 #include <signal.h>
+#ifdef __MINGW32__
+  /* MinGW does not yet (mingw-runtime-2.2) define SIGQUIT */
+  #define SIGQUIT 3
+#endif
 
 /* For dont_repeat() */
 #include "gdbcmd.h"

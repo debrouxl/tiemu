@@ -21,7 +21,6 @@
 
 #include "defs.h"
 #include "serial.h"
-#include "ser-unix.h"
 
 #include <sys/types.h>
 
@@ -33,14 +32,49 @@
 #endif
 
 #include <sys/time.h>
+
+#if !defined (__MINGW32__)
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/tcp.h>
-
 #include <signal.h>
+#else /* !__MINGW32__ */
+#include <winsock2.h>
+#endif /* !__MINGW32__ */
+
 #include "gdb_string.h"
+
+/*
+ * Winsock needs to be started manually.
+ */
+
+#if defined (__MINGW32__)
+#define ECONNREFUSED WSAECONNREFUSED
+#define EINPROGRESS  WSAEINPROGRESS
+#define ETIMEDOUT    WSAETIMEDOUT
+
+static int ws_started;
+static int
+net_open_winsock ()
+{
+  if (!ws_started) {
+    WORD    wVersionRequested;
+    WSADATA wsaData;
+    int     err;
+
+    wVersionRequested = MAKEWORD (2, 2);
+    err = WSAStartup (wVersionRequested, &wsaData);
+    if (err)
+      return 0;
+    ws_started = 1;
+  }
+  return 1;
+}
+#endif /* !__MINGW32__ */
+
+extern void ser_platform_tcp_init (struct serial_ops *ops);
 
 static int net_open (struct serial *scb, const char *name);
 static void net_close (struct serial *scb);
@@ -85,6 +119,15 @@ net_open (struct serial *scb, const char *name)
   if (!hostname[0])
     strcpy (hostname, "localhost");
 
+#if defined (__MINGW32__)
+  if (!net_open_winsock ())
+    {
+      fprintf_unfiltered (gdb_stderr, "error WINSOCK startup\n");
+      errno = ENOENT;
+      return -1;
+    }    
+#endif /* __MINGW32__ */
+  
   hostent = gethostbyname (hostname);
   if (!hostent)
     {
@@ -106,9 +149,11 @@ net_open (struct serial *scb, const char *name)
   memcpy (&sockaddr.sin_addr.s_addr, hostent->h_addr,
 	  sizeof (struct in_addr));
 
+#if !defined (__MINGW32__)
   /* set socket nonblocking */
   tmp = 1;
   ioctl (scb->fd, FIONBIO, &tmp);
+#endif /* !__MINGW32__ */
 
   /* Use Non-blocking connect.  connect() will return 0 if connected already. */
   n = connect (scb->fd, (struct sockaddr *) &sockaddr, sizeof (sockaddr));
@@ -174,10 +219,12 @@ net_open (struct serial *scb, const char *name)
       }
   } 
 
+#if !defined (__MINGW32__)
   /* turn off nonblocking */
   tmp = 0;
   ioctl (scb->fd, FIONBIO, &tmp);
-
+#endif /* !__MINGW32__ */
+  
   if (use_udp == 0)
     {
       /* Disable Nagle algorithm. Needed in some cases. */
@@ -188,7 +235,9 @@ net_open (struct serial *scb, const char *name)
 
   /* If we don't do this, then GDB simply exits
      when the remote side dies.  */
+#if !defined (__MINGW32__)
   signal (SIGPIPE, SIG_IGN);
+#endif /* !__MINGW32__ */
 
   return 0;
 }
@@ -212,19 +261,6 @@ _initialize_ser_tcp (void)
   ops->next = 0;
   ops->open = net_open;
   ops->close = net_close;
-  ops->readchar = ser_unix_readchar;
-  ops->write = ser_unix_write;
-  ops->flush_output = ser_unix_nop_flush_output;
-  ops->flush_input = ser_unix_flush_input;
-  ops->send_break = ser_unix_nop_send_break;
-  ops->go_raw = ser_unix_nop_raw;
-  ops->get_tty_state = ser_unix_nop_get_tty_state;
-  ops->set_tty_state = ser_unix_nop_set_tty_state;
-  ops->print_tty_state = ser_unix_nop_print_tty_state;
-  ops->noflush_set_tty_state = ser_unix_nop_noflush_set_tty_state;
-  ops->setbaudrate = ser_unix_nop_setbaudrate;
-  ops->setstopbits = ser_unix_nop_setstopbits;
-  ops->drain_output = ser_unix_nop_drain_output;
-  ops->async = ser_unix_async;
+  ser_platform_tcp_init (ops);
   serial_add_interface (ops);
 }

@@ -404,15 +404,23 @@ remote_fileio_to_fio_stat (struct stat *st, struct fio_stat *fst)
   remote_fileio_to_fio_uint ((long) st->st_gid, fst->fst_gid);
   remote_fileio_to_fio_uint ((long) st->st_rdev, fst->fst_rdev);
   remote_fileio_to_fio_ulong ((LONGEST) st->st_size, fst->fst_size);
+#if HAVE_STRUCT_STAT_ST_BLKSIZE
   remote_fileio_to_fio_ulong ((LONGEST) st->st_blksize, fst->fst_blksize);
+#endif
 #if HAVE_STRUCT_STAT_ST_BLOCKS
   remote_fileio_to_fio_ulong ((LONGEST) st->st_blocks, fst->fst_blocks);
-#else
+#elif __MSDOS__
   /* FIXME: This is correct for DJGPP, but other systems that don't
      have st_blocks, if any, might prefer 512 instead of st_blksize.
-     (eliz, 30-12-2003)  */
+     (eliz, 30-12-2003).
+  */
   remote_fileio_to_fio_ulong (((LONGEST) st->st_size + st->st_blksize - 1)
 			      / (LONGEST) st->st_blksize,
+			      fst->fst_blocks);
+#else
+  /* MinGW does not have st_blksize or st_blocks.
+     (ccj, 21-05-2004). */
+  remote_fileio_to_fio_ulong (((LONGEST) st->st_size + 512 - 1) / 512,
 			      fst->fst_blocks);
 #endif
   remote_fileio_to_fio_time (st->st_atime, fst->fst_atime);
@@ -1129,11 +1137,18 @@ remote_fileio_func_fstat (char *buf)
       remote_fileio_to_fio_uint (1, fst.fst_dev);
       st.st_mode = S_IFCHR | (fd == FIO_FD_CONSOLE_IN ? S_IRUSR : S_IWUSR);
       st.st_nlink = 1;
+#if defined (__MINGW32__)
+      st.st_uid = 0;
+      st.st_gid = 0;
+#else /* !__MINGW32__ */
       st.st_uid = getuid ();
       st.st_gid = getgid ();
+#endif /* !__MINGW32__ */
       st.st_rdev = 0;
       st.st_size = 0;
+#if HAVE_STRUCT_STAT_ST_BLKSIZE
       st.st_blksize = 512;
+#endif
 #if HAVE_STRUCT_STAT_ST_BLOCKS
       st.st_blocks = 0;
 #endif

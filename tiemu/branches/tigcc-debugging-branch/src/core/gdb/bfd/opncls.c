@@ -218,7 +218,26 @@ bfd_fdopenr (const char *filename, const char *target, int fd)
 
   bfd_set_error (bfd_error_system_call);
 #if ! defined(HAVE_FCNTL) || ! defined(F_GETFL)
+#if defined (__MINGW32__)
+  /*
+   * If we wrongly guess the access type on mingw, later in bfd_open_file
+   * fopen will fail tring to open currently executing file in +r mode.
+   *
+   * Added to this, if we do not do this closing a bfd tries to write the
+   * symbols to disk. If a gdb session has a file on the command line and
+   * then a 'file xxxx' is entered by the user and command line file is
+   * closed and a write is attempted.
+   *
+   * I can't find a better way to determine which way fd was opened.
+   */
+ 
+  if (_commit (fd) < 0)
+    fdflags = O_RDONLY;
+  else
+    fdflags = O_RDWR;
+#else
   fdflags = O_RDWR;			/* Assume full access.  */
+#endif
 #else
   fdflags = fcntl (fd, F_GETFL, NULL);
 #endif

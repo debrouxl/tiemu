@@ -26,6 +26,7 @@
 #if defined (HAVE_DIRENT_H)
 #  include <dirent.h>
 #  define D_NAMLEN(d)   (strlen ((d)->d_name))
+#  define FILENAME(d)   ((d)->d_name)
 #else
 #  if defined (HAVE_SYS_NDIR_H)
 #    include <sys/ndir.h>
@@ -40,7 +41,16 @@
 #    define dirent direct
 #  endif /* !dirent */
 #  define D_NAMLEN(d)   ((d)->d_namlen)
+#  define FILENAME(d)   ((d)->d_name)
 #endif /* !HAVE_DIRENT_H */
+
+#if defined (__MINGW32__)
+# undef FILENAME
+# define FILENAME(d) (d).cFileName
+# define closedir(dir) FindClose (dir)
+# undef D_NAMLEN
+# define D_NAMLEN(d) strlen (d.cFileName)
+#endif
 
 #if defined (STRUCT_DIRENT_HAS_D_INO) && !defined (STRUCT_DIRENT_HAS_D_FILENO)
 #  define d_fileno d_ino

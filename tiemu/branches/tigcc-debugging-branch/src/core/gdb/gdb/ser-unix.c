@@ -1335,6 +1335,25 @@ ser_unix_async (struct serial *scb,
 }
 
 void
+ser_platform_tcp_init (struct serial_ops *ops)
+{
+  ops->readchar = ser_unix_readchar;
+  ops->write = ser_unix_write;
+  ops->flush_output = ser_unix_nop_flush_output;
+  ops->flush_input = ser_unix_flush_input;
+  ops->send_break = ser_unix_nop_send_break;
+  ops->go_raw = ser_unix_nop_raw;
+  ops->get_tty_state = ser_unix_nop_get_tty_state;
+  ops->set_tty_state = ser_unix_nop_set_tty_state;
+  ops->print_tty_state = ser_unix_nop_print_tty_state;
+  ops->noflush_set_tty_state = ser_unix_nop_noflush_set_tty_state;
+  ops->setbaudrate = ser_unix_nop_setbaudrate;
+  ops->setstopbits = ser_unix_nop_setstopbits;
+  ops->drain_output = ser_unix_nop_drain_output;
+  ops->async = ser_unix_async;
+}
+
+void
 _initialize_ser_hardwire (void)
 {
   struct serial_ops *ops = XMALLOC (struct serial_ops);

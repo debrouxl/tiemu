@@ -31,6 +31,12 @@
 #endif
 #endif
 
+#ifdef __MINGW32__
+#include <io.h>
+#include <sys/time.h>
+#include <windows.h>
+#endif
+
 #include <sys/types.h>
 #include "gdb_string.h"
 #include <errno.h>
@@ -145,12 +151,23 @@ static struct
     int poll_timeout;
 #endif
 
+#if defined (__MINGW32__)
+    /* Handles for WaitForMultipleObjects.
+
+       Space is allocated for num_fds handles, but currently only console
+       input handles are waited upon, all other handle kinds are
+       considered always ready. */
+
+    HANDLE *waitable_handles;
+    file_handler **waitable_files;
+#else /* !__MINGW32__ */
     /* Masks to be used in the next call to select.
        Bits are set in response to calls to create_file_handler. */
     fd_set check_masks[3];
 
     /* What file descriptors were found ready by select. */
     fd_set ready_masks[3];
+#endif /* !__MINGW32__ */
 
     /* Number of file descriptors to monitor. (for poll) */
     /* Number of valid bits (highest fd value + 1). (for select) */
@@ -469,7 +486,13 @@ add_file_handler (int fd, handler_func * proc, gdb_client_data client_data)
 #endif
     }
   else
+#if defined (__MINGW32__)
+    /* For now, there is no way to specify a mask for users of
+       create_file_handler under MinGW. */
+    create_file_handler (fd, 0, proc, client_data);
+#else /* !__MINGW32__ */
     create_file_handler (fd, GDB_READABLE | GDB_EXCEPTION, proc, client_data);
+#endif /* !__MINGW32__ */
 }
 
 /* Add a file handler/descriptor to the list of descriptors we are
@@ -528,6 +551,39 @@ create_file_handler (int fd, int mask, handler_func * proc, gdb_client_data clie
 	}
       else
 	{
+#if defined (__MINGW32__)
+      /* Count number of file_handlers, realloc space if needed */
+
+      int count_fds = 0;
+      file_handler *fd_file_ptr;
+
+      for (fd_file_ptr = gdb_notifier.first_file_handler; fd_file_ptr != NULL;
+           fd_file_ptr = fd_file_ptr->next_file)
+        count_fds++;
+      
+      if( gdb_notifier.num_fds != count_fds)
+      {
+        if( gdb_notifier.num_fds == 0)
+	{
+	  gdb_notifier.waitable_handles = 
+	    (HANDLE *)xmalloc( sizeof( HANDLE));
+	  gdb_notifier.waitable_files = 
+	    (file_handler **)xmalloc( sizeof( file_handler *));
+	}
+	else
+	{
+	  gdb_notifier.waitable_handles = 
+	    (HANDLE *)xrealloc( 
+	      gdb_notifier.waitable_handles, count_fds * sizeof( HANDLE)
+	    );
+	  gdb_notifier.waitable_files = 
+	    (file_handler **)xrealloc( 
+	      gdb_notifier.waitable_files, count_fds * sizeof( file_handler *)
+	    );
+	}
+	gdb_notifier.num_fds = count_fds;
+      }
+#else /* !__MINGW32__ */
 	  if (mask & GDB_READABLE)
 	    FD_SET (fd, &gdb_notifier.check_masks[0]);
 	  else
@@ -545,6 +601,7 @@ create_file_handler (int fd, int mask, handler_func * proc, gdb_client_data clie
 
 	  if (gdb_notifier.num_fds <= fd)
 	    gdb_notifier.num_fds = fd + 1;
+#endif /* !__MINGW32__ */
 	}
     }
 
@@ -606,6 +663,23 @@ delete_file_handler (int fd)
     }
   else
     {
+#if defined (__MINGW32__)
+      /* Just realloc space. */
+      --gdb_notifier.num_fds;
+
+      xfree (gdb_notifier.waitable_handles);
+      xfree (gdb_notifier.waitable_files);
+
+      if (gdb_notifier.num_fds > 0)
+      {
+	gdb_notifier.waitable_handles = 
+	  (HANDLE *)xmalloc( gdb_notifier.num_fds * sizeof( HANDLE));
+	gdb_notifier.waitable_files = 
+	  (file_handler **)xmalloc( 
+	    gdb_notifier.num_fds * sizeof( file_handler *)
+	  );
+      }
+#else /* !__MINGW32__ */
       if (file_ptr->mask & GDB_READABLE)
 	FD_CLR (fd, &gdb_notifier.check_masks[0]);
       if (file_ptr->mask & GDB_WRITABLE)
@@ -627,6 +701,7 @@ delete_file_handler (int fd)
 	    }
 	  gdb_notifier.num_fds = i;
 	}
+#endif /* !__MINGW32__ */
     }
 
   /* Deactivate the file descriptor, by clearing its mask, 
@@ -708,6 +783,10 @@ handle_file_event (int event_file_desc)
 	    }
 	  else
 	    {
+#if defined (__MINGW32__)
+              /* Masks match when it's ready - simple! */
+	      mask = file_ptr->ready_mask;
+#else /* !__MINGW32__ */
 	      if (file_ptr->ready_mask & GDB_EXCEPTION)
 		{
 		  printf_unfiltered ("Exception condition detected on fd %d\n", file_ptr->fd);
@@ -716,6 +795,7 @@ handle_file_event (int event_file_desc)
 	      else
 		file_ptr->error = 0;
 	      mask = file_ptr->ready_mask & file_ptr->mask;
+#endif /* !__MINGW32__ */
 	    }
 
 	  /* Clear the received events for next time around. */
@@ -770,6 +850,59 @@ gdb_wait_for_event (void)
     }
   else
     {
+#if defined (__MINGW32__)
+       /* Since our users may close/dup fds without telling us, 
+          the safest (and simplest) thing is to do fd->HANDLE conversion 
+          every time just before calling WaitForMultipleObjects */
+          
+       /* NOTE: file_handler->mask is really abused here */
+       
+       int waitable_count = 0;
+       HANDLE h;
+       
+       for (file_ptr = gdb_notifier.first_file_handler;
+            file_ptr != NULL;
+            file_ptr = file_ptr->next_file)
+         {
+           file_ptr->mask = 1;
+ 	  file_ptr->error = 0;
+           h = (HANDLE)_get_osfhandle (file_ptr->fd);
+           if (GetFileType (h) == FILE_TYPE_CHAR) /* console */
+             {
+             gdb_notifier.waitable_handles[waitable_count] = h;
+             gdb_notifier.waitable_files[waitable_count] = file_ptr;
+             ++waitable_count;
+             }
+           else /* consider it ready */
+             file_ptr->mask = 1;
+         }
+       if (waitable_count > 0)
+         {
+         DWORD r = WaitForMultipleObjects (waitable_count, 
+                     gdb_notifier.waitable_handles,
+                     0,
+                     gdb_notifier.timeout_valid 
+                      ?       gdb_notifier.select_timeout.tv_sec * 1000
+                            + gdb_notifier.select_timeout.tv_usec / 1000
+                      :  INFINITE);
+                      
+         if (r == WAIT_FAILED)
+ 	  {
+ 	    int i;
+ 	    
+             printf_unfiltered( "gdb_wait_for_event: WaitForMultipleObjects failed: %x\n",
+                                   (unsigned)GetLastError() );
+ 	    for (i=0; i<waitable_count; ++i )
+ 	      gdb_notifier.waitable_files[i]->error = 1;
+ 	  }
+                                 
+         /* WaitForMultipleObjects returns only the first ready object.
+            I don't know how to get to the others */
+         if (r >= WAIT_OBJECT_0 && r < WAIT_OBJECT_0 + waitable_count)
+           gdb_notifier.waitable_files[r-WAIT_OBJECT_0]->mask = 1;
+          
+      }
+#else /* !__MINGW32__ */
       gdb_notifier.ready_masks[0] = gdb_notifier.check_masks[0];
       gdb_notifier.ready_masks[1] = gdb_notifier.check_masks[1];
       gdb_notifier.ready_masks[2] = gdb_notifier.check_masks[2];
@@ -790,6 +923,7 @@ gdb_wait_for_event (void)
 	  if (errno != EINTR)
 	    perror_with_name ("Select");
 	}
+#endif /* !__MINGW32__ */
     }
 
   /* Enqueue all detected file events. */
@@ -832,6 +966,24 @@ gdb_wait_for_event (void)
     }
   else
     {
+#if defined (__MINGW32__)
+
+      /* NOTE: file_handler->mask is really abused here */
+      
+      for (file_ptr = gdb_notifier.first_file_handler;
+           file_ptr != NULL;
+           file_ptr = file_ptr->next_file)
+        if (file_ptr->mask)
+          {
+            file_ptr->mask = 0;
+    	    if (file_ptr->ready_mask == 0)
+	      {
+	        file_event_ptr = create_file_event (file_ptr->fd);
+	        async_queue_event (file_event_ptr, TAIL);
+  	        file_ptr->ready_mask = 1;
+	      }
+          }
+#else /* !__MINGW32__ */
       for (file_ptr = gdb_notifier.first_file_handler;
 	   (file_ptr != NULL) && (num_found > 0);
 	   file_ptr = file_ptr->next_file)
@@ -860,6 +1012,7 @@ gdb_wait_for_event (void)
 	    }
 	  file_ptr->ready_mask = mask;
 	}
+#endif /* !__MINGW32__ */
     }
   return 0;
 }

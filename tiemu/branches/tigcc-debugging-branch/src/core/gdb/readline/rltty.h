@@ -38,7 +38,7 @@
 #endif /* TERMIO_TTY_DRIVER */
 
 /* Other (BSD) machines use sgtty. */
-#if defined (NEW_TTY_DRIVER)
+#if defined (NEW_TTY_DRIVER) && !defined (__MINGW32__)
 #  include <sgtty.h>
 #endif
 

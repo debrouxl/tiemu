@@ -329,12 +329,16 @@ do_serial_close (struct serial *scb, int really_close)
 void
 serial_close (struct serial *scb)
 {
+  if (!scb)
+    return;
   do_serial_close (scb, 1);
 }
 
 void
 serial_un_fdopen (struct serial *scb)
 {
+  if (!scb)
+    return;
   do_serial_close (scb, 0);
 }
 
@@ -342,6 +346,9 @@ int
 serial_readchar (struct serial *scb, int timeout)
 {
   int ch;
+
+  if (!scb)
+    return 0;
 
   /* FIXME: cagney/1999-10-11: Don't enable this check until the ASYNC
      code is finished. */
@@ -384,6 +391,9 @@ serial_write (struct serial *scb, const char *str, int len)
       gdb_flush (serial_logfp);
     }
 
+  if (!scb)
+    return 0;
+
   return (scb->ops->write (scb, str, len));
 }
 
@@ -404,24 +414,33 @@ serial_printf (struct serial *desc, const char *format,...)
 int
 serial_drain_output (struct serial *scb)
 {
+  if (!scb)
+    return 0;
   return scb->ops->drain_output (scb);
 }
 
 int
 serial_flush_output (struct serial *scb)
 {
+  if (!scb)
+    return 0;
   return scb->ops->flush_output (scb);
 }
 
 int
 serial_flush_input (struct serial *scb)
 {
+  if (!scb)
+    return 0;
   return scb->ops->flush_input (scb);
 }
 
 int
 serial_send_break (struct serial *scb)
 {
+  if (!scb)
+    return 0;
+
   if (serial_logfp != NULL)
     serial_logchar (serial_logfp, 'w', SERIAL_BREAK, 0);
 
@@ -431,18 +450,24 @@ serial_send_break (struct serial *scb)
 void
 serial_raw (struct serial *scb)
 {
+  if (!scb)
+    return;
   scb->ops->go_raw (scb);
 }
 
 serial_ttystate
 serial_get_tty_state (struct serial *scb)
 {
+  if (!scb)
+    return 0;
   return scb->ops->get_tty_state (scb);
 }
 
 int
 serial_set_tty_state (struct serial *scb, serial_ttystate ttystate)
 {
+  if (!scb)
+    return 0;
   return scb->ops->set_tty_state (scb, ttystate);
 }
 
@@ -451,6 +476,8 @@ serial_print_tty_state (struct serial *scb,
 			serial_ttystate ttystate,
 			struct ui_file *stream)
 {
+  if (!scb)
+    return;
   scb->ops->print_tty_state (scb, ttystate, stream);
 }
 
@@ -459,30 +486,40 @@ serial_noflush_set_tty_state (struct serial *scb,
 			      serial_ttystate new_ttystate,
 			      serial_ttystate old_ttystate)
 {
+  if (!scb)
+    return 0;
   return scb->ops->noflush_set_tty_state (scb, new_ttystate, old_ttystate);
 }
 
 int
 serial_setbaudrate (struct serial *scb, int rate)
 {
+  if (!scb)
+    return 0;
   return scb->ops->setbaudrate (scb, rate);
 }
 
 int
 serial_setstopbits (struct serial *scb, int num)
 {
+  if (!scb)
+    return 0;
   return scb->ops->setstopbits (scb, num);
 }
 
 int
 serial_can_async_p (struct serial *scb)
 {
+  if (!scb)
+    return 0;
   return (scb->ops->async != NULL);
 }
 
 int
 serial_is_async_p (struct serial *scb)
 {
+  if (!scb)
+    return 0;
   return (scb->ops->async != NULL) && (scb->async_handler != NULL);
 }
 
@@ -491,6 +528,9 @@ serial_async (struct serial *scb,
 	      serial_event_ftype *handler,
 	      void *context)
 {
+  if (!scb)
+    return;
+
   /* Only change mode if there is a need. */
   if ((scb->async_handler == NULL)
       != (handler == NULL))

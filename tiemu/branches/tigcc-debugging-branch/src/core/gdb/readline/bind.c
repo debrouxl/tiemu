@@ -48,6 +48,11 @@
 extern int errno;
 #endif /* !errno */
 
+#ifdef __MINGW32__
+#include <sys/stat.h>
+#include <io.h>
+#endif
+
 #include "posixstat.h"
 
 /* System-specific feature definitions and include files. */
@@ -735,6 +740,19 @@ _rl_read_init_file (filename, include_level)
   openname = tilde_expand (filename);
   buffer = _rl_read_file (openname, &file_size);
   free (openname);
+
+#if defined (__MINGW32__) && defined (INITFILES_IN_REGISTRY)
+  if (buffer == 0)
+    {
+      openname = _rl_get_user_registry_string(READLINE_REGKEY,
+                                              INPUTRC_REGVAL);
+      if (openname)
+        {
+          buffer = _rl_read_file (openname, &file_size);
+          free (openname);
+        }
+    }
+#endif	/* __MINGW32__ */
 
   if (buffer == 0)
     return (errno);

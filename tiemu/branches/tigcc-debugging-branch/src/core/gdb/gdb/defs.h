@@ -1051,6 +1051,7 @@ enum gdb_osabi
   GDB_OSABI_QNXNTO,
 
   GDB_OSABI_CYGWIN,
+  GDB_OSABI_WIN32,
 
   GDB_OSABI_INVALID		/* keep this last */
 };
@@ -1238,7 +1239,7 @@ extern int use_windows;
 #define SLASH_STRING "/"
 #endif
 
-#ifdef __MSDOS__
+#if defined(__MSDOS__) || defined(__MINGW32__)
 # define CANT_FORK
 # define GLOBAL_CURDIR
 #endif

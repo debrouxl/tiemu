@@ -582,7 +582,7 @@ case "${target}" in
     # Can't build gdb for mingw32 if not native.
     case "${host}" in
       i[[3456789]]86-*-mingw32) ;; # keep gdb tcl tk expect etc.
-      *) noconfigdirs="$noconfigdirs gdb tcl tk expect itcl gnuserv"
+      *) noconfigdirs="$noconfigdirs tcl tk expect itcl gnuserv"
          ;;
     esac
     ;;    

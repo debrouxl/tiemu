@@ -72,6 +72,9 @@ extern char *strchr (), *strrchr ();
 #if defined (HAVE_STRCASECMP)
 #define _rl_stricmp strcasecmp
 #define _rl_strnicmp strncasecmp
+#elif defined (__MINGW32__)
+#define _rl_stricmp stricmp
+#define _rl_strnicmp strnicmp
 #else
 extern int _rl_stricmp PARAMS((char *, char *));
 extern int _rl_strnicmp PARAMS((char *, char *, int));
@@ -150,6 +153,30 @@ extern char *_rl_strpbrk PARAMS((const char *, const char *));
 #  define SWAP(s, e)  do { int t; t = s; s = e; e = t; } while (0)
 #endif
 
+#if defined (__MINGW32__)
+#define WAIT_FOR_INPUT 200	/* milliseconds to suspend maximally 
+ 				   when waiting for input */
+#define FOR_INPUT	1	/* flags for open state of the console  */
+#define FOR_OUTPUT	2
+#define INITIALIZED	4
+
+/* undefine this when readline / history should not look into the registry
+   for the path to their init files  */
+#define INITFILES_IN_REGISTRY 1
+ 
+#if defined (INITFILES_IN_REGISTRY)
+/* We also try to get the .inputrc and .history file paths from the registry,
+   define what to look for */
+#define READLINE_REGKEY	"Software\\Free Software Foundation\\libreadline"
+#define INPUTRC_REGVAL	"inputrc-file"
+#define HISTFILE_REGVAL	"history-file"
+
+extern char *_rl_get_user_registry_string (char *keyName, char* valName);
+
+#endif
+ 
+#endif	/* __MINGW32__  */
+ 
 /* CONFIGURATION SECTION */
 #include "rlconf.h"
 

@@ -25362,7 +25362,9 @@ done
 
 # Platform specific tests.
 case $host in
-  *-*-mingw*)            ARCH="-D__WIN32__ -D__MINGW32__ -mwindows -D_WINDOWS" ;;
+# Need console mode for now, to use the GDB CLI.
+#  *-*-mingw*)            ARCH="-D__WIN32__ -D__MINGW32__ -mwindows -D_WINDOWS" ;;
+  *-*-mingw*)            ARCH="-D__WIN32__ -D__MINGW32__" ;;
   *-*-*bsd*)             ARCH="-D__BSD__" ;;
   i[3456]86-*-linux-*) ARCH="-D__I386__ -D__LINUX__" ;;
   *)                     ARCH="-D__LINUX__" ;;
@@ -30875,7 +30877,7 @@ for i in $jpeg_incdirs;
 do
   for j in jpeglib.h;
   do
-    echo "configure: 30878: $i/$j" >&5
+    echo "configure: 30880: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       jpeg_incdir=$i
@@ -31110,7 +31112,7 @@ for i in $qt_incdirs;
 do
   for j in $kde_qt_header;
   do
-    echo "configure: 31113: $i/$j" >&5
+    echo "configure: 31115: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       qt_incdir=$i
@@ -31906,7 +31908,7 @@ for i in $kde_incdirs;
 do
   for j in $kde_check_header;
   do
-    echo "configure: 31909: $i/$j" >&5
+    echo "configure: 31911: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       kde_incdir=$i
@@ -31936,7 +31938,7 @@ for i in $kde_libdirs;
 do
   for j in $kde_check_lib;
   do
-    echo "configure: 31939: $i/$j" >&5
+    echo "configure: 31941: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       kde_libdir=$i
@@ -33019,7 +33021,7 @@ for i in $kde_sharedirs;
 do
   for j in apps/ksgmltools2/customization/kde-chunk.xsl;
   do
-    echo "configure: 33022: $i/$j" >&5
+    echo "configure: 33024: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       KDE_XSL_STYLESHEET=$i
