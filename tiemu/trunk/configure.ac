@@ -8,7 +8,7 @@ AC_INIT(TiEmu, 1.80-050309, [tiemu-users@lists.sourceforge.net])
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
 
-AC_PREFIX_DEFAULT(/usr)
+AC_PREFIX_DEFAULT(/usr/local)
 
 dnl Files to configure.
 AC_CONFIG_SRCDIR([src/gui/main.c])

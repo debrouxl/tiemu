@@ -427,7 +427,7 @@ PACKAGE_VERSION='1.80-050309'
 PACKAGE_STRING='TiEmu 1.80-050309'
 PACKAGE_BUGREPORT='tiemu-users@lists.sourceforge.net'
 
-ac_default_prefix=/usr
+ac_default_prefix=/usr/local
 ac_unique_file="src/gui/main.c"
 # Factoring default headers for most tests.
 ac_includes_default="\
