@@ -31,6 +31,7 @@ Source: "C:\sources\roms\tiemu\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: 
 ; Skin files
 Source: "C:\sources\roms\tiemu\skins\*.skn"; DestDir: "{app}\skins"; Flags: ignoreversion;
 Source: "C:\sources\roms\tiemu\skins\ti92.skn"; DestDir: "{app}\skins"; DestName: "ti92+.skn"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu\skins\ti89.skn"; DestDir: "{app}\skins"; DestName: "ti89t.skn"; Flags: ignoreversion;
 ; i18n files
 ;Source: "C:\sources\roms\libs\files\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tifiles.mo"; Flags: ignoreversion;
 ;Source: "C:\sources\roms\libs\cables\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "ticables.mo"; Flags: ignoreversion;
@@ -151,7 +152,7 @@ begin
   
   Result := GetGtkInstalled ();
   if not Result then begin
-    MsgBox ('Please install the "GTK+ 2.0 Runtime Environment" of DropLine Systems. You can obtain GTK+ from <http://prdownloads.sourceforge.net/gtk-win/GTK-Runtime-Environment-2.2.4-2.exe?download>.', mbError, MB_OK);
+    MsgBox ('Please install the "GTK+ 2.0 Runtime Environment" (v2.2.4-3) of DropLine Systems. You can obtain GTK+ from <http://prdownloads.sourceforge.net/gtk-win/GTK-Runtime-Environment-2.2.4-3.exe?download>.', mbError, MB_OK);
   end;
   
   if Result then begin
