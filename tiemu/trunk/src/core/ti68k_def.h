@@ -106,7 +106,6 @@ typedef struct
     // lcd.c
     int     lcd_off;
     int     contrast;
-    //int     lcd_addr;
 	int		lcd_power;
 
     // linkport.c

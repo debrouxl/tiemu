@@ -23,7 +23,7 @@
  */
 
 /*
-  	Manage state images
+  	State images
 */
 
 #ifdef HAVE_CONFIG_H
@@ -53,104 +53,75 @@
 */
 int ti68k_state_load(char *filename)
 {
-  FILE *fp;
-  int kbmask=0;
-  int comError=0;
-  int cpuCompleteStop=0;
-  char str[9], romName[56];
-  int i;
-  UBYTE* mem[256];
-  int int0Count = 0;
-  int mem_and;
-
-  DISPLAY("Loading RAM image (VTi format): %s\n", filename);
-  if(!strcmp(filename, ""))
-    return ERR_68K_NONE;
-  if( (fp = fopen(filename, "rb")) == NULL)
-    return ERR_68K_CANT_OPEN;
-
-  fread(str,8,1,fp);
-  str[8]=0;
-  if( strcmp(str,"VTIv2.0 ") && strcmp(str, "GTKTIEMU") )
-    return ERR_68K_INVALID_STATE;
-  fread(romName,56,1,fp);
-  //  if (strcmp(romName,romImage[currentROM].name))
-  //  return;
-  fread(&regs,sizeof(regs),1,fp);
-  MakeFromSR();
-  fread(tihw.ram,256,1024,fp);
-//  fread(&tihw.mem_prot,4,1,fp); fread(&tihw.ram256,4,1,fp);
-  fread(&tihw.timer_value,4,1,fp); fread(&tihw.timer_init,4,1,fp);
-  fread(&int0Count,4,1,fp);
-//  fread(&tihw.io0Bit7,4,1,fp); fread(&tihw.io0Bit2,4,1,fp);
-  fread(&kbmask,4,1,fp);
-//  fread(&tihw.ram_wrap,4,1,fp); fread(&(mem_and),4,1,fp);
-  fread(&comError,4,1,fp);
-  //fread(&transflag,4,1,fp); fread(&transbyte,4,1,fp);
-  //fread(&transnotready,4,1,fp);
-  //fread(&recvflag,4,1,fp); fread(&recvbyte,4,1,fp);
-  //fread(&rom_ret_or,4,1,fp);
-//  fread(&tihw.lcd_addr,4,1,fp); fread(&tihw.lcd_off,4,1,fp);
-  fread(&tihw.contrast,4,1,fp);
-  fread(&cpuCompleteStop,4,1,fp);
-  for (i=0;i<32;i++)
-    mem[i]=&tihw.ram[(i&(mem_and>>16))<<16];
-
-  // GtkTiEmu specific
-  fread(tihw.io, 1, IO_SIZE, fp);      // write IO
-  fread(&specialflags, sizeof(specialflags), 1, fp); // and flags
-  fclose(fp);
+	FILE *f;
+  	IMG_INFO *img = &img_infos;
+  	IMG_INFO sav;
   
-  return ERR_68K_NONE;
+  	if(!strlen(filename))
+  		return ERR_68K_CANT_OPEN;
+  
+  	// Open file
+  	DISPLAY("Loading state image (TiEmu v2.00 format): %s\n", filename);
+  	f = fopen(filename, "rb");
+  	if(f == NULL)
+  		return ERR_68K_CANT_OPEN;
+  	
+  	// Compare image infos
+	fread(&sav, 1, sizeof(IMG_INFO), f);
+	if(memcmp(&sav, img, sizeof(IMG_INFO)))
+		return ERR_68K_INVALID_STATE;
+	
+	// Load internal hardware (registers and special flags)
+    fwrite(&regs, sizeof(regs), 1, f);
+    fwrite(&specialflags, sizeof(specialflags), 1, f);
+	MakeFromSR();
+    
+    // Load I/O ports state
+    fread(tihw.io , IO_SIZE, 1, f);
+    fread(tihw.io2, IO_SIZE, 1, f);
+    
+    fclose(f); 
+  
+  	return 0;
 }
 
 
 /*
-  This function save the state of the calculator.
-  Can be called at any time.
+  	This function saves the state of the calculator.
+  	Can be called at any time.
 
-  Return an error code if an error occured, 0 otherwise
+  	Return an error code if an error occured, 0 otherwise
 */
 int ti68k_state_save(char *filename)
 {
-  FILE *fp;
-  int kbmask=0;
-  int comError=0;
-  int cpuCompleteStop=0;
-  int int0Count = 0;
-  int mem_and;
+  	FILE *f;
+  	IMG_INFO *img = &img_infos;
+  
+  	if(!strlen(filename))
+  		return ERR_68K_CANT_OPEN;
+  
+  	// Open file
+  	DISPLAY("Saving state image (TiEmu v2.00 format): %s\n", filename);
+  	f = fopen(filename, "wb");
+  	if(f == NULL)
+  		return ERR_68K_CANT_OPEN;
+  	
+  	// Save current image infos
+	fwrite(img, 1, sizeof(IMG_INFO), f);
+	
+	// Save internal hardware
+    m68k_setpc(m68k_getpc());
+    MakeSR();
+    
+    // Save registers and special flags
+    fwrite(&regs, sizeof(regs), 1, f);
+    fwrite(&specialflags, sizeof(specialflags), 1, f);
+    
+    // Save I/O ports state
+    fwrite(tihw.io , IO_SIZE, 1, f);
+    fwrite(tihw.io2, IO_SIZE, 1, f);
+    
+    fclose(f);
 
-  if(strlen(filename)) // name exist ?
-    {
-      if( (fp = fopen(filename, "wb")) == NULL)
-	return ERR_68K_CANT_OPEN;
-
-      m68k_setpc(m68k_getpc());
-      fprintf(fp,"GTKTIEMU");
-      fwrite(filename,56,1,fp);
-      MakeSR();
-      fwrite(&regs,sizeof(regs),1,fp); // struct format differs !
-      fwrite(tihw.ram,256,1024,fp);
-//      fwrite(&tihw.mem_prot,4,1,fp); fwrite(&tihw.ram256,4,1,fp);
-      fwrite(&tihw.timer_value,4,1,fp); fwrite(&tihw.timer_init,4,1,fp);
-      fwrite(&int0Count,4,1,fp);
-//      fwrite(&tihw.io0Bit7,4,1,fp); fwrite(&tihw.io0Bit2,4,1,fp);
-      fwrite(&kbmask,4,1,fp);
-//      fwrite(&tihw.ram_wrap,4,1,fp); fwrite(&(mem_and),4,1,fp);
-      fwrite(&comError,4,1,fp);
-      //fwrite(&transflag,4,1,fp); fwrite(&transbyte,4,1,fp);
-      //fwrite(&transnotready,4,1,fp);
-      //fwrite(&recvflag,4,1,fp); fwrite(&recvbyte,4,1,fp);
-      //fwrite(&rom_ret_or,4,1,fp);
-//      fwrite(&tihw.lcd_addr,4,1,fp); fwrite(&tihw.lcd_off,4,1,fp);
-      fwrite(&tihw.contrast,4,1,fp);
-      fwrite(&cpuCompleteStop,4,1,fp);
-      
-      // GtkTiEmu specific
-      fwrite(tihw.io, 1, IO_SIZE, fp);      // write IO
-      fwrite(&specialflags, sizeof(specialflags), 1, fp); // and flags
-      fclose(fp);
-    }
-
-  return ERR_68K_NONE;
+  	return 0;
 }
