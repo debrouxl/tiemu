@@ -50,7 +50,7 @@ extern const char* key_mapping;
 extern const char  sknKey92[];
 extern const char  sknKey89[];
 
-extern uint32_t *pLcdBuf;
+extern uint32_t *lcd_bytmap;
 extern PIX_INFOS pi;
 
 gint display_main_wnd(void)
@@ -169,7 +169,7 @@ static int match_skin(int calc_type)
       	options.skin_file = g_strdup_printf("%s%s.skn", 
 			inst_paths.skin_dir, skn_name);
 
-	    tiemu_error(0, _("skin incompatible with the current calc model. Falling back to default skin."));
+	    //tiemu_error(0, _("skin incompatible with the current calc model. Falling back to default skin."));
 	    g_free(skn_name);
 		return -1;
 	}
@@ -256,10 +256,10 @@ int  hid_init(void)
 	}
         
     // Allocate the TI screen buffer
-	pLcdBuf = malloc(tihw.lcd_w * tihw.lcd_h);
+	lcd_bytmap = malloc(LCDMEM_W * LCDMEM_H);
 
     // Allocate the lcd pixbuf
-    lcd = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 240, 128);
+    lcd = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, LCDMEM_W, LCDMEM_H);
     if(lcd == NULL)
     {
         gchar *s = g_strdup_printf("unable to create LCD pixbuf.\n");

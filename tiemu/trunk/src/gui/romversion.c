@@ -38,6 +38,7 @@
 #include "fs_misc.h"
 #include "rcfile.h"
 #include "tie_error.h"
+#include "calc.h"
 
 gchar *chosen_file = NULL;
 
@@ -240,7 +241,15 @@ gint display_romversion_dbox()
 				}
 
                 // Restart engine
+				err = hid_exit();
+				handle_error();
+				if(err) return -1;
+
                 ti68k_restart();
+				
+				err = hid_init();
+				handle_error();
+				if(err)	return -1;
 			} 
 			else if(ti68k_is_a_tib_file(chosen_file))
 			{

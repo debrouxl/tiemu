@@ -219,7 +219,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">2 colors</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <signal name="activate" handler="on_2_colors1_activate" last_modification_time="Fri, 14 May 2004 05:55:42 GMT"/>
 		    </widget>
 		  </child>
@@ -229,7 +229,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">4 colors</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <property name="group">2_colors1</property>
 		      <signal name="activate" handler="on_4_colors1_activate" last_modification_time="Fri, 14 May 2004 05:55:42 GMT"/>
 		    </widget>
@@ -240,7 +240,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">7 colors</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <property name="group">2_colors1</property>
 		      <signal name="activate" handler="on_7_colors1_activate" last_modification_time="Fri, 14 May 2004 05:55:42 GMT"/>
 		    </widget>
@@ -251,7 +251,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">blurry</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">True</property>
+		      <property name="active">False</property>
 		      <property name="group">2_colors1</property>
 		      <signal name="activate" handler="on_11_colors1_activate" last_modification_time="Fri, 14 May 2004 15:26:48 GMT"/>
 		    </widget>

@@ -68,6 +68,9 @@ typedef unsigned char	uchar;	// can't replace UBYTE/uchar by uint8_t type, why ?
 #define DBG_BREAK   1
 #define DBG_TRACE   2
 
+#define LCDMEM_W	240		// LCD memory height
+#define LCDMEM_H	128		// LCD memory height
+
 /* Structures */
 
 typedef struct 
@@ -102,8 +105,8 @@ typedef struct
 	int		ti92v1;			// ROm v1.x(y)
 	int		ti92v2;			// ROM v2.x
 
-	int		lcd_w;			// LCD width
-	int		lcd_h;			// LCD height
+	int		lcd_w;			// LCD physical width
+	int		lcd_h;			// LCD physical height
 
     // ioports.c
 	//...

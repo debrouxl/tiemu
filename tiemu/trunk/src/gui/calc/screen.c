@@ -55,7 +55,7 @@ GdkPixbuf *lcd = NULL;
 GdkPixbuf *skn = NULL;
 GdkPixmap *pixmap = NULL;
 
-uint32_t *pLcdBuf;					// LCD buffer (grayscale colormap)
+uint32_t *lcd_bytmap;				// LCD buffer (color-mapped as grayscale)
 PIX_INFOS pi;
 
 static uint32_t convtab[512];      	// planar to chunky conversion table
@@ -165,8 +165,8 @@ void redraw_skin(void)
 int hid_update_lcd(void)
 {
 	int i, j, k;
-	uint8_t *lcd_mem = tihw.lcd_ptr;
-	uint8_t *lcd_ptr = (uint8_t *)pLcdBuf;
+	uint8_t *lcd_bitmap = tihw.lcd_ptr;
+	uint8_t *lcd_buf = (uint8_t *)lcd_bytmap;
 	GdkRect src, dst;
 	guchar *p;
 
@@ -192,24 +192,24 @@ int hid_update_lcd(void)
 	if(!max_plane || !cur_plane) 
     { 
 		// no gray scale or init gray plane
-		for(j = 0, k = 0; k < tihw.lcd_h; k++)
+		for(j = 0, k = 0; k < LCDMEM_H; k++)
 		{
-			for(i = 0; i < tihw.lcd_w/8; i++, lcd_mem++) 
+			for(i = 0; i < LCDMEM_W/8; i++, lcd_bitmap++) 
 			{
-				pLcdBuf[j++] = convtab[(*lcd_mem << 1)  ];
-				pLcdBuf[j++] = convtab[(*lcd_mem << 1)+1];
+				lcd_bytmap[j++] = convtab[(*lcd_bitmap << 1)  ];
+				lcd_bytmap[j++] = convtab[(*lcd_bitmap << 1)+1];
 			}
 		}
     }
 	else 
     { 
 		// compute gray scale
-		for(j = 0, k = 0; k < tihw.lcd_h; k++)
+		for(j = 0, k = 0; k < LCDMEM_H; k++)
 		{
-			for(i = 0; i < tihw.lcd_w/8; i++, lcd_mem++) 
+			for(i = 0; i < LCDMEM_W/8; i++, lcd_bitmap++) 
 			{
-				pLcdBuf[j++] += convtab[(*lcd_mem << 1)  ];
-				pLcdBuf[j++] += convtab[(*lcd_mem << 1)+1];
+				lcd_bytmap[j++] += convtab[(*lcd_bitmap << 1)  ];
+				lcd_bytmap[j++] += convtab[(*lcd_bitmap << 1)+1];
 			}
 		}
     }
@@ -217,20 +217,22 @@ int hid_update_lcd(void)
     if(cur_plane++ >= max_plane) 
 	{
 		// Copy the LCD into 
-		for(j = 0; j < tihw.lcd_h; j++) 
+		for(j = 0; j < LCDMEM_H; j++) 
 		{
-			for (i = 0; i < tihw.lcd_w; i++, lcd_ptr++) 
+			for (i = 0; i < LCDMEM_W; i++) 
 			{
 #if 1
 				p = pi.pixels + j * pi.rowstride + i * pi.n_channels;
 
-				p[0] = grayscales[*lcd_ptr].r;
-				p[1] = grayscales[*lcd_ptr].g;
-				p[2] = grayscales[*lcd_ptr].b;
+				p[0] = grayscales[*lcd_buf].r;
+				p[1] = grayscales[*lcd_buf].g;
+				p[2] = grayscales[*lcd_buf].b;
 				p[3] = 0;
+
+				lcd_buf++;
 #else				
-				// optimisation: blit par uint32_t
-				((gulong *)pi.pixels)[j * pi.rowstride + i] = ((gulong *)grayscales)[*lcd_ptr]);
+				((uint32_t *)pi.pixels)[j * pi.rowstride + i] = ((uint32_t *)grayscales)[*lcd_buf];
+				lcd_buf++;
 #endif
 			}
 		}
@@ -240,8 +242,8 @@ int hid_update_lcd(void)
         // Copy surface into window
         src.x = 0;
         src.y = 0;
-		src.w = tihw.log_w > 240 ? 240 : tihw.log_w;
-		src.h = tihw.log_h > 128 ? 128 : tihw.log_h;
+		src.w = tihw.log_w > tihw.lcd_w ? tihw.lcd_w : tihw.log_w;
+		src.h = tihw.log_h > tihw.lcd_h ? tihw.lcd_h : tihw.log_h;
 
         if(params.background) 
 		{
