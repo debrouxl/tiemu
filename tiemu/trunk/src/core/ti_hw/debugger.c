@@ -23,7 +23,7 @@
  */
 
 /*
-    Internal debugger (text mode)
+    Internal debugger (text mode) from original Tiger
 */
 
 #include <stdlib.h>
