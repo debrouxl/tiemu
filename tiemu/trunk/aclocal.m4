@@ -9202,9 +9202,7 @@ EOF
       _LT_AC_TAGVAR(always_export_symbols, $1)=yes
 
       extract_expsyms_cmds='test -f $output_objdir/impgen.c || sed -e "/^# \/\* impgen\.c starts here \*\//,/^# \/\* impgen.c ends here \*\// { s/^# //;s/^# *$//; p; }" -e d < $''0 > $output_objdir/impgen.c~
-	test -f $output_objdir/impgen.exe || (cd $output_objdir && \
-	if test "x$HOST_CC" != "x" ; then $HOST_CC -o impgen impgen.c ; \
-	else $CC -o impgen impgen.c ; fi)~
+	test -f $output_objdir/impgen.exe || (cd $output_objdir && if test "x$HOST_CC" != "x" ; then $HOST_CC -o impgen impgen.c ; else $CC -o impgen impgen.c ; fi)~
 	$output_objdir/impgen $dir/$soroot > $output_objdir/$soname-def'
 
       _LT_AC_TAGVAR(old_archive_from_expsyms_cmds, $1)='$DLLTOOL --as=$AS --dllname $soname --def $output_objdir/$soname-def --output-lib $output_objdir/$newlib'
