@@ -1,0 +1,217 @@
+                     TiEmu v2.00 skin format
+                     ***********************
+
+Author : Julien BLACHE <jb@tilp.info>
+
+
+I. Summary
+**********
+
+  This file documents the TiEmu v2.00 skin format. This skin format is
+inspired from the VTi 2.5 skin format, with some improvements. However,
+it is *not* compatible with the original VTi 2.5 skin format.
+
+  Skin files use the ".skn" extension. They consist of a header
+containing LCD and keys positions along with some other informations,
+followed by a JPEG image.
+
+  The size of the header is not fixed ; it is determined by the length
+of the strings it contains. See below for more explanations.
+
+  These skins can be produced using the Skinedit editor bundled with
+TiEmu v2.00.
+
+
+II. Header
+**********
+
+  The header consists of 3 types of data :
+   - strings (S)
+   - integers (I)
+   - RECT structs (R)
+
+  The RECT struct is composed of 4 uint32_t integers, indicating the
+coordinates of the top-left and bottom-right coordinates of a
+rectangle.
+  The RECT struct is defined as follows :
+
+        struct RECT
+        {
+           uint32_t left;
+           uint32_t top;
+           uint32_t right;
+           uint32_t bottom;
+        };
+
+  Note also that all integers are unsigned and 32 bits long. The ISO
+C99 standard type "uint32_t" (defined in <stdint.h> should be used to
+manipulate them.
+
+  Last, strings are *not* NULL-terminated, and preceeded by a uint32
+indicating their size when needed. It's up to you to NULL-terminate
+the string before use.
+
+
+  Here's how the header is decomposed (address in hex) :
+
+  0x000 - 0x00F (S) (16 bytes): "TiEmu v2.00" (NULL-padded)
+        This string indicates the version of the skin. The version
+        will match the version of TiEmu in which the change was
+        introduced.
+  0x010 - 0x013 (I) (4 bytes) : endianness flag
+        This integer is used to determine whether the skin was
+        produced on a machine using the same endianness as the host
+        we're running on.
+        When writing the skin, this integer has the value 0xFEEDBABE ;
+        when reading the skin, if the value does not match 0xFEEDBABE,
+        then you need to byteswap all the 32-bits integers.
+  0x014 - 0x017 (I) (4 bytes) : JPEG offset
+        This integer gives the position of the JPEG data in the
+        file. A call to fseek() will bring you to the beginning of the
+        JPEG image.
+  0x018 - 0x01B (I) (4 bytes) : string length
+        Length of the following string.
+  0x01C - 0x*** (S) (?? bytes): skin's name
+        This string is used to store the skin's name.
+  0x*** - 0x*** (I) (4 bytes) : string length
+        Length of the following string.
+  0x*** - 0x*** (S) (?? bytes): author's name
+        This string is used to store the author's name.
+  0x*** - 0x*** (I) (4 bytes) : color type
+        This integer determines which color scheme is to be used for
+        the LCD black/white pixels.
+        It is either 0 (low contrast), 1 (high contrast) or 2 (custom
+        colors).
+  0x*** - 0x*** (I) (4 bytes) : LCD white color
+        24 bits R/G/B value.
+  0x*** - 0x*** (I) (4 bytes) : LCD black color
+        24 bits R/G/B value.
+  0x*** - 0x*** (S) (8 bytes) : calc type
+        This string determines the calc type. Types are allocated as
+        follows :
+         "TI-73",         "TI-82",          "TI-83",
+         "TI-83+",        "TI-85",          "TI-86",
+         "Ti-89",         "TI-92",          "TI-92+",
+         "V200PLT".
+  0x*** - 0x*** (R) (16 bytes) : LCD position
+        A RECT struct, indicating the LCD position.
+  0x*** - 0x*** (I) (4 bytes) : number of RECT structs
+	This integer determines the number of RECT structs containing
+	keys positions. As new calculators will appear, we might need
+	more than the 80 usual keys.
+  0x*** - 0x*** (R) (80 x 16 bytes) : keys positions
+        RECT structs, indicating the keys positions.
+  0x*** - 0x*** : JPEG data
+        The JPEG image.
+
+  All the coordinates are given with an origin at the top-left of the
+*unscaled* JPEG image. This means you'll have to take care of the
+coordinates whenever the skin is scaled.
+
+
+III. Keys definitions
+*********************
+
+  Here is how the 80 RECT struct defining keys positions are arranged ;
+currently, we can handle up to 80 keys.
+
+      Ti-73            TI-82        TI-85        TI-89        TI-92                
+                       TI-83        TI-86                     TI-92+               
+                       TI-83+                                                      
+
+ 0.   Y=               Y=           F1           F1           Grab (Hand)          
+ 1.   Window           Window       F2           F2           F1                   
+ 2.   Zoom             Zoom         F3           F3           F2                   
+ 3.   Trace            Trace        F4           F4           F3                   
+ 4.   Graph            Graph        F5           F5           F4                   
+ 5.   2nd              2nd          2nd          2nd          F5                   
+ 6.   Mode             Mode         Exit         Shift        F6                   
+ 7.   Del              Del          More         Esc          F7                   
+ 8.   Left             Left         Left         Left         F8                   
+ 9.   Right            Right        Right        Right        Q                    
+10.   Up               Up           Up           Up           W                    
+11.   Down             Down         Down         Down         E                    
+12.   Math             Alpha        Alpha        Diamond      R                    
+13.   Draw             X,T,theta    x-var        Alpha        T                    
+14.   List             Stat         Del          Apps         Y                    
+15.   x^2              Math         Graph        Home         U                    
+16.   ^                Matrx        Stat         Mode         I                    
+17.   Prgm             Prgm         Prgm         Catalog      O                    
+18.   Apps             Vars         Custom       Backspace    P                    
+19.   Clear            Clear        Clear        Clear        A                    
+20.   Unit             x^-1         log          X            S                    
+21.   b/c              sin          sin          Y            D                    
+22.   F<->D            cos          cos          Z            F                    
+23.   A(b/c) <-> d/e   tan          tan          T            G                    
+24.   Const            ^            ^            ^            H                    
+25.   Simp             x^2          ln           =            J                    
+26.   %                , (Comma)    ee           (            K                    
+27.   (                (            (            )            L                    
+28.   )                )            )            , (Comma)    Z                    
+29.   / (Divide)       / (Divide)   / (Divide)   / (Divide)   X                    
+30.   x                log          x^2          |            C                    
+31.   7                7            7            7            V                    
+32.   8                8            8            8            B                    
+33.   9                9            9            9            N                    
+34.   *                *            *            *            M                    
+35.   , (Comma)        ln           , (Comma)    ee           Theta                
+36.   4                4            4            4            Shift                
+37.   5                5            5            5            On                   
+38.   6                6            6            6            Diamond              
+39.   -                -            -            -            2nd (Alpha area)     
+40.   Sto>             Sto>         Sto>         Sto>         Sto>                 
+41.   1                1            1            1            Space                
+42.   2                2            2            2            =                    
+43.   3                3            3            3            Backspace            
+44.   +                +            +            +            Enter (Alpha area)   
+45.   On               On           On           On           2nd (Cursor area)    
+46.   0                0            0            0            Esc                  
+47.   . (Period)       . (Period)   . (Period)   . (Period)   Mode                 
+48.   (-)              (-)          (-)          (-)          Clear                
+49.   Enter            Enter        Enter        Enter        ln                   
+50.                                                           Apps                 
+51.                                                           Enter (Cursor area)  
+52.                                                           Left                 
+53.                                                           Right                
+54.                                                           Up                   
+55.                                                           Down                 
+56.                                                           sin                  
+57.                                                           cos                  
+58.                                                           tan                  
+59.                                                           ^                    
+60.                                                           (                    
+61.                                                           )                    
+62.                                                           , (Comma)            
+63.                                                           / (Divide)           
+64.                                                           7                    
+65.                                                           8                    
+66.                                                           9                    
+67.                                                           *                    
+68.                                                           4                    
+69.                                                           5                    
+70.                                                           6                    
+71.                                                           -                    
+72.                                                           1                    
+73.                                                           2                    
+74.                                                           3                    
+75.                                                           +                    
+76.                                                           0                    
+77.                                                           . (Period)           
+78.                                                           (-)                  
+79.                                                           Enter (Numeric area) 
+
+
+IV. JPEG image
+***************
+
+  Starting at the offset given by the uint32 located at 0x014, a JPEG
+image. It is an exact copy of the original JPEG file.
+  Thus, stripping down the header, you can open the skin image with
+any JPEG-aware program.
+
+
+V. Contact
+***********
+
+  This file and the skin format were put together by Julien
+BLACHE. Please mail <jb@tilp.info> for any question.

@@ -1,0 +1,29 @@
+/*
+ * Chaînes de caractères à traduire générées par
+ * Glade. Ajouter ce fichier au fichier POTFILE.in
+ * de votre projet. NE PAS compiler ce fichier
+ * avec le reste de votre application.
+ */
+
+gchar *s = N_("Breakpoint !");
+gchar *s = N_("Address:");
+gchar *s = N_("Type:");
+gchar *s = N_("0x000000");
+gchar *s = N_("access");
+gchar *s = N_("byte read");
+gchar *s = N_("Mode:");
+gchar *s = N_("A breakpoint has been encountered...");
+gchar *s = N_("Target:");
+gchar *s = N_("0x4c00");
+gchar *s = N_("Id:");
+gchar *s = N_("#0");
+gchar *s = N_("Exception !");
+gchar *s = N_("Type:");
+gchar *s = N_("PC (pushed):");
+gchar *s = N_("illegal instr");
+gchar *s = N_("000000");
+gchar *s = N_("0000");
+gchar *s = N_("SR (pushed):");
+gchar *s = N_("An exception has been encountered...");
+gchar *s = N_("Id:");
+gchar *s = N_("#0");

@@ -1,0 +1,113 @@
+
+
+Salut !
+
+L'AMS plante en bouclant au milieu d'une écriture en Flash invalide.
+Elle est effectuée dans la fonction du trap #11 qui nettoie la Flash
+au reset : la limite supérieure de la Flash (FlashMemoryEnd), qui est
+calculée dynamiquement uniquement sur Titanium, a été mal calculée, et
+l'écriture essaie d'aller trop loin en mémoire.
+
+Le calcul dynamique de la taille de la FlashROM est effectué avant par
+une autre fonction du trap #11, ajoutée spécialement sur l'AMS 3.00 de
+la Titanium. J'ai documenté ça dans ma doc sur la Titanium
+(commentaire 2). Il semble que des futurs modèles pourrait avoir 8Mo
+de Flash, ou alors ce serait pour garder une compatibilité du code
+avec la TI-89, je ne sais pas trop.
+
+En tout cas voilà ce qu'il faut que tu implémentes sur TiEmu pour
+éviter le problème : des commandes sont envoyées à la mémoire Flash
+pour déterminer sur quel modèle on se trouve, voilà le bout de code de
+l'AMS correspondant :
+
+lea CertMem,a1 ; Any valid address within the device (= the EEPROM
+chip). Sur TI, semble devoir être CertMem absolument (?)
+move.w #$9090,(a1) ; Read Identifier Codes
+move.w ROM_BASE,d1 ; Identifier code address + 0 -> Manufacturer Code
+move.w ROM_BASE+2,d2 ; Bottom parameter device code
+move.l #$400000,d0
+cmp.w #$89,d1      ; Manufacturer Code
+beq Ret
+cmp.w #$B5,d2      ;  Bottom parameter device code
+beq Ret
+move.l #$800000,d0
+Ret:
+move.w #$5050,(a1) ; Clear Status Register
+move.w #$FFFF,(a1) ; Read Array
+move.l d0,d1
+addi.l #ROM_BASE,d1
+move.l d1,a0
+
+Il faut donc que lorsque la commande 0x9090 est envoyée à ROM_BASE +
+0x10000,  le manufacturer code retourné à la lecture de ROM_BASE.w
+soit 0x89 (le bottom parameter device code, $B5 n'a pas besoin d'être
+bon puisque le test fait est un OU, mais tu peux l'implémenter si tu
+veux).
+
+Tu peux avoir plus de détail sur ces commandes en lisant la datasheet
+de la FlashROM de la V200, car le même type semble être utilisé sur la
+Titanium.
+Note que le manufacturer code de la V200 est 0xB0. Je ne connais pas
+son bottom parameter device code.
+
+Il semble y avoir un autre problème plus loin dans le code du reset,
+mais comme à chaque que la calc est resetée je dois rentrer moi-même à
+la main les variables de l'AMS mal fixées à cause du bug précédent, et
+que TiEmu crash bizarrement parfois lorsque j'appuie sur 'stop' du
+débogueur alors que on est en mode 'run', j'ai du mal à voir le
+problème. Ce serait plus simple que du fasse un nouveau build avec ce
+premier problème corrigé.
+
+Quelques autres remarques :
+
+* La fenêtre Memory n'est pas toujours rafraîchie. Il y a le bouton
+refresh, mais on ne pense pas toujours à l'utiliser. Elle n'est pas
+rafraîchie notamment lorsque un breakpoint est touché, ce serait
+possible de forcer le rafraîchissement à ce moment là ?
+
+* Pour le problème de scroll d'instructions gênant dont je te parlais
+: va n'importe où dans l'AMS où il y a des instructions valides,
+scroll instruction par instruction vers le bas, tu verras que sur
+certaines instructions le scroll est effectué en haut, mais pas en bas
+de la fenêtre (la dernière instruction reste la même).
+
+* Quelques idées pas forcément très urgentes mais qui seraient
+intéressantes à implémenter :
+- L'AMS utilise le registre a6 comme frame pointer, et accède
+relativement à ce registre aux variables locales créées et aux
+paramètres de la fonction exécutée.
+Le problème est qu'avec des instructions de type cmp.w -$54(a6),d0, on
+voudrait savoir ce qu'il y a à la variable à l'offset $54 : il faut
+alors sortir une calculatrice hexa, calculer l'adresse réelle et aller
+dans la fenêtre Memory trouver la valeur.
+L'idéal serait d'avoir dans la même fenêtre que stack frame, un memory
+dumper qui ressemble à celui de la pile, mais avec les offsets
+relatifs au registre a6 plutôt que des adresses réelles (offsets
+positifs et négatifs pour pouvoir regarder à la fois les variables
+locales et les paramètres de la fonction). Par exemple :
+-6  0084
+-4  5600
+-2  0000
+0   0090
+2   4924
+4   2828
+6   0000
+Il faudrait que la fenêtre puisse être scrollable à l'infini dans les
+deux sens, on ne peut pas savoir la quantité de variables que la
+fonction peut utiliser.
+Si c'est trop compliquer à réaliser, écrire à côté de l'instruction
+l'adresse correspondant à -$54(a6) dans l'exemple précédent suffirait
+pour pouvoir se débrouiller, mais serait beaucoup moins bien.
+
+- Un système de breakpoint temporaire sur instruction, comme sous GDB,
+serait pratique (breakpoint qui disparaît la première fois qu'il est
+touché) : il m'arrive souvent de placer un breakpoint après un bsr ou
+un jsr de l'AMS avant de faire un step into dans la sous-routine au
+cas où elle serait trop profonde et que j'abandonne le déboguage à
+quelques niveaux d'appels plus profond. Je fais un run et mon
+breakpoint est touché; je l'enlève et je continue. Un breakpoint
+temporaire éviterait d'avoir à l'enlever à chaque fois.
+
+++, bonne continuation,
+
+-- Olivier

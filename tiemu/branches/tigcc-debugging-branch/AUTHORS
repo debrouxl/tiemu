@@ -1,0 +1,53 @@
+The TiEmu project is managed by the TiEmu team.
+The TiEmu team includes the following people:
+
+
+Romain Lievin (roms): main developer, Win32 port
+================================================
+
+web: http://lpg.ticalc.org/prj_tiemu
+mail: roms@lievin.net
+
+
+Julien Blache (jb): Debian packaging
+====================================
+
+web: http://jblache.org
+mail: jb@jblache.org
+
+
+Jesse Palmer (jp3d): icon designer
+==================================
+
+web: http://jp3d.net
+mail: jp@jp3d.net
+
+
+Packagers:
+==========
+- Julien Blache <jb@jblache.org>: Linux/Debian
+- Romain Lievin: <roms@lievin.net>: Win32
+
+
+All the others who have contributed to
+======================================
+
+Some contributions have been brought about this software by people:
+- Kevin Kofler
+- ...
+
+
+*------------ Previous releases ----------------*
+
+Roms aka Romain Lievin
+web: http://www.lievin.net
+mail: roms@lievin.net
+
+Tom aka Thomas Corvazier
+web: http://lpg.ticalc.org/prj_tiemu
+mail: corvazier@yahoo.com
+
+The libti68k library is based on the Jonas Minnberg's emulator 
+named (X)Tiger. He has recently released its emulator under GPL licence.
+
+See the LICENSES file for more informations.

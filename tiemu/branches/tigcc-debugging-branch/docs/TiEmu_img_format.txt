@@ -1,0 +1,53 @@
+*****************************************************************
+* File format of the TiEmu v2.0 image files						*
+* Documentation by Romain Lievin <roms@tilp.info>				*
+*																*
+*																*
+* Begin: 17/05/2005												*
+* Last update: 19/02/2005										*
+*****************************************************************
+
+
+Remark: I use the C notation for numbers (12: decimal, 0x1A: hexadecimal, 
+'C': character). Moreover, all words are in LSB-MSB format.
+
+This document describes the file format of *.img files.
+An TiEmu image file is a composite file which contains:
+- a header section
+- a pure data section
+
+
+The TiEmu v2.00 image format
+----------------------------
+
+  The following is a table of the bytes that make up a such file.
+
+  Address		Size	What It Contains
+  ---------------------------------------------------------------------------
+  0x00-0x0F	0-15	16	a signature: "TiEmu img v2.00" (NULL-padded)
+  
+  0x10-0x13	16-19	4	structure revision (2)
+  0x14-0x18	20-23	4	offset to the data section (0x40)
+  0x19		24		1	calculator type (2 = TI92)
+  0x1A-0x1E	25-29	5	firmware revision ("2.08\0")
+  0x1F		30		1	internal/external (1/0)
+  0x20		31		1	FLASH/PROM (2/0)
+  0x21		32		1	has boot (1/0)
+  0x22-0x26	33-36	4	pure data size
+  0x27		37		1	hw1/hw2 (1/2) if applicable
+  0x28		38		1	ROM base address
+  0x29-0x3F	39-64	n	filled with 0
+  
+  0x40-...	64-...		pure data (ROM image)
+ 
+ 
+ 
+Calculator type (libtifiles defs):
+
+#define TI92 		(1 << 0)
+#define TI89 		(1 << 1)
+#define TI92p	 	(1 << 2)
+#define V200		(1 << 3)
+#define TI89t		(1 << 4)
+ 
+FLASH upgrade does not have boot block.

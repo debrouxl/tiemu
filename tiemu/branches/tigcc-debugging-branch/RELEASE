@@ -1,0 +1,60 @@
+			[ Release notes ]
+
+
+
+Previous version: 1.80o		(09/03/2005)
+Current version:  1.80p		(19/03/2005)
+
+SubVersion (CVS) revision: $Id$
+
+TiEmu is available for 2 platforms:
+Linux (GTK), Windows (GTK).
+
+If you have a SilverLink cable (TI-GRAPH LINK USB), you will need to retrieve
+a Linux/Win32/Mac OS-X driver on the Linux Programmer Group at 
+<http://lpg.ticalc.org/prj_usb>.
+
+For the other link cables, no driver is needed because it's provided.
+
+
+New capabilities:
+-----------------
+
+	- added KDE file selector support (Kevin)
+	- full hw1/2/3 protection support for all calcs
+
+
+Improvements:
+-------------
+
+	- increased link timeout from 1.5 to 10s (no more transfer interrupts)
+  - grayscale support (dual buffer) from Kevin Kofler
+  - can send all of 89?, 92?, 9x? and v2? to all the models
+  - clean-up in ti68k_scan_images (no more cache, useless now)
+  - can remove (=file delete) image from list
+		
+
+Bug fixes:
+----------
+
+	- fixed ghost of RAM in $100000 on TI89,92,92+,V200
+	- fixed ghost of RAM in $000000 on Tinanium
+	- fixed timer incrementing/reloading (PPhd: loop freeze)
+	- fixed size for archived handles on PedRom
+	- fixed file pattern for Win32 file selector; fixed default 
+					path and pattern for the new GTK file selector.
+
+
+To do:
+------
+
+	- implement the RTC introduced with AMS 2.09
+
+	
+Notes:
+------
+
+	Big thanks to Kevin Kofler, Lionel Debroux and Olivier Armand who have take some time
+	to answer all my questions, providing me suggestions, help and documentation.
+
+	All Thanks to my wife & my baby which let me work on my PC ;-) Well, I love them a lot !
