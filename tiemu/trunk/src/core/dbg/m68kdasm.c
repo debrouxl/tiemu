@@ -257,6 +257,39 @@ int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
 
 	PARAM_WORD(op);
 
+	// F-Line ROM calls (see KerNO doc and thanks to Lionel Debroux)
+	if((op >= 0xf800) && (op <= 0xfff2))
+	{
+		switch(op)
+		{
+		case 0xfff0:	// 6 byte bsr w/long word displacement
+			PARAM_LONG(pm);
+			if (pm & 0x8000)
+				sprintf (buffer, "FLINE    *-$%lX [bsr %lX]", (int)(-(signed short)pm) - 2, pc + (signed short)pm + 2);
+			else
+				sprintf (buffer, "FLINE    *+$%lX [bsr %lX]", pm + 2, pc + pm + 2);
+			return 6;
+			break;
+		case 0xfff1:	// 6 byte bra w/long word displacement
+			PARAM_LONG(pm);
+			if (pm & 0x8000)
+				sprintf (buffer, "FLINE    *-$%lX [bra %lX]", (int)(-(signed short)pm) - 2, pc + (signed short)pm + 2);
+			else
+				sprintf (buffer, "FLINE    *+$%lX [bra %lX]", pm + 2, pc + pm + 2);
+			return 6;
+			break;
+		case 0xfff2:	// 4 byte ROM CALL
+			PARAM_WORD(pm);
+			sprintf (buffer, "FLINE    $%04x [%s]", pm/4, "");
+			return 4;
+			break;
+		default:		// 2 byte ROM CALL
+			sprintf (buffer, "FLINE    $%03x [%s]", op & 0x7ef, "");
+			return 2;
+			break;
+		}
+	}
+
 	lo = op & 0x3f;
 	rhi = (op >> 9) & 7;
 	rlo = op & 7;

@@ -1,5 +1,10 @@
 SubVersion: $Id$
 
+To do:
+	- video scaling
+	- link port is broken (HW2 only ?!)
+	- stealth I/O and mem protect
+
 - 14/07/2004, version 1.74: roms
 	Fixes from Lionel, Kevin and Olivier's suggestions:
 	- when scrolling down in the code window, the bar is now reset 
@@ -9,12 +14,8 @@ SubVersion: $Id$
 	- popup menu available when debugger is opened
 	- rebuilt under Linux
 	- fixed bug with SDCB in the VTi's disassembler
-
-	To do:
-	- Run to cursor s'arrête au mauvais endroit s'il y a des JSR.
-	- video scaling
-	- link port is broken (HW2 only ?!)
-	- stealth I/O and mem protect
+	- modified VTi's disasm to show F-Line ROM calls
+	- completely rewritten debugging layer and added Step Out mode
 
 - 12/07/2004, version 1.73: roms
 	SDL removed for GTK: screen and keyboard support rewritten from 

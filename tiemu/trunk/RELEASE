@@ -3,7 +3,7 @@
 
 
 Previous version: 1.72		(03/07/2004)
-Current version:  1.74		(19/07/2004)
+Current version:  1.74		(21/07/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -24,8 +24,10 @@ New capabilities:
 	- VTi-style SR flags (don't reset)
 	- save/restore bkpts with state image
 	- symbolic debugger: code addresses are replaced by their 
-	counterpart name (ROM calls)
+		counterpart name (ROM calls)
 	- V200PLT and TI89 Titanium support (don't work: illegal instruction)
+	- Step Out mode in the debugger
+	- disassemble FLINE instructions
 
 
 Improvements:
@@ -50,6 +52,11 @@ Improvements:
 	- ghost spaces
 	- popup menu (slow down)
 	- SDL (video library removed): less CPU intensive and cleaner
+	- scrolling in the dbg code window
+	- popup menu (slow down)
+	- popup menu available when debugger is opened
+	- fixed bug in the VTI's disassembler: SBCD handled as OR.B
+	- debugging layer completely reworked
 		
 
 To do:
