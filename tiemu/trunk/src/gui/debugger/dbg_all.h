@@ -9,6 +9,7 @@
 #include "dbg_regs.h"
 #include "dbg_vectors.h"
 #include "dbg_pclog.h"
+#include "dbg_stack.h"
 
 typedef struct {
     GtkWidget *mem;
@@ -16,6 +17,7 @@ typedef struct {
     GtkWidget *bkpts;
     GtkWidget *code;
     GtkWidget *pclog;
+    GtkWidget *stack;
 } DbgWidgets;
 extern DbgWidgets dbgw;
 
@@ -25,6 +27,7 @@ typedef struct {
     gint    bkpts;
     gint    code;
     gint    pclog;
+    gint    stack;
 } DbgStates;
 extern DbgStates dbgs;
 

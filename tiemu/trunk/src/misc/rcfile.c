@@ -813,6 +813,11 @@ int rcfile_default()
 	options3.pclog.w = 160;
 	options3.pclog.h = 240;
 
+    options3.stack.x = 0;
+    options3.stack.y = 0;
+    options3.stack.w = 160;
+    options3.stack.h = 240;
+
 	return 0;
 }
 

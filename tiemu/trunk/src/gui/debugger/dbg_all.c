@@ -49,6 +49,7 @@ void gtk_debugger_preload(void)
 	//create_dbgmem_window();
 	//create_dbgbkpts_window();
 	//create_dbgpclog_window();
+    //create_dbgstack_window();
 }
 
 int gtk_debugger_enter(int context)
@@ -75,6 +76,7 @@ int gtk_debugger_enter(int context)
 	dbgw.mem  = dbgmem_display_window();
 	dbgw.bkpts = dbgbkpts_display_window();
     dbgw.pclog = dbgpclog_display_window();
+    dbgw.stack = dbgstack_display_window();
 	dbgw.code = dbgcode_display_window();	// the last has focus
 
     dbg_on = !0;
@@ -94,6 +96,8 @@ void gtk_debugger_refresh(void)
 		dbgpclog_refresh_window();
 	if(dbgs.code)
 		dbgcode_refresh_window();
+    if(dbgs.stack)
+		dbgstack_refresh_window();
 }
 
 void set_other_windows_sensitivity(int state)
@@ -102,6 +106,7 @@ void set_other_windows_sensitivity(int state)
     gtk_widget_set_sensitive(dbgw.bkpts, state);
     gtk_widget_set_sensitive(dbgw.mem, state);
     gtk_widget_set_sensitive(dbgw.pclog, state);
+    gtk_widget_set_sensitive(dbgw.stack, state);
 }
 
 void gtk_debugger_minimize_all(void)
@@ -116,6 +121,8 @@ void gtk_debugger_minimize_all(void)
         gtk_window_iconify(GTK_WINDOW(dbgw.pclog));
     if(dbgw.code)
         gtk_window_iconify(GTK_WINDOW(dbgw.code));
+    if(dbgw.stack)
+        gtk_window_iconify(GTK_WINDOW(dbgw.stack));
 }
 
 void gtk_debugger_deminimize_all(void)
@@ -130,6 +137,8 @@ void gtk_debugger_deminimize_all(void)
         gtk_window_deiconify(GTK_WINDOW(dbgw.pclog));
     if(dbgw.code)
         gtk_window_deiconify(GTK_WINDOW(dbgw.code));
+    if(dbgw.stack)
+        gtk_window_deiconify(GTK_WINDOW(dbgw.stack));
 }
 
 // callbacks from dbg_code.c (window menu)
@@ -177,6 +186,16 @@ on_pc_log1_activate                    (GtkMenuItem     *menuitem,
         dbgpclog_display_window();
 }
 
+GLADE_CB void
+on_stack_frame1_activate                    (GtkMenuItem     *menuitem,
+                                             gpointer         user_data)
+{
+    if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
+        gtk_widget_hide(dbgw.pclog);
+  	else
+        dbgpclog_display_window();
+}
+
 
 GLADE_CB void
 on_quit1_activate                      (GtkMenuItem     *menuitem,
@@ -192,6 +211,8 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
         gtk_widget_hide(dbgw.pclog);
 	if(dbgw.code)
 	    gtk_widget_hide(dbgw.code);
+    if(dbgw.stack)
+	    gtk_widget_hide(dbgw.stack);
 
     dbg_on = 0;
 }
@@ -204,6 +225,7 @@ on_minimize_all1_activate              (GtkMenuItem     *menuitem,
     gtk_window_iconify(GTK_WINDOW(dbgw.bkpts));
     gtk_window_iconify(GTK_WINDOW(dbgw.mem));
     gtk_window_iconify(GTK_WINDOW(dbgw.pclog));
+    gtk_window_iconify(GTK_WINDOW(dbgw.stack));
 }
 
 
@@ -215,6 +237,7 @@ on_maximize_all1_activate              (GtkMenuItem     *menuitem,
     gtk_window_deiconify(GTK_WINDOW(dbgw.bkpts));
     gtk_window_deiconify(GTK_WINDOW(dbgw.mem));
     gtk_window_deiconify(GTK_WINDOW(dbgw.pclog));
+    gtk_window_deiconify(GTK_WINDOW(dbgw.stack));
 }
 
 void update_submenu(GtkWidget *widget, gpointer user_data)
@@ -251,6 +274,13 @@ void update_submenu(GtkWidget *widget, gpointer user_data)
     g_signal_handlers_block_by_func(GTK_OBJECT(item), on_pc_log1_activate, NULL);
     gtk_check_menu_item_set_active(item, dbgs.pclog);
     g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_pc_log1_activate, NULL);
+
+    // stack
+    elt = g_list_nth(list, 4);
+    item = GTK_CHECK_MENU_ITEM(elt->data);
+    g_signal_handlers_block_by_func(GTK_OBJECT(item), on_stack_frame1_activate, NULL);
+    gtk_check_menu_item_set_active(item, dbgs.stack);
+    g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_stack_frame1_activate, NULL);
 }
 
 // callbacks from dbg_regs.c
@@ -390,6 +420,32 @@ on_dbgbkpts_window_show                (GtkWidget       *widget,
                                         gpointer         user_data)
 {
     dbgs.bkpts = !0;
+}
+
+// callbacks from dbg_stack.c
+GLADE_CB gboolean
+on_dbgstack_window_delete_event       (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+    gtk_widget_hide(widget);    
+    return TRUE;
+}
+
+GLADE_CB void
+on_dbgstack_window_hide                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    dbgs.stack = 0;
+    gtk_window_get_size(GTK_WINDOW(widget), &options3.stack.w, &options3.stack.h);
+    gtk_window_get_position(GTK_WINDOW(widget), &options3.stack.x, &options3.stack.y);
+}
+
+GLADE_CB void
+on_dbgstack_window_show                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    dbgs.stack = !0;
 }
 
 // misc

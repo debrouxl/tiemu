@@ -73,6 +73,7 @@ typedef struct {
 	GdkRect mem;
 	GdkRect regs;
     GdkRect pclog;
+    GdkRect stack;
 } DbgOptions;
 
 extern TieOptions options;

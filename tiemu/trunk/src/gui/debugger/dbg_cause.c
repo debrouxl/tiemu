@@ -136,7 +136,7 @@ gint dbgcause2_display_dbox()
 	g_free(str);
 
 	// set pushed PC
-	ti68k_register_get_addr(7, &sp);//ti68k_register_get_sp(&sp);
+	ti68k_register_get_sp(&sp);
 	p_sr = (uint16_t *)ti68k_get_real_address(sp);
 	sr =  GUINT16_SWAP_LE_BE(*p_sr);
 	str = g_strdup_printf("%04x", sr);
@@ -145,7 +145,7 @@ gint dbgcause2_display_dbox()
 	g_free(str);
 
 	// set pushed SR
-	ti68k_register_get_addr(7, &sp);
+	ti68k_register_get_sp(&sp);
 	p_pc = (uint32_t *)ti68k_get_real_address(sp+2);
 	pc =  GUINT32_SWAP_LE_BE(*p_pc);
 	str = g_strdup_printf("%06x", pc);
