@@ -38,17 +38,15 @@ void heap_get_base_address(uint32_t *base)
 {
 	uint32_t ptr;
 
-	switch(tihw.calc_type)
-	{
-	case TI92:
-		ptr = 0x5D42;
-		*base = rd_long(&tihw.ram[ptr]);
-		//printf("heap_get_base_address: $%06x\n", *base);
-		break;
-	default:
-		*base = 0;
-		break;
-	}
+	if(tihw.ti92v2)
+		ptr = 0x4720 + 0x1902;		//tios::main_lcd equ tios::globals+$0000
+	else if(tihw.ti92v1)
+		ptr = 0x4440 + 0x1902;		//and tios::heap equ tios::globals+$1902
+	else
+		ptr = 0x4c00 + 0x1902;
+
+	*base = rd_long(&tihw.ram[ptr]);
+	//printf("heap_get_base_address: $%06x\n", *base);
 }
 
 /*
