@@ -55,6 +55,7 @@ tihw_OBJ = \
 	core/ti_hw/m68k.o
 
 core_OBJ = \
+	core/core.o	\
 	core/intlist.o 	\
 	core/bkpts.o 	\
 	core/errors.o 	\
@@ -70,14 +71,13 @@ hid_OBJ = \
 	hid/printl.o	\
 	hid/rcfile.o 	\
 	hid/skin.o	\
-	hid/ticalc.o 	\
+	hid/hid.o 	\
 	hid/tie_error.o \
 	hid/tikeys.o
 
 gui_OBJ = \
 	./gui/support.o \
 	./gui/utils.o \
-	./gui/tiemu_dbox.o ./gui/tiemu_cb.o \
 	./gui/link_dbox.o ./gui/link_cb.o \
 	./gui/msg_dbox.o ./gui/msg_cb.o \
 	./gui/infos_dbox.o ./gui/infos_cb.o \
@@ -106,7 +106,8 @@ gui_OBJ = \
 	./gui/about_dbox.o ./gui/about_cb.o \
 	./gui/pbar_dbox.o ./gui/pbar_cb.o \
 	./gui/skin_dbox.o ./gui/skin_cb.o \
-	./gui/refresh.o ./gui/main_wnd.o \
+	./gui/refresh.o ./gui/popup.o \
+	./gui/popup_dbox.o ./gui/popup_cb.o \
 	./gui/main.o 
 
 tiemu_OBJ = core/uae/newcpu.o $(tihw_OBJ) $(core_OBJ) $(hid_OBJ) $(gui_OBJ)

@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h> // usleep
 
 #include "intl.h"
 #include "struct.h"
@@ -53,7 +54,7 @@
 
 
 G_LOCK_DEFINE(running);
-static volatile byte running = 0;
+static volatile int running = 0;
 
 // run as a separate thread
 gpointer ti68k_engine(gpointer data)

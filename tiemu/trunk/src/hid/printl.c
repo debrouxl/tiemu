@@ -148,7 +148,9 @@ skip_console:
 
 int close_console(void)
 {
+#ifdef __WIN32__
 	FreeConsole(hConsole);
+#endif
 }
 
 /**************** printl callbacks ********************/
