@@ -507,35 +507,44 @@ void put_long(CPTR adr, ULONG arg)
         return;
     }
     
+    // Protected memory violation. Triggered when memory below [$000120] is
+	// written while bit 2 of [$600001] is set
 	if((adr < 0x120) && tihw.mem_prot)
 	{
 		specialflags |= SPCFLAG_INT;
         currIntLev = 7;
 	}
 
-    if (adr < 0x200000) 
-	{
-	    if (adr >=0x1c0000)
-	        tihw.flash_prot=0;
-	    lput(adr, arg);
-	}
-    else if (adr < 0x400000)
-	{
-	    FlashWriteByte(adr,(arg>>24)&0xff);
+    // Write accesses to the boot installer sector ($200000-$20FFFF) are
+    // filtered and never reach the flash ROM.
+    else if(adr >= 0x200000 && adr < 0x210000)
+        return;
+
+    //$1C0000-$1FFFFF: "the Protection" enable/disable
+    //Note: Four consecutive accesses to this range crashes a HW1 calc!
+    //READ:  Enable the Protection
+    //WRITE: Disable the Protection
+    //Note: No access to this range will have any effect unless the access is
+    //"authorized," see below.
+    else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
+        tihw.flash_prot = 0;
+  
+    // write to internal/external FLASH
+    else if (adr >= 0x200000 && adr < 0x600000)
+    {
+        FlashWriteByte(adr,(arg>>24)&0xff);
         FlashWriteByte(adr+1,(arg>>16)&0xff);
         FlashWriteByte(adr+2,(arg>>8)&0xff);
         FlashWriteByte(adr+3,arg&0xff);
-	}
-    else if (adr < 0x600000) 
-	{
-	    FlashWriteByte(adr,(arg>>24)&0xff);
-	    FlashWriteByte(adr+1,(arg>>16)&0xff);
-	    FlashWriteByte(adr+2,(arg>>8)&0xff);
-	    FlashWriteByte(adr+3,arg&0xff);
-	}
-    else
-	    io_put_long(adr&0x1f, arg);
+    }
 
+    // memory-mapped I/O
+    else if(adr >= 0x600000)
+        io_put_long(adr&0x1f, arg);
+
+    // standard access
+    else
+        lput(adr, arg);
 }
 
 void put_word(CPTR adr, UWORD arg) 
@@ -683,13 +692,11 @@ void put_byte(CPTR adr, UBYTE arg)
     else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
         tihw.flash_prot = 0;
   
-    // write to internal FLASH
-    else if (adr >= 0x200000 && adr < 0x400000)
+    // write to internal/external FLASH
+    else if (adr >= 0x200000 && adr < 0x600000)
+    {
         FlashWriteByte(adr,arg&0xff);
-
-    // write to external FLASH
-    else if (adr >= 0x400000 && adr < 0x600000)
-        FlashWriteByte(adr,arg&0xff);
+    }
 
     // memory-mapped I/O
     else if(adr >= 0x600000)
