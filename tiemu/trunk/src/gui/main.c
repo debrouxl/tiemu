@@ -57,7 +57,12 @@ TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
 gint
-idle_loop (gpointer data);
+timer_loop (gpointer data)
+{
+    cb_update_screen();
+
+    return TRUE;
+}
 
 /* Main function */		
 int main(int argc, char **argv) 
@@ -65,6 +70,7 @@ int main(int argc, char **argv)
 	GThread *thread = NULL;
 	GError *error = NULL;
     //char *dstname;
+    guint id;
 
 	/*
 		Do primary initializations 
@@ -202,6 +208,9 @@ int main(int argc, char **argv)
 		GTK popup menu is called from SDL in hid.c
 	*/
 	gdk_threads_enter();
+
+    //id = gtk_timeout_add(20, (GtkFunction) timer_loop, NULL);
+
 	while(1) {
 		// poll SDL events
 		hid_update_keys();

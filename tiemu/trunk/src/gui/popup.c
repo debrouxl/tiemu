@@ -104,8 +104,8 @@ GtkWidget* display_popup_menu(void)
     data = glade_xml_get_widget(xml, "restrict1");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.restrict);
 
-	data = glade_xml_get_widget(xml, "sync1");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.sync_one);
+	//data = glade_xml_get_widget(xml, "sync1");
+	//gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.sync_one);
 
     // init radio buttons
     switch(params.grayplanes) {
@@ -308,11 +308,12 @@ GLADE_CB void
 on_sync1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+    /*
 	if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
     		params.sync_one = 0;
   	else
     		params.sync_one = 1;
-
+*/
   	ti68k_engine_unhalt();
 }
 

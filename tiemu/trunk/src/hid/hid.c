@@ -758,7 +758,7 @@ static void hid_lcd_on_off(int i)
 /*
   Update the LCD screen by converting and blitting LCD memory
 */
-static int hid_update_lcd(void)
+int hid_update_lcd(void)
 {
   SDL_Rect src_rect, dst_rect;
   int i, j, k;

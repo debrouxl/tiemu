@@ -93,7 +93,6 @@ int ti68k_config_load_default(void)
   params.i_tick = 640;
   params.tick_rate = 40000;
   params.cycle_rate = 150;
-  params.sync_one = 0;
   params.restrict = 1;
 
   ticable_get_default_param(&link_cable);
@@ -131,10 +130,6 @@ int ti68k_init(void)
 	// init hid
 	cb_init_specific();
 	cb_screen_on_off(!0);
-
-	// note: TI92+ does not flicker when LCD is refresh on IRQ1 (??)
-	if(tihw.calc_type == TI92p)
-		params.sync_one = 0;
 
 	return 0;
 }

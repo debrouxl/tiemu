@@ -418,15 +418,6 @@ void Interrupt(int nr)
 {
   assert(nr < 8 && nr >= 0);
   
-  // Sync (eventually) the refresh of screen on TI timer (int1)
-  /*
-  if(nr == 1 && params.sync_one && ++uscycle == 4) 
-    {
-      cb_update_screen();
-      uscycle = 0;
-    }
-  */
-
   Exception(nr+24);
   
   regs.intmask = nr;

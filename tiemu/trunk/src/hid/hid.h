@@ -33,6 +33,7 @@ int  hid_init(void);
 int  hid_exit(void);
 
 int hid_update_keys(void);
+int hid_update_lcd(void);
 
 void hid_switch_with_skin(void);
 void hid_switch_without_skin(void);

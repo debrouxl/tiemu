@@ -74,7 +74,7 @@ typedef struct
     int tick_rate;
     int cycle_rate;
     int i_tick;
-    int sync_one;
+    //int sync_one;
     int restrict;
 } Ti68kParameters;
 

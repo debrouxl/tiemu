@@ -675,9 +675,6 @@ void rcfile_write(void)
   fprintf(txt, "# Instructions per timertick\n");
   fprintf(txt, "itick=%i\n", params.i_tick);
   fprintf(txt, "\n");
-  fprintf(txt, "# Synchronization of the refresh on IRQ1/timer (0 or 1)\n");
-  fprintf(txt, "sync_one=%i\n", params.sync_one);
-  fprintf(txt, "\n");
   fprintf(txt, "# Number of lines in the disassembly window\n");
   fprintf(txt, "code_lines=%i\n", options.code_lines);
   fprintf(txt, "\n");

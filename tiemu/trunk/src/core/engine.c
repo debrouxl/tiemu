@@ -62,7 +62,7 @@
 
 
 G_LOCK_DEFINE(running);
-static volatile int running = 0;
+static int running = 0;
 
 // run as a separate thread
 gpointer ti68k_engine(gpointer data)
