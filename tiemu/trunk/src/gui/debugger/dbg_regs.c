@@ -638,58 +638,74 @@ on_treeview3_button_press_event        (GtkWidget       *widget,
     gint i, j;
     gint col;
 
-    switch (event->type) 
+    if(event->type != GDK_BUTTON_PRESS)
+        return FALSE;
+
     {
-    case GDK_BUTTON_PRESS:	// third button clicked
-	    if (event->button == 3) 
-        {
-            GdkEventButton *bevent;
-            GtkWidget *menu;
+        // cell selection
+        gint tx = (gint) event->x;
+	    gint ty = (gint) event->y;
+	    gint cx, cy;
 
-            // cell selection
-            gint tx = (gint) event->x;
-	        gint ty = (gint) event->y;
-	        gint cx, cy;
+        ret = gtk_tree_view_get_path_at_pos(view, tx, ty, &path, &column, &cx, &cy);
+        if(ret == FALSE)
+            return FALSE;
 
-            ret = gtk_tree_view_get_path_at_pos(view, tx, ty, &path, &column, &cx, &cy);
-            if(ret == FALSE)
-                return FALSE;
-
-            col = column2index((GtkWidget *)view, column);
-            spath = gtk_tree_path_to_string(path);
-            sscanf(spath, "%i:%i", &i, &j);
-            
-            //gtk_tree_path_free(path);
-            g_free(spath);
-
-            // check for regs
-            printf("%i %i %i\n", i, j, col);
-            if(!((i>= 0) && (i <= 1) && (j >= 0) && (j <= 7) && (col == 1)))
-                return FALSE;
-
-            // get iterator
-	        if (!gtk_tree_model_get_iter(model, &iter, path))
-		        return FALSE;
-            gtk_tree_path_free(path);
-            gtk_tree_model_get(model, &iter, COL_VALUE, &spath, -1);
-            sscanf(spath, "%x", &value);
-            printf("value = %x\n", value);
-
-            // popup menu
-       	    bevent = (GdkEventButton *) (event);
-            menu = display_popup_menu();
-
-		    gtk_menu_popup(GTK_MENU(menu),
-				       NULL, NULL, NULL, NULL,
-				       bevent->button, bevent->time);
-	        gtk_widget_show(menu);
-
-		    return TRUE;
-	    }
-	    break;
-    default:
-        break;
+        col = column2index((GtkWidget *)view, column);
+        spath = gtk_tree_path_to_string(path);
+        sscanf(spath, "%i:%i", &i, &j);
+        
+        //gtk_tree_path_free(path);
+        g_free(spath);
     }
+
+    if(event->button == 1)  // first button clicked
+    {
+        if(!((col == 0) && (i == 2) && ((j == 4) ||(j ==5))))
+            return FALSE;
+
+        if(dbgsr_display_dbox() == -1)
+            return TRUE;
+
+        dbgregs_refresh_window();
+
+        return TRUE;
+    }
+
+	if (event->button == 3)     // third button clicked
+    {
+        GdkEventButton *bevent;
+        GtkWidget *menu;        
+
+        // check for click on regs
+        if(! 
+            (
+                (col == 1) && 
+                (i>= 0) && (i <= 1) && 
+                (j >= 0) && (j <= 7)
+            ) 
+          )
+            return FALSE;
+
+        // get iterator
+	    if (!gtk_tree_model_get_iter(model, &iter, path))
+		    return FALSE;
+        gtk_tree_path_free(path);
+        gtk_tree_model_get(model, &iter, COL_VALUE, &spath, -1);
+        sscanf(spath, "%x", &value);
+        printf("value = %x\n", value);
+
+        // popup menu
+       	bevent = (GdkEventButton *) (event);
+        menu = display_popup_menu();
+
+		gtk_menu_popup(GTK_MENU(menu),
+				   NULL, NULL, NULL, NULL,
+				   bevent->button, bevent->time);
+	    gtk_widget_show(menu);
+
+		return TRUE;
+	}
 
     return FALSE;
 }
@@ -704,4 +720,71 @@ on_go_to_address4_activate             (GtkMenuItem     *menuitem,
     dbgmem_add_tab(value);
 
     value = -1;
+}
+
+/***** Status Register window *****/
+
+static GtkWidget *btns[16];
+static uint32_t tmp_sr;
+
+gint dbgsr_display_dbox(void)
+{
+	GladeXML *xml;
+	GtkWidget *dbox;
+	gint result;
+    gint i;
+    gint ret = -1;
+
+    // load GUI
+	xml = glade_xml_new
+		(tilp_paths_build_glade("dbg_regs-2.glade"), "dbgsr_window",
+		 PACKAGE);
+	if (!xml)
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+	glade_xml_signal_autoconnect(xml);
+	
+	dbox = glade_xml_get_widget(xml, "dbgsr_window");
+
+    // set initial states
+    ti68k_register_get_sr(&tmp_sr);
+    for(i = 0; i < 16; i++)
+    {
+        gchar *str = g_strdup_printf("checkbutton%i", i+1);
+        btns[i] = glade_xml_get_widget(xml, str);
+        g_free(str);
+
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(btns[i]), 
+                tmp_sr & (1 << i) ? TRUE : FALSE);
+    }
+
+	// run dialog
+	result = gtk_dialog_run(GTK_DIALOG(dbox));
+	switch (result) {
+	case GTK_RESPONSE_OK:
+        ti68k_register_set_sr(tmp_sr);
+        ret = 0;
+		break;
+	default:
+		break;
+	}
+
+	gtk_widget_destroy(dbox);
+
+	return ret;
+}
+
+GLADE_CB void
+on_checkbutton1_toggled                (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+    gint i;
+    
+    for(i = 0; i< 16; i++)
+        if(togglebutton == (GtkToggleButton *)btns[i])
+            break;
+    
+    if(GTK_TOGGLE_BUTTON(btns[i])->active == TRUE)
+        tmp_sr |=  (1 << i);
+    else
+        tmp_sr &= ~(1 << i);
 }
