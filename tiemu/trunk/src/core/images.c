@@ -483,7 +483,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
     }
 
 	// Some V200 and TI89 Titanium ROMs are half the size
-	if(img.calc_type == V200 || img.calc_type == TI89t)
+	if((img.size < 4*MB) && (img.calc_type == V200 || img.calc_type == TI89t))
 	{
 		img.size = 4*MB;
 		img.data = realloc(img.data, 4*MB + 4);

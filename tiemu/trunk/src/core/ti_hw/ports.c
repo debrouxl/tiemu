@@ -392,27 +392,35 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
     switch(addr) 
     {
         case 0x00:	// rw <76543210>
+		case 0x08:
 			if(!tihw.protect) tihw.io2[addr] = arg;
 			return;
 		case 0x01:	// rw <76543210>
+		case 0x09:
 			if(!tihw.protect) tihw.io2[addr] = arg;
 			return;
 		case 0x02:	// rw <76543210>
+		case 0x0a:
 			if(!tihw.protect) tihw.io2[addr] = arg;
 			return;
 		case 0x03:	// rw <76543210>
+		case 0x0b:
 			if(!tihw.protect) tihw.io2[addr] = arg;
 			return;
 		case 0x04:	// rw <76543210>
+		case 0x0c:
 			if(!tihw.protect) tihw.io2[addr] = arg;
 			return;
 		case 0x05:	// rw <76543210>
+		case 0x0d:
 			if(!tihw.protect) tihw.io2[addr] = arg;
 			return;
 		case 0x06:	// rw <76543210>
+		case 0x0e:
 			if(!tihw.protect) tihw.io2[addr] = arg;
 			return;
 		case 0x07:	// rw <76543210>
+		case 0x0f:
 			if(!tihw.protect) tihw.io2[addr] = arg;
 			return;
 		case 0x11:	// -w <76543210>
@@ -473,20 +481,28 @@ uint8_t io2_get_byte(uint32_t addr)
     switch(addr) 
     {
         case 0x00:
+		case 0x08:
 			break;
 		case 0x01:
+		case 0x09:
 			break;
 		case 0x02:
+		case 0x0a:
 			break;
 		case 0x03:
+		case 0x0b:
 			break;
 		case 0x04:
+		case 0x0c:
 			break;
 		case 0x05:
+		case 0x0d:
 			break;
 		case 0x06:
+		case 0x0e:
 			break;
 		case 0x07:
+		case 0x0f:
 			break;
 		case 0x11:
 			break;

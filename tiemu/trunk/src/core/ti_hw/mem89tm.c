@@ -174,7 +174,7 @@ uint8_t ti89t_get_byte(uint32_t adr)
 
 void ti89t_put_long(uint32_t adr, uint32_t arg) 
 {
-    if(IN_RANGE(0x000120, adr, 0x1fffff))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM access
 	{
         lput(adr, arg);
 	}
@@ -199,7 +199,7 @@ void ti89t_put_long(uint32_t adr, uint32_t arg)
 
 void ti89t_put_word(uint32_t adr, uint16_t arg) 
 {
-	if(IN_RANGE(0x000120, adr, 0x1fffff))				// RAM access
+	if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM access
 	{
         wput(adr, arg);
 	}
@@ -222,7 +222,7 @@ void ti89t_put_word(uint32_t adr, uint16_t arg)
 
 void ti89t_put_byte(uint32_t adr, uint8_t arg) 
 {
-    if(IN_RANGE(0x000120, adr, 0x1fffff))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM access
 	{
         bput(adr, arg);
 	}
