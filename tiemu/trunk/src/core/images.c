@@ -80,7 +80,10 @@ int ti68k_is_a_rom_file(const char *filename)
 
 int ti68k_is_a_tib_file(const char *filename)
 {
-	return (tifiles_is_a_flash_file(filename) || tifiles_is_a_tib_file(filename));
+	int ret1 = tifiles_is_a_flash_file(filename);
+	int ret2 = tifiles_is_a_tib_file(filename);
+
+	return ret1 || ret2;
 }
 
 int ti68k_is_a_img_file(const char *filename)
@@ -149,8 +152,8 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
     HW_PARM_BLOCK hwblock;
 
 	// No filename, exits
-	if(!strcmp(filename, ""))
-		return 0;
+    if(!strcmp(g_basename(filename), ""))
+	    return ERR_CANT_OPEN;
 
 	// Open file
   	file = fopen(filename, "rb");
@@ -236,8 +239,8 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 	int i;
 
 	// No filename, exits
-	if(!strcmp(filename, ""))
-		return 0;
+	if(!strcmp(g_basename(filename), ""))
+	   return ERR_CANT_OPEN;
 
 	// Check valid file
 	if(!tifiles_is_a_ti_file(filename))
@@ -321,8 +324,8 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
 	FILE *f;
 
 	// No filename, exits
-	if(!strcmp(filename, ""))
-		return 0;
+	if(!strcmp(g_basename(filename), ""))
+	   return ERR_CANT_OPEN;
 
 	// Check file
 	if(!ti68k_is_a_img_file(filename))
@@ -366,16 +369,19 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	char *ext;
 	gchar *basename;
 
+	*dstname = NULL;
+
 	// No filename, exits
-	if(!strcmp(srcname, ""))
-		return 0;
+	if(!strcmp(g_basename(srcname), ""))
+	   return ERR_CANT_OPEN;
 
 	// Preload romdump
 	memset(&img, 0, sizeof(IMG_INFO));
 	err = ti68k_get_rom_infos(srcname, &img, !0);
 	if(err)
     {
-      	DISPLAY(_("Unable to get informations on ROM dump.\n"));
+	    free(img.data);
+      	DISPLAY(_("Unable to get informations on ROM dump: %s\n"), srcname);
       	return err;
     }
 	ti68k_display_rom_infos(&img);
@@ -437,16 +443,19 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
     int real_size;
 	HW_PARM_BLOCK hwpb;
 
+	*dstname = NULL;
+
 	// No filename, exits
-	if(!strcmp(srcname, ""))
-		return 0;
+	if(!strcmp(g_basename(srcname), ""))
+	   return ERR_CANT_OPEN;
 
 	// Preload upgrade
 	memset(&img, 0, sizeof(IMG_INFO));
 	err = ti68k_get_tib_infos(srcname, &img, !0);
 	if(err)
     {
-      	DISPLAY(_("Unable to get informations on FLASH upgrade.\n"));
+	    free(img.data);
+      	DISPLAY(_("Unable to get informations on FLASH upgrade: %s\n"), srcname);
       	return err;
     }
 	ti68k_display_tib_infos(&img);
@@ -580,19 +589,22 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 	gchar *basename;
     int real_size;
 
-	// No filename, exits
-	if(!strcmp(srcname1, ""))
-		return 0;
+    *dstname = NULL;
 
-    if(!strcmp(srcname2, ""))
-		return 0;
+	// No filename, exits
+	if(!strcmp(g_basename(srcname1), ""))
+		return ERR_CANT_OPEN;
+
+	if(!strcmp(g_basename(srcname2), ""))
+		return ERR_CANT_OPEN;
 
 	// Preload romdump
     memset(&img, 0, sizeof(IMG_INFO));
 	err = ti68k_get_rom_infos(srcname1, &img, !0);
 	if(err)
     {
-      	DISPLAY(_("Unable to get informations on ROM dump.\n"));
+	    free(img.data);
+      	DISPLAY(_("Unable to get informations on ROM dump: %s\n"), srcname1);
       	return err;
     }
 	ti68k_display_rom_infos(&img);
@@ -601,10 +613,12 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
     real_size = img.size;
 
     // Load upgrade
+
     err = ti68k_get_tib_infos(srcname2, &img, !0);
 	if(err)
     {
-      	DISPLAY(_("Unable to get informations on ROM dump.\n"));
+	    free(img.data);
+      	DISPLAY(_("Unable to get informations on ROM dump: %s\n"), srcname2);
       	return err;
     }
 	ti68k_display_tib_infos(&img);
@@ -659,14 +673,14 @@ int ti68k_load_image(const char *filename)
 	memset(img, 0, sizeof(IMG_INFO));
 
 	// No filename, exits
-	if(!strcmp(filename, ""))
-		return 0;
+	if(!strcmp(g_basename(filename), ""))
+	   return ERR_CANT_OPEN;
 
 	// Load infos
 	err = ti68k_get_img_infos(filename, img);
   	if(err)
     {
-      	DISPLAY(_("Unable to get informations on ROM image.\n"));
+      	DISPLAY(_("Unable to get informations on image: %s\n"), filename);
       	return err;
     }
 	ti68k_display_img_infos(img);
@@ -704,14 +718,15 @@ int ti68k_load_upgrade(const char *filename)
 		return -1;
 
 	// No filename, exits
-	if(!strcmp(filename, ""))
-		return 0;
+	if(!strcmp(g_basename(filename), ""))
+		return ERR_CANT_OPEN;
 
 	memset(&tib, 0, sizeof(IMG_INFO));
 	err = ti68k_get_tib_infos(filename, &tib, !0);
 	if(err)
     {
-      	DISPLAY(_("Unable to get informations on FLASH upgrade.\n"));
+free(img->data);
+      	DISPLAY(_("Unable to get informations on FLASH upgrade: %s\n"), filename);
       	return err;
     }
 	ti68k_display_tib_infos(&tib);
@@ -733,6 +748,25 @@ int ti68k_load_upgrade(const char *filename)
   	img_loaded = 2;
 	return 0;
 }
+
+/*
+  	Unload an image (free memory).
+*/
+int ti68k_unload_image_or_upgrade(void)
+{
+	IMG_INFO *img = &img_infos;
+
+	if(!img_loaded)
+		return -1;
+
+	if(img->data != NULL)
+		free(img->data);
+
+	img_loaded = 0;
+
+	return 0;
+}
+
 
 /*
     Search for ROM dumps or FLASH upgrades in a given directory 
@@ -762,11 +796,15 @@ int ti68k_scan_files(const char *src_dir, const char *dst_dir, int erase)
 
         path = g_strconcat(src_dir, dirent, NULL);
 
-        if(ti68k_is_a_rom_file(dirent))
+        if(ti68k_is_a_rom_file(path))
         {
             ret = ti68k_convert_rom_to_image(path, dst_dir, &dstname);
 			if(ret)
-				return ret;
+				{
+					g_free(dstname);
+					g_free(path);
+					return ret;
+						}
 
             if(erase)
                 unlink(path);
@@ -774,11 +812,15 @@ int ti68k_scan_files(const char *src_dir, const char *dst_dir, int erase)
             g_free(dstname);
         }
 
-		if(ti68k_is_a_tib_file(dirent))
+		if(ti68k_is_a_tib_file(path))
         {
             ret = ti68k_convert_tib_to_image(path, dst_dir, &dstname);
 			if(ret)
+				{
+					g_free(dstname);
+					g_free(path);
 				return ret;
+					}
 
             if(erase)
                 unlink(path);
@@ -1014,6 +1056,9 @@ int ti68k_find_image(const char *dirname, char **dst_name)
 	G_CONST_RETURN gchar *dirent;
     int ret = 0;
     char *filename;
+    
+    if(dst_name != NULL)
+	    *dst_name = NULL;
 
     // Search for *.img files and convert them
 	dir = g_dir_open(dirname, 0, &error);

@@ -65,7 +65,8 @@ core_tisw_OBJ = \
 	core/ti_sw/handles.o	\
 	core/ti_sw/registers.o	\
 	core/ti_sw/romcalls.o	\
-	core/ti_sw/timem.o
+	core/ti_sw/timem.o	\
+	core/ti_sw/vat.o
 
 core_OBJ = 			\
 	core/engine.o		\

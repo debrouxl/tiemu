@@ -25,6 +25,8 @@ To do:
 	- fixed/improved some endianess issues
 	- pedrom tibs are now placed in the 'pedrom' folder. The wizard let you import them 
 		automatically.
+	- fix problem of path with scan_images under Linux
+	- fixed/improved mem allocation in images.c
 
 - 07/02/2005, version 1.80m: roms
 	- dbus architecture improved (reset)

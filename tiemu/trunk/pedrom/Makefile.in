@@ -185,27 +185,27 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-romsdir = $(pkgdatadir)/ROMs
-dist_roms_DATA = pedrom*.tib
+pedromdir = $(pkgdatadir)/pedrom
+dist_pedrom_DATA = pedrom*.tib
 
 romcallsdir = $(pkgdatadir)
 dist_romcalls_DATA = romcalls.*
-subdir = ROMs
+subdir = pedrom
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
-DATA = $(dist_romcalls_DATA) $(dist_roms_DATA)
+DATA = $(dist_pedrom_DATA) $(dist_romcalls_DATA)
 
-DIST_COMMON = $(dist_romcalls_DATA) $(dist_roms_DATA) \
+DIST_COMMON = $(dist_pedrom_DATA) $(dist_romcalls_DATA) \
 	$(srcdir)/Makefile.in Makefile.am
 all: all-am
 
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  ROMs/Makefile
+	  $(AUTOMAKE) --gnu  pedrom/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 
@@ -218,6 +218,24 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+dist_pedromDATA_INSTALL = $(INSTALL_DATA)
+install-dist_pedromDATA: $(dist_pedrom_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pedromdir)
+	@list='$(dist_pedrom_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(dist_pedromDATA_INSTALL) $$d$$p $(DESTDIR)$(pedromdir)/$$f"; \
+	  $(dist_pedromDATA_INSTALL) $$d$$p $(DESTDIR)$(pedromdir)/$$f; \
+	done
+
+uninstall-dist_pedromDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_pedrom_DATA)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(pedromdir)/$$f"; \
+	  rm -f $(DESTDIR)$(pedromdir)/$$f; \
+	done
 dist_romcallsDATA_INSTALL = $(INSTALL_DATA)
 install-dist_romcallsDATA: $(dist_romcalls_DATA)
 	@$(NORMAL_INSTALL)
@@ -235,24 +253,6 @@ uninstall-dist_romcallsDATA:
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
 	  echo " rm -f $(DESTDIR)$(romcallsdir)/$$f"; \
 	  rm -f $(DESTDIR)$(romcallsdir)/$$f; \
-	done
-dist_romsDATA_INSTALL = $(INSTALL_DATA)
-install-dist_romsDATA: $(dist_roms_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(romsdir)
-	@list='$(dist_roms_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(dist_romsDATA_INSTALL) $$d$$p $(DESTDIR)$(romsdir)/$$f"; \
-	  $(dist_romsDATA_INSTALL) $$d$$p $(DESTDIR)$(romsdir)/$$f; \
-	done
-
-uninstall-dist_romsDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(dist_roms_DATA)'; for p in $$list; do \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " rm -f $(DESTDIR)$(romsdir)/$$f"; \
-	  rm -f $(DESTDIR)$(romsdir)/$$f; \
 	done
 tags: TAGS
 TAGS:
@@ -297,7 +297,7 @@ check: check-am
 all-am: Makefile $(DATA)
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(romcallsdir) $(DESTDIR)$(romsdir)
+	$(mkinstalldirs) $(DESTDIR)$(pedromdir) $(DESTDIR)$(romcallsdir)
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
@@ -338,7 +338,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-dist_romcallsDATA install-dist_romsDATA
+install-data-am: install-dist_pedromDATA install-dist_romcallsDATA
 
 install-exec-am:
 
@@ -364,19 +364,20 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-dist_romcallsDATA uninstall-dist_romsDATA \
+uninstall-am: uninstall-dist_pedromDATA uninstall-dist_romcallsDATA \
 	uninstall-info-am
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
 	dvi-am info info-am install install-am install-data \
-	install-data-am install-dist_romcallsDATA install-dist_romsDATA \
-	install-exec install-exec-am install-info install-info-am \
-	install-man install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
-	ps ps-am uninstall uninstall-am uninstall-dist_romcallsDATA \
-	uninstall-dist_romsDATA uninstall-info-am
+	install-data-am install-dist_pedromDATA \
+	install-dist_romcallsDATA install-exec install-exec-am \
+	install-info install-info-am install-man install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am \
+	uninstall-dist_pedromDATA uninstall-dist_romcallsDATA \
+	uninstall-info-am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

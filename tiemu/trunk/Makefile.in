@@ -188,7 +188,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
 # subdirectories to scan
-SUBDIRS = build glade help pixmaps ROMs skins src $(am__append_1)
+SUBDIRS = build glade help pedrom pixmaps skins src $(am__append_1)
 
 dist_pkgdata_DATA = COPYING RELEASE AUTHORS LICENSES
 
@@ -213,7 +213,7 @@ DIST_COMMON = README $(dist_pkgdata_DATA) $(srcdir)/Makefile.in \
 	config.h.in config.rpath config.sub configure configure.ac \
 	depcomp install-sh ltmain.sh missing mkinstalldirs tiemu.lsm.in \
 	tiemu.spec.in
-DIST_SUBDIRS = build glade help pixmaps ROMs skins src man
+DIST_SUBDIRS = build glade help pedrom pixmaps skins src man
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 

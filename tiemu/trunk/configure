@@ -1952,7 +1952,7 @@ fi
 
           ac_config_headers="$ac_config_headers config.h"
 
-                                                                                                              ac_config_files="$ac_config_files Makefile build/Makefile glade/Makefile help/Makefile man/Makefile pixmaps/Makefile ROMs/Makefile skins/Makefile src/Makefile tiemu.lsm tiemu.spec"
+                                                                                                              ac_config_files="$ac_config_files Makefile build/Makefile glade/Makefile help/Makefile man/Makefile pedrom/Makefile pixmaps/Makefile skins/Makefile src/Makefile tiemu.lsm tiemu.spec"
 
 
 echo "$as_me:$LINENO: checking for something to drink while compiling" >&5
@@ -29962,8 +29962,8 @@ do
   "glade/Makefile" ) CONFIG_FILES="$CONFIG_FILES glade/Makefile" ;;
   "help/Makefile" ) CONFIG_FILES="$CONFIG_FILES help/Makefile" ;;
   "man/Makefile" ) CONFIG_FILES="$CONFIG_FILES man/Makefile" ;;
+  "pedrom/Makefile" ) CONFIG_FILES="$CONFIG_FILES pedrom/Makefile" ;;
   "pixmaps/Makefile" ) CONFIG_FILES="$CONFIG_FILES pixmaps/Makefile" ;;
-  "ROMs/Makefile" ) CONFIG_FILES="$CONFIG_FILES ROMs/Makefile" ;;
   "skins/Makefile" ) CONFIG_FILES="$CONFIG_FILES skins/Makefile" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "tiemu.lsm" ) CONFIG_FILES="$CONFIG_FILES tiemu.lsm" ;;

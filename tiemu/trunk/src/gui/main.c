@@ -266,6 +266,8 @@ int main(int argc, char **argv)
 
 		err = ti68k_exit();
 		handle_error();
+
+			ti68k_unload_image_or_upgrade();
 	}
 
 	return 0;

@@ -19,8 +19,8 @@ AC_CONFIG_FILES([
   glade/Makefile
   help/Makefile
   man/Makefile
+  pedrom/Makefile
   pixmaps/Makefile
-  ROMs/Makefile
   skins/Makefile
   src/Makefile
   tiemu.lsm
