@@ -57,14 +57,18 @@ enum {
         COL_C, COL_D, COL_E, COL_F,
 		COL_ASCII,
 
-        COL_EDITABLE,           // editable cell
-		COL_GRAY,               // left and right column in gray
-        COL_FONT,               // courier font for everyone
-        COL_COLOR,              // red or black foreground (changes)
-        COL_SELECT              // green or white background (selection)
+        COL_S0, COL_S1, COL_S2, COL_S3, // green or white background (selection)
+        COL_S4, COL_S5, COL_S6, COL_S7,
+        COL_S8, COL_S9, COL_SA, COL_SB,
+        COL_SC, COL_SD, COL_SE, COL_SF,
+
+        COL_EDITABLE,   // editable cell
+		COL_GRAY,       // left and right column in gray
+        COL_FONT,       // courier font for everyone
+        COL_COLOR,      // red or black foreground (changes)
 };
 #define CLIST_NVCOLS	(18)
-#define CLIST_NCOLS		(18+5)
+#define CLIST_NCOLS		(18 + 20)
 
 #define FONT_NAME	"courier"
 
@@ -185,8 +189,11 @@ static GtkWidget* clist_create(GtkListStore **st)
                 G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
 				G_TYPE_STRING,
 
-				G_TYPE_BOOLEAN, 
-				GDK_TYPE_COLOR, G_TYPE_STRING, GDK_TYPE_COLOR, GDK_TYPE_COLOR,
+                GDK_TYPE_COLOR, GDK_TYPE_COLOR, GDK_TYPE_COLOR, GDK_TYPE_COLOR,
+                GDK_TYPE_COLOR, GDK_TYPE_COLOR, GDK_TYPE_COLOR, GDK_TYPE_COLOR,
+                GDK_TYPE_COLOR, GDK_TYPE_COLOR, GDK_TYPE_COLOR, GDK_TYPE_COLOR,
+                GDK_TYPE_COLOR, GDK_TYPE_COLOR, GDK_TYPE_COLOR, GDK_TYPE_COLOR,
+				G_TYPE_BOOLEAN, GDK_TYPE_COLOR, G_TYPE_STRING, GDK_TYPE_COLOR,
 				-1
             );
     model = GTK_TREE_MODEL(store);
@@ -217,7 +224,7 @@ static GtkWidget* clist_create(GtkListStore **st)
 			"font", COL_FONT,
             "editable", COL_EDITABLE,
             "foreground-gdk", COL_COLOR,
-            "background-gdk", COL_SELECT,
+            "background-gdk", COL_S0 + i - COL_0,
             NULL);
 
         g_signal_connect(G_OBJECT(renderer), "edited",
@@ -279,7 +286,7 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &red, 1,
 				  FALSE, FALSE, &success);
 
-    gdk_color_parse("Green", &white);
+    gdk_color_parse("White", &white);
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &white, 1,
 				  FALSE, FALSE, &success);
 
@@ -326,7 +333,7 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 				i, str, 
 				COL_EDITABLE, TRUE, 
                 COL_COLOR, color,
-                COL_SELECT, &white,
+                i + CLIST_NVCOLS - COL_0, &white,
 				-1);
 
 			g_free(str);            
@@ -569,121 +576,6 @@ static void refresh_page(int page, int offset)
     }
 }
 
-static gboolean
-on_treeview_key_press_event            (GtkWidget       *widget,
-                                        GdkEventKey     *event,
-                                        gpointer         user_data)
-{
-    GtkTreeView *view = GTK_TREE_VIEW(widget);
-	GtkTreeModel *model = gtk_tree_view_get_model(view);
-	GtkListStore *store = GTK_LIST_STORE(model);
-    GtkTreeSelection *selection;
-    GtkTreeIter iter;
-    gboolean valid;
-    gchar *str;
-    gchar *row;
-    gint row_idx, row_max;
-    uint32_t addr;
-    uint32_t min, max;
-    gint n;
-
-    GtkNotebook *nb = GTK_NOTEBOOK(notebook);
-	gint page = gtk_notebook_get_current_page(nb);
-
-    // get min address
-    gtk_tree_model_get_iter_first(model, &iter);
-    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-    sscanf(str, "%x", &min);
-
-    // get max address
-    n = gtk_tree_model_iter_n_children(model, NULL);
-    gtk_tree_model_iter_nth_child(model, &iter, NULL, n-1);
-    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-    sscanf(str, "%x", &max);
-
-    // retrieve selection
-    selection = gtk_tree_view_get_selection(view);
-    valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
-    if(valid)
-    {
-        gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-        sscanf(str, "%x", &addr);
-
-        row = gtk_tree_model_get_string_from_iter(model, &iter);
-        sscanf(row, "%i", &row_idx);
-        row_max = gtk_tree_model_iter_n_children(model, NULL) - 1;
-    }
-    else
-        row_idx = row_max = -1;
-
-    switch(event->keyval) 
-	{
-    case GDK_Up:
-        if(row_max == -1)
-            break;
-
-        if(row_idx > 0)
-            break;
-
-        refresh_page(page, -0x10);
-
-        return FALSE;
-
-    case GDK_Down:
-        if(row_max == -1)
-            break;
-
-        if(row_idx < row_max)
-            break;
-
-        refresh_page(page, +0x10);
-
-        {
-            GtkTreePath *path = gtk_tree_path_new_from_string("7");
-            gtk_tree_selection_select_path(selection, path);
-        }
-        
-        return TRUE;
-
-    case GDK_Page_Up:
-        if(row_max == -1)
-            break;
-
-        if(row_idx > 0)
-            break;
-
-        refresh_page(page, -DUMP_SIZE);
-
-        {
-            GtkTreePath *path = gtk_tree_path_new_from_string("0");
-            gtk_tree_selection_select_path(selection, path);
-        }
-
-        return TRUE;
-
-    case GDK_Page_Down:
-        if(row_max == -1)
-            break;
-
-        if(row_idx < row_max)
-            break;
-
-        refresh_page(page, +DUMP_SIZE);
-
-        {
-            GtkTreePath *path = gtk_tree_path_new_from_string("7");
-            gtk_tree_selection_select_path(selection, path);
-        }
-
-        return TRUE;
-
-	default:
-		return FALSE;
-	}
-
-    return FALSE;
-}
-
 /***** Popup menu *****/
 
 /*
@@ -836,6 +728,140 @@ on_dissassemble1_activate              (GtkMenuItem     *menuitem,
     dbgcode_disasm_at(addr + (col-1));
 }
 
+static gboolean
+on_treeview_key_press_event            (GtkWidget       *widget,
+                                        GdkEventKey     *event,
+                                        gpointer         user_data)
+{
+    GtkTreeView *view = GTK_TREE_VIEW(widget);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
+    GtkTreeSelection *selection;
+    GtkTreeIter iter;
+    gboolean valid;
+    gchar *str;
+    gchar *row;
+    gint row_idx, row_max;
+    uint32_t addr;
+    uint32_t min, max;
+    gint n;
+
+    GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+	gint page = gtk_notebook_get_current_page(nb);
+
+    // get min address
+    gtk_tree_model_get_iter_first(model, &iter);
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "%x", &min);
+
+    // get max address
+    n = gtk_tree_model_iter_n_children(model, NULL);
+    gtk_tree_model_iter_nth_child(model, &iter, NULL, n-1);
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "%x", &max);
+
+    // retrieve selection
+    selection = gtk_tree_view_get_selection(view);
+    valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
+    if(valid)
+    {
+        gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+        sscanf(str, "%x", &addr);
+
+        row = gtk_tree_model_get_string_from_iter(model, &iter);
+        sscanf(row, "%i", &row_idx);
+        row_max = gtk_tree_model_iter_n_children(model, NULL) - 1;
+    }
+    else
+        row_idx = row_max = -1;
+
+    printf("keyval = %x\n", event->keyval);
+    switch(event->keyval) 
+	{
+    case GDK_Up:
+        if(row_max == -1)
+            break;
+
+        if(row_idx > 0)
+            break;
+
+        refresh_page(page, -0x10);
+
+        return FALSE;
+
+    case GDK_Down:
+        if(row_max == -1)
+            break;
+
+        if(row_idx < row_max)
+            break;
+
+        refresh_page(page, +0x10);
+
+        {
+            GtkTreePath *path = gtk_tree_path_new_from_string("7");
+            gtk_tree_selection_select_path(selection, path);
+        }
+        
+        return TRUE;
+
+    case GDK_Page_Up:
+        if(row_max == -1)
+            break;
+
+        if(row_idx > 0)
+            break;
+
+        refresh_page(page, -DUMP_SIZE);
+
+        {
+            GtkTreePath *path = gtk_tree_path_new_from_string("0");
+            gtk_tree_selection_select_path(selection, path);
+        }
+
+        return TRUE;
+
+    case GDK_Page_Down:
+        if(row_max == -1)
+            break;
+
+        if(row_idx < row_max)
+            break;
+
+        refresh_page(page, +DUMP_SIZE);
+
+        {
+            GtkTreePath *path = gtk_tree_path_new_from_string("7");
+            gtk_tree_selection_select_path(selection, path);
+        }
+
+        return TRUE;
+
+    case GDK_F3:
+		//
+		return TRUE;
+
+    case GDK_A:
+        if(event->state & GDK_CONTROL_MASK)
+        {
+            on_go_to_address2_activate((GtkMenuItem *)widget, user_data);
+            return TRUE;
+        }
+
+    case GDK_F:
+        if(event->state & GDK_CONTROL_MASK)
+        {
+            on_find1_activate((GtkMenuItem *)widget, user_data);
+            return TRUE;
+        }
+
+	default:
+		return FALSE;
+	}
+
+    return FALSE;
+}
+
 /*
 	Type address in a box.
 */
@@ -950,6 +976,8 @@ static gint search_engine(char *str, int ascii, int casse, uint32_t *address, in
     return 0;
 }
 
+#define IS_BOUNDED(a,v,b) (((a) <= (v)) && ((v) <= (b)))
+
 static gint search_highlight(uint32_t start, int length, int state)
 {
     GtkNotebook *nb = GTK_NOTEBOOK(notebook);
@@ -957,7 +985,7 @@ static gint search_highlight(uint32_t start, int length, int state)
 	GtkWidget *tab;
 	GtkWidget *label;
 	G_CONST_RETURN gchar *text;
-	uint32_t addr;
+	uint32_t base, addr;
 
 	GList *l, *elt;
 	GtkWidget *list;
@@ -969,7 +997,7 @@ static gint search_highlight(uint32_t start, int length, int state)
 
     GdkColor white, green;
 	gboolean success;
-    GdkColor *color = &white;
+    GdkColor *color = &green;
 
 	gdk_color_parse("White", &white);
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &white, 1,
@@ -979,11 +1007,13 @@ static gint search_highlight(uint32_t start, int length, int state)
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &green, 1,
 				  FALSE, FALSE, &success);
 
+    printf("%x %i\n", start, length);
+
 	// retrieve addr by tab name
 	tab = gtk_notebook_get_nth_page(nb, page);
 	label = gtk_notebook_get_tab_label(nb, tab);
 	text = gtk_label_get_text(GTK_LABEL(label));
-    sscanf(text, "%06x", &addr);
+    sscanf(text, "%06x", &base);
 
 	// get list pointer (we have 1 child)
 	l = gtk_container_get_children(GTK_CONTAINER(nb));
@@ -994,24 +1024,22 @@ static gint search_highlight(uint32_t start, int length, int state)
 	store = GTK_LIST_STORE(model);
 
     // change background color
-    for(valid = gtk_tree_model_get_iter_first(model, &iter);
-        valid; 
-        valid = gtk_tree_model_iter_next(model, &iter))
+    for(valid = gtk_tree_model_get_iter_first(model, &iter), addr = base;
+        valid && (addr - base < DUMP_SIZE); 
+        valid = gtk_tree_model_iter_next(model, &iter), addr += 0x10)
     {
         gint i;
 
-        
-        if((addr + 16) < start)
-            continue;
-        if((addr + 16) > (start + length))
+        if(!((start > addr) || ((start + length) < (addr + 16))))
             continue;
 
-        for(i = COL_0 + start%addr; (i <= COL_F) || (i <= COL_0 + (start+length)%addr); i++)
+        //if(!IS_BOUNDED(addr, start, addr+16)) continue;
+
+        for(i = start%addr; (i < 16) && (i < (start+length)%addr); i++)
 		{
             gchar *str = "XX";
 
-            gtk_list_store_set(store, &iter, i, str, 
-                //COL_SELECT, &color,
+            gtk_list_store_set(store, &iter, i + COL_S0, color,
 				-1);
         }
     }
@@ -1046,7 +1074,8 @@ gint display_dbgmem_search(void)
 	gtk_entry_set_text(GTK_ENTRY(entry), old_str);
 
     check1 = glade_xml_get_widget(xml, "checkbutton1");    
-    check2 = glade_xml_get_widget(xml, "checkbutton2");    
+    check2 = glade_xml_get_widget(xml, "checkbutton2");
+    gtk_toggle_button_set_active(check2, TRUE);
 
 	dbox = glade_xml_get_widget(xml, "dbgmem_search");	
 	
@@ -1070,7 +1099,10 @@ gint display_dbgmem_search(void)
         while(gtk_events_pending()) gtk_main_iteration();
 
 		if(search_engine(old_str, ascii, casse, &block_addr, &block_len))
+        {
             search_highlight(block_addr, block_len, !0);
+            while(gtk_events_pending()) gtk_main_iteration();
+        }
 
         gtk_widget_set_sensitive(entry, TRUE);
         while(gtk_events_pending()) gtk_main_iteration();

@@ -22,7 +22,7 @@ To do:
 	- new window: stack
 	- regs_dbox: added Status Register window (1 button per bit)
 	- mem_dbox: replaced '+A' header by absolute address
-	- mem_dbox: searching capability
+	- mem_dbox: searching capability (find first only)
 
 - 14/07/2004, version 1.74: roms
 	Fixes from Lionel, Kevin and Olivier's suggestions:
