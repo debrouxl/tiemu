@@ -45,34 +45,12 @@ static uint32_t rd_long(uint8_t *p)
 	return (p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
 }
 
-int romcalls_load_from_file(const char* filename)
+static void load_tigcc_file_type(FILE *f)    // os.h TIGCC file: ".set acos, 0xF5"
 {
-	IMG_INFO *img = &img_infos;
-    FILE *f;
-    int n;
     char buf[256];
     char *name, *p;
+    int n;
     int number;
-	uint32_t addr;
-	int i;
-
-    if(loaded)
-        return 0;
-
-	if(!img_loaded || (img->calc_type == TI92))
-		return -1;
-
-	if(old_ct == -1)
-		old_ct = img->calc_type;
-	else if(old_ct == img->calc_type)
-		return 0;
-
-	printf("Loading symbols (ROM calls)... ");
-    memset(list, 0, sizeof(list));
-
-    f = fopen(filename, "rt");
-    if(f == NULL)
-        return -1;
 
     while(!feof(f))
     {
@@ -100,6 +78,80 @@ int romcalls_load_from_file(const char* filename)
 
 		// and store
 		list[number].name = name;
+    }
+}
+
+static void load_lionel_file_type(FILE *f)   // Lionel Debroux formatted file: 2E:ScrToHome
+{
+    char str[256];
+    int number;
+
+    while(!feof(f))
+    {
+        gchar **array;
+
+        // get line
+        fgets(str, sizeof(str), f);
+		if(feof(f))
+			break;
+        str[strlen(str) - 1] = '\0';
+
+        if(!strchr(str, ':'))
+            continue;
+
+        // split
+        array = g_strsplit(str, ":", 2);
+        if(!array[0] || !array[1])
+        {
+            g_strfreev(array);
+            continue;
+        }
+
+        // get values and store
+        sscanf(array[0], "%x", &number);
+		list[number].name = strdup(array[1]);
+
+        g_strfreev(array);
+    }
+}
+
+int romcalls_load_from_file(const char* filename)
+{
+	IMG_INFO *img = &img_infos;
+    FILE *f;
+	uint32_t addr;
+	int i;
+    char tmp[32];
+
+    if(loaded)
+        return 0;
+
+	if(!img_loaded || (img->calc_type == TI92))
+		return -1;
+
+	if(old_ct == -1)
+		old_ct = img->calc_type;
+	else if(old_ct == img->calc_type)
+		return 0;
+
+	printf("Loading symbols (ROM calls)... ");
+    memset(list, 0, sizeof(list));
+
+    f = fopen(filename, "rt");
+    if(f == NULL)
+        return -1;
+
+    fgets(tmp, sizeof(tmp), f);
+    fgets(tmp, sizeof(tmp), f);
+    if(!strncmp(tmp, ".set", strlen(".set")))
+    {
+        rewind(f);
+        load_tigcc_file_type(f);
+    }
+    else
+    {
+        rewind(f);
+        load_lionel_file_type(f);
     }
 
     fclose(f);

@@ -68,7 +68,7 @@ int gtk_debugger_enter(int context)
     }
 
 	// load symbols
-	path = g_strconcat(inst_paths.base_dir, "romcalls.lst", NULL);
+	path = g_strconcat(inst_paths.base_dir, "romcalls.txt", NULL);
 	ti68k_debug_load_symbols(path);
 	g_free(path);
 

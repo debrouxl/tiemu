@@ -12,6 +12,7 @@ To do:
 	- update regs when changing the Supervisor bit
 	- clicking OK in the ROM version without selection makes box crash
 	- bug fixes in the mem dbox searching
+	- use Lionel's romcalls listing (N°:func_name)
 
 - 27/07/2004, version 1.75: roms
 	Olivier's suggestions:

@@ -376,6 +376,8 @@ GLADE_CB void
 on_step1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+    static int i =0;
+
 	ti68k_debug_step();
 
 	clist_refresh(store);
