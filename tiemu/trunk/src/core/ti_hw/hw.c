@@ -154,10 +154,7 @@ void hw_update(void)
     if(!(tihw.timer_value & 3)) 
     {
     	if(!io_bit_tst(0x15,7))
-    	{
-        	specialflags |= SPCFLAG_INT;
-        	currIntLev = 1;
-        }
+			hw_m68k_irq(1);
     }
 
 	// Auto-int 2: keyboard scan
@@ -169,10 +166,7 @@ void hw_update(void)
 	{
         tihw.heartbeat = 1024;
         if(!io_bit_tst(0x15,7) && io_bit_tst(0x15,2))
-        {
-			specialflags |= SPCFLAG_INT;
-        	currIntLev = 3;
-        }
+			hw_m68k_irq(3);
 	}
 
 	// Triggered by the link hardware for various reasons.
@@ -193,8 +187,7 @@ void hw_update(void)
 			(io_bit_tst(0x0c,0) && io_bit_tst(0x0d,5)))
 		{
 			io_bit_set(0x0d,4);					// interrupt pending
-			specialflags |= SPCFLAG_INT;
-			currIntLev = 4;
+			hw_m68k_irq(4);
 		}
 	}
 
@@ -204,10 +197,7 @@ void hw_update(void)
     {
         tihw.timer_value = tihw.timer_init;
 		if(!io_bit_tst(0x15,7))
-		{
-        	specialflags |= SPCFLAG_INT;
-        	currIntLev = 5;
-        }
+			hw_m68k_irq(5);
     }
 
 	// Auto-int 6: triggered when [ON] is pressed.

@@ -71,6 +71,12 @@ int hw_m68k_exit(void)
     return 0;
 }
 
+void hw_m68k_irq(int n)
+{
+	specialflags |= SPCFLAG_INT;
+    currIntLev = n;
+}
+
 /* Replace UAE's M68000_run() */
 /*
   Do 'n' instructions.

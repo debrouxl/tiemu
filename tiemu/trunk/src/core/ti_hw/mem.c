@@ -37,6 +37,7 @@
 #include "mem.h"
 #include "images.h"
 #include "bkpts.h"
+#include "m68k.h"
 #include "ti68k_def.h"
 #include "ti68k_int.h"
 
@@ -549,10 +550,7 @@ void hw_put_long(uint32_t adr, uint32_t arg)
     // Protected memory violation. Triggered when memory below [$000120] is
 	// written while bit 2 of [$600001] is set
 	if((adr < 0x120) && io_bit_tst(0x01,2))
-	{
-		specialflags |= SPCFLAG_INT;
-        currIntLev = 7;
-	}
+		hw_m68k_irq(7);
 
     // Write accesses to the boot installer sector ($200000-$20FFFF) are
     // filtered and never reach the flash ROM.
@@ -644,10 +642,7 @@ void hw_put_word(uint32_t adr, uint16_t arg)
     // Protected memory violation. Triggered when memory below [$000120] is
 	// written while bit 2 of [$600001] is set
     if((adr < 0x120) && io_bit_tst(0x01,2))
-	{
-		specialflags |= SPCFLAG_INT;
-        currIntLev = 7;
-	}
+		hw_m68k_irq(7);
 
 	else if(adr >= 0x200000 && adr < 0x210000)
         return;
@@ -721,10 +716,7 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
     // Protected memory violation. Triggered when memory below [$000120] is
 	// written while bit 2 of [$600001] is set
     if((adr < 0x120) && io_bit_tst(0x01,2))
-	{
-		specialflags |= SPCFLAG_INT;
-        currIntLev = 7;
-	}
+		hw_m68k_irq(7);
 
     // Write accesses to the boot installer sector ($200000-$20FFFF) are
     // filtered and never reach the flash ROM.

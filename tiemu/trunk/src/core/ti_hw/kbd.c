@@ -144,14 +144,12 @@ int hw_kbd_update(void)		// ~600Hz
 	        specialflags &= ~SPCFLAG_STOP;
 	        
 	    // Auto-Int 6 triggered when [ON] is pressed.
-        specialflags |= SPCFLAG_INT;
-        currIntLev = 6;
+		hw_m68k_irq(6);
     }
 	else
     {
     	// Auto-Int 2 triggered periodically while key(s) other than [ON] are held down.
-        specialflags |= SPCFLAG_INT;
-        currIntLev = 2;
+		hw_m68k_irq(2);
     }
 
 	key_change = 0;

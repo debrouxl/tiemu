@@ -31,4 +31,6 @@ int hw_m68k_exit(void);
 
 int hw_m68k_run(int);
 
+void hw_m68k_irq(int n);
+
 #endif
