@@ -273,6 +273,8 @@ uint32_t hw_get_long(uint32_t adr)
 	    {
 	        if ((uint32_t)GPOINTER_TO_INT(l->data) == adr) 
 	        {
+				printf("bk: %06x\n", adr);
+
 				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_READ_LONG; 
 	            specialflags |= SPCFLAG_BRK;	            

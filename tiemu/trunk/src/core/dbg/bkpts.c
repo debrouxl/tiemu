@@ -142,6 +142,50 @@ void ti68k_bkpt_del_exception(int n)
     bkpts.exception = g_list_remove(bkpts.exception, GINT_TO_POINTER(n));
 }
 
+void ti68k_bkpt_get_address(int id, uint32_t *address)
+{
+	*address = GPOINTER_TO_INT(g_list_nth(bkpts.code, id)->data);
+}
+
+void ti68k_bkpt_get_access(int id, uint32_t *address, int mode)
+{
+	if((mode & BK_READ) && (mode & BK_BYTE))
+		*address = GPOINTER_TO_INT(g_list_nth(bkpts.mem_rb, id)->data);
+    else if((mode & BK_READ) && (mode & BK_WORD))
+		*address = GPOINTER_TO_INT(g_list_nth(bkpts.mem_rw, id)->data);
+    else if((mode & BK_READ) && (mode & BK_LONG))
+		*address = GPOINTER_TO_INT(g_list_nth(bkpts.mem_rl, id)->data);
+    else if((mode & BK_WRITE) && (mode & BK_BYTE))
+		*address = GPOINTER_TO_INT(g_list_nth(bkpts.mem_wb, id)->data);
+    else if((mode & BK_WRITE) && (mode & BK_WORD))
+		*address = GPOINTER_TO_INT(g_list_nth(bkpts.mem_ww, id)->data);
+    else if((mode & BK_WRITE) && (mode & BK_LONG))
+		*address = GPOINTER_TO_INT(g_list_nth(bkpts.mem_wl, id)->data);
+}
+
+void ti68k_bkpt_get_range(int id, uint32_t *min, uint32_t *max, int mode)
+{
+	if(mode & BK_READ) 
+    {
+        ADDR_RANGE *s = g_list_nth(bkpts.mem_rng_r, id)->data;
+
+		*min = s->val1;
+		*max = s->val2;
+    }
+
+    if(mode & BK_WRITE) 
+    {
+        ADDR_RANGE *s = g_list_nth(bkpts.mem_rng_w, id)->data;
+
+		*min = s->val1;
+		*max = s->val2;
+    }
+}
+
+void ti68k_bkpt_get_exception(int id, int *n)
+{
+	*n = GPOINTER_TO_INT(g_list_nth(bkpts.exception, id)->data);
+}
 
 void ti68k_bkpt_clear_address(void)
 {

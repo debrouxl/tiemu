@@ -90,6 +90,11 @@ void ti68k_bkpt_del_access(uint32_t address, int mode);
 void ti68k_bkpt_del_range(uint32_t min, uint32_t max, int mode);
 void ti68k_bkpt_del_exception(int n);
 
+void ti68k_bkpt_get_address(int id, uint32_t *address);
+void ti68k_bkpt_get_access(int id, uint32_t *address, int mode);
+void ti68k_bkpt_get_range(int id, uint32_t *min, uint32_t *max, int mode);
+void ti68k_bkpt_get_exception(int id, int *n);
+
 void ti68k_bkpt_clear_address(void);
 void ti68k_bkpt_clear_access(void);
 void ti68k_bkpt_clear_range(void);

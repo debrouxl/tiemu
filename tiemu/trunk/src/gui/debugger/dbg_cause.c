@@ -41,7 +41,7 @@ gint dbgcause1_display_dbox()
 	gint result;
 	gchar *str;
 	gint type, id, mode;
-	uint32_t value;
+	uint32_t value, min, max;
 
     // get context
 	ti68k_bkpt_get_cause(&type, &mode, &id);
@@ -80,6 +80,25 @@ gint dbgcause1_display_dbox()
 	// set id
 	label = glade_xml_get_widget(xml, "label24");
 	str = g_strdup_printf("%i", id);
+	gtk_label_set_text(GTK_LABEL(label), str);
+	g_free(str);
+
+	// set target
+	label = glade_xml_get_widget(xml, "label25");
+	switch(type)
+	{
+	case BK_TYPE_ACCESS:
+		ti68k_bkpt_get_access(id, &min, mode);
+		str = g_strdup_printf("0x%06x", min);
+		break;
+	case BK_TYPE_RANGE:
+		ti68k_bkpt_get_range(id, &min, &max, mode);
+		str = g_strdup_printf("0x%06x-0x%06x", min, max);
+		break;
+	default:
+		str = g_strdup("n/a");
+		break;
+	}
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 	
