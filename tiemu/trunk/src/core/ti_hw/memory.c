@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "uae.h"
 #include "hardware.h"
@@ -77,18 +78,8 @@ int hw_mem_init(void)
 	tihw.rom_flash = img->flash;
 	strcpy(tihw.rom_version, img->version);
 
-//	tihw.rom_size = rom_sizes[log2(tihw.calc_type)];
-//	tihw.ram_size = rom_sizes[log2(tihw.calc_type)];
-	if(tihw.calc_type == TI92)
-		tihw.rom_size = 1*MB;
-	else
-		tihw.rom_size = 2*MB;
-
-	if(tihw.calc_type == TI92)
-		tihw.ram_size = 128*KB;
-	else
-		tihw.ram_size = 256*KB;
-
+	tihw.rom_size = rom_sizes[log2(tihw.calc_type)];
+	tihw.ram_size = ram_sizes[log2(tihw.calc_type)];
 
   /* Init vars */
   ram128 = (tihw.ram_size == 128);
