@@ -544,7 +544,7 @@ int ti68k_load_upgrade(const char *filename)
       	DISPLAY(_("Unable to get informations on FLASH upgrade.\n"));
       	return err;
     }
-	ti68k_display_img_infos(header);
+	ti68k_display_tib_infos(header);
 
   	params.rom_size = header->data_size;
   	params.ram_size = (header->data_size == 1024*1024) ? 128 : 256;
