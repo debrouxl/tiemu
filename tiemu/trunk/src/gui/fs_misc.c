@@ -276,7 +276,10 @@ gint display_import_romversion_dbox(void)
 			dstname = g_strconcat(inst_paths.img_dir, basename, NULL);
 			g_free(basename);
 
+#ifdef __WIN32__
 			CopyFile(filename, dstname, FALSE);
+#else
+#endif
 			g_free(dstname);
 		}
 	}

@@ -27,7 +27,9 @@
 */
 
 #include <stdio.h>
+#ifdef __WIN32__
 #include <windows.h>
+#endif
 
 #include "struct.h"
 #include "paths.h"

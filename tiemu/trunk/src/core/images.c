@@ -745,7 +745,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 				else if(ti68k_is_a_img_file(path))
 				{
 					memset(&img, 0, sizeof(IMG_INFO));
-					ret = ti68k_get_img_infos(path, &img, 0);
+					ret = ti68k_get_img_infos(path, &img);
 					if(ret)
 					{
 						fprintf(stderr, _("Can not get ROM/update info: <%s>\n"), path);

@@ -44,24 +44,22 @@ uae_OBJ = \
 	core/uae/readcpu.o
 
 tihw_OBJ = \
-	core/ti_hw/dbus.o		\
+	core/ti_hw/dbus.o	\
 	core/ti_hw/debugger.o 	\
 	core/ti_hw/hardware.o 	\
 	core/ti_hw/ioports.o 	\
 	core/ti_hw/keyboard.o 	\
-	core/ti_hw/lcd.o 		\
-	core/ti_hw/m68k.o		\   
-    core/ti_hw/memory.o 	\
+	core/ti_hw/lcd.o 	\
+	core/ti_hw/m68k.o	\
+	core/ti_hw/memory.o 	\
 	core/ti_hw/timer.o	
 
-core_OBJ = 				\
-	core/core.o			\
+core_OBJ = 			\
 	core/bkpts.o 		\
 	core/callbacks.o 	\
 	core/engine.o		\
-	core/errors.o 		\
+	core/error.o 		\
 	core/images.o 		\
-	core/state.o 		\
 	core/interface.o	\
 	core/registers.o	\
 	core/state.o		\
@@ -70,17 +68,16 @@ core_OBJ = 				\
 hid_OBJ = \
 	hid/cmdline.o 	\
 	hid/files.o 	\
-	hid/hid.o		\
+	hid/hid.o	\
 	hid/paths.o 	\
 	hid/printl.o	\
 	hid/rcfile.o 	\
 	hid/skinops.o	\
-	hid/hid.o 	\
 	hid/tie_error.o \
 	hid/tikeys.o
 
 gui_OBJ = \
-	./gui/about.o							\
+	./gui/about.o						\
 	./gui/adbkpt_dbox.o ./gui/adbkpt_cb.o 	\
 	./gui/bkpt_cause.o 						\
 	./gui/comm.o							\
@@ -89,7 +86,7 @@ gui_OBJ = \
 	./gui/dboxes.o							\
 	./gui/debug_dbox.o ./gui/debug_cb.o 	\
 	./gui/filesel.o							\
-	./gui/fsel_dbox.o ./gui/fsel_cb.o 		\
+	./gui/fs_misc.o	\
 	./gui/help.o	 						\
 	./gui/infos.o							\
 	./gui/logaddr_dbox.o ./gui/logaddr_cb.o \

@@ -614,7 +614,7 @@ void MC68000_run(void)
       if(l - lastTime >= timeDiff) 
 	{
 	  lastTime = l;
-	  update_hardware();
+	  hw_update();
 	  if(params.tick_rate != tickRate) 
 	    {
 	      tickRate = params.tick_rate;

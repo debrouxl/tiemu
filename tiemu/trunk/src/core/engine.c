@@ -35,8 +35,11 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <string.h>
+#ifndef __WIN32__
 #include <unistd.h> // usleep
+#else
 #include <windows.h>
+#endif
 
 #include "intl.h"
 #include "engine.h"
