@@ -26,6 +26,14 @@
 #include <config.h>
 #endif
 
+#ifdef __WIN32__
+#include "C:\SDL-1.2.7\include\SDL.h"
+#include "C:\SDL-1.2.7\include\SDL_thread.h"
+#else
+# include <SDL/SDL.h>
+# include "SDL_thread.h"
+#endif
+
 #include <gtk/gtk.h>
 #include <sys/timeb.h>
 #include <sys/types.h>
@@ -59,6 +67,45 @@
 #define NB_INSTRUCTIONS_PER_LOOP 50000 //50000
 #define TIME_LIMIT               30 // 30
 
+//#define THREADED
+
+int my_thread(void *data)
+{
+    struct timeb tCurrentTime;
+	struct timeb tLastTime;
+	unsigned long int iCurrentTime;
+	unsigned long int iLastTime; 
+    gint res = 0;
+
+    while (1) 
+	{
+		// Update GUI only if emulator core is halted
+		if(is_halted())
+            continue;
+      
+		// Run emulator core
+		ftime(&tLastTime);
+		if((res = ti68k_doInstructions(NB_INSTRUCTIONS_PER_LOOP))) {  
+			// a bkpt has been encountered
+		} else { 
+			// normal execution
+			ftime(&tCurrentTime);
+			iLastTime    = tLastTime.time*1000+tLastTime.millitm;
+			iCurrentTime = tCurrentTime.time*1000+tCurrentTime.millitm;
+			if ((iCurrentTime - iLastTime) < TIME_LIMIT) {
+#if defined(__LINUX__)
+				usleep((TIME_LIMIT - iCurrentTime + iLastTime)*1000);
+#elif defined(__WIN32__)
+				Sleep((TIME_LIMIT - iCurrentTime + iLastTime));
+#endif
+			}
+		}
+	}
+}
+
+/******************/
+
+
 extern int wizard_ok;
 extern gchar *wizard_rom;
 
@@ -69,12 +116,6 @@ TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 #undef main			// undef main with SDL/Win32
 #endif
 
-// to remove
-int ticables_printl(int level, const char *format, ...);
-int tifiles_printl(int level, const char *format, ...);
-int ticalcs_printl(int level, const char *format, ...);
-int tiemu_printl(int level, const char *format, ...);
-
 /* Main function */		
 int main(int argc, char **argv) 
 {
@@ -83,6 +124,7 @@ int main(int argc, char **argv)
 	unsigned long int iCurrentTime;
 	unsigned long int iLastTime; 
 	gint res=0;
+    SDL_Thread *thread;
 
 	/*
 		Do primary initializations 
@@ -205,6 +247,7 @@ int main(int argc, char **argv)
 		//close_console();
 
 	/* Run main loop */
+#ifndef THREADED
 	while (1) 
 	{
 		// Update GUI only if emulator core is halted
@@ -231,6 +274,17 @@ int main(int argc, char **argv)
 			}
 		}
 	}
+#else
+    thread = SDL_CreateThread(my_thread, NULL);
+
+    while(1) {
+        while( gtk_events_pending() ) { 
+				gtk_main_iteration(); 
+			}
+    }
+
+    gtk_main();
+#endif
 
 	/* Close the emulator library */
 	ti68k_exit();
