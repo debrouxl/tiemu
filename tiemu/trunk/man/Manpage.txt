@@ -1,0 +1,171 @@
+(GTK)TIEMU(1)                                                    (GTK)TIEMU(1)
+
+
+
+NAME
+       tiemu - a TI emulator for TI89/92/92+/V200PLT hand-helds
+
+SYNOPSYS
+       gtktiemu  [-h]  [-v] [-rom_file=] [-sav_file=] [image] [--help] [--ver-
+       sion]
+
+DESCRIPTION
+       The TiEmu program allows you to emulate a Texas Instruments calculators
+       such  as  a  TI89,  TI92, TI92+ or V200PLT gand-held.  The emulator has
+       also a virtual link capability which allows to connect  it  to  another
+       program (such as a linking program for instance).
+
+OPTIONS
+       The command line options override the default options (startup options)
+       and the config file options even.   The  TiEmu  accepts  the  following
+       options:
+
+       -h, --help
+              Display a list of all command line options.
+
+       -v, --version
+              Output the version info.
+
+       -rom_file=
+              Load  the  specified ROM image. Must be a valid TI89/92/92+/V200
+              ROM image.
+
+       -sav_file=
+              Load the specified state file. Must be a valid  TI89/92/92+/V200
+              state image.
+
+SEE ALSO
+       tilp(1) for the latest information on the link cable parameters.
+
+CONFIG FILE FORMAT
+       This section describes the format of the .tiemu config file which is in
+       the home directory of the user (Linux). A line preceded by the '#' sym-
+       bol  is  a  comment.   Each line has the following format: option=some-
+       thing.  The config file must have the 'RC_END' string  at  end.   Every
+       line  can  be put in any order.  Take in mind that any comment added in
+       the config file will be overwritten.  Below is  described  each  option
+       and the possible values:
+
+       calctype=  Defines  the  calculator  type.  Choose one of the following
+       value: ti89, ti92, ti92+.
+
+       linktype= Define the link cable  type.  Choose  one  of  the  following
+       value:  TIGraphLink,  parallel,  serial, AVRlink, fastAVRlink, virtual,
+       TiEmulator, VTi, UsbGraphLink, TiPcUsbLink.
+
+       adr_port= places the I/O address of the I/O port  to  use.  It  can  be
+       0x3F8 for a serial port or 0x378 for a parallel port for instance.
+
+       serial_device=  places  the character device name of the serial port to
+       use with a Grey TIGL.
+
+       timeout= with the timeout value to use in  tenth  of  seconds.  Default
+       value: 20.
+
+       delay=  with  the  delay  value  to  use in micro-seconds for home-made
+       cables. Default value: 10
+
+       use_tidev= Define whether gtktilink will use or not the  'tidev  kernel
+       module'  for  handling  your link cable. The link cable is managed thru
+       the libTicable but with the kernel module and not  with  low-level  I/O
+       routines.  Options: 'yes' or 'no'.
+
+       background=  Define  whether GtkTiEmu display the background (keyboard)
+       or only the LCD screen. Put 0 if you do not want the keyboard.
+
+       rom_file= Define the ROM image to load at startup.
+
+       ram_file= Define the RAM image to load at startup.
+
+       gray_planes= Define the number of gray scales. Valid values are 0, 2, 5
+       or 11.
+
+       tick_rate= Define the tick rate.
+
+       cycle_rate= Define the cycle rate.
+
+       dark_color=  Set  the  dark  color  to  the  given RGB value. Format is
+       0xrrggbb.
+
+       light_color= Set the light color to the  given  RGB  value.  Format  is
+       0xrrggbb.
+
+       sync_one=  Enable or disable synchronization on IRQ1 (m68k IRQs). Valid
+       value is: 0 or 1.
+
+       code_lines= Defines the number of lines which are displayed in the code
+       box of th debugger window.
+
+       stack_lines=  Defines  the  number  of lines which are displayed in the
+       stack box of th debugger window.
+
+       mem_lines= Defines the number of lines which are displayed in the  mem-
+       ory box of th debugger window.
+
+       img_format=  Defines  the image format of the screenshots. Several for-
+       mats are available: PCX, XPM, JPG or BMP (SDL only).
+
+       img_type= You can do screenshots in Black&White or in colors.
+
+       img_size= The size of the image that is to say you can shots  only  the
+       LCD or the entire window (skin+LCD).
+
+       screen_file=  Defines  the  base  filename where the screenshot will be
+       stored.
+
+       screen_counter= This allows you to save the current screenshot counter.
+       In   fact,   the   resulting   filename   is   computed   as   'screen-
+       file[screen_counter].[img_format]. Example: 'screenshot001.xpm'.
+
+       console= Available under Windows platform only. You can  hide  or  show
+       the console at startup or even display it only during boot.
+
+       Think to terminate your config script with the 'RC_END' word !!!
+
+
+COPYRIGHT
+       Copyright  (C)  2000-2001, Romain Lievin and Thomas Corvazier.  Permis-
+       sion to use, copy, modify, and distribute this software and  its  docu-
+       mentation  for  any purpose and without fee is hereby granted, provided
+       that the above copyright notice appear in all copies and that both that
+       copyright  notice and this permission notice appear in supporting docu-
+       mentation.
+
+       This program and its source code is distributed under the terms of  the
+       terms  of the GNU General Public License as published by the Free Soft-
+       ware Foundation; either version 2 of the License, or (at  your  option)
+       any later version.
+
+       This  program  is  distributed  in the hope that it will be useful, but
+       WITHOUT ANY  WARRANTY;  without  even  the  implied  warranty  of  MER-
+       CHANTABILITY  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
+       Public License for more details.
+
+       You should have received a copy of the GNU General Public License along
+       with this program; if not, write to the Free Software Foundation, Inc.,
+       59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+
+SUGGESTIONS AND BUG REPORTS
+       The  canonical place to find GtkTiEmu and some  miscellenaous  informa-
+       tions   is   at   http://lpg.ticalc.org/prj_gtktiemu   (redirected   on
+       http://gtktiemu.sourceforge.net).     You    can    also    look     at
+       http://lpg.ticalc.org  and  http://www.ticalc.org for others TI related
+       programs for Linux.
+
+AUTHOR
+       Romain Lievin.  Thomas Corvazier
+
+SPECIAL THANKS
+       - Jonas Minnberg (Sasq) for Tiger - UAE, the Universal  Amiga  Emulator
+       (http:// ??)
+
+       -  Benjamin  Gordon  <ben@bxg.org> for creating rpm packages: he is the
+       official maintainer of this package.
+
+       -  Julien  Blache <jb@jblache.org> for creating deb packages: he is the
+       official maintainer of this package.
+
+THANKS
+                                 June 11, 2004                   (GTK)TIEMU(1)
+ÿÿ
