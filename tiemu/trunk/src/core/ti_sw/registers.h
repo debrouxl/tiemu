@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: interface.h 224 2004-05-19 14:04:04Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *

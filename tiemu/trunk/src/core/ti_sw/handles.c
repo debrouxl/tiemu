@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: bkpts.h 517 2004-07-07 15:06:40Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -23,46 +23,10 @@
  */
 
 /*
-  Breakpoint definitions
+    Handles/Heap access
 */
 
-#ifndef __ROMCALLS__
-#define __ROMCALLS__
-
 #include <stdio.h>
-#include <stdint.h>
 
-#include "romcalls.h"
+#include "handles.h"
 
-#define NMAX_ROMCALLS	0x800
-
-/* Types */
-
-typedef struct
-{
-	int			id;
-    uint32_t    addr;
-    char*       name;
-} ROM_CALL;
-
-/* Functions */
-
-int romcalls_load_from_file(const char* filename);
-int romcalls_unload(void);
-int romcalls_is_loaded(void);
-
-int romcalls_is_address(uint32_t addr);
-int romcalls_is_name(const char *name);
-
-int romcalls_get_id(int i);
-const char* romcalls_get_name(int i);
-uint32_t romcalls_get_addr(int i);
-const char* romcalls_get_addr_name(uint32_t addr);
-
-ROM_CALL *romcalls_sort_by_id(void);
-ROM_CALL *romcalls_sort_by_addr(void);
-ROM_CALL *romcalls_sort_by_name(void);
-
-int romcalls_get_size(void);
-
-#endif
