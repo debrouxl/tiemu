@@ -56,15 +56,15 @@ enum {
         COL_8, COL_9, COL_A, COL_B,
         COL_C, COL_D, COL_E, COL_F,
 		COL_ASCII,
-		COL_0b, COL_1b, COL_2b, COL_3b, 
-		COL_4b, COL_5b, COL_6b, COL_7b, 
-		COL_8b, COL_9b, COL_Ab, COL_Bb, 
-		COL_Cb, COL_Db, COL_Eb, COL_Fb,
-		COL_GRAY, COL_FONT,
-        COL_COLOR,
+
+        COL_EDITABLE,           // editable cell
+		COL_GRAY,               // left and right column in gray
+        COL_FONT,               // courier font for everyone
+        COL_COLOR,              // red or black foreground (changes)
+        COL_SELECT              // green or white background (selection)
 };
 #define CLIST_NVCOLS	(18)
-#define CLIST_NCOLS		(18+19)
+#define CLIST_NCOLS		(18+5)
 
 #define FONT_NAME	"courier"
 
@@ -184,11 +184,9 @@ static GtkWidget* clist_create(GtkListStore **st)
                 G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
                 G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
 				G_TYPE_STRING,
-				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
-				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
-				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
-				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
-				GDK_TYPE_COLOR, G_TYPE_STRING, GDK_TYPE_COLOR,
+
+				G_TYPE_BOOLEAN, 
+				GDK_TYPE_COLOR, G_TYPE_STRING, GDK_TYPE_COLOR, GDK_TYPE_COLOR,
 				-1
             );
     model = GTK_TREE_MODEL(store);
@@ -217,8 +215,9 @@ static GtkWidget* clist_create(GtkListStore **st)
             text[i], renderer, 
             "text", i, 
 			"font", COL_FONT,
-            "editable", i + CLIST_NVCOLS - 1,
+            "editable", COL_EDITABLE,
             "foreground-gdk", COL_COLOR,
+            "background-gdk", COL_SELECT,
             NULL);
 
         g_signal_connect(G_OBJECT(renderer), "edited",
@@ -261,7 +260,7 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
     gchar *str;
     char ascii[17];
     uint32_t a;
-	GdkColor gray, black, red;
+	GdkColor gray, black, red, white;
 	gboolean success;
     GdkColor *color = &black;
 
@@ -280,6 +279,10 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &red, 1,
 				  FALSE, FALSE, &success);
 
+    gdk_color_parse("Green", &white);
+	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &white, 1,
+				  FALSE, FALSE, &success);
+
     old_ptr = old;
     for(a = start; a < start+length; a += 0x10)
     {
@@ -295,7 +298,7 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 		gtk_list_store_set(store, &iter, 
 			COL_ADDR, str, 
 			COL_GRAY, &gray,
-			COL_FONT, FONT_NAME,
+			COL_FONT, FONT_NAME,            
 			-1);
 		g_free(str);
 
@@ -321,8 +324,9 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 */
 			gtk_list_store_set(store, &iter, 
 				i, str, 
-				i + CLIST_NVCOLS - COL_0, TRUE, 
+				COL_EDITABLE, TRUE, 
                 COL_COLOR, color,
+                COL_SELECT, &white,
 				-1);
 
 			g_free(str);            
@@ -878,7 +882,7 @@ gint display_dbgmem_address(uint32_t *addr)
   'case sensitive' or in good French 'respect des majuscules'.
 */
 
-static gint search_engine(char *str, int ascii, int casse)
+static gint search_engine(char *str, int ascii, int casse, uint32_t *address, int *length)
 {
     uint8_t *data;
     uint16_t len;
@@ -916,7 +920,6 @@ static gint search_engine(char *str, int ascii, int casse)
             strncpy(digits, &tmp[2*i], 2); 
             digits[2] = '\0';
             sscanf(digits, "%02x", &data[i]);
-            //data = 
         }
 
         g_free(tmp);
@@ -938,7 +941,80 @@ static gint search_engine(char *str, int ascii, int casse)
     }
 
     if(i == len)
-        printf("found at $%06x !\n", addr - len + 1);
+    {
+        *address = addr - len + 1;
+        *length = len;
+        return !0;
+    }
+
+    return 0;
+}
+
+static gint search_highlight(uint32_t start, int length, int state)
+{
+    GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+    gint page = gtk_notebook_get_current_page(nb);
+	GtkWidget *tab;
+	GtkWidget *label;
+	G_CONST_RETURN gchar *text;
+	uint32_t addr;
+
+	GList *l, *elt;
+	GtkWidget *list;
+	GtkTreeView *view;
+	GtkTreeModel *model;
+	GtkListStore *store;
+    GtkTreeIter iter;
+    gboolean valid;
+
+    GdkColor white, green;
+	gboolean success;
+    GdkColor *color = &white;
+
+	gdk_color_parse("White", &white);
+	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &white, 1,
+				  FALSE, FALSE, &success);
+
+	gdk_color_parse("Green", &green);
+	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &green, 1,
+				  FALSE, FALSE, &success);
+
+	// retrieve addr by tab name
+	tab = gtk_notebook_get_nth_page(nb, page);
+	label = gtk_notebook_get_tab_label(nb, tab);
+	text = gtk_label_get_text(GTK_LABEL(label));
+    sscanf(text, "%06x", &addr);
+
+	// get list pointer (we have 1 child)
+	l = gtk_container_get_children(GTK_CONTAINER(nb));
+	elt = g_list_nth(l, page);
+	list = GTK_WIDGET(elt->data);
+	view = GTK_TREE_VIEW(list);
+	model = gtk_tree_view_get_model(view);
+	store = GTK_LIST_STORE(model);
+
+    // change background color
+    for(valid = gtk_tree_model_get_iter_first(model, &iter);
+        valid; 
+        valid = gtk_tree_model_iter_next(model, &iter))
+    {
+        gint i;
+
+        
+        if((addr + 16) < start)
+            continue;
+        if((addr + 16) > (start + length))
+            continue;
+
+        for(i = COL_0 + start%addr; (i <= COL_F) || (i <= COL_0 + (start+length)%addr); i++)
+		{
+            gchar *str = "XX";
+
+            gtk_list_store_set(store, &iter, i, str, 
+                //COL_SELECT, &color,
+				-1);
+        }
+    }
 
     return 0;
 }
@@ -954,6 +1030,8 @@ gint display_dbgmem_search(void)
     
     static gchar *old_str = NULL;
     gint ascii, casse;
+    uint32_t block_addr;
+    int block_len;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_search", PACKAGE);
@@ -971,10 +1049,15 @@ gint display_dbgmem_search(void)
     check2 = glade_xml_get_widget(xml, "checkbutton2");    
 
 	dbox = glade_xml_get_widget(xml, "dbgmem_search");	
-	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	
-	switch (result) {
-	case GTK_RESPONSE_OK:
+    
+    for(result = 0;;)
+    {
+        result = gtk_dialog_run(GTK_DIALOG(dbox));
+	    printf("result = %i\n", result);
+        if((result == GTK_RESPONSE_CANCEL) || (result == GTK_RESPONSE_DELETE_EVENT))
+            break;
+
 		str = (gchar *)gtk_entry_get_text(GTK_ENTRY(entry));
 
         g_free(old_str);
@@ -983,11 +1066,14 @@ gint display_dbgmem_search(void)
         ascii = GTK_TOGGLE_BUTTON(check1)->active;
         casse = GTK_TOGGLE_BUTTON(check2)->active;
 
-		search_engine(old_str, ascii, casse);
-		ret = 0;
-		break;
-	default:
-		break;
+        gtk_widget_set_sensitive(entry, FALSE);
+        while(gtk_events_pending()) gtk_main_iteration();
+
+		if(search_engine(old_str, ascii, casse, &block_addr, &block_len))
+            search_highlight(block_addr, block_len, !0);
+
+        gtk_widget_set_sensitive(entry, TRUE);
+        while(gtk_events_pending()) gtk_main_iteration();
 	}
 
 	gtk_widget_destroy(dbox);

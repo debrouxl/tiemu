@@ -208,24 +208,24 @@ static void clist_refresh(GtkListStore *store)
     for(valid = gtk_tree_model_get_iter_first(model, &iter);
         valid; 
         valid = gtk_tree_model_iter_next(model, &iter))
-        {
-            GdkPixbuf *pix;
-            gchar *str;
+    {
+        GdkPixbuf *pix;
+        gchar *str;
 
-            gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-            sscanf(str, "%x", &addr);
+        gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+        sscanf(str, "%x", &addr);
 
-			color = (addr == pc) ? &color2 : &color1;
+		color = (addr == pc) ? &color2 : &color1;
 
-            if(g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL)
-                pix = create_pixbuf("bkpt.xpm");
-            else
-                pix = create_pixbuf("void.xpm");
+        if(g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL)
+            pix = create_pixbuf("bkpt.xpm");
+        else
+            pix = create_pixbuf("void.xpm");
 
-            gtk_list_store_set(store, &iter, COL_ICON, pix, COL_COLOR, color, -1);
-            g_free(str);
-			g_object_unref(pix);
-        }
+        gtk_list_store_set(store, &iter, COL_ICON, pix, COL_COLOR, color, -1);
+        g_free(str);
+		g_object_unref(pix);
+    }
 }
 
 static GtkWidget *list;
