@@ -34,16 +34,22 @@
 #include "ti68k_int.h"
 
 /*
-	Retrieve address of heap (pointed by $5D42).
+	Retrieve address of heap (pointed by $5D42 on TI92).
 */
 void heap_get_addr(uint32_t *base)
 {
 	uint32_t ptr;
 
 	if(tihw.ti92v2)
+	{
 		ptr = 0x4720 + 0x1902;		//tios::main_lcd equ tios::globals+$0000
+		*base = rd_long(ti68k_get_real_address(ptr));
+	}
 	else if(tihw.ti92v1)
+	{
 		ptr = 0x4440 + 0x1902;		//and tios::heap equ tios::globals+$1902
+		*base = rd_long(ti68k_get_real_address(ptr));
+	}
 	else
 	{
 		uint32_t b, size, addr;
@@ -54,25 +60,16 @@ void heap_get_addr(uint32_t *base)
 			// AMS1
 			romcalls_get_symbol_address(0x96, &addr);		// tios::HeapDeref (#0x096)
 			ptr = rd_word(ti68k_get_real_address(addr + 8));// MOVEA.W $7592,A0
+			*base = rd_long(ti68k_get_real_address(ptr));
 		} else
 		{
 			// AMS2
-			//romcalls_get_symbol_address(0x441, base);
-			romcalls_get_symbol_address(0x96, &addr);		// tios::HeapDeref (#0x096)
-			ptr = rd_word(ti68k_get_real_address(addr + 8));
-			if(ptr == 0x2078)
-				ptr = rd_word(ti68k_get_real_address(addr + 10));// MOVEA.W $7592,A0 (AMS203)
-			else if(ptr == 0x2079)
-				ptr = rd_word(ti68k_get_real_address(addr + 12));// MOVEA.W $79F2,A0 (AMS300)
-			else
-			{
-				fprintf(stderr, "Warning/Bug: heap_get_addr: unhandled case !\n");
-				ptr = 0;
-			}
+			romcalls_get_symbol_address(0x441, &addr);		// tios::HeapTable	(#0x441)
+			*base  = addr;
 		}
 	}
 
-	*base = rd_long(ti68k_get_real_address(ptr));
+	
 }
 
 /*

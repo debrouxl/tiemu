@@ -39,17 +39,19 @@ première fois, j'ai converti, puis choisi la nouvelle ROM dans la liste, et
 TiEmu a planté (fenêtre de plantage Windows). La deuxième fois, la ROM était
 déjà dans la liste, je l'ai choisie et tout a marché...
 
-*  Tiens, je viens de t'écrire un mail:
-Tiens, encore un truc, dans le débogueur cette fois-ci: Actuellement, F8 sur
+*  Tiens, encore un truc, dans le débogueur cette fois-ci: Actuellement, F8 sur
 un trap rentre dans un trap. Pourrais-tu s'il te plaît faire en sorte que F8
 ne rentre pas dans le trap, mais le traîte comme un JSR? VTI fait ça et
 c'est bien pratique. En revanche, F7 devrait rentrer dans le trap.
 
-* Et encore un autre bogue: l'écriture en FlashROM n'est pas émulée correctement, même si je saute tous mes astuces anti-débogage, HW3Patch ne fonctionne pas.
-Et pour le problème de Flash: Les écritures en 0x812d50-0x812d5f (word par word) ne sont effectivement pas passées! Les écritures en 0x83be8c/0x83be8d, 0x83be90/0x83be91, 0x83be96/0x83be97 et 0x83be9c/0x83be9d (word par word aussi) sont passées.
-Peut-être que ta protection anti-écriture est trop large, elle concerne seulement le boot (0x800000-0x80ffff).
-
-* Autre bogue, la fenêtre heap affiche n'importe quoi sous AMS 3.01.
+* Et encore un autre bogue: l'écriture en FlashROM n'est pas émulée correctement, 
+même si je saute tous mes astuces anti-débogage, HW3Patch ne fonctionne pas.
+Et pour le problème de Flash: Les écritures en 0x812d50-0x812d5f (word par word) 
+ne sont effectivement pas passées! Les écritures en 
+0x83be8c/0x83be8d, 0x83be90/0x83be91, 0x83be96/0x83be97 et 0x83be9c/0x83be9d 
+(word par word aussi) sont passées.
+Peut-être que ta protection anti-écriture est trop large, elle concerne seulement 
+le boot (0x800000-0x80ffff).
 
 Lionel
 ======
