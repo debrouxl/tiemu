@@ -76,7 +76,7 @@ typedef struct
     int background;
     int grayplanes;
 
-    int restrict;
+    int restricted;
     int cpu_rate;       // OSC1
     int hw_rate;        // OSC2
     int lcd_rate;       // synched OSC2 (hw1) or OSC3 (hw2)

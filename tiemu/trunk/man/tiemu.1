@@ -1,14 +1,14 @@
-.TH (GTK)TIEMU 1 "October 31, 2000"
+.TH (GTK)TIEMU 1 "June 11, 2004"
 .SH NAME
-gtktiemu - a TI emulator for TI89/92/92+ calculators
+tiemu - a TI emulator for TI89/92/92+/V200PLT hand-helds
 .SH SYNOPSYS
-\fBgtktiemu\fP [-h] [-v] [-rom_file=] [-ram_file=] [-calc=] [-link=] [-adr_port=] [-dev_port=] [-timeout=] [-delay=]  [-gray_planes=] [-tick_rate] [-cycle_rate] [-dark_col] [-light_col] [-sync_one=] [-background=] [filename] [--help] [--version] 
+\fBgtktiemu\fP [-h] [-v] [-rom_file=] [-sav_file=] [image] [--help] [--version] 
 .SH DESCRIPTION
-The \fBGtkTiEmu\fP program allows you to emulate a Texas Instruments calculators such as a TI89, TI92 or TI92+ calculator.
+The \fBTiEmu\fP program allows you to emulate a Texas Instruments calculators such as a TI89, TI92, TI92+ or V200PLT gand-held.
 The emulator has also a virtual link capability which allows to connect it to another program (such as a linking program for instance).
 .SH OPTIONS
 The command line options override the default options (startup options) and the config file options even.
-The \fBGtkTiEmu\fP accepts the following options:
+The \fBTiEmu\fP accepts the following options:
 .TP
 \fB-h, --help\fP
 Display a list of all command line options.
@@ -17,67 +17,14 @@ Display a list of all command line options.
 Output the version info.
 .TP
 \fB-rom_file=\fP
-Load the specified ROM file. Must be a valid TI89/92/92+ ROM image.
+Load the specified ROM image. Must be a valid TI89/92/92+/V200 ROM image.
 .TP
-\fB-ram_file=\fP
-Load the specified RAM file. Must be a valid TI89/92/92+ RAM image.
-.TP
-\fB-calc=\fP
-Select a calculator type: ti92+, ti92, ti89.
-.TP
-\fB-link=\fP
-Select a link cable type: Grey TIGraphLink (tgl), home-made serial or Black TIGraphLink (ser), home-made parallel link (par), fastAVRlink (avr), generic virtual link (vtl), TIEmulator virtual link (tie), VTi virtual link (vti), TI/PC USB link (tpu) or USB TIGraphLink (ugl).
-.TP
-\fB-adr_port=\fP
-This value can represent either a direct address, either a link number/mode, according to the link type.
-Give the direct address of the parallel port (0x3BC, 0x378 or 0x278) or serial
-port (0x3F8, 0x2F8, 0x3E8 or 0x2E8), depending of the link cable type.
-Give the link number of the virtual link (1 -> #0, 2 -> #1).
-Give the link mode of the TI/PC USB link (1 -> 'raw' mode, 2 -> 'cooked' mode).
-.TP
-\fB-dev_port=\fP
-Give the serial port device (/dev/ttyS[0..3]) for the Grey TIGraphLink or the fastAVRlink.
-.TP
-\fB-timeout=\fP
-in tenth of seconds (0.1 s). This is the time while the program wait a response of the 
-calculator. Once this delay elapsed, the program send a time out error. The 
-default value is 1 seconds.
-.TP
-\fB-delay=\fP
-in microseconds. This is the time which separate the transmission of 2 bytes.
-The default value is 5 microseconds. Decrease this value increase the 
-transfer speed but decrease the reliability of the transmission.
-.TP
-\fB-gray_planes=\fP
-This value represent the number of grey scales on the TI planar screen. Legal values are: 0 (Black & White), 2 (2 extra colors -> 4 colors), 5 (5 extra colors -> 7 colors) or 11 (blurry mode).
-.TP
-\fB-tick_rate=\fP
-set number the rate of the timer. The 'tickrate' is a measure of how often the internal timer of the TI89/92/92+ should be increased by one. Since the screen is updated every 16th time the timer ticks, this value is important for emulator performance. For fast Pentium (or equivalent processors), you should probably leave it at 40000. For slower Pentium, you should probably increase this to leave more room for the m68k emulation, or, if a game is running too slox you could try to decrease this (which will speed the game up if it is synchronized with the timer and is not too CPU-intensive).
-Defaults to 40000 and can be any integer value. The higher, the slower.
-.TP
-\fB-cycle_rate=\fP
-set the rate of instructions. The 'cyclerate' is a measure of how long to delay each m68k instruction beforeproceeding to the next. On slower Pentium (or equivalent processors), always set this to 0 as delay is not necessary. On faster Pentium , the default works pertty fine (can be adjusted from program to program if you want as exact speed as possible).
-Defaults to 140 and can be any integer value.
-.TP
-\fB-dark_col=\fP
-set the dark (dark blue) color to the given RGB value (in hex). Format: 0xrrggbb. Default value is 0x000034.
-.TP
-\fB-light_col=\fP
-set the dark (dark blue) color to the given RGB value (in hex). Format: 0xrrggbb. Default value is 0x989898.
-.TP
-\fB-sync_one=\fP
-0 or 1. Must be an integer boolean value. If you set this to \fB0\fP, scren updating will be synchronized with the timer which means it will always be updated regularly. This may cause grayscale pictures to flicker when you press keys and other things happen in the code. If you set this to \fB1\fP, scren updating will be synchronized with IRQ1. This means that if IRQ1 does not run, the screen is not updated. This options usually makes grayscales rock-stable, but will not work at all in programs thqt turn off IRQ1 (like 'tunnel' or 'torus'). This options is 0 per default but switching it to 1 is usually a good idea when grayscale is involved.
-.TP
-\fB-background=\fP
-0 or 1. If set to 0, GtkTiEmu will display only the calculator LCD. You will not see the keyboard but popup menu is still accessible.
-.TP
-\fBfilename\fP
-a ROM file to load at startup, such as 'ti92.rom'.
-.TP
+\fB-sav_file=\fP
+Load the specified state file. Must be a valid TI89/92/92+/V200 state image.
 .SH SEE ALSO
-gtktilink(1) for the latest information on the link cable parameters.
+tilp(1) for the latest information on the link cable parameters.
 .SH CONFIG FILE FORMAT
-This section describes the format of the .gtktiemu config file which is in the home directory of the user (Linux). A line preceded by the '#' symbol is a comment. 
+This section describes the format of the .tiemu config file which is in the home directory of the user (Linux). A line preceded by the '#' symbol is a comment. 
 Each line has the following format: option=something.
 The config file must have the 'RC_END' string at end.
 Every line can be put in any order.

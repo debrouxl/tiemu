@@ -7,8 +7,8 @@
 @SET_MAKE@
 CC        = @CC@
 CPP       = @CPP@
-CFLAGS    = @CFLAGS@
-LDFLAGS   = @LDFLAGS@ $(no_undefined) -ljpeg
+CFLAGS    = @CFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GTHREAD_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@ @SDL_CFLAGS@
+LDFLAGS   = @LDFLAGS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GTHREAD_LIBS@ @GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ @SDL_LIBS@ $(no_undefined) -ljpeg
 
 INSTALL         = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -23,7 +23,9 @@ sysconfdir      = @sysconfdir@
 
 DEFS=@DEFS@ \
 	-DSHARE_DIR=\"${prefix}/share/tiemu\" \
-	-DPACKAGE_LOCALE_DIR=\"${prefix}/share/locale\"
+	-DLOCALEDIR=\"${prefix}/share/locale\"
+#	-DSHARE_DIR=\"$(pkgdatadir)\" \
+#	-DLOCALEDIR=\"$(datadir)/locale\"
 
 INCLUDES = \
 	-I@top_srcdir@ -I$(includedir) \
