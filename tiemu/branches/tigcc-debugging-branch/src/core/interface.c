@@ -147,10 +147,10 @@ int ti68k_exit(void)
 	return 0;
 }
 
-int ti68k_get_cycle_count(int reset, int *diff)
+unsigned int ti68k_get_cycle_count(int reset, unsigned int *diff)
 {
-	static int old_cnt = 0;
-	int new_cnt;
+	static unsigned int old_cnt = 0;
+	unsigned int new_cnt;
 
 	new_cnt = hw_m68k_get_cycle_count(reset);
 

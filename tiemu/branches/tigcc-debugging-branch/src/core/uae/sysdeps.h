@@ -153,6 +153,6 @@ extern void *xmalloc(size_t);
 #define STATIC_INLINE static __inline__
 #endif
 
-#if defined(__WIN32__)
+#ifdef _MSC_VER
 #define __inline__ __inline
 #endif

@@ -41,15 +41,17 @@
 #include "dbg_all.h"
 
 /* 
-   The TI92/89 should approximately execute NB_INSTRUCTIONS_PER_LOOP in 
-   TIME_LIMIT milliseconds (1.500.000 instructions/s).
+   The TI92/89 should approximately execute NB_CYCLES_PER_LOOP_HW[12] in 
+   TIME_LIMIT milliseconds (10.000.000 or 12.000.000 cycles/s).
    If you think this values are a bit too big, you can slow down 
    the emulator by changing them 
 */
-#define NB_INSTRUCTIONS_PER_LOOP 50000	// 50000 inst
+#define NB_CYCLES_PER_LOOP_HW1 300000	// 300000 cycles
+#define NB_CYCLES_PER_LOOP_HW2 360000	// 360000 cycles
 #define TIME_LIMIT               30	    // 30 ms
+#define MIN_INSTRUCTIONS_PER_CYCLE 4 	// instructions take at least 4 cycles
 
-static int cpu_instr = NB_INSTRUCTIONS_PER_LOOP;
+static int cpu_cycles = NB_CYCLES_PER_LOOP_HW2;
 
 static guint tid = 0;
 static gint  res = 0;
@@ -74,18 +76,20 @@ static gboolean engine_func(gint *data)
 
 	// set instruction rate
     if(params.cpu_rate != -1)
-        cpu_instr = params.cpu_rate;
+        cpu_cycles = params.cpu_rate;
+    else
+        cpu_cycles = tihw.hw_type == HW1 ? NB_CYCLES_PER_LOOP_HW1 : NB_CYCLES_PER_LOOP_HW2;
 
 	// run emulation core
 	g_timer_start(tmr);
-	*data = hw_m68k_run(cpu_instr);
+	*data = hw_m68k_run(cpu_cycles / MIN_INSTRUCTIONS_PER_CYCLE, cpu_cycles);
 	g_timer_stop(tmr);
 
 	// a bkpt has been encountered ? If yes, stop engine
 	if(*data)
 		return FALSE;
 
-	// get time needed to execute 'cpu_instr' instructions
+	// get time needed to execute 'cpu_cycles' cycles
 	ms = 1000 * g_timer_elapsed(tmr, NULL); // return 0, why ?
 	g_timer_destroy(tmr);
 	//cal = (guint)ms;
@@ -139,13 +143,14 @@ void engine_calibrate(void)
 	int i;
 	gdouble ms;
 	GTimer *tmr = g_timer_new();
+	int cycles = tihw.hw_type == HW1 ? NB_CYCLES_PER_LOOP_HW1 : NB_CYCLES_PER_LOOP_HW2;
 
 	fprintf(stdout, "Calibrating engine: ");
 	g_timer_start(tmr);
 
 	for(i = 0; i < NLOOPS; i++)
 	{
-		hw_m68k_run(NB_INSTRUCTIONS_PER_LOOP);
+		hw_m68k_run(cycles / MIN_INSTRUCTIONS_PER_CYCLE, cycles);
 	}
 
 	g_timer_stop(tmr);

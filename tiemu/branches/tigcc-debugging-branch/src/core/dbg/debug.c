@@ -127,7 +127,7 @@ int ti68k_debug_step_over(void)
 	// run emulation until address after instruction is reached
 	do
 	{
-		hw_m68k_run(1);
+		hw_m68k_run(1, 0);
 
 		// force GUI refresh in order to be able to cancel operation
 		while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
@@ -155,12 +155,12 @@ int ti68k_debug_step_out(void)
 	// run emulation until address is reached
 	do
 	{
-		hw_m68k_run(1);
+		hw_m68k_run(1, 0);
 
 		//printf("$%06x: %06x\n", m68k_getpc(), curriword());
 		if(is_ret_inst((uint16_t)curriword()))
 		{
-			hw_m68k_run(1);
+			hw_m68k_run(1, 0);
 			return 0;
 		}	
 	}
@@ -197,7 +197,7 @@ int ti68k_debug_skip(uint32_t next_pc)
 
 int ti68k_debug_do_instructions(int n)
 {
-    return hw_m68k_run(n);
+    return hw_m68k_run(n, 0);
 }
 
 // Used to read/modify/write memory directly from debugger
