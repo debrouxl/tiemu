@@ -1,6 +1,12 @@
 2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
-        Merged MinGW GDB 6.3-1 patches.
+        * symtab.c (find_pc_sect_psymtab, find_pc_sect_symtab): Always assume the object file has been reordered.
+        * dbxread.c (find_relocation_offset): Default to text section offset rather than 0.
+          (read_dbx_symtab): Pass objfile parameter to find_relocation_offset.
+
+2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        Merge MinGW GDB 6.3-1 patches.
 
 2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 

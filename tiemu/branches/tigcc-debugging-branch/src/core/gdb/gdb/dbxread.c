@@ -1171,14 +1171,14 @@ function_outside_compilation_unit_complaint (const char *arg1)
 }
 
 /* (TiEmu 20050401 Kevin Kofler) */
-static CORE_ADDR find_relocation_offset (CORE_ADDR addr)
+static CORE_ADDR find_relocation_offset (CORE_ADDR addr, struct objfile *objfile)
 {
   struct obj_section *s;
   s = find_pc_section (addr);
   if (s)
     return s->offset;
   else
-    return 0; /* Well, no section for this symbol, so we can guess just about anything. */
+    return ANOFFSET (objfile->section_offsets, SECT_OFF_TEXT (objfile)); /* FIXME */
 }
 
 /* Setup partial_symtab's describing each source file for which
@@ -1331,19 +1331,19 @@ read_dbx_symtab (struct objfile *objfile)
 
 	  case N_TEXT | N_EXT:
 	  case N_NBTEXT | N_EXT:
-	  nlist.n_value += find_relocation_offset (nlist.n_value);
+	  nlist.n_value += find_relocation_offset (nlist.n_value, objfile);
 	  goto record_it;
 
 	  case N_DATA | N_EXT:
 	  case N_NBDATA | N_EXT:
-	  nlist.n_value += find_relocation_offset (nlist.n_value);
+	  nlist.n_value += find_relocation_offset (nlist.n_value, objfile);
 	  goto record_it;
 
 	  case N_BSS:
 	  case N_BSS | N_EXT:
 	  case N_NBBSS | N_EXT:
 	  case N_SETV | N_EXT:		/* FIXME, is this in BSS? */
-	  nlist.n_value += find_relocation_offset (nlist.n_value);
+	  nlist.n_value += find_relocation_offset (nlist.n_value, objfile);
 	  goto record_it;
 
 	  case N_ABS | N_EXT:
@@ -1367,7 +1367,7 @@ read_dbx_symtab (struct objfile *objfile)
 	  case N_FN:
 	  case N_FN_SEQ:
 	  case N_TEXT:
-	  nlist.n_value += find_relocation_offset (nlist.n_value);
+	  nlist.n_value += find_relocation_offset (nlist.n_value, objfile);
 	  namestring = set_namestring (objfile, nlist);
 
 	  if ((namestring[0] == '-' && namestring[1] == 'l')
@@ -1397,7 +1397,7 @@ read_dbx_symtab (struct objfile *objfile)
 	  continue;
 
 	  case N_DATA:
-	  nlist.n_value += find_relocation_offset (nlist.n_value);
+	  nlist.n_value += find_relocation_offset (nlist.n_value, objfile);
 	  goto record_it;
 
 	  case N_UNDF | N_EXT:
@@ -1476,7 +1476,7 @@ read_dbx_symtab (struct objfile *objfile)
 	    static char *dirname_nso;
 	    int prev_textlow_not_set;
 
-	    valu = nlist.n_value + find_relocation_offset (nlist.n_value);
+	    valu = nlist.n_value + find_relocation_offset (nlist.n_value, objfile);
 
 	    prev_textlow_not_set = textlow_not_set;
 
@@ -1696,7 +1696,7 @@ read_dbx_symtab (struct objfile *objfile)
 	  switch (p[1])
 	  {
 	  case 'S':
-	    nlist.n_value += find_relocation_offset (nlist.n_value);
+	    nlist.n_value += find_relocation_offset (nlist.n_value, objfile);
 #ifdef STATIC_TRANSFORM_NAME
 	    namestring = STATIC_TRANSFORM_NAME (namestring);
 #endif
@@ -1707,7 +1707,7 @@ read_dbx_symtab (struct objfile *objfile)
 				 psymtab_language, objfile);
 	    continue;
 	  case 'G':
-	    nlist.n_value += find_relocation_offset (nlist.n_value);
+	    nlist.n_value += find_relocation_offset (nlist.n_value, objfile);
 	    /* The addresses in these entries are reported to be
 	       wrong.  See the code that reads 'G's for symtabs. */
 	    add_psymbol_to_list (namestring, p - namestring,
@@ -1843,7 +1843,7 @@ read_dbx_symtab (struct objfile *objfile)
 		function_outside_compilation_unit_complaint (name);
 		xfree (name);
 	      }
-	    nlist.n_value += find_relocation_offset (nlist.n_value);
+	    nlist.n_value += find_relocation_offset (nlist.n_value, objfile);
 	    /* Kludges for ELF/STABS with Sun ACC */
 	    last_function_name = namestring;
 #ifdef SOFUN_ADDRESS_MAYBE_MISSING
@@ -1908,7 +1908,7 @@ read_dbx_symtab (struct objfile *objfile)
 		function_outside_compilation_unit_complaint (name);
 		xfree (name);
 	      }
-	    nlist.n_value += find_relocation_offset (nlist.n_value);
+	    nlist.n_value += find_relocation_offset (nlist.n_value, objfile);
 	    /* Kludges for ELF/STABS with Sun ACC */
 	    last_function_name = namestring;
 #ifdef SOFUN_ADDRESS_MAYBE_MISSING

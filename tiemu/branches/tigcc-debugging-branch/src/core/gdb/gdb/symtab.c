@@ -739,9 +739,13 @@ find_pc_sect_psymtab (CORE_ADDR pc, asection *section)
 	   many partial symbol tables containing the PC, but
 	   we want the partial symbol table that contains the
 	   function containing the PC.  */
+	/* (TiEmu 20050401 Kevin Kofler) Our object files are always
+	                                 reordered (or almost). */
+#if 0
 	if (!(objfile->flags & OBJF_REORDERED) &&
 	    section == 0)	/* can't validate section this way */
 	  return (pst);
+#endif
 
 	if (msymbol == NULL)
 	  return (pst);
@@ -1885,7 +1889,9 @@ find_pc_sect_symtab (CORE_ADDR pc, asection *section)
 	/* In order to better support objfiles that contain both
 	   stabs and coff debugging info, we continue on if a psymtab
 	   can't be found. */
-	if ((objfile->flags & OBJF_REORDERED) && objfile->psymtabs)
+	/* (TiEmu 20050401 Kevin Kofler) Our object files are always
+	                                 reordered (or almost). */
+	if (/*(objfile->flags & OBJF_REORDERED) &&*/ objfile->psymtabs)
 	  {
 	    ps = find_pc_sect_psymtab (pc, section);
 	    if (ps)
