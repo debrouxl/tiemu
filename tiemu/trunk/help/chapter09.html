@@ -1,0 +1,440 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR" content="Mozilla 1.1 under Linux">
+  <title>TiEmu User's Manual</title>
+  <meta name="author" content="The TiEmu team">
+  <meta name="description" content="User's Manual">
+</head>
+<body style="background-color: rgb(255, 255, 255);">
+<div align="center">
+<div style="text-align: left;">
+<div class="NAVFOOTER">
+<hr align="left" width="100%">
+<table summary="Footer navigation table" border="0" cellpadding="0"
+ cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td align="left" valign="top" width="33%"><a href="chapter08.html"
+ accesskey="P">Prev</a></td>
+      <td align="center" valign="top" width="34%"><a
+ href="Manual_en.html" accesskey="H">Home</a></td>
+      <td align="right" valign="top" width="33%"><a
+ href="chapter20.html" accesskey="N">Next</a></td>
+    </tr>
+    <tr>
+      <td align="left" valign="top" width="33%">Screenshots<br>
+      </td>
+      <td align="center" valign="top" width="34%">&nbsp;</td>
+      <td align="right" valign="top" width="33%">Bugs<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<hr align="left" width="100%">
+</div>
+</div>
+</div>
+<h1>9. Command line</h1>
+<p><font color="#000000">TiEmu can accept some arguments on the command
+line for specific purposes. The text below is an excerpt of the Linux
+'manpage' but it is appplicable to Windows, too. <br>
+Under Linux, manpage is accessible by typeing 'man tiemu' in the shell.<br>
+Windows users will open the <span style="font-style: italic;">ManPage.txt</span>
+file in <span style="font-style: italic;">C:\Program Files\TiEmu</span>
+folder.<br>
+</font></p>
+<table style="width: 100%; text-align: left;" border="0" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><font size="-1"><span
+ style="font-family: courier;">(GTK)TIEMU(1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(GTK)TIEMU(1)</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">NAME</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tiemu - a TI emulator for TI89/92/92+/V200PLT hand-helds</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">SYNOPSYS</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+gtktiemu&nbsp; [-h]&nbsp; [-v] [-rom_file=] [-sav_file=] [image]
+[--help] [--ver-</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sion]</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">DESCRIPTION</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+The TiEmu program allows you to emulate a Texas Instruments calculators</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+such&nbsp; as&nbsp; a&nbsp; TI89,&nbsp; TI92, TI92+ or V200PLT
+gand-held.&nbsp; The emulator has</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+also a virtual link capability which allows to connect&nbsp; it&nbsp;
+to&nbsp; another</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+program (such as a linking program for instance).</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">OPTIONS</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+The command line options override the default options (startup options)</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+and the config file options even.&nbsp;&nbsp; The&nbsp; TiEmu&nbsp;
+accepts&nbsp; the&nbsp; following</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+options:</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-h, --help</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Display a list of all command line options.</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-v, --version</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Output the version info.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-rom_file=</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Load&nbsp; the&nbsp; specified ROM image. Must be a valid
+TI89/92/92+/V200</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ROM image.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-sav_file=</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Load the specified state file. Must be a valid&nbsp; TI89/92/92+/V200</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+state image.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">SEE ALSO</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tilp(1) for the latest information on the link cable parameters.</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">CONFIG FILE FORMAT</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+This section describes the format of the .tiemu config file which is in</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+the home directory of the user (Linux). A line preceded by the '#' sym-</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+bol&nbsp; is&nbsp; a&nbsp; comment.&nbsp;&nbsp; Each line has the
+following format: option=some-</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+thing.&nbsp; The config file must have the 'RC_END' string&nbsp;
+at&nbsp; end.&nbsp;&nbsp; Every</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+line&nbsp; can&nbsp; be put in any order.&nbsp; Take in mind that any
+comment added in</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+the config file will be overwritten.&nbsp; Below is&nbsp;
+described&nbsp; each&nbsp; option</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+and the possible values:</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+calctype=&nbsp; Defines&nbsp; the&nbsp; calculator&nbsp; type.&nbsp;
+Choose one of the following</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+value: ti89, ti92, ti92+.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+linktype= Define the link cable&nbsp; type.&nbsp; Choose&nbsp;
+one&nbsp; of&nbsp; the&nbsp; following</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+value:&nbsp; TIGraphLink,&nbsp; parallel,&nbsp; serial, AVRlink,
+fastAVRlink, virtual,</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TiEmulator, VTi, UsbGraphLink, TiPcUsbLink.</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+adr_port= places the I/O address of the I/O port&nbsp; to&nbsp;
+use.&nbsp; It&nbsp; can&nbsp; be</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0x3F8 for a serial port or 0x378 for a parallel port for instance.</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+serial_device=&nbsp; places&nbsp; the character device name of the
+serial port to</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+use with a Grey TIGL.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+timeout= with the timeout value to use in&nbsp; tenth&nbsp; of&nbsp;
+seconds.&nbsp; Default</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+value: 20.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+delay=&nbsp; with&nbsp; the&nbsp; delay&nbsp; value&nbsp; to&nbsp; use
+in micro-seconds for home-made</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cables. Default value: 10</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+use_tidev= Define whether gtktilink will use or not the&nbsp;
+'tidev&nbsp; kernel</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+module'&nbsp; for&nbsp; handling&nbsp; your link cable. The link cable
+is managed thru</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+the libTicable but with the kernel module and not&nbsp; with&nbsp;
+low-level&nbsp; I/O</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+routines.&nbsp; Options: 'yes' or 'no'.</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+background=&nbsp; Define&nbsp; whether GtkTiEmu display the background
+(keyboard)</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+or only the LCD screen. Put 0 if you do not want the keyboard.</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rom_file= Define the ROM image to load at startup.</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ram_file= Define the RAM image to load at startup.</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+gray_planes= Define the number of gray scales. Valid values are 0, 2, 5</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+or 11.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tick_rate= Define the tick rate.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cycle_rate= Define the cycle rate.</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+dark_color=&nbsp; Set&nbsp; the&nbsp; dark&nbsp; color&nbsp; to&nbsp;
+the&nbsp; given RGB value. Format is</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0xrrggbb.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+light_color= Set the light color to the&nbsp; given&nbsp; RGB&nbsp;
+value.&nbsp; Format&nbsp; is</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+0xrrggbb.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sync_one=&nbsp; Enable or disable synchronization on IRQ1 (m68k IRQs).
+Valid</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+value is: 0 or 1.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+code_lines= Defines the number of lines which are displayed in the code</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+box of th debugger window.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+stack_lines=&nbsp; Defines&nbsp; the&nbsp; number&nbsp; of lines which
+are displayed in the</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+stack box of th debugger window.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mem_lines= Defines the number of lines which are displayed in the&nbsp;
+mem-</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ory box of th debugger window.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+img_format=&nbsp; Defines&nbsp; the image format of the screenshots.
+Several for-</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mats are available: PCX, XPM, JPG or BMP (SDL only).</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+img_type= You can do screenshots in Black&amp;White or in colors.</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+img_size= The size of the image that is to say you can shots&nbsp;
+only&nbsp; the</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LCD or the entire window (skin+LCD).</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+screen_file=&nbsp; Defines&nbsp; the&nbsp; base&nbsp; filename where
+the screenshot will be</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+stored.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+screen_counter= This allows you to save the current screenshot counter.</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+In&nbsp;&nbsp; fact,&nbsp;&nbsp; the&nbsp;&nbsp; resulting&nbsp;&nbsp;
+filename&nbsp;&nbsp; is&nbsp;&nbsp; computed&nbsp;&nbsp; as&nbsp;&nbsp;
+'screen-</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+file[screen_counter].[img_format]. Example: 'screenshot001.xpm'.</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+console= Available under Windows platform only. You can&nbsp;
+hide&nbsp; or&nbsp; show</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+the console at startup or even display it only during boot.</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Think to terminate your config script with the 'RC_END' word !!!</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">COPYRIGHT</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Copyright&nbsp; (C)&nbsp; 2000-2001, Romain Lievin and Thomas
+Corvazier.&nbsp; Permis-</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sion to use, copy, modify, and distribute this software and&nbsp;
+its&nbsp; docu-</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mentation&nbsp; for&nbsp; any purpose and without fee is hereby
+granted, provided</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+that the above copyright notice appear in all copies and that both that</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+copyright&nbsp; notice and this permission notice appear in supporting
+docu-</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mentation.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+This program and its source code is distributed under the terms
+of&nbsp; the</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+terms&nbsp; of the GNU General Public License as published by the Free
+Soft-</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ware Foundation; either version 2 of the License, or (at&nbsp;
+your&nbsp; option)</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+any later version.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+This&nbsp; program&nbsp; is&nbsp; distributed&nbsp; in the hope that it
+will be useful, but</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+WITHOUT ANY&nbsp; WARRANTY;&nbsp; without&nbsp; even&nbsp; the&nbsp;
+implied&nbsp; warranty&nbsp; of&nbsp; MER-</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CHANTABILITY&nbsp; or FITNESS FOR A PARTICULAR PURPOSE.&nbsp; See the
+GNU General</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Public License for more details.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+You should have received a copy of the GNU General Public License along</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+with this program; if not, write to the Free Software Foundation, Inc.,</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">SUGGESTIONS AND BUG REPORTS</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+The&nbsp; canonical place to find GtkTiEmu and some&nbsp;
+miscellenaous&nbsp; informa-</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tions&nbsp;&nbsp; is&nbsp;&nbsp; at&nbsp;&nbsp;
+http://lpg.ticalc.org/prj_gtktiemu&nbsp;&nbsp; (redirected&nbsp;&nbsp;
+on</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+http://gtktiemu.sourceforge.net).&nbsp;&nbsp;&nbsp;&nbsp;
+You&nbsp;&nbsp;&nbsp; can&nbsp;&nbsp;&nbsp; also&nbsp;&nbsp;&nbsp;
+look&nbsp;&nbsp;&nbsp;&nbsp; at</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+http://lpg.ticalc.org&nbsp; and&nbsp; http://www.ticalc.org for others
+TI related</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+programs for Linux.</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">AUTHOR</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Romain Lievin.&nbsp; Thomas Corvazier</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">SPECIAL THANKS</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+- Jonas Minnberg (Sasq) for Tiger - UAE, the Universal&nbsp;
+Amiga&nbsp; Emulator</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(http:// ??)</span><br style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-&nbsp; Benjamin&nbsp; Gordon&nbsp; &lt;ben@bxg.org&gt; for creating
+rpm packages: he is the</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+official maintainer of this package.</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-&nbsp; Julien&nbsp; Blache &lt;jb@jblache.org&gt; for creating deb
+packages: he is the</span><br style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+official maintainer of this package.</span><br
+ style="font-family: courier;">
+      <br style="font-family: courier;">
+      <span style="font-family: courier;">THANKS</span><br
+ style="font-family: courier;">
+      <span style="font-family: courier;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+June 11,
+2004&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(GTK)TIEMU(1)</span></font><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<hr>
+</body>
+</html>
