@@ -159,7 +159,6 @@ int hw_kbd_update(void)
         currIntLev = 2;
 
 		key_change = 0;
-        printf("$");
     }
   
     return rc;

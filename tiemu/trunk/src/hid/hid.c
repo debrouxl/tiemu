@@ -305,7 +305,7 @@ int hid_init(void)
 
   	// Init SDL
   	DISPLAY("Initializing Simple Directmedia Layer (SDL)... ");
-  	if(SDL_Init(SDL_INIT_VIDEO) < 0) 
+  	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) 
     {
 	  	gchar *s = g_strdup_printf("SDL: can't initialize: %s\n", SDL_GetError());
 	  	tiemu_error(0, s);
@@ -461,7 +461,7 @@ static int sdl_to_ti(int key)
 			case SDLK_DELETE : 		return TIKEY_CLEAR;
 			case SDLK_SCROLLOCK : 	return TIKEY_ON;			
 
-			default : return TIKEY_NU;
+			default : return TIKEY_VOID;
 		}
     }
   	else
@@ -565,14 +565,14 @@ static int sdl_to_ti(int key)
 			case SDLK_F6 : 			return TIKEY_CATALOG;
 			case SDLK_F9  : 		return TIKEY_APPS;
 			case SDLK_TAB : 		return TIKEY_STORE;
-			case SDLK_CAPSLOCK : 	return TIKEY_ALPHA;			
+			case SDLK_CAPSLOCK :	return TIKEY_ALPHA;
 			case SDLK_PAGEDOWN : 	return TIKEY_MODE;
 			// missing key here
 			case SDLK_PAGEUP : 		return TIKEY_EE;	
 			case SDLK_DELETE : 		return TIKEY_CLEAR;
-			case SDLK_SCROLLOCK : return TIKEY_ON;
+			case SDLK_SCROLLOCK :	return TIKEY_ON;
 		
-			default : return TIKEY_NU;
+			default : return TIKEY_VOID;
 		}
     }
 
@@ -582,12 +582,33 @@ static int sdl_to_ti(int key)
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 void gui_popup_menu(void);
 
+static SDL_TimerID tid;
+static Uint32 release_capslock(Uint32 interval, void *param)
+{
+	int key = (int)param;
+
+	printf("d");
+	ti68k_kbd_set_key(key, 0);	
+
+	SDL_RemoveTimer(tid);
+
+	return 0;
+}
+
 int hid_update_keys(void) 
 {
 	static int iKeyWasPressed;			// a key was pressed
   	SDL_Event event;
 
   	iKeyWasPressed = 0;
+
+	if(iKeyWasPressed)
+	{
+		/*if(iLastKey == TIKEY_ALPHA)
+		{
+
+		}*/
+	}
   
   	while(SDL_PollEvent(&event)) 
     {
@@ -663,6 +684,7 @@ int hid_update_keys(void)
 	    	}
 	  		else
 	    	{
+				int key = sdl_to_ti(event.key.keysym.sym);
                 /*
 				if(iAlpha)
 				{
@@ -670,15 +692,33 @@ int hid_update_keys(void)
 					//iAlpha = 0;
 				}
                 */
-
-	      		ti68k_kbd_set_key(sdl_to_ti(event.key.keysym.sym), 1);
+	      		ti68k_kbd_set_key(key, 1);
                 iKeyWasPressed = 1;
+
+				if(event.key.keysym.sym == SDLK_CAPSLOCK)
+				{
+					printf("u");
+					ti68k_kbd_set_key(key, 1);
+					// simulate a key press/release due to nature of CAPS/LOCK
+					tid = SDL_AddTimer(30, release_capslock, (void *)key);
+				}
 	    	}
 		}
       	else if(event.type == SDL_KEYUP) 
 		{
-	  		ti68k_kbd_set_key(sdl_to_ti(event.key.keysym.sym), 0);
-/*
+			int key = sdl_to_ti(event.key.keysym.sym);
+
+			if(event.key.keysym.sym != SDLK_CAPSLOCK)
+	  			ti68k_kbd_set_key(key, 0);
+			else
+			{
+				printf("u");
+				ti68k_kbd_set_key(key, 1);
+				// simulate a key press/release due to nature of CAPS/LOCK
+				tid = SDL_AddTimer(30, release_capslock, (void *)key);
+			}
+
+			/*
             if(iAlpha)
 	    	{
 	      		ti68k_kbd_set_key(TIKEY_ALPHA, 0);
@@ -688,11 +728,13 @@ int hid_update_keys(void)
 		}
       	else if(event.type == SDL_QUIT) 
 		{
-	  		//DISPLAY("SDL_QUIT\n");
-	  		ti68k_exit();
+			/* Calling gtk_main_quit will exits this block:
+					gdk_threads_enter();
+					gtk_main();
+					gdk_threads_leave();
+				as in main.c
+			*/
 			gtk_main_quit();
-
-	  		exit(0);
 		}
       	else if(event.type == SDL_VIDEORESIZE)
 		{
