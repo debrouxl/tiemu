@@ -61,9 +61,6 @@ void io_put_byte(CPTR adr, UBYTE arg)
 
 			// set: protected memory violation triggered when memory below [$000120] is written
 			tihw.prot_mem = bit_get(2, arg);
-
-            mem_and=(tihw.ram_wrap)?0x1ffff:(!tihw.ram256?0x1ffff:0x3ffff);
-            //mem_mask[0] = (mem_and==0x1fffff) ? (128*1024) : (256 * 1024);
 	    break;
         case 0x04:
 			// set: 000000..1FFFFF mapped to 200000..3FFFFF

@@ -56,12 +56,6 @@ ULONG mem_mask[8] = { 0 };
 	// C00000-FFFFFF : nothing
 
 int rom_changed[32]; // FLASH segments which have been (re)programmed
-
-//int memprotect;
-//int ram128;
-//int ram_wrap;
-int mem_and;
-
 int flash_protect;
 int rom_ret_or;
 int rom_write_ready;
@@ -100,10 +94,6 @@ int hw_mem_init(void)
 	tihw.prot_mem = 1;
 
   /* Init vars */
-  //memprotect=0;
-  //ram_wrap=0; 
-  mem_and=0x1ffff;
-  
   rom_write_ready=0; 
   rom_write_phase=0; 
   rom_ret_or=0;
