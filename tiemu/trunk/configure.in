@@ -6,8 +6,10 @@ AC_PREREQ(2.52)
 # init autoconf
 AC_INIT(src/hid/ticalc.c)
 
+##AM_MAINTAINER_MODE
+
 # set program version number
-VERSION=1.68
+VERSION=1.90-BETA
 PACKAGE=tiemu
 AC_SUBST(VERSION)
 AC_SUBST(PACKAGE)
@@ -19,6 +21,7 @@ AM_CONFIG_HEADER(config.h)
 # determine the system type
 dnl AC_CANONICAL_SYSTEM
 # determine the host type
+AC_CANONICAL_TARGET
 AC_CANONICAL_HOST
 
 # change the default prefix (/usr/local) to /usr
@@ -26,10 +29,6 @@ AC_PREFIX_DEFAULT('/usr')
 
 # build time sanity check...
 AM_SANITY_CHECK
-
-# Just for fun :)
-echo -n "checking for something to drink while compiling..."
-echo " err: no fridge found"
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -55,17 +54,17 @@ AC_SUBST(TIFILES_CFLAGS)
 AC_SUBST(TIFILES_LIBS)
 
 # check for ticalcs presence
-PKG_CHECK_MODULES(TICALCS, ticalcs >= 4.3.0)
+PKG_CHECK_MODULES(TICALCS, ticalcs-4 >= 4.5.0)
 AC_SUBST(TICALCS_CFLAGS)
 AC_SUBST(TICALCS_LIBS)
 
 # check for glib presence
-PKG_CHECK_MODULES(GLIB, glib > 1.2.0)
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.2.2)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
 # check for gtk presence
-PKG_CHECK_MODULES(GTK, gtk+ > 1.2.0)
+PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.2.0)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
@@ -85,11 +84,9 @@ AC_CHECK_HEADERS(jpeglib.h)
 AC_CHECK_HEADERS(stdint.h)
 
 dnl checks for libraries.
-AC_CHECK_LIB(glib, main)
 AC_CHECK_LIB(m, pow)
 AC_CHECK_LIB(jpeg, jpeg_destroy_compress)
 AC_CHECK_LIB(pthread, pthread_create) dnl needed by SDL
-AC_CHECK_LIB(SDL, SDL_Init)
 
 # checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -167,6 +164,8 @@ case $host in
   *-*-mingw*) ARCH="-D__WIN32__ -D__MINGW32__ -Os -s" ;;
   *-*-cygwin) ARCH="-D__WIN32__ -D__CYGWIN__ -mno-cygwin" ;;
   *-*-*bsd*)  ARCH="-D__BSD__" ;;
+  i[[34]]86-*-linux-*) ARCH="-D__I386__ -D__LINUX__" ;; 
+  i[[56]]86-*-linux-*) ARCH="-O3 -mcpu=pentium -DPENT_COUNTER -DX86_ASSEMBLY -D__LINUX__" ;;
   *)          ARCH="-D__LINUX__" ;;
 esac
 
@@ -177,7 +176,7 @@ AM_PROG_LIBTOOL
 AC_PROG_LIBTOOL
 
 # some extra flags
-CFLAGS="$CFLAGS $ARCH -Wall -DDEBUGGER -DPENT_COUNTER"
+CFLAGS="$CFLAGS $ARCH -Wall -DDEBUGGER"
 LDFLAGS="$LDFLAGS"
 
 # pass flags
