@@ -370,7 +370,7 @@ load_image(FILE *fp)
   char *filename;
   FILE *ft;
   GError *error = NULL;
-  GdkGeometry geometry;
+  //GdkGeometry geometry;
   
   /*
    * Extract image from skin by creating a temp file

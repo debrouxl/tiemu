@@ -17,7 +17,7 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -187,9 +187,7 @@ sbar_print(char *fmt, ...)
   va_list ap;
 
   va_start(ap, fmt);
-
   vsprintf(message, fmt, ap);
-
   va_end(ap);
 
   gtk_statusbar_pop(GTK_STATUSBAR(statusbar), 1);

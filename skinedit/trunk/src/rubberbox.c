@@ -212,7 +212,7 @@ draw_rubberbox(GtkWidget *drawing_area, GdkRect rect)
   update_rect.w = ((oc.w + oc.x + 1) <= skin_infos.width) ? (oc.w + 1) : oc.w;  /* add 2 to really erase the lines (right, bottom) ... */
   update_rect.h = ((oc.h + oc.y + 1) <= skin_infos.height) ? (oc.h + 1) : oc.h; /* ... but be careful */
   
-  gtk_widget_draw (drawing_area, (GdkRectangle *)&update_rect);
+  gtk_widget_draw (drawing_area, (GdkRectangle *)(&update_rect));
   
   update_rect.x = c.x;
   update_rect.y = c.y;
