@@ -224,6 +224,7 @@ void hw_update(void)
     {
         G_LOCK(lcd_flag);
         lcd_flag = !0;
+		//printf(">");
         G_UNLOCK(lcd_flag);
     }
 

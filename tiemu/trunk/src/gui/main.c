@@ -69,6 +69,7 @@ static gint hid_refresh (gpointer data)
         hid_update_lcd();
         G_LOCK(lcd_flag);
         lcd_flag = 0;
+		//printf("<");
         G_UNLOCK(lcd_flag);
 
         // Toggles every FS (every time the LCD restarts at line 0)

@@ -160,14 +160,20 @@ void io_put_byte(CPTR adr, UBYTE arg)
             hw_dbus_putbyte(arg);
             break;
         case 0x10: 	// -w <76543210> (hw1)
-			// address of LCD memory divided by 8
+			// address of LCD memory divided by 8 (mutex pb !)-
 			if(tihw.hw_type == HW1)
+			{
 				tihw.lcd_ptr = &tihw.ram[((tihw.io[0x10] << 8) | tihw.io[0x11]) << 3];
+				//printf("@%04x ", ((tihw.io[0x10] << 8) | tihw.io[0x11]) << 3);
+			}
         break;
         case 0x11: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8
 			if(tihw.hw_type == HW1)
-				tihw.lcd_ptr = &tihw.ram[((tihw.io[0x10] << 8) | tihw.io[0x11]) << 3];
+			{
+				//tihw.lcd_ptr = &tihw.ram[((tihw.io[0x10] << 8) | tihw.io[0x11]) << 3];
+				//printf("$%04x ", ((tihw.io[0x10] << 8) | tihw.io[0x11]) << 3);
+			}
         break;
         case 0x12:	// -w <76543210>
 			// LCD logical width = (64-n)*2 bytes = (64-n)*16 pixels <=> n = 64-w/16
