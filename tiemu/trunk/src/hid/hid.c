@@ -292,16 +292,6 @@ int hid_exit(void)
 /* Events management (kbd & mouse) */
 /***********************************/
 
-int hid_popup_menu(void)
-{
-	if(popup_menu) {
-		popup_menu = 0;
-		return (!0);
-	}
-
-	return 0;
-}
-
 /* Converts a keyboard key (an SDL event) into a TI key */
 static int sdl_to_ti(int key) 
 {
@@ -521,7 +511,7 @@ static int sdl_to_ti(int key)
 
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 
-static int hid_update_keys(void) 
+int hid_update_keys(void) 
 {
   SDL_Event event;
   int i;
@@ -549,9 +539,8 @@ static int hid_update_keys(void)
 	    {
 	      if(!bFullscreen) 
 		{
-		      //SDL_WaitEvent(&event); // flush event
-			//gui_popup_menu();
-		      popup_menu = !0;
+		      SDL_WaitEvent(&event); // flush event
+			  gui_popup_menu();
 		}
 	      else
 		hid_switch_windowed();

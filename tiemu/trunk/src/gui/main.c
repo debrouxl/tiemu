@@ -209,16 +209,12 @@ int main(int argc, char **argv)
 	/*
 		Surprisingly, this way is less CPU intensive than gtk_main()
 		and putting the cb_update_key in a gtk_idle function.
+		GTK popup menu is called from SDL in hid.c
 	*/
 	gdk_threads_enter();
 	while(1) {
-		// poll events
-		cb_update_keys();
-
-		// we will remove polling by event later
-		if(hid_popup_menu()) {
-			gui_popup_menu();
-		}
+		// poll SDL events
+		hid_update_keys();
 
 		// do an iteration
 		gtk_main_iteration();
