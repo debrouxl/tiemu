@@ -51,8 +51,14 @@ union flagu intel_flag_lookup[256];
 unsigned long highCnt;
 # define readpec(l) __asm__(".byte 0x0f, 0x31" :"=a" (l), "=d" (highCnt))
 #elif defined(__WIN32__)
-# define readpec(l) { _asm("	rdtsc	t"); _asm("	
+static _inline readpec(l) {
+	__asm {
+		rdtsc		;
+		mov	l,eax		;lsw
+	};	
+};
 
+/*
 static _inline double getAbsoluteCPUcycle(void) {
 	unsigned __int32 temp[2];	//__int64
 
@@ -64,6 +70,7 @@ static _inline double getAbsoluteCPUcycle(void) {
 
 	return temp[1]*4294967296.0 + (*temp));
 }
+*/
 
 #else
 # define readpec(l) 
