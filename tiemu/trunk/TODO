@@ -3,9 +3,6 @@ List of stuffs to do (in French, sorry):
 ExtendeD
 ========
 
-* Pouvoir envoyer un fichier en le glissant déplaçant vers la calc
-serait pratique, comme sous VTI.
-
 * Un bug non reproduit : l'ouverture du débugger faisait défiler très
 rapidement toute seule la fenêtre Code sans s'arrêter à n'importe quel
 adresses (trop hautes pour être du code).
@@ -65,10 +62,6 @@ Une manière simple de reproduire le bogue du blocage de l'engine: appuie sur le 
 de la souris sur l'écran, garde-le appuyé jusqu'à ce que le menu apparaît, puis relâche-le 
 sans rien sélectionner dans le menu -> hop, émulateur bloqué.
 
-* Ton code pour les bsr F-Line est faux, 
-next_pc = curr_pc + ti68k_debug_disassemble(curr_pc, &output); donnera curr_pc + 2, alors 
-qu'il faut curr_pc + 4 pour FFEE et curr_pc + 6 pour FFF0.
-
 * Et sinon, il y a un autre cas particulier bizarre, je ne sais pas 
 s'il vaut le coup de le traîter, mais _bcd_math est un ROM_CALL qui s'appelle comme ça:
 - n'importe quelle méthode d'appel d'un ROM_CALL (jsr, F-Line etc.)
@@ -82,6 +75,29 @@ Précisions:
 - Pour le F-Line, tu peux comparer l'opcode avec 0xF8B5, mais pour les appels par jsr, 
 tu n'as pas d'autre choix que de tester le target du saut pour savoir si on saute vers 
 _bcd_math ou aillers
+
+Il y en a un dans TIGCCLIB:
+
+__floatunssibf:
+ link.w %a6,#-36
+ pea.l 8(%a6)
+ move.l 0xC8,%a0
+ move.l 0xB5*4(%a0),%a0 /* _bcd_math */
+ jsr (%a0)
+ .word 0x6B30 /* bcdMove | bcdUnsigned | bcdAbsSrc | bcdR0 */
+ move.l -10(%a6),%d0
+ move.l -6(%a6),%d1
+ move.w -2(%a6),%d2
+ unlk %a6
+ rts
+
+Le .word 0x6B30 est le code de la pseudo-FPU dont je parle. Et ce n'est pas
+exécuté par le processeur, _bcd_math rajoute 2 octets à l'adresse de retour.
+
+* FLINE addresse: 
+Le problème, c'est qu'il faut d'abord trouver __ld_entry_point pour calculer l'adresse.
+Mais tu peux le faire avec la table des handles: tu cherches le handle contenant 
+l'adresse courante, et tu as __ld_entry_point = HeapDeref(handle)+2.
 
 Lionel
 ======
@@ -97,11 +113,6 @@ des ROM_CALLs, sélectionner l'un d'entre eux
 certificate).
         * aller dans la fenêtre de debug: TIEmu est parti
 dans le décor, je ne sais pas s'il exécute ou pas
-
-+ Autre détail: les handles sont tous 2 octets trop
-gros. Et je revérifierai, mais je ne suis pas sûr que
-tous les handles soient affichés (je ne trouve pas des
-fichiers créés).
 
 * Il y a un petit bug dans la fenêtre des breakpoints
 (c'est le bug mineur dont je ne me souvenais plus

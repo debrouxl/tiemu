@@ -270,37 +270,37 @@ int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
 		case 0xfff0:	// 6 byte bsr w/long word displacement
 			PARAM_LONG(pm);
 			if (pm & 0x8000)
-				sprintf (buffer, "FLINE    *-$%lX [bsr %lX]", (int)(-(signed short)pm) - 2, pc + (signed short)pm + 2);
+				sprintf (buffer, "FLINE    bsr.l *-$%lX [%lX]", (int)(-(signed short)pm) - 2, pc + (signed short)pm + 2);
 			else
-				sprintf (buffer, "FLINE    *+$%lX [bsr %lX]", pm + 2, pc + pm + 2);
+				sprintf (buffer, "FLINE    bsr.l *+$%lX [%lX]", pm + 2, pc + pm + 2);
 			return 6;
 		case 0xfff1:	// 6 byte bra w/long word displacement
 			PARAM_LONG(pm);
             if (pm & 0x8000)
-				sprintf (buffer, "FLINE    *-$%lX [bra %lX]", (int)(-(signed short)pm) - 2, pc + (signed short)pm + 2);
+				sprintf (buffer, "FLINE    bra.l *-$%lX [%lX]", (int)(-(signed short)pm) - 2, pc + (signed short)pm + 2);
 			else
-				sprintf (buffer, "FLINE    *+$%lX [bra %lX]", pm + 2, pc + pm + 2);
+				sprintf (buffer, "FLINE    bra.l *+$%lX [%lX]", pm + 2, pc + pm + 2);
 			return 6;
 		case 0xfff2:	// 4 byte ROM CALL
 			PARAM_WORD(pm);
-			sprintf (buffer, "FLINE    $%04x [%s]", pm/4, romcalls_get_name(pm / 4));
+			sprintf (buffer, "FLINE    $%04x.l [%s]", pm/4, romcalls_get_name(pm / 4));
 			return 4;
 		case 0xffee:	// jmp __ld_entry_point_plus_0x8000+word (branchement avec offset signé de 2 octets rajouté à (début du programme)+0x8000)
 			PARAM_WORD(pm);
 			if (pm & 0x8000)
-				sprintf (buffer, "FLINE    *-$%lX [jmp %lX]", (int)(-(signed short)pm) - 2, pc + (signed short)pm + 2);
+				sprintf (buffer, "FLINE    jmp.w *-$%lX [%lX]", (int)(-(signed short)pm) - 2 + 0x8000, pc + (signed short)pm + 2 + 0x8000);
 			else
-				sprintf (buffer, "FLINE    *+$%lX [jmp %lX]", pm + 2, pc + pm + 2);
+				sprintf (buffer, "FLINE    jmp.w *+$%lX [%lX]", pm + 2 + 0x8000, pc + pm + 2 + 0x8000);
 			return 4;
 		case 0xffef:	// jsr __ld_entry_point_plus_0x8000+word (appel de fonction avec offset signé de 2 octets rajouté à (début du programme)+0x8000)
 			PARAM_WORD(pm);
 			if (pm & 0x8000)
-				sprintf (buffer, "FLINE    *-$%lX [jsr %lX]", (int)(-(signed short)pm) - 2, pc + (signed short)pm + 2);
+				sprintf (buffer, "FLINE    jsr.w *-$%lX [%lX]", (int)(-(signed short)pm) - 2 + 0x8000, pc + (signed short)pm + 2 + 0x8000);
 			else
-				sprintf (buffer, "FLINE    *+$%lX [jsr %lX]", pm + 2, pc + pm + 2);
-			return 6;
+				sprintf (buffer, "FLINE    jsr.w *+$%lX [%lX]", pm + 2 + 0x8000, pc + pm + 2 + 0x8000);
+			return 4;
 		default:		// 2 byte ROM CALL
-			sprintf (buffer, "FLINE    $%03x [%s]", op & 0x7ff, romcalls_get_name(op & 0x7ff));
+			sprintf (buffer, "FLINE    $%03x.w [%s]", op & 0x7ff, romcalls_get_name(op & 0x7ff));
 			return 2;
 			break;
 		}
