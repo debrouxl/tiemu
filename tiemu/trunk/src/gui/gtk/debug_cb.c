@@ -704,10 +704,13 @@ on_set_breakpoint_at_selection1_activate
                                         (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  GtkWidget *clist = code_clist;
-  GdkPixmap *pixmap;
-  GdkBitmap *mask;
+  GtkTreeModel *model;
+  GtkListStore *list;
+  GtkTreeIter iter;
+  GtkTreePath *path;
+  GdkPixbuf *bkpt;
   gint addr;
+  gpointer addrp;
   gint i;
   CODE_BKPT *s, *s1;
 
@@ -716,10 +719,13 @@ on_set_breakpoint_at_selection1_activate
   /* Retrieve the selected line and its address */
   if(selected_row != -1)
     {
-#if 0 /* FUCKED */
-      addr = GPOINTER_TO_INT(gtk_clist_get_row_data((GtkCList *)clist, 
-						    selected_row));
-#endif /* 0 */
+      model = gtk_tree_view_get_model(GTK_TREE_VIEW(code_clist));
+      path = gtk_tree_path_new_from_indices(selected_row, -1);
+      gtk_tree_model_get_iter(model, &iter, path);
+      gtk_tree_path_free(path);
+      gtk_tree_model_get(model, &iter, 3, &addrp, -1);
+      addr = GPOINTER_TO_INT(addrp);
+
       /* Check whether we already have a breakpoint */      
       for(i=0; i<g_list_length(bkpt_address_list); i++)
 	{
@@ -736,6 +742,12 @@ on_set_breakpoint_at_selection1_activate
 	      return;
 	    }
 	}
+
+      bkpt = create_pixbuf("bkpt.xpm");
+      list = GTK_LIST_STORE(model);
+      gtk_list_store_set(list, &iter,
+			 0, bkpt, -1);
+      g_object_unref(bkpt);
     }
   else
     {
@@ -750,11 +762,6 @@ on_set_breakpoint_at_selection1_activate
   s->address = addr;
   s->id = i;
   bkpt_address_list = g_list_append(bkpt_address_list, s);
-#if 0 /* FUCKED */
-  open_xpm("bkpt.xpm", code_clist, &pixmap, &mask);
-  gtk_clist_set_pixmap((GtkCList *)clist, selected_row, 0, pixmap, mask);
-#endif /* 0 */
-  gdk_pixmap_unref(pixmap);
 }
 
 
