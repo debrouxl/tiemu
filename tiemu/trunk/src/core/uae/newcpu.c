@@ -390,7 +390,7 @@ void Exception(int nr)
         bkpts.id = 0;
         while (l) 
 	    {
-	        if ((CPTR)GPOINTER_TO_INT(l->data) == nr) 
+	        if (GPOINTER_TO_INT(l->data) == nr) 
 	        {
 				bkpts.type = BK_CAUSE_EXCEPTION;
 				bkpts.mode = nr;

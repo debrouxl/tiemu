@@ -11,20 +11,20 @@
 
 #include "config.h"
 #include "options.h"
-#include "gensound.h"
-#include "sounddep/sound.h"
-#include "events.h"
+//#include "gensound.h"
+//#include "sounddep/sound.h"
+//#include "events.h"
 #include "uae.h"
-#include "machdep/m68k.h"
-#include "memory.h"
+#include "m68k.h"
+//#include "memory.h"
 #include "custom.h"
 #include "readcpu.h"
 #include "newcpu.h"
-#include "autoconf.h"
-#include "ersatz.h"
-#include "debug.h"
-#include "compiler.h"
-#include "gui.h"
+//#include "autoconf.h"
+//#include "ersatz.h"
+//#include "debug.h"
+//#include "compiler.h"
+//#include "gui.h"
 
 /* Opcode of faulting instruction */
 uae_u16 last_op_for_exception_3;
@@ -109,9 +109,9 @@ static void build_cpufunctbl (void)
 			  : currprefs.cpu_compatible ? op_smalltbl_4
 			  : op_smalltbl_3);
 
-    sprintf (warning_buffer, "Building CPU function table (%d %d %d).\n",
+	//roms
+    printf ("Building CPU function table (%d %d %d).\n",
 	     currprefs.cpu_level, currprefs.cpu_compatible, currprefs.address_space_24);
-    write_log (warning_buffer);
 
     for (opcode = 0; opcode < 65536; opcode++)
 	cpufunctbl[opcode] = op_illg;
@@ -980,7 +980,8 @@ void REGPARAM2 op_illg(uae_u32 opcode)
 	write_log("Your Kickstart requires a 68020 CPU. Giving up.\n");
 	broken_in = 1;
 	regs.spcflags |= SPCFLAG_BRK;
-	quit_program = 1;
+	//quit_program = 1;
+	//roms
     }
     if (opcode == 0xFF0D) {
 	if ((pc & 0xF80000) == 0xF80000) {
@@ -1194,8 +1195,9 @@ void m68k_go(int may_quit)
 	    quit_program = 0;
 	    m68k_reset();
 	}
-	if (debugging)
-	    debug();
+	//roms
+	//if (debugging)
+	//    debug();
 	m68k_run1();
     }
     in_m68k_go--;

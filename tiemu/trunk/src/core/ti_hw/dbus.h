@@ -31,21 +31,16 @@ int hw_dbus_init(void);
 int hw_dbus_reset(void);
 int hw_dbus_exit(void);
 
-void  (*hw_dbus_putbyte)    (UBYTE arg);
-UBYTE (*hw_dbus_getbyte)    (void);
-int   (*hw_dbus_byteavail)	(void);
-int   (*hw_dbus_checkread)  (void);
+void    (*hw_dbus_putbyte)    (uint8_t arg);
+uint8_t (*hw_dbus_getbyte)    (void);
+int     (*hw_dbus_byteavail)  (void);
+int     (*hw_dbus_checkread)  (void);
 
 int send_ti_file(const char *filename);
 
 /* Variables */
 
 extern TicableLinkCable lc;
-
-//extern int lc_internal;
-//extern int lc_timeout;
-//extern int lc_speedy;
-//extern int TO_VALUE;
 
 #endif
 

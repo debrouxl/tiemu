@@ -183,9 +183,9 @@ int hw_kbd_update(void)
     return rc;
 }
 
-static UBYTE get_rowmask(UBYTE r) 
+static uint8_t get_rowmask(uint8_t r) 
 {
-    UBYTE rc = 0;
+    uint8_t rc = 0;
     int i;
     int *row = key_row + (r << 3);
   
@@ -197,10 +197,10 @@ static UBYTE get_rowmask(UBYTE r)
     return rc;
 }
 
-UBYTE hw_kbd_read_mask(void)
+uint8_t hw_kbd_read_mask(void)
 {
     static int i;
-    static UBYTE arg;
+    static uint8_t arg;
     static UWORD mask;
 
     arg = 0;
@@ -208,8 +208,8 @@ UBYTE hw_kbd_read_mask(void)
     for(i=0; i<10; i++)
     {
         if(!(mask & (1<<i)))
-            arg |= get_rowmask((UBYTE)i);
+            arg |= get_rowmask((uint8_t)i);
     }
 
-    return (UBYTE)(~arg);
+    return (uint8_t)(~arg);
 }

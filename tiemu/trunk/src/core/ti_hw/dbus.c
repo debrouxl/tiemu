@@ -46,20 +46,20 @@
 	Linkport (lp) / directfile (df) mappers
 */
 
-void  (*hw_dbus_putbyte)    (UBYTE arg);
-UBYTE (*hw_dbus_getbyte)    (void);
+void  (*hw_dbus_putbyte)    (uint8_t arg);
+uint8_t (*hw_dbus_getbyte)    (void);
 int   (*hw_dbus_byteavail)	(void);
 int   (*hw_dbus_checkread)  (void);
 
-static void  lp_putbyte(UBYTE arg);
-static UBYTE lp_getbyte(void);
-static int   lp_byteavail(void);
-static int   lp_checkread(void);
+static void    lp_putbyte(uint8_t arg);
+static uint8_t lp_getbyte(void);
+static int     lp_byteavail(void);
+static int     lp_checkread(void);
 
-static void  df_putbyte(UBYTE arg);
-static UBYTE df_getbyte(void);
-static int   df_byteavail(void);
-static int   df_checkread(void);
+static void    df_putbyte(uint8_t arg);
+static uint8_t df_getbyte(void);
+static int     df_byteavail(void);
+static int     df_checkread(void);
 
 static void map_to_linkport(void)
 {
@@ -156,9 +156,9 @@ int hw_dbus_exit(void)
 */
 
 static int   lp_avail_byte;
-static UBYTE lp_last_byte;
+static uint8_t lp_last_byte;
 
-static void lp_putbyte(UBYTE arg)
+static void lp_putbyte(uint8_t arg)
 {
 	int err;
   
@@ -173,7 +173,7 @@ static void lp_putbyte(UBYTE arg)
 	io_bit_set(0x0d,3);		// link activity
 }
 
-static UBYTE lp_getbyte(void)
+static uint8_t lp_getbyte(void)
 {
 	lp_avail_byte = 0;
 
@@ -231,13 +231,13 @@ int t2f_flag;   // data available
 int f2t_data;   // file => ti data
 int f2t_flag;   // data available
 
-void df_putbyte(UBYTE arg)
+void df_putbyte(uint8_t arg)
 {
 	t2f_data = arg;
 	t2f_flag = 1;
 }
 
-UBYTE df_getbyte(void)
+uint8_t df_getbyte(void)
 {
 	f2t_flag = 0;
     return f2t_data;
