@@ -113,6 +113,8 @@ int hw_m68k_run(int n)
 {
     int i=n;
     GList *l = NULL;
+    static FILE *f = NULL;
+    static foo = 0;
 
 #if 1
 
@@ -169,6 +171,10 @@ int hw_m68k_run(int n)
         {
             bkpts.pclog_buf[bkpts.pclog_ptr++ % bkpts.pclog_size] = m68k_getpc();
         }
+
+	if(f == NULL)
+	    f = fopen("/tmp/tiemu.log", "wt");
+	fprintf(f, "%i: $%06x\n", foo++, (int)m68k_getpc());
 
 		// search for next opcode and execute it
 		opcode = nextiword();
