@@ -1209,8 +1209,8 @@ unsigned long REGPARAM2 op_illg (uae_u32 opcode)
 	return 4;
     }
 #if 1
-    fprintf(stderr, "UAE: illegal instruction: %04x at $%06x (intel = 0x%08x) %08x\n", 
-            opcode, regs.pc, get_real_address(regs.pc), m68k_getpc());
+    fprintf(stderr, "UAE: illegal instruction: %04x at %08x\n", 
+            opcode, m68k_getpc());
 #endif
     Exception (4,0);
     return 4;

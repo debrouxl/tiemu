@@ -189,6 +189,7 @@ extern int cloanto_rom;
 
 extern int fast_memcmp(const void *foo, const void *bar, int len);
 extern int memcmpy(void *foo, const void *bar, int len);
+#endif
 
 /*
  * You can specify numbers from 0 to 5 here. It is possible that higher
@@ -198,6 +199,7 @@ extern int memcmpy(void *foo, const void *bar, int len);
  */
 #define CPU_EMU_SIZE 0
 
+#if 0
 /* #define NEED_TO_DEBUG_BADLY */
 
 #if !defined(USER_PROGRAMS_BEHAVE)

@@ -96,7 +96,12 @@ static gboolean engine_func(gint *data)
 // start emulation engine
 void engine_start(void) 
 {
-	if(params.restricted)
+	if (cal >= TIME_LIMIT)
+		fprintf(stderr, "warning: emulation slower than TI (cal = %d, TIME_LIMIT = %d)", cal, TIME_LIMIT);
+	else if (cal >= TIME_LIMIT-5)
+		fprintf(stderr, "warning: emulation may be slower than TI (cal = %d, TIME_LIMIT = %d)", cal, TIME_LIMIT);
+
+	if(params.restricted && cal < TIME_LIMIT - 5)
 		tid = g_timeout_add_full(G_PRIORITY_DEFAULT, TIME_LIMIT-cal, 
 					 (GSourceFunc)engine_func, &res, 
 					 (GDestroyNotify)engine_notify);
@@ -128,7 +133,7 @@ int engine_is_running(void)
 	Called at startup to know needed time for exec'ing hw_m68k_run.
 	This allow to make exec'ing more precise.
 */
-#define NLOOPS	10
+#define NLOOPS	20
 void engine_calibrate(void)
 {
 	int i;

@@ -158,13 +158,6 @@ STATIC_INLINE uae_u32 get_ilong_prefetch (uae_s32 o)
 
 #define curriword() get_iword_prefetch(0)
 
-STATIC_INLINE uae_u16 nextiword(void)
-{
-  uae_u16 r = get_iword_prefetch(0);
-  m68k_incpc (2);
-  return r;
-}
-
 STATIC_INLINE void fill_prefetch_0 (void)
 {
     uae_u32 r;
