@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: wizard_cb.c 187 2004-05-14 14:22:36Z roms $ */
 
 /*  TiEmu - an TI emulator
  *
@@ -24,56 +24,57 @@
 #  include <config.h>
 #endif
 
-#include <stdlib.h>
-#include <string.h>
 #include <gtk/gtk.h>
+#include <glade/glade.h>
 
-#include "wizard_cb.h"
-#include "wizard_dbox.h"
-#include "support.h"
-
-//#include "platform.h"
-#include "struct.h"
-#include "hid.h"
-#include "dboxes.h"
-#include "interface.h"
+#include "intl.h"
 
 static gint action = 1;
 gchar *wizard_rom = NULL;
 gint wizard_ok = FALSE;
 
-/**********************/
-/**********************/
-
-gint display_flash_fileselection(void)
+gint display_wizard_dbox(void)
 {
-  GtkWidget *dbox;
-
-  dbox = create_flash_fileselection();
-  gtk_file_selection_complete(GTK_FILE_SELECTION(dbox), 
-			      "*.tib;*.89u;*.9xu");
-  gtk_widget_show_all(dbox);
-  return 0;
+    display_step1_dbox();
 }
-
-gint display_romfile_fileselection(void)
-{
-  GtkWidget *dbox;
-
-  dbox = create_romfile_fileselection();
-  gtk_file_selection_complete(GTK_FILE_SELECTION(dbox), 
-			      "*.rom");
-  gtk_widget_show_all(dbox);
-  return 0;
-}
-
 
 gint display_step1_dbox(void)
 {
-  gtk_widget_show_all(create_step1_dbox());
-  return 0;
+    GladeXML *xml;
+	GtkWidget *dbox;
+	GtkWidget *data;
+	gint result;
+
+    xml = glade_xml_new
+	    (tilp_paths_build_glade("wizard-2.glade"), "step1_dbox", PACKAGE);
+	if (!xml)
+		g_error(_("comm.c: GUI loading failed !\n"));
+	glade_xml_signal_autoconnect(xml);
+
+	dbox = glade_xml_get_widget(xml, "step1_dbox");
+
+    data = glade_xml_get_widget(xml, "applybutton1");
+    gtk_button_set_label(data, "<= Back");
+    data = glade_xml_get_widget(xml, "applybutton2");
+    gtk_button_set_label(data, "<= Cancel");
+    data = glade_xml_get_widget(xml, "applybutton3");
+    gtk_button_set_label(data, "Next =>");
+
+    result = gtk_dialog_run(GTK_DIALOG(dbox));
+	switch (result) {
+	case GTK_RESPONSE_OK:
+		ti68k_unhalt();
+		break;
+	default:
+		break;
+	}
+
+	gtk_widget_destroy(dbox);
+
+	return 0;
 }
 
+/*
 gint display_msg1_dbox(void)
 {
   gtk_widget_show_all(create_msg1_dbox());
@@ -92,10 +93,6 @@ gint display_wait_dbox(void)
   return 0;
 }
 
-
-/****************************/
-/* FLASH file selection box */
-/****************************/
 
 void
 on_flashfile_fileselection_destroy     (GtkObject       *object,
@@ -146,10 +143,6 @@ on_flashfile_cancel_button2_clicked    (GtkButton       *button,
   gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "flash_fileselection"));
 }
 
-
-/*************/
-/* Step1 box */
-/*************/
 
 void
 step1_on_radiobutton1_toggled          (GtkToggleButton *togglebutton,
@@ -210,10 +203,6 @@ step1_b3_button_clicked                (GtkButton       *button,
 }
 
 
-/****************/
-/* Message1 box */
-/****************/
-
 void
 msg1_ok_button_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
@@ -223,9 +212,6 @@ msg1_ok_button_clicked                 (GtkButton       *button,
 }
 
 
-/*************/
-/* Step3 box */
-/*************/
 
 void
 step3_b1_button_clicked                (GtkButton       *button,
@@ -253,9 +239,6 @@ step3_b3_button_clicked                (GtkButton       *button,
 }
 
 
-/****************************************/
-/* Display a box for make the user wait */
-/****************************************/
 
 
 void
@@ -265,9 +248,6 @@ wait_ok_button_clicked                 (GtkButton       *button,
 
 }
 
-/************************/
-/* Choose a ROM to load */
-/************************/
 
 void
 on_romfile_fileselection_destroy       (GtkObject       *object,
@@ -310,3 +290,5 @@ on_romfile_ok_button2_clicked          (GtkButton       *button,
   gtk_widget_destroy(f);
   gtk_widget_show(create_step3_dbox());
 }
+
+*/

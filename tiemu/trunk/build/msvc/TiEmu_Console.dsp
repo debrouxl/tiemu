@@ -388,11 +388,7 @@ SOURCE=..\..\src\gui\viewlog_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\wizard_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\wizard_dbox.c
+SOURCE=..\..\src\gui\wizard.c
 # End Source File
 # End Group
 # Begin Group "hid"

@@ -43,7 +43,7 @@
 #include "refresh.h"
 #include "printl.h"
 
-#include "wizard_dbox.h"
+#include "wizard.h"
 #include "popup.h"
 
 
@@ -80,6 +80,15 @@ int main(int argc, char **argv)
 	*/
 	g_thread_init(NULL);
 	gtk_init(&argc, &argv);
+
+    display_wizard_dbox();
+		while(!wizard_ok) {
+			while( gtk_events_pending() ) { 
+				gtk_main_iteration(); 
+			}
+		}
+
+    return -1;
 
     /*
         Set splash screen
@@ -149,7 +158,7 @@ int main(int argc, char **argv)
 	*/
 	if(ti68k_loadImage((options.params)->rom_file)) {
       
-		gtk_widget_show(create_step1_dbox());
+		gtk_widget_show(display_step1_dbox());
 		while(!wizard_ok) {
 			while( gtk_events_pending() ) { 
 				gtk_main_iteration(); 
