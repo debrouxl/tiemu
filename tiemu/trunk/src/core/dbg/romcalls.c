@@ -30,21 +30,44 @@
 #include <string.h>
 
 #include "romcalls.h"
+#include "images.h"
+#include "ti68k_def.h"
 
-static ROM_CALL list[2048];
+#define TBL_SIZE	0x800
+
+static ROM_CALL list[TBL_SIZE];
 static int loaded;
+
+static int old_ct = -1;		// previous calc type for reloading
+
+static uint32_t rd_long(uint8_t *p)
+{
+	return (p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
+}
 
 int romcalls_load_from_file(const char* filename)
 {
+	IMG_INFO *img = &img_infos;
     FILE *f;
     int n;
     char buf[256];
     char *name, *p;
     int number;
+	uint32_t addr;
+	int i;
 
     if(loaded)
         return 0;
 
+	if(!img_loaded || (img->calc_type == CALC_TI92))
+		return -1;
+
+	if(old_ct == -1)
+		old_ct = img->calc_type;
+	else if(old_ct == img->calc_type)
+		return 0;
+
+	printf("Loading symbols (ROM calls)... ");
     memset(list, 0, sizeof(list));
 
     f = fopen(filename, "rt");
@@ -62,24 +85,42 @@ int romcalls_load_from_file(const char* filename)
         // get function name
         name = strdup(buf+5);
         p = strchr(name, ',');
-        if(p != NULL)
-            *p = '\0';
+        if(p == NULL)
+			continue;
+        else
+			*p++ = '\0';
 
         // get function number
-        n = sscanf(buf, "%x", &number);
-        if(n < 1)
+        n = sscanf(p, "%x", &number);
+        if((n < 1) || (number > 0x7ff))
         {
             free(name);
             continue;
         }
 
-        printf("tios::%s (0x%03x)\n", name, number);
-
-        // get function address
+		// and store
+		list[number].name = name;
     }
 
     fclose(f);
     loaded = !0;
+	printf("Done !\n");
+
+	// get function address
+	addr = rd_long(&tihw.ram[0xC8]);
+	printf("Parsing symbols (addresses) at $%06x... ", addr);
+
+	for(i = 0; i < TBL_SIZE; i++)
+	{
+		if(list[i].name == NULL)
+			list[i].name = strdup("unknown");
+
+		list[i].addr = rd_long(&tihw.rom[(addr & 0x0fffff) + (i << 2)]); 
+
+		//printf("tios::%s (0x%03x) => $%06x\n", list[i].name, i, list[i].addr);
+	}
+
+	printf("Done !\n");
 
     return 0;
 }
@@ -96,9 +137,9 @@ int romcalls_is_loaded(void)
     return loaded;
 }
 
-
   /*
 memset(romFuncAddr,0,sizeof(int)*0x800);
     for (int i=0;(romFuncs[i].name)&&(i<(getmem_dword(getmem_dword(0xc8)-4))-1);i++)
         romFuncAddr[i]=getmem_dword(getmem_dword(0xc8)+(i<<2));
         */
+

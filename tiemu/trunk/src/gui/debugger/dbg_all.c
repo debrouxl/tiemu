@@ -58,6 +58,8 @@ void preload_gtk_debugger(void)
 
 int enter_gtk_debugger(int context)
 {
+	gchar *path;
+
     // show breakpoint source
     switch(context)
     {
@@ -67,6 +69,11 @@ int enter_gtk_debugger(int context)
         display_dbgcause_dbox();
         break;
     }
+
+	// load symbols
+	path = g_strconcat(inst_paths.base_dir, "romcalls.lst", NULL);
+	ti68k_debug_load_symbols(path);
+	g_free(path);
 
     // refresh debugger windows (open debugger, if not already opened)
 	dbgw.regs = display_dbgregs_window();

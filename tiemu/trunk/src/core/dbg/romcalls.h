@@ -44,6 +44,8 @@ typedef struct
 
 /* Functions */
 
-int romcall_is_address(uint32_t addr);
+int romcalls_load_from_file(const char* filename);
+int romcalls_unload(void);
+int romcalls_is_loaded(void);
 
 #endif

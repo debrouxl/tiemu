@@ -49,6 +49,7 @@ int ti68k_debug_break(void);
 int ti68k_debug_step(void);
 int ti68k_debug_skip(uint32_t next_pc);
 int ti68k_debug_do_instructions(int n);
+int ti68k_debug_load_symbols(const char *filename);
 
 // Link
 int ti68k_linkport_send_file(const char *filename);

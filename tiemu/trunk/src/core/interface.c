@@ -39,6 +39,7 @@
 #include "hw.h"
 #include "m68k.h"
 #include "dbus.h"
+#include "romcalls.h"
 
 #include "ti68k_int.h"
 #include "ti68k_err.h"
@@ -249,7 +250,13 @@ uint8_t* ti68k_get_real_address(uint32_t addr)
 
 int ti68k_debug_load_symbols(const char *filename)
 {
-    return romcalls_load_from_file(filename);
+	if(!strcmp(filename, ""))
+		return 0;
+
+	if(!romcalls_is_loaded())
+		return romcalls_load_from_file(filename);
+
+	return 0;
 }
 
 
