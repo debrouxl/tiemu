@@ -63,6 +63,7 @@
 #define SKIN_TI89  "TI-89"
 #define SKIN_TI92  "TI-92"
 #define SKIN_TI92P "TI-92+"
+#define SKIN_V200  "V200PLT"
 
 #define SKIN_TYPE_TIEMU   10
 #define SKIN_TYPE_VTI     2
@@ -70,7 +71,7 @@
 #define SKIN_TYPE_NEW     0
 
 #define ENDIANNESS_FLAG 0xfeedbabe
-#define TIEMU_SKIN_ID "TiEmu v2.00"
+#define TIEMU_SKIN_ID   "TiEmu v2.00"
 
 /*********/
 /* Types */

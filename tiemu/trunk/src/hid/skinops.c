@@ -46,7 +46,7 @@ SKIN_INFOS skin_infos = { 0 };
 static int skin_loaded = 0;
 
 // taken from skinedit/src/skinops.c/load_skin_tiemu()
-int skin_read_header(const char *filename,SKIN_INFOS* infos)
+int skin_read_header(const char *filename, SKIN_INFOS* si)
 {
 	FILE *fp = NULL;
   	int i;
@@ -74,11 +74,11 @@ int skin_read_header(const char *filename,SKIN_INFOS* infos)
 		length = bswap_32(length);
   	if (length > 0)
     	{
-      		skin_infos.name = (char *)malloc(length + 1);
-	      	if (skin_infos.name == NULL)
+      		si->name = (char *)malloc(length + 1);
+	      	if (si->name == NULL)
 			return -1;
-	      	memset(skin_infos.name, 0, length + 1);
-	      	fread(skin_infos.name, length, 1, fp);
+	      	memset(si->name, 0, length + 1);
+	      	fread(si->name, length, 1, fp);
     	}
 	
 	/* Skin author */
@@ -87,26 +87,26 @@ int skin_read_header(const char *filename,SKIN_INFOS* infos)
 		length = bswap_32(length);
   	if (length > 0)
     	{
-      		skin_infos.author = (char *)malloc(length + 1);
-      		if (skin_infos.author == NULL)
+      		si->author = (char *)malloc(length + 1);
+      		if (si->author == NULL)
 			return -1;
-      		memset(skin_infos.author, 0, length + 1);
-      		fread(skin_infos.author, length, 1, fp);
+      		memset(si->author, 0, length + 1);
+      		fread(si->author, length, 1, fp);
     	}
 
 	/* LCD colors */
-  	fread(&skin_infos.colortype, 4, 1, fp);
-  	fread(&skin_infos.lcd_white, 4, 1, fp);
-  	fread(&skin_infos.lcd_black, 4, 1, fp);
+  	fread(&si->colortype, 4, 1, fp);
+  	fread(&si->lcd_white, 4, 1, fp);
+  	fread(&si->lcd_black, 4, 1, fp);
 
    	/* Calc type */
-  	fread(skin_infos.calc, 8, 1, fp);
+  	fread(si->calc, 8, 1, fp);
 
   	/* LCD position */
-  	fread(&skin_infos.lcd_pos.left, 4, 1, fp);
-  	fread(&skin_infos.lcd_pos.top, 4, 1, fp);
-  	fread(&skin_infos.lcd_pos.right, 4, 1, fp);
-  	fread(&skin_infos.lcd_pos.bottom, 4, 1, fp);
+  	fread(&si->lcd_pos.left, 4, 1, fp);
+  	fread(&si->lcd_pos.top, 4, 1, fp);
+  	fread(&si->lcd_pos.right, 4, 1, fp);
+  	fread(&si->lcd_pos.bottom, 4, 1, fp);
 
 	/* Number of RECT struct to read */
   	fread(&length, 4, 1, fp);
@@ -117,29 +117,29 @@ int skin_read_header(const char *filename,SKIN_INFOS* infos)
 
   	for (i = 0; i < length; i++)
     	{
-      		fread(&skin_infos.keys_pos[i].left, 4, 1, fp);
-      		fread(&skin_infos.keys_pos[i].top, 4, 1, fp);
-      		fread(&skin_infos.keys_pos[i].right, 4, 1, fp);
-      		fread(&skin_infos.keys_pos[i].bottom, 4, 1, fp);
+      		fread(&si->keys_pos[i].left, 4, 1, fp);
+      		fread(&si->keys_pos[i].top, 4, 1, fp);
+      		fread(&si->keys_pos[i].right, 4, 1, fp);
+      		fread(&si->keys_pos[i].bottom, 4, 1, fp);
     	}
 
 	if (endian != ENDIANNESS_FLAG)
 	{
-		skin_infos.colortype = bswap_32(skin_infos.colortype);
-		skin_infos.lcd_white = bswap_32(skin_infos.lcd_white);
-		skin_infos.lcd_black = bswap_32(skin_infos.lcd_black);
+		si->colortype = bswap_32(si->colortype);
+		si->lcd_white = bswap_32(si->lcd_white);
+		si->lcd_black = bswap_32(si->lcd_black);
       
-		skin_infos.lcd_pos.top = bswap_32(skin_infos.lcd_pos.top);
-		skin_infos.lcd_pos.left = bswap_32(skin_infos.lcd_pos.left);
-		skin_infos.lcd_pos.bottom = bswap_32(skin_infos.lcd_pos.bottom);
-		skin_infos.lcd_pos.right = bswap_32(skin_infos.lcd_pos.right);
+		si->lcd_pos.top = bswap_32(si->lcd_pos.top);
+		si->lcd_pos.left = bswap_32(si->lcd_pos.left);
+		si->lcd_pos.bottom = bswap_32(si->lcd_pos.bottom);
+		si->lcd_pos.right = bswap_32(si->lcd_pos.right);
 
 		for (i = 0; i < length; i++)
 		{
-			skin_infos.keys_pos[i].top = bswap_32(skin_infos.keys_pos[i].top);
-			skin_infos.keys_pos[i].bottom = bswap_32(skin_infos.keys_pos[i].bottom);
-			skin_infos.keys_pos[i].left = bswap_32(skin_infos.keys_pos[i].left);
-			skin_infos.keys_pos[i].right = bswap_32(skin_infos.keys_pos[i].right);
+			si->keys_pos[i].top = bswap_32(si->keys_pos[i].top);
+			si->keys_pos[i].bottom = bswap_32(si->keys_pos[i].bottom);
+			si->keys_pos[i].left = bswap_32(si->keys_pos[i].left);
+			si->keys_pos[i].right = bswap_32(si->keys_pos[i].right);
 		}
 	}
     	
@@ -148,7 +148,7 @@ int skin_read_header(const char *filename,SKIN_INFOS* infos)
     	return 0;
 }
 
-int skin_read_image(const char *filename, SKIN_INFOS* infos)
+int skin_read_image(const char *filename, SKIN_INFOS* si)
 {
 	FILE *fp = NULL;
   	uint32_t endian;
@@ -198,30 +198,30 @@ int skin_read_image(const char *filename, SKIN_INFOS* infos)
 
     	// Load JPEG image
     	jpeg_start_decompress(&cinfo);
-    	skin_infos.ncolors = cinfo.actual_number_of_colors;
+    	si->ncolors = cinfo.actual_number_of_colors;
 
     	// Copy the color palette
     	for (j = 0; j < cinfo.actual_number_of_colors; j++) {
-			skin_infos.cmap[0][j] = cinfo.colormap[0][j];
-			skin_infos.cmap[1][j] = cinfo.colormap[1][j];
-			skin_infos.cmap[2][j] = cinfo.colormap[2][j];
+			si->cmap[0][j] = cinfo.colormap[0][j];
+			si->cmap[1][j] = cinfo.colormap[1][j];
+			si->cmap[2][j] = cinfo.colormap[2][j];
     	}
 
     	if (cinfo.output_components != 1)	// 1: palettized 
 		return -1;
 
     	// Get skin size
-    	skin_infos.width = cinfo.output_width + (cinfo.output_width & 3);
-    	skin_infos.height = cinfo.output_height + (cinfo.output_height & 3);
+    	si->width = cinfo.output_width + (cinfo.output_width & 3);
+    	si->height = cinfo.output_height + (cinfo.output_height & 3);
 
     	// Allocate image
-    	skin_infos.img = p = (unsigned char *) malloc(skin_infos.width * skin_infos.height);
-    	if (skin_infos.img == NULL)
+    	si->img = p = (unsigned char *) malloc(si->width * si->height);
+    	if (si->img == NULL)
 		return -1;
 
     	// Load jpeg image line by line //c += xx*yy;
     	while (cinfo.output_scanline < cinfo.output_height) {
-		p += skin_infos.width;
+		p += si->width;
 		jpeg_read_scanlines(&cinfo, (JSAMPARRAY)&p, 1);
     	}
 
@@ -231,16 +231,16 @@ int skin_read_image(const char *filename, SKIN_INFOS* infos)
 
 	// Rescale coords
 	if(scaled) {
-		skin_infos.lcd_pos.left >>= 1;
-		skin_infos.lcd_pos.right >>= 1;
-		skin_infos.lcd_pos.top >>= 1;
-		skin_infos.lcd_pos.bottom >>= 1;
+		si->lcd_pos.left >>= 1;
+		si->lcd_pos.right >>= 1;
+		si->lcd_pos.top >>= 1;
+		si->lcd_pos.bottom >>= 1;
 	
 		for (i = 0; i < SKIN_KEYS; i++) {
-      			skin_infos.keys_pos[i].left >>= 1;
-      			skin_infos.keys_pos[i].top >>= 1;
-      			skin_infos.keys_pos[i].right >>= 1;
-      			skin_infos.keys_pos[i].bottom >>= 1;
+      			si->keys_pos[i].left >>= 1;
+      			si->keys_pos[i].top >>= 1;
+      			si->keys_pos[i].right >>= 1;
+      			si->keys_pos[i].bottom >>= 1;
     		}
 	}
     	

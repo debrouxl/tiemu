@@ -362,7 +362,7 @@ GLADE_CB void
 on_set_skin1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	display_skinlist_dbox();
+	    display_skin_dbox();
 }
 
 

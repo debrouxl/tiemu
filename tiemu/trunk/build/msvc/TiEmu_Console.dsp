@@ -376,11 +376,7 @@ SOURCE=..\..\src\gui\scroptions.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\skin_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\skin_dbox.c
+SOURCE=..\..\src\gui\setskin.c
 # End Source File
 # Begin Source File
 
