@@ -64,3 +64,8 @@ static inline int target_stopped_data_address (CORE_ADDR *addr_p)
 #define target_insert_watchpoint ti68k_bkpt_add_watchpoint
 #define HAVE_CONTINUABLE_WATCHPOINT 1
 #define STOPPED_BY_WATCHPOINT(wait_status) ti68k_bkpt_stopped_by_watchpoint()
+
+/* (TiEmu 20050401 Kevin Kofler) BCD floats */
+#define TARGET_FLOAT_FORMAT (&floatformat_smapbcd_big)
+#define TARGET_DOUBLE_FORMAT (&floatformat_smapbcd_big)
+#define TARGET_LONG_DOUBLE_FORMAT (&floatformat_smapbcd_big)

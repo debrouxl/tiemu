@@ -216,6 +216,83 @@ const struct floatformat floatformat_ia64_quad_little =
   "floatformat_ia64_quad_little",
   floatformat_always_valid
 };
+
+static int floatformat_smapbcd_is_valid PARAMS ((const struct floatformat *fmt, const char *from));
+
+static int
+floatformat_smapbcd_is_valid (fmt, from)
+     const struct floatformat *fmt;
+     const char *from;
+{
+  unsigned short exponent;
+  unsigned int mantissah, mantissal;
+  const unsigned char *ufrom = (const unsigned char *) from;
+  
+  exponent = get_field (ufrom, fmt->byteorder, fmt->totalsize,
+			0, 16);
+  mantissah = get_field (ufrom, fmt->byteorder, fmt->totalsize,
+		         16, 32);
+  mantissal = get_field (ufrom, fmt->byteorder, fmt->totalsize,
+		         48, 32);
+  
+  if (exponent == 0x7fff)
+    {
+      if (mantissah == 0xaa00cc00u && !mantissal)
+        return 1;
+      else if (mantissah == 0xaa00bb00u && !mantissal)
+        return 1;
+      else if (mantissah == 0xaa000000u && !mantissal)
+        return 1;
+      else
+        return 0;
+    }
+  else if (exponent == 0xffff)
+    {
+      if (mantissah == 0xaa00bb00u && !mantissal)
+        return 1;
+      else
+        return 0;
+    }
+  else if (exponent == 0 || exponent == 0x8000)
+    {
+      if (mantissah || mantissal)
+        return 0;
+      else
+        return 1;
+    }
+  else if (exponent != 0x4000 && !mantissah && !mantissal)
+    return 0;
+  else
+    {
+      if ((mantissah & 0xf0000000u) > 0x90000000u
+          || (mantissah & 0x0f000000u) > 0x09000000u
+          || (mantissah & 0x00f00000u) > 0x00900000u
+          || (mantissah & 0x000f0000u) > 0x00090000u
+          || (mantissah & 0x0000f000u) > 0x00009000u
+          || (mantissah & 0x00000f00u) > 0x00000900u
+          || (mantissah & 0x000000f0u) > 0x00000090u
+          || (mantissah & 0x0000000fu) > 0x00000009u
+          || (mantissal & 0xf0000000u) > 0x90000000u
+          || (mantissal & 0x0f000000u) > 0x09000000u
+          || (mantissal & 0x00f00000u) > 0x00900000u
+          || (mantissal & 0x000f0000u) > 0x00090000u
+          || (mantissal & 0x0000f000u) > 0x00009000u
+          || (mantissal & 0x00000f00u) > 0x00000900u
+          || (mantissal & 0x000000f0u) > 0x00000090u
+          || (mantissal & 0x0000000fu) > 0x00000009u)
+        return 0;
+      else
+        return 1;
+    }
+}
+
+const struct floatformat floatformat_smapbcd_big =
+{
+  floatformat_big, 80, 0, 1, 15, 0x4000, 0x7fff, 16, 64,
+  floatformat_intbit_yes,
+  "floatformat_smapbcd_big",
+  floatformat_smapbcd_is_valid
+};
 
 /* Extract a field which starts at START and is LEN bits long.  DATA and
    TOTAL_LEN are the thing we are extracting it from, in byteorder ORDER.  */
@@ -285,6 +362,9 @@ floatformat_to_double (fmt, from, to)
   unsigned int mant_bits, mant_off;
   int mant_bits_left;
   int special_exponent;		/* It's a NaN, denorm or zero */
+
+  /* This should use the routines in doublest.c instead. */
+  if (fmt == &floatformat_smapbcd_big) abort();
 
   exponent = get_field (ufrom, fmt->byteorder, fmt->totalsize,
 			fmt->exp_start, fmt->exp_len);
@@ -454,6 +534,9 @@ floatformat_from_double (fmt, from, to)
   unsigned int mant_bits, mant_off;
   int mant_bits_left;
   unsigned char *uto = (unsigned char *)to;
+
+  /* This should use the routines in doublest.c instead. */
+  if (fmt == &floatformat_smapbcd_big) abort();
 
   dfrom = *from;
   memset (uto, 0, fmt->totalsize / FLOATFORMAT_CHAR_BIT);

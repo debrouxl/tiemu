@@ -450,6 +450,346 @@ convert_doublest_to_floatformat (CONST struct floatformat *fmt,
     }
 }
 
+/* Isn't portability fun... */
+#undef exp10l /* Don't use broken exp10l from glibc */
+#ifdef HAVE_LONG_DOUBLE
+#define exp10l(x) powl((DOUBLEST)10.,x)
+#else
+#define exp10l(x) pow((DOUBLEST)10.,x)
+#endif
+
+#ifndef INFINITY
+#ifdef HUGE_VAL
+#define INFINITY HUGE_VAL
+#else
+#define INFINITY (1.0 / 0.0)
+#endif
+#endif
+
+#ifndef NAN
+#define NAN (0.0 / 0.0)
+#endif
+
+/* Convert from FMT to a DOUBLEST.
+   FROM is the address of the extended float.
+   Store the DOUBLEST in *TO.  */
+
+static void
+convert_smapbcd_to_doublest (const struct floatformat *fmt,
+			     const void *from,
+			     DOUBLEST *to)
+{
+  long exponent;
+  unsigned long mantissa;
+  int i;
+  unsigned char *uval = (unsigned char *) from;
+
+  gdb_assert (fmt != NULL);
+
+  exponent = get_field (uval, fmt->byteorder, fmt->totalsize, 0, 16);
+
+  switch (exponent & 0x7fff)
+    {
+      case 0:
+        *to = (DOUBLEST)0.;
+        break;
+
+      case 0x7fff:
+        if (floatformat_is_nan (fmt, (void *)from))
+          *to = (DOUBLEST)NAN;
+        else
+          *to = (DOUBLEST)INFINITY;
+        break;
+
+      default:
+        *to = (DOUBLEST)0.;
+
+        for (i=16; i<80; i+=4)
+          {
+            *to *= (DOUBLEST)10.;
+            mantissa = get_field (uval, fmt->byteorder, fmt->totalsize, i, 4);
+            *to += (DOUBLEST)mantissa;
+          }
+
+        *to *= exp10l((exponent & 0x7fff) - (0x4000 + 15));
+        break;
+    }
+
+  if (exponent & 0x8000) *to = -*to;
+}
+
+#ifndef HAVE_LONG_DOUBLE
+#define isnanl isnan
+#define isinfl isinf
+#endif
+
+#if !defined(__linux__) && !defined(__MINGW32__)
+#ifdef HAVE_LONG_DOUBLE
+#define frexpl ldfrexp
+#else
+#define frexpl frexp
+#endif
+#endif
+
+/* (TiEmu 20050403 Kevin Kofler) These come from TIGCC.
+   FIXME: These assume GCC all over the place. */
+struct real_value
+{
+	unsigned short exponent;
+	unsigned long long mantissa;
+};
+typedef struct real_value smap_bcd_float;
+#define REAL_VALUE_TYPE smap_bcd_float
+
+#define POSITIVE_ZERO (__extension__(smap_bcd_float){0,0})
+#define POSITIVE_INF (__extension__(smap_bcd_float){0x7FFF,0xAA00BB0000000000ull})
+#define TIGCC_NAN (__extension__(smap_bcd_float){0x7FFF,0xAA00000000000000ull})
+
+#undef REAL_VALUE_NEGATE
+#define REAL_VALUE_NEGATE(x) \
+__extension__ ({ \
+	REAL_VALUE_TYPE __tempx = x; \
+	if ((__tempx.mantissa) || (__tempx.exponent != 0x4000)) \
+		__tempx.exponent ^= 0x8000; \
+	__tempx; \
+})
+
+/* Add 1 unit in the last place to a positive SMAP II BCD float. */
+static void bcdpadd1ulp(smap_bcd_float *op)
+{
+  int i;
+  op->mantissa++; /* This will give a digit of 10 in some cases. */
+  for (i=0;i<60;i+=4) { /* for each digit except the first one */
+    int d=(op->mantissa>>i)&15;
+    if (d<10) /* if the digit is <10, we're done */
+      break;
+    op->mantissa += 6ull<<i; /* subtract 10 from the digit, add 1 to the next digit */
+  }
+  /* Now, we should have a carry only in one case: the mantissa was
+     9999999999999999. So now, we have A000000000000000, where A is 10 in a
+     single digit. We can safely truncate the last digit because it is 0 (so
+     there is no risk of double-rounding here). */
+  if (op->mantissa >= 0xA000000000000000ull) { /* if we have a carry */
+    gdb_assert (op->mantissa == 0xA000000000000000ull); /* sanity check */
+    op->mantissa = 0x1000000000000000ull; /* A -> 10, drop the last digit */
+    op->exponent++; /* adjust the exponent */
+    if (op->exponent > 0x4000+16383) /* exponent too large, overflow to +infinity */
+      *op = POSITIVE_INF;
+  }
+}
+
+typedef struct {
+  int ndigits;
+  unsigned char *digits;
+  long effexp;
+} arbprec_decimal;
+
+static void arbprec_pack (arbprec_decimal *r)
+{
+  unsigned char *p = r->digits;
+  if (r->ndigits) {
+    while (p < r->digits + r->ndigits && !*p) p++;
+    r->ndigits -= p - r->digits;
+    memmove (r->digits, p, r->ndigits);
+    if (r->ndigits) {
+      p = r->digits + r->ndigits - 1;
+      while (p > r->digits && !*p) {
+        p--;
+        r->effexp++;
+      }
+      r->ndigits = (p + 1) - r->digits;
+    }
+    r->digits = xrealloc (r->digits, r->ndigits);
+  }
+}
+
+static void arbprec_mul2 (arbprec_decimal *r)
+{
+  unsigned char *p;
+  unsigned char carry = 0;
+  r->ndigits++;
+  r->digits = xrealloc (r->digits, r->ndigits);
+  for (p = r->digits + r->ndigits - 1; p > r->digits; p--) {
+    unsigned char digit = (p[-1]<<1) + carry;
+    *p = digit % 10;
+    carry = digit / 10;
+  }
+  *p = carry;
+  arbprec_pack (r);
+}
+
+static void arbprec_div2 (arbprec_decimal *r)
+{
+  unsigned char *p;
+  unsigned char carry = 0;
+  r->ndigits++;
+  r->digits = xrealloc (r->digits, r->ndigits);
+  for (p = r->digits; p < r->digits + r->ndigits - 1; p++) {
+    unsigned char digit = (*p>>1) + carry;
+    carry = (*p&1)*5;
+    *p = digit;
+  }
+  *p = carry;
+  r->effexp--;
+  arbprec_pack (r);
+}
+
+static void arbprec_add (arbprec_decimal *r1, arbprec_decimal *r2)
+{
+  if (!r2->ndigits)
+    return;
+  else if (!r1->ndigits) {
+    r1->digits = xrealloc (r1->digits, r2->ndigits);
+    memcpy (r1->digits, r2->digits, r2->ndigits);
+    r1->ndigits = r2->ndigits;
+    r1->effexp = r2->effexp;
+  } else {
+    if (r1->effexp > r2->effexp) {
+      long effexpdiff = r1->effexp - r2->effexp;
+      r1->digits = xrealloc (r1->digits, r1->ndigits + effexpdiff);
+      memset (r1->digits + r1->ndigits, 0, effexpdiff);
+      r1->ndigits += effexpdiff;
+      r1->effexp = r2->effexp;
+    } else if (r2->effexp > r1->effexp) {
+      long effexpdiff = r2->effexp - r1->effexp;
+      r2->digits = xrealloc (r2->digits, r2->ndigits + effexpdiff);
+      memset (r2->digits + r2->ndigits, 0, effexpdiff);
+      r2->ndigits += effexpdiff;
+      r2->effexp = r1->effexp;
+    }
+
+    {
+      int ndigits = max (r1->ndigits, r2->ndigits) + 1;
+      unsigned char *digits = xmalloc (ndigits);
+      unsigned char *p, *q1, *q2;
+      unsigned char carry = 0;
+      for (p = digits + ndigits - 1, q1 = r1->digits + r1->ndigits - 1,
+           q2 = r2->digits + r2->ndigits - 1; p > digits; p--, q1--, q2--) {
+        unsigned char digit = (q1>=r1->digits?*q1:0) + (q2>=r2->digits?*q2:0)
+                              + carry;
+        *p = digit % 10;
+        carry = digit / 10;
+      }
+      *p = carry;
+      free (r1->digits);
+      r1->digits = digits;
+      r1->ndigits = ndigits;
+      arbprec_pack (r1);
+      arbprec_pack (r2);
+    }
+  }
+}
+
+static void arbprec_to_bcd (arbprec_decimal *a, smap_bcd_float *r)
+{
+  if (a->ndigits) {
+    long exponent = a->effexp + a->ndigits - 1;
+    if (exponent>16383) /* exponent too large, overflow to +infinity */
+      *r = POSITIVE_INF;
+    else if (exponent<-16383) /* exponent too small, underflow to +0 */
+      *r = POSITIVE_ZERO;
+    else {
+      int i;
+      r->exponent = 0x4000 + exponent;
+      r->mantissa = 0;
+      for (i = 0; i < a->ndigits && i < 16; i++) {
+        r->mantissa = (r->mantissa << 4) + a->digits[i];
+      }
+      for (; i < 16; i++) {
+        r->mantissa <<= 4;
+      }
+      if (a->ndigits > 16 && a->digits[16] >= 5)
+        bcdpadd1ulp (r);
+    }
+  } else {
+    *r = POSITIVE_ZERO;
+  }
+}
+
+static void real_value_htof (REAL_VALUE_TYPE *res, DOUBLEST from)
+{
+	arbprec_decimal r = {0, NULL, 0};
+	arbprec_decimal one = {1, NULL, 0};
+	unsigned int negative = 0;
+	int exp = 0;
+	DOUBLEST mant;
+
+	if (from < 0)
+	{
+		negative = 1;
+		from = -from;
+	}
+	mant = frexpl (from, &exp);
+	one.digits = xmalloc (1);
+	*(one.digits) = 1;
+	while (mant != (DOUBLEST)0.)
+	{
+		arbprec_mul2 (&r);
+		if (mant >= (DOUBLEST).5)
+		{
+			arbprec_add (&r, &one);
+			mant -= (DOUBLEST).5;
+		}
+		mant *= (DOUBLEST)2.;
+		exp--;
+	}
+	free (one.digits);
+	if (exp >= 0)
+	{
+		while (exp)
+		{
+			arbprec_mul2 (&r);
+			exp--;
+		}
+	}
+	else
+	{
+		while (exp)
+		{
+			arbprec_div2 (&r);
+			exp++;
+		}
+	}
+	arbprec_to_bcd (&r, res);
+	free (r.digits);
+	if (negative)
+		*res = REAL_VALUE_NEGATE (*res);
+}
+
+
+/* The converse: convert the DOUBLEST *FROM to an extended float
+   and store where TO points.  Neither FROM nor TO have any alignment
+   restrictions.  */
+
+static void
+convert_doublest_to_smapbcd (CONST struct floatformat *fmt,
+			     const DOUBLEST *from,
+			     void *to)
+{
+  struct real_value rv;
+  unsigned char *uto = (unsigned char *) to;
+
+  if (isnanl (*from))
+    rv = TIGCC_NAN;
+  else if (isinfl (*from))
+    {
+      rv = POSITIVE_INF;
+      if (*from < (DOUBLEST)0.0) rv = REAL_VALUE_NEGATE (rv);
+    }
+  else if (*from == (DOUBLEST)0.0)
+    {
+      float positive_zero = 0.f, fromf = *from;
+      rv = POSITIVE_ZERO;
+      if (memcmp (&fromf, &positive_zero, sizeof (float))) rv = REAL_VALUE_NEGATE (rv);
+    }
+  else
+    real_value_htof (&rv, *from);
+
+  put_field (uto, fmt->byteorder, fmt->totalsize, 0, 16, rv.exponent);
+  put_field (uto, fmt->byteorder, fmt->totalsize, 16, 32, (unsigned long)(rv.mantissa>>32));
+  put_field (uto, fmt->byteorder, fmt->totalsize, 48, 32, (unsigned long)(rv.mantissa));
+}
+
 /* Check if VAL (which is assumed to be a floating point number whose
    format is described by FMT) is negative.  */
 
@@ -482,6 +822,15 @@ floatformat_is_nan (const struct floatformat *fmt, char *val)
 
   if (exponent != fmt->exp_nan)
     return 0;
+
+  /* (TiEmu 20050401 Kevin Kofler) Our NAN has a 0xAA00000000000000 mantissa.
+     Infinities are 0xAA00xx0000000000. */
+  if (fmt == &floatformat_smapbcd_big)
+    {
+      mant = get_field (uval, fmt->byteorder, fmt->totalsize,
+			32, 16);
+      return !mant;
+    }
 
   mant_bits_left = fmt->man_len;
   mant_off = fmt->man_start;
@@ -588,6 +937,8 @@ floatformat_to_doublest (const struct floatformat *fmt,
       memcpy (&val, in, sizeof (val));
       *out = val;
     }
+  else if (fmt == &floatformat_smapbcd_big) /* (TiEmu 20050401) */
+    convert_smapbcd_to_doublest (fmt, in, out);
   else
     convert_floatformat_to_doublest (fmt, in, out);
 }
@@ -612,6 +963,8 @@ floatformat_from_doublest (const struct floatformat *fmt,
       long double val = *in;
       memcpy (out, &val, sizeof (val));
     }
+  else if (fmt == &floatformat_smapbcd_big) /* (TiEmu 20050401) */
+    convert_doublest_to_smapbcd (fmt, in, out);
   else
     convert_doublest_to_floatformat (fmt, in, out);
 }

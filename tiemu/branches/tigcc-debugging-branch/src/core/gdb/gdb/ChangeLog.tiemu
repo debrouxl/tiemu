@@ -1,6 +1,31 @@
 2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
-        * infrun.c (handle_inferior_event): Skip out of supervisor mode and F-Line handlers.
+        BCD floating point support:
+        * ../libiberty/floatformats.c (floatformat_smapbcd_big): New floatformat structure.
+          (floatformat_smapbcd_is_valid): New static function.
+          (floatformat_to_double, floatformat_from_double): Abort for floatformat_smapbcd_big.
+        * ../libiberty/floatformats.h (floatformat_smapbcd_big): Declare extern.
+        * config/m68k/tm-monitor.h (TARGET_FLOAT_FORMAT, TARGET_DOUBLE_FORMAT, TARGET_LONG_DOUBLE_FORMAT): Define.
+        * doublest.c (floatformat_is_nan): Special-case floatformat_smapbcd_big.
+          (floatformat_to_doublest): Use convert_smapbcd_to_doublest for floatformat_smapbcd_big.
+          (floatformat_from_doublest): Use convert_doublest_to_smapbcd for floatformat_smapbcd_big.
+          (convert_smapbcd_to_doublest, convert_doublest_to_smapbcd): New static functions.
+          (struct real_value, smap_bcd_float, POSITIVE_ZERO, POSITIVE_INF, TIGCC_NAN, REAL_VALUE_TYPE, bcdpadd1ulp,
+           real_value_negate, struct arbprec_decimal, arbprec_pack, arbprec_add, arbprec_to_bcd, real_value_htof):
+            Import from TIGCC and adapt.
+
+2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        Support for TiEmu breakpoints and watchpoints:
+        * config/m68k/tm-monitor.h (TARGET_HAS_HARDWARE_WATCHPOINTS, TARGET_CAN_USE_HARDWARE_WATCHPOINT,
+           TARGET_REGION_OK_FOR_HW_WATCHPOINT, TARGET_REGION_SIZE_OK_FOR_HW_WATCHPOINT,
+           target_remove_hw_breakpoint, target_insert_hw_breakpoint, target_remove_watchpoint,
+           target_insert_watchpoint, HAVE_CONTINUABLE_WATCHPOINT, STOPPED_BY_WATCHPOINT): New macros.
+          (target_stopped_data_address): New inline function.
+
+2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * infrun.c (handle_inferior_event): Skip out of supervisor mode.
         * infcmd.c (step_1): Refresh GTK interface in the loop.
 
 2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>

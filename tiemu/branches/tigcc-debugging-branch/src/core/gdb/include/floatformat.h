@@ -111,6 +111,8 @@ extern const struct floatformat floatformat_ia64_spill_little;
 extern const struct floatformat floatformat_ia64_quad_big;
 extern const struct floatformat floatformat_ia64_quad_little;
 
+extern const struct floatformat floatformat_smapbcd_big;
+
 /* Convert from FMT to a double.
    FROM is the address of the extended float.
    Store the double in *TO.  */
