@@ -41,73 +41,67 @@ FLASH_WSM   wsm;
 */
 void FlashWriteByte(uint32_t addr, int v)
 {
-    uint8_t *rom = mem_tab[2];
-    int i;
+	int i;
+    uint8_t *rom;
+  
+	if(tihw.calc_type == TI92)
+        return;
 
-    // map ROM accesses
-    if(tihw.rom_base == 0x20)
-        rom = mem_tab[2];
-    else
-        rom = mem_tab[4];
-  
-    addr &= 0x1fffff;
-  
     if(tihw.protect) 
         return;
 
-    // TI92 has EPROM
-    if(tihw.calc_type == TI92)
-        return;
+	rom = tihw.rom;
+	addr &= tihw.rom_size - 1;
 
     // Write State Machine (WSM, Sharp's data sheet)
     if (wsm.write_ready)
     {
-        if ((rom[addr]==0xff)||(wsm.write_ready==1))
+        if ((rom[addr] == 0xff) || (wsm.write_ready == 1))
 	    {
-	        rom[addr]=v;
-	        wsm.changed[addr>>16]=1;
+	        rom[addr] = v;
+	        wsm.changed[addr >> 16] = 1;
 	    }
         else
 	        wsm.write_ready--;
             wsm.write_ready--;
-            wsm.ret_or=0xffffffff;
+            wsm.ret_or = 0xffffffff;
     }
-    else if (v==0x50)
-        wsm.write_phase=0x50;
-    else if (v==0x10)
+    else if (v == 0x50)
+        wsm.write_phase = 0x50;
+    else if (v == 0x10)
     {
-        if (wsm.write_phase==0x50)
-	        wsm.write_phase=0x51;
-        else if (wsm.write_phase==0x51)
+        if (wsm.write_phase == 0x50)
+	        wsm.write_phase = 0x51;
+        else if (wsm.write_phase == 0x51)
         {
-	        wsm.write_ready=2;
-	        wsm.write_phase=0x50;
+	        wsm.write_ready = 2;
+	        wsm.write_phase = 0x50;
         }
     }
-    else if (v==0x20)
+    else if (v == 0x20)
     {
-        if (wsm.write_phase==0x50)
-	        wsm.write_phase=0x20;
+        if (wsm.write_phase == 0x50)
+	        wsm.write_phase = 0x20;
     }
-    else if (v==0xd0)
+    else if (v == 0xd0)
     {
-        if (wsm.write_phase==0x20)
+        if (wsm.write_phase == 0x20)
         {
-	        wsm.write_phase=0xd0;
-	        wsm.ret_or=0xffffffff;
-	        wsm.erase=0xffffffff;
-	        wsm.erase_phase=0;
-	        for (i=0;i<0x10000;i++)
-	            rom[(addr&0x1f0000)+i]=0xff;
-	        wsm.changed[addr>>16]=1;
+	        wsm.write_phase = 0xd0;
+	        wsm.ret_or = 0xffffffff;
+	        wsm.erase = 0xffffffff;
+	        wsm.erase_phase = 0;
+	        for (i = 0; i < 0x10000; i++)
+	            rom[(addr & 0x1f0000) + i] = 0xff;	// 64KB block
+	        wsm.changed[addr >> 16] = 1;
         } 
     }
-    else if (v==0xff)
+    else if (v == 0xff)
     {
-        if (wsm.write_phase==0x50)
+        if (wsm.write_phase == 0x50)
         {
-	        wsm.write_ready=0;
-	        wsm.ret_or=0;
+	        wsm.write_ready = 0;
+	        wsm.ret_or = 0;
         }
     }
 }
