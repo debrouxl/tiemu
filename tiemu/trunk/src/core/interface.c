@@ -130,11 +130,6 @@ int ti68k_init(void)
     tihw.calc_type = img_infos.calc_type;
 	TRY(hw_init());
 
-	// init hid
-	if(cb_init_specific() != 0)
-		return ERR_HID_FAILED;
-	cb_screen_on_off(!0);
-
 	return 0;
 }
 
@@ -155,8 +150,6 @@ int ti68k_reset(void)
 */
 int ti68k_exit(void)
 {
-    if(cb_exit_specific() != 0)
-		return ERR_HID_FAILED;
     TRY(hw_exit());
 
     ticable_exit();

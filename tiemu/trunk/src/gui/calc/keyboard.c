@@ -41,9 +41,8 @@
 #include "romversion.h"
 #include "fs_misc.h"
 
+const char* key_mapping;
 static int alpha = 0;
-
-const char* key_mapping = NULL; // key mapping
 
 static int gdk_to_ti89(guint keyval)
 {

@@ -37,6 +37,7 @@
 #include "struct.h"
 #include "tie_error.h"
 #include "calc.h"
+#include "dbg_all.h"
 
 GtkWidget *wnd = NULL;
 GtkWidget *area = NULL;
@@ -83,7 +84,7 @@ on_calc_wnd_delete_event           (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-    return TRUE;
+    return TRUE;	// block destroy
 }
 
 GLADE_CB gboolean
@@ -214,10 +215,6 @@ int  hid_init(void)
 {
     SKIN_INFOS *si = &skin_infos;
 
-    // Create main window
-    if(wnd == NULL)
-        display_main_wnd();
-
     // Found a skin
 	match_skin(tihw.calc_type);
 
@@ -278,18 +275,28 @@ int  hid_init(void)
 	    return -1;
     }
 
+	// Create main window
+    display_main_wnd();
+
     // Get window size depending on windowed/fullscreen
   	if(params.background)
-        gtk_drawing_area_size(GTK_DRAWING_AREA(area), skin_infos.width, skin_infos.height);
+	{
+        gtk_drawing_area_size(GTK_DRAWING_AREA(area), si->width, si->height);
+		gtk_window_resize(GTK_WINDOW(wnd), si->width, si->height);
+	}
     else
+	{
         gtk_drawing_area_size(GTK_DRAWING_AREA(area), tihw.lcd_w, tihw.lcd_h);  
+		gtk_window_resize(GTK_WINDOW(wnd), tihw.lcd_w, tihw.lcd_h);
+	}
     
     // Draw the skin and compute grayscale palette
   	set_colors();
   	redraw_skin();
 
-    // Install LCD refresh
-    tid = g_timeout_add((params.lcd_rate == -1) ? 10 : params.lcd_rate, (GtkFunction)hid_refresh, NULL);
+    // Install LCD refresh: 100 FPS (10 ms)
+    tid = g_timeout_add((params.lcd_rate == -1) ? 10 : params.lcd_rate, 
+		(GtkFunction)hid_refresh, NULL);
 
     return 0;
 }
@@ -300,19 +307,20 @@ int  hid_exit(void)
     // Uninstall LCD refresh
     g_source_remove(tid);
 
+	// Release resources
     if(lcd != NULL)
     {
         //g_object_unref(lcd);
         lcd = NULL;
     }
 
-    if(pixmap != NULL)
+   if(pixmap != NULL)
     {
         g_object_unref(pixmap);
         pixmap = NULL;
     }
 
-    
+   gtk_widget_destroy(wnd);
 
     return 0;
 }
@@ -321,6 +329,9 @@ int hid_switch_with_skin(void)
 {
     params.background = 1;
     gtk_drawing_area_size(GTK_DRAWING_AREA(area), skin_infos.width, skin_infos.height);
+	gtk_window_resize(GTK_WINDOW(wnd), skin_infos.width, skin_infos.height);
+
+	redraw_skin();
 
     return 0;
 }
@@ -329,6 +340,7 @@ int hid_switch_without_skin(void)
 {
     params.background = 0;
     gtk_drawing_area_size(GTK_DRAWING_AREA(area), tihw.lcd_w, tihw.lcd_h);
+	gtk_window_resize(GTK_WINDOW(wnd), tihw.lcd_w, tihw.lcd_h);
 
     return 0;
 }
@@ -362,14 +374,6 @@ int hid_switch_large_view(void)
 {
     return 0;
 }
-
-int hid_update_keys(void)
-{
-    return 0;
-}
-
-void hid_lcd_on_off(int i);
-int hid_set_contrast(int c);
 
 int  hid_screenshot(char *filename)
 {

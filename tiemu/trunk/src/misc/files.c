@@ -105,8 +105,9 @@ void process_buffer(gchar *buf)
 {
   gint i;
   
-  for(i=0; i<strlen(buf); i++)
-    if(buf[i]=='\r') buf[i]=' ';
+  for(i = 0; i < (int)strlen(buf); i++)
+    if(buf[i] == '\r') 
+		buf[i]=' ';
 }
 
 /*************************************/

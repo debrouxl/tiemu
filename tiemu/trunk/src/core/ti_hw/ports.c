@@ -97,7 +97,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
 			if(tihw.calc_type == TI92 || tihw.calc_type == TI92p)
 			{
                 bit_chg(tihw.contrast,0,bit_get(arg,5));
-				cb_set_contrast(tihw.contrast);
+				hid_set_contrast(tihw.contrast);
 			}
         break;
         case 0x01:	// rw <.....2.0>
@@ -229,9 +229,9 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         	// %[5-2] set: LCD RS (row sync) frequency, OSC2/((16-n)*8)
         	// %1111 turns off the RS completely (used when LCD is off)        	
         	if((arg & 0x3c) == 0x3c)
-	            cb_screen_on_off(0);
+	            hid_lcd_on_off(0);
             else
-	            cb_screen_on_off(!0);
+	            hid_lcd_on_off(!0);
         break;
         case 0x1d:	// -w <7..43210>
 			// %[3-1]: contrast
@@ -239,13 +239,13 @@ void io_put_byte(uint32_t addr, uint8_t arg)
 			{
 				// %[3-1]: bits <4321.> of contrast
             	tihw.contrast = (tihw.contrast & 1) | ((arg & 15) << 1);
-            	cb_set_contrast(tihw.contrast);
+            	hid_set_contrast(tihw.contrast);
             }
             else
             {
             	// %[3-1]: LCD contrast bits 3-0 (bit 3 is msb on HW1)
             	tihw.contrast = arg & 0x0f;
-            	cb_set_contrast(tihw.contrast);
+            	hid_set_contrast(tihw.contrast);
             	
             	// %4: HW1: Screen disable (power down), HW2: LCD contrast bit 4 (msb)
 				if(io2_bit_tst(0x1f,0))
@@ -253,7 +253,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
                     bit_chg(tihw.contrast,4,bit_get(arg,4));
                 }
 				else
-					cb_screen_on_off(!bit_get(arg,4));
+					hid_lcd_on_off(!bit_get(arg,4));
             }
         break;
         case 0x1e:
@@ -438,9 +438,9 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 		case 0x1d:	// rw <7...3210>
 			// %1: Screen enable (clear this bit to shut down LCD)
 			if(bit_tst(arg,1))
-	            cb_screen_on_off(!0);
+	            hid_lcd_on_off(!0);
             else
-	            cb_screen_on_off(0);
+	            hid_lcd_on_off(0);
 			break;
 		case 0x1f:	// rw <.....210>
 			if(!tihw.protect) tihw.io2[addr] = arg; else return;

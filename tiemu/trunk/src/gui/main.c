@@ -40,11 +40,12 @@
 #include "files.h"
 #include "rcfile.h"
 #include "ti68k_int.h"
+#include "printl.h"
 
 #include "hid.h"
 #include "engine.h"
 #include "refresh.h"
-#include "../hid/printl.h"
+#include "printl.h"
 
 #include "wizard.h"
 #include "popup.h"
@@ -156,8 +157,11 @@ int main(int argc, char **argv)
     splash_screen_set_label(_("Initializing m68k emulation engine..."));
 	err = ti68k_init();
 	handle_error();
-	if(err)
-		return -1;
+	if(err)	return -1;
+
+	err = hid_init();
+	handle_error();
+	if(err)	return -1;
 
 	/*
 		Load FLASH upgrade (if any)
@@ -211,6 +215,10 @@ int main(int argc, char **argv)
 		Close the emulator engine
 	*/
 	ti68k_engine_halt();
+
+	err = hid_exit();
+	handle_error();
+
 	err = ti68k_exit();
 	handle_error();
   
