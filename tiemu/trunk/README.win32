@@ -43,9 +43,6 @@ This step may require an administrator account (at least for NT4).
 You will need to REBOOT your machine after installation (if you plan to 
 use a parallel or serial link cable).
 
-4°) This setup will modify your AUTOEXEC.BAT (Windows 9x/Me) to speed-up 
-GTK+ 2.0 rendering. It should be better to REBOOT your machine after the first
-installation...
 
 PortTalk copyright (http://www.beyondlogic.org):
 Documentation and source code Copyright © 2002 Craig Peacock, Craig.Peacock@beyondlogic.org

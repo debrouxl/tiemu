@@ -12,6 +12,8 @@ To do:
 	- fixed AI2 (need to be raised whenever a key is pressed)
 	- main loop modified: main loop is restarted whenever a new ROM is loaded.
 	- fixed main window which appears when the whole window is ready
+	- fixed V200 and Titanium crash under Linux (buffer overflow). V200 transfers don't crash
+		any more under Windows (probably same bug).
 
 - 20/01/2005, version 1.80k: roms
 	- link port is now reset when error occurs: great improvement

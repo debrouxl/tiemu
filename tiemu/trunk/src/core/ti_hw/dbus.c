@@ -298,12 +298,12 @@ int df_checkread(void)
 
 #ifdef __LINUX__
 static TicableLinkCable 	ilc = { 0 };
-static TicalcFncts		itc = { 0 };
+static TicalcFncts			itc = { 0 };
 static TicalcInfoUpdate 	iu = { 0 };
-static TicableDataRate*         tdr;
+static TicableDataRate*     tdr;
 #else
 TicableLinkCable	ilc = { 0 };
-TicalcFncts		itc;	// = { 0 };	// make release crash !
+TicalcFncts			itc = { 0 };
 TicalcInfoUpdate 	iu = { 0 };
 TicableDataRate*	tdr = NULL;
 #endif
