@@ -80,34 +80,34 @@ int hw_exit(void)
 }
 
 /* This function should be called everytime the counter increases */
+// OSC2 is the timing base for the timers, the link I/O hardware and (HW1 only)
+// the LCD controller.
+// HW1: 680 kHz to 770 kHz
+// HW2: ~520 kHz (= 2^19 Hz !)
 void hw_update()
 {
-    /* Auto-int 5: timer */
-    if(tihw.timer_value++ == 0)
-    {
-        tihw.timer_value = tihw.timer_init;
-        specialflags |= SPCFLAG_INT;
-        
-        if(currIntLev < 5)
-	        currIntLev = 5;
-    }
-    else
-        tihw.timer_value &= 0xff;
+	/* Auto-int management */
 
-    /* Auto-int 1: 1/4 of timer rate */
-    if(!(tihw.timer_value&3)) 
+	// Auto-int 1: 1/4 of timer rate
+	// Triggered at a fixed rate: OSC2/2^11
+    if(/*io_bit_tst(0x15,7) && io_bit_tst(0x15,1) &&*/ !(tihw.timer_value&3)) 
     {
         specialflags |= SPCFLAG_INT;
         currIntLev = 1;
     }
 
-  
-    /* Auto-int 2: keyboard scan */
-    if(!(tihw.timer_value & 2))
-    {
-    }
+	// Auto-int 2: keyboard scan
+    // see keyboard.c
 
-#if 1
+	// Auto-int 3: disabled by default by AMS
+	// When enabled, it is triggered at a fixed rate: OSC2/2^19
+	if(/*io_bit_tst(0x15,7) && io_bit_tst(0x15,1) && io_bit_tst(0x15,2) &&*/ 0/*timer*/)
+	{
+		specialflags |= SPCFLAG_INT;
+        currIntLev = 3;
+	}
+
+	// Triggered by the link hardware for various reasons.
 	// External link activity ?
 	if(!lc.get_red_wire() || !lc.get_white_wire())
 		io_bit_set(0x0d,3);
@@ -129,18 +129,27 @@ void hw_update()
 			currIntLev = 4;
 		}
 	}
-#else
-    /* Link status */
-    if(hw_dbus_checkread())
-        tihw.io[0xc] |= 2;
 
-    /* Link interrupt */ 
-    if(tihw.io[0xc] & 2) 
+    // Auto-int 5: triggered by the programmable timer.
+	// The default rate is OSC2/(K*2^9), where K=79 for HW1 and K=53 for HW2
+    if(/*io_bit_tst(0x15,7) &&*/ tihw.timer_value++ == 0)
     {
+        tihw.timer_value = tihw.timer_init;
         specialflags |= SPCFLAG_INT;
-        currIntLev = 4;
+        
+        if(currIntLev < 5)
+	        currIntLev = 5;
     }
-#endif
+    else
+        tihw.timer_value &= 0xff;
+
+	// Auto-int 6: triggered when [ON] is pressed.
+	// see keyboard.c
+
+	// Auto-int 7: "vector table write protection" & "stack overflow"
+	// see memory.c
+
+	/* Hardware refresh */
   
     /* LCD is refreshed every 16th time */
     if(!(tihw.timer_value&15))
