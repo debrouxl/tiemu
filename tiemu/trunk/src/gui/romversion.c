@@ -134,6 +134,7 @@ gint display_romversion_dbox(gboolean file_only)
     FILE *fp;
     gchar *filename;
     struct stat s;
+	gchar *path;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("romversion-2.glade"), "romversion_dbox",

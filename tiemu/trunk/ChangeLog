@@ -12,6 +12,9 @@ To do:
 	- fixed warnings
 	- update stack frame when stepping
 	- improved step over: don't stop at the first RTS/RTE
+	- fixed disassembling of STOP instruction
+	- highlight ROM call
+	- fixed loading of ROM calls (load from FLASH)
 
 - 20/08/2004, version 1.79: roms
 	- LCD background is less dark

@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.79		(22/08/2004)
-Current version:  1.80		(28/08/2004)
+Previous version: 1.80		(28/08/2004)
+Current version:  1.80		(02/09/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,20 +20,24 @@ For the other link cables, no driver is needed because it's provided.
 New capabilities:
 -----------------
 
-	- bkpts window: can jump to bkpt address
 	- code window: can jump to ROM call
+	- bkpts window: can jump to code breakpoint
+	- can stop debugger at any time (infinite loop)
 
 
 Improvements:
 -------------
 
-	- none
+	- Step Over: don't stop at the first RTS/RTE
 		
 
 Bug fixes:
 ----------
 
 	- fixed vectors copy
+	- update stack frame when stepping
+	- disassembling of STOP instruction
+	- loading of ROM calls on V200 
 
 
 To do:

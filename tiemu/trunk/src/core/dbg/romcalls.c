@@ -123,16 +123,13 @@ int romcalls_load_from_file(const char* filename)
 	int i;
     char tmp[32];
 
-    if(loaded)
-        return 0;
-
 	if(!img_loaded || (img->calc_type == TI92))
 		return -1;
 
-	if(old_ct == -1)
-		old_ct = img->calc_type;
-	else if(old_ct == img->calc_type)
+	if((old_ct == img->calc_type) && loaded)
 		return 0;
+	else
+		old_ct = img->calc_type;
 
 	printf("Loading symbols (ROM calls)... ");
     memset(list, 0, sizeof(list));
@@ -159,7 +156,9 @@ int romcalls_load_from_file(const char* filename)
 	printf("Done !\n");
 
 	// get function address
-	addr = rd_long(&tihw.ram[0xC8]);
+	//addr = rd_long(&tihw.ram[0xC8]);
+	addr = rd_long(&tihw.rom[0x12000 + 0x88 + 0xC8]);
+
 	printf("Parsing symbols (addresses) at $%06x... ", addr);
 
 	for(i = 0; i < TBL_SIZE; i++)

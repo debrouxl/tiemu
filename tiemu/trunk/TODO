@@ -55,7 +55,7 @@ idée d'attendre que le pointeur de pile soit revenu
 à la même valeur (ça ne marchera pas dans plusieurs 
 cas de figure
 
-* Sur la V200, la table des ROM_CALLs est trouvée à 
++ Sur la V200, la table des ROM_CALLs est trouvée à 
 l'adresse 0x000000 (qui est en fait manifestement 
 une copie de 0x200000 au moment où il charge la 
 table, l'init de la RAM est sûrement faite après). 
@@ -83,7 +83,7 @@ aller à l'adresse 390020 (les 24 bits de poids
 faible), comme le fait le Memory View, plutôt que 
 d'aller à l'adresse 303900.
 
-* il faudrait une indication que le curseur est sur 
++ il faudrait une indication que le curseur est sur 
 la première instruction d'un ROM_CALL. Si c'est 
 difficile de faire comme VTI (noms au milieu du 
 désassemblage), je ne sais pas, une façon similaire 
@@ -91,13 +91,13 @@ désassemblage), je ne sais pas, une façon similaire
 ROM_CALL dans la status line - ici, en-dessous de 
 Symbol: [...] par exemple) suffit.
 
-* F8 ne compte pas le niveau des subroutines, cela 
++ F8 ne compte pas le niveau des subroutines, cela 
 rend moins facile le debug (surtout que F2 ne marche 
 plus, comme dit plus haut). Il m'est difficile de 
 m'habituer à ce que F8 ne marche pas sur les 
 branches...
 
-* Au passage, un autre bug que je connais depuis 
++ Au passage, un autre bug que je connais depuis 
 longtemps dans le désassembleur de VTI/ttdasm mais 
 que je n'ai pas pensé à te signaler: l'instruction 
 STOP est mal désassemblée. STOP est une instruction 

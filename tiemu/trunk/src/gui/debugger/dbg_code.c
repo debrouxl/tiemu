@@ -364,7 +364,7 @@ GtkWidget* dbgcode_create_window(void)
 		if(!strcmp(name, "unknown") ||(name == NULL))
 			continue;
 
-		str = g_strdup_printf("%03x: %s [%06x]", i, name, addr);
+		str = g_strdup_printf("%s [$%x] - #%03x", name, addr, i);
 		items = g_list_append (items, str);
 	}
 	gtk_combo_set_popdown_strings (GTK_COMBO (data), items);
@@ -408,8 +408,18 @@ void dbgcode_refresh_window(void)
 
 void dbgcode_disasm_at(uint32_t addr)
 {
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreePath *path;
+	GtkTreeViewColumn *column;
+
     gtk_list_store_clear(store);
     clist_populate(store, addr);
+
+	//set selection
+	path = gtk_tree_path_new_from_string("0");
+    gtk_tree_view_set_cursor(view, path, NULL, FALSE);
+	//gtk_tree_view_row_activated(view, path, column);        // show selection
+    gtk_tree_path_free(path);
 }
 
 GLADE_CB void
@@ -829,13 +839,14 @@ GLADE_CB void
 on_combo_entry1_changed                (GtkEditable     *editable,
                                         gpointer         user_data)
 {
+	//printf(".");
 	gchar *str = gtk_editable_get_chars(editable, 0, -1);
 	uint32_t addr;
 	int id;
 	gchar name[256];
 	int ret;
 
-	ret = sscanf(str, "%03x: %s [%x]", &id, name, &addr);
+	ret = sscanf(str, "%s [$%x] - #%03x ",name, &addr, &id);
 	if(ret == 3)
 		dbgcode_disasm_at(addr & 0xffffff);
 

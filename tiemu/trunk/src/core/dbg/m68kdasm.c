@@ -724,7 +724,10 @@ int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
 			else if (lo == 0x31)
 				sprintf (buffer, "NOP");
 			else if (lo == 0x32)
-				sprintf (buffer, "STOP");
+			{
+				PARAM_WORD (pm);
+				sprintf (buffer, "STOP     #$%X", pm);
+			}
 			else if (lo == 0x33)
 				sprintf (buffer, "RTE");
 			else if (lo == 0x35)
