@@ -98,7 +98,7 @@ void Interrupt2(int nr)
 
 void hw_m68k_irq(int n)
 {
-	regs.spcflags |= SPCFLAG_INT;
+	set_special(SPCFLAG_INT);
     currIntLev = n;
 
 	pending_ints |= (1 << n);
@@ -122,12 +122,11 @@ int hw_m68k_run(int n)
 {
     int i=n;
     GList *l = NULL;
-    static FILE *f = NULL;
-    static int foo = 0;
 
 	for(i = 0; i < n; i++)
 	{
 		uae_u32 opcode;
+		int cycles;
 
 		// refresh hardware
 		do_cycles();
@@ -204,8 +203,8 @@ int hw_m68k_run(int n)
 		}
 
 		// search for next opcode and execute it
-		opcode = curriword();
-		(*cpufunctbl[opcode])(opcode); // increments PC automatically now
+		opcode = get_iword_prefetch (0);
+		cycles += (*cpufunctbl[opcode])(opcode); // increments PC automatically now
 
 		// HW2/3 grayscales management
 		lcd_hook_hw2(0);
@@ -225,7 +224,7 @@ int hw_m68k_run(int n)
     	    if(regs.spcflags & SPCFLAG_ADRERR) 
 	        {
 	            Exception(3,0);
-				regs.spcflags &= ~SPCFLAG_ADRERR;
+				unset_special(SPCFLAG_ADRERR);
 	        }
 	  
 	        if (regs.spcflags & SPCFLAG_DOTRACE) 
@@ -235,24 +234,25 @@ int hw_m68k_run(int n)
 	      
 	        if (regs.spcflags & SPCFLAG_TRACE) 
 	        {
-	            regs.spcflags &= ~SPCFLAG_TRACE;
-	            regs.spcflags |= SPCFLAG_DOTRACE;
+				unset_special(SPCFLAG_TRACE);
 			}
 
 	        if (regs.spcflags & SPCFLAG_BRK) 
 	        {		
-	          regs.spcflags &= ~SPCFLAG_BRK;
-	          return 1;		// DBG_BREAK
+				unset_special(SPCFLAG_BRK);
+				return 1;		// DBG_BREAK
 	        }
 
 	        if(regs.spcflags & SPCFLAG_DBTRACE) 
 	        {
-	          regs.spcflags &= ~SPCFLAG_DBTRACE;
-              return 2;     // DBG_TRACE
+				unset_special(SPCFLAG_DBTRACE);
+				return 2;     // DBG_TRACE
 	        }
 
             if(regs.spcflags & SPCFLAG_DBSKIP)
-                regs.spcflags &= ~SPCFLAG_DBSKIP;
+			{
+                unset_special(SPCFLAG_DBSKIP);
+			}
 	    }
 	}
 
