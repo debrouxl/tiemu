@@ -34,6 +34,7 @@
 #include "struct.h"
 #include "romcalls.h"
 #include "dbg_code.h"
+#include "dbg_mem.h"
 
 enum {
 		COL_ID, COL_NAME, COL_ADDR, COL_FULL
@@ -149,7 +150,12 @@ static void goto_romcall(const char *str)
 
 	ret = sscanf(str, "%s [$%x] - #%03x ",name, &addr, &id);
 	if(ret == 3)
-		dbgcode_disasm_at(addr & 0xffffff);
+	{
+		if(addr < 0x200000)
+			dbgmem_add_tab(addr & 0xffffff);
+		else
+			dbgcode_disasm_at(addr & 0xffffff);
+	}
 }
 
 GLADE_CB void

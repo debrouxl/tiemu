@@ -155,12 +155,6 @@ d'aplomb.
 * j'ai de nouveau des problèmes avec le caractère 0x09
 dans la fenêtre ASCII de la memory view (Win ME ?).
 
-* Bon point pour la possibilité de sélectionner un
-ROM_CALL à travers son nom, et de ne plus aller aux
-ROM_CALLs non disponibles. Petite suggestion: si un
-ROM_CALL est dans la RAM, il faudrait aller plutôt
-dans la fenêtre Memory (comme la VTI de JM)
-
 * Toujours le problème avec TAB (0x09) mal interprété.
 J'utilise le GTK téléchargé en même temps que The GIMP
 2.0.5, un GTK+ du 01/10/2004, version 2.4.10.
