@@ -23,7 +23,7 @@
  */
 
 /*
-    Running engine
+    Running engine (threaded).
 */
 
 #ifdef HAVE_CONFIG_H

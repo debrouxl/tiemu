@@ -387,7 +387,7 @@ int send_ti_file(const char *filename)
         return ERR_68K_TI_FILE;
 
     // FLASH APP file ?
-    if(tifiles_is_a_flash_file(filename) && !strcmp(tifiles_flash_app_file_ext(), tifiles_get_extension(filename)))
+    if(tifiles_is_a_flash_file(filename) && !strcasecmp(tifiles_flash_app_file_ext(), tifiles_get_extension(filename)))
     {
         map_to_directfile();
         tihw.lc_speedy = 1;
@@ -399,7 +399,7 @@ int send_ti_file(const char *filename)
     }
 
     // FLASH OS file ?
-    if(tifiles_is_a_flash_file(filename) && !strcmp(tifiles_flash_os_file_ext(), tifiles_get_extension(filename)))
+    if(tifiles_is_a_flash_file(filename) && !strcasecmp(tifiles_flash_os_file_ext(), tifiles_get_extension(filename)))
     {
         map_to_directfile();
         tihw.lc_speedy = 1;
