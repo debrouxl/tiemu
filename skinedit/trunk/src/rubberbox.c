@@ -212,10 +212,10 @@ draw_rubberbox(GtkSDL *sdl_area, SDL_Rect rect)
 
   for (i = c.y; i < (c.y + c.h); i++)
     {
-      SDLpixels = (uint16_t *)(s->pixels + (i * 2*s->w + 2*c.x));
+      SDLpixels = (uint16_t *)(s->pixels) + (i * 2*s->w + 2*c.x);
       *SDLpixels = ~(*SDLpixels);
 
-      SDLpixels = (uint16_t *)(s->pixels + (i * 2*s->w + 2*(c.x + c.w)));
+      SDLpixels = (uint16_t *)(s->pixels) + (i * 2*s->w + 2*(c.x + c.w));
       *SDLpixels = ~(*SDLpixels);
     }
 
@@ -225,10 +225,10 @@ draw_rubberbox(GtkSDL *sdl_area, SDL_Rect rect)
 
   for (i = 0; i < c.w; i++)
     {
-      SDLpixels = (uint16_t *)(s->pixels + (c.y * 2*s->w + 2*i + 2*c.x));
+      SDLpixels = (uint16_t *)(s->pixels) + (c.y * 2*s->w + 2*i + 2*c.x);
       *SDLpixels = ~(*SDLpixels);
 
-      SDLpixels = (uint16_t *)(s->pixels + ((c.y + c.h) * 2*s->w + 2*i + 2*c.x));
+      SDLpixels = (uint16_t *)(s->pixels) + ((c.y + c.h) * 2*s->w + 2*i + 2*c.x);
       *SDLpixels = ~(*SDLpixels);
     }
 

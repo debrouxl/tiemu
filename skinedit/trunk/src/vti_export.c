@@ -23,7 +23,9 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdint.h>
+#ifndef __WIN32__
 #include <byteswap.h>
+#endif
 
 #include <glib.h>
 

@@ -13,6 +13,8 @@
 #include <SDL/SDL.h>
 #include <gtk/gtk.h>
 
+#include "intl.h"
+
 #include "main_intf.h"
 #include "support.h"
 #include "utils.h"
@@ -43,7 +45,9 @@ main (int argc, char *argv[])
   gtk_set_locale ();
   gtk_init (&argc, &argv);
 
+#ifndef __WIN32__
   add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");
+#endif
 
   signal(SIGINT, signal_handler);
 

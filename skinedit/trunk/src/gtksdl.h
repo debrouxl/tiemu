@@ -7,7 +7,7 @@
 # include <gtk/gtk.h>
 # include <gdk/gdk.h>
 # include <gtk/gtkwidget.h>
-# include <gdk/gdkx.h>
+//# include <gdk/gdkx.h>
 
 # include <SDL/SDL.h>
 

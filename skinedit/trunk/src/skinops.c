@@ -27,7 +27,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#ifndef __WIN32__
 #include <byteswap.h>
+#endif
 
 #include <SDL/SDL.h>
 #include <gtk/gtk.h>
