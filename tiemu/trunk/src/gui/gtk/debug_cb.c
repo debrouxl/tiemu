@@ -462,17 +462,22 @@ gint refresh_code_dbox(void)
 */
 gint refresh_memory_dbox(void)
 {
-#if 0 /* FUCKED */
   GtkWidget *clist = mem_clist;
+  GtkTreeModel *model;
+  GtkListStore *list;
+  GtkTreeIter iter;
   gchar *text[3];
-  gint i, j, k;
+  gint i, k;
   UBYTE *ti_ram = (UBYTE *)ti68k_getRamPtr();
   gint addr = data_addr;
 
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
+  list = GTK_LIST_STORE(model);
+  
+  gtk_list_store_clear(list);
+
   /* Fill the clist */
-  for(i=0; i<options.mem_lines; i++)
-    gtk_clist_remove((GtkCList *)clist, 0);
-  for(j=0; j<options.mem_lines; j++, addr+=8)
+  for(i = 0; i < options.mem_lines; i++, addr+=8)
     {
       text[0] = g_strdup_printf("%06X", addr);
       text[1] = g_strdup_printf("%02X %02X %02X %02X %02X %02X %02X %02X ",
@@ -491,15 +496,17 @@ gint refresh_memory_dbox(void)
 				isprint(ti_ram[addr+6]) ? ti_ram[addr+6] : '.',
 				isprint(ti_ram[addr+7]) ? ti_ram[addr+7] : '.');
       
-      gtk_clist_append((GtkCList *)clist, row_text);
+      gtk_list_store_append(list, &iter);
+      gtk_list_store_set(list, &iter,
+			 0, text[0], 1, text[1],
+			 2, text[2], -1);
 
-      for(k=0; k<3; k++)
+      for(k = 0; k < 3; k++)
 	{
 	  //fprintf(stderr, "<%i %p %s>\n", k, row_text[k], row_text[k]); // bug here !!!
 	  g_free(text[k]);
 	}
     }
-#endif /* 0 */
 
   return 0;
 }
