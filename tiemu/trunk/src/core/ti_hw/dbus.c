@@ -288,6 +288,12 @@ int df_byteavail(void)
 
 int df_checkread(void)
 {
+	if(f2t_flag)
+	{
+		io_bit_set(0x0d,5);		// rx reg full
+		io_bit_set(0x0d,2);		// link activity
+	}
+
     return f2t_flag;
 }
 
