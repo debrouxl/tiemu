@@ -21,3 +21,5 @@ gchar *s = N_("128KB");
 gchar *s = N_("2MB");
 gchar *s = N_("external ROM");
 gchar *s = N_("Calc type:");
+gchar *s = N_("Hardware:");
+gchar *s = N_("HW1");

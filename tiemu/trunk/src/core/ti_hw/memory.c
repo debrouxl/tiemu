@@ -85,9 +85,11 @@ int hw_mem_init(void)
 	int i;
 
 	// get infos from image
+	tihw.calc_type = img_infos.calc_type;
 	tihw.rom_internal = img->internal;
 	tihw.rom_flash = img->flash;
 	strcpy(tihw.rom_version, img->version);
+	tihw.hw_type = img->hw_type;
 
 	if((tihw.calc_type == TI92) && (strcmp(tihw.rom_version, "2.0") > 0))
 	{
