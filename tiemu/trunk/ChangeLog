@@ -8,6 +8,7 @@ To do:
 - 10/08/2004, version 1.77: roms
 	- step over fixed again: stops on Bcc/DBcc, STOP, RTE, RTD, RTS, RTR, JMP.
 	- FLINE > 5 was mis-disassembled
+	- code window: don't reload source when setting a bkpt
 
 - 07/08/2004, verison 1.76: roms
 	- splitted memory mapping (init/exit)

@@ -161,7 +161,7 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
     }
 }
 
-static void clist_refresh(GtkListStore *store)
+static void clist_refresh(GtkListStore *store, gboolean reload)
 {
     GtkTreeModel *model = GTK_TREE_MODEL(store);
     gboolean valid;
@@ -198,7 +198,7 @@ static void clist_refresh(GtkListStore *store)
     }
 
 	// pc not found, erase and populate
-    if(!found)
+    if(!found && reload)
     {
         gtk_list_store_clear(store);
         clist_populate(store, ti68k_debug_get_pc());
@@ -342,7 +342,7 @@ GtkWidget* dbgcode_display_window(void)
     set_other_windows_sensitivity(TRUE);
      
     gtk_list_store_clear(store);
-	clist_refresh(store);
+	clist_refresh(store, TRUE);
 
     return wnd;
 }
@@ -352,7 +352,7 @@ void dbgcode_refresh_window(void)
 	if(dbgs.code)
 	{
 		gtk_list_store_clear(store);
-		clist_refresh(store);
+		clist_refresh(store, TRUE);
 	}
 }
 
@@ -382,7 +382,7 @@ on_step1_activate                      (GtkMenuItem     *menuitem,
 
 	ti68k_debug_step();
 
-	clist_refresh(store);
+	clist_refresh(store, TRUE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
     dbgmem_refresh_window();
@@ -395,7 +395,7 @@ on_step_over1_activate                 (GtkMenuItem     *menuitem,
 {
     ti68k_debug_step_over();
 
-	clist_refresh(store);
+	clist_refresh(store, TRUE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
     dbgmem_refresh_window();
@@ -407,7 +407,7 @@ on_step_out1_activate                 (GtkMenuItem     *menuitem,
 {
     ti68k_debug_step_out();
 
-	clist_refresh(store);
+	clist_refresh(store, TRUE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
     dbgmem_refresh_window();
@@ -445,7 +445,7 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
 	tb_set_states(1, 1, 1, 1, 1, 0, 1);
     set_other_windows_sensitivity(TRUE);
     
-	clist_refresh(store);
+	clist_refresh(store, FALSE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
     dbgmem_refresh_window();
@@ -501,7 +501,7 @@ dbgcode_button6_clicked                     (GtkButton       *button,
     else
         ti68k_bkpt_del_address(addr);
 
-    clist_refresh(store);
+    clist_refresh(store, FALSE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
     dbgmem_refresh_window();
@@ -697,7 +697,7 @@ GLADE_CB void
 on_go_to_pc1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    clist_refresh(store);
+    clist_refresh(store, TRUE);
 }
 
 

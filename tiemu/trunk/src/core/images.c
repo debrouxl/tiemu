@@ -177,8 +177,12 @@ int ti68k_get_hw_param_block(IMG_INFO *rom, HW_PARM_BLOCK *block)
     uint32_t addr;
 
     addr = rd_long(&rom->data[0x104]);
-    addr -= (rom->rom_base << 16);
-
+#if 0
+    //addr -= (rom->rom_base << 16);
+#else
+    // allow to use patched ROMs (such as Extended's V200 ROM)
+    for(; addr >= 0x200000; addr -= 0x200000);
+#endif
 	if(addr < 0x000000 || addr >= 0x200000)
 		return -1;
 

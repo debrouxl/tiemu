@@ -125,12 +125,13 @@ static int gdk_to_ti89(guint keyval)
 		case GDK_Alt_L : 	    return TIKEY_2ND;
 		case GDK_Alt_R : 	    return TIKEY_2ND;
 
-		case GDK_space : 		return TIKEY_SPACE;
+		case GDK_space : alpha = 1;	return TIKEY_NEGATE;
 		case GDK_Escape : 		return TIKEY_ESCAPE;
 		case GDK_BackSpace : 	return TIKEY_BACKSPACE;
 		case GDK_parenleft : 	return TIKEY_PALEFT;
 		case GDK_parenright : 	return TIKEY_PARIGHT;
 		case GDK_period : 		return TIKEY_PERIOD;
+        case GDK_KP_Decimal:    return TIKEY_PERIOD;
 		case GDK_comma : 		return TIKEY_COMMA;
 		case GDK_KP_Add : 	    return TIKEY_PLUS;
 		case GDK_KP_Multiply :  return TIKEY_MULTIPLY;
@@ -242,6 +243,7 @@ static int gdk_to_ti92(guint keyval)
 		case GDK_parenleft : 	return TIKEY_PALEFT;
 		case GDK_parenright : 	return TIKEY_PARIGHT;
 		case GDK_period : 		return TIKEY_PERIOD;
+        case GDK_KP_Decimal:    return TIKEY_PERIOD;
 		case GDK_comma : 		return TIKEY_COMMA;
 		case GDK_KP_Add : 	    return TIKEY_PLUS;
 		case GDK_KP_Multiply :  return TIKEY_MULTIPLY;

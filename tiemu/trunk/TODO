@@ -12,7 +12,7 @@ demi écran plutôt qu'une seule ligne, sinon l'instruction courante est
 toujours la dernière et on n'a plus de visibilité sur les instructions
 suivantes (VTI se comporte comme ça, c'est pas terrible).
 
-- Le problème apparait lorsque le breakpoint est placé sur une instruction qui
+O Le problème apparait lorsque le breakpoint est placé sur une instruction qui
 n'est pas dans la fenêtre que l'instruction (ie à plus de de 10 instructions
 de PC) : après le 'set breakpoint', l'instruction courante est affichée,
 plutôt que l'instruction où on a placé le breakpoint (c'est gênant si l'on
