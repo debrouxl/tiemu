@@ -2255,12 +2255,12 @@ static void generate_includes (FILE *f)
     fprintf (f, "#include \"sysdeps.h\"\n");
     fprintf (f, "#include \"config.h\"\n");
     fprintf (f, "#include \"options.h\"\n");
-    fprintf (f, "#include \"machdep/m68k.h\"\n");
+    fprintf (f, "#include \"m68kk.h\"\n");
     fprintf (f, "#include \"memory.h\"\n");
     fprintf (f, "#include \"custom.h\"\n");
     fprintf (f, "#include \"readcpu.h\"\n");
     fprintf (f, "#include \"newcpu.h\"\n");
-    fprintf (f, "#include \"compiler.h\"\n");
+    //fprintf (f, "#include \"compiler.h\"\n");
     fprintf (f, "#include \"cputbl.h\"\n");
 }
 

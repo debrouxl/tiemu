@@ -15,7 +15,7 @@
 //#include "sounddep/sound.h"
 //#include "events.h"
 #include "uae.h"
-#include "m68k.h"
+#include "m68kk.h"
 //#include "memory.h"
 #include "custom.h"
 #include "readcpu.h"
