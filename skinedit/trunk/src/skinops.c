@@ -392,11 +392,11 @@ load_image(FILE *fp)
   skin_infos.img_orig = gdk_pixbuf_new_from_file(filename, &error);
   if (skin_infos.img_orig == NULL) 
     {
-			fprintf(stderr, "Failed to load pixbuf file: %s: %s\n", filename, error->message);
+      fprintf(stderr, "Failed to load pixbuf file: %s: %s\n", filename, error->message);
       g_error_free(error);
       return -1;
     }
-
+  
   /*
    * Set image and drawing area sizes
    */
@@ -412,18 +412,18 @@ load_image(FILE *fp)
   geometry.max_height = -1; //skin_infos.height;
   geometry.base_height = -1;
   geometry.base_width = -1;
-
+  
   gtk_window_set_geometry_hints(GTK_WINDOW(main_wnd),
-				GTK_WIDGET(drawingarea1),
-				&geometry,
-				GDK_HINT_MAX_SIZE);
+  GTK_WIDGET(drawingarea1),
+  &geometry,
+  GDK_HINT_MAX_SIZE);
 */
 
   /*
    * Display image in the back-end pixbuf
    */
   pixbuf = gdk_pixbuf_copy(skin_infos.img_orig);
-	//gtk_widget_draw (GTK_DRAWING_AREA(drawingarea1), (GdkRectangle *)&update_rect);
+  //gtk_widget_draw (GTK_DRAWING_AREA(drawingarea1), (GdkRectangle *)&update_rect);
   
   /*
    * Delete temp file

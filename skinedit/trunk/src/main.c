@@ -25,24 +25,24 @@ GtkWidget *main_wnd;
 
 static void help(void)
 {
-	fprintf(stdout, "\n");
-	fprintf(stdout, _("Usage: skinedit [-options] [filename]\n"));
-	fprintf(stdout, "\n");
-	fprintf(stdout, _
-		("-h, --help    display this information page and exit\n"));
-	fprintf(stdout, _
-		("-v, --version display the version information and exit\n"));
-	fprintf(stdout, "\n");
-	fprintf(stdout, _("filename      a skin file to load\n"));
-	fprintf(stdout, "\n");
-	fprintf(stdout, _("See the manpage for more informations...\n"));
-	fprintf(stdout, "\n");
-	exit(0);
+  fprintf(stdout, "\n");
+  fprintf(stdout, _("Usage: skinedit [-options] [filename]\n"));
+  fprintf(stdout, "\n");
+  fprintf(stdout, _
+	  ("-h, --help    display this information page and exit\n"));
+  fprintf(stdout, _
+	  ("-v, --version display the version information and exit\n"));
+  fprintf(stdout, "\n");
+  fprintf(stdout, _("filename      a skin file to load\n"));
+  fprintf(stdout, "\n");
+  fprintf(stdout, _("See the manpage for more informations...\n"));
+  fprintf(stdout, "\n");
+  exit(0);
 }
 
 static int strexact(char *p1, char *p2)
 {
-	return (strstr(p1, p2) && strstr(p2, p1));
+  return (strstr(p1, p2) && strstr(p2, p1));
 }
 
 void
@@ -62,31 +62,31 @@ signal_handler(int sig)
 int
 main (int argc, char *argv[])
 {
-    int cnt;
-    const char *p;
-    char arg[128];
-
+  int cnt;
+  const char *p;
+  char arg[128];
+  
 #ifdef __WIN32__
-	HMODULE hModule;
-	char *sBuffer;
-	DWORD dWord;
-	char *dirname;
-	char *base_dir;
-	char *pixmap_dir;
-	char *locale_dir;
-
-	// Init the path for the Windows version by getting the 
-	// executable location.
-	hModule = GetModuleHandle("skinedit.exe");
-	sBuffer = (char *) malloc(4096 * sizeof(char));
-	dWord = GetModuleFileName(hModule, sBuffer, 4096);
-	dirname = g_dirname(sBuffer);
-	base_dir = g_strconcat(dirname, "\\", NULL);
-	g_free(dirname);
-	free(sBuffer);
-
-	pixmap_dir = g_strconcat(base_dir, "pixmaps\\", NULL);
-	locale_dir = g_strconcat(base_dir, "locale\\", NULL);
+  HMODULE hModule;
+  char *sBuffer;
+  DWORD dWord;
+  char *dirname;
+  char *base_dir;
+  char *pixmap_dir;
+  char *locale_dir;
+  
+  // Init the path for the Windows version by getting the 
+  // executable location.
+  hModule = GetModuleHandle("skinedit.exe");
+  sBuffer = (char *) malloc(4096 * sizeof(char));
+  dWord = GetModuleFileName(hModule, sBuffer, 4096);
+  dirname = g_dirname(sBuffer);
+  base_dir = g_strconcat(dirname, "\\", NULL);
+  g_free(dirname);
+  free(sBuffer);
+  
+  pixmap_dir = g_strconcat(base_dir, "pixmaps\\", NULL);
+  locale_dir = g_strconcat(base_dir, "locale\\", NULL);
 #endif
 
 #ifdef ENABLE_NLS
@@ -95,9 +95,8 @@ main (int argc, char *argv[])
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
 #else
-  setlocale(LC_ALL, "");
   bindtextdomain(PACKAGE, locale_dir);
-  //bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+  bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
 #endif
 #endif
@@ -130,28 +129,28 @@ main (int argc, char *argv[])
 
     // scan command line
     for (cnt = 1; cnt < argc; cnt++) {
-        
-        // get argument
-		p = argv[cnt];
-		if (*p == '-') {
-            // argument
-			p++;
-        } else {
-            // filename
-            if(load_skin(p) == 0)
-	            skin_infos.changed = 1;
-        }
-		
-        strcpy(arg, p);
-
-		if (strexact(arg, "-help") || strexact(arg, "h"))
-			help();
-		if (strexact(arg, "-version") || strexact(arg, "v"))
-			exit(0);
+      
+      // get argument
+      p = argv[cnt];
+      if (*p == '-') {
+	// argument
+	p++;
+      } else {
+	// filename
+	if(load_skin(p) == 0)
+	  skin_infos.changed = 1;
+      }
+      
+      strcpy(arg, p);
+      
+      if (strexact(arg, "-help") || strexact(arg, "h"))
+	help();
+      if (strexact(arg, "-version") || strexact(arg, "v"))
+	exit(0);
     }
-
-  gtk_main ();
-  return 0;
+    
+    gtk_main ();
+    return 0;
 }
 
 /* 
@@ -165,6 +164,6 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 		     HINSTANCE hPrevInstance,
 		     LPSTR lpCmdLine, int nCmdShow)
 {
-	return main(__argc, __argv);
+  return main(__argc, __argv);
 }
 #endif

@@ -67,16 +67,16 @@ on_new_activate                        (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   GtkWidget *filesel;
-	GSList *formats;
-	gchar *ext_list = NULL;
-	int i;
-
+  GSList *formats;
+  gchar *ext_list = NULL;
+  int i;
+  
   /* must save & destroy pixbuf */
-
+  
   if (skin_infos.changed)
     {
       gtk_widget_show(create_skin_changed(GUINT_TO_POINTER(ACTION_NEW)));
-
+      
       return;
     }
 
@@ -121,27 +121,27 @@ on_new_activate                        (GtkMenuItem     *menuitem,
 
   gtk_window_set_title(GTK_WINDOW(filesel), _("Select JPEG image"));
 
-	ext_list = g_strdup("");
-	formats = gdk_pixbuf_get_formats ();
-
-	for(i=0; i < g_slist_length(formats); i++)
-		{
-			GSList *elt;
-			GdkPixbufFormat *fmt;
-			gchar **exts;
-
-			elt = g_slist_nth(formats, i);
-			fmt = (GdkPixbufFormat *)elt->data;
-			exts = gdk_pixbuf_format_get_extensions(fmt);
-
-			ext_list = g_strconcat(ext_list, "*.", exts[0], "; ", NULL);
-			g_strfreev(exts);
-		}
-	g_slist_free (formats);
-
+  ext_list = g_strdup("");
+  formats = gdk_pixbuf_get_formats ();
+  
+  for(i=0; i < g_slist_length(formats); i++)
+    {
+      GSList *elt;
+      GdkPixbufFormat *fmt;
+      gchar **exts;
+      
+      elt = g_slist_nth(formats, i);
+      fmt = (GdkPixbufFormat *)elt->data;
+      exts = gdk_pixbuf_format_get_extensions(fmt);
+      
+      ext_list = g_strconcat(ext_list, "*.", exts[0], "; ", NULL);
+      g_strfreev(exts);
+    }
+  g_slist_free (formats);
+  
   gtk_file_selection_complete(GTK_FILE_SELECTION(filesel), ext_list);
-	g_free(ext_list);
-
+  g_free(ext_list);
+  
   gtk_signal_connect (GTK_OBJECT(GTK_FILE_SELECTION(filesel)->ok_button), "clicked",
                       GTK_SIGNAL_FUNC(on_filesel_new_ok_clicked),
                       NULL);
@@ -160,8 +160,7 @@ on_open_activate                       (GtkMenuItem     *menuitem,
 
   if (skin_infos.changed)
     {
-      gtk_widget_show(create_skin_changed(GUINT_TO_POINTER(ACTION_OPEN)));
-      
+      gtk_widget_show(create_skin_changed(GUINT_TO_POINTER(ACTION_OPEN)));     
       return;
     }
 
@@ -220,14 +219,9 @@ void
 on_save_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-#if ROMS
-  if (area == NULL)
-    return;
-#else
   if(pixbuf == NULL)
     return;
-#endif
-
+  
   if (skin_infos.skin_path != NULL)
     {
       if (write_skin() == 0)
@@ -246,13 +240,8 @@ on_save_as_activate                    (GtkMenuItem     *menuitem,
 {
   GtkWidget *filesel;
 
-#if ROMS
-  if (area == NULL)
-    return;
-#else
   if(pixbuf == NULL)
     return;
- #endif
 
   filesel = create_filesel();
   
@@ -274,19 +263,14 @@ on_vti_v21_activate                    (GtkMenuItem     *menuitem,
 {
   GtkWidget *filesel;
 
-#if ROMS
-  if (area == NULL)
-    return;
-#else
   if(pixbuf == NULL)
     return;
-#endif
-
+  
   filesel = create_filesel();
   
   gtk_window_set_title(GTK_WINDOW(filesel), _("Select destination file -- VTi v2.1 export"));
-
-    gtk_file_selection_complete(GTK_FILE_SELECTION(filesel), "*.skn");
+  
+  gtk_file_selection_complete(GTK_FILE_SELECTION(filesel), "*.skn");
   
   gtk_signal_connect (GTK_OBJECT(GTK_FILE_SELECTION(filesel)->ok_button), "clicked",
 		      GTK_SIGNAL_FUNC(on_filesel_vti_export_ok_clicked),
@@ -302,13 +286,8 @@ on_vti_v25_activate                    (GtkMenuItem     *menuitem,
 {
   GtkWidget *filesel;
 
-#if ROMS
-  if (area == NULL)
-    return;
-#else
   if(pixbuf == NULL)
     return;
-#endif
 
   filesel = create_filesel();
   
@@ -350,16 +329,11 @@ on_properties_activate                 (GtkMenuItem     *menuitem,
   uint32_t custom_white = 0xffffff;
   uint32_t custom_black = 0;
 
-#if ROMS
-  if (area == NULL)
-    return;
-#else
   if(pixbuf == NULL)
     return;
-#endif
-
+  
   properties = create_prop_dialog();
-
+  
   if (skin_infos.name != NULL)
     {
       gtk_entry_set_text(GTK_ENTRY(lookup_widget(properties, "prop_entry_title")), skin_infos.name);
@@ -489,10 +463,8 @@ on_lcd_position_activate               (GtkMenuItem     *menuitem,
 
   erase_rubberbox(drawingarea1);
 
-  if ((skin_infos.lcd_pos.top >= 0)
-      && (skin_infos.lcd_pos.left >= 0)
-      && (skin_infos.lcd_pos.bottom > 0)
-      && (skin_infos.lcd_pos.right > 0))
+  if ((skin_infos.lcd_pos.top >= 0) && (skin_infos.lcd_pos.left >= 0)
+      && (skin_infos.lcd_pos.bottom > 0) && (skin_infos.lcd_pos.right > 0))
     {
       lcd_cur.x = skin_infos.lcd_pos.left;
       lcd_cur.y = skin_infos.lcd_pos.top;
@@ -536,13 +508,8 @@ on_key_positions_activate              (GtkMenuItem     *menuitem,
   GtkTreeIter iter;
   GtkTreeSelection *sel;
 
-#if ROMS
-  if (area == NULL)
-    return;
-#else
   if(pixbuf == NULL)
     return;
-#endif
 
   if (list_keys_dialog != NULL)
     {
@@ -639,13 +606,8 @@ void
 on_tb_properties_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
-#if ROMS
-  if (area == NULL)
-    return;
-#else
   if(pixbuf == NULL)
     return;
-#endif
 
   on_properties_activate(NULL, NULL);
 }
@@ -655,13 +617,8 @@ void
 on_tb_lcd_pos_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
-#if ROMS
-  if (area == NULL)
-    return;
-#else
   if(pixbuf == NULL)
     return;
-#endif
 
   on_lcd_position_activate(NULL, NULL);
 }
@@ -671,13 +628,8 @@ void
 on_tb_key_pos_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
-#if ROMS
-  if (area == NULL)
-    return;
-#else
   if(pixbuf == NULL)
     return;
-#endif
 
   on_key_positions_activate(NULL, NULL);
 }
@@ -700,49 +652,49 @@ on_filesel_delete_destroy_event                (GtkWidget       *widget,
 
 static char* convert_image_to_jpeg(char *filename)
 {
-	GdkPixbuf *img;
-	GError *error = NULL;
-	gboolean status;
-	gchar *s, *d;
-
-	/* Load image */
-	img = gdk_pixbuf_new_from_file(filename, &error);
+  GdkPixbuf *img;
+  GError *error = NULL;
+  gboolean status;
+  gchar *s, *d;
+  
+  /* Load image */
+  img = gdk_pixbuf_new_from_file(filename, &error);
   if (img == NULL) 
     {
-			fprintf(stderr, "Failed to load pixbuf file: %s: %s\n", filename, error->message);
+      fprintf(stderr, "Failed to load pixbuf file: %s: %s\n", filename, error->message);
       g_error_free(error);
       return NULL;
     }
-
-	/* Check for file with extension */
-	d = strrchr(filename, '.');
-	if(d == NULL)
-		return NULL;
-	
-	/* JPEG file ? Don't convert. */
-	s = g_strdup(filename);
-	if(!strcmp(d, ".jpg") || !strcmp(d, ".jpeg"))
-		{	
-			g_object_unref(img);
-			return s;
-		}	
-
-	/* Replace filename extension by jpg */
-	s = g_strdup(filename);
-	d = strrchr(s, '.');
-	strcpy(++d, "jpg");
-
-	/* Save image as JPEG */
-	status = gdk_pixbuf_save (img, s, "jpeg", &error, "quality", "100", NULL);
-	if(status == FALSE) 
-		{
-			fprintf(stderr, "Failed to save pixbuf file: %s: %s\n", filename, error->message);
-			g_error_free(error);
-			g_object_unref(img);
+  
+  /* Check for file with extension */
+  d = strrchr(filename, '.');
+  if(d == NULL)
+    return NULL;
+  
+  /* JPEG file ? Don't convert. */
+  s = g_strdup(filename);
+  if(!strcmp(d, ".jpg") || !strcmp(d, ".jpeg"))
+    {	
+      g_object_unref(img);
+      return s;
+    }	
+  
+  /* Replace filename extension by jpg */
+  s = g_strdup(filename);
+  d = strrchr(s, '.');
+  strcpy(++d, "jpg");
+  
+  /* Save image as JPEG */
+  status = gdk_pixbuf_save (img, s, "jpeg", &error, "quality", "100", NULL);
+  if(status == FALSE) 
+    {
+      fprintf(stderr, "Failed to save pixbuf file: %s: %s\n", filename, error->message);
+      g_error_free(error);
+      g_object_unref(img);
       return NULL;
-		}
-
-	return s;
+    }
+  
+  return s;
 }
 
 void
@@ -751,31 +703,31 @@ on_filesel_new_ok_clicked                  (GtkButton       *button,
 {
   FILE *fp = NULL;
   const char *fn = NULL;
-	gchar *s;
+  gchar *s;
 
   fn = gtk_file_selection_get_filename(GTK_FILE_SELECTION(lookup_widget(GTK_WIDGET(button), "filesel")));
-
+  
   if (fn != NULL)
     {
-			s = convert_image_to_jpeg((char *)fn);
-			if(s != NULL)
-			{
-				fp = fopen(fn, "rb");
-				if (fp != NULL)
-					{
-						if (load_image(fp) == 0)
-							{
-								skin_infos.changed = 1;
-								skin_infos.type = SKIN_TYPE_NEW;
-								skin_infos.jpeg_path = strdup(s);	//strdup(jpeg);
-								g_free(s);
-							}
-
-						fclose(fp);
-					}
-			}
+      s = convert_image_to_jpeg((char *)fn);
+      if(s != NULL)
+	{
+	  fp = fopen(fn, "rb");
+	  if (fp != NULL)
+	    {
+	      if (load_image(fp) == 0)
+		{
+		  skin_infos.changed = 1;
+		  skin_infos.type = SKIN_TYPE_NEW;
+		  skin_infos.jpeg_path = strdup(s);	//strdup(jpeg);
+		  g_free(s);
+		}
+	      
+	      fclose(fp);
+	    }
+	}
     }
-
+  
   gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "filesel"));
   on_properties_activate(NULL ,NULL);
 }
@@ -887,24 +839,10 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
 		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
 		  pixbuf, 
 		  event->area.x, event->area.y,
-      event->area.x, event->area.y,
-      (event->area.width > skin_infos.width) ? skin_infos.width : event->area.width,
-        (event->area.height > skin_infos.height) ? skin_infos.height : event->area.height,
+		  event->area.x, event->area.y,
+		  (event->area.width > skin_infos.width) ? skin_infos.width : event->area.width,
+		  (event->area.height > skin_infos.height) ? skin_infos.height : event->area.height,
 		  GDK_RGB_DITHER_NONE, 0, 0);
-   
+  
   return TRUE;
-}
-
-void
-on_drawingarea1_size_allocate          (GtkWidget       *widget,
-                                        GdkRectangle    *allocation,
-                                        gpointer         user_data)
-{
-}
-
-void
-on_drawingarea1_size_request           (GtkWidget       *widget,
-                                        GtkRequisition  *requisition,
-                                        gpointer         user_data)
-{
 }

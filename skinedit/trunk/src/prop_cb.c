@@ -71,37 +71,36 @@ on_lcd_color_ok_clicked                (GtkButton       *button,
                                         gpointer         user_data)
 {
   GtkWidget *colorsel;
-	GtkColorSelectionDialog *csd;
-	GtkColorSelection *cs;
-
+  GtkColorSelectionDialog *csd;
+  GtkColorSelection *cs;
+  
   gdouble gcolor[4];
   unsigned char r, g, b;
-
+  
   colorsel = lookup_widget(GTK_WIDGET(button), "lcd_color_select");
-	printf("colorsel = %p\n", colorsel);
-
-	csd = GTK_COLOR_SELECTION_DIALOG(colorsel);
-	cs = GTK_COLOR_SELECTION(csd->colorsel);
-	gtk_color_selection_get_color(cs, gcolor);
-
+  
+  csd = GTK_COLOR_SELECTION_DIALOG(colorsel);
+  cs = GTK_COLOR_SELECTION(csd->colorsel);
+  gtk_color_selection_get_color(cs, gcolor);
+  
   r = (unsigned char)(gcolor[0] * 0xff);
   g = (unsigned char)(gcolor[1] * 0xff);
   b = (unsigned char)(gcolor[2] * 0xff);
-
+  
   switch(GPOINTER_TO_UINT(user_data))
     {
-      case ACTION_LCD_WHITE:
-	skin_infos.lcd_white = (r << 16) | (g << 8) | b; 
-	set_lcd_color(lcd_custom_white, skin_infos.lcd_white); 
-	break;
-      case ACTION_LCD_BLACK:
-	skin_infos.lcd_black = (r << 16) | (g << 8) | b;
-	set_lcd_color(lcd_custom_black, skin_infos.lcd_black); 
-	break;
-      default:
-	return;
+    case ACTION_LCD_WHITE:
+      skin_infos.lcd_white = (r << 16) | (g << 8) | b; 
+      set_lcd_color(lcd_custom_white, skin_infos.lcd_white); 
+      break;
+    case ACTION_LCD_BLACK:
+      skin_infos.lcd_black = (r << 16) | (g << 8) | b;
+      set_lcd_color(lcd_custom_black, skin_infos.lcd_black); 
+      break;
+    default:
+      return;
     }
-
+  
   gtk_widget_destroy(colorsel);
 }
 

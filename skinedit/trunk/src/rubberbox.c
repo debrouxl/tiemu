@@ -74,7 +74,7 @@ mouse_motion(GtkWidget *drawingarea, GdkEventMotion *event, gpointer action)
 
   if (y > skin_infos.height - 1)
     y = skin_infos.height - 1;
-
+  
   if (x >= ox)
     {
       tmp_rect.x = ox;
@@ -185,21 +185,21 @@ draw_rubberbox(GtkWidget *drawing_area, GdkRect rect)
   
   c = rect;
   oc = old_rect;
-
+  
   if ((c.x > skin_infos.width) || (c.y > skin_infos.height) || 
       ((c.x + c.w) > skin_infos.width) || ((c.y + c.h) > skin_infos.height))
     return;
-    
+  
   g_object_unref(pixbuf);
   pixbuf = gdk_pixbuf_copy(skin_infos.img_orig);
-
-   	draw_hline(c.x, c.y, c.w);
-		draw_hline(c.x, c.y + c.h, c.w);
-
-		draw_vline(c.x, c.y, c.h);
-		draw_vline(c.x + c.w, c.y, c.h);
-
-/*
+  
+  draw_hline(c.x, c.y, c.w);
+  draw_hline(c.x, c.y + c.h, c.w);
+  
+  draw_vline(c.x, c.y, c.h);
+  draw_vline(c.x + c.w, c.y, c.h);
+  
+  /*
    * 2 calls to SDL_UpdateRect :
    * + erase the old rect
    * + draw the new one
@@ -213,9 +213,9 @@ draw_rubberbox(GtkWidget *drawing_area, GdkRect rect)
   update_rect.y = oc.y;
   update_rect.w = ((oc.w + oc.x + 1) <= skin_infos.width) ? (oc.w + 1) : oc.w;  /* add 2 to really erase the lines (right, bottom) ... */
   update_rect.h = ((oc.h + oc.y + 1) <= skin_infos.height) ? (oc.h + 1) : oc.h; /* ... but be careful */
-
+  
   gtk_widget_draw (drawing_area, (GdkRectangle *)&update_rect);
-
+  
   update_rect.x = c.x;
   update_rect.y = c.y;
   update_rect.w = ((c.w + c.x + 1) <= skin_infos.width) ? (c.w + 1) : c.w;  /* add 2 to really erase the lines (right, bottom) ... */
