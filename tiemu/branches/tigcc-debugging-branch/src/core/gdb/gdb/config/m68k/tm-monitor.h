@@ -37,3 +37,30 @@
 /*#define NUM_REGS 18 */
 
 /* FIXME, should do GET_LONGJMP_TARGET for newlib.  */
+
+/* (TiEmu 20050401 Kevin Kofler) Hardware (TiEmu) breakpoints and watchpoints */
+#define TARGET_HAS_HARDWARE_WATCHPOINTS 1
+#define TARGET_CAN_USE_HARDWARE_WATCHPOINT(type, count, other) 1
+#define TARGET_REGION_OK_FOR_HW_WATCHPOINT(addr, len) 1
+#define TARGET_REGION_SIZE_OK_FOR_HW_WATCHPOINT(size) 1
+#include <stdint.h>
+extern int ti68k_bkpt_add_address(uint32_t address);
+extern int ti68k_bkpt_del_address(uint32_t address);
+extern void dbgbkpts_refresh_window(void);
+#define target_remove_hw_breakpoint(addr, shadow) (ti68k_bkpt_del_address(addr),dbgbkpts_refresh_window(),0)
+#define target_insert_hw_breakpoint(addr, shadow) (ti68k_bkpt_add_address(addr),dbgbkpts_refresh_window(),0)
+extern int ti68k_bkpt_add_watchpoint(uint32_t address, uint32_t len, int type);
+extern int ti68k_bkpt_del_watchpoint(uint32_t address, uint32_t len, int type);
+extern int ti68k_bkpt_stopped_data_address(uint32_t *address);
+extern int ti68k_bkpt_stopped_by_watchpoint(void);
+static inline int target_stopped_data_address (CORE_ADDR *addr_p)
+{
+  uint32_t address = 0;
+  int retval = ti68k_bkpt_stopped_data_address(&address);
+  *addr_p = address;
+  return retval;
+}
+#define target_remove_watchpoint ti68k_bkpt_del_watchpoint
+#define target_insert_watchpoint ti68k_bkpt_add_watchpoint
+#define HAVE_CONTINUABLE_WATCHPOINT 1
+#define STOPPED_BY_WATCHPOINT(wait_status) ti68k_bkpt_stopped_by_watchpoint()
