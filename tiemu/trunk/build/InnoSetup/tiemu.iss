@@ -34,6 +34,9 @@ Source: "C:\sources\roms\tiemu\skins\ti92.skn"; DestDir: "{app}\skins"; DestName
 Source: "C:\sources\roms\tiemu\skins\ti89.skn"; DestDir: "{app}\skins"; DestName: "ti89t.skn"; Flags: ignoreversion;
 ; Keymap files
 Source: "C:\sources\roms\tiemu\skins\*.map"; DestDir: "{app}\skins"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu\skins\ti92.map"; DestDir: "{app}\skins"; DestName: "ti92+.map"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu\skins\ti92.map"; DestDir: "{app}\skins"; DestName: "v200plt.map"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu\skins\ti89.map"; DestDir: "{app}\skins"; DestName: "ti89t.map"; Flags: ignoreversion;
 ; i18n files
 ;Source: "C:\sources\roms\libs\files\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tifiles.mo"; Flags: ignoreversion;
 ;Source: "C:\sources\roms\libs\cables\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "ticables.mo"; Flags: ignoreversion;

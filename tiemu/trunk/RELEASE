@@ -3,7 +3,7 @@
 
 
 Previous version: 1.75		(07/08/2004)
-Current version:  1.79		(20/08/2004)
+Current version:  1.79		(22/08/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -44,12 +44,18 @@ Improvements:
 Bug fixes:
 ----------
 
-	- few bugs fixes
+	- no ghost in 0x400000-0x5FFFFF on TI89
+	- stack frame display 1 word on 2
+	- fixed step over: works on DBcc
+	- PC highlight lost when scrolling: fixed
+	- restart engine when clicking outside of the popup menu
+	- important bug: FLINE instructions were not executed !
+
 
 To do:
 ------
 
-	- implement the Protection
+	- implement the HW2 Protection (HW1 protection if almost complete)
 	- implement the RTC introduced with AMS 2.09
 
 	

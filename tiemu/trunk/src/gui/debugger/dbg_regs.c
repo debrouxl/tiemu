@@ -106,7 +106,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 	n = path_string[2] - '0';
 	switch(path_string[0] - '0')
 	{
-		case 0:	// Ax
+		case 1:	// Ax
 			if(validate_value(new_text, 8))
 			{
 				sscanf(new_text, "%x", &value);			
@@ -114,7 +114,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 				ti68k_register_set_addr(n, value);
 			}
 		break;
-		case 1:	// Dx
+		case 0:	// Dx
 			if(validate_value(new_text, 8))
 			{
 				sscanf(new_text, "%x", &value);			
@@ -311,7 +311,7 @@ static void ctree_populate(GtkTreeStore *store)
 	// set the 3 main nodes
 	gtk_tree_store_append(store, &node1, NULL);
 	gtk_tree_store_set(store, &node1, 
-		COL_NAME, "Addr", 
+		COL_NAME, "Data", 
 		COL_VALUE, "",  
 		COL_EDITABLE, FALSE,
 		COL_FONT, FONT_NAME,
@@ -319,7 +319,7 @@ static void ctree_populate(GtkTreeStore *store)
 		
 	gtk_tree_store_append(store, &node2, NULL);
 	gtk_tree_store_set(store, &node2, 
-		COL_NAME, "Data", 
+		COL_NAME, "Addr", 
 		COL_VALUE, "",  
 		COL_EDITABLE, FALSE,
 		COL_FONT, FONT_NAME,
@@ -333,10 +333,10 @@ static void ctree_populate(GtkTreeStore *store)
 		COL_FONT, FONT_NAME,
 		-1);
 		
-	// populate Ax node
+	// populate Dx node
 	for(i = 0; i < 8; i++)
 	{
-		gchar *str = g_strdup_printf("A%i", i);
+		gchar *str = g_strdup_printf("D%i", i);
 		
 		gtk_tree_store_append(store, &iter, &node1);
 		gtk_tree_store_set(store, &iter,
@@ -350,10 +350,10 @@ static void ctree_populate(GtkTreeStore *store)
 	   	g_free(str);
 	}
 	
-	// populate Dx node
+	// populate Ax node
 	for(i = 0; i < 8; i++)
 	{
-		gchar *str = g_strdup_printf("D%i", i);
+		gchar *str = g_strdup_printf("A%i", i);
 		
 		gtk_tree_store_append(store, &iter, &node2);
 		gtk_tree_store_set(store, &iter,
@@ -406,7 +406,7 @@ static void ctree_refresh(GtkTreeStore *store)
 	// refresh Ax nodes
 	for(i = 0; i < 8; i++)
 	{
-		spath = g_strdup_printf("0:%i", i);
+		spath = g_strdup_printf("1:%i", i);
 		path = gtk_tree_path_new_from_string(spath);
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			continue;
@@ -426,7 +426,7 @@ static void ctree_refresh(GtkTreeStore *store)
 	// refresh Dx nodes
 	for(i = 0; i < 8; i++)
 	{
-		spath = g_strdup_printf("1:%i", i);
+		spath = g_strdup_printf("0:%i", i);
 		path = gtk_tree_path_new_from_string(spath);
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			continue;

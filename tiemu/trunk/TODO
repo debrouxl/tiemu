@@ -2,46 +2,6 @@ List of stuffs to do:
 
 ExtendeD:
 
-O Mais il semble y avoir un problème avec certaines instructions, c'est
-assez bizarre : le scroll n'incrémente pas l'adresse de l'instruction du
-bas, mais incrémente celle de la première instruction (scroll n'importe où d
-ans l'AMS, tu devrais tomber sur ce bug).
-
-O Par contre il reste toujours ce problème de saut d'écran lorsque l'on avance
-avec du 'step'. Mais là ce serait vraiment mieux que le scroll se fasse par
-demi écran plutôt qu'une seule ligne, sinon l'instruction courante est
-toujours la dernière et on n'a plus de visibilité sur les instructions
-suivantes (VTI se comporte comme ça, c'est pas terrible).
-
-O Le problème apparait lorsque le breakpoint est placé sur une instruction qui
-n'est pas dans la fenêtre que l'instruction (ie à plus de de 10 instructions
-de PC) : après le 'set breakpoint', l'instruction courante est affichée,
-plutôt que l'instruction où on a placé le breakpoint (c'est gênant si l'on
-veut placer plusieurs breakpoints dans la même région).
-
-O Mais ça en a fait apparaître un autre : le scroll vers le bas avec le
-clavier dans la fenêtre Memory ne fait pas défiler les lignes (mais va au
-bon endroit quand on arrête d'appuyer sur 'bas'). Le scroll vers le haut n'a
-pas ce problème.
-
-O  On dirait que  "Step" over ne marche plus du tout (pas d'effet).
-Ok. En fait il manque aussi 'dbra', 'dbne', etc. Il y est sur VTI, et il y
-était dans la version précédente de TiEmu. Je trouvais ça pratique.
-Je pense que Step Over doit faire autre chose qu'un Step In uniquement sur
-bsr, jsr, et les dbxx. Pour toutes ces instructions il va jusqu'à
-l'instruction qui suit.
-
-O Je viens de me rendre compte de quelque chose d'un peu gênant, je ne sais
-pas si ça peut être corrigé : lorsqu'on laisse F7 appuyé pour faire une
-série de 'step' rapidement,  la sélection en vert ne passe que sur
-instruction sur 5 environ, on s'y perd un peu, ça saute un peu partout. Je
-faisait souvent ça sous VTI pour sauter une séquence d'instructions, là ce
-n'est plus vraiment faisable avec 'step'.
-
-O Un autre petit détail de sélection : lorsque l'on scroll, l'instruction
-courante n'est plus en surbrillance si on passe aux 10 instructions
-suivantes et si on revient en arrière. On perd alors l'emplacement de PC.
-
 - bug sur Step Out
 
 
@@ -66,13 +26,6 @@ wizard, alors que je venais de le faire au lancement d'avant (j'ai pris une
 TI89OS209.89u). Et la calculatrice émulée résultante ne peut même pas être
 allumée. Avec un .rom, ça marche.
 
-O Toujours pas moyen d'entrer des parenthèses avec mon clavier allemand.
-:-( Voilà à quoi ressemble mon clavier:
-http://www.uni-regensburg.de/EDV/Misc/KeyBoards/keys11.jpg .
-
-O La conversion de la touche espace en alpha+(-) sur la TI-89 n'est pas
-gérée. :-(
-
 - Je ne sais pas si on peut y faire quelque chose, mais Alt+ESC, Ctrl+ESC,
 Alt+TAB (quand on les appuie en même temps et pas l'une après l'autre) sont
 avalées par Windows, pour Alt+F4, Windows ne le voit pas, mais TiEmu non
@@ -82,7 +35,7 @@ plus, et il y a probablement d'autres combines de touches "suspectes".
 ne répond plus à aucun appui de touches (mais on peut le fermer à travers le
 popup au moins). L'"engine" est "stoppée" et pas re"start"ée.
 
-- Si on défile vers le bas dans le débogueur, le curseur vert (PC actuel)
+O Si on défile vers le bas dans le débogueur, le curseur vert (PC actuel)
 disparaît même si l'instruction actuelle est encore visible.
 
 - Le débogueur est toujours très lent. :-( Déjà, le défilement du curseur
@@ -94,37 +47,11 @@ rouge d'être à l'origine de la lenteur.
 
 Lionel:
 
-O le désassembleur de F-Line désassemble toujours mal
-les ROM_CALLs dont le numéro est en-dessus de 0x10:
-0x53 (sprintf) est désassemblé comme 0x43.
-
 * le transfert d'un fichier vers TIEmu par F10 donne
 une erreur 400 dans la fenêtre command-line (mais n'a
 pas l'air de planter l'émulateur). Il faut faire un
 Reset Calculator pour avoir une calculette à nouveau
 d'aplomb.
-
-O TIEmu n'apprécie pas la ROM de V200 modifiée pour
-VTI par ExtendeD, il crashe.
-
-O clic en dehors du popup menu: je n'ai pas ce pb. 
-Tu l'avais sous ton Me ou sous XP ?
-Les deux (TIEmu 1.75)
-
-O la touche "exposant" (mapping clavier) ne semble
-pas marcher comme sur VTI.
-
-O la 89 a un ghost à 0x400000-0x5FFFFF, elle ne
-devrait pas.
-
-O la stack frame n'affiche pas correctement le
-contenu de la stack frame (environ un mot sur
-deux). La fenêtre memory affiche tout correctement
-
-- Et je trouve que ça serait mieux si les
-registres de donnée venaient avant les registres
-d'adresse, c'est là que j'ai tendance à les
-chercher
 
 -------------
 + done
