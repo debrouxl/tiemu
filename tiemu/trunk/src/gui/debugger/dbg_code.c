@@ -35,10 +35,11 @@
 #include "ti68k_int.h"
 
 enum { 
-	    COL_ICON, COL_ADDR, COL_DISASM,
+	    COL_ICON, COL_ADDR, COL_OPCODE, COL_OPERAND,
+        COL_HEXADDR
 };
-#define CLIST_NVCOLS	(3)		// 3 visible columns
-#define CLIST_NCOLS		(3)		// 4 real columns
+#define CLIST_NVCOLS	(4)		// 3 visible columns
+#define CLIST_NCOLS		(5)		// 4 real columns
 
 static GtkListStore* clist_create(GtkWidget *list)
 {
@@ -47,11 +48,13 @@ static GtkListStore* clist_create(GtkWidget *list)
 	GtkTreeModel *model;
 	GtkCellRenderer *renderer;
 	GtkTreeSelection *selection;
-    const gchar *text[CLIST_NVCOLS] = { _(""), _("Address"), _("Disassembly") };
+    const gchar *text[CLIST_NVCOLS] = { _(""), _("Address"), _("Opcode"), _("Operand") };
     gint i;
 	
 	store = gtk_list_store_new(CLIST_NCOLS,
-				GDK_TYPE_PIXBUF, G_TYPE_STRING, G_TYPE_STRING,
+				GDK_TYPE_PIXBUF, 
+                G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+                G_TYPE_INT
 				-1
             );
     model = GTK_TREE_MODEL(store);
@@ -69,7 +72,7 @@ static GtkListStore* clist_create(GtkWidget *list)
             "pixbuf", COL_ICON,
 			NULL);
   
-	for(i = COL_ADDR; i <= COL_DISASM; i++)
+	for(i = COL_ADDR; i <= COL_OPERAND; i++)
 	{
 		renderer = gtk_cell_renderer_text_new();
 		gtk_tree_view_insert_column_with_attributes(view, -1, 
@@ -87,42 +90,102 @@ static GtkListStore* clist_create(GtkWidget *list)
 	}
 	
 	selection = gtk_tree_view_get_selection(view);
-	gtk_tree_selection_set_mode(selection, GTK_SELECTION_NONE);	// SINGLE ?
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	return store;
 }
 
-static void clist_refresh(GtkListStore *store)
+static void clist_populate(GtkListStore *store)
 {
     GtkTreeIter iter;
-	gint i;
     GdkPixbuf *pix;
+    gint i;
+    uint32_t addr;
 
     gtk_list_store_clear(store);
+    ti68k_register_get_pc(&addr);
 
+    for(i = 0; i < 32; i++)
+    {
+        char output[128];
+        int offset;
+        gchar** row_text;
+        uint32_t value;
+        
+        // disassemble at 'addr' address into 'output' and returns offset to the
+        // next instruction address
+        offset = ti68k_debug_disassemble(addr, output);
 
-    pix = create_pixbuf("run.xpm");
-    gtk_list_store_append(store, &iter);
-	gtk_list_store_set(store, &iter, 
+        row_text = g_strsplit(output, " ", 3);
+        if(row_text[2] == NULL)
+            row_text[2] = g_strdup("");
+        if(row_text[1] == NULL)
+            row_text[1] = g_strdup("");
+        sscanf(row_text[0], "%lx", &value);
+    
+        pix = create_pixbuf("void.xpm");
+
+        gtk_list_store_append(store, &iter);
+	    gtk_list_store_set(store, &iter, 
         COL_ICON, pix,
-	    COL_ADDR, "1", 
-		COL_DISASM, "2",
+	    COL_ADDR, row_text[0], 
+		COL_OPCODE, row_text[1],
+        COL_OPERAND, row_text[2],
+        COL_HEXADDR, value,
 		-1);
 
-#if 0
-	for(i = 0; i < 128; i++)
-	{
-	    gtk_list_store_append(store, &iter);
-		gtk_list_store_set(store, &iter, 
-		COL_ADDR, i, 
-		COL_DISASM, "???"/*ti68k_exception_to_string(i)*/,
-		-1);
-	}
-#endif
+        g_strfreev(row_text);
+        addr += offset;
+    }
+}
+
+static void clist_refresh(GtkListStore *store)
+{
+    uint32_t addr;
+    uint32_t pc;
+
+    // check for refresh
     /*
-	pix1 = create_pixbuf("run.ico");
-	COL_ICON, pix1
-	*/
+    do
+    {
+      gtk_tree_model_get(model, &iter, 3, &addrp, -1);
+      addr = GPOINTER_TO_INT(addrp);
+
+      if (addr == addr_active)
+	{
+	  found = TRUE;
+	  break;
+	}
+    }
+  while (gtk_tree_model_iter_next(model, &iter) == TRUE);
+
+  if (found == TRUE)
+    {
+      refresh_breakpoints();
+      return 0;
+    }
+  */
+
+    // place pc
+    ti68k_register_get_pc(&pc);
+
+    valid = gtk_tree_model_get_iter(model, &iter, path);
+	while (valid) {
+		struct menu *menu;
+
+		gtk_tree_model_get(model2, child, 6, &menu, -1);
+
+		if (menu == tofind) {
+			memcpy(&found, child, sizeof(GtkTreeIter));
+			return &found;
+		}
+
+		ret = gtktree_iter_find_node(child, tofind);
+		if (ret)
+			return ret;
+
+		valid = gtk_tree_model_iter_next(model2, child);
+	}
 }
 
 /*
@@ -146,8 +209,8 @@ gint display_dbgcode_window(void)
 
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
-	//clist_populate(store);
-	clist_refresh(store);
+	clist_populate(store);
+	//clist_refresh(store);
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);

@@ -476,6 +476,10 @@ SOURCE=..\..\src\gui\comm.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gui\dbg_all.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\dboxes.c
 # End Source File
 # Begin Source File
