@@ -720,8 +720,8 @@ int ti68k_load_image(const char *filename)
 int ti68k_load_upgrade(const char *filename)
 {
 	IMG_INFO tib = { 0 };
-	IMG_INFO *img = &tib;
   	int err;
+    IMG_INFO *img = &img_infos;
 
 	if(!img_loaded)
 		return -1;
@@ -730,16 +730,20 @@ int ti68k_load_upgrade(const char *filename)
 	if(!strcmp(filename, ""))
 		return 0;
 
-	err = ti68k_get_tib_infos(filename, img, !0);
+	err = ti68k_get_tib_infos(filename, &tib, !0);
 	if(err)
     {
       	DISPLAY(_("Unable to get informations on FLASH upgrade.\n"));
       	return err;
     }
-	ti68k_display_tib_infos(img);
+	ti68k_display_tib_infos(&tib);
 
-	img->has_boot = 1;	// still bootable
-	memcpy(tihw.rom+SPP, img->data+SPP, img->size-SPP);
+    // Allow upgrade ?
+    if(tib.calc_type != img->calc_type)
+        return -1;
+
+	tib.has_boot = 1;	// still bootable
+	memcpy(tihw.rom+SPP, tib.data+SPP, tib.size-SPP);
 
   	img_loaded = 2;
 	return 0;

@@ -211,7 +211,11 @@ gint display_romversion_dbox()
 		case GTK_RESPONSE_OK:
 			if(ti68k_is_a_img_file(chosen_file))
 			{
+                // Remove previous tib file
+                g_free(params.tib_file);
+				params.tib_file = g_strconcat(inst_paths.img_dir, "", NULL);
 
+                // Set new image
 				g_free(params.rom_file);
 				params.rom_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
 				g_free(chosen_file);
@@ -221,9 +225,13 @@ gint display_romversion_dbox()
 					msg_box("Error", "Can not load the image.");
 					return -1;
 				}
+
+                // Restart engine
+                ti68k_restart();
 			} 
 			else if(ti68k_is_a_tib_file(chosen_file))
 			{
+                // Set tib file
 				g_free(params.tib_file);
 				params.tib_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
 				g_free(chosen_file);
@@ -236,10 +244,11 @@ gint display_romversion_dbox()
                 
                 msg_box(_("Information"), _("Your configuration has been saved."));
                 rcfile_write();
-			}
 
-            ti68k_reset();
-			//ti68k_restart();
+                // Simply reset, don't restart
+                ti68k_reset();
+			}
+			
 		break;
 
 		case GTK_RESPONSE_APPLY:
