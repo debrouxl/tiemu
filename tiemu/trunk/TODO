@@ -191,18 +191,6 @@ Mais bon ça reste utilisable.
 rapidement toute seule la fenêtre Code sans s'arrêter à n'importe quel
 adresses (trop hautes pour être du code).
 
-Les suggestions, par priorité :
-
-* Les data breakpoints se déclenchent une fois que l'instruction ayant
-fait le read ou le write a été exécutée. Est-ce ça ne pourra pas être
-fait avant qu'elle s'exécute, afin que l'instruction selectionnée à
-l'arrêt soit celle-ci (pour éviter d'avoir à scroller vers le haut
-d'une instruction à chaque fois) ?
-
-* Est-ce que TiEmu pourrait se souvenir du dernier OS émulé et le
-charger automatiquement au démarrage ? (Voire que ce soit désactivable
-dans la config si ça gêne certains)
-
 
 Kevin
 =====

@@ -205,7 +205,9 @@ void io_put_byte(uint32_t addr, uint8_t arg)
             else
             {
             	// %[3-0]: LCD contrast bits 3-0 (bit 3 is msb on HW1)
-            	tihw.contrast = 31 - (arg & 0x0f);
+				tihw.contrast = arg & 0x0f;
+				if(tihw.calc_type == TI89)
+            		tihw.contrast = 31 - tihw.contrast;
             	
             	// %4: HW1: Screen disable (power down), HW2: LCD contrast bit 4 (msb)
 				if(io2_bit_tst(0x1f,0))
