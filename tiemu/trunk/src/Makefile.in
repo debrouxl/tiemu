@@ -99,11 +99,10 @@ gui_OBJ = \
 	./gui/user_dbox.o ./gui/user_cb.o \
 	./gui/fsel_dbox.o ./gui/fsel_cb.o \
 	./gui/wizard_dbox.o ./gui/wizard_cb.o \
-	./gui/help_dbox.o ./gui/help_cb.o \
-	./gui/manpage_dbox.o ./gui/manpage_cb.o \
-	./gui/startup_dbox.o ./gui/startup_cb.o \
-	./gui/thanks_dbox.o ./gui/thanks_cb.o \
-	./gui/about_dbox.o ./gui/about_cb.o \
+	./gui/help.o	 	\
+	./gui/manpage.o		\
+	./gui/about.o		\
+	./gui/release.o
 	./gui/pbar_dbox.o ./gui/pbar_cb.o \
 	./gui/skin_dbox.o ./gui/skin_cb.o \
 	./gui/refresh.o ./gui/popup.o \
