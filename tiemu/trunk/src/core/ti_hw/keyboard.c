@@ -110,6 +110,7 @@ int keyRowV200[10][8] =
 int hw_kbd_init(void)
 {
 	key_change = 0;
+    tihw.on_key = 0;
 
     switch(tihw.calc_type)
     {
@@ -158,15 +159,17 @@ int hw_kbd_update(void)
 {
 	int rc = key_change;	// ~600Hz
 
-    if((tihw.on_key = ti68k_kbd_is_key_pressed(TIKEY_ON))) 
+    if(ti68k_kbd_is_key_pressed(TIKEY_ON))
+        tihw.on_key = 1;
+    if(tihw.on_key) 
     {
     	// set calc on
         if(specialflags & SPCFLAG_STOP)
 	        specialflags &= ~SPCFLAG_STOP;
 	        
 	    // Auto-Int 6 triggered when [ON] is pressed.
-	    //if(currIntLev < 6)	// don't work 
-	    if(specialflags < 6)	// work (why ?!)
+	    if(currIntLev < 6)	// don't work 
+	    //if(specialflags < 6)	// work (why ?!)
 	    {
 	        specialflags |= SPCFLAG_INT;
 	        currIntLev = 6;

@@ -13,7 +13,7 @@
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  but WITHOUT ANY WARRAN7TY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
@@ -116,8 +116,8 @@ void io_put_byte(CPTR adr, UBYTE arg)
         	// %3 set: 000000..1FFFFF mapped to 200000..3FFFFF
 			if(bit_tst(arg,3) && (tihw.calc_type == TI92))
 			{
-				mem_tab[2] = mem_tab[0];
-				mem_mask[2] = mem_mask[0];
+				//mem_tab[2] = mem_tab[0];
+				//mem_mask[2] = mem_mask[0];
 				//mem_tab[3] = mem_tab[1];
 				//mem_mask[3] = mem_mask[1];
             } else
@@ -211,6 +211,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
         case 0x1a:	// r- <......10>
         	// keyboard col mask (see keyboard.c)
         	// Write any value to $60001A to acknowledge this interrupt (AutoInt6)
+            tihw.on_key = 0;
         break;
         case 0x1b:	// r- <76543210>
         	// Write any value to $60001B to acknowledge this interrupt (AutoInt2)
@@ -342,7 +343,8 @@ UBYTE io_get_byte(CPTR adr)
         break;
         case 0x1a:	// rw <......10>
         // ON key status (0=down, 1=up)
-        return v | ((1 - read_onkey()) << 1); 
+            v = ((1 - read_onkey()) << 1); 
+        break;
         case 0x1b:	// r- <76543210> 
         // keyboard row mask
         return hw_kbd_read_mask();
