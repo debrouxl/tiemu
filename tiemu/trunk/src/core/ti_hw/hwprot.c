@@ -54,7 +54,6 @@ int hw_hwp_init(void)
 {
 	tihw.protect = 0;
 	ba = (tihw.rom_base << 16) - 0x200000;
-	printf("ba = %06x\n", ba);
 	access1 = access2 = crash = arch_mem_crash = 0;
 
 	return 0;
