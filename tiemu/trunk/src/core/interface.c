@@ -187,13 +187,180 @@ int ti68k_debug_get_pc(void)
 	return m68k_getpc();
 }
 
-int ti68k_debug_disassemble(int addr, char *output)
-{
-  uint32_t nextPc;
+// some instructions use a weird naming scheme, remap !
+static const char* instr[] = { 
+	"ORSR.B", "ORSR.W",		/* ORI to SR #<data>,SR		*/
+	"ANDSR.B", "ANDSR.W",	/* ANDI to SR #<data>,SR	*/
+	"EORSR.B", "EORSR.W",	/* EORI to SR #<data>,SR	*/
+	"MVSR2.W", "MVSR2.B",	/* MOVE from SR SR,<ea>		*/
+	"MV2SR.B", "MV2SR.W",	/* MOVE to SR <ea>,SR		*/
+	"MVR2USP.L",			/* MOVE An,USP	*/
+	"MVUSP2R.L",			/* MOVE USP,An	*/
+	"MOVEC2",				/* MOVEC Rc,Rn */
+	"MOVE2C",				/* MOVEC Rn,Rc */
+	NULL
+};
 
-  MC68000_disasm(addr, &nextPc, 1, output);
-  output[strlen(output)-1]='\0'; // strip CR-LF
-  return (nextPc-addr);
+static int match_opcode(const char *opcode)
+{
+	int i;
+
+	if(opcode == NULL)
+		return -1;
+
+	for(i = 0; instr[i] != NULL; i++)
+	{
+		if(!strcmp(opcode, (char *)instr[i]))
+			return i;
+	}
+
+	return -1;
+}
+
+uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
+{
+	uint32_t next;
+	char *tok;
+	gchar** split;
+	int idx;
+	char output[128];
+
+	MC68000_disasm(addr, &next, 1, output);
+	output[strlen(output)-1] = '\0'; // strip CR-LF
+
+	// remove extra space as in 'BT .B' instead of BT.B
+	tok = strstr(output, " .");
+	if(tok)
+		memcpy(tok, tok+1, strlen(tok));
+	//printf("<%s>\n", output);
+	
+	// split string into address, opcode and operand
+	split = g_strsplit(output, " ", 3);
+	printf("%s %s%*c %s\n", 
+			split[0], 
+			split[1], 8 - strlen(split[1]), ' ', 
+			split[2]);
+
+	// search for opcode to rewrite
+	idx = match_opcode(split[1]);
+	if(idx != -1)
+	{
+		gchar *tmp;
+		
+		switch(idx)
+		{
+		case 0:		/* ORI to SR #<data>,SR		*/
+			g_free(split[1]);
+			split[1] = g_strdup("ORI.B");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 1:
+			g_free(split[1]);
+			split[1] = g_strdup("ORI.W");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 2:		/* ANDI to SR #<data>,SR	*/
+			g_free(split[1]);
+			split[1] = g_strdup("ANDI.B");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 3:
+			g_free(split[1]);
+			split[1] = g_strdup("ANDI.W");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 4:		/* EORI to SR #<data>,SR	*/
+			g_free(split[1]);
+			split[1] = g_strdup("EORI.B");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 5:
+			g_free(split[1]);
+			split[1] = g_strdup("EORI.W");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 6:		/* MOVE from SR SR,<ea>		*/
+			g_free(split[1]);
+			split[1] = g_strdup("MOVE.B");
+			
+			tmp = g_strconcat("SR,", split[2], NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 7:
+			g_free(split[1]);
+			split[1] = g_strdup("MOVE.W");
+			
+			tmp = g_strconcat("SR,", split[2], NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 8:		/* MOVE to SR <ea>,SR		*/
+			g_free(split[1]);
+			split[1] = g_strdup("MOVE.B");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 9:
+			g_free(split[1]);
+			split[1] = g_strdup("MOVE.W");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 10:	/* MOVE An,USP	*/
+			g_free(split[1]);
+			split[1] = g_strdup("MOVE");
+			
+			tmp = g_strconcat(split[2], ",USP", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 11:	/* MOVE USP,An	*/
+			g_free(split[1]);
+			split[1] = g_strdup("MOVE");
+			
+			tmp = g_strconcat("USP,", split[2], NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 12:	/* MOVEC Rc,Rn */
+			break;
+		case 13:	/* MOVEC Rn,Rc */
+			break;
+		default:
+			break;
+		}
+	}
+	
+	*line = g_strdup_printf("%s %s %s\n", 
+			split[0] ? split[0] : "", 
+			split[1] ? split[1] : "",
+			split[2] ? split[2] : "");
+	g_strfreev(split);
+
+	return (next - addr);
 }
 
 int ti68k_debug_break(void)

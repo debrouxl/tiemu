@@ -112,7 +112,7 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
 
     for(i = 0; i < 10; i++)
     {
-        char output[128];
+        gchar *output;
         int offset;
 		gchar** split;
         gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
@@ -120,9 +120,10 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
         
         // disassemble at 'addr' address into 'output' and returns offset to the
         // next instruction address
-        offset = ti68k_debug_disassemble(addr, output);
+        offset = ti68k_debug_disassemble(addr, &output);
 
         split = g_strsplit(output, " ", 3);
+		g_free(output);
 
 		row_text[0] = g_strdup(split[0]);
 		sscanf(row_text[0], "%x", &value);
@@ -509,7 +510,7 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
     gchar *row;
     gint row_idx, row_max;
     uint32_t addr;
-    char output[128];
+    gchar *output;
     int offset;
     //int i, j;
 
@@ -559,7 +560,8 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         if(row_idx < row_max)
             break;
 
-        offset = ti68k_debug_disassemble(addr, output);
+        offset = ti68k_debug_disassemble(addr, &output);
+		g_free(output);
 
         gtk_list_store_clear(store);
         clist_populate(store, addr + offset);

@@ -10,7 +10,7 @@ SubVersion: $Id$
 	- pb with Alpha key: fixed
 	- no key auto-repeat: fixed
 	- long names with the ROM version box: fixed
-	- disasm listing (mv2sr instead of move xx,sr): to fix
+	- disasm listing (mv2sr instead of move xx,sr): fixed
 	- SR flags (VTi emulation): fixed
 
 	Fixes:
