@@ -175,10 +175,11 @@ void io_put_byte(uint32_t addr, uint8_t arg)
 			// keyboard row mask (see keyboard.c)
         break;
         case 0x1a:	// r- <......10>
-        	// keyboard col mask (see keyboard.c)
+        	// ON key status (see keyboard.c)
         	// Write any value to $60001A to acknowledge this interrupt (AutoInt6)
         break;
         case 0x1b:	// r- <76543210>
+			// keyboard column status (see keyboard.c)
         	// Write any value to $60001B to acknowledge this interrupt (AutoInt2)
         break;
         case 0x1c:	// -w <..5432..>
@@ -313,8 +314,8 @@ uint8_t io_get_byte(uint32_t addr)
 			bit_chg(v,1,!tihw.on_key);
         break;
         case 0x1b:	// r- <76543210> 
-			// keyboard row mask
-	        v = hw_kbd_read_mask();
+			// keyboard column status
+	        v = hw_kbd_read_cols();
         case 0x1c:	// -w <..5432..> 
         break;
         case 0x1d:	// -w <7..43210>

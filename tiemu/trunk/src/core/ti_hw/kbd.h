@@ -36,6 +36,6 @@ int hw_kbd_update(void);
 void ti68k_kbd_set_key(int key, int active);
 int ti68k_kbd_is_key_pressed(int key);
 
-uint8_t hw_kbd_read_mask(void);
+uint8_t hw_kbd_read_cols(void);
 
 #endif

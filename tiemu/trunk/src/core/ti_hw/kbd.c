@@ -127,6 +127,7 @@ void ti68k_kbd_set_key(int key, int active)
 {
     key_states[key] = active;
 	key_change = !0;
+	//printf("%i", active);
 
 	if(key == TIKEY_ON)
 		tihw.on_key = active;
@@ -146,9 +147,11 @@ int hw_kbd_update(void)		// ~600Hz
     }
 	else if(key_change)
     {
-    	// Auto-Int 2 triggered periodically while key(s) other than [ON] are held down.
-		//if(!(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)) || tihw.hw_type == HW1)
-			hw_m68k_irq(2);
+    	// Auto-Int 2 is triggered when the first unmasked key is pressed. Keeping the key
+		// pressed, or pressing another one without releasing the first key, will not generate
+		// additional interrupts.
+		hw_m68k_irq(2);
+		//printf(".");
     }
 
 	key_change = 0;
@@ -170,7 +173,7 @@ static uint8_t get_rowmask(uint8_t r)
     return rc;
 }
 
-uint8_t hw_kbd_read_mask(void)
+uint8_t hw_kbd_read_cols(void)
 {
     static int i;
     static uint8_t arg;
