@@ -482,9 +482,7 @@ on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem
     rcfile_write();
 
 	// exits
-  	err = ti68k_exit();
-	handle_error();
-  	exit(0);
+  	gtk_main_quit();
 }
 
 
@@ -492,9 +490,5 @@ GLADE_CB void
 on_exit_without_saving_state1_activate (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	int err;
-
-	err = ti68k_exit();
-	handle_error();
-  	exit(0);
+	gtk_main_quit();
 }
