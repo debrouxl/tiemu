@@ -57,8 +57,8 @@ int tiemu_error(int err_code, char *err_str)
 			if (err) {
 				err = ticalc_get_error(err, s);
 				if (err) {
-
 					// next level: error for TiEmu
+					err = ti68k_error_get(err, s);
 				}
 			}
 		}

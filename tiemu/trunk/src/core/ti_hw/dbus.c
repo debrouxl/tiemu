@@ -338,7 +338,7 @@ static int init_linkfile(void)
 {
   	ilc = (TicableLinkCable *)malloc(sizeof(TicableLinkCable));
   	if(ilc == NULL)
-    	return ERR_68K_MALLOC;
+    	return ERR_MALLOC;
 
   	ilc->init  = ilp_init_port;
   	ilc->open  = ilp_open_port;
@@ -361,7 +361,7 @@ static int init_linkfile(void)
       	break;
 		case V200: ticalc_set_calc(CALC_V200, &itc);
       	break;
-    	default: return ERR_68K_INTERNAL;
+    	default: return ERR_NONE;
       	break;
     }
 
@@ -402,7 +402,7 @@ int send_ti_file(const char *filename)
 
     // Check for TI file
     if(!tifiles_is_a_ti_file(filename))
-        return ERR_68K_TI_FILE;
+        return ERR_NOT_TI_FILE;
 
     if(((tifiles_which_calc_type(filename) == CALC_TI89) && (tihw.calc_type == TI89)) ||
         ((tifiles_which_calc_type(filename) == CALC_TI92) && (tihw.calc_type == TI92)) ||
@@ -411,7 +411,7 @@ int send_ti_file(const char *filename)
     {
         ok = 1;
     } else
-        return ERR_68K_TI_FILE;
+        return ERR_NOT_TI_FILE;
 
     t2f_flag = 0;
     f2t_flag = 0;

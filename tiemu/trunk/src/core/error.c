@@ -40,50 +40,56 @@
 */
 int ti68k_error_get(int err_num, char *error_msg)
 {
-  switch(err_num)
+	switch(err_num)
     {
-    case ERR_68K_NONE:
-      strcpy(error_msg, _("No error."));
-      break;
-    case ERR_68K_INVALID_ROM: 
-      strcpy(error_msg, _("Invalid ROM."));
-      break;
-    case ERR_68K_INVALID_SIZE: 
-      strcpy(error_msg, _("Invalid ROM size."));
-      break;
-    case ERR_68K_CANT_OPEN:
-      strcpy(error_msg, _("Can not open ROM."));
-      break;
-    case ERR_68K_CANT_CLOSE:
-      strcpy(error_msg, _("Unable to close file."));
-      break;
-    case ERR_68K_INTERNAL:
-      strcpy(error_msg, _("Internal error."));
-      break;
-    case ERR_68K_TI_FILE:
-      strcpy(error_msg, _("Invalid TI file."));
-      break;
-    case ERR_68K_INVALID_FLASH:
-      strcpy(error_msg, _("Invalid FLASH file."));
-      break;
-    case ERR_68K_ROM_NOT_LOADED:
-      strcpy(error_msg, _("A ROM should have been loaded before."));
-      break;
-    case ERR_68K_CANT_OPEN_DIR:
-      strcpy(error_msg, _("Unable to open directory."));
-      break;
-    case ERR_68K_CANT_CLOSE_DIR:
-      strcpy(error_msg, ("Unable to close directory."));
-      break;
-    case ERR_68K_INVALID_FILE:
-      strcpy(error_msg, ("Invalid file."));
-      break;
-    case ERR_68K_INVALID_STATE:
-      strcpy(error_msg, ("Invalid state file."));
-      break;
-    case ERR_68K_INVALID_MODE:
-      strcpy(error_msg, ("Breakpoint, invalid mode."));
-      break;
+    case ERR_NONE:
+		strcpy(error_msg, _("No error."));
+		break;
+
+	case ERR_CANT_OPEN:
+		strcpy(error_msg, _("Can not open ROM."));
+		break;
+
+	case ERR_INVALID_STATE:
+		strcpy(error_msg, _("Invalid state image."));
+		break;
+
+	case ERR_INVALID_IMAGE:
+		strcpy(error_msg, _("Invalid emulator image."));
+		break;
+
+	case ERR_INVALID_UPGRADE:
+		strcpy(error_msg, _("Invalid FLASH upgrade."));
+		break;
+
+	case ERR_INVALID_ROM:
+		strcpy(error_msg, _("Invalid ROM dump."));
+		break;
+
+	case ERR_NO_IMAGE:
+		strcpy(error_msg, _("No image."));
+		break;
+
+	case ERR_HID_FAILED:
+		strcpy(error_msg, _("Failed to init HID subsystem."));
+		break;
+
+	case ERR_INVALID_ROM_SIZE:
+		strcpy(error_msg, _("ROM dump has a weird size."));
+		break;
+
+	case ERR_NOT_TI_FILE:
+		strcpy(error_msg, _("This is not recognized as a TI file."));
+		break;
+
+	case ERR_CANT_OPEN_DIR:
+		strcpy(error_msg, _("Can parse folder."));
+		break;
+
+	case ERR_CANT_UPGRADE:
+		strcpy(error_msg, _("Can't upgrade calculator."));
+		break;		
+
     default:
       strcpy(error_msg, _("Error code not found in the list.\nThis is a bug. Please report it.\n."));
       return err_num;

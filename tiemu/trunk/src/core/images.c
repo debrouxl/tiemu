@@ -179,6 +179,9 @@ int ti68k_get_hw_param_block(IMG_INFO *rom, HW_PARM_BLOCK *block)
 	else
 		addr -= 0x400000;
 
+	if(addr < 0x200000 || addr > 0x600000)
+		return -1;
+
     memset(block, 0, sizeof(HW_PARM_BLOCK));
     block->len = rd_word(&(rom->data[addr+0]));
     block->hardwareID = rd_long(&(rom->data[addr+2]));
@@ -256,7 +259,8 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
     else
     {
         // Get hw param block to determine calc type & hw type
-        ti68k_get_hw_param_block(rom, &hwblock);
+        if(ti68k_get_hw_param_block(rom, &hwblock) == -1)
+			return ERR_INVALID_ROM;
         ti68k_display_hw_param_block(&hwblock);
 
         switch(hwblock.hardwareID)
@@ -310,7 +314,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 
 	// Load file
 	if(ti9x_read_flash_file(filename, &content) != 0)
-        return ERR_68K_INVALID_FLASH;
+        return ERR_INVALID_UPGRADE;
 	
 	// count headers
   	for (ptr = &content; ptr != NULL; ptr = ptr->next)
@@ -712,7 +716,6 @@ int ti68k_load_image(const char *filename)
       	fprintf(stderr, "Unable to open this file: <%s>\n", filename);
       	return ERR_CANT_OPEN;
     }
-
 	// Read pure data
     fseek(f, img->data_offset, SEEK_SET);
 	img->data = malloc(img->size + 4);
@@ -879,7 +882,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
       	if(file == NULL)
         {
           	fprintf(stderr, _("Unable to open this file: <%s>\n"), filename);
-          	return ERR_68K_CANT_OPEN;
+          	return ERR_CANT_OPEN;
         }
 
 		nlines = 0;

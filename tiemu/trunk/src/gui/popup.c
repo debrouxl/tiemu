@@ -461,7 +461,6 @@ on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem
 	gchar *basename;
 	gchar *dot;
 	gchar *path;
-	int err;
 
 	// build name
 	basename = g_path_get_basename(params.rom_file);

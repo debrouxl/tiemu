@@ -234,7 +234,8 @@ gint display_romversion_dbox()
 				handle_error();
 				if(err) 
 				{
-					msg_box("Error", "Can not load the image.");
+					//msg_box("Error", "Can not load the image.");
+					ti68k_engine_unhalt();
 					return -1;
 				}
 
@@ -253,7 +254,8 @@ gint display_romversion_dbox()
 				handle_error();
 				if(err)
 				{
-					msg_box("Error", "Can not load the upgrade.");
+					//msg_box("Error", "Can not load the upgrade.");
+					ti68k_engine_unhalt();
 					return -1;
 				}
                 
