@@ -78,7 +78,8 @@ core_dbg_OBJ = \
 	core/dbg/bkpts.o	\
 	core/dbg/debug.o	\
 	core/dbg/disasm.o	\
-	core/dbg/m68kdasm.o
+	core/dbg/m68kdasm.o \
+	core/dbg/fpudasm.o
 
 misc_OBJ = \
 	misc/cmdline.o 	\

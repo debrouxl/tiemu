@@ -86,8 +86,6 @@ void heap_get_size(uint16_t *size)
 
 	*size = 0;
 	heap_get_addr(&base);
-	if(base == -1)
-		return;
 
 	for(i = 0; ; i++)
 	{

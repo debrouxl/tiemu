@@ -43,8 +43,6 @@ roms
 
 * MOVEA.W diassembled as MOVEA.L (HeapDeref)
 
-* rom calls & handles to make more reliable
-
 -------------
 + done
 - in progress

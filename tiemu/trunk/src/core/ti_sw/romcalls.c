@@ -198,7 +198,7 @@ static int merge_from_flash(void)
 
 	romcalls_get_table_infos(&addr, &size);
 	if(size == 0)
-		return 0;
+		return -1;
 
 	printf("Parsing ROM calls from flash memory (%i entries at $%06x)... ", size, addr);
 
@@ -237,18 +237,18 @@ int romcalls_preload(const char* filename)
 		strcpy(old_av, img->version);
 	}
 
-	load_from_file(filename);
-	merge_from_flash();
+	if(load_from_file(filename))
+		return -1;
+	if(merge_from_flash())
+		return -1;
 	loaded = !0;
-/*
-	for(i = 0x0; i < 0x10; i++)
-	{
-		ROM_CALL *elt = (ROM_CALL *)g_list_nth_data(list, i);
 
-		printf("%i: %i $%06x <%s>\n", i, elt->id, elt->addr, elt->name);
-	}
-*/
     return 0;
+}
+
+int romcalls_is_loaded(void)
+{
+	return loaded;
 }
 
 /* =========== */
@@ -356,6 +356,7 @@ int romcalls_is_name(const char *name)
 
 const char* romcalls_get_name(int id)
 {
+	if(!loaded)	return "not loaded";
 	return table[id].name;
 }
 
