@@ -434,13 +434,12 @@ SOURCE=..\..\src\core\type2str.c
 # Begin Group "gui"
 
 # PROP Default_Filter ""
+# Begin Group "debug"
+
+# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\gui\about.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\comm.c
+SOURCE=..\..\src\gui\dbg_bkpts.c
 # End Source File
 # Begin Source File
 
@@ -453,6 +452,19 @@ SOURCE=..\..\src\gui\dbg_mem.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\dbg_regs.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\dbg_vectors.c
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\src\gui\about.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\comm.c
 # End Source File
 # Begin Source File
 
