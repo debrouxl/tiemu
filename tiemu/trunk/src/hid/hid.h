@@ -1,11 +1,10 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  TiEmu - an TI emulator
- *
- *  Originally written by Jonas Minsberg
- *  Copyright (C) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (C) 2001-2004, Romain Lievin
+/*  TiEmu - a TI emulator
+ *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
+ *  Copyright (c) 2003-2004, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
