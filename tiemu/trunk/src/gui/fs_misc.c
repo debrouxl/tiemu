@@ -186,8 +186,8 @@ gint display_tifile_dbox()
 
 gint display_set_rom_dbox(void)
 {
-     const gchar *filename;
-     const gchar *src;
+    const gchar *filename;
+    const gchar *src;
     gchar *dst;
     gchar *cmd;
 
@@ -198,16 +198,15 @@ gint display_set_rom_dbox(void)
 
     dst = g_strconcat(inst_paths.rom_dir, g_basename(src), NULL);
     cmd = g_strdup_printf("cp %s %s", src, dst);
-    system(cmd); //copy_file(src, dst);
-    
+    system(cmd); //copy_file(src, dst);    
 
     ti68k_unhalt();
 }
 
 gint display_set_tib_dbox(void)
 {
-     const gchar *filename;
-     const gchar *src;
+    const gchar *filename;
+    const gchar *src;
     gchar *dst;
     gchar *cmd;
 

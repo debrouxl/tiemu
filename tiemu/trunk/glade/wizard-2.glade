@@ -108,7 +108,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkRadioButton" id="radiobutton4">
+	    <widget class="GtkRadioButton" id="radiobutton1">
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label" translatable="yes">You can use TiLP or another dumping program 
@@ -128,16 +128,17 @@ to get a ROM image of your calculator.</property>
 	  </child>
 
 	  <child>
-	    <widget class="GtkRadioButton" id="radiobutton5">
+	    <widget class="GtkRadioButton" id="radiobutton2">
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label" translatable="yes">You have downloaded a FLASH upgrade on the TI
 website and would like to use it.</property>
 	      <property name="use_underline">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="active">False</property>
+	      <property name="active">True</property>
 	      <property name="inconsistent">False</property>
 	      <property name="draw_indicator">True</property>
+	      <property name="group">radiobutton1</property>
 	      <signal name="toggled" handler="step1_on_radiobutton2_toggled" last_modification_time="Tue, 08 Jul 2003 12:26:14 GMT"/>
 	    </widget>
 	    <packing>
@@ -148,7 +149,7 @@ website and would like to use it.</property>
 	  </child>
 
 	  <child>
-	    <widget class="GtkRadioButton" id="radiobutton6">
+	    <widget class="GtkRadioButton" id="radiobutton3">
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label" translatable="yes">You already have a ROM image and would like to use it.</property>
@@ -157,6 +158,7 @@ website and would like to use it.</property>
 	      <property name="active">False</property>
 	      <property name="inconsistent">False</property>
 	      <property name="draw_indicator">True</property>
+	      <property name="group">radiobutton1</property>
 	      <signal name="toggled" handler="step1_on_radiobutton3_toggled" last_modification_time="Tue, 08 Jul 2003 12:26:22 GMT"/>
 	    </widget>
 	    <packing>

@@ -28,17 +28,19 @@
 #include <glade/glade.h>
 
 #include "intl.h"
+#include "support.h"
 
-static gint action = 1;
 gchar *wizard_rom = NULL;
 gint wizard_ok = FALSE;
+
+static gint action = 1;
 
 gint display_wizard_dbox(void)
 {
     display_step1_dbox();
 }
 
-gint display_step1_dbox(void)
+static gint display_step1_dbox(void)
 {
     GladeXML *xml;
 	GtkWidget *dbox;
@@ -53,12 +55,122 @@ gint display_step1_dbox(void)
 
 	dbox = glade_xml_get_widget(xml, "step1_dbox");
 
+    //data = glade_xml_get_widget(xml, "cancelbutton1");
+    //gtk_button_set_label(data, "<= Back");
     data = glade_xml_get_widget(xml, "applybutton1");
-    gtk_button_set_label(data, "<= Back");
+    gtk_widget_hide(data);
+    //data = glade_xml_get_widget(xml, "okbutton1");
+    //gtk_button_set_label(data, "Next =>");
+
+    result = gtk_dialog_run(GTK_DIALOG(dbox));
+    if(result == GTK_RESPONSE_OK)
+    {
+        switch(action)
+        {
+            case 1: 
+                gtk_widget_destroy(dbox);
+                display_msg_dbox();
+            break;
+            case 2: 
+                gtk_widget_destroy(dbox);
+                //create_flash_fileselection();
+                
+
+            break;
+            case 3: 
+                gtk_widget_destroy(dbox);
+                //create_romfile_fileselection();
+                printf("rom fs\n");
+                display_wait_dbox();
+            break;
+            default:
+        break;
+        }
+	}
+    else
+    {
+        gtk_widget_destroy(dbox);
+        exit(0);
+    }
+
+	return 0;
+}
+
+static gint display_step3_dbox(void)
+{
+    GladeXML *xml;
+	GtkWidget *dbox;
+	GtkWidget *data;
+	gint result;
+
+    xml = glade_xml_new
+	    (tilp_paths_build_glade("wizard-2.glade"), "step3_dbox", PACKAGE);
+	if (!xml)
+		g_error(_("comm.c: GUI loading failed !\n"));
+	glade_xml_signal_autoconnect(xml);
+
+	dbox = glade_xml_get_widget(xml, "step3_dbox");
+
+    //data = glade_xml_get_widget(xml, "cancelbutton2");
+    //gtk_button_set_label(data, "<= Back");
     data = glade_xml_get_widget(xml, "applybutton2");
-    gtk_button_set_label(data, "<= Cancel");
-    data = glade_xml_get_widget(xml, "applybutton3");
-    gtk_button_set_label(data, "Next =>");
+    gtk_widget_hide(data);
+    //data = glade_xml_get_widget(xml, "okbutton2");
+    //gtk_button_set_label(data, "Next =>");
+
+    result = gtk_dialog_run(GTK_DIALOG(dbox));
+    if(result == GTK_RESPONSE_OK)
+    {
+        gtk_widget_destroy(dbox);
+        wizard_ok = 1;
+    }
+    else
+    {
+        gtk_widget_destroy(dbox);
+        exit(0);
+    }
+
+	return 0;
+}
+
+
+static gint display_msg_dbox(void)
+{
+    GladeXML *xml;
+	GtkWidget *dbox;
+	GtkWidget *data;
+	gint result;
+
+    xml = glade_xml_new
+	    (tilp_paths_build_glade("wizard-2.glade"), "msg_dbox", PACKAGE);
+	if (!xml)
+		g_error(_("comm.c: GUI loading failed !\n"));
+	glade_xml_signal_autoconnect(xml);
+
+	dbox = glade_xml_get_widget(xml, "msg_dbox");
+
+    result = gtk_dialog_run(GTK_DIALOG(dbox));
+	
+    gtk_widget_destroy(dbox);
+    exit(0);
+
+	return 0;
+}
+
+gint display_wait_dbox(void)
+{
+    GladeXML *xml;
+	GtkWidget *dbox;
+	GtkWidget *data;
+	gint result;
+
+    xml = glade_xml_new
+	    (tilp_paths_build_glade("wizard-2.glade"), "wait_dbox", PACKAGE);
+	if (!xml)
+		g_error(_("comm.c: GUI loading failed !\n"));
+	glade_xml_signal_autoconnect(xml);
+
+	dbox = glade_xml_get_widget(xml, "wait_dbox");
 
     result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) {
@@ -74,221 +186,73 @@ gint display_step1_dbox(void)
 	return 0;
 }
 
-/*
-gint display_msg1_dbox(void)
+gint display_wz_rom_dbox(void)
 {
-  gtk_widget_show_all(create_msg1_dbox());
-  return 0;
-}
+    const gchar *filename;
+    gchar *ext;
 
-gint display_step3_dbox(void)
-{
-  gtk_widget_show_all(create_step3_dbox());
-  return 0;
-}
+    // get filename
+	filename = create_fsel("*rom");
+	if (!filename)
+		return;
 
-gint display_wait_dbox(void)
-{
-  gtk_widget_show_all(create_wait_dbox());
-  return 0;
-}
-
-
-void
-on_flashfile_fileselection_destroy     (GtkObject       *object,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_flashfile_ok_button2_clicked        (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  GtkWidget *w;
-  GtkWidget *f;
-  const gchar *filename;
-  gchar buffer[1024];
-  gchar *ext = NULL;
-
-  f = lookup_widget(GTK_WIDGET(button), "flash_fileselection");
-
-  filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(f));
-  ext = strrchr(filename, '.');
-  if(str_cmp(ext, ".tib") && str_cmp(ext, ".89u") && str_cmp(ext, ".9xu"))
+    ext = strrchr(filename, '.');
+    if(strcasecmp(ext, ".rom"))
     {
-      msg_box(_("Error"), _("Invalid file"));
-      gtk_widget_destroy(f);
-      gtk_widget_show(create_step1_dbox());     
-      return;
+        msg_box(_("Error"), _("Invalid Rom dump."));
+        display_step1_dbox();     
+        return;
+    }
+  
+    wizard_rom = g_strdup(filename);
+    
+    display_step3_dbox();
+}
+
+gint display_wz_tib_dbox(void)
+{
+    const gchar *filename;
+    gchar buffer[1024];
+
+    // get filename
+	filename = create_fsel("*.89u;*.9xu;*.tib");
+	if (!filename)
+		return;
+
+    if(!tifiles_is_a_flash_file(filename) && !tifiles_is_a_tib_file(filename))
+    {
+        msg_box(_("Error"), _("Invalid FLASH upgrade."));
+        display_step1_dbox();
+        return;
     }
 
-  gtk_widget_show((w = create_wait_dbox()));
-  while( gtk_events_pending() ) { gtk_main_iteration(); }
-  ti68k_convertTibToRom(filename, buffer);
-  wizard_rom = g_strdup(buffer);
-  gtk_widget_destroy(w);
-  while( gtk_events_pending() ) { gtk_main_iteration(); }
-
-  gtk_widget_destroy(f);
-  gtk_widget_show(create_step3_dbox());
+    display_wait_dbox();
+    
+    ti68k_convertTibToRom(filename, buffer);
+    wizard_rom = g_strdup(buffer);
+    
+    display_step3_dbox();
+  
 }
 
 
-void
-on_flashfile_cancel_button2_clicked    (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "flash_fileselection"));
-}
-
-
-void
+GLADE_CB void
 step1_on_radiobutton1_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
   action = 1;
 }
 
-
-void
+GLADE_CB void
 step1_on_radiobutton2_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
   action = 2;
 }
 
-
-void
+GLADE_CB void
 step1_on_radiobutton3_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
   action = 3;
 }
-
-
-void
-step1_b1_button_clicked                (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-step1_b2_button_clicked                (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  switch(action)
-    {
-    case 1: gtk_widget_show(create_msg1_dbox());
-      break;
-    case 2: gtk_widget_show(create_flash_fileselection());
-      break;
-    case 3: gtk_widget_show(create_romfile_fileselection());
-      break;
-    default:
-      break;
-    }
-  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "step1_dbox"));
-}
-
-
-void
-step1_b3_button_clicked                (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  exit(0);
-}
-
-
-void
-msg1_ok_button_clicked                 (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "msg1_dbox"));
-  exit(0);
-}
-
-
-
-void
-step3_b1_button_clicked                (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "step3_dbox"));
-  gtk_widget_show(create_step1_dbox());
-}
-
-
-void
-step3_b2_button_clicked                (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "step3_dbox"));
-  wizard_ok = TRUE;
-}
-
-
-void
-step3_b3_button_clicked                (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  exit(0);
-}
-
-
-
-
-void
-wait_ok_button_clicked                 (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_romfile_fileselection_destroy       (GtkObject       *object,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_romfile_cancel_button2_clicked      (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "romfile_fileselection"));
-  exit(0);
-}
-
-
-void
-on_romfile_ok_button2_clicked          (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  GtkWidget *f;
-  const gchar *filename;
-  gchar *ext = NULL;
-
-  f = lookup_widget(GTK_WIDGET(button), "romfile_fileselection");
-
-  filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(f));
-  ext = strrchr(filename, '.');
-  if(str_cmp(ext, ".rom"))
-    {
-      msg_box(_("Error"), _("Invalid file"));
-      gtk_widget_destroy(f);
-      gtk_widget_show(create_step1_dbox());     
-      return;
-    }
-  wizard_rom = g_strdup(filename);
-
-  gtk_widget_destroy(f);
-  gtk_widget_show(create_step3_dbox());
-}
-
-*/
