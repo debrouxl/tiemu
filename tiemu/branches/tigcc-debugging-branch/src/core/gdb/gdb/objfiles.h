@@ -613,15 +613,16 @@ extern void *objfile_data (struct objfile *objfile,
   ALL_OBJFILES (objfile)			\
     ALL_OBJFILE_OSECTIONS (objfile, osect)
 
+/* (TiEmu 20050401 Kevin Kofler) We don't always have a .data section, and we never have a .rodata one. */
 #define SECT_OFF_DATA(objfile) \
-     ((objfile->sect_index_data == -1) \
+     (/*(objfile->sect_index_data == -1) \
       ? (internal_error (__FILE__, __LINE__, "sect_index_data not initialized"), -1) \
-      : objfile->sect_index_data)
+      :*/ objfile->sect_index_data)
 
 #define SECT_OFF_RODATA(objfile) \
-     ((objfile->sect_index_rodata == -1) \
+     (/*(objfile->sect_index_rodata == -1) \
       ? (internal_error (__FILE__, __LINE__, "sect_index_rodata not initialized"), -1) \
-      : objfile->sect_index_rodata)
+      :*/ objfile->sect_index_rodata)
 
 #define SECT_OFF_TEXT(objfile) \
      ((objfile->sect_index_text == -1) \

@@ -1170,6 +1170,17 @@ function_outside_compilation_unit_complaint (const char *arg1)
 	     arg1);
 }
 
+/* (TiEmu 20050401 Kevin Kofler) */
+static CORE_ADDR find_relocation_offset (CORE_ADDR addr)
+{
+  struct obj_section *s;
+  s = find_pc_section (addr);
+  if (s)
+    return s->offset;
+  else
+    return 0; /* Well, no section for this symbol, so we can guess just about anything. */
+}
+
 /* Setup partial_symtab's describing each source file for which
    debugging information is available. */
 
@@ -1256,11 +1267,16 @@ read_dbx_symtab (struct objfile *objfile)
      performance-critical.  So that expense would not be welcome.  I'm
      not sure what to do about this at the moment.
 
+     (TiEmu 20050401) Well, sorry, but your hack is NOT welcome here.
+     Our symbols can be in just about any section. So I changed it to
+     do things the proper way even if it is slow. -- Kevin Kofler
+
      What we have done for years is to simply assume that the .data
      section's offset is appropriate for all global and static
      variables.  Recently, this was expanded to fall back to the .bss
      section's offset if there is no .data section, and then to the
      .rodata section's offset.  */
+#if 0
   data_sect_index = objfile->sect_index_data;
   if (data_sect_index == -1)
     data_sect_index = SECT_OFF_BSS (objfile);
@@ -1272,6 +1288,7 @@ read_dbx_symtab (struct objfile *objfile)
      it also has no global or static variables.  If it does, we will
      get an internal error from an ANOFFSET macro below when we try to
      use data_sect_index.  */
+#endif
 
   for (symnum = 0; symnum < DBX_SYMCOUNT (objfile); symnum++)
     {
@@ -1314,19 +1331,19 @@ read_dbx_symtab (struct objfile *objfile)
 
 	  case N_TEXT | N_EXT:
 	  case N_NBTEXT | N_EXT:
-	  nlist.n_value += ANOFFSET (objfile->section_offsets, SECT_OFF_TEXT (objfile));
+	  nlist.n_value += find_relocation_offset (nlist.n_value);
 	  goto record_it;
 
 	  case N_DATA | N_EXT:
 	  case N_NBDATA | N_EXT:
-	  nlist.n_value += ANOFFSET (objfile->section_offsets, SECT_OFF_DATA (objfile));
+	  nlist.n_value += find_relocation_offset (nlist.n_value);
 	  goto record_it;
 
 	  case N_BSS:
 	  case N_BSS | N_EXT:
 	  case N_NBBSS | N_EXT:
 	  case N_SETV | N_EXT:		/* FIXME, is this in BSS? */
-	  nlist.n_value += ANOFFSET (objfile->section_offsets, SECT_OFF_BSS (objfile));
+	  nlist.n_value += find_relocation_offset (nlist.n_value);
 	  goto record_it;
 
 	  case N_ABS | N_EXT:
@@ -1350,7 +1367,7 @@ read_dbx_symtab (struct objfile *objfile)
 	  case N_FN:
 	  case N_FN_SEQ:
 	  case N_TEXT:
-	  nlist.n_value += ANOFFSET (objfile->section_offsets, SECT_OFF_TEXT (objfile));
+	  nlist.n_value += find_relocation_offset (nlist.n_value);
 	  namestring = set_namestring (objfile, nlist);
 
 	  if ((namestring[0] == '-' && namestring[1] == 'l')
@@ -1380,7 +1397,7 @@ read_dbx_symtab (struct objfile *objfile)
 	  continue;
 
 	  case N_DATA:
-	  nlist.n_value += ANOFFSET (objfile->section_offsets, SECT_OFF_DATA (objfile));
+	  nlist.n_value += find_relocation_offset (nlist.n_value);
 	  goto record_it;
 
 	  case N_UNDF | N_EXT:
@@ -1459,7 +1476,7 @@ read_dbx_symtab (struct objfile *objfile)
 	    static char *dirname_nso;
 	    int prev_textlow_not_set;
 
-	    valu = nlist.n_value + ANOFFSET (objfile->section_offsets, SECT_OFF_TEXT (objfile));
+	    valu = nlist.n_value + find_relocation_offset (nlist.n_value);
 
 	    prev_textlow_not_set = textlow_not_set;
 
@@ -1679,7 +1696,7 @@ read_dbx_symtab (struct objfile *objfile)
 	  switch (p[1])
 	  {
 	  case 'S':
-	    nlist.n_value += ANOFFSET (objfile->section_offsets, data_sect_index);
+	    nlist.n_value += find_relocation_offset (nlist.n_value);
 #ifdef STATIC_TRANSFORM_NAME
 	    namestring = STATIC_TRANSFORM_NAME (namestring);
 #endif
@@ -1690,7 +1707,7 @@ read_dbx_symtab (struct objfile *objfile)
 				 psymtab_language, objfile);
 	    continue;
 	  case 'G':
-	    nlist.n_value += ANOFFSET (objfile->section_offsets, data_sect_index);
+	    nlist.n_value += find_relocation_offset (nlist.n_value);
 	    /* The addresses in these entries are reported to be
 	       wrong.  See the code that reads 'G's for symtabs. */
 	    add_psymbol_to_list (namestring, p - namestring,
@@ -1826,7 +1843,7 @@ read_dbx_symtab (struct objfile *objfile)
 		function_outside_compilation_unit_complaint (name);
 		xfree (name);
 	      }
-	    nlist.n_value += ANOFFSET (objfile->section_offsets, SECT_OFF_TEXT (objfile));
+	    nlist.n_value += find_relocation_offset (nlist.n_value);
 	    /* Kludges for ELF/STABS with Sun ACC */
 	    last_function_name = namestring;
 #ifdef SOFUN_ADDRESS_MAYBE_MISSING
@@ -1891,7 +1908,7 @@ read_dbx_symtab (struct objfile *objfile)
 		function_outside_compilation_unit_complaint (name);
 		xfree (name);
 	      }
-	    nlist.n_value += ANOFFSET (objfile->section_offsets, SECT_OFF_TEXT (objfile));
+	    nlist.n_value += find_relocation_offset (nlist.n_value);
 	    /* Kludges for ELF/STABS with Sun ACC */
 	    last_function_name = namestring;
 #ifdef SOFUN_ADDRESS_MAYBE_MISSING
@@ -2626,6 +2643,17 @@ read_ofile_symtab (struct partial_symtab *pst)
 }
 
 
+/* (TiEmu 20050401 Kevin Kofler) */
+static CORE_ADDR find_relocation_offset_ex (CORE_ADDR addr, struct section_offsets *section_offsets, struct objfile *objfile)
+{
+  struct obj_section *s;
+  s = find_pc_section (addr);
+  if (s)
+    return ANOFFSET (section_offsets, s->the_bfd_section->index);
+  else
+    return ANOFFSET (section_offsets, SECT_OFF_TEXT (objfile)); /* FIXME */
+}
+
 /* This handles a single symbol from the symbol-file, building symbols
    into a GDB symtab.  It takes these arguments and an implicit argument.
 
@@ -2732,7 +2760,7 @@ process_one_symbol (int type, int desc, CORE_ADDR valu, char *name,
       sline_found_in_function = 0;
 
       /* Relocate for dynamic loading */
-      valu += ANOFFSET (section_offsets, SECT_OFF_TEXT (objfile));
+      valu += find_relocation_offset_ex (valu, section_offsets, objfile);
       valu = SMASH_TEXT_ADDRESS (valu);
       last_function_start = valu;
 
@@ -2854,7 +2882,7 @@ process_one_symbol (int type, int desc, CORE_ADDR valu, char *name,
     case N_FN_SEQ:
       /* This kind of symbol indicates the start of an object file.  */
       /* Relocate for dynamic loading */
-      valu += ANOFFSET (section_offsets, SECT_OFF_TEXT (objfile));
+      valu += find_relocation_offset_ex (valu, section_offsets, objfile);
       break;
 
     case N_SO:
@@ -2863,7 +2891,7 @@ process_one_symbol (int type, int desc, CORE_ADDR valu, char *name,
          Finish the symbol table of the previous source file
          (if any) and start accumulating a new symbol table.  */
       /* Relocate for dynamic loading */
-      valu += ANOFFSET (section_offsets, SECT_OFF_TEXT (objfile));
+      valu += find_relocation_offset_ex (valu, section_offsets, objfile);
 
       n_opt_found = 0;
 
@@ -2901,7 +2929,7 @@ process_one_symbol (int type, int desc, CORE_ADDR valu, char *name,
          included in the compilation of the main source file
          (whose name was given in the N_SO symbol.)  */
       /* Relocate for dynamic loading */
-      valu += ANOFFSET (section_offsets, SECT_OFF_TEXT (objfile));
+      valu += find_relocation_offset_ex (valu, section_offsets, objfile);
       start_subfile (name, current_subfile->dirname);
       break;
 
@@ -2984,7 +3012,7 @@ process_one_symbol (int type, int desc, CORE_ADDR valu, char *name,
 		   elfstab_offset_sections ever starts dealing with the
 		   text offset, and we still need to do this, we need to
 		   invent a SECT_OFF_ADDR_KLUDGE or something.  */
-		valu += ANOFFSET (section_offsets, SECT_OFF_TEXT (objfile));
+		valu += find_relocation_offset_ex (valu, section_offsets, objfile);
 		goto define_a_symbol;
 	      }
 	  }
@@ -3004,22 +3032,22 @@ process_one_symbol (int type, int desc, CORE_ADDR valu, char *name,
 
     case_N_STSYM:		/* Static symbol in data seg */
     case N_DSLINE:		/* Source line number, data seg */
-      valu += ANOFFSET (section_offsets, SECT_OFF_DATA (objfile));
+      valu += find_relocation_offset_ex (valu, section_offsets, objfile);
       goto define_a_symbol;
 
     case_N_LCSYM:		/* Static symbol in BSS seg */
     case N_BSLINE:		/* Source line number, bss seg */
       /*   N_BROWS:       overlaps with N_BSLINE */
-      valu += ANOFFSET (section_offsets, SECT_OFF_BSS (objfile));
+      valu += find_relocation_offset_ex (valu, section_offsets, objfile);
       goto define_a_symbol;
 
     case_N_ROSYM:		/* Static symbol in Read-only data seg */
-      valu += ANOFFSET (section_offsets, SECT_OFF_RODATA (objfile));
+      valu += find_relocation_offset_ex (valu, section_offsets, objfile);
       goto define_a_symbol;
 
     case N_ENTRY:		/* Alternate entry point */
       /* Relocate for dynamic loading */
-      valu += ANOFFSET (section_offsets, SECT_OFF_TEXT (objfile));
+      valu += find_relocation_offset_ex (valu, section_offsets, objfile);
       goto define_a_symbol;
 
       /* The following symbol types we don't know how to process.  Handle

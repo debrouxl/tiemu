@@ -1,3 +1,7 @@
+2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * objfiles.c (SECT_OFF_DATA, SECT_OFF_RODATA): Don't error if the section is missing.
+
 2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * event-loop.c (gdb_do_one_event): Call gtk_main_iteration if gtk_events_pending.

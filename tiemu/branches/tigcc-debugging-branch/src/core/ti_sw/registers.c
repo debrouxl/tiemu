@@ -39,6 +39,9 @@
 #include "ti68k_def.h"
 #include "bits.h"
 
+/* Flushes GDB's register cache */
+extern void registers_changed(void);
+
 // SR bits set/get modifiers
 #define SR_get_T(sr)        bit_get(sr, 15)
 #define SR_get_S(sr)        bit_get(sr, 13)
@@ -72,16 +75,19 @@ static char old_uf[32];
 void ti68k_register_set_data(int n, uint32_t val)
 {
     if (n>=0 && n<8) m68k_dreg(regs,n) = val;
+    registers_changed ();
 }
 
 void ti68k_register_set_addr(int n, uint32_t val)
 {
     if (n>=0 && n<8) m68k_areg(regs,n) = val;
+    registers_changed ();
 }
 
 void ti68k_register_set_sp(uint32_t val)
 {
     m68k_areg(regs,7) = val;
+    registers_changed ();
 }
 
 void ti68k_register_set_usp(uint32_t val)
@@ -90,6 +96,7 @@ void ti68k_register_set_usp(uint32_t val)
         m68k_areg(regs,7) = val;
     else
         regs.usp = val;
+    registers_changed ();
 }
 
 void ti68k_register_set_ssp(uint32_t val)
@@ -98,23 +105,27 @@ void ti68k_register_set_ssp(uint32_t val)
         m68k_areg(regs,7) = val;
     else
         regs.usp = val;
+    registers_changed ();
 }
 
 void ti68k_register_set_pc(uint32_t val)
 {
     m68k_setpc(val);
+    registers_changed ();
 }
 
 void ti68k_register_set_sr(uint32_t val)
 {
     regs.sr = (int)val;
     MakeFromSR();
+    registers_changed ();
 }
 
 void ti68k_register_set_flag(uint8_t flag)
 {
   	//TODO
   	/* T  0  S  0  0  I2 I1 I0 0  0  0  X  N  Z  V  C */	  
+    registers_changed ();
 }
 
 int ti68k_register_set_flags(const char *sf, const char *uf)
@@ -155,6 +166,8 @@ int ti68k_register_set_flags(const char *sf, const char *uf)
 	}
 
     MakeFromSR();
+
+    registers_changed ();
 
 	return !0;
 }
