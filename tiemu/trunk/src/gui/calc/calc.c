@@ -310,7 +310,10 @@ static gint hid_refresh (gpointer data)
         G_UNLOCK(lcd_flag);
 
         // Toggles every FS (every time the LCD restarts at line 0)
-        tihw.io2[0x1d] |= (1 << 7);
+		if(tihw.io2[0x1d] & 0x80)
+			tihw.io2[0x1d] &= ~0x80;
+		else
+			tihw.io2[0x1d] |= 0x80;
     }
 
     return TRUE;

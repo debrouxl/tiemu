@@ -171,6 +171,12 @@ certificate).
         * aller dans la fenêtre de debug: TIEmu est parti
 dans le décor, je ne sais pas s'il exécute ou pas
 
+* Il y a toujours un problème avec le programme de
+test de l'AI3, fait par Greg Dietsche, que
+j'utilise.
+Cette fois-ci, la calculette semble se bloquer, il
+faut un double reset pour tout remettre d'aplomb.
+
 me/moi
 ======
 
