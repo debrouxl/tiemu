@@ -13,7 +13,7 @@
 #include "tilibs.h"
 //#include "platform.h"
 #include "struct.h"
-#include "ticalc.h"
+#include "hid.h"
 #include "msg_cb.h"
 #include "interface.h"
 #include "main.h"

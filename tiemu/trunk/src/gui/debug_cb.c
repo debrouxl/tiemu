@@ -13,7 +13,7 @@
 #include "interface.h"
 //#include "platform.h"
 #include "struct.h"
-#include "ticalc.h"
+#include "hid.h"
 #include "paths.h"
 #include "support.h"
 #include "utils.h"

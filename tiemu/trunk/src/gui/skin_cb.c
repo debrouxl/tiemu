@@ -16,7 +16,7 @@
 #include "support.h"
 #include "msg_cb.h"
 #include "skin.h"
-#include "ticalc.h"
+#include "hid.h"
 #include "interface.h"
 #include "main.h"
 

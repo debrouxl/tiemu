@@ -11,7 +11,7 @@
 //#include "platform.h"
 #include "struct.h"
 #include "extern.h"
-#include "ticalc.h"
+#include "hid.h"
 #include "adbkpt_cb.h"
 #include "adbkpt_dbox.h"
 

@@ -26,6 +26,7 @@
 #include <config.h>
 #endif
 
+#include <gtk/gtk.h>
 #include <sys/timeb.h>
 #include <sys/types.h>
 #include <stdlib.h>
@@ -41,11 +42,13 @@
 #include "rcfile.h"
 #include "interface.h"
 
-#include "tiemu_cb.h"
-#include "wizard_dbox.h"
+#include "hid.h"
 #include "refresh.h"
 #include "main.h"
 #include "printl.h"
+
+#include "wizard_dbox.h"
+#include "popup_cb.h"
 
 /* 
    The TI92/89 should approximately execute NB_INSTRUCTIONS_PER_LOOP in 

@@ -13,7 +13,7 @@
 //#include "platform.h"
 #include "struct.h"
 #include "version.h"
-#include "ticalc.h"
+#include "hid.h"
 #include "paths.h"
 #include "files.h"
 #include "tilibs.h"

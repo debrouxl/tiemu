@@ -8,7 +8,7 @@
 #include "pgmentbkpt_dbox.h"
 #include "support.h"
 
-#include "ticalc.h"
+#include "hid.h"
 #include "main.h"
 
 gint display_pgmentrybkpt_dbox (void)

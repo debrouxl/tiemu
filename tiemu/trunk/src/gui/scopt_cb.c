@@ -9,7 +9,7 @@
 #include "support.h"
 
 #include "struct.h"
-#include "ticalc.h"
+#include "hid.h"
 #include "screenshot.h"
 #include "main.h"
 

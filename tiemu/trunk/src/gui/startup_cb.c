@@ -18,7 +18,7 @@
 #include "version.h"
 #include "rcfile.h"
 #include "files.h"
-#include "ticalc.h"
+#include "hid.h"
 #include "main.h"
 
 

@@ -8,9 +8,8 @@
 #include "itick_dbox.h"
 #include "support.h"
 
-//#include "platform.h"
 #include "struct.h"
-#include "ticalc.h"
+#include "hid.h"
 #include "main.h"
 
 gint tmp_cyclerate, tmp_tickrate, tmp_itick;

@@ -15,8 +15,8 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
-#include "tiemu_cb.h"
-#include "tiemu_dbox.h"
+#include "popup_cb.h"
+#include "popup_dbox.h"
 #include "support.h"
 
 #define GLADE_HOOKUP_OBJECT(component,widget,name) \

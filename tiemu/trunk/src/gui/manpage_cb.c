@@ -12,7 +12,7 @@
 
 //#include "platform.h"
 #include "struct.h"
-#include "ticalc.h"
+#include "hid.h"
 #include "files.h"
 #include "main.h"
 

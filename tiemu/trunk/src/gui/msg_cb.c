@@ -10,7 +10,7 @@
 
 //#include "platform.h"
 #include "struct.h"
-#include "ticalc.h"
+#include "hid.h"
 #include "main.h"
 
 static gboolean b = TRUE;

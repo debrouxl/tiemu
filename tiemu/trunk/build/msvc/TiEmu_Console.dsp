@@ -356,10 +356,6 @@ SOURCE=..\..\src\gui\logaddr_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\main_wnd.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\gui\manpage_cb.c
 # End Source File
 # Begin Source File
@@ -389,6 +385,18 @@ SOURCE=..\..\src\gui\pgmentbkpt_cb.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\pgmentbkpt_dbox.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\popup.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\popup_cb.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\popup_dbox.c
 # End Source File
 # Begin Source File
 
@@ -448,14 +456,6 @@ SOURCE=..\..\src\gui\thanks_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\tiemu_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\tiemu_dbox.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\gui\trap_cb.c
 # End Source File
 # Begin Source File
@@ -500,6 +500,10 @@ SOURCE=..\..\src\hid\cmdline.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\hid\hid.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\hid\jdatasrc.c
 # End Source File
 # Begin Source File
@@ -520,10 +524,6 @@ SOURCE=..\..\src\hid\skin.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\hid\ticalc.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\hid\tie_error.c
 # End Source File
 # Begin Source File
@@ -539,6 +539,58 @@ SOURCE=..\..\src\gui\main.c
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\..\src\hid\cmdline.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\extern.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\files.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\intl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\paths.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\printl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\rcfile.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\screenshot.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\skin.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\struct.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\ticalc.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\tie_error.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\version.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 

@@ -13,7 +13,7 @@
 //#include "platform.h"
 #include "struct.h"
 #include "extern.h"
-#include "ticalc.h"
+#include "hid.h"
 #include "interface.h"
 #include "bkpts.h"
 #include "main.h"
