@@ -93,12 +93,11 @@ static void set_infos(void)	// set window & lcd sizes
 	}
 }
 
-GtkWidget* create_calc_wnd (void);
-
 // Main wnd by loading glade xml file or by executing glade generated code
 gint display_main_wnd(void)
 {
 	GladeXML *xml;
+	gchar *title;
 
 	xml = glade_xml_new
 		(tilp_paths_build_glade("calc-2.glade"), "calc_wnd",
@@ -111,6 +110,11 @@ gint display_main_wnd(void)
 	area = glade_xml_get_widget(xml, "drawingarea1");
 
 	gtk_widget_realize(main_wnd);	// set drawing area valid
+
+	// set title (useful for TIGCC-IDE for instance)
+	title = g_strdup_printf("TiEmu (%s)", ti68k_calctype_to_string(tihw.calc_type));
+	gtk_window_set_title(GTK_WINDOW(main_wnd), title);
+	g_free(title);
 
 	return 0;
 }
