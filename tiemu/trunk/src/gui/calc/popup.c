@@ -193,6 +193,15 @@ on_reset_calc1_activate                (GtkMenuItem     *menuitem,
   	ti68k_engine_release();
 }
 
+GLADE_CB void
+on_upgrade_calc1_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if(dbg_on) return;
+	
+  	display_set_tib_dbox();
+}
+
 
 GLADE_CB void
 on_set_rom1_activate                   (GtkMenuItem     *menuitem,

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: main.c 197 2004-05-15 11:40:44Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -199,64 +199,61 @@ gint display_tifile_dbox()
 	return 0;
 }
 
-gint display_set_rom_dbox(void)
-{
-    const gchar *filename;
-    const gchar *src = NULL;
-    gchar *dst;
-    gchar *cmd;
-
-    // get filename
-	filename = create_fsel2(inst_paths.base_dir, "*.rom", FALSE);
-	if (!filename)
-		return 0;
-
-    dst = g_strconcat(inst_paths.img_dir, g_basename(src), NULL);
-    cmd = g_strdup_printf("cp %s %s", src, dst);
-    system(cmd); //copy_file(src, dst);    
-
-    ti68k_engine_release();
-
-    return 0;
-}
-
 gint display_set_tib_dbox(void)
 {
     const gchar *filename;
-    //const gchar *src;
-    //gchar *dst;
-    //gchar *cmd;
+	gchar *path, *name;
+	int err;
 
     // get filename
-	filename = create_fsel2(inst_paths.base_dir, "*.89u;*.9xu;*.tib", FALSE);
+	filename = create_fsel2(inst_paths.base_dir, "*.89u;*.9xu;*.v2u;*.tib", FALSE);
 	if (!filename)
-		return 0;
-/*
-    g_free(params.tib_file);
-    params.tib_file = g_strdup(filename);
-    if(ti68k_loadImage(params.tib_file))  {
-        msg_box(_("Error"), _("Can not open the ROM/FLASH file."));
-        ti68k_engine_release();
-        return -1;
-    }    
-*/
+		goto display_set_tib_dbox_end;
+
+	if(!ti68k_is_a_tib_file(filename))
+	{
+		msg_box("Error", "Don't seem to be an upgrade.");
+		ti68k_engine_release();
+		return -1;
+	}
+
+	path = g_path_get_dirname(filename);
+	name = g_path_get_basename(filename);
+
+	// set tib file
+	g_free(params.tib_file);
+	params.tib_file = g_strconcat(path, G_DIR_SEPARATOR_S, name, NULL);
+	g_free(path); g_free(name);
+
+	err = ti68k_load_upgrade(params.tib_file);
+	handle_error();
+	if(err)
+	{
+		msg_box("Error", "Can not load the upgrade.");
+		ti68k_engine_release();
+		return -1;
+	}
+    
+    //msg_box(_("Information"), _("Your configuration has been saved."));
+    //rcfile_write();
+
+    // simply reset, don't restart
+    ti68k_reset();
+
+display_set_tib_dbox_end:
     ti68k_engine_release();
 
     return 0;
 }
-
-
 
 gint display_import_romversion_dbox(void)
 {
     const gchar *filename;
 	char *dstname;
-	char *basename;
-	int ret;
 	int err;
     
     // get filename
-	filename = create_fsel2(inst_paths.base_dir, "*.rom;*.89u;*.9xu;*.tib", FALSE);
+	filename = create_fsel2(inst_paths.base_dir, "*.rom;*.89u;*.9xu;*.v2u;*.tib", FALSE);
 	if (!filename)
 		return 0;
 
@@ -268,31 +265,10 @@ gint display_import_romversion_dbox(void)
 	}
 	else if(ti68k_is_a_tib_file(filename))
 	{
-		ret = msg_box2("Question", 
-			"Do you want to load it as a fake image or as a FLASH upgrade ? \n\n"	\
-			"Click 'yes/ok' if you want to directly upgrade the calculator operating system (AMS). \n\n"	\
-			"On the other hand, if you load it as a fake ROM image, TiEmu will convert the FLASH "	\
-			"upgrade into an image but your image will suffer from some limitations "	\
-			"(no boot block, no certificate, problems with fonts)");
-		if(ret == 2)
-		{	// fake rom
-			err = ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname);
-			handle_error();
-			g_free(dstname);
-		}
-		else if(ret ==1)
-		{
-			//copy
-			basename = g_path_get_basename(filename);
-			dstname = g_strconcat(inst_paths.img_dir, basename, NULL);
-			g_free(basename);
-
-#ifdef __WIN32__
-			CopyFile(filename, dstname, FALSE);
-#else
-#endif
-			g_free(dstname);
-		}
+		// fake rom
+		err = ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname);
+		handle_error();
+		g_free(dstname);
 	}
 
     return 0;

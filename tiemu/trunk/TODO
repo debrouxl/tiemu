@@ -183,11 +183,6 @@ me/moi
 * le clavier ne fonctionne plus sur PedRom en rev $697 (idle).
 Due à idle: il suffit de décommenter "if(!(arg & 0x10))" sur le port $600005.
 
-* pb de contraste 
-
-* simplify ti92+ & ti92.skn
-* simplify ROM/upgrade
-
 -------------
 + done
 - in progress

@@ -151,6 +151,15 @@
       <signal name="activate" handler="on_reset_calc1_activate"/>
     </widget>
   </child>
+  
+  <child>
+    <widget class="GtkMenuItem" id="upgrade_calc1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">_Upgrade calc</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_upgrade_calc1_activate"/>
+    </widget>
+  </child>
 
   <child>
     <widget class="GtkSeparatorMenuItem" id="separator12">

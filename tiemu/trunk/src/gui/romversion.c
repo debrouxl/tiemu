@@ -222,7 +222,9 @@ gint display_romversion_dbox(gboolean file_only)
             if(chosen_file == NULL)
                 break;
 
-			if(ti68k_is_a_img_file(chosen_file))
+			if(!ti68k_is_a_img_file(chosen_file))
+				break;
+
 			{
                 // Remove previous tib file
                 g_free(params.tib_file);
@@ -255,31 +257,6 @@ gint display_romversion_dbox(gboolean file_only)
 				err = hid_init();
 				handle_error();
 				if(err)	return -1;
-			} 
-			else if(ti68k_is_a_tib_file(chosen_file))
-			{
-                if(file_only) return 0;
-
-                // Set tib file
-				g_free(params.tib_file);
-				params.tib_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
-				g_free(chosen_file);
-                chosen_file = NULL;
-
-				err = ti68k_load_upgrade(params.tib_file);
-				handle_error();
-				if(err)
-				{
-					//msg_box("Error", "Can not load the upgrade.");
-					ti68k_engine_release();
-					return -1;
-				}
-                
-                //msg_box(_("Information"), _("Your configuration has been saved."));
-                //rcfile_write();
-
-                // Simply reset, don't restart
-                ti68k_reset();
 			}
 
 			g_free(params.sav_file);

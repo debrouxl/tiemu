@@ -771,6 +771,8 @@ int ti68k_load_upgrade(const char *filename)
 	memcpy(tihw.rom+SPP, tib.data+SPP, tib.size-SPP);
     free(tib.data);
 
+	strcpy(tihw.rom_version, tib.version);
+
   	img_loaded = 2;
 	return 0;
 }
@@ -930,6 +932,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 			}
 			else
 			{
+				/*
 				if(ti68k_is_a_tib_file(path))
 				{
 					memset(&img, 0, sizeof(IMG_INFO));
@@ -940,7 +943,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 						break;
 					}
 				}
-				else if(ti68k_is_a_img_file(path))
+				else*/ if(ti68k_is_a_img_file(path))
 				{
 					memset(&img, 0, sizeof(IMG_INFO));
 					ret = ti68k_get_img_infos(path, &img);

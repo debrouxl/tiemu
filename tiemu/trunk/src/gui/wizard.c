@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: wizard_cb.c 187 2004-05-14 14:22:36Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -235,7 +235,7 @@ gint display_wz_tib_dbox(void)
 	int err;
 
     // get filename
-	filename = (char *)create_fsel2("", "*.89u;*.9xu;*.tib", FALSE);
+	filename = (char *)create_fsel2("", "*.89u;*.9xu;*.v2u;*.tib", FALSE);
 	if (filename == NULL)
 	{
 		display_step1_dbox();
