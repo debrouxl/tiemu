@@ -102,7 +102,7 @@ Filename: "{app}\Uninstall.exe"; Parameters: ""; MinVersion: 0,4;
 [UninstallDelete]
 Type: files; Name: "{app}\tiemu.url"
 
-;; Taken from "http://www.dropline.net/gtk/support.php"
+;; Taken from "http://www.dropline.net/gtk/support.php" with some customizations
 
 [Code]
 var
