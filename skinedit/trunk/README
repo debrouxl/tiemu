@@ -12,7 +12,15 @@ It can read/modify/write VTi-formatted skins and TiEmu-formatted skins.
 FEATURES
 --------
 
-To do...
+- creating skins from scratch by loading a JPEG image
+- modifying an existing skin
+- exporting the skin to various formats (VTi old & new format, TiEmu)
+
+- LCD area
+- keys area
+- editing skin properties such as : author, description, colors, model, ...
+
+- informations displayed in the status bar
 
 For documentation about the skin internals and key mapping, 
 see the doc directory.
@@ -27,7 +35,9 @@ AVAILABILITY
 COPYRIGHT
 ---------
 
-SkinEdit is Copyright (C) 2002 by Julien Blache <jb@jblache.org>.
+SkinEdit is Copyright (C) 2002-2003 by Julien Blache <jb@jblache.org>.
+Modifications (c) 2004 by Romain Liévin <roms@tilp.info>.
+
 
 Copying is allowed under the terms of GNU General Public License.  
 See the file COPYING for more details.
