@@ -64,6 +64,12 @@ int hw_io_init(void)
 	tihw.io[0x1c] = 0x21;
 	tihw.io[0x1d] = 0x80;
 
+	tihw.io2[0x11] = 0x40;
+	tihw.io2[0x11] = 0x18;
+	tihw.io2[0x17] = 0x00;
+	tihw.io2[0x1d] = 0x06;
+	tihw.io2[0x1f] = 0x07;
+
 	return 0;
 }
 
@@ -173,8 +179,9 @@ void io_put_byte(CPTR adr, UBYTE arg)
         	// Write any value to $60001B to acknowledge this interrupt (AutoInt2)
         break;
         case 0x1c:	// -w <..5432..>
-            tihw.lcd_off = bit_get(arg,7);
-            if(tihw.lcd_off)
+            //tihw.lcd_off = bit_get(arg,7);
+            //if(tihw.lcd_off)
+            if(bit_tst(arg,7))
 	            cb_screen_on_off(0);
             else
 	            cb_screen_on_off(!0);
@@ -343,9 +350,15 @@ void io2_put_byte(CPTR adr, UBYTE arg)
 		case 0x17:	// rw <......10>
 			// Display memory snoop range
 			tihw.lcd_ptr = &tihw.ram[0x4c000 + 0x1000*(arg&3)];
-			break;
+		break;
 		case 0x1d:	// rw <7...3210>
-				tihw.lcd_power = bit_get(arg,1);
+			// Screen enable (clear this bit to shut down LCD)
+			/*
+			if(bit_tst(arg,1))
+	            cb_screen_on_off(!0);
+            else
+	            cb_screen_on_off(0);
+			*/
 			break;
 		case 0x1f:	// rw <.....210>
 			break;

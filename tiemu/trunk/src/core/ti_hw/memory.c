@@ -131,6 +131,7 @@ int hw_mem_init(void)
     // clear RAM/ROM/IO
     memset(tihw.ram, 0x00, tihw.ram_size);
     memset(tihw.io , 0x00, io_size);  
+	memset(tihw.io2, 0x00, io_size);
     for (i=0; i<tihw.rom_size; i++)
     {
         if (i & 1)
