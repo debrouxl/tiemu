@@ -37,7 +37,8 @@ Bug fixes:
 ----------
 
 	- 0x200000 and 0x400000 are ghost of 0x000000 (Titanium only)
-	- fixed heap listing with AMS300
+	- heap listing with AMS300
+	- Step Over on TRAP
 
 
 To do:
