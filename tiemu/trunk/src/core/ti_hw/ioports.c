@@ -94,6 +94,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
             //mem_tab[2] = mem_tab[0];
             //mem_tab[3] = mem_tab[1];
             
+			// writing to this register will stop the system oscillator
 			if (!(arg&0x10)) specialflags |= SPCFLAG_STOP; 
             break;
         case 0x06: 
@@ -158,10 +159,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
         case 0x1c:	// -w <..5432..>
             tihw.lcd_off = bit_get(arg,7);
             if(tihw.lcd_off)
-	        {
-	            specialflags |= SPCFLAG_STOP;
 	            cb_screen_on_off(0);
-	        }
             else
 	            cb_screen_on_off(!0);
         break;
