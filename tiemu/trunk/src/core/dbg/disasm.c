@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: interface.c 514 2004-07-07 09:27:53Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -40,7 +40,7 @@
 #include "ti68k_err.h"
 
 //#define UAE_DISASM
-#define MAME_DISASM
+#define VTI_DISASM
 
 #ifdef UAE_DISASM
 

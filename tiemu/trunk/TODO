@@ -65,20 +65,21 @@ Une manière simple de reproduire le bogue du blocage de l'engine: appuie sur le 
 de la souris sur l'écran, garde-le appuyé jusqu'à ce que le menu apparaît, puis relâche-le 
 sans rien sélectionner dans le menu -> hop, émulateur bloqué.
 
-* [10:42:52] <Kevin Kofler> Ton code pour les bsr F-Line est faux, 
+* Ton code pour les bsr F-Line est faux, 
 next_pc = curr_pc + ti68k_debug_disassemble(curr_pc, &output); donnera curr_pc + 2, alors 
 qu'il faut curr_pc + 4 pour FFEE et curr_pc + 6 pour FFF0.
-[10:42:53] <Kevin Kofler> Et sinon, il y a un autre cas particulier bizarre, je ne sais pas 
+
+* Et sinon, il y a un autre cas particulier bizarre, je ne sais pas 
 s'il vaut le coup de le traîter, mais _bcd_math est un ROM_CALL qui s'appelle comme ça:
-* n'importe quelle méthode d'appel d'un ROM_CALL (jsr, F-Line etc.)
-* 2 octets: opcode FPU
+- n'importe quelle méthode d'appel d'un ROM_CALL (jsr, F-Line etc.)
+- 2 octets: opcode FPU
 et le ROM_CALL saute ces 2 octets en retournant, donc retourne à next_pc+2. Si tu veux 
 gérer ça, tu devrais regarder le target du jsr ou F-Line et comparer avec l'adresse de 
 _bcd_math.
 Précisions:
-* la "FPU" est purement émulée en logiciel par _bcd_math, et les opcodes ne correspondent 
+- la "FPU" est purement émulée en logiciel par _bcd_math, et les opcodes ne correspondent 
 à aucune FPU réelle
-* Pour le F-Line, tu peux comparer l'opcode avec 0xF8B5, mais pour les appels par jsr, 
+- Pour le F-Line, tu peux comparer l'opcode avec 0xF8B5, mais pour les appels par jsr, 
 tu n'as pas d'autre choix que de tester le target du saut pour savoir si on saute vers 
 _bcd_math ou aillers
 
