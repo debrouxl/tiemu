@@ -512,5 +512,29 @@ SOURCE="..\..\..\..\..\Gtk2Dev\lib\atk-1.0.lib"
 SOURCE=.\libjpeg.lib
 # End Source File
 # End Group
+# Begin Group "Documentation"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE="..\..\docs\ti_hw\tie\IO-PORTS.TXT"
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\docs\ti_hw\misc\J89hw.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\docs\ti_hw\fargo\LowLevel.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\docs\ti_hw\flash\ti92.doc
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\docs\TiEmu_img_format.txt
+# End Source File
+# End Group
 # End Target
 # End Project

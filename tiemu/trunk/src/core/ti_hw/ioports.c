@@ -85,12 +85,14 @@ void io_put_byte(CPTR adr, UBYTE arg)
             linkport_putbyte(arg);
             break;
         case 0x10: 
-            tihw.lcd_addr=(((tihw.lcd_addr>>3)&0xff)|((arg&0xff)<<8))<<3;
-            //cb_set_screen_ptr((int)(&ti_ram[tihw.lcd_addr]));
+			// address of LCD memory divided by 8
+            tihw.lcd_addr = (((tihw.lcd_addr >> 3) & 0xff) | 
+						((arg & 0xff) << 8)) << 3;
         break;
         case 0x11: 
-            tihw.lcd_addr=(((tihw.lcd_addr>>3)&0xff00)|(arg&0xff))<<3;
-            //cb_set_screen_ptr((int)(&ti_ram[tihw.lcd_addr]));
+			// address of LCD memory divided by 8
+            tihw.lcd_addr=(((tihw.lcd_addr >> 3) & 0xff00) |
+						(arg & 0xff)) << 3;
         break;
         case 0x17: 
             tihw.timer_init = arg; 

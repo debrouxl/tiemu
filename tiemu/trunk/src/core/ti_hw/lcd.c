@@ -27,10 +27,12 @@
 
 #include "ti68k_def.h"
 
+// On 92 with ROM 1.x, the memory used by the system is at address $4440 and
+//on ROM 2.x, this address is $4720. 
 int hw_lcd_init(void)
 {
     tihw.contrast = 13;
-    tihw.lcd_addr = (tihw.rom_flash) ? 0x4c00 : 0x4440;
+    tihw.lcd_addr = (tihw.rom_flash) ? 0x4c00 : 0x4720;	//0x4440;
     tihw.lcd_ptr = &tihw.ram[tihw.lcd_addr];
     tihw.lcd_off = 0;
     
