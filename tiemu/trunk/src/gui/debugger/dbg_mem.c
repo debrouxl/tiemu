@@ -483,7 +483,7 @@ static void refresh_page(int page, int offset)
 	G_CONST_RETURN gchar *text;
 	uint32_t addr, len = 128;
 
-	GList *l;
+	GList *l, *elt;
 	GtkWidget *list;
 	GtkTreeView *view;
 	GtkTreeModel *model;
@@ -497,12 +497,12 @@ static void refresh_page(int page, int offset)
 
 	// get list pointer (we have 1 child)
 	l = gtk_container_get_children(GTK_CONTAINER(nb));
-	list = GTK_WIDGET(l->data);
+	elt = g_list_nth(l, page);
+	list = GTK_WIDGET(elt->data);
 	view = GTK_TREE_VIEW(list);
 	model = gtk_tree_view_get_model(view);
 	store = GTK_LIST_STORE(model);
 
-#if 0
 	if(!strcmp(text, "STACK"))
 	{
 		uint32_t sp_start, sp_end;
@@ -521,14 +521,7 @@ static void refresh_page(int page, int offset)
 
 	addr += offset;
 	addr &= 0xffffff;
-#else
-	if(!strcmp(text, "STACK"))
-		return;
 
-	sscanf(text, "%x", &addr);
-	addr += offset;
-	addr &= 0xffffff;
-#endif
 	str = g_strdup_printf("%06x", addr);
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);

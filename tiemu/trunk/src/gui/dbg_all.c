@@ -58,8 +58,8 @@ int enter_gtk_debugger(int context)
 
     // open debugger, if not already opened
 	dbgw.regs = refresh_dbgregs_window();
-	/*dbgw.code = */refresh_dbgcode_window();
-	dbgw.mem = refresh_dbgmem_window();
+	dbgw.code = refresh_dbgcode_window();
+	dbgw.mem  = refresh_dbgmem_window();
 	dbgw.bkpts = refresh_dbgbkpts_window();
     dbgw.pclog = refresh_dbgpclog_window();
 
@@ -124,7 +124,6 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
         gtk_widget_destroy(dbgw.mem);
 	if(dbgw.pclog)
         gtk_widget_destroy(dbgw.pclog);
-
-    // and this one
-    gtk_widget_destroy(GTK_WIDGET(menuitem));   //args are swapped
+	if(dbgw.code)
+	    gtk_widget_destroy(dbgw.code);
 }
