@@ -66,14 +66,14 @@ int help(void)
 
 	fprintf(stdout, "usage: tiemu [-options] [image]\n");
 	fprintf(stdout, "\n");
-	fprintf(stdout, "-h, --help    display this information page and exit\n");
-	fprintf(stdout, "-v, --version display the version information and exit\n");
-	fprintf(stdout, "--import   import ROM or TIB into repository without loading\n");
-	fprintf(stdout, "-rom=		ROM dump to convert and load\n");
-	fprintf(stdout, "-tib=		TIB or upgrade to convert and load\n");
-	fprintf(stdout, "-sav=		state image to load\n");
+	fprintf(stdout, "-h, --help     display this information page and exit\n");
+	fprintf(stdout, "-v, --version  display the version information and exit\n");
+	fprintf(stdout, "--import       import ROM or TIB into repository without loading\n");
+	fprintf(stdout, "-rom=          ROM dump to convert and load\n");
+	fprintf(stdout, "-tib=          TIB or upgrade to convert and load\n");
+	fprintf(stdout, "-sav=          state image to load\n");
 	fprintf(stdout, "\n");
-	fprintf(stdout, "filename   a filename which contains a TiEmu image\n");
+	fprintf(stdout, "filename       a filename which contains a TiEmu image\n");
 	fprintf(stdout, "\n");
 
 	exit(0);
