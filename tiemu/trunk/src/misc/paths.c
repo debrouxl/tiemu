@@ -110,7 +110,6 @@ static void init_win32_paths(void)
 	dWord = GetModuleFileName(hModule, sBuffer, 4096);
 	dirname = g_path_get_dirname(sBuffer);
 	basename = g_path_get_basename(dirname);
-	fprintf(stdout, "basename: <%s>\n", basename);
 
 	// modify exec path like '/target/bin' into '/target/share/tiemu' if we 
 	// are running an Msys path (MinGW). Otherwise, do nothing if we are running from a
@@ -129,7 +128,6 @@ static void init_win32_paths(void)
 	free(sBuffer);  // malloc -> free
 	g_free(dirname);
 	g_free(basename);
-	fprintf(stdout, "base path: <%s>\n", inst_paths.base_dir);
 
 	// set others
 	inst_paths.pixmap_dir =

@@ -44,8 +44,8 @@
 
 int hw_io_init(void)
 {
-	memset(tihw.io, 0x14, sizeof(tihw.io));
-	memset(tihw.io2, 0x14, sizeof(tihw.io2));
+	memset(tihw.io, 0x00, tihw.io_size);
+	memset(tihw.io2, 0x00, tihw.io2_size);
 
 	if(tihw.hw_type > HW1)
 		tihw.lcd_adr = 0x4c00;
