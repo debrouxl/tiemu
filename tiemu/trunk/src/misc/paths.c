@@ -45,7 +45,7 @@ TiemuInstPaths inst_paths;      // installation paths
 /*
   Called by TiEmu at startup for initializing platform dependant paths.
 */
-#if defined(__LINUX__) || defined(__BSD__) || defined(__MACOSX__)
+#if defined(__LINUX__) || defined(__BSD__) || defined(__MACOSX__) || defined(__MINGW32__)
 static void init_linux_paths(void)
 {
 	gchar *tmp;
@@ -67,10 +67,18 @@ static void init_linux_paths(void)
 	inst_paths.img_dir = 
             g_strconcat(inst_paths.home_dir, CONF_DIR, "images/", NULL);
 
+#if defined(__MINGW32__)
+	tmp = g_strconcat(inst_paths.home_dir, CONF_DIR, NULL);
+	printf("MinGW path: <%s> <%s>\n", inst_paths.home_dir, CONF_DIR); 
+	mkdir(tmp);
+	g_free(tmp);
+	mkdir(inst_paths.img_dir);
+#else
 	tmp = g_strconcat(inst_paths.home_dir, CONF_DIR, NULL);
 	mkdir(tmp, 0777);
 	g_free(tmp);
 	mkdir(inst_paths.img_dir, 0777);
+#endif
 
 	/* bintextdomain(PACKAGE, "/usr/share/locale"); ->
 	   '/usr/share/locale/  fr/LC_MESSAGES/tilp.mo' */
@@ -83,7 +91,7 @@ static void init_linux_paths(void)
 }
 #endif				/*  */
 
-#ifdef __WIN32__
+#if defined(__WIN32__) && !defined(__MINGW32__)
 static void init_win32_paths(void)
 {
 	HMODULE hModule;
@@ -129,7 +137,7 @@ static void init_win32_paths(void)
 int initialize_paths(void)
 {
 
-#if defined(__LINUX__) || defined(__BSD__)
+#if defined(__LINUX__) || defined(__BSD__) || defined(__MINGW32__)
 	init_linux_paths();
 
 #elif defined(__WIN32__)

@@ -164,7 +164,6 @@ int main(int argc, char **argv)
 			if(ti68k_find_image(inst_paths.img_dir, NULL))
 			{
 				// search for an available image to use
-				printf("image found !\n");
 				if(display_romversion_dbox(TRUE) == -1)
 					goto wizard;
 			}

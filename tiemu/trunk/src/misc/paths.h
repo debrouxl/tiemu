@@ -28,7 +28,7 @@
    Platform independant paths
 */
 
-#if defined(__LINUX__) || defined(__MACOSX__)
+#if defined(__LINUX__) || defined(__MACOSX__) || defined(__MINGW32__)
 # define CONF_DIR   	".tiemu/"
 # define INI_FILE    	"tiemu.ini"
 # define CACHE_FILE 	"ROMs.lst"
@@ -45,7 +45,7 @@
 # define LOG_FILE 		"tiemu.log"
 #endif
 
-#ifdef __WIN32__
+#if defined(__WIN32__) && !defined(__MINGW32__)
 #define SHARE_DIR "" // local path
 #endif
 
