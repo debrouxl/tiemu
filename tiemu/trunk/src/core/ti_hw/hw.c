@@ -147,6 +147,12 @@ void hw_update(void)
     	tihw.heartbeat--;
     }
 
+	// Increment RTC timer
+	if(io2_bit_tst(0x1f, 2))
+	{
+		tihw.rtc_value++;
+	}
+
 	/* Auto-int management */
 
 	// Auto-int 1: 1/4 of timer rate

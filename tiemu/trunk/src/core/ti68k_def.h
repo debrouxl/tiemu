@@ -133,6 +133,11 @@ typedef struct
     uint8_t     timer_init;
     int         heartbeat;
 
+	uint8_t		rtc_value;
+
+	// hardware.c
+
+
 } Ti68kHardware;
 
 typedef struct

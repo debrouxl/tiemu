@@ -34,6 +34,7 @@
 #include "keydefs.h"
 #include "callbacks.h"
 #include "ti68k_def.h"
+#include "m68k.h"
 
 static TiKey key_states[NB_MAX_KEYS];
 static int  *key_row;

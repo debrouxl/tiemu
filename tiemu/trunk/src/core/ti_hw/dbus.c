@@ -294,6 +294,8 @@ static int ilp_put(uint8_t data)
 		if(toELAPSED(clk, 20))	// 2s
 			return ERR_WRITE_TIMEOUT;
     };
+
+	//printf("%02x ", data);
   
   	return 0;
 }
@@ -312,6 +314,8 @@ static int ilp_get(uint8_t *data)
     
   	*data = t2f_data;
   	t2f_flag = 0;
+
+	//printf("%02x ", *data);
   
 	return 0;
 }

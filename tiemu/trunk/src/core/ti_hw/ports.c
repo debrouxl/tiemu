@@ -28,6 +28,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <signal.h>
@@ -414,8 +415,12 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 		case 0x13:  // rw <..543210>
 			break;
 		case 0x14:	// rw <76543210>
+			// RTC, incremented every 2^13. The whole word must be read: 
+			// reading the port byte by byte can return wrong
+			tihw.rtc_value = (tihw.io[0x14] << 8) | tihw.io2[0x15];
 			break;
 		case 0x15:	// rw <76543210>
+			tihw.rtc_value = (tihw.io[0x14] << 8) | tihw.io2[0x15];
 			break;
 		case 0x17:	// rw <......10>
 			// Display memory snoop range
@@ -430,6 +435,10 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 			break;
 		case 0x1f:	// rw <.....210>
 			// %0 set: use 5 contrast bits (default for AMS).
+
+			// %1 
+
+			// %2 set: activates the incrementation of $700014.w
 			break;
     }
 
@@ -476,9 +485,13 @@ uint8_t io2_get_byte(uint32_t addr)
 			break;
 		case 0x13:
 			break;
-		case 0x14:
+		case 0x14:	// rw <7...3210>	word
+			// RTC, incremented every 2^13. The whole word must be read: 
+			// reading the port byte by byte can return wrong
+			return MSB(tihw.rtc_value);
 			break;
 		case 0x15:
+			return LSB(tihw.rtc_value);
 			break;
 		case 0x17:
 			break;
