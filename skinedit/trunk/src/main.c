@@ -82,7 +82,7 @@ main (int argc, char *argv[])
    If TiEmu is compiled as a windowed application (_WINDOWS), 
    then we use the 'WinMain' entry point.
 */
-#if defined(__WIN32__) && defined(_WINDOWS)	// && !defined(_CONSOLE)
+#if defined(__WIN32__) && defined(_WINDOWS)	&& !defined(_CONSOLE)
 int APIENTRY WinMain(HINSTANCE hInstance,
 		     HINSTANCE hPrevInstance,
 		     LPSTR lpCmdLine, int nCmdShow)
