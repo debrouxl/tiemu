@@ -102,7 +102,6 @@ static void init_win32_paths(void)
 	char *sBuffer;
 	gchar *dirname;
 	gchar *basename;
-	gchar **sarray;
 
 	// Init the path for the Windows version by getting the 
 	// executable location.
@@ -111,15 +110,17 @@ static void init_win32_paths(void)
 	dWord = GetModuleFileName(hModule, sBuffer, 4096);
 	dirname = g_path_get_dirname(sBuffer);
 	basename = g_path_get_basename(dirname);
+	fprintf(stdout, "basename: <%s>\n", basename);
 
-	// modify exec path if we are running an Msys path (MinGW)
-	// do nothing if we are running from local path (MSVC & InnoSetup)
-	if(g_str_has_suffix(basename, "bin"))
+	// modify exec path like '/target/bin' into '/target/share/tiemu' if we 
+	// are running an Msys path (MinGW). Otherwise, do nothing if we are running from a
+	// local path (MSVC & InnoSetup)
+	if((strlen(basename) == 3) && !g_strcasecmp(basename, "bin"))
 	{
 		gchar *token;
 
 		dirname = g_realloc(dirname, strlen(dirname) + strlen(MINGW_REL) + 1);
-		token = g_strrstr(dirname, "bin");
+		token = dirname + strlen(dirname) - 3;
 		strcpy(token, MINGW_REL);
 	}	
 
