@@ -1,3 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
+/* $Id: cabl_int.h 651 2004-04-25 15:22:07Z roms $ */
+
 /*  TiEmu - a TI emulator
  *  loader.c: loader for TiEmu skins
  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
@@ -34,10 +37,6 @@
 #include <jpeglib.h>
 
 #include "skin.h"
-#include "paths.h"
-#include "tilibs.h"
-#include "interface.h"
-#include "struct.h"
 
 #if defined(__MACOSX__) || defined(__WIN32__)
 #define bswap_32(a) (a >> 24) | ((a & 0xff0000) >> 16) << 8 | ((a & 0xff00) >> 8) << 16 | (a & 0xff) << 8
@@ -159,6 +158,7 @@ static int skin_read_image(const char *filename, SKIN_INFOS* infos)
    	struct jpeg_error_mgr jerr;
 	int i, j;
 	char *p;
+	int scaled = 0;
   
     	fp = fopen(filename, "rb");
   	if (fp == NULL)
@@ -190,6 +190,7 @@ static int skin_read_image(const char *filename, SKIN_INFOS* infos)
     	if ((cinfo.image_width > 600) || (cinfo.image_height > 600)) {
 		cinfo.scale_num = 1;
 		cinfo.scale_denom = 2;
+		scaled = 1;
     	}
     
     	// Require a colormapped output with a limited number of colors
@@ -228,6 +229,21 @@ static int skin_read_image(const char *filename, SKIN_INFOS* infos)
     	// Close JPEG
     	jpeg_finish_decompress(&cinfo);
     	jpeg_destroy_decompress(&cinfo);
+
+	// Rescale coords
+	if(scaled) {
+		skin_infos.lcd_pos.left >>= 1;
+		skin_infos.lcd_pos.right >>= 1;
+		skin_infos.lcd_pos.top >>= 1;
+		skin_infos.lcd_pos.bottom >>= 1;
+	
+		for (i = 0; i < SKIN_KEYS; i++) {
+      			skin_infos.keys_pos[i].left >>= 1;
+      			skin_infos.keys_pos[i].top >>= 1;
+      			skin_infos.keys_pos[i].right >>= 1;
+      			skin_infos.keys_pos[i].bottom >>= 1;
+    		}
+	}
     	
     	/* Close file */
     	fclose(fp);

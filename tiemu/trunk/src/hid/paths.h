@@ -29,12 +29,14 @@
 # define ST_FILE    "version"
 # define IO_FILE    "/etc/tiemu.conf"
 # define CACHE_FILE "ROMs.lst"
+# define LOG_FILE "/tmp/tiemu.log"
 #elif defined(__WIN32__)
 # define CONF_DIR   ""
 # define RC_FILE    "tiemu.ini"
 # define ST_FILE    "tiemu.ver"
 # define IO_FILE    "tiemu.cnf"
 # define CACHE_FILE "ROMs.lst"
+# define LOG_FILE "C:\\tiemu.log"
 #else
 # define CONF_DIR   ".tiemu"
 # define RC_FILE    "init"

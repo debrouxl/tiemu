@@ -1,3 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
+/* $Id: cabl_int.h 651 2004-04-25 15:22:07Z roms $ */
+
 /*  GtkTiEmu - a TI emulator
  *  Copyright (C) 2000, Thomas Corvazier, Romain Lievin
  *

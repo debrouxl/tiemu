@@ -1,5 +1,8 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/* Hey EMACS -*- linux-c -*- */
+/* $Id: cabl_err.h 651 2004-04-25 15:22:07Z roms $ */
+
+/*  libticables - Ti Link Cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2004  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,13 +19,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef ERROR_H
-#define ERROR_H
+#ifndef __TIEMU_ERROR__
+#define __TIEMU_ERROR__
 
-//#include "platform.h"
-
-DLLEXPORT
-int tiemu_error(int err_num);
+int tiemu_error(int err_code, char *err_str);
 
 #endif
-

@@ -1,3 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
+/* $Id: cabl_int.h 651 2004-04-25 15:22:07Z roms $ */
+
 /*  tilp - link program for TI calculators
  *  Copyright (C) 1999-2001  Romain Lievin
  *

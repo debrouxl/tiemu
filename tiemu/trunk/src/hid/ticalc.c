@@ -1,8 +1,11 @@
-/*  TiEmu - a TI emulator
+/* Hey EMACS -*- linux-c -*- */
+/* $Id: cabl_int.h 651 2004-04-25 15:22:07Z roms $ */
+
+/*  TiEmu - an TI emulator
  *
  *  Originally written by Jonas Minsberg
  *  Copyright (C) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2002, Romain Lievin
+ *  Copyright (c) 2001-2004, Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,8 +20,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-
-/* SDL */
 #ifdef __WIN32__
 #include "C:\SDL-1.2.7\include\SDL.h"
 #else
@@ -36,6 +37,7 @@
 #include "tilibs.h"
 #include "interface.h"
 #include "screenshot.h"
+#include "tie_error.h"
 
 #define DEFAULT_BPP   8
 #define DEFAULT_FLAGS (SDL_HWPALETTE | SDL_HWSURFACE | SDL_RESIZABLE) 
@@ -99,12 +101,6 @@ static int pos_to_key(int x, int y);
 #define SCREEN_ON  (!0)
 #define SCREEN_OFF 0
 
-static void SDL_ComplainAndExit(void)
-{
-  DISPLAY("Problem: %s\n", SDL_GetError());
-  exit(-1);
-}
-
 /* External GUI dependant function, called for showing popup menu */
 void hid_popup_menu(SDL_MouseButtonEvent event);
 
@@ -112,6 +108,13 @@ void hid_popup_menu(SDL_MouseButtonEvent event);
 /* TI89: RGB = 49:46:34 & 204:204:207 */
 /* TI92: RGB = 83:111:138 & 174:204:176 */
 
+static void SDL_ComplainAndExit(void)
+{
+	gchar *s = g_strdup_printf("SDL problem: %s\n", SDL_GetError());
+	tiemu_error(0, s);
+	g_free(s);
+	exit(-1);
+}
 
 /**************************/
 /* Init/Exit entry points */
@@ -135,10 +138,13 @@ static int hid_init_subsystem(void)
       g_free(options.skin_file);
       options.skin_file = g_strconcat(inst_paths.skin_dir,
 				      "ti92.skn", NULL);
-      if(skin_load(options.skin_file) == -1)
-	      exit(-1);
 
-      printf("<%i %i>\n", skin_infos.lcd_pos.left, skin_infos.lcd_pos.top);
+      if(skin_load(options.skin_file) == -1) {
+	      gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
+	      tiemu_error(0, s);
+	      g_free(s);
+	      return -1;
+      }
       
       key_mapping = sknKey92;
     }
@@ -147,11 +153,16 @@ static int hid_init_subsystem(void)
       iLcdW = 160 << iScale; 
       iLcdH = 100 << iScale;
       
-      printf("<<%s>>\n", inst_paths.skin_dir);
       g_free(options.skin_file);
       options.skin_file = g_strconcat(inst_paths.skin_dir,
 				      "ti89.skn", NULL);
-      skin_load(options.skin_file);
+
+      if(skin_load(options.skin_file) == -1) {
+	      gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
+	      tiemu_error(0, s);
+	      g_free(s);
+	      return -1;
+      }
 
       key_mapping = sknKey89;
     }
@@ -173,13 +184,14 @@ static int hid_init_subsystem(void)
     }
 
   // Set VIDEO mode and create the window surface
-  if(!iWinW && !iWinH)
-    exit(-1);
-  if (!(sdlWindow = SDL_SetVideoMode(iWinW, iWinH, 
-				     DEFAULT_BPP, DEFAULT_FLAGS)))
+  sdlWindow = SDL_SetVideoMode(iWinW, iWinH, 
+				     DEFAULT_BPP, DEFAULT_FLAGS);
+  if(sdlWindow == NULL)
     {
-      DISPLAY("Could not set video mode: %s\n", SDL_GetError());
-      return -1;
+	  gchar *s = g_strdup_printf("could not set video mode: %s\n", SDL_GetError());
+	  tiemu_error(0, s);
+	  g_free(s);
+	  return -1;
     }
   
   // Create LCD surface to blit into window
@@ -208,11 +220,19 @@ static int hid_quit_subsystem(void)
 {
   SDL_FreeSurface(sdlLcdSrc);
   sdlLcdSrc = NULL;
+
   SDL_FreeSurface(sdlWindow);
   sdlWindow = NULL;
+
   free(pLcdBuf);
 
   return 0;
+}
+
+static int hid_restart_subsystem(void)
+{
+	hid_quit_subsystem();
+	hid_init_subsystem();
 }
 
 int hid_init(void)
@@ -223,16 +243,15 @@ int hid_init(void)
   DISPLAY("Initializing SDL... ");
   if(SDL_Init(SDL_INIT_VIDEO) < 0) 
     {
-      fprintf(stderr,"Couldn't initialize SDL: %s\n", SDL_GetError());
-      return -1;
+	  gchar *s = g_strdup_printf("could not initialize Simple Directmedia Layer: %s\n", SDL_GetError());
+	  tiemu_error(0, s);
+	  g_free(s);
+	  return -1;
     }
   DISPLAY("Done.\n");
 
   // Set application title
   SDL_WM_SetCaption(sTitle, "gtktiemu.xpm");
-
-  // Keyboard input is directly passed to the application (bypasses the WM)
-  //SDL_WM_GrabInput(SDL_GRAB_ON);
 
   // Init the SDL key -> TI key conversion table
   for(i=0; i<256; i++)
@@ -709,12 +728,12 @@ static int hid_set_contrast(int c)
 */
 static void hid_lcd_on_off(int i) 
 {
-  if(i)
-    iScrState = SCREEN_ON;
-  else {
-    iScrState = SCREEN_OFF;
-    redraw_skin(); //for clearing LCD 
-  }
+	if(i) {
+		iScrState = SCREEN_ON;
+	} else {
+		iScrState = SCREEN_OFF;
+		redraw_skin(); //for clearing LCD 
+	}
 }
 
 
