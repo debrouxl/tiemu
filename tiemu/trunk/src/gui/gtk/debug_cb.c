@@ -339,7 +339,7 @@ gint refresh_breakpoints(void)
   do
     {
       /* Get addr from the clist */
-      gtk_tree_model_get(model, &iter, 3, &addrp);
+      gtk_tree_model_get(model, &iter, 3, &addrp, -1);
       addr = GPOINTER_TO_INT(addrp);
 
       //printf("Looking for a breakpoint at 0x%06x\n", addr);
@@ -410,7 +410,7 @@ gint refresh_code_dbox(void)
   do
     {
       /* Get addr from the clist */
-      gtk_tree_model_get(model, &iter, 3, &addrp);
+      gtk_tree_model_get(model, &iter, 3, &addrp, -1);
       addr = GPOINTER_TO_INT(addrp);
 
       if (addr == addr_active)
@@ -594,8 +594,6 @@ void
 on_step_over1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  //gint addr;
-  
   put_in_sb(_("Step over."));
   fprintf(stderr, "Step over (F8): not yet implemented\n");
 
@@ -616,8 +614,12 @@ void
 on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+  GtkTreeModel *model;
+  GtkTreePath *path;
+  GtkTreeIter iter;
   gint addr_to_go, next_addr;
   gint i;
+  gpointer addrp;
   gchar buffer[64];
 
   put_in_sb(_("Ran up to cursor."));
@@ -627,9 +629,14 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
   if(selected_row != -1)
     {
       printf("PC: 0x%06x\n", ti68k_getPcRegister());
-#if 0 /* FUCKED */
-      addr_to_go = GPOINTER_TO_INT(gtk_clist_get_row_data((GtkCList *)code_clist, selected_row));
-#endif /* 0 */
+
+      model = gtk_tree_view_get_model(GTK_TREE_VIEW(code_clist));
+      path = gtk_tree_path_new_from_indices(selected_row, -1);
+      gtk_tree_model_get_iter(model, &iter, path);
+      gtk_tree_path_free(path);
+      gtk_tree_model_get(model, &iter, 3, &addrp, -1);
+      addr_to_go = GPOINTER_TO_INT(addrp);
+
       printf("addr to go: 0x%06x\n", addr_to_go);
       for(i=1, next_addr = ti68k_getPcRegister(); next_addr < addr_to_go; i++)
 	{
