@@ -188,7 +188,7 @@ void redraw_skin(void)
     r.h = wi.h;
 
 	// scale image if needed
-	si.p = gdk_pixbuf_scale_simple(skn, wi.w, wi.h, GDK_INTERP_BILINEAR);
+	si.p = gdk_pixbuf_scale_simple(skn, wi.w, wi.h, GDK_INTERP_NEAREST);
 
 	// and draw image into pixmap (next, into window on expose event)
     gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
@@ -214,7 +214,7 @@ void redraw_lcd(void)
     r.h = li.pos.h;
 
 	// scale image if needed
-	si.p = gdk_pixbuf_scale_simple(skn, wi.w, wi.h, GDK_INTERP_BILINEAR);
+	si.p = gdk_pixbuf_scale_simple(skn, wi.w, wi.h, GDK_INTERP_NEAREST);
 
 	// and draw
 	gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
@@ -331,7 +331,7 @@ int hid_update_lcd(void)
 			src.h *= si.s;
 
 			// scale image
-			si.p = gdk_pixbuf_scale_simple(si.l, li.pos.w, li.pos.h, GDK_INTERP_BILINEAR);
+			si.p = gdk_pixbuf_scale_simple(si.l, li.pos.w, li.pos.h, GDK_INTERP_NEAREST);
 
 			// and draw image into pixmap (next, into window on expose event)
 			gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
