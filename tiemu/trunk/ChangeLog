@@ -1,5 +1,8 @@
 SubVersion: $Id$
 
+- 14/07/2004, version 1.74: roms
+	SDL removed for GTK: screen and keyboard support rewritten from scratch !
+
 - 12/07/2004, version 1.73: roms
 	To do:
 	- link port is broken (HW2 only ?!)

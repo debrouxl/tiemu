@@ -16,8 +16,8 @@ For a more specific README, see README.linux or README.win32
 TiEmu is a program allowing a PC to emulate a TI89/92(+)/V200PLT hand-held.
 It works on Linux and Windows platforms actually.
 
-It uses GTK+ (the Gimp ToolKit, http://www.gimp.org/gtk) for the GUI and the SDL 
-(Simple Directmedia Layer) for the display. 
+It uses GTK+ (the Gimp ToolKit, http://www.gimp.org/gtk) for the GUI and
+for the display. 
 
 All link cables are supported by the link port: parallel, serial, 
 Black TI Graph Link, Gray TI Graph Link and the SilverLink.

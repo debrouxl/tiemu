@@ -237,9 +237,9 @@ int skin_read_image(const char *filename, SKIN_INFOS* si)
 	r = (rw < rh) ? rw : rh;
 	s = ceil(10 * r) / 10.0;
 
-	printf("image :<%i x %i>\n", sw, sh);
-	printf("lcd : <%i x %i>\n", lw, lh);
-	printf("ratios : <%2.2f x %2.2f> => %2.1f\n", rw, rh, s);
+	//printf("image :<%i x %i>\n", sw, sh);
+	//printf("lcd : <%i x %i>\n", lw, lh);
+	//printf("ratios : <%2.2f x %2.2f> => %2.1f\n", rw, rh, s);
     
     tmp = gdk_pixbuf_scale_simple(si->image, (int)(sw/s), (int)(sh/s), GDK_INTERP_NEAREST);
     g_object_unref(si->image);

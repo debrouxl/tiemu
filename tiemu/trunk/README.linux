@@ -16,7 +16,6 @@ REQUIREMENTS
 
  - A UNIX computer (Intel x86 or PPC) and C compiler (gcc)
  - X11 (X Window System)
- - SDL (Simple Directmedia Layer)
  - GTK+ 2.x (http://www.gtk.org)
  - ticables, tifiles and ticalcs libraries from the TiLP project 
 	(http://tilp.info)
