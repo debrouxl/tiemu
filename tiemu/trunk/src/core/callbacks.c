@@ -33,7 +33,6 @@
 #include "uae.h"
 
 #include "callbacks.h"
-#include "debugger.h"
 #include "update.h"
 
 

@@ -363,10 +363,6 @@ SOURCE=..\..\src\core\ti_hw\dbus.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\debugger.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\core\ti_hw\hardware.c
 # End Source File
 # Begin Source File

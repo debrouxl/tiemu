@@ -18,7 +18,6 @@
 #include "readcpu.h"
 
 // tiemu begin
-#include "debugger.h"
 #include "tilibs.h"
 #include "ti68k_def.h"
 #include "../ti_hw/memory.h"
