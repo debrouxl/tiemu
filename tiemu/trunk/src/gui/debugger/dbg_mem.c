@@ -272,7 +272,7 @@ static void clist_refresh(GtkListStore *store, uint32_t start, int length)
 	clist_populate(store, start, length);
 }
 
-static void notebook_add_tab(GtkWidget *notebook, const char* tab_name)
+static void notebook_add_page(GtkWidget *notebook, const char* tab_name)
 {
 	GtkListStore *store;
 	GtkWidget *label;
@@ -369,7 +369,8 @@ gint display_dbgmem_window(void)
     notebook = glade_xml_get_widget(xml, "notebook1");
     gtk_notebook_popup_enable(GTK_NOTEBOOK(notebook));
     
-    notebook_add_tab(notebook, _("STACK"));
+    notebook_add_page(notebook, _("STACK"));
+	notebook_add_page(notebook, "0x000000");
 
     gtk_window_resize(GTK_WINDOW(dbox), options3.mem.w, options3.mem.h);
     gtk_window_move(GTK_WINDOW(dbox), options3.mem.x, options3.mem.y);
@@ -389,7 +390,6 @@ gint refresh_dbgmem_window(void)
 
     return 0;
 }
-
 
 GLADE_CB gboolean
 on_dbgmem_window_delete_event       (GtkWidget       *widget,
@@ -420,7 +420,7 @@ dbgmem_button1_clicked                     (GtkButton       *button,
 	display_dbgmem_dbox(&addr);
 	
 	str = g_strdup_printf("%06x", addr);
-	notebook_add_tab(notebook, str);
+	notebook_add_page(notebook, str);
 	g_free(str);
 }
 
@@ -434,54 +434,34 @@ dbgmem_button2_clicked                     (GtkButton       *button,
 	gtk_notebook_remove_page(GTK_NOTEBOOK(notebook), current_page);
 }
 
+static void refresh_current_page(int offset);
+
 GLADE_CB void
 dbgmem_button3_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-	gint page;
-	GtkWidget *nb = notebook;
-	GtkWidget *tab;
-	GtkWidget *label;
-	G_CONST_RETURN gchar *text;
-	uint32_t addr;
-
-	GList *l;
-	GtkWidget *list;
-	GtkTreeView *view;
-	GtkTreeModel *model;
-	GtkListStore *store;
-	gchar *str;
-
-	// retrieve addr by tab name
-	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
-	tab = gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook), page);
-	label = gtk_notebook_get_tab_label(GTK_NOTEBOOK(notebook), tab);
-	text = gtk_label_get_text(GTK_LABEL(label));
-
-	// get list pointer (we have 1 child)
-	l = gtk_container_get_children(GTK_CONTAINER(GTK_NOTEBOOK(notebook)));
-	list = GTK_WIDGET(l->data);
-	view = GTK_TREE_VIEW(list);
-	model = gtk_tree_view_get_model(view);
-	store = GTK_LIST_STORE(model);
-
-	if(!strcmp(text, "STACK"))
-		return;
-
-	sscanf(text, "%06x", &addr);
-	addr -= 0x10;
-	addr &= 0xffffff;
-
-	str = g_strdup_printf("%06lx", addr);
-	gtk_label_set_text(GTK_LABEL(label), str);
-	g_free(str);
-   	clist_refresh(store, addr, 128);
+	refresh_current_page(-0x10);
 }
 
 GLADE_CB void
 dbgmem_button4_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
+	refresh_current_page(+0x10);
+}
+
+GLADE_CB void
+on_notebook1_switch_page               (GtkNotebook     *notebook,
+                                        GtkNotebookPage *page,
+                                        guint            page_num,
+                                        gpointer         user_data)
+{
+	printf("switch to page #%i\n", page_num);	
+	refresh_current_page(0);
+}
+
+static void refresh_current_page(int offset)
+{
 	gint page;
 	GtkWidget *nb = notebook;
 	GtkWidget *tab;
@@ -513,11 +493,12 @@ dbgmem_button4_clicked                     (GtkButton       *button,
 		return;
 
 	sscanf(text, "%06x", &addr);
-	addr += 0x10;
+	addr += offset;
 	addr &= 0xffffff;
 
 	str = g_strdup_printf("%06lx", addr);
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
    	clist_refresh(store, addr, 128);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 0);
 }
