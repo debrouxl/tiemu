@@ -68,19 +68,8 @@ gint display_infos_dbox()
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 	
-	switch(ti68k_getCalcType())
-	{
-	case TI92: p = "TI92";
-		break;
-	case TI89: p = "TI89";
-		break;
-	case TI92 | MODULEPLUS: p = "TI92+";
-		break;
-	default: p = "Unknown";
-		break;
-	}
 	label = glade_xml_get_widget(xml, "label23");
-	str = g_strdup_printf("%s", p);
+	str = g_strdup_printf("%s", ti68k_calctype_to_string(ti68k_getCalcType()));
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 	
@@ -95,21 +84,12 @@ gint display_infos_dbox()
 	g_free(str);
 	
 	label = glade_xml_get_widget(xml, "label26");
-	str = g_strdup_printf("%i KB", ti68k_getRomSize());
+	str = g_strdup_printf("%i KB", ti68k_getRomSize() >> 10);
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 	
-	i = ti68k_getRomType();
-	if(i & INTERNAL) 
-		p1 = _("internal"); 
-	else 
-		p1 = _("external");
-	if(i & FLASH_ROM) 
-		p2 = _("FLASH"); 
-	else 
-		p2 = _("PROM");
 	label = glade_xml_get_widget(xml, "label27");
-	str = g_strdup_printf("%s %s", p1, p2);
+	str = g_strdup_printf("%s", ti68k_romtype_to_string(ti68k_getRomType()));
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 	
