@@ -1080,8 +1080,8 @@ int hid_screenshot(char *filename)
 		}
       
 		outfile = g_strdup_printf("%s%03i.%s", 
-			options.screen_file, 
-			options.screen_counter, ext);
+			options.img_file, 
+			options.img_counter, ext);
 	} else {
 		outfile = g_strdup(filename);
 	}
@@ -1125,15 +1125,18 @@ int hid_screenshot(char *filename)
 		pixbuf = gdk_pixbuf_new_from_data(pixels, GDK_COLORSPACE_RGB, FALSE,
 				8, iWinW, iWinH, iWinLineSize, NULL, NULL);
 
-		result = gdk_pixbuf_save(pixbuf, outfile, type, &error, "quality", "100", NULL);
+		//result = gdk_pixbuf_save(pixbuf, outfile, type, &error, "quality", "100", NULL);
+		result = gdk_pixbuf_save(pixbuf, outfile, type, &error, NULL);
 		if (result == FALSE) {
 			DISPLAY("Failed to save pixbuf file: %s: %s\n", outfile, error->message);
 			g_error_free(error);
 		}
+
+		SDL_FreeSurface(sdlCapture);
 	}
 
 	DISPLAY("Done !\n");
-	options.screen_counter++;
+	options.img_counter++;
 	g_free(filename);
 
 	return 0;

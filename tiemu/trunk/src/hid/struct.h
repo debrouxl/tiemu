@@ -39,26 +39,26 @@
 /*
   General GtkTiEmu options
 */
-struct options_
+typedef struct
 {
   // TI core field
   Ti68kParameters *params;
   TicableLinkParam *link_cable;
 
-  gchar *skin_file;
+  gchar*	skin_file;
   
-  char locale[MAXCHARS];
-  gint code_lines;
-  gint stack_lines;
-  gint mem_lines;
-  gint img_type;
-  gint img_format;
-  gint img_size;
-  gchar *screen_file;
-  gint screen_counter;
-  gint console;
-};
-typedef struct options_ TieOptions;
+  gint		code_lines;
+  gint		stack_lines;
+  gint		mem_lines;
+  gint		img_type;
+  gint		img_format;
+  gint		img_size;
+  gchar*	img_file;
+  gint		img_counter;
+
+  gint		console;
+
+} TieOptions;
 
 extern TieOptions options;
 

@@ -436,14 +436,14 @@ void rcfile_read(void)
       
 	if( (p=find_str(buffer, "screen_file=")) )
 	{
-	  g_free(options.screen_file);
-	  options.screen_file = g_strdup(p);
+	  g_free(options.img_file);
+	  options.img_file = g_strdup(p);
 	  continue;
 	}
       
 	if( (p=find_str(buffer, "screen_counter=")) )
 	{
-	  sscanf(p, "%i", &(options.screen_counter));
+	  sscanf(p, "%i", &(options.img_counter));
 	  continue;
 	}
 	
@@ -729,10 +729,10 @@ void rcfile_write(void)
   fprintf(txt, "\n");
 
   fprintf(txt, "# Screenshot base file\n");
-  fprintf(txt, "screen_file=%s\n", options.screen_file);
+  fprintf(txt, "screen_file=%s\n", options.img_file);
   fprintf(txt, "\n");
   fprintf(txt, "# Screenshot counter\n");
-  fprintf(txt, "screen_counter=%i\n", options.screen_counter);
+  fprintf(txt, "screen_counter=%i\n", options.img_counter);
   fprintf(txt, "\n");
   fprintf(txt, "\n");
   fprintf(txt, "#\n");
@@ -769,19 +769,19 @@ int load_default_config()
 
 	ti68k_loadDefaultConfig();
 
-	options.skin_file = g_strconcat(inst_paths.skin_dir, "ti92.skn", NULL);
-
-	// default ROM & RAM at startup
 	(options.params)->rom_file = g_strconcat(inst_paths.rom_dir, "", NULL);
 	(options.params)->ram_file = g_strdup("");
 	(options.params)->tib_file = g_strdup("");
+
+	// other fields
+	options.skin_file = g_strconcat(inst_paths.skin_dir, "ti92.skn", NULL);
 
 	options.code_lines  = 20;
 	options.stack_lines = 20;
 	options.mem_lines   = 20;
 
-	options.screen_file = g_strdup("screenshot");
-	options.screen_counter = 0;
+	options.img_file = g_strdup("screenshot");
+	options.img_counter = 0;
 	options.img_type = IMG_COL;	//IMG_BW;
 	options.img_format = IMG_PNG;
 	options.img_size = IMG_SKIN;	//IMG_LCD;

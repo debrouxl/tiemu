@@ -84,10 +84,10 @@ gint display_scopt_dbox(void)
   label = lookup_widget(dbox, "label3");
   refresh_label();
 
-  i_screen_file = g_strdup(options.screen_file);
-  i_screen_counter = options.screen_counter;
+  i_screen_file = g_strdup(options.img_file);
+  i_screen_counter = options.img_counter;
   gtk_entry_set_text(GTK_ENTRY(lookup_widget(dbox, "entry1")),
-		     options.screen_file);
+		     options.img_file);
 
   gtk_widget_show_all(dbox);
   return 0;
@@ -177,9 +177,9 @@ on_scopt_ok_button_clicked             (GtkButton       *button,
   options.img_format = i_image_format;
   options.img_type = i_image_type;
   options.img_size = i_image_size;
-  options.screen_counter = i_screen_counter;
-  g_free(options.screen_file);
-  options.screen_file = g_strdup(i_screen_file);
+  options.img_counter = i_screen_counter;
+  g_free(options.img_file);
+  options.img_file = g_strdup(i_screen_file);
   gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "scopt_dbox"));
 }
 
@@ -222,7 +222,7 @@ on_entry1_changed                      (GtkEditable     *editable,
 {
   gchar *s;
 
-  g_free(options.screen_file);
+  g_free(options.img_file);
   s = gtk_editable_get_chars(editable, 0, -1);
   i_screen_file = g_strdup(s);
   refresh_label();
