@@ -92,8 +92,8 @@ on_list_keys_selection_changed (GtkTreeSelection *sel,
 
       draw_rubberbox(drawingarea1, key_cur);
 
-      sbar_print(_("Current size : %d x %d -- Left click + drag to define key position, right click to save and go on. Close the list window when done (save the key before !)"),
-		 key_cur.w, key_cur.h);
+      sbar_print(_("Current size : %d x %d at (%d;%d) -- Left click + drag to define key position, right click to save and go on. Close the list window when done (save the key before !)"),
+		 key_cur.w, key_cur.h, key_cur.x, key_cur.y);
     }
   else
     {

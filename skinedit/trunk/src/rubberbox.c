@@ -115,7 +115,8 @@ mouse_motion(GtkWidget *drawingarea, GdkEventMotion *event, gpointer action)
 
   if (GPOINTER_TO_UINT(action) == ACTION_LCD_COORDS)
     {
-      sbar_print(_("LCD size : %d x %d"), tmp_rect.w, tmp_rect.h);
+      sbar_print(_("LCD size : %d x %d at (%d;%d)"), tmp_rect.w, tmp_rect.h,
+		 tmp_rect.x, tmp_rect.y);
     }
 
   return FALSE;
