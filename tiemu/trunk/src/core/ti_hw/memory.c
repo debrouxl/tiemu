@@ -26,12 +26,13 @@
 #include <stdio.h>
 
 #include "uae.h"
-
 #include "hardware.h"
 #include "images.h"
 #include "memory.h"
 #include "bkpts.h"
 #include "ti68k_def.h"
+
+static IMG_INFO *img = &img_infos; // a shortcut
 
 const int rom_sizes[] = { 1*MB, 2*MB, 2*MB, 4*MB };	// 92, 89, 92+, V200
 const int ram_sizes[] = { 128*KB, 256*KB, 256*KB, 256*KB };
@@ -63,13 +64,31 @@ int rom_write_phase;
 int rom_erase;
 int rom_erasePhase;
 
-static IMG_INFO *cri = &img_infos; // a shortcut
+int log2(int i);
 
 /* Mem init/exit */
 
 int hw_mem_init(void)
 {
-  int i;
+	int i;
+
+	// Get infos from image
+	tihw.rom_internal = img->internal;
+	tihw.rom_flash = img->flash;
+	strcpy(tihw.rom_version, img->version);
+
+//	tihw.rom_size = rom_sizes[log2(tihw.calc_type)];
+//	tihw.ram_size = rom_sizes[log2(tihw.calc_type)];
+	if(tihw.calc_type == TI92)
+		tihw.rom_size = 1*MB;
+	else
+		tihw.rom_size = 2*MB;
+
+	if(tihw.calc_type == TI92)
+		tihw.ram_size = 128*KB;
+	else
+		tihw.ram_size = 256*KB;
+
 
   /* Init vars */
   ram128 = (tihw.ram_size == 128);
@@ -135,15 +154,15 @@ int hw_mem_init(void)
   mem_mask[3] = IO_SIZE-1;
 
   /*
-  if(cri->internal)
+  if(img->internal)
     tihw.rom = ti_int_rom;
   else
     tihw.rom = ti_ext_rom;
 	*/
   
   // blit ROM
-  memcpy(tihw.rom, cri->data, cri->size);
-  free(cri->data);
+  memcpy(tihw.rom, img->data, img->size);
+  free(img->data);
 
   return (tihw.ram && tihw.rom /*ti_int_rom && ti_ext_rom*/ && tihw.io);
 }
@@ -554,7 +573,7 @@ void intRomWriteByte(int addr,int v)
   addr &= 0x1fffff;
   
   //if (getCalcType() != TI89) return;
-  if(cri->calc_type != TI89)
+  if(img->calc_type != TI89)
     return;
 
   if (rom_write_ready)
@@ -619,7 +638,7 @@ void extRomWriteByte(int addr,int v)
   if(flash_protect) 
     return;
   //if (getCalcType() != (TI92 | MODULEPLUS)) return;
-  if(cri->calc_type != (TI92 | MODULEPLUS)) 
+  if(img->calc_type != (TI92 | MODULEPLUS)) 
     return;
 
   if (rom_write_ready)
@@ -686,16 +705,16 @@ int find_pc()
 
   // wrap ROM
   /*
-  if(cri->size < (2048*1024))
+  if(img->size < (2048*1024))
     {
       for (i=0;i<0x100000;i++)
 	ti_int_rom[i+0x100000] = ti_int_rom[i];
 	}*/
 
   // find PC reset vector
-  if(cri->flash)
+  if(img->flash)
     { // TI89 or TI92+
-      for (vt = 0x12000; vt<cri->size; vt++)
+      for (vt = 0x12000; vt<img->size; vt++)
 	{
 	  if (*((int*)(tihw.rom+vt)) == 0xcccccccc) {
 	    vt += 4;
@@ -722,4 +741,9 @@ int find_pc()
   }  
 
   return 0;
+}
+
+int log2(int i)
+{
+	return (int)(log10(i) / log10(2));
 }

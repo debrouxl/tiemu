@@ -79,7 +79,7 @@ gint display_infos_dbox()
 	g_free(str);
 	
 	label = glade_xml_get_widget(xml, "label25");
-	str = g_strdup_printf("%i KB", tihw.ram_size);
+	str = g_strdup_printf("%i KB", tihw.ram_size >> 10);
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 	
