@@ -53,51 +53,13 @@
 #include "ti68k_int.h"
 #include "ti68k_def.h"
 
-
-GLADE_CB void        
-on_popup_menu_deactivate			   (GtkMenuShell *menushell,
-									    gpointer user_data)
-{
-	printf("deactivate !\n");
-}
-
-GLADE_CB void
-on_popup_menu_cancel                   (GtkMenuShell    *menushell,
-                                        gpointer         user_data)
-{
-	// called on ESC
-	DISPLAY("on_popup_menu_cancel\n");
-    ti68k_engine_release();
-}
-
-extern GtkWidget *main_wnd;
-
-GLADE_CB gboolean
-on_popup_menu_button_press_event       (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
-{
-	GtkAllocation *alloc = &(widget->allocation);
-
-    //DISPLAY("on_popup_menu_button_press_event: %p %p %p\n", event->window, widget->window, main_wnd->window);
-    //DISPLAY("%i %i %i %i\n", (gint)event->x, (gint)event->y, (gint)event->x_root, (gint)event->y_root);
-    //DISPLAY("%i %i %i %i\n", alloc->x, alloc->y, alloc->width, alloc->height);
-
-    if((event->window == main_wnd->window) ||        
-        (event->x > alloc->width) || (event->y > alloc->height) ||
-        (event->x < alloc->x) || (event->y < alloc->y)) 
-    {
-        ti68k_engine_release();
-    }
-
-  	return TRUE;
-}
-
 GLADE_CB void
 on_popup_menu_header                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	ti68k_engine_release();
+	fprintf(stdout, _("* TiEmu version %s (cables=%s, files=%s, calcs=%s)"),
+	     TIEMU_VERSION, ticable_get_version(), tifiles_get_version(),
+	     ticalc_get_version());
 }
 
 
@@ -105,7 +67,9 @@ GLADE_CB void
 on_send_file_to_gtktiemu1_activate     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	ti68k_engine_stop();
 	display_tifile_dbox();
+	ti68k_engine_start();
 }
 
 
@@ -113,7 +77,9 @@ GLADE_CB void
 on_link_cable1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	ti68k_engine_stop();
 	display_comm_dbox();
+	ti68k_engine_start();
 }
 
 
@@ -130,7 +96,6 @@ on_save_config1_activate               (GtkMenuItem     *menuitem,
   	msg_box(_("Information"), 
 	  _("Configuration file saved (in tiemu.ini)."));
 #endif
-	ti68k_engine_release();
 }
 
 
@@ -148,7 +113,9 @@ GLADE_CB void
 on_load_state_image1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	ti68k_engine_stop();
 	display_load_state_dbox();
+	ti68k_engine_start();
 }
 
 
@@ -156,7 +123,9 @@ GLADE_CB void
 on_save_state_image1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	ti68k_engine_stop();
 	display_save_state_dbox();
+	ti68k_engine_start();
 }
 
 
@@ -164,8 +133,9 @@ GLADE_CB void
 on_revert_to_saved_state1_activate     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	ti68k_engine_stop();
 	ti68k_state_load(params.sav_file);
-  	ti68k_engine_release();
+  	ti68k_engine_start();
 }
 
 
@@ -175,8 +145,9 @@ on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
 {
     if(dbg_on) return;
 
+	ti68k_engine_stop();
     ti68k_debug_break();
-	ti68k_engine_release();
+	ti68k_engine_start();
 }
 
 
@@ -184,8 +155,9 @@ GLADE_CB void
 on_reset_calc1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	ti68k_engine_stop();
 	ti68k_reset();
-  	ti68k_engine_release();
+  	ti68k_engine_start();
 }
 
 GLADE_CB void
@@ -193,8 +165,10 @@ on_upgrade_calc1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	if(dbg_on) return;
-	
+
+	ti68k_engine_stop();
   	display_set_tib_dbox();
+	ti68k_engine_start();
 }
 
 
@@ -204,7 +178,9 @@ on_set_rom1_activate                   (GtkMenuItem     *menuitem,
 {
 	if(dbg_on) return;
 
+	ti68k_engine_stop();
 	display_romversion_dbox (FALSE);
+	ti68k_engine_start();
 }
 
 
@@ -213,25 +189,9 @@ on_restrict_to_actual_speed1_activate  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
-    		params.restricted = 0;
+    	params.restricted = 0;
   	else
-    		params.restricted = 1;
-
-  	ti68k_engine_release();
-}
-
-
-GLADE_CB void
-on_sync1_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    /*
-	if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
-    		params.sync_one = 0;
-  	else
-    		params.sync_one = 1;
-*/
-  	ti68k_engine_release();
+    	params.restricted = 1;
 }
 
 
@@ -239,9 +199,10 @@ GLADE_CB void
 on_normal_view1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    printf("normal !\n");
+    //printf("normal !\n");
+	//ti68k_engine_stop();
 	//hid_switch_normal_view();
-  	//ti68k_engine_release();
+  	//ti68k_engine_start();
 }
 
 
@@ -249,9 +210,10 @@ GLADE_CB void
 on_large_view1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    printf("large !\n");
+    //printf("large !\n");
+	//ti68k_engine_stop();
 	//hid_switch_large_view();
-  	//ti68k_engine_release();
+  	//ti68k_engine_start();
 }
 
 
@@ -259,9 +221,10 @@ GLADE_CB void
 on_full_screen1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    printf("full !\n");
+    //printf("full !\n");
+	//ti68k_engine_stop();
 	//hid_switch_fullscreen();
-  	//ti68k_engine_release();
+  	//ti68k_engine_start();
 }
 
 
@@ -269,8 +232,9 @@ GLADE_CB void
 on_no_skin1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	ti68k_engine_stop();
 	hid_switch_without_skin();
-  	ti68k_engine_release();
+  	ti68k_engine_start();
 }
 
 
@@ -278,8 +242,9 @@ GLADE_CB void
 on_default_skin1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	ti68k_engine_stop();
 	hid_switch_with_skin();
-  	ti68k_engine_release();
+  	ti68k_engine_start();
 }
 
 
@@ -287,7 +252,9 @@ GLADE_CB void
 on_set_skin1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	ti68k_engine_stop();
 	display_skin_dbox();
+	ti68k_engine_start();
 }
 
 
@@ -295,8 +262,9 @@ GLADE_CB void
 on_now1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	ti68k_engine_stop();
 	hid_screenshot(NULL);
-  	ti68k_engine_release();
+  	ti68k_engine_start();
 }
 
 
@@ -355,6 +323,9 @@ on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem
 	gchar *basename;
 	gchar *dot;
 	extern int exit_loop;
+
+	// stop emulation engine
+	ti68k_engine_stop();
 
 	// build name
 	basename = g_path_get_basename(params.rom_file);
@@ -420,9 +391,6 @@ GtkWidget* display_popup_menu(void)
 	g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_restrict_to_actual_speed1_activate, NULL);
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.restricted);
 	g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_restrict_to_actual_speed1_activate, NULL);
-
-	data = glade_xml_get_widget(xml, "sync1");
-	gtk_widget_set_sensitive(data, FALSE);
 
     switch(options.view)
     {

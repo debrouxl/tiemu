@@ -113,7 +113,6 @@ do_popup_menu (GtkWidget *my_widget, GdkEventButton *event)
 	GtkWidget *menu;
 	int event_button, event_time;
 
-	ti68k_engine_stop();
 	menu = display_popup_menu();
 
 	if (event)
@@ -208,8 +207,6 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
 		GtkWidget *menu;
 		
 		bevent = (GdkEventButton *) (event);
-		
-		ti68k_engine_stop();
 		
 		menu = display_popup_menu();
 		gtk_menu_popup(GTK_MENU(menu),

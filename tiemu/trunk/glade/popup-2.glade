@@ -6,9 +6,6 @@
 <widget class="GtkMenu" id="popup_menu">
   <property name="visible">True</property>
   <property name="events">GDK_KEY_PRESS_MASK</property>
-  <signal name="cancel" handler="on_popup_menu_cancel"/>
-  <signal name="button_press_event" handler="on_popup_menu_button_press_event" last_modification_time="Tue, 11 May 2004 20:10:11 GMT"/>
-  <signal name="deactivate" handler="on_popup_menu_deactivate" last_modification_time="Sat, 19 Feb 2005 12:35:54 GMT"/>
   <accelerator key="Escape" modifiers="0" signal="cancel"/>
 
   <child>
@@ -198,17 +195,6 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkCheckMenuItem" id="sync1">
-	      <property name="visible">True</property>
-	      <property name="tooltip" translatable="yes">If you uncheck this, screen updating will be synchronized with the timer which means it always be updated regularly. This may cause grayscale pictures to flicker when you press keys and other things happen in the code. If you check this, screen updating will be synced with IRQ 1. This means that if IRQ 1 does not run, the screen is not updated. This options usually makes grayscales rock-stable, but wont work at all in programs that turn off IRQ 1 (like &quot;tunnel&quot; and &quot;torus&quot;).</property>
-	      <property name="label" translatable="yes">Sync</property>
-	      <property name="use_underline">True</property>
-	      <property name="active">False</property>
-	      <signal name="activate" handler="on_sync1_activate"/>
-	    </widget>
-	  </child>
-
-	  <child>
 	    <widget class="GtkSeparatorMenuItem" id="separator22">
 	      <property name="visible">True</property>
 	    </widget>
@@ -219,7 +205,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Normal view (x1)</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">False</property>
+	      <property name="active">True</property>
 	      <signal name="activate" handler="on_normal_view1_activate" last_modification_time="Fri, 14 May 2004 15:28:18 GMT"/>
 	    </widget>
 	  </child>
@@ -229,7 +215,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Large view (x2)</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">False</property>
+	      <property name="active">True</property>
 	      <property name="group">normal_view1</property>
 	      <signal name="activate" handler="on_large_view1_activate" last_modification_time="Fri, 14 May 2004 15:28:18 GMT"/>
 	    </widget>
@@ -240,7 +226,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Full screen</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">False</property>
+	      <property name="active">True</property>
 	      <property name="group">normal_view1</property>
 	      <signal name="activate" handler="on_full_screen1_activate"/>
 	    </widget>

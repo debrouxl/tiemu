@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: main.c 187 2004-05-14 14:22:36Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -98,7 +98,6 @@ gint display_infos_dbox()
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) {
 	case GTK_RESPONSE_OK:
-		ti68k_engine_release();
 		break;
 	default:
 		break;

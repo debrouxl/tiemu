@@ -243,6 +243,12 @@ int main(int argc, char **argv)
    		gdk_threads_enter();
 		gtk_main();
 		gdk_threads_leave();
+		{
+			GTimer *tmr;
+			gulong us = 0;
+
+			for(tmr = g_timer_new(); us < 250000; g_timer_elapsed(tmr, &us));
+		}
 
 		/* 
 			Close the emulator engine
@@ -266,43 +272,13 @@ int main(int argc, char **argv)
    then we use the 'WinMain' entry point.
 */
 #if defined(__WIN32__) && defined(_WINDOWS)// && !defined(_CONSOLE)
-
-// Keyboard hook: prevents Alt+ESC, Ctrl+ESC and Alt+TAB to disturb TiEmu (NT only)
-LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) 
-{
-   BOOL fEatKeystroke = FALSE;
-
-   if (nCode == HC_ACTION) 
-   {
-      switch (wParam) 
-	  {
-		case WM_KEYDOWN:  case WM_SYSKEYDOWN:
-		case WM_KEYUP:    case WM_SYSKEYUP: 
-			{
-			PKBDLLHOOKSTRUCT p = (PKBDLLHOOKSTRUCT) lParam;
-			fEatKeystroke = 
-            /*((p->vkCode == VK_TAB) && ((p->flags & LLKHF_ALTDOWN) != 0)) ||*/
-            ((p->vkCode == VK_ESCAPE) && ((p->flags & LLKHF_ALTDOWN) != 0)) ||
-            ((p->vkCode == VK_ESCAPE) && ((GetKeyState(VK_CONTROL) & 0x8000) != 0));
-			}
-         break;
-      }
-   }
-   return(fEatKeystroke ? 1 : CallNextHookEx(NULL, nCode, wParam, lParam));
-}
-
 int APIENTRY WinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      LPSTR     lpCmdLine,
                      int       nCmdShow)
 {
-	OSVERSIONINFO os;
-	MOUSEKEYS mk;
-	int ret;
-
 	/* Check whether a TiEmu session is already running */
 	HANDLE hMutex;
-	HHOOK hhkLowLevelKybd;
 
 	hMutex = CreateMutex(NULL, TRUE, "TiEmu");
 	if (GetLastError() == ERROR_ALREADY_EXISTS) 
@@ -310,37 +286,6 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 		MessageBox(NULL, _("Error"), _("An TiEmu session is already running. Check the task list."), MB_OK);
 	}
 
-	//  Get OS type (NT or non-NT)
-	memset(&os, 0, sizeof(OSVERSIONINFO));
-  	os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  	GetVersionEx(&os);
-
-	// Prevent Alt+ESC, Ctrl+ESC and Alt+TAB actions
-	if(os.dwPlatformId == VER_PLATFORM_WIN32_NT)
-	{
-		// Install the low-level keyboard & mouse hooks (contribution from K. Kofler)
-		hhkLowLevelKybd  = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboardProc, hInstance, 0);
-	}
-	else
-	{
-		// Make Windows believe we are a screen saver (contribution from K. Kofler)
-		SystemParametersInfo(SPI_SCREENSAVERRUNNING, TRUE, &mk, 0);
-	}
-  
-	ret = main(__argc, __argv);
-
-	// Restore hooks
-	if(os.dwPlatformId == VER_PLATFORM_WIN32_NT)
-	{
-		// Un-install the hook
-		UnhookWindowsHookEx(hhkLowLevelKybd);
-	}
-	else
-	{
-		// Uninstall hack (this is an undocumented feature)
-		SystemParametersInfo(SPI_SCREENSAVERRUNNING, FALSE, &mk, 0);
-	}
-
-	return ret;
+	return main(__argc, __argv);
 }
 #endif

@@ -186,7 +186,6 @@ gint display_wait_dbox(void)
     result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) {
 	case GTK_RESPONSE_OK:
-		ti68k_engine_release();
 		break;
 	default:
 		break;

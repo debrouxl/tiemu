@@ -48,7 +48,6 @@ gint display_skin_dbox()
 	filename = (char *)create_fsel2(inst_paths.skin_dir, "*.skn", FALSE);
 	if (!filename)
 	{
-		ti68k_engine_release();
 		return 0;
 	}
 
@@ -57,7 +56,6 @@ gint display_skin_dbox()
     options.skin_file = g_strdup(filename);
     
     hid_change_skin(options.skin_file);
-    ti68k_engine_release();
 
 	return 0;
 }
@@ -77,7 +75,6 @@ gint display_load_state_dbox()
     
     err = ti68k_state_load(params.sav_file);
 	handle_error();
-    ti68k_engine_release();
 
 	return 0;
 }
@@ -121,8 +118,6 @@ gint display_save_state_dbox()
 #endif
     }
 
-    ti68k_engine_release();
-
 	return 0;
 }
 
@@ -160,7 +155,6 @@ gint display_tifile_dbox()
 	filename = (char *)create_fsel2(folder, (char *)ext, FALSE);
 	if (!filename)
     {
-        ti68k_engine_release();
 		return 0;
     }
 
@@ -173,7 +167,6 @@ gint display_tifile_dbox()
         !tifiles_is_ti9x(tifiles_which_calc_type(filename))) 
 	{
         msg_box(_("Error"), _("This file is not a valid TI file."));
-        ti68k_engine_release();
         return -1;
     }
 
@@ -201,7 +194,6 @@ gint display_tifile_dbox()
     err = ti68k_linkport_send_file(filename);
     handle_error();
     destroy_pbar();	
-    ti68k_engine_release();
 
 	return 0;
 }
@@ -215,12 +207,11 @@ gint display_set_tib_dbox(void)
     // get filename
 	filename = create_fsel2(inst_paths.base_dir, "*.89u;*.9xu;*.v2u;*.tib", FALSE);
 	if (!filename)
-		goto display_set_tib_dbox_end;
+		return 0;
 
 	if(!ti68k_is_a_tib_file(filename))
 	{
 		msg_box("Error", "Don't seem to be an upgrade.");
-		ti68k_engine_release();
 		return -1;
 	}
 
@@ -237,7 +228,6 @@ gint display_set_tib_dbox(void)
 	if(err)
 	{
 		msg_box("Error", "Can not load the upgrade.");
-		ti68k_engine_release();
 		return -1;
 	}
     
@@ -246,9 +236,6 @@ gint display_set_tib_dbox(void)
 
     // simply reset, don't restart
     ti68k_reset();
-
-display_set_tib_dbox_end:
-    ti68k_engine_release();
 
     return 0;
 }

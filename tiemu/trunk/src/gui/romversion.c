@@ -176,7 +176,6 @@ gint display_romversion_dbox(gboolean file_only)
 	{
         DISPLAY("Unable to open this file: %s\n", filename);
         gtk_widget_destroy(dbox);
-		ti68k_engine_release();
         return -1;
     }
 
@@ -241,7 +240,7 @@ gint display_romversion_dbox(gboolean file_only)
 			params.sav_file = g_strdup("");
 
 			while(gtk_events_pending()) gtk_main_iteration();
-			gtk_main_quit();			
+			gtk_main_quit();	
 		break;
 
 		case GTK_RESPONSE_APPLY:
@@ -251,7 +250,6 @@ gint display_romversion_dbox(gboolean file_only)
 		
 		default:
             if(file_only) return -1;
-			ti68k_engine_release();
 		break;
 	}
 

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: main.c 187 2004-05-14 14:22:36Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -120,7 +120,6 @@ gint display_scroptions_dbox()
 	}
 
 	gtk_widget_destroy(dbox);
-    ti68k_engine_release();
 
 	return 0;
 }
