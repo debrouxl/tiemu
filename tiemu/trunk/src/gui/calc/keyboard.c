@@ -24,7 +24,7 @@
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
-#endif				/*  */
+#endif
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
@@ -228,14 +228,14 @@ static int gdk_to_ti92(guint keyval)
 		case GDK_F8 : return TIKEY_F8;
 		
 		// Standard
-		case GDK_Return :	return TIKEY_ENTER1;
-		case GDK_KP_Enter: return TIKEY_ENTER2;
-		case GDK_Shift_L : 	return TIKEY_SHIFT;
-		case GDK_Shift_R : 	return TIKEY_SHIFT;
+		case GDK_Return :	    return TIKEY_ENTER1;
+		case GDK_KP_Enter:      return TIKEY_ENTER2;
+		case GDK_Shift_L : 	    return TIKEY_SHIFT;
+		case GDK_Shift_R : 	    return TIKEY_SHIFT;
 		case GDK_Control_L : 	return TIKEY_DIAMOND;
 		case GDK_Control_R : 	return TIKEY_DIAMOND;
-		case GDK_Alt_L : 	return TIKEY_2ND;
-		case GDK_Alt_R : 	return TIKEY_2ND;
+		case GDK_Alt_L : 	    return TIKEY_2ND;
+		case GDK_Alt_R : 	    return TIKEY_2ND;
 		case GDK_space : 		return TIKEY_SPACE;
 		case GDK_Escape : 		return TIKEY_ESCAPE;
 		case GDK_BackSpace : 	return TIKEY_BACKSPACE;
@@ -243,8 +243,8 @@ static int gdk_to_ti92(guint keyval)
 		case GDK_parenright : 	return TIKEY_PARIGHT;
 		case GDK_period : 		return TIKEY_PERIOD;
 		case GDK_comma : 		return TIKEY_COMMA;
-		case GDK_KP_Add : 	return TIKEY_PLUS;
-		case GDK_KP_Multiply : return TIKEY_MULTIPLY;
+		case GDK_KP_Add : 	    return TIKEY_PLUS;
+		case GDK_KP_Multiply :  return TIKEY_MULTIPLY;
 		case GDK_KP_Divide : 	return TIKEY_DIVIDE;    
 		case GDK_slash : 		return TIKEY_DIVIDE;
 		case GDK_KP_Subtract : 	return TIKEY_MINUS;			
@@ -253,9 +253,9 @@ static int gdk_to_ti92(guint keyval)
 		case GDK_less : 		return TIKEY_NEGATE;			
 		
 		// Specific
-		case GDK_F9  : 		return TIKEY_APPS;
+		case GDK_F9  : 		    return TIKEY_APPS;
 		case GDK_semicolon : 	return TIKEY_THETA;
-		case GDK_Tab : 		return TIKEY_STORE;
+		case GDK_Tab : 		    return TIKEY_STORE;
 		case GDK_Caps_Lock : 	return TIKEY_HAND;
 		case GDK_Page_Down : 	return TIKEY_MODE;
 		case GDK_backslash : 	return TIKEY_LN;			
@@ -293,7 +293,7 @@ static int pos_to_key(int x, int y)
   	for(i = 0; i < nkeys; i++)
     {
       	if((x >= kp[i].left) && (x < kp[i].right) && 
-	 		(y >= kp[i].top) && (y < kp[i].bottom)) 
+	 	   (y >= kp[i].top) && (y < kp[i].bottom)) 
 		
 		return key_mapping[i];
     }
@@ -306,53 +306,35 @@ on_calc_wnd_button_press_event     (GtkWidget       *widget,
                                         GdkEventButton  *event,
                                         gpointer         user_data)
 {
-    int key;
+    if(event->type != GDK_BUTTON_PRESS)
+        return FALSE;
 
-    printf("button_press\n");
-    switch (event->type) 
+	if (event->button == 3) 
     {
-    case GDK_BUTTON_PRESS:
-        if(event->button == 1)
-        {
-            key = pos_to_key((int)event->x, (int)event->y);
-            if(key < 0)
-                break;
+        GdkEventButton *bevent;
+        GtkWidget *menu;
 
-            ti68k_kbd_set_key(key, 1);
-            return TRUE;
-        }
+		bevent = (GdkEventButton *) (event);
+        menu = display_popup_menu();
 
-	    if (event->button == 3) 
-        {
-            GdkEventButton *bevent;
-            GtkWidget *menu;
+        ti68k_engine_halt();
 
-		    bevent = (GdkEventButton *) (event);
-            menu = display_popup_menu();
+		gtk_menu_popup(GTK_MENU(menu),
+				   NULL, NULL, NULL, NULL,
+				   bevent->button, bevent->time);
+	    gtk_widget_show(menu);
 
-            ti68k_engine_halt();
+		return TRUE;
+	}
 
-		    gtk_menu_popup(GTK_MENU(menu),
-				       NULL, NULL, NULL, NULL,
-				       bevent->button, bevent->time);
-	        gtk_widget_show(menu);
+    if(event->button == 1)
+    {
+        int key = pos_to_key((int)event->x, (int)event->y);
+        if(key < 0)
+            return FALSE;
 
-		    return TRUE;
-	    }
-	    break;
-    case GDK_BUTTON_RELEASE:
-        if(event->button == 1)
-        {
-            key = pos_to_key((int)event->x, (int)event->y);
-            if(key < 0)
-                break;
-	      	
-      		ti68k_kbd_set_key(key, 0);
-            return TRUE;
-        }
-        break;
-    default:
-        break;
+        ti68k_kbd_set_key(key, 1);
+        return TRUE;
     }
 
 	return FALSE;
@@ -363,6 +345,19 @@ on_calc_wnd_button_release_event     (GtkWidget       *widget,
                                         GdkEventButton  *event,
                                         gpointer         user_data)
 {
+    if(event->type != GDK_BUTTON_RELEASE)
+        return FALSE;
+
+    if(event->button == 1)
+    {
+        int key = pos_to_key((int)event->x, (int)event->y);
+        if(key < 0)
+            return FALSE;
+	    
+      	ti68k_kbd_set_key(key, 0);
+        return TRUE;
+    }
+
     return FALSE;
 }
 
@@ -372,7 +367,8 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
                                         GdkEventKey     *event,
                                         gpointer         user_data)
 {
-    printf("key_press\n");
+    if(event->hardware_keycode == 0x0014)
+        event->keyval = GDK_Caps_Lock;
 
     if(event->keyval == GDK_Print)
 	{
@@ -397,6 +393,8 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
     else
     {
         int key = gdk_to_ti(event->keyval);
+        if(alpha)
+			ti68k_kbd_set_key(TIKEY_ALPHA, 1);
 	    ti68k_kbd_set_key(key, 1);
         return TRUE;
     }
@@ -410,10 +408,13 @@ on_calc_wnd_key_release_event      (GtkWidget       *widget,
                                         GdkEventKey     *event,
                                         gpointer         user_data)
 {
-    printf("key_release\n");
+    if(event->hardware_keycode == 0x0014)
+        event->keyval = GDK_Caps_Lock;
 
     {
         int key = gdk_to_ti(event->keyval);
+        if(alpha)
+			ti68k_kbd_set_key(TIKEY_ALPHA, alpha =0);
         ti68k_kbd_set_key(key, 0);
         return TRUE;
     }
