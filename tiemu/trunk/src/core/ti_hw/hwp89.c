@@ -44,24 +44,75 @@
 static int access1 = 0;		// protection access authorization (hw1)
 static int access2 = 0;		// same (hw2)
 static int crash = 0;
-static unsigned int arch_mem_limit = 0;
 static int arch_mem_crash = 0;
 
 #define HWP
-//#define HWP1				// HW1 protection if define set
-//#define HWP2				// HW2 protection if define set
 
-static void crash_calc(void)
+static void freeze_calc(void)
 {
-	//hw_reset();
 	access1 = access2 = 0;
 	crash = 0;
-	printf("Grr, you've crashed the calc !\n");
+	m68k_setstopped(1);		
 }
 
 // note: "if(!(adr & 1))" is used to avoid multiple increment when reading/writing words
 // this don't work for longs but this problem will not exist when this code will be
 // splitted.
+
+/*
+	Check whether instruction fetch is allowed at adr.
+	The returned value can be used by breakpoints to determine the
+	origin of violation.
+*/
+int ti89_hwp_fetch(uint32_t adr)
+{
+	// protections (hw1)
+	if(tihw.hw_type == HW1)
+	{
+		if(IN_RANGE(0x390000+tihw.archive_limit*0x10000, 
+								adr, 0x3fffff))				// archive memory limit (hw1)
+		{
+			// three consecutive access to any adress >=$390000+limit*$10000 and <$400000 crashes the calc
+			if(!(adr & 1)) arch_mem_crash++;
+			if((tihw.hw_type == HW1) && (arch_mem_crash >= 4))
+			{
+				freeze_calc();
+				return 1;
+			}
+		}
+	}
+
+	// protections (hw2)
+	else if(tihw.hw_type == HW2)
+	{
+		if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM page execution protection
+		{
+			if(tihw.ram_exec[adr >> 12]) 
+			{
+				freeze_calc();
+				return 2;
+			}
+		}
+		else if(IN_RANGE(0x040000, adr, 0x1fffff))			// RAM page execution protection
+		{
+			if(io2_bit_tst(6, 7)) 
+			{
+				freeze_calc();
+				return 2;
+			}
+		}
+		else if(IN_RANGE(0x210000, adr, 0x3fffff))			// FLASH page execution protection
+		{
+			if(adr >= (uint32_t)(0x210000 + tihw.io2[0x12]*0x10000)) 
+			{
+				//freeze_calc();
+				//return 3;
+			}
+		}
+	}
+
+	return 0;
+}
 
 uint8_t ti89_hwp_get_byte(uint32_t adr) 
 {
@@ -70,17 +121,17 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0 (hw1)
 	{
 		if(!tihw.protect && (tihw.hw_type == HW1))
-			bit_clr(arch_mem_limit, 0);
+			bit_clr(tihw.archive_limit, 0);
 	}
 	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1 (hw1)
 	{
 		if(!tihw.protect && (tihw.hw_type == HW1))
-			bit_clr(arch_mem_limit, 1);
+			bit_clr(tihw.archive_limit, 1);
 	}
 	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2 (hw1)
 	{
 		if(!tihw.protect && (tihw.hw_type == HW1))
-			bit_clr(arch_mem_limit, 2);
+			bit_clr(tihw.archive_limit, 2);
 	}
 	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
 	{
@@ -99,7 +150,7 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 			if(!(adr & 1)) crash++;
 			if(crash >= 4)
 			{
-				crash_calc();
+				freeze_calc();
 				printf("1");
 			}
 		}
@@ -141,42 +192,10 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 			if(!(adr & 1)) 
 				access2++;
 	}
-	else if(IN_RANGE(0x390000+arch_mem_limit*0x10000, 
-								adr, 0x3fffff))			// archive memory limit (hw1)
-	{
-		// three consecutive access to any adress >=$390000+limit*$10000 and <$400000 crashes the calc
-		if(!(adr & 1)) arch_mem_crash++;
-		if((tihw.hw_type == HW1) && (arch_mem_crash >= 4))
-		{
-			// instruction fetch ??
-			//crash_calc();
-			printf("2");
-		}
-	}
 	else
 	{
 		access1 = access2 = 0;
 		crash = arch_mem_crash = 0;
-	}
-
-	// protections (hw2)
-	if(tihw.hw_type == HW2)
-	{
-		if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM page execution protection
-		{
-			// instruction fetch
-			//if(tihw.ram_exec[adr >> 24]) crash_calc();
-		}
-		else if(IN_RANGE(0x040000, adr, 0x1fffff))			// RAM page execution protection
-		{
-			// instruction fetch
-			//if(io2_bit_tst(6, 7)) crash_calc();
-		}
-		else if(IN_RANGE(0x210000, adr, 0x3fffff))			// FLASH page execution protection
-		{
-			// instruction fetch
-			//if(adr >= (uint32_t)(0x210000 + tihw.io2[0x12]*0x10000)) crash_calc();
-		}
 	}
 #endif
 
@@ -218,17 +237,17 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0 (hw1)
 	{
 		if(!tihw.protect && (tihw.hw_type == HW1))
-			bit_set(arch_mem_limit, 0);
+			bit_set(tihw.archive_limit, 0);
 	}
 	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1 (hw1)
 	{
 		if(!tihw.protect && (tihw.hw_type == HW1))
-			bit_set(arch_mem_limit, 1);
+			bit_set(tihw.archive_limit, 1);
 	}
 	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2 (hw1)
 	{
 		if(!tihw.protect && (tihw.hw_type == HW1))
-			bit_set(arch_mem_limit, 2);
+			bit_set(tihw.archive_limit, 2);
 	}
 	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
 	{
@@ -247,7 +266,7 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 			if(!(adr & 1)) crash++;
 			if(crash >= 4)
 			{
-				crash_calc();
+				freeze_calc();
 				printf("3");
 			}
 		}
@@ -289,42 +308,10 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 			if(!(adr & 1)) 
 				access2++;
 	}
-	else if(IN_RANGE(0x390000+arch_mem_limit*0x10000, 
-								adr, 0x3fffff))			// archive memory limit (hw1)
-	{
-		// three consecutive access to any adress >=$390000+limit*$10000 and <$400000 crashes the calc
-		if(!(adr & 1)) arch_mem_crash++;
-		if((tihw.hw_type == HW1) && (arch_mem_crash >= 4))
-		{
-			// instruction fetch ??
-			//crash_calc();
-			//printf("4");
-		}
-	}
 	else
 	{
 		access1= access2 = 0;
 		crash = arch_mem_crash = 0;
-	}
-
-	// protections (hw2)
-	if(tihw.hw_type == HW2)
-	{
-		if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM page execution protection
-		{
-			// instruction fetch
-			//if(tihw.ram_exec[adr >> 24]) crash_calc();
-		}
-		else if(IN_RANGE(0x040000, adr, 0x1fffff))			// RAM page execution protection
-		{
-			// instruction fetch
-			//if(io2_bit_tst(6, 7)) crash_calc();
-		}
-		else if(IN_RANGE(0x210000, adr, 0x3fffff))			// FLASH page execution protection
-		{
-			// instruction fetch
-			//if(adr >= (uint32_t)(0x210000 + tihw.io2[0x12]*0x10000)) crash_calc();
-		}
 	}
 #endif
 

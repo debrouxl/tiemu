@@ -189,6 +189,7 @@ const char *ti68k_bkpt_cause_to_string(int type)
 	case BK_CAUSE_ADDRESS:	return _("address");
     case BK_CAUSE_EXCEPTION:return _("exception");
 	case BK_CAUSE_PGMENTRY: return _("prgm entry");
+	case BK_CAUSE_PROTECT:  return _("hw protection");
 	default:				return _("unknown");
 	}
 }
@@ -203,6 +204,7 @@ const char *ti68k_bkpt_type_to_string(int type)
     case BK_TYPE_CODE:      return _("code");
     case BK_TYPE_EXCEPTION: return _("exception");
 	case BK_TYPE_PGMENTRY:	return _("prgm entry");
+	case BK_TYPE_PROTECT:   return _("hw protection");
 	default:                return _("unknown");
 	}
 }
@@ -219,6 +221,8 @@ int ti68k_string_to_bkpt_type(const char *str)
 		return BK_TYPE_EXCEPTION;
 	else if(!strcmp(str, _("prgm entry")))
 		return BK_TYPE_PGMENTRY;
+	else if(!strcmp(str, _("hw protection")))
+		return BK_TYPE_PROTECT;
 
 	return 0;
 }

@@ -188,6 +188,16 @@ int hw_m68k_run(int n)
             bkpts.pclog_buf[bkpts.pclog_ptr++ % bkpts.pclog_size] = m68k_getpc();
         }
 
+		// hardware protection
+		if(params.hw_protect)
+		{
+			if(bkpts.id = ti89_hwp_fetch(m68k_getpc()))
+			{
+				bkpts.type = BK_TYPE_PROTECT;
+				return 3;
+			}
+		}
+
 		// search for next opcode and execute it
 		opcode = nextiword();
 		(*cpufunctbl[opcode])(opcode);

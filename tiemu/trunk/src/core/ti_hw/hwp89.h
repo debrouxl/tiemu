@@ -29,7 +29,7 @@
 
 /* Functions */
 
-int ti89_hwp_mem_init(void);
+int ti89_hwp_fetch(uint32_t adr);
 
 uint8_t  ti89_hwp_get_byte(uint32_t addr);
 uint16_t ti89_hwp_get_word(uint32_t addr);

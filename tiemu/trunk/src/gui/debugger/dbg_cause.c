@@ -277,6 +277,28 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 		g_free(str1);
 		g_free(str2);
 	}
+	else if(type == BK_TYPE_PROTECT)
+	{
+		uint32_t value;
+
+		ti68k_register_get_pc(&value);
+
+		switch(bkpts.id)
+		{
+		case 1:
+			str = g_strdup_printf("hw protection violation: FLASH execution at $%06x.\nExecution allowed until $%06x.", value, 0x390000+tihw.archive_limit*0x10000);
+			break;
+		case 2:
+			str = g_strdup_printf("hw protection violation: RAM execution at $%06x.\n", value);
+			break;
+		case 3:
+			str = g_strdup_printf("hw protection violation: FLASH execution at $%06x.\nExecution allowed until $%06x.", value, 0x210000 + tihw.io2[0x12]*0x10000);
+			break;
+		default: 
+			str = g_strdup("bug !\n"); 
+			break;
+		}
+	}
 	else
 	{
 		str = g_strdup("bug !\n");

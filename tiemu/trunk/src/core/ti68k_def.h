@@ -65,8 +65,9 @@ typedef unsigned char	uchar;	// can't replace UBYTE/uchar by uint8_t type, why ?
 #define HW2			2
 #define HW3         3
 
-#define DBG_BREAK   1
-#define DBG_TRACE   2
+#define DBG_BREAK   1	// user breakpoint
+#define DBG_TRACE   2	// trace (T)
+#define DBG_HWPV	3	// hardware protection violation
 
 #define LCDMEM_W	240		// LCD memory height
 #define LCDMEM_H	128		// LCD memory height
@@ -110,25 +111,19 @@ typedef struct
 	int		lcd_w;			// LCD physical width
 	int		lcd_h;			// LCD physical height
 
-    // ioports.c
-	//...
-
-    // keyboard.c
+    // keyboard
     int     on_key;
 
-    // lcd.c
+    // lcd
 	uint32_t lcd_adr;		// LCD address (as $4c00)
 	char	*lcd_ptr;		// direct pointer to LCD in PC RAM
-    int     contrast;
+    int		contrast;
 	int		log_w;			// LCD logical width
 	int		log_h;			// LCD logical height
 	int		on_off;
-	unsigned long	lcd_tick;		// used by grayscales
+	unsigned long	lcd_tick;// used by grayscales
 
-    // linkport.c
-	int		lc_speedy;		// not used any longer (free of use)
-
-    // memory.c
+    // memory
     uchar	*rom;
     uchar	*ram;
     uchar	*io;
@@ -136,19 +131,15 @@ typedef struct
     uchar   *unused;
     int     initial_pc;
 
-    // timer.c
+    // timer & rtc
     uint8_t     timer_value;
     uint8_t     timer_init;
-    int         heartbeat;	// not used any longer (free of use)
-
 	uint8_t		rtc_value;
 
-	// hardware.c
-
 	// protection
-	int		protect;		// hw protection state
-	int		archive_limit;	// archive memory limit
-	int		ram_exec[64];	// RAM page execution protection bitmask
+	int			protect;		// hw protection state
+	uint32_t	archive_limit;	// archive memory limit
+	int			ram_exec[64];	// RAM page execution protection bitmask
 
 } Ti68kHardware;
 
