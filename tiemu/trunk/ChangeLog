@@ -10,6 +10,8 @@ To do:
 	- [roms]  $1030: fixed MSVC compilation and support for new UAE
 		Note: there is a post-build lock with gencpu. To fix...
 	- [roms]  $1032: added instruction cycle count support
+	- [kevin] $1037: restrict to actual speed based on cycle count, not instruction count.
+	- [roms]  $1038: fixed Win32 multiple file selector
 
 - 19/03/2005, version 1.80q:
 	- [roms] $985: updated copyright notice.
