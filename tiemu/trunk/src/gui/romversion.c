@@ -215,7 +215,7 @@ gint display_romversion_dbox()
 			{
                 // Remove previous tib file
                 g_free(params.tib_file);
-				params.tib_file = g_strconcat(inst_paths.img_dir, "", NULL);
+				params.tib_file = g_strconcat(/*inst_paths.img_dir, */"", NULL);
 
                 // Set new image
 				g_free(params.rom_file);

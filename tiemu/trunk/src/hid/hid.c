@@ -127,7 +127,7 @@ static int match_skin(int calc_type)
 {
 	SKIN_INFOS si;
 	int ok;
-	gchar *str;
+	//gchar *str;
 
 	// filename is "", load default skin
 	if(!strcmp(g_basename(options.skin_file), ""))
