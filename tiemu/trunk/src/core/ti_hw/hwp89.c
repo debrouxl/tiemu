@@ -41,7 +41,8 @@
 #include "ti68k_int.h"
 #include "flash.h"
 
-static int access = 0;		// protection access authorization
+static int access1 = 0;		// protection access authorization (hw1)
+static int access2 = 0;		// same (hw2)
 static int crash = 0;
 static unsigned int arch_mem_limit = 0;
 static int arch_mem_crash = 0;
@@ -53,11 +54,12 @@ static int arch_mem_crash = 0;
 static void crash_calc(void)
 {
 	//hw_reset();
-	access = crash = 0;
+	access1 = access2 = 0;
+	crash = 0;
 	printf("Grr, you've crashed the calc !\n");
 }
 
-// note: if(!(adr & 1)) is used to avoid multiple increment when reading/writing words
+// note: "if(!(adr & 1))" is used to avoid multiple increment when reading/writing words
 // this don't work for longs but this problem will not exist when this code will be
 // splitted.
 
@@ -83,14 +85,14 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 	}
 	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable
 	{
-		if(access >= 3) 
+		if((access1 >= 3) || (++access2 == 8)) 
 		{
 			tihw.protect = !0;
-			access = 0;
+			access1 = access2 = 0;
 		}
-		else
+		else if(tihw.hw_type == HW1)
 		{
-			// any four consecutive access to $1c0000-1fffff crashes the calculator
+			// any four consecutive access to $1c0000-1fffff crashes a HW1 calc
 			if(!(adr & 1)) crash++;
 			if(crash >= 4)
 			{
@@ -101,7 +103,12 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 	}
 	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
 	{
-		if(!(adr & 1)) access++;
+		if(tihw.hw_type == HW1)
+			if(!(adr & 1)) 
+				access1++;
+		if(tihw.hw_type == HW2)
+			if(!(adr & 1)) 
+				access2++;
 	}
 	else if(IN_RANGE(0x210000, adr, 0x211fff))			// certificate (read protected)
 	{
@@ -110,7 +117,12 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 	}
 	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
 	{
-		if(!(adr & 1)) access++;
+		if(tihw.hw_type == HW1)
+			if(!(adr & 1)) 
+				access1++;
+		if(tihw.hw_type == HW2)
+			if(!(adr & 1)) 
+				access2++;
 	}
 	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
 	{
@@ -119,7 +131,12 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 	}
 	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
 	{
-		if(!(adr & 1)) access++;
+		if(tihw.hw_type == HW1)
+			if(!(adr & 1)) 
+				access1++;
+		if(tihw.hw_type == HW2)
+			if(!(adr & 1)) 
+				access2++;
 	}
 	else if(IN_RANGE(0x390000+arch_mem_limit*0x10000, 
 								adr, 0x3fffff))			// archive memory limit
@@ -134,9 +151,25 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 	}
 	else
 	{
-		access = 0;
-		crash = 0;
-		arch_mem_crash = 0;
+		access1 = access2 = 0;
+		crash = arch_mem_crash = 0;
+	}
+
+	// protections (hw2)
+	if(0)	//tihw.hw_type == HW2)
+	{
+		if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM page execution protection
+		{
+			//if((tihw.hw_type == HW2) && tihw.ram_exec[adr >> 24]) crash_calc();
+		}
+		else if(IN_RANGE(0x040000, adr, 0x1fffff))			// RAM page execution protection
+		{
+			//if((tihw.hw_type == HW2) && io2_bit_tst(6, 7)) crash_calc();
+		}
+		else if(IN_RANGE(0x210000, adr, 0x3fffff))			// FLASH page execution protection
+		{
+			if(adr >= (uint32_t)(0x210000 + tihw.io2[0x12]*0x10000)) crash_calc();
+		}
 	}
 #endif
 
@@ -193,14 +226,14 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 	}
 	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection disable
 	{
-		if(access >= 3) 
+		if((access1 >= 3) || (++access2 == 8)) 
 		{
 			tihw.protect = 0;
-			access = 0;
+			access1 = access2 = 0;
 		}
-		else
+		else if(tihw.hw_type == HW1)
 		{
-			// any four consecutive accesses to $1c0000-1fffff crashes the calculator
+			// any four consecutive accesses to $1c0000-1fffff crash an HW1 calc
 			if(!(adr & 1)) crash++;
 			if(crash >= 4)
 			{
@@ -213,7 +246,11 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
-				access++;
+				access1++;
+		if(tihw.hw_type == HW2)
+			if(!(adr & 1)) 
+				access2++;
+
 		return;		// don't write on boot code
 	}
 	else if(IN_RANGE(0x210000, adr, 0x211fff))			// certificate (read protected)
@@ -223,7 +260,10 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
-				access++;
+				access1++;
+		if(tihw.hw_type == HW2)
+			if(!(adr & 1)) 
+				access2++;
 	}
 	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
 	{
@@ -233,7 +273,10 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
-				access++;
+				access1++;
+		if(tihw.hw_type == HW2)
+			if(!(adr & 1)) 
+				access2++;
 	}
 	else if(IN_RANGE(0x390000+arch_mem_limit*0x10000, 
 								adr, 0x3fffff))			// archive memory limit
@@ -246,11 +289,34 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 			//printf("4");
 		}
 	}
+	else if(tihw.hw_type == HW2)						// RAM page execution protection
+	{
+		// ...
+	}
 	else
 	{
-		access = 0;
-		crash = 0;
-		arch_mem_crash = 0;
+		access1= access2 = 0;
+		crash = arch_mem_crash = 0;
+	}
+
+	// protections (hw2)
+	if(0)	//tihw.hw_type == HW2)
+	{
+		if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM page execution protection
+		{
+			if((tihw.hw_type == HW2) && tihw.ram_exec[adr >> 24]) 
+				crash_calc();
+		}
+		else if(IN_RANGE(0x040000, adr, 0x1fffff))			// RAM page execution protection
+		{
+			if((tihw.hw_type == HW2) && io2_bit_tst(6, 7)) 
+				crash_calc();
+		}
+		else if(IN_RANGE(0x210000, adr, 0x3fffff))			// FLASH page execution protection
+		{
+			if((tihw.hw_type == HW2) && (adr >= (uint32_t)(0x210000 + tihw.io2[0x12]*0x10000)))
+				crash_calc();
+		}
 	}
 #endif
 

@@ -345,42 +345,60 @@ uint32_t io_get_long(uint32_t addr)
 
 void io2_put_byte(uint32_t addr, uint8_t arg)
 {
+	int i;
+
 	addr &= tihw.io2_size-1;
 
     switch(addr) 
     {
         case 0x00:	// rw <76543210>
 		case 0x08:
-			if(!tihw.protect) tihw.io2[addr] = arg;
-			return;
+			if(tihw.protect)
+				return;
+			for(i = 0; i < 8; i++)	// this is the fastest method (an easier method will use 64 bit integer)
+				tihw.ram_exec[i] = arg & (1 << i);
 		case 0x01:	// rw <76543210>
 		case 0x09:
-			if(!tihw.protect) tihw.io2[addr] = arg;
-			return;
+			if(tihw.protect)
+				return;
+			for(i = 0; i < 8; i++)
+				tihw.ram_exec[8+i] = arg & (1 << i);
 		case 0x02:	// rw <76543210>
 		case 0x0a:
-			if(!tihw.protect) tihw.io2[addr] = arg;
-			return;
+			if(tihw.protect)
+				return;
+			for(i = 0; i < 8; i++)
+				tihw.ram_exec[16+i] = arg & (1 << i);
 		case 0x03:	// rw <76543210>
 		case 0x0b:
-			if(!tihw.protect) tihw.io2[addr] = arg;
-			return;
+			if(tihw.protect)
+				return;
+			for(i = 0; i < 8; i++)
+				tihw.ram_exec[24+i] = arg & (1 << i);
 		case 0x04:	// rw <76543210>
 		case 0x0c:
-			if(!tihw.protect) tihw.io2[addr] = arg;
-			return;
+			if(tihw.protect)
+				return;
+			for(i = 0; i < 8; i++)
+				tihw.ram_exec[32+i] = arg & (1 << i);
 		case 0x05:	// rw <76543210>
 		case 0x0d:
-			if(!tihw.protect) tihw.io2[addr] = arg;
-			return;
+			if(tihw.protect)
+				return;
+			for(i = 0; i < 8; i++)
+				tihw.ram_exec[40+i] = arg & (1 << i);
 		case 0x06:	// rw <76543210>
 		case 0x0e:
-			if(!tihw.protect) tihw.io2[addr] = arg;
-			return;
+			if(tihw.protect)
+				return;
+			for(i = 0; i < 8; i++)
+				tihw.ram_exec[48+i] = arg & (1 << i);
 		case 0x07:	// rw <76543210>
 		case 0x0f:
-			if(!tihw.protect) tihw.io2[addr] = arg;
-			return;
+			if(tihw.protect)
+				return;
+			for(i = 0; i < 8; i++)
+				tihw.ram_exec[56+i] = arg & (1 << i);
 		case 0x11:	// -w <76543210>
 			break;
 		case 0x12:

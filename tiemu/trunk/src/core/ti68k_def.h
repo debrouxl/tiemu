@@ -136,8 +136,6 @@ typedef struct
     uchar   *unused;
     int     initial_pc;
 
-    int		protect;		// the Hardware Protection
-
     // timer.c
     uint8_t     timer_value;
     uint8_t     timer_init;
@@ -147,6 +145,10 @@ typedef struct
 
 	// hardware.c
 
+	// protection
+	int		protect;		// hw protection state
+	int		archive_limit;	// archive memory limit
+	int		ram_exec[64];	// RAM page execution protection bitmask
 
 } Ti68kHardware;
 

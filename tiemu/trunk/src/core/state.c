@@ -138,6 +138,9 @@ int ti68k_state_load(char *filename)
 	tihw.on_off = thw.on_off;
 	tihw.lcd_adr = thw.lcd_adr;
 	tihw.contrast = thw.contrast;
+	tihw.protect = thw.protect;
+	tihw.archive_limit = thw.archive_limit;
+	memcpy(tihw.ram_exec, thw.ram_exec, 32);
 
 	// Load modified FLASH segments
 	ret = fseek(f, sav.rom_offset, SEEK_SET);
