@@ -33,7 +33,7 @@
 	      <property name="visible">True</property>
 	      <property name="label">gtk-add</property>
 	      <property name="use_stock">True</property>
-	      <signal name="clicked" handler="dbgbkpts_button1_clicked" last_modification_time="Fri, 04 Jun 2004 05:57:39 GMT"/>
+	      <signal name="clicked" handler="dbgbkpts_button1_clicked" object="treeview1" last_modification_time="Fri, 04 Jun 2004 05:57:39 GMT"/>
 	    </widget>
 	  </child>
 
@@ -42,7 +42,7 @@
 	      <property name="visible">True</property>
 	      <property name="label">gtk-remove</property>
 	      <property name="use_stock">True</property>
-	      <signal name="clicked" handler="dbgbkpts_button2_clicked" last_modification_time="Fri, 04 Jun 2004 05:57:28 GMT"/>
+	      <signal name="clicked" handler="dbgbkpts_button2_clicked" object="treeview1" last_modification_time="Fri, 04 Jun 2004 05:57:28 GMT"/>
 	    </widget>
 	  </child>
 

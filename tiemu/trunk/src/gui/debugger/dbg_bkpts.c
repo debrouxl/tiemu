@@ -63,7 +63,7 @@ static GtkListStore* clist_create(GtkWidget *list)
 	}
 	
 	selection = gtk_tree_view_get_selection(view);
-	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
 
 	return store;
 }
@@ -212,11 +212,12 @@ gint display_dbgbkpts_window(void)
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
 	clist_refresh(store);
+    printf("<%p>\n", data);
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
 
-	gtk_window_resize(GTK_WINDOW(dbox), 320, 120);
+	gtk_window_resize(GTK_WINDOW(dbox), 350, 120);
     gtk_widget_show(GTK_WIDGET(dbox));
 
 	return 0;
@@ -255,7 +256,7 @@ on_dbgbkpts_window_destroy             (GtkObject       *object,
 
 }
 
-
+/* Add bkpt */
 GLADE_CB void
 dbgbkpts_button1_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
@@ -270,12 +271,33 @@ dbgbkpts_button1_clicked                     (GtkButton       *button,
 	gtk_widget_show(menu);
 }
 
-
+/* Remove bkpt */
 GLADE_CB void
 dbgbkpts_button2_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+    GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GList *l;
+	
+	// get selection
+	selection = gtk_tree_view_get_selection(view);
+	for (l = gtk_tree_selection_get_selected_rows(selection, &model);
+	     l != NULL; l = l->next) 
+	{
+		GtkTreeIter iter;
+		GtkTreePath *path = l->data;
+        gchar *str;
+			
+		gtk_tree_model_get_iter(model, &iter, path);
+		gtk_tree_model_get(model, &iter, COL_SYMBOL, &str, -1);
+		
+		//ti68k_bkpt_set_exception(n);
+        printf("sel: <%s>\n", str);
+        g_free(str);
+    }
 }
 
 
