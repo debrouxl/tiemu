@@ -319,7 +319,7 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 			mem_ptr = ti68k_get_real_address(addr + (i-COL_0));
 
 			str = g_strdup_printf("%02x", *mem_ptr);
-			ascii[i-COL_0] = (isprint(*mem_ptr) ? *mem_ptr : '.');
+			ascii[i-COL_0] = (isprint(*mem_ptr) && !iscntrl(*mem_ptr) ? *mem_ptr : '.');
 /*
             if(*old_ptr != *mem_ptr)
             {
