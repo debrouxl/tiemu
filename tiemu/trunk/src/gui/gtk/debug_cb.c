@@ -303,7 +303,7 @@ gint refresh_register_dbox(void)
 */
 
 /* Utility function */
-gint refresh_breakpoints(GtkWidget *widget)
+gint refresh_breakpoints(void)
 {
   GtkWidget *clist = code_clist;
   GtkTreeModel *model;
@@ -322,7 +322,7 @@ gint refresh_breakpoints(GtkWidget *widget)
   if (gtk_tree_model_get_iter(model, &iter, path) == FALSE)
     {
       gtk_tree_path_free(path);
-      return 1;
+      return -1;
     }
 
   gtk_tree_path_free(path);
@@ -381,53 +381,78 @@ gint refresh_breakpoints(GtkWidget *widget)
 
 gint refresh_code_dbox(void)
 {
-#if 0 /* FUCKED */
   GtkWidget *clist = code_clist;
-  gchar *text[3];
-  gint i, k;
-  gint addr = ti68k_getPcRegister();
+  GtkTreeModel *model;
+  GtkListStore *list;
+  GtkTreeIter iter;
+  GtkTreePath *path;
+  gchar *text[2];
+  gint i;
+  gint addr_active = ti68k_getPcRegister();
+  gint addr;
+  gpointer addrp;
   gint offset;
   gchar buffer[MAXCHARS];
-  gint row;
-
-  //fprintf(stderr, "PC: %06X\n", getPcRegister());
-  row = gtk_clist_find_row_from_data((GtkCList *)clist, 
-				     GINT_TO_POINTER(ti68k_getPcRegister()));
-  //fprintf(stdout, "row: %i\n", row);
-  if(row != -1)
-    { // row not found: address is outside, reload disasm
-      refresh_breakpoints(debugger_dbox);
+  gboolean found;
+  
+  path = gtk_tree_path_new_from_indices(0, -1);
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
+  list = GTK_LIST_STORE(model);
+  if (gtk_tree_model_get_iter(model, &iter, path) == FALSE)
+    {
+      gtk_tree_path_free(path);
       return -1;
     }
 
-  /* Fill the clist */
+  gtk_tree_path_free(path);
 
-  for(i=0; i<options.code_lines; i++)
-    gtk_clist_remove((GtkCList *)clist, 0);
+  found = FALSE;
+  do
+    {
+      /* Get addr from the clist */
+      gtk_tree_model_get(model, &iter, 3, &addrp);
+      addr = GPOINTER_TO_INT(addrp);
+
+      if (addr == addr_active)
+	{
+	  found = TRUE;
+	  break;
+	}
+    }
+  while (gtk_tree_model_iter_next(model, &iter) == TRUE);
+
+  if (found == TRUE)
+    {
+      /* row found, no need to reload */
+      refresh_breakpoints();
+      return 0;
+    }
+
+  /* Reload the CList */
+  list = GTK_LIST_STORE(model);
+  gtk_list_store_clear(list);
+
   for(i=0; i<options.code_lines; i++)
     {
       offset = ti68k_disasm(addr, buffer);
-      text[1] = g_strdup(buffer);
-      text[1][9] = '\0';
-      text[2] = g_strdup(buffer+10);
- 
-      gtk_clist_append((GtkCList *)clist, row_text);
-      gtk_clist_set_row_data((GtkCList *)clist, i, 
-			     GINT_TO_POINTER(addr)); // add addr to clist data
+      text[0] = g_strdup(buffer);
+      text[0][9] = '\0';
+      text[1] = g_strdup(buffer+10);
+
+      gtk_list_store_append(list, &iter);
+      gtk_list_store_set(list, &iter, 1, text[0],
+			 2, text[1], 3, GINT_TO_POINTER(addr),
+			 -1);
       //fprintf(stderr, "%i: %06X\n", i, addr);
 
       addr += offset;
 
-      for(k=0; k<3; k++)
-	{
-	  g_free(text[k]);
-	} 
+      g_free(text[0]);
+      g_free(text[1]);
     }
 
   /* Refresh breakpoints */
-  //printf("clist pointer: %p\n", clist);
-  refresh_breakpoints(debugger_dbox);
-#endif /* 0 */
+  refresh_breakpoints();
 
   return 0;
 }
@@ -568,7 +593,7 @@ on_step_over1_activate                 (GtkMenuItem     *menuitem,
   refresh_code_dbox();
 
   /* Refres_breakpoints */
-  refresh_breakpoints(code_clist);
+  refresh_breakpoints();
 }
 
 
@@ -608,8 +633,8 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
 
   refresh_code_dbox();
   
-  /* Refres_breakpoints */
-  refresh_breakpoints(code_clist);
+  /* Refresh breakpoints */
+  refresh_breakpoints();
 }
 
 
@@ -641,8 +666,8 @@ on_break1_activate                     (GtkMenuItem     *menuitem,
 
   refresh_code_dbox();
   
-  /* Refres_breakpoints */
-  refresh_breakpoints(code_clist);
+  /* Refresh breakpoints */
+  refresh_breakpoints();
 }
 
 
@@ -687,7 +712,7 @@ on_set_breakpoint_at_selection1_activate
 	      bkpt_address_list = g_list_remove(bkpt_address_list, s1);
 	      g_free(s1);
 	      printf("Bkpt toggled\n");
-	      refresh_breakpoints(code_clist);
+	      refresh_breakpoints();
 
 	      return;
 	    }
@@ -759,7 +784,7 @@ on_clear_all_breakpoints1_activate     (GtkMenuItem     *menuitem,
   bkpt_address_list = NULL;
 
   /* Refresh breakpoints */
-  refresh_breakpoints(code_clist);
+  refresh_breakpoints();
 }
 
 
@@ -991,8 +1016,8 @@ on_force_refresh1_activate             (GtkMenuItem     *menuitem,
 {
   refresh_code_dbox();
   
-  /* Refres_breakpoints */
-  refresh_breakpoints(code_clist);
+  /* Refresh breakpoints */
+  refresh_breakpoints();
 }
 
 /********************/
