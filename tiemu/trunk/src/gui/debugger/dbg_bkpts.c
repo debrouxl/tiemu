@@ -314,6 +314,7 @@ GtkWidget* dbgbkpts_create_window(void)
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgbkpts_window");
+	gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
 	statbar = glade_xml_get_widget(xml, "statusbar1");
 	
@@ -322,12 +323,6 @@ GtkWidget* dbgbkpts_create_window(void)
 	clist_populate(store);
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
-	gtk_widget_show(data);
-
-	gtk_window_resize(GTK_WINDOW(dbox), options3.bkpts.w, options3.bkpts.h);
-	gtk_window_move(GTK_WINDOW(dbox), options3.bkpts.x, options3.bkpts.y);
-
-    gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
 	already_open = !0;
 
@@ -340,10 +335,18 @@ GtkWidget* dbgbkpts_display_window(void)
 
 	if(!already_open)
 		wnd = dbgbkpts_create_window();
-    gtk_widget_show(wnd);
+    
+	if(!options3.bkpts.minimized)
+	{
+		gtk_window_resize(GTK_WINDOW(wnd), options3.bkpts.rect.w, options3.bkpts.rect.h);
+		gtk_window_move(GTK_WINDOW(wnd), options3.bkpts.rect.x, options3.bkpts.rect.y);
+	}
+	else
+		gtk_window_iconify(GTK_WINDOW(wnd));
 
 	gtk_list_store_clear(store);
     clist_populate(store);
+	gtk_widget_show(wnd);
 
 	display_dbgcause_dbox2(statbar);
 
@@ -352,7 +355,7 @@ GtkWidget* dbgbkpts_display_window(void)
 
 void dbgbkpts_refresh_window(void)
 {
-	if(dbgs.bkpts)
+	if(options3.bkpts.visible)
 	{
 		gtk_list_store_clear(store);
 		clist_populate(store);

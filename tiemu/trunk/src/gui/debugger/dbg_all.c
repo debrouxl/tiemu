@@ -36,7 +36,6 @@
 
 DbgOptions options3;
 DbgWidgets dbgw = { 0 };
-DbgStates dbgs = { 0 };
 
 int dbg_on = 0;
 
@@ -81,72 +80,72 @@ int gtk_debugger_enter(int context)
 }
 
 void gtk_debugger_refresh(void)
-{
-	if(dbgs.regs)
+{	
+	if(options3.regs.visible)
 		dbgregs_refresh_window();
-	if(dbgs.mem)
+	if(options3.mem.visible)
 		dbgmem_refresh_window();
-	if(dbgs.bkpts)
+	if(options3.bkpts.visible)
 		dbgbkpts_refresh_window();
-	if(dbgs.pclog)
+	if(options3.pclog.visible)
 		dbgpclog_refresh_window();
-	if(dbgs.code)
+	if(options3.code.visible)
 		dbgcode_refresh_window();
-    if(dbgs.stack)
+    if(options3.stack.visible)
 		dbgstack_refresh_window();
-	if(dbgs.heap)
+	if(options3.heap.visible)
 		dbgheap_refresh_window();
 }
 
 void set_other_windows_sensitivity(int state)
 {
-    if(dbgs.regs)
+    if(options3.regs.visible)
         gtk_widget_set_sensitive(dbgw.regs, state);
-    if(dbgs.bkpts)
+    if(options3.bkpts.visible)
         gtk_widget_set_sensitive(dbgw.bkpts, state);
-    if(dbgs.mem)
+    if(options3.mem.visible)
         gtk_widget_set_sensitive(dbgw.mem, state);
-    if(dbgs.pclog)
+    if(options3.pclog.visible)
         gtk_widget_set_sensitive(dbgw.pclog, state);
-    if(dbgs.stack)
+    if(options3.stack.visible)
         gtk_widget_set_sensitive(dbgw.stack, state);
-	if(dbgs.heap)
+	if(options3.heap.visible)
         gtk_widget_set_sensitive(dbgw.heap, state);
 }
 
 void gtk_debugger_minimize_all(int all)
 {
-    if(dbgs.regs)
+    if(options3.regs.visible)
         gtk_window_iconify(GTK_WINDOW(dbgw.regs));
-    if(dbgs.bkpts)
+    if(options3.bkpts.visible)
         gtk_window_iconify(GTK_WINDOW(dbgw.bkpts));
-    if(dbgs.mem)
+    if(options3.mem.visible)
         gtk_window_iconify(GTK_WINDOW(dbgw.mem));
-    if(dbgs.pclog)
+    if(options3.pclog.visible)
         gtk_window_iconify(GTK_WINDOW(dbgw.pclog));
-    if(dbgs.code & all)
+    if(options3.code.visible & all)
         gtk_window_iconify(GTK_WINDOW(dbgw.code));
-    if(dbgs.stack)
+    if(options3.stack.visible)
         gtk_window_iconify(GTK_WINDOW(dbgw.stack));
-	if(dbgs.heap)
+	if(options3.heap.visible)
         gtk_window_iconify(GTK_WINDOW(dbgw.heap));
 }
 
 void gtk_debugger_unminimize_all(int all)
 {
-    if(dbgs.regs)
+    if(options3.regs.visible)
         gtk_window_deiconify(GTK_WINDOW(dbgw.regs));
-    if(dbgs.bkpts)
+    if(options3.bkpts.visible)
         gtk_window_deiconify(GTK_WINDOW(dbgw.bkpts));
-    if(dbgs.mem)
+    if(options3.mem.visible)
         gtk_window_deiconify(GTK_WINDOW(dbgw.mem));
-    if(dbgs.pclog)
+    if(options3.pclog.visible)
         gtk_window_deiconify(GTK_WINDOW(dbgw.pclog));
-    if(dbgs.code & all)
+    if(options3.code.visible & all)
         gtk_window_deiconify(GTK_WINDOW(dbgw.code));
-    if(dbgs.stack)
+    if(options3.stack.visible)
         gtk_window_deiconify(GTK_WINDOW(dbgw.stack));
-	if(dbgs.heap)
+	if(options3.heap.visible)
         gtk_window_deiconify(GTK_WINDOW(dbgw.heap));
 }
 
@@ -155,19 +154,19 @@ void gtk_debugger_show_all(int all)
     if(!dbg_on)
         return;
 
-    if(!dbgs.regs)
+    if(!options3.regs.visible)
         gtk_widget_show(dbgw.regs);
-    if(!dbgs.bkpts)
+    if(!options3.bkpts.visible)
         gtk_widget_show(dbgw.bkpts);
-    if(!dbgs.mem)
+    if(!options3.mem.visible)
         gtk_widget_show(dbgw.mem);
-    if(!dbgs.pclog)
+    if(!options3.pclog.visible)
         gtk_widget_show(dbgw.pclog);
-    if(!dbgs.code && all)
+    if(!options3.code.visible && all)
         gtk_widget_show(dbgw.code);
-    if(!dbgs.stack)
+    if(!options3.stack.visible)
         gtk_widget_show(dbgw.stack);
-	if(!dbgs.heap)
+	if(!options3.heap.visible)
         gtk_widget_show(dbgw.heap);
 }
 
@@ -176,19 +175,19 @@ void gtk_debugger_hide_all(int all)
     if(!dbg_on)
         return;
 
-    if(dbgs.regs)
+    if(options3.regs.visible)
         gtk_widget_hide(dbgw.regs);
-    if(dbgs.bkpts)
+    if(options3.bkpts.visible)
         gtk_widget_hide(dbgw.bkpts);
-    if(dbgs.mem)
+    if(options3.mem.visible)
         gtk_widget_hide(dbgw.mem);
-    if(dbgs.pclog)
+    if(options3.pclog.visible)
         gtk_widget_hide(dbgw.pclog);
-    if(dbgs.code && all)
+    if(options3.code.visible && all)
         gtk_widget_hide(dbgw.code);
-    if(dbgs.stack)
+    if(options3.stack.visible)
         gtk_widget_hide(dbgw.stack);
-	if(dbgs.heap)
+	if(options3.heap.visible)
         gtk_widget_hide(dbgw.heap);
 }
 
@@ -303,11 +302,14 @@ on_maximize_all1_activate              (GtkMenuItem     *menuitem,
     gtk_debugger_unminimize_all(0);
 }
 
+extern void options3_set_default(void);
+
 GLADE_CB void
 on_restore_all1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	// restore windows with default settings
+	options3_set_default();
 }
 
 void update_submenu(GtkWidget *widget, gpointer user_data)
@@ -321,42 +323,42 @@ void update_submenu(GtkWidget *widget, gpointer user_data)
     elt = g_list_nth(list, 0);
     item = GTK_CHECK_MENU_ITEM(elt->data);
     g_signal_handlers_block_by_func(GTK_OBJECT(item), on_registers1_activate, NULL);
-    gtk_check_menu_item_set_active(item, dbgs.regs);
+    gtk_check_menu_item_set_active(item, options3.regs.visible);
     g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_registers1_activate, NULL);
 
     // bkpts
     elt = g_list_nth(list, 1);
     item = GTK_CHECK_MENU_ITEM(elt->data);
     g_signal_handlers_block_by_func(GTK_OBJECT(item), on_breakpoints1_activate, NULL);
-    gtk_check_menu_item_set_active(item, dbgs.bkpts);
+    gtk_check_menu_item_set_active(item, options3.bkpts.visible);
     g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_breakpoints1_activate, NULL);
 
     // mem
     elt = g_list_nth(list, 2);
     item = GTK_CHECK_MENU_ITEM(elt->data);
     g_signal_handlers_block_by_func(GTK_OBJECT(item), on_memory1_activate, NULL);
-    gtk_check_menu_item_set_active(item, dbgs.mem);
+    gtk_check_menu_item_set_active(item, options3.mem.visible);
     g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_memory1_activate, NULL);
 
     // pclog
     elt = g_list_nth(list, 3);
     item = GTK_CHECK_MENU_ITEM(elt->data);
     g_signal_handlers_block_by_func(GTK_OBJECT(item), on_pc_log1_activate, NULL);
-    gtk_check_menu_item_set_active(item, dbgs.pclog);
+    gtk_check_menu_item_set_active(item, options3.pclog.visible);
     g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_pc_log1_activate, NULL);
 
     // stack
     elt = g_list_nth(list, 4);
     item = GTK_CHECK_MENU_ITEM(elt->data);
     g_signal_handlers_block_by_func(GTK_OBJECT(item), on_stack_frame1_activate, NULL);
-    gtk_check_menu_item_set_active(item, dbgs.stack);
+    gtk_check_menu_item_set_active(item, options3.stack.visible);
     g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_stack_frame1_activate, NULL);
 	
 	// heap
     elt = g_list_nth(list, 5);
     item = GTK_CHECK_MENU_ITEM(elt->data);
     g_signal_handlers_block_by_func(GTK_OBJECT(item), on_heap_frame1_activate, NULL);
-    gtk_check_menu_item_set_active(item, dbgs.heap);
+    gtk_check_menu_item_set_active(item, options3.heap.visible);
     g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_heap_frame1_activate, NULL);
 }
 
@@ -382,17 +384,16 @@ on_dbgregs_window_state_event		   (GtkWidget       *widget,
 
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
-		dbgs.regs = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-		if(dbgs.regs)
+		options3.regs.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
+		if(options3.regs.visible)
 		{
-			gtk_window_get_size(GTK_WINDOW(widget), &options3.regs.w, &options3.regs.h);
-			gtk_window_get_position(GTK_WINDOW(widget), &options3.regs.x, &options3.regs.y);
+			gtk_window_get_size(GTK_WINDOW(widget), &options3.regs.rect.w, &options3.regs.rect.h);
+			gtk_window_get_position(GTK_WINDOW(widget), &options3.regs.rect.x, &options3.regs.rect.y);
 		}
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
-	{
-	}
+		options3.regs.minimized = state & GDK_WINDOW_STATE_ICONIFIED;
 }
 
 // callbacks from dbg_pclog.c
@@ -416,17 +417,16 @@ on_dbgpclog_window_state_event		   (GtkWidget       *widget,
 
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
-		dbgs.pclog = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-		if(dbgs.pclog)
+		options3.pclog.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
+		if(options3.pclog.visible)
 		{
-			gtk_window_get_size(GTK_WINDOW(widget), &options3.pclog.w, &options3.pclog.h);
-			gtk_window_get_position(GTK_WINDOW(widget), &options3.pclog.x, &options3.pclog.y);
+			gtk_window_get_size(GTK_WINDOW(widget), &options3.pclog.rect.w, &options3.pclog.rect.h);
+			gtk_window_get_position(GTK_WINDOW(widget), &options3.pclog.rect.x, &options3.pclog.rect.y);
 		}
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
-	{
-	}
+		options3.pclog.minimized = state & GDK_WINDOW_STATE_ICONIFIED;
 }
 
 // callbacks from dbg_mem.c
@@ -451,17 +451,16 @@ on_dbgmem_window_state_event		   (GtkWidget       *widget,
 
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
-		dbgs.mem = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-		if(dbgs.mem)
+		options3.mem.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
+		if(options3.mem.visible)
 		{
-			gtk_window_get_size(GTK_WINDOW(widget), &options3.mem.w, &options3.mem.h);
-			gtk_window_get_position(GTK_WINDOW(widget), &options3.mem.x, &options3.mem.y);
+			gtk_window_get_size(GTK_WINDOW(widget), &options3.mem.rect.w, &options3.mem.rect.h);
+			gtk_window_get_position(GTK_WINDOW(widget), &options3.mem.rect.x, &options3.mem.rect.y);
 		}
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
-	{
-	}
+		options3.mem.minimized = state & GDK_WINDOW_STATE_ICONIFIED;
 }
 
 // callbacks from dbg_code.c
@@ -487,17 +486,16 @@ on_dbgcode_window_state_event		   (GtkWidget       *widget,
 
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
-		dbgs.code = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-		if(dbgs.code)
+		options3.code.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
+		if(options3.code.visible)
 		{
-			gtk_window_get_size(GTK_WINDOW(widget), &options3.code.w, &options3.code.h);
-			gtk_window_get_position(GTK_WINDOW(widget), &options3.code.x, &options3.code.y);
+			gtk_window_get_size(GTK_WINDOW(widget), &options3.code.rect.w, &options3.code.rect.h);
+			gtk_window_get_position(GTK_WINDOW(widget), &options3.code.rect.x, &options3.code.rect.y);
 		}
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
-	{
-	}
+		options3.code.minimized = state & GDK_WINDOW_STATE_ICONIFIED;
 }
 
 // callbacks from dbg_bkpts.c
@@ -522,17 +520,16 @@ on_dbgbkpts_window_state_event		   (GtkWidget       *widget,
 
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
-		dbgs.bkpts = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-		if(dbgs.bkpts)
+		options3.bkpts.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
+		if(options3.bkpts.visible)
 		{
-			gtk_window_get_size(GTK_WINDOW(widget), &options3.bkpts.w, &options3.bkpts.h);
-			gtk_window_get_position(GTK_WINDOW(widget), &options3.bkpts.x, &options3.bkpts.y);
+			gtk_window_get_size(GTK_WINDOW(widget), &options3.bkpts.rect.w, &options3.bkpts.rect.h);
+			gtk_window_get_position(GTK_WINDOW(widget), &options3.bkpts.rect.x, &options3.bkpts.rect.y);
 		}
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
-	{
-	}
+		options3.bkpts.minimized = state & GDK_WINDOW_STATE_ICONIFIED;
 }
 
 // callbacks from dbg_stack.c
@@ -556,17 +553,16 @@ on_dbgstack_window_state_event		   (GtkWidget       *widget,
 
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
-		dbgs.stack = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-		if(dbgs.stack)
+		options3.stack.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
+		if(options3.stack.visible)
 		{
-			gtk_window_get_size(GTK_WINDOW(widget), &options3.stack.w, &options3.stack.h);
-			gtk_window_get_position(GTK_WINDOW(widget), &options3.stack.x, &options3.stack.y);
+			gtk_window_get_size(GTK_WINDOW(widget), &options3.stack.rect.w, &options3.stack.rect.h);
+			gtk_window_get_position(GTK_WINDOW(widget), &options3.stack.rect.x, &options3.stack.rect.y);
 		}
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
-	{
-	}
+		options3.stack.minimized = state & GDK_WINDOW_STATE_ICONIFIED;
 }
 
 // callbacks from dbg_heap.c
@@ -590,17 +586,25 @@ on_dbgheap_window_state_event		   (GtkWidget       *widget,
 
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
-		dbgs.heap = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-		if(dbgs.heap)
+		options3.heap.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
+		if(options3.heap.visible)
 		{
-			gtk_window_get_size(GTK_WINDOW(widget), &options3.heap.w, &options3.heap.h);
-			gtk_window_get_position(GTK_WINDOW(widget), &options3.heap.x, &options3.heap.y);
+			gtk_window_get_size(GTK_WINDOW(widget), &options3.heap.rect.w, &options3.heap.rect.h);
+			gtk_window_get_position(GTK_WINDOW(widget), &options3.heap.rect.x, &options3.heap.rect.y);
 		}
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
-	{
-	}
+		options3.heap.minimized = state & GDK_WINDOW_STATE_ICONIFIED;
 }
 
 // misc
+
+// Common remplacement for gtk_window_(de)iconify)
+void gtk_window_minimize(GtkWindow *window, gboolean action)
+{
+	if(action)
+		gtk_window_iconify(window);
+	else
+		gtk_window_deiconify(window);
+}

@@ -137,18 +137,13 @@ GtkWidget* dbgpclog_create_window(void)
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgpclog_window");
+	gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
 	clist_populate(store);
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
-	gtk_widget_show(data);
-
-	gtk_window_resize(GTK_WINDOW(dbox), options3.pclog.w, options3.pclog.h);
-	gtk_window_move(GTK_WINDOW(dbox), options3.pclog.x, options3.pclog.y);
-
-    gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
 	already_open = !0;
 
@@ -161,16 +156,24 @@ GtkWidget* dbgpclog_display_window(void)
 
 	if(!already_open)
 		wnd = dbgpclog_create_window();
-    gtk_widget_show(wnd);
+    
+	if(!options3.pclog.minimized)
+	{
+		gtk_window_resize(GTK_WINDOW(wnd), options3.pclog.rect.w, options3.pclog.rect.h);
+		gtk_window_move(GTK_WINDOW(wnd), options3.pclog.rect.x, options3.pclog.rect.y);
+	}
+	else
+		gtk_window_iconify(GTK_WINDOW(wnd));
 
 	clist_refresh(store);
+	gtk_widget_show(wnd);
 
 	return wnd;
 }
 
 void dbgpclog_refresh_window(void)
 {
-	if(dbgs.pclog)
+	if(options3.pclog.visible)
 	{
 		clist_refresh(store);
 	}

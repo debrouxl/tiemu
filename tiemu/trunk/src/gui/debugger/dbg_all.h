@@ -13,6 +13,8 @@
 #include "dbg_heap.h"
 #include "dbg_entry.h"
 
+/* Definitions */
+
 typedef struct {
     GtkWidget *mem;
     GtkWidget *regs;
@@ -24,16 +26,7 @@ typedef struct {
 } DbgWidgets;
 extern DbgWidgets dbgw;
 
-typedef struct {
-    gint    mem;
-    gint    regs;
-    gint    bkpts;
-    gint    code;
-    gint    pclog;
-    gint    stack;
-	gint	heap;
-} DbgStates;
-extern DbgStates dbgs;
+/* Functions */
 
 void gtk_debugger_preload(void);
 int  gtk_debugger_enter(int context);
@@ -46,6 +39,8 @@ void gtk_debugger_unminimize_all(int all);
 
 void gtk_debugger_show_all(int all);
 void gtk_debugger_hide_all(int all);
+
+void gtk_window_minimize(GtkWindow *window, gboolean action);
 
 extern GtkWidget *main_wnd;
 

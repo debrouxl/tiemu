@@ -161,6 +161,7 @@ GtkWidget* dbgstack_create_window(void)
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgstack_window");
+	gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
 	notebook = glade_xml_get_widget(xml, "notebook1");
     gtk_notebook_popup_enable(GTK_NOTEBOOK(notebook));
@@ -176,12 +177,6 @@ GtkWidget* dbgstack_create_window(void)
     label = glade_xml_get_widget(xml, "label2");
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
-	gtk_widget_show(data);
-
-	gtk_window_resize(GTK_WINDOW(dbox), options3.stack.w, options3.stack.h);
-	gtk_window_move(GTK_WINDOW(dbox), options3.stack.x, options3.stack.y);
-
-    gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
 	already_open = !0;
 
@@ -194,17 +189,25 @@ GtkWidget* dbgstack_display_window(void)
 
 	if(!already_open)
 		wnd = dbgstack_create_window();
-    gtk_widget_show(wnd);
+    
+	if(!options3.stack.minimized)
+	{
+		gtk_window_resize(GTK_WINDOW(wnd), options3.stack.rect.w, options3.stack.rect.h);
+		gtk_window_move(GTK_WINDOW(wnd), options3.stack.rect.x, options3.stack.rect.y);
+	}
+	else
+		gtk_window_iconify(GTK_WINDOW(wnd));
 
 	clist_refresh(store1, TARGET_SP);
 	clist_refresh(store2, TARGET_FP);
+	gtk_widget_show(wnd);
 
 	return wnd;
 }
 
 void dbgstack_refresh_window(void)
 {
-	if(dbgs.stack)
+	if(options3.stack.visible)
 	{
 		clist_refresh(store1, TARGET_SP);
 		clist_refresh(store2, TARGET_FP);

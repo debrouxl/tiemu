@@ -402,16 +402,12 @@ GtkWidget* dbgmem_create_window(void)
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgmem_window");
+	gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
     notebook = glade_xml_get_widget(xml, "notebook1");
     gtk_notebook_popup_enable(GTK_NOTEBOOK(notebook));
     
 	notebook_add_page(notebook, "0x000000");
-
-    gtk_window_resize(GTK_WINDOW(dbox), options3.mem.w, options3.mem.h);
-    gtk_window_move(GTK_WINDOW(dbox), options3.mem.x, options3.mem.y);
-
-    gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
 	already_open = !0;
 
@@ -424,16 +420,24 @@ GtkWidget* dbgmem_display_window(void)
 
 	if(!already_open)
 		wnd = dbgmem_create_window();
-    gtk_widget_show(wnd);
+    
+	if(!options3.mem.minimized)
+	{
+		gtk_window_resize(GTK_WINDOW(wnd), options3.mem.rect.w, options3.mem.rect.h);
+		gtk_window_move(GTK_WINDOW(wnd), options3.mem.rect.x, options3.mem.rect.y);
+	}
+	else
+		gtk_window_iconify(GTK_WINDOW(wnd));
 
 	refresh_page(0, 0);
+	gtk_widget_show(wnd);
 
     return wnd;
 }
 
 void dbgmem_refresh_window(void)
 {
-	if(dbgs.mem)
+	if(options3.mem.visible)
 	{
         GtkNotebook *nb = GTK_NOTEBOOK(notebook);
 	    gint page = gtk_notebook_get_current_page(nb);

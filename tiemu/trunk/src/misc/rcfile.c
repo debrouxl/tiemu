@@ -450,36 +450,61 @@ void rcfile_read(void)
 
 	if( (p=find_str(buffer, "bkpts_wnd=")) )
 	{
-	  sscanf(p, "(%i;%i;%i;%i)", &(options3.bkpts.x), &(options3.bkpts.y), 
-				&(options3.bkpts.w), &(options3.bkpts.h));
+	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
+		  &(options3.bkpts.rect.x), &(options3.bkpts.rect.y), 
+		  &(options3.bkpts.rect.w), &(options3.bkpts.rect.h),
+		  &(options3.bkpts.minimized), &(options3.bkpts.visible)
+		  );
 	  continue;
 	}
 	if( (p=find_str(buffer, "code_wnd=")) )
 	{
-	  sscanf(p, "(%i;%i;%i;%i)", &(options3.code.x), &(options3.code.y), 
-				&(options3.code.w), &(options3.code.h));
+	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
+		  &(options3.code.rect.x), &(options3.code.rect.y), 
+		  &(options3.code.rect.w), &(options3.code.rect.h),
+		  &(options3.code.minimized), &(options3.code.visible));
 	  continue;
 	}
 	if( (p=find_str(buffer, "mem_wnd=")) )
 	{
-	  sscanf(p, "(%i;%i;%i;%i)", &(options3.mem.x), &(options3.mem.y), 
-				&(options3.mem.w), &(options3.mem.h));
+	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
+		  &(options3.mem.rect.x), &(options3.mem.rect.y), 
+		  &(options3.mem.rect.w), &(options3.mem.rect.h),
+		  &(options3.mem.minimized), &(options3.mem.visible));
 	  continue;
 	}
 	if( (p=find_str(buffer, "regs_wnd=")) )
 	{
-	  sscanf(p, "(%i;%i;%i;%i)", &(options3.regs.x), &(options3.regs.y), 
-				&(options3.regs.w), &(options3.regs.h));
+	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
+		  &(options3.regs.rect.x), &(options3.regs.rect.y), 
+		  &(options3.regs.rect.w), &(options3.regs.rect.h),
+		  &(options3.regs.minimized), &(options3.regs.visible));
 	  continue;
 	}
 	if( (p=find_str(buffer, "pclog_wnd=")) )
 	{
-	  sscanf(p, "(%i;%i;%i;%i)", &(options3.pclog.x), &(options3.pclog.y), 
-				&(options3.pclog.w), &(options3.pclog.h));
+	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
+		  &(options3.pclog.rect.x), &(options3.pclog.rect.y), 
+		  &(options3.pclog.rect.w), &(options3.pclog.rect.h),
+		  &(options3.pclog.minimized), &(options3.pclog.visible));
 	  continue;
 	}
-
-	
+	if( (p=find_str(buffer, "stack_wnd=")) )
+	{
+	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
+		  &(options3.stack.rect.x), &(options3.stack.rect.y), 
+		  &(options3.stack.rect.w), &(options3.stack.rect.h),
+		  &(options3.stack.minimized), &(options3.stack.visible));
+	  continue;
+	}
+	if( (p=find_str(buffer, "heap_wnd=")) )
+	{
+	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
+		  &(options3.heap.rect.x), &(options3.heap.rect.y), 
+		  &(options3.heap.rect.w), &(options3.heap.rect.h),
+		  &(options3.heap.minimized), &(options3.heap.visible));
+	  continue;
+	}	
     }
   fclose(txt);
 
@@ -756,21 +781,41 @@ void rcfile_write(void)
   fprintf(txt, "kbd_dbg=%s\n", options.kbd_dbg ? "yes" : "no");
   fprintf(txt, "\n");
 
-	fprintf(txt, "# Geometry hints of debugger windows (x,y,w,h)\n");
-	fprintf(txt, "bkpts_wnd=(%i;%i;%i;%i)", options3.bkpts.x, options3.bkpts.y, 
-											options3.bkpts.w, options3.bkpts.h);
+	fprintf(txt, "# Geometry hints of debugger windows (x,y,w,h,m,v)\n");
+	fprintf(txt, "bkpts_wnd=(%i;%i;%i;%i;%i;%i)", 
+		options3.bkpts.rect.x, options3.bkpts.rect.y, 
+		options3.bkpts.rect.w, options3.bkpts.rect.h,
+		options3.bkpts.minimized, options3.bkpts.visible);
 	fprintf(txt, "\n");
-	fprintf(txt, "code_wnd=(%i;%i;%i;%i)", options3.code.x, options3.code.y, 
-											options3.code.w, options3.code.h);
+	fprintf(txt, "code_wnd=(%i;%i;%i;%i;%i;%i)", 
+		options3.code.rect.x, options3.code.rect.y, 
+		options3.code.rect.w, options3.code.rect.h,
+		options3.code.minimized, options3.code.visible);
 	fprintf(txt, "\n");
-	fprintf(txt, "mem_wnd=(%i;%i;%i;%i)", options3.mem.x, options3.mem.y, 
-											options3.mem.w, options3.mem.h);
+	fprintf(txt, "mem_wnd=(%i;%i;%i;%i;%i;%i)", 
+		options3.mem.rect.x, options3.mem.rect.y, 
+		options3.mem.rect.w, options3.mem.rect.h,
+		options3.mem.minimized, options3.mem.visible);
 	fprintf(txt, "\n");
-	fprintf(txt, "regs_wnd=(%i;%i;%i;%i)", options3.regs.x, options3.regs.y, 
-											options3.regs.w, options3.regs.h);
+	fprintf(txt, "regs_wnd=(%i;%i;%i;%i;%i;%i)", 
+		options3.regs.rect.x, options3.regs.rect.y, 
+		options3.regs.rect.w, options3.regs.rect.h,
+		options3.regs.minimized, options3.regs.visible);
 	fprintf(txt, "\n");
-	fprintf(txt, "pclog_wnd=(%i;%i;%i;%i)", options3.pclog.x, options3.pclog.y, 
-											options3.pclog.w, options3.pclog.h);
+	fprintf(txt, "pclog_wnd=(%i;%i;%i;%i;%i;%i)", 
+		options3.pclog.rect.x, options3.pclog.rect.y, 
+		options3.pclog.rect.w, options3.pclog.rect.h,
+		options3.pclog.minimized, options3.pclog.visible);
+	fprintf(txt, "\n");
+	fprintf(txt, "stack_wnd=(%i;%i;%i;%i;%i;%i)", 
+		options3.stack.rect.x, options3.stack.rect.y, 
+		options3.stack.rect.w, options3.stack.rect.h,
+		options3.stack.minimized, options3.stack.visible);
+	fprintf(txt, "\n");
+	fprintf(txt, "heap_wnd=(%i;%i;%i;%i;%i;%i)", 
+		options3.heap.rect.x, options3.heap.rect.y, 
+		options3.heap.rect.w, options3.heap.rect.h,
+		options3.heap.minimized, options3.heap.visible);
 	fprintf(txt, "\n");
 
 	fprintf(txt, "\n");
@@ -781,6 +826,8 @@ void rcfile_write(void)
 
   fclose(txt);
 }
+
+extern void options3_set_default(void);
 
 /*
   Initialize the options structure with some default values
@@ -809,42 +856,60 @@ int rcfile_default()
 	options2.format = IMG_PNG;
 	options2.size = IMG_SKIN;	//IMG_LCD;
 
-	// Optimized for 1024x768
-	options3.bkpts.x = 490;
-	options3.bkpts.y = 380;
-	options3.bkpts.w = 320;
-	options3.bkpts.h = 120;
-
-	options3.code.x = 490;
-	options3.code.y = 30;
-	options3.code.w = 320;
-	options3.code.h = 240;
-
-	options3.mem.x = 0;
-	options3.mem.y = 380;
-	options3.mem.w = 480;
-	options3.mem.h = 200;
-
-	options3.regs.x = 830;
-	options3.regs.y = 0;
-	options3.regs.w = 180;
-	options3.regs.h = 540;
-
-	options3.pclog.x = 0;
-	options3.pclog.y = 0;
-	options3.pclog.w = 160;
-	options3.pclog.h = 240;
-
-    options3.stack.x = 0;
-    options3.stack.y = 0;
-    options3.stack.w = 160;
-    options3.stack.h = 240;
-
-	options3.heap.x = 0;
-	options3.heap.y = 0;
-	options3.heap.w = 160;
-	options3.heap.h = 240;
+	options3_set_default();	
 
 	return 0;
 }
 
+void options3_set_default(void)
+{
+	// Optimized for 1024x768
+	options3.bkpts.rect.x = 490;
+	options3.bkpts.rect.y = 380;
+	options3.bkpts.rect.w = 320;
+	options3.bkpts.rect.h = 120;
+	options3.bkpts.visible = !0;
+	options3.bkpts.minimized = 0;
+
+	options3.code.rect.x = 490;
+	options3.code.rect.y = 30;
+	options3.code.rect.w = 320;
+	options3.code.rect.h = 240;
+	options3.bkpts.visible = !0;
+	options3.bkpts.minimized = 0;
+
+	options3.mem.rect.x = 0;
+	options3.mem.rect.y = 380;
+	options3.mem.rect.w = 480;
+	options3.mem.rect.h = 200;
+	options3.mem.visible = !0;
+	options3.mem.minimized = 0;
+
+	options3.regs.rect.x = 830;
+	options3.regs.rect.y = 0;
+	options3.regs.rect.w = 180;
+	options3.regs.rect.h = 540;
+	options3.regs.visible = !0;
+	options3.regs.minimized = 0;
+
+	options3.pclog.rect.x = 0;
+	options3.pclog.rect.y = 0;
+	options3.pclog.rect.w = 160;
+	options3.pclog.rect.h = 240;
+	options3.pclog.visible = !0;
+	options3.pclog.minimized = 0;
+
+    options3.stack.rect.x = 0;
+    options3.stack.rect.y = 0;
+    options3.stack.rect.w = 160;
+    options3.stack.rect.h = 240;
+	options3.stack.visible = !0;
+	options3.stack.minimized = 0;
+
+	options3.heap.rect.x = 0;
+	options3.heap.rect.y = 0;
+	options3.heap.rect.w = 160;
+	options3.heap.rect.h = 240;
+	options3.heap.visible = !0;
+	options3.heap.minimized = 0;
+}

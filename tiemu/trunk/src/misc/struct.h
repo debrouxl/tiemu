@@ -76,13 +76,13 @@ typedef struct {
 } WinState;
 
 typedef struct {
-	GdkRect bkpts;
-	GdkRect code;
-	GdkRect mem;
-	GdkRect regs;
-    GdkRect pclog;
-    GdkRect stack;
-	GdkRect	heap;
+	WinState	bkpts;
+	WinState	code;
+	WinState	mem;
+	WinState	regs;
+    WinState	pclog;
+    WinState	stack;
+	WinState	heap;
 } DbgOptions;
 
 extern TieOptions options;

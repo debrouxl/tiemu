@@ -570,18 +570,13 @@ GtkWidget* dbgregs_create_window(void)
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgregs_window");
+	gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
 	data = glade_xml_get_widget(xml, "treeview1");
     store = ctree_create(data);
 	ctree_populate(store);
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
-	gtk_widget_show(data);
-
-	gtk_window_resize(GTK_WINDOW(dbox), options3.regs.w, options3.regs.h);
-	gtk_window_move(GTK_WINDOW(dbox), options3.regs.x, options3.regs.y);
-
-    gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
 	already_open = !0;
 
@@ -594,16 +589,24 @@ GtkWidget* dbgregs_display_window(void)
 
 	if(!already_open)
 		wnd = dbgregs_create_window();
-    gtk_widget_show(wnd);
 
+	if(!options3.regs.minimized)
+	{
+		gtk_window_resize(GTK_WINDOW(wnd), options3.regs.rect.w, options3.regs.rect.h);
+		gtk_window_move(GTK_WINDOW(wnd), options3.regs.rect.x, options3.regs.rect.y);
+	}
+	else
+		gtk_window_iconify(GTK_WINDOW(wnd));
+    
 	ctree_refresh(store);
+	gtk_widget_show(wnd);
 
 	return wnd;
 }
 
 void dbgregs_refresh_window(void)
 {
-	if(dbgs.regs)
+	if(options3.regs.visible)
 	{
 		ctree_refresh(store);
 	}

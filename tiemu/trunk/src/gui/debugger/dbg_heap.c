@@ -144,18 +144,13 @@ GtkWidget* dbgheap_create_window(void)
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgheap_window");
+	gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
 	clist_populate(store);
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
-	gtk_widget_show(data);
-
-	gtk_window_resize(GTK_WINDOW(dbox), options3.heap.w, options3.heap.h);
-	gtk_window_move(GTK_WINDOW(dbox), options3.heap.x, options3.heap.y);
-
-    gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
 	already_open = !0;
 
@@ -168,16 +163,24 @@ GtkWidget* dbgheap_display_window(void)
 
 	if(!already_open)
 		wnd = dbgheap_create_window();
-    gtk_widget_show(wnd);
+    
+	if(!options3.heap.minimized)
+	{
+		gtk_window_resize(GTK_WINDOW(wnd), options3.heap.rect.w, options3.heap.rect.h);
+		gtk_window_move(GTK_WINDOW(wnd), options3.heap.rect.x, options3.heap.rect.y);
+	}
+	else
+		gtk_window_iconify(GTK_WINDOW(wnd));
 
 	clist_refresh(store);
+	gtk_widget_show(wnd);
 
 	return wnd;
 }
 
 void dbgheap_refresh_window(void)
 {
-	if(dbgs.heap)
+	if(options3.heap.visible)
 	{
 		clist_refresh(store);
 	}

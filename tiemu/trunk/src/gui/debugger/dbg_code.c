@@ -317,6 +317,7 @@ GtkWidget* dbgcode_create_window(void)
 	glade_xml_signal_autoconnect(xml);
 
 	dbox = glade_xml_get_widget(xml, "dbgcode_window");
+	gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
     data = glade_xml_get_widget(xml, "windows1_menu");
     g_signal_connect(G_OBJECT(data), "map", G_CALLBACK(update_submenu), NULL);
@@ -347,11 +348,6 @@ GtkWidget* dbgcode_create_window(void)
 	dbgromcall_create_window(combo);
 	dbgromcall_refresh_window(combo);
 
-	gtk_window_resize(GTK_WINDOW(dbox), options3.code.w, options3.code.h);
-	gtk_window_move(GTK_WINDOW(dbox), options3.code.x, options3.code.y);
-
-    gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
-
 	already_open = !0;
 
 	return dbox;
@@ -363,7 +359,14 @@ GtkWidget* dbgcode_display_window(void)
 
 	if(!already_open)
 		wnd = dbgcode_create_window();
-    gtk_widget_show(wnd);
+    
+	if(!options3.code.minimized)
+	{
+		gtk_window_resize(GTK_WINDOW(wnd), options3.code.rect.w, options3.code.rect.h);
+		gtk_window_move(GTK_WINDOW(wnd), options3.code.rect.x, options3.code.rect.y);
+	}
+	else
+		gtk_window_iconify(GTK_WINDOW(wnd));
 
 	gtk_widget_set_sensitive(list, TRUE);	
 	tb_set_states(1, 1, 1, 1, 1, 0, 1);
@@ -373,13 +376,14 @@ GtkWidget* dbgcode_display_window(void)
 	clist_refresh(store, TRUE);
 
 	dbgromcall_refresh_window(combo);
+	gtk_widget_show(wnd);
 
     return wnd;
 }
 
 void dbgcode_refresh_window(void)
 {
-	if(dbgs.code)
+	if(options3.code.visible)
 	{
 		gtk_list_store_clear(store);
 		clist_refresh(store, TRUE);
