@@ -46,7 +46,7 @@ SKIN_INFOS skin_infos = { 0 };
 static int skin_loaded = 0;
 
 // taken from skinedit/src/skinops.c/load_skin_tiemu()
-static int skin_read_header(const char *filename,SKIN_INFOS* infos)
+int skin_read_header(const char *filename,SKIN_INFOS* infos)
 {
 	FILE *fp = NULL;
   	int i;
@@ -148,12 +148,11 @@ static int skin_read_header(const char *filename,SKIN_INFOS* infos)
     	return 0;
 }
 
-static int skin_read_image(const char *filename, SKIN_INFOS* infos)
+int skin_read_image(const char *filename, SKIN_INFOS* infos)
 {
 	FILE *fp = NULL;
   	uint32_t endian;
   	uint32_t jpeg_offset;
-  	uint32_t length;
   	struct jpeg_decompress_struct cinfo;
    	struct jpeg_error_mgr jerr;
 	int i, j;
@@ -223,7 +222,7 @@ static int skin_read_image(const char *filename, SKIN_INFOS* infos)
     	// Load jpeg image line by line //c += xx*yy;
     	while (cinfo.output_scanline < cinfo.output_height) {
 		p += skin_infos.width;
-		jpeg_read_scanlines(&cinfo, &p, 1);
+		jpeg_read_scanlines(&cinfo, (JSAMPARRAY)&p, 1);
     	}
 
     	// Close JPEG

@@ -102,7 +102,7 @@ static int pos_to_key(int x, int y);
 #define SCREEN_OFF 0
 
 /* External GUI dependant function, called for showing popup menu */
-void hid_popup_menu(SDL_MouseButtonEvent event);
+void gui_popup_menu(void);
 
 /* Note */
 /* TI89: RGB = 49:46:34 & 204:204:207 */
@@ -233,6 +233,8 @@ static int hid_restart_subsystem(void)
 {
 	hid_quit_subsystem();
 	hid_init_subsystem();
+	
+	return 0;
 }
 
 int hid_init(void)

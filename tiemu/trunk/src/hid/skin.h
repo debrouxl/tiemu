@@ -123,7 +123,7 @@ int skin_load(const char *filename);
 int skin_unload(void);
 
 int skin_read_header(const char* filename, SKIN_INFOS* infos);
-int skin_read_imager(const char* filename, SKIN_INFOS* infos);
+int skin_read_image (const char* filename, SKIN_INFOS* infos);
 
 
 #endif

@@ -34,6 +34,7 @@
 
 #include "intl.h"
 #include "printl.h"
+#include "user_cb.h"
 
 /*
   This function can take 2 parameters:
@@ -46,7 +47,7 @@ int tiemu_error(int err_code, char *err_str)
 	char s[512];
 
 	if(!err_code && !err_str)
-		return;
+		return 0;
 
 	if(err_code) {
 		/* Retrieve the error message */
