@@ -124,6 +124,7 @@ typedef struct
     int     contrast;
 	int		log_w;			// LCD logical width
 	int		log_h;			// LCD logical height
+	int		on_off;
 
     // linkport.c
 	int		lc_speedy;		// speedy mode for direct file

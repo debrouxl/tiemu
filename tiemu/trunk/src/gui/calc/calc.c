@@ -401,8 +401,8 @@ int  hid_init(void)
     }	
     
     // Draw the skin and compute grayscale palette
+	redraw_skin();
   	compute_grayscale();
-  	redraw_skin();
 
     // Init the planar/chunky conversion table for LCD
   	compute_convtable();
@@ -410,9 +410,7 @@ int  hid_init(void)
     // Install LCD refresh: 100 FPS (10 ms)
     tid = g_timeout_add((params.lcd_rate == -1) ? 10 : params.lcd_rate, 
 		(GtkFunction)hid_refresh, NULL);
-
-	hid_lcd_on_off(1);
-
+	
     return 0;
 }
 

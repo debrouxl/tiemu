@@ -43,7 +43,7 @@
 #define BPP 8               // 8 bits per pixel
 #define NGS 16              // Number of gray scales
 
-#define SCREEN_ON   1
+#define SCREEN_ON   (!0)
 #define SCREEN_OFF	0
 
 /* Variables */
@@ -61,7 +61,7 @@ WND_INFOS	wi;
 
 static uint32_t convtab[512];      	// planar to chunky conversion table
 static RGB      grayscales[16];		// gray scales rgb values (colormap)
-static int		lcd_state = 0;      // screen state
+static int		lcd_state = -1;     // screen state
 
 static int contrast = NGS;          // current contrast level
 static int old_contrast = 0;        // previous contrast level
@@ -124,7 +124,7 @@ void compute_grayscale(void)
   	g = sg;
   	b = sb;
 
-  	if(lcd_state == SCREEN_ON) 
+  	if(lcd_state) 
     {
       	for(i = 0; i <= (max_plane+1); i++) 
 		{
@@ -142,9 +142,10 @@ void compute_grayscale(void)
 /* Redraw the skin into window but don't reload skin file */
 void redraw_skin(void) 
 {
-    GdkRect rect;
+    GdkRect r;
 
-	gtk_drawing_area_size(GTK_DRAWING_AREA(area), wi.w, wi.h);
+	//gtk_drawing_area_size(GTK_DRAWING_AREA(area), wi.w, wi.h);
+	gtk_widget_set_size_request(area, wi.w, wi.h);
 	gtk_window_resize(GTK_WINDOW(main_wnd), wi.w, wi.h);
 
   	if(!params.background) 
@@ -153,18 +154,32 @@ void redraw_skin(void)
 	if(skn == NULL)
 	    return;
 
-    gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
-		  skn, 0, 0, 0, 0, -1, -1,
-		  GDK_RGB_DITHER_NONE, 0, 0);
-  
-    rect.x = 0;
-    rect.y = 0;
-    rect.w = skin_infos.width;
-    rect.h = skin_infos.height;
+	r.x = 0;
+    r.y = 0;
+    r.w = skin_infos.width;
+    r.h = skin_infos.height;
 
-    //gtk_widget_draw(area, (GdkRectangle *)&rect);
-	//gtk_widget_queue_draw_area(area, rect.x, rect.y, rect.w, rect.h);
-	gdk_window_invalidate_rect(main_wnd->window, (GdkRectangle *)&rect, FALSE);
+    gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
+		  skn, 0, 0, 0, 0, -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
+  	gdk_window_invalidate_rect(main_wnd->window, (GdkRectangle *)&r, FALSE);
+}
+
+/* Redraw the lcd only */
+void redraw_lcd(void) 
+{
+	GdkRect r;
+
+	if(pixmap == NULL)
+		return;
+
+	r.x = li.pos.x;
+    r.y = li.pos.y;
+    r.w = li.pos.w;
+    r.h = li.pos.h;
+
+	gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
+		  skn, r.x, r.y, r.x, r.y, r.w, r.h, GDK_RGB_DITHER_NONE, 0, 0);
+	gtk_widget_queue_draw_area(area, r.x, r.y, r.w, r.h);
 }
 
 /* Update LCD screen part */
@@ -178,21 +193,45 @@ int hid_update_lcd(void)
 
     if(!pixmap || !lcd)
         return 0;
-	
+
+	// Check for LCD state change (from TI HW)
+	if(lcd_state != tihw.on_off)
+	{
+		lcd_state = tihw.on_off;
+
+		if(!lcd_state)
+			redraw_lcd();	// to clear LCD
+
+		printf("lcd state: %i\n", lcd_state);
+	}
+
+	// Check for contrast change (from TI HW)
+	if(contrast != tihw.contrast)
+	{
+		gint c;
+
+		//printf("%i %i\n", contrast, tihw.contrast);
+		c = contrast = tihw.contrast;
+
+		if((tihw.calc_type == TI89) || (tihw.calc_type == TI89t))
+    		c = 31-c;
+
+		new_contrast = (c + old_contrast) / 2;
+  		old_contrast = c;
+
+		compute_grayscale();
+	}
+
+	// Check for gray plane change (menu)
     if(max_plane != params.grayplanes) 
     {
 		max_plane = params.grayplanes;
 		compute_grayscale();
     }
 
-	if(lcd_state == SCREEN_OFF)
+	// LCD off: don't refresh !
+	if(!lcd_state)
 		return 0;
-
-	if(contrast != new_contrast) 
-    {
-		contrast = new_contrast;
-		compute_grayscale();
-    }
 
 	// Convert the bitmap screen to a bytemap screen */
 	if(!max_plane || !cur_plane) 
@@ -266,30 +305,4 @@ int hid_update_lcd(void)
     }
 
     return -1;
-}
-
-/* Set LCD state */
-void hid_lcd_on_off(int i) 
-{
-    if(i) 
-	{
-		lcd_state = SCREEN_ON;
-	} 
-	else 
-	{
-		lcd_state = SCREEN_OFF;
-		redraw_skin(); 	// to clear LCD 
-	}
-}
-
-/* Set LCD contrast */
-int hid_set_contrast(int c)
-{
-    if((tihw.calc_type == TI89) || (tihw.calc_type == TI89t))
-    	c = 31-c;
-
-  	new_contrast = (c+old_contrast) / 2;
-  	old_contrast = c;
-
-    return 0;
 }
