@@ -46,60 +46,70 @@ typedef struct
 		} bits; 
 	} flags; 
 	uint16_t handle; 
-} TIGCC_SYM_ENTRY;
+} TI89_SYM_ENTRY;
 
 typedef struct 
 { 
 	uint16_t folder; 
 	uint16_t offset; 
-} TIGCC_HSym;
+} TI89_HSym;
 
 
 // AMS 1 only
 int parse_vat_89(void)
 {
-	uint32_t addr;
-	uint16_t size;
-	char name[10];
-	int i, j, k;
+	uint32_t fa, va, pa;
+	uint16_t fs, vs, ps;
+	int nfolders, nvars;
+	int i, j;
 
 	if(tihw.calc_type == TI92)
 		return -1;
 
-	// Handle #8: names and handles of all folders (including "main") ??
-	heap_get_block_addr_and_size(0x8, &addr, &size);
-	addr += 4;
+	// handle: names and handles of all folders (including "main")
+	heap_get_block_addr_and_size(0x8, &fa, &fs);
 
-	for(i=0; i<size; i++)
+	// skip maximum number of folders before handle #$B needs to be resized
+	// and actual number of folders 
+	printf("# folder: %i\n", nfolders = mem_rd_word(fa+2));	
+	fa += 4;
+
+	// now, we read a list of SYM_ENTRY structs (list of folders)
+	for(i=0; i<nfolders; i++)
 	{
-		uint32_t fa;	// folder address
-		uint16_t fs;	// folder size
+		TI89_SYM_ENTRY se;
+		
+		memcpy(&se, ti68k_get_real_address(fa + i * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
+		se.handle = GUINT16_FROM_BE(se.handle);
+		printf("folder name: <%s>\n", se.name);
 
-		for (j=0; j<9; j++)
-        {
-            name[j] = mem_rd_byte(addr+14*i+j);
-            if((name[j] <= ' ') && (name[j]))
-                return 0;
-        }
-		printf("folder: <%s>\n", name);
+		// handle xxxx: names and handles of all variables
+		heap_get_block_addr_and_size(se.handle, &va, &vs);
 
-		// parse variables
-		heap_get_block_addr_and_size(mem_rd_word(addr+14*i+12), &fa, &fs);
-		fa += 4;
+		// skip max num and actual num of vars
+		printf("# vars: %i\n", nvars = mem_rd_word(va+2));	
+		va += 4;
 
-        for (k=0; k < fs; k++)
+		for(j=0; j<nvars; j++)
 		{
-			for (j=0; j<9; j++)
+			TI89_SYM_ENTRY se;
+
+			memcpy(&se, ti68k_get_real_address(va + j * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
+			se.handle = GUINT16_FROM_BE(se.handle);
+			printf("var name: <%s>\n", se.name);
+
+			// handle: variable content
+			heap_get_block_addr_and_size(se.handle, &pa, &ps);
 			{
-				name[j] = mem_rd_byte(addr+14*k+j);
-				if((name[j] <= ' ') && (name[j]))
-					return 0;
-			}
-			printf("var: <%s>\n", name);
-        }
+				uint16_t varsize = mem_rd_word(pa);
+				uint8_t vartype = mem_rd_byte(pa + varsize + 1);
+
+				printf("var size = %i, var type = %02x\n", varsize, vartype);
+			}		
+		}
 	}
 
-	return 0;	
+	return 0;
 }
 
 /*
@@ -119,7 +129,7 @@ int parse_vat_92(void)
 	uint32_t fa, va, pa;
 	uint16_t fs, vs, ps;
 	int nfolders, nvars;
-	int i, j, k;
+	int i, j;
 
 	if(tihw.calc_type != TI92)
 		return -1;
@@ -132,7 +142,7 @@ int parse_vat_92(void)
 	printf("# folder: %i\n", nfolders = mem_rd_word(fa+2));	
 	fa += 4;
 
-	// now, we read a list of TI92_SYM_ENTRY structs (list of folders)
+	// now, we read a list of SYM_ENTRY structs (list of folders)
 	for(i=0; i<nfolders; i++)
 	{
 		TI92_SYM_ENTRY se;
@@ -172,6 +182,71 @@ int parse_vat_92(void)
 
 int parse_vat(void)
 {
-	return 0;
-	return parse_vat_92();
+	return parse_vat_89();
 }
+
+int vat_parse(TNode **tree)
+{
+	if(tree == NULL)
+		return -1;
+
+	*tree = g_node_new(NULL);
+
+	return 0;
+}
+
+/*
+
+  *tree = t_node_new(NULL);
+  vars = t_node_new(NULL);
+  apps = t_node_new(NULL);
+  t_node_append(*tree, vars);
+  t_node_append(*tree, apps);
+
+  for (;;) {
+    TiVarEntry *ve = calloc(1, sizeof(TiVarEntry));
+    TNode *node;
+
+    TRYF(ti92_send_ACK());
+    TRYF(ti92_send_CTS());
+
+    TRYF(ti92_recv_ACK(NULL));
+    TRYF(ti92_recv_XDP(&unused, buffer));
+    memcpy(ve->name, buffer + 4, 8);	// skip 4 extra 00 uint8_t
+    ve->name[8] = '\0';
+    ve->type = buffer[12];
+    ve->attr = buffer[13];
+    ve->size = buffer[14] | (buffer[15] << 8) |
+	(buffer[16] << 16) | (buffer[17] << 24);
+    strcpy(ve->folder, "");
+
+    tifiles_translate_varname(ve->name, ve->trans, ve->type);
+    node = t_node_new(ve);
+
+    if (ve->type == TI92_DIR) {
+      strcpy(folder_name, ve->name);
+      folder = t_node_append(vars, node);
+    } else {
+      strcpy(ve->folder, folder_name);
+      t_node_append(folder, node);
+    }
+
+    printl2(0, _("Name: %8s | "), ve->name);
+    printl2(0, _("Type: %8s | "), tifiles_vartype2string(ve->type));
+    printl2(0, _("Attr: %i  | "), ve->attr);
+    printl2(0, _("Size: %08X\n"), ve->size);
+
+    TRYF(ti92_send_ACK());
+    err = ti92_recv_CONT();
+    if (err == ERR_EOT)
+      break;
+    TRYF(err);
+
+    sprintf(update->label_text, _("Reading of '%s/%s'"),
+	    ((TiVarEntry *) (folder->data))->trans, ve->trans);
+    update_label();
+    if (update->cancel)
+      return -1;
+  }
+
+  */

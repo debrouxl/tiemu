@@ -22,13 +22,25 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#ifndef __VAT__
+#define __VAT__
+
 /*
 	Definitions
 */
 
-#ifndef __VAT__
-#define __VAT__
+typedef struct
+{
+	char		name[9];
+	uint16_t	handle;
+} VatSymEntry;
 
+
+/*
+	Functions
+*/
+
+int vat_parse(TNode **tree);
 
 
 #endif
