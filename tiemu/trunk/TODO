@@ -36,45 +36,45 @@ n'est plus vraiment faisable avec 'step'.
 
 Kevin:
 
-1. Avec GTK-Runtime-Environment-2.2.4-2, il n'arrive pas à ouvrir le JPEG du
+- Avec GTK-Runtime-Environment-2.2.4-2, il n'arrive pas à ouvrir le JPEG du
 skin sous WinMe. J'ai été obligé de récupérer
 GTK-Runtime-Environment-2.2.4-3 qui corrige ce problème, il faudrait le
 mettre quelque part dans le readme.
 
-2. L'installation de GTK-Runtime-Environment-2.2.4-3 m'a réactivé le thème
+- L'installation de GTK-Runtime-Environment-2.2.4-3 m'a réactivé le thème
 WIMP avec tous ses warnings. J'ai été obligé de renommer libwimp.dll en
 libwimp.dl_ pour me débarasser de ces warnings.
 
-3. Le menu popup ne reste ouvert que si on garde la touche de la souris
+- Le menu popup ne reste ouvert que si on garde la touche de la souris
 appuyée, ce qui est peu pratique. Et si on appuie 2 fois de suite trop
 rapidement, TiEmu plante. (Il s'embrouille avec les engine starts/stops.)
 
-4. La conversion des ROMs au format 89u n'a pas l'air de marcher
+- La conversion des ROMs au format 89u n'a pas l'air de marcher
 correctement. À chaque lancement, il me redemande d'importer une ROM avec le
 wizard, alors que je venais de le faire au lancement d'avant (j'ai pris une
 TI89OS209.89u). Et la calculatrice émulée résultante ne peut même pas être
 allumée. Avec un .rom, ça marche.
 
-5. Toujours pas moyen d'entrer des parenthèses avec mon clavier allemand.
+- Toujours pas moyen d'entrer des parenthèses avec mon clavier allemand.
 :-( Voilà à quoi ressemble mon clavier:
 http://www.uni-regensburg.de/EDV/Misc/KeyBoards/keys11.jpg .
 
-6. La conversion de la touche espace en alpha+(-) sur la TI-89 n'est pas
+O La conversion de la touche espace en alpha+(-) sur la TI-89 n'est pas
 gérée. :-(
 
-7. Je ne sais pas si on peut y faire quelque chose, mais Alt+ESC, Ctrl+ESC,
+- Je ne sais pas si on peut y faire quelque chose, mais Alt+ESC, Ctrl+ESC,
 Alt+TAB (quand on les appuie en même temps et pas l'une après l'autre) sont
 avalées par Windows, pour Alt+F4, Windows ne le voit pas, mais TiEmu non
 plus, et il y a probablement d'autres combines de touches "suspectes".
 
-8. Si j'appuie sur la touche Windows et que je reviens à TiEmu ensuite, il
+- Si j'appuie sur la touche Windows et que je reviens à TiEmu ensuite, il
 ne répond plus à aucun appui de touches (mais on peut le fermer à travers le
 popup au moins). L'"engine" est "stoppée" et pas re"start"ée.
 
-9. Si on défile vers le bas dans le débogueur, le curseur vert (PC actuel)
+- Si on défile vers le bas dans le débogueur, le curseur vert (PC actuel)
 disparaît même si l'instruction actuelle est encore visible.
 
-10. Le débogueur est toujours très lent. :-( Déjà, le défilement du curseur
+- Le débogueur est toujours très lent. :-( Déjà, le défilement du curseur
 vers le bas pourrait être plus rapide. Et ensuite tout ce qui touche au
 single-step rame à fond si on a la fenêtre des registres activée, cacher la
 fenêtre des registres le rend nettement plus rapide ("lent, mais utilisable"

@@ -198,7 +198,7 @@ on_set_rom1_activate                   (GtkMenuItem     *menuitem,
 {
 	if(dbg_on) return;
 
-	display_romversion_dbox ();
+	display_romversion_dbox (FALSE);
 }
 
 

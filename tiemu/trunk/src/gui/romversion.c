@@ -119,7 +119,7 @@ static GtkListStore* clist_init(GtkWidget *clist)
 
 #define NTOKENS 7
 
-gint display_romversion_dbox()
+gint display_romversion_dbox(gboolean file_only)
 {
 	GtkWidget *dialog;
     GladeXML *xml;
@@ -226,13 +226,15 @@ gint display_romversion_dbox()
 			{
                 // Remove previous tib file
                 g_free(params.tib_file);
-				params.tib_file = g_strconcat(/*inst_paths.img_dir, */"", NULL);
+				params.tib_file = g_strconcat("", NULL);
 
                 // Set new image
 				g_free(params.rom_file);
 				params.rom_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
 				g_free(chosen_file);
                 chosen_file = NULL;
+
+                if(file_only) return 0;
 
 				err = ti68k_load_image(params.rom_file);
 				handle_error();
@@ -256,6 +258,8 @@ gint display_romversion_dbox()
 			} 
 			else if(ti68k_is_a_tib_file(chosen_file))
 			{
+                if(file_only) return 0;
+
                 // Set tib file
 				g_free(params.tib_file);
 				params.tib_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
@@ -285,10 +289,11 @@ gint display_romversion_dbox()
 
 		case GTK_RESPONSE_APPLY:
 			display_import_romversion_dbox();
-			display_romversion_dbox();	// force rescan but recursive
+			display_romversion_dbox(file_only);	// force rescan but recursive
         break;
 		
 		default:
+            if(file_only) return -1;
 		break;
 	}
 

@@ -23,8 +23,6 @@ InfoAfterFile=C:\sources\roms\tiemu\RELEASE
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4; Flags: unchecked
 
-Name: "wimp"; Description: "WiMP (Windows IMpersonator) theme"; GroupDescription: "Themes:"; MinVersion: 0,4
-
 [Files]
 ; Glade files
 Source: "C:\sources\roms\tiemu\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
@@ -60,13 +58,6 @@ Source: "C:\sources\roms\Porttalk22\PortTalk.sys"; DestDir: "{sys}\drivers"; Fla
 Source: "C:\sources\roms\Porttalk22\PortTalk.sys"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\Porttalk22\AllowIO.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\Porttalk22\Uninstall.exe"; DestDir: "{app}"; Flags: ignoreversion
-; Script to modify AUTOEXEC.bat
-; Install helper
-Source: "C:\sources\roms\tiemu\build\InnoSetup\AddEntry\AddEntry.exe"; DestDir: "{app}"; Flags: ignoreversion; Attribs: hidden; MinVersion: 4,0;
-
-; Fix Gtk-Wimp installation problem (file is not at the right location)
-;Source: "C:\Program Files\Fichiers Communs\GTK\2.0\lib\libwimp.dll"; DestDir: "{code:GetGtkPath}\lib\gtk-2.0\2.2.0\engines"; Flags: onlyifdoesntexist uninsneveruninstall;
-;Source: "C:\Program Files\Common Files\GTK\2.0\lib\libwimp.dll"; DestDir: "{code:GetGtkPath}\lib\gtk-2.0\2.2.0\engines"; Flags: onlyifdoesntexist uninsneveruninstall; MinVersion: 0,4;
 
 [Dirs]
 ;Name: "{app}\My TI images"; Flags: uninsneveruninstall;
@@ -87,8 +78,6 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: 
 [Run]
 ; Remove any previously installed PortTalk driver (especially v1.x)
 Filename: "{app}\Uninstall.exe"; Parameters: ""; MinVersion: 0,4;
-; Boost GTK2 (Win9x/Me)
-Filename: "{app}\AddEntry.exe"; Description: "Modify AUTOEXEC.BAT (you will have to restart Windows !)"; StatusMsg: "Modifying AUTOEXEC.BAT..."; Flags: postinstall nowait runminimized; MinVersion: 4,0;
 
 [UninstallRun]
 ; Remove any previously installed PortTalk driver (especially v1.x)
@@ -160,7 +149,7 @@ begin
       WimpPath := GtkPath + '\lib\gtk-2.0\2.2.0\engines\libwimp.dll';
       if FileExists(WimpPath) and not UsingWinNT() then begin
         DeleteFile(WimpPath);
-        MsgBox('The GTK+ Wimp theme engine has been disabled to avoid lot of warnings in console.', mbError, MB_OK);
+        MsgBox('The GTK+ Wimp theme engine has been removed to avoid lot of warnings in console.', mbError, MB_OK);
       end;
   end;
   

@@ -390,7 +390,7 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
     }
     else if(event->keyval == GDK_F12)
     {
-        display_romversion_dbox();
+        display_romversion_dbox(FALSE);
         return TRUE;
     }
     else

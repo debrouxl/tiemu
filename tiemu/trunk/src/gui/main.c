@@ -52,6 +52,7 @@
 #include "tie_error.h"
 #include "dboxes.h"
 #include "dbg_all.h"
+#include "romversion.h"
 
 
 ScrOptions options2;
@@ -136,7 +137,7 @@ int main(int argc, char **argv)
     //ticalc_set_printl(ticalcs_printl);
 
     /*
-        Search for ROM in the image directory
+        Search for dumps or upgrades to convert (in the image directory)
     */
     splash_screen_set_label(_("Searching for ROM dumps..."));
     err = ti68k_scan_files(inst_paths.img_dir, inst_paths.img_dir);
@@ -148,14 +149,25 @@ int main(int argc, char **argv)
 	err = ti68k_load_image(params.rom_file);
 	if(err) 
 	{
-      
-		display_wizard_dbox();
-		while(!wizard_ok)
-			GTK_REFRESH();
-	
-		g_free(params.rom_file);
-		params.rom_file = g_strdup(wizard_rom);
-		g_free(wizard_rom);
+        if(ti68k_find_image(inst_paths.img_dir, NULL))
+        {
+            // search for an available image to use
+            printf("image found !\n");
+            if(display_romversion_dbox(TRUE) == -1)
+                goto wizard;
+        }
+        else
+        {
+            // launch wizard
+wizard:
+		    display_wizard_dbox();
+		    while(!wizard_ok)
+			    GTK_REFRESH();
+	    
+		    g_free(params.rom_file);
+		    params.rom_file = g_strdup(wizard_rom);
+		    g_free(wizard_rom);
+        }
 
         splash_screen_set_label(_("Loading image..."));
 		err = ti68k_load_image(params.rom_file);

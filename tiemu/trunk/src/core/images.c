@@ -757,7 +757,6 @@ int ti68k_load_upgrade(const char *filename)
 	return 0;
 }
 
-
 /*
     Search for ROM dumps in a given directory and
     converts them into images.
@@ -791,6 +790,7 @@ int ti68k_scan_files(const char *src_dir, const char *dst_dir)
             ret = ti68k_convert_rom_to_image(path, dst_dir, &dstname);
             if(!ret)
                 unlink(path);
+            g_free(dstname);
         }
 
         g_free(path);
@@ -1022,4 +1022,46 @@ static int get_rom_version(char *ptr, int size, char *version)
     }
     
   	return 0;
+}
+
+/*
+    Returns the first found image
+*/
+int ti68k_find_image(const char *dirname, char **dst_name)
+{
+    GDir *dir;
+	GError *error = NULL;
+	G_CONST_RETURN gchar *dirent;
+    int ret = 0;
+    char *filename;
+
+    // Search for *.img files and convert them
+	dir = g_dir_open(dirname, 0, &error);
+	if (dir == NULL) 
+	{
+		fprintf(stderr, _("Opendir error\n"));
+      	return ERR_CANT_OPEN_DIR;
+	}
+
+    filename = NULL;
+
+    while ((dirent = g_dir_read_name(dir)) != NULL) 
+	{
+  		if (dirent[0] == '.') 
+  			continue;
+
+        if(!ti68k_is_a_img_file(dirent))
+            continue;
+
+        filename = g_strconcat(dirname, dirent, NULL);
+        ret = !0;
+        break;
+    }
+
+    g_dir_close(dir);
+
+    if(dst_name != NULL)
+        *dst_name = filename;
+
+    return ret;
 }
