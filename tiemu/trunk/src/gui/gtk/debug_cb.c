@@ -954,15 +954,15 @@ on_clist2_button_press_event           (GtkWidget       *widget,
                                         GdkEventButton  *event,
                                         gpointer         user_data)
 {
-  gint row, column;
   GdkEventButton *bevent;
+  gboolean valid;
 
-#if 0 /* FUCKED */
-  if (!gtk_clist_get_selection_info (GTK_CLIST (widget), 
-				     event->x, event->y, 
-				     &row, &column)) 
+  valid = gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(widget),
+					(gint)event->x, (gint)event->y,
+					NULL, NULL, NULL, NULL);
+
+  if (valid == FALSE)
     return FALSE;
-#endif /* 0 */
 
   switch(event->type)
     {
