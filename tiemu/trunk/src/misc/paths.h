@@ -31,17 +31,17 @@
 #if defined(__LINUX__) || defined(__MACOSX__)
 # define CONF_DIR   	".tiemu/"
 # define INI_FILE    	"tiemu.ini"
-# define CACHE_FILE 	"ROMs.lst"
+# define CACHE_FILE 	"img_list.txt"
 # define LOG_FILE 		"/tmp/tiemu.log"
 #elif defined(__WIN32__)
 # define CONF_DIR   	""
 # define INI_FILE    	"tiemu.ini"
-# define CACHE_FILE 	"ROMs.lst"
+# define CACHE_FILE 	"img_list.txt"
 # define LOG_FILE 		"C:\\tiemu.log"
 #else
 # define CONF_DIR   	".tiemu/"
 # define INI_FILE    	"init"
-# define CACHE_FILE 	"ROMs.lst"
+# define CACHE_FILE 	"img_list.txt"
 # define LOG_FILE 		"tiemu.log"
 #endif
 

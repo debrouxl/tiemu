@@ -846,11 +846,8 @@ int ti68k_scan_files(const char *src_dir, const char *dst_dir, int erase)
     return 0;
 }
 
-#define NTOKENS 7
-
 /*
-  	Scan images in a given directory 
-  	and build the cache file.
+  	Scan images in a given directory and write list into img_list.txt.
 */
 int ti68k_scan_images(const char *dirname, const char *filename)
 {
@@ -859,67 +856,20 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 	GDir *dir;
 	GError *error = NULL;
 	G_CONST_RETURN gchar *dirent;
-	char buffer[1024];
-	char str[20];
-	char *rom_names[256] = { 0 };
-	int nlines;
-	int j;
-	gchar *path;
+	gchar *path, *str;
+	int ret;
 	struct stat f_info;
-	int ret;  	
-  	char *line[NTOKENS];
+  	char *line[7];
 
   	DISPLAY(_("Scanning images/upgrades... "));
 
-	// First, check if cache file exists
-  	if(!access(filename, F_OK))
-    {
-      	// if yes, ...
-      	file = fopen(filename, "rt");
-      	if(file == NULL)
-		{
-	  		fprintf(stderr, _("Unable to open this file: <%s>\n"), filename);
-	  		return ERR_CANT_OPEN;
-		}
-
-		// read it and store ROM names
-      	for(nlines = 0; !feof(file) && (nlines < 255); nlines++)
-		{
-            gchar **row_text;
-
-	  		fgets(buffer, sizeof(buffer), file);
-			if(feof(file))
-				break;
-            buffer[strlen(buffer) - 1] = '\0';
-
-            row_text = g_strsplit(buffer, ",", NTOKENS);
-
-	  		rom_names[nlines] = g_strdup(row_text[0]);
-
-            g_strfreev(row_text);
-		}		
-      
-		// ready to add new entries
-		fclose(file);
-      	file = fopen(filename, "at");
-      	if(file == NULL)
-        {
-          	fprintf(stderr, _("Unable to reopen this file: <%s>\n"), filename);
-          	return ERR_CANT_OPEN;
-        }
-    }
-  	else
-    {
-      	DISPLAY(_(" (cache need to be built) "));
-      	file = fopen(filename, "wt");
-      	if(file == NULL)
-        {
-          	fprintf(stderr, _("Unable to open this file: <%s>\n"), filename);
-          	return ERR_CANT_OPEN;
-        }
-
-		nlines = 0;
-    }  
+	// Create file (and overwrite)
+	file = fopen(filename, "wt");
+    if(file == NULL)
+	{
+	  	fprintf(stderr, _("Unable to open this file: <%s>\n"), filename);
+	  	return ERR_CANT_OPEN;
+	} 	
 
   	// List all files available in the directory
 	dir = g_dir_open(dirname, 0, &error);
@@ -933,60 +883,49 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 	{
   		if (dirent[0] == '.') 
   			continue;
-      
-      	// compare current file with cache
-      	for(j = 0; j < nlines; j++)
+   
+	  	path = g_strconcat(dirname, dirent, NULL);
+	  	
+		ret = stat(path, &f_info);
+		if(ret == -1)
 		{
-	  		if(!strcmp(rom_names[j], dirent))
-	    		break;
+			fprintf(stderr, _("Can not stat: <%s>\n"), dirent);
+	      	perror("stat: ");
 		}
-		
-		// we have a new entry, we add it in the cache
-      	if(j == nlines)
+		else
 		{
-	  		path = g_strconcat(dirname, dirent, NULL);
-	  		
-			ret = stat(path, &f_info);
-			if(ret == -1)
+			if(ti68k_is_a_img_file(path))
 			{
-				fprintf(stderr, _("Can not stat: <%s>\n"), dirent);
-	      		perror("stat: ");
-			}
-			else
-			{
-				if(ti68k_is_a_img_file(path))
+				memset(&img, 0, sizeof(IMG_INFO));
+				ret = ti68k_get_img_infos(path, &img);
+				if(ret)
 				{
-					memset(&img, 0, sizeof(IMG_INFO));
-					ret = ti68k_get_img_infos(path, &img);
-					if(ret)
-					{
-						fprintf(stderr, _("Can not get ROM/update info: <%s>\n"), path);
-						break;
-					}
+					fprintf(stderr, _("Can not get ROM/update info: <%s>\n"), path);
+					break;
 				}
-                else
-					continue;
-
-		  		line[0] = (char *)dirent;
-		  		line[1] = (char *)ti68k_calctype_to_string(img.calc_type);
-	  			line[2] = img.version;
-	  			line[3] = (char *)ti68k_romtype_to_string(img.flash);
-	  			sprintf(str, "%iKB", (int)(img.size >> 10));
-	  			line[4] = str;
-	  			if(img.has_boot)
-	  				line[5] = _("yes");
-	  			else
-	  				line[5] = _("no");
-				line[6] = (char *)ti68k_hwtype_to_string(img.hw_type);
-		  
-		  			fprintf(file, "%s,%s,%s,%s,%s,%s,%s\n", 
-		  				line[0], line[1], line[2], 
-		  				line[3], line[4], line[5], line[6]);
 			}
-	  		g_free(path);
+            else
+				continue;
+
+			str = g_strdup_printf("%iKB", (int)(img.size >> 10));
+
+		  	line[0] = (char *)dirent;
+		  	line[1] = (char *)ti68k_calctype_to_string(img.calc_type);
+	  		line[2] = img.version;
+	  		line[3] = (char *)ti68k_romtype_to_string(img.flash);
+	  		line[4] = str;
+			line[5] = img.has_boot ? _("yes") : _("no");
+			line[6] = (char *)ti68k_hwtype_to_string(img.hw_type);
+	  
+		  	fprintf(file, "%s,%s,%s,%s,%s,%s,%s\n", 
+		  			line[0], line[1], line[2], 
+		  			line[3], line[4], line[5], line[6]);
+			g_free(str);
 		}
+	  	g_free(path);
     }      
 
+	// Close
 	g_dir_close(dir);
   
   	fclose(file);

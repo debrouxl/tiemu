@@ -45,20 +45,6 @@ dans le décor, je ne sais pas s'il exécute ou pas
 PPhd
 ====
 
-* The following loop freeze on tiemu whereas it doesn"t on Vti and/or Real calc (extract from
-PedroM/process.asm) :
- 
- lea	$600000,a3
- 		move.w	(a3),-(a7)
- 		move.b	$C(a3),-(a7)
- 		move.w	$E(a3),-(a7)
- 		move.w	$14(a3),-(a7)
- 		move.w	$18(a3),-(a7)
- 		\LoopHardCpt1:	move.b	$17(a3),d1
- 				bne.s	\LoopHardCpt1
- 		\LoopHardCpt2:	move.b	$17(a3),d1
- 				beq.s	\LoopHardCpt2
-
 * I am sorry I can"t send any files to TIEMU.
  The "Send Files to TIEMU" doesn"t provide any "Input File Name" field, and
  it doesn"t select any TI file , but only folders (ie the files .9xz, 89z, etc are not
@@ -91,14 +77,6 @@ perfectly possible but quite
  
  So it isn"t really a bug report, just a notice of difference between tiemu and real
 calculators.
-
-* When you import a new ROM, it replaces the previous image if it existed, but it doesn"t
-  update the other information (Version, etc).
-  For example, when I import pedrom89.tib, it still displays v0.80 instead of v0.81
-
-* A known problem is that you can only select 89? files when sending to an 89
-etc. It would really be nice if you could send all of 89?, 92?, 9x? and v2?
-to all the models.
 
 
 roms
