@@ -77,7 +77,7 @@ Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environmen
 ; Register skinedit in the shell
 Root: HKCR; Subkey: ".skn"; ValueType: string; ValueName: ""; ValueData: "SkinEdit";
 Root: HKCR; Subkey: "SkinEdit"; ValueType: string; ValueName: ""; ValueData: "VTi/TiEmu skin";
-Root: HKCR; Subkey: "SkinEdit\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\icons\String.ico"
+Root: HKCR; Subkey: "SkinEdit\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\skinedit.exe"
 Root: HKCR; Subkey: "SkinEdit\shell\open";  ValueType: string; ValueData: "Open with &SkinEdit"
 Root: HKCR; Subkey: "SkinEdit\shell\open\command"; ValueType: string; ValueName: ""; ValueData: "{app}\skinedit.exe %1"
 

@@ -100,10 +100,6 @@ SOURCE=..\..\src\boxes_intf.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gtksdl.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\main.c
 # End Source File
 # Begin Source File
@@ -212,6 +208,10 @@ SOURCE=..\..\src\vti_export.h
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # Begin Source File
 
+SOURCE=.\bitmap1.bmp
+# End Source File
+# Begin Source File
+
 SOURCE=.\skinedit.rc
 # End Source File
 # End Group
@@ -260,11 +260,7 @@ SOURCE="..\..\..\..\..\..\Gtk2Dev\lib\atk-1.0.lib"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\..\..\..\SDL-1.2.7\lib\SDL.lib"
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\Gtk2Dev\lib\libjpeg.lib
+SOURCE=..\..\..\..\..\Gtk2Dev\lib\intl.lib
 # End Source File
 # End Group
 # End Target
