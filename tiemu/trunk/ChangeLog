@@ -23,6 +23,7 @@ To do:
 	- stack & frame pointer window are now scrollable
 	- remind folder when sending variable
 	- allow cross-compatibility when sending TI files
+	- switched to the new file selector (seems to be slow)
 
 - 08/11/2004, version 1.80f: roms
 	- PedRom is now provided with TiEmu as default OS.

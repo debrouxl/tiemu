@@ -31,7 +31,7 @@
 #include "filesel.h"
 #include "refresh.h"
 
-static G_CONST_RETURN gchar *filename = NULL;
+static gchar *filename = NULL;
 
 static void store_filename(GtkFileSelection * file_selector,
 			   gpointer user_data)
@@ -83,6 +83,33 @@ const gchar *create_fsel(gchar *dirname, gchar *ext)
 		return NULL;
 	else
 		return filename;
+}
+
+const gchar *create_fsel2(gchar *dirname, gchar *ext, gboolean save)
+{
+	GtkWidget *dialog;
+	GtkFileFilter *filter;
+    
+	filter = gtk_file_filter_new();
+	gtk_file_filter_add_pattern (filter, ext);
+
+	dialog = gtk_file_chooser_dialog_new ("Open File",
+				      NULL,
+					  save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN,
+				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+				      NULL);
+	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), dirname);
+	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
+
+	g_free(filename);
+	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+	else
+		filename = NULL;
+	gtk_widget_destroy (dialog);
+
+	return filename;
 }
 
 

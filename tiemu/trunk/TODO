@@ -281,6 +281,11 @@ d'aller à l'adresse 303900.
 * j'ai de nouveau des problèmes avec le caractère 0x09
 dans la fenêtre ASCII de la memory view (Win ME ?).
 
+me/moi
+======
+
+* bug de contraste avec pedrom en rev $695 ou 696 ou 697.
+
 -------------
 + done
 - in progress
