@@ -83,9 +83,20 @@ gint display_save_state_dbox()
 {
     const gchar *filename;
 	int err;
+	gchar *basename;
+	gchar *dot;
+	gchar *pattern;
 
     // get filename
-	filename = create_fsel(inst_paths.base_dir, "*.sav");
+	basename = g_path_get_basename(params.rom_file);
+	dot = strrchr(basename, '.');
+	if(dot != NULL)
+		*dot = '\0';
+	pattern = g_strconcat(basename, ".sav", NULL);
+	g_free(basename);
+
+	filename = create_fsel(inst_paths.base_dir, pattern);
+	g_free(pattern);
 	if (!filename)
 		return 0;
 
