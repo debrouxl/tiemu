@@ -109,7 +109,9 @@ int hw_dbus_reset(void)
 {
     //hw_dbus_exit();
     //hw_dbus_init();
-    //t2f_flag = f2t_flag = 0;
+#ifndef __LINUX__
+    t2f_flag = f2t_flag = 0;
+#endif
     printf("D-Bus reset !\n");
 
 	return 0;

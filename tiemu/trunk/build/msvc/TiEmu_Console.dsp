@@ -296,10 +296,6 @@ SOURCE=..\..\src\gui\calc\calc.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\glade\src\calc_if.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\gui\calc\kbd_mapper.c
 # End Source File
 # Begin Source File
