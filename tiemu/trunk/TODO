@@ -83,7 +83,7 @@ rouge d'être à l'origine de la lenteur.
 
 Lionel:
 
-* le désassembleur de F-Line désassemble toujours mal
+O le désassembleur de F-Line désassemble toujours mal
 les ROM_CALLs dont le numéro est en-dessus de 0x10:
 0x53 (sprintf) est désassemblé comme 0x43.
 

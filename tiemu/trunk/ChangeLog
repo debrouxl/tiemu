@@ -5,6 +5,10 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
+- 10/08/2004, version 1.77: roms
+	- step over fixed again: stops on Bcc/DBcc, STOP, RTE, RTD, RTS, RTR, JMP.
+	- FLINE > 5 was mis-disassembled
+
 - 07/08/2004, verison 1.76: roms
 	- splitted memory mapping (init/exit)
 	- SR/PC were not shown any longer with exception (fixed)

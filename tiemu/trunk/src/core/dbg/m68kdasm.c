@@ -252,6 +252,7 @@ int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
 	unsigned short op, lo, rhi, rlo;
 	unsigned long pm;
 	int count;
+    //char buf[80];
 
     pc=_pc;
 
@@ -272,7 +273,7 @@ int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
 			break;
 		case 0xfff1:	// 6 byte bra w/long word displacement
 			PARAM_LONG(pm);
-			if (pm & 0x8000)
+            if (pm & 0x8000)
 				sprintf (buffer, "FLINE    *-$%lX [bra %lX]", (int)(-(signed short)pm) - 2, pc + (signed short)pm + 2);
 			else
 				sprintf (buffer, "FLINE    *+$%lX [bra %lX]", pm + 2, pc + pm + 2);
@@ -280,11 +281,11 @@ int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
 			break;
 		case 0xfff2:	// 4 byte ROM CALL
 			PARAM_WORD(pm);
-			sprintf (buffer, "FLINE    $%04x [%s]", pm/4, "");
+			sprintf (buffer, "FLINE    $%04x [%s]", pm/4, romcalls_get_name(pm / 4));
 			return 4;
 			break;
 		default:		// 2 byte ROM CALL
-			sprintf (buffer, "FLINE    $%03x [%s]", op & 0x7ef, "");
+			sprintf (buffer, "FLINE    $%03x [%s]", op & 0x7ff, romcalls_get_name(op & 0x7ff));
 			return 2;
 			break;
 		}

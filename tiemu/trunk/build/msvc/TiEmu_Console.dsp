@@ -482,27 +482,11 @@ SOURCE="..\..\..\..\..\Gtk2Dev\lib\atk-1.0.lib"
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\docs\ti_hw\ExtendeD\7000xx_Ports.txt
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\ChangeLog
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\docs\ti_hw\tie\IO-PORTS.TXT"
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\docs\ti_hw\misc\J89hw.txt
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\docs\ti_hw\fargo\LowLevel.txt
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\docs\ti_hw\ExtendeD\titanium-info.txt"
+SOURCE=..\..\TODO
 # End Source File
 # End Group
 # End Target

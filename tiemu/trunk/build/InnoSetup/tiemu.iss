@@ -23,6 +23,8 @@ InfoAfterFile=C:\sources\roms\tiemu\RELEASE
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4; Flags: unchecked
 
+Name: "wimp"; Description: "WiMP (Windows IMpersonator) theme"; GroupDescription: "Themes:"; MinVersion: 0,4
+
 [Files]
 ; Glade files
 Source: "C:\sources\roms\tiemu\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
