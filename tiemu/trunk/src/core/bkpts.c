@@ -23,7 +23,7 @@
  */
 
 /*
-  Breakpoints management
+    Breakpoints management
 */
 
 #include <assert.h>

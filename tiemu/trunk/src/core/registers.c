@@ -23,7 +23,7 @@
  */
 
 /*
-    Register access/manipulation
+    Registers access/manipulation
 */
 
 #ifdef HAVE_CONFIG_H

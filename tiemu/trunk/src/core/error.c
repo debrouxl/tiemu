@@ -23,7 +23,7 @@
  */
 
 /*
-  Transcoding of error codes into message strings
+    Transcoding of error codes into message strings
 */
 
 #include <stdio.h>

@@ -23,7 +23,7 @@
  */
 
 /*
-  TI core: exported & misc routines
+    Interface: exported & misc routines
 */
 
 #ifdef HAVE_CONFIG_H
