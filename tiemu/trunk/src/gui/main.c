@@ -55,9 +55,9 @@ TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
 
-#ifdef __WIN32__
-#undef main			// undef main with SDL/Win32
-#endif
+//#ifdef __WIN32__
+//#undef main			// undef main with SDL/Win32
+//#endif
 
 
 /* Main function */		

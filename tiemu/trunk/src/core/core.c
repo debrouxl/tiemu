@@ -59,25 +59,28 @@ gpointer ti68k_engine(gpointer data)
 
 	while (1) 
 	{
+		// Check engine status
 		G_LOCK(running);
 		if (!running)
 			continue;
 		G_UNLOCK(running);
+		
+		ftime(&tLastTime);
       
 		// Run emulator core
-		ftime(&tLastTime);
-
 		res = ti68k_doInstructions(NB_INSTRUCTIONS_PER_LOOP);
 		if(res) {  
 			// a bkpt has been encountered
 		} else { 
 			// normal execution
 			ftime(&tCurrentTime);
-			iLastTime    = tLastTime.time*1000+tLastTime.millitm;
-			iCurrentTime = tCurrentTime.time*1000+tCurrentTime.millitm;
+			
+			iLastTime    = 1000 * tLastTime.time + tLastTime.millitm;
+			iCurrentTime = 1000 * tCurrentTime.time + tCurrentTime.millitm;
+			
 			if ((iCurrentTime - iLastTime) < TIME_LIMIT) {
 #if defined(__LINUX__)
-				usleep((TIME_LIMIT - iCurrentTime + iLastTime)*1000);
+				usleep(1000 * (TIME_LIMIT - iCurrentTime + iLastTime));
 #elif defined(__WIN32__)
 				Sleep((TIME_LIMIT - iCurrentTime + iLastTime));
 #endif

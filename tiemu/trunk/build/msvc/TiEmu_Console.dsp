@@ -224,6 +224,10 @@ SOURCE=..\..\src\core\callbacks.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\core.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\errors.c
 # End Source File
 # Begin Source File
