@@ -61,6 +61,8 @@ roms
 
 * MOVEA.W diassembled as MOVEA.L (HeapDeref)
 
+* make AC_CHECK_LIB(comdlg32, GetOpenFileName) work
+
 -------------
 + done
 - in progress

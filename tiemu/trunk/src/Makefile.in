@@ -1,5 +1,9 @@
 ## Process this file with autoconf to produce Makefile
 
+#if OS_WIN32
+	extra_ldflags = -lcomdlg32
+#endif
+
 @SET_MAKE@
 CC        = @CC@
 CPP       = @CPP@
