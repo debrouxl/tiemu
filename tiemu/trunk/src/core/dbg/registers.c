@@ -61,7 +61,7 @@
 // Previous state to detect change
 static uint32_t old_d[8];
 static uint32_t old_a[8];
-static uint32_t old_sp;
+static uint32_t old_sp, old_usp, old_ssp;
 static uint32_t old_pc;
 static uint16_t old_sr;
 static char old_sf[32];
@@ -79,7 +79,23 @@ void ti68k_register_set_addr(int n, uint32_t val)
 
 void ti68k_register_set_sp(uint32_t val)
 {
-    regs.usp = val;
+    regs.a[7] = val;
+}
+
+void ti68k_register_set_usp(uint32_t val)
+{
+    if(!regs.s)
+        regs.a[7] = val;
+    else
+        regs.usp = val;
+}
+
+void ti68k_register_set_ssp(uint32_t val)
+{
+    if(regs.s)
+        regs.a[7] = val;
+    else
+        regs.usp = val;
 }
 
 void ti68k_register_set_pc(uint32_t val)
@@ -174,10 +190,46 @@ int ti68k_register_get_sp(uint32_t *val)
 	int c = 0;
 	
 	*val = regs.usp;
-	if(regs.usp != old_sp)
+	if(regs.a[7] != old_sp)
 		c = !0;
 
-	old_sp = regs.usp;
+	old_sp = regs.a[7];
+    return c;
+}
+
+int ti68k_register_get_usp(uint32_t *val)
+{
+    int c = 0;
+    uint32_t *reg;
+
+    if(!regs.s)
+        reg = &regs.a[7];
+    else
+        reg = &regs.usp;
+
+    *val = *reg;
+	if(*reg != old_usp)
+		c = !0;
+
+	old_usp = *reg;
+    return c;
+}
+
+int ti68k_register_get_ssp(uint32_t *val)
+{
+    int c = 0;
+    uint32_t *reg;
+
+    if(regs.s)
+        reg = &regs.a[7];
+    else
+        reg = &regs.usp;
+
+    *val = *reg;
+	if(*reg != old_ssp)
+		c = !0;
+
+	old_ssp = *reg;
     return c;
 }
 

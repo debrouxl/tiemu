@@ -19,6 +19,7 @@ To do:
 	- mem_dbox: can disasm at address and added popup menu
 	- mem_dbox: can update multiple bytes at once
 	- regs_dbox: can open a mem tab with register value
+	- new window: stack
 
 - 14/07/2004, version 1.74: roms
 	Fixes from Lionel, Kevin and Olivier's suggestions:

@@ -38,6 +38,8 @@ typedef enum {
 void ti68k_register_set_data(int n, uint32_t val);
 void ti68k_register_set_addr(int n, uint32_t val);
 void ti68k_register_set_sp(uint32_t val);
+void ti68k_register_set_usp(uint32_t val);
+void ti68k_register_set_ssp(uint32_t val);
 void ti68k_register_set_pc(uint32_t val);
 void ti68k_register_set_sr(uint32_t val);
 void ti68k_register_set_flag(uint8_t flag);
@@ -46,6 +48,8 @@ int  ti68k_register_set_flags(const char *sf, const char *uf);
 int ti68k_register_get_data(int n, uint32_t *val);
 int ti68k_register_get_addr(int n, uint32_t *val);
 int ti68k_register_get_sp(uint32_t *val);
+int ti68k_register_get_usp(uint32_t *val);
+int ti68k_register_get_ssp(uint32_t *val);
 int ti68k_register_get_pc(uint32_t *val);
 int ti68k_register_get_sr(uint32_t *val);
 const char *ti68k_register_get_flag(void);

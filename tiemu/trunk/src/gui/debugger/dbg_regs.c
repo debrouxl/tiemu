@@ -133,15 +133,23 @@ static void renderer_edited(GtkCellRendererText * cell,
 						ti68k_register_set_pc(value);
 					}
 				break;		
-				case 1:	// sp
+				case 1:	// usp
 					if(validate_value(new_text, 6))
 					{
 						sscanf(new_text, "%x", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
-						ti68k_register_set_sp(value);
+						ti68k_register_set_usp(value);
 					}
 				break;
-				case 2: // sr
+                case 2:	// ssp
+					if(validate_value(new_text, 6))
+					{
+						sscanf(new_text, "%x", &value);			
+						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
+						ti68k_register_set_ssp(value);
+					}
+				break;
+				case 3: // sr
 					if(validate_value(new_text, 4))
 					{
 						sscanf(new_text, "%x", &value);			
@@ -149,7 +157,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 						ti68k_register_set_sr(value);
 					}
 				break;
-				case 3: // super-flags
+				case 4: // super-flags
 					if(ti68k_register_set_flags(new_text, NULL))
                     {
                         uint32_t data;
@@ -167,7 +175,7 @@ static void renderer_edited(GtkCellRendererText * cell,
                         gtk_tree_store_set(store, &iter, COL_VALUE, sdata,	-1);
                         g_free(sdata);	   	                
                     }
-				case 4: // user-flags
+				case 5: // user-flags
 					if(ti68k_register_set_flags(NULL, new_text))
                     {
                         uint32_t data;
@@ -284,7 +292,7 @@ static void ctree_populate(GtkTreeStore *store)
 	GtkTreeIter node1, node2, node3;
     GtkTreeIter iter;
     int i;
-    const char *others[] = { "PC", "SP", "SR" , "sf", "uf"};
+    const char *others[] = { "PC", "USP", "SSP", "SR" , "sf", "uf"};
 	GdkColor color;
 	gboolean success;
 
@@ -352,7 +360,7 @@ static void ctree_populate(GtkTreeStore *store)
 	}
 	
 	// populate Others node
-	for(i = 0; i < 5; i++)
+	for(i = 0; i < 6; i++)
 	{
 		gtk_tree_store_append(store, &iter, &node3);
 		gtk_tree_store_set(store, &iter,
@@ -446,14 +454,33 @@ static void ctree_refresh(GtkTreeStore *store)
 	   	gtk_tree_path_free(path);	
 	}
 	
-	// refresh Others node (SP)
+	// refresh Others node (USP)
 	{
 		spath = g_strdup_printf("2:%i", 1);
 		path = gtk_tree_path_new_from_string(spath);
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			return;
 		
-		changed = ti68k_register_get_sp(&data);
+		changed = ti68k_register_get_usp(&data);
+		sdata = g_strdup_printf("%06x", data);
+		color = changed ? &red : &blue;
+		
+		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
+		gtk_tree_store_set(store, &iter, COL_COLOR, color, -1);
+		g_free(sdata);
+	   		
+	   	g_free(spath);
+	   	gtk_tree_path_free(path);	
+	}
+
+    // refresh Others node (SSP)
+	{
+		spath = g_strdup_printf("2:%i", 2);
+		path = gtk_tree_path_new_from_string(spath);
+		if(!gtk_tree_model_get_iter(model, &iter, path))
+			return;
+		
+		changed = ti68k_register_get_ssp(&data);
 		sdata = g_strdup_printf("%06x", data);
 		color = changed ? &red : &blue;
 		
@@ -467,7 +494,7 @@ static void ctree_refresh(GtkTreeStore *store)
 	
 	// refresh Others node (SR)
 	{
-		spath = g_strdup_printf("2:%i", 2);
+		spath = g_strdup_printf("2:%i", 3);
 		path = gtk_tree_path_new_from_string(spath);
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			return;
@@ -491,7 +518,7 @@ static void ctree_refresh(GtkTreeStore *store)
 		changed = ti68k_register_get_flags(s_flags, u_flags);		
 		color = changed ? &red : &blue;
 
-		spath = g_strdup_printf("2:%i", 3);
+		spath = g_strdup_printf("2:%i", 4);
 		path = gtk_tree_path_new_from_string(spath);
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			return;
@@ -502,7 +529,7 @@ static void ctree_refresh(GtkTreeStore *store)
 	   	g_free(spath);
 	   	gtk_tree_path_free(path);
 
-		spath = g_strdup_printf("2:%i", 4);
+		spath = g_strdup_printf("2:%i", 5);
 		path = gtk_tree_path_new_from_string(spath);
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			return;
@@ -636,6 +663,7 @@ on_treeview3_button_press_event        (GtkWidget       *widget,
             g_free(spath);
 
             // check for regs
+            printf("%i %i %i\n", i, j, col);
             if(!((i>= 0) && (i <= 1) && (j >= 0) && (j <= 7) && (col == 1)))
                 return FALSE;
 
