@@ -29,7 +29,9 @@
 #include <glade/glade.h>
 
 #include "intl.h"
+#include "support.h"
 #include "paths.h"
+#include "struct.h"
 #include "skinops.h"
 #include "interface.h"
 #include "screenshot.h"
@@ -56,8 +58,9 @@ gint display_scroptions_dbox()
 	
 	dbox = glade_xml_get_widget(xml, "scroptions_dbox");
 	memcpy(&tmp_options, &options2, sizeof(ScrOptions));
+    tmp_options.file = g_strdup(options2.file);
 	
-	switch (options2.format)
+	switch (tmp_options.format)
 	{
 	case IMG_JPG: 
 		data = glade_xml_get_widget(xml, "radiobutton30");
@@ -73,7 +76,7 @@ gint display_scroptions_dbox()
 		break; 
 	}
 
-	switch (options2.type)
+	switch (tmp_options.type)
 	{
 	case IMG_BW:
 		data = glade_xml_get_widget(xml, "radiobutton10");
@@ -82,42 +85,41 @@ gint display_scroptions_dbox()
 	case IMG_COL:
 		data = glade_xml_get_widget(xml, "radiobutton11");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
-		BREAK;
+		break;
 	}
 
-	switch (options2.size)
+	switch (tmp_options.size)
 	{
 	case IMG_LCD:
 		data = glade_xml_get_widget(xml, "radiobutton20");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
 		break;
-	case IMG_SKN:
+	case IMG_SKIN:
 		data = glade_xml_get_widget(xml, "radiobutton21");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
-		BREAK;
+		break;
 	}
 
+    label = glade_xml_get_widget(xml, "label10");
 	refresh_label();
-	tmp_options.file = g_strdup(options2.file);
-	i_screen_counter = options.img_counter;
-	
+		
 	data = glade_xml_get_widget(xml, "entry10");
-	gtk_entry_set_text(GTK_ENTRY(data), options.img_file);
+	gtk_entry_set_text(GTK_ENTRY(data), tmp_options.file);
 	
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) {
 	case GTK_RESPONSE_OK:
+        g_free(options2.file);
 		memcpy(&options2, &tmp_options, sizeof(ScrOptions));
-		g_free(options2.file);
 		options2.file = g_strdup(tmp_options.file);
-
-		ti68k_unhalt();
+        g_free(tmp_options.file);
 		break;
 	default:
 		break;
 	}
 
 	gtk_widget_destroy(dbox);
+    ti68k_unhalt();
 
 	return 0;
 }
@@ -126,152 +128,102 @@ void refresh_label(void)
 {
 	gchar buffer[MAXCHARS];
 	gchar *ext = "???";
+    gchar *str;
 	
-	switch(i_image_format)
+    if(label == NULL)
+        return;
+
+	switch(tmp_options.format)
 	{
-	case IMG_XPM: ext = "xpm"; break;
-	case IMG_PCX: ext = "pcx"; break;
-	case IMG_JPG: ext = "jpg"; break;
-	case IMG_BMP: ext = "bmp"; break;
-	default: break;
+	    case IMG_JPG: ext = "jpg"; break;
+	    case IMG_PNG: ext = "png"; break;
+	    case IMG_ICO: ext = "ico"; break;
+	    default: break;
 	}
 	
-	sprintf(buffer, "%s%03i.%s", i_screen_file, i_screen_counter, ext);
-	gtk_label_set_text(GTK_LABEL(label), buffer);
+    str = g_strdup_printf("%s%03i.%s", tmp_options.file, tmp_options.counter, ext);
+	gtk_label_set_text(GTK_LABEL(label), str);
+    g_free(str);
 }
 
-void
-on_scopt_radiobutton18_toggled         (GtkToggleButton *togglebutton,
+
+GLADE_CB void
+on_scopt_radiobutton10_toggled         (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
   if(gtk_toggle_button_get_active(togglebutton))
-    i_image_format = IMG_PCX;
-  refresh_label();
+    tmp_options.type = IMG_BW;
 }
 
 
-void
-on_scopt_radiobutton19_toggled         (GtkToggleButton *togglebutton,
+GLADE_CB void
+on_scopt_radiobutton11_toggled         (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if(gtk_toggle_button_get_active(togglebutton))
-    i_image_format = IMG_XPM;
-  refresh_label();
+    if(gtk_toggle_button_get_active(togglebutton))
+        tmp_options.type = IMG_COL;
 }
 
 
-void
+GLADE_CB void
 on_scopt_radiobutton20_toggled         (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if(gtk_toggle_button_get_active(togglebutton))
-    i_image_format = IMG_JPG;
-  refresh_label();
+    if(gtk_toggle_button_get_active(togglebutton))
+        tmp_options.size = IMG_LCD;
 }
 
 
-void
+GLADE_CB void
 on_scopt_radiobutton21_toggled         (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if(gtk_toggle_button_get_active(togglebutton))
-    i_image_format = IMG_BMP;
-  refresh_label();
+    if(gtk_toggle_button_get_active(togglebutton))
+        tmp_options.size = IMG_SKIN;
 }
 
 
-void
-on_scopt_radiobutton22_toggled         (GtkToggleButton *togglebutton,
+GLADE_CB void
+on_scopt_radiobutton30_toggled         (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if(gtk_toggle_button_get_active(togglebutton))
-    i_image_type = IMG_BW;
+    if(gtk_toggle_button_get_active(togglebutton))
+        tmp_options.format = IMG_JPG;
+    refresh_label();
 }
 
 
-void
-on_scopt_radiobutton23_toggled         (GtkToggleButton *togglebutton,
+GLADE_CB void
+on_scopt_radiobutton31_toggled         (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if(gtk_toggle_button_get_active(togglebutton))
-    i_image_type = IMG_COL;
+    if(gtk_toggle_button_get_active(togglebutton))
+        tmp_options.format = IMG_PNG;
+    refresh_label();
 }
 
 
-void
-on_scopt_radiobutton24_toggled         (GtkToggleButton *togglebutton,
+GLADE_CB void
+on_scopt_radiobutton32_toggled         (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  if(gtk_toggle_button_get_active(togglebutton))
-    i_image_size = IMG_LCD;
+    if(gtk_toggle_button_get_active(togglebutton))
+        tmp_options.format = IMG_ICO;
+    refresh_label();
 }
 
 
-void
-on_scopt_radiobutton25_toggled         (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if(gtk_toggle_button_get_active(togglebutton))
-    i_image_size = IMG_SKIN;
-}
-
-
-void
-on_scopt_ok_button_clicked             (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  options.img_format = i_image_format;
-  options.img_type = i_image_type;
-  options.img_size = i_image_size;
-  options.img_counter = i_screen_counter;
-  g_free(options.img_file);
-  options.img_file = g_strdup(i_screen_file);
-  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "scopt_dbox"));
-}
-
-
-void
-on_scopt_cancel_button_clicked         (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "scopt_dbox"));
-}
-
-void
-on_scopt_dbox_destroy                  (GtkObject       *object,
-                                        gpointer         user_data)
-{
-  ti68k_unhalt();
-}
-
-void refresh_label(void)
-{
-  gchar buffer[MAXCHARS];
-  gchar *ext = "???";
-
-  switch(i_image_format)
-    {
-    case IMG_XPM: ext = "xpm"; break;
-    case IMG_PCX: ext = "pcx"; break;
-    case IMG_JPG: ext = "jpg"; break;
-    case IMG_BMP: ext = "bmp"; break;
-    default: break;
-    }
-  
-  sprintf(buffer, "%s%03i.%s", i_screen_file, i_screen_counter, ext);
-  gtk_label_set_text(GTK_LABEL(label), buffer);
-}
-
-void
+GLADE_CB void
 on_entry1_changed                      (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  gchar *s;
+    gchar *str;
 
-  g_free(options.img_file);
-  s = gtk_editable_get_chars(editable, 0, -1);
-  i_screen_file = g_strdup(s);
-  refresh_label();
+    g_free(tmp_options.file);
+    str = gtk_editable_get_chars(editable, 0, -1);
+    tmp_options.file = g_strdup(str);
+    g_free(str);
+    refresh_label();
 }
 
 /* */

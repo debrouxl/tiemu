@@ -65,6 +65,7 @@ typedef struct {
 } ScrOptions;
 
 extern TieOptions options;
+extern ScrOptions options2;
 
 /* Misc */
 struct sel

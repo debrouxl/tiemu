@@ -372,11 +372,7 @@ SOURCE=..\..\src\gui\romv_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\scopt_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\scopt_dbox.c
+SOURCE=..\..\src\gui\scroptions.c
 # End Source File
 # Begin Source File
 

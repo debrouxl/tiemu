@@ -96,7 +96,7 @@
 			  <property name="active">True</property>
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
-			  <signal name="toggled" handler="on_scopt_radiobutton22_toggled"/>
+			  <signal name="toggled" handler="on_scopt_radiobutton10_toggled" last_modification_time="Sat, 15 May 2004 12:52:08 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -116,7 +116,7 @@
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
 			  <property name="group">radiobutton10</property>
-			  <signal name="toggled" handler="on_scopt_radiobutton23_toggled"/>
+			  <signal name="toggled" handler="on_scopt_radiobutton11_toggled" last_modification_time="Sat, 15 May 2004 12:52:13 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -146,7 +146,7 @@
 			  <property name="active">True</property>
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
-			  <signal name="toggled" handler="on_scopt_radiobutton24_toggled"/>
+			  <signal name="toggled" handler="on_scopt_radiobutton20_toggled" last_modification_time="Sat, 15 May 2004 12:52:18 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -166,7 +166,7 @@
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
 			  <property name="group">radiobutton20</property>
-			  <signal name="toggled" handler="on_scopt_radiobutton25_toggled"/>
+			  <signal name="toggled" handler="on_scopt_radiobutton21_toggled" last_modification_time="Sat, 15 May 2004 12:52:23 GMT"/>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -238,7 +238,7 @@
 		      <property name="active">True</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_scopt_radiobutton18_toggled"/>
+		      <signal name="toggled" handler="on_scopt_radiobutton30_toggled" last_modification_time="Sat, 15 May 2004 12:52:32 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -258,7 +258,7 @@
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
 		      <property name="group">radiobutton30</property>
-		      <signal name="toggled" handler="on_scopt_radiobutton19_toggled"/>
+		      <signal name="toggled" handler="on_scopt_radiobutton31_toggled" last_modification_time="Sat, 15 May 2004 12:52:36 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -278,7 +278,7 @@
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
 		      <property name="group">radiobutton30</property>
-		      <signal name="toggled" handler="on_scopt_radiobutton20_toggled"/>
+		      <signal name="toggled" handler="on_scopt_radiobutton32_toggled" last_modification_time="Sat, 15 May 2004 12:52:44 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>

@@ -379,7 +379,7 @@ GLADE_CB void
 on_screen_options1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	display_scopt_dbox();
+	display_scroptions_dbox();
 }
 
 

@@ -1075,7 +1075,7 @@ int hid_screenshot(char *filename)
 	int gap = iScrW - iLcdW;
 
 	if(filename == NULL) {
-		switch(options.img_format) {
+		switch(options2.format) {
 			case IMG_JPG: ext = "jpg"; type = "jpeg"; break;
 			case IMG_PNG: ext = "png"; type = "png";  break;
 			case IMG_ICO: ext = "ico"; type = "ico";  break;
@@ -1083,19 +1083,19 @@ int hid_screenshot(char *filename)
 		}
       
 		outfile = g_strdup_printf("%s%03i.%s", 
-			options.img_file, 
-			options.img_counter, ext);
+			options2.file, 
+			options2.counter, ext);
 	} else {
 		outfile = g_strdup(filename);
 	}
 
 	DISPLAY("Screenshot to %s... ", outfile);
 
-	if((options.img_size == IMG_LCD) && (options.img_type == IMG_BW)) {
+	if((options2.size == IMG_LCD) && (options2.type == IMG_BW)) {
 
-	} else if((options.img_size == IMG_LCD) && (options.img_type == IMG_COL)) {
+	} else if((options2.size == IMG_LCD) && (options2.type == IMG_COL)) {
 
-	} else if(options.img_size == IMG_SKIN) {
+	} else if(options2.size == IMG_SKIN) {
 
 		SDL_Surface *sdlCapture;
 		SDL_PixelFormat fmt;
@@ -1139,7 +1139,7 @@ int hid_screenshot(char *filename)
 	}
 
 	DISPLAY("Done !\n");
-	options.img_counter++;
+	options2.counter++;
 	g_free(filename);
 
 	return 0;

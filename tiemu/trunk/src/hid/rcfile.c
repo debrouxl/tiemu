@@ -411,39 +411,39 @@ void rcfile_read(void)
 
 	if( (p=find_str(buffer, "img_format=")) )
 	{
-	  if(!strcmp(p, "pcx")) options.img_format=IMG_PCX;
-	  else if(!strcmp(p, "xpm")) options.img_format=IMG_XPM;
-	  else if(!strcmp(p, "jpg")) options.img_format=IMG_JPG;
+	  if(!strcmp(p, "pcx")) options2.format=IMG_PCX;
+	  else if(!strcmp(p, "xpm")) options2.format=IMG_XPM;
+	  else if(!strcmp(p, "jpg")) options2.format=IMG_JPG;
 	  else stop(l);
 	  continue;
 	}
       
 	if( (p=find_str(buffer, "img_type=")) )
 	{
-	  if(!strcmp(p, "bw")) options.img_type = IMG_BW;
-	  else if(!strcmp(p, "color")) options.img_type = IMG_COL;
+	  if(!strcmp(p, "bw")) options2.type = IMG_BW;
+	  else if(!strcmp(p, "color")) options2.type = IMG_COL;
 	  else stop(l);
 	  continue;
 	}
       
 	if( (p=find_str(buffer, "img_size=")) )
 	{
-	  if(!strcmp(p, "lcd")) options.img_size = IMG_LCD;
-	  else if(!strcmp(p, "skin")) options.img_size = IMG_SKIN;
+	  if(!strcmp(p, "lcd")) options2.size = IMG_LCD;
+	  else if(!strcmp(p, "skin")) options2.size = IMG_SKIN;
 	  else stop(l);
 	  continue;
 	}
       
 	if( (p=find_str(buffer, "screen_file=")) )
 	{
-	  g_free(options.img_file);
-	  options.img_file = g_strdup(p);
+	  g_free(options2.file);
+	  options2.file = g_strdup(p);
 	  continue;
 	}
       
 	if( (p=find_str(buffer, "screen_counter=")) )
 	{
-	  sscanf(p, "%i", &(options.img_counter));
+	  sscanf(p, "%i", &(options2.counter));
 	  continue;
 	}
 	
@@ -713,7 +713,7 @@ void rcfile_write(void)
   fprintf(txt, "\n");
   fprintf(txt, "# Screenshot: image format (xpm, pcx, jpg, bmp)\n");
   fprintf(txt, "img_format=");
-  switch(options.img_format)
+  switch(options2.format)
     {
     case IMG_XPM: fprintf(txt, "xpm\n"); break;
     case IMG_PCX: fprintf(txt, "pcx\n"); break;
@@ -722,17 +722,17 @@ void rcfile_write(void)
     }
   fprintf(txt, "\n");
   fprintf(txt, "# Screenshot: image type (bw, color)\n");
-  fprintf(txt, "img_type=%s\n", (options.img_type == IMG_BW) ? "bw" : "color");
+  fprintf(txt, "img_type=%s\n", (options2.type == IMG_BW) ? "bw" : "color");
   fprintf(txt, "\n");
   fprintf(txt, "# Screenshot: image size (lcd, skin)\n");
-  fprintf(txt, "img_size=%s\n", (options.img_size == IMG_LCD) ? "lcd" : "skin");
+  fprintf(txt, "img_size=%s\n", (options2.size == IMG_LCD) ? "lcd" : "skin");
   fprintf(txt, "\n");
 
   fprintf(txt, "# Screenshot base file\n");
-  fprintf(txt, "screen_file=%s\n", options.img_file);
+  fprintf(txt, "screen_file=%s\n", options2.file);
   fprintf(txt, "\n");
   fprintf(txt, "# Screenshot counter\n");
-  fprintf(txt, "screen_counter=%i\n", options.img_counter);
+  fprintf(txt, "screen_counter=%i\n", options2.counter);
   fprintf(txt, "\n");
   fprintf(txt, "\n");
   fprintf(txt, "#\n");
@@ -780,11 +780,11 @@ int rcfile_default()
 	options.stack_lines = 20;
 	options.mem_lines   = 20;
 
-	options.img_file = g_strdup("screenshot");
-	options.img_counter = 0;
-	options.img_type = IMG_COL;	//IMG_BW;
-	options.img_format = IMG_PNG;
-	options.img_size = IMG_SKIN;	//IMG_LCD;
+	options2.file = g_strdup("screenshot");
+	options2.counter = 0;
+	options2.type = IMG_COL;	//IMG_BW;
+	options2.format = IMG_PNG;
+	options2.size = IMG_SKIN;	//IMG_LCD;
 
 #if defined(__WIN32__) && defined(_CONSOLE)
 	options.console = !0;
