@@ -34,16 +34,6 @@ Ceci devrait être facilement implémentable en C dans l'émulateur, ce ne sont
 que des lookups d'adresses. Ce code pourrait aussi être utilisé pour
 afficher une fenêtre "Handles" comme le fait VTI.
 
-* Tiens, encore un bogue: lors du chargement de AMS 2.09 pour V200 en v2u, la
-première fois, j'ai converti, puis choisi la nouvelle ROM dans la liste, et
-TiEmu a planté (fenêtre de plantage Windows). La deuxième fois, la ROM était
-déjà dans la liste, je l'ai choisie et tout a marché...
-
-*  Tiens, encore un truc, dans le débogueur cette fois-ci: Actuellement, F8 sur
-un trap rentre dans un trap. Pourrais-tu s'il te plaît faire en sorte que F8
-ne rentre pas dans le trap, mais le traîte comme un JSR? VTI fait ça et
-c'est bien pratique. En revanche, F7 devrait rentrer dans le trap.
-
 * Et encore un autre bogue: l'écriture en FlashROM n'est pas émulée correctement, 
 même si je saute tous mes astuces anti-débogage, HW3Patch ne fonctionne pas.
 Et pour le problème de Flash: Les écritures en 0x812d50-0x812d5f (word par word) 

@@ -94,7 +94,9 @@ emulation engine without closing frames, <br>
 &nbsp;&nbsp;&nbsp; step out runs PC until a RTS/RTR/RTD/RTE/STOP
 instruction is reached (go out of the sub-routine)<br>
 &nbsp;&nbsp;&nbsp; step over runs PC until instruction after the
-current one is reached (skips all code in a sub-routine for instance)<br>
+current one is reached (skips all code in a sub-routine for instance),
+except for branches. <br>
+&nbsp;&nbsp;&nbsp; This works for JSR/BSR/FLINE/DBCC/TRAP, <br>
 - <span style="font-style: italic;">run to cursor</span> : runs PC
 until cursor address is reached.<br>
 <h2>7.2 Registers</h2>
