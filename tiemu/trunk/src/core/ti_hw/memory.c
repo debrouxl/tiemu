@@ -51,7 +51,7 @@ ULONG mem_mask[16];		// pseudo chip-select
 
 // 000000-0fffff : RAM (128 or 256 KB)
 // 100000-1fffff : 
-// 200000-2fffff : internal ROM (TI89 or V200 ?)
+// 200000-2fffff : internal ROM (TI92, TI89, V200)
 // 300000-3fffff : idem
 // 400000-4fffff : external ROM (TI92, TI92-II, TI92+)
 // 500000-5fffff : idem
@@ -158,10 +158,16 @@ int hw_mem_init(void)
 	if(tihw.rom_internal)
 	{
 		mem_tab[2] = tihw.rom;
-		mem_mask[2] = MIN(tihw.rom_size, 1*MB)-1;
+		mem_mask[2] = 0x1fffff; //MIN(tihw.rom_size, 1*MB)-1;
 
 		mem_tab[3] = tihw.rom + 0x100000;
-		mem_mask[3] = MIN(tihw.rom_size - 1*MB, 1*MB)-1;
+		mem_mask[3] = 0x1fffff; //MIN(tihw.rom_size - 1*MB, 1*MB)-1;
+
+        mem_tab[4] = tihw.rom + 0x200000;
+		mem_mask[4] = 0x1fffff; //MIN(tihw.rom_size - 2*MB, 1*MB)-1;
+
+        mem_tab[5] = tihw.rom + 0x300000;
+		mem_mask[5] = 0x1fffff; //MIN(tihw.rom_size - 3*MB, 1*MB)-1;
 	}
 
     // map ROM (external)

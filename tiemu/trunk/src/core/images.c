@@ -230,7 +230,7 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
 
   	if(rom->size < 256) 
     	return ERR_68K_INVALID_SIZE;
-  	if (rom->size > 2*1024*1024)
+  	if (rom->size > 4*MB)
     	return ERR_68K_INVALID_SIZE;
   
 	if(rom->data == NULL)
