@@ -103,10 +103,14 @@ int hw_dbus_init(void)
     return 0;
 }
 
+static int avail = 0;
+
 int hw_dbus_reset(void)
 {
     //hw_dbus_exit();
     //hw_dbus_init();
+	printf("Dbus reset !\n");
+	avail = 0;
 
 	return 0;
 }
@@ -170,9 +174,6 @@ static int exit_link_cable(void)
 	return 0;
 }
 
-static int   lp_avail_byte;
-static uint8_t lp_last_byte;
-
 static void lp_putbyte(uint8_t arg)
 {
 	int err;
@@ -181,23 +182,43 @@ static void lp_putbyte(uint8_t arg)
 	if(err)
 	{
 		io_bit_set(0x0d,7);	// error
-		tiemu_error(err, NULL);
+		//tiemu_error(err, NULL);
+		printf("lp_putbyte error !\n");
 		return;
 	}
-	io_bit_set(0x0d,6);		// tx buffer empty
+
+	io_bit_set(0x0d,6);		// tx reg empty
 	io_bit_set(0x0d,2);		// link activity
 }
 
 static uint8_t lp_getbyte(void)
 {
-	lp_avail_byte = 0;
+	int err;
+	uint8_t arg;
 
-	return lp_last_byte;
+	if(!avail)
+	{
+		io_bit_set(0x0d,7);
+		printf("lp_getbyte (byte lost) !\n");
+	}
+
+	err = lc.get(&arg);
+	if(err)
+    {
+		io_bit_set(0x0d,7);	// error
+		//tiemu_error(err, NULL);
+		printf("lp_getbyte error !\n");
+		avail = 0;
+		return 0x00;
+    }
+	avail = 0;
+
+	return arg;
 }
 
 static int lp_byteavail(void)
 {
-	return lp_avail_byte;
+	return 0;
 }
 
 static int lp_checkread(void)
@@ -205,34 +226,27 @@ static int lp_checkread(void)
 	int err = 0;
 	int status = 0;
 
-	if(lp_avail_byte)
+	if(avail)
 	    return 0;
-	
+
 	err = lc.check(&status);
 	if(err)
 	{
 	    io_bit_set(0x0d,7);		// error
-	    tiemu_error(err, NULL);
-	    lp_last_byte = 0;
+	    //tiemu_error(err, NULL);
+		printf("lp_checkread error !\n");
+		avail = 0;
+		return 0x00;
 	}
   
 	if(status & STATUS_RX)
 	{
-        err = lc.get(&lp_last_byte);
-		if(err)
-        {
-			io_bit_set(0x0d,7);	// error
-			tiemu_error(err, NULL);
-        }
-
-		io_bit_set(0x0d,5);		// rx buf full
+		io_bit_set(0x0d,5);		// rx reg full
 		io_bit_set(0x0d,2);		// link activity
-		lp_avail_byte = 1;
+		avail = !0;
     }
-	else
-		lp_avail_byte = 0;
   
-	return lp_avail_byte;
+	return avail;
 }
 
 

@@ -206,18 +206,19 @@ void hw_update(void)
 	}
 
 	// DBus: External link activity ?
+	/*
 	if(!lc.get_red_wire() || !lc.get_white_wire())
 	{
 		io_bit_set(0x0d,3);
 		io_bit_set(0x0d,2);
 	}
+	*/
 
 	// DBUS enabled ?
 	if(!io_bit_tst(0x0c,6))
 	{
 		// Check for data arrival (link cable)
-		if(hw_dbus_checkread()) 
-			io_bit_set(0x0d,5);
+		hw_dbus_checkread();
 
 		// Trigger int4 on: error, link act, txbuf empty or rxbuf full
 		if((io_bit_tst(0x0c,3) && io_bit_tst(0x0d,7))  ||

@@ -156,8 +156,10 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         break;
         case 0x0f: 	// rw <76543210>
 			// write a byte to the transmit buffer (1 byte buffer)
+			printf("putting... ");
 			io_bit_clr(0x0d, 0);	// STX=0 (tx reg is full)
             hw_dbus_putbyte(arg);
+			printf("%02X\n", arg);
             break;
         case 0x10: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8 (msb)
@@ -315,8 +317,10 @@ uint8_t io_get_byte(uint32_t addr)
             break;
         case 0x0f: 	// rw <76543210>
 			// read one byte from receive (incoming) buffer
+			printf("getting... ");
             v = hw_dbus_getbyte();
 			io_bit_clr(0x0d, 5);	// SRX=0 (rx reg is empty)
+			printf("%02X\n", v);
         case 0x10: 	// -w <76543210> (hw1)
         break;
         case 0x11: 	// -w <76543210> (hw1) 
