@@ -448,6 +448,10 @@ SOURCE=..\..\src\gui\dbg_mem.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gui\dbg_regs.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\dboxes.c
 # End Source File
 # Begin Source File
