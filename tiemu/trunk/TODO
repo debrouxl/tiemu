@@ -3,13 +3,6 @@ List of stuffs to do (in French, sorry):
 ExtendeD
 ========
 
-* sur 89, l'interprétation des touches se mélange 
-parfois les pinceaux (4 au lieu de l, 6 au lieu de o, . au lieu de w).
-
-* J'ai aussi plusieurs crash de cause difficile à déterminer en
-utilisant le débogueur. Il y en a peut-être un lié à la fonction
-'disable' de breakpoint.
-
 * Pouvoir envoyer un fichier en le glissant déplaçant vers la calc
 serait pratique, comme sous VTI.
 
@@ -53,13 +46,6 @@ Les nombres de niveaux de gris interessants sont 2, 4, 7 et 8:
   4: plane0, plane0, plane1 (2/3, 1/3)
   7: plane2, plane0, plane1, plane0, plane1, plane0 (3/6, 2/6, 1/6)
   8: plane1, plane0, plane2, plane0, plane0, plane1, plane0 (4/7, 2/7, 1/7)
-
-* Kevin Kofler vient de me (Olivier) faire remarquer qu'il n'est pas possible
-d'envoyer de fichiers à TiEmu lorsqu'il émule une Titanium 
-(plantage). Il n'y a pas de problèmes avec les autres modèles de calcs.
-Tu es au courant du problème ? Peut-être est-ce dû à la gestion de
-l'USB dans l'AMS 3 ? (bizarrement un AMS 3 patché avec Titarom et
-émulé sous VTI n'a pas de problème pour utiliser le LIO).
 
 
 Lionel
