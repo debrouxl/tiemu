@@ -31,7 +31,8 @@ int hw_m68k_init(void);
 int hw_m68k_reset(void);
 int hw_m68k_exit(void);
 
-int hw_m68k_run(int);
+int hw_m68k_run(int ninsts);
+int hw_m68k_get_cycle_count(int);
 
 void hw_m68k_irq(int n);
 

@@ -147,17 +147,24 @@ int ti68k_exit(void)
 	return 0;
 }
 
+int ti68k_get_cycle_count(int reset, int *diff)
+{
+	static int old_cnt = 0;
+	int new_cnt;
+
+	new_cnt = hw_m68k_get_cycle_count(reset);
+
+	if(diff != NULL)
+		*diff = new_cnt - old_cnt;
+	old_cnt = new_cnt;
+
+	return new_cnt;
+}
+
 /******************/
 /* Link functions */
 /******************/
 
-/*
-    Remark: there is a bug here... If the buffer is allocated with malloc, GtkTiEmu will 
-    segfault (backBuf address out of bounds). If the buffer is allocated on the heap 
-    as an array, there will be no problem. Moreover, this problem does not appear when we send 
-    a file via the command mode, only in GUI mode.
-    Then, there may be a problem of shared memory or something else...
-*/
 int ti68k_linkport_send_file(const char *filename)
 {
     return send_ti_file(filename);

@@ -9,6 +9,7 @@ To do:
 	- [kevin] $1029: merged UAE 0.8.15 from tigcc-dbg branch
 	- [roms]  $1030: fixed MSVC compilation and support for new UAE
 		Note: there is a post-build lock with gencpu. To fix...
+	- [roms]  $1032: added instruction cycle count support
 
 - 19/03/2005, version 1.80q:
 	- [roms] $985: updated copyright notice.

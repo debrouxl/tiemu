@@ -113,10 +113,23 @@ void hw_m68k_irq(int n)
 extern void lcd_hook_hw2(int);
 
 /* Replace UAE's M68000_run() */
+
 /*
-  Do 'n' instructions.
-  return ERR_NONE if successful, a negative value if an error occured,
-  a positive value if a breakpoint has been encountered.
+	Returns cycle count.
+*/
+static int cycles = 0;
+int hw_m68k_get_cycle_count(int reset)
+{
+	if(reset) cycles = 0;
+	return cycles;
+}
+
+/*
+  Do 'n' instructions. 
+  Returned value:
+  - 1 if breakpoint has been encountered,
+  - 2 if trace,
+  - 0 otherwise.
 */
 int hw_m68k_run(int n)
 {
@@ -126,7 +139,6 @@ int hw_m68k_run(int n)
 	for(i = 0; i < n; i++)
 	{
 		uae_u32 opcode;
-		int cycles;
 
 		// refresh hardware
 		do_cycles();
