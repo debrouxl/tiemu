@@ -337,7 +337,7 @@ gint display_dbgmem_dbox(uint32_t *addr)
 	glade_xml_signal_autoconnect(xml);
 	
 	entry = glade_xml_get_widget(xml, "entry1");
-	gtk_entry_set_text(GTK_ENTRY(entry), "0x000000");
+	gtk_entry_set_text(GTK_ENTRY(entry), "000000");
 	*addr = 0;
 	
 	dbox = glade_xml_get_widget(xml, "dbgmem_dbox");	
@@ -412,7 +412,8 @@ dbgmem_button1_clicked                     (GtkButton       *button,
 	uint32_t addr;
 	gchar *str;
 	
-	display_dbgmem_dbox(&addr);
+	if(display_dbgmem_dbox(&addr) == -1)
+		return;
 	
 	str = g_strdup_printf("%06x", addr);
 	notebook_add_page(notebook, str);
