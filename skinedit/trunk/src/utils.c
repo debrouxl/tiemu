@@ -100,10 +100,11 @@ clear_skin_infos(void)
   if (skin_infos.jpeg_path != NULL)
     free(skin_infos.jpeg_path);
 
-#ifndef __MACOSX__
   if (skin_infos.img_orig != NULL)
-    free(skin_infos.img_orig);
-#endif  
+    {
+      g_object_unref(skin_infos.img_orig);
+      skin_infos.img_orig = NULL;
+    }
 
   memset(&skin_infos, 0, sizeof(struct skinInfos));
 }

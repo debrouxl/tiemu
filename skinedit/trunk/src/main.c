@@ -82,7 +82,7 @@ main (int argc, char *argv[])
   signal(SIGINT, signal_handler);
 
   fprintf(stdout, _("SkinEdit v%s, (C) 2002-2003 Julien BLACHE <jb@tilp.info>\n"), VERSION);
-  fprintf(stdout, _("                  2004      Romain Liévin <roms@tilp.info>\n"), VERSION);
+  fprintf(stdout, _("                     2004      Romain Liévin <roms@tilp.info>\n"));
   fprintf(stdout, "\n");
   fprintf(stdout, _("This program is free software; you can redistribute it and/or modify\n"));
   fprintf(stdout, _("it under the terms of the GNU General Public License as published by\n"));

@@ -384,7 +384,7 @@ load_jpeg(FILE *fp)
    * Feed the original pixbuf with our image
    */
   skin_infos.img_orig = gdk_pixbuf_new_from_file(filename, &error);
-  if (!skin_infos.img_orig) 
+  if (skin_infos.img_orig == NULL) 
     {
       printf("error");
       g_error_free(error);

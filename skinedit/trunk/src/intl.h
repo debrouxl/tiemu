@@ -58,7 +58,7 @@
 # undef PACKAGE
 # define PACKAGE "skinedit"	// name of package
 # define LOCALEDIR ""		// place of the translated file
-# define VERSION "1.2.1"	// version
+# define VERSION "1.24"		// version
 #endif
 
 #endif

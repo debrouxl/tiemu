@@ -237,18 +237,18 @@ draw_rubberbox(GtkWidget *drawing_area, GdkRect rect)
   update_rect.y = oc.y;
   update_rect.w = ((oc.w + oc.x + 2) <= skin_infos.width) ? (oc.w + 2) : oc.w;  /* add 2 to really erase the lines (right, bottom) ... */
   update_rect.h = ((oc.h + oc.y + 2) <= skin_infos.height) ? (oc.h + 2) : oc.h; /* ... but be careful */
-  printf("<oc: %i %i %i %i>\n", update_rect.x, update_rect.y, update_rect.w, update_rect.h);
 
   gtk_widget_draw (drawing_area, (GdkRectangle *)&update_rect);
+  //gtk_widget_queue_draw_area (drawing_area, update_rect.x, update_rect.y, update_rect.w, update_rect.h);
   //gdk_window_invalidate_rect(drawing_area->window, (GdkRectangle *)&update_rect, FALSE);
 
   update_rect.x = c.x;
   update_rect.y = c.y;
   update_rect.w = ((c.w + c.x + 2) <= skin_infos.width) ? (c.w + 2) : c.w;  /* add 2 to really erase the lines (right, bottom) ... */
   update_rect.h = ((c.h + c.y + 2) <= skin_infos.height) ? (c.h + 2) : c.h; /* ... but be careful */
-  printf("<c: %i %i %i %i>\n", update_rect.x, update_rect.y, update_rect.w, update_rect.h);
   
   gtk_widget_draw (drawing_area, (GdkRectangle *)&update_rect);
+  //gtk_widget_queue_draw_area (drawing_area, update_rect.x, update_rect.y, update_rect.w, update_rect.h);
   //gdk_window_invalidate_rect(drawing_area->window, (GdkRectangle *)&update_rect, FALSE);
 
   tmp_rect = rect; /* when called from callbacks.c (for LCD or keys) */
@@ -259,15 +259,13 @@ draw_rubberbox(GtkWidget *drawing_area, GdkRect rect)
 void
 erase_rubberbox(GtkWidget *drawing_area)
 {
-	GdkRect update_rect;
+  GdkRect update_rect;
 	
-	printf("erase\n");
-
   // copy original image
   g_object_unref(pixbuf);
   pixbuf = gdk_pixbuf_copy(skin_infos.img_orig);
   
-  // force full redraw
+  // force immediate & full redraw
   gtk_widget_queue_draw(drawing_area);
 }
 

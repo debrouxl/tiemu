@@ -8,12 +8,12 @@ CFG=SkinEdit_console - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "SkinEdit_console.mak".
+!MESSAGE NMAKE /f "SkinEdit_Console.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "SkinEdit_console.mak" CFG="SkinEdit_console - Win32 Debug"
+!MESSAGE NMAKE /f "SkinEdit_Console.mak" CFG="SkinEdit_console - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -151,6 +151,10 @@ SOURCE=..\..\src\gtksdl.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\intl.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\keymaps.h
 # End Source File
 # Begin Source File
@@ -246,5 +250,9 @@ SOURCE=..\..\src\utils.c
 SOURCE=..\..\src\vti_export.c
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\ChangeLog
+# End Source File
 # End Target
 # End Project
