@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: cabl_int.h 651 2004-04-25 15:22:07Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -42,6 +42,7 @@
 #define DEFAULT_BPP   8
 #define DEFAULT_FLAGS (SDL_HWPALETTE | SDL_HWSURFACE | SDL_RESIZABLE) 
 
+int gui_popup = 0;
 
 /*****************************************/
 /* Various variables and short functions */
@@ -540,7 +541,8 @@ static int hid_update_keys(void)
 	      if(!bFullscreen) 
 		{
 		  SDL_WaitEvent(&event); // flush event
-		  gui_popup_menu();
+		  gui_popup = !0;
+		  //gui_popup_menu();
 		}
 	      else
 		hid_switch_windowed();

@@ -67,9 +67,10 @@
 #define NB_INSTRUCTIONS_PER_LOOP 50000 //50000
 #define TIME_LIMIT               30 // 30
 
-//#define THREADED
+#define THREADED
+//#define LOOPED
 
-int my_thread(void *data)
+gpointer my_thread(gpointer data)
 {
     struct timeb tCurrentTime;
 	struct timeb tLastTime;
@@ -80,8 +81,9 @@ int my_thread(void *data)
     while (1) 
 	{
 		// Update GUI only if emulator core is halted
-		if(is_halted())
-            continue;
+		if(is_halted()) {
+			continue;
+		}
       
 		// Run emulator core
 		ftime(&tLastTime);
@@ -103,8 +105,40 @@ int my_thread(void *data)
 	}
 }
 
+int my_loop(gpointer data)
+{
+	    struct timeb tCurrentTime;
+	struct timeb tLastTime;
+	unsigned long int iCurrentTime;
+	unsigned long int iLastTime; 
+    gint res = 0;
+
+		// Update GUI only if emulator core is halted
+		if(is_halted())
+            return;
+      
+		// Run emulator core
+		ftime(&tLastTime);
+		if((res = ti68k_doInstructions(NB_INSTRUCTIONS_PER_LOOP))) {  
+			// a bkpt has been encountered
+		} else { 
+			// normal execution
+			ftime(&tCurrentTime);
+			iLastTime    = tLastTime.time*1000+tLastTime.millitm;
+			iCurrentTime = tCurrentTime.time*1000+tCurrentTime.millitm;
+			if ((iCurrentTime - iLastTime) < TIME_LIMIT) {
+#if defined(__LINUX__)
+				usleep((TIME_LIMIT - iCurrentTime + iLastTime)*1000);
+#elif defined(__WIN32__)
+				Sleep((TIME_LIMIT - iCurrentTime + iLastTime));
+#endif
+			}
+		}
+}
+
 /******************/
 
+extern int gui_popup;
 
 extern int wizard_ok;
 extern gchar *wizard_rom;
@@ -124,7 +158,8 @@ int main(int argc, char **argv)
 	unsigned long int iCurrentTime;
 	unsigned long int iLastTime; 
 	gint res=0;
-    SDL_Thread *thread;
+	GThread *thread;
+	GError *error;
 
 	/*
 		Do primary initializations 
@@ -180,6 +215,7 @@ int main(int argc, char **argv)
 	/* 
 		Init GTK+ (popup menu, boxes, ...)
 	*/
+	g_thread_init(NULL);
 	gtk_init(&argc, &argv);
 
 	/*
@@ -247,7 +283,7 @@ int main(int argc, char **argv)
 		//close_console();
 
 	/* Run main loop */
-#ifndef THREADED
+#if !defined(THREADED) && !defined(LOOPED)
 	while (1) 
 	{
 		// Update GUI only if emulator core is halted
@@ -274,16 +310,22 @@ int main(int argc, char **argv)
 			}
 		}
 	}
+#elif defined(THREADED) && !defined(LOOPED)
+	thread = g_thread_create(my_thread, NULL, FALSE, &error);
+
+	gdk_threads_enter();
+	//gtk_main();
+	while(1) {
+		if(gui_popup) {
+			gui_popup_menu();
+			gui_popup = 0;
+		}
+			gtk_main_iteration();
+	}
+	gdk_threads_leave();
 #else
-    thread = SDL_CreateThread(my_thread, NULL);
-
-    while(1) {
-        while( gtk_events_pending() ) { 
-				gtk_main_iteration(); 
-			}
-    }
-
-    gtk_main();
+	gtk_idle_add(my_loop, NULL);
+	gtk_main();
 #endif
 
 	/* Close the emulator library */
