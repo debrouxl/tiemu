@@ -143,19 +143,19 @@ tiemu_OBJ = core/uae/newcpu.o \
 	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ)
 
 #rules:
-all: tiemu
+all: uae tiemu
 
 uae:
-#if OS_WIN32
+ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	export CFLAGS="-mms-bitfields"
-#endif
+endif
 	cd core/uae && $(MAKE) gen
 	cd core/uae && $(MAKE) all
-#if OS_WIN32
+ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	export CFLAGS=
-#endif
+endif
 
-tiemu: uae $(tiemu_OBJ)
+tiemu: $(tiemu_OBJ)
 #	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu $(LDFLAGS) $(CFLAGS)
 	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) \
 	-o tiemu $(LDFLAGS) $(CFLAGS)
