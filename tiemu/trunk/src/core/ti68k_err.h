@@ -54,5 +54,6 @@
 #define ERR_NOT_TI_FILE			519
 //#define ERR_MALLOC				520
 #define ERR_CANT_OPEN_DIR		521
+#define ERR_CANT_UPGRADE		522
 
 #endif

@@ -748,7 +748,7 @@ int ti68k_load_upgrade(const char *filename)
     if(tib.calc_type != img->calc_type)
     {
         free(tib.data);
-        return -1;
+        return ERR_CANT_UPGRADE;
     }
 
 	tib.has_boot = 1;	// still bootable
