@@ -17,6 +17,7 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
+
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -78,11 +79,11 @@ int hw_m68k_exit(void)
     return 0;
 }
 
-// UAE does not implement interrupt priority and pending
+// UAE does not implement interrupt priority and pending interrupts
 // I re-implement it as replacement of Interrupt()
 void Interrupt2(int nr)
 {
-	//if((nr > regs.intmask) ||(nr == 7))	// ok, if idle disabled
+	if((nr > regs.intmask) || (nr == 7))	// ok, if idle disabled
 		Interrupt(nr);
 
 	pending_ints &= ~(1 << nr);
@@ -104,31 +105,52 @@ void hw_m68k_irq(int n)
 */
 int hw_m68k_run(int n)
 {
-    int i;
-    GList *l;
+    int i=n;
+    GList *l = NULL;
 
-#if 0
+#if 1
 	int j;
-
-	if(!pending_ints && (specialflags & SPCFLAG_STOP))
-	{
-		for(i=0;i<n;i++)
-			do_cycles();
-		return 0;
-	}
-
-	regs.stopped = 0;
-	specialflags &= ~SPCFLAG_STOP;
-
-	if(specialflags & SPCFLAG_STOP)
-		printf("!");
 
 	for(j=0; j<i; j++)
 	{
 		UWORD opcode;
+
+		// search for breakpoint
+        if(((l = bkpts.code) != NULL) && !(specialflags & SPCFLAG_DBSKIP))
+        {
+            bkpts.id = 0;
+            while(l)
+            {
+                if(BKPT_ADDR(GPOINTER_TO_INT(l->data)) == (int)m68k_getpc())
+                {
+					if(BKPT_IS_TMP(GPOINTER_TO_INT(l->data)))
+						bkpts.code = g_list_remove(bkpts.code, l->data);
+
+                    bkpts.type = BK_TYPE_CODE;
+		            //specialflags |= SPCFLAG_BRK;
+                    return 1;
+                }
+
+                bkpts.id++;
+                l = g_list_next(l);
+            }
+        }
+
+        // store PC in the trace buffer
+        if(bkpts.pclog_size > 1)
+        {
+            bkpts.pclog_buf[bkpts.pclog_ptr++ % bkpts.pclog_size] = m68k_getpc();
+        }
+
+		// search for next opcode, execute it and refresh hardware (if not STOP'ed)
+		opcode = nextiword();
+		(*cpufunctbl[opcode])(opcode);
+		//printf("$%06x\n", m68k_getpc());
 		
+		// refresh hardware
 		do_cycles();
 
+		// process (pending) interrupts
 		if(pending_ints)
 		{
 			int level, mask = 0x80;
@@ -140,8 +162,41 @@ int hw_m68k_run(int n)
 			regs.stopped = 0;
 		}
 
-		opcode = nextiword();
-		(*cpufunctbl[opcode])(opcode);
+		// management of special flags
+        if(specialflags) 
+	    {
+    	    if(specialflags & SPCFLAG_ADRERR) 
+	        {
+	            Exception(3);
+				specialflags &= ~SPCFLAG_ADRERR;
+	        }
+	  
+	        if (specialflags & SPCFLAG_DOTRACE) 
+	        {
+	            Exception(9);
+	        }
+	      
+	        if (specialflags & SPCFLAG_TRACE) 
+	        {
+	            specialflags &= ~SPCFLAG_TRACE;
+	            specialflags |= SPCFLAG_DOTRACE;
+			}
+
+	        if (specialflags & SPCFLAG_BRK) 
+	        {		
+	          specialflags &= ~SPCFLAG_BRK;
+	          return 1;		// DBG_BREAK
+	        }
+
+	        if(specialflags & SPCFLAG_DBTRACE) 
+	        {
+	          specialflags &= ~SPCFLAG_DBTRACE;
+              return 2;     // DBG_TRACE
+	        }
+
+            if(specialflags & SPCFLAG_DBSKIP)
+                specialflags &= ~SPCFLAG_DBSKIP;
+	    }
 	}
 
 #else
@@ -207,10 +262,11 @@ int hw_m68k_run(int n)
 
 			// while (specialflags & SPCFLAG_STOP)
 			// need to be re-entrant so that hardware (ON key) is still running.
-			if (specialflags & SPCFLAG_STOP)
+			if ((specialflags & SPCFLAG_STOP) && (specialflags & (SPCFLAG_INT | SPCFLAG_DOINT)))
 	        {
 				int intr = intlev();
 				// wake on int level 6 (ON key) or level 1..5
+				specialflags &= ~(SPCFLAG_INT | SPCFLAG_DOINT);
 				if(
 					((intr == 5) && (tihw.io[0x05] & 0x10)) ||
 					((intr == 4) && (tihw.io[0x05] & 0x08)) ||
@@ -304,4 +360,84 @@ int hw_m68k_run(int n)
 		opcode = nextiword();
 		(*cpufunctbl[opcode])(opcode);
 	}
+*/
+
+/*
+for(i = 0; i < n; i++) 
+    {
+        UWORD opcode;
+
+        // search for next opcode, execute it and refresh hardware (if not STOP'ed)
+		if (!((specialflags & SPCFLAG_STOP) && !(specialflags & SPCFLAG_DBSKIP)))
+		{
+			opcode = nextiword();
+			(*cpufunctbl[opcode])(opcode);
+		}
+
+		// refresh hardware
+        do_cycles();
+
+        // management of special flags
+        if(specialflags) 
+	    {
+    	    if(specialflags & SPCFLAG_ADRERR) 
+	        {
+	            Exception(3);
+				specialflags &= ~SPCFLAG_ADRERR;
+	        }
+
+			// while (specialflags & SPCFLAG_STOP)
+			// need to be re-entrant so that hardware (ON key) is still running.
+			if (specialflags & SPCFLAG_STOP)
+	        {
+				if(pending_ints)
+				{
+					int level, mask = 0x80;
+					for (level = 7; level; level--, mask >>= 1)
+						if (pending_ints & mask)
+							break;
+
+					if(
+						((level == 5) && (tihw.io[0x05] & 0x10)) ||
+						((level == 4) && (tihw.io[0x05] & 0x08)) ||
+						((level == 3) && (tihw.io[0x05] & 0x04)) ||
+						((level == 2) && (tihw.io[0x05] & 0x02)) ||
+						((level == 1) && (tihw.io[0x05] & 0x01))
+						)
+					{
+						printf("%iR ", level);
+						Interrupt2(level);
+						regs.stopped = 0;
+						specialflags &= ~SPCFLAG_STOP;
+					}
+				}
+	        }
+
+			if(pending_ints)
+			{
+				int level, mask = 0x80;
+				for (level = 7; level; level--, mask >>= 1)
+					if (pending_ints & mask)
+						break;
+
+				Interrupt2 (level);
+				regs.stopped = 0;
+			}
+
+			if (specialflags & SPCFLAG_BRK) 
+	        {		
+	          specialflags &= ~SPCFLAG_BRK;
+	          return 1;		// DBG_BREAK
+	        }
+
+	        if(specialflags & SPCFLAG_DBTRACE) 
+	        {
+	          specialflags &= ~SPCFLAG_DBTRACE;
+              return 2;     // DBG_TRACE
+	        }
+
+            if(specialflags & SPCFLAG_DBSKIP)
+                specialflags &= ~SPCFLAG_DBSKIP;
+	    }  
+    }
 */

@@ -101,7 +101,8 @@ void io_put_byte(uint32_t addr, uint8_t arg)
             }
             
 			// turn off OSC1 (CPU), wake on int level 6 (ON key) and int level [5..1]
-			m68k_setstopped(1);
+			//m68k_setstopped(1);
+			//printf("S");
         break;
         case 0x06: 
 		case 0x07: 
