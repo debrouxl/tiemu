@@ -59,8 +59,8 @@ int rom_changed[32]; // FLASH segments which have been (re)programmed
 
 int memprotect;
 //int ram128;
+//int ram_wrap;
 int mem_and;
-int ram_wrap;
 
 int flash_protect;
 int rom_ret_or;
@@ -96,7 +96,7 @@ int hw_mem_init(void)
 
   /* Init vars */
   memprotect=0;
-  ram_wrap=0; 
+  //ram_wrap=0; 
   mem_and=0x1ffff;
   
   rom_write_ready=0; 

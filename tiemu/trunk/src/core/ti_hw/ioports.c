@@ -39,7 +39,9 @@
 #include "callbacks.h"
 #include "ti68k_def.h"
 
-#define bit(i,b)	(((b) & (1 << i)) >> i)
+#define bit_get(i,b)	(((b) & (1 << i)) >> i)
+#define bit_set(i,b)	((b) &  (1 << i))
+#define bit_clr(i,b)	((b) | ~(1 << i))
 
 void io_put_byte(CPTR adr, UBYTE arg) 
 {
@@ -53,15 +55,17 @@ void io_put_byte(CPTR adr, UBYTE arg)
             tihw.io0Bit2=(arg>>2)&1;
         break;
         case 0x01:
-			// interleave RAM (allows use of 256K of RAM)
-			tihw.ram256 = bit(0, arg);
+			// clr: interleave RAM (allows use of 256K of RAM)
+			tihw.ram256 = bit_get(0, arg);
 
 			memprotect=(arg>>2)&1;
-            mem_and=(ram_wrap)?0x1ffff:(!tihw.ram256?0x1ffff:0x3ffff);
+            mem_and=(tihw.ram_wrap)?0x1ffff:(!tihw.ram256?0x1ffff:0x3ffff);
             //mem_mask[0] = (mem_and==0x1fffff) ? (128*1024) : (256 * 1024);
 	    break;
-        case 0x04: // bit 3 set: 000000..1FFFFF mapped to 200000..3FFFFF
-            ram_wrap=(arg&8)>>3;
+        case 0x04:
+			// set: 000000..1FFFFF mapped to 200000..3FFFFF
+			tihw.ram_wrap = bit_get(3, arg);
+            //mem_tab[1] = mem_tab[0];
         break;
         case 0x05: if (!(arg&0x10)) specialflags |= SPCFLAG_STOP; 
             break;

@@ -83,7 +83,7 @@ int ti68k_state_load(char *filename)
   fread(&int0Count,4,1,fp);
   fread(&tihw.io0Bit7,4,1,fp); fread(&tihw.io0Bit2,4,1,fp);
   fread(&kbmask,4,1,fp);
-  fread(&ram_wrap,4,1,fp); fread(&(mem_and),4,1,fp);
+  fread(&tihw.ram_wrap,4,1,fp); fread(&(mem_and),4,1,fp);
   fread(&comError,4,1,fp);
   fread(&transflag,4,1,fp); fread(&transbyte,4,1,fp);
   fread(&transnotready,4,1,fp);
@@ -134,7 +134,7 @@ int ti68k_state_save(char *filename)
       fwrite(&int0Count,4,1,fp);
       fwrite(&tihw.io0Bit7,4,1,fp); fwrite(&tihw.io0Bit2,4,1,fp);
       fwrite(&kbmask,4,1,fp);
-      fwrite(&ram_wrap,4,1,fp); fwrite(&(mem_and),4,1,fp);
+      fwrite(&tihw.ram_wrap,4,1,fp); fwrite(&(mem_and),4,1,fp);
       fwrite(&comError,4,1,fp);
       fwrite(&transflag,4,1,fp); fwrite(&transbyte,4,1,fp);
       fwrite(&transnotready,4,1,fp);

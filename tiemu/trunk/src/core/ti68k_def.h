@@ -112,6 +112,7 @@ typedef struct
     int     initial_pc;
 
 	int		ram256;
+	int		ram_wrap;
 
     // timer.c
     int     timer_value;
