@@ -67,17 +67,20 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 {
 #ifdef HWP
 	// stealth I/O
-	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
+	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0 (hw1)
 	{
-		bit_clr(arch_mem_limit, 0);
+		if(!tihw.protect && (tihw.hw_type == HW1))
+			bit_clr(arch_mem_limit, 0);
 	}
-	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
+	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1 (hw1)
 	{
-		bit_clr(arch_mem_limit, 1);
+		if(!tihw.protect && (tihw.hw_type == HW1))
+			bit_clr(arch_mem_limit, 1);
 	}
-	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
+	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2 (hw1)
 	{
-		bit_clr(arch_mem_limit, 2);
+		if(!tihw.protect && (tihw.hw_type == HW1))
+			bit_clr(arch_mem_limit, 2);
 	}
 	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
 	{
@@ -139,14 +142,15 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 				access2++;
 	}
 	else if(IN_RANGE(0x390000+arch_mem_limit*0x10000, 
-								adr, 0x3fffff))			// archive memory limit
+								adr, 0x3fffff))			// archive memory limit (hw1)
 	{
 		// three consecutive access to any adress >=$390000+limit*$10000 and <$400000 crashes the calc
 		if(!(adr & 1)) arch_mem_crash++;
-		if(arch_mem_crash >= 4)
+		if((tihw.hw_type == HW1) && (arch_mem_crash >= 4))
 		{
+			// instruction fetch ??
 			//crash_calc();
-			//printf("2");
+			printf("2");
 		}
 	}
 	else
@@ -156,19 +160,22 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 	}
 
 	// protections (hw2)
-	if(0)	//tihw.hw_type == HW2)
+	if(tihw.hw_type == HW2)
 	{
 		if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM page execution protection
 		{
-			//if((tihw.hw_type == HW2) && tihw.ram_exec[adr >> 24]) crash_calc();
+			// instruction fetch
+			//if(tihw.ram_exec[adr >> 24]) crash_calc();
 		}
 		else if(IN_RANGE(0x040000, adr, 0x1fffff))			// RAM page execution protection
 		{
-			//if((tihw.hw_type == HW2) && io2_bit_tst(6, 7)) crash_calc();
+			// instruction fetch
+			//if(io2_bit_tst(6, 7)) crash_calc();
 		}
 		else if(IN_RANGE(0x210000, adr, 0x3fffff))			// FLASH page execution protection
 		{
-			if(adr >= (uint32_t)(0x210000 + tihw.io2[0x12]*0x10000)) crash_calc();
+			// instruction fetch
+			//if(adr >= (uint32_t)(0x210000 + tihw.io2[0x12]*0x10000)) crash_calc();
 		}
 	}
 #endif
@@ -208,17 +215,20 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 {
 #ifdef HWP
     // stealth I/O
-	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
+	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0 (hw1)
 	{
-		bit_set(arch_mem_limit, 0);
+		if(!tihw.protect && (tihw.hw_type == HW1))
+			bit_set(arch_mem_limit, 0);
 	}
-	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
+	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1 (hw1)
 	{
-		bit_set(arch_mem_limit, 1);
+		if(!tihw.protect && (tihw.hw_type == HW1))
+			bit_set(arch_mem_limit, 1);
 	}
-	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
+	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2 (hw1)
 	{
-		bit_set(arch_mem_limit, 2);
+		if(!tihw.protect && (tihw.hw_type == HW1))
+			bit_set(arch_mem_limit, 2);
 	}
 	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
 	{
@@ -251,7 +261,8 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 			if(!(adr & 1)) 
 				access2++;
 
-		return;		// don't write on boot code
+		// don't write on boot code
+		return;		
 	}
 	else if(IN_RANGE(0x210000, adr, 0x211fff))			// certificate (read protected)
 	{
@@ -279,19 +290,16 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 				access2++;
 	}
 	else if(IN_RANGE(0x390000+arch_mem_limit*0x10000, 
-								adr, 0x3fffff))			// archive memory limit
+								adr, 0x3fffff))			// archive memory limit (hw1)
 	{
 		// three consecutive access to any adress >=$390000+limit*$10000 and <$400000 crashes the calc
 		if(!(adr & 1)) arch_mem_crash++;
-		if(arch_mem_crash >= 4)
+		if((tihw.hw_type == HW1) && (arch_mem_crash >= 4))
 		{
+			// instruction fetch ??
 			//crash_calc();
 			//printf("4");
 		}
-	}
-	else if(tihw.hw_type == HW2)						// RAM page execution protection
-	{
-		// ...
 	}
 	else
 	{
@@ -300,22 +308,22 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 	}
 
 	// protections (hw2)
-	if(0)	//tihw.hw_type == HW2)
+	if(tihw.hw_type == HW2)
 	{
 		if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM page execution protection
 		{
-			if((tihw.hw_type == HW2) && tihw.ram_exec[adr >> 24]) 
-				crash_calc();
+			// instruction fetch
+			//if(tihw.ram_exec[adr >> 24]) crash_calc();
 		}
 		else if(IN_RANGE(0x040000, adr, 0x1fffff))			// RAM page execution protection
 		{
-			if((tihw.hw_type == HW2) && io2_bit_tst(6, 7)) 
-				crash_calc();
+			// instruction fetch
+			//if(io2_bit_tst(6, 7)) crash_calc();
 		}
 		else if(IN_RANGE(0x210000, adr, 0x3fffff))			// FLASH page execution protection
 		{
-			if((tihw.hw_type == HW2) && (adr >= (uint32_t)(0x210000 + tihw.io2[0x12]*0x10000)))
-				crash_calc();
+			// instruction fetch
+			//if(adr >= (uint32_t)(0x210000 + tihw.io2[0x12]*0x10000)) crash_calc();
 		}
 	}
 #endif
