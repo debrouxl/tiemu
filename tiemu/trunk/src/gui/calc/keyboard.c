@@ -50,7 +50,7 @@ static int hwkey_to_tikey(guint16 hardware_keycode, int action)
 {
     int i;
 
-	if(options.kbd_dbg)
+	//if(options.kbd_dbg)
 		printf("pckey = %02x (%s)\n", hardware_keycode, keymap_value_to_string(pckeys, hardware_keycode));
 
     for(i = 0; i < KEYMAP_MAX; i++)
@@ -106,6 +106,32 @@ static int pos_to_key(int x, int y)
   	return -1;
 }
 
+// raise the main popup menu
+static void
+do_popup_menu (GtkWidget *my_widget, GdkEventButton *event)
+{
+	GtkWidget *menu;
+	int event_button, event_time;
+
+	ti68k_engine_stop();
+	menu = display_popup_menu();
+
+	if (event)
+    {
+      event_button = event->button;
+      event_time = event->time;
+    }
+	else
+    {
+      event_button = 0;
+      event_time = gtk_get_current_event_time ();
+    }
+
+	gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL, 
+                  event_button, event_time);
+	gtk_widget_show(menu);
+}
+
 GLADE_CB gboolean
 on_calc_wnd_button_press_event     (GtkWidget       *widget,
                                         GdkEventButton  *event,
@@ -114,21 +140,9 @@ on_calc_wnd_button_press_event     (GtkWidget       *widget,
     if(event->type != GDK_BUTTON_PRESS)
         return FALSE;
 
-	if (event->button == 3) 
+	if (event->button == 3 && event->type == GDK_BUTTON_PRESS)
     {
-        GdkEventButton *bevent;
-        GtkWidget *menu;
-
-		bevent = (GdkEventButton *) (event);
-
-        ti68k_engine_stop();
-
-        menu = display_popup_menu();
-		gtk_menu_popup(GTK_MENU(menu),
-				   NULL, NULL, NULL, NULL,
-				   bevent->button, bevent->time);
-	    gtk_widget_show(menu);
-
+		do_popup_menu(widget, event);
 		return TRUE;
 	}
 
@@ -172,15 +186,18 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
                                         GdkEventKey     *event,
                                         gpointer         user_data)
 {
-    if(event->hardware_keycode == 0x0014)
-        event->keyval = GDK_Caps_Lock;
-/*
-	if(event->keyval == GDK_F9)
+	//printf("<%04x %04x %04x>\n", event->state, event->keyval, event->hardware_keycode);
+
+    if((event->keyval = 0xffff) && (event->hardware_keycode == 0x14))
 	{
-        hid_screenshot(NULL);
-        return TRUE;
-    } 
-*/
+        event->keyval = GDK_Caps_Lock;
+	}
+	else if((event->keyval == 0xffff) && (event->hardware_keycode == 0x5d))
+	{
+		do_popup_menu(widget, NULL);
+		return TRUE;
+	}
+
 #ifdef __MACOSX__
 	/* Until we get the mouse working on Mac OS X, invoke the menu using the
 		Enter key, which can't be used for anything else anyway because it is

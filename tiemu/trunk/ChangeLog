@@ -9,6 +9,7 @@ To do:
 	- fixed FLASH writes with HW3 patch
 	- fixed Step Over on the following FLINEs : 0xfff0, 0xfff2, 0xffee.
 	- fixed Hardware Parameter Block when converting FLASH upgrade
+	- the Windows(tm) MENU key raises the popup menu for now
 
 - 07/02/2005, version 1.80m: roms
 	- dbus architecture improved (reset)

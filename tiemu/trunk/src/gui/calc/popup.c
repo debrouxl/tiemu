@@ -72,7 +72,7 @@ on_popup_menu_button_press_event       (GtkWidget       *widget,
 {
 	GtkAllocation *alloc = &(widget->allocation);
 
-    //DISPLAY("on_popup_menu_button_press_event: %p %p %p\n", event->window, widget->window, main_wnd->window);
+    DISPLAY("on_popup_menu_button_press_event: %p %p %p\n", event->window, widget->window, main_wnd->window);
     //DISPLAY("%i %i %i %i\n", (gint)event->x, (gint)event->y, (gint)event->x_root, (gint)event->y_root);
     //DISPLAY("%i %i %i %i\n", alloc->x, alloc->y, alloc->width, alloc->height);
 
