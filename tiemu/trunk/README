@@ -84,41 +84,52 @@ all you need (I hope !) for configuring/using the emulator.
 | KEYBOARD MAPPING |
 +------------------+
 
-The keyboard mapping is the same as VTi (since we use VTi's skins), the well 
+The keyboard mapping is the same as VTi, the well 
 known TI emulator for Windows.
 
-TI92       PC
----------  ------------
-[Hand]     [Caps Lock]
-[SHIFT]    [Shift]
-[ON]       [Sroll Lock]
-[DIAMOND]  [Ctrl]
-[2ND]      [Alt]
-[STO>]     [Tab]
-[SIN]      [Insert]
-[COS]      [Home]
-[TAN]      [Page Up]
-[LN]       [End]
-[CLEAR]    [Suppr]
-[MODE]     [Page Down]
-[APPS]     [Print Scrn]
-[(-)]      [<]
-[Theta]    [;]
-[+]        [+]
-[-]        [-]
-[X]        [*]
-[Div]      [/]
-[^]        [§]
-[(]        [[]
-[)]        []]
+TI92(+)    	PC
+---------  	------------
+APPS		F9
+THETA		;
+STO>		Tab
+DIAMOND		Ctrl
+2ND			Alt
+(			[
+)			]
+HAND/LOCK	Caps Lock
+MODE		`
+LN			\
+SIN			Insert
+COS			Home
+TAN			Page Up
+CLEAR		Delete
+ON			Scroll Lock
+ENTER		Num Pad Enter
+
+TI89       	PC
+---------  	------------
+CATALOG		F6
+APPS		F9
+STO>		Tab
+DIAMOND		Ctrl
+2ND			Alt
+(			[
+)			]
+HAND/LOCK	Alpha
+MODE		`
+|			\
+EE			Insert
+CLEAR		Delete
+ON			Scroll Lock
 
 Letters, Numbers, Cursor movement, F1-F8 + some others are the
 same keys on both keyboards
 
 Special Keys
 
-[F9]       Enter Debugger
-[F10]      Do a screen capture
+F10			Send TI file
+F11			Enter Debugger
+F12			Set ROM version
 
 
 +-------------------+
