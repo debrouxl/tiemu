@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "uae.h"
+#include "libuae.h"
 #include "ports.h"
 #include "hw.h"
 #include "mem.h"

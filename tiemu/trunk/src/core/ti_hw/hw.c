@@ -31,7 +31,7 @@
 #include <string.h>
 #include <glib.h>
 
-#include "uae.h"
+#include "libuae.h"
 #include "mem.h"
 #include "ports.h"
 #include "dbus.h"

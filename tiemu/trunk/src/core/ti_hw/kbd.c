@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#include "uae.h"
+#include "libuae.h"
 #include "keydefs.h"
 #include "callbacks.h"
 #include "ti68k_def.h"

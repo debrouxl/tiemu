@@ -35,7 +35,7 @@
 #include <string.h>
 #include <math.h>
 
-#include "uae.h"
+#include "libuae.h"
 #include "hw.h"
 #include "m68k.h"
 #include "dbus.h"
@@ -189,7 +189,7 @@ int ti68k_debug_get_pc(void)
 
 int ti68k_debug_disassemble(int addr, char *output)
 {
-  CPTR nextPc;
+  uint32_t nextPc;
 
   MC68000_disasm(addr, &nextPc, 1, output);
   output[strlen(output)-1]='\0'; // strip CR-LF

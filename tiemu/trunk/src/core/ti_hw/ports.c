@@ -33,7 +33,7 @@
 #include <signal.h>
 #include <time.h>
 
-#include "uae.h"
+#include "libuae.h"
 #include "mem.h"
 #include "kbd.h"
 #include "dbus.h"

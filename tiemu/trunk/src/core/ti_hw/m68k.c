@@ -26,8 +26,7 @@
     M68K management (wrapper for the UAE engine)
 */
 
-#include "uae.h"
-#include "memory.h"
+#include "libuae.h"
 #include "ti68k_def.h"
 #include "mem.h"
 #include "hw.h"
@@ -81,6 +80,7 @@ int hw_m68k_exit(void)
 */
 int hw_m68k_run(int n)
 {
+#if 1
   int i;
   GList *l;
   static FILE *flog;
@@ -188,6 +188,6 @@ int hw_m68k_run(int n)
 	    }
 	}  
     }
-
+#endif
   return 0;
 }

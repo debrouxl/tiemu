@@ -32,7 +32,7 @@
 
 #include <string.h>
 
-#include "uae.h"
+#include "libuae.h"
 #include "dbus.h"
 #include "timer.h"
 #include "lcd.h"
