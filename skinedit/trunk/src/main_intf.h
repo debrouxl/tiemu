@@ -7,8 +7,12 @@
 GtkWidget* create_main_window (void);
 GtkWidget* create_filesel (void);
 
-GtkWidget *sdl_eventbox;
+GtkWidget *drawingarea1;
 GtkWidget *statusbar;
 
-GtkWidget *area;
-GtkSDL *sdl_area;
+//GdkPixmap *pixmap;
+GdkPixbuf *pixbuf;
+GdkPixbuf *orig;
+
+//GtkWidget *area;  // = drawingarea
+//GtkSDL *sdl_area; // = pixmap

@@ -353,6 +353,7 @@ load_skin_tiemu(FILE *fp)
   return load_jpeg(fp);
 }
 
+#ifdef ROMS
 int
 load_jpeg(FILE *fp)
 {
@@ -428,16 +429,15 @@ load_jpeg(FILE *fp)
       return -1;
     }
 
+#ifdef ROMS
   /*
    * Place a gtksdl in the eventbox
    */
-
   area = gtk_sdl_new(skin_infos.width, skin_infos.height, 16, SDL_HWSURFACE | SDL_HWPALETTE);
   sdl_area = GTK_SDL(area);
   
   gtk_container_add(GTK_CONTAINER(sdl_eventbox), GTK_WIDGET(area));
   gtk_widget_show(GTK_WIDGET(area));
-
   /*
    * gtksdl needs some time to be set up...
    */
@@ -446,11 +446,10 @@ load_jpeg(FILE *fp)
     {
       gtk_main_iteration();
     }
-
+#endif
   /*
    * Feed the gtksdl with our jpg
    */
-  
   if(SDL_MUSTLOCK(sdl_area->surface)) 
     {
       if(SDL_LockSurface(sdl_area->surface) < 0)
@@ -474,13 +473,10 @@ load_jpeg(FILE *fp)
       SDL_UnlockSurface(sdl_area->surface);
     }
 
-
   skin_infos.img_orig = malloc(2 * (sdl_area->surface)->w * (sdl_area->surface)->h);
-
   if (skin_infos.img_orig != NULL)
     {
       memcpy(skin_infos.img_orig, (sdl_area->surface)->pixels, (2 * (sdl_area->surface)->w * (sdl_area->surface)->h));
-      
       SDL_UpdateRect(sdl_area->surface, 0, 0, 0, 0);
     }
   else
@@ -498,6 +494,108 @@ load_jpeg(FILE *fp)
 
   return ret;
 }
+#else
+int
+load_jpeg(FILE *fp)
+{
+  struct jpeg_decompress_struct cinfo;
+  struct jpeg_error_mgr jerr;
+  GtkWidget *widget = drawingarea1;
+
+  unsigned char *img, *img_ptr;
+  int i, j;
+
+  uint16_t *SDLpixels;
+  unsigned char r, g, b;
+
+  int ret = 0;
+
+  GError *error = NULL;
+
+  cinfo.err = jpeg_std_error(&jerr);
+  jpeg_create_decompress(&cinfo);
+  jpeg_stdio_src(&cinfo, fp);
+  jpeg_read_header(&cinfo, TRUE);
+  
+  cinfo.scale_num = 1;
+  cinfo.scale_denom = 1;
+
+  /*
+   * Colormapped output, only 128 colors
+   */
+
+  cinfo.quantize_colors = TRUE;
+  cinfo.desired_number_of_colors = 128;
+  
+  jpeg_start_decompress(&cinfo);
+  
+  if (cinfo.output_components != 1) /* 1: palettized */ 
+    return -1;
+
+  /*
+   * JPEG rounds down odd number to the lower even.
+   */
+  skin_infos.width = cinfo.output_width & 0xfffffffe;
+  skin_infos.height = cinfo.output_height & 0xfffffffe;
+
+  img = img_ptr = (unsigned char*) malloc(cinfo.output_width * cinfo.output_height);
+
+  if(img == NULL)
+    {
+      jpeg_destroy_decompress(&cinfo);
+      
+      return -1;
+    }
+
+  /*
+   * Load the JPEG
+   */
+
+  while(cinfo.output_scanline < cinfo.output_height)
+    {
+      img_ptr += skin_infos.width;
+      jpeg_read_scanlines(&cinfo, &img_ptr, 1);
+    }
+
+  /* 
+   * Initialise the pixmap and the drawing area
+   */
+  gtk_drawing_area_size(GTK_DRAWING_AREA(widget), 
+			skin_infos.width, skin_infos.height);
+
+  if(pixbuf != NULL) {
+    g_object_unref(pixbuf);
+    pixbuf = NULL;
+  }
+
+  orig = gdk_pixbuf_new_from_file("ti92.jpg", &error);
+  if (!orig) 
+    {
+      printf("error");
+      g_error_free(error);
+      exit(0);
+    }
+  pixbuf = gdk_pixbuf_copy(orig);
+  /*
+  pixmap = gdk_pixmap_new(widget->window, 
+			  skin_infos.width, skin_infos.height, 
+			  -1);
+  printf("pixmap = %p\n", pixmap);
+  gdk_draw_pixbuf(pixmap,
+		  widget->style->fg_gc[GTK_WIDGET_STATE(drawingarea1)],
+		  orig, 
+		  0, 0, 0, 0, 
+		  skin_infos.width, skin_infos.height,
+		  GDK_RGB_DITHER_NONE, 0, 0);
+  */
+  jpeg_finish_decompress(&cinfo);
+  jpeg_destroy_decompress(&cinfo);
+  free(img);
+
+  return ret;
+}
+#endif
+
 
 
 int

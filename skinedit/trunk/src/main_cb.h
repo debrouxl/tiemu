@@ -124,3 +124,13 @@ on_filesel_cancel_clicked              (GtkButton       *button,
 
 
 #endif /* !__MAIN_CB_H__ */
+
+gboolean
+on_drawingarea1_configure_event        (GtkWidget       *widget,
+                                        GdkEventConfigure *event,
+                                        gpointer         user_data);
+
+gboolean
+on_drawingarea1_expose_event           (GtkWidget       *widget,
+                                        GdkEventExpose  *event,
+                                        gpointer         user_data);

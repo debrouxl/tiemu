@@ -63,6 +63,8 @@ create_main_window (void)
   GtkWidget *tb_key_pos;
   GtkWidget *scrolledwindow1;
   GtkWidget *viewport1;
+  //  GtkWidget *drawingarea1;
+  //  GtkWidget *statusbar;
   GtkAccelGroup *accel_group;
 
   accel_group = gtk_accel_group_new ();
@@ -225,10 +227,10 @@ create_main_window (void)
   gtk_widget_show (viewport1);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), viewport1);
 
-  sdl_eventbox = gtk_event_box_new ();
-  gtk_widget_show (sdl_eventbox);
-  gtk_container_add (GTK_CONTAINER (viewport1), sdl_eventbox);
-  gtk_widget_set_events (sdl_eventbox, GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON_PRESS_MASK);
+  drawingarea1 = gtk_drawing_area_new ();
+  gtk_widget_show (drawingarea1);
+  gtk_container_add (GTK_CONTAINER (viewport1), drawingarea1);
+  gtk_widget_set_events (drawingarea1, GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON_PRESS_MASK);
 
   statusbar = gtk_statusbar_new ();
   gtk_widget_show (statusbar);
@@ -282,6 +284,12 @@ create_main_window (void)
   g_signal_connect ((gpointer) tb_key_pos, "clicked",
                     G_CALLBACK (on_tb_key_pos_clicked),
                     NULL);
+  g_signal_connect ((gpointer) drawingarea1, "configure_event",
+                    G_CALLBACK (on_drawingarea1_configure_event),
+                    NULL);
+  g_signal_connect ((gpointer) drawingarea1, "expose_event",
+                    G_CALLBACK (on_drawingarea1_expose_event),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (main_window, main_window, "main_window");
@@ -317,7 +325,7 @@ create_main_window (void)
   GLADE_HOOKUP_OBJECT (main_window, tb_key_pos, "tb_key_pos");
   GLADE_HOOKUP_OBJECT (main_window, scrolledwindow1, "scrolledwindow1");
   GLADE_HOOKUP_OBJECT (main_window, viewport1, "viewport1");
-  GLADE_HOOKUP_OBJECT (main_window, sdl_eventbox, "sdl_eventbox");
+  GLADE_HOOKUP_OBJECT (main_window, drawingarea1, "drawingarea1");
   GLADE_HOOKUP_OBJECT (main_window, statusbar, "statusbar");
 
   gtk_window_add_accel_group (GTK_WINDOW (main_window), accel_group);

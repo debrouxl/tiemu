@@ -85,19 +85,19 @@ on_new_activate                        (GtkMenuItem     *menuitem,
     }
 
   if (lcd_mouse_motion != 0)
-    gtk_signal_disconnect(GTK_OBJECT(sdl_eventbox),
+    gtk_signal_disconnect(GTK_OBJECT(drawingarea1),
 			  lcd_mouse_motion);
 
   if (lcd_button_press != 0)
-    gtk_signal_disconnect(GTK_OBJECT(sdl_eventbox),
+    gtk_signal_disconnect(GTK_OBJECT(drawingarea1),
 			  lcd_button_press);
 
   if (keys_mouse_motion != 0)
-    gtk_signal_disconnect(GTK_OBJECT(sdl_eventbox),
+    gtk_signal_disconnect(GTK_OBJECT(drawingarea1),
 			  keys_mouse_motion);
 
   if (keys_button_press != 0)
-    gtk_signal_disconnect(GTK_OBJECT(sdl_eventbox),
+    gtk_signal_disconnect(GTK_OBJECT(drawingarea1),
 			  keys_button_press);
 
   lcd_mouse_motion = 0;
@@ -106,6 +106,7 @@ on_new_activate                        (GtkMenuItem     *menuitem,
   keys_mouse_motion = 0;
   keys_button_press = 0;
 
+#if ROMS
   if (sdl_area != NULL)
     {
       gtk_widget_destroy(GTK_WIDGET(sdl_area));
@@ -116,6 +117,14 @@ on_new_activate                        (GtkMenuItem     *menuitem,
 
       clear_skin_infos();
     }
+#else
+  if (pixbuf != NULL)
+    {
+      g_object_unref(pixbuf);
+      pixbuf = NULL;
+      clear_skin_infos();
+    }
+#endif
 
   gtk_statusbar_pop(GTK_STATUSBAR(statusbar), 1);
 
@@ -155,19 +164,19 @@ on_open_activate                       (GtkMenuItem     *menuitem,
     }
 
   if (lcd_mouse_motion != 0)
-    gtk_signal_disconnect(GTK_OBJECT(sdl_eventbox),
+    gtk_signal_disconnect(GTK_OBJECT(drawingarea1),
 			  lcd_mouse_motion);
 
   if (lcd_button_press != 0)
-    gtk_signal_disconnect(GTK_OBJECT(sdl_eventbox),
+    gtk_signal_disconnect(GTK_OBJECT(drawingarea1),
 			  lcd_button_press);
 
   if (keys_mouse_motion != 0)
-    gtk_signal_disconnect(GTK_OBJECT(sdl_eventbox),
+    gtk_signal_disconnect(GTK_OBJECT(drawingarea1),
 			  keys_mouse_motion);
 
   if (keys_button_press != 0)
-    gtk_signal_disconnect(GTK_OBJECT(sdl_eventbox),
+    gtk_signal_disconnect(GTK_OBJECT(drawingarea1),
 			  keys_button_press);
 
   lcd_mouse_motion = 0;
@@ -176,6 +185,7 @@ on_open_activate                       (GtkMenuItem     *menuitem,
   keys_mouse_motion = 0;
   keys_button_press = 0;
 
+#if ROMS
   if (sdl_area != NULL)
     {
       gtk_widget_destroy(GTK_WIDGET(sdl_area));
@@ -186,6 +196,14 @@ on_open_activate                       (GtkMenuItem     *menuitem,
 
       clear_skin_infos();
     }
+#else
+  if (pixbuf != NULL)
+    {
+      g_object_unref(pixbuf);
+      pixbuf = NULL;
+      clear_skin_infos();
+    }
+#endif
 
   gtk_statusbar_pop(GTK_STATUSBAR(statusbar), 1);
 
@@ -207,8 +225,13 @@ void
 on_save_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+#if ROMS
   if (area == NULL)
     return;
+#else
+  if(pixbuf == NULL)
+    return;
+#endif
 
   if (skin_infos.skin_path != NULL)
     {
@@ -228,8 +251,13 @@ on_save_as_activate                    (GtkMenuItem     *menuitem,
 {
   GtkWidget *filesel;
 
+#if ROMS
   if (area == NULL)
     return;
+#else
+  if(pixbuf == NULL)
+    return;
+ #endif
 
   filesel = create_filesel();
   
@@ -251,8 +279,13 @@ on_vti_v21_activate                    (GtkMenuItem     *menuitem,
 {
   GtkWidget *filesel;
 
+#if ROMS
   if (area == NULL)
     return;
+#else
+  if(pixbuf == NULL)
+    return;
+#endif
 
   filesel = create_filesel();
   
@@ -274,8 +307,13 @@ on_vti_v25_activate                    (GtkMenuItem     *menuitem,
 {
   GtkWidget *filesel;
 
+#if ROMS
   if (area == NULL)
     return;
+#else
+  if(pixbuf == NULL)
+    return;
+#endif
 
   filesel = create_filesel();
   
@@ -319,8 +357,13 @@ on_properties_activate                 (GtkMenuItem     *menuitem,
   uint32_t custom_white = 0xffffff;
   uint32_t custom_black = 0;
 
+#if ROMS
   if (area == NULL)
     return;
+#else
+  if(pixbuf == NULL)
+    return;
+#endif
 
   properties = create_prop_dialog();
 
@@ -419,8 +462,13 @@ on_lcd_position_activate               (GtkMenuItem     *menuitem,
 {
   SDL_Rect lcd_cur;
 
+#if ROMS
   if (area == NULL)
     return;
+#else
+  if(pixbuf == NULL)
+    return;
+#endif
 
   if (list_keys_dialog != NULL)
     {
@@ -430,19 +478,19 @@ on_lcd_position_activate               (GtkMenuItem     *menuitem,
 
 
   if (lcd_mouse_motion != 0)
-    gtk_signal_disconnect(GTK_OBJECT(sdl_eventbox),
+    gtk_signal_disconnect(GTK_OBJECT(drawingarea1),
 			  lcd_mouse_motion);
 
   if (lcd_button_press != 0)
-    gtk_signal_disconnect(GTK_OBJECT(sdl_eventbox),
+    gtk_signal_disconnect(GTK_OBJECT(drawingarea1),
 			  lcd_button_press);
 
   if (keys_mouse_motion != 0)
-    gtk_signal_disconnect(GTK_OBJECT(sdl_eventbox),
+    gtk_signal_disconnect(GTK_OBJECT(drawingarea1),
 			  keys_mouse_motion);
 
   if (keys_button_press != 0)
-    gtk_signal_disconnect(GTK_OBJECT(sdl_eventbox),
+    gtk_signal_disconnect(GTK_OBJECT(drawingarea1),
 			  keys_button_press);
 
   lcd_mouse_motion = 0;
@@ -451,7 +499,11 @@ on_lcd_position_activate               (GtkMenuItem     *menuitem,
   keys_mouse_motion = 0;
   keys_button_press = 0;
 
+#if ROMS
   erase_rubberbox(sdl_area);
+#else
+  erase_rubberbox(NULL);
+#endif
 
   if ((skin_infos.lcd_pos.top >= 0)
       && (skin_infos.lcd_pos.left >= 0)
@@ -464,7 +516,11 @@ on_lcd_position_activate               (GtkMenuItem     *menuitem,
       lcd_cur.w = skin_infos.lcd_pos.right - skin_infos.lcd_pos.left;
       lcd_cur.h = skin_infos.lcd_pos.bottom - skin_infos.lcd_pos.top;
 
+#if ROMS
       draw_rubberbox(sdl_area, lcd_cur);
+#else
+      draw_rubberbox(NULL, lcd_cur);
+#endif
 
       sbar_print(_("Left click + drag to define LCD position, right click when done. Current size : %d x %d"),
 		 lcd_cur.w, lcd_cur.h);
@@ -476,13 +532,13 @@ on_lcd_position_activate               (GtkMenuItem     *menuitem,
 
 
   if (lcd_mouse_motion == 0)
-    lcd_mouse_motion = gtk_signal_connect(GTK_OBJECT(sdl_eventbox),
+    lcd_mouse_motion = gtk_signal_connect(GTK_OBJECT(drawingarea1),
 					  "motion_notify_event",
 					  (GtkSignalFunc)mouse_motion,
 					  GUINT_TO_POINTER(ACTION_LCD_COORDS));
   
   if (lcd_button_press == 0)
-    lcd_button_press = gtk_signal_connect(GTK_OBJECT(sdl_eventbox),
+    lcd_button_press = gtk_signal_connect(GTK_OBJECT(drawingarea1),
 					  "button_press_event",
 					  (GtkSignalFunc)button_press,
 					  GUINT_TO_POINTER(ACTION_LCD_COORDS));
@@ -500,8 +556,13 @@ on_key_positions_activate              (GtkMenuItem     *menuitem,
   GtkTreeIter iter;
   GtkTreeSelection *sel;
 
+#if ROMS
   if (area == NULL)
     return;
+#else
+  if(pixbuf == NULL)
+    return;
+#endif
 
   if (list_keys_dialog != NULL)
     {
@@ -543,13 +604,13 @@ on_key_positions_activate              (GtkMenuItem     *menuitem,
 		   G_CALLBACK(on_list_keys_selection_changed), NULL);
 
   if (keys_mouse_motion == 0)
-    keys_mouse_motion = gtk_signal_connect(GTK_OBJECT(sdl_eventbox),
+    keys_mouse_motion = gtk_signal_connect(GTK_OBJECT(drawingarea1),
 					   "motion_notify_event",
 					   (GtkSignalFunc)mouse_motion,
 					   NULL);
   
   if (keys_button_press == 0)
-    keys_button_press = gtk_signal_connect(GTK_OBJECT(sdl_eventbox),
+    keys_button_press = gtk_signal_connect(GTK_OBJECT(drawingarea1),
 					   "button_press_event",
 					   (GtkSignalFunc)button_press,
 					   NULL);
@@ -600,8 +661,13 @@ void
 on_tb_properties_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
+#if ROMS
   if (area == NULL)
     return;
+#else
+  if(pixbuf == NULL)
+    return;
+#endif
 
   on_properties_activate(NULL, NULL);
 }
@@ -611,8 +677,13 @@ void
 on_tb_lcd_pos_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
+#if ROMS
   if (area == NULL)
     return;
+#else
+  if(pixbuf == NULL)
+    return;
+#endif
 
   on_lcd_position_activate(NULL, NULL);
 }
@@ -622,8 +693,13 @@ void
 on_tb_key_pos_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
+#if ROMS
   if (area == NULL)
     return;
+#else
+  if(pixbuf == NULL)
+    return;
+#endif
 
   on_key_positions_activate(NULL, NULL);
 }
@@ -757,3 +833,58 @@ on_filesel_cancel_clicked               (GtkButton       *button,
   gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "filesel"));
 }
 
+/* Backing pixmap for drawing area */
+//GdkPixmap *pixmap = NULL;
+GdkPixbuf *pixbuf = NULL;
+
+/* Create a new backing pixmap of the appropriate size */
+gboolean
+on_drawingarea1_configure_event        (GtkWidget       *widget,
+                                        GdkEventConfigure *event,
+                                        gpointer         user_data)
+{
+  return FALSE;
+}
+
+/* Redraw the screen from the backing pixmap */
+gboolean
+on_drawingarea1_expose_event           (GtkWidget       *widget,
+                                        GdkEventExpose  *event,
+                                        gpointer         user_data)
+{
+    GdkRectangle update_rect;
+
+   if(pixbuf == NULL)
+     return FALSE;
+     
+  gdk_draw_pixbuf(widget->window,
+		  widget->style->fg_gc[GTK_WIDGET_STATE(drawingarea1)],
+		  pixbuf, 
+		  event->area.x, event->area.y,
+                  event->area.x, event->area.y,
+                  event->area.width, event->area.height,
+		  GDK_RGB_DITHER_NONE, 0, 0);
+
+  /*
+  update_rect.x = 5;
+  update_rect.y = 5;
+  update_rect.width = 10;
+  update_rect.height = 10;
+  gdk_draw_rectangle (widget->window,
+                      widget->style->black_gc,
+                      TRUE,
+                      update_rect.x, update_rect.y,
+                      update_rect.width, update_rect.height);
+    gtk_widget_draw (widget, &update_rect);
+
+    printf("pixmap == %p\n", pixmap);
+
+  gdk_draw_pixmap(widget->window,
+                  widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
+                  pixmap,
+                  event->area.x, event->area.y,
+                  event->area.x, event->area.y,
+                  event->area.width, event->area.height);
+  */    
+  return FALSE;
+}

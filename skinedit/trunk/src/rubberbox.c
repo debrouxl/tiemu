@@ -38,19 +38,16 @@ extern struct skinInfos skin_infos;
 
 static SDL_Rect old_rect; /* previous rect */
 static SDL_Rect tmp_rect; /* new rect */
-static int ox, oy; /* origin */
+static int ox, oy;        /* origin */
 
 extern unsigned int lcd_mouse_motion; /* main_cb.c */
 extern unsigned int lcd_button_press; /* main_cb.c */
 
 
 gboolean
-mouse_motion(GtkWidget *sdl_eventbox, GdkEventMotion *event, gpointer action)
+mouse_motion(GtkWidget *drawingarea, GdkEventMotion *event, gpointer action)
 {
   int x, y; /* pointer coords */
-
-  SDL_Surface *s;
-
   GdkModifierType state; 
 
   if (event->is_hint) 
@@ -67,15 +64,13 @@ mouse_motion(GtkWidget *sdl_eventbox, GdkEventMotion *event, gpointer action)
   if ((state & GDK_BUTTON1_MASK) == 0) /* button 1 is not pressed */
     return FALSE;
 
-  s = GTK_SDL(GTK_BIN(sdl_eventbox)->child)->surface;
-
   /* be careful with GDK ... */
 
-  if (x > s->w)
-    x = s->w;
+  if (x > skin_infos.width)
+    x = skin_infos.width;
   
-  if (y > s->h)
-    y = s->h;
+  if (y > skin_infos.height)
+    y = skin_infos.height;
 
   if (x < 0)
     x = 0;
@@ -120,7 +115,7 @@ mouse_motion(GtkWidget *sdl_eventbox, GdkEventMotion *event, gpointer action)
 	}
     }
 
-  draw_rubberbox(GTK_SDL(GTK_BIN(sdl_eventbox)->child), tmp_rect);
+  draw_rubberbox(NULL, tmp_rect);
 
   if (GPOINTER_TO_UINT(action) == ACTION_LCD_COORDS)
     {
@@ -138,7 +133,7 @@ button_press(GtkWidget *sdl_eventbox, GdkEventButton *event, gpointer action)
       ox = event->x;
       oy = event->y;
       
-      erase_rubberbox(GTK_SDL(GTK_BIN(sdl_eventbox)->child));
+      erase_rubberbox(NULL);
     }
   else if (event->button == 3) /* right button */
     {
@@ -158,7 +153,7 @@ button_press(GtkWidget *sdl_eventbox, GdkEventButton *event, gpointer action)
 	  lcd_mouse_motion = 0;
 	  lcd_button_press = 0;
 
-	  erase_rubberbox(GTK_SDL(GTK_BIN(sdl_eventbox)->child));
+	  erase_rubberbox(NULL);
 
 	  sbar_print(_("Saved LCD coordinates"));
 	}
@@ -184,6 +179,7 @@ button_press(GtkWidget *sdl_eventbox, GdkEventButton *event, gpointer action)
 void
 draw_rubberbox(GtkSDL *sdl_area, SDL_Rect rect)
 {
+#if ROMS
   SDL_Surface *s;
   SDL_Rect c;
   SDL_Rect oc;
@@ -257,22 +253,56 @@ draw_rubberbox(GtkSDL *sdl_area, SDL_Rect rect)
 		 c.x, c.y,
 		 ((c.w + c.x + 2) <= s->w) ? (c.w + 2) : c.w,  /* add 2 to really erase the lines (right, bottom) ... */
 		 ((c.h + c.y + 2) <= s->h) ? (c.h + 2) : c.h); /* ... but be careful */
-  
+
   tmp_rect = rect; /* when called from callbacks.c (for LCD or keys) */
   old_rect = rect; /* save coords */
+#else
+  SDL_Rect c;
+  SDL_Rect oc;
+  uint16_t *SDLpixels;
+  int i;
+  GdkRectangle update_rect;
+  GtkWidget *widget = drawingarea1;
   
+  c = rect;
+  oc = old_rect;
+
+  if ((c.x > skin_infos.width) || 
+      (c.y > skin_infos.height) || 
+      ((c.x + c.w) > skin_infos.width) || 
+      ((c.y + c.h) > skin_infos.height))
+    return;
+
+  update_rect.x = c.x;
+  update_rect.y = c.y;
+  update_rect.width = c.w;
+  update_rect.height = c.h;
+  /*
+  gdk_draw_rectangle (widget->window,
+                      widget->style->black_gc,
+                      TRUE,
+                      update_rect.x, update_rect.y,
+                      update_rect.width, update_rect.height);
+  gtk_widget_draw (widget, &update_rect);
+  */
+  g_object_unref(pixbuf);
+  pixbuf = gdk_pixbuf_copy(orig);
+
+  put_pixel(pixbuf, 5, 5, 0x55, 0xaa, 0x55, 0);
+
+#endif  
 }
 
 void
 erase_rubberbox(GtkSDL *sdl_area)
 {
-
+#if ROMS
   uint16_t *img_orig;
   SDL_Surface *s;
 
   img_orig = skin_infos.img_orig;
-  s = sdl_area->surface;
 
+  s = sdl_area->surface;
   if(SDL_MUSTLOCK(s)) 
     {
       if(SDL_LockSurface(s) < 0)
@@ -290,4 +320,38 @@ erase_rubberbox(GtkSDL *sdl_area)
 
   memset(&tmp_rect, 0, sizeof(SDL_Rect));
   memset(&old_rect, 0, sizeof(SDL_Rect));
+#else
+  g_object_unref(pixbuf);
+  pixbuf = gdk_pixbuf_copy(orig);
+#endif
+}
+
+
+static void
+put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha)
+{
+  int width, height, rowstride, n_channels;
+  guchar *pixels, *p;
+
+  n_channels = gdk_pixbuf_get_n_channels (pixbuf);
+
+  g_assert (gdk_pixbuf_get_colorspace (pixbuf) == GDK_COLORSPACE_RGB);
+  g_assert (gdk_pixbuf_get_bits_per_sample (pixbuf) == 8);
+  g_assert (!gdk_pixbuf_get_has_alpha (pixbuf));
+  g_assert (n_channels == 3);
+
+  width = gdk_pixbuf_get_width (pixbuf);
+  height = gdk_pixbuf_get_height (pixbuf);
+
+  g_assert (x >= 0 && x < width);
+  g_assert (y >= 0 && y < height);
+
+  rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+  pixels = gdk_pixbuf_get_pixels (pixbuf);
+
+  p = pixels + y * rowstride + x * n_channels;
+  p[0] = red;
+  p[1] = green;
+  p[2] = blue;
+  p[3] = alpha;
 }
