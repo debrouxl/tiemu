@@ -900,11 +900,14 @@ gint display_dbgmem_address(uint32_t *addr)
 	str = g_strdup_printf("0x%06x", *addr);
 	gtk_entry_set_text(GTK_ENTRY(entry), str);
 	g_free(str);
+
+	gtk_editable_select_region(GTK_EDITABLE(entry), 0, -1);
 	
 	dbox = glade_xml_get_widget(xml, "dbgmem_address");	
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	
-	switch (result) {
+	switch (result) 
+	{
 	case GTK_RESPONSE_OK:
 		str = g_strdup(gtk_entry_get_text(GTK_ENTRY(entry)));
 		sscanf(str, "%x", addr);
