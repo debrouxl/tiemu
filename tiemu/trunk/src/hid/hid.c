@@ -1085,6 +1085,29 @@ void hid_switch_large_view(void)
 /*
   Do a screenshot of skin and/or LCD
 */
+
+static void init_sdl_pixel_format(SDL_PixelFormat *fmt)
+{
+    // RGB 24 bits (note that R & B are swapped! Why?)
+	fmt->palette = NULL;
+	fmt->BitsPerPixel = 24;
+	fmt->BytesPerPixel = 3;
+	fmt->Rmask = 0x0000ff;
+	fmt->Gmask = 0x00ff00;
+	fmt->Bmask = 0xff0000;
+	fmt->Amask = 0;
+	fmt->Rshift = 0;
+	fmt->Gshift = 8;
+	fmt->Bshift = 16;
+	fmt->Ashift = 0;
+	fmt->Rloss = 0;
+	fmt->Gloss = 0;
+	fmt->Bloss = 0;
+	fmt->Aloss = 0;
+	fmt->colorkey = 0;
+	fmt->alpha = 0;
+}
+
 int hid_screenshot(char *filename)
 {
 	gchar *outfile;
@@ -1092,9 +1115,12 @@ int hid_screenshot(char *filename)
 	gchar *type;
 	int gap = iScrW - iLcdW;
 
-    char *map;
-    int x, y;
-    int i, j;
+    SDL_Surface *sdlCapture;
+	SDL_PixelFormat fmt;
+	Uint8 *pixels;
+	GdkPixbuf *pixbuf = { 0 };
+	gboolean result = FALSE;
+	GError *error = NULL;
 
 	if(filename == NULL) {
 		switch(options2.format) {
@@ -1111,54 +1137,48 @@ int hid_screenshot(char *filename)
 
 	DISPLAY("Screenshot to %s... ", outfile);
 
+    init_sdl_pixel_format(&fmt);
+
 	if((options2.size == IMG_LCD) && (options2.type == IMG_BW)) {
+        Uint8 *ptr;
+        int x, y;
+
+        sdlCapture = SDL_ConvertSurface(sdlLcdSrc, &fmt, SDL_SWSURFACE);
+
+        ptr = (Uint8 *)pLcdBuf;
+        pixels = (Uint8 *)sdlCapture->pixels;
+
+        for(y = 0; y < iScrH; y++) 
+	    {
+	        for (x = 0; x < iScrW; x++) 
+	        {
+                pixels[(y*sdlCapture->pitch + 3*x + 0) << iScale] = *ptr ? 0x00 : 0xff;
+                pixels[(y*sdlCapture->pitch + 3*x + 1) << iScale] = *ptr ? 0x00 : 0xff;
+                pixels[(y*sdlCapture->pitch + 3*x + 2) << iScale] = *ptr ? 0x00 : 0xff;
+
+                ptr++;
+            }
+        }
 
 	} else if((options2.size == IMG_LCD) && (options2.type == IMG_COL)) {
+        sdlCapture = SDL_ConvertSurface(sdlLcdSrc, &fmt, SDL_SWSURFACE);
 
 	} else if(options2.size == IMG_SKIN) {
-
-		SDL_Surface *sdlCapture;
-		SDL_PixelFormat fmt;
-		Uint8 *pixels;
-		GdkPixbuf *pixbuf = { 0 };
-		gboolean result = FALSE;
-		GError *error = NULL;
-
-        // RGB 24 bits
-		fmt.palette = NULL;
-		fmt.BitsPerPixel = 24;
-		fmt.BytesPerPixel = 3;
-		fmt.Rmask = 0x0000ff;
-		fmt.Gmask = 0x00ff00;
-		fmt.Bmask = 0xff0000;
-		fmt.Amask = 0;
-		fmt.Rshift = 0;
-		fmt.Gshift = 8;
-		fmt.Bshift = 16;
-		fmt.Ashift = 0;
-		fmt.Rloss = 0;
-		fmt.Gloss = 0;
-		fmt.Bloss = 0;
-		fmt.Aloss = 0;
-		fmt.colorkey = 0;
-		fmt.alpha = 0;
-
 		sdlCapture = SDL_ConvertSurface(sdlWindow, &fmt, SDL_SWSURFACE);
-		pixels = (Uint8 *)sdlCapture->pixels;
+	}
+
+        pixels = (Uint8 *)sdlCapture->pixels;
 
 		pixbuf = gdk_pixbuf_new_from_data(pixels, GDK_COLORSPACE_RGB, FALSE,
-				8, iWinW, iWinH, sdlCapture->pitch, NULL, NULL);
+				8, sdlCapture->w, sdlCapture->h, sdlCapture->pitch, NULL, NULL);
 
 		//result = gdk_pixbuf_save(pixbuf, outfile, type, &error, "quality", "100", NULL);
 		result = gdk_pixbuf_save(pixbuf, outfile, type, &error, NULL);
 		if (result == FALSE) {
 			DISPLAY("Failed to save pixbuf file: %s: %s\n", outfile, error->message);
 			g_error_free(error);
-		}
 
 		SDL_FreeSurface(sdlCapture);
-
-        exit(0);
 	}
 
 	DISPLAY("Done !\n");
@@ -1167,96 +1187,3 @@ int hid_screenshot(char *filename)
 
 	return 0;
 }
-
-
-/*
-
-  //  
-  // Write the TI screen in black & white
-  //  
-  if((type == IMG_BW) && (size == IMG_LCD))
-    {
-      Uint8 *ptr = ti68k_getLcdPtr();
-      
-      img.height = iLcdH;
-      img.width = iLcdW;
-      img.inverted = !0;
-      img.depth = 2;
-      img.encoding = IMG_BW_TYPE;
-
-      alloc_bitmap(&img);
-      printf("iLcdW = %i, iScrW = %i, gap = %i\n", iLcdW, iScrW, gap); 
-
-      for(row=0; row<iLcdH; row++) 
-	{
-	  for (col=0;col<(iLcdW>>3);col++) 
-	    {
-	      (img.bitmap)[row*(iLcdW>>3)+col] = *ptr++;
-	    }
-	  ptr += gap>>3;
-	}
-      // BUG HERE...
-      memset(img.bitmap, 255, (iLcdH * iLcdW) / 8);
-    }
-
-  //
-  // Write only the TI screen in color
-  //
-  if((type == IMG_COL) && (size == IMG_LCD))
-    {
-      Uint8 *ptr = (Uint8 *)pLcdBuf;
-      img.height = iLcdH;
-      img.width = iLcdW;
-      img.depth = NGS;
-      img.encoding = IMG_COL_TYPE;
-      
-      alloc_colormap(&img);
-      for(k=0; k<NGS; k++)
-	{
-	  (img.colormap)[3*k+0] = sdlPal[k].r;
-	  (img.colormap)[3*k+1] = sdlPal[k].g;
-	  (img.colormap)[3*k+2] = sdlPal[k].b;
-	}
-      
-      alloc_bytemap(&img);
-      for(row=0; row<iLcdH; row++)
-	{
-	  for(col=0; col<iLcdW; col++)
-	    {
-	      (img.bytemap)[row*iLcdW+col] = ptr[row*iLcdW+col];
-	    }
-	  ptr+=gap;
-	}
-    }
-
-  //
-  // Write the entire screen in color
-  //  
-  if(size == IMG_SKIN)
-    {
-      Uint8 *ptr;
-      img.height = iWinH;
-      img.width  = iWinW;
-      img.depth = NGS + skin_infos.ncolors;
-      img.encoding = IMG_COL_TYPE;
-
-      alloc_colormap(&img);
-      for(k=0; k<NGS+skin_infos.ncolors; k++)
-	{
-	  (img.colormap)[3*k+0] = sdlPal[k].r;
-	  (img.colormap)[3*k+1] = sdlPal[k].g;
-	  (img.colormap)[3*k+2] = sdlPal[k].b;
-	}
-      
-      ptr = (Uint8 *)sdlWindow->pixels;
-      alloc_bytemap(&img);
-      for(row=0; row<iWinH; row++)
-	{
-	  for(col=0; col<iWinW; col++)
-	    {
-	      (img.bytemap)[row*iWinW+col] = ptr[row*iWinLineSize+col];
-	    }
-	} 
-    }
-
-*/
