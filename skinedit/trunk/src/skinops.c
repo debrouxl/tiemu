@@ -252,14 +252,6 @@ load_skin_tiemu(FILE *fp)
   if (endian != ENDIANNESS_FLAG)
     jpeg_offset = bswap_32(jpeg_offset);
 
-
-  fread(skin_infos.calc, 8, 1, fp);
-
-  fread(&skin_infos.colortype, 4, 1, fp);
-  fread(&skin_infos.lcd_white, 4, 1, fp);
-  fread(&skin_infos.lcd_black, 4, 1, fp);
-
-
   /*
    * Skin name
    */
@@ -301,6 +293,24 @@ load_skin_tiemu(FILE *fp)
 
       fread(skin_infos.author, length, 1, fp);
     }
+
+  /*
+   * LCD colors
+   */
+
+  fread(&skin_infos.colortype, 4, 1, fp);
+  fread(&skin_infos.lcd_white, 4, 1, fp);
+  fread(&skin_infos.lcd_black, 4, 1, fp);
+
+   /*
+   * Calc type
+   */
+
+  fread(skin_infos.calc, 8, 1, fp);
+
+  /*
+   * LCD position
+   */
 
   fread(&skin_infos.lcd_pos.left, 4, 1, fp);
   fread(&skin_infos.lcd_pos.top, 4, 1, fp);
