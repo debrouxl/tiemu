@@ -5,6 +5,10 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
+- 14/09/2004, version 1.80: roms
+	- fixed HW3 support
+	- fixed bug in LCD snoop range register: TI89 Titanium (patched) and V200 (patched) work.
+
 - 28/08/2004, version 1.80: roms
 	- fixed vectors copy
 	- bkpts window: can jump to bkpt address
