@@ -401,9 +401,9 @@
   <child>
     <widget class="GtkMenuItem" id="go_to_address1">
       <property name="visible">True</property>
-      <property name="label" translatable="yes">Go to address</property>
+      <property name="label" translatable="yes">Go to _address</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="on_go_to_address1_activate" object="treeview1" last_modification_time="Sun, 13 Jun 2004 09:36:25 GMT"/>
+      <signal name="activate" handler="on_go_to_address1_activate" last_modification_time="Sun, 13 Jun 2004 09:36:25 GMT"/>
       <accelerator key="G" modifiers="0" signal="activate"/>
     </widget>
   </child>
@@ -411,18 +411,18 @@
   <child>
     <widget class="GtkMenuItem" id="go_to_pc1">
       <property name="visible">True</property>
-      <property name="label" translatable="yes">Go to PC</property>
+      <property name="label" translatable="yes">Go to _PC</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="on_go_to_pc1_activate" object="treeview1" last_modification_time="Sun, 13 Jun 2004 09:36:25 GMT"/>
+      <signal name="activate" handler="on_go_to_pc1_activate" last_modification_time="Sun, 13 Jun 2004 09:36:25 GMT"/>
     </widget>
   </child>
 
   <child>
     <widget class="GtkMenuItem" id="set_breakpoint1">
       <property name="visible">True</property>
-      <property name="label" translatable="yes">Set breakpoint</property>
+      <property name="label" translatable="yes">Set _breakpoint</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="on_set_breakpoint1_activate" object="treeview1" last_modification_time="Sun, 13 Jun 2004 09:36:25 GMT"/>
+      <signal name="activate" handler="on_set_breakpoint1_activate" last_modification_time="Sun, 13 Jun 2004 09:36:25 GMT"/>
       <accelerator key="F2" modifiers="0" signal="activate"/>
     </widget>
   </child>
@@ -430,9 +430,18 @@
   <child>
     <widget class="GtkMenuItem" id="set_pc_to_selection1">
       <property name="visible">True</property>
-      <property name="label" translatable="yes">Set PC to selection</property>
+      <property name="label" translatable="yes">Set PC to _selection</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="on_set_pc_to_selection1_activate" object="treeview1" last_modification_time="Sun, 13 Jun 2004 09:36:25 GMT"/>
+      <signal name="activate" handler="on_set_pc_to_selection1_activate" last_modification_time="Sun, 13 Jun 2004 09:36:25 GMT"/>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="view_memory1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">View _memory</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_view_memory1_activate" last_modification_time="Mon, 02 Aug 2004 14:31:35 GMT"/>
     </widget>
   </child>
 </widget>

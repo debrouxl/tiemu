@@ -204,4 +204,58 @@
   </child>
 </widget>
 
+<widget class="GtkMenu" id="dbgmem_popup">
+
+  <child>
+    <widget class="GtkMenuItem" id="find1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">Find</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_find1_activate" last_modification_time="Mon, 02 Aug 2004 14:40:43 GMT"/>
+      <accelerator key="F" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="find_next1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">Find _next</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_find_next1_activate" last_modification_time="Mon, 02 Aug 2004 14:40:43 GMT"/>
+      <accelerator key="F3" modifiers="0" signal="activate"/>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="separator1">
+      <property name="visible">True</property>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="go_to_address1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">Go to _address</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_go_to_address2_activate" last_modification_time="Mon, 02 Aug 2004 14:40:43 GMT"/>
+      <accelerator key="A" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="separator2">
+      <property name="visible">True</property>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="dissassemble1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">_Dissassemble</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_dissassemble1_activate" last_modification_time="Mon, 02 Aug 2004 14:40:43 GMT"/>
+    </widget>
+  </child>
+</widget>
+
 </glade-interface>

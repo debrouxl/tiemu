@@ -354,6 +354,12 @@ void dbgcode_refresh_window(void)
 	}
 }
 
+void dbgcode_disasm_at(uint32_t addr)
+{
+    gtk_list_store_clear(store);
+    clist_populate(store, addr);
+}
+
 GLADE_CB void
 on_run1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
@@ -677,6 +683,7 @@ on_go_to_address1_activate             (GtkMenuItem     *menuitem,
 
     if(display_dbgmem_dbox(&addr) == -1)
 		return;
+
     gtk_list_store_clear(store);
     clist_populate(store, addr);
 }
@@ -722,4 +729,28 @@ on_set_pc_to_selection1_activate       (GtkMenuItem     *menuitem,
     dbgcode_refresh_window();
     dbgregs_refresh_window();
     dbgmem_refresh_window();
+}
+
+GLADE_CB void
+on_view_memory1_activate       (GtkMenuItem     *menuitem,
+                                gpointer         user_data)
+{
+    //GtkWidget *list = GTK_WIDGET(user_data);
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
+    GtkTreeSelection *selection;
+    GtkTreeIter iter;
+    gboolean valid;
+    gchar *str;
+    uint32_t addr;
+
+    selection = gtk_tree_view_get_selection(view);
+    valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
+	if(!valid) return;
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "%x", &addr);
+    
+    printf("addr = %x\n", addr);
+    dbgmem_add_tab(addr);
 }

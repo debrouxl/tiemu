@@ -135,121 +135,14 @@ static void renderer_edited(GtkCellRendererText * cell,
 }
 
 static void refresh_page(int page, int offset);
-
 static gboolean
 on_treeview_key_press_event            (GtkWidget       *widget,
                                         GdkEventKey     *event,
-                                        gpointer         user_data)
-{
-    GtkTreeView *view = GTK_TREE_VIEW(widget);
-	GtkTreeModel *model = gtk_tree_view_get_model(view);
-	GtkListStore *store = GTK_LIST_STORE(model);
-    GtkTreeSelection *selection;
-    GtkTreeIter iter;
-    gboolean valid;
-    gchar *str;
-    gchar *row;
-    gint row_idx, row_max;
-    uint32_t addr;
-    uint32_t min, max;
-    gint n;
-
-    GtkNotebook *nb = GTK_NOTEBOOK(notebook);
-	gint page = gtk_notebook_get_current_page(nb);
-
-    // get min address
-    gtk_tree_model_get_iter_first(model, &iter);
-    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-    sscanf(str, "%x", &min);
-
-    // get max address
-    n = gtk_tree_model_iter_n_children(model, NULL);
-    gtk_tree_model_iter_nth_child(model, &iter, NULL, n-1);
-    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-    sscanf(str, "%x", &max);
-
-    // retrieve selection
-    selection = gtk_tree_view_get_selection(view);
-    valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
-    if(valid)
-    {
-        gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-        sscanf(str, "%x", &addr);
-
-        row = gtk_tree_model_get_string_from_iter(model, &iter);
-        sscanf(row, "%i", &row_idx);
-        row_max = gtk_tree_model_iter_n_children(model, NULL) - 1;
-    }
-    else
-        row_idx = row_max = -1;
-
-    switch(event->keyval) 
-	{
-    case GDK_Up:
-        if(row_max == -1)
-            break;
-
-        if(row_idx > 0)
-            break;
-
-        refresh_page(page, -0x10);
-
-        return FALSE;
-
-    case GDK_Down:
-        if(row_max == -1)
-            break;
-
-        if(row_idx < row_max)
-            break;
-
-        refresh_page(page, +0x10);
-
-        {
-            GtkTreePath *path = gtk_tree_path_new_from_string("7");
-            gtk_tree_selection_select_path(selection, path);
-        }
-        
-        return TRUE;
-
-    case GDK_Page_Up:
-        if(row_max == -1)
-            break;
-
-        if(row_idx > 0)
-            break;
-
-        refresh_page(page, -DUMP_SIZE);
-
-        {
-            GtkTreePath *path = gtk_tree_path_new_from_string("0");
-            gtk_tree_selection_select_path(selection, path);
-        }
-
-        return TRUE;
-
-    case GDK_Page_Down:
-        if(row_max == -1)
-            break;
-
-        if(row_idx < row_max)
-            break;
-
-        refresh_page(page, +DUMP_SIZE);
-
-        {
-            GtkTreePath *path = gtk_tree_path_new_from_string("7");
-            gtk_tree_selection_select_path(selection, path);
-        }
-
-        return TRUE;
-
-	default:
-		return FALSE;
-	}
-
-    return FALSE;
-}
+                                        gpointer         user_data);
+static gboolean
+on_treeview_btn_press_event        (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data);
 
 static GtkWidget* clist_create(GtkListStore **st)
 {
@@ -337,6 +230,8 @@ static GtkWidget* clist_create(GtkListStore **st)
 
     g_signal_connect(G_OBJECT(list), "key_press_event",
 			 G_CALLBACK(on_treeview_key_press_event), list);
+    g_signal_connect(G_OBJECT(list), "button_press_event",
+			 G_CALLBACK(on_treeview_btn_press_event), list);
 
 	*st = store;
 	return list;
@@ -484,6 +379,16 @@ void dbgmem_refresh_window(void)
 	}
 }
 
+void dbgmem_add_tab(uint32_t addr)
+{
+    gchar *str;
+	
+	str = g_strdup_printf("%06x", addr);
+	notebook_add_page(notebook, str);
+	g_free(str);
+}
+
+
 GLADE_CB void
 dbgmem_button1_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
@@ -596,6 +501,270 @@ static void refresh_page(int page, int offset)
    	clist_refresh(store, addr, len <= DUMP_SIZE ? len : DUMP_SIZE);
 }
 
+static gboolean
+on_treeview_key_press_event            (GtkWidget       *widget,
+                                        GdkEventKey     *event,
+                                        gpointer         user_data)
+{
+    GtkTreeView *view = GTK_TREE_VIEW(widget);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
+    GtkTreeSelection *selection;
+    GtkTreeIter iter;
+    gboolean valid;
+    gchar *str;
+    gchar *row;
+    gint row_idx, row_max;
+    uint32_t addr;
+    uint32_t min, max;
+    gint n;
+
+    GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+	gint page = gtk_notebook_get_current_page(nb);
+
+    // get min address
+    gtk_tree_model_get_iter_first(model, &iter);
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "%x", &min);
+
+    // get max address
+    n = gtk_tree_model_iter_n_children(model, NULL);
+    gtk_tree_model_iter_nth_child(model, &iter, NULL, n-1);
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "%x", &max);
+
+    // retrieve selection
+    selection = gtk_tree_view_get_selection(view);
+    valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
+    if(valid)
+    {
+        gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+        sscanf(str, "%x", &addr);
+
+        row = gtk_tree_model_get_string_from_iter(model, &iter);
+        sscanf(row, "%i", &row_idx);
+        row_max = gtk_tree_model_iter_n_children(model, NULL) - 1;
+    }
+    else
+        row_idx = row_max = -1;
+
+    switch(event->keyval) 
+	{
+    case GDK_Up:
+        if(row_max == -1)
+            break;
+
+        if(row_idx > 0)
+            break;
+
+        refresh_page(page, -0x10);
+
+        return FALSE;
+
+    case GDK_Down:
+        if(row_max == -1)
+            break;
+
+        if(row_idx < row_max)
+            break;
+
+        refresh_page(page, +0x10);
+
+        {
+            GtkTreePath *path = gtk_tree_path_new_from_string("7");
+            gtk_tree_selection_select_path(selection, path);
+        }
+        
+        return TRUE;
+
+    case GDK_Page_Up:
+        if(row_max == -1)
+            break;
+
+        if(row_idx > 0)
+            break;
+
+        refresh_page(page, -DUMP_SIZE);
+
+        {
+            GtkTreePath *path = gtk_tree_path_new_from_string("0");
+            gtk_tree_selection_select_path(selection, path);
+        }
+
+        return TRUE;
+
+    case GDK_Page_Down:
+        if(row_max == -1)
+            break;
+
+        if(row_idx < row_max)
+            break;
+
+        refresh_page(page, +DUMP_SIZE);
+
+        {
+            GtkTreePath *path = gtk_tree_path_new_from_string("7");
+            gtk_tree_selection_select_path(selection, path);
+        }
+
+        return TRUE;
+
+	default:
+		return FALSE;
+	}
+
+    return FALSE;
+}
+
+/***** Popup menu *****/
+
+/*
+	Display popup menu (right click)
+*/
+static GtkWidget* display_popup_menu(void)
+{
+	GladeXML *xml;
+	GtkWidget *menu;
+
+	xml = glade_xml_new
+	    (tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_popup",
+	     PACKAGE);
+	if (!xml)
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+	glade_xml_signal_autoconnect(xml);
+
+	menu = glade_xml_get_widget(xml, "dbgmem_popup");
+	return menu;
+}
+
+static gboolean
+on_treeview_btn_press_event        (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data)
+{
+    GtkTreeView *view = GTK_TREE_VIEW(widget);
+	GtkTreePath *path;
+	GtkTreeViewColumn *column;
+    gboolean ret;
+
+    switch (event->type) 
+    {
+    case GDK_BUTTON_PRESS:	// third button clicked
+	    if (event->button == 3) 
+        {
+            GdkEventButton *bevent;
+            GtkWidget *menu;
+
+            //--- set cell focus
+            gint tx = (gint) event->x;
+	        gint ty = (gint) event->y;
+	        gint cx, cy;
+
+	        ret = gtk_tree_view_get_path_at_pos(view, tx, ty, &path, &column, &cx, &cy);
+            gtk_tree_view_set_cursor(view, path, column, FALSE);
+            //printf("%i %i %i %i (%i)\n", tx, ty, cx, cy, ret);
+            //---
+
+		    bevent = (GdkEventButton *) (event);
+            menu = display_popup_menu();
+
+		    gtk_menu_popup(GTK_MENU(menu),
+				       NULL, NULL, NULL, NULL,
+				       bevent->button, bevent->time);
+	        gtk_widget_show(menu);
+
+		    return TRUE;
+	    }
+	    break;
+    default:
+        break;
+    }
+
+    return FALSE;
+}
+
+GLADE_CB void
+on_find1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+
+}
+
+
+GLADE_CB void
+on_find_next1_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+
+}
+
+
+GLADE_CB void
+on_go_to_address2_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+	gint page = gtk_notebook_get_current_page(nb);
+
+    uint32_t addr;
+	gchar *str;
+	
+	if(display_dbgmem_dbox(&addr) == -1)
+		return;
+
+    gtk_notebook_remove_page(nb, page);
+	
+	str = g_strdup_printf("%06x", addr);
+	notebook_add_page(notebook, str);
+	g_free(str);
+}
+
+
+GLADE_CB void
+on_dissassemble1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+    gint page = gtk_notebook_get_current_page(nb);
+
+	GList *l, *elt;
+	GtkWidget *list;
+	GtkTreeView *view;
+	GtkTreeModel *model;
+	GtkListStore *store;
+	gchar *str;
+
+    GtkTreePath *path;
+    GtkTreeViewColumn *column;
+    GtkTreeIter iter;
+    gint col;
+    uint32_t addr;
+
+	// get list pointer (we have 1 child)
+	l = gtk_container_get_children(GTK_CONTAINER(nb));
+	elt = g_list_nth(l, page);
+	list = GTK_WIDGET(elt->data);
+	view = GTK_TREE_VIEW(list);
+	model = gtk_tree_view_get_model(view);
+	store = GTK_LIST_STORE(model);
+
+    // get column
+    gtk_tree_view_get_cursor(view, &path, &column);
+    if(!path || !column)
+        return;
+
+    // get iterator
+	if (!gtk_tree_model_get_iter(model, &iter, path))
+		return;
+
+    // get old value
+	col = column2index(list, column);
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "%06x", &addr);
+    
+    // populate code
+    dbgcode_disasm_at(addr + (col-1));
+}
 
 /*
 	Type address in a box.
