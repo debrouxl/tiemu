@@ -20,6 +20,8 @@ To do:
 	- [roms]  $951: clean-up in ti68k_scan_images (no more cache, useless now)
 	- [roms]  $952: can remove (=file delete) image from list
 	- [roms]  $954: fixed size for archived handles on PedRom
+	- [roms]  $958: fixed file pattern for Win32 file selector; fixed default 
+		path and patter for the new GTK file selector.
 
 - 25/02/2005, version 1.80o: roms
 	- fixed bug in ti68k_get_hw_param_block (wrong search/replace)

@@ -55,12 +55,11 @@ static void cancel_filename(GtkButton * button, gpointer user_data)
 static const gchar *create_fsel_1(gchar *dirname, gchar *ext, gboolean save)
 {
 	GtkWidget *fs;
-	gchar *mask;
     
-    mask = g_strconcat(dirname, G_DIR_SEPARATOR_S, ext, NULL);
 	fs = gtk_file_selection_new("Select a file...");
-	gtk_file_selection_complete(GTK_FILE_SELECTION(fs), mask);
-    g_free(mask);
+
+	gtk_file_selection_set_filename (GTK_FILE_SELECTION(fs), dirname);
+	gtk_file_selection_complete(GTK_FILE_SELECTION(fs), ext);
 
 	g_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->ok_button),
 			 "clicked", G_CALLBACK(store_filename), fs);
@@ -82,7 +81,8 @@ static const gchar *create_fsel_1(gchar *dirname, gchar *ext, gboolean save)
 
 	filename = NULL;
 	gtk_widget_show(fs);
-	while (filename == NULL) {
+	while (filename == NULL) 
+	{
         GTK_REFRESH();
 	}
 
@@ -97,19 +97,32 @@ static const gchar *create_fsel_2(gchar *dirname, gchar *ext, gboolean save)
 {
 	GtkWidget *dialog;
 	GtkFileFilter *filter;
+	gchar *path;
+	gchar **sarray;
+	gint i;
     
-	filter = gtk_file_filter_new();
-	gtk_file_filter_add_pattern (filter, ext);
-
+	// create box
 	dialog = gtk_file_chooser_dialog_new ("Open File",
 				      NULL,
 					  save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN,
 				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 				      NULL);
-	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), dirname);
+
+	// set default folder
+	path = g_path_get_dirname(dirname);
+	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), path);
+	g_free(path);
+
+	// set wildcards
+	filter = gtk_file_filter_new();
+	sarray = g_strsplit(ext, ";", -1);
+	for(i = 0; sarray[i] != NULL; i++)
+		gtk_file_filter_add_pattern (filter, sarray[n]);
+	g_strfreev(sarray);
 	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
 
+	// get result
 	g_free(filename);
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
 		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
@@ -135,7 +148,7 @@ static const gchar *create_fsel_3(gchar *dirname, gchar *ext, gboolean save)
 	memset (&o, 0, sizeof(OPENFILENAME));
 
 	// format filter
-	sarray = g_strsplit(ext, ";", -1);
+	sarray = g_strsplit(ext, "|", -1);
 	for(n = 0; sarray[n] != NULL; n++);
 
 	for(i = 0, p = lpstrFilter; i < n; i++)
