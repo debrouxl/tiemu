@@ -1,0 +1,103 @@
+## Process this file with automake to produce Makefile.in
+
+if OS_WIN32
+ no_undefined = -no-undefined
+endif
+
+DEFS=@DEFS@ \
+	-DSHARE_DIR=\"${prefix}/share/tiemu\" \
+	-DPACKAGE_LOCALE_DIR=\"${prefix}/share/locale\"
+
+INCLUDES = -I$(top_srcdir) -I$(includedir) \
+	-I../intl -I$(top_srcdir)/intl \
+	-DPREFIX=\"${prefix}\" -I. \
+	-I./core/uae -I./core/ti_hw -I./core -I./hid -I./gui/gtk
+
+# program to compile and install
+bin_PROGRAMS = tiemu
+
+uae_SRC = \
+	cpu0.c cpu1.c \
+	cpu2.c cpu3.c \
+	cpu4.c cpu5.c \
+	cpu6.c cpu7.c \
+	cpu8.c cpu9.c \
+	cpuA.c cpuB.c \
+	cpuC.c cpuD.c \
+	cpuE.c cpuF.c \
+	cpudefs.c cpustbl.c \
+	readcpu.c newcpu.c
+
+tihw_SRC = \
+	debugger.c \
+	hardware.c \
+	lcd.c \
+        keyboard.c \
+        linkport.c \
+        memory.c \
+	timer.c \
+	ioports.c \
+	m68k.c
+
+core_SRC = \
+	intlist.c \
+	bkpts.c \
+	error.c \
+	images.c \
+	state.c \
+	callbacks.c \
+	interface.c
+
+hid_SRC  = 	skin.c		\
+		cnv.c 		\
+		pcx.c xpm.c 	\
+		jpg.c bmp.c	\
+		files.c misc.c rcfile.c 	\
+		ticalc.c paths.c 		\
+		tikeys.c
+
+gui_SRC  = support.c gxpm.c \
+	tiemu_dbox.c tiemu_cb.c \
+	link_dbox.c link_cb.c \
+	msg_dbox.c msg_cb.c \
+	infos_dbox.c infos_cb.c \
+	adbkpt_dbox.c adbkpt_cb.c \
+	colors_dbox.c colors_cb.c \
+	dbkpt_dbox.c dbkpt_cb.c \
+	debug_dbox.c debug_cb.c \
+	itick_dbox.c itick_cb.c \
+	logaddr_dbox.c logaddr_cb.c \
+	romv_dbox.c romv_cb.c \
+	trap_dbox.c trap_cb.c \
+	viewlog_dbox.c viewlog_cb.c \
+	dbgopt_dbox.c dbgopt_cb.c \
+	pgmentbkpt_dbox.c pgmentbkpt_cb.c \
+	state_dbox.c state_cb.c \
+	dump_dbox.c dump_cb.c \
+	bkpt_cause.c \
+	scopt_dbox.c scopt_cb.c \
+	user_dbox.c user_cb.c \
+	fsel_dbox.c fsel_cb.c \
+	wizard_dbox.c wizard_cb.c \
+	help_dbox.c help_cb.c \
+	manpage_dbox.c manpage_cb.c \
+	startup_dbox.c startup_cb.c \
+	thanks_dbox.c thanks_cb.c \
+	about_dbox.c about_cb.c \
+	pbar_dbox.c pbar_cb.c \
+	skin_dbox.c skin_cb.c \
+	refresh.c main_wnd.c \
+	main.c 
+
+tiemu_SOURCES = $(uae_SRC) $(tihw_SRC) $(core_SRC) $(hid_SRC) $(gui_SRC)
+
+noinst_HEADERS = #./core/*.h ./gui/*.h ./gui/gtk/*.h
+
+EXTRA_DIST = core hid gui
+
+tiemu_LDFLAGS = $(LDFLAGS) -ljpeg $(no_undefined) #@SDL_LIBS@
+
+dos2unix:
+	dos2unix
+	lowercase
+	uppercase

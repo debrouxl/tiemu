@@ -1,0 +1,92 @@
+				*****************
+				*     TiEmu	*
+				* Win32 version *
+				*****************
+
+
+
+
+
+
+DESCRIPTION
+-----------
+
+Development platform: various Windows flavours (Windows 98/Me, NT4/2000/XP)
+with MSVC 5.0 & 6.0.
+I have recently added a MinGW support to compile TiLP under the Minimalist Gnu
+for Windows environment (thanks to K. Kofler).
+
+
+REQUIREMENTS
+------------
+
+ - A Windows computer (Windows95/98/Me or WindowsNT4/2000).
+ - GTK+ 1.3 for Windows (http://tilp.sourceforge.net, only the GtkDLLs pack)
+ - developers: GTK+ 1.3.0 (GtkHeaders pack)
+ - developers: the ticables, tifiles and ticalcs libraries
+ - developers: the Microsoft Visual C++ compiler 5.0 or above (MSVC) if you 
+	want to compile it.
+
+
+INSTALLATION
+------------
+
+Download and install the SilverLink driver if needed.
+Next, runs the InnoSetup package.
+
+
+COMPILATION
+-----------
+
+- Retrieve the 2 InstallShield packages at http://tiemu.sourceforge.net.
+There are one packages for header and the other for DLLs.
+Latest GTK+ files can be found directly at
+   http://user.sqic.fi/~tml/gimp/win32 or also at	
+   http://www.gtk.org, GTK on Win32 topic)
+
+With manually retrieved archives: 
+- Uncompress the ZIP archives and copy the glib, gdk and gtk directory
+in the /include dir of MSVC.
+- More particularly, copy the glib.h and glibconfig.h file directly in the 
+/include directory.
+- As same, copy the gdk.h and gdkconfig.h file directly in the /include
+directory.
+- Next, copy also the gtk.h file into the /include dir.
+- In the /include dir, copy string.h to strings.h.
+- At last, copy all .lib files of the distrib in the /lib dir of MSVC.
+
+With InstallShield packages: execute them !
+
+To finish...
+
+
+AVAILABILITY
+------------
+
+  http://lpg.ticalc.org/prj_tiemu (redirected on http://tiemu.sourceforge.net)
+
+
+COPYRIGHT
+---------
+
+libti68k library is Copyright (C) 2000-2001 by Romain Lievin 
+<roms@tilp.info> and Thomas Corvazier <corvazier@yahoo.com>
+
+This library is based on the XTiger emulator (see AUTHORS for more details).
+
+Copying is allowed under the terms of GNU General Public License (LGPL).  
+See the file COPYING for more details.
+
+
+THANKS
+------
+
+See the THANKS file, please.
+
+
+---------------------------------------------------------------------------
+Please report any bugs, questions, ...  (please give me your platform, your
+calculator type (with ROM version) and your link cable model).
+
+
+Romain Lievin <roms@lpg.ticalc.org>

@@ -1,0 +1,80 @@
+				*****************
+				*     TiEmu     *
+				* Linux version *
+				*****************
+
+
+DESCRIPTION
+-----------
+
+Development platform: Linux Debian, 2.4.14 kernel, XFree 4.0, Gtk+ 1.2.10.
+Ported on PowerPC platforms by JB (Julien Blache, jb@jblache.org).
+
+
+REQUIREMENTS
+------------
+
+ - A UNIX computer (Intel x86 or PPC) and C compiler (gcc)
+ - X11 (X Window System)
+ - SDL (Simple Directmedia Layer)
+ - GTK+ 1.2.0 (http://www.gtk.org)
+ - ticables, tifiles and ticalcs libraries from the TiLP project 
+	(http://tilp.info)
+ - JPEG library (jpeg6.2)
+
+
+INSTALLATION
+------------
+
+At first, you must have the ticables and ticalcs libraries installed. See
+the documentation of these libraries for the installation procedure.
+
+Untar the tiemu-X.XX.tar.gz archive (tar -xvzf), change directory to
+tiemu directory.
+
+Go the tiemu directory and type './configure' in order to be sure
+that all it is OK. Next, type 'make' to make a binary for your machine.
+
+If the compile suceeds without any errors, you can type 'make install' to
+install the binary in /usr/bin. This will also copy some necessary
+files to /usr/local/share/tiemu and will install the manpage and the
+help.
+
+If you already have some ROM images, place them into the ROMs directory before
+typing 'make install'. This will install your ROMs at the right place.
+
+
+USAGE
+-----
+
+Type tiemu for using it.
+A manpage is available by 'man tiemu'.
+
+
+AVAILABILITY
+------------
+
+  http://lpg.ticalc.org/prj_tiemu/index.html
+
+
+COPYRIGHT
+---------
+
+TiEmu is Copyright (C) 2000-2002 by the TiEmu team <roms@tilp.info>
+
+TiEmu is based on the XTiger emulator (see AUTHORS for more details).
+
+Copying is allowed under the terms of GNU General Public License (LGPL).  
+See the file COPYING for more details.
+
+
+THANKS
+------
+
+Thanks to Jonas Minnberg.TiEmu is taken from the xtiger emulator.
+
+
+---------------------------------------------------------------------------
+Please report any bugs, questions, ...
+
+Romain Lievin <roms@tilp.info>

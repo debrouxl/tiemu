@@ -1,0 +1,681 @@
+<?xml version="1.0"?>
+<GTK-Interface>
+
+<project>
+  <name>TiEmu II</name>
+  <program_name>tiemu</program_name>
+  <directory></directory>
+  <source_directory></source_directory>
+  <pixmaps_directory>pixmaps</pixmaps_directory>
+  <language>C</language>
+  <gnome_support>False</gnome_support>
+  <gettext_support>True</gettext_support>
+  <use_widget_names>True</use_widget_names>
+  <output_main_file>False</output_main_file>
+  <output_support_files>False</output_support_files>
+  <output_build_files>False</output_build_files>
+  <main_source_file>tiemu_dbox.c</main_source_file>
+  <main_header_file>tiemu_dbox.h</main_header_file>
+  <handler_source_file>tiemu_cb.c</handler_source_file>
+  <handler_header_file>tiemu_cb.h</handler_header_file>
+  <translatable_strings_file>trans.str</translatable_strings_file>
+</project>
+
+<widget>
+  <class>GtkMenu</class>
+  <name>popup_menu</name>
+  <signal>
+    <name>configure_event</name>
+    <handler>on_popup_menu_configure_event</handler>
+    <last_modification_time>Tue, 04 Jul 2000 18:13:03 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>cancel</name>
+    <handler>on_popup_menu_cancel</handler>
+    <last_modification_time>Thu, 10 May 2001 21:27:16 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>deactivate</name>
+    <handler>on_popup_menu_deactivate</handler>
+    <last_modification_time>Thu, 10 May 2001 21:27:20 GMT</last_modification_time>
+  </signal>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>popup_menu_header</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_popup_menu_header</handler>
+      <last_modification_time>Mon, 16 Apr 2001 16:07:26 GMT</last_modification_time>
+    </signal>
+    <label>TiEmu II menu (v2.0)</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>separator10</name>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>send_file_to_gtktiemu1</name>
+    <tooltip>Send the selected file to the emulator. This file can be of any type (single, group, backup, FLASH app or FLASH OS).</tooltip>
+    <accelerator>
+      <modifiers>0</modifiers>
+      <key>GDK_F10</key>
+      <signal>activate</signal>
+    </accelerator>
+    <signal>
+      <name>activate</name>
+      <handler>on_send_file_to_gtktiemu1_activate</handler>
+      <last_modification_time>Thu, 16 Nov 2000 19:59:05 GMT</last_modification_time>
+    </signal>
+    <label>Send _file to TIEmu</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>link_cable1</name>
+    <tooltip>Link cable setup</tooltip>
+    <signal>
+      <name>activate</name>
+      <handler>on_link_cable1_activate</handler>
+      <last_modification_time>Sun, 06 Aug 2000 14:01:19 GMT</last_modification_time>
+    </signal>
+    <label>Link _options...</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>separator11</name>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>config1</name>
+    <label>_Configuration</label>
+    <right_justify>False</right_justify>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>config1_menu</name>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>save_config1</name>
+	<tooltip>Save the actual configuration</tooltip>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_save_config1_activate</handler>
+	  <last_modification_time>Tue, 25 Jul 2000 18:35:59 GMT</last_modification_time>
+	</signal>
+	<label>Save config...</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>load_config1</name>
+	<tooltip>Load the configuration previously saved</tooltip>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_load_config1_activate</handler>
+	  <last_modification_time>Tue, 25 Jul 2000 18:36:18 GMT</last_modification_time>
+	</signal>
+	<label>Load config...</label>
+	<right_justify>False</right_justify>
+      </widget>
+    </widget>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>calculator_state1</name>
+    <label>Calculator state</label>
+    <right_justify>False</right_justify>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>calculator_state1_menu</name>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>load_state_image1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_load_state_image1_activate</handler>
+	  <last_modification_time>Tue, 04 Jul 2000 18:10:28 GMT</last_modification_time>
+	</signal>
+	<label>Load state image...</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>save_state_image1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_save_state_image1_activate</handler>
+	  <last_modification_time>Tue, 04 Jul 2000 18:10:35 GMT</last_modification_time>
+	</signal>
+	<label>Save state image...</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>revert_to_saved_state1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_revert_to_saved_state1_activate</handler>
+	  <last_modification_time>Tue, 04 Jul 2000 18:10:43 GMT</last_modification_time>
+	</signal>
+	<label>Revert to saved state</label>
+	<right_justify>False</right_justify>
+      </widget>
+    </widget>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>separator20</name>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>enter_debugger1</name>
+    <tooltip>Go to debugger</tooltip>
+    <accelerator>
+      <modifiers>0</modifiers>
+      <key>GDK_F9</key>
+      <signal>activate</signal>
+    </accelerator>
+    <signal>
+      <name>activate</name>
+      <handler>on_enter_debugger1_activate</handler>
+      <last_modification_time>Tue, 04 Jul 2000 18:09:02 GMT</last_modification_time>
+    </signal>
+    <label>Enter _debugger...</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>reset_calc1</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_reset_calc1_activate</handler>
+      <last_modification_time>Tue, 04 Jul 2000 18:10:21 GMT</last_modification_time>
+    </signal>
+    <label>_Reset calc</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>separator12</name>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>emulator_options1</name>
+    <label>Emulator _options</label>
+    <right_justify>False</right_justify>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>emulator_options1_menu</name>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>speed2</name>
+	<label>Speed</label>
+	<right_justify>False</right_justify>
+
+	<widget>
+	  <class>GtkMenu</class>
+	  <name>speed2_menu</name>
+
+	  <widget>
+	    <class>GtkCheckMenuItem</class>
+	    <name>restrict1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_restrict_to_actual_speed1_activate</handler>
+	      <last_modification_time>Tue, 04 Jul 2000 18:11:05 GMT</last_modification_time>
+	    </signal>
+	    <label>Restrict to actual speed</label>
+	    <active>True</active>
+	    <always_show_toggle>True</always_show_toggle>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>change_speed1</name>
+	    <tooltip>Set number the rate of the timer</tooltip>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_change_speed1_activate</handler>
+	      <last_modification_time>Wed, 05 Jul 2000 18:57:15 GMT</last_modification_time>
+	    </signal>
+	    <label>Tickrate...</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>cycle_rate1</name>
+	    <tooltip>Set the rate of instructions</tooltip>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_cycle_rate1_activate</handler>
+	      <last_modification_time>Wed, 05 Jul 2000 20:34:40 GMT</last_modification_time>
+	    </signal>
+	    <label>Cycle rate...</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>itick1</name>
+	    <tooltip>Set numbers of instructions per timertick</tooltip>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_itick1_activate</handler>
+	      <last_modification_time>Wed, 05 Jul 2000 20:34:53 GMT</last_modification_time>
+	    </signal>
+	    <label>Itick</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkCheckMenuItem</class>
+	    <name>sync1</name>
+	    <tooltip>If you uncheck this, screen updating will be synchronized with the timer which means it always be updated regularly. This may cause grayscale pictures to flicker when you press keys and other things happen in the code. If you check this, screen updating will be synced with IRQ 1. This means that if IRQ 1 does not run, the screen is not updated. This options usually makes grayscales rock-stable, but wont work at all in programs that turn off IRQ 1 (like &quot;tunnel&quot; and &quot;torus&quot;).</tooltip>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_sync1_activate</handler>
+	      <last_modification_time>Tue, 25 Jul 2000 20:27:12 GMT</last_modification_time>
+	    </signal>
+	    <label>Sync</label>
+	    <active>False</active>
+	    <always_show_toggle>True</always_show_toggle>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>number_of_colors1</name>
+	<tooltip>Set current number of emulated extra grayscales colors</tooltip>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_number_of_colors1_activate</handler>
+	  <last_modification_time>Tue, 25 Jul 2000 19:37:52 GMT</last_modification_time>
+	</signal>
+	<label>Number of colors...</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>screen1</name>
+	<label>_Screen</label>
+	<right_justify>False</right_justify>
+
+	<widget>
+	  <class>GtkMenu</class>
+	  <name>screen1_menu</name>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>normal_view_(1x)1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_normal_view_(1x)1_activate</handler>
+	      <last_modification_time>Tue, 21 May 2002 20:00:13 GMT</last_modification_time>
+	    </signal>
+	    <label>_Normal view (1x)</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>large_view_(x2)1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_large_view_(x2)1_activate</handler>
+	      <last_modification_time>Tue, 21 May 2002 20:00:13 GMT</last_modification_time>
+	    </signal>
+	    <label>_Large view (x2)</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>full_screen1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_full_screen1_activate</handler>
+	      <last_modification_time>Tue, 21 May 2002 20:00:13 GMT</last_modification_time>
+	    </signal>
+	    <label>_Full screen (Alt+Enter)</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+	</widget>
+      </widget>
+    </widget>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>skin_for_current_calc1</name>
+    <label>Skin for current calc</label>
+    <right_justify>False</right_justify>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>skin_for_current_calc1_menu</name>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>skin1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_skin1_activate</handler>
+	  <last_modification_time>Thu, 16 Nov 2000 20:04:23 GMT</last_modification_time>
+	</signal>
+	<label>Skin92</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>none1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_none1_activate</handler>
+	  <last_modification_time>Thu, 16 Nov 2000 20:04:24 GMT</last_modification_time>
+	</signal>
+	<label>None</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>set_skin1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_set_skin1_activate</handler>
+	  <last_modification_time>Tue, 28 May 2002 18:38:23 GMT</last_modification_time>
+	</signal>
+	<label>Set skin...</label>
+	<right_justify>False</right_justify>
+      </widget>
+    </widget>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>screenshot1</name>
+    <label>_Screenshot</label>
+    <right_justify>False</right_justify>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>screenshot1_menu</name>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>now_!1</name>
+	<accelerator>
+	  <modifiers>0</modifiers>
+	  <key>GDK_F10</key>
+	  <signal>activate</signal>
+	</accelerator>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_now_!1_activate</handler>
+	  <last_modification_time>Sat, 12 May 2001 18:00:03 GMT</last_modification_time>
+	</signal>
+	<label>_Now !</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>options1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_rbm_options1_activate</handler>
+	  <last_modification_time>Sat, 12 May 2001 08:10:07 GMT</last_modification_time>
+	</signal>
+	<label>_Options</label>
+	<right_justify>False</right_justify>
+      </widget>
+    </widget>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>ram1</name>
+    <tooltip>RAM parameters</tooltip>
+    <label>RAM</label>
+    <right_justify>False</right_justify>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>ram1_menu</name>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>dump_ram1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_dump_ram1_activate</handler>
+	  <last_modification_time>Tue, 25 Jul 2000 19:35:35 GMT</last_modification_time>
+	</signal>
+	<label>Dump RAM...</label>
+	<right_justify>False</right_justify>
+      </widget>
+    </widget>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>rom1</name>
+    <tooltip>ROM parameters</tooltip>
+    <label>ROM</label>
+    <right_justify>False</right_justify>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>rom1_menu</name>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>dump_rom1</name>
+	<tooltip>Make a ROM dump to link port</tooltip>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_dump_rom1_activate</handler>
+	  <last_modification_time>Tue, 04 Jul 2000 18:11:35 GMT</last_modification_time>
+	</signal>
+	<label>Dump ROM...</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>rom_file1</name>
+	<tooltip>Add a ROM image or a FLASH upgrade...</tooltip>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_rom_file1_activate</handler>
+	  <last_modification_time>Wed, 05 Jul 2000 20:31:08 GMT</last_modification_time>
+	</signal>
+	<label>Add image/upgrade...</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>set_rom1</name>
+	<tooltip>Set emulation ROM version</tooltip>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_set_rom1_activate</handler>
+	  <last_modification_time>Sun, 25 Mar 2001 14:04:52 GMT</last_modification_time>
+	</signal>
+	<label>Set ROM (image/upgrade)</label>
+	<right_justify>False</right_justify>
+      </widget>
+    </widget>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>separator13</name>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>help1</name>
+    <label>_Help</label>
+    <right_justify>False</right_justify>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>help1_menu</name>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>help3</name>
+	<accelerator>
+	  <modifiers>GDK_CONTROL_MASK</modifiers>
+	  <key>GDK_H</key>
+	  <signal>activate</signal>
+	</accelerator>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_help3_activate</handler>
+	  <last_modification_time>Sat, 10 Nov 2001 16:11:20 GMT</last_modification_time>
+	</signal>
+	<label>Help</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>manpage1</name>
+	<accelerator>
+	  <modifiers>GDK_CONTROL_MASK</modifiers>
+	  <key>GDK_M</key>
+	  <signal>activate</signal>
+	</accelerator>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_manpage1_activate</handler>
+	  <last_modification_time>Sat, 10 Nov 2001 16:11:35 GMT</last_modification_time>
+	</signal>
+	<label>Manpage</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>separator15</name>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>changelog1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_changelog1_activate</handler>
+	  <last_modification_time>Sat, 10 Nov 2001 16:11:41 GMT</last_modification_time>
+	</signal>
+	<label>ChangeLog</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>separator14</name>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>thanks1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_thanks1_activate</handler>
+	  <last_modification_time>Sat, 10 Nov 2001 16:11:52 GMT</last_modification_time>
+	</signal>
+	<label>Thanks</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>about1</name>
+	<tooltip>More informations</tooltip>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_about1_activate</handler>
+	  <last_modification_time>Tue, 04 Jul 2000 18:11:41 GMT</last_modification_time>
+	</signal>
+	<label>About...</label>
+	<right_justify>False</right_justify>
+      </widget>
+    </widget>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>infos1</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_infos1_activate</handler>
+      <last_modification_time>Sat, 24 Mar 2001 15:47:56 GMT</last_modification_time>
+    </signal>
+    <label>Infos...</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>exit1</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_exit1_activate</handler>
+      <last_modification_time>Thu, 16 Nov 2000 20:15:36 GMT</last_modification_time>
+    </signal>
+    <label>E_xit and save state</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>exit_without_saving_state1</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_exit_without_saving_state1_activate</handler>
+      <last_modification_time>Thu, 16 Nov 2000 20:07:19 GMT</last_modification_time>
+    </signal>
+    <label>Exit _without saving state</label>
+    <right_justify>False</right_justify>
+  </widget>
+</widget>
+
+</GTK-Interface>

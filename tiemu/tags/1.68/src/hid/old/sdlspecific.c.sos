@@ -1,0 +1,1313 @@
+/*  GtkTiEmu - a TI emulator
+ *  GtkSpecific.c: Linux display specific part
+ *  Originally written by Jonas Minsberg
+ *  Copyright (C) 2000, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2002, Romain Lievin
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details. *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+/* 
+   This source come from the xspecific.c file of (x)tiger. I modified
+   and adapted so that it can work with GTK. Moreover, I corrected some
+   bugs with the management of the display in 24 colors mode.
+*/
+
+/* SDL */
+#include <SDL/SDL.h>
+#include <signal.h>
+
+/* Program dependencies */
+#include "platform.h"
+#include "support.h"
+#include "img/fmt.h"
+#include "specific.h"
+#include "skn_loader.h"
+#include "struct.h"
+
+/* GTK */
+#include <gtk/gtk.h>
+#include "../gtk/gtk_tiemu_cb.h"
+#include "../gtk/gtk_refresh.h"
+
+#define DEFAULT_BPP   8
+#define DEFAULT_FLAGS (SDL_HWPALETTE | SDL_HWSURFACE | SDL_RESIZABLE) 
+
+
+/*****************************************/
+/* Various variables and short functions */
+/*****************************************/
+
+#define NGS 16                // Number of gray scales
+
+char *sTitle = "GtkTiEmu";    // Name of app in title bar
+
+SDL_Color sdlPal[256];        // global palette: greyscale + skin
+SDL_Surface *sdlWindow;       // SDL formatted surface
+SDL_Surface *sdlLcdSrc;
+SDL_Surface *sdlLcdDst;
+int iBpp, iDepth;             // bytes per pixel & number of colors
+int iScale = 1;               // scaling factor: not implemented yet
+unsigned int iWinLineSize;    // length of a row (in bytes)
+unsigned int iLcdLineSize;    // length of a row (in bytes)
+
+int iWinW, iWinH;             // window size
+int iScrW = 240, iScrH = 128; // LCD size (TI memory)
+int iLcdW, iLcdH;             // LCD size (clipped)
+
+Uint32 *pLcdBuf = NULL;       // LCD screen  (TI screen: bytemapped)
+Uint32 convtab[512] = { 0 };  // Planar to chunky conversion table
+
+Uint8 sdl2ti[512] = { 0 };    // SDL to TI key conversion table
+volatile int iKeyWasPressed;  // true if a TI key has been pressed
+int lastKey = -1;             // ??
+int iAlpha = 0;               // The TI89 Alpha key has been pressed
+
+int bFullscreen=0;            // true if toggled in FullScreen mode
+int bFullscreenFailed=0;      // true if failed to toggle in fullscreen
+int bWindowedFailed=0;        // true if failed to toggle in windowed
+
+int iContrast = NGS;          // current contrast level
+int iLastContrast = 0;        // previous contrast level
+int iNewContrast = NGS;       // new contrast level
+int iGrayPlanes = -1;         // number of grayscales to emulate
+int iCurrPlane = 0;           // ?
+int iEmuState = 0;            // ?
+
+int suspended = 0;            // emulation engine is suspended
+
+int bGtkOkay = 0;             // gtk_init has been called once
+GtkWidget *window;            // GTK window (not showed) & menu
+
+void switch_without_skin();
+void switch_with_skin();
+void switch_fullscreen();
+void switch_windowed();
+void compute_convtable(void);
+int sdl_to_ti(int key);
+int gtk_main_window(void);
+void set_colors(void);
+
+int ret;
+
+static void SDL_ComplainAndExit(void)
+{
+  DISPLAY("Problem: %s\n", SDL_GetError());
+  exit(-1);
+}
+
+
+/*************/
+/* Init/Exit */
+/*************/
+static int init_specific(void) 
+{
+  int i;
+
+  gtk_main_window();
+
+  // Init SDL
+  DISPLAY("Initializing SDL... ");
+  if(SDL_Init(SDL_INIT_VIDEO) < 0) 
+    {
+      fprintf(stderr,"Couldn't initialize SDL: %s\n", SDL_GetError());
+      return -1;
+    }
+  DISPLAY("Done.\n");
+
+  // Set application title
+  SDL_WM_SetCaption(sTitle, "gtktiemu.xpm");
+
+  // Init the SDL key -> TI key conversion table
+  for(i=0; i<256; i++)
+    sdl2ti[i] = sdl_to_ti(i);
+
+  for(i=0; i<256; i++)
+    sdl2ti[i+256] = sdl_to_ti(i+65288);
+
+  // Init the planar/chunky conversion table for LCD
+  compute_convtable();
+
+  // Do the rest
+  init_hid_subsystem();
+
+  return 0;
+}
+
+
+/*
+  Initialize SDL, buffers and some other stuffs.
+  This function can be called at any time
+*/
+static int init_hid_subsystem(void)
+{
+  // Allocate the TI screen buffer
+  pLcdBuf = malloc((iScale * iScrW) * (iScale * iScrH));
+  
+  // Get LCD size depending on calculator type
+  if (ti68k_getCalcType() & TI92) 
+    {
+      iLcdW = iScale * 240; 
+      iLcdH = iScale * 128;
+      if (!load_skin("ti92.skn"))
+	return -1;
+    }
+  else if (ti68k_getCalcType() & TI89)
+    {
+      iLcdW = iScale * 160; 
+      iLcdH = iScale * 100;
+      if (!load_skin("ti89.skn"))
+	return -1;
+    }
+  
+  // Get window size depending on windowed/fullscreen
+  if(*(options.background)) 
+    {
+      iWinH = iScale * skin.height;
+      iWinW = iScale * skin.width;
+    }
+  else 
+    {
+      iWinH = iLcdH;
+      iWinW = iLcdW;
+    }
+
+  // Set VIDEO mode and create the window surface
+  if (!(sdlWindow = SDL_SetVideoMode(iWinW, iWinH, 
+				     DEFAULT_BPP, DEFAULT_FLAGS)))
+    {
+      DISPLAY("Could not set video mode: %s\n", SDL_GetError());
+      return -1;
+    }
+  
+  // Create LCD surface to blit into window
+  sdlLcdSrc = SDL_CreateRGBSurface(SDL_HWSURFACE, 
+				   iScale * iScrW, iScale * iScrH, 
+				   DEFAULT_BPP, 
+				   255, 255, 255, 255);
+  
+  // Get some constants
+  iDepth = sdlWindow->format->BitsPerPixel;
+  iBpp = sdlWindow->format->BytesPerPixel;
+  iWinLineSize = iScale * (sdlWindow->pitch) >> (iBpp >> 1);
+  iLcdLineSize = iScale * (sdlLcdSrc->pitch) >> (iBpp >> 1);
+
+  // Draw the skin and compute grayscale palette
+  set_colors();
+  redraw_skin();
+  
+  return 0;
+}
+
+/*
+  Release allocated ressources
+*/
+static int quit_hid_subsystem(void)
+{
+  SDL_FreeSurface(sdlLcdSrc);
+  sdlLcdSrc = NULL;
+  SDL_FreeSurface(sdlWindow);
+  sdlWindow = NULL;
+  free(pLcdBuf);
+
+  return 0;
+}
+
+static int exit_specific(void) 
+{
+  quit_hid_subsystem();
+  SDL_Quit();
+
+  return 0;
+}
+
+
+/***********************/
+/* Keyboard management */
+/***********************/
+
+/* Converts a keyboard key (an SDL event) into a TI key */
+int sdl_to_ti(int key) 
+{
+  if(ti68k_getCalcType() & TI92)
+    {
+      switch(key) 
+	{
+	case SDLK_a : return TIKEY_A;
+	case SDLK_b : return TIKEY_B;
+	case SDLK_c : return TIKEY_C;
+	case SDLK_d : return TIKEY_D;
+	case SDLK_e : return TIKEY_E;
+	case SDLK_f : return TIKEY_F;
+	case SDLK_g : return TIKEY_G;
+	case SDLK_h : return TIKEY_H;
+	case SDLK_i : return TIKEY_I;
+	case SDLK_j : return TIKEY_J;
+	case SDLK_k : return TIKEY_K;
+	case SDLK_l : return TIKEY_L;
+	case SDLK_m : return TIKEY_M;
+	case SDLK_n : return TIKEY_N;
+	case SDLK_o : return TIKEY_O;
+	case SDLK_p : return TIKEY_P;
+	case SDLK_q : return TIKEY_Q;
+	case SDLK_r : return TIKEY_R;
+	case SDLK_s : return TIKEY_S;
+	case SDLK_t : return TIKEY_T;
+	case SDLK_u : return TIKEY_U;
+	case SDLK_v : return TIKEY_V;
+	case SDLK_w : return TIKEY_W;
+	case SDLK_x : return TIKEY_X;
+	case SDLK_y : return TIKEY_Y;
+	case SDLK_z : return TIKEY_Z;
+	case SDLK_KP0 : return TIKEY_0;
+	case SDLK_KP1 : return TIKEY_1;
+	case SDLK_KP2 : return TIKEY_2;
+	case SDLK_KP3 : return TIKEY_3;
+	case SDLK_KP4 : return TIKEY_4;
+	case SDLK_KP5 : return TIKEY_5;
+	case SDLK_KP6 : return TIKEY_6;
+	case SDLK_KP7 : return TIKEY_7;
+	case SDLK_KP8 : return TIKEY_8;
+	case SDLK_KP9 : return TIKEY_9;
+	case SDLK_0 : return TIKEY_0;
+	case SDLK_1 : return TIKEY_1;
+	case SDLK_2 : return TIKEY_2;
+	case SDLK_3 : return TIKEY_3;
+	case SDLK_4 : return TIKEY_4;
+	case SDLK_5 : return TIKEY_5;
+	case SDLK_6 : return TIKEY_6;
+	case SDLK_7 : return TIKEY_7;
+	case SDLK_8 : return TIKEY_8;
+	case SDLK_9 : return TIKEY_9;
+	case SDLK_UP : return TIKEY_UP;
+	case SDLK_LEFT : return TIKEY_LEFT;
+	case SDLK_RIGHT : return TIKEY_RIGHT;
+	case SDLK_DOWN : return TIKEY_DOWN;
+	case SDLK_F1 : return TIKEY_F1;
+	case SDLK_F2 : return TIKEY_F2;
+	case SDLK_F3 : return TIKEY_F3;
+	case SDLK_F4 : return TIKEY_F4;
+	case SDLK_F5 : return TIKEY_F5;
+	case SDLK_F6 : return TIKEY_F6;
+	case SDLK_F7 : return TIKEY_F7;
+	case SDLK_F8 : return TIKEY_F8;
+	case SDLK_RETURN : return TIKEY_ENTER1;
+	case SDLK_KP_ENTER : return TIKEY_ENTER2;
+	case SDLK_LSHIFT : return TIKEY_SHIFT;
+	case SDLK_RSHIFT : return TIKEY_SHIFT;
+	case SDLK_RCTRL : return TIKEY_DIAMOND;
+	case SDLK_LCTRL : return TIKEY_DIAMOND;
+	case SDLK_LALT : return TIKEY_2ND;
+	case SDLK_RALT : return TIKEY_2ND;
+	case SDLK_CAPSLOCK : return TIKEY_HAND;
+	case SDLK_TAB : return TIKEY_STORE;
+	case SDLK_SPACE : return TIKEY_SPACE;
+	case SDLK_ESCAPE : return TIKEY_ESCAPE;
+	case SDLK_BACKSPACE : return TIKEY_BACKSPACE;
+	case SDLK_LEFTPAREN : return TIKEY_PALEFT;
+	case SDLK_RIGHTPAREN : return TIKEY_PARIGHT;
+	case SDLK_PERIOD : return TIKEY_PERIOD;
+	case SDLK_COMMA : return TIKEY_COMMA;
+	case SDLK_KP_PLUS : return TIKEY_PLUS;
+	case SDLK_KP_MULTIPLY : return TIKEY_MULTIPLY;
+	case SDLK_KP_DIVIDE : return TIKEY_DIVIDE;    
+	case SDLK_KP_MINUS : return TIKEY_MINUS;
+	case SDLK_MINUS : return TIKEY_NEGATE;
+	case SDLK_BACKSLASH : return TIKEY_ON;
+	  //case SDLK_quoteright : return TIKEY_MULTIPLY;
+	case SDLK_SLASH : return TIKEY_DIVIDE;
+	case SDLK_SEMICOLON : return TIKEY_THETA;
+	case SDLK_EQUALS : return TIKEY_EQUALS;
+	  //case SDLK_quoteleft : return TIKEY_POWER;
+	case SDLK_LESS : return TIKEY_NEGATE;
+	  //case SDLK_KP_Decimal : return TIKEY_PERIOD;
+	case SDLK_INSERT : return TIKEY_SIN;
+	case SDLK_DELETE : return TIKEY_CLEAR;
+	case SDLK_HOME : return TIKEY_COS;
+	case SDLK_END : return TIKEY_LN;
+	case SDLK_PAGEUP : return TIKEY_TAN;
+	case SDLK_PAGEDOWN : return TIKEY_MODE;
+	case SDLK_SCROLLOCK : return TIKEY_ON;
+	case SDLK_F9 : return OPT_DEBUGGER;
+	case SDLK_F10 : return OPT_SCREENCAPTURE;
+	  // F11 & F12 are used by WindowMaker
+	case SDLK_PRINT : return TIKEY_APPS;
+	  /*  
+	      case SDLK_BREAK_ALTERNATIVE :
+	      case SDLK_BREAK : return OPT_QUITNOSAVE;
+	  */
+	default : return TIKEY_NU;
+	}
+    }
+  else
+    {
+      iAlpha = 0;
+      switch(key) 
+	{
+	case SDLK_a : iAlpha = 1; return TIKEY_EQUALS;
+	case SDLK_b : iAlpha = 1; return TIKEY_PALEFT;
+	case SDLK_c : iAlpha = 1; return TIKEY_PARIGHT;
+	case SDLK_d : iAlpha = 1; return TIKEY_COMMA;
+	case SDLK_e : iAlpha = 1; return TIKEY_DIVIDE;
+	case SDLK_f : iAlpha = 1; return TIKEY_F;
+	case SDLK_g : iAlpha = 1; return TIKEY_7;
+	case SDLK_h : iAlpha = 1; return TIKEY_8;
+	case SDLK_i : iAlpha = 1; return TIKEY_9;
+	case SDLK_j : iAlpha = 1; return TIKEY_MULTIPLY;
+	case SDLK_k : iAlpha = 1; return TIKEY_EE;
+	case SDLK_l : iAlpha = 1; return TIKEY_4;
+	case SDLK_m : iAlpha = 1; return TIKEY_5;
+	case SDLK_n : iAlpha = 1; return TIKEY_6;
+	case SDLK_o : iAlpha = 1; return TIKEY_MINUS;
+	case SDLK_p : iAlpha = 1; return TIKEY_STORE;
+	case SDLK_q : iAlpha = 1; return TIKEY_1;
+	case SDLK_r : iAlpha = 1; return TIKEY_2;
+	case SDLK_s : iAlpha = 1; return TIKEY_3;
+	case SDLK_t : return TIKEY_T;
+	case SDLK_u : iAlpha = 1; return TIKEY_PLUS;
+	case SDLK_v : iAlpha = 1; return TIKEY_0;
+	case SDLK_w : iAlpha = 1; return TIKEY_PERIOD;
+	case SDLK_x : return TIKEY_X;
+	case SDLK_y : return TIKEY_Y;
+	case SDLK_z : return TIKEY_Z;
+	case SDLK_KP0 : return TIKEY_0;
+	case SDLK_KP1 : return TIKEY_1;
+	case SDLK_KP2 : return TIKEY_2;
+	case SDLK_KP3 : return TIKEY_3;
+	case SDLK_KP4 : return TIKEY_4;
+	case SDLK_KP5 : return TIKEY_5;
+	case SDLK_KP6 : return TIKEY_6;
+	case SDLK_KP7 : return TIKEY_7;
+	case SDLK_KP8 : return TIKEY_8;
+	case SDLK_KP9 : return TIKEY_9;
+	case SDLK_0 : return TIKEY_0;
+	case SDLK_1 : return TIKEY_1;
+	case SDLK_2 : return TIKEY_2;
+	case SDLK_3 : return TIKEY_3;
+	case SDLK_4 : return TIKEY_4;
+	case SDLK_5 : return TIKEY_5;
+	case SDLK_6 : return TIKEY_6;
+	case SDLK_7 : return TIKEY_7;
+	case SDLK_8 : return TIKEY_8;
+	case SDLK_9 : return TIKEY_9;
+	case SDLK_UP : return TIKEY_UP;
+	case SDLK_LEFT : return TIKEY_LEFT;
+	case SDLK_RIGHT : return TIKEY_RIGHT;
+	case SDLK_DOWN : return TIKEY_DOWN;
+	case SDLK_F1 : return TIKEY_F1;
+	case SDLK_F2 : return TIKEY_F2;
+	case SDLK_F3 : return TIKEY_F3;
+	case SDLK_F4 : return TIKEY_F4;
+	case SDLK_F5 : return TIKEY_F5;
+	case SDLK_F6 : return TIKEY_CATALOG;
+	case SDLK_F7 : return TIKEY_F7;
+	case SDLK_F8 : return TIKEY_F8;
+	case SDLK_RETURN : return TIKEY_ENTER1;
+	case SDLK_KP_ENTER : return TIKEY_ENTER2;
+	case SDLK_LSHIFT : return TIKEY_SHIFT;
+	case SDLK_RSHIFT : return TIKEY_SHIFT;
+	case SDLK_RCTRL : return TIKEY_DIAMOND;
+	case SDLK_LCTRL : return TIKEY_DIAMOND;
+	case SDLK_LALT : return TIKEY_2ND;
+	case SDLK_RALT : return TIKEY_2ND;
+	case SDLK_CAPSLOCK : return TIKEY_ALPHA;
+	case SDLK_TAB : return TIKEY_STORE;
+	case SDLK_SPACE : return TIKEY_SPACE;
+	case SDLK_ESCAPE : return TIKEY_ESCAPE;
+	case SDLK_BACKSPACE : return TIKEY_BACKSPACE;
+	case SDLK_LEFTPAREN : return TIKEY_PALEFT;
+	case SDLK_RIGHTPAREN : return TIKEY_PARIGHT;
+	case SDLK_PERIOD : return TIKEY_PERIOD;
+	case SDLK_COMMA : return TIKEY_COMMA;
+	case SDLK_KP_PLUS : return TIKEY_PLUS;
+	case SDLK_KP_MULTIPLY : return TIKEY_MULTIPLY;
+	case SDLK_KP_DIVIDE : return TIKEY_DIVIDE;    
+	case SDLK_KP_MINUS : return TIKEY_MINUS;
+	case SDLK_MINUS : return TIKEY_NEGATE;
+	case SDLK_BACKSLASH : return TIKEY_ON;
+	  //case SDLK_quoteright : return TIKEY_MULTIPLY;
+	case SDLK_SLASH : return TIKEY_DIVIDE;
+	  //case SDLK_semicolon : return TIKEY_THETA;
+	case SDLK_EQUALS : return TIKEY_EQUALS;
+	  //case SDLK_quoteleft : return TIKEY_POWER;
+	case SDLK_LESS : return TIKEY_NEGATE;
+	  //case SDLK_KP_Decimal : return TIKEY_PERIOD;
+	case SDLK_INSERT : return TIKEY_SIN;
+	case SDLK_DELETE : return TIKEY_CLEAR;
+	case SDLK_HOME : return TIKEY_COS;
+	case SDLK_END : return TIKEY_LN;
+	case SDLK_PAGEUP : return TIKEY_EE;	
+	case SDLK_PAGEDOWN : return TIKEY_POWER;
+	case SDLK_SCROLLOCK : return TIKEY_ON;
+	case SDLK_F9 : return OPT_DEBUGGER;
+	case SDLK_F10 : return OPT_SCREENCAPTURE;
+	  // F11 & F12 are used by WindowMaker
+	case SDLK_PRINT : return TIKEY_APPS;
+	  /*  
+	      case SDLK_BREAK_ALTERNATIVE :
+	      case SDLK_BREAK : return OPT_QUITNOSAVE;
+	  */
+	default : return TIKEY_NU;
+	}
+    }
+}
+
+
+/*static*/ int update_keys(void) 
+{
+  SDL_Event event;
+  int i;
+
+  iKeyWasPressed = 0;
+  
+  while(SDL_PollEvent(&event)) 
+    {
+      if(event.type==SDL_MOUSEBUTTONDOWN) 
+	{
+	  if(event.button.button==1) 
+	    {
+	      i = pos_to_key(event.button.x,event.button.y);
+	      if(i>=0) 
+		{
+		  if(event.button.button == 1) 
+		    {
+		      lastKey = i;
+		      ti68k_setActiveKey(i,1);
+		      iKeyWasPressed = 1;
+		    }
+		}
+	    }
+#ifndef EXT_WIN
+	  else if(event.button.button == 3)
+	    {
+	      if(!bFullscreen) 
+		{
+		  SDL_WaitEvent(&event); // flush event !!!
+		  gtk_menu_popup(GTK_MENU(display_popup_menu()),
+				 NULL, NULL, NULL, NULL,
+				 event.button.button,
+				 -897199374); // cannot pass time
+		  suspend();
+		}
+	      else
+		switch_windowed();
+	    }
+#endif
+	}
+      else if(event.button.button==3) 
+	{
+	  
+	}
+      else if(event.type==SDL_MOUSEBUTTONUP) 
+	{
+	  if(event.button.button==1) 
+	    {
+	      if(lastKey!=-1) 
+		{
+		  ti68k_setActiveKey(lastKey,0);
+		  lastKey = -1;
+		}
+	    }
+	}
+      else if(event.type==SDL_KEYDOWN) 
+	{
+	  if((event.key.keysym.mod & KMOD_RALT || 
+	      event.key.keysym.mod & KMOD_LALT) && 
+	     (event.key.keysym.sym==SDLK_RETURN)) 
+	    {
+	      if (bFullscreen)
+		switch_windowed();
+	      else
+		switch_fullscreen();
+	    }
+	  else if(event.key.keysym.sym == SDLK_F9)
+	    {
+	      ti68k_setActiveKey(OPT_DEBUGGER, 0);
+	      ti68k_launchDebugger();
+	    }
+	  else if(event.key.keysym.sym == SDLK_F10)
+	    {
+	      ti68k_setActiveKey(OPT_SCREENCAPTURE, 0);
+	      do_screenshot(options.img_format, options.img_type, options.img_size, 
+			    NULL);
+	      unsuspend();
+	    }
+	  else
+	    {
+	      iKeyWasPressed = 1;
+	      if(iAlpha)
+		ti68k_setActiveKey(TIKEY_ALPHA, 1);
+	      ti68k_setActiveKey(sdl_to_ti(event.key.keysym.sym), 1);
+	    }
+	}
+      else if(event.type==SDL_KEYUP) 
+	{
+	  if(iAlpha)
+	    {
+	      ti68k_setActiveKey(TIKEY_ALPHA, 0);
+	      iAlpha = 0;
+	    }
+	  ti68k_setActiveKey(sdl_to_ti(event.key.keysym.sym), 0);
+	}
+      else if(event.type==SDL_QUIT) 
+	{
+	  SDL_Quit();
+	  exit(0);
+	}
+      else if(event.type==SDL_VIDEORESIZE)
+	{
+	  DISPLAY("SDL_VIDEORESIZE: w=%i h=%i\n", event.resize.w, 
+		  event.resize.h);
+	  
+	  iScale = event.resize.w / skin.width;
+	  DISPLAY("iScale = %i\n", iScale);
+	  quit_hid_subsystem();
+	  init_hid_subsystem();
+	}
+    }
+
+  return iKeyWasPressed;
+}
+
+
+/* 
+   Converts the mouse position into a TIKEY_xx code
+   Checks if the mouse cursor is within a rectangle defined in the keyDefs
+   array
+*/
+int pos_to_key(int x, int y) 
+{
+  int i;
+  RECT *rcRectKeys = skin.rcKeys;
+  
+  for(i = 0; i<80 ;i++)
+    {
+      if ( (x >= rcRectKeys[i].left) && (x < rcRectKeys[i].right) 
+	  && (y >= rcRectKeys[i].top) && (y < rcRectKeys[i].bottom) ) 
+	return skin.key_mapping[i];
+    }
+
+  return -1;
+}
+
+
+/*********************/
+/* Screen management */
+/*********************/
+
+/* The value v is between l and h and can not be outside */
+#define filter(v, l, h) (v<l ? l : (v>h ? h : v))
+
+/* Computes the 16 grays level colors and allocates a colormap */
+void set_colors(void)
+{
+  int i;
+  int sr, sg, sb;
+  int er, eg, eb;
+  int r,g,b;
+
+  sr = 0xA8<<8; sg = 0xB4<<8; sb = 0xA8<<8;
+  er = 0x00<<8; eg = 0x00<<8; eb = 0x34<<8;
+
+  // Light & Dark color are in the skin: to do !
+  /*
+  sr = (*options.light_color & 0xff0000) >> 8;
+  sg = (*options.light_color & 0x00ff00);
+  sb = (*options.light_color & 0x0000ff) << 8;
+  er = (*options.dark_color & 0xff0000) >> 8;
+  eg = (*options.dark_color & 0x00ff00);
+  eb = (*options.dark_color & 0x0000ff) << 8;
+  */
+  if(iContrast < NGS) 
+    {
+      sr = sr - (sr-er)*(NGS - iContrast)/13;
+      sg = sg - (sg-eg)*(NGS - iContrast)/13;
+      sb = sb - (sb-eb)*(NGS - iContrast)/13;
+    }
+  else 
+    {
+      er = er - (er-sr)*(iContrast - NGS)/13;
+      eg = eg - (eg-sg)*(iContrast - NGS)/13;
+      eb = eb - (eb-sb)*(iContrast - NGS)/13;
+    }
+  
+  r = sr, g = sg, b = sb;
+
+  if(iEmuState & ESTAT_SCREENON) 
+    {
+      for(i=0; i<=(iGrayPlanes+1); i++) 
+	{
+	  sdlPal[i].r = filter(r, 0x0000, 0xA800) >> 8;
+	  sdlPal[i].g = filter(g, 0x0000, 0xB400) >> 8;
+	  sdlPal[i].b = filter(b, 0x3400, 0xA800) >> 8;
+	 
+	  ret = SDL_SetColors(sdlWindow, &(sdlPal[i]), i, 1);
+	  ret = SDL_SetColors(sdlLcdSrc, &(sdlPal[i]), i, 1);
+
+	  r-=((sr-er)/(iGrayPlanes+1));
+	  g-=((sg-eg)/(iGrayPlanes+1));
+	  b-=((sb-eb)/(iGrayPlanes+1));
+	}
+    }
+}
+
+
+int set_contrast(int c)
+{
+  if(ti68k_getCalcType() == TI89)
+    c = 31-c;
+
+  iNewContrast = (c+iLastContrast)/2;
+  iLastContrast = c;
+  return 0;
+}
+
+static int screen_on(void) 
+{
+  iEmuState |= ESTAT_SCREENON;
+  return 0;
+}
+
+static int screen_off(void) 
+{
+  iEmuState &= ~ESTAT_SCREENON;
+  redraw_skin(); //for clearing LCD
+  return 0;
+}
+
+void set_screen_ptr(Uint8* ptr) 
+{
+  //pLcdMem = ptr;
+}
+
+void update_window(void) 
+{  
+  if (bFullscreen)
+    switch_fullscreen();
+  else
+    switch_windowed(); 
+}
+
+static int update_screen(void) 
+{
+  Uint8 *pLcdMem = ti68k_getLcdPtr();
+  int i, j, k;
+  SDL_Rect src_rect, dst_rect;
+
+  if(iGrayPlanes != glob_inf.grayPlanes) 
+    {
+      iGrayPlanes = glob_inf.grayPlanes;
+      set_colors();
+    }
+
+  if(!(iEmuState & ESTAT_SCREENON)) 
+    return 0;
+
+  if(iContrast != iNewContrast) 
+    {
+      iContrast = iNewContrast;
+      set_colors();
+    }
+
+  // Convert the bitmap screen to a bytemap screen */
+  if(!iGrayPlanes || !iCurrPlane) 
+    { // no gray scale or init gray plane
+      for(j=0, k=0; k<iScrH; k++)
+	for(i=0; i<iScrW>>3; i++, pLcdMem++) 
+	  {
+	    pLcdBuf[j++] = convtab[((*pLcdMem)<<1)  ];
+	    pLcdBuf[j++] = convtab[((*pLcdMem)<<1)+1];
+	  }
+    }
+  else 
+    { // compute gray scale
+      for(j=0, k=0; k<iScrH; k++)
+	for(i=0; i<iScrW>>3; i++, pLcdMem++) 
+	  {
+	    pLcdBuf[j++] += convtab[((*pLcdMem)<<1)  ];
+	    pLcdBuf[j++] += convtab[((*pLcdMem)<<1)+1];
+	  }
+    }
+
+  // Display computed gray scale if required
+  if(iCurrPlane++ >= iGrayPlanes) 
+  {
+      // Copy the LCD into 
+      Uint8 *ptr = (Uint8 *)pLcdBuf;
+      Uint8 *ptr8 = (Uint8 *)sdlLcdSrc->pixels;
+      
+      for(j=0; j<iScrH; j++) 
+	{
+	  for (i=0;i<iScrW;i++) 
+	    {
+	      ptr8[j*iLcdLineSize + iScale*i] = *ptr++;
+	    }
+	}
+      
+      iCurrPlane = 0;
+      
+      // Convert surface from 8 bits depth to any depth
+      sdlLcdDst = SDL_DisplayFormat(sdlLcdSrc);
+      if(sdlLcdDst == NULL) {
+	SDL_ComplainAndExit();
+      }
+      
+      // Copy surface into window
+      src_rect.x = 0; 
+      src_rect.y = 0; 
+      src_rect.w = iLcdW; 
+      src_rect.h = iLcdH;
+      dst_rect.x = iScale * skin.rcLcd.left; 
+      dst_rect.y = iScale * skin.rcLcd.top;
+      
+      if (SDL_BlitSurface(sdlLcdDst, &src_rect, sdlWindow, &dst_rect) < 0) {
+	SDL_FreeSurface(sdlLcdDst);
+	SDL_ComplainAndExit();
+      }
+      SDL_FreeSurface(sdlLcdDst);
+      
+      SDL_UpdateRect(sdlWindow, 
+		     iScale * skin.rcLcd.left, iScale * skin.rcLcd.top, 
+		     iLcdW, iLcdH); 
+  }
+
+  return 0;
+}
+
+
+/* Redraw the skin */
+void redraw_skin(void) 
+{
+  int i, j;
+  Uint8 r, g, b;
+  Uint8 *ptr;
+
+  SDL_Rect rect;
+  SDL_Surface *sdlSkin;
+  SDL_Surface *sdlImage;
+
+  if(!*(options.background)) return;
+  
+  // Load the skin colormap
+  for(i=0; i<skin.ncolors; i++)
+    {
+      sdlPal[i+NGS].r = skin.cmap[0][i];
+      sdlPal[i+NGS].g = skin.cmap[1][i];
+      sdlPal[i+NGS].b = skin.cmap[2][i];
+    }
+
+  // and allocate colors
+  SDL_SetColors(sdlWindow, &(sdlPal[NGS]), NGS, skin.ncolors);
+
+  if(!*(options.background)) 
+    return;
+
+  // Fill the surface with the skin image
+  sdlSkin = SDL_CreateRGBSurface(SDL_HWSURFACE, iWinW, iWinH, DEFAULT_BPP, 
+				   255, 255, 255, 255);
+  SDL_SetColors(sdlSkin, &(sdlPal[NGS]), NGS, skin.ncolors);
+ 
+  ptr = (Uint8 *)sdlSkin->pixels;
+  for (j=0;j<skin.height;j++)
+    {
+      for (i=0;i<skin.width;i++) 
+	{
+	  r = skin.cmap[0][skin.img[j*skin.width+i]];
+	  g = skin.cmap[1][skin.img[j*skin.width+i]];
+	  b = skin.cmap[2][skin.img[j*skin.width+i]];
+	  ptr[j * iWinLineSize + iScale*i] = NGS + skin.img[j*skin.width+i];
+	    //SDL_MapRGB(sdlSkin->format, r, g, b);
+	}
+    }
+
+  // Convert surface from 8 bits depth to any depth
+  sdlImage = SDL_DisplayFormat(sdlSkin);
+  //pb with SDL_FreeSurface(sdlSkin);
+  if(sdlImage == NULL) {
+    SDL_ComplainAndExit();
+  }
+
+  // Copy surface into window
+  rect.x = 0; 
+  rect.y = 0;
+  
+  if (SDL_BlitSurface(sdlSkin, NULL, sdlWindow, &rect) < 0) {
+    SDL_FreeSurface(sdlImage);
+    SDL_ComplainAndExit();
+  }
+  SDL_FreeSurface(sdlImage);
+  SDL_FreeSurface(sdlSkin);
+  
+  SDL_UpdateRect(sdlWindow, 0, 0, 0, 0);
+}	
+
+
+/****************/
+/* GTK routines */
+/****************/
+
+/* A GTK callback: displays a popup menu */
+gboolean
+button_press_event        (GtkWidget       *widget,
+                           GdkEventButton  *event,
+                           gpointer         user_data)
+{
+  GtkWidget *menu;
+
+  /* Displays the popup menu */
+  if(event->button == 3)
+    {
+      menu = display_popup_menu();
+      gtk_widget_grab_focus(menu);
+      gdk_event_get();
+      gtk_menu_popup(GTK_MENU(menu), 
+		     NULL, NULL, NULL, NULL, 
+		     event->button, event->time);
+      suspend();
+    }
+  
+  return FALSE;
+}
+
+/* The GTK auxiliary window */
+int gtk_main_window(void)
+{
+  GtkWidget *eventbox;
+  GtkWidget *label;
+  
+  if (bGtkOkay) return 0;
+  gtk_init (NULL, NULL);
+    
+  /* The main window */
+  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (window), "GtkTiEmu");
+  gtk_widget_set_usize(window, 250, 50);
+
+  /* The event box */
+  eventbox = gtk_event_box_new ();
+  gtk_container_add (GTK_CONTAINER (window), eventbox);
+  GTK_WIDGET_SET_FLAGS (eventbox, GTK_CAN_FOCUS);
+  GTK_WIDGET_SET_FLAGS (eventbox, GTK_CAN_DEFAULT);
+  gtk_widget_set_events (eventbox, GDK_BUTTON_PRESS_MASK | GDK_KEY_PRESS_MASK);
+  gtk_widget_show (eventbox);
+
+  label = gtk_label_new ("Click here to display a menu");
+  gtk_container_add (GTK_CONTAINER (eventbox), label);
+  gtk_widget_show (label);
+  
+  gtk_signal_connect (GTK_OBJECT (window), "destroy",
+                      GTK_SIGNAL_FUNC (gtk_main_quit),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (eventbox), "button_press_event",
+                      GTK_SIGNAL_FUNC (button_press_event),
+                      NULL);
+  //gtk_widget_grab_focus (eventbox);
+  gtk_widget_grab_default (eventbox);
+
+#ifdef EXT_WIN  
+  gtk_widget_show_all(window);
+#endif
+
+  bGtkOkay = 1;
+  return 0;
+}
+
+
+/* Bitmap to bytemap conversion table */
+void compute_convtable(void) 
+{
+  int i,j;
+  Uint8 k;
+  Uint8 *tmptab = (Uint8 *)convtab;
+
+  for(i=0, j=0; i<256; i++) 
+    {
+      for(k = 1<<7; k; k>>=1)
+	{
+	  if(i & k)
+	    tmptab[j++] = 1;
+	  else
+	    tmptab[j++] = 0;
+	}
+    }
+}
+
+
+int update_gui(void) 
+{
+  gtk_main_iteration_do(FALSE);
+  return suspended;
+}
+
+int is_suspended() 
+{
+  return suspended;
+}
+
+void suspend(void) 
+{
+  suspended = 1;
+}
+
+void unsuspend(void) 
+{
+  suspended = 0;
+}
+
+
+int set_gui_callbacks(void)
+{
+  return ti68k_setGuiCallbacks(init_specific,
+			       exit_specific,
+			       update_screen,
+			       update_keys,
+			       screen_on,
+			       screen_off,
+			       NULL,
+			       set_contrast);
+  //gt_init_refresh_functions();
+}
+
+
+int do_screenshot(int format, int type, int size, char *filename)
+{
+  Image img;
+  char outfile[MAXCHARS];
+  char *ext = "???";
+  FILE *fp = NULL;
+  int row, col;
+  Uint8 *ptr8;
+  Uint16 *ptr16;
+  Uint32 *ptr32;
+  unsigned long l; // a pixel
+  int i, j, k;
+  SDL_Surface *sdlScrBuf = NULL;
+  int gap = iScrW - iLcdW;
+
+  if(filename == NULL)
+    {
+      switch(format)
+	{
+	case IMG_XPM: ext = "xpm"; break;
+	case IMG_PCX: ext = "pcx"; break;
+	case IMG_JPG: ext = "jpg"; break;
+	case IMG_BMP: ext = "bmp"; break;
+	default: break;
+	}
+      sprintf(outfile, "%s%03i.%s", options.screen_file, 
+	      options.screen_counter, ext);
+    }
+  else
+    strcpy(outfile, filename);
+  
+  if(format != IMG_BMP)
+  {
+	fp = fopen(outfile, "wb");
+	if(fp == NULL) exit(-1);
+  }
+  
+  DISPLAY("Screenshot to %s... ", outfile);
+  //  
+  // Write the TI screen in black & white
+  //  
+  if((type == IMG_BW) && (size == IMG_LCD))
+    {
+      img.height = iLcdH;
+      img.width = iLcdW;
+      img.inverted = !0;
+      img.depth = 2;
+      alloc_bitmap(&img);
+
+      if(ti68k_getCalcType() & TI92)
+	{
+	  memcpy(img.bitmap, ti68k_getLcdPtr(), 
+		 ((img.width * img.height) >> 3) * sizeof(byte));
+	}
+      else
+	{
+	  Uint8 *pLcdMem = ti68k_getLcdPtr();
+	  for(j=0; j<iLcdH; j++) 
+	    {
+	      for (i=0;i<(iLcdW>>3);i++) 
+		{
+		  (img.bitmap)[j*(iLcdW>>3)+i] = *pLcdMem++;
+		}
+	      pLcdMem += gap>>3;
+	    }
+	}
+    }
+  //
+  // Write only the TI screen in color
+  //
+  if((type == IMG_COL) && (size == IMG_LCD))
+    {
+      img.height = iLcdH;
+      img.width = iLcdW;
+      img.depth = 255;
+
+      if(format == IMG_BMP) // required in BMP format for SDL
+	{
+	  int iLcdLineSize;
+	  Uint8 *ptr;
+	  int i, j;
+
+	  sdlScrBuf = SDL_CreateRGBSurface(SDL_SWSURFACE, iLcdW, iLcdH, 
+					   iDepth, 0, 0, 0, 0);
+	  SDL_SetColors(sdlScrBuf, sdlPal, 0, 256);
+	  iLcdLineSize = (sdlScrBuf->pitch) >> (iBpp >> 1);
+	  
+	  ptr = (Uint8 *)sdlScrBuf->pixels;
+	  ptr8 = (Uint8 *)sdlWindow->pixels;
+	  ptr8 += skin.rcLcd.top*iWinLineSize + skin.rcLcd.left;
+	  for(j=0; j<iLcdH; j++) 
+	    {
+	      for (i=0;i<iLcdW;i++) 
+		{
+		  ptr[j*iLcdLineSize+i] = ptr8[j*iLcdLineSize+i];
+		}
+	      //ptr += gap;
+	    }
+	}
+
+      switch(iDepth) 
+	{
+	case 8: // rrggbb is 8 bits + palette
+	  alloc_colormap(&img);
+	  for(k=0; k<256; k++)
+	    {
+	      (img.colormap)[3*k+0] = sdlPal[k].r;
+	      (img.colormap)[3*k+1] = sdlPal[k].g;
+	      (img.colormap)[3*k+2] = sdlPal[k].b;
+	    }  
+	  ptr8 = (Uint8 *)sdlWindow->pixels;
+	  ptr8 += skin.rcLcd.top*iWinLineSize + skin.rcLcd.left;
+	  alloc_bytemap(&img);
+	  for(row=0; row<iLcdH; row++)
+	    {
+	      for(col=0; col<iLcdW; col++)
+		{
+		  (img.bytemap)[row*iLcdW+col] = ptr8[row*iLcdLineSize+col];
+		}
+	      //ptr+=gap;
+	    }
+	  break;
+	case 16: // rrggbb is 5/6/5 bits
+	  ptr16 = (Uint16 *)sdlWindow->pixels;
+	  ptr16 += skin.rcLcd.top*iWinLineSize + skin.rcLcd.left;
+	  alloc_rgbmap(&img);
+	  for(row=0; row<iLcdH; row++)
+	    {
+	      for(col=0; col<iLcdW; col++)
+		{	
+		  // 16 planes only      
+		  l = ptr16[row*iLcdW+col];
+		  (img.rgbmap)[3*(row*iLcdW+col)+0] = ((l & 0xf800) >> 11) << 3;
+		  (img.rgbmap)[3*(row*iLcdW+col)+1] = ((l & 0x7e0) >> 5) << 2;
+		  (img.rgbmap)[3*(row*iLcdW+col)+2] = ((l & 0x1f)) << 3;
+		}
+	      //ptr+=gap;
+	    }
+	  convert_rgbmap_to_bytemap(&img);
+	  break;
+	case 24:
+	case 32: // rrggbb is 8/8/8 bits
+	  ptr32 = (Uint32 *)(sdlWindow->pixels);
+	  ptr32 += skin.rcLcd.top*iWinLineSize + skin.rcLcd.left;
+	  alloc_rgbmap(&img);
+	  for(row=0; row<iLcdH; row++)
+	    {
+	      for(col=0; col<iLcdW; col++)
+		{
+		  l = ptr32[row*iLcdW+col];
+		  (img.rgbmap)[3*(row*iLcdW+col)+0] = ((l & 0xff0000) >> 16);
+		  (img.rgbmap)[3*(row*iLcdW+col)+1] = ((l & 0x00ff00) >>  8);
+		  (img.rgbmap)[3*(row*iLcdW+col)+2] = ((l & 0x0000ff) >>  0);
+		}
+	      //ptr+=gap;
+	    }
+	  convert_rgbmap_to_bytemap(&img);
+	  break;
+	}
+    }
+  //
+  // Write the entire screen in color
+  //  
+  if(size == IMG_SKIN)
+    {
+      img.height = iScale*iWinH;
+      img.width  = iScale*iWinW;
+      img.depth  = 255;
+
+      DISPLAY("iDepth: %i\n", iDepth);
+      switch(iDepth) 
+	{
+	case 8: // rrggbb is 8 bits + palette
+	  alloc_colormap(&img);
+	  for(k=0; k<256; k++)
+	    {
+	      (img.colormap)[3*k+0] = sdlPal[k].r;
+	      (img.colormap)[3*k+1] = sdlPal[k].g;
+	      (img.colormap)[3*k+2] = sdlPal[k].b;
+	    }  
+	  ptr8 = (Uint8 *)sdlWindow->pixels;
+	  alloc_bytemap(&img);
+	  for(row=0; row<iWinH; row++)
+	    {
+	      for(col=0; col<iWinW; col++)
+		{
+		  (img.bytemap)[row*iWinW+col] = ptr8[row*iLcdLineSize+col];
+		}
+	    }
+	  break;
+	case 16: // rrggbb is 5/6/5 bits
+	  ptr16 = (Uint16 *)sdlWindow->pixels;
+	  alloc_rgbmap(&img);
+	  for(row=0; row<iWinH; row++)
+	    {
+	      for(col=0; col<iWinW; col++)
+		{
+		  l = ptr16[row*iWinLineSize+col];
+		  (img.rgbmap)[3*(row*iWinW+col)+0] = ((l & 0xf800) >> 11) << 3;
+		  (img.rgbmap)[3*(row*iWinW+col)+1] = ((l & 0x7e0) >> 5) << 2;
+		  (img.rgbmap)[3*(row*iWinW+col)+2] = ((l & 0x1f)) << 3;
+		}
+	    }
+	  convert_rgbmap_to_bytemap(&img);
+	  break;
+	case 24:
+	case 32: // rrggbb is 8/8/8 bits
+	  ptr32 = (Uint32 *)sdlWindow->pixels;
+	  alloc_rgbmap(&img);
+	  for(row=0; row<iWinH; row++)
+	    {
+	      for(col=0; col<iWinW; col++)
+		{
+		  l = ptr32[row*iWinW+col];
+		  (img.rgbmap)[3*(row*iWinW+col)+0] = ((l & 0xff0000) >> 16);
+		  (img.rgbmap)[3*(row*iWinW+col)+1] = ((l & 0x00ff00) >>  8);
+		  (img.rgbmap)[3*(row*iWinW+col)+2] = ((l & 0x0000ff) >>  0);
+		}
+	    }
+	  convert_rgbmap_to_bytemap(&img);
+	  break;
+	}
+    }
+
+  switch(format)
+    { 
+    case IMG_XPM: write_xpm_format(fp, &img); break;
+    case IMG_PCX: write_pcx_format(fp, &img); break;
+    case IMG_JPG: write_jpg_format(fp, &img); break;
+    case IMG_BMP: 
+      if(size == IMG_LCD)
+	{
+	  SDL_SaveBMP(sdlScrBuf, outfile);
+	  SDL_FreeSurface(sdlScrBuf);
+	}
+      else
+	SDL_SaveBMP(sdlWindow, outfile); 
+      break;
+    default: DISPLAY("Invalid image format\n"); break;
+    }
+
+  //delete_image(&img); // ??
+    if(format != IMG_BMP)
+	{
+		fclose(fp);
+	}
+  DISPLAY("Done !\n");
+  options.screen_counter++;
+
+  return 0;
+}
+
+
+/*******************************/
+/* SDLspecific public routines */
+/*******************************/
+
+void switch_with_skin(void)
+{
+  SDL_FreeSurface(sdlWindow);
+  
+  if (!(sdlWindow = SDL_SetVideoMode(iWinW, iWinH, DEFAULT_BPP, 
+				   DEFAULT_FLAGS))) 
+    {
+      fprintf(stderr,
+	      "Couldn't switch to fullscreen\n");
+    }
+  iWinLineSize = (sdlWindow->pitch) >> (iBpp >> 1);
+  
+  *(options.background) = 1;
+
+  redraw_skin();
+  set_colors();
+}
+
+// Dangerous -> SDL crashes -> Linux crashes, shit !
+void switch_without_skin(void)
+{
+  SDL_FreeSurface(sdlWindow);
+  
+  if (!(sdlWindow = SDL_SetVideoMode(iLcdW, iLcdH, DEFAULT_BPP, 
+				   DEFAULT_FLAGS))) 
+    {
+      fprintf(stderr, "Couldn't switch without skin\n");
+    }
+  iWinLineSize = (sdlWindow->pitch) >> (iBpp >> 1);
+  
+  *(options.background) = 0;
+  set_colors();
+}
+
+void switch_fullscreen(void) 
+{
+  SDL_FreeSurface(sdlWindow);
+  
+  if (!(sdlWindow = SDL_SetVideoMode(iWinW, iWinH, DEFAULT_BPP, 
+				   DEFAULT_FLAGS | SDL_FULLSCREEN))) 
+    {
+      fprintf(stderr, "Couldn't switch with skin\n");
+      if (!bWindowedFailed)
+	switch_windowed();
+      else
+	exit(1);
+
+      bFullscreenFailed = 1;
+  }
+  
+  bFullscreen = 1;
+  bFullscreenFailed = 0;
+  redraw_skin();
+  DISPLAY("Done.\n");
+}
+
+void switch_windowed(void) 
+{
+  SDL_FreeSurface(sdlWindow);
+  
+  if (!(sdlWindow = SDL_SetVideoMode(iWinW, iWinH, DEFAULT_BPP, DEFAULT_FLAGS))) 
+    {
+      DISPLAY("Couldn't switch to window mode\n");
+      if (!bFullscreenFailed)
+	switch_fullscreen();
+      else
+	exit(1);
+
+      bFullscreenFailed = 1;
+    }
+  
+  bFullscreen = 0;
+  bWindowedFailed = 0;
+  redraw_skin();
+}

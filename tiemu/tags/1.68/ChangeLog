@@ -1,0 +1,316 @@
+Some explanations about the version number: the version number has this form:
+X.XX_X.XX where X is the major number and XX the minor one.
+An even number is a stable version whereas an odd number is an unstable/devel version.
+The first X.XX shows the version of the GtkTiEmu interface and the last X.XX shows the version of the libti68k used.
+
+To do:
+	A better management of errors
+	Debugger
+
+- 02/01/2003, version 1.68:
+	Removed automake support in ./src. Switched to a pure autoconf support.
+	Some warning removed.
+	
+- 30/01/2003, version 1.67:
+	Automake reworked and improved. Bu, I still have these ugly links.
+	Compilable under MinGW for K. Kofler.	
+	
+- 01/11/2002, version 1.66:
+	Automake/Autoconf does not support sub-dirs any longer -> file are 
+	linked now (ugly !).
+	
+- 13/10/2002, version 1.65:
+	Changed to support libticalcs v4.x.x.
+	Compilation fixes.
+	
+- 02/08/2002, version 1.64:
+	Changed to support libticalcs v4.x.x. 
+	Compilation fixes.
+	
+- 02/06/2002, version 1.63b:
+	FLASH upgrade support works fine now.
+	
+- 01/06/2002, version 1.63a:
+	Beta release.
+	
+- 01/06/2002, version 1.62q:
+	GUI slightly modified (wizard, ROM version, ...) and FLASH upgrade
+	management: support unified.
+	
+- 31/05/2002, version 1.62p:
+	Merge with Win32 port attempt.
+	
+- 30/05/2002, version 1.62o:
+	Linkport improved and cleaned-up. Fully works.
+	A FLASH upgraded converted into a ROM image with TiLP works...
+	
+- 30/05/2002, version 1.62m:
+	HW memory support improved but it's still impossible to directly load
+	a FLASH upgrade as a ROM image.
+	
+- 29/05/2002, version 1.62l:
+	Attemp to thread TiEmu and to remove suspend/unsuspend removed: failed.
+	But, some clean-up has been done.
+	
+- 29/05/2002, version 1.62k:
+	Added the ability to change skin.
+	
+- 28/05/2002, version 1.62j:
+	Skin support updated for supporting TiEmu skins (imported skinops.c
+	from JB's SkinEdit)
+	FLASH upgrade support to improve (if we load directly an upgrade,
+	this will not work but it works after a ROM image).
+	GUI clean-up finished.
+	
+- 27/05/2002, version 1.62i:
+	find_pc function modified and FLASH upgrade support improved.
+	Link box upgraded.
+	Skin support to finish.
+	
+- 26/05/2002, version 1.62h:
+	find_pc function modified and FLASH upgrade support improved.
+	
+- 22/05/2002, version 1.62g:
+	ROM image overhaul.
+	
+- 21/05/2002, version 1.62f:
+	GUI clean-up.
+	
+- 18/05/2002, version 1.62e:
+	GUI clean-up.
+	
+- 16/05/2002, version 1.62d:
+	TI HW clean-up.
+	
+- 15/05/2002, version 1.62c (1.64):
+	TI HW clean-up.
+	
+- 14/05/2002, version 1.62b (1.63):
+	TI HW clean-up.
+	
+- 13/05/2002, version 1.62a (1.62):
+	TI HW clean-up.
+	
+- 12/05/2002, version 1.61:
+	GlobInf structure modified.
+	
+- 11/05/2002, version 1.60:
+	Clean-up finished.
+	
+- 10/05/2002, version 1.59:
+	Headers modified. Clean-up of files.
+	
+- 09/05/2002, version 1.58:
+	Project tree completely rebuilt: libti68k & tiemu are now a single
+	package with sub-folders.
+	
+- 07/05/2002, version 1.57_1.4.3:
+	Scaling support finished (for displays with high resolution).
+	
+- 20/04/2002, version 1.56b_1.4.3:
+	Screenshot code rewritten according to the new rendering system.
+	
+- 16/04/2002, version 1.56a_1.4.3:
+	skn_loader.c: overhaul &  clean-up.
+	sdl_specific.c: rendering completely rewritten with pure SDL functions.
+	Tested on a PC 233MHz: speed & mem use are slightly greater.
+
+- 20/02/2002, version 1.55_1.4.3:
+	Libti68k & TiEmu modified for supporting the liticables-v3.x.x
+	
+- 28/01/2002, version 1.54_1.4.2:
+	Applied the JB's patch for compiling GtkTiEmu on Linux/PPC (problem
+	of endian-ness with skins and some other stuffs).
+
+=====> TiEmu II project starts here <=====
+	
+- 21/11/2001, version 1.53_1.4.2:
+	Direct internal linkport with TiLP. Implemented but disabled.
+	LCD: better gray scales/contrast management (no orange color !)
+
+- 19/11/2001, version 1.52_1.4.1:
+	Compiled under Win32. Debugger has been re-enabled under Win32 since
+	it works fine now.
+
+- 18/11/2001, version 1.51_1.4.0:
+	Send file finished.
+	Debugger dbox slightly improved (unsuspend).
+
+- 15/11/2001, version 1.50_1.3.9:
+	Removed pthread support.
+	Send file function in progress.
+
+- 14/11/2001, version 1.49_1.3.8:
+	It it not necessary to restart emulator if we change the link cable 
+	type.
+	Progress bar & Msgbox added.
+
+- 12/11/2001, version 1.48_1.3.5:
+	Recompiled for supporting modified libti68k.
+
+- 11/11/2001, version 1.47_1.3.5:
+	Cleanup of the debugger dbox.
+	Hidden config files (~/.tiemu*) moved into the ~/.tiemu/ 
+	hidden directory.	
+
+- 10/11/2001, version 1.46_1.3.5:
+	Cleanup of dialog boxes: faster.
+	Added a check for SDL in configure
+
+- 10/11/2001, version 1.45_1.3.5:
+	Cleanup of headers.
+
+- 10/11/2001, version 1.44_1.3.5:
+	Changed any malloc+strcat/cpy to g_strconcat: safer & shorter.
+
+- 05/11/2001, version 1.43_1.3.5:
+	Upgrading to Automake/Autoconf v2.52
+	Upgrading to libticables-v2.x.x
+
+To do:
+	GUI improved (faster, better display of boxes).
+	RC file management updated & improved (sections).
+	Link box upgraded.
+
+- 21/06/2001, version 1.42_1.3.3:
+	Compiled under Win32.
+	Skin/no skin resizing works (SDL does not crashes any longer).
+
+- 20/06/2001, version 1.41_1.3.2:
+	Code source have been cleaned.
+	Some improvements and minor bug fixes.
+
+- 19/06/2001, version 1.40_1.3.0:
+	A ROM wizard has been added for an easy startup.
+
+- 18/06/2001, version 1.39_1.3.0:
+	ROM management improved and fsel dboxes removed from callbacks.c
+	Trying to implement skin/no skin but SDL crashes.
+	About dbox updated and fixed.
+	Implemented a ROM wizard at startup.
+	A bug (Linux) in the inst_paths.base_dir fixed
+
+- 14/06/2001, version 1.38_1.2.9:
+	a FLASH upgrade can be used at startup.
+
+- 13/06/2001, version 1.37_1.2.9:
+	jpeg works under Win32 (HAVE_LIBJPEG !).
+	menu item bug fixed (SkinXX)
+
+- 12/06/2001, version 1.36_1.2.9:
+	Internationalization.
+
+- 11/06/2001, version 1.35_1.2.8:
+	TI89 keyboard is now VTi compatible.
+
+- 10/06/2001, version 1.34_1.2.7:
+	The update_keys function (SDL) did not return iKeyWasPressed.
+	TI89 keymap fixed.
+
+- 09/06/2001, version 1.33_1.2.6:
+	GtkTiEmu exits correctly now. Thanks to JB, my Debian packager, for
+	the idea which allows me to circumvent the pb.
+
+- 05/06/2001, version 1.32_1.2.3: 
+	globInf struct format modified so that rom/ram/tibFile strings are unlimited in size.
+	It is now possible to load a TIB file from the 'Set ROM' dbox.
+	If GtkTiEmu does not find a ROM at startup, it display a fileselection dbox.
+
+- 02/06/2001, version 1.31_1.2.0: 
+	hardware emulation improved. 
+	Listing of available ROMs is now more efficient thanks to a cache file.
+
+- 01/06/2001, version 1.31_1.1.9: 
+	a FLASH upgrade can now be loaded.
+
+- 26/05/2001, version 1.30_1.1.8: 
+	'Send file to GtkTiEmu' item implemented. 
+	Some bugs have been fixed in the debugger but it still crashes under Win32.
+
+- 25/05/2001, version 1.29_?.?.?: 
+	bug fix in the ROM version dialog box (fstat path).
+
+- 23/05/2001, version 1.28_?.?.?: 
+	the bug which crashes the debugger (Win32 version) has been insulated but not fixed yet.
+
+- 22/05/2001, version 1.27_1.1.5: 
+	command shell added. 
+	Load file capability to do/improve.
+
+- 21/05/2O01, version 1.26_?.?.?: 
+	Win32 version have pbs under WindowsNT4. Fixed.
+
+- 20/05/2001, version 1.25_1.1.4: 
+	finish to port GtkTiEmu under Win32. 
+	Screenshot pb under Win32 fixed but the debugger still does not work !
+
+- 19/05/2001, version 1.24_1.1.4: 
+	screenshot options improved: the screenshot file can now be chosen and auto incremented.
+Scaling to do...
+
+- 19/05/2001, version 1.23_1.1.4: 
+	F9/F10 keys fixed in SDL version. 
+	TI89 screen works fine now as well as the skin redrawing (TI89 <->TI92 toggling). Nethertheless, LCD/Skin toggling does not work very well.
+	Contrast fixed. 
+	Screenshot tested in both version, all formats, all depths and all calcs: it'a all right !
+
+- 18/05/2001, version 1.22_1.1.4: 
+	BMP format added. 
+	I have tested all possible color depths (8/16/24 colors) for both the X11 and the SDL version.
+	Screenshots have been tested with various file format, various screenshot size and various color depth.
+
+- 17/05/2001, version 1.21_1.1.4: 
+	screenshot implemented in SDL version. 
+	SDL version works now in 8 bit mode.
+
+- 16/05/2001, version 1.20_1.14: 
+	SDL version works fine in 24/32 planes. 
+	Gray scale management finished.
+
+- 15/05/2001, version 1.19_1.1.4: 
+	SDL version being improved for grey scale support.
+
+- 15/05/2001, version 1.18_1.1.4: 
+	minor bug fixes in X11 screenshots and different color planes tested (8, 16 and 24 bits per pixels). 
+	X11 version completely cleaned.
+
+- 14/05/2001, version 1.17_1.1.4: 
+	check/radio buttons in the popup menu works fine now. 
+	Screenshots works in LCD & WND and in XPM/PCX/JPG.
+
+- 13/05/2001, version 1.16_1.1.4: 
+	SDL version updated.
+
+- 12/05/2001, version 1.15_1.1.4: 
+	screenshot implemented in B&W for X11. Does not work in color mode.
+
+- 10/05/2001, version 1.14_1.1.4: 
+	little bug fix with the popup menu (ESC). 
+	Buttons in items still have to be fixed.
+
+- 08/05/2001, version 1.13_1.1.4: 
+	ti68k library headers files have changed their location
+
+- 07/05/2001, version 1.12_1.1.3: 
+	contrast added.
+
+- 06/05/2001, version 1.11_1.1.2: 
+	dumping of RAM/ROM added.
+
+- 06/05/2001, version 1.10_1.1.1: 
+	'Set ROM version' function implemented.
+
+- 05/05/2001, version 1.09: 
+	Infos dbox improved.
+
+- 05/05/2001, version 1.08: 
+	reset calc works fine now. 
+
+- 04/05/2001, version 1.07: 
+	pb with loadState fixed. Accelator keys added to all dialog boxes.
+
+- 01/05/2001, version 1.06: 
+	loadState does not work with TI89 calc.
+
+- ??/05/2000: version 1.00: 
+	start of project
