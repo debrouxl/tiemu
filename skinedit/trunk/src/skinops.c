@@ -47,7 +47,7 @@ extern struct skinInfos skin_infos;
 
 
 int
-load_skin(char *path)
+load_skin(const char *path)
 {
   FILE *fp = NULL;
   char buf[17];
@@ -634,7 +634,7 @@ write_skin(void)
 
 
 int
-write_skin_as(char *dest)
+write_skin_as(const char *dest)
 {
   FILE *fp = NULL;
   FILE *jpeg = NULL;

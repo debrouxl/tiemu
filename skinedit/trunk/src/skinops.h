@@ -25,7 +25,7 @@
 
 
 int
-load_skin(char *path);
+load_skin(const char *path);
 
 int
 load_skin_old_vti(FILE *fp);
@@ -43,7 +43,7 @@ int
 write_skin(void);
 
 int
-write_skin_as(char *dest);
+write_skin_as(const char *dest);
 
 void
 write_header(FILE *fp);

@@ -22,7 +22,7 @@
 #define __KEYMAPS_H__
 
 
-char *keynames[5][SKIN_KEYS + 1]= 
+const char *keynames[5][SKIN_KEYS + 1]= 
   {
     /* 0 => TI-73 */
     {"Y=", "Window", "Zoom", "Trace",

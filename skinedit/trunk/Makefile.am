@@ -1,12 +1,11 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = intl po src
+SUBDIRS = src po
 
 EXTRA_DIST = \
 	autogen.sh \
-	skinedit.glade \
-	doc/skin_fmt.txt \
-	osx
+	glade/main.glade \
+	glade/main.gladep
 
 install-data-local:
 	@$(NORMAL_INSTALL)

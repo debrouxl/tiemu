@@ -19,6 +19,7 @@
 
 
 #include <stdint.h>
+#include <string.h>
 
 #include <SDL/SDL.h>
 #include <gtk/gtk.h>
@@ -51,7 +52,6 @@ mouse_motion(GtkWidget *sdl_eventbox, GdkEventMotion *event, gpointer action)
   SDL_Surface *s;
 
   GdkModifierType state; 
-
 
   if (event->is_hint) 
     {

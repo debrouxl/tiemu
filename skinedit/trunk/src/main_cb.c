@@ -40,6 +40,7 @@
 #include "boxes_intf.h"
 
 #include "main_cb.h"
+#include "boxes_cb.h"
 
 #include "rubberbox.h"
 #include "skinops.h"
@@ -483,7 +484,11 @@ on_key_positions_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   int i;
-  GtkWidget *list;
+  GtkWidget *view;
+  GtkListStore *list;
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+  GtkTreeSelection *sel;
 
   if (area == NULL)
     return;
@@ -496,22 +501,36 @@ on_key_positions_activate              (GtkMenuItem     *menuitem,
 
   create_list_keys_dialog();
 
-  list = lookup_widget(GTK_WIDGET(list_keys_dialog), "list_keys");
+  view = lookup_widget(GTK_WIDGET(list_keys_dialog), "list_keys");
 
-  gtk_clist_freeze(GTK_CLIST(list));
+  list = gtk_list_store_new(1, G_TYPE_STRING);
+
+  model = GTK_TREE_MODEL(list);
+  
+  gtk_tree_view_set_model(GTK_TREE_VIEW(view), model);
+  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(view), FALSE);
+
+  gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(view), 0, "",
+					      gtk_cell_renderer_text_new(),
+					      "text", 0, NULL);
+
+  gtk_list_store_clear(list);
 
   for (i = 0; keynames[skin_infos.keymap][i] != NULL; i++)
     {
-      gtk_clist_append(GTK_CLIST(list), &keynames[skin_infos.keymap][i]);
+      gtk_list_store_append(list, &iter);
+      gtk_list_store_set(list, &iter, 0, keynames[skin_infos.keymap][i], -1);
     }
 
   clist_max = i;
-  
-  gtk_clist_thaw(GTK_CLIST(list));
+
+  sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+  gtk_tree_selection_set_mode(sel, GTK_SELECTION_SINGLE);
 
   gtk_widget_show(list_keys_dialog);
 
-  gtk_clist_select_row(GTK_CLIST(list), 0, 0);
+  g_signal_connect(G_OBJECT(sel), "changed",
+		   G_CALLBACK(on_list_keys_selection_changed), NULL);
 
   if (keys_mouse_motion == 0)
     keys_mouse_motion = gtk_signal_connect(GTK_OBJECT(sdl_eventbox),
@@ -620,7 +639,7 @@ on_filesel_new_ok_clicked                  (GtkButton       *button,
 					    gpointer         user_data)
 {
   FILE *fp = NULL;
-  char *jpeg = NULL;
+  const char *jpeg = NULL;
 
   jpeg = gtk_file_selection_get_filename(GTK_FILE_SELECTION(lookup_widget(GTK_WIDGET(button), "filesel")));
 
@@ -651,7 +670,7 @@ void
 on_filesel_open_ok_clicked                  (GtkButton       *button,
 					     gpointer         user_data)
 {
-  char *skin = NULL;
+  const char *skin = NULL;
 
   skin = gtk_file_selection_get_filename(GTK_FILE_SELECTION(lookup_widget(GTK_WIDGET(button), "filesel")));
 
@@ -671,7 +690,7 @@ void
 on_filesel_save_as_ok_clicked                  (GtkButton       *button,
 						gpointer         user_data)
 {
-  char *path = NULL;
+  const char *path = NULL;
 
   path = gtk_file_selection_get_filename(GTK_FILE_SELECTION(lookup_widget(GTK_WIDGET(button), "filesel")));
 
@@ -704,7 +723,7 @@ void
 on_filesel_vti_export_ok_clicked                  (GtkButton       *button,
 						   gpointer         version)
 {
-  char *path = NULL;
+  const char *path = NULL;
   
   path = gtk_file_selection_get_filename(GTK_FILE_SELECTION(lookup_widget(GTK_WIDGET(button), "filesel")));
   

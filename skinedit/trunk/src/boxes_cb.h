@@ -25,11 +25,8 @@
 
 
 void
-on_list_keys_select_row                (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
+on_list_keys_selection_changed (GtkTreeSelection *sel,
+				gpointer user_data);
 
 gboolean
 on_list_keys_dialog_delete_destroy_event (GtkWidget       *widget,

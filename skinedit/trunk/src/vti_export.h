@@ -23,7 +23,7 @@
 
 
 int
-export_skin_vti(char *path, unsigned int version);
+export_skin_vti(const char *path, unsigned int version);
 
 int
 write_vti_core(FILE *fp);

@@ -58,15 +58,22 @@ extern unsigned int keys_button_press; /* main_cb.c */
  */
 
 void
-on_list_keys_select_row                (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
+on_list_keys_selection_changed (GtkTreeSelection *sel,
+				gpointer user_data)
 {
+  int row;
   SDL_Rect key_cur;
+  GList *paths;
+  GtkTreeModel *model;
 
   erase_rubberbox(sdl_area);
+
+  paths = gtk_tree_selection_get_selected_rows(sel, &model);
+
+  row = *gtk_tree_path_get_indices(g_list_nth_data(paths, 0));
+
+  g_list_foreach(paths, (GFunc)gtk_tree_path_free, NULL);
+  g_list_free(paths);
 
   if (row > SKIN_KEYS - 1) /* should not happen */
     return;

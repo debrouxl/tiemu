@@ -37,7 +37,7 @@
 extern struct skinInfos skin_infos;
 
 int
-export_skin_vti(char *path, unsigned int version)
+export_skin_vti(const char *path, unsigned int version)
 {
   FILE *fp = NULL;
   FILE *jpeg = NULL;

@@ -141,7 +141,7 @@ on_lcd_custom_white_button_press_event (GtkWidget       *widget,
 
   gtk_window_set_title(GTK_WINDOW(colorsel), _("Select custom WHITE color"));
 
-  gtk_color_selection_set_opacity(GTK_COLOR_SELECTION(GTK_COLOR_SELECTION_DIALOG(colorsel)->colorsel), FALSE);
+  //  gtk_color_selection_set_opacity(GTK_COLOR_SELECTION(GTK_COLOR_SELECTION_DIALOG(colorsel)->colorsel), FALSE);
 
   gtk_widget_show(colorsel);
 
@@ -162,7 +162,7 @@ on_lcd_custom_black_button_press_event (GtkWidget       *widget,
 
   gtk_window_set_title(GTK_WINDOW(colorsel), _("Select custom BLACK color"));
   
-  gtk_color_selection_set_opacity(GTK_COLOR_SELECTION(GTK_COLOR_SELECTION_DIALOG(colorsel)->colorsel), FALSE);
+  //gtk_color_selection_set_opacity(GTK_COLOR_SELECTION(GTK_COLOR_SELECTION_DIALOG(colorsel)->colorsel), FALSE);
 
   gtk_widget_show(colorsel);
 
@@ -174,7 +174,7 @@ void
 on_prop_dlg_ok_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-  char *text = NULL;
+  const char *text = NULL;
 
   if (skin_infos.name != NULL)
     free(skin_infos.name);
