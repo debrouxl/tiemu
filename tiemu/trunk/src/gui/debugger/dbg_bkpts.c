@@ -124,6 +124,7 @@ static void clist_refresh(GtkListStore *store)
 		str = g_strdup_printf("0x%06x", addr);
 		
 		gtk_list_store_append(store, &iter);
+
 		gtk_list_store_set(store, &iter, 
 		COL_SYMBOL, str, 
 		COL_TYPE, ti68k_bkpt_type_to_string(BK_TYPE_CODE),
@@ -206,7 +207,7 @@ static void clist_refresh(GtkListStore *store)
 	}
 }
 
-GtkListStore *store;
+static GtkListStore *store;
 
 /*
 	Display registers window

@@ -253,7 +253,7 @@ ULONG get_long(CPTR adr)
 	    {
 	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
 	        {
-				bkpts.type = BK_CAUSE_ACCESS;
+				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_READ_LONG; 
 	            specialflags |= SPCFLAG_BRK;	            
 	            break;
@@ -273,7 +273,7 @@ ULONG get_long(CPTR adr)
 
 	        if ((r->val1 >= adr) && ((adr+3) <= r->val2)) 
 	        {
-				bkpts.type = BK_CAUSE_RANGE;
+				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_READ_LONG; 
 	            specialflags |= SPCFLAG_BRK;	            
 	            break;
@@ -340,7 +340,7 @@ UWORD get_word(CPTR adr)
 	    {
 	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
 	        {
-				bkpts.type = BK_CAUSE_ACCESS;
+				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_READ_WORD;
 	            specialflags |= SPCFLAG_BRK;
 	            break;
@@ -360,7 +360,7 @@ UWORD get_word(CPTR adr)
 
 	        if ((r->val1 >= adr) && ((adr+1) <= r->val2)) 
 	        {
-				bkpts.type = BK_CAUSE_RANGE;
+				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_READ_WORD; 
 	            specialflags |= SPCFLAG_BRK;	            
 	            break;
@@ -426,7 +426,7 @@ UBYTE get_byte(CPTR adr)
         while (l) {
 	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
 	        {
-				bkpts.type = BK_CAUSE_ACCESS;
+				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_READ_BYTE;
 	            specialflags |= SPCFLAG_BRK;	            
 	            break;
@@ -447,7 +447,7 @@ UBYTE get_byte(CPTR adr)
 
 	        if ((r->val1 >= adr) && (adr <= r->val2))
 	        {
-				bkpts.type = BK_CAUSE_RANGE;
+				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_READ_BYTE; 
 	            specialflags |= SPCFLAG_BRK;	            
 	            break;
@@ -508,7 +508,7 @@ void put_long(CPTR adr, ULONG arg)
 	    {
 	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
 	        {
-				bkpts.type = BK_CAUSE_ACCESS;
+				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_WRITE_LONG;
 	            specialflags |= SPCFLAG_BRK;	            
 	            break;
@@ -528,7 +528,7 @@ void put_long(CPTR adr, ULONG arg)
 
             if ((r->val1 >= adr) && ((adr+3) <= r->val2))
 	        {
-				bkpts.type = BK_CAUSE_RANGE;
+				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_WRITE_LONG; 
 	            specialflags |= SPCFLAG_BRK;	            
 	            break;
@@ -603,7 +603,7 @@ void put_word(CPTR adr, UWORD arg)
 	    {
 	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
 	        {
-				bkpts.type = BK_CAUSE_ACCESS;
+				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_WRITE_WORD;
 	            specialflags |= SPCFLAG_BRK;	            
 	            break;
@@ -623,7 +623,7 @@ void put_word(CPTR adr, UWORD arg)
 
 	        if ((r->val1 >= adr) && ((adr+1) <= r->val2))
 	        {
-				bkpts.type = BK_CAUSE_RANGE;
+				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_WRITE_WORD; 
 	            specialflags |= SPCFLAG_BRK;	            
 	            break;
@@ -687,7 +687,7 @@ void put_byte(CPTR adr, UBYTE arg)
 	    {
 	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
 	        {
-				bkpts.type = BK_CAUSE_ACCESS;
+				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_WRITE_BYTE;
 	            specialflags |= SPCFLAG_BRK;	            
 	            break;
@@ -707,7 +707,7 @@ void put_byte(CPTR adr, UBYTE arg)
 
 	        if ((r->val1 >= adr) && (adr <= r->val2)) 
 	        {
-				bkpts.type = BK_CAUSE_RANGE;
+				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_WRITE_BYTE; 
 	            specialflags |= SPCFLAG_BRK;	            
 	            break;

@@ -13,4 +13,4 @@ gchar *s = N_("access");
 gchar *s = N_("byte read");
 gchar *s = N_("#1");
 gchar *s = N_("Mode:");
-gchar *s = N_("A breakpoint has been encounntered...");
+gchar *s = N_("A breakpoint has been encountered...");

@@ -83,11 +83,8 @@ int hw_m68k_run(int n)
           {
               if(GPOINTER_TO_INT(l->data) == (int)regs.pc)
               {
-                bkpts.type = BK_CAUSE_ADDRESS;
-		        cb_update_screen();
-		        cb_launch_debugger();
-
-		        return 1;
+                bkpts.type = BK_TYPE_CODE;
+		        specialflags |= SPCFLAG_BRK;
               }
 
               bkpts.id++;
@@ -155,15 +152,14 @@ int hw_m68k_run(int n)
 	  if (specialflags & SPCFLAG_BRK) 
 	    {		
 	      specialflags &= ~SPCFLAG_BRK;
-	      cb_update_screen();
-	      cb_launch_debugger();
-	      return 1;		
+	      //cb_launch_debugger();
+	      return 1;		// DBG_BREAK
 	    }
 	  if(specialflags & SPCFLAG_DBTRACE) 
 	    {
 	      specialflags &= ~SPCFLAG_DBTRACE;
-	      cb_update_screen();
-	      cb_launch_debugger();
+	      //cb_launch_debugger();
+          return 2;     // DBG_TRACE
 	    }
 	}  
     }

@@ -43,7 +43,14 @@ gint display_dbgcause_dbox()
 	gchar *str;
 	gint type, id, mode;
 	uint32_t value;
+
+    // get context
+	ti68k_bkpt_get_cause(&type, &mode, &id);
+    printf("<%i %i %i>\n", type, mode, id);
+    if(!type && !mode && !id)
+        return 0;
 	
+    // load GUI
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_cause-2.glade"), "dbgcause_dbox",
 		 PACKAGE);
@@ -52,9 +59,6 @@ gint display_dbgcause_dbox()
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgcause_dbox");
-
-	// get context
-	ti68k_bkpt_get_cause(&type, &mode, &id);
 
 	// set PC
 	label = glade_xml_get_widget(xml, "label21");

@@ -65,6 +65,9 @@ static int cpu_instr = NB_INSTRUCTIONS_PER_LOOP;
 G_LOCK_DEFINE(running);
 static int running = 0;
 
+G_LOCK_DEFINE(debugger);
+int debugger = 0;
+
 // run as a separate thread
 gpointer ti68k_engine(gpointer data)
 {
@@ -93,6 +96,9 @@ gpointer ti68k_engine(gpointer data)
 		res = ti68k_debug_do_instructions(NB_INSTRUCTIONS_PER_LOOP);
 		if(res) {  
 			// a bkpt has been encountered
+            //enter_gtk_debugger(res);
+            running = 0;
+            debugger = res;
 		} else { 
 			// normal execution
 			ftime(&tCurrentTime);

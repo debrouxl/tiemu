@@ -35,19 +35,39 @@
 #include "./debugger/dbg_mem.h"
 #include "./debugger/dbg_regs.h"
 #include "./debugger/dbg_vectors.h"
-#include "ti68k_int.H"
+#include "ti68k_int.h"
 
+static int dbg_active = 0;
 
-int enter_gtk_debugger(void)
+int enter_gtk_debugger(int context)
 {
-	ti68k_engine_halt();
-    
-	//display_dbgmem_window();
-	//display_dbgregs_window();
-	//display_dbgvectors_dbox();
-	//display_dbgdata_dbox();
-	display_dbgbkpts_window();
-    //display_dbgcode_window();
+    // show breakpoint source
+    switch(context)
+    {
+    case DBG_TRACE:
+        break;
+    case DBG_BREAK:
+        display_dbgcause_dbox();
+        break;
+    }
+
+    // open debugger, if not already opened
+    if(!dbg_active)    
+    {
+	    display_dbgmem_window();
+	    display_dbgregs_window();
+	    display_dbgbkpts_window();
+        display_dbgcode_window();
+
+        dbg_active = !0;
+    }
+    else
+    {
+        refresh_dbgmem_window();
+	    refresh_dbgregs_window();
+	    refresh_dbgbkpts_window();
+        refresh_dbgcode_window();
+    }
 
 	return 0;
 }

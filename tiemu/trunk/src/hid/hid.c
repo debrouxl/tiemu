@@ -41,6 +41,7 @@
 #include "keydefs.h"
 #include "fs_misc.h"
 #include "romversion.h"
+#include "dbg_all.h"
 
 #define DEFAULT_BPP   8
 #define DEFAULT_FLAGS (SDL_HWPALETTE | SDL_HWSURFACE | SDL_RESIZABLE) 
@@ -615,7 +616,6 @@ int hid_update_keys(void)
 	    	}
 	  		else if(event.key.keysym.sym == SDLK_PRINT)
 	    	{
-				ti68k_kbd_set_key(OPT_SCREENCAPTURE, 0);
 	      		hid_screenshot(NULL);
 	    	}
 	  		else if(event.key.keysym.sym == SDLK_F10)
@@ -624,8 +624,8 @@ int hid_update_keys(void)
 	    	}
 			else if(event.key.keysym.sym == SDLK_F11)
 	    	{
-				ti68k_kbd_set_key(OPT_DEBUGGER, 0);
-	      		ti68k_debug_launch();
+	      		//enter_gtk_debugger(0);
+                ti68k_debug_break();
 	    	}
 			else if(event.key.keysym.sym == SDLK_F12)
 	    	{

@@ -95,6 +95,7 @@ void ti68k_bkpt_clear_access(void);
 void ti68k_bkpt_clear_range(void);
 void ti68k_bkpt_clear_exception(void);
 
+void ti68k_bkpt_set_cause(int type, int mode, int id);
 void ti68k_bkpt_get_cause(int *type, int *id, int *mode);
 
 

@@ -62,6 +62,9 @@
 #define HW1			1
 #define HW2			2
 
+#define DBG_BREAK   1
+#define DBG_TRACE   2
+
 /* Structures */
 
 typedef struct 
@@ -151,9 +154,9 @@ typedef struct
 	GList *exception;
 
 	// Breakpoint cause
-	int type;		// = cause
-	int mode;		// = access type
-	int id;			// = n°
+	int type;       // Ti68kBkptType
+    int mode;       // Ti68kBkptMode
+	int id;
 } Ti68kBreakpoints;
 
 extern Ti68kParameters 	params;

@@ -44,8 +44,9 @@ int ti68k_restart(void);
 
 // Debugging
 int ti68k_debug_disassemble(int addr, char *output);
-int ti68k_debug_launch(void);
-int ti68k_debug_do_single_step(void);
+int ti68k_debug_break(void);
+int ti68k_debug_step(void);
+int ti68k_debug_skip(uint32_t next_pc);
 int ti68k_debug_do_instructions(int n);
 
 // Link

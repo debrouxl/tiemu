@@ -60,6 +60,7 @@ TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
 //G_LOCK_EXTERN(lcd_flag);
 extern int lcd_flag;
+extern int debugger;
 
 static gint hid_refresh (gpointer data)
 {
@@ -73,6 +74,12 @@ static gint hid_refresh (gpointer data)
     }
     
     hid_update_keys();
+
+    if(debugger)
+    {
+        enter_gtk_debugger(debugger);
+        debugger = 0;
+    }
 
     return TRUE;
 }

@@ -606,6 +606,7 @@ on_step1_activate                      (GtkMenuItem     *menuitem,
   DISPLAY("addr=$%06x\n", addr);
   ti68k_debug_do_single_step(); // set trap
   ti68k_engine_unhalt();    // emulator in free running
+  //ti68k_debug_do_instructions(1);
 }
 
 

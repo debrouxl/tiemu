@@ -254,26 +254,7 @@ GLADE_CB void
 on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    ti68k_debug_launch();
-	/*
-	gint i;
-  	CODE_BKPT *s;
-
-  	// Suspend emulation core
-  	ti68k_engine_halt();
-  
-  	// Remove all breakpoints so that we can 'single step'
-  	// Bkpts are restored when the debugger is exited
-  	for(i=0; i<g_list_length(bkpt_address_list); i++)
-	{	
-      		s = (CODE_BKPT *)g_list_nth_data(bkpt_address_list, i);
-      		ti68k_delBreakpointAddress(s->id);
-    	}
-
-  	// Launch debugger
-  	display_debugger_dbox();
-	*/
-	//ti68k_engine_unhalt();
+    ti68k_debug_break();
 }
 
 

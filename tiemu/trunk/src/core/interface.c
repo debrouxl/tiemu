@@ -197,9 +197,34 @@ int ti68k_debug_launch(void)
     return cb_launch_debugger();
 }
 
-int ti68k_debug_do_single_step(void)
+int ti68k_debug_break(void)
 {
-    return specialflags |= SPCFLAG_DBTRACE;
+    specialflags |= SPCFLAG_BRK;
+    return 0;
+}
+
+int ti68k_debug_step(void)
+{
+    // Set up an internal trap (DBTRACE) which will 
+    // launch/refresh the debugger when encountered
+    specialflags |= SPCFLAG_DBTRACE;
+    ti68k_engine_unhalt();
+
+    return 0;
+}
+
+int ti68k_debug_skip(uint32_t next_pc)
+{
+    broken_in = 0;
+    specialflags |= SPCFLAG_BRK;
+    do 
+    {
+      //MC68000_step();
+        ti68k_debug_step();
+    } 
+    while (next_pc != m68k_getpc() && !broken_in);
+
+    return 0;
 }
 
 /*

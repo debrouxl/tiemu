@@ -195,6 +195,12 @@ void ti68k_bkpt_clear_exception(void)
 	bkpts.exception = NULL;
 }
 
+void ti68k_bkpt_set_cause(int type, int mode, int id)
+{
+    bkpts.type = type;
+    bkpts.mode = mode;
+    bkpts.id = id;
+}
 
 void ti68k_bkpt_get_cause(int *type, int *mode, int *id) 
 {

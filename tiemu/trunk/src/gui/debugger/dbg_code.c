@@ -33,6 +33,7 @@
 #include "paths.h"
 #include "support.h"
 #include "ti68k_int.h"
+#include "dbg_bkpts.h"
 
 enum { 
 	    COL_ICON, COL_ADDR, COL_OPCODE, COL_OPERAND,
@@ -141,53 +142,66 @@ static void clist_populate(GtkListStore *store)
 
 static void clist_refresh(GtkListStore *store)
 {
+    GtkTreeModel *model = GTK_TREE_MODEL(store);
+    gboolean valid;
+    GtkTreeIter iter;
+
     uint32_t addr;
     uint32_t pc;
+    int found = 0;
+
+    ti68k_register_get_pc(&pc);
+    printf("pc at %06x\n", pc);
 
     // check for refresh
-    /*
-    do
+    for(valid = gtk_tree_model_get_iter_first(model, &iter);
+        valid; 
+        valid = gtk_tree_model_iter_next(model, &iter))
     {
-      gtk_tree_model_get(model, &iter, 3, &addrp, -1);
-      addr = GPOINTER_TO_INT(addrp);
+        gchar *str;
 
-      if (addr == addr_active)
-	{
-	  found = TRUE;
-	  break;
-	}
+        gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+        sscanf(str, "%lx", &addr);
+
+        if(addr == pc)
+            found = !0;
+
+        g_free(str);
     }
-  while (gtk_tree_model_iter_next(model, &iter) == TRUE);
 
-  if (found == TRUE)
-    {
-      refresh_breakpoints();
-      return 0;
-    }
-  */
+    if(!found)
+        clist_populate(store);
 
-    // place pc
-    ti68k_register_get_pc(&pc);
-/*
-    valid = gtk_tree_model_get_iter(model, &iter, path);
-	while (valid) {
-		struct menu *menu;
+    // look for pc and matching bkpt
+    for(valid = gtk_tree_model_get_iter_first(model, &iter);
+        valid; 
+        valid = gtk_tree_model_iter_next(model, &iter))
+        {
+            GdkPixbuf *pix;
+            gchar *str;
 
-		gtk_tree_model_get(model2, child, 6, &menu, -1);
+            gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+            sscanf(str, "%lx", &addr);
 
-		if (menu == tofind) {
-			memcpy(&found, child, sizeof(GtkTreeIter));
-			return &found;
-		}
+            if(addr == pc)
+            {
+                pix = create_pixbuf("run.xpm");
+            }
+            else if(g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL)
+            {
+                pix = create_pixbuf("bkpt.xpm");
+            }
+            else
+            {
+                pix = create_pixbuf("void.xpm");
+            }
 
-		ret = gtktree_iter_find_node(child, tofind);
-		if (ret)
-			return ret;
-
-		valid = gtk_tree_model_iter_next(model2, child);
-	}
-    */
+            gtk_list_store_set(store, &iter, COL_ICON, pix, -1);
+            g_free(str);
+        }
 }
+
+static GtkListStore *store;
 
 /*
 	Display source code window
@@ -197,7 +211,6 @@ gint display_dbgcode_window(void)
 	GladeXML *xml;
 	GtkWidget *dbox;
     GtkWidget *data;
-	GtkListStore *store;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_code-2.glade"), "dbgcode_window",
@@ -211,7 +224,7 @@ gint display_dbgcode_window(void)
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
 	clist_populate(store);
-	//clist_refresh(store);
+	clist_refresh(store);
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
@@ -220,6 +233,12 @@ gint display_dbgcode_window(void)
     gtk_widget_show(GTK_WIDGET(dbox));
 
 	return 0;
+}
+
+gint refresh_dbgcode_window(void)
+{
+    clist_refresh(store);
+    return 0;
 }
 
 
@@ -236,7 +255,7 @@ GLADE_CB void
 dbgcode_button1_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-    printf("clicked !\n");
+    ti68k_engine_unhalt();
 }
 
 
@@ -245,7 +264,7 @@ GLADE_CB void
 dbgcode_button2_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+    ti68k_debug_step();
 }
 
 
@@ -263,7 +282,38 @@ GLADE_CB void
 dbgcode_button4_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
+    //ti68k_debug_skip(next_pc);
+    GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
+    GtkTreeSelection *selection;
+    GtkTreeIter iter;
+    gboolean valid;
+    gchar *str;
+    uint32_t addr;
 
+    selection = gtk_tree_view_get_selection(view);
+    valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
+
+    // Get address to go
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "%lx", &addr);
+
+    ti68k_bkpt_set_address(addr);
+    clist_refresh(store);
+    //refresh_dbgbkpts_window();
+    ti68k_engine_unhalt();
+    /*
+    for(i=1, next_addr = ti68k_register_get_pc(); next_addr < addr_to_go; i++)
+	{
+	  next_addr += ti68k_debug_disassemble(next_addr, buffer);
+	  printf("-> buffer: <%s>\n", buffer);
+	  if(i > options.code_lines)
+	    break;
+	}
+      //bkpt_encountered = !doInstructions(i, 0);
+      */
 }
 
 
@@ -272,7 +322,17 @@ GLADE_CB void
 dbgcode_button5_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
+#if 1
+    GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
 
+    ti68k_engine_halt();
+    clist_refresh(store);
+#else
+    ti68k_debug_break();
+#endif
 }
 
 
@@ -281,6 +341,24 @@ GLADE_CB void
 dbgcode_button6_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
+    GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
+    GtkTreeSelection *selection;
+    GtkTreeIter iter;
+    gboolean valid;
+    gchar *str;
+    uint32_t addr;
 
+    selection = gtk_tree_view_get_selection(view);
+    valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
+
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "%lx", &addr);
+
+    ti68k_bkpt_set_address(addr);
+    clist_refresh(store);
+    refresh_dbgbkpts_window();
 }
 
