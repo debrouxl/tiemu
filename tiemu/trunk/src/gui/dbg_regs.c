@@ -22,7 +22,7 @@ enum {
 
 #define FONT_NAME	"courier"
 
-GtkWidget *ctree;
+//GtkWidget *ctree;
 
 static int validate_value(const char *str, int ndigits)
 {
@@ -44,17 +44,17 @@ static void renderer_edited(GtkCellRendererText * cell,
 			    const gchar * path_string,
 			    const gchar * new_text, gpointer user_data)
 {
-    GtkWidget *list = ctree;
-	GtkTreeView *view = GTK_TREE_VIEW(list);
-	GtkTreeStore *store = user_data;
-	GtkTreeModel *model = GTK_TREE_MODEL(store);
+    GtkWidget *tree = user_data;
+	GtkTreeView *view = GTK_TREE_VIEW(tree);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkTreeStore *store = GTK_TREE_STORE(model);
 
 	GtkTreePath *path = gtk_tree_path_new_from_string(path_string);
 	GtkTreeIter iter;
 	
 	uint32_t value;
 	gint n;
-	
+
 	if (!gtk_tree_model_get_iter(model, &iter, path))
 		return;
 		
@@ -190,7 +190,7 @@ static GtkTreeStore* ctree_create(GtkWidget *tree)
 			NULL);
 			
 	g_signal_connect(G_OBJECT(renderer), "edited",
-			G_CALLBACK(renderer_edited), store);
+			G_CALLBACK(renderer_edited), tree);
 
     
     for (i = 0; i < CLIST_NVCOLS; i++) 
@@ -470,7 +470,7 @@ gint display_dbgregs_window(void)
 	
 	dbox = glade_xml_get_widget(xml, "dbgregs_window");
 
-	ctree = data = glade_xml_get_widget(xml, "treeview1");
+	data = glade_xml_get_widget(xml, "treeview1");
     store = ctree_create(data);
 	ctree_populate(store);
 	ctree_refresh(store);

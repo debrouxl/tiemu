@@ -14,7 +14,6 @@
 #include "ti68k_int.h"
 
 static GtkWidget *notebook;
-static GtkWidget *clist;
 
 enum { 
 	    COL_ADDR, 
@@ -32,14 +31,14 @@ enum {
 #define CLIST_NVCOLS	(18)
 #define CLIST_NCOLS		(18+17)
 
-static gint column2index(GtkTreeViewColumn * column)
+static gint column2index(GtkWidget *list, GtkTreeViewColumn * column)
 {
 	gint i;
 
 	for (i = 0; i < CLIST_NVCOLS; i++) {
 		GtkTreeViewColumn *col;
 
-		col = gtk_tree_view_get_column(GTK_TREE_VIEW(clist), i);
+		col = gtk_tree_view_get_column(GTK_TREE_VIEW(list), i);
 		if (col == column)
 			return i;
 	}
@@ -51,10 +50,10 @@ static void renderer_edited(GtkCellRendererText * cell,
 			    const gchar * path_string,
 			    const gchar * new_text, gpointer user_data)
 {
-    GtkWidget *list = clist;
+    GtkWidget *list = user_data;
 	GtkTreeView *view = GTK_TREE_VIEW(list);
-	GtkListStore *store = user_data;
-	GtkTreeModel *model = GTK_TREE_MODEL(store);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
 
     GtkTreeViewColumn *column;
     GtkTreeIter iter;
@@ -75,7 +74,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 		return;
 
     // get old value
-	col = column2index(column);
+	col = column2index(list, column);
     gtk_tree_model_get(model, &iter, COL_ADDR, &str_addr, -1);
 
     // check for new value
@@ -132,7 +131,7 @@ static GtkWidget* clist_create(GtkListStore **st)
             );
     model = GTK_TREE_MODEL(store);
 	
-	clist = list = gtk_tree_view_new_with_model(model);
+	list = gtk_tree_view_new_with_model(model);
 	view = GTK_TREE_VIEW(list);
   
     gtk_tree_view_set_model(view, model); 
@@ -158,7 +157,7 @@ static GtkWidget* clist_create(GtkListStore **st)
             NULL);
 
         g_signal_connect(G_OBJECT(renderer), "edited",
-			 G_CALLBACK(renderer_edited), store);
+			 G_CALLBACK(renderer_edited), list);
     }
 
 	i = COL_ASCII;
