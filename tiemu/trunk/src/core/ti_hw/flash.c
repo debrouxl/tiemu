@@ -82,7 +82,7 @@ uint32_t FlashReadLong(uint32_t addr)
 }
 
 /*
-	Write a byte to a Sharp FLASH memory (not reworked yet, from Corvazier).
+	Write a byte to a Sharp FLASH memory
 */
 void FlashWriteByte(uint32_t addr, uint8_t v)
 {
@@ -101,14 +101,7 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
     // Write State Machine (WSM, Sharp's data sheet)
     if (wsm.write_ready)
     {
-        if ((rom[addr] == 0xff) || (wsm.write_ready == 1))
-	    {
-	        rom[addr] = v;
-	    }
-        else
-		{
-	        wsm.write_ready--;
-		}
+	    rom[addr] = v;
             
 		wsm.write_ready--;
         wsm.ret_or = 0xffffffff;

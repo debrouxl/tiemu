@@ -31,10 +31,13 @@
 
 typedef struct
 {
+	int	cmd;
     int ret_or;
+    int write;
+    int erase;
+
     int write_ready;
     int write_phase;
-    int erase;
     int erase_phase;
 } FLASH_WSM;
 

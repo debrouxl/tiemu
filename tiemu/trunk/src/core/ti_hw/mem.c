@@ -99,6 +99,7 @@ int hw_mem_init(void)
 	// init vars
     tihw.protect = 0;
 	memset(&wsm, 0, sizeof(FLASH_WSM));
+	wsm.write_phase = 0x50;
 
     // clear breakpoints
 	ti68k_bkpt_clear_access();

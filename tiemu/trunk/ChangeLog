@@ -5,6 +5,9 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
+- 18/02/2005, version 1.80n: roms
+	- fixed FLASH writes with HW3 patch
+
 - 07/02/2005, version 1.80m: roms
 	- dbus architecture improved (reset)
 	- fixed and tested linkport support with real cables: GrayLink, BlackLink, VTi and TiEmu.
