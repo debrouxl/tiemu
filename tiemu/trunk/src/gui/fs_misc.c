@@ -167,10 +167,11 @@ gint display_tifile_dbox()
 
     // note that core is currently not bkpt-interruptible when
     // transferring file
+    GTK_REFRESH();
     err = ti68k_linkport_send_file(filename);
     handle_error();
     destroy_pbar();	
-    ti68k_engine_unhalt();  // _must_ be put after !
+    ti68k_engine_unhalt();
 
 	return 0;
 }

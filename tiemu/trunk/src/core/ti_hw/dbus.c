@@ -225,31 +225,32 @@ static int lp_checkread(void)
 	Directfile access
 */
  
-int byte_t2f;
-int byte_f2t;
-int iput;
-int iget;
+int t2f_data;   // ti => file data
+int t2f_flag;   // data available
+
+int f2t_data;   // file => ti data
+int f2t_flag;   // data available
 
 void df_putbyte(UBYTE arg)
 {
-	byte_t2f = arg;
-	iget = 1;
+	t2f_data = arg;
+	t2f_flag = 1;
 }
 
 UBYTE df_getbyte(void)
 {
-	iput = 0;
-    return byte_f2t;
+	f2t_flag = 0;
+    return f2t_data;
 }
 
 int df_byteavail(void)
 {
-    return iput;
+    return f2t_flag;
 }
 
 int df_checkread(void)
 {
-    return iput;
+    return f2t_flag;    // useless
 }
 
 
@@ -281,13 +282,15 @@ static int ilp_open_port(void)     { return 0; }
 static int ilp_put(uint8_t data)
 { 
 	tiTIME clk;
-  	byte_f2t = data; 
-  	iput = 1;
+
+  	f2t_data = data; 
+  	f2t_flag = 1;
+
 	io_bit_set(0x0d,5);		// rx buffer full
 	io_bit_set(0x0d,3);		// link activity
 
 	toSTART(clk);
-  	while(iput) 
+  	while(f2t_flag) 
     { 
       	ti68k_debug_do_instructions(1); 
 		if(toELAPSED(clk, 20))	// 2s
@@ -302,15 +305,16 @@ static int ilp_get(uint8_t *data)
 	tiTIME clk;
 
 	toSTART(clk);
-  	while(!iget) 
+  	while(!t2f_flag) 
     { 
       	ti68k_debug_do_instructions(1);
 		if(toELAPSED(clk, 20))
 			return ERR_WRITE_TIMEOUT;
     };
     
-  	*data = byte_t2f;
-  	iget = 0;
+  	*data = t2f_data;
+  	t2f_flag = 0;
+
 	io_bit_set(0x0d,6);		// tx buffer empty
 	io_bit_set(0x0d,3);		// link activity
   
@@ -364,6 +368,9 @@ static int init_linkfile(void)
   	ticalc_set_update(&iu, ilp_start, ilp_stop, ilp_refresh,
 		    ilp_pbar, ilp_label);
 
+    t2f_flag = 0;
+    f2t_flag = 0;
+
   	return 0;
 }
 
@@ -405,6 +412,9 @@ int send_ti_file(const char *filename)
         ok = 1;
     } else
         return ERR_68K_TI_FILE;
+
+    t2f_flag = 0;
+    f2t_flag = 0;
 
     // FLASH APP file ?
     if(tifiles_is_a_flash_file(filename) && !strcasecmp(tifiles_flash_app_file_ext(), tifiles_get_extension(filename)))
