@@ -46,6 +46,7 @@
 #endif
 
 #if defined(__WIN32__)
+#undef SHARE_DIR
 #define SHARE_DIR "" // local path
 #endif
 
