@@ -177,6 +177,10 @@ int ti68k_get_hw_param_block(IMG_INFO *rom, HW_PARM_BLOCK *block)
     uint32_t addr;
 
     addr = rd_long(&rom->data[0x104]);
+    addr &= 0x000fffff;
+
+    printf("%x %x\n", rom->rom_base, addr);
+/*
 #if 0
     //addr -= (rom->rom_base << 16);
 #else
@@ -185,7 +189,7 @@ int ti68k_get_hw_param_block(IMG_INFO *rom, HW_PARM_BLOCK *block)
 #endif
 	if(addr < 0x000000 || addr >= 0x200000)
 		return -1;
-
+*/
     memset(block, 0, sizeof(HW_PARM_BLOCK));
     block->len = rd_word(&(rom->data[addr+0]));
     block->hardwareID = rd_long(&(rom->data[addr+2]));
@@ -198,6 +202,12 @@ int ti68k_get_hw_param_block(IMG_INFO *rom, HW_PARM_BLOCK *block)
     block->physDisplayBitsTall = rd_long(&(rom->data[addr+30]));
     block->LCDBitsWide = rd_long(&(rom->data[addr+34]));
     block->LCDBitsTall = rd_long(&(rom->data[addr+38]));
+
+    if((block->hardwareID == 8) && (rom->rom_base == 0x40))
+    {
+        fprintf(stdout, "Detected V200 patched ROM (ExtendeD): emulated as TI92+ by changing the hwID from 8 to 1.\n");
+        block->hardwareID = 1;
+    }
 
     return 0;
 }

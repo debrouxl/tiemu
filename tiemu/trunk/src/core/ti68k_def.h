@@ -71,6 +71,11 @@ typedef unsigned char	uchar;	// can't replace UBYTE/uchar by uint8_t type, why ?
 #define LCDMEM_W	240		// LCD memory height
 #define LCDMEM_H	128		// LCD memory height
 
+#define HWID_TI92P  1
+#define HWID_TI89   3
+#define HWID_V200   8
+#define HWID_TI89T  9
+
 /* Structures */
 
 typedef struct 

@@ -9,13 +9,16 @@ To do:
 	- changed keyboard mapping to pure VTi mapping
 	- added ability to load keymaps from file
 	- force code window refresh when maintaining F7 key pressed
+	- accept ExtendeD's V200 ROM (patched)
+
+	- force mem window refresh when scrolling up/down (to do)
+	- too many ASCII chars in the mem window (to do)
 
 - 10/08/2004, version 1.77: roms
 	- step over fixed again: stops on Bcc/DBcc, STOP, RTE, RTD, RTS, RTR, JMP.
 	- FLINE > 5 was mis-disassembled
 	- code window: don't reload source when setting a bkpt
 	- check for image at startup and can select it
-	- accept ExtendeD's V200 ROM (patched)
 	- code window: show PC in the middle of the window and leave 3 isntructions at bottom
 
 - 07/08/2004, verison 1.76: roms
