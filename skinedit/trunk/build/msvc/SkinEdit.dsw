@@ -27,7 +27,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "SkinEdit_console"=.\SkinEdit_console.dsp - Package Owner=<4>
+Project: "SkinEdit_Console"=.\SkinEdit_Console.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

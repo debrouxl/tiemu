@@ -95,9 +95,10 @@ main (int argc, char *argv[])
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
 #else
-	bindtextdomain(PACKAGE, locale_dir);
-  bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-	textdomain (GETTEXT_PACKAGE);
+  setlocale(LC_ALL, "");
+  bindtextdomain(PACKAGE, locale_dir);
+  //bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+  textdomain (GETTEXT_PACKAGE);
 #endif
 #endif
 

@@ -63,17 +63,19 @@ mouse_motion(GtkWidget *drawingarea, GdkEventMotion *event, gpointer action)
 
   /* be careful with GDK ... */
 
-  if (x > skin_infos.width - 1)
-    x = skin_infos.width - 1;
-
-  if (y > skin_infos.height - 1)
-    y = skin_infos.height - 1;
-
   if (x < 0)
     x = 0;
   
   if (y < 0)
     y = 0;
+	
+	if (x > skin_infos.width - 1)
+    x = skin_infos.width - 1;
+
+  if (y > skin_infos.height - 1)
+    y = skin_infos.height - 1;
+
+	printf("<%i %i => %i %i>\n", (int)event->x, (int)event->y, x, y);
 
     
   if (x >= ox)
@@ -212,21 +214,17 @@ draw_rubberbox(GtkWidget *drawing_area, GdkRect rect)
 
   update_rect.x = oc.x;
   update_rect.y = oc.y;
-  update_rect.w = ((oc.w + oc.x + 2) <= skin_infos.width) ? (oc.w + 2) : oc.w;  /* add 2 to really erase the lines (right, bottom) ... */
-  update_rect.h = ((oc.h + oc.y + 2) <= skin_infos.height) ? (oc.h + 2) : oc.h; /* ... but be careful */
+  update_rect.w = ((oc.w + oc.x + 1) <= skin_infos.width) ? (oc.w + 1) : oc.w;  /* add 2 to really erase the lines (right, bottom) ... */
+  update_rect.h = ((oc.h + oc.y + 1) <= skin_infos.height) ? (oc.h + 1) : oc.h; /* ... but be careful */
 
   gtk_widget_draw (drawing_area, (GdkRectangle *)&update_rect);
-  //gtk_widget_queue_draw_area (drawing_area, update_rect.x, update_rect.y, update_rect.w, update_rect.h);
-  //gdk_window_invalidate_rect(drawing_area->window, (GdkRectangle *)&update_rect, FALSE);
 
   update_rect.x = c.x;
   update_rect.y = c.y;
-  update_rect.w = ((c.w + c.x + 2) <= skin_infos.width) ? (c.w + 2) : c.w;  /* add 2 to really erase the lines (right, bottom) ... */
-  update_rect.h = ((c.h + c.y + 2) <= skin_infos.height) ? (c.h + 2) : c.h; /* ... but be careful */
+  update_rect.w = ((c.w + c.x + 1) <= skin_infos.width) ? (c.w + 1) : c.w;  /* add 2 to really erase the lines (right, bottom) ... */
+  update_rect.h = ((c.h + c.y + 1) <= skin_infos.height) ? (c.h + 1) : c.h; /* ... but be careful */
   
   gtk_widget_draw (drawing_area, (GdkRectangle *)&update_rect);
-  //gtk_widget_queue_draw_area (drawing_area, update_rect.x, update_rect.y, update_rect.w, update_rect.h);
-  //gdk_window_invalidate_rect(drawing_area->window, (GdkRectangle *)&update_rect, FALSE);
 
   tmp_rect = rect; /* when called from callbacks.c (for LCD or keys) */
   old_rect = rect; /* save coords */
