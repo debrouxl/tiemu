@@ -127,7 +127,7 @@ int hw_m68k_run(int n)
 
 	for(i = 0; i < n; i++)
 	{
-		uae_u16 opcode;
+		uae_u32 opcode;
 
 		// refresh hardware
 		do_cycles();

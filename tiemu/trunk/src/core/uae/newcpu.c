@@ -47,11 +47,6 @@ int fpp_movem_index2[256];
 int fpp_movem_next[256];
 
 cpuop_func *cpufunctbl[65536];
-//tiemu begin
-unsigned long lastTime = 0;
-unsigned long cycleRate = 0;
-unsigned long tickRate = 0;
-//tiemu end
 
 #define COUNT_INSTRS 0
 
@@ -128,7 +123,7 @@ static void build_cpufunctbl (void)
 			  : ! currprefs.cpu_compatible ? op_smalltbl_4_ff
 			  : op_smalltbl_5_ff);
 
-    printf ("UAE: Building CPU function table (%d %d %d).\n",
+    printf ("UAE: building CPU function table (%d %d %d).\n",
 	    currprefs.cpu_level, currprefs.cpu_compatible, currprefs.address_space_24);
 
     for (opcode = 0; opcode < 65536; opcode++)
@@ -225,7 +220,7 @@ void init_m68k (void)
 	}
     }
 #endif
-    write_log ("Building CPU table for configuration: 68");
+    write_log ("UAE: building CPU table for configuration: 68");
     if (currprefs.address_space_24 && currprefs.cpu_level > 1)
         write_log ("EC");
     switch (currprefs.cpu_level) {
@@ -253,7 +248,7 @@ void init_m68k (void)
     read_table68k ();
     do_merges ();
 
-    write_log ("%d CPU functions\n", nr_cpuop_funcs);
+    write_log ("UAE: %d CPU functions\n", nr_cpuop_funcs);
 
     build_cpufunctbl ();
 }

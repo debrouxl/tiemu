@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /w /W0 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "__WIN32__" /YX /FD /GZ /c
+# ADD CPP /nologo /w /W0 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "__WIN32__" /D "BUILD_UAE" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x40c /d "_DEBUG"
 # ADD RSC /l 0x40c /d "_DEBUG"
 BSC32=bscmake.exe
@@ -85,71 +85,11 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\cpu0.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cpu1.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cpu2.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cpu3.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cpu4.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cpu5.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cpu6.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cpu7.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cpu8.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cpu9.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cpuA.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cpuB.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cpuC.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cpuD.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\cpudefs.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\cpuE.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cpuF.c
+SOURCE=.\cpuemu.c
 # End Source File
 # Begin Source File
 
@@ -157,7 +97,11 @@ SOURCE=.\cpustbl.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\cputbl.c
+SOURCE=.\fpp.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\missing.c
 # End Source File
 # Begin Source File
 
@@ -169,7 +113,15 @@ SOURCE=.\readcpu.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=.\compiler.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\cputbl.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\libuae.h
 # End Source File
 # Begin Source File
 
@@ -194,10 +146,6 @@ SOURCE=.\sysconfig.h
 # Begin Source File
 
 SOURCE=.\sysdeps.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\uae.h
 # End Source File
 # Begin Source File
 

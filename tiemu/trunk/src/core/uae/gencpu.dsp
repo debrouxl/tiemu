@@ -54,7 +54,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Desc=Generating CPU tables...
-PostBuild_Cmds=gencpu.exe s >cpustbl.c	gencpu.exe t >cputbl.c	gencpu.exe h >cputbl.h      	gencpu.exe f 0 >cpu0.c	gencpu.exe f 1 >cpu1.c	gencpu.exe f 2 >cpu2.c	gencpu.exe f 3 >cpu3.c	gencpu.exe f 4 >cpu4.c	gencpu.exe f 5 >cpu5.c	gencpu.exe f 6 >cpu6.c	gencpu.exe f 7 >cpu7.c	gencpu.exe f 8 >cpu8.c	gencpu.exe f 9 >cpu9.c	gencpu.exe f 10 >cpuA.c	gencpu.exe f 11 >cpuB.c	gencpu.exe f 12 >cpuC.c	gencpu.exe f 13 >cpuD.c	gencpu.exe f 14 >cpuE.c	gencpu.exe f 15 >cpuF.c
+PostBuild_Cmds=gencpu.exe
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "gencpu - Win32 Debug"
@@ -80,11 +80,6 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"gencpu.exe" /pdbtype:sept
-# Begin Special Build Tool
-SOURCE="$(InputPath)"
-PostBuild_Desc=Generating CPU tables...
-PostBuild_Cmds=gencpu.exe s >cpustbl.c	gencpu.exe t >cputbl.c	gencpu.exe h >cputbl.h      	gencpu.exe f 0 >cpu0.c	gencpu.exe f 1 >cpu1.c	gencpu.exe f 2 >cpu2.c	gencpu.exe f 3 >cpu3.c	gencpu.exe f 4 >cpu4.c	gencpu.exe f 5 >cpu5.c	gencpu.exe f 6 >cpu6.c	gencpu.exe f 7 >cpu7.c	gencpu.exe f 8 >cpu8.c	gencpu.exe f 9 >cpu9.c	gencpu.exe f 10 >cpuA.c	gencpu.exe f 11 >cpuB.c	gencpu.exe f 12 >cpuC.c	gencpu.exe f 13 >cpuD.c	gencpu.exe f 14 >cpuE.c	gencpu.exe f 15 >cpuF.c
-# End Special Build Tool
 
 !ENDIF 
 
@@ -99,6 +94,10 @@ SOURCE=.\cpudefs.c
 # Begin Source File
 
 SOURCE=.\gencpu.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\missing.c
 # End Source File
 # Begin Source File
 
