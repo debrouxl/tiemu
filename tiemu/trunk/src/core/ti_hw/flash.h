@@ -43,7 +43,13 @@ extern FLASH_WSM   wsm;
 
 /* Functions */
 
-void FlashWriteByte(uint32_t addr, int v);
+uint8_t  FlashReadByte(uint32_t addr);
+uint16_t FlashReadWord(uint32_t addr);
+uint32_t FlashReadLong(uint32_t addr);
+
+void FlashWriteByte(uint32_t addr, uint8_t  v);
+void FlashWriteWord(uint32_t addr, uint16_t v);
+void FlashWriteLong(uint32_t addr, uint32_t v);
 
 uint32_t find_pc(void);
 

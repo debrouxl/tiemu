@@ -38,10 +38,28 @@
 FLASH_WSM   wsm;
 
 /*
-	Write a byte into a Sharp FLASH memory.
-	Not reworked yet (from Corvazier)
+	Read a byte from a Sharp FLASH memory.
 */
-void FlashWriteByte(uint32_t addr, int v)
+uint8_t FlashReadByte(uint32_t addr)
+{
+	return 0;
+}
+
+uint16_t FlashReadWord(uint32_t addr)
+{
+	return 0;
+}
+
+uint32_t FlashReadLong(uint32_t addr)
+{
+	//return (lget(adr) | wsm.ret_or);
+	return 0;
+}
+
+/*
+	Write a byte to a Sharp FLASH memory (not reworked yet, from Corvazier).
+*/
+void FlashWriteByte(uint32_t addr, uint8_t v)
 {
 	//int i;
     uint8_t *rom = tihw.rom;
@@ -95,10 +113,6 @@ void FlashWriteByte(uint32_t addr, int v)
 	        wsm.erase_phase = 0;
 
 			memset(&rom[addr & 0xff0000], 0xff, 64*KB);
-			/*
-	        for (i = 0; i < 0x10000; i++)
-	            rom[(addr & 0x1f0000) + i] = 0xff;	// 64KB block
-				*/
 			
 	        wsm.changed[addr >> 16] = 1;
         } 
@@ -121,7 +135,7 @@ void FlashWriteByte(uint32_t addr, int v)
 uint32_t find_pc(void)
 {
     int vt = 0x000000; // vector table
-    int i;
+    //int i;
     uint32_t pc;
 
     // find PC reset vector
@@ -159,4 +173,18 @@ uint32_t find_pc(void)
 	printf("found PC ($%06x) at offset 0x%x\n", pc, vt - 0x12000);
 
     return (pc);
+}
+
+void FlashWriteWord(uint32_t addr, uint16_t data)
+{
+	FlashWriteByte(addr+0,MSB(data));
+	FlashWriteByte(addr+1,LSB(data));
+}
+
+void FlashWriteLong(uint32_t addr, uint32_t data)
+{
+	FlashWriteByte(addr+0,(uint8_t)((data>>24)&0xff));
+    FlashWriteByte(addr+1,(uint8_t)((data>>16)&0xff));
+    FlashWriteByte(addr+2,(uint8_t)((data>>8 )&0xff));
+    FlashWriteByte(addr+3,(uint8_t)((data>>0 )&0xff));
 }

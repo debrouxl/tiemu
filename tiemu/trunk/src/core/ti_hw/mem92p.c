@@ -406,10 +406,7 @@ void ti92p_put_long(uint32_t adr, uint32_t arg)
 	}
     else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
 	{
-        FlashWriteByte(adr,(arg>>24)&0xff);
-        FlashWriteByte(adr+1,(arg>>16)&0xff);
-        FlashWriteByte(adr+2,(arg>>8)&0xff);
-        FlashWriteByte(adr+3,arg&0xff);
+		FlashWriteLong(adr, arg);
 	}
     else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
 	{
@@ -489,8 +486,7 @@ void ti92p_put_word(uint32_t adr, uint16_t arg)
 	}
     else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
 	{
-        FlashWriteByte(adr,(arg>>8)&0xff);
-	    FlashWriteByte(adr+1,arg&0xff);
+		FlashWriteWord(adr, arg);
 	}
     else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
 	{
@@ -570,7 +566,7 @@ void ti92p_put_byte(uint32_t adr, uint8_t arg)
 	}
     else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
 	{
-        FlashWriteByte(adr,arg&0xff);
+        FlashWriteByte(adr,arg);
 	}
     else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
 	{
