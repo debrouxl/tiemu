@@ -146,7 +146,7 @@ int hw_mem_init(void)
 
     case TI89:
     case V200:
-        ti89_mem_init();
+			ti89_mem_init();
         break;
 
     case TI89t:
@@ -181,12 +181,24 @@ int hw_mem_init(void)
 	case TI89:
 	case TI92p:
     case V200:
-		get_byte_ptr = ti89_get_byte;
-		get_word_ptr = ti89_get_word;
-		get_long_ptr = ti89_get_long;
-		put_byte_ptr = ti89_put_byte;
-		put_word_ptr = ti89_put_word;
-		put_long_ptr = ti89_put_long;
+		if(!params.hw_protect)
+		{
+			get_byte_ptr = ti89_get_byte;
+			get_word_ptr = ti89_get_word;
+			get_long_ptr = ti89_get_long;
+			put_byte_ptr = ti89_put_byte;
+			put_word_ptr = ti89_put_word;
+			put_long_ptr = ti89_put_long;
+		}
+		else
+		{
+			get_byte_ptr = ti89_hwp_get_byte;
+			get_word_ptr = ti89_hwp_get_word;
+			get_long_ptr = ti89_hwp_get_long;
+			put_byte_ptr = ti89_hwp_put_byte;
+			put_word_ptr = ti89_hwp_put_word;
+			put_long_ptr = ti89_hwp_put_long;
+		}
 	break;
 
 	case TI89t:

@@ -132,6 +132,10 @@ SOURCE=..\..\src\core\ti_hw\hw.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\ti_hw\hwp89.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\ti_hw\kbd.c
 # End Source File
 # Begin Source File

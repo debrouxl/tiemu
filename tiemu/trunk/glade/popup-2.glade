@@ -204,7 +204,7 @@
 	  <child>
 	    <widget class="GtkCheckMenuItem" id="hw_protection1">
 	      <property name="visible">True</property>
-	      <property name="tooltip" translatable="yes">Enable/disable hardware protection. Please note you will have restart the emulator or select an image for changes to take effect.</property>
+	      <property name="tooltip" translatable="yes">Enable/disable hardware protection. Please note you will have to restart the emulator or select an image for changes to take effect.</property>
 	      <property name="label" translatable="yes">HW protection</property>
 	      <property name="use_underline">True</property>
 	      <property name="active">False</property>

@@ -41,69 +41,12 @@
 #include "ti68k_int.h"
 #include "flash.h"
 
-// 000000-0fffff : RAM (256 KB)
-// 100000-1fffff : ghost of RAM
-// 200000-2fffff : internal FLASH (TI89/V200)
-// 300000-3fffff : 
-// 400000-4fffff : internal FLASH (V200) or nothing (TI89)
-// 500000-5fffff : 
-// 600000-6fffff : memory mapped I/O (all HW)
-// 700000-7fffff : memory mapped I/O (HW2, HW3)
-// 800000-8fffff : unused
-// 900000-9fffff :	 ... 
-// a00000-afffff : 
-// b00000-bfffff : 
-// c00000-cfffff : 
-// d00000-dfffff :
-// e00000-efffff :   ...
-// d00000-ffffff : unused
-
-int ti89_mem_init(void)
-{
-    int i = 0;
-
-    // map RAM
-    mem_tab[0] = tihw.ram;
-    mem_msk[0] = tihw.ram_size-1;
-	mem_tab[1] = tihw.ram;
-    mem_msk[1] = tihw.ram_size-1;
-
-	// map FLASH
-    mem_tab[2] = tihw.rom + 0x000000;
-    mem_msk[2] = MIN(tihw.rom_size - 0*MB, 1*MB) - 1;
-
-    mem_tab[3] = tihw.rom + 0x100000;
-    mem_msk[3] = MIN(tihw.rom_size - 1*MB, 1*MB) - 1;
-
-    // ghosts
-    if(tihw.calc_type == V200)
-	{
-		mem_tab[4] = tihw.rom + 0x200000;
-		mem_msk[4] = MIN(tihw.rom_size - 2*MB, 1*MB) - 1;
-
-		mem_tab[5] = tihw.rom + 0x300000;
-		mem_msk[5] = MIN(tihw.rom_size - 3*MB, 1*MB) - 1;
-    }
-
-    // map IO
-    mem_tab[6] = tihw.io;
-    mem_msk[6] = tihw.io_size-1;
-	
-	if(tihw.hw_type >= HW2)
-	{
-		mem_tab[7] = tihw.io2;
-		mem_msk[7] = tihw.io2_size-1;
-	}
-
-    return 0;
-}
-
 static int access = 0;
 static int crash = 0;
 
 //#define HWP			// HW1 protection if define set
 
-uint32_t ti89_get_long(uint32_t adr) 
+uint32_t ti89_hwp_get_long(uint32_t adr) 
 {
 #ifdef HWP
 	// stealth I/O
@@ -180,7 +123,7 @@ uint32_t ti89_get_long(uint32_t adr)
     return 0x14141414;
 }
 
-uint16_t ti89_get_word(uint32_t adr) 
+uint16_t ti89_hwp_get_word(uint32_t adr) 
 {
 #ifdef HWP
     // stealth I/O
@@ -257,7 +200,7 @@ uint16_t ti89_get_word(uint32_t adr)
     return 0x1414;
 }
 
-uint8_t ti89_get_byte(uint32_t adr) 
+uint8_t ti89_hwp_get_byte(uint32_t adr) 
 {
     // stealth I/O
 #ifdef HWP
@@ -334,7 +277,7 @@ uint8_t ti89_get_byte(uint32_t adr)
     return 0x14;
 }
 
-void ti89_put_long(uint32_t adr, uint32_t arg) 
+void ti89_hwp_put_long(uint32_t adr, uint32_t arg) 
 {
 	// stealth I/O
 #ifdef HWP
@@ -414,7 +357,7 @@ void ti89_put_long(uint32_t adr, uint32_t arg)
     return;
 }
 
-void ti89_put_word(uint32_t adr, uint16_t arg) 
+void ti89_hwp_put_word(uint32_t adr, uint16_t arg) 
 {
 #ifdef HWP
 	// stealth I/O
@@ -494,7 +437,7 @@ void ti89_put_word(uint32_t adr, uint16_t arg)
     return;
 }
 
-void ti89_put_byte(uint32_t adr, uint8_t arg) 
+void ti89_hwp_put_byte(uint32_t adr, uint8_t arg) 
 {
 #ifdef HWP
     // stealth I/O
