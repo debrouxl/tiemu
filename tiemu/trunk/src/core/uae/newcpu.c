@@ -309,12 +309,28 @@ int intlev(void)
   return rc;
 }
 
+//tiemu: added to be VTi compatible (VTi does not keep some SR bits at 0)
+static char u14, u12, u11, u7, u6, u5;
+
 void MakeSR(void)
 {
-
-  regs.sr = ((regs.t << 15) | (regs.s << 13) | (regs.intmask << 8)
-	     | (regs.x << 4) | (NFLG << 3) | (ZFLG << 2) | (VFLG << 1) 
-	     |  CFLG);
+  regs.sr = (
+      (regs.t << 15) | 
+      (u14 << 14) |
+      (regs.s << 13) | 
+      (u12 << 12) |
+      (u11 << 11) |
+      (regs.intmask << 8) |
+	 
+      (u7 << 7) |
+      (u6 << 6) |
+      (u5 << 5) |
+      (regs.x << 4) | 
+      (NFLG << 3) | 
+      (ZFLG << 2) | 
+      (VFLG << 1) |  
+      (CFLG << 0)
+      );
 }
 
 void MakeFromSR(void)
@@ -322,8 +338,15 @@ void MakeFromSR(void)
   int olds = regs.s;
 
   regs.t = (regs.sr >> 15) & 1;
+  u14 = (regs.sr >> 14) & 1;
   regs.s = (regs.sr >> 13) & 1;
+  u12 = (regs.sr >> 12) & 1;
+  u11 = (regs.sr >> 11) & 1;
   regs.intmask = (regs.sr >> 8) & 7;
+
+  u7 = (regs.sr >> 7) & 1;
+  u6 = (regs.sr >> 6) & 1;
+  u5 = (regs.sr >> 5) & 1;
   regs.x = (regs.sr >> 4) & 1;
   NFLG = (regs.sr >> 3) & 1;
   ZFLG = (regs.sr >> 2) & 1;

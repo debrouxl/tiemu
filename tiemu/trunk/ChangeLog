@@ -11,7 +11,7 @@ SubVersion: $Id$
 	- no key auto-repeat: fixed
 	- long names with the ROM version box: fixed
 	- disasm listing: need to modify the UAE
-	- SR flags (VTi emulation): need to modify the UAE
+	- SR flags (VTi emulation): fixed
 
 	Disable menu access when debugger is opened.
 	I/O bits manipulation functions moved into bits.h and fixed (bit_set/clr buggy).
