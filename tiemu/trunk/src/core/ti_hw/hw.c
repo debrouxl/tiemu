@@ -154,9 +154,14 @@ void hw_update(void)
     }
 
 	// Increment RTC timer every 8192 seconds
-	if(io2_bit_tst(0x1f, 2))
+	if(io2_bit_tst(0x1f, 2) && io2_bit_tst(0x1f, 1))
 	{
-		tihw.rtc_value++;
+		static time_t old_clk;
+		if(((clock() - old_clk) / CLOCKS_PER_SEC) > 3/*8191*/)
+		{
+			old_clk = clock();
+			tihw.rtc_value++;
+		}
 	}
 
 	/* Auto-int management */
@@ -166,7 +171,8 @@ void hw_update(void)
     if(!(timer & 3)) 
     {		
     	if(!io_bit_tst(0x15,7))
-			hw_m68k_irq(1);
+			if(!(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)) || tihw.hw_type == HW1)
+				hw_m68k_irq(1);
     }
 
 	// Auto-int 2: keyboard scan
@@ -178,7 +184,8 @@ void hw_update(void)
 	{
         tihw.heartbeat = 1024;
         if(!io_bit_tst(0x15,7) && io_bit_tst(0x15,2))
-			hw_m68k_irq(3);
+			if(!(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)) || tihw.hw_type == HW1)
+				hw_m68k_irq(3);
 	}
 
 	// Triggered by the link hardware for various reasons.
@@ -209,7 +216,8 @@ void hw_update(void)
     {
         tihw.timer_value = tihw.io[0x17] - 1;
 		if(!io_bit_tst(0x15,7))	
-			hw_m68k_irq(5);
+			if(!(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)) || tihw.hw_type == HW1)
+				hw_m68k_irq(5);
     }
 
 	// Auto-int 6: triggered when [ON] is pressed.

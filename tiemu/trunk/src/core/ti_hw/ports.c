@@ -477,6 +477,7 @@ uint8_t io2_get_byte(uint32_t addr)
 		case 0x17:
 			break;
 		case 0x1d:
+			//printf("%02x ", tihw.io2[0x1d]);
 			break;
 		case 0x1f:
 			break;

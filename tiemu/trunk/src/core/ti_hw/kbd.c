@@ -34,6 +34,7 @@
 #include "keydefs.h"
 #include "ti68k_def.h"
 #include "m68k.h"
+#include "bits.h"
 
 static TiKey key_states[NB_MAX_KEYS];
 static int  *key_row;
@@ -146,7 +147,8 @@ int hw_kbd_update(void)		// ~600Hz
 	else
     {
     	// Auto-Int 2 triggered periodically while key(s) other than [ON] are held down.
-		hw_m68k_irq(2);
+		//if(!(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)) || tihw.hw_type == HW1)
+			hw_m68k_irq(2);
     }
 
 	key_change = 0;
