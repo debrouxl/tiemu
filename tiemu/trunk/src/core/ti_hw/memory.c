@@ -226,7 +226,7 @@ int hw_mem_exit(void)
 #define wget(adr) ((UWORD)(((UWORD)bget(adr))<< 8 | bget((adr)+1)))
 #define lget(adr) ((ULONG)(((ULONG)wget(adr))<<16 | wget((adr)+2)))
 
-static void extRomWriteByte(int addr,int v);
+static void FlashWriteByte(int addr,int v);
 
 ULONG get_long(CPTR adr) 
 {
@@ -272,24 +272,36 @@ ULONG get_long(CPTR adr)
 	    }
     }
   
+    // Odd address: exception !
     if(adr & 1) 
     {
         specialflags |= SPCFLAG_ADRERR;
         return 0;
     }
 
-    if (adr>=0x1c0000 && adr<0x200000)
+    //$1C0000-$1FFFFF: "the Protection" enable/disable
+    //Note: Four consecutive accesses to this range crashes a HW1 calc!
+    //READ:  Enable the Protection
+    //WRITE: Disable the Protection
+    //Note: No access to this range will have any effect unless the access is
+    //"authorized," see below.
+    if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
         tihw.flash_prot = 1;
-  
-    if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
+
+    // The certificate memory ($210000-$211FFF) is read protected.
+    else if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
         return 0x14141414;
   
-    if (adr<0x200000) 
+    // RAM access
+    else if (adr<0x200000) 
         return lget(adr);
-    
-    if (adr<0x600000) 
-        return (lget(adr)|rom_ret_or);
-    else 
+  
+    // FLASH access
+    else if (adr >= 0x200000 && adr<0x600000) 
+        return (lget(adr) | rom_ret_or);
+
+    // memory-mapped I/O
+    else if(adr >= 0x600000) 
         return io_get_long(adr&0x1f);
 }
 
@@ -337,21 +349,36 @@ UWORD get_word(CPTR adr)
 	    }
     }
   
+    // Odd address: exception !
     if(adr & 1) 
     {
         specialflags |= SPCFLAG_ADRERR;
         return 0;
     }
 
-    if (adr>=0x1c0000 && adr <0x200000)
+    //$1C0000-$1FFFFF: "the Protection" enable/disable
+    //Note: Four consecutive accesses to this range crashes a HW1 calc!
+    //READ:  Enable the Protection
+    //WRITE: Disable the Protection
+    //Note: No access to this range will have any effect unless the access is
+    //"authorized," see below.
+    if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
         tihw.flash_prot = 1;
-    if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
+
+    // The certificate memory ($210000-$211FFF) is read protected.
+    else if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
         return 0x1414;
-    if (adr<0x200000) 
+  
+    // RAM access
+    else if (adr<0x200000) 
         return wget(adr);
-    if (adr<0x600000) 
-        return (wget(adr)|rom_ret_or);
-    else 
+  
+    // FLASH access
+    else if (adr >= 0x200000 && adr<0x600000) 
+        return (wget(adr) | rom_ret_or);
+
+    // memory-mapped I/O
+    else if(adr >= 0x600000) 
         return io_get_word(adr&0x1f);
 }
 
@@ -409,15 +436,20 @@ UBYTE get_byte(CPTR adr)
     if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
         tihw.flash_prot = 1;
 
-    if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
+    // The certificate memory ($210000-$211FFF) is read protected.
+    else if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
         return 0x14;
   
-    if (adr<0x200000) 
+    // RAM access
+    else if (adr<0x200000) 
         return bget(adr);
   
-    if (adr<0x600000) 
-        return (bget(adr)|rom_ret_or);
-    else 
+    // FLASH access
+    else if (adr >= 0x200000 && adr<0x600000) 
+        return (bget(adr) | rom_ret_or);
+
+    // memory-mapped I/O
+    else if(adr >= 0x600000) 
         return io_get_byte(adr&0x1f);
 }
 
@@ -465,6 +497,7 @@ void put_long(CPTR adr, ULONG arg)
 	    }
     }
 
+    // Odd address: exception !
     if(adr & 1)
     {
         specialflags |= SPCFLAG_ADRERR;
@@ -485,17 +518,17 @@ void put_long(CPTR adr, ULONG arg)
 	}
     else if (adr < 0x400000)
 	{
-	    extRomWriteByte(adr,(arg>>24)&0xff);
-        extRomWriteByte(adr+1,(arg>>16)&0xff);
-        extRomWriteByte(adr+2,(arg>>8)&0xff);
-        extRomWriteByte(adr+3,arg&0xff);
+	    FlashWriteByte(adr,(arg>>24)&0xff);
+        FlashWriteByte(adr+1,(arg>>16)&0xff);
+        FlashWriteByte(adr+2,(arg>>8)&0xff);
+        FlashWriteByte(adr+3,arg&0xff);
 	}
     else if (adr < 0x600000) 
 	{
-	    extRomWriteByte(adr,(arg>>24)&0xff);
-	    extRomWriteByte(adr+1,(arg>>16)&0xff);
-	    extRomWriteByte(adr+2,(arg>>8)&0xff);
-	    extRomWriteByte(adr+3,arg&0xff);
+	    FlashWriteByte(adr,(arg>>24)&0xff);
+	    FlashWriteByte(adr+1,(arg>>16)&0xff);
+	    FlashWriteByte(adr+2,(arg>>8)&0xff);
+	    FlashWriteByte(adr+3,arg&0xff);
 	}
     else
 	    io_put_long(adr&0x1f, arg);
@@ -546,10 +579,19 @@ void put_word(CPTR adr, UWORD arg)
 	    }
     }
   
+    // Odd address: exception !
     if(adr & 1)
 	{
         specialflags |= SPCFLAG_ADRERR;
 		return;
+	}
+
+    // Protected memory violation. Triggered when memory below [$000120] is
+	// written while bit 2 of [$600001] is set
+    if((adr < 0x120) && tihw.mem_prot)
+	{
+		specialflags |= SPCFLAG_INT;
+        currIntLev = 7;
 	}
 
     if (adr < 0x200000) 
@@ -560,13 +602,13 @@ void put_word(CPTR adr, UWORD arg)
     }
     else if (adr < 0x400000)
     {
-	    extRomWriteByte(adr,(arg>>8)&0xff);
-        extRomWriteByte(adr+1,arg&0xff);
+	    FlashWriteByte(adr,(arg>>8)&0xff);
+        FlashWriteByte(adr+1,arg&0xff);
     }
     else if (adr < 0x600000) 
     {
-	    extRomWriteByte(adr,(arg>>8)&0xff);
-	    extRomWriteByte(adr+1,arg&0xff);
+	    FlashWriteByte(adr,(arg>>8)&0xff);
+	    FlashWriteByte(adr+1,arg&0xff);
     }
     else
 		io_put_word(adr&0x1f, arg);
@@ -640,11 +682,11 @@ void put_byte(CPTR adr, UBYTE arg)
   
     // write to internal FLASH
     else if (adr >= 0x200000 && adr < 0x400000)
-        extRomWriteByte(adr,arg&0xff);
+        FlashWriteByte(adr,arg&0xff);
 
     // write to external FLASH
     else if (adr >= 0x400000 && adr < 0x600000)
-        extRomWriteByte(adr,arg&0xff);
+        FlashWriteByte(adr,arg&0xff);
 
     // memory-mapped I/O
     else if(adr >= 0x600000)
@@ -661,67 +703,76 @@ UBYTE *get_real_address(CPTR adr)
     return &mem_tab[(adr>>20)&0xf][adr&mem_mask[(adr>>20)&0xf]];
 }
 
-static void extRomWriteByte(int addr,int v)
+// not reworked yet (from Corvazier)
+static void FlashWriteByte(int addr, int v)
 {
-  UBYTE *extRom = mem_tab[2];
-  int i;
-  
-  addr &= 0x1fffff;
-  
-  if(tihw.flash_prot) 
-    return;
+    UBYTE *rom = mem_tab[2];
+    int i;
 
-  if(tihw.calc_type == TI92)
+    // map ROM accesses
+    if(tihw.rom_internal)
+        rom = mem_tab[2];
+    else
+        rom = mem_tab[4];
+  
+    addr &= 0x1fffff;
+  
+    if(tihw.flash_prot) 
         return;
 
-  if (rom_write_ready)
+    // TI92 has EPROM
+    if(tihw.calc_type == TI92)
+        return;
+
+    // Write State Machine (WSM, Sharp's data sheet)
+    if (rom_write_ready)
     {
-      if ((extRom[addr]==0xff)||(rom_write_ready==1))
-	{
-	  extRom[addr]=v;
-	  rom_changed[addr>>16]=1;
-	}
-      else
-	rom_write_ready--;
-      rom_write_ready--;
-      rom_ret_or=0xffffffff;
+        if ((rom[addr]==0xff)||(rom_write_ready==1))
+	    {
+	        rom[addr]=v;
+	        rom_changed[addr>>16]=1;
+	    }
+        else
+	        rom_write_ready--;
+            rom_write_ready--;
+            rom_ret_or=0xffffffff;
     }
-  else if (v==0x50)
-    rom_write_phase=0x50;
-  else if (v==0x10)
+    else if (v==0x50)
+        rom_write_phase=0x50;
+    else if (v==0x10)
     {
-      if (rom_write_phase==0x50)
-	rom_write_phase=0x51;
-      else if (rom_write_phase==0x51)
+        if (rom_write_phase==0x50)
+	        rom_write_phase=0x51;
+        else if (rom_write_phase==0x51)
         {
-	  rom_write_ready=2;
-	  rom_write_phase=0x50;
+	        rom_write_ready=2;
+	        rom_write_phase=0x50;
         }
     }
-  else if (v==0x20)
+    else if (v==0x20)
     {
-      if (rom_write_phase==0x50)
-	rom_write_phase=0x20;
+        if (rom_write_phase==0x50)
+	        rom_write_phase=0x20;
     }
-  else if (v==0xd0)
+    else if (v==0xd0)
     {
-      if (rom_write_phase==0x20)
+        if (rom_write_phase==0x20)
         {
-	  rom_write_phase=0xd0;
-	  rom_ret_or=0xffffffff;
-	  rom_erase=0xffffffff;
-	  rom_erasePhase=0;
-	  for (i=0;i<0x10000;i++)
-	    extRom[(addr&0x1f0000)+i]=0xff;
-	  rom_changed[addr>>16]=1;
+	        rom_write_phase=0xd0;
+	        rom_ret_or=0xffffffff;
+	        rom_erase=0xffffffff;
+	        rom_erasePhase=0;
+	        for (i=0;i<0x10000;i++)
+	            rom[(addr&0x1f0000)+i]=0xff;
+	        rom_changed[addr>>16]=1;
         } 
     }
-  else if (v==0xff)
+    else if (v==0xff)
     {
-      if (rom_write_phase==0x50)
+        if (rom_write_phase==0x50)
         {
-	  rom_write_ready=0;
-	  rom_ret_or=0;
+	        rom_write_ready=0;
+	        rom_ret_or=0;
         }
     }
 }
