@@ -53,7 +53,7 @@ ifdef([AC_OUTPUT_SUBDIRS],[],
 # KDE_PATH_X_DIRECT
 dnl Internal subroutine of AC_PATH_X.
 dnl Set ac_x_includes and/or ac_x_libraries.
-AC_DEFUN(KDE_PATH_X_DIRECT,
+AC_DEFUN([KDE_PATH_X_DIRECT],
 [if test "$ac_x_includes" = NO; then
   # Guess where to find include files, by looking for this one X11 .h file.
   test -z "$x_direct_test_include" && x_direct_test_include=X11/Intrinsic.h
@@ -177,7 +177,7 @@ dnl ------------------------------------------------------------------------
 dnl Find a file (or one of more files in a list of dirs)
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_FIND_FILE,
+AC_DEFUN([AC_FIND_FILE],
 [
 $3=NO
 for i in $2;
@@ -196,7 +196,7 @@ done
 
 dnl KDE_FIND_PATH(programm-name, variable-name, list of directories,
 dnl	if-not-found, test-parameter)
-AC_DEFUN(KDE_FIND_PATH,
+AC_DEFUN([KDE_FIND_PATH],
 [
    AC_MSG_CHECKING([for $1])
    if test -n "$$2"; then
@@ -249,7 +249,7 @@ AC_DEFUN(KDE_FIND_PATH,
    fi
 ])
 
-AC_DEFUN(KDE_MOC_ERROR_MESSAGE,
+AC_DEFUN([KDE_MOC_ERROR_MESSAGE],
 [
     AC_MSG_ERROR([No Qt meta object compiler (moc) found!
 Please check whether you installed Qt correctly.
@@ -261,7 +261,7 @@ configure.
 ])
 ])
 
-AC_DEFUN(KDE_UIC_ERROR_MESSAGE,
+AC_DEFUN([KDE_UIC_ERROR_MESSAGE],
 [
     AC_MSG_WARN([No Qt ui compiler (uic) found!
 Please check whether you installed Qt correctly.
@@ -274,7 +274,7 @@ configure.
 ])
 
 
-AC_DEFUN(KDE_CHECK_UIC_FLAG,
+AC_DEFUN([KDE_CHECK_UIC_FLAG],
 [
     AC_MSG_CHECKING([whether uic supports -$1 ])
     kde_cache=`echo $1 | sed 'y% .=/+-%____p_%'`
@@ -309,7 +309,7 @@ dnl Find the meta object compiler and the ui compiler in the PATH,
 dnl in $QTDIR/bin, and some more usual places
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_PATH_QT_MOC_UIC,
+AC_DEFUN([AC_PATH_QT_MOC_UIC],
 [
    qt_bindirs=""
    for dir in $kde_qt_dirs; do
@@ -352,7 +352,7 @@ AC_DEFUN(AC_PATH_QT_MOC_UIC,
    AC_SUBST(UIC_TR)
 ])
 
-AC_DEFUN(KDE_1_CHECK_PATHS,
+AC_DEFUN([KDE_1_CHECK_PATHS],
 [
   KDE_1_CHECK_PATH_HEADERS
 
@@ -400,7 +400,7 @@ KDE_SET_PATHS($kde_result)
 
 ])
 
-AC_DEFUN(KDE_SET_PATHS,
+AC_DEFUN([KDE_SET_PATHS],
 [
   kde_cv_all_paths="kde_have_all_paths=\"yes\" \
 	kde_htmldir=\"$kde_htmldir\" \
@@ -424,7 +424,7 @@ AC_DEFUN(KDE_SET_PATHS,
 	kde_result=$1"
 ])
 
-AC_DEFUN(KDE_SET_DEFAULT_PATHS,
+AC_DEFUN([KDE_SET_DEFAULT_PATHS],
 [
 if test "$1" = "default"; then
 
@@ -501,7 +501,7 @@ else
 fi
 ])
 
-AC_DEFUN(KDE_CHECK_PATHS_FOR_COMPLETENESS,
+AC_DEFUN([KDE_CHECK_PATHS_FOR_COMPLETENESS],
 [ if test -z "$kde_htmldir" || test -z "$kde_appsdir" ||
    test -z "$kde_icondir" || test -z "$kde_sounddir" ||
    test -z "$kde_datadir" || test -z "$kde_locale"  ||
@@ -516,14 +516,14 @@ AC_DEFUN(KDE_CHECK_PATHS_FOR_COMPLETENESS,
   fi
 ])
 
-AC_DEFUN(KDE_MISSING_PROG_ERROR,
+AC_DEFUN([KDE_MISSING_PROG_ERROR],
 [
     AC_MSG_ERROR([The important program $1 was not found!
 Please check whether you installed KDE correctly.
 ])
 ])
 
-AC_DEFUN(KDE_SUBST_PROGRAMS,
+AC_DEFUN([KDE_SUBST_PROGRAMS],
 [
 
         kde_default_bindirs="/usr/bin /usr/local/bin /opt/local/bin /usr/X11R6/bin /opt/kde/bin /opt/kde3/bin /usr/kde/bin /usr/local/kde/bin"
@@ -581,7 +581,7 @@ AC_DEFUN(KDE_SUBST_PROGRAMS,
         AC_SUBST(kde_libs_htmldir)
 ])dnl
 
-AC_DEFUN(AC_CREATE_KFSSTND,
+AC_DEFUN([AC_CREATE_KFSSTND],
 [
 AC_REQUIRE([AC_CHECK_RPATH])
 
@@ -628,7 +628,7 @@ KDE_SUBST_PROGRAMS
 
 ])
 
-AC_DEFUN(AC_SUBST_KFSSTND,
+AC_DEFUN([AC_SUBST_KFSSTND],
 [
 AC_SUBST(kde_htmldir)
 AC_SUBST(kde_appsdir)
@@ -659,7 +659,7 @@ dnl AC_SUBST(kde_cgidir)
 dnl AC_SUBST(kde_toolbardir)
 ])
 
-AC_DEFUN(KDE_MISC_TESTS,
+AC_DEFUN([KDE_MISC_TESTS],
 [
    AC_LANG_C
    dnl Checks for libraries.
@@ -748,7 +748,7 @@ dnl Find the header files and libraries for X-Windows. Extended the
 dnl macro AC_PATH_X
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(K_PATH_X,
+AC_DEFUN([K_PATH_X],
 [
 AC_REQUIRE([KDE_MISC_TESTS])dnl
 
@@ -1002,7 +1002,7 @@ AC_LANG_RESTORE
 
 ])
 
-AC_DEFUN(KDE_PRINT_QT_PROGRAM,
+AC_DEFUN([KDE_PRINT_QT_PROGRAM],
 [
 AC_REQUIRE([KDE_USE_QT])
 cat > conftest.$ac_ext <<EOF
@@ -1065,7 +1065,7 @@ cat >> conftest.$ac_ext <<EOF
 EOF
 ])
 
-AC_DEFUN(KDE_USE_QT,
+AC_DEFUN([KDE_USE_QT],
 [
 if test -z "$1"; then
   kde_qtver=3
@@ -1129,7 +1129,7 @@ if test $kde_qtver = 1; then
 fi
 ])
 
-AC_DEFUN(KDE_CHECK_QT_DIRECT,
+AC_DEFUN([KDE_CHECK_QT_DIRECT],
 [
 AC_REQUIRE([KDE_USE_QT])
 AC_MSG_CHECKING([if Qt compiles without flags])
@@ -1192,7 +1192,7 @@ dnl $(QT_LDFLAGS) will be -Lqtliblocation (if needed)
 dnl and $(QT_INCLUDES) will be -Iqthdrlocation (if needed)
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_PATH_QT_1_3,
+AC_DEFUN([AC_PATH_QT_1_3],
 [
 AC_REQUIRE([K_PATH_X])
 AC_REQUIRE([KDE_USE_QT])
@@ -1485,12 +1485,12 @@ AC_SUBST(LIB_QPE)
 AC_SUBST(kde_qtver)
 ])
 
-AC_DEFUN(AC_PATH_QT,
+AC_DEFUN([AC_PATH_QT],
 [
 AC_PATH_QT_1_3
 ])
 
-AC_DEFUN(KDE_CHECK_FINAL,
+AC_DEFUN([KDE_CHECK_FINAL],
 [
   AC_ARG_ENABLE(final, [  --enable-final          build size optimized apps (experimental - needs lots of memory)],
 	kde_use_final=$enableval, kde_use_final=no)
@@ -1527,7 +1527,7 @@ dnl $(KDE_LDFLAGS) will be the kdeliblocation (if needed)
 dnl and $(kde_includes) will be the kdehdrlocation (if needed)
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_BASE_PATH_KDE,
+AC_DEFUN([AC_BASE_PATH_KDE],
 [
 AC_PREREQ([2.13])
 AC_REQUIRE([AC_PATH_QT])dnl
@@ -1659,7 +1659,7 @@ AC_SUBST(all_libraries)
 AC_SUBST(AUTODIRS)
 ])
 
-AC_DEFUN(KDE_CHECK_EXTRA_LIBS,
+AC_DEFUN([KDE_CHECK_EXTRA_LIBS],
 [
 AC_MSG_CHECKING(for extra includes)
 AC_ARG_WITH(extra-includes, [  --with-extra-includes=DIR
@@ -1714,7 +1714,7 @@ AC_MSG_RESULT($kde_use_extra_libs)
 
 ])
 
-AC_DEFUN(KDE_1_CHECK_PATH_HEADERS,
+AC_DEFUN([KDE_1_CHECK_PATH_HEADERS],
 [
     AC_MSG_CHECKING([for KDE headers installed])
     AC_LANG_SAVE
@@ -1763,7 +1763,7 @@ For more details about this problem, look at the end of config.log.])
   AC_LANG_RESTORE
 ])
 
-AC_DEFUN(KDE_CHECK_KDEQTADDON,
+AC_DEFUN([KDE_CHECK_KDEQTADDON],
 [
 AC_MSG_CHECKING(for kde-qt-addon)
 AC_CACHE_VAL(kde_cv_have_kdeqtaddon,
@@ -1799,7 +1799,7 @@ It is a separate package (and CVS module) named kde-qt-addon.])
 fi
 ])
 
-AC_DEFUN(KDE_CHECK_KIMGIO,
+AC_DEFUN([KDE_CHECK_KIMGIO],
 [
    AC_REQUIRE([AC_BASE_PATH_KDE])
    AC_REQUIRE([KDE_CHECK_EXTRA_LIBS])
@@ -1829,7 +1829,7 @@ AC_DEFUN(KDE_CHECK_KIMGIO,
    AC_SUBST(LIB_KIMGIO)
 ])
 
-AC_DEFUN(KDE_CREATE_LIBS_ALIASES,
+AC_DEFUN([KDE_CREATE_LIBS_ALIASES],
 [
    AC_REQUIRE([KDE_MISC_TESTS])
    AC_REQUIRE([KDE_CHECK_LIBDL])
@@ -1896,7 +1896,7 @@ else
 fi
 ])
 
-AC_DEFUN(AC_PATH_KDE,
+AC_DEFUN([AC_PATH_KDE],
 [
   AC_BASE_PATH_KDE
   AC_ARG_ENABLE(path-check, [  --disable-path-check    don't try to find out, where to install],
@@ -1921,13 +1921,13 @@ AC_DEFUN(AC_PATH_KDE,
 ])
 
 dnl obsolete
-AC_DEFUN(AC_CHECK_SETENV,
+AC_DEFUN([AC_CHECK_SETENV],
 [
    AC_OBSOLETE([$0], [; instead use AC_CHECK_FUNCS([setenv unsetenv])])dnl 
    AC_CHECK_FUNCS([setenv unsetenv])
 ])
 
-AC_DEFUN(AC_CHECK_GETDOMAINNAME,
+AC_DEFUN([AC_CHECK_GETDOMAINNAME],
 [
 AC_MSG_CHECKING(for getdomainname)
 AC_CACHE_VAL(ac_cv_func_getdomainname,
@@ -1996,7 +1996,7 @@ fi
 
 ])
 
-AC_DEFUN(AC_CHECK_GETHOSTNAME,
+AC_DEFUN([AC_CHECK_GETHOSTNAME],
 [
 
 AC_MSG_CHECKING([for gethostname])
@@ -2059,7 +2059,7 @@ if eval "test \"`echo $ac_cv_func_gethostname`\" = yes"; then
 fi
 ])
 
-AC_DEFUN(AC_CHECK_USLEEP,
+AC_DEFUN([AC_CHECK_USLEEP],
 [
 AC_MSG_CHECKING([for usleep])
 AC_CACHE_VAL(ac_cv_func_usleep,
@@ -2086,7 +2086,7 @@ if eval "test \"`echo $ac_cv_func_usleep`\" = yes"; then
 fi
 ])
 
-AC_DEFUN(AC_CHECK_RANDOM,
+AC_DEFUN([AC_CHECK_RANDOM],
 [
 AC_MSG_CHECKING([for random])
 AC_CACHE_VAL(ac_cv_func_random,
@@ -2112,7 +2112,7 @@ if eval "test \"`echo $ac_cv_func_random`\" = yes"; then
 fi
 ])
 
-AC_DEFUN(AC_FIND_GIF,
+AC_DEFUN([AC_FIND_GIF],
    [AC_MSG_CHECKING([for giflib])
 AC_CACHE_VAL(ac_cv_lib_gif,
 [ac_save_LIBS="$LIBS"
@@ -2146,7 +2146,7 @@ else
 fi
 ])
 
-AC_DEFUN(KDE_FIND_JPEG_HELPER,
+AC_DEFUN([KDE_FIND_JPEG_HELPER],
 [
 AC_MSG_CHECKING([for libjpeg$2])
 AC_CACHE_VAL(ac_cv_lib_jpeg_$1,
@@ -2189,7 +2189,7 @@ fi
 
 ])
 
-AC_DEFUN(AC_FIND_JPEG,
+AC_DEFUN([AC_FIND_JPEG],
 [
 dnl first look for libraries
 KDE_FIND_JPEG_HELPER(6b, 6b,
@@ -2231,7 +2231,7 @@ fi
 AC_SUBST(LIBJPEG)
 ])
 
-AC_DEFUN(KDE_CHECK_QT_JPEG,
+AC_DEFUN([KDE_CHECK_QT_JPEG],
 [
 AC_MSG_CHECKING([if Qt needs $LIBJPEG])
 AC_CACHE_VAL(kde_cv_qt_jpeg,
@@ -2266,7 +2266,7 @@ fi
 
 ])
 
-AC_DEFUN(AC_FIND_ZLIB,
+AC_DEFUN([AC_FIND_ZLIB],
 [
 AC_REQUIRE([KDE_CHECK_EXTRA_LIBS])
 AC_MSG_CHECKING([for libz])
@@ -2299,7 +2299,7 @@ else
 fi
 ])
 
-AC_DEFUN(KDE_TRY_TIFFLIB,
+AC_DEFUN([KDE_TRY_TIFFLIB],
 [
 AC_MSG_CHECKING([for libtiff $1])
 
@@ -2345,7 +2345,7 @@ fi
 
 ])
 
-AC_DEFUN(AC_FIND_TIFF,
+AC_DEFUN([AC_FIND_TIFF],
 [
 AC_REQUIRE([K_PATH_X])
 AC_REQUIRE([AC_FIND_ZLIB])
@@ -2359,7 +2359,7 @@ AC_SUBST(LIBTIFF)
 ])
 
 
-AC_DEFUN(AC_FIND_PNG,
+AC_DEFUN([AC_FIND_PNG],
 [
 AC_REQUIRE([KDE_CHECK_EXTRA_LIBS])
 AC_REQUIRE([AC_FIND_ZLIB])
@@ -2402,12 +2402,12 @@ else
 fi
 ])
 
-AC_DEFUN(AC_CHECK_BOOL,
+AC_DEFUN([AC_CHECK_BOOL],
 [
   AC_DEFINE_UNQUOTED(HAVE_BOOL, 1, [You _must_ have bool])
 ])
 
-AC_DEFUN(AC_CHECK_GNU_EXTENSIONS,
+AC_DEFUN([AC_CHECK_GNU_EXTENSIONS],
 [
 AC_MSG_CHECKING(if you need GNU extensions)
 AC_CACHE_VAL(ac_cv_gnu_extensions,
@@ -2435,7 +2435,7 @@ if test "$ac_cv_gnu_extensions" = "yes"; then
 fi
 ])
 
-AC_DEFUN(KDE_CHECK_COMPILER_FLAG,
+AC_DEFUN([KDE_CHECK_COMPILER_FLAG],
 [
 AC_MSG_CHECKING(whether $CXX supports -$1)
 kde_cache=`echo $1 | sed 'y% .=/+-%____p_%'`
@@ -2463,7 +2463,7 @@ fi
 dnl AC_REMOVE_FORBIDDEN removes forbidden arguments from variables
 dnl use: AC_REMOVE_FORBIDDEN(CC, [-forbid -bad-option whatever])
 dnl it's all white-space separated
-AC_DEFUN(AC_REMOVE_FORBIDDEN,
+AC_DEFUN([AC_REMOVE_FORBIDDEN],
 [ __val=$$1
   __forbid=" $2 "
   if test -n "$__val"; then
@@ -2484,7 +2484,7 @@ AC_DEFUN(AC_REMOVE_FORBIDDEN,
 ])
 
 dnl AC_VALIDIFY_CXXFLAGS checks for forbidden flags the user may have given
-AC_DEFUN(AC_VALIDIFY_CXXFLAGS,
+AC_DEFUN([AC_VALIDIFY_CXXFLAGS],
 [dnl
 if test "x$kde_use_qt_emb" != "xyes"; then
  AC_REMOVE_FORBIDDEN(CXX, [-fno-rtti -rpath])
@@ -2495,7 +2495,7 @@ else
 fi
 ])
 
-AC_DEFUN(AC_CHECK_COMPILERS,
+AC_DEFUN([AC_CHECK_COMPILERS],
 [
   AC_ARG_ENABLE(debug,[  --enable-debug[=ARG]    enables debug symbols (yes|no|full) [default=no]],
   [
@@ -2757,14 +2757,14 @@ AC_DEFUN(AC_CHECK_COMPILERS,
   AC_SUBST(KDE_CXXFLAGS)
 ])
 
-AC_DEFUN(KDE_ADD_DEPENDENCIES,
+AC_DEFUN([KDE_ADD_DEPENDENCIES],
 [
    [A]M_DEPENDENCIES(CC)
    [A]M_DEPENDENCIES(CXX)
 ])
 
 dnl just a wrapper to clean up configure.in
-AC_DEFUN(KDE_PROG_LIBTOOL,
+AC_DEFUN([KDE_PROG_LIBTOOL],
 [
 AC_REQUIRE([AC_CHECK_COMPILERS])
 AC_REQUIRE([AC_ENABLE_SHARED])
@@ -2811,14 +2811,14 @@ EOF
   fi
 ])
 
-AC_DEFUN(KDE_CHECK_TYPES,
+AC_DEFUN([KDE_CHECK_TYPES],
 [  AC_CHECK_SIZEOF(int, 4)dnl
   AC_CHECK_SIZEOF(long, 4)dnl
   AC_CHECK_SIZEOF(char *, 4)dnl
   AC_CHECK_SIZEOF(char, 1)dnl
 ])dnl
 
-AC_DEFUN(KDE_DO_IT_ALL,
+AC_DEFUN([KDE_DO_IT_ALL],
 [
 AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
@@ -2831,7 +2831,7 @@ AM_KDE_WITH_NLS
 AC_PATH_KDE
 ])
 
-AC_DEFUN(AC_CHECK_RPATH,
+AC_DEFUN([AC_CHECK_RPATH],
 [
 AC_MSG_CHECKING(for rpath)
 AC_ARG_ENABLE(rpath,
@@ -2859,7 +2859,7 @@ AC_MSG_RESULT($USE_RPATH)
 ])
 
 dnl Check for the type of the third argument of getsockname
-AC_DEFUN(AC_CHECK_SOCKLEN_T, [
+AC_DEFUN([AC_CHECK_SOCKLEN_T], [
   AC_MSG_CHECKING(for socklen_t)
   AC_CACHE_VAL(ac_cv_socklen_t, [
     AC_LANG_SAVE
@@ -2911,7 +2911,7 @@ dnl PARTICULAR PURPOSE.
 dnl >
 dnl for this file it is relicensed under LGPL
 
-AC_DEFUN(AM_KDE_WITH_NLS,
+AC_DEFUN([AM_KDE_WITH_NLS],
   [
     dnl If we use NLS figure out what method
 
@@ -2954,7 +2954,7 @@ AC_DEFUN(AM_KDE_WITH_NLS,
 
 dnl AM_PATH_PROG_WITH_TEST_KDE(VARIABLE, PROG-TO-CHECK-FOR,
 dnl   TEST-PERFORMED-ON-FOUND_PROGRAM [, VALUE-IF-NOT-FOUND [, PATH]])
-AC_DEFUN(AM_PATH_PROG_WITH_TEST_KDE,
+AC_DEFUN([AM_PATH_PROG_WITH_TEST_KDE],
 [# Extract the first word of "$2", so it can be a program name with args.
 set dummy $2; ac_word=[$]2
 AC_MSG_CHECKING([for $ac_word])
@@ -2996,7 +2996,7 @@ AC_SUBST($1)dnl
 
 # serial 1
 
-AC_DEFUN(AM_LC_MESSAGES,
+AC_DEFUN([AM_LC_MESSAGES],
   [if test $ac_cv_header_locale_h = yes; then
     AC_CACHE_CHECK([for LC_MESSAGES], am_cv_val_LC_MESSAGES,
       [AC_TRY_LINK([#include <locale.h>], [return LC_MESSAGES],
@@ -3042,7 +3042,7 @@ AC_DEFUN([AM_FUNC_ERROR_AT_LINE],
 # serial 1
 # Stephan Kulow: I put a KDE in it to avoid name conflicts
 
-AC_DEFUN(AM_KDE_GNU_GETTEXT,
+AC_DEFUN([AM_KDE_GNU_GETTEXT],
   [AC_REQUIRE([AC_PROG_MAKE_SET])dnl
    AC_REQUIRE([AC_PROG_RANLIB])dnl
    AC_REQUIRE([AC_HEADER_STDC])dnl
@@ -3104,7 +3104,7 @@ __argz_count __argz_stringify __argz_next])
 
   ])
 
-AC_DEFUN(AC_HAVE_XPM,
+AC_DEFUN([AC_HAVE_XPM],
  [AC_REQUIRE_CPP()dnl
   AC_REQUIRE([KDE_CHECK_EXTRA_LIBS])
 
@@ -3160,7 +3160,7 @@ AC_DEFUN(AC_HAVE_XPM,
  AC_SUBST(XPMLIB)
 ])
 
-AC_DEFUN(AC_HAVE_DPMS,
+AC_DEFUN([AC_HAVE_DPMS],
  [AC_REQUIRE_CPP()dnl
   AC_REQUIRE([KDE_CHECK_EXTRA_LIBS])
 
@@ -3248,7 +3248,7 @@ AC_DEFUN(AC_HAVE_DPMS,
  AC_SUBST(DPMSLIB)
 ])
 
-AC_DEFUN(AC_HAVE_GL,
+AC_DEFUN([AC_HAVE_GL],
  [AC_REQUIRE_CPP()dnl
   AC_REQUIRE([KDE_CHECK_EXTRA_LIBS])
 
@@ -3329,7 +3329,7 @@ AC_DEFUN(AC_HAVE_GL,
 
  dnl shadow password and PAM magic - maintained by ossi@kde.org
 
-AC_DEFUN(KDE_PAM, [
+AC_DEFUN([KDE_PAM], [
   AC_REQUIRE([KDE_CHECK_LIBDL])
 
   AC_ARG_WITH(pam,
@@ -3381,7 +3381,7 @@ AC_DEFUN(KDE_PAM, [
 ])
 
 dnl DEF_PAM_SERVICE(arg name, full name, define name)
-AC_DEFUN(DEF_PAM_SERVICE, [
+AC_DEFUN([DEF_PAM_SERVICE], [
   AC_ARG_WITH($1-pam,
     [  --with-$1-pam=[val]    override PAM service from --with-pam for $2],
     [ if test "x$use_pam" = xyes; then
@@ -3402,7 +3402,7 @@ You may want to enforce it by using --with-pam.])
     AC_SUBST($3_PAM_SERVICE)
 ])
 
-AC_DEFUN(KDE_SHADOWPASSWD, [
+AC_DEFUN([KDE_SHADOWPASSWD], [
   AC_REQUIRE([KDE_PAM])
 
   AC_CHECK_LIB(shadow, getspent,
@@ -3459,7 +3459,7 @@ AC_DEFUN(KDE_SHADOWPASSWD, [
 
 ])
 
-AC_DEFUN(KDE_PASSWDLIBS, [
+AC_DEFUN([KDE_PASSWDLIBS], [
   AC_REQUIRE([KDE_MISC_TESTS]) dnl for LIBCRYPT
   AC_REQUIRE([KDE_PAM])
   AC_REQUIRE([KDE_SHADOWPASSWD])
@@ -3485,7 +3485,7 @@ AC_DEFUN(KDE_PASSWDLIBS, [
   AC_SUBST(PASSWDLIBS)
 ])
 
-AC_DEFUN(KDE_CHECK_LIBDL,
+AC_DEFUN([KDE_CHECK_LIBDL],
 [
 AC_CHECK_LIB(dl, dlopen, [
 LIBDL="-ldl"
@@ -3500,7 +3500,7 @@ ac_cv_have_shload=yes
 AC_SUBST(LIBDL)
 ])
 
-AC_DEFUN(KDE_CHECK_DLOPEN,
+AC_DEFUN([KDE_CHECK_DLOPEN],
 [
 KDE_CHECK_LIBDL
 AC_CHECK_HEADERS(dlfcn.h dl.h)
@@ -3540,7 +3540,7 @@ fi
 
 ])
 
-AC_DEFUN(KDE_CHECK_DYNAMIC_LOADING,
+AC_DEFUN([KDE_CHECK_DYNAMIC_LOADING],
 [
 KDE_CHECK_DLOPEN(libtool_enable_shared=yes, libtool_enable_static=no)
 KDE_PROG_LIBTOOL
@@ -3560,7 +3560,7 @@ else
 fi
 ])
 
-AC_DEFUN(KDE_ADD_INCLUDES,
+AC_DEFUN([KDE_ADD_INCLUDES],
 [
 if test -z "$1"; then
   test_include="Pix.h"
@@ -3598,7 +3598,7 @@ fi
 ])
 
 
-AC_DEFUN(KDE_CHECK_MICO,
+AC_DEFUN([KDE_CHECK_MICO],
 [
 AC_REQUIRE([KDE_CHECK_LIBDL])
 AC_REQUIRE([KDE_MISC_TESTS])
@@ -3707,7 +3707,7 @@ AC_SUBST(idldir)
 
 ])
 
-AC_DEFUN(KDE_CHECK_MINI_STL,
+AC_DEFUN([KDE_CHECK_MINI_STL],
 [
 AC_REQUIRE([KDE_CHECK_MICO])
 
@@ -3745,13 +3745,13 @@ fi
 ])
 
 
-AC_DEFUN(KDE_CHECK_LIBPTHREAD,
+AC_DEFUN([KDE_CHECK_LIBPTHREAD],
 [
 AC_CHECK_LIB(pthread, pthread_create, [LIBPTHREAD="-lpthread"] )
 AC_SUBST(LIBPTHREAD)
 ])
 
-AC_DEFUN(KDE_CHECK_PTHREAD_OPTION,
+AC_DEFUN([KDE_CHECK_PTHREAD_OPTION],
 [
     AC_ARG_ENABLE(kernel-threads, [  --enable-kernel-threads Enable the use of the LinuxThreads port on FreeBSD/i386 only.],
 	kde_use_kernthreads=$enableval, kde_use_kernthreads=no)
@@ -3807,7 +3807,7 @@ AC_DEFUN(KDE_CHECK_PTHREAD_OPTION,
     AC_SUBST(LIBPTHREAD)
 ])
 
-AC_DEFUN(KDE_CHECK_THREADING,
+AC_DEFUN([KDE_CHECK_THREADING],
 [
   AC_REQUIRE([KDE_CHECK_LIBPTHREAD])
   AC_REQUIRE([KDE_CHECK_PTHREAD_OPTION])
@@ -3828,7 +3828,7 @@ AC_DEFUN(KDE_CHECK_THREADING,
   fi
 ])
 
-AC_DEFUN(KDE_TRY_LINK_PYTHON,
+AC_DEFUN([KDE_TRY_LINK_PYTHON],
 [
 if test "$kde_python_link_found" = no; then
 
@@ -3880,7 +3880,7 @@ fi
 
 ])
 
-AC_DEFUN(KDE_CHECK_PYTHON_DIR,
+AC_DEFUN([KDE_CHECK_PYTHON_DIR],
 [
 AC_MSG_CHECKING([for Python directory])
  
@@ -3903,7 +3903,7 @@ AC_ARG_WITH(pythondir,
 AC_MSG_RESULT($ac_python_dir)
 ])
 
-AC_DEFUN(KDE_CHECK_PYTHON_INTERN,
+AC_DEFUN([KDE_CHECK_PYTHON_INTERN],
 [
 AC_REQUIRE([KDE_CHECK_LIBDL])
 AC_REQUIRE([KDE_CHECK_LIBPTHREAD])
@@ -3992,7 +3992,7 @@ fi
 ])
 
 
-AC_DEFUN(KDE_CHECK_PYTHON,
+AC_DEFUN([KDE_CHECK_PYTHON],
 [
   KDE_CHECK_PYTHON_INTERN("2.2", 
     [KDE_CHECK_PYTHON_INTERN("2.1", 
@@ -4000,7 +4000,7 @@ AC_DEFUN(KDE_CHECK_PYTHON,
   ])])
 ])
 
-AC_DEFUN(KDE_CHECK_STL_SGI,
+AC_DEFUN([KDE_CHECK_STL_SGI],
 [
     AC_MSG_CHECKING([if STL implementation is SGI like])
     AC_CACHE_VAL(kde_cv_stl_type_sgi,
@@ -4023,7 +4023,7 @@ using namespace std;
    fi
 ])
 
-AC_DEFUN(KDE_CHECK_STL_HP,
+AC_DEFUN([KDE_CHECK_STL_HP],
 [
     AC_MSG_CHECKING([if STL implementation is HP like])
     AC_CACHE_VAL(kde_cv_stl_type_hp,
@@ -4045,7 +4045,7 @@ using namespace std;
    fi
 ])
 
-AC_DEFUN(KDE_CHECK_STL,
+AC_DEFUN([KDE_CHECK_STL],
 [
     AC_LANG_SAVE
     AC_LANG_CPLUSPLUS
@@ -4065,7 +4065,7 @@ AC_DEFUN(KDE_CHECK_STL,
     AC_LANG_RESTORE
 ])
 
-AC_DEFUN(AC_FIND_QIMGIO,
+AC_DEFUN([AC_FIND_QIMGIO],
    [AC_REQUIRE([AC_FIND_JPEG])
 AC_REQUIRE([KDE_CHECK_EXTRA_LIBS])
 AC_MSG_CHECKING([for qimgio])
@@ -4104,11 +4104,11 @@ else
 fi
 ])
 
-AC_DEFUN(KDE_CHECK_ANSI,
+AC_DEFUN([KDE_CHECK_ANSI],
 [
 ])
 
-AC_DEFUN(KDE_CHECK_INSURE,
+AC_DEFUN([KDE_CHECK_INSURE],
 [
   AC_ARG_ENABLE(insure, [  --enable-insure             use insure++ for debugging [default=no]],
   [
@@ -4125,7 +4125,7 @@ AC_DEFUN(KDE_CHECK_INSURE,
    fi
 ])
 
-AC_DEFUN(AM_DISABLE_LIBRARIES,
+AC_DEFUN([AM_DISABLE_LIBRARIES],
 [
     AC_PROVIDE([AM_ENABLE_STATIC])
     AC_PROVIDE([AM_ENABLE_SHARED])
@@ -4134,7 +4134,7 @@ AC_DEFUN(AM_DISABLE_LIBRARIES,
 ])
 
 
-AC_DEFUN(AC_CHECK_UTMP_FILE,
+AC_DEFUN([AC_CHECK_UTMP_FILE],
 [
     AC_MSG_CHECKING([for utmp file])
 
@@ -4167,7 +4167,7 @@ AC_DEFUN(AC_CHECK_UTMP_FILE,
 ])
 
 
-AC_DEFUN(KDE_CREATE_SUBDIRSLIST,
+AC_DEFUN([KDE_CREATE_SUBDIRSLIST],
 [
 
 DO_NOT_COMPILE="$DO_NOT_COMPILE CVS debian bsd-port admin"
@@ -4209,7 +4209,7 @@ done
 AC_SUBST(TOPSUBDIRS)
 ])
 
-AC_DEFUN(KDE_CHECK_NAMESPACES,
+AC_DEFUN([KDE_CHECK_NAMESPACES],
 [
 AC_MSG_CHECKING(whether C++ compiler supports namespaces)
 AC_LANG_SAVE
@@ -4235,7 +4235,7 @@ AC_MSG_RESULT(no)
 AC_LANG_RESTORE
 ])
 
-AC_DEFUN(KDE_CHECK_NEWLIBS,
+AC_DEFUN([KDE_CHECK_NEWLIBS],
 [
 
 ])
@@ -4244,7 +4244,7 @@ dnl ------------------------------------------------------------------------
 dnl Check for S_ISSOCK macro. Doesn't exist on Unix SCO. faure@kde.org
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_CHECK_S_ISSOCK,
+AC_DEFUN([AC_CHECK_S_ISSOCK],
 [
 AC_MSG_CHECKING(for S_ISSOCK)
 AC_CACHE_VAL(ac_cv_have_s_issock,
@@ -4273,7 +4273,7 @@ dnl ------------------------------------------------------------------------
 dnl Check for MAXPATHLEN macro, defines KDEMAXPATHLEN. faure@kde.org
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_CHECK_KDEMAXPATHLEN,
+AC_DEFUN([AC_CHECK_KDEMAXPATHLEN],
 [
 AC_MSG_CHECKING(for MAXPATHLEN)
 AC_CACHE_VAL(ac_cv_maxpathlen,
@@ -4311,7 +4311,7 @@ AC_DEFINE_UNQUOTED(KDEMAXPATHLEN,$ac_cv_maxpathlen, [Define a safe value for MAX
 dnl -------------------------------------------------------------------------
 dnl See if the compiler supports a template repository         bero@redhat.de
 dnl -------------------------------------------------------------------------
-AC_DEFUN(KDE_COMPILER_REPO,
+AC_DEFUN([KDE_COMPILER_REPO],
 [
   REPO=""
   NOREPO=""
@@ -4340,7 +4340,7 @@ AC_DEFUN(KDE_COMPILER_REPO,
   AC_SUBST(NOREPO)
 ])
 
-AC_DEFUN(KDE_CHECK_HEADER,
+AC_DEFUN([KDE_CHECK_HEADER],
 [
    AC_LANG_SAVE
    kde_safe_cppflags=$CPPFLAGS
@@ -4351,14 +4351,14 @@ AC_DEFUN(KDE_CHECK_HEADER,
    AC_LANG_RESTORE
 ])
 
-AC_DEFUN(KDE_FAST_CONFIGURE,
+AC_DEFUN([KDE_FAST_CONFIGURE],
 [
   dnl makes configure fast (needs perl)
   AC_ARG_ENABLE(fast-perl, [  --disable-fast-perl     disable fast Makefile generation (needs perl)],
       with_fast_perl=$enableval, with_fast_perl=yes)
 ])
 
-AC_DEFUN(KDE_CONF_FILES,
+AC_DEFUN([KDE_CONF_FILES],
 [
   val=
   if test -f $srcdir/configure.files ; then
@@ -4373,7 +4373,7 @@ AC_DEFUN(KDE_CONF_FILES,
   AC_SUBST(CONF_FILES)
 ])dnl
 
-AC_DEFUN(KDE_SET_PREFIX,
+AC_DEFUN([KDE_SET_PREFIX],
 [
   unset CDPATH
   dnl make $KDEDIR the default for the installation
@@ -4453,7 +4453,7 @@ pushdef([AC_PROG_INSTALL],
   fi
 ])dnl
 
-AC_DEFUN(KDE_LANG_CPLUSPLUS,
+AC_DEFUN([KDE_LANG_CPLUSPLUS],
 [AC_LANG_CPLUSPLUS
 ac_link='rm -rf SunWS_cache; ${CXX-g++} -o conftest${ac_exeext} $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS 1>&AC_FD_CC'
 pushdef([AC_LANG_CPLUSPLUS], [popdef([AC_LANG_CPLUSPLUS]) KDE_LANG_CPLUSPLUS])
@@ -4464,7 +4464,7 @@ pushdef([AC_LANG_CPLUSPLUS],
 KDE_LANG_CPLUSPLUS
 ])
 
-AC_DEFUN(KDE_CHECK_LONG_LONG,
+AC_DEFUN([KDE_CHECK_LONG_LONG],
 [
 AC_MSG_CHECKING(for long long)
 AC_CACHE_VAL(kde_cv_c_long_long,
@@ -4484,7 +4484,7 @@ if test "$kde_cv_c_long_long" = yes; then
 fi
 ])
 
-AC_DEFUN(KDE_CHECK_LIB,
+AC_DEFUN([KDE_CHECK_LIB],
 [
      kde_save_LDFLAGS="$LDFLAGS"
      dnl AC_CHECK_LIB modifies LIBS, so save it here
@@ -4503,7 +4503,7 @@ AC_DEFUN(KDE_CHECK_LIB,
 
 
 
-AC_DEFUN(KDE_CHECK_INITGROUPS,
+AC_DEFUN([KDE_CHECK_INITGROUPS],
 [ 
   AC_REQUIRE([AC_CANONICAL_HOST])
   AC_CHECK_FUNCS(initgroups)
@@ -4543,7 +4543,7 @@ AC_DEFUN(KDE_CHECK_INITGROUPS,
 ])
 
 
-AC_DEFUN(KDE_CHECK_JAVA_DIR,
+AC_DEFUN([KDE_CHECK_JAVA_DIR],
 [
 AC_MSG_CHECKING([for Java directory])
 
@@ -4676,7 +4676,7 @@ dnl                                                     [$3])])])
 dnl m4_define([AC_FOREACH],
 dnl [mm_foreach([$1], m4_split(m4_normalize([$2])), [$3])])
 
-AC_DEFUN(KDE_NEED_FLEX,
+AC_DEFUN([KDE_NEED_FLEX],
 [
 kde_libs_safe=$LIBS
 LIBS="$LIBS $USER_LDFLAGS"
@@ -4688,7 +4688,7 @@ fi
 AC_SUBST(LEXLIB)
 ])
 
-AC_DEFUN(AC_PATH_QTOPIA,
+AC_DEFUN([AC_PATH_QTOPIA],
 [
   dnl TODO: use AC_CACHE_VAL
 
@@ -11049,9 +11049,11 @@ AU_DEFUN([jm_MAINTAINER_MODE], [AM_MAINTAINER_MODE])
 
 # isc-posix.m4 serial 2 (gettext-0.11.2)
 dnl Copyright (C) 1995-2002 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 # This file is not needed with autoconf-2.53 and newer.  Remove it in 2005.
 
@@ -11072,11 +11074,13 @@ AC_DEFUN([AC_ISC_POSIX],
   ]
 )
 
-# gettext.m4 serial 34 (gettext-0.14.2)
-dnl Copyright (C) 1995-2005 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+# gettext.m4 serial 28 (gettext-0.13)
+dnl Copyright (C) 1995-2003 Free Software Foundation, Inc.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 dnl
 dnl This file can can be used in projects which are not available under
 dnl the GNU General Public License or the GNU Library General Public
@@ -11164,9 +11168,6 @@ AC_DEFUN([AM_GNU_GETTEXT],
     AC_REQUIRE([AM_ICONV_LINKFLAGS_BODY])
   ])
 
-  dnl Sometimes, on MacOS X, libintl requires linking with CoreFoundation.
-  gt_INTL_MACOSX
-
   dnl Set USE_NLS.
   AM_NLS
 
@@ -11247,9 +11248,9 @@ extern
 #ifdef __cplusplus
 "C"
 #endif
-const char *_nl_expand_alias (const char *);],
+const char *_nl_expand_alias ();],
               [bindtextdomain ("", "");
-return (int) gettext ("")]ifelse([$2], [need-ngettext], [ + (int) ngettext ("", "", 0)], [])[ + _nl_msg_cat_cntr + *_nl_expand_alias ("")],
+return (int) gettext ("")]ifelse([$2], [need-ngettext], [ + (int) ngettext ("", "", 0)], [])[ + _nl_msg_cat_cntr + *_nl_expand_alias (0)],
               gt_cv_func_gnugettext_libintl=yes,
               gt_cv_func_gnugettext_libintl=no)
             dnl Now see whether libintl exists and depends on libiconv.
@@ -11268,9 +11269,9 @@ extern
 #ifdef __cplusplus
 "C"
 #endif
-const char *_nl_expand_alias (const char *);],
+const char *_nl_expand_alias ();],
                 [bindtextdomain ("", "");
-return (int) gettext ("")]ifelse([$2], [need-ngettext], [ + (int) ngettext ("", "", 0)], [])[ + _nl_msg_cat_cntr + *_nl_expand_alias ("")],
+return (int) gettext ("")]ifelse([$2], [need-ngettext], [ + (int) ngettext ("", "", 0)], [])[ + _nl_msg_cat_cntr + *_nl_expand_alias (0)],
                [LIBINTL="$LIBINTL $LIBICONV"
                 LTLIBINTL="$LTLIBINTL $LTLIBICONV"
                 gt_cv_func_gnugettext_libintl=yes
@@ -11319,15 +11320,6 @@ return (int) gettext ("")]ifelse([$2], [need-ngettext], [ + (int) ngettext ("", 
         CATOBJEXT=.gmo
       fi
     ])
-
-    if test -n "$INTL_MACOSX_LIBS"; then
-      if test "$gt_use_preinstalled_gnugettext" = "yes" \
-         || test "$nls_cv_use_gnu_gettext" = "yes"; then
-        dnl Some extra flags are needed during linking.
-        LIBINTL="$LIBINTL $INTL_MACOSX_LIBS"
-        LTLIBINTL="$LTLIBINTL $INTL_MACOSX_LIBS"
-      fi
-    fi
 
     if test "$gt_use_preinstalled_gnugettext" = "yes" \
        || test "$nls_cv_use_gnu_gettext" = "yes"; then
@@ -11434,7 +11426,6 @@ AC_DEFUN([AM_INTL_SUBDIR],
   AC_REQUIRE([AM_MKINSTALLDIRS])dnl
   AC_REQUIRE([AC_PROG_CC])dnl
   AC_REQUIRE([AC_CANONICAL_HOST])dnl
-  AC_REQUIRE([gt_GLIBC2])dnl
   AC_REQUIRE([AC_PROG_RANLIB])dnl
   AC_REQUIRE([AC_ISC_POSIX])dnl
   AC_REQUIRE([AC_HEADER_STDC])dnl
@@ -11443,23 +11434,22 @@ AC_DEFUN([AM_INTL_SUBDIR],
   AC_REQUIRE([AC_C_INLINE])dnl
   AC_REQUIRE([AC_TYPE_OFF_T])dnl
   AC_REQUIRE([AC_TYPE_SIZE_T])dnl
-  AC_REQUIRE([gl_AC_TYPE_LONG_LONG])dnl
+  AC_REQUIRE([jm_AC_TYPE_LONG_LONG])dnl
   AC_REQUIRE([gt_TYPE_LONGDOUBLE])dnl
   AC_REQUIRE([gt_TYPE_WCHAR_T])dnl
   AC_REQUIRE([gt_TYPE_WINT_T])dnl
-  AC_REQUIRE([gl_AC_HEADER_INTTYPES_H])
-  AC_REQUIRE([gl_AC_HEADER_STDINT_H])
+  AC_REQUIRE([jm_AC_HEADER_INTTYPES_H])
+  AC_REQUIRE([jm_AC_HEADER_STDINT_H])
   AC_REQUIRE([gt_TYPE_INTMAX_T])
   AC_REQUIRE([gt_PRINTF_POSIX])
   AC_REQUIRE([AC_FUNC_ALLOCA])dnl
   AC_REQUIRE([AC_FUNC_MMAP])dnl
-  AC_REQUIRE([gl_GLIBC21])dnl
+  AC_REQUIRE([jm_GLIBC21])dnl
   AC_REQUIRE([gt_INTDIV0])dnl
-  AC_REQUIRE([gl_AC_TYPE_UINTMAX_T])dnl
+  AC_REQUIRE([jm_AC_TYPE_UINTMAX_T])dnl
   AC_REQUIRE([gt_HEADER_INTTYPES_H])dnl
   AC_REQUIRE([gt_INTTYPES_PRI])dnl
   AC_REQUIRE([gl_XSIZE])dnl
-  AC_REQUIRE([gt_INTL_MACOSX])dnl
 
   AC_CHECK_TYPE([ptrdiff_t], ,
     [AC_DEFINE([ptrdiff_t], [long],
@@ -11513,11 +11503,7 @@ __fsetlocking])
   AM_ICONV
   AM_LANGINFO_CODESET
   if test $ac_cv_header_locale_h = yes; then
-    gt_LC_MESSAGES
-  fi
-
-  if test -n "$INTL_MACOSX_LIBS"; then
-    CPPFLAGS="$CPPFLAGS -I/System/Library/Frameworks/CoreFoundation.framework/Headers"
+    AM_LC_MESSAGES
   fi
 
   dnl intl/plural.c is generated from intl/plural.y. It requires bison,
@@ -11553,50 +11539,6 @@ changequote([,])dnl
 ])
 
 
-dnl Checks for special options needed on MacOS X.
-dnl Defines INTL_MACOSX_LIBS.
-AC_DEFUN([gt_INTL_MACOSX],
-[
-  dnl Check for API introduced in MacOS X 10.2.
-  AC_CACHE_CHECK([for CFPreferencesCopyAppValue],
-    gt_cv_func_CFPreferencesCopyAppValue,
-    [gt_save_CPPFLAGS="$CPPFLAGS"
-     CPPFLAGS="$CPPFLAGS -I/System/Library/Frameworks/CoreFoundation.framework/Headers"
-     gt_save_LIBS="$LIBS"
-     LIBS="$LIBS -framework CoreFoundation"
-     AC_TRY_LINK([#include <CFPreferences.h>],
-       [CFPreferencesCopyAppValue(NULL, NULL)],
-       [gt_cv_func_CFPreferencesCopyAppValue=yes],
-       [gt_cv_func_CFPreferencesCopyAppValue=no])
-     CPPFLAGS="$gt_save_CPPFLAGS"
-     LIBS="$gt_save_LIBS"])
-  if test $gt_cv_func_CFPreferencesCopyAppValue = yes; then
-    AC_DEFINE([HAVE_CFPREFERENCESCOPYAPPVALUE], 1,
-      [Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in the CoreFoundation framework.])
-  fi
-  dnl Check for API introduced in MacOS X 10.3.
-  AC_CACHE_CHECK([for CFLocaleCopyCurrent], gt_cv_func_CFLocaleCopyCurrent,
-    [gt_save_CPPFLAGS="$CPPFLAGS"
-     CPPFLAGS="$CPPFLAGS -I/System/Library/Frameworks/CoreFoundation.framework/Headers"
-     gt_save_LIBS="$LIBS"
-     LIBS="$LIBS -framework CoreFoundation"
-     AC_TRY_LINK([#include <CFLocale.h>], [CFLocaleCopyCurrent();],
-       [gt_cv_func_CFLocaleCopyCurrent=yes],
-       [gt_cv_func_CFLocaleCopyCurrent=no])
-     CPPFLAGS="$gt_save_CPPFLAGS"
-     LIBS="$gt_save_LIBS"])
-  if test $gt_cv_func_CFLocaleCopyCurrent = yes; then
-    AC_DEFINE([HAVE_CFLOCALECOPYCURRENT], 1,
-      [Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the CoreFoundation framework.])
-  fi
-  INTL_MACOSX_LIBS=
-  if test $gt_cv_func_CFPreferencesCopyAppValue = yes || test $gt_cv_func_CFLocaleCopyCurrent = yes; then
-    INTL_MACOSX_LIBS="-Wl,-framework -Wl,CoreFoundation"
-  fi
-  AC_SUBST([INTL_MACOSX_LIBS])
-])
-
-
 dnl gt_CHECK_DECL(FUNC, INCLUDES)
 dnl Check whether a function is declared.
 AC_DEFUN([gt_CHECK_DECL],
@@ -11620,11 +11562,13 @@ AC_DEFUN([gt_CHECK_DECL],
 dnl Usage: AM_GNU_GETTEXT_VERSION([gettext-version])
 AC_DEFUN([AM_GNU_GETTEXT_VERSION], [])
 
-# po.m4 serial 5 (gettext-0.14.2)
-dnl Copyright (C) 1995-2005 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+# po.m4 serial 3 (gettext-0.14)
+dnl Copyright (C) 1995-2003 Free Software Foundation, Inc.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 dnl
 dnl This file can can be used in projects which are not available under
 dnl the GNU General Public License or the GNU Library General Public
@@ -11638,8 +11582,6 @@ dnl They are *not* in the public domain.
 dnl Authors:
 dnl   Ulrich Drepper <drepper@cygnus.com>, 1995-2000.
 dnl   Bruno Haible <haible@clisp.cons.org>, 2000-2003.
-
-AC_PREREQ(2.50)
 
 dnl Checks for all prerequisites of the po subdirectory.
 AC_DEFUN([AM_PO_SUBDIRS],
@@ -11656,7 +11598,7 @@ AC_DEFUN([AM_PO_SUBDIRS],
   dnl The first test excludes Solaris msgfmt and early GNU msgfmt versions.
   dnl The second test excludes FreeBSD msgfmt.
   AM_PATH_PROG_WITH_TEST(MSGFMT, msgfmt,
-    [$ac_dir/$ac_word --statistics /dev/null >&]AS_MESSAGE_LOG_FD[ 2>&1 &&
+    [$ac_dir/$ac_word --statistics /dev/null >/dev/null 2>&1 &&
      (if $ac_dir/$ac_word --statistics /dev/null 2>&1 >/dev/null | grep usage >/dev/null; then exit 1; else exit 0; fi)],
     :)
   AC_PATH_PROG(GMSGFMT, gmsgfmt, $MSGFMT)
@@ -11665,7 +11607,7 @@ AC_DEFUN([AM_PO_SUBDIRS],
   dnl The first test excludes Solaris xgettext and early GNU xgettext versions.
   dnl The second test excludes FreeBSD xgettext.
   AM_PATH_PROG_WITH_TEST(XGETTEXT, xgettext,
-    [$ac_dir/$ac_word --omit-header --copyright-holder= --msgid-bugs-address= /dev/null >&]AS_MESSAGE_LOG_FD[ 2>&1 &&
+    [$ac_dir/$ac_word --omit-header --copyright-holder= --msgid-bugs-address= /dev/null >/dev/null 2>&1 &&
      (if $ac_dir/$ac_word --omit-header --copyright-holder= --msgid-bugs-address= /dev/null 2>&1 >/dev/null | grep usage >/dev/null; then exit 1; else exit 0; fi)],
     :)
   dnl Remove leftover from FreeBSD xgettext call.
@@ -11673,7 +11615,7 @@ AC_DEFUN([AM_PO_SUBDIRS],
 
   dnl Search for GNU msgmerge 0.11 or newer in the PATH.
   AM_PATH_PROG_WITH_TEST(MSGMERGE, msgmerge,
-    [$ac_dir/$ac_word --update -q /dev/null /dev/null >&]AS_MESSAGE_LOG_FD[ 2>&1], :)
+    [$ac_dir/$ac_word --update -q /dev/null /dev/null >/dev/null 2>&1], :)
 
   dnl This could go away some day; the PATH_PROG_WITH_TEST already does it.
   dnl Test whether we really found GNU msgfmt.
@@ -11970,7 +11912,7 @@ changequote([,])dnl
     QMFILES="$QMFILES $srcdirpre$lang.qm"
     frobbedlang=`echo $lang | sed -e 's/\..*$//' -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
     MSGFILES="$MSGFILES $srcdirpre$frobbedlang.msg"
-    frobbedlang=`echo $lang | sed -e 's/_/-/g' -e 's/^sr-CS/sr-SP/' -e 's/@latin$/-Latn/' -e 's/@cyrillic$/-Cyrl/' -e 's/^sr-SP$/sr-SP-Latn/' -e 's/^uz-UZ$/uz-UZ-Latn/'`
+    frobbedlang=`echo $lang | sed -e 's/_/-/g'`
     RESOURCESDLLFILES="$RESOURCESDLLFILES $srcdirpre$frobbedlang/\$(DOMAIN).resources.dll"
   done
   # CATALOGS depends on both $ac_dir and the user's LINGUAS
@@ -12011,7 +11953,7 @@ changequote([,])dnl
       QTCATALOGS="$QTCATALOGS $lang.qm"
       frobbedlang=`echo $lang | sed -e 's/\..*$//' -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
       TCLCATALOGS="$TCLCATALOGS $frobbedlang.msg"
-      frobbedlang=`echo $lang | sed -e 's/_/-/g' -e 's/^sr-CS/sr-SP/' -e 's/@latin$/-Latn/' -e 's/@cyrillic$/-Cyrl/' -e 's/^sr-SP$/sr-SP-Latn/' -e 's/^uz-UZ$/uz-UZ-Latn/'`
+      frobbedlang=`echo $lang | sed -e 's/_/-/g'`
       CSHARPCATALOGS="$CSHARPCATALOGS $frobbedlang/\$(DOMAIN).resources.dll"
     done
   fi
@@ -12031,7 +11973,7 @@ EOF
   if grep -l '@CSHARPCATALOGS@' "$ac_file" > /dev/null; then
     # Add dependencies that cannot be formulated as a simple suffix rule.
     for lang in $ALL_LINGUAS; do
-      frobbedlang=`echo $lang | sed -e 's/_/-/g' -e 's/^sr-CS/sr-SP/' -e 's/@latin$/-Latn/' -e 's/@cyrillic$/-Cyrl/' -e 's/^sr-SP$/sr-SP-Latn/' -e 's/^uz-UZ$/uz-UZ-Latn/'`
+      frobbedlang=`echo $lang | sed -e 's/_/-/g'`
       cat >> "$ac_file.tmp" <<EOF
 $frobbedlang/\$(DOMAIN).resources.dll: $lang.po
 	@echo "\$(MSGFMT) -c --csharp -d \$(srcdir) -l $lang $srcdirpre$lang.po -r \$(DOMAIN)"; \
@@ -12049,9 +11991,11 @@ EOF
 
 # nls.m4 serial 1 (gettext-0.12)
 dnl Copyright (C) 1995-2003 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 dnl
 dnl This file can can be used in projects which are not available under
 dnl the GNU General Public License or the GNU Library General Public
@@ -12095,11 +12039,13 @@ AC_DEFUN([AM_MKINSTALLDIRS],
   AC_SUBST(MKINSTALLDIRS)
 ])
 
-# progtest.m4 serial 4 (gettext-0.14.2)
-dnl Copyright (C) 1996-2003, 2005 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+# progtest.m4 serial 3 (gettext-0.12)
+dnl Copyright (C) 1996-2003 Free Software Foundation, Inc.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 dnl
 dnl This file can can be used in projects which are not available under
 dnl the GNU General Public License or the GNU Library General Public
@@ -12112,8 +12058,6 @@ dnl They are *not* in the public domain.
 
 dnl Authors:
 dnl   Ulrich Drepper <drepper@cygnus.com>, 1996.
-
-AC_PREREQ(2.50)
 
 # Search path for a program which passes the given test.
 
@@ -12164,7 +12108,6 @@ AC_CACHE_VAL(ac_cv_path_$1,
       test -z "$ac_dir" && ac_dir=.
       for ac_exec_ext in '' $ac_executable_extensions; do
         if $ac_executable_p "$ac_dir/$ac_word$ac_exec_ext"; then
-          echo "$as_me: trying $ac_dir/$ac_word..." >&AS_MESSAGE_LOG_FD
           if [$3]; then
             ac_cv_path_$1="$ac_dir/$ac_word$ac_exec_ext"
             break 2
@@ -12188,11 +12131,13 @@ fi
 AC_SUBST($1)dnl
 ])
 
-# lib-prefix.m4 serial 4 (gettext-0.14.2)
-dnl Copyright (C) 2001-2005 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+# lib-prefix.m4 serial 3 (gettext-0.13)
+dnl Copyright (C) 2001-2003 Free Software Foundation, Inc.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Bruno Haible.
 
@@ -12259,7 +12204,7 @@ AC_DEFUN([AC_LIB_PREFIX],
         if test "X$additional_includedir" = "X/usr/local/include"; then
           if test -n "$GCC"; then
             case $host_os in
-              linux* | gnu* | k*bsd*-gnu) haveit=yes;;
+              linux*) haveit=yes;;
             esac
           fi
         fi
@@ -12342,11 +12287,13 @@ AC_DEFUN([AC_LIB_WITH_FINAL_PREFIX],
   prefix="$acl_save_prefix"
 ])
 
-# lib-link.m4 serial 5 (gettext-0.14.2)
-dnl Copyright (C) 2001-2005 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+# lib-link.m4 serial 4 (gettext-0.12)
+dnl Copyright (C) 2001-2003 Free Software Foundation, Inc.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Bruno Haible.
 
@@ -12692,7 +12639,7 @@ AC_DEFUN([AC_LIB_LINKFLAGS_BODY],
                 if test "X$additional_includedir" = "X/usr/local/include"; then
                   if test -n "$GCC"; then
                     case $host_os in
-                      linux* | gnu* | k*bsd*-gnu) haveit=yes;;
+                      linux*) haveit=yes;;
                     esac
                   fi
                 fi
@@ -12741,7 +12688,7 @@ AC_DEFUN([AC_LIB_LINKFLAGS_BODY],
                       if test "X$additional_libdir" = "X/usr/local/lib"; then
                         if test -n "$GCC"; then
                           case $host_os in
-                            linux* | gnu* | k*bsd*-gnu) haveit=yes;;
+                            linux*) haveit=yes;;
                           esac
                         fi
                       fi
@@ -12894,9 +12841,11 @@ AC_DEFUN([AC_LIB_APPENDTOVAR],
 
 # lib-ld.m4 serial 3 (gettext-0.13)
 dnl Copyright (C) 1996-2003 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl Subroutines of libtool.m4,
 dnl with replacements s/AC_/AC_LIB/ and s/lt_cv/acl_cv/ to avoid collision
@@ -13005,9 +12954,11 @@ AC_LIB_PROG_LD_GNU
 
 # iconv.m4 serial AM4 (gettext-0.11.3)
 dnl Copyright (C) 2000-2002 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Bruno Haible.
 
@@ -13105,42 +13056,13 @@ size_t iconv();
   fi
 ])
 
-# glibc2.m4 serial 1
-dnl Copyright (C) 2000-2002, 2004 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
-
-# Test for the GNU C Library, version 2.0 or newer.
-# From Bruno Haible.
-
-AC_DEFUN([gt_GLIBC2],
-  [
-    AC_CACHE_CHECK(whether we are using the GNU C Library 2 or newer,
-      ac_cv_gnu_library_2,
-      [AC_EGREP_CPP([Lucky GNU user],
-	[
-#include <features.h>
-#ifdef __GNU_LIBRARY__
- #if (__GLIBC__ >= 2)
-  Lucky GNU user
- #endif
-#endif
-	],
-	ac_cv_gnu_library_2=yes,
-	ac_cv_gnu_library_2=no)
-      ]
-    )
-    AC_SUBST(GLIBC2)
-    GLIBC2="$ac_cv_gnu_library_2"
-  ]
-)
-
 # signed.m4 serial 1 (gettext-0.10.40)
 dnl Copyright (C) 2001-2002 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Bruno Haible.
 
@@ -13154,17 +13076,19 @@ AC_DEFUN([bh_C_SIGNED],
   fi
 ])
 
-# longlong.m4 serial 5
-dnl Copyright (C) 1999-2004 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+# longlong.m4 serial 4
+dnl Copyright (C) 1999-2003 Free Software Foundation, Inc.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Paul Eggert.
 
 # Define HAVE_LONG_LONG if 'long long' works.
 
-AC_DEFUN([gl_AC_TYPE_LONG_LONG],
+AC_DEFUN([jm_AC_TYPE_LONG_LONG],
 [
   AC_CACHE_CHECK([for long long], ac_cv_type_long_long,
   [AC_TRY_LINK([long long ll = 1LL; int i = 63;],
@@ -13180,9 +13104,11 @@ AC_DEFUN([gl_AC_TYPE_LONG_LONG],
 
 # longdouble.m4 serial 1 (gettext-0.12)
 dnl Copyright (C) 2002-2003 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Bruno Haible.
 dnl Test whether the compiler supports the 'long double' type.
@@ -13209,9 +13135,11 @@ AC_DEFUN([gt_TYPE_LONGDOUBLE],
 
 # wchar_t.m4 serial 1 (gettext-0.12)
 dnl Copyright (C) 2002-2003 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Bruno Haible.
 dnl Test whether <stddef.h> has the 'wchar_t' type.
@@ -13230,9 +13158,11 @@ AC_DEFUN([gt_TYPE_WCHAR_T],
 
 # wint_t.m4 serial 1 (gettext-0.12)
 dnl Copyright (C) 2003 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Bruno Haible.
 dnl Test whether <wchar.h> has the 'wint_t' type.
@@ -13249,65 +13179,71 @@ AC_DEFUN([gt_TYPE_WINT_T],
   fi
 ])
 
-# inttypes_h.m4 serial 6
-dnl Copyright (C) 1997-2004 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+# inttypes_h.m4 serial 5 (gettext-0.12)
+dnl Copyright (C) 1997-2003 Free Software Foundation, Inc.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Paul Eggert.
 
 # Define HAVE_INTTYPES_H_WITH_UINTMAX if <inttypes.h> exists,
 # doesn't clash with <sys/types.h>, and declares uintmax_t.
 
-AC_DEFUN([gl_AC_HEADER_INTTYPES_H],
+AC_DEFUN([jm_AC_HEADER_INTTYPES_H],
 [
-  AC_CACHE_CHECK([for inttypes.h], gl_cv_header_inttypes_h,
+  AC_CACHE_CHECK([for inttypes.h], jm_ac_cv_header_inttypes_h,
   [AC_TRY_COMPILE(
     [#include <sys/types.h>
 #include <inttypes.h>],
     [uintmax_t i = (uintmax_t) -1;],
-    gl_cv_header_inttypes_h=yes,
-    gl_cv_header_inttypes_h=no)])
-  if test $gl_cv_header_inttypes_h = yes; then
+    jm_ac_cv_header_inttypes_h=yes,
+    jm_ac_cv_header_inttypes_h=no)])
+  if test $jm_ac_cv_header_inttypes_h = yes; then
     AC_DEFINE_UNQUOTED(HAVE_INTTYPES_H_WITH_UINTMAX, 1,
       [Define if <inttypes.h> exists, doesn't clash with <sys/types.h>,
        and declares uintmax_t. ])
   fi
 ])
 
-# stdint_h.m4 serial 5
-dnl Copyright (C) 1997-2004 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+# stdint_h.m4 serial 3 (gettext-0.12)
+dnl Copyright (C) 1997-2003 Free Software Foundation, Inc.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Paul Eggert.
 
 # Define HAVE_STDINT_H_WITH_UINTMAX if <stdint.h> exists,
 # doesn't clash with <sys/types.h>, and declares uintmax_t.
 
-AC_DEFUN([gl_AC_HEADER_STDINT_H],
+AC_DEFUN([jm_AC_HEADER_STDINT_H],
 [
-  AC_CACHE_CHECK([for stdint.h], gl_cv_header_stdint_h,
+  AC_CACHE_CHECK([for stdint.h], jm_ac_cv_header_stdint_h,
   [AC_TRY_COMPILE(
     [#include <sys/types.h>
 #include <stdint.h>],
     [uintmax_t i = (uintmax_t) -1;],
-    gl_cv_header_stdint_h=yes,
-    gl_cv_header_stdint_h=no)])
-  if test $gl_cv_header_stdint_h = yes; then
+    jm_ac_cv_header_stdint_h=yes,
+    jm_ac_cv_header_stdint_h=no)])
+  if test $jm_ac_cv_header_stdint_h = yes; then
     AC_DEFINE_UNQUOTED(HAVE_STDINT_H_WITH_UINTMAX, 1,
       [Define if <stdint.h> exists, doesn't clash with <sys/types.h>,
        and declares uintmax_t. ])
   fi
 ])
 
-# intmax.m4 serial 2 (gettext-0.14.2)
-dnl Copyright (C) 2002-2005 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+# intmax.m4 serial 1 (gettext-0.12)
+dnl Copyright (C) 2002-2003 Free Software Foundation, Inc.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Bruno Haible.
 dnl Test whether the system has the 'intmax_t' type, but don't attempt to
@@ -13315,11 +13251,11 @@ dnl find a replacement if it is lacking.
 
 AC_DEFUN([gt_TYPE_INTMAX_T],
 [
-  AC_REQUIRE([gl_AC_HEADER_INTTYPES_H])
-  AC_REQUIRE([gl_AC_HEADER_STDINT_H])
+  AC_REQUIRE([jm_AC_HEADER_INTTYPES_H])
+  AC_REQUIRE([jm_AC_HEADER_STDINT_H])
   AC_CACHE_CHECK(for intmax_t, gt_cv_c_intmax_t,
     [AC_TRY_COMPILE([
-#include <stddef.h>
+#include <stddef.h> 
 #include <stdlib.h>
 #if HAVE_STDINT_H_WITH_UINTMAX
 #include <stdint.h>
@@ -13336,9 +13272,11 @@ AC_DEFUN([gt_TYPE_INTMAX_T],
 
 # printf-posix.m4 serial 2 (gettext-0.13.1)
 dnl Copyright (C) 2003 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Bruno Haible.
 dnl Test whether the printf() function supports POSIX/XSI format strings with
@@ -13379,16 +13317,18 @@ int main ()
   esac
 ])
 
-# glibc21.m4 serial 3
-dnl Copyright (C) 2000-2002, 2004 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+# glibc21.m4 serial 2 (fileutils-4.1.3, gettext-0.10.40)
+dnl Copyright (C) 2000-2002 Free Software Foundation, Inc.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 # Test for the GNU C Library, version 2.1 or newer.
 # From Bruno Haible.
 
-AC_DEFUN([gl_GLIBC21],
+AC_DEFUN([jm_GLIBC21],
   [
     AC_CACHE_CHECK(whether we are using the GNU C Library 2.1 or newer,
       ac_cv_gnu_library_2_1,
@@ -13412,9 +13352,11 @@ AC_DEFUN([gl_GLIBC21],
 
 # intdiv0.m4 serial 1 (gettext-0.11.3)
 dnl Copyright (C) 2002 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Bruno Haible.
 
@@ -13481,11 +13423,13 @@ int main ()
     [Define if integer division by zero raises signal SIGFPE.])
 ])
 
-# uintmax_t.m4 serial 9
-dnl Copyright (C) 1997-2004 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+# uintmax_t.m4 serial 7 (gettext-0.12)
+dnl Copyright (C) 1997-2003 Free Software Foundation, Inc.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Paul Eggert.
 
@@ -13494,12 +13438,12 @@ AC_PREREQ(2.13)
 # Define uintmax_t to 'unsigned long' or 'unsigned long long'
 # if it is not already defined in <stdint.h> or <inttypes.h>.
 
-AC_DEFUN([gl_AC_TYPE_UINTMAX_T],
+AC_DEFUN([jm_AC_TYPE_UINTMAX_T],
 [
-  AC_REQUIRE([gl_AC_HEADER_INTTYPES_H])
-  AC_REQUIRE([gl_AC_HEADER_STDINT_H])
-  if test $gl_cv_header_inttypes_h = no && test $gl_cv_header_stdint_h = no; then
-    AC_REQUIRE([gl_AC_TYPE_UNSIGNED_LONG_LONG])
+  AC_REQUIRE([jm_AC_HEADER_INTTYPES_H])
+  AC_REQUIRE([jm_AC_HEADER_STDINT_H])
+  if test $jm_ac_cv_header_inttypes_h = no && test $jm_ac_cv_header_stdint_h = no; then
+    AC_REQUIRE([jm_AC_TYPE_UNSIGNED_LONG_LONG])
     test $ac_cv_type_unsigned_long_long = yes \
       && ac_type='unsigned long long' \
       || ac_type='unsigned long'
@@ -13512,17 +13456,19 @@ AC_DEFUN([gl_AC_TYPE_UINTMAX_T],
   fi
 ])
 
-# ulonglong.m4 serial 4
-dnl Copyright (C) 1999-2004 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+# ulonglong.m4 serial 3
+dnl Copyright (C) 1999-2003 Free Software Foundation, Inc.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Paul Eggert.
 
 # Define HAVE_UNSIGNED_LONG_LONG if 'unsigned long long' works.
 
-AC_DEFUN([gl_AC_TYPE_UNSIGNED_LONG_LONG],
+AC_DEFUN([jm_AC_TYPE_UNSIGNED_LONG_LONG],
 [
   AC_CACHE_CHECK([for unsigned long long], ac_cv_type_unsigned_long_long,
   [AC_TRY_LINK([unsigned long long ull = 1ULL; int i = 63;],
@@ -13538,9 +13484,11 @@ AC_DEFUN([gl_AC_TYPE_UNSIGNED_LONG_LONG],
 
 # inttypes.m4 serial 1 (gettext-0.11.4)
 dnl Copyright (C) 1997-2002 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Paul Eggert.
 
@@ -13564,9 +13512,11 @@ AC_DEFUN([gt_HEADER_INTTYPES_H],
 
 # inttypes-pri.m4 serial 1 (gettext-0.11.4)
 dnl Copyright (C) 1997-2002 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Bruno Haible.
 
@@ -13593,25 +13543,28 @@ char *p = PRId32;
   fi
 ])
 
-# xsize.m4 serial 3
-dnl Copyright (C) 2003-2004 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+# xsize.m4 serial 2
+dnl Copyright (C) 2003 Free Software Foundation, Inc.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 AC_DEFUN([gl_XSIZE],
 [
   dnl Prerequisites of lib/xsize.h.
   AC_REQUIRE([gl_SIZE_MAX])
-  AC_REQUIRE([AC_C_INLINE])
   AC_CHECK_HEADERS(stdint.h)
 ])
 
 # size_max.m4 serial 2
 dnl Copyright (C) 2003 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Bruno Haible.
 
@@ -13669,9 +13622,11 @@ Found it
 
 # codeset.m4 serial AM1 (gettext-0.10.40)
 dnl Copyright (C) 2000-2002 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
+dnl This file is free software, distributed under the terms of the GNU
+dnl General Public License.  As a special exception to the GNU General
+dnl Public License, this file may be distributed as part of a program
+dnl that contains a configuration script generated by Autoconf, under
+dnl the same distribution terms as the rest of that program.
 
 dnl From Bruno Haible.
 
@@ -13689,42 +13644,11 @@ AC_DEFUN([AM_LANGINFO_CODESET],
   fi
 ])
 
-# lcmessage.m4 serial 4 (gettext-0.14.2)
-dnl Copyright (C) 1995-2002, 2004-2005 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
-dnl
-dnl This file can can be used in projects which are not available under
-dnl the GNU General Public License or the GNU Library General Public
-dnl License but which still want to provide support for the GNU gettext
-dnl functionality.
-dnl Please note that the actual code of the GNU gettext library is covered
-dnl by the GNU Library General Public License, and the rest of the GNU
-dnl gettext package package is covered by the GNU General Public License.
-dnl They are *not* in the public domain.
-
-dnl Authors:
-dnl   Ulrich Drepper <drepper@cygnus.com>, 1995.
-
-# Check whether LC_MESSAGES is available in <locale.h>.
-
-AC_DEFUN([gt_LC_MESSAGES],
-[
-  AC_CACHE_CHECK([for LC_MESSAGES], gt_cv_val_LC_MESSAGES,
-    [AC_TRY_LINK([#include <locale.h>], [return LC_MESSAGES],
-       gt_cv_val_LC_MESSAGES=yes, gt_cv_val_LC_MESSAGES=no)])
-  if test $gt_cv_val_LC_MESSAGES = yes; then
-    AC_DEFINE(HAVE_LC_MESSAGES, 1,
-      [Define if your <locale.h> file defines LC_MESSAGES.])
-  fi
-])
-
 
 dnl PKG_CHECK_MODULES(GSTUFF, gtk+-2.0 >= 1.3 glib = 1.3.4, action-if, action-not)
 dnl defines GSTUFF_LIBS, GSTUFF_CFLAGS, see pkg-config man page
 dnl also defines GSTUFF_PKG_ERRORS on error
-AC_DEFUN(PKG_CHECK_MODULES, [
+AC_DEFUN([PKG_CHECK_MODULES], [
   succeeded=no
 
   if test -z "$PKG_CONFIG"; then
