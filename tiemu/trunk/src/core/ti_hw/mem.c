@@ -71,9 +71,12 @@ uint32_t mem_msk[16];		// pseudo chip-select (allow wrapping / ghost space)
 static GETBYTE_FUNC	get_byte_ptr;
 static GETWORD_FUNC	get_word_ptr;
 static GETLONG_FUNC	get_long_ptr;
+
 static PUTBYTE_FUNC	put_byte_ptr;
 static PUTWORD_FUNC	put_word_ptr;
 static PUTLONG_FUNC	put_long_ptr;
+
+	   HWPFETCH_FUNC hwp_fetch_ptr;
 
 /* Mem init/exit */
 
@@ -101,7 +104,7 @@ int hw_mem_init(void)
 		tihw.ram_size = 2*MB;	// used to avoid mirroring of segments
 
 	// init vars
-    tihw.protect = 0;	//params.hw_protect;
+    tihw.protect = 0;
 	hw_flash_init();
 
     // clear breakpoints
@@ -198,6 +201,7 @@ int hw_mem_init(void)
 			put_byte_ptr = ti89_hwp_put_byte;
 			put_word_ptr = ti89_hwp_put_word;
 			put_long_ptr = ti89_hwp_put_long;
+			hwp_fetch_ptr = ti89_hwp_fetch;
 		}
 	break;
 

@@ -95,3 +95,5 @@ int ti92p_mem_init(void)
   
     return 0;
 }
+
+// see mem89.c

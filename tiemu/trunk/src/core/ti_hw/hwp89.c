@@ -32,14 +32,10 @@
 
 #include "libuae.h"
 #include "ports.h"
-#include "hw.h"
 #include "mem.h"
-#include "images.h"
-#include "bkpts.h"
-#include "m68k.h"
+#include "mem89.h"
 #include "ti68k_def.h"
 #include "ti68k_int.h"
-#include "flash.h"
 
 static int access1 = 0;		// protection access authorization (hw1)
 static int access2 = 0;		// same (hw2)
@@ -200,24 +196,7 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 #endif
 
     // memory
-    if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
-	{
-        return bget(adr);
-	}
-    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
-	{
-        return (bget(adr) | wsm.ret_or);
-	}
-    else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
-	{
-       return io_get_byte(adr);
-	}
-	else if(IN_RANGE(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
-	{
-		return io2_get_byte(adr);
-	}
-
-    return 0x14;
+	return ti89_get_byte(adr);
 }
 
 uint16_t ti89_hwp_get_word(uint32_t adr) 
@@ -316,22 +295,7 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 #endif
 
     // memory
-    if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
-	{
-        bput(adr, arg);
-	}
-    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
-	{
-        FlashWriteByte(adr,arg);
-	}
-    else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
-	{
-		io_put_byte(adr, arg);
-	}
-	else if(IN_RANGE(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
-	{
-		io2_put_byte(adr, arg);
-	}
+    ti89_put_byte(adr, arg);
 
     return;
 }

@@ -37,7 +37,7 @@
 #include "ti68k_err.h"
 #include "flash.h"
 
-#define SAV_REVISION	3
+#define SAV_REVISION	4
 
 static int load_bkpt(FILE *f, GList **l)
 {
