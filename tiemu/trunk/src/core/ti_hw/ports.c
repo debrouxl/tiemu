@@ -223,7 +223,6 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         break;
         case 0x1b:	// r- <76543210>
         	// Write any value to $60001B to acknowledge this interrupt (AutoInt2)
-			printf("!");
         break;
         case 0x1c:	// -w <..5432..>
         	// %[5-2] set: LCD RS (row sync) frequency, OSC2/((16-n)*8)

@@ -305,7 +305,7 @@ int hid_init(void)
 
   	// Init SDL
   	DISPLAY("Initializing Simple Directmedia Layer (SDL)... ");
-  	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) 
+  	if(SDL_Init(SDL_INIT_VIDEO) < 0) 
     {
 	  	gchar *s = g_strdup_printf("SDL: can't initialize: %s\n", SDL_GetError());
 	  	tiemu_error(0, s);
@@ -353,7 +353,7 @@ int hid_exit(void)
 /* Converts a keyboard key (an SDL event) into a TI key */
 static int sdl_to_ti(int key) 
 {
-  	if((tihw.calc_type == TI92) || (tihw.calc_type == TI92p) || (tihw.calc_type == V200))
+  	if(tihw.calc_type != TI89)
     {
       	switch(key) 
 		{
@@ -582,33 +582,24 @@ static int sdl_to_ti(int key)
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 void gui_popup_menu(void);
 
-static SDL_TimerID tid;
-static Uint32 release_capslock(Uint32 interval, void *param)
-{
-	int key = (int)param;
-
-	printf("d");
-	ti68k_kbd_set_key(key, 0);	
-
-	SDL_RemoveTimer(tid);
-
-	return 0;
-}
-
 int hid_update_keys(void) 
 {
+	SDL_Event event;
 	static int iKeyWasPressed;			// a key was pressed
-  	SDL_Event event;
+	static Uint32 caps_ticks = -1;		// #ticks since CAPS/LOCK pressed
 
-  	iKeyWasPressed = 0;
-
-	if(iKeyWasPressed)
+	// simulate a key press/release due to nature of CAPS/LOCK
+	if(caps_ticks != -1)
 	{
-		/*if(iLastKey == TIKEY_ALPHA)
+		if(SDL_GetTicks() - caps_ticks > 30)
 		{
-
-		}*/
+			// release CAPS/LOCK
+			ti68k_kbd_set_key(TIKEY_ALPHA, 0);
+			caps_ticks = -1;
+		}
 	}
+
+	iKeyWasPressed = 0;
   
   	while(SDL_PollEvent(&event)) 
     {
@@ -651,6 +642,7 @@ int hid_update_keys(void)
 		  			if(event.button.button == 1) 
 		    		{
 		      			ti68k_kbd_set_key(key, 0);
+						iKeyWasPressed = 0;
 		    		}
 				}
 	    	}
@@ -697,10 +689,8 @@ int hid_update_keys(void)
 
 				if(event.key.keysym.sym == SDLK_CAPSLOCK)
 				{
-					printf("u");
 					ti68k_kbd_set_key(key, 1);
-					// simulate a key press/release due to nature of CAPS/LOCK
-					tid = SDL_AddTimer(30, release_capslock, (void *)key);
+					caps_ticks = SDL_GetTicks();
 				}
 	    	}
 		}
@@ -709,13 +699,14 @@ int hid_update_keys(void)
 			int key = sdl_to_ti(event.key.keysym.sym);
 
 			if(event.key.keysym.sym != SDLK_CAPSLOCK)
+			{
 	  			ti68k_kbd_set_key(key, 0);
+				iKeyWasPressed = 0;
+			}
 			else
 			{
-				printf("u");
 				ti68k_kbd_set_key(key, 1);
-				// simulate a key press/release due to nature of CAPS/LOCK
-				tid = SDL_AddTimer(30, release_capslock, (void *)key);
+				caps_ticks = SDL_GetTicks();
 			}
 
 			/*
