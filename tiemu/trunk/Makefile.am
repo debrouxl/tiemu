@@ -4,6 +4,6 @@
 SUBDIRS = \
 	build glade help man pixmaps ROMs skins src
 
-dist_pkgdata_DATA = COPYING RELEASE AUTHORS
+dist_pkgdata_DATA = COPYING RELEASE AUTHORS LICENSES
 
 EXTRA_DIST = README.* TODO docs

@@ -1,0 +1,20 @@
+Copyright informations on PedRom:
+
+PedRom is free software and released under "GNU GENERAL PUBLIC LICENSE Version 2, June 1991".
+Source code of PedRom can be found at <http://www.ticalc.org/archives/files/fileinfo/319/31951.html>.
+
+;*
+;* PedroM - Operating System for Ti-89/Ti-92+/V200.
+;* Copyright (C) 2003 PpHd
+;*
+;* This program is free software ; you can redistribute it and/or modify it under the
+;* terms of the GNU General Public License as published by the Free Software Foundation;
+;* either version 2 of the License, or (at your option) any later version. 
+;* 
+;* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+;* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+;* See the GNU General Public License for more details. 
+;* 
+;* You should have received a copy of the GNU General Public License along with this program;
+;* if not, write to the 
+;* Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 

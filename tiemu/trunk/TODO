@@ -11,22 +11,6 @@ Kevin
 * Un truc qui serait bien serait une fonction "breakpoint on program entry".
 Mais comme la feature dans VTI est implémentée plutôt avec les pieds, il
 faudrait qu'on discute de ça ensemble pour ne pas faire les mêmes erreurs.
-Le problème n°1 dans VTI est sa manière foireuse de récupérer l'adresse du
-heap. Voici une méthode qui fonctionne:
- move.l $c8,a3 ;get ROM call table address
- cmp.l #$441,-4(a3) ;check if HeapTable is present
- bcs.s getheap_ams1
- lea.l $441*4(a3),a0 ;get address of HeapTable
- move.l a0,(a4)+ ;set Heap
- bra.s getheap_ams2
-getheap_ams1:
- move.l HeapDeref*4(a3),a0
- clr.w (a4)+
- move.w 8(a0),(a4)+ ;set Heap
-getheap_ams2:
-Ceci devrait être facilement implémentable en C dans l'émulateur, ce ne sont
-que des lookups d'adresses. Ce code pourrait aussi être utilisé pour
-afficher une fenêtre "Handles" comme le fait VTI.
 
 *  Il y a un bogue avec le débogueur et les touches: prends un AMS 2.0x ou 3.0x, mets 
 un breakpoint sur le trap #11, lance un programme ASM (même Exec "4e750000" suffit), 

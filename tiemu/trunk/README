@@ -325,19 +325,3 @@ Please report any bugs at <tilp-devel@lists.sf.net>.
 
 See the TODO file for more informations.
 Conttributing, help, testing is welcome :-))
-
-
-+-----------+
-| COPYRIGHT |
-+-----------+
-
-TiEmu is copyright (C) 2001-2004 by Romain Lievin. 
-TiLP framework is copyright (c) 1999-2004 by Romain Lievin <roms@tilp.info>
-GtkTiEmu and the libti68k library are copyright (C) 2000-2001 by Romain Lievin 
-<roms@lpg.ticalc.org> and Thomas Corvazier <corvazier@yahoo.com>
-
-TiEmu is based on the XTiger emulator (see AUTHORS for more details) which is based on UAE (Universal Amiga Emulator).
-
-
-Copying is allowed under the terms of GNU General Public License (GPL).  
-See the file COPYING for more details.

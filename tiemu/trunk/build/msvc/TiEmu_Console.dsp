@@ -180,6 +180,10 @@ SOURCE=..\..\src\core\dbg\disasm.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\dbg\fpudasm.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\dbg\m68kdasm.c
 # End Source File
 # End Group
