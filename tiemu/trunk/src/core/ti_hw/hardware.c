@@ -198,8 +198,8 @@ void hw_update(void)
   		
   	// Update LCD (HW1: every 16Th timer tick, HW2: unrelated)
   	//if((tihw.hw_type == HW1) && !(tihw.timer_value & 15))
-	if(!(tihw.timer_value & 15))
-  		cb_update_screen();
+	//if(!(tihw.timer_value & 15))
+  	//	cb_update_screen();
 }
 
 /*

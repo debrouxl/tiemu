@@ -56,10 +56,10 @@ ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
-gint
-timer_loop (gpointer data)
+static gint hid_refresh (gpointer data)
 {
-    cb_update_screen();
+    hid_update_lcd();
+    hid_update_keys();
 
     return TRUE;
 }
@@ -70,7 +70,6 @@ int main(int argc, char **argv)
 	GThread *thread = NULL;
 	GError *error = NULL;
     //char *dstname;
-    guint id;
 
 	/*
 		Do primary initializations 
@@ -203,21 +202,17 @@ int main(int argc, char **argv)
     splash_screen_stop();
 
 	/*
-		Surprisingly, this way is less CPU intensive than gtk_main()
-		and putting the cb_update_key in a gtk_idle function.
+		Surprisingly, using gtk_main_iteration is less CPU intensive than 
+        gtk_main() and the hid_update_key in a gtk_idle function.
 		GTK popup menu is called from SDL in hid.c
+        Timeout handler is used to refresh display. This way is 10% less CPU 
+        intensive than direct updating from hardware at hardware rate.
 	*/
-	gdk_threads_enter();
+    gtk_timeout_add((params.lcd_rate == -1) ? 10 : params.lcd_rate, 
+           (GtkFunction)hid_refresh, NULL);
 
-    //id = gtk_timeout_add(20, (GtkFunction) timer_loop, NULL);
-
-	while(1) {
-		// poll SDL events
-		hid_update_keys();
-
-		// do an iteration
-		gtk_main_iteration();
-	}
+   	gdk_threads_enter();
+    gtk_main();
 	gdk_threads_leave();
 
 	/* 
