@@ -46,29 +46,53 @@ static void renderer_edited(GtkCellRendererText * cell,
 			    const gchar * path_string,
 			    const gchar * new_text, gpointer user_data)
 {
-	GtkTreePath *path = gtk_tree_path_new_from_string(path_string);
-	GtkTreeIter iter;
-	GtkTreeModel *model = GTK_TREE_MODEL(user_data);
-	gint value;
+    GtkWidget *list = clist;
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkListStore *store = user_data;
+	GtkTreeModel *model = GTK_TREE_MODEL(store);
 
-	GtkTreePath *path2;
-	GtkTreeViewColumn *column;
-	GtkTreeView *view = GTK_TREE_VIEW(clist);
+    GtkTreeViewColumn *column;
+    GtkTreeIter iter;
+	GtkTreePath *path;	
 	gint col;
+    gchar *str_addr;
+    gchar *str_data = new_text;
+    int addr, data;
+    uint8_t *mem_ptr;
 
+    // get column
+    gtk_tree_view_get_cursor(view, &path, &column);
+    if(!path || !column)
+        return;
+
+    // get iterator
 	if (!gtk_tree_model_get_iter(model, &iter, path))
 		return;
 
-	printf("<%s> %s\n", path_string, new_text);
-
-
-
-	gtk_tree_view_get_cursor(view, &path2, &column);
+    // get old value
 	col = column2index(column);
-	printf("<%p %p> %i\n", path2, column, col);
+    gtk_tree_model_get(model, &iter, COLUMN_ADDR, &str_addr, -1);
 
-	gtk_tree_model_get(model, &iter, col, &value, -1);
+    printf("@<%s> = <%s>\n", str_addr, str_data);
 
+    // check for new value
+    if(!isxdigit(str_data[0]) || !isxdigit(str_data[1]) || (strlen(str_data) > 2))
+    {
+        gtk_tree_path_free(path);
+        return;
+    }
+
+    // set new value
+    gtk_list_store_set(store, &iter, col, new_text,	-1);
+
+    // and update memory
+    sscanf(str_addr, "%lx", &addr);
+    sscanf(str_data, "%x", &data);
+    addr += (col - COLUMN_0);
+    mem_ptr = (uint8_t *)ti68k_get_real_address(addr);
+	*mem_ptr = data;
+
+    g_free(str_addr);
 	gtk_tree_path_free(path);
 }
 
@@ -301,15 +325,6 @@ on_dbgmem_window_destroy               (GtkObject       *object,
     gtk_widget_destroy(GTK_WIDGET(object));
 }
 
-GLADE_CB gboolean
-on_notebook1_select_page               (GtkNotebook     *notebook,
-                                        gboolean         move_focus,
-                                        gpointer         user_data)
-{
-    printf("!\n");
-
-  return FALSE;
-}
 
 GLADE_CB void
 on_add1_activate                       (GtkMenuItem     *menuitem,
