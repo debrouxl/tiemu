@@ -5,44 +5,37 @@
 
 <widget class="GtkDialog" id="about_dbox">
   <property name="visible">True</property>
-  <property name="title" translatable="yes">About GtkTiEmu...</property>
+  <property name="title" translatable="yes">About TiLP...</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
-  <property name="resizable">True</property>
+  <property name="default_width">320</property>
+  <property name="default_height">240</property>
+  <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
   <property name="has_separator">True</property>
 
   <child internal-child="vbox">
-    <widget class="GtkVBox" id="dialog-vbox1">
+    <widget class="GtkVBox" id="dialog-vbox2">
       <property name="visible">True</property>
       <property name="homogeneous">False</property>
       <property name="spacing">0</property>
 
       <child internal-child="action_area">
-	<widget class="GtkHButtonBox" id="dialog-action_area1">
+	<widget class="GtkHButtonBox" id="dialog-action_area2">
 	  <property name="visible">True</property>
 	  <property name="layout_style">GTK_BUTTONBOX_END</property>
 
 	  <child>
-	    <widget class="GtkHButtonBox" id="hbuttonbox1">
+	    <widget class="GtkButton" id="okbutton1">
 	      <property name="visible">True</property>
-	      <property name="layout_style">GTK_BUTTONBOX_DEFAULT_STYLE</property>
-	      <property name="spacing">30</property>
-
-	      <child>
-		<widget class="GtkButton" id="button1">
-		  <property name="visible">True</property>
-		  <property name="can_default">True</property>
-		  <property name="can_focus">True</property>
-		  <property name="label">gtk-close</property>
-		  <property name="use_stock">True</property>
-		  <property name="relief">GTK_RELIEF_NORMAL</property>
-		  <signal name="clicked" handler="about_ok_button_clicked"/>
-		  <accelerator key="Return" modifiers="0" signal="clicked"/>
-		  <accelerator key="Escape" modifiers="0" signal="clicked"/>
-		</widget>
-	      </child>
+	      <property name="can_default">True</property>
+	      <property name="can_focus">True</property>
+		  <property name="has_focus">True</property>
+	      <property name="label">gtk-ok</property>
+	      <property name="use_stock">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="response_id">-5</property>
 	    </widget>
 	  </child>
 	</widget>
@@ -67,7 +60,7 @@
 	  <child>
 	    <widget class="GtkImage" id="pixmap2">
 	      <property name="visible">True</property>
-	      <property name="pixbuf">logo.xpm</property>
+	      <property name="pixbuf">../pixmaps/logo.xpm</property>
 	      <property name="xalign">0.5</property>
 	      <property name="yalign">0.5</property>
 	      <property name="xpad">0</property>
@@ -108,7 +101,7 @@
 	      <child>
 		<widget class="GtkLabel" id="label5">
 		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">* GtkTiEmu, version 1.45</property>
+		  <property name="label" translatable="yes">* TiLP, version 6.00</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">False</property>
 		  <property name="justify">GTK_JUSTIFY_CENTER</property>
@@ -151,8 +144,10 @@
 		<widget class="GtkLabel" id="label7">
 		  <property name="visible">True</property>
 		  <property name="label" translatable="yes">* Supported platforms are:
-  - Linux (any): RL &lt;roms@tilp.info&gt;
-  - Win32 (Windows 9x/Me/NT4/2000): RL &lt;roms@tilp.info&gt;</property>
+  - Linux (i386, Alpha, Sparc): RL &lt;roms@lpg.ticalc.org&gt;
+  - Win32 (Windows 9x/Me/NT4/2000): RL &lt;roms@lpg.ticalc.org&gt;
+  - Macintosh (Mac OS-X): JB &lt;jb@jblache.org&gt;
+  - FreeBSD: TC &lt;tijl@ulyssis.org&gt;</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">False</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -173,7 +168,7 @@
 	      <child>
 		<widget class="GtkLabel" id="label8">
 		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">* Official homepage: http://lpg.ticalc.org/prj__tiemu</property>
+		  <property name="label" translatable="yes">* Official homepage: http://tilp.info</property>
 		  <property name="use_underline">True</property>
 		  <property name="use_markup">False</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -194,7 +189,7 @@
 	      <child>
 		<widget class="GtkLabel" id="label9">
 		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">* This program is based on UAE (Universal Amiga Emulator)</property>
+		  <property name="label" translatable="yes">* Web site designed by Russel G. Howe</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">False</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -257,11 +252,54 @@
 	      <child>
 		<widget class="GtkLabel" id="label11">
 		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">Program placed under GPL license. Libraries placed under LPGL.</property>
+		  <property name="label" translatable="yes">* Program placed under GPL license. 
+Libraries placed under LPGL.</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">False</property>
 		  <property name="justify">GTK_JUSTIFY_CENTER</property>
-		  <property name="wrap">True</property>
+		  <property name="wrap">False</property>
+		  <property name="selectable">False</property>
+		  <property name="xalign">0</property>
+		  <property name="yalign">0.5</property>
+		  <property name="xpad">10</property>
+		  <property name="ypad">0</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
+		  <property name="fill">False</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkLabel" id="label14">
+		  <property name="visible">True</property>
+		  <property name="label" translatable="yes"></property>
+		  <property name="use_underline">False</property>
+		  <property name="use_markup">False</property>
+		  <property name="justify">GTK_JUSTIFY_LEFT</property>
+		  <property name="wrap">False</property>
+		  <property name="selectable">False</property>
+		  <property name="xalign">0</property>
+		  <property name="yalign">0.5</property>
+		  <property name="xpad">10</property>
+		  <property name="ypad">0</property>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
+		  <property name="fill">False</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkLabel" id="label13">
+		  <property name="visible">True</property>
+		  <property name="label" translatable="yes">* Program developed by the TiLP team &lt;tilp-users@lists.sf.net&gt;</property>
+		  <property name="use_underline">False</property>
+		  <property name="use_markup">False</property>
+		  <property name="justify">GTK_JUSTIFY_CENTER</property>
+		  <property name="wrap">False</property>
 		  <property name="selectable">False</property>
 		  <property name="xalign">0</property>
 		  <property name="yalign">0.5</property>
@@ -310,7 +348,7 @@
 	      <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
 
 	      <child>
-		<widget class="GtkTextView" id="text1">
+		<widget class="GtkTextView" id="textview1">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="editable">False</property>
