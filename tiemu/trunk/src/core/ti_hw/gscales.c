@@ -23,10 +23,13 @@
  */
 
 /*
-    Gray-scale detection and management (idea suggested by K. Kofler).
+    Gray-scale detection and management (many ideas from K. Kofler).
 	Can manages 1 (b&w), 2 (4 colors) or 3 (7/8 colors) planes
 
-			!!! Could be greatly optimized !!!
+	The HW1 part could be greatly optimized.
+
+	The current algorithm are simple but fast (no time ratio detection).
+	This will be improved later...
 */
 
 
@@ -44,7 +47,7 @@
 #include "images.h"
 #include "ti68k_def.h"
 
-#define BUFSIZE	12			// store 12 plane addresses
+#define BUFSIZE			12	// store 12 plane addresses
 #define UPDATE_PLANES	32	// update plane addresses every 16 LCD refresh
 
 double round(double v)
@@ -71,12 +74,14 @@ int gp_seq[9][8] = {			// gray plane sequences
 	{ 1, 0, 2, 0, 0, 1, 0, -1 },// 8 colors (3 planes)
 };
 
-
-extern void lcd_hook(void)
+/*
+	HW1 grayscale management
+*/
+void lcd_hook_hw1(void)
 {
 	static uint32_t lcd_addrs[BUFSIZE];
-	static int t;
 	static int cnt;
+	static int t;
 	static double fir;
 	uint32_t tmp;
 
@@ -137,7 +142,7 @@ extern void lcd_hook(void)
 			lcd_planes[2] = tmp;
 		}
 
-#if 0
+#if 1
 		printf("%06x-%06x-%06x\n", lcd_planes[0], lcd_planes[1], lcd_planes[2]);
 		//printf("%1.1f/%1.1f %i\n", round(fir), fir, c);				 
 		//for(i = 0; i < 8; i++)	printf("%06x ", lcd_addrs[i]); printf("\n");
@@ -153,5 +158,91 @@ extern void lcd_hook(void)
 			ngc = 3;
 		else if(ngp == 3)
 			ngc = 7;
+	}
+}
+
+static void process_address(uint32_t plane_addr)
+{
+	static uint32_t min=0;
+	static uint32_t max=0;
+	static uint32_t mid=0;
+	uint32_t tmp;
+	static int cnt;
+	const int ngp2ngc[] = { 1, 1, 3, 7 }; 
+
+	tmp = plane_addr;
+
+	if(tmp < min)
+		min = tmp;
+	if((tmp > min) && (tmp < max))
+		mid = tmp;
+	if(tmp > max)
+		max = tmp;
+
+	if(!(cnt++ % 8))
+	{
+		int ngp = 1;
+
+		lcd_planes[0] = min;
+		lcd_planes[1] = mid;
+		lcd_planes[2] = max;
+
+		if(min != mid)
+			ngp++;
+		if(mid != max)
+			ngp++;
+
+		ngc = ngp2ngc[ngp];
+		//printf("$%06x: %06x, %06x-%06x-%06x  %i\n", m68k_getpc(), tmp+0xa00, min+0xa00, mid+0xa00, max+0xa00, ngp);
+		min = max = mid = tmp;
+	}
+}
+
+/*
+	HW2 grayscale management
+*/
+void lcd_hook_hw2(int refresh)
+{
+	static int dead_cnt = 0;
+	static int fs_toggled = 0;
+
+	// if refresh from GTK (calc.c), set 1 plane
+	if(refresh)
+	{
+		fs_toggled = !0;
+
+		if(++dead_cnt < 5)
+			return;
+
+		lcd_planes[0] = tihw.lcd_adr;
+		ngc = 1;
+		return;
+	}	
+
+	// if refresh from CPU loop (m68k.c), search for opcode signature:
+	// TIGGL lib : 
+	//		movem.l  (%a0)+,%d0-%d7/%a2-%a6 ; (%a1)==0x4c00, alors plan:=(%a0)
+	// graphlib-titanik et graphlib-iceberg : 
+	//		movem.l  (%a0)+,%d0-%d7/%a2-%a6 ; (%a1)==0x4c00+12, alors plan:=-12(%a0)
+	if(fs_toggled)
+	{
+		UWORD opcode = curriword();
+
+		if(opcode == 0x4cd8)
+		{
+			uint32_t a0 = regs.a[0]-0xa00;
+			uint32_t a1 = regs.a[1]-0xa00;
+
+			if(a1 == 0x4c0c)
+				a0 -= 12;
+			else if(a1 != 0x4c00)
+				return;
+			//printf("$%06x\n", m68k_getpc());
+			//printf("%06x %06x\n", regs.a[0], regs.a[1]);
+
+			process_address(a0);
+			fs_toggled = 0;
+			dead_cnt = 0;
+		}
 	}
 }

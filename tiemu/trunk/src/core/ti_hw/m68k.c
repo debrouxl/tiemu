@@ -103,6 +103,8 @@ void hw_m68k_irq(int n)
 				if (pending_ints & mask)	\
 					break;
 
+extern void lcd_hook_hw2(int);
+
 /* Replace UAE's M68000_run() */
 /*
   Do 'n' instructions.
@@ -175,6 +177,9 @@ int hw_m68k_run(int n)
 		// search for next opcode and execute it
 		opcode = nextiword();
 		(*cpufunctbl[opcode])(opcode);
+
+		// HW2/3 grayscales management
+		lcd_hook_hw2(0);
 
 		// process (pending) interrupts
 		if(pending_ints)

@@ -110,10 +110,6 @@ SOURCE=..\..\src\core\uae\newcpu.c
 
 SOURCE=..\..\src\core\uae\table68k
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\libuae.lib
-# End Source File
 # End Group
 # Begin Group "ti_hw"
 
@@ -201,6 +197,10 @@ SOURCE=..\..\src\core\ti_sw\registers.c
 # Begin Source File
 
 SOURCE=..\..\src\core\ti_sw\romcalls.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\uae\libuae.lib
 # End Source File
 # End Group
 # Begin Source File

@@ -297,7 +297,7 @@ extern volatile int lcd_flag;
 extern volatile int debugger;
 static gint tid = -1;
 
-extern int lcd_hook(void);
+extern int lcd_hook_hw2(int);
 
 static gint hid_refresh (gpointer data)
 {
@@ -310,12 +310,15 @@ static gint hid_refresh (gpointer data)
         G_UNLOCK(lcd_flag);
 
         // Toggles every FS (every time the LCD restarts at line 0)
-		if(tihw.io2[0x1d] & 0x80)
-			tihw.io2[0x1d] &= ~0x80;
-		else
-			tihw.io2[0x1d] |= 0x80;
+		if(tihw.hw_type >= HW2)
+		{
+			if(tihw.io2[0x1d] & 0x80)
+				tihw.io2[0x1d] &= ~0x80;
+			else
+				tihw.io2[0x1d] |= 0x80;
 
-		lcd_hook();
+			lcd_hook_hw2(TRUE);
+		}
     }
 
     return TRUE;

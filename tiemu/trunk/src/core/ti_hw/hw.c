@@ -143,7 +143,7 @@ int hw_exit(void)
 G_LOCK_DEFINE(lcd_flag);
 volatile int lcd_flag = !0;
 
-extern int lcd_hook(void);
+extern int lcd_hook_hw1(void);
 
 /*
     This function is called by do_cycles to regularly updates the hardware.
@@ -258,7 +258,7 @@ void hw_update(void)
         G_LOCK(lcd_flag);
         lcd_flag = !0;
         G_UNLOCK(lcd_flag);
-		lcd_hook();
+		lcd_hook_hw1();
     }
 }
 

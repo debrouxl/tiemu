@@ -310,22 +310,13 @@ int intlev(void)
   return rc;
 }
 
-//tiemu: added to be VTi compatible (VTi does not maintain SR unused bits at 0)
-static char u14, u12, u11, u7, u6, u5;
-
 void MakeSR(void)
 {
   regs.sr = (
       (regs.t << 15) | 
-      (u14 << 14) |
       (regs.s << 13) | 
-      (u12 << 12) |
-      (u11 << 11) |
       (regs.intmask << 8) |
 	 
-      (u7 << 7) |
-      (u6 << 6) |
-      (u5 << 5) |
       (regs.x << 4) | 
       (NFLG << 3) | 
       (ZFLG << 2) | 
@@ -339,15 +330,9 @@ void MakeFromSR(void)
   int olds = regs.s;
 
   regs.t = (regs.sr >> 15) & 1;
-  u14 = (regs.sr >> 14) & 1;
   regs.s = (regs.sr >> 13) & 1;
-  u12 = (regs.sr >> 12) & 1;
-  u11 = (regs.sr >> 11) & 1;
   regs.intmask = (regs.sr >> 8) & 7;
 
-  u7 = (regs.sr >> 7) & 1;
-  u6 = (regs.sr >> 6) & 1;
-  u5 = (regs.sr >> 5) & 1;
   regs.x = (regs.sr >> 4) & 1;
   NFLG = (regs.sr >> 3) & 1;
   ZFLG = (regs.sr >> 2) & 1;
@@ -360,24 +345,6 @@ void MakeFromSR(void)
       regs.a[7] = temp;
     }
   
-  //tiemu begin
-  /*
-    This part of code (turbo)boost the direct transfer of files through
-    the internal link 
-  */  
-#if 0
-  if(tihw.lc_speedy && regs.intmask < 4 && 
-     (tihw.io[0xc]&0x2 || hw_dbus_checkread())) 
-     //((tihw.io[0xc] & 2) && (tihw.io[0xd] & 0x40)) ||
-	 //((tihw.io[0xc] & 1) && (tihw.io[0xd] & 0x20)))
-    {
-      tihw.io[0xc] |= 0x2;
-      specialflags |= SPCFLAG_INT;
-      currIntLev = 4;
-    }
-#endif
-  //tiemu end
-
   specialflags |= SPCFLAG_INT;
   if (regs.t)
     specialflags |= SPCFLAG_TRACE;
