@@ -47,7 +47,7 @@
 #define BUFSIZE			16	// store 16 plane addresses
 #define UPDATE_PLANES	16	// must be a multiple of BUFSIZE
 
-uint32_t lcd_planes[3];
+uint32_t lcd_planes[5];
 int ngc = 1;
 
 /*
@@ -57,13 +57,36 @@ static void process_address(uint32_t plane_addr)
 {
 	static uint32_t lcd_addrs[BUFSIZE];
 	static int lcd_cumulative_tickcounts[BUFSIZE];
+    static int lcd_last_plane_count;
+	static uint32_t lcd_last_planes[3];
 	int lcd_exptime[3] = {0, 0, 0};
 	int lcd_apparitions[3] = {0, 0, 0};
 	int lcd_first_apparition[3] = {0, 0, 0};
 	int cycle_start, cycle_end; // cycle = [cycle_start, cycle_end[ (semi-open interval)
 	static int cnt;
+	static int already_reset;
 	static int t;
 	uint32_t tmp;
+
+	// Detect plane switches and sync on them
+	if (!already_reset)
+	{
+		switch (lcd_last_plane_count)
+		{
+			case 2:
+				if (plane_addr == lcd_last_planes[1]) break;
+			case 1:
+				if (plane_addr == lcd_last_planes[0]) break;
+			case 0:
+				lcd_last_planes[lcd_last_plane_count++] = plane_addr;
+				break;
+			default:
+				if (plane_addr == lcd_last_planes[0] || plane_addr == lcd_last_planes[1] || plane_addr == lcd_last_planes[2]) break;
+				// We have a 4th plane, reset the buffer.
+				cnt -= cnt % BUFSIZE;
+				already_reset = 1;
+		}
+	}
 
 	lcd_addrs[cnt % BUFSIZE] = plane_addr;
 	lcd_cumulative_tickcounts[cnt++ % BUFSIZE] = tihw.lcd_tick;
@@ -73,9 +96,16 @@ static void process_address(uint32_t plane_addr)
 		int np, i, j, ngp=1;
 		static int old_ngp=1;
 
+		already_reset = 0;
+		lcd_last_plane_count = 0;
+
+		cycle_end = BUFSIZE - 1; // -1 because we'll need to read
+		                         // up to cycle_end for the
+		                         // exposition times
+
 		// get address of plane #0
 		np = 1;
-		lcd_planes[0] = lcd_planes[1] = lcd_planes[2] = lcd_addrs[0];		
+		lcd_planes[0] = lcd_planes[1] = lcd_planes[2] = lcd_planes[3] = lcd_planes[4] = lcd_planes[5] = lcd_addrs[0];		
 
 		// get address of plane #1
 		for(i = 1; i < BUFSIZE; i++)
@@ -99,7 +129,51 @@ static void process_address(uint32_t plane_addr)
 			}
 		}
 
-		ngp = np;
+		// get address of plane #3 (plane-switching)
+		for(i = 1; i < BUFSIZE; i++)
+		{
+			if((lcd_addrs[i] != lcd_planes[0]) && (lcd_addrs[i] != lcd_planes[1]) && (lcd_addrs[i] != lcd_planes[2]))
+			{
+				// plane-switching: set plane switch as last possible end of cycle
+				cycle_end = i;
+				lcd_planes[3] = lcd_addrs[i];
+				np++;
+				break;
+			}
+		}
+
+		// get address of plane #4 (plane-switching)
+		for(i = 1; i < BUFSIZE; i++)
+		{
+			if((lcd_addrs[i] != lcd_planes[0]) && (lcd_addrs[i] != lcd_planes[1]) && (lcd_addrs[i] != lcd_planes[2]) && (lcd_addrs[i] != lcd_planes[3]))
+			{
+				lcd_planes[4] = lcd_addrs[i];
+				np++;
+				break;
+			}
+		}
+
+		// ignore plane #5 (can be produced by plane-switching, but we don't need it)
+
+		if (np < 4)
+			ngp = np;
+		else if (np == 4)
+		{
+			ngp = 2;
+			// plane-switching: set plane switch as last possible end of cycle
+			for(i = 1; i < BUFSIZE; i++)
+			{
+				if(lcd_addrs[i] == lcd_planes[2])
+				{
+					cycle_end = i;
+					break;
+				}
+			}
+			// reset plane 2
+			lcd_planes[2] = lcd_planes[0];
+		}
+		else
+			ngp = 3;
 
 		// search for a full cycle
 		// Use the fact that if there are only 2 planes, plane 2 is the same as plane 0.
@@ -107,7 +181,7 @@ static void process_address(uint32_t plane_addr)
 		{
 			// skip the first plane (not a complete exposition)
 			for (i = 0; lcd_addrs[i] == lcd_addrs[0]; i++);
-			for (; i < BUFSIZE; i++)
+			for (; i <= cycle_end; i++)
 			{
 				// only count an apparition if the plane has actually changed
 				if (lcd_addrs[i] == lcd_planes[0]
@@ -131,13 +205,10 @@ static void process_address(uint32_t plane_addr)
 				    && lcd_apparitions[2] >= 2)
 					break;
 			}
-			if (i == BUFSIZE)
+			if (i > cycle_end)
 			{
 //				printf("Warning: no full grayscale cycle found (BUFSIZE too small?)\n");
 				cycle_start = 0;
-				cycle_end = BUFSIZE - 1; // -1 because we'll need to read
-				                         // up to cycle_end for the
-				                         // exposition times
 			}
 			else
 			{
@@ -205,9 +276,11 @@ static void process_address(uint32_t plane_addr)
 			}
 		}
 
+#if 0
 		if(old_ngp != ngp)
 			printf("Detected %i planes !\n", ngp);
 		old_ngp = ngp;
+#endif
 
 		// now, determine number of grayscales (kevin)
 		if(ngp == 1)
