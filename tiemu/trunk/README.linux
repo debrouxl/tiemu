@@ -7,7 +7,7 @@
 DESCRIPTION
 -----------
 
-Development platform: Linux Debian, 2.4.14 kernel, XFree 4.0, Gtk+ 1.2.10.
+Development platform: GNU/Linux Debian, 2.5.64 kernel, XFree 4.2.1, GTK+ 2.2.
 Ported on PowerPC platforms by JB (Julien Blache, jb@jblache.org).
 
 
@@ -17,7 +17,7 @@ REQUIREMENTS
  - A UNIX computer (Intel x86 or PPC) and C compiler (gcc)
  - X11 (X Window System)
  - SDL (Simple Directmedia Layer)
- - GTK+ 1.2.0 (http://www.gtk.org)
+ - GTK+ 2.x (http://www.gtk.org)
  - ticables, tifiles and ticalcs libraries from the TiLP project 
 	(http://tilp.info)
  - JPEG library (jpeg6.2)
@@ -60,21 +60,15 @@ AVAILABILITY
 COPYRIGHT
 ---------
 
-TiEmu is Copyright (C) 2000-2002 by the TiEmu team <roms@tilp.info>
-
-TiEmu is based on the XTiger emulator (see AUTHORS for more details).
+TiEmu is Copyright (C) 2000-2004 by the TiLP team <tilp-users@lists.sf.net>
 
 Copying is allowed under the terms of GNU General Public License (LGPL).  
 See the file COPYING for more details.
 
 
-THANKS
-------
-
-Thanks to Jonas Minnberg.TiEmu is taken from the xtiger emulator.
-
-
 ---------------------------------------------------------------------------
-Please report any bugs, questions, ...
+Please report any bugs, questions, ...  (please give us your platform, your 
+calculator type (with ROM version) and your link cable model).
 
-Romain Lievin <roms@tilp.info>
+
+The TiLP team <tilp-users@lists.sf.net>

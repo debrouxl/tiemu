@@ -5,7 +5,7 @@
 
 
 
-For the installation procedure, see INSTALL.linux
+For the installation procedure, see INSTALL
 For a more specific README, see README.linux or README.win32
 
 
@@ -13,15 +13,15 @@ For a more specific README, see README.linux or README.win32
 | DESCRIPTION |
 +-------------+
 
-TiEmu is a program allowing a PC to emulate a TI89/92/92+ calculator.
-It uses GTK+ (the Gimp ToolKit, http://www.gimp.org/gtk) for the GUI and the SDL (SimpleDirectmedia Layer) for the display. 
+TiEmu is a program allowing a PC to emulate a TI89/92(+)/V200PLT hand-held.
+It uses GTK+ (the Gimp ToolKit, http://www.gimp.org/gtk) for the GUI and the SDL (Simple Directmedia Layer) for the display. 
 It works on Linux and Windows platforms actually.
 
 All link cables are supported by the link port: parallel, serial, 
 Black TI Graph Link, Gray TI Graph Link and the (fast)AVRlink.
 
 TiEmu is based on XTiger, the original TI emulator for Linux (see the AUTHORS file for more details) which uses the m68k emulation core from UAE (The Ultimate Amiga Emulator).
-It also uses the libticables library.
+It also uses the TiLP framework (ti* libraries).
 
 
 +----------+
@@ -112,7 +112,7 @@ TI92       PC
 [(]        [[]
 [)]        []]
 
-Letters, Numbers, Cursormovement, F1-F8 + some others are the
+Letters, Numbers, Cursor movement, F1-F8 + some others are the
 same keys on both keyboards
 
 Special Keys
@@ -252,11 +252,10 @@ Nethertheless, if you like programming in GTK+, you could develop a skin editor 
 | COPYRIGHT |
 +-----------+
 
-GtkTiEmu and the libti68k library are Copyright (C) 2000-2001 by Romain Lievin 
+GtkTiEmu and the libti68k library are copyright (C) 2000-2001 by Romain Lievin 
 <roms@lpg.ticalc.org> and Thomas Corvazier <corvazier@yahoo.com>
-TiEmu is copyright (C) 2001-2002 by Romain Lievin. 
-libticables is Copyright (c) 1999-2002 by Romain Lievin <roms@lpg.ticalc.org>
-libticalcs is Copyright (c) 1999-2002 by Romain Lievin <roms@lpg.ticalc.org>
+TiEmu is copyright (C) 2001-2004 by Romain Lievin. 
+TiLP framework is copyright (c) 1999-2004 by Romain Lievin <roms@tilp.info>
 
 TiEmu is based on the XTiger emulator (see AUTHORS for more details) which is based on UAE (Universal Amiga Emulator).
 

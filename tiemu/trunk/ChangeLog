@@ -1,11 +1,12 @@
-Some explanations about the version number: the version number has this form:
-X.XX_X.XX where X is the major number and XX the minor one.
-An even number is a stable version whereas an odd number is an unstable/devel version.
-The first X.XX shows the version of the GtkTiEmu interface and the last X.XX shows the version of the libti68k used.
+SubVersion: $Id$
 
-To do:
-	A better management of errors
-	Debugger
+- 05/05/2004, version 1.70: roms
+	Rework in progress.	
+
+=====> TiEmu II project re-starts here <=====
+
+- 02/07/2003, version 1.68: jb
+	Removed GTK+ 1.2 to GTK+ 2.0.
 
 - 02/01/2003, version 1.68:
 	Removed automake support in ./src. Switched to a pure autoconf support.
@@ -103,6 +104,13 @@ To do:
 - 09/05/2002, version 1.58:
 	Project tree completely rebuilt: libti68k & tiemu are now a single
 	package with sub-folders.
+	
+---	
+Some explanations about the version number: the version number has this form:
+X.XX_X.XX where X is the major number and XX the minor one.
+An even number is a stable version whereas an odd number is an unstable/devel version.
+The first X.XX shows the version of the GtkTiEmu interface and the last X.XX shows the version of the libti68k used.	
+---	
 	
 - 07/05/2002, version 1.57_1.4.3:
 	Scaling support finished (for displays with high resolution).
