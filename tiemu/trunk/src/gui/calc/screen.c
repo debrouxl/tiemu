@@ -57,7 +57,7 @@ GdkPixmap *pixmap = NULL;
 
 uint32_t*	lcd_bytmap;				// LCD buffer (color-mapped as grayscale)
 LCD_INFOS	li;
-SCALE_INFOS	sc;
+WND_INFOS	wi;
 
 static uint32_t convtab[512];      	// planar to chunky conversion table
 static RGB      grayscales[16];		// gray scales rgb values (colormap)
@@ -98,10 +98,6 @@ void compute_grayscale(void)
   	int r, g ,b;
     uint32_t white = skin_infos.lcd_white;  // 0xcfe0ce
     uint32_t black = skin_infos.lcd_black;  // 0x222e31
-
-    //white = skin_infos.lcd_white = 0xffffff;
-    //black = skin_infos.lcd_black = 0x000000;
-    //printf("B&W: %08lx %08lx\n", skin_infos.lcd_black, skin_infos.lcd_white);
 
   	sr = (white & 0xff0000) >> 8;
   	sg = (white & 0x00ff00);
@@ -148,6 +144,9 @@ void redraw_skin(void)
 {
     GdkRect rect;
 
+	gtk_drawing_area_size(GTK_DRAWING_AREA(area), wi.w, wi.h);
+	gtk_window_resize(GTK_WINDOW(main_wnd), wi.w, wi.h);
+
   	if(!params.background) 
     	return;
   
@@ -162,7 +161,10 @@ void redraw_skin(void)
     rect.y = 0;
     rect.w = skin_infos.width;
     rect.h = skin_infos.height;
-    gtk_widget_draw(area, (GdkRectangle *)&rect);
+
+    //gtk_widget_draw(area, (GdkRectangle *)&rect);
+	//gtk_widget_queue_draw_area(area, rect.x, rect.y, rect.w, rect.h);
+	gdk_window_invalidate_rect(main_wnd->window, (GdkRectangle *)&rect, FALSE);
 }
 
 /* Update LCD screen part */
@@ -259,7 +261,8 @@ int hid_update_lcd(void)
 		  lcd, src.x, src.y, dst.x, dst.y, src.w, src.h,
 		  GDK_RGB_DITHER_NONE, 0, 0);
 
-		gtk_widget_draw(area, (GdkRectangle *)&dst);
+		//gtk_widget_draw(area, (GdkRectangle *)&dst);
+		gtk_widget_queue_draw_area(area, dst.x, dst.y, dst.w, dst.h);
     }
 
     return -1;

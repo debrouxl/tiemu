@@ -25,6 +25,7 @@
 #define __CALC_H__
 
 #include <stdint.h>
+#include "struct.h"
 
 /* Functions */
 
@@ -67,7 +68,15 @@ typedef struct
 	int 	n_channels;
 	guchar*	pixels;
 	gulong*	pixels2;
+
+	GdkRect pos;
 } LCD_INFOS;
+
+typedef struct
+{
+	int w;
+	int h;
+} WND_INFOS;
 
 typedef struct
 {

@@ -61,7 +61,35 @@ extern const char	sknKey89[];
 
 extern uint32_t*	lcd_bytmap;
 extern LCD_INFOS	li;
-extern SCALE_INFOS	sc;
+extern WND_INFOS	wi;
+
+static void set_infos(void)	// set window & lcd sizes
+{
+	if(params.background) 
+	{
+		li.pos.x = skin_infos.lcd_pos.left; 
+		li.pos.y = skin_infos.lcd_pos.top;
+	}
+	else 
+	{
+		li.pos.x = 0;
+		li.pos.y = 0;
+	}  
+
+	li.pos.w = tihw.lcd_w;
+	li.pos.h = tihw.lcd_h;
+
+	if(params.background)
+	{
+		wi.w = skin_infos.width;
+		wi.h = skin_infos.height;
+	}
+	else
+	{
+		wi.w = tihw.lcd_w;
+		wi.h = tihw.lcd_h;
+	}
+}
 
 gint display_main_wnd(void)
 {
@@ -79,8 +107,8 @@ gint display_main_wnd(void)
 
 	gtk_window_set_policy (GTK_WINDOW (main_wnd), TRUE, TRUE, FALSE);
 
-    gtk_widget_show(area);
-	gtk_widget_show(main_wnd);
+    //gtk_widget_show(area);
+	//gtk_widget_show(main_wnd);
 
 	return 0;
 }
@@ -100,28 +128,6 @@ on_calc_wnd_delete_event           (GtkWidget       *widget,
     return TRUE;	// block destroy
 }
 
-void redraw_skin(void);
-static void resize(void)
-{
-	// Get window size depending on windowed/fullscreen
-	if(params.background)
-	{
-		w = skin_infos.width;
-		h = skin_infos.height;
-	}
-	else
-	{
-		w = tihw.lcd_w;
-		h = tihw.lcd_h;
-	}
-		
-	gtk_drawing_area_size(GTK_DRAWING_AREA(area), w, h);
-	gtk_window_resize(GTK_WINDOW(main_wnd), w, h);
-
-	if(params.background)
-		redraw_skin();
-}
-
 typedef void (*VCB) (void);
 
 GLADE_CB gboolean
@@ -129,27 +135,8 @@ on_calc_wnd_expose_event           (GtkWidget       *widget,
                                     GdkEventExpose  *event,
                                     gpointer         user_data)
 {
-	SKIN_INFOS *si = & skin_infos;
-	guint width, height;
-
-	width = event->area.width;
-	height = event->area.height;
-	//if(width < si->width || height < si->height)
-	//	return;
-
-	sc.w = width;
-	sc.h = (int)(sc.w / sc.r);
-	sc.s = (float)sc.w / si->width;
-	printf("expose: scaling w/ %ix%i %1.2f %1.2f\n", sc.w, sc.h, sc.r, sc.s);
-
-	//w = width;
-	//h = height;
-
-	g_signal_handlers_block_by_func(GTK_OBJECT(widget), (VCB)on_calc_wnd_expose_event, NULL);
-	//resize();
-	g_signal_handlers_unblock_by_func(GTK_OBJECT(widget), (VCB)on_calc_wnd_expose_event, NULL);
-
-	return TRUE;
+	//printf("expose !\n");
+	return FALSE;
 }
 
 GLADE_CB gboolean
@@ -177,15 +164,6 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
 		event->area.width, event->area.height);
 
 	return FALSE;
-}
-
-
-GLADE_CB void
-on_calc_wnd_size_request           (GtkWidget       *widget,
-                                    GtkRequisition  *requisition,
-                                    gpointer         user_data)
-{
-	// to remove !
 }
 
 static int match_skin(int calc_type)
@@ -323,7 +301,6 @@ static gint hid_refresh (gpointer data)
 	    hid_update_lcd();
         G_LOCK(lcd_flag);
         lcd_flag = 0;
-		//printf("<");
         G_UNLOCK(lcd_flag);
 
         // Toggles every FS (every time the LCD restarts at line 0)
@@ -335,6 +312,7 @@ static gint hid_refresh (gpointer data)
 
 void compute_convtable(void);
 void compute_grayscale(void);
+void redraw_skin(void);
 
 int  hid_init(void)
 {
@@ -386,6 +364,9 @@ int  hid_init(void)
         }
 	}
 
+	// Set window/LCD infos
+	set_infos();
+
     // Allocate the TI screen buffer
 	lcd_bytmap = (uint32_t *)malloc(LCDMEM_W * LCDMEM_H);
 
@@ -417,11 +398,11 @@ int  hid_init(void)
 	    tiemu_error(0, s);
 	    g_free(s);
 	    return -1;
-    }
+    }	
     
     // Draw the skin and compute grayscale palette
   	compute_grayscale();
-  	resize();
+  	redraw_skin();
 
     // Init the planar/chunky conversion table for LCD
   	compute_convtable();
@@ -431,12 +412,6 @@ int  hid_init(void)
 		(GtkFunction)hid_refresh, NULL);
 
 	hid_lcd_on_off(1);
-
-	// Set scale infos
-	sc.w = si->width;
-	sc.h = si->height;
-	sc.r = (float)sc.w / sc.h;
-	sc.s = (float)1.0;
 
     return 0;
 }
@@ -469,7 +444,8 @@ int  hid_exit(void)
 int hid_switch_with_skin(void)
 {
     params.background = 1;
-	resize();
+	set_infos();
+	redraw_skin();
 
     return 0;
 }
@@ -477,7 +453,8 @@ int hid_switch_with_skin(void)
 int hid_switch_without_skin(void)
 {
     params.background = 0;
-	resize();
+	set_infos();
+	redraw_skin();
 
     return 0;
 }
