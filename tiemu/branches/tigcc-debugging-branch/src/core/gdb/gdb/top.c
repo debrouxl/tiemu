@@ -1458,7 +1458,11 @@ quit_force (char *args, int from_tty)
   catch_errors (quit_target, &qt,
 	        "Quitting: ", RETURN_MASK_ALL);
 
-  exit (exit_code);
+  extern struct interp *current_interpreter;
+  current_interpreter = NULL;
+  reinitialize_more_filter ();
+  extern jmp_buf quit_gdb;
+  longjmp (quit_gdb, 1);
 }
 
 /* Returns whether GDB is running on a terminal and whether the user

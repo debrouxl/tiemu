@@ -304,8 +304,10 @@ show_version (char *args, int from_tty)
 void
 quit_command (char *args, int from_tty)
 {
+#if 0 /* (TiEmu 20050330 Kevin Kofler) */
   if (!quit_confirm ())
     error ("Not confirmed.");
+#endif
   quit_force (args, from_tty);
 }
 

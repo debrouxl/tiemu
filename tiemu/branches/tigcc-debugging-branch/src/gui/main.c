@@ -32,6 +32,7 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
+#include <setjmp.h>
 
 #if WITH_KDE
 #include "kde.h"
@@ -68,6 +69,7 @@
 ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
+jmp_buf quit_gdb;               // longjmp target used when quitting GDB
 
 /* Special */
 
@@ -251,13 +253,16 @@ int main(int argc, char **argv)
 		/*
 			Run the GDB CLI for now
 		*/
-		struct captured_main_args args;
-		memset (&args, 0, sizeof args);
-		args.argc = argc;
-		args.argv = argv;
-		args.use_windows = 0;
-		args.interpreter_p = INTERP_CONSOLE;
-		gdb_main (&args);
+		if (setjmp(quit_gdb) == 0)
+		{
+			struct captured_main_args args;
+			memset (&args, 0, sizeof args);
+			args.argc = argc;
+			args.argv = argv;
+			args.use_windows = 0;
+			args.interpreter_p = INTERP_CONSOLE;
+			gdb_main (&args);
+		}
 
 		err = hid_exit();
 		handle_error();

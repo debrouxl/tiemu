@@ -1,5 +1,9 @@
 2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+      * interp.c (m68k_go_sim): Raise SIGQUIT, not SIGINT. Raise it to regs, not saved_state.
+
+2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
       * interp.c (call_calltrap, customreset, sim_os_trap, write_log_standard, uae_reset, uae_quit, S_ERR, put,
           put_arg, get_arg): Delete.
         (currprefs): Delete variable.

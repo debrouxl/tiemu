@@ -115,6 +115,7 @@ captured_main (void *data)
   static int quiet = 0;
   static int batch = 0;
   static int set_args = 0;
+  static int already_initialized = 0;
 
   /* Pointers to various arguments from command line.  */
   char *symarg = NULL;
@@ -517,7 +518,11 @@ extern int gdbtk_test (char *);
 
   /* Initialize all files.  Give the interpreter a chance to take
      control of the console via the deprecated_init_ui_hook().  */
-  gdb_init (argv[0]);
+  if (!already_initialized)
+  {
+    gdb_init (argv[0]);
+    already_initialized = 1;
+  }
 
   /* Do these (and anything which might call wrap_here or *_filtered)
      after initialize_all_files() but before the interpreter has been
@@ -720,6 +725,10 @@ extern int gdbtk_test (char *);
       catch_command_errors (source_command, cmdarg[i], !batch, RETURN_MASK_ALL);
     }
   xfree (cmdarg);
+
+  /* (TiEmu 20050330 Kevin Kofler)) */
+  catch_command_errors (execute_command, "target sim", 0, RETURN_MASK_ALL);
+  catch_command_errors (execute_command, "run", 0, RETURN_MASK_ALL);
 
   /* Read in the old history after all the command files have been read. */
   init_history ();

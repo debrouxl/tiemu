@@ -1,0 +1,12 @@
+2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * main.c (captured_main): Run "target sim" and "run" automatically.
+                                  Only run initializations once, even if we are called multiple times.
+        * infrun.c (print_stop_reason): Run "quit" automatically when exiting inferior.
+        * cli-cmds.c (quit_command): Don't call quit_confirm.
+        * top.c (quit_force): Reset current interpreter and "more" filter and jump back to TiEmu instead of exiting.
+        * interps.c (current_interpreter): Don't declare static.
+
+2005-03-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * Makefile.in: Don't build standalone executable.

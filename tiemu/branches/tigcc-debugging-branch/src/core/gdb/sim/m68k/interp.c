@@ -353,7 +353,7 @@ static void m68k_go_sim(int step)
     engine_start();
     gtk_main();
     /* If we get here, we were interrupted by the normal course of action. */
-    raise_exception(SIGINT);
+    regs.exception = SIGQUIT;
   }
 }
 

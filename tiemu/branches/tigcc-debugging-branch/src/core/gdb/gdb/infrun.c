@@ -2836,6 +2836,7 @@ print_stop_reason (enum inferior_stop_reason stop_reason, int stop_info)
 	    ui_out_field_string (uiout, "reason", "exited-normally");
 	  ui_out_text (uiout, "\nProgram exited normally.\n");
 	}
+      execute_command("quit", 0); /* (TiEmu 20050330 Kevin Kofler) */
       break;
     case SIGNAL_RECEIVED:
       /* Signal received. The signal table tells us to print about
