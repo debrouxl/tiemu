@@ -518,7 +518,7 @@ s,@host_cpu@,i686,;t t
 s,@host_vendor@,pc,;t t
 s,@host_os@,mingw32,;t t
 s,@CC@,gcc,;t t
-s,@CFLAGS@,-g -O2,;t t
+s,@CFLAGS@,-g -O2 -mms-bitfields,;t t
 s,@LDFLAGS@,,;t t
 s,@CPPFLAGS@,,;t t
 s,@ac_ct_CC@,gcc,;t t

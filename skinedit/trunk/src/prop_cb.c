@@ -222,6 +222,11 @@ on_prop_dlg_ok_clicked                 (GtkButton       *button,
       strcpy(skin_infos.calc, CALC_TI83P);
       skin_infos.keymap = 1;
     }
+  else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(GTK_WIDGET(button), "ti84p"))))
+    {
+      strcpy(skin_infos.calc, CALC_TI84P);
+      skin_infos.keymap = 1;
+    }
   else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(GTK_WIDGET(button), "ti85"))))
     {
       strcpy(skin_infos.calc, CALC_TI85);
@@ -235,6 +240,11 @@ on_prop_dlg_ok_clicked                 (GtkButton       *button,
   else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(GTK_WIDGET(button), "ti89"))))
     {
       strcpy(skin_infos.calc, CALC_TI89);
+      skin_infos.keymap = 3;
+    }
+  else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(GTK_WIDGET(button), "ti89t"))))
+    {
+      strcpy(skin_infos.calc, CALC_TI89T);
       skin_infos.keymap = 3;
     }
   else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(GTK_WIDGET(button), "ti92"))))

@@ -364,6 +364,10 @@ on_properties_activate                 (GtkMenuItem     *menuitem,
     {
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(properties, "ti83p")), TRUE);
     }
+  else if (strcmp(skin_infos.calc, CALC_TI84P) == 0)
+    {
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(properties, "ti84p")), TRUE);
+    }
   else if (strcmp(skin_infos.calc, CALC_TI85) == 0)
     {
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(properties, "ti85")), TRUE);
@@ -375,6 +379,10 @@ on_properties_activate                 (GtkMenuItem     *menuitem,
   else if (strcmp(skin_infos.calc, CALC_TI89) == 0)
     {
       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(properties, "ti89")), TRUE);
+    }
+  else if (strcmp(skin_infos.calc, CALC_TI89T) == 0)
+    {
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(properties, "ti89t")), TRUE);
     }
   else if (strcmp(skin_infos.calc, CALC_TI92) == 0)
     {

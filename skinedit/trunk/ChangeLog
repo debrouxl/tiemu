@@ -1,10 +1,10 @@
 List of changes:
 
 - 05/05/2005, version 1.26: roms
-  Rebuilt under Linux.
-  Compiled under MinGW.
-  Added TI84+ and Titanium support.
-  Switched to GTK+ 2.6.
+	Rebuilt under Linux.
+	Compiled under MinGW.
+	Added TI84+ and TI89 Titanium support.
+	Switched to GTK+ 2.6.
 
 - 08/05/2004, version 1.25: roms
 	Fixed out of bounds coords when the scroll area is larger than

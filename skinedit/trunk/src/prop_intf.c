@@ -31,6 +31,7 @@ create_lcd_color_select (gpointer action)
 {
   GtkWidget *lcd_color_select;
   GtkWidget *lcd_color_ok;
+  GtkWidget *lcd_color_unused;
   GtkWidget *lcd_color_cancel;
   GtkWidget *colorselection1;
 
@@ -38,10 +39,15 @@ create_lcd_color_select (gpointer action)
   gtk_container_set_border_width (GTK_CONTAINER (lcd_color_select), 10);
   gtk_window_set_modal (GTK_WINDOW (lcd_color_select), TRUE);
   gtk_window_set_resizable (GTK_WINDOW (lcd_color_select), FALSE);
+  gtk_window_set_type_hint (GTK_WINDOW (lcd_color_select), GDK_WINDOW_TYPE_HINT_DIALOG);
 
   lcd_color_ok = GTK_COLOR_SELECTION_DIALOG (lcd_color_select)->ok_button;
   gtk_widget_show (lcd_color_ok);
   GTK_WIDGET_SET_FLAGS (lcd_color_ok, GTK_CAN_DEFAULT);
+
+  lcd_color_unused = GTK_COLOR_SELECTION_DIALOG (lcd_color_select)->cancel_button;
+  gtk_widget_show (lcd_color_unused);
+  GTK_WIDGET_SET_FLAGS (lcd_color_unused, GTK_CAN_DEFAULT);
 
   lcd_color_cancel = GTK_COLOR_SELECTION_DIALOG (lcd_color_select)->cancel_button;
   gtk_widget_show (lcd_color_cancel);
@@ -68,6 +74,7 @@ create_lcd_color_select (gpointer action)
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (lcd_color_select, lcd_color_select, "lcd_color_select");
   GLADE_HOOKUP_OBJECT_NO_REF (lcd_color_select, lcd_color_ok, "lcd_color_ok");
+  GLADE_HOOKUP_OBJECT_NO_REF (lcd_color_select, lcd_color_unused, "lcd_color_unused");
   GLADE_HOOKUP_OBJECT_NO_REF (lcd_color_select, lcd_color_cancel, "lcd_color_cancel");
   GLADE_HOOKUP_OBJECT_NO_REF (lcd_color_select, colorselection1, "colorselection1");
 
@@ -91,14 +98,16 @@ create_prop_dialog (void)
   GtkWidget *hbox4;
   GtkWidget *frame1;
   GtkWidget *table2;
-  GtkWidget *ti73;
   GSList *ti73_group = NULL;
+  GtkWidget *ti73;
   GtkWidget *ti82;
   GtkWidget *ti83;
   GtkWidget *ti83p;
+  GtkWidget *ti84p;
   GtkWidget *ti85;
   GtkWidget *ti86;
   GtkWidget *ti89;
+  GtkWidget *ti89t;
   GtkWidget *ti92;
   GtkWidget *ti92p;
   GtkWidget *v200;
@@ -125,6 +134,7 @@ create_prop_dialog (void)
   gtk_window_set_title (GTK_WINDOW (prop_dialog), _("Properties"));
   gtk_window_set_modal (GTK_WINDOW (prop_dialog), TRUE);
   gtk_window_set_default_size (GTK_WINDOW (prop_dialog), 473, 266);
+  gtk_window_set_type_hint (GTK_WINDOW (prop_dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
 
   dialog_vbox2 = GTK_DIALOG (prop_dialog)->vbox;
   gtk_widget_show (dialog_vbox2);
@@ -185,7 +195,7 @@ create_prop_dialog (void)
   gtk_box_pack_start (GTK_BOX (hbox4), frame1, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame1), 3);
 
-  table2 = gtk_table_new (5, 2, TRUE);
+  table2 = gtk_table_new (4, 3, TRUE);
   gtk_widget_show (table2);
   gtk_container_add (GTK_CONTAINER (frame1), table2);
 
@@ -213,7 +223,7 @@ create_prop_dialog (void)
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (ti83), ti73_group);
   ti73_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (ti83));
 
-  ti83p = gtk_radio_button_new_with_mnemonic (NULL, _("TI-83 Plus"));
+  ti83p = gtk_radio_button_new_with_mnemonic (NULL, _("TI-83+"));
   gtk_widget_show (ti83p);
   gtk_table_attach (GTK_TABLE (table2), ti83p, 0, 1, 3, 4,
                     (GtkAttachOptions) (GTK_FILL),
@@ -221,34 +231,9 @@ create_prop_dialog (void)
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (ti83p), ti73_group);
   ti73_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (ti83p));
 
-  ti85 = gtk_radio_button_new_with_mnemonic (NULL, _("TI-85"));
-  gtk_widget_show (ti85);
-  gtk_table_attach (GTK_TABLE (table2), ti85, 0, 1, 4, 5,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (ti85), ti73_group);
-  ti73_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (ti85));
-
-  ti86 = gtk_radio_button_new_with_mnemonic (NULL, _("TI-86"));
-  gtk_widget_show (ti86);
-  gtk_table_attach (GTK_TABLE (table2), ti86, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (ti86), ti73_group);
-  ti73_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (ti86));
-
-  ti89 = gtk_radio_button_new_with_mnemonic (NULL, _("TI-89"));
-  gtk_widget_show (ti89);
-  gtk_table_attach (GTK_TABLE (table2), ti89, 1, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (ti89), ti73_group);
-  ti73_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (ti89));
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (ti89), TRUE);
-
   ti92 = gtk_radio_button_new_with_mnemonic (NULL, _("TI-92"));
   gtk_widget_show (ti92);
-  gtk_table_attach (GTK_TABLE (table2), ti92, 1, 2, 2, 3,
+  gtk_table_attach (GTK_TABLE (table2), ti92, 2, 3, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (ti92), ti73_group);
@@ -256,7 +241,7 @@ create_prop_dialog (void)
 
   ti92p = gtk_radio_button_new_with_mnemonic (NULL, _("TI-92 Plus"));
   gtk_widget_show (ti92p);
-  gtk_table_attach (GTK_TABLE (table2), ti92p, 1, 2, 3, 4,
+  gtk_table_attach (GTK_TABLE (table2), ti92p, 2, 3, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (ti92p), ti73_group);
@@ -264,11 +249,53 @@ create_prop_dialog (void)
 
   v200 = gtk_radio_button_new_with_mnemonic (NULL, _("Voyage 200"));
   gtk_widget_show (v200);
-  gtk_table_attach (GTK_TABLE (table2), v200, 1, 2, 4, 5,
+  gtk_table_attach (GTK_TABLE (table2), v200, 2, 3, 3, 4,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (v200), ti73_group);
   ti73_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (v200));
+
+  ti89 = gtk_radio_button_new_with_mnemonic (NULL, _("TI-89"));
+  gtk_widget_show (ti89);
+  gtk_table_attach (GTK_TABLE (table2), ti89, 1, 2, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (ti89), ti73_group);
+  ti73_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (ti89));
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (ti89), TRUE);
+
+  ti86 = gtk_radio_button_new_with_mnemonic (NULL, _("TI-86"));
+  gtk_widget_show (ti86);
+  gtk_table_attach (GTK_TABLE (table2), ti86, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (ti86), ti73_group);
+  ti73_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (ti86));
+
+  ti85 = gtk_radio_button_new_with_mnemonic (NULL, _("TI-85"));
+  gtk_widget_show (ti85);
+  gtk_table_attach (GTK_TABLE (table2), ti85, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (ti85), ti73_group);
+  ti73_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (ti85));
+
+  ti84p = gtk_radio_button_new_with_mnemonic (NULL, _("TI-84+"));
+  gtk_widget_show (ti84p);
+  gtk_table_attach (GTK_TABLE (table2), ti84p, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (ti84p), ti73_group);
+  ti73_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (ti84p));
+
+  ti89t = gtk_radio_button_new_with_mnemonic (NULL, _("Titanium"));
+  gtk_widget_show (ti89t);
+  gtk_table_attach (GTK_TABLE (table2), ti89t, 2, 3, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (ti89t), ti73_group);
+  ti73_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (ti89t));
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (ti89t), TRUE);
 
   label5 = gtk_label_new (_("Calc type"));
   gtk_widget_show (label5);
@@ -413,9 +440,11 @@ create_prop_dialog (void)
   GLADE_HOOKUP_OBJECT (prop_dialog, ti82, "ti82");
   GLADE_HOOKUP_OBJECT (prop_dialog, ti83, "ti83");
   GLADE_HOOKUP_OBJECT (prop_dialog, ti83p, "ti83p");
+  GLADE_HOOKUP_OBJECT (prop_dialog, ti84p, "ti84p");
   GLADE_HOOKUP_OBJECT (prop_dialog, ti85, "ti85");
   GLADE_HOOKUP_OBJECT (prop_dialog, ti86, "ti86");
   GLADE_HOOKUP_OBJECT (prop_dialog, ti89, "ti89");
+  GLADE_HOOKUP_OBJECT (prop_dialog, ti89t, "ti89t");
   GLADE_HOOKUP_OBJECT (prop_dialog, ti92, "ti92");
   GLADE_HOOKUP_OBJECT (prop_dialog, ti92p, "ti92p");
   GLADE_HOOKUP_OBJECT (prop_dialog, v200, "v200");

@@ -48,7 +48,7 @@ AUTOMAKE = ${SHELL} /c/sources/roms/skinedit/missing --run automake-1.7
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2
+CFLAGS = -g -O2 -mms-bitfields
 CPP = gcc -E
 CPPFLAGS = 
 CXX = g++
