@@ -72,47 +72,7 @@ gint display_comm_dbox()
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
 					     FALSE);
 
-	// Cable  
-	data = glade_xml_get_widget(xml, "optionmenu_comm_cable");
-	switch ((options.link_cable)->link_type) {
-	case LINK_TGL:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 0);
-		break;
-		
-	case LINK_SER:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 1);
-		break;
-
-	case LINK_SLV:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 2);
-	  break;
-
-	case LINK_PAR:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 3);
-	  break;
-
-	case LINK_TIE:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 4);
-	  break;
-
-	case LINK_VTI:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 5);
-	  break;
-	
-	case LINK_VTL:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 6);
-	  break;
-
-    case LINK_NUL:
-      gtk_option_menu_set_history(GTK_OPTION_MENU(data), 7);
-	  break;
-
-	default:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 7);
-	  break;
-	}
-
-	// Port
+	// Port (before cable to force update)
 	port = data = glade_xml_get_widget(xml, "optionmenu_comm_port");
 	switch ((options.link_cable)->port) {
 	case PARALLEL_PORT_1:
@@ -150,6 +110,46 @@ gint display_comm_dbox()
 
 	default:
 	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 0);
+	  break;
+	}
+
+	// Cable  
+	data = glade_xml_get_widget(xml, "optionmenu_comm_cable");
+	switch ((options.link_cable)->link_type) {
+	case LINK_TGL:
+		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 0);
+		break;
+		
+	case LINK_SER:
+		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 1);
+		break;
+
+	case LINK_SLV:
+	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 2);
+	  break;
+
+	case LINK_PAR:
+	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 3);
+	  break;
+
+	case LINK_TIE:
+	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 4);
+	  break;
+
+	case LINK_VTI:
+	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 5);
+	  break;
+	
+	case LINK_VTL:
+	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 6);
+	  break;
+
+    case LINK_NUL:
+      gtk_option_menu_set_history(GTK_OPTION_MENU(data), 7);
+	  break;
+
+	default:
+	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 7);
 	  break;
 	}
 

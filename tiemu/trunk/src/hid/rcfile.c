@@ -217,9 +217,6 @@ void rcfile_read(void)
 		else if (!strcmp(p, "TIGraphLink"))
 			(options.link_cable)->link_type = LINK_TGL;
 
-		else if (!strcmp(p, "fastAVRlink"))
-			(options.link_cable)->link_type = LINK_AVR;
-
 		else if (!strcmp(p, "VTi"))
 			(options.link_cable)->link_type = LINK_VTI;
 
@@ -231,6 +228,9 @@ void rcfile_read(void)
 
 		else if (!strcmp(p, "UsbGraphLink"))
 			(options.link_cable)->link_type = LINK_UGL;
+
+		else if (!strcmp(p, "none"))
+			(options.link_cable)->link_type = LINK_NUL;
 
 		else
 			stop(l);
@@ -253,25 +253,8 @@ void rcfile_read(void)
 		continue;
 	}
 	
-	if ((p = find_str(buffer, "baudrate="))) {
-		sscanf(p, "%i", (int *) &((options.link_cable)->baud_rate));
-		continue;
-	}
-	
 	if ((p = find_str(buffer, "delay="))) {
 		sscanf(p, "%i", &((options.link_cable)->delay));
-		continue;
-	}
-	
-	if ((p = find_str(buffer, "rts_cts="))) {
-		if (!strcmp(p, "on"))
-			(options.link_cable)->hfc = HFC_ON;
-
-		else if (!strcmp(p, "off"))
-			(options.link_cable)->hfc = HFC_OFF;
-
-		else
-			stop(l);
 		continue;
 	}
 	
@@ -318,6 +301,9 @@ void rcfile_read(void)
 		else if (!strcmp(p, "USB port #4"))
 			(options.link_cable)->port = USB_PORT_4;
 
+		else if (!strcmp(p, "null"))
+			(options.link_cable)->port = NULL_PORT;
+
 		else
 			stop(l);
 		continue;
@@ -335,6 +321,9 @@ void rcfile_read(void)
 
 		else if (!strcmp(p, "driver"))
 			(options.link_cable)->method = IOM_DRV;
+
+		else if (!strcmp(p, "null"))
+			(options.link_cable)->method = IOM_NULL;
 
 		else
 			stop(l);
@@ -411,9 +400,9 @@ void rcfile_read(void)
 
 	if( (p=find_str(buffer, "img_format=")) )
 	{
-	  if(!strcmp(p, "pcx")) options2.format=IMG_PCX;
-	  else if(!strcmp(p, "xpm")) options2.format=IMG_XPM;
-	  else if(!strcmp(p, "jpg")) options2.format=IMG_JPG;
+	  if(!strcmp(p, "jpg")) options2.format=IMG_JPG;
+	  else if(!strcmp(p, "png")) options2.format=IMG_PNG;
+	  else if(!strcmp(p, "ico")) options2.format=IMG_ICO;
 	  else stop(l);
 	  continue;
 	}
@@ -549,9 +538,6 @@ void rcfile_write(void)
 	case LINK_TGL:
 		fprintf(txt, "TIGraphLink\n");
 		break;
-	case LINK_AVR:
-		fprintf(txt, "fastAVRlink\n");
-		break;
 	case LINK_VTL:
 		fprintf(txt, "virtual\n");
 		break;
@@ -565,7 +551,7 @@ void rcfile_write(void)
 		fprintf(txt, "UsbGraphLink\n");
 		break;
 	default:
-		fprintf(txt, "invalid\n");
+		fprintf(txt, "none\n");
 		break;
 	}
 
@@ -617,7 +603,7 @@ void rcfile_write(void)
 		fprintf(txt, "USB port #4\n");
 		break;
 	default:
-		fprintf(txt, "invalid\n");
+		fprintf(txt, "null\n");
 		break;
 	}
 
@@ -635,7 +621,8 @@ void rcfile_write(void)
 
 	else if ((options.link_cable)->method & IOM_DRV)
 		fprintf(txt, "driver\n");
-
+	else if ((options.link_cable)->method & IOM_NULL)
+		fprintf(txt, "null\n");
 	else
 		fprintf(txt, "automatic\n");
 	fprintf(txt, "\n");
@@ -647,18 +634,11 @@ void rcfile_write(void)
 		"# Serial device or character device (empty=automatic)\n");
 	fprintf(txt, "serial_device=%s\n", (options.link_cable)->device);
 	fprintf(txt, "\n");
-	fprintf(txt, "# Baud rate for the fastAVRlink\n");
-	fprintf(txt, "baudrate=%i\n", (options.link_cable)->baud_rate);
-	fprintf(txt, "\n");
 	fprintf(txt, "# Timeout value in 0.1 seconds\n");
 	fprintf(txt, "timeout=%i\n", (options.link_cable)->timeout);
 	fprintf(txt, "\n");
 	fprintf(txt, "# Delay value\n");
 	fprintf(txt, "delay=%i\n", (options.link_cable)->delay);
-	fprintf(txt, "\n");
-	fprintf(txt, "# Hardware flow control for fastAVRlink.\n");
-	fprintf(txt, "rts_cts=%s\n",
-		((options.link_cable)->hfc == HFC_ON) ? "on" : "off");
 	fprintf(txt, "\n");
 	fprintf(txt, "#\n");
 
@@ -715,10 +695,9 @@ void rcfile_write(void)
   fprintf(txt, "img_format=");
   switch(options2.format)
     {
-    case IMG_XPM: fprintf(txt, "xpm\n"); break;
-    case IMG_PCX: fprintf(txt, "pcx\n"); break;
     case IMG_JPG: fprintf(txt, "jpg\n"); break;
-	case IMG_BMP: fprintf(txt, "bmp\n"); break;
+    case IMG_PNG: fprintf(txt, "png\n"); break;
+    case IMG_ICO: fprintf(txt, "ico\n"); break;
     }
   fprintf(txt, "\n");
   fprintf(txt, "# Screenshot: image type (bw, color)\n");
@@ -770,8 +749,8 @@ int rcfile_default()
 	ti68k_loadDefaultConfig();
 
 	(options.params)->rom_file = g_strconcat(inst_paths.img_dir, "", NULL);
-	(options.params)->ram_file = NULL;
-	(options.params)->tib_file = NULL;
+	(options.params)->ram_file = g_strdup("");
+	(options.params)->tib_file = g_strdup("");
 
 	// other fields
 	options.skin_file = g_strconcat(inst_paths.skin_dir, "ti92.skn", NULL);

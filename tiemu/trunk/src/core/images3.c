@@ -149,6 +149,11 @@ int ti68k_get_rom_infos(const char *filename, ROM_INFO *ri, int preload)
 {
   	FILE *file;
 
+	// No filename, exits
+	if(!strcmp(filename, ""))
+		return 0;
+
+	// Open file
   	file = fopen(filename, "rb");
   	if(file == NULL)
     {
@@ -204,6 +209,10 @@ int ti68k_get_tib_infos(const char *filename, TIB_INFO *ti, int preload)
 	Ti9xFlash *ptr;
 	int nheaders;
 	int i;
+
+	// No filename, exits
+	if(!strcmp(filename, ""))
+		return 0;
 
 	// Check valid file
 	if(!tifiles_is_a_ti_file(filename))
@@ -266,6 +275,10 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
 	FILE *f;
 	char *ext;
 
+	// No filename, exits
+	if(!strcmp(filename, ""))
+		return 0;
+
 	// Check file
 	if(!ti68k_is_a_img_file(filename))
 	{
@@ -308,6 +321,10 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	gchar *basename;
 	IMG_INFO header;
 	int i;
+
+	// No filename, exits
+	if(!strcmp(srcname, ""))
+		return 0;
 
 	// Preload romdump
 	err = ti68k_get_rom_infos(srcname, &ri, !0);
@@ -372,6 +389,10 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	IMG_INFO header;
 	int i, j;
 	int num_blocks, last_block;
+
+	// No filename, exits
+	if(!strcmp(srcname, ""))
+		return 0;
 
 	// Preload upgrade
 	err = ti68k_get_tib_infos(srcname, &ri, !0);
@@ -466,6 +487,10 @@ int ti68k_load_image(const char *filename)
   	FILE *f;  	
   	int err;
 
+	// No filename, exits
+	if(!strcmp(filename, ""))
+		return 0;
+
 	// Load infos
 	err = ti68k_get_img_infos(filename, header);
   	if(err)
@@ -508,6 +533,10 @@ int ti68k_load_upgrade(const char *filename)
 	int i;
 	IMG_INFO *header = &current_img_info;
   	int err;
+
+	// No filename, exits
+	if(!strcmp(filename, ""))
+		return 0;
 
 	err = ti68k_get_tib_infos(filename, header, !0);
 	if(err)

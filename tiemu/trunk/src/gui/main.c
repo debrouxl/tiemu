@@ -134,6 +134,7 @@ int main(int argc, char **argv)
 	/*
 		For developers only
 	*/
+/*
 #ifndef __WIN32__
 	// linux
 	g_free((options.params)->rom_file);
@@ -143,6 +144,7 @@ int main(int argc, char **argv)
 	g_free((options.params)->rom_file);
 	(options.params)->rom_file = g_strdup("C:\\msvc\\tilp\\images\\ti92.img");
 #endif
+*/
 
 	/*
 		Attempt to load an image
@@ -150,11 +152,8 @@ int main(int argc, char **argv)
 	if(ti68k_load_image((options.params)->rom_file)) {
       
 		display_wizard_dbox();
-		while(!wizard_ok) {
-			while( gtk_events_pending() ) { 
-				gtk_main_iteration(); 
-			}
-		}
+		while(!wizard_ok)
+			GTK_REFRESH();
 	
 		g_free((options.params)->rom_file);
 		(options.params)->rom_file = g_strdup(wizard_rom);

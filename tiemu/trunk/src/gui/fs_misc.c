@@ -246,7 +246,12 @@ gint display_import_romversion_dbox(void)
 	}
 	else if(ti68k_is_a_tib_file(filename))
 	{
-		ret = msg_box2("Question", "Do you want to load it as a fake image or as a FLASH upgrade ? \n\nClick FLASH if you want to directly upgrade the calculator operating system (AMS). \n\nOn the other hand, if you load it as a fake ROM image, TiEmu will convert the FLASH upgrade into a ROM image but your image will suffer from some limitations (no boot block, no certificate, problems with fonts) (rom=1, upg=2)?");
+		ret = msg_box2("Question", 
+			"Do you want to load it as a fake image or as a FLASH upgrade ? \n\n"	\
+			"Click 'yes/ok' if you want to directly upgrade the calculator operating system (AMS). \n\n"	\
+			"On the other hand, if you load it as a fake ROM image, TiEmu will convert the FLASH "	\
+			"upgrade into an image but your image will suffer from some limitations "	\
+			"(no boot block, no certificate, problems with fonts)");
 		if(ret == 1)
 		{	// fake rom
 			ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname);

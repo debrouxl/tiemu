@@ -128,6 +128,7 @@ int ti68k_loadDefaultConfig(void)
 
   ticable_get_default_param(&(params.link_cable));
   params.link_cable.link_type = LINK_NUL;
+  params.link_cable.port = NULL_PORT;
 
   return 0;
 }
