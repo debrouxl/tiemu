@@ -439,6 +439,7 @@ on_run1_activate                       (GtkMenuItem     *menuitem,
     gtk_widget_set_sensitive(list, FALSE);
     set_other_windows_sensitivity(FALSE);
 
+	ti68k_debug_step();	// skip possible current bkpt
     ti68k_engine_start();
 }
 

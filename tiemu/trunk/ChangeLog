@@ -16,6 +16,7 @@ To do:
 	- added temporary breakpoint mode
 	- breakpoints are now editable
 	- fixed bugs with data breakpoints
+	- fixed bug with 'Run': didn't run if a bkpt is on the current line
 
 - 08/11/2004, version 1.80f: roms
 	- PedRom is now provided with TiEmu as default OS.

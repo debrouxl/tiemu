@@ -17,7 +17,7 @@ courante n'a aucun effet, c'est bizarre...
 n'avance pas d'instruction en instruction, mais se décale parfois, on
 s'y perd complètement.
 
-* Si après un breakpoint sur instruction se fait toucher, et si on
++ Si après un breakpoint sur instruction se fait toucher, et si on
 fait 'run', le même breakpoint se fait retoucher, il faudrait plutôt
 continuer.
 

@@ -91,23 +91,11 @@ int hw_m68k_run(int n)
     int i;
     GList *l;
     static FILE *flog;
-    //static once = 0;
   
     for(i = 0; i < n; i++) 
     {
         UWORD opcode;
 
-		// V200 debug purpose
-	  /*
-	  if(!once && (m68k_getpc() < 0x200000 || m68k_getpc() >= 0x600000))
-	  {
-		  printf("<%06x>\n", m68k_getpc());
-			bkpts.type = BK_TYPE_CODE;
-		    specialflags |= SPCFLAG_BRK;
-			once = !0;
-	  }
-	  */
-		
         // save log to disk (internal use)
 #ifdef __WIN32__
         if(flog != NULL)
@@ -146,7 +134,8 @@ int hw_m68k_run(int n)
         }
 
         // search for next opcode, execute it and refresh hardware (if not STOP'ed)
-		if (!(specialflags & SPCFLAG_STOP))
+		if (!((specialflags & SPCFLAG_STOP) && !(specialflags & SPCFLAG_DBSKIP)))
+//		if(specialflags != SPCFLAG_STOP)
 		{
 			opcode = nextiword();
 			(*cpufunctbl[opcode])(opcode);
