@@ -475,7 +475,7 @@ static int sdl_to_ti(int key)
 			case SDLK_c : iAlpha = 1; 	return TIKEY_PARIGHT;
 			case SDLK_d : iAlpha = 1; 	return TIKEY_COMMA;
 			case SDLK_e : iAlpha = 1; 	return TIKEY_DIVIDE;
-			case SDLK_f : iAlpha = 1; 	return TIKEY_F;
+			case SDLK_f : iAlpha = 1; 	return TIKEY_PIPE;
 			case SDLK_g : iAlpha = 1; 	return TIKEY_7;
 			case SDLK_h : iAlpha = 1; 	return TIKEY_8;
 			case SDLK_i : iAlpha = 1; 	return TIKEY_9;
@@ -556,7 +556,7 @@ static int sdl_to_ti(int key)
 			case SDLK_KP_DIVIDE : 	return TIKEY_DIVIDE;    
 			case SDLK_KP_MINUS : 	return TIKEY_MINUS;
 			case SDLK_MINUS : 		return TIKEY_NEGATE;
-			case SDLK_BACKSLASH : 	return TIKEY_ON;
+			case SDLK_BACKSLASH : 	return TIKEY_PIPE;
 			case SDLK_SLASH : 		return TIKEY_DIVIDE;
 			case SDLK_EQUALS : 		return TIKEY_EQUALS;
 			case SDLK_LESS : 		return TIKEY_NEGATE;
@@ -677,13 +677,13 @@ int hid_update_keys(void)
 	  		else
 	    	{
 				int key = sdl_to_ti(event.key.keysym.sym);
-                /*
+
 				if(iAlpha)
 				{
 					ti68k_kbd_set_key(TIKEY_ALPHA, 1);
 					//iAlpha = 0;
 				}
-                */
+
 	      		ti68k_kbd_set_key(key, 1);
                 iKeyWasPressed = 1;
 
@@ -709,13 +709,11 @@ int hid_update_keys(void)
 				caps_ticks = SDL_GetTicks();
 			}
 
-			/*
             if(iAlpha)
 	    	{
 	      		ti68k_kbd_set_key(TIKEY_ALPHA, 0);
 	      		iAlpha = 0;
 	    	}
-            */
 		}
       	else if(event.type == SDL_QUIT) 
 		{
