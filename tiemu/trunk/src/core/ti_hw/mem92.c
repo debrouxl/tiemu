@@ -34,6 +34,7 @@
 #include "ports.h"
 #include "hw.h"
 #include "mem.h"
+#include "mem92.h"
 #include "flash.h"
 #include "images.h"
 #include "bkpts.h"
@@ -95,6 +96,14 @@ int ti92_mem_init(void)
     // map IO
     mem_tab[6] = tihw.io;
     mem_msk[6] = tihw.io_size-1;
+
+	// set mappers
+	mem_get_byte_ptr = ti92_get_byte;
+	mem_get_word_ptr = ti92_get_word;
+	mem_get_long_ptr = ti92_get_long;
+	mem_put_byte_ptr = ti92_put_byte;
+	mem_put_word_ptr = ti92_put_word;
+	mem_put_long_ptr = ti92_put_long;
 
     return 0;
 }

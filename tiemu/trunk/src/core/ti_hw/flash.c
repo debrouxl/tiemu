@@ -53,7 +53,10 @@ int hw_flash_reset(void)
 
 int hw_flash_exit(void)
 {
-	free(wsm.changed);
+	if(wsm.changed != NULL)
+		free(wsm.changed);
+
+	wsm.changed = NULL;
 	return 0;
 }
 

@@ -44,7 +44,7 @@
 #include "mem92.h"
 #include "mem92p.h"
 #include "mem89tm.h"
-#include "hwp89.h"
+#include "hwprot.h"
 
 static IMG_INFO *img = &img_infos;
 
@@ -76,7 +76,13 @@ static PUTBYTE_FUNC	put_byte_ptr;
 static PUTWORD_FUNC	put_word_ptr;
 static PUTLONG_FUNC	put_long_ptr;
 
-	   HWPFETCH_FUNC hwp_fetch_ptr;
+GETBYTE_FUNC	mem_get_byte_ptr;
+GETWORD_FUNC	mem_get_word_ptr;
+GETLONG_FUNC	mem_get_long_ptr;
+
+PUTBYTE_FUNC	mem_put_byte_ptr;
+PUTWORD_FUNC	mem_put_word_ptr;
+PUTLONG_FUNC	mem_put_long_ptr;
 
 /* Mem init/exit */
 
@@ -102,10 +108,6 @@ int hw_mem_init(void)
 
 	if(tihw.calc_type == TI89t)
 		tihw.ram_size = 2*MB;	// used to avoid mirroring of segments
-
-	// init vars
-    tihw.protect = 0;
-	hw_flash_init();
 
     // clear breakpoints
 	ti68k_bkpt_clear_access();
@@ -136,28 +138,15 @@ int hw_mem_init(void)
         mem_msk[i] = 0;
     }
 
-    // set banks on per calc basis
+    // set banks and mappers on per calc basis
     switch(tihw.calc_type)
     {
-    case TI92:
-        ti92_mem_init();
-        break;
-
-    case TI92p:
-        ti92p_mem_init();
-        break;
-
+    case TI92:  ti92_mem_init();  break;
+    case TI92p: ti92p_mem_init(); break;
     case TI89:
-    case V200:
-			ti89_mem_init();
-        break;
-
-    case TI89t:
-        ti89t_mem_init();
-        break;
-
-    default:
-        break;
+    case V200:  ti89_mem_init();  break;
+    case TI89t: ti89t_mem_init(); break;
+    default: break;
     }
   
     // blit ROM
@@ -169,50 +158,24 @@ int hw_mem_init(void)
 
     tihw.initial_pc = find_pc();
 
-	// set memory specific parts mappers
-	switch(tihw.calc_type)
+	// set memory mappers for hw protection
+	if(params.hw_protect && (tihw.calc_type == TI89))
 	{
-	case TI92:
-		get_byte_ptr = ti92_get_byte;
-		get_word_ptr = ti92_get_word;
-		get_long_ptr = ti92_get_long;
-		put_byte_ptr = ti92_put_byte;
-		put_word_ptr = ti92_put_word;
-		put_long_ptr = ti92_put_long;
-	break;
-	
-	case TI89:
-	case TI92p:
-    case V200:
-		if(!params.hw_protect)
-		{
-			get_byte_ptr = ti89_get_byte;
-			get_word_ptr = ti89_get_word;
-			get_long_ptr = ti89_get_long;
-			put_byte_ptr = ti89_put_byte;
-			put_word_ptr = ti89_put_word;
-			put_long_ptr = ti89_put_long;
-		}
-		else
-		{
-			get_byte_ptr = ti89_hwp_get_byte;
-			get_word_ptr = ti89_hwp_get_word;
-			get_long_ptr = ti89_hwp_get_long;
-			put_byte_ptr = ti89_hwp_put_byte;
-			put_word_ptr = ti89_hwp_put_word;
-			put_long_ptr = ti89_hwp_put_long;
-			hwp_fetch_ptr = ti89_hwp_fetch;
-		}
-	break;
-
-	case TI89t:
-		get_byte_ptr = ti89t_get_byte;
-		get_word_ptr = ti89t_get_word;
-		get_long_ptr = ti89t_get_long;
-		put_byte_ptr = ti89t_put_byte;
-		put_word_ptr = ti89t_put_word;
-		put_long_ptr = ti89t_put_long;
-	break;
+		get_byte_ptr = hwp_get_byte;
+		get_word_ptr = hwp_get_word;
+		get_long_ptr = hwp_get_long;
+		put_byte_ptr = hwp_put_byte;
+		put_word_ptr = hwp_put_word;
+		put_long_ptr = hwp_put_long;
+	}
+	else
+	{
+		get_byte_ptr = mem_get_byte_ptr;
+		get_word_ptr = mem_get_word_ptr;
+		get_long_ptr = mem_get_long_ptr;
+		put_byte_ptr = mem_put_byte_ptr;
+		put_word_ptr = mem_put_word_ptr;
+		put_long_ptr = mem_put_long_ptr;
 	}
 
     return 0;
@@ -245,8 +208,6 @@ int hw_mem_exit(void)
 	// clear breakpoints
 	ti68k_bkpt_clear_access();
 	ti68k_bkpt_clear_range();
-
-	hw_flash_exit();
 
     return 0;
 }

@@ -35,6 +35,7 @@
 #include "ports.h"
 #include "hw.h"
 #include "mem.h"
+#include "mem89.h"
 #include "images.h"
 #include "bkpts.h"
 #include "m68k.h"
@@ -92,6 +93,14 @@ int ti89_mem_init(void)
 		mem_tab[7] = tihw.io2;
 		mem_msk[7] = tihw.io2_size-1;
 	}
+
+	// set mappers
+	mem_get_byte_ptr = ti89_get_byte;
+	mem_get_word_ptr = ti89_get_word;
+	mem_get_long_ptr = ti89_get_long;
+	mem_put_byte_ptr = ti89_put_byte;
+	mem_put_word_ptr = ti89_put_word;
+	mem_put_long_ptr = ti89_put_long;
 
     return 0;
 }

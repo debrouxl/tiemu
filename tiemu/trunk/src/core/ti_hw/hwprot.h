@@ -22,21 +22,25 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TI68K_HWP89__
-#define __TI68K_HWP89__
+#ifndef __TI68K_HWPROTECT__
+#define __TI68K_HWPROTECT__
 
 #include "stdint.h"
 
 /* Functions */
 
-int ti89_hwp_fetch(uint32_t adr);
+int hw_hwp_init(void);
+int hw_hwp_reset(void);
+int hw_hwp_exit(void);
 
-uint8_t  ti89_hwp_get_byte(uint32_t addr);
-uint16_t ti89_hwp_get_word(uint32_t addr);
-uint32_t ti89_hwp_get_long(uint32_t addr);
+int hwp_fetch(uint32_t adr);
 
-void ti89_hwp_put_long(uint32_t addr, uint32_t arg);
-void ti89_hwp_put_word(uint32_t addr, uint16_t arg);
-void ti89_hwp_put_byte(uint32_t addr, uint8_t  arg);
+uint8_t  hwp_get_byte(uint32_t addr);
+uint16_t hwp_get_word(uint32_t addr);
+uint32_t hwp_get_long(uint32_t addr);
+
+void hwp_put_long(uint32_t addr, uint32_t arg);
+void hwp_put_word(uint32_t addr, uint16_t arg);
+void hwp_put_byte(uint32_t addr, uint8_t  arg);
 
 #endif

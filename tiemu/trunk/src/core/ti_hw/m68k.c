@@ -191,7 +191,7 @@ int hw_m68k_run(int n)
 		// hardware protection
 		if(params.hw_protect)
 		{
-			if(bkpts.id = hwp_fetch_ptr(m68k_getpc()))
+			if(bkpts.id = hwp_fetch(m68k_getpc()))
 			{
 				bkpts.type = BK_TYPE_PROTECT;
 				return 3;

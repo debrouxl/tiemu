@@ -23,7 +23,7 @@
  */
 
 /*
-    Memory management: TI89/V200 FLASH with Hardware Protection
+    Memory management: TI89/92+/V200/Titanium FLASH with Hardware Protection
 */
 
 #include <stdlib.h>
@@ -34,33 +34,61 @@
 #include "ports.h"
 #include "mem.h"
 #include "mem89.h"
+#include "hwprot.h"
 #include "ti68k_def.h"
 #include "ti68k_int.h"
 
-static int access1 = 0;		// protection access authorization (hw1)
-static int access2 = 0;		// same (hw2)
-static int crash = 0;
-static int arch_mem_crash = 0;
+static uint32_t ba;			// FLASH ROM base address
+
+static int access1;			// protection access authorization (hw1)
+static int access2;			// protection access authorization (hw2)
+static int crash;			// access counter before crashing
+static int arch_mem_crash;	// same
 
 #define HWP
 
+int hw_hwp_init(void)
+{
+	tihw.protect = 0;
+	ba = tihw.rom_base << 24;
+	access1 = access2 = crash = arch_mem_crash = 0;
+
+	return 0;
+}
+
+int hw_hwp_reset(void)
+{
+	return 0;
+}
+
+int hw_hwp_exit(void)
+{
+	return 0;
+}
+
+extern GETBYTE_FUNC	mem_get_byte_ptr;
+extern GETWORD_FUNC	mem_get_word_ptr;
+extern GETLONG_FUNC	mem_get_long_ptr;
+
+extern PUTBYTE_FUNC	mem_put_byte_ptr;
+extern PUTWORD_FUNC	mem_put_word_ptr;
+extern PUTLONG_FUNC	mem_put_long_ptr;
+
 static void freeze_calc(void)
 {
-	access1 = access2 = 0;
-	crash = 0;
+	access1 = access2 = crash = 0;
 	m68k_setstopped(1);		
 }
 
-// note: "if(!(adr & 1))" is used to avoid multiple increment when reading/writing words
-// this don't work for longs but this problem will not exist when this code will be
-// splitted.
+// note: "if(!(adr & 1))" is used to avoid multiple increment when reading/writing words.
+// This don't work for longs but I don't think protection is accessed by longs.
 
 /*
 	Check whether instruction fetch is allowed at adr.
 	The returned value can be used by breakpoints to determine the
 	origin of violation.
 */
-int ti89_hwp_fetch(uint32_t adr)
+int hwp_fetch(uint32_t adr)
 {
 	// protections (hw1)
 	if(tihw.hw_type == HW1)
@@ -110,7 +138,7 @@ int ti89_hwp_fetch(uint32_t adr)
 	return 0;
 }
 
-uint8_t ti89_hwp_get_byte(uint32_t adr) 
+uint8_t hwp_get_byte(uint32_t adr) 
 {
 #ifdef HWP
 	// stealth I/O
@@ -147,7 +175,6 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 			if(crash >= 4)
 			{
 				freeze_calc();
-				printf("1");
 			}
 		}
 	}
@@ -174,12 +201,12 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 			if(!(adr & 1)) 
 				access2++;
 	}
-	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
+	else if(IN_RANGE(0x218000, adr, 0x219fff))			// read protected
 	{
 		if(tihw.protect)
 			return 0x14;
 	}
-	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
+	else if(IN_RANGE(0x21a000, adr, 0x21ffff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
@@ -196,20 +223,20 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 #endif
 
     // memory
-	return ti89_get_byte(adr);
+	return mem_get_byte_ptr(adr);
 }
 
-uint16_t ti89_hwp_get_word(uint32_t adr) 
+uint16_t hwp_get_word(uint32_t adr) 
 {
-	return (ti89_hwp_get_byte(adr+0) << 8) | ti89_hwp_get_byte(adr+1);
+	return (hwp_get_byte(adr+0) << 8) | hwp_get_byte(adr+1);
 }
 
-uint32_t ti89_hwp_get_long(uint32_t adr) 
+uint32_t hwp_get_long(uint32_t adr) 
 {
-	return (ti89_hwp_get_word(adr+0) << 16) | ti89_hwp_get_word(adr+2);
+	return (hwp_get_word(adr+0) << 16) | hwp_get_word(adr+2);
 }
 
-void ti89_hwp_put_byte(uint32_t adr, uint8_t arg) 
+void hwp_put_byte(uint32_t adr, uint8_t arg) 
 {
 #ifdef HWP
     // stealth I/O
@@ -246,7 +273,6 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 			if(crash >= 4)
 			{
 				freeze_calc();
-				printf("3");
 			}
 		}
 	}
@@ -274,11 +300,11 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 			if(!(adr & 1)) 
 				access2++;
 	}
-	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
+	else if(IN_RANGE(0x218000, adr, 0x219fff))			// read protected
 	{
 		return;
 	}
-	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
+	else if(IN_RANGE(0x21a000, adr, 0x21ffff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
@@ -295,19 +321,19 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 #endif
 
     // memory
-    ti89_put_byte(adr, arg);
+    mem_put_byte_ptr(adr, arg);
 
     return;
 }
 
-void ti89_hwp_put_word(uint32_t adr, uint16_t arg) 
+void hwp_put_word(uint32_t adr, uint16_t arg) 
 {
-	ti89_hwp_put_byte(adr+0, MSB(arg));
-	ti89_hwp_put_byte(adr+1, LSB(arg));
+	hwp_put_byte(adr+0, MSB(arg));
+	hwp_put_byte(adr+1, LSB(arg));
 }
 
-void ti89_hwp_put_long(uint32_t adr, uint32_t arg) 
+void hwp_put_long(uint32_t adr, uint32_t arg) 
 {
-	ti89_hwp_put_word(adr+0, MSW(arg));
-	ti89_hwp_put_word(adr+2, LSW(arg));
+	hwp_put_word(adr+0, MSW(arg));
+	hwp_put_word(adr+2, LSW(arg));
 }

@@ -24,7 +24,9 @@ To do:
 	- [roms]  $960: improved management of ALPHA key on TI89 (letter/number).
 	- [roms]  $962: factorized TI89/V200 & TI92+ code (memory).
 	- [kevin] $966: added KDE file selector support.
-	- [roms]  $976: full hw1/2 protection support.
+	- [roms]  $976: full hw1/2/3 protection support (89).
+	- [roms]  $978: overhaul of some parts in memory management and factorized 
+					hw protection code for all calcs.
 
 - 25/02/2005, version 1.80o: roms
 	- fixed bug in ti68k_get_hw_param_block (wrong search/replace)

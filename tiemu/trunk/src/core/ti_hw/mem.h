@@ -37,7 +37,13 @@ typedef void	 (*PUTBYTE_FUNC) (uint32_t, uint8_t );
 typedef void	 (*PUTWORD_FUNC) (uint32_t, uint16_t);
 typedef void	 (*PUTLONG_FUNC) (uint32_t, uint32_t);
 
-typedef int      (*HWPFETCH_FUNC)(uint32_t);
+extern GETBYTE_FUNC	mem_get_byte_ptr;
+extern GETWORD_FUNC	mem_get_word_ptr;
+extern GETLONG_FUNC	mem_get_long_ptr;
+
+extern PUTBYTE_FUNC	mem_put_byte_ptr;
+extern PUTWORD_FUNC	mem_put_word_ptr;
+extern PUTLONG_FUNC	mem_put_long_ptr;
 
 /* Functions */
 
@@ -77,8 +83,5 @@ extern uint32_t mem_msk[];
 #define lget(adr) ((uint32_t)(((uint32_t)wget(adr))<<16 | wget((adr)+2)))
 
 #define IN_RANGE(a,v,b)	(((v) >= (a)) && ((v) <= (b)))
-
-/* HW protection */
-extern  HWPFETCH_FUNC	hwp_fetch_ptr;
 
 #endif
