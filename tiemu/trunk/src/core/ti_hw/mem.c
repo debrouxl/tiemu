@@ -51,18 +51,18 @@ uint32_t mem_mask[16];		// pseudo chip-select (allow wrapping / ghost space)
 
 // 000000-0fffff : RAM (128 or 256 KB)
 // 100000-1fffff : 
-// 200000-2fffff : internal ROM (TI92, TI89, V200)
+// 200000-2fffff : internal ROM (TI92, TI89, V200) or unused
 // 300000-3fffff : idem
-// 400000-4fffff : external ROM (TI92, TI92-II, TI92+)
+// 400000-4fffff : external ROM (TI92, TI92-II, TI92+) or unused
 // 500000-5fffff : idem
-// 600000-6fffff : memory mapped I/O
-// 700000-7fffff : memory mapped I/O (HW2)
-// 800000-8fffff : unused
-// 900000-9fffff :   ...
-// a00000-afffff : 
-// b00000-bfffff : 
-// c00000-cfffff : 
-// d00000-dfffff : 
+// 600000-6fffff : memory mapped I/O (all HW)
+// 700000-7fffff : memory mapped I/O (HW2, HW3)
+// 800000-8fffff : ROM (TI89 Titanium) or unused
+// 900000-9fffff : idem
+// a00000-afffff : idem
+// b00000-bfffff : idem
+// c00000-cfffff : unused
+// d00000-dfffff :	 ...
 // e00000-efffff :   ...
 // d00000-ffffff : unused
 
@@ -95,7 +95,7 @@ int hw_mem_init(void)
 	}
 
 	// init vars
-    tihw.protect = 1;
+    tihw.protect = 0;
 	memset(&wsm, 0, sizeof(FLASH_WSM));
 
     // clear breakpoints
@@ -172,7 +172,7 @@ int hw_mem_init(void)
 		mem_mask[5] = MIN(tihw.rom_size - 1*MB, 1*MB)-1;
 	}
 #else
-    bank_s = (tihw.rom_base & 0xff) >> 4;                        // starting bank
+    bank_s = (tihw.rom_base & 0xff) >> 4;               // starting bank
     bank_n = (int)ceil((double)(tihw.rom_size >> 20));  // number of banks
 
     for(i = 0, bank_i = bank_s; i < bank_n; bank_i++, i++)
@@ -222,7 +222,7 @@ int hw_mem_init(void)
 		put_word_ptr = ti92_put_word;
 		put_long_ptr = ti92_put_long;
 	}
-#if 1
+#if 0
 	else
 	{
 		get_byte_ptr = ti89_get_byte;

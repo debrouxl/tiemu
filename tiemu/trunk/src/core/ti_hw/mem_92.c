@@ -55,42 +55,51 @@ uint32_t ti92_get_long(uint32_t adr)
 {
     // RAM or PROM access
 	if(IN_RANGE(0x000000, adr, 0x5fffff))
+	{
         return lget(adr);
+	}
 
     // memory-mapped I/O
 	else if(IN_RANGE(0x600000, adr, 0x6fffff))
+	{
         return io_get_long(adr & 0x1f);
+	}
 
-    else
-        return 0;
+    return 0;
 }
 
 uint16_t ti92_get_word(uint32_t adr) 
 {
 	// RAM or PROM access
     if(IN_RANGE(0x000000, adr, 0x5fffff))
+	{
         return wget(adr);
+	}
 
     // memory-mapped I/O
     else if(IN_RANGE(0x600000, adr, 0x6fffff))
+	{
         return io_get_word(adr & 0x1f);
+	}
 
-    else
-        return 0;
+    return 0;
 }
 
 uint8_t ti92_get_byte(uint32_t adr) 
 {
 	// RAM or PROM access
     if(IN_RANGE(0x000000, adr, 0x5fffff))
+	{
         return bget(adr);
+	}
 
     // memory-mapped I/O
     else if(IN_RANGE(0x600000, adr, 0x6fffff))
+	{
         return io_get_byte(adr & 0x1f);
+	}
 
-    else
-        return 0;
+    return 0;
 }
 
 void ti92_put_long(uint32_t adr, uint32_t arg) 
@@ -103,7 +112,9 @@ void ti92_put_long(uint32_t adr, uint32_t arg)
 
     // memory-mapped I/O
     else if(IN_RANGE(0x600000, adr, 0x6fffff))
+	{
         io_put_long(adr & 0x1f, arg);
+	}
 }
 
 void ti92_put_word(uint32_t adr, uint16_t arg) 
@@ -116,7 +127,9 @@ void ti92_put_word(uint32_t adr, uint16_t arg)
 
     // memory-mapped I/O
     else if(IN_RANGE(0x600000, adr, 0x6fffff))
+	{
         io_put_word(adr & 0x1f, arg);
+	}
 }
 
 void ti92_put_byte(uint32_t adr, uint8_t arg) 
@@ -129,5 +142,7 @@ void ti92_put_byte(uint32_t adr, uint8_t arg)
 
     // memory-mapped I/O
     else if(IN_RANGE(0x600000, adr, 0x6fffff))
+	{
         io_put_byte(adr & 0x1f, arg);
+	}
 }

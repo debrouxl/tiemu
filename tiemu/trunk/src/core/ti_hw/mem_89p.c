@@ -58,6 +58,7 @@ static int crash = 0;
 uint32_t ti89p_get_long(uint32_t adr) 
 {
 	// stealth I/O
+	/*
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
 	{
 		access = crash = 0;
@@ -108,13 +109,14 @@ uint32_t ti89p_get_long(uint32_t adr)
 		access++;
 		crash = 0;
 	}
+	*/
 
     // memory
-    if (IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
 	{
         return lget(adr);
 	}
-    else if (IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
 	{
         return (lget(adr) | wsm.ret_or);
 	}
@@ -132,6 +134,7 @@ uint32_t ti89p_get_long(uint32_t adr)
 
 uint16_t ti89p_get_word(uint32_t adr) 
 {
+	/*
     // stealth I/O
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
 	{
@@ -183,13 +186,14 @@ uint16_t ti89p_get_word(uint32_t adr)
 		access++;
 		crash = 0;
 	}
+	*/
 
     // memory
-    if (IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
 	{
         return wget(adr);
 	}
-    else if (IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
 	{
         return (wget(adr) | wsm.ret_or);
 	}
@@ -208,6 +212,7 @@ uint16_t ti89p_get_word(uint32_t adr)
 uint8_t ti89p_get_byte(uint32_t adr) 
 {
     // stealth I/O
+	/*
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
 	{
 		access = crash = 0;
@@ -258,13 +263,14 @@ uint8_t ti89p_get_byte(uint32_t adr)
 		access++;
 		crash = 0;
 	}
+	*/
 
     // memory
-    if (IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
 	{
         return bget(adr);
 	}
-    else if (IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
 	{
         return (bget(adr) | wsm.ret_or);
 	}
@@ -283,6 +289,7 @@ uint8_t ti89p_get_byte(uint32_t adr)
 void ti89p_put_long(uint32_t adr, uint32_t arg) 
 {
 	// stealth I/O
+	/*
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
 	{
 		access = crash = 0;
@@ -336,13 +343,14 @@ void ti89p_put_long(uint32_t adr, uint32_t arg)
 		crash = 0;
 		if(tihw.protect) return;
 	}
+	*/
 
     // memory
-    if (IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
 	{
         lput(adr, arg);
 	}
-    else if (IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
 	{
         FlashWriteByte(adr,(arg>>24)&0xff);
         FlashWriteByte(adr+1,(arg>>16)&0xff);
@@ -363,6 +371,7 @@ void ti89p_put_long(uint32_t adr, uint32_t arg)
 
 void ti89p_put_word(uint32_t adr, uint16_t arg) 
 {
+	/*
 	// stealth I/O
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
 	{
@@ -417,13 +426,14 @@ void ti89p_put_word(uint32_t adr, uint16_t arg)
 		crash = 0;
 		if(tihw.protect) return;
 	}
+	*/
 
     // memory
-    if (IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
 	{
         wput(adr, arg);
 	}
-    else if (IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
 	{
         FlashWriteByte(adr,(arg>>8)&0xff);
 	    FlashWriteByte(adr+1,arg&0xff);
@@ -442,6 +452,7 @@ void ti89p_put_word(uint32_t adr, uint16_t arg)
 
 void ti89p_put_byte(uint32_t adr, uint8_t arg) 
 {
+	/*
     // stealth I/O
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
 	{
@@ -496,13 +507,14 @@ void ti89p_put_byte(uint32_t adr, uint8_t arg)
 		crash = 0;
 		if(tihw.protect) return;
 	}
+	*/
 
     // memory
-    if (IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
 	{
         bput(adr, arg);
 	}
-    else if (IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
 	{
         FlashWriteByte(adr,arg&0xff);
 	}
