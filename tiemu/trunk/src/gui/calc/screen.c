@@ -95,8 +95,10 @@ void compute_grayscale(void)
   	int sr, sg, sb;
   	int er, eg, eb;
   	int r, g ,b;
-    uint32_t white = skin_infos.lcd_white;
-    uint32_t black = skin_infos.lcd_black;
+    uint32_t white = skin_infos.lcd_white;  // 0xcfe0ce
+    uint32_t black = skin_infos.lcd_black;  // 0x222e31
+
+    //printf("B&W: %08lx %08lx\n", skin_infos.lcd_black, skin_infos.lcd_white);
 
   	sr = (white & 0xff0000) >> 8;
   	sg = (white & 0x00ff00);

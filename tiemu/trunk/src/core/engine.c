@@ -57,93 +57,10 @@
    If you think this values are a bit too big, you can slow down 
    the emulator by changing them 
 */
-#define NB_INSTRUCTIONS_PER_LOOP 50000	// 50000
-#define TIME_LIMIT               30	    // 30
+#define NB_INSTRUCTIONS_PER_LOOP 50000	// 50000 inst
+#define TIME_LIMIT               30	    // 30 ms
 
 static int cpu_instr = NB_INSTRUCTIONS_PER_LOOP;
-
-#if 0
-
-G_LOCK_DEFINE(running);
-static volatile int running = 0;
-
-G_LOCK_DEFINE(debugger);
-volatile int debugger = 0;
-
-// run as a separate thread
-gpointer ti68k_engine(gpointer data)
-{
-	struct timeb tCurrentTime;
-	struct timeb tLastTime;
-	unsigned long int iCurrentTime;
-	unsigned long int iLastTime; 
-	gint res = 0;
-
-    if(params.cpu_rate != -1)
-        cpu_instr = params.cpu_rate;
-
-	while (1) 
-	{
-		// Check engine status
-		G_LOCK(running);
-		if (!running) 
-        {
-			G_UNLOCK(running);
-			g_thread_yield ();			
-			continue;
-		}
-		G_UNLOCK(running);
-		
-		ftime(&tLastTime);
-      
-		// Run emulator core
-		res = ti68k_debug_do_instructions(cpu_instr);
-		if(res) 
-        {  
-			// a bkpt has been encountered
-			G_LOCK(running);
-            running = 0;
-			G_UNLOCK(running);
-
-            debugger = res;
-		} 
-        else 
-        { 
-			// normal execution
-			ftime(&tCurrentTime);
-			
-			iLastTime    = 1000 * tLastTime.time + tLastTime.millitm;
-			iCurrentTime = 1000 * tCurrentTime.time + tCurrentTime.millitm;
-			
-			if((iCurrentTime - iLastTime) < TIME_LIMIT)
-                if(params.restricted)
-				    sleep((TIME_LIMIT - iCurrentTime + iLastTime));
-		}
-	}
-
-	return GINT_TO_POINTER(0);
-}
-
-int ti68k_engine_is_stopped() 
-{
-	return !running;
-}
-
-void ti68k_engine_stop(void) 
-{
-	G_LOCK(running);
-	running = 0;
-	G_UNLOCK(running);
-}
-
-void ti68k_engine_start(void) 
-{
-	G_LOCK(running);
-	running = 1;
-	G_UNLOCK(running);
-}
-
-#else		// new management
 
 GThread *thread = NULL;
 GError *error = NULL;
@@ -192,7 +109,7 @@ gpointer ti68k_engine(gpointer data)
             running = 0;
 			G_UNLOCK(running);
 
-			// show debug mode has been entered and pass bkpt type 
+			// debug mode has been entered and pass bkpt type 
 			G_LOCK(debugger);
 			debugger = res;
 			G_UNLOCK(debugger);
@@ -240,10 +157,9 @@ void ti68k_engine_start(void)
 	G_LOCK(running);
 	if(!running)
 	{
+        // if not already running, create new thread
 		thread = g_thread_create(ti68k_engine, NULL, TRUE, &error);		
 	}
 	G_UNLOCK(running);
     //printf("done.\n");
 }
-
-#endif
