@@ -25,7 +25,7 @@
  */
 
 /*
-    Running engine (threaded).
+    Run engine from GTK main loop at regular interval.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -33,27 +33,12 @@
 #endif
 
 #include <glib.h>
-#include <time.h> /*time_t which sys/timeb.h uses is defined there*/
-#include <sys/timeb.h>
-#include <sys/types.h>
-#include <stdlib.h>
-#include <string.h>
-#ifndef __WIN32__
-#include <unistd.h> // usleep
-#else
-#include <windows.h>
-#endif
 
 #include "intl.h"
-#include "engine.h"
 #include "ti68k_int.h"
 #include "m68k.h"
-
-#if defined(__LINUX__) || defined(__MACOSX__)
-#define sleep(x)	usleep(1000 * (x))
-#elif defined(__WIN32__)
-#define sleep(x)	Sleep((x))
-#endif
+#include "engine.h"
+#include "dbg_all.h"
 
 /* 
    The TI92/89 should approximately execute NB_INSTRUCTIONS_PER_LOOP in 
@@ -66,111 +51,79 @@
 
 static int cpu_instr = NB_INSTRUCTIONS_PER_LOOP;
 
-GThread *thread = NULL;
-GError *error = NULL;
+static guint tid = 0;
+static gint  res = 0;
 
-G_LOCK_DEFINE(running);
-/*static*/ volatile int running = 0;
-
-G_LOCK_DEFINE(debugger);
-volatile int debugger = 0;
-
-// run as a separate thread
-gpointer ti68k_engine(gpointer data)
+// function called when the function below is exited
+static void engine_notify(gint *data)
 {
-	gint res = 0;
-    GTimer *tmr;
+	// call debugger here
+	if(*data)
+		gtk_debugger_enter(GPOINTER_TO_INT(*data));
+
+	// and reset source id
+	tid = 0;
+}
+
+// function called by g_timeout_add_full/g_idle_add_full
+static gboolean engine_func(gint *data)
+{
+	GTimer *tmr;
     gulong us;
-    gint ms;
 
-	G_LOCK(running);
-	running = 1;
-	G_UNLOCK(running);
-
-    tmr = g_timer_new();
-
+	// set instruction rate
     if(params.cpu_rate != -1)
         cpu_instr = params.cpu_rate;
 
-	while (1) 
-	{
-		// Check engine status
-		G_LOCK(running);
-		if (!running) 
-        {
-			G_UNLOCK(running);
-			g_thread_exit(GINT_TO_POINTER(0));
-		}
-		G_UNLOCK(running);
+	// start measurement of time
+	tmr = g_timer_new();
+	g_timer_start(tmr);
 
-        g_timer_start(tmr);
-		
-		// Run emulation core
-		res = hw_m68k_run(cpu_instr);
-		if(res) 
-        {  
-			// a bkpt has been encountered: stop engine
-			G_LOCK(running);
-            running = 0;
-			G_UNLOCK(running);
+	// run emulation core
+	*data = hw_m68k_run(cpu_instr);
 
-			// enter in debug mode and pass bkpt type 
-			G_LOCK(debugger);
-			debugger = res;
-			G_UNLOCK(debugger);
-			
-			g_thread_exit(GINT_TO_POINTER(res));
-		} 
-        else if(params.restricted)
-        { 
-			// normal execution
-            g_timer_elapsed(tmr, &us);
-            ms = us / 1000;
-            if(ms < TIME_LIMIT)
-                sleep(TIME_LIMIT - ms);
+	// a bkpt has been encountered ? If yes, stop engine
+	if(*data)
+		return FALSE;
 
-            g_timer_reset(tmr);
-		}
-	}
+	// get time needed to execute 'cpu_instr' instructions
+	g_timer_elapsed(tmr, &us);
 
-	g_thread_exit(GINT_TO_POINTER(0));
+	return TRUE;
 }
 
-int ti68k_engine_is_stopped() 
-{
-	return !running;
-}
-
-void ti68k_engine_stop(void) 
-{
-    printf("stopping engine... ");
-	G_LOCK(running);
-	running = 0;				// request termination
-	G_UNLOCK(running);
-
-    if(thread != NULL)
-	{
-	    g_thread_join(thread);	// wait for thread termination
-	}
-    thread = NULL;
-    printf("done.\n");
-
-	//while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
-}
-
+// start emulation engine
 void ti68k_engine_start(void) 
 {
-    printf("starting engine... ");
+	if(params.restricted)
+		tid = g_timeout_add_full(G_PRIORITY_DEFAULT, TIME_LIMIT, engine_func, &res, engine_notify);
+	else
+		tid = g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, engine_func, &res, engine_notify);
+}
 
-    //while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
+// stop it
+void ti68k_engine_stop(void) 
+{
+	if(tid)
+		g_source_remove(tid);
+}
 
-	G_LOCK(running);
-	if(!running)
-	{
-        // if not already running, create new thread
-		thread = g_thread_create(ti68k_engine, NULL, TRUE, &error);
-        running = 1;
-	}
-	G_UNLOCK(running);
-    printf("done.\n");
+// state of engine
+int engine_is_stopped() 
+{
+	return !tid;
+}
+
+int engine_is_running(void)
+{
+	return tid;
+}
+
+/*
+	Called at startup to know needed time for exec'ing hw_m68k_run.
+	This allow to make exec'ing more precise.
+*/
+void ti68k_engine_calibrate(void)
+{
+
 }

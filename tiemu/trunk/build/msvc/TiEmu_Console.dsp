@@ -225,10 +225,6 @@ SOURCE=..\..\src\core\uae\libuae.lib
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\core\engine.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\core\error.c
 # End Source File
 # Begin Source File
@@ -305,10 +301,6 @@ SOURCE=..\..\src\gui\debugger\dbg_stack.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\debugger\dbg_vectors.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\debugger\gsource.c
 # End Source File
 # End Group
 # Begin Group "calc"
@@ -440,6 +432,10 @@ SOURCE=..\..\src\misc\rcfile.c
 SOURCE=..\..\src\misc\tie_error.c
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\src\core\engine.c
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\src\gui\main.c
