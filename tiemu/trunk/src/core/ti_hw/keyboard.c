@@ -36,6 +36,8 @@
 #include "ti68k_def.h"
 
 static int key_states[NB_MAX_KEYS];
+static int *key_row;
+static int key_change;
 
 int keyRow92[10][8] =
 {
@@ -105,10 +107,10 @@ int keyRowV200[10][8] =
    TIKEY_ENTER1, TIKEY_MINUS}
 };
 
-static int *key_row;
-
 int hw_kbd_init(void)
 {
+	key_change = 0;
+
     switch(tihw.calc_type)
     {
     case TI89:
@@ -141,6 +143,7 @@ int hw_kbd_exit(void)
 void ti68k_kbd_set_key(int key, int active)
 {
     key_states[key] = active;
+	key_change = !0;
 }
 
 /* Returns true if the corresponding key was pressed */
@@ -151,7 +154,7 @@ int ti68k_kbd_is_key_pressed(int key)
 
 int hw_kbd_update(void) 
 {
-    int rc = cb_update_keys();	// ~600Hz
+	int rc = key_change;	// ~600Hz
 
     if((tihw.on_key = ti68k_kbd_is_key_pressed(TIKEY_ON))) 
     {

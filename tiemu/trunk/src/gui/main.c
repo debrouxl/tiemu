@@ -206,6 +206,9 @@ int main(int argc, char **argv)
 
 	gdk_threads_enter();
 	while(1) {
+		// poll events
+		cb_update_keys();
+
 		// we will remove polling by event later
 		if(hid_popup_menu()) {
 			gui_popup_menu();

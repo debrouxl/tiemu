@@ -55,11 +55,12 @@ int hw_io_exit(void)
     return 0;
 }
 
-#define bit_tst(i,b)	(((b) & (1 << i)) >> i)
-
-//#define bit_get(i,b)	((b) &  (1 << i))
+#define bit_get(i,b)	((b) &  (1 << i))
 #define bit_set(i,b)	((b) |  (1 << i))
 #define bit_clr(i,b)	((b) & ~(1 << i))
+
+#define bit_tst(i,b)	(((b) & (1 << i)) >> i)
+
 #define bit_chg(i,b,s)	{if(s) bit_set(i,b); else bit_clr(i, b);}
 
 void io_put_byte(CPTR adr, UBYTE arg)

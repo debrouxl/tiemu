@@ -79,7 +79,7 @@ typedef struct
 
 typedef struct
 {
-    // misc
+    // misc (non hardware)
     int     calc_type;
 
     int     ram_size;
@@ -88,6 +88,8 @@ typedef struct
     int     rom_flash;
     char	rom_version[5];
 	int		hw_type;
+
+	char	*lcd_ptr;
 
     // ioports.c
     int     io0Bit7;
@@ -100,7 +102,6 @@ typedef struct
     int     lcd_off;
     int     contrast;
     int     lcd_addr;
-    char	*lcd_ptr;
 	int		lcd_power;
 
     // linkport.c
@@ -116,7 +117,7 @@ typedef struct
 	int		ram256;
 	int		ram_wrap;
 	int		mem_prot;
-    int   flash_prot;
+    int		flash_prot;
 
     // timer.c
     int     timer_value;

@@ -71,7 +71,7 @@ Uint32 *pLcdBuf = NULL;       // LCD screen  (TI screen: bytemapped)
 Uint32 convtab[512] = { 0 };  // Planar to chunky conversion table
 
 Uint8 sdl2ti[512] = { 0 };    // SDL to TI key conversion table
-volatile int iKeyWasPressed;  // true if a TI key has been pressed
+int iKeyWasPressed;			  // true if a TI key has been pressed
 int lastKey = -1;             // the latest key pressed
 int iAlpha = 0;               // The TI89 Alpha key has been pressed
 
