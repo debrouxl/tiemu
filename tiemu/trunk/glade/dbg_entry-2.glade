@@ -82,7 +82,6 @@
 	      <property name="rules_hint">False</property>
 	      <property name="reorderable">False</property>
 	      <property name="enable_search">True</property>
-	      <signal name="button_press_event" handler="dbgentry_button_press_event" last_modification_time="Fri, 25 Feb 2005 10:37:05 GMT"/>
 	    </widget>
 	  </child>
 	</widget>

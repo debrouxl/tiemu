@@ -181,5 +181,5 @@ distdir: clean
 	cp -rl * ../tiemu-@VERSION@/src
 
 install: tiemu
-	#@$(INSTALL) -m755 -d $(DESTDIR)$(tilp_help_dir)
-	$(INSTALL) -m755 tiemu ${prefix}/bin
+	@$(INSTALL) -d $(prefix)/bin
+	$(INSTALL) -m755 tiemu ${prefix}/bin/

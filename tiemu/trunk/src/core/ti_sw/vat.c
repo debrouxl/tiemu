@@ -228,7 +228,6 @@ int vat_parse(GNode **tree)
 	vse = g_malloc0(sizeof(VatSymEntry));
 	strcpy(vse->name, "home");
 	*tree = g_node_new(vse);
-	printf("vse: %p\n", vse);
 
 	if(tihw.calc_type == TI92)
 		parse_vat_92(*tree);
