@@ -222,6 +222,7 @@ int hw_mem_init(void)
 		put_word_ptr = ti92_put_word;
 		put_long_ptr = ti92_put_long;
 	}
+#if 1
 	else
 	{
 		get_byte_ptr = ti89_get_byte;
@@ -231,6 +232,17 @@ int hw_mem_init(void)
 		put_word_ptr = ti89_put_word;
 		put_long_ptr = ti89_put_long;
 	}
+#else
+	else
+	{
+		get_byte_ptr = ti89p_get_byte;
+		get_word_ptr = ti89p_get_word;
+		get_long_ptr = ti89p_get_long;
+		put_byte_ptr = ti89p_put_byte;
+		put_word_ptr = ti89p_put_word;
+		put_long_ptr = ti89p_put_long;
+	}
+#endif
 
     return 0;
 }

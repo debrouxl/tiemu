@@ -73,7 +73,7 @@ uint32_t ti89p_get_long(uint32_t adr)
 	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
 	{
 		access = crash = 0;
-		cb_screen_on_off(0);
+		//cb_screen_on_off(0);
 	}
 	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
 	{
@@ -148,7 +148,7 @@ uint16_t ti89p_get_word(uint32_t adr)
 	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
 	{
 		access = crash = 0;
-		cb_screen_on_off(0);
+		//cb_screen_on_off(0);
 	}
 	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
 	{
@@ -223,7 +223,7 @@ uint8_t ti89p_get_byte(uint32_t adr)
 	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
 	{
 		access = crash = 0;
-		cb_screen_on_off(0);
+		//cb_screen_on_off(0);
 	}
 	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
 	{
@@ -298,7 +298,7 @@ void ti89p_put_long(uint32_t adr, uint32_t arg)
 	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
 	{
 		access = crash = 0;
-		cb_screen_on_off(!0);
+		//cb_screen_on_off(!0);
 	}
 	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
 	{
@@ -379,7 +379,7 @@ void ti89p_put_word(uint32_t adr, uint16_t arg)
 	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
 	{
 		access = crash = 0;
-		cb_screen_on_off(!0);
+		//cb_screen_on_off(!0);
 	}
 	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
 	{
@@ -458,7 +458,7 @@ void ti89p_put_byte(uint32_t adr, uint8_t arg)
 	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
 	{
 		access = crash = 0;
-		cb_screen_on_off(!0);
+		//cb_screen_on_off(!0);
 	}
 	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
 	{

@@ -218,6 +218,13 @@ void ti89_put_word(uint32_t adr, uint16_t arg)
 	else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
         tihw.protect = 0;
 
+	else if(adr < 0x200000)		// pb here (92+ not boot otherwise)
+	{
+		if(adr >= 0x1c0000)
+			tihw.protect = 0;
+		wput(adr, arg);
+	}
+
 	// write to internal/external FLASH
     else if (adr >= 0x200000 && adr < 0x600000) 
     {

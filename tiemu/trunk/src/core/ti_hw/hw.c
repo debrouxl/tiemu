@@ -154,11 +154,13 @@ void hw_update(void)
     	tihw.heartbeat--;
     }
 
-	// Increment RTC timer
+	// Increment RTC timer evry 8192 seconds
+	/*
 	if(io2_bit_tst(0x1f, 2))
 	{
 		tihw.rtc_value++;
 	}
+	*/
 
 	/* Auto-int management */
 
