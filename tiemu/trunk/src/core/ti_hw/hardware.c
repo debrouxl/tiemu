@@ -152,10 +152,9 @@ void hw_update(void)
     if(!io_bit_tst(0x15,7) && tihw.timer_value == 0)
     {
         tihw.timer_value = tihw.timer_init;
+
         specialflags |= SPCFLAG_INT;
-        
-        if(currIntLev < 5)
-	        currIntLev = 5;
+        currIntLev = 5;
     }
 
 	// Auto-int 6: triggered when [ON] is pressed.
@@ -166,8 +165,16 @@ void hw_update(void)
 
 	/* Hardware refresh */
   
+  	// Update keyboard (~600Hz). Not related to timer but as a convenience
+  	if(!(tihw.timer_value & 7))		// 1 and 3 don't work, 7 and 15 are ok
+  		hw_kbd_update();
+  		
+  	// Update LCD (HW1: every 16Th timer tick, HW2: unrelated)
+  	if(!(tihw.timer_value & 15))
+  		cb_update_screen();
+  
     /* LCD is refreshed every 16th time */
-    if(!(tihw.timer_value&15))
+    if(!(tihw.timer_value & 15))
     {
         if(tihw.lc_file && !io_bit_tst(0x0c,5)) 
 	    {
@@ -177,12 +184,9 @@ void hw_update(void)
 	            tihw.lc_file = 0;
 	            tihw.lc_timeout = 0;
 	        }
-	    }
+	    }       
 
-        hw_kbd_update();
-
-        if(!params.sync_one)
-	        cb_update_screen();
+        //cb_update_screen();
     }
 }
 
