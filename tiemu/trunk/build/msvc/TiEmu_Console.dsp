@@ -434,7 +434,7 @@ SOURCE=..\..\src\misc\tie_error.c
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\core\engine.c
+SOURCE=..\..\src\gui\engine.c
 # End Source File
 # Begin Source File
 
