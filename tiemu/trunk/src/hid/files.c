@@ -1,8 +1,11 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: cabl_int.h 651 2004-04-25 15:22:07Z roms $ */
+/* $Id$ */
 
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  TiEmu - an TI emulator
+ *
+ *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
+ *  Copyright (c) 2003-2004, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,7 +36,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-//#include "platform.h"
 #include "tilibs.h"
 
 #include "struct.h"
