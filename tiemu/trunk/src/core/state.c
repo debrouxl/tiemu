@@ -73,9 +73,6 @@ int ti68k_state_load(char *filename)
 	// Load internal hardware (registers and special flags)
     fwrite(&regs, sizeof(regs), 1, f);
     fwrite(&specialflags, sizeof(specialflags), 1, f);
-
-	m68k_setpc(m68k_getpc());
-    MakeFromSR();
     
     // Load I/O ports state
     fread(tihw.io , IO_SIZE, 1, f);
@@ -84,6 +81,9 @@ int ti68k_state_load(char *filename)
     // Load RAM content
     fread(tihw.ram, 256*KB, 1, f);
     
+	m68k_setpc(m68k_getpc());
+    MakeFromSR();
+
     fclose(f); 
   
   	return 0;

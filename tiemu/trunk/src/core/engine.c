@@ -110,7 +110,7 @@ gpointer ti68k_engine(gpointer data)
 			iCurrentTime = 1000 * tCurrentTime.time + tCurrentTime.millitm;
 			
 			if((iCurrentTime - iLastTime) < TIME_LIMIT)
-                //if((options.params)->restrict)
+                if(params.restricted)
 				    sleep((TIME_LIMIT - iCurrentTime + iLastTime));
 		}
 	}

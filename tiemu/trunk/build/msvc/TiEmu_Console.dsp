@@ -442,6 +442,10 @@ SOURCE=.\libjpeg.lib
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\docs\ti_hw\ExtendeD\7000xx_Ports.txt
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\ChangeLog
 # End Source File
 # Begin Source File
@@ -458,11 +462,7 @@ SOURCE=..\..\docs\ti_hw\fargo\LowLevel.txt
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\docs\ti_hw\flash\ti92.doc
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\docs\TiEmu_img_format.txt
+SOURCE="..\..\docs\ti_hw\ExtendeD\titanium-info.txt"
 # End Source File
 # End Group
 # End Target

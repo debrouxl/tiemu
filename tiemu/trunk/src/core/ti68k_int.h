@@ -72,4 +72,7 @@ uint8_t* ti68k_get_real_address(uint32_t addr);
 #include "state.h"
 #include "type2str.h"
 
+// Errors
+int ti68k_error_get(int err_num, char *error_msg);
+
 #endif

@@ -113,7 +113,8 @@ static GtkWidget* display_popup_menu(void)
     data = glade_xml_get_widget(xml, "restrict1");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.restricted);
 
-	//data = glade_xml_get_widget(xml, "sync1");
+	data = glade_xml_get_widget(xml, "sync1");
+	gtk_widget_set_sensitive(data, FALSE);
 	//gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.sync_one);
 
     // init radio buttons

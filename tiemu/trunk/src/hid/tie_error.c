@@ -35,6 +35,7 @@
 #include "intl.h"
 #include "printl.h"
 #include "dboxes.h"
+#include "ti68k_int.h"
 
 /*
   This function can take 2 parameters:

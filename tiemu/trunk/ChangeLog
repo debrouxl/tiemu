@@ -2,14 +2,16 @@ SubVersion: $Id$
 
 - 07/07/2004, version 1.72: roms
 	Error management connected and updated.
+	Fixed 'restrict to current speed'.
+	Synch item disabled for now.
 
 	Still to do:
-	- Synch check item to remove ?
 	- link port is broken
 	- Extended ROM V200 et TI89TI
 	- state image
 	- pb de bkpt ?
 	- dans le memory dump, le 1er octet de la mémoire n'est pas à 0x00...
+	- stealth I/O and mem protect
 
 - 30/06/2004, version 1.71: roms
 	Lionel Debroux's suggestions:
