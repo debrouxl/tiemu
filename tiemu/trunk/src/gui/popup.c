@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: cabl_int.h 651 2004-04-25 15:22:07Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - a TI emulator
  *  loader.c: loader for TiEmu skins
