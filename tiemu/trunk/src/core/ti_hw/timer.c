@@ -31,12 +31,16 @@
 int timer_value = 0;
 int timer_init = 0xB2;
 
-void hw_init_timer()
+int hw_timer_init(void)
 {
   timer_value = 0;
   timer_init = 0xB2;
 }
 
-void hw_exit_timer()
+int hw_timer_reset(void)
+{
+}
+
+int hw_timer_exit(void)
 {
 }

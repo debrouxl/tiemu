@@ -27,7 +27,8 @@ extern int timer_value;
 
 /* Functions */
 
-void hw_init_timer();
-void hw_exit_timer();
+int hw_timer_init(void);
+int hw_timer_reset(void);
+int hw_timer_exit(void);
 
 #endif

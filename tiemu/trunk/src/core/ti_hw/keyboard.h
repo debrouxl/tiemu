@@ -24,9 +24,9 @@
 
 /* Functions */
 
-void hw_init_kbd();
-void hw_exit_kbd();
-int  hw_update_kbd();
+int hw_kbd_init(void);
+int hw_kbd_reset(void);
+int hw_kbd_exit(void);
 
 UBYTE read_keyboard_mask(void);
 //UBYTE get_rowmask(UBYTE r);

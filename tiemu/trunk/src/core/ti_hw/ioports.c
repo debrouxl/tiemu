@@ -174,12 +174,16 @@ ULONG io_get_long(CPTR adr)
 }
 
 
-void hw_init_io()
+int hw_io_init(void)
 {
   io0Bit2=1; 
   io0Bit7=1;
 }
 
-void hw_exit_io()
+int hw_io_reset(void)
+{
+}
+
+int hw_io_exit(void)
 {
 }

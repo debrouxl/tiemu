@@ -23,10 +23,11 @@
 extern int init_int_tab_offset;
 extern int timer_init, timer_value;
 
-void init_hardware(void);
-void reset_hardware(void);
-void update_hardware(void);
-void exit_hardware(void);
+int hw_init(void);
+int hw_reset(void);
+int hw_exit(void);
+
+int hw_update(void);
 
 #define CYCLES_PER_INSTR 10
 #define CYCLES_PER_TICK 6400

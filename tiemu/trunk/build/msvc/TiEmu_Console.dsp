@@ -95,6 +95,10 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\src\core\ti_hw\dbus.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\ti_hw\debugger.c
 # End Source File
 # Begin Source File
@@ -112,10 +116,6 @@ SOURCE=..\..\src\core\ti_hw\keyboard.c
 # Begin Source File
 
 SOURCE=..\..\src\core\ti_hw\lcd.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\linkport.c
 # End Source File
 # Begin Source File
 

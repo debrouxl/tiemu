@@ -117,7 +117,7 @@ int ti68k_init(void)
 
     tihw.calc_type = img_infos.calc_type;
 
-  init_hardware();
+	hw_init();
 
   cb_init_specific();
   cb_screen_on_off(!0);
@@ -142,7 +142,7 @@ int ti68k_reset(void)
   listBkptAddress = 0;
   cycle_instr = params.i_tick;
 
-  reset_hardware();
+  hw_reset();
 
   return 0;
 }
@@ -154,7 +154,7 @@ int ti68k_reset(void)
 int ti68k_exit(void)
 {
     cb_exit_specific();
-    exit_hardware();
+    hw_exit();
 
     ticable_exit();
 	tifiles_exit();
@@ -212,7 +212,7 @@ int ti68k_debug_do_instructions(int n)
     if(!img_loaded)
         return ERR_68K_ROM_NOT_LOADED;
 
-    return hw_run_m68k(n);
+    return hw_m68k_run(n);
 }
 
 
@@ -247,8 +247,8 @@ int ti68k_linkport_get_timeout(int value)
 
 int ti68k_linkport_reconfigure(void)
 {
-    hw_exit_dbus();
-    hw_init_dbus();
+    hw_dbus_init();
+    hw_dbus_exit();
 
     return 0;
 }

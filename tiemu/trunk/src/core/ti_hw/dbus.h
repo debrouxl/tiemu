@@ -24,8 +24,9 @@
 
 /* Functions */
 
-void hw_init_dbus();
-void hw_exit_dbus();
+int hw_dbus_init(void);
+int hw_dbus_reset(void);
+int hw_dbus_exit(void);
 
 void  linkport_putbyte(UBYTE arg);
 UBYTE linkport_getbyte(void);

@@ -22,8 +22,9 @@
 
 /* Functions */
 
-int hw_init_mem();
-int hw_exit_mem();
+int hw_mem_init(void);
+int hw_mem_reset(void);
+int hw_mem_exit(void);
 
 extern UBYTE get_byte(CPTR adr);
 extern UWORD get_word(CPTR adr);

@@ -30,7 +30,7 @@ int lcd_off;
 int contrast;
 int lcd_base_addr;
 
-void hw_init_lcd()
+int hw_lcd_init(void)
 {
   contrast=13; //16
   lcd_base_addr=(img_infos.flash)?0x4c00:0x4440;
@@ -38,6 +38,10 @@ void hw_init_lcd()
   lcd_off=0;
 }
 
-void hw_exit_lcd()
+int hw_lcd_reset(void)
+{
+}
+
+int hw_lcd_exit(void)
 {
 }

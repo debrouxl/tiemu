@@ -22,8 +22,9 @@
 
 /* Functions */
 
-void hw_init_io();
-void hw_exit_io();
+int hw_io_init(void);
+int hw_io_reset(void);
+int hw_io_exit(void);
 
 extern UBYTE io_get_byte(CPTR adr);
 extern UWORD io_get_word(CPTR adr);

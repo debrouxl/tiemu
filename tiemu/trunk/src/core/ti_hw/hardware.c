@@ -108,29 +108,29 @@ void update_hardware()
   A ROM image must have been loaded before calling this function.
 */
 
-void init_hardware() 
+int hw_init(void)
 {
-  hw_init_mem();
-  hw_init_io();
-  hw_init_kbd();
-  hw_init_timer();
-  hw_init_lcd();
-  hw_init_dbus();
-  hw_init_m68k();
+  hw_mem_init();
+  hw_io_init();
+  hw_kbd_init();
+  hw_timer_init();
+  hw_lcd_init();
+  hw_dbus_init();
+  hw_m68k_init();
 }
 
-void reset_hardware()
+int hw_reset(void)
 {
-  hw_reset_m68k();
+  hw_m68k_reset();
 }
 
-void exit_hardware(void) 
+int hw_exit(void)
 {
-  hw_exit_m68k();
-  hw_exit_dbus();
-  hw_exit_lcd();
-  hw_exit_timer();
-  hw_exit_kbd();
-  hw_exit_io();
-  hw_exit_mem();
+  hw_m68k_exit();
+  hw_dbus_exit();
+  hw_lcd_exit();
+  hw_timer_exit();
+  hw_kbd_exit();
+  hw_io_exit();
+  hw_mem_exit();
 }

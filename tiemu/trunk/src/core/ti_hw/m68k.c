@@ -28,12 +28,12 @@
 //#include "interface.h"
 #include "callbacks.h"
 
-void hw_init_m68k()
+int hw_m68k_init(void)
 {
   init_m68k();
 }
 
-void hw_reset_m68k()
+int hw_m68k_reset(void)
 {
   find_pc();
   rom_at_0();
@@ -41,7 +41,7 @@ void hw_reset_m68k()
   ram_at_0();
 }
 
-void hw_exit_m68k()
+int hw_m68k_exit(void)
 {
 }
 
@@ -51,7 +51,7 @@ void hw_exit_m68k()
   return ERR_NONE if successful, a negative value if an error occured,
   a positive value if a breakpoint has been encountered.
 */
-int hw_run_m68k(int n)
+int hw_m68k_run(int n)
 {
   int i;
   GList *l;

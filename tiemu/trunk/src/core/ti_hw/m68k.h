@@ -22,10 +22,11 @@
 
 /* Functions */
 
-void hw_init_m68k(void);
-void hw_reset_m68k(void);
-void hw_exit_m68k(void);
-int  hw_run_m68k(int);
+int hw_m68k_init(void);
+int hw_m68k_reset(void);
+int hw_m68k_exit(void);
+
+int hw_m68k_run(int);
 
 /* Variables */
 

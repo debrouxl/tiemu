@@ -76,7 +76,7 @@ void print_lc_error(int errnum)
   D-bus management (HW linkport)
 */
 
-void hw_init_dbus()
+int hw_dbus_init(void)
 {
   int err;
 
@@ -101,7 +101,11 @@ void hw_init_dbus()
   init_linkfile();
 }
 
-void hw_exit_dbus()
+int hw_dbux_reset(void)
+{
+}
+
+int hw_dbus_exit(void)
 {
   int err;
 

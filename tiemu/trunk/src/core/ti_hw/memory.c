@@ -31,7 +31,6 @@
 #include "images.h"
 #include "memory.h"
 #include "bkpts.h"
-//#include "params.h"
 #include "ti68k_def.h"
 
 /* Memory blocks */
@@ -78,12 +77,12 @@ static IMG_INFO *cri = &img_infos; // a shortcut
 
 static int mem_initialized = 0;
 
-int hw_init_mem()
+int hw_mem_init(void)
 {
   int i;
 
   if(mem_initialized) 
-    hw_exit_mem();
+    hw_mem_exit();
 
   /* Init vars */
   ram128 = (tihw.ram_size == 128);
@@ -165,7 +164,11 @@ int hw_init_mem()
   return (ti_ram && ti_int_rom && ti_ext_rom && ti_io);
 }
 
-int hw_exit_mem()
+int hw_mem_reset(void)
+{
+}
+
+int hw_mem_exit(void)
 {
   if(ti_ram) 
     free(ti_ram); 

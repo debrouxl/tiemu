@@ -28,7 +28,8 @@ extern int lcd_off;
 
 /* Functions */
 
-void hw_init_lcd();
-void hw_exit_lcd();
+int hw_lcd_init(void);
+int hw_lcd_reset(void);
+int hw_lcd_exit(void);
 
 #endif

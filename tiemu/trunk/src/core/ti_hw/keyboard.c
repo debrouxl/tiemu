@@ -154,7 +154,7 @@ UBYTE read_keyboard_mask(void)
   return (UBYTE)(~arg);
 }
 
-void hw_init_kbd()
+int hw_kbd_init(void)
 {
   if(img_infos.calc_type & TI92)
     key_row = (int*)keyRow92;
@@ -162,7 +162,11 @@ void hw_init_kbd()
     key_row = (int*)keyRow89;
 }
 
-void hw_exit_kbd()
+int hw_kbd_reset(void)
+{
+}
+
+int hw_kbd_exit(void)
 {
   key_row = NULL;
 }
