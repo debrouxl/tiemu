@@ -12,7 +12,6 @@
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
   <property name="has_separator">True</property>
-  <signal name="destroy" handler="on_infos_dbox_destroy"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox1">
@@ -39,7 +38,6 @@
 		  <property name="label">gtk-close</property>
 		  <property name="use_stock">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
-		  <signal name="clicked" handler="on_button4_clicked"/>
 		  <accelerator key="Escape" modifiers="0" signal="clicked"/>
 		  <accelerator key="Return" modifiers="0" signal="clicked"/>
 		</widget>

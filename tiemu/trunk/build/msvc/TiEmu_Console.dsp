@@ -316,11 +316,7 @@ SOURCE=..\..\src\gui\help.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\infos_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\infos_dbox.c
+SOURCE=..\..\src\gui\infos.c
 # End Source File
 # Begin Source File
 
