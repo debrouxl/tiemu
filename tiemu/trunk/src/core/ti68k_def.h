@@ -114,7 +114,6 @@ typedef struct
 	int		log_h;			// LCD logical height
 
     // linkport.c
-	int		lc_file;		// direct file loading mode
 	int		lc_speedy;		// speedy mode for direct file
     int     lc_timeout;     // timeout for internal link
 

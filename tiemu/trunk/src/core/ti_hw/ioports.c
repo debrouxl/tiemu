@@ -51,7 +51,7 @@ int hw_io_init(void)
 	tihw.io[0x03] = 0xff;
 	tihw.io[0x05] = 0x00;
 	tihw.io[0x0c] = 0x8d;
-	tihw.io[0x0d] = 0x40;
+	tihw.io[0x0d] = 0x42;
 	tihw.io[0x0e] = 0xff;
 	tihw.io[0x0f] = 0x00;
 
@@ -144,6 +144,8 @@ void io_put_byte(CPTR adr, UBYTE arg)
         	// see hardware.c
         break;
         case 0x0d:	// r- <76543210>
+			// reading teh DBus status register resets that register
+			tihw.io[0x0d] = 0x00;
 			break;
         case 0x0e:	// rw <....3210>
 			// set red/white wires (if direct access)			

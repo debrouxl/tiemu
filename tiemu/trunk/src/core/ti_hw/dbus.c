@@ -168,11 +168,11 @@ static void lp_putbyte(UBYTE arg)
     err = lc.put(arg);
 	if(err)
 	{
-		io_bit_set(0x0c,3);	// error
+		io_bit_set(0x0d,7);	// error
 		print_lc_error(err);
 		return;
 	}
-	io_bit_set(0x0d,1);		// tx buffer empty
+	io_bit_set(0x0d,6);		// tx buffer empty
 	io_bit_set(0x0d,3);		// link activity
 }
 
@@ -200,7 +200,7 @@ static int lp_checkread(void)
 	err = lc.check(&status);
 	if(err)
 	{
-	    io_bit_set(0x0c,3);		// error
+	    io_bit_set(0x0d,7);		// error
 	    print_lc_error(err);
 	    lp_last_byte = 0;
 	}
@@ -210,7 +210,7 @@ static int lp_checkread(void)
         err = lc.get(&lp_last_byte);
 		if(err)
         {
-			io_bit_set(0x0c,3);	// error
+			io_bit_set(0x0d,7);	// error
 			print_lc_error(err);
         }
 
@@ -272,8 +272,8 @@ int df_checkread(void)
     (hardware protocol).
     In fact, I simply reimplement the basic functions of libticables usually 
     used by libticalcs for sending/receiving data. These functions exchange
-    bytes with the linkport at HW level (io.c).
-    The libticalcs provided the abstraction we need for this.
+    bytes with the linkport at HW level (ioports.c).
+    The libticalcs provides the abstraction we need for this.
 
 	Wonderful, isn't it ?! Take a look at the 'TiLP framework' power ;-)
 */
@@ -321,6 +321,7 @@ static int ilp_close_port(void)    	{ return 0; }
 static int ilp_term_port(void)     	{ return 0; }
 static int ilp_check_port(int *st) { return 0; }
 
+/* libticalcs functions (GUI callbacks API) */
 static void ilp_start(void)   { }
 static void ilp_stop(void)    { }
 static void ilp_refresh(void) { }
@@ -378,10 +379,8 @@ int test_sendfile(void)
 {
     map_to_directfile();
     tihw.lc_speedy = 1;
-    tihw.lc_file = 1;
     //itc.send_var("/root/str.89s", 0, NULL);
     itc.send_var("C:\\str.9xs", 0, NULL);
-    tihw.lc_file = 0;
     tihw.lc_speedy = 0;
     map_to_linkport();
 
@@ -410,9 +409,7 @@ int send_ti_file(const char *filename)
     {
         map_to_directfile();
         tihw.lc_speedy = 1;
-        tihw.lc_file = 1;  
         itc.send_flash(filename, MODE_APPS);
-        tihw.lc_file = 0;
         tihw.lc_speedy = 0;
         map_to_linkport();
     }
@@ -422,9 +419,7 @@ int send_ti_file(const char *filename)
     {
         map_to_directfile();
         tihw.lc_speedy = 1;
-        tihw.lc_file = 1;  
         itc.send_flash(filename, MODE_AMS);
-        tihw.lc_file = 0;
         tihw.lc_speedy = 0;
         map_to_linkport();
     }
@@ -434,9 +429,7 @@ int send_ti_file(const char *filename)
     {
         map_to_directfile();
         tihw.lc_speedy = 1;
-        tihw.lc_file = 1;  
         itc.send_backup(filename, MODE_NORMAL);
-        tihw.lc_file = 0;
         tihw.lc_speedy = 0;
         map_to_linkport();
     }
@@ -446,9 +439,7 @@ int send_ti_file(const char *filename)
     {
         map_to_directfile();
         tihw.lc_speedy = 1;
-        tihw.lc_file = 1;  
         itc.send_var(filename, MODE_NORMAL, NULL);
-        tihw.lc_file = 0;
         tihw.lc_speedy = 0;
         map_to_linkport();
     }
@@ -458,9 +449,7 @@ int send_ti_file(const char *filename)
     {
         map_to_directfile();
         tihw.lc_speedy = 1;
-        tihw.lc_file = 1;  
         itc.send_var(filename, MODE_NORMAL, NULL);
-        tihw.lc_file = 0;
         tihw.lc_speedy = 0;
         map_to_linkport();
     }
