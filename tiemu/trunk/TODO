@@ -203,7 +203,7 @@ This is a bug. Please report it.
 * Dans le débogueur, la fenêtre Breakpoints n'a pas de "QuickInfos" dans la
 toolbar. (En revanche, dans la fenêtre Code/Source, ils y sont maintenant.)
 
-* Un truc qui serait bien serait une fonction "breakpoint on program entry".
++ Un truc qui serait bien serait une fonction "breakpoint on program entry".
 Mais comme la feature dans VTI est implémentée plutôt avec les pieds, il
 faudrait qu'on discute de ça ensemble pour ne pas faire les mêmes erreurs.
 Le problème n°1 dans VTI est sa manière foireuse de récupérer l'adresse du

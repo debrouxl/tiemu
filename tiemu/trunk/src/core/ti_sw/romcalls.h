@@ -65,6 +65,7 @@ ROM_CALL *romcalls_sort_by_name(void);
 
 int romcalls_get_size(void);
 
-void romcalls_get_table_infos(uint32_t *addr, uint32_t *size);
+void romcalls_get_table_infos(uint32_t *base, uint32_t *size);
+void romcalls_get_symbol_address(int id, uint32_t *addr);
 
 #endif

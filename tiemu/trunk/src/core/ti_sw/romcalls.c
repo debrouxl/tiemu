@@ -40,10 +40,24 @@ static int		loaded;
 
 static int old_ct = -1;		// previous calc type for reloading
 
-void romcalls_get_table_infos(uint32_t *addr, uint32_t *size)
+/*
+	Retrieve base address of ROM calls table and size.
+*/
+void romcalls_get_table_infos(uint32_t *base, uint32_t *size)
 {
-	*addr = rd_long(&tihw.rom[0x12000 + 0x88 + 0xC8]);
-	*size = rd_long(&tihw.rom[((*addr-4) & 0x0fffff)]);
+	*base = rd_long(&tihw.rom[0x12000 + 0x88 + 0xC8]);
+	*size = rd_long(&tihw.rom[((*base-4) & 0x0fffff)]);
+}
+
+/*
+	Given a ROM call ID, retrieve address of ROM call.
+*/
+void romcalls_get_symbol_address(int id, uint32_t *addr)
+{
+	uint32_t base;
+
+	base = rd_long(&tihw.rom[0x12000 + 0x88 + 0xC8]);
+	*addr = rd_long(&tihw.rom[(base & 0x0fffff) + 4*id]); 
 }
 
 /* 
@@ -167,10 +181,7 @@ int romcalls_load_from_file(const char* filename)
 	printf("Done !\n");
 
 	// get function address
-	//addr = rd_long(&tihw.ram[0xC8]);
-	addr = rd_long(&tihw.rom[0x12000 + 0x88 + 0xC8]);
-	list_size = rd_long(&tihw.rom[((addr-4) & 0x0fffff)]);
-
+	romcalls_get_table_infos(&addr, &list_size);
 	printf("ROM calls: parsing %i entries at $%06x... ", list_size, addr);
 
 	for(i = 0; i < list_size; i++)

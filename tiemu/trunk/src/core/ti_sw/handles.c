@@ -29,7 +29,9 @@
 #include <stdio.h>
 
 #include "handles.h"
+#include "romcalls.h"
 #include "ti68k_def.h"
+#include "ti68k_int.h"
 
 /*
 	Retrieve address of heap (pointed by $5D42).
@@ -43,10 +45,25 @@ void heap_get_base_address(uint32_t *base)
 	else if(tihw.ti92v1)
 		ptr = 0x4440 + 0x1902;		//and tios::heap equ tios::globals+$1902
 	else
-		ptr = 0x4c00 + 0x1902;
+	{
+		uint32_t b, size, addr;
 
-	*base = rd_long(&tihw.ram[ptr]);
-	//printf("heap_get_base_address: $%06x\n", *base);
+		romcalls_get_table_infos(&b, &size);
+		if(size < 0x441)
+		{
+			// AMS1
+			romcalls_get_symbol_address(0x96, &addr);		// tios::HeapDeref (#0x096)
+			ptr = rd_word(ti68k_get_real_address(addr + 8));// MOVEA.L $7592,A0
+		} else
+		{
+			// AMS2
+			//romcalls_get_symbol_address(0x441, base);
+			romcalls_get_symbol_address(0x96, &addr);		// tios::HeapDeref (#0x096)
+			ptr = rd_word(ti68k_get_real_address(addr + 10));// MOVEA.L $7592,A0
+		}
+	}
+
+	*base = rd_long(ti68k_get_real_address(ptr));
 }
 
 /*
@@ -58,19 +75,19 @@ void heap_get_size(uint16_t *size)
 	uint32_t base, addr;
 	int i;
 
-	heap_get_base_address(&base);
 	*size = 0;
+	heap_get_base_address(&base);
+	if(base == -1)
+		return;
 
 	for(i = 0; ; i++)
 	{
-		addr = rd_long(&tihw.ram[base + 4*i]);
-		//printf("%i: $%06x\n", i, addr);
+		addr = rd_long(ti68k_get_real_address(base + 4*i));
 		if(addr == 0)
 			break;
 	}
 
 	*size = i;
-	//printf("heap_get_size: %i\n", *size);
 }
 
 /*
@@ -82,6 +99,6 @@ void heap_get_block_size(int handle, uint32_t *addr, uint16_t *size)
 
 	heap_get_base_address(&base);
 
-	*addr = rd_long(&tihw.ram[base + 4*handle]);
-	*size = rd_word(&tihw.ram[*addr - 2]);
+	*addr = rd_long(ti68k_get_real_address(base + 4*handle));
+	*size = rd_word(ti68k_get_real_address(*addr - 2));
 }
