@@ -75,6 +75,7 @@ FFLAGS = @FFLAGS@
 GENCAT = @GENCAT@
 GLADE_CFLAGS = @GLADE_CFLAGS@
 GLADE_LIBS = @GLADE_LIBS@
+GLIBC2 = @GLIBC2@
 GLIBC21 = @GLIBC21@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
@@ -97,6 +98,7 @@ INTLBISON = @INTLBISON@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LDFLAGS = @LDFLAGS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
@@ -207,10 +209,10 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 	check-recursive installcheck-recursive
 DIST_COMMON = README $(dist_pkgdata_DATA) $(srcdir)/Makefile.in \
 	$(srcdir)/configure ABOUT-NLS AUTHORS COPYING ChangeLog INSTALL \
-	Makefile.am NEWS TODO aclocal.m4 compile config.guess \
-	config.h.in config.rpath config.sub configure configure.ac \
-	depcomp install-sh ltmain.sh missing mkinstalldirs tiemu.lsm.in \
-	tiemu.spec.in
+	Makefile.am NEWS TODO acinclude.m4 aclocal.m4 compile \
+	config.guess config.h.in config.rpath config.sub configure \
+	configure.ac depcomp install-sh ltmain.sh missing mkinstalldirs \
+	tiemu.lsm.in tiemu.spec.in
 DIST_SUBDIRS = build glade help pedrom pixmaps skins src man
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -230,7 +232,7 @@ $(top_builddir)/config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 $(srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(srcdir)/configure.ac $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
 
-$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.ac 
+$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.ac acinclude.m4
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 
 config.h: stamp-h1

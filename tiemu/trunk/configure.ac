@@ -111,13 +111,13 @@ esac
 CFLAGS="$CFLAGS $ARCH"
 
 # KDE dialogs support
-AC_ARG_WITH(kde, AC_HELP_STRING([--with-kde], [Compile with KDE support]), [kde=$withval], [kde=no])
-if test "x$kde" = "xyes"; then
-        AC_PROG_CXX
-        AC_PATH_KDE
-        AC_DEFINE(WITH_KDE, 1, [Use KDE support])
-fi
-AC_SUBST(kde)
+#AC_ARG_WITH(kde, AC_HELP_STRING([--with-kde], [Compile with KDE support]), [kde=$withval], [kde=no])
+#if test "x$kde" = "xyes"; then
+#        AC_PROG_CXX
+#        AC_PATH_KDE
+#        AC_DEFINE(WITH_KDE, 1, [Use KDE support])
+#fi
+#AC_SUBST(kde)
 
 # Ensure MSVC-compatible struct packing convention is used when
 # compiling for Win32 with gcc.
