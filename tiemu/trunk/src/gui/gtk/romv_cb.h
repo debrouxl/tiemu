@@ -22,15 +22,8 @@ void
 on_romversion_dbox_destroy             (GtkObject       *object,
                                         gpointer         user_data);
 
-gboolean
-on_clist1_button_press_event           (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
-
-
-gboolean
-on_romv_clist1_button_press_event      (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
+void 
+on_romv_clist_selection_changed (GtkTreeSelection *sel, 
+				 gpointer user_data);
 
 #endif /* !ROMV_CB_H */

@@ -28,20 +28,44 @@ gchar *chosen_file = NULL;
 gint display_romversion_dbox(void)
 {
   GtkWidget *dbox, *dbox2;
-  GtkWidget *list = NULL;
-  gchar *text[6]; // 6 columns
+  GtkWidget *clist;
+  GtkListStore *list;
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+  GtkTreeSelection *sel;
+
   gchar buffer[MAXCHARS];
   int i;
   FILE *fp;
   gchar *filename;
   struct stat s;
 
+  gchar *text[6] = { _("Filename"), _("Calc"),
+		     _("Version"), _("Memory"),
+		     _("Size"), _("Type") };
+
   dbox = create_romversion_dbox();
   
-  list = lookup_widget(dbox, "clist1");
+  clist = lookup_widget(dbox, "clist1");
+
+  /* Set up the GtkTreeView */
+  list = gtk_list_store_new(6, G_TYPE_STRING, G_TYPE_STRING,
+			    G_TYPE_STRING, G_TYPE_STRING,
+			    G_TYPE_STRING, G_TYPE_STRING);
+  model = GTK_TREE_MODEL(list);
+  
+  gtk_tree_view_set_model(GTK_TREE_VIEW(clist), model); 
+  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(clist), TRUE); 
+  
+  for (i = 0; i < 6; i++)
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), i, text[i],
+						gtk_cell_renderer_text_new(),
+						"text", 0, NULL);
+  gtk_list_store_clear(list); 
 
   /* List all ROMs available in the ROM directory */
-  gtk_widget_show_all(dbox2 = create_window1());
+  dbox2 = create_window1();
+  gtk_widget_show_all(dbox2);
   while( gtk_events_pending() ) { gtk_main_iteration(); }
   while( gtk_events_pending() ) { gtk_main_iteration(); }
 
@@ -61,6 +85,7 @@ gint display_romversion_dbox(void)
   if(fp == NULL)
     {
       DISPLAY("Unable to open this file: %s\n", filename);
+      gtk_widget_destroy(dbox);
       return -1;
     }
   while(!feof(fp))
@@ -70,14 +95,25 @@ gint display_romversion_dbox(void)
 	  fscanf(fp, "%s\t", buffer);
 	  text[i] = g_strdup(buffer);
 	}
-#if 0 /* FUCKED */
-      gtk_clist_append(GTK_CLIST(list), text);	  
-#endif /* 0 */
+
+      gtk_list_store_append(list, &iter);
+      gtk_list_store_set(list, &iter, 0, text[0],
+			 1, text[1], 2, text[2],
+			 3, text[3], 4, text[4],
+			 5, text[5], -1);
+
       for(i=0; i<6; i++) g_free(text[i]);
     } 
   fclose(fp);
-  
+
+  sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(clist));
+  gtk_tree_selection_set_mode(sel, GTK_SELECTION_SINGLE);
+
   gtk_widget_show_all(dbox);
+
+  g_signal_connect(G_OBJECT(sel), "changed",
+                   G_CALLBACK(on_romv_clist_selection_changed), NULL);
+
   return 0;
 }
 
@@ -164,37 +200,22 @@ on_romversion_dbox_destroy             (GtkObject       *object,
   unhalt();
 }
 
-#if 0 /* FUCKED */
-void
-on_romv_clist1_select_row              (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-  gchar *filename = NULL;
-  gtk_clist_get_text(clist, row, 0, &filename);
-  chosen_file = g_strdup(filename);
+
+void 
+on_romv_clist_selection_changed (GtkTreeSelection *sel, 
+				 gpointer user_data)
+{ 
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+
+  if (gtk_tree_selection_get_selected (sel, &model, &iter))
+    {
+      if (chosen_file != NULL)
+	g_free(chosen_file);
+
+      gtk_tree_model_get (model, &iter, 0, &chosen_file, -1);
+    }
 }
 
-
-void
-on_romv_clist1_unselect_row            (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-}
-#endif /* 0 */
-
-gboolean
-on_romv_clist1_button_press_event      (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
-{
-
-  return FALSE;
-}
 
 /**/

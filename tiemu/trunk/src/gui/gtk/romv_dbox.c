@@ -104,9 +104,6 @@ create_romversion_dbox (void)
   g_signal_connect ((gpointer) romversion_dbox, "destroy",
                     G_CALLBACK (on_romversion_dbox_destroy),
                     NULL);
-  g_signal_connect ((gpointer) clist1, "button_press_event",
-                    G_CALLBACK (on_romv_clist1_button_press_event),
-                    NULL);
   g_signal_connect ((gpointer) button7, "clicked",
                     G_CALLBACK (on_button7_clicked),
                     NULL);

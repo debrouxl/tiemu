@@ -117,7 +117,6 @@
 		      <property name="rules_hint">False</property>
 		      <property name="reorderable">False</property>
 		      <property name="enable_search">True</property>
-		      <signal name="button_press_event" handler="on_romv_clist1_button_press_event"/>
 		    </widget>
 		  </child>
 		</widget>

@@ -104,13 +104,13 @@ gint display_skinlist_dbox(void)
   if(closedir(dir)==-1)
     msg_box("Error", "Unable to close directory.");
   
-  sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(clist)); 
-  gtk_tree_selection_set_mode(sel, GTK_SELECTION_SINGLE);       
+  sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(clist));
+  gtk_tree_selection_set_mode(sel, GTK_SELECTION_SINGLE);
 
   gtk_widget_show_all(dbox);
 
-  g_signal_connect(G_OBJECT(sel), "changed", 
-                   G_CALLBACK(on_skin_clist_selection_changed), NULL); 
+  g_signal_connect(G_OBJECT(sel), "changed",
+                   G_CALLBACK(on_skin_clist_selection_changed), NULL);
 
   return 0;
 }
