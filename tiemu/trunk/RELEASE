@@ -1,29 +1,41 @@
-Previous version: 1.53-stable (lib 1.4.2)
-Current version: 1.57-stable (lib 1.4.3)
+			[ Release notes ]
 
 
-Improvements:
-------------- 
 
-	- upgraded to libticables v3.x.x
-	- SDL rendering system (LCD) completely rewritten
-	
+Previous version: 1.65	     (11/11/2002)
+Current version:  2.00-alpha (08/06/2004)
+
+SubVersion (CVS) revision: $Id: RELEASE 655 2004-04-26 18:12:16Z roms $
+
+TiEmu is available for 2 platforms:
+Linux (GTK), Windows (GTK).
+
+If you have a SilverLink cable (TI-GRAPH LINK USB), you will need to retrieve
+a Linux/Win32/Mac OS-X driver on the Linux Programmer Group at 
+<http://lpg.ticalc.org/prj_usb>.
+
+For the other link cables, no driver is needed because it's provided.
+
+
 New capabilities:
 -----------------
 
-	- added scaling support for people who are using high resolution such
-	as 1280x1024
+	- none
+
+
+Improvements:
+-------------
+
+	- completely reworked
 	
 	
 Future capabilities:
 --------------------
 
-	- use the latest & faster UAE
-	- a better FLASH support to do
-	- 
+	- use the latest & faster UAE.
 
 	
 Notes:
 ------
-- use a RAM image format compatible with VTi's .sav file format for a future Netscape plugin (in progress)
-- Flash Apps/OS does not work but no problems for archives.
+
+	- none.

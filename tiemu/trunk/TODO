@@ -1,25 +1,6 @@
 List of stuffs to do:
 
-- test FlashApps and AMS: does not work !
-- auto-calibration and cycle count
-- double click on popup menu
-- debugger crashes under Win32
-- scale size and full screen
-
-* RAM image compatible with VTi format (.sav)
-* direct linking & console (w/ pbar)
-
-+ light & dark colors
-+ TI92+ LCD flickers (does not appear when IRQ1 Sync is enabled)
-+ start with a FLASH upgrade directly without having a ROM image
-+ jpeg screenshot under Win32 seems to not work (works under Linux)
-+ TI keyboard mapping (89, VTi compatible)
-+ LCD colors: flickering, TI89 color inversion, ON/OFF
-+ save grey scale settings
-+ video memory protecting pb with SDL & exit
-+ key mapping (same as VTi ??)
-+ grey scales with SDL version
-+ RAM image loading
+- use latest UAE engine
 
 -------------
 + done

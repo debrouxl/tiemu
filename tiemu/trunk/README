@@ -14,13 +14,15 @@ For a more specific README, see README.linux or README.win32
 +-------------+
 
 TiEmu is a program allowing a PC to emulate a TI89/92(+)/V200PLT hand-held.
-It uses GTK+ (the Gimp ToolKit, http://www.gimp.org/gtk) for the GUI and the SDL (Simple Directmedia Layer) for the display. 
+It uses GTK+ (the Gimp ToolKit, http://www.gimp.org/gtk) for the GUI and the SDL 
+(Simple Directmedia Layer) for the display. 
 It works on Linux and Windows platforms actually.
 
 All link cables are supported by the link port: parallel, serial, 
 Black TI Graph Link, Gray TI Graph Link and the (fast)AVRlink.
 
-TiEmu is based on XTiger, the original TI emulator for Linux (see the AUTHORS file for more details) which uses the m68k emulation core from UAE (The Ultimate Amiga Emulator).
+TiEmu is based on XTiger, the original TI emulator for Linux (see the AUTHORS file for 
+more details) which uses the m68k emulation core from UAE (The Ultimate Amiga Emulator).
 It also uses the TiLP framework (ti* libraries).
 
 
@@ -40,7 +42,7 @@ o Works with 1Mb & 2Mb ROMS, 128 or 256k memory (but FLASH Apps/OS does not work
 o Nice debugger (memory, breakpoints, traps, vectors, ...)
 o Constrast emulated (Try [Alt] + [+] & [-])
 o Pretty fast
-o Sreenshot of LCD and/or calculator in several images format (JPG/PCX/XPM/BMP)
+o Sreenshot of LCD and/or calculator in several images format (JPG/PNG)
 o TI keyboard useable directly from PC keyboard or with the mouse on the skin
 
 
@@ -48,9 +50,9 @@ o TI keyboard useable directly from PC keyboard or with the mouse on the skin
 | SYSTEM REQUIREMENTS |
 +---------------------+
 
-You will need a PC Intel computer. A 100MHz processor is a minimum.
+You will need a PC Intel (486) computer. A 100MHz processor is a minimum.
 TiEmu uses roughly 10MB of RAM.
-Nethertheless, it's fast (it starts in 10 seconds on a PC166/64MB under NT4). 
+Nevertheless, it's fast (it starts in 10 seconds on a PC166/64MB under NT4). 
 
 
 +------------------+
@@ -236,11 +238,6 @@ Rusty Wagner for the calculator skins.
 +------+
 | BUGS |
 +------+
-
-- FLASH archive works but not FLASH Apps/OS
-- X11 version seems to not start in 8 bit mode
-- X11 & SDL version have not been tested in 32 bit mode (I wasn't be able to
-  to do it)
 
 If you find a bug, please give your:
 - calc type

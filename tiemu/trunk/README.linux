@@ -20,7 +20,7 @@ REQUIREMENTS
  - GTK+ 2.x (http://www.gtk.org)
  - ticables, tifiles and ticalcs libraries from the TiLP project 
 	(http://tilp.info)
- - JPEG library (jpeg6.2)
+ - JPEG library (jpeg62)
 
 
 INSTALLATION
