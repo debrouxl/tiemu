@@ -198,7 +198,7 @@ static int hid_init_subsystem(void)
   sdlLcdSrc = SDL_CreateRGBSurface(SDL_HWSURFACE, 
 				   iScrW << iScale, iScrH << iScale, 
 				   DEFAULT_BPP, 
-				   255, 255, 255, 255);
+				   255, 255, 255, 0);
   
   // Get some constants
   iDepth = sdlWindow->format->BitsPerPixel;
@@ -231,10 +231,12 @@ static int hid_quit_subsystem(void)
 
 static int hid_restart_subsystem(void)
 {
-	hid_quit_subsystem();
-	hid_init_subsystem();
+	int ret1, ret2;
 	
-	return 0;
+	ret1 = hid_quit_subsystem();
+	ret2 = hid_init_subsystem();
+	
+	return ret1 | ret2;
 }
 
 int hid_init(void)
@@ -577,11 +579,8 @@ static int hid_update_keys(void)
 	    }
 	  else if(event.key.keysym.sym == SDLK_F10)
 	    {
-		  /*
 	      ti68k_setActiveKey(OPT_SCREENCAPTURE, 0);
-	      hid_screenshot(options.img_format, options.img_type, 
-			    options.img_size, NULL);
-		*/
+	      hid_screenshot(NULL);
 	    }
 	  else
 	    {
@@ -1049,8 +1048,7 @@ void hid_switch_windowed(void)
 void hid_switch_normal_view(void)
 {
   iScale = 0;
-  hid_quit_subsystem();
-  hid_init_subsystem();
+  hid_restart_subsystem();
 }
 
 /*
@@ -1059,8 +1057,7 @@ void hid_switch_normal_view(void)
 void hid_switch_large_view(void)
 {
   iScale = 1;
-  hid_quit_subsystem();
-  hid_init_subsystem();
+  hid_restart_subsystem();
 }
 
 /*
@@ -1068,36 +1065,83 @@ void hid_switch_large_view(void)
 */
 int hid_screenshot(char *filename)
 {
-	/*
-  Image img;
-  char outfile[MAXCHARS];
-  char *ext = "???";
-  FILE *fp = NULL;
-  int row, col, k;
-  int gap = iScrW - iLcdW;
+	gchar *outfile;
+	gchar *ext = "???";
+	gchar *type;
+	int row, col, k;
+	int gap = iScrW - iLcdW;
 
-  if(filename == NULL)
-    {
-      switch(format)
-	{
-	case IMG_XPM: ext = "xpm"; break;
-	case IMG_PCX: ext = "pcx"; break;
-	case IMG_JPG: ext = "jpg"; break;
-	case IMG_BMP: ext = "bmp"; break;
-	default: break;
+	if(filename == NULL) {
+		switch(options.img_format) {
+			case IMG_JPG: ext = "jpg"; type = "jpeg"; break;
+			case IMG_PNG: ext = "png"; type = "png";  break;
+			case IMG_ICO: ext = "ico"; type = "ico";  break;
+			default: break;
+		}
+      
+		outfile = g_strdup_printf("%s%03i.%s", 
+			options.screen_file, 
+			options.screen_counter, ext);
+	} else {
+		outfile = g_strdup(filename);
 	}
-      sprintf(outfile, "%s%03i.%s", options.screen_file, 
-	      options.screen_counter, ext);
-    }
-  else
-    strcpy(outfile, filename);
-  
-  fp = fopen(outfile, "wb");
-  if(fp == NULL) 
-    return -1;
-  
-  DISPLAY("Screenshot to %s... ", outfile);
-  
+
+	DISPLAY("Screenshot to %s... ", outfile);
+
+	if((options.img_size == IMG_LCD) && (options.img_type == IMG_BW)) {
+
+	} else if((options.img_size == IMG_LCD) && (options.img_type == IMG_COL)) {
+
+	} else if(options.img_size == IMG_SKIN) {
+
+		SDL_Surface *sdlCapture;
+		SDL_PixelFormat fmt;
+		Uint8 pixels;
+		GdkPixbuf *pixbuf = { 0 };
+		gboolean result = FALSE;
+		GError *error = NULL;
+
+		fmt.palette = NULL;
+		fmt.BitsPerPixel = 24;
+		fmt.BytesPerPixel = 3;
+		fmt.Rmask = 255;
+		fmt.Gmask = 255;
+		fmt.Bmask = 255;
+		fmt.Amask = 0;
+		fmt.Rshift = 0;
+		fmt.Gshift = 0;
+		fmt.Bshift = 0;
+		fmt.Ashift = 0;
+		fmt.Rloss = 0;
+		fmt.Gloss = 0;
+		fmt.Bloss = 0;
+		fmt.Aloss = 0;
+		fmt.colorkey = 0;
+		fmt.alpha = 0;
+
+		sdlCapture = SDL_ConvertSurface(sdlWindow, &fmt, SDL_SWSURFACE);
+		pixels = (Uint8 *)sdlCapture->pixels;
+
+		pixbuf = gdk_pixbuf_new_from_data(pixels, GDK_COLORSPACE_RGB, FALSE,
+				8, iWinW, iWinH, iWinLineSize, NULL, NULL);
+
+		result = gdk_pixbuf_save(pixbuf, outfile, type, &error, "quality", "100", NULL);
+		if (result == FALSE) {
+			DISPLAY("Failed to save pixbuf file: %s: %s\n", outfile, error->message);
+			g_error_free(error);
+		}
+	}
+
+	DISPLAY("Done !\n");
+	options.screen_counter++;
+	g_free(filename);
+
+	return 0;
+}
+
+
+/*
+
   //  
   // Write the TI screen in black & white
   //  
@@ -1186,19 +1230,4 @@ int hid_screenshot(char *filename)
 	} 
     }
 
-  switch(format)
-    { 
-    case IMG_XPM: write_xpm_format(fp, &img); break;
-    case IMG_PCX: write_pcx_format(fp, &img); break;
-    case IMG_JPG: write_jpg_format(fp, &img); break;
-    case IMG_BMP: write_bmp_format(fp, &img); break;
-    default: DISPLAY("Invalid image format\n"); break;
-    }
-
-  //delete_image(&img); // bug ...
-  fclose(fp);
-  DISPLAY("Done !\n");
-  options.screen_counter++;
 */
-  return 0;
-}

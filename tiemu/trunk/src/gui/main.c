@@ -81,7 +81,7 @@ int main(int argc, char **argv)
   version();
   initialize_paths();
   load_default_config();
-  read_rc_file();
+  rcfile_read();
   scan_cmdline(argc, argv);
   
   /* Check libticables & libticalcs library */

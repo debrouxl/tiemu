@@ -174,7 +174,7 @@ void
 on_save_config1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  write_rc_file();
+  rcfile_write();
 
 #if defined(__LINUX__)
   msg_box(_("Information"), 
@@ -190,7 +190,7 @@ void
 on_load_config1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  read_rc_file();
+  rcfile_read();
 
   msg_box(_("Information"), 
 	  _("Configuration file loaded."));
@@ -480,8 +480,8 @@ on_exit1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   ti68k_saveState((options.params)->ram_file);
-  if(!is_rcfile_exist())
-    write_rc_file();
+  if(!rcfile_exist())
+    rcfile_write();
 
   ti68k_exit();
   exit(0);

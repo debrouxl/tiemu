@@ -104,9 +104,9 @@ save_state_on_ok_button2_clicked       (GtkButton       *button,
   g_free((options.params)->ram_file);
   (options.params)->ram_file = g_strdup(s);
   ti68k_saveState((options.params)->ram_file);
-  if(!is_rcfile_exist())
+  if(!rcfile_exist())
     {
-      write_rc_file();
+      rcfile_write();
 
 #if defined(__LINUX__)
       msg_box(_("Information"), 

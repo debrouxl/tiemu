@@ -782,9 +782,9 @@ int load_default_config()
 
 	options.screen_file = g_strdup("screenshot");
 	options.screen_counter = 0;
-	options.img_type = IMG_BW;
-	options.img_format = IMG_PCX;
-	options.img_size = IMG_LCD;
+	options.img_type = IMG_COL;	//IMG_BW;
+	options.img_format = IMG_PNG;
+	options.img_size = IMG_SKIN;	//IMG_LCD;
 
 	options.console=0;
 
