@@ -103,44 +103,89 @@ void gtk_debugger_refresh(void)
 
 void set_other_windows_sensitivity(int state)
 {
-    gtk_widget_set_sensitive(dbgw.regs, state);
-    gtk_widget_set_sensitive(dbgw.bkpts, state);
-    gtk_widget_set_sensitive(dbgw.mem, state);
-    gtk_widget_set_sensitive(dbgw.pclog, state);
-    gtk_widget_set_sensitive(dbgw.stack, state);
+    if(dbgs.regs)
+        gtk_widget_set_sensitive(dbgw.regs, state);
+    if(dbgs.bkpts)
+        gtk_widget_set_sensitive(dbgw.bkpts, state);
+    if(dbgs.mem)
+        gtk_widget_set_sensitive(dbgw.mem, state);
+    if(dbgs.pclog)
+        gtk_widget_set_sensitive(dbgw.pclog, state);
+    if(dbgs.stack)
+        gtk_widget_set_sensitive(dbgw.stack, state);
 }
 
 void gtk_debugger_minimize_all(void)
 {
-    if(dbgw.regs)
+    if(dbgs.regs)
         gtk_window_iconify(GTK_WINDOW(dbgw.regs));
-    if(dbgw.bkpts)
+    if(dbgs.bkpts)
         gtk_window_iconify(GTK_WINDOW(dbgw.bkpts));
-    if(dbgw.mem)
+    if(dbgs.mem)
         gtk_window_iconify(GTK_WINDOW(dbgw.mem));
-    if(dbgw.pclog)
+    if(dbgs.pclog)
         gtk_window_iconify(GTK_WINDOW(dbgw.pclog));
-    if(dbgw.code)
+    if(dbgs.code)
         gtk_window_iconify(GTK_WINDOW(dbgw.code));
-    if(dbgw.stack)
+    if(dbgs.stack)
         gtk_window_iconify(GTK_WINDOW(dbgw.stack));
 }
 
 void gtk_debugger_deminimize_all(void)
 {
-    if(dbgw.regs)
+    if(dbgs.regs)
         gtk_window_deiconify(GTK_WINDOW(dbgw.regs));
-    if(dbgw.bkpts)
+    if(dbgs.bkpts)
         gtk_window_deiconify(GTK_WINDOW(dbgw.bkpts));
-    if(dbgw.mem)
+    if(dbgs.mem)
         gtk_window_deiconify(GTK_WINDOW(dbgw.mem));
-    if(dbgw.pclog)
+    if(dbgs.pclog)
         gtk_window_deiconify(GTK_WINDOW(dbgw.pclog));
-    if(dbgw.code)
+    if(dbgs.code)
         gtk_window_deiconify(GTK_WINDOW(dbgw.code));
-    if(dbgw.stack)
+    if(dbgs.stack)
         gtk_window_deiconify(GTK_WINDOW(dbgw.stack));
 }
+
+void gtk_debugger_show_all(void)
+{
+    if(!dbg_on)
+        return;
+
+    if(!dbgs.regs)
+        gtk_widget_show(dbgw.regs);
+    if(!dbgs.bkpts)
+        gtk_widget_show(dbgw.bkpts);
+    if(!dbgs.mem)
+        gtk_widget_show(dbgw.mem);
+    if(!dbgs.pclog)
+        gtk_widget_show(dbgw.pclog);
+    if(!dbgs.code)
+        gtk_widget_show(dbgw.code);
+    if(!dbgs.stack)
+        gtk_widget_show(dbgw.stack);
+}
+
+void gtk_debugger_hide_all(void)
+{
+    if(!dbg_on)
+        return;
+
+    if(dbgs.regs)
+        gtk_widget_hide(dbgw.regs);
+    if(dbgs.bkpts)
+        gtk_widget_hide(dbgw.bkpts);
+    if(dbgs.mem)
+        gtk_widget_hide(dbgw.mem);
+    if(dbgs.pclog)
+        gtk_widget_hide(dbgw.pclog);
+    if(dbgs.code)
+        gtk_widget_hide(dbgw.code);
+    if(dbgs.stack)
+        gtk_widget_hide(dbgw.stack);
+}
+
+/* Callbacks */
 
 // callbacks from dbg_code.c (window menu)
 
@@ -202,31 +247,32 @@ GLADE_CB void
 on_quit1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    if(dbgw.regs)
-        gtk_widget_hide(dbgw.regs);
-    if(dbgw.bkpts)
-        gtk_widget_hide(dbgw.bkpts);
-    if(dbgw.mem)
-        gtk_widget_hide(dbgw.mem);
-	if(dbgw.pclog)
-        gtk_widget_hide(dbgw.pclog);
-	if(dbgw.code)
-	    gtk_widget_hide(dbgw.code);
-    if(dbgw.stack)
-	    gtk_widget_hide(dbgw.stack);
+    gtk_widget_hide(dbgw.regs);
+    gtk_widget_hide(dbgw.bkpts);
+    gtk_widget_hide(dbgw.mem);
+    gtk_widget_hide(dbgw.pclog);
+    gtk_widget_hide(dbgw.stack);
+    gtk_widget_hide(dbgw.code);
+
+    while(gtk_events_pending()) gtk_main_iteration();
 
     dbg_on = 0;
+
+    // Closing the debugger starts the emulator
+    bkpts.mode = bkpts.type = bkpts.id = 0;
+    ti68k_engine_start();
+
 }
 
 GLADE_CB void
 on_minimize_all1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    gtk_window_iconify(GTK_WINDOW(dbgw.regs));
-    gtk_window_iconify(GTK_WINDOW(dbgw.bkpts));
-    gtk_window_iconify(GTK_WINDOW(dbgw.mem));
-    gtk_window_iconify(GTK_WINDOW(dbgw.pclog));
-    gtk_window_iconify(GTK_WINDOW(dbgw.stack));
+    gtk_widget_hide(dbgw.regs);
+    gtk_widget_hide(dbgw.bkpts);
+    gtk_widget_hide(dbgw.mem);
+    gtk_widget_hide(dbgw.pclog);
+    gtk_widget_hide(dbgw.stack);
 }
 
 
@@ -234,11 +280,11 @@ GLADE_CB void
 on_maximize_all1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    gtk_window_deiconify(GTK_WINDOW(dbgw.regs));
-    gtk_window_deiconify(GTK_WINDOW(dbgw.bkpts));
-    gtk_window_deiconify(GTK_WINDOW(dbgw.mem));
-    gtk_window_deiconify(GTK_WINDOW(dbgw.pclog));
-    gtk_window_deiconify(GTK_WINDOW(dbgw.stack));
+    gtk_widget_show(dbgw.regs);
+    gtk_widget_show(dbgw.bkpts);
+    gtk_widget_show(dbgw.mem);
+    gtk_widget_show(dbgw.pclog);
+    gtk_widget_show(dbgw.stack);
 }
 
 void update_submenu(GtkWidget *widget, gpointer user_data)
@@ -372,6 +418,7 @@ on_dbgcode_window_delete_event       (GtkWidget       *widget,
                                         gpointer         user_data)
 {
     gtk_widget_hide(widget);
+    on_quit1_activate(NULL, NULL);    
     return TRUE;
 }
 
@@ -382,11 +429,6 @@ on_dbgcode_window_hide                (GtkWidget       *widget,
     dbgs.code = 0;
     gtk_window_get_size(GTK_WINDOW(widget), &options3.code.w, &options3.code.h);
     gtk_window_get_position(GTK_WINDOW(widget), &options3.code.x, &options3.code.y);
-    
-    // Closing the debugger starts the emulator
-    on_quit1_activate(NULL, NULL);
-    bkpts.mode = bkpts.type = bkpts.id = 0;
-    ti68k_engine_start();
 }
 
 GLADE_CB void

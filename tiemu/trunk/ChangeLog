@@ -13,6 +13,7 @@ To do:
 	- clicking OK in the ROM version without selection makes box crash
 	- bug fixes in the mem dbox searching
 	- use Lionel's romcalls listing (N°:func_name)
+	- min/max window improved: hide windows like Glade
 
 - 27/07/2004, version 1.75: roms
 	Olivier's suggestions:

@@ -40,4 +40,7 @@ void set_other_windows_sensitivity(int state);
 void gtk_debugger_minimize_all(void);
 void gtk_debugger_deminimize_all(void);
 
+void gtk_debugger_show_all(void);
+void gtk_debugger_hide_all(void);
+
 #endif

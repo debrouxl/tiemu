@@ -526,9 +526,10 @@ on_calc_wnd_window_state_event         (GtkWidget       *widget,
     //printf("%04X %04X\n", wstate->new_window_state, wstate->changed_mask);
 
     if((mask & GDK_WINDOW_STATE_ICONIFIED) && (state & GDK_WINDOW_STATE_ICONIFIED))
-        gtk_debugger_minimize_all();
+        gtk_debugger_hide_all();    //gtk_debugger_minimize_all();
+        
     else if((mask & GDK_WINDOW_STATE_ICONIFIED) && !(state & GDK_WINDOW_STATE_ICONIFIED))
-        gtk_debugger_deminimize_all();
+        gtk_debugger_show_all();    //gtk_debugger_deminimize_all();
 
     return FALSE;
 }
