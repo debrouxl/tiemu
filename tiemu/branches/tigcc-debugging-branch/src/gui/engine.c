@@ -87,7 +87,8 @@ static gboolean engine_func(gint *data)
 	{
 		if (!dbg_on)
 			gtk_debugger_enter(GPOINTER_TO_INT(*data));
-		sim_exception(bkpts.type == BK_CAUSE_EXCEPTION ? SIGSEGV : SIGINT);
+		sim_exception(bkpts.type == BK_CAUSE_EXCEPTION ? SIGSEGV :
+		              bkpts.type == BK_CAUSE_GDBTRAP ? SIGTRAP : SIGINT);
 	}
 
 	return TRUE;

@@ -1,3 +1,7 @@
+2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+      * interp.c (sim_write): Call fill_prefetch_0 after writing.
+
 2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
       * interp.c (sim_resume): Call gdbcallback_disable_debugger and gdbcallback_enable_debugger.

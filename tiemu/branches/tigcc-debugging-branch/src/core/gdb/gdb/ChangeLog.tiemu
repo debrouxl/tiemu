@@ -1,6 +1,8 @@
 2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * objfiles.c (SECT_OFF_DATA, SECT_OFF_RODATA): Don't error if the section is missing.
+        * dbxread.c (find_relocation_offset, find_relocation_offset_ex): New static functions.
+          (read_dbx_symtab, process_one_symbol): Use them, respectively.
 
 2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 

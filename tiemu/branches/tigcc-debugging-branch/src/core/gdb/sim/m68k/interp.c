@@ -417,6 +417,7 @@ sim_write (sd, addr, buffer, size)
   init_pointers ();
   for (i = 0; i < size; i++)
     put_byte(addr + i, buffer[i]);
+  fill_prefetch_0 (); /* Force reloading the prefetch in case we changed the bytes under prefetch. */
   return size;
 }
 

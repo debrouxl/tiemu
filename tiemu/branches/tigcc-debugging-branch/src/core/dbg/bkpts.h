@@ -94,7 +94,8 @@ typedef enum {
 // Breakpoints cause (ti68k_bkpt_get_cause())
 typedef enum {
     BK_CAUSE_ACCESS=1, BK_CAUSE_RANGE, BK_CAUSE_ADDRESS,
-    BK_CAUSE_EXCEPTION, BK_CAUSE_PGMENTRY, BK_CAUSE_PROTECT
+    BK_CAUSE_EXCEPTION, BK_CAUSE_PGMENTRY, BK_CAUSE_PROTECT,
+    BK_CAUSE_GDBTRAP
 } Ti68kBkptCause;
 
 /* Functions */
