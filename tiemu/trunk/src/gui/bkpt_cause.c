@@ -82,7 +82,7 @@ void display_bkpt_cause()
 
   /* */
   // Get breakpoint cause
-  ti68k_getBreakpointCause(&type, &id, &mode);
+  ti68k_bkpt_get_cause(&type, &id, &mode);
   sprintf(buffer, "Bkpt has been encountered at $%06x!\nType=%i, id=%i, mode=%i\n", ti68k_register_get_pc(), type, id, mode);
   fprintf(stderr, buffer);
 

@@ -742,7 +742,7 @@ void rcfile_write(void)
 */
 int rcfile_default()
 {
-	ti68k_loadDefaultConfig();
+	ti68k_config_load_default();
 
 	params.rom_file = g_strconcat(inst_paths.img_dir, "", NULL);
 	params.ram_file = g_strdup("");

@@ -117,15 +117,12 @@ int main(int argc, char **argv)
 	}
 
 	/* 
-	   Initialize the libti* libraries
-	 */
+	    Change logging domains
+	*/
 	
     //ticable_set_printl(ticables_printl);
-	ticable_init();
 	//tifiles_set_printl(tifiles_printl);
-	tifiles_init();
     //ticalc_set_printl(ticalcs_printl);
-	ticalc_init();
 
 	/* 
 		Assign an GUI to the emulation engine 

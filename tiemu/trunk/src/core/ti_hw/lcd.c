@@ -21,8 +21,10 @@
 */
 
 #include "uae.h"
-//#include "interface.h"
 #include "images.h"
+#include "ti68k_def.h"
+
+extern UBYTE *ti_ram;
 
 int lcd_off;
 int contrast;
@@ -32,6 +34,7 @@ void hw_init_lcd()
 {
   contrast=13; //16
   lcd_base_addr=(img_infos.flash)?0x4c00:0x4440;
+  tihw.lcd_ptr = &ti_ram[lcd_base_addr];
   lcd_off=0;
 }
 

@@ -21,8 +21,8 @@
  */
 
 
-#ifndef __CORE_DEFS__
-#define __CORE_DEFS__
+#ifndef __TI68K_DEFS__
+#define __TI68K_DEFS__
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -83,17 +83,18 @@ typedef struct
     int     lcd_off;
     int     contrast;
     int     lcd_base_addr;
+    char*   lcd_ptr;
 
     // linkport.c
     TicableLinkParam lc;
 
     // memory.c
-    char    *ti_rom;
-    char    *ti_int_rom;
-    char    *ti_ext_rom;
-    char    *ti_ram;
-    char    *ti_io;
-    char    garbage_mem[0x10000];
+    char    *int_rom;
+    char    *ext_rom;
+    char    *rom;
+    char    *ram;
+    char    *io;
+    char    *garbage;
 
     // timer.c
     int     timer_value;

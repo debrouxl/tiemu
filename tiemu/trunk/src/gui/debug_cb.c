@@ -453,7 +453,7 @@ gint refresh_code_dbox(void)
 
   for(i=0; i<options.code_lines; i++)
     {
-      offset = ti68k_disasm(addr, buffer);
+      offset = ti68k_debug_disassemble(addr, buffer);
       text[0] = g_strdup(buffer);
       text[0][9] = '\0';
       text[1] = g_strdup(buffer+10);
@@ -487,7 +487,7 @@ gint refresh_memory_dbox(void)
   GtkTreeIter iter;
   gchar *text[3];
   gint i, k;
-  UBYTE *ti_ram = (UBYTE *)tihw.ti_ram;
+  UBYTE *ti_ram = (UBYTE *)tihw.ram;
   gint addr = data_addr;
 
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
@@ -542,7 +542,7 @@ gint refresh_stack_dbox(void)
   gchar *text[2];
   gint i;
   gint sp = ti68k_register_get_sp();
-  UWORD *ti_ram = (UWORD *)tihw.ti_ram;
+  UWORD *ti_ram = (UWORD *)tihw.ram;
   gint addr;
 
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
@@ -604,7 +604,7 @@ on_step1_activate                      (GtkMenuItem     *menuitem,
   // debugger when encountered
   addr = ti68k_register_get_pc();
   DISPLAY("addr=$%06x\n", addr);
-  ti68k_doSingleStep(); // set trap
+  ti68k_debug_do_single_step(); // set trap
   ti68k_unhalt();    // emulator in free running
 }
 
@@ -659,7 +659,7 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
       printf("addr to go: 0x%06x\n", addr_to_go);
       for(i=1, next_addr = ti68k_register_get_pc(); next_addr < addr_to_go; i++)
 	{
-	  next_addr += ti68k_disasm(next_addr, buffer);
+	  next_addr += ti68k_debug_disassemble(next_addr, buffer);
 	  printf("-> buffer: <%s>\n", buffer);
 	  if(i > options.code_lines)
 	    break;

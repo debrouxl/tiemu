@@ -213,7 +213,7 @@ int ilp_put(uint8_t data)
   iput = 1;
   while(iput) 
     { 
-      ti68k_doInstructions(1); 
+      ti68k_debug_do_instructions(1); 
     };
   
   return 0; 
@@ -223,7 +223,7 @@ int ilp_get(uint8_t *data)
 { 
   while(!iget) 
     { 
-      ti68k_doInstructions(1); 
+      ti68k_debug_do_instructions(1); 
     };
   *data = byte_t2f;
   iget = 0; 

@@ -83,7 +83,7 @@ int keyRow89[10][8] =
 int *key_row;
 
 /* Press a key */
-void ti68k_setActiveKey(int key, int active)
+void ti68k_kbd_set_key(int key, int active)
 {
   key_states[key] = active;
 }

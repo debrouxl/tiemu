@@ -533,7 +533,7 @@ static int hid_update_keys(void)
 		  if(event.button.button == 1) 
 		    {
 		      lastKey = i;
-		      ti68k_setActiveKey(i,1);
+		      ti68k_kbd_set_key(i,1);
 		      iKeyWasPressed = 1;
 		    }
 		}
@@ -560,7 +560,7 @@ static int hid_update_keys(void)
 	    {
 	      if(lastKey!=-1) 
 		{
-		  ti68k_setActiveKey(lastKey,0);
+		  ti68k_kbd_set_key(lastKey,0);
 		  lastKey = -1;
 		}
 	    }
@@ -578,30 +578,30 @@ static int hid_update_keys(void)
 	    }
 	  else if(event.key.keysym.sym == SDLK_F9)
 	    {
-	      ti68k_setActiveKey(OPT_DEBUGGER, 0);
-	      ti68k_launchDebugger();
+	      ti68k_kbd_set_key(OPT_DEBUGGER, 0);
+	      ti68k_debug_launch();
 	    }
 	  else if(event.key.keysym.sym == SDLK_F10)
 	    {
-	      ti68k_setActiveKey(OPT_SCREENCAPTURE, 0);
+	      ti68k_kbd_set_key(OPT_SCREENCAPTURE, 0);
 	      hid_screenshot(NULL);
 	    }
 	  else
 	    {
 	      iKeyWasPressed = 1;
 	      if(iAlpha)
-		ti68k_setActiveKey(TIKEY_ALPHA, 1);
-	      ti68k_setActiveKey(sdl_to_ti(event.key.keysym.sym), 1);
+		ti68k_kbd_set_key(TIKEY_ALPHA, 1);
+	      ti68k_kbd_set_key(sdl_to_ti(event.key.keysym.sym), 1);
 	    }
 	}
       else if(event.type==SDL_KEYUP) 
 	{
 	  if(iAlpha)
 	    {
-	      ti68k_setActiveKey(TIKEY_ALPHA, 0);
+	      ti68k_kbd_set_key(TIKEY_ALPHA, 0);
 	      iAlpha = 0;
 	    }
-	  ti68k_setActiveKey(sdl_to_ti(event.key.keysym.sym), 0);
+	  ti68k_kbd_set_key(sdl_to_ti(event.key.keysym.sym), 0);
 	}
       else if(event.type==SDL_QUIT) 
 	{
@@ -744,7 +744,7 @@ static int hid_update_lcd(void)
 {
   SDL_Rect src_rect, dst_rect;
   int i, j, k;
-  Uint8 *pLcdMem = ti68k_getLcdPtr();
+  Uint8 *pLcdMem = tihw.lcd_ptr;    //ti68k_getLcdPtr();
   
   if(iGrayPlanes != params.grayplanes) 
     {

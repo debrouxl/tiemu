@@ -63,6 +63,7 @@
 /* Internal variables */
 /**********************/
 
+
 Ti68kParameters params = { 0 };
 TicableLinkParam link_cable = { 0 };
 Ti68kHardware tihw = { 0 };
@@ -71,6 +72,7 @@ Ti68kHardware tihw = { 0 };
 /***********************************/
 /* Entry points for initialization */
 /***********************************/
+
 
 /*
   Initialization order (checked by the runlevel):
@@ -99,7 +101,7 @@ int ti68k_gui_set_callbacks(
   This should be the SECOND function to call (unless the 'params' 
   structure has been properly initialized.
  */
-int ti68k_loadDefaultConfig(void)
+int ti68k_config_load_default(void)
 {
   params.background = 1;
   params.grayplanes = 2;
@@ -128,6 +130,10 @@ int ti68k_loadDefaultConfig(void)
 */
 int ti68k_init(void)
 {
+    ticable_init();
+	tifiles_init();
+	ticalc_init();
+
     tihw.calc_type = img_infos.calc_type;
 
   init_hardware();
@@ -161,13 +167,17 @@ int ti68k_reset(void)
 }
 
 /*
-  Close the library by exiting HID and exiting hardware the emulation engine
+  Close the library by exiting HID and exiting the emulation engine
   (free ressources).
 */
 int ti68k_exit(void)
 {
-  cb_exit_specific();
-  exit_hardware();
+    cb_exit_specific();
+    exit_hardware();
+
+    ticable_exit();
+	tifiles_exit();
+	ticalc_exit();
 
   return 1;
 }
@@ -185,31 +195,12 @@ int ti68k_restart(void)
 }
 
 
-
-
-/*****************/
-/* HID functions */
-/*****************/
-
-void* ti68k_getLcdPtr(void)
-{
-  //UWORD arg = (((UWORD)ti_io[0x10])<<8)|ti_io[0x11];
-  //return (&ti_ram[arg<<3]);
-  return (&ti_ram[lcd_base_addr]);
-}
-
-/*
-int ti68k_getCalcType(void)
-{
-  return img_infos.calc_type;
-}
-*/
-
 /***********************/
 /* Debugging functions */
 /***********************/
 
-int ti68k_disasm(int addr, char *output)
+
+int ti68k_debug_disassemble(int addr, char *output)
 {
   CPTR nextPc;
 
@@ -218,31 +209,24 @@ int ti68k_disasm(int addr, char *output)
   return (nextPc-addr);
 }
 
-int ti68k_launchDebugger(void)
+int ti68k_debug_launch(void)
 {
-  return cb_launch_debugger();
+    return cb_launch_debugger();
 }
 
-void ti68k_getBreakpointCause(int *type, int *id, int *mode) 
+int ti68k_debug_do_single_step(void)
 {
-  *type = breakType;
-  *mode = breakMode;
-  *id = breakId;
-}
-
-int ti68k_doSingleStep(void)
-{
-  return specialflags |= SPCFLAG_DBTRACE;
+    return specialflags |= SPCFLAG_DBTRACE;
 }
 
 /*
-  Do 'n' instructions.
-  Return 0 if successful, a negative value if an error occured,
-  a positive value if a breakpoint has been encountered.
+    Do 'n' instructions.
+    Return 0 if successful, a negative value if an error occured,
+    a positive value if a breakpoint has been encountered.
 
-  Note: replace M68000_run() from UAE
+    Note: replace M68000_run() from UAE
 */
-int ti68k_doInstructions(int n) //fait n instructions
+int ti68k_debug_do_instructions(int n)
 {
     if(!img_loaded)
         return ERR_68K_ROM_NOT_LOADED;

@@ -230,3 +230,10 @@ void ti68k_bkpt_del_trap(int trap)
     listBkptTrap[trap] = 0;
     nBkptTrap--;
 }
+
+void ti68k_bkpt_get_cause(int *type, int *id, int *mode) 
+{
+    *type = breakType;
+    *mode = breakMode;
+    *id = breakId;
+}

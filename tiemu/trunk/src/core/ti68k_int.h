@@ -22,12 +22,11 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TI68K_CORE__
-#define __TI68K_CORE__
+#ifndef __TI68K_INTF__
+#define __TI68K_INTF__
 
 #include "ti68k_def.h"
 #include "tilibs.h"
-//#include "keydefs.h"
 
 #include "bkpts.h"
 #include "callbacks.h"
@@ -41,62 +40,29 @@
 /* Functions */
 /*************/
 
+//Note: [ti68k]_[group]_[short_or_long_name]
+
 // Initialization
-int ti68k_loadDefaultConfig(void);
+int ti68k_config_load_default(void);
+
 int ti68k_init(void);
 int ti68k_reset(void);
 int ti68k_exit(void);
-
 int ti68k_restart(void);
 
-// ROM
-void* ti68k_getRomPtr(void);
-int ti68k_getRomSize(void);
-const char *ti68k_getRomVersion(void);
-int ti68k_isRomOk(void);
-int ti68k_getRomInfo(IMG_INFO *ri);
-int ti68k_dumpRom(const char *filename);
-
-// RAM
-void* ti68k_getRamPtr(void);
-int ti68k_getRamSize(void);
-int ti68k_dumpRam(const char *filename);
-
-// LCD
-void* ti68k_getLcdPtr(void);
-char ti68k_getContrast(void);
-int ti68k_getCalcType(void);
-
 // Debugging
-int ti68k_disasm(int addr, char *output);
-int ti68k_launchDebugger(void);
-void ti68k_getBreakpointCause(int *type, int *id, int *mode);
-int ti68k_doSingleStep(void);
-int ti68k_doInstructions(int n);
+int ti68k_debug_disassemble(int addr, char *output);
+int ti68k_debug_launch(void);
+int ti68k_debug_do_single_step(void);
+int ti68k_debug_do_instructions(int n);
 
 // Link
-int ti68k_sendFile(const char *filename);
-int ti68k_setInternalLinkTimeout(int value);
-int ti68k_getInternalLinkTimeout(int value);
-int ti68k_reconfigure_linkport(void);
-#define ti68k_reconfigureLinkport ti68k_reconfigure_linkport
+int ti68k_linkport_send_file(const char *filename);
+int ti68k_linkport_set_timeout(int value);
+int ti68k_linkport_set_timeout(int value);
+int ti68k_linkport_reconfigure(void);
 
-
-/***********/
-/* Externs */
-/***********/
-
-void ti68k_setActiveKey(int key, int active);
-int ti68k_isKeyPressed(int key);
-
-
-
-/**************************/
-/* Compatibility wrappers */
-/**************************/
-
-//#define ti68k_initLib68k  ti68k_init
-//#define ti68k_resetLib68k ti68k_reset
-//#define ti68k_exitLib68k  ti68k_exit
+// Keyboard
+void ti68k_kbd_set_key(int key, int active);
 
 #endif
