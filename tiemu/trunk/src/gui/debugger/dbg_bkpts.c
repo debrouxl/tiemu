@@ -110,14 +110,11 @@ static const int bkpts_memrng_rw[2] = {
 	BK_READ, BK_WRITE
 };
 
-static void clist_refresh(GtkListStore *store)
+static void clist_populate(GtkListStore *store)
 {
 	GList *l;
     GtkTreeIter iter;
 	gint i;
-
-	g_assert(store != NULL);
-	gtk_list_store_clear(store);
 
 	// Code breakpoints
 	for(l = bkpts.code; l != NULL; l = g_list_next(l))
@@ -238,7 +235,7 @@ GtkWidget* display_dbgbkpts_window(void)
 
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
-	clist_refresh(store);
+	clist_populate(store);
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
@@ -259,7 +256,8 @@ GtkWidget* refresh_dbgbkpts_window(void)
 	if(!already_open)
 		wnd = display_dbgbkpts_window();
 
-	clist_refresh(store);
+	gtk_list_store_clear(store);
+    clist_populate(store);
 
 	return wnd;
 }

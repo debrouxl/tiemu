@@ -53,10 +53,10 @@ static int validate_value(const char *str, int ndigits)
 {
 	int i;
 	
-	 if((int)strlen(str) != ndigits)
+	if((int)strlen(str) > ndigits)
 	 	return 0;
 	
-	for(i = 0; i < ndigits; i++)
+	for(i = 0; (i < ndigits) && (i < (int)strlen(str)); i++)
 	{
 		if(!isxdigit(str[i]))
 			return 0;
@@ -110,7 +110,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 			switch(n)
 			{
 				case 0:	// pc
-					if(validate_value(new_text, 8))
+					if(validate_value(new_text, 6))
 					{
 						sscanf(new_text, "%x", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
@@ -118,7 +118,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 					}
 				break;		
 				case 1:	// sp
-					if(validate_value(new_text, 8))
+					if(validate_value(new_text, 6))
 					{
 						sscanf(new_text, "%x", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
@@ -246,9 +246,6 @@ static void ctree_populate(GtkTreeStore *store)
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color, 1,
 				  FALSE, FALSE, &success);
 
-	// clear tree
-	gtk_tree_store_clear(store);
-	
 	// set the 3 main nodes
 	gtk_tree_store_append(store, &node1, NULL);
 	gtk_tree_store_set(store, &node1, 
@@ -392,7 +389,7 @@ static void ctree_refresh(GtkTreeStore *store)
 			return;
 		
 		changed = ti68k_register_get_pc(&data);
-		sdata = g_strdup_printf("%08x", data);
+		sdata = g_strdup_printf("%06x", data);
 		color = changed ? &red : &blue;
 		
 		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
@@ -411,7 +408,7 @@ static void ctree_refresh(GtkTreeStore *store)
 			return;
 		
 		changed = ti68k_register_get_sp(&data);
-		sdata = g_strdup_printf("%08x", data);
+		sdata = g_strdup_printf("%06x", data);
 		color = changed ? &red : &blue;
 		
 		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);

@@ -101,15 +101,12 @@ static GtkListStore* clist_create(GtkWidget *list)
 	return store;
 }
 
-static void clist_populate(GtkListStore *store)
+static void clist_populate(GtkListStore *store, uint32_t addr)
 {
     GtkTreeIter iter;
     GdkPixbuf *pix;
     gint i;
-    uint32_t addr;
-
-    gtk_list_store_clear(store);
-    addr = ti68k_debug_get_pc();
+    //uint32_t addr = ti68k_debug_get_pc();
 
     for(i = 0; i < 10; i++)
     {
@@ -183,7 +180,10 @@ static void clist_refresh(GtkListStore *store)
     }
 
     if(!found)
-        clist_populate(store);
+    {
+        gtk_list_store_clear(store);
+        clist_populate(store, ti68k_debug_get_pc());
+    }
 
     // look for pc and matching bkpt
     for(valid = gtk_tree_model_get_iter_first(model, &iter);
@@ -265,7 +265,7 @@ GtkWidget* display_dbgcode_window(void)
 
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
-	clist_populate(store);
+	clist_populate(store, ti68k_debug_get_pc());
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
@@ -288,6 +288,8 @@ GtkWidget* refresh_dbgcode_window(void)
 
 	gtk_widget_set_sensitive(list, TRUE);	
 	tb_set_states(1, 1, 1, 1, 0, 1);
+     
+    gtk_list_store_clear(store);
 	clist_refresh(store);
 
     return wnd;
@@ -483,7 +485,7 @@ on_go_to_address1_activate             (GtkMenuItem     *menuitem,
     uint32_t addr;
 
     display_dbgmem_dbox(&addr);
-    //???
+    clist_populate(store, addr);
 }
 
 
