@@ -54,74 +54,6 @@ extern gchar *wizard_rom;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
-#define EXT_WIN
-
-#ifdef EXT_WIN
-gboolean
-button_press_event        (GtkWidget       *widget,
-                           GdkEventButton  *event,
-                           gpointer         user_data)
-{
-  GtkWidget *menu;
-
-  if(event->button == 3)
-    {
-      halt();
-      menu = display_popup_menu();
-      gtk_widget_grab_focus(menu);
-      gdk_event_get();
-      gtk_menu_popup(GTK_MENU(menu), 
-		     NULL, NULL, NULL, NULL, 
-		     event->button, event->time);
-    }
-  
-  return FALSE;
-}
-
-/* 
-   The GTK auxiliary window: may not be shown but used for 
-   using GTK with SDL.
-   A better way should be to use a GtkSDL plugin...
-*/
-int gtk_main_window(void)
-{
-    GtkWidget *window;
-  GtkWidget *eventbox;
-  GtkWidget *label;
-  
-  /* The main window */
-  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title (GTK_WINDOW(window), "TiEmu");
-  gtk_window_set_default_size(GTK_WINDOW(window), 250, 50);
-
-  /* The event box */
-  eventbox = gtk_event_box_new ();
-  gtk_container_add (GTK_CONTAINER (window), eventbox);
-  GTK_WIDGET_SET_FLAGS (eventbox, GTK_CAN_FOCUS);
-  GTK_WIDGET_SET_FLAGS (eventbox, GTK_CAN_DEFAULT);
-  gtk_widget_set_events (eventbox, GDK_BUTTON_PRESS_MASK | GDK_KEY_PRESS_MASK);
-  gtk_widget_show (eventbox);
-
-  label = gtk_label_new ("Click here to display a menu");
-  gtk_container_add (GTK_CONTAINER (eventbox), label);
-  gtk_widget_show (label);
-  
-  g_signal_connect ((gpointer)window, "destroy",
-		    G_CALLBACK(gtk_main_quit),
-		    NULL);
-  g_signal_connect ((gpointer)eventbox, "button_press_event",
-		    G_CALLBACK(button_press_event),
-		    NULL);
-
-  //gtk_widget_grab_focus (eventbox);
-  gtk_widget_grab_default (eventbox);
-
-  gtk_widget_show_all(window);
-
-  return 0;
-}
-#endif
-
 //#ifdef __WIN32__
 //#undef main			// undef main with SDL/Win32
 //#endif
@@ -262,10 +194,6 @@ int main(int argc, char **argv)
 	thread = g_thread_create(ti68k_engine, NULL, FALSE, &error);
 	ti68k_unhalt();
 
-#ifdef EXT_WIN
-    gtk_main_window();
-    gtk_main();
-#endif
 	gdk_threads_enter();
 	while(1) {
 		// we will remove polling by event later

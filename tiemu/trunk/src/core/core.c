@@ -62,10 +62,10 @@ gpointer ti68k_engine(gpointer data)
 	{
 		// Check engine status
 		//G_LOCK(running);
-        if (!running) {
-            g_thread_yield ();
+		if (!running) {
+			g_thread_yield ();
 			continue;
-        }
+		}
 		//G_UNLOCK(running);
 		
 		ftime(&tLastTime);
