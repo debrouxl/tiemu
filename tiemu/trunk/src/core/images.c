@@ -319,7 +319,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
   	// Load TIB into memory and relocate at SPP
 	if(tib->data == NULL)
   		tib->data = malloc(SPP + ptr->data_length + 4);
-  	memset(tib->data + SPP, 0xff, ptr->data_length);
+  	memset(tib->data, 0xff, SPP + ptr->data_length);
   	memcpy(tib->data + SPP, ptr->data_part, ptr->data_length);
   	
   	// Update current rom infos
@@ -465,7 +465,6 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 /*
 	Convert an upgrade into an image.
   	The image has neither boot block nor certificate.
-    We should add prameter block...
 */
 int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **dstname)
 {
@@ -481,9 +480,6 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	// No filename, exits
 	if(!strcmp(srcname, ""))
 		return 0;
-		
-	// Erase boot block
-	//memset(img.data, 0xff, SPP);
 
 	// Preload upgrade
 	err = ti68k_get_tib_infos(srcname, &img, !0);
@@ -515,7 +511,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	strcpy(img.signature, "TiEmu img v2.00");
 	img.header_size = sizeof(IMG_INFO);
 	img.data_offset = 0x40;
-    real_size = img.size;
+    real_size = img.size - SPP;
 	img.size = 2 << 20;
 	
 	// Write header
@@ -549,31 +545,31 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
     fputc(0x04, f);
     fputc(0x00, f);
 
+    fputc(0x00, f);
+    fputc(0x00, f);
+    fputc(0x00, f);
     switch(img.calc_type)
     {
         case TI89:  fputc(0x03, f); break;
         case TI92p: fputc(0x01, f); break;
         case V200:  fputc(0x08, f); break;
     }
-    fputc(0x00, f);
-    fputc(0x00, f);
-    fputc(0x00, f);
 
   	for(i = 0x10e; i < SPP; i++)
     	fputc(0xff, f);
   
-  	// Copy FLASH upgrade
+  	// Copy FLASH upgrade at 0x12000 (SPP)
   	num_blocks = real_size / 65536;
   	for(i = 0; i < num_blocks; i++ )
     {
       	DISPLAY(".");
       	fflush(stdout);
 
-      	fwrite(&img.data[65536 * i], sizeof(char), 65536, f);
+      	fwrite(&img.data[65536 * i + SPP], sizeof(char), 65536, f);
     }
 
   	last_block = real_size % 65536;
-   	fwrite(&img.data[65536 * i], sizeof(char), last_block, f);
+   	fwrite(&img.data[65536 * i + SPP], sizeof(char), last_block, f);
   
   	DISPLAY("\n");
   	DISPLAY("Completing to 2MB size\n");
@@ -640,7 +636,7 @@ int ti68k_load_upgrade(const char *filename)
 	IMG_INFO *img = &tib;
   	int err;
 
-	if(img_loaded < 2)
+	if(!img_loaded)
 		return -1;
 
 	// No filename, exits
@@ -656,7 +652,7 @@ int ti68k_load_upgrade(const char *filename)
 	ti68k_display_tib_infos(img);
 
 	img->has_boot = 1;	// still bootable
-	memcpy(tihw.rom+0x12000, img->data+0x12000, img->size-0x12000);
+	memcpy(tihw.rom+SPP, img->data+SPP, img->size-SPP);
 
   	img_loaded = 2;
 	return 0;
@@ -874,7 +870,7 @@ static int get_rom_version(char *ptr, int size, char *version)
 
   	strcpy(version, "?.??");
 
-  	for (i = 0x12000; i < size-16; i += 2)
+  	for (i = SPP; i < size-16; i += 2)
     {
       if (is_num(ptr[i])&&(ptr[i+1]=='.') && is_num(ptr[i+2]) &&
 	  (ptr[i+3]==0)&&is_alnum(ptr[i+4]) && is_alnum(ptr[i+5]) &&
