@@ -44,14 +44,27 @@ union flagu intel_flag_lookup[256];
 #ifdef PENT_COUNTER
 
 /*
-  On Pentium processors or equivalent (I have an AMD K6), there is a timer
-  called TSC (Timer Stamp Counter) which counts the number of CPU cycles.
+  On Pentium processors (IA-32) or equivalent (I have an AMD K6), there is an
+  64-bits timer called TSC (Timer Stamp Counter) which counts the number of CPU cycles.
 */
 #if defined(__LINUX__)
 unsigned long highCnt;
 # define readpec(l) __asm__(".byte 0x0f, 0x31" :"=a" (l), "=d" (highCnt))
 #elif defined(__WIN32__)
-# define readpec(l) /*asm("rdtsc	highCnt")*/
+# define readpec(l) { _asm("	rdtsc	t"); _asm("	
+
+static _inline double getAbsoluteCPUcycle(void) {
+	unsigned __int32 temp[2];	//__int64
+
+	__asm {
+		rdtsc					; edx:eax
+		mov		temp,eax		; little endian
+		mov		temp[4],edx		; msvc byte offset
+	}
+
+	return temp[1]*4294967296.0 + (*temp));
+}
+
 #else
 # define readpec(l) 
 #endif
