@@ -694,7 +694,7 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
                                         GdkEventKey     *event,
                                         gpointer         user_data)
 {
-    GtkTreeView *view = GTK_TREE_VIEW(list);
+    GtkTreeView *view = GTK_TREE_VIEW(widget);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
 	GtkListStore *store = GTK_LIST_STORE(model);
     GtkTreeSelection *selection;

@@ -100,7 +100,7 @@ scroll instruction par instruction vers le bas, tu verras que sur
 certaines instructions le scroll est effectué en haut, mais pas en bas
 de la fenêtre (la dernière instruction reste la même).
 
-* Quelques idées pas forcément très urgentes mais qui seraient
++ Quelques idées pas forcément très urgentes mais qui seraient
 intéressantes à implémenter :
 - L'AMS utilise le registre a6 comme frame pointer, et accède
 relativement à ce registre aux variables locales créées et aux

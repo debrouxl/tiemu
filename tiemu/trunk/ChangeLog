@@ -19,7 +19,8 @@ To do:
 	- fixed bug with 'Run': didn't run if a bkpt is on the current line
 	- update stack frame when editing memory hex dump
 	- don't list invalid ROM calls any more
-	- added frame pointer window (in progress)
+	- added frame pointer window
+	- stack & frame pointer window are now scrollable
 
 - 08/11/2004, version 1.80f: roms
 	- PedRom is now provided with TiEmu as default OS.

@@ -28,6 +28,7 @@
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "intl.h"
 #include "paths.h"
@@ -44,7 +45,7 @@ enum {
 
 #define FONT_NAME	"courier"
 
-#define DUMP_SIZE       32
+#define DUMP_SIZE       10
 
 static GtkListStore* clist_create(GtkWidget *list)
 {
@@ -83,12 +84,13 @@ static GtkListStore* clist_create(GtkWidget *list)
     {
 		GtkTreeViewColumn *col;
 		
+
 		col = gtk_tree_view_get_column(view, i);
 		gtk_tree_view_column_set_resizable(col, TRUE);
 	}
 	
 	selection = gtk_tree_view_get_selection(view);
-	gtk_tree_selection_set_mode(selection, GTK_SELECTION_NONE);
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	return store;
 }
@@ -96,7 +98,7 @@ static GtkListStore* clist_create(GtkWidget *list)
 #define	TARGET_SP	1
 #define TARGET_FP	2
 
-static void clist_populate(GtkListStore *store, gint target)
+static void clist_populate(GtkListStore *store, gint target, gint offset)
 {
     int i;
     GtkTreeIter iter;
@@ -112,11 +114,12 @@ static void clist_populate(GtkListStore *store, gint target)
 		ti68k_register_get_addr(6, &sp);
 	mem = (uint16_t *)ti68k_get_real_address(sp);
 
-    for(i = 0; i < DUMP_SIZE; i++)
+	printf("offset = %i\n", offset);
+    for(i = 0+(offset>>1); i < DUMP_SIZE+(offset>>1); i++)
     {
         gtk_list_store_append(store, &iter);
 
-        str = g_strdup_printf("0x%06x:", sp + 2*i);
+        str = g_strdup_printf(/*"0x%06x "*/"(%c%i):", /*sp + 2*i, */i > 0 ? '+' : i < 0 ? '-' : ' ', abs(2*i));
 		gtk_list_store_set(store, &iter, COL_ADDR, str, -1);
         g_free(str);
 
@@ -135,7 +138,7 @@ static GtkWidget *notebook;
 static void clist_refresh(GtkListStore *store, gint target)
 {
 	gtk_list_store_clear(store);
-	clist_populate(store, target);
+	clist_populate(store, target, -4);
 
     if(ti68k_debug_is_supervisor())
         gtk_label_set_text(GTK_LABEL(label), "SSP");
@@ -170,11 +173,11 @@ GtkWidget* dbgstack_create_window(void)
 
 	data = glade_xml_get_widget(xml, "treeview1");
     store1 = clist_create(data);
-	clist_populate(store1, TARGET_SP);
+	clist_populate(store1, TARGET_SP, 0);
 
 	data = glade_xml_get_widget(xml, "treeview2");
     store2 = clist_create(data);
-	clist_populate(store2, TARGET_FP);
+	clist_populate(store2, TARGET_FP, 0);
 
     label = glade_xml_get_widget(xml, "label2");
 
@@ -214,3 +217,112 @@ void dbgstack_refresh_window(void)
 	}
 }
 
+GLADE_CB gboolean
+on_dbgstack_key_press_event           (GtkWidget       *widget,
+                                       GdkEventKey     *event,
+                                       gpointer         user_data)
+{
+    GtkTreeView *view = GTK_TREE_VIEW(widget);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
+    GtkTreeIter iter;
+    GtkTreePath *path;
+	
+	gchar *str;
+    gchar *row;
+    gint row_idx, row_max;
+    uint32_t min, max;
+    gint n;
+
+	// get min address
+    gtk_tree_model_get_iter_first(model, &iter);
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "(%i)", &min);
+
+    // get max address
+    n = gtk_tree_model_iter_n_children(model, NULL);
+    gtk_tree_model_iter_nth_child(model, &iter, NULL, n-1);
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "(%i)", &max);
+
+	// retrieve cursor
+    gtk_tree_view_get_cursor(view, &path, NULL);
+    if(path == NULL)
+        return FALSE;
+	printf("<%i:%i>\n", min, max);
+
+	// get row
+    row_idx = row_max = -1;
+    row = gtk_tree_path_to_string(path);
+    sscanf(row, "%i", &row_idx);
+    g_free(row);
+    row_max = gtk_tree_model_iter_n_children(model, NULL) - 1;
+    //printf("row_idx = %i, row_max = %i\n", row_idx, row_max);
+    
+    // bind our key
+	switch(event->keyval) 
+	{
+    case GDK_Up:
+        if(row_max == -1)
+            break;
+        if(row_idx > 0)
+            break;
+
+        gtk_list_store_clear(store);
+        clist_populate(store, TARGET_SP, min-2);
+
+		path = gtk_tree_path_new_from_string("0");
+        gtk_tree_view_set_cursor(view, path, NULL, FALSE);
+
+        return TRUE;
+
+    case GDK_Down:
+        if(row_max == -1)
+            break;
+        if(row_idx < row_max)
+            break;
+
+		gtk_list_store_clear(store);
+        clist_populate(store, TARGET_SP, min+2);
+
+        path = gtk_tree_path_new_from_string("9");
+        gtk_tree_view_set_cursor(view, path, NULL, FALSE);
+
+        return TRUE;
+
+    case GDK_Page_Up:
+        if(row_max == -1)
+            break;
+
+        if(row_idx > 0)
+            break;
+
+		 gtk_list_store_clear(store);
+        clist_populate(store, TARGET_SP, min-10);
+
+		path = gtk_tree_path_new_from_string("0");
+        gtk_tree_view_set_cursor(view, path, NULL, FALSE);
+
+        return TRUE;
+
+    case GDK_Page_Down:
+        if(row_max == -1)
+            break;
+
+        if(row_idx < row_max)
+            break;
+
+        gtk_list_store_clear(store);
+        clist_populate(store, TARGET_SP, min+10);
+
+        path = gtk_tree_path_new_from_string("9");
+        gtk_tree_view_set_cursor(view, path, NULL, FALSE);
+
+        return TRUE;
+
+	default:
+		return FALSE;
+	}
+
+	return FALSE;
+}
