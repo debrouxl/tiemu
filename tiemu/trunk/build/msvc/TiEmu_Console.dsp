@@ -418,11 +418,7 @@ SOURCE=..\..\src\core\uae\newcpu.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\registers.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\version.h
+SOURCE=..\..\src\misc\version.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

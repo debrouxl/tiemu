@@ -1054,7 +1054,7 @@ static gint search_highlight(uint32_t blk_beg, uint32_t blk_end, int state)
 
         while(gtk_events_pending()) gtk_main_iteration();
         tab_adr += offset;
-
+        tab_adr &= 0xffffff;
     }
 
     // change background color
@@ -1062,7 +1062,11 @@ static gint search_highlight(uint32_t blk_beg, uint32_t blk_end, int state)
         valid && (addr - tab_adr < DUMP_SIZE); 
         valid = gtk_tree_model_iter_next(model, &iter), addr += 0x10)
     {
-        if(addr + 16 < blk_beg)
+        // clear selection
+        for(i = 0; i < 16; i++)
+            gtk_list_store_set(store, &iter, i + COL_S0, &white, -1);
+
+        if(addr + 16 <= blk_beg)
             continue;
 
         if(addr > blk_end)
@@ -1074,13 +1078,9 @@ static gint search_highlight(uint32_t blk_beg, uint32_t blk_end, int state)
         stop = !addr ? blk_end : blk_end % addr;
         if(stop > 15) stop = 16;
 
+        // set selection
         for(i = start; (i < 16) && (i < stop); i++)
-		{
-            gchar *str = "XX";
-
-            gtk_list_store_set(store, &iter, i + COL_S0, color,
-				-1);
-        }
+            gtk_list_store_set(store, &iter, i + COL_S0, &green, -1);
     }
 
     return 0;
@@ -1170,6 +1170,7 @@ gint display_dbgmem_search(void)
         while(gtk_events_pending()) gtk_main_iteration();
 
         blk_adr += blk_len;
+        blk_adr &= 0xffffff;
 	}
 
 	gtk_widget_destroy(dbox);

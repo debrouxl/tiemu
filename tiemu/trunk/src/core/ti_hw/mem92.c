@@ -60,8 +60,6 @@
 
 int ti92_mem_init(void)
 {
-    int i;
-
     // map RAM
     mem_tab[0] = tihw.ram;
     mem_msk[0] = tihw.ram_size-1;

@@ -219,6 +219,9 @@ gint display_romversion_dbox()
 	switch (result) 
 	{
 		case GTK_RESPONSE_OK:
+            if(chosen_file == NULL)
+                break;
+
 			if(ti68k_is_a_img_file(chosen_file))
 			{
                 // Remove previous tib file
