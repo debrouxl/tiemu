@@ -83,7 +83,7 @@ int hw_m68k_exit(void)
 // I re-implement it as replacement of Interrupt()
 void Interrupt2(int nr)
 {
-	if((nr > regs.intmask) || (nr == 7))	// ok, if idle disabled
+	//if((nr > regs.intmask) || (nr == 7))	// ok, if idle disabled (bug ?!)
 		Interrupt(nr);
 
 	pending_ints &= ~(1 << nr);
@@ -96,6 +96,12 @@ void hw_m68k_irq(int n)
 
 	pending_ints |= (1 << n);
 }
+
+#define GET_INT_LVL	\
+		int level, mask = 0x80;	\
+			for (level = 7; level; level--, mask >>= 1)	\
+				if (pending_ints & mask)	\
+					break;
 
 /* Replace UAE's M68000_run() */
 /*
@@ -114,6 +120,29 @@ int hw_m68k_run(int n)
 	for(j=0; j<i; j++)
 	{
 		UWORD opcode;
+
+		// refresh hardware
+		do_cycles();
+
+		// OSC1 stopped ? Refresh hardware and wake-up on interrupt. No opcode execution.
+		if ((specialflags & SPCFLAG_STOP))
+	    {
+			if(pending_ints)
+			{
+				GET_INT_LVL;
+
+				// wake-up on int level 6 (ON key) or level 1..5
+				if ((pending_ints & (tihw.io[5] << 1)) || (level == 6))
+				{
+					Interrupt2(level);
+					regs.stopped = 0;
+					specialflags &= ~SPCFLAG_STOP;
+					//printf("R");
+				}
+			}
+
+			continue;
+	    }		
 
 		// search for breakpoint
         if(((l = bkpts.code) != NULL) && !(specialflags & SPCFLAG_DBSKIP))
@@ -136,29 +165,25 @@ int hw_m68k_run(int n)
             }
         }
 
-        // store PC in the trace buffer
+        // store PC in the log buffer
         if(bkpts.pclog_size > 1)
         {
             bkpts.pclog_buf[bkpts.pclog_ptr++ % bkpts.pclog_size] = m68k_getpc();
         }
 
-		// search for next opcode, execute it and refresh hardware (if not STOP'ed)
-		opcode = nextiword();
-		(*cpufunctbl[opcode])(opcode);
-		//printf("$%06x\n", m68k_getpc());
-		
-		// refresh hardware
-		do_cycles();
+		// search for next opcode and execute it
+		if (!(specialflags & SPCFLAG_DBSKIP))
+		{
+			opcode = nextiword();
+			(*cpufunctbl[opcode])(opcode);
+		}
 
 		// process (pending) interrupts
 		if(pending_ints)
 		{
-			int level, mask = 0x80;
-			for (level = 7; level; level--, mask >>= 1)
-				if (pending_ints & mask)
-					break;
-
-			Interrupt2 (level);
+			GET_INT_LVL;
+			if(level > regs.intmask)
+				Interrupt2 (level);
 			regs.stopped = 0;
 		}
 
@@ -278,6 +303,7 @@ int hw_m68k_run(int n)
 					Interrupt2(intr);
 					regs.stopped = 0;
 					specialflags &= ~SPCFLAG_STOP;
+					printf("%R");
 				}
 	        }
 	      
@@ -325,119 +351,3 @@ int hw_m68k_run(int n)
 
 	return 0;
 }
-
-/*
-	if(!pending_ints && (specialflags & SPCFLAG_STOP))
-	{
-		for(i=0;i<n;i++)
-			do_cycles();
-		return 0;
-	}
-
-	regs.stopped = 0;
-	specialflags &= ~SPCFLAG_STOP;
-
-	if(specialflags & SPCFLAG_STOP)
-		printf("!");
-
-	for(j=0; j<i; j++)
-	{
-		UWORD opcode;
-		
-		do_cycles();
-
-		if(pending_ints)
-		{
-			int level, mask = 0x80;
-			for (level = 7; level; level--, mask >>= 1)
-				if (pending_ints & mask)
-					break;
-
-			Interrupt2 (level);
-			regs.stopped = 0;
-		}
-
-		opcode = nextiword();
-		(*cpufunctbl[opcode])(opcode);
-	}
-*/
-
-/*
-for(i = 0; i < n; i++) 
-    {
-        UWORD opcode;
-
-        // search for next opcode, execute it and refresh hardware (if not STOP'ed)
-		if (!((specialflags & SPCFLAG_STOP) && !(specialflags & SPCFLAG_DBSKIP)))
-		{
-			opcode = nextiword();
-			(*cpufunctbl[opcode])(opcode);
-		}
-
-		// refresh hardware
-        do_cycles();
-
-        // management of special flags
-        if(specialflags) 
-	    {
-    	    if(specialflags & SPCFLAG_ADRERR) 
-	        {
-	            Exception(3);
-				specialflags &= ~SPCFLAG_ADRERR;
-	        }
-
-			// while (specialflags & SPCFLAG_STOP)
-			// need to be re-entrant so that hardware (ON key) is still running.
-			if (specialflags & SPCFLAG_STOP)
-	        {
-				if(pending_ints)
-				{
-					int level, mask = 0x80;
-					for (level = 7; level; level--, mask >>= 1)
-						if (pending_ints & mask)
-							break;
-
-					if(
-						((level == 5) && (tihw.io[0x05] & 0x10)) ||
-						((level == 4) && (tihw.io[0x05] & 0x08)) ||
-						((level == 3) && (tihw.io[0x05] & 0x04)) ||
-						((level == 2) && (tihw.io[0x05] & 0x02)) ||
-						((level == 1) && (tihw.io[0x05] & 0x01))
-						)
-					{
-						printf("%iR ", level);
-						Interrupt2(level);
-						regs.stopped = 0;
-						specialflags &= ~SPCFLAG_STOP;
-					}
-				}
-	        }
-
-			if(pending_ints)
-			{
-				int level, mask = 0x80;
-				for (level = 7; level; level--, mask >>= 1)
-					if (pending_ints & mask)
-						break;
-
-				Interrupt2 (level);
-				regs.stopped = 0;
-			}
-
-			if (specialflags & SPCFLAG_BRK) 
-	        {		
-	          specialflags &= ~SPCFLAG_BRK;
-	          return 1;		// DBG_BREAK
-	        }
-
-	        if(specialflags & SPCFLAG_DBTRACE) 
-	        {
-	          specialflags &= ~SPCFLAG_DBTRACE;
-              return 2;     // DBG_TRACE
-	        }
-
-            if(specialflags & SPCFLAG_DBSKIP)
-                specialflags &= ~SPCFLAG_DBSKIP;
-	    }  
-    }
-*/
