@@ -29,11 +29,11 @@ int hw_io_init(void);
 int hw_io_reset(void);
 int hw_io_exit(void);
 
-#define bit_get(v,b)	((v) &  (1 << b))
-#define bit_set(v,b)	((v) |  (1 << b))
-#define bit_clr(v,b)	((v) & ~(1 << b))
+#define bit_get(v,b)	(((v) &  (1 << b)) >> b)
+#define bit_set(v,b)	 ((v) |  (1 << b))
+#define bit_clr(v,b)	 ((v) & ~(1 << b))
 
-#define bit_tst(v,b)	(((v) & (1 << b)) >> b)
+#define bit_tst(v,b)	 ((v) &  (1 << b))
 #define bit_chg(v,b,s)	{ if(s) bit_set(v,b); else bit_clr(v,b); }
 
 extern UBYTE io_get_byte(CPTR adr);

@@ -34,6 +34,7 @@
 #include <string.h>
 
 #include "uae.h"
+#include "ioports.h"
 
 #include "tilibs.h"
 #include "ti68k_err.h"
@@ -100,12 +101,12 @@ int hw_dbus_init(void)
 	ticable_init();
 	ticable_set_param(&link_cable);
 	ticable_set_cable(link_cable.link_type, &lc);
-	if( (err=lc.init()) )
+	if(err = lc.init())
     {
 		print_lc_error(err);
 		return;
     }
-	if( (err=lc.open()) )
+	if(err = lc.open())
     {
 		print_lc_error(err);
 		return;
@@ -128,12 +129,12 @@ int hw_dbus_exit(void)
 	int err;
 
 	// exit linkport
-	if( (err=lc.close()) )
+	if(err = lc.close())
     {
 		print_lc_error(err);
 		return;
     }
-	if( (err=lc.exit()) )
+	if(err = lc.exit())
     { 
 		print_lc_error(err);
 		return;
@@ -159,9 +160,12 @@ static void lp_putbyte(UBYTE arg)
     err = lc.put(arg);
 	if(err)
 	{
-	  print_lc_error(err);
-	  return;
+		io_bit_set(0x0c,3);	// error
+		print_lc_error(err);
+		return;
 	}
+	io_bit_set(0x0d,1);		// tx buffer empty
+	io_bit_set(0x0d,3);		// link activity
 }
 
 static UBYTE lp_getbyte(void)
@@ -188,6 +192,7 @@ static int lp_checkread(void)
     err = lc.check(&status);
 	if(err)
     {
+		io_bit_set(0x0c,3);		// error
 		print_lc_error(err);
 		lp_last_byte = 0;
     }
@@ -197,8 +202,12 @@ static int lp_checkread(void)
         err = lc.get(&lp_last_byte);
 		if(err)
         {
+			io_bit_set(0x0c,3);	// error
 			print_lc_error(err);
         }
+
+		io_bit_set(0x0d,5);		// rx buf full
+		io_bit_set(0x0d,3);		// link activity
 		lp_avail_byte = 1;
     }
 	else
@@ -240,7 +249,6 @@ int df_byteavail(void)
 
 int df_checkread(void)
 {
-	int err = 0;
 	int status = 0;
 
     return iput;
@@ -276,7 +284,9 @@ static int ilp_put(uint8_t data)
 { 
   	byte_f2t = data; 
   	iput = 1;
-  	
+	io_bit_set(0x0d,5);		// rx buffer full
+	io_bit_set(0x0d,3);		// link activity
+
   	while(iput) 
     { 
       	ti68k_debug_do_instructions(1); 
@@ -293,9 +303,11 @@ static int ilp_get(uint8_t *data)
     };
     
   	*data = byte_t2f;
-  	iget = 0; 
+  	iget = 0;
+	io_bit_set(0x0d,6);		// tx buffer empty
+	io_bit_set(0x0d,3);		// link activity
   
-  return 0; 
+	return 0; 
 }
 
 static int ilp_probe_port()    	{ return 0; }

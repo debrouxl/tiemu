@@ -44,6 +44,10 @@ int hw_io_init(void)
 {
 	memset(tihw.io, 0x14, sizeof(tihw.io));
 	memset(tihw.io2, 0x14, sizeof(tihw.io2));
+
+	// current link status
+	tihw.io[0x0d] = 0x40;
+
 	return 0;
 }
 
@@ -100,17 +104,6 @@ void io_put_byte(CPTR adr, UBYTE arg)
 		case 0x0b:
         break;
         case 0x0c:	// rw <765.3210>
-			// autostart enable, should be set if $600005:3 is set
-			tihw.dbus_auto = bit_get(arg,7);
-			
-			// disable byte sender/receiver (also disables interrupts)
-			tihw.dbus_raw = bit_get(arg,6);
-
-			// link timeout disable
-			tihw.dbus_to = bit_get(arg,5);
-
-			// trigger int level 4 on ...
-
         break;
         case 0x0d:	// r- <76543210>
 			break;
@@ -125,7 +118,6 @@ void io_put_byte(CPTR adr, UBYTE arg)
         case 0x0f: 	// rw <76543210>
 			// write a byte to the transmit buffer (1 byte buffer)
             hw_dbus_putbyte(arg);
-			io_bit_clr(0x0c,1);		// tx buffer empty flag
             break;
         case 0x10: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8
@@ -237,19 +229,12 @@ UBYTE io_get_byte(CPTR adr)
         case 0x0a: 
         case 0x0b:
         return 0x14;
-        case 0x0c:	// -w <765.3210>
-			// read to begin acknowledging link interrupt (level 4)
-            // return 5|((1-transflag)<<1)|(lc_raw_access?0x40:0);
+        case 0x0c:	// rw <765.3210>
         break;
         case 0x0d:	// r- <76543210>
 			// linkport status
-			//v |= tihw.dbus_err << 7;
-			//v |= tihw.tx_empty << 6;
-			//v |= tihw.rx_full << 5;
-            //return (hw_dbus_byteavail() ? 0x60 : 0x40);	/* 0x40 -> always return tx buffer as empty */
-            v |= 0x40;  // stx
-            v |= hw_dbus_byteavail() ? 0x20 : 0x00;
-            return (hw_dbus_byteavail() ? 0x60 : 0x40);
+			v |= (hw_dbus_byteavail() ? 0x60 : 0x40);	// needed, why ?
+		break;
         case 0x0e:	// rw <....3210>
 			// read red/white wires if raw access
 			if(tihw.dbus_raw)

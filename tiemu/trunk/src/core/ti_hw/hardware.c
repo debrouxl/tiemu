@@ -107,21 +107,28 @@ void hw_update()
     {
     }
 
-#if 0
-	// Link status: error, link act, txbuf empty or rxbuf full
-	io_bit_set(0x0d,6);						// txbuf always empty
-	io_bit_chg(0x0d,5,hw_dbus_checkread());	// rxbuf full
-	io_bit_chg(0x0d,3,hw_dbus_checkread());	// link activity
+#if 1
+	// External link activity ?
+	if(!lc.get_red_wire() || !lc.get_white_wire())
+		io_bit_set(0x0d,3);
 
-	// Trigger int4 on: error, link act, txbuf empty or rxbuf full
-	if((io_bit_tst(0x0c,3) && io_bit_tst(0x0d,7)) ||
-		(io_bit_tst(0x0c,2) && io_bit_tst(0x0d,2)) ||
-		(io_bit_tst(0x0c,1) && io_bit_tst(0x0d,3)) ||
-		(io_bit_tst(0x0c,0) && io_bit_tst(0x0d,5)))
-    {
-        specialflags |= SPCFLAG_INT;
-        currIntLev = 4;
-    }
+	// DBUS enabled ?
+	if(!io_bit_tst(0x0c,6))
+	{
+		// Check for data in buffer (and link activity)
+		hw_dbus_checkread();
+
+		// Trigger int4 on: error, link act, txbuf empty or rxbuf full
+		if((io_bit_tst(0x0c,3) && io_bit_tst(0x0d,7)) ||
+			(io_bit_tst(0x0c,2) && io_bit_tst(0x0d,3)) ||
+			(io_bit_tst(0x0c,1) && io_bit_tst(0x0d,6)) ||
+			(io_bit_tst(0x0c,0) && io_bit_tst(0x0d,5)))
+		{
+			io_bit_set(0x0d,4);					// interrupt pending
+			specialflags |= SPCFLAG_INT;
+			currIntLev = 4;
+		}
+	}
 #else
     /* Link status */
     if(hw_dbus_checkread())
@@ -138,7 +145,7 @@ void hw_update()
     /* LCD is refreshed every 16th time */
     if(!(tihw.timer_value&15))
     {
-        if(tihw.lc_file) 
+        if(tihw.lc_file && !io_bit_tst(0x0c,5)) 
 	    {
 	        if(tihw.lc_timeout++ >= TO_VALUE) 
 	        {
