@@ -189,7 +189,7 @@ int ti68k_register_get_sp(uint32_t *val)
 {
 	int c = 0;
 	
-	*val = regs.usp;
+	*val = regs.a[7];
 	if(regs.a[7] != old_sp)
 		c = !0;
 

@@ -155,6 +155,10 @@ static void renderer_edited(GtkCellRendererText * cell,
 						sscanf(new_text, "%x", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
 						ti68k_register_set_sr(value);
+
+                        // update usp <=> ssp
+                        dbgregs_refresh_window();
+                        dbgstack_refresh_window();
 					}
 				break;
 				case 4: // super-flags
@@ -173,7 +177,11 @@ static void renderer_edited(GtkCellRendererText * cell,
                         ti68k_register_get_sr(&data);
                         sdata = g_strdup_printf("%04x", data);
                         gtk_tree_store_set(store, &iter, COL_VALUE, sdata,	-1);
-                        g_free(sdata);	   	                
+                        g_free(sdata);
+                        
+                        // update usp <=> ssp
+                        dbgregs_refresh_window();
+                        dbgstack_refresh_window();
                     }
 				case 5: // user-flags
 					if(ti68k_register_set_flags(NULL, new_text))
@@ -668,6 +676,7 @@ on_treeview3_button_press_event        (GtkWidget       *widget,
             return TRUE;
 
         dbgregs_refresh_window();
+        dbgstack_refresh_window();
 
         return TRUE;
     }

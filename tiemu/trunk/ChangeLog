@@ -9,6 +9,7 @@ To do:
 	- splitted memory mapping (init/exit)
 	- SR/PC were not shown any longer with exception (fixed)
 	- added refresh button to mem window
+	- update regs when changing the Supervisor bit.
 
 - 27/07/2004, version 1.75: roms
 	Olivier's suggestions:

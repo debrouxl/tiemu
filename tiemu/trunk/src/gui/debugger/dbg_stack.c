@@ -131,9 +131,9 @@ static void clist_refresh(GtkListStore *store)
 	clist_populate(store);
 
     if(ti68k_debug_is_supervisor())
-        gtk_label_set_text(GTK_LABEL(label), _("Current SP is: SSP"));
+        gtk_label_set_text(GTK_LABEL(label), "SSP");
     else
-        gtk_label_set_text(GTK_LABEL(label), _("Current SP is: USP"));
+        gtk_label_set_text(GTK_LABEL(label), "USP");
 }
 
 static GtkListStore *store = NULL;
@@ -161,7 +161,7 @@ GtkWidget* dbgstack_create_window(void)
     store = clist_create(data);
 	clist_populate(store);
 
-    label = glade_xml_get_widget(xml, "label1");
+    label = glade_xml_get_widget(xml, "label2");
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);

@@ -5,4 +5,5 @@
  */
 
 gchar *s = N_("Stack frame");
-gchar *s = N_("Current stack is: USP");
+gchar *s = N_("Current stack is:");
+gchar *s = N_("USP");
