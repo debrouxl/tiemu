@@ -36,18 +36,9 @@
 #include "ti68k_int.h"
 #include "struct.h"
 #include "tie_error.h"
-#include "hid.h"
+#include "calc.h"
 
 /* Types */
-
-typedef struct
-{
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-    uint8_t a;
-
-} RGBA;
 
 #define BPP 8               // 8 bits per pixel
 #define NGS 16              // Number of gray scales
@@ -64,20 +55,21 @@ GdkPixbuf *lcd = NULL;
 GdkPixbuf *skn = NULL;
 GdkPixmap *pixmap = NULL;
 
-uint32_t convtab[512];      // Planar to chunky conversion table
-RGBA     grayscales[16];    // Gray scales rgb values
+uint32_t *pLcdBuf;					// LCD buffer (grayscale colormap)
+PIX_INFOS pi;
 
-int iContrast = NGS;          // current contrast level
-int iLastContrast = 0;        // previous contrast level
-int iNewContrast = NGS;       // new contrast level
-int iGrayPlanes = -1;         // number of grayscales to emulate
-int iCurrPlane = 0;           // ?
-int iScrState = 0;            // screen state
+static uint32_t convtab[512];      	// planar to chunky conversion table
+static RGBA     grayscales[16];		// gray scales rgb values (colormap)
+static int lcd_state = 0;           // screen state
 
-int iScrW, iScrH;
-uint32_t *pLcdBuf;
-uint32_t convtab[];
+static int contrast = NGS;          // current contrast level
+static int old_contrast = 0;        // previous contrast level
+static int new_contrast = NGS;		// new contrast level
 
+static int max_plane = -1;         	// number of grayscales to emulate
+static int cur_plane = 0;           // current grayscale plane
+
+/* Compute conversion table */
 void compute_convtable(void) 
 {
   	int i, j;
@@ -96,8 +88,8 @@ void compute_convtable(void)
 /* The value v is between l and h and can not be outside */
 #define filter(v, l, h) (v<l ? l : (v>h ? h : v))
 
-/* Computes the 16 grays level colors and allocates a colormap */
-void set_colors(void)
+/* Computes the 16 grays level colors */
+void compute_grayscale(void)
 {
   	int i;
   	int sr, sg, sb;
@@ -114,41 +106,40 @@ void set_colors(void)
   	eg = (black & 0x00ff00);
   	eb = (black & 0x0000ff) << 8;
 
-  	if(iContrast < NGS) 
+  	if(contrast < NGS) 
     {
-      	sr = sr - (sr-er)*(NGS - iContrast)/13;
-      	sg = sg - (sg-eg)*(NGS - iContrast)/13;
-      	sb = sb - (sb-eb)*(NGS - iContrast)/13;
+      	sr = sr - (sr-er) * (NGS - contrast)/13;
+      	sg = sg - (sg-eg) * (NGS - contrast)/13;
+      	sb = sb - (sb-eb) * (NGS - contrast)/13;
     }
   	else 
     {
-      	er = er - (er-sr)*(iContrast - NGS)/13;
-      	eg = eg - (eg-sg)*(iContrast - NGS)/13;
-      	eb = eb - (eb-sb)*(iContrast - NGS)/13;
+      	er = er - (er-sr)*(contrast - NGS)/13;
+      	eg = eg - (eg-sg)*(contrast - NGS)/13;
+      	eb = eb - (eb-sb)*(contrast - NGS)/13;
     }
   
   	r = sr;
   	g = sg;
   	b = sb;
 
-  	if(iScrState == SCREEN_ON) 
+  	if(lcd_state == SCREEN_ON) 
     {
-      	for(i = 0; i <= (iGrayPlanes+1); i++) 
+      	for(i = 0; i <= (max_plane+1); i++) 
 		{
 	  		grayscales[i].r = filter(r, 0x0000, 0xA800) >> 8;
 	  		grayscales[i].g = filter(g, 0x0000, 0xB400) >> 8;
 	  		grayscales[i].b = filter(b, 0x3400, 0xA800) >> 8;
+	  		grayscales[i].a = 0;
 
-	  		r -= ((sr-er) / (iGrayPlanes+1));
-	  		g -= ((sg-eg) / (iGrayPlanes+1));
-	  		b -= ((sb-eb) / (iGrayPlanes+1));
+	  		r -= ((sr-er) / (max_plane+1));
+	  		g -= ((sg-eg) / (max_plane+1));
+	  		b -= ((sb-eb) / (max_plane+1));
 		}
     }
 }
 
-/* 
-   Redraw the skin into window but don't reload skin file
-*/
+/* Redraw the skin into window but don't reload skin file */
 void redraw_skin(void) 
 {
     GdkRect rect;
@@ -170,86 +161,81 @@ void redraw_skin(void)
     gtk_widget_draw(area, (GdkRectangle *)&rect);
 }
 
+/* Update LCD screen part */
 int hid_update_lcd(void)
 {
 	int i, j, k;
-	uint8_t *pLcdMem = tihw.lcd_ptr;
-	uint8_t *ptr = (uint8_t *)pLcdBuf;
+	uint8_t *lcd_mem = tihw.lcd_ptr;
+	uint8_t *lcd_ptr = (uint8_t *)pLcdBuf;
 	GdkRect src, dst;
-
-	int width, height, rowstride, n_channels;
-	guchar *pixels, *p;
+	guchar *p;
 
     if(!pixmap || !lcd)
         return 0;
-
-    iScrW = tihw.lcd_w;
-    iScrH = tihw.lcd_h;
-
-	n_channels = gdk_pixbuf_get_n_channels (lcd);
-	width = gdk_pixbuf_get_width (lcd);
-	height = gdk_pixbuf_get_height (lcd);
-	rowstride = gdk_pixbuf_get_rowstride (lcd);
-	pixels = gdk_pixbuf_get_pixels (lcd);
-
-    if(iGrayPlanes != params.grayplanes) 
+	
+    if(max_plane != params.grayplanes) 
     {
-		iGrayPlanes = params.grayplanes;
-		set_colors();
+		max_plane = params.grayplanes;
+		compute_grayscale();
     }
 
-	if(iScrState == SCREEN_OFF)
+	if(lcd_state == SCREEN_OFF)
 		return 0;
 
-	if(iContrast != iNewContrast) 
+	if(contrast != new_contrast) 
     {
-		iContrast = iNewContrast;
-		set_colors();
+		contrast = new_contrast;
+		compute_grayscale();
     }
 
 	// Convert the bitmap screen to a bytemap screen */
-	if(!iGrayPlanes || !iCurrPlane) 
+	if(!max_plane || !cur_plane) 
     { 
 		// no gray scale or init gray plane
-		for(j=0, k=0; k<iScrH; k++)
+		for(j = 0, k = 0; k < tihw.lcd_h; k++)
 		{
-			for(i=0; i<iScrW>>3; i++, pLcdMem++) 
+			for(i = 0; i < tihw.lcd_w/8; i++, lcd_mem++) 
 			{
-				pLcdBuf[j++] = convtab[((*pLcdMem)<<1)  ];
-				pLcdBuf[j++] = convtab[((*pLcdMem)<<1)+1];
+				pLcdBuf[j++] = convtab[(*lcd_mem << 1)  ];
+				pLcdBuf[j++] = convtab[(*lcd_mem << 1)+1];
 			}
 		}
     }
 	else 
     { 
 		// compute gray scale
-		for(j=0, k=0; k<iScrH; k++)
+		for(j = 0, k = 0; k < tihw.lcd_h; k++)
 		{
-			for(i=0; i<iScrW>>3; i++, pLcdMem++) 
+			for(i = 0; i < tihw.lcd_w/8; i++, lcd_mem++) 
 			{
-				pLcdBuf[j++] += convtab[((*pLcdMem)<<1)  ];
-				pLcdBuf[j++] += convtab[((*pLcdMem)<<1)+1];
+				pLcdBuf[j++] += convtab[(*lcd_mem << 1)  ];
+				pLcdBuf[j++] += convtab[(*lcd_mem << 1)+1];
 			}
 		}
     }
 
-    if(iCurrPlane++ >= iGrayPlanes) 
+    if(cur_plane++ >= max_plane) 
 	{
 		// Copy the LCD into 
-		for(j = 0; j < iScrH; j++) 
+		for(j = 0; j < tihw.lcd_h; j++) 
 		{
-			for (i = 0; i < iScrW; i++, ptr++) 
+			for (i = 0; i < tihw.lcd_w; i++, lcd_ptr++) 
 			{
-				p = pixels + j * rowstride + i * n_channels;
+#if 1
+				p = pi.pixels + j * pi.rowstride + i * pi.n_channels;
 
-				p[0] = grayscales[*ptr].r;
-				p[1] = grayscales[*ptr].g;
-				p[2] = grayscales[*ptr].b;
+				p[0] = grayscales[*lcd_ptr].r;
+				p[1] = grayscales[*lcd_ptr].g;
+				p[2] = grayscales[*lcd_ptr].b;
 				p[3] = 0;
+#else				
+				// optimisation: blit par uint32_t
+				((gulong *)pi.pixels)[j * pi.rowstride + i] = ((gulong *)grayscales)[*lcd_ptr]);
+#endif
 			}
 		}
 
-        iCurrPlane = 0;
+        cur_plane = 0;
 
         // Copy surface into window
         src.x = 0;
@@ -267,8 +253,8 @@ int hid_update_lcd(void)
 			dst.x = 0;
 			dst.y = 0;
 		}  
-        dst.w = width;
-        dst.h = height;
+        dst.w = src.w;
+        dst.h = src.h;
 
         gdk_draw_pixbuf(pixmap, wnd->style->fg_gc[GTK_WIDGET_STATE(wnd)],
 		  lcd, src.x, src.y, dst.x, dst.y, -1, -1,
@@ -280,26 +266,28 @@ int hid_update_lcd(void)
     return -1;
 }
 
+/* Set LCD state */
 void hid_lcd_on_off(int i) 
 {
     if(i) 
 	{
-		iScrState = SCREEN_ON;
+		lcd_state = SCREEN_ON;
 	} 
 	else 
 	{
-		iScrState = SCREEN_OFF;
+		lcd_state = SCREEN_OFF;
 		redraw_skin(); 	// to clear LCD 
 	}
 }
 
+/* Set LCD contrast */
 int hid_set_contrast(int c)
 {
     if((tihw.calc_type == TI89) || (tihw.calc_type == TI89t))
     	c = 31-c;
 
-  	iNewContrast = (c+iLastContrast) / 2;
-  	iLastContrast = c;
+  	new_contrast = (c+old_contrast) / 2;
+  	old_contrast = c;
 
     return 0;
 }

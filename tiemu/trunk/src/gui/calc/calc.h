@@ -24,8 +24,10 @@
 #ifndef __CALC_H__
 #define __CALC_H__
 
-int  hid_init(void);
-int  hid_exit(void);
+/* Functions */
+
+int hid_init(void);
+int hid_exit(void);
 
 int hid_update_keys(void);
 int hid_update_lcd(void);
@@ -45,5 +47,26 @@ void hid_set_callbacks(void);
 int hid_screenshot(char *filename);
 
 int hid_popup_menu(void);
+
+/* Private Types */
+
+typedef struct
+{
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t a;
+
+} RGBA;
+
+typedef struct
+{
+	int 	width;
+	int 	height;
+	int 	rowstride;
+	int 	n_channels;
+	guchar*	pixels;
+	gulong*	pixels2;
+} PIX_INFOS;
 
 #endif

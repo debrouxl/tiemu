@@ -51,6 +51,7 @@ extern const char  sknKey92[];
 extern const char  sknKey89[];
 
 extern uint32_t *pLcdBuf;
+extern PIX_INFOS pi;
 
 gint display_main_wnd(void)
 {
@@ -208,12 +209,14 @@ static gint hid_refresh (gpointer data)
 }
 
 void compute_convtable(void);
-void set_colors(void);
+void compute_grayscale(void);
 void redraw_skin(void);
 
 int  hid_init(void)
 {
     SKIN_INFOS *si = &skin_infos;
+
+	//display_main_wnd();
 
     // Found a skin
 	match_skin(tihw.calc_type);
@@ -264,6 +267,16 @@ int  hid_init(void)
 	    g_free(s);
 	    return -1;
     }
+    
+    pi.n_channels = gdk_pixbuf_get_n_channels (lcd);
+	pi.width = gdk_pixbuf_get_width (lcd);
+	pi.height = gdk_pixbuf_get_height (lcd);
+	pi.rowstride = gdk_pixbuf_get_rowstride (lcd);
+	pi.pixels = gdk_pixbuf_get_pixels (lcd);
+
+	// Create main window
+	if(wnd == NULL)
+		display_main_wnd();
 
     // Allocate the backing pixmap
     pixmap = gdk_pixmap_new(wnd->window, si->width, si->height, -1);
@@ -274,9 +287,6 @@ int  hid_init(void)
 	    g_free(s);
 	    return -1;
     }
-
-	// Create main window
-    display_main_wnd();
 
     // Get window size depending on windowed/fullscreen
   	if(params.background)
@@ -291,7 +301,7 @@ int  hid_init(void)
 	}
     
     // Draw the skin and compute grayscale palette
-  	set_colors();
+  	compute_grayscale();
   	redraw_skin();
 
     // Install LCD refresh: 100 FPS (10 ms)
@@ -320,7 +330,7 @@ int  hid_exit(void)
         pixmap = NULL;
     }
 
-   gtk_widget_destroy(wnd);
+   //gtk_widget_destroy(wnd);
 
     return 0;
 }
@@ -357,12 +367,14 @@ int hid_change_skin(const char *filename)
 
 int hid_switch_fullscreen(void)
 {
-    return 0;
+	gdk_window_fullscreen(wnd->window);
+	return 0;
 }
 
 int hid_switch_windowed(void)
 {
-    return 0;
+	gdk_window_unfullscreen(wnd->window);
+	return 0;
 }
 
 int hid_switch_normal_view(void)

@@ -366,7 +366,10 @@ GLADE_CB void
 on_full_screen1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	hid_switch_fullscreen();
+	if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
+    		hid_switch_windowed();
+  	else
+    		hid_switch_fullscreen();
   	ti68k_engine_unhalt();
 }
 
