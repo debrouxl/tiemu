@@ -48,9 +48,9 @@ extern void intRomWriteByte(int adr, int v);
 
 /* Variables */
 
-extern unsigned char /*UBYTE*/ *ti_ram;
+extern UBYTE *ti_ram;
 extern UBYTE *ti_rom, *ti_int_rom, *ti_ext_rom;
-extern unsigned char /*UBYTE*/ *ti_io;
+extern UBYTE *ti_io;
 
 extern UBYTE *mem_tab[8];
 extern ULONG mem_mask[8];
@@ -67,8 +67,8 @@ extern int rom_erasePhase;
 
 /* Defines */
 
-#define rom_at_0() { mem_tab[0] = ti_rom; mem_mask[0] = ROM_SIZE-1; }
-#define ram_at_0() { mem_tab[0] = ti_ram; mem_mask[0] = RAM_SIZE-1; }
+#define rom_at_0() { mem_tab[0] = tihw.rom; mem_mask[0] = ROM_SIZE-1; }
+#define ram_at_0() { mem_tab[0] = tihw.ram; mem_mask[0] = RAM_SIZE-1; }
 
 #define LM_BYTE 0
 #define LM_WORD 1

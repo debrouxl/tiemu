@@ -21,11 +21,11 @@
 */
 
 #include "uae.h"
+#include "ti68k_def.h"
 #include "memory.h"
 #include "hardware.h"
 #include "bkpts.h"
 #include "images.h"
-//#include "interface.h"
 #include "callbacks.h"
 
 int hw_m68k_init(void)

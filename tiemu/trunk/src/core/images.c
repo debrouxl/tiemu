@@ -540,7 +540,7 @@ int ti68k_load_upgrade(const char *filename)
 	ti68k_display_tib_infos(img);
 
 	img->has_boot = 1;	// still bootable
-	memcpy(ti_rom+0x12000, img->data+0x12000, img->size-0x12000);
+	memcpy(tihw.rom+0x12000, img->data+0x12000, img->size-0x12000);
 
   	img_loaded = 2;
 	return 0;

@@ -487,7 +487,7 @@ gint refresh_memory_dbox(void)
   GtkTreeIter iter;
   gchar *text[3];
   gint i, k;
-  UBYTE *ti_ram = (UBYTE *)tihw.ram;
+  //UBYTE *tihw.ram = (UBYTE *)tihw.ram;
   gint addr = data_addr;
 
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
@@ -500,20 +500,20 @@ gint refresh_memory_dbox(void)
     {
       text[0] = g_strdup_printf("%06X", addr);
       text[1] = g_strdup_printf("%02X %02X %02X %02X %02X %02X %02X %02X ",
-				ti_ram[addr+0], ti_ram[addr+1],
-				ti_ram[addr+2], ti_ram[addr+3],
-				ti_ram[addr+4], ti_ram[addr+5],
-				ti_ram[addr+6], ti_ram[addr+7]);
+				tihw.ram[addr+0], tihw.ram[addr+1],
+				tihw.ram[addr+2], tihw.ram[addr+3],
+				tihw.ram[addr+4], tihw.ram[addr+5],
+				tihw.ram[addr+6], tihw.ram[addr+7]);
       
       text[2] = g_strdup_printf("%c%c%c%c%c%c%c%c", 
-				isprint(ti_ram[addr+0]) ? ti_ram[addr+0] : '.',
-				isprint(ti_ram[addr+1]) ? ti_ram[addr+1] : '.',
-				isprint(ti_ram[addr+2]) ? ti_ram[addr+2] : '.',
-				isprint(ti_ram[addr+3]) ? ti_ram[addr+3] : '.',
-				isprint(ti_ram[addr+4]) ? ti_ram[addr+4] : '.',
-				isprint(ti_ram[addr+5]) ? ti_ram[addr+5] : '.',
-				isprint(ti_ram[addr+6]) ? ti_ram[addr+6] : '.',
-				isprint(ti_ram[addr+7]) ? ti_ram[addr+7] : '.');
+				isprint(tihw.ram[addr+0]) ? tihw.ram[addr+0] : '.',
+				isprint(tihw.ram[addr+1]) ? tihw.ram[addr+1] : '.',
+				isprint(tihw.ram[addr+2]) ? tihw.ram[addr+2] : '.',
+				isprint(tihw.ram[addr+3]) ? tihw.ram[addr+3] : '.',
+				isprint(tihw.ram[addr+4]) ? tihw.ram[addr+4] : '.',
+				isprint(tihw.ram[addr+5]) ? tihw.ram[addr+5] : '.',
+				isprint(tihw.ram[addr+6]) ? tihw.ram[addr+6] : '.',
+				isprint(tihw.ram[addr+7]) ? tihw.ram[addr+7] : '.');
       
       gtk_list_store_append(list, &iter);
       gtk_list_store_set(list, &iter,
@@ -542,7 +542,7 @@ gint refresh_stack_dbox(void)
   gchar *text[2];
   gint i;
   gint sp = ti68k_register_get_sp();
-  UWORD *ti_ram = (UWORD *)tihw.ram;
+//  UWORD *tihw.ram = (UWORD *)tihw.ram;
   gint addr;
 
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
@@ -554,7 +554,7 @@ gint refresh_stack_dbox(void)
   for(i = 0, addr = sp; i < 10; i++, addr += 2)
     {
       text[0] = g_strdup_printf("%06X:", addr);
-      text[1] = g_strdup_printf("%04X", ti_ram[addr]);
+      text[1] = g_strdup_printf("%04X", tihw.ram[addr]);
 
       gtk_list_store_append(list, &iter);
       gtk_list_store_set(list, &iter,

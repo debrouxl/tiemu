@@ -93,18 +93,18 @@ typedef struct
     int     lcd_off;
     int     contrast;
     int     lcd_base_addr;
-    char*   lcd_ptr;
+    uint8_t	*lcd_ptr;
 
     // linkport.c
     TicableLinkParam lc;
 
     // memory.c
-    char    *int_rom;
-    char    *ext_rom;
-    char    *rom;
-    char    *ram;
-    char    *io;
-    char    *garbage;
+    uint8_t *int_rom;
+    uint8_t *ext_rom;
+    uint8_t *rom;
+    uint8_t *ram;
+    uint8_t *io;
+    uint8_t *garbage;
 
     // timer.c
     int     timer_value;

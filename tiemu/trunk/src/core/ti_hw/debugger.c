@@ -32,6 +32,7 @@
 #include "tilibs.h"
 #include "images.h"
 #include "callbacks.h"
+#include "ti68k_def.h"
 
 int breakPoints = 0;
 ULONG breakAdr[16];
@@ -97,7 +98,7 @@ int enter_debugger(void)
       put_word(breakAdr[i], breakSave[i]);
     }
 
-  printf("---BREAK TO DEBUGGER--- <%d>\n", ti_ram[0x85]);
+  printf("---BREAK TO DEBUGGER--- <%d>\n", tihw.ram[0x85]);
   currpc = m68k_getpc();
   MC68000_dumpstate(&nextpc);
 

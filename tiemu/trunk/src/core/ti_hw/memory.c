@@ -35,11 +35,11 @@
 
 /* Memory blocks */
 
-UBYTE *ti_rom;
+//UBYTE *ti.rom;
 UBYTE *ti_int_rom;
 UBYTE *ti_ext_rom;
-unsigned char /*UBYTE*/ *ti_ram;
-unsigned char /*UBYTE*/ *ti_io;
+//UBYTE *ti.ram;
+UBYTE *ti_io;
 UBYTE garbage_mem[0x10000];
 
 UBYTE *mem_tab[8] = 
@@ -47,8 +47,8 @@ UBYTE *mem_tab[8] =
   0, // 000000-1FFFFF : RAM
   0, // 200000-3FFFFF : internal ROM (TI89)
   0, // 400000-5FFFFF : external ROM (TI92/TI92+)
-  0, // 600000-6FFFFF : Memory mapped I/O (lower 6 bits)
-  0, // 
+  0, // 600000-7FFFFF : Memory mapped I/O (lower 6 bits)
+  0, //					Garbage ??
   0,
   0,
   0
@@ -107,13 +107,13 @@ int hw_mem_init(void)
   listBkptAsRgW = listBkptAsRgR = NULL;
 
   /* Allocate memory */  
-  ti_ram     = malloc(RAM_SIZE+4);
+  tihw.ram     = malloc(RAM_SIZE+4);
   ti_int_rom = malloc(ROM_SIZE+4);
   ti_ext_rom = malloc(ROM_SIZE+4);
   ti_io      = malloc(IO_SIZE+4);
 
   /* Clear RAM/ROM/IO */
-  memset(ti_ram, 0x00, RAM_SIZE);
+  memset(tihw.ram, 0x00, RAM_SIZE);
   memset(ti_io , 0x00, IO_SIZE);  
   for (i=0; i<2048*1024; i++)
     {
@@ -131,11 +131,11 @@ int hw_mem_init(void)
 
   /* Set all banks to RAM (with mask 0 per default) */
   for(i=0; i<8; i++) { 
-    mem_tab[i] = ti_ram; 
+    mem_tab[i] = tihw.ram; 
   }
 
   /* Map RAM */
-  mem_tab[0] = ti_ram;
+  mem_tab[0] = tihw.ram;
   mem_mask[0] = RAM_SIZE-1;
 
   /* Map ROM in two places */
@@ -153,15 +153,15 @@ int hw_mem_init(void)
   mem_mask[4] = 0x10000-1;
 
   if(cri->internal)
-    ti_rom = ti_int_rom;
+    tihw.rom = ti_int_rom;
   else
-    ti_rom = ti_ext_rom;
+    tihw.rom = ti_ext_rom;
   
   // blit ROM
-  memcpy(ti_rom, cri->data, cri->size);
+  memcpy(tihw.rom, cri->data, cri->size);
   free(cri->data);
 
-  return (ti_ram && ti_int_rom && ti_ext_rom && ti_io);
+  return (tihw.ram && ti_int_rom && ti_ext_rom && ti_io);
 }
 
 int hw_mem_reset(void)
@@ -170,9 +170,9 @@ int hw_mem_reset(void)
 
 int hw_mem_exit(void)
 {
-  if(ti_ram) 
-    free(ti_ram); 
-  ti_ram=NULL;
+  if(tihw.ram) 
+    free(tihw.ram); 
+  tihw.ram=NULL;
   
   if(ti_int_rom) 
     free(ti_int_rom); 
@@ -560,10 +560,6 @@ UBYTE *get_real_address(CPTR adr)
   return &mem_tab[(adr>>21)&0x7][adr&mem_mask[(adr>>21)&0x7]];
 }
 
-int valid_address(CPTR adr, ULONG size) 
-{
-  return 1;
-}
 
 void intRomWriteByte(int addr,int v)
 {
@@ -716,28 +712,28 @@ int find_pc()
     { // TI89 or TI92+
       for (vt = 0x12000; vt<cri->size; vt++)
 	{
-	  if (*((int*)(ti_rom+vt)) == 0xcccccccc) {
+	  if (*((int*)(tihw.rom+vt)) == 0xcccccccc) {
 	    vt += 4;
 	    break;
 	  }
 	}
       vt += 4; // skip SP
    
-      uae_initial_pc = ti_rom[vt+3] | (ti_rom[vt+2]<<8) |
-        (ti_rom[vt+1]<<16) | (ti_rom[vt]<<24);
+      uae_initial_pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
+        (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
     }
   else
     { // TI92
       vt = 0;
       vt += 4; // skip SP
       
-      uae_initial_pc = ti_rom[vt+3] | (ti_rom[vt+2]<<8) |
-        (ti_rom[vt+1]<<16) | (ti_rom[vt]<<24);
+      uae_initial_pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
+        (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
     }
 
   // copy vector table into RAM for boot
   for (i=0; i<256; i++) {
-    ti_ram[i] = ti_rom[vt + i];
+    tihw.ram[i] = tihw.rom[vt + i];
   }  
 
   return 0;

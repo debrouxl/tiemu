@@ -76,7 +76,7 @@ int ti68k_state_load(char *filename)
   //  return;
   fread(&regs,sizeof(regs),1,fp);
   MakeFromSR();
-  fread(ti_ram,256,1024,fp);
+  fread(tihw.ram,256,1024,fp);
   fread(&memprotect,4,1,fp); fread(&ram128,4,1,fp);
   fread(&timer_value,4,1,fp); fread(&timer_init,4,1,fp);
   fread(&int0Count,4,1,fp);
@@ -92,7 +92,7 @@ int ti68k_state_load(char *filename)
   fread(&contrast,4,1,fp);
   fread(&cpuCompleteStop,4,1,fp);
   for (i=0;i<32;i++)
-    mem[i]=&ti_ram[(i&(mem_and>>16))<<16];
+    mem[i]=&tihw.ram[(i&(mem_and>>16))<<16];
 
   // GtkTiEmu specific
   fread(ti_io, 1, IO_SIZE, fp);      // write IO
@@ -127,7 +127,7 @@ int ti68k_state_save(char *filename)
       fwrite(filename,56,1,fp);
       MakeSR();
       fwrite(&regs,sizeof(regs),1,fp); // struct format differs !
-      fwrite(ti_ram,256,1024,fp);
+      fwrite(tihw.ram,256,1024,fp);
       fwrite(&memprotect,4,1,fp); fwrite(&ram128,4,1,fp);
       fwrite(&timer_value,4,1,fp); fwrite(&timer_init,4,1,fp);
       fwrite(&int0Count,4,1,fp);
