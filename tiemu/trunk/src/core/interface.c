@@ -39,7 +39,6 @@
 #include "hw.h"
 #include "m68k.h"
 #include "dbus.h"
-#include "romcalls.h"
 
 #include "ti68k_int.h"
 #include "ti68k_err.h"
@@ -63,31 +62,14 @@ Ti68kBreakpoints	bkpts = { 0 };
 
 /*
   Initialization order (checked by the runlevel):
-  - register callbacks
   - load the default config
   - load a ROM (init ROM)
   - init the lib (init HW, UAE, HID)
   - reset the lib
 */
 
-/* 
-   This should be the FIRST function to call for registering
-   HID callbacks.
-   The callbacks will not be used until ti68k_init().
-*/
 /*
-void ti68k_gui_set_callbacks(
-              callback_iv_t initSpecific,
-			  callback_iv_t exitSpecific,
-			  callback_iv_t updateScreen,
-			  callback_iv_t updateKeys,
-			  callback_vi_t screenOnOff,
-			  callback_ii_t setContrast
-			  );
-*/
-
-/*
-  This should be the SECOND function to call (unless the 'params' 
+  This should be the FIRST function to call (unless the 'params' 
   structure has been properly initialized.
  */
 int ti68k_config_load_default(void)
@@ -108,13 +90,13 @@ int ti68k_config_load_default(void)
 }
 
 /*
-  This should be the THIRD function to call. 
+  This should be the SECOND function to call. 
   Load a ROM image (images.c).
 */
 int ti68k_load_image(const char *filename);
 
 /*
-  This is the FOURTH function to call for completely initializing the
+  This is the THIRD function to call for completely initializing the
   emulation engine.
 */
 int ti68k_init(void)
@@ -136,7 +118,7 @@ int ti68k_init(void)
 }
 
 /*
-  This should be the FIFTH function to call.
+  This should be the FOURTH function to call.
   It simply resets the hardware engine.
 */
 int ti68k_reset(void)
@@ -147,7 +129,7 @@ int ti68k_reset(void)
 }
 
 /*
-  Close the library by exiting HID and exiting the emulation engine
+  Close the library by exiting the emulation engine
   (free ressources).
 */
 int ti68k_exit(void)
@@ -171,101 +153,6 @@ int ti68k_restart(void)
   TRY(ti68k_reset());
   
   return 0;
-}
-
-
-/***********************/
-/* Debugging functions */
-/***********************/
-
-int ti68k_debug_get_pc(void)
-{
-	return m68k_getpc();
-}
-
-//extern uint32_t ti68k_debug_disassemble(uint32_t addr, char **line);	// disasm.c
-
-int ti68k_debug_break(void)
-{
-    specialflags |= SPCFLAG_BRK;
-    return 0;
-}
-
-int ti68k_debug_trace(void)
-{
-    // Set up an internal trap (DBTRACE) which will 
-    // launch/refresh the debugger when encountered
-    specialflags |= SPCFLAG_DBTRACE;
-
-    return 0;
-}
-
-int ti68k_debug_step(void)
-{
-	return ti68k_debug_do_instructions(1);
-}
-
-int ti68k_debug_step_over(void)
-{
-    // Set up an internal trap (DBTRACE) which will 
-    // launch/refresh the debugger when encountered
-    specialflags |= SPCFLAG_DBTRACE;
-
-    return 0;
-}
-
-int ti68k_debug_skip(uint32_t next_pc)
-{
-    broken_in = 0;
-    //specialflags |= SPCFLAG_BRK;
-
-    do 
-    {
-		ti68k_debug_step();
-
-		// too far: stop
-		if(m68k_getpc() > next_pc)
-			break;
-
-		// jump back: stop
-		if(next_pc - m68k_getpc() > 0x80)
-			break;
-    } 
-    while (next_pc != m68k_getpc() && !broken_in);
-
-    return 0;
-}
-
-/*
-    Do 'n' instructions.
-    Return 0 if successful, a negative value if an error occured,
-    a positive value if a breakpoint has been encountered.
-
-    Note: replace M68000_run() from UAE
-*/
-int ti68k_debug_do_instructions(int n)
-{
-    if(!img_loaded)
-        return ERR_NO_IMAGE;
-
-    return hw_m68k_run(n);
-}
-
-// Used to read/modify/write memory directly from debugger
-uint8_t* ti68k_get_real_address(uint32_t addr)
-{
-	return hw_get_real_address(addr);
-}
-
-int ti68k_debug_load_symbols(const char *filename)
-{
-	if(!strcmp(filename, ""))
-		return 0;
-
-	if(!romcalls_is_loaded())
-		return romcalls_load_from_file(filename);
-
-	return 0;
 }
 
 

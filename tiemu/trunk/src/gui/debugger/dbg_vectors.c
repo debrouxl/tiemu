@@ -124,7 +124,7 @@ static void clist_get_selection(GtkWidget *list)
 	}	
 }
 
-gint display_dbgvectors_dbox(void)
+gint dbgvectors_display_dbox(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -150,7 +150,7 @@ gint display_dbgvectors_dbox(void)
 	switch (result) {
 	case GTK_RESPONSE_OK:
 		clist_get_selection(data);
-		display_dbgbkpts_window();
+		dbgbkpts_display_window();
 		break;
 	default:
 		break;

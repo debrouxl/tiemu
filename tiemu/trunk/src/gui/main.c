@@ -64,7 +64,7 @@ GSource* attach_dbg_gsource(void);
 
 gboolean on_dbg_event(gpointer data)
 {
-	enter_gtk_debugger(GPOINTER_TO_INT(data));
+	gtk_debugger_enter(GPOINTER_TO_INT(data));
 
 	return TRUE;	// don't automatically remove callback
 }
@@ -208,7 +208,7 @@ int main(int argc, char **argv)
 		Cache debugger windows to speed-up display and install custom event
 	*/
 	splash_screen_set_label(_("Pre-loading debugger..."));
-	preload_gtk_debugger();
+	gtk_debugger_preload();
 
 	source = attach_dbg_gsource();
 	g_source_set_callback(source, on_dbg_event, NULL, NULL);

@@ -34,9 +34,6 @@
 #include "paths.h"
 #include "support.h"
 #include "ti68k_int.h"
-#include "dbg_bkpts.h"
-#include "dbg_regs.h"
-#include "dbg_mem.h"
 #include "struct.h"
 #include "dbg_all.h"
 
@@ -242,6 +239,7 @@ typedef struct {
 	GtkWidget *b4;
 	GtkWidget *b5;
 	GtkWidget *b6;
+	GtkWidget *b7;
 } TB;
 static TB tb;
 
@@ -251,10 +249,11 @@ typedef struct {
     GtkWidget *m3;
     GtkWidget *m4;
     GtkWidget *m5;
+	GtkWidget *m6;
 } MI;
 static MI mi;
 
-static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6)
+static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6, int s7)
 {
 	gtk_widget_set_sensitive(tb.b1, s1);
 	gtk_widget_set_sensitive(tb.b2, s2);
@@ -262,12 +261,14 @@ static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6)
 	gtk_widget_set_sensitive(tb.b4, s4);
 	gtk_widget_set_sensitive(tb.b5, s5);
 	gtk_widget_set_sensitive(tb.b6, s6);
+	gtk_widget_set_sensitive(tb.b7, s7);
 
     gtk_widget_set_sensitive(mi.m1, s1);
 	gtk_widget_set_sensitive(mi.m2, s2);
 	gtk_widget_set_sensitive(mi.m3, s3);
 	gtk_widget_set_sensitive(mi.m4, s4);
 	gtk_widget_set_sensitive(mi.m5, s5);
+	gtk_widget_set_sensitive(mi.m6, s6);
 }
 
 static GtkScrolledWindow *sw;
@@ -276,7 +277,7 @@ static GtkAdjustment *adj;
 /*
 	Display source code window
 */
-GtkWidget* create_dbgcode_window(void)
+GtkWidget* dbgcode_create_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -300,12 +301,14 @@ GtkWidget* create_dbgcode_window(void)
 	tb.b4 = glade_xml_get_widget(xml, "button4");
 	tb.b5 = glade_xml_get_widget(xml, "button5");
 	tb.b6 = glade_xml_get_widget(xml, "button6");
+	tb.b7 = glade_xml_get_widget(xml, "button7");
 
     mi.m1 = glade_xml_get_widget(xml, "run1");
     mi.m2 = glade_xml_get_widget(xml, "step1");
     mi.m3 = glade_xml_get_widget(xml, "step_over1");
-    mi.m4 = glade_xml_get_widget(xml, "run_to_cursor1");
-    mi.m5 = glade_xml_get_widget(xml, "break1");
+	mi.m4 = glade_xml_get_widget(xml, "step_out1");
+    mi.m5 = glade_xml_get_widget(xml, "run_to_cursor1");
+    mi.m6 = glade_xml_get_widget(xml, "break1");	
 
     list = glade_xml_get_widget(xml, "treeview1");
 
@@ -324,16 +327,16 @@ GtkWidget* create_dbgcode_window(void)
 	return dbox;
 }
 
-GtkWidget* display_dbgcode_window(void)
+GtkWidget* dbgcode_display_window(void)
 {
 	static GtkWidget *wnd = NULL;
 
 	if(!already_open)
-		wnd = create_dbgcode_window();
+		wnd = dbgcode_create_window();
     gtk_widget_show(wnd);
 
 	gtk_widget_set_sensitive(list, TRUE);	
-	tb_set_states(1, 1, 1, 1, 0, 1);
+	tb_set_states(1, 1, 1, 1, 1, 0, 1);
     set_other_windows_sensitivity(TRUE);
      
     gtk_list_store_clear(store);
@@ -342,11 +345,20 @@ GtkWidget* display_dbgcode_window(void)
     return wnd;
 }
 
+void dbgcode_refresh_window(void)
+{
+	if(dbgs.code)
+	{
+		gtk_list_store_clear(store);
+		clist_refresh(store);
+	}
+}
+
 GLADE_CB void
 on_run1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	tb_set_states(1, 0, 0, 0, 1, 0);
+	tb_set_states(0, 0, 0, 0, 0, 1, 0);
     gtk_widget_set_sensitive(list, FALSE);
     set_other_windows_sensitivity(FALSE);
 
@@ -360,8 +372,9 @@ on_step1_activate                      (GtkMenuItem     *menuitem,
 {
 	ti68k_debug_step();
 
-	display_dbgcode_window();
-    display_dbgregs_window();
+	clist_refresh(store);
+    dbgregs_refresh_window();
+	dbgpclog_refresh_window();
 }
 
 
@@ -371,8 +384,20 @@ on_step_over1_activate                 (GtkMenuItem     *menuitem,
 {
     ti68k_debug_step_over();
 
-	display_dbgcode_window();
-    display_dbgregs_window();
+	clist_refresh(store);
+    dbgregs_refresh_window();
+	dbgpclog_refresh_window();
+}
+
+GLADE_CB void
+on_step_out1_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    ti68k_debug_step_out();
+
+	clist_refresh(store);
+    dbgregs_refresh_window();
+	dbgpclog_refresh_window();
 }
 
 
@@ -398,16 +423,17 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
     sscanf(str, "%x", &addr);
 
-	tb_set_states(1, 0, 0, 0, 1, 0);
+	tb_set_states(0, 0, 0, 0, 0, 1, 0);
     set_other_windows_sensitivity(FALSE);
 
     ti68k_debug_skip(addr);
 
-	tb_set_states(1, 1, 1, 1, 0, 1);
+	tb_set_states(1, 1, 1, 1, 1, 0, 1);
     set_other_windows_sensitivity(TRUE);
     
-	display_dbgcode_window();
-    display_dbgregs_window();
+	clist_refresh(store);
+    dbgregs_refresh_window();
+	dbgpclog_refresh_window();
 }
 
 
@@ -424,7 +450,7 @@ on_break1_activate                     (GtkMenuItem     *menuitem,
 
     ti68k_engine_stop();
     gtk_widget_set_sensitive(list, TRUE);
-	tb_set_states(1, 1, 1, 1, 0, 1);
+	tb_set_states(1, 1, 1, 1, 1, 0, 1);
     set_other_windows_sensitivity(TRUE);
     clist_refresh(store);
 #else
@@ -461,7 +487,8 @@ dbgcode_button6_clicked                     (GtkButton       *button,
         ti68k_bkpt_del_address(addr);
 
     clist_refresh(store);
-    display_dbgbkpts_window();
+    dbgregs_refresh_window();
+	dbgpclog_refresh_window();
 }
 
 /***** Popup menu *****/
@@ -686,6 +713,6 @@ on_set_pc_to_selection1_activate       (GtkMenuItem     *menuitem,
     sscanf(str, "%x", &addr);
 
     ti68k_register_set_pc(addr);
-    display_dbgcode_window();
-    display_dbgregs_window();
+    dbgcode_refresh_window();
+    dbgregs_refresh_window();
 }

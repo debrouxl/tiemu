@@ -108,6 +108,10 @@ SOURCE=..\..\src\core\uae\newcpu.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\uae\table68k
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\uae\libuae.lib
 # End Source File
 # End Group
@@ -173,6 +177,10 @@ SOURCE=..\..\src\core\ti_hw\timer.c
 # Begin Source File
 
 SOURCE=..\..\src\core\dbg\bkpts.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\dbg\debug.c
 # End Source File
 # Begin Source File
 

@@ -38,6 +38,7 @@
 #include "support.h"
 #include "ti68k_int.h"
 #include "struct.h"
+#include "dbg_all.h"
 
 
 enum { 
@@ -506,7 +507,7 @@ static gint already_open = 0;
 /*
 	Display registers window
 */
-GtkWidget* create_dbgregs_window(void)
+GtkWidget* dbgregs_create_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -536,15 +537,23 @@ GtkWidget* create_dbgregs_window(void)
 	return dbox;
 }
 
-GtkWidget* display_dbgregs_window(void)
+GtkWidget* dbgregs_display_window(void)
 {
     static GtkWidget *wnd = NULL;
 
 	if(!already_open)
-		wnd = create_dbgregs_window();
+		wnd = dbgregs_create_window();
     gtk_widget_show(wnd);
 
 	ctree_refresh(store);
 
 	return wnd;
+}
+
+void dbgregs_refresh_window(void)
+{
+	if(dbgs.regs)
+	{
+		ctree_refresh(store);
+	}
 }

@@ -43,6 +43,7 @@
 #include "support.h"
 #include "ti68k_int.h"
 #include "struct.h"
+#include "dbg_all.h"
 
 #define DUMP_SIZE       128
 
@@ -171,8 +172,6 @@ on_treeview_key_press_event            (GtkWidget       *widget,
         if(row_max == -1)
             break;
 
-        //printf("Up: %i/%i %x\n", row_idx, row_max, addr);
-
         if(row_idx > 0)
             break;
 
@@ -183,8 +182,6 @@ on_treeview_key_press_event            (GtkWidget       *widget,
     case GDK_Down:
         if(row_max == -1)
             break;
-
-        //printf("Down: %i/%i %x\n", row_idx, row_max, addr);
 
         if(row_idx < row_max)
             break;
@@ -462,7 +459,7 @@ static gint already_open = 0;
 /*
 	Display memory window
 */
-GtkWidget* create_dbgmem_window(void)
+GtkWidget* dbgmem_create_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -492,17 +489,24 @@ GtkWidget* create_dbgmem_window(void)
 
 static void refresh_page(int page, int offset);
 
-GtkWidget* display_dbgmem_window(void)
+GtkWidget* dbgmem_display_window(void)
 {
     static GtkWidget *wnd = NULL;
 
 	if(!already_open)
-		wnd = create_dbgmem_window();
+		wnd = dbgmem_create_window();
     gtk_widget_show(wnd);
 
 	refresh_page(0, 0);
 
     return wnd;
+}
+
+void dbgmem_refresh_window(void)
+{
+	if(dbgs.mem)
+	{
+	}
 }
 
 GLADE_CB void

@@ -28,14 +28,6 @@
 
 #include <gtk/gtk.h>
 
-#include "dbg_bkpts.h"
-#include "dbg_code.h"
-#include "dbg_cause.h"
-#include "dbg_data.h"
-#include "dbg_mem.h"
-#include "dbg_regs.h"
-#include "dbg_vectors.h"
-#include "dbg_pclog.h"
 #include "ti68k_int.h"
 #include "struct.h"
 #include "dbg_all.h"
@@ -48,7 +40,7 @@ DbgStates dbgs = { 0 };
 
 int dbg_on = 0;
 
-void preload_gtk_debugger(void)
+void gtk_debugger_preload(void)
 {
 	//create_dbgregs_window();
 	//create_dbgcode_window();
@@ -57,7 +49,7 @@ void preload_gtk_debugger(void)
 	//create_dbgpclog_window();
 }
 
-int enter_gtk_debugger(int context)
+int gtk_debugger_enter(int context)
 {
 	gchar *path;
 
@@ -67,7 +59,7 @@ int enter_gtk_debugger(int context)
     case DBG_TRACE:
         break;
     case DBG_BREAK:
-        display_dbgcause_dbox();
+        dbgcause1_display_dbox();
         break;
     }
 
@@ -77,15 +69,29 @@ int enter_gtk_debugger(int context)
 	g_free(path);
 
     // refresh debugger windows (open debugger, if not already opened)
-	dbgw.regs = display_dbgregs_window();
-	dbgw.mem  = display_dbgmem_window();
-	dbgw.bkpts = display_dbgbkpts_window();
-    dbgw.pclog = display_dbgpclog_window();
-	dbgw.code = display_dbgcode_window();	// the last has focus
+	dbgw.regs = dbgregs_display_window();
+	dbgw.mem  = dbgmem_display_window();
+	dbgw.bkpts = dbgbkpts_display_window();
+    dbgw.pclog = dbgpclog_display_window();
+	dbgw.code = dbgcode_display_window();	// the last has focus
 
     dbg_on = !0;
 
 	return 0;
+}
+
+void gtk_debugger_refresh(void)
+{
+	if(dbgs.regs)
+		dbgregs_refresh_window();
+	if(dbgs.mem)
+		dbgmem_refresh_window();
+	if(dbgs.bkpts)
+		dbgbkpts_refresh_window();
+	if(dbgs.pclog)
+		dbgpclog_refresh_window();
+	if(dbgs.code)
+		dbgcode_refresh_window();
 }
 
 void set_other_windows_sensitivity(int state)
@@ -106,7 +112,7 @@ on_registers1_activate                 (GtkMenuItem     *menuitem,
     if(dbgs.regs)
         gtk_widget_hide(dbgw.regs);
   	else
-        display_dbgregs_window();
+        dbgregs_display_window();
 }
 
 
@@ -117,7 +123,7 @@ on_breakpoints1_activate               (GtkMenuItem     *menuitem,
     if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
         gtk_widget_hide(dbgw.bkpts);
   	else
-        display_dbgbkpts_window();
+        dbgbkpts_display_window();
 }
 
 
@@ -128,7 +134,7 @@ on_memory1_activate                    (GtkMenuItem     *menuitem,
     if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
         gtk_widget_hide(dbgw.mem);
   	else
-        display_dbgmem_window();
+        dbgmem_display_window();
 }
 
 GLADE_CB void
@@ -138,7 +144,7 @@ on_pc_log1_activate                    (GtkMenuItem     *menuitem,
     if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
         gtk_widget_hide(dbgw.pclog);
   	else
-        display_dbgpclog_window();
+        dbgpclog_display_window();
 }
 
 
@@ -319,3 +325,4 @@ on_dbgbkpts_window_show                (GtkWidget       *widget,
 {
     dbgs.bkpts = !0;
 }
+

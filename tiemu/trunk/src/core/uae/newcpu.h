@@ -94,6 +94,12 @@ extern float calibrate_pcounter(void);
 
 extern void MC68000_oldstep(UWORD opcode);
 
+static INLINE_DECLARATION UWORD curriword(void)
+{
+	UWORD r = (((UWORD)regs.pc_p[0])<<8) | regs.pc_p[1];
+	return r;
+}
+
 static INLINE_DECLARATION UWORD nextiword(void)
 {
   UWORD r = (((UWORD)regs.pc_p[0])<<8) | regs.pc_p[1];

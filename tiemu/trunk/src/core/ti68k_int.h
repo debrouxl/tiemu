@@ -42,17 +42,6 @@ int ti68k_reset(void);
 int ti68k_exit(void);
 int ti68k_restart(void);
 
-// Debugging
-int ti68k_debug_get_pc(void);
-uint32_t ti68k_debug_disassemble(uint32_t addr, char **line);
-int ti68k_debug_break(void);
-int ti68k_debug_trace(void);
-int ti68k_debug_step(void);
-int ti68k_debug_step_over(void);
-int ti68k_debug_skip(uint32_t next_pc);
-int ti68k_debug_do_instructions(int n);
-int ti68k_debug_load_symbols(const char *filename);
-
 // Link
 int ti68k_linkport_send_file(const char *filename);
 int ti68k_linkport_reconfigure(void);
@@ -74,6 +63,7 @@ uint8_t* ti68k_get_real_address(uint32_t addr);
 #include "registers.h"
 #include "state.h"
 #include "type2str.h"
+#include "debug.h"
 
 // Errors
 int ti68k_error_get(int err_num, char *error_msg);

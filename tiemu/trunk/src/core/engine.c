@@ -44,6 +44,7 @@
 #include "intl.h"
 #include "engine.h"
 #include "ti68k_int.h"
+#include "m68k.h"
 
 #if defined(__LINUX__)
 #define sleep(x)	usleep(1000 * (x))
@@ -102,7 +103,8 @@ gpointer ti68k_engine(gpointer data)
         g_timer_start(tmr);
 		
 		// Run emulation core
-		res = ti68k_debug_do_instructions(cpu_instr);
+		//res = ti68k_debug_do_instructions(cpu_instr);
+		res = hw_m68k_run(cpu_instr);
 		if(res) 
         {  
 			// a bkpt has been encountered: stop engine

@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
 
-GtkWidget* create_dbgpclog_window(void);
-GtkWidget* display_dbgpclog_window(void);
+GtkWidget* dbgpclog_create_window(void);
+GtkWidget* dbgpclog_display_window(void);
+void dbgpclog_refresh_window(void);

@@ -35,9 +35,8 @@
 #include "paths.h"
 #include "support.h"
 #include "ti68k_int.h"
-#include "dbg_vectors.h"
-#include "dbg_data.h"
 #include "struct.h"
+#include "dbg_all.h"
 
 
 enum { 
@@ -218,7 +217,7 @@ static gint already_open = 0;
 /*
 	Display registers window
 */
-GtkWidget* create_dbgbkpts_window(void)
+GtkWidget* dbgbkpts_create_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -248,18 +247,27 @@ GtkWidget* create_dbgbkpts_window(void)
 	return dbox;
 }
 
-GtkWidget* display_dbgbkpts_window(void)
+GtkWidget* dbgbkpts_display_window(void)
 {
     static GtkWidget *wnd = NULL;
 
 	if(!already_open)
-		wnd = create_dbgbkpts_window();
+		wnd = dbgbkpts_create_window();
     gtk_widget_show(wnd);
 
 	gtk_list_store_clear(store);
     clist_populate(store);
 
 	return wnd;
+}
+
+void dbgbkpts_refresh_window(void)
+{
+	if(dbgs.bkpts)
+	{
+		gtk_list_store_clear(store);
+		clist_populate(store);
+	}
 }
 
 
@@ -351,7 +359,7 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
         g_strfreev(row_text);
     }
 
-    display_dbgbkpts_window();
+    dbgbkpts_display_window();
 }
 
 
@@ -376,7 +384,7 @@ GLADE_CB void
 dbgbkpts_data_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	display_dbgdata_dbox();
+	dbgdata_display_dbox();
 }
 
 
@@ -385,7 +393,7 @@ GLADE_CB void
 dbgbkpts_vector_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	display_dbgvectors_dbox();
+	dbgvectors_display_dbox();
 }
 
 

@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
 
 
-gint display_dbgvectors_dbox();
+gint dbgvectors_display_dbox();
+void dbgvectors_refresh_window(void);

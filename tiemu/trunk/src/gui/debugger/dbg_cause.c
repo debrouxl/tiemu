@@ -33,7 +33,7 @@
 #include "paths.h"
 #include "ti68k_int.h"
 
-gint display_dbgcause1_dbox()
+gint dbgcause1_display_dbox()
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -96,7 +96,7 @@ gint display_dbgcause1_dbox()
 	return 0;
 }
 
-gint display_dbgcause2_dbox()
+gint dbgcause2_display_dbox()
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -178,9 +178,9 @@ gint display_dbgcause_dbox()
 
 	// exception or code/mem ?
 	if(type == BK_TYPE_EXCEPTION)
-		display_dbgcause2_dbox();
+		dbgcause2_display_dbox();
 	else
-		display_dbgcause1_dbox();
+		dbgcause1_display_dbox();
 
 	return 0;
 }

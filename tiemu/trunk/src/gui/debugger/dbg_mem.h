@@ -1,7 +1,8 @@
 #include <gtk/gtk.h>
 
 
-GtkWidget* create_dbgmem_window(void);
-GtkWidget* display_dbgmem_window(void);
+GtkWidget* dbgmem_create_window(void);
+GtkWidget* dbgmem_display_window(void);
+void dbgmem_refresh_window(void);
 
-gint display_dbgmem_dbox(int *addr);
+gint display_dbgmem_dbox(uint32_t *addr);

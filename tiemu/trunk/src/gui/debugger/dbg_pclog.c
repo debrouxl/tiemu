@@ -33,10 +33,8 @@
 #include "paths.h"
 #include "support.h"
 #include "ti68k_int.h"
-#include "dbg_bkpts.h"
-#include "dbg_regs.h"
-#include "dbg_mem.h"
 #include "struct.h"
+#include "dbg_all.h"
 
 enum { 
 	    COL_ADDR
@@ -126,7 +124,7 @@ static gint already_open = 0;
 /*
 	Display registers window
 */
-GtkWidget* create_dbgpclog_window(void)
+GtkWidget* dbgpclog_create_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -156,15 +154,24 @@ GtkWidget* create_dbgpclog_window(void)
 	return dbox;
 }
 
-GtkWidget* display_dbgpclog_window(void)
+GtkWidget* dbgpclog_display_window(void)
 {
     static GtkWidget *wnd = NULL;
 
 	if(!already_open)
-		wnd = create_dbgpclog_window();
+		wnd = dbgpclog_create_window();
     gtk_widget_show(wnd);
 
 	clist_refresh(store);
 
 	return wnd;
 }
+
+void dbgpclog_refresh_window(void)
+{
+	if(dbgs.pclog)
+	{
+		clist_refresh(store);
+	}
+}
+

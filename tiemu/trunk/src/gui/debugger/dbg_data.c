@@ -39,7 +39,7 @@
 
 static GladeXML *xml;
 
-gint display_dbgdata_dbox(void)
+gint dbgdata_display_dbox(void)
 {
 	//GladeXML *xml;
 	GtkWidget *dbox;
@@ -131,7 +131,7 @@ loop:
 			ti68k_bkpt_set_range(start, stop, mode);
 		}
 
-		display_dbgbkpts_window();
+		dbgbkpts_display_window();
 
 		break;
 	default:

@@ -1,5 +1,5 @@
 #include <gtk/gtk.h>
 
 
-gint display_dbgdata_dbox();
-gint refresh_dbgdata_dbox();
+gint dbgdata_display_dbox();
+gint dbgdata_refresh_dbox();
