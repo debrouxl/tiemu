@@ -137,6 +137,7 @@ gint display_tifile_dbox()
     switch(tihw.calc_type) {
     case TI92:
         ext = "*.92?";
+		break;
     case TI89:
         ext = "*.89?";
         break;

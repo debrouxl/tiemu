@@ -87,6 +87,8 @@ const gchar *create_fsel(gchar *dirname, gchar *ext)
 
 const gchar *create_fsel2(gchar *dirname, gchar *ext, gboolean save)
 {
+	return create_fsel(dirname, ext);
+	/*
 	GtkWidget *dialog;
 	GtkFileFilter *filter;
     
@@ -110,6 +112,7 @@ const gchar *create_fsel2(gchar *dirname, gchar *ext, gboolean save)
 	gtk_widget_destroy (dialog);
 
 	return filename;
+	*/
 }
 
 
