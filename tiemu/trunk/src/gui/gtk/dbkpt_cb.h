@@ -22,4 +22,8 @@ void
 on_data_bkpts_dbox_destroy             (GtkWidget       *widget,
                                         gpointer         user_data);
 
+void 
+on_dbkpt_clist_selection_changed (GtkTreeSelection *sel, 
+				  gpointer user_data);
+
 #endif /* !DBKPT_CB_H */

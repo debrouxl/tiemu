@@ -20,31 +20,42 @@
 
 extern DATA_BKPT db;
 
+static gint sel_row = -1;
+
 gint display_data_bkpts_dbox(void)
 {
-#if 0 /* FUCKED */
   GtkWidget *dbox;
   GtkWidget *clist;
-  GtkStyle *style;
-  GdkFont *fixed_font;
-  gchar *row_text[3];
+  GtkListStore *list;
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+  GtkTreeSelection *sel;
   gint i;
   gchar buffer[MAXCHARS];
-  gint cw;
   DATA_BKPT *s;
 
+  gchar *text[4] = { _("Id"), _("Type"),
+		     _("Mode"), _("Address") };
+
   dbox = create_data_bkpts_dbox(); 
-  data_bkpt_dbox = dbox; /* ahem ? */
+  data_bkpt_dbox = dbox;
 
   clist = lookup_widget(dbox, "clist4");
-  gtk_clist_clear((GtkCList *)clist);
 
-  fixed_font = gdk_font_load("-adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1");
-  style = gtk_style_new();
-  style->font = fixed_font;
-  cw = gdk_char_width(fixed_font, 'A');
+  /* Set up the GtkTreeView */
+  list = gtk_list_store_new(4, G_TYPE_INT, G_TYPE_STRING,
+			    G_TYPE_STRING, G_TYPE_STRING);
+  model = GTK_TREE_MODEL(list);
+  
+  gtk_tree_view_set_model(GTK_TREE_VIEW(clist), model); 
+  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(clist), TRUE); 
+  
+  for (i = 0; i < 6; i++)
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), i, text[i],
+						gtk_cell_renderer_text_new(),
+						"text", 0, NULL);
+  gtk_list_store_clear(list); 
 
-  for(i=0; i<3; i++) row_text[i] = NULL;
   for(i=0; i<g_list_length(bkpt_access_list); i++)
     {
       s = (DATA_BKPT *)g_list_nth_data(bkpt_access_list, i);
@@ -66,7 +77,7 @@ gint display_data_bkpts_dbox(void)
 	sprintf(buffer, "Write only");
       else
 	sprintf(buffer, "Read & Write");
-      row_text[0] = g_strdup(buffer);
+      text[0] = g_strdup(buffer);
 
       if(s->mode & BK_BYTE)
 	sprintf(buffer, "Byte");
@@ -76,47 +87,45 @@ gint display_data_bkpts_dbox(void)
 	sprintf(buffer, "Long");
       else
 	sprintf(buffer, "Byte");
-      row_text[1] = g_strdup(buffer);
-      row_text[2] = g_strdup_printf("%06X", s->address);
+      text[1] = g_strdup(buffer);
+      text[2] = g_strdup_printf("%06X", s->address);
 
-      gtk_clist_append((GtkCList *)clist, row_text);
-      //DISPLAY("set row data: %i\n", s->id);
-      gtk_clist_set_row_data((GtkCList *)clist, i, GINT_TO_POINTER(s->id));
-      gtk_clist_set_row_style((GtkCList *)clist, i, style);
+      gtk_list_store_append(list, &iter);
+      gtk_list_store_set(list, &iter, 0, s->id,
+			 1, text[0], 2, text[1],
+			 3, text[2], -1);
     }
   for(i=0; i<3; i++) 
-    g_free(row_text[i]);
+    g_free(text[i]);
   
-  gtk_widget_show_all(dbox);
-#endif /* 0 */
+  sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(clist));
+  gtk_tree_selection_set_mode(sel, GTK_SELECTION_SINGLE);
 
+  gtk_widget_show_all(dbox);
+
+  g_signal_connect(G_OBJECT(sel), "changed",
+                   G_CALLBACK(on_dbkpt_clist_selection_changed), NULL);
+  
   return 0;
 }
 
-#if 0 /* FUCKED */
-/* A row of the Data Breakpoint DBox has been selected */
-void
-on_clist4_select_row                   (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-  data_bkpt_selected_row = row;
-}
+void 
+on_dbkpt_clist_selection_changed (GtkTreeSelection *sel, 
+				  gpointer user_data)
+{ 
+  GList *paths;
+  GtkTreeModel *model;
 
+  paths = gtk_tree_selection_get_selected_rows(sel, &model);
 
-/* A row of the Data Breakpoint DBox has been unselected */
-void
-on_clist4_unselect_row                 (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-  data_bkpt_selected_row = -1;
+  if (paths != NULL)
+    sel_row = *gtk_tree_path_get_indices(g_list_nth_data(paths, 0));
+  else
+    sel_row = -1;
+
+  g_list_foreach(paths, (GFunc)gtk_tree_path_free, NULL);
+  g_list_free(paths);
 }
-#endif /* 0 */
 
 
 /* Add button of the 'Data breakpoints dialog box' */
@@ -134,20 +143,28 @@ void
 on_button_del_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
-#if 0 /* FUCKED */
   gint id;
   GtkWidget *clist;
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+  GtkTreePath *path;
   int i;
   DATA_BKPT *s = NULL;
 
-  clist = lookup_widget(GTK_WIDGET(button), "clist1");
-
-  if(data_bkpt_selected_row != -1)
+  if(sel_row != -1)
     {
+      clist = lookup_widget(GTK_WIDGET(button), "clist1");
+      
+      model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
+      path = gtk_tree_path_new_from_indices(sel_row, -1);
+      gtk_tree_model_get_iter(model, &iter, path);
+      gtk_tree_path_free(path);
+
       /* Remove data breakpoint */
       // get id associated with the row
-      id = GPOINTER_TO_INT(gtk_clist_get_row_data((GtkCList *)clist, selected_row));
-      //DISPLAY("Selected row: %i\n", data_bkpt_selected_row);
+      gtk_tree_model_get(model, &iter,
+			 0, &id, -1);
+      //DISPLAY("Selected row: %i\n", sel_row);
       //DISPLAY("id: %i\n", id);
       
       // retrieve structure associated with id
@@ -164,9 +181,8 @@ on_button_del_clicked                  (GtkButton       *button,
       // delete the right id
       ti68k_delBreakpointAccess(s->id, s->mode);
       bkpt_access_list = g_list_remove(bkpt_access_list, s);
-      gtk_clist_remove(GTK_CLIST(clist), selected_row);
+      gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
     }
-#endif /* 0 */
 }
 
 /* Ok button of the 'Data breakpoints dialog box' */

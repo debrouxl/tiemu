@@ -39,7 +39,7 @@ static GtkWidget *code_clist;
 static GtkWidget *mem_clist;
 static GtkWidget *stack_clist;
 static GtkWidget *reg_text;
-static GtkWidget *statusbar; // statusbar
+static GtkWidget *statusbar;
 
 gint refresh_register_dbox(void);
 gint refresh_code_dbox(void);
@@ -80,7 +80,6 @@ gint display_debugger_dbox(void)
 
 /* Local persistant variables */
  GtkWidget *data_bkpt_dbox = NULL;
- gint data_bkpt_selected_row = -1;
  gint bkpt_encountered = 0;
  gint data_addr = 0x000000;
  gint selected_row = -1;
