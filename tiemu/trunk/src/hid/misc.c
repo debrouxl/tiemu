@@ -34,8 +34,10 @@
 */
 int version(void)
 {
-  fprintf(stdout, "TiEmu II - Version %s, (C) Romain Lievin & Thomas Corvazier  2000-2001, Romain Lievin 2001-2002\n",
-          TIEMU_VERSION);
+  fprintf(stdout, "TiEmu II - Version %s\n", TIEMU_VERSION);
+  fprintf(stdout, "  (C) Romain Lievin & Thomas Corvazier  2000-2001\n");
+  fprintf(stdout, "  (C) Romain Lievin 2001-2003\n");
+  fprintf(stdout, "  (C) Julien Blache 2003\n");
   fprintf(stdout, "THIS PROGRAM COMES WITH ABSOLUTELY NO WARRANTY\n");
   fprintf(stdout, "PLEASE READ THE DOCUMENTATION FOR DETAILS\n");
 
@@ -51,7 +53,7 @@ int help(void)
 
   version();
 
-  fprintf(stdout, "usage: gtktiemu [-options] [filename]\n");
+  fprintf(stdout, "usage: tiemu [-options] [filename]\n");
   fprintf(stdout, "\n");
   fprintf(stdout, "-h, --help    display this information page and exit\n");
   fprintf(stdout, "-v, --version display the version information and exit\n");
