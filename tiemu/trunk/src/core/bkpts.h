@@ -32,15 +32,13 @@
 #include <glib.h>
 #include <stdint.h>
 
-/*
-    To remove...
-*/
+/* Types */
+
 typedef struct
 {
   uint32_t	 val1;
   uint32_t 	 val2;
 } ADDR_RANGE;
-
 
 /* Constants */
 
@@ -87,46 +85,6 @@ typedef enum {
     BK_CAUSE_VECTOR, BK_CAUSE_TRAP, BK_CAUSE_AUTOINT
 } Ti68kBkptCause;
 
-/*
-  Variables
-*/
-/*
-// Memory
-extern int breakMode;
-extern int breakType;
-extern int breakId;
-
-typedef struct
-{
-	int	mode;
-	int	type;
-	int id;
-} MEM_BKPT;
-
-extern MEM_BKPT mem_bkpt;
-
-extern GList *listBkptAsRB;
-extern GList *listBkptAsWB;
-extern GList *listBkptAsRW;
-extern GList *listBkptAsWW;
-extern GList *listBkptAsRL;
-extern GList *listBkptAsWL;
-
-extern GList *listBkptAsRgR;
-extern GList *listBkptAsRgW;
-
-// Code
-extern GList *listBkptAddress;
-
-// Vectors, AutoInts and Traps
-extern int listBkptVector[16];
-extern int listBkptAutoint[8];
-extern int listBkptTrap[16];
-
-extern int nBkptVector;
-extern int nBkptAutoint;
-extern int nBkptTrap;
-*/
 /* Functions */
 
 int ti68k_bkpt_set_address(int address);
@@ -151,7 +109,5 @@ void ti68k_bkpt_clear_access_range(void);
 void ti68k_bkpt_clear_vector(void);
 void ti68k_bkpt_clear_autoint(void);
 void ti68k_bkpt_clear_trap(void);
-
-
 
 #endif

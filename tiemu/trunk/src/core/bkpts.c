@@ -38,39 +38,6 @@
 #include "ti68k_def.h"
 
 
-/* Variables */
-/*
-// Memory
-int breakType = 0;
-int breakMode = 0;
-int breakId   = 0;
-
-GList* listBkptAsRB = NULL;
-GList* listBkptAsWB = NULL;
-GList* listBkptAsRW = NULL;
-GList* listBkptAsWW = NULL;
-GList* listBkptAsRL = NULL;
-GList* listBkptAsWL = NULL;
-
-GList* listBkptAsRgR = NULL;
-GList* listBkptAsRgW = NULL;
-
-// Code
-GList *listBkptAddress  = NULL;
-
-// Vectors & Traps
-int listBkptVector[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-int nBkptVector = 0;
-
-int listBkptTrap[16]   = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-int nBkptTrap = 0; 
-
-int listBkptAutoint[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-int nBkptAutoint = 0;
-*/
-/* Functions */
-
-
 int ti68k_bkpt_set_address(int address) 
 {
     bkpts.listBkptAddress = g_list_append(bkpts.listBkptAddress, GINT_TO_POINTER(address));
