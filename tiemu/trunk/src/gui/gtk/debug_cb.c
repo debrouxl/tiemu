@@ -49,6 +49,7 @@ gint refresh_memory_dbox(void);
 static void
 setup_clist(GtkWidget *clist, gchar *title[], int n)
 {
+  /* The ONLY POSSIBLE VALUES of n are 2 and 3 */
   GtkListStore *list;
   GtkTreeModel *model;
   int i;
@@ -299,7 +300,6 @@ gint refresh_breakpoints(GtkWidget *widget)
     }
  
   /* Fill the clist */
-  gtk_clist_freeze((GtkCList *)clist);
   //printf("list length: %i, %p\n", g_list_length(bkpt_address_list), bkpt_address_list);
   for(i=0; i<g_list_length(bkpt_address_list); i++)
     {
@@ -319,9 +319,6 @@ gint refresh_breakpoints(GtkWidget *widget)
 	      gtk_clist_set_pixmap((GtkCList *)clist, j, 0, 
 				   pixmap_bkpt, mask_bkpt);
 	    }
-	  else
-	    {
-	    }
 	  //fprintf(stderr, "<%06X %06X>\n", addr2, getPcRegister());
 	}
     }
@@ -340,8 +337,6 @@ gint refresh_breakpoints(GtkWidget *widget)
   gdk_pixmap_unref(pixmap_run);
   gdk_pixmap_unref(pixmap_bkpt);
   gdk_pixmap_unref(pixmap_void);
-
-  gtk_clist_thaw((GtkCList *)clist);  
 #endif /* 0 */
 
   return 0;
@@ -351,73 +346,50 @@ gint refresh_code_dbox(void)
 {
 #if 0 /* FUCKED */
   GtkWidget *clist = code_clist;
-  gchar *row_text[3];
+  gchar *text[3];
   gint i, k;
   gint addr = ti68k_getPcRegister();
   gint offset;
   gchar buffer[MAXCHARS];
-  GtkStyle *style;
-  GdkFont *fixed_font;
-  gint cw;
   gint row;
 
-  /* Check if necessary to refresh the clist box */
-  if(clist != NULL)
-    {
-      //fprintf(stderr, "PC: %06X\n", getPcRegister());
-      row = gtk_clist_find_row_from_data((GtkCList *)clist, 
-					 GINT_TO_POINTER(ti68k_getPcRegister()));
-      //fprintf(stdout, "row: %i\n", row);
-      if(row != -1)
-	{ // row not found: address is outside, reload disasm
-	  refresh_breakpoints(debugger_dbox);
-	  return -1;
-	}
+  //fprintf(stderr, "PC: %06X\n", getPcRegister());
+  row = gtk_clist_find_row_from_data((GtkCList *)clist, 
+				     GINT_TO_POINTER(ti68k_getPcRegister()));
+  //fprintf(stdout, "row: %i\n", row);
+  if(row != -1)
+    { // row not found: address is outside, reload disasm
+      refresh_breakpoints(debugger_dbox);
+      return -1;
     }
 
-  /* Load a font */
-  //fixed_font = gdk_font_load ("-misc-fixed-medium-r-*-*-*-100-*-*-*-*-*-*");
-  fixed_font = gdk_font_load("-adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1");
-
-  style = gtk_style_new();
-  style->font = fixed_font;
-  cw = gdk_char_width(fixed_font, 'A');
-
-  gtk_clist_set_column_width((GtkCList *)clist, 0, 1*cw);
-  gtk_clist_set_column_width((GtkCList *)clist, 1, 10*cw);
-  gtk_clist_set_column_width((GtkCList *)clist, 2, 24*cw);
-
   /* Fill the clist */
-  gtk_clist_freeze((GtkCList *)clist);
+
   for(i=0; i<options.code_lines; i++)
     gtk_clist_remove((GtkCList *)clist, 0);
-  for(i=0; i<3; i++) row_text[i] = NULL;
   for(i=0; i<options.code_lines; i++)
     {
       offset = ti68k_disasm(addr, buffer);
-      row_text[1] = g_strdup(buffer);
-      row_text[1][9] = '\0';
-      row_text[2] = g_strdup(buffer+10);
+      text[1] = g_strdup(buffer);
+      text[1][9] = '\0';
+      text[2] = g_strdup(buffer+10);
  
       gtk_clist_append((GtkCList *)clist, row_text);
       gtk_clist_set_row_data((GtkCList *)clist, i, 
 			     GINT_TO_POINTER(addr)); // add addr to clist data
       //fprintf(stderr, "%i: %06X\n", i, addr);
-      gtk_clist_set_row_style((GtkCList *)clist, i, style);
 
       addr += offset;
 
       for(k=0; k<3; k++)
 	{
-	  g_free(row_text[k]);
+	  g_free(text[k]);
 	} 
     }
 
   /* Refresh breakpoints */
   //printf("clist pointer: %p\n", clist);
   refresh_breakpoints(debugger_dbox);
-
-  gtk_clist_thaw((GtkCList *)clist);
 #endif /* 0 */
 
   return 0;
@@ -430,74 +402,41 @@ gint refresh_memory_dbox(void)
 {
 #if 0 /* FUCKED */
   GtkWidget *clist = mem_clist;
-  GtkStyle *style;
-  GdkColormap *cmap;
-  GdkColor colour;
-  GdkFont *fixed_font;
-  gchar *row_text[3];
+  gchar *text[3];
   gint i, j, k;
   UBYTE *ti_ram = (UBYTE *)ti68k_getRamPtr();
-  gint cw;
   gint addr = data_addr;
 
-  /* Load the colormap */
-  cmap = gdk_colormap_get_system();
-  colour.red = 0xffff;
-  colour.green = 0;
-  colour.blue = 0;
-  if (!gdk_color_alloc(cmap, &colour)) 
-    {
-      g_error("couldn't allocate colour");
-    }
-  
-  /* Load a font */
-  //fixed_font = gdk_font_load ("-misc-fixed-medium-r-*-*-*-100-*-*-*-*-*-*");
-  fixed_font = gdk_font_load("-adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1");
-  style = gtk_style_new();
-  style->font = fixed_font;
-  //style->text[GTK_STATE_NORMAL] = colour;
-  cw = gdk_char_width(fixed_font, 'A');
-
-  gtk_clist_set_column_width((GtkCList *)clist, 0, 7*cw);
-  gtk_clist_set_column_width((GtkCList *)clist, 1, 25*cw);
-  gtk_clist_set_column_width((GtkCList *)clist, 2, 9*cw);
-
   /* Fill the clist */
-  gtk_clist_freeze((GtkCList *)clist);  
   for(i=0; i<options.mem_lines; i++)
     gtk_clist_remove((GtkCList *)clist, 0);
-  for(j=0; j<3; j++) 
-    row_text[j] = NULL;
   for(j=0; j<options.mem_lines; j++, addr+=8)
     {
-      row_text[0] = g_strdup_printf("%06X", addr);
-      row_text[1] = g_strdup_printf("%02X %02X %02X %02X %02X %02X %02X %02X ",
-				    ti_ram[addr+0], ti_ram[addr+1],
-				    ti_ram[addr+2], ti_ram[addr+3],
-				    ti_ram[addr+4], ti_ram[addr+5],
-				    ti_ram[addr+6], ti_ram[addr+7]);
+      text[0] = g_strdup_printf("%06X", addr);
+      text[1] = g_strdup_printf("%02X %02X %02X %02X %02X %02X %02X %02X ",
+				ti_ram[addr+0], ti_ram[addr+1],
+				ti_ram[addr+2], ti_ram[addr+3],
+				ti_ram[addr+4], ti_ram[addr+5],
+				ti_ram[addr+6], ti_ram[addr+7]);
       
-      row_text[2] = g_strdup_printf("%c%c%c%c%c%c%c%c", 
-				    isprint(ti_ram[addr+0]) ? ti_ram[addr+0] : '.',
-				    isprint(ti_ram[addr+1]) ? ti_ram[addr+1] : '.',
-				    isprint(ti_ram[addr+2]) ? ti_ram[addr+2] : '.',
-				    isprint(ti_ram[addr+3]) ? ti_ram[addr+3] : '.',
-				    isprint(ti_ram[addr+4]) ? ti_ram[addr+4] : '.',
-				    isprint(ti_ram[addr+5]) ? ti_ram[addr+5] : '.',
-				    isprint(ti_ram[addr+6]) ? ti_ram[addr+6] : '.',
-				    isprint(ti_ram[addr+7]) ? ti_ram[addr+7] : '.');
-
+      text[2] = g_strdup_printf("%c%c%c%c%c%c%c%c", 
+				isprint(ti_ram[addr+0]) ? ti_ram[addr+0] : '.',
+				isprint(ti_ram[addr+1]) ? ti_ram[addr+1] : '.',
+				isprint(ti_ram[addr+2]) ? ti_ram[addr+2] : '.',
+				isprint(ti_ram[addr+3]) ? ti_ram[addr+3] : '.',
+				isprint(ti_ram[addr+4]) ? ti_ram[addr+4] : '.',
+				isprint(ti_ram[addr+5]) ? ti_ram[addr+5] : '.',
+				isprint(ti_ram[addr+6]) ? ti_ram[addr+6] : '.',
+				isprint(ti_ram[addr+7]) ? ti_ram[addr+7] : '.');
+      
       gtk_clist_append((GtkCList *)clist, row_text);
-      gtk_clist_set_row_style((GtkCList *)clist, j, style);
 
       for(k=0; k<3; k++)
 	{
 	  //fprintf(stderr, "<%i %p %s>\n", k, row_text[k], row_text[k]); // bug here !!!
-	  g_free(row_text[k]);
+	  g_free(text[k]);
 	}
     }
-  
-  gtk_clist_thaw((GtkCList *)clist);
 #endif /* 0 */
 
   return 0;
@@ -510,46 +449,27 @@ gint refresh_stack_dbox(void)
 {
 #if 0 /* FUCKED */
   GtkWidget *clist = stack_clist;
-  GtkStyle *style;
-  GdkFont *fixed_font;
-  gchar *row_text[2];
+  gchar *text[2];
   gint i, k;
   gint sp = ti68k_getSpRegister();
   UWORD *ti_ram = (UWORD *)ti68k_getRamPtr();
   gint addr;
-  gint cw;
-
-  /* Load a font */
-  //fixed_font = gdk_font_load ("-misc-fixed-medium-r-*-*-*-100-*-*-*-*-*-*");
-  fixed_font = gdk_font_load("-adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1");
-  style = gtk_style_new();
-  style->font = fixed_font;
-  cw = gdk_char_width(fixed_font, 'A');
-
-  gtk_clist_set_column_width((GtkCList *)clist, 0, 8*cw);
-  gtk_clist_set_column_width((GtkCList *)clist, 1, 10*cw);
 
   /* Fill the clist */
-  gtk_clist_freeze((GtkCList *)clist);
   for(i=0; i<options.stack_lines; i++)
     gtk_clist_remove((GtkCList *)clist, 0);
-  for(i=0; i<2; i++) 
-    row_text[i] = NULL;
   for(i=0, addr = sp; i<10; i++, addr += 2)
     {
-      row_text[0] = g_strdup_printf("%06X:", addr);
-      row_text[1] = g_strdup_printf("%04X", ti_ram[addr]);
+      text[0] = g_strdup_printf("%06X:", addr);
+      text[1] = g_strdup_printf("%04X", ti_ram[addr]);
       
       gtk_clist_append((GtkCList *)clist, row_text);
-      gtk_clist_set_row_style((GtkCList *)clist, i, style);
     
       for(k=0; k<2; k++)
 	{
-	  g_free(row_text[k]);
+	  g_free(text[k]);
 	}
     }
-      
-  gtk_clist_thaw((GtkCList *)clist);
 #endif /* 0 */
 
   return 0;
