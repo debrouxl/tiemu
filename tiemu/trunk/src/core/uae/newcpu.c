@@ -589,8 +589,8 @@ void op_illg(ULONG opcode)
       return;
     }
   
-  fprintf(stderr, "UAE: illegal instruction: %04x at %08x\n", opcode, 
-	  get_real_address(regs.pc));
+  fprintf(stderr, "UAE: illegal instruction: %04x at %08x (intel = %08x) %08x\n", opcode, regs.pc,
+	  get_real_address(regs.pc), m68k_getpc());
   Exception(4);
 }
 

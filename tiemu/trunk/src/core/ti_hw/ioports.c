@@ -46,9 +46,9 @@ int hw_io_init(void)
 	memset(tihw.io2, 0x14, sizeof(tihw.io2));
 
 	tihw.io[0x00] = 0x00;
-	tihw.io[0x01] = 0x04 | (tihw.ti92v1 ? 1 : 0);
+	tihw.io[0x01] = 0x04;   // | (tihw.ti92v1 ? 1 : 0);
 	tihw.io[0x03] = 0xff;
-	//tihw.io[0x05] = 0x??;
+	tihw.io[0x05] = 0x00;
 	tihw.io[0x0c] = 0x8d;
 	tihw.io[0x0d] = 0x40;
 	tihw.io[0x0e] = 0xff;
@@ -95,7 +95,8 @@ void io_put_byte(CPTR adr, UBYTE arg)
         break;
         case 0x01:	// rw <.....2.0>
 			// clr: interleave RAM (allows use of 256K of RAM)
-			//mem_mask[0] = bit_tst(arg,0) ? 0x1fffff : 0x3fffff;
+            //if(tihw.hw_type == 1)
+			//    mem_mask[0] = bit_tst(arg,0) ? 0x1fffff : 0x3fffff;
 
 			// set: protected memory violation triggered when memory below [$000120] is written
 	    break;
@@ -107,14 +108,19 @@ void io_put_byte(CPTR adr, UBYTE arg)
         break;
         case 0x05:	// -w <...43210>
         	// set: 000000..1FFFFF mapped to 200000..3FFFFF
-			if(bit_tst(arg,3))
+			if(bit_tst(arg,3) && (tihw.calc_type == TI92))
 			{
 				//mem_tab[2] = mem_tab[0];
 				//mem_tab[3] = mem_tab[1];
-			}
+            } else
+            {
+                //mem_tab[2] = mem_tab[0];
+				//mem_tab[3] = mem_tab[1];
+            }
             
 			// writing to this register will stop the system oscillator
-			if (!(arg&0x10)) specialflags |= SPCFLAG_STOP; 
+			if (!(arg&0x10) && (tihw.calc_type != TI92)) 
+                specialflags |= SPCFLAG_STOP; 
             break;
         case 0x06: 
 		case 0x07: 
@@ -230,14 +236,15 @@ UBYTE io_get_byte(CPTR adr)
 
 			// something to do with keyboard
             v |= 4;
+        break;
         case 0x01:	// rw <.....2.0>
-			// protected memory violation triggered when memory below [$000120] is written
+        break;
         case 0x02:
         	return 0x14;
+        break;
         case 0x03:	// -w <.654.210>
         break;
         case 0x04:	// ??
-			// interleave RAM
         break;        
         case 0x05:	// -w <...43210>
         break;

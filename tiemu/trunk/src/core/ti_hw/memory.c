@@ -47,7 +47,7 @@ const int rom_base[] = { 0x400000, 0x200000, 0x400000, 0x800000 };
 const int io_size = 32;
 
 UBYTE *mem_tab[16];     // 1MB per banks
-ULONG mem_mask[16];		// pseudo chip-select
+ULONG mem_mask[16];		// pseudo chip-select (allow wrapping / ghost space)
 
 // 000000-0fffff : RAM (128 or 256 KB)
 // 100000-1fffff : 
@@ -151,23 +151,32 @@ int hw_mem_init(void)
     mem_tab[0] = tihw.ram;
     mem_mask[0] = tihw.ram_size-1;
 
-    mem_tab[1] = tihw.ram;
-    mem_mask[1] = tihw.ram_size-1;
-
     // map ROM (internal)
 	if(tihw.rom_internal)
 	{
-		mem_tab[2] = tihw.rom;
-		mem_mask[2] = 0x1fffff; //MIN(tihw.rom_size, 1*MB)-1;
+        if(tihw.rom_size > 0*MB)
+        {
+		    mem_tab[2] = tihw.rom;
+		    mem_mask[2] = MIN(tihw.rom_size, 1*MB)-1;
+        }
 
-		mem_tab[3] = tihw.rom + 0x100000;
-		mem_mask[3] = 0x1fffff; //MIN(tihw.rom_size - 1*MB, 1*MB)-1;
+        if(tihw.rom_size > 1*MB)
+        {
+		    mem_tab[3] = tihw.rom + 0x100000;
+		    mem_mask[3] = MIN(tihw.rom_size - 1*MB, 1*MB)-1;
+        }
 
-        mem_tab[4] = tihw.rom + 0x200000;
-		mem_mask[4] = 0x1fffff; //MIN(tihw.rom_size - 2*MB, 1*MB)-1;
+        if(tihw.rom_size > 2*MB)
+        {
+            mem_tab[4] = tihw.rom + 0x200000;
+		    mem_mask[4] = MIN(tihw.rom_size - 2*MB, 1*MB)-1;
+        }
 
-        mem_tab[5] = tihw.rom + 0x300000;
-		mem_mask[5] = 0x1fffff; //MIN(tihw.rom_size - 3*MB, 1*MB)-1;
+        if(tihw.rom_size > 3*MB)
+        {
+            mem_tab[5] = tihw.rom + 0x300000;
+		    mem_mask[5] = MIN(tihw.rom_size - 3*MB, 1*MB)-1;
+        }
 	}
 
     // map ROM (external)
