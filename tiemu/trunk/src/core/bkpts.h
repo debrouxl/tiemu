@@ -44,11 +44,11 @@ typedef struct
 /* Constants */
 
 // Bkpts types (access)
-#define BK_BYTE 1
-#define BK_WORD 2
-#define BK_LONG 4
-#define BK_READ 16
-#define BK_WRITE 32
+#define BK_BYTE     1
+#define BK_WORD     2
+#define BK_LONG     4
+#define BK_READ     16
+#define BK_WRITE    32
 
 #define BK_READ_BYTE (BK_READ | BK_BYTE)
 #define BK_READ_WORD (BK_READ | BK_WORD)
@@ -119,18 +119,17 @@ extern int breakMode;
 extern int breakType;
 extern int breakId;
 
-extern GList *listBkptAsRB;  extern int nBkptAsRB;
-extern GList *listBkptAsWB;  extern int nBkptAsWB;
-extern GList *listBkptAsRW;  extern int nBkptAsRW;
-extern GList *listBkptAsWW;  extern int nBkptAsWW;
-extern GList *listBkptAsRL;  extern int nBkptAsRL;
-extern GList *listBkptAsWL;  extern int nBkptAsWL;
-extern GList *listBkptAsRgR; extern int nBkptAsRgR;
-extern GList *listBkptAsRgW; extern int nBkptAsRgW;
+extern GList *listBkptAsRB;
+extern GList *listBkptAsWB;
+extern GList *listBkptAsRW;
+extern GList *listBkptAsWW;
+extern GList *listBkptAsRL;
+extern GList *listBkptAsWL;
+extern GList *listBkptAsRgR;
+extern GList *listBkptAsRgW;
 
 // Code
 extern GList *listBkptAddress;
-extern int nBkptAddress;
 
 // Vectors, AutoInts and Traps
 extern int listBkptVector[16]; extern int nBkptVector;
@@ -139,18 +138,17 @@ extern int listBkptTrap[16];   extern int nBkptTrap;
 
 /* Functions */
 
-int ti68k_setBreakpointAddress(int address);
-int ti68k_setBreakpointAccess(int address, int mode);
-int ti68k_setBreakpointAccessRange(int addressMin,int addressMax,
-				    int mode);
-int ti68k_setBreakpointVector(int vector);
-int ti68k_setBreakpointAutoint(int autoint);
-int ti68k_setBreakpointTrap(int trap);
-void ti68k_delBreakpointAddress(int i);
-void ti68k_delBreakpointAccess(int i, int mode);
-void ti68k_delBreakpointAccessRange(int i, int mode);
-void ti68k_delBreakpointVector(int i);
-void ti68k_delBreakpointAutoint(int i);
-void ti68k_delBreakpointTrap(int i);
+int ti68k_bkpt_set_address(int address);
+int ti68k_bkpt_set_access(int address, int mode);
+int ti68k_bkpt_set_access_range(int addressMin, int addressMax, int mode);
+int ti68k_bkpt_set_vector(int vector);
+int ti68k_bkpt_set_autointoint(int autoint);
+int ti68k_bkpt_set_trapTrap(int trap);
+void ti68k_bkpt_del_address(int i);
+void ti68k_bkpt_del_access(int i, int mode);
+void ti68k_bkpt_del_access_range(int i, int mode);
+void ti68k_bkpt_del_vector(int i);
+void ti68k_bkpt_del_autoint(int i);
+void ti68k_bkpt_del_trap(int i);
 
 #endif

@@ -30,10 +30,8 @@
 #include <stdlib.h>
 #include <glib.h>
 
-#include "uae.h"
-#include "bkpts.h"
 #include "intl.h"
-#include "tilibs.h"
+#include "bkpts.h"
 #include "ti68k_err.h"
 
 /* Variables */
@@ -68,13 +66,13 @@ int nBkptAutoint = 0;
 
 /* Functions */
 
-int ti68k_setBreakpointAddress(int address) 
+int ti68k_bkpt_set_address(int address) 
 {
     listBkptAddress = g_list_append(listBkptAddress, GINT_TO_POINTER(address));
     return g_list_length(listBkptAddress);
 }
 
-int ti68k_setBreakpointAddressRange(int addressMin, int addressMax, int mode) 
+int ti68k_bkpt_set_address_range(int addressMin, int addressMax, int mode) 
 {
     if(mode & BK_READ) 
     {
@@ -95,7 +93,7 @@ int ti68k_setBreakpointAddressRange(int addressMin, int addressMax, int mode)
     return ERR_68K_INVALID_MODE;
 }
 
-int ti68k_setBreakpointAccess(int address, int mode) 
+int ti68k_bkpt_set_access(int address, int mode) 
 {
     if(mode==BK_READ_BYTE) 
     {		
@@ -131,7 +129,7 @@ int ti68k_setBreakpointAccess(int address, int mode)
         return ERR_68K_INVALID_MODE;
 }
 
-int ti68k_setBreakpointVector(int vector) 
+int ti68k_bkpt_set_vector(int vector) 
 {
     assert( (vector >= 2) && (vector < 16) );
     listBkptVector[vector] = !0;
@@ -139,7 +137,7 @@ int ti68k_setBreakpointVector(int vector)
     return (nBkptVector-1);
 }
 
-int ti68k_setBreakpointAutoint(int autoint)
+int ti68k_bkpt_set_autoint(int autoint)
 {
     assert( (autoint >= 1) && (autoint < 8) );
     listBkptAutoint[autoint] = !0;
@@ -147,7 +145,7 @@ int ti68k_setBreakpointAutoint(int autoint)
     return (nBkptAutoint-1);
 }
 
-int ti68k_setBreakpointTrap(int trap) 
+int ti68k_bkpt_set_trap(int trap) 
 {
     assert( (trap >= 0) && (trap < 16) );
     listBkptTrap[trap] = !0;
@@ -156,12 +154,12 @@ int ti68k_setBreakpointTrap(int trap)
 }
 
 
-void ti68k_delBreakpointAddress(int i) 
+void ti68k_bkpt_del_address(int i) 
 {
     listBkptAddress = g_list_delete_link(listBkptAddress, g_list_nth(listBkptAddress, i));
 }
 
-void ti68k_delBreakpointAccess(int i, int mode) 
+void ti68k_bkpt_del_access(int i, int mode) 
 {
     if (mode==BK_READ_BYTE) 
     {		
@@ -189,7 +187,7 @@ void ti68k_delBreakpointAccess(int i, int mode)
     }
 }
 
-void ti68k_delBreakpointAccessRange(int i,int mode) 
+void ti68k_bkpt_delaccess_range(int i,int mode) 
 {
     if (mode & BK_READ) 
     {
@@ -212,21 +210,21 @@ void ti68k_delBreakpointAccessRange(int i,int mode)
     }
 }
 
-void ti68k_delBreakpointVector(int vector) 
+void ti68k_bkpt_del_vector(int vector) 
 {
     assert( (vector >= 2) && (vector < 16) );
     listBkptVector[vector] = 0;
     nBkptVector--;
 }
 
-void ti68k_delBreakpointAutoint(int autoint)
+void ti68k_bkpt_del_autoint(int autoint)
 {
     assert( (autoint >= 1) && (autoint < 8) );
     listBkptAutoint[autoint] = 0;
     nBkptAutoint--;
 }
 
-void ti68k_delBreakpointTrap(int trap) 
+void ti68k_bkpt_del_trap(int trap) 
 {
     assert( (trap >= 0) && (trap < 16) );
     listBkptTrap[trap] = 0;

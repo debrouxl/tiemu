@@ -38,7 +38,7 @@
    If the error code has been handled, the function returns 0 else it 
    propagates the error code by returning it.
 */
-int ti68k_getError(int err_num, char *error_msg)
+int ti68k_error_get(int err_num, char *error_msg)
 {
   switch(err_num)
     {

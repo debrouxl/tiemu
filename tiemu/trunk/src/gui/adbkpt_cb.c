@@ -171,7 +171,7 @@ on_button_ok_clicked                   (GtkButton       *button,
   /* Place a breakpoint */
   if(single_or_range == 1)
     {
-      i = ti68k_setBreakpointAccess(db.address, db.mode);
+      i = ti68k_bkpt_set_access(db.address, db.mode);
       //DISPLAY("Breakpoint access id: %i\n", i);
       s = (DATA_BKPT *)g_malloc(sizeof(DATA_BKPT));
       s->id = i;

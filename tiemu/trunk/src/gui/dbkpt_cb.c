@@ -203,7 +203,7 @@ on_button_del_clicked                  (GtkButton       *button,
 	}
 
       // delete the right id
-      ti68k_delBreakpointAccess(s->id, s->mode);
+      ti68k_bkpt_del_access(s->id, s->mode);
       bkpt_access_list = g_list_remove(bkpt_access_list, s);
       gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
     }

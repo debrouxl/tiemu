@@ -215,7 +215,7 @@ on_debugger_dbox_destroy               (GtkObject       *object,
     {
       s = (CODE_BKPT *)g_list_nth_data(bkpt_address_list, i);
       
-      ti68k_setBreakpointAddress(s->address);
+      ti68k_bkpt_set_address(s->address);
     }
   
   // Emulation core in free running
@@ -695,7 +695,7 @@ on_break1_activate                     (GtkMenuItem     *menuitem,
   /* Place a breakpoint */
   addr = ti68k_getPcRegister();
   //addr = getPcRegister() + disasm(getPcRegister(), buffer);
-  i = ti68k_setBreakpointAddress(addr);
+  i = ti68k_bkpt_set_address(addr);
 
   s = (CODE_BKPT *)g_malloc(sizeof(CODE_BKPT));
   s->address = addr;
@@ -752,7 +752,7 @@ on_set_breakpoint_at_selection1_activate
 	  if(addr == s1->address)
 	    {
 	      /* If yes, then remove it (toggle bkpt) */
-	      ti68k_delBreakpointAddress(s1->id);
+	      ti68k_bkpt_del_address(s1->id);
 	      bkpt_address_list = g_list_remove(bkpt_address_list, s1);
 	      g_free(s1);
 	      printf("Bkpt toggled\n");
@@ -775,7 +775,7 @@ on_set_breakpoint_at_selection1_activate
     
   /* Place a breakpoint */
   fprintf(stdout, "Place a breakpoint at %06X\n", addr);
-  i = ti68k_setBreakpointAddress(addr);
+  i = ti68k_bkpt_set_address(addr);
   
   s = (CODE_BKPT *)g_malloc(sizeof(CODE_BKPT));
   s->address = addr;
@@ -814,7 +814,7 @@ on_set_data_breakpoint1_activate       (GtkMenuItem     *menuitem,
 static void clear_all_bkpt_address(gpointer data, gpointer user_data)
 {
   CODE_BKPT *s = (CODE_BKPT *)data;
-  ti68k_delBreakpointAddress(s->id);
+  ti68k_bkpt_del_address(s->id);
 
   g_free(s);
 }

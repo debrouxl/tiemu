@@ -49,9 +49,6 @@
 #include "popup.h"
 
 
-extern int wizard_ok;
-extern gchar *wizard_rom;
-
 ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
