@@ -77,23 +77,24 @@ hid_OBJ = \
 	hid/tikeys.o
 
 gui_OBJ = \
-	./gui/about.o						\
-	./gui/adbkpt_dbox.o ./gui/adbkpt_cb.o 	\
-	./gui/bkpt_cause.o 						\
+	./gui/debugger/dbg_bkpts.o					\
+	./gui/debugger/dbg_cause.o					\
+	./gui/debugger/dbg_code.o					\
+	./gui/debugger/dbg_data.o					\
+	./gui/debugger/dbg_mem.o					\
+	./gui/debugger/dbg_regs.o					\
+	./gui/debugger/dbg_vectors.o					\
+	./gui/about.o							\
 	./gui/comm.o							\
-	./gui/dbgopt_dbox.o ./gui/dbgopt_cb.o 	\
-	./gui/dbkpt_dbox.o ./gui/dbkpt_cb.o 	\
+	./gui/dbg_all.o							\
 	./gui/dboxes.o							\
-	./gui/debug_dbox.o ./gui/debug_cb.o 	\
 	./gui/filesel.o							\
-	./gui/fs_misc.o	\
+	./gui/fs_misc.o							\
 	./gui/help.o	 						\
 	./gui/infos.o							\
-	./gui/logaddr_dbox.o ./gui/logaddr_cb.o \
 	./gui/main.o							\
 	./gui/manpage.o							\
 	./gui/pbars.o							\
-	./gui/pgmentbkpt_dbox.o ./gui/pgmentbkpt_cb.o \
 	./gui/popup.o							\
 	./gui/refresh.o							\
 	./gui/release.o							\
@@ -101,8 +102,6 @@ gui_OBJ = \
 	./gui/scroptions.o						\
 	./gui/splash.o							\
 	./gui/support.o 						\
-	./gui/trap_dbox.o ./gui/trap_cb.o 		\
-	./gui/viewlog_dbox.o ./gui/viewlog_cb.o \
 	./gui/wizard.o
 
 tiemu_OBJ = core/uae/newcpu.o $(tihw_OBJ) $(core_OBJ) $(hid_OBJ) $(gui_OBJ)

@@ -30,6 +30,8 @@
 # include <config.h>
 #endif
 
+#include <string.h>
+
 #include "uae.h"
 #include "ti68k_int.h"
 #include "ti68k_def.h"

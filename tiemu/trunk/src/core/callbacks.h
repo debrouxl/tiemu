@@ -38,7 +38,7 @@ typedef void (*callback_vi_t) (int);
 typedef void (*callback_vv_t) (void);
 
 // Function pointers
-extern callback_iv_t cb_launch_debugger;
+extern callback_ii_t cb_launch_debugger;
 extern callback_vi_t cb_update_progbar;
 
 extern callback_iv_t cb_init_specific;
@@ -61,7 +61,7 @@ void ti68k_gui_set_callbacks(
 	callback_ii_t setContrast
 	);
 
-callback_iv_t ti68k_debugger_define(callback_iv_t new_debugger);
+callback_ii_t ti68k_debugger_define(callback_ii_t new_debugger);
 
 
 #endif

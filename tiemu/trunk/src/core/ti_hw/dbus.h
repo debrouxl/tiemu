@@ -36,9 +36,6 @@ UBYTE (*hw_dbus_getbyte)    (void);
 int   (*hw_dbus_byteavail)	(void);
 int   (*hw_dbus_checkread)  (void);
 
-static int init_linkfile(void);
-static int exit_linkfile(void);
-
 int send_ti_file(const char *filename);
 
 /* Variables */

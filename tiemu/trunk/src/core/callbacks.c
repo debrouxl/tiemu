@@ -39,7 +39,7 @@
 
 /* Function pointers */
 
-callback_iv_t cb_launch_debugger = enter_debugger;
+callback_ii_t cb_launch_debugger = enter_debugger;
 
 callback_iv_t cb_init_specific  = NULL;
 callback_iv_t cb_exit_specific  = NULL;
@@ -75,7 +75,7 @@ void ti68k_gui_set_callbacks(
     is restored to internal debugger (text mode).
     Return the default callback, too.
 */
-callback_iv_t ti68k_debugger_define(callback_iv_t new_debugger)
+callback_ii_t ti68k_debugger_define(callback_ii_t new_debugger)
 {
     if(new_debugger == NULL)
     {
@@ -86,5 +86,5 @@ callback_iv_t ti68k_debugger_define(callback_iv_t new_debugger)
         cb_launch_debugger = new_debugger;
     }
   
-    return (callback_iv_t)enter_debugger;
+    return (callback_ii_t)enter_debugger;
 }

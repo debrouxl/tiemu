@@ -25,7 +25,7 @@
 #ifndef __TI68K_DEBUGGER__
 #define __TI68K_DEBUGGER__
 
-int enter_debugger(void);
+int enter_debugger(int unused);
 
 extern int breakPoints;
 

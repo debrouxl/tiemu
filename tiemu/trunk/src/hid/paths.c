@@ -27,6 +27,8 @@
 */
 
 #include <stdio.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #ifdef __WIN32__
 #include <windows.h>
 #include <direct.h> // _mkdir

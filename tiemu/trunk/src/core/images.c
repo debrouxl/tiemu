@@ -56,8 +56,10 @@
 
 #define SPP	0x12000		// system privileged part
 
-IMG_INFO	img_infos = { 0 };
+IMG_INFO	img_infos;
 int			img_loaded = 0;
+
+static int get_rom_version(char *ptr, int size, char *version);
 
 /*
 	Utility functions
@@ -292,7 +294,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 {
 	Ti9xFlash content;
 	Ti9xFlash *ptr;
-	int nheaders;
+	int nheaders = 0;
 	int i;
 
 	// No filename, exits
@@ -385,7 +387,7 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
 	// Check file
 	if(!ti68k_is_a_img_file(filename))
 	{
-		fprintf(stderr, "Images must have '.img' extension.\n", filename);
+		fprintf(stderr, "Images must have '.img' extension.\n");
       	return ERR_CANT_OPEN;
 	}
 	
@@ -419,7 +421,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 {
   	FILE *f; 
   	int err;
-	IMG_INFO img = { 0 };
+	IMG_INFO img;
 	char *ext;
 	gchar *basename;
 	int i;
@@ -429,6 +431,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 		return 0;
 
 	// Preload romdump
+	memset(&img, 0, sizeof(IMG_INFO));
 	err = ti68k_get_rom_infos(srcname, &img, !0);
 	if(err)
     {
@@ -479,7 +482,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 {
 	FILE *f; 
   	int err;
-	IMG_INFO img = { 0 };
+	IMG_INFO img;
 	char *ext;
 	gchar *basename;
 	int i, j;
@@ -491,6 +494,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 		return 0;
 
 	// Preload upgrade
+	memset(&img, 0, sizeof(IMG_INFO));
 	err = ti68k_get_tib_infos(srcname, &img, !0);
 	if(err)
     {
@@ -601,7 +605,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 {
     FILE *f; 
   	int err;
-	IMG_INFO img = { 0 };
+	IMG_INFO img;
 	char *ext;
 	gchar *basename;
 	int i;
@@ -615,6 +619,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 		return 0;
 
 	// Preload romdump
+    memset(&img, 0, sizeof(IMG_INFO));
 	err = ti68k_get_rom_infos(srcname1, &img, !0);
 	if(err)
     {
@@ -725,7 +730,7 @@ int ti68k_load_image(const char *filename)
 */
 int ti68k_load_upgrade(const char *filename)
 {
-	IMG_INFO tib = { 0 };
+	IMG_INFO tib;
   	int err;
     IMG_INFO *img = &img_infos;
 
@@ -736,6 +741,7 @@ int ti68k_load_upgrade(const char *filename)
 	if(!strcmp(filename, ""))
 		return 0;
 
+	memset(&tib, 0, sizeof(IMG_INFO));
 	err = ti68k_get_tib_infos(filename, &tib, !0);
 	if(err)
     {
@@ -810,7 +816,7 @@ int ti68k_scan_files(const char *src_dir, const char *dst_dir)
 int ti68k_scan_images(const char *dirname, const char *filename)
 {
 	FILE *file;
-	IMG_INFO img = { 0 };
+	IMG_INFO img;
 	GDir *dir;
 	GError *error = NULL;
 	G_CONST_RETURN gchar *dirent;
@@ -933,7 +939,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 		  		line[1] = (char *)ti68k_calctype_to_string(img.calc_type);
 	  			line[2] = img.version;
 	  			line[3] = (char *)ti68k_romtype_to_string(img.internal | img.flash);
-	  			sprintf(str, "%iKB", img.size >> 10);
+	  			sprintf(str, "%iKB", (int)(img.size >> 10));
 	  			line[4] = str;
 	  			if(img.has_boot)
 	  				line[5] = _("yes");
@@ -941,7 +947,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 	  				line[5] = _("no");
 				line[6] = (char *)ti68k_hwtype_to_string(img.hw_type);
 		  
-		  			fprintf(file, "%s\t%s\t%s\t%s\t%s\t%s\n", 
+		  			fprintf(file, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", 
 		  				line[0], line[1], line[2], 
 		  				line[3], line[4], line[5], line[6]);
 			}

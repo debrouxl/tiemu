@@ -76,9 +76,9 @@ typedef struct
     int erase;
     int erasePhase;
 } FLASH_WSM;
-FLASH_WSM   wsm = { 0 };
+FLASH_WSM   wsm;
 
-static int log2(int i);
+static int find_pc(void);
 
 /* Mem init/exit */
 
@@ -246,7 +246,7 @@ ULONG get_long(CPTR adr)
   
     adr &= 0xFFFFFF;
 
-    if (l = bkpts.mem_rl) 
+    if ((l = bkpts.mem_rl) != NULL) 
     {
         bkpts.id = 0;
         while (l) 
@@ -264,7 +264,7 @@ ULONG get_long(CPTR adr)
 	    }
     }
   
-    if (l = bkpts.mem_rng_r) 
+    if ((l = bkpts.mem_rng_r) != NULL) 
     {
         bkpts.id = 0;
         while (l) 
@@ -333,7 +333,7 @@ UWORD get_word(CPTR adr)
 	
     adr &= 0xFFFFFF;
 
-    if (l = bkpts.mem_rw) 
+    if ((l = bkpts.mem_rw) != NULL) 
     {
         bkpts.id = 0;
         while (l) 
@@ -351,7 +351,7 @@ UWORD get_word(CPTR adr)
 	    }
     }
   
-    if (l = bkpts.mem_rng_r) 
+    if ((l = bkpts.mem_rng_r) != NULL) 
     {
         bkpts.id = 0;
         while (l) 
@@ -420,7 +420,7 @@ UBYTE get_byte(CPTR adr)
   
     adr &= 0xFFFFFF;
 
-    if (l = bkpts.mem_rb) 
+    if ((l = bkpts.mem_rb) != NULL) 
     {
         bkpts.id = 0;
         while (l) {
@@ -437,7 +437,7 @@ UBYTE get_byte(CPTR adr)
         }
     }
 
-    if (l = bkpts.mem_rng_r) 
+    if ((l = bkpts.mem_rng_r) != NULL)
     {
         bkpts.id = 0;
         while (l) 
@@ -501,7 +501,7 @@ void put_long(CPTR adr, ULONG arg)
 
     adr &= 0xFFFFFF;
 
-    if (l = bkpts.mem_wl) 
+    if ((l = bkpts.mem_wl) != NULL) 
     {
         bkpts.id = 0;
         while (l) 
@@ -519,7 +519,7 @@ void put_long(CPTR adr, ULONG arg)
 	    }
     }
   
-    if (l = bkpts.mem_rng_w) 
+    if ((l = bkpts.mem_rng_w) != NULL) 
     {
         bkpts.id = 0;
         while (l) 
@@ -596,7 +596,7 @@ void put_word(CPTR adr, UWORD arg)
 	
     adr &= 0xFFFFFF;
 
-    if (l = bkpts.mem_ww) 
+    if ((l = bkpts.mem_ww) != NULL) 
     {
         bkpts.id = 0;
         while (l) 
@@ -614,7 +614,7 @@ void put_word(CPTR adr, UWORD arg)
 	    }
     }
   
-    if (l = bkpts.mem_rng_w)
+    if ((l = bkpts.mem_rng_w) != NULL)
     {
         bkpts.id = 0;
         while (l) 
@@ -680,7 +680,7 @@ void put_byte(CPTR adr, UBYTE arg)
 	
     adr &= 0xFFFFFF;
   
-    if (l = bkpts.mem_wb) 
+    if ((l = bkpts.mem_wb) != NULL) 
     {
         bkpts.id = 0;
         while (l) 
@@ -698,7 +698,7 @@ void put_byte(CPTR adr, UBYTE arg)
 	    }
     }
 
-    if (l = bkpts.mem_rng_w) 
+    if ((l = bkpts.mem_rng_w) != NULL) 
     {
         bkpts.id = 0;
         while (l) 

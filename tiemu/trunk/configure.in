@@ -142,9 +142,11 @@ case $host in
   *-*-cygwin) ARCH="-D__WIN32__ -D__CYGWIN__ -mno-cygwin" ;;
   *-*-*bsd*)  ARCH="-D__BSD__" ;;
   i[[34]]86-*-linux-*) ARCH="-D__I386__ -D__LINUX__" ;; 
-  i[[56]]86-*-linux-*) ARCH="-O3 -mcpu=pentium -DPENT_COUNTER -DX86_ASSEMBLY -D__LINUX__" ;;
+  i[[56]]86-*-linux-*) ARCH="-O3 -mcpu=pentium -DX86_ASSEMBLY -D__LINUX__" ;;
   *)          ARCH="-D__LINUX__" ;;
 esac
+
+-DPENT_COUNTER
 
 # check for ticables presence
 PKG_CHECK_MODULES(TICABLES, ticables >= 3.8.3)

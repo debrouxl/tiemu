@@ -50,6 +50,8 @@ int hw_lcd_init(void)
 		lcd_addr = 0x4720;
 	else if(tihw.ti92v1)
 		lcd_addr = 0x4440;
+	else
+	    lcd_addr = 0x4c00;
 
 	lcd_addr >>= 3;
 

@@ -40,7 +40,6 @@ gint display_infos_dbox()
 	GtkWidget *label;
 	gint result;
 	gchar *str;
-	int i = 0;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("infos-2.glade"), "infos_dbox",

@@ -51,30 +51,30 @@ UBYTE (*hw_dbus_getbyte)    (void);
 int   (*hw_dbus_byteavail)	(void);
 int   (*hw_dbus_checkread)  (void);
 
-void  lp_putbyte(UBYTE arg);
-UBYTE lp_getbyte(void);
-int   lp_byteavail(void);
-int   lp_checkread(void);
+static void  lp_putbyte(UBYTE arg);
+static UBYTE lp_getbyte(void);
+static int   lp_byteavail(void);
+static int   lp_checkread(void);
 
-void  df_putbyte(UBYTE arg);
-UBYTE df_getbyte(void);
-int   df_byteavail(void);
-int   df_checkread(void);
+static void  df_putbyte(UBYTE arg);
+static UBYTE df_getbyte(void);
+static int   df_byteavail(void);
+static int   df_checkread(void);
 
 static void map_to_linkport(void)
 {
     hw_dbus_putbyte = lp_putbyte;
-	hw_dbus_getbyte = lp_getbyte;
-	hw_dbus_byteavail = lp_byteavail;
-	hw_dbus_checkread = lp_checkread;
+    hw_dbus_getbyte = lp_getbyte;
+    hw_dbus_byteavail = lp_byteavail;
+    hw_dbus_checkread = lp_checkread;
 }
 
 static void map_to_directfile(void)
 {
     hw_dbus_putbyte = df_putbyte;
-	hw_dbus_getbyte = df_getbyte;
-	hw_dbus_byteavail = df_byteavail;
-	hw_dbus_checkread = df_checkread;
+    hw_dbus_getbyte = df_getbyte;
+    hw_dbus_byteavail = df_byteavail;
+    hw_dbus_checkread = df_checkread;
 }
 
 TicableLinkCable lc;
@@ -94,6 +94,9 @@ static void print_lc_error(int errnum)
     D-bus management (HW linkport)
 */
 
+static int init_linkfile(void);
+static int exit_linkfile(void);
+
 int hw_dbus_init(void)
 {
 	int err;
@@ -102,16 +105,16 @@ int hw_dbus_init(void)
 	ticable_init();
 	ticable_set_param(&link_cable);
 	ticable_set_cable(link_cable.link_type, &lc);
-	if(err = lc.init())
-    {
+	if((err = lc.init()))
+	{
 		print_lc_error(err);
 		return -1;
-    }
-	if(err = lc.open())
-    {
+	}
+	if((err = lc.open()))
+	{
 		print_lc_error(err);
 		return -1;
-    }
+	}
 
 	// init directfile
 	init_linkfile();
@@ -132,19 +135,19 @@ int hw_dbus_exit(void)
 	int err;
 
 	// exit linkport
-	if(err = lc.close())
-    {
+	if((err = lc.close()))
+	{
 		print_lc_error(err);
 		return -1;
-    }
-	if(err = lc.exit())
-    { 
+	}
+	if((err = lc.exit()))
+	{ 
 		print_lc_error(err);
 		return -1;
-    }
-
+	}
+	
 	// exit directfile
-    exit_linkfile();
+	exit_linkfile();
 
     return 0;
 }
@@ -192,18 +195,18 @@ static int lp_checkread(void)
 	int status = 0;
 
 	if(lp_avail_byte)
-		return 0;
-
-    err = lc.check(&status);
+	    return 0;
+	
+	err = lc.check(&status);
 	if(err)
-    {
-		io_bit_set(0x0c,3);		// error
-		print_lc_error(err);
-		lp_last_byte = 0;
-    }
+	{
+	    io_bit_set(0x0c,3);		// error
+	    print_lc_error(err);
+	    lp_last_byte = 0;
+	}
   
 	if(status & STATUS_RX)
-    {
+	{
         err = lc.get(&lp_last_byte);
 		if(err)
         {
@@ -254,8 +257,6 @@ int df_byteavail(void)
 
 int df_checkread(void)
 {
-	int status = 0;
-
     return iput;
 }
 

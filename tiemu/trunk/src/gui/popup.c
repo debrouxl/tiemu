@@ -26,6 +26,7 @@
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
+#include <stdlib.h>
 
 #include "intl.h"
 #include "support.h"

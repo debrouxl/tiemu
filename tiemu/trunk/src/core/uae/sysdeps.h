@@ -1,4 +1,6 @@
+#ifdef __WIN32__
 #pragma warning( disable : 4142 )
+#endif
 
 #ifndef SYSDEPS_H
 #define SYSDEPS_H

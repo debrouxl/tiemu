@@ -112,6 +112,8 @@ gpointer ti68k_engine(gpointer data)
 				    sleep((TIME_LIMIT - iCurrentTime + iLastTime));
 		}
 	}
+
+	return GINT_TO_POINTER(0);
 }
 
 int ti68k_engine_is_halted() 

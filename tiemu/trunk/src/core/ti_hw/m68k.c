@@ -78,7 +78,7 @@ int hw_m68k_run(int n)
       (*cpufunctbl[opcode])(opcode);
       do_cycles();
 
-      if(l = bkpts.code)
+      if((l = bkpts.code) != NULL)
       {
           bkpts.id = 0;
           while(l)

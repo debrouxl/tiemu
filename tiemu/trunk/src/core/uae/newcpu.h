@@ -98,8 +98,6 @@ extern union flagu regflags;
 extern float calibrate_pcounter(void);
 #endif
 
-extern int find_pc(void);
-
 extern void MC68000_oldstep(UWORD opcode);
 
 static INLINE_DECLARATION UWORD nextiword(void)

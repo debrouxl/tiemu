@@ -1169,10 +1169,10 @@ int hid_screenshot(char *filename)
 {
 	gchar *outfile;
 	gchar *ext = "???";
-	gchar *type;
-	int gap = iScrW - iLcdW;
+	gchar *type = "???";
+	//int gap = iScrW - iLcdW;
 
-    SDL_Surface *sdlCapture;
+	SDL_Surface *sdlCapture = NULL;
 	SDL_PixelFormat fmt;
 	Uint8 *pixels;
 	GdkPixbuf *pixbuf = { 0 };
@@ -1184,7 +1184,7 @@ int hid_screenshot(char *filename)
 			case IMG_JPG: ext = "jpg"; type = "jpeg"; break;
 			case IMG_PNG: ext = "png"; type = "png";  break;
 			case IMG_ICO: ext = "ico"; type = "ico";  break;
-			default: break;
+			default: type = "???"; break;
 		}
       
 		outfile = g_strdup_printf("%s%03i.%s", options2.file, options2.counter, ext);

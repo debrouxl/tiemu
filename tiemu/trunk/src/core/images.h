@@ -71,8 +71,6 @@ typedef struct {
 	Functions
 */
 
-static int get_rom_version(char *ptr, int size, char *version);
-
 int ti68k_is_a_rom_file(const char *filename);
 int ti68k_is_a_tib_file(const char *filename);
 int ti68k_is_a_img_file(const char *filename);

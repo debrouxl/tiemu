@@ -122,11 +122,11 @@ float calibrate_pcounter(void)
   pfreq = (float)(j-i)/1000/NMS;
   fprintf(stderr, "UAE: calibration loop gives %f MHz\n", pfreq);
   
-  tickRate = params.tick_rate;
-  cycleRate = params.cycle_rate;
+  //tickRate = params.tick_rate;
+  //cycleRate = params.cycle_rate;
   
-  timeDiff = ((unsigned long)permSec * (unsigned long)tickRate)/100000;
-  cycleDiff = (permSec*cycleRate)/100000;
+  //timeDiff = ((unsigned long)permSec * (unsigned long)tickRate)/100000;
+  //cycleDiff = (permSec*cycleRate)/100000;
   
   return pfreq;
 }

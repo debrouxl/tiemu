@@ -83,7 +83,7 @@ int parsenum(char *s, int n, ULONG *l)
     return 0;
 }
 
-int enter_debugger(void) 
+int enter_debugger(int arg) 
 {
   char c[32] = "";
   char *ptr;
