@@ -299,6 +299,8 @@ int  hid_init(void)
     tid = g_timeout_add((params.lcd_rate == -1) ? 10 : params.lcd_rate, 
 		(GtkFunction)hid_refresh, NULL);
 
+	hid_lcd_on_off(1);
+
     return 0;
 }
 

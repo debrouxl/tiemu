@@ -196,6 +196,8 @@ GLADE_CB void
 on_set_rom1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	if(dbg_on) return;
+
 	display_romversion_dbox ();
 }
 
@@ -500,6 +502,8 @@ GtkWidget* display_popup_menu(void)
     default:
         break;
     }
+
+	//while(gtk_events_pending()) gtk_main_iteration();
 
 	return menu;
 }

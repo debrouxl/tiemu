@@ -145,7 +145,7 @@ void ti68k_engine_stop(void)
 	G_UNLOCK(running);
 
     if(thread != NULL)
-	    g_thread_join(thread);		// wait for thread termination
+	    g_thread_join(thread);	// wait for thread termination
     thread = NULL;
     printf("done.\n");
 }

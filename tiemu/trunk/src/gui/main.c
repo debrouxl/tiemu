@@ -73,10 +73,8 @@ gboolean on_dbg_event(gpointer data)
 
 int main(int argc, char **argv) 
 {
-	GThread *thread = NULL;
-	GError *error = NULL;
-    int err;
 	GSource *source;
+    int err;	
 
 	/*
 		Do primary initializations 
