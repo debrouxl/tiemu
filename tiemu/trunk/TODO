@@ -4,9 +4,7 @@ List of stuffs to do (in French, sorry):
 ExtendeD
 ========
 
-* (pas vraiment prioritaire) Est-ce qu'il serait possible de pouvoir
-envoyer plusieurs fichiers à TiEmu à la fois ? Actuellement il faut
-les prendre un par un.
+*
 
 
 Kevin
@@ -43,9 +41,6 @@ PPhd
 
 * 1. Cycle counts ? Even they were wrong, they could be useless.
   3. Multiple windows for dissassembled code ?
-
-* Also the ability to send multiple files to tiemu and not only one file
-per "send file".
 
 * If you could save the exact debugger state in the config file (which windows are
 openned, relative position of the windows and window size), I think it

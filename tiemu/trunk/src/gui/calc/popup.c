@@ -58,9 +58,16 @@ GLADE_CB void
 on_popup_menu_header                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+#if 1
 	fprintf(stdout, _("* TiEmu version %s (cables=%s, files=%s, calcs=%s)\n"),
 	     TIEMU_VERSION, ticable_get_version(), tifiles_get_version(),
 	     ticalc_get_version());
+#else
+	gchar **list, **ptr;
+
+	list = create_fsels(inst_paths.base_dir, NULL, "*.txt", FALSE);
+	for(ptr = list; *ptr; ptr++)	printf("<<%s>>\n", *ptr);
+#endif
 }
 
 
@@ -70,7 +77,7 @@ on_send_file_to_gtktiemu1_activate     (GtkMenuItem     *menuitem,
 {
 	if(dbg_run) return;
 	ti68k_engine_stop();
-	display_tifile_dbox();
+	display_tifiles_dbox();
 	ti68k_engine_start();
 }
 
