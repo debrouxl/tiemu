@@ -11,9 +11,10 @@
 #include "intl.h"
 #include "paths.h"
 #include "support.h"
+#include "ti68k_int.h"
 
 static GtkWidget *notebook;
-static GtkListStore *store;
+static GtkWidget *clist;
 
 enum { 
 	    COLUMN_ADDR, 
@@ -26,19 +27,47 @@ enum {
 #define CLIST_NVCOLS	(COLUMN_ASCII+1)
 #define CLIST_NCOLS		(CLIST_NVCOLS+16)
 
+static gint column2index(GtkTreeViewColumn * column)
+{
+	gint i;
+
+	for (i = 0; i < CLIST_NVCOLS; i++) {
+		GtkTreeViewColumn *col;
+
+		col = gtk_tree_view_get_column(GTK_TREE_VIEW(clist), i);
+		if (col == column)
+			return i;
+	}
+
+	return -1;
+}
+
 static void renderer_edited(GtkCellRendererText * cell,
 			    const gchar * path_string,
 			    const gchar * new_text, gpointer user_data)
 {
 	GtkTreePath *path = gtk_tree_path_new_from_string(path_string);
 	GtkTreeIter iter;
-	GtkTreeModel *model = GTK_TREE_MODEL(store);
+	GtkTreeModel *model = GTK_TREE_MODEL(user_data);
 	gint value;
+
+	GtkTreePath *path2;
+	GtkTreeViewColumn *column;
+	GtkTreeView *view = GTK_TREE_VIEW(clist);
+	gint col;
 
 	if (!gtk_tree_model_get_iter(model, &iter, path))
 		return;
 
-	gtk_tree_model_get(model, &iter, COLUMN_ADDR, &value, -1);
+	printf("<%s> %s\n", path_string, new_text);
+
+
+
+	gtk_tree_view_get_cursor(view, &path2, &column);
+	col = column2index(column);
+	printf("<%p %p> %i\n", path2, column, col);
+
+	gtk_tree_model_get(model, &iter, col, &value, -1);
 
 	gtk_tree_path_free(path);
 }
@@ -75,7 +104,7 @@ static GtkWidget* clist_create(GtkListStore **st)
             );
     model = GTK_TREE_MODEL(store);
 	
-	list = gtk_tree_view_new_with_model(model);
+	clist = list = gtk_tree_view_new_with_model(model);
 	view = GTK_TREE_VIEW(list);
   
     gtk_tree_view_set_model(view, model); 
@@ -101,7 +130,7 @@ static GtkWidget* clist_create(GtkListStore **st)
             NULL);
 
         g_signal_connect(G_OBJECT(renderer), "edited",
-			 G_CALLBACK(renderer_edited), NULL);
+			 G_CALLBACK(renderer_edited), store);
     }
 
 	i = COLUMN_ASCII;
@@ -160,17 +189,18 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
         }
 		
 		ascii[16] = '\0';
-		printf("<%s>\n", ascii);
 		gtk_list_store_set(store, &iter, COLUMN_ASCII, ascii, -1);
     }
 }
 
 static void notebook_add_tab(GtkWidget *notebook, const char* tab_name)
 {
+	GtkListStore *store;
 	GtkWidget *label;
 	GtkWidget *child;
 	gint current_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
 	uint32_t addr;
+	uint32_t len;
 	
 	label = gtk_label_new(tab_name);
 	gtk_widget_show(label);
@@ -182,10 +212,11 @@ static void notebook_add_tab(GtkWidget *notebook, const char* tab_name)
 		uint32_t sp_start, sp_end;
 		uint32_t *mem_ptr = (uint32_t *)ti68k_get_real_address(0x000000);
 
-		sp_start = *mem_ptr;
+		sp_start = GUINT32_SWAP_LE_BE(*mem_ptr);
 		sp_end = ti68k_register_get_sp();
-    	clist_populate(store, sp_start, sp_end - sp_start);
-		//clist_populate(store, 0x000000, 64);
+		len = sp_end - sp_start;
+
+		clist_populate(store, sp_start, len <= 128 ? len : 128);
     }
     else
     {
@@ -226,7 +257,7 @@ gint display_dbgmem_dbox(uint32_t *addr)
 	switch (result) {
 	case GTK_RESPONSE_OK:
 		str = g_strdup(gtk_entry_get_text(GTK_ENTRY(entry)));
-		sscanf(str, "%0x", addr);
+		sscanf(str, "%lx", addr);
 		break;
 	default:
 		break;

@@ -51,6 +51,7 @@
 #include "splash.h"
 #include "tie_error.h"
 #include "dboxes.h"
+#include "dbg_mem.h"
 
 
 ScrOptions options2;
@@ -78,7 +79,10 @@ static gint hid_refresh (gpointer data)
 
 int enter_gtk_debugger(void)
 {
+	ti68k_engine_halt();
     display_dbgmem_window();
+
+	return 0;
 }
 
 /* Main function */		
