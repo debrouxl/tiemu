@@ -40,6 +40,8 @@ DbgStates dbgs = { 0 };
 
 int dbg_on = 0;
 
+/* Functions applicable to the whole debugger */
+
 void gtk_debugger_preload(void)
 {
 	//create_dbgregs_window();
@@ -68,7 +70,7 @@ int gtk_debugger_enter(int context)
 	ti68k_debug_load_symbols(path);
 	g_free(path);
 
-    // refresh debugger windows (open debugger, if not already opened)
+    // open debugger windows (if not already opened)
 	dbgw.regs = dbgregs_display_window();
 	dbgw.mem  = dbgmem_display_window();
 	dbgw.bkpts = dbgbkpts_display_window();
@@ -100,6 +102,34 @@ void set_other_windows_sensitivity(int state)
     gtk_widget_set_sensitive(dbgw.bkpts, state);
     gtk_widget_set_sensitive(dbgw.mem, state);
     gtk_widget_set_sensitive(dbgw.pclog, state);
+}
+
+void gtk_debugger_minimize_all(void)
+{
+    if(dbgw.regs)
+        gtk_window_iconify(GTK_WINDOW(dbgw.regs));
+    if(dbgw.bkpts)
+        gtk_window_iconify(GTK_WINDOW(dbgw.bkpts));
+    if(dbgw.mem)
+        gtk_window_iconify(GTK_WINDOW(dbgw.mem));
+    if(dbgw.pclog)
+        gtk_window_iconify(GTK_WINDOW(dbgw.pclog));
+    if(dbgw.code)
+        gtk_window_iconify(GTK_WINDOW(dbgw.code));
+}
+
+void gtk_debugger_deminimize_all(void)
+{
+    if(dbgw.regs)
+        gtk_window_deiconify(GTK_WINDOW(dbgw.regs));
+    if(dbgw.bkpts)
+        gtk_window_deiconify(GTK_WINDOW(dbgw.bkpts));
+    if(dbgw.mem)
+        gtk_window_deiconify(GTK_WINDOW(dbgw.mem));
+    if(dbgw.pclog)
+        gtk_window_deiconify(GTK_WINDOW(dbgw.pclog));
+    if(dbgw.code)
+        gtk_window_deiconify(GTK_WINDOW(dbgw.code));
 }
 
 // callbacks from dbg_code.c (window menu)
@@ -185,6 +215,42 @@ on_maximize_all1_activate              (GtkMenuItem     *menuitem,
     gtk_window_deiconify(GTK_WINDOW(dbgw.bkpts));
     gtk_window_deiconify(GTK_WINDOW(dbgw.mem));
     gtk_window_deiconify(GTK_WINDOW(dbgw.pclog));
+}
+
+void update_submenu(GtkWidget *widget, gpointer user_data)
+{
+    GtkMenuShell *shell = GTK_MENU_SHELL(widget);
+    GList *list = shell->children;
+    GList *elt;
+    GtkCheckMenuItem *item;
+
+    // regs
+    elt = g_list_nth(list, 0);
+    item = GTK_CHECK_MENU_ITEM(elt->data);
+    g_signal_handlers_block_by_func(GTK_OBJECT(item), on_registers1_activate, NULL);
+    gtk_check_menu_item_set_active(item, dbgs.regs);
+    g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_registers1_activate, NULL);
+
+    // bkpts
+    elt = g_list_nth(list, 1);
+    item = GTK_CHECK_MENU_ITEM(elt->data);
+    g_signal_handlers_block_by_func(GTK_OBJECT(item), on_breakpoints1_activate, NULL);
+    gtk_check_menu_item_set_active(item, dbgs.bkpts);
+    g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_breakpoints1_activate, NULL);
+
+    // mem
+    elt = g_list_nth(list, 2);
+    item = GTK_CHECK_MENU_ITEM(elt->data);
+    g_signal_handlers_block_by_func(GTK_OBJECT(item), on_memory1_activate, NULL);
+    gtk_check_menu_item_set_active(item, dbgs.mem);
+    g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_memory1_activate, NULL);
+
+    // pclog
+    elt = g_list_nth(list, 3);
+    item = GTK_CHECK_MENU_ITEM(elt->data);
+    g_signal_handlers_block_by_func(GTK_OBJECT(item), on_pc_log1_activate, NULL);
+    gtk_check_menu_item_set_active(item, dbgs.pclog);
+    g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_pc_log1_activate, NULL);
 }
 
 // callbacks from dbg_regs.c
@@ -326,3 +392,4 @@ on_dbgbkpts_window_show                (GtkWidget       *widget,
     dbgs.bkpts = !0;
 }
 
+// misc

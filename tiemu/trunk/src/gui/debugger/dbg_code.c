@@ -277,6 +277,9 @@ static GtkAdjustment *adj;
 /*
 	Display source code window
 */
+
+extern update_submenu(GtkWidget*, gpointer);
+
 GtkWidget* dbgcode_create_window(void)
 {
 	GladeXML *xml;
@@ -291,6 +294,9 @@ GtkWidget* dbgcode_create_window(void)
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgcode_window");
+
+    data = glade_xml_get_widget(xml, "windows1_menu");
+    g_signal_connect(G_OBJECT(data), "map", G_CALLBACK(update_submenu), NULL);
 
     data = glade_xml_get_widget(xml, "scrolledwindow1");
     sw = GTK_SCROLLED_WINDOW(data);

@@ -5,7 +5,7 @@
 
 <widget class="GtkWindow" id="calc_wnd">
   <property name="visible">True</property>
-  <property name="events">GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK</property>
+  <property name="events">GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_VISIBILITY_NOTIFY_MASK</property>
   <property name="title" translatable="yes">TiEmu II</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
@@ -22,6 +22,7 @@
   <signal name="destroy" handler="on_calc_wnd_destroy" last_modification_time="Wed, 14 Jul 2004 20:10:55 GMT"/>
   <signal name="size_request" handler="on_calc_wnd_size_request" last_modification_time="Mon, 19 Jul 2004 14:20:32 GMT"/>
   <signal name="expose_event" handler="on_calc_wnd_expose_event" last_modification_time="Fri, 23 Jul 2004 12:46:29 GMT"/>
+  <signal name="window_state_event" handler="on_calc_wnd_window_state_event" last_modification_time="Sat, 31 Jul 2004 16:45:27 GMT"/>
 
   <child>
     <widget class="GtkDrawingArea" id="drawingarea1">
