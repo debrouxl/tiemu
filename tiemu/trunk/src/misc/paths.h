@@ -28,7 +28,7 @@
    Platform independant paths
 */
 
-#if defined(__LINUX__)
+#if defined(__LINUX__) || defined(__MACOSX__)
 # define CONF_DIR   	".tiemu/"
 # define INI_FILE    	"tiemu.ini"
 # define CACHE_FILE 	"ROMs.lst"

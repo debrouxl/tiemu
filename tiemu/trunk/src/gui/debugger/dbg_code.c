@@ -353,6 +353,7 @@ GtkWidget* dbgcode_create_window(void)
 
 	data = glade_xml_get_widget(xml, "combo1");
 	items = g_list_append (items, "");
+	if (romcalls_is_loaded()) {
 	lst = romcalls_sort_by_name();
 	for(i = 0; i < NROMCALLS; i++)
 	{
@@ -373,6 +374,7 @@ GtkWidget* dbgcode_create_window(void)
 	}
 	gtk_combo_set_popdown_strings (GTK_COMBO (data), items);
 	g_free(lst);
+	}
 
 	gtk_window_resize(GTK_WINDOW(dbox), options3.code.w, options3.code.h);
 	gtk_window_move(GTK_WINDOW(dbox), options3.code.x, options3.code.y);

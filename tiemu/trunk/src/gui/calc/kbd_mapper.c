@@ -157,7 +157,7 @@ int keymap_load(const char *filename)
         pckey = keymap_string_to_value(pckeys, split[0]);
         if(pckey == -1)
         {
-            fprintf(stderr, "Warning: non-existent key: <%s>\n", split[0]);
+            fprintf(stderr, "Warning: non-existent PC key: <%s>\n", split[0]);
             g_strfreev(split);
             continue;
         }
@@ -165,7 +165,7 @@ int keymap_load(const char *filename)
         tikey = keymap_string_to_value(tikeys, split2[0]);
         if(tikey == -1)
         {
-            fprintf(stderr, "Warning: non-existent key: <%s>\n", split[1]);
+            fprintf(stderr, "Warning: non-existent TI key: <%s>\n", split[1]);
             g_strfreev(split);
             continue;
         }

@@ -31,6 +31,7 @@
 #endif
 
 #include <glib.h>
+#include <time.h> /*time_t which sys/timeb.h uses is defined there*/
 #include <sys/timeb.h>
 #include <sys/types.h>
 #include <stdlib.h>
@@ -46,7 +47,7 @@
 #include "ti68k_int.h"
 #include "m68k.h"
 
-#if defined(__LINUX__)
+#if defined(__LINUX__) || defined(__MACOSX__)
 #define sleep(x)	usleep(1000 * (x))
 #elif defined(__WIN32__)
 #define sleep(x)	Sleep((x))

@@ -28,6 +28,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 
 #include "romcalls.h"
 #include "images.h"
@@ -99,7 +100,7 @@ static void load_lionel_file_type(FILE *f)   // Lionel Debroux formatted file: 2
         fgets(str, sizeof(str), f);
 		if(feof(f))
 			break;
-        str[strlen(str) - 1] = '\0';
+		for (number = strlen(str) - 1; str[number] == '\n' || str[number] == '\r'; number--) str[number] = '\0';
 
         if(!strchr(str, ':'))
             continue;
@@ -141,8 +142,10 @@ int romcalls_load_from_file(const char* filename)
     memset(list, 0, sizeof(list));
 
     f = fopen(filename, "rt");
-    if(f == NULL)
+    if(f == NULL) {
+			printf("Failed: %s (%d)\n", strerror(errno), errno);
         return -1;
+		}
 
     fgets(tmp, sizeof(tmp), f);
     fgets(tmp, sizeof(tmp), f);

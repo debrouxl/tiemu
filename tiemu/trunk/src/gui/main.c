@@ -106,24 +106,24 @@ int main(int argc, char **argv)
 
 	if (strcmp(tifiles_get_version(), TIEMU_REQUIRES_LIBFILES_VERSION) < 0) 
 	{
-		printl(0, _("libtifiles library version <%s> mini required.\n"),
-			TIEMU_REQUIRES_LIBFILES_VERSION);
+		printl(0, _("libtifiles library version <%s> mini required (<%s> found).\n"),
+			TIEMU_REQUIRES_LIBFILES_VERSION, tifiles_get_version());
 		msg_box(_("Error"), _("Libtifiles: version mismatches."));
 		exit(-1);
 	}
 	
 	if (strcmp(ticable_get_version(), TIEMU_REQUIRES_LIBCABLES_VERSION) < 0) 
 	{
-		printl(0, _("libticables library version <%s> mini required.\n"),
-			TIEMU_REQUIRES_LIBCABLES_VERSION);
+		printl(0, _("libticables library version <%s> mini required (<%s> found).\n"),
+			TIEMU_REQUIRES_LIBCABLES_VERSION, ticable_get_version());
 		msg_box(_("Error"), _("Libticables: version mismatches."));
 		exit(-1);
 	}
 	
 	if (strcmp(ticalc_get_version(), TIEMU_REQUIRES_LIBCALCS_VERSION) < 0) 
 	{
-		printl(0, _("libticalcs library version <%s> mini required.\n"),
-			TIEMU_REQUIRES_LIBCALCS_VERSION);
+		printl(0, _("libticalcs library version <%s> mini required (<%s> found).\n"),
+			TIEMU_REQUIRES_LIBCALCS_VERSION, ticalc_get_version());
 		msg_box(_("Error"), _("Libticalcs: version mismatches."));
 		exit(-1);
 	}

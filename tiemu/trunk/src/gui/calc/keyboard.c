@@ -169,11 +169,33 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
     if(event->hardware_keycode == 0x0014)
         event->keyval = GDK_Caps_Lock;
 
-    if(event->hardware_keycode == 0x0013)
+	if(event->keyval == GDK_F9)
 	{
         hid_screenshot(NULL);
         return TRUE;
     } 
+#ifdef __MACOSX__
+	/* Until we get the mouse working on Mac OS X, invoke the menu using the
+		Enter key, which can't be used for anything else anyway because it is
+		not among the keys defined in pckeys.h */
+	else if (event->hardware_keycode == 0x3C) 
+	{
+		GdkEventButton *bevent;
+		GtkWidget *menu;
+		
+		bevent = (GdkEventButton *) (event);
+		
+		ti68k_engine_stop();
+		
+		menu = display_popup_menu();
+		gtk_menu_popup(GTK_MENU(menu),
+									 NULL, NULL, NULL, NULL,
+									 bevent->button, bevent->time);
+		gtk_widget_show(menu);
+		
+		return TRUE;
+	}
+#endif
     else if(event->keyval == GDK_F10)
     {
         display_tifile_dbox();

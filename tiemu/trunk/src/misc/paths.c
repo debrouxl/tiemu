@@ -45,7 +45,7 @@ TiemuInstPaths inst_paths;      // installation paths
 /*
   Called by TiEmu at startup for initializing platform dependant paths.
 */
-#if defined(__LINUX__) || defined(__BSD__)
+#if defined(__LINUX__) || defined(__BSD__) || defined(__MACOSX__)
 static void init_linux_paths(void)
 {
 	inst_paths.base_dir =
