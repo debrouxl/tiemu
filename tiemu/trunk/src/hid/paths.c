@@ -102,7 +102,7 @@ static void init_win32_paths(void)
 	inst_paths.home_dir = 
 	    g_strconcat(inst_paths.base_dir, "", NULL);
 	inst_paths.img_dir = 
-            g_strconcat(inst_paths.home_dir, CONF_DIR, "images/", NULL);
+            g_strconcat(inst_paths.home_dir, CONF_DIR, "images\\", NULL);
     mkdir(inst_paths.img_dir, 0755);
 
 #ifdef ENABLE_NLS

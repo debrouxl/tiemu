@@ -226,3 +226,36 @@ gint display_set_tib_dbox(void)
     ti68k_unhalt();
 }
 
+
+
+gint display_import_romversion_dbox(void)
+{
+    const gchar *filename;
+	char *dstname;
+	int ret;
+    
+    // get filename
+	filename = create_fsel(inst_paths.base_dir, "*.rom;*.89u;*.9xu;*.tib");
+	if (!filename)
+		return;
+
+    if(ti68k_is_a_rom_file(filename))
+	{
+		ti68k_convert_rom_to_image(filename, inst_paths.img_dir, &dstname);
+		g_free(dstname);
+	}
+	else if(ti68k_is_a_tib_file(filename))
+	{
+		ret = msg_box2("Question", "Do you want to load it as a fake image or as a FLASH upgrade ? \n\nClick FLASH if you want to directly upgrade the calculator operating system (AMS). \n\nOn the other hand, if you load it as a fake ROM image, TiEmu will convert the FLASH upgrade into a ROM image but your image will suffer from some limitations (no boot block, no certificate, problems with fonts) (rom=1, upg=2)?");
+		if(ret == 1)
+		{	// fake rom
+			ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname);
+			g_free(dstname);
+		}
+		else
+		{
+			//copy
+			CopyFile(filename, inst_paths.img_dir, FALSE);
+		}
+	}
+}

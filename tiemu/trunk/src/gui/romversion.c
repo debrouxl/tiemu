@@ -68,8 +68,8 @@ GtkListStore* clist_init(GtkWidget *clist)
 	GtkTreeSelection *selection;
 	gint i;
 	const gchar *text[CLIST_NCOLS] = { 
-		_("Filename"), _("Calc"), _("Version"), 
-		_("Memory"), _("Size"), _("Type") };
+		_("Filename"), _("Model"), _("Version"), 
+		_("Type"), _("Size"), _("Boot") };
 	
 	list = gtk_list_store_new(6, 
     			G_TYPE_STRING, G_TYPE_STRING,
@@ -151,7 +151,7 @@ gint display_romversion_dbox()
 
 	// scan ROM images
     filename = g_strconcat(inst_paths.img_dir, CACHE_FILE, NULL);
-    ti68k_scanFiles(inst_paths.img_dir, filename);
+    ti68k_scan_files(inst_paths.img_dir, filename);
 
     stat(filename, &s);
     if(s.st_size == 0) 
@@ -198,96 +198,50 @@ gint display_romversion_dbox()
 
 	// run main box
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
+	gtk_widget_destroy(dbox);
+
 	switch (result) 
 	{
 		case GTK_RESPONSE_OK:
-			g_free((options.params)->rom_file);
-			(options.params)->rom_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
-			g_free(chosen_file);
-/*
-			if(ti68k_loadImage((options.params)->rom_file)) 
+			if(ti68k_is_a_img_file(chosen_file))
 			{
-				msg_box("Error", "Can not open the ROM image.");
-				return;
+
+				g_free((options.params)->rom_file);
+				(options.params)->rom_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
+				g_free(chosen_file);
+
+				if(ti68k_load_image((options.params)->rom_file)) 
+				{
+					msg_box("Error", "Can not load the image.");
+					return;
+				}
+			} 
+			else if(ti68k_is_a_tib_file(chosen_file))
+			{
+				g_free((options.params)->tib_file);
+				(options.params)->tib_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
+				g_free(chosen_file);
+
+				if(ti68k_load_upgrade((options.params)->tib_file)) 
+				{
+					msg_box("Error", "Can not load the upgrade.");
+					return;
+				}
 			}
-*/    
+
 			ti68k_restart();
 		break;
 
 		case GTK_RESPONSE_APPLY:
-			display_set_rom_dbox();
+			display_import_romversion_dbox();
+			display_romversion_dbox();	// forece rescan but recursive
         break;
 		
 		default:
 		break;
 	}
 
-	gtk_widget_destroy(dbox);
     ti68k_unhalt();
 
 	return 0;
 }
-
-
-/*
-void
-on_button6_clicked                     (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  char *ext = NULL;
-  int ret;
-
-  ext = strrchr(chosen_file, '.');
-  
-  if(!strcasecmp(ext, ".rom")) 
-    { // ROM image
-      g_free((options.params)->rom_file);
-      (options.params)->rom_file = g_strconcat(inst_paths.rom_dir,
-					       chosen_file, NULL);
-      g_free(chosen_file);
-      if(ti68k_loadImage((options.params)->rom_file)) 
-	{
-	  msg_box("Error", "Can not open the ROM image.");
-	  return;
-	}
-      
-      ti68k_restart();
-    }
-  else 
-    { // FLASH upgrade
-      ret = msg_box2("Question", "Do you want to load it as a fake ROM image or as an FLASH upgrade ? \n\nClick FLASH if you want to directly upgrade the calculator operating system (AMS). \n\nOn the other hand, if you load it as a fake ROM image, TiEmu will convert the FLASH upgrade into a ROM image but your image will suffer from some limitations (no boot block, no certificate, problems with fonts).");
-
-      if(ret == 1) 
-	{ // ROM
-	  g_free((options.params)->rom_file);
-	  (options.params)->rom_file = g_strconcat(inst_paths.rom_dir,
-						   chosen_file, NULL);
-	  g_free(chosen_file);
-	  if(ti68k_loadImage((options.params)->rom_file)) 
-	    {
-	      msg_box("Error", "Can not open the ROM image.");
-	      return;
-	    }
-	  ti68k_restart();
-	}
-      else
-	{ // FLASH
-	  g_free((options.params)->tib_file);
-	  (options.params)->tib_file = g_strconcat(inst_paths.rom_dir,
-						   chosen_file, NULL);
-	  g_free(chosen_file);
-	  if(ti68k_loadUpgrade((options.params)->tib_file)) 
-	    {
-	      msg_box("Error", "Can not open the FLASH upgrade.");
-	      return;
-	    }
-	  ti68k_reset();
-	}
-    }
-  
-  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "romversion_dbox"));
-  while( gtk_events_pending() ) { 
-    gtk_main_iteration(); 
-  }
-}
-*/
