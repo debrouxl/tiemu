@@ -33,18 +33,104 @@
 #include "skinops.h"
 #include "ti68k_int.h"
 
-static int tmp_vectors[16];
-static int tmp_autoints[8];
-static int tmp_traps[16];
+enum { 
+	    COL_NUMBER, COL_NAME,
+};
+#define CLIST_NVCOLS	(2)		// 2 visible columns
+#define CLIST_NCOLS		(2)		// 2 real columns
 
-gint display_dbgvectors_dbox()
+static GtkListStore* clist_create(GtkWidget *list)
+{
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkListStore *store;
+	GtkTreeModel *model;
+	GtkCellRenderer *renderer;
+	GtkTreeSelection *selection;
+    const gchar *text[CLIST_NVCOLS] = { _("Number"), _("Name") };
+    gint i;
+	
+	store = gtk_list_store_new(CLIST_NCOLS,
+				G_TYPE_INT, G_TYPE_STRING,
+				-1
+            );
+    model = GTK_TREE_MODEL(store);
+	
+	//clist = tree = gtk_tree_view_new_with_model(model);
+	//view = GTK_TREE_VIEW(tree);
+  
+    gtk_tree_view_set_model(view, model); 
+    gtk_tree_view_set_headers_visible(view, TRUE);
+	gtk_tree_view_set_rules_hint(view, FALSE);
+  
+	for(i = COL_NUMBER; i <= COL_NAME; i++)
+	{
+		renderer = gtk_cell_renderer_text_new();
+		gtk_tree_view_insert_column_with_attributes(view, -1, 
+            text[i], renderer, 
+            "text", i,
+			NULL);
+	}
+    
+    for (i = 0; i < CLIST_NVCOLS; i++) 
+    {
+		GtkTreeViewColumn *col;
+		
+		col = gtk_tree_view_get_column(view, i);
+		gtk_tree_view_column_set_resizable(col, TRUE);
+	}
+	
+	selection = gtk_tree_view_get_selection(view);
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
+
+	return store;
+}
+
+static void clist_populate(GtkListStore *store)
+{
+    GtkTreeIter iter;
+	gint i;
+
+	for(i = 0; i < 128; i++)
+	{
+	    gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter, 
+		COL_NUMBER, i, 
+		COL_NAME, ti68k_exception_to_string(i),
+		-1);
+	}
+}
+
+static void clist_get_selection(GtkWidget *list)
+{
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	//GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GList *l;
+	
+	// get selection
+	selection = gtk_tree_view_get_selection(view);
+	for (l = gtk_tree_selection_get_selected_rows(selection, &model);
+	     l != NULL; l = l->next) 
+	{
+		GtkTreeIter iter;
+		GtkTreePath *path = l->data;
+		gint n;
+			
+		gtk_tree_model_get_iter(model, &iter, path);
+		gtk_tree_model_get(model, &iter, COL_NUMBER, &n, -1);
+		
+		ti68k_bkpt_set_exception(n);
+	}	
+}
+
+gint display_dbgvectors_dbox(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
 	GtkWidget *data;
 	gint result;
-	gchar *str;
-	int i = 0;
+	GtkListStore *store;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_vectors-2.glade"), "dbgvectors_dbox",
@@ -55,13 +141,14 @@ gint display_dbgvectors_dbox()
 	
 	dbox = glade_xml_get_widget(xml, "dbgvectors_dbox");
 		
-
-	
+	data = glade_xml_get_widget(xml, "treeview1");
+    store = clist_create(data);
+	clist_populate(store);	
 	
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) {
 	case GTK_RESPONSE_OK:
-		ti68k_engine_unhalt();
+		clist_get_selection(data);
 		break;
 	default:
 		break;

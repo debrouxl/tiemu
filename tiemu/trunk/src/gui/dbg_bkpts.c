@@ -12,7 +12,7 @@
 
 
 enum { 
-	    COL_SYMBOL, COL_TYPE, COL_START, COL_END, COL_STATUS, COL_RW, COL_SIZE,
+	    COL_SYMBOL, COL_TYPE, COL_STATUS, COL_START, COL_END, COL_RW, COL_SIZE,
 };
 #define CLIST_NVCOLS	(7)		// 7 visible columns
 #define CLIST_NCOLS		(7)		// 7 real columns
@@ -66,20 +66,125 @@ static GtkListStore* clist_create(GtkWidget *list)
 	return store;
 }
 
+static GList** bkpts_mem_access[6] = {
+	&bkpts.mem_rb, &bkpts.mem_rw, &bkpts.mem_rl, 
+	&bkpts.mem_wb, &bkpts.mem_ww, &bkpts.mem_wl, 
+};
+static  GList** bkpts_mem_range[2] = { 
+	&bkpts.mem_rng_r, &bkpts.mem_rng_w,
+};
+static const char* bkpts_memacc_rw[6] = {
+	_("read"), _("read"), _("read"), 
+	_("write"), _("write"), _("write"), 
+};
+static const char* bkpts_memrng_rw[2] = {
+	_("read"), _("write"),
+};
+static const char* bkpts_memacc_size[6] = {
+	_("byte"), _("word"), _("long"),
+	_("byte"), _("word"), _("long"),
+};
+
 static void clist_refresh(GtkListStore *store)
 {
+	GList *l;
     GtkTreeIter iter;
-	gchar *str;
+	gchar *str, *str1, *str2;
+	gint i;
 
 	gtk_list_store_clear(store);
-/*
-	str = g_strdup("foo");
-    gtk_list_store_append(store, &iter);
-	gtk_list_store_set(store, &iter, 0, str, -1);
-	g_free(str);
-*/
 
+	// Code breakpoints
+	for(l = bkpts.code; l; l = g_list_next(l))
+	{
+		uint32_t addr = GPOINTER_TO_INT(l->data);
+		
+		str = g_strdup_printf("0x%06x", addr);
+		
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter, 
+		COL_SYMBOL, str, 
+		COL_TYPE, _("code"),
+		COL_STATUS, _("enabled"),
+		COL_START, str,
+		COL_END, "",		
+		COL_RW, "",
+		COL_SIZE, "",
+		-1);
+		
+		g_free(str);
+	}
 
+	// Vector breakpoints
+	for(l = bkpts.exception; l; l = g_list_next(l))
+	{
+		gint n = GPOINTER_TO_INT(l->data);
+		
+		str1 = g_strdup_printf("#%i", n);
+		str2 = g_strdup_printf("0x%06x", 4 * n);
+		
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter, 
+		COL_SYMBOL, str1, 
+		COL_TYPE, _("exception"),
+		COL_STATUS, _("enabled"),
+		COL_START, str2,
+		COL_END, "",		
+		COL_RW, "",
+		COL_SIZE, "",
+		-1);
+		
+		g_free(str);
+	}
+	
+	// Memory access breakpoints
+	for(i = 0; i < 6; i++)
+	{
+		for(l = *bkpts_mem_access[i]; l; l = g_list_next(l))
+		{
+			uint32_t addr = GPOINTER_TO_INT(l->data);
+			
+			str = g_strdup_printf("0x%06x", addr);
+			
+			gtk_list_store_append(store, &iter);
+			gtk_list_store_set(store, &iter, 
+			COL_SYMBOL, str, 
+			COL_TYPE, _("mem access"),
+			COL_STATUS, _("enabled"),
+			COL_START, str,
+			COL_END, "",		
+			COL_RW, bkpts_memacc_rw[i],
+			COL_SIZE, bkpts_memacc_size[i],
+			-1);
+			
+			g_free(str);
+		}
+	}
+	
+	// Memory range breakpoints
+	for(i = 0; i < 6; i++)
+	{
+		for(l = *bkpts_mem_access[i]; l; l = g_list_next(l))
+		{
+			ADDR_RANGE *s = l->data;
+			
+			str1 = g_strdup_printf("0x%06x", s->val1);
+			str2 = g_strdup_printf("0x%06x", s->val1);
+			
+			gtk_list_store_append(store, &iter);
+			gtk_list_store_set(store, &iter, 
+			COL_SYMBOL, str1, 
+			COL_TYPE, _("mem range"),
+			COL_STATUS, _("enabled"),
+			COL_START, str1,
+			COL_END, str2,		
+			COL_RW, bkpts_memrng_rw[i],
+			COL_SIZE, _("any"),
+			-1);
+			
+			g_free(str);
+		}
+	}
 }
 
 /*
