@@ -111,7 +111,8 @@ gint display_main_wnd(void)
 
 	gtk_widget_realize(main_wnd);	// set drawing area valid
 
-	// set title (useful for TIGCC-IDE for instance)
+	// set window title (useful for TIGCC-IDE for instance)
+	// Note: lpWindowName is "TiEmu (%s)" and lpClassName is "gdkWindowToplevel"
 	title = g_strdup_printf("TiEmu (%s)", ti68k_calctype_to_string(tihw.calc_type));
 	gtk_window_set_title(GTK_WINDOW(main_wnd), title);
 	g_free(title);
