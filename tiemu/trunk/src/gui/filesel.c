@@ -118,7 +118,7 @@ static const gchar *create_fsel_2(gchar *dirname, gchar *ext, gboolean save)
 	filter = gtk_file_filter_new();
 	sarray = g_strsplit(ext, ";", -1);
 	for(i = 0; sarray[i] != NULL; i++)
-		gtk_file_filter_add_pattern (filter, sarray[n]);
+		gtk_file_filter_add_pattern (filter, sarray[i]);
 	g_strfreev(sarray);
 	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
 

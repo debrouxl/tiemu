@@ -93,7 +93,7 @@ static void process_address(uint32_t plane_addr)
 
 	if(!(cnt % UPDATE_PLANES))
 	{
-		int np, i, j, ngp=1;
+		int np, i, ngp=1;
 		static int old_ngp=1;
 
 		already_reset = 0;
