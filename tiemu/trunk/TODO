@@ -41,7 +41,18 @@ dans le décor, je ne sais pas s'il exécute ou pas
 PPhd
 ====
 
-* ...
+* 1. Cycle counts ? Even they were wrong, they could be useless.
+  2. More dissassembled lines of code in the debugger.
+  3. Multiple windows for dissassembled code ?
+  4. When you press F5, it should close the debugger, otherwise some
+	strange bugs appear.
+
+* Also the ability to send multiple files to tiemu and not only one file
+per "send file".
+
+* If you could save the exact debugger state in the config file (which windows are
+openned, relative position of the windows and window size), I think it
+shouldn't matter very much.
 
 
 roms
@@ -52,6 +63,8 @@ roms
 * make AC_CHECK_LIB(comdlg32, GetOpenFileName) work
 
 * console mode (Win32)
+
+* use a single debugger window
 
 -------------
 + done

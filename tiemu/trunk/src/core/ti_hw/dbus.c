@@ -180,7 +180,7 @@ static int exit_link_cable(void)
 static void lp_reinit(void)
 {
 	avail = 0;
-	printf("reinit !\n");
+	//printf("reinit !\n");
 }
 
 static void lp_putbyte(uint8_t arg)

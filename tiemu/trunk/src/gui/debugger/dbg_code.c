@@ -408,16 +408,25 @@ void dbgcode_disasm_at(uint32_t addr)
     gtk_tree_path_free(path);
 }
 
+
+GLADE_CB void
+on_quit1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
 GLADE_CB void
 on_run1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+#if 1
 	tb_set_states(0, 0, 0, 0, 0, 1, 0);
     gtk_widget_set_sensitive(list, FALSE);
     set_other_windows_sensitivity(FALSE);
 
 	ti68k_debug_step();	// skip possible current bkpt
     ti68k_engine_start();
+#else
+	on_quit1_activate(menuitem, user_data);
+#endif
 }
 
 

@@ -47,7 +47,7 @@ gint display_skin_dbox()
 {
 	const gchar *filename;
 
-	filename = (char *)create_fsel(inst_paths.skin_dir, "", "*.skn", FALSE);
+	filename = (char *)create_fsel(inst_paths.skin_dir, NULL, "*.skn", FALSE);
 	if (!filename)
 	{
 		return 0;
@@ -68,7 +68,7 @@ gint display_load_state_dbox()
 	int err;
 
     // get filename
-	filename = create_fsel(inst_paths.home_dir, "", "*.sav", FALSE);
+	filename = create_fsel(inst_paths.home_dir, NULL, "*.sav", FALSE);
 	if (!filename)
 		return 0;
 
@@ -145,7 +145,7 @@ gint display_tifile_dbox()
 	if(folder == NULL)
 		folder = g_strdup(inst_paths.base_dir);
 
-	filename = (char *)create_fsel(folder, "", (char *)ext, FALSE);
+	filename = (char *)create_fsel(folder, NULL, (char *)ext, FALSE);
 	if (!filename)
     {
 		return 0;
@@ -198,7 +198,7 @@ gint display_set_tib_dbox(void)
 	int err;
 
     // get filename
-	filename = create_fsel(inst_paths.base_dir, "", "*.89u;*.9xu;*.v2u;*.tib", FALSE);
+	filename = create_fsel(inst_paths.base_dir, NULL, "*.89u;*.9xu;*.v2u;*.tib", FALSE);
 	if (!filename)
 		return 0;
 
@@ -240,7 +240,7 @@ gint display_import_romversion_dbox(void)
 	int err;
     
     // get filename
-	filename = create_fsel(inst_paths.base_dir, "", "*.rom;*.89u;*.9xu;*.v2u;*.tib", FALSE);
+	filename = create_fsel(inst_paths.base_dir, NULL, "*.rom;*.89u;*.9xu;*.v2u;*.tib", FALSE);
 	if (!filename)
 		return 0;
 

@@ -58,14 +58,14 @@ static void cancel_filename(GtkButton * button, gpointer user_data)
 } 
 
 // GTK 1.x/2.x (x < 4)
-static const gchar *create_fsel_1(gchar *dirname, gchar *ext, gboolean save)
+static const gchar *create_fsel_1(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
 	GtkWidget *fs;
     
 	fs = gtk_file_selection_new("Select a file...");
 
 	gtk_file_selection_set_filename (GTK_FILE_SELECTION(fs), dirname);
-	gtk_file_selection_complete(GTK_FILE_SELECTION(fs), ext);
+	gtk_file_selection_complete(GTK_FILE_SELECTION(fs), filename ? filename : ext);
 
 	g_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->ok_button),
 			 "clicked", G_CALLBACK(store_filename), fs);
@@ -99,7 +99,7 @@ static const gchar *create_fsel_1(gchar *dirname, gchar *ext, gboolean save)
 }
 
 // GTK >= 2.4
-static const gchar *create_fsel_2(gchar *dirname, gchar *ext, gboolean save)
+static const gchar *create_fsel_2(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
 	GtkWidget *dialog;
 	GtkFileFilter *filter;
@@ -119,6 +119,10 @@ static const gchar *create_fsel_2(gchar *dirname, gchar *ext, gboolean save)
 	path = g_path_get_dirname(dirname);
 	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), path);
 	g_free(path);
+
+	// set default name
+	if(filename)
+		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), filename);
 
 	// set wildcards
 	filter = gtk_file_filter_new();
@@ -140,7 +144,7 @@ static const gchar *create_fsel_2(gchar *dirname, gchar *ext, gboolean save)
 }
 
 // Win32 fs
-static const gchar *create_fsel_3(gchar *dirname, gchar *ext, gboolean save)
+static const gchar *create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
 #ifdef WIN32
 	OPENFILENAME o;
@@ -152,6 +156,10 @@ static const gchar *create_fsel_3(gchar *dirname, gchar *ext, gboolean save)
 
 	// clear structure
 	memset (&o, 0, sizeof(OPENFILENAME));
+
+	// set default filename
+	if(filename)
+		strcpy(lpstrFile, filename);
 
 	// format filter
 	sarray = g_strsplit(ext, "|", -1);
@@ -196,7 +204,7 @@ static const gchar *create_fsel_3(gchar *dirname, gchar *ext, gboolean save)
 }
 
 // KDE
-static const gchar *create_fsel_4(gchar *dirname, gchar *ext, gboolean save)
+static const gchar *create_fsel_4(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
 #if WITH_KDE
 	gchar *p;
@@ -224,14 +232,14 @@ const gchar *create_fsel(gchar *dirname, gchar *filename, gchar *ext, gboolean s
 	if(options.fs_type == 3)
 		options.fs_type = 1;
 #endif
-	//printf("%i: <%s> <%s> <%s> %i\n", options.fs_type, dirname, filename, ext, save);
+	printf("%i: <%s> <%s> <%s> %i\n", options.fs_type, dirname, filename, ext, save);
 
 	switch(options.fs_type)
 	{
-	case 0:	return create_fsel_1(dirname, ext, save);
-	case 1:	return create_fsel_2(dirname, ext, save);
-	case 2: return create_fsel_3(dirname, ext, save);
-	case 3: return create_fsel_4(dirname, ext, save);
+	case 0:	return create_fsel_1(dirname, filename, ext, save);
+	case 1:	return create_fsel_2(dirname, filename, ext, save);
+	case 2: return create_fsel_3(dirname, filename, ext, save);
+	case 3: return create_fsel_4(dirname, filename, ext, save);
 	default: return NULL;
 	}
 
