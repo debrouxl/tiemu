@@ -1,0 +1,23 @@
+## Process this file with automake to produce Makefile.in
+
+SUBDIRS = build
+EXTRA_DIST = core hid gui ./build/Makefile.am
+BUILT_SOURCES = links
+
+links: src.lst
+	@echo "Creating hard-links..." ;
+	@cd $(SUBDIRS); \
+	ln -sf `cat ../src.lst` ./
+
+src.lst:
+	@rm -f src.lst
+	@cd $(SUBDIRS); \
+	find ../core ../gui ../hid -iname *.c -depth > ../src.lst ; \
+	find ../core ../gui ../hid -iname *.h -depth >> ../src.lst
+
+clean-am:
+	@echo "Removing hard-links in $(SUBDIRS)" ;
+	@rm -f ./build/*.c ./build/*.h
+	@rm -f src.lst
+
+DISTCLEANFILES = ./build/*.*

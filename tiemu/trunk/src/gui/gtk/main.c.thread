@@ -1,0 +1,359 @@
+/*  gtktiemu - a TI89/92/92+ emulator
+ *  (c) Copyright 2000-2001, Romain Lievin and Thomas Corvazier
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <sys/timeb.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#include <SDL/SDL.h> // shall I use pthread instead ?
+#include <SDL/SDL_thread.h>
+
+#include "tilibs.h"
+#include "platform.h"
+#include "struct.h"
+#include "ticalc.h"
+#include "version.h"
+#include "misc.h"
+#include "files.h"
+#include "rcfile.h"
+#include "lib68k.h"
+
+#include "tiemu_cb.h"
+#include "wizard_dbox.h"
+#include "refresh.h"
+
+/* 
+   The TI92/89 should approximately execute NB_INSTRUCTIONS_PER_LOOP in 
+   TIME_LIMIT milliseconds
+   If you think this values are a bit too big, you can slow down 
+   the emulator by changing them 
+*/
+#define NB_INSTRUCTIONS_PER_LOOP 5000 //50000
+#define TIME_LIMIT               3
+
+//#define EXT_WIN
+
+gint romOk = 0;
+extern int wizard_ok;
+extern gchar *wizard_rom;
+
+TieOptions options;        // general gtktiemu options
+InfoUpdate info_update;    // pbar, msg_box, refresh, ...
+
+/*
+  This thread runs the emulation engine concurently with the GUI
+  which runs in the main loop
+*/
+SDL_Thread *wid;
+SDL_mutex *mut;
+
+static struct timeb tCurrentTime;
+static struct timeb tLastTime;
+static unsigned long int iCurrentTime;
+static unsigned long int iLastTime; 
+static int res;
+
+int working_thread(void *data)
+{
+  DISPLAY("Working thread has ID %i\n", SDL_ThreadID());
+ 
+  while (1) 
+    {
+      if(SDL_LockMutex(mut) == -1)
+	continue;
+
+      ftime(&tLastTime);
+      if((res = ti68k_doInstructions(NB_INSTRUCTIONS_PER_LOOP)))
+	{  // a bkpt has been encountered
+	
+	}
+      else 
+	{ // normal execution
+
+	  ftime(&tCurrentTime);
+	  iLastTime    = tLastTime.time*1000+tLastTime.millitm;
+	  iCurrentTime = tCurrentTime.time*1000+tCurrentTime.millitm;
+	  if ((iCurrentTime - iLastTime) < TIME_LIMIT)
+	  {
+#if defined(__LINUX__)
+	    usleep((TIME_LIMIT - iCurrentTime + iLastTime)*1000);
+#elif defined(__WIN32__)
+	    Sleep((TIME_LIMIT - iCurrentTime + iLastTime));
+#endif
+	  }
+	}
+      
+      SDL_UnlockMutex(mut);
+    }
+
+  return 0;
+}
+
+
+extern int menu;
+extern SDL_MouseButtonEvent smbe;
+
+gint my_function(gpointer data)
+{
+  if(menu) {
+    DISPLAY("menu = 1\n");
+    gtk_menu_popup(GTK_MENU(display_popup_menu()),
+		   NULL, NULL, NULL, NULL,
+		   smbe.button,
+		   -897199374); // cannot pass time
+    menu = 0;
+  }
+}
+
+
+/* Main function */		
+int main(int argc, char **argv) 
+{
+  /* Do primary initializations */
+  version();
+  initialize_paths();
+  load_default_config();
+  read_rc_file();
+  scan_cmdline(argc, argv);
+  
+  /* Check libticables & libticalcs library */
+
+  DISPLAY(_("libticables library, version %s\n"),
+	  ticable_get_version());
+  if(strcmp(ticable_get_version(), LIB_CABLE_VERSION_REQUIRED) < 0)
+    {
+      DISPLAY("Library version <%s> mini required.\n", 
+	      LIB_CABLE_VERSION_REQUIRED);
+      exit(-1);
+    }
+
+  DISPLAY(_("libticalcs library, version %s\n"),
+	  ticalc_get_version());
+  if(strcmp(ticalc_get_version(), LIB_CALC_VERSION_REQUIRED) < 0)
+    {
+      DISPLAY("Library version <%s> mini required.\n", 
+	      LIB_CALC_VERSION_REQUIRED);
+      exit(-1);
+    }
+
+  /* Initialize the libticables library */
+  ticable_set_param(options.link_cable);
+
+  /* Initialize refresh functions of the libticalcs library */
+  gt_init_refresh_functions();
+  
+  /* Assign a GUI to the libti68k library */
+  hid_set_gui_callbacks();
+
+  /* and a debugger */
+  ti68k_defineDebugger(enter_gtk_debugger);
+
+  /* Load a ROM image */
+  gtk_init(&argc, &argv);
+  if(ti68k_loadImage((options.params)->rom_file)) 
+    {
+
+      gtk_widget_show(create_step1_dbox());
+      while(!wizard_ok) {
+	while( gtk_events_pending() ) { 
+	  gtk_main_iteration(); 
+	}
+      }
+      g_free((options.params)->rom_file);
+      (options.params)->rom_file = g_strdup(wizard_rom);
+      g_free(wizard_rom);
+      ti68k_loadImage((options.params)->rom_file);
+    }
+
+  /* Init TI68k engine */
+  if(ti68k_init()) return -1;
+
+  /* Start emulation */
+  ti68k_reset();
+
+  /* Load calculator state image */
+  ti68k_loadState((options.params)->ram_file);
+  
+  /* Close the start-up console (Win32) */
+  options.console = DSP_ON;
+  ticable_DISPLAY_settings(options.console);
+
+  /* Create popup menu: must be called after initLib68k ! */
+  gtk_main_window();
+
+  /* Run the emulation engine in a thread (working thread) */
+  mut = SDL_CreateMutex();
+  wid = SDL_CreateThread(working_thread, NULL);
+  //working_thread(NULL);
+
+  /* Run GTK main loop */
+  gtk_idle_add(my_function, NULL);
+  gtk_main();
+  /*
+  while(1) {
+    while( gtk_events_pending() ) { 
+      gtk_main_iteration(); 
+    }
+      if(menu) {
+	DISPLAY("menu = 1\n");
+	gtk_menu_popup(GTK_MENU(display_popup_menu()),
+		 NULL, NULL, NULL, NULL,
+		 smbe.button,
+		 -897199374); // cannot pass time
+	menu = 0;
+      }
+  }
+  */
+
+  /* Close the emulator library */
+  ti68k_exit();
+  
+  return 0;
+}
+
+
+/* 
+   If GtkTiEmu is compiled in console mode (_CONSOLE), 
+   then we use the 'main' entry point.
+   If GtkTiEmu is compiled as a windowed application (_WINDOWS), 
+   then we use the 'WinMain' entry point.
+*/
+#if defined(__WIN32__) && defined(_WINDOWS)// && !defined(_CONSOLE)
+int APIENTRY WinMain(HINSTANCE hInstance,
+                     HINSTANCE hPrevInstance,
+                     LPSTR     lpCmdLine,
+                     int       nCmdShow)
+{
+  /* Check whether a TiLP session is already running */
+  HANDLE hMutex = CreateMutex(NULL, TRUE, "GtkTiEmu");
+  if (GetLastError() == ERROR_ALREADY_EXISTS)
+    {
+      g_error("GtkTiEmu is already running.");
+    }
+
+//  ticable_DISPLAY_settings(DSP_ON);
+  
+  return main(__argc, __argv);
+}
+#endif
+
+
+GtkWidget *window;
+
+/* 
+   A GTK callback: displays a popup menu if the auxiliary 
+   window has been enabled
+*/
+gboolean
+button_press_event        (GtkWidget       *widget,
+                           GdkEventButton  *event,
+                           gpointer         user_data)
+{
+  GtkWidget *menu;
+
+  /* Displays the popup menu */
+  if(event->button == 3)
+    {
+      menu = display_popup_menu();
+      gtk_widget_grab_focus(menu);
+      gdk_event_get();
+      gtk_menu_popup(GTK_MENU(menu), 
+		     NULL, NULL, NULL, NULL, 
+		     event->button, event->time);
+      suspend();
+    }
+  
+  return FALSE;
+}
+
+/* 
+   The GTK auxiliary window: may not be shown but used for 
+   using GTK with SDL.
+   A better way should be to use a GtkSDL plugin.
+*/
+int gtk_main_window(void)
+{
+  GtkWidget *eventbox;
+  GtkWidget *label;
+  
+  /* The main window */
+  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (window), "GtkTiEmu");
+  gtk_widget_set_usize(window, 250, 50);
+
+  /* The event box */
+  eventbox = gtk_event_box_new ();
+  gtk_container_add (GTK_CONTAINER (window), eventbox);
+  GTK_WIDGET_SET_FLAGS (eventbox, GTK_CAN_FOCUS);
+  GTK_WIDGET_SET_FLAGS (eventbox, GTK_CAN_DEFAULT);
+  gtk_widget_set_events (eventbox, GDK_BUTTON_PRESS_MASK | GDK_KEY_PRESS_MASK);
+  gtk_widget_show (eventbox);
+
+  label = gtk_label_new ("Click here to display a menu");
+  gtk_container_add (GTK_CONTAINER (eventbox), label);
+  gtk_widget_show (label);
+  
+  gtk_signal_connect (GTK_OBJECT (window), "destroy",
+                      GTK_SIGNAL_FUNC (gtk_main_quit),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (eventbox), "button_press_event",
+                      GTK_SIGNAL_FUNC (button_press_event),
+                      NULL);
+  //gtk_widget_grab_focus (eventbox);
+  gtk_widget_grab_default (eventbox);
+
+#ifdef EXT_WIN  
+  gtk_widget_show_all(window);
+#endif
+
+  return 0;
+}
+
+
+/*****************************************
+  These 4 functions should be removed
+*******************************************/
+
+int suspended = 0;            // emulation engine is suspended
+
+int update_gui(void) 
+{
+  gtk_main_iteration_do(FALSE);
+  return suspended;
+}
+
+int is_suspended() 
+{
+  return suspended;
+}
+
+void suspend(void) 
+{
+  SDL_LockMutex(mut);
+  suspended = 1;
+}
+
+void unsuspend(void) 
+{
+  SDL_UnlockMutex(mut);
+  suspended = 0;
+}

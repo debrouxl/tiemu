@@ -1,0 +1,29 @@
+Previous version: 1.53-stable (lib 1.4.2)
+Current version: 1.57-stable (lib 1.4.3)
+
+
+Improvements:
+------------- 
+
+	- upgraded to libticables v3.x.x
+	- SDL rendering system (LCD) completely rewritten
+	
+New capabilities:
+-----------------
+
+	- added scaling support for people who are using high resolution such
+	as 1280x1024
+	
+	
+Future capabilities:
+--------------------
+
+	- use the latest & faster UAE
+	- a better FLASH support to do
+	- 
+
+	
+Notes:
+------
+- use a RAM image format compatible with VTi's .sav file format for a future Netscape plugin (in progress)
+- Flash Apps/OS does not work but no problems for archives.

@@ -1,0 +1,265 @@
+				***************
+				*    TiEmu    *
+				***************
+
+
+
+
+For the installation procedure, see INSTALL.linux
+For a more specific README, see README.linux or README.win32
+
+
++-------------+
+| DESCRIPTION |
++-------------+
+
+TiEmu is a program allowing a PC to emulate a TI89/92/92+ calculator.
+It uses GTK+ (the Gimp ToolKit, http://www.gimp.org/gtk) for the GUI and the SDL (SimpleDirectmedia Layer) for the display. 
+It works on Linux and Windows platforms actually.
+
+All link cables are supported by the link port: parallel, serial, 
+Black TI Graph Link, Gray TI Graph Link and the (fast)AVRlink.
+
+TiEmu is based on XTiger, the original TI emulator for Linux (see the AUTHORS file for more details) which uses the m68k emulation core from UAE (The Ultimate Amiga Emulator).
+It also uses the libticables library.
+
+
++----------+
+| FEATURES |
++----------+
+
+Some features:
+
+o Works on 8, 16, 24/32 planes display (256, 65565, 16M/True colors)
+o Easy to use thanks to a GUI developped with GTK+
+o The ability to save the emulator state
+o Full linkport emulation (all link cables, even virtual)
+o File linkport emulation (for directly loading files)
+o Works with Fargo
+o Works with 1Mb & 2Mb ROMS, 128 or 256k memory (but FLASH Apps/OS does not work)
+o Nice debugger (memory, breakpoints, traps, vectors, ...)
+o Constrast emulated (Try [Alt] + [+] & [-])
+o Pretty fast
+o Sreenshot of LCD and/or calculator in several images format (JPG/PCX/XPM/BMP)
+o TI keyboard useable directly from PC keyboard or with the mouse on the skin
+
+
++---------------------+
+| SYSTEM REQUIREMENTS |
++---------------------+
+
+You will need a PC Intel computer. A 100MHz processor is a minimum.
+TiEmu uses roughly 10MB of RAM.
+Nethertheless, it's fast (it starts in 10 seconds on a PC166/64MB under NT4). 
+
+
++------------------+
+| ROMDUMPS & FARGO |
++------------------+
+
+To run this emulator you will need a ROM image or a FLASH upgrade.
+As ROM images are copyrighted by Texas Instrument, they will never be distributed with the emulator. To get a ROM image, you can use TiLP or any other ROM dumping program. TiLP may be interessant because it can be virtually linked with the emulator. A TI92 calculator requires FargoII for getting a ROM dump.
+
+If you can get a ROM image (because you don't own the calculator or you want to test the emulator), you can download a FLASH upgrade from the TI web site (http://education.ti.com and load it).
+
+If you want to run Fargo on the emulator, you will need to get
+a backup, put the fargo core inside (converted with
+"putfargo") and send it to the emulator.
+
+
++-----------------+
+| HOW TO USE IT ? |
++-----------------+
+
+When you launch it, TiEmu take some a while for initializing it. Once you 
+have launched, you should see a window with the look of your calculator. 
+You can either click with the left button on a TI key, either press the 
+correspondant key of your PC keyboard.
+
+Else, the right button of your mouse let you access a popup menu which contains
+all you need (I hope !) for configuring/using the emulator.
+
+
++------------------+
+| KEYBOARD MAPPING |
++------------------+
+
+The keyboard mapping is the same as VTi (since we use VTi's skins), the well 
+known TI emulator for Windows.
+
+TI92       PC
+---------  ------------
+[Hand]     [Caps Lock]
+[SHIFT]    [Shift]
+[ON]       [Sroll Lock]
+[DIAMOND]  [Ctrl]
+[2ND]      [Alt]
+[STO>]     [Tab]
+[SIN]      [Insert]
+[COS]      [Home]
+[TAN]      [Page Up]
+[LN]       [End]
+[CLEAR]    [Suppr]
+[MODE]     [Page Down]
+[APPS]     [Print Scrn]
+[(-)]      [<]
+[Theta]    [;]
+[+]        [+]
+[-]        [-]
+[X]        [*]
+[Div]      [/]
+[^]        [§]
+[(]        [[]
+[)]        []]
+
+Letters, Numbers, Cursormovement, F1-F8 + some others are the
+same keys on both keyboards
+
+Special Keys
+
+[F9]       Enter Debugger
+[F10]      Do a screen capture
+
+
++-------------------+
+| RIGHT BUTTON MENU |
++-------------------+
+
+Remark: the SDL version have a small and tricky bug: you have to double-click the menuitem for activating it.
+The right button menu give you access to the functionnalities of the emulator. If you let your mouse on the item during some while, a tooltip will appear.
+This menu is organized as follow:
+
+- Send file to TiEmu: directly load a file and transfer it into the emulator.
+- Link options: for configuring a link cable to use for the linkport emulation.
+- Config: load/save the current configuration in the config file (~/.tiemu ou tiemu.ini). The current state is not saved but loaded if it has been previously saved.
+- Calculator state: save/load the current state or load the latest saved stated
+- Enter debugger: see the DEBUGGER section further in the text
+- Reset calc: reset the calculator (RAM, FLASH: all !).
+- Emulator options: 
+	
+Speed: for tuning TiEmu. Only the 'Sync' item is implemented.
+Number of colors: allows you to choose the number of grayscales.
+Screen: with the  normal/large items, you can modify the size of the application window. Useful if you are working with high resolution. The same effect can be got by resizing the window with the mouse. 
+The fullscreen item switch in fullscreen mode. You can also press 'Alt+Enter' for toggling the full-screen mode.
+
+- Skin for current calc: you can choose to display the emulator with a skin or only the LCD display. You can change for a compatible skinn, too.
+- Screenshot: do a screenshot of the LCD display. The screenshot file is automatically incremented.
+- RAM: dump the RAM content into a file. The file is a text file and contains
+an hexadecimal & character dump.
+- ROM:
+
+Dump ROM: dump the ROM content into a file. The file is a text file and contains an hexadecimal & character dump. Beware, this may take some time and space disk for writing the file (roughly 10 MB).
+Add image/upgrade: add a file to the list of images/upgrades (see below).
+Set ROM: choose a file to load. It can be a true ROM image or a FLASH upgrade.
+If you select a FLASH upgrade, TiEmu will dislpay a choice: either convert the upgrade into a fake ROM image (for using the upgrade as a new ROM image), either load the upgrade for FLASHing your calc.
+- Help: display the logo and the license as well as misc informations.
+- Infos: some informations about the calc and the developper
+- Exit and save state: save the current state and quit
+- Exit without saving state: exit immediately without saving the curren state.
+
+
++--------------------+
+| LINKPORT EMULATION |
++--------------------+
+
+TiEmu emulates the linkport in two ways:
+- through an external link cable
+- from file
+
+With a link cable, TiEmu can communicate with the hardware (parallel, serial, ... link cable) or virtually (TiLP, VTi, another TiEmu application).
+
+Remark about virtual links: you have the choice between the TiEmu and the VTi virtual link.
+For Windows users: the Vti virtual link allows you to make TiEmu 
+communicate with VTi. It provides also a different linking method of the 
+TiEmu virtual link.
+For Linux users: the 2 possible virtual link are useable.
+Simply choose the best or the fastest.
+
+For the TiEmu virtual link, the emulator must be set on the channel #0 and the linking program on the channel #1.
+
+With file, TiEmu can load files directly from disk without using any linking program. Useful and fast !
+
+
++----------+
+| DEBUGGER |
++----------+
+
+It does not work in the Win32 version due to a memory bug.
+
+For quickly launch the debugger, press F9. Else, you can use the right button menu.
+The debugger allows you to monitor the code and registers, place several kind of breakpoints (addresses, traps, exceptions, data, ...) and also single step your instructions.
+
+Remark: there is a popup menu available on the 'Code' and 'Memory' frames. Simply press your right button mouse for displaying it !
+
+Currently, the 'Log' menu is not implemented.
+
+
++-------------+
+| SCREENSHOTS |
++-------------+
+
+Simply press F10 for doing a screenshot with the current options. The different options can be easily modified in the 'Screenshot options' dialog box.
+You have the choice between several file formats: PCX, XPM, JPG and BMP (SDL/Win32 and SDL/Linux only).
+
+The screenshot filename is automatically incremented whenever you do a screenshot.
+
+
++--------------+
+| COMMAND LINE |
++--------------+
+
+All the informations about the command line and the configuration file format 
+(~/.tiemu or tiemu.ini) are available in:
+-  the manpage for the Linux users ('man tiemu'),
+-  the Manpage.txt file for the Windows users.
+
+
++--------+
+| THANKS |
++--------+
+
+Jonas Minnberg for making (X)Tiger from which we have developped TiEmu.
+Rusty Wagner for the calculator skins.
+
+
++------+
+| BUGS |
++------+
+
+- FLASH archive works but not FLASH Apps/OS
+- X11 version seems to not start in 8 bit mode
+- X11 & SDL version have not been tested in 32 bit mode (I wasn't be able to
+  to do it)
+
+If you find a bug, please give your:
+- calc type
+- ROM version & HW type
+- the size and color depth of your screen (Linux users can use the xdpyinfo
+  command)
+- any infos you think interessant.
+Please report any bugs at <roms@lpg.ticalc.org>.
+
+
++------+
+| TODO |
++------+
+
+See the TODO file for more informations.
+Nethertheless, if you like programming in GTK+, you could develop a skin editor for Linux. Mail me, you will have all my help !
+
+
++-----------+
+| COPYRIGHT |
++-----------+
+
+GtkTiEmu and the libti68k library are Copyright (C) 2000-2001 by Romain Lievin 
+<roms@lpg.ticalc.org> and Thomas Corvazier <corvazier@yahoo.com>
+TiEmu is copyright (C) 2001-2002 by Romain Lievin. 
+libticables is Copyright (c) 1999-2002 by Romain Lievin <roms@lpg.ticalc.org>
+libticalcs is Copyright (c) 1999-2002 by Romain Lievin <roms@lpg.ticalc.org>
+
+TiEmu is based on the XTiger emulator (see AUTHORS for more details) which is based on UAE (Universal Amiga Emulator).
+
+
+Copying is allowed under the terms of GNU General Public License (GPL).  
+See the file COPYING for more details.
