@@ -7,8 +7,8 @@
 @SET_MAKE@
 CC        = @CC@
 CPP       = @CPP@
-CFLAGS    = @CFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GTHREAD_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@ @SDL_CFLAGS@
-LDFLAGS   = @LDFLAGS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GTHREAD_LIBS@ @GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ @SDL_LIBS@ $(no_undefined) -ljpeg
+CFLAGS    = @CFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GTHREAD_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@
+LDFLAGS   = @LDFLAGS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GTHREAD_LIBS@ @GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ $(no_undefined)
 
 INSTALL         = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -30,10 +30,12 @@ DEFS=@DEFS@ \
 INCLUDES = \
 	-I@top_srcdir@ -I$(includedir) \
 	-DPREFIX=\"${prefix}\" -I. \
-	-I./core/uae -I./core/ti_hw -I./core -I./hid -I./gui
+	-I./core -I./core/uae -I./core/ti_hw -I./core/dbg \
+	-I./misc \
+	-I./gui -I./gui/calc -I./gui/debugger
 
 # source files to build
-uae_OBJ = \
+core_uae_OBJ = \
 	core/uae/cpu0.o core/uae/cpu1.o \
 	core/uae/cpu2.o core/uae/cpu3.o \
 	core/uae/cpu4.o core/uae/cpu5.o \
@@ -45,68 +47,87 @@ uae_OBJ = \
 	core/uae/cpudefs.o core/uae/cpustbl.o \
 	core/uae/readcpu.o
 
-tihw_OBJ = \
+core_tihw_OBJ = \
 	core/ti_hw/dbus.o	\
+	core/ti_hw/flash.o	\
 	core/ti_hw/hw.o 	\
-	core/ti_hw/ports.o 	\
 	core/ti_hw/kbd.o 	\
 	core/ti_hw/lcd.o 	\
 	core/ti_hw/m68k.o	\
 	core/ti_hw/mem.o 	\
+	core/ti_hw/mem_89.o	\
+	core/ti_hw/mem_89p.o	\
+	core/ti_hw/mem_89t.o	\
+	core/ti_hw/mem_92.o	\
+	core/ti_hw/ports.o 	\
 	core/ti_hw/timer.o	
 
 core_OBJ = 			\
-	core/bkpts.o 		\
-	core/callbacks.o 	\
 	core/engine.o		\
 	core/error.o 		\
 	core/images.o 		\
 	core/interface.o	\
-	core/registers.o	\
 	core/state.o		\
 	core/type2str.o
 
-hid_OBJ = \
-	hid/cmdline.o 	\
-	hid/files.o 	\
-	hid/hid.o	\
-	hid/paths.o 	\
-	hid/printl.o	\
-	hid/rcfile.o 	\
-	hid/skinops.o	\
-	hid/tie_error.o \
-	hid/tikeys.o
+core_dbg_OBJ = \
+	core/dbg/bkpts.o	\
+	core/dbg/disasm.o	\
+	core/dbg/m68kdasm.o	\
+	core/dbg/registers.o	\
+	core/dbg/romcalls.o
+
+misc_OBJ = \
+	misc/cmdline.o 	\
+	misc/files.o 	\
+	misc/paths.o 	\
+	misc/printl.o	\
+	misc/rcfile.o 	\
+	misc/tie_error.o 
+
+gui_calc_OBJ = \
+	gui/calc/calc.o		\
+	gui/calc/keyboard.o	\
+	gui/calc/popup.o	\
+	gui/calc/screen.o	\
+	gui/calc/skinops.o	\
+	gui/calc/tikeys.o
+
+gui_debugger_OBJ = \
+	gui/debugger/dbg_all.o		\
+	gui/debugger/dbg_bkpts.o	\
+	gui/debugger/dbg_cause.o	\
+	gui/debugger/dbg_code.o		\
+	gui/debugger/dbg_data.o		\
+	gui/debugger/dbg_mem.o		\
+	gui/debugger/dbg_pclog.o	\
+	gui/debugger/dbg_regs.o		\
+	gui/debugger/dbg_vectors.o	\
+	gui/debugger/gsource.o		
 
 gui_OBJ = \
-	./gui/debugger/dbg_bkpts.o					\
-	./gui/debugger/dbg_cause.o					\
-	./gui/debugger/dbg_code.o					\
-	./gui/debugger/dbg_data.o					\
-	./gui/debugger/dbg_mem.o					\
-	./gui/debugger/dbg_pclog.o					\
-	./gui/debugger/dbg_regs.o					\
-	./gui/debugger/dbg_vectors.o					\
-	./gui/about.o							\
-	./gui/comm.o							\
-	./gui/dbg_all.o							\
-	./gui/dboxes.o							\
-	./gui/filesel.o							\
-	./gui/fs_misc.o							\
-	./gui/help.o	 						\
-	./gui/infos.o							\
-	./gui/main.o							\
-	./gui/manpage.o							\
-	./gui/pbars.o							\
-	./gui/popup.o							\
-	./gui/refresh.o							\
-	./gui/release.o							\
-	./gui/romversion.o						\
-	./gui/scroptions.o						\
-	./gui/splash.o							\
-	./gui/support.o 						\
-	./gui/wizard.o
+	gui/about.o							\
+	gui/comm.o							\
+	gui/dboxes.o							\
+	gui/filesel.o							\
+	gui/fs_misc.o							\
+	gui/help.o	 						\
+	gui/infos.o							\
+	gui/main.o							\
+	gui/manpage.o							\
+	gui/pbars.o							\
+	gui/refresh.o							\
+	gui/release.o							\
+	gui/romversion.o						\
+	gui/scroptions.o						\
+	gui/splash.o							\
+	gui/support.o 							\
+	gui/wizard.o
 
-tiemu_OBJ = core/uae/newcpu.o $(tihw_OBJ) $(core_OBJ) $(hid_OBJ) $(gui_OBJ)
+tiemu_OBJ = core/uae/newcpu.o \
+	$(core_uae_OBJ) $(core_OBJ) $(core_tihw_OBJ) $(core_dbg_OBJ) \
+	$(misc_OBJ) \
+	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ)
 
 #rules:
 all: tiemu

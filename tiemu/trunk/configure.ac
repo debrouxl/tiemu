@@ -3,7 +3,7 @@ dnl $Id: configure.in 409 2004-06-07 21:10:20Z roms $
 
 dnl Init.
 AC_PREREQ(2.57)
-AC_INIT(TiEmu, 1.70-a4, [tilp-users@lists.sourceforge.net])
+AC_INIT(TiEmu, 1.74, [tilp-users@lists.sourceforge.net])
 
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
@@ -13,16 +13,18 @@ AC_PREFIX_DEFAULT(/usr)
 dnl Files to configure.
 AC_CONFIG_SRCDIR([src/gui/main.c])
 AC_CONFIG_HEADERS([config.h])
-AC_OUTPUT([Makefile
-build/Makefile
-glade/Makefile
-man/Makefile
-pixmaps/Makefile
-ROMs/Makefile
-skins/Makefile
-src/Makefile
-tiemu.lsm
-tiemu.spec])
+AC_CONFIG_FILES([
+  Makefile
+  build/Makefile
+  glade/Makefile
+  man/Makefile
+  pixmaps/Makefile
+  ROMs/Makefile
+  skins/Makefile
+  src/Makefile
+  tiemu.lsm
+  tiemu.spec
+])
 
 AC_MSG_CHECKING([for something to drink while compiling])
 AC_MSG_RESULT([err: no fridge found!])
@@ -71,14 +73,11 @@ PKG_CHECK_MODULES(GLADE, libglade-2.0 >= 1.99.0)
 AC_SUBST(GLADE_CFLAGS)
 AC_SUBST(GLADE_LIBS)
 
-AM_PATH_SDL
-
 # Checks for header files.
 AC_HEADER_STDBOOL
 AC_CHECK_HEADERS([fcntl.h])
 AC_CHECK_HEADERS([libintl.h])
 AC_CHECK_HEADERS([sys/timeb.h])
-AC_CHECK_HEADERS(jpeglib.h)
 AC_CHECK_HEADERS(stdint.h)
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -88,8 +87,7 @@ AC_C_VOLATILE
 
 # Checks for libraries.
 AC_CHECK_LIB(m, pow)
-AC_CHECK_LIB(jpeg, jpeg_destroy_compress)
-AC_CHECK_LIB(pthread, pthread_create) dnl needed by SDL
+AC_CHECK_LIB(pthread, pthread_create) dnl needed by GThread
 
 # Checks for library functions.
 AC_FUNC_MALLOC

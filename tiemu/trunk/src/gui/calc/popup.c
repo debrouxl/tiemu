@@ -393,7 +393,7 @@ on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem
 		*dot = '\0';
 
 	// set path
-	path = g_strconcat(inst_paths.base_dir, basename, ".sav", NULL);
+	path = g_strconcat(inst_paths.home_dir, basename, ".sav", NULL);
 	g_free(basename);
 
 	// save state and and path
@@ -455,27 +455,27 @@ GtkWidget* display_popup_menu(void)
     switch(params.grayplanes) {
     case 2:
         data = glade_xml_get_widget(xml, "2_colors1");
-        gtk_signal_handler_block_by_func(GTK_OBJECT(data), (VCB)on_2_colors1_activate, NULL);
+        g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_2_colors1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        gtk_signal_handler_unblock_by_func(GTK_OBJECT(data), (VCB)on_2_colors1_activate, NULL);
+        g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_2_colors1_activate, NULL);
         break;
     case 4:
         data = glade_xml_get_widget(xml, "4_colors1");
-        gtk_signal_handler_block_by_func(GTK_OBJECT(data), (VCB)on_4_colors1_activate, NULL);
+        g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_4_colors1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        gtk_signal_handler_unblock_by_func(GTK_OBJECT(data), (VCB)on_4_colors1_activate, NULL);
+        g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_4_colors1_activate, NULL);
         break;
     case 7:
         data = glade_xml_get_widget(xml, "7_colors1");
-        gtk_signal_handler_block_by_func(GTK_OBJECT(data), (VCB)on_7_colors1_activate, NULL);
+        g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_7_colors1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        gtk_signal_handler_unblock_by_func(GTK_OBJECT(data), (VCB)on_7_colors1_activate, NULL);
+        g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_7_colors1_activate, NULL);
         break;
     case 11:
         data = glade_xml_get_widget(xml, "11_colors1");
-        gtk_signal_handler_block_by_func(GTK_OBJECT(data), (VCB)on_11_colors1_activate, NULL);
+        g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_11_colors1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        gtk_signal_handler_unblock_by_func(GTK_OBJECT(data), (VCB)on_11_colors1_activate, NULL);
+        g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_11_colors1_activate, NULL);
         break;
     }
 
@@ -483,21 +483,21 @@ GtkWidget* display_popup_menu(void)
     {
     case VIEW_NORMAL:
         data = glade_xml_get_widget(xml, "normal_view1");
-        gtk_signal_handler_block_by_func(GTK_OBJECT(data), (VCB)on_normal_view1_activate, NULL);
+        g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_normal_view1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        gtk_signal_handler_unblock_by_func(GTK_OBJECT(data), (VCB)on_normal_view1_activate, NULL);
+        g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_normal_view1_activate, NULL);
         break;
     case VIEW_LARGE:
         data = glade_xml_get_widget(xml, "large_view1");
-        gtk_signal_handler_block_by_func(GTK_OBJECT(data), (VCB)on_large_view1_activate, NULL);
+        g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_large_view1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        gtk_signal_handler_unblock_by_func(GTK_OBJECT(data), (VCB)on_large_view1_activate, NULL);
+        g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_large_view1_activate, NULL);
         break;
     case VIEW_FULL:
         data = glade_xml_get_widget(xml, "full_view1");
-        gtk_signal_handler_block_by_func(GTK_OBJECT(data), (VCB)on_full_screen1_activate, NULL);
+        g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_full_screen1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        gtk_signal_handler_unblock_by_func(GTK_OBJECT(data), (VCB)on_full_screen1_activate, NULL);
+        g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_full_screen1_activate, NULL);
         break;
     default:
         break;

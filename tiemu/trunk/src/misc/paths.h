@@ -30,7 +30,7 @@
 
 #if defined(__LINUX__)
 # define CONF_DIR   	".tiemu/"
-# define INI_FILE    	"init"
+# define INI_FILE    	"tiemu.ini"
 # define CACHE_FILE 	"ROMs.lst"
 # define LOG_FILE 		"/tmp/tiemu.log"
 #elif defined(__WIN32__)

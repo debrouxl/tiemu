@@ -65,7 +65,7 @@ gint display_load_state_dbox()
 	int err;
 
     // get filename
-	filename = create_fsel(inst_paths.base_dir, "*.sav");
+	filename = create_fsel(inst_paths.home_dir, "*.sav");
 	if (!filename)
 		return 0;
 
@@ -95,7 +95,7 @@ gint display_save_state_dbox()
 	pattern = g_strconcat(basename, ".sav", NULL);
 	g_free(basename);
 
-	filename = create_fsel(inst_paths.base_dir, pattern);
+	filename = create_fsel(inst_paths.home_dir, pattern);
 	g_free(pattern);
 	if (!filename)
 		return 0;

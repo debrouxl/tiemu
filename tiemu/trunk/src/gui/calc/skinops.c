@@ -34,7 +34,6 @@
 #if !defined(__WIN32__) && !defined(__MACOSX__)
 #include <byteswap.h>
 #endif
-#include <jpeglib.h>
 #include <math.h>
 
 #include "skinops.h"
