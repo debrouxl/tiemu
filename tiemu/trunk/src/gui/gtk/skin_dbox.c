@@ -79,9 +79,6 @@ create_skin_dbox (void)
   g_signal_connect ((gpointer) skin_dbox, "destroy_event",
                     G_CALLBACK (on_skin_dbox_destroy),
                     NULL);
-  g_signal_connect ((gpointer) clist1, "button_press_event",
-                    G_CALLBACK (on_skin_clist1_button_press_event),
-                    NULL);
   g_signal_connect ((gpointer) button7, "clicked",
                     G_CALLBACK (on_skin_button7_clicked),
                     NULL);

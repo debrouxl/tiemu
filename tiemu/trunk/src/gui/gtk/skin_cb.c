@@ -26,22 +26,45 @@ static gint valid = 0;
 gint display_skinlist_dbox(void)
 {
   GtkWidget *dbox;
-  GtkWidget *list;
+  GtkWidget *clist;
+  GtkListStore *list;
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+  GtkTreeSelection *sel;
   gchar *filename;
 
   DIR *dir;
   struct dirent *dirent;
-  gchar *text[6]; // 6 columns
   skinInfos si;
   int i;
+  gchar *text[5] = { _("Filename"), _("Version"),
+		     _("Skin name"), _("Author name"),
+		     _("Calc type") };
 
   dbox = create_skin_dbox();
   
-  list = lookup_widget(dbox, "clist1");
+  clist = lookup_widget(dbox, "clist1");
+
+  /* Set up the GtkTreeView */
+  list = gtk_list_store_new(5, G_TYPE_STRING, G_TYPE_STRING,
+			    G_TYPE_STRING, G_TYPE_STRING,
+			    G_TYPE_STRING);
+  model = GTK_TREE_MODEL(list);
+  
+  gtk_tree_view_set_model(GTK_TREE_VIEW(clist), model); 
+  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(clist), TRUE); 
+  
+
+  for (i = 0; i < 5; i++)
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), i, text[i],
+						gtk_cell_renderer_text_new(),
+						"text", 0, NULL);
+  gtk_list_store_clear(list); 
 
   if( (dir=opendir(inst_paths.skin_dir)) == NULL)
     {
       msg_box("Error", "Unable to open directory.");
+      gtk_widget_destroy(dbox);
       return 0;
     }
   
@@ -69,20 +92,27 @@ gint display_skinlist_dbox(void)
 	  text[4] = g_strdup(si.calc);
 	  text[5] = g_strdup("");
 
-#if 0 /* FUCKED */
-	  gtk_clist_append(GTK_CLIST(list), text);	  
-#endif /* 0 */
-	  for(i=0; i<6; i++) g_free(text[i]);
+	  gtk_list_store_append(list, &iter);
+	  gtk_list_store_set(list, &iter, 0, text[0],
+			     1, text[1], 2, text[2],
+			     3, text[3], 4, text[4],
+			     5, text[5], -1);
+
+	  for(i=0; i<5; i++) g_free(text[i]);
 	} 
     }
   
   if(closedir(dir)==-1)
-    {
-      msg_box("Error", "Unable to close directory.");
-      return 0;
-    }
+    msg_box("Error", "Unable to close directory.");
   
+  sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(clist)); 
+  gtk_tree_selection_set_mode(sel, GTK_SELECTION_SINGLE);       
+
   gtk_widget_show_all(dbox);
+
+  g_signal_connect(G_OBJECT(sel), "changed", 
+                   G_CALLBACK(on_skin_clist_selection_changed), NULL); 
+
   return 0;
 }
 
@@ -93,47 +123,30 @@ on_skin_dbox_destroy                   (GtkObject       *object,
   unhalt();
 }
 
-#if 0 /* FUCKED */
-void
-on_skin_clist1_select_row              (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-  gchar *buffer = NULL;
-  gtk_clist_get_text(clist, row, 0, &buffer);
-  chosen_file = g_strdup(buffer);
-  //printf("chosen_file = <%s>\n", chosen_file);
+void 
+on_skin_clist_selection_changed (GtkTreeSelection *sel, 
+				 gpointer user_data) 
+{ 
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+  gchar *buf;
 
-  valid = 0;
-  gtk_clist_get_text(clist, row, 4, &buffer);
-  if(!strcmp(buffer, "TI-89") && (ti68k_getCalcType() & TI89))
-    valid = 1;
-  if(!strcmp(buffer, "TI-92") && (ti68k_getCalcType() & TI92))
-    valid = 1;
+  if (gtk_tree_selection_get_selected (sel, &model, &iter))
+    {
+      valid = 0;
+      if (chosen_file != NULL)
+	g_free(chosen_file);
+
+      gtk_tree_model_get (model, &iter, 0, &chosen_file, 4, &buf, -1);
+
+      if ((!strcmp(buf, "TI-89") && (ti68k_getCalcType() & TI89))
+	|| (!strcmp(buf, "TI-92") && (ti68k_getCalcType() & TI92)))
+	valid = 1;
+
+      g_free(buf);
+    }
 }
 
-
-void
-on_skin_clist1_unselect_row            (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-  return;
-}
-
-#endif /* 0 */
-
-gboolean
-on_skin_clist1_button_press_event      (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
-{
-  return FALSE;
-}
 
 /* OK button */
 void
