@@ -35,6 +35,7 @@
 #include <byteswap.h>
 #endif
 #include <jpeglib.h>
+#include <math.h>
 
 #include "skinops.h"
 
@@ -45,7 +46,11 @@
 SKIN_INFOS skin_infos = { 0 };
 static int skin_loaded = 0;
 
-// taken from skinedit/src/skinops.c/load_skin_tiemu()
+void jpeg_file_src (j_decompress_ptr cinfo, FILE * infile);
+
+/*
+	Read skin informations (header)
+*/
 int skin_read_header(const char *filename, SKIN_INFOS* si)
 {
 	FILE *fp = NULL;
@@ -148,8 +153,10 @@ int skin_read_header(const char *filename, SKIN_INFOS* si)
     	return 0;
 }
 
-void jpeg_file_src (j_decompress_ptr cinfo, FILE * infile);
 
+/*
+	Read skin image (pure jpeg data)
+*/
 int skin_read_image(const char *filename, SKIN_INFOS* si)
 {
 	FILE *fp = NULL;
@@ -159,16 +166,31 @@ int skin_read_image(const char *filename, SKIN_INFOS* si)
    	struct jpeg_error_mgr jerr;
 	int i, j;
 	char *p;
-	int scaled = 0;
+
+	int h, w;
+	float rw, rh, r;
+	double s;
+	int lcd_w, lcd_h;
+	
+	// set lcd size
+	if(!strcmp(si->calc, SKIN_TI89))
+	{
+		lcd_w = 160;
+		lcd_h = 100;
+	} else
+	{
+		lcd_w = 240;
+		lcd_h = 128;
+	}
   
-    	fp = fopen(filename, "rb");
+    fp = fopen(filename, "rb");
   	if (fp == NULL)
-    	{
-      		fprintf(stderr, "Unable to open this file: <%s>\n", filename);
-      		return -1;
-    	}
+    {
+    	fprintf(stderr, "Unable to open this file: <%s>\n", filename);
+    	return -1;
+    }
     	
-    	/* offsets */
+    /* offsets */
   	fseek(fp, 16, SEEK_SET);  
   	fread(&endian, 4, 1, fp);
   	fread(&jpeg_offset, 4, 1, fp);
@@ -177,87 +199,89 @@ int skin_read_image(const char *filename, SKIN_INFOS* si)
 	fseek(fp, jpeg_offset, SEEK_SET);
   	
   	// Init JPEG
-    	cinfo.err = jpeg_std_error(&jerr);
-    	jpeg_create_decompress(&cinfo);
+    cinfo.err = jpeg_std_error(&jerr);
+    jpeg_create_decompress(&cinfo);
 
 #ifdef __WIN32__
 	jpeg_file_src(&cinfo, fp);
 #else
 	jpeg_stdio_src(&cinfo, fp);
 #endif
-    	jpeg_read_header(&cinfo, TRUE);
+    jpeg_read_header(&cinfo, TRUE);
 
-    	// Rescale image to half if necessary
-    	if ((cinfo.image_width > 800) || (cinfo.image_height > 600)) {
-		cinfo.scale_num = 1;
-		cinfo.scale_denom = 2;
-		scaled = 1;
-    	}
+	// Rescale image if needed (fixed LCD size)
+	w = si->lcd_pos.right - si->lcd_pos.left;
+	h = si->lcd_pos.bottom - si->lcd_pos.top;
+	rw = (float)w / lcd_w;
+	rh = (float)h / lcd_h;
+	r = (rw < rh) ? rw : rh;
+	s = ceil(10 * r) / 10.0;
 
-        // Rescale image if LCD size is too small
-        if((si->lcd_pos.right - si->lcd_pos.left) < 240 || 
-                (si->lcd_pos.bottom - si->lcd_pos.top) < 128)
-        {
-            printf("<%i %i %i %i>\n", si->lcd_pos.left, si->lcd_pos.right,
-            si->lcd_pos.top, si->lcd_pos.bottom);
-        }
-    
-    	// Require a colormapped output with a limited number of colors
-    	cinfo.quantize_colors = TRUE;
-    	cinfo.desired_number_of_colors = MAX_COLORS;
+	//printf("image :<%i x %i>\n", cinfo.image_width, cinfo.image_height);
+	//printf("lcd : <w = %i; h = %i>\n", w, h);
+	//printf("ratios : <%2.2f; %2.2f> => %2.1f\n", rw, rh, s);
 
-    	// Load JPEG image
-    	jpeg_start_decompress(&cinfo);
-    	si->ncolors = cinfo.actual_number_of_colors;
+	cinfo.scale_num = 10;
+	cinfo.scale_denom = (int)(10 * s);
+	//printf("scaling: %i / %i\n", cinfo.scale_num, cinfo.scale_denom);
 
-    	// Copy the color palette
-    	for (j = 0; j < cinfo.actual_number_of_colors; j++) {
-			si->cmap[0][j] = cinfo.colormap[0][j];
-			si->cmap[1][j] = cinfo.colormap[1][j];
-			si->cmap[2][j] = cinfo.colormap[2][j];
-    	}
+    // Require a colormapped output with a limited number of colors
+    cinfo.quantize_colors = TRUE;
+    cinfo.desired_number_of_colors = MAX_COLORS;
 
-    	if (cinfo.output_components != 1)	// 1: palettized 
+    // Load JPEG image
+    jpeg_start_decompress(&cinfo);
+    si->ncolors = cinfo.actual_number_of_colors;
+
+    // Copy the color palette
+    for (j = 0; j < cinfo.actual_number_of_colors; j++) {
+		si->cmap[0][j] = cinfo.colormap[0][j];
+		si->cmap[1][j] = cinfo.colormap[1][j];
+		si->cmap[2][j] = cinfo.colormap[2][j];
+    }
+
+    if (cinfo.output_components != 1)	// 1: palettized 
 		return -1;
 
-    	// Get skin size
-    	si->width = cinfo.output_width + (cinfo.output_width & 3);
-    	si->height = cinfo.output_height + (cinfo.output_height & 3);
+    // Get skin size
+	printf("image :<%i x %i>\n", cinfo.output_width, cinfo.output_height);
+    si->width = cinfo.output_width + (cinfo.output_width & 3);
+    si->height = cinfo.output_height + (cinfo.output_height & 3);
 
-    	// Allocate image
-    	si->img = p = (unsigned char *) malloc(si->width * si->height);
-    	if (si->img == NULL)
+    // Allocate image
+    si->img = p = (unsigned char *) malloc(si->width * si->height);
+    if (si->img == NULL)
 		return -1;
 
-    	// Load jpeg image line by line //c += xx*yy;
-    	while (cinfo.output_scanline < cinfo.output_height) {
+    // Load jpeg image line by line //c += xx*yy;
+    while (cinfo.output_scanline < cinfo.output_height) 
+	{
 		p += si->width;
 		jpeg_read_scanlines(&cinfo, (JSAMPARRAY)&p, 1);
-    	}
+    }
 
-    	// Close JPEG
-    	jpeg_finish_decompress(&cinfo);
-    	jpeg_destroy_decompress(&cinfo);
+    // Close JPEG
+    jpeg_finish_decompress(&cinfo);
+    jpeg_destroy_decompress(&cinfo);
 
-	// Rescale coords
-	if(scaled) {
-		si->lcd_pos.left >>= 1;
-		si->lcd_pos.right >>= 1;
-		si->lcd_pos.top >>= 1;
-		si->lcd_pos.bottom >>= 1;
-	
-		for (i = 0; i < SKIN_KEYS; i++) {
-      			si->keys_pos[i].left >>= 1;
-      			si->keys_pos[i].top >>= 1;
-      			si->keys_pos[i].right >>= 1;
-      			si->keys_pos[i].bottom >>= 1;
-    		}
-	}
+	// Rescale all coords
+	si->lcd_pos.left = (long)(si->lcd_pos.left / s);
+	si->lcd_pos.right = (long)(si->lcd_pos.right / s);
+	si->lcd_pos.top = (long)(si->lcd_pos.top / s);
+	si->lcd_pos.bottom = (long)(si->lcd_pos.bottom / s);
+
+	for (i = 0; i < SKIN_KEYS; i++) 
+	{
+      	si->keys_pos[i].left = (long)(si->keys_pos[i].left / s);
+      	si->keys_pos[i].top = (long)(si->keys_pos[i].top / s);
+      	si->keys_pos[i].right = (long)(long)(si->keys_pos[i].right / s);
+      	si->keys_pos[i].bottom = (long)(long)(si->keys_pos[i].bottom / s);
+    }
     	
-    	/* Close file */
-    	fclose(fp);
+   	/* Close file */
+   	fclose(fp);
     	
-    	return 0;
+   	return 0;
 }
 
 /* Unload skin by freeing allocated memory */

@@ -171,7 +171,7 @@ static int match_skin(int calc_type)
       	options.skin_file = g_strdup_printf("%s%s.skn", 
 			inst_paths.skin_dir, ti68k_calctype_to_string(calc_type));
 
-		tiemu_error(0, _("skin incompatible with the current calc model. Falling back to default skin."));
+		//tiemu_error(0, _("skin incompatible with the current calc model. Falling back to default skin."));
 		return -1;
 	}
 
