@@ -33,17 +33,21 @@
 #include "support.h"
 
 typedef struct {
-	GtkWidget *window;
-	GtkWidget *label;
+	GtkWidget	*window;
+	GtkWidget	*label;
+	int			valid;
 } TilpSplashScreen;
 
-static TilpSplashScreen splashscreen;
+static TilpSplashScreen splashscreen = { 0 };
 
 GtkWidget *splash_screen_start(void)
 {
 	GtkWidget *image, *vbox;
 	GdkColor color;
 	GdkPixbuf *pixbuf;
+
+	if(splashscreen.valid)
+		return splashscreen.window;
 
 	splashscreen.window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(splashscreen.window),
@@ -82,16 +86,25 @@ GtkWidget *splash_screen_start(void)
 		gtk_main_iteration();
 	}
 
+	splashscreen.valid = !0;
 	return splashscreen.window;
 }
 
 void splash_screen_stop(void)
 {
+	if(!splashscreen.valid)
+		return;
+	
 	gtk_widget_destroy(splashscreen.window);
+
+	splashscreen.valid = 0;
 } 
 
 void splash_screen_set_label(gchar * label)
 {
+	if(!splashscreen.valid)
+		return;
+
 	gtk_label_set_text(GTK_LABEL(splashscreen.label), label);
 
 	while (gtk_events_pending()) {

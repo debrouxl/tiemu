@@ -359,6 +359,7 @@ on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem
 {
 	gchar *basename;
 	gchar *dot;
+	extern int exit_loop;
 
 	// build name
 	basename = g_path_get_basename(params.rom_file);
@@ -375,7 +376,8 @@ on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem
 	ti68k_state_save(params.sav_file);
     rcfile_write();
 
-	// exits
+	// exit
+	exit_loop = !0;
   	gtk_main_quit();
 }
 
@@ -384,6 +386,9 @@ GLADE_CB void
 on_exit_without_saving_state1_activate (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	extern int exit_loop;
+
+	exit_loop = !0;
 	gtk_main_quit();
 }
 

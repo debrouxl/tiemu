@@ -44,6 +44,7 @@
 #include "dbg_all.h"
 #include "screenshot.h"
 #include "kbd_mapper.h"
+#include "calc_if.h"
 
 GtkWidget *main_wnd = NULL;
 GtkWidget *area = NULL;
@@ -91,8 +92,12 @@ static void set_infos(void)	// set window & lcd sizes
 	}
 }
 
+GtkWidget* create_calc_wnd (void);
+
+// Main wnd by loading glade xml file or by executing glade generated code
 gint display_main_wnd(void)
 {
+#if 0
 	GladeXML *xml;
 
 	xml = glade_xml_new
@@ -104,23 +109,27 @@ gint display_main_wnd(void)
 	
 	main_wnd = glade_xml_get_widget(xml, "calc_wnd");
 	area = glade_xml_get_widget(xml, "drawingarea1");
+#else
+	main_wnd = create_calc_wnd();
+	area = g_object_get_data(main_wnd, "drawingarea1");
 
+	gtk_widget_show(main_wnd);
+	gtk_widget_show(area);
+
+#endif
 	gtk_window_set_policy (GTK_WINDOW (main_wnd), TRUE, TRUE, FALSE);
-
-    //gtk_widget_show(area);
-	//gtk_widget_show(main_wnd);
 
 	return 0;
 }
 
-GLADE_CB void
+/*GLADE_CB*/ void
 on_calc_wnd_destroy                    (GtkObject       *object,
                                         gpointer         user_data)
 {
 	return;
 }
 
-GLADE_CB gboolean
+/*GLADE_CB*/ gboolean
 on_calc_wnd_delete_event           (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
@@ -130,7 +139,7 @@ on_calc_wnd_delete_event           (GtkWidget       *widget,
 
 typedef void (*VCB) (void);
 
-GLADE_CB gboolean
+/*GLADE_CB*/ gboolean
 on_calc_wnd_expose_event           (GtkWidget       *widget,
                                     GdkEventExpose  *event,
                                     gpointer         user_data)
@@ -139,7 +148,7 @@ on_calc_wnd_expose_event           (GtkWidget       *widget,
 	return FALSE;
 }
 
-GLADE_CB gboolean
+/*GLADE_CB*/ gboolean
 on_drawingarea1_configure_event        (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data)
@@ -147,7 +156,7 @@ on_drawingarea1_configure_event        (GtkWidget       *widget,
     return FALSE;
 }
 
-GLADE_CB gboolean
+/*GLADE_CB*/ gboolean
 on_drawingarea1_expose_event           (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data)
@@ -575,7 +584,7 @@ int  hid_screenshot(char *filename)
 }
 
 
-GLADE_CB gboolean
+/*GLADE_CB*/ gboolean
 on_calc_wnd_window_state_event         (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)

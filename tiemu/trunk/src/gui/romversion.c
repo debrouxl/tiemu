@@ -126,7 +126,6 @@ gint display_romversion_dbox(gboolean file_only)
 	GtkWidget *dbox;
 	GtkWidget *data;
     gint result;
-	int err;
 
     GtkListStore *list;
     GtkTreeIter iter;
@@ -225,51 +224,24 @@ gint display_romversion_dbox(gboolean file_only)
 			if(!ti68k_is_a_img_file(chosen_file))
 				break;
 
-			{
-                // Remove previous tib file
-                g_free(params.tib_file);
-				params.tib_file = g_strconcat("", NULL);
+            // Remove previous tib file
+            g_free(params.tib_file);
+			params.tib_file = g_strconcat("", NULL);
 
-                // Set new image
-				g_free(params.rom_file);
-				params.rom_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
-				g_free(chosen_file);
-                chosen_file = NULL;
+            // Set new image
+			g_free(params.rom_file);
+			params.rom_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
+			g_free(chosen_file);
+            chosen_file = NULL;
 
-                if(file_only) return 0;
+            if(file_only) return 0;
 
-				err = ti68k_load_image(params.rom_file);
-				handle_error();
-				if(err) 
-				{
-					//msg_box("Error", "Can not load the image.");
-					ti68k_engine_release();
-					return -1;
-				}
-
-                // Restart engine
-				err = hid_exit();
-				handle_error();
-				if(err) return -1;
-
-				err = ti68k_exit();
-				handle_error();
-				if(err) return -1;
-
-				err = ti68k_init();
-				handle_error();
-				if(err)	return -1;
-
-				err = hid_init();
-				handle_error();
-				if(err)	return -1;
-
-				ti68k_reset();
-			}
-
+            // Restart engine by exiting the GTK loop
 			g_free(params.sav_file);
 			params.sav_file = g_strdup("");
-			
+
+			while(gtk_events_pending()) gtk_main_iteration();
+			gtk_main_quit();			
 		break;
 
 		case GTK_RESPONSE_APPLY:
@@ -279,10 +251,9 @@ gint display_romversion_dbox(gboolean file_only)
 		
 		default:
             if(file_only) return -1;
+			ti68k_engine_release();
 		break;
 	}
-
-    ti68k_engine_release();
 
 	return 0;
 }
