@@ -129,6 +129,7 @@ void create_pbar_type4(const gchar * title, gchar * text)
 	gtk_label_set_text(GTK_LABEL(p_win.label), text);
 	p_win.pbar1 = glade_xml_get_widget(xml, "progressbar4");
 	p_win.label_rate = glade_xml_get_widget(xml, "label22");
+	printf("<%p>\n", p_win.label_rate);
 
 	gtk_widget_show_all(pbar_window);
 }

@@ -134,7 +134,8 @@ gint display_tifile_dbox()
 	static gchar *folder = NULL;
 
     // set mask
-    switch(tihw.calc_type) {
+    switch(tihw.calc_type) 
+	{
     case TI92:
         ext = "*.92?";
 		break;
@@ -169,24 +170,30 @@ gint display_tifile_dbox()
 
     // check extension
     if(!tifiles_is_a_ti_file(filename) || 
-        !tifiles_is_ti9x(tifiles_which_calc_type(filename))) {
+        !tifiles_is_ti9x(tifiles_which_calc_type(filename))) 
+	{
         msg_box(_("Error"), _("This file is not a valid TI file."));
         ti68k_engine_release();
         return -1;
     }
 
     // set pbar title
-#if 1
-    if(tifiles_is_a_tib_file(filename) || tifiles_is_a_flash_file(filename)) {
+    if(tifiles_is_a_tib_file(filename) || tifiles_is_a_flash_file(filename)) 
+	{
         create_pbar_type5(_("Flash"), "");
-    } else if(tifiles_is_a_backup_file(filename)) {
+    } 
+	else if(tifiles_is_a_backup_file(filename)) 
+	{
         create_pbar_type3(_("Backup"));
-    } else if(tifiles_is_a_group_file(filename)) {
+    } 
+	else if(tifiles_is_a_group_file(filename)) 
+	{
         create_pbar_type5(_("Sending group file"), "");
-    } else if(tifiles_is_a_single_file(filename)) {
+    } 
+	else if(tifiles_is_a_single_file(filename)) 
+	{
         create_pbar_type4(_("Sending variable"), "");
     }
-#endif
 
     // note that core is currently not bkpt-interruptible when
     // transferring file

@@ -31,12 +31,11 @@
 extern TicalcInfoUpdate info_update;
 extern struct progress_window
 {
-  GtkWidget *window;
-  GtkWidget *pbar;
-  GtkWidget *pbar2;
-  GtkWidget *label;
-  GtkWidget *label2;
-  GtkWidget *label_rate;
+	GtkWidget *window;
+	GtkWidget *pbar1;
+	GtkWidget *pbar2;
+	GtkWidget *label;
+	GtkWidget *label_rate;
 } p_win;
 
 TicableDataRate *dr;
@@ -59,7 +58,7 @@ static void refresh_pbar1(void)
 
   info_update.percentage = (float) info_update.count / info_update.total;
 
-  if(p_win.pbar != NULL)
+  if(p_win.pbar1 != NULL)
     {
     info_update.percentage = (float) info_update.count / info_update.total;
 
@@ -76,8 +75,8 @@ static void refresh_pbar1(void)
 
       rate = dr->count / toCURRENT(dr->start);
       g_snprintf(buffer, 32, "Rate: %1.1f Kbytes/s", rate / 1000);
-      //gtk_label_set_text(GTK_LABEL(p_win.label_rate), buffer);
-      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(p_win.pbar), info_update.percentage);
+      gtk_label_set_text(GTK_LABEL(p_win.label_rate), buffer);
+      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(p_win.pbar1), info_update.percentage);
       
       GTK_REFRESH();
     }
