@@ -235,7 +235,7 @@ GLADE_CB void
 on_2_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    params.grayplanes = 2;
+    params.grayplanes = 1;
     ti68k_engine_release();
 }
 
@@ -259,10 +259,10 @@ on_7_colors1_activate                  (GtkMenuItem     *menuitem,
 
 
 GLADE_CB void
-on_11_colors1_activate                    (GtkMenuItem     *menuitem,
+on_8_colors1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    params.grayplanes = 11;
+    params.grayplanes = 8;
     ti68k_engine_release();
 }
 
@@ -472,10 +472,10 @@ GtkWidget* display_popup_menu(void)
         g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_7_colors1_activate, NULL);
         break;
     case 11:
-        data = glade_xml_get_widget(xml, "11_colors1");
-        g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_11_colors1_activate, NULL);
+        data = glade_xml_get_widget(xml, "8_colors1");
+        g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_8_colors1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_11_colors1_activate, NULL);
+        g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_8_colors1_activate, NULL);
         break;
     }
 
