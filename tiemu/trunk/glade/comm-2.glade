@@ -11,6 +11,11 @@
   <property name="modal">True</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="has_separator">True</property>
 
   <child internal-child="vbox">
@@ -33,6 +38,7 @@
 	      <property name="label">gtk-cancel</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
 	    </widget>
 	  </child>
@@ -45,6 +51,7 @@
 	      <property name="label">gtk-ok</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-5</property>
 	    </widget>
 	  </child>
@@ -100,6 +107,7 @@
 		      <property name="label" translatable="yes">_Auto-detect</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -439,7 +447,7 @@
 		    <widget class="GtkOptionMenu" id="optionmenu_comm_calc">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="history">0</property>
+		      <property name="history">4</property>
 		      <signal name="changed" handler="comm_calc_changed" last_modification_time="Mon, 05 Apr 2004 20:49:40 GMT"/>
 
 		      <child>
@@ -473,6 +481,14 @@
 			    <widget class="GtkMenuItem" id="ti83plus">
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">TI83+</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="ti84plus">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">TI84+</property>
 			      <property name="use_underline">True</property>
 			    </widget>
 			  </child>
@@ -597,6 +613,7 @@
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
+		  <property name="focus_on_click">True</property>
 		  <signal name="clicked" handler="comm_button_log_clicked" last_modification_time="Mon, 05 Apr 2004 19:02:10 GMT"/>
 
 		  <child>

@@ -95,7 +95,7 @@ static int is_varname(uint8_t *mem)
 	static char buf[10];
 	int i=0;
 
-	printf("%i %i %i %02x\n", is_alnum(mem[i]) ? 1 : 0, is_allowed_char(mem[i]), mem[i], mem[i]);
+	//printf("%i %i %i %02x\n", is_alnum(mem[i]) ? 1 : 0, is_allowed_char(mem[i]), mem[i], mem[i]);
 
 	if(!is_alnum(mem[0]))
 		return 0;
@@ -127,9 +127,13 @@ static int get_folder_list_handle(void)
 			// folders with the number of identified folders
 			int nfolders = mem_rd_word(addr+2);
 			
+			if(nfolders == 0)
+				break;
+
 			for(i = 0; i < nfolders; i++)
 				if(!is_varname(ti68k_get_real_address(addr + 4 + i*sizeof(TI89_SYM_ENTRY))))
 					break;
+
 			if(i < nfolders)
 				return -1;
 
