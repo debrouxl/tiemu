@@ -765,7 +765,7 @@ void put_byte(CPTR adr, UBYTE arg)
         bput(adr, arg);
 }
 
-// Use: ??
+// Use: converts m68k address into PC-mapped address
 UBYTE *get_real_address(CPTR adr) 
 {
     return &mem_tab[(adr>>20)&0xf][adr&mem_mask[(adr>>20)&0xf]];
@@ -891,7 +891,8 @@ static int find_pc()
     return (pc);
 }
 
-static int log2(int i)
+// Used to read/modify/write memory directly from debugger
+uint8_t* ti68k_get_real_address(uint32_t addr)
 {
-	return (int)(log10(i) / log10(2));
+	return get_real_address(addr);
 }

@@ -1,0 +1,1 @@
+copy *.glade c:\msvc\tilp\glade\
