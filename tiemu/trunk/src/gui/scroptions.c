@@ -33,7 +33,7 @@
 #include "support.h"
 #include "paths.h"
 #include "struct.h"
-#include "skinops.h"
+//#include "skinops.h"
 #include "ti68k_int.h"
 #include "screenshot.h"
 

@@ -31,7 +31,6 @@
 
 #include "intl.h"
 #include "paths.h"
-#include "skinops.h"
 #include "ti68k_int.h"
 #include "dbg_bkpts.h"
 
