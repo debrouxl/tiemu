@@ -21,24 +21,20 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <SDL/SDL.h>
 #include <gtk/gtk.h>
-#include "gtksdl.h"
 
 #include "support.h"
 #include "struct.h"
-
 #include "main_intf.h"
 #include "boxes_intf.h"
-
 #include "rubberbox.h"
 #include "utils.h"
 
 extern struct skinInfos skin_infos;
 
-static SDL_Rect old_rect; /* previous rect */
-static SDL_Rect tmp_rect; /* new rect */
-static int ox, oy;        /* origin */
+static GdkRect old_rect; /* previous rect */
+static GdkRect tmp_rect; /* new rect */
+static int ox, oy;       /* origin */
 
 extern unsigned int lcd_mouse_motion; /* main_cb.c */
 extern unsigned int lcd_button_press; /* main_cb.c */
@@ -56,8 +52,8 @@ mouse_motion(GtkWidget *drawingarea, GdkEventMotion *event, gpointer action)
     }
   else 
     { 
-      x = event->x; 
-      y = event->y; 
+      x = (int)event->x; 
+      y = (int)event->y; 
       state = event->state; 
     } 
 
@@ -115,7 +111,7 @@ mouse_motion(GtkWidget *drawingarea, GdkEventMotion *event, gpointer action)
 	}
     }
 
-  draw_rubberbox(NULL, tmp_rect);
+  draw_rubberbox(drawingarea1, tmp_rect);
 
   if (GPOINTER_TO_UINT(action) == ACTION_LCD_COORDS)
     {
@@ -126,12 +122,12 @@ mouse_motion(GtkWidget *drawingarea, GdkEventMotion *event, gpointer action)
 }
 
 gboolean
-button_press(GtkWidget *sdl_eventbox, GdkEventButton *event, gpointer action)
+button_press(GtkWidget *drawing_area, GdkEventButton *event, gpointer action)
 {
   if (event->button == 1) /* left button */
     {
-      ox = event->x;
-      oy = event->y;
+      ox = (int)event->x;
+      oy = (int)event->y;
       
       erase_rubberbox(NULL);
     }
@@ -144,10 +140,10 @@ button_press(GtkWidget *sdl_eventbox, GdkEventButton *event, gpointer action)
 	  skin_infos.lcd_pos.bottom = tmp_rect.y + tmp_rect.h;
 	  skin_infos.lcd_pos.right = tmp_rect.x + tmp_rect.w;
 
-	  gtk_signal_disconnect(GTK_OBJECT(sdl_eventbox),
+	  gtk_signal_disconnect(GTK_OBJECT(drawing_area),
 				lcd_mouse_motion);
 
-	  gtk_signal_disconnect(GTK_OBJECT(sdl_eventbox),
+	  gtk_signal_disconnect(GTK_OBJECT(drawing_area),
 				lcd_button_press);
 
 	  lcd_mouse_motion = 0;
@@ -180,91 +176,12 @@ void get_pixel (GdkPixbuf *pixbuf, int x, int y, guchar *red, guchar *green, guc
 
 
 void
-draw_rubberbox(GtkWidget *drawing_area, SDL_Rect rect)
+draw_rubberbox(GtkWidget *drawing_area, GdkRect rect)
 {
-#if ROMS
-  SDL_Surface *s;
-  SDL_Rect c;
-  SDL_Rect oc;
-  uint16_t *img_orig;
-  uint16_t *SDLpixels;
-  int i;
-
-  img_orig = skin_infos.img_orig;
-  s = sdl_area->surface;
-  c = rect;
-  oc = old_rect;
-
-  if ((c.x > s->w) || (c.y > s->h) || ((c.x + c.w) > s->w) || ((c.y + c.h) > s->h))
-    return;
-
-  if(SDL_MUSTLOCK(s)) 
-    {
-      if(SDL_LockSurface(s) < 0)
-	return;
-    }
-
-  memcpy(s->pixels, img_orig, (2 * s->w * s->h));
-
-  /* vertical lines at c.x and (c.x + c.w), c.y < y < (c.y + c.h) */
-  /* !!! must multiply by 2 because uint16_t !!! */
-
-  for (i = c.y; i < (c.y + c.h); i++)
-    {
-      SDLpixels = (uint16_t *)(s->pixels) + (i * 2*s->w + 2*c.x);
-      *SDLpixels = ~(*SDLpixels);
-
-      SDLpixels = (uint16_t *)(s->pixels) + (i * 2*s->w + 2*(c.x + c.w));
-      *SDLpixels = ~(*SDLpixels);
-    }
-
-
-  /* horizontal lines at c.y and (c.y + c.h), c.x < x < (c.x + c.w) */
-  /* !!! must multiply by 2 because uint16_t !!! */
-
-  for (i = 0; i < c.w; i++)
-    {
-      SDLpixels = (uint16_t *)(s->pixels) + (c.y * 2*s->w + 2*i + 2*c.x);
-      *SDLpixels = ~(*SDLpixels);
-
-      SDLpixels = (uint16_t *)(s->pixels) + ((c.y + c.h) * 2*s->w + 2*i + 2*c.x);
-      *SDLpixels = ~(*SDLpixels);
-    }
-
-
-  if (SDL_MUSTLOCK(s)) 
-    {
-      SDL_UnlockSurface(s);
-    }
-
-  /*
-   * 2 calls to SDL_UpdateRect :
-   * + erase the old rect
-   * + draw the new one
-   *
-   * We could composite a new rectangle with the new and old ones,
-   * but this would consume more resources than these 2 calls.
-   * Plus it would complicate the code. *sigh*
-   */
-
-  SDL_UpdateRect(s,
-		 oc.x, oc.y,
-		 ((oc.w + oc.x + 2) <= s->w) ? (oc.w + 2) : oc.w,  /* add 2 to really erase the lines (right, bottom) ... */
-		 ((oc.h + oc.y + 2) <= s->h) ? (oc.h + 2) : oc.h); /* ... but be careful */
-
-  SDL_UpdateRect(s,
-		 c.x, c.y,
-		 ((c.w + c.x + 2) <= s->w) ? (c.w + 2) : c.w,  /* add 2 to really erase the lines (right, bottom) ... */
-		 ((c.h + c.y + 2) <= s->h) ? (c.h + 2) : c.h); /* ... but be careful */
-
-  tmp_rect = rect; /* when called from callbacks.c (for LCD or keys) */
-  old_rect = rect; /* save coords */
-#else
-  SDL_Rect c;
-  SDL_Rect oc;
-  uint16_t *SDLpixels;
-  int x, y;	//i
-  GdkRectangle update_rect;
+  GdkRect c;
+  GdkRect oc;
+  GdkRect update_rect;
+  int x, y;
   guchar r, g, b;
   
   c = rect;
@@ -276,6 +193,9 @@ draw_rubberbox(GtkWidget *drawing_area, SDL_Rect rect)
       ((c.y + c.h) > skin_infos.height))
     return;
     
+  g_object_unref(pixbuf);
+  pixbuf = gdk_pixbuf_copy(skin_infos.img_orig);
+
   /* vertical lines at c.x and (c.x + c.w), c.y < y < (c.y + c.h) */
   /* !!! must multiply by 2 because uint16_t !!! */
   for (y = c.y; y < (c.y + c.h); y++)
@@ -312,79 +232,62 @@ draw_rubberbox(GtkWidget *drawing_area, SDL_Rect rect)
    * but this would consume more resources than these 2 calls.
    * Plus it would complicate the code. *sigh*
    */
-   
+
   update_rect.x = oc.x;
   update_rect.y = oc.y;
-  update_rect.width = ((oc.w + oc.x + 2) <= skin_infos.width) ? (oc.w + 2) : oc.w;  /* add 2 to really erase the lines (right, bottom) ... */
-  update_rect.height = ((oc.h + oc.y + 2) <= skin_infos.height) ? (oc.h + 2) : oc.h; /* ... but be careful */
+  update_rect.w = ((oc.w + oc.x + 2) <= skin_infos.width) ? (oc.w + 2) : oc.w;  /* add 2 to really erase the lines (right, bottom) ... */
+  update_rect.h = ((oc.h + oc.y + 2) <= skin_infos.height) ? (oc.h + 2) : oc.h; /* ... but be careful */
 
+	printf("<oc: %i %i %i %i>\n", update_rect.x, update_rect.y, update_rect.w, update_rect.h);
+/*
   gdk_draw_pixbuf(drawing_area->window,
 		  drawing_area->style->fg_gc[GTK_WIDGET_STATE(drawing_area)],
 		  pixbuf, 
 		  update_rect.x, update_rect.y,
-                  update_rect.x, update_rect.y,
-                  update_rect.width, update_rect.height,
+      update_rect.x, update_rect.y,
+      update_rect.w, update_rect.h,
 		  GDK_RGB_DITHER_NONE, 0, 0);
-
+*/
   update_rect.x = c.x;
   update_rect.y = c.y;
-  update_rect.width = ((c.w + c.x + 2) <= skin_infos.width) ? (c.w + 2) : c.w;  /* add 2 to really erase the lines (right, bottom) ... */
-  update_rect.height = ((c.h + c.y + 2) <= skin_infos.height) ? (c.h + 2) : c.h; /* ... but be careful */
-  
+  update_rect.w = ((c.w + c.x + 2) <= skin_infos.width) ? (c.w + 2) : c.w;  /* add 2 to really erase the lines (right, bottom) ... */
+  update_rect.h = ((c.h + c.y + 2) <= skin_infos.height) ? (c.h + 2) : c.h; /* ... but be careful */
+
+	printf("<c: %i %i %i %i>\n", update_rect.x, update_rect.y, update_rect.w, update_rect.h);
+/* 
   gdk_draw_pixbuf(drawing_area->window,
 		  drawing_area->style->fg_gc[GTK_WIDGET_STATE(drawing_area)],
 		  pixbuf, 
 		  update_rect.x, update_rect.y,
-                  update_rect.x, update_rect.y,
-                  update_rect.width, update_rect.height,
+      update_rect.x, update_rect.y,
+      update_rect.w, update_rect.h,
 		  GDK_RGB_DITHER_NONE, 0, 0);
+*/
 
   tmp_rect = rect; /* when called from callbacks.c (for LCD or keys) */
   old_rect = rect; /* save coords */
-  
-  put_pixel(pixbuf, 5, 5, 0x55, 0xaa, 0x55);
-
-#endif  
 }
 
+/* Erase box by reloading original pixbuf */
 void
 erase_rubberbox(GtkWidget *drawing_area)
 {
-#if ROMS
-  uint16_t *img_orig;
-  SDL_Surface *s;
-
-  img_orig = skin_infos.img_orig;
-
-  s = sdl_area->surface;
-  if(SDL_MUSTLOCK(s)) 
-    {
-      if(SDL_LockSurface(s) < 0)
-	return;
-    }
-
-  memcpy(s->pixels, img_orig, (2 * s->w * s->h));
-
-  if (SDL_MUSTLOCK(s)) 
-    {
-      SDL_UnlockSurface(s);
-    }
-  
-  SDL_UpdateRect(s, 0, 0, 0, 0);
-
-  memset(&tmp_rect, 0, sizeof(SDL_Rect));
-  memset(&old_rect, 0, sizeof(SDL_Rect));
-#else
   // copy original image
   g_object_unref(pixbuf);
-  pixbuf = gdk_pixbuf_copy(orig);
+  pixbuf = gdk_pixbuf_copy(skin_infos.img_orig);
   
   // force redraw
-  //gtk_signal_emit_by_name(GTK_OBJECT(drawing_area), "expose_event");
-#endif
+  /*
+  gdk_draw_pixbuf(drawing_area->window,
+		  drawing_area->style->fg_gc[GTK_WIDGET_STATE(drawing_area)],
+		  pixbuf, 
+			0, 0,
+		  0, 0, skin_infos.width, skin_infos.height,
+		  GDK_RGB_DITHER_NONE, 0, 0);
+	*/
 }
 
-
+/* Taken from pixbuf doc */
 static void
 put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue)
 {
@@ -411,9 +314,10 @@ put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blu
   p[0] = red;
   p[1] = green;
   p[2] = blue;
-  p[3] = 0;	//alpha;
+  p[3] = 0;	// don't use alpha channel;
 }
 
+/* Taken from pixbuf doc */
 static void
 get_pixel (GdkPixbuf *pixbuf, int x, int y, guchar *red, guchar *green, guchar *blue)
 {
@@ -437,8 +341,7 @@ get_pixel (GdkPixbuf *pixbuf, int x, int y, guchar *red, guchar *green, guchar *
   pixels = gdk_pixbuf_get_pixels (pixbuf);
 
   p = pixels + y * rowstride + x * n_channels;
-  *red = p[0];
+  *red   = p[0];
   *green = p[1];
-  *blue = p[2];
-  //p[3] = alpha;
+  *blue  = p[2];
 }

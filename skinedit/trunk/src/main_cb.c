@@ -431,7 +431,7 @@ void
 on_lcd_position_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  SDL_Rect lcd_cur;
+  GdkRect lcd_cur;
 
   if(pixbuf == NULL)
     return;

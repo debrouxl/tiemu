@@ -28,7 +28,6 @@
 #include <string.h>
 
 #include <gtk/gtk.h>
-#include "gtksdl.h"
 
 #include "support.h"
 #include "struct.h"
@@ -80,9 +79,9 @@ on_lcd_color_ok_clicked                (GtkButton       *button,
 
   gtk_color_selection_get_color(GTK_COLOR_SELECTION(GTK_COLOR_SELECTION_DIALOG(colorsel)->colorsel), gcolor);
 
-  r = gcolor[0] * 0xff;
-  g = gcolor[1] * 0xff;
-  b = gcolor[2] * 0xff;
+  r = (unsigned char)(gcolor[0] * 0xff);
+  g = (unsigned char)(gcolor[1] * 0xff);
+  b = (unsigned char)(gcolor[2] * 0xff);
 
   switch(GPOINTER_TO_UINT(user_data))
     {

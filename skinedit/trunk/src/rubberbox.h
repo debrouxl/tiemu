@@ -23,13 +23,13 @@
 
 
 gboolean
-mouse_motion(GtkWidget *drawingarea, GdkEventMotion *event, gpointer action);
+mouse_motion(GtkWidget *drawing_area, GdkEventMotion *event, gpointer action);
 
 gboolean
-button_press(GtkWidget *drawingarea, GdkEventButton *event, gpointer action);
+button_press(GtkWidget *drawing_area, GdkEventButton *event, gpointer action);
 
 void
-draw_rubberbox(GtkWidget *drawing_area, SDL_Rect rect);
+draw_rubberbox(GtkWidget *drawing_area, GdkRect rect);
 
 void
 erase_rubberbox(GtkWidget *drawing_area);

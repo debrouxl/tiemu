@@ -351,7 +351,7 @@ load_skin_tiemu(FILE *fp)
 int
 load_jpeg(FILE *fp)
 {
-  char template[] = "fnXXXXXX";
+  char pattern[] = "fnXXXXXX";
   char *filename;
   FILE *ft;
   GError *error = NULL;
@@ -359,7 +359,7 @@ load_jpeg(FILE *fp)
   /*
    * Extract image from file by creating a temp file
    */
-  filename = _mktemp(template);
+  filename = _mktemp(pattern);
   ft = fopen(filename, "wb");
   if(ft == NULL) {
 		fprintf(stderr, "Unable to open this file: <%s>\n", filename);
@@ -373,11 +373,8 @@ load_jpeg(FILE *fp)
   fclose(ft);
 
   /* 
-   * Initialise the pixbuf and the drawing area
+   * Destroy previous pixbuf
    */
-  gtk_drawing_area_size(GTK_DRAWING_AREA(drawingarea1), 
-			skin_infos.width, skin_infos.height);
-
   if(pixbuf != NULL) {
     g_object_unref(pixbuf);
     pixbuf = NULL;
@@ -386,8 +383,8 @@ load_jpeg(FILE *fp)
   /*
    * Feed the original pixbuf with our image
    */
-  orig = gdk_pixbuf_new_from_file(filename, &error);
-  if (!orig) 
+  skin_infos.img_orig = gdk_pixbuf_new_from_file(filename, &error);
+  if (!skin_infos.img_orig) 
     {
       printf("error");
       g_error_free(error);
@@ -395,15 +392,18 @@ load_jpeg(FILE *fp)
     }
 
   /*
-   * Set image size
+   * Set image and drawing area sizes
    */
-  skin_infos.width = gdk_pixbuf_get_width(pixbuf);
-  skin_infos.height = gdk_pixbuf_get_height(pixbuf);
+  skin_infos.width = gdk_pixbuf_get_width(skin_infos.img_orig);
+  skin_infos.height = gdk_pixbuf_get_height(skin_infos.img_orig);
+
+  gtk_drawing_area_size(GTK_DRAWING_AREA(drawingarea1), 
+			skin_infos.width, skin_infos.height);
   
   /*
    * Display image in the back-end pixbuf
    */
-  pixbuf = gdk_pixbuf_copy(orig);
+  pixbuf = gdk_pixbuf_copy(skin_infos.img_orig);
   //gtk_signal_emit_by_name
   
   /*

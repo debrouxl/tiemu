@@ -28,7 +28,6 @@
 #include <string.h>
 
 #include <gtk/gtk.h>
-#include "gtksdl.h"
 
 #include "support.h"
 #include "struct.h"
@@ -62,15 +61,11 @@ on_list_keys_selection_changed (GtkTreeSelection *sel,
 				gpointer user_data)
 {
   int row;
-  SDL_Rect key_cur;
+  GdkRect key_cur;
   GList *paths;
   GtkTreeModel *model;
 
-#ifdef ROMS
-  erase_rubberbox(sdl_area);
-#else
-  erase_rubberbox(NULL);
-#endif
+  erase_rubberbox(drawingarea1);
 
   paths = gtk_tree_selection_get_selected_rows(sel, &model);
 
@@ -95,11 +90,7 @@ on_list_keys_selection_changed (GtkTreeSelection *sel,
       key_cur.w = skin_infos.keys_pos[row].right - skin_infos.keys_pos[row].left;
       key_cur.h = skin_infos.keys_pos[row].bottom - skin_infos.keys_pos[row].top;
 
-#ifdef ROMS
-      draw_rubberbox(sdl_area, key_cur);
-#else
-      draw_rubberbox(NULL, key_cur);
-#endif
+      draw_rubberbox(drawingarea1, key_cur);
 
       sbar_print(_("Current size : %d x %d -- Left click + drag to define key position, right click to save and go on. Close the list window when done (save the key before !)"),
 		 key_cur.w, key_cur.h);
@@ -125,11 +116,7 @@ on_list_keys_dialog_delete_destroy_event       (GtkWidget       *widget,
   keys_mouse_motion = 0;
   keys_button_press = 0;
 
-#ifdef ROMS
-  erase_rubberbox(sdl_area);
-#else
-  erase_rubberbox(NULL);
-#endif
+  erase_rubberbox(drawingarea1);
 
   gtk_widget_destroy(widget);
 

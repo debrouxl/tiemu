@@ -40,9 +40,9 @@ struct skinInfos
   char *skin_path;
   int type;
   int changed;
-#ifndef __MACOSX__
-  uint16_t *img_orig;
-#endif
+
+  GdkPixbuf *img_orig;
+
   unsigned int width;
   unsigned int height;
   unsigned char calc[9];
@@ -57,5 +57,14 @@ struct skinInfos
 };
 
 extern struct skinInfos skin_infos;
+
+// Same as GtkRectangle but more convenient (w = width)
+typedef struct {
+
+  gint x;
+  gint y;
+  gint w;
+  gint h;
+} GdkRect;
 
 #endif /* !__STRUCT_H__ */
