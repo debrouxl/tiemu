@@ -74,15 +74,16 @@ volatile int debugger = 0;
 // run as a separate thread
 gpointer ti68k_engine(gpointer data)
 {
-	struct timeb tCurrentTime;
-	struct timeb tLastTime;
-	unsigned long int iCurrentTime;
-	unsigned long int iLastTime; 
 	gint res = 0;
+    GTimer *tmr;
+    gulong us;
+    gint ms;
 
 	G_LOCK(running);
 	running = 1;
 	G_UNLOCK(running);
+
+    tmr = g_timer_new();
 
     if(params.cpu_rate != -1)
         cpu_instr = params.cpu_rate;
@@ -97,9 +98,9 @@ gpointer ti68k_engine(gpointer data)
 			g_thread_exit(GINT_TO_POINTER(0));
 		}
 		G_UNLOCK(running);
+
+        g_timer_start(tmr);
 		
-		ftime(&tLastTime);
-      
 		// Run emulator core
 		res = ti68k_debug_do_instructions(cpu_instr);
 		if(res) 
@@ -119,14 +120,12 @@ gpointer ti68k_engine(gpointer data)
         else 
         { 
 			// normal execution
-			ftime(&tCurrentTime);
-			
-			iLastTime    = 1000 * tLastTime.time + tLastTime.millitm;
-			iCurrentTime = 1000 * tCurrentTime.time + tCurrentTime.millitm;
-			
-			if((iCurrentTime - iLastTime) < TIME_LIMIT)
-                if(params.restricted)
-				    sleep((TIME_LIMIT - iCurrentTime + iLastTime));
+            g_timer_elapsed(tmr, &us);
+            ms = us / 1000;
+            if(ms < TIME_LIMIT)
+                sleep(TIME_LIMIT - ms);
+
+            g_timer_reset(tmr);
 			// use g_thread_yield rather than sleep ?
 		}
 	}
@@ -141,19 +140,19 @@ int ti68k_engine_is_stopped()
 
 void ti68k_engine_stop(void) 
 {
-    //printf("stopping engine... ");
+    printf("stopping engine... ");
 	G_LOCK(running);
 	running = 0;				// request termination
 	G_UNLOCK(running);
 
 	g_thread_join(thread);		// wait for thread termination
 	thread = NULL;
-    //printf("done.\n");
+    printf("done.\n");
 }
 
 void ti68k_engine_start(void) 
 {
-    //printf("starting engine... ");
+    printf("starting engine... ");
 	G_LOCK(running);
 	if(!running)
 	{
@@ -161,5 +160,5 @@ void ti68k_engine_start(void)
 		thread = g_thread_create(ti68k_engine, NULL, TRUE, &error);		
 	}
 	G_UNLOCK(running);
-    //printf("done.\n");
+    printf("done.\n");
 }
