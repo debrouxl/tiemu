@@ -89,7 +89,7 @@ n'est pas protégé contre les ROM_CALLs invalides à
 des adresses farfelues (n'existant pas sur la version 
 de ROM émulée).
 
-* La fenêtre Memory n'est pas toujours rafraîchie. Il y a le bouton
+- La fenêtre Memory n'est pas toujours rafraîchie. Il y a le bouton
 refresh, mais on ne pense pas toujours à l'utiliser. Elle n'est pas
 rafraîchie notamment lorsque un breakpoint est touché, ce serait
 possible de forcer le rafraîchissement à ce moment là ?

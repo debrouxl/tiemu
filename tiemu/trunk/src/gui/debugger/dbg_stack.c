@@ -93,7 +93,10 @@ static GtkListStore* clist_create(GtkWidget *list)
 	return store;
 }
 
-static void clist_populate(GtkListStore *store)
+#define	TARGET_SP	1
+#define TARGET_FP	2
+
+static void clist_populate(GtkListStore *store, gint target)
 {
     int i;
     GtkTreeIter iter;
@@ -103,7 +106,10 @@ static void clist_populate(GtkListStore *store)
     uint16_t *mem;
     uint16_t data;
 
-    ti68k_register_get_sp(&sp);
+	if(target == TARGET_SP)
+		ti68k_register_get_sp(&sp);
+	else if(target == TARGET_FP)
+		ti68k_register_get_addr(6, &sp);
 	mem = (uint16_t *)ti68k_get_real_address(sp);
 
     for(i = 0; i < DUMP_SIZE; i++)
@@ -124,11 +130,12 @@ static void clist_populate(GtkListStore *store)
 }
 
 static GtkWidget *label;
+static GtkWidget *notebook;
 
-static void clist_refresh(GtkListStore *store)
+static void clist_refresh(GtkListStore *store, gint target)
 {
 	gtk_list_store_clear(store);
-	clist_populate(store);
+	clist_populate(store, target);
 
     if(ti68k_debug_is_supervisor())
         gtk_label_set_text(GTK_LABEL(label), "SSP");
@@ -136,7 +143,8 @@ static void clist_refresh(GtkListStore *store)
         gtk_label_set_text(GTK_LABEL(label), "USP");
 }
 
-static GtkListStore *store = NULL;
+static GtkListStore *store1 = NULL;
+static GtkListStore *store2 = NULL;
 static gint already_open = 0;
 
 /*
@@ -157,9 +165,16 @@ GtkWidget* dbgstack_create_window(void)
 	
 	dbox = glade_xml_get_widget(xml, "dbgstack_window");
 
+	notebook = glade_xml_get_widget(xml, "notebook1");
+    gtk_notebook_popup_enable(GTK_NOTEBOOK(notebook));
+
 	data = glade_xml_get_widget(xml, "treeview1");
-    store = clist_create(data);
-	clist_populate(store);
+    store1 = clist_create(data);
+	clist_populate(store1, TARGET_SP);
+
+	data = glade_xml_get_widget(xml, "treeview2");
+    store2 = clist_create(data);
+	clist_populate(store2, TARGET_FP);
 
     label = glade_xml_get_widget(xml, "label2");
 
@@ -184,7 +199,8 @@ GtkWidget* dbgstack_display_window(void)
 		wnd = dbgstack_create_window();
     gtk_widget_show(wnd);
 
-	clist_refresh(store);
+	clist_refresh(store1, TARGET_SP);
+	clist_refresh(store2, TARGET_FP);
 
 	return wnd;
 }
@@ -193,7 +209,8 @@ void dbgstack_refresh_window(void)
 {
 	if(dbgs.stack)
 	{
-		clist_refresh(store);
+		clist_refresh(store1, TARGET_SP);
+		clist_refresh(store2, TARGET_FP);
 	}
 }
 
