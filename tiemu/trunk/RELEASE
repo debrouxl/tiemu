@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.71 (2.00-a4)	(03/07/2004)
-Current version:  1.72 (2.00-a6)	(12/07/2004)
+Previous version: 1.72		(03/07/2004)
+Current version:  1.74		(19/07/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -23,7 +23,9 @@ New capabilities:
 	- dis-assembly window: use VTi syntax
 	- VTi-style SR flags (don't reset)
 	- save/restore bkpts with state image
-	- symbolic debugger: code addresses are replaced by their counterpart name (ROM calls)
+	- symbolic debugger: code addresses are replaced by their 
+	counterpart name (ROM calls)
+	- V200PLT and TI89 Titanium support (don't work: illegal instruction)
 
 
 Improvements:
@@ -46,6 +48,8 @@ Improvements:
 	- linkport reworked but still buggy with HW2 (?!)
 	- fixed code bkpt
 	- ghost spaces
+	- popup menu (slow down)
+	- SDL (video library removed): less CPU intensive and cleaner
 		
 
 To do:
