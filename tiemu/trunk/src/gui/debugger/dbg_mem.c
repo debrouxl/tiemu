@@ -28,9 +28,6 @@
 #  include <config.h>
 #endif
 
-// set_page, to remove...
-#undef GTK_DISABLE_DEPRECATED
-
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <gdk/gdkkeysyms.h>
@@ -381,7 +378,7 @@ static void notebook_add_page(GtkWidget *notebook, const char* tab_name)
 	gtk_widget_show(child);
 
 	gtk_notebook_insert_page(nb, child, label, page);
-	gtk_notebook_set_page(nb, page);
+	gtk_notebook_set_current_page(nb, page);
 
     gtk_widget_grab_focus(child);
 }

@@ -28,11 +28,11 @@
 #  include <config.h>
 #endif				/*  */
 
-#ifdef GTK_DISABLE_DEPRECATED
-#undef GTK_DISABLE_DEPRECATED
+//#ifdef GTK_DISABLE_DEPRECATED
+//#undef GTK_DISABLE_DEPRECATED
 #include <gtk/gtk.h>
-#define GTK_DISABLE_DEPRECATED
-#endif
+//#define GTK_DISABLE_DEPRECATED
+//#endif
 #include <glade/glade.h>
 
 #include "intl.h"

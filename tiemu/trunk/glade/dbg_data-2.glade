@@ -292,7 +292,7 @@
 		      <property name="max_length">8</property>
 		      <property name="text" translatable="yes">0x000000</property>
 		      <property name="has_frame">True</property>
-		      <property name="invisible_char" translatable="yes">*</property>
+		      <property name="invisible_char">*</property>
 		      <property name="activates_default">False</property>
 		      <property name="width_chars">9</property>
 		    </widget>
@@ -315,7 +315,7 @@
 		      <property name="max_length">8</property>
 		      <property name="text" translatable="yes">0x000000</property>
 		      <property name="has_frame">True</property>
-		      <property name="invisible_char" translatable="yes">*</property>
+		      <property name="invisible_char">*</property>
 		      <property name="activates_default">False</property>
 		      <property name="width_chars">9</property>
 		    </widget>
@@ -330,51 +330,6 @@
 		  </child>
 
 		  <child>
-		    <widget class="GtkOptionMenu" id="optionmenu1">
-		      <property name="visible">True</property>
-		      <property name="can_focus">True</property>
-		      <property name="history">0</property>
-
-		      <child>
-			<widget class="GtkMenu" id="menu1">
-
-			  <child>
-			    <widget class="GtkMenuItem" id="item1">
-			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Byte</property>
-			      <property name="use_underline">True</property>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkMenuItem" id="word1">
-			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Word</property>
-			      <property name="use_underline">True</property>
-			    </widget>
-			  </child>
-
-			  <child>
-			    <widget class="GtkMenuItem" id="long1">
-			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Long</property>
-			      <property name="use_underline">True</property>
-			    </widget>
-			  </child>
-			</widget>
-		      </child>
-		    </widget>
-		    <packing>
-		      <property name="left_attach">1</property>
-		      <property name="right_attach">2</property>
-		      <property name="top_attach">0</property>
-		      <property name="bottom_attach">1</property>
-		      <property name="x_options">fill</property>
-		      <property name="y_options"></property>
-		    </packing>
-		  </child>
-
-		  <child>
 		    <widget class="GtkEntry" id="entry1">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
@@ -383,7 +338,7 @@
 		      <property name="max_length">8</property>
 		      <property name="text" translatable="yes">0x000000</property>
 		      <property name="has_frame">True</property>
-		      <property name="invisible_char" translatable="yes">*</property>
+		      <property name="invisible_char">*</property>
 		      <property name="activates_default">False</property>
 		      <property name="width_chars">8</property>
 		    </widget>
@@ -393,6 +348,24 @@
 		      <property name="top_attach">1</property>
 		      <property name="bottom_attach">2</property>
 		      <property name="y_options"></property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkComboBoxEntry" id="comboboxentry1">
+		      <property name="width_request">75</property>
+		      <property name="visible">True</property>
+		      <property name="items" translatable="yes">Byte
+Word
+Long</property>
+		    </widget>
+		    <packing>
+		      <property name="left_attach">1</property>
+		      <property name="right_attach">2</property>
+		      <property name="top_attach">0</property>
+		      <property name="bottom_attach">1</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options">fill</property>
 		    </packing>
 		  </child>
 		</widget>
