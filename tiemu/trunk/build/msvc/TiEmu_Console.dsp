@@ -246,6 +246,10 @@ SOURCE=..\..\src\core\intlist.c
 
 SOURCE=..\..\src\core\state.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\type2str.c
+# End Source File
 # End Group
 # Begin Group "gui"
 

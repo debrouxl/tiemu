@@ -1,11 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: type2str.h 370 2004-03-22 18:47:32Z roms $ */
 
-/*  TiEmu - an TI emulator
- *
- *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
- *  Copyright (c) 2003-2004, Romain Liévin
+/*  libticables - Ti Link Cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2004  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,23 +19,13 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/*
-  This file include some dependant OS headers files.
-  There are few things because the GLIb is used finally.
-*/
+#ifndef __TI68K_TYPE2STR__
+#define __TI68K_TYPE2STR__
 
-#ifndef __TI68K_CONSTS__
-#define __TI68K_CONSTS__
+const char *ti68k_calctype_to_string(int type);
+int         ti68k_string_to_calctype(const char *str);
 
-// Constants
-#define TI92 		1
-#define TI89 		2
-#define MODULEPLUS 	4
-#define TI92p 		(TI92 | MODULEPLUS)
-#define V200		8
-  
-#define INTERNAL 	1
-#define FLASH_ROM 	2
+const char *ti68k_romtype_to_string(int type);
+int         ti68k_string_to_romtype(const char *str);
 
 #endif
-

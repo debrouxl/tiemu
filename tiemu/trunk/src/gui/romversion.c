@@ -33,6 +33,7 @@
 #include "paths.h"
 #include "interface.h"
 #include "refresh.h"
+#include "struct.h"
 
 gchar *chosen_file = NULL;
 
@@ -200,6 +201,17 @@ gint display_romversion_dbox()
 	switch (result) 
 	{
 		case GTK_RESPONSE_OK:
+			g_free((options.params)->rom_file);
+			(options.params)->rom_file = g_strconcat(inst_paths.rom_dir, chosen_file, NULL);
+			g_free(chosen_file);
+
+			if(ti68k_loadImage((options.params)->rom_file)) 
+			{
+				msg_box("Error", "Can not open the ROM image.");
+				return;
+			}
+      
+			ti68k_restart();
 		break;
 
 		case GTK_RESPONSE_APPLY:

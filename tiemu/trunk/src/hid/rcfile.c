@@ -59,7 +59,7 @@ int rcfile_get_path(char **path)
 {
 	*path = g_strconcat(inst_paths.home_dir, 
 			    DIR_SEPARATOR_S, CONF_DIR, 
-			    DIR_SEPARATOR, RC_FILE, NULL); 
+			    DIR_SEPARATOR, INI_FILE, NULL); 
 	return 0;
 }
 

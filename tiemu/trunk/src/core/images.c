@@ -714,183 +714,164 @@ int ti68k_getRomType(void)
 /********/
 
 /*
-  Scan ROM images in a given directory and build a cache file.
+  	Scan ROM images in a given directory 
+  	and build the cache file.
 */
 int ti68k_scanFiles(const char *dirname, const char *filename)
 {
-  //DIR *dir;
-	//struct dirent *dirent;
+	FILE *file;
+	ROM_INFO ri;
 	GDir *dir;
-	GError *error;
+	GError *error = NULL;
 	G_CONST_RETURN gchar *dirent;
-  struct stat f_info;
-  char *path, *path2;
-  char *text[6];
-  ROM_INFO ri;
-  char *p1, *p2, *p3, *p5;
-  char buffer[MAXCHARS];
-  char buffer2[20];
-  int err;
-  FILE *file = NULL;
-  char rom_names[256][MAXCHARS];
-  int i=0;
-  int j;
-  int res=-1;
+	char buffer[1024];
+	char str[20];
+	char *rom_names[256] = { 0 };
+	int nlines;
+	int i,j;
+	gchar *path;
+	struct stat f_info;
+	int ret;  	
+  	char *line[6];
+	char *p1, *p2, *p3, *p5;
+	int err;  	
 
-  DISPLAY(_("Scanning ROM images... "));
+  	DISPLAY(_("Scanning ROM images... "));
 
-  /* First, check if cache file exists */
-  if(!access(filename, F_OK))
+  	// First, check if cache file exists
+  	if(!access(filename, F_OK))
     {
-      // if yes, read it
-      file = fopen(filename, "rt");
-      if(file == NULL)
-	{
-	  fprintf(stderr, _("Unable to open this file: <%s>\n"), filename);
-	  return ERR_68K_CANT_OPEN;
-	}
+      	// if yes, ...
+      	file = fopen(filename, "rt");
+      	if(file == NULL)
+		{
+	  		fprintf(stderr, _("Unable to open this file: <%s>\n"), filename);
+	  		return ERR_68K_CANT_OPEN;
+		}
 
-      while(!feof(file))
-	{
-	  fgets(buffer, MAXCHARS, file);
-	  sscanf(buffer, "%s\t", buffer2);
-	  strcpy(rom_names[i], buffer2);
-	  i++;
-	}
+		// read it and store ROM names
+      	for(nlines = 0; !feof(file) && (nlines < 255); nlines++)
+		{
+	  		fgets(buffer, sizeof(buffer), file);
+			if(feof(file))
+				break;
+
+	  		sscanf(buffer, "%s\t", str);
+	  		rom_names[nlines] = g_strdup(str);
+		}		
       
-      // and store ROM names for comparison
-      strcpy(rom_names[i], "");
-      fclose(file);
-      file = fopen(filename, "at");
-      if(file == NULL)
+		// ready to add new entries
+		fclose(file);
+      	file = fopen(filename, "at");
+      	if(file == NULL)
         {
-          fprintf(stderr, _("Unable to reopen this file: <%s>\n"), filename);
-          return ERR_68K_CANT_OPEN;
+          	fprintf(stderr, _("Unable to reopen this file: <%s>\n"), filename);
+          	return ERR_68K_CANT_OPEN;
         }
     }
-  else
+  	else
     {
-      DISPLAY(_("cache need to be built... "));
-      file = fopen(filename, "wt");
-      if(file == NULL)
+      	DISPLAY(_(" (cache need to be built) "));
+      	file = fopen(filename, "wt");
+      	if(file == NULL)
         {
-          fprintf(stderr, _("Unable to open this file: <%s>\n"), filename);
-          return ERR_68K_CANT_OPEN;
+          	fprintf(stderr, _("Unable to open this file: <%s>\n"), filename);
+          	return ERR_68K_CANT_OPEN;
         }
     }  
 
-  /* List all ROMs available in the ROM directory */
-  /*
-	path = (char *)dirname;
-  if( (dir=opendir(dirname)) == NULL)
-    {
-      fprintf(stderr, _("Opendir error\n"));
-      return ERR_68K_CANT_OPEN_DIR;
-    }
-	*/
-
+  	// List all ROMs available in the directory
 	dir = g_dir_open(dirname, 0, &error);
-	if (dir == NULL) {
+	if (dir == NULL) 
+	{
 		fprintf(stderr, _("Opendir error\n"));
-      return ERR_68K_CANT_OPEN_DIR;
+      	return ERR_68K_CANT_OPEN_DIR;
 	}
   
-	while ((dirent = g_dir_read_name(dir)) != NULL) {
-  //while( (dirent=readdir(dir)) != NULL)
-      //if(!strcmp(dirent->d_name, ".")) { continue; }
-      //if(!strcmp(dirent->d_name, "..")) { continue; }
-			if (dirent[0] == '.') continue;
-      for(j=0; j<i; j++)
+	while ((dirent = g_dir_read_name(dir)) != NULL) 
 	{
-	  if(!strcmp(rom_names[j], dirent))
-	    break;
-	}
-      if(i==j)
-	{
-	  // we have a new ROM, we add it in the cache file
-	  //strcpy(iupdate->label_text, dirent->d_name);
-	  //iupdate_label();
-	  path2 = (char *)malloc((strlen(path) + 1 +
-				  strlen(dirent) + 1) *
-				 sizeof(char));
-	  strcpy(path2, path);
-	  strcat(path2, dirent);
-	  if( (err=stat(path2, &f_info)) != -1)
-	    {
-	      res = ti68k_getFileInfo(path2, &ri);
-	      if(!res)
+  		if (dirent[0] == '.') 
+  			continue;
+      
+      	// compare current file with cache
+      	for(j = 0; j < nlines; j++)
 		{
-		  text[0] = dirent;
-		  
-		  switch(ri.calc_type)
-		    {
-		    case TI92: p1 = "TI92";
-		      break;
-		    case TI89: p1 = "TI89";
-		      break;
-		    case TI92 | MODULEPLUS: p1 = "TI92+";
-		      break;
-		    default: p1 = "TI??";
-		      break;
-		    }
-		  text[1] = p1;
-		  
-		  text[2] = ri.version;
-		  
-		  if(ri.internal)
-		    p2 = _("internal");
-		  else
-		    p2 = _("external");
-		  if(ri.flash)
-		    p3 = _("FLASH");
-		  else
-		    p3 = _("PROM");
-		  sprintf(buffer, "%s-%s", p3, p2);
-		  text[3] = buffer;
-		  
-		  sprintf(buffer2, "%iKB", ri.size>>10);
-		  text[4] = buffer2;
-		  
-		  if(ri.tib)
-		    p5 = _("tib");
-		  else
-		    p5 = _("img");
-		  text[5] = p5;
-		  
-		  fprintf(file, "%s\t%s\t%s\t%s\t%s\t%s\n", text[0], text[1],
-			  text[2], text[3], text[4], text[5]);
+	  		if(!strcmp(rom_names[j], dirent))
+	    		break;
 		}
-	      else
+		
+		// we have a new ROM, we add it in the cache
+      	if(j == nlines)
 		{
-		  fprintf(stderr, _("Can not get ROM/update info: <%s>\n"), 
-			  path2);
+	  		path = g_strconcat(dirname, dirent, NULL);
+	  		
+			ret = stat(path, &f_info);
+			if(ret == -1)
+			{
+				fprintf(stderr, _("Can not stat: <%s> %i\n"), dirent, err);
+	      		perror("stat: ");
+			}
+			else
+			{
+				ret = ti68k_getFileInfo(path, &ri);
+	      		if(ret)
+	      		{
+	      			fprintf(stderr, _("Can not get ROM/update info: <%s>\n"), path);
+	      		}
+	      		else
+				{
+		  			line[0] = dirent;
+
+		  			switch(ri.calc_type)
+		    		{
+		    			case TI92: line[1] = "TI92";
+		      			break;
+		    			case TI89: line[1] = "TI89";
+		      			break;
+		    			case TI92 | MODULEPLUS: line[1] = "TI92+";
+		      			break;
+		    			default: line[1] = "TI??";
+		      			break;
+		    		}
+		  
+		  			line[2] = ri.version;
+		  			if(ri.internal)
+		    			p2 = _("internal");
+		  			else
+		    			p2 = _("external");
+		  			
+		  			if(ri.flash)
+		    			p3 = _("FLASH");
+		  			else
+		    			p3 = _("PROM");
+		  			sprintf(buffer, "%s-%s", p3, p2);
+		  			line[3] = buffer;
+		  
+		  			sprintf(str, "%iKB", ri.size >> 10);
+		  			line[4] = str;
+		  
+		  			if(ri.tib)
+		    			p5 = _("tib");
+		  			else
+		    			p5 = _("img");
+		  			line[5] = p5;
+		  
+		  			fprintf(file, "%s\t%s\t%s\t%s\t%s\t%s\n", 
+		  				line[0], line[1], line[2], 
+		  				line[3], line[4], line[5]);
+				}
+			}
+	  		g_free(path);
 		}
-	    }
-	  else
-	    {
-	      fprintf(stderr, _("Can not stat: <%s> %i\n"), 
-		      dirent, err);
-	      perror("stat: ");
-	    }
-	  free(path2);
-	}
     }      
-		/*
-  if(closedir(dir)==-1)
-    {
-      fprintf(stderr, _("Closedir error\n"));
-      return ERR_68K_CANT_CLOSE_DIR;
-    }
-		*/
+
 	g_dir_close(dir);
   
-  fclose(file);
-  DISPLAY(_("Done.\n"));
+  	fclose(file);
+  	DISPLAY(_("Done.\n"));
   
-  return 0;
+  	return 0;
 }
-
-
 
 
 /*
