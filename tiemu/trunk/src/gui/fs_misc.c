@@ -134,17 +134,8 @@ gint display_tifile_dbox()
     case TI92:
         ext = "*.92?";
 		break;
-    case TI89:
-        ext = "*.89?";
-        break;
-    case TI92p:
-        ext = "*.9x?";
-        break;
-	case V200:
-		ext = "*.v2?";
-		break;
-    default:
-        ext = "*.???";
+	default:
+        ext = "*.89?;*.92?;*.9x?;*.v2?";
         break;
     }
 

@@ -247,8 +247,6 @@ void hw_update(void)
 			
     }
 
-	printf("%02x ", tihw.timer_value);
-
 	// Auto-int 6: triggered when [ON] is pressed.
 	// see keyboard.c
 
