@@ -295,11 +295,16 @@ const int ti_ram_sizes[] = { 256*KB, 256*KB, 256*KB, 256*KB, 256*KB }; // should
 
 static int log2(int i)
 {
-	return (int)(log10(i) / log10(2));
+    int j, v;
+
+    for(j = 0, v = i; v != 0; v >>= 1, j++);
+
+    return j-1;
 }
 
 int ti68k_get_rom_size(int calc_type)
 {
+    int i;
     if(calc_type > CALC_MAX)
     {
         DISPLAY("Bad argument !\n");

@@ -100,7 +100,7 @@ int hw_mem_init(void)
 
 	// init vars
     tihw.flash_prot = 1;
-	memset(&wsm, 0, sizeof(wsm));
+	memset(&wsm, 0, sizeof(FLASH_WSM));
 
     // clear breakpoints
 	ti68k_bkpt_clear_address();
@@ -186,7 +186,7 @@ int hw_mem_init(void)
 	}
   
     // blit ROM
-    memcpy(tihw.rom, img->data, img->size);
+    memcpy(tihw.rom, img->data, img->size / 2);
     free(img->data);
 
     if(!tihw.ram || !tihw.rom || !tihw.io || !tihw.io2)
