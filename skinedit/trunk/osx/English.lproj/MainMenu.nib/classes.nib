@@ -1,0 +1,87 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {propCancel = id; propOK = id; }; 
+            CLASS = PropController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                LCDColorCustom = id; 
+                LCDColorCustomBlack = id; 
+                LCDColorCustomWhite = id; 
+                LCDColorHigh = id; 
+                LCDColorLow = id; 
+                LCDColorMatrix = id; 
+                calc73 = id; 
+                calc82 = id; 
+                calc83 = id; 
+                calc83P = id; 
+                calc85 = id; 
+                calc86 = id; 
+                calc89 = id; 
+                calc92 = id; 
+                calc92P = id; 
+                calcMatrix = id; 
+                calcV200 = id; 
+                mySkinController = id; 
+                mySkineditController = id; 
+                properties = id; 
+                skinAuthor = id; 
+                skinTitle = id; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {listKeysFinish = id; listKeysSelect = id; }; 
+            CLASS = SkinController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                listKeys = id; 
+                listKeysDrawer = id; 
+                mainWindow = id; 
+                myPropController = id; 
+                mySkineditController = id; 
+                skinScrollView = id; 
+                skinView = id; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = SkinView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {listKeys = id; }; 
+            SUPERCLASS = NSImageView; 
+        }, 
+        {
+            ACTIONS = {
+                menuExportVTi21 = id; 
+                menuExportVTi25 = id; 
+                menuKeyPos = id; 
+                menuLCDPos = id; 
+                menuNew = id; 
+                menuOpen = id; 
+                menuProperties = id; 
+                menuQuit = id; 
+                menuSave = id; 
+                menuSaveAs = id; 
+                skinChangedCancel = id; 
+                skinChangedIgnore = id; 
+                skinChangedSave = id; 
+            }; 
+            CLASS = SkineditController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                listKeys = id; 
+                listKeysDrawer = id; 
+                mainWindow = id; 
+                myPropController = id; 
+                mySkinController = id; 
+                properties = id; 
+                skinChanged = id; 
+                skinView = id; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}
