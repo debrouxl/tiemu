@@ -8,6 +8,8 @@ To do:
 - 21/01/2005, version 1.80l: roms
 	- switched to GTK+ package 2.4-rc26 (2.4.14): compatible with GiMP and fixes toolbar tooltips
 	- fixed size of handles in handle wnd
+	- some improvements and fixes in the linkport support
+	- fixed AI2 (need to be raised whenever a key is pressed)
 
 - 20/01/2005, version 1.80k: roms
 	- link port is now reset when error occurs: great improvement

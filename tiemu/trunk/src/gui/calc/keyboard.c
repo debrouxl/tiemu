@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: dbg_cause.c 446 2004-06-13 09:11:07Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -45,7 +45,6 @@
 
 Pc2TiKey*       kbd_keymap = keymap;
 const char*     skn_keymap;
-static int      alpha = 0;
 
 static int hwkey_to_tikey(guint16 hardware_keycode, int action)
 {
@@ -67,7 +66,7 @@ static int hwkey_to_tikey(guint16 hardware_keycode, int action)
                 ti_key, keymap_value_to_string(tikeys, ti_key),
                 modifier, keymap_value_to_string(tikeys, modifier));
 #endif
-            if(modifier != -1)
+			if(modifier != -1)
                 ti68k_kbd_set_key(modifier, action);
             ti68k_kbd_set_key(ti_key, action);
 

@@ -144,7 +144,7 @@ int hw_kbd_update(void)		// ~600Hz
     	// Auto-Int 6 triggered when [ON] is pressed.
 		hw_m68k_irq(6);
     }
-	else
+	else if(key_change)
     {
     	// Auto-Int 2 triggered periodically while key(s) other than [ON] are held down.
 		//if(!(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)) || tihw.hw_type == HW1)
@@ -166,7 +166,7 @@ static uint8_t get_rowmask(uint8_t r)
     {
         rc |= key_states[row[i]] << (7-i);
     }
-  
+
     return rc;
 }
 
