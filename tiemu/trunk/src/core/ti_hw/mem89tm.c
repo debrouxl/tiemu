@@ -86,7 +86,7 @@ int ti89t_mem_init(void)
     mem_tab[6] = tihw.io;
     mem_msk[6] = tihw.io_size-1;
 	
-	if(tihw.hw_type == HW2)
+	if(tihw.hw_type >= HW2)
 	{
 		mem_tab[7] = tihw.io2;
 		mem_msk[7] = tihw.io_size-1;

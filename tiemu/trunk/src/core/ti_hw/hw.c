@@ -98,7 +98,7 @@ int hw_init(void)
         cycle_instr = params.hw_rate;
     else if(tihw.hw_type == HW1)
         cycle_instr = HW1_RATE;
-    else if(tihw.hw_type == HW2)
+    else if(tihw.hw_type >= HW2)
         cycle_instr = HW2_RATE;
 
     return 0;

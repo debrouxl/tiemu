@@ -317,7 +317,7 @@ static gint tid = -1;
 
 static gint hid_refresh (gpointer data)
 {
-    if(lcd_flag || (tihw.calc_type == HW2))
+    if(lcd_flag || (tihw.calc_type >= HW2))
     {
 		// TI92+: jackycar, TI89: baballe
         hid_update_lcd();

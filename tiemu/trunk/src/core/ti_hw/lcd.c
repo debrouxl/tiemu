@@ -35,7 +35,7 @@ int hw_lcd_init(void)
 	// TI92 ROM 1.x : $4440
 	// TI92 ROM 2.x : $4720
 	// TI89/92+/V200: $4c00;
-    // TI89t: ??
+    // TI89t: $4c00;
 	if(tihw.rom_flash)
 		lcd_addr = 0x4c00;
 	else if(tihw.ti92v2)
@@ -50,7 +50,7 @@ int hw_lcd_init(void)
 	tihw.io[0x10] = MSB(lcd_addr);
 	tihw.io[0x11] = LSB(lcd_addr);
 
-    if(tihw.hw_type == HW2)
+    if(tihw.hw_type >= HW2)
 		tihw.io2[0x17] = 0x00;
 
 	tihw.lcd_ptr = &tihw.ram[lcd_addr << 3];
