@@ -29,7 +29,7 @@
 */
 
 #if defined(__LINUX__)
-# define CONF_DIR   	".tiemu"
+# define CONF_DIR   	".tiemu/"
 # define INI_FILE    	"init"
 # define CACHE_FILE 	"ROMs.lst"
 # define LOG_FILE 		"/tmp/tiemu.log"
@@ -39,7 +39,7 @@
 # define CACHE_FILE 	"ROMs.lst"
 # define LOG_FILE 		"C:\\tiemu.log"
 #else
-# define CONF_DIR   	".tiemu"
+# define CONF_DIR   	".tiemu/"
 # define INI_FILE    	"init"
 # define CACHE_FILE 	"ROMs.lst"
 # define LOG_FILE 		"tiemu.log"

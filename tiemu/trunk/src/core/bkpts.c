@@ -33,7 +33,8 @@
 
 #include "intl.h"
 #include "bkpts.h"
-#include "verbose.h"
+#include "tilibs.h"
+//#include "verbose.h"
 #include "ti68k_err.h"
 
 /* Variables */

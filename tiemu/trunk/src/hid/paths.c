@@ -58,10 +58,10 @@ static void init_linux_paths(void)
 	inst_paths.glade_dir =
 	    g_strconcat(inst_paths.base_dir, "glade/", NULL);
 	inst_paths.home_dir =
-		g_strdup(g_get_home_dir());
+		g_strconcat(g_get_home_dir(), "/", NULL);
 	inst_paths.img_dir = 
             g_strconcat(inst_paths.home_dir, CONF_DIR, "images/", NULL);
-	mkdir(inst_paths.img_dir);
+	mkdir(inst_paths.img_dir, 0777);
 
 	/* bintextdomain(PACKAGE, "/usr/share/locale"); ->
 	   '/usr/share/locale/  fr/LC_MESSAGES/tilp.mo' */
@@ -107,11 +107,7 @@ static void init_win32_paths(void)
 	    g_strconcat(inst_paths.base_dir, "", NULL);
 	inst_paths.img_dir = 
             g_strconcat(inst_paths.home_dir, CONF_DIR, "images\\", NULL);
-#ifndef __WIN32__
-    mkdir(inst_paths.img_dir, 0755);
-#else
-    mkdir(inst_paths.img_dir);
-#endif
+	mkdir(inst_paths.img_dir);
 
 #ifdef ENABLE_NLS
 	inst_paths.locale_dir =
