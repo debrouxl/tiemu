@@ -12,7 +12,7 @@ aboutir.
 
 * le link ne marche pas convenablement. Voir plus bas.
 
-* le grayscale ne semble pas fonctionner 
++ le grayscale ne semble pas fonctionner 
 convenablement, quel que soit le réglage du 
 nombre de plans et le contraste. J'ai testé avec 
 SlimeBall 0.96, tileeng (vieille demo du tilemap 
@@ -20,11 +20,11 @@ engine d'ExtGraph, pas disponible dans ExtGraph)
 et dissolve, seuls programmes en niveaux de 
 gris de mon rom dump.
 
-- tthdex ne marche pas convenablement, les 
+* tthdex ne marche pas convenablement, les 
 Je ne pourrais pas trop de dire d'où ça vient, mais si c'est idle()
 qui pose problème, ce doit être le port $600005 qui est mal émulé.
 
-- l'AI3 ne semble pas être émulée correctement. Le 
+* l'AI3 ne semble pas être émulée correctement. Le 
 programme de test que j'utilise regarde les contenus 
 des ports 700014, 70001C, 70001D, 70001F et le 
 compteur de ticks d'AI3 (utilisé comme timer sur HW2 
@@ -125,7 +125,7 @@ http://members.chello.at/gerhard.kofler/kevin/francais/ti89prog/
 * Ce serait bien d'avoir aussi une option 8 niveaux de gris (moyenne de 7
 plans plutôt que de 6).
 
-- Il y a apparemment un problème d'adresse d'écran sur la vieille TI-92
++ Il y a apparemment un problème d'adresse d'écran sur la vieille TI-92
 aussi (pas seulement sur la Titanium). Quand Backgammon affiche un dialogue
 ou quitte vers l'écran HOME, normalement, l'écran devrait être remis sur
 LCD_MEM. Ça marche sur une vraie TI-92 et sur VTI, mais pas sur TiEmu, qui
@@ -188,7 +188,7 @@ faut un double reset pour tout remettre d'aplomb.
 me/moi
 ======
 
-* le clavier ne fonctionne plus sur PedRom en rev $697 (idle).
++ le clavier ne fonctionne plus sur PedRom en rev $697 (idle).
 Due à idle: il suffit de décommenter "if(!(arg & 0x10))" sur le port $600005.
 
 -------------
