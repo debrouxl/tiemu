@@ -36,9 +36,15 @@
 
 gchar *chosen_file = NULL;
 
-void 
-on_romv_clist_selection_changed (GtkTreeSelection *sel, 
-                				 gpointer user_data)
+enum { 
+	COLUMN_FILENAME, COLUMN_CALC, COLUMN_VERSION, 
+	COLUMN_MEMORY, COLUMN_SIZE, COLUMN_TYPE, COLUMN_NCOLS
+};
+
+#define CLIST_NCOLS (COLUMN_NCOLS)
+
+static void clist_selection_changed(GtkTreeSelection * sel,
+				   					gpointer user_data)
 { 
     GtkTreeModel *model;
     GtkTreeIter iter;
@@ -52,25 +58,69 @@ on_romv_clist_selection_changed (GtkTreeSelection *sel,
     }
 }
 
+GtkListStore* clist_init(GtkWidget *clist)
+{
+	GtkTreeView *view = GTK_TREE_VIEW(clist);	
+	GtkListStore *list;
+	GtkTreeModel *model;
+	GtkCellRenderer *renderer;
+	GtkTreeSelection *selection;
+	gint i;
+	const gchar *text[CLIST_NCOLS] = { 
+		_("Filename"), _("Calc"), _("Version"), 
+		_("Memory"), _("Size"), _("Type") };
+	
+	list = gtk_list_store_new(6, 
+    			G_TYPE_STRING, G_TYPE_STRING,
+			    G_TYPE_STRING, G_TYPE_STRING,
+			    G_TYPE_STRING, G_TYPE_STRING);
+    model = GTK_TREE_MODEL(list);
+  
+    gtk_tree_view_set_model(view, model); 
+    gtk_tree_view_set_headers_visible(view, TRUE);
+	gtk_tree_view_set_headers_clickable(view, TRUE);
+	gtk_tree_view_set_rules_hint(view, FALSE);
+  
+    for (i = 0; i < CLIST_NCOLS; i++) 
+    {
+    	renderer = gtk_cell_renderer_text_new();
+        gtk_tree_view_insert_column_with_attributes(view, -1, text[i],
+						renderer, "text", i, NULL);
+    }
+    
+    for (i = 0; i < CLIST_NCOLS; i++) 
+    {
+		GtkTreeViewColumn *col;
+		
+		col = gtk_tree_view_get_column(view, i);
+		gtk_tree_view_column_set_resizable(col, TRUE);
+	}
+	
+	selection = gtk_tree_view_get_selection(view);
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
+
+	g_signal_connect(G_OBJECT(selection), "changed",
+			 G_CALLBACK(clist_selection_changed), NULL);
+
+	return list;
+}
+
 gint display_romversion_dbox()
 {
-	GladeXML *xml;
-	GtkWidget *dbox, *dbox2;
+	GtkWidget *dialog;
+    GladeXML *xml;
+	GtkWidget *dbox;
 	GtkWidget *data;
     gint result;
 
-    GtkWidget *clist;
     GtkListStore *list;
-    GtkTreeModel *model;
     GtkTreeIter iter;
-    GtkTreeSelection *sel;
 
     gchar buffer[MAXCHARS];
     int i;
     FILE *fp;
     gchar *filename;
     struct stat s;
-    gchar *text[6] = { _("Filename"), _("Calc"), _("Version"), _("Memory"), _("Size"), _("Type") };
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("romversion-2.glade"), "romversion_dbox",
@@ -79,10 +129,15 @@ gint display_romversion_dbox()
 		g_error("GUI loading failed !\n");
 	glade_xml_signal_autoconnect(xml);
 
-    // display wait box
-    dbox2 = glade_xml_get_widget(xml, "cache_dbox");
-    gtk_widget_show_all(dbox2);
-    GTK_REFRESH();
+	// display waiting box
+	dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+			GTK_MESSAGE_INFO,
+			GTK_BUTTONS_CLOSE, _("Cache is being built. Please wait..."));
+	g_signal_connect_swapped(GTK_OBJECT(dialog), "response",
+			G_CALLBACK(gtk_widget_destroy),
+			GTK_OBJECT(dialog));
+	gtk_widget_show_all(GTK_WIDGET(dialog));
+	GTK_REFRESH();
 	
     // display list box
 	dbox = glade_xml_get_widget(xml, "romversion_dbox");
@@ -90,77 +145,68 @@ gint display_romversion_dbox()
     data = glade_xml_get_widget(xml, "applybutton1");
     gtk_button_set_label(data, "Import...");
 
-    clist = glade_xml_get_widget(xml, "clist1");
-    list = gtk_list_store_new(6, G_TYPE_STRING, G_TYPE_STRING,
-			    G_TYPE_STRING, G_TYPE_STRING,
-			    G_TYPE_STRING, G_TYPE_STRING);
-    model = GTK_TREE_MODEL(list);
-  
-    gtk_tree_view_set_model(GTK_TREE_VIEW(clist), model); 
-    gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(clist), TRUE); 
-  
-    gtk_list_store_clear(list); 
-    for (i = 0; i < 6; i++) {
-        gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), i, text[i],
-						gtk_cell_renderer_text_new(),
-						"text", i, NULL);
-    }
+    data = glade_xml_get_widget(xml, "clist1");
+    list = clist_init(data);
 
-    filename = g_strconcat(inst_paths.home_dir, CACHE_FILE, NULL);
+	// scan ROM images
+    filename = g_strconcat(inst_paths.rom_dir, CACHE_FILE, NULL);
     ti68k_scanFiles(inst_paths.rom_dir, filename);
-    
-    // destroy cache box
-    gtk_widget_destroy(dbox2);
-    GTK_REFRESH();
 
     stat(filename, &s);
-    if(s.st_size == 0) {
-      gtk_widget_show_all(dbox);
-      return 0;
+    if(s.st_size == 0) 
+	{
+		gtk_widget_show_all(dbox);
+		return 0;
     }
 
     fp = fopen(filename, "rt");
-    if(fp == NULL) {
+    if(fp == NULL) 
+	{
         DISPLAY("Unable to open this file: %s\n", filename);
         gtk_widget_destroy(dbox);
+		ti68k_unhalt();
         return -1;
     }
 
-    while(!feof(fp)) {
-        for(i=0; i<6; i++) {
+    while(!feof(fp)) 
+	{
+		gchar **row_text = g_malloc0((CLIST_NCOLS+1) * sizeof(gchar *));
+
+        for(i=0; i<6; i++) 
+		{
 	        fscanf(fp, "%s\t", buffer);
-	        text[i] = g_strdup(buffer);
+	        row_text[i] = g_strdup(buffer);
 	    }
 
         gtk_list_store_append(list, &iter);
-        gtk_list_store_set(list, &iter, 0, text[0],
-			 1, text[1], 2, text[2],
-			 3, text[3], 4, text[4],
-			 5, text[5], -1);
+        gtk_list_store_set(list, &iter, 
+			0, row_text[0],
+			1, row_text[1], 
+			2, row_text[2],
+			3, row_text[3], 
+			4, row_text[4],
+			5, row_text[5], -1);
 
-        for(i=0; i<6; i++) g_free(text[i]);
+			g_strfreev(row_text);
     } 
 
     fclose(fp);
+    
+  	// destroy waiting box
+	gtk_widget_destroy(GTK_WIDGET(dialog));
 
-    sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(clist));
-    gtk_tree_selection_set_mode(sel, GTK_SELECTION_SINGLE);
-
-    gtk_widget_show_all(dbox);
-
-    g_signal_connect(G_OBJECT(sel), "changed",
-                   G_CALLBACK(on_romv_clist_selection_changed), NULL);
-
-
+	// run main box
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
-	switch (result) {
-	case GTK_RESPONSE_OK:
-		ti68k_unhalt();
+	switch (result) 
+	{
+		case GTK_RESPONSE_OK:
 		break;
-    case GTK_RESPONSE_APPLY:
-        display_set_rom_dbox();
+
+		case GTK_RESPONSE_APPLY:
+			display_set_rom_dbox();
         break;
-	default:
+		
+		default:
 		break;
 	}
 
