@@ -178,6 +178,10 @@ SOURCE=..\..\src\core\dbg\m68kdasm.c
 
 SOURCE=..\..\src\core\dbg\registers.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\dbg\romcalls.c
+# End Source File
 # End Group
 # Begin Source File
 

@@ -24,9 +24,6 @@
 static char *ccodes[16] = { "T ", "F ", "HI", "LS", "CC", "CS", "NE", "EQ", "VC", "VS", "PL", "MI", "GE", "LT", "GT", "LE" };
 static int pc;
 
-//#define PARAM_WORD(v) ((v) = *(unsigned short *)&p[0], p += 2)
-//#define PARAM_LONG(v) ((v) = (*(unsigned short *)&p[0] << 16) + *(unsigned short *)&p[2], p += 4)
-
 #define PARAM_WORD(v) ((v) = GUINT16_SWAP_LE_BE(*(unsigned short *)&p[0]), p += 2)
 #define PARAM_LONG(v) ((v) = GUINT16_SWAP_LE_BE((*(unsigned short *)&p[0] << 16) + *(unsigned short *)&p[2]), p += 4)
 
