@@ -33,6 +33,8 @@
 #include "struct.h"
 #include "version.h"
 #include "ti68k_def.h"
+#include "ti68k_int.h"
+#include "tie_error.h"
 
 /*
   Display the program version
@@ -59,22 +61,23 @@ int help(void)
 
 	version();
 
-	fprintf(stdout, "usage: tiemu [-options] [filename]\n");
+	fprintf(stdout, "usage: tiemu [-options] [image]\n");
 	fprintf(stdout, "\n");
 	fprintf(stdout, "-h, --help    display this information page and exit\n");
 	fprintf(stdout, "-v, --version display the version information and exit\n");
-	fprintf(stdout, "-rom_file=    ROM to load at startup\n");
-	fprintf(stdout, "-sav_file=    RAM image to load\n");
-	fprintf(stdout, "-background=  enable(1) or disable(0) background\n");
+	fprintf(stdout, "--import   import ROM or TIB into repository without loading\n");
+	fprintf(stdout, "-rom=		ROM dump to convert and load\n");
+	fprintf(stdout, "-tib=		TIB or upgrade to convert and load\n");
+	fprintf(stdout, "-sav=		state image to load\n");
 	fprintf(stdout, "\n");
-	fprintf(stdout, "filename      a filename which contains a ROM image\n");
+	fprintf(stdout, "filename   a filename which contains a TiEmu image\n");
 	fprintf(stdout, "\n");
 
 	exit(0);
 	return 0;
 }
 
-static /*inline*/ int strexact(char *p1, char *p2)
+static int strexact(char *p1, char *p2)
 {
 	return (strstr(p1,p2) && strstr(p2,p1));
 }
@@ -88,31 +91,86 @@ int scan_cmdline(int argc, char **argv)
 	char *p;
 	char *q;
 	char msg[80];
+	gchar *dstname;
+	int import = 0;
   
-	for(cnt=1; cnt<argc; cnt++) {
-		p=argv[cnt];
-		if(*p=='-' ) {
-			// an option
+	for(cnt=1; cnt<argc; cnt++) 
+	{
+		p = argv[cnt];
+
+		if(*p == '-' ) 
+		{
+			// a long option (like --help)
 			p++;
-		} else {
-			// a ROM to load
+		} else 
+		{
+			// an image to load
 			g_free(params.rom_file);
 			params.rom_file = g_strdup(p);
 		}
+
+		strcpy(msg, p);
+
+		if(strexact(msg, "-import")) 
+			import = !0;
       
-	      if(strstr  (msg, "rom_file="     )) {
-		  q=msg+9;
-		  g_free(params.rom_file);
-		  params.rom_file = g_strdup(p);
-		}
-	      if(strstr  (msg, "sav_file="     )) {
-		  q=msg+9;
-		  g_free(params.sav_file);
-		  params.sav_file = g_strdup(p);
+	    if(strstr(msg, "rom=") || strstr(msg, "tib="))
+		{	
+			q=msg+4;
+
+			if(ti68k_is_a_rom_file(q))
+			{
+				int err = ti68k_convert_rom_to_image(q, inst_paths.img_dir, &dstname);
+				if(err) 
+				{
+					tiemu_error(err, NULL);
+					exit(-1);
+				}
+
+				if(import)
+					exit(0);
+
+				g_free(params.rom_file);
+				params.rom_file = dstname;
+				g_free(params.sav_file);
+				params.sav_file = g_strdup("");
+			}
+			else if(ti68k_is_a_tib_file(q))
+			{
+				int err = ti68k_convert_tib_to_image(q, inst_paths.img_dir, &dstname);
+				if(err) 
+				{
+					tiemu_error(err, NULL);
+					exit(-1);
+				}
+
+				if(import)
+					exit(0);
+
+				g_free(params.rom_file);
+				params.rom_file = dstname;
+				g_free(params.sav_file);
+				params.sav_file = g_strdup("");
+			}
+			else
+				exit(-1);
 		}
 
-	      if(strexact(msg, "-help"       )) help();
-	      if(strexact(msg, "-version"    )) { version(); exit(0); }
+		if(strstr(msg, "sav=")) 
+		{
+			q=msg+4;
+			g_free(params.sav_file);
+			params.sav_file = g_strdup(p);
+		}
+	      
+		if(strexact(msg, "-help") || strexact(msg, "h")) 
+			help();
+
+	    if(strexact(msg, "-version") || strexact(msg, "v")) 
+		{ 
+			//version(); 
+			exit(0); 
+		}
 	}
 
 	return 0;

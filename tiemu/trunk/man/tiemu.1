@@ -2,7 +2,7 @@
 .SH NAME
 tiemu - a TI emulator of TI89(Titanium)/92(+)/V200 hand-helds
 .SH SYNOPSYS
-\fBtiemu\fP [-h] [-v] [-rom_file=] [-sav_file=] [image] [--help] [--version] 
+\fBtiemu\fP [-h] [-v] [--help] [--version] [--import] [-rom=] [-tib=] [-sav_file=] [image] 
 .SH DESCRIPTION
 The \fBTiEmu\fP program allows you to emulate a Texas Instruments calculator such as TI89, TI89 Titanium, TI92, TI92+ or V200PLT.
 The emulator has also a virtual link capability which allows to connect it to another program (such as TiLP for instance).
@@ -16,11 +16,19 @@ Display a list of all command line options.
 \fB-v, --version\fP
 Output the version info.
 .TP
-\fB-rom_file=\fP
-Convert and use the specified ROM dump.
+\fB--import=\fP
+Import ROM or TIB into repository and exit. Can be used for creating images (as an example).
+This flag must be set before -rom or -tib !
 .TP
-\fB-sav_file=\fP
+\fB-rom=\fP
+Convert and use the specified dump as image. Note that the image is added to the image repository.
+.TP
+\fB-tib=\fP
+Convert and use the specified tib/upgrade as image. Idem.
+.TP
+\fB-sav=\fP
 Load the specified state file. Must be a valid state image and target for emulated calculator.
+
 .SH SEE ALSO
 tilp(1) for the use of a linking program. TiEmu shares the same communication box for link settings.
 .SH CONFIG FILE FORMAT
@@ -66,7 +74,7 @@ Define the custom skin file to use. Must be a full path name.
 \fBkeys_file=\fP
 Define the keymap to use. Must be a full path name.
 
-\fBrom_file=\fP
+\fBimg_file=\fP
 Define the TiEmu image to load at startup. Must be a full path name.
 
 \fBtib_file=\fP

@@ -174,7 +174,7 @@ int main(int argc, char **argv)
 			{
 				// launch wizard
 	wizard:
-				printf("ret = %i\n", display_wizard_dbox());
+				display_wizard_dbox();
 				while(!wizard_ok)
 					GTK_REFRESH();
 

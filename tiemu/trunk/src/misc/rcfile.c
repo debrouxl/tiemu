@@ -343,6 +343,12 @@ void rcfile_read(void)
 	  continue;
 	}
 
+	if( (p=find_str(buffer, "img_file=")) ) {
+	  g_free(params.rom_file);
+	  params.rom_file = g_strdup(p);
+	  continue;
+	}
+
 	if( (p=find_str(buffer, "tib_file=")) )
 	{
 	  g_free(params.tib_file);
@@ -720,8 +726,8 @@ void rcfile_write(void)
     fprintf(txt, "# KEYS file\n");
 	fprintf(txt, "keys_file=%s\n", options.keys_file);
 	fprintf(txt, "\n");
-	fprintf(txt, "# ROM file\n");
-	fprintf(txt, "rom_file=%s\n", params.rom_file);
+	fprintf(txt, "# IMG file\n");
+	fprintf(txt, "img_file=%s\n", params.rom_file);
 	fprintf(txt, "\n");
     fprintf(txt, "# TIB file\n");
     fprintf(txt, "tib_file=%s\n", params.tib_file);

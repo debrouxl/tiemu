@@ -12,6 +12,8 @@ To do:
 	- program entry breakpoint feature now useable with AMS >= 2.00
 	- improved dbg windows behaviour: save/restore size, position and state (hide/minimized);
 		fixed ini file, too
+	- updated manpage
+	- command line improved and up-to-date
 
 - 18/02/2005, version 1.80n: roms
 	- fixed FLASH writes with HW3 patch
