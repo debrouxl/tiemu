@@ -123,10 +123,15 @@ int keymap_load(const char *filename)
     {
         gchar **split = { 0 };
         gchar **split2 = { 0 };
+	char *p;
 
         // remove cr/lf
         fgets(line, sizeof(line), f);
-        line[strlen(line) - 1] = '\0';
+        //line[strlen(line) - 2] = '\0';
+	p = strrchr(line, '\r');
+	if(p != NULL) *p = '\0';
+	p = strrchr(line, '\n');
+	if(p != NULL) *p = '\0';
 
         // skip comments
         if((line[0] == '#') || (line[0] == '/'))
