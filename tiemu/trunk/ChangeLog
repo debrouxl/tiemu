@@ -1,10 +1,15 @@
 SubVersion: $Id$
 
 - 14/07/2004, version 1.74: roms
-	SDL removed for GTK: screen and keyboard support rewritten from scratch !
-	Debugger raised on event from thread.
+	Fixes from Lionel, Kevin and Oliver's suggestions:
+	- when scrolling down in the code window, the bar is now reset (hide first instruction).
+	- add .rom files in images: to fix
+	- 
 
 - 12/07/2004, version 1.73: roms
+	SDL removed for GTK: screen and keyboard support rewritten from scratch !
+	Debugger raised on event from m68k thread: less CPU intensive but could be better.
+
 	To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect

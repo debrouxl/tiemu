@@ -31,9 +31,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <io.h>		// _pipe
-#include <fcntl.h>	// _O_BINARY
-
 #include "intl.h"
 #include "tilibs.h"
 #include "struct.h"

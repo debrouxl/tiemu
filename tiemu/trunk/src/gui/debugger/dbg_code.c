@@ -270,6 +270,9 @@ static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6)
 	gtk_widget_set_sensitive(mi.m5, s5);
 }
 
+static GtkScrolledWindow *sw;
+static GtkAdjustment *adj;
+
 /*
 	Display source code window
 */
@@ -287,6 +290,9 @@ GtkWidget* create_dbgcode_window(void)
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgcode_window");
+
+    data = glade_xml_get_widget(xml, "scrolledwindow1");
+    sw = GTK_SCROLLED_WINDOW(data);
 
 	tb.b1 = glade_xml_get_widget(xml, "button1");
 	tb.b2 = glade_xml_get_widget(xml, "button2");
@@ -524,7 +530,6 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
     uint32_t addr;
     gchar *output;
     int offset;
-    //int i, j;
 
     selection = gtk_tree_view_get_selection(view);
     valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
@@ -577,6 +582,11 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
 
         gtk_list_store_clear(store);
         clist_populate(store, addr + offset);
+
+        adj = gtk_scrolled_window_get_vadjustment(sw);
+        gtk_adjustment_set_value(adj, 0.5);
+        gtk_scrolled_window_set_vadjustment(sw, adj); 
+
         return FALSE;
 
     case GDK_Page_Up:
@@ -603,6 +613,11 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
 
         gtk_list_store_clear(store);
         clist_populate(store, addr + 0x10);
+
+        adj = gtk_scrolled_window_get_vadjustment(sw);
+        gtk_adjustment_set_value(adj, 0.5);
+        gtk_scrolled_window_set_vadjustment(sw, adj); 
+
         return FALSE;
 
 	default:
