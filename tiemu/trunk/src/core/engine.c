@@ -93,7 +93,7 @@ static gboolean engine_func(gint *data)
 }
 
 // start emulation engine
-void ti68k_engine_start(void) 
+void engine_start(void) 
 {
 	if(params.restricted)
 		tid = g_timeout_add_full(G_PRIORITY_DEFAULT, TIME_LIMIT, engine_func, &res, engine_notify);
@@ -102,7 +102,7 @@ void ti68k_engine_start(void)
 }
 
 // stop it
-void ti68k_engine_stop(void) 
+void engine_stop(void) 
 {
 	if(tid)
 		g_source_remove(tid);
@@ -123,7 +123,7 @@ int engine_is_running(void)
 	Called at startup to know needed time for exec'ing hw_m68k_run.
 	This allow to make exec'ing more precise.
 */
-void ti68k_engine_calibrate(void)
+void engine_calibrate(void)
 {
 
 }

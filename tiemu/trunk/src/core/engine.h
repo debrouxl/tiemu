@@ -27,8 +27,10 @@
 #ifndef __ENGINE_H__
 #define __ENGINE_H__
 
-void ti68k_engine_start(void); 
-void ti68k_engine_stop(void);
+void engine_calibrate(void);
+
+void engine_start(void); 
+void engine_stop(void);
 
 int engine_is_stopped(void);
 int engine_is_running(void);

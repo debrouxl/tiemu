@@ -65,11 +65,16 @@ ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
-/* Main function */		
+/* Special */
 
-gint exit_loop = 0;
+static gint exit_loop = 0;
 
-extern gboolean ti68k_test(gpointer data);
+void exit_main_loop(void)
+{
+	exit_loop = !0;
+}
+
+/* Main function */
 
 int main(int argc, char **argv) 
 {
@@ -234,15 +239,17 @@ int main(int argc, char **argv)
 		/* 
 			Start emulation engine and run main loop 
 		*/
+		splash_screen_set_label(_("TiEmu starting..."));
+		engine_calibrate();
+		
 		splash_screen_stop();
-		ti68k_engine_start();
-
+		engine_start();
 		gtk_main();
 
 		/* 
 			Close the emulator engine
 		*/
-		ti68k_engine_stop();
+		engine_stop();
 
 		err = hid_exit();
 		handle_error();

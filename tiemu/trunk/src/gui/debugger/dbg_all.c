@@ -271,7 +271,7 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
 
     // Closing the debugger starts the emulator
 	ti68k_bkpt_set_cause(0, 0, 0);
-    ti68k_engine_start();
+    engine_start();
 }
 
 GLADE_CB void

@@ -42,7 +42,11 @@ void gtk_debugger_hide_all(int all);
 
 void gtk_window_minimize(GtkWindow *window, gboolean action);
 
-extern GtkWidget *main_wnd;
+/* Variables */
+
 extern int dbg_on;
+
+// convenient place (calc.h)
+extern GtkWidget *main_wnd;
 
 #endif
