@@ -39,10 +39,12 @@ struct global_param {
   int sync_one;
   int restrict;
   
-  TicableLinkParam link_cable;
+  //TicableLinkParam link_cable;
 };
 typedef struct global_param Ti68kParameters;
 
 extern Ti68kParameters params;
+
+extern TicableLinkParam link_cable;
 
 #endif

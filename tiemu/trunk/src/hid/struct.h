@@ -40,10 +40,6 @@
 */
 typedef struct
 {
-	// TI core field
-	Ti68kParameters  *params;
-	TicableLinkParam *link_cable;
-	
 	gchar* skin_file;
 	
 	gint	code_lines;
@@ -53,7 +49,6 @@ typedef struct
 	gint	console;
 
 } TieOptions;
-
 
 typedef struct {
 	int		format;
@@ -68,6 +63,7 @@ extern TieOptions options;
 extern ScrOptions options2;
 
 /* Misc */
+
 struct sel
 {
   gint address; // address of the breakpoint
@@ -84,6 +80,5 @@ struct data_bkpt
 };
 typedef struct data_bkpt DATA_BKPT;
 
-extern TiemuInstPaths inst_paths;
 
 #endif

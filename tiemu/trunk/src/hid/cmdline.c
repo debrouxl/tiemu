@@ -94,19 +94,19 @@ int scan_cmdline(int argc, char **argv)
 			p++;
 		} else {
 			// a ROM to load
-			g_free((options.params)->rom_file);
-			(options.params)->rom_file = g_strdup(p);
+			g_free(params.rom_file);
+			params.rom_file = g_strdup(p);
 		}
       
 	      if(strstr  (msg, "rom_file="     )) {
 		  q=msg+9;
-		  g_free((options.params)->rom_file);
-		  (options.params)->rom_file = g_strdup(p);
+		  g_free(params.rom_file);
+		  params.rom_file = g_strdup(p);
 		}
 	      if(strstr  (msg, "ram_file="     )) {
 		  q=msg+9;
-		  g_free((options.params)->ram_file);
-		  (options.params)->ram_file = g_strdup(p);
+		  g_free(params.ram_file);
+		  params.ram_file = g_strdup(p);
 		}
 
 	      if(strexact(msg, "-help"       )) help();

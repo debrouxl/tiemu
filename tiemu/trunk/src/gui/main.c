@@ -143,31 +143,31 @@ int main(int argc, char **argv)
 /*
 #ifndef __WIN32__
 	// linux
-	g_free((options.params)->rom_file);
-	(options.params)->rom_file = g_strdup("/home/romain/ti92.img");
+	g_free(params.rom_file);
+	params.rom_file = g_strdup("/home/romain/ti92.img");
 #else
 	//win32
-	g_free((options.params)->rom_file);
-	(options.params)->rom_file = g_strdup("C:\\msvc\\tilp\\images\\ti92p.img");
+	g_free(params.rom_file);
+	params.rom_file = g_strdup("C:\\msvc\\tilp\\images\\ti92p.img");
 
-	g_free((options.params)->tib_file);
-	(options.params)->tib_file = g_strdup("C:\\msvc\\tilp\\images\\os.9xu");
+	g_free(params.tib_file);
+	params.tib_file = g_strdup("C:\\msvc\\tilp\\images\\os.9xu");
 #endif
 */
 	/*
 		Attempt to load an image
 	*/
-	if(ti68k_load_image((options.params)->rom_file)) {
+	if(ti68k_load_image(params.rom_file)) {
       
 		display_wizard_dbox();
 		while(!wizard_ok)
 			GTK_REFRESH();
 	
-		g_free((options.params)->rom_file);
-		(options.params)->rom_file = g_strdup(wizard_rom);
+		g_free(params.rom_file);
+		params.rom_file = g_strdup(wizard_rom);
 		g_free(wizard_rom);
         splash_screen_set_label(_("Loading image..."));
-		ti68k_load_image((options.params)->rom_file);
+		ti68k_load_image(params.rom_file);
 	}
 
 	/* 
@@ -182,8 +182,8 @@ int main(int argc, char **argv)
 	/*
 		Load FLASH upgrade (if any)
 	*/
-	if(options.params->tib_file != NULL) {
-		ti68k_load_upgrade((options.params)->tib_file);
+	if(params.tib_file != NULL) {
+		ti68k_load_upgrade(params.tib_file);
 	}
 
 	/* 
@@ -201,8 +201,8 @@ int main(int argc, char **argv)
 		Load calculator state image 
 	*/
     splash_screen_set_label(_("Loading saved state..."));
-	if(options.params->ram_file != NULL) {
-		ti68k_state_load((options.params)->ram_file);
+	if(params.ram_file != NULL) {
+		ti68k_state_load(params.ram_file);
 	}
   
 	/* 

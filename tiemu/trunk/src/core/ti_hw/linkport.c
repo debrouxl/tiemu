@@ -85,8 +85,8 @@ void hw_init_dbus()
   lc_raw_access=0;
 
   ticable_init();
-  ticable_set_param(&(params.link_cable));
-  ticable_set_cable(params.link_cable.link_type, &lc);
+  ticable_set_param(&link_cable);
+  ticable_set_cable(link_cable.link_type, &lc);
   if( (err=lc.init()) )
     {
       print_lc_error(err);

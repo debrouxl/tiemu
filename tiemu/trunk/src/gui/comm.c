@@ -74,7 +74,7 @@ gint display_comm_dbox()
 
 	// Port (before cable to force update)
 	port = data = glade_xml_get_widget(xml, "optionmenu_comm_port");
-	switch ((options.link_cable)->port) {
+	switch (link_cable.port) {
 	case PARALLEL_PORT_1:
 	case SERIAL_PORT_1:
 	case USB_PORT_1:
@@ -115,7 +115,7 @@ gint display_comm_dbox()
 
 	// Cable  
 	data = glade_xml_get_widget(xml, "optionmenu_comm_cable");
-	switch ((options.link_cable)->link_type) {
+	switch (link_cable.link_type) {
 	case LINK_TGL:
 		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 0);
 		break;
@@ -155,7 +155,7 @@ gint display_comm_dbox()
 
 	// Calc
 	data = glade_xml_get_widget(xml, "optionmenu_comm_calc");
-	switch ((options.link_cable)->calc_type) {
+	switch (link_cable.calc_type) {
 	case CALC_TI73:
 	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 0);
 	  break;
@@ -203,14 +203,14 @@ gint display_comm_dbox()
 
 	// Timeout
 	data = glade_xml_get_widget(xml, "spinbutton_comm_timeout");
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), (options.link_cable)->timeout);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), link_cable.timeout);
 	
 	// Delay
 	data = glade_xml_get_widget(xml, "spinbutton_comm_delay");
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), (options.link_cable)->delay);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), link_cable.delay);
 
 	// Avoid early callbacks
-	memcpy(&tmp_lp, &options.link_cable, sizeof(TicableLinkParam));
+	memcpy(&tmp_lp, &link_cable, sizeof(TicableLinkParam));
 	
 	// Loop
 	init = 0;
@@ -218,7 +218,7 @@ gint display_comm_dbox()
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) {
 	case GTK_RESPONSE_OK:
-        memcpy(&(options.link_cable), &tmp_lp, sizeof(TicableLinkParam));
+        memcpy(&link_cable, &tmp_lp, sizeof(TicableLinkParam));
         ti68k_reconfigure_linkport();
 		break;
 	case GTK_RESPONSE_HELP:

@@ -85,13 +85,13 @@ GtkWidget* display_popup_menu(void)
 
 	// init check buttons
     data = glade_xml_get_widget(xml, "restrict1");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), (options.params)->restrict);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.restrict);
 
 	data = glade_xml_get_widget(xml, "sync1");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), (options.params)->sync_one);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.sync_one);
 
     // init radio buttons
-    switch((options.params)->n_grayplanes) {
+    switch(params.n_grayplanes) {
     case 2:
         data = glade_xml_get_widget(xml, "2_colors1");
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
@@ -225,7 +225,7 @@ GLADE_CB void
 on_revert_to_saved_state1_activate     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	ti68k_state_load((options.params)->ram_file);
+	ti68k_state_load(params.ram_file);
   	ti68k_unhalt();
 }
 
@@ -278,9 +278,9 @@ on_restrict_to_actual_speed1_activate  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
-    		(options.params)->restrict = 0;
+    		params.restrict = 0;
   	else
-    		(options.params)->restrict = 1;
+    		params.restrict = 1;
 
   	ti68k_unhalt();
 }
@@ -291,9 +291,9 @@ on_sync1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
-    		(options.params)->sync_one = 0;
+    		params.sync_one = 0;
   	else
-    		(options.params)->sync_one = 1;
+    		params.sync_one = 1;
 
   	ti68k_unhalt();
 }
@@ -305,7 +305,7 @@ on_2_colors1_activate                  (GtkMenuItem     *menuitem,
 {
     //if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
     //if (!gtk_toggle_button_get_active(togglebutton))
-    (options.params)->n_grayplanes = 2;
+    params.n_grayplanes = 2;
     ti68k_unhalt();
 }
 
@@ -314,7 +314,7 @@ GLADE_CB void
 on_4_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    (options.params)->n_grayplanes = 4;
+    params.n_grayplanes = 4;
     ti68k_unhalt();
 }
 
@@ -323,7 +323,7 @@ GLADE_CB void
 on_7_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    (options.params)->n_grayplanes = 7;
+    params.n_grayplanes = 7;
     ti68k_unhalt();
 }
 
@@ -332,7 +332,7 @@ GLADE_CB void
 on_11_colors1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    (options.params)->n_grayplanes = 11;
+    params.n_grayplanes = 11;
     ti68k_unhalt();
 }
 
@@ -451,7 +451,7 @@ GLADE_CB void
 on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	ti68k_state_save((options.params)->ram_file);
+	ti68k_state_save(params.ram_file);
   	if(!rcfile_exist())
     		rcfile_write();
 

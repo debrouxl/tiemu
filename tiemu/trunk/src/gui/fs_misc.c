@@ -94,10 +94,10 @@ gint display_load_state_dbox()
 	if (!filename)
 		return;
 
-    g_free((options.params)->ram_file);
-    (options.params)->ram_file = g_strdup(filename);
+    g_free(params.ram_file);
+    params.ram_file = g_strdup(filename);
     
-    ti68k_state_load((options.params)->ram_file);
+    ti68k_state_load(params.ram_file);
     ti68k_unhalt();
 
 	return 0;
@@ -112,9 +112,9 @@ gint display_save_state_dbox()
 	if (!filename)
 		return;
 
-    g_free((options.params)->ram_file);
-    (options.params)->ram_file = g_strdup(filename);
-    ti68k_state_save((options.params)->ram_file);
+    g_free(params.ram_file);
+    params.ram_file = g_strdup(filename);
+    ti68k_state_save(params.ram_file);
     
     if(!rcfile_exist())
     {
@@ -215,9 +215,9 @@ gint display_set_tib_dbox(void)
 	if (!filename)
 		return;
 /*
-    g_free((options.params)->tib_file);
-    (options.params)->tib_file = g_strdup(filename);
-    if(ti68k_loadImage((options.params)->tib_file))  {
+    g_free(params.tib_file);
+    params.tib_file = g_strdup(filename);
+    if(ti68k_loadImage(params.tib_file))  {
         msg_box(_("Error"), _("Can not open the ROM/FLASH file."));
         ti68k_unhalt();
         return -1;

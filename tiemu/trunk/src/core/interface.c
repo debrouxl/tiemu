@@ -65,6 +65,7 @@
 /**********************/
 
 Ti68kParameters params = { 0 };
+TicableLinkParam link_cable = { 0 };
 
 
 /***********************************/
@@ -108,9 +109,9 @@ int ti68k_loadDefaultConfig(void)
   params.sync_one = 0;
   params.restrict = 1;
 
-  ticable_get_default_param(&(params.link_cable));
-  params.link_cable.link_type = LINK_NUL;
-  params.link_cable.port = NULL_PORT;
+  ticable_get_default_param(&link_cable);
+  link_cable.link_type = LINK_NUL;
+  link_cable.port = NULL_PORT;
 
   return 0;
 }

@@ -211,11 +211,11 @@ gint display_romversion_dbox()
 			if(ti68k_is_a_img_file(chosen_file))
 			{
 
-				g_free((options.params)->rom_file);
-				(options.params)->rom_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
+				g_free(params.rom_file);
+				params.rom_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
 				g_free(chosen_file);
 
-				if(ti68k_load_image((options.params)->rom_file)) 
+				if(ti68k_load_image(params.rom_file)) 
 				{
 					msg_box("Error", "Can not load the image.");
 					return;
@@ -223,11 +223,11 @@ gint display_romversion_dbox()
 			} 
 			else if(ti68k_is_a_tib_file(chosen_file))
 			{
-				g_free((options.params)->tib_file);
-				(options.params)->tib_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
+				g_free(params.tib_file);
+				params.tib_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
 				g_free(chosen_file);
 
-				if(ti68k_load_upgrade((options.params)->tib_file)) 
+				if(ti68k_load_upgrade(params.tib_file)) 
 				{
 					msg_box("Error", "Can not load the upgrade.");
 					return;

@@ -20,8 +20,6 @@
 #ifndef __TI68K_MEMORY__
 #define __TI68K_MEMORY__
 
-#include "intlist.h"
-
 /* Functions */
 
 int hw_init_mem();
