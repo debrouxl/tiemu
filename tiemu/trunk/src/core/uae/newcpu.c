@@ -386,27 +386,28 @@ void Exception(int nr)
 	{
 	  if(bkpts.vectors[nr])
 	    {
-	      specialflags |= SPCFLAG_BRK;
-	      bkpts.type = BK_CAUSE_VECTOR;
+		  bkpts.type = BK_CAUSE_VECTOR;
 	      bkpts.id = nr;
+	      specialflags |= SPCFLAG_BRK;
+	      
 	    }
 	}
       else if( (nr>=24) && (nr<32) )
 	{
 	  if(bkpts.autoints[nr-24])
 	    {
-	      specialflags |= SPCFLAG_BRK;
-	      bkpts.type = BK_CAUSE_AUTOINT;
+		  bkpts.type = BK_CAUSE_AUTOINT;
 	      bkpts.id = nr-24;
+	      specialflags |= SPCFLAG_BRK;	      
 	    }
 	}
       else if( (nr>=32) && (nr<48) )
 	{
 	  if(bkpts.traps[nr-32])
 	    {
-	      specialflags |= SPCFLAG_BRK;
-	      bkpts.type = BK_CAUSE_TRAP;
+		  bkpts.type = BK_CAUSE_TRAP;
 	      bkpts.id = nr-32; // number of trap (0..15)
+	      specialflags |= SPCFLAG_BRK;	      
 	    }
 	}
     }

@@ -252,41 +252,41 @@ ULONG get_long(CPTR adr)
   
     adr &= 0xFFFFFF;
 
-    if (l=bkpts.mem_rl) 
+    if (l = bkpts.mem_rl) 
     {
-        bkpts.id=0;
+        bkpts.id = 0;
         while (l) 
 	    {
 	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
 	        {
+				bkpts.type = BK_CAUSE_ACCESS;
 	            bkpts.mode = BK_READ_LONG; 
-	            specialflags|=SPCFLAG_BRK; 
-	            bkpts.type = BK_CAUSE_ACCESS;
+	            specialflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	        
             bkpts.id++;
-	        l=l->next;
+	        l = l->next;
 	    }
     }
   
-    if (l=bkpts.mem_rng_r) 
+    if (l = bkpts.mem_rng_r) 
     {
-        bkpts.id=0;
+        bkpts.id = 0;
         while (l) 
 	    {
             ADDR_RANGE *r = l->data;
 
-	        if (r->val1>=adr && (adr+3)<=r->val2) 
+	        if ((r->val1 >= adr) && ((adr+3) <= r->val2)) 
 	        {
+				bkpts.type = BK_CAUSE_RANGE;
 	            bkpts.mode = BK_READ_LONG; 
-	            specialflags|=SPCFLAG_BRK; 
-	            bkpts.type = BK_CAUSE_RANGE;
+	            specialflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
             bkpts.id++;
-	        l=l->next;
+	        l = l->next;
 	    }
     }
   
@@ -339,41 +339,41 @@ UWORD get_word(CPTR adr)
 	
     adr &= 0xFFFFFF;
 
-    if (l=bkpts.mem_rw) 
+    if (l = bkpts.mem_rw) 
     {
         bkpts.id = 0;
         while (l) 
 	    {
-	        if ((CPTR)GPOINTER_TO_INT(l->data)==adr) 
+	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
 	        {
+				bkpts.type = BK_CAUSE_ACCESS;
 	            bkpts.mode = BK_READ_WORD;
-	            specialflags|=SPCFLAG_BRK;
-	            bkpts.type = BK_CAUSE_ACCESS;
+	            specialflags |= SPCFLAG_BRK;
 	            break;
 	        }
 	    
             bkpts.id++;
-	        l=l->next;
+	        l = l->next;
 	    }
     }
   
-    if (l=bkpts.mem_rng_r) 
+    if (l = bkpts.mem_rng_r) 
     {
-        bkpts.id=0;
+        bkpts.id = 0;
         while (l) 
 	    {
             ADDR_RANGE *r = l->data;
 
-	        if (r->val1>=adr && (adr+1)<=r->val2) 
+	        if ((r->val1 >= adr) && ((adr+1) <= r->val2)) 
 	        {
+				bkpts.type = BK_CAUSE_RANGE;
 	            bkpts.mode = BK_READ_WORD; 
-	            specialflags|=SPCFLAG_BRK; 
-	            bkpts.type = BK_CAUSE_RANGE;
+	            specialflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
             bkpts.id++;
-	        l=l->next;
+	        l = l->next;
 	    }
     }
   
@@ -426,42 +426,42 @@ UBYTE get_byte(CPTR adr)
   
     adr &= 0xFFFFFF;
 
-    if (l=bkpts.mem_rb) 
+    if (l = bkpts.mem_rb) 
     {
         bkpts.id = 0;
         while (l) {
-	        if ((CPTR)GPOINTER_TO_INT(l->data)==adr) 
+	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
 	        {
+				bkpts.type = BK_CAUSE_ACCESS;
 	            bkpts.mode = BK_READ_BYTE;
-	            specialflags|=SPCFLAG_BRK;
-	            bkpts.type = BK_CAUSE_ACCESS;
+	            specialflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	    
             bkpts.id++;
-	        l=l->next;
+	        l = l->next;
         }
     }
 
-    if (l=bkpts.mem_rng_r) 
+    if (l = bkpts.mem_rng_r) 
     {
-        bkpts.id=0;
+        bkpts.id = 0;
         while (l) 
 	    {
         
             ADDR_RANGE *r = l->data;
 
-	        if (r->val1>=adr && adr<=r->val2) 
+	        if ((r->val1 >= adr) && (adr <= r->val2))
 	        {
+				bkpts.type = BK_CAUSE_RANGE;
 	            bkpts.mode = BK_READ_BYTE; 
-	            specialflags|=SPCFLAG_BRK; 
-	            bkpts.type = BK_CAUSE_RANGE;
+	            specialflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
             bkpts.id++;
 	  
-            l=l->next;
+            l = l->next;
 	    }
     }
   
@@ -507,41 +507,41 @@ void put_long(CPTR adr, ULONG arg)
 
     adr &= 0xFFFFFF;
 
-    if (l=bkpts.mem_wl) 
+    if (l = bkpts.mem_wl) 
     {
         bkpts.id = 0;
         while (l) 
 	    {
-	        if ((CPTR)GPOINTER_TO_INT(l->data)==adr) 
+	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
 	        {
+				bkpts.type = BK_CAUSE_ACCESS;
 	            bkpts.mode = BK_WRITE_LONG;
-	            specialflags|=SPCFLAG_BRK;
-	            bkpts.type = BK_CAUSE_ACCESS;
+	            specialflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
             bkpts.id++;
-	        l=l->next;
+	        l = l->next;
 	    }
     }
   
-    if (l=bkpts.mem_rng_w) 
+    if (l = bkpts.mem_rng_w) 
     {
-        bkpts.id=0;
+        bkpts.id = 0;
         while (l) 
 	    {
 	        ADDR_RANGE *r = l->data;
 
-            if (r->val1>=adr && (adr+3)<=r->val2) 
+            if ((r->val1 >= adr) && ((adr+3) <= r->val2))
 	        {
+				bkpts.type = BK_CAUSE_RANGE;
 	            bkpts.mode = BK_WRITE_LONG; 
-	            specialflags|=SPCFLAG_BRK; 
-	            bkpts.type = BK_CAUSE_RANGE;
+	            specialflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
             bkpts.id++;
-	        l=l->next;
+	        l = l->next;
 	    }
     }
 
@@ -602,41 +602,41 @@ void put_word(CPTR adr, UWORD arg)
 	
     adr &= 0xFFFFFF;
 
-    if (l=bkpts.mem_ww) 
+    if (l = bkpts.mem_ww) 
     {
         bkpts.id = 0;
         while (l) 
 	    {
-	        if ((CPTR)GPOINTER_TO_INT(l->data)==adr) 
+	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
 	        {
+				bkpts.type = BK_CAUSE_ACCESS;
 	            bkpts.mode = BK_WRITE_WORD;
-	            specialflags|=SPCFLAG_BRK;
-	            bkpts.type = BK_CAUSE_ACCESS;
+	            specialflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
             bkpts.id++;
-            l=l->next;
+            l = l->next;
 	    }
     }
   
-    if (l=bkpts.mem_rng_w)
+    if (l = bkpts.mem_rng_w)
     {
-        bkpts.id=0;
+        bkpts.id = 0;
         while (l) 
 	    {
             ADDR_RANGE *r = l->data;
 
-	        if (r->val1>=adr && (adr+1)<=r->val2) 
+	        if ((r->val1 >= adr) && ((adr+1) <= r->val2))
 	        {
+				bkpts.type = BK_CAUSE_RANGE;
 	            bkpts.mode = BK_WRITE_WORD; 
-	            specialflags|=SPCFLAG_BRK; 
-	            bkpts.type = BK_CAUSE_RANGE;
+	            specialflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
             bkpts.id++;
-	        l=l->next;
+	        l = l->next;
 	    }
     }
   
@@ -686,41 +686,41 @@ void put_byte(CPTR adr, UBYTE arg)
 	
     adr &= 0xFFFFFF;
   
-    if (l=bkpts.mem_wb) 
+    if (l = bkpts.mem_wb) 
     {
         bkpts.id = 0;
         while (l) 
 	    {
-	        if ((CPTR)GPOINTER_TO_INT(l->data)==adr) 
+	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
 	        {
+				bkpts.type = BK_CAUSE_ACCESS;
 	            bkpts.mode = BK_WRITE_BYTE;
-	            specialflags|=SPCFLAG_BRK;
-	            bkpts.type = BK_CAUSE_ACCESS;
+	            specialflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
             bkpts.id++;
-	        l=l->next;
+	        l = l->next;
 	    }
     }
 
-    if (l=bkpts.mem_rng_w) 
+    if (l = bkpts.mem_rng_w) 
     {
-        bkpts.id=0;
+        bkpts.id = 0;
         while (l) 
 	    {
             ADDR_RANGE *r = l->data;
 
-	        if (r->val1>=adr && adr<=r->val2) 
+	        if ((r->val1 >= adr) && (adr <= r->val2)) 
 	        {
+				bkpts.type = BK_CAUSE_RANGE;
 	            bkpts.mode = BK_WRITE_BYTE; 
-	            specialflags|=SPCFLAG_BRK; 
-	            bkpts.type = BK_CAUSE_RANGE;
+	            specialflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
             bkpts.id++;
-	        l=l->next;
+	        l = l->next;
 	    }
     }
 
