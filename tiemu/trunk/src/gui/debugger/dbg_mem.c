@@ -36,6 +36,7 @@
 #include "paths.h"
 #include "support.h"
 #include "ti68k_int.h"
+#include "struct.h"
 
 static GtkWidget *notebook;
 
@@ -331,13 +332,15 @@ gint display_dbgmem_dbox(uint32_t *addr)
 	return 0;
 }
 
+static gint already_open = 0;
+
 /*
 	Display memory window
 */
 gint display_dbgmem_window(void)
 {
 	GladeXML *xml;
-    GtkWidget *data;
+	GtkWidget *dbox;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_window",
@@ -346,29 +349,49 @@ gint display_dbgmem_window(void)
 		g_error("GUI loading failed !\n");
 	glade_xml_signal_autoconnect(xml);
 	
-	data = glade_xml_get_widget(xml, "dbgmem_window");
+	dbox = glade_xml_get_widget(xml, "dbgmem_window");
 
     notebook = glade_xml_get_widget(xml, "notebook1");
     gtk_notebook_popup_enable(GTK_NOTEBOOK(notebook));
     
     notebook_add_tab(notebook, _("STACK"));
 
-    gtk_widget_show(GTK_WIDGET(data));
+	gtk_widget_set_usize(GTK_WIDGET(dbox), options3.mem.w, options3.mem.h);
+	gtk_widget_set_uposition(GTK_WIDGET(dbox), options3.mem.x, options3.mem.y);
+    gtk_widget_show(GTK_WIDGET(dbox));
+
+	already_open = !0;
 
 	return 0;
 }
 
 gint refresh_dbgmem_window(void)
 {
+	if(!already_open)
+		display_dbgmem_window();
+
 	//clist_refresh(store);
+
     return 0;
+}
+
+
+GLADE_CB gboolean
+on_dbgmem_window_delete_event       (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	gdk_window_get_size(widget->window, &options3.mem.w, &options3.mem.h);
+	gdk_window_get_root_origin(widget->window, &options3.mem.x, &options3.mem.y);
+
+	return FALSE;
 }
 
 GLADE_CB void
 on_dbgmem_window_destroy               (GtkObject       *object,
                                         gpointer         user_data)
 {
-    gtk_widget_destroy(GTK_WIDGET(object));
+    already_open = 0;
 }
 
 

@@ -35,6 +35,7 @@
 #include "ti68k_int.h"
 #include "dbg_vectors.h"
 #include "dbg_data.h"
+#include "struct.h"
 
 
 enum { 
@@ -208,6 +209,7 @@ static void clist_refresh(GtkListStore *store)
 }
 
 static GtkListStore *store;
+static gint already_open = 0;
 
 /*
 	Display registers window
@@ -234,15 +236,23 @@ gint display_dbgbkpts_window(void)
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
 
-	gtk_window_resize(GTK_WINDOW(dbox), 350, 120);
+	//gtk_window_resize(GTK_WINDOW(dbox), 350, 120);
+	gtk_widget_set_usize(GTK_WIDGET(dbox), options3.bkpts.w, options3.bkpts.h);
+	gtk_widget_set_uposition(GTK_WIDGET(dbox), options3.bkpts.x, options3.bkpts.y);
     gtk_widget_show(GTK_WIDGET(dbox));
+
+	already_open = !0;
 
 	return 0;
 }
 
 gint refresh_dbgbkpts_window(void)
 {
+	if(!already_open)
+		display_dbgbkpts_window();
+
 	clist_refresh(store);
+
 	return 0;
 }
 
@@ -265,12 +275,22 @@ static GtkWidget* display_popup_menu(void)
 	return data;
 }
 
+GLADE_CB gboolean
+on_dbgbkpts_window_delete_event       (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	gdk_window_get_size(widget->window, &options3.bkpts.w, &options3.bkpts.h);
+	gdk_window_get_root_origin(widget->window, &options3.bkpts.x, &options3.bkpts.y);
+
+	return FALSE;
+}
 
 GLADE_CB void
 on_dbgbkpts_window_destroy             (GtkObject       *object,
                                         gpointer         user_data)
 {
-
+	already_open = 0;
 }
 
 /* Add bkpt */

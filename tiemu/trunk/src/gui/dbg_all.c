@@ -36,8 +36,9 @@
 #include "./debugger/dbg_regs.h"
 #include "./debugger/dbg_vectors.h"
 #include "ti68k_int.h"
+#include "struct.h"
 
-static int dbg_active = 0;
+DbgOptions options3;
 
 int enter_gtk_debugger(int context)
 {
@@ -52,22 +53,10 @@ int enter_gtk_debugger(int context)
     }
 
     // open debugger, if not already opened
-    if(!dbg_active)    
-    {
-	    //display_dbgmem_window();
-        //display_dbgbkpts_window();
-	    display_dbgregs_window();	    
-        display_dbgcode_window();
-
-        dbg_active = !0;
-    }
-    else
-    {
-        //refresh_dbgmem_window();
-        //refresh_dbgbkpts_window();
-	    refresh_dbgregs_window();
-        refresh_dbgcode_window();
-    }
+	refresh_dbgregs_window();
+	refresh_dbgcode_window();
+	refresh_dbgmem_window();
+	refresh_dbgbkpts_window();
 
 	return 0;
 }

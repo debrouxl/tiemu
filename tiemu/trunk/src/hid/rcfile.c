@@ -380,24 +380,6 @@ void rcfile_read(void)
 	  sscanf(p, "%i", &(params.lcd_rate));
 	  continue;
 	}
-	
-	if( (p=find_str(buffer, "code_lines=")) )
-	{
-	  sscanf(p, "%i", &(options.code_lines));
-	  continue;
-	}
-
-	if( (p=find_str(buffer, "mem_lines=")) )
-	{
-	  sscanf(p, "%i", &(options.mem_lines));
-	  continue;
-	}
-
-	if( (p=find_str(buffer, "stack_lines=")) )
-	{
-	  sscanf(p, "%i", &(options.stack_lines));
-	  continue;
-	}
 
 	if( (p=find_str(buffer, "img_format=")) )
 	{
@@ -675,16 +657,6 @@ void rcfile_write(void)
   fprintf(txt, "# LCD update rate (100 fps max.)\n");
   fprintf(txt, "lcd_rate=%i\n", params.lcd_rate);
   fprintf(txt, "\n");
-  fprintf(txt, "# Number of lines in the disassembly window\n");
-  fprintf(txt, "code_lines=%i\n", options.code_lines);
-  fprintf(txt, "\n");
-  fprintf(txt, "# Number of lines in the stack window\n");
-  fprintf(txt, "stack_lines=%i\n", options.stack_lines);
-  fprintf(txt, "\n");
-  fprintf(txt, "# Number of lines in the memory window\n");
-  fprintf(txt, "mem_lines=%i\n", options.mem_lines);
-  fprintf(txt, "\n");
-  fprintf(txt, "\n");
   fprintf(txt, "#\n");
   fprintf(txt, "# SCREENSHOT SECTION\n");
   fprintf(txt, "#\n");
@@ -749,10 +721,6 @@ int rcfile_default()
 	// other fields
 	options.skin_file = g_strconcat(inst_paths.skin_dir, "ti92.skn", NULL);
 
-	options.code_lines  = 20;
-	options.stack_lines = 20;
-	options.mem_lines   = 20;
-
 	options2.file = g_strdup("screenshot");
 	options2.counter = 0;
 	options2.type = IMG_COL;	//IMG_BW;
@@ -764,6 +732,26 @@ int rcfile_default()
 #else
 	options.console = 0;
 #endif
+
+	options3.bkpts.x = 0;
+	options3.bkpts.y = 0;
+	options3.bkpts.w = 350;
+	options3.bkpts.h = 120;
+
+	options3.code.x = 10;
+	options3.code.y = 10;
+	options3.code.w = 320;
+	options3.code.h = 240;
+
+	options3.mem.x = 20;
+	options3.mem.y = 20;
+	options3.mem.w = 160;
+	options3.mem.h = 120;
+
+	options3.regs.x = 30;
+	options3.regs.y = 30;
+	options3.regs.w = 160;
+	options3.regs.h = 480;
 
 	return 0;
 }

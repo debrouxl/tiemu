@@ -34,21 +34,15 @@
 
 #include "paths.h"
 
-/*
-  General GtkTiEmu options
-*/
+/* General options */
 typedef struct
 {
-	gchar* skin_file;
-	
-	gint	code_lines;
-	gint	stack_lines;
-	gint	mem_lines;
-	
+	gchar* skin_file;	
 	gint	console;
 
 } TieOptions;
 
+/* Screen capture options */
 typedef struct {
 	int		format;
 	int		type;
@@ -58,26 +52,24 @@ typedef struct {
 	int		counter;
 } ScrOptions;
 
+/* Debugger options for windows size and placement */
+typedef struct {
+	int x;
+	int y;
+	int w;
+	int h;
+} GdkRect;
+
+typedef struct {
+	GdkRect bkpts;
+	GdkRect code;
+	GdkRect mem;
+	GdkRect regs;
+} DbgOptions;
+
 extern TieOptions options;
 extern ScrOptions options2;
-
-/* Misc */
-
-struct sel
-{
-  gint address; // address of the breakpoint
-  gint id;      // breakpoint id
-};
-typedef struct sel CODE_BKPT;
-
-struct data_bkpt
-{
-  gint address;  // breakpoint address
-  gint address2; // second bkpt address for range
-  gint mode;     // breakpoint access mode
-  gint id;       // breakpoint id
-};
-typedef struct data_bkpt DATA_BKPT;
+extern DbgOptions options3;
 
 
 #endif

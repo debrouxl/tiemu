@@ -34,6 +34,7 @@
 #include "support.h"
 #include "ti68k_int.h"
 #include "dbg_bkpts.h"
+#include "struct.h"
 
 enum { 
 	    COL_ICON, COL_ADDR, COL_OPCODE, COL_OPERAND,
@@ -201,6 +202,7 @@ static void clist_refresh(GtkListStore *store)
 }
 
 static GtkListStore *store;
+static gint already_open = 0;
 
 /*
 	Display source code window
@@ -223,29 +225,48 @@ gint display_dbgcode_window(void)
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
 	clist_populate(store);
-	clist_refresh(store);
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
 
-	gtk_window_resize(GTK_WINDOW(dbox), 320, 240);
+	//gtk_window_resize(GTK_WINDOW(dbox), 320, 240);
+	gtk_widget_set_usize(GTK_WIDGET(dbox), options3.code.w, options3.code.h);
+	gtk_widget_set_uposition(GTK_WIDGET(dbox), options3.code.x, options3.code.y);
     gtk_widget_show(GTK_WIDGET(dbox));
+
+	already_open = !0;
 
 	return 0;
 }
 
 gint refresh_dbgcode_window(void)
 {
-    clist_refresh(store);
+	if(!already_open)
+		display_dbgcode_window();
+	
+	clist_refresh(store);
+
     return 0;
 }
 
+GLADE_CB gboolean
+on_dbgcode_window_delete_event       (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	gdk_window_get_size(widget->window, &options3.code.w, &options3.code.h);
+	gdk_window_get_root_origin(widget->window, &options3.code.x, &options3.code.y);
+
+	return FALSE;
+}
 
 GLADE_CB void
 on_dbgcode_window_destroy               (GtkObject       *object,
                                         gpointer         user_data)
 {
-    gtk_widget_destroy(GTK_WIDGET(object));
+	already_open = 0;
+	// Closing the debugger starts the emulator
+    ti68k_engine_unhalt();
 }
 
 

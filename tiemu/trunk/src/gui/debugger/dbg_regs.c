@@ -36,6 +36,7 @@
 #include "paths.h"
 #include "support.h"
 #include "ti68k_int.h"
+#include "struct.h"
 
 
 enum { 
@@ -474,6 +475,7 @@ static void ctree_refresh(GtkTreeStore *store)
 }
 
 static GtkTreeStore *store;
+static gint already_open = 0;
 
 /*
 	Display registers window
@@ -496,26 +498,47 @@ gint display_dbgregs_window(void)
 	data = glade_xml_get_widget(xml, "treeview1");
     store = ctree_create(data);
 	ctree_populate(store);
-	ctree_refresh(store);
+	//ctree_refresh(store);
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
 
-	gtk_window_resize(GTK_WINDOW(dbox), 160, 480);
+	//gtk_window_resize(GTK_WINDOW(dbox), 160, 480);
+	gtk_widget_set_usize(GTK_WIDGET(dbox), options3.code.w, options3.code.h);
+	gtk_widget_set_uposition(GTK_WIDGET(dbox), options3.code.x, options3.code.y);
     gtk_widget_show(GTK_WIDGET(dbox));
+
+	already_open = !0;
 
 	return 0;
 }
 
 gint refresh_dbgregs_window(void)
 {
+	if(!already_open)
+		display_dbgregs_window();
+
 	ctree_refresh(store);
+
 	return 0;
+}
+
+
+GLADE_CB gboolean
+on_dbgregs_window_delete_event       (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+	gdk_window_get_size(widget->window, &options3.regs.w, &options3.regs.h);
+	gdk_window_get_root_origin(widget->window, &options3.regs.x, &options3.regs.y);
+
+	return FALSE;
 }
 
 GLADE_CB void
 on_dbgregs_window_destroy               (GtkObject       *object,
                                         gpointer         user_data)
 {
-    gtk_widget_destroy(GTK_WIDGET(object));
+    already_open = 0;
 }
+
