@@ -53,6 +53,8 @@ int hw_m68k_reset(void)
 
 int hw_m68k_exit(void)
 {
+	ti68k_bkpt_clear_exception();
+
     return 0;
 }
 

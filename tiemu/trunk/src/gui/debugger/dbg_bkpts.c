@@ -115,6 +115,7 @@ static void clist_refresh(GtkListStore *store)
 	gchar *str, *str1, *str2;
 	gint i;
 
+	g_assert(store != NULL);
 	gtk_list_store_clear(store);
 
 	// Code breakpoints
@@ -208,7 +209,7 @@ static void clist_refresh(GtkListStore *store)
 	}
 }
 
-static GtkListStore *store;
+static GtkListStore *store = NULL;
 static gint already_open = 0;
 
 /*

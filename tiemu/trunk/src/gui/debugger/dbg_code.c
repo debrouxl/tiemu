@@ -273,6 +273,7 @@ gint refresh_dbgcode_window(void)
 		list = display_dbgcode_window();
 
 	gtk_widget_set_sensitive(list, TRUE);	
+	tb_set_states(1, 1, 1, 1, 0, 1);
 	clist_refresh(store);
 
     return 0;

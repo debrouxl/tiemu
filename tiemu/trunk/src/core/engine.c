@@ -96,8 +96,9 @@ gpointer ti68k_engine(gpointer data)
 		res = ti68k_debug_do_instructions(NB_INSTRUCTIONS_PER_LOOP);
 		if(res) {  
 			// a bkpt has been encountered
-            //enter_gtk_debugger(res);
+			//G_LOCK(running);
             running = 0;
+			//G_UNLOCK(running);
             debugger = res;
 		} else { 
 			// normal execution
