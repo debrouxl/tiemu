@@ -98,7 +98,6 @@ int hw_mem_init(void)
 	memset(&wsm, 0, sizeof(FLASH_WSM));
 
     // clear breakpoints
-	ti68k_bkpt_clear_address();
 	ti68k_bkpt_clear_access();
 	ti68k_bkpt_clear_range();
 
@@ -260,7 +259,6 @@ int hw_mem_exit(void)
     tihw.io2 = NULL;
 
 	// clear breakpoints
-	ti68k_bkpt_clear_address();
 	ti68k_bkpt_clear_access();
 	ti68k_bkpt_clear_range();
 

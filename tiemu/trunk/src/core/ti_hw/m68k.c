@@ -37,12 +37,15 @@
 int hw_m68k_init(void)
 {
     // init breakpoints
+    ti68k_bkpt_clear_address();
 	ti68k_bkpt_clear_exception();
-	ti68k_bkpt_set_exception(4);	// illegal instruction
     bkpts.mode = bkpts.type = bkpts.id = 0;
 
+    // set trap on illegal instruction
+    ti68k_bkpt_set_exception(4);
+
     // init instruction logging
-    bkpts.pclog_size = 10;  //50;
+    bkpts.pclog_size = 10;
     bkpts.pclog_buf = (uint32_t *)malloc(bkpts.pclog_size * sizeof(uint32_t));
     if(bkpts.pclog_buf == NULL)
         return ERR_MALLOC;
@@ -64,6 +67,7 @@ int hw_m68k_reset(void)
 
 int hw_m68k_exit(void)
 {
+    ti68k_bkpt_clear_address();
 	ti68k_bkpt_clear_exception();
 
     free(bkpts.pclog_buf);
@@ -85,15 +89,14 @@ void hw_m68k_irq(int n)
 */
 int hw_m68k_run(int n)
 {
-#if 1
-  int i;
-  GList *l;
-  static FILE *flog;
-  //static once = 0;
+    int i;
+    GList *l;
+    static FILE *flog;
+    //static once = 0;
   
-  for(i=0; i<n; i++) 
-  {
-      UWORD opcode;
+    for(i = 0; i < n; i++) 
+    {
+        UWORD opcode;
 
 		// V200 debug purpose
 	  /*
@@ -106,105 +109,104 @@ int hw_m68k_run(int n)
 	  }
 	  */
 		
+        // save log to disk (internal use)
         if(flog != NULL)
         {
             //fprintf(flog, "0x%06lx\n", m68k_getpc());
         }
         else
-            flog = fopen("C:\\tiemu.log", "wt");
+            flog = fopen("C:\\tiemu.log", "wt");        
 
+        // search for breakpoint
+        if(((l = bkpts.code) != NULL) && !(specialflags & SPCFLAG_DBTRACE))
+        {
+            bkpts.id = 0;
+            while(l)
+            {
+                if(GPOINTER_TO_INT(l->data) == (int)m68k_getpc())
+                {
+                    bkpts.type = BK_TYPE_CODE;
+		            //specialflags |= SPCFLAG_BRK;
+                    return 1;
+                }
+
+                bkpts.id++;
+                l = g_list_next(l);
+            }
+        }
+
+        // store PC in the trace buffer
         if(bkpts.pclog_size > 1)
+        {
             bkpts.pclog_buf[bkpts.pclog_ptr++ % bkpts.pclog_size] = m68k_getpc();
+        }
 
-      opcode = nextiword();
-      (*cpufunctbl[opcode])(opcode);
-      do_cycles();
+        // search for next opcode, execute it and refresh hardware
+        opcode = nextiword();
+        (*cpufunctbl[opcode])(opcode);
+        do_cycles();
 
-      if((l = bkpts.code) != NULL)
-      {
-          bkpts.id = 0;
-          while(l)
-          {
-              if(GPOINTER_TO_INT(l->data) == (int)regs.pc)
-              {
-                bkpts.type = BK_TYPE_CODE;
-		        specialflags |= SPCFLAG_BRK;
-              }
-
-              bkpts.id++;
-              l = g_list_next(l);
-          }
-      }
-
-      /* Debug purposes */
-#if 0
-      if (bInstructionsDisplay) 
-	{
-	  disasm(getPcRegister(), inst);
-	  printf("disasm: %s\n", inst);
-	}
-#endif
-      /* Flag management */      
-      if(specialflags) 
-	{
-	  if(specialflags & SPCFLAG_ADRERR) 
+        // management of special flags
+        if(specialflags) 
 	    {
-	      Exception(3);
-	      specialflags &= ~SPCFLAG_ADRERR;
-	    }
+    	    if(specialflags & SPCFLAG_ADRERR) 
+	        {
+	            Exception(3);
+	        specialflags &= ~SPCFLAG_ADRERR;
+	        }
 	  
-	  if (specialflags & SPCFLAG_DOTRACE) 
-	    {
-	      Exception(9);
-	    }
-	  
-	  while (specialflags & SPCFLAG_STOP) 
-	    {
-	      do_cycles();
-	      if (specialflags & (SPCFLAG_INT | SPCFLAG_DOINT)) 
-		{
-		  int intr = intlev();
-		  specialflags &= ~(SPCFLAG_INT | SPCFLAG_DOINT);
-		  if (intr != -1 && intr > regs.intmask) 
-		    {
-		      Interrupt(intr);
-		      regs.stopped = 0;
-		      specialflags &= ~SPCFLAG_STOP;
-		    }	    
-		}
-	    }		
-	  
-	  if (specialflags & SPCFLAG_TRACE) 
-	    {
-	      specialflags &= ~SPCFLAG_TRACE;
-	      specialflags |= SPCFLAG_DOTRACE;
-	    }	  
-	  if (specialflags & SPCFLAG_DOINT) 
-	    {
-	      int intr = intlev();
-	      specialflags &= ~(SPCFLAG_INT | SPCFLAG_DOINT);
-	      if (intr != -1 && intr > regs.intmask) {
-		Interrupt(intr);
-		regs.stopped = 0;
-	      }	    
-	    }
-	  if (specialflags & SPCFLAG_INT) 
-	    {
-	      specialflags &= ~SPCFLAG_INT;
-	      specialflags |= SPCFLAG_DOINT;
-	    }
-	  if (specialflags & SPCFLAG_BRK) 
-	    {		
-	      specialflags &= ~SPCFLAG_BRK;
-	      return 1;		// DBG_BREAK
-	    }
-	  if(specialflags & SPCFLAG_DBTRACE) 
-	    {
-	      specialflags &= ~SPCFLAG_DBTRACE;
-          return 2;     // DBG_TRACE
-	    }
-	}  
+	        if (specialflags & SPCFLAG_DOTRACE) 
+	        {
+	            Exception(9);
+	        }
+	      
+	        while (specialflags & SPCFLAG_STOP) 
+	        {
+	            do_cycles();
+	            if (specialflags & (SPCFLAG_INT | SPCFLAG_DOINT)) 
+		        {
+		            int intr = intlev();
+		            specialflags &= ~(SPCFLAG_INT | SPCFLAG_DOINT);
+		            if (intr != -1 && intr > regs.intmask) 
+		            {
+		                Interrupt(intr);
+		                regs.stopped = 0;
+		                specialflags &= ~SPCFLAG_STOP;
+		            }	    
+		        }
+	        }		
+	      
+	        if (specialflags & SPCFLAG_TRACE) 
+	        {
+	            specialflags &= ~SPCFLAG_TRACE;
+	            specialflags |= SPCFLAG_DOTRACE;
+	        }	  
+	        if (specialflags & SPCFLAG_DOINT) 
+	        {
+	            int intr = intlev();
+	            specialflags &= ~(SPCFLAG_INT | SPCFLAG_DOINT);
+	            if (intr != -1 && intr > regs.intmask) 
+                {
+		            Interrupt(intr);
+		            regs.stopped = 0;
+	            }	    
+	        }
+	        if (specialflags & SPCFLAG_INT) 
+	        {
+	          specialflags &= ~SPCFLAG_INT;
+	          specialflags |= SPCFLAG_DOINT;
+	        }
+	        if (specialflags & SPCFLAG_BRK) 
+	        {		
+	          specialflags &= ~SPCFLAG_BRK;
+	          return 1;		// DBG_BREAK
+	        }
+	        if(specialflags & SPCFLAG_DBTRACE) 
+	        {
+	          specialflags &= ~SPCFLAG_DBTRACE;
+              return 2;     // DBG_TRACE
+	        }
+	    }  
     }
-#endif
   return 0;
 }

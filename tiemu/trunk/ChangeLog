@@ -9,11 +9,12 @@ SubVersion: $Id$
 	Linkport reworked but seems to be buggy with HW2 ?!
 	Fixed IMG_INFO structure: size was incorrect.
 	Added new field to IMG_INFO: ROM base address.
+	Navigate with arrow keys in the mem dbox.
+	Save of breakpoints in the state image.
+	Fixed code breakpoint which was buggy.
 
 	Still to do:
-	- navigate with arrow keys in the mem dbox
 	- link port is broken
-	- pb de bkpt ?
 	- dans le memory dump, le 1er octet de la mémoire n'est pas à 0x00...
 	- stealth I/O and mem protect
 
