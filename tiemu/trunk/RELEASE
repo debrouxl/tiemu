@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.75		(07/08/2004)
-Current version:  1.79		(22/08/2004)
+Previous version: 1.79		(22/08/2004)
+Current version:  1.80		(28/08/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,38 +20,20 @@ For the other link cables, no driver is needed because it's provided.
 New capabilities:
 -----------------
 
-	- added refresh button in the mem window	
-	- use Lionel's ROM call list (but can use TIGCC os.h file, too)
-	- check for image at startup and can select it
-	- accept ExtendeD's V200 ROM (patched)
-	- can load keymap (PC to TI keyboard translation) from file
+	- bkpts window: can jump to bkpt address
+	- code window: can jump to ROM call
 
 
 Improvements:
 -------------
 
-	- update registers when modifying the supervisor bit
-	- minimizing/maximizing of windows improved
-	- step over fixed again
-	- FLINE > 5 was mis-disassembled
-	- code window: don't reload source when setting a bkpt
-	- code window: show PC in the middle of the window and leave 3 isntructions at bottom
-	- changed keyboard mapping to pure VTi mapping
-	- LCD background is less dark than before
-	- mem window: refresh when scrolling up/down
-	- when calc is OFF, CPU is now used at 3% instead of 100%
+	- none
 		
 
 Bug fixes:
 ----------
 
-	- no ghost in 0x400000-0x5FFFFF on TI89
-	- stack frame display 1 word on 2
-	- fixed step over: works on DBcc
-	- PC highlight lost when scrolling: fixed
-	- restart engine when clicking outside of the popup menu
-	- important bug: FLINE instructions were not executed !
-	- when calc is OFF, debugger can be launched
+	- fixed vectors copy
 
 
 To do:

@@ -34,6 +34,8 @@
 
 #include "romcalls.h"
 
+#define NROMCALLS	0x800
+
 /* Types */
 
 typedef struct

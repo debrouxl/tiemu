@@ -7,16 +7,16 @@ ExtendeD:
 
 Kevin:
 
-O Avec GTK-Runtime-Environment-2.2.4-2, il n'arrive pas à ouvrir le JPEG du
++ Avec GTK-Runtime-Environment-2.2.4-2, il n'arrive pas à ouvrir le JPEG du
 skin sous WinMe. J'ai été obligé de récupérer
 GTK-Runtime-Environment-2.2.4-3 qui corrige ce problème, il faudrait le
 mettre quelque part dans le readme.
 
-O L'installation de GTK-Runtime-Environment-2.2.4-3 m'a réactivé le thème
++ L'installation de GTK-Runtime-Environment-2.2.4-3 m'a réactivé le thème
 WIMP avec tous ses warnings. J'ai été obligé de renommer libwimp.dll en
 libwimp.dl_ pour me débarasser de ces warnings.
 
-O Le menu popup ne reste ouvert que si on garde la touche de la souris
++ Le menu popup ne reste ouvert que si on garde la touche de la souris
 appuyée, ce qui est peu pratique. Et si on appuie 2 fois de suite trop
 rapidement, TiEmu plante. (Il s'embrouille avec les engine starts/stops.)
 
@@ -35,7 +35,7 @@ plus, et il y a probablement d'autres combines de touches "suspectes".
 ne répond plus à aucun appui de touches (mais on peut le fermer à travers le
 popup au moins). L'"engine" est "stoppée" et pas re"start"ée.
 
-O Si on défile vers le bas dans le débogueur, le curseur vert (PC actuel)
++ Si on défile vers le bas dans le débogueur, le curseur vert (PC actuel)
 disparaît même si l'instruction actuelle est encore visible.
 
 - Le débogueur est toujours très lent. :-( Déjà, le défilement du curseur
@@ -53,7 +53,7 @@ pas l'air de planter l'émulateur). Il faut faire un
 Reset Calculator pour avoir une calculette à nouveau
 d'aplomb.
 
- * F8 ne fait "silencieusement" pas l'appel complet 
+* F8 ne fait "silencieusement" pas l'appel complet 
 à une subroutine, mais seulement une partie.
 Actuellement, TIEmu s'arrête manifestement après le
 premier rts rencontré, ce qui n'est bon que si la
@@ -64,7 +64,7 @@ idée d'attendre que le pointeur de pile soit revenu
 à la même valeur (ça ne marchera pas dans plusieurs 
 cas de figure
 
-* je n'ai pas trouvé d'option permettant d'aller
++ je n'ai pas trouvé d'option permettant d'aller
 directement à un ROM_CALL donné. C'est pourtant utile.
 
 -------------

@@ -33,9 +33,9 @@
 #include "images.h"
 #include "ti68k_def.h"
 
-#define TBL_SIZE	0x800
+#define TBL_SIZE	NROMCALLS
 
-static ROM_CALL list[TBL_SIZE];
+static ROM_CALL list[TBL_SIZE] = { 0 };
 static int		loaded;
 
 static int old_ct = -1;		// previous calc type for reloading
