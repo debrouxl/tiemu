@@ -96,6 +96,7 @@ typedef struct
     int     rom_flash;
     char	rom_version[5];
 	int		hw_type;
+	int		io_size;
 
 	int		ti92v1;			// ROm v1.x(y)
 	int		ti92v2;			// ROM v2.x

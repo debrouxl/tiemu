@@ -44,10 +44,7 @@
 
 static IMG_INFO *img = &img_infos; // a shortcut
 
-const int rom_base[] = { 0x400000, 0x200000, 0x400000, 0x800000 };
-const int io_size = 32;
-
-uint8_t *mem_tab[16];     // 1MB per banks
+uint8_t *mem_tab[16];		// 1MB per banks
 uint32_t mem_mask[16];		// pseudo chip-select (allow wrapping / ghost space)
 
 // 000000-0fffff : RAM (128 or 256 KB)
@@ -67,8 +64,6 @@ uint32_t mem_mask[16];		// pseudo chip-select (allow wrapping / ghost space)
 // e00000-efffff :   ...
 // d00000-ffffff : unused
 
-//#define MAX(a,b)	((a) > (b) ? (a) : (b))
-
 extern FLASH_WSM   wsm;
 
 /* Mem init/exit */
@@ -82,11 +77,13 @@ int hw_mem_init(void)
 		// TI92 II is same as TI92+
 		tihw.rom_size = ti68k_get_rom_size(TI92p);
 		tihw.ram_size = ti68k_get_ram_size(TI92p);
+		tihw.io_size = ti68k_get_io_size(TI92p);
 	}
 	else
 	{
 		tihw.rom_size = ti68k_get_rom_size(tihw.calc_type);
 		tihw.ram_size = ti68k_get_ram_size(tihw.calc_type);
+		tihw.io_size = ti68k_get_io_size(tihw.calc_type);
 	}
 
 	// init vars
@@ -101,13 +98,13 @@ int hw_mem_init(void)
     // allocate mem
     tihw.ram = malloc(tihw.ram_size + 4);
     tihw.rom = malloc(tihw.rom_size + 4);
-    tihw.io  = malloc(32 + 4);
-    tihw.io2 = malloc(32 + 4);
+    tihw.io  = malloc(tihw.io_size + 4);
+    tihw.io2 = malloc(tihw.io_size + 4);
 
     // clear RAM/ROM/IO
     memset(tihw.ram, 0x00, tihw.ram_size);
-    memset(tihw.io , 0x00, io_size);  
-	memset(tihw.io2, 0x00, io_size);
+    memset(tihw.io , 0x00, tihw.io_size);  
+	memset(tihw.io2, 0x00, tihw.io_size);
     for (i=0; i<tihw.rom_size; i++)
     {
         if (i & 1)
@@ -168,12 +165,12 @@ int hw_mem_init(void)
 
     // map IO
     mem_tab[6] = tihw.io;
-    mem_mask[6] = io_size-1;
+    mem_mask[6] = tihw.io_size-1;
 	
 	if(tihw.hw_type == HW2)
 	{
 		mem_tab[7] = tihw.io2;
-		mem_mask[7] = io_size-1;
+		mem_mask[7] = tihw.io_size-1;
 	}
   
     // blit ROM

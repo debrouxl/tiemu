@@ -36,8 +36,6 @@
 #include "ti68k_int.h"
 #include "ti68k_err.h"
 
-#define IO_SIZE     32
-
 /*
   Must be done between init_hardware and M68000_run.
   Typically called after initLib68k.
@@ -72,11 +70,11 @@ int ti68k_state_load(char *filename)
     fread(&specialflags, sizeof(specialflags), 1, f);
     
     // Load I/O ports state
-    fread(tihw.io , IO_SIZE, 1, f);
-    fread(tihw.io2, IO_SIZE, 1, f);
+    fread(tihw.io , tihw.io_size, 1, f);
+    fread(tihw.io2, tihw.io_size, 1, f);
     
     // Load RAM content
-    fread(tihw.ram, 256*KB, 1, f);
+    fread(tihw.ram, tihw.ram_size, 1, f);
     
 	// Update UAE structures
 	m68k_setpc(m68k_getpc());
@@ -120,11 +118,11 @@ int ti68k_state_save(char *filename)
     fwrite(&specialflags, sizeof(specialflags), 1, f);
     
     // Save I/O ports state
-    fwrite(tihw.io , IO_SIZE, 1, f);
-    fwrite(tihw.io2, IO_SIZE, 1, f);
+    fwrite(tihw.io , tihw.io_size, 1, f);
+    fwrite(tihw.io2, tihw.io_size, 1, f);
     
     // Save RAM content
-    fwrite(tihw.ram, 256*KB, 1, f);
+    fwrite(tihw.ram, tihw.ram_size, 1, f);
     
     fclose(f);
 
