@@ -199,6 +199,8 @@ static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, g
 
 	return filename = g_strdup(lpstrFile);
 #endif
+
+	return NULL;
 }
 
 // KDE
@@ -426,10 +428,33 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext, gbool
 
 	return filenames;
 #endif
+
+	return NULL;
 }
 
 static gchar** create_fsels_4(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
+#if WITH_KDE
+	gchar *p;
+	gchar *extspaces = g_strdup(ext);
+	p = extspaces;
+	while ((p = strchr(p, ';'))) *p = ' ';
+	if(save) { // multi-select doesn't make much sense when saving, and KDE doesn't support it
+		p = sp_kde_get_write_filename(dirname, extspaces, _("Save file"));
+		if (!p)
+			filenames = NULL;
+		else {
+			filenames = g_malloc(2 * sizeof(gchar *));
+			filenames[0] = p;
+			filenames[1] = NULL;
+		}
+	}
+	else
+		filenames = sp_kde_get_open_filenames(dirname, extspaces, _("Open file"));
+	g_free(extspaces);
+	return filenames;
+#endif
+
 	return NULL;
 }
 

@@ -21,6 +21,7 @@ void sp_kde_init (int argc, char **argv, const char *appName, const char *progra
 void sp_kde_finish (void);
 
 char *sp_kde_get_open_filename (unsigned char *dir, unsigned char *filter, unsigned char *title);
+char **sp_kde_get_open_filenames (unsigned char *dir, unsigned char *filter, unsigned char *title);
 char *sp_kde_get_write_filename (unsigned char *dir, unsigned char *filter, unsigned char *title);
 
 char *sp_kde_get_save_filename (unsigned char *dir, unsigned int *spns);
