@@ -27,7 +27,7 @@
     <child>
       <widget class="GtkMenuItem" id="send_file_to_gtktiemu1">
         <property name="tooltip" translatable="yes">Send the selected file to the emulator. This file can be of any type (single, group, backup, FLASH app or FLASH OS).</property>
-        <property name="label" translatable="yes">Send _file to GtkTIEmu</property>
+        <property name="label" translatable="yes">Send _file to TIEmu</property>
         <property name="visible">yes</property>
         <property name="use_underline">yes</property>
 
@@ -169,8 +169,6 @@
         <property name="visible">yes</property>
         <property name="use_underline">yes</property>
 
-        <signal name="activate" handler="on_emulator_options1_activate" />
-
         <child>
           <widget class="GtkMenu" id="emulator_options1_menu">
             <property name="visible">yes</property>
@@ -242,25 +240,12 @@
             </child>
 
             <child>
-              <widget class="GtkMenuItem" id="colors1">
-                <property name="label" translatable="yes">Colors</property>
+              <widget class="GtkMenuItem" id="number_of_colors1">
+                <property name="tooltip" translatable="yes">Set current number of emulated extra grayscales colors</property>
+                <property name="label" translatable="yes">Number of colors...</property>
                 <property name="visible">yes</property>
 
-                <child>
-                  <widget class="GtkMenu" id="colors1_menu">
-                    <property name="visible">yes</property>
-
-                    <child>
-                      <widget class="GtkMenuItem" id="number_of_colors1">
-                        <property name="tooltip" translatable="yes">Set current number of emulated extra grayscales colors</property>
-                        <property name="label" translatable="yes">Number of colors...</property>
-                        <property name="visible">yes</property>
-
-                        <signal name="activate" handler="on_number_of_colors1_activate" />
-                      </widget>
-                    </child>
-                  </widget>
-                </child>
+                <signal name="activate" handler="on_number_of_colors1_activate" />
               </widget>
             </child>
 
@@ -336,6 +321,15 @@
                 <property name="visible">yes</property>
 
                 <signal name="activate" handler="on_none1_activate" />
+              </widget>
+            </child>
+
+            <child>
+              <widget class="GtkMenuItem" id="set_skin1">
+                <property name="label" translatable="yes">Set skin...</property>
+                <property name="visible">yes</property>
+
+                <signal name="activate" handler="on_set_skin1_activate" />
               </widget>
             </child>
           </widget>

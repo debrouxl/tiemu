@@ -1,5 +1,0 @@
-The GUI dependant routines.
-
-gtk: GTK+ (Linux/Win32)
-mfc: MFC (Win32)
-osx: Cocoa (Mac OS-X)

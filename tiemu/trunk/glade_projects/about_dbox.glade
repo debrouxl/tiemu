@@ -151,9 +151,8 @@
 		<widget class="GtkLabel" id="label7">
 		  <property name="visible">True</property>
 		  <property name="label" translatable="yes">* Supported platforms are:
-  - Linux (any): RL &lt;roms@lpg.ticalc.org&gt;
-  - Win32 (Windows 9x/Me/NT4/2000): RL &lt;roms@lpg.ticalc.org&gt;
-  - Macintosh (Mac OS-X): JB &lt;jb@jblache.org&gt;</property>
+  - Linux (any): RL &lt;roms@tilp.info&gt;
+  - Win32 (Windows 9x/Me/NT4/2000): RL &lt;roms@tilp.info&gt;</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">False</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -174,7 +173,7 @@
 	      <child>
 		<widget class="GtkLabel" id="label8">
 		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">* Official homepage: http://lpg.ticalc.org/prj_gtktiemu</property>
+		  <property name="label" translatable="yes">* Official homepage: http://lpg.ticalc.org/prj__tiemu</property>
 		  <property name="use_underline">True</property>
 		  <property name="use_markup">False</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>

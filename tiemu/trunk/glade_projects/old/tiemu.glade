@@ -72,7 +72,7 @@
       <handler>on_send_file_to_gtktiemu1_activate</handler>
       <last_modification_time>Thu, 16 Nov 2000 19:59:05 GMT</last_modification_time>
     </signal>
-    <label>Send _file to GtkTIEmu</label>
+    <label>Send _file to TIEmu</label>
     <right_justify>False</right_justify>
   </widget>
 
@@ -226,11 +226,6 @@
   <widget>
     <class>GtkMenuItem</class>
     <name>emulator_options1</name>
-    <signal>
-      <name>activate</name>
-      <handler>on_emulator_options1_activate</handler>
-      <last_modification_time>Thu, 16 Nov 2000 20:03:50 GMT</last_modification_time>
-    </signal>
     <label>Emulator _options</label>
     <right_justify>False</right_justify>
 
@@ -318,27 +313,15 @@
 
       <widget>
 	<class>GtkMenuItem</class>
-	<name>colors1</name>
-	<label>Colors</label>
+	<name>number_of_colors1</name>
+	<tooltip>Set current number of emulated extra grayscales colors</tooltip>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_number_of_colors1_activate</handler>
+	  <last_modification_time>Tue, 25 Jul 2000 19:37:52 GMT</last_modification_time>
+	</signal>
+	<label>Number of colors...</label>
 	<right_justify>False</right_justify>
-
-	<widget>
-	  <class>GtkMenu</class>
-	  <name>colors1_menu</name>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>number_of_colors1</name>
-	    <tooltip>Set current number of emulated extra grayscales colors</tooltip>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_number_of_colors1_activate</handler>
-	      <last_modification_time>Tue, 25 Jul 2000 19:37:52 GMT</last_modification_time>
-	    </signal>
-	    <label>Number of colors...</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-	</widget>
       </widget>
 
       <widget>
@@ -422,6 +405,18 @@
 	  <last_modification_time>Thu, 16 Nov 2000 20:04:24 GMT</last_modification_time>
 	</signal>
 	<label>None</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>set_skin1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>on_set_skin1_activate</handler>
+	  <last_modification_time>Tue, 28 May 2002 18:38:23 GMT</last_modification_time>
+	</signal>
+	<label>Set skin...</label>
 	<right_justify>False</right_justify>
       </widget>
     </widget>

@@ -263,119 +263,25 @@
 
 	      <child>
 		<widget class="GtkHBox" id="hbox1">
+		  <property name="border_width">10</property>
 		  <property name="visible">True</property>
 		  <property name="homogeneous">True</property>
 		  <property name="spacing">0</property>
 
 		  <child>
-		    <widget class="GtkCheckButton" id="checkbutton1">
-		      <property name="border_width">5</property>
+		    <widget class="GtkButton" id="button2">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="label" translatable="yes">Kernel 
-driver</property>
+		      <property name="label" translatable="yes">Click Here</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
-		      <property name="active">False</property>
-		      <property name="inconsistent">False</property>
-		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="linktype_checkbutton1_toggled"/>
-
-		      <child>
-			<widget class="GtkLabel" id="label1">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Kernel 
-driver</property>
-			  <property name="use_underline">False</property>
-			  <property name="use_markup">False</property>
-			  <property name="justify">GTK_JUSTIFY_LEFT</property>
-			  <property name="wrap">False</property>
-			  <property name="selectable">False</property>
-			  <property name="xalign">0.05</property>
-			  <property name="yalign">0.5</property>
-			  <property name="xpad">0</property>
-			  <property name="ypad">0</property>
-			</widget>
-		      </child>
+		      <signal name="pressed" handler="on_button2_pressed" last_modification_time="Wed, 02 Jul 2003 18:16:27 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
 		      <property name="expand">False</property>
 		      <property name="fill">False</property>
-		    </packing>
-		  </child>
-
-		  <child>
-		    <widget class="GtkCheckButton" id="checkbutton2">
-		      <property name="border_width">5</property>
-		      <property name="visible">True</property>
-		      <property name="can_focus">True</property>
-		      <property name="label" translatable="yes">DCB (Win32)</property>
-		      <property name="use_underline">True</property>
-		      <property name="relief">GTK_RELIEF_NORMAL</property>
-		      <property name="active">False</property>
-		      <property name="inconsistent">False</property>
-		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="linktype_checkbutton2_toggled"/>
-
-		      <child>
-			<widget class="GtkLabel" id="label5">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">DCB (Win32)</property>
-			  <property name="use_underline">False</property>
-			  <property name="use_markup">False</property>
-			  <property name="justify">GTK_JUSTIFY_LEFT</property>
-			  <property name="wrap">False</property>
-			  <property name="selectable">False</property>
-			  <property name="xalign">0.05</property>
-			  <property name="yalign">0.5</property>
-			  <property name="xpad">0</property>
-			  <property name="ypad">0</property>
-			</widget>
-		      </child>
-		    </widget>
-		    <packing>
-		      <property name="padding">0</property>
-		      <property name="expand">False</property>
-		      <property name="fill">False</property>
-		    </packing>
-		  </child>
-
-		  <child>
-		    <widget class="GtkCheckButton" id="checkbutton3">
-		      <property name="border_width">5</property>
-		      <property name="visible">True</property>
-		      <property name="can_focus">True</property>
-		      <property name="label" translatable="yes">custom
-settings</property>
-		      <property name="use_underline">True</property>
-		      <property name="relief">GTK_RELIEF_NORMAL</property>
-		      <property name="active">False</property>
-		      <property name="inconsistent">False</property>
-		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="linktype_checkbutton3_toggled"/>
-
-		      <child>
-			<widget class="GtkLabel" id="label9">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">custom
-settings</property>
-			  <property name="use_underline">False</property>
-			  <property name="use_markup">False</property>
-			  <property name="justify">GTK_JUSTIFY_LEFT</property>
-			  <property name="wrap">True</property>
-			  <property name="selectable">False</property>
-			  <property name="xalign">0.05</property>
-			  <property name="yalign">0.5</property>
-			  <property name="xpad">0</property>
-			  <property name="ypad">0</property>
-			</widget>
-		      </child>
-		    </widget>
-		    <packing>
-		      <property name="padding">0</property>
-		      <property name="expand">False</property>
-		      <property name="fill">False</property>
+		      <property name="pack_type">GTK_PACK_END</property>
 		    </packing>
 		  </child>
 		</widget>
@@ -384,7 +290,7 @@ settings</property>
 	      <child>
 		<widget class="GtkLabel" id="label9">
 		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">Options:</property>
+		  <property name="label" translatable="yes">Probing of ports &amp; cables</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">False</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -540,7 +446,7 @@ Home-made serial</property>
 		    <widget class="GtkRadioButton" id="radiobutton6">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="label" translatable="yes">fastAVRlink</property>
+		      <property name="label" translatable="yes">AVRlink</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="active">False</property>
@@ -696,7 +602,7 @@ AVRlink</property>
 		    <widget class="GtkRadioButton" id="radiobutton10">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="label" translatable="yes">0x3f8 (COM1)</property>
+		      <property name="label" translatable="yes">Serial port #1</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="active">True</property>
@@ -715,7 +621,7 @@ AVRlink</property>
 		    <widget class="GtkRadioButton" id="radiobutton11">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="label" translatable="yes">0x2f8 (COM2)</property>
+		      <property name="label" translatable="yes">Serial port #2</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="active">False</property>
@@ -735,7 +641,7 @@ AVRlink</property>
 		    <widget class="GtkRadioButton" id="radiobutton12">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="label" translatable="yes">0x3e8 (COM3)</property>
+		      <property name="label" translatable="yes">Serial port #3</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="active">False</property>
@@ -755,7 +661,7 @@ AVRlink</property>
 		    <widget class="GtkRadioButton" id="radiobutton13">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="label" translatable="yes">0x2e8 (COM4)</property>
+		      <property name="label" translatable="yes">Serial port #4</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="active">False</property>
@@ -763,6 +669,26 @@ AVRlink</property>
 		      <property name="draw_indicator">True</property>
 		      <property name="group">radiobutton10</property>
 		      <signal name="toggled" handler="linktype_radiobutton13_toggled"/>
+		    </widget>
+		    <packing>
+		      <property name="padding">0</property>
+		      <property name="expand">False</property>
+		      <property name="fill">False</property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkRadioButton" id="radiobutton14">
+		      <property name="visible">True</property>
+		      <property name="can_focus">True</property>
+		      <property name="label" translatable="yes">Custom settings</property>
+		      <property name="use_underline">True</property>
+		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="active">False</property>
+		      <property name="inconsistent">False</property>
+		      <property name="draw_indicator">True</property>
+		      <property name="group">radiobutton10</property>
+		      <signal name="toggled" handler="linktype_radiobutton14_toggled" last_modification_time="Wed, 02 Jul 2003 18:15:51 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
