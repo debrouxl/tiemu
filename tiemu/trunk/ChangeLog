@@ -6,6 +6,7 @@ To do:
 	- stealth I/O and mem protect (done but not enabled)
 
 - 07/02/2005, version 1.80m: roms
+	- dbus architecture improved (reset)
 	- fixed and tested linkport support with real cables: GrayLink, BlackLink.
 	SilverLink makes TiEmu crash.
 	Virtual links don't work !
@@ -20,7 +21,7 @@ To do:
 	- fixed V200 and Titanium crash under Linux (buffer overflow). V200 transfers don't crash
 		any more under Windows (probably same bug).
 	- added kbd_dbg variable in tiemu.ini file to display keystrokes in console (useful for creating keymaps).
-	- prevent Alt+ESC and Ctrl+ESC to disturb TiEmu on WinNT (thanks to Kevin)
+	- prevent Alt+ESC and Ctrl+ESC to disturb TiEmu (thanks to Kevin)
 
 - 20/01/2005, version 1.80k: roms
 	- link port is now reset when error occurs: great improvement

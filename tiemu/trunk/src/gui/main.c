@@ -296,6 +296,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                      LPSTR     lpCmdLine,
                      int       nCmdShow)
 {
+	OSVERSIONINFO os;
+	MOUSEKEYS mk;
 	int ret;
 
 	/* Check whether a TiEmu session is already running */
@@ -308,13 +310,36 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 		MessageBox(NULL, _("Error"), _("An TiEmu session is already running. Check the task list."), MB_OK);
 	}
 
-	// Install the low-level keyboard & mouse hooks (contribution from K. Kofler)
-	hhkLowLevelKybd  = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboardProc, hInstance, 0);
+	//  Get OS type (NT or non-NT)
+	memset(&os, 0, sizeof(OSVERSIONINFO));
+  	os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+  	GetVersionEx(&os);
+
+	// Prevent Alt+ESC, Ctrl+ESC and Alt+TAB actions
+	if(os.dwPlatformId == VER_PLATFORM_WIN32_NT)
+	{
+		// Install the low-level keyboard & mouse hooks (contribution from K. Kofler)
+		hhkLowLevelKybd  = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboardProc, hInstance, 0);
+	}
+	else
+	{
+		// Make Windows believe we are a screen saver (contribution from K. Kofler)
+		SystemParametersInfo(SPI_SCREENSAVERRUNNING, TRUE, &mk, 0);
+	}
   
 	ret = main(__argc, __argv);
 
-	// Un-install the hook
-	UnhookWindowsHookEx(hhkLowLevelKybd);
+	// Restore hooks
+	if(os.dwPlatformId == VER_PLATFORM_WIN32_NT)
+	{
+		// Un-install the hook
+		UnhookWindowsHookEx(hhkLowLevelKybd);
+	}
+	else
+	{
+		// Uninstall hack (this is an undocumented feature)
+		SystemParametersInfo(SPI_SCREENSAVERRUNNING, FALSE, &mk, 0);
+	}
 
 	return ret;
 }
