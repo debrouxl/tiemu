@@ -66,7 +66,7 @@ gint display_help_dbox()
 	}
 
 	xml = glade_xml_new
-	    (tilp_paths_build_glade("manpage-2.glade"), "help_dbox",
+	    (tilp_paths_build_glade("manpage-2.glade"), "manpage_dbox",
 	     PACKAGE);
 	if (!xml)
 		g_error("GUI loading failed !\n");
