@@ -53,6 +53,7 @@ static int cpu_instr = NB_INSTRUCTIONS_PER_LOOP;
 
 static guint tid = 0;
 static gint  res = 0;
+static guint cal = 0;
 
 // function called when the function below is exited
 static void engine_notify(gint *data)
@@ -68,26 +69,26 @@ static void engine_notify(gint *data)
 // function called by g_timeout_add_full/g_idle_add_full
 static gboolean engine_func(gint *data)
 {
-	GTimer *tmr;
-    gulong us;
+	GTimer *tmr = g_timer_new();
+	gdouble ms;
 
 	// set instruction rate
     if(params.cpu_rate != -1)
         cpu_instr = params.cpu_rate;
 
-	// start measurement of time
-	tmr = g_timer_new();
-	g_timer_start(tmr);
-
 	// run emulation core
+	g_timer_start(tmr);
 	*data = hw_m68k_run(cpu_instr);
+	g_timer_stop(tmr);
 
 	// a bkpt has been encountered ? If yes, stop engine
 	if(*data)
 		return FALSE;
 
 	// get time needed to execute 'cpu_instr' instructions
-	g_timer_elapsed(tmr, &us);
+	ms = 1000 * g_timer_elapsed(tmr, NULL); // return 0, why ?
+	g_timer_destroy(tmr);
+	//cal = (guint)ms;
 
 	return TRUE;
 }
@@ -96,7 +97,7 @@ static gboolean engine_func(gint *data)
 void engine_start(void) 
 {
 	if(params.restricted)
-		tid = g_timeout_add_full(G_PRIORITY_DEFAULT, TIME_LIMIT, 
+		tid = g_timeout_add_full(G_PRIORITY_DEFAULT, TIME_LIMIT-cal, 
 					 (GSourceFunc)engine_func, &res, 
 					 (GDestroyNotify)engine_notify);
 	else
@@ -127,7 +128,25 @@ int engine_is_running(void)
 	Called at startup to know needed time for exec'ing hw_m68k_run.
 	This allow to make exec'ing more precise.
 */
+#define NLOOPS	10
 void engine_calibrate(void)
 {
+	int i;
+	gdouble ms;
+	GTimer *tmr = g_timer_new();
 
+	fprintf(stdout, "Calibrating engine: ");
+	g_timer_start(tmr);
+
+	for(i = 0; i < NLOOPS; i++)
+	{
+		hw_m68k_run(NB_INSTRUCTIONS_PER_LOOP);
+	}
+
+	g_timer_stop(tmr);
+	ms = 1000 * g_timer_elapsed(tmr, NULL);
+	g_timer_destroy(tmr);
+	
+	cal = (guint)(ms / NLOOPS);
+	fprintf(stdout, "%i loops in %.1f ms => %i ms\n", i, ms, cal);
 }

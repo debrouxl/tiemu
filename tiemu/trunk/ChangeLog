@@ -21,7 +21,7 @@ To do:
 	         new file selectors.
 	- [roms] $1008: implemented full-screen view.
 	- [roms] $1009: improved CPU responsiveness of large view mode.
-	- [roms] $1012: TiEmu don't use threads any longer
+	- [roms] $1015: TiEmu don't use threads any longer.
 
 - 12/03/2005, version 1.80p:
 	- [kevin] $933: increased link timeout from 1.5 to 10s.
