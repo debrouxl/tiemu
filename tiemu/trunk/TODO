@@ -14,10 +14,6 @@ et des nombres sont tapés à la place.
 Kevin
 =====
 
-* Un truc qui serait bien serait une fonction "breakpoint on program entry".
-Mais comme la feature dans VTI est implémentée plutôt avec les pieds, il
-faudrait qu'on discute de ça ensemble pour ne pas faire les mêmes erreurs.
-
 *  Il y a un bogue avec le débogueur et les touches: prends un AMS 2.0x ou 3.0x, mets 
 un breakpoint sur le trap #11, lance un programme ASM (même Exec "4e750000" suffit), 
 quitte le débogueur, appuie sur n'importe quelle touche, il réagit comme si c'était ENTER. 

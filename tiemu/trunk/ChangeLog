@@ -27,6 +27,7 @@ To do:
 		automatically.
 	- fix problem of path with scan_images under Linux
 	- fixed/improved mem allocation in images.c
+	- added program entry breakpoint feature (AMS < 2.00 only)
 
 - 07/02/2005, version 1.80m: roms
 	- dbus architecture improved (reset)

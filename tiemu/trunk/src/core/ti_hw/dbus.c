@@ -42,6 +42,7 @@
 #include "ti68k_err.h"
 #include "ti68k_def.h"
 #include "ti68k_int.h"
+#include "tie_error.h"
 
 /*
 	Linkport (lp) / directfile (df) mappers

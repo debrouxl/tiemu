@@ -272,6 +272,28 @@ static void clist_populate(GtkListStore *store)
 
 		g_strfreev(row_text);
 	}
+
+	// Prgm entry breakpoints
+	for(l = bkpts.pgmentry; l != NULL; l = g_list_next(l))
+	{
+		uint32_t addr = GPOINTER_TO_INT(l->data);
+		gchar *str;
+		
+		str = g_strdup_printf("#%04x", BKPT_ADDR(addr));
+		
+		gtk_list_store_append(store, &iter);
+
+		gtk_list_store_set(store, &iter, 
+		COL_SYMBOL, str, 
+		COL_TYPE, ti68k_bkpt_type_to_string(BK_TYPE_PGMENTRY),
+		COL_STATUS, BKPT_IS_ENABLED(addr) ? _("enabled") : _("disabled"),
+		COL_START, str,
+		COL_END, "",		
+        COL_MODE, BKPT_IS_TMP(addr) ? _("one-shot") : "",
+		-1);
+		
+		g_free(str);
+	}
 }
 
 static GtkListStore *store = NULL;

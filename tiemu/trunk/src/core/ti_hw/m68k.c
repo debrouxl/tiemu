@@ -147,7 +147,7 @@ int hw_m68k_run(int n)
 			continue;
 	    }		
 
-		// search for breakpoint
+		// search for code breakpoint
         if(((l = bkpts.code) != NULL) && !(specialflags & SPCFLAG_DBSKIP))
         {
             bkpts.id = 0;
@@ -168,7 +168,18 @@ int hw_m68k_run(int n)
             }
         }
 
-		//PC=HeapDeref(handle)+2
+		// search for pgrm entry breakpoint
+		if((bkpts.pgmentry != NULL) && !(specialflags & SPCFLAG_DBSKIP))
+		{
+			uint16_t handle = GPOINTER_TO_INT(bkpts.pgmentry->data);
+			bkpts.id = 0;
+
+			if(heap_deref(handle)+2 == (int)m68k_getpc())
+			{
+				bkpts.type = BK_TYPE_PGMENTRY;
+				return 1;
+			}
+		}
 
         // store PC in the log buffer
         if(bkpts.pclog_size > 1)

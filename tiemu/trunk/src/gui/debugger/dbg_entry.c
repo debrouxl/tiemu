@@ -31,8 +31,10 @@
 
 #include "intl.h"
 #include "paths.h"
+#include "support.h"
 #include "ti68k_int.h"
 #include "dbg_entry.h"
+#include "dbg_bkpts.h"
 
 enum { 
 	    COL_NAME, COL_HANDLE
@@ -40,9 +42,11 @@ enum {
 #define CTREE_NVCOLS	(1)		// 1 visible columns
 #define CTREE_NCOLS		(2)		// 1 real columns
 
-static GtkTreeStore* ctree_create(GtkWidget *tree)
+#define SELTOK	"-> "
+
+static GtkTreeStore* ctree_create(GtkWidget *widget)
 {
-	GtkTreeView *view = GTK_TREE_VIEW(tree);
+	GtkTreeView *view = GTK_TREE_VIEW(widget);
 	GtkTreeStore *store;
 	GtkTreeModel *model;
 	GtkCellRenderer *renderer;
@@ -80,13 +84,21 @@ static GtkTreeStore* ctree_create(GtkWidget *tree)
 	return store;
 }
 
-static void ctree_populate(GtkTreeStore *store)
+static void ctree_populate(GtkWidget *widget)
 {
+	GtkTreeView *view = GTK_TREE_VIEW(widget);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkTreeStore *store = GTK_TREE_STORE(model);
 	gint i, j;
 	GNode *tree;
+	uint16_t handle;
 
 	// Parse VAT
 	vat_parse(&tree);
+
+	// Retrieve breakpoint
+	if(ti68k_bkpt_get_pgmentry(0, &handle))
+		handle = -1;
 
 	// and show it
 	for (i = 0; i < (int)g_node_n_children(tree); i++) 
@@ -106,36 +118,38 @@ static void ctree_populate(GtkTreeStore *store)
 
 			gtk_tree_store_append(store, &var_iter, &fol_iter);
 			gtk_tree_store_set(store, &var_iter, COL_NAME, vse->name, COL_HANDLE, vse->handle, -1);
+			
+			if(vse->handle == handle)
+			{
+				gchar *name = g_strconcat(SELTOK, vse->name, NULL);
+				gtk_tree_store_set(store, &var_iter, COL_NAME, name, -1);
+				g_free(name);
+			}
 		}
 	}
+
+	gtk_tree_view_expand_all(view);
 
 	// Free copy of VAT
 	vat_free(&tree);
 }
 
-static void ctree_get_selection(GtkWidget *tree)
+GList *sel = NULL;
+
+static void ctree_get_selection(void)
 {
-	GtkTreeView *view = GTK_TREE_VIEW(tree);
-	GtkTreeSelection *selection;
-	GtkTreeModel *model;
-	GList *l;
-	
-	// get selection
-	selection = gtk_tree_view_get_selection(view);
-	for (l = gtk_tree_selection_get_selected_rows(selection, &model);
-	     l != NULL; l = l->next) 
-	{
-		GtkTreeIter iter;
-		GtkTreePath *path = l->data;
-		char *name;
-		int handle;
-			
-		gtk_tree_model_get_iter(model, &iter, path);
-		gtk_tree_model_get(model, &iter, COL_NAME, &name, COL_HANDLE, &handle, -1);
-		printf("Selected: %s\n", name);;
-		
-		//ti68k_bkpt_add_exception(n);
-	}	
+	GList *ptr;
+
+	// clear bkpt list
+	ti68k_bkpt_clear_pgmentry();
+
+	// create new one
+	for(ptr = sel; ptr != NULL; ptr = g_list_next(ptr))
+		ti68k_bkpt_add_pgmentry((uint16_t)(GPOINTER_TO_INT(ptr->data)));
+
+	// free data
+	g_list_free(sel);
+	sel = NULL;
 }
 
 gint dbgentry_display_dbox(void)
@@ -144,7 +158,6 @@ gint dbgentry_display_dbox(void)
 	GtkWidget *dbox;
 	GtkWidget *data;
 	gint result;
-	GtkTreeStore *store;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_entry-2.glade"), "dbgentry_dbox",
@@ -157,15 +170,15 @@ gint dbgentry_display_dbox(void)
 	//gtk_window_resize(GTK_WINDOW(dbox), 320, 240);
 		
 	data = glade_xml_get_widget(xml, "treeview1");
-    store = ctree_create(data);
-	ctree_populate(store);	
+    ctree_create(data);
+	ctree_populate(data);	
 	
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) 
 	{
 	case GTK_RESPONSE_OK:
-		ctree_get_selection(data);
-		//dbgbkpts_display_window();
+		ctree_get_selection();
+		dbgbkpts_display_window();
 		break;
 	default:
 		break;
@@ -176,6 +189,63 @@ gint dbgentry_display_dbox(void)
 	return 0;
 }
 
+GLADE_CB gboolean
+dbgentry_button_press_event        (GtkWidget       *widget,
+                                    GdkEventButton  *event,
+                                    gpointer         user_data)
+{		
+	GtkTreeView *view = GTK_TREE_VIEW(widget);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkTreeStore *store = GTK_TREE_STORE(model);
+	GtkTreeViewColumn *column;
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	gboolean folder;
 
+	// is double click ?
+	if(event->type != GDK_2BUTTON_PRESS)
+		return FALSE;
 
+	gtk_tree_view_get_cursor(view, &path, &column);
+	if(!path || !column)
+		return FALSE;
 
+	gtk_tree_model_get_iter(model, &iter, path);
+	folder = gtk_tree_model_iter_has_child(model, &iter);
+
+    if(!folder)
+	{
+        gchar** row_text = g_malloc0((CTREE_NVCOLS + 1) * sizeof(gchar *));
+		uint16_t handle;
+		
+		// get address
+		gtk_tree_model_get(model, &iter, COL_NAME, &row_text[COL_NAME], COL_HANDLE, &handle, -1);
+
+		// toggle token
+		if(strstr(row_text[COL_NAME], SELTOK))
+		{
+			// remove entry
+			gchar *name = g_strdup(&row_text[COL_NAME][strlen(SELTOK)]);
+			gtk_tree_store_set(store, &iter, COL_NAME, name, -1);
+			g_free(name);
+			sel = g_list_remove(sel, GINT_TO_POINTER(handle));
+		}
+		else
+		{
+			gchar *name;
+			
+			// no more than 1 bkpt
+			if(g_list_length(sel) >= 1) return FALSE;
+			
+			// add entry
+			name = g_strconcat(SELTOK, row_text[COL_NAME], NULL);
+			gtk_tree_store_set(store, &iter, COL_NAME, name, -1);
+			g_free(name);
+			sel = g_list_append(sel, GINT_TO_POINTER(handle));
+		}
+
+        g_strfreev(row_text);
+	}
+	
+    return FALSE;
+}
