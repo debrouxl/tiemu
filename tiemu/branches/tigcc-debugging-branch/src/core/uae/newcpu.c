@@ -631,27 +631,28 @@ void MakeSR (void)
     assert((VFLG & 1) == VFLG);
     assert((CFLG & 1) == CFLG);
 #endif
-    regs.sr = ((regs.t1 << 15) | (regs.t0 << 14)
-	       | (regs.s << 13) | (regs.m << 12) | (regs.intmask << 8)
+    regs.sr = ((regs.t1 << 15) /*| (regs.t0 << 14)*/
+	       | (regs.s << 13) /*| (regs.m << 12)*/ | (regs.intmask << 8)
 	       | (GET_XFLG << 4) | (GET_NFLG << 3) | (GET_ZFLG << 2) | (GET_VFLG << 1)
 	       | GET_CFLG);
 }
 
 void MakeFromSR (void)
 {
-    int oldm = regs.m;
+//    int oldm = regs.m;
     int olds = regs.s;
 
     regs.t1 = (regs.sr >> 15) & 1;
-    regs.t0 = (regs.sr >> 14) & 1;
+//    regs.t0 = (regs.sr >> 14) & 1;
     regs.s = (regs.sr >> 13) & 1;
-    regs.m = (regs.sr >> 12) & 1;
+//    regs.m = (regs.sr >> 12) & 1;
     regs.intmask = (regs.sr >> 8) & 7;
     SET_XFLG ((regs.sr >> 4) & 1);
     SET_NFLG ((regs.sr >> 3) & 1);
     SET_ZFLG ((regs.sr >> 2) & 1);
     SET_VFLG ((regs.sr >> 1) & 1);
     SET_CFLG (regs.sr & 1);
+#if 0
     if (currprefs.cpu_level >= 2) {
 	if (olds != regs.s) {
 	    if (olds) {
@@ -662,7 +663,7 @@ void MakeFromSR (void)
 		m68k_areg(regs, 7) = regs.usp;
 	    } else {
 		regs.usp = m68k_areg(regs, 7);
-		m68k_areg(regs, 7) = regs.m ? regs.msp : regs.isp;
+		m68k_areg(regs, 7) = /*regs.m ? regs.msp :*/ regs.isp;
 	    }
 	} else if (olds && oldm != regs.m) {
 	    if (oldm) {
@@ -674,6 +675,7 @@ void MakeFromSR (void)
 	    }
 	}
     } else {
+#endif
 	if (olds != regs.s) {
 	    if (olds) {
 		regs.isp = m68k_areg(regs, 7);
@@ -683,10 +685,10 @@ void MakeFromSR (void)
 		m68k_areg(regs, 7) = regs.isp;
 	    }
 	}
-    }
+//    }
 
     set_special (SPCFLAG_INT);
-    if (regs.t1 || regs.t0)
+    if (regs.t1 /*|| regs.t0*/)
 	set_special (SPCFLAG_TRACE);
     else
 	unset_special (SPCFLAG_TRACE | SPCFLAG_DOTRACE);
@@ -710,12 +712,15 @@ void Exception(int nr, uaecptr oldpc)
 
     if (!regs.s) {
 	regs.usp = m68k_areg(regs, 7);
+#if 0
 	if (currprefs.cpu_level >= 2)
 	    m68k_areg(regs, 7) = regs.m ? regs.msp : regs.isp;
 	else
+#endif
 	    m68k_areg(regs, 7) = regs.isp;
 	regs.s = 1;
     }
+#if 0
     if (currprefs.cpu_level > 0) {
 	if (nr == 2 || nr == 3) {
 	    int i;
@@ -748,6 +753,7 @@ void Exception(int nr, uaecptr oldpc)
 	    put_word (m68k_areg(regs, 7), nr * 4);
 	}
     } else {
+#endif
 	if (nr == 2 || nr == 3) {
 	    m68k_areg(regs, 7) -= 12;
 	    /* ??????? */
@@ -759,7 +765,7 @@ void Exception(int nr, uaecptr oldpc)
 	    write_log ("Exception!\n");
 	    goto kludge_me_do;
 	}
-    }
+//    }
     m68k_areg(regs, 7) -= 4;
     put_long (m68k_areg(regs, 7), currpc);
 kludge_me_do:
@@ -767,7 +773,7 @@ kludge_me_do:
     put_word (m68k_areg(regs, 7), regs.sr);
     m68k_setpc (get_long (regs.vbr + 4*nr));
     fill_prefetch_0 ();
-    regs.t1 = regs.t0 = regs.m = 0;
+    regs.t1 /*= regs.t0 = regs.m*/ = 0;
     unset_special (SPCFLAG_TRACE | SPCFLAG_DOTRACE);
 
   // added for capturing the exception and next launch a debugger
@@ -828,8 +834,8 @@ int m68k_move2c (int regno, uae_u32 *regp)
 	case 0x800: regs.usp = *regp; break;
 	case 0x801: regs.vbr = *regp; break;
 	case 0x802: caar = *regp & 0xfc; break;
-	case 0x803: regs.msp = *regp; if (regs.m == 1) m68k_areg(regs, 7) = regs.msp; break;
-	case 0x804: regs.isp = *regp; if (regs.m == 0) m68k_areg(regs, 7) = regs.isp; break;
+//	case 0x803: regs.msp = *regp; if (regs.m == 1) m68k_areg(regs, 7) = regs.msp; break;
+//	case 0x804: regs.isp = *regp; if (regs.m == 0) m68k_areg(regs, 7) = regs.isp; break;
 	default:
 	    op_illg (0x4E7B);
 	    return 0;
@@ -859,8 +865,8 @@ int m68k_movec2 (int regno, uae_u32 *regp)
 	case 0x800: *regp = regs.usp; break;
 	case 0x801: *regp = regs.vbr; break;
 	case 0x802: *regp = caar; break;
-	case 0x803: *regp = regs.m == 1 ? m68k_areg(regs, 7) : regs.msp; break;
-	case 0x804: *regp = regs.m == 0 ? m68k_areg(regs, 7) : regs.isp; break;
+//	case 0x803: *regp = regs.m == 1 ? m68k_areg(regs, 7) : regs.msp; break;
+//	case 0x804: *regp = regs.m == 0 ? m68k_areg(regs, 7) : regs.isp; break;
 	case 0x805: *regp = mmusr; break;
 	default:
 	    op_illg (0x4E7A);
@@ -1133,10 +1139,10 @@ void m68k_reset (void)
     fill_prefetch_0 ();
     regs.kick_mask = 0xF80000;
     regs.s = 1;
-    regs.m = 0;
+//    regs.m = 0;
     regs.stopped = 0;
     regs.t1 = 0;
-    regs.t0 = 0;
+//    regs.t0 = 0;
     SET_ZFLG (0);
     SET_XFLG (0);
     SET_CFLG (0);
@@ -1233,7 +1239,7 @@ static uaecptr last_trace_ad = 0;
 
 static void do_trace (void)
 {
-    if (regs.t0 && currprefs.cpu_level >= 2) {
+    if (0/*regs.t0 && currprefs.cpu_level >= 2*/) {
 	uae_u16 opcode;
 	/* should also include TRAP, CHK, SR modification FPcc */
 	/* probably never used so why bother */
@@ -1572,12 +1578,12 @@ void m68k_dumpstate (uaecptr *nextpc)
 	if ((i & 3) == 3) DISPLAY ("\n");
     }
     if (regs.s == 0) regs.usp = m68k_areg(regs, 7);
-    if (regs.s && regs.m) regs.msp = m68k_areg(regs, 7);
-    if (regs.s && regs.m == 0) regs.isp = m68k_areg(regs, 7);
-    DISPLAY ("USP=%08lx ISP=%08lx MSP=%08lx VBR=%08lx\n",
-	     regs.usp,regs.isp,regs.msp,regs.vbr);
-    DISPLAY ("T=%d%d S=%d M=%d X=%d N=%d Z=%d V=%d C=%d IMASK=%d\n",
-	     regs.t1, regs.t0, regs.s, regs.m,
+//    if (regs.s && regs.m) regs.msp = m68k_areg(regs, 7);
+    if (regs.s /*&& regs.m == 0*/) regs.isp = m68k_areg(regs, 7);
+    DISPLAY ("USP=%08lx SSP=%08lx VBR=%08lx\n",
+	     regs.usp,regs.isp/*,regs.msp*/,regs.vbr);
+    DISPLAY ("T=%d S=%d X=%d N=%d Z=%d V=%d C=%d IMASK=%d\n",
+	     regs.t1/*, regs.t0*/, regs.s, /*regs.m,*/
 	     GET_XFLG, GET_NFLG, GET_ZFLG, GET_VFLG, GET_CFLG, regs.intmask);
     for (i = 0; i < 8; i++){
 	DISPLAY ("FP%d: %g ", i, regs.fp[i]);

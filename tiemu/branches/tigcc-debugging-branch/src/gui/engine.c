@@ -97,12 +97,12 @@ static gboolean engine_func(gint *data)
 void engine_start(void) 
 {
 	if (cal >= TIME_LIMIT)
-		fprintf(stderr, "warning: emulation slower than TI (cal = %d, TIME_LIMIT = %d)", cal, TIME_LIMIT);
+		fprintf(stderr, "warning: emulation slower than TI (cal = %d, TIME_LIMIT = %d)\n", cal, TIME_LIMIT);
 	else if (cal >= TIME_LIMIT-5)
-		fprintf(stderr, "warning: emulation may be slower than TI (cal = %d, TIME_LIMIT = %d)", cal, TIME_LIMIT);
+		fprintf(stderr, "warning: emulation may be slower than TI (cal = %d, TIME_LIMIT = %d)\n", cal, TIME_LIMIT);
 
-	if(params.restricted && cal < TIME_LIMIT - 5)
-		tid = g_timeout_add_full(G_PRIORITY_DEFAULT, TIME_LIMIT-cal, 
+	if(params.restricted && cal < TIME_LIMIT)
+		tid = g_timeout_add_full(G_PRIORITY_DEFAULT_IDLE, TIME_LIMIT-cal, 
 					 (GSourceFunc)engine_func, &res, 
 					 (GDestroyNotify)engine_notify);
 	else
