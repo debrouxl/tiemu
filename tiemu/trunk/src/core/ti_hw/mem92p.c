@@ -63,6 +63,8 @@ int ti92p_mem_init(void)
     // map RAM
     mem_tab[0] = tihw.ram;
     mem_msk[0] = tihw.ram_size-1;
+	mem_tab[1] = tihw.ram;
+    mem_msk[1] = tihw.ram_size-1;
 
 	// map FLASH
     mem_tab[4] = tihw.rom;

@@ -12,6 +12,7 @@ To do:
 	- [kevin] $937: allow building with -mwindows -D_WINDOWS on MinGW.
 	- [roms]  $940: removed mutex at startup because we should be able to run 
 		2 instances of TiEmu for virtual linking.
+	- [roms]  $941: fixed ghost of RAM in $100000 on TI89,92,92+,V200.
 
 - 25/02/2005, version 1.80o: roms
 	- fixed bug in ti68k_get_hw_param_block (wrong search/replace)
