@@ -27,14 +27,27 @@
 
 #include "ti68k_def.h"
 
-// On 92 with ROM 1.x, the memory used by the system is at address $4440 and
-//on ROM 2.x, this address is $4720. 
 int hw_lcd_init(void)
 {
-    tihw.contrast = 13;
-    tihw.lcd_addr = (tihw.rom_flash) ? 0x4c00 : 0x4720;	//0x4440;
-    tihw.lcd_ptr = &tihw.ram[tihw.lcd_addr];
+	// Set contrast
+	if(tihw.calc_type == TI92)
+		tihw.contrast = 13;
+	else if((tihw.calc_type == TI89) && (tihw.hw_type == 2))
+		tihw.contrast = 3;
     tihw.lcd_off = 0;
+
+	// On 92 with ROM 1.x, the memory used by the system is at address $4440 and
+	// on ROM 2.x, this address is $4720.
+	// On TI89/92+ , this address is 4c00;
+	if(tihw.rom_flash)
+		tihw.lcd_addr = 0x4c00;
+	else if(strcmp(tihw.rom_version, "2.0") > 0)
+		tihw.lcd_addr = 0x4720;
+	else
+		tihw.lcd_addr = 0x4440;
+
+	// for use by HID
+	tihw.lcd_ptr = &tihw.ram[tihw.lcd_addr];
     
     return 0;
 }
