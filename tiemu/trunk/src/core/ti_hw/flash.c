@@ -23,7 +23,9 @@
  */
 
 /*
-    FLASH algorithm management
+    FLASH algorithm management:
+	- Sharp's LH28F160S3T: TI89/TI92+
+	- Sharp's LH28F320BF: V200/TI89 Titanium
 */
 
 #include <stdio.h>
@@ -36,7 +38,7 @@
 FLASH_WSM   wsm;
 
 /*
-	Write a byte intl a Sharp FLASH memory.
+	Write a byte into a Sharp FLASH memory.
 	Not reworked yet (from Corvazier)
 */
 void FlashWriteByte(uint32_t addr, int v)

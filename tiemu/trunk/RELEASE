@@ -3,7 +3,7 @@
 
 
 Previous version: 1.80		(28/08/2004)
-Current version:  1.80		(15/09/2004)
+Current version:  1.80		(23/09/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -26,6 +26,8 @@ New capabilities:
 	- TI89 Titanium patched as TI89 work
 	- V200 patched as TI92+ work
 	- V200 work
+	- bkpt window: enable/disable bkpt
+	- pc log window: can jump to code address
 
 
 Improvements:
@@ -45,6 +47,7 @@ Bug fixes:
 	- fixed bug in LCD snoop range register: TI89 Titanium patched (ExtendeD) work.
 	- fixed bug in FLASH emulation (algorithm)
 	- fixed ROM size handling with TI89 Titanium & V200
+	- fixed TI89 Titanium RAM accesses
 
 
 To do:

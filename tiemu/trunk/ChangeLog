@@ -5,7 +5,10 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
-- 14/09/2004, version 1.80: roms
+- 23/09/2004, version 1.80c: roms
+	- ...
+
+- 14/09/2004, version 1.80b: roms
 	- fixed HW3 support
 	- fixed bug in LCD snoop range register: TI89 Titanium (patched) and V200 (patched) work.
 	- fixed bug in FLASH emulation (algorithm)
@@ -13,8 +16,10 @@ To do:
 	- removed copying of vector table from FLASH to RAM at startup
 	- added 'go to address' in the PC log window
 	- implemented 'enable/disabled' breakpoint
+	- added some missing HW ports
+	- fixed TI89 Titanium RAM accesses
 
-- 28/08/2004, version 1.80: roms
+- 28/08/2004, version 1.80a: roms
 	- fixed vectors copy
 	- bkpts window: can jump to bkpt address
 	- code window: can jump to ROM call
