@@ -10,7 +10,7 @@
 
 .. .  .   .    .     .      .        .        .      .     .    .   .  . ..
 ===========================================================================
-INTRODUCTION                                     File version: 200106040000
+INTRODUCTION                                     File version: 200501150001
 ---------------------------------------------------------------------------
 This document contains (some) information about the TI89 hardware as seen
 from the programmer's point of view.  It is assumed that the reader is very
@@ -36,6 +36,7 @@ model.
 A link to the most recent version of this document and other interesting
 stuff can be found at Olle's site >>>  http://alh.dhs.org/ti89/
 
+Updated by Romain Lievin for the TiEmu project from ExtendeD's informations.
 
 -- 
 Johan Eilert <johei804@student.liu.se>
@@ -395,7 +396,7 @@ $60001D -W ($80+contrast)
 
 These are HW2 only --------------------------------------------------------
 
-$700000 rw ($FFDF FFFF FFFF FFFF = allow exec at $005xxx only)
+$700000 RW ($FFDF FFFF FFFF FFFF = allow exec at $005xxx only)
 	Bit SET means instruction fetches NOT allowed in that 4K page.
 	The Protection must be disabled for changes to have any effect.
 $700000	:15-0	$00Fxxx-$000xxx  (one bit for each 4K page)
@@ -403,17 +404,26 @@ $700002	:15-0	$01Fxxx-$010xxx
 $700004	:15-0	$02Fxxx-$020xxx
 $700006	:15-0	$03Fxxx-$030xxx  (bit 15 controls $1FFFFF-$040000 too)
 
+$700008 to $700000F RW
+  These ports are the ghosts of the ports for the protection of execution in
+  RAM ($700000 to $700007). Any writing to either the real ports or the ghosts
+  will change both ports (eg $700002 and $70000A).
+
 $700011	-W ($40, $57 by boot installer when 'i' is pressed)
 	:7-0	??? (something to do with link port transfer speed)
 
-$700012	Rw (reset: $0018 => $390000-$3FFFFF) Flash ROM execution protection
+$700012	RW (reset: $0018 => $390000-$3FFFFF) Flash ROM execution protection
 	The Protection must be disabled for changes to have any effect.
 	:15-6	-
 	:5-0	First exec protected flash ROM sector =(n*$10000+$210000)
 
-$700014 rw ???
-	The Protection must be disabled for changes to have any effect.
-	:15-0	??? (data is latched and can be read back!)
+$700014 RW Real Time Clock
+  Real Time Clock. Incremented every 2^13 = 8192 seconds exactly.
+  The whole word must be read : reading the port byte by byte can return wrong
+  values.
+  The timer is not incremented when the batteries have been removed, but the
+  value it had when they were removed is kept. Removing the lithium battery
+  and putting it back gives a random value to the timer.	
 
 $700017 RW ($00 = $4C00-$5BFF)
 	The HW2 display controller doesn't fetch pixel data from RAM but
@@ -443,16 +453,30 @@ $70001D RW ($06)
 	the "rest" voltage value (%111).  Finally, both bits should be
 	cleared.
 
-$70001F Rw ($07)
+$70001F RW ($07)
 	The Protection must be disabled for changes to have any effect.
 	:7-3	-
-	:2	? set by reset code, no further access
-	:1	? (clearing the bit kills autoint 1, 2?, 3?, 4 and 5)???
-		There are functions to set and clear this bit, but they are
-		never called by AMS.
+	:2	  activates the incrementation of $700014.w when bit 1 is set. Set by
+        AMS on reset.
+	:1		its effect depends on the state of bit 2.
 	:0	Use 5 contrast bits (default for AMS).  When this bit is
 		cleared, the contrast hardware uses $60001D:3-0 only to
 		specify the contrast, effectively emulating a HW1.
+		AND, clearing this bit activate the execution in areas from which the 
+		Protection can be disabled :
+    ROM_BASE+$12000 to ROM_BASE+$17FFF and ROM_BASE+$1A000 to ROM_BASE+$1FFFF.
+    The execution in the boot sector is not protected by the protection
+
+ bit2/bit1
+   1   1   : State set by AMS on reset. $700014.w is incremented.
+   1   0   : Auto-ints 1, 2, 3 and 5 are inhibited. The RTC is stopped.
+   0   1   : The RTC is stopped. The auto-ints works normally.
+   0   0   : The RTC is stopped. The frequencies of all the auto-ints are
+             lower (OSC2 must be slower).
+             AI1 : ~ 176 Hz instead of 256 Hz. 
+             AI3 : ~ 40 ticks per minute instead of 60.
+             AI5 : ~ 13.2 Hz instead 19.3 Hz.
+   Only AMS initializes theses bits on reset. The boot code does not.
 
 
 ===========================================================================
