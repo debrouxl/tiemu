@@ -437,54 +437,6 @@ SOURCE=..\..\src\gui\main.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\src\hid\cmdline.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\extern.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\files.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\intl.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\paths.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\printl.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\rcfile.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\screenshot.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\skin.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\struct.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\ticalc.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\tie_error.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\hid\version.h
 # End Source File
 # End Group

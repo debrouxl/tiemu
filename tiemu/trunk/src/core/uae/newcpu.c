@@ -20,7 +20,7 @@
 // tiemu begin
 #include "debugger.h"
 #include "tilibs.h"
-#include "params.h"
+#include "ti68k_def.h"
 #include "../ti_hw/memory.h"
 #include "../ti_hw/linkport.h"
 #include "bkpts.h"

@@ -83,7 +83,7 @@ void display_bkpt_cause()
   /* */
   // Get breakpoint cause
   ti68k_getBreakpointCause(&type, &id, &mode);
-  sprintf(buffer, "Bkpt has been encountered at $%06x!\nType=%i, id=%i, mode=%i\n", ti68k_getPcRegister(), type, id, mode);
+  sprintf(buffer, "Bkpt has been encountered at $%06x!\nType=%i, id=%i, mode=%i\n", ti68k_register_get_pc(), type, id, mode);
   fprintf(stderr, buffer);
 
   // Process type
@@ -186,7 +186,7 @@ void display_bkpt_cause()
       break;
     }
 
-  sprintf(buffer, _("Bkpt has been encountered at $%06x\nType: %s\nId: #%i\nMode: %s"), ti68k_getPcRegister(), sType, id, sMode);
+  sprintf(buffer, _("Bkpt has been encountered at $%06x\nType: %s\nId: #%i\nMode: %s"), ti68k_register_get_pc(), sType, id, sMode);
 
   /* */
   accel_group = gtk_accel_group_new ();

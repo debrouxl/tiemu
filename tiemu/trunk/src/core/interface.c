@@ -56,6 +56,7 @@
 #include "linkport.h"
 #include "ioports.h"
 #include "m68k.h"
+#include "ti68k_def.h"
 
 
 /**********************/
@@ -64,6 +65,7 @@
 
 Ti68kParameters params = { 0 };
 TicableLinkParam link_cable = { 0 };
+Ti68kHardware tihw;
 
 
 /***********************************/
@@ -131,7 +133,7 @@ int ti68k_init(void)
   cb_init_specific();
   cb_screen_on_off(!0);
 
-#if !defined(__WIN32__) && defined(PENT_COUNTER)
+#ifdef PENT_COUNTER
   calibrate_pcounter();	// crash under Win32
 #endif
 
@@ -380,75 +382,6 @@ int ti68k_doInstructions(int n) //fait n instructions
     return ERR_68K_ROM_NOT_LOADED;
 
   return hw_run_m68k(n);
-}
-
-/*****************************/
-/* Registers access routines */
-/*****************************/
-
-void ti68k_setDataRegister(int n,int val)
-{
-  if (n>=0 && n<8) regs.d[n] = val;
-}
-
-void ti68k_setAddressRegister(int n,int val)
-{
-  if (n>=0 && n<8) regs.a[n] = val;
-}
-
-void ti68k_setSpRegister(int val)
-{
-  regs.usp=val;
-}
-
-void ti68k_setPcRegister(int val)
-{
-  regs.pc=val;
-}
-
-void ti68k_setSrRegister(int val)
-{
-  regs.sr=val;
-}
-
-void ti68k_setFlagRegister(unsigned char flag)
-{
-  //TODO
-}
-
-int ti68k_getDataRegister(int n)
-{
-  if (n>=0 && n<8) return regs.d[n];
-  return 0;
-}
-
-int ti68k_getAddressRegister(int n)
-{
-  if (n>=0 && n<8) return regs.a[n];
-  return 0;
-}
-	
-int ti68k_getSpRegister()
-{
-  return regs.usp;
-}
-
-int ti68k_getPcRegister()
-{
-  return regs.pc;
-}
-
-int ti68k_getSrRegister()
-{
-  return regs.sr;
-}
-
-char *ti68k_getFlagRegister(void)
-{
-  static char str_SR[128];
-  sprintf(str_SR, "T=%d S=%d X=%d N=%d\nZ=%d V=%d C=%d IMASK=%d\n",
-	  regs.t, regs.s, regs.x, NFLG, ZFLG, VFLG, CFLG, regs.intmask);
-  return str_SR;
 }
 
 

@@ -250,9 +250,9 @@ gint refresh_register_dbox(void)
   /* Display the Dx & Ax registers */
   for(i=0; i<8; i++)
     {
-      sprintf(buffer, "D%i=%08X", i, ti68k_getDataRegister(i));
+      sprintf(buffer, "D%i=%08X", i, ti68k_register_get_data(i));
       gtk_text_buffer_insert(buf, &end, buffer, -1);
-      if(prev_Dx[i] != ti68k_getDataRegister(i))
+      if(prev_Dx[i] != ti68k_register_get_data(i))
 	gtk_text_buffer_apply_tag(buf, red_tag, &start, &end);
       
       start = end;
@@ -260,9 +260,9 @@ gint refresh_register_dbox(void)
       sprintf(buffer, "  ");
       gtk_text_buffer_insert(buf, &end, buffer, -1);
       
-      sprintf(buffer, "A%i=%08X\n", i, ti68k_getAddressRegister(i));
+      sprintf(buffer, "A%i=%08X\n", i, ti68k_register_get_addr(i));
       gtk_text_buffer_insert(buf, &end, buffer, -1);
-      if(prev_Ax[i] != ti68k_getAddressRegister(i))
+      if(prev_Ax[i] != ti68k_register_get_addr(i))
 	gtk_text_buffer_apply_tag(buf, red_tag, &start, &end);
       
       start = end;
@@ -272,25 +272,25 @@ gint refresh_register_dbox(void)
   start = end;
   
   /* Display the SP register */
-  sprintf(buffer, "SP=%06X\n", ti68k_getSpRegister());
+  sprintf(buffer, "SP=%06X\n", ti68k_register_get_sp());
   gtk_text_buffer_insert(buf, &end, buffer, -1);
-  if(prev_SP != ti68k_getSpRegister())
+  if(prev_SP != ti68k_register_get_sp())
     gtk_text_buffer_apply_tag(buf, red_tag, &start, &end);
 
   start = end;
 
   /* Display the SR register */
-  sprintf(buffer, "SR=%04X      ", ti68k_getSrRegister());
+  sprintf(buffer, "SR=%04X      ", ti68k_register_get_sr());
   gtk_text_buffer_insert(buf, &end, buffer, -1);
-  if(prev_SR != ti68k_getSrRegister())
+  if(prev_SR != ti68k_register_get_sr())
     gtk_text_buffer_apply_tag(buf, red_tag, &start, &end);
 
   start = end;
 
   /* Display the PC register */
-  sprintf(buffer, "PC=%06X  \n", ti68k_getPcRegister());
+  sprintf(buffer, "PC=%06X  \n", ti68k_register_get_pc());
   gtk_text_buffer_insert(buf, &end, buffer, -1);
-  if(prev_PC != ti68k_getPcRegister())
+  if(prev_PC != ti68k_register_get_pc())
     gtk_text_buffer_apply_tag(buf, red_tag, &start, &end);
 
   /* Display the status flag register */
@@ -302,17 +302,17 @@ gint refresh_register_dbox(void)
   gtk_text_buffer_insert(buf, &end, buffer, -1);
 
   */
-  gtk_text_buffer_insert(buf, &end, ti68k_getFlagRegister(), -1);
+  gtk_text_buffer_insert(buf, &end, ti68k_register_get_flag(), -1);
 
   /* Store old values for colour display */
   for(i=0; i<8; i++)
     {
-      prev_Dx[i] = ti68k_getDataRegister(i);
-      prev_Ax[i] = ti68k_getAddressRegister(i);
+      prev_Dx[i] = ti68k_register_get_data(i);
+      prev_Ax[i] = ti68k_register_get_addr(i);
     }
-  prev_SR = ti68k_getSrRegister();
-  prev_SP = ti68k_getSpRegister();
-  prev_PC = ti68k_getPcRegister();
+  prev_SR = ti68k_register_get_sr();
+  prev_SP = ti68k_register_get_sp();
+  prev_PC = ti68k_register_get_pc();
 
   return 0;
 }
@@ -351,7 +351,7 @@ gint refresh_breakpoints(void)
   bkpt = create_pixbuf("bkpt.xpm");
   none = create_pixbuf("void.xpm");
  
-  addr_active = ti68k_getPcRegister();
+  addr_active = ti68k_register_get_pc();
   //fprintf(stdout, "PC in refresh: %06X\n", addr_active);
 
   /* Fill the clist */
@@ -407,7 +407,7 @@ gint refresh_code_dbox(void)
   GtkTreePath *path;
   gchar *text[2];
   gint i;
-  gint addr_active = ti68k_getPcRegister();
+  gint addr_active = ti68k_register_get_pc();
   gint addr;
   gpointer addrp;
   gint offset;
@@ -541,7 +541,7 @@ gint refresh_stack_dbox(void)
   GtkTreeIter iter;
   gchar *text[2];
   gint i;
-  gint sp = ti68k_getSpRegister();
+  gint sp = ti68k_register_get_sp();
   UWORD *ti_ram = (UWORD *)ti68k_getRamPtr();
   gint addr;
 
@@ -602,7 +602,7 @@ on_step1_activate                      (GtkMenuItem     *menuitem,
 
   // Set up an internal trap (DBTRACE) which will launch/refresh the
   // debugger when encountered
-  addr = ti68k_getPcRegister();
+  addr = ti68k_register_get_pc();
   DISPLAY("addr=$%06x\n", addr);
   ti68k_doSingleStep(); // set trap
   ti68k_unhalt();    // emulator in free running
@@ -647,7 +647,7 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
   /* Execute some instructions */
   if(selected_row != -1)
     {
-      printf("PC: 0x%06x\n", ti68k_getPcRegister());
+      printf("PC: 0x%06x\n", ti68k_register_get_pc());
 
       model = gtk_tree_view_get_model(GTK_TREE_VIEW(code_clist));
       path = gtk_tree_path_new_from_indices(selected_row, -1);
@@ -657,7 +657,7 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
       addr_to_go = GPOINTER_TO_INT(addrp);
 
       printf("addr to go: 0x%06x\n", addr_to_go);
-      for(i=1, next_addr = ti68k_getPcRegister(); next_addr < addr_to_go; i++)
+      for(i=1, next_addr = ti68k_register_get_pc(); next_addr < addr_to_go; i++)
 	{
 	  next_addr += ti68k_disasm(next_addr, buffer);
 	  printf("-> buffer: <%s>\n", buffer);
@@ -693,8 +693,8 @@ on_break1_activate                     (GtkMenuItem     *menuitem,
   fprintf(stderr, "Break (F11)\n");
 
   /* Place a breakpoint */
-  addr = ti68k_getPcRegister();
-  //addr = getPcRegister() + disasm(getPcRegister(), buffer);
+  addr = ti68k_register_get_pc();
+  //addr = ti68k_register_get_pc() + disasm(ti68k_register_get_pc(), buffer);
   i = ti68k_bkpt_set_address(addr);
 
   s = (CODE_BKPT *)g_malloc(sizeof(CODE_BKPT));
@@ -770,7 +770,7 @@ on_set_breakpoint_at_selection1_activate
     }
   else
     {
-      addr = ti68k_getPcRegister();
+      addr = ti68k_register_get_pc();
     }
     
   /* Place a breakpoint */
@@ -1056,7 +1056,7 @@ on_set_pc_to_selection1_activate       (GtkMenuItem     *menuitem,
       gtk_tree_model_get(model, &iter, 3, &addrp, -1);
       addr = GPOINTER_TO_INT(addrp);
       
-      ti68k_setPcRegister(addr);
+      ti68k_register_set_pc(addr);
       refresh_register_dbox();
     }
 }
@@ -1117,7 +1117,7 @@ void
 on_button45_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-  ti68k_setPcRegister(code_addr_to_go);
+  ti68k_register_set_pc(code_addr_to_go);
   refresh_register_dbox();
 
   gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "gotocode_dbox"));

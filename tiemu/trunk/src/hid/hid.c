@@ -36,6 +36,7 @@
 #include "ti68k_int.h"
 #include "screenshot.h"
 #include "tie_error.h"
+#include "keydefs.h"
 
 #define DEFAULT_BPP   8
 #define DEFAULT_FLAGS (SDL_HWPALETTE | SDL_HWSURFACE | SDL_RESIZABLE) 

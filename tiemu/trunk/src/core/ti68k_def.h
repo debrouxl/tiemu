@@ -45,7 +45,8 @@
 
 /* Structures */
 
-struct global_param {
+typedef struct 
+{
   char *rom_file;
   char *ram_file;
   char *tib_file;
@@ -61,11 +62,47 @@ struct global_param {
   int i_tick;
   int sync_one;
   int restrict;
-};
-typedef struct global_param Ti68kParameters;
+} Ti68kParameters;
+
+typedef struct
+{
+    // misc
+    int ram_size;
+    int rom_size;
+    int rom_internal;
+    int rom_flash;
+
+    // ioports.c
+    int io0Bit7;
+    int io0Bit2;
+
+    // keyboard.c
+    int on_key0;
+
+    // lcd.c
+    int lcd_off;
+    int contrast;
+    int lcd_base_addr;
+
+    // linkport.c
+    TicableLinkParam lc;
+
+    // memory.c
+    char *ti_rom;
+    char *ti_int_rom;
+    char *ti_ext_rom;
+    char *ti_ram;
+    char *ti_io;
+    char garbage_mem[0x10000];
+
+    // timer.c
+    int timer_value;
+    int timer_init;
+
+} Ti68kHardware;
 
 extern Ti68kParameters params;
-
 extern TicableLinkParam link_cable;
+extern Ti68kHardware tihw;
 
 #endif

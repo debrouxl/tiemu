@@ -41,7 +41,7 @@
 #include "ti68k_int.h"
 
 #include "hid.h"
-#include "core.h"
+#include "engine.h"
 #include "refresh.h"
 #include "printl.h"
 

@@ -36,7 +36,7 @@
 
 #include "intl.h"
 #include "struct.h"
-#include "core.h"
+#include "engine.h"
 
 #if defined(__LINUX__)
 #define sleep(x)	usleep(1000 * (x))
@@ -95,6 +95,27 @@ gpointer ti68k_engine(gpointer data)
 		}
 	}
 }
+
+int ti68k_engine_is_halted() 
+{
+	return !running;
+}
+
+void ti68k_engine_halt(void) 
+{
+	//G_LOCK(running);
+	running = 0;
+	//G_UNLOCK(running);
+}
+
+void ti68k_engine_unhalt(void) 
+{
+	//G_LOCK(running);
+	running = 1;
+	//G_UNLOCK(running);
+}
+
+// compat
 
 int ti68k_is_halted() 
 {

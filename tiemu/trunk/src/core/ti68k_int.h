@@ -27,31 +27,16 @@
 
 #include "ti68k_def.h"
 #include "tilibs.h"
-#include "keydefs.h"
+//#include "keydefs.h"
 
-
-// roms
-#include "type2str.h"
-#include "state.h"
-#include "images.h"
-#include "core.h"
-#include "callbacks.h"
 #include "bkpts.h"
-
-/*
-#ifdef __WIN32__
-# define str_cmp(s1, s2) (stricmp((s1), (s2)))
-#else
-# define str_cmp(s1, s2) (strcasecmp((s1), (s2)))
-#endif
-*/
-
-/*************/
-/* Constants */
-/*************/  
-
-#define MAXCHARS 256
-  
+#include "callbacks.h"
+#include "engine.h"
+#include "images.h"
+#include "registers.h"
+#include "state.h"
+#include "type2str.h"
+ 
 /*************/
 /* Functions */
 /*************/
@@ -89,20 +74,6 @@ void ti68k_getBreakpointCause(int *type, int *id, int *mode);
 int ti68k_doSingleStep(void);
 int ti68k_doInstructions(int n);
 
-// Register access
-void ti68k_setDataRegister(int n,int val);
-void ti68k_setAddressRegister(int n,int val);
-void ti68k_setSpRegister(int val);
-void ti68k_setPcRegister(int val);
-void ti68k_setSrRegister(int val);
-void ti68k_setFlagRegister(unsigned char flag);
-int  ti68k_getDataRegister(int n);
-int  ti68k_getAddressRegister(int n);
-int ti68k_getSpRegister();
-int ti68k_getPcRegister();
-int ti68k_getSrRegister();
-char *ti68k_getFlagRegister(void);
-
 // Link
 int ti68k_sendFile(const char *filename);
 int ti68k_setInternalLinkTimeout(int value);
@@ -124,8 +95,8 @@ int ti68k_isKeyPressed(int key);
 /* Compatibility wrappers */
 /**************************/
 
-#define ti68k_initLib68k  ti68k_init
-#define ti68k_resetLib68k ti68k_reset
-#define ti68k_exitLib68k  ti68k_exit
+//#define ti68k_initLib68k  ti68k_init
+//#define ti68k_resetLib68k ti68k_reset
+//#define ti68k_exitLib68k  ti68k_exit
 
 #endif
