@@ -15,6 +15,7 @@ To do:
 	- removed "C:\\tiemu.log" empty file under Linux
 	- added temporary breakpoint mode
 	- breakpoints are now editable
+	- fixed bugs with data breakpoints
 
 - 08/11/2004, version 1.80f: roms
 	- PedRom is now provided with TiEmu as default OS.

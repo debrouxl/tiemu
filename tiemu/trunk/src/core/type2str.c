@@ -226,21 +226,24 @@ const char *ti68k_bkpt_mode_to_string(int type, int mode)
 	case BK_CAUSE_ACCESS:
 		switch(mode)
 		{
-		case BK_READ_BYTE: return "byte-read";
-		case BK_READ_WORD: return "word-read";
-		case BK_READ_LONG: return "long-read";
-		case BK_WRITE_BYTE:return "byte-write";
-		case BK_WRITE_WORD:return "word-write";
-		case BK_WRITE_LONG:return "long-write";
+		case BK_READ_BYTE:	return "byte-read";
+		case BK_READ_WORD:	return "word-read";
+		case BK_READ_LONG:	return "long-read";
+		case BK_WRITE_BYTE:	return "byte-write";
+		case BK_WRITE_WORD:	return "word-write";
+		case BK_WRITE_LONG:	return "long-write";
+		case BK_RW_BYTE:	return "r/w byte";
+		case BK_RW_WORD:	return "r/w word";
+		case BK_RW_LONG:	return "r/w long";
 		default: return "unknwon (bug)";
 		}
 		break;
 	case BK_CAUSE_RANGE:
-        if((mode & BK_MODE_READ) && (mode & BK_MODE_WRITE))
+        if((mode & BK_READ) && (mode & BK_WRITE))
             return "any";
-		else if(mode & BK_MODE_READ)
+		else if(mode & BK_READ)
             return "read";
-        else if(mode & BK_MODE_WRITE)
+        else if(mode & BK_WRITE)
             return "write";
 		break;
 	case BK_CAUSE_ADDRESS:
@@ -254,16 +257,16 @@ const char *ti68k_bkpt_mode_to_string(int type, int mode)
 int ti68k_string_to_bkpt_mode(const char * str)
 {
     if(!strcmp(str, "any"))
-        return BK_MODE_READ | BK_MODE_WRITE;
+        return BK_READ | BK_WRITE;
     else if(!strcmp(str, "read"))
-        return BK_MODE_READ;
+        return BK_READ;
     else if(!strcmp(str, "write"))
-        return BK_MODE_WRITE;
+        return BK_WRITE;
     else if(!strcmp(str, "byte-read"))
         return BK_READ_BYTE;
-    else if(!strcmp(str, "byte-word"))
+    else if(!strcmp(str, "word-read"))
         return BK_READ_WORD;
-    else if(!strcmp(str, "byte-long"))
+    else if(!strcmp(str, "long-read"))
         return BK_READ_LONG;
     else if(!strcmp(str, "byte-write"))
         return BK_WRITE_BYTE;
@@ -271,6 +274,12 @@ int ti68k_string_to_bkpt_mode(const char * str)
         return BK_WRITE_WORD;
     else if(!strcmp(str, "long-write"))
         return BK_WRITE_LONG;
+	else if(!strcmp(str, "r/w byte"))
+		return BK_RW_BYTE;
+	else if(!strcmp(str, "r/w word"))
+		return BK_RW_WORD;
+	else if(!strcmp(str, "r/w long"))
+		return BK_RW_LONG;
     else
         return 0;
 }

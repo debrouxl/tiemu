@@ -358,7 +358,7 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
             mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
             sscanf(row_text[COL_START], "%x", &min);
             sscanf(row_text[COL_END], "%x", &max);
-            ti68k_bkpt_del_range(min, max, mode);        
+            ti68k_bkpt_del_range(min, max, mode);
             break;
         }
         g_strfreev(row_text);
@@ -545,7 +545,6 @@ on_treeview2_button_press_event        (GtkWidget       *widget,
 	GtkTreeViewColumn *column;
     GtkTreeIter iter;
     gboolean ret;
-    gchar *spath;
 
     if (event->type != GDK_2BUTTON_PRESS)	// double-click ?
 		return FALSE;
@@ -583,15 +582,22 @@ on_treeview2_button_press_event        (GtkWidget       *widget,
 			new_addr = old_addr;
 			if(display_dbgmem_address(&new_addr) == -1)
 				return TRUE;
-			printf("addr = %x\n", new_addr);
 
-			ti68k_bkpt_del_address(old_addr);
-	        ti68k_bkpt_add_address(new_addr);
-			
+			ti68k_bkpt_set_address(old_addr, new_addr);			
 			dbgbkpts_refresh_window();
 		}
-		if((type == BK_TYPE_RANGE) ||(type == BK_TYPE_ACCESS))
+		if((type == BK_TYPE_ACCESS) || (type == BK_TYPE_RANGE))
 		{
+			uint32_t old_min, old_max;
+			uint32_t new_min, new_max;
+			uint32_t mode;
+
+            mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
+			printf("<%s %s> %i %i\n", row_text[COL_TYPE], row_text[COL_MODE], type, mode);
+            sscanf(row_text[COL_START], "%x", &old_min);
+            sscanf(row_text[COL_END], "%x", &old_max);
+            
+			dbgdata_display_dbox(mode, type, old_min, old_max);
 		}
 
 		g_strfreev(row_text);
@@ -607,7 +613,7 @@ GLADE_CB void
 dbgbkpts_data_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	dbgdata_display_dbox();
+	dbgdata_display_dbox(-1, -1, -1, -1);
 }
 
 

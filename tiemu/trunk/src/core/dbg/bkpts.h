@@ -64,14 +64,12 @@ typedef struct
 /* Constants */
 
 // Breakpoints mode (ti68k_bkpt_set_[access|access_range])
-#define BK_MODE_BYTE     1
-#define BK_MODE_WORD     2
-#define BK_MODE_LONG     4
-#define BK_MODE_READ     16
-#define BK_MODE_WRITE    32
-
-// shortcuts and compat
-#define BK_MODE_RW       (BK_READ | KB_WRITE)
+#define BK_BYTE     1
+#define BK_WORD     2
+#define BK_LONG     4
+#define BK_READ     16
+#define BK_WRITE    32
+#define BK_RW      (BK_READ | KB_WRITE)
 
 #define BK_READ_BYTE	(BK_READ | BK_BYTE)
 #define BK_READ_WORD 	(BK_READ | BK_WORD)
@@ -81,11 +79,9 @@ typedef struct
 #define BK_WRITE_WORD 	(BK_WRITE | BK_WORD)
 #define BK_WRITE_LONG 	(BK_WRITE | BK_LONG)
 
-#define BK_BYTE     BK_MODE_BYTE
-#define BK_WORD     BK_MODE_WORD
-#define BK_LONG     BK_MODE_LONG
-#define BK_READ     BK_MODE_READ
-#define BK_WRITE    BK_MODE_WRITE
+#define BK_RW_BYTE		(BK_READ_BYTE | BK_WRITE_BYTE)
+#define BK_RW_WORD		(BK_READ_WORD | BK_WRITE_WORD)
+#define BK_RW_LONG		(BK_READ_LONG | BK_WRITE_LONG)
 
 // Breakpoints type 
 typedef enum {

@@ -39,16 +39,17 @@
 
 static GladeXML *xml;
 
-gint dbgdata_display_dbox(void)
+gint dbgdata_display_dbox(gint mode, gint type, uint32_t start, uint32_t stop)
 {
 	//GladeXML *xml;
 	GtkWidget *dbox;
 	GtkWidget *data;
 	gint result;
 
-	gint mode, type, access;
-	G_CONST_RETURN gchar *s_start, *s_stop;
-	uint32_t start, stop;
+	gint access;	//gint mode, type, access;
+	G_CONST_RETURN gchar *sc_start, *sc_stop;
+	gchar *s_start, *s_stop;
+	//uint32_t start, stop;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_data-2.glade"), "dbgdata_dbox",
@@ -63,11 +64,67 @@ gint dbgdata_display_dbox(void)
 	data = glade_xml_get_widget(xml, "radiobutton20");
 	gtk_signal_emit_by_name(GTK_OBJECT(data), "toggled");
 
+	printf("%i %i %x %x\n", mode, type, start, stop);
+
+	// set type
+	if(type == -1)
+	{
+		// skip box preset step
+	}
+	else 
+	{
+		data = glade_xml_get_widget(xml, "radiobutton10");
+		if(mode & BK_READ)
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
+
+		data = glade_xml_get_widget(xml, "radiobutton11");
+		if(mode & BK_WRITE)
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
+
+		data = glade_xml_get_widget(xml, "radiobutton12");
+		if((mode & BK_READ) && (mode & BK_WRITE))
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
+
+		if(type == BK_TYPE_ACCESS)
+		{
+			data = glade_xml_get_widget(xml, "radiobutton20");
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
+
+			data = glade_xml_get_widget(xml, "optionmenu1");
+			if(mode & BK_BYTE)
+				gtk_option_menu_set_history(GTK_OPTION_MENU(data), 0);
+			else if(mode & BK_WORD)
+				gtk_option_menu_set_history(GTK_OPTION_MENU(data), 1);
+			else if(mode & BK_LONG)
+				gtk_option_menu_set_history(GTK_OPTION_MENU(data), 2);
+
+			data = glade_xml_get_widget(xml, "entry3");
+			s_start = g_strdup_printf("0x%x", start);
+			gtk_entry_set_text(GTK_ENTRY(data), s_start);
+			g_free(s_start);
+		}
+		else if(type == BK_TYPE_RANGE)
+		{
+			data = glade_xml_get_widget(xml, "radiobutton21");
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
+
+			data = glade_xml_get_widget(xml, "entry1");
+			s_start = g_strdup_printf("0x%x", start);
+			gtk_entry_set_text(GTK_ENTRY(data), s_start);
+			g_free(s_start);
+
+			data = glade_xml_get_widget(xml, "entry2");
+			s_stop = g_strdup_printf("0x%x", stop);
+			gtk_entry_set_text(GTK_ENTRY(data), s_stop);
+			g_free(s_stop);
+		}
+	}
+
 loop:
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) {
 	case GTK_RESPONSE_OK:
-		s_start = s_stop = "";
+		sc_start = sc_stop = "";
 		mode = type = access = 0;
 		// Retrieve settings from fields
 		data = glade_xml_get_widget(xml, "radiobutton10");
@@ -82,13 +139,13 @@ loop:
 
 		data = glade_xml_get_widget(xml, "radiobutton20");
 		if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data)))
-			type = 1;
+			type = BK_TYPE_ACCESS;
 
 		data = glade_xml_get_widget(xml, "radiobutton21");
 		if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data)))
-			type = 2;
+			type = BK_TYPE_RANGE;
 	
-		if(type == 1)
+		if(type == BK_TYPE_ACCESS)
 		{
 			data = glade_xml_get_widget(xml, "optionmenu1");
 			switch(gtk_option_menu_get_history(GTK_OPTION_MENU(data)))
@@ -99,22 +156,22 @@ loop:
 			}
 
 			data = glade_xml_get_widget(xml, "entry3");
-			s_start = s_stop = gtk_entry_get_text(GTK_ENTRY(data));
-		} else if(type == 2)
+			sc_start = sc_stop = gtk_entry_get_text(GTK_ENTRY(data));
+		} else if(type == BK_TYPE_RANGE)
 		{
 			data = glade_xml_get_widget(xml, "entry1");
-			s_start = gtk_entry_get_text(GTK_ENTRY(data));
+			sc_start = gtk_entry_get_text(GTK_ENTRY(data));
 
 			data = glade_xml_get_widget(xml, "entry2");
-			s_stop = gtk_entry_get_text(GTK_ENTRY(data));			
+			sc_stop = gtk_entry_get_text(GTK_ENTRY(data));			
 		}
 
 		// Convert values and check
-		result = sscanf(s_start, "%x", &start);
+		result = sscanf(sc_start, "%x", &start);
 		if(result < 1)
 			goto loop;
 
-		result = sscanf(s_stop, "%x", &stop);
+		result = sscanf(sc_stop, "%x", &stop);
 		if((result < 1) && (type == 2))
 			goto loop;
 
@@ -122,11 +179,11 @@ loop:
 			goto loop;
 
 		// Add breakpoint
-		if(type == 1)
+		if(type == BK_TYPE_ACCESS)
 		{
 			ti68k_bkpt_add_access(start, mode | access) ;
 		} 
-		else if(type == 2)
+		else if(type == BK_TYPE_RANGE)
 		{
 			ti68k_bkpt_add_range(start, stop, mode);
 		}
