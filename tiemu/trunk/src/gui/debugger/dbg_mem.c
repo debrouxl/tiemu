@@ -456,7 +456,7 @@ GLADE_CB void
 dbgmem_button1_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-	uint32_t addr;
+	uint32_t addr = 0;
 	gchar *str;
 	
 	if(display_dbgmem_address(&addr) == -1)
@@ -689,7 +689,7 @@ on_go_to_address2_activate             (GtkMenuItem     *menuitem,
     GtkNotebook *nb = GTK_NOTEBOOK(notebook);
 	gint page = gtk_notebook_get_current_page(nb);
 
-    uint32_t addr;
+    uint32_t addr = 0;
 	gchar *str;
 	
 	if(display_dbgmem_address(&addr) == -1)
@@ -897,7 +897,7 @@ gint display_dbgmem_address(uint32_t *addr)
 	glade_xml_signal_autoconnect(xml);
 	
 	entry = glade_xml_get_widget(xml, "entry1");
-	str = g_strdup_printf("%06x", *addr);
+	str = g_strdup_printf("0x%06x", *addr);
 	gtk_entry_set_text(GTK_ENTRY(entry), str);
 	g_free(str);
 	

@@ -586,6 +586,7 @@ on_treeview2_button_press_event        (GtkWidget       *widget,
 
 			ti68k_bkpt_set_address(old_addr, new_addr);			
 			dbgbkpts_refresh_window();
+			dbgcode_refresh_window();
 		}
 		if((type == BK_TYPE_ACCESS) || (type == BK_TYPE_RANGE))
 		{

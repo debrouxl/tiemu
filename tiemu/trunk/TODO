@@ -84,7 +84,7 @@ reset).
 en double dans la fenêtre console, bien qu'elle ne 
 soit prise en compte qu'une fois par l'émulateur.
 
-* le dropdown (ou quelque soit son nom) des ROM_CALLs 
++ le dropdown (ou quelque soit son nom) des ROM_CALLs 
 n'est pas protégé contre les ROM_CALLs invalides à 
 des adresses farfelues (n'existant pas sur la version 
 de ROM émulée).

@@ -34,7 +34,7 @@
 
 #include "romcalls.h"
 
-#define NROMCALLS	0x800
+#define NMAX_ROMCALLS	0x800
 
 /* Types */
 
@@ -62,5 +62,7 @@ const char* romcalls_get_addr_name(uint32_t addr);
 ROM_CALL *romcalls_sort_by_id(void);
 ROM_CALL *romcalls_sort_by_addr(void);
 ROM_CALL *romcalls_sort_by_name(void);
+
+int romcalls_get_size(void);
 
 #endif

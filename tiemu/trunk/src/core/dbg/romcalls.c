@@ -34,9 +34,8 @@
 #include "images.h"
 #include "ti68k_def.h"
 
-#define TBL_SIZE	NROMCALLS
-
-static ROM_CALL list[TBL_SIZE] = { 0 };
+static ROM_CALL list[NMAX_ROMCALLS] = { 0 };
+static int		list_size = 0;
 static int		loaded;
 
 static int old_ct = -1;		// previous calc type for reloading
@@ -140,6 +139,7 @@ int romcalls_load_from_file(const char* filename)
 
 	printf("Loading symbols (ROM calls)... ");
     memset(list, 0, sizeof(list));
+	list_size = 0;
 
     f = fopen(filename, "rt");
     if(f == NULL) {
@@ -168,10 +168,11 @@ int romcalls_load_from_file(const char* filename)
 	// get function address
 	//addr = rd_long(&tihw.ram[0xC8]);
 	addr = rd_long(&tihw.rom[0x12000 + 0x88 + 0xC8]);
+	list_size = rd_long(&tihw.rom[((addr-4) & 0x0fffff)]);
 
-	printf("Parsing symbols (addresses) at $%06x... ", addr);
+	printf("ROM calls: parsing %i entries at $%06x... ", list_size, addr);
 
-	for(i = 0; i < TBL_SIZE; i++)
+	for(i = 0; i < list_size; i++)
 	{
 		if(list[i].name == NULL)
 			list[i].name = strdup("unknown");
@@ -210,7 +211,7 @@ int romcalls_is_address(uint32_t addr)
 
 	if(!loaded)	return -1;
 
-	for(i = 0; i < TBL_SIZE; i++)
+	for(i = 0; i < list_size; i++)
 	{
 		if(addr == list[i].addr)
 			return last_id = list[i].id;
@@ -226,7 +227,7 @@ int romcalls_is_name(const char *name)
 
 	if(!loaded)	return -1;
 
-	for(i = 0; i < TBL_SIZE; i++)
+	for(i = 0; i < list_size; i++)
 	{
 		if(!strcmp(name, list[i].name))
 			return list[i].id;
@@ -274,7 +275,7 @@ const char* romcalls_get_addr_name(uint32_t addr)
 
 static ROM_CALL* duplicate_list(ROM_CALL *src)
 {
-	ROM_CALL *dst = g_memdup(src, TBL_SIZE * sizeof(ROM_CALL));
+	ROM_CALL *dst = g_memdup(src, list_size * sizeof(ROM_CALL));
 
 	return dst;
 }
@@ -295,7 +296,7 @@ static compare_func_by_id(gconstpointer a, gconstpointer b, gpointer user_data)
 ROM_CALL *romcalls_sort_by_id(void)
 {
 	ROM_CALL *ret = duplicate_list(list);
-	g_qsort_with_data(ret, TBL_SIZE, sizeof(ROM_CALL), compare_func_by_id, NULL);
+	g_qsort_with_data(ret, list_size, sizeof(ROM_CALL), compare_func_by_id, NULL);
 	
 	return ret;
 }
@@ -316,7 +317,7 @@ static compare_func_by_addr(gconstpointer a, gconstpointer b, gpointer user_data
 ROM_CALL *romcalls_sort_by_addr(void)
 {
 	ROM_CALL *ret = duplicate_list(list);
-	g_qsort_with_data(ret, TBL_SIZE, sizeof(ROM_CALL), compare_func_by_addr, NULL);
+	g_qsort_with_data(ret, list_size, sizeof(ROM_CALL), compare_func_by_addr, NULL);
 	
 	return ret;
 }
@@ -333,7 +334,12 @@ static compare_func_by_name(gconstpointer a, gconstpointer b, gpointer user_data
 ROM_CALL *romcalls_sort_by_name(void)
 {
 	ROM_CALL *ret = duplicate_list(list);
-	g_qsort_with_data(ret, TBL_SIZE, sizeof(ROM_CALL), compare_func_by_name, NULL);
+	g_qsort_with_data(ret, list_size, sizeof(ROM_CALL), compare_func_by_name, NULL);
 	
 	return ret;
+}
+
+int romcalls_get_size(void)
+{
+	return list_size;
 }

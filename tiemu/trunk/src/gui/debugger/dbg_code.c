@@ -357,7 +357,7 @@ GtkWidget* dbgcode_create_window(void)
 	items = g_list_append (items, "");
 	if (romcalls_is_loaded()) {
 	lst = romcalls_sort_by_name();
-	for(i = 0; i < NROMCALLS; i++)
+	for(i = 0; i < romcalls_get_size(); i++)
 	{
 		uint32_t addr;
 		const gchar *name;
@@ -810,7 +810,7 @@ GLADE_CB void
 on_go_to_address1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    uint32_t addr;
+    uint32_t addr = 0;
 
     if(display_dbgmem_address(&addr) == -1)
 		return;
