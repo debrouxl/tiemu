@@ -41,12 +41,12 @@
 #include "ti68k_int.h"
 #include "flash.h"
 
-// 000000-03ffff : RAM (256 KB), non ghost'ed
-// 100000-1fffff : 
-// 200000-2fffff : image of 0x000000 (ghost)
-// 300000-3fffff : 
-// 400000-4fffff : image of 0x000000 (ghost)
-// 500000-5fffff : 
+// 000000-03ffff : RAM (256 KB), not mirrored
+// 100000-1fffff : unused
+// 200000-2fffff : image of 0x000000 (ghost, not mirrored)
+// 300000-3fffff : unused
+// 400000-4fffff : image of 0x000000 (ghost, not mirrored)
+// 500000-5fffff : unused
 // 600000-6fffff : memory mapped I/O (all HW)
 // 700000-7fffff : memory mapped I/O (HW2, HW3), non ghost'ed
 // 800000-8fffff : ROM (TI89 Titanium)
@@ -64,15 +64,15 @@ int ti89t_mem_init(void)
 
     // map RAM
     mem_tab[0] = tihw.ram;
-    mem_msk[0] = 1*MB - 1;  // avoid ghost
-
+	mem_msk[0] = tihw.ram_size-1;
+	
     // ghost of RAM
     for(i = 0; i < 4; i++)
     {
         mem_tab[2+i] = mem_tab[i]; 
         mem_msk[2+i] = mem_msk[i];
     }
-    
+   
 	// map FLASH
     for(i = 0; i < 4; i++)
     {
@@ -95,7 +95,7 @@ int ti89t_mem_init(void)
 
 uint32_t ti89t_get_long(uint32_t adr) 
 {
-    if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x3fffff))				// RAM access
 	{
         return lget(adr);
 	}
@@ -118,7 +118,7 @@ uint32_t ti89t_get_long(uint32_t adr)
 
 uint16_t ti89t_get_word(uint32_t adr) 
 {
-    if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x3fffff))				// RAM access
 	{
         return wget(adr);
 	}
@@ -141,7 +141,7 @@ uint16_t ti89t_get_word(uint32_t adr)
 
 uint8_t ti89t_get_byte(uint32_t adr) 
 {
-    if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x3fffff))				// RAM access
 	{
         return bget(adr);
 	}
@@ -164,7 +164,7 @@ uint8_t ti89t_get_byte(uint32_t adr)
 
 void ti89t_put_long(uint32_t adr, uint32_t arg) 
 {
-    if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x3fffff))				// RAM access
 	{
         lput(adr, arg);
 	}
@@ -186,7 +186,7 @@ void ti89t_put_long(uint32_t adr, uint32_t arg)
 
 void ti89t_put_word(uint32_t adr, uint16_t arg) 
 {
-	if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM access
+	if(IN_RANGE(0x000000, adr, 0x3fffff))				// RAM access
 	{
         wput(adr, arg);
 	}
@@ -208,7 +208,7 @@ void ti89t_put_word(uint32_t adr, uint16_t arg)
 
 void ti89t_put_byte(uint32_t adr, uint8_t arg) 
 {
-    if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x3fffff))				// RAM access
 	{
         bput(adr, arg);
 	}

@@ -96,6 +96,9 @@ int hw_mem_init(void)
 		tihw.io2_size = ti68k_get_io2_size(tihw.calc_type);
 	}
 
+	if(tihw.calc_type == TI89t)
+		tihw.ram_size = 2*MB;	// used to avoid mirroring of segments
+
 	// init vars
     tihw.protect = 0;
 	hw_flash_init();

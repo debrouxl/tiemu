@@ -89,14 +89,6 @@ LINK32=link.exe
 
 # Name "TiEmu_Windows - Win32 Release"
 # Name "TiEmu_Windows - Win32 Debug"
-# Begin Group "Resource Files"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\TiEMu.rc
-# End Source File
-# End Group
 # Begin Group "Documentation"
 
 # PROP Default_Filter ""
@@ -161,6 +153,18 @@ SOURCE="..\..\..\..\..\Gtk2Dev\lib\atk-1.0.lib"
 SOURCE="..\..\..\..\..\GTK2DEV\lib\glade-2.0.lib"
 # End Source File
 # End Group
+# Begin Group "Resource Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\TiEmu.ico
+# End Source File
+# Begin Source File
+
+SOURCE=.\TiEMu.rc
+# End Source File
+# End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter ""
@@ -193,10 +197,6 @@ SOURCE=..\..\src\core\uae\newcpu.c
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\table68k
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\libuae.lib
 # End Source File
 # End Group
 # Begin Group "ti_hw"
@@ -268,6 +268,10 @@ SOURCE=..\..\src\core\dbg\disasm.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\dbg\fpudasm.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\dbg\m68kdasm.c
 # End Source File
 # End Group
@@ -280,11 +284,27 @@ SOURCE=..\..\src\core\ti_sw\handles.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\hwpm.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\ti_sw\registers.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\ti_sw\romcalls.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_sw\timem.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_sw\vat.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\uae\libuae.lib
 # End Source File
 # End Group
 # Begin Source File
@@ -337,6 +357,10 @@ SOURCE=..\..\src\gui\debugger\dbg_code.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\debugger\dbg_data.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\debugger\dbg_entry.c
 # End Source File
 # Begin Source File
 
@@ -429,10 +453,6 @@ SOURCE=..\..\src\gui\filesel.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\fs_misc.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\help.c
 # End Source File
 # Begin Source File
 
