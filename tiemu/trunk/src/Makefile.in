@@ -44,29 +44,33 @@ uae_OBJ = \
 	core/uae/readcpu.o
 
 tihw_OBJ = \
+	core/ti_hw/dbus.o		\
 	core/ti_hw/debugger.o 	\
 	core/ti_hw/hardware.o 	\
-	core/ti_hw/lcd.o 	\
-        core/ti_hw/keyboard.o 	\
-        core/ti_hw/linkport.o 	\
-        core/ti_hw/memory.o 	\
-	core/ti_hw/timer.o 	\
 	core/ti_hw/ioports.o 	\
-	core/ti_hw/m68k.o
+	core/ti_hw/keyboard.o 	\
+	core/ti_hw/lcd.o 		\
+	core/ti_hw/m68k.o		\   
+    core/ti_hw/memory.o 	\
+	core/ti_hw/timer.o	
 
-core_OBJ = \
-	core/core.o	\
-	core/intlist.o 	\
-	core/bkpts.o 	\
-	core/errors.o 	\
-	core/images.o 	\
-	core/state.o 	\
-	core/callbacks.o \
-	core/interface.o
+core_OBJ = 				\
+	core/core.o			\
+	core/bkpts.o 		\
+	core/callbacks.o 	\
+	core/engine.o		\
+	core/errors.o 		\
+	core/images.o 		\
+	core/state.o 		\
+	core/interface.o	\
+	core/registers.o	\
+	core/state.o		\
+	core/type2str.o
 
 hid_OBJ = \
 	hid/cmdline.o 	\
 	hid/files.o 	\
+	hid/hid.o		\
 	hid/paths.o 	\
 	hid/printl.o	\
 	hid/rcfile.o 	\
@@ -76,35 +80,33 @@ hid_OBJ = \
 	hid/tikeys.o
 
 gui_OBJ = \
-	./gui/support.o \
-	./gui/link_dbox.o ./gui/link_cb.o \
-	./gui/dboxes.o		\
-	./gui/infos.o		\
-	./gui/adbkpt_dbox.o ./gui/adbkpt_cb.o \
-	./gui/dbkpt_dbox.o ./gui/dbkpt_cb.o \
-	./gui/debug_dbox.o ./gui/debug_cb.o \
+	./gui/about.o							\
+	./gui/adbkpt_dbox.o ./gui/adbkpt_cb.o 	\
+	./gui/bkpt_cause.o 						\
+	./gui/comm.o							\
+	./gui/dbgopt_dbox.o ./gui/dbgopt_cb.o 	\
+	./gui/dbkpt_dbox.o ./gui/dbkpt_cb.o 	\
+	./gui/dboxes.o							\
+	./gui/debug_dbox.o ./gui/debug_cb.o 	\
+	./gui/filesel.o							\
+	./gui/fsel_dbox.o ./gui/fsel_cb.o 		\
+	./gui/help.o	 						\
+	./gui/infos.o							\
 	./gui/logaddr_dbox.o ./gui/logaddr_cb.o \
-	./gui/romv_dbox.o ./gui/romv_cb.o \
-	./gui/trap_dbox.o ./gui/trap_cb.o \
-	./gui/viewlog_dbox.o ./gui/viewlog_cb.o \
-	./gui/dbgopt_dbox.o ./gui/dbgopt_cb.o \
+	./gui/main.o							\
+	./gui/manpage.o							\
+	./gui/pbars.o							\
 	./gui/pgmentbkpt_dbox.o ./gui/pgmentbkpt_cb.o \
-	./gui/state_dbox.o ./gui/state_cb.o \
-	./gui/dump_dbox.o ./gui/dump_cb.o \
-	./gui/bkpt_cause.o \
-	./gui/scopt_dbox.o ./gui/scopt_cb.o \
-	./gui/fsel_dbox.o ./gui/fsel_cb.o \
-	./gui/wizard_dbox.o ./gui/wizard_cb.o \
-	./gui/help.o	 	\
-	./gui/manpage.o		\
-	./gui/about.o		\
-	./gui/release.o		\
-	./gui/pbars.o		\
-	./gui/skin_dbox.o ./gui/skin_cb.o \
-	./gui/refresh.o		\
-	./gui/popup.o 		\
-	./gui/splash.o		\
-	./gui/main.o
+	./gui/popup.o							\
+	./gui/refresh.o							\
+	./gui/release.o							\
+	./gui/romversion.o						\
+	./gui/scroptions.o						\
+	./gui/splash.o							\
+	./gui/support.o 						\
+	./gui/trap_dbox.o ./gui/trap_cb.o 		\
+	./gui/viewlog_dbox.o ./gui/viewlog_cb.o \
+	./gui/wizard.o
 
 tiemu_OBJ = core/uae/newcpu.o $(tihw_OBJ) $(core_OBJ) $(hid_OBJ) $(gui_OBJ)
 
