@@ -19,19 +19,17 @@
 #ifndef __RCFILE_H__
 #define __RCFILE_H__
 
-//#include "platform.h"
+
+int check_access(void);
+
+void read_rc_file(void);
+
+void write_rc_file(void);
+
+int is_rcfile_exist(void);
 
 
-int check_access();
-
-void read_rc_file();
-
-void write_rc_file();
-
-int is_rcfile_exist();
-
-
-int load_default_config();
+int load_default_config(void);
 
 int init_options(void);
 

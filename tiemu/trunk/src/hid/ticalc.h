@@ -25,8 +25,8 @@
 /* Exported functions */
 /**********************/
 
-int hid_init(void);
-int hid_exit(void);
+int  hid_init(void);
+int  hid_exit(void);
 
 void hid_switch_with_skin(void);
 void hid_switch_without_skin(void);
@@ -38,7 +38,7 @@ void hid_switch_windowed(void);
 void hid_switch_normal_view(void);
 void hid_switch_large_view(void);
 
-int hid_set_gui_callbacks(void);
+int  hid_set_gui_callbacks(void);
 
 int do_screenshot(int format, int type, int size, char *filename);
 

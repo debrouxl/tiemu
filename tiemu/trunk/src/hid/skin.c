@@ -1,7 +1,8 @@
 /*  TiEmu - a TI emulator
- *  loader.c: loader for VTi & TiEmu skins
+ *  loader.c: loader for TiEmu skins
  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
+ *  Copyright (c) 2003-2004, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,15 +24,13 @@
 #endif
 
 #include <stdio.h>
-//#include <unistd.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-
-#ifndef __WIN32__
 #include <stdint.h>
+#if !defined(__WIN32__) && !defined(__MACOSX__)
 #include <byteswap.h>
 #endif
-
 #include <jpeglib.h>
 
 #include "skin.h"
@@ -39,518 +38,249 @@
 #include "tilibs.h"
 #include "interface.h"
 #include "struct.h"
-#include "./defs.h"
 
+#if defined(__MACOSX__) || defined(__WIN32__)
+#define bswap_32(a) (a >> 24) | ((a & 0xff0000) >> 16) << 8 | ((a & 0xff00) >> 8) << 16 | (a & 0xff) << 8
+#endif /* __MACOSX__ || __WIN32__ */
 
-/* Keep information on currently loaded skin */
-//skinInfos skin_infos = { 0 };
-skinInfos skin = { 0 };
+SKIN_INFOS skin_infos = { 0 };
 static int skin_loaded = 0;
 
-/****************/
-/* Internal use */
-/****************/
-
-/* Load a JPEG file from stream 'fp' */
-static int load_jpeg(FILE *fp, skinInfos *skin)
+// taken from skinedit/src/skinops.c/load_skin_tiemu()
+static int skin_read_header(const char *filename,SKIN_INFOS* infos)
 {
-    struct jpeg_decompress_struct cinfo;
-    struct jpeg_error_mgr jerr;
-
-    unsigned char *img;
-    int j;
-
-    // Init JPEG
-    cinfo.err = jpeg_std_error(&jerr);
-    jpeg_create_decompress(&cinfo);
-    jpeg_stdio_src(&cinfo, fp);
-    jpeg_read_header(&cinfo, TRUE);
-
-    // Rescale image to half if necessary
-    if ((cinfo.image_width > 600)
-	|| (cinfo.image_height > 600)) {
-	cinfo.scale_num = 1;
-	cinfo.scale_denom = 2;
-    }
-
-    // Require a colormapped output with a limited number of colors
-    cinfo.quantize_colors = TRUE;
-    cinfo.desired_number_of_colors = MAX_COLORS;
-
-    // Decompress JPEG
-    jpeg_start_decompress(&cinfo);
-
-    if (cinfo.output_components != 1)	// 1: palettized 
-      return -1;
-
-    // Copy the color palette
-    skin->ncolors = cinfo.actual_number_of_colors;
-    for (j = 0; j < cinfo.actual_number_of_colors; j++) {
-	skin->cmap[0][j] = cinfo.colormap[0][j];
-	skin->cmap[1][j] = cinfo.colormap[1][j];
-	skin->cmap[2][j] = cinfo.colormap[2][j];
-    }
-
-    // Get skin size (JPEG rounds down odd number to the lower even)
-    skin->width = cinfo.output_width + (cinfo.output_width & 3);
-    skin->height = cinfo.output_height + (cinfo.output_height & 3);
-
-    // Allocate image
-    skin->img = img = (unsigned char *) malloc(skin->width * skin->height);
-    if (img == NULL)
-      {
-	jpeg_destroy_decompress(&cinfo);
-	return -1;
-      }
-
-    // Load jpeg image line per line
-    while (cinfo.output_scanline < cinfo.output_height) 
-      {
-	img += skin->width;
-	jpeg_read_scanlines(&cinfo, &img, 1);
-      }
-    
-    // Close JPEG
-    jpeg_finish_decompress(&cinfo);
-    jpeg_destroy_decompress(&cinfo);
-
-    return 0;
-}
-
-
-void
-vti_calc_type_to_string(uint32_t calc, skinInfos *skin)
-{
-  switch(calc)
-    {
-      case 73:
-	strcpy(skin->calc, SKIN_TI73);
-	break;
-      case 82:
-	strcpy(skin->calc, SKIN_TI82);
-	break;
-      case 83:
-	strcpy(skin->calc, SKIN_TI83);
-	break;
-      case 84:
-	strcpy(skin->calc, SKIN_TI83P);
-	break;
-      case 85:
-	strcpy(skin->calc, SKIN_TI85);
-	break;
-      case 86:
-	strcpy(skin->calc, SKIN_TI86);
-	break;
-      case 89:
-	strcpy(skin->calc, SKIN_TI89);
-	break;
-      case 92:
-	strcpy(skin->calc, SKIN_TI92);
-	break;
-      case 94:
-	strcpy(skin->calc, SKIN_TI92P);
-	break;
-      default: /* should not get there */
-	break;
-    }
-}
-
-
-#ifndef bswap_32
-uint32_t
-bswap_32(uint32_t a)
-{
-  return (a >> 24) | ((a & 0xff0000) >> 16) << 8 | ((a & 0xff00) >> 8) << 16 | (a & 0xff) << 8;
-}
-#endif
-
-
-
-#if G_BYTE_ORDER == G_BIG_ENDIAN
-void
-byteswap_vti_skin(uint32_t *calc, skinInfos *skin)
-{
-  int i;
-
-  skin->colortype = bswap_32(skin->colortype);
-  skin->lcd_white = bswap_32(skin->lcd_white);
-  skin->lcd_black = bswap_32(skin->lcd_black);
+	FILE *fp = NULL;
+  	int i;
+  	uint32_t endian;
+  	uint32_t jpeg_offset;
+  	uint32_t length;
   
-  *calc = bswap_32(*calc);
-  
-  skin->lcd_pos.top = bswap_32(skin->lcd_pos.top);
-  skin->lcd_pos.left = bswap_32(skin->lcd_pos.left);
-  skin->lcd_pos.bottom = bswap_32(skin->lcd_pos.bottom);
-  skin->lcd_pos.right = bswap_32(skin->lcd_pos.right);
-  
-  for (i = 0; i < 80; i++)
-    {
-      skin->keys_pos[i].top = bswap_32(skin->keys_pos[i].top);
-      skin->keys_pos[i].bottom = bswap_32(skin->keys_pos[i].bottom);
-      skin->keys_pos[i].left = bswap_32(skin->keys_pos[i].left);
-      skin->keys_pos[i].right = bswap_32(skin->keys_pos[i].right);
-    }
-}
-#endif
+	fp = fopen(filename, "rb");
+  	if (fp == NULL)
+    	{
+      		printf("Unable to open this file: <%s>\n", filename);
+      		return -1;
+    	}
+ 
+	/* offsets */
+  	fseek(fp, 16, SEEK_SET);  
+  	fread(&endian, 4, 1, fp);
+  	fread(&jpeg_offset, 4, 1, fp);
+	if (endian != ENDIANNESS_FLAG)
+		jpeg_offset = bswap_32(jpeg_offset);
 
+	/* Skin name */
+  	fread(&length, 4, 1, fp);
+	if (endian != ENDIANNESS_FLAG)
+		length = bswap_32(length);
+  	if (length > 0)
+    	{
+      		skin_infos.name = (char *)malloc(length + 1);
+	      	if (skin_infos.name == NULL)
+			return -1;
+	      	memset(skin_infos.name, 0, length + 1);
+	      	fread(skin_infos.name, length, 1, fp);
+    	}
+	
+	/* Skin author */
+  	fread(&length, 4, 1, fp);
+	if (endian != ENDIANNESS_FLAG)
+		length = bswap_32(length);
+  	if (length > 0)
+    	{
+      		skin_infos.author = (char *)malloc(length + 1);
+      		if (skin_infos.author == NULL)
+			return -1;
+      		memset(skin_infos.author, 0, length + 1);
+      		fread(skin_infos.author, length, 1, fp);
+    	}
 
-int
-load_skin_old_vti(FILE *fp, skinInfos *skin)
-{
-  uint32_t calc;
-  int i;
+	/* LCD colors */
+  	fread(&skin_infos.colortype, 4, 1, fp);
+  	fread(&skin_infos.lcd_white, 4, 1, fp);
+  	fread(&skin_infos.lcd_black, 4, 1, fp);
 
-  fseek(fp, 8, SEEK_SET);
+   	/* Calc type */
+  	fread(skin_infos.calc, 8, 1, fp);
 
-  skin->name = (char *)malloc(65);
+  	/* LCD position */
+  	fread(&skin_infos.lcd_pos.left, 4, 1, fp);
+  	fread(&skin_infos.lcd_pos.top, 4, 1, fp);
+  	fread(&skin_infos.lcd_pos.right, 4, 1, fp);
+  	fread(&skin_infos.lcd_pos.bottom, 4, 1, fp);
 
-  if (skin->name != NULL)
-    {
-      memset(skin->name, 0, 65);
-      fread(skin->name, 64, 1, fp);
+	/* Number of RECT struct to read */
+  	fread(&length, 4, 1, fp);
+	if (endian != ENDIANNESS_FLAG)
+		length = bswap_32(length);
+  	if (length > SKIN_KEYS)
+    		return -1;
 
-      if (strlen(skin->name) == 0)
+  	for (i = 0; i < length; i++)
+    	{
+      		fread(&skin_infos.keys_pos[i].left, 4, 1, fp);
+      		fread(&skin_infos.keys_pos[i].top, 4, 1, fp);
+      		fread(&skin_infos.keys_pos[i].right, 4, 1, fp);
+      		fread(&skin_infos.keys_pos[i].bottom, 4, 1, fp);
+    	}
+
+	if (endian != ENDIANNESS_FLAG)
 	{
-	  free(skin->name);
-	  skin->name = NULL;
-	}
-      else
-	{
-	  skin->name = realloc(skin->name, strlen(skin->name) + 1);
-	}
-    }
-
-  fread(&calc, 4, 1, fp);
-
-  fread(&skin->colortype, 4, 1, fp);
-  fread(&skin->lcd_white, 4, 1, fp);
-  fread(&skin->lcd_black, 4, 1, fp);
-
-  fread(&skin->lcd_pos, 16, 1, fp);
-  
-  fread(skin->keys_pos, 80*16, 1, fp);
-
-#if G_BYTE_ORDER == G_BIG_ENDIAN
-  /*
-   * VTI skins are usually designed on a little endian architecture
-   */
-  
-  byteswap_vti_skin(&calc, skin);
-#endif
-
-  // added by roms
-  for (i = 0; i < 80; i++)
-    {
-      skin->keys_pos[i].top >>= 1;
-      skin->keys_pos[i].bottom >>= 1;
-      skin->keys_pos[i].left >>= 1;
-      skin->keys_pos[i].right >>= 1;
-    }
-  skin->lcd_pos.top >>= 1;
-  skin->lcd_pos.bottom >>= 1;
-  skin->lcd_pos.left >>= 1;
-  skin->lcd_pos.right >>= 1;
-  
-  vti_calc_type_to_string(calc, skin);
-
-  skin->type = SKIN_TYPE_OLD_VTI;
-
-  fseek(fp, 1384, SEEK_SET);
-
-  return load_jpeg(fp, skin);
-}
-
-
-int
-load_skin_vti(FILE *fp, skinInfos *skin)
-{
-  uint32_t calc;
-  int i;
-
-  fseek(fp, 8, SEEK_SET);
-
-  skin->name = (char *)malloc(65);
-
-  if (skin->name != NULL)
-    {
-      memset(skin->name, 0, 65);
-      fread(skin->name, 64, 1, fp);
-
-      if (strlen(skin->name) == 0)
-	{
-	  free(skin->name);
-	  skin->name = NULL;
-	}
-      else
-	{
-	  skin->name = realloc(skin->name, strlen(skin->name) + 1);
-	}
-    }
-
-  skin->author = (char *)malloc(65);
-
-  if (skin->author != NULL)
-    {
-      memset(skin->author, 0, 65);
-      fread(skin->author, 64, 1, fp);
-
-      if (strlen(skin->author) == 0)
-	{
-	  free(skin->author);
-	  skin->author = NULL;
-	}
-      else
-	{
-	  skin->author = realloc(skin->author, strlen(skin->author) + 1);
-	}
-    }
-
-  fread(&calc, 4, 1, fp);
-
-  fread(&skin->colortype, 4, 1, fp);
-  fread(&skin->lcd_white, 4, 1, fp);
-  fread(&skin->lcd_black, 4, 1, fp);
-
-  fread(&skin->lcd_pos, 16, 1, fp);
-  
-  fread(skin->keys_pos, 80*16, 1, fp);
-
-#if G_BYTE_ORDER == G_BIG_ENDIAN
-  /*
-   * VTI skins are usually designed on a little endian architecture
-   */
-
-  byteswap_vti_skin(&calc, skin);
-#endif
-
-  // added by roms
-  for (i = 0; i < 80; i++)
-    {
-      skin->keys_pos[i].top >>= 1;
-      skin->keys_pos[i].bottom >>= 1;
-      skin->keys_pos[i].left >>= 1;
-      skin->keys_pos[i].right >>= 1;
-    }
-  skin->lcd_pos.top >>= 1;
-  skin->lcd_pos.bottom >>= 1;
-  skin->lcd_pos.left >>= 1;
-  skin->lcd_pos.right >>= 1;
-  
-  vti_calc_type_to_string(calc, skin);
-
-  skin->type = SKIN_TYPE_VTI;  
-
-  fseek(fp, 1448, SEEK_SET);
-
-  return load_jpeg(fp, skin);
-}
-
-int
-load_skin_tiemu(FILE *fp, skinInfos *skin)
-{
-  int i;
-  uint32_t endian;
-  uint32_t jpeg_offset;
-  uint32_t length;
-
-  fseek(fp, 16, SEEK_SET);
-  
-  fread(&endian, 4, 1, fp);
-
-  fread(&jpeg_offset, 4, 1, fp);
-
-  if (endian != ENDIANNESS_FLAG)
-    jpeg_offset = bswap_32(jpeg_offset);
-
-
-  fread(skin->calc, 8, 1, fp);
-
-  fread(&skin->colortype, 4, 1, fp);
-  fread(&skin->lcd_white, 4, 1, fp);
-  fread(&skin->lcd_black, 4, 1, fp);
-
-
-  /*
-   * Skin name
-   */
-  fread(&length, 4, 1, fp);
-
-  if (endian != ENDIANNESS_FLAG)
-    length = bswap_32(length);
-
-  if (length > 0)
-    {
-      skin->name = (char *)malloc(length + 1);
-
-      if (skin->name == NULL)
-	return -1;
-
-      memset(skin->name, 0, length + 1);
-
-      fread(skin->name, length, 1, fp);
-    }
-
-
-  /*
-   * Skin author
-   */
-
-  fread(&length, 4, 1, fp);
-
-  if (endian != ENDIANNESS_FLAG)
-    length = bswap_32(length);
-
-  if (length > 0)
-    {
-      skin->author = (char *)malloc(length + 1);
-
-      if (skin->author == NULL)
-	return -1;
-
-      memset(skin->author, 0, length + 1);
-
-      fread(skin->author, length, 1, fp);
-    }
-
-
-  fread(&skin->lcd_pos, 16, 1, fp);
-
-  /* number of RECT struct to read */
-  fread(&length, 4, 1, fp);
-
-  if (endian != ENDIANNESS_FLAG)
-    length = bswap_32(length);
-
-  if (length > SKIN_KEYS)
-    return -1;
-
-  fread(skin->keys_pos, length*16, 1, fp);
-
-  if (endian != ENDIANNESS_FLAG)
-    {
-      skin->colortype = bswap_32(skin->colortype);
-      skin->lcd_white = bswap_32(skin->lcd_white);
-      skin->lcd_black = bswap_32(skin->lcd_black);
+		skin_infos.colortype = bswap_32(skin_infos.colortype);
+		skin_infos.lcd_white = bswap_32(skin_infos.lcd_white);
+		skin_infos.lcd_black = bswap_32(skin_infos.lcd_black);
       
-      skin->lcd_pos.top = bswap_32(skin->lcd_pos.top);
-      skin->lcd_pos.left = bswap_32(skin->lcd_pos.left);
-      skin->lcd_pos.bottom = bswap_32(skin->lcd_pos.bottom);
-      skin->lcd_pos.right = bswap_32(skin->lcd_pos.right);
+		skin_infos.lcd_pos.top = bswap_32(skin_infos.lcd_pos.top);
+		skin_infos.lcd_pos.left = bswap_32(skin_infos.lcd_pos.left);
+		skin_infos.lcd_pos.bottom = bswap_32(skin_infos.lcd_pos.bottom);
+		skin_infos.lcd_pos.right = bswap_32(skin_infos.lcd_pos.right);
 
-      for (i = 0; i < 80; i++)
-	{
-	  skin->keys_pos[i].top = bswap_32(skin->keys_pos[i].top);
-	  skin->keys_pos[i].bottom = bswap_32(skin->keys_pos[i].bottom);
-	  skin->keys_pos[i].left = bswap_32(skin->keys_pos[i].left);
-	  skin->keys_pos[i].right = bswap_32(skin->keys_pos[i].right);
+		for (i = 0; i < length; i++)
+		{
+			skin_infos.keys_pos[i].top = bswap_32(skin_infos.keys_pos[i].top);
+			skin_infos.keys_pos[i].bottom = bswap_32(skin_infos.keys_pos[i].bottom);
+			skin_infos.keys_pos[i].left = bswap_32(skin_infos.keys_pos[i].left);
+			skin_infos.keys_pos[i].right = bswap_32(skin_infos.keys_pos[i].right);
+		}
 	}
-    }
-
-  skin->type = SKIN_TYPE_TIEMU;
-
-  fseek(fp, jpeg_offset, SEEK_SET);
-  
-  return load_jpeg(fp, skin);
+    	
+    	fclose(fp);
+  	
+    	return 0;
 }
 
+static int skin_read_image(const char *filename, SKIN_INFOS* infos)
+{
+	FILE *fp = NULL;
+  	uint32_t endian;
+  	uint32_t jpeg_offset;
+  	uint32_t length;
+  	struct jpeg_decompress_struct cinfo;
+   	struct jpeg_error_mgr jerr;
+	int i, j;
+	char *p;
+  
+    	fp = fopen(filename, "rb");
+  	if (fp == NULL)
+    	{
+      		printf("Unable to open this file: <%s>\n", filename);
+      		return -1;
+    	}
+    	
+    	/* offsets */
+  	fseek(fp, 16, SEEK_SET);  
+  	fread(&endian, 4, 1, fp);
+  	fread(&jpeg_offset, 4, 1, fp);
+	if (endian != ENDIANNESS_FLAG)
+		jpeg_offset = bswap_32(jpeg_offset);
+	fseek(fp, jpeg_offset, SEEK_SET);
+  	
+  	// Init JPEG
+    	cinfo.err = jpeg_std_error(&jerr);
+    	jpeg_create_decompress(&cinfo);
 
-/***********/
-/* Exports */
-/***********/
+	jpeg_file_src(&cinfo, fp);		//jpeg_stdio_src(&cinfo, fp);
+    	jpeg_read_header(&cinfo, TRUE);
 
+    	// Rescale image to half if necessary
+    	if ((cinfo.image_width > 600) || (cinfo.image_height > 600)) {
+		cinfo.scale_num = 1;
+		cinfo.scale_denom = 2;
+    	}
+    
+    	// Require a colormapped output with a limited number of colors
+    	cinfo.quantize_colors = TRUE;
+    	cinfo.desired_number_of_colors = MAX_COLORS;
+
+    	// Load JPEG image
+    	jpeg_start_decompress(&cinfo);
+    	skin_infos.ncolors = cinfo.actual_number_of_colors;
+
+    	// Copy the color palette
+    	for (j = 0; j < cinfo.actual_number_of_colors; j++) {
+			skin_infos.cmap[0][j] = cinfo.colormap[0][j];
+			skin_infos.cmap[1][j] = cinfo.colormap[1][j];
+			skin_infos.cmap[2][j] = cinfo.colormap[2][j];
+    	}
+
+    	if (cinfo.output_components != 1)	// 1: palettized 
+		return -1;
+
+    	// Get skin size
+    	skin_infos.width = cinfo.output_width + (cinfo.output_width & 3);
+    	skin_infos.height = cinfo.output_height + (cinfo.output_height & 3);
+
+    	// Allocate image
+    	skin_infos.img = p = (unsigned char *) malloc(skin_infos.width * skin_infos.height);
+    	if (skin_infos.img == NULL)
+		return -1;
+
+    	// Load jpeg image line by line //c += xx*yy;
+    	while (cinfo.output_scanline < cinfo.output_height) {
+		p += skin_infos.width;
+		jpeg_read_scanlines(&cinfo, &p, 1);
+    	}
+
+    	// Close JPEG
+    	jpeg_finish_decompress(&cinfo);
+    	jpeg_destroy_decompress(&cinfo);
+    	
+    	/* Close file */
+    	fclose(fp);
+    	
+    	return 0;
+}
 
 /* Unload skin by freeing allocated memory */
 int skin_unload(void)
 {
-  if (skin_loaded == FALSE)
-    return -1;
-  else
-    skin_loaded = FALSE;
+  	if (skin_loaded == FALSE)
+    		return -1;
+  	else
+    		skin_loaded = FALSE;
   
-  free(skin.img);
-  free(skin.name);
-  free(skin.author);
+  	free(skin_infos.img);
+  	free(skin_infos.name);
+  	free(skin_infos.author);
 
-  memset(&skin, 0, sizeof(skinInfos));
+  	memset(&skin_infos, 0, sizeof(SKIN_INFOS));
   
-  return 0;
+  	return 0;
 }
 
 /* Load a skin (automatically detects the format and version) */
 int skin_load(const char *filename)
 {
-  FILE *fp = NULL;
-  char buf[17];
-  int ret = 0;
+	FILE *fp = NULL;
+  	char buf[17];
+  	int ret = 0;
 
-  fp = fopen(filename, "rb");
-  if (fp == NULL)
-    {
-      DISPLAY("Unable to open this file: <%s>\n", filename);
-      return -1;
-    }
+  	fp = fopen(filename, "rb");
+  	if (fp == NULL)
+    	{
+      		printf("Unable to open this file: <%s>\n", filename);
+      		return -1;
+    	}
 
-  /*
-   * Determine the type of skin being loaded
-   */
+  	fread(buf, 16, 1, fp);
+  	if (strncmp(buf, "TiEmu v2.00", 16))
+  	{
+  		printf("Bad skin format\n");
+      		return -1;
+  	}
 
-  fread(buf, 16, 1, fp);
+	fclose(fp);
+  	
+  	ret = skin_read_header(filename, &skin_infos);
+  	ret = skin_read_image(filename, &skin_infos);
+
+  	if (ret == 0)
+    	{
+      		printf("Skin loaded (%s): %d x %d, %s\n", filename, skin_infos.width, skin_infos.height, buf);
+    	}
   
-  if (buf[0] == 'V') /* VTi skin, string is only 8 bytes long */
-    buf[7] = 0;
-
-  if (strncmp(buf, "VTIv2.1", 7) == 0)
-    ret = load_skin_old_vti(fp, &skin);
-  else if (strncmp(buf, "VTIv2.5", 7) == 0)
-    ret = load_skin_vti(fp, &skin);
-  else
-    ret = load_skin_tiemu(fp, &skin);
-
-  ret = load_jpeg(fp, &skin);
-
-  fclose(fp);
-
-  if (ret == 0)
-    {
-      DISPLAY("Skin loaded (%s): %d x %d, %s\n",
-	      filename, skin.width, skin.height, buf);
-    }
-  
-  return ret;
+  	return ret;
 }
 
 
-/* Read the header embedded in skin */
-int skin_read_header(const char *filename, skinInfos* infos)
-{
-  FILE *fp = NULL;
-  char buf[17];
-  int ret = 0;
 
-  fp = fopen(filename, "rb");
-  if (fp == NULL)
-    {
-      DISPLAY("Unable to open this file: <%s>\n", filename);
-      return -1;
-    }
-
-  /*
-   * Determine the type of skin being loaded
-   */
-
-  fread(buf, 16, 1, fp);
-  
-  if (buf[0] == 'V') /* VTi skin, string is only 8 bytes long */
-    buf[7] = 0;
-
-  if (strncmp(buf, "VTIv2.1", 7) == 0)
-    ret = load_skin_old_vti(fp, infos);
-  else if (strncmp(buf, "VTIv2.5", 7) == 0)
-    ret = load_skin_vti(fp, infos);
-  else
-    ret = load_skin_tiemu(fp, infos);
-
-  fclose(fp);
-
-  return 0;
-}

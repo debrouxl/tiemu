@@ -26,12 +26,12 @@
 /* Some definitions */
 
 #if defined(__WIN32__)
-# define TIEMU_VERSION "Version 1.60" // For Win32
+# define TIEMU_VERSION "Version 1.69" // For Win32
 #else
 # define TIEMU_VERSION VERSION
 #endif
-#define LIB_CABLE_VERSION_REQUIRED "3.0.0"
-#define LIB_CALC_VERSION_REQUIRED "3.0.0"
+#define LIB_CABLE_VERSION_REQUIRED "3.8.4"
+#define LIB_CALC_VERSION_REQUIRED "4.5.3"
 
 #endif
 

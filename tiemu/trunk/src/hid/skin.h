@@ -29,15 +29,43 @@
 #include <config.h>
 #endif
 
-#ifndef __WIN32__
-# include <stdint.h>
-#else
-# include <windows.h>
-typedef DWORD uint32_t;
-#endif
+#include <stdint.h>
 
-#include "./defs.h"
 
+/***************/
+/* Definitions */
+/***************/
+
+#define LCD_COLORTYPE_LOW    0
+#define LCD_COLORTYPE_HIGH   1
+#define LCD_COLORTYPE_CUSTOM 2
+
+#define LCD_HI_WHITE 0xb0ccae
+#define LCD_HI_BLACK 0x8a6f53
+
+#define LCD_LOW_WHITE 0xcfe0cc
+#define LCD_LOW_BLACK 0x222e31
+
+#define MAX_COLORS (256 - 16)		// we need to keep 16 colors for grayscales
+#define SKIN_KEYS  80
+
+#define SKIN_TI73  "TI-73"
+#define SKIN_TI82  "TI-82"
+#define SKIN_TI83  "TI-83"
+#define SKIN_TI83P "TI-83+"
+#define SKIN_TI85  "TI-85"
+#define SKIN_TI86  "TI-86"
+#define SKIN_TI89  "TI-89"
+#define SKIN_TI92  "TI-92"
+#define SKIN_TI92P "TI-92+"
+
+#define SKIN_TYPE_TIEMU   10
+#define SKIN_TYPE_VTI     2
+#define SKIN_TYPE_OLD_VTI 1
+#define SKIN_TYPE_NEW     0
+
+#define ENDIANNESS_FLAG 0xfeedbabe
+#define TIEMU_SKIN_ID "TiEmu v2.00"
 
 /*********/
 /* Types */
@@ -53,9 +81,6 @@ typedef struct
 } RECT;
 #endif
 
-#define MAX_COLORS 128		// we need to keep 16 colors for grayscales
-#define SKIN_KEYS  80
-
 typedef struct
 {
   int type;
@@ -67,7 +92,7 @@ typedef struct
   unsigned int width;
   unsigned int height;
 
-  unsigned char calc[8];
+  unsigned char calc[9];
   uint32_t colortype;
 
   uint32_t lcd_black;
@@ -79,10 +104,10 @@ typedef struct
   RECT lcd_pos;
   RECT keys_pos[SKIN_KEYS];
 
-} skinInfos;
+} SKIN_INFOS;
 
 
-extern skinInfos skin;
+extern SKIN_INFOS skin_infos;
 
 /*************/
 /* Functions */
@@ -91,7 +116,8 @@ extern skinInfos skin;
 int skin_load(const char *filename);
 int skin_unload(void);
 
-int skin_read_header(const char*filename, skinInfos* infos);
+int skin_read_header(const char* filename, SKIN_INFOS* infos);
+int skin_read_imager(const char* filename, SKIN_INFOS* infos);
 
 
 #endif

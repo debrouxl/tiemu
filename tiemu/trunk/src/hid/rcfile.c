@@ -40,7 +40,7 @@
 #include "files.h"
 #include "ticalc.h"
 #include "interface.h"
-#include "screenshot.h"
+//#include "screenshot.h"
 
 static char *rc_file; 
 

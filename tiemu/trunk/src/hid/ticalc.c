@@ -29,7 +29,6 @@
 #include <string.h>
 
 /* Program dependencies */
-//#include "platform.h"
 #include "support.h"
 #include "ticalc.h"
 #include "skin.h"
