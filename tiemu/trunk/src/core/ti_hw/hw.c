@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: main.c 245 2004-05-23 20:45:43Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -36,7 +36,6 @@
 #include "ports.h"
 #include "dbus.h"
 #include "kbd.h"
-#include "timer.h"
 #include "lcd.h"
 #include "m68k.h"
 #include "images.h"
@@ -89,7 +88,6 @@ int hw_init(void)
 	TRY(hw_io_init());
 	TRY(hw_dbus_init());
 	TRY(hw_kbd_init());
-	TRY(hw_timer_init());
 	TRY(hw_lcd_init());
 	TRY(hw_m68k_init());
 
@@ -109,7 +107,6 @@ int hw_reset(void)
 	TRY(hw_mem_reset());
 	TRY(hw_io_reset());
 	TRY(hw_kbd_reset());
-	TRY(hw_timer_reset());
 	TRY(hw_lcd_reset());
 	TRY(hw_dbus_reset());
 	TRY(hw_m68k_reset());
@@ -122,7 +119,6 @@ int hw_exit(void)
 	TRY(hw_m68k_exit());
 	TRY(hw_dbus_exit());
 	TRY(hw_lcd_exit());
-	TRY(hw_timer_exit());
 	TRY(hw_kbd_exit());
 	TRY(hw_io_exit());
 	TRY(hw_mem_exit());
@@ -207,7 +203,7 @@ void hw_update(void)
 	// The default rate is OSC2/(K*2^9), where K=79 for HW1 and K=53 for HW2
     if(tihw.timer_value == 0)
     {
-        tihw.timer_value = tihw.timer_init;
+        tihw.timer_value = tihw.io[0x17];
 		if(!io_bit_tst(0x15,7))
 			hw_m68k_irq(5);
     }
