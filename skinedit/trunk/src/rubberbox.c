@@ -180,8 +180,6 @@ draw_rubberbox(GtkWidget *drawing_area, GdkRect rect)
   GdkRect c;
   GdkRect oc;
   GdkRect update_rect;
-  int x, y;
-  guchar r, g, b;
   
   c = rect;
   oc = old_rect;
@@ -240,6 +238,7 @@ erase_rubberbox(GtkWidget *drawing_area)
 }
 
 /* Taken from pixbuf doc */
+#ifndef FAST_DRAW
 static void
 put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue)
 {
@@ -297,6 +296,7 @@ get_pixel (GdkPixbuf *pixbuf, int x, int y, guchar *red, guchar *green, guchar *
   *green = p[1];
   *blue  = p[2];
 }
+#endif
 
 static void
 draw_hline(int x, int y, int w)
