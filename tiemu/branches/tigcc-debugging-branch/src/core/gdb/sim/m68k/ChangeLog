@@ -1,0 +1,46 @@
+2005-03-25  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+      * interp.c: Include gdb/callback.h and  gdb/remote-sim.h instead of callback.h and remote-sim.h.
+        (sim_open, sim_create_inferior): Use struct bfd, not struct _bfd.
+        (call_calltrap): Add missing REGPARAM.
+      * gencpu.c (generate_one_opcode): Use REGPARAM, not REGPARAM2.
+      * memory.c (dummy_*, chipmem_*, default_*): Likewise.
+      * newcpu.c (op_illg_1, op_illg): Likewise.
+
+2001-02-27  Will Cohen  <wcohen@redhat.com>
+
+      * ChangeLog: New file.
+      * README: New file.
+      * Makefile.in: New file.
+      * compiler.h: New file.
+      * config.h: New file.
+      * config.in: New file.
+      * configure: New file.
+      * gencpu.c: New file.
+      * missing.c: New file.
+      * custom.h: New file.
+      * fpp.c: New file.
+      * include/autoconf.h: New file.
+      * include/debug.h: New file.
+      * include/ersatz.h: New file.
+      * include/memory.h: New file.
+      * include/options.h: New file.
+      * include/readcpu.h: New file.
+      * include/sysdeps.h: New file.
+      * include/uae.h: New file.
+      * include/uaeexe.h: New file.
+      * include/zfile.h: New file.
+      * interp.c: New file.
+      * machdep/m68k.h: New file.
+      * machdep/maccess.h: New file.
+      * machdep/rpt.h: New file.
+      * md-fpp.h: New file.
+      * memory.c: New file.
+      * newcpu.c: New file.
+      * newcpu.h: New file.
+      * readcpu.c: New file.
+      * support.c: New file.
+      * sysconfig.h: New file.
+      * table68k: New file.
+      * target.h: New file.
+      * build68k.c: New file.

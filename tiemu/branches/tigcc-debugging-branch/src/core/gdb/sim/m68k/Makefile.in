@@ -1,0 +1,68 @@
+#    Makefile template for Configure for the m68k sim library.
+#    Copyright (C) 2001 Free Software Foundation, Inc.
+#    Written by Cygnus Support.
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+## COMMON_PRE_CONFIG_FRAG
+
+SIM_OBJS = interp.o sim-load.o cpuemu.o memory.o newcpu.o cpustbl.o fpp.o support.o \
+      readcpu.o cpudefs.o
+SIM_EXTRA_LIBS = -lm
+SIM_EXTRA_CLEAN = m68k-clean
+# NOTE -DREGPARAM define is a hack.
+SIM_EXTRA_CFLAGS = -DHAVE_ENDIAN_H=1 -I$(srcdir)/include -DREGPARAM="__attribute__((regparm(3)))" \
+      -DNO_INLINE_MEMORY_ACCESS -DSIM_HAVE_ENVIRONMENT -DSIM_M68K -MMD
+
+# Flags to use when cross-building m68k sim.
+# Prefix to apply to names of object files when using them
+# to run on the machine we are compiling on.
+HOST_PREFIX=
+# Prefix to apply to names of object files when compiling them
+# to run on the machine we are compiling on.
+# The default for this variable is chosen to keep these rules
+# out of the way of the other rules for compiling the same source files.
+HOST_PREFIX_1=loser-
+HOST_CC=$(CC)
+HOST_CFLAGS=$(ALL_CFLAGS) -DGENERATOR_FILE
+HOST_CLIB=$(CLIB)
+HOST_LDFLAGS=$(LDFLAGS)
+HOST_CPPFLAGS=$(ALL_CPPFLAGS)
+HOST_ALLOCA=$(ALLOCA)
+HOST_MALLOC=$(MALLOC)
+HOST_OBSTACK=$(OBSTACK)
+HOST_VFPRINTF=$(VFPRINTF)
+HOST_DOPRINT=$(DOPRINT)
+
+
+## COMMON_POST_CONFIG_FRAG
+
+gencpu: gencpu.o readcpu.o cpudefs.o missing.o
+	$(HOST_CC) $(HOST_LDFLAGS) -o gencpu gencpu.o readcpu.o \
+	              missing.o cpudefs.o
+
+build68k: build68k.o
+	$(HOST_CC) $(HOST_LDFLAGS) -o build68k build68k.o
+
+
+cpudefs.c: build68k $(srcdir)/table68k
+	./build68k <$(srcdir)/table68k >cpudefs.c
+
+cpuemu.c cpustbl.c cputbl.h: gencpu
+	./gencpu
+
+m68k-clean:
+	-rm -f build68k cpudefs.c 
+	-rm -f gencpu cpuemu.c cpustbl.c cputbl.h
