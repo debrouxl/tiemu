@@ -26,6 +26,7 @@
     TI's ASIC management: glue logic for screen, keyboard, linkport, timers.
 */
 
+
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -38,7 +39,7 @@
 #include "callbacks.h"
 #include "ti68k_def.h"
 
-int cycle_instr = 640;
+int cycle_instr = 625;
 int cycle_count = 0;
 
 /*
@@ -46,8 +47,47 @@ int cycle_count = 0;
 	A ROM image must have been loaded before calling this function.
 */
 
+#include <glib.h>
+#include <sys/timeb.h>
+#include <sys/types.h>
+
+void hw_update(void);
+
+gpointer hw_engine(gpointer data)
+{
+	struct timeb tCurrentTime;
+	struct timeb tLastTime;
+	unsigned long int iCurrentTime;
+	unsigned long int iLastTime; 
+	gint res = 0;
+	int i;
+
+	while (1) 
+	{
+		g_thread_yield ();
+		
+		ftime(&tLastTime);
+      
+		for(i=0; i<164; i++)	// 16384Hz
+			hw_update();
+
+		// normal execution
+		ftime(&tCurrentTime);
+			
+		iLastTime    = 1000 * tLastTime.time + tLastTime.millitm;
+		iCurrentTime = 1000 * tCurrentTime.time + tCurrentTime.millitm;
+			
+		if((iCurrentTime - iLastTime) < 10)
+		    Sleep((10 - (iCurrentTime - iLastTime)));
+	}
+}
+
+
 int hw_init(void)
 {
+	GThread *thread = NULL;
+	GError *error = NULL;
+
 	hw_mem_init();
 	hw_dbus_init();
 	hw_kbd_init();
@@ -55,6 +95,8 @@ int hw_init(void)
 	hw_lcd_init();
 	hw_io_init();
 	hw_m68k_init();
+
+	thread = g_thread_create(hw_engine, NULL, FALSE, &error);
 }
 
 int hw_reset(void)
@@ -84,7 +126,7 @@ int hw_exit(void)
 // the LCD controller.
 // HW1: 680 kHz to 770 kHz
 // HW2: ~520 kHz (= 2^19 Hz !)
-void hw_update()
+void hw_update(void)
 {
 	/* Auto-int management */
 

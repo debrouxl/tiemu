@@ -50,7 +50,7 @@ static void INLINE do_cycles(void)
 {
     if(cycle_count++ >= cycle_instr) 
     {
-        hw_update();
+        //hw_update();
         cycle_count = 0;
     }
 }

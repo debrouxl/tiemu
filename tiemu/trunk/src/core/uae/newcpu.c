@@ -606,6 +606,7 @@ void MC68000_run(void)
 #ifdef PENT_COUNTER          
       readpec(l);
       (*cpufunctbl[opcode])(opcode);
+	  do_cycles();
       
       if(l - lastTime >= timeDiff) 
 	{
