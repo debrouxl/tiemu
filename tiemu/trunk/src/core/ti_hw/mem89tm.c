@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: main.c 245 2004-05-23 20:45:43Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -48,7 +48,7 @@
 // 400000-4fffff : image of 0x000000 (ghost), not emulated for compatibility
 // 500000-5fffff : 
 // 600000-6fffff : memory mapped I/O (all HW)
-// 700000-7fffff : memory mapped I/O (HW2, HW3)
+// 700000-7fffff : memory mapped I/O (HW2, HW3), non ghost'ed
 // 800000-8fffff : ROM (TI89 Titanium)
 // 900000-9fffff : idem
 // a00000-afffff : idem
@@ -89,7 +89,7 @@ int ti89t_mem_init(void)
 	if(tihw.hw_type >= HW2)
 	{
 		mem_tab[7] = tihw.io2;
-		mem_msk[7] = tihw.io_size-1;
+		mem_msk[7] = 1*MB - 1;  // avoid ghost
 	}
 
     return 0;

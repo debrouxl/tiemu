@@ -185,6 +185,13 @@ deux breakpoints provoque l'apparition d'un doublon si on laisse
 'either' coché.
 Mais bon ça reste utilisable.
 
+* Les ports à $710000 sont tous reservés à la HW3 pour l'instant, et ne
+sont pas des reflets des ports $700000. Ils correspondent aux ports de
+l'USB et de la clock HW. TiEmu doit ignorer toutes les écritures vers
+ces ports tant qu'on a pas réunis d'infos préçises dessus (pour la
+clock une implémentation serait éventuellement possible avec ma doc,
+pour l'USB les recherches sont en cours mais pas pour tout de suite).
+
 ---
 
 * Un bug non reproduit : l'ouverture du débugger faisait défiler très
@@ -281,6 +288,12 @@ est à l'envers! Sur TI-92+ HW2, il va dans le bon sens, mais il devient
 d'abord tout noir et ensuite repart du blanc, il faudrait faire attention au
 fait que les HW2 ont plus de bits pour le contraste que les HW1. Sur TI-92,
 tout marche.
+
++ Les nombres de niveaux de gris interessants sont 2, 4, 7 et 8:
+* 2: plane0 (1/1)
+* 4: plane0, plane0, plane1 (2/3, 1/3)
+* 7: plane2, plane0, plane1, plane0, plane1, plane0 (3/6, 2/6, 1/6)
+* 8: plane1, plane0, plane2, plane0, plane0, plane1, plane0 (4/7, 2/7, 1/7)
 
 
 Lionel
