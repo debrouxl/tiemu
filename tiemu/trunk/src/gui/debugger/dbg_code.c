@@ -28,6 +28,7 @@
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "intl.h"
 #include "paths.h"
@@ -487,6 +488,32 @@ on_treeview1_button_press_event        (GtkWidget       *widget,
     return FALSE;
 }
 
+// used to implement accelerator keys
+GLADE_CB void
+on_go_to_address1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+GLADE_CB gboolean
+on_treeview1_key_press_event           (GtkWidget       *widget,
+                                        GdkEventKey     *event,
+                                        gpointer         user_data)
+{
+	switch(event->keyval) 
+	{
+	case GDK_F2:
+		// already managed by toolbar button
+		return FALSE;
+	case GDK_G:
+	case GDK_g:
+		on_go_to_address1_activate(NULL, user_data);
+		return TRUE;
+	default:
+		return FALSE;
+	}
+
+	return FALSE;
+}
+
 // note: user_data data passing ha been manually added to Glade file
 GLADE_CB void
 on_go_to_address1_activate             (GtkMenuItem     *menuitem,
@@ -494,7 +521,8 @@ on_go_to_address1_activate             (GtkMenuItem     *menuitem,
 {
     uint32_t addr;
 
-    display_dbgmem_dbox(&addr);
+    if(display_dbgmem_dbox(&addr) == -1)
+		return;
     gtk_list_store_clear(store);
     clist_populate(store, addr);
 }

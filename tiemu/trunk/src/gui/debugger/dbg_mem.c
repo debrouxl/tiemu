@@ -328,6 +328,7 @@ gint display_dbgmem_dbox(uint32_t *addr)
 	GtkWidget *entry;
 	gint result;
 	gchar *str;
+	gint ret = -1;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_dbox", PACKAGE);
@@ -346,13 +347,14 @@ gint display_dbgmem_dbox(uint32_t *addr)
 	case GTK_RESPONSE_OK:
 		str = g_strdup(gtk_entry_get_text(GTK_ENTRY(entry)));
 		sscanf(str, "%x", addr);
+		ret = 0;
 		break;
 	default:
 		break;
 	}
 
 	gtk_widget_destroy(dbox);
-	return 0;
+	return ret;
 }
 
 static gint already_open = 0;

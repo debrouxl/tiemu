@@ -67,10 +67,10 @@ int enter_gtk_debugger(int context)
 
     // refresh debugger windows (open debugger, if not already opened)
 	dbgw.regs = display_dbgregs_window();
-	dbgw.code = display_dbgcode_window();
 	dbgw.mem  = display_dbgmem_window();
 	dbgw.bkpts = display_dbgbkpts_window();
     dbgw.pclog = display_dbgpclog_window();
+	dbgw.code = display_dbgcode_window();	// the last has focus
 
 	return 0;
 }

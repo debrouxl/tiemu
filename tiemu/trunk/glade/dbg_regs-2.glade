@@ -5,6 +5,7 @@
 
 <widget class="GtkWindow" id="dbgregs_window">
   <property name="tooltip" translatable="yes">Show registers</property>
+  <property name="can_focus">True</property>
   <property name="title" translatable="yes">Registers</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
