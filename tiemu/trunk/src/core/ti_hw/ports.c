@@ -432,7 +432,7 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 			break;
 		case 0x17:	// rw <......10>
 			// Display memory snoop range
-			tihw.lcd_ptr = &tihw.ram[0x4c000 + 0x1000*(arg&3)];
+			tihw.lcd_ptr = &tihw.ram[0x4c00 + 0x1000*(arg&3)];
 		break;
 		case 0x1d:	// rw <7...3210>
 			// %1: Screen enable (clear this bit to shut down LCD)
