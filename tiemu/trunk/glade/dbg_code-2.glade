@@ -316,7 +316,7 @@
 	      <property name="label">gtk-yes</property>
 	      <property name="use_stock">True</property>
 	      <signal name="clicked" handler="on_run1_activate" object="treeview1" last_modification_time="Sun, 13 Jun 2004 08:47:18 GMT"/>
-	      <accelerator key="F5" modifiers="0" signal="clicked"/>
+
 	    </widget>
 	  </child>
 
@@ -327,7 +327,7 @@
 	      <property name="label">gtk-jump-to</property>
 	      <property name="use_stock">True</property>
 	      <signal name="clicked" handler="on_step1_activate" object="treeview1" last_modification_time="Sun, 13 Jun 2004 08:53:08 GMT"/>
-	      <accelerator key="F7" modifiers="0" signal="clicked"/>
+
 	    </widget>
 	  </child>
 
@@ -338,7 +338,7 @@
 	      <property name="label">gtk-redo</property>
 	      <property name="use_stock">True</property>
 	      <signal name="clicked" handler="on_step_over1_activate" object="treeview1" last_modification_time="Sun, 13 Jun 2004 08:47:52 GMT"/>
-	      <accelerator key="F8" modifiers="0" signal="clicked"/>
+	      
 	    </widget>
 	  </child>
 
@@ -359,7 +359,7 @@
 	      <property name="label">gtk-goto-last</property>
 	      <property name="use_stock">True</property>
 	      <signal name="clicked" handler="on_run_to_cursor1_activate" object="treeview1" last_modification_time="Sun, 13 Jun 2004 08:48:09 GMT"/>
-	      <accelerator key="F4" modifiers="0" signal="clicked"/>
+
 	    </widget>
 	  </child>
 
@@ -370,7 +370,7 @@
 	      <property name="label">gtk-no</property>
 	      <property name="use_stock">True</property>
 	      <signal name="clicked" handler="on_break1_activate" object="treeview1" last_modification_time="Sun, 13 Jun 2004 08:48:22 GMT"/>
-	      <accelerator key="F11" modifiers="0" signal="clicked"/>
+
 	    </widget>
 	  </child>
 
@@ -381,7 +381,7 @@
 	      <property name="label">gtk-stop</property>
 	      <property name="use_stock">True</property>
 	      <signal name="clicked" handler="dbgcode_button6_clicked" object="treeview1" last_modification_time="Fri, 04 Jun 2004 06:00:10 GMT"/>
-	      <accelerator key="F2" modifiers="0" signal="clicked"/>
+
 	    </widget>
 	  </child>
 	</widget>

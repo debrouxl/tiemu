@@ -318,7 +318,7 @@ GtkWidget* dbgcode_create_window(void)
 	if (!xml)
 		g_error(_("%s: GUI loading failed !\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
-	
+
 	dbox = glade_xml_get_widget(xml, "dbgcode_window");
 
     data = glade_xml_get_widget(xml, "windows1_menu");
@@ -662,6 +662,9 @@ on_go_to_address1_activate             (GtkMenuItem     *menuitem,
 GLADE_CB void
 on_set_tmp_bkpt1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+GLADE_CB void
+on_set_breakpoint1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
 
 GLADE_CB gboolean
 on_treeview1_key_press_event           (GtkWidget       *widget,
@@ -706,7 +709,7 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
 	switch(event->keyval) 
 	{
 	case GDK_F2:
-		// already managed by toolbar button
+		on_set_breakpoint1_activate(NULL, NULL);
 		return FALSE;
 	case GDK_F3:
 		on_set_tmp_bkpt1_activate(NULL, NULL);

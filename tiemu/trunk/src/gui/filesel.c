@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: main.c 197 2004-05-15 11:40:44Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -87,8 +87,9 @@ const gchar *create_fsel(gchar *dirname, gchar *ext)
 
 const gchar *create_fsel2(gchar *dirname, gchar *ext, gboolean save)
 {
+#if 1
 	return create_fsel(dirname, ext);
-	/*
+#else
 	GtkWidget *dialog;
 	GtkFileFilter *filter;
     
@@ -112,7 +113,7 @@ const gchar *create_fsel2(gchar *dirname, gchar *ext, gboolean save)
 	gtk_widget_destroy (dialog);
 
 	return filename;
-	*/
+#endif
 }
 
 
