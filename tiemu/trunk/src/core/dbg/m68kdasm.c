@@ -31,16 +31,20 @@ static int pc;
 
 static char tmpStr[64];
 
+static int rcid;
+
 int IsROMAddr(int addr)
 {
-	return romcalls_is_address(addr) == -1 ? 0 : 1;
+	rcid = romcalls_is_addr(addr);
+	return rcid == -1 ? 0 : 1;
 }
 
 char *ROMAddrName(int addr)
 {
 	const char *s;
 
-	s = romcalls_get_addr_name(addr);
+	//s = romcalls_get_name_from_addr(addr);
+	s = romcalls_get_name(rcid);
 
 	if(s != NULL)
 		sprintf(tmpStr,"tios::%s", s);

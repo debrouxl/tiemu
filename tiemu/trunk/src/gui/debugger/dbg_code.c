@@ -314,8 +314,7 @@ GtkWidget* dbgcode_create_window(void)
 	GtkWidget *dbox;
     GtkWidget *data;
 	GList *items = NULL;
-	gint i;
-	ROM_CALL *lst;
+	GList *lst, *ptr;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_code-2.glade"), "dbgcode_window",
@@ -355,27 +354,25 @@ GtkWidget* dbgcode_create_window(void)
 
 	data = glade_xml_get_widget(xml, "combo1");
 	items = g_list_append (items, "");
-	if (romcalls_is_loaded()) {
-		lst = romcalls_sort_by_name();
-		for(i = 0; i < romcalls_get_size(); i++)
-		{
-			uint32_t addr;
-			const gchar *name;
-			gchar *str;
-			int id;
 
-			addr = lst[i].addr;	//romcalls_get_addr(i);
-			name = lst[i].name;	//romcalls_get_name(i);
-			id = lst[i].id;
+	lst = romcalls_sort_by_id();
+	if(lst != NULL)
+	{
+		for(ptr = lst; ptr != NULL; ptr = g_list_next(ptr))
+		{
+			uint32_t addr = ROMCALL_ADDR(ptr);
+			const gchar *name = ROMCALL_NAME(ptr);
+			int id = ROMCALL_ID(ptr);
+			gchar *str;
 
 			if(!strcmp(name, "unknown") || (name == NULL))
 				continue;
 
 			str = g_strdup_printf("%s [$%x] - #%03x", name, addr, id);
+			printf("<%s>\n", str);
 			items = g_list_append (items, str);
 		}
 		gtk_combo_set_popdown_strings (GTK_COMBO (data), items);
-		g_free(lst);
 	}
 
 	gtk_window_resize(GTK_WINDOW(dbox), options3.code.w, options3.code.h);

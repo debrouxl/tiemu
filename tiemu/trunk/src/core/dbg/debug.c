@@ -199,10 +199,7 @@ int ti68k_debug_load_symbols(const char *filename)
 	if(!strcmp(filename, ""))
 		return 0;
 
-	//if(!romcalls_is_loaded())
-		return romcalls_load_from_file(filename);
-
-	return 0;
+	return romcalls_preload(filename);
 }
 
 /* -- */

@@ -34,17 +34,25 @@
 #include "images.h"
 #include "ti68k_def.h"
 
-static ROM_CALL list[NMAX_ROMCALLS] = { 0 };
-static int		list_size = 0;
-static int		loaded;
-
 static int old_ct = -1;		// previous calc type for reloading
+static int loaded = 0;		// loaded
+
+static ROM_CALL table[NMAX_ROMCALLS];	// list by id
+static GList	*list = NULL;			// sorted list (by id, addr or name)
+
+
+/* =========== */
 
 /*
 	Retrieve base address of ROM calls table and size.
 */
 void romcalls_get_table_infos(uint32_t *base, uint32_t *size)
 {
+	*base = *size = 0;
+
+	if(tihw.calc_type == TI92)
+		return;
+
 	*base = rd_long(&tihw.rom[0x12000 + 0x88 + 0xC8]);
 	*size = rd_long(&tihw.rom[((*base-4) & 0x0fffff)]);
 }
@@ -60,10 +68,9 @@ void romcalls_get_symbol_address(int id, uint32_t *addr)
 	*addr = rd_long(&tihw.rom[(base & 0x0fffff) + 4*id]); 
 }
 
-/* 
-	Loading from file
-*/
+/* =========== */
 
+/* Load a list of ROM calls symbols (addr & id), TIGCC formatted. */
 static void load_tigcc_file_type(FILE *f)    // os.h TIGCC file: ".set acos, 0xF5"
 {
     char buf[256];
@@ -96,11 +103,12 @@ static void load_tigcc_file_type(FILE *f)    // os.h TIGCC file: ".set acos, 0xF
         }
 
 		// and store
-		list[number].name = name;
-		list[number].id = number;
+		table[number].name = name;
+		table[number].id = number;
     }
 }
 
+/* Load a list of ROM calls symbols (addr & id), tthdex formatted. */
 static void load_lionel_file_type(FILE *f)   // Lionel Debroux formatted file: 2E:ScrToHome
 {
     char str[256];
@@ -129,21 +137,93 @@ static void load_lionel_file_type(FILE *f)   // Lionel Debroux formatted file: 2
 
         // get values and store
         sscanf(array[0], "%x", &number);
-		list[number].name = strdup(array[1]);
-		list[number].id = number;
+		table[number].name = strdup(array[1]);
+		table[number].id = number;
 
         g_strfreev(array);
     }
 }
 
-int romcalls_load_from_file(const char* filename)
+/*
+	Load ROM calls (id & addr) from file. Don't touch addr field.
+*/
+static int load_from_file(const char *filename)
+{
+	FILE *f;
+	char tmp[32];
+
+	printf("Loading ROM calls from file <%s>... ", filename);
+    memset(table, 0, sizeof(table));
+
+    f = fopen(filename, "rt");
+    if(f == NULL) 
+	{
+		printf("Failed to open <%s> with error %s (%d)\n", 
+			       filename, strerror(errno), errno);
+        return -1;
+	}
+
+    fgets(tmp, sizeof(tmp), f);
+    fgets(tmp, sizeof(tmp), f);
+	rewind(f);
+
+    if(!strncmp(tmp, ".set", strlen(".set")))
+        load_tigcc_file_type(f);
+	else
+		load_lionel_file_type(f);
+
+    fclose(f);
+	printf("Done !\n");
+
+	return 0;
+}
+
+/*
+	Fill the addr field from ROM calls located in FLASH. Don't touch other fields !
+	And construct list from ROM call table.
+*/
+static int merge_from_flash(void)
+{
+	uint32_t addr;
+	int size;
+	int i;
+
+	if(list != NULL)
+	{
+		g_list_free(list);
+		list = NULL;
+	}
+
+	romcalls_get_table_infos(&addr, &size);
+	if(size == 0)
+		return 0;
+
+	printf("Parsing ROM calls from flash memory (%i entries at $%06x)... ", size, addr);
+
+	for(i = 0; i < size; i++)
+	{
+		if(table[i].name == NULL)
+			table[i].name = strdup("unknown");
+
+		table[i].addr = rd_long(&tihw.rom[(addr & 0x0fffff) + (i << 2)]); 
+
+		list = g_list_append (list, &table[i]);
+	}
+	
+	list = g_list_reverse(list);
+	printf("Done !\n");
+
+	return 0;
+}
+
+/*
+	Load ROM calls from file and FLASH and merge.
+*/
+int romcalls_preload(const char* filename)
 {
 	IMG_INFO *img = &img_infos;
-    FILE *f;
-	uint32_t addr;
-	int i;
-    char tmp[32];
 
+	// check for reloading
 	if(!img_loaded || (img->calc_type == TI92))
 		return -1;
 
@@ -152,81 +232,102 @@ int romcalls_load_from_file(const char* filename)
 	else
 		old_ct = img->calc_type;
 
-	printf("Loading symbols (ROM calls)... ");
-    memset(list, 0, sizeof(list));
-	list_size = 0;
-
-    f = fopen(filename, "rt");
-    if(f == NULL) {
-			printf("Failed to open <%s> with error %s (%d)\n", 
-			       filename, strerror(errno), errno);
-        return -1;
-		}
-
-    fgets(tmp, sizeof(tmp), f);
-    fgets(tmp, sizeof(tmp), f);
-    if(!strncmp(tmp, ".set", strlen(".set")))
-    {
-        rewind(f);
-        load_tigcc_file_type(f);
-    }
-    else
-    {
-        rewind(f);
-        load_lionel_file_type(f);
-    }
-
-    fclose(f);
-    loaded = !0;
-	printf("Done !\n");
-
-	// get function address
-	romcalls_get_table_infos(&addr, &list_size);
-	printf("ROM calls: parsing %i entries at $%06x... ", list_size, addr);
-
-	for(i = 0; i < list_size; i++)
-	{
-		if(list[i].name == NULL)
-			list[i].name = strdup("unknown");
-
-		list[i].addr = rd_long(&tihw.rom[(addr & 0x0fffff) + (i << 2)]); 
-	}
-
-	printf("Done !\n");
-
-    return 0;
-}
-
-int romcalls_unload(void)
-{
-    loaded = 0;
-
-    return 0;
-}
-
-int romcalls_is_loaded(void)
-{
-    return loaded;
-}
-
+	load_from_file(filename);
+	merge_from_flash();
+	loaded = !0;
 /*
-	Parsing of ROM call address from FLASH (list is supposed to be sorted by id !)
-*/
+	for(i = 0x500; i < 0x505; i++)
+	{
+		ROM_CALL *elt = (ROM_CALL *)g_list_nth_data(list, i);
 
-// cache last search
+		printf("%i: %i $%06x <%s>\n", i, elt->id, elt->addr, elt->name);
+	}
+*/
+    return 0;
+}
+
+/* =========== */
+
+// negative value if a < b; zero if a = b; positive value if a > b
+static gint compare_func_by_id(gconstpointer a, gconstpointer b)
+{
+	ROM_CALL *aa = (ROM_CALL *)a;
+	ROM_CALL *bb = (ROM_CALL *)b;
+
+	if(aa->id == bb->id)
+		return 0;
+	else if(aa->id > bb->id)
+		return 1;
+	else return -1;
+}
+
+GList* romcalls_sort_by_id(void)
+{
+	return g_list_sort(list, compare_func_by_id);
+}
+
+// negative value if a < b; zero if a = b; positive value if a > b
+static gint compare_func_by_addr(gconstpointer a, gconstpointer b)
+{
+	ROM_CALL *aa = (ROM_CALL *)a;
+	ROM_CALL *bb = (ROM_CALL *)b;
+
+	if(aa->addr == bb->addr)
+		return 0;
+	else if(aa->addr > bb->addr)
+		return 1;
+	else return -1;
+}
+
+GList* romcalls_sort_by_addr(void)
+{
+	return g_list_sort(list, compare_func_by_addr);
+}
+
+// negative value if a < b; zero if a = b; positive value if a > b
+static gint compare_func_by_name(gconstpointer a, gconstpointer b)
+{
+	ROM_CALL *aa = (ROM_CALL *)a;
+	ROM_CALL *bb = (ROM_CALL *)b;
+
+	return strcmp(aa->name, bb->name);
+}
+
+GList* romcalls_sort_by_name(void)
+{
+	return g_list_sort(list, compare_func_by_name);
+}
+
+// negative value if a < b; zero if a = b; positive value if a > b
+static gint compare_func_by_iname(gconstpointer a, gconstpointer b)
+{
+	ROM_CALL *aa = (ROM_CALL *)a;
+	ROM_CALL *bb = (ROM_CALL *)b;
+
+	return g_ascii_strcasecmp(aa->name, bb->name);
+}
+
+GList* romcalls_sort_by_iname(void)
+{
+	return g_list_sort(list, compare_func_by_name);
+}
+
+/* =========== */
+
+// cache last search (disasm)
 static int last_id = 0;	
 
 // returns id or -1
-int romcalls_is_address(uint32_t addr)
+int romcalls_is_addr(uint32_t addr)
 {
 	int i;
 
 	if(!loaded)	return -1;
 
-	for(i = 0; i < list_size; i++)
+	for(i = 0; i < (int)g_list_length(list); i++)
 	{
-		if(addr == list[i].addr)
-			return last_id = list[i].id;
+		if(addr == table[i].addr)
+			return last_id = i;
 	}
 
 	return -1;
@@ -239,119 +340,21 @@ int romcalls_is_name(const char *name)
 
 	if(!loaded)	return -1;
 
-	for(i = 0; i < list_size; i++)
+	for(i = 0; i < (int)g_list_length(list); i++)
 	{
-		if(!strcmp(name, list[i].name))
-			return list[i].id;
+		if(!strcmp(name, table[i].name))
+			return i;
 	}
 
 	return -1;
 }
 
-int romcalls_get_id(int i)
+const char* romcalls_get_name(int id)
 {
-	return list[i].id;
+	return table[id].name;
 }
 
-const char* romcalls_get_name(int i)
+uint32_t romcalls_get_addr(int id)
 {
-	return list[i].name;
-}
-
-uint32_t romcalls_get_addr(int i)
-{
-	return list[i].addr;
-}
-
-const char* romcalls_get_addr_name(uint32_t addr)
-{
-	int id;
-
-	if(!loaded)	return NULL;
-
-	if(addr == list[last_id].addr)
-		return list[last_id].name;
-
-	id = romcalls_is_address(addr);
-	if(id == -1)
-		return NULL;
-	else
-		return romcalls_get_name(id);
-	
-	return NULL;
-}
-
-/*
-	Sorting functions
-*/
-
-static ROM_CALL* duplicate_list(ROM_CALL *src)
-{
-	ROM_CALL *dst = g_memdup(src, list_size * sizeof(ROM_CALL));
-
-	return dst;
-}
-
-// negative value if a < b; zero if a = b; positive value if a > b
-static compare_func_by_id(gconstpointer a, gconstpointer b, gpointer user_data)
-{
-	ROM_CALL *aa = (ROM_CALL *)a;
-	ROM_CALL *bb = (ROM_CALL *)b;
-
-	if(aa->id == bb->id)
-		return 0;
-	else if(aa->id > bb->id)
-		return 1;
-	else return -1;
-}
-
-ROM_CALL *romcalls_sort_by_id(void)
-{
-	ROM_CALL *ret = duplicate_list(list);
-	g_qsort_with_data(ret, list_size, sizeof(ROM_CALL), compare_func_by_id, NULL);
-	
-	return ret;
-}
-
-// negative value if a < b; zero if a = b; positive value if a > b
-static compare_func_by_addr(gconstpointer a, gconstpointer b, gpointer user_data)
-{
-	ROM_CALL *aa = (ROM_CALL *)a;
-	ROM_CALL *bb = (ROM_CALL *)b;
-
-	if(aa->addr == bb->addr)
-		return 0;
-	else if(aa->addr > bb->addr)
-		return 1;
-	else return -1;
-}
-
-ROM_CALL *romcalls_sort_by_addr(void)
-{
-	ROM_CALL *ret = duplicate_list(list);
-	g_qsort_with_data(ret, list_size, sizeof(ROM_CALL), compare_func_by_addr, NULL);
-	
-	return ret;
-}
-
-// negative value if a < b; zero if a = b; positive value if a > b
-static compare_func_by_name(gconstpointer a, gconstpointer b, gpointer user_data)
-{
-	ROM_CALL *aa = (ROM_CALL *)a;
-	ROM_CALL *bb = (ROM_CALL *)b;
-
-	return strcmp(aa->name, bb->name);
-}
-
-ROM_CALL *romcalls_sort_by_name(void)
-{
-	ROM_CALL *ret = duplicate_list(list);
-	g_qsort_with_data(ret, list_size, sizeof(ROM_CALL), compare_func_by_name, NULL);
-	
-	return ret;
-}
-
-int romcalls_get_size(void)
-{
-	return list_size;
+	return table[id].addr;
 }

@@ -31,6 +31,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <glib.h>
 
 #include "romcalls.h"
 
@@ -47,25 +48,23 @@ typedef struct
 
 /* Functions */
 
-int romcalls_load_from_file(const char* filename);
-int romcalls_unload(void);
-int romcalls_is_loaded(void);
-
-int romcalls_is_address(uint32_t addr);
-int romcalls_is_name(const char *name);
-
-int romcalls_get_id(int i);
-const char* romcalls_get_name(int i);
-uint32_t romcalls_get_addr(int i);
-const char* romcalls_get_addr_name(uint32_t addr);
-
-ROM_CALL *romcalls_sort_by_id(void);
-ROM_CALL *romcalls_sort_by_addr(void);
-ROM_CALL *romcalls_sort_by_name(void);
-
-int romcalls_get_size(void);
-
 void romcalls_get_table_infos(uint32_t *base, uint32_t *size);
 void romcalls_get_symbol_address(int id, uint32_t *addr);
+int romcalls_preload(const char* filename);
+
+GList* romcalls_sort_by_id(void);
+GList* romcalls_sort_by_addr(void);
+GList* romcalls_sort_by_name(void);
+GList* romcalls_sort_by_iname(void);
+
+int romcalls_is_addr(uint32_t addr);
+int romcalls_is_name(const char *name);
+
+const char* romcalls_get_name(int id);
+uint32_t romcalls_get_addr(int id);
+
+#define ROMCALL_ID(elt)		(((ROM_CALL *)(elt->data))->id)
+#define ROMCALL_NAME(elt)	(((ROM_CALL *)(elt->data))->name)
+#define ROMCALL_ADDR(elt)	(((ROM_CALL *)(elt->data))->addr)
 
 #endif
