@@ -361,6 +361,7 @@ gint display_dbgmem_window(void)
 gint refresh_dbgmem_window(void)
 {
 	//clist_refresh(store);
+    return 0;
 }
 
 GLADE_CB void

@@ -106,107 +106,6 @@ int ti68k_string_to_hwtype(const char *str)
 	return 0;
 }
 
-const char *ti68k_bkpt_type_to_string(int type)
-{
-	switch(type)
-	{
-	case BK_CAUSE_ACCESS:	return "access";
-	case BK_CAUSE_RANGE:	return "access range";
-	case BK_CAUSE_ADDRESS:	return "address";
-	case BK_CAUSE_VECTOR:	return "vector";
-	case BK_CAUSE_TRAP:		return "trap";
-	case BK_CAUSE_AUTOINT:	return "auto-int";
-	default:				return "unknown (bug)";
-	}
-}
-
-const char *ti68k_bkpt_mode_to_string(int type, int mode)
-{
-	switch(type)
-	{
-	case BK_CAUSE_ACCESS:
-		switch(mode)
-		{
-		case BK_READ_BYTE: return "byte (read)";
-		case BK_READ_WORD: return "word (read)";
-		case BK_READ_LONG: return "long (read)";
-		case BK_WRITE_BYTE:return "byte (write)";
-		case BK_WRITE_WORD:return "word (write)";
-		case BK_WRITE_LONG:return "long (write)";
-		default: return "iunknwon (bug)";
-		}
-		break;
-	case BK_CAUSE_RANGE:
-		return "n/a";
-		break;
-	case BK_CAUSE_ADDRESS:
-		return "n/a";
-		break;
-	case BK_CAUSE_VECTOR:
-	/*
-		switch(mode)
-		{
-		case BK_BUS_ERROR:			return "bus error";
-		case BK_ADDRESS_ERROR:		return "address error";
-		case BK_ILLEGAL_INSTRUCTION:return "illegal instruction";
-		case BK_ZERO_DIVIDE:		return "division by zero";
-		case BK_CHK_INSTRUCTION:	return "CHK instruction";
-		case BK_TRAPV_INSTRUCTION:	return "TRAPV instruction";
-		case BK_PRIVILEGE_VIOLATION:return "privilege violation";
-		case BK_TRACE:				return "trace";
-		case BK_LINE_1010:			return "line 1010 emulator";
-		case BK_LINE_1111:			return "line 1111 emulator";
-		case BK_NONINIT_INTERRUPT:	return "non initialized interruption";
-		default:					return "unknown (bug).";
-		}
-		*/
-		break;
-	case BK_CAUSE_TRAP:
-	/*
-		switch(mode)
-        {
-        case BK_TRAP_0: return "Trap #0";
-		case BK_TRAP_1: return "Trap #1 (int mask)";
-		case BK_TRAP_2: return "Trap #2 reset)";
-		case BK_TRAP_3: return "Trap #3";
-		case BK_TRAP_4: return "Trap #4 (on/off)";
-		case BK_TRAP_5: return "Trap #5";
-		case BK_TRAP_6: return "Trap #6";
-		case BK_TRAP_7: return "Trap #7";
-		case BK_TRAP_8: return "Trap #8";
-		case BK_TRAP_9: return "Trap #9";
-		case BK_TRAP_A: return "Trap #10 (self test)";
-		case BK_TRAP_B: return "Trap #11 (archive)";
-		case BK_TRAP_C: return "Trap #12";
-		case BK_TRAP_D: return "Trap #13";
-		case BK_TRAP_E: return "Trap #14";
-		case BK_TRAP_F: return "Trap #15 (ER_throw)";
-		default: return "unkwown (bug)";
-		}
-		*/
-		break;
-	case BK_CAUSE_AUTOINT:
-	/*
-		switch(mode)
-        {
-        case BK_SPURIOUS:	return "Spurious interrupt";
-		case BK_AUTOINT_1:	return "Auto-int 1 (350Hz timer)";
-		case BK_AUTOINT_2:	return "Auto-int 2 (keyboard)";
-		case BK_AUTOINT_3:	return "Auto-int 3";
-		case BK_AUTOINT_4:	return "Auto-int 4 (link)";
-		case BK_AUTOINT_5:	return "Auto-int 5 (prog timer)";
-		case BK_AUTOINT_6:	return "Auto-int 6 (on key)";
-		case BK_AUTOINT_7:	return "Auto-int 7 (protected mem)";  
-		default: return "unkwown (bug)";
-		}
-		*/
-		break;
-	default:				
-		return "unknown (bug)";
-	break;
-	}
-}
-
 const char *ti68k_exception_to_string(int number)
 {
 	switch(number)
@@ -279,4 +178,99 @@ const char *ti68k_exception_to_string(int number)
 		
 		default: return _("User interrupt vectors");
 	}
+}
+
+const char *ti68k_bkpt_cause_to_string(int type)
+{
+	switch(type)
+	{
+	case BK_CAUSE_ACCESS:	return "access";
+	case BK_CAUSE_RANGE:	return "access range";
+	case BK_CAUSE_ADDRESS:	return "address";
+    case BK_CAUSE_EXCEPTION:return "exception";
+	default:				return "unknown (bug)";
+	}
+}
+
+
+const char *ti68k_bkpt_type_to_string(int type)
+{
+	switch(type)
+	{
+    case BK_TYPE_ACCESS:    return _("access");
+    case BK_TYPE_RANGE:     return _("range");
+    case BK_TYPE_CODE:      return _("code");
+    case BK_TYPE_EXCEPTION: return _("exception");
+	default:                return _("unknown");
+	}
+}
+
+int ti68k_string_to_bkpt_type(const char *str)
+{
+	if(!strcmp(str, _("access")))
+		return BK_TYPE_ACCESS;
+	else if(!strcmp(str, _("range")))
+		return BK_TYPE_RANGE;
+	else if(!strcmp(str, _("code")))
+		return BK_TYPE_CODE;
+	else if(!strcmp(str, _("exception")))
+		return BK_TYPE_EXCEPTION;
+
+	return 0;
+}
+
+const char *ti68k_bkpt_mode_to_string(int type, int mode)
+{
+	switch(type)
+	{
+	case BK_CAUSE_ACCESS:
+		switch(mode)
+		{
+		case BK_READ_BYTE: return "byte-read";
+		case BK_READ_WORD: return "word-read";
+		case BK_READ_LONG: return "long-read";
+		case BK_WRITE_BYTE:return "byte-write";
+		case BK_WRITE_WORD:return "word-write";
+		case BK_WRITE_LONG:return "long-write";
+		default: return "unknwon (bug)";
+		}
+		break;
+	case BK_CAUSE_RANGE:
+        if((mode & BK_MODE_READ) && (mode & BK_MODE_WRITE))
+            return "any";
+		else if(mode & BK_MODE_READ)
+            return "read";
+        else if(mode & BK_MODE_WRITE)
+            return "write";
+		break;
+	case BK_CAUSE_ADDRESS:
+		return "n/a";
+		break;
+	}
+
+    return "unknown (bug)";
+}
+
+int ti68k_string_to_bkpt_mode(const char * str)
+{
+    if(!strcmp(str, "any"))
+        return BK_MODE_READ | BK_MODE_WRITE;
+    else if(!strcmp(str, "read"))
+        return BK_MODE_READ;
+    else if(!strcmp(str, "write"))
+        return BK_MODE_WRITE;
+    else if(!strcmp(str, "byte-read"))
+        return BK_READ_BYTE;
+    else if(!strcmp(str, "byte-word"))
+        return BK_READ_WORD;
+    else if(!strcmp(str, "byte-long"))
+        return BK_READ_LONG;
+    else if(!strcmp(str, "byte-write"))
+        return BK_WRITE_BYTE;
+    else if(!strcmp(str, "word-write"))
+        return BK_WRITE_WORD;
+    else if(!strcmp(str, "long-write"))
+        return BK_WRITE_LONG;
+    else
+        return 0;
 }

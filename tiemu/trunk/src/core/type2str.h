@@ -31,9 +31,12 @@ int         ti68k_string_to_romtype(const char *str);
 const char *ti68k_hwtype_to_string(int type);
 int         ti68k_string_to_hwtype(const char *str);
 
-const char *ti68k_bkpt_type_to_string(int type);
-const char *ti68k_bkpt_mode_to_string(int type, int mode);
-
 const char *ti68k_exception_to_string(int number);
+
+const char *ti68k_bkpt_type_to_string(int type);
+int         ti68k_string_to_bkpt_type(const char *str);
+
+const char *ti68k_bkpt_mode_to_string(int type, int mode);
+int         ti68k_string_to_bkpt_mode(const char * str);
 
 #endif

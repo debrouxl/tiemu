@@ -168,7 +168,7 @@ static void clist_refresh(GtkListStore *store)
 
     // place pc
     ti68k_register_get_pc(&pc);
-
+/*
     valid = gtk_tree_model_get_iter(model, &iter, path);
 	while (valid) {
 		struct menu *menu;
@@ -186,6 +186,7 @@ static void clist_refresh(GtkListStore *store)
 
 		valid = gtk_tree_model_iter_next(model2, child);
 	}
+    */
 }
 
 /*

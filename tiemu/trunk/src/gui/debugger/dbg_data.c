@@ -126,7 +126,7 @@ loop:
 		} 
 		else if(type == 2)
 		{
-			ti68k_bkpt_set_access_range(start, stop, mode);
+			ti68k_bkpt_set_range(start, stop, mode);
 		}
 
 		refresh_dbgbkpts_window();

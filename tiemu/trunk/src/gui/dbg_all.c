@@ -35,6 +35,7 @@
 #include "./debugger/dbg_mem.h"
 #include "./debugger/dbg_regs.h"
 #include "./debugger/dbg_vectors.h"
+#include "ti68k_int.H"
 
 
 int enter_gtk_debugger(void)
@@ -45,8 +46,8 @@ int enter_gtk_debugger(void)
 	//display_dbgregs_window();
 	//display_dbgvectors_dbox();
 	//display_dbgdata_dbox();
-	//display_dbgbkpts_window();
-    display_dbgcode_window();
+	display_dbgbkpts_window();
+    //display_dbgcode_window();
 
 	return 0;
 }

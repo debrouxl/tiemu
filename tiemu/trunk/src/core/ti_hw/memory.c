@@ -105,7 +105,7 @@ int hw_mem_init(void)
     // clear breakpoints
 	ti68k_bkpt_clear_address();
 	ti68k_bkpt_clear_access();
-	ti68k_bkpt_clear_access_range();
+	ti68k_bkpt_clear_range();
 
     // allocate mem
     tihw.ram = malloc(tihw.ram_size + 4);
@@ -224,7 +224,7 @@ int hw_mem_exit(void)
 	// clear breakpoints
 	ti68k_bkpt_clear_address();
 	ti68k_bkpt_clear_access();
-	ti68k_bkpt_clear_access_range();
+	ti68k_bkpt_clear_range();
 
     return 0;
 }

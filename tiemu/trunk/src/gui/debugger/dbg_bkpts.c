@@ -38,10 +38,10 @@
 
 
 enum { 
-	    COL_SYMBOL, COL_TYPE, COL_STATUS, COL_START, COL_END, COL_RW, COL_SIZE,
+	    COL_SYMBOL, COL_TYPE, COL_STATUS, COL_START, COL_END, COL_MODE,
 };
-#define CLIST_NVCOLS	(7)		// 7 visible columns
-#define CLIST_NCOLS		(7)		// 7 real columns
+#define CLIST_NVCOLS	(6)		// 7 visible columns
+#define CLIST_NCOLS		(6)		// 7 real columns
 
 static GtkListStore* clist_create(GtkWidget *list)
 {
@@ -51,12 +51,12 @@ static GtkListStore* clist_create(GtkWidget *list)
 	GtkCellRenderer *renderer;
 	GtkTreeSelection *selection;
     const gchar *text[CLIST_NVCOLS] = { 
-		_("Symbol"), _("Type"), _("Status"), _("Start"), _("End"), _("Mode"), _("Type")
+		_("Symbol"), _("Type"), _("Status"), _("Start"), _("End"), _("Mode")
     };
     gint i;
 	
 	store = gtk_list_store_new(CLIST_NCOLS,
-				G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, 
+				G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
 				G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
 				-1
             );
@@ -69,7 +69,7 @@ static GtkListStore* clist_create(GtkWidget *list)
     gtk_tree_view_set_headers_visible(view, TRUE);
 	gtk_tree_view_set_rules_hint(view, FALSE);
   
-	for(i = COL_SYMBOL; i <= COL_SIZE; i++)
+	for(i = COL_SYMBOL; i <= COL_MODE; i++)
 	{
 		renderer = gtk_cell_renderer_text_new();
 		gtk_tree_view_insert_column_with_attributes(view, -1, 
@@ -99,16 +99,12 @@ static GList** bkpts_mem_access[6] = {
 static  GList** bkpts_mem_range[2] = { 
 	&bkpts.mem_rng_r, &bkpts.mem_rng_w,
 };
-static const char* bkpts_memacc_rw[6] = {
-	_("read"), _("read"), _("read"), 
-	_("write"), _("write"), _("write"), 
+static const int bkpts_memacc_rw[6] = {
+    BK_READ_BYTE, BK_READ_WORD, BK_READ_LONG,
+    BK_WRITE_BYTE, BK_WRITE_WORD, BK_WRITE_LONG, 
 };
-static const char* bkpts_memrng_rw[2] = {
-	_("read"), _("write"),
-};
-static const char* bkpts_memacc_size[6] = {
-	_("byte"), _("word"), _("long"),
-	_("byte"), _("word"), _("long"),
+static const int bkpts_memrng_rw[2] = {
+	BK_READ, BK_WRITE
 };
 
 static void clist_refresh(GtkListStore *store)
@@ -130,12 +126,11 @@ static void clist_refresh(GtkListStore *store)
 		gtk_list_store_append(store, &iter);
 		gtk_list_store_set(store, &iter, 
 		COL_SYMBOL, str, 
-		COL_TYPE, _("code"),
+		COL_TYPE, ti68k_bkpt_type_to_string(BK_TYPE_CODE),
 		COL_STATUS, _("enabled"),
 		COL_START, str,
 		COL_END, "",		
-		COL_RW, "",
-		COL_SIZE, "",
+        COL_MODE, "",
 		-1);
 		
 		g_free(str);
@@ -152,12 +147,11 @@ static void clist_refresh(GtkListStore *store)
 		gtk_list_store_append(store, &iter);
 		gtk_list_store_set(store, &iter, 
 		COL_SYMBOL, str1, 
-		COL_TYPE, _("exception"),
+		COL_TYPE, ti68k_bkpt_type_to_string(BK_TYPE_EXCEPTION),
 		COL_STATUS, _("enabled"),
 		COL_START, str2,
 		COL_END, "",		
-		COL_RW, "",
-		COL_SIZE, "",
+		COL_MODE, "",
 		-1);
 		
 		g_free(str);
@@ -175,15 +169,15 @@ static void clist_refresh(GtkListStore *store)
 			gtk_list_store_append(store, &iter);
 			gtk_list_store_set(store, &iter, 
 			COL_SYMBOL, str, 
-			COL_TYPE, _("mem access"),
+			COL_TYPE, ti68k_bkpt_type_to_string(BK_TYPE_ACCESS),
 			COL_STATUS, _("enabled"),
 			COL_START, str,
-			COL_END, "",		
-			COL_RW, bkpts_memacc_rw[i],
-			COL_SIZE, bkpts_memacc_size[i],
+			COL_END, "",
+            COL_MODE, ti68k_bkpt_mode_to_string(BK_TYPE_ACCESS, bkpts_memacc_rw[i]),
 			-1);
 			
-			g_free(str);
+			g_free(str1);
+            g_free(str2);
 		}
 	}
 	
@@ -200,12 +194,11 @@ static void clist_refresh(GtkListStore *store)
 			gtk_list_store_append(store, &iter);
 			gtk_list_store_set(store, &iter, 
 			COL_SYMBOL, str1, 
-			COL_TYPE, _("mem range"),
+			COL_TYPE, ti68k_bkpt_type_to_string(BK_TYPE_RANGE),
 			COL_STATUS, _("enabled"),
 			COL_START, str1,
-			COL_END, str2,		
-			COL_RW, bkpts_memrng_rw[i],
-			COL_SIZE, _("any"),
+			COL_END, str2,
+            COL_MODE, ti68k_bkpt_mode_to_string(BK_TYPE_RANGE, bkpts_memrng_rw[i]),
 			-1);
 			
 			g_free(str);
@@ -236,7 +229,6 @@ gint display_dbgbkpts_window(void)
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
 	clist_refresh(store);
-    printf("<%p>\n", data);
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
@@ -313,15 +305,45 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
 	{
 		GtkTreeIter iter;
 		GtkTreePath *path = l->data;
-        gchar *str;
+        gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
+        uint32_t n, type, min, max, mode;
 			
 		gtk_tree_model_get_iter(model, &iter, path);
-		gtk_tree_model_get(model, &iter, COL_SYMBOL, &str, -1);
+		gtk_tree_model_get(model, &iter, 
+            COL_SYMBOL, &row_text[COL_SYMBOL], 
+            COL_TYPE, &row_text[COL_TYPE], 
+            COL_START, &row_text[COL_START], 
+            COL_END, &row_text[COL_END],
+            COL_MODE, &row_text[COL_MODE],
+            -1);
 		
-		//ti68k_bkpt_set_exception(n);
-        printf("sel: <%s>\n", str);
-        g_free(str);
+        type = ti68k_string_to_bkpt_type(row_text[COL_TYPE]);
+        switch(type)
+        {
+        case BK_TYPE_CODE:
+            sscanf(row_text[COL_START], "%lx", &min);
+            ti68k_bkpt_del_address(min);
+            break;
+        case BK_TYPE_EXCEPTION:
+            sscanf(row_text[COL_SYMBOL], "#%i", &n);
+            ti68k_bkpt_del_exception(n);
+            break;
+        case BK_TYPE_ACCESS:
+            mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
+            sscanf(row_text[COL_START], "%lx", &min);
+            ti68k_bkpt_del_access(min, mode);
+            break;
+        case BK_TYPE_RANGE:
+            mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
+            sscanf(row_text[COL_START], "%lx", &min);
+            sscanf(row_text[COL_END], "%lx", &max);
+            ti68k_bkpt_del_range(min, max, mode);        
+            break;
+        }
+        g_strfreev(row_text);
     }
+
+    refresh_dbgbkpts_window();
 }
 
 
