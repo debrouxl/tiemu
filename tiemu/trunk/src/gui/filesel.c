@@ -178,15 +178,21 @@ static const gchar *create_fsel_3(gchar *dirname, gchar *ext, gboolean save)
 
 const gchar *create_fsel(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
-	options.fs_type = 2;
-	//printf("<%s> <%s> <%s> %i\n", dirname, filename, ext, save);
+#ifndef __WIN32__
+	if(options.fs_type == 2)
+		options.fs_type = 1;
+#endif
+	//printf("%i: <%s> <%s> <%s> %i\n", options.fs_type, dirname, filename, ext, save);
 
-	if(options.fs_type == 0)
-		return create_fsel_1(dirname, ext, save);
-	else if(options.fs_type == 1)
-		return create_fsel_2(dirname, ext, save);
-	else
-		return create_fsel_3(dirname, ext, save);
+	switch(options.fs_type)
+	{
+	case 0:	return create_fsel_1(dirname, ext, save);
+	case 1:	return create_fsel_2(dirname, ext, save);
+	case 2: return create_fsel_3(dirname, ext, save);
+	default: return NULL;
+	}
+
+	return NULL;
 }
 
 
