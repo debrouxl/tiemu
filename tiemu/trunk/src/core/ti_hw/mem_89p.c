@@ -23,7 +23,7 @@
  */
 
 /*
-    Memory management: TI89/92+/V200 FLASH
+    Memory management: TI89/92+/V200 FLASH with Hardware Protection
 */
 
 #include <stdlib.h>
@@ -50,7 +50,9 @@
 #define wget(adr) ((uint16_t)(((uint16_t)bget(adr))<< 8 | bget((adr)+1)))
 #define lget(adr) ((uint32_t)(((uint32_t)wget(adr))<<16 | wget((adr)+2)))
 
-uint32_t ti89_get_long(uint32_t adr) 
+#define IN_RANGE(a,v,b)	(((v) >= (a)) && ((v) <= (b)))
+
+uint32_t ti89p_get_long(uint32_t adr) 
 {
     //$1C0000-$1FFFFF: "the Protection" enable/disable
     //Note: Four consecutive accesses to this range crashes a HW1 calc!
@@ -88,7 +90,7 @@ uint32_t ti89_get_long(uint32_t adr)
         return 0;
 }
 
-uint16_t ti89_get_word(uint32_t adr) 
+uint16_t ti89p_get_word(uint32_t adr) 
 {
     //$1C0000-$1FFFFF: "the Protection" enable/disable
     //Note: Four consecutive accesses to this range crashes a HW1 calc!
@@ -126,7 +128,7 @@ uint16_t ti89_get_word(uint32_t adr)
         return 0;
 }
 
-uint8_t ti89_get_byte(uint32_t adr) 
+uint8_t ti89p_get_byte(uint32_t adr) 
 {
     //$1C0000-$1FFFFF: "the Protection" enable/disable
     //Note: Four consecutive accesses to this range crashes a HW1 calc!
@@ -164,7 +166,7 @@ uint8_t ti89_get_byte(uint32_t adr)
         return 0;
 }
 
-void ti89_put_long(uint32_t adr, uint32_t arg) 
+void ti89p_put_long(uint32_t adr, uint32_t arg) 
 {
     // Write accesses to the boot installer sector ($200000-$20FFFF) are
     // filtered and never reach the flash ROM.
@@ -202,43 +204,34 @@ void ti89_put_long(uint32_t adr, uint32_t arg)
         lput(adr, arg);
 }
 
-void ti89_put_word(uint32_t adr, uint16_t arg) 
+void ti89p_put_word(uint32_t adr, uint16_t arg) 
 {
-	// Write accesses to the boot installer sector ($200000-$20FFFF) are
-    // filtered and never reach the flash ROM.
 	if(adr >= 0x200000 && adr < 0x210000)
         return;
-
-	//$1C0000-$1FFFFF: "the Protection" enable/disable
-    //Note: Four consecutive accesses to this range crashes a HW1 calc!
-    //READ:  Enable the Protection
-    //WRITE: Disable the Protection
-    //Note: No access to this range will have any effect unless the access is
-    //"authorized," see below.
 	else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
         tihw.flash_prot = 0;
 
-	// write to internal/external FLASH
+    else if (adr < 0x200000) // pb here
+    {
+	    if (adr >=0x1c0000)
+	        tihw.flash_prot=0;
+	    wput(adr, arg);
+    }
+
     else if (adr >= 0x200000 && adr < 0x600000) 
     {
 	    FlashWriteByte(adr,(arg>>8)&0xff);
 	    FlashWriteByte(adr+1,arg&0xff);
     }
-
-	// memory-mapped I/O
     else if(adr >= 0x600000 && adr < 0x700000)
 		io_put_word(adr & 0x1f, arg);
-
-	// memory-mapped I/O (HW2)
 	else if(adr >= 0x700000 && adr < 0x800000)
 		io2_put_word(adr & 0x1f, arg);
-
-	// standard access
 	else
 		wput(adr, arg);
 }
 
-void ti89_put_byte(uint32_t adr, uint8_t arg) 
+void ti89p_put_byte(uint32_t adr, uint8_t arg) 
 {
     // Write accesses to the boot installer sector ($200000-$20FFFF) are
     // filtered and never reach the flash ROM.

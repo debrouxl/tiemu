@@ -49,14 +49,16 @@
 #define wget(adr) ((uint16_t)(((uint16_t)bget(adr))<< 8 | bget((adr)+1)))
 #define lget(adr) ((uint32_t)(((uint32_t)wget(adr))<<16 | wget((adr)+2)))
 
+#define IN_RANGE(a,v,b)	(((v) >= (a)) && ((v) <= (b)))
+
 uint32_t ti92_get_long(uint32_t adr) 
 {
     // RAM or PROM access
-    if (adr >= 0x000000 && adr<0x600000) 
+	if(IN_RANGE(0x000000, adr, 0x5fffff))
         return lget(adr);
 
     // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000) 
+	else if(IN_RANGE(0x600000, adr, 0x6fffff))
         return io_get_long(adr & 0x1f);
 
     else
@@ -66,11 +68,11 @@ uint32_t ti92_get_long(uint32_t adr)
 uint16_t ti92_get_word(uint32_t adr) 
 {
 	// RAM or PROM access
-    if (adr >= 0x000000 && adr<0x600000) 
+    if(IN_RANGE(0x000000, adr, 0x5fffff))
         return wget(adr);
 
     // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000) 
+    else if(IN_RANGE(0x600000, adr, 0x6fffff))
         return io_get_word(adr & 0x1f);
 
     else
@@ -80,11 +82,11 @@ uint16_t ti92_get_word(uint32_t adr)
 uint8_t ti92_get_byte(uint32_t adr) 
 {
 	// RAM or PROM access
-    if (adr >= 0x000000 && adr<0x600000) 
+    if(IN_RANGE(0x000000, adr, 0x5fffff))
         return bget(adr);
 
     // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000) 
+    else if(IN_RANGE(0x600000, adr, 0x6fffff))
         return io_get_byte(adr & 0x1f);
 
     else
@@ -94,38 +96,38 @@ uint8_t ti92_get_byte(uint32_t adr)
 void ti92_put_long(uint32_t adr, uint32_t arg) 
 {
     // write to RAM
-	if(adr < 0x200000)
+	if(IN_RANGE(0x000000, adr, 0x1fffff))
 	{
 		lput(adr, arg);
 	}
 
     // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000)
+    else if(IN_RANGE(0x600000, adr, 0x6fffff))
         io_put_long(adr & 0x1f, arg);
 }
 
 void ti92_put_word(uint32_t adr, uint16_t arg) 
 {
     // write to RAM
-	if(adr < 0x200000)
+	if(IN_RANGE(0x000000, adr, 0x1fffff))
 	{
 		wput(adr, arg);
 	}
 
     // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000)
+    else if(IN_RANGE(0x600000, adr, 0x6fffff))
         io_put_word(adr & 0x1f, arg);
 }
 
 void ti92_put_byte(uint32_t adr, uint8_t arg) 
 {
 	// write to RAM
-	if(adr < 0x200000)
+	if(IN_RANGE(0x000000, adr, 0x1fffff))
 	{
 		bput(adr, arg);
 	}
 
     // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000)
+    else if(IN_RANGE(0x600000, adr, 0x6fffff))
         io_put_byte(adr & 0x1f, arg);
 }

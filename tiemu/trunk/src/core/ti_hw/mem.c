@@ -42,6 +42,7 @@
 #include "flash.h"
 #include "mem_89.h"
 #include "mem_92.h"
+#include "mem_89p.h"
 
 static IMG_INFO *img = &img_infos;
 
