@@ -69,7 +69,9 @@ __floatunssibf:
 Le .word 0x6B30 est le code de la pseudo-FPU dont je parle. Et ce n'est pas
 exécuté par le processeur, _bcd_math rajoute 2 octets à l'adresse de retour.
 
-Au fait, si tu veux savoir exactement les opcodes permis par _bcd_math et peut-être les afficher de manière lisible, cf. ftp://ftp.ti.com/pub/graph-ti/calc-apps/89/asm/exec.inc . (Mais ça ne va marcher que pour les appels que tu peux détecter à l'avance, évidemment.)
+Au fait, si tu veux savoir exactement les opcodes permis par _bcd_math et peut-être les 
+afficher de manière lisible, cf. ftp://ftp.ti.com/pub/graph-ti/calc-apps/89/asm/exec.inc . 
+(Mais ça ne va marcher que pour les appels que tu peux détecter à l'avance, évidemment.)
 
 Lionel
 ======

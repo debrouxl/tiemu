@@ -33,6 +33,7 @@ typedef struct
     long    ram_offset;     // offset to RAM area
 	long	misc_offset;	// offset to extra informations
     long    bkpts_offset;   // offset to bkpts area
+	long	rom_offset;		// offset to FLASH changes
 } SAV_INFO;
 
 int ti68k_state_load(char *filename);

@@ -31,12 +31,14 @@
 
 typedef struct
 {
-	int	cmd;
-    int ret_or;
-    int write;
-    int erase;
+	int	cmd;			// FLASH command (CUI)
+    int ret_or;			// status flag
+    int write;			// write in progress
+    int erase;			// erase in progress
+	int	*changed;		// 64KB blocks changed
+	int	nblocks;		// number of blocks
 
-    int write_ready;
+    int write_ready;	// will be removed later
     int write_phase;
     int erase_phase;
 } FLASH_WSM;
@@ -44,6 +46,10 @@ typedef struct
 extern FLASH_WSM   wsm;
 
 /* Functions */
+
+int hw_flash_init(void);
+int hw_flash_reset(void);
+int hw_flash_exit(void);
 
 uint8_t  FlashReadByte(uint32_t addr);
 uint16_t FlashReadWord(uint32_t addr);

@@ -20,6 +20,7 @@ To do:
 	- clean-up and improvements in the misc menu (help)
 	- fixed status bar display in the bkpts dbox
 	- some items of the popup menu are disabled when the engine is running
+	- save FLASH segment which have been written/erased
 
 - 07/02/2005, version 1.80m: roms
 	- dbus architecture improved (reset)

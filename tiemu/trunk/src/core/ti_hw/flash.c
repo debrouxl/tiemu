@@ -37,6 +37,38 @@
 
 FLASH_WSM   wsm;
 
+int hw_flash_init(void)
+{
+	memset(&wsm, 0, sizeof(FLASH_WSM));
+	wsm.nblocks = tihw.rom_size >> 16;
+	wsm.changed = calloc(wsm.nblocks, sizeof(int));
+	wsm.write_phase = 0x50;
+	return 0;
+}
+
+int hw_flash_reset(void)
+{
+	return 0;
+}
+
+int hw_flash_exit(void)
+{
+	free(wsm.changed);
+	return 0;
+}
+
+int hw_flash_nblocks(void)
+{
+	int i, n = 0;
+
+	for(i = 0; i < wsm.nblocks; i++)
+		if(wsm.changed[i])
+			n++;
+	printf("n = %i\n", n);
+
+	return n;
+}
+
 /*
 	Read a byte from a Sharp FLASH memory.
 */
@@ -102,6 +134,8 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
     if (wsm.write_ready)
     {
 	    rom[addr] = v;
+		wsm.changed[addr>>16] = !0;
+		//printf("%i written\n", addr>>16);
             
 		wsm.write_ready--;
         wsm.ret_or = 0xffffffff;
@@ -143,6 +177,8 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
 	        wsm.erase_phase = 0;
 
 			memset(&rom[addr & 0xff0000], 0xff, 64*KB);
+			wsm.changed[addr>>16] = !0;
+			//printf("%i erased\n", addr>>16);
         } 
     }
     else if (v == 0xff)
