@@ -9,7 +9,7 @@ AC_INIT(src/hid/ticalc.c)
 ##AM_MAINTAINER_MODE
 
 # set program version number
-VERSION=1.90-BETA
+VERSION=1.91-BETA
 PACKAGE=tiemu
 AC_SUBST(VERSION)
 AC_SUBST(PACKAGE)

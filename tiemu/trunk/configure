@@ -1449,7 +1449,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 ##AM_MAINTAINER_MODE
 
 # set program version number
-VERSION=1.90-BETA
+VERSION=1.91-BETA
 PACKAGE=tiemu
 
 
