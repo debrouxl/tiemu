@@ -246,274 +246,258 @@ SOURCE=..\..\src\core\state.c
 # Begin Group "gui"
 
 # PROP Default_Filter ""
-# Begin Group "gtk"
-
-# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\about_cb.c
+SOURCE=..\..\src\gui\about_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\about_dbox.c
+SOURCE=..\..\src\gui\about_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\adbkpt_cb.c
+SOURCE=..\..\src\gui\adbkpt_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\adbkpt_dbox.c
+SOURCE=..\..\src\gui\adbkpt_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\bkpt_cause.c
+SOURCE=..\..\src\gui\bkpt_cause.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\colors_cb.c
+SOURCE=..\..\src\gui\colors_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\colors_dbox.c
+SOURCE=..\..\src\gui\colors_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\dbgopt_cb.c
+SOURCE=..\..\src\gui\dbgopt_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\dbgopt_dbox.c
+SOURCE=..\..\src\gui\dbgopt_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\dbkpt_cb.c
+SOURCE=..\..\src\gui\dbkpt_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\dbkpt_dbox.c
+SOURCE=..\..\src\gui\dbkpt_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\debug_cb.c
+SOURCE=..\..\src\gui\debug_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\debug_dbox.c
+SOURCE=..\..\src\gui\debug_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\dump_cb.c
+SOURCE=..\..\src\gui\dump_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\dump_dbox.c
+SOURCE=..\..\src\gui\dump_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\fsel_cb.c
+SOURCE=..\..\src\gui\fsel_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\fsel_dbox.c
+SOURCE=..\..\src\gui\fsel_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\help_cb.c
+SOURCE=..\..\src\gui\help_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\help_dbox.c
+SOURCE=..\..\src\gui\help_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\infos_cb.c
+SOURCE=..\..\src\gui\infos_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\infos_dbox.c
+SOURCE=..\..\src\gui\infos_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\itick_cb.c
+SOURCE=..\..\src\gui\itick_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\itick_dbox.c
+SOURCE=..\..\src\gui\itick_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\link_cb.c
+SOURCE=..\..\src\gui\link_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\link_cb.c.old
+SOURCE=..\..\src\gui\link_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\link_dbox.c
+SOURCE=..\..\src\gui\logaddr_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\logaddr_cb.c
+SOURCE=..\..\src\gui\logaddr_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\logaddr_dbox.c
+SOURCE=..\..\src\gui\main.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\main.c
+SOURCE=..\..\src\gui\main_wnd.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\main_wnd.c
+SOURCE=..\..\src\gui\manpage_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\manpage_cb.c
+SOURCE=..\..\src\gui\manpage_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\manpage_dbox.c
+SOURCE=..\..\src\gui\msg_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\msg_cb.c
+SOURCE=..\..\src\gui\msg_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\msg_dbox.c
+SOURCE=..\..\src\gui\pbar_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\pbar_cb.c
+SOURCE=..\..\src\gui\pbar_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\pbar_dbox.c
+SOURCE=..\..\src\gui\pgmentbkpt_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\pgmentbkpt_cb.c
+SOURCE=..\..\src\gui\pgmentbkpt_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\pgmentbkpt_dbox.c
+SOURCE=..\..\src\gui\refresh.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\refresh.c
+SOURCE=..\..\src\gui\romv_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\romv_cb.c
+SOURCE=..\..\src\gui\romv_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\romv_dbox.c
+SOURCE=..\..\src\gui\scopt_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\scopt_cb.c
+SOURCE=..\..\src\gui\scopt_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\scopt_dbox.c
+SOURCE=..\..\src\gui\skin_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\skin_cb.c
+SOURCE=..\..\src\gui\skin_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\skin_dbox.c
+SOURCE=..\..\src\gui\startup_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\startup_cb.c
+SOURCE=..\..\src\gui\startup_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\startup_dbox.c
+SOURCE=..\..\src\gui\state_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\state_cb.c
+SOURCE=..\..\src\gui\state_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\state_dbox.c
+SOURCE=..\..\src\gui\support.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\support.c
+SOURCE=..\..\src\gui\thanks_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\thanks_cb.c
+SOURCE=..\..\src\gui\thanks_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\thanks_dbox.c
+SOURCE=..\..\src\gui\tiemu_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\tiemu_cb.c
+SOURCE=..\..\src\gui\tiemu_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\tiemu_dbox.c
+SOURCE=..\..\src\gui\trap_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\trap_cb.c
+SOURCE=..\..\src\gui\trap_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\trap_dbox.c
+SOURCE=..\..\src\gui\user_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\user_cb.c
+SOURCE=..\..\src\gui\user_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\user_dbox.c
+SOURCE=..\..\src\gui\utils.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\utils.c
+SOURCE=..\..\src\gui\viewlog_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\viewlog_cb.c
+SOURCE=..\..\src\gui\viewlog_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\viewlog_dbox.c
+SOURCE=..\..\src\gui\wizard_cb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\wizard_cb.c
+SOURCE=..\..\src\gui\wizard_dbox.c
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\wizard_dbox.c
-# End Source File
-# End Group
 # End Group
 # Begin Group "hid"
 
 # PROP Default_Filter ""
-# Begin Group "skn"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\src\hid\skn\skin.c
-# End Source File
-# End Group
 # Begin Source File
 
 SOURCE=..\..\src\hid\files.c
@@ -529,6 +513,10 @@ SOURCE=..\..\src\hid\paths.c
 # Begin Source File
 
 SOURCE=..\..\src\hid\rcfile.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\skn\skin.c
 # End Source File
 # Begin Source File
 
