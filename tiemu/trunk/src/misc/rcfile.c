@@ -817,7 +817,7 @@ int rcfile_default()
 	options3.regs.x = 830;
 	options3.regs.y = 0;
 	options3.regs.w = 180;
-	options3.regs.h = 520;
+	options3.regs.h = 540;
 
 	options3.pclog.x = 0;
 	options3.pclog.y = 0;

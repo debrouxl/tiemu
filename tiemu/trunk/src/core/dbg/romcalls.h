@@ -40,6 +40,7 @@
 
 typedef struct
 {
+	int			id;
     uint32_t    addr;
     char*       name;
 } ROM_CALL;
@@ -52,8 +53,14 @@ int romcalls_is_loaded(void);
 
 int romcalls_is_address(uint32_t addr);
 int romcalls_is_name(const char *name);
-const char* romcalls_get_name(int id);
-uint32_t romcalls_get_addr(int id);
+
+int romcalls_get_id(int i);
+const char* romcalls_get_name(int i);
+uint32_t romcalls_get_addr(int i);
 const char* romcalls_get_addr_name(uint32_t addr);
+
+ROM_CALL *romcalls_sort_by_id(void);
+ROM_CALL *romcalls_sort_by_addr(void);
+ROM_CALL *romcalls_sort_by_name(void);
 
 #endif

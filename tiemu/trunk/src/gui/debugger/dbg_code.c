@@ -313,6 +313,7 @@ GtkWidget* dbgcode_create_window(void)
     GtkWidget *data;
 	GList *items = NULL;
 	gint i;
+	ROM_CALL *lst;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_code-2.glade"), "dbgcode_window",
@@ -352,22 +353,26 @@ GtkWidget* dbgcode_create_window(void)
 
 	data = glade_xml_get_widget(xml, "combo1");
 	items = g_list_append (items, "");
+	lst = romcalls_sort_by_name();
 	for(i = 0; i < NROMCALLS; i++)
 	{
 		uint32_t addr;
 		const gchar *name;
 		gchar *str;
+		int id;
 
-		addr = romcalls_get_addr(i);
-		name = romcalls_get_name(i);
+		addr = lst[i].addr;	//romcalls_get_addr(i);
+		name = lst[i].name;	//romcalls_get_name(i);
+		id = lst[i].id;
 
-		if(!strcmp(name, "unknown") ||(name == NULL))
+		if(!strcmp(name, "unknown") || (name == NULL))
 			continue;
 
-		str = g_strdup_printf("%s [$%x] - #%03x", name, addr, i);
+		str = g_strdup_printf("%s [$%x] - #%03x", name, addr, id);
 		items = g_list_append (items, str);
 	}
 	gtk_combo_set_popdown_strings (GTK_COMBO (data), items);
+	g_free(lst);
 
 	gtk_window_resize(GTK_WINDOW(dbox), options3.code.w, options3.code.h);
 	gtk_window_move(GTK_WINDOW(dbox), options3.code.x, options3.code.y);
@@ -410,7 +415,7 @@ void dbgcode_disasm_at(uint32_t addr)
 {
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreePath *path;
-	GtkTreeViewColumn *column;
+	//GtkTreeViewColumn *column;
 
     gtk_list_store_clear(store);
     clist_populate(store, addr);

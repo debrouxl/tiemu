@@ -26,9 +26,6 @@ plus, et il y a probablement d'autres combines de touches "suspectes".
 ne répond plus à aucun appui de touches (mais on peut le fermer à travers le
 popup au moins). L'"engine" est "stoppée" et pas re"start"ée.
 
-+ Si on défile vers le bas dans le débogueur, le curseur vert (PC actuel)
-disparaît même si l'instruction actuelle est encore visible.
-
 - Le débogueur est toujours très lent. :-( Déjà, le défilement du curseur
 vers le bas pourrait être plus rapide. Et ensuite tout ce qui touche au
 single-step rame à fond si on a la fenêtre des registres activée, cacher la
@@ -109,6 +106,13 @@ sur le bra.s).
 Il y a un tel STOP à 2008F6 sur la ROM de V200 
 (boucle infinie d'erreur à laquelle l'exécution 
 finit actuellement par arriver sur la ROM de V200).
+
+* j'ai de nouveau des problèmes avec le caractère 0x09
+dans la fenêtre ASCII de la memory view (Win ME ?).
+
++ la fenêtre des registres est un poil trop petite en
+hauteur pour voir toutes les infos sans scroller.
+
 
 -------------
 + done
