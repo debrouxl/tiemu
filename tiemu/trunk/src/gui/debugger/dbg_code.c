@@ -716,7 +716,7 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         if(row_idx < row_max)
             break;
 
-        offset = ti68k_debug_disassemble(addr, &output);
+        offset = ti68k_debug_disassemble(start, &output);
 		g_free(output);
 
         gtk_list_store_clear(store);

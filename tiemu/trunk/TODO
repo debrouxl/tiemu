@@ -13,7 +13,7 @@ aboutir.
 * Un Step To sur une instruction suffisamment loin de l'instruction
 courante n'a aucun effet, c'est bizarre...
 
-* Le scroll d'instructions vers le bas n'est pas bon du tout, Il
++ Le scroll d'instructions vers le bas n'est pas bon du tout, Il
 n'avance pas d'instruction en instruction, mais se décale parfois, on
 s'y perd complètement.
 
@@ -80,7 +80,7 @@ marche pas; une utilisation du menu F12 semble le
 faire marcher définitivement (jusqu'au prochain
 reset).
 
-* chaque pression de touche semble être reportée 
++ chaque pression de touche semble être reportée 
 en double dans la fenêtre console, bien qu'elle ne 
 soit prise en compte qu'une fois par l'émulateur.
 

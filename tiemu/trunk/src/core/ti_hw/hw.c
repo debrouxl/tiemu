@@ -153,13 +153,11 @@ void hw_update(void)
     	tihw.heartbeat--;
     }
 
-	// Increment RTC timer evry 8192 seconds
-	/*
+	// Increment RTC timer every 8192 seconds
 	if(io2_bit_tst(0x1f, 2))
 	{
 		tihw.rtc_value++;
 	}
-	*/
 
 	/* Auto-int management */
 
@@ -176,7 +174,7 @@ void hw_update(void)
 
 	// Auto-int 3: disabled by default by AMS
 	// When enabled, it is triggered at a fixed rate: OSC2/2^19 = 1/1024 of timer rate = 1Hz
-	if(io_bit_tst(0x15,1)&& !tihw.heartbeat)
+	if(io_bit_tst(0x15,1) && !tihw.heartbeat)
 	{
         tihw.heartbeat = 1024;
         if(!io_bit_tst(0x15,7) && io_bit_tst(0x15,2))
