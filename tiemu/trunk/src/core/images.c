@@ -54,6 +54,7 @@
 #define is_alnum(c) isalnum(c)
 
 #define SPP	0x12000		// system privileged part
+#define BO  0x88        // offset from SPP to boot
 
 IMG_INFO	img_infos;
 int			img_loaded = 0;
@@ -334,7 +335,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
   	memcpy(tib->data + SPP, ptr->data_part, ptr->data_length);
   	
   	// Update current rom infos
-    tib->rom_base = tib->data[0x8d + SPP] & 0xf0;
+    tib->rom_base = tib->data[BO+5 + SPP] & 0xf0;
 
 	switch(ptr->device_type & 0xff)
 	{
@@ -537,18 +538,8 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	fwrite(&img, 1, sizeof(IMG_INFO), f);
   
   	// Write boot block
-  	for(i=0; i<0x05; i++)
-    	fputc(0xff, f);
-    
-    fputc(img.rom_base, f); // base address for detection
-
-  	for(i=0x06; i<0x65; i++)
-    	fputc(0xff, f);
-
-  	fputc(0xf0, f); 		// FLASH ROM
-
-    for(i = 0x66; i < 0x104; i++)
-        fputc(0xff, f);
+    memcpy(img.data, &img.data[SPP + BO], 256);
+    fwrite(img.data, 1, 256 + 4, f);
 
     // hardware param block
     fputc(0x00, f);

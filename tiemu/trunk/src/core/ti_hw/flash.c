@@ -122,11 +122,11 @@ uint32_t find_pc(void)
     int vt = 0x000000; // vector table
     int i;
     uint32_t pc;
-  
+
     // find PC reset vector
     if(tihw.rom_flash)
     { 
-        // TI89 or TI92+
+        // FLASH (TI89, TI92+, 200, ...)
         for (vt = 0x12000; vt < tihw.rom_size; vt++)
 	    {
 	        if (*((int*)(tihw.rom + vt)) == 0xcccccccc) 
@@ -140,10 +140,11 @@ uint32_t find_pc(void)
    
         pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
             (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
+        printf("PC = %06X\n", pc);
     }
   else
     { 
-      // TI92
+      // EPROM (TI92)
       vt = 0;
       vt += 4; // skip SP
       
