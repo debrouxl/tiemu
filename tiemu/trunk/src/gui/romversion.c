@@ -150,8 +150,8 @@ gint display_romversion_dbox()
     list = clist_init(data);
 
 	// scan ROM images
-    filename = g_strconcat(inst_paths.rom_dir, CACHE_FILE, NULL);
-    ti68k_scanFiles(inst_paths.rom_dir, filename);
+    filename = g_strconcat(inst_paths.img_dir, CACHE_FILE, NULL);
+    ti68k_scanFiles(inst_paths.img_dir, filename);
 
     stat(filename, &s);
     if(s.st_size == 0) 
@@ -202,15 +202,15 @@ gint display_romversion_dbox()
 	{
 		case GTK_RESPONSE_OK:
 			g_free((options.params)->rom_file);
-			(options.params)->rom_file = g_strconcat(inst_paths.rom_dir, chosen_file, NULL);
+			(options.params)->rom_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
 			g_free(chosen_file);
-
+/*
 			if(ti68k_loadImage((options.params)->rom_file)) 
 			{
 				msg_box("Error", "Can not open the ROM image.");
 				return;
 			}
-      
+*/    
 			ti68k_restart();
 		break;
 

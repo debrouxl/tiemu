@@ -55,9 +55,9 @@ static void init_linux_paths(void)
 	    g_strconcat(inst_paths.base_dir, "glade/", NULL);
 	inst_paths.home_dir =
 		g_strdup(g_get_home_dir());
-	inst_paths.rom_dir = 
+	inst_paths.img_dir = 
             g_strconcat(inst_paths.home_dir, CONF_DIR, "images/", NULL);
-	mkdir(inst_paths.rom_dir);
+	mkdir(inst_paths.img_dir);
 
 	/* bintextdomain(PACKAGE, "/usr/share/locale"); ->
 	   '/usr/share/locale/  fr/LC_MESSAGES/tilp.mo' */
@@ -101,9 +101,9 @@ static void init_win32_paths(void)
 	    g_strconcat(inst_paths.base_dir, "glade\\", NULL);
 	inst_paths.home_dir = 
 	    g_strconcat(inst_paths.base_dir, "", NULL);
-	inst_paths.rom_dir = 
+	inst_paths.img_dir = 
             g_strconcat(inst_paths.home_dir, CONF_DIR, "images/", NULL);
-    mkdir(inst_paths.rom_dir, 0755);
+    mkdir(inst_paths.img_dir, 0755);
 
 #ifdef ENABLE_NLS
 	inst_paths.locale_dir =

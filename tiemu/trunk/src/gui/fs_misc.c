@@ -196,7 +196,7 @@ gint display_set_rom_dbox(void)
 	if (!filename)
 		return;
 
-    dst = g_strconcat(inst_paths.rom_dir, g_basename(src), NULL);
+    dst = g_strconcat(inst_paths.img_dir, g_basename(src), NULL);
     cmd = g_strdup_printf("cp %s %s", src, dst);
     system(cmd); //copy_file(src, dst);    
 
@@ -214,7 +214,7 @@ gint display_set_tib_dbox(void)
 	filename = create_fsel(inst_paths.base_dir, "*.89u;*.9xu;*.tib");
 	if (!filename)
 		return;
-
+/*
     g_free((options.params)->tib_file);
     (options.params)->tib_file = g_strdup(filename);
     if(ti68k_loadImage((options.params)->tib_file))  {
@@ -222,7 +222,7 @@ gint display_set_tib_dbox(void)
         ti68k_unhalt();
         return -1;
     }    
-
+*/
     ti68k_unhalt();
 }
 

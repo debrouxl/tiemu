@@ -769,7 +769,7 @@ int rcfile_default()
 
 	ti68k_loadDefaultConfig();
 
-	(options.params)->rom_file = g_strconcat(inst_paths.rom_dir, "", NULL);
+	(options.params)->rom_file = g_strconcat(inst_paths.img_dir, "", NULL);
 	(options.params)->ram_file = NULL;
 	(options.params)->tib_file = NULL;
 

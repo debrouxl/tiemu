@@ -39,7 +39,7 @@ typedef struct
 	char	revision[4];	// firmware revision
 	char	internal;		// internal/external
 	char	flash;			// EPROM or FLASH
-	char	img_type;		// FLASH upgrade or ROM image
+	char	has_boot;		// FLASH upgrade does not have boot
 	char	data_size;		// size of pure data
 } IMG_INFO;
 
@@ -53,10 +53,10 @@ typedef struct
     int size;
     char *content;
 	int loaded;
-} ROM_INFO;
+} Ti68kRomInfo;
 
-typedef ROM_INFO	UPG_INFO;
-typedef ROM_INFO	Ti68kRomInfo;
+typedef Ti68kRomInfo	ROM_INFO;
+typedef Ti68kRomInfo	TIB_INFO;
 
 /*
   Variables
@@ -87,17 +87,24 @@ int ti68k_dumpRom(const char *filename);
 	Functions (new)
 */
 
-int ti68k_display_image_infos(ROM_INFO *ri);
+int ti68k_is_a_rom_file(const char *filename);
+int ti68k_is_a_tib_file(const char *filename);
+int ti68k_is_a_img_file(const char *filename);
 
-int ti68k_get_romdump_infos(const char *filename, ROM_INFO *img, int preload);
-int ti68k_get_upgrade_infos(const char *filename, UPG_INFO *upg, int preload);
-int ti68k_get_image_infos(const char *filename, IMG_INFO *img);
+int ti68k_display_rom_infos(ROM_INFO *s);
+int ti68k_display_tib_infos(TIB_INFO *s);
+int ti68k_display_img_infos(IMG_INFO *s);
 
-int ti68k_convert_rom_to_image(const char *filename, const char *dirname);
-int ti68k_convert_tib_to_image(const char *filename, const char *dirname);
+int ti68k_get_rom_infos(const char *filename, ROM_INFO *rom, int preload);
+int ti68k_get_tib_infos(const char *filename, TIB_INFO *tib, int preload);
+int ti68k_get_img_infos(const char *filename, IMG_INFO *img);
+
+
+int ti68k_convert_rom_to_image(const char *src, const char *dirname, char **dst);
+int ti68k_convert_tib_to_image(const char *src, const char *dirname, char **dst);
 
 int ti68k_load_image(const char *filename);
-int ti68k_load_upgrade(const char *filename);					
+int ti68k_load_upgrade(const char *filename);
 
 int ti68k_scan_images(const char *dirname, const char *filename);
 

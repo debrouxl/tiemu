@@ -56,10 +56,10 @@ typedef struct
 {
   char *base_dir;		// Windows directory (determined at startup)
   char *locale_dir;		// locale
-  char *manpage_dir;		// manpages
+  char *manpage_dir;	// manpages
   char *help_dir;		// help files
   char *pixmap_dir;		// pixmaps
-  char *rom_dir;		// ROMs
+  char *img_dir;		// images
   char *skin_dir;		// skins
   char *glade_dir;		// GUI files
   char *home_dir;		// $HOME

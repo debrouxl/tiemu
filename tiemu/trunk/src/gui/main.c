@@ -147,7 +147,7 @@ int main(int argc, char **argv)
 	/*
 		Attempt to load an image
 	*/
-	if(ti68k_loadImage((options.params)->rom_file)) {
+	if(ti68k_load_image((options.params)->rom_file)) {
       
 		display_wizard_dbox();
 		while(!wizard_ok) {
@@ -160,7 +160,7 @@ int main(int argc, char **argv)
 		(options.params)->rom_file = g_strdup(wizard_rom);
 		g_free(wizard_rom);
         splash_screen_set_label(_("Loading image..."));
-		ti68k_loadImage((options.params)->rom_file);
+		ti68k_load_image((options.params)->rom_file);
 	}
 
 	/* 
@@ -173,7 +173,7 @@ int main(int argc, char **argv)
 	}
 
 	if(options.params->tib_file != NULL) {
-		ti68k_loadUpgrade((options.params)->tib_file);
+		ti68k_load_upgrade((options.params)->tib_file);
 	}
 
 	/* 

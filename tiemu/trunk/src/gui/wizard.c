@@ -29,6 +29,7 @@
 
 #include "intl.h"
 #include "support.h"
+#include "struct.h"
 
 #ifdef __WIN32__
 # define strcasecmp _stricmp
@@ -77,15 +78,11 @@ static gint display_step1_dbox(void)
             break;
             case 2: 
                 gtk_widget_destroy(dbox);
-                //create_flash_fileselection();
-                
-
+                display_wz_tib_dbox();
             break;
             case 3: 
                 gtk_widget_destroy(dbox);
-                //create_romfile_fileselection();
-                printf("rom fs\n");
-                display_wait_dbox();
+                display_wz_rom_dbox();
             break;
             default:
         break;
@@ -193,50 +190,59 @@ gint display_wait_dbox(void)
 gint display_wz_rom_dbox(void)
 {
     const gchar *filename;
-    gchar *ext;
+	gchar *dstname;
 
     // get filename
-	filename = create_fsel("*rom");
-	if (!filename)
-		return;
+	filename = create_fsel("", "*.rom");
+	if (filename == NULL)
+	{
+		display_step1_dbox();
+		return -1;
+	}
 
-    ext = strrchr(filename, '.');
-    if(strcasecmp(ext, ".rom"))
+	if(!ti68k_is_a_rom_file(filename))
     {
-        msg_box(_("Error"), _("Invalid Rom dump."));
+        msg_box(_("Error"), _("Invalid ROM dump."));
         display_step1_dbox();     
         return;
     }
   
-    wizard_rom = g_strdup(filename);
+	ti68k_convert_rom_to_image(filename, inst_paths.img_dir, &dstname);
+    wizard_rom = g_strdup(dstname);
+	g_free(dstname);
     
     display_step3_dbox();
+
+	return 0;
 }
 
 gint display_wz_tib_dbox(void)
 {
     const gchar *filename;
-    gchar buffer[1024];
+    gchar *dstname;
 
     // get filename
-	filename = create_fsel("*.89u;*.9xu;*.tib");
-	if (!filename)
-		return;
+	filename = create_fsel("", "*.89u;*.9xu;*.tib");
+	if (filename == NULL)
+	{
+		display_step1_dbox();
+		return -1;
+	}
 
-    if(!tifiles_is_a_flash_file(filename) && !tifiles_is_a_tib_file(filename))
+    if(!ti68k_is_a_tib_file(filename))
     {
         msg_box(_("Error"), _("Invalid FLASH upgrade."));
         display_step1_dbox();
         return;
     }
 
-    display_wait_dbox();
+    ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname);
+    wizard_rom = g_strdup(dstname);
+	g_free(dstname);
     
-    ti68k_convertTibToRom(filename, buffer);
-    wizard_rom = g_strdup(buffer);
-    
-    display_step3_dbox();
-  
+    display_step3_dbox();  
+
+	return 0;
 }
 
 
