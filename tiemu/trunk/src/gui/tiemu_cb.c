@@ -118,7 +118,7 @@ on_popup_menu_configure_event          (GtkWidget       *widget,
                                         gpointer         user_data)
 {
   DISPLAY("configure\n");
-  unhalt();
+//  unhalt();
   return FALSE;
 }
 
@@ -382,8 +382,7 @@ void
 on_now__1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  do_screenshot(options.img_format, options.img_type, 
-		options.img_size, NULL);
+  hid_screenshot(NULL);
   unhalt();
 }
 

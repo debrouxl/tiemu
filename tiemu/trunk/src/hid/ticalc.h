@@ -40,7 +40,7 @@ void hid_switch_large_view(void);
 
 int  hid_set_gui_callbacks(void);
 
-int do_screenshot(int format, int type, int size, char *filename);
+int  hid_screenshot(char *filename);
 
 #endif
 

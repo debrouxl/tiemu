@@ -495,14 +495,11 @@ static int sdl_to_ti(int key)
 	case SDLK_PAGEUP : return TIKEY_EE;	
 	case SDLK_PAGEDOWN : return TIKEY_POWER;
 	case SDLK_SCROLLOCK : return TIKEY_ON;
+	case SDLK_PRINT : return TIKEY_APPS;
+
 	case SDLK_F9 : return OPT_DEBUGGER;
 	case SDLK_F10 : return OPT_SCREENCAPTURE;
-	  // F11 & F12 are used by WindowMaker
-	case SDLK_PRINT : return TIKEY_APPS;
-	  /*  
-	      case SDLK_BREAK_ALTERNATIVE :
-	      case SDLK_BREAK : return OPT_QUITNOSAVE;
-	  */
+
 	default : return TIKEY_NU;
 	}
     }
@@ -534,18 +531,16 @@ static int hid_update_keys(void)
 		    }
 		}
 	    }
-#ifndef EXT_WIN
 	  else if(event.button.button == 3)
 	    {
 	      if(!bFullscreen) 
 		{
-		  SDL_WaitEvent(&event); // flush event !!!
-		  hid_popup_menu(event.button);
+		  SDL_WaitEvent(&event); // flush event
+		  gui_popup_menu();
 		}
 	      else
 		hid_switch_windowed();
 	    }
-#endif
 	}
       else if(event.button.button==3) 
 	{
@@ -582,7 +577,7 @@ static int hid_update_keys(void)
 	    {
 		  /*
 	      ti68k_setActiveKey(OPT_SCREENCAPTURE, 0);
-	      do_screenshot(options.img_format, options.img_type, 
+	      hid_screenshot(options.img_format, options.img_type, 
 			    options.img_size, NULL);
 		*/
 	    }
@@ -1069,7 +1064,7 @@ void hid_switch_large_view(void)
 /*
   Do a screenshot of skin and/or LCD
 */
-int do_screenshot(int format, int type, int size, char *filename)
+int hid_screenshot(char *filename)
 {
 	/*
   Image img;

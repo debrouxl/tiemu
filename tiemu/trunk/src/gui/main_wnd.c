@@ -38,13 +38,15 @@ static GtkWidget *window;
 /* 
    Display a popup menu: entry point used by ticalc.c (SDL)
 */
-void hid_popup_menu(SDL_MouseButtonEvent event)
+void gui_popup_menu(void)
 {
+	guint32 time;
+
+  time = gtk_get_current_event_time();
   halt();
   gtk_menu_popup(GTK_MENU(display_popup_menu()),
 		 NULL, NULL, NULL, NULL,
-		 event.button,
-		 -897199374); // cannot pass time
+		 GDK_3BUTTON_PRESS, time);
 }
 
 

@@ -1,5 +1,11 @@
-/*  gtktiemu - a TI89/92/92+ emulator
- *  (c) Copyright 2000-2001, Romain Lievin and Thomas Corvazier
+/* Hey EMACS -*- linux-c -*- */
+/* $Id: cabl_int.h 651 2004-04-25 15:22:07Z roms $ */
+
+/*  TiEmu - an TI emulator
+ *
+ *  Originally written by Jonas Minsberg
+ *  Copyright (C) 2000, Thomas Corvazier, Romain Lievin
+ *  Copyright (C) 2001-2004, Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -110,8 +116,13 @@ int main(int argc, char **argv)
   /* Load a ROM image */
   gtk_init(&argc, &argv);
 
+  // linux
   g_free((options.params)->rom_file);
   (options.params)->rom_file = g_strdup("/home/romain/ti92.rom");
+
+  //win32
+  g_free((options.params)->rom_file);
+  (options.params)->rom_file = g_strdup("C:\\Program Files\\Common Files\\GTK\\2.0\\lib\\ti92.rom");
 
   if(ti68k_loadImage((options.params)->rom_file)) 
     {
@@ -122,8 +133,7 @@ int main(int argc, char **argv)
 	}
       }
       g_free((options.params)->rom_file);
-      //(options.params)->rom_file = g_strdup(wizard_rom);
-      //(options.params)->rom_file = g_strdup("C:\\Program Files\\Common Files\\GTK\\2.0\\lib\\ti92.rom");	//wizard_rom);
+      (options.params)->rom_file = g_strdup(wizard_rom);
       g_free(wizard_rom);
       ti68k_loadImage((options.params)->rom_file);
     }

@@ -1,3 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
+/* $Id: cabl_int.h 651 2004-04-25 15:22:07Z roms $ */
+
 /*  gtktiemu - a TI89/92/92+ emulator
  *  (c) Copyright 2000, Romain Lievin and Thomas Corvazier
  *  (c) Copyright 2001, Romain Lievin
