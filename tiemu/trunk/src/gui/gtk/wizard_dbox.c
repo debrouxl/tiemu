@@ -250,6 +250,15 @@ create_step1_dbox (void)
   gtk_box_pack_start (GTK_BOX (hbox6), label18, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (label18), GTK_JUSTIFY_LEFT);
 
+  g_signal_connect ((gpointer) radiobutton1, "toggled",
+                    G_CALLBACK (step1_on_radiobutton1_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) radiobutton2, "toggled",
+                    G_CALLBACK (step1_on_radiobutton2_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) radiobutton3, "toggled",
+                    G_CALLBACK (step1_on_radiobutton3_toggled),
+                    NULL);
   g_signal_connect ((gpointer) button4, "clicked",
                     G_CALLBACK (step1_b1_button_clicked),
                     NULL);

@@ -252,6 +252,7 @@ to get a ROM image of your calculator.</property>
 	      <property name="active">False</property>
 	      <property name="inconsistent">False</property>
 	      <property name="draw_indicator">True</property>
+	      <signal name="toggled" handler="step1_on_radiobutton1_toggled" last_modification_time="Tue, 08 Jul 2003 12:26:04 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -272,6 +273,7 @@ website and would like to use it.</property>
 	      <property name="inconsistent">False</property>
 	      <property name="draw_indicator">True</property>
 	      <property name="group">radiobutton1</property>
+	      <signal name="toggled" handler="step1_on_radiobutton2_toggled" last_modification_time="Tue, 08 Jul 2003 12:26:14 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -291,6 +293,7 @@ website and would like to use it.</property>
 	      <property name="inconsistent">False</property>
 	      <property name="draw_indicator">True</property>
 	      <property name="group">radiobutton1</property>
+	      <signal name="toggled" handler="step1_on_radiobutton3_toggled" last_modification_time="Tue, 08 Jul 2003 12:26:22 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>

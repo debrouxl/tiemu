@@ -24,11 +24,11 @@ step1_on_radiobutton1_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-step2_on_radiobutton2_toggled          (GtkToggleButton *togglebutton,
+step1_on_radiobutton2_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-step3_on_radiobutton3_toggled          (GtkToggleButton *togglebutton,
+step1_on_radiobutton3_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
