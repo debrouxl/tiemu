@@ -146,14 +146,8 @@ tiemu_OBJ = core/uae/newcpu.o \
 all: uae tiemu
 
 uae:
-ifneq (,$(findstring __WIN32__,$(CFLAGS)))
-	export CFLAGS="-mms-bitfields"
-endif
-	cd core/uae && $(MAKE) gen
-	cd core/uae && $(MAKE) all
-ifneq (,$(findstring __WIN32__,$(CFLAGS)))
-	export CFLAGS=
-endif
+	cd core/uae && $(MAKE) CFLAGS="$(CFLAGS)" gen
+	cd core/uae && $(MAKE) CFLAGS="$(CFLAGS)" all
 
 tiemu: $(tiemu_OBJ)
 #	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu $(LDFLAGS) $(CFLAGS)
