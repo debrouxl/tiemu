@@ -65,6 +65,8 @@ ULONG mem_mask[16];		// pseudo chip-select
 // e00000-efffff :   ...
 // d00000-ffffff : unused
 
+//#define MAX(a,b)	((a) > (b) ? (a) : (b))
+
 typedef struct
 {
     int changed[32]; // FLASH segments which have been (re)programmed
@@ -83,6 +85,8 @@ static int log2(int i);
 int hw_mem_init(void)
 {
 	int i;
+	int ti92v1;
+	int ti92v2;
 
 	// get infos from image
 	tihw.calc_type = img_infos.calc_type;
@@ -90,8 +94,11 @@ int hw_mem_init(void)
 	tihw.rom_flash = img->flash;
 	strcpy(tihw.rom_version, img->version);
 	tihw.hw_type = img->hw_type;
+	
+	tihw.ti92v1 = (tihw.calc_type == TI92) && (strcmp(tihw.rom_version, "2.0") < 0);
+	tihw.ti92v2 = (tihw.calc_type == TI92) && (strcmp(tihw.rom_version, "2.0") >= 0);
 
-	if((tihw.calc_type == TI92) && (strcmp(tihw.rom_version, "2.0") > 0))
+	if(tihw.ti92v2)
 	{
 		// TI92 II is same as TI92+
 		tihw.rom_size = rom_sizes[1];
@@ -143,26 +150,39 @@ int hw_mem_init(void)
     // map RAM
     mem_tab[0] = tihw.ram;
     mem_mask[0] = tihw.ram_size-1;
+
     mem_tab[1] = tihw.ram;
     mem_mask[1] = tihw.ram_size-1;
 
     // map ROM (internal)
-    mem_tab[2] = tihw.rom;
-    mem_mask[2] = tihw.rom_size/2-1;
-    mem_tab[3] = tihw.rom + 0x100000;
-    mem_mask[3] = tihw.rom_size/2-1;
+	if(tihw.rom_internal)
+	{
+		mem_tab[2] = tihw.rom;
+		mem_mask[2] = MIN(tihw.rom_size, 1*MB)-1;
+
+		mem_tab[3] = tihw.rom + 0x100000;
+		mem_mask[3] = MIN(tihw.rom_size, 1*MB)-1;
+	}
 
     // map ROM (external)
-    mem_tab[4] = tihw.rom;
-    mem_mask[4] = tihw.rom_size/2-1;
-    mem_tab[5] = tihw.rom + 0x100000;
-    mem_mask[5] = tihw.rom_size/2-1;
+	if(!tihw.rom_internal)
+	{
+		mem_tab[4] = tihw.rom;
+		mem_mask[4] = MIN(tihw.rom_size, 1*MB)-1;
+
+		mem_tab[5] = tihw.rom + 0x100000;
+		mem_mask[5] = MIN(tihw.rom_size, 1*MB)-1;
+	}
 
     // map IO
     mem_tab[6] = tihw.io;
     mem_mask[6] = io_size-1;
-    mem_tab[7] = tihw.io2;
-    mem_mask[7] = io_size-1;
+	
+	if(tihw.hw_type == HW2)
+	{
+		mem_tab[7] = tihw.io2;
+		mem_mask[7] = io_size-1;
+	}
   
     // blit ROM
     memcpy(tihw.rom, img->data, img->size);

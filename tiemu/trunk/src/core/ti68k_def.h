@@ -94,6 +94,9 @@ typedef struct
 	int		lc_speedy;		// speedy mode for direct file
     int     lc_timeout;     // timeout for internal link
 
+	int		ti92v1;
+	int		ti92v2;
+
     // ioports.c
 	//...
 
