@@ -156,7 +156,7 @@ static void process_address(uint32_t plane_addr)
 				ngc = 7;
 		}
 
-#if 1
+#if 0
 		printf("%i: %06x-%06x-%06x (%i-%i-%i)\n", ngp,
 				lcd_planes[0], lcd_planes[1], lcd_planes[2],
 				lcd_exptime[0]>>4, lcd_exptime[1]>>4, lcd_exptime[2]>>4
