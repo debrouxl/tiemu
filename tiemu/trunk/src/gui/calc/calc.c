@@ -116,6 +116,19 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
 	return FALSE;
 }
 
+GLADE_CB void
+on_calc_wnd_size_request           (GtkWidget       *widget,
+                                    GtkRequisition  *requisition,
+                                    gpointer         user_data)
+{
+	gint w, h;
+
+	printf("size request: %i x %i\n", requisition->width, requisition->height);
+
+	gtk_window_get_size(GTK_WINDOW(widget), &w, &h);
+	printf("%i x %i\n", w, h);
+}
+
 static int match_skin(int calc_type)
 {
 	SKIN_INFOS si;
@@ -281,15 +294,9 @@ int  hid_init(void)
 
     // Get window size depending on windowed/fullscreen
   	if(params.background)
-	{
         gtk_drawing_area_size(GTK_DRAWING_AREA(area), si->width, si->height);
-		gtk_window_resize(GTK_WINDOW(wnd), si->width, si->height);
-	}
     else
-	{
         gtk_drawing_area_size(GTK_DRAWING_AREA(area), tihw.lcd_w, tihw.lcd_h);  
-		gtk_window_resize(GTK_WINDOW(wnd), tihw.lcd_w, tihw.lcd_h);
-	}
     
     // Draw the skin and compute grayscale palette
   	compute_grayscale();
@@ -313,7 +320,7 @@ int  hid_exit(void)
 	// Release resources
     if(lcd != NULL)
     {
-        //g_object_unref(lcd);
+        g_object_unref(lcd);
         lcd = NULL;
     }
 
@@ -333,8 +340,6 @@ int hid_switch_with_skin(void)
 {
     params.background = 1;
     gtk_drawing_area_size(GTK_DRAWING_AREA(area), skin_infos.width, skin_infos.height);
-	gtk_window_resize(GTK_WINDOW(wnd), skin_infos.width, skin_infos.height);
-
 	redraw_skin();
 
     return 0;

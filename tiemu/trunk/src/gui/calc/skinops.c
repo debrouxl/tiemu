@@ -293,10 +293,8 @@ int skin_load(const char *filename)
   	ret = skin_read_header(filename, &skin_infos);
   	ret = skin_read_image(filename, &skin_infos);
 
-  	if (ret == 0)
-    	{
-      		fprintf(stderr, "Skin loaded (%s): %d x %d, %s\n", filename, skin_infos.width, skin_infos.height, buf);
-    	}
+	if(!ret)
+   		fprintf(stdout, "loading skin: %s (%d x %d) %s\n", g_basename(filename), skin_infos.width, skin_infos.height, buf);
   
   	return ret;
 }
