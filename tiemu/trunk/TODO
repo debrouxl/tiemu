@@ -8,10 +8,6 @@ ExtendeD
 envoyer plusieurs fichiers à TiEmu à la fois ? Actuellement il faut
 les prendre un par un.
 
-* Lorsque la 89 est émulée, si on tape lentement des lettres, tout va
-bien, mais si on tape rapidement, l' 'alpha' ne semble pas être appuyé
-et des nombres sont tapés à la place.
-
 
 Kevin
 =====
@@ -61,8 +57,6 @@ roms
 * MOVEA.W diassembled as MOVEA.L (HeapDeref)
 
 * make AC_CHECK_LIB(comdlg32, GetOpenFileName) work
-
-* AI2 to fix (keyboard)
 
 * console mode (Win32)
 

@@ -123,14 +123,29 @@ int hw_kbd_exit(void)
     return 0;
 }
 
+void ti68k_kbd_set_keys(int *keys, int *actives, int n)
+{
+	int i;
+	for(i = 0; i < n; i++)
+		key_states[keys[i]] = actives[i];
+	key_change = !0;
+}
+
 void ti68k_kbd_set_key(int key, int active)
 {
-    key_states[key] = active;
-	key_change = !0;
-	//printf("%i", active);
-
-	if(key == TIKEY_ON)
+	if(key == TIKEY_ALPHA)
+	{
+		if(active)
+			key_states[key]++;
+		else
+			key_states[key]--;
+	}
+	else if(key == TIKEY_ON)
 		tihw.on_key = active;
+	else
+		key_states[key] = active;
+
+	key_change = !0;	
 }
 
 int ti68k_kbd_is_key_pressed(int key)
@@ -151,7 +166,6 @@ int hw_kbd_update(void)		// ~600Hz
 		// pressed, or pressing another one without releasing the first key, will not generate
 		// additional interrupts.
 		hw_m68k_irq(2);
-		//printf(".");
     }
 
 	key_change = 0;
@@ -167,7 +181,7 @@ static uint8_t get_rowmask(uint8_t r)
   
     for(i=0; i<8; i++)
     {
-        rc |= key_states[row[i]] << (7-i);
+        rc |= (key_states[row[i]] & 1) << (7-i);
     }
 
     return rc;
@@ -175,17 +189,16 @@ static uint8_t get_rowmask(uint8_t r)
 
 uint8_t hw_kbd_read_cols(void)
 {
-    static int i;
+    static uint8_t i;
     static uint8_t arg;
     static uint16_t mask;
 
-    arg = 0;
     mask = (((uint16_t)tihw.io[0x18]) << 8) | tihw.io[0x19];
-    for(i=0; i<10; i++)
+    for(i = 0, arg = 0; i < 10; i++)
     {
         if(!(mask & (1<<i)))
-            arg |= get_rowmask((uint8_t)i);
+            arg |= get_rowmask(i);
     }
 
-    return (uint8_t)(~arg);
+    return ~arg;
 }
