@@ -107,7 +107,7 @@ static INLINE_DECLARATION ULONG nextilong(void)
 }
 
 //roms
-#ifdef __WIN32__
+#if defined(__WIN32__) && !defined(__MINGW32__)
 extern unsigned char* hw_get_real_address(unsigned long adr);
 #else
 #include <stdint.h>

@@ -482,7 +482,11 @@ void rcfile_write(void)
 	FILE *txt;
 
 	rcfile_get_path(&rc_file);
+#ifndef __WIN32__
 	mkdir(CONF_DIR, 0755);
+#else
+	mkdir(CONF_DIR);
+#endif
 	txt=fopen(rc_file, "wt");
 
 	if(txt==NULL) {

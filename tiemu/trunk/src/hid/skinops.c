@@ -202,7 +202,7 @@ int skin_read_image(const char *filename, SKIN_INFOS* si)
     cinfo.err = jpeg_std_error(&jerr);
     jpeg_create_decompress(&cinfo);
 
-#ifdef __WIN32__
+#if defined(__WIN32__) && !defined(__MINGW32__)
 	jpeg_file_src(&cinfo, fp);
 #else
 	jpeg_stdio_src(&cinfo, fp);

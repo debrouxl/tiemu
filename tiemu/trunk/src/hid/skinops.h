@@ -77,7 +77,7 @@
 /* Types */
 /*********/
 
-#ifndef __WIN32__	// already defined by Windows
+#if !defined(__WIN32__)	// already defined by Windows
 typedef struct
 {
   uint32_t left;
@@ -85,6 +85,8 @@ typedef struct
   uint32_t right;
   uint32_t bottom;
 } RECT;
+#elif defined(__MINGW32__)
+#include <windef.h>
 #endif
 
 typedef struct

@@ -1,0 +1,1 @@
+Change prefix into /usr in sdl-config.
