@@ -78,47 +78,46 @@ static void map_dbus_to_file(void)
     hw_dbus_checkread = df_checkread;
 }
 
-TicableLinkCable lc;
-
-
 /*
     D-bus management (HW linkport)
 */
 
-static int init_linkcable(void);
-static int exit_linkcable(void);
-static int init_linkfile(void);
-static int exit_linkfile(void);
+static int init_link_cable(void);
+static int exit_link_cable(void);
+static int init_link_file(void);
+static int exit_link_file(void);
 
 int hw_dbus_init(void)
 {
-	// init linkcable
-	init_linkcable();
+	// init link_cable
+	init_link_cable();
 
 	// init directfile
-	init_linkfile();
+	init_link_file();
 
-	// set mappers to linkcable
-	map_dbus_to_cable();
+	if(link_cable.link_type == LINK_NUL)
+		map_dbus_to_file();		// set mappers to link_cable
+	else
+		map_dbus_to_cable();	// set mappers to link_cable
 
     return 0;
 }
 
 int hw_dbus_reset(void)
 {
-	exit_linkfile();
-	init_linkfile();
+	hw_dbus_exit();
+	hw_dbus_init();
 
 	return 0;
 }
 
 int hw_dbus_exit(void)
 {
-	// exit linkcable
-	exit_linkcable();
-	
-	// exit linkfile
-	exit_linkfile();
+	// exit link_cable
+	exit_link_cable();
+
+	// exit link_file
+	exit_link_file();
 
     return 0;
 }
@@ -127,7 +126,9 @@ int hw_dbus_exit(void)
 	Link cable access
 */
 
-static int init_linkcable(void)
+TicableLinkCable lc;	// used in ports.c for direct access
+
+static int init_link_cable(void)
 {
 	int err;
 
@@ -150,7 +151,7 @@ static int init_linkcable(void)
 	return 0;
 }
 
-static int exit_linkcable(void)
+static int exit_link_cable(void)
 {
 	int err;
 
@@ -254,7 +255,7 @@ void df_putbyte(uint8_t arg)
 
 	if(sip == 0)
 	{
-		printf("attempted to send data !\n");
+		printf("receiving %02x !\n", arg);
 		io_bit_set(0x0d,7);	// SLE=1
 	}
 }
@@ -373,7 +374,7 @@ static void ilp_pbar(void)    { }
 static void ilp_label(void)   { }
 
 /* Initialize a pseudo link cable to be connected with HW */
-static int init_linkfile(void)
+static int init_link_file(void)
 {
   	ilc = (TicableLinkCable *)malloc(sizeof(TicableLinkCable));
   	if(ilc == NULL)
@@ -415,7 +416,7 @@ static int init_linkfile(void)
   	return 0;
 }
 
-static int exit_linkfile(void)
+static int exit_link_file(void)
 {
 	ilc->exit();
 
@@ -461,7 +462,6 @@ int send_ti_file(const char *filename)
         return ERR_NOT_TI_FILE;
 
 	// Use direct file loading
-    map_dbus_to_file();
 	start = clock();
 	sip = 1;
 
@@ -499,7 +499,6 @@ int send_ti_file(const char *filename)
 	// Restore link cable use
 	sip = 0;
 	finish = clock();
-	map_dbus_to_cable();
 	duration = (double)(finish - start) / CLOCKS_PER_SEC;
 	//printf("Duration: %2.1f seconds.\n", duration);
 
