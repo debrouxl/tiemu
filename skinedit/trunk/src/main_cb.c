@@ -68,8 +68,8 @@ on_new_activate                        (GtkMenuItem     *menuitem,
 {
   GtkWidget *filesel;
 	GSList *formats;
-	int i;
 	gchar *ext_list = NULL;
+	int i;
 
   /* must save & destroy pixbuf */
 
@@ -121,7 +121,9 @@ on_new_activate                        (GtkMenuItem     *menuitem,
 
   gtk_window_set_title(GTK_WINDOW(filesel), _("Select JPEG image"));
 
+	ext_list = g_strdup("");
 	formats = gdk_pixbuf_get_formats ();
+
 	for(i=0; i < g_slist_length(formats); i++)
 		{
 			GSList *elt;
@@ -131,17 +133,14 @@ on_new_activate                        (GtkMenuItem     *menuitem,
 			elt = g_slist_nth(formats, i);
 			fmt = (GdkPixbufFormat *)elt->data;
 			exts = gdk_pixbuf_format_get_extensions(fmt);
-/*
-			strcat(ext_list, "*.");
-			strcat(ext_list, exts[0]);
-			strcat(ext_list, "; ");
-			*/
+
 			ext_list = g_strconcat(ext_list, "*.", exts[0], "; ", NULL);
 			g_strfreev(exts);
 		}
 	g_slist_free (formats);
 
   gtk_file_selection_complete(GTK_FILE_SELECTION(filesel), ext_list);
+	g_free(ext_list);
 
   gtk_signal_connect (GTK_OBJECT(GTK_FILE_SELECTION(filesel)->ok_button), "clicked",
                       GTK_SIGNAL_FUNC(on_filesel_new_ok_clicked),
