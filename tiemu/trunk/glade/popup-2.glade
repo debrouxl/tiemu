@@ -288,7 +288,7 @@
 	  <child>
 	    <widget class="GtkCheckMenuItem" id="full_screen1">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">_Full screen (Alt+Enter)</property>
+	      <property name="label" translatable="yes">_Full screen</property>
 	      <property name="use_underline">True</property>
 	      <property name="active">False</property>
 	      <signal name="activate" handler="on_full_screen1_activate"/>

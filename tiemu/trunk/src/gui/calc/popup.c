@@ -145,8 +145,9 @@ GLADE_CB void
 on_popup_menu_cancel                   (GtkMenuShell    *menushell,
                                         gpointer         user_data)
 {
-	// never called (ESC)
-	DISPLAY("on_popup_menu_cancel\n");
+	// called on ESC
+	//DISPLAY("on_popup_menu_cancel\n");
+    ti68k_engine_unhalt();
 }
 
 
@@ -157,14 +158,17 @@ on_popup_menu_button_press_event       (GtkWidget       *widget,
 {
 	GtkAllocation *alloc = &(widget->allocation);
 
-    	//DISPLAY("%i %i %i %i\n", (gint)event->x, (gint)event->y, (gint)event->x_root, (gint)event->y_root);
-    	//DISPLAY("%i %i %i %i\n", alloc->x, alloc->y, alloc->width, alloc->height);
-    	if((event->x > alloc->width) || (event->y > alloc->height) ||
-        	(event->x < alloc->x) || (event->y < alloc->y)) {
-           	ti68k_engine_unhalt();
-    	}
+    //DISPLAY("on_popup_menu_button_press_event\n");
+    //DISPLAY("%i %i %i %i\n", (gint)event->x, (gint)event->y, (gint)event->x_root, (gint)event->y_root);
+    //DISPLAY("%i %i %i %i\n", alloc->x, alloc->y, alloc->width, alloc->height);
+    if((event->x > alloc->width) || (event->y > alloc->height) ||
+        (event->x < alloc->x) || (event->y < alloc->y)) 
+    {
+        ti68k_engine_unhalt();
+    }
 
-  	return TRUE;	//return FALSE;
+  	return TRUE;
+    //return FALSE;
 }
 
 
@@ -173,8 +177,8 @@ on_popup_menu_key_press_event          (GtkWidget       *widget,
                                         GdkEventKey     *event,
                                         gpointer         user_data)
 {
-	// never called (ESC)
-	DISPLAY("on_popup_menu_key_press_event\n");
+	// called on key press in the menu
+	//DISPLAY("on_popup_menu_key_press_event\n");
   	return FALSE;
 }
 
