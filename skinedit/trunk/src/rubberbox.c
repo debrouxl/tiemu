@@ -1,3 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
+/* $Id$ */
+
 /*
  *   skinedit - a skin editor for the TiEmu emulator
  *   Copyright (C) 2002 Julien BLACHE <jb@tilp.info>
