@@ -35,6 +35,7 @@
 #include "support.h"
 #include "struct.h"
 #include "engine.h"
+#include "tie_error.h"
 
 #include "ti68k_def.h"
 #include "ti68k_int.h"
@@ -55,6 +56,7 @@ gint display_comm_dbox()
 	GtkWidget *dbox;
 	GtkWidget *data;
 	gint result;
+	int err;
 
 	init = !0;
 
@@ -223,7 +225,8 @@ gint display_comm_dbox()
 	switch (result) {
 	case GTK_RESPONSE_OK:
         memcpy(&link_cable, &tmp_lp, sizeof(TicableLinkParam));
-        ti68k_linkport_reconfigure();
+        err = ti68k_linkport_reconfigure();
+		handle_error();
 		break;
 	case GTK_RESPONSE_HELP:
 		break;

@@ -67,13 +67,13 @@ int hw_init(void)
 	tihw.ti92v2 = (tihw.calc_type == TI92) && (strcmp(tihw.rom_version, "2.0") >= 0);
 
     // Do sub-initializations.
-	hw_mem_init();
-	hw_io_init();
-	hw_dbus_init();
-	hw_kbd_init();
-	hw_timer_init();
-	hw_lcd_init();
-	hw_m68k_init();
+	TRY(hw_mem_init());
+	TRY(hw_io_init());
+	TRY(hw_dbus_init());
+	TRY(hw_kbd_init());
+	TRY(hw_timer_init());
+	TRY(hw_lcd_init());
+	TRY(hw_m68k_init());
 
     // Set hardware update rate (dependant from io[0x15])
     if(params.hw_rate != -1)
@@ -88,26 +88,26 @@ int hw_init(void)
 
 int hw_reset(void)
 {
-	hw_mem_reset();
-	hw_io_reset();
-	hw_kbd_reset();
-	hw_timer_reset();
-	hw_lcd_reset();
-	hw_dbus_reset();
-	hw_m68k_reset();
+	TRY(hw_mem_reset());
+	TRY(hw_io_reset());
+	TRY(hw_kbd_reset());
+	TRY(hw_timer_reset());
+	TRY(hw_lcd_reset());
+	TRY(hw_dbus_reset());
+	TRY(hw_m68k_reset());
 
     return 0;
 }
 
 int hw_exit(void)
 {
-	hw_m68k_exit();
-	hw_dbus_exit();
-	hw_lcd_exit();
-	hw_timer_exit();
-	hw_kbd_exit();
-	hw_io_exit();
-	hw_mem_exit();
+	TRY(hw_m68k_exit());
+	TRY(hw_dbus_exit());
+	TRY(hw_lcd_exit());
+	TRY(hw_timer_exit());
+	TRY(hw_kbd_exit());
+	TRY(hw_io_exit());
+	TRY(hw_mem_exit());
 
     return 0;
 }

@@ -36,6 +36,7 @@
 #include "engine.h"
 #include "filesel.h"
 #include "ti68k_int.h"
+#include "tie_error.h"
 
 #ifdef __WIN32__
 # define strcasecmp _stricmp
@@ -200,6 +201,7 @@ gint display_wz_rom_dbox(void)
 {
     const gchar *filename;
 	gchar *dstname;
+	int err;
 
     // get filename
 	filename = (char *)create_fsel("", "*.rom");
@@ -216,7 +218,8 @@ gint display_wz_rom_dbox(void)
         return -1;
     }
   
-	ti68k_convert_rom_to_image(filename, inst_paths.img_dir, &dstname);
+	err = ti68k_convert_rom_to_image(filename, inst_paths.img_dir, &dstname);
+	handle_error();
     wizard_rom = g_strdup(dstname);
 	g_free(dstname);
     
@@ -229,6 +232,7 @@ gint display_wz_tib_dbox(void)
 {
     const gchar *filename;
     gchar *dstname;
+	int err;
 
     // get filename
 	filename = (char *)create_fsel("", "*.89u;*.9xu;*.tib");
@@ -245,7 +249,8 @@ gint display_wz_tib_dbox(void)
         return -1;
     }
 
-    ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname);
+    err = ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname);
+	handle_error();
     wizard_rom = g_strdup(dstname);
 	g_free(dstname);
     

@@ -37,6 +37,7 @@
 #include "dboxes.h"
 #include "fs_misc.h"
 #include "rcfile.h"
+#include "tie_error.h"
 
 gchar *chosen_file = NULL;
 
@@ -119,6 +120,7 @@ gint display_romversion_dbox()
 	GtkWidget *dbox;
 	GtkWidget *data;
     gint result;
+	int err;
 
     GtkListStore *list;
     GtkTreeIter iter;
@@ -221,7 +223,9 @@ gint display_romversion_dbox()
 				g_free(chosen_file);
                 chosen_file = NULL;
 
-				if(ti68k_load_image(params.rom_file)) 
+				err = ti68k_load_image(params.rom_file);
+				handle_error(err);
+				if(err) 
 				{
 					msg_box("Error", "Can not load the image.");
 					return -1;
@@ -238,7 +242,9 @@ gint display_romversion_dbox()
 				g_free(chosen_file);
                 chosen_file = NULL;
 
-				if(ti68k_load_upgrade(params.tib_file)) 
+				err = ti68k_load_upgrade(params.tib_file);
+				handle_error(err);
+				if(err)
 				{
 					msg_box("Error", "Can not load the upgrade.");
 					return -1;

@@ -46,6 +46,7 @@
 #include "infos.h"
 #include "manpage.h"
 #include "scroptions.h"
+#include "tie_error.h"
 
 #include "ti68k_int.h"
 #include "ti68k_def.h"
@@ -470,11 +471,14 @@ GLADE_CB void
 on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	int err;
+
 	ti68k_state_save(params.sav_file);
   	if(!rcfile_exist())
     		rcfile_write();
 
-  	ti68k_exit();
+  	err = ti68k_exit();
+	handle_error(err);
   	exit(0);
 }
 
@@ -483,6 +487,9 @@ GLADE_CB void
 on_exit_without_saving_state1_activate (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	ti68k_exit();
+	int err;
+
+	err = ti68k_exit();
+	handle_error(err);
   	exit(0);
 }

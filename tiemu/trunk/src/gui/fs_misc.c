@@ -37,6 +37,7 @@
 #include "hid.h"
 #include "rcfile.h"
 #include "pbars.h"
+#include "tie_error.h"
 
 gint display_skin_dbox()
 {
@@ -95,6 +96,7 @@ gint display_skin_dbox()
 gint display_load_state_dbox()
 {
 	const gchar *filename;
+	int err;
 
     // get filename
 	filename = create_fsel(inst_paths.base_dir, "*.sav");
@@ -104,7 +106,8 @@ gint display_load_state_dbox()
     g_free(params.sav_file);
     params.sav_file = g_strdup(filename);
     
-    ti68k_state_load(params.sav_file);
+    err = ti68k_state_load(params.sav_file);
+	handle_error();
     ti68k_engine_unhalt();
 
 	return 0;
@@ -113,6 +116,7 @@ gint display_load_state_dbox()
 gint display_save_state_dbox()
 {
     const gchar *filename;
+	int err;
 
     // get filename
 	filename = create_fsel(inst_paths.base_dir, "*.sav");
@@ -121,7 +125,8 @@ gint display_save_state_dbox()
 
     g_free(params.sav_file);
     params.sav_file = g_strdup(filename);
-    ti68k_state_save(params.sav_file);
+    err = ti68k_state_save(params.sav_file);
+	handle_error();
     
     if(!rcfile_exist())
     {
@@ -145,6 +150,7 @@ gint display_tifile_dbox()
 {
 	const gchar *filename;
     const gchar *ext;
+	int err;
 
     // set mask
     switch(tihw.calc_type) {
@@ -193,7 +199,8 @@ gint display_tifile_dbox()
     }
     
 
-    ti68k_linkport_send_file(filename);
+    err = ti68k_linkport_send_file(filename);
+	handle_error();
     ti68k_engine_unhalt();  // _must_ be put after !
 
 	return 0;
@@ -253,6 +260,7 @@ gint display_import_romversion_dbox(void)
 	char *dstname;
 	char *basename;
 	int ret;
+	int err;
     
     // get filename
 	filename = create_fsel(inst_paths.base_dir, "*.rom;*.89u;*.9xu;*.tib");
@@ -261,7 +269,8 @@ gint display_import_romversion_dbox(void)
 
     if(ti68k_is_a_rom_file(filename))
 	{
-		ti68k_convert_rom_to_image(filename, inst_paths.img_dir, &dstname);
+		err = ti68k_convert_rom_to_image(filename, inst_paths.img_dir, &dstname);
+		handle_error();
 		g_free(dstname);
 	}
 	else if(ti68k_is_a_tib_file(filename))
@@ -274,7 +283,8 @@ gint display_import_romversion_dbox(void)
 			"(no boot block, no certificate, problems with fonts)");
 		if(ret == 2)
 		{	// fake rom
-			ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname);
+			err = ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname);
+			handle_error();
 			g_free(dstname);
 		}
 		else if(ret ==1)

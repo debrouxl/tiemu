@@ -150,7 +150,7 @@ int main(int argc, char **argv)
     */
     splash_screen_set_label(_("Searching for ROM dumps..."));
     err = ti68k_scan_files(inst_paths.img_dir, inst_paths.img_dir);
-	check_error();
+	handle_error();
 
 	/*
 		Attempt to load an image (step 3)
@@ -169,7 +169,7 @@ int main(int argc, char **argv)
 
         splash_screen_set_label(_("Loading image..."));
 		err = ti68k_load_image(params.rom_file);
-		check_error();
+		handle_error();
 	}
 
 	/* 
@@ -177,7 +177,7 @@ int main(int argc, char **argv)
 	*/
     splash_screen_set_label(_("Initializing m68k emulation engine..."));
 	err = ti68k_init();
-	check_error();
+	handle_error();
 	if(err)
 		return -1;
 
@@ -187,7 +187,7 @@ int main(int argc, char **argv)
 	if(params.tib_file != NULL) 
 	{
 		err = ti68k_load_upgrade(params.tib_file);
-		check_error();
+		handle_error();
 	}
 
 	/* 
@@ -208,7 +208,7 @@ int main(int argc, char **argv)
 	if(params.sav_file != NULL) 
 	{
 		err = ti68k_state_load(params.sav_file);
-		check_error();
+		handle_error();
 	}
   
 	/* 
@@ -237,7 +237,7 @@ int main(int argc, char **argv)
 		Close the emulator engine
 	*/
 	err = ti68k_exit();
-	check_error();
+	handle_error();
   
 	return 0;
 }
