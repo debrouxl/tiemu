@@ -505,7 +505,8 @@ gint display_dbgregs_window(void)
 	gtk_widget_show(data);
 
 	gtk_window_resize(GTK_WINDOW(dbox), options3.regs.w, options3.regs.h);
-	gtk_widget_set_uposition(GTK_WIDGET(dbox), options3.regs.x, options3.regs.y);
+	gtk_window_move(GTK_WINDOW(dbox), options3.regs.x, options3.regs.y);
+	//gtk_widget_set_uposition(GTK_WIDGET(dbox), options3.regs.x, options3.regs.y);
     gtk_widget_show(GTK_WIDGET(dbox));
 
 	already_open = !0;
@@ -531,6 +532,8 @@ on_dbgregs_window_delete_event       (GtkWidget       *widget,
 {
 	gdk_window_get_size(widget->window, &options3.regs.w, &options3.regs.h);
 	gdk_window_get_root_origin(widget->window, &options3.regs.x, &options3.regs.y);
+	//gtk_window_get_size(GTK_WINDOW(widget), &options3.regs.w, &options3.regs.h);
+	//gtk_window_get_position(GTK_WINDOW(widget), &options3.regs.x, &options3.regs.y);
 
 	return FALSE;
 }
