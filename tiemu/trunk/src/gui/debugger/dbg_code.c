@@ -212,6 +212,8 @@ static void clist_refresh(GtkListStore *store)
 
             gtk_list_store_set(store, &iter, COL_ICON, pix, -1);
             g_free(str);
+
+            //if(addr == pc) gtk_tree_selection_select_iter(selection, &iter);
         }
 }
 
@@ -498,6 +500,31 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
                                         GdkEventKey     *event,
                                         gpointer         user_data)
 {
+    GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
+    GtkTreeSelection *selection;
+    GtkTreeIter iter;
+    gboolean valid;
+    gchar *str;
+    gchar *row;
+    gint row_idx, row_max;
+    uint32_t addr;
+
+    selection = gtk_tree_view_get_selection(view);
+    valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
+    if(valid)
+    {
+        gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+        sscanf(str, "%x", &addr);
+
+        row = gtk_tree_model_get_string_from_iter(model, &iter);
+        sscanf(row, "%i", &row_idx);
+        row_max = gtk_tree_model_iter_n_children(model, NULL) - 1;
+    }
+    else
+        row_idx = row_max = -1;
+
 	switch(event->keyval) 
 	{
 	case GDK_F2:
@@ -507,6 +534,43 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
 	case GDK_g:
 		on_go_to_address1_activate(NULL, user_data);
 		return TRUE;
+
+    case GDK_Up:
+        if(row_max == -1)
+            break;
+
+        printf("Up: %i/%i %x\n", row_idx, row_max, addr);
+
+        if(row_idx > 0)
+            break;
+
+        gtk_list_store_clear(store);
+        clist_populate(store, addr - 2);
+
+        return FALSE;
+    case GDK_Down:
+        if(row_max == -1)
+            break;
+
+        printf("Down: %i/%i %x\n", row_idx, row_max, addr);
+
+        if(row_idx < row_max)
+            break;
+
+        gtk_list_store_clear(store);
+        clist_populate(store, addr + 2);
+
+        return FALSE;
+
+    case GDK_Page_Up:
+    case GDK_Page_Down:
+        if(row_max == -1)
+            break;
+
+        printf("Page Up/Down: %i/%i <%s> %i\n", row_idx, row_max, str);
+
+        return FALSE;
+
 	default:
 		return FALSE;
 	}
@@ -514,7 +578,7 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
 	return FALSE;
 }
 
-// note: user_data data passing ha been manually added to Glade file
+// note: user_data data passing has been manually added to Glade file
 GLADE_CB void
 on_go_to_address1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
@@ -567,3 +631,24 @@ on_set_pc_to_selection1_activate       (GtkMenuItem     *menuitem,
     display_dbgcode_window();
     display_dbgregs_window();
 }
+
+/*
+{
+    GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
+    GtkTreeSelection *selection;
+    GtkTreeIter iter;
+    gboolean valid;
+    gchar *str;    
+
+    selection = gtk_tree_view_get_selection(view);
+    valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+
+    printf("move: %i %s <%s>", count, step_to_string(step), str);
+
+  return FALSE;
+}
+
+  */
