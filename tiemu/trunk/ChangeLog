@@ -5,6 +5,10 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
+- 21/01/2005, version 1.80l: roms
+	- switched to GTK+ package 2.4-rc26 (2.4.14): compatible with GiMP and fixes toolbar tooltips
+	- fixed size of handles in handle wnd
+
 - 20/01/2005, version 1.80k: roms
 	- link port is now reset when error occurs: great improvement
 	- added support of EA bit ($60000D:2): Titanium work

@@ -103,13 +103,6 @@ l'USB dans l'AMS 3 ? (bizarrement un AMS 3 patché avec Titarom et
 Lionel
 ======
 
-* j'ai de nouveau des problèmes avec le caractère 0x09
-dans la fenêtre ASCII de la memory view (Win ME ?).
-
-* Toujours le problème avec TAB (0x09) mal interprété.
-J'utilise le GTK téléchargé en même temps que The GIMP
-2.0.5, un GTK+ du 01/10/2004, version 2.4.10.
-
 * Un bug bizarre, dont les instructions de
 reproduction semblent être:
         * utiliser un AMS "récent" (2.07+), sur une 92+ ou

@@ -101,4 +101,7 @@ void heap_get_block_size(int handle, uint32_t *addr, uint16_t *size)
 
 	*addr = rd_long(ti68k_get_real_address(base + 4*handle));
 	*size = rd_word(ti68k_get_real_address(*addr - 2));
+
+	*size &= ~(1 << 16);	// remove lock
+	*size <<= 1;			// size is twice
 }
