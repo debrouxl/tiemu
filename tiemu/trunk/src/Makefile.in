@@ -88,11 +88,13 @@ misc_OBJ = \
 
 gui_calc_OBJ = \
 	gui/calc/calc.o		\
+	gui/calc/kbd_mapper.o	\
 	gui/calc/keyboard.o	\
+	gui/calc/keynames.o	\
 	gui/calc/popup.o	\
 	gui/calc/screen.o	\
-	gui/calc/skinops.o	\
-	gui/calc/tikeys.o
+	gui/calc/skinkeys.o	\
+	gui/calc/skinops.o
 
 gui_debugger_OBJ = \
 	gui/debugger/dbg_all.o		\
