@@ -53,6 +53,8 @@ ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
+gint
+idle_loop (gpointer data);
 
 /* Main function */		
 int main(int argc, char **argv) 
@@ -204,6 +206,10 @@ int main(int argc, char **argv)
 	ti68k_engine_unhalt();
     splash_screen_stop();
 
+	/*
+		Surprisingly, this way is less CPU intensive than gtk_main()
+		and putting the cb_update_key in a gtk_idle function.
+	*/
 	gdk_threads_enter();
 	while(1) {
 		// poll events
@@ -213,6 +219,8 @@ int main(int argc, char **argv)
 		if(hid_popup_menu()) {
 			gui_popup_menu();
 		}
+
+		// do an iteration
 		gtk_main_iteration();
 	}
 	gdk_threads_leave();
@@ -224,7 +232,6 @@ int main(int argc, char **argv)
   
 	return 0;
 }
-
 
 /* 
    If GtkTiEmu is compiled in console mode (_CONSOLE), 
