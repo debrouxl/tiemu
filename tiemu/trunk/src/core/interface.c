@@ -80,7 +80,9 @@ void change_runlevel(int new, int min)
 /* Internal variables */
 /**********************/
 
-Ti68kRomInfo current_rom_info = { 0 };
+//Ti68kRomInfo current_rom_info = { 0 };
+int img_loaded = 0;
+IMG_INFO current_img_info = { 0 };
 Ti68kParameters params = { 0 };
 
 
@@ -213,17 +215,17 @@ int ti68k_getRomSize(void)
 
 const char *ti68k_getRomVersion(void)
 {
-  return current_rom_info.version;
+  return current_img_info.revision;
 }
 
 int ti68k_isRomOk(void)
 {
-  return current_rom_info.loaded;
+  return img_loaded;
 }
 
 int ti68k_getRomInfo(ROM_INFO *ri)
 {
-  ri = &current_rom_info;
+  ri = &current_img_info;
   return 0;
 }
 
@@ -351,7 +353,7 @@ char ti68k_getContrast(void)
 
 int ti68k_getCalcType(void)
 {
-  return current_rom_info.calc_type;
+  return current_img_info.calc_type;
 }
 
 /***********************/
@@ -503,4 +505,26 @@ int ti68k_reconfigure_linkport()
   hw_init_dbus();
 
   return 0;
+}
+
+
+
+
+
+
+
+
+/*
+  	Return ROM type:
+  	- internal/external
+  	- EPROM/FLASH
+*/
+int ti68k_getRomType(void)
+{
+  	int internal, flashrom;
+
+  	internal = ((ti_rom[5] & 0x60) == 0x20) ? INTERNAL : 0;
+  	flashrom = (ti_rom[0x65] & 0xf) ? 0 : FLASH_ROM;
+  
+  	return internal | flashrom;
 }

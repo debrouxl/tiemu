@@ -148,7 +148,6 @@ int ti68k_display_img_infos(IMG_INFO *s)
 int ti68k_get_rom_infos(const char *filename, ROM_INFO *ri, int preload)
 {
   	FILE *file;
-	char *rom;
 
   	file = fopen(filename, "rb");
   	if(file == NULL)
@@ -167,13 +166,13 @@ int ti68k_get_rom_infos(const char *filename, ROM_INFO *ri, int preload)
   	if (ri->size > 2*1024*1024)
     	return ERR_68K_INVALID_SIZE;
   
-  	rom = malloc(ri->size + 4);
-  	memset(rom, 0xff, ri->size);
-  	fread(rom, 1, ri->size, file);
+  	ri->content = malloc(ri->size + 4);
+  	memset(ri->content, 0xff, ri->size);
+  	fread(ri->content, 1, ri->size, file);
   	fclose(file);
 
-  	ri->internal = ((rom[0x05] & 0x60) == 0x20) ? (!0) : 0;
-  	ri->flash = (rom[0x65] & 0xf) ? 0 : (!0);
+  	ri->internal = ((ri->content[0x05] & 0x60) == 0x20) ? (!0) : 0;
+  	ri->flash = (ri->content[0x65] & 0xf) ? 0 : (!0);
   	ri->tib = 0;
 
   	if(ri->internal && ri->flash)
@@ -183,12 +182,10 @@ int ti68k_get_rom_infos(const char *filename, ROM_INFO *ri, int preload)
   	else 
     	ri->calc_type = TI92;
   
-  	get_rom_version(rom, ri->size, ri->version);
+  	get_rom_version(ri->content, ri->size, ri->version);
 
-	if(preload)
-		ri->content = rom;
-	else
-		free(rom);
+	if(!preload)
+		free(ri->content);
 
 	return 0;
 }
@@ -207,7 +204,6 @@ int ti68k_get_tib_infos(const char *filename, TIB_INFO *ti, int preload)
 	Ti9xFlash *ptr;
 	int nheaders;
 	int i;
-  	char *rom;
 
 	// Check valid file
 	if(!tifiles_is_a_ti_file(filename))
@@ -228,12 +224,12 @@ int ti68k_get_tib_infos(const char *filename, TIB_INFO *ti, int preload)
     	ptr = ptr->next;
     	
   	// Load TIB into memory
-  	rom = malloc(SPP + ptr->data_length + 4);
-  	memset(rom, 0xff, SPP + ptr->data_length);
-  	memcpy(rom + SPP, ptr->data_part, ptr->data_length);
+  	ti->content = malloc(SPP + ptr->data_length + 4);
+  	memset(ti->content, 0xff, SPP + ptr->data_length);
+  	memcpy(ti->content + SPP, ptr->data_part, ptr->data_length);
   	
-  	// Update current ROM infos
-  	if (((rom+SPP)[0x88+0x05] & 0x60) == 0x20)
+  	// Update current rom infos
+  	if (((ti->content+SPP)[0x88+0x05] & 0x60) == 0x20)
     {
       	ti->internal = !0;
       	ti->calc_type = TI89;
@@ -248,13 +244,11 @@ int ti68k_get_tib_infos(const char *filename, TIB_INFO *ti, int preload)
   	ti->tib = !0;
   	ti->size = ptr->data_length + SPP;
 
-  	get_rom_version(rom, ti->size, ti->version);
+  	get_rom_version(ti->content, ti->size, ti->version);
   	
   	ti9x_free_flash_content(&content);
-	if(preload)
-		ti->content = rom;
-	else
-		free(rom);
+	if(!preload)
+		free(ti->content);
 
   	return 0;
 }
@@ -273,8 +267,7 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
 	char *ext;
 
 	// Check file
-	ext = strrchr(filename, '.');
-	if(strcasecmp(ext, ".img"))
+	if(!ti68k_is_a_img_file(filename))
 	{
 		fprintf(stderr, "Images must have '.img' extension.\n", filename);
       	return ERR_68K_CANT_OPEN;
@@ -289,7 +282,7 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
     }
     
     // Read header
-    fread(ri, 1, sizeof(IMG_INFO), f);
+    fread(ri, sizeof(IMG_INFO), 1, f);
     if(strcmp(ri->signature, "TiEmu img v2.00"))
    	{
    		fprintf(stderr, "Bad image: <%s>\n", filename);
@@ -347,12 +340,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	strcpy(header.signature, "TiEmu img v2.00");
 	header.header_size = sizeof(IMG_INFO);
 	header.data_offset = 0x40;
-	switch(ri.calc_type)
-	{
-		case TI89:  header.calc_type = CALC_TI89; break;
-		case TI92:  header.calc_type = CALC_TI92; break;
-		case TI92p: header.calc_type = CALC_TI92P; break;
-	}
+	header.calc_type = ri.calc_type;
 	memcpy(&header.revision, &ri.version, 4);
 	header.internal = ri.internal;
 	header.flash = ri.flash;
@@ -417,17 +405,12 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	strcpy(header.signature, "TiEmu img v2.00");
 	header.header_size = sizeof(IMG_INFO);
 	header.data_offset = 0x40;
-	switch(ri.calc_type)
-	{
-		case TI89:  header.calc_type = CALC_TI89; break;
-		case TI92:  header.calc_type = CALC_TI92; break;
-		case TI92p: header.calc_type = CALC_TI92P; break;
-	}
+	header.calc_type = ri.calc_type;
 	memcpy(&header.revision, &ri.version, 4);
 	header.internal = ri.internal;
 	header.flash = ri.flash;
 	header.has_boot = !ri.tib;
-	header.data_size = ri.size;
+	header.data_size = 2 << 20;	//ri.size;
 	
 	// Write header
 	fwrite(&header, 1, sizeof(IMG_INFO), f);
@@ -466,7 +449,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
   
   	DISPLAY("\n");
   	DISPLAY("Completing to 2MB size\n");
-  	for(j = SPP + ri.size; j < 2*1024*1024; j++)
+  	for(j = SPP + ri.size; j < (2 << 20); j++)
   		fputc(0xff, f);
   
   	// Close file
@@ -481,19 +464,18 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 */
 int ti68k_load_image(const char *filename)
 {
-	ROM_INFO *cri = &current_rom_info;
-	IMG_INFO header;
+	IMG_INFO *header = &current_img_info;
   	FILE *f;  	
   	int err;
 
 	// Load infos
-	err = ti68k_get_img_infos(filename, &header);
+	err = ti68k_get_img_infos(filename, header);
   	if(err)
     {
       	DISPLAY(_("Unable to get informations on ROM image.\n"));
       	return err;
     }
-	ti68k_display_img_infos(&header);
+	ti68k_display_img_infos(header);
 	
 	// Open file
 	f = fopen(filename, "rb");
@@ -502,19 +484,16 @@ int ti68k_load_image(const char *filename)
       	fprintf(stderr, "Unable to open this file: <%s>\n", filename);
       	return ERR_68K_CANT_OPEN;
     }
-    
-    cri->flash = header.flash;
-	cri->internal = header.internal;
-	cri->size = header.data_size;
-    
-    // Read pure data
-    fseek(f, header.data_offset, SEEK_SET);
-    fread(cri->content, 1, header.data_size, f);	
+
+	// Read pure data
+    fseek(f, header->data_offset, SEEK_SET);
+	header->content = malloc(header->data_size + 4);
+    fread(header->content, 1, header->data_size, f);	
   	
-  	params.rom_size = cri->size;
-  	params.ram_size = (cri->size == 1024*1024) ? 128 : 256;
+  	params.rom_size = header->data_size;
+  	params.ram_size = (header->data_size == 1024*1024) ? 128 : 256;
   
-  	cri->loaded = 1;
+  	img_loaded = 1;
   	return 0;
 }
 
@@ -529,37 +508,22 @@ int ti68k_load_upgrade(const char *filename)
 	Ti9xFlash *ptr;
 	int nheaders;
 	int i;
-	ROM_INFO *cri = &current_rom_info;
+	IMG_INFO *header = &current_img_info;
   	int err;
 
-	err = ti68k_get_tib_infos(filename, cri, !0);
+	err = ti68k_get_tib_infos(filename, header, !0);
 	if(err)
     {
       	DISPLAY(_("Unable to get informations on FLASH upgrade.\n"));
       	return err;
     }
-	ti68k_display_img_infos(cri);
+	ti68k_display_img_infos(header);
 
-  	params.rom_size = cri->size;
-  	params.ram_size = (cri->size == 1024*1024) ? 128 : 256;
+  	params.rom_size = header->data_size;
+  	params.ram_size = (header->data_size == 1024*1024) ? 128 : 256;
 
-  	cri->loaded = 2;	 
+  	img_loaded = 2;
 	return 0;
-}
-
-/*
-  	Return ROM type:
-  	- internal/external
-  	- EPROM/FLASH
-*/
-int ti68k_getRomType(void)
-{
-  	int internal, flashrom;
-
-  	internal = ((ti_rom[5] & 0x60) == 0x20) ? INTERNAL : 0;
-  	flashrom = (ti_rom[0x65] & 0xf) ? 0 : FLASH_ROM;
-  
-  	return internal | flashrom;
 }
 
 
@@ -567,10 +531,11 @@ int ti68k_getRomType(void)
   	Scan ROM images in a given directory 
   	and build the cache file.
 */
-int ti68k_scanFiles(const char *dirname, const char *filename)
+int ti68k_scan_files(const char *dirname, const char *filename)
 {
 	FILE *file;
-	ROM_INFO ri;
+	IMG_INFO ii;
+	TIB_INFO ti;
 	GDir *dir;
 	GError *error = NULL;
 	G_CONST_RETURN gchar *dirent;
@@ -582,11 +547,11 @@ int ti68k_scanFiles(const char *dirname, const char *filename)
 	gchar *path;
 	struct stat f_info;
 	int ret;  	
-  	char *line[6];
+  	char *line[7];
 	char *p1, *p2, *p3, *p5;
 	int err;  	
 
-  	DISPLAY(_("Scanning ROM images... "));
+  	DISPLAY(_("Scanning images/upgrades... "));
 
   	// First, check if cache file exists
   	if(!access(filename, F_OK))
@@ -628,9 +593,13 @@ int ti68k_scanFiles(const char *dirname, const char *filename)
           	fprintf(stderr, _("Unable to open this file: <%s>\n"), filename);
           	return ERR_68K_CANT_OPEN;
         }
+
+		fprintf(file, "%s\t%s\t%s\t%s\t%s\t%s\n", 
+						"filename", "calctype", "revision", 
+						"memtype", "size", "boot");
     }  
 
-  	// List all ROMs available in the directory
+  	// List all files available in the directory
 	dir = g_dir_open(dirname, 0, &error);
 	if (dir == NULL) 
 	{
@@ -650,7 +619,7 @@ int ti68k_scanFiles(const char *dirname, const char *filename)
 	    		break;
 		}
 		
-		// we have a new ROM, we add it in the cache
+		// we have a new entry, we add it in the cache
       	if(j == nlines)
 		{
 	  		path = g_strconcat(dirname, dirent, NULL);
@@ -663,49 +632,41 @@ int ti68k_scanFiles(const char *dirname, const char *filename)
 			}
 			else
 			{
-				//ret = ti68k_getFileInfo(path, &ri);
-				ret = 1;
-	      		if(ret)
-	      		{
-	      			fprintf(stderr, _("Can not get ROM/update info: <%s>\n"), path);
-	      		}
-	      		else
+				if(ti68k_is_a_tib_file(dirent)
 				{
-		  			line[0] = dirent;
+					ret = ti68k_get_tib_infos(dirent, &ti);
+					if(ret)
+					{
+						fprintf(stderr, _("Can not get ROM/update info: <%s>\n"), path);
+						break;
+					}
+					ii.calc_type = ti.calc_type;
+					ii.revision = ti.version;
+					ii.internal = ti.internal;
+					ii.flash = ti.flash;
+					ii.has_boot = !ti.tib;
+					ii.data_size = ti.size;
+				}
+				else if(ti68k_is_a_img_file(dirent)
+				{
+					ret = ti68k_get_img_infos(dirent, &ii);
+					if(ret)
+					{
+						fprintf(stderr, _("Can not get ROM/update info: <%s>\n"), path);
+						break;
+					}
+				}
 
-		  			switch(ri.calc_type)
-		    		{
-		    			case TI92: line[1] = "TI92";
-		      			break;
-		    			case TI89: line[1] = "TI89";
-		      			break;
-		    			case TI92 | MODULEPLUS: line[1] = "TI92+";
-		      			break;
-		    			default: line[1] = "TI??";
-		      			break;
-		    		}
-		  
-		  			line[2] = ri.version;
-		  			if(ri.internal)
-		    			p2 = _("internal");
-		  			else
-		    			p2 = _("external");
-		  			
-		  			if(ri.flash)
-		    			p3 = _("FLASH");
-		  			else
-		    			p3 = _("PROM");
-		  			sprintf(buffer, "%s-%s", p3, p2);
-		  			line[3] = buffer;
-		  
-		  			sprintf(str, "%iKB", ri.size >> 10);
-		  			line[4] = str;
-		  
-		  			if(ri.tib)
-		    			p5 = _("tib");
-		  			else
-		    			p5 = _("img");
-		  			line[5] = p5;
+		  		line[0] = dirent;
+		  		line[1] = ti68k_calctype_to_string(ii.calc_type);
+	  			line[2] = ii.revision;
+	  			line[3] = ti68k_romtype_to_string(ii.internal | ii.flash);
+	  			sprintf(str, "%iKB", ii.data_size >> 10);
+	  			line[4] = str;
+	  			if(ii.has_boot)
+	  				line[5] = _("yes");
+	  			else
+	  				line[5] = _("no");
 		  
 		  			fprintf(file, "%s\t%s\t%s\t%s\t%s\t%s\n", 
 		  				line[0], line[1], line[2], 

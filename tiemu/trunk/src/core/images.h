@@ -40,7 +40,8 @@ typedef struct
 	char	internal;		// internal/external
 	char	flash;			// EPROM or FLASH
 	char	has_boot;		// FLASH upgrade does not have boot
-	char	data_size;		// size of pure data
+	long	data_size;		// size of pure data
+	char*	content;		// temp, will be removed later
 } IMG_INFO;
 
 typedef struct
@@ -62,8 +63,13 @@ typedef Ti68kRomInfo	TIB_INFO;
   Variables
 */
 
-extern int rom_loaded;
-extern ROM_INFO current_rom_info;
+//old
+//extern int rom_loaded;
+//extern ROM_INFO current_rom_info;
+
+//new
+extern int img_loaded;
+extern IMG_INFO current_img_info;
 
 /*
   Functions (old)
@@ -106,6 +112,6 @@ int ti68k_convert_tib_to_image(const char *src, const char *dirname, char **dst)
 int ti68k_load_image(const char *filename);
 int ti68k_load_upgrade(const char *filename);
 
-int ti68k_scan_images(const char *dirname, const char *filename);
+int ti68k_scan_files(const char *dirname, const char *filename);
 
 #endif

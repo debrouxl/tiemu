@@ -156,7 +156,7 @@ UBYTE read_keyboard_mask(void)
 
 void hw_init_kbd()
 {
-  if(current_rom_info.calc_type & TI92)
+  if(current_img_info.calc_type & TI92)
     key_row = (int*)keyRow92;
   else
     key_row = (int*)keyRow89;

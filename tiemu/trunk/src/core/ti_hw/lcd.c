@@ -31,7 +31,7 @@ int lcd_base_addr;
 void hw_init_lcd()
 {
   contrast=13; //16
-  lcd_base_addr=(current_rom_info.flash)?0x4c00:0x4440;
+  lcd_base_addr=(current_img_info.flash)?0x4c00:0x4440;
   lcd_off=0;
 }
 

@@ -72,7 +72,7 @@ int rom_write_phase;
 int rom_erase;
 int rom_erasePhase;
 
-static ROM_INFO *cri = &current_rom_info; // a shortcut
+static IMG_INFO *cri = &current_img_info; // a shortcut
 
 /* Mem init/exit */
 
@@ -162,7 +162,7 @@ int hw_init_mem()
     ti_rom = ti_ext_rom;
   
   // blit ROM
-  memcpy(ti_rom, cri->content, cri->size);
+  memcpy(ti_rom, cri->content, cri->data_size);
   free(cri->content);
 
   return (ti_ram && ti_int_rom && ti_ext_rom && ti_io);
@@ -712,7 +712,7 @@ int find_pc()
   // find PC reset vector
   if(cri->flash)
     { // TI89 or TI92+
-      for (vt = 0x12000; vt<cri->size; vt++)
+      for (vt = 0x12000; vt<cri->data_size; vt++)
 	{
 	  if (*((int*)(ti_rom+vt)) == 0xcccccccc) {
 	    vt += 4;

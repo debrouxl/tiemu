@@ -137,11 +137,11 @@ int main(int argc, char **argv)
 #ifndef __WIN32__
 	// linux
 	g_free((options.params)->rom_file);
-	(options.params)->rom_file = g_strdup("/home/romain/ti92.rom");
+	(options.params)->rom_file = g_strdup("/home/romain/ti92.img");
 #else
 	//win32
 	g_free((options.params)->rom_file);
-	(options.params)->rom_file = g_strdup("C:\\Program Files\\Common Files\\GTK\\2.0\\lib\\ti92.rom");
+	(options.params)->rom_file = g_strdup("C:\\msvc\\tilp\\images\\ti92.img");
 #endif
 
 	/*
