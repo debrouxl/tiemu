@@ -100,7 +100,7 @@ int hw_mem_init(void)
 	// init vars
 	tihw.ram256 = (tihw.ram_size == 256*KB);
 	//tihw.ram_wrap = 
-	tihw.prot_mem = 1;
+	tihw.mem_prot = 1;
 
   /* Init vars */
   rom_write_ready=0; 
@@ -464,7 +464,7 @@ void put_long(CPTR adr, ULONG arg)
         return;
     }
     
-	if((adr < 0x120) && tihw.prot_mem)
+	if((adr < 0x120) && tihw.mem_prot)
 	{
 		// Protected memory violation. Triggered when memory below [$000120] is
 		// written while bit 2 of [$600001] is set
@@ -613,7 +613,7 @@ void put_byte(CPTR adr, UBYTE arg)
 
     // Protected memory violation. Triggered when memory below [$000120] is
 	// written while bit 2 of [$600001] is set
-    if((adr < 0x120) && tihw.prot_mem)
+    if((adr < 0x120) && tihw.mem_prot)
 	{
 		specialflags |= SPCFLAG_INT;
         currIntLev = 7;
