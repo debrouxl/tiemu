@@ -276,6 +276,12 @@ lignes utilisées par Backgammon pour Fargo sont:
  move.w   %d0,0x600010                        | restore used plane to
 tios__001c
 
++ J'en ai déjà un nouveau: le règlage du contraste est bizarre: Sur V200, il
+est à l'envers! Sur TI-92+ HW2, il va dans le bon sens, mais il devient
+d'abord tout noir et ensuite repart du blanc, il faudrait faire attention au
+fait que les HW2 ont plus de bits pour le contraste que les HW1. Sur TI-92,
+tout marche.
+
 
 Lionel
 ======

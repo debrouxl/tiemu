@@ -138,6 +138,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
 			// address of LCD memory divided by 8 (lsb)
 			tihw.lcd_adr = ((tihw.io[0x10] << 8) | arg) << 3;
 			//tihw.lcd_ptr = &tihw.ram[((tihw.io[0x10] << 8) | arg) << 3];
+			//printf("lcd_addr=%06x ", tihw.lcd_adr); 
 			//printf("$600011: lcd_addr = %04x (%04x at @%06x)\n", tihw.lcd_adr, curriword(), m68k_getpc());
         break;
         case 0x12:	// -w <76543210>

@@ -120,7 +120,7 @@ typedef struct
     int     on_key;
 
     // lcd.c
-	uint16_t lcd_adr;		// LCD address (as $4c00)
+	uint32_t lcd_adr;		// LCD address (as $4c00)
 	char	*lcd_ptr;		// direct pointer to LCD in PC RAM
     int     contrast;
 	int		log_w;			// LCD logical width
