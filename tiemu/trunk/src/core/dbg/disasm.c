@@ -95,10 +95,7 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 	
 	// split string into address, opcode and operand
 	split = g_strsplit(output, " ", 3);
-	printf("%s %s%*c %s\n", 
-			split[0], 
-			split[1], 8 - strlen(split[1]), ' ', 
-			split[2]);
+	//printf("%s %s%*c %s\n", split[0], split[1], 8 - strlen(split[1]), ' ', split[2]);
 
 	// search for opcode to rewrite
 	idx = match_opcode(split[1]);
@@ -261,7 +258,7 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 
 	offset = Dasm68000(mem, output, addr);
 	split = g_strsplit(output, " ", 2);
-	printf("<%06x: %s>\n", addr, output);
+	//printf("<%06x: %s>\n", addr, output);
 
 	if(split[1])
 		for(p = split[1]; *p == ' '; p++);

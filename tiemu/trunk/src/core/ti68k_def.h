@@ -160,10 +160,9 @@ typedef struct
 	int id;
 
     // Logging
-    int         pc_log_size;
-    uint32_t*   pc_log;
-    int         pc_rd_ptr;
-    int         pc_wr_ptr;
+    int         pclog_size;
+    uint32_t*   pclog_buf;
+    int         pclog_ptr;
 } Ti68kBreakpoints;
 
 extern Ti68kParameters 	params;

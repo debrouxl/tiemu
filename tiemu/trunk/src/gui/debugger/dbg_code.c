@@ -42,10 +42,10 @@
 
 enum { 
 	    COL_ICON, COL_ADDR, COL_OPCODE, COL_OPERAND,
-        COL_HEXADDR, COL_FONT
+        COL_HEXADDR, COL_FONT, COL_COLOR
 };
 #define CLIST_NVCOLS	(4)		// 4 visible columns
-#define CLIST_NCOLS		(6)		// 6 real columns
+#define CLIST_NCOLS		(7)		// 7 real columns
 
 #define FONT_NAME	"courier"
 
@@ -62,7 +62,7 @@ static GtkListStore* clist_create(GtkWidget *list)
 	store = gtk_list_store_new(CLIST_NCOLS,
 				GDK_TYPE_PIXBUF, 
                 G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-                G_TYPE_INT, G_TYPE_STRING,
+                G_TYPE_INT, G_TYPE_STRING, GDK_TYPE_COLOR,
 				-1
             );
     model = GTK_TREE_MODEL(store);
@@ -86,6 +86,7 @@ static GtkListStore* clist_create(GtkWidget *list)
 		gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i,
+			"background-gdk", COL_COLOR,
 			NULL);
 	}
     
@@ -108,7 +109,11 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
     GtkTreeIter iter;
     GdkPixbuf *pix;
     gint i;
-    //uint32_t addr = ti68k_debug_get_pc();
+    GdkColor color;
+	gboolean success;
+
+	gdk_color_parse("White", &color);
+	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color, 1, FALSE, FALSE, &success);
 
     for(i = 0; i < 10; i++)
     {
@@ -136,7 +141,10 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
 		else
 			row_text[2] = g_strdup(split[2]);
 
-        pix = create_pixbuf("void.xpm");
+		if(g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL)
+                pix = create_pixbuf("bkpt.xpm");
+        else
+                pix = create_pixbuf("void.xpm");
 
         gtk_list_store_append(store, &iter);
 	    gtk_list_store_set(store, &iter, 
@@ -146,11 +154,13 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
         COL_OPERAND, row_text[2],
         COL_HEXADDR, value,
 		COL_FONT, FONT_NAME,
+		COL_COLOR, &color,
 		-1);
 
         addr += offset;
         g_strfreev(split);
 		g_strfreev(row_text);
+		g_object_unref(pix);
     }
 }
 
@@ -164,9 +174,17 @@ static void clist_refresh(GtkListStore *store)
     uint32_t pc;
     int found = 0;
 
+	GdkColor *color, color1, color2;
+	gboolean success;
+
     pc = ti68k_debug_get_pc();
 
-    // check for refresh
+	gdk_color_parse("White", &color1);
+	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color1, 1, FALSE, FALSE, &success);
+	gdk_color_parse("Green", &color2);
+	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color2, 1, FALSE, FALSE, &success);
+
+    // check for refresh (search for pc)
     for(valid = gtk_tree_model_get_iter_first(model, &iter);
         valid; 
         valid = gtk_tree_model_iter_next(model, &iter))
@@ -182,6 +200,7 @@ static void clist_refresh(GtkListStore *store)
         g_free(str);
     }
 
+	// pc not found, erase and populate
     if(!found)
     {
         gtk_list_store_clear(store);
@@ -199,23 +218,16 @@ static void clist_refresh(GtkListStore *store)
             gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
             sscanf(str, "%x", &addr);
 
-            if(addr == pc)
-            {
-                pix = create_pixbuf("run.xpm");
-            }
-            else if(g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL)
-            {
+			color = (addr == pc) ? &color2 : &color1;
+
+            if(g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL)
                 pix = create_pixbuf("bkpt.xpm");
-            }
             else
-            {
                 pix = create_pixbuf("void.xpm");
-            }
 
-            gtk_list_store_set(store, &iter, COL_ICON, pix, -1);
+            gtk_list_store_set(store, &iter, COL_ICON, pix, COL_COLOR, color, -1);
             g_free(str);
-
-            //if(addr == pc) gtk_tree_selection_select_iter(selection, &iter);
+			g_object_unref(pix);
         }
 }
 
@@ -328,8 +340,6 @@ GLADE_CB void
 on_run1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    //GtkWidget *list = (GtkWidget *)(menuitem);   // arg are swapped, why ?
-
 	tb_set_states(1, 0, 0, 0, 1, 0);
     gtk_widget_set_sensitive(list, FALSE);
     set_other_windows_sensitivity(FALSE);
@@ -542,7 +552,7 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         if(row_max == -1)
             break;
 
-        printf("Up: %i/%i %x\n", row_idx, row_max, addr);
+        //printf("Up: %i/%i %x\n", row_idx, row_max, addr);
 
         if(row_idx > 0)
             break;
@@ -555,7 +565,7 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         if(row_max == -1)
             break;
 
-        printf("Down: %i/%i %x\n", row_idx, row_max, addr);
+        //printf("Down: %i/%i %x\n", row_idx, row_max, addr);
 
         if(row_idx < row_max)
             break;
@@ -571,7 +581,7 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         if(row_max == -1)
             break;
 
-        printf("PageUp: %i/%i %x\n", row_idx, row_max, addr);
+        //printf("PageUp: %i/%i %x\n", row_idx, row_max, addr);
 
         if(row_idx > 0)
             break;
@@ -584,7 +594,7 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         if(row_max == -1)
             break;
 
-        printf("PageDown: %i/%i %x\n", row_idx, row_max, addr);
+        //printf("PageDown: %i/%i %x\n", row_idx, row_max, addr);
 
         if(row_idx < row_max)
             break;

@@ -9,8 +9,6 @@ SubVersion: $Id$
 
 	Still to do:
 	- link port is broken
-	- Extended ROM V200 et TI89TI
-	- state image
 	- pb de bkpt ?
 	- dans le memory dump, le 1er octet de la mémoire n'est pas à 0x00...
 	- stealth I/O and mem protect

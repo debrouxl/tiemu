@@ -96,13 +96,13 @@ static void clist_populate(GtkListStore *store)
 {
     int i;
 
-    for(i = 0; i < bkpts.pc_log_size; i++)
+    for(i = 0; i < bkpts.pclog_size; i++)
     {
         GtkTreeIter iter;
         uint32_t addr;
         gchar *str;
 
-        addr = bkpts.pc_log[(bkpts.pc_rd_ptr + i) % bkpts.pc_log_size];
+        addr = bkpts.pclog_buf[(bkpts.pclog_ptr + i) % bkpts.pclog_size];
         str = g_strdup_printf("0x%06x", addr);
     
         gtk_list_store_append(store, &iter);
@@ -112,6 +112,12 @@ static void clist_populate(GtkListStore *store)
 		
 		g_free(str);
     }
+}
+
+static void clist_refresh(GtkListStore *store)
+{
+	gtk_list_store_clear(store);
+	clist_populate(store);
 }
 
 static GtkListStore *store = NULL;
@@ -158,8 +164,7 @@ GtkWidget* display_dbgpclog_window(void)
 		wnd = create_dbgpclog_window();
     gtk_widget_show(wnd);
 
-	gtk_list_store_clear(store);
-    clist_populate(store);
+	clist_refresh(store);
 
 	return wnd;
 }

@@ -811,7 +811,7 @@ int rcfile_default()
 	options3.pclog.x = 0;
 	options3.pclog.y = 0;
 	options3.pclog.w = 160;
-	options3.pclog.h = 120;
+	options3.pclog.h = 240;
 
 	return 0;
 }

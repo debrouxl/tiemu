@@ -42,12 +42,11 @@ int hw_m68k_init(void)
     bkpts.mode = bkpts.type = bkpts.id = 0;
 
     // init instruction logging
-    bkpts.pc_log_size = 1;  //50;
-    bkpts.pc_log = (uint32_t *)malloc(bkpts.pc_log_size * sizeof(uint32_t));
-    if(bkpts.pc_log == NULL)
+    bkpts.pclog_size = 10;  //50;
+    bkpts.pclog_buf = (uint32_t *)malloc(bkpts.pclog_size * sizeof(uint32_t));
+    if(bkpts.pclog_buf == NULL)
         return ERR_MALLOC;
-    bkpts.pc_rd_ptr = 0;
-    bkpts.pc_wr_ptr = 0;
+    bkpts.pclog_ptr = 0;
 
     init_m68k();
 
@@ -67,7 +66,7 @@ int hw_m68k_exit(void)
 {
 	ti68k_bkpt_clear_exception();
 
-    free(bkpts.pc_log);
+    free(bkpts.pclog_buf);
 
     return 0;
 }
@@ -96,8 +95,8 @@ int hw_m68k_run(int n)
         else
             flog = fopen("C:\\tiemu.log", "wt");
 
-        if(bkpts.pc_log_size > 1)
-            bkpts.pc_log[bkpts.pc_wr_ptr++ % bkpts.pc_log_size] = m68k_getpc();
+        if(bkpts.pclog_size > 1)
+            bkpts.pclog_buf[bkpts.pclog_ptr++ % bkpts.pclog_size] = m68k_getpc();
 
       opcode = nextiword();
       (*cpufunctbl[opcode])(opcode);
