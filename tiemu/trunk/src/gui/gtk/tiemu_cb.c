@@ -90,11 +90,9 @@ GtkWidget* display_popup_menu(void)
   g_free(s);
 
   w = lookup_widget(menu, "sync1");
-  gtk_check_menu_item_set_show_toggle(GTK_CHECK_MENU_ITEM(w), TRUE);
   gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(w), (options.params)->sync_one);
 
   w = lookup_widget(menu, "restrict1");
-  gtk_check_menu_item_set_show_toggle(GTK_CHECK_MENU_ITEM(w), TRUE);
   gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(w), !((options.params)->background));
 
   w = lookup_widget(menu, "skin1");

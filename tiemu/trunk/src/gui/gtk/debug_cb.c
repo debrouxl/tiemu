@@ -595,9 +595,8 @@ on_step_over1_activate                 (GtkMenuItem     *menuitem,
   /* Execute one instruction */
   //bkpt_encountered = !doInstructions(1, 0);
 
-  /* Refresh the 'code' dbox by sending the 'show' signal */
-  gtk_signal_emit_by_name((GtkObject *)debugger_dbox, "show");
-  
+  refresh_code_dbox();
+
   /* Refres_breakpoints */
   refresh_breakpoints(code_clist);
 }
@@ -621,7 +620,9 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
   if(selected_row != -1)
     {
       printf("PC: 0x%06x\n", ti68k_getPcRegister());
+#if 0 /* FUCKED */
       addr_to_go = GPOINTER_TO_INT(gtk_clist_get_row_data((GtkCList *)code_clist, selected_row));
+#endif /* 0 */
       printf("addr to go: 0x%06x\n", addr_to_go);
       for(i=1, next_addr = ti68k_getPcRegister(); next_addr < addr_to_go; i++)
 	{
@@ -634,9 +635,8 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
     }
   else
     return; 
-  
-  /* Refresh the 'code' dbox by sending the 'show' signal */
-  gtk_signal_emit_by_name((GtkObject *)debugger_dbox, "show");
+
+  refresh_code_dbox();
   
   /* Refres_breakpoints */
   refresh_breakpoints(code_clist);
@@ -669,8 +669,7 @@ on_break1_activate                     (GtkMenuItem     *menuitem,
   s->id = i;
   bkpt_address_list = g_list_append(bkpt_address_list, s);
 
-  /* Refresh the 'code' dbox by sending the 'show' signal */
-  gtk_signal_emit_by_name((GtkObject *)debugger_dbox, "show");
+  refresh_code_dbox();
   
   /* Refres_breakpoints */
   refresh_breakpoints(code_clist);
@@ -700,12 +699,13 @@ on_set_breakpoint_at_selection1_activate
 
   put_in_sb(_("Breakpoint added."));
   fprintf(stderr, "Breakpoints|Set bkpt at selection (F2)\n");
-  //fprintf(stderr, "clist: %p\n", clist);
   /* Retrieve the selected line and its address */
   if(selected_row != -1)
     {
+#if 0 /* FUCKED */
       addr = GPOINTER_TO_INT(gtk_clist_get_row_data((GtkCList *)clist, 
 						    selected_row));
+#endif /* 0 */
       /* Check whether we already have a breakpoint */      
       for(i=0; i<g_list_length(bkpt_address_list); i++)
 	{
@@ -738,7 +738,9 @@ on_set_breakpoint_at_selection1_activate
   bkpt_address_list = g_list_append(bkpt_address_list, s);
   
   open_xpm("bkpt.xpm", code_clist, &pixmap, &mask);
+#if 0 /* FUCKED */
   gtk_clist_set_pixmap((GtkCList *)clist, selected_row, 0, pixmap, mask);
+#endif /* 0 */
   gdk_pixmap_unref(pixmap);
 }
 
@@ -859,10 +861,12 @@ on_clist1_button_press_event           (GtkWidget       *widget,
   gint row, column;
   GdkEventButton *bevent;
 
+#if 0 /* FUCKED */
   if (!gtk_clist_get_selection_info (GTK_CLIST (widget), 
 				     event->x, event->y, 
 				     &row, &column)) 
     return FALSE;
+#endif /* 0 */
 
   switch(event->type)
     {
@@ -887,6 +891,7 @@ on_clist1_button_press_event           (GtkWidget       *widget,
 }
 
 
+#if 0 /* FUCKED */
 void
 on_clist1_select_row                   (GtkCList        *clist,
                                         gint             row,
@@ -907,7 +912,7 @@ on_clist1_unselect_row                 (GtkCList        *clist,
 {
   selected_row = -1;
 }
-
+#endif /* 0 */
 
 gboolean
 on_clist2_key_press_event              (GtkWidget       *widget,
@@ -936,10 +941,12 @@ on_clist2_button_press_event           (GtkWidget       *widget,
   gint row, column;
   GdkEventButton *bevent;
 
+#if 0 /* FUCKED */
   if (!gtk_clist_get_selection_info (GTK_CLIST (widget), 
 				     event->x, event->y, 
 				     &row, &column)) 
     return FALSE;
+#endif /* 0 */
 
   switch(event->type)
     {
@@ -1003,10 +1010,12 @@ on_set_pc_to_selection1_activate       (GtkMenuItem     *menuitem,
   /* Retrieve the selected line and its address */
   if(selected_row != -1)
     {
+#if 0 /* FUCKED */
       addr = GPOINTER_TO_INT(gtk_clist_get_row_data((GtkCList *)code_clist, 
 						    selected_row));
+#endif /* 0 */
       ti68k_setPcRegister(addr);
-      gtk_signal_emit_by_name((GtkObject *)debugger_dbox, "show");
+      refresh_register_dbox();
     }
 }
 
@@ -1015,8 +1024,7 @@ void
 on_force_refresh1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  /* Refresh the 'code' dbox by sending the 'show' signal */
-  gtk_signal_emit_by_name((GtkObject *)debugger_dbox, "show");
+  refresh_code_dbox();
   
   /* Refres_breakpoints */
   refresh_breakpoints(code_clist);
@@ -1068,7 +1076,7 @@ on_button45_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
   ti68k_setPcRegister(code_addr_to_go);
-  gtk_signal_emit_by_name((GtkObject *)debugger_dbox, "show");  
+  refresh_register_dbox();
 
   gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "gotocode_dbox"));
 }
@@ -1094,7 +1102,7 @@ on_button99_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
   data_addr = data_addr_to_go;
-  gtk_signal_emit_by_name((GtkObject *)debugger_dbox, "show");  
+  refresh_memory_dbox();
 
   gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "gotodata_dbox"));
 }
@@ -1109,6 +1117,7 @@ on_options1_activate                   (GtkMenuItem     *menuitem,
 
 /* Memory box events for test purposes */
 
+#if 0 /* FUCKED */
 void
 on_clist2_click_column                 (GtkCList        *clist,
                                         gint             column,
@@ -1127,7 +1136,7 @@ on_clist2_select_row                   (GtkCList        *clist,
 {
   //fprintf(stdout, "row: %i\n", row);
 }
-
+#endif /* 0 */
 
 gboolean
 on_clist2_event                        (GtkWidget       *widget,

@@ -175,9 +175,6 @@ on_button_ok_clicked                   (GtkButton       *button,
       */
     }
 
-  /* Refresh some dboxes */
-  gtk_signal_emit_by_name((GtkObject *)data_bkpt_dbox, "show");
-
   gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "adbkpt_dbox"));
 }
 

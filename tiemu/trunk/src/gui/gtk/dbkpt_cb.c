@@ -93,7 +93,7 @@ gint display_data_bkpts_dbox(void)
   return 0;
 }
 
-
+#if 0 /* FUCKED */
 /* A row of the Data Breakpoint DBox has been selected */
 void
 on_clist4_select_row                   (GtkCList        *clist,
@@ -116,6 +116,7 @@ on_clist4_unselect_row                 (GtkCList        *clist,
 {
   data_bkpt_selected_row = -1;
 }
+#endif /* 0 */
 
 
 /* Add button of the 'Data breakpoints dialog box' */
@@ -133,6 +134,7 @@ void
 on_button_del_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
+#if 0 /* FUCKED */
   gint id;
   GtkWidget *clist;
   int i;
@@ -164,6 +166,7 @@ on_button_del_clicked                  (GtkButton       *button,
       bkpt_access_list = g_list_remove(bkpt_access_list, s);
       gtk_clist_remove(GTK_CLIST(clist), selected_row);
     }
+#endif /* 0 */
 }
 
 /* Ok button of the 'Data breakpoints dialog box' */

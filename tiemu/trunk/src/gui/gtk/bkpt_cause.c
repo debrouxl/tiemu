@@ -17,6 +17,13 @@
 #include "interface.h"
 #include "bkpts.h"
 
+#define GLADE_HOOKUP_OBJECT(component,widget,name) \
+  g_object_set_data_full (G_OBJECT (component), name, \
+    gtk_widget_ref (widget), (GDestroyNotify) gtk_widget_unref)
+
+#define GLADE_HOOKUP_OBJECT_NO_REF(component,widget,name) \
+  g_object_set_data (G_OBJECT (component), name, widget)
+
 /*static*/ void
 bc_ok_button_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
@@ -43,7 +50,6 @@ void display_bkpt_cause()
   GtkWidget *button1;
   GtkWidget *hbox1;
   GtkWidget *pixmap1;
-  guint label1_key;
   GtkWidget *label1;
   GtkAccelGroup *accel_group;
 
@@ -165,19 +171,17 @@ void display_bkpt_cause()
   accel_group = gtk_accel_group_new ();
 
   bc_dbox = gtk_dialog_new ();
-  gtk_object_set_data (GTK_OBJECT (bc_dbox), "bc_dbox", bc_dbox);
+  GLADE_HOOKUP_OBJECT_NO_REF(bc_dbox, bc_dbox, "bc_dbox");
   gtk_window_set_title (GTK_WINDOW (bc_dbox), _("Information"));
   gtk_window_set_position (GTK_WINDOW (bc_dbox), GTK_WIN_POS_CENTER);
   gtk_window_set_modal (GTK_WINDOW (bc_dbox), TRUE);
 
   dialog_vbox1 = GTK_DIALOG (bc_dbox)->vbox;
-  gtk_object_set_data (GTK_OBJECT (bc_dbox), "dialog_vbox1", dialog_vbox1);
+  GLADE_HOOKUP_OBJECT_NO_REF(bc_dbox, dialog_vbox1, "dialog_vbox1");
   gtk_widget_show (dialog_vbox1);
 
   label2 = gtk_label_new (buffer);
-  gtk_widget_ref (label2);
-  gtk_object_set_data_full (GTK_OBJECT (bc_dbox), "label2", label2,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  GLADE_HOOKUP_OBJECT(bc_dbox, label2, "label2");
   gtk_widget_show (label2);
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), label2, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_FILL);
@@ -186,59 +190,44 @@ void display_bkpt_cause()
   gtk_misc_set_padding (GTK_MISC (label2), 5, 5);
 
   dialog_action_area1 = GTK_DIALOG (bc_dbox)->action_area;
-  gtk_object_set_data (GTK_OBJECT (bc_dbox), "dialog_action_area1", dialog_action_area1);
+  GLADE_HOOKUP_OBJECT_NO_REF(bc_dbox, dialog_action_area1, "dialog_action_area1");
   gtk_widget_show (dialog_action_area1);
   gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 10);
 
   hbuttonbox1 = gtk_hbutton_box_new ();
-  gtk_widget_ref (hbuttonbox1);
-  gtk_object_set_data_full (GTK_OBJECT (bc_dbox), "hbuttonbox1", hbuttonbox1,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  GLADE_HOOKUP_OBJECT(bc_dbox, hbuttonbox1, "hbuttonbox1");
   gtk_widget_show (hbuttonbox1);
   gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbuttonbox1, TRUE, TRUE, 0);
 
   button1 = gtk_button_new ();
-  gtk_widget_ref (button1);
-  gtk_object_set_data_full (GTK_OBJECT (bc_dbox), "button1", button1,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  GLADE_HOOKUP_OBJECT(bc_dbox, button1, "button1");
   gtk_widget_show (button1);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), button1);
   GTK_WIDGET_SET_FLAGS (button1, GTK_CAN_DEFAULT);
 
   hbox1 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox1);
-  gtk_object_set_data_full (GTK_OBJECT (bc_dbox), "hbox1", hbox1,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  GLADE_HOOKUP_OBJECT(bc_dbox, hbox1, "hbox1");
   gtk_widget_show (hbox1);
   gtk_container_add (GTK_CONTAINER (button1), hbox1);
 
   pixmap1 = create_pixmap (bc_dbox, "yes.xpm");
-  gtk_widget_ref (pixmap1);
-  gtk_object_set_data_full (GTK_OBJECT (bc_dbox), "pixmap1", pixmap1,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  GLADE_HOOKUP_OBJECT(bc_dbox, pixmap1, "pixmap1");
   gtk_widget_show (pixmap1);
   gtk_box_pack_start (GTK_BOX (hbox1), pixmap1, TRUE, FALSE, 0);
 
-  label1 = gtk_label_new ("");
-  label1_key = gtk_label_parse_uline (GTK_LABEL (label1),
-                                   _("_OK"));
-  gtk_widget_ref (label1);
-  gtk_object_set_data_full (GTK_OBJECT (bc_dbox), "label1", label1,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  label1 = gtk_label_new_with_mnemonic(_("_OK"));
+  GLADE_HOOKUP_OBJECT(bc_dbox, label1, "label1");
   gtk_widget_show (label1);
   gtk_box_pack_start (GTK_BOX (hbox1), label1, FALSE, TRUE, 0);
   gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
   gtk_misc_set_padding (GTK_MISC (label1), 5, 0);
 
-  gtk_signal_connect (GTK_OBJECT (bc_dbox), "destroy",
-                      GTK_SIGNAL_FUNC (on_bc_dbox_destroy),
-                      bc_dbox);
-  gtk_signal_connect (GTK_OBJECT (button1), "clicked",
-                      GTK_SIGNAL_FUNC (bc_ok_button_clicked),
-                      bc_dbox);
-
-  gtk_widget_add_accelerator (button1, "clicked", accel_group,
-                              label1_key, GDK_MOD1_MASK, 0);
+  g_signal_connect ((gpointer)bc_dbox, "destroy",
+		    G_CALLBACK(on_bc_dbox_destroy),
+		    bc_dbox);
+  g_signal_connect ((gpointer)button1, "clicked",
+		    G_CALLBACK(bc_ok_button_clicked),
+		    bc_dbox);
 
   gtk_window_add_accel_group (GTK_WINDOW (bc_dbox), accel_group);
 

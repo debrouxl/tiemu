@@ -70,7 +70,9 @@ gint display_romversion_dbox(void)
 	  fscanf(fp, "%s\t", buffer);
 	  text[i] = g_strdup(buffer);
 	}
+#if 0 /* FUCKED */
       gtk_clist_append(GTK_CLIST(list), text);	  
+#endif /* 0 */
       for(i=0; i<6; i++) g_free(text[i]);
     } 
   fclose(fp);
@@ -162,7 +164,7 @@ on_romversion_dbox_destroy             (GtkObject       *object,
   unhalt();
 }
 
-
+#if 0 /* FUCKED */
 void
 on_romv_clist1_select_row              (GtkCList        *clist,
                                         gint             row,
@@ -184,7 +186,7 @@ on_romv_clist1_unselect_row            (GtkCList        *clist,
                                         gpointer         user_data)
 {
 }
-
+#endif /* 0 */
 
 gboolean
 on_romv_clist1_button_press_event      (GtkWidget       *widget,

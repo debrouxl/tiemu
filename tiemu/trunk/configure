@@ -12494,7 +12494,7 @@ LIBTOOL='$(SHELL) $(top_builddir)/libtool'
 
 
 # some extra flags
-CFLAGS="$CFLAGS $ARCH -Wall -DDEBUGGER"
+CFLAGS="$CFLAGS -DGTK_DISABLE_DEPRECATED $ARCH -Wall -DDEBUGGER"
 LDFLAGS="$LDFLAGS"
 
 # pass flags

@@ -136,11 +136,6 @@ void
 on_options1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
-void
-on_clist2_click_column                 (GtkCList        *clist,
-                                        gint             column,
-                                        gpointer         user_data);
-
 gboolean
 on_clist2_event                        (GtkWidget       *widget,
                                         GdkEvent        *event,

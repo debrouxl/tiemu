@@ -69,7 +69,9 @@ gint display_skinlist_dbox(void)
 	  text[4] = g_strdup(si.calc);
 	  text[5] = g_strdup("");
 
+#if 0 /* FUCKED */
 	  gtk_clist_append(GTK_CLIST(list), text);	  
+#endif /* 0 */
 	  for(i=0; i<6; i++) g_free(text[i]);
 	} 
     }
@@ -91,7 +93,7 @@ on_skin_dbox_destroy                   (GtkObject       *object,
   unhalt();
 }
 
-
+#if 0 /* FUCKED */
 void
 on_skin_clist1_select_row              (GtkCList        *clist,
                                         gint             row,
@@ -123,6 +125,7 @@ on_skin_clist1_unselect_row            (GtkCList        *clist,
   return;
 }
 
+#endif /* 0 */
 
 gboolean
 on_skin_clist1_button_press_event      (GtkWidget       *widget,

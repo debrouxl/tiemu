@@ -85,8 +85,8 @@ int gtk_main_window(void)
   
   /* The main window */
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title (GTK_WINDOW (window), "GtkTiEmu");
-  gtk_widget_set_usize(window, 250, 50);
+  gtk_window_set_title (GTK_WINDOW(window), "TiEmu");
+  gtk_window_set_default_size(GTK_WINDOW(window), 250, 50);
 
   /* The event box */
   eventbox = gtk_event_box_new ();
@@ -100,12 +100,12 @@ int gtk_main_window(void)
   gtk_container_add (GTK_CONTAINER (eventbox), label);
   gtk_widget_show (label);
   
-  gtk_signal_connect (GTK_OBJECT (window), "destroy",
-                      GTK_SIGNAL_FUNC (gtk_main_quit),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (eventbox), "button_press_event",
-                      GTK_SIGNAL_FUNC (button_press_event),
-                      NULL);
+  g_signal_connect ((gpointer)window, "destroy",
+		    G_CALLBACK(gtk_main_quit),
+		    NULL);
+  g_signal_connect ((gpointer)eventbox, "button_press_event",
+		    G_CALLBACK(button_press_event),
+		    NULL);
 
   //gtk_widget_grab_focus (eventbox);
   gtk_widget_grab_default (eventbox);

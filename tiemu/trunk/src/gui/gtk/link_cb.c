@@ -295,7 +295,7 @@ update_entry1 (GtkWidget *w)
   g_snprintf(buffer, MAXCHARS, "0x%03x", io_addr);
 
   gtk_entry_set_visibility(GTK_ENTRY(w), custom_toggled);
-  gtk_entry_set_editable(GTK_ENTRY(w), custom_toggled);
+  gtk_editable_set_editable(GTK_EDITABLE(w), custom_toggled);
   gtk_entry_set_text(GTK_ENTRY(w), buffer);
 }
 
@@ -310,7 +310,7 @@ update_entry2 (GtkWidget *w)
   g_snprintf(buffer, MAXCHARS, "%s", device);
 
   gtk_entry_set_visibility(GTK_ENTRY(w), custom_toggled);
-  gtk_entry_set_editable(GTK_ENTRY(w), custom_toggled);
+  gtk_editable_set_editable(GTK_EDITABLE(w), custom_toggled);
   gtk_entry_set_text(GTK_ENTRY(w), buffer);
 }
 
@@ -649,10 +649,10 @@ linktype_radiobutton14_toggled         (GtkToggleButton *togglebutton,
 
   w = lookup_widget(GTK_WIDGET(togglebutton), "entry1");
   gtk_entry_set_visibility(GTK_ENTRY(w), custom_toggled);
-  gtk_entry_set_editable(GTK_ENTRY(w), custom_toggled);
+  gtk_editable_set_editable(GTK_EDITABLE(w), custom_toggled);
   w = lookup_widget(GTK_WIDGET(togglebutton), "entry2");
   gtk_entry_set_visibility(GTK_ENTRY(w), custom_toggled);
-  gtk_entry_set_editable(GTK_ENTRY(w), custom_toggled);
+  gtk_editable_set_editable(GTK_EDITABLE(w), custom_toggled);
 }
 
 

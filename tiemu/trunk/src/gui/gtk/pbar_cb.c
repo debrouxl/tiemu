@@ -51,8 +51,6 @@ void create_pbar_type1(const gchar *title)
   gtk_window_set_title (GTK_WINDOW(pbar_window), title);
 
   p_win.pbar = lookup_widget(pbar_window, "progressbar1");
-  gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (p_win.pbar),
-				  PROGRESS_TYPE);
 
   p_win.label_rate = lookup_widget(pbar_window, "label20");
 
@@ -72,7 +70,7 @@ void create_pbar_type2(const gchar *title, gchar *text)
   gtk_window_set_title (GTK_WINDOW(pbar_window), title);
 
   p_win.label = lookup_widget(pbar_window, "label3");
-  gtk_label_set(GTK_LABEL(p_win.label), text);
+  gtk_label_set_text(GTK_LABEL(p_win.label), text);
 
   gtk_widget_show_all(pbar_window);
 }
@@ -92,12 +90,8 @@ void create_pbar_type3(const gchar *title)
   gtk_window_set_title (GTK_WINDOW(pbar_window), title);
 
   p_win.pbar = lookup_widget(pbar_window, "progressbar2");
-  gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (p_win.pbar),
-				  PROGRESS_TYPE);
 
   p_win.pbar2 = lookup_widget(pbar_window, "progressbar3");
-  gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (p_win.pbar2),
-				  PROGRESS_TYPE);
 
   p_win.label_rate = lookup_widget(pbar_window, "label21");
 
@@ -116,11 +110,9 @@ void create_pbar_type4(const gchar *title, gchar *text)
   gtk_window_set_title (GTK_WINDOW(pbar_window), title);
 
   p_win.label = lookup_widget(pbar_window, "label15");
-  gtk_label_set(GTK_LABEL(p_win.label), text);
+  gtk_label_set_text(GTK_LABEL(p_win.label), text);
 
   p_win.pbar = lookup_widget(pbar_window, "progressbar4");
-  gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (p_win.pbar),
-				  PROGRESS_TYPE);
 
   p_win.label_rate = lookup_widget(pbar_window, "label22");
 
@@ -142,15 +134,11 @@ void create_pbar_type5(const gchar *title, gchar *text)
   gtk_window_set_title (GTK_WINDOW(pbar_window), title);
 
   p_win.label = lookup_widget(pbar_window, "label19");
-  gtk_label_set(GTK_LABEL(p_win.label), text);
+  gtk_label_set_text(GTK_LABEL(p_win.label), text);
 
   p_win.pbar = lookup_widget(pbar_window, "progressbar5");
-  gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (p_win.pbar),
-				  PROGRESS_TYPE);
 
   p_win.pbar2 = lookup_widget(pbar_window, "progressbar6");
-  gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (p_win.pbar2),
-				  PROGRESS_TYPE);
 
   p_win.label_rate = lookup_widget(pbar_window, "label23");
 
