@@ -44,6 +44,7 @@ int dbg_on = 0;
 
 void gtk_debugger_preload(void)
 {
+	// Commented: make TiEmu crash
 	//create_dbgregs_window();
 	//create_dbgcode_window();
 	//create_dbgmem_window();
@@ -113,7 +114,7 @@ void set_other_windows_sensitivity(int state)
         gtk_widget_set_sensitive(dbgw.heap, state);
 }
 
-void gtk_debugger_minimize_all(void)
+void gtk_debugger_minimize_all(int all)	// unused
 {
     if(dbgs.regs)
         gtk_window_iconify(GTK_WINDOW(dbgw.regs));
@@ -123,7 +124,7 @@ void gtk_debugger_minimize_all(void)
         gtk_window_iconify(GTK_WINDOW(dbgw.mem));
     if(dbgs.pclog)
         gtk_window_iconify(GTK_WINDOW(dbgw.pclog));
-    if(dbgs.code)
+    if(dbgs.code & all)
         gtk_window_iconify(GTK_WINDOW(dbgw.code));
     if(dbgs.stack)
         gtk_window_iconify(GTK_WINDOW(dbgw.stack));
@@ -131,7 +132,7 @@ void gtk_debugger_minimize_all(void)
         gtk_window_iconify(GTK_WINDOW(dbgw.heap));
 }
 
-void gtk_debugger_deminimize_all(void)
+void gtk_debugger_deminimize_all(int all)	// unused
 {
     if(dbgs.regs)
         gtk_window_deiconify(GTK_WINDOW(dbgw.regs));
@@ -141,7 +142,7 @@ void gtk_debugger_deminimize_all(void)
         gtk_window_deiconify(GTK_WINDOW(dbgw.mem));
     if(dbgs.pclog)
         gtk_window_deiconify(GTK_WINDOW(dbgw.pclog));
-    if(dbgs.code)
+    if(dbgs.code & all)
         gtk_window_deiconify(GTK_WINDOW(dbgw.code));
     if(dbgs.stack)
         gtk_window_deiconify(GTK_WINDOW(dbgw.stack));
@@ -149,7 +150,7 @@ void gtk_debugger_deminimize_all(void)
         gtk_window_deiconify(GTK_WINDOW(dbgw.heap));
 }
 
-void gtk_debugger_show_all(void)
+void gtk_debugger_show_all(int all)
 {
     if(!dbg_on)
         return;
@@ -162,7 +163,7 @@ void gtk_debugger_show_all(void)
         gtk_widget_show(dbgw.mem);
     if(!dbgs.pclog)
         gtk_widget_show(dbgw.pclog);
-    if(!dbgs.code)
+    if(!dbgs.code && all)
         gtk_widget_show(dbgw.code);
     if(!dbgs.stack)
         gtk_widget_show(dbgw.stack);
@@ -170,7 +171,7 @@ void gtk_debugger_show_all(void)
         gtk_widget_show(dbgw.heap);
 }
 
-void gtk_debugger_hide_all(void)
+void gtk_debugger_hide_all(int all)
 {
     if(!dbg_on)
         return;
@@ -183,7 +184,7 @@ void gtk_debugger_hide_all(void)
         gtk_widget_hide(dbgw.mem);
     if(dbgs.pclog)
         gtk_widget_hide(dbgw.pclog);
-    if(dbgs.code)
+    if(dbgs.code && all)
         gtk_widget_hide(dbgw.code);
     if(dbgs.stack)
         gtk_widget_hide(dbgw.stack);
@@ -199,8 +200,7 @@ GLADE_CB void
 on_registers1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    //if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
-    if(dbgs.regs)
+    if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
         gtk_widget_hide(dbgw.regs);
   	else
         dbgregs_display_window();
@@ -263,14 +263,7 @@ GLADE_CB void
 on_quit1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    gtk_widget_hide(dbgw.regs);
-    gtk_widget_hide(dbgw.bkpts);
-    gtk_widget_hide(dbgw.mem);
-    gtk_widget_hide(dbgw.pclog);
-    gtk_widget_hide(dbgw.stack);
-	gtk_widget_hide(dbgw.heap);
-    gtk_widget_hide(dbgw.code);
-
+	gtk_debugger_hide_all(!0);
     while(gtk_events_pending()) gtk_main_iteration();
 
     dbg_on = 0;
@@ -278,7 +271,21 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
     // Closing the debugger starts the emulator
 	ti68k_bkpt_set_cause(0, 0, 0);
     ti68k_engine_start();
+}
 
+GLADE_CB void
+on_show_all1_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	gtk_debugger_show_all(0);
+}
+
+
+GLADE_CB void
+on_hide_all1_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	gtk_debugger_hide_all(0);
 }
 
 GLADE_CB void
@@ -304,6 +311,12 @@ on_maximize_all1_activate              (GtkMenuItem     *menuitem,
     gtk_widget_show(dbgw.pclog);
     gtk_widget_show(dbgw.stack);
 	gtk_widget_show(dbgw.heap);
+}
+
+GLADE_CB void
+on_restore_all1_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
 }
 
 void update_submenu(GtkWidget *widget, gpointer user_data)

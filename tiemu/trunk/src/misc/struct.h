@@ -70,6 +70,12 @@ typedef struct {
 } GdkRect;
 
 typedef struct {
+	GdkRect	rect;
+	gint	visible;
+	gint	minimized;
+} WinState;
+
+typedef struct {
 	GdkRect bkpts;
 	GdkRect code;
 	GdkRect mem;

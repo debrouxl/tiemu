@@ -41,11 +41,11 @@ void gtk_debugger_refresh(void);
 
 void set_other_windows_sensitivity(int state);
 
-void gtk_debugger_minimize_all(void);
-void gtk_debugger_deminimize_all(void);
+void gtk_debugger_minimize_all(int all);
+void gtk_debugger_deminimize_all(int all);
 
-void gtk_debugger_show_all(void);
-void gtk_debugger_hide_all(void);
+void gtk_debugger_show_all(int all);
+void gtk_debugger_hide_all(int all);
 
 extern GtkWidget *main_wnd;
 
