@@ -47,34 +47,34 @@
 	Linkport (lp) / directfile (df) mappers
 */
 
+void	(*hw_dbus_reinit)		(void);
 void	(*hw_dbus_putbyte)		(uint8_t arg);	// TI -> outside
 uint8_t (*hw_dbus_getbyte)		(void);			// outside -> TI
-int		(*hw_dbus_byteavail)	(void);
 int		(*hw_dbus_checkread)	(void);
 
-static void    lp_putbyte(uint8_t arg);
-static uint8_t lp_getbyte(void);
-static int     lp_byteavail(void);
-static int     lp_checkread(void);
+static void		lp_reinit	(void);
+static void		lp_putbyte	(uint8_t arg);
+static uint8_t	lp_getbyte	(void);
+static int		lp_checkread(void);
 
-static void    df_putbyte(uint8_t arg);
-static uint8_t df_getbyte(void);
-static int     df_byteavail(void);
-static int     df_checkread(void);
+static void		df_reinit	(void);
+static void		df_putbyte	(uint8_t arg);
+static uint8_t	df_getbyte	(void);
+static int		df_checkread(void);
 
 static void map_dbus_to_cable(void)
 {
+	hw_dbus_reinit = lp_reinit;
     hw_dbus_putbyte = lp_putbyte;
     hw_dbus_getbyte = lp_getbyte;
-    hw_dbus_byteavail = lp_byteavail;
     hw_dbus_checkread = lp_checkread;
 }
 
 static void map_dbus_to_file(void)
 {
+	hw_dbus_reinit = df_reinit;
     hw_dbus_putbyte = df_putbyte;
     hw_dbus_getbyte = df_getbyte;
-    hw_dbus_byteavail = df_byteavail;
     hw_dbus_checkread = df_checkread;
 }
 
@@ -103,14 +103,9 @@ int hw_dbus_init(void)
     return 0;
 }
 
-static int avail = 0;
-
 int hw_dbus_reset(void)
 {
-    //hw_dbus_exit();
-    //hw_dbus_init();
-	printf("Dbus reset !\n");
-	avail = 0;
+	hw_dbus_reinit();
 
 	return 0;
 }
@@ -131,6 +126,7 @@ int hw_dbus_exit(void)
 */
 
 TicableLinkCable lc;	// used in ports.c for direct access
+static int avail = 0;
 
 static int init_link_cable(void)
 {
@@ -172,6 +168,11 @@ static int exit_link_cable(void)
 	}
 
 	return 0;
+}
+
+static void lp_reinit(void)
+{
+	avail = 0;
 }
 
 static void lp_putbyte(uint8_t arg)
@@ -216,11 +217,6 @@ static uint8_t lp_getbyte(void)
 	return arg;
 }
 
-static int lp_byteavail(void)
-{
-	return 0;
-}
-
 static int lp_checkread(void)
 {
 	int err = 0;
@@ -262,6 +258,11 @@ int t2f_flag;   // data available
 int f2t_data;   // file => ti data
 int f2t_flag;   // data available
 
+void df_reinit(void)
+{
+	t2f_flag = f2t_flag = 0;
+}
+
 void df_putbyte(uint8_t arg)
 {
 	t2f_data = arg;
@@ -269,7 +270,7 @@ void df_putbyte(uint8_t arg)
 
 	if(sip == 0)
 	{
-		printf("receiving %02x !\n", arg);
+		printf("receiving <%02x>\n", arg);
 		io_bit_set(0x0d,7);	// SLE=1
 		t2f_flag = f2t_flag = 0;
 	}
@@ -279,11 +280,6 @@ uint8_t df_getbyte(void)
 {
 	f2t_flag = 0;
     return f2t_data;
-}
-
-int df_byteavail(void)
-{
-    return f2t_flag;
 }
 
 int df_checkread(void)
@@ -435,8 +431,7 @@ static int init_link_file(void)
 
   	//ticalc_set_update(&iu, ilp_start, ilp_stop, ilp_refresh, ilp_pbar, ilp_label);
 
-    t2f_flag = f2t_flag = 0;
-
+    df_reinit();
 	ilc.init();
 
   	return 0;
@@ -445,7 +440,7 @@ static int init_link_file(void)
 static int exit_link_file(void)
 {
 	ilc.exit();
-	t2f_flag = f2t_flag = 0;
+	df_reinit();
 
     return 0;
 }
@@ -528,7 +523,7 @@ int send_ti_file(const char *filename)
 	{
 		tiemu_error(ret, NULL);
 		io_bit_set(0x0d,7);	// SLE=1
-		t2f_flag = f2t_flag = 0;
+		df_reinit();
 	}
 
   return 0;
