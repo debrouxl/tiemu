@@ -108,18 +108,18 @@ int hw_mem_init(void)
 	ti68k_bkpt_clear_range();
 
     // allocate mem
-    tihw.ram = malloc(tihw.ram_size + 4);
-    tihw.rom = malloc(tihw.rom_size + 4);
-    tihw.io  = malloc(tihw.io_size + 4);
-    tihw.io2 = malloc(tihw.io2_size + 4);
-    tihw.unused = malloc(1*MB + 4);
+    tihw.ram = malloc(tihw.ram_size);
+    tihw.rom = malloc(tihw.rom_size);
+    tihw.io  = malloc(tihw.io_size);
+    tihw.io2 = malloc(tihw.io2_size);
+    tihw.unused = malloc(1*MB);
 
     // clear RAM/ROM/IO
     memset(tihw.ram, 0x00, tihw.ram_size);
     memset(tihw.io , 0x00, tihw.io_size);  
 	memset(tihw.io2, 0x00, tihw.io2_size);
     memset(tihw.rom, 0xff, tihw.rom_size);
-    memset(tihw.unused, 0x00, 1*MB + 4);
+    memset(tihw.unused, 0x00, 1*MB);
 
 	// clear banks
 	memset(&mem_tab, 0, sizeof(mem_tab));
