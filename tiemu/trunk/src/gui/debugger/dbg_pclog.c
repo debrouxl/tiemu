@@ -87,7 +87,7 @@ static GtkListStore* clist_create(GtkWidget *list)
 	}
 	
 	selection = gtk_tree_view_get_selection(view);
-	gtk_tree_selection_set_mode(selection, GTK_SELECTION_NONE);
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	return store;
 }
@@ -179,3 +179,40 @@ void dbgpclog_refresh_window(void)
 	}
 }
 
+GLADE_CB gboolean
+on_pclog_button_press_event        (GtkWidget       *widget,
+                                    GdkEventButton  *event,
+                                    gpointer         user_data)
+{		
+	GtkWidget *list = GTK_WIDGET(widget);
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GList *l;
+
+	// is double click ?
+	if(event->type != GDK_2BUTTON_PRESS)
+		return FALSE;
+	
+	// get selection
+	selection = gtk_tree_view_get_selection(view);
+	l = gtk_tree_selection_get_selected_rows(selection, &model);
+	{
+		GtkTreeIter iter;
+		GtkTreePath *path = l->data;
+        gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
+        uint32_t addr;
+		
+		// get address
+		gtk_tree_model_get_iter(model, &iter, path);
+		gtk_tree_model_get(model, &iter, COL_ADDR, &row_text[COL_ADDR], -1);
+
+		// populate code
+		sscanf(row_text[COL_ADDR], "%x", &addr);
+		dbgcode_disasm_at(addr);
+
+        g_strfreev(row_text);
+    }
+
+    return FALSE;
+}

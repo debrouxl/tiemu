@@ -11,6 +11,7 @@ To do:
 	- fixed bug in FLASH emulation (algorithm)
 	- fixed ROM size handling with TI89 Titanium & V200
 	- removed copying of vector table from FLASH to RAM at startup
+	- added 'go to address' in the PC log window
 
 - 28/08/2004, version 1.80: roms
 	- fixed vectors copy

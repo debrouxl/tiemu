@@ -11,6 +11,11 @@
   <property name="modal">False</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="has_separator">True</property>
 
   <child internal-child="vbox">
@@ -32,6 +37,7 @@
 	      <property name="label">gtk-cancel</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
 	    </widget>
 	  </child>
@@ -44,6 +50,7 @@
 	      <property name="label">gtk-ok</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-5</property>
 	    </widget>
 	  </child>
@@ -83,6 +90,7 @@
 		      <property name="label" translatable="yes">Read</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -101,6 +109,7 @@
 		      <property name="label" translatable="yes">Write</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -120,6 +129,7 @@
 		      <property name="label" translatable="yes">Either</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -173,7 +183,7 @@
 		  <property name="n_rows">2</property>
 		  <property name="n_columns">4</property>
 		  <property name="homogeneous">False</property>
-		  <property name="row_spacing">0</property>
+		  <property name="row_spacing">5</property>
 		  <property name="column_spacing">0</property>
 
 		  <child>
@@ -184,6 +194,7 @@
 		      <property name="label" translatable="yes">Single</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -207,6 +218,7 @@
 		      <property name="label" translatable="yes">Range</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
@@ -232,7 +244,7 @@
 		      <property name="justify">GTK_JUSTIFY_CENTER</property>
 		      <property name="wrap">False</property>
 		      <property name="selectable">False</property>
-		      <property name="xalign">0</property>
+		      <property name="xalign">0.5</property>
 		      <property name="yalign">0.5</property>
 		      <property name="xpad">0</property>
 		      <property name="ypad">0</property>
@@ -258,7 +270,7 @@
 		      <property name="selectable">False</property>
 		      <property name="xalign">0</property>
 		      <property name="yalign">0.5</property>
-		      <property name="xpad">0</property>
+		      <property name="xpad">5</property>
 		      <property name="ypad">0</property>
 		    </widget>
 		    <packing>
@@ -318,31 +330,7 @@
 		  </child>
 
 		  <child>
-		    <widget class="GtkEntry" id="entry1">
-		      <property name="visible">True</property>
-		      <property name="can_focus">True</property>
-		      <property name="editable">True</property>
-		      <property name="visibility">True</property>
-		      <property name="max_length">8</property>
-		      <property name="text" translatable="yes">0x000000</property>
-		      <property name="has_frame">True</property>
-		      <property name="invisible_char" translatable="yes">*</property>
-		      <property name="activates_default">False</property>
-		      <property name="width_chars">8</property>
-		    </widget>
-		    <packing>
-		      <property name="left_attach">1</property>
-		      <property name="right_attach">2</property>
-		      <property name="top_attach">1</property>
-		      <property name="bottom_attach">2</property>
-		      <property name="x_padding">5</property>
-		      <property name="y_options"></property>
-		    </packing>
-		  </child>
-
-		  <child>
 		    <widget class="GtkOptionMenu" id="optionmenu1">
-		      <property name="border_width">5</property>
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
 		      <property name="history">0</property>
@@ -382,6 +370,28 @@
 		      <property name="top_attach">0</property>
 		      <property name="bottom_attach">1</property>
 		      <property name="x_options">fill</property>
+		      <property name="y_options"></property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkEntry" id="entry1">
+		      <property name="visible">True</property>
+		      <property name="can_focus">True</property>
+		      <property name="editable">True</property>
+		      <property name="visibility">True</property>
+		      <property name="max_length">8</property>
+		      <property name="text" translatable="yes">0x000000</property>
+		      <property name="has_frame">True</property>
+		      <property name="invisible_char" translatable="yes">*</property>
+		      <property name="activates_default">False</property>
+		      <property name="width_chars">8</property>
+		    </widget>
+		    <packing>
+		      <property name="left_attach">1</property>
+		      <property name="right_attach">2</property>
+		      <property name="top_attach">1</property>
+		      <property name="bottom_attach">2</property>
 		      <property name="y_options"></property>
 		    </packing>
 		  </child>
