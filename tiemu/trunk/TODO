@@ -6,7 +6,8 @@ ExtendeD:
 assez bizarre : le scroll n'incrémente pas l'adresse de l'instruction du
 bas, mais incrémente celle de la première instruction (scroll n'importe où d
 ans l'AMS, tu devrais tomber sur ce bug).
-Par contre il reste toujours ce problème de saut d'écran lorsque l'on avance
+
+O Par contre il reste toujours ce problème de saut d'écran lorsque l'on avance
 avec du 'step'. Mais là ce serait vraiment mieux que le scroll se fasse par
 demi écran plutôt qu'une seule ligne, sinon l'instruction courante est
 toujours la dernière et on n'a plus de visibilité sur les instructions
@@ -93,7 +94,7 @@ pas l'air de planter l'émulateur). Il faut faire un
 Reset Calculator pour avoir une calculette à nouveau
 d'aplomb.
 
-* TIEmu n'apprécie pas la ROM de V200 modifiée pour
+O TIEmu n'apprécie pas la ROM de V200 modifiée pour
 VTI par ExtendeD, il crashe.
 
 -------------

@@ -9,6 +9,9 @@ To do:
 	- step over fixed again: stops on Bcc/DBcc, STOP, RTE, RTD, RTS, RTR, JMP.
 	- FLINE > 5 was mis-disassembled
 	- code window: don't reload source when setting a bkpt
+	- check for image at startup and can select it
+	- accept ExtendeD's V200 ROM (patched)
+	- code window: show PC in the middle of the window and leave 3 isntructions at bottom
 
 - 07/08/2004, verison 1.76: roms
 	- splitted memory mapping (init/exit)

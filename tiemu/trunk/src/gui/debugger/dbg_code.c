@@ -46,6 +46,8 @@ enum {
 
 #define FONT_NAME	"courier"
 
+#define NLINES      10
+
 static GtkListStore* clist_create(GtkWidget *list)
 {
 	GtkTreeView *view = GTK_TREE_VIEW(list);
@@ -112,7 +114,7 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
 	gdk_color_parse("White", &color);
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color, 1, FALSE, FALSE, &success);
 
-    for(i = 0; i < 10; i++)
+    for(i = 0; i < NLINES; i++)
     {
         gchar *output;
         int offset;
@@ -174,6 +176,10 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
 	GdkColor *color, color1, color2;
 	gboolean success;
 
+    const int offset = 3;   // 3 instructions are still visible
+    uint32_t addr3;
+    gint i;
+
     pc = ti68k_debug_get_pc();
 
 	gdk_color_parse("White", &color1);
@@ -182,26 +188,41 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color2, 1, FALSE, FALSE, &success);
 
     // check for refresh (search for pc)
-    for(valid = gtk_tree_model_get_iter_first(model, &iter);
+    for(valid = gtk_tree_model_get_iter_first(model, &iter), i = 0;
         valid; 
-        valid = gtk_tree_model_iter_next(model, &iter))
+        valid = gtk_tree_model_iter_next(model, &iter), i++)
     {
         gchar *str;
 
         gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
         sscanf(str, "%x", &addr);
 
+        if(i == offset)
+            addr3 = addr;
+
         if(addr == pc)
-            found = !0;
+            found = i+1;
 
         g_free(str);
     }
+
+    printf("<%i %i>\n", offset, found);
 
 	// pc not found, erase and populate
     if(!found && reload)
     {
         gtk_list_store_clear(store);
         clist_populate(store, ti68k_debug_get_pc());
+    }
+
+    // repopulate so that 3 instructions are still visible at the bottom of the list
+    if(found && reload)
+    {
+        if(NLINES - found < offset)
+        {
+            gtk_list_store_clear(store);
+            clist_populate(store, addr3);
+        }
     }
 
     // look for pc and matching bkpt
