@@ -409,7 +409,7 @@ on_step1_activate                      (GtkMenuItem     *menuitem,
 	clist_refresh(store, TRUE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
-    dbgmem_refresh_window();
+    //dbgmem_refresh_window();
 
     // force refresh !
     while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
@@ -425,7 +425,7 @@ on_step_over1_activate                 (GtkMenuItem     *menuitem,
 	clist_refresh(store, TRUE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
-    dbgmem_refresh_window();
+    //dbgmem_refresh_window();
 }
 
 GLADE_CB void
@@ -437,7 +437,7 @@ on_step_out1_activate                 (GtkMenuItem     *menuitem,
 	clist_refresh(store, TRUE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
-    dbgmem_refresh_window();
+    //dbgmem_refresh_window();
 }
 
 
@@ -475,7 +475,7 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
 	clist_refresh(store, FALSE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
-    dbgmem_refresh_window();
+    //dbgmem_refresh_window();
 }
 
 
@@ -531,7 +531,7 @@ dbgcode_button6_clicked                     (GtkButton       *button,
     clist_refresh(store, FALSE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
-    dbgmem_refresh_window();
+    //dbgmem_refresh_window();
     dbgbkpts_refresh_window();
 }
 
@@ -759,7 +759,7 @@ on_set_pc_to_selection1_activate       (GtkMenuItem     *menuitem,
     ti68k_register_set_pc(addr);
     dbgcode_refresh_window();
     dbgregs_refresh_window();
-    dbgmem_refresh_window();
+    //dbgmem_refresh_window();
 }
 
 GLADE_CB void

@@ -67,7 +67,7 @@ GThread *thread = NULL;
 GError *error = NULL;
 
 G_LOCK_DEFINE(running);
-static volatile int running = 0;
+/*static*/ volatile int running = 0;
 
 G_LOCK_DEFINE(debugger);
 volatile int debugger = 0;
@@ -147,9 +147,13 @@ void ti68k_engine_stop(void)
 	G_UNLOCK(running);
 
     if(thread != NULL)
+	{
 	    g_thread_join(thread);	// wait for thread termination
+	}
     thread = NULL;
     printf("done.\n");
+
+	//while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
 }
 
 void ti68k_engine_start(void) 

@@ -140,9 +140,12 @@ int hw_m68k_run(int n)
             bkpts.pclog_buf[bkpts.pclog_ptr++ % bkpts.pclog_size] = m68k_getpc();
         }
 
-        // search for next opcode, execute it and refresh hardware
-        opcode = nextiword();
-        (*cpufunctbl[opcode])(opcode);
+        // search for next opcode, execute it and refresh hardware (if not STOP'ed)
+		if (!(specialflags & SPCFLAG_STOP))
+		{
+			opcode = nextiword();
+			(*cpufunctbl[opcode])(opcode);
+		}
         do_cycles();
 
         // management of special flags
@@ -151,7 +154,7 @@ int hw_m68k_run(int n)
     	    if(specialflags & SPCFLAG_ADRERR) 
 	        {
 	            Exception(3);
-	        specialflags &= ~SPCFLAG_ADRERR;
+				specialflags &= ~SPCFLAG_ADRERR;
 	        }
 	  
 	        if (specialflags & SPCFLAG_DOTRACE) 
@@ -159,9 +162,8 @@ int hw_m68k_run(int n)
 	            Exception(9);
 	        }
 	      
-	        while (specialflags & SPCFLAG_STOP) 
+			if (specialflags & SPCFLAG_STOP)	//while (specialflags & SPCFLAG_STOP) 
 	        {
-	            do_cycles();
 	            if (specialflags & (SPCFLAG_INT | SPCFLAG_DOINT)) 
 		        {
 		            int intr = intlev();
@@ -173,13 +175,14 @@ int hw_m68k_run(int n)
 		                specialflags &= ~SPCFLAG_STOP;
 		            }	    
 		        }
-	        }		
+	        }
 	      
 	        if (specialflags & SPCFLAG_TRACE) 
 	        {
 	            specialflags &= ~SPCFLAG_TRACE;
 	            specialflags |= SPCFLAG_DOTRACE;
 	        }	  
+
 	        if (specialflags & SPCFLAG_DOINT) 
 	        {
 	            int intr = intlev();
@@ -190,21 +193,25 @@ int hw_m68k_run(int n)
 		            regs.stopped = 0;
 	            }	    
 	        }
+
 	        if (specialflags & SPCFLAG_INT) 
 	        {
 	          specialflags &= ~SPCFLAG_INT;
 	          specialflags |= SPCFLAG_DOINT;
 	        }
+
 	        if (specialflags & SPCFLAG_BRK) 
 	        {		
 	          specialflags &= ~SPCFLAG_BRK;
 	          return 1;		// DBG_BREAK
 	        }
+
 	        if(specialflags & SPCFLAG_DBTRACE) 
 	        {
 	          specialflags &= ~SPCFLAG_DBTRACE;
               return 2;     // DBG_TRACE
 	        }
+
             if(specialflags & SPCFLAG_DBSKIP)
                 specialflags &= ~SPCFLAG_DBSKIP;
 	    }  

@@ -74,12 +74,13 @@ int ti89_mem_init(void)
     mem_msk[5] = mem_msk[3] = MIN(tihw.rom_size - 1*MB, 1*MB) - 1;
 
     // ghosts
-    /*
-    mem_tab[4] = mem_tab[2];
-    mem_msk[4] = mem_msk[2];
-    mem_tab[5] = mem_tab[3];
-    mem_msk[5] = mem_msk[3];
-    */
+    if(tihw.calc_type == V200)
+	{
+		mem_tab[4] = mem_tab[2];
+		mem_msk[4] = mem_msk[2];
+		mem_tab[5] = mem_tab[3];
+		mem_msk[5] = mem_msk[3];
+    }
 
     // map IO
     mem_tab[6] = tihw.io;

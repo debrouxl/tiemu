@@ -39,6 +39,7 @@ Improvements:
 	- changed keyboard mapping to pure VTi mapping
 	- LCD background is less dark than before
 	- mem window: refresh when scrolling up/down
+	- when calc is OFF, CPU is now used at 3% instead of 100%
 		
 
 Bug fixes:
@@ -50,6 +51,7 @@ Bug fixes:
 	- PC highlight lost when scrolling: fixed
 	- restart engine when clicking outside of the popup menu
 	- important bug: FLINE instructions were not executed !
+	- when calc is OFF, debugger can be launched
 
 
 To do:

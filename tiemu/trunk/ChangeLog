@@ -16,6 +16,7 @@ To do:
 	- important bug: FLINE instructions were not executed !
 	- popup menu slowed down in non-restricted speed mode (fixed)
 	- removed lock-ups at startup (start engine after splash screen)
+	- when calc is OFF, CPU is now used at 3% instead of 100% and debugger can be launched
 
 - 13/08/2004, version 1.78: roms
 	- changed keyboard mapping to pure VTi mapping
