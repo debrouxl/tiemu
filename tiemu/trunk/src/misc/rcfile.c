@@ -792,6 +792,7 @@ void rcfile_write(void)
   fprintf(txt, "\n");
 
   fprintf(txt, "# File selector to use (old (GTK1/2) or new (GTK 2.6) or win32 (Windows))\n");
+  fprintf(txt, "fs_type=");
   switch(options.fs_type)
   {
   case 0: fprintf(txt, "old\n"); break;
