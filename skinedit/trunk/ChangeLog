@@ -2,6 +2,7 @@ List of changes:
 
 - 03/05/2004, version 1.24: roms
 	Clean-up. Win32 installer.
+	BUg fixes.
 
 - 02/05/2004, version 1.23: roms
 	Removed SDL support for GtkDrawable. 
