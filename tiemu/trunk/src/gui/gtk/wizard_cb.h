@@ -1,3 +1,7 @@
+
+#ifndef WIZARD_CB_H
+#define WIZARD_CB_H
+
 #include <gtk/gtk.h>
 
 gint display_flash_fileselection();
@@ -5,10 +9,6 @@ gint display_romfile_fileselection();
 
 void
 on_flashfile_fileselection_destroy     (GtkObject       *object,
-                                        gpointer         user_data);
-
-void
-on_flashfile_fileselection_show        (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void
@@ -78,3 +78,5 @@ on_romfile_ok_button2_clicked          (GtkButton       *button,
 void
 on_romfile_cancel_button2_clicked      (GtkButton       *button,
                                         gpointer         user_data);
+
+#endif /* !WIZARD_CB_H */

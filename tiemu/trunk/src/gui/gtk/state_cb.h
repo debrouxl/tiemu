@@ -1,5 +1,8 @@
-#include <gtk/gtk.h>
 
+#ifndef STATE_CB_H
+#define STATE_CB_H
+
+#include <gtk/gtk.h>
 
 gint display_fs_load_state();
 gint display_fs_save_state();
@@ -29,17 +32,11 @@ load_state_on_cancel_button1_clicked   (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_fs_load_state_show                  (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_fs_save_state_show                  (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
 on_fs_load_state_destroy               (GtkObject       *object,
                                         gpointer         user_data);
 
 void
 on_fs_save_state_destroy               (GtkObject       *object,
                                         gpointer         user_data);
+
+#endif /* !STATE_CB_H */

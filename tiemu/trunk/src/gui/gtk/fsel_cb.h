@@ -1,5 +1,8 @@
-#include <gtk/gtk.h>
 
+#ifndef FSEL_CB_H
+#define FSEL_CB_H
+
+#include <gtk/gtk.h>
 
 gint display_rom_fileselection();
 gint display_tifile_fileselection();
@@ -9,10 +12,6 @@ gint display_ams_fileselection();
 
 void
 on_rom_fileselection_destroy           (GtkObject       *object,
-                                        gpointer         user_data);
-
-void
-on_rom_fileselection_show              (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void
@@ -28,10 +27,6 @@ on_tifile_fileselection_destroy        (GtkObject       *object,
                                         gpointer         user_data);
 
 void
-on_tifile_fileselection_show           (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
 on_tifile_ok_button2_clicked           (GtkButton       *button,
                                         gpointer         user_data);
 
@@ -41,10 +36,6 @@ on_tifile_cancel_button2_clicked       (GtkButton       *button,
 
 void
 on_tib_fileselection_destroy           (GtkObject       *object,
-                                        gpointer         user_data);
-
-void
-on_tib_fileselection_show              (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void
@@ -60,13 +51,11 @@ on_ams_fileselection_destroy           (GtkObject       *object,
                                         gpointer         user_data);
 
 void
-on_ams_fileselection_show              (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
 on_ams_ok_button2_clicked              (GtkButton       *button,
                                         gpointer         user_data);
 
 void
 on_ams_cancel_button2_clicked          (GtkButton       *button,
                                         gpointer         user_data);
+
+#endif /* !FSEL_CB_H */

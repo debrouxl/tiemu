@@ -1,3 +1,7 @@
+
+#ifndef TIEMU_CB_H
+#define TIEMU_CB_H
+
 #include <gtk/gtk.h>
 
 GtkWidget* display_popup_menu();
@@ -11,31 +15,11 @@ on_popup_menu_configure_event          (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void
-on_popup_menu_show                     (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
 on_popup_menu_cancel                   (GtkMenuShell    *menushell,
                                         gpointer         user_data);
 
 void
 on_popup_menu_deactivate               (GtkMenuShell    *menushell,
-                                        gpointer         user_data);
-
-void
-on_popup_menu_show_skin1               (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_popup_menu_show_none                (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_popup_menu_show_sync1               (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_popup_menu_show_restrict1           (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void
@@ -204,10 +188,6 @@ on_exit_without_saving_state1_activate (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_popup_menu_show_restrict1           (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
 on_single1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
@@ -234,3 +214,5 @@ on_change_skin1_activate               (GtkMenuItem     *menuitem,
 void
 on_set_skin1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+#endif /* !TIEMU_CB_H */

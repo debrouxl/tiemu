@@ -1,27 +1,11 @@
-#include <gtk/gtk.h>
 
+#ifndef SCOPT_CB_H
+#define SCOPT_CB_H
+
+#include <gtk/gtk.h>
 
 gint display_scopt_dbox();
 
-void
-on_scopt_dbox_show18                   (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_scopt_dbox_show19                   (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_scopt_dbox_show20                   (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_scopt_dbox_show21                   (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_scopt_dbox_show22                   (GtkWidget       *widget,
-                                        gpointer         user_data);
 
 void
 on_scopt_radiobutton18_toggled         (GtkToggleButton *togglebutton,
@@ -64,41 +48,12 @@ on_scopt_dbox_destroy                  (GtkObject       *object,
                                         gpointer         user_data);
 
 void
-on_scopt_dbox_show22                   (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_scopt_dbox_show23                   (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_scopt_dbox_show24                   (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_scopt_dbox_show25                   (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_scopt_dbox_show21                   (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
 on_scopt_radiobutton21_toggled         (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_scopt_dbox_show_entry               (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_scopt_dbox_show_label               (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void
 on_entry1_changed                      (GtkEditable     *editable,
                                         gpointer         user_data);
 
-void
-on_scopt_dbox_show_entry               (GtkWidget       *widget,
-                                        gpointer         user_data);
+
+#endif /* !SCOPT_CB_H */

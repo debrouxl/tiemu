@@ -1,18 +1,11 @@
+
+#ifndef DBGOPT_CB_H
+#define DBGOPT_CB_H
+
 #include <gtk/gtk.h>
 
 int display_dbgopt_dbox();
 
-void
-on_dbgopt_dbox_show1                   (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_dbgopt_dbox_show2                   (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_dbgopt_dbox_show3                   (GtkWidget       *widget,
-                                        gpointer         user_data);
 
 void
 on_timeout_spinbutton1_changed         (GtkEditable     *editable,
@@ -45,3 +38,5 @@ on_dbgopt_spinbutton3_changed          (GtkEditable     *editable,
 void
 on_dbgopt_dbox_destroy                 (GtkObject       *object,
                                         gpointer         user_data);
+
+#endif /* !DBGOPT_CB_H */

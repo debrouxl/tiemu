@@ -1,131 +1,11 @@
-#include <gtk/gtk.h>
 
+#ifndef TRAP_CB_H
+#define TRAP_CB_H
+
+#include <gtk/gtk.h>
 
 gint display_trap_dbox();
 
-void
-on_trap_dbox_show1                     (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show2                     (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show3                     (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show4                     (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show5                     (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show6                     (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show7                     (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show8                     (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show9                     (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show10                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show11                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show12                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show13                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show14                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show15                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show16                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show17                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show18                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show19                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show20                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show21                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show22                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show23                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show24                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show25                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show26                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show27                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show28                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show29                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show30                    (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_trap_dbox_show31                    (GtkWidget       *widget,
-                                        gpointer         user_data);
 
 void
 on_checkbutton1_toggled                (GtkToggleButton *togglebutton,
@@ -259,6 +139,5 @@ void
 on_button47_clicked                    (GtkButton       *button,
                                         gpointer         user_data);
 
-void
-on_trap_dbox_show                      (GtkWidget       *widget,
-                                        gpointer         user_data);
+
+#endif /* !TRAP_CB_H */
