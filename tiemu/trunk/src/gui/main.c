@@ -58,21 +58,23 @@ ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
-//G_LOCK_EXTERN(lcd_flag);
-extern int lcd_flag;
-extern int debugger;
+G_LOCK_EXTERN(lcd_flag);
+extern volatile int lcd_flag;
+extern volatile int debugger;
 
 static gint hid_refresh (gpointer data)
 {
     if(lcd_flag || (tihw.calc_type == HW2))
     {
         hid_update_lcd();
+        G_LOCK(lcd_flag);
         lcd_flag = 0;
+        G_UNLOCK(lcd_flag);
 
         // Toggles every FS (every time the LCD restarts at line 0)
         tihw.io2[0x1d] |= (1 << 7);
     }
-    
+
     hid_update_keys();
 
 	// gruik, should be removed later...

@@ -124,8 +124,8 @@ int hw_exit(void)
     return 0;
 }
 
-//G_LOCK_DEFINE(lcd_flag);
-int lcd_flag = !0;
+G_LOCK_DEFINE(lcd_flag);
+volatile int lcd_flag = !0;
 
 /*
     This function is called by do_cycles to regularly updates the hardware.
@@ -221,7 +221,11 @@ void hw_update(void)
   		
   	// Update LCD (HW1: every 16Th timer tick, HW2: unrelated)
   	if((tihw.hw_type == HW1) && !(tihw.timer_value & 15))
+    {
+        G_LOCK(lcd_flag);
         lcd_flag = !0;
+        G_UNLOCK(lcd_flag);
+    }
 
 }
 
