@@ -33,12 +33,14 @@
 #include "skinops.h"
 #include "ti68k_int.h"
 #include "support.h"
+#include "dbg_bkpts.h"
 
 static gint menu;
+static GladeXML *xml;
 
 gint display_dbgdata_dbox(void)
 {
-	GladeXML *xml;
+	//GladeXML *xml;
 	GtkWidget *dbox;
 	GtkWidget *data;
 	gint result;
@@ -56,6 +58,9 @@ gint display_dbgdata_dbox(void)
 	
 	dbox = glade_xml_get_widget(xml, "dbgdata_dbox");
 	gtk_window_resize(GTK_WINDOW(dbox), 320, 240);
+
+	data = glade_xml_get_widget(xml, "radiobutton20");
+	gtk_signal_emit_by_name(GTK_OBJECT(data), "toggled");
 
 loop:
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
@@ -123,6 +128,8 @@ loop:
 			ti68k_bkpt_set_access_range(start, stop, mode);
 		}
 
+		refresh_dbgbkpts_window();
+
 		break;
 	default:
 		break;
@@ -138,14 +145,34 @@ GLADE_CB void
 on_radiobutton20_toggled               (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-	
+	GtkWidget *data;
+
+	data = glade_xml_get_widget(xml, "optionmenu1");
+	gtk_widget_set_sensitive(data, TRUE);
+	data = glade_xml_get_widget(xml, "entry3");
+	gtk_widget_set_sensitive(data, TRUE);
+
+	data = glade_xml_get_widget(xml, "entry1");
+	gtk_widget_set_sensitive(data, FALSE);
+	data = glade_xml_get_widget(xml, "entry2");
+	gtk_widget_set_sensitive(data, FALSE);
 }
 
 GLADE_CB void
 on_radiobutton21_toggled               (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-	//gtk_widget_set_sensitive(button, FALSE);
+	GtkWidget *data;
+
+	data = glade_xml_get_widget(xml, "optionmenu1");
+	gtk_widget_set_sensitive(data, FALSE);
+	data = glade_xml_get_widget(xml, "entry3");
+	gtk_widget_set_sensitive(data, FALSE);
+
+	data = glade_xml_get_widget(xml, "entry1");
+	gtk_widget_set_sensitive(data, TRUE);
+	data = glade_xml_get_widget(xml, "entry2");
+	gtk_widget_set_sensitive(data, TRUE);
 }
 
 

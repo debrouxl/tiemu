@@ -50,6 +50,9 @@ int ti68k_bkpt_set_access_range(int addressMin, int addressMax, int mode)
     {
         ADDR_RANGE *s = g_malloc(sizeof(ADDR_RANGE));
 
+		s->val1 = addressMin;
+		s->val2 = addressMax;
+
         bkpts.mem_rng_r = g_list_append(bkpts.mem_rng_r, s);
         return g_list_length(bkpts.mem_rng_r);
     }
@@ -57,6 +60,9 @@ int ti68k_bkpt_set_access_range(int addressMin, int addressMax, int mode)
     if(mode & BK_WRITE) 
     {
         ADDR_RANGE *s = g_malloc(sizeof(ADDR_RANGE));
+
+		s->val1 = addressMin;
+		s->val2 = addressMax;
 
         bkpts.mem_rng_w = g_list_append(bkpts.mem_rng_w, s);
         return g_list_length(bkpts.mem_rng_w);

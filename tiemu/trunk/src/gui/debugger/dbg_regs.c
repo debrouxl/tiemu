@@ -449,6 +449,7 @@ static void ctree_refresh(GtkTreeStore *store)
 
 }
 
+static GtkTreeStore *store;
 
 /*
 	Display registers window
@@ -457,8 +458,7 @@ gint display_dbgregs_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
-    GtkWidget *data;
-	GtkTreeStore *store;
+    GtkWidget *data;	
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_regs-2.glade"), "dbgregs_window",
@@ -480,6 +480,12 @@ gint display_dbgregs_window(void)
 	gtk_window_resize(GTK_WINDOW(dbox), 160, 480);
     gtk_widget_show(GTK_WIDGET(dbox));
 
+	return 0;
+}
+
+gint refresh_dbgregs_window(void)
+{
+	ctree_refresh(store);
 	return 0;
 }
 

@@ -10,6 +10,7 @@
 #include "support.h"
 #include "ti68k_int.h"
 #include "dbg_vectors.h"
+#include "dbg_data.h"
 
 
 enum { 
@@ -26,7 +27,7 @@ static GtkListStore* clist_create(GtkWidget *list)
 	GtkCellRenderer *renderer;
 	GtkTreeSelection *selection;
     const gchar *text[CLIST_NVCOLS] = { 
-		_("Symbol"), _("Type"), _("Start"), _("End"), _("Status"), _("R/W"), _("Size")
+		_("Symbol"), _("Type"), _("Status"), _("Start"), _("End"), _("Mode"), _("Type")
     };
     gint i;
 	
@@ -96,7 +97,7 @@ static void clist_refresh(GtkListStore *store)
 	gtk_list_store_clear(store);
 
 	// Code breakpoints
-	for(l = bkpts.code; l; l = g_list_next(l))
+	for(l = bkpts.code; l != NULL; l = g_list_next(l))
 	{
 		uint32_t addr = GPOINTER_TO_INT(l->data);
 		
@@ -117,7 +118,7 @@ static void clist_refresh(GtkListStore *store)
 	}
 
 	// Vector breakpoints
-	for(l = bkpts.exception; l; l = g_list_next(l))
+	for(l = bkpts.exception; l != NULL; l = g_list_next(l))
 	{
 		gint n = GPOINTER_TO_INT(l->data);
 		
@@ -141,7 +142,7 @@ static void clist_refresh(GtkListStore *store)
 	// Memory access breakpoints
 	for(i = 0; i < 6; i++)
 	{
-		for(l = *bkpts_mem_access[i]; l; l = g_list_next(l))
+		for(l = *bkpts_mem_access[i]; l != NULL; l = g_list_next(l))
 		{
 			uint32_t addr = GPOINTER_TO_INT(l->data);
 			
@@ -163,14 +164,14 @@ static void clist_refresh(GtkListStore *store)
 	}
 	
 	// Memory range breakpoints
-	for(i = 0; i < 6; i++)
+	for(i = 0; i < 2; i++)
 	{
-		for(l = *bkpts_mem_access[i]; l; l = g_list_next(l))
+		for(l = *(bkpts_mem_range[i]); l != NULL; l = g_list_next(l))
 		{
 			ADDR_RANGE *s = l->data;
 			
 			str1 = g_strdup_printf("0x%06x", s->val1);
-			str2 = g_strdup_printf("0x%06x", s->val1);
+			str2 = g_strdup_printf("0x%06x", s->val2);
 			
 			gtk_list_store_append(store, &iter);
 			gtk_list_store_set(store, &iter, 
@@ -188,6 +189,8 @@ static void clist_refresh(GtkListStore *store)
 	}
 }
 
+GtkListStore *store;
+
 /*
 	Display registers window
 */
@@ -196,7 +199,6 @@ gint display_dbgbkpts_window(void)
 	GladeXML *xml;
 	GtkWidget *dbox;
     GtkWidget *data;
-	GtkListStore *store;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_bkpts-2.glade"), "dbgbkpts_window",
@@ -214,9 +216,15 @@ gint display_dbgbkpts_window(void)
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
 
-	gtk_window_resize(GTK_WINDOW(dbox), 320, 60);
+	gtk_window_resize(GTK_WINDOW(dbox), 320, 120);
     gtk_widget_show(GTK_WIDGET(dbox));
 
+	return 0;
+}
+
+gint refresh_dbgbkpts_window(void)
+{
+	clist_refresh(store);
 	return 0;
 }
 
@@ -292,7 +300,7 @@ GLADE_CB void
 dbgbkpts_data_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+	display_dbgdata_dbox();
 }
 
 
@@ -302,7 +310,6 @@ dbgbkpts_vector_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	display_dbgvectors_dbox();
-	//clist_refresh();
 }
 
 

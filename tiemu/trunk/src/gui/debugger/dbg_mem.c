@@ -334,6 +334,11 @@ gint display_dbgmem_window(void)
 	return 0;
 }
 
+gint refresh_dbgmem_window(void)
+{
+	//clist_refresh(store);
+}
+
 GLADE_CB void
 on_dbgmem_window_destroy               (GtkObject       *object,
                                         gpointer         user_data)

@@ -32,6 +32,7 @@
 #include "paths.h"
 #include "skinops.h"
 #include "ti68k_int.h"
+#include "dbg_bkpts.h"
 
 enum { 
 	    COL_NUMBER, COL_NAME,
@@ -118,7 +119,6 @@ static void clist_get_selection(GtkWidget *list)
 			
 		gtk_tree_model_get_iter(model, &iter, path);
 		gtk_tree_model_get(model, &iter, COL_NUMBER, &n, -1);
-		printf("sel: %i\n", n);
 		
 		ti68k_bkpt_set_exception(n);
 	}	
@@ -150,6 +150,7 @@ gint display_dbgvectors_dbox(void)
 	switch (result) {
 	case GTK_RESPONSE_OK:
 		clist_get_selection(data);
+		refresh_dbgbkpts_window();
 		break;
 	default:
 		break;
