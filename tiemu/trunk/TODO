@@ -12,7 +12,6 @@ adresses (trop hautes pour être du code).
  répond pas (il répond si on ferme le débogeur : il se réouvre tout de
  suite).
 
-
 Kevin
 =====
 
@@ -76,11 +75,6 @@ __floatunssibf:
 
 Le .word 0x6B30 est le code de la pseudo-FPU dont je parle. Et ce n'est pas
 exécuté par le processeur, _bcd_math rajoute 2 octets à l'adresse de retour.
-
-* FLINE addresse: 
-Le problème, c'est qu'il faut d'abord trouver __ld_entry_point pour calculer l'adresse.
-Mais tu peux le faire avec la table des handles: tu cherches le handle contenant 
-l'adresse courante (instruction désassemblée), et tu as __ld_entry_point = HeapDeref(handle)+2.
 
 Lionel
 ======

@@ -27,8 +27,13 @@
 
 #include <stdint.h>
 
-void heap_get_base_address(uint32_t *base);
+void heap_get_addr(uint32_t *base);
 void heap_get_size(uint16_t *size);
-void heap_get_block_size(int handle, uint32_t *addr, uint16_t *size);
+
+void heap_get_block_addr(int handle, uint32_t *addr);
+void heap_get_block_size(int handle, uint16_t *size);
+void heap_get_block_addr_and_size(int handle, uint32_t *addr, uint16_t *size);
+
+void heap_search_for_address(uint32_t address, int *handle);
 
 #endif

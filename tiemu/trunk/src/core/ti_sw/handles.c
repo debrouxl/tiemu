@@ -23,7 +23,13 @@
  */
 
 /*
-    Handles/Heap access
+    Handles/Heap access:
+	$5D42 is a pointer on the Handles[] array. An handle is an index in this array
+	which poins on a memory allocatedblock :
+	Handles[0] => block 0
+	Handles[1] => block 1 ....
+
+	The first word just before the beginning of the block is the block size.
 */
 
 #include <stdio.h>
@@ -97,9 +103,38 @@ void heap_get_size(uint16_t *size)
 }
 
 /*
+	Dereference an handle (like HeapDeref)
+*/
+void heap_get_block_addr(int handle, uint32_t *addr)
+{
+	uint32_t base;
+
+	heap_get_addr(&base);
+	*addr = rd_long(ti68k_get_real_address(base + 4*handle));
+}
+
+/*
+	Get size of an allocated block (like HeapSize)
+*/
+void heap_get_block_size(int handle, uint16_t *size)
+{
+	uint32_t base;
+	uint32_t addr;
+
+	heap_get_addr(&base);
+
+	addr = rd_long(ti68k_get_real_address(base + 4*handle));
+	*size = rd_word(ti68k_get_real_address(addr - 2));
+
+	*size &= ~(1 << 16);	// remove lock
+	*size <<= 1;			// size is twice
+	*size -= 2;
+}
+
+/*
 	Given an handle, retrieve block size and block address
 */
-void heap_get_block_size(int handle, uint32_t *addr, uint16_t *size)
+void heap_get_block_addr_and_size(int handle, uint32_t *addr, uint16_t *size)
 {
 	uint32_t base;
 
@@ -112,3 +147,38 @@ void heap_get_block_size(int handle, uint32_t *addr, uint16_t *size)
 	*size <<= 1;			// size is twice
 	*size -= 2;
 }
+
+/*
+*/
+void heap_search_for_address(uint32_t address, int *handle)
+{
+	uint32_t base;
+	uint16_t size;
+	int i;
+
+	heap_get_addr(&base);
+	heap_get_size(&size);
+
+	for(i = 0; i < size; i++)
+	{
+		uint32_t addr = rd_long(ti68k_get_real_address(base + 4*i));
+		uint16_t size = rd_word(ti68k_get_real_address(addr - 2));
+		
+		if ((address >= addr) && (address < addr+size))
+			*handle = i;
+	}
+
+	*handle = -1;
+}
+
+//#define HeapDeref(handle) HeapTable[handle]
+//#define HeapSize(handle) ((short*)HeapDeref(handle))[-1]<<1;
+/*
+for (handle=0; handle<n_handles; handle++)
+{
+  if (instruction_address>=HeapDeref(handle)
+      && instruction_address<HeapDeref(handle)+HeapSize(handle)) break;
+}
+if (handle==n_handles) error;
+__ld_entry_point=HeapDeref(handle)+2;
+*/

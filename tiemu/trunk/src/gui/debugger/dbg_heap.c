@@ -106,7 +106,7 @@ static void clist_populate(GtkListStore *store)
 		uint16_t size;
         gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
 
-		heap_get_block_size(i, &addr, &size);
+		heap_get_block_addr_and_size(i, &addr, &size);
 
 		row_text[0] = g_strdup_printf("%i:", i);
 		row_text[1] = g_strdup_printf("$%06x", addr);

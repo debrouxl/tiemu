@@ -17,6 +17,7 @@
 #include <glib.h>	// GUINT16_SWAP_LE_BE
 
 #include "romcalls.h"
+#include "handles.h"
 
 #ifdef __WIN32__
 #pragma warning( disable : 4244 )
@@ -288,16 +289,44 @@ int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
 		case 0xffee:	// jmp __ld_entry_point_plus_0x8000+word (branchement avec offset signé de 2 octets rajouté à (début du programme)+0x8000)
 			PARAM_WORD(pm);
 			if (pm & 0x8000)
-				sprintf (buffer, "FLINE    jmp.w *-$%lX [%lX]", (int)(-(signed short)pm) - 2 + 0x8000, pc + (signed short)pm + 2 + 0x8000);
+			{
+				int handle;
+				uint32_t addr;
+				
+				heap_search_for_address(pc + (signed short)pm + 2 + 0x8000, &handle);
+				heap_get_block_addr(handle, &addr);				
+				sprintf (buffer, "FLINE    jmp.w *-$%lX [%lX]", (int)(-(signed short)pm) - 2 + 0x8000, addr);
+			}
 			else
-				sprintf (buffer, "FLINE    jmp.w *+$%lX [%lX]", pm + 2 + 0x8000, pc + pm + 2 + 0x8000);
+			{
+				int handle;
+				uint32_t addr;
+
+				heap_search_for_address(pc + pm + 2 + 0x8000, &handle);
+				heap_get_block_addr(handle, &addr);				
+				sprintf (buffer, "FLINE    jmp.w *+$%lX [%lX]", pm + 2 + 0x8000, addr);
+			}
 			return 4;
 		case 0xffef:	// jsr __ld_entry_point_plus_0x8000+word (appel de fonction avec offset signé de 2 octets rajouté à (début du programme)+0x8000)
 			PARAM_WORD(pm);
 			if (pm & 0x8000)
-				sprintf (buffer, "FLINE    jsr.w *-$%lX [%lX]", (int)(-(signed short)pm) - 2 + 0x8000, pc + (signed short)pm + 2 + 0x8000);
+			{
+				int handle;
+				uint32_t addr;
+				
+				heap_search_for_address(pc + (signed short)pm + 2 + 0x8000, &handle);
+				heap_get_block_addr(handle, &addr);	
+				sprintf (buffer, "FLINE    jsr.w *-$%lX [%lX]", (int)(-(signed short)pm) - 2 + 0x8000, addr);
+			}
 			else
-				sprintf (buffer, "FLINE    jsr.w *+$%lX [%lX]", pm + 2 + 0x8000, pc + pm + 2 + 0x8000);
+			{
+				int handle;
+				uint32_t addr;
+
+				heap_search_for_address(pc + pm + 2 + 0x8000, &handle);
+				heap_get_block_addr(handle, &addr);
+				sprintf (buffer, "FLINE    jsr.w *+$%lX [%lX]", pm + 2 + 0x8000, addr);
+			}
 			return 4;
 		default:		// 2 byte ROM CALL
 			sprintf (buffer, "FLINE    $%03x.w [%s]", op & 0x7ff, romcalls_get_name(op & 0x7ff));

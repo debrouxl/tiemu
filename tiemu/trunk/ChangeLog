@@ -14,6 +14,8 @@ To do:
 	- changed engine_start/stop architecture to remove some menu locks/bugs
 	- fix: ROM call combo box: does not jump to call when names contains '/'
 	- fix: don't reload ROM calls when changing AMS without chaning calc type
+	- show vector name rather than number
+	- dis-assemble FLINE with __ld_entry_point
 
 - 07/02/2005, version 1.80m: roms
 	- dbus architecture improved (reset)
