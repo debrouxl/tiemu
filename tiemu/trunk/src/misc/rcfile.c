@@ -387,9 +387,9 @@ void rcfile_read(void)
 	  continue;
 	}
 
-	if( (p=find_str(buffer, "protect_on=")) )
+	if( (p=find_str(buffer, "hw_protect=")) )
 	{
-	  sscanf(p, "%i", &(params.protect_on));
+	  sscanf(p, "%i", &(params.hw_protect));
 	  continue;
 	}
 
@@ -752,7 +752,7 @@ void rcfile_write(void)
   fprintf(txt, "lcd_rate=%i\n", params.lcd_rate);
   fprintf(txt, "\n");
   fprintf(txt, "# HW2 protection\n");
-  fprintf(txt, "protect_on=%i\n", params.protect_on);
+  fprintf(txt, "hw_protect=%i\n", params.hw_protect);
   fprintf(txt, "\n");
   fprintf(txt, "#\n");
   fprintf(txt, "# SCREENSHOT SECTION\n");

@@ -195,6 +195,16 @@ on_restrict_to_actual_speed1_activate  (GtkMenuItem     *menuitem,
     	params.restricted = 1;
 }
 
+GLADE_CB void
+on_hw_protection1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
+    	params.hw_protect = 0;
+  	else
+    	params.hw_protect = 1;
+}
+
 
 GLADE_CB void
 on_normal_view1_activate          (GtkMenuItem     *menuitem,
@@ -411,6 +421,11 @@ GtkWidget* display_popup_menu(void)
 	g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_restrict_to_actual_speed1_activate, NULL);
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.restricted);
 	g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_restrict_to_actual_speed1_activate, NULL);
+
+	data = glade_xml_get_widget(xml, "hw_protection1");
+	g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_hw_protection1_activate, NULL);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.hw_protect);
+	g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_hw_protection1_activate, NULL);
 
     switch(options.view)
     {
