@@ -38,6 +38,7 @@
 #include "dbg_regs.h"
 #include "dbg_mem.h"
 #include "struct.h"
+#include "dbg_all.h"
 
 enum { 
 	    COL_ICON, COL_ADDR, COL_OPCODE, COL_OPERAND,
@@ -542,7 +543,7 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
     uint32_t addr;
     char output[128];
     int offset;
-    int i, j;
+    //int i, j;
 
     selection = gtk_tree_view_get_selection(view);
     valid = gtk_tree_selection_get_selected(selection, NULL, &iter);

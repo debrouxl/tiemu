@@ -28,14 +28,14 @@
 
 #include <gtk/gtk.h>
 
-#include "./debugger/dbg_bkpts.h"
-#include "./debugger/dbg_code.h"
-#include "./debugger/dbg_cause.h"
-#include "./debugger/dbg_data.h"
-#include "./debugger/dbg_mem.h"
-#include "./debugger/dbg_regs.h"
-#include "./debugger/dbg_vectors.h"
-#include "./debugger/dbg_pclog.h"
+#include "dbg_bkpts.h"
+#include "dbg_code.h"
+#include "dbg_cause.h"
+#include "dbg_data.h"
+#include "dbg_mem.h"
+#include "dbg_regs.h"
+#include "dbg_vectors.h"
+#include "dbg_pclog.h"
 #include "ti68k_int.h"
 #include "struct.h"
 #include "dbg_all.h"
