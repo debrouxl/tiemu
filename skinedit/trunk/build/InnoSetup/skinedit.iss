@@ -7,7 +7,7 @@
 
 [Setup]
 AppName=SkinEdit
-AppVerName=SkinEdit 1.24
+AppVerName=SkinEdit 1.26
 AppPublisher=The TiLP Team
 AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
 AppSupportURL=http://lpg.ticalc.org/prj_tiemu/index.html
@@ -25,25 +25,21 @@ Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescri
 
 [Files]
 ; Glade files
-Source: "C:\home\devel\skinedit\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
+Source: "C:\sources\roms\skinedit\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
 ; Pixmaps files
-Source: "C:\home\devel\skinedit\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
+Source: "C:\sources\roms\skinedit\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
 ; i18n files
-Source: "C:\home\devel\skinedit\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "skinedit.mo"; Flags: ignoreversion;
+Source: "C:\sources\roms\skinedit\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "skinedit.mo"; Flags: ignoreversion;
 ; Misc files
-Source: "C:\home\devel\skinedit\README"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: ignoreversion
-Source: "C:\home\devel\skinedit\AUTHORS"; DestDir: "{app}"; DestName: "Authors.txt"; Flags: ignoreversion
-Source: "C:\home\devel\skinedit\CHANGELOG"; DestDir: "{app}"; DestName: "ChangeLog.txt"; Flags: ignoreversion
-Source: "C:\home\devel\skinedit\COPYING"; DestDir: "{app}"; DestName: "License.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\skinedit\README"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\skinedit\AUTHORS"; DestDir: "{app}"; DestName: "Authors.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\skinedit\CHANGELOG"; DestDir: "{app}"; DestName: "ChangeLog.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\skinedit\COPYING"; DestDir: "{app}"; DestName: "License.txt"; Flags: ignoreversion
 ; Executable files
-Source: "C:\home\devel\skinedit\build\msvc\skinedit.exe"; DestDir: "{app}"; DestName: "skinedit.exe"; Flags: ignoreversion
+Source: "C:\sources\roms\skinedit\build\msvc\skinedit.exe"; DestDir: "{app}"; DestName: "skinedit.exe"; Flags: ignoreversion
 
-; Script to modify AUTOEXEC.bat
-; Install helper
-;Source: "C:\sources\roms\tilp\build\InnoSetup\AddEntry\AddEntry.exe"; DestDir: "{app}"; Flags: ignoreversion; Attribs: hidden; MinVersion: 4,0;
-
-; Fix Gtk-Wimp installation problem (file is not at the right location)
-Source: "C:\Program Files\Common Files\GTK\2.0\lib\libwimp.dll"; DestDir: "{code:GetGtkPath}\lib\gtk-2.0\2.2.0\engines"; Flags: onlyifdoesntexist uninsneveruninstall; MinVersion: 0,4;
+; GTK+ specific
+Source: "C:\Gtk2Dev\bin\gtkthemeselector.exe"; DestDir: "{app}";
 
 [Dirs]
 Name: "{app}\My Skins"; Flags: uninsneveruninstall;
@@ -55,23 +51,17 @@ Filename: "{app}\skinedit.url"; Section: "InternetShortcut"; Key: "URL"; String:
 Name: "{group}\SkinEdit"; Filename: "{app}\skinedit.exe"; WorkingDir: "{app}\My Skins"
 Name: "{group}\SkinEdit on the Web"; Filename: "{app}\skinedit.url"
 Name: "{group}\Uninstall SkinEdit"; Filename: "{uninstallexe}"
+;Name: "{group}\User's Manual"; Filename: "{app}\help\Manual_en.html"
+Name: "{group}\GTK theme selector"; Filename: "{app}\gtkthemeselector.exe";
 
 Name: "{userdesktop}\SkinEdit"; Filename: "{app}\skinedit.exe"; WorkingDir: "{app}\My Skins"; MinVersion: 4,4; Tasks: desktopicon
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\SkinEdit"; Filename: "{app}\skinedit.exe"; WorkingDir: "{app}\My Skins"; MinVersion: 4,4; Tasks: quicklaunchicon
-
-[Run]
-; Boost GTK2 (Win9x/Me)
-Filename: "{app}\AddEntry.exe"; Description: "Modify AUTOEXEC.BAT (you will have to restart Windows !)"; StatusMsg: "Modifying AUTOEXEC.BAT..."; Flags: postinstall nowait runminimized; MinVersion: 4,0;
 
 [Registry]
 ; This adds the GTK+ libraries to skinedit.exe's path
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\skinedit.exe"; Flags: uninsdeletekeyifempty
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\skinedit.exe"; ValueType: string; ValueData: "{app}\skinedit.exe"; Flags: uninsdeletevalue
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\skinedit.exe"; ValueType: string; ValueName: "Path"; ValueData: "{app};{code:GetGtkPath}\lib"; Flags: uninsdeletevalue
-
-[Registry]
-; Boost GTK2 (WinNT/2000/XP)
-Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: string; ValueName: "PANGO_WIN32_NO_UNISCRIBE"; ValueData: "anything"; MinVersion: 0,4;
 
 [Registry]
 ; Register skinedit in the shell
@@ -91,6 +81,7 @@ var
   Exists: Boolean;
   GtkPath: String;
   WimpPath: String;
+  GtkVersion: String;
 
 function GetGtkInstalled (): Boolean;
 begin
@@ -101,11 +92,11 @@ begin
    Result := Exists
 end;
 
-function GetOldGtkInstalled (): Boolean;
+function GetGtkVersionInstalled (): Boolean;
 begin
-  Exists := RegQueryStringValue (HKLM, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\gtk-win32-runtime_is1', 'DisplayName', GtkPath);
+  Exists := RegQueryStringValue (HKLM, 'Software\GTK\2.0', 'Version', GtkVersion);
   if not Exists then begin
-    Exists := RegQueryStringValue (HKCU, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\gtk-win32-runtime_is1', 'DisplayName', GtkPath);
+    Exists := RegQueryStringValue (HKCU, 'Software\GTK\2.0', 'Version', GtkVersion);
   end;
    Result := Exists
 end;
@@ -115,23 +106,42 @@ begin
     Result := GtkPath;
 end;
 
+function GetGtkVersion (S: String): String;
+begin
+    Result := GtkVersion;
+end;
+
+function IsTiglUsbVersion3Mini (): Boolean;
+var
+  Version: String;
+begin
+  GetVersionNumbersString('C:\WinNT\System\TiglUsb.dll', Version);
+  if CompareStr(Version, '3.0.0.0') < 0 then begin
+    Result := false;
+  end;
+end;
+
 function InitializeSetup(): Boolean;
 begin
-  Result := GetOldGtkInstalled ();
-  if Result then begin
-    MsgBox ('Warning: it seems you have the "GTK+/Win32 Runtime (2003-05-14)" package installed. skinedit is now using a more standard package. You must uninstall it else skinedit will fail to start.', mbError, MB_OK);
-  end;
-  
+  // Retrieve GTK path
   Result := GetGtkInstalled ();
   if not Result then begin
-    MsgBox ('Please install the "GTK+ 2.0 Runtime Environment" of DropLine Systems. You can obtain GTK+ from <http://prdownloads.sourceforge.net/gtk-win/GTK-Runtime-Environment-2.2.4-2.exe?download>.', mbError, MB_OK);
+    MsgBox ('Please install the "GTK+ 2.6.x Runtime Environment" (2.6.4 mini). You can obtain GTK+ from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.4-rc1.exe?download>.', mbError, MB_OK);
   end;
-  
+
+  // Retrieve GTK version
   if Result then begin
-      WimpPath := GtkPath + '\lib\gtk-2.0\2.2.0\engines\libwimp.dll';
-      if FileExists(WimpPath) and not UsingWinNT() then begin
-        DeleteFile(WimpPath);
-        MsgBox('The GTK+ Wimp theme engine has been disabled to avoid lot of warnings in console.', mbError, MB_OK);
-      end;
+    Result := GetGtkVersionInstalled ();
+
+    // and check
+    if CompareStr(GtkVersion, '2.6.4') < 0 then begin
+      MsgBox ('Wrong package version. You need at least version 2.6.4 from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.4-rc1.exe?download>.', mbError, MB_OK);
+    end;
+  end;
+
+  // Check for non-NT and WiMP theme
+  WimpPath := GtkPath + '\lib\gtk-2.0\2.4.0\engines\libwimp.dll';
+  if FileExists(WimpPath) and not UsingWinNT() then begin
+        MsgBox('Tip: you are running a non-NT platform with the GTK+ WiMP theme engine installed. If you get a lot of warnings about fonts in console, run the Gtk+ Theme Selector as provided in the start menu group of TiLP/TiEmu', mbError, MB_OK);
   end;
 end;
