@@ -103,9 +103,6 @@ int hw_init_mem()
   mem_initialized = !0;
 
   /* Initialize bkpts */
-  nBkptAsRB = nBkptAsRW = nBkptAsRL = 0;
-  nBkptAsWB = nBkptAsWW = nBkptAsWL = 0;
-  nBkptAsRgR = nBkptAsRgW = 0;
   listBkptAsRB = listBkptAsRW = listBkptAsRL = NULL;
   listBkptAsWB = listBkptAsWW = listBkptAsWL = NULL;
   listBkptAsRgW = listBkptAsRgR = NULL;
@@ -202,16 +199,16 @@ int hw_exit_mem()
 
 ULONG get_long(CPTR adr) 
 {
-  struct intlist* l;
+  GList* l;
   
-  adr &= 0xFFFFFF;
-  if (nBkptAsRL) 
+    adr &= 0xFFFFFF;
+
+  if (l=listBkptAsRL) 
     {
-      l=listBkptAsRL;
-      breakId=0;
+       breakId=0;
       while (l) 
 	{
-	  if (l->val==adr) 
+	  if (l->data==adr) 
 	    {
 	      breakMode = BK_READ_LONG; 
 	      specialflags|=SPCFLAG_BRK; 
@@ -222,13 +219,14 @@ ULONG get_long(CPTR adr)
 	  l=l->next;
 	}
     }
-  if (nBkptAsRgR) 
+  if (l=listBkptAsRgR) 
     {
-      l=listBkptAsRgR;
       breakId=0;
       while (l) 
 	{
-	  if (l->val>=adr && (adr+3)<=l->val2) 
+        ADDR_RANGE *r = l->data;
+
+	  if (r->val>=adr && (adr+3)<=r->val2) 
 	    {
 	      breakMode = BK_READ_LONG; 
 	      specialflags|=SPCFLAG_BRK; 
@@ -259,16 +257,15 @@ ULONG get_long(CPTR adr)
 
 UWORD get_word(CPTR adr) 
 {
-  struct intlist* l;
+  GList* l;
 	
   adr &= 0xFFFFFF;
-  if (nBkptAsRW) 
+  if (l=listBkptAsRW) 
     {
-      l=listBkptAsRW;
       breakId = 0;
       while (l) 
 	{
-	  if (l->val==adr) 
+	  if (l->data==adr) 
 	    {
 	      breakMode = BK_READ_WORD;
 	      specialflags|=SPCFLAG_BRK;
@@ -279,13 +276,14 @@ UWORD get_word(CPTR adr)
 	  l=l->next;
 	}
     }
-  if (nBkptAsRgR) 
+  if (l=listBkptAsRgR) 
     {
-      l=listBkptAsRgR;
       breakId=0;
       while (l) 
 	{
-	  if (l->val>=adr && (adr+1)<=l->val2) 
+          ADDR_RANGE *r = l->data;
+
+	  if (r->val>=adr && (adr+1)<=r->val2) 
 	    {
 	      breakMode = BK_READ_WORD; 
 	      specialflags|=SPCFLAG_BRK; 
@@ -316,15 +314,14 @@ UWORD get_word(CPTR adr)
 
 UBYTE get_byte(CPTR adr) 
 {
-  struct intlist* l;
+  GList* l;
   
   adr &= 0xFFFFFF;
-  if (nBkptAsRB) 
+  if (l=listBkptAsRB) 
     {
-      l=listBkptAsRB;
       breakId = 0;
       while (l) {
-	if (l->val==adr) 
+	if (l->data==adr) 
 	  {
 	    breakMode = BK_READ_BYTE;
 	    specialflags|=SPCFLAG_BRK;
@@ -335,13 +332,14 @@ UBYTE get_byte(CPTR adr)
 	l=l->next;
       }
     }
-  if (nBkptAsRgR) 
+  if (l=listBkptAsRgR) 
     {
-      l=listBkptAsRgR;
       breakId=0;
       while (l) 
 	{
-	  if (l->val>=adr && adr<=l->val2) 
+        ADDR_RANGE *r = l->data;
+
+	  if (r->val>=adr && adr<=r->val2) 
 	    {
 	      breakMode = BK_READ_BYTE; 
 	      specialflags|=SPCFLAG_BRK; 
@@ -368,15 +366,15 @@ UBYTE get_byte(CPTR adr)
 
 void put_long(CPTR adr, ULONG arg) 
 {
-  struct intlist* l;
+  GList* l;
+
   adr &= 0xFFFFFF;
-  if (nBkptAsWL) 
+  if (l=listBkptAsWL) 
     {
-      l=listBkptAsWL;
       breakId = 0;
       while (l) 
 	{
-	  if (l->val==adr) 
+	  if (l->data==adr) 
 	    {
 	      breakMode = BK_WRITE_LONG;
 	      specialflags|=SPCFLAG_BRK;
@@ -387,13 +385,14 @@ void put_long(CPTR adr, ULONG arg)
 	  l=l->next;
 	}
     }
-  if (nBkptAsRgW) 
+  if (l=listBkptAsRgW) 
     {
-      l=listBkptAsRgW;
       breakId=0;
       while (l) 
 	{
-	  if (l->val>=adr && (adr+3)<=l->val2) 
+	    ADDR_RANGE *r = l->data;
+
+          if (r->val>=adr && (adr+3)<=r->val2) 
 	    {
 	      breakMode = BK_WRITE_LONG; 
 	      specialflags|=SPCFLAG_BRK; 
@@ -436,16 +435,15 @@ void put_long(CPTR adr, ULONG arg)
 
 void put_word(CPTR adr, UWORD arg) 
 {
-  struct intlist* l;
+  GList* l;
 	
   adr &= 0xFFFFFF;
-  if (nBkptAsWW) 
+  if (l=listBkptAsWW) 
     {
-      l=listBkptAsWW;
       breakId = 0;
       while (l) 
 	{
-	  if (l->val==adr) 
+	  if (l->data==adr) 
 	    {
 	      breakMode = BK_WRITE_WORD;
 	      specialflags|=SPCFLAG_BRK;
@@ -456,13 +454,14 @@ void put_word(CPTR adr, UWORD arg)
 	  l=l->next;
 	}
     }
-  if (nBkptAsRgW) 
+  if (l=listBkptAsRgW)
     {
-      l=listBkptAsRgW;
       breakId=0;
       while (l) 
 	{
-	  if (l->val>=adr && (adr+1)<=l->val2) 
+          ADDR_RANGE *r = l->data;
+
+	  if (r->val>=adr && (adr+1)<=r->val2) 
 	    {
 	      breakMode = BK_WRITE_WORD; 
 	      specialflags|=SPCFLAG_BRK; 
@@ -500,17 +499,16 @@ void put_word(CPTR adr, UWORD arg)
 
 void put_byte(CPTR adr, UBYTE arg) 
 {
-  struct intlist* l;
+  GList* l;
 	
   adr &= 0xFFFFFF;
   
-  if (nBkptAsWB) 
+  if (l=listBkptAsWB) 
     {
-      l=listBkptAsWB;
       breakId = 0;
       while (l) 
 	{
-	  if (l->val==adr) 
+	  if (l->data==adr) 
 	    {
 	      breakMode = BK_WRITE_BYTE;
 	      specialflags|=SPCFLAG_BRK;
@@ -521,13 +519,14 @@ void put_byte(CPTR adr, UBYTE arg)
 	  l=l->next;
 	}
     }
-  if (nBkptAsRgW) 
+  if (l=listBkptAsRgW) 
     {
-      l=listBkptAsRgW;
       breakId=0;
       while (l) 
 	{
-	  if (l->val>=adr && adr<=l->val2) 
+          ADDR_RANGE *r = l->data;
+
+	  if (r->val>=adr && adr<=r->val2) 
 	    {
 	      breakMode = BK_WRITE_BYTE; 
 	      specialflags|=SPCFLAG_BRK; 

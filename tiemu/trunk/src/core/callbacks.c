@@ -35,7 +35,6 @@
 #include "debugger.h"
 #include "update.h"
 
-extern int runlevel;
 
 /* Function pointers */
 
@@ -66,8 +65,6 @@ int ti68k_gui_set_callbacks(
   cb_update_keys    = updateKeys;
   cb_screen_on_off  = screenOnOff;
   cb_set_contrast   = setContrast;
-
-  return (runlevel = 1);
 }
 
 

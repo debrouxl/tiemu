@@ -26,12 +26,12 @@
   Breakpoints management
 */
 
-#include <stdlib.h>
 #include <assert.h>
+#include <stdlib.h>
+#include <glib.h>
 
 #include "uae.h"
 #include "bkpts.h"
-#include "intlist.h"
 #include "intl.h"
 #include "tilibs.h"
 #include "ti68k_err.h"
@@ -43,25 +43,26 @@ int breakType = 0;
 int breakMode = 0;
 int breakId   = 0;
 
-struct intlist *listBkptAsRB;  int nBkptAsRB;
-struct intlist *listBkptAsWB;  int nBkptAsWB;
-struct intlist *listBkptAsRW;  int nBkptAsRW;
-struct intlist *listBkptAsWW;  int nBkptAsWW;
-struct intlist *listBkptAsRL;  int nBkptAsRL;
-struct intlist *listBkptAsWL;  int nBkptAsWL;
-struct intlist *listBkptAsRgR; int nBkptAsRgR;
-struct intlist *listBkptAsRgW; int nBkptAsRgW;
+GList* listBkptAsRB = NULL;
+GList* listBkptAsWB = NULL;
+GList* listBkptAsRW = NULL;
+GList* listBkptAsWW = NULL;
+GList* listBkptAsRL = NULL;
+GList* listBkptAsWL = NULL;
+GList* listBkptAsRgR = NULL;
+GList* listBkptAsRgW = NULL;
 
 // Code
-struct intlist *listBkptAddress = 0;
-int nBkptAddress = 0;
+GList *listBkptAddress  = NULL;
 
 // Vectors & Traps
 int listBkptVector[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-int listBkptTrap[16]   = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-int listBkptAutoint[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 int nBkptVector = 0;
+
+int listBkptTrap[16]   = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 int nBkptTrap = 0; 
+
+int listBkptAutoint[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 int nBkptAutoint = 0;
 
 
@@ -69,165 +70,165 @@ int nBkptAutoint = 0;
 
 int ti68k_setBreakpointAddress(int address) 
 {
-  addEnd(&listBkptAddress, address);
-  nBkptAddress++;
-  return (nBkptAddress-1);
+    listBkptAddress = g_list_append(listBkptAddress, GINT_TO_POINTER(address));
+    return g_list_length(listBkptAddress);
 }
 
 int ti68k_setBreakpointAddressRange(int addressMin, int addressMax, int mode) 
 {
-  if(mode & BK_READ) 
-    {		
-      add2End(&listBkptAsRgR,addressMin,addressMax);
-      return nBkptAsRgR++;
-    }
-  if(mode & BK_WRITE) 
+    if(mode & BK_READ) 
     {
-      add2End(&listBkptAsRgW,addressMin,addressMax);
-      return nBkptAsRgW++;
+        ADDR_RANGE *s = g_malloc(sizeof(ADDR_RANGE));
+
+        listBkptAsRgR = g_list_append(listBkptAsRgR, s);
+        return g_list_length(listBkptAsRgR);
     }
-  return ERR_68K_INVALID_MODE;
+
+    if(mode & BK_WRITE) 
+    {
+        ADDR_RANGE *s = g_malloc(sizeof(ADDR_RANGE));
+
+        listBkptAsRgW = g_list_append(listBkptAsRgW, s);
+        return g_list_length(listBkptAsRgW);
+    }
+    
+    return ERR_68K_INVALID_MODE;
 }
 
 int ti68k_setBreakpointAccess(int address, int mode) 
 {
-  if(mode==BK_READ_BYTE) 
+    if(mode==BK_READ_BYTE) 
     {		
-      addEnd(&listBkptAsRB, address);
-      return nBkptAsRB++;
+        listBkptAsRB = g_list_append(listBkptAsRB, GINT_TO_POINTER(address));
+        return g_list_length(listBkptAsRB);
     }
-  else if(mode==BK_READ_WORD) 
+    else if(mode==BK_READ_WORD) 
     {
-      addEnd(&listBkptAsRW, address);
-      return nBkptAsRW++;
+      listBkptAsRW = g_list_append(listBkptAsRW, GINT_TO_POINTER(address));
+      return g_list_length(listBkptAsRW);
     }
-  else if(mode==BK_READ_LONG) 
+    else if(mode==BK_READ_LONG) 
     {
-      addEnd(&listBkptAsRL,address);
-      return nBkptAsRL++;
+      listBkptAsRL = g_list_append(listBkptAsRL, GINT_TO_POINTER(address));
+      return g_list_length(listBkptAsRL);
     }
-  else if (mode==BK_WRITE_BYTE) 
+    else if (mode==BK_WRITE_BYTE) 
     {
-      addEnd(&listBkptAsWB,address);
-      return nBkptAsWB++;
+      listBkptAsWB = g_list_append(listBkptAsWB, GINT_TO_POINTER(address));
+      return g_list_length(listBkptAsWB);
     }
-  else if (mode==BK_WRITE_WORD) 
+    else if (mode==BK_WRITE_WORD) 
     {
-      addEnd(&listBkptAsWW,address);
-      return nBkptAsWW++;
+      listBkptAsWW = g_list_append(listBkptAsWW, GINT_TO_POINTER(address));
+      return g_list_length(listBkptAsWW);
     }
-  else if (mode==BK_WRITE_LONG) 
+    else if (mode==BK_WRITE_LONG) 
     {
-      addEnd(&listBkptAsWL,address);
-      return nBkptAsWL++;
+      listBkptAsWL = g_list_append(listBkptAsWL, GINT_TO_POINTER(address));
+      return g_list_length(listBkptAsWL);
     }
-  else
-    return ERR_68K_INVALID_MODE;
+    else
+        return ERR_68K_INVALID_MODE;
 }
 
 int ti68k_setBreakpointVector(int vector) 
 {
-  assert( (vector >= 2) && (vector < 16) );
-  listBkptVector[vector] = !0;
-  nBkptVector++;
-  return (nBkptVector-1);
+    assert( (vector >= 2) && (vector < 16) );
+    listBkptVector[vector] = !0;
+    nBkptVector++;
+    return (nBkptVector-1);
 }
 
 int ti68k_setBreakpointAutoint(int autoint)
 {
-  assert( (autoint >= 1) && (autoint < 8) );
-  listBkptAutoint[autoint] = !0;
-  nBkptAutoint++;
-  return (nBkptAutoint-1);
+    assert( (autoint >= 1) && (autoint < 8) );
+    listBkptAutoint[autoint] = !0;
+    nBkptAutoint++;
+    return (nBkptAutoint-1);
 }
 
 int ti68k_setBreakpointTrap(int trap) 
 {
-  assert( (trap >= 0) && (trap < 16) );
-  listBkptTrap[trap] = !0;
-  nBkptTrap++;
-  return (nBkptTrap-1);
+    assert( (trap >= 0) && (trap < 16) );
+    listBkptTrap[trap] = !0;
+    nBkptTrap++;
+    return (nBkptTrap-1);
 }
 
 
 void ti68k_delBreakpointAddress(int i) 
 {
-  delAt(&listBkptAddress, i);
+    listBkptAddress = g_list_delete_link(listBkptAddress, g_list_nth(listBkptAddress, i));
 }
 
 void ti68k_delBreakpointAccess(int i, int mode) 
 {
-  if (mode==BK_READ_BYTE) 
+    if (mode==BK_READ_BYTE) 
     {		
-      delAt(&listBkptAsRB,i);
-      nBkptAsRB--;
+        listBkptAsRB = g_list_delete_link(listBkptAsRB, g_list_nth(listBkptAsRB, i));
     }
-  if (mode==BK_READ_WORD) 
+    if (mode==BK_READ_WORD) 
     {
-      delAt(&listBkptAsRW,i);
-      nBkptAsRW--;
+      listBkptAsRW = g_list_delete_link(listBkptAsRW, g_list_nth(listBkptAsRW, i));
     }
-  if (mode==BK_READ_LONG) 
+    if (mode==BK_READ_LONG) 
     {
-      delAt(&listBkptAsRL,i);
-      nBkptAsRL--;
+      listBkptAsRL = g_list_delete_link(listBkptAsRL, g_list_nth(listBkptAsRL, i));
     }
-  if (mode==BK_WRITE_BYTE) 
+    if (mode==BK_WRITE_BYTE) 
     {
-      delAt(&listBkptAsWB,i);
-      nBkptAsWB--;
+      listBkptAsWB = g_list_delete_link(listBkptAsWB, g_list_nth(listBkptAsWB, i));
     }
-  if (mode==BK_WRITE_WORD) 
+    if (mode==BK_WRITE_WORD) 
     {
-      delAt(&listBkptAsWW,i);
-      nBkptAsWW--;
+      listBkptAsWW = g_list_delete_link(listBkptAsWW, g_list_nth(listBkptAsWW, i));
     }
-  if (mode==BK_WRITE_LONG) 
+    if (mode==BK_WRITE_LONG) 
     {
-      delAt(&listBkptAsWL,i);
-      nBkptAsWL--;
+      listBkptAsWL = g_list_delete_link(listBkptAsWL, g_list_nth(listBkptAsWL, i));
     }
 }
 
 void ti68k_delBreakpointAccessRange(int i,int mode) 
 {
-  if (mode & BK_READ) 
+    if (mode & BK_READ) 
     {
-      delAt(&listBkptAsRgR,i);
-      nBkptAsRgR--;
+        GList *elt = g_list_nth(listBkptAsRgR, i);
+
+        g_free(elt->data);
+        listBkptAsRgR = g_list_delete_link(listBkptAsRgR, elt);
     }
-  else if (mode & BK_WRITE) 
+    else if (mode & BK_WRITE) 
     {
-      delAt(&listBkptAsRgW,i);
-      nBkptAsRgW--;
+        GList *elt = g_list_nth(listBkptAsRgW, i);
+
+        g_free(elt->data);
+        listBkptAsRgW = g_list_delete_link(listBkptAsRgW, elt);
     }
-  else
+    else
     {
-      DISPLAY(_("delBreakpointAccessRange: mode is neither READ nor WRITE. This is a bug. Please report it !\n"));
-      exit(-1);
+        DISPLAY(_("delBreakpointAccessRange: mode is neither READ nor WRITE. This is a bug. Please report it !\n"));
+        exit(-1);
     }
 }
 
 void ti68k_delBreakpointVector(int vector) 
 {
-  assert( (vector >= 2) && (vector < 16) );
-  listBkptVector[vector] = 0;
-  nBkptVector--;
-  //return (nBkptVector-1);
+    assert( (vector >= 2) && (vector < 16) );
+    listBkptVector[vector] = 0;
+    nBkptVector--;
 }
 
 void ti68k_delBreakpointAutoint(int autoint)
 {
-  assert( (autoint >= 1) && (autoint < 8) );
-  listBkptAutoint[autoint] = 0;
-  nBkptAutoint--;
-  //return (nBkptAutoint-1);
+    assert( (autoint >= 1) && (autoint < 8) );
+    listBkptAutoint[autoint] = 0;
+    nBkptAutoint--;
 }
 
 void ti68k_delBreakpointTrap(int trap) 
 {
-  assert( (trap >= 0) && (trap < 16) );
-  listBkptTrap[trap] = 0;
-  nBkptTrap--;
-  //return (nBkptTrap-1);
+    assert( (trap >= 0) && (trap < 16) );
+    listBkptTrap[trap] = 0;
+    nBkptTrap--;
 }

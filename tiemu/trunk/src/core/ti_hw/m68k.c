@@ -54,7 +54,7 @@ void hw_exit_m68k()
 int hw_run_m68k(int n)
 {
   int i;
-  struct intlist *l;
+  GList *l;
   //char inst[100];
   
   for(i=0; i<n; i++) 
@@ -65,26 +65,24 @@ int hw_run_m68k(int n)
       (*cpufunctbl[opcode])(opcode);
       do_cycles();
 
-      if(nBkptAddress) 
-	{
-	  l=listBkptAddress;
-	  breakId = 0;
-	  while (l) 
-	    {
-	      if (l->val==(int)regs.pc)
-		{
-		  //DISPLAY("l->val=0x%06x, pc=0x%06x\n", 
-		  //  l->val, (int)regs.pc);
-		  breakType = BK_CAUSE_ADDRESS;
-		  cb_update_screen();
-		  cb_launch_debugger();
+      if(l = listBkptAddress)
+      {
+          breakId = 0;
+          while(l)
+          {
+              if(GPOINTER_TO_INT(l->data) == (int)regs.pc)
+              {
+                breakType = BK_CAUSE_ADDRESS;
+		        cb_update_screen();
+		        cb_launch_debugger();
 
-		  return 1;
-		}
-	      breakId++;
-	      l=l->next;
-	    }
-	}
+		        return 1;
+              }
+
+              breakId++;
+              l = g_list_next(l);
+          }
+      }
 
       /* Debug purposes */
 #if 0

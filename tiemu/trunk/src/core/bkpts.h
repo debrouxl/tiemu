@@ -29,6 +29,18 @@
 #ifndef __TI68K_BKPTS__
 #define __TI68K_BKPTS__
 
+#include <glib.h>
+
+/*
+    To move...
+*/
+typedef struct
+{
+  int	 val;
+  int 	 val2;
+} ADDR_RANGE;
+
+
 /* Constants */
 
 // Bkpts types (access)
@@ -107,17 +119,17 @@ extern int breakMode;
 extern int breakType;
 extern int breakId;
 
-extern struct intlist *listBkptAsRB;  extern int nBkptAsRB;
-extern struct intlist *listBkptAsWB;  extern int nBkptAsWB;
-extern struct intlist *listBkptAsRW;  extern int nBkptAsRW;
-extern struct intlist *listBkptAsWW;  extern int nBkptAsWW;
-extern struct intlist *listBkptAsRL;  extern int nBkptAsRL;
-extern struct intlist *listBkptAsWL;  extern int nBkptAsWL;
-extern struct intlist *listBkptAsRgR; extern int nBkptAsRgR;
-extern struct intlist *listBkptAsRgW; extern int nBkptAsRgW;
+extern GList *listBkptAsRB;  extern int nBkptAsRB;
+extern GList *listBkptAsWB;  extern int nBkptAsWB;
+extern GList *listBkptAsRW;  extern int nBkptAsRW;
+extern GList *listBkptAsWW;  extern int nBkptAsWW;
+extern GList *listBkptAsRL;  extern int nBkptAsRL;
+extern GList *listBkptAsWL;  extern int nBkptAsWL;
+extern GList *listBkptAsRgR; extern int nBkptAsRgR;
+extern GList *listBkptAsRgW; extern int nBkptAsRgW;
 
 // Code
-extern struct intlist *listBkptAddress;
+extern GList *listBkptAddress;
 extern int nBkptAddress;
 
 // Vectors, AutoInts and Traps

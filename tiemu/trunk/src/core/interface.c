@@ -36,11 +36,7 @@
 #include <ctype.h>
 
 #include <sys/types.h>
-#ifndef __WIN32__
-#include <dirent.h>
-#endif
 #include <sys/stat.h>
-//#include <unistd.h>
 #include <string.h>
 
 #include "uae.h"
@@ -52,7 +48,7 @@
 #include "keyboard.h"
 #include "params.h"
 #include "callbacks.h"
-#include "intlist.h"
+//#include "intlist.h"
 #include "ti68k_err.h"
 #include "images.h"
 #include "tilibs.h"
@@ -63,18 +59,6 @@
 #include "ioports.h"
 #include "m68k.h"
 
-/* Used for checking the calling order of some functions */
-int runlevel = 0;
-
-void change_runlevel(int new, int min)
-{
-  if(new < min)
-    {
-      DISPLAY("Runlevel error: is %i, should be %i\n", runlevel, min);
-      exit(-1);
-    }
-  runlevel = new;
-}
 
 /**********************/
 /* Internal variables */
@@ -101,7 +85,7 @@ Ti68kParameters params = { 0 };
    HID callbacks.
    The callbacks will not be used until ti68k_init().
 */
-int ti68k_set_gui_callbacks(
+int ti68k_gui_set_callbacks(
               callback_iv_t initSpecific,
 			  callback_iv_t exitSpecific,
 			  callback_iv_t updateScreen,
@@ -165,7 +149,6 @@ int ti68k_init(void)
 */
 int ti68k_reset(void)
 {
-  nBkptAddress = 0;
   listBkptAddress = 0;
   cycle_instr = params.i_tick;
 
