@@ -72,7 +72,7 @@ int hw_mem_init(void)
 
 	if(tihw.ti92v2)
 	{
-		// TI92 II is same as TI92+
+		// TI92 II is same as TI92+ in memory size
 		tihw.rom_size = ti68k_get_rom_size(TI92p);
 		tihw.ram_size = ti68k_get_ram_size(TI92p);
 		tihw.io_size = ti68k_get_io_size(TI92p);

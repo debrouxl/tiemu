@@ -120,6 +120,10 @@ SOURCE=..\..\src\core\ti_hw\dbus.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\ti_hw\flash.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\ti_hw\hw.c
 # End Source File
 # Begin Source File
@@ -137,6 +141,10 @@ SOURCE=..\..\src\core\ti_hw\m68k.c
 # Begin Source File
 
 SOURCE=..\..\src\core\ti_hw\mem.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\mem_92.c
 # End Source File
 # Begin Source File
 
