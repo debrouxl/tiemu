@@ -63,7 +63,7 @@ void* ti68k_getRomPtr(void);
 int ti68k_getRomSize(void);
 const char *ti68k_getRomVersion(void);
 int ti68k_isRomOk(void);
-int ti68k_getRomInfo(ROM_INFO *ri);
+int ti68k_getRomInfo(IMG_INFO *ri);
 int ti68k_dumpRom(const char *filename);
 
 // RAM

@@ -80,9 +80,6 @@ void change_runlevel(int new, int min)
 /* Internal variables */
 /**********************/
 
-//Ti68kRomInfo current_rom_info = { 0 };
-int img_loaded = 0;
-IMG_INFO current_img_info = { 0 };
 Ti68kParameters params = { 0 };
 
 
@@ -216,7 +213,7 @@ int ti68k_getRomSize(void)
 
 const char *ti68k_getRomVersion(void)
 {
-  return current_img_info.revision;
+  return img_infos.version;
 }
 
 int ti68k_isRomOk(void)
@@ -224,9 +221,9 @@ int ti68k_isRomOk(void)
   return img_loaded;
 }
 
-int ti68k_getRomInfo(ROM_INFO *ri)
+int ti68k_getRomInfo(IMG_INFO *img)
 {
-  ri = &current_img_info;
+  img = &img_infos;
   return 0;
 }
 
@@ -354,7 +351,7 @@ char ti68k_getContrast(void)
 
 int ti68k_getCalcType(void)
 {
-  return current_img_info.calc_type;
+  return img_infos.calc_type;
 }
 
 /***********************/

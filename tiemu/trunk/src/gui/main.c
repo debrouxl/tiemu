@@ -164,6 +164,13 @@ int main(int argc, char **argv)
 		ti68k_load_image((options.params)->rom_file);
 	}
 
+	/*
+		Load FLASH upgrade (if any)
+	*/
+	if(options.params->tib_file != NULL) {
+		ti68k_load_upgrade((options.params)->tib_file);
+	}
+
 	/* 
 		Initialize emulation engine
 	*/
@@ -171,10 +178,6 @@ int main(int argc, char **argv)
 	if(ti68k_init()) {
 		tiemu_error(0, "failed to init the ti68k engine.\n");
 		return -1;
-	}
-
-	if(options.params->tib_file != NULL) {
-		ti68k_load_upgrade((options.params)->tib_file);
 	}
 
 	/* 
