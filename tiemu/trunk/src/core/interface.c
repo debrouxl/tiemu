@@ -182,6 +182,10 @@ int ti68k_restart(void)
 /* Debugging functions */
 /***********************/
 
+int ti68k_debug_get_pc(void)
+{
+	return m68k_getpc();
+}
 
 int ti68k_debug_disassemble(int addr, char *output)
 {

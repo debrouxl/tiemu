@@ -75,6 +75,42 @@ void ti68k_register_set_flag(uint8_t flag)
   	/* T  0  S  0  0  I2 I1 I0 0  0  0  X  N  Z  V  C */	  
 }
 
+int ti68k_register_set_flags(const char *sf, const char *uf)
+{
+	/* SR: T 0 S 0 0 I2 I1 I0 0 0 0 X N Z V C */
+	int t, s, i, x, n, z, v, c;
+	int nargs;
+	
+	if(sf != NULL)
+	{
+		nargs = sscanf(sf, "T=%d S=%d I=%d", &t, &s, &i);
+		
+		if(nargs < 3)
+			return 0;
+		if((i < 0) || (i > 7))
+			return 0;
+
+		regs.t = t;
+		regs.s = s;
+		regs.intmask = i;
+	}
+
+	if(uf != NULL)
+	{
+		nargs = sscanf(uf, "X=%d N=%d \nZ=%d V=%d C=%d", &x, &n, &z, &v, &c);
+
+		if(nargs < 5)
+			return 0;
+
+		regs.x = x;
+		NFLG = n;
+		ZFLG = z;
+		VFLG = v;
+		CFLG = c;
+	}
+
+	return !0;
+}
 
 int ti68k_register_get_data(int n, uint32_t *val)
 {
@@ -158,7 +194,7 @@ int ti68k_register_get_flags(char *sf, char *uf)
 
 	/* SR: T 0 S 0 0 I2 I1 I0 0 0 0 X N Z V C */	  
     sprintf(sf, "T=%d S=%d I=%d", regs.t, regs.s, regs.intmask);
-	sprintf(uf, "X=%d N=%d\nZ=%d V=%d C=%d", regs.x, NFLG, ZFLG, VFLG, CFLG);
+	sprintf(uf, "X=%d N=%d \nZ=%d V=%d C=%d", regs.x, NFLG, ZFLG, VFLG, CFLG);	 //%dSPC\n: SPC is important !
 
 	if(strcmp(sf, old_sf) || strcmp(uf, old_uf))
 		c = !0;

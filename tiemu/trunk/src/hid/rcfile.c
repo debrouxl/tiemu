@@ -434,6 +434,33 @@ void rcfile_read(void)
 	  options.skin_file = g_strdup(p);
 	  continue;
 	}
+
+	if( (p=find_str(buffer, "bkpts_wnd=")) )
+	{
+	  sscanf(p, "(%i;%i;%i;%i)", &(options3.bkpts.x), &(options3.bkpts.y), 
+				&(options3.bkpts.w), &(options3.bkpts.h));
+	  continue;
+	}
+	if( (p=find_str(buffer, "code_wnd=")) )
+	{
+	  sscanf(p, "(%i;%i;%i;%i)", &(options3.code.x), &(options3.code.y), 
+				&(options3.code.w), &(options3.code.h));
+	  continue;
+	}
+	if( (p=find_str(buffer, "mem_wnd=")) )
+	{
+	  sscanf(p, "(%i;%i;%i;%i)", &(options3.mem.x), &(options3.mem.y), 
+				&(options3.mem.w), &(options3.mem.h));
+	  continue;
+	}
+	if( (p=find_str(buffer, "regs_wnd=")) )
+	{
+	  sscanf(p, "(%i;%i;%i;%i)", &(options3.regs.x), &(options3.regs.y), 
+				&(options3.regs.w), &(options3.regs.h));
+	  continue;
+	}
+
+	
     }
   fclose(txt);
 
@@ -625,7 +652,7 @@ void rcfile_write(void)
 	fprintf(txt, "\n");
 	fprintf(txt, "#\n");
 
-  /* Specific part to GtkTiEmu */
+  /* Specific part to TiEmu */
 	fprintf(txt, "#\n");
 	fprintf(txt, "# EMULATOR SECTION\n");
 	fprintf(txt, "#\n");
@@ -648,13 +675,13 @@ void rcfile_write(void)
   fprintf(txt, "# Number of gray planes (0, 2, 5, 11)\n");
   fprintf(txt, "gray_planes=%i\n", params.grayplanes);
   fprintf(txt, "\n");
-  fprintf(txt, "# CPU instructions rate (50000 per 30ms)\n");
+  fprintf(txt, "# CPU instructions rate (50000 per 30ms) = OSC1\n");
   fprintf(txt, "cpu_rate=%i\n", params.cpu_rate);
   fprintf(txt, "\n");
-  fprintf(txt, "# Hardware update rate (625 (hw1) or 1172 (hw2)\n");
+  fprintf(txt, "# Hardware update rate (625 (hw1) or 1172 (hw2) = OSC2/OSC3\n");
   fprintf(txt, "hw_rate=%i\n", params.hw_rate);
   fprintf(txt, "\n");
-  fprintf(txt, "# LCD update rate (100 fps max.)\n");
+  fprintf(txt, "# LCD update rate (100 fps max.) = OSC3\n");
   fprintf(txt, "lcd_rate=%i\n", params.lcd_rate);
   fprintf(txt, "\n");
   fprintf(txt, "#\n");
@@ -697,8 +724,22 @@ void rcfile_write(void)
   case 2: fprintf(txt, "boot\n"); break;
   default: fprintf(txt, "no\n"); break;
   }
-
   fprintf(txt, "\n");
+	fprintf(txt, "# Geometry hints of debugger windows (x,y,w,h)\n");
+	fprintf(txt, "bkpts_wnd=(%i;%i;%i;%i)", options3.bkpts.x, options3.bkpts.y, 
+											options3.bkpts.w, options3.bkpts.h);
+	fprintf(txt, "\n");
+	fprintf(txt, "code_wnd=(%i;%i;%i;%i)", options3.code.x, options3.code.y, 
+											options3.code.w, options3.code.h);
+	fprintf(txt, "\n");
+	fprintf(txt, "mem_wnd=(%i;%i;%i;%i)", options3.mem.x, options3.mem.y, 
+											options3.mem.w, options3.mem.h);
+	fprintf(txt, "\n");
+	fprintf(txt, "regs_wnd=(%i;%i;%i;%i)", options3.regs.x, options3.regs.y, 
+											options3.regs.w, options3.regs.h);
+	fprintf(txt, "\n");
+
+	fprintf(txt, "\n");
   fprintf(txt, "RC_END\n");
   fflush(txt);
 
@@ -733,25 +774,26 @@ int rcfile_default()
 	options.console = 0;
 #endif
 
-	options3.bkpts.x = 0;
-	options3.bkpts.y = 0;
-	options3.bkpts.w = 350;
+	// Optimized for 1024x768
+	options3.bkpts.x = 490;
+	options3.bkpts.y = 380;
+	options3.bkpts.w = 320;
 	options3.bkpts.h = 120;
 
-	options3.code.x = 10;
-	options3.code.y = 10;
+	options3.code.x = 490;
+	options3.code.y = 30;
 	options3.code.w = 320;
 	options3.code.h = 240;
 
-	options3.mem.x = 20;
-	options3.mem.y = 20;
-	options3.mem.w = 160;
-	options3.mem.h = 120;
+	options3.mem.x = 0;
+	options3.mem.y = 380;
+	options3.mem.w = 480;
+	options3.mem.h = 200;
 
-	options3.regs.x = 30;
-	options3.regs.y = 30;
-	options3.regs.w = 160;
-	options3.regs.h = 480;
+	options3.regs.x = 830;
+	options3.regs.y = 0;
+	options3.regs.w = 180;
+	options3.regs.h = 500;
 
 	return 0;
 }

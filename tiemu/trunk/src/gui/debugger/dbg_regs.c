@@ -132,13 +132,13 @@ static void renderer_edited(GtkCellRendererText * cell,
 						ti68k_register_set_sr(value);
 					}
 				break;
-				case 3: // flags
-					/*if(validate_value(new_text))
-					{
-						sscanf(new_text, "%lx", &value);			
+				case 3: // s-flags
+					if(ti68k_register_set_flags(new_text, NULL))
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
-						ti68k_register_set_flags(value);
-					}*/
+				case 4:
+					if(ti68k_register_set_flags(NULL, new_text))
+						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
+					break;
 				break;
 			}
 		break;
@@ -504,8 +504,8 @@ gint display_dbgregs_window(void)
 	gtk_widget_show(data);
 
 	//gtk_window_resize(GTK_WINDOW(dbox), 160, 480);
-	gtk_widget_set_usize(GTK_WIDGET(dbox), options3.code.w, options3.code.h);
-	gtk_widget_set_uposition(GTK_WIDGET(dbox), options3.code.x, options3.code.y);
+	gtk_widget_set_usize(GTK_WIDGET(dbox), options3.regs.w, options3.regs.h);
+	gtk_widget_set_uposition(GTK_WIDGET(dbox), options3.regs.x, options3.regs.y);
     gtk_widget_show(GTK_WIDGET(dbox));
 
 	already_open = !0;

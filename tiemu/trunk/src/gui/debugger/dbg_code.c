@@ -105,7 +105,7 @@ static void clist_populate(GtkListStore *store)
     uint32_t addr;
 
     gtk_list_store_clear(store);
-    ti68k_register_get_pc(&addr);
+    addr = ti68k_debug_get_pc();
 
     for(i = 0; i < 10; i++)
     {
@@ -151,7 +151,7 @@ static void clist_refresh(GtkListStore *store)
     uint32_t pc;
     int found = 0;
 
-    ti68k_register_get_pc(&pc);
+    pc = ti68k_debug_get_pc();
 
     // check for refresh
     for(valid = gtk_tree_model_get_iter_first(model, &iter);

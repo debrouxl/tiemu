@@ -9,8 +9,6 @@
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
-  <property name="default_width">160</property>
-  <property name="default_height">120</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <signal name="destroy" handler="on_dbgbkpts_window_destroy" last_modification_time="Thu, 03 Jun 2004 14:41:58 GMT"/>
