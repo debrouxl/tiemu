@@ -1,5 +1,21 @@
 2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+      * interp.c (sim_resume): Call gdbcallback_disable_debugger and gdbcallback_enable_debugger.
+        (sim_fetch_register): Use m68k_getpc for %pc.
+        (sim_store_register): Use m68k_setpc for %pc.
+        (sim_create_inferior, sim_resume): Delete regs.pc kludge.
+
+2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+      * interp.c (saved_state): Delete variable.
+        (MMASKB, RAISE_EXCEPTION, sim_create_inferior, init_pointers, sim_stop_reason, sim_resume, sim_fetch_register,
+         sim_store_register): Use regs instead of saved_state.
+        (sim_create_inferior, sim_resume): Don't copy regs to saved_state.
+        (sim_resume): Don't copy saved_state to regs.
+        (sim_exception): Delete pc argument and special-casing of trap #15.
+
+2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
       * interp.c (sim_exception): Delete oldpc argument.
 
 2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>

@@ -1,5 +1,14 @@
 2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * event-loop.c (gdb_do_one_event): Call gtk_main_iteration if gtk_events_pending.
+          (poll_timers): Ignore timers, always use 30 ms timeout.
+        * top.c (execute_command): Call gdbcallback_refresh_debugger when done with the command.
+        * remote-sim.c (gdbsim_create_inferior): Ignore "No executable file specified." and "No program loaded."
+                                                 warnings.
+          (gdbsim_xfer_inferior_memory): Ignore "No program loaded." error.
+
+2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * main.c (captured_main): Run "target sim" and "run" automatically.
                                   Only run initializations once, even if we are called multiple times.
         * infrun.c (print_stop_reason): Run "quit" automatically when exiting inferior.

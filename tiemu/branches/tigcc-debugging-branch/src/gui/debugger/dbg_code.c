@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@
 #include "dbg_all.h"
 #include "romcalls.h"
 #include "dbg_romcall.h"
+#include "engine.h"
 
 enum { 
 	    COL_ICON, COL_ADDR, COL_OPCODE, COL_OPERAND,
@@ -997,4 +998,39 @@ on_treeview1_size_allocate             (GtkWidget       *widget,
 	}
 
 	old = NLINES;
+}
+
+void gdbcallback_disable_debugger(void)
+{
+	if (dbg_on)
+	{
+		tb_set_states(0, 0, 0, 0, 0, 1, 0);
+		gtk_widget_set_sensitive(list, FALSE);
+		set_other_windows_sensitivity(FALSE);
+	}
+}
+
+void gdbcallback_enable_debugger(void)
+{
+	if (dbg_on)
+	{
+		gtk_widget_set_sensitive(list, TRUE);
+		tb_set_states(1, 1, 1, 1, 1, 0, 1);
+		set_other_windows_sensitivity(TRUE);
+	}
+}
+
+void gdbcallback_refresh_debugger(void)
+{
+	if (dbg_on)
+	{
+		clist_refresh(store, TRUE);
+		dbgregs_refresh_window();
+		dbgpclog_refresh_window();
+		//dbgmem_refresh_window();
+		dbgstack_refresh_window();
+
+		// force refresh !
+		while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
+	}
 }

@@ -22,7 +22,7 @@
 #define SPCFLAG_ADRERR 256
 #define SPCFLAG_MODE_CHANGE 512
 
-#if 0 //ndef SET_CFLG
+#ifndef SET_CFLG
 
 #define SET_CFLG(x) (CFLG = (x))
 #define SET_NFLG(x) (NFLG = (x))
@@ -76,7 +76,10 @@ extern unsigned long op_illg (uae_u32) REGPARAM;
 typedef char flagtype;
 
 struct flag_struct {
-    unsigned int cznv;
+    unsigned int c;
+    unsigned int z;
+    unsigned int n;
+    unsigned int v; 
     unsigned int x;
 };
 

@@ -430,10 +430,12 @@ gdbsim_create_inferior (char *exec_file, char *args, char **env, int from_tty)
   int len;
   char *arg_buf, **argv;
 
+#if 0 /* (TiEmu 20050330 Kevin Kofler) */
   if (exec_file == 0 || exec_bfd == 0)
     warning ("No executable file specified.");
   if (!program_loaded)
     warning ("No program loaded.");
+#endif
 
   if (sr_get_debug ())
     printf_filtered ("gdbsim_create_inferior: exec_file \"%s\", args \"%s\"\n",
@@ -746,8 +748,10 @@ gdbsim_xfer_inferior_memory (CORE_ADDR memaddr, char *myaddr, int len,
 			     int write, struct mem_attrib *attrib,
 			     struct target_ops *target)
 {
+#if 0 /* (TiEmu 20050330 Kevin Kofler) */
   if (!program_loaded)
     error ("No program loaded.");
+#endif
 
   if (sr_get_debug ())
     {

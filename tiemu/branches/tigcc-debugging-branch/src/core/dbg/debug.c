@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,6 +42,9 @@
 #include "debug.h"
 #include "ti68k_def.h"
 #include "ti68k_err.h"
+
+/* Flushes GDB's register cache */
+extern void registers_changed(void);
 
 
 int ti68k_debug_get_pc(void)
@@ -134,6 +137,8 @@ int ti68k_debug_step_over(void)
 	}
 	while ((next_pc != m68k_getpc()) && !(regs.spcflags & SPCFLAG_BRK));
 
+	registers_changed();
+
 	if(regs.spcflags & SPCFLAG_BRK)
 		regs.spcflags &= ~SPCFLAG_BRK;
 
@@ -161,6 +166,7 @@ int ti68k_debug_step_out(void)
 		if(is_ret_inst((uint16_t)curriword()))
 		{
 			hw_m68k_run(1, 0);
+			registers_changed();
 			return 0;
 		}	
 	}
@@ -197,6 +203,7 @@ int ti68k_debug_skip(uint32_t next_pc)
 
 int ti68k_debug_do_instructions(int n)
 {
+    registers_changed();
     return hw_m68k_run(n, 0);
 }
 

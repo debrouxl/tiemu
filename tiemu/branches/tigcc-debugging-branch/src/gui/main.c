@@ -65,6 +65,7 @@
 #include "../core/gdb/gdb/main.h"
 #include "../core/gdb/gdb/gdb_string.h"
 #include "../core/gdb/gdb/interps.h"
+#include "../core/gdb/readline/readline.h"
 
 ScrOptions options2;
 TieOptions options;		// general tiemu options
@@ -263,6 +264,12 @@ int main(int argc, char **argv)
 			args.interpreter_p = INTERP_CONSOLE;
 			gdb_main (&args);
 		}
+
+		/*
+			Clean up in case we interrupted GDB during command-line
+			parsing
+		*/
+		rl_callback_handler_remove();
 
 		err = hid_exit();
 		handle_error();

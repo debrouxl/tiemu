@@ -357,6 +357,11 @@ gdb_do_one_event (void *data)
   /* Are any timers that are ready? If so, put an event on the queue. */
   poll_timers ();
 
+  /* (TiEmu 20050330 Kevin Kofler) */
+  extern int gtk_events_pending(void);
+  extern void gtk_main_iteration(void);
+  while (gtk_events_pending()) gtk_main_iteration();
+
   /* Wait for a new event.  If gdb_wait_for_event returns -1,
      we should get out because this means that there are no
      event sources left. This will make the event loop stop,
@@ -1101,10 +1106,11 @@ handle_timer_event (int dummy)
 static void
 poll_timers (void)
 {
+#if 0
   struct timeval time_now, delta;
   gdb_event *event_ptr;
 
-  if (timer_list.first_timer != NULL)
+ if (timer_list.first_timer != NULL)
     {
       gettimeofday (&time_now, NULL);
       delta.tv_sec = timer_list.first_timer->when.tv_sec - time_now.tv_sec;
@@ -1155,4 +1161,13 @@ poll_timers (void)
     }
   else
     gdb_notifier.timeout_valid = 0;
+#endif
+
+/* (TiEmu 20050330 Kevin Kofler) */
+#ifdef HAVE_POLL
+   gdb_notifier.poll_timeout = 30;
+#endif
+   gdb_notifier.select_timeout.tv_sec = 0;
+   gdb_notifier.select_timeout.tv_usec = 30000;
+   gdb_notifier.timeout_valid = 1;
 }

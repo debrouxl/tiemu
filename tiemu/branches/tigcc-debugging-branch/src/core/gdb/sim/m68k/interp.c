@@ -90,7 +90,6 @@ static jmp_buf interp_trap;
 #endif
 
 
-struct regstruct saved_state;
 static int opt_cpu_level = 0; /* 68000 default */
 static int opt_mem_size = 20; /* 1M default */
 
@@ -112,7 +111,7 @@ static int nsamples;
 
 static host_callback *callback;
 
-#define MMASKB ((saved_state.msize -1) & ~0)
+#define MMASKB ((regs.msize -1) & ~0)
 
 #if defined(__GO32__) || defined(_WIN32)
 int sim_memory_size = 19;
@@ -137,7 +136,7 @@ fail ()
 }
 
 #define RAISE_EXCEPTION(x) \
-  (saved_state.exception = x, saved_state.insn_end = 0)
+  (regs.exception = x, regs.insn_end = 0)
 
 /* This function exists mainly for the purpose of setting a breakpoint to
    catch simulated bus errors when running the simulator under GDB.  */
@@ -249,8 +248,6 @@ sim_create_inferior (sd, prog_bfd, argv, env)
      char **env;
 {
   current_bfd = prog_bfd;
-  memcpy (&saved_state, &regs, sizeof(regs));
-  saved_state.pc = m68k_getpc();
   return SIM_RC_OK;
 }
 
@@ -295,7 +292,7 @@ init_pointers ()
 
   /* NOTE figure out if memory size has changed */
 
-  if (saved_state.profile && !profile_file)
+  if (regs.profile && !profile_file)
     {
       profile_file = fopen ("gmon.out", "wb");
       /* Seek to where to put the call arc data */
@@ -309,7 +306,7 @@ init_pointers ()
       }
       else
       {
-        saved_state.profile_hist =
+        regs.profile_hist =
           (unsigned short *) calloc (64, (nsamples * sizeof (short) / 64));
       }
     }
@@ -325,7 +322,7 @@ sim_stop_reason (sd, reason, sigrc)
 {
   /* The m68k simulator uses SIGQUIT to indicate that the program has
      exited, so we must check for it here and translate it to exit.  */
-  if (saved_state.exception == SIGQUIT)
+  if (regs.exception == SIGQUIT)
     {
       *reason = sim_exited;
       *sigrc = exit_code;
@@ -333,7 +330,7 @@ sim_stop_reason (sd, reason, sigrc)
   else
     {
       *reason = sim_stopped;
-      *sigrc = saved_state.exception;
+      *sigrc = regs.exception;
     }
 }
 
@@ -357,6 +354,8 @@ static void m68k_go_sim(int step)
   }
 }
 
+extern void gdbcallback_disable_debugger(void);
+extern void gdbcallback_enable_debugger(void);
 void
 sim_resume (sd, step, siggnal)
      SIM_DESC sd;
@@ -370,18 +369,16 @@ sim_resume (sd, step, siggnal)
   prev_fpe = signal (SIGFPE, SIG_IGN);
 
   init_pointers ();
-  saved_state.exception = 0;
+  regs.exception = 0;
   if (step)
-    saved_state.exception = SIGTRAP;
+    regs.exception = SIGTRAP;
 
-  saved_state.pc_p = saved_state.pc_oldp = get_real_address(saved_state.pc);
-  memcpy (&regs, &saved_state, sizeof(regs));
+  gdbcallback_disable_debugger();
   if (setjmp(interp_trap) == 0)
     m68k_go_sim (step);
   if (!step)
     engine_stop();
-  memcpy (&saved_state, &regs, sizeof(regs));
-  saved_state.pc = m68k_getpc();
+  gdbcallback_enable_debugger();
 
   signal (SIGFPE, prev_fpe);
   /*  signal (SIGINT, prev);*/
@@ -465,15 +462,15 @@ sim_fetch_register (sd, rn, memory, length)
     case  0: case  1: case  2: case  3: case  4: case  5: case  6: case  7:
       /* address regs "a0", "a1", "a2", "a3", "a4", "a5", "fp", "sp" */
     case  8: case  9: case 10: case 11: case 12: case 13: case 14: case 15:
-      val = saved_state.regs[rn];
+      val = regs.regs[rn];
       break;
       /*  "ps" */
     case 16:
-      val = saved_state.usp;
+      val = regs.usp;
       break;
       /* "pc" */
     case 17:
-      val = saved_state.pc;
+      val = m68k_getpc();
       break;
       /*  "fp0", "fp1", "fp2", "fp3", "fp4", "fp5", "fp6", "fp7" */
     case 18: case 19: case 20: case 21:
@@ -481,15 +478,15 @@ sim_fetch_register (sd, rn, memory, length)
       return 0;
       /* "fpcontrol" */
     case 26:
-      val = saved_state.fpcr;
+      val = regs.fpcr;
       break;
       /* "fpstatus" */
     case 27:
-      val = saved_state.fpsr;
+      val = regs.fpsr;
       break;
       /* "fpiaddr" */
     case 28:
-      val = saved_state.fpiar;
+      val = regs.fpiar;
       break;
       /* "fpcode" */
     case 29:
@@ -521,15 +518,15 @@ sim_store_register (sd, rn, memory, length)
     case  0: case  1: case  2: case  3: case  4: case  5: case  6: case  7:
       /* address regs "a0", "a1", "a2", "a3", "a4", "a5", "fp", "sp" */
     case  8: case  9: case 10: case 11: case 12: case 13: case 14: case 15:
-      saved_state.regs[rn] = val;
+      regs.regs[rn] = val;
       break;
       /*  "ps" */
     case 16:
-      saved_state.usp = val;
+      regs.usp = val;
       break;
       /* "pc" */
     case 17:
-      saved_state.pc = val;
+      m68k_setpc(val);
       break;
       /*  "fp0", "fp1", "fp2", "fp3", "fp4", "fp5", "fp6", "fp7" */
     case 18: case 19: case 20: case 21:
@@ -537,15 +534,15 @@ sim_store_register (sd, rn, memory, length)
       return 0;
       /* "fpcontrol" */
     case 26:
-      saved_state.fpcr = val;
+      regs.fpcr = val;
       break;
       /* "fpstatus" */
     case 27:
-      saved_state.fpsr = val;
+      regs.fpsr = val;
       break;
       /* "fpiaddr" */
     case 28:
-      saved_state.fpiar = val;
+      regs.fpiar = val;
       break;
       /* "fpcode" */
     case 29:
@@ -573,19 +570,9 @@ sim_do_command (sd, cmd)
   
   
 void
-sim_exception (int which, int pc)
+sim_exception (int which)
 {
-  /*  if (trace)*/
-  switch (which) {
-  case 47:
-    regs.exception = SIGTRAP;
-    regs.pc = pc - 2;
-    regs.pc_p = regs.pc_oldp = get_real_address(regs.pc);
-    break;
-  default:
-    regs.exception = which;
-    break;
-  }
+  regs.exception = which;
   longjmp(interp_trap, 1);
 }
 

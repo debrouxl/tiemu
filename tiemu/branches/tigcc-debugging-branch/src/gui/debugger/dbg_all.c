@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@
 #include "dbg_all.h"
 #include "support.h"
 #include "paths.h"
+#include "gdbcall.h"
 
 DbgOptions options3;
 DbgWidgets dbgw = { 0 };
@@ -271,7 +272,7 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
 
     // Closing the debugger starts the emulator
 	ti68k_bkpt_set_cause(0, 0, 0);
-    engine_start();
+    if (engine_is_stopped()) gdbcall_continue();
 }
 
 GLADE_CB void

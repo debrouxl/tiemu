@@ -764,6 +764,10 @@ execute_command (char *p, int from_tty)
 	  warned = 1;
 	}
     }
+
+  /* (TiEmu 20050330 Kevin Kofler) */
+  extern void gdbcallback_refresh_debugger (void);
+  gdbcallback_refresh_debugger ();
 }
 
 /* Read commands from `instream' and execute them
