@@ -75,6 +75,7 @@ Ti68kBreakpoints	bkpts = { 0 };
    HID callbacks.
    The callbacks will not be used until ti68k_init().
 */
+/*
 void ti68k_gui_set_callbacks(
               callback_iv_t initSpecific,
 			  callback_iv_t exitSpecific,
@@ -83,6 +84,7 @@ void ti68k_gui_set_callbacks(
 			  callback_vi_t screenOnOff,
 			  callback_ii_t setContrast
 			  );
+*/
 
 /*
   This should be the SECOND function to call (unless the 'params' 

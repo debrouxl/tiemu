@@ -32,7 +32,6 @@
 #include "hw.h"
 #include "bkpts.h"
 #include "images.h"
-#include "callbacks.h"
 
 int hw_m68k_init(void)
 {

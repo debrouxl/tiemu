@@ -101,7 +101,7 @@ gpointer ti68k_engine(gpointer data)
 
         g_timer_start(tmr);
 		
-		// Run emulator core
+		// Run emulation core
 		res = ti68k_debug_do_instructions(cpu_instr);
 		if(res) 
         {  
@@ -110,7 +110,7 @@ gpointer ti68k_engine(gpointer data)
             running = 0;
 			G_UNLOCK(running);
 
-			// debug mode has been entered and pass bkpt type 
+			// enter in debug mode and pass bkpt type 
 			G_LOCK(debugger);
 			debugger = res;
 			G_UNLOCK(debugger);
@@ -139,7 +139,7 @@ int ti68k_engine_is_stopped()
 
 void ti68k_engine_stop(void) 
 {
-    //printf("stopping engine... ");
+    printf("stopping engine... ");
 	G_LOCK(running);
 	running = 0;				// request termination
 	G_UNLOCK(running);
@@ -147,12 +147,12 @@ void ti68k_engine_stop(void)
     if(thread != NULL)
 	    g_thread_join(thread);		// wait for thread termination
     thread = NULL;
-    //printf("done.\n");
+    printf("done.\n");
 }
 
 void ti68k_engine_start(void) 
 {
-    //printf("starting engine... ");
+    printf("starting engine... ");
 
     //while(gtk_events_pending()) gtk_main_iteration();
 
@@ -163,5 +163,5 @@ void ti68k_engine_start(void)
 		thread = g_thread_create(ti68k_engine, NULL, TRUE, &error);		
 	}
 	G_UNLOCK(running);
-    //printf("done.\n");
+    printf("done.\n");
 }

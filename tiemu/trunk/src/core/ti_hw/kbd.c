@@ -32,7 +32,6 @@
 
 #include "libuae.h"
 #include "keydefs.h"
-#include "callbacks.h"
 #include "ti68k_def.h"
 #include "m68k.h"
 
