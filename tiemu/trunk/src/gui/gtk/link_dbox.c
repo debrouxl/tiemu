@@ -39,7 +39,7 @@ create_linktype_dbox (void)
   GtkWidget *label8;
   GtkWidget *entry1;
   GtkWidget *entry2;
-  GtkWidget *label8;
+  GtkWidget *label7;
   GtkWidget *frame3;
   GtkWidget *hbox1;
   GtkWidget *button2;
@@ -133,10 +133,10 @@ create_linktype_dbox (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_entry_set_text (GTK_ENTRY (entry2), _("/dev/"));
 
-  label8 = gtk_label_new (_("Specify I/O or device:"));
-  gtk_widget_show (label8);
-  gtk_frame_set_label_widget (GTK_FRAME (frame4), label8);
-  gtk_label_set_justify (GTK_LABEL (label8), GTK_JUSTIFY_LEFT);
+  label7 = gtk_label_new (_("Specify I/O or device:"));
+  gtk_widget_show (label7);
+  gtk_frame_set_label_widget (GTK_FRAME (frame4), label7);
+  gtk_label_set_justify (GTK_LABEL (label7), GTK_JUSTIFY_LEFT);
 
   frame3 = gtk_frame_new (NULL);
   gtk_widget_show (frame3);
@@ -447,7 +447,7 @@ create_linktype_dbox (void)
   GLADE_HOOKUP_OBJECT (linktype_dbox, label8, "label8");
   GLADE_HOOKUP_OBJECT (linktype_dbox, entry1, "entry1");
   GLADE_HOOKUP_OBJECT (linktype_dbox, entry2, "entry2");
-  GLADE_HOOKUP_OBJECT (linktype_dbox, label8, "label8");
+  GLADE_HOOKUP_OBJECT (linktype_dbox, label7, "label7");
   GLADE_HOOKUP_OBJECT (linktype_dbox, frame3, "frame3");
   GLADE_HOOKUP_OBJECT (linktype_dbox, hbox1, "hbox1");
   GLADE_HOOKUP_OBJECT (linktype_dbox, button2, "button2");

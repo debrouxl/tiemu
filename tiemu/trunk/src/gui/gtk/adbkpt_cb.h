@@ -55,7 +55,7 @@ on_entry2_changed                      (GtkEditable     *editable,
                                         gpointer         user_data);
 
 void
-on_button_ok23_clicked                 (GtkButton       *button,
+on_button_ok_clicked                   (GtkButton       *button,
                                         gpointer         user_data);
 
 void

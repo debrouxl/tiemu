@@ -140,7 +140,7 @@ on_entry4_changed                      (GtkEditable     *editable,
 
 /* OK button of the 'Add data breakpoint' dialog box */
 void
-on_button_ok23_clicked                   (GtkButton       *button,
+on_button_ok_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
   gint i;
