@@ -383,6 +383,15 @@ create_popup_menu (void)
   gtk_widget_show (exit_without_saving_state1);
   gtk_container_add (GTK_CONTAINER (popup_menu), exit_without_saving_state1);
 
+  g_signal_connect ((gpointer) popup_menu, "selection_done",
+                    G_CALLBACK (on_popup_menu_selection_done),
+                    NULL);
+  g_signal_connect ((gpointer) popup_menu, "button-press-event",
+                    G_CALLBACK (on_popup_menu_configure_event),
+                    NULL);
+  g_signal_connect ((gpointer) popup_menu, "key-press-event",
+                    G_CALLBACK (on_popup_menu_configure_event),
+                    NULL);
   g_signal_connect ((gpointer) popup_menu, "configure_event",
                     G_CALLBACK (on_popup_menu_configure_event),
                     NULL);

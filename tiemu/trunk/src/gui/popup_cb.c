@@ -71,11 +71,24 @@
 #include "main.h"
 #include "support.h"
 
-on_popup_menu_selection_done           (GtkMenuShell    *menushell,
-                                        gpointer         user_data)
+
+gboolean    
+on_popup_menu_key_press_event      (GtkWidget *widget,
+                                            GdkEventKey *event,
+                                            gpointer user_data)
 {
-	DISPLAY("selection_done\n");
+	DISPLAY("on_popup_menu_key_press_event\n");
 }
+
+
+gboolean    
+on_popup_menu_button_press_event      (GtkWidget *widget,
+                                            GdkEventButton *event,
+                                            gpointer user_data)
+{
+	DISPLAY("on_popup_menu_button_press_event\n");
+}
+
 
 
 /*
@@ -108,10 +121,6 @@ GtkWidget* display_popup_menu(void)
 	else
 		gtk_label_set_text(GTK_LABEL(GTK_BIN(w)->child), ("Skin 89"));
 
-	g_signal_connect ((gpointer) menu, "selection_done",
-                    G_CALLBACK (on_popup_menu_selection_done),
-                    NULL);
-
 	return menu;
 }
 
@@ -119,7 +128,7 @@ GtkWidget* display_popup_menu(void)
 /* Callbacks */
 /*************/
 
-/* configure event */
+
 gboolean
 on_popup_menu_configure_event          (GtkWidget       *widget,
                                         GdkEventConfigure *event,
@@ -131,7 +140,6 @@ on_popup_menu_configure_event          (GtkWidget       *widget,
 }
 
 
-/* cancel */
 void
 on_popup_menu_cancel                   (GtkMenuShell    *menushell,
                                         gpointer         user_data)
@@ -141,15 +149,20 @@ on_popup_menu_cancel                   (GtkMenuShell    *menushell,
 	unhalt();
 }
 
-/* deactivate */
+
+void
+on_popup_menu_selection_done           (GtkMenuShell    *menushell,
+                                        gpointer         user_data)
+{
+	DISPLAY("on_popup_menu_selection_done\n");
+}
+
+
 void
 on_popup_menu_deactivate               (GtkMenuShell    *menushell,
                                         gpointer         user_data)
 {
-	// bug if we click outside of the rbm menu: we need to unhalt the emulation
-	// core although a menu item could have been clicked.
 	DISPLAY("on_popup_menu_deactivate\n");
-	//unhalt();
 }
 
 

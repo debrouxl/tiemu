@@ -19,6 +19,10 @@ on_popup_menu_cancel                   (GtkMenuShell    *menushell,
                                         gpointer         user_data);
 
 void
+on_popup_menu_selection_done           (GtkMenuShell    *menushell,
+                                        gpointer         user_data);
+
+void
 on_popup_menu_deactivate               (GtkMenuShell    *menushell,
                                         gpointer         user_data);
 
