@@ -127,17 +127,23 @@ void hw_update(void)
         return;
 
     // Increment timer
-    tihw.timer_value++;
-    tihw.heartbeat--;
+    if(io_bit_tst(0x15,3))
+    {
+    	tihw.timer_value++;
+    	tihw.heartbeat--;
+    }
 
 	/* Auto-int management */
 
 	// Auto-int 1: 1/4 of timer rate
 	// Triggered at a fixed rate: OSC2/2^11
-    if(!io_bit_tst(0x15,7) && !(tihw.timer_value & 3)) 
+    if(!(tihw.timer_value & 3)) 
     {
-        specialflags |= SPCFLAG_INT;
-        currIntLev = 1;
+    	if(!io_bit_tst(0x15,7))
+    	{
+        	specialflags |= SPCFLAG_INT;
+        	currIntLev = 1;
+        }
     }
 
 	// Auto-int 2: keyboard scan
@@ -145,11 +151,14 @@ void hw_update(void)
 
 	// Auto-int 3: disabled by default by AMS
 	// When enabled, it is triggered at a fixed rate: OSC2/2^19 = 1/1024 of timer rate = 1Hz
-	if(io_bit_tst(0x15,7) && io_bit_tst(0x15,1) && io_bit_tst(0x15,2) && !tihw.heartbeat)
+	if(io_bit_tst(0x15,1)&& !tihw.heartbeat)
 	{
         tihw.heartbeat = 1024;
-		specialflags |= SPCFLAG_INT;
-        currIntLev = 3;
+        if(!io_bit_tst(0x15,7) && io_bit_tst(0x15,2))
+        {
+			specialflags |= SPCFLAG_INT;
+        	currIntLev = 3;
+        }
 	}
 
 	// Triggered by the link hardware for various reasons.
@@ -177,12 +186,14 @@ void hw_update(void)
 
     // Auto-int 5: triggered by the programmable timer.
 	// The default rate is OSC2/(K*2^9), where K=79 for HW1 and K=53 for HW2
-    if(!io_bit_tst(0x15,7) && tihw.timer_value == 0)
+    if(tihw.timer_value == 0)
     {
         tihw.timer_value = tihw.timer_init;
-
-        specialflags |= SPCFLAG_INT;
-        currIntLev = 5;
+		if(!io_bit_tst(0x15,7))
+		{
+        	specialflags |= SPCFLAG_INT;
+        	currIntLev = 5;
+        }
     }
 
 	// Auto-int 6: triggered when [ON] is pressed.
