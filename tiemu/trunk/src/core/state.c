@@ -74,8 +74,8 @@ int ti68k_state_load(char *filename)
     fwrite(&regs, sizeof(regs), 1, f);
     fwrite(&specialflags, sizeof(specialflags), 1, f);
 
-	MakeFromSR();
 	m68k_setpc(m68k_getpc());
+    MakeFromSR();
     
     // Load I/O ports state
     fread(tihw.io , IO_SIZE, 1, f);
@@ -114,8 +114,8 @@ int ti68k_state_save(char *filename)
 	fwrite(img, 1, sizeof(IMG_INFO), f);
 	
 	// Save internal hardware
-    m68k_setpc(m68k_getpc());
     MakeSR();
+    m68k_setpc(m68k_getpc());
     
     // Save registers and special flags
     fwrite(&regs, sizeof(regs), 1, f);
