@@ -41,9 +41,9 @@
 				 |
 	HeapDeref  --+
 
-	- PedRom: | size | handle |
-			    |
-	HeapDeref --+
+	- PedRom: | size.l | handle | block |
+								  |
+	HeapDeref					--+
 
 
 */
@@ -130,19 +130,14 @@ void heap_get_block_addr(int handle, uint32_t *addr)
 
 	heap_get_addr(&base);
 	*addr = mem_rd_long(base + 4*handle);
-	if(pedrom) *addr += 2;
 }
 
 uint32_t heap_deref(int handle)
 {
-	uint32_t base, addr;
+	uint32_t base;
 
 	heap_get_addr(&base);
-	addr = mem_rd_long(base + 4*handle);
-
-	if(pedrom) addr += 2;
-
-	return addr;
+	return mem_rd_long(base + 4*handle);
 }
 
 /*
@@ -157,13 +152,17 @@ void heap_get_block_size(int handle, uint16_t *size)
 
 	addr = mem_rd_long(base + 4*handle);
 	if(!pedrom)
+	{
 		*size = mem_rd_word(addr - 2);
+		*size &= ~(1 << 16);	// remove lock
+		*size <<= 1;			// size is twice
+		*size -= 2;
+	}
 	else
-		*size = mem_rd_word(addr);
-
-	*size &= ~(1 << 16);	// remove lock
-	*size <<= 1;			// size is twice
-	*size -= 2;
+	{
+		*size = (uint16_t)mem_rd_long(addr - 6);
+		*size -= 6;
+	}
 }
 
 uint16_t heap_size(int handle)
@@ -176,13 +175,17 @@ uint16_t heap_size(int handle)
 
 	addr = mem_rd_long(base + 4*handle);
 	if(!pedrom)
+	{
 		size = mem_rd_word(addr - 2);
+		size &= ~(1 << 16);	// remove lock
+		size <<= 1;			// size is twice
+		size -= 2;
+	}
 	else
-		size = mem_rd_word(addr);
-
-	size &= ~(1 << 16);	// remove lock
-	size <<= 1;			// size is twice
-	size -= 2;
+	{
+		size = (uint16_t)mem_rd_long(addr - 6);
+		size -= 6;
+	}
 
 	return size;
 }
@@ -198,16 +201,17 @@ void heap_get_block_addr_and_size(int handle, uint32_t *addr, uint16_t *size)
 
 	*addr = mem_rd_long(base + 4*handle);
 	if(!pedrom)
+	{
 		*size = mem_rd_word(*addr - 2);
+		*size &= ~(1 << 16);	// remove lock
+		*size <<= 1;			// size is twice
+		*size -= 2;
+	}
 	else
 	{
-		*size = mem_rd_word(*addr);
-		*addr += 2;
+		*size = (uint16_t)mem_rd_long(*addr - 6);
+		*size -= 6;
 	}
-
-	*size &= ~(1 << 16);	// remove lock
-	*size <<= 1;			// size is twice
-	*size -= 2;
 }
 
 /*
