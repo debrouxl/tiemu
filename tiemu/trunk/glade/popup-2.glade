@@ -8,7 +8,7 @@
   <property name="events">GDK_KEY_PRESS_MASK</property>
   <signal name="cancel" handler="on_popup_menu_cancel"/>
   <signal name="button_press_event" handler="on_popup_menu_button_press_event" last_modification_time="Tue, 11 May 2004 20:10:11 GMT"/>
-  <signal name="key_press_event" handler="on_popup_menu_key_press_event" last_modification_time="Tue, 11 May 2004 20:10:16 GMT"/>
+  <signal name="deactivate" handler="on_popup_menu_deactivate" last_modification_time="Sat, 19 Feb 2005 12:35:54 GMT"/>
   <accelerator key="Escape" modifiers="0" signal="cancel"/>
 
   <child>
@@ -151,7 +151,7 @@
       <signal name="activate" handler="on_reset_calc1_activate"/>
     </widget>
   </child>
-  
+
   <child>
     <widget class="GtkMenuItem" id="upgrade_calc1">
       <property name="visible">True</property>

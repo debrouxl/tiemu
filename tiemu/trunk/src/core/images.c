@@ -684,15 +684,7 @@ int ti68k_load_image(const char *filename)
 	if(img->data == NULL)
 		return ERR_MALLOC;
     fread(img->data, 1, img->size, f);
-
-	{
-		HW_PARM_BLOCK hwblock;
-
-		if(ti68k_get_hw_param_block(img->data, img->rom_base, &hwblock) == -1)
-			return ERR_INVALID_ROM;
-        ti68k_display_hw_param_block(&hwblock);
-	}
-  
+ 
   	img_loaded = 1;
   	return 0;
 }
