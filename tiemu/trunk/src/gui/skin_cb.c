@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: hid.c 163 2004-05-13 06:40:57Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -36,8 +36,8 @@
 #include "skin_cb.h"
 #include "skin_dbox.h"
 #include "support.h"
-#include "msg_cb.h"
-#include "skin.h"
+#include "dboxes.h"
+#include "skinops.h"
 #include "hid.h"
 #include "core.h"
 #include "interface.h"

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: hid.c 163 2004-05-13 06:40:57Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -24,8 +24,7 @@
 #include <gtk/gtk.h>
 
 #include "intl.h"
-#include "msg_cb.h" // msg_box()
-#include "user_cb.h"
+#include "dboxes.h"
 #include "tilibs.h"
 
 extern TicalcInfoUpdate info_update;

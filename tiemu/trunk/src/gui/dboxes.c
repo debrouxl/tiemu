@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: dboxes.c 366 2004-03-22 18:04:07Z roms $ */
+/* $Id$ */
 
 /*  tilp - Ti Linking Program
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -27,17 +27,18 @@
 #include <glade/glade.h>
 #include <string.h>
 
+#include "intl.h"
 #include "dboxes.h"
 #include "support.h"
 
-#include "tilp_defs.h"
-#include "tilp_core.h"
 static gint ret_val = 0;
+
 void msg_box(const gchar * title, gchar * message)
 {
 	GtkWidget *dialog, *label;
 	gint result;
 	gint msg_type = -1;
+
 	if (!strcmp(title, _("Information")))
 		msg_type = GTK_MESSAGE_INFO;
 
@@ -49,6 +50,7 @@ void msg_box(const gchar * title, gchar * message)
 
 	else if (!strcmp(title, _("Error")))
 		msg_type = GTK_MESSAGE_ERROR;
+
 	if (msg_type != -1) {
 		dialog =
 		    gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
@@ -70,8 +72,10 @@ void msg_box(const gchar * title, gchar * message)
 		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox),
 				  label);
 		gtk_widget_show(label);
+
 		while (gtk_events_pending())
 			gtk_main_iteration();
+
 		result = gtk_dialog_run(GTK_DIALOG(dialog));
 		switch (result) {
 		case GTK_RESPONSE_OK:
@@ -82,6 +86,7 @@ void msg_box(const gchar * title, gchar * message)
 	}
 	gtk_widget_destroy(dialog);
 }
+
 gint msg_box2(const char *title, char *message)
 {
 	GtkWidget *dialog;

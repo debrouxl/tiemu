@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: hid.c 163 2004-05-13 06:40:57Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -35,7 +35,7 @@
 //#include "platform.h"
 #include "struct.h"
 #include "hid.h"
-#include "msg_cb.h"
+#include "dboxes.h"
 #include "interface.h"
 
 static gint action = 1;

@@ -27,13 +27,10 @@
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 
-#include "popup_cb.h"
-#include "popup_dbox.h"
-#include "support.h"
-
-#include "version.h"
+#include "intl.h"
 #include "struct.h"
-#include "interface.h"
+#include "version.h"
+#include "popup.h"
 
 /* 
    Display a popup menu: entry point used by hid.c (SDL)
@@ -404,7 +401,7 @@ void
 on_changelog1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	display_startup_dbox();
+	display_release_dbox();
 }
 
 

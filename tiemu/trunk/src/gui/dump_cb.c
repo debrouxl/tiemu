@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: hid.c 163 2004-05-13 06:40:57Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -33,7 +33,7 @@
 #include "interface.h"
 #include "struct.h"
 #include "hid.h"
-#include "pbar_cb.h"
+#include "pbars.h"
 
 gint display_ramdump_fileselection(void)
 {

@@ -51,7 +51,7 @@ union flagu intel_flag_lookup[256];
 unsigned long highCnt;
 # define readpec(l) __asm__(".byte 0x0f, 0x31" :"=a" (l), "=d" (highCnt))
 #elif defined(__WIN32__)
-# define readpec(l)
+# define readpec(l) /*asm("rdtsc	highCnt")*/
 #else
 # define readpec(l) 
 #endif

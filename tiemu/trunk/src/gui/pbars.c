@@ -5,19 +5,24 @@
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 
-#include "gstruct.h"
-#include "tilp_core.h"
+#include "intl.h"
 #include "pbars.h"
+#include "tilibs.h"
 
-/* For Win32 platforms, it is better to use discrete pbar 
-   because they are faster. */
+
+/* 
+	For Win32 platforms, it is better to use discrete pbar 
+   	because they are faster. 
+*/
 #ifdef __WIN32__
 #define PROGRESS_TYPE GTK_PROGRESS_CONTINUOUS
 #else				/*  */
 #define PROGRESS_TYPE GTK_PROGRESS_CONTINUOUS
 #endif				/*  */
+
 struct progress_window p_win = { 0 };
 static GtkWidget *pbar_window = NULL;
+extern TicalcInfoUpdate info_update;
 
 #if 1				//def USE_LIBGLADE
 
@@ -263,7 +268,8 @@ void destroy_pbar(void)
 		gtk_widget_destroy(pbar_window);
 	pbar_window = NULL;
 }
-GLADE_CB void on_pbar_okbutton1_pressed(GtkButton * button,
+
+/*GLADE_CB*/ void on_pbar_okbutton1_pressed(GtkButton * button,
 					gpointer user_data)
 {
 	info_update.cancel = 1;

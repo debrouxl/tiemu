@@ -34,7 +34,7 @@
 
 #include "intl.h"
 #include "printl.h"
-#include "user_cb.h"
+#include "dboxes.h"
 
 /*
   This function can take 2 parameters:
@@ -67,7 +67,7 @@ int tiemu_error(int err_code, char *err_str)
 	}
 	
 	printl(2, "%s", s);
-	user1_box(_("Error"), s, _("OK"));
+	msg_box(_("Error"), s, _("OK"));
 
 	return err_code;
 }

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: release.c 366 2004-03-22 18:04:07Z roms $ */
+/* $Id$ */
 
 /*  tilp - Ti Linking Program
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -25,13 +25,14 @@
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
+#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "release.h"
-#include "tilp_core.h"
+#include "intl.h"
+#include "paths.h"
 
 gint display_release_dbox()
 {

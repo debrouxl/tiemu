@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: help.c 443 2004-04-03 13:31:55Z roms $ */
+/* $Id$ */
 
 /*  tilp - Ti Linking Program
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -25,13 +25,15 @@
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
+#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include "intl.h"
 #include "help.h"
-#include "tilp_core.h"
+#include "paths.h"
 
 gint display_help_dbox()
 {

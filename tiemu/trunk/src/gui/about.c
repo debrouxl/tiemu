@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: about.c 366 2004-03-22 18:04:07Z roms $ */
+/* $Id$ */
 
 /*  tilp - Ti Linking Program
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -31,8 +31,10 @@
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 
+#include "intl.h"
 #include "about.h"
-#include "tilp_core.h"
+#include "paths.h"
+#include "version.h"
 
 gint display_about_dbox()
 {

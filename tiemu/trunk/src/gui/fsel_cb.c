@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: hid.c 163 2004-05-13 06:40:57Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -34,8 +34,8 @@
 
 #include "struct.h"
 #include "hid.h"
-#include "pbar_cb.h"
-#include "msg_cb.h"
+#include "pbars.h"
+#include "dboxes.h"
 #include "tilibs.h"
 #include "interface.h"
 

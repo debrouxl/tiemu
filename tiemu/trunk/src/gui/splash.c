@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: splash.c 366 2004-03-22 18:04:07Z roms $ */
+/* $Id$ */
 
 /*  tilp - Ti Linking Program
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -28,21 +28,25 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "support.h"
-#include "tilp_version.h"
+#include "intl.h"
+#include "version.h"
+
 typedef struct {
 	GtkWidget *window;
 	GtkWidget *label;
 } TilpSplashScreen;
+
 static TilpSplashScreen splashscreen;
+
 GtkWidget *splash_screen_start(void)
 {
 	GtkWidget *image, *vbox;
 	GdkColor color;
 	GdkPixbuf *pixbuf;
+
 	splashscreen.window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(splashscreen.window),
-			     TILP_VERSION);
+			     TIEMU_VERSION);
 	gtk_window_set_position(GTK_WINDOW(splashscreen.window),
 				GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_window_set_decorated(GTK_WINDOW(splashscreen.window), FALSE);
@@ -67,17 +71,22 @@ GtkWidget *splash_screen_start(void)
 	g_object_unref(pixbuf);
 	gtk_widget_show(image);
 	gtk_widget_show(splashscreen.window);
+
 	while (gtk_events_pending()) {
 		gtk_main_iteration();
 	}
+
 	return splashscreen.window;
 }
 void splash_screen_stop(void)
 {
 	gtk_widget_destroy(splashscreen.window);
-} void splash_screen_set_label(gchar * label)
+} 
+
+void splash_screen_set_label(gchar * label)
 {
 	gtk_label_set_text(GTK_LABEL(splashscreen.label), label);
+
 	while (gtk_events_pending()) {
 		gtk_main_iteration();
 	}

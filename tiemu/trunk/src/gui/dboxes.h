@@ -3,6 +3,9 @@
 
 #include <gtk/gtk.h>
 
+#define BUTTON1  1
+#define BUTTON2  2
+#define BUTTON3  3
 
 void msg_box(const gchar * title, gchar * message);
 gint msg_box2(const char *title, char *message);

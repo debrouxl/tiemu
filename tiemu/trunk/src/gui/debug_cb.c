@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: hid.c 163 2004-05-13 06:40:57Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -33,19 +33,17 @@
 #include "support.h"
 
 #include "interface.h"
-//#include "platform.h"
 #include "struct.h"
 #include "hid.h"
 #include "paths.h"
 #include "support.h"
-#include "utils.h"
 #include "pgmentbkpt_dbox.h"
 #include "pgmentbkpt_cb.h"
 #include "trap_dbox.h"
 #include "trap_cb.h"
 #include "dbgopt_dbox.h"
 #include "dbgopt_cb.h"
-#include "msg_cb.h"
+#include "dboxes.h"
 #include "dbkpt_dbox.h"
 #include "dbkpt_cb.h"
 #include "bkpt_cause.h"

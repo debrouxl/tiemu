@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 
-GtkWidget* display_popup_menu();
+GtkWidget* display_popup_menu(void);
 
 void
 on_popup_menu_cancel                   (GtkMenuShell    *menushell,

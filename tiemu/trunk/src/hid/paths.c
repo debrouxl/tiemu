@@ -53,6 +53,8 @@ static void init_linux_paths(void)
             g_strconcat(inst_paths.base_dir, "images/", NULL);
 	inst_paths.skin_dir =
 	    g_strconcat(inst_paths.base_dir, "skins/", NULL);
+	inst_paths.glade_dir =
+	    g_strconcat(inst_paths.base_dir, "glade/", NULL);
 	inst_paths.home_dir =
 		g_strdup(g_get_home_dir());
 
@@ -96,6 +98,8 @@ static void init_win32_paths(void)
 	    g_strconcat(inst_paths.base_dir, "images\\", NULL);
 	inst_paths.skin_dir =
 	    g_strconcat(inst_paths.base_dir, "skins\\", NULL);
+	inst_paths.glade_dir =
+	    g_strconcat(inst_paths.base_dir, "glade\\", NULL);
 	inst_paths.home_dir = 
 	    g_strconcat(inst_paths.base_dir, "My ROM images\\", NULL);
 
@@ -120,4 +124,12 @@ int initialize_paths(void)
 
 #endif				/*  */
 	return 0;
+}
+
+const char *tilp_paths_build_glade(const char *name)
+{
+	static char *path = NULL;
+	g_free(path);
+	path = g_strconcat(inst_paths.glade_dir, name, NULL);
+	return path;
 }

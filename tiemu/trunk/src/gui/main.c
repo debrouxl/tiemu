@@ -44,7 +44,7 @@
 #include "printl.h"
 
 #include "wizard_dbox.h"
-#include "popup_cb.h"
+#include "popup.h"
 
 
 extern int wizard_ok;

@@ -36,7 +36,7 @@
 #endif
 #include <jpeglib.h>
 
-#include "skin.h"
+#include "skinops.h"
 
 #if defined(__MACOSX__) || defined(__WIN32__)
 #define bswap_32(a) (a >> 24) | ((a & 0xff0000) >> 16) << 8 | ((a & 0xff00) >> 8) << 16 | (a & 0xff) << 8

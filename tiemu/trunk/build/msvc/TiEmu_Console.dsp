@@ -252,11 +252,7 @@ SOURCE=..\..\src\core\state.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\gui\about_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\about_dbox.c
+SOURCE=..\..\src\gui\about.c
 # End Source File
 # Begin Source File
 
@@ -269,14 +265,6 @@ SOURCE=..\..\src\gui\adbkpt_dbox.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\bkpt_cause.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\colors_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\colors_dbox.c
 # End Source File
 # Begin Source File
 
@@ -293,6 +281,10 @@ SOURCE=..\..\src\gui\dbkpt_cb.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\dbkpt_dbox.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\dboxes.c
 # End Source File
 # Begin Source File
 
@@ -320,11 +312,7 @@ SOURCE=..\..\src\gui\fsel_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\help_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\help_dbox.c
+SOURCE=..\..\src\gui\help.c
 # End Source File
 # Begin Source File
 
@@ -333,14 +321,6 @@ SOURCE=..\..\src\gui\infos_cb.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\infos_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\itick_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\itick_dbox.c
 # End Source File
 # Begin Source File
 
@@ -360,27 +340,11 @@ SOURCE=..\..\src\gui\logaddr_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\manpage_cb.c
+SOURCE=..\..\src\gui\manpage.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\manpage_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\msg_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\msg_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\pbar_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\pbar_dbox.c
+SOURCE=..\..\src\gui\pbars.c
 # End Source File
 # Begin Source File
 
@@ -396,15 +360,11 @@ SOURCE=..\..\src\gui\popup.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\popup_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\popup_dbox.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\gui\refresh.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\release.c
 # End Source File
 # Begin Source File
 
@@ -432,11 +392,7 @@ SOURCE=..\..\src\gui\skin_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\startup_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\startup_dbox.c
+SOURCE=..\..\src\gui\splash.c
 # End Source File
 # Begin Source File
 
@@ -452,31 +408,11 @@ SOURCE=..\..\src\gui\support.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\thanks_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\thanks_dbox.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\gui\trap_cb.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\gui\trap_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\user_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\user_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\utils.c
 # End Source File
 # Begin Source File
 
@@ -524,7 +460,7 @@ SOURCE=..\..\src\hid\rcfile.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\hid\skin.c
+SOURCE=..\..\src\hid\skinops.c
 # End Source File
 # Begin Source File
 

@@ -31,7 +31,7 @@
 
 #include "support.h"
 #include "hid.h"
-#include "skin.h"
+#include "skinops.h"
 #include "struct.h"
 #include "interface.h"
 #include "screenshot.h"

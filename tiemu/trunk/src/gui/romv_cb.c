@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: hid.c 163 2004-05-13 06:40:57Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -38,10 +38,9 @@
 #include "interface.h"
 #include "struct.h"
 #include "hid.h"
-#include "msg_cb.h"
+#include "dboxes.h"
 #include "paths.h"
 #include "tilibs.h"
-#include "user_cb.h"
 
 gchar *chosen_file = NULL;
 
@@ -168,7 +167,7 @@ on_button6_clicked                     (GtkButton       *button,
     }
   else 
     { // FLASH upgrade
-      ret = user2_box("Question", "Do you want to load it as a fake ROM image or as an FLASH upgrade ? \n\nClick FLASH if you want to directly upgrade the calculator operating system (AMS). \n\nOn the other hand, if you load it as a fake ROM image, TiEmu will convert the FLASH upgrade into a ROM image but your image will suffer from some limitations (no boot block, no certificate, problems with fonts).", "ROM", "FLASH");
+      ret = msg_box2("Question", "Do you want to load it as a fake ROM image or as an FLASH upgrade ? \n\nClick FLASH if you want to directly upgrade the calculator operating system (AMS). \n\nOn the other hand, if you load it as a fake ROM image, TiEmu will convert the FLASH upgrade into a ROM image but your image will suffer from some limitations (no boot block, no certificate, problems with fonts).", "ROM", "FLASH");
 
       if(ret == 1) 
 	{ // ROM
