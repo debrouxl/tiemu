@@ -18,6 +18,7 @@ To do:
 	- [roms]  $949: fixed timer incrementing/reloading (PPhd: loop freeze)
 	- [roms]  $950: can send all of 89?, 92?, 9x? and v2? to all the models
 	- [roms]  $951: clean-up in ti68k_scan_images (no more cache, useless now)
+	- [roms]  $952: can remove (=file delete) image from list
 
 - 25/02/2005, version 1.80o: roms
 	- fixed bug in ti68k_get_hw_param_block (wrong search/replace)

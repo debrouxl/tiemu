@@ -29,6 +29,7 @@
 #include <glade/glade.h>
 #include <sys/stat.h>
 
+#include "support.h"
 #include "intl.h"
 #include "paths.h"
 #include "ti68k_int.h"
@@ -68,7 +69,7 @@ static void clist_selection_changed(GtkTreeSelection * sel,
     }
 }
 
-static GtkListStore* clist_init(GtkWidget *clist)
+static GtkListStore* clist_create(GtkWidget *clist)
 {
 	GtkTreeView *view = GTK_TREE_VIEW(clist);	
 	GtkListStore *list;
@@ -117,48 +118,12 @@ static GtkListStore* clist_init(GtkWidget *clist)
 	return list;
 }
 
-#define NTOKENS 7
-
-gint display_romversion_dbox(gboolean file_only)
+static void clist_populate(GtkListStore *store)
 {
-	GtkWidget *dialog;
-    GladeXML *xml;
-	GtkWidget *dbox;
-	GtkWidget *data;
-    gint result;
-
-    GtkListStore *list;
-    GtkTreeIter iter;
-
+	gchar *filename;
     FILE *fp;
-    gchar *filename;
+    GtkTreeIter iter;    
     struct stat s;
-	
-	xml = glade_xml_new
-		(tilp_paths_build_glade("romversion-2.glade"), "romversion_dbox",
-		 PACKAGE);
-	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
-	glade_xml_signal_autoconnect(xml);
-
-	// display waiting box
-	dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
-			GTK_MESSAGE_INFO,
-			GTK_BUTTONS_CLOSE, _("Cache is being built. Please wait..."));
-	g_signal_connect_swapped(GTK_OBJECT(dialog), "response",
-			G_CALLBACK(gtk_widget_destroy),
-			GTK_OBJECT(dialog));
-	gtk_widget_show_all(GTK_WIDGET(dialog));
-	GTK_REFRESH();
-	
-    // display list box
-	dbox = glade_xml_get_widget(xml, "romversion_dbox");
-    
-    data = glade_xml_get_widget(xml, "applybutton1");
-    gtk_button_set_label(GTK_BUTTON(data), "Import...");
-
-    data = glade_xml_get_widget(xml, "clist1");
-    list = clist_init(data);
 
 	// scan ROM images
     filename = g_strconcat(inst_paths.img_dir, CACHE_FILE, NULL);
@@ -166,18 +131,11 @@ gint display_romversion_dbox(gboolean file_only)
 
     stat(filename, &s);
     if(s.st_size == 0) 
-	{
-		gtk_widget_show_all(dbox);
-		return 0;
-    }
+		return;
 
     fp = fopen(filename, "rt");
     if(fp == NULL) 
-	{
-        DISPLAY("Unable to open this file: %s\n", filename);
-        gtk_widget_destroy(dbox);
-        return -1;
-    }
+		return;
 
     while(!feof(fp)) 
 	{
@@ -189,10 +147,10 @@ gint display_romversion_dbox(gboolean file_only)
             break;
         line[strlen(line) - 1] = '\0';
 
-        row_text = g_strsplit(line, ",", NTOKENS);
+        row_text = g_strsplit(line, ",", 7);
 
-        gtk_list_store_append(list, &iter);
-        gtk_list_store_set(list, &iter, 
+        gtk_list_store_append(store, &iter);
+        gtk_list_store_set(store, &iter, 
 			0, row_text[0],
 			1, row_text[1], 
 			2, row_text[2],
@@ -206,10 +164,36 @@ gint display_romversion_dbox(gboolean file_only)
     } 
 
     fclose(fp);
-    
-  	// destroy waiting box
-	gtk_widget_destroy(GTK_WIDGET(dialog));
+}
 
+static void clist_refresh(GtkListStore *store)
+{
+	gtk_list_store_clear(store);
+	clist_populate(store);
+}
+
+gint display_romversion_dbox(gboolean file_only)
+{
+    GladeXML *xml;
+	GtkWidget *dbox;
+	GtkWidget *data;
+    gint result;
+    GtkListStore *store;
+	
+	xml = glade_xml_new
+		(tilp_paths_build_glade("romversion-2.glade"), "romversion_dbox",
+		 PACKAGE);
+	if (!xml)
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+	glade_xml_signal_autoconnect(xml);
+
+    // display list box
+	dbox = glade_xml_get_widget(xml, "romversion_dbox");
+    
+    data = glade_xml_get_widget(xml, "clist1");
+    store = clist_create(data);
+	clist_populate(store);
+    
 	// run main box
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	gtk_widget_destroy(dbox);
@@ -242,11 +226,6 @@ gint display_romversion_dbox(gboolean file_only)
 			while(gtk_events_pending()) gtk_main_iteration();
 			gtk_main_quit();	
 		break;
-
-		case GTK_RESPONSE_APPLY:
-			display_import_romversion_dbox();
-			display_romversion_dbox(file_only);	// force rescan but recursive
-        break;
 		
 		default:
             if(file_only) return -1;
@@ -255,3 +234,44 @@ gint display_romversion_dbox(gboolean file_only)
 
 	return 0;
 }
+
+GLADE_CB void
+on_romversion_add1_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkTreeView *view = GTK_TREE_VIEW(button);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
+
+	display_import_romversion_dbox();
+	clist_refresh(store);
+}
+
+GLADE_CB void
+on_romversion_del1_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkTreeView *view = GTK_TREE_VIEW(button);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(view);
+	GtkTreeIter iter;
+	gchar *filename;
+	gchar *path;
+
+	if (gtk_tree_selection_get_selected (selection, &model, &iter))
+    {
+		gtk_tree_model_get(model, &iter, COLUMN_FILENAME, &filename, -1);		
+		path = g_strconcat(inst_paths.img_dir, filename, NULL);
+		
+		// delete
+		unlink(path);
+
+		g_free(filename);
+		g_free(path);
+	}
+
+	clist_refresh(store);
+}
+
+
