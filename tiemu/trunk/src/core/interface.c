@@ -263,7 +263,7 @@ int ti68k_linkport_reconfigure(void)
 /******************/
 
 const int ti_rom_sizes[] = { 1*MB, 2*MB, 2*MB, 4*MB, 4*MB };	// 92, 89, 92+, V200, TI89 Titanium
-const int ti_ram_sizes[] = { 128*KB, 256*KB, 256*KB, 256*KB, 256*KB };
+const int ti_ram_sizes[] = { 256*KB, 256*KB, 256*KB, 256*KB, 256*KB }; // should be 128
 
 static int log2(int i)
 {

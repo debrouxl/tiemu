@@ -219,6 +219,7 @@ gint display_romversion_dbox()
 				g_free(params.rom_file);
 				params.rom_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
 				g_free(chosen_file);
+                chosen_file = NULL;
 
 				if(ti68k_load_image(params.rom_file)) 
 				{
@@ -235,6 +236,7 @@ gint display_romversion_dbox()
 				g_free(params.tib_file);
 				params.tib_file = g_strconcat(inst_paths.img_dir, chosen_file, NULL);
 				g_free(chosen_file);
+                chosen_file = NULL;
 
 				if(ti68k_load_upgrade(params.tib_file)) 
 				{

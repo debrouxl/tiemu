@@ -740,10 +740,14 @@ int ti68k_load_upgrade(const char *filename)
 
     // Allow upgrade ?
     if(tib.calc_type != img->calc_type)
+    {
+        free(tib.data);
         return -1;
+    }
 
 	tib.has_boot = 1;	// still bootable
 	memcpy(tihw.rom+SPP, tib.data+SPP, tib.size-SPP);
+    free(tib.data);
 
   	img_loaded = 2;
 	return 0;
