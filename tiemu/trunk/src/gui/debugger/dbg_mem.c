@@ -105,7 +105,6 @@ static void renderer_edited(GtkCellRendererText * cell,
     gchar *str_addr;
     gchar *str_data = (char *)new_text;
     int addr, data, i;
-    uint8_t *mem_ptr;
 
     // get column
     gtk_tree_view_get_cursor(view, &path, &column);
@@ -148,8 +147,9 @@ static void renderer_edited(GtkCellRendererText * cell,
         sscanf(digits, "%x", &data);
         addr += (col - COL_0) + i;
 
-        mem_ptr = (uint8_t *)ti68k_get_real_address(addr);
-	    *mem_ptr++ = data;
+        //mem_ptr = (uint8_t *)ti68k_get_real_address(addr);
+	    //*mem_ptr++ = data;
+		mem_wr_byte(addr, (uint8_t)data);
 
 		dbgstack_refresh_window();	// refresh stack, too
     }
@@ -987,9 +987,7 @@ static gint search_engine(char *str, int ascii, int casse, uint32_t *address, in
     i = 0;
     for(addr = *address; addr <= 0xffffff; addr++)
     {
-        uint8_t *mem_ptr = (uint8_t *)ti68k_get_real_address(addr);
-
-        if(*mem_ptr == data[i])
+		if(mem_rd_byte(addr) == data[i])
             i++;
         else
             i = 0;

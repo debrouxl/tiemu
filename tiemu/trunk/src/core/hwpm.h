@@ -34,17 +34,17 @@
 // Hardware parameter block from TIGCC documentation
 // Exists only on FLASH calculators
 typedef struct {
-	unsigned short len;                 /* length of parameter block    */
-    unsigned long  hardwareID;          /* 1 = TI-92 Plus, 3 = TI-89    */
-    unsigned long  hardwareRevision;    /* hardware revision number     */
-    unsigned long  bootMajor;           /* boot code version number     */
-    unsigned long  bootRevision;        /* boot code revision number    */
-    unsigned long  bootBuild;           /* boot code build number       */
-    unsigned long  gateArray;           /* gate array version number    */
-    unsigned long  physDisplayBitsWide; /* display width                */
-    unsigned long  physDisplayBitsTall; /* display height               */
-    unsigned long  LCDBitsWide;         /* visible display width        */
-    unsigned long  LCDBitsTall;         /* visible display height       */
+	uint16_t  len;                 /* length of parameter block    */
+    uint32_t  hardwareID;          /* 1 = TI-92 Plus, 3 = TI-89    */
+    uint32_t  hardwareRevision;    /* hardware revision number     */
+    uint32_t  bootMajor;           /* boot code version number     */
+    uint32_t  bootRevision;        /* boot code revision number    */
+    uint32_t  bootBuild;           /* boot code build number       */
+    uint32_t  gateArray;           /* gate array version number    */
+    uint32_t  physDisplayBitsWide; /* display width                */
+    uint32_t  physDisplayBitsTall; /* display height               */
+    uint32_t  LCDBitsWide;         /* visible display width        */
+    uint32_t  LCDBitsTall;         /* visible display height       */
 } HW_PARM_BLOCK;
 
 // Possible values if hardwareID field

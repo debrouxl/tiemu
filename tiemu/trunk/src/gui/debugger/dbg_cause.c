@@ -124,8 +124,6 @@ gint dbgcause2_display_dbox()
 	gchar *str;
 	gint type, id, mode;
 	uint32_t sp;
-	uint16_t* p_sr;
-	uint32_t* p_pc;
 	uint32_t pc;
 	uint32_t sr;
 
@@ -156,8 +154,7 @@ gint dbgcause2_display_dbox()
 
 	// set pushed PC
 	ti68k_register_get_sp(&sp);
-	p_sr = (uint16_t *)ti68k_get_real_address(sp);
-	sr =  GUINT16_SWAP_LE_BE(*p_sr);
+	sr = mem_rd_long(sp);
 	str = g_strdup_printf("%04x", sr);
 	label = glade_xml_get_widget(xml, "label43");
 	gtk_label_set_text(GTK_LABEL(label), str);
@@ -165,8 +162,7 @@ gint dbgcause2_display_dbox()
 
 	// set pushed SR
 	ti68k_register_get_sp(&sp);
-	p_pc = (uint32_t *)ti68k_get_real_address(sp+2);
-	pc =  GUINT32_SWAP_LE_BE(*p_pc);
+	pc = mem_rd_long(sp+2);
 	str = g_strdup_printf("%06x", pc);
 	label = glade_xml_get_widget(xml, "label44");
 	gtk_label_set_text(GTK_LABEL(label), str);
@@ -229,18 +225,14 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 	{
 		// exception
 		uint32_t sp;
-		uint16_t* p_sr;
-		uint32_t* p_pc;
 		uint32_t pc;
 		uint32_t sr;
 
 		ti68k_register_get_sp(&sp);
-		p_sr = (uint16_t *)ti68k_get_real_address(sp);
-		sr =  GUINT16_SWAP_LE_BE(*p_sr);
+		sr = mem_rd_long(sp);
 
 		ti68k_register_get_sp(&sp);
-		p_pc = (uint32_t *)ti68k_get_real_address(sp+2);
-		pc =  GUINT32_SWAP_LE_BE(*p_pc);
+		pc = mem_rd_long(sp+2);
 
 		str = g_strdup_printf("type=<%s>, id=#%i, SR=%04x, PC=%06x\n", 
 			ti68k_exception_to_string(mode), id, str, pc);

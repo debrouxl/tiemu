@@ -105,14 +105,12 @@ static void clist_populate(GtkListStore *store, gint target, gint offset)
     gchar *str;
 
     uint32_t sp;
-    uint16_t *mem;
     uint16_t data;
 
 	if(target == TARGET_SP)
 		ti68k_register_get_sp(&sp);
 	else if(target == TARGET_FP)
 		ti68k_register_get_addr(6, &sp);
-	mem = (uint16_t *)ti68k_get_real_address(sp);
 
     for(i = 0+(offset>>1); i < DUMP_SIZE+(offset>>1); i++)
     {
@@ -122,7 +120,7 @@ static void clist_populate(GtkListStore *store, gint target, gint offset)
 		gtk_list_store_set(store, &iter, COL_ADDR, str, -1);
         g_free(str);
 
-        data =  GUINT16_SWAP_LE_BE(mem[i]);
+		data = mem_rd_word(sp+i);	
 		str = g_strdup_printf("%04x", data);
         gtk_list_store_set(store, &iter, COL_DATA, str, -1);
         g_free(str);

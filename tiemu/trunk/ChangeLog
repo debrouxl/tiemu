@@ -22,6 +22,7 @@ To do:
 	- some items of the popup menu are disabled when the engine is running
 	- save FLASH segment which have been written/erased
 	- added FPU dis-assembler
+	- fixed/improved some endianess issues
 
 - 07/02/2005, version 1.80m: roms
 	- dbus architecture improved (reset)

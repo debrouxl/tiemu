@@ -185,10 +185,4 @@ extern Ti68kHardware 	tihw;
 extern TicableLinkParam link_cable;
 extern Ti68kBreakpoints	bkpts;
 
-// should not be here...
-uint16_t rd_word(uint8_t *p);
-uint32_t rd_long(uint8_t *p);
-void wr_word(uint8_t *p, uint16_t d);
-void wr_long(uint8_t *p, uint32_t d);
-
 #endif

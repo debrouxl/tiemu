@@ -49,12 +49,12 @@ void heap_get_addr(uint32_t *base)
 	if(tihw.ti92v2)
 	{
 		ptr = 0x4720 + 0x1902;		//tios::main_lcd equ tios::globals+$0000
-		*base = rd_long(ti68k_get_real_address(ptr));
+		*base = mem_rd_long(ptr);
 	}
 	else if(tihw.ti92v1)
 	{
 		ptr = 0x4440 + 0x1902;		//and tios::heap equ tios::globals+$1902
-		*base = rd_long(ti68k_get_real_address(ptr));
+		*base = mem_rd_long(ptr);
 	}
 	else
 	{
@@ -64,13 +64,13 @@ void heap_get_addr(uint32_t *base)
 		if(size < 0x441)
 		{
 			// AMS1
-			romcalls_get_symbol_address(0x96, &addr);		// tios::HeapDeref (#0x096)
-			ptr = rd_word(ti68k_get_real_address(addr + 8));// MOVEA.W $7592,A0
-			*base = rd_long(ti68k_get_real_address(ptr));
+			romcalls_get_symbol_address(0x96, &addr);	// tios::HeapDeref (#0x096)
+			ptr = mem_rd_word(addr + 8);				// MOVEA.W $7592,A0
+			*base = mem_rd_long(ptr);
 		} else
 		{
 			// AMS2
-			romcalls_get_symbol_address(0x441, &addr);		// tios::HeapTable	(#0x441)
+			romcalls_get_symbol_address(0x441, &addr);	// tios::HeapTable	(#0x441)
 			*base  = addr;
 		}
 	}	
@@ -89,7 +89,7 @@ void heap_get_size(uint16_t *size)
 
 	for(i = 0; ; i++)
 	{
-		addr = rd_long(ti68k_get_real_address(base + 4*i));
+		addr = mem_rd_long(base + 4*i);
 		if(addr == 0)
 			break;
 	}
@@ -105,7 +105,7 @@ void heap_get_block_addr(int handle, uint32_t *addr)
 	uint32_t base;
 
 	heap_get_addr(&base);
-	*addr = rd_long(ti68k_get_real_address(base + 4*handle));
+	*addr = mem_rd_long(base + 4*handle);
 }
 
 /*
@@ -118,8 +118,8 @@ void heap_get_block_size(int handle, uint16_t *size)
 
 	heap_get_addr(&base);
 
-	addr = rd_long(ti68k_get_real_address(base + 4*handle));
-	*size = rd_word(ti68k_get_real_address(addr - 2));
+	addr = mem_rd_long(base + 4*handle);
+	*size = mem_rd_word(addr - 2);
 
 	*size &= ~(1 << 16);	// remove lock
 	*size <<= 1;			// size is twice
@@ -135,8 +135,8 @@ void heap_get_block_addr_and_size(int handle, uint32_t *addr, uint16_t *size)
 
 	heap_get_addr(&base);
 
-	*addr = rd_long(ti68k_get_real_address(base + 4*handle));
-	*size = rd_word(ti68k_get_real_address(*addr - 2));
+	*addr = mem_rd_long(base + 4*handle);
+	*size = mem_rd_word(*addr - 2);
 
 	*size &= ~(1 << 16);	// remove lock
 	*size <<= 1;			// size is twice
@@ -157,8 +157,8 @@ void heap_search_for_address(uint32_t address, int *handle)
 
 	for(i = 0; i < size; i++)
 	{
-		uint32_t addr = rd_long(ti68k_get_real_address(base + 4*i));
-		uint16_t size = rd_word(ti68k_get_real_address(addr - 2));
+		uint32_t addr = mem_rd_long(base + 4*i);
+		uint16_t size = mem_rd_word(addr - 2);
 		
 		if ((address >= addr) && (address < addr+size))
 			*handle = i;

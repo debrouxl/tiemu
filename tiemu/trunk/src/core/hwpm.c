@@ -49,32 +49,6 @@
 
 /* -- */
 
-uint16_t rd_word(uint8_t *p)
-{
-	return (p[0] << 8) | p[1];
-}
-
-uint32_t rd_long(uint8_t *p)
-{
-	return (p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
-}
-
-void wr_word(uint8_t *p, uint16_t d)
-{
-	p[0] = MSB(d);
-	p[1] = LSB(d);
-}
-
-void wr_long(uint8_t *p, uint32_t d)
-{
-	p[0] = MSB(MSW(d));
-	p[1] = LSB(MSW(d));
-	p[2] = MSB(LSW(d));
-	p[3] = LSB(LSW(d));
-}
-
-/* -- */
-
 void ti68k_display_hw_param_block(HW_PARM_BLOCK *s)
 {
     int i = 0;
@@ -115,27 +89,27 @@ int ti68k_get_hw_param_block(uint8_t *rom_data, uint8_t rom_base, HW_PARM_BLOCK 
     addr &= 0x000fffff;
 
     memset(s, 0, sizeof(HW_PARM_BLOCK));
-    s->len = rd_word(&(rom_data[addr+0]));
+    s->len = GUINT16_FROM_BE(&(rom_data[addr+0]));
 	if(s->len > 2+(4*i++))
-		s->hardwareID = rd_long(&(rom_data[addr+2]));
+		s->hardwareID = GUINT32_FROM_BE(&(rom_data[addr+2]));
 	if(s->len > 2+(4*i++))
-		s->hardwareRevision = rd_long(&(rom_data[addr+6]));
+		s->hardwareRevision = GUINT32_FROM_BE(&(rom_data[addr+6]));
 	if(s->len > 2+(4*i++))
-		s->bootMajor = rd_long(&(rom_data[addr+10]));
+		s->bootMajor = GUINT32_FROM_BE(&(rom_data[addr+10]));
 	if(s->len > 2+(4*i++))
-		s->bootRevision = rd_long(&(rom_data[addr+14]));
+		s->bootRevision = GUINT32_FROM_BE(&(rom_data[addr+14]));
 	if(s->len > 2+(4*i++))
-		s->bootBuild = rd_long(&(rom_data[addr+18]));
+		s->bootBuild = GUINT32_FROM_BE(&(rom_data[addr+18]));
 	if(s->len > 2+(4*i++))
-		s->gateArray = rd_long(&(rom_data[addr+22]));
+		s->gateArray = GUINT32_FROM_BE(&(rom_data[addr+22]));
 	if(s->len > 2+(4*i++))
-		s->physDisplayBitsWide = rd_long(&(rom_data[addr+26]));
+		s->physDisplayBitsWide = GUINT32_FROM_BE(&(rom_data[addr+26]));
 	if(s->len > 2+(4*i++))
-		s->physDisplayBitsTall = rd_long(&(rom_data[addr+30]));
+		s->physDisplayBitsTall = GUINT32_FROM_BE(&(rom_data[addr+30]));
 	if(s->len > 2+(4*i++))
-		s->LCDBitsWide = rd_long(&(rom_data[addr+34]));
+		s->LCDBitsWide = GUINT32_FROM_BE(&(rom_data[addr+34]));
 	if(s->len > 2+(4*i++))
-		s->LCDBitsTall = rd_long(&(rom_data[addr+38]));
+		s->LCDBitsTall = GUINT32_FROM_BE(&(rom_data[addr+38]));
 
     if((s->hardwareID == HWID_V200) && (rom_base == 0x40))
     {

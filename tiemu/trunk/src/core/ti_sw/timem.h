@@ -1,7 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: romcalls.h 864 2005-02-22 09:54:05Z roms $ */
 
-/*  TiEmu - a TI emulator
+/*  TiEmu - an TI emulator
+ *
  *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
  *  Copyright (c) 2003-2004, Romain Liévin
@@ -21,27 +22,25 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef VERSION_H
-#define VERSION_H
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#ifndef __TIMEM__
+#define __TIMEM__
 
 /*
-  This file contains version number
-  and library requirements.
+	Functions
 */
 
-#ifdef __WIN32__
-# define TIEMU_VERSION "1.80-050222"		// For Win32
-#else
-# define TIEMU_VERSION VERSION
-#endif
-#define TIEMU_REQUIRES_LIBFILES_VERSION		"0.6.1"
-#define TIEMU_REQUIRES_LIBCABLES_VERSION	"3.8.1"
-#define TIEMU_REQUIRES_LIBCALCS_VERSION 	"4.5.4"
+uint16_t rd_word(uint8_t *p);
+uint32_t rd_long(uint8_t *p);
+
+void wr_word(uint8_t *p, uint16_t d);
+void wr_long(uint8_t *p, uint32_t d);
+
+uint8_t  mem_rd_byte(uint32_t a);
+uint16_t mem_rd_word(uint32_t a);
+uint32_t mem_rd_long(uint32_t a);
+
+void mem_wr_byte(uint32_t a, uint8_t  d);
+void mem_wr_word(uint32_t a, uint16_t d);
+void mem_wr_long(uint32_t a, uint32_t d);
 
 #endif
-
-
