@@ -147,8 +147,6 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         	// see hardware.c
         break;
         case 0x0d:	// r- <76543210>
-			// reading the DBus status register resets that register
-			//tihw.io[0x0d] = 0x00;
 			break;
         case 0x0e:	// rw <....3210>
 			// set red/white wires (if direct access)			
@@ -319,6 +317,9 @@ uint8_t io_get_byte(uint32_t addr)
         case 0x0d:	// r- <76543210>
 			// linkport status
 			v |= (hw_dbus_byteavail() ? 0x60 : 0x40);	// needed, why ?
+			
+			// reading the DBus status register resets that register
+			tihw.io[0x0d] = 0x00;
 		break;
         case 0x0e:	// rw <....3210>
 			// %[2-3]: read red/white wires if raw access
@@ -330,7 +331,6 @@ uint8_t io_get_byte(uint32_t addr)
             break;
         case 0x0f: 	// rw <76543210>
 			// read one byte from receive (incoming) buffer
-			io_bit_clr(0x0c,0);		// rx buffer full
             return hw_dbus_getbyte();
         case 0x10: 	// -w <76543210> (hw1)
         break;

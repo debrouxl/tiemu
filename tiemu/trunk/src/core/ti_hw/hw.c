@@ -140,6 +140,14 @@ void hw_update(void)
         return;
 	}
 
+	if(tihw.lc_speedy && (tihw.io[0xc]&0x2 || hw_dbus_checkread())) 
+     /*((io_bit_tst(0x0c,1) && io_bit_tst(0x0d,6)) ||
+		(io_bit_tst(0x0c,0) && io_bit_tst(0x0d,5))))*/
+    {
+      tihw.io[0xc] |= 0x2;
+      hw_m68k_irq(4);
+    }
+
     // Increment timer
     if(io_bit_tst(0x15,3))
     {
@@ -175,6 +183,7 @@ void hw_update(void)
 		io_bit_set(0x0d,3);
 
 	// DBUS enabled ?
+	/*
 	if(!io_bit_tst(0x0c,6))
 	{
 		// Trigger int4 on: error, link act, txbuf empty or rxbuf full
@@ -186,6 +195,7 @@ void hw_update(void)
 			hw_m68k_irq(4);
 		}
 	}
+	*/
 
     // Auto-int 5: triggered by the programmable timer.
 	// The default rate is OSC2/(K*2^9), where K=79 for HW1 and K=53 for HW2

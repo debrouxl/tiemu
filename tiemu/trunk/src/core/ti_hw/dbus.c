@@ -472,50 +472,8 @@ int send_ti_file(const char *filename)
 	{
 		print_lc_error(ret);
 		io_bit_set(0x0d,7);
+		tihw.io[0x0d] = 0;
 	}
 
   return 0;
 }
-
-/*
-//vti
-int SendByte(int c)
-{
-	int count=1000000;
-
-    recvflag=1;
-    recvbyte=c;
-    hw_m68k_irq(4);
-    
-    while ((recvflag)&&(count--))
-        ti68k_debug_do_instructions(1);		//Execute();
-
-    if (recvflag)
-        return 0;
-
-    return 1;
-}
-
-int GetByte(int *c)
-{
-    int count=1000000;
-
-    while ((!transflag)&&(count--))
-        ti68k_debug_do_instructions(1);		//Execute();
-
-    if (transflag)
-    {
-        *c=transbyte&0xff;
-        transflag=0;
-    }
-    else
-    {
-        //getError=1;
-		printf("error !\n");
-        return 0;
-    }
-
-    return 1;
-}
-//vti
-*/
