@@ -8,6 +8,9 @@ To do:
 - 03/01/2005, version 1.80i: roms
 	- implemented new method for grayscale computing & management (idea from Kevin)
 	- clean-up of popup menu (#colors menu removed)
+	- grayscales pb with HW2...
+	- fixed UAE to handle multiple pending interrupts and some other fixes
+	- idle mode and STOP improved
 
 - 13/12/2004, version 1.80h: roms
 	- simplified skin/keymap management (TI92+ => TI92, TI89t => TI89)

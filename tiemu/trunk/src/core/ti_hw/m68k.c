@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: main.c 245 2004-05-23 20:45:43Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -33,6 +33,8 @@
 #include "bkpts.h"
 #include "images.h"
 
+int pending_ints;
+
 int hw_m68k_init(void)
 {
     // init breakpoints
@@ -61,6 +63,8 @@ int hw_m68k_reset(void)
     MC68000_reset();
     ram_at_0();
 
+	pending_ints = 0;
+
     return 0;
 }
 
@@ -74,10 +78,22 @@ int hw_m68k_exit(void)
     return 0;
 }
 
+// UAE does not implement interrupt priority and pending
+// I re-implement it as replacement of Interrupt()
+void Interrupt2(int nr)
+{
+	//if((nr > regs.intmask) ||(nr == 7))	// ok, if idle disabled
+		Interrupt(nr);
+
+	pending_ints &= ~(1 << nr);
+}
+
 void hw_m68k_irq(int n)
 {
 	specialflags |= SPCFLAG_INT;
     currIntLev = n;
+
+	pending_ints |= (1 << n);
 }
 
 /* Replace UAE's M68000_run() */
@@ -90,21 +106,49 @@ int hw_m68k_run(int n)
 {
     int i;
     GList *l;
-    static FILE *flog;
-  
+
+#if 0
+	int j;
+
+	if(!pending_ints && (specialflags & SPCFLAG_STOP))
+	{
+		for(i=0;i<n;i++)
+			do_cycles();
+		return 0;
+	}
+
+	regs.stopped = 0;
+	specialflags &= ~SPCFLAG_STOP;
+
+	if(specialflags & SPCFLAG_STOP)
+		printf("!");
+
+	for(j=0; j<i; j++)
+	{
+		UWORD opcode;
+		
+		do_cycles();
+
+		if(pending_ints)
+		{
+			int level, mask = 0x80;
+			for (level = 7; level; level--, mask >>= 1)
+				if (pending_ints & mask)
+					break;
+
+			Interrupt2 (level);
+			regs.stopped = 0;
+		}
+
+		opcode = nextiword();
+		(*cpufunctbl[opcode])(opcode);
+	}
+
+#else
+
     for(i = 0; i < n; i++) 
     {
         UWORD opcode;
-
-        // save log to disk (internal use)
-#ifdef __WIN32__
-        if(flog != NULL)
-        {
-            //fprintf(flog, "0x%06lx\n", m68k_getpc());
-        }
-        else
-            flog = fopen("C:\\tiemu.log", "wt");        
-#endif
 
         // search for breakpoint
         if(((l = bkpts.code) != NULL) && !(specialflags & SPCFLAG_DBSKIP))
@@ -133,9 +177,12 @@ int hw_m68k_run(int n)
             bkpts.pclog_buf[bkpts.pclog_ptr++ % bkpts.pclog_size] = m68k_getpc();
         }
 
+		// TI89 HW1 AMS203 and gray3pt() test program
+		//if((int)m68k_getpc() == 0x3f83c) printf(".");
+		//if((int)m68k_getpc() == 0x2a2568) printf(".");
+
         // search for next opcode, execute it and refresh hardware (if not STOP'ed)
 		if (!((specialflags & SPCFLAG_STOP) && !(specialflags & SPCFLAG_DBSKIP)))
-//		if(specialflags != SPCFLAG_STOP)
 		{
 			opcode = nextiword();
 			(*cpufunctbl[opcode])(opcode);
@@ -172,26 +219,10 @@ int hw_m68k_run(int n)
 					((intr == 1) && (tihw.io[0x05] & 0x01))
 					)
 				{
-					Interrupt(intr);
+					Interrupt2(intr);
 					regs.stopped = 0;
 					specialflags &= ~SPCFLAG_STOP;
 				}
-
-				// useful ??
-				/*
-	            if (specialflags & (SPCFLAG_INT | SPCFLAG_DOINT)) 
-		        {
-		            int intr = intlev();
-		            specialflags &= ~(SPCFLAG_INT | SPCFLAG_DOINT);
-		            if (intr != -1 && intr > regs.intmask) 
-		            {
-		                Interrupt(intr);
-		                regs.stopped = 0;
-		                specialflags &= ~SPCFLAG_STOP;
-						printf("#*#\n");
-		            }	    
-		        }
-				*/
 	        }
 	      
 	        if (specialflags & SPCFLAG_TRACE) 
@@ -206,8 +237,8 @@ int hw_m68k_run(int n)
 	            specialflags &= ~(SPCFLAG_INT | SPCFLAG_DOINT);
 	            if (intr != -1 && intr > regs.intmask) 
                 {
-		            Interrupt(intr);
-		            regs.stopped = 0;
+		            Interrupt2(intr);
+		            regs.stopped = 0;					
 	            }	    
 	        }
 
@@ -233,5 +264,44 @@ int hw_m68k_run(int n)
                 specialflags &= ~SPCFLAG_DBSKIP;
 	    }  
     }
-  return 0;
+
+#endif
+
+	return 0;
 }
+
+/*
+	if(!pending_ints && (specialflags & SPCFLAG_STOP))
+	{
+		for(i=0;i<n;i++)
+			do_cycles();
+		return 0;
+	}
+
+	regs.stopped = 0;
+	specialflags &= ~SPCFLAG_STOP;
+
+	if(specialflags & SPCFLAG_STOP)
+		printf("!");
+
+	for(j=0; j<i; j++)
+	{
+		UWORD opcode;
+		
+		do_cycles();
+
+		if(pending_ints)
+		{
+			int level, mask = 0x80;
+			for (level = 7; level; level--, mask >>= 1)
+				if (pending_ints & mask)
+					break;
+
+			Interrupt2 (level);
+			regs.stopped = 0;
+		}
+
+		opcode = nextiword();
+		(*cpufunctbl[opcode])(opcode);
+	}
+*/

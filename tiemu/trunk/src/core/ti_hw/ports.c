@@ -101,8 +101,6 @@ void io_put_byte(uint32_t addr, uint8_t arg)
             }
             
 			// turn off OSC1 (CPU), wake on int level 6 (ON key) and int level [5..1]
-			//arg = 0x1f;	//if(!(arg & 0x10))	PedRom
-			//printf("%02X ", arg);
 			m68k_setstopped(1);
         break;
         case 0x06: 
