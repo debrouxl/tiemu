@@ -257,7 +257,7 @@ load_skin_old_vti(FILE *fp, skinInfos *skin)
 
   fseek(fp, 1384, SEEK_SET);
 
-  return 0; //return load_jpeg(fp);
+  return load_jpeg(fp, skin);
 }
 
 
@@ -342,7 +342,7 @@ load_skin_vti(FILE *fp, skinInfos *skin)
 
   fseek(fp, 1448, SEEK_SET);
 
-  return 0; //return load_jpeg(fp);
+  return load_jpeg(fp, skin);
 }
 
 int
@@ -450,7 +450,7 @@ load_skin_tiemu(FILE *fp, skinInfos *skin)
 
   fseek(fp, jpeg_offset, SEEK_SET);
   
-  return 0; //return load_jpeg(fp);
+  return load_jpeg(fp, skin);
 }
 
 

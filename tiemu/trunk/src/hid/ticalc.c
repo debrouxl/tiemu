@@ -31,7 +31,6 @@
 /* Program dependencies */
 #include "platform.h"
 #include "support.h"
-#include "img/fmt.h"
 #include "ticalc.h"
 #include "skn/skin.h"
 #include "struct.h"
@@ -171,6 +170,7 @@ static int hid_init_subsystem(void)
     }
 
   // Set VIDEO mode and create the window surface
+  printf("<%i %i>\n", iWinW, iWinH);
   if (!(sdlWindow = SDL_SetVideoMode(iWinW, iWinH, 
 				     DEFAULT_BPP, DEFAULT_FLAGS)))
     {
@@ -557,9 +557,11 @@ static int hid_update_keys(void)
 	    }
 	  else if(event.key.keysym.sym == SDLK_F10)
 	    {
+		  /*
 	      ti68k_setActiveKey(OPT_SCREENCAPTURE, 0);
 	      do_screenshot(options.img_format, options.img_type, 
 			    options.img_size, NULL);
+		*/
 	    }
 	  else
 	    {
@@ -1046,6 +1048,7 @@ void hid_switch_large_view(void)
 */
 int do_screenshot(int format, int type, int size, char *filename)
 {
+	/*
   Image img;
   char outfile[MAXCHARS];
   char *ext = "???";
@@ -1176,6 +1179,6 @@ int do_screenshot(int format, int type, int size, char *filename)
   fclose(fp);
   DISPLAY("Done !\n");
   options.screen_counter++;
-
+*/
   return 0;
 }
