@@ -7,16 +7,16 @@ ExtendeD:
 
 Kevin:
 
-- Avec GTK-Runtime-Environment-2.2.4-2, il n'arrive pas à ouvrir le JPEG du
+O Avec GTK-Runtime-Environment-2.2.4-2, il n'arrive pas à ouvrir le JPEG du
 skin sous WinMe. J'ai été obligé de récupérer
 GTK-Runtime-Environment-2.2.4-3 qui corrige ce problème, il faudrait le
 mettre quelque part dans le readme.
 
-- L'installation de GTK-Runtime-Environment-2.2.4-3 m'a réactivé le thème
+O L'installation de GTK-Runtime-Environment-2.2.4-3 m'a réactivé le thème
 WIMP avec tous ses warnings. J'ai été obligé de renommer libwimp.dll en
 libwimp.dl_ pour me débarasser de ces warnings.
 
-- Le menu popup ne reste ouvert que si on garde la touche de la souris
+O Le menu popup ne reste ouvert que si on garde la touche de la souris
 appuyée, ce qui est peu pratique. Et si on appuie 2 fois de suite trop
 rapidement, TiEmu plante. (Il s'embrouille avec les engine starts/stops.)
 
@@ -52,6 +52,20 @@ une erreur 400 dans la fenêtre command-line (mais n'a
 pas l'air de planter l'émulateur). Il faut faire un
 Reset Calculator pour avoir une calculette à nouveau
 d'aplomb.
+
+ * F8 ne fait "silencieusement" pas l'appel complet 
+à une subroutine, mais seulement une partie.
+Actuellement, TIEmu s'arrête manifestement après le
+premier rts rencontré, ce qui n'est bon que si la
+subroutine n'appelle pas elle-même de subroutines.
+Je ne vois que la solution "compter le niveau des
+subroutines". Je ne pense pas qu'il soit une bonne
+idée d'attendre que le pointeur de pile soit revenu 
+à la même valeur (ça ne marchera pas dans plusieurs 
+cas de figure
+
+* je n'ai pas trouvé d'option permettant d'aller
+directement à un ROM_CALL donné. C'est pourtant utile.
 
 -------------
 + done

@@ -5,6 +5,11 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
+- 28/08/2004, version 1.80: roms
+	- fixed vectors copy
+	- bkpts window: can jump to bkpt address
+	- code window: can jump to ROM call
+
 - 20/08/2004, version 1.79: roms
 	- LCD background is less dark
 	- force mem window refresh when scrolling up/down

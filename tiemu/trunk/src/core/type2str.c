@@ -151,12 +151,12 @@ const char *ti68k_exception_to_string(int number)
 		case 38: return _("TRAP #6 instruction vectors");
 		case 39: return _("TRAP #7 instruction vectors");
 		case 40: return _("TRAP #8 instruction vectors");
-		case 41: return _("TRAP #8 instruction vectors");
-		case 42: return _("TRAP #8 instruction vectors");
-		case 43: return _("TRAP #8 instruction vectors");
-		case 44: return _("TRAP #8 instruction vectors");
-		case 45: return _("TRAP #8 instruction vectors");
-		case 46: return _("TRAP #8 instruction vectors");
+		case 41: return _("TRAP #9 instruction vectors");
+		case 42: return _("TRAP #10 instruction vectors");
+		case 43: return _("TRAP #11 instruction vectors");
+		case 44: return _("TRAP #12 instruction vectors");
+		case 45: return _("TRAP #13 instruction vectors");
+		case 46: return _("TRAP #14 instruction vectors");
 		case 47: return _("TRAP #15 instruction vectors");	
 		case 48: 
 		case 49: 

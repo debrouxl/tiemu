@@ -99,10 +99,9 @@ int ti68k_debug_step_over(void)
 		return 0;
 	}
 
-	// run emulation until address is reached or another condition
+	// run emulation until address after instruction is reached or another condition
 	do
 	{
-		//printf("$%06x: %06x\n", m68k_getpc(), curriword());
 		for(i = 0; i < sizeof(rets) / sizeof(uint16_t); i++)
 			if(curriword() == rets[i])
 			{

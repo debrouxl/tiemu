@@ -232,6 +232,11 @@ GtkWidget* dbgbkpts_create_window(void)
 	
 	dbox = glade_xml_get_widget(xml, "dbgbkpts_window");
 
+	data = glade_xml_get_widget(xml, "button3");
+	gtk_widget_set_sensitive(data, FALSE);
+	data = glade_xml_get_widget(xml, "button4");
+	gtk_widget_set_sensitive(data, FALSE);
+
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
 	clist_populate(store);
@@ -367,8 +372,8 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
 
 GLADE_CB void
 dbgbkpts_button3_clicked                     (GtkButton       *button,
-                                        GtkWidget       *widget,
-                                        gpointer         user_data)
+                                              GtkWidget       *widget,
+                                              gpointer         user_data)
 {
 
 }
@@ -376,9 +381,50 @@ dbgbkpts_button3_clicked                     (GtkButton       *button,
 
 GLADE_CB void
 dbgbkpts_button4_clicked                     (GtkButton       *button,
-                                        gpointer         user_data)
+                                              gpointer         user_data)
 {
 
+}
+
+GLADE_CB void
+dbgbkpts_button5_clicked                     (GtkButton       *button,
+                                              gpointer         user_data)
+{
+	GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GList *l;
+	
+	// get selection
+	selection = gtk_tree_view_get_selection(view);
+	l = gtk_tree_selection_get_selected_rows(selection, &model);
+	{
+		GtkTreeIter iter;
+		GtkTreePath *path = l->data;
+        gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
+        uint32_t type, addr;
+			
+		gtk_tree_model_get_iter(model, &iter, path);
+		gtk_tree_model_get(model, &iter, 
+            COL_SYMBOL, &row_text[COL_SYMBOL], 
+            COL_TYPE, &row_text[COL_TYPE], 
+            COL_START, &row_text[COL_START], 
+            COL_END, &row_text[COL_END],
+            COL_MODE, &row_text[COL_MODE],
+            -1);
+		
+		type = ti68k_string_to_bkpt_type(row_text[COL_TYPE]);
+		if(type == BK_TYPE_CODE)
+		{
+			// get address
+            sscanf(row_text[COL_START], "%x", &addr);
+
+			// populate code
+			dbgcode_disasm_at(addr);
+        }
+        g_strfreev(row_text);
+    }
 }
 
 
