@@ -116,17 +116,15 @@ void io_put_byte(CPTR adr, UBYTE arg)
         	// %3 set: 000000..1FFFFF mapped to 200000..3FFFFF
 			if(bit_tst(arg,3) && (tihw.calc_type == TI92))
 			{
-				mem_tab[2] = mem_tab[0];
-				mem_mask[2] = mem_mask[0];
-				/*
-				mem_tab[3] = mem_tab[1];
-				mem_mask[3] = mem_mask[1];
-				*/	
+
+				//mem_tab[2] = mem_tab[0];
+				//mem_mask[2] = mem_mask[0];
+				//mem_tab[3] = mem_tab[1];
+				//mem_mask[3] = mem_mask[1];
             } else
             {
-				mem_tab[2] = tihw.rom;
-				mem_mask[2] = 0x1fffff;
-				//mem_mask[2] = mem_mask[0];
+				//mem_tab[2] = tihw.rom;
+				//mem_mask[2] = 0x1fffff;
 				//mem_tab[3] = mem_tab[1];
 				//mem_mask[3] = mem_mask[1];
             }
