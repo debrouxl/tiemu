@@ -157,6 +157,10 @@ SOURCE=..\..\src\core\callbacks.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\disasm.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\engine.c
 # End Source File
 # Begin Source File
