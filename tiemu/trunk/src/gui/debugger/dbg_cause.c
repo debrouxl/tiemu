@@ -215,8 +215,17 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
     if(!type && !mode && !id)
         return 0;
 
+	// user break
+	if(!type && !mode)
+	{
+		uint32_t value;
+
+		ti68k_register_get_pc(&value);
+		str = g_strdup_printf("User break (pc=$0x%06x)", value);
+	}
+
 	// exception or code/mem ?
-	if(type == BK_TYPE_EXCEPTION)
+	else if(type == BK_TYPE_EXCEPTION)
 	{
 		// exception
 		uint32_t sp;
@@ -233,23 +242,32 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 		p_pc = (uint32_t *)ti68k_get_real_address(sp+2);
 		pc =  GUINT32_SWAP_LE_BE(*p_pc);
 
-		str = g_strdup_printf("<%s>, id=#%i, SR=%04x, PC=%06x\n", 
+		str = g_strdup_printf("type=<%s>, id=#%i, SR=%04x, PC=%06x\n", 
 			ti68k_exception_to_string(mode), id, str, pc);
-
 	}
-	else
+	else if(type == BK_TYPE_CODE)
 	{
 		// code
+		uint32_t value;
+
+		ti68k_register_get_pc(&value);
+		str = g_strdup_printf("type=<%s>, id=#%i, PC=$0x%06x", 
+			ti68k_bkpt_type_to_string(type), id, value);
+	}
+	else if((type == BK_TYPE_ACCESS) || (type ==BK_TYPE_RANGE))
+	{
+		// mem access or range
 		uint32_t value, min, max;
 		gchar *str1, *str2;
 
 		ti68k_register_get_pc(&value);
-		str1 = g_strdup_printf("pc=$0x%06x, type=<%s>, mode=<%s>, id=#%i", 
-			value, ti68k_bkpt_type_to_string(type),
-			ti68k_bkpt_mode_to_string(type, mode), id);
+		str1 = g_strdup_printf("type=<%s>, id=#%i, mode=<%s>, PC=$0x%06x", 
+			ti68k_bkpt_type_to_string(type), id, 
+			ti68k_bkpt_mode_to_string(type, mode), value);
 	
 		switch(type)
 		{
+
 		case BK_TYPE_ACCESS:
 			ti68k_bkpt_get_access(id, &min, mode);
 			str2 = g_strdup_printf("mem=$0x%06x", min);
@@ -267,6 +285,10 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 		g_free(str1);
 		g_free(str2);
 	}
+	else
+	{
+		str = g_strdup("bug !\n");
+	}
 
 	sb_id = gtk_statusbar_get_context_id(GTK_STATUSBAR(sb), str);
 	gtk_statusbar_push(GTK_STATUSBAR(sb), sb_id, str);
@@ -274,8 +296,3 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 
 	return 0;
 }
-
-/*
-	id = gtk_statusbar_get_context_id(GTK_STATUSBAR(sb), str);
-	gtk_statusbar_push(GTK_STATUSBAR(sb), id, str);
-}*/
