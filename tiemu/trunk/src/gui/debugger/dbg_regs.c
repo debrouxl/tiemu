@@ -239,9 +239,9 @@ static gboolean select_func(GtkTreeSelection * selection,
 }
 
 
-static GtkTreeStore* ctree_create(GtkWidget *tree)
+static GtkTreeStore* ctree_create(GtkWidget *widget)
 {
-	GtkTreeView *view = GTK_TREE_VIEW(tree);
+	GtkTreeView *view = GTK_TREE_VIEW(widget);
 	GtkTreeStore *store;
 	GtkTreeModel *model;
 	GtkCellRenderer *renderer;
@@ -255,9 +255,6 @@ static GtkTreeStore* ctree_create(GtkWidget *tree)
             );
     model = GTK_TREE_MODEL(store);
 	
-	//clist = tree = gtk_tree_view_new_with_model(model);
-	//view = GTK_TREE_VIEW(tree);
-  
     gtk_tree_view_set_model(view, model); 
     gtk_tree_view_set_headers_visible(view, FALSE);
 	gtk_tree_view_set_rules_hint(view, TRUE);
@@ -279,7 +276,7 @@ static GtkTreeStore* ctree_create(GtkWidget *tree)
 			NULL);
 			
 	g_signal_connect(G_OBJECT(renderer), "edited",
-			G_CALLBACK(renderer_edited), tree);
+			G_CALLBACK(renderer_edited), widget);
 
     
     for (i = 0; i < CLIST_NVCOLS; i++) 

@@ -46,9 +46,9 @@ enum {
 
 #define GET_STORE(w)    (GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(w))))
 
-static GtkListStore* clist_create(GtkWidget *list)
+static GtkListStore* clist_create(GtkWidget *widget)
 {
-	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeView *view = GTK_TREE_VIEW(widget);
 	GtkListStore *store;
 	GtkTreeModel *model;
 	GtkCellRenderer *renderer;
@@ -62,9 +62,6 @@ static GtkListStore* clist_create(GtkWidget *list)
             );
     model = GTK_TREE_MODEL(store);
 	
-	//clist = tree = gtk_tree_view_new_with_model(model);
-	//view = GTK_TREE_VIEW(tree);
-  
     gtk_tree_view_set_model(view, model); 
     gtk_tree_view_set_headers_visible(view, TRUE);
 	gtk_tree_view_set_rules_hint(view, FALSE);

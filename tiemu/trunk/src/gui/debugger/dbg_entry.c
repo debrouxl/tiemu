@@ -134,7 +134,7 @@ static void ctree_populate(GtkWidget *widget)
 	vat_free(&tree);
 }
 
-GList *sel = NULL;
+static GList *sel = NULL;
 
 static void ctree_get_selection(void)
 {

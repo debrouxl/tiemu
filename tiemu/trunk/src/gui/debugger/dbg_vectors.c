@@ -40,9 +40,9 @@ enum {
 #define CLIST_NVCOLS	(2)		// 2 visible columns
 #define CLIST_NCOLS		(2)		// 2 real columns
 
-static GtkListStore* clist_create(GtkWidget *list)
+static GtkListStore* clist_create(GtkWidget *widget)
 {
-	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeView *view = GTK_TREE_VIEW(widget);
 	GtkListStore *store;
 	GtkTreeModel *model;
 	GtkCellRenderer *renderer;
@@ -56,9 +56,6 @@ static GtkListStore* clist_create(GtkWidget *list)
             );
     model = GTK_TREE_MODEL(store);
 	
-	//clist = tree = gtk_tree_view_new_with_model(model);
-	//view = GTK_TREE_VIEW(tree);
-  
     gtk_tree_view_set_model(view, model); 
     gtk_tree_view_set_headers_visible(view, TRUE);
 	gtk_tree_view_set_rules_hint(view, FALSE);
@@ -86,8 +83,11 @@ static GtkListStore* clist_create(GtkWidget *list)
 	return store;
 }
 
-static void clist_populate(GtkListStore *store)
+static void clist_populate(GtkWidget *widget)
 {
+	GtkTreeView *view = GTK_TREE_VIEW(widget);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
     GtkTreeIter iter;
 	gint i;
 
@@ -134,7 +134,6 @@ gint dbgvectors_display_dbox(void)
 	GtkWidget *dbox;
 	GtkWidget *data;
 	gint result;
-	GtkListStore *store;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_vectors-2.glade"), "dbgvectors_dbox",
@@ -147,11 +146,12 @@ gint dbgvectors_display_dbox(void)
 	gtk_window_resize(GTK_WINDOW(dbox), 320, 240);
 		
 	data = glade_xml_get_widget(xml, "treeview1");
-    store = clist_create(data);
-	clist_populate(store);	
+    clist_create(data);
+	clist_populate(data);	
 	
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
-	switch (result) {
+	switch (result) 
+	{
 	case GTK_RESPONSE_OK:
 		clist_get_selection(data);
 		dbgbkpts_display_window();
