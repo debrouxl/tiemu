@@ -3,27 +3,8 @@ List of stuffs to do (in French, sorry):
 ExtendeD
 ========
 
-* bug sur Step Out
-
-* Les Step over sont anormalement lent, sans raison. Certains bsr de
-l'AMS ont des sous-bsr qui ont eux-mêmes plusieurs sous-bsr, etc.,
-certains step over sur ces bsr mettent plusieurs dizaines de seconde à
-aboutir.
-
-+ tthdex ne marche pas convenablement, les 
-Je ne pourrais pas trop de dire d'où ça vient, mais si c'est idle()
-qui pose problème, ce doit être le port $600005 qui est mal émulé.
-
 * sur 89, l'interprétation des touches se mélange 
-parfois les pinceaux (4 au lieu de l, 6 au lieu de o,
-. au lieu de w).
-
-* le menu qui apparaît par un clic droit sur la 
-fenêtre skin+screen de l'émulateur marche 
-toujours mal. Au lancement ou après un reset, il ne 
-marche pas; une utilisation du menu F12 semble le 
-faire marcher définitivement (jusqu'au prochain
-reset).
+parfois les pinceaux (4 au lieu de l, 6 au lieu de o, . au lieu de w).
 
 * J'ai aussi plusieurs crash de cause difficile à déterminer en
 utilisant le débogueur. Il y en a peut-être un lié à la fonction
@@ -39,15 +20,6 @@ adresses (trop hautes pour être du code).
 
 Kevin
 =====
-
-* Je ne sais pas si on peut y faire quelque chose, mais Alt+ESC, Ctrl+ESC,
-Alt+TAB (quand on les appuie en même temps et pas l'une après l'autre) sont
-avalées par Windows, pour Alt+F4, Windows ne le voit pas, mais TiEmu non
-plus, et il y a probablement d'autres combines de touches "suspectes".
-
-* Si j'appuie sur la touche Windows et que je reviens à TiEmu ensuite, il
-ne répond plus à aucun appui de touches (mais on peut le fermer à travers le
-popup au moins). L'"engine" est "stoppée" et pas re"start"ée.
 
 * Un truc qui serait bien serait une fonction "breakpoint on program entry".
 Mais comme la feature dans VTI est implémentée plutôt avec les pieds, il
@@ -84,8 +56,7 @@ Les nombres de niveaux de gris interessants sont 2, 4, 7 et 8:
 
 * Kevin Kofler vient de me (Olivier) faire remarquer qu'il n'est pas possible
 d'envoyer de fichiers à TiEmu lorsqu'il émule une Titanium 
-(plantage). Il n'y a pas de problèmes avec les autres modèles de
-calcs.
+(plantage). Il n'y a pas de problèmes avec les autres modèles de calcs.
 Tu es au courant du problème ? Peut-être est-ce dû à la gestion de
 l'USB dans l'AMS 3 ? (bizarrement un AMS 3 patché avec Titarom et
 émulé sous VTI n'a pas de problème pour utiliser le LIO).
