@@ -66,7 +66,7 @@ static void clist_selection_changed(GtkTreeSelection * sel,
     }
 }
 
-GtkListStore* clist_init(GtkWidget *clist)
+static GtkListStore* clist_init(GtkWidget *clist)
 {
 	GtkTreeView *view = GTK_TREE_VIEW(clist);	
 	GtkListStore *list;

@@ -47,6 +47,7 @@
 #include "manpage.h"
 #include "scroptions.h"
 #include "tie_error.h"
+#include "dbg_mem.h"
 
 #include "ti68k_int.h"
 #include "ti68k_def.h"
@@ -253,6 +254,7 @@ GLADE_CB void
 on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+    ti68k_debug_launch();
 	/*
 	gint i;
   	CODE_BKPT *s;
@@ -271,7 +273,7 @@ on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
   	// Launch debugger
   	display_debugger_dbox();
 	*/
-	ti68k_engine_unhalt();
+	//ti68k_engine_unhalt();
 }
 
 

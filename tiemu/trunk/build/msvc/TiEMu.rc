@@ -44,7 +44,7 @@ BEGIN
     BEGIN
         BLOCK "040c04b0"
         BEGIN
-            VALUE "Comments", "This program is placed under GPL license. The license can be found on www.gnu.org\0."
+            VALUE "Comments", "This program is placed under GPL license. The license can be found on www.gnu.org\0","\0","\0"
             VALUE "CompanyName", "Linux Programmer Group\0"
             VALUE "FileDescription", "TiEmu\0"
             VALUE "FileVersion", "1.69\0"

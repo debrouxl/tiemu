@@ -24,6 +24,7 @@
       <property name="tab_pos">GTK_POS_TOP</property>
       <property name="scrollable">False</property>
       <property name="enable_popup">False</property>
+      <signal name="select_page" handler="on_notebook1_select_page" last_modification_time="Tue, 01 Jun 2004 20:04:45 GMT"/>
 
       <child>
 	<widget class="GtkScrolledWindow" id="scrolledwindow1">
@@ -52,7 +53,7 @@
       </child>
 
       <child>
-	<widget class="GtkLabel" id="label20">
+	<widget class="GtkLabel" id="label1">
 	  <property name="visible">True</property>
 	  <property name="label" translatable="yes">0x000000</property>
 	  <property name="use_underline">False</property>

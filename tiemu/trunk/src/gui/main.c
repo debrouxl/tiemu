@@ -76,6 +76,11 @@ static gint hid_refresh (gpointer data)
     return TRUE;
 }
 
+int enter_gtk_debugger(void)
+{
+    display_dbgmem_window();
+}
+
 /* Main function */		
 int main(int argc, char **argv) 
 {
@@ -143,7 +148,7 @@ int main(int argc, char **argv)
 		and a debugger (step 1)
 	*/
 	hid_set_callbacks();
-	//ti68k_defineDebugger(enter_gtk_debugger);
+	ti68k_debugger_define(enter_gtk_debugger);
 
     /*
         Search for ROM in the image directory
