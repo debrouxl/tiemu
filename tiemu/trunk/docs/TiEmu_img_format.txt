@@ -1,10 +1,10 @@
 *****************************************************************
-* File format of the TiEmu v2.0 image files			*
-* Documentation by Romain Lievin <roms@tilp.info>		*
-*								*
-*								*
-* Begin: 17/05/2005						*
-* Last update: 17/05/2004					*
+* File format of the TiEmu v2.0 image files						*
+* Documentation by Romain Lievin <roms@tilp.info>				*
+*																*
+*																*
+* Begin: 17/05/2005												*
+* Last update: 19/02/2005										*
 *****************************************************************
 
 
@@ -26,7 +26,7 @@ The TiEmu v2.00 image format
   ---------------------------------------------------------------------------
   0x00-0x0F	0-15	16	a signature: "TiEmu img v2.00" (NULL-padded)
   
-  0x10-0x13	16-19	4	size of the header section
+  0x10-0x13	16-19	4	structure revision (2)
   0x14-0x18	20-23	4	offset to the data section (0x40)
   0x19		24		1	calculator type (2 = TI92)
   0x1A-0x1E	25-29	5	firmware revision ("2.08\0")
@@ -48,5 +48,6 @@ Calculator type (libtifiles defs):
 #define TI89 		(1 << 1)
 #define TI92p	 	(1 << 2)
 #define V200		(1 << 3)
+#define TI89t		(1 << 4)
  
 FLASH upgrade does not have boot block.

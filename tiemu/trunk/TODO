@@ -34,22 +34,43 @@ Ceci devrait être facilement implémentable en C dans l'émulateur, ce ne sont
 que des lookups d'adresses. Ce code pourrait aussi être utilisé pour
 afficher une fenêtre "Handles" comme le fait VTI.
 
-+ Et encore un autre bogue: l'écriture en FlashROM n'est pas émulée correctement, 
-même si je saute tous mes astuces anti-débogage, HW3Patch ne fonctionne pas.
-Et pour le problème de Flash: Les écritures en 0x812d50-0x812d5f (word par word) 
-ne sont effectivement pas passées! Les écritures en 
-0x83be8c/0x83be8d, 0x83be90/0x83be91, 0x83be96/0x83be97 et 0x83be9c/0x83be9d 
-(word par word aussi) sont passées.
-Peut-être que ta protection anti-écriture est trop large, elle concerne seulement 
-le boot (0x800000-0x80ffff).
+*  Il y a un bogue avec le débogueur et les touches: prends un AMS 2.0x ou 3.0x, mets 
+un breakpoint sur le trap #11, lance un programme ASM (même Exec "4e750000" suffit), 
+quitte le débogueur, appuie sur n'importe quelle touche, il réagit comme si c'était ENTER. 
+Seulement après avoir désactivé le BP sur le trap 11 et appuyé sur ENTER une autre fois, 
+TiEmu reprend son comportement normal.
+Ce problème est apparemment causée par le fait qu'une touche (ENTER) est appuyée au moment 
+où on entre dans le débogueur. (Le BP sur le trap 11 s'active au moment où ENTER est encore 
+appuyé.)
 
-*  Il y a un bogue avec le débogueur et les touches: prends un AMS 2.0x ou 3.0x, mets un breakpoint sur le trap #11, lance un programme ASM (même Exec "4e750000" suffit), quitte le débogueur, appuie sur n'importe quelle touche, il réagit comme si c'était ENTER. Seulement après avoir désactivé le BP sur le trap 11 et appuyé sur ENTER une autre fois, TiEmu reprend son comportement normal.
-[19:00:01] <Kevin Kofler> Ce problème est apparemment causée par le fait qu'une touche (ENTER) est appuyée au moment où on entre dans le débogueur. (Le BP sur le trap 11 s'active au moment où ENTER est encore appuyé.)
-[19:02:09] <Kevin Kofler> Au passage, c'est normal que AMS 3.01 pour V200 au format v2u m'affiche "Hardware Version -1.00"? Le pointeur du basecode parameter block pointe vers une zone qui ne contient que des FFFF.
-[19:03:05] <Kevin Kofler> AMS 2.09 pour V200 aussi.
-[19:04:35] <Kevin Kofler> Bon, c'est général pour les ??u, ça me le fait aussi pour un 89u de TI-89. VTI donne carrément n'importe quoi comme pointeur, mais au moins les routines le reconnaissaient et prenaient une valeur par défaut à la place. Mais -1 est carrément bizarre.
-[19:06:12] <Kevin Kofler> Il faudrait initialiser le boot par défaut pour qu'on lise 2 pour le champ gateArray du basecode parameter block, parce que c'est la version que tu émules par défaut. (Si ça ne correspond pas, il y aura des ennuis avec les ndg et autres.)
-[19:09:43] <Kevin Kofler> Pardon: pour qu'on se comprenne, je parle du hardware parameter block, pas du basecode parameter block.
+* Au passage, c'est normal que AMS 3.01 pour V200 au format v2u m'affiche 
+"Hardware Version -1.00"? Le pointeur du basecode parameter block pointe vers une zone 
+qui ne contient que des FFFF.
+AMS 2.09 pour V200 aussi.
+Bon, c'est général pour les ??u, ça me le fait aussi pour un 89u de TI-89. VTI donne 
+carrément n'importe quoi comme pointeur, mais au moins les routines le reconnaissaient 
+et prenaient une valeur par défaut à la place. Mais -1 est carrément bizarre.
+Il faudrait initialiser le boot par défaut pour qu'on lise 2 pour le champ gateArray du 
+basecode parameter block, parce que c'est la version que tu émules par défaut. (Si ça ne 
+correspond pas, il y aura des ennuis avec les ndg et autres.)
+Pardon: pour qu'on se comprenne, je parle du hardware parameter block, pas du basecode 
+parameter block.
+
+* Au fait, même si avec les touches pour changer d'apps bloquées, la calculatrice émulée se bloque quand-même par occasion. Il y a plein de moyens de causer ce bogue avec la souris seulement. Il faudrait vraiment que tu corriges ce bogue à la racine plutôt que de chercher des workarounds.[08:36:41] <Kevin Kofler> Et ensuite:
+* le blocage des touches ne sert à rien, la machine émulée ne reçoit quand-même pas les touches même si tu empêches leur fonction système (et comme déjà dit, le bogue de la machine bloquée est quand-même là),
+[08:36:41] <Kevin Kofler> * je trouve ta manière de bloquer ces touches à l'initialisation de TiEmu et de ne les réactiver qu'à la fin très brutale. Si tu penses que c'est une bonne idée de garder cette feature, il faudrait trouver un moyen de ne le faire que si TiEmu est la fenêtre active.
+
+Bref, je pense que le mieux est de désactiver ce code.
+[08:36:41] <Kevin Kofler> Une manière simple de reproduire le bogue du blocage de l'engine: appuie sur le bouton droit de la souris sur l'écran, garde-le appuyé jusqu'à ce que le menu apparaît, puis relâche-le sans rien sélectionner dans le menu -> hop, émulateur bloqué.
+
+* [10:42:52] <Kevin Kofler> Ton code pour les bsr F-Line est faux, next_pc = curr_pc + ti68k_debug_disassemble(curr_pc, &output); donnera curr_pc + 2, alors qu'il faut curr_pc + 4 pour FFEE et curr_pc + 6 pour FFF0.
+[10:42:53] <Kevin Kofler> Et sinon, il y a un autre cas particulier bizarre, je ne sais pas s'il vaut le coup de le traîter, mais _bcd_math est un ROM_CALL qui s'appelle comme ça:
+* n'importe quelle méthode d'appel d'un ROM_CALL (jsr, F-Line etc.)
+* 2 octets: opcode FPU
+et le ROM_CALL saute ces 2 octets en retournant, donc retourne à next_pc+2. Si tu veux gérer ça, tu devrais regarder le target du jsr ou F-Line et comparer avec l'adresse de _bcd_math.
+[10:42:53] <Kevin Kofler> Précisions:
+* la "FPU" est purement émulée en logiciel par _bcd_math, et les opcodes ne correspondent à aucune FPU réelle
+* Pour le F-Line, tu peux comparer l'opcode avec 0xF8B5, mais pour les appels par jsr, tu n'as pas d'autre choix que de tester le target du saut pour savoir si on saute vers _bcd_math ou aillers
 
 Lionel
 ======
@@ -81,8 +102,6 @@ roms
 ====
 
 * MOVEA.W diassembled as MOVEA.L (HeapDeref)
-
-* XML file instead of .ini file with saving of all debuggers parameters (bkpts, window sizes, ...)
 
 -------------
 + done

@@ -49,6 +49,7 @@
 #include "ti68k_err.h"
 #include "ti68k_def.h"
 #include "images.h"
+#include "hwpm.h"
 
 #define is_num(c)   isdigit(c)
 #define is_alnum(c) isalnum(c)
@@ -131,84 +132,6 @@ void ti68k_display_img_infos(IMG_INFO *s)
 	DISPLAY(_("  Has boot    : %s\n"), s->has_boot ? "yes" : "no");	
 }
 
-void ti68k_display_hw_param_block(HW_PARM_BLOCK *s)
-{
-    gint i = 0;
-
-    DISPLAY(_("Hardware Parameters Block:\n"));
-    DISPLAY(_("Length           : %i\n"), s->len);
-    if(s->len > 2+(4*i++))
-        DISPLAY(_("  hardwareID       : %i\n"), s->hardwareID);
-    if(s->len > 2+(4*i++))
-        DISPLAY(_("  hardwareRevision : %i\n"), s->hardwareRevision);
-    if(s->len > 2+(4*i++))
-        DISPLAY(_("  bootMajor        : %i\n"), s->bootMajor);
-    if(s->len > 2+(4*i++))
-        DISPLAY(_("  bootRevision     : %i\n"), s->bootRevision);
-    if(s->len > 2+(4*i++))
-        DISPLAY(_("  bootBuild        : %i\n"), s->bootBuild);
-    if(s->len > 2+(4*i++))
-        DISPLAY(_("  gateArray        : %i\n"), s->gateArray);
-    if(s->len > 2+(4*i++))
-        DISPLAY(_("  physDisplayBitsWide : %i\n"), s->physDisplayBitsWide & 0xff);
-    if(s->len > 2+(4*i++))
-        DISPLAY(_("  physDisplayBitsTall : %i\n"), s->physDisplayBitsTall & 0xff);
-    if(s->len > 2+(4*i++))
-        DISPLAY(_("  LCDBitsWide         : %i\n"), s->LCDBitsWide & 0xff);
-    if(s->len > 2+(4*i++))
-        DISPLAY(_("  LCDBitsTall         : %i\n"), s->LCDBitsTall & 0xff);
-}
-
-/*
-    Read hardware parameter block from image.
-*/
-int ti68k_get_hw_param_block(IMG_INFO *rom, HW_PARM_BLOCK *block)
-{
-    uint32_t addr;
-
-    addr = rd_long(&rom->data[0x104]);
-    addr &= 0x000fffff;
-
-    //printf("!!! %x %x !!!\n", rom->rom_base, addr);
-/*
-#if 0
-    //addr -= (rom->rom_base << 16);
-#else
-    // allow to use patched ROMs (such as Extended's V200 ROM)
-    for(; addr >= 0x200000; addr -= 0x200000);
-#endif
-	if(addr < 0x000000 || addr >= 0x200000)
-		return -1;
-*/
-    memset(block, 0, sizeof(HW_PARM_BLOCK));
-    block->len = rd_word(&(rom->data[addr+0]));
-    block->hardwareID = rd_long(&(rom->data[addr+2]));
-    block->hardwareRevision = rd_long(&(rom->data[addr+6]));
-    block->bootMajor = rd_long(&(rom->data[addr+10]));
-    block->bootRevision = rd_long(&(rom->data[addr+14]));
-    block->bootBuild = rd_long(&(rom->data[addr+18]));
-    block->gateArray = rd_long(&(rom->data[addr+22]));
-    block->physDisplayBitsWide = rd_long(&(rom->data[addr+26]));
-    block->physDisplayBitsTall = rd_long(&(rom->data[addr+30]));
-    block->LCDBitsWide = rd_long(&(rom->data[addr+34]));
-    block->LCDBitsTall = rd_long(&(rom->data[addr+38]));
-
-    if((block->hardwareID == HWID_V200) && (rom->rom_base == 0x40))
-    {
-        fprintf(stdout, "Detected V200 patched ROM (ExtendeD): emulated as TI92+ by changing the hwID from 8 to 1.\n");
-        block->hardwareID = HWID_TI92P;
-    }
-
-	if((block->hardwareID == HWID_TI89T) && (rom->rom_base == 0x20))
-    {
-        fprintf(stdout, "Detected TI89 Titanium patched ROM (ExtendeD): emulated as TI89 by changing the hwID from 9 to 3.\n");
-        block->hardwareID = HWID_TI89;
-    }
-
-    return 0;
-}
-
-
 /*
 	Get some informations on the ROM dump:
 	- size
@@ -269,7 +192,7 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
     else
     {
         // Get hw param block to determine calc type & hw type
-        if(ti68k_get_hw_param_block(rom, &hwblock) == -1)
+        if(ti68k_get_hw_param_block(rom->data, rom->rom_base, &hwblock) == -1)
 			return ERR_INVALID_ROM;
         ti68k_display_hw_param_block(&hwblock);
 
@@ -512,6 +435,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	int i, j;
 	int num_blocks, last_block;
     int real_size;
+	HW_PARM_BLOCK hwpb;
 
 	// No filename, exits
 	if(!strcmp(srcname, ""))
@@ -560,29 +484,62 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
   
   	// Write boot block
     memcpy(img.data, &img.data[SPP + BO], 256);
-    fwrite(img.data, 1, 256 + 4, f);
+    fwrite(img.data, 1, 256, f);
 
-    // hardware param block
+    // Write hardware param block
+
+	// fill structure
+	hwpb.len = 24;
+	hwpb.hardwareRevision = img.hw_type;
+	switch(img.calc_type)
+	{
+		case TI89:  hwpb.hardwareID = HWID_TI89;  break;
+		case TI92p: hwpb.hardwareID = HWID_TI92P; break;
+		case V200:  hwpb.hardwareID = HWID_V200;  break;
+		case TI89t: hwpb.hardwareID = HWID_TI89T; break;
+	}
+	hwpb.bootMajor = hwpb.bootRevision = hwpb.bootBuild = 1;
+	hwpb.gateArray = img.hw_type;
+
+	// write filler
+	fputc(0xfe, f); fputc(0xed, f); fputc(0xba, f); fputc(0xbe, f);
+
+	// write address (pointer)
     fputc(0x00, f);
     fputc(img.rom_base, f);
     fputc(0x01, f);
     fputc(0x08, f);
 
-    fputc(0x04, f);
-    fputc(0x00, f);
+	// write structure
+	fputc(MSB(hwpb.len), f);	
+	fputc(LSB(hwpb.len), f);
+	fputc(MSB(MSW(hwpb.hardwareID)), f);
+	fputc(LSB(MSW(hwpb.hardwareID)), f);
+	fputc(MSB(LSW(hwpb.hardwareID)), f);
+	fputc(LSB(LSW(hwpb.hardwareID)), f);
+	fputc(MSB(MSW(hwpb.hardwareRevision)), f);
+	fputc(LSB(MSW(hwpb.hardwareRevision)), f);
+	fputc(MSB(LSW(hwpb.hardwareRevision)), f);
+	fputc(LSB(LSW(hwpb.hardwareRevision)), f);
+	fputc(MSB(MSW(hwpb.bootMajor)), f);
+	fputc(LSB(MSW(hwpb.bootMajor)), f);
+	fputc(MSB(LSW(hwpb.bootMajor)), f);
+	fputc(LSB(LSW(hwpb.bootMajor)), f);
+	fputc(MSB(MSW(hwpb.hardwareRevision)), f);
+	fputc(LSB(MSW(hwpb.hardwareRevision)), f);
+	fputc(MSB(LSW(hwpb.hardwareRevision)), f);
+	fputc(LSB(LSW(hwpb.hardwareRevision)), f);
+	fputc(MSB(MSW(hwpb.bootBuild)), f);
+	fputc(LSB(MSW(hwpb.bootBuild)), f);
+	fputc(MSB(LSW(hwpb.bootBuild)), f);
+	fputc(LSB(LSW(hwpb.bootBuild)), f);
+	fputc(MSB(MSW(hwpb.gateArray)), f);
+	fputc(LSB(MSW(hwpb.gateArray)), f);
+	fputc(MSB(LSW(hwpb.gateArray)), f);
+	fputc(LSB(LSW(hwpb.gateArray)), f);
 
-    fputc(0x00, f);
-    fputc(0x00, f);
-    fputc(0x00, f);
-    switch(img.calc_type)   // hw parm block
-    {
-        case TI89:  fputc(0x03, f); break;
-        case TI92p: fputc(0x01, f); break;
-        case V200:  fputc(0x08, f); break;
-        case TI89t: fputc(0x09, f); break;
-    }
-
-  	for(i = 0x10e; i < SPP; i++)
+	// Fill with 0xff up-to System Part
+  	for(i = 0x108 + hwpb.len+2; i < SPP; i++)
     	fputc(0xff, f);
   
   	// Copy FLASH upgrade at 0x12000 (SPP)
@@ -726,7 +683,15 @@ int ti68k_load_image(const char *filename)
 	img->data = malloc(img->size + 4);
 	if(img->data == NULL)
 		return ERR_MALLOC;
-    fread(img->data, 1, img->size, f);	
+    fread(img->data, 1, img->size, f);
+
+	{
+		HW_PARM_BLOCK hwblock;
+
+		if(ti68k_get_hw_param_block(img->data, img->rom_base, &hwblock) == -1)
+			return ERR_INVALID_ROM;
+        ti68k_display_hw_param_block(&hwblock);
+	}
   
   	img_loaded = 1;
   	return 0;

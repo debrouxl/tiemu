@@ -192,6 +192,10 @@ SOURCE=..\..\src\core\ti_sw\handles.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\hwpm.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\ti_sw\registers.c
 # End Source File
 # Begin Source File

@@ -71,11 +71,6 @@ typedef unsigned char	uchar;	// can't replace UBYTE/uchar by uint8_t type, why ?
 #define LCDMEM_W	240		// LCD memory height
 #define LCDMEM_H	128		// LCD memory height
 
-#define HWID_TI92P  1
-#define HWID_TI89   3
-#define HWID_V200   8
-#define HWID_TI89T  9
-
 /* Structures */
 
 typedef struct 
@@ -190,7 +185,10 @@ extern Ti68kHardware 	tihw;
 extern TicableLinkParam link_cable;
 extern Ti68kBreakpoints	bkpts;
 
+// should not be here...
 uint16_t rd_word(uint8_t *p);
 uint32_t rd_long(uint8_t *p);
+void wr_word(uint8_t *p, uint16_t d);
+void wr_long(uint8_t *p, uint32_t d);
 
 #endif
