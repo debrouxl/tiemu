@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: hid.c 163 2004-05-13 06:40:57Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 		adn a debugger
 	*/
 	hid_set_gui_callbacks();
-	ti68k_defineDebugger(enter_gtk_debugger);
+	//ti68k_defineDebugger(enter_gtk_debugger);
 
 	/* 
 		Init GTK+ (popup menu, boxes, ...) and threads

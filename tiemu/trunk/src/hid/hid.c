@@ -382,13 +382,10 @@ static int sdl_to_ti(int key)
 	case SDLK_KP_MINUS : return TIKEY_MINUS;
 	case SDLK_MINUS : return TIKEY_NEGATE;
 	case SDLK_BACKSLASH : return TIKEY_ON;
-	  //case SDLK_quoteright : return TIKEY_MULTIPLY;
 	case SDLK_SLASH : return TIKEY_DIVIDE;
 	case SDLK_SEMICOLON : return TIKEY_THETA;
 	case SDLK_EQUALS : return TIKEY_EQUALS;
-	  //case SDLK_quoteleft : return TIKEY_POWER;
 	case SDLK_LESS : return TIKEY_NEGATE;
-	  //case SDLK_KP_Decimal : return TIKEY_PERIOD;
 	case SDLK_INSERT : return TIKEY_SIN;
 	case SDLK_DELETE : return TIKEY_CLEAR;
 	case SDLK_HOME : return TIKEY_COS;
@@ -396,10 +393,11 @@ static int sdl_to_ti(int key)
 	case SDLK_PAGEUP : return TIKEY_TAN;
 	case SDLK_PAGEDOWN : return TIKEY_MODE;
 	case SDLK_SCROLLOCK : return TIKEY_ON;
-	case SDLK_F9 : return OPT_DEBUGGER;
-	case SDLK_F10 : return OPT_SCREENCAPTURE;
-	  // F11 & F12 are used by WindowMaker
-	case SDLK_PRINT : return TIKEY_APPS;
+	case SDLK_F9  : return TIKEY_APPS;	//return OPT_SCREENCAPTURE;
+	case SDLK_F10 : break;		// send file
+	case SDLK_F11 : return OPT_DEBUGGER;
+	case SDLK_F12 : break;		// set ROM
+	case SDLK_PRINT : break;
 	  /*  
 	      case SDLK_BREAK_ALTERNATIVE :
 	      case SDLK_BREAK : return OPT_QUITNOSAVE;
@@ -493,13 +491,9 @@ static int sdl_to_ti(int key)
 	case SDLK_KP_MINUS : return TIKEY_MINUS;
 	case SDLK_MINUS : return TIKEY_NEGATE;
 	case SDLK_BACKSLASH : return TIKEY_ON;
-	  //case SDLK_quoteright : return TIKEY_MULTIPLY;
 	case SDLK_SLASH : return TIKEY_DIVIDE;
-	  //case SDLK_semicolon : return TIKEY_THETA;
 	case SDLK_EQUALS : return TIKEY_EQUALS;
-	  //case SDLK_quoteleft : return TIKEY_POWER;
 	case SDLK_LESS : return TIKEY_NEGATE;
-	  //case SDLK_KP_Decimal : return TIKEY_PERIOD;
 	case SDLK_INSERT : return TIKEY_SIN;
 	case SDLK_DELETE : return TIKEY_CLEAR;
 	case SDLK_HOME : return TIKEY_COS;

@@ -48,38 +48,32 @@ create_popup_menu (void)
   GtkWidget *enter_debugger1;
   GtkWidget *reset_calc1;
   GtkWidget *separator12;
+  GtkWidget *set_rom1;
   GtkWidget *emulator_options1;
   GtkWidget *emulator_options1_menu;
-  GtkWidget *speed2;
-  GtkWidget *speed2_menu;
   GtkWidget *restrict1;
-  GtkWidget *change_speed1;
-  GtkWidget *cycle_rate1;
-  GtkWidget *itick1;
   GtkWidget *sync1;
+  GtkWidget *separator22;
   GtkWidget *number_of_colors1;
-  GtkWidget *screen1;
-  GtkWidget *screen1_menu;
+  GtkWidget *number_of_colors1_menu;
+  GSList *_2_colors1_group = NULL;
+  GtkWidget *_2_colors1;
+  GtkWidget *_4_colors1;
+  GtkWidget *_7_colors1;
+  GtkWidget *blurry1;
+  GtkWidget *separator21;
   GtkWidget *normal_view__1x_1;
   GtkWidget *large_view__x2_1;
   GtkWidget *full_screen1;
   GtkWidget *skin_for_current_calc1;
   GtkWidget *skin_for_current_calc1_menu;
-  GtkWidget *skin1;
   GtkWidget *none1;
+  GtkWidget *skin1;
   GtkWidget *set_skin1;
   GtkWidget *screenshot1;
   GtkWidget *screenshot1_menu;
   GtkWidget *now__1;
   GtkWidget *options1;
-  GtkWidget *ram1;
-  GtkWidget *ram1_menu;
-  GtkWidget *dump_ram1;
-  GtkWidget *rom1;
-  GtkWidget *rom1_menu;
-  GtkWidget *dump_rom1;
-  GtkWidget *rom_file1;
-  GtkWidget *set_rom1;
   GtkWidget *separator13;
   GtkWidget *help1;
   GtkWidget *help1_menu;
@@ -88,7 +82,6 @@ create_popup_menu (void)
   GtkWidget *separator15;
   GtkWidget *changelog1;
   GtkWidget *separator14;
-  GtkWidget *thanks1;
   GtkWidget *about1;
   GtkWidget *infos1;
   GtkWidget *exit1;
@@ -107,7 +100,7 @@ create_popup_menu (void)
                               GDK_Escape, 0,
                               GTK_ACCEL_VISIBLE);
 
-  popup_menu_header = gtk_menu_item_new_with_mnemonic (_("TiEmu II menu (v2.0)"));
+  popup_menu_header = gtk_menu_item_new_with_mnemonic (_("TiEmu II menu (v2.00)"));
   gtk_widget_set_name (popup_menu_header, "popup_menu_header");
   gtk_widget_show (popup_menu_header);
   gtk_container_add (GTK_CONTAINER (popup_menu), popup_menu_header);
@@ -196,7 +189,7 @@ create_popup_menu (void)
   gtk_container_add (GTK_CONTAINER (popup_menu), enter_debugger1);
   gtk_tooltips_set_tip (tooltips, enter_debugger1, _("Go to debugger"), NULL);
   gtk_widget_add_accelerator (enter_debugger1, "activate", accel_group,
-                              GDK_F9, 0,
+                              GDK_F11, 0,
                               GTK_ACCEL_VISIBLE);
 
   reset_calc1 = gtk_menu_item_new_with_mnemonic (_("_Reset calc"));
@@ -210,6 +203,15 @@ create_popup_menu (void)
   gtk_container_add (GTK_CONTAINER (popup_menu), separator12);
   gtk_widget_set_sensitive (separator12, FALSE);
 
+  set_rom1 = gtk_menu_item_new_with_mnemonic (_("Set ROM (image/upgrade)"));
+  gtk_widget_set_name (set_rom1, "set_rom1");
+  gtk_widget_show (set_rom1);
+  gtk_container_add (GTK_CONTAINER (popup_menu), set_rom1);
+  gtk_tooltips_set_tip (tooltips, set_rom1, _("Set emulation ROM version"), NULL);
+  gtk_widget_add_accelerator (set_rom1, "activate", accel_group,
+                              GDK_F12, 0,
+                              GTK_ACCEL_VISIBLE);
+
   emulator_options1 = gtk_menu_item_new_with_mnemonic (_("Emulator _options"));
   gtk_widget_set_name (emulator_options1, "emulator_options1");
   gtk_widget_show (emulator_options1);
@@ -219,44 +221,23 @@ create_popup_menu (void)
   gtk_widget_set_name (emulator_options1_menu, "emulator_options1_menu");
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (emulator_options1), emulator_options1_menu);
 
-  speed2 = gtk_menu_item_new_with_mnemonic (_("Speed"));
-  gtk_widget_set_name (speed2, "speed2");
-  gtk_widget_show (speed2);
-  gtk_container_add (GTK_CONTAINER (emulator_options1_menu), speed2);
-
-  speed2_menu = gtk_menu_new ();
-  gtk_widget_set_name (speed2_menu, "speed2_menu");
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (speed2), speed2_menu);
-
   restrict1 = gtk_check_menu_item_new_with_mnemonic (_("Restrict to actual speed"));
   gtk_widget_set_name (restrict1, "restrict1");
   gtk_widget_show (restrict1);
-  gtk_container_add (GTK_CONTAINER (speed2_menu), restrict1);
+  gtk_container_add (GTK_CONTAINER (emulator_options1_menu), restrict1);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (restrict1), TRUE);
-
-  change_speed1 = gtk_menu_item_new_with_mnemonic (_("Tickrate..."));
-  gtk_widget_set_name (change_speed1, "change_speed1");
-  gtk_widget_show (change_speed1);
-  gtk_container_add (GTK_CONTAINER (speed2_menu), change_speed1);
-  gtk_tooltips_set_tip (tooltips, change_speed1, _("Set number the rate of the timer"), NULL);
-
-  cycle_rate1 = gtk_menu_item_new_with_mnemonic (_("Cycle rate..."));
-  gtk_widget_set_name (cycle_rate1, "cycle_rate1");
-  gtk_widget_show (cycle_rate1);
-  gtk_container_add (GTK_CONTAINER (speed2_menu), cycle_rate1);
-  gtk_tooltips_set_tip (tooltips, cycle_rate1, _("Set the rate of instructions"), NULL);
-
-  itick1 = gtk_menu_item_new_with_mnemonic (_("Itick"));
-  gtk_widget_set_name (itick1, "itick1");
-  gtk_widget_show (itick1);
-  gtk_container_add (GTK_CONTAINER (speed2_menu), itick1);
-  gtk_tooltips_set_tip (tooltips, itick1, _("Set numbers of instructions per timertick"), NULL);
 
   sync1 = gtk_check_menu_item_new_with_mnemonic (_("Sync"));
   gtk_widget_set_name (sync1, "sync1");
   gtk_widget_show (sync1);
-  gtk_container_add (GTK_CONTAINER (speed2_menu), sync1);
+  gtk_container_add (GTK_CONTAINER (emulator_options1_menu), sync1);
   gtk_tooltips_set_tip (tooltips, sync1, _("If you uncheck this, screen updating will be synchronized with the timer which means it always be updated regularly. This may cause grayscale pictures to flicker when you press keys and other things happen in the code. If you check this, screen updating will be synced with IRQ 1. This means that if IRQ 1 does not run, the screen is not updated. This options usually makes grayscales rock-stable, but wont work at all in programs that turn off IRQ 1 (like \"tunnel\" and \"torus\")."), NULL);
+
+  separator22 = gtk_menu_item_new ();
+  gtk_widget_set_name (separator22, "separator22");
+  gtk_widget_show (separator22);
+  gtk_container_add (GTK_CONTAINER (emulator_options1_menu), separator22);
+  gtk_widget_set_sensitive (separator22, FALSE);
 
   number_of_colors1 = gtk_menu_item_new_with_mnemonic (_("Number of colors..."));
   gtk_widget_set_name (number_of_colors1, "number_of_colors1");
@@ -264,29 +245,55 @@ create_popup_menu (void)
   gtk_container_add (GTK_CONTAINER (emulator_options1_menu), number_of_colors1);
   gtk_tooltips_set_tip (tooltips, number_of_colors1, _("Set current number of emulated extra grayscales colors"), NULL);
 
-  screen1 = gtk_menu_item_new_with_mnemonic (_("_Screen"));
-  gtk_widget_set_name (screen1, "screen1");
-  gtk_widget_show (screen1);
-  gtk_container_add (GTK_CONTAINER (emulator_options1_menu), screen1);
+  number_of_colors1_menu = gtk_menu_new ();
+  gtk_widget_set_name (number_of_colors1_menu, "number_of_colors1_menu");
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (number_of_colors1), number_of_colors1_menu);
 
-  screen1_menu = gtk_menu_new ();
-  gtk_widget_set_name (screen1_menu, "screen1_menu");
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (screen1), screen1_menu);
+  _2_colors1 = gtk_radio_menu_item_new_with_mnemonic (_2_colors1_group, _("2 colors"));
+  _2_colors1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (_2_colors1));
+  gtk_widget_set_name (_2_colors1, "_2_colors1");
+  gtk_widget_show (_2_colors1);
+  gtk_container_add (GTK_CONTAINER (number_of_colors1_menu), _2_colors1);
+
+  _4_colors1 = gtk_radio_menu_item_new_with_mnemonic (_2_colors1_group, _("4 colors"));
+  _2_colors1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (_4_colors1));
+  gtk_widget_set_name (_4_colors1, "_4_colors1");
+  gtk_widget_show (_4_colors1);
+  gtk_container_add (GTK_CONTAINER (number_of_colors1_menu), _4_colors1);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (_4_colors1), TRUE);
+
+  _7_colors1 = gtk_radio_menu_item_new_with_mnemonic (_2_colors1_group, _("7 colors"));
+  _2_colors1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (_7_colors1));
+  gtk_widget_set_name (_7_colors1, "_7_colors1");
+  gtk_widget_show (_7_colors1);
+  gtk_container_add (GTK_CONTAINER (number_of_colors1_menu), _7_colors1);
+
+  blurry1 = gtk_radio_menu_item_new_with_mnemonic (_2_colors1_group, _("blurry"));
+  _2_colors1_group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (blurry1));
+  gtk_widget_set_name (blurry1, "blurry1");
+  gtk_widget_show (blurry1);
+  gtk_container_add (GTK_CONTAINER (number_of_colors1_menu), blurry1);
+
+  separator21 = gtk_menu_item_new ();
+  gtk_widget_set_name (separator21, "separator21");
+  gtk_widget_show (separator21);
+  gtk_container_add (GTK_CONTAINER (emulator_options1_menu), separator21);
+  gtk_widget_set_sensitive (separator21, FALSE);
 
   normal_view__1x_1 = gtk_menu_item_new_with_mnemonic (_("_Normal view (1x)"));
   gtk_widget_set_name (normal_view__1x_1, "normal_view__1x_1");
   gtk_widget_show (normal_view__1x_1);
-  gtk_container_add (GTK_CONTAINER (screen1_menu), normal_view__1x_1);
+  gtk_container_add (GTK_CONTAINER (emulator_options1_menu), normal_view__1x_1);
 
   large_view__x2_1 = gtk_menu_item_new_with_mnemonic (_("_Large view (x2)"));
   gtk_widget_set_name (large_view__x2_1, "large_view__x2_1");
   gtk_widget_show (large_view__x2_1);
-  gtk_container_add (GTK_CONTAINER (screen1_menu), large_view__x2_1);
+  gtk_container_add (GTK_CONTAINER (emulator_options1_menu), large_view__x2_1);
 
   full_screen1 = gtk_menu_item_new_with_mnemonic (_("_Full screen (Alt+Enter)"));
   gtk_widget_set_name (full_screen1, "full_screen1");
   gtk_widget_show (full_screen1);
-  gtk_container_add (GTK_CONTAINER (screen1_menu), full_screen1);
+  gtk_container_add (GTK_CONTAINER (emulator_options1_menu), full_screen1);
 
   skin_for_current_calc1 = gtk_menu_item_new_with_mnemonic (_("Skin for current calc"));
   gtk_widget_set_name (skin_for_current_calc1, "skin_for_current_calc1");
@@ -297,17 +304,17 @@ create_popup_menu (void)
   gtk_widget_set_name (skin_for_current_calc1_menu, "skin_for_current_calc1_menu");
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (skin_for_current_calc1), skin_for_current_calc1_menu);
 
-  skin1 = gtk_menu_item_new_with_mnemonic (_("Skin92"));
-  gtk_widget_set_name (skin1, "skin1");
-  gtk_widget_show (skin1);
-  gtk_container_add (GTK_CONTAINER (skin_for_current_calc1_menu), skin1);
-
   none1 = gtk_menu_item_new_with_mnemonic (_("None"));
   gtk_widget_set_name (none1, "none1");
   gtk_widget_show (none1);
   gtk_container_add (GTK_CONTAINER (skin_for_current_calc1_menu), none1);
 
-  set_skin1 = gtk_menu_item_new_with_mnemonic (_("Set skin..."));
+  skin1 = gtk_menu_item_new_with_mnemonic (_("Default"));
+  gtk_widget_set_name (skin1, "skin1");
+  gtk_widget_show (skin1);
+  gtk_container_add (GTK_CONTAINER (skin_for_current_calc1_menu), skin1);
+
+  set_skin1 = gtk_menu_item_new_with_mnemonic (_("Other..."));
   gtk_widget_set_name (set_skin1, "set_skin1");
   gtk_widget_show (set_skin1);
   gtk_container_add (GTK_CONTAINER (skin_for_current_calc1_menu), set_skin1);
@@ -326,56 +333,13 @@ create_popup_menu (void)
   gtk_widget_show (now__1);
   gtk_container_add (GTK_CONTAINER (screenshot1_menu), now__1);
   gtk_widget_add_accelerator (now__1, "activate", accel_group,
-                              GDK_F10, 0,
+                              GDK_F9, 0,
                               GTK_ACCEL_VISIBLE);
 
   options1 = gtk_menu_item_new_with_mnemonic (_("_Options"));
   gtk_widget_set_name (options1, "options1");
   gtk_widget_show (options1);
   gtk_container_add (GTK_CONTAINER (screenshot1_menu), options1);
-
-  ram1 = gtk_menu_item_new_with_mnemonic (_("RAM"));
-  gtk_widget_set_name (ram1, "ram1");
-  gtk_widget_show (ram1);
-  gtk_container_add (GTK_CONTAINER (popup_menu), ram1);
-  gtk_tooltips_set_tip (tooltips, ram1, _("RAM parameters"), NULL);
-
-  ram1_menu = gtk_menu_new ();
-  gtk_widget_set_name (ram1_menu, "ram1_menu");
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (ram1), ram1_menu);
-
-  dump_ram1 = gtk_menu_item_new_with_mnemonic (_("Dump RAM..."));
-  gtk_widget_set_name (dump_ram1, "dump_ram1");
-  gtk_widget_show (dump_ram1);
-  gtk_container_add (GTK_CONTAINER (ram1_menu), dump_ram1);
-
-  rom1 = gtk_menu_item_new_with_mnemonic (_("ROM"));
-  gtk_widget_set_name (rom1, "rom1");
-  gtk_widget_show (rom1);
-  gtk_container_add (GTK_CONTAINER (popup_menu), rom1);
-  gtk_tooltips_set_tip (tooltips, rom1, _("ROM parameters"), NULL);
-
-  rom1_menu = gtk_menu_new ();
-  gtk_widget_set_name (rom1_menu, "rom1_menu");
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (rom1), rom1_menu);
-
-  dump_rom1 = gtk_menu_item_new_with_mnemonic (_("Dump ROM..."));
-  gtk_widget_set_name (dump_rom1, "dump_rom1");
-  gtk_widget_show (dump_rom1);
-  gtk_container_add (GTK_CONTAINER (rom1_menu), dump_rom1);
-  gtk_tooltips_set_tip (tooltips, dump_rom1, _("Make a ROM dump to link port"), NULL);
-
-  rom_file1 = gtk_menu_item_new_with_mnemonic (_("Add image/upgrade..."));
-  gtk_widget_set_name (rom_file1, "rom_file1");
-  gtk_widget_show (rom_file1);
-  gtk_container_add (GTK_CONTAINER (rom1_menu), rom_file1);
-  gtk_tooltips_set_tip (tooltips, rom_file1, _("Add a ROM image or a FLASH upgrade..."), NULL);
-
-  set_rom1 = gtk_menu_item_new_with_mnemonic (_("Set ROM (image/upgrade)"));
-  gtk_widget_set_name (set_rom1, "set_rom1");
-  gtk_widget_show (set_rom1);
-  gtk_container_add (GTK_CONTAINER (rom1_menu), set_rom1);
-  gtk_tooltips_set_tip (tooltips, set_rom1, _("Set emulation ROM version"), NULL);
 
   separator13 = gtk_menu_item_new ();
   gtk_widget_set_name (separator13, "separator13");
@@ -424,11 +388,6 @@ create_popup_menu (void)
   gtk_widget_show (separator14);
   gtk_container_add (GTK_CONTAINER (help1_menu), separator14);
   gtk_widget_set_sensitive (separator14, FALSE);
-
-  thanks1 = gtk_menu_item_new_with_mnemonic (_("Thanks"));
-  gtk_widget_set_name (thanks1, "thanks1");
-  gtk_widget_show (thanks1);
-  gtk_container_add (GTK_CONTAINER (help1_menu), thanks1);
 
   about1 = gtk_menu_item_new_with_mnemonic (_("About..."));
   gtk_widget_set_name (about1, "about1");
@@ -490,23 +449,29 @@ create_popup_menu (void)
   g_signal_connect ((gpointer) reset_calc1, "activate",
                     G_CALLBACK (on_reset_calc1_activate),
                     NULL);
+  g_signal_connect ((gpointer) set_rom1, "activate",
+                    G_CALLBACK (on_set_rom1_activate),
+                    NULL);
   g_signal_connect ((gpointer) restrict1, "activate",
                     G_CALLBACK (on_restrict_to_actual_speed1_activate),
-                    NULL);
-  g_signal_connect ((gpointer) change_speed1, "activate",
-                    G_CALLBACK (on_change_speed1_activate),
-                    NULL);
-  g_signal_connect ((gpointer) cycle_rate1, "activate",
-                    G_CALLBACK (on_cycle_rate1_activate),
-                    NULL);
-  g_signal_connect ((gpointer) itick1, "activate",
-                    G_CALLBACK (on_itick1_activate),
                     NULL);
   g_signal_connect ((gpointer) sync1, "activate",
                     G_CALLBACK (on_sync1_activate),
                     NULL);
   g_signal_connect ((gpointer) number_of_colors1, "activate",
                     G_CALLBACK (on_number_of_colors1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) _2_colors1, "activate",
+                    G_CALLBACK (on_2_colors1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) _4_colors1, "activate",
+                    G_CALLBACK (on_4_colors1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) _7_colors1, "activate",
+                    G_CALLBACK (on_7_colors1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) blurry1, "activate",
+                    G_CALLBACK (on_blurry1_activate),
                     NULL);
   g_signal_connect ((gpointer) normal_view__1x_1, "activate",
                     G_CALLBACK (on_normal_view__1x_1_activate),
@@ -517,11 +482,11 @@ create_popup_menu (void)
   g_signal_connect ((gpointer) full_screen1, "activate",
                     G_CALLBACK (on_full_screen1_activate),
                     NULL);
-  g_signal_connect ((gpointer) skin1, "activate",
-                    G_CALLBACK (on_skin1_activate),
-                    NULL);
   g_signal_connect ((gpointer) none1, "activate",
                     G_CALLBACK (on_none1_activate),
+                    NULL);
+  g_signal_connect ((gpointer) skin1, "activate",
+                    G_CALLBACK (on_skin1_activate),
                     NULL);
   g_signal_connect ((gpointer) set_skin1, "activate",
                     G_CALLBACK (on_set_skin1_activate),
@@ -532,18 +497,6 @@ create_popup_menu (void)
   g_signal_connect ((gpointer) options1, "activate",
                     G_CALLBACK (on_rbm_options1_activate),
                     NULL);
-  g_signal_connect ((gpointer) dump_ram1, "activate",
-                    G_CALLBACK (on_dump_ram1_activate),
-                    NULL);
-  g_signal_connect ((gpointer) dump_rom1, "activate",
-                    G_CALLBACK (on_dump_rom1_activate),
-                    NULL);
-  g_signal_connect ((gpointer) rom_file1, "activate",
-                    G_CALLBACK (on_rom_file1_activate),
-                    NULL);
-  g_signal_connect ((gpointer) set_rom1, "activate",
-                    G_CALLBACK (on_set_rom1_activate),
-                    NULL);
   g_signal_connect ((gpointer) help3, "activate",
                     G_CALLBACK (on_help3_activate),
                     NULL);
@@ -552,9 +505,6 @@ create_popup_menu (void)
                     NULL);
   g_signal_connect ((gpointer) changelog1, "activate",
                     G_CALLBACK (on_changelog1_activate),
-                    NULL);
-  g_signal_connect ((gpointer) thanks1, "activate",
-                    G_CALLBACK (on_thanks1_activate),
                     NULL);
   g_signal_connect ((gpointer) about1, "activate",
                     G_CALLBACK (on_about1_activate),
@@ -589,38 +539,31 @@ create_popup_menu (void)
   GLADE_HOOKUP_OBJECT (popup_menu, enter_debugger1, "enter_debugger1");
   GLADE_HOOKUP_OBJECT (popup_menu, reset_calc1, "reset_calc1");
   GLADE_HOOKUP_OBJECT (popup_menu, separator12, "separator12");
+  GLADE_HOOKUP_OBJECT (popup_menu, set_rom1, "set_rom1");
   GLADE_HOOKUP_OBJECT (popup_menu, emulator_options1, "emulator_options1");
   GLADE_HOOKUP_OBJECT (popup_menu, emulator_options1_menu, "emulator_options1_menu");
-  GLADE_HOOKUP_OBJECT (popup_menu, speed2, "speed2");
-  GLADE_HOOKUP_OBJECT (popup_menu, speed2_menu, "speed2_menu");
   GLADE_HOOKUP_OBJECT (popup_menu, restrict1, "restrict1");
-  GLADE_HOOKUP_OBJECT (popup_menu, change_speed1, "change_speed1");
-  GLADE_HOOKUP_OBJECT (popup_menu, cycle_rate1, "cycle_rate1");
-  GLADE_HOOKUP_OBJECT (popup_menu, itick1, "itick1");
   GLADE_HOOKUP_OBJECT (popup_menu, sync1, "sync1");
+  GLADE_HOOKUP_OBJECT (popup_menu, separator22, "separator22");
   GLADE_HOOKUP_OBJECT (popup_menu, number_of_colors1, "number_of_colors1");
-  GLADE_HOOKUP_OBJECT (popup_menu, screen1, "screen1");
-  GLADE_HOOKUP_OBJECT (popup_menu, screen1_menu, "screen1_menu");
+  GLADE_HOOKUP_OBJECT (popup_menu, number_of_colors1_menu, "number_of_colors1_menu");
+  GLADE_HOOKUP_OBJECT (popup_menu, _2_colors1, "_2_colors1");
+  GLADE_HOOKUP_OBJECT (popup_menu, _4_colors1, "_4_colors1");
+  GLADE_HOOKUP_OBJECT (popup_menu, _7_colors1, "_7_colors1");
+  GLADE_HOOKUP_OBJECT (popup_menu, blurry1, "blurry1");
+  GLADE_HOOKUP_OBJECT (popup_menu, separator21, "separator21");
   GLADE_HOOKUP_OBJECT (popup_menu, normal_view__1x_1, "normal_view__1x_1");
   GLADE_HOOKUP_OBJECT (popup_menu, large_view__x2_1, "large_view__x2_1");
   GLADE_HOOKUP_OBJECT (popup_menu, full_screen1, "full_screen1");
   GLADE_HOOKUP_OBJECT (popup_menu, skin_for_current_calc1, "skin_for_current_calc1");
   GLADE_HOOKUP_OBJECT (popup_menu, skin_for_current_calc1_menu, "skin_for_current_calc1_menu");
-  GLADE_HOOKUP_OBJECT (popup_menu, skin1, "skin1");
   GLADE_HOOKUP_OBJECT (popup_menu, none1, "none1");
+  GLADE_HOOKUP_OBJECT (popup_menu, skin1, "skin1");
   GLADE_HOOKUP_OBJECT (popup_menu, set_skin1, "set_skin1");
   GLADE_HOOKUP_OBJECT (popup_menu, screenshot1, "screenshot1");
   GLADE_HOOKUP_OBJECT (popup_menu, screenshot1_menu, "screenshot1_menu");
   GLADE_HOOKUP_OBJECT (popup_menu, now__1, "now__1");
   GLADE_HOOKUP_OBJECT (popup_menu, options1, "options1");
-  GLADE_HOOKUP_OBJECT (popup_menu, ram1, "ram1");
-  GLADE_HOOKUP_OBJECT (popup_menu, ram1_menu, "ram1_menu");
-  GLADE_HOOKUP_OBJECT (popup_menu, dump_ram1, "dump_ram1");
-  GLADE_HOOKUP_OBJECT (popup_menu, rom1, "rom1");
-  GLADE_HOOKUP_OBJECT (popup_menu, rom1_menu, "rom1_menu");
-  GLADE_HOOKUP_OBJECT (popup_menu, dump_rom1, "dump_rom1");
-  GLADE_HOOKUP_OBJECT (popup_menu, rom_file1, "rom_file1");
-  GLADE_HOOKUP_OBJECT (popup_menu, set_rom1, "set_rom1");
   GLADE_HOOKUP_OBJECT (popup_menu, separator13, "separator13");
   GLADE_HOOKUP_OBJECT (popup_menu, help1, "help1");
   GLADE_HOOKUP_OBJECT (popup_menu, help1_menu, "help1_menu");
@@ -629,7 +572,6 @@ create_popup_menu (void)
   GLADE_HOOKUP_OBJECT (popup_menu, separator15, "separator15");
   GLADE_HOOKUP_OBJECT (popup_menu, changelog1, "changelog1");
   GLADE_HOOKUP_OBJECT (popup_menu, separator14, "separator14");
-  GLADE_HOOKUP_OBJECT (popup_menu, thanks1, "thanks1");
   GLADE_HOOKUP_OBJECT (popup_menu, about1, "about1");
   GLADE_HOOKUP_OBJECT (popup_menu, infos1, "infos1");
   GLADE_HOOKUP_OBJECT (popup_menu, exit1, "exit1");
