@@ -516,30 +516,35 @@ gint refresh_memory_dbox(void)
 */
 gint refresh_stack_dbox(void)
 {
-#if 0 /* FUCKED */
   GtkWidget *clist = stack_clist;
+  GtkTreeModel *model;
+  GtkListStore *list;
+  GtkTreeIter iter;
   gchar *text[2];
-  gint i, k;
+  gint i;
   gint sp = ti68k_getSpRegister();
   UWORD *ti_ram = (UWORD *)ti68k_getRamPtr();
   gint addr;
 
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
+  list = GTK_LIST_STORE(model);
+  
+  gtk_list_store_clear(list);
+
   /* Fill the clist */
-  for(i=0; i<options.stack_lines; i++)
-    gtk_clist_remove((GtkCList *)clist, 0);
-  for(i=0, addr = sp; i<10; i++, addr += 2)
+  for(i = 0, addr = sp; i < 10; i++, addr += 2)
     {
       text[0] = g_strdup_printf("%06X:", addr);
       text[1] = g_strdup_printf("%04X", ti_ram[addr]);
-      
-      gtk_clist_append((GtkCList *)clist, row_text);
+
+      gtk_list_store_append(list, &iter);
+      gtk_list_store_set(list, &iter,
+			 0, text[0], 1, text[1],
+			 -1);
     
-      for(k=0; k<2; k++)
-	{
-	  g_free(text[k]);
-	}
+      g_free(text[0]);
+      g_free(text[1]);
     }
-#endif /* 0 */
 
   return 0;
 }
