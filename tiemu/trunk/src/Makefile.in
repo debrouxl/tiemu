@@ -5,6 +5,10 @@ CC        = @CC@
 CPP       = @CPP@
 CFLAGS    = @CFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GTHREAD_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@
 LDFLAGS   = @LDFLAGS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GTHREAD_LIBS@ @GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ $(extra_ldflags)
+CXXFLAGS  = @CXXFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GTHREAD_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@
+MOC       = @MOC@
+
+kde       = @kde@
 
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	LDFLAGS += -lcomdlg32
@@ -17,9 +21,18 @@ prefix          = @prefix@
 exec_prefix     = @exec_prefix@
 bindir          = @bindir@
 libdir          = @libdir@
-ysconfdir      = @sysconfdir@
+sysconfdir      = @sysconfdir@
 
-.SUFFIXES: .o .c .h .m .i .S .rc .res
+.SUFFIXES: .o .c .cpp .h .m .i .S .rc .res
+
+ifeq ($(kde), yes)
+kdeincludes = @all_includes@
+kdelibraries = @LIB_KDECORE@ @LIB_KDEUI@ @LIB_KIO@ @LIB_QT@ @KDE_LDFLAGS@
+kde_OBJ = gui/kde.o gui/kde-private.o
+kdeprivsources = gui/kde-private.cpp
+gui/kde-private.cpp: gui/kde-private.h
+	$(MOC) gui/kde-private.h -o gui/kde-private.cpp
+endif
 
 DEFS=@DEFS@ \
 	-DSHARE_DIR=\"${prefix}/share/tiemu\" \
@@ -141,7 +154,7 @@ tiemu_OBJ = core/uae/newcpu.o \
 	$(core_uae_OBJ) $(core_OBJ) $(core_tihw_OBJ) $(core_tisw_OBJ) \
 	$(core_dbg_OBJ) \
 	$(misc_OBJ) \
-	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ)
+	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(kde_OBJ)
 
 #rules:
 all: uae tiemu
@@ -153,16 +166,21 @@ uae:
 tiemu: $(tiemu_OBJ)
 #	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu $(LDFLAGS) $(CFLAGS)
 	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) \
-	-o tiemu $(LDFLAGS) $(CFLAGS)
+	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
 
 .c.o:
 	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) $< -o $@
 	#../libtool --mode=compile $(CC) $(INCLUDES) $(DEFS) \
 	#-c $(CFLAGS) $< -o $@
 
+.cpp.o:
+	$(CXX) $(INCLUDES) $(DEFS) -c $(CXXFLAGS) $(kdeincludes) $< -o $@
+	#../libtool --mode=compile $(CC) $(INCLUDES) $(DEFS) \
+	#-c $(CFLAGS) $< -o $@
+
 clean:
 	@cd core/uae && $(MAKE) clean
-	@rm -f $(tiemu_OBJ) tiemu tiemu.exe
+	@rm -f $(tiemu_OBJ) tiemu tiemu.exe $(kdeprivsources)
 
 distclean: clean
 	@cd core/uae && $(MAKE) distclean

@@ -110,6 +110,16 @@ case $host in
 esac
 CFLAGS="$CFLAGS $ARCH"
 
+# KDE dialogs support
+AC_ARG_WITH(kde, AC_HELP_STRING([--with-kde], [Compile with KDE support]), [kde=$withval], [kde=no])
+if test "x$kde" = "xyes"; then
+        AC_PROG_CXX
+        AC_PATH_KDE
+        KDE_CHECK_NEWLIBS
+        AC_DEFINE(WITH_KDE, 1, [Use KDE support])
+fi
+AC_SUBST(kde)
+
 # Ensure MSVC-compatible struct packing convention is used when
 # compiling for Win32 with gcc.
 # What flag to depends on gcc version: gcc3 uses "-mms-bitfields", while
@@ -152,9 +162,11 @@ esac
 # some extra flags
 CFLAGS="$CFLAGS -DGTK_DISABLE_DEPRECATED -DDEBUGGER"
 LDFLAGS="$LDFLAGS"
+CXXFLAGS="$CFLAGS -fno-rtti -fno-exceptions"
 
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
+AC_SUBST(CXXFLAGS)
 
 # Output.
 AC_OUTPUT

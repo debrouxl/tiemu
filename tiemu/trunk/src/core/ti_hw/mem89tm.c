@@ -95,7 +95,7 @@ int ti89t_mem_init(void)
 
 uint32_t ti89t_get_long(uint32_t adr) 
 {
-    if(IN_RANGE(0x000000, adr, 0x3fffff))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x5fffff))				// RAM access
 	{
         return lget(adr);
 	}
@@ -117,7 +117,7 @@ uint32_t ti89t_get_long(uint32_t adr)
 
 uint16_t ti89t_get_word(uint32_t adr) 
 {
-    if(IN_RANGE(0x000000, adr, 0x3fffff))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x5fffff))				// RAM access
 	{
         return wget(adr);
 	}
@@ -139,7 +139,7 @@ uint16_t ti89t_get_word(uint32_t adr)
 
 uint8_t ti89t_get_byte(uint32_t adr) 
 {
-    if(IN_RANGE(0x000000, adr, 0x3fffff))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x5fffff))				// RAM access
 	{
         return bget(adr);
 	}
@@ -161,7 +161,7 @@ uint8_t ti89t_get_byte(uint32_t adr)
 
 void ti89t_put_long(uint32_t adr, uint32_t arg) 
 {
-    if(IN_RANGE(0x000000, adr, 0x3fffff))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x5fffff))				// RAM access
 	{
         lput(adr, arg);
 	}
@@ -183,7 +183,7 @@ void ti89t_put_long(uint32_t adr, uint32_t arg)
 
 void ti89t_put_word(uint32_t adr, uint16_t arg) 
 {
-	if(IN_RANGE(0x000000, adr, 0x3fffff))				// RAM access
+	if(IN_RANGE(0x000000, adr, 0x5fffff))				// RAM access
 	{
         wput(adr, arg);
 	}
@@ -205,7 +205,7 @@ void ti89t_put_word(uint32_t adr, uint16_t arg)
 
 void ti89t_put_byte(uint32_t adr, uint8_t arg) 
 {
-    if(IN_RANGE(0x000000, adr, 0x3fffff))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x5fffff))				// RAM access
 	{
         bput(adr, arg);
 	}

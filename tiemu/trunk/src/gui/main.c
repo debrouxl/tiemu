@@ -36,6 +36,9 @@
 #include <windows.h>
 #endif
 */
+#if WITH_KDE
+#include "kde.h"
+#endif
 
 #include "intl.h"
 #include "tilibs.h"
@@ -109,7 +112,13 @@ int main(int argc, char **argv)
     */
     splash_screen_start();
     splash_screen_set_label(_("Initializing GTK+..."));    
-  
+
+#if WITH_KDE
+    splash_screen_set_label(_("Initializing KDE..."));
+    sp_kde_init(argc, argv, "TiEmu");
+    atexit(sp_kde_finish);
+#endif
+
 	/* 
 	   Check the version of libraries 
 	 */

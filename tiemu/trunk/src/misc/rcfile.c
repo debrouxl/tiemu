@@ -451,6 +451,7 @@ void rcfile_read(void)
 	  if(!strcmp(p, "old")) options.fs_type = 0;
 	  else if(!strcmp(p, "new")) options.fs_type = 1;
 	  else if(!strcmp(p, "win32")) options.fs_type = 2;
+	  else if(!strcmp(p, "kde")) options.fs_type = 3;
 	}
 	
 	if( (p=find_str(buffer, "skin_file=")) )
@@ -800,13 +801,14 @@ void rcfile_write(void)
   fprintf(txt, "kbd_dbg=%s\n", options.kbd_dbg ? "yes" : "no");
   fprintf(txt, "\n");
 
-  fprintf(txt, "# File selector to use (old (GTK1/2) or new (GTK 2.6) or win32 (Windows))\n");
+  fprintf(txt, "# File selector to use (old (GTK1/2) or new (GTK 2.4+) or win32 (Windows) or kde (KDE))\n");
   fprintf(txt, "fs_type=");
   switch(options.fs_type)
   {
   case 0: fprintf(txt, "old\n"); break;
   case 1: fprintf(txt, "new\n"); break;
   case 2: fprintf(txt, "win32\n"); break;
+  case 3: fprintf(txt, "kde\n"); break;
   default: fprintf(txt, "old\n"); break;
   }
   fprintf(txt, "\n");
@@ -884,7 +886,11 @@ int rcfile_default()
 #ifdef __WIN32__
 	options.fs_type = 2;
 #else
+#if WITH_KDE
+	options.fs_type = 3;
+#else
 	options.fs_type = 1;
+#endif
 #endif
 
 	options2.file = g_strdup("screenshot");

@@ -32,6 +32,10 @@
 #include <windows.h>
 #endif
 
+#if WITH_KDE
+#include "kde.h"
+#endif
+
 #include "intl.h"
 #include "filesel.h"
 #include "refresh.h"
@@ -51,7 +55,7 @@ static void cancel_filename(GtkButton * button, gpointer user_data)
 	filename = "";
 } 
 
-// GTK 1.x/2.x (x <= 4)
+// GTK 1.x/2.x (x < 4)
 static const gchar *create_fsel_1(gchar *dirname, gchar *ext, gboolean save)
 {
 	GtkWidget *fs;
@@ -92,7 +96,7 @@ static const gchar *create_fsel_1(gchar *dirname, gchar *ext, gboolean save)
 		return filename;
 }
 
-// GTK >= 2.6
+// GTK >= 2.4
 static const gchar *create_fsel_2(gchar *dirname, gchar *ext, gboolean save)
 {
 	GtkWidget *dialog;
@@ -189,10 +193,31 @@ static const gchar *create_fsel_3(gchar *dirname, gchar *ext, gboolean save)
 #endif
 }
 
+// KDE
+static const gchar *create_fsel_4(gchar *dirname, gchar *ext, gboolean save)
+{
+#if WITH_KDE
+	gchar *p;
+	gchar *extspaces = g_strdup(ext);
+	p = extspaces;
+	while ((p = strchr(p, ';'))) *p = ' ';
+	if(save)
+		filename = sp_kde_get_write_filename(dirname, extspaces, _("Save file"));
+	else
+		filename = sp_kde_get_open_filename(dirname, extspaces, _("Open file"));
+	g_free(extspaces);
+	return filename;
+#endif
+}
+
 const gchar *create_fsel(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
 #ifndef __WIN32__
 	if(options.fs_type == 2)
+		options.fs_type = 1;
+#endif
+#if !WITH_KDE
+	if(options.fs_type == 3)
 		options.fs_type = 1;
 #endif
 	//printf("%i: <%s> <%s> <%s> %i\n", options.fs_type, dirname, filename, ext, save);
@@ -202,6 +227,7 @@ const gchar *create_fsel(gchar *dirname, gchar *filename, gchar *ext, gboolean s
 	case 0:	return create_fsel_1(dirname, ext, save);
 	case 1:	return create_fsel_2(dirname, ext, save);
 	case 2: return create_fsel_3(dirname, ext, save);
+	case 3: return create_fsel_4(dirname, ext, save);
 	default: return NULL;
 	}
 
