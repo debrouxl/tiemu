@@ -34,7 +34,7 @@
 #include "handles.h"
 #include "vat.h"
 
-#if 1
+#if 0
 #define printg	printf
 #else
 #define printg
@@ -61,6 +61,58 @@ typedef struct
 } TI89_HSym;
 
 
+#define is_alnum(c)		isalnum((char)(c))
+
+// Return TRUE if there is a NULL terminated string starting at *mem.
+static int is_varname(uint8_t *mem)
+{
+	static char buf[10];
+	int i;
+
+	if(!is_alnum(mem[0]))
+		return 0;
+
+	for(i=1; i<8; i++)
+		if(!is_alnum(mem[i]) && mem[i])
+			return 0;
+
+	return !0;
+}
+
+static int get_folder_list_handle(void)
+{
+	int handle = -1;
+	uint16_t heap_size;
+	int h, i;
+
+	// search for memory blocks which have a string at [5]
+	heap_get_size(&heap_size);
+	for(h = 0; h < heap_size; h++)
+	{
+		uint32_t addr;
+		uint16_t size;
+
+		heap_get_block_addr_and_size(h, &addr, &size);
+		if(is_varname(ti68k_get_real_address(addr + 4)))
+		{
+			// next, be sure we have found the folder list by comparing the number of (possible)
+			// folders with the number of identified folders
+			int nfolders = mem_rd_word(addr+2);
+			
+			for(i = 0; i < nfolders; i++)
+				if(!is_varname(ti68k_get_real_address(addr + 4 + i*sizeof(TI89_SYM_ENTRY))))
+					break;
+			if(i < nfolders)
+				return -1;
+
+			printf("handle $%i, #folders = %i\n", h, nfolders);
+			return h;
+		}
+	}
+
+	return -1;
+}
+
 // AMS 1 only
 int parse_vat_89(GNode *node_top)
 {
@@ -70,15 +122,21 @@ int parse_vat_89(GNode *node_top)
 	int i, j;
 	VatSymEntry *vse;
 	GNode *node_fol, *node_var;
+	int handle = 0x08;
 
 	if(tihw.calc_type == TI92)
-		return -1;
-
-	if(strcmp(img_infos.version, "2.00") >= 0)
-		return -1;
+		return -1;	
 
 	// handle: names and handles of all folders (including "main")
-	heap_get_block_addr_and_size(0x8, &fa, &fs);
+	if(strcmp(img_infos.version, "2.00") >= 0)
+		handle = get_folder_list_handle();	// AMS2 (dynamic)
+	else
+		handle = 0x08;	// AMS1 (static)
+
+	if(handle == -1)
+		return -1;
+	else
+		heap_get_block_addr_and_size(handle, &fa, &fs);
 
 	// skip maximum number of folders before handle #$B needs to be resized
 	// and actual number of folders 

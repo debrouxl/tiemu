@@ -9,6 +9,7 @@ To do:
 	- fixed bug in ti68k_get_hw_param_block (wrong search/replace)
 	- fixed TAB char (0x09) pb in the dbg_mem window (Lionel)
 	- handles are now displayed fine with PedRom
+	- program entry breakpoint feature now useable with AMS >= 2.00
 
 - 18/02/2005, version 1.80n: roms
 	- fixed FLASH writes with HW3 patch
