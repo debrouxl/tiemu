@@ -169,6 +169,9 @@ typedef struct
 	// Exceptions
 	GList *exception;
 
+	// Program entry
+	GList *pgmentry;
+
 	// Breakpoint cause
 	int type;       // Ti68kBkptType
     int mode;       // Ti68kBkptMode

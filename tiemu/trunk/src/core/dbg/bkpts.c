@@ -100,6 +100,12 @@ int ti68k_bkpt_add_exception(uint32_t number)
 	return g_list_length(bkpts.exception)-1;
 }
 
+int ti68k_bkpt_add_pgmentry(uint16_t handle) 
+{
+    bkpts.pgmentry = g_list_append(bkpts.pgmentry, GINT_TO_POINTER(handle));
+	return g_list_length(bkpts.pgmentry)-1;
+}
+
 /* Delete */
 
 static gint compare_func(gconstpointer a, gconstpointer b)
@@ -119,54 +125,73 @@ static gint compare_func2(gconstpointer a, gconstpointer b)
 	return !(BKPT_ADDR(aa) == BKPT_ADDR(bb));
 }
 
-void ti68k_bkpt_del_address(uint32_t address) 
+int ti68k_bkpt_del_address(uint32_t address) 
 {
 	GList *elt = g_list_find_custom(bkpts.code, GINT_TO_POINTER(address), compare_func2);
+
 	if(elt != NULL)
 		bkpts.code = g_list_delete_link(bkpts.code, elt);
+	else
+		return -1;
+
+	return 0;
 }
 
-void ti68k_bkpt_del_access(uint32_t address, int mode) 
+int ti68k_bkpt_del_access(uint32_t address, int mode) 
 {
     if((mode & BK_READ) && (mode & BK_BYTE))
 	{
 		GList *elt = g_list_find_custom(bkpts.mem_rb, GINT_TO_POINTER(address), compare_func2);
 		if(elt != NULL)
 			bkpts.mem_rb = g_list_delete_link(bkpts.mem_rb, elt);
+		else
+			return -1;
 	}
     if((mode & BK_READ) && (mode & BK_WORD))
     {
 		GList *elt = g_list_find_custom(bkpts.mem_rw, GINT_TO_POINTER(address), compare_func2);
 		if(elt != NULL)
 			bkpts.mem_rw = g_list_delete_link(bkpts.mem_rw, elt);
+		else
+			return -1;
 	}
     if((mode & BK_READ) && (mode & BK_LONG))
     {
 		GList *elt = g_list_find_custom(bkpts.mem_rl, GINT_TO_POINTER(address), compare_func2);
 		if(elt != NULL)
 			bkpts.mem_rl = g_list_delete_link(bkpts.mem_rl, elt);
+		else
+			return -1;
 	}
     if((mode & BK_WRITE) && (mode & BK_BYTE))
     {
 		GList *elt = g_list_find_custom(bkpts.mem_wb, GINT_TO_POINTER(address), compare_func2);
 		if(elt != NULL)
 			bkpts.mem_wb = g_list_delete_link(bkpts.mem_wb, elt);
+		else
+			return -1;
 	}
     if((mode & BK_WRITE) && (mode & BK_WORD))
     {
 		GList *elt = g_list_find_custom(bkpts.mem_ww, GINT_TO_POINTER(address), compare_func2);
 		if(elt != NULL)
 			bkpts.mem_ww = g_list_delete_link(bkpts.mem_ww, elt);
+		else
+			return -1;
 	}
     if((mode & BK_WRITE) && (mode & BK_LONG))
     {
 		GList *elt = g_list_find_custom(bkpts.mem_wl, GINT_TO_POINTER(address), compare_func2);
 		if(elt != NULL)
 			bkpts.mem_wl = g_list_delete_link(bkpts.mem_wl, elt);
+		else
+			return -1;
 	}
+
+	return 0;
 }
 
-void ti68k_bkpt_del_range(uint32_t min, uint32_t max, int mode) 
+int ti68k_bkpt_del_range(uint32_t min, uint32_t max, int mode) 
 {
     ADDR_RANGE s;
     GList *elt = NULL;
@@ -179,6 +204,8 @@ void ti68k_bkpt_del_range(uint32_t min, uint32_t max, int mode)
         elt = g_list_find_custom(bkpts.mem_rng_r, &s, compare_func);       
         if(elt != NULL)
 			bkpts.mem_rng_r = g_list_delete_link(bkpts.mem_rng_r, elt);
+		else
+			return -1;
     }
     
 	if (mode & BK_WRITE) 
@@ -186,44 +213,73 @@ void ti68k_bkpt_del_range(uint32_t min, uint32_t max, int mode)
         elt = g_list_find_custom(bkpts.mem_rng_w, &s, compare_func);       
         if(elt != NULL)
 			bkpts.mem_rng_w = g_list_delete_link(bkpts.mem_rng_w, elt);
+		else
+			return -1;
     }
+
+	return 0;
 }
 
-void ti68k_bkpt_del_exception(uint32_t number) 
+int ti68k_bkpt_del_exception(uint32_t number) 
 {
 	GList *elt = g_list_find_custom(bkpts.exception, GINT_TO_POINTER(number), compare_func2);
     if(elt != NULL)
-			bkpts.exception = g_list_delete_link(bkpts.exception, elt);
+		bkpts.exception = g_list_delete_link(bkpts.exception, elt);
+	else
+		return -1;
+
+	return 0;
+}
+
+int ti68k_bkpt_del_pgmentry(uint16_t handle) 
+{
+	GList *elt = g_list_find_custom(bkpts.pgmentry, GINT_TO_POINTER(handle), compare_func2);
+    if(elt != NULL)
+		bkpts.pgmentry = g_list_delete_link(bkpts.pgmentry, elt);
+	else
+		return -1;
+
+	return 0;
 }
 
 /* Set */
 
-void ti68k_bkpt_set_address(uint32_t address, uint32_t new_address)
+int ti68k_bkpt_set_address(uint32_t address, uint32_t new_address)
 {
 	GList *elt = g_list_find_custom(bkpts.code, GINT_TO_POINTER(address), compare_func2);
 	if(elt != NULL)
-			elt->data = GINT_TO_POINTER(new_address);
+		elt->data = GINT_TO_POINTER(new_address);
+	else
+		return -1;
+
+	return 0;
 }
 
-void ti68k_bkpt_set_access(uint32_t address, int mode, uint32_t new_address)
+int ti68k_bkpt_set_access(uint32_t address, int mode, uint32_t new_address)
 {
 	if((mode & BK_READ) && (mode & BK_BYTE))
 	{
 		GList *elt = g_list_find_custom(bkpts.mem_rb, GINT_TO_POINTER(address), compare_func2);
 		if(elt != NULL)
 			elt->data = GINT_TO_POINTER(new_address);
+		else
+			return -1;
 	}
     else if((mode & BK_READ) && (mode & BK_WORD))
 	{
 		GList *elt = g_list_find_custom(bkpts.mem_rw, GINT_TO_POINTER(address), compare_func2);
 		if(elt != NULL)
 			elt->data = GINT_TO_POINTER(new_address);
+		else
+			return -1;
 	}
     else if((mode & BK_READ) && (mode & BK_LONG))
 	{
 		GList *elt = g_list_find_custom(bkpts.mem_rl, GINT_TO_POINTER(address), compare_func2);
 		if(elt != NULL)
 			elt->data = GINT_TO_POINTER(new_address);
+		else
+			return -1;
 	}
     
 	if((mode & BK_WRITE) && (mode & BK_BYTE))
@@ -231,22 +287,30 @@ void ti68k_bkpt_set_access(uint32_t address, int mode, uint32_t new_address)
 		GList *elt = g_list_find_custom(bkpts.mem_wb, GINT_TO_POINTER(address), compare_func2);
 		if(elt != NULL)
 			elt->data = GINT_TO_POINTER(new_address);
+		else
+			return -1;
 	}
     else if((mode & BK_WRITE) && (mode & BK_WORD))
 	{
 		GList *elt = g_list_find_custom(bkpts.mem_ww, GINT_TO_POINTER(address), compare_func2);
 		if(elt != NULL)
 			elt->data = GINT_TO_POINTER(new_address);
+		else
+			return -1;
 	}
     else if((mode & BK_WRITE) && (mode & BK_LONG))
 	{
 		GList *elt = g_list_find_custom(bkpts.mem_wl, GINT_TO_POINTER(address), compare_func2);
 		if(elt != NULL)
 			elt->data = GINT_TO_POINTER(new_address);
+		else
+			return -1;
 	}
+
+	return 0;
 }
 
-void ti68k_bkpt_set_range(uint32_t min, uint32_t max, int mode, uint32_t new_min, uint32_t new_max)
+int ti68k_bkpt_set_range(uint32_t min, uint32_t max, int mode, uint32_t new_min, uint32_t new_max)
 {
 	ADDR_RANGE s, *p;
     GList *elt = NULL;
@@ -258,7 +322,7 @@ void ti68k_bkpt_set_range(uint32_t min, uint32_t max, int mode, uint32_t new_min
     {       
         elt = g_list_find_custom(bkpts.mem_rng_r, &s, compare_func);       
 		if(elt == NULL)
-			return;
+			return -1;
 
         p = elt->data;
 		p->val1 = new_min;
@@ -269,49 +333,94 @@ void ti68k_bkpt_set_range(uint32_t min, uint32_t max, int mode, uint32_t new_min
     {   
         elt = g_list_find_custom(bkpts.mem_rng_w, &s, compare_func);       
 		if(elt == NULL)
-			return;
+			return -1;
 
         p = elt->data;
 		p->val1 = new_min;
 		p->val2 = new_max;
     }
+
+	return 0;
 }
 
-void ti68k_bkpt_set_exception(uint32_t number, uint32_t new_n)
+int ti68k_bkpt_set_exception(uint32_t number, uint32_t new_n)
 {
 	GList *elt = g_list_find_custom(bkpts.exception, GINT_TO_POINTER(number), compare_func2);
-	elt->data = GINT_TO_POINTER(new_n);
+	if(elt != NULL)
+		elt->data = GINT_TO_POINTER(new_n);
+	else
+		return -1;
+
+	return 0;
+}
+
+int ti68k_bkpt_set_pgmentry(uint16_t handle, uint16_t new_h)
+{
+	GList *elt = g_list_find_custom(bkpts.pgmentry, GINT_TO_POINTER(handle), compare_func2);
+	if(elt != NULL)
+		elt->data = GINT_TO_POINTER(new_h);
+	else
+		return -1;
+
+	return 0;
 }
 
 /* Get */
 
-void ti68k_bkpt_get_address(int id, uint32_t *address)
+int ti68k_bkpt_get_address(int id, uint32_t *address)
 {
+	if(g_list_length(bkpts.code) == 0)
+		return -1;
+
 	*address = GPOINTER_TO_INT(g_list_nth(bkpts.code, id)->data);
+	return 0;
 }
 
-void ti68k_bkpt_get_access(int id, uint32_t *address, int mode)
+int ti68k_bkpt_get_access(int id, uint32_t *address, int mode)
 {
 	if((mode & BK_READ) && (mode & BK_BYTE))
+	{
+		if(g_list_length(bkpts.mem_rb) == 0) return -1;
 		*address = GPOINTER_TO_INT(g_list_nth(bkpts.mem_rb, id)->data);
+	}
     else if((mode & BK_READ) && (mode & BK_WORD))
+	{
+		if(g_list_length(bkpts.mem_rw) == 0) return -1;
 		*address = GPOINTER_TO_INT(g_list_nth(bkpts.mem_rw, id)->data);
+	}
     else if((mode & BK_READ) && (mode & BK_LONG))
+	{
+		if(g_list_length(bkpts.mem_rl) == 0) return -1;
 		*address = GPOINTER_TO_INT(g_list_nth(bkpts.mem_rl, id)->data);
+	}
     
 	if((mode & BK_WRITE) && (mode & BK_BYTE))
+	{
+		if(g_list_length(bkpts.mem_wb) == 0) return -1;
 		*address = GPOINTER_TO_INT(g_list_nth(bkpts.mem_wb, id)->data);
+	}
     else if((mode & BK_WRITE) && (mode & BK_WORD))
+	{
+		if(g_list_length(bkpts.mem_wl) == 0) return -1;
 		*address = GPOINTER_TO_INT(g_list_nth(bkpts.mem_ww, id)->data);
+	}
     else if((mode & BK_WRITE) && (mode & BK_LONG))
+	{
+		if(g_list_length(bkpts.mem_wl) == 0) return -1;
 		*address = GPOINTER_TO_INT(g_list_nth(bkpts.mem_wl, id)->data);
+	}
+
+	return 0;
 }
 
-void ti68k_bkpt_get_range(int id, uint32_t *min, uint32_t *max, int mode)
+int ti68k_bkpt_get_range(int id, uint32_t *min, uint32_t *max, int mode)
 {
 	if(mode & BK_READ) 
     {
-        ADDR_RANGE *s = g_list_nth(bkpts.mem_rng_r, id)->data;
+        ADDR_RANGE *s;
+		
+		if(g_list_length(bkpts.mem_rng_r) == 0) return -1;		
+		s = g_list_nth(bkpts.mem_rng_r, id)->data;
 
 		*min = s->val1;
 		*max = s->val2;
@@ -319,17 +428,37 @@ void ti68k_bkpt_get_range(int id, uint32_t *min, uint32_t *max, int mode)
 
     if(mode & BK_WRITE) 
     {
-        ADDR_RANGE *s = g_list_nth(bkpts.mem_rng_w, id)->data;
+        ADDR_RANGE *s;
+		
+		if(g_list_length(bkpts.mem_rng_w) == 0) return -1;		
+		s = g_list_nth(bkpts.mem_rng_w, id)->data;
 
 		*min = s->val1;
 		*max = s->val2;
     }
+
+	return 0;
 }
 
-void ti68k_bkpt_get_exception(int id, uint32_t *number)
+int ti68k_bkpt_get_exception(int id, uint32_t *number)
 {
+	if(g_list_length(bkpts.exception) == 0)
+		return -1;
+
 	*number = GPOINTER_TO_INT(g_list_nth(bkpts.exception, id)->data);
+	return 0;
 }
+
+int ti68k_bkpt_get_pgmentry(int id, uint16_t *handle)
+{
+	if(g_list_length(bkpts.pgmentry) == 0)
+		return -1;
+	
+	*handle = GPOINTER_TO_INT(g_list_nth(bkpts.pgmentry, id)->data);
+	return 0;
+}
+
+/* Clear */
 
 void ti68k_bkpt_clear_address(void)
 {
@@ -382,6 +511,14 @@ void ti68k_bkpt_clear_exception(void)
 	g_list_free(bkpts.exception);
 	bkpts.exception = NULL;
 }
+
+void ti68k_bkpt_clear_pgmentry(void)
+{
+	g_list_free(bkpts.pgmentry);
+	bkpts.pgmentry = NULL;
+}
+
+/* Others */
 
 void ti68k_bkpt_set_cause(int type, int mode, int id)
 {

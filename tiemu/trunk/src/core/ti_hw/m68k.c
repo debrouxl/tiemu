@@ -41,6 +41,7 @@ int hw_m68k_init(void)
     // init breakpoints
     ti68k_bkpt_clear_address();
 	ti68k_bkpt_clear_exception();
+	ti68k_bkpt_clear_pgmentry();
     bkpts.mode = bkpts.type = bkpts.id = 0;
 
     // set trap on illegal instruction
@@ -166,6 +167,8 @@ int hw_m68k_run(int n)
                 l = g_list_next(l);
             }
         }
+
+		//PC=HeapDeref(handle)+2
 
         // store PC in the log buffer
         if(bkpts.pclog_size > 1)

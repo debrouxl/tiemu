@@ -153,10 +153,12 @@ int ti68k_state_load(char *filename)
 	ti68k_bkpt_clear_range();
     ti68k_bkpt_clear_address();
 	ti68k_bkpt_clear_exception();
+	ti68k_bkpt_clear_pgmentry();
 
     ret = fseek(f, sav.bkpts_offset, SEEK_SET);
     load_bkpt(f, &bkpts.code);
     load_bkpt(f, &bkpts.exception);
+	load_bkpt(f, &bkpts.pgmentry);
 
     load_bkpt(f, &bkpts.mem_rb);
 	load_bkpt(f, &bkpts.mem_rw);
@@ -277,6 +279,7 @@ int ti68k_state_save(char *filename)
     // Save breakpoints (address, access, range, exception)
     save_bkpt(f, bkpts.code);
     save_bkpt(f, bkpts.exception);
+	save_bkpt(f, bkpts.pgmentry);
 
     save_bkpt(f, bkpts.mem_rb);
 	save_bkpt(f, bkpts.mem_rw);

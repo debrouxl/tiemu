@@ -719,7 +719,7 @@ int ti68k_load_upgrade(const char *filename)
 
 	// No filename, exits
 	if(!strcmp(g_basename(filename), ""))
-		return ERR_CANT_OPEN;
+		return 0;	//ERR_CANT_OPEN;
 
 	memset(&tib, 0, sizeof(IMG_INFO));
 	err = ti68k_get_tib_infos(filename, &tib, !0);

@@ -86,12 +86,13 @@ typedef struct
 typedef enum {
     BK_TYPE_ACCESS=1, BK_TYPE_RANGE, 
     BK_TYPE_CODE, BK_TYPE_EXCEPTION,
+	BK_TYPE_PGMENTRY
 } Ti68kBkptType;
 
 // Breakpoints cause (ti68k_bkpt_get_cause())
 typedef enum {
     BK_CAUSE_ACCESS=1, BK_CAUSE_RANGE, BK_CAUSE_ADDRESS,
-    BK_CAUSE_EXCEPTION
+    BK_CAUSE_EXCEPTION, BK_CAUSE_PGMENTRY
 } Ti68kBkptCause;
 
 /* Functions */
@@ -100,26 +101,31 @@ int ti68k_bkpt_add_address(uint32_t address);
 int ti68k_bkpt_add_access(uint32_t address, int mode);
 int ti68k_bkpt_add_range(uint32_t min, uint32_t max, int mode);
 int ti68k_bkpt_add_exception(uint32_t n);
+int ti68k_bkpt_add_pgmentry(uint16_t handle);
 
-void ti68k_bkpt_del_address(uint32_t address);
-void ti68k_bkpt_del_access(uint32_t address, int mode);
-void ti68k_bkpt_del_range(uint32_t min, uint32_t max, int mode);
-void ti68k_bkpt_del_exception(uint32_t n);
+int ti68k_bkpt_del_address(uint32_t address);
+int ti68k_bkpt_del_access(uint32_t address, int mode);
+int ti68k_bkpt_del_range(uint32_t min, uint32_t max, int mode);
+int ti68k_bkpt_del_exception(uint32_t n);
+int ti68k_bkpt_del_pgmentry(uint16_t handle);
 
-void ti68k_bkpt_set_address(uint32_t address, uint32_t new_address);
-void ti68k_bkpt_set_access(uint32_t address, int mode, uint32_t new_address);
-void ti68k_bkpt_set_range(uint32_t min, uint32_t max, int mode, uint32_t new_min, uint32_t new_max);
-void ti68k_bkpt_set_exception(uint32_t n, uint32_t new_n);
+int ti68k_bkpt_set_address(uint32_t address, uint32_t new_address);
+int ti68k_bkpt_set_access(uint32_t address, int mode, uint32_t new_address);
+int ti68k_bkpt_set_range(uint32_t min, uint32_t max, int mode, uint32_t new_min, uint32_t new_max);
+int ti68k_bkpt_set_exception(uint32_t n, uint32_t new_n);
+int ti68k_bkpt_set_pgmentry(uint16_t handle, uint16_t new_handle);
 
-void ti68k_bkpt_get_address(int idx, uint32_t *address);
-void ti68k_bkpt_get_access(int idx, uint32_t *address, int mode);
-void ti68k_bkpt_get_range(int idx, uint32_t *min, uint32_t *max, int mode);
-void ti68k_bkpt_get_exception(int idx, uint32_t *n);
+int ti68k_bkpt_get_address(int idx, uint32_t *address);
+int ti68k_bkpt_get_access(int idx, uint32_t *address, int mode);
+int ti68k_bkpt_get_range(int idx, uint32_t *min, uint32_t *max, int mode);
+int ti68k_bkpt_get_exception(int idx, uint32_t *n);
+int ti68k_bkpt_get_pgmentry(int idx, uint16_t *handle);
 
 void ti68k_bkpt_clear_address(void);
 void ti68k_bkpt_clear_access(void);
 void ti68k_bkpt_clear_range(void);
 void ti68k_bkpt_clear_exception(void);
+void ti68k_bkpt_clear_pgmentry(void);
 
 void ti68k_bkpt_set_cause(int type, int mode, int id);
 void ti68k_bkpt_get_cause(int *type, int *id, int *mode);

@@ -76,8 +76,9 @@ int parse_vat_89(GNode *node_top)
 
 	// skip maximum number of folders before handle #$B needs to be resized
 	// and actual number of folders 
-	printf("# folder: %i\n", nfolders = mem_rd_word(fa+2));	
+	nfolders = mem_rd_word(fa+2);
 	fa += 4;
+	//printf("# folder: %i\n", nfolders);
 
 	// now, we read a list of SYM_ENTRY structs (list of folders)
 	for(i=0; i<nfolders; i++)
@@ -87,7 +88,7 @@ int parse_vat_89(GNode *node_top)
 		// read struct
 		memcpy(&se, ti68k_get_real_address(fa + i * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
 		se.handle = GUINT16_FROM_BE(se.handle);
-		printf("folder name: <%s>\n", se.name);
+		//printf("folder name: <%s>\n", se.name);
 
 		// add node
 		vse = g_malloc0(sizeof(VatSymEntry));
@@ -98,8 +99,9 @@ int parse_vat_89(GNode *node_top)
 		heap_get_block_addr_and_size(se.handle, &va, &vs);
 
 		// skip max num and actual num of vars
-		printf("# vars: %i\n", nvars = mem_rd_word(va+2));	
+		nvars = mem_rd_word(va+2);
 		va += 4;
+		//printf("# vars: %i\n", nvars);
 
 		for(j=0; j<nvars; j++)
 		{
@@ -108,7 +110,7 @@ int parse_vat_89(GNode *node_top)
 			// read struct
 			memcpy(&se, ti68k_get_real_address(va + j * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
 			se.handle = GUINT16_FROM_BE(se.handle);
-			printf("var name: <%s>\n", se.name);
+			//printf("var name: <%s>\n", se.name);
 
 			// add node
 			vse = g_malloc0(sizeof(VatSymEntry));
@@ -121,7 +123,7 @@ int parse_vat_89(GNode *node_top)
 				uint16_t varsize = mem_rd_word(pa);
 				uint8_t vartype = mem_rd_byte(pa + varsize + 1);
 
-				printf("var size = %i, var type = %02x\n", varsize, vartype);
+				//printf("var size = %i, var type = %02x\n", varsize, vartype);
 			}		
 		}
 	}
@@ -158,8 +160,9 @@ int parse_vat_92(GNode *node_top)
 
 	// skip maximum number of folders before handle #$B needs to be resized
 	// and actual number of folders 
-	printf("# folder: %i\n", nfolders = mem_rd_word(fa+2));	
+	nfolders = mem_rd_word(fa+2);
 	fa += 4;
+	//printf("# folder: %i\n", nfolders);
 
 	// now, we read a list of SYM_ENTRY structs (list of folders)
 	for(i=0; i<nfolders; i++)
@@ -169,7 +172,7 @@ int parse_vat_92(GNode *node_top)
 		// read struct
 		memcpy(&se, ti68k_get_real_address(fa + i * sizeof(TI92_SYM_ENTRY)), sizeof(TI92_SYM_ENTRY));
 		se.handle = GUINT16_FROM_BE(se.handle);
-		printf("folder name: <%s>\n", se.name);
+		//printf("folder name: <%s>\n", se.name);
 
 		// add node
 		vse = g_malloc0(sizeof(VatSymEntry));
@@ -180,8 +183,9 @@ int parse_vat_92(GNode *node_top)
 		heap_get_block_addr_and_size(se.handle, &va, &vs);
 
 		// skip max num and actual num of vars
-		printf("# vars: %i\n", nvars = mem_rd_word(va+2));	
+		nvars = mem_rd_word(va+2);
 		va += 4;
+		//printf("# vars: %i\n", nvars);	
 
 		for(j=0; j<nvars; j++)
 		{
@@ -190,7 +194,7 @@ int parse_vat_92(GNode *node_top)
 			// read struct
 			memcpy(&se, ti68k_get_real_address(va + j * sizeof(TI92_SYM_ENTRY)), sizeof(TI92_SYM_ENTRY));
 			se.handle = GUINT16_FROM_BE(se.handle);
-			printf("var name: <%s>\n", se.name);
+			//printf("var name: <%s>\n", se.name);
 
 			// add node
 			vse = g_malloc0(sizeof(VatSymEntry));
@@ -203,7 +207,7 @@ int parse_vat_92(GNode *node_top)
 				uint16_t varsize = mem_rd_word(pa);
 				uint8_t vartype = mem_rd_byte(pa + varsize + 1);
 
-				printf("var size = %i, var type = %02x\n", varsize, vartype);
+				//printf("var size = %i, var type = %02x\n", varsize, vartype);
 			}		
 		}
 	}

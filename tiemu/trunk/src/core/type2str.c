@@ -184,11 +184,12 @@ const char *ti68k_bkpt_cause_to_string(int type)
 {
 	switch(type)
 	{
-	case BK_CAUSE_ACCESS:	return "access";
-	case BK_CAUSE_RANGE:	return "access range";
-	case BK_CAUSE_ADDRESS:	return "address";
-    case BK_CAUSE_EXCEPTION:return "exception";
-	default:				return "unknown (bug)";
+	case BK_CAUSE_ACCESS:	return _("access");
+	case BK_CAUSE_RANGE:	return _("access range");
+	case BK_CAUSE_ADDRESS:	return _("address");
+    case BK_CAUSE_EXCEPTION:return _("exception");
+	case BK_CAUSE_PGMENTRY: return _("prgm entry");
+	default:				return _("unknown");
 	}
 }
 
@@ -201,6 +202,7 @@ const char *ti68k_bkpt_type_to_string(int type)
     case BK_TYPE_RANGE:     return _("range");
     case BK_TYPE_CODE:      return _("code");
     case BK_TYPE_EXCEPTION: return _("exception");
+	case BK_TYPE_PGMENTRY:	return _("prgm entry");
 	default:                return _("unknown");
 	}
 }
@@ -215,6 +217,8 @@ int ti68k_string_to_bkpt_type(const char *str)
 		return BK_TYPE_CODE;
 	else if(!strcmp(str, _("exception")))
 		return BK_TYPE_EXCEPTION;
+	else if(!strcmp(str, _("prgm entry")))
+		return BK_TYPE_PGMENTRY;
 
 	return 0;
 }
