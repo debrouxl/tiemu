@@ -142,8 +142,6 @@ int hw_kbd_update(void)		// ~600Hz
     	// set calc on
         if(specialflags & SPCFLAG_STOP)
 	        specialflags &= ~SPCFLAG_STOP;
-		else
-			specialflags |= SPCFLAG_STOP;
 	        
 	    // Auto-Int 6 triggered when [ON] is pressed.
         specialflags |= SPCFLAG_INT;

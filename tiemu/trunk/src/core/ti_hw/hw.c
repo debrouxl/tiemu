@@ -135,7 +135,10 @@ void hw_update(void)
 {
     // OSC2 enable (bit clear means oscillator stopped!)
     if(!io_bit_tst(0x15,1))
+	{
+		hw_kbd_update();	// scan ON key
         return;
+	}
 
     // Increment timer
     if(io_bit_tst(0x15,3))
