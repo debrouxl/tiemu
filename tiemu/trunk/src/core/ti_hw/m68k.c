@@ -216,7 +216,7 @@ int hw_m68k_run(int n)
 
 		// search for next opcode and execute it
 		opcode = get_iword_prefetch (0);
-		cycles += (*cpufunctbl[opcode])(opcode); // increments PC automatically now
+		cycles += (*cpufunctbl[opcode])(opcode) * 2; // increments PC automatically now
 
 		// HW2/3 grayscales management
 		lcd_hook_hw2(0);
