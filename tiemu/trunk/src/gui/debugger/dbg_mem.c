@@ -277,7 +277,8 @@ static void notebook_add_page(GtkWidget *notebook, const char* tab_name)
 	GtkListStore *store;
 	GtkWidget *label;
 	GtkWidget *child;
-	gint current_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
+	GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+	gint page = gtk_notebook_get_current_page(nb);
 	uint32_t addr;
 	uint32_t len;
 	
@@ -305,8 +306,8 @@ static void notebook_add_page(GtkWidget *notebook, const char* tab_name)
     }
 	gtk_widget_show(child);
 
-	gtk_notebook_insert_page(GTK_NOTEBOOK(notebook), child, label, current_page);
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), current_page);
+	gtk_notebook_insert_page(nb, child, label, page);
+	gtk_notebook_set_page(nb, page);
 }
 
 
@@ -381,12 +382,14 @@ gint display_dbgmem_window(void)
 	return 0;
 }
 
+static void refresh_page(int offset);
+
 gint refresh_dbgmem_window(void)
 {
 	if(!already_open)
 		display_dbgmem_window();
 
-	//clist_refresh(store);
+	refresh_page(0);
 
     return 0;
 }
@@ -424,30 +427,28 @@ dbgmem_button1_clicked                     (GtkButton       *button,
 	g_free(str);
 }
 
-
 GLADE_CB void
 dbgmem_button2_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-	gint current_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
+	GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+	gint page = gtk_notebook_get_current_page(nb);
 	
-	gtk_notebook_remove_page(GTK_NOTEBOOK(notebook), current_page);
+	gtk_notebook_remove_page(nb, page);
 }
-
-static void refresh_current_page(int offset);
 
 GLADE_CB void
 dbgmem_button3_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-	refresh_current_page(-0x10);
+	refresh_page(-0x10);
 }
 
 GLADE_CB void
 dbgmem_button4_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-	refresh_current_page(+0x10);
+	refresh_page(+0x10);
 }
 
 GLADE_CB void
@@ -456,16 +457,15 @@ on_notebook1_switch_page               (GtkNotebook     *notebook,
                                         guint            page_num,
                                         gpointer         user_data)
 {
-	printf("switch to page #%i\n", page_num);	
-	refresh_current_page(0);
+	refresh_page(0);
 }
 
-static void refresh_current_page(int offset)
+static void refresh_page(int offset)
 {
-	gint page;
-	GtkWidget *nb = notebook;
+	GtkNotebook *nb = GTK_NOTEBOOK(notebook);
 	GtkWidget *tab;
 	GtkWidget *label;
+	gint page;
 	G_CONST_RETURN gchar *text;
 	uint32_t addr;
 
@@ -477,13 +477,13 @@ static void refresh_current_page(int offset)
 	gchar *str;
 
 	// retrieve addr by tab name
-	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
-	tab = gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook), page);
-	label = gtk_notebook_get_tab_label(GTK_NOTEBOOK(notebook), tab);
+	page = gtk_notebook_get_current_page(nb);
+	tab = gtk_notebook_get_nth_page(nb, page);
+	label = gtk_notebook_get_tab_label(nb, tab);
 	text = gtk_label_get_text(GTK_LABEL(label));
 
 	// get list pointer (we have 1 child)
-	l = gtk_container_get_children(GTK_CONTAINER(GTK_NOTEBOOK(notebook)));
+	l = gtk_container_get_children(GTK_CONTAINER(nb));
 	list = GTK_WIDGET(l->data);
 	view = GTK_TREE_VIEW(list);
 	model = gtk_tree_view_get_model(view);
@@ -500,5 +500,5 @@ static void refresh_current_page(int offset)
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
    	clist_refresh(store, addr, 128);
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 0);
+	gtk_notebook_set_page(nb, 0);
 }
