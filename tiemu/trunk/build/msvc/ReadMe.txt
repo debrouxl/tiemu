@@ -14,14 +14,25 @@ This document covers the compilation of TiEmu with the MSVC compiler.
 
 2) Before compiling anything, you will need to set up a directory layout like this:
 - run the GTK installer and set installation folder to "C:\GTK2DEV"
-- uncompress or checkout libs in the base folder "C:\sources\roms" like this:
+- uncompress or checkout libs in a base folder (I'm using "C:\sources\roms") like this:
 		base_folder\tifiles
 		base_folder\ticables
 	  base_folder\ticalcs
 - do the same with TiEmu:
 	  base_folder\tiemu
 
-3) Open the MSVC project and build.
+3) Open the MSVC project at "base_folder\tiemu\src\core\uae" and build the uae project.
+Next, open the TiEmu project and the build.
+
+4) Resulting files will be produced in "C:\msvc\tilp" and not in "C:\msvc\tiemu".
+I use this convenient location because libs are used primarily by TiLP and placed here.
+
+Before running TiEmu, you will need to copy the following folders:
+- glade
+- help
+- pedrom
+- pixmaps
+- skins
 
 ---
-Romain Liévin (The TiLP Team leader).
+Romain Liévin
