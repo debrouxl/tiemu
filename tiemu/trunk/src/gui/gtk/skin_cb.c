@@ -95,8 +95,7 @@ gint display_skinlist_dbox(void)
 	  gtk_list_store_append(list, &iter);
 	  gtk_list_store_set(list, &iter, 0, text[0],
 			     1, text[1], 2, text[2],
-			     3, text[3], 4, text[4],
-			     5, text[5], -1);
+			     3, text[3], 4, text[4], -1);
 
 	  for(i=0; i<5; i++) g_free(text[i]);
 	} 
