@@ -35,7 +35,6 @@ unsigned long specialflags;
 int currIntLev = -1;
 int broken_in;
 int delayTime = 0;
-//int uae_initial_pc;
 
 #ifdef INTEL_FLAG_OPT
 union flagu intel_flag_lookup[256];

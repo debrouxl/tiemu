@@ -84,3 +84,23 @@ int         ti68k_string_to_romtype(const char *str)
 		
 	return 0;
 }
+
+const char *ti68k_hwtype_to_string(int type)
+{
+	switch(type)
+	{
+		case HW1:  return "hw1";
+		case HW2:  return "hw2";
+		default:   return "none";
+	}
+}
+
+int ti68k_string_to_hwtype(const char *str)
+{
+	if(!strcmp(str, "hw1"))
+		return HW1;
+	else if(!strcmp(str, "hw2"))
+		return HW2;
+
+	return 0;
+}

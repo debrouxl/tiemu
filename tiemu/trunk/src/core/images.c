@@ -94,6 +94,15 @@ int ti68k_is_a_img_file(const char *filename)
 	return 0;
 }
 
+static uint16_t rd_word(uint8_t *p)
+{
+	return (p[0] << 8) | p[1];
+}
+
+static uint32_t rd_long(uint8_t *p)
+{
+	return (p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
+}
 
 /*
 	Display informations
@@ -105,6 +114,7 @@ int ti68k_display_rom_infos(IMG_INFO *s)
   	DISPLAY(_("  Firmware    : v%s\n"), s->version);
   	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->internal | s->flash));
   	DISPLAY(_("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
+	DISPLAY(_("  Hardware    : %i\n"), s->hw_type);
 }
 
 int ti68k_display_tib_infos(IMG_INFO *s)
@@ -124,7 +134,9 @@ int ti68k_display_img_infos(IMG_INFO *s)
   	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->internal | s->flash));
   	DISPLAY(_("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
 	DISPLAY(_("  Has boot    : %s\n"), s->has_boot ? "yes" : "no");
+	DISPLAY(_("  Hardware    : %i\n"), s->hw_type);
 }
+
 
 /*
 	Get some informations on the ROM dump:
@@ -135,10 +147,13 @@ int ti68k_display_img_infos(IMG_INFO *s)
 	- calc type
 	Note: if the data field is NULL, memory is allocated. 
 	Otherwise, data is overwritten.
+	Thanks to Kevin for HW2 detection code.
 */
 int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
 {
   	FILE *file;
+	uint32_t addr;
+	uint16_t data;
 
 	// No filename, exits
 	if(!strcmp(filename, ""))
@@ -180,6 +195,27 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
     	rom->calc_type = TI92;
   
   	get_rom_version(rom->data, rom->size, rom->version);
+
+	// Determine hw type by analysing hw param block
+	addr = rd_long(&rom->data[0x104]);
+	if(rom->internal)
+		addr -= 0x200000;
+	else
+		addr -= 0x400000;
+	printf("addr = <%x>\n", addr);
+
+	if(addr > 0x10000)
+		rom->hw_type = 1;
+	else
+	{
+		data = rd_word(&(rom->data[addr]));
+		printf("data = %x\n", data);
+
+		if(data < 22)
+			rom->hw_type = 1;
+		else
+			rom->hw_type = 2;
+	}
 
 	if(!preload)
 		free(rom->data);
@@ -252,6 +288,8 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
   	tib->size = ptr->data_length + SPP;
 
   	get_rom_version(tib->data, tib->size, tib->version);
+
+	tib->hw_type = 2;	// hw2 is default
   	
   	ti9x_free_flash_content(&content);
 	if(!preload)
@@ -474,6 +512,11 @@ int ti68k_load_image(const char *filename)
 	IMG_INFO *img = &img_infos;
   	FILE *f;  	
   	int err;
+	uint32_t addr;
+	uint16_t data;
+
+	// Clear infos
+	memset(img, 0, sizeof(IMG_INFO));
 
 	// No filename, exits
 	if(!strcmp(filename, ""))
@@ -500,10 +543,6 @@ int ti68k_load_image(const char *filename)
     fseek(f, img->data_offset, SEEK_SET);
 	img->data = malloc(img->size + 4);
     fread(img->data, 1, img->size, f);	
-  	
-	// Set hardware informations
-//  	tihw.rom_size = img->size;
-//  	tihw.ram_size = (img->size == 1024*1024) ? 128 : 256;
   
   	img_loaded = 1;
   	return 0;
@@ -695,6 +734,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 			{
 				if(ti68k_is_a_tib_file(path))
 				{
+					memset(&img, 0, sizeof(IMG_INFO));
 					ret = ti68k_get_tib_infos(path, &img, 0);
 					if(ret)
 					{
@@ -704,6 +744,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 				}
 				else if(ti68k_is_a_img_file(path))
 				{
+					memset(&img, 0, sizeof(IMG_INFO));
 					ret = ti68k_get_img_infos(path, &img, 0);
 					if(ret)
 					{
@@ -724,10 +765,11 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 	  				line[5] = _("yes");
 	  			else
 	  				line[5] = _("no");
+				line[6] = ti68k_hwtype_to_string(img.hw_type);
 		  
 		  			fprintf(file, "%s\t%s\t%s\t%s\t%s\t%s\n", 
 		  				line[0], line[1], line[2], 
-		  				line[3], line[4], line[5]);
+		  				line[3], line[4], line[5], line[6]);
 			}
 	  		g_free(path);
 		}

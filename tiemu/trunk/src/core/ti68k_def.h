@@ -56,6 +56,9 @@
 #define KB			(1024)
 #define MB			(1024*KB)
 
+#define HW1			1
+#define HW2			2
+
 /* Structures */
 
 typedef struct 
@@ -84,6 +87,7 @@ typedef struct
     int     rom_internal;
     int     rom_flash;
     char	rom_version[5];
+	int		hw_type;
 
     // ioports.c
     int     io0Bit7;

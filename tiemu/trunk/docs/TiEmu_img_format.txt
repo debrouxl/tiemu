@@ -34,16 +34,18 @@ The TiEmu v2.00 image format
   0x20		31		1	FLASH/PROM (2/0)
   0x21		32		1	has boot (1/0)
   0x22-0x26	33-36	4	pure data size
-  0x27-0x3F	37-64	n	filled with 0
+  0x27		37		1	hw1/hw2 (1/2) if applicable
+  0x28-0x3F	38-64	n	filled with 0
   
   0x40-...	64-...		pure data (ROM image)
  
  
  
 Calculator type (libtifiles defs):
- 	TI92+ = 1
- 	TI92 = 2
- 	TI89 = 3
- 	V200 = 10
+
+#define TI92 		(1 << 0)
+#define TI89 		(1 << 1)
+#define TI92p	 	(1 << 2)
+#define V200		(1 << 3)
  
 FLASH upgrade does not have boot block.

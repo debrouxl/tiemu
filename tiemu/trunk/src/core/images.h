@@ -43,8 +43,9 @@ typedef struct
 	char	flash;			// EPROM or FLASH
 	char	has_boot;		// FLASH upgrade does not have boot
 	long	size;			// size of pure data
+	char	hw_type;		// hw1 or hw2
 
-	char*	data;			// temporary use
+	char*	data;			// pure data (temporary use)
 } IMG_INFO;
 
 extern int		img_loaded;
