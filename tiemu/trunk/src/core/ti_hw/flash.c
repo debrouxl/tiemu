@@ -222,3 +222,85 @@ uint32_t find_pc(void)
 
     return (pc);
 }
+
+/*
+#if 0
+#define	printd	printf
+#else
+#define printd	
+#endif
+
+void FlashWriteWord(uint32_t addr, uint16_t data)
+{
+	uint8_t *rom = tihw.rom;
+  
+	if(tihw.calc_type == TI92)
+        return;
+
+    if(tihw.protect) 
+        return;
+
+	addr -= tihw.rom_base << 16;
+	addr &= tihw.rom_size - 1;
+
+	if((addr & 0x1fff) == 0x1000)
+		printf("WW: $%06x: %04x ($%06x)\n", addr+ti_rom_base[log_b2(tihw.calc_type)], data, m68k_getpc());
+
+    // Write State Machine (WSM, Sharp's data sheet)
+	switch(data & 0xff)
+	{
+	case FCD_SETUP_BYTE_WRITE:	//0x10: byte write setup/confirm
+		printd("FCD_SETUP_BYTE_WRITE: $%06x\n", m68k_getpc());
+		wsm.cmd = 0x10;
+		wsm.write = 1;
+		break;
+	default:
+		printd("FCD_BYTE_WRITE: %04x at $%06x\n", data, m68k_getpc());
+		if(wsm.write)
+		{
+			wsm.cmd = 0xff;
+			rom[addr+0] = MSB(data);
+			rom[addr+1] = LSB(data);
+			wsm.write = 0;
+			wsm.ret_or = 0xffffffff;
+		}
+		break;
+	case FCD_SETUP_BLCK_ERASE:	//0x20: block erase setup/confirm
+		printd("FCD_SETUP_BLCK_ERASE: $%06x\n", m68k_getpc());
+		wsm.cmd = 0x20;
+		wsm.erase = 1;
+		break;
+	case FCD_CONFIRM_BLK_ERASE:	//0xd0: confirm and block erase
+		if(wsm.cmd == 0x20)
+		{
+			printd("FCD_CONFIRM_BLK_ERASE: $%06x\n", m68k_getpc());
+			wsm.cmd = 0xd0;
+			memset(&rom[addr & 0xff0000], 0xff, 64*KB);
+	        wsm.erase = 0;			
+			wsm.ret_or = 0xffffffff;
+		}
+		break;
+	case FCD_CLEAR_STATUS:		//0x50: clear status register
+		printd("FCD_CLEAR_STATUS: $%06x\n", m68k_getpc());
+		wsm.cmd = 0x50;
+		wsm.write = 0;
+		wsm.erase = 0;
+		wsm.ret_or = 0;
+		break;
+	case FCD_READ_ID_CODES:		//0x90: read identifier codes
+		printd("FCD_READ_ID_CODES: $%06x\n", m68k_getpc());
+		wsm.cmd = 0x90;
+		break;
+	case FCD_READ_OR_RESET:		//0xff: read array/reset
+		printd("FCD_READ_OR_RESET: $%06x\n", m68k_getpc());
+		if(wsm.erase || wsm.write)
+			break;
+
+		wsm.cmd = 0xff;
+		wsm.write = 0;
+		wsm.erase = 0;
+		wsm.ret_or = 0;
+		break;
+	}
+}
+  */

@@ -89,7 +89,8 @@ static inline is_bsr_inst(uint16_t ci)
 	return 
 		((ci >> 6) == 0x13a) ||										/* jsr */
         ((ci >> 8) == 0x61)  ||										/* bsr */
-        (ci >= 0xf800 && ci <= 0xffef) ||							/* fline */
+        (ci >= 0xf800 && ci <= 0xffee) ||							/* fline */
+		(ci == 0xfff0) || (ci == 0xfff2) ||
 		((ci & 0xf000) == 0x5000) && ((ci & 0x00f8) == 0x00c8)	||	/* dbcc */
 		((ci & 0x4e40) == 0x4e40)									/* trap */
 		;

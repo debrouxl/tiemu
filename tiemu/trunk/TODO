@@ -34,7 +34,7 @@ Ceci devrait être facilement implémentable en C dans l'émulateur, ce ne sont
 que des lookups d'adresses. Ce code pourrait aussi être utilisé pour
 afficher une fenêtre "Handles" comme le fait VTI.
 
-* Et encore un autre bogue: l'écriture en FlashROM n'est pas émulée correctement, 
++ Et encore un autre bogue: l'écriture en FlashROM n'est pas émulée correctement, 
 même si je saute tous mes astuces anti-débogage, HW3Patch ne fonctionne pas.
 Et pour le problème de Flash: Les écritures en 0x812d50-0x812d5f (word par word) 
 ne sont effectivement pas passées! Les écritures en 
@@ -66,7 +66,7 @@ certificate).
         * aller dans la fenêtre de debug: TIEmu est parti
 dans le décor, je ne sais pas s'il exécute ou pas
 
-* Autre détail: les handles sont tous 2 octets trop
++ Autre détail: les handles sont tous 2 octets trop
 gros. Et je revérifierai, mais je ne suis pas sûr que
 tous les handles soient affichés (je ne trouve pas des
 fichiers créés).

@@ -56,14 +56,11 @@ void FlashWriteLong(uint32_t addr, uint32_t v);
 uint32_t find_pc(void);
 
 /* Command definitions */
-#define READ_ARRAY_RESET		0xff
-#define READ_ID_CODES			0x90
-#define QUERY					0x98
-#define READ_STATUS_REGISTER	0x70
-#define CLEAR_STATUS_REGISTER	0x50
-#define BLOCK_ERASE_SETUP		0x20
-#define FULL_CHIP_ERASE			0x30
-#define BYTE_WRITE_SETUP		0x40
-#define CONFIRM_BLOCK_ERASE		0xd0
+#define FCD_SETUP_BYTE_WRITE	0x10
+#define FCD_SETUP_BLCK_ERASE	0x20
+#define FCD_CONFIRM_BLK_ERASE	0xd0
+#define FCD_CLEAR_STATUS		0x50
+#define FCD_READ_ID_CODES		0x90
+#define FCD_READ_OR_RESET		0xff
 
 #endif
