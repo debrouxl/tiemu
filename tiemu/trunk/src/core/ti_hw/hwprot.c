@@ -129,10 +129,9 @@ int hwp_fetch(uint32_t adr)
 		}
 		else if(IN_RANGE2(0x210000, adr, 0x3fffff))			// FLASH page execution protection
 		{
-			printf("$%06x ", adr);
-			if(adr >= (uint32_t)(0x210000 + tihw.io2[0x12]*0x10000 + ba)) 
+			if(adr >= (0x210000+ba + (uint32_t)tihw.io2[0x12]*0x10000)) 
 			{
-				//printf("$%06x ", adr);
+				//printf(">> $%06x-%06x ", adr, 0x210000+ba + (uint32_t)tihw.io2[0x12]*0x10000);
 				//freeze_calc();
 				//return 3;
 			}

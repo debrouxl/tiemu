@@ -47,8 +47,6 @@ int hw_io_init(void)
 	memset(tihw.io, 0x00, tihw.io_size);
 	memset(tihw.io2, 0x00, tihw.io2_size);
 
-	tihw.io2[0x12] = 0xff;
-
 	if(tihw.hw_type > HW1)
 		tihw.lcd_adr = 0x4c00;
 
@@ -405,6 +403,7 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 		case 0x12:	// rw <..543210>
 			if(tihw.protect)
 				return;
+			arg &= 0x3f;
 			break;
 		case 0x13:
 			break;

@@ -526,10 +526,6 @@ SOURCE=..\..\ChangeLog
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\README
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\RELEASE
 # End Source File
 # Begin Source File
