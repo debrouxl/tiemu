@@ -43,6 +43,7 @@
 #include "mem_89.h"
 #include "mem_92.h"
 #include "mem_89p.h"
+#include "mem_89t.h"
 
 static IMG_INFO *img = &img_infos;
 
@@ -222,7 +223,16 @@ int hw_mem_init(void)
 		put_word_ptr = ti92_put_word;
 		put_long_ptr = ti92_put_long;
 	}
-#if 0
+	else if(tihw.calc_type == TI89t)
+	{
+		get_byte_ptr = ti89t_get_byte;
+		get_word_ptr = ti89t_get_word;
+		get_long_ptr = ti89t_get_long;
+		put_byte_ptr = ti89t_put_byte;
+		put_word_ptr = ti89t_put_word;
+		put_long_ptr = ti89t_put_long;
+	}
+#if 1
 	else
 	{
 		get_byte_ptr = ti89_get_byte;

@@ -152,6 +152,10 @@ SOURCE=..\..\src\core\ti_hw\mem_89p.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\ti_hw\mem_89t.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\ti_hw\mem_92.c
 # End Source File
 # Begin Source File

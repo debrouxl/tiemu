@@ -65,7 +65,7 @@ uint32_t ti92_get_long(uint32_t adr)
         return io_get_long(adr & 0x1f);
 	}
 
-    return 0;
+    return 0x14141414;
 }
 
 uint16_t ti92_get_word(uint32_t adr) 
@@ -82,7 +82,7 @@ uint16_t ti92_get_word(uint32_t adr)
         return io_get_word(adr & 0x1f);
 	}
 
-    return 0;
+    return 0x1414;
 }
 
 uint8_t ti92_get_byte(uint32_t adr) 
@@ -99,7 +99,7 @@ uint8_t ti92_get_byte(uint32_t adr)
         return io_get_byte(adr & 0x1f);
 	}
 
-    return 0;
+    return 0x14;
 }
 
 void ti92_put_long(uint32_t adr, uint32_t arg) 

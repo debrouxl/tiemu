@@ -23,7 +23,7 @@
  */
 
 /*
-    Memory management: TI89/92+/V200 FLASH without any HW protection
+    Memory management: TI89 Titanium without any HW protection
 */
 
 #include <stdlib.h>
@@ -52,13 +52,13 @@
 
 #define IN_RANGE(a,v,b)	(((v) >= (a)) && ((v) <= (b)))
 
-uint32_t ti89_get_long(uint32_t adr) 
+uint32_t ti89t_get_long(uint32_t adr) 
 {
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
 	{
         return lget(adr);
 	}
-    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x800000, adr, 0xbfffff))			// FLASH access
 	{
         return (lget(adr) | wsm.ret_or);
 	}
@@ -74,13 +74,13 @@ uint32_t ti89_get_long(uint32_t adr)
     return 0x14141414;
 }
 
-uint16_t ti89_get_word(uint32_t adr) 
+uint16_t ti89t_get_word(uint32_t adr) 
 {
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
 	{
         return wget(adr);
 	}
-    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x800000, adr, 0xbfffff))			// FLASH access
 	{
         return (wget(adr) | wsm.ret_or);
 	}
@@ -96,13 +96,13 @@ uint16_t ti89_get_word(uint32_t adr)
     return 0x1414;
 }
 
-uint8_t ti89_get_byte(uint32_t adr) 
+uint8_t ti89t_get_byte(uint32_t adr) 
 {
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
 	{
         return bget(adr);
 	}
-    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x800000, adr, 0xbfffff))			// FLASH access
 	{
         return (bget(adr) | wsm.ret_or);
 	}
@@ -118,13 +118,13 @@ uint8_t ti89_get_byte(uint32_t adr)
     return 0x14;
 }
 
-void ti89_put_long(uint32_t adr, uint32_t arg) 
+void ti89t_put_long(uint32_t adr, uint32_t arg) 
 {
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
 	{
         lput(adr, arg);
 	}
-    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x800000, adr, 0xbfffff))			// FLASH access
 	{
         FlashWriteByte(adr,(arg>>24)&0xff);
         FlashWriteByte(adr+1,(arg>>16)&0xff);
@@ -143,13 +143,13 @@ void ti89_put_long(uint32_t adr, uint32_t arg)
     return;
 }
 
-void ti89_put_word(uint32_t adr, uint16_t arg) 
+void ti89t_put_word(uint32_t adr, uint16_t arg) 
 {
 	if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
 	{
         wput(adr, arg);
 	}
-    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x800000, adr, 0xbfffff))			// FLASH access
 	{
         FlashWriteByte(adr,(arg>>8)&0xff);
 	    FlashWriteByte(adr+1,arg&0xff);
@@ -166,13 +166,13 @@ void ti89_put_word(uint32_t adr, uint16_t arg)
     return;
 }
 
-void ti89_put_byte(uint32_t adr, uint8_t arg) 
+void ti89t_put_byte(uint32_t adr, uint8_t arg) 
 {
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
 	{
         bput(adr, arg);
 	}
-    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x800000, adr, 0xbfffff))			// FLASH access
 	{
         FlashWriteByte(adr,arg&0xff);
 	}
