@@ -240,6 +240,8 @@ static int match_keymap(int calc_type)
 
 	if(!strcmp(keys_name, "ti92+") || !strcmp(keys_name, "ti89t"))
 		keys_name[4] = '\0';
+	if(!strcmp(keys_name, "v200plt"))
+		strcpy(keys_name, "ti92");
 
 	// filename is "", load default keymap
 	if(!strcmp(g_basename(options.keys_file), ""))
