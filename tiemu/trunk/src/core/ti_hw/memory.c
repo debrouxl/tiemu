@@ -186,7 +186,7 @@ int hw_mem_init(void)
 	}
   
     // blit ROM
-    memcpy(tihw.rom, img->data, img->size / 2);
+    memcpy(tihw.rom, img->data, img->size);
     free(img->data);
 
     if(!tihw.ram || !tihw.rom || !tihw.io || !tihw.io2)

@@ -304,7 +304,6 @@ static int log2(int i)
 
 int ti68k_get_rom_size(int calc_type)
 {
-    int i;
     if(calc_type > CALC_MAX)
     {
         DISPLAY("Bad argument !\n");
