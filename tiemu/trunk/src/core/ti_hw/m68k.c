@@ -118,8 +118,6 @@ int hw_m68k_run(int n)
     static FILE *f = NULL;
     static foo = 0;
 
-#if 1
-
 	for(i = 0; i < n; i++)
 	{
 		UWORD opcode;
@@ -142,7 +140,6 @@ int hw_m68k_run(int n)
 					Interrupt2(level);
 					regs.stopped = 0;
 					specialflags &= ~SPCFLAG_STOP;
-					//printf("R");
 				}
 			}
 
@@ -228,130 +225,6 @@ int hw_m68k_run(int n)
                 specialflags &= ~SPCFLAG_DBSKIP;
 	    }
 	}
-
-#else
-
-    for(i = 0; i < n; i++) 
-    {
-        UWORD opcode;
-
-        // search for breakpoint
-        if(((l = bkpts.code) != NULL) && !(specialflags & SPCFLAG_DBSKIP))
-        {
-            bkpts.id = 0;
-            while(l)
-            {
-                if(BKPT_ADDR(GPOINTER_TO_INT(l->data)) == (int)m68k_getpc())
-                {
-					if(BKPT_IS_TMP(GPOINTER_TO_INT(l->data)))
-						bkpts.code = g_list_remove(bkpts.code, l->data);
-
-                    bkpts.type = BK_TYPE_CODE;
-		            //specialflags |= SPCFLAG_BRK;
-                    return 1;
-                }
-
-                bkpts.id++;
-                l = g_list_next(l);
-            }
-        }
-
-        // store PC in the trace buffer
-        if(bkpts.pclog_size > 1)
-        {
-            bkpts.pclog_buf[bkpts.pclog_ptr++ % bkpts.pclog_size] = m68k_getpc();
-        }
-
-		// TI89 HW1 AMS203 and gray3pt() test program
-		//if((int)m68k_getpc() == 0x3f7e0) printf(".");
-		//if((int)m68k_getpc() == 0x2a2568) printf(".");
-
-        // search for next opcode, execute it and refresh hardware (if not STOP'ed)
-		if (!((specialflags & SPCFLAG_STOP) && !(specialflags & SPCFLAG_DBSKIP)))
-		{
-			opcode = nextiword();
-			(*cpufunctbl[opcode])(opcode);
-		}
-
-		// refresh hardware
-        do_cycles();
-
-        // management of special flags
-        if(specialflags) 
-	    {
-    	    if(specialflags & SPCFLAG_ADRERR) 
-	        {
-	            Exception(3);
-				specialflags &= ~SPCFLAG_ADRERR;
-	        }
-	  
-	        if (specialflags & SPCFLAG_DOTRACE) 
-	        {
-	            Exception(9);
-	        }
-
-			// while (specialflags & SPCFLAG_STOP)
-			// need to be re-entrant so that hardware (ON key) is still running.
-			if ((specialflags & SPCFLAG_STOP) && (specialflags & (SPCFLAG_INT | SPCFLAG_DOINT)))
-	        {
-				int intr = intlev();
-				// wake on int level 6 (ON key) or level 1..5
-				specialflags &= ~(SPCFLAG_INT | SPCFLAG_DOINT);
-				if(
-					((intr == 5) && (tihw.io[0x05] & 0x10)) ||
-					((intr == 4) && (tihw.io[0x05] & 0x08)) ||
-					((intr == 3) && (tihw.io[0x05] & 0x04)) ||
-					((intr == 2) && (tihw.io[0x05] & 0x02)) ||
-					((intr == 1) && (tihw.io[0x05] & 0x01))
-					)
-				{
-					Interrupt2(intr);
-					regs.stopped = 0;
-					specialflags &= ~SPCFLAG_STOP;
-				}
-	        }
-	      
-	        if (specialflags & SPCFLAG_TRACE) 
-	        {
-	            specialflags &= ~SPCFLAG_TRACE;
-	            specialflags |= SPCFLAG_DOTRACE;
-	        }	  
-
-	        if (specialflags & SPCFLAG_DOINT) 
-	        {
-	            int intr = intlev();
-	            specialflags &= ~(SPCFLAG_INT | SPCFLAG_DOINT);
-	            if (intr != -1 && intr > regs.intmask) 
-                {
-		            Interrupt2(intr);
-		            regs.stopped = 0;					
-	            }	    
-	        }
-
-	        if (specialflags & SPCFLAG_INT) 
-	        {
-	          specialflags &= ~SPCFLAG_INT;
-	          specialflags |= SPCFLAG_DOINT;
-	        }
-
-	        if (specialflags & SPCFLAG_BRK) 
-	        {		
-	          specialflags &= ~SPCFLAG_BRK;
-	          return 1;		// DBG_BREAK
-	        }
-
-	        if(specialflags & SPCFLAG_DBTRACE) 
-	        {
-	          specialflags &= ~SPCFLAG_DBTRACE;
-              return 2;     // DBG_TRACE
-	        }
-
-            if(specialflags & SPCFLAG_DBSKIP)
-                specialflags &= ~SPCFLAG_DBSKIP;
-	    }  
-    }
-
-#endif
 
 	return 0;
 }
