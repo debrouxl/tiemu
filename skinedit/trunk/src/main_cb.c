@@ -810,14 +810,13 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
   if(pixbuf == NULL)
     return FALSE;
 
-  //printf("expose: %i %i %i %i\n", event->area.x, event->area.y, event->area.width, event->area.height);
-
   gdk_draw_pixbuf(widget->window,
 		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
 		  pixbuf, 
 		  event->area.x, event->area.y,
       event->area.x, event->area.y,
-      event->area.width, event->area.height,
+      (event->area.width > skin_infos.width) ? skin_infos.width : event->area.width,
+        (event->area.height > skin_infos.height) ? skin_infos.height : event->area.height,
 		  GDK_RGB_DITHER_NONE, 0, 0);
    
   return TRUE;
