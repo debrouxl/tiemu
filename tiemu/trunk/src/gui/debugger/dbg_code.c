@@ -318,6 +318,7 @@ dbgcode_button2_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
     ti68k_debug_step();
+	ti68k_engine_unhalt();
 }
 
 
@@ -335,7 +336,6 @@ GLADE_CB void
 dbgcode_button4_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-    //ti68k_debug_skip(next_pc);
     GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);

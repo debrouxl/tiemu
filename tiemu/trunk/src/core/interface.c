@@ -212,7 +212,6 @@ int ti68k_debug_step(void)
     // Set up an internal trap (DBTRACE) which will 
     // launch/refresh the debugger when encountered
     specialflags |= SPCFLAG_DBTRACE;
-    ti68k_engine_unhalt();
 
     return 0;
 }
@@ -220,12 +219,12 @@ int ti68k_debug_step(void)
 int ti68k_debug_skip(uint32_t next_pc)
 {
     broken_in = 0;
-    specialflags |= SPCFLAG_BRK;
+    //specialflags |= SPCFLAG_BRK;
 
     do 
     {
-        ti68k_debug_step();
-		printf("pc: %lx dst: %lx\n", m68k_getpc(), next_pc);
+        specialflags |= SPCFLAG_DBTRACE;
+		ti68k_engine_unhalt();
 
 		// too far: stop
 		if(m68k_getpc() > next_pc)

@@ -259,6 +259,7 @@ on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     ti68k_debug_break();
+	ti68k_engine_unhalt();
 }
 
 

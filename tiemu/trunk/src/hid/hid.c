@@ -624,7 +624,6 @@ int hid_update_keys(void)
 	    	}
 			else if(event.key.keysym.sym == SDLK_F11)
 	    	{
-	      		//enter_gtk_debugger(0);
                 ti68k_debug_break();
 	    	}
 			else if(event.key.keysym.sym == SDLK_F12)
