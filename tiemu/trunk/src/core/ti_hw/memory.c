@@ -161,7 +161,7 @@ int hw_mem_init(void)
 		mem_mask[2] = MIN(tihw.rom_size, 1*MB)-1;
 
 		mem_tab[3] = tihw.rom + 0x100000;
-		mem_mask[3] = MIN(tihw.rom_size, 1*MB)-1;
+		mem_mask[3] = MIN(tihw.rom_size - 1*MB, 1*MB)-1;
 	}
 
     // map ROM (external)
@@ -171,7 +171,7 @@ int hw_mem_init(void)
 		mem_mask[4] = MIN(tihw.rom_size, 1*MB)-1;
 
 		mem_tab[5] = tihw.rom + 0x100000;
-		mem_mask[5] = MIN(tihw.rom_size, 1*MB)-1;
+		mem_mask[5] = MIN(tihw.rom_size - 1*MB, 1*MB)-1;
 	}
 
     // map IO

@@ -90,7 +90,7 @@ int ti68k_state_load(char *filename)
   //fread(&transnotready,4,1,fp);
   //fread(&recvflag,4,1,fp); fread(&recvbyte,4,1,fp);
   //fread(&rom_ret_or,4,1,fp);
-  fread(&tihw.lcd_addr,4,1,fp); fread(&tihw.lcd_off,4,1,fp);
+//  fread(&tihw.lcd_addr,4,1,fp); fread(&tihw.lcd_off,4,1,fp);
   fread(&tihw.contrast,4,1,fp);
   fread(&cpuCompleteStop,4,1,fp);
   for (i=0;i<32;i++)
@@ -142,7 +142,7 @@ int ti68k_state_save(char *filename)
       //fwrite(&transnotready,4,1,fp);
       //fwrite(&recvflag,4,1,fp); fwrite(&recvbyte,4,1,fp);
       //fwrite(&rom_ret_or,4,1,fp);
-      fwrite(&tihw.lcd_addr,4,1,fp); fwrite(&tihw.lcd_off,4,1,fp);
+//      fwrite(&tihw.lcd_addr,4,1,fp); fwrite(&tihw.lcd_off,4,1,fp);
       fwrite(&tihw.contrast,4,1,fp);
       fwrite(&cpuCompleteStop,4,1,fp);
       
