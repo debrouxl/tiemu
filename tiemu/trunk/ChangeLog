@@ -5,6 +5,9 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
+- 09/03/2005, version 1.80p: roms
+	...
+	
 - 25/02/2005, version 1.80o: roms
 	- fixed bug in ti68k_get_hw_param_block (wrong search/replace)
 	- fixed TAB char (0x09) pb in the dbg_mem window (Lionel)
