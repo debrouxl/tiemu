@@ -86,14 +86,18 @@ static inline is_ret_inst(uint16_t inst)
 
 static inline is_bsr_inst(uint16_t ci)
 {
-	return 
-		((ci >> 6) == 0x13a) ||										/* jsr */
-        ((ci >> 8) == 0x61)  ||										/* bsr */
-        (ci >= 0xf800 && ci <= 0xffee) ||							/* fline */
-		(ci == 0xfff0) || (ci == 0xfff2) ||
-		((ci & 0xf000) == 0x5000) && ((ci & 0x00f8) == 0x00c8)	||	/* dbcc */
-		((ci & 0x4e40) == 0x4e40)									/* trap */
-		;
+	int t1, t2, t3, t4, t5;
+	
+	t1 = ((ci >> 6) == (0x4e80 >> 6));						/* jsr */
+    t2 = ((ci >> 8) == (0x61ff >> 8));						/* bsr */
+    t3 = (ci >= 0xf800 && ci <= 0xffee);						/* fline */
+	t4 = (ci == 0xfff0) || (ci == 0xfff2) ||
+		((ci & 0xf000) == 0x5000) && ((ci & 0x00f8) == 0x00c8);	/* dbcc */
+	t5 = ((ci >> 4) == (0x4e40 >> 4));						/* trap */
+
+	//printf("<%i %i %i %i %i>\n", ret1, ret2, ret3, ret4, ret5);
+
+	return t1 || t2 || t3 || t4 || t5;
 }
 
 int ti68k_debug_step_over(void)
@@ -110,9 +114,11 @@ int ti68k_debug_step_over(void)
 	// check current instruction
 	if(!is_bsr_inst(curriword()))
 	{
+		printf("single step !\n");
 		ti68k_debug_step();
 		return 0;
 	}
+	printf("step over !\n");
 
 	// run emulation until address after instruction is reached
 	do
