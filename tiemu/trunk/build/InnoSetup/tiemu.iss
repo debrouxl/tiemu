@@ -57,13 +57,16 @@ Source: "C:\sources\roms\tifiles\tests\tifiles.dll"; DestDir: "{app}"; Flags: ig
 Source: "C:\sources\roms\ticables\tests\ticables.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticalcs\tests\ticalcs.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu\build\msvc\tiemu.exe"; DestDir: "{app}"; DestName: "tiemu.exe"; Flags: ignoreversion
-Source: "C:\Program Files\Common Files\GTK\2.0\lib\jpeg-62.dll"; DestDir: "{app}";
 ;Source: "C:\WinNT\system32\MSVCRTD.DLL"; DestDir: "{app}"; Flags: ignoreversion
 ; Copy PortTalk driver for Windows NT4/2000/XP
 Source: "C:\sources\roms\Porttalk22\PortTalk.sys"; DestDir: "{sys}\drivers"; Flags: ignoreversion
 Source: "C:\sources\roms\Porttalk22\PortTalk.sys"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\Porttalk22\AllowIO.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\Porttalk22\Uninstall.exe"; DestDir: "{app}"; Flags: ignoreversion
+
+; GTK+ specific
+;Source: "C:\msvc\tilp\jpeg-62.dll"; DestDir: "{app}";
+Source: "C:\Gtk2Dev\bin\gtkthemeselector.exe"; DestDir: "{app}";
 
 [Dirs]
 ;Name: "{app}\My TI images"; Flags: uninsneveruninstall;
@@ -77,6 +80,7 @@ Name: "{group}\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}\My TI fil
 Name: "{group}\TiEmu on the Web"; Filename: "{app}\tiemu.url"
 Name: "{group}\Uninstall TiEmu"; Filename: "{uninstallexe}"
 Name: "{group}\User's Manual"; Filename: "{app}\help\User_Manual.html"
+Name: "{group}\GTK theme selector"; Filename: "{app}\gtkthemeselector.exe";
 
 Name: "{userdesktop}\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: desktopicon
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: quicklaunchicon
@@ -90,10 +94,10 @@ Filename: "{app}\Uninstall.exe"; Parameters: ""; MinVersion: 0,4;
 Filename: "{app}\Uninstall.exe"; Parameters: ""; MinVersion: 0,4;
 
 [Registry]
-; This adds the GTK+ libraries to gtk-foo.exe's path
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; Flags: uninsdeletekeyifempty
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; ValueType: string; ValueData: "{app}\tiemu.exe"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; ValueType: string; ValueName: "Path"; ValueData: "{app};{code:GetGtkPath}\lib"; Flags: uninsdeletevalue
+; This adds the GTK+ libraries to tiemu.exe's path
+;Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; Flags: uninsdeletekeyifempty
+;Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; ValueType: string; ValueData: "{app}\tiemu.exe"; Flags: uninsdeletevalue
+;Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; ValueType: string; ValueName: "Path"; ValueData: "{app};{code:GetGtkPath}\bin"; Flags: uninsdeletevalue
 
 [UninstallDelete]
 Type: files; Name: "{app}\tiemu.url"
@@ -105,6 +109,7 @@ var
   Exists: Boolean;
   GtkPath: String;
   WimpPath: String;
+  GtkVersion: String;
 
 function GetGtkInstalled (): Boolean;
 begin
@@ -115,11 +120,11 @@ begin
    Result := Exists
 end;
 
-function GetOldGtkInstalled (): Boolean;
+function GetGtkVersionInstalled (): Boolean;
 begin
-  Exists := RegQueryStringValue (HKLM, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\gtk-win32-runtime_is1', 'DisplayName', GtkPath);
+  Exists := RegQueryStringValue (HKLM, 'Software\GTK\2.0', 'Version', GtkVersion);
   if not Exists then begin
-    Exists := RegQueryStringValue (HKCU, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\gtk-win32-runtime_is1', 'DisplayName', GtkPath);
+    Exists := RegQueryStringValue (HKCU, 'Software\GTK\2.0', 'Version', GtkVersion);
   end;
    Result := Exists
 end;
@@ -127,6 +132,11 @@ end;
 function GetGtkPath (S: String): String;
 begin
     Result := GtkPath;
+end;
+
+function GetGtkVersion (S: String): String;
+begin
+    Result := GtkVersion;
 end;
 
 function IsTiglUsbVersion3Mini (): Boolean;
@@ -141,16 +151,36 @@ end;
 
 function InitializeSetup(): Boolean;
 begin
-  Result := GetOldGtkInstalled ();
-  if Result then begin
-    MsgBox ('Warning: it seems you have the "GTK+/Win32 Runtime (2003-05-14)" package installed. TiEmu is now using a more standard package. You must uninstall it else TiEmu will fail to start.', mbError, MB_OK);
-  end;
-  
+
+  // Retrieve GTK path
   Result := GetGtkInstalled ();
   if not Result then begin
-    MsgBox ('Please install the "GTK+ 2.0 Runtime Environment" (v2.2.4-3) of DropLine Systems. You can obtain GTK+ from <http://prdownloads.sourceforge.net/gtk-win/GTK-Runtime-Environment-2.2.4-3.exe?download>.', mbError, MB_OK);
+    MsgBox ('Please install the "GTK+ 2.0 Runtime Environment" (2.4-rc16). You can obtain GTK+ from <http://gladewin32.sourceforge.net/>.', mbError, MB_OK);
   end;
   
+  // Maybe I should include libglade/libxml and use GTK/The GiMP runtime package
+  // Retrieve GTK version (2.4.3 for GiMP package or aio-2.4-rc16/2.4.6-c2 for libglade package)
+  if Result then begin
+    Result := GetGtkVersionInstalled ();
+    
+    if (Length(GtkVersion) > 0) then begin
+      if StrGet(GtkVersion, 1) = 'a' then begin
+        if CompareStr(GtkVersion, 'aio-2.4-rc16') < 0 then begin
+          MsgBox ('Wrong package version. You need version aio-2.4-rc16 mini from <http://gladewin32.sourceforge.net/>.', mbError, MB_OK);
+        end;
+      end
+      else begin
+        if CompareStr(GtkVersion, '2.4.3') < 0 then begin
+          MsgBox ('Wrong package version. You need version 2.4.3 mini from <The GiMP>.', mbError, MB_OK);
+        end;
+      end
+    end
+    else begin
+      MsgBox ('GTK+ 2.0 package seems to be mis-installed or corrupted.', mbError, MB_OK);
+    end;
+  end;
+
+  // Remove WiMP theme when running on Win9x/Me
   if Result then begin
       WimpPath := GtkPath + '\lib\gtk-2.0\2.2.0\engines\libwimp.dll';
       if FileExists(WimpPath) and not UsingWinNT() then begin
@@ -159,6 +189,7 @@ begin
       end;
   end;
   
+  // Check version of USB driver
   if IsTiglUsbVersion3Mini() then begin
     MsgBox('SilverLink driver v2.x has been removed of your system. Now, TiEmu requires v3.x (check out the README for download location).', mbError, MB_OK);
   end;
