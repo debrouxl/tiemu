@@ -46,39 +46,14 @@ gint refresh_code_dbox(void);
 gint refresh_stack_dbox(void);
 gint refresh_memory_dbox(void);
 
-static void
-setup_clist(GtkWidget *clist, gchar *title[], int n)
-{
-  /* The ONLY POSSIBLE VALUES of n are 2 and 3 */
-  GtkListStore *list;
-  GtkTreeModel *model;
-  int i;
-
-  if (n == 3)
-    list = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_STRING,
-			      G_TYPE_STRING);
-  else
-    list = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
-  model = GTK_TREE_MODEL(list);
-  
-  gtk_tree_view_set_model(GTK_TREE_VIEW(clist), model); 
-  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(clist), TRUE); 
-  
-  for (i = 0; i < n; i++)
-    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), i, title[i],
-						gtk_cell_renderer_text_new(),
-						"text", 0, NULL);
-  gtk_list_store_clear(list);
-}
 
 gint display_debugger_dbox(void)
 {
   GtkWidget *dbox;
+  GtkWidget *clist;
+  GtkListStore *list;
+  GtkTreeModel *model;
   GtkTreeSelection *sel;
-    
-  gchar *t_code[3] = { _("B"), _("Adr"), _("Code") };
-  gchar *t_mem[3] = { _("Addr"), _("Dump"), _("Char") };
-  gchar *t_stack[2] = { _("SP"), _("Value") };
   
   if(debugger_dbox == NULL)
     {
@@ -87,15 +62,71 @@ gint display_debugger_dbox(void)
 
       reg_text = lookup_widget(dbox, "text5");
       
+      /* Code clist */
       code_clist = lookup_widget(dbox, "clist1");
-      setup_clist(code_clist, t_code, 3);
+      clist = code_clist;
+      list = gtk_list_store_new(4, GDK_TYPE_PIXBUF, G_TYPE_STRING,
+				G_TYPE_STRING, G_TYPE_POINTER);
+      model = GTK_TREE_MODEL(list);
+      
+      gtk_tree_view_set_model(GTK_TREE_VIEW(clist), model); 
+      gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(clist), TRUE); 
+      
+      gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), 0, _("B"),
+						  gtk_cell_renderer_pixbuf_new(),
+						  "pixbuf", 0, NULL);
+      gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), 1, _("Addr"),
+						  gtk_cell_renderer_text_new(),
+						  "text", 1, NULL);
+      gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), 2, _("Code"),
+						  gtk_cell_renderer_text_new(),
+						  "text", 2, NULL);
+      gtk_list_store_clear(list);
+
+      /* Memory clist */
       mem_clist = lookup_widget(dbox, "clist2");
-      setup_clist(mem_clist, t_mem, 3);
+      clist = code_clist;
+      list = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_STRING,
+				G_TYPE_STRING);
+      model = GTK_TREE_MODEL(list);
+      
+      gtk_tree_view_set_model(GTK_TREE_VIEW(clist), model); 
+      gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(clist), FALSE); 
+      
+      gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), 0, _("Addr"),
+						  gtk_cell_renderer_text_new(),
+						  "text", 0, NULL);
+      gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), 1, _("Dump"),
+						  gtk_cell_renderer_text_new(),
+						  "text", 1, NULL);
+      gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), 2, _("Char"),
+						  gtk_cell_renderer_text_new(),
+						  "text", 2, NULL);
+      gtk_list_store_clear(list);
+
+      /* Stack clist */
       stack_clist = lookup_widget(dbox, "clist3");
-      setup_clist(stack_clist, t_stack, 2);
+      clist = stack_clist;
+      mem_clist = lookup_widget(dbox, "clist2");
+      clist = code_clist;
+      list = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
+      model = GTK_TREE_MODEL(list);
+      
+      gtk_tree_view_set_model(GTK_TREE_VIEW(clist), model); 
+      gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(clist), FALSE); 
+      
+      gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), 0, _("SP"),
+						  gtk_cell_renderer_text_new(),
+						  "text", 0, NULL);
+      gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), 1, _("Value"),
+						  gtk_cell_renderer_text_new(),
+						  "text", 1, NULL);
+      gtk_list_store_clear(list);
+
 
       statusbar = lookup_widget(dbox, "statusbar1");
 
+      /* We need to catch the selection on the code_clist */
       sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(code_clist));
       gtk_tree_selection_set_mode(sel, GTK_SELECTION_SINGLE);
       
@@ -274,70 +305,76 @@ gint refresh_register_dbox(void)
 /* Utility function */
 gint refresh_breakpoints(GtkWidget *widget)
 {
-#if 0 /* FUCKED */
   GtkWidget *clist = code_clist;
-  GdkPixmap *pixmap_run;
-  GdkBitmap *mask_run;
-  GdkPixmap *pixmap_bkpt;
-  GdkBitmap *mask_bkpt;
-  GdkPixmap *pixmap_void;
-  GdkBitmap *mask_void;
-  gint i, j;
-  CODE_BKPT *s1;
-  gint addr1, addr2, addr;
-  gint res;
+  GtkTreeModel *model;
+  GtkListStore *list;
+  GtkTreePath *path;
+  GtkTreeIter iter;
+  GdkPixbuf *run, *bkpt, *none;
+  gint i;
+  CODE_BKPT *bp;
+  gint addr_bp, addr_active, addr;
+  gpointer addrp;
 
-  /* Load pixmaps */
-  open_xpm("run.xpm", widget, &pixmap_run, &mask_run);
-  open_xpm("bkpt.xpm", widget, &pixmap_bkpt, &mask_bkpt);
-  open_xpm("void.xpm", widget, &pixmap_void, &mask_void);
-
-  /* Erase pixmaps entries */
-  for(j=0; j<DEBUG_LINES; j++)
+  path = gtk_tree_path_new_from_indices(0, -1);
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
+  list = GTK_LIST_STORE(model);
+  if (gtk_tree_model_get_iter(model, &iter, path) == FALSE)
     {
-      gtk_clist_set_pixmap((GtkCList *)clist, j, 0, 
-			   pixmap_void, mask_void);
+      gtk_tree_path_free(path);
+      return 1;
     }
+
+  gtk_tree_path_free(path);
+
+  /* Load pixbufs */
+  run = create_pixbuf("run.xpm");
+  bkpt = create_pixbuf("bkpt.xpm");
+  none = create_pixbuf("void.xpm");
  
+  addr_active = ti68k_getPcRegister();
+  //fprintf(stdout, "PC in refresh: %06X\n", addr_active);
+
   /* Fill the clist */
-  //printf("list length: %i, %p\n", g_list_length(bkpt_address_list), bkpt_address_list);
-  for(i=0; i<g_list_length(bkpt_address_list); i++)
+  do
     {
-      s1 = (CODE_BKPT *)g_list_nth_data(bkpt_address_list, i);
-      addr1 = s1->address;
-      //printf("Breakpoint to localize at 0x%06x\n", addr1);
+      /* Get addr from the clist */
+      gtk_tree_model_get(model, &iter, 3, &addrp);
+      addr = GPOINTER_TO_INT(addrp);
 
-      for(j=0; j<DEBUG_LINES; j++)
+      //printf("Looking for a breakpoint at 0x%06x\n", addr);
+
+      /* Look for a matching breakpoint */
+      for (i = 0; i < g_list_length(bkpt_address_list); i++)
 	{
-	  addr2 = GPOINTER_TO_INT(gtk_clist_get_row_data((GtkCList *)clist, 
-							 j));
-	  //printf("Address localized: 0x%06x\n", addr2);
+	  bp = (CODE_BKPT *)g_list_nth_data(bkpt_address_list, i);
+	  addr_bp = bp->address;
 
-	  if(addr1 == addr2)
+	  if (addr == addr_active)
 	    {
-	      //printf("Bkpt localized: 0x%06x at clist line %i\n", addr2, j);
-	      gtk_clist_set_pixmap((GtkCList *)clist, j, 0, 
-				   pixmap_bkpt, mask_bkpt);
+	      /* set the run pixmap */
+	      //printf("Address is active: Ox%06x\n", addr);
+	      gtk_list_store_set(list, &iter, 0, run, -1);
 	    }
-	  //fprintf(stderr, "<%06X %06X>\n", addr2, getPcRegister());
+	  else if (addr == addr_bp)
+	    {
+	      /* set the bkpt pixmap */
+	      //printf("Breakpoint found at 0x%06x\n", addr);
+	      gtk_list_store_set(list, &iter, 0, bkpt, -1);
+	    }
+	  else
+	    {
+	      /* set the void pixmap */
+	      //printf("No breakpoint at 0x%06x\n", addr);
+	      gtk_list_store_set(list, &iter, 0, none, -1);
+	    }
 	}
     }
+  while (gtk_tree_model_iter_next(model, &iter) == TRUE);
 
-  /* Update the run arrow */
-  addr = ti68k_getPcRegister();
-  //fprintf(stdout, "PC in refresh: %06X\n", ti68k_getPcRegister());
-  res = gtk_clist_find_row_from_data((GtkCList *)clist, GINT_TO_POINTER(addr));
-  //fprintf(stdout, "row in refresh: %i\n", res);
-  if(res != -1)
-    { // row found
-      gtk_clist_set_pixmap((GtkCList *)clist, res, 0, pixmap_run, mask_run);
-    }
-  printf("\n");
-
-  gdk_pixmap_unref(pixmap_run);
-  gdk_pixmap_unref(pixmap_bkpt);
-  gdk_pixmap_unref(pixmap_void);
-#endif /* 0 */
+  g_object_unref(run);
+  g_object_unref(bkpt);
+  g_object_unref(none);
 
   return 0;
 }
@@ -669,9 +706,8 @@ on_set_breakpoint_at_selection1_activate
   s->address = addr;
   s->id = i;
   bkpt_address_list = g_list_append(bkpt_address_list, s);
-  
-  open_xpm("bkpt.xpm", code_clist, &pixmap, &mask);
 #if 0 /* FUCKED */
+  open_xpm("bkpt.xpm", code_clist, &pixmap, &mask);
   gtk_clist_set_pixmap((GtkCList *)clist, selected_row, 0, pixmap, mask);
 #endif /* 0 */
   gdk_pixmap_unref(pixmap);
@@ -720,7 +756,7 @@ on_clear_all_breakpoints1_activate     (GtkMenuItem     *menuitem,
   fprintf(stderr, "Breakpoints|Clear all bkpts\n");
   g_list_foreach(bkpt_address_list, clear_all_bkpt_address, NULL);
   g_list_free(bkpt_address_list);
-  bkpt_address_list = NULL; // free ne met pas le ptr a null: bug !
+  bkpt_address_list = NULL;
 
   /* Refresh breakpoints */
   refresh_breakpoints(code_clist);
