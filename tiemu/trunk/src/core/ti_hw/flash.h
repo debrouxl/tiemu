@@ -27,11 +27,13 @@
 
 #include "stdint.h"
 
+#define N_SEGMENTS 64 // 4MB of FLASH
+
 /* Types */
 
 typedef struct
 {
-    int changed[32]; // FLASH segments which have been (re)programmed
+    int changed[N_SEGMENTS]; // FLASH segments which have been (re)programmed
     int ret_or;
     int write_ready;
     int write_phase;

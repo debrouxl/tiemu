@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: main.c 245 2004-05-23 20:45:43Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -100,7 +100,7 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
         if ((rom[addr] == 0xff) || (wsm.write_ready == 1))
 	    {
 	        rom[addr] = v;
-	        wsm.changed[addr >> 16] = 1;
+	        //wsm.changed[addr >> 16] = 1;
 	    }
         else
 	        wsm.write_ready--;
@@ -141,7 +141,7 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
 
 			memset(&rom[addr & 0xff0000], 0xff, 64*KB);
 			
-	        wsm.changed[addr >> 16] = 1;
+				//wsm.changed[addr >> 16] = 1;
         } 
     }
     else if (v == 0xff)
