@@ -30,11 +30,12 @@
 /* Constants for do_screenshot */
 /*******************************/
 
-#define IMG_XPM 1
-#define IMG_PCX 2
-#define IMG_JPG 3
-#define IMG_PNG 4
-#define IMG_BMP 5
+#define IMG_XPM 1 // unsupported
+#define IMG_PCX 2 // unsupported
+#define IMG_JPG 3 // supported by PixBuf
+#define IMG_PNG 4 // supported by PixBuf
+#define IMG_BMP 5 // unsupported
+#define IMG_ICO 6 // supported by PixBuf
 
 #define IMG_TYPE 64
 #define IMG_COL  (IMG_TYPE+1)

@@ -54,7 +54,6 @@ static void init_linux_paths(void)
             g_strconcat(inst_paths.base_dir, "images/", NULL);
 	inst_paths.skin_dir =
 	    g_strconcat(inst_paths.base_dir, "skins/", NULL);
-	printf("!!! %s !!!\n", inst_paths.skin_dir);
 	inst_paths.home_dir =
 		g_strdup(g_get_home_dir());
 
@@ -98,6 +97,8 @@ static void init_win32_paths(void)
 	    g_strconcat(inst_paths.base_dir, "images\\", NULL);
 	inst_paths.skin_dir =
 	    g_strconcat(inst_paths.base_dir, "skins\\", NULL);
+	inst_paths.home_dir = 
+	    g_strconcat(inst_paths.base_dir, "My ROM images\\", NULL);
 
 	/* bintextdomain(PACKAGE, "/usr/share/locale"); ->
 	   '/usr/share/locale/  fr/LC_MESSAGES/tilp.mo' */
@@ -105,9 +106,7 @@ static void init_win32_paths(void)
 	inst_paths.locale_dir =
 	    g_strconcat(inst_paths.base_dir, "locale\\", NULL);
 #endif				/*  */
-
 	// on WIN32 systems, 'My TI Files' by default
-	inst_paths.home_dir = g_strconcat(inst_paths.base_dir, "My ROM images", NULL);
 	_chdir(inst_paths.home_dir);
 }
 #endif				/*  */

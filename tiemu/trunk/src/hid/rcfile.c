@@ -55,7 +55,7 @@ static char *rc_file;
 /*
   Return the path where the config file is stored
 */
-int get_rcfile_path(char **path)
+int rcfile_get_path(char **path)
 {
 	*path = g_strconcat(inst_paths.home_dir, 
 			    DIR_SEPARATOR_S, CONF_DIR, 
@@ -66,224 +66,350 @@ int get_rcfile_path(char **path)
 /* 
    Print an error msg 
 */
-void stop (int line)
+static void stop (int line)
 {
-  fprintf(stderr, gettext("Configuration file error at line %i.\n"), line);
+	printl(2, _("Configuration file error at line %i.\n"), line);
 }
 
 /*
   Find a token in a string and returns pointer after token
 */
-char *find_str(char *s, const char *t)
+static char *find_str(char *s, const char *t)
 {
-  char *p = strstr(s, t);
+	char *p = strstr(s, t);
 
-  if(p==NULL) return NULL;
-  else return p+strlen(t);
+	if(p==NULL) 
+		return NULL;
+	else 
+		return p+strlen(t);
 }
 
 /* Chech whether a RC file exists */
-int is_rcfile_exist(void)
+int rcfile_exist(void)
 {
-  get_rcfile_path(&rc_file);
+	rcfile_get_path(&rc_file);
   
-  return !access(rc_file, F_OK);
+	return !access(rc_file, F_OK);
 }
 
+/* Delete the RC file */
+int rcfile_delete(void)
+{
+	rcfile_get_path(&rc_file);
+
+	return unlink(rc_file);
+}
+
+/* Return TiLP version number */
+int rcfile_get_version(char *version)
+{
+	FILE *txt;
+	char buffer[256];
+	int i = 0;
+	char *p;
+
+	strcpy(version, "");
+	if (rcfile_exist() == 0) {
+		return -1;
+	}
+
+	rcfile_get_path(&rc_file);
+
+	txt = fopen(rc_file, "rt");
+	if (txt == NULL)
+		return -1;
+
+	for (i = 0; i < 5; i++)
+		fgets(buffer, 256, txt);
+
+	p = strchr(buffer, '=');
+	if (p == NULL)
+		return -1;
+
+	strcpy(version, ++p);
+
+	p = strchr(version, '\r');
+	if (p)
+		*p = '\0';
+
+	p = strchr(version, '\n');
+	if (p)
+		*p = '\0';
+
+	return 0;
+}
 
 /* 
    Read the RC file and configure the corresponding variables 
 */
-void read_rc_file(void)
+void rcfile_read(void)
 {
-  FILE *txt;
-  char buffer[256];
-  char *p;
-  int l=0;
+	FILE *txt;
+	char buffer[256];
+	char *p;
+	int l=0;
 
-  get_rcfile_path(&rc_file);
+	rcfile_get_path(&rc_file);
 
-  txt=fopen(rc_file, "rt");
-  if(txt == NULL)
-    {
-      DISPLAY(_("Configuration file not found, use default values. You can create one by the 'File|Save config' command menu.\n"));
-      //gif->msg_box(_("Information"), _("Configuration file not found, use default values. You can create one by the 'File|Save config' command menu.\n"));
-      
-      return;
-    }
+	txt=fopen(rc_file, "rt");
+	if(txt == NULL) {
+		DISPLAY(_("Configuration file not found, use default values. You can create one by the 'File|Save config' command menu.\n"));
+		//gif->msg_box(_("Information"), _("Configuration file not found, use default values. You can create one by the 'File|Save config' command menu.\n"));
+		return;
+	}
 
-  while(!feof(txt))
-    {
-      fgets(buffer, 256, txt);
-      l++;
-      buffer[strlen(buffer)-1]='\0';
-      if(!strcmp(buffer, "RC_END")) 
-	{
+	while(!feof(txt)) {
+		fgets(buffer, 256, txt);
+		l++;
+		buffer[strlen(buffer)-1]='\0';
+
+	if(!strcmp(buffer, "RC_END")) {
 	  fclose(txt);
 	  return;
 	}
-      if(buffer[0]=='#' || !strlen(buffer)) continue;
-      //printf("<%s>\n", buffer);
-      /* Common part with TiLP: hardware section */
-      if( (p=find_str(buffer, "calctype=")) )
-	{/*
-	  if(!strcmp(p, "ti92+")) (options.link_cable)->calc_type=CALC_TI92P;
-	  else if(!strcmp(p, "ti92")) (options.link_cable)->calc_type=CALC_TI92;
-	  else if(!strcmp(p, "ti89")) (options.link_cable)->calc_type=CALC_TI89;
-	  else if(!strcmp(p, "ti86")) (options.link_cable)->calc_type=CALC_TI86;
-	  else if(!strcmp(p, "ti85")) (options.link_cable)->calc_type=CALC_TI85;
-	  else if(!strcmp(p, "ti83+")) (options.link_cable)->calc_type=CALC_TI83P;
-	  else if(!strcmp(p, "ti83")) (options.link_cable)->calc_type=CALC_TI83;
-	  else if(!strcmp(p, "ti82")) (options.link_cable)->calc_type=CALC_TI82;
-	  else stop(l);
-	 */
-	  continue;
-	}
+
+	if(buffer[0]=='#' || !strlen(buffer)) continue;
       
-      if( (p=find_str(buffer, "linktype=")) )
-	{
-	  if(!strcmp(p, "parallel")) (options.link_cable)->link_type=LINK_PAR;
-	  else if(!strcmp(p, "serial")) (options.link_cable)->link_type=LINK_SER;
-	  else if(!strcmp(p, "TIGraphLink")) (options.link_cable)->link_type=LINK_TGL;
-	  else if(!strcmp(p, "fastAVRlink")) (options.link_cable)->link_type=LINK_AVR;
-	  else if(!strcmp(p, "VTi")) (options.link_cable)->link_type=LINK_VTI;
-	  else if(!strcmp(p, "TiEmulator")) (options.link_cable)->link_type=LINK_TIE;
-	  else if(!strcmp(p, "virtual")) (options.link_cable)->link_type=LINK_VTL;
-	  else if(!strcmp(p, "TiPcUsbLink")) (options.link_cable)->link_type=LINK_TPU;
-	  else if(!strcmp(p, "UsbGraphLink")) (options.link_cable)->link_type=LINK_UGL;
-	  else stop(l);
-	  continue;
+	/* Common part with TiLP: hardware section */
+	if ((p = find_str(buffer, "calctype="))) {
+		if (!strcmp(p, "v200"))
+			(options.link_cable)->calc_type = CALC_V200;
+
+		else if (!strcmp(p, "ti92+"))
+			(options.link_cable)->calc_type = CALC_TI92P;
+
+		else if (!strcmp(p, "ti92"))
+			(options.link_cable)->calc_type = CALC_TI92;
+
+		else if (!strcmp(p, "ti89"))
+			(options.link_cable)->calc_type = CALC_TI89;
+
+		else if (!strcmp(p, "ti86"))
+			(options.link_cable)->calc_type = CALC_TI86;
+
+		else if (!strcmp(p, "ti85"))
+			(options.link_cable)->calc_type = CALC_TI85;
+
+		else if (!strcmp(p, "ti83+"))
+			(options.link_cable)->calc_type = CALC_TI83P;
+
+		else if (!strcmp(p, "ti83"))
+			(options.link_cable)->calc_type = CALC_TI83;
+
+		else if (!strcmp(p, "ti82"))
+			(options.link_cable)->calc_type = CALC_TI82;
+
+		else if (!strcmp(p, "ti73"))
+			(options.link_cable)->calc_type = CALC_TI73;
+
+		else
+			stop(l);
+		continue;
 	}
-      if( (p=find_str(buffer, "adr_port=")) )
-	{
-	  sscanf(p, "0x%03X", &((options.link_cable)->io_addr));
-	  //check_access();
-	  continue;
+	
+	if ((p = find_str(buffer, "linktype="))) {
+		if (!strcmp(p, "parallel"))
+			(options.link_cable)->link_type = LINK_PAR;
+
+		else if (!strcmp(p, "serial"))
+			(options.link_cable)->link_type = LINK_SER;
+
+		else if (!strcmp(p, "TIGraphLink"))
+			(options.link_cable)->link_type = LINK_TGL;
+
+		else if (!strcmp(p, "fastAVRlink"))
+			(options.link_cable)->link_type = LINK_AVR;
+
+		else if (!strcmp(p, "VTi"))
+			(options.link_cable)->link_type = LINK_VTI;
+
+		else if (!strcmp(p, "TiEmulator"))
+			(options.link_cable)->link_type = LINK_TIE;
+
+		else if (!strcmp(p, "virtual"))
+			(options.link_cable)->link_type = LINK_VTL;
+
+		else if (!strcmp(p, "UsbGraphLink"))
+			(options.link_cable)->link_type = LINK_UGL;
+
+		else
+			stop(l);
+		continue;
 	}
-      if( (p=find_str(buffer, "device=")) )
-	{
-	  strcpy((options.link_cable)->device, p);
+	
+	if ((p = find_str(buffer, "adr_port="))) {
+		sscanf(p, "0x%03X", &((options.link_cable)->io_addr));
+
+		//check_access();
+		continue;
 	}
-      if( (p=find_str(buffer, "timeout=")) )
-	{
-	  sscanf(p, "%i", &((options.link_cable)->timeout));
-	  continue;
+	
+	if ((p = find_str(buffer, "device="))) {
+		strcpy((options.link_cable)->device, p);
 	}
-      if( (p=find_str(buffer, "baudrate=")) )
-	{
-	  sscanf(p, "%i", (int *)&((options.link_cable)->baud_rate));
-	  continue;
+	
+	if ((p = find_str(buffer, "timeout="))) {
+		sscanf(p, "%i", &((options.link_cable)->timeout));
+		continue;
 	}
-      if( (p=find_str(buffer, "delay=")) )
-	{
-	  sscanf(p, "%i", &((options.link_cable)->delay));
-	  continue;
+	
+	if ((p = find_str(buffer, "baudrate="))) {
+		sscanf(p, "%i", (int *) &((options.link_cable)->baud_rate));
+		continue;
 	}
-      if( (p=find_str(buffer, "rts_cts=")) )
-        {
-	  if(!strcmp(p, "on")) 
-	    (options.link_cable)->hfc = HFC_ON;
-          else if(!strcmp(p, "off")) 
-	    (options.link_cable)->hfc = HFC_OFF;
-          else stop(l);
-          continue;
-        }
-            if( (p=find_str(buffer, "port=")) )
-	{
-	  if(!strcmp(p, "parallel port #1")) (options.link_cable)->port=PARALLEL_PORT_1;
-	  else if(!strcmp(p, "parallel port #2")) (options.link_cable)->port=PARALLEL_PORT_2;
-	  else if(!strcmp(p, "parallel port #3")) (options.link_cable)->port=PARALLEL_PORT_3;
-	  else if(!strcmp(p, "serial port #1")) (options.link_cable)->port=SERIAL_PORT_1;
-	  else if(!strcmp(p, "serial port #2")) (options.link_cable)->port=SERIAL_PORT_2;
-	  else if(!strcmp(p, "serial port #3")) (options.link_cable)->port=SERIAL_PORT_3;
-	  else if(!strcmp(p, "serial port #4")) (options.link_cable)->port=SERIAL_PORT_4;
-	  else if(!strcmp(p, "virtual port #1")) (options.link_cable)->port=VIRTUAL_PORT_1;
-	  else if(!strcmp(p, "virtual port #2")) (options.link_cable)->port=VIRTUAL_PORT_2;
-	  else if(!strcmp(p, "USB port #1")) (options.link_cable)->port=USB_PORT_1;
-	  else if(!strcmp(p, "USB port #2")) (options.link_cable)->port=USB_PORT_2;
-	  else if(!strcmp(p, "USB port #3")) (options.link_cable)->port=USB_PORT_3;
-	  else if(!strcmp(p, "USB port #4")) (options.link_cable)->port=USB_PORT_4;
-	  else stop(l);
-	  continue;
+	
+	if ((p = find_str(buffer, "delay="))) {
+		sscanf(p, "%i", &((options.link_cable)->delay));
+		continue;
 	}
-      if( (p=find_str(buffer, "method=")) )
-	{
-	  if(!strcmp(p, "automatic")) (options.link_cable)->method=IOM_AUTO;
-	  else if(!strcmp(p, "asm"))	    
-	    (options.link_cable)->method=IOM_ASM;
-	  //	  else if(!strcmp(p, "dcb")) 
-	  // (options.link_cable)->method=IOM_DCB;
-	  else if(!strcmp(p, "kernel driver"))
-	    (options.link_cable)->method=IOM_DRV;
-	  else stop(l);
-	  continue;
+	
+	if ((p = find_str(buffer, "rts_cts="))) {
+		if (!strcmp(p, "on"))
+			(options.link_cable)->hfc = HFC_ON;
+
+		else if (!strcmp(p, "off"))
+			(options.link_cable)->hfc = HFC_OFF;
+
+		else
+			stop(l);
+		continue;
+	}
+	
+	if ((p = find_str(buffer, "port="))) {
+		if (!strcmp(p, "user"))
+			(options.link_cable)->port = USER_PORT;
+
+		else if (!strcmp(p, "parallel port #1"))
+			(options.link_cable)->port = PARALLEL_PORT_1;
+
+		else if (!strcmp(p, "parallel port #2"))
+			(options.link_cable)->port = PARALLEL_PORT_2;
+
+		else if (!strcmp(p, "parallel port #3"))
+			(options.link_cable)->port = PARALLEL_PORT_3;
+
+		else if (!strcmp(p, "serial port #1"))
+			(options.link_cable)->port = SERIAL_PORT_1;
+
+		else if (!strcmp(p, "serial port #2"))
+			(options.link_cable)->port = SERIAL_PORT_2;
+
+		else if (!strcmp(p, "serial port #3"))
+			(options.link_cable)->port = SERIAL_PORT_3;
+
+		else if (!strcmp(p, "serial port #4"))
+			(options.link_cable)->port = SERIAL_PORT_4;
+
+		else if (!strcmp(p, "virtual port #1"))
+			(options.link_cable)->port = VIRTUAL_PORT_1;
+
+		else if (!strcmp(p, "virtual port #2"))
+			(options.link_cable)->port = VIRTUAL_PORT_2;
+
+		else if (!strcmp(p, "USB port #1"))
+			(options.link_cable)->port = USB_PORT_1;
+
+		else if (!strcmp(p, "USB port #2"))
+			(options.link_cable)->port = USB_PORT_2;
+
+		else if (!strcmp(p, "USB port #3"))
+			(options.link_cable)->port = USB_PORT_3;
+
+		else if (!strcmp(p, "USB port #4"))
+			(options.link_cable)->port = USB_PORT_4;
+
+		else
+			stop(l);
+		continue;
+	}
+	
+	if ((p = find_str(buffer, "method="))) {
+		if (!strcmp(p, "automatic"))
+			(options.link_cable)->method = IOM_AUTO;
+
+		else if (!strcmp(p, "asm"))
+			(options.link_cable)->method = IOM_ASM;
+
+		else if (!strcmp(p, "api"))
+			(options.link_cable)->method = IOM_API;
+
+		else if (!strcmp(p, "driver"))
+			(options.link_cable)->method = IOM_DRV;
+
+		else
+			stop(l);
+		continue;
 	}
 
       /* GtkTiEmu specific part: emulator section */
-      if( (p=find_str(buffer, "background=")) )
-	{
+	if( (p=find_str(buffer, "background=")) ) {
 	  sscanf(p, "%i", &((options.params)->background));
 	  continue;
 	}
-      if( (p=find_str(buffer, "rom_file=")) )
-	{
+
+	if( (p=find_str(buffer, "rom_file=")) ) {
 	  g_free((options.params)->rom_file);
 	  (options.params)->rom_file = g_strdup(p);
 	  continue;
 	}
-      if( (p=find_str(buffer, "ram_file=")) )
+
+	if( (p=find_str(buffer, "ram_file=")) )
 	{
 	  g_free((options.params)->ram_file);
 	  (options.params)->ram_file = g_strdup(p);
 	  continue;
 	}
-      if( (p=find_str(buffer, "tib_file=")) )
+
+	if( (p=find_str(buffer, "tib_file=")) )
 	{
 	  g_free((options.params)->tib_file);
 	  (options.params)->tib_file = g_strdup(p);
 	  continue;
 	}
-      if( (p=find_str(buffer, "gray_planes=")) )
+
+	if( (p=find_str(buffer, "gray_planes=")) )
 	{
 	  sscanf(p, "%i", &((options.params)->n_grayplanes));
 	  continue;
 	}
-      if( (p=find_str(buffer, "tick_rate=")) )
+
+	if( (p=find_str(buffer, "tick_rate=")) )
 	{
 	  sscanf(p, "%u", &((options.params)->tick_rate));
 	  continue;
 	}
-      if( (p=find_str(buffer, "cycle_rate=")) )
+
+	if( (p=find_str(buffer, "cycle_rate=")) )
 	{
 	  sscanf(p, "%u", &((options.params)->cycle_rate));
 	  continue;
 	}
-      if( (p=find_str(buffer, "itick=")) )
+
+	if( (p=find_str(buffer, "itick=")) )
 	{
 	  sscanf(p, "%i", &((options.params)->i_tick));
 	  continue;
 	}
-      if( (p=find_str(buffer, "sync_one=")) )
-	{
-	  sscanf(p, "%i", &((options.params)->sync_one));
-	  continue;
-	}
-      if( (p=find_str(buffer, "code_lines=")) )
+	
+	if( (p=find_str(buffer, "code_lines=")) )
 	{
 	  sscanf(p, "%i", &(options.code_lines));
 	  continue;
 	}
-      if( (p=find_str(buffer, "mem_lines=")) )
+
+	if( (p=find_str(buffer, "mem_lines=")) )
 	{
 	  sscanf(p, "%i", &(options.mem_lines));
 	  continue;
 	}
-      if( (p=find_str(buffer, "stack_lines=")) )
+
+	if( (p=find_str(buffer, "stack_lines=")) )
 	{
 	  sscanf(p, "%i", &(options.stack_lines));
 	  continue;
 	}
-      if( (p=find_str(buffer, "img_format=")) )
+
+	if( (p=find_str(buffer, "img_format=")) )
 	{
 	  if(!strcmp(p, "pcx")) options.img_format=IMG_PCX;
 	  else if(!strcmp(p, "xpm")) options.img_format=IMG_XPM;
@@ -291,31 +417,36 @@ void read_rc_file(void)
 	  else stop(l);
 	  continue;
 	}
-      if( (p=find_str(buffer, "img_type=")) )
+      
+	if( (p=find_str(buffer, "img_type=")) )
 	{
 	  if(!strcmp(p, "bw")) options.img_type = IMG_BW;
 	  else if(!strcmp(p, "color")) options.img_type = IMG_COL;
 	  else stop(l);
 	  continue;
 	}
-      if( (p=find_str(buffer, "img_size=")) )
+      
+	if( (p=find_str(buffer, "img_size=")) )
 	{
 	  if(!strcmp(p, "lcd")) options.img_size = IMG_LCD;
 	  else if(!strcmp(p, "skin")) options.img_size = IMG_SKIN;
 	  else stop(l);
 	  continue;
 	}
-      if( (p=find_str(buffer, "screen_file=")) )
+      
+	if( (p=find_str(buffer, "screen_file=")) )
 	{
 	  g_free(options.screen_file);
 	  options.screen_file = g_strdup(p);
 	  continue;
 	}
-      if( (p=find_str(buffer, "screen_counter=")) )
+      
+	if( (p=find_str(buffer, "screen_counter=")) )
 	{
 	  sscanf(p, "%i", &(options.screen_counter));
 	  continue;
 	}
+	
 	if( (p=find_str(buffer, "console=")) )
 	{
 	  if(!strcmp(p, "no")) options.console = 0;
@@ -324,6 +455,7 @@ void read_rc_file(void)
 	  else stop(l);
 	  continue;
 	}
+	
 	if( (p=find_str(buffer, "skin_file=")) )
 	{
 	  g_free(options.skin_file);
@@ -333,8 +465,6 @@ void read_rc_file(void)
     }
   fclose(txt);
 
-  fprintf(stderr, "rcfile, 0x%03x\n", (options.link_cable)->io_addr);
-
   return;
 }
 
@@ -342,169 +472,212 @@ void read_rc_file(void)
    Write the contents of some variables to the RC file 
    in a plain text format.
 */
-void write_rc_file(void)
+void rcfile_write(void)
 {
-  FILE *txt;
+	FILE *txt;
 
-  get_rcfile_path(&rc_file);
-  mkdir(CONF_DIR, 0755);
-  txt=fopen(rc_file, "wt");
+	rcfile_get_path(&rc_file);
+	mkdir(CONF_DIR, 0755);
+	txt=fopen(rc_file, "wt");
 
-  printf("rcfile: <%s>\n", rc_file);
+	if(txt==NULL) {
+		//gif->msg_box(_("Error"), _("Unable to write the config file (~/.tilp or tilp.ini).\n"));
+		return;
+	}
 
-  if(txt==NULL)
-    {
-      //gif->msg_box(_("Error"), _("Unable to write the config file (~/.tilp or tilp.ini).\n"));
-      return;
-    }
+	fprintf(txt, "# Config file for TiEmu II\n");
+	fprintf(txt, "  (C) Romain Lievin & Thomas Corvazier  2000-2001\n");
+	fprintf(txt, "  (C) Romain Lievin 2001-2003\n");
+	fprintf(txt, "  (C) Julien Blache 2003\n");
+	fprintf(txt, "  (C) Romain Liévin 2004\n");
+	fprintf(txt, "# Warning: any comments that you add to this file WILL be overwritten\n");
+	fprintf(txt, "\n");
 
-  fprintf(txt, "# Config file for GtkTiEmu\n");
-  fprintf(txt, "# Copyright (C) 2000-2001 Thomas Corvazier <corvazier@yahoo.com>\n");
-  fprintf(txt, "# and Romain Lievin <rlievin@mail.com>\n");
-  fprintf(txt, "# Warning: any comments that you add to this file WILL be overwritten\n");
-  fprintf(txt, "\n");
+	/* Common part with TiLP */
+	fprintf(txt, "version=%s\n", TIEMU_VERSION);
+	fprintf(txt, "\n");
+	fprintf(txt, "#\n");
+	fprintf(txt, "# HARDWARE SECTION\n");
+	fprintf(txt, "#\n");
+	fprintf(txt, "\n");
+	fprintf(txt, "# Calculator type\n");
+	fprintf(txt, "calctype=");
+	switch ((options.link_cable)->calc_type) {
+	case CALC_V200:
+		fprintf(txt, "v200\n");
+		break;
+	case CALC_TI92P:
+		fprintf(txt, "ti92+\n");
+		break;
+	case CALC_TI92:
+		fprintf(txt, "ti92\n");
+		break;
+	case CALC_TI89:
+		fprintf(txt, "ti89\n");
+		break;
+	case CALC_TI86:
+		fprintf(txt, "ti86\n");
+		break;
+	case CALC_TI85:
+		fprintf(txt, "ti85\n");
+		break;
+	case CALC_TI83P:
+		fprintf(txt, "ti83+\n");
+		break;
+	case CALC_TI83:
+		fprintf(txt, "ti83\n");
+		break;
+	case CALC_TI82:
+		fprintf(txt, "ti82\n");
+		break;
+	case CALC_TI73:
+		fprintf(txt, "ti73\n");
+		break;
+	}
 
-  /* Common part with TiLP */
-  fprintf(txt, "version=%s\n", TIEMU_VERSION);
-  fprintf(txt, "\n");
-  fprintf(txt, "#\n");
-  fprintf(txt, "# HARDWARE SECTION\n");
-  fprintf(txt, "#\n");
-  fprintf(txt, "\n");
-  fprintf(txt, "# Link cable type\n");
-  fprintf(txt, "linktype=");
-  switch((options.link_cable)->link_type)
-    {
-    case LINK_PAR:
-      fprintf(txt, "parallel\n");
-      break;
-    case LINK_SER:
-      fprintf(txt, "serial\n");
-      break;
-    case LINK_TGL:
-      fprintf(txt, "TIGraphLink\n");
-      break; 
-    case LINK_AVR:
-      fprintf(txt, "fastAVRlink\n");
-      break;
-    case LINK_VTL:
-      fprintf(txt, "virtual\n");
-      break;
-    case LINK_TIE:
-      fprintf(txt, "TiEmulator\n");
-      break;
-    case LINK_VTI:
-      fprintf(txt, "VTi\n");
-      break;
-    case LINK_UGL:
-      fprintf(txt, "UsbGraphLink\n");
-      break;
-    case LINK_TPU:
-      fprintf(txt, "TiPcUsbLink\n");
-      break;
-    default: break;
-    }
-  fprintf(txt, "\n");
-  fprintf(txt, "# Port to use (serial, parallel, ...\n");
-  fprintf(txt, "port=");
-  switch((options.link_cable)->port)
-    {
-    case PARALLEL_PORT_1:
-      fprintf(txt, "parallel port #1\n");
-      break;
-    case PARALLEL_PORT_2:
-      fprintf(txt, "parallel port #2\n");
-      break;
-    case PARALLEL_PORT_3:
-      fprintf(txt, "parallel port #3\n");
-      break;
-    case SERIAL_PORT_1:
-      fprintf(txt, "serial port #1\n");
-      break;
-    case SERIAL_PORT_2:
-      fprintf(txt, "serial port #2\n");
-      break;
-    case SERIAL_PORT_3:
-      fprintf(txt, "serial port #3\n");
-      break;
-    case SERIAL_PORT_4:
-      fprintf(txt, "serial port #4\n");
-      break;
-    case VIRTUAL_PORT_1:
-      fprintf(txt, "virtual port #1\n");
-      break;
-    case VIRTUAL_PORT_2:
-      fprintf(txt, "virtual port #2\n");
-      break;
-    case USB_PORT_1:
-      fprintf(txt, "USB port #1\n");
-      break;
-    case USB_PORT_2:
-      fprintf(txt, "USB port #2\n");
-      break;
-    case USB_PORT_3:
-      fprintf(txt, "USB port #3\n");
-      break;
-    case USB_PORT_4:
-      fprintf(txt, "USB port #4\n");
-      break;
-    default: break;
-    }
-  fprintf(txt, "\n");
-  fprintf(txt, "# Method to use for I/O accesses\n");
-  fprintf(txt, "method=");
-  switch((options.link_cable)->method)
-    {
-    case IOM_AUTO:
-      fprintf(txt, "automatic\n");
-      break;
-    case IOM_ASM:
-      fprintf(txt, "asm\n");
-      break;
-      //    case IOM_DCB:
-      //fprintf(txt, "dcb\n");
-      //break;
-    case IOM_DRV:
-      fprintf(txt, "kernel driver\n");
-      break;
-    default: break;
-    }
-  fprintf(txt, "\n");
-  fprintf(txt, "# Parallel/serial/virtual port address (0=automatic)\n");
-  fprintf(txt, "adr_port=0x%03X\n", (options.link_cable)->io_addr);
-  fprintf(txt, "\n");
-  fprintf(txt, "# Serial device or character device (empty=automatic)\n");
-  fprintf(txt, "serial_device=%s\n", (options.link_cable)->device);
-  fprintf(txt, "\n");
-  fprintf(txt, "# Baud rate for the fastAVRlink\n");
-  fprintf(txt, "baudrate=%i\n", (options.link_cable)->baud_rate);
-  fprintf(txt, "\n");
-  fprintf(txt, "# Timeout value in 0.1 seconds\n");
-  fprintf(txt, "timeout=%i\n", (options.link_cable)->timeout);
-  fprintf(txt, "\n");
-  fprintf(txt, "# Delay value\n");
-  fprintf(txt, "delay=%i\n", (options.link_cable)->delay);
-  fprintf(txt, "\n");
-  fprintf(txt, "# Hardware flow control for fastAVRlink.\n");
-  fprintf(txt, "rts_cts=%s\n", ((options.link_cable)->hfc == HFC_ON) ? "on" : "off");
-  fprintf(txt, "\n");
+	fprintf(txt, "\n");
+	fprintf(txt, "# Link cable type\n");
+	fprintf(txt, "linktype=");
+
+	switch ((options.link_cable)->link_type) {
+	case LINK_PAR:
+		fprintf(txt, "parallel\n");
+		break;
+	case LINK_SER:
+		fprintf(txt, "serial\n");
+		break;
+	case LINK_TGL:
+		fprintf(txt, "TIGraphLink\n");
+		break;
+	case LINK_AVR:
+		fprintf(txt, "fastAVRlink\n");
+		break;
+	case LINK_VTL:
+		fprintf(txt, "virtual\n");
+		break;
+	case LINK_TIE:
+		fprintf(txt, "TiEmulator\n");
+		break;
+	case LINK_VTI:
+		fprintf(txt, "VTi\n");
+		break;
+	case LINK_UGL:
+		fprintf(txt, "UsbGraphLink\n");
+		break;
+	default:
+		fprintf(txt, "invalid\n");
+		break;
+	}
+
+	fprintf(txt, "\n");
+	fprintf(txt, "# Port to use (serial, parallel, ...\n");
+	fprintf(txt, "port=");
+
+	switch ((options.link_cable)->port) {
+	case USER_PORT:
+		fprintf(txt, "user\n");
+		break;
+	case PARALLEL_PORT_1:
+		fprintf(txt, "parallel port #1\n");
+		break;
+	case PARALLEL_PORT_2:
+		fprintf(txt, "parallel port #2\n");
+		break;
+	case PARALLEL_PORT_3:
+		fprintf(txt, "parallel port #3\n");
+		break;
+	case SERIAL_PORT_1:
+		fprintf(txt, "serial port #1\n");
+		break;
+	case SERIAL_PORT_2:
+		fprintf(txt, "serial port #2\n");
+		break;
+	case SERIAL_PORT_3:
+		fprintf(txt, "serial port #3\n");
+		break;
+	case SERIAL_PORT_4:
+		fprintf(txt, "serial port #4\n");
+		break;
+	case VIRTUAL_PORT_1:
+		fprintf(txt, "virtual port #1\n");
+		break;
+	case VIRTUAL_PORT_2:
+		fprintf(txt, "virtual port #2\n");
+		break;
+	case USB_PORT_1:
+		fprintf(txt, "USB port #1\n");
+		break;
+	case USB_PORT_2:
+		fprintf(txt, "USB port #2\n");
+		break;
+	case USB_PORT_3:
+		fprintf(txt, "USB port #3\n");
+		break;
+	case USB_PORT_4:
+		fprintf(txt, "USB port #4\n");
+		break;
+	default:
+		fprintf(txt, "invalid\n");
+		break;
+	}
+
+	fprintf(txt, "\n");
+	fprintf(txt, "# Method to use for I/O accesses\n");
+	fprintf(txt, "method=");
+	if ((options.link_cable)->method & IOM_AUTO)
+		fprintf(txt, "automatic\n");
+
+	else if ((options.link_cable)->method & IOM_ASM)
+		fprintf(txt, "asm\n");
+
+	else if ((options.link_cable)->method & IOM_API)
+		fprintf(txt, "api\n");
+
+	else if ((options.link_cable)->method & IOM_DRV)
+		fprintf(txt, "driver\n");
+
+	else
+		fprintf(txt, "automatic\n");
+	fprintf(txt, "\n");
+	fprintf(txt,
+		"# Parallel/serial/virtual port address (0=automatic)\n");
+	fprintf(txt, "adr_port=0x%03X\n", (options.link_cable)->io_addr);
+	fprintf(txt, "\n");
+	fprintf(txt,
+		"# Serial device or character device (empty=automatic)\n");
+	fprintf(txt, "serial_device=%s\n", (options.link_cable)->device);
+	fprintf(txt, "\n");
+	fprintf(txt, "# Baud rate for the fastAVRlink\n");
+	fprintf(txt, "baudrate=%i\n", (options.link_cable)->baud_rate);
+	fprintf(txt, "\n");
+	fprintf(txt, "# Timeout value in 0.1 seconds\n");
+	fprintf(txt, "timeout=%i\n", (options.link_cable)->timeout);
+	fprintf(txt, "\n");
+	fprintf(txt, "# Delay value\n");
+	fprintf(txt, "delay=%i\n", (options.link_cable)->delay);
+	fprintf(txt, "\n");
+	fprintf(txt, "# Hardware flow control for fastAVRlink.\n");
+	fprintf(txt, "rts_cts=%s\n",
+		((options.link_cable)->hfc == HFC_ON) ? "on" : "off");
+	fprintf(txt, "\n");
+	fprintf(txt, "#\n");
 
   /* Specific part to GtkTiEmu */
-  fprintf(txt, "#\n");
-  fprintf(txt, "# EMULATOR SECTION\n");
-  fprintf(txt, "#\n");
-  fprintf(txt, "\n");
-  fprintf(txt, "# Background (0 for LCD only, 1 with skin)\n");
-  fprintf(txt, "background=%i\n", (options.params)->background);
-  fprintf(txt, "\n");
-  fprintf(txt, "# SKIN file\n");
-  fprintf(txt, "skin_file=%s\n", options.skin_file);
-  fprintf(txt, "\n");
-  fprintf(txt, "# ROM file\n");
-  fprintf(txt, "rom_file=%s\n", (options.params)->rom_file);
-  fprintf(txt, "\n");
-  fprintf(txt, "# RAM file\n");
-  fprintf(txt, "ram_file=%s\n", (options.params)->ram_file);
+	fprintf(txt, "#\n");
+	fprintf(txt, "# EMULATOR SECTION\n");
+	fprintf(txt, "#\n");
+	fprintf(txt, "\n");
+	fprintf(txt, "# Background (0 for LCD only, 1 with skin)\n");
+	fprintf(txt, "background=%i\n", (options.params)->background);
+	fprintf(txt, "\n");
+	fprintf(txt, "# SKIN file\n");
+	fprintf(txt, "skin_file=%s\n", options.skin_file);
+	fprintf(txt, "\n");
+	fprintf(txt, "# ROM file\n");
+	fprintf(txt, "rom_file=%s\n", (options.params)->rom_file);
+	fprintf(txt, "\n");
+	fprintf(txt, "# RAM file\n");
+	fprintf(txt, "ram_file=%s\n", (options.params)->ram_file);
   fprintf(txt, "\n");
   fprintf(txt, "# TIB file\n");
   fprintf(txt, "tib_file=%s\n", (options.params)->tib_file);
@@ -590,31 +763,31 @@ void write_rc_file(void)
 */
 int load_default_config()
 {
-  // share structures fields
-  options.params = &params;
-  options.link_cable = &(params.link_cable);
+	// share structures fields
+	options.params = &params;
+	options.link_cable = &(params.link_cable);
 
-  ti68k_loadDefaultConfig();
+	ti68k_loadDefaultConfig();
 
-  options.skin_file = g_strconcat(inst_paths.skin_dir, "ti92.skn", NULL);
+	options.skin_file = g_strconcat(inst_paths.skin_dir, "ti92.skn", NULL);
 
-  // default ROM & RAM at startup
-  (options.params)->rom_file = g_strconcat(inst_paths.rom_dir, "ti.rom", NULL);
-  (options.params)->ram_file = g_strdup("");
-  (options.params)->tib_file = g_strdup("");
+	// default ROM & RAM at startup
+	(options.params)->rom_file = g_strconcat(inst_paths.rom_dir, "", NULL);
+	(options.params)->ram_file = g_strdup("");
+	(options.params)->tib_file = g_strdup("");
 
-  options.code_lines  = 20;
-  options.stack_lines = 20;
-  options.mem_lines   = 20;
+	options.code_lines  = 20;
+	options.stack_lines = 20;
+	options.mem_lines   = 20;
 
-  options.img_type = IMG_BW;
-  options.img_format = IMG_PCX;
-  options.img_size = IMG_LCD;
+	options.screen_file = g_strdup("screenshot");
+	options.screen_counter = 0;
+	options.img_type = IMG_BW;
+	options.img_format = IMG_PCX;
+	options.img_size = IMG_LCD;
 
-  options.screen_counter = 0;
-  options.screen_file = g_strdup("screenshot");
-  options.console=0;
+	options.console=0;
 
-  return 0;
+	return 0;
 }
 
