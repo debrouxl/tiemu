@@ -196,11 +196,6 @@ int ti68k_debug_disassemble(int addr, char *output)
   return (nextPc-addr);
 }
 
-int ti68k_debug_launch(void)
-{
-    return cb_launch_debugger(0);
-}
-
 int ti68k_debug_break(void)
 {
     specialflags |= SPCFLAG_BRK;

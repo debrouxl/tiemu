@@ -154,13 +154,11 @@ int hw_m68k_run(int n)
 	  if (specialflags & SPCFLAG_BRK) 
 	    {		
 	      specialflags &= ~SPCFLAG_BRK;
-	      //cb_launch_debugger();
 	      return 1;		// DBG_BREAK
 	    }
 	  if(specialflags & SPCFLAG_DBTRACE) 
 	    {
 	      specialflags &= ~SPCFLAG_DBTRACE;
-	      //cb_launch_debugger();
           return 2;     // DBG_TRACE
 	    }
 	}  

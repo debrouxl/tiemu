@@ -39,8 +39,6 @@
 
 /* Function pointers */
 
-callback_ii_t cb_launch_debugger = enter_debugger;
-
 callback_iv_t cb_init_specific  = NULL;
 callback_iv_t cb_exit_specific  = NULL;
 callback_iv_t cb_update_screen  = NULL;
@@ -68,23 +66,3 @@ void ti68k_gui_set_callbacks(
   cb_set_contrast   = setContrast;
 }
 
-
-/*
-    This function defines the passed function (callback) 
-    as current debugger. If you pass NULL, the current debugger
-    is restored to internal debugger (text mode).
-    Return the default callback, too.
-*/
-callback_ii_t ti68k_debugger_define(callback_ii_t new_debugger)
-{
-    if(new_debugger == NULL)
-    {
-        cb_launch_debugger = enter_debugger;
-    }
-    else
-    {
-        cb_launch_debugger = new_debugger;
-    }
-  
-    return (callback_ii_t)enter_debugger;
-}

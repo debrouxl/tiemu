@@ -561,7 +561,7 @@ void op_illg(ULONG opcode)
 {
   regs.pc_p-=2;
   
-#ifdef DEBUGGER // this part scan breakpoint and launch debugger
+#ifdef DEBUGGER_TIGER // this part scan breakpoint and launch debugger
   if(opcode == 0xdfff) 
     {
       int i;
@@ -712,7 +712,7 @@ void MC68000_run(void)
 	  if(specialflags & SPCFLAG_DBTRACE) 
 	    {
 	      specialflags &= ~SPCFLAG_DBTRACE;
-	      cb_launch_debugger();
+	      //cb_launch_debugger();
 	    }
 	}   
     }

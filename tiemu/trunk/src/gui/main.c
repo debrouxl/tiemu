@@ -149,11 +149,9 @@ int main(int argc, char **argv)
     //ticalc_set_printl(ticalcs_printl);
 
 	/* 
-		Assign an GUI to the emulation engine 
-		and a debugger (step 1)
+		Assign an GUI to the emulation engine
 	*/
 	hid_set_callbacks();
-	ti68k_debugger_define(enter_gtk_debugger);
 
     /*
         Search for ROM in the image directory
