@@ -9,14 +9,19 @@ To do:
 	- [roms] $985: updated copyright notice.
 	- [roms] $990: set main window title (for TIGCC-IDE).
 	- [roms] $993: switched to GTK+ 2.6.4 for Windows.
-	- [roms] $994: removed GTK deprecated code (-DGTK_DISABLE_DEPRECATED), except for comm.c
+	- [roms] $994: removed GTK deprecated code (-DGTK_DISABLE_DEPRECATED),
+	         except for comm.c
 	- [roms] $996: set default filename in file selectors
-	- [roms] $997: more dissassembled lines of code in the debugger (resizeable).
+	- [roms] $997: more dissassembled lines of code in the debugger 
+	         (resizeable).
 	- [roms] $998: close the debugger when you press F5.
-	- [roms] $1001: added scaling support for skin & lcd (beware: CPU intensive).
-	- [roms] $1002: can send several TI files at once and added new file selectors.
+	- [roms] $1001: added scaling support for skin & lcd 
+	         (beware: CPU intensive).
+	- [roms] $1002: can send several TI files at once and added 
+	         new file selectors.
 	- [roms] $1008: implemented full-screen view.
 	- [roms] $1009: improved CPU responsiveness of large view mode.
+	- [roms] $1012: TiEmu don't use threads any longer
 
 - 12/03/2005, version 1.80p:
 	- [kevin] $933: increased link timeout from 1.5 to 10s.

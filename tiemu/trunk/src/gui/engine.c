@@ -96,9 +96,13 @@ static gboolean engine_func(gint *data)
 void engine_start(void) 
 {
 	if(params.restricted)
-		tid = g_timeout_add_full(G_PRIORITY_DEFAULT, TIME_LIMIT, engine_func, &res, engine_notify);
+		tid = g_timeout_add_full(G_PRIORITY_DEFAULT, TIME_LIMIT, 
+					 (GSourceFunc)engine_func, &res, 
+					 (GDestroyNotify)engine_notify);
 	else
-		tid = g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, engine_func, &res, engine_notify);
+		tid = g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, 
+				      (GSourceFunc)engine_func, &res, 
+				      (GDestroyNotify)engine_notify);
 }
 
 // stop it
