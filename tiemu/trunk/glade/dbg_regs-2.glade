@@ -18,8 +18,7 @@
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <signal name="delete_event" handler="on_dbgregs_window_delete_event" last_modification_time="Mon, 07 Jun 2004 08:11:10 GMT"/>
-  <signal name="hide" handler="on_dbgregs_window_hide" last_modification_time="Wed, 30 Jun 2004 13:12:11 GMT"/>
-  <signal name="show" handler="on_dbgregs_window_show" last_modification_time="Sun, 04 Jul 2004 09:00:30 GMT"/>
+  <signal name="window_state_event" handler="on_dbgregs_window_state_event" last_modification_time="Sun, 27 Feb 2005 08:21:51 GMT"/>
 
   <child>
     <widget class="GtkScrolledWindow" id="scrolledwindow1">

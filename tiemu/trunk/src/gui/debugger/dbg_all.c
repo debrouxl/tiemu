@@ -114,7 +114,7 @@ void set_other_windows_sensitivity(int state)
         gtk_widget_set_sensitive(dbgw.heap, state);
 }
 
-void gtk_debugger_minimize_all(int all)	// unused
+void gtk_debugger_minimize_all(int all)
 {
     if(dbgs.regs)
         gtk_window_iconify(GTK_WINDOW(dbgw.regs));
@@ -132,7 +132,7 @@ void gtk_debugger_minimize_all(int all)	// unused
         gtk_window_iconify(GTK_WINDOW(dbgw.heap));
 }
 
-void gtk_debugger_deminimize_all(int all)	// unused
+void gtk_debugger_unminimize_all(int all)
 {
     if(dbgs.regs)
         gtk_window_deiconify(GTK_WINDOW(dbgw.regs));
@@ -292,12 +292,7 @@ GLADE_CB void
 on_minimize_all1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    gtk_widget_hide(dbgw.regs);
-    gtk_widget_hide(dbgw.bkpts);
-    gtk_widget_hide(dbgw.mem);
-    gtk_widget_hide(dbgw.pclog);
-    gtk_widget_hide(dbgw.stack);
-	gtk_widget_hide(dbgw.heap);
+    gtk_debugger_minimize_all(0);
 }
 
 
@@ -305,18 +300,14 @@ GLADE_CB void
 on_maximize_all1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    gtk_widget_show(dbgw.regs);
-    gtk_widget_show(dbgw.bkpts);
-    gtk_widget_show(dbgw.mem);
-    gtk_widget_show(dbgw.pclog);
-    gtk_widget_show(dbgw.stack);
-	gtk_widget_show(dbgw.heap);
+    gtk_debugger_unminimize_all(0);
 }
 
 GLADE_CB void
 on_restore_all1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	// restore windows with default settings
 }
 
 void update_submenu(GtkWidget *widget, gpointer user_data)
@@ -372,7 +363,7 @@ void update_submenu(GtkWidget *widget, gpointer user_data)
 // callbacks from dbg_regs.c
 
 GLADE_CB gboolean
-on_dbgregs_window_delete_event       (GtkWidget       *widget,
+on_dbgregs_window_delete_event         (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
@@ -381,24 +372,32 @@ on_dbgregs_window_delete_event       (GtkWidget       *widget,
 }
 
 GLADE_CB void
-on_dbgregs_window_hide                (GtkWidget       *widget,
+on_dbgregs_window_state_event		   (GtkWidget       *widget,
+                                        GdkEvent        *event,
                                         gpointer         user_data)
 {
-    dbgs.regs = 0;
-    gtk_window_get_size(GTK_WINDOW(widget), &options3.regs.w, &options3.regs.h);
-    gtk_window_get_position(GTK_WINDOW(widget), &options3.regs.x, &options3.regs.y);
-}
+    GdkEventWindowState *wstate = (GdkEventWindowState *)event;
+    GdkWindowState state = wstate->new_window_state;
+    GdkWindowState mask = wstate->changed_mask;
 
-GLADE_CB void
-on_dbgregs_window_show                (GtkWidget       *widget,
-                                        gpointer         user_data)
-{
-    dbgs.regs = !0;
+	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
+	{
+		dbgs.regs = !(state & GDK_WINDOW_STATE_WITHDRAWN);
+		if(dbgs.regs)
+		{
+			gtk_window_get_size(GTK_WINDOW(widget), &options3.regs.w, &options3.regs.h);
+			gtk_window_get_position(GTK_WINDOW(widget), &options3.regs.x, &options3.regs.y);
+		}
+	}
+
+	if(mask & GDK_WINDOW_STATE_ICONIFIED)
+	{
+	}
 }
 
 // callbacks from dbg_pclog.c
 GLADE_CB gboolean
-on_dbgpclog_window_delete_event       (GtkWidget       *widget,
+on_dbgpclog_window_delete_event        (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
@@ -407,19 +406,27 @@ on_dbgpclog_window_delete_event       (GtkWidget       *widget,
 }
 
 GLADE_CB void
-on_dbgpclog_window_hide                (GtkWidget       *widget,
+on_dbgpclog_window_state_event		   (GtkWidget       *widget,
+                                        GdkEvent        *event,
                                         gpointer         user_data)
 {
-    dbgs.pclog = 0;
-    gtk_window_get_size(GTK_WINDOW(widget), &options3.pclog.w, &options3.pclog.h);
-    gtk_window_get_position(GTK_WINDOW(widget), &options3.pclog.x, &options3.pclog.y);
-}
+    GdkEventWindowState *wstate = (GdkEventWindowState *)event;
+    GdkWindowState state = wstate->new_window_state;
+    GdkWindowState mask = wstate->changed_mask;
 
-GLADE_CB void
-on_dbgpclog_window_show                (GtkWidget       *widget,
-                                        gpointer         user_data)
-{
-    dbgs.pclog = !0;
+	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
+	{
+		dbgs.pclog = !(state & GDK_WINDOW_STATE_WITHDRAWN);
+		if(dbgs.pclog)
+		{
+			gtk_window_get_size(GTK_WINDOW(widget), &options3.pclog.w, &options3.pclog.h);
+			gtk_window_get_position(GTK_WINDOW(widget), &options3.pclog.x, &options3.pclog.y);
+		}
+	}
+
+	if(mask & GDK_WINDOW_STATE_ICONIFIED)
+	{
+	}
 }
 
 // callbacks from dbg_mem.c
@@ -434,19 +441,27 @@ on_dbgmem_window_delete_event       (GtkWidget       *widget,
 }
 
 GLADE_CB void
-on_dbgmem_window_hide                (GtkWidget       *widget,
+on_dbgmem_window_state_event		   (GtkWidget       *widget,
+                                        GdkEvent        *event,
                                         gpointer         user_data)
 {
-    dbgs.mem = 0;
-    gtk_window_get_size(GTK_WINDOW(widget), &options3.mem.w, &options3.mem.h);
-    gtk_window_get_position(GTK_WINDOW(widget), &options3.mem.x, &options3.mem.y);
-}
+    GdkEventWindowState *wstate = (GdkEventWindowState *)event;
+    GdkWindowState state = wstate->new_window_state;
+    GdkWindowState mask = wstate->changed_mask;
 
-GLADE_CB void
-on_dbgmem_window_show                (GtkWidget       *widget,
-                                        gpointer         user_data)
-{
-    dbgs.mem = !0;
+	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
+	{
+		dbgs.mem = !(state & GDK_WINDOW_STATE_WITHDRAWN);
+		if(dbgs.mem)
+		{
+			gtk_window_get_size(GTK_WINDOW(widget), &options3.mem.w, &options3.mem.h);
+			gtk_window_get_position(GTK_WINDOW(widget), &options3.mem.x, &options3.mem.y);
+		}
+	}
+
+	if(mask & GDK_WINDOW_STATE_ICONIFIED)
+	{
+	}
 }
 
 // callbacks from dbg_code.c
@@ -462,19 +477,27 @@ on_dbgcode_window_delete_event       (GtkWidget       *widget,
 }
 
 GLADE_CB void
-on_dbgcode_window_hide                (GtkWidget       *widget,
+on_dbgcode_window_state_event		   (GtkWidget       *widget,
+                                        GdkEvent        *event,
                                         gpointer         user_data)
 {
-    dbgs.code = 0;
-    gtk_window_get_size(GTK_WINDOW(widget), &options3.code.w, &options3.code.h);
-    gtk_window_get_position(GTK_WINDOW(widget), &options3.code.x, &options3.code.y);
-}
+    GdkEventWindowState *wstate = (GdkEventWindowState *)event;
+    GdkWindowState state = wstate->new_window_state;
+    GdkWindowState mask = wstate->changed_mask;
 
-GLADE_CB void
-on_dbgcode_window_show                (GtkWidget       *widget,
-                                        gpointer         user_data)
-{
-    dbgs.code = !0;
+	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
+	{
+		dbgs.code = !(state & GDK_WINDOW_STATE_WITHDRAWN);
+		if(dbgs.code)
+		{
+			gtk_window_get_size(GTK_WINDOW(widget), &options3.code.w, &options3.code.h);
+			gtk_window_get_position(GTK_WINDOW(widget), &options3.code.x, &options3.code.y);
+		}
+	}
+
+	if(mask & GDK_WINDOW_STATE_ICONIFIED)
+	{
+	}
 }
 
 // callbacks from dbg_bkpts.c
@@ -489,19 +512,27 @@ on_dbgbkpts_window_delete_event       (GtkWidget       *widget,
 }
 
 GLADE_CB void
-on_dbgbkpts_window_hide                (GtkWidget       *widget,
+on_dbgbkpts_window_state_event		   (GtkWidget       *widget,
+                                        GdkEvent        *event,
                                         gpointer         user_data)
 {
-    dbgs.bkpts = 0;
-    gtk_window_get_size(GTK_WINDOW(widget), &options3.bkpts.w, &options3.bkpts.h);
-    gtk_window_get_position(GTK_WINDOW(widget), &options3.bkpts.x, &options3.bkpts.y);
-}
+    GdkEventWindowState *wstate = (GdkEventWindowState *)event;
+    GdkWindowState state = wstate->new_window_state;
+    GdkWindowState mask = wstate->changed_mask;
 
-GLADE_CB void
-on_dbgbkpts_window_show                (GtkWidget       *widget,
-                                        gpointer         user_data)
-{
-    dbgs.bkpts = !0;
+	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
+	{
+		dbgs.bkpts = !(state & GDK_WINDOW_STATE_WITHDRAWN);
+		if(dbgs.bkpts)
+		{
+			gtk_window_get_size(GTK_WINDOW(widget), &options3.bkpts.w, &options3.bkpts.h);
+			gtk_window_get_position(GTK_WINDOW(widget), &options3.bkpts.x, &options3.bkpts.y);
+		}
+	}
+
+	if(mask & GDK_WINDOW_STATE_ICONIFIED)
+	{
+	}
 }
 
 // callbacks from dbg_stack.c
@@ -515,19 +546,27 @@ on_dbgstack_window_delete_event       (GtkWidget       *widget,
 }
 
 GLADE_CB void
-on_dbgstack_window_hide                (GtkWidget       *widget,
+on_dbgstack_window_state_event		   (GtkWidget       *widget,
+                                        GdkEvent        *event,
                                         gpointer         user_data)
 {
-    dbgs.stack = 0;
-    gtk_window_get_size(GTK_WINDOW(widget), &options3.stack.w, &options3.stack.h);
-    gtk_window_get_position(GTK_WINDOW(widget), &options3.stack.x, &options3.stack.y);
-}
+    GdkEventWindowState *wstate = (GdkEventWindowState *)event;
+    GdkWindowState state = wstate->new_window_state;
+    GdkWindowState mask = wstate->changed_mask;
 
-GLADE_CB void
-on_dbgstack_window_show                (GtkWidget       *widget,
-                                        gpointer         user_data)
-{
-    dbgs.stack = !0;
+	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
+	{
+		dbgs.stack = !(state & GDK_WINDOW_STATE_WITHDRAWN);
+		if(dbgs.stack)
+		{
+			gtk_window_get_size(GTK_WINDOW(widget), &options3.stack.w, &options3.stack.h);
+			gtk_window_get_position(GTK_WINDOW(widget), &options3.stack.x, &options3.stack.y);
+		}
+	}
+
+	if(mask & GDK_WINDOW_STATE_ICONIFIED)
+	{
+	}
 }
 
 // callbacks from dbg_heap.c
@@ -541,19 +580,27 @@ on_dbgheap_window_delete_event       (GtkWidget       *widget,
 }
 
 GLADE_CB void
-on_dbgheap_window_hide                (GtkWidget       *widget,
+on_dbgheap_window_state_event		   (GtkWidget       *widget,
+                                        GdkEvent        *event,
                                         gpointer         user_data)
 {
-    dbgs.heap = 0;
-    gtk_window_get_size(GTK_WINDOW(widget), &options3.heap.w, &options3.heap.h);
-    gtk_window_get_position(GTK_WINDOW(widget), &options3.heap.x, &options3.heap.y);
-}
+    GdkEventWindowState *wstate = (GdkEventWindowState *)event;
+    GdkWindowState state = wstate->new_window_state;
+    GdkWindowState mask = wstate->changed_mask;
 
-GLADE_CB void
-on_dbgheap_window_show                (GtkWidget       *widget,
-                                        gpointer         user_data)
-{
-    dbgs.heap = !0;
+	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
+	{
+		dbgs.heap = !(state & GDK_WINDOW_STATE_WITHDRAWN);
+		if(dbgs.heap)
+		{
+			gtk_window_get_size(GTK_WINDOW(widget), &options3.heap.w, &options3.heap.h);
+			gtk_window_get_position(GTK_WINDOW(widget), &options3.heap.x, &options3.heap.y);
+		}
+	}
+
+	if(mask & GDK_WINDOW_STATE_ICONIFIED)
+	{
+	}
 }
 
 // misc

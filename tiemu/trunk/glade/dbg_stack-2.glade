@@ -17,8 +17,7 @@
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <signal name="delete_event" handler="on_dbgstack_window_delete_event" last_modification_time="Tue, 03 Aug 2004 17:32:53 GMT"/>
-  <signal name="hide" handler="on_dbgstack_window_hide" last_modification_time="Tue, 03 Aug 2004 17:32:58 GMT"/>
-  <signal name="show" handler="on_dbgstack_window_show" last_modification_time="Tue, 03 Aug 2004 17:33:06 GMT"/>
+  <signal name="window_state_event" handler="on_dbgstack_window_state_event" last_modification_time="Sun, 27 Feb 2005 08:34:26 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox1">
