@@ -117,7 +117,7 @@ int hw_m68k_run(int n)
             flog = fopen("C:\\tiemu.log", "wt");        
 
         // search for breakpoint
-        if(((l = bkpts.code) != NULL) && !(specialflags & SPCFLAG_DBTRACE))
+        if(((l = bkpts.code) != NULL) && !(specialflags & SPCFLAG_DBSKIP))
         {
             bkpts.id = 0;
             while(l)
@@ -205,6 +205,8 @@ int hw_m68k_run(int n)
 	          specialflags &= ~SPCFLAG_DBTRACE;
               return 2;     // DBG_TRACE
 	        }
+            if(specialflags & SPCFLAG_DBSKIP)
+                specialflags &= ~SPCFLAG_DBSKIP;
 	    }  
     }
   return 0;

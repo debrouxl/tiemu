@@ -62,6 +62,7 @@ int ti68k_debug_trace(void)
 
 int ti68k_debug_step(void)
 {
+    specialflags |= SPCFLAG_DBSKIP;
 	return ti68k_debug_do_instructions(1);
 }
 

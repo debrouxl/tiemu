@@ -8,7 +8,8 @@ To do:
 - 27/07/2004, version 1.75: roms
 	Olivier's suggestions:
 	- synch Code/Window menu with state of other windows (show/hide)
-	- minimize/maximize all windows when touching calc or code window
+	- minimize/maximize all windows when touching calc or code window. Could be better...
+	- can't step after bkpt: fixed.
 
 - 14/07/2004, version 1.74: roms
 	Fixes from Lionel, Kevin and Olivier's suggestions:
