@@ -32,7 +32,7 @@
 #include <glib.h>
 
 /*
-    To move...
+    To remove...
 */
 typedef struct
 {
@@ -119,12 +119,22 @@ extern int breakMode;
 extern int breakType;
 extern int breakId;
 
+typedef struct
+{
+	int	mode;
+	int	type;
+	int id;
+} MEM_BKPT;
+
+extern MEM_BKPT mem_bkpt;
+
 extern GList *listBkptAsRB;
 extern GList *listBkptAsWB;
 extern GList *listBkptAsRW;
 extern GList *listBkptAsWW;
 extern GList *listBkptAsRL;
 extern GList *listBkptAsWL;
+
 extern GList *listBkptAsRgR;
 extern GList *listBkptAsRgW;
 
@@ -132,9 +142,13 @@ extern GList *listBkptAsRgW;
 extern GList *listBkptAddress;
 
 // Vectors, AutoInts and Traps
-extern int listBkptVector[16]; extern int nBkptVector;
-extern int listBkptAutoint[8]; extern int nBkptAutoint;
-extern int listBkptTrap[16];   extern int nBkptTrap;
+extern int listBkptVector[16];
+extern int listBkptAutoint[8];
+extern int listBkptTrap[16];
+
+extern int nBkptVector;
+extern int nBkptAutoint;
+extern int nBkptTrap;
 
 /* Functions */
 
@@ -144,11 +158,21 @@ int ti68k_bkpt_set_access_range(int addressMin, int addressMax, int mode);
 int ti68k_bkpt_set_vector(int vector);
 int ti68k_bkpt_set_autointoint(int autoint);
 int ti68k_bkpt_set_trapTrap(int trap);
+
 void ti68k_bkpt_del_address(int i);
 void ti68k_bkpt_del_access(int i, int mode);
 void ti68k_bkpt_del_access_range(int i, int mode);
 void ti68k_bkpt_del_vector(int i);
 void ti68k_bkpt_del_autoint(int i);
 void ti68k_bkpt_del_trap(int i);
+
+void ti68k_bkpt_clear_address(void);
+void ti68k_bkpt_clear_access(void);
+void ti68k_bkpt_clear_access_range(void);
+void ti68k_bkpt_clear_vector(void);
+void ti68k_bkpt_clear_autoint(void);
+void ti68k_bkpt_clear_trap(void);
+
+
 
 #endif

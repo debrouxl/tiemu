@@ -113,10 +113,13 @@ int hw_mem_init(void)
   rom_ret_or = 0;
   flash_protect = 0;
 
-    // Initialize bkpts
-    listBkptAsRB = listBkptAsRW = listBkptAsRL = NULL;
-    listBkptAsWB = listBkptAsWW = listBkptAsWL = NULL;
-    listBkptAsRgW = listBkptAsRgR = NULL;
+    // Clear breakpoints
+	ti68k_bkpt_clear_address();
+	ti68k_bkpt_clear_access();
+	ti68k_bkpt_clear_access_range();
+	ti68k_bkpt_clear_vector();
+	ti68k_bkpt_clear_autoint();
+	ti68k_bkpt_clear_trap();
 
     // allocate mem
     tihw.ram = malloc(tihw.ram_size + 4);   //RAM_SIZE+4);
@@ -171,6 +174,7 @@ int hw_mem_reset(void)
 
 int hw_mem_exit(void)
 {
+	// Free memory
     if(tihw.ram)
         free(tihw.ram); 
     tihw.ram=NULL;
@@ -181,7 +185,15 @@ int hw_mem_exit(void)
  
     if(tihw.io)  
         free(tihw.io);  
-    tihw.io=NULL;
+    tihw.io = NULL;
+
+	// Clear breakpoints
+	ti68k_bkpt_clear_address();
+	ti68k_bkpt_clear_access();
+	ti68k_bkpt_clear_access_range();
+	ti68k_bkpt_clear_vector();
+	ti68k_bkpt_clear_autoint();
+	ti68k_bkpt_clear_trap();
 
     return 0;
 }

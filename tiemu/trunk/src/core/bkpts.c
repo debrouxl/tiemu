@@ -47,6 +47,7 @@ GList* listBkptAsRW = NULL;
 GList* listBkptAsWW = NULL;
 GList* listBkptAsRL = NULL;
 GList* listBkptAsWL = NULL;
+
 GList* listBkptAsRgR = NULL;
 GList* listBkptAsRgW = NULL;
 
@@ -236,4 +237,68 @@ void ti68k_bkpt_get_cause(int *type, int *id, int *mode)
     *type = breakType;
     *mode = breakMode;
     *id = breakId;
+}
+
+void ti68k_bkpt_clear_address(void)
+{
+	g_list_free(listBkptAddress);
+	listBkptAddress = NULL;
+}
+
+void ti68k_bkpt_clear_access(void)
+{
+	g_list_free(listBkptAsRB);
+	listBkptAsRB = NULL;
+	g_list_free(listBkptAsRW);
+	listBkptAsRW = NULL;
+	g_list_free(listBkptAsRL);
+	listBkptAsRL = NULL;
+
+	g_list_free(listBkptAsWB);
+	listBkptAsWB = NULL;
+	g_list_free(listBkptAsWW);
+	listBkptAsWW = NULL;
+	g_list_free(listBkptAsWL);
+	listBkptAsWL = NULL;
+}
+
+void ti68k_bkpt_clear_access_range(void)
+{
+	GList *l;
+
+	l = listBkptAsRgR;
+	while(l != NULL)
+	{
+        g_free(l->data);		
+		l = g_list_next(l);
+	}			
+	g_list_free(listBkptAsRgR);
+	listBkptAsRgR = NULL;
+
+	l = listBkptAsRgW;
+	while(l != NULL)
+	{
+	    g_free(l->data);		
+		l = g_list_next(l);
+	}			
+	g_list_free(listBkptAsRgW);
+	listBkptAsRgW = NULL;
+}
+
+void ti68k_bkpt_clear_vector(void)
+{
+	memset(listBkptVector, 0, 16);
+	nBkptVector = 0;
+}
+
+void ti68k_bkpt_clear_autoint(void)
+{
+	memset(listBkptTrap, 0, 16);
+	nBkptTrap = 0;
+}
+
+void ti68k_bkpt_clear_trap(void)
+{
+	memset(listBkptAutoint, 0, 8);
+	nBkptAutoint = 0;
 }
