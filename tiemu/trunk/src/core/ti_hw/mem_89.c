@@ -50,6 +50,8 @@
 #define wget(adr) ((uint16_t)(((uint16_t)bget(adr))<< 8 | bget((adr)+1)))
 #define lget(adr) ((uint32_t)(((uint32_t)wget(adr))<<16 | wget((adr)+2)))
 
+#define IN_RANGE(a,v,b)	(((v) >= (a)) && ((v) <= (b)))
+
 uint32_t ti89_get_long(uint32_t adr) 
 {
     //$1C0000-$1FFFFF: "the Protection" enable/disable
@@ -58,7 +60,7 @@ uint32_t ti89_get_long(uint32_t adr)
     //WRITE: Disable the Protection
     //Note: No access to this range will have any effect unless the access is
     //"authorized," see below.
-    if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
+    if(adr >= 0x1C0000 && adr < 0x200000)
     {
         tihw.protect = 1;
         return lget(adr);
@@ -96,7 +98,7 @@ uint16_t ti89_get_word(uint32_t adr)
     //WRITE: Disable the Protection
     //Note: No access to this range will have any effect unless the access is
     //"authorized," see below.
-    if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
+    if(adr >= 0x1C0000 && adr < 0x200000)
     {
         tihw.protect = 1;
         return wget(adr);
@@ -134,7 +136,7 @@ uint8_t ti89_get_byte(uint32_t adr)
     //WRITE: Disable the Protection
     //Note: No access to this range will have any effect unless the access is
     //"authorized," see below.
-    if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
+    if(adr >= 0x1C0000 && adr < 0x200000)
     {
         tihw.protect = 1;
         return bget(adr);
@@ -177,7 +179,7 @@ void ti89_put_long(uint32_t adr, uint32_t arg)
     //WRITE: Disable the Protection
     //Note: No access to this range will have any effect unless the access is
     //"authorized," see below.
-    else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
+    else if(adr >= 0x1C0000 && adr < 0x200000)
         tihw.protect = 0;
   
     // write to internal/external FLASH
@@ -215,15 +217,8 @@ void ti89_put_word(uint32_t adr, uint16_t arg)
     //WRITE: Disable the Protection
     //Note: No access to this range will have any effect unless the access is
     //"authorized," see below.
-	else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
+	else if(adr >= 0x1C0000 && adr < 0x200000)
         tihw.protect = 0;
-
-	else if(adr < 0x200000)		// pb here (92+ not boot otherwise)
-	{
-		if(adr >= 0x1c0000)
-			tihw.protect = 0;
-		wput(adr, arg);
-	}
 
 	// write to internal/external FLASH
     else if (adr >= 0x200000 && adr < 0x600000) 
@@ -258,7 +253,7 @@ void ti89_put_byte(uint32_t adr, uint8_t arg)
     //WRITE: Disable the Protection
     //Note: No access to this range will have any effect unless the access is
     //"authorized," see below.
-    else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
+    else if(adr >= 0x1C0000 && adr < 0x200000)
         tihw.protect = 0;
   
     // write to internal/external FLASH
