@@ -43,6 +43,8 @@ enum {
 #define CLIST_NVCOLS	(2)		// 1 visible columns
 #define CLIST_NCOLS		(3)		// 1 real columns
 
+#define FONT_NAME		"courier"
+
 #define DUMP_SIZE       10
 
 static GtkListStore* clist_create(GtkWidget *list)

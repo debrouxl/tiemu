@@ -163,7 +163,9 @@ nom de ROM Call, amener à la première ROM call correspondante, comme
 dans la version de VTI de JM.
 
 * Pouvoir envoyer un fichier en le glissant déplaçant vers la calc
-serait pratique, comme sous VTI. Ou il faudrait au moins que le
+serait pratique, comme sous VTI. 
+
++ Ou il faudrait au moins que le
 dernier dossier visité avec l'explorateur de fichier soit gardé en
 mémoire et utilisé comme répertoire de départ au prochain envoi.
 

@@ -128,6 +128,7 @@ gint display_tifile_dbox()
 	const gchar *filename;
     const gchar *ext;
 	int err;
+	static gchar *folder = NULL;
 
     // set mask
     switch(tihw.calc_type) {
@@ -147,13 +148,21 @@ gint display_tifile_dbox()
         break;
     }
 
-    // get filename
-	filename = (char *)create_fsel(inst_paths.base_dir, (char *)ext);
+	// get filename
+	if(folder == NULL)
+		folder = g_strdup(inst_paths.base_dir);
+
+	filename = (char *)create_fsel(folder, (char *)ext);
 	if (!filename)
     {
         ti68k_engine_release();
 		return 0;
     }
+
+	// keep folder
+	g_free(folder);
+	folder = g_path_get_dirname(filename);
+	return 0;
 
     // check extension
     if(!tifiles_is_a_ti_file(filename) || 

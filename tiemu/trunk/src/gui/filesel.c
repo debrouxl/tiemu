@@ -50,7 +50,7 @@ const gchar *create_fsel(gchar *dirname, gchar *ext)
 	GtkWidget *fs;
 	gchar *mask;
     
-    mask = g_strconcat(dirname, ext, NULL);
+    mask = g_strconcat(dirname, G_DIR_SEPARATOR_S, ext, NULL);
 	fs = gtk_file_selection_new("Select a file...");
 	gtk_file_selection_complete(GTK_FILE_SELECTION(fs), mask);
     g_free(mask);
