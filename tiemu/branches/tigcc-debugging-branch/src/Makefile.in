@@ -147,6 +147,14 @@ gui_OBJ = \
 	gui/support.o 							\
 	gui/wizard.o
 
+core_gdb_ARC = \
+	core/gdb/gdb/libgdb.a \
+	core/gdb/sim/m68k/libsim.a \
+	core/gdb/bfd/libbfd.a \
+	core/gdb/readline/libreadline.a \
+	core/gdb/opcodes/libopcodes.a  \
+	core/gdb/libiberty/libiberty.a
+
 tiemu_OBJ = core/uae/newcpu.o \
 	$(core_uae_OBJ) $(core_OBJ) $(core_tihw_OBJ) $(core_tisw_OBJ) \
 	$(core_dbg_OBJ) \
@@ -154,15 +162,18 @@ tiemu_OBJ = core/uae/newcpu.o \
 	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(kde_OBJ)
 
 #rules:
-all: uae tiemu
+all: uae gdb tiemu
 
 uae:
 	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" gen
 	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" all
 
+gdb:
+	cd core/gdb && $(MAKE)
+
 tiemu: $(tiemu_OBJ)
-#	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu $(LDFLAGS) $(CFLAGS)
-	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) \
+#	$(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) -o tiemu $(LDFLAGS) $(CFLAGS)
+	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) \
 	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
 
 .c.o:
@@ -177,10 +188,12 @@ tiemu: $(tiemu_OBJ)
 
 clean:
 	@cd core/uae && $(MAKE) clean
+	@cd core/gdb && $(MAKE) clean
 	@rm -f $(tiemu_OBJ) tiemu tiemu.exe $(kdeprivsources)
 
 distclean: clean
 	@cd core/uae && $(MAKE) distclean
+	@cd core/gdb && $(MAKE) distclean
 	@rm -Rf .libs
 
 dos2unix:

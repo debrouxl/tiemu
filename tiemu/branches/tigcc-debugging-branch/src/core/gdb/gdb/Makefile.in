@@ -956,7 +956,8 @@ DISTSTUFF = $(YYFILES)
 .c.o:
 	$(CC) -c $(INTERNAL_CFLAGS) $<
 
-all: gdb$(EXEEXT) $(CONFIG_ALL)
+# Kevin Kofler 2005-03-29 Don't build gdb executable, only libraries.
+all: libgdb.a $(ADD_DEPS) $(CDEPS) $(TDEPLIBS) $(CONFIG_ALL)
 	@$(MAKE) $(FLAGS_TO_PASS) DO=all "DODIRS=`echo $(SUBDIRS) | sed 's/testsuite//'`" subdir_do
 .PHONY: all-tui
 all-tui: $(TUI)$(EXEEXT)

@@ -167,6 +167,13 @@ AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
 AC_SUBST(CXXFLAGS)
 
+# Run GDB configury
+ac_configure_args="$ac_configure_args --target=m68k-coff --disable-tui"
+changequote(<<,>>)
+ac_configure_args=`echo "$ac_configure_args" | sed "s,'CFLAGS=[^']*',,g"`
+changequote([,])
+AC_CONFIG_SUBDIRS(src/core/gdb)
+
 # Output.
 AC_OUTPUT
 
