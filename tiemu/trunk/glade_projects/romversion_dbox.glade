@@ -117,8 +117,6 @@
 		      <property name="rules_hint">False</property>
 		      <property name="reorderable">False</property>
 		      <property name="enable_search">True</property>
-		      <signal name="select_row" handler="on_romv_clist1_select_row"/>
-		      <signal name="unselect_row" handler="on_romv_clist1_unselect_row"/>
 		      <signal name="button_press_event" handler="on_romv_clist1_button_press_event"/>
 		    </widget>
 		  </child>
