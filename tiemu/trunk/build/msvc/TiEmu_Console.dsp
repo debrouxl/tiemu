@@ -300,19 +300,11 @@ SOURCE=..\..\src\gui\debug_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\fs_skin.c
+SOURCE=..\..\src\gui\filesel.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\fs_tifile.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\fsel_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\fsel_dbox.c
+SOURCE=..\..\src\gui\fs_misc.c
 # End Source File
 # Begin Source File
 
@@ -360,11 +352,7 @@ SOURCE=..\..\src\gui\release.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\romv_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\romv_dbox.c
+SOURCE=..\..\src\gui\romversion.c
 # End Source File
 # Begin Source File
 
@@ -373,14 +361,6 @@ SOURCE=..\..\src\gui\scroptions.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\splash.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\state_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\state_dbox.c
 # End Source File
 # Begin Source File
 

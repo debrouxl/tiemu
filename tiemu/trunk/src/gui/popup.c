@@ -269,7 +269,6 @@ GLADE_CB void
 on_set_rom1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	//display_rom_fileselection ();
 	display_romversion_dbox ();
 }
 

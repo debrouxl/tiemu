@@ -1,0 +1,235 @@
+/* Hey EMACS -*- linux-c -*- */
+/* $Id: main.c 187 2004-05-14 14:22:36Z roms $ */
+
+/*  TiEmu - an TI emulator
+ *
+ *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
+ *  Copyright (c) 2003-2004, Romain Liévin
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details. *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif				/*  */
+
+#include <gtk/gtk.h>
+#include <glade/glade.h>
+#include <sys/stat.h>
+
+#include "intl.h"
+#include "paths.h"
+#include "interface.h"
+#include "refresh.h"
+
+gchar *chosen_file = NULL;
+
+void 
+on_romv_clist_selection_changed (GtkTreeSelection *sel, 
+                				 gpointer user_data)
+{ 
+    GtkTreeModel *model;
+    GtkTreeIter iter;
+
+    if (gtk_tree_selection_get_selected (sel, &model, &iter))
+    {
+        if (chosen_file != NULL)
+	        g_free(chosen_file);
+
+        gtk_tree_model_get (model, &iter, 0, &chosen_file, -1);
+    }
+}
+
+gint display_romversion_dbox()
+{
+	GladeXML *xml;
+	GtkWidget *dbox, *dbox2;
+	GtkWidget *data;
+    gint result;
+
+    GtkWidget *clist;
+    GtkListStore *list;
+    GtkTreeModel *model;
+    GtkTreeIter iter;
+    GtkTreeSelection *sel;
+
+    gchar buffer[MAXCHARS];
+    int i;
+    FILE *fp;
+    gchar *filename;
+    struct stat s;
+    gchar *text[6] = { _("Filename"), _("Calc"), _("Version"), _("Memory"), _("Size"), _("Type") };
+	
+	xml = glade_xml_new
+		(tilp_paths_build_glade("romversion-2.glade"), "romversion_dbox",
+		 PACKAGE);
+	if (!xml)
+		g_error("GUI loading failed !\n");
+	glade_xml_signal_autoconnect(xml);
+
+    // display wait box
+    dbox2 = glade_xml_get_widget(xml, "cache_dbox");
+    gtk_widget_show_all(dbox2);
+    GTK_REFRESH();
+	
+    // display list box
+	dbox = glade_xml_get_widget(xml, "romversion_dbox");
+    
+    data = glade_xml_get_widget(xml, "applybutton1");
+    gtk_button_set_label(data, "Import...");
+
+    clist = glade_xml_get_widget(xml, "clist1");
+    list = gtk_list_store_new(6, G_TYPE_STRING, G_TYPE_STRING,
+			    G_TYPE_STRING, G_TYPE_STRING,
+			    G_TYPE_STRING, G_TYPE_STRING);
+    model = GTK_TREE_MODEL(list);
+  
+    gtk_tree_view_set_model(GTK_TREE_VIEW(clist), model); 
+    gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(clist), TRUE); 
+  
+    gtk_list_store_clear(list); 
+    for (i = 0; i < 6; i++) {
+        gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), i, text[i],
+						gtk_cell_renderer_text_new(),
+						"text", i, NULL);
+    }
+
+    filename = g_strconcat(inst_paths.home_dir, CACHE_FILE, NULL);
+    ti68k_scanFiles(inst_paths.rom_dir, filename);
+    
+    // destroy cache box
+    gtk_widget_destroy(dbox2);
+    GTK_REFRESH();
+
+    stat(filename, &s);
+    if(s.st_size == 0) {
+      gtk_widget_show_all(dbox);
+      return 0;
+    }
+
+    fp = fopen(filename, "rt");
+    if(fp == NULL) {
+        DISPLAY("Unable to open this file: %s\n", filename);
+        gtk_widget_destroy(dbox);
+        return -1;
+    }
+
+    while(!feof(fp)) {
+        for(i=0; i<6; i++) {
+	        fscanf(fp, "%s\t", buffer);
+	        text[i] = g_strdup(buffer);
+	    }
+
+        gtk_list_store_append(list, &iter);
+        gtk_list_store_set(list, &iter, 0, text[0],
+			 1, text[1], 2, text[2],
+			 3, text[3], 4, text[4],
+			 5, text[5], -1);
+
+        for(i=0; i<6; i++) g_free(text[i]);
+    } 
+
+    fclose(fp);
+
+    sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(clist));
+    gtk_tree_selection_set_mode(sel, GTK_SELECTION_SINGLE);
+
+    gtk_widget_show_all(dbox);
+
+    g_signal_connect(G_OBJECT(sel), "changed",
+                   G_CALLBACK(on_romv_clist_selection_changed), NULL);
+
+
+	result = gtk_dialog_run(GTK_DIALOG(dbox));
+	switch (result) {
+	case GTK_RESPONSE_OK:
+		ti68k_unhalt();
+		break;
+    case GTK_RESPONSE_APPLY:
+        display_set_rom_dbox();
+        break;
+	default:
+		break;
+	}
+
+	gtk_widget_destroy(dbox);
+    ti68k_unhalt();
+
+	return 0;
+}
+
+
+/*
+void
+on_button6_clicked                     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  char *ext = NULL;
+  int ret;
+
+  ext = strrchr(chosen_file, '.');
+  
+  if(!strcasecmp(ext, ".rom")) 
+    { // ROM image
+      g_free((options.params)->rom_file);
+      (options.params)->rom_file = g_strconcat(inst_paths.rom_dir,
+					       chosen_file, NULL);
+      g_free(chosen_file);
+      if(ti68k_loadImage((options.params)->rom_file)) 
+	{
+	  msg_box("Error", "Can not open the ROM image.");
+	  return;
+	}
+      
+      ti68k_restart();
+    }
+  else 
+    { // FLASH upgrade
+      ret = msg_box2("Question", "Do you want to load it as a fake ROM image or as an FLASH upgrade ? \n\nClick FLASH if you want to directly upgrade the calculator operating system (AMS). \n\nOn the other hand, if you load it as a fake ROM image, TiEmu will convert the FLASH upgrade into a ROM image but your image will suffer from some limitations (no boot block, no certificate, problems with fonts).");
+
+      if(ret == 1) 
+	{ // ROM
+	  g_free((options.params)->rom_file);
+	  (options.params)->rom_file = g_strconcat(inst_paths.rom_dir,
+						   chosen_file, NULL);
+	  g_free(chosen_file);
+	  if(ti68k_loadImage((options.params)->rom_file)) 
+	    {
+	      msg_box("Error", "Can not open the ROM image.");
+	      return;
+	    }
+	  ti68k_restart();
+	}
+      else
+	{ // FLASH
+	  g_free((options.params)->tib_file);
+	  (options.params)->tib_file = g_strconcat(inst_paths.rom_dir,
+						   chosen_file, NULL);
+	  g_free(chosen_file);
+	  if(ti68k_loadUpgrade((options.params)->tib_file)) 
+	    {
+	      msg_box("Error", "Can not open the FLASH upgrade.");
+	      return;
+	    }
+	  ti68k_reset();
+	}
+    }
+  
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "romversion_dbox"));
+  while( gtk_events_pending() ) { 
+    gtk_main_iteration(); 
+  }
+}
+*/
