@@ -21,7 +21,7 @@ s'y perd complètement.
 fait 'run', le même breakpoint se fait retoucher, il faudrait plutôt
 continuer.
 
-* Je ne suis pas sûr que les data breakpoints fionctionnent
++ Je ne suis pas sûr que les data breakpoints fionctionnent
 correctement. Si je place un breakpoint 'single byte' à 0, il n'est
 jamais atteint par le code du reset, alors qu'il y a bien une écriture
 d'un long mot à 0.

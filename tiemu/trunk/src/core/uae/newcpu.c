@@ -538,12 +538,13 @@ static char* ccnames[] =
 
 void MC68000_reset(void)
 {
+	specialflags = 0;	// here; otherwise bkpt at $0 is not catched
   regs.a[7] = get_long(0x000000);
   m68k_setpc(tihw.initial_pc);
   regs.s = 1;
   regs.stopped = 0;
   regs.t = 0;
-  specialflags = 0;
+  //specialflags = 0;
   regs.intmask = 7;
   regs.vbr = regs.sfc = regs.dfc = 0;
 }
