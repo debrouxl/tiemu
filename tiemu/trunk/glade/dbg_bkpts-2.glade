@@ -74,7 +74,7 @@
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
 	      <property name="is_important">False</property>
-	      <signal name="clicked" handler="dbgbkpts_button3_clicked" last_modification_time="Fri, 04 Jun 2004 05:57:46 GMT"/>
+	      <signal name="clicked" handler="dbgbkpts_button3_clicked" object="treeview1" last_modification_time="Fri, 04 Jun 2004 05:57:46 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="expand">False</property>
@@ -90,7 +90,7 @@
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
 	      <property name="is_important">False</property>
-	      <signal name="clicked" handler="dbgbkpts_button4_clicked" last_modification_time="Fri, 04 Jun 2004 05:57:56 GMT"/>
+	      <signal name="clicked" handler="dbgbkpts_button4_clicked" object="treeview1" last_modification_time="Fri, 04 Jun 2004 05:57:56 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="expand">False</property>

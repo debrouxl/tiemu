@@ -124,11 +124,11 @@ loop:
 		// Add breakpoint
 		if(type == 1)
 		{
-			ti68k_bkpt_set_access(start, mode | access) ;
+			ti68k_bkpt_add_access(start, mode | access) ;
 		} 
 		else if(type == 2)
 		{
-			ti68k_bkpt_set_range(start, stop, mode);
+			ti68k_bkpt_add_range(start, stop, mode);
 		}
 
 		dbgbkpts_display_window();

@@ -38,6 +38,17 @@
 #include "struct.h"
 #include "dbg_all.h"
 
+/* Macros: addresses are 24-bits. We use the MSb to encode 
+	bkpt state (enabled/disabled) */
+
+#define BKPT_MASK			0x80000000
+#define BKPT_ADDR(addr)		(addr & ~BKPT_MASK)
+
+#define ENABLE_BKPT(addr)	(addr |= BKPT_MASK)
+#define DISABLE_BKPT(addr)	(addr &= ~BKPT_MASK)
+
+#define BKPT_IS_ENABLED(addr)	(!(addr & BKPT_MASK))
+#define BKPT_ENABLED(addr)		(!(addr & BKPT_MASK))
 
 enum { 
 	    COL_SYMBOL, COL_TYPE, COL_STATUS, COL_START, COL_END, COL_MODE,
@@ -121,14 +132,14 @@ static void clist_populate(GtkListStore *store)
 		uint32_t addr = GPOINTER_TO_INT(l->data);
 		gchar *str;
 		
-		str = g_strdup_printf("0x%06x", addr);
+		str = g_strdup_printf("0x%06x", BKPT_ADDR(addr));
 		
 		gtk_list_store_append(store, &iter);
 
 		gtk_list_store_set(store, &iter, 
 		COL_SYMBOL, str, 
 		COL_TYPE, ti68k_bkpt_type_to_string(BK_TYPE_CODE),
-		COL_STATUS, _("enabled"),
+		COL_STATUS, BKPT_IS_ENABLED(addr) ? _("enabled") : _("disabled"),
 		COL_START, str,
 		COL_END, "",		
         COL_MODE, "",
@@ -168,13 +179,13 @@ static void clist_populate(GtkListStore *store)
 			uint32_t addr = GPOINTER_TO_INT(l->data);
 			gchar *str;
 			
-			str = g_strdup_printf("0x%06x", addr);
+			str = g_strdup_printf("0x%06x", BKPT_ADDR(addr));
 			
 			gtk_list_store_append(store, &iter);
 			gtk_list_store_set(store, &iter, 
 			COL_SYMBOL, str, 
 			COL_TYPE, ti68k_bkpt_type_to_string(BK_TYPE_ACCESS),
-			COL_STATUS, _("enabled"),
+			COL_STATUS, BKPT_IS_ENABLED(addr) ? _("enabled") : _("disabled"),
 			COL_START, str,
 			COL_END, "",
             COL_MODE, ti68k_bkpt_mode_to_string(BK_TYPE_ACCESS, bkpts_memacc_rw[i]),
@@ -192,14 +203,14 @@ static void clist_populate(GtkListStore *store)
 			ADDR_RANGE *s = l->data;
 			gchar *str1, *str2;
 			
-			str1 = g_strdup_printf("0x%06x", s->val1);
-			str2 = g_strdup_printf("0x%06x", s->val2);
+			str1 = g_strdup_printf("0x%06x", BKPT_ADDR(s->val1));
+			str2 = g_strdup_printf("0x%06x", BKPT_ADDR(s->val2));
 			
 			gtk_list_store_append(store, &iter);
 			gtk_list_store_set(store, &iter, 
 			COL_SYMBOL, str1, 
 			COL_TYPE, ti68k_bkpt_type_to_string(BK_TYPE_RANGE),
-			COL_STATUS, _("enabled"),
+			COL_STATUS, BKPT_IS_ENABLED(s->val1) ? _("enabled") : _("disabled"),
 			COL_START, str1,
 			COL_END, str2,
             COL_MODE, ti68k_bkpt_mode_to_string(BK_TYPE_RANGE, bkpts_memrng_rw[i]),
@@ -233,9 +244,7 @@ GtkWidget* dbgbkpts_create_window(void)
 	dbox = glade_xml_get_widget(xml, "dbgbkpts_window");
 
 	data = glade_xml_get_widget(xml, "button3");
-	gtk_widget_set_sensitive(data, FALSE);
 	data = glade_xml_get_widget(xml, "button4");
-	gtk_widget_set_sensitive(data, FALSE);
 
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
@@ -345,7 +354,7 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
         {
         case BK_TYPE_CODE:
             sscanf(row_text[COL_START], "%x", &min);
-            ti68k_bkpt_del_address(min);
+            ti68k_bkpt_del_address(BKPT_ADDR(min));
             break;
         case BK_TYPE_EXCEPTION:
             sscanf(row_text[COL_SYMBOL], "#%i", &n);
@@ -354,13 +363,13 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
         case BK_TYPE_ACCESS:
             mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
             sscanf(row_text[COL_START], "%x", &min);
-            ti68k_bkpt_del_access(min, mode);
+            ti68k_bkpt_del_access(BKPT_ADDR(min), mode);
             break;
         case BK_TYPE_RANGE:
             mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
             sscanf(row_text[COL_START], "%x", &min);
             sscanf(row_text[COL_END], "%x", &max);
-            ti68k_bkpt_del_range(min, max, mode);        
+            ti68k_bkpt_del_range(BKPT_ADDR(min), BKPT_ADDR(max), mode);        
             break;
         }
         g_strfreev(row_text);
@@ -370,22 +379,28 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
 }
 
 
+/* Disable bkpt */
 GLADE_CB void
 dbgbkpts_button3_clicked                     (GtkButton       *button,
                                               GtkWidget       *widget,
                                               gpointer         user_data)
 {
 
+	dbgbkpts_display_window();
 }
 
 
+/* Enable bkpt */
 GLADE_CB void
 dbgbkpts_button4_clicked                     (GtkButton       *button,
                                               gpointer         user_data)
 {
 
+	dbgbkpts_display_window();
 }
 
+
+/* Go to bkpt address */
 GLADE_CB void
 dbgbkpts_button5_clicked                     (GtkButton       *button,
                                               gpointer         user_data)
@@ -399,6 +414,7 @@ dbgbkpts_button5_clicked                     (GtkButton       *button,
 	// get selection
 	selection = gtk_tree_view_get_selection(view);
 	l = gtk_tree_selection_get_selected_rows(selection, &model);
+	if(l != NULL)
 	{
 		GtkTreeIter iter;
 		GtkTreePath *path = l->data;
@@ -434,7 +450,6 @@ dbgbkpts_data_activate                    (GtkMenuItem     *menuitem,
 {
 	dbgdata_display_dbox();
 }
-
 
 
 GLADE_CB void

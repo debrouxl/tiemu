@@ -577,7 +577,7 @@ dbgcode_button6_clicked                     (GtkButton       *button,
     sscanf(str, "%x", &addr);
 
     if(g_list_find(bkpts.code, GINT_TO_POINTER(addr)) == NULL)
-        ti68k_bkpt_set_address(addr);
+        ti68k_bkpt_add_address(addr);
     else
         ti68k_bkpt_del_address(addr);
 

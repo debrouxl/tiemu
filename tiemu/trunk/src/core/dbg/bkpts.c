@@ -37,13 +37,15 @@
 #include "ti68k_err.h"
 #include "ti68k_def.h"
 
+/* Add */
 
-void ti68k_bkpt_set_address(uint32_t address) 
+int ti68k_bkpt_add_address(uint32_t address) 
 {
     bkpts.code = g_list_append(bkpts.code, GINT_TO_POINTER(address));
+	return g_list_length(bkpts.code) - 1;
 }
 
-void ti68k_bkpt_set_access(uint32_t address, int mode) 
+int ti68k_bkpt_add_access(uint32_t address, int mode) 
 {
     if((mode & BK_READ) && (mode & BK_BYTE))
         bkpts.mem_rb = g_list_append(bkpts.mem_rb, GINT_TO_POINTER(address));
@@ -57,9 +59,11 @@ void ti68k_bkpt_set_access(uint32_t address, int mode)
 		bkpts.mem_ww = g_list_append(bkpts.mem_ww, GINT_TO_POINTER(address));
     else if((mode & BK_WRITE) && (mode & BK_LONG))
 		bkpts.mem_wl = g_list_append(bkpts.mem_wl, GINT_TO_POINTER(address));
+
+	return -1;
 }
 
-void ti68k_bkpt_set_range(uint32_t addressMin, uint32_t addressMax, int mode) 
+int ti68k_bkpt_add_range(uint32_t addressMin, uint32_t addressMax, int mode) 
 {
     if(mode & BK_READ) 
     {
@@ -69,6 +73,7 @@ void ti68k_bkpt_set_range(uint32_t addressMin, uint32_t addressMax, int mode)
 		s->val2 = addressMax;
 
         bkpts.mem_rng_r = g_list_append(bkpts.mem_rng_r, s);
+		return g_list_length(bkpts.mem_rng_r) - 1;
     }
 
     if(mode & BK_WRITE) 
@@ -79,14 +84,19 @@ void ti68k_bkpt_set_range(uint32_t addressMin, uint32_t addressMax, int mode)
 		s->val2 = addressMax;
 
         bkpts.mem_rng_w = g_list_append(bkpts.mem_rng_w, s);
+		return g_list_length(bkpts.mem_rng_w) - 1;
     }
+
+	return -1;
 }
 
-void ti68k_bkpt_set_exception(int number) 
+int ti68k_bkpt_add_exception(int number) 
 {
     bkpts.exception = g_list_append(bkpts.exception, GINT_TO_POINTER(number));
+	return g_list_length(bkpts.exception)-1;
 }
 
+/* Delete */
 
 void ti68k_bkpt_del_address(uint32_t address) 
 {
@@ -141,6 +151,55 @@ void ti68k_bkpt_del_exception(int n)
 {
     bkpts.exception = g_list_remove(bkpts.exception, GINT_TO_POINTER(n));
 }
+
+/* Set */
+
+void ti68k_bkpt_set_address(int id, uint32_t address)
+{
+	g_list_nth(bkpts.code, id)->data = GINT_TO_POINTER(address);
+}
+
+void ti68k_bkpt_set_access(int id, uint32_t address, int mode)
+{
+	if((mode & BK_READ) && (mode & BK_BYTE))
+		g_list_nth(bkpts.mem_rb, id)->data = GINT_TO_POINTER(address);
+    else if((mode & BK_READ) && (mode & BK_WORD))
+		g_list_nth(bkpts.mem_rw, id)->data = GINT_TO_POINTER(address);
+    else if((mode & BK_READ) && (mode & BK_LONG))
+		g_list_nth(bkpts.mem_rl, id)->data = GINT_TO_POINTER(address);
+    else if((mode & BK_WRITE) && (mode & BK_BYTE))
+		g_list_nth(bkpts.mem_wb, id)->data = GINT_TO_POINTER(address);
+    else if((mode & BK_WRITE) && (mode & BK_WORD))
+		g_list_nth(bkpts.mem_ww, id)->data = GINT_TO_POINTER(address);
+    else if((mode & BK_WRITE) && (mode & BK_LONG))
+		g_list_nth(bkpts.mem_wl, id)->data = GINT_TO_POINTER(address);
+}
+
+void ti68k_bkpt_set_range(int id, uint32_t min, uint32_t max, int mode)
+{
+	if(mode & BK_READ) 
+    {
+        ADDR_RANGE *s = g_list_nth(bkpts.mem_rng_r, id)->data;
+
+		s->val1 = min;
+		s->val2 = max;
+    }
+
+    if(mode & BK_WRITE) 
+    {
+        ADDR_RANGE *s = g_list_nth(bkpts.mem_rng_w, id)->data;
+
+		s->val1 = min;
+		s->val2 = max;
+    }
+}
+
+void ti68k_bkpt_set_exception(int id, int n)
+{
+	g_list_nth(bkpts.exception, id)->data = GINT_TO_POINTER(n);
+}
+
+/* Get */
 
 void ti68k_bkpt_get_address(int id, uint32_t *address)
 {
@@ -260,7 +319,5 @@ void ti68k_bkpt_clear_all(void)
 	ti68k_bkpt_clear_range();
     ti68k_bkpt_clear_exception();
 
-    bkpts.type = 0;
-    bkpts.mode = 0;
-    bkpts.id = 0;
+	ti68k_bkpt_set_cause(0, 0, 0);	
 }

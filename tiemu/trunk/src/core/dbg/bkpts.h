@@ -80,15 +80,20 @@ typedef enum {
 
 /* Functions */
 
-void ti68k_bkpt_set_address(uint32_t address);
-void ti68k_bkpt_set_access(uint32_t address, int mode);
-void ti68k_bkpt_set_range(uint32_t min, uint32_t max, int mode);
-void ti68k_bkpt_set_exception(int n);
+int ti68k_bkpt_add_address(uint32_t address);
+int ti68k_bkpt_add_access(uint32_t address, int mode);
+int ti68k_bkpt_add_range(uint32_t min, uint32_t max, int mode);
+int ti68k_bkpt_add_exception(int n);
 
 void ti68k_bkpt_del_address(uint32_t address);
 void ti68k_bkpt_del_access(uint32_t address, int mode);
 void ti68k_bkpt_del_range(uint32_t min, uint32_t max, int mode);
 void ti68k_bkpt_del_exception(int n);
+
+void ti68k_bkpt_set_address(int id, uint32_t address);
+void ti68k_bkpt_set_access(int id, uint32_t address, int mode);
+void ti68k_bkpt_set_range(int id, uint32_t min, uint32_t max, int mode);
+void ti68k_bkpt_set_exception(int id, int n);
 
 void ti68k_bkpt_get_address(int id, uint32_t *address);
 void ti68k_bkpt_get_access(int id, uint32_t *address, int mode);

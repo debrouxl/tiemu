@@ -120,7 +120,7 @@ static void clist_get_selection(GtkWidget *list)
 		gtk_tree_model_get_iter(model, &iter, path);
 		gtk_tree_model_get(model, &iter, COL_NUMBER, &n, -1);
 		
-		ti68k_bkpt_set_exception(n);
+		ti68k_bkpt_add_exception(n);
 	}	
 }
 

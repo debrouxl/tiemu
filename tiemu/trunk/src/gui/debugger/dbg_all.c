@@ -259,7 +259,7 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
     dbg_on = 0;
 
     // Closing the debugger starts the emulator
-    bkpts.mode = bkpts.type = bkpts.id = 0;
+	ti68k_bkpt_set_cause(0, 0, 0);
     ti68k_engine_start();
 
 }
