@@ -127,7 +127,7 @@ typedef struct
     uchar	*io2;
     int     initial_pc;
 
-    int		flash_prot;
+    int		protect;		// the Hardware Protection
 
     // timer.c
     uint8_t     timer_value;

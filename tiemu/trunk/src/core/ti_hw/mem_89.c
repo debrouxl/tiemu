@@ -60,12 +60,12 @@ uint32_t ti89_get_long(uint32_t adr)
     //"authorized," see below.
     if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
     {
-        tihw.flash_prot = 1;
+        tihw.protect = 1;
         return lget(adr);
     }
 
     // The certificate memory ($210000-$211FFF) is read protected.
-    else if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
+    else if (tihw.protect && adr>=0x210000 && adr<=0x211fff)
         return 0x14141414;
   
     // RAM access
@@ -98,12 +98,12 @@ uint16_t ti89_get_word(uint32_t adr)
     //"authorized," see below.
     if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
     {
-        tihw.flash_prot = 1;
+        tihw.protect = 1;
         return wget(adr);
     }
 
     // The certificate memory ($210000-$211FFF) is read protected.
-    else if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
+    else if (tihw.protect && adr>=0x210000 && adr<=0x211fff)
         return 0x1414;
   
     // RAM access
@@ -136,12 +136,12 @@ uint8_t ti89_get_byte(uint32_t adr)
     //"authorized," see below.
     if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
     {
-        tihw.flash_prot = 1;
+        tihw.protect = 1;
         return bget(adr);
     }
 
     // The certificate memory ($210000-$211FFF) is read protected.
-    else if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
+    else if (tihw.protect && adr>=0x210000 && adr<=0x211fff)
         return 0x14;
   
     // RAM access
@@ -178,7 +178,7 @@ void ti89_put_long(uint32_t adr, uint32_t arg)
     //Note: No access to this range will have any effect unless the access is
     //"authorized," see below.
     else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-        tihw.flash_prot = 0;
+        tihw.protect = 0;
   
     // write to internal/external FLASH
     else if (adr >= 0x200000 && adr < 0x600000)
@@ -216,7 +216,7 @@ void ti89_put_word(uint32_t adr, uint16_t arg)
     //Note: No access to this range will have any effect unless the access is
     //"authorized," see below.
 	else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-        tihw.flash_prot = 0;
+        tihw.protect = 0;
 
 	// write to internal/external FLASH
     else if (adr >= 0x200000 && adr < 0x600000) 
@@ -252,7 +252,7 @@ void ti89_put_byte(uint32_t adr, uint8_t arg)
     //Note: No access to this range will have any effect unless the access is
     //"authorized," see below.
     else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-        tihw.flash_prot = 0;
+        tihw.protect = 0;
   
     // write to internal/external FLASH
     else if (adr >= 0x200000 && adr < 0x600000)

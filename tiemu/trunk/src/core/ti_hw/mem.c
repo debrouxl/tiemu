@@ -95,7 +95,7 @@ int hw_mem_init(void)
 	}
 
 	// init vars
-    tihw.flash_prot = 1;
+    tihw.protect = 1;
 	memset(&wsm, 0, sizeof(FLASH_WSM));
 
     // clear breakpoints

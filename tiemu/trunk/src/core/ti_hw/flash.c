@@ -52,7 +52,7 @@ void FlashWriteByte(uint32_t addr, int v)
   
     addr &= 0x1fffff;
   
-    if(tihw.flash_prot) 
+    if(tihw.protect) 
         return;
 
     // TI92 has EPROM
