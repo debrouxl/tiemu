@@ -1,5 +1,10 @@
 SubVersion: $Id$
 
+- 12/07/2004, version 1.73: roms
+	To do:
+	- link port is broken (HW2 only ?!)
+	- stealth I/O and mem protect
+
 - 07/07/2004, version 1.72: roms
 	Error management connected and updated.
 	Fixed 'restrict to current speed'.
@@ -13,11 +18,6 @@ SubVersion: $Id$
 	Save of breakpoints in the state image.
 	Fixed code breakpoint which was buggy.
 	Added symbolic debugger (replace address by name; take a look at 0x4f89fe on TI92+).
-
-	Still to do:
-	- link port is broken (HW2 only ?!)
-	- dans le memory dump, le 1er octet de la mémoire n'est pas à 0x00...
-	- stealth I/O and mem protect
 
 - 30/06/2004, version 1.71: roms
 	Lionel Debroux's suggestions:

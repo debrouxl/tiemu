@@ -3,7 +3,7 @@
 
 
 Previous version: 1.71 (2.00-a4)	(03/07/2004)
-Current version:  1.72 (2.00-a5)	(08/07/2004)
+Current version:  1.72 (2.00-a6)	(12/07/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -22,6 +22,8 @@ New capabilities:
 
 	- dis-assembly window: use VTi syntax
 	- VTi-style SR flags (don't reset)
+	- save/restore bkpts with state image
+	- symbolic debugger: code addresses are replaced by their counterpart name (ROM calls)
 
 
 Improvements:
@@ -41,13 +43,16 @@ Improvements:
 	- error management
 	- fixed 'restrict to current speed'
 	- bugs in state image loading and LCD init: works fine now
+	- linkport reworked but still buggy with HW2 (?!)
+	- fixed code bkpt
+	- ghost spaces
 		
-	
-Future capabilities:
---------------------
 
-	- use the latest & faster UAE
-	- or, develop my own m68k emulation engine (PME, Portable M68k Engine)
+To do:
+------
+
+	- implement the Protection
+	- implement the RTC introduced with AMS 2.09
 
 	
 Notes:

@@ -59,7 +59,7 @@ int romcalls_load_from_file(const char* filename)
     if(loaded)
         return 0;
 
-	if(!img_loaded || (img->calc_type == CALC_TI92))
+	if(!img_loaded || (img->calc_type == TI92))
 		return -1;
 
 	if(old_ct == -1)
@@ -152,6 +152,8 @@ int romcalls_is_address(uint32_t addr)
 {
 	int i;
 
+	if(!loaded)	return -1;
+
 	for(i = 0; i < TBL_SIZE; i++)
 	{
 		if(addr == list[i].addr)
@@ -165,6 +167,8 @@ int romcalls_is_address(uint32_t addr)
 int romcalls_is_name(const char *name)
 {
 	int i;
+
+	if(!loaded)	return -1;
 
 	for(i = 0; i < TBL_SIZE; i++)
 	{
@@ -188,6 +192,8 @@ uint32_t romcalls_get_addr(int id)
 const char* romcalls_get_addr_name(uint32_t addr)
 {
 	int id;
+
+	if(!loaded)	return NULL;
 
 	if(addr == list[last_id].addr)
 		return list[last_id].name;
