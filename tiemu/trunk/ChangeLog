@@ -5,10 +5,11 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
-- 19:01/2005, version 1.80k: roms
+- 19/01/2005, version 1.80k: roms
 	- link port is now reset when error occurs: great improvement
 	- added support of EA bit ($60000D:2): Titanium work
 	- clean-up of linkport support (no more hack)
+	- fixed linkport progress bars
 
 - 12/01/2005, version 1.80j: roms
 	- rewrite of the m68k loop:

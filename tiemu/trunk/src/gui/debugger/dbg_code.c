@@ -655,6 +655,54 @@ on_treeview1_button_press_event        (GtkWidget       *widget,
     return FALSE;
 }
 
+static int export_disasm_to_file(GtkWidget *widget)
+{
+	GtkTreeView *view = GTK_TREE_VIEW(widget);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
+    GtkTreeIter iter;
+    gchar *str;
+    uint32_t addr, start;
+    gchar *output;
+    int offset;
+	int i, j;
+
+	FILE *f;
+	gchar **split;
+
+    // starting address
+    gtk_tree_model_get_iter_first(model, &iter);
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "%x", &start);
+
+	f = fopen("C:\\disasm.txt", "a+t");
+	if(f == NULL)
+		return -1;
+
+	addr = start;
+	for(i = 0; i < NLINES; i++)
+	{
+		offset = ti68k_debug_disassemble(addr, &output);
+		addr += offset;
+
+		split = g_strsplit(output, " ", 3);
+		g_free(output);
+
+		fprintf(f, "%s\t%s", split[0], split[1]);
+		for(j=10-strlen(split[1]); j >= 0; j--)
+			fprintf(f, " ");
+		fprintf(f, "\t%s", split[2]);
+		for(j=16-strlen(split[2]); j >= 0; j--)
+			fprintf(f, " ");
+		fprintf(f, "\t;\n");
+		g_strfreev(split);
+	}
+
+	fclose(f);
+
+	return 0;
+}
+
 // used to implement accelerator keys
 GLADE_CB void
 on_go_to_address1_activate             (GtkMenuItem     *menuitem,
@@ -708,6 +756,9 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
     // bind our key
 	switch(event->keyval) 
 	{
+	case GDK_F6:
+		export_disasm_to_file(widget);
+		return FALSE;
 	case GDK_F2:
 		on_set_breakpoint1_activate(NULL, NULL);
 		return FALSE;

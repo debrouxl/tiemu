@@ -62,7 +62,7 @@ static uint8_t df_getbyte(void);
 static int     df_byteavail(void);
 static int     df_checkread(void);
 
-static void map_to_linkport(void)
+static void map_dbus_to_cable(void)
 {
     hw_dbus_putbyte = lp_putbyte;
     hw_dbus_getbyte = lp_getbyte;
@@ -70,7 +70,7 @@ static void map_to_linkport(void)
     hw_dbus_checkread = lp_checkread;
 }
 
-static void map_to_directfile(void)
+static void map_dbus_to_file(void)
 {
     hw_dbus_putbyte = df_putbyte;
     hw_dbus_getbyte = df_getbyte;
@@ -83,44 +83,35 @@ TicableLinkCable lc;
 
 static void print_lc_error(int errnum)
 {
+	tiemu_error(errnum, NULL);
+	/*
     char msg[MAXCHARS] = "No error -> bug !\n";
 
     ticable_get_error(errnum, msg);
     DISPLAY("Link cable error: code = %i, msg = %s\n", errnum, msg);
-    //iupdate_msgbox("Error", msg);
+    msg_box("Error", msg);
+	*/
 }
 
 /*
     D-bus management (HW linkport)
 */
 
+static int init_linkcable(void);
+static int exit_linkcable(void);
 static int init_linkfile(void);
 static int exit_linkfile(void);
 
 int hw_dbus_init(void)
 {
-	int err;
-
-	// init linkport
-	ticable_init();
-	ticable_set_param(&link_cable);
-	ticable_set_cable(link_cable.link_type, &lc);
-	if((err = lc.init()))
-	{
-		print_lc_error(err);
-		return -1;
-	}
-	if((err = lc.open()))
-	{
-		print_lc_error(err);
-		return -1;
-	}
+	// init linkcable
+	init_linkcable();
 
 	// init directfile
 	init_linkfile();
 
-	// set mappers to linkport
-	map_to_linkport();
+	// set mappers to linkcable
+	map_dbus_to_cable();
 
     return 0;
 }
@@ -135,9 +126,44 @@ int hw_dbus_reset(void)
 
 int hw_dbus_exit(void)
 {
+	// exit linkcable
+	exit_linkcable();
+	
+	// exit linkfile
+	exit_linkfile();
+
+    return 0;
+}
+
+/*
+	Link cable access
+*/
+
+static int init_linkcable(void)
+{
 	int err;
 
-	// exit linkport
+	ticable_init();
+	ticable_set_param(&link_cable);
+	ticable_set_cable(link_cable.link_type, &lc);
+	if((err = lc.init()))
+	{
+		print_lc_error(err);
+		return -1;
+	}
+	if((err = lc.open()))
+	{
+		print_lc_error(err);
+		return -1;
+	}
+
+	return 0;
+}
+
+static int exit_linkcable(void)
+{
+	int err;
+
 	if((err = lc.close()))
 	{
 		print_lc_error(err);
@@ -148,16 +174,9 @@ int hw_dbus_exit(void)
 		print_lc_error(err);
 		return -1;
 	}
-	
-	// exit directfile
-	exit_linkfile();
 
-    return 0;
+	return 0;
 }
-
-/*
-	Linkport access
-*/
 
 static int   lp_avail_byte;
 static uint8_t lp_last_byte;
@@ -228,7 +247,7 @@ static int lp_checkread(void)
 
 
 /*
-	Directfile access
+	Link file access
 */
  
 int t2f_data;   // ti => file data
@@ -280,14 +299,28 @@ int df_checkread(void)
 TicableLinkCable* 	ilc = NULL;
 TicalcFncts			itc;
 TicalcInfoUpdate 	iu = { 0 };
+TicableDataRate		*tdr;
 
 /* libticables functions (link API) */
-static int ilp_init_port(void)     { return 0; }
-static int ilp_open_port(void)     { return 0; }
+static int ilp_init(void)     
+{ 
+	ticable_get_datarate(&tdr);
+
+	tdr->count = 0;
+  	toSTART(tdr->start);
+	return 0; 
+}
+
+static int ilp_open(void)     
+{ 
+	return 0; 
+}
 
 static int ilp_put(uint8_t data)
 { 
 	tiTIME clk;
+
+	tdr->count++;
 
   	f2t_data = data; 
   	f2t_flag = 1;
@@ -299,7 +332,7 @@ static int ilp_put(uint8_t data)
   	while(f2t_flag) 
     { 
       	ti68k_debug_do_instructions(1); 
-		if(toELAPSED(clk, 20))	// 2s
+		if(toELAPSED(clk, 15))	// 2s
 			return ERR_WRITE_TIMEOUT;
     };
 
@@ -314,7 +347,7 @@ static int ilp_get(uint8_t *data)
   	while(!t2f_flag) 
     { 
       	ti68k_debug_do_instructions(1);
-		if(toELAPSED(clk, 20))
+		if(toELAPSED(clk, 15))
 			return ERR_WRITE_TIMEOUT;
     };
     
@@ -323,13 +356,15 @@ static int ilp_get(uint8_t *data)
 
 	io_bit_set(0x0d,6);	// STX=1 (tx reg is empty)
 
+	tdr->count++;
+
 	return 0;
 }
 
-static int ilp_probe_port(void)    	{ return 0; }
-static int ilp_close_port(void)    	{ return 0; }
-static int ilp_term_port(void)     	{ return 0; }
-static int ilp_check_port(int *st) { return 0; }
+static int ilp_probe(void)    	{ return 0; }
+static int ilp_close(void)    	{ return 0; }
+static int ilp_term(void)     	{ return 0; }
+static int ilp_check(int *st)	{ return 0; }
 
 /* libticalcs functions (GUI callbacks API) */
 static void ilp_start(void)   { }
@@ -345,14 +380,14 @@ static int init_linkfile(void)
   	if(ilc == NULL)
     	return ERR_MALLOC;
 
-  	ilc->init  = ilp_init_port;
-  	ilc->open  = ilp_open_port;
+  	ilc->init  = ilp_init;
+  	ilc->open  = ilp_open;
   	ilc->put   = ilp_put;
   	ilc->get   = ilp_get;
-  	ilc->close = ilp_close_port;
-  	ilc->exit  = ilp_term_port;
-  	ilc->probe = ilp_probe_port;
-  	ilc->check = ilp_check_port;
+  	ilc->close = ilp_close;
+  	ilc->exit  = ilp_term;
+  	ilc->probe = ilp_probe;
+  	ilc->check = ilp_check;
 
   	ticalc_set_cable(ilc);
 
@@ -362,6 +397,8 @@ static int init_linkfile(void)
       	break;
     	case TI89: ticalc_set_calc(CALC_TI89, &itc);
       	break;
+		case TI89t: ticalc_set_calc(CALC_TI89T, &itc);
+		break;
     	case TI92p: ticalc_set_calc(CALC_TI92P, &itc);
       	break;
 		case V200: ticalc_set_calc(CALC_V200, &itc);
@@ -370,16 +407,19 @@ static int init_linkfile(void)
       	break;
     }
 
-  	ticalc_set_update(&iu, ilp_start, ilp_stop, ilp_refresh,
-		    ilp_pbar, ilp_label);
+  	//ticalc_set_update(&iu, ilp_start, ilp_stop, ilp_refresh, ilp_pbar, ilp_label);
 
     t2f_flag = f2t_flag = 0;
+
+	ilc->init();
 
   	return 0;
 }
 
 static int exit_linkfile(void)
 {
+	ilc->exit();
+
     if(ilc != NULL)
 	    free(ilc);
     ilc = NULL;
@@ -389,14 +429,13 @@ static int exit_linkfile(void)
     return 0;
 }
 
-int test_sendfile(void)
+static int test_sendfile(void)
 {
-    map_to_directfile();
+    map_dbus_to_file();
     tihw.lc_speedy = 1;
-    //itc.send_var("/root/str.89s", 0, NULL);
     itc.send_var("C:\\str.9xs", 0, NULL);
     tihw.lc_speedy = 0;
-    map_to_linkport();
+    map_dbus_to_cable();
 
     return 0;
 }
@@ -411,73 +450,69 @@ int send_ti_file(const char *filename)
         return ERR_NOT_TI_FILE;
 
 	if(((tifiles_which_calc_type(filename) == CALC_TI92) && (tihw.calc_type == TI92)) ||
-		(tifiles_which_calc_type(filename) == CALC_TI89) ||
+		(tifiles_which_calc_type(filename) == CALC_TI89)  ||
+		(tifiles_which_calc_type(filename) == CALC_TI89T) ||
 		(tifiles_which_calc_type(filename) == CALC_TI92P) ||
 		(tifiles_which_calc_type(filename) == CALC_V200)
 	  )
     {
         ok = 1;
-    } else
+    } 
+	else
         return ERR_NOT_TI_FILE;
 
-    t2f_flag = 0;
-    f2t_flag = 0;
+	// Use direct file loading
+    map_dbus_to_file();
 
     // FLASH APP file ?
     if(tifiles_is_a_flash_file(filename) && !strcasecmp(tifiles_flash_app_file_ext(), tifiles_get_extension(filename)))
     {
-        map_to_directfile();
+        
         tihw.lc_speedy = 1;
         ret = itc.send_flash(filename, MODE_APPS);
         tihw.lc_speedy = 0;
-        map_to_linkport();
     }
 
     // FLASH OS file ?
     if(tifiles_is_a_flash_file(filename) && !strcasecmp(tifiles_flash_os_file_ext(), tifiles_get_extension(filename)))
     {
-        map_to_directfile();
         tihw.lc_speedy = 1;
         ret = itc.send_flash(filename, MODE_AMS);
         tihw.lc_speedy = 0;
-        map_to_linkport();
     }
   
     // Backup file ?
     else if(tifiles_is_a_backup_file(filename))
     {
-        map_to_directfile();
         tihw.lc_speedy = 1;
         ret = itc.send_backup(filename, MODE_NORMAL);
         tihw.lc_speedy = 0;
-        map_to_linkport();
     }
 
     // Group file ?
     else if(tifiles_is_a_group_file(filename))
     {
-        map_to_directfile();
         tihw.lc_speedy = 1;
         ret = itc.send_var(filename, MODE_NORMAL, NULL);
         tihw.lc_speedy = 0;
-        map_to_linkport();
     }
 
     // Single file
     else if(tifiles_is_a_single_file(filename))
     {
-        map_to_directfile();
         tihw.lc_speedy = 1;
         ret = itc.send_var(filename, MODE_NORMAL, NULL);
         tihw.lc_speedy = 0;
-        map_to_linkport();
     }
+
+	// Restore link cable use
+	map_dbus_to_cable();
 
 	// Transfer aborted ? Set hw link error
 	if(ret != 0)
 	{
 		print_lc_error(ret);
-		io_bit_set(0x0d,7);
+		io_bit_set(0x0d,7);	// SLE=1
 		tihw.io[0x0d] = 0;
 	}
 

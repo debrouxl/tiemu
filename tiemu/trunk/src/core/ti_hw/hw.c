@@ -205,8 +205,7 @@ void hw_update(void)
 				hw_m68k_irq(3);
 	}
 
-	// Triggered by the link hardware for various reasons.
-	// External link activity ?
+	// DBus: External link activity ?
 	if(!lc.get_red_wire() || !lc.get_white_wire())
 	{
 		io_bit_set(0x0d,3);
@@ -216,6 +215,10 @@ void hw_update(void)
 	// DBUS enabled ?
 	if(!io_bit_tst(0x0c,6))
 	{
+		// Check for data arrival (link cable)
+		if(hw_dbus_checkread()) 
+			io_bit_set(0x0d,5);
+
 		// Trigger int4 on: error, link act, txbuf empty or rxbuf full
 		if((io_bit_tst(0x0c,3) && io_bit_tst(0x0d,7))  ||
 			(io_bit_tst(0x0c,2) && io_bit_tst(0x0d,3)) ||

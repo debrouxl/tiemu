@@ -10,8 +10,6 @@ l'AMS ont des sous-bsr qui ont eux-mêmes plusieurs sous-bsr, etc.,
 certains step over sur ces bsr mettent plusieurs dizaines de seconde à
 aboutir.
 
-* le link ne marche pas convenablement. Voir plus bas.
-
 + tthdex ne marche pas convenablement, les 
 Je ne pourrais pas trop de dire d'où ça vient, mais si c'est idle()
 qui pose problème, ce doit être le port $600005 qui est mal émulé.
@@ -59,16 +57,6 @@ plus, et il y a probablement d'autres combines de touches "suspectes".
 * Si j'appuie sur la touche Windows et que je reviens à TiEmu ensuite, il
 ne répond plus à aucun appui de touches (mais on peut le fermer à travers le
 popup au moins). L'"engine" est "stoppée" et pas re"start"ée.
-
-* Le transfert de fichiers ne marche pas: Lors du premier transfert, j'ai:
-Link cable error: code = 4, msg = Msg: Timeout occured while writing to the
-devi
-ce.
-Cause: Check that your link cable is plugged and/or the calculator is ready.
-starting engine... done.
-puis ensuite:
-Link cable error: code = 400, msg = Error code not found in the list.
-This is a bug. Please report it.
 
 * Un truc qui serait bien serait une fonction "breakpoint on program entry".
 Mais comme la feature dans VTI est implémentée plutôt avec les pieds, il
