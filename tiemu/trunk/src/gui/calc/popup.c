@@ -40,7 +40,7 @@
 #include "rcfile.h"
 #include "dboxes.h"
 #include "romversion.h"
-#include "hid.h"
+#include "calc.h"
 #include "help.h"
 #include "release.h"
 #include "about.h"

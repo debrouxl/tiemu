@@ -24,6 +24,8 @@
 #ifndef __CALC_H__
 #define __CALC_H__
 
+#include <stdint.h>
+
 /* Functions */
 
 int hid_init(void);

@@ -34,7 +34,7 @@
 #include "intl.h"
 #include "tilibs.h"
 #include "struct.h"
-#include "hid.h"
+#include "calc.h"
 #include "version.h"
 #include "cmdline.h"
 #include "files.h"
@@ -42,10 +42,9 @@
 #include "ti68k_int.h"
 #include "printl.h"
 
-#include "hid.h"
 #include "engine.h"
 #include "refresh.h"
-#include "printl.h"
+#include "calc.h"
 
 #include "wizard.h"
 #include "popup.h"
@@ -203,7 +202,7 @@ int main(int argc, char **argv)
 		Start thread (emulation engine) and run main loop 
 	*/
     splash_screen_set_label(_("Starting engine..."));
-	thread = g_thread_create(ti68k_engine, NULL, FALSE, &error);
+	//thread = g_thread_create(ti68k_engine, NULL, FALSE, &error);
 	ti68k_engine_unhalt();
     splash_screen_stop();
 
@@ -221,7 +220,7 @@ int main(int argc, char **argv)
 
 	err = ti68k_exit();
 	handle_error();
-  
+
 	return 0;
 }
 

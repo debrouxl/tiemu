@@ -36,7 +36,7 @@
 #include "struct.h"
 #include "ti68k_int.h"
 #include "dboxes.h"
-#include "hid.h"
+#include "calc.h"
 #include "rcfile.h"
 #include "pbars.h"
 #include "tie_error.h"

@@ -62,6 +62,8 @@
 
 static int cpu_instr = NB_INSTRUCTIONS_PER_LOOP;
 
+#if 0
+
 G_LOCK_DEFINE(running);
 static volatile int running = 0;
 
@@ -140,3 +142,101 @@ void ti68k_engine_unhalt(void)
 	running = 1;
 	G_UNLOCK(running);
 }
+
+#else		// new management
+
+GThread *thread = NULL;
+GError *error = NULL;
+
+G_LOCK_DEFINE(running);
+static volatile int running = 0;
+
+G_LOCK_DEFINE(debugger);
+volatile int debugger = 0;
+
+// run as a separate thread
+gpointer ti68k_engine(gpointer data)
+{
+	struct timeb tCurrentTime;
+	struct timeb tLastTime;
+	unsigned long int iCurrentTime;
+	unsigned long int iLastTime; 
+	gint res = 0;
+
+	G_LOCK(running);
+	running = 1;
+	G_UNLOCK(running);
+
+    if(params.cpu_rate != -1)
+        cpu_instr = params.cpu_rate;
+
+	while (1) 
+	{
+		// Check engine status
+		G_LOCK(running);
+		if (!running) 
+        {
+			G_UNLOCK(running);
+			g_thread_exit(GINT_TO_POINTER(0));
+		}
+		G_UNLOCK(running);
+		
+		ftime(&tLastTime);
+      
+		// Run emulator core
+		res = ti68k_debug_do_instructions(cpu_instr);
+		if(res) 
+        {  
+			// a bkpt has been encountered
+			G_LOCK(running);
+            running = 0;
+			G_UNLOCK(running);
+
+			debugger = res;
+			
+			// send a signal to GTK ?
+			g_thread_exit(GINT_TO_POINTER(res));
+		} 
+        else 
+        { 
+			// normal execution
+			ftime(&tCurrentTime);
+			
+			iLastTime    = 1000 * tLastTime.time + tLastTime.millitm;
+			iCurrentTime = 1000 * tCurrentTime.time + tCurrentTime.millitm;
+			
+			if((iCurrentTime - iLastTime) < TIME_LIMIT)
+                if(params.restricted)
+				    sleep((TIME_LIMIT - iCurrentTime + iLastTime));
+		}
+	}
+
+	g_thread_exit(GINT_TO_POINTER(0));
+}
+
+int ti68k_engine_is_halted() 
+{
+	return !running;
+}
+
+void ti68k_engine_halt(void) 
+{
+	G_LOCK(running);
+	running = 0;				// request termination
+	G_UNLOCK(running);
+
+	g_thread_join(thread);		// wait for thread termination
+	thread = NULL;
+}
+
+void ti68k_engine_unhalt(void) 
+{
+	G_LOCK(running);
+	if(!running)
+	{
+		thread = g_thread_create(ti68k_engine, NULL, TRUE, &error);		
+	}
+	G_UNLOCK(running);
+}
+
+#endif
