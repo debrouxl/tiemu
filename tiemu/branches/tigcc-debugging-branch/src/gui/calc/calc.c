@@ -3,9 +3,11 @@
 
 /*  TiEmu - an TI emulator
  *
- *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
- *  Copyright (c) 2003-2004, Romain Liévin
+ *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2003, Romain Lievin
+ *  Copyright (c) 2003, Julien Blache
+ *  Copyright (c) 2004, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,11 +28,11 @@
 #  include <config.h>
 #endif				/*  */
 
-#ifdef GTK_DISABLE_DEPRECATED
-#undef GTK_DISABLE_DEPRECATED
+//#ifdef GTK_DISABLE_DEPRECATED
+//#undef GTK_DISABLE_DEPRECATED
 #include <gtk/gtk.h>
-#define GTK_DISABLE_DEPRECATED
-#endif
+//#define GTK_DISABLE_DEPRECATED
+//#endif
 #include <glade/glade.h>
 
 #include "intl.h"
@@ -48,8 +50,6 @@
 GtkWidget *main_wnd = NULL;
 GtkWidget *area = NULL;
 
-gint w, h;
-
 extern GdkPixbuf*	lcd;
 extern GdkPixbuf*	skn;
 extern GdkPixmap*	pixmap;
@@ -62,13 +62,14 @@ extern const char	sknKey89[];
 extern uint32_t*	lcd_bytmap;
 extern LCD_INFOS	li;
 extern WND_INFOS	wi;
+extern SCL_INFOS	si;
 
 static void set_infos(void)	// set window & lcd sizes
 {
 	if(params.background) 
 	{
-		li.pos.x = skin_infos.lcd_pos.left; 
-		li.pos.y = skin_infos.lcd_pos.top;
+		li.pos.x = si.s * skin_infos.lcd_pos.left; 
+		li.pos.y = si.s * skin_infos.lcd_pos.top;
 	}
 	else 
 	{
@@ -76,27 +77,26 @@ static void set_infos(void)	// set window & lcd sizes
 		li.pos.y = 0;
 	}  
 
-	li.pos.w = tihw.lcd_w;
-	li.pos.h = tihw.lcd_h;
+	li.pos.w = si.s * tihw.lcd_w;
+	li.pos.h = si.s * tihw.lcd_h;
 
 	if(params.background)
 	{
-		wi.w = skin_infos.width;
-		wi.h = skin_infos.height;
+		wi.w = si.s * skin_infos.width;
+		wi.h = si.s * skin_infos.height;
 	}
 	else
 	{
-		wi.w = tihw.lcd_w;
-		wi.h = tihw.lcd_h;
+		wi.w = si.s * tihw.lcd_w;
+		wi.h = si.s * tihw.lcd_h;
 	}
 }
-
-GtkWidget* create_calc_wnd (void);
 
 // Main wnd by loading glade xml file or by executing glade generated code
 gint display_main_wnd(void)
 {
 	GladeXML *xml;
+	gchar *title;
 
 	xml = glade_xml_new
 		(tilp_paths_build_glade("calc-2.glade"), "calc_wnd",
@@ -109,6 +109,12 @@ gint display_main_wnd(void)
 	area = glade_xml_get_widget(xml, "drawingarea1");
 
 	gtk_widget_realize(main_wnd);	// set drawing area valid
+
+	// set window title (useful for TIGCC-IDE for instance)
+	// Note: lpWindowName is "TiEmu (%s)" and lpClassName is "gdkWindowToplevel"
+	title = g_strdup_printf("TiEmu (%s)", ti68k_calctype_to_string(tihw.calc_type));
+	gtk_window_set_title(GTK_WINDOW(main_wnd), title);
+	g_free(title);
 
 	return 0;
 }
@@ -151,8 +157,6 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data)
 {
-	//if(pixmap == NULL) return FALSE;
-
     gdk_draw_pixmap(
         widget->window,
 		widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
@@ -324,8 +328,6 @@ void redraw_skin(void);
 
 int  hid_init(void)
 {
-    SKIN_INFOS *si = &skin_infos;
-
     // Found a PC keyboard keymap
     match_keymap(tihw.calc_type);
 
@@ -387,6 +389,7 @@ int  hid_init(void)
 	    g_free(s);
 	    return -1;
     }
+	si.l = gdk_pixbuf_new_subpixbuf(lcd, 0, 0, tihw.lcd_w, tihw.lcd_h);
     
 	// Constants for LCD update (speed-up)
     li.n_channels = gdk_pixbuf_get_n_channels (lcd);
@@ -399,7 +402,7 @@ int  hid_init(void)
 	display_main_wnd();
 
     // Allocate the backing pixmap
-    pixmap = gdk_pixmap_new(main_wnd->window, si->width, si->height, -1);
+    pixmap = gdk_pixmap_new(main_wnd->window, wi.w, wi.h, -1);
     if(pixmap == NULL)
     {
         gchar *s = g_strdup_printf("unable to create backing pixbuf.\n");
@@ -477,34 +480,61 @@ int hid_change_skin(const char *filename)
 	return ret1 | ret2;
 }
 
-static gint fullscreen = 0;
+static gint view_mode = VW_NORMAL;
 
-int hid_switch_fullscreen(void)
+int hid_switch_unfullscreen(void)
 {
-	gdk_window_fullscreen(main_wnd->window);
-    fullscreen = !0;
+	if(view_mode & VW_FULL)
+	{
+		gdk_window_unfullscreen(main_wnd->window);
+		view_mode &= ~VW_FULL;
+	}
 
 	return 0;
 }
 
-int hid_switch_windowed(void)
+int hid_switch_fullscreen(void)
 {
-	gdk_window_unfullscreen(main_wnd->window);
-    fullscreen = 0;
+	if(!(view_mode & VW_FULL))
+	{
+		gdk_window_fullscreen(main_wnd->window);
+		view_mode |= VW_FULL;
+	}
 
 	return 0;
 }
 
 int hid_switch_normal_view(void)
 {
-    if(fullscreen)
-        hid_switch_windowed();
+	if(!(view_mode & VW_NORMAL))
+	{
+		hid_switch_unfullscreen();
+
+		si.s = 1;		
+		hid_exit();
+		hid_init();
+
+		view_mode &= ~VW_LARGE;
+		view_mode |= VW_NORMAL;
+	}
 
     return 0;
 }
 
 int hid_switch_large_view(void)
 {
+	if(!(view_mode & VW_LARGE))
+	{
+		hid_switch_unfullscreen();
+
+		si.s = 2;		
+		hid_exit();
+		hid_init();
+
+		view_mode &= ~VW_NORMAL;
+		view_mode |= VW_LARGE;
+	}
+
     return 0;
 }
 

@@ -6,8 +6,8 @@ NAME
        tiemu - a TI emulator of TI89(Titanium)/92(+)/V200 hand-helds
 
 SYNOPSYS
-       tiemu   [-h]  [-v]  [--help]  [--version]  [--import]  [-rom=]  [-tib=]
-       [-sav_file=] [image]
+       tiemu [-h] [-v] [--help] [--version] [--import] [-rom=] [-tib=] [-sav=]
+       [image]
 
 DESCRIPTION
        The TiEmu program allows you to emulate a Texas Instruments  calculator
@@ -144,22 +144,23 @@ CONFIG FILE FORMAT
 COPYRIGHT
        Copyright (C) 2000-2001, Romain Lievin and Thomas Corvazier.  Copyright
        (C) 2001-2003, Romain Lievin Copyright (C) 2003,  Julien  Blache  Copy-
-       right (C) 2004-2005, Romain Lievin
+       right  (C)  2004,  Romain  Lievin Copyright (C) 2005, Romain Lievin and
+       Kevin Kofler
 
-       Permission  to  use, copy, modify, and distribute this software and its
-       documentation for any purpose and without fee is hereby  granted,  pro-
-       vided  that  the  above  copyright notice appear in all copies and that
-       both that copyright notice and this permission notice  appear  in  sup-
+       Permission to use, copy, modify, and distribute this software  and  its
+       documentation  for  any purpose and without fee is hereby granted, pro-
+       vided that the above copyright notice appear in  all  copies  and  that
+       both  that  copyright  notice and this permission notice appear in sup-
        porting documentation.
 
-       This  program and its source code is distributed under the terms of the
-       terms of the GNU General Public License as published by the Free  Soft-
-       ware  Foundation;  either version 2 of the License, or (at your option)
+       This program and its source code is distributed under the terms of  the
+       terms  of the GNU General Public License as published by the Free Soft-
+       ware Foundation; either version 2 of the License, or (at  your  option)
        any later version.
 
-       This program is distributed in the hope that it  will  be  useful,  but
-       WITHOUT  ANY  WARRANTY;  without  even  the  implied  warranty  of MER-
-       CHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU  General
+       This  program  is  distributed  in the hope that it will be useful, but
+       WITHOUT ANY  WARRANTY;  without  even  the  implied  warranty  of  MER-
+       CHANTABILITY  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
        Public License for more details.
 
        You should have received a copy of the GNU General Public License along
@@ -168,9 +169,9 @@ COPYRIGHT
 
 
 SUGGESTIONS AND BUG REPORTS
-       The   canonical place to find TiEmu and some miscellenaous informations
-       is at <http://lpg.ticalc.org/prj_tiemu>.  You can also take a  look  at
-       <http://lpg.ticalc.org>   and  <http://www.ticalc.org>  for  others  TI
+       The  canonical place to find TiEmu and some miscellenaous  informations
+       is  at  <http://lpg.ticalc.org/prj_tiemu>.  You can also take a look at
+       <http://lpg.ticalc.org>  and  <http://www.ticalc.org>  for  others   TI
        related programs for Linux.
 
 AUTHOR
@@ -180,10 +181,10 @@ AUTHOR
 SPECIAL THANKS
        - Jonas Minnberg (Sasq) for Tiger - UAE, the Universal Amiga Emulator
 
-       - Benjamin Gordon <ben@bxg.org> for creating rpm packages:  he  is  the
+       -  Benjamin  Gordon  <ben@bxg.org> for creating rpm packages: he is the
        official maintainer of this package.
 
-       - Julien Blache <jb@jblache.org> for creating deb packages: he  is  the
+       -  Julien  Blache <jb@jblache.org> for creating deb packages: he is the
        official maintainer of this package.
 
 THANKS

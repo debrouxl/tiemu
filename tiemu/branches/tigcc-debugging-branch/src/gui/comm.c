@@ -24,8 +24,8 @@
 #endif				/*  */
 
 #undef GTK_DISABLE_DEPRECATED
-
 #include <gtk/gtk.h>
+#define GTK_DISABLE_DEPRECATED
 #include <glade/glade.h>
 #include <string.h>
 

@@ -3,9 +3,11 @@
 
 /*  TiEmu - an TI emulator
  *
- *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
- *  Copyright (c) 2003-2004, Romain Liévin
+ *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2003, Romain Lievin
+ *  Copyright (c) 2003, Julien Blache
+ *  Copyright (c) 2004, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -222,7 +224,7 @@ gint display_wz_rom_dbox(void)
 	int err;
 
     // get filename
-	filename = (char *)create_fsel(inst_paths.rom_dir, "", "*.rom", FALSE);
+	filename = (char *)create_fsel(inst_paths.rom_dir, NULL, "*.rom", FALSE);
 	if (filename == NULL)
 	{
 		display_step1_dbox();
@@ -253,7 +255,7 @@ gint display_wz_tib_dbox(void)
 	int err;
 
     // get filename
-	filename = (char *)create_fsel(inst_paths.rom_dir, "", "*.89u;*.9xu;*.v2u;*.tib", FALSE);
+	filename = (char *)create_fsel(inst_paths.rom_dir, NULL, "*.89u;*.9xu;*.v2u;*.tib", FALSE);
 	if (filename == NULL)
 	{
 		display_step1_dbox();

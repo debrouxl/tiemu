@@ -125,6 +125,36 @@ sp_kde_get_open_filename (unsigned char *dir, unsigned char *filter, unsigned ch
         return g_strdup (fileName);
 }
 
+char **
+sp_kde_get_open_filenames (unsigned char *dir, unsigned char *filter, unsigned char *title)
+{
+	QStringList fileNames;
+	char **result, **p;
+
+	QTimer timer;
+	QObject::connect (&timer, SIGNAL (timeout ()), Bridge, SLOT (TimerHook ()));
+	timer.changeInterval (1000 / SP_FOREIGN_FREQ);
+	SPKDEModal = TRUE;
+
+	fileNames = KFileDialog::getOpenFileNames ((const char *) dir,
+						   (const char *) filter,
+						   NULL,
+						   (const char *) title);
+
+	SPKDEModal = FALSE;
+
+	if (fileNames.empty())
+		return NULL;
+
+	p = result = (char **) g_malloc ((fileNames.count() + 1) * sizeof(char *));
+	for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it) {
+		*(p++) = g_strdup (*it);
+	}
+	*p = NULL;
+
+	return result;
+}
+
 char *
 sp_kde_get_write_filename (unsigned char *dir, unsigned char *filter, unsigned char *title)
 {

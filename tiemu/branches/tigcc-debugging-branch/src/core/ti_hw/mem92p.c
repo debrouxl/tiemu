@@ -3,9 +3,11 @@
 
 /*  TiEmu - an TI emulator
  *
- *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
- *  Copyright (c) 2003-2004, Romain Liévin
+ *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2003, Romain Lievin
+ *  Copyright (c) 2003, Julien Blache
+ *  Copyright (c) 2004, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,6 +37,7 @@
 #include "ports.h"
 #include "hw.h"
 #include "mem.h"
+#include "mem89.h"
 #include "images.h"
 #include "bkpts.h"
 #include "m68k.h"
@@ -92,6 +95,14 @@ int ti92p_mem_init(void)
 		mem_tab[7] = tihw.io2;
 		mem_msk[7] = tihw.io2_size-1;
 	}
+
+	// set mappers
+	mem_get_byte_ptr = ti89_get_byte;
+	mem_get_word_ptr = ti89_get_word;
+	mem_get_long_ptr = ti89_get_long;
+	mem_put_byte_ptr = ti89_put_byte;
+	mem_put_word_ptr = ti89_put_word;
+	mem_put_long_ptr = ti89_put_long;
   
     return 0;
 }

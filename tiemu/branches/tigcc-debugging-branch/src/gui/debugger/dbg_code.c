@@ -3,9 +3,11 @@
 
 /*  TiEmu - an TI emulator
  *
- *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
- *  Copyright (c) 2003-2004, Romain Liévin
+ *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2003, Romain Lievin
+ *  Copyright (c) 2003, Julien Blache
+ *  Copyright (c) 2004, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -48,7 +50,8 @@ enum {
 
 #define FONT_NAME	"courier"
 
-#define NLINES      10
+//#define NLINES      10
+static gint NLINES = 10;
 
 static GtkListStore* clist_create(GtkWidget *widget)
 {
@@ -406,16 +409,25 @@ void dbgcode_disasm_at(uint32_t addr)
     gtk_tree_path_free(path);
 }
 
+
+GLADE_CB void
+on_quit1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
 GLADE_CB void
 on_run1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+#if 0
 	tb_set_states(0, 0, 0, 0, 0, 1, 0);
     gtk_widget_set_sensitive(list, FALSE);
     set_other_windows_sensitivity(FALSE);
 
 	ti68k_debug_step();	// skip possible current bkpt
     ti68k_engine_start();
+#else
+	on_quit1_activate(menuitem, user_data);
+#endif
 }
 
 
@@ -921,4 +933,34 @@ on_view_memory1_activate       (GtkMenuItem     *menuitem,
     
     printf("addr = %x\n", addr);
     dbgmem_add_tab(addr);
+}
+
+
+GLADE_CB void
+on_treeview1_size_allocate             (GtkWidget       *widget,
+                                        GdkRectangle    *allocation,
+                                        gpointer         user_data)
+{
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreePath *path;
+	GdkRectangle rect;
+	static int old = 0;
+
+	path = gtk_tree_path_new_from_string("0");
+	gtk_tree_view_get_background_area(view, path, NULL, &rect);
+	g_free(path);
+
+	if(rect.height == 0)
+		return;
+
+	NLINES = allocation->height / rect.height - 1;
+	printf("#lines: %i (%i %i)\n", NLINES, allocation->height, rect.height);
+
+	if(old != NLINES)
+	{	
+		gtk_list_store_clear(store);
+		clist_refresh(store, TRUE);
+	}
+
+	old = NLINES;
 }

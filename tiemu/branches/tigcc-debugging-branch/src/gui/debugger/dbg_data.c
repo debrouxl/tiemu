@@ -3,9 +3,11 @@
 
 /*  TiEmu - an TI emulator
  *
- *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
- *  Copyright (c) 2003-2004, Romain Liévin
+ *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2003, Romain Lievin
+ *  Copyright (c) 2003, Julien Blache
+ *  Copyright (c) 2004, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,8 +27,6 @@
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif				/*  */
-
-#undef GTK_DISABLE_DEPRECATED
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
@@ -60,7 +60,8 @@ gint dbgdata_display_dbox(gint *mode, gint *type, uint32_t *start, uint32_t *sto
 	gtk_window_resize(GTK_WINDOW(dbox), 320, 240);
 
 	data = glade_xml_get_widget(xml, "radiobutton20");
-	gtk_signal_emit_by_name(GTK_OBJECT(data), "toggled");
+	//gtk_signal_emit_by_name(GTK_OBJECT(data), "toggled");
+	g_signal_emit_by_name(G_OBJECT(data), "toggled");
 
 	printf("%i %i %x %x\n", mode, type, *start, *stop);
 
@@ -88,13 +89,13 @@ gint dbgdata_display_dbox(gint *mode, gint *type, uint32_t *start, uint32_t *sto
 			data = glade_xml_get_widget(xml, "radiobutton20");
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
 
-			data = glade_xml_get_widget(xml, "optionmenu1");
+			data = glade_xml_get_widget(xml, "comboboxentry1");
 			if(*mode & BK_BYTE)
-				gtk_option_menu_set_history(GTK_OPTION_MENU(data), 0);
+				gtk_combo_box_set_active(GTK_COMBO_BOX(data), 0);
 			else if(*mode & BK_WORD)
-				gtk_option_menu_set_history(GTK_OPTION_MENU(data), 1);
+				gtk_combo_box_set_active(GTK_COMBO_BOX(data), 1);
 			else if(*mode & BK_LONG)
-				gtk_option_menu_set_history(GTK_OPTION_MENU(data), 2);
+				gtk_combo_box_set_active(GTK_COMBO_BOX(data), 2);
 
 			data = glade_xml_get_widget(xml, "entry3");
 			s_start = g_strdup_printf("0x%06x", *start);
@@ -145,8 +146,8 @@ loop:
 	
 		if(*type == BK_TYPE_ACCESS)
 		{
-			data = glade_xml_get_widget(xml, "optionmenu1");
-			switch(gtk_option_menu_get_history(GTK_OPTION_MENU(data)))
+			data = glade_xml_get_widget(xml, "comboboxentry1");
+			switch(gtk_combo_box_get_active(GTK_COMBO_BOX(data)))
 			{
 			case 0: *mode |= BK_BYTE; break;
 			case 1: *mode |= BK_WORD; break;

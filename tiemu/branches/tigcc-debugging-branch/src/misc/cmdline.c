@@ -3,9 +3,11 @@
 
 /*  TiEmu - an TI emulator
  *
- *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
- *  Copyright (c) 2003-2004, Romain Liévin
+ *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2003, Romain Lievin
+ *  Copyright (c) 2003, Julien Blache
+ *  Copyright (c) 2004, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,6 +48,7 @@ int version(void)
 	fprintf(stdout, "  (C) Romain Lievin 2001-2003\n");
 	fprintf(stdout, "  (C) Julien Blache 2003\n");
 	fprintf(stdout, "  (C) Romain Lievin 2004-2005\n");
+	fprintf(stdout, "  (C) Romain Lievin & Kevin Kofler 2005\n");
 	fprintf(stdout, "THIS PROGRAM COMES WITH ABSOLUTELY NO WARRANTY\n");
 	fprintf(stdout, "PLEASE READ THE DOCUMENTATION FOR DETAILS\n");
 
@@ -63,14 +66,14 @@ int help(void)
 
 	fprintf(stdout, "usage: tiemu [-options] [image]\n");
 	fprintf(stdout, "\n");
-	fprintf(stdout, "-h, --help    display this information page and exit\n");
-	fprintf(stdout, "-v, --version display the version information and exit\n");
-	fprintf(stdout, "--import   import ROM or TIB into repository without loading\n");
-	fprintf(stdout, "-rom=		ROM dump to convert and load\n");
-	fprintf(stdout, "-tib=		TIB or upgrade to convert and load\n");
-	fprintf(stdout, "-sav=		state image to load\n");
+	fprintf(stdout, "-h, --help     display this information page and exit\n");
+	fprintf(stdout, "-v, --version  display the version information and exit\n");
+	fprintf(stdout, "--import       import ROM or TIB into repository without loading\n");
+	fprintf(stdout, "-rom=          ROM dump to convert and load\n");
+	fprintf(stdout, "-tib=          TIB or upgrade to convert and load\n");
+	fprintf(stdout, "-sav=          state image to load\n");
 	fprintf(stdout, "\n");
-	fprintf(stdout, "filename   a filename which contains a TiEmu image\n");
+	fprintf(stdout, "filename       a filename which contains a TiEmu image\n");
 	fprintf(stdout, "\n");
 
 	exit(0);

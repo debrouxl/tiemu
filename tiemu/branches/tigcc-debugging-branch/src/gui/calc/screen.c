@@ -3,9 +3,11 @@
 
 /*  TiEmu - an TI emulator
  *
- *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
- *  Copyright (c) 2003-2004, Romain Liévin
+ *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2003, Romain Lievin
+ *  Copyright (c) 2003, Julien Blache
+ *  Copyright (c) 2004, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -58,6 +60,7 @@ GdkPixmap *pixmap = NULL;
 uint32_t*	lcd_bytmap;				// LCD buffer (color-mapped as grayscale)
 LCD_INFOS	li;
 WND_INFOS	wi;
+SCL_INFOS	si = { 1, NULL };
 
 static uint32_t convtab[512];      	// planar to chunky conversion table
 static RGB      grayscales[16];		// gray scales rgb values (colormap)
@@ -167,24 +170,33 @@ void redraw_skin(void)
 {
     GdkRect r;
 
-	//gtk_drawing_area_size(GTK_DRAWING_AREA(area), wi.w, wi.h);
+	// resize window and drawing area
 	gtk_widget_set_size_request(area, wi.w, wi.h);
 	gtk_window_resize(GTK_WINDOW(main_wnd), wi.w, wi.h);
 
+	// no skin ?
   	if(!params.background) 
     	return;
   
 	if(skn == NULL)
 	    return;
 
+	// set region to update
 	r.x = 0;
     r.y = 0;
-    r.w = skin_infos.width;
-    r.h = skin_infos.height;
+    r.w = wi.w;
+    r.h = wi.h;
 
+	// scale image if needed
+	si.p = gdk_pixbuf_scale_simple(skn, wi.w, wi.h, GDK_INTERP_NEAREST);
+
+	// and draw image into pixmap (next, into window on expose event)
     gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
-		  skn, 0, 0, 0, 0, -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
+		  si.p, 0, 0, 0, 0, -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
   	gdk_window_invalidate_rect(main_wnd->window, (GdkRectangle *)&r, FALSE);
+
+	// and release
+	g_object_unref(si.p);
 }
 
 /* Redraw the lcd only */
@@ -195,14 +207,22 @@ void redraw_lcd(void)
 	if(pixmap == NULL)
 		return;
 
+	// set region to update
 	r.x = li.pos.x;
     r.y = li.pos.y;
     r.w = li.pos.w;
     r.h = li.pos.h;
 
+	// scale image if needed
+	si.p = gdk_pixbuf_scale_simple(skn, wi.w, wi.h, GDK_INTERP_NEAREST);
+
+	// and draw
 	gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
-		  skn, r.x, r.y, r.x, r.y, r.w, r.h, GDK_RGB_DITHER_NONE, 0, 0);
+		  si.p, r.x, r.y, r.x, r.y, r.w, r.h, GDK_RGB_DITHER_NONE, 0, 0);
 	gtk_widget_queue_draw_area(area, r.x, r.y, r.w, r.h);
+
+	// and release
+	g_object_unref(si.p);
 }
 
 // gray plane sequences in relation with gscales.c
@@ -224,7 +244,7 @@ int hid_update_lcd(void)
 	int i, j, k, l;
 	uint8_t *lcd_bitmap = tihw.lcd_ptr = &tihw.ram[tihw.lcd_adr];	
 	uint8_t *lcd_buf = (uint8_t *)lcd_bytmap;
-	GdkRect src, dst;
+	GdkRect src;
 	guchar *p;
 
 	extern uint32_t lcd_planes[3];
@@ -299,31 +319,37 @@ int hid_update_lcd(void)
 			}
 		}
 
-        // Copy surface into window
-        src.x = 0;
-        src.y = 0;
+        // Set region to update
+        src.x = src.y = 0;
 		src.w = tihw.log_w > tihw.lcd_w ? tihw.lcd_w : tihw.log_w;
 		src.h = tihw.log_h > tihw.lcd_h ? tihw.lcd_h : tihw.log_h;
 
-        if(params.background) 
+		// Copy surface into window
+		if(si.s > 1)
 		{
-			dst.x = skin_infos.lcd_pos.left; 
-			dst.y = skin_infos.lcd_pos.top;
+			src.w *= si.s;
+			src.h *= si.s;
+
+			// scale image
+			si.p = gdk_pixbuf_scale_simple(si.l, li.pos.w, li.pos.h, GDK_INTERP_NEAREST);
+
+			// and draw image into pixmap (next, into window on expose event)
+			gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
+			  si.p, src.x, src.y, li.pos.x, li.pos.y, src.w, src.h,
+			  GDK_RGB_DITHER_NONE, 0, 0);
+			gtk_widget_queue_draw_area(area, li.pos.x, li.pos.y, src.w, src.h);
+
+			// and release
+			g_object_unref(si.p);
 		}
-		else 
+		else
 		{
-			dst.x = 0;
-			dst.y = 0;
-		}  
-        dst.w = src.w;
-        dst.h = src.h;
-
-        gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
-		  lcd, src.x, src.y, dst.x, dst.y, src.w, src.h,
-		  GDK_RGB_DITHER_NONE, 0, 0);
-
-		//gtk_widget_draw(area, (GdkRectangle *)&dst);
-		gtk_widget_queue_draw_area(area, dst.x, dst.y, dst.w, dst.h);
+			// and draw image into pixmap (next, into window on expose event)
+			gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
+			  lcd, src.x, src.y, li.pos.x, li.pos.y, src.w, src.h,
+			  GDK_RGB_DITHER_NONE, 0, 0);
+			gtk_widget_queue_draw_area(area, li.pos.x, li.pos.y, src.w, src.h);
+		}
     }
 
     return -1;

@@ -3,9 +3,11 @@
 
 /*  TiEmu - an TI emulator
  *
- *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
- *  Copyright (c) 2003-2004, Romain Liévin
+ *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2003, Romain Lievin
+ *  Copyright (c) 2003, Julien Blache
+ *  Copyright (c) 2004, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -45,7 +47,7 @@ gint display_skin_dbox()
 {
 	const gchar *filename;
 
-	filename = (char *)create_fsel(inst_paths.skin_dir, "", "*.skn", FALSE);
+	filename = (char *)create_fsel(inst_paths.skin_dir, NULL, "*.skn", FALSE);
 	if (!filename)
 	{
 		return 0;
@@ -66,7 +68,7 @@ gint display_load_state_dbox()
 	int err;
 
     // get filename
-	filename = create_fsel(inst_paths.home_dir, "", "*.sav", FALSE);
+	filename = create_fsel(inst_paths.home_dir, NULL, "*.sav", FALSE);
 	if (!filename)
 		return 0;
 
@@ -143,7 +145,7 @@ gint display_tifile_dbox()
 	if(folder == NULL)
 		folder = g_strdup(inst_paths.base_dir);
 
-	filename = (char *)create_fsel(folder, "", (char *)ext, FALSE);
+	filename = (char *)create_fsel(folder, NULL, (char *)ext, FALSE);
 	if (!filename)
     {
 		return 0;
@@ -189,6 +191,76 @@ gint display_tifile_dbox()
 	return 0;
 }
 
+gint display_tifiles_dbox()
+{
+	const gchar *ext;
+	gchar **filenames, **ptr;
+	int err;
+	static gchar *folder = NULL;
+
+    // set mask
+    switch(tihw.calc_type) 
+	{
+    case TI92:
+        ext = "*.92?";
+		break;
+	default:
+        ext = "*.89?;*.92?;*.9x?;*.v2?";
+        break;
+    }
+
+	// get filename
+	if(folder == NULL)
+		folder = g_strdup(inst_paths.base_dir);
+
+	filenames = create_fsels(folder, NULL, (char *)ext, FALSE);
+	if(!filenames)
+		return 0;
+
+	// keep folder
+	g_free(folder);
+	folder = g_path_get_dirname(filenames[0]);
+
+    // check extension
+	for(ptr = filenames; *ptr; ptr++)
+	{
+		if(!tifiles_is_a_ti_file(*ptr) || !tifiles_is_ti9x(tifiles_which_calc_type(*ptr))) 
+		{
+			msg_box(_("Error"), _("This file is not a valid TI file."));
+			g_strfreev(filenames);
+			return -1;
+		}
+
+		// set pbar title
+		if(tifiles_is_a_tib_file(*ptr) || tifiles_is_a_flash_file(*ptr)) 
+		{
+			create_pbar_type5(_("Flash"), "");
+		} 
+		else if(tifiles_is_a_backup_file(*ptr)) 
+		{
+			create_pbar_type3(_("Backup"));
+		} 
+		else if(tifiles_is_a_group_file(*ptr)) 
+		{
+			create_pbar_type5(_("Sending group file"), "");
+		} 
+		else if(tifiles_is_a_single_file(*ptr)) 
+		{
+			create_pbar_type4(_("Sending variable"), "");
+		}
+
+		// note that core is currently not bkpt-interruptible when
+		// transferring file
+		GTK_REFRESH();
+		err = ti68k_linkport_send_file(*ptr);
+		handle_error();
+		destroy_pbar();	
+	}
+
+	g_strfreev(filenames);
+	return 0;
+}
+
 gint display_set_tib_dbox(void)
 {
     const gchar *filename;
@@ -196,7 +268,7 @@ gint display_set_tib_dbox(void)
 	int err;
 
     // get filename
-	filename = create_fsel(inst_paths.base_dir, "", "*.89u;*.9xu;*.v2u;*.tib", FALSE);
+	filename = create_fsel(inst_paths.base_dir, NULL, "*.89u;*.9xu;*.v2u;*.tib", FALSE);
 	if (!filename)
 		return 0;
 
@@ -238,7 +310,7 @@ gint display_import_romversion_dbox(void)
 	int err;
     
     // get filename
-	filename = create_fsel(inst_paths.base_dir, "", "*.rom;*.89u;*.9xu;*.v2u;*.tib", FALSE);
+	filename = create_fsel(inst_paths.base_dir, NULL, "*.rom;*.89u;*.9xu;*.v2u;*.tib", FALSE);
 	if (!filename)
 		return 0;
 

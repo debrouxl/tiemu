@@ -66,11 +66,11 @@ core_tihw_OBJ = \
 	core/ti_hw/flash.o	\
 	core/ti_hw/gscales.o	\
 	core/ti_hw/hw.o 	\
+	core/ti_hw/hwprot.o	\
 	core/ti_hw/kbd.o 	\
 	core/ti_hw/m68k.o	\
 	core/ti_hw/mem.o 	\
 	core/ti_hw/mem89.o	\
-	core/ti_hw/hwp89.o	\
 	core/ti_hw/mem89tm.o	\
 	core/ti_hw/mem92.o	\
 	core/ti_hw/mem92p.o	\

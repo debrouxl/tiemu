@@ -2,9 +2,11 @@
 /* $Id: hid.h 557 2004-07-14 08:17:39Z roms $ */
 
 /*  TiEmu - a TI emulator
- *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
- *  Copyright (c) 2003-2004, Romain Liévin
+ *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2003, Romain Lievin
+ *  Copyright (c) 2003, Julien Blache
+ *  Copyright (c) 2004, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,7 +42,7 @@ int hid_switch_without_skin(void);
 int hid_change_skin(const char *filename);
 
 int hid_switch_fullscreen(void);
-int hid_switch_windowed(void);
+int hid_switch_unfullscreen(void);
 
 int hid_switch_normal_view(void);
 int hid_switch_large_view(void);
@@ -80,11 +82,18 @@ typedef struct
 
 typedef struct
 {
-	int 		w;	// width
-	int 		h;	// height
-	float 		r;	// original ratio
-	float 		s;	// scaling factor
-	GdkPixbuf*	p;	// temp pointer
-} SCALE_INFOS;
+	//int 		w;	// width
+	//int 		h;	// height
+	//float 		r;	// original ratio
+	//float 		s;	// scaling factor
+
+	int			s;
+	GdkPixbuf*	l;	// lcd pixbuf
+	GdkPixbuf*	p;	// scaled pixbuf
+} SCL_INFOS;
+
+#define VW_NORMAL	1
+#define VW_LARGE	2
+#define VW_FULL		4
 
 #endif

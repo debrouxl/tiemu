@@ -220,6 +220,10 @@ SOURCE=..\..\src\core\ti_hw\hw.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\ti_hw\hwprot.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\ti_hw\kbd.c
 # End Source File
 # Begin Source File

@@ -3,9 +3,11 @@
 
 /*  TiEmu - an TI emulator
  *
- *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
- *  Copyright (c) 2003-2004, Romain Liévin
+ *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2003, Romain Lievin
+ *  Copyright (c) 2003, Julien Blache
+ *  Copyright (c) 2004, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,29 +43,33 @@
 #include "refresh.h"
 #include "struct.h"
 
+/* Single file selectors */
+
 static gchar *filename = NULL;
+static gint action = 0;
 
 static void store_filename(GtkFileSelection * file_selector,
 			   gpointer user_data)
 {
-	filename = (gchar *)
-	    gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data));
+	filename = (gchar *)gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data));
+	action = 1;
 } 
 
 static void cancel_filename(GtkButton * button, gpointer user_data)
 {
-	filename = "";
+	filename = NULL;
+	action = 2;
 } 
 
 // GTK 1.x/2.x (x < 4)
-static const gchar *create_fsel_1(gchar *dirname, gchar *ext, gboolean save)
+static const gchar* create_fsel_1(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
 	GtkWidget *fs;
     
 	fs = gtk_file_selection_new("Select a file...");
 
 	gtk_file_selection_set_filename (GTK_FILE_SELECTION(fs), dirname);
-	gtk_file_selection_complete(GTK_FILE_SELECTION(fs), ext);
+	gtk_file_selection_complete(GTK_FILE_SELECTION(fs), filename ? filename : ext);
 
 	g_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->ok_button),
 			 "clicked", G_CALLBACK(store_filename), fs);
@@ -83,21 +89,15 @@ static const gchar *create_fsel_1(gchar *dirname, gchar *ext, gboolean save)
 				 "clicked", G_CALLBACK(gtk_widget_destroy),
 				 (gpointer) fs);
 
-	filename = NULL;
 	gtk_widget_show(fs);
-	while (filename == NULL) 
-	{
-        GTK_REFRESH();
-	}
+	for(action = 0; !action; )
+		GTK_REFRESH();
 
-	if (!strcmp(filename, ""))
-		return NULL;
-	else
-		return filename;
+	return filename;
 }
 
 // GTK >= 2.4
-static const gchar *create_fsel_2(gchar *dirname, gchar *ext, gboolean save)
+static const gchar* create_fsel_2(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
 	GtkWidget *dialog;
 	GtkFileFilter *filter;
@@ -118,6 +118,10 @@ static const gchar *create_fsel_2(gchar *dirname, gchar *ext, gboolean save)
 	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), path);
 	g_free(path);
 
+	// set default name
+	if(filename)
+		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), filename);
+
 	// set wildcards
 	filter = gtk_file_filter_new();
 	sarray = g_strsplit(ext, ";", -1);
@@ -137,8 +141,8 @@ static const gchar *create_fsel_2(gchar *dirname, gchar *ext, gboolean save)
 	return filename;
 }
 
-// Win32 fs
-static const gchar *create_fsel_3(gchar *dirname, gchar *ext, gboolean save)
+// WIN32
+static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
 #ifdef WIN32
 	OPENFILENAME o;
@@ -150,6 +154,10 @@ static const gchar *create_fsel_3(gchar *dirname, gchar *ext, gboolean save)
 
 	// clear structure
 	memset (&o, 0, sizeof(OPENFILENAME));
+
+	// set default filename
+	if(filename)
+		strcpy(lpstrFile, filename);
 
 	// format filter
 	sarray = g_strsplit(ext, "|", -1);
@@ -191,10 +199,12 @@ static const gchar *create_fsel_3(gchar *dirname, gchar *ext, gboolean save)
 
 	return filename = g_strdup(lpstrFile);
 #endif
+
+	return NULL;
 }
 
 // KDE
-static const gchar *create_fsel_4(gchar *dirname, gchar *ext, gboolean save)
+static const gchar* create_fsel_4(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
 #if WITH_KDE
 	gchar *p;
@@ -208,8 +218,11 @@ static const gchar *create_fsel_4(gchar *dirname, gchar *ext, gboolean save)
 	g_free(extspaces);
 	return filename;
 #endif
+
+	return NULL;
 }
 
+// Front-end
 const gchar *create_fsel(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
 #ifndef __WIN32__
@@ -224,10 +237,246 @@ const gchar *create_fsel(gchar *dirname, gchar *filename, gchar *ext, gboolean s
 
 	switch(options.fs_type)
 	{
-	case 0:	return create_fsel_1(dirname, ext, save);
-	case 1:	return create_fsel_2(dirname, ext, save);
-	case 2: return create_fsel_3(dirname, ext, save);
-	case 3: return create_fsel_4(dirname, ext, save);
+	case 0:	return create_fsel_1(dirname, filename, ext, save);
+	case 1:	return create_fsel_2(dirname, filename, ext, save);
+	case 2: return create_fsel_3(dirname, filename, ext, save);
+	case 3: return create_fsel_4(dirname, filename, ext, save);
+	default: return NULL;
+	}
+
+	return NULL;
+}
+
+/* Multiple files selectors */
+
+static gchar** filenames = NULL;
+static gint actions = 0;
+
+static void store_filenames(GtkFileSelection * file_selector,
+			   gpointer user_data)
+{
+	filenames = gtk_file_selection_get_selections(GTK_FILE_SELECTION(user_data));
+	actions = 1;
+} 
+
+static void cancel_filenames(GtkButton * button, gpointer user_data)
+{
+	filenames = NULL;
+	actions = 2;
+} 
+
+// GTK 1.x/2.x (x < 4)
+static gchar** create_fsels_1(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
+{
+	GtkWidget *fs;
+    
+	fs = gtk_file_selection_new("Select a file...");
+
+	gtk_file_selection_set_select_multiple(GTK_FILE_SELECTION(fs), TRUE);
+	gtk_file_selection_set_filename (GTK_FILE_SELECTION(fs), dirname);
+	gtk_file_selection_complete(GTK_FILE_SELECTION(fs), filename ? filename : ext);
+
+	g_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->ok_button),
+			 "clicked", G_CALLBACK(store_filenames), fs);
+
+	g_signal_connect(GTK_OBJECT
+			 (GTK_FILE_SELECTION(fs)->cancel_button),
+			 "clicked", G_CALLBACK(cancel_filenames), fs);
+
+	g_signal_connect_swapped(GTK_OBJECT
+				 (GTK_FILE_SELECTION(fs)->ok_button),
+				 "clicked",
+				 G_CALLBACK(gtk_widget_destroy),
+				 (gpointer) fs);
+
+	g_signal_connect_swapped(GTK_OBJECT
+				 (GTK_FILE_SELECTION(fs)->cancel_button),
+				 "clicked", G_CALLBACK(gtk_widget_destroy),
+				 (gpointer) fs);
+
+	gtk_widget_show(fs);
+	for(actions = 0; !actions; )
+		GTK_REFRESH();
+
+	return filenames;
+}
+
+// GTK >= 2.4
+static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
+{
+	GtkWidget *dialog;
+	GtkFileFilter *filter;
+	gchar *path;
+	gchar **sarray;
+	gint i;
+    
+	// create box
+	dialog = gtk_file_chooser_dialog_new ("Open File",
+				      NULL,
+					  save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN,
+				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+				      NULL);
+
+	// set default folder
+	path = g_path_get_dirname(dirname);
+	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), path);
+	g_free(path);
+
+	// set multiple selection
+	gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
+
+	// set default name
+	if(filename)
+		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), filename);
+
+	// set wildcards
+	filter = gtk_file_filter_new();
+	sarray = g_strsplit(ext, ";", -1);
+	for(i = 0; sarray[i] != NULL; i++)
+		gtk_file_filter_add_pattern (filter, sarray[i]);
+	g_strfreev(sarray);
+	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
+
+	// get result
+	g_free(filename);
+	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+	{
+		GSList *list, *p;
+		gchar **q;
+		
+		// convert list into string array
+		list = gtk_file_chooser_get_filenames (GTK_FILE_CHOOSER (dialog));
+		filenames = g_malloc0(g_slist_length(list)+1);
+
+		for(p = list, q = filenames; p; p = g_slist_next(p), q++)
+		{
+			*q = g_malloc0(strlen(p->data) + 1);
+			strcpy(*q, p->data);
+		}
+		*q = NULL;
+	}
+	else
+		filename = NULL;
+	gtk_widget_destroy (dialog);
+
+	return filenames;
+}
+
+// WIN32
+static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
+{
+#ifdef WIN32
+	OPENFILENAME o;
+	char lpstrFile[1024] = "\0";
+	char lpstrFilter[256];
+	char *p;
+	gchar **sarray;
+	int i, n;
+
+	// clear structure
+	memset (&o, 0, sizeof(OPENFILENAME));
+
+	// set default filename
+	if(filename)
+		strcpy(lpstrFile, filename);
+
+	// format filter
+	sarray = g_strsplit(ext, "|", -1);
+	for(n = 0; sarray[n] != NULL; n++);
+
+	for(i = 0, p = lpstrFilter; i < n; i++)
+	{
+		strcpy(p, sarray[i]);
+		p += strlen(sarray[i]);
+		*p++ = '\0';
+
+		strcpy(p, sarray[i]);
+		p += strlen(sarray[i]);
+		*p++ = '\0';
+	}
+	*p++ = '\0';
+	g_strfreev(sarray);
+
+	// set structure
+	o.lStructSize = sizeof (o);	
+	o.lpstrFilter = lpstrFilter;	//"All\0*.*\0Text\0*.TXT\0";
+	o.lpstrFile = lpstrFile;		//"C:\msvc\tilp\0foo.txt\0bar.txt"
+	o.nMaxFile = sizeof(lpstrFile);
+	o.lpstrInitialDir = dirname;
+	o.Flags = 0x02000000 | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY |
+				 OFN_NOCHANGEDIR | OFN_EXPLORER | OFN_LONGNAMES | OFN_NONETWORKBUTTON |
+				 OFN_ALLOWMULTISELECT;
+
+	// open/close
+	if(!save)
+	{
+		if(!GetOpenFileName(&o))
+			return NULL;
+		filenames = NULL;
+
+		for(p = lpstrFile, i=0; *p; p += strlen(p)+1, i++)
+		{
+			if(i)	// skip directory
+			{
+				filenames = g_realloc(filenames, (i+1) * sizeof(gchar *));
+				filenames[i-1] = g_strconcat(lpstrFile, G_DIR_SEPARATOR_S, p, NULL);
+			}
+		}
+		filenames[i-1] = NULL;
+	}
+
+	return filenames;
+#endif
+
+	return NULL;
+}
+
+static gchar** create_fsels_4(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
+{
+#if WITH_KDE
+	gchar *p;
+	gchar *extspaces = g_strdup(ext);
+	p = extspaces;
+	while ((p = strchr(p, ';'))) *p = ' ';
+	if(save) { // multi-select doesn't make much sense when saving, and KDE doesn't support it
+		p = sp_kde_get_write_filename(dirname, extspaces, _("Save file"));
+		if (!p)
+			filenames = NULL;
+		else {
+			filenames = g_malloc(2 * sizeof(gchar *));
+			filenames[0] = p;
+			filenames[1] = NULL;
+		}
+	}
+	else
+		filenames = sp_kde_get_open_filenames(dirname, extspaces, _("Open file"));
+	g_free(extspaces);
+	return filenames;
+#endif
+
+	return NULL;
+}
+
+// Front-end
+gchar** create_fsels(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
+{
+#ifndef __WIN32__
+	if(options.fs_type == 2)
+		options.fs_type = 1;
+#endif
+#if !WITH_KDE
+	if(options.fs_type == 3)
+		options.fs_type = 1;
+#endif
+	//printf("%i: <%s> <%s> <%s> %i\n", options.fs_type, dirname, filename, ext, save);
+
+	switch(options.fs_type)
+	{
+	case 0:	return create_fsels_1(dirname, filename, ext, save);
+	case 1:	return create_fsels_2(dirname, filename, ext, save);
+	case 2: return create_fsels_3(dirname, filename, ext, save);
+	case 3: return create_fsels_4(dirname, filename, ext, save);
 	default: return NULL;
 	}
 

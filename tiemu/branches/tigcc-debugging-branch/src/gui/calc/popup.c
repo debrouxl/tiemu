@@ -3,9 +3,11 @@
 
 /*  TiEmu - an TI emulator
  *
- *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
- *  Copyright (c) 2003-2004, Romain Liévin
+ *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2003, Romain Lievin
+ *  Copyright (c) 2003, Julien Blache
+ *  Copyright (c) 2004, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -56,9 +58,16 @@ GLADE_CB void
 on_popup_menu_header                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+#if 1
 	fprintf(stdout, _("* TiEmu version %s (cables=%s, files=%s, calcs=%s)\n"),
 	     TIEMU_VERSION, ticable_get_version(), tifiles_get_version(),
 	     ticalc_get_version());
+#else
+	gchar **list, **ptr;
+
+	list = create_fsels(inst_paths.base_dir, NULL, "*.txt", FALSE);
+	for(ptr = list; *ptr; ptr++)	printf("<<%s>>\n", *ptr);
+#endif
 }
 
 
@@ -68,7 +77,7 @@ on_send_file_to_gtktiemu1_activate     (GtkMenuItem     *menuitem,
 {
 	if(dbg_run) return;
 	ti68k_engine_stop();
-	display_tifile_dbox();
+	display_tifiles_dbox();
 	ti68k_engine_start();
 }
 
@@ -210,10 +219,7 @@ GLADE_CB void
 on_normal_view1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    //printf("normal !\n");
-	//ti68k_engine_stop();
-	//hid_switch_normal_view();
-  	//ti68k_engine_start();
+	hid_switch_normal_view();
 }
 
 
@@ -221,10 +227,7 @@ GLADE_CB void
 on_large_view1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    //printf("large !\n");
-	//ti68k_engine_stop();
-	//hid_switch_large_view();
-  	//ti68k_engine_start();
+	hid_switch_large_view();
 }
 
 
@@ -232,10 +235,10 @@ GLADE_CB void
 on_full_screen1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    //printf("full !\n");
-	//ti68k_engine_stop();
-	//hid_switch_fullscreen();
-  	//ti68k_engine_start();
+	if(GTK_CHECK_MENU_ITEM(menuitem)->active == TRUE) 
+		hid_switch_fullscreen();
+	else
+		hid_switch_unfullscreen();
 }
 
 
@@ -441,12 +444,6 @@ GtkWidget* display_popup_menu(void)
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
         g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_large_view1_activate, NULL);
         break;
-    case VIEW_FULL:
-        data = glade_xml_get_widget(xml, "full_view1");
-        g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_full_screen1_activate, NULL);
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_full_screen1_activate, NULL);
-        break;
     default:
         break;
     }
@@ -472,17 +469,6 @@ GtkWidget* display_popup_menu(void)
 		data = glade_xml_get_widget(xml, "set_rom1");
 		gtk_widget_set_sensitive(data, FALSE);
 	}
-
-	// 
-	data = glade_xml_get_widget(xml, "normal_view1");
-	gtk_widget_set_sensitive(data, FALSE);
-	data = glade_xml_get_widget(xml, "large_view1");
-	gtk_widget_set_sensitive(data, FALSE);
-	data = glade_xml_get_widget(xml, "full_view1");
-	gtk_widget_set_sensitive(data, FALSE);
-
-
-	//while(gtk_events_pending()) gtk_main_iteration();
 
 	return menu;
 }
