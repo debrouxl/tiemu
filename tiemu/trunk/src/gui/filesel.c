@@ -132,7 +132,7 @@ static const gchar *create_fsel_3(gchar *dirname, gchar *ext, gboolean save)
 	int i, n;
 
 	// clear structure
-	memset (&o, 0, sizeof (o));
+	memset (&o, 0, sizeof(OPENFILENAME));
 
 	// format filter
 	sarray = g_strsplit(ext, ";", -1);

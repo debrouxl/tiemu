@@ -12,4 +12,4 @@ clean:
 	$(RM) ./msvc/*.opt
 	$(RM) -Rfv ./msvc/output
 	$(RM) -Rfv ./msvc/test
-	$(RM) ./msvc/*.exe
+	$(RM) ./msvc/tiemu*.exe

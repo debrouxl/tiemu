@@ -91,6 +91,7 @@ AC_C_VOLATILE
 # Checks for libraries.
 AC_CHECK_LIB(m, pow)
 AC_CHECK_LIB(pthread, pthread_create) dnl needed by GThread
+AC_CHECK_LIB(comdlg32, GetOpenFileName)
 
 # Checks for library functions.
 AC_FUNC_MALLOC

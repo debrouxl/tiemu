@@ -17,6 +17,7 @@ To do:
 	- cleaned-up configure.ac script (CygWin & MinGW)
 	- fixed Step Over
 	- added Win32 file selector
+	- fixed bad use of sizeof in hw_io_init
 	
 - 18/02/2005, version 1.80n: roms
 	- fixed FLASH writes with HW3 patch
