@@ -31,6 +31,7 @@ int hw_mem_init(void);
 int hw_mem_reset(void);
 int hw_mem_exit(void);
 
+// defs similator to UAE's memory.h (interface)
 extern UBYTE get_byte(CPTR adr);
 extern UWORD get_word(CPTR adr);
 extern ULONG get_long(CPTR adr);

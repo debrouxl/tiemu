@@ -25,6 +25,8 @@
 #ifndef __TI68K_IO__
 #define __TI68K_IO__
 
+#include <stdint.h>
+
 int hw_io_init(void);
 int hw_io_reset(void);
 int hw_io_exit(void);
@@ -36,13 +38,13 @@ int hw_io_exit(void);
 #define bit_tst(v,b)	 ((v) &  (1 << b))
 #define bit_chg(v,b,s)	{ if(s) bit_set(v,b); else bit_clr(v,b); }
 
-extern UBYTE io_get_byte(CPTR adr);
-extern UWORD io_get_word(CPTR adr);
-extern ULONG io_get_long(CPTR adr);
+extern uint8_t  io_get_byte(uint32_t addr);
+extern uint16_t io_get_word(uint32_t addr);
+extern uint32_t io_get_long(uint32_t addr);
 
-extern void io_put_long(CPTR adr, ULONG arg);
-extern void io_put_word(CPTR adr, UWORD arg);
-extern void io_put_byte(CPTR adr, UBYTE arg);
+extern void io_put_long(uint32_t addr, uint32_t arg);
+extern void io_put_word(uint32_t addr, uint16_t arg);
+extern void io_put_byte(uint32_t addr, uint8_t  arg);
 
 #define io_bit_get(a,b)		bit_get(tihw.io[a],b)
 #define io_bit_set(a,b)		bit_set(tihw.io[a],b)
@@ -51,13 +53,13 @@ extern void io_put_byte(CPTR adr, UBYTE arg);
 #define io_bit_tst(a,b)		bit_tst(tihw.io[a],b)
 #define io_bit_chg(a,b,s)	bit_chg(tihw.io[a],b,s)	
 
-extern UBYTE io2_get_byte(CPTR adr);
-extern UWORD io2_get_word(CPTR adr);
-extern ULONG io2_get_long(CPTR adr);
+extern uint8_t  io2_get_byte(uint32_t addr);
+extern uint16_t io2_get_word(uint32_t addr);
+extern uint32_t io2_get_long(uint32_t addr);
 
-extern void io2_put_long(CPTR adr, ULONG arg);
-extern void io2_put_word(CPTR adr, UWORD arg);
-extern void io2_put_byte(CPTR adr, UBYTE arg);
+extern void io2_put_long(uint32_t addr, uint32_t arg);
+extern void io2_put_word(uint32_t addr, uint16_t arg);
+extern void io2_put_byte(uint32_t addr, uint8_t  arg);
 
 #define io2_bit_get(a,b)		bit_get(tihw.io2[a],b)
 #define io2_bit_set(a,b)		bit_set(tihw.io2[a],b)

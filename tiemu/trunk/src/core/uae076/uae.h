@@ -5,7 +5,7 @@
   *
   * Copyright 1996 Bernd Schmidt
   */
-
+#if 0
 extern void do_start_program(void);
 extern void do_leave_program(void);
 extern void start_program(void);
@@ -40,3 +40,5 @@ struct bstring {
 };
 
 extern char *colormodes[];
+
+#endif

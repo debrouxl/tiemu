@@ -86,9 +86,9 @@ int hw_io_exit(void)
 }
 
 
-void io_put_byte(CPTR adr, UBYTE arg)
+void io_put_byte(uint32_t addr, uint8_t arg)
 {
-    switch(adr) 
+    switch(addr) 
     {
         case 0x00:	// rw <76...2..>
 			// %5: bit 0 of contrast (TI92)
@@ -259,26 +259,26 @@ void io_put_byte(CPTR adr, UBYTE arg)
         break;
     }
   
-    tihw.io[adr] = arg;
+    tihw.io[addr] = arg;
 }
 
-void io_put_word(CPTR adr, UWORD arg) 
+void io_put_word(uint32_t addr, uint16_t arg) 
 {
-    io_put_byte(adr,   MSB(arg));
-    io_put_byte(adr+1, LSB(arg));
+    io_put_byte(addr,   MSB(arg));
+    io_put_byte(addr+1, LSB(arg));
 }
 
-void io_put_long(CPTR adr, ULONG arg) 
+void io_put_long(uint32_t addr, uint32_t arg) 
 {
-    io_put_word(adr,   MSW(arg));
-    io_put_word(adr+2, LSW(arg));
+    io_put_word(addr,   MSW(arg));
+    io_put_word(addr+2, LSW(arg));
 }
 
-UBYTE io_get_byte(CPTR adr) 
+uint8_t io_get_byte(uint32_t addr) 
 {
-    int v = tihw.io[adr];
+    int v = tihw.io[addr];
 
-    switch(adr) 
+    switch(addr) 
     {
         case 0x00:	// rw <76...2..>
 			// %0: bits <....0> of contrast
@@ -371,21 +371,21 @@ UBYTE io_get_byte(CPTR adr)
     return v;
 }
 
-UWORD io_get_word(CPTR adr) 
+uint16_t io_get_word(uint32_t addr) 
 {
-    return (((UWORD)io_get_byte(adr))<<8) | io_get_byte(adr+1);
+    return (((uint16_t)io_get_byte(addr))<<8) | io_get_byte(addr+1);
 }
 
-ULONG io_get_long(CPTR adr) 
+uint32_t io_get_long(uint32_t addr) 
 {
-    return (((ULONG)io_get_word(adr))<<16) | io_get_word(adr+2);
+    return (((uint32_t)io_get_word(addr))<<16) | io_get_word(addr+2);
 }
 
 /** HW2 **/
 
-void io2_put_byte(CPTR adr, UBYTE arg)
+void io2_put_byte(uint32_t addr, uint8_t arg)
 {
-    switch(adr) 
+    switch(addr) 
     {
         case 0x00:	// rw <76543210>
 			break;
@@ -429,26 +429,26 @@ void io2_put_byte(CPTR adr, UBYTE arg)
 			break;
     }
 
-    tihw.io2[adr] = arg;
+    tihw.io2[addr] = arg;
 }
 
-void io2_put_word(CPTR adr, UWORD arg) 
+void io2_put_word(uint32_t addr, uint16_t arg) 
 {
-    io2_put_byte(adr,   MSB(arg));
-    io2_put_byte(adr+1, LSB(arg));
+    io2_put_byte(addr,   MSB(arg));
+    io2_put_byte(addr+1, LSB(arg));
 }
 
-void io2_put_long(CPTR adr, ULONG arg) 
+void io2_put_long(uint32_t addr, uint32_t arg) 
 {
-    io2_put_word(adr,   MSW(arg));
-    io2_put_word(adr+2, LSW(arg));
+    io2_put_word(addr,   MSW(arg));
+    io2_put_word(addr+2, LSW(arg));
 }
 
-UBYTE io2_get_byte(CPTR adr) 
+uint8_t io2_get_byte(uint32_t addr) 
 {
-    int v = tihw.io2[adr];
+    int v = tihw.io2[addr];
 
-    switch(adr) 
+    switch(addr) 
     {
         case 0x00:
 			break;
@@ -487,13 +487,13 @@ UBYTE io2_get_byte(CPTR adr)
     return v;
 }
 
-UWORD io2_get_word(CPTR adr) 
+uint16_t io2_get_word(uint32_t addr) 
 {
-    return (((UWORD)io2_get_byte(adr))<<8) | io2_get_byte(adr+1);
+    return (((uint16_t)io2_get_byte(addr))<<8) | io2_get_byte(addr+1);
 }
 
-ULONG io2_get_long(CPTR adr) 
+uint32_t io2_get_long(uint32_t addr) 
 {
-    return (((ULONG)io2_get_word(adr))<<16) | io2_get_word(adr+2);
+    return (((uint32_t)io2_get_word(addr))<<16) | io2_get_word(addr+2);
 }
 
