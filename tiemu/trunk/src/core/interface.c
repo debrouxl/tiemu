@@ -247,7 +247,7 @@ int ti68k_dumpRom(const char *filename)
 
   f = fopen(filename, "wt");
   if(f == NULL)
-    return ERR_CANT_OPEN;
+    return ERR_68K_CANT_OPEN;
 
   //iupdate->total = params.rom_size;
   for(i=0; i<params.rom_size; i+=16) // size in Bytes
@@ -303,7 +303,7 @@ int ti68k_dumpRam(const char *filename)
 
   f = fopen(filename, "wt");
   if(f == NULL)
-    return ERR_CANT_OPEN;
+    return ERR_68K_CANT_OPEN;
 
   for(i=0; i<1024*params.ram_size; i+=16) // size in KB
     {
@@ -393,7 +393,7 @@ int ti68k_doSingleStep(void)
 int ti68k_doInstructions(int n) //fait n instructions
 {
   if (!ti68k_isRomOk())
-    return ERR_ROM_NOT_LOADED;
+    return ERR_68K_ROM_NOT_LOADED;
 
   return hw_run_m68k(n);
 }

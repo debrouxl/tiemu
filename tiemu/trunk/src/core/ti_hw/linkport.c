@@ -249,7 +249,7 @@ int init_linkfile()
     free(ilc);
   ilc = (TicableLinkCable *)malloc(sizeof(TicableLinkCable));
   if(ilc == NULL)
-    return ERR_MALLOC;
+    return ERR_68K_MALLOC;
 
   ilc->init  = ilp_init_port;
   ilc->open  = ilp_open_port;
@@ -270,7 +270,7 @@ int init_linkfile()
       break;
     case TI92 | MODULEPLUS: ticalc_set_calc(CALC_TI92P, &itc);
       break;
-    default: return ERR_INTERNAL;
+    default: return ERR_68K_INTERNAL;
       break;
     }
 
@@ -298,7 +298,7 @@ int send_ti_file(const char *filename)
   /* Get extension */
   ext = strrchr(filename, '.');
   if(ext == NULL)
-    return ERR_TI_FILE;
+    return ERR_68K_TI_FILE;
   else
     ext++;
   
@@ -309,7 +309,7 @@ int send_ti_file(const char *filename)
      (strstr(ext, "9x") && (ti68k_getCalcType() == TI92p)) ||
      (strstr(ext, "9X") && (ti68k_getCalcType() == TI92p)) ) */
     {
-      return ERR_TI_FILE;
+      return ERR_68K_TI_FILE;
     }
 
   /* FLASH APP file ? */

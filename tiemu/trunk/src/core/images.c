@@ -78,7 +78,7 @@ int ti68k_getImageInfo(const char *filename, ROM_INFO *ri)
   if(file == NULL)
     {
       DISPLAY(_("Unable to open this file: <%s>\n"), filename);
-      return ERR_CANT_OPEN;
+      return ERR_68K_CANT_OPEN;
     }
 
   // Retrieve ROM size
@@ -87,9 +87,9 @@ int ti68k_getImageInfo(const char *filename, ROM_INFO *ri)
   fseek(file, 0, SEEK_SET);
 
   if(ri->size < 256) 
-    return ERR_INVALID_SIZE;
+    return ERR_68K_INVALID_SIZE;
   if (ri->size > 2*1024*1024)
-    return ERR_INVALID_SIZE;
+    return ERR_68K_INVALID_SIZE;
   
   // Load ROM into memory (a bit boring since a ROM is 2MB wide)
   rom = malloc(ri->size + 4);
@@ -141,20 +141,20 @@ int ti68k_getUpgradeInfo(const char *filename, ROM_INFO *ri)
 
   ext = strrchr(filename, '.');
   if(ext == NULL)
-    return ERR_TI_FILE;
+    return ERR_68K_TI_FILE;
   
   if(!strcasecmp(ext, ".89u"))
     ri->calc_type = TI89;
   else if(!strcasecmp(ext, ".9Xu"))
     ri->calc_type = TI92;
   else
-    return ERR_INVALID_FLASH;
+    return ERR_68K_INVALID_FLASH;
 
   file = fopen(filename, "rb");
   if(file == NULL)
     {
       fprintf(stderr, _("Unable to open this file: <%s>\n"), filename);
-      return ERR_CANT_OPEN;
+      return ERR_68K_CANT_OPEN;
     }
 
   /* Check whether we have a .89u/.9xu or a .tib file */
@@ -175,7 +175,7 @@ int ti68k_getUpgradeInfo(const char *filename, ROM_INFO *ri)
             }
         }
       if(j < strlen(signature))
-        return ERR_INVALID_FLASH; // not a FLASH file
+        return ERR_68K_INVALID_FLASH; // not a FLASH file
     }
 
   /* Now, we read it */
@@ -185,7 +185,7 @@ int ti68k_getUpgradeInfo(const char *filename, ROM_INFO *ri)
       /* If a .89u/.9xu file, we skip the licence header */
       fgets(str, 9, file);
       if(strcmp(str, "**TIFL**"))
-        return ERR_INVALID_FLASH;
+        return ERR_68K_INVALID_FLASH;
       for(i=0; i<4; i++)
         fgetc(file);
 
@@ -212,7 +212,7 @@ int ti68k_getUpgradeInfo(const char *filename, ROM_INFO *ri)
 
           fgets(str, 9, file);
           if(strcmp(str, "**TIFL**"))
-            return ERR_INVALID_FLASH;
+            return ERR_68K_INVALID_FLASH;
           for(i=0; i<4; i++) fgetc(file);
           for(i=0; i<4; i++)
             date[i] = 0xff & fgetc(file);
@@ -358,7 +358,7 @@ int ti68k_convertTibToRom(const char *f_in, char *f_out)
   if(file == NULL)
     {
       fprintf(stderr, "Unable to open this file: <%s>\n", filename);
-      return ERR_CANT_OPEN;
+      return ERR_68K_CANT_OPEN;
     }
   
   ext = strrchr(filename, '.');
@@ -376,7 +376,7 @@ int ti68k_convertTibToRom(const char *f_in, char *f_out)
   if(fo == NULL)
     {
       fprintf(stderr, "Unable to open this file: <%s>\n", filename2);
-      return ERR_CANT_OPEN;
+      return ERR_68K_CANT_OPEN;
     }
 
   /* Check whether we have a .89u/.9xu or a .tib file */
@@ -396,7 +396,7 @@ int ti68k_convertTibToRom(const char *f_in, char *f_out)
 	    }
 	}
       if(j < strlen(signature))
-	return ERR_TI_FILE; // not a FLASH file
+	return ERR_68K_TI_FILE; // not a FLASH file
     }
 
   /* Now, we convert it */
@@ -406,7 +406,7 @@ int ti68k_convertTibToRom(const char *f_in, char *f_out)
       /* If a .89u/.9xu file, we skip the licence header */
       fgets(str, 9, file);
       if(strcmp(str, "**TIFL**")) 
-	return ERR_INVALID_FLASH;
+	return ERR_68K_INVALID_FLASH;
       for(i=0; i<4; i++) 
 	fgetc(file);
       
@@ -433,7 +433,7 @@ int ti68k_convertTibToRom(const char *f_in, char *f_out)
 	  
 	  fgets(str, 9, file);
 	  if(strcmp(str, "**TIFL**"))
-	    return ERR_INVALID_FILE;
+	    return ERR_68K_INVALID_FILE;
 	  for(i=0; i<4; i++) fgetc(file);
 	  for(i=0; i<4; i++)
 	    date[i] = 0xff & fgetc(file);
@@ -590,7 +590,7 @@ int ti68k_loadUpgrade(const char *filename)
   if(file == NULL)
     {
       fprintf(stderr, _("Unable to open this file: <%s>\n"), filename);
-      return ERR_CANT_OPEN;
+      return ERR_68K_CANT_OPEN;
     }
 
   /* Check whether we have a .89u/.9xu or a .tib file */
@@ -611,7 +611,7 @@ int ti68k_loadUpgrade(const char *filename)
             }
         }
       if(j < strlen(signature))
-        return ERR_INVALID_FLASH; // not a FLASH file
+        return ERR_68K_INVALID_FLASH; // not a FLASH file
     }
 
   /* Now, we read it */
@@ -621,7 +621,7 @@ int ti68k_loadUpgrade(const char *filename)
       /* If a .89u/.9xu file, we skip the licence header */
       fgets(str, 9, file);
       if(strcmp(str, "**TIFL**"))
-        return ERR_INVALID_FLASH;
+        return ERR_68K_INVALID_FLASH;
       for(i=0; i<4; i++)
         fgetc(file);
 
@@ -648,7 +648,7 @@ int ti68k_loadUpgrade(const char *filename)
 
           fgets(str, 9, file);
           if(strcmp(str, "**TIFL**"))
-            return ERR_INVALID_FLASH;
+            return ERR_68K_INVALID_FLASH;
           for(i=0; i<4; i++) fgetc(file);
           for(i=0; i<4; i++)
             date[i] = 0xff & fgetc(file);
@@ -741,7 +741,7 @@ int ti68k_scanFiles(const char *dirname, const char *filename)
       if(file == NULL)
 	{
 	  fprintf(stderr, _("Unable to open this file: <%s>\n"), filename);
-	  return ERR_CANT_OPEN;
+	  return ERR_68K_CANT_OPEN;
 	}
 
       while(!feof(file))
@@ -759,7 +759,7 @@ int ti68k_scanFiles(const char *dirname, const char *filename)
       if(file == NULL)
         {
           fprintf(stderr, _("Unable to reopen this file: <%s>\n"), filename);
-          return ERR_CANT_OPEN;
+          return ERR_68K_CANT_OPEN;
         }
     }
   else
@@ -769,7 +769,7 @@ int ti68k_scanFiles(const char *dirname, const char *filename)
       if(file == NULL)
         {
           fprintf(stderr, _("Unable to open this file: <%s>\n"), filename);
-          return ERR_CANT_OPEN;
+          return ERR_68K_CANT_OPEN;
         }
     }  
 
@@ -778,7 +778,7 @@ int ti68k_scanFiles(const char *dirname, const char *filename)
   if( (dir=opendir(dirname)) == NULL)
     {
       fprintf(stderr, _("Opendir error\n"));
-      return ERR_CANT_OPEN_DIR;
+      return ERR_68K_CANT_OPEN_DIR;
     }
   
   while( (dirent=readdir(dir)) != NULL)
@@ -863,7 +863,7 @@ int ti68k_scanFiles(const char *dirname, const char *filename)
   if(closedir(dir)==-1)
     {
       fprintf(stderr, _("Closedir error\n"));
-      return ERR_CANT_CLOSE_DIR;
+      return ERR_68K_CANT_CLOSE_DIR;
     }
   
   fclose(file);

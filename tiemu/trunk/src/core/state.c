@@ -44,9 +44,9 @@ int loadState_old(char *filename)
 
   DISPLAY("Loading RAM image (TiEmu format): %s\n", filename);
   if(!strcmp(filename, ""))
-	  return ERR_NONE;
+	  return ERR_68K_NONE;
   if( (fp = fopen(filename, "rb")) == NULL)
-    return ERR_CANT_OPEN;
+    return ERR_68K_CANT_OPEN;
 
   fread(&m, 1, sizeof(int), fp);
   if(m != RAM_SIZE) 
@@ -67,7 +67,7 @@ int loadState_old(char *filename)
       //update_contrast();
     }
   
-  return ERR_NONE;
+  return ERR_68K_NONE;
 }
 
 int ti68k_saveState_old(char *filename)
@@ -78,7 +78,7 @@ int ti68k_saveState_old(char *filename)
   if(strlen(filename)) // name exist ?
     {
       if( (fp = fopen(filename, "wb")) == NULL)
-	return ERR_CANT_OPEN;
+	return ERR_68K_CANT_OPEN;
       
       m68k_setpc(m68k_getpc());
       MakeSR();
@@ -91,7 +91,7 @@ int ti68k_saveState_old(char *filename)
       fclose(fp);
     }
 
-  return ERR_NONE;
+  return ERR_68K_NONE;
 }
 
 int loadState_vti(char *filename)
@@ -107,14 +107,14 @@ int loadState_vti(char *filename)
 
   DISPLAY("Loading RAM image (VTi format): %s\n", filename);
   if(!strcmp(filename, ""))
-    return ERR_NONE;
+    return ERR_68K_NONE;
   if( (fp = fopen(filename, "rb")) == NULL)
-    return ERR_CANT_OPEN;
+    return ERR_68K_CANT_OPEN;
 
   fread(str,8,1,fp);
   str[8]=0;
   if( strcmp(str,"VTIv2.0 ") && strcmp(str, "GTKTIEMU") )
-    return ERR_INVALID_STATE;
+    return ERR_68K_INVALID_STATE;
   fread(romName,56,1,fp);
   //  if (strcmp(romName,romImage[currentROM].name))
   //  return;
@@ -143,7 +143,7 @@ int loadState_vti(char *filename)
   fread(&specialflags, sizeof(specialflags), 1, fp); // and flags
   fclose(fp);
   
-  return ERR_NONE;
+  return ERR_68K_NONE;
 }
 
 /*
@@ -160,7 +160,7 @@ int saveState_vti(char *filename)
   if(strlen(filename)) // name exist ?
     {
       if( (fp = fopen(filename, "wb")) == NULL)
-	return ERR_CANT_OPEN;
+	return ERR_68K_CANT_OPEN;
 
       m68k_setpc(m68k_getpc());
       fprintf(fp,"GTKTIEMU");
@@ -189,7 +189,7 @@ int saveState_vti(char *filename)
       fclose(fp);
     }
 
-  return ERR_NONE;
+  return ERR_68K_NONE;
 }
 
 /*
@@ -206,9 +206,9 @@ int ti68k_loadState(char *filename)
   char str[MAXCHARS];
 
   if(!strcmp(filename, ""))
-    return ERR_NONE;
+    return ERR_68K_NONE;
   if( (fp = fopen(filename, "rb")) == NULL)
-    return ERR_CANT_OPEN;
+    return ERR_68K_CANT_OPEN;
   else
     {
       fgets(str, MAXCHARS, fp);
@@ -218,7 +218,7 @@ int ti68k_loadState(char *filename)
 	return loadState_old(filename);
     }
 
-  return ERR_NONE;
+  return ERR_68K_NONE;
 }
 
 /*

@@ -36,52 +36,51 @@ int ti68k_getError(int err_num, char *error_msg)
 {
   switch(err_num)
     {
-    case ERR_NONE:
+    case ERR_68K_NONE:
       strcpy(error_msg, _("No error."));
       break;
-    case ERR_INVALID_ROM: 
+    case ERR_68K_INVALID_ROM: 
       strcpy(error_msg, _("Invalid ROM."));
       break;
-    case ERR_INVALID_SIZE: 
+    case ERR_68K_INVALID_SIZE: 
       strcpy(error_msg, _("Invalid ROM size."));
       break;
-    case ERR_CANT_OPEN:
+    case ERR_68K_CANT_OPEN:
       strcpy(error_msg, _("Can not open ROM."));
       break;
-    case ERR_CANT_CLOSE:
+    case ERR_68K_CANT_CLOSE:
       strcpy(error_msg, _("Unable to close file."));
       break;
-    case ERR_INTERNAL:
+    case ERR_68K_INTERNAL:
       strcpy(error_msg, _("Internal error."));
       break;
-    case ERR_TI_FILE:
+    case ERR_68K_TI_FILE:
       strcpy(error_msg, _("Invalid TI file."));
       break;
-    case ERR_INVALID_FLASH:
+    case ERR_68K_INVALID_FLASH:
       strcpy(error_msg, _("Invalid FLASH file."));
       break;
-    case ERR_ROM_NOT_LOADED:
+    case ERR_68K_ROM_NOT_LOADED:
       strcpy(error_msg, _("A ROM should have been loaded before."));
       break;
-    case ERR_CANT_OPEN_DIR:
+    case ERR_68K_CANT_OPEN_DIR:
       strcpy(error_msg, _("Unable to open directory."));
       break;
-    case ERR_CANT_CLOSE_DIR:
+    case ERR_68K_CANT_CLOSE_DIR:
       strcpy(error_msg, ("Unable to close directory."));
       break;
-    case ERR_INVALID_FILE:
+    case ERR_68K_INVALID_FILE:
       strcpy(error_msg, ("Invalid file."));
       break;
-    case ERR_INVALID_STATE:
+    case ERR_68K_INVALID_STATE:
       strcpy(error_msg, ("Invalid state file."));
       break;
-    case ERR_INVALID_MODE:
+    case ERR_68K_INVALID_MODE:
       strcpy(error_msg, ("Breakpoint, invalid mode."));
       break;
     default:
       strcpy(error_msg, _("Error code not found in the list.\nThis is a bug. Please report it.\n."));
       return err_num;
-      //      break;
     }
   
   return 0;

@@ -80,7 +80,7 @@ int ti68k_setBreakpointAddressRange(int addressMin, int addressMax, int mode)
       add2End(&listBkptAsRgW,addressMin,addressMax);
       return nBkptAsRgW++;
     }
-  return ERR_INVALID_MODE;
+  return ERR_68K_INVALID_MODE;
 }
 
 int ti68k_setBreakpointAccess(int address, int mode) 
@@ -116,7 +116,7 @@ int ti68k_setBreakpointAccess(int address, int mode)
       return nBkptAsWL++;
     }
   else
-    return ERR_INVALID_MODE;
+    return ERR_68K_INVALID_MODE;
 }
 
 int ti68k_setBreakpointVector(int vector) 
