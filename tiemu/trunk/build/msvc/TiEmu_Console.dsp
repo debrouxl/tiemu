@@ -498,6 +498,10 @@ SOURCE=..\..\README
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\RELEASE
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\TODO
 # End Source File
 # End Group
