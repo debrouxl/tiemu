@@ -317,7 +317,7 @@ on_calc_wnd_button_press_event     (GtkWidget       *widget,
 		bevent = (GdkEventButton *) (event);
         menu = display_popup_menu();
 
-        ti68k_engine_halt();
+        ti68k_engine_stop();
 
 		gtk_menu_popup(GTK_MENU(menu),
 				   NULL, NULL, NULL, NULL,

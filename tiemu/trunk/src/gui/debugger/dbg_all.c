@@ -282,7 +282,7 @@ on_dbgcode_window_hide                (GtkWidget       *widget,
     // Closing the debugger starts the emulator
     on_quit1_activate(NULL, NULL);
     bkpts.mode = bkpts.type = bkpts.id = 0;
-    ti68k_engine_unhalt();
+    ti68k_engine_start();
 }
 
 GLADE_CB void

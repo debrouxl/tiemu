@@ -27,8 +27,8 @@
 
 gpointer ti68k_engine(gpointer data);
 
-int  ti68k_engine_is_halted(void) ;
-void ti68k_engine_halt(void);
-void ti68k_engine_unhalt(void);
+int  ti68k_engine_is_stopped(void) ;
+void ti68k_engine_stop(void);
+void ti68k_engine_start(void);
 
 #endif

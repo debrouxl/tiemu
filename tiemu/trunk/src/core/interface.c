@@ -206,7 +206,7 @@ int ti68k_debug_skip(uint32_t next_pc)
     do 
     {
         specialflags |= SPCFLAG_DBTRACE;
-		ti68k_engine_unhalt();
+		ti68k_engine_start();
 
 		// too far: stop
 		if(m68k_getpc() > next_pc)

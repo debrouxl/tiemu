@@ -344,7 +344,7 @@ on_run1_activate                       (GtkMenuItem     *menuitem,
     gtk_widget_set_sensitive(list, FALSE);
     set_other_windows_sensitivity(FALSE);
 
-    ti68k_engine_unhalt();
+    ti68k_engine_start();
 }
 
 
@@ -353,7 +353,7 @@ on_step1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     ti68k_debug_step();
-	ti68k_engine_unhalt();
+	ti68k_engine_start();
 }
 
 
@@ -408,7 +408,7 @@ on_break1_activate                     (GtkMenuItem     *menuitem,
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
 	GtkListStore *store = GTK_LIST_STORE(model);
 
-    ti68k_engine_halt();
+    ti68k_engine_stop();
     gtk_widget_set_sensitive(list, TRUE);
 	tb_set_states(1, 1, 1, 1, 0, 1);
     set_other_windows_sensitivity(TRUE);

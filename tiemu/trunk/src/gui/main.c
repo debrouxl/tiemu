@@ -222,7 +222,7 @@ int main(int argc, char **argv)
 		Start thread (emulation engine) and run main loop 
 	*/
     splash_screen_set_label(_("Starting engine..."));
-	ti68k_engine_unhalt();
+	ti68k_engine_start();
     splash_screen_stop();
 
    	gdk_threads_enter();
@@ -232,7 +232,7 @@ int main(int argc, char **argv)
 	/* 
 		Close the emulator engine
 	*/
-	ti68k_engine_halt();
+	ti68k_engine_stop();
 
 	err = hid_exit();
 	handle_error();

@@ -124,19 +124,19 @@ gpointer ti68k_engine(gpointer data)
 	return GINT_TO_POINTER(0);
 }
 
-int ti68k_engine_is_halted() 
+int ti68k_engine_is_stopped() 
 {
 	return !running;
 }
 
-void ti68k_engine_halt(void) 
+void ti68k_engine_stop(void) 
 {
 	G_LOCK(running);
 	running = 0;
 	G_UNLOCK(running);
 }
 
-void ti68k_engine_unhalt(void) 
+void ti68k_engine_start(void) 
 {
 	G_LOCK(running);
 	running = 1;
@@ -210,18 +210,19 @@ gpointer ti68k_engine(gpointer data)
 			if((iCurrentTime - iLastTime) < TIME_LIMIT)
                 if(params.restricted)
 				    sleep((TIME_LIMIT - iCurrentTime + iLastTime));
+			// use g_thread_yield rather than sleep ?
 		}
 	}
 
 	g_thread_exit(GINT_TO_POINTER(0));
 }
 
-int ti68k_engine_is_halted() 
+int ti68k_engine_is_stopped() 
 {
 	return !running;
 }
 
-void ti68k_engine_halt(void) 
+void ti68k_engine_stop(void) 
 {
 	G_LOCK(running);
 	running = 0;				// request termination
@@ -231,7 +232,7 @@ void ti68k_engine_halt(void)
 	thread = NULL;
 }
 
-void ti68k_engine_unhalt(void) 
+void ti68k_engine_start(void) 
 {
 	G_LOCK(running);
 	if(!running)
