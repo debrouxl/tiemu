@@ -26,7 +26,8 @@
 #include "m68kk.h"
 #include "options.h"
 #include "memory.h"
-//#include "newcpu.h"
 #include "readcpu.h"
+#include "custom.h"
+#include "newcpu.h"
 
 #endif

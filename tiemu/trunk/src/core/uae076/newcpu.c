@@ -1077,6 +1077,26 @@ static __inline__ void do_trace(void)
     }
 }
 
+int currIntLev = -1;
+int intlev (void)
+{
+    /*
+    uae_u16 imask = intreq & intena;
+    if (imask && (intena & 0x4000)){
+	if (imask & 0x2000) return 6;
+	if (imask & 0x1800) return 5;
+	if (imask & 0x0780) return 4;
+	if (imask & 0x0070) return 3;
+	if (imask & 0x0008) return 2;
+	if (imask & 0x0007) return 1;
+    }
+    return -1;
+    */
+    int rc = currIntLev;
+    currIntLev = -1;
+    return rc;
+}
+
 static int do_specialties (void)
 {
     /*n_spcinsns++;*/

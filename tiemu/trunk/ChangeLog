@@ -1,5 +1,10 @@
 SubVersion: $Id$
 
+- 30/06/2004, version 1.71: roms
+	Julein Debroux's suggestions:
+	- debug access is slow: fixed
+	- window focus: ...
+
 - 05/05/2004, version 1.70: roms
 	Rework in progress.	
 

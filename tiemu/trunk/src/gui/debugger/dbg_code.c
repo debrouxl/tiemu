@@ -285,6 +285,8 @@ GtkWidget* refresh_dbgcode_window(void)
 
 	if(!already_open)
 		wnd = display_dbgcode_window();
+    else
+        gtk_widget_show(wnd);
 
 	gtk_widget_set_sensitive(list, TRUE);	
 	tb_set_states(1, 1, 1, 1, 0, 1);
@@ -312,6 +314,16 @@ on_dbgcode_window_destroy               (GtkObject       *object,
 {
 	already_open = 0;
 	// Closing the debugger starts the emulator
+    bkpts.mode = bkpts.type = bkpts.id = 0;
+    ti68k_engine_unhalt();
+}
+
+GLADE_CB void
+on_dbgcode_window_hide                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    on_dbgcode_window_delete_event(widget, NULL, user_data);
+
     bkpts.mode = bkpts.type = bkpts.id = 0;
     ti68k_engine_unhalt();
 }

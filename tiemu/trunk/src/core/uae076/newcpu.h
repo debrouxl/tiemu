@@ -18,6 +18,7 @@ extern int fpp_movem_index2[256];
 extern int fpp_movem_next[256];
 
 extern int broken_in;
+extern int currIntLev;
 
 typedef void cpuop_func(uae_u32) REGPARAM;
 
@@ -70,7 +71,8 @@ extern struct regstruct
 #define get_ibyte(o) do_get_mem_byte((uae_u8 *)(regs.pc_p + (o) + 1))
 #define get_iword(o) do_get_mem_word((uae_u16 *)(regs.pc_p + (o)))
 #define get_ilong(o) do_get_mem_long((uae_u32 *)(regs.pc_p + (o)))
-
+//roms
+/*
 static __inline__ uae_u32 get_ibyte_prefetch(uae_s32 o)
 {
     if (o > 3 || o < 0)
@@ -119,9 +121,10 @@ static __inline__ void fill_prefetch_2(void)
 #else
 #define fill_prefetch_2 fill_prefetch_0
 #endif
-
+*/
 /* These are only used by the 68020/68881 code, and therefore don't
  * need to handle prefetch.  */
+/*
 static __inline__ uae_u32 next_ibyte(void)
 {
     uae_u32 r = get_ibyte(0);
@@ -142,7 +145,7 @@ static __inline__ uae_u32 next_ilong(void)
     m68k_incpc(4);
     return r;
 }
-
+*/
 #if !defined(USE_COMPILER)
 static __inline__ void m68k_setpc(uaecptr newpc)
 {

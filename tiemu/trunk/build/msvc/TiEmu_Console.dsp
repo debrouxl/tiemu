@@ -232,6 +232,10 @@ SOURCE=..\..\src\hid\tikeys.c
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\src\gui\dbg_all.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\debugger\dbg_bkpts.c
 # End Source File
 # Begin Source File
@@ -270,10 +274,6 @@ SOURCE=..\..\src\gui\about.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\comm.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\dbg_all.c
 # End Source File
 # Begin Source File
 

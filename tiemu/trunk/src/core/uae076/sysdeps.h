@@ -308,7 +308,8 @@ extern FILE *uae_fopen_del (const char *name, const char *mode);
 extern int uae_open_del (const char *name, int flags, int mode);
 
 #else
-
+//roms
+/*
 static __inline__ FILE *uae_fopen_del (const char *name, const char *mode)
 {
     FILE *fd;
@@ -328,7 +329,7 @@ static __inline__ int uae_open_del (const char *name, int flags, int mode)
     }
     return fd;
 }
-
+*/
 #endif
 
 #ifdef DONT_HAVE_STDIO

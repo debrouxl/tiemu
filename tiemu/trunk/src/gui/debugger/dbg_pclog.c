@@ -157,6 +157,8 @@ GtkWidget* refresh_dbgpclog_window(void)
 
 	if(!already_open)
 		wnd = display_dbgpclog_window();
+    else
+        gtk_widget_show(wnd);
 
 	gtk_list_store_clear(store);
     clist_populate(store);
@@ -176,8 +178,16 @@ on_dbgpclog_window_delete_event       (GtkWidget       *widget,
 }
 
 GLADE_CB void
+on_dbgpclog_window_hide                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    on_dbgpclog_window_delete_event(widget, NULL, user_data);
+}
+
+GLADE_CB void
 on_dbgpclog_window_destroy             (GtkObject       *object,
                                         gpointer         user_data)
 {
 	already_open = 0;
+    printf("closed !\n");
 }

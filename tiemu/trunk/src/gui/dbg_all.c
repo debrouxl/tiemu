@@ -73,7 +73,7 @@ on_registers1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
-        gtk_widget_destroy(dbgw.regs);
+        gtk_widget_hide(dbgw.regs);
   	else
         refresh_dbgregs_window();
 }
@@ -84,7 +84,7 @@ on_breakpoints1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
-        gtk_widget_destroy(dbgw.bkpts);
+        gtk_widget_hide(dbgw.bkpts);
   	else
         refresh_dbgbkpts_window();
 }
@@ -95,7 +95,7 @@ on_memory1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
-        gtk_widget_destroy(dbgw.mem);
+        gtk_widget_hide(dbgw.mem);
   	else
         refresh_dbgmem_window();
 }
@@ -105,7 +105,7 @@ on_pc_log1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
-        gtk_widget_destroy(dbgw.pclog);
+        gtk_widget_hide(dbgw.pclog);
   	else
         refresh_dbgpclog_window();
 }
@@ -117,13 +117,13 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
 {
     // close all other windows
     if(dbgw.regs)
-        gtk_widget_destroy(dbgw.regs);
+        gtk_widget_hide(dbgw.regs);
     if(dbgw.bkpts)
-        gtk_widget_destroy(dbgw.bkpts);
+        gtk_widget_hide(dbgw.bkpts);
     if(dbgw.mem)
-        gtk_widget_destroy(dbgw.mem);
+        gtk_widget_hide(dbgw.mem);
 	if(dbgw.pclog)
-        gtk_widget_destroy(dbgw.pclog);
+        gtk_widget_hide(dbgw.pclog);
 	if(dbgw.code)
-	    gtk_widget_destroy(dbgw.code);
+	    gtk_widget_hide(dbgw.code);
 }

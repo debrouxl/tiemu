@@ -397,6 +397,8 @@ GtkWidget* refresh_dbgmem_window(void)
 
 	if(!already_open)
 		wnd = display_dbgmem_window();
+    else
+        gtk_widget_show(wnd);
 
 	refresh_page(0, 0);
 
@@ -412,6 +414,13 @@ on_dbgmem_window_delete_event       (GtkWidget       *widget,
     gtk_window_get_position(GTK_WINDOW(widget), &options3.mem.x, &options3.mem.y);
     
     return FALSE;
+}
+
+GLADE_CB void
+on_dbgmem_window_hide                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    on_dbgmem_window_delete_event(widget, NULL, user_data);
 }
 
 GLADE_CB void

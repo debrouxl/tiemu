@@ -135,7 +135,7 @@ extern void byteput(uaecptr addr, uae_u32 b);
 #define byteput_1 byteput
 
 #endif
-
+/*
 static __inline__ uae_u32 get_long(uaecptr addr)
 {
     return longget_1(addr);
@@ -170,3 +170,13 @@ static __inline__ int valid_address(uaecptr addr, uae_u32 size)
 {
     return get_mem_bank(addr).check(addr, size);
 }
+*/
+
+//wrappers
+#define get_byte(addr)	hw_get_byte(addr)
+#define get_word(addr)	hw_get_word(addr)
+#define get_long(addr)	hw_get_long(addr)
+
+#define put_long(adr, arg)	hw_put_long(adr, arg)
+#define put_word(adr, arg)	hw_put_word(adr, arg)
+#define put_byte(adr, arg)	hw_put_byte(adr, arg)

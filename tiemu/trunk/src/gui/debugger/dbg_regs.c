@@ -513,6 +513,8 @@ GtkWidget* refresh_dbgregs_window(void)
 
 	if(!already_open)
 		wnd = display_dbgregs_window();
+    else
+        gtk_widget_show(wnd);
 
 	ctree_refresh(store);
 
@@ -529,6 +531,13 @@ on_dbgregs_window_delete_event       (GtkWidget       *widget,
     gtk_window_get_position(GTK_WINDOW(widget), &options3.regs.x, &options3.regs.y);
 
 	return FALSE;
+}
+
+GLADE_CB void
+on_dbgregs_window_hide                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    on_dbgregs_window_delete_event(widget, NULL, user_data);
 }
 
 GLADE_CB void

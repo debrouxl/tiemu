@@ -255,6 +255,8 @@ GtkWidget* refresh_dbgbkpts_window(void)
 
 	if(!already_open)
 		wnd = display_dbgbkpts_window();
+    else
+        gtk_widget_show(wnd);
 
 	gtk_list_store_clear(store);
     clist_populate(store);
@@ -290,6 +292,13 @@ on_dbgbkpts_window_delete_event       (GtkWidget       *widget,
     gtk_window_get_position(GTK_WINDOW(widget), &options3.bkpts.x, &options3.bkpts.y);
 
     return FALSE;
+}
+
+GLADE_CB void
+on_dbgbkpts_window_hide                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    on_dbgbkpts_window_delete_event(widget, NULL, user_data);
 }
 
 GLADE_CB void
