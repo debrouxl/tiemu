@@ -107,6 +107,13 @@ typedef struct
     // linkport.c
     TicableLinkParam lc;
 
+	int		tx_empty;
+	int		rx_full;
+	int		dbus_raw;
+	int		dbus_auto;
+	int		dbus_to;
+	int		dbus_err;
+
     // memory.c
     UBYTE	*rom;
     UBYTE	*ram;

@@ -105,21 +105,30 @@ void io_put_byte(CPTR adr, UBYTE arg)
 		case 0x0b:
         break;
         case 0x0c:	// rw <765.3210>
-            lc_raw_access=(arg>>6)&1;
+			// autostart enable, should be set if $600005:3 is set
+			tihw.dbus_auto = bit_tst(7, arg);
+			
+			// disable byte sender/receiver (also disables interrupts)
+			tihw.dbus_raw = bit_tst(6, arg);
+
+			// link timeout disable
+			tihw.dbus_to = bit_tst(5, arg);
+
+			// trigger int level 4 on ...
+
         break;
         case 0x0d:	// r- <76543210>
 			break;
         case 0x0e:	// rw <....3210>
-			// write link port w/ direct access
-            lc_raw_access=(arg>>6)&1;
-            if (lc_raw_access)
+			// set red/white wires (if direct access)			
+			if(tihw.dbus_raw)
 	        {
-	            lc.set_red_wire(arg&1);
-	            lc.set_white_wire((arg>>1)&1);
+	            lc.set_red_wire(bit_get(0, arg));
+	            lc.set_white_wire(bit_get(1, arg));
 	        }
         break;
         case 0x0f: 	// rw <76543210>
-        //tx buffer
+			// write a byte to the transmit buffer (1 byte buffer)
             linkport_putbyte(arg);
             break;
         case 0x10: 	// -w <76543210> (hw1)
@@ -145,10 +154,14 @@ void io_put_byte(CPTR adr, UBYTE arg)
             tihw.timer_init = arg; 
             break;
         case 0x18:	// rw <76543210>
+			// keyboard row mask (see keyboard.c)
         break;    
         case 0x19:	// rw <......10>
+			// keyboard row mask (see keyboard.c)
         break;
         case 0x1a:	// rw <......10> <76543210>
+			// keyboard col mask (see keyboard.c)
+
         	// Write any value to $60001A to acknowledge this interrupt (AutoInt6)
         break;
         case 0x1b:	// r- <76543210>
@@ -217,6 +230,7 @@ UBYTE io_get_byte(CPTR adr)
         case 0x03:	// -w <.654.210>
         break;
         case 0x04:	// ??
+			// interleave RAM
         break;        
         case 0x05:	// -w <...43210>
         break;
@@ -227,22 +241,28 @@ UBYTE io_get_byte(CPTR adr)
         case 0x0a: 
         case 0x0b:
         return 0x14;
-        case 0x0c:	// rw <765.3210>
-         //link status
-            //link bug here !!!
-            //return 5|((1-transflag)<<1)|(lc_raw_access?0x40:0);
+        case 0x0c:	// -w <765.3210>
+			// read to begin acknowledging link interrupt (level 4)
+            // return 5|((1-transflag)<<1)|(lc_raw_access?0x40:0);
         break;
         case 0x0d:	// r- <76543210>
-            /* 0x40 -> always return tx buffer as empty */
-            return (linkport_byteavail() ? 0x60 : 0x40);
+			// linkport status
+			v |= tihw.dbus_err << 7;
+			v |= tihw.tx_empty << 6;
+			v |= tihw.rx_full << 5;
+            //return (linkport_byteavail() ? 0x60 : 0x40);	/* 0x40 -> always return tx buffer as empty */
         case 0x0e:	// rw <....3210>
-            if (lc_raw_access)
-	            return 0x50|(lc.get_white_wire()<<1)|lc.get_red_wire();
+			// read red/white wires if raw access
+			if(tihw.dbus_raw)
+			{
+				v |= lc.get_white_wire() << 3;
+				v |= lc.get_white_wire() << 2;
+			}
             break;
         case 0x0f: 	// rw <76543210>
+			// read one byte from receive (incoming) buffer
             recvflag = 0;
-            recvbyte = linkport_getbyte();
-            return recvbyte;
+            return linkport_getbyte();
         case 0x10: 	// -w <76543210> (hw1)
         break;
         case 0x11: 	// -w <76543210> (hw1) 
@@ -279,7 +299,7 @@ UBYTE io_get_byte(CPTR adr)
         return 0x14;
     }
   
-    return tihw.io[adr];
+    return v;
 }
 
 UWORD io_get_word(CPTR adr) 
