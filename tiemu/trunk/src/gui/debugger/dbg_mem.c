@@ -31,6 +31,8 @@
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
+#include <gdk/gdkkeysyms.h>
+
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
@@ -41,6 +43,8 @@
 #include "support.h"
 #include "ti68k_int.h"
 #include "struct.h"
+
+#define DUMP_SIZE       128
 
 static GtkWidget *notebook;
 
@@ -129,6 +133,99 @@ static void renderer_edited(GtkCellRendererText * cell,
 	gtk_tree_path_free(path);
 }
 
+static void clist_refresh(GtkListStore *store, uint32_t start, int length);
+
+static gboolean
+on_treeview_key_press_event            (GtkWidget       *widget,
+                                        GdkEventKey     *event,
+                                        gpointer         user_data)
+{
+    GtkTreeView *view = GTK_TREE_VIEW(widget);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
+    GtkTreeSelection *selection;
+    GtkTreeIter iter;
+    gboolean valid;
+    gchar *str;
+    gchar *row;
+    gint row_idx, row_max;
+    uint32_t addr;
+
+    selection = gtk_tree_view_get_selection(view);
+    valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
+    if(valid)
+    {
+        gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+        sscanf(str, "%x", &addr);
+
+        row = gtk_tree_model_get_string_from_iter(model, &iter);
+        sscanf(row, "%i", &row_idx);
+        row_max = gtk_tree_model_iter_n_children(model, NULL) - 1;
+    }
+    else
+        row_idx = row_max = -1;
+
+    switch(event->keyval) 
+	{
+    case GDK_Up:
+        if(row_max == -1)
+            break;
+
+        //printf("Up: %i/%i %x\n", row_idx, row_max, addr);
+
+        if(row_idx > 0)
+            break;
+
+        clist_refresh(store, (addr - 0x10) & 0xffffff, DUMP_SIZE);
+
+        return FALSE;
+
+    case GDK_Down:
+        if(row_max == -1)
+            break;
+
+        //printf("Down: %i/%i %x\n", row_idx, row_max, addr);
+
+        if(row_idx < row_max)
+            break;
+
+        clist_refresh(store, addr + 0x10, DUMP_SIZE);
+
+        return FALSE;
+
+    case GDK_Page_Up:
+        if(row_max == -1)
+            break;
+
+        //printf("PageUp: %i/%i %x\n", row_idx, row_max, addr);
+
+        if(row_idx > 0)
+            break;
+
+        //clist_refresh(store, addr - DUMP_SIZE, DUMP_SIZE);
+
+        return FALSE;
+
+    case GDK_Page_Down:
+        if(row_max == -1)
+            break;
+
+        //printf("PageDown: %i/%i %x\n", row_idx, row_max, addr);
+
+        if(row_idx < row_max)
+            break;
+
+        //clist_refresh(store, addr + DUMP_SIZE, DUMP_SIZE);
+
+        return FALSE;
+
+	default:
+		return FALSE;
+	}
+
+    return FALSE;
+}
+
 static GtkWidget* clist_create(GtkListStore **st)
 {
 	GtkWidget *list;
@@ -211,7 +308,10 @@ static GtkWidget* clist_create(GtkListStore **st)
 	}
 	
 	selection = gtk_tree_view_get_selection(view);
-	gtk_tree_selection_set_mode(selection, GTK_SELECTION_NONE);
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
+
+    g_signal_connect(G_OBJECT(list), "key_press_event",
+			 G_CALLBACK(on_treeview_key_press_event), list);
 
 	*st = store;
 	return list;
@@ -303,13 +403,13 @@ static void notebook_add_page(GtkWidget *notebook, const char* tab_name)
 		ti68k_register_get_sp(&sp_end);
 		len = sp_end - sp_start;
 
-		clist_populate(store, sp_start, len <= 128 ? len : 128);
+		clist_populate(store, sp_start, len <= DUMP_SIZE ? len : DUMP_SIZE);
     }
     else
     {
 		// display normal
 		sscanf(tab_name, "%06x", &addr);
-    	clist_populate(store, addr, 128);
+    	clist_populate(store, addr, DUMP_SIZE);
     }
 	gtk_widget_show(child);
 
@@ -465,7 +565,7 @@ static void refresh_page(int page, int offset)
 	GtkWidget *tab;
 	GtkWidget *label;
 	G_CONST_RETURN gchar *text;
-	uint32_t addr, len = 128;
+	uint32_t addr, len = DUMP_SIZE;
 
 	GList *l, *elt;
 	GtkWidget *list;
@@ -500,7 +600,7 @@ static void refresh_page(int page, int offset)
 	else
 	{
 		sscanf(text, "%x", &addr);
-		len = 128;
+		len = DUMP_SIZE;
 	}
 
 	addr += offset;
@@ -509,5 +609,5 @@ static void refresh_page(int page, int offset)
 	str = g_strdup_printf("%06x", addr);
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
-   	clist_refresh(store, addr, len <= 128 ? len : 128);
+   	clist_refresh(store, addr, len <= DUMP_SIZE ? len : DUMP_SIZE);
 }
