@@ -7,7 +7,8 @@ To do:
 
 - 24/10/2004, version 1.80d: roms
 	- fixed bug: directory creation in $HOME
-	- fixed bug: 'unexpected Xlib async reply' (Linux).
+	- bug: 'unexpected Xlib async reply' (Linux) (not fixed yet)
+	- fixed missing feature in the FLASH device: TI89 Titanium boots for now
 	
 - 11/10/2004, version 1.80c: roms
 	- applied patch from Christian Walther <cwalther@gmx.ch>

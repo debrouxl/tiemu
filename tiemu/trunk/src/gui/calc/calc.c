@@ -320,7 +320,7 @@ static gint hid_refresh (gpointer data)
     if(lcd_flag || (tihw.hw_type >= HW2))
     {
 		// TI92+: jackycar, TI89: baballe
-	    //hid_update_lcd();
+	    hid_update_lcd();
         G_LOCK(lcd_flag);
         lcd_flag = 0;
 		//printf("<");

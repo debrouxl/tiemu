@@ -95,17 +95,6 @@ int ti89t_mem_init(void)
     return 0;
 }
 
-/* Put/Get byte/word/longword */
-#define bput(adr, arg) { mem_tab[(adr)>>20][(adr) & mem_msk[(adr)>>20]] = (arg); }
-#define wput(adr, arg) { bput((adr), (arg)>> 8); bput((adr)+1, (arg)&0x00ff); }
-#define lput(adr, arg) { wput((adr), (uint16_t)((arg)>>16)); wput((adr)+2, (uint16_t)((arg)&0xffff)); }
-
-#define bget(adr) (mem_tab[(adr)>>20][(adr)&mem_msk[(adr)>>20]])
-#define wget(adr) ((uint16_t)(((uint16_t)bget(adr))<< 8 | bget((adr)+1)))
-#define lget(adr) ((uint32_t)(((uint32_t)wget(adr))<<16 | wget((adr)+2)))
-
-#define IN_RANGE(a,v,b)	(((v) >= (a)) && ((v) <= (b)))
-
 uint32_t ti89t_get_long(uint32_t adr) 
 {
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
@@ -114,7 +103,8 @@ uint32_t ti89t_get_long(uint32_t adr)
 	}
     else if(IN_RANGE(0x800000, adr, 0xbfffff))			// FLASH access
 	{
-        return (lget(adr) | wsm.ret_or);
+		return FlashReadLong(adr);
+        //return (lget(adr) | wsm.ret_or);
 	}
     else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
 	{
@@ -136,7 +126,8 @@ uint16_t ti89t_get_word(uint32_t adr)
 	}
     else if(IN_RANGE(0x800000, adr, 0xbfffff))			// FLASH access
 	{
-        return (wget(adr) | wsm.ret_or);
+		return FlashReadWord(adr);
+        //return (wget(adr) | wsm.ret_or);
 	}
     else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
 	{
@@ -158,7 +149,8 @@ uint8_t ti89t_get_byte(uint32_t adr)
 	}
     else if(IN_RANGE(0x800000, adr, 0xbfffff))			// FLASH access
 	{
-        return (bget(adr) | wsm.ret_or);
+		return FlashReadByte(adr);
+        //return (bget(adr) | wsm.ret_or);
 	}
     else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
 	{

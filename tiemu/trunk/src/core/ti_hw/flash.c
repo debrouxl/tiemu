@@ -42,18 +42,39 @@ FLASH_WSM   wsm;
 */
 uint8_t FlashReadByte(uint32_t addr)
 {
-	return 0;
+	if (wsm.write_phase == 0x90)
+	{
+		switch(addr & 0xffff)
+		{
+		case 0:	return 0x89;	// manufacturer code (0xb0 sur V200)
+		case 1:	return 0x00;
+		case 2: return 0xb5;	// device code
+		case 3: return 0x00;
+		default: return 0xff;
+		}
+	}
+	else
+		return (bget(addr) | wsm.ret_or);
 }
 
 uint16_t FlashReadWord(uint32_t addr)
 {
-	return 0;
+	if (wsm.write_phase == 0x90)
+	{
+		switch(addr & 0xffff)
+		{
+		case 0:	return 0x0089;	// manufacturer code
+		case 2: return 0x00b5;	// device code
+		default: return 0xffff;
+		}
+	}
+	else
+		return (wget(addr) | wsm.ret_or);
 }
 
 uint32_t FlashReadLong(uint32_t addr)
 {
-	//return (lget(adr) | wsm.ret_or);
-	return 0;
+	return (lget(addr) | wsm.ret_or);
 }
 
 /*
@@ -87,9 +108,13 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
             wsm.ret_or = 0xffffffff;
     }
     else if (v == 0x50)
+	{
+		// clear status register
         wsm.write_phase = 0x50;
+	}
     else if (v == 0x10)
     {
+		//byte write setup/confirm
         if (wsm.write_phase == 0x50)
 	        wsm.write_phase = 0x51;
         else if (wsm.write_phase == 0x51)
@@ -100,11 +125,13 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
     }
     else if (v == 0x20)
     {
+		// block erase setup/confirm
         if (wsm.write_phase == 0x50)
 	        wsm.write_phase = 0x20;
     }
     else if (v == 0xd0)
     {
+		// confirm and block erase
         if (wsm.write_phase == 0x20)
         {
 	        wsm.write_phase = 0xd0;
@@ -119,12 +146,32 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
     }
     else if (v == 0xff)
     {
+		// read array/reset
         if (wsm.write_phase == 0x50)
         {
 	        wsm.write_ready = 0;
 	        wsm.ret_or = 0;
         }
     }
+	else if (v == 0x90)
+	{
+		// read identifier codes
+		wsm.write_phase = 0x90;
+	}
+}
+
+void FlashWriteWord(uint32_t addr, uint16_t data)
+{
+	FlashWriteByte(addr+0,MSB(data));
+	FlashWriteByte(addr+1,LSB(data));
+}
+
+void FlashWriteLong(uint32_t addr, uint32_t data)
+{
+	FlashWriteByte(addr+0,(uint8_t)((data>>24)&0xff));
+    FlashWriteByte(addr+1,(uint8_t)((data>>16)&0xff));
+    FlashWriteByte(addr+2,(uint8_t)((data>>8 )&0xff));
+    FlashWriteByte(addr+3,(uint8_t)((data>>0 )&0xff));
 }
 
 /*
@@ -173,18 +220,4 @@ uint32_t find_pc(void)
 	printf("found PC ($%06x) at offset 0x%x\n", pc, vt - 0x12000);
 
     return (pc);
-}
-
-void FlashWriteWord(uint32_t addr, uint16_t data)
-{
-	FlashWriteByte(addr+0,MSB(data));
-	FlashWriteByte(addr+1,LSB(data));
-}
-
-void FlashWriteLong(uint32_t addr, uint32_t data)
-{
-	FlashWriteByte(addr+0,(uint8_t)((data>>24)&0xff));
-    FlashWriteByte(addr+1,(uint8_t)((data>>16)&0xff));
-    FlashWriteByte(addr+2,(uint8_t)((data>>8 )&0xff));
-    FlashWriteByte(addr+3,(uint8_t)((data>>0 )&0xff));
 }

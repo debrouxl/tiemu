@@ -64,4 +64,16 @@ extern uint32_t mem_msk[];
 #define rom_at_0() { mem_tab[0] = tihw.rom; mem_msk[0] = tihw.rom_size-1; }
 #define ram_at_0() { mem_tab[0] = tihw.ram; mem_msk[0] = tihw.ram_size-1; }
 
+/* Put/Get byte/word/longword */
+
+#define bput(adr, arg) { mem_tab[(adr)>>20][(adr) & mem_msk[(adr)>>20]] = (arg); }
+#define wput(adr, arg) { bput((adr), (arg)>> 8); bput((adr)+1, (arg)&0x00ff); }
+#define lput(adr, arg) { wput((adr), (uint16_t)((arg)>>16)); wput((adr)+2, (uint16_t)((arg)&0xffff)); }
+
+#define bget(adr) (mem_tab[(adr)>>20][(adr)&mem_msk[(adr)>>20]])
+#define wget(adr) ((uint16_t)(((uint16_t)bget(adr))<< 8 | bget((adr)+1)))
+#define lget(adr) ((uint32_t)(((uint32_t)wget(adr))<<16 | wget((adr)+2)))
+
+#define IN_RANGE(a,v,b)	(((v) >= (a)) && ((v) <= (b)))
+
 #endif
