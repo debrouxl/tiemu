@@ -1,11 +1,20 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = \
-	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-	@PACKAGE_CFLAGS@
+AM_CPPFLAGS = -I$(top_srcdir)/intl
+AM_CFLAGS = -Wall
 
+## programs and files to compile and install
 bin_PROGRAMS = skinedit
+
+# build instructions
+skinedit_CPPFLAGS = \
+	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
+	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\"
+	 @GLIB_CFLAGS@ @GTK_CFLAGS@
+
+skinedit_LDADD = \
+        @GLIB_LIBS@ @GTK_LIBS@
+#        @LTLIBINTL@
 
 skinedit_SOURCES = \
 	main.c defs.h struct.h keymaps.h \
@@ -20,6 +29,4 @@ skinedit_SOURCES = \
 	skinops.c skinops.h \
 	utils.c utils.h \
 	vti_export.c vti_export.h
-
-skinedit_LDADD = @PACKAGE_LIBS@ @SDL_LIBS@ $(INTLLIBS)
 
