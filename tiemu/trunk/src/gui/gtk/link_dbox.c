@@ -334,36 +334,6 @@ create_linktype_dbox (void)
                     G_CALLBACK (on_linktype_dbox_show31),
                     NULL);
   g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show1),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show2),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show3),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show4),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show5),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show6),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show7),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show8),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show10),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show11),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
                     G_CALLBACK (on_linktype_dbox_show20),
                     NULL);
   g_signal_connect ((gpointer) linktype_dbox, "show",
@@ -374,9 +344,6 @@ create_linktype_dbox (void)
                     NULL);
   g_signal_connect ((gpointer) linktype_dbox, "show",
                     G_CALLBACK (on_linktype_dbox_show23),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show40),
                     NULL);
   g_signal_connect ((gpointer) button1, "clicked",
                     G_CALLBACK (on_linktype_button_fs_clicked),

@@ -22,6 +22,7 @@ extern DATA_BKPT db;
 
 gint display_data_bkpts_dbox()
 {
+#if 0 /* FUCKED */
   GtkWidget *dbox;
   gpointer user_data;
   GtkWidget *clist;
@@ -90,6 +91,8 @@ gint display_data_bkpts_dbox()
     g_free(row_text[i]);
   
   gtk_widget_show_all(dbox);
+#endif /* 0 */
+
   return 0;
 }
 

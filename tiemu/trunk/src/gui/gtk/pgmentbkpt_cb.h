@@ -11,5 +11,5 @@ on_button21_clicked                    (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_button22_enter                      (GtkButton       *button,
+on_button22_clicked                    (GtkButton       *button,
                                         gpointer         user_data);

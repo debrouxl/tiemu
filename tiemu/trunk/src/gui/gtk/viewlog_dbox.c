@@ -150,10 +150,6 @@ create_viewlog_dbox (void)
                               GDK_Return, 0,
                               GTK_ACCEL_VISIBLE);
 
-  g_signal_connect ((gpointer) viewlog_dbox, "destroy",
-                    G_CALLBACK (on_viewlog_dbox_destroy),
-                    NULL);
-
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (viewlog_dbox, viewlog_dbox, "viewlog_dbox");
   GLADE_HOOKUP_OBJECT_NO_REF (viewlog_dbox, vbox19, "vbox19");

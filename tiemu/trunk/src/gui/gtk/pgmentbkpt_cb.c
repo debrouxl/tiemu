@@ -34,7 +34,7 @@ on_button21_clicked                    (GtkButton       *button,
 
 
 void
-on_button22_enter                      (GtkButton       *button,
+on_button22_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
   gtk_widget_destroy(user_data);

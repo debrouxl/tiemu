@@ -42,7 +42,7 @@ create_scopt_dbox (void)
   GtkWidget *radiobutton24;
   GSList *radiobutton24_group = NULL;
   GtkWidget *radiobutton25;
-  GtkWidget *label3;
+  GtkWidget *label2;
   GtkWidget *frame4;
   GtkWidget *entry1;
   GtkWidget *label4;
@@ -121,10 +121,10 @@ create_scopt_dbox (void)
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton25), radiobutton24_group);
   radiobutton24_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton25));
 
-  label3 = gtk_label_new (_("Image type:"));
-  gtk_widget_show (label3);
-  gtk_frame_set_label_widget (GTK_FRAME (frame2), label3);
-  gtk_label_set_justify (GTK_LABEL (label3), GTK_JUSTIFY_LEFT);
+  label2 = gtk_label_new (_("Image type:"));
+  gtk_widget_show (label2);
+  gtk_frame_set_label_widget (GTK_FRAME (frame2), label2);
+  gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_LEFT);
 
   frame4 = gtk_frame_new (NULL);
   gtk_widget_show (frame4);
@@ -277,7 +277,7 @@ create_scopt_dbox (void)
   GLADE_HOOKUP_OBJECT (scopt_dbox, hseparator1, "hseparator1");
   GLADE_HOOKUP_OBJECT (scopt_dbox, radiobutton24, "radiobutton24");
   GLADE_HOOKUP_OBJECT (scopt_dbox, radiobutton25, "radiobutton25");
-  GLADE_HOOKUP_OBJECT (scopt_dbox, label3, "label3");
+  GLADE_HOOKUP_OBJECT (scopt_dbox, label2, "label2");
   GLADE_HOOKUP_OBJECT (scopt_dbox, frame4, "frame4");
   GLADE_HOOKUP_OBJECT (scopt_dbox, entry1, "entry1");
   GLADE_HOOKUP_OBJECT (scopt_dbox, label4, "label4");

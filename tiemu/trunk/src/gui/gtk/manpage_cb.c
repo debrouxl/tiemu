@@ -16,6 +16,7 @@
 
 gint display_manpage_dbox()
 {
+#if 0 /* FUCKED */
   GtkWidget *dbox;
   gpointer user_data;
   FILE *fd;
@@ -55,6 +56,8 @@ gint display_manpage_dbox()
     }
 
   gtk_widget_show_all(dbox);
+#endif /* 0 */
+
   return 0;
 }
 

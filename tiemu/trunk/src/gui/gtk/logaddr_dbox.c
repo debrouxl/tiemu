@@ -85,10 +85,6 @@ create_edit_logged_addr_dbox (void)
                               GDK_Return, 0,
                               GTK_ACCEL_VISIBLE);
 
-  g_signal_connect ((gpointer) edit_logged_addr_dbox, "destroy",
-                    G_CALLBACK (on_edit_logged_addr_dbox_destroy),
-                    NULL);
-
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (edit_logged_addr_dbox, edit_logged_addr_dbox, "edit_logged_addr_dbox");
   GLADE_HOOKUP_OBJECT_NO_REF (edit_logged_addr_dbox, dialog_vbox4, "dialog_vbox4");

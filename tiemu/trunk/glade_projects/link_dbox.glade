@@ -15,21 +15,10 @@
   <signal name="show" handler="on_linktype_dbox_show"/>
   <signal name="show" handler="on_linktype_dbox_show30"/>
   <signal name="show" handler="on_linktype_dbox_show31"/>
-  <signal name="show" handler="on_linktype_dbox_show1"/>
-  <signal name="show" handler="on_linktype_dbox_show2"/>
-  <signal name="show" handler="on_linktype_dbox_show3"/>
-  <signal name="show" handler="on_linktype_dbox_show4"/>
-  <signal name="show" handler="on_linktype_dbox_show5"/>
-  <signal name="show" handler="on_linktype_dbox_show6"/>
-  <signal name="show" handler="on_linktype_dbox_show7"/>
-  <signal name="show" handler="on_linktype_dbox_show8"/>
-  <signal name="show" handler="on_linktype_dbox_show10"/>
-  <signal name="show" handler="on_linktype_dbox_show11"/>
   <signal name="show" handler="on_linktype_dbox_show20"/>
   <signal name="show" handler="on_linktype_dbox_show21"/>
   <signal name="show" handler="on_linktype_dbox_show22"/>
   <signal name="show" handler="on_linktype_dbox_show23"/>
-  <signal name="show" handler="on_linktype_dbox_show40"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox1">

@@ -19,6 +19,7 @@
 
 gint display_help_dbox()
 {
+#if 0 /* FUCKED */
   GtkWidget *dbox;
   gpointer user_data;
   FILE *fd;
@@ -75,6 +76,8 @@ gint display_help_dbox()
   gtk_text_thaw(GTK_TEXT (text));
 
   gtk_widget_show_all(dbox);
+#endif /* 0 */
+
   return 0;
 }
 

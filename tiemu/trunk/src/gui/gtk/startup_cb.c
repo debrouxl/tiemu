@@ -85,6 +85,7 @@ void
 on_startup_dbox_show                   (GtkWidget       *widget,
                                         gpointer         user_data)
 {
+#if 0 /* FUCKED */
   FILE *fd;
   gchar buffer[MAXCHARS];
   GdkFont *fixed_font;
@@ -125,6 +126,7 @@ on_startup_dbox_show                   (GtkWidget       *widget,
 	}
     }
   gtk_text_thaw(GTK_TEXT (text));
+#endif /* 0 */
 }
 
 

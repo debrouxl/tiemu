@@ -80,7 +80,7 @@ create_skin_dbox (void)
                     G_CALLBACK (on_skin_dbox_destroy),
                     NULL);
   g_signal_connect ((gpointer) clist1, "button_press_event",
-                    G_CALLBACK (on_clist1_button_press_event),
+                    G_CALLBACK (on_skin_clist1_button_press_event),
                     NULL);
   g_signal_connect ((gpointer) button7, "clicked",
                     G_CALLBACK (on_skin_button7_clicked),
@@ -104,24 +104,24 @@ create_skin_dbox (void)
 }
 
 GtkWidget*
-create_window1 (void)
+create_window2 (void)
 {
-  GtkWidget *window1;
+  GtkWidget *window2;
   GtkWidget *label2;
 
-  window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title (GTK_WINDOW (window1), _("Scanning..."));
+  window2 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (window2), _("Scanning..."));
 
   label2 = gtk_label_new (_("Cache is being built.\nThis may take a while.\nPlease wait..."));
   gtk_widget_show (label2);
-  gtk_container_add (GTK_CONTAINER (window1), label2);
+  gtk_container_add (GTK_CONTAINER (window2), label2);
   gtk_label_set_line_wrap (GTK_LABEL (label2), TRUE);
   gtk_misc_set_padding (GTK_MISC (label2), 10, 10);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
-  GLADE_HOOKUP_OBJECT_NO_REF (window1, window1, "window1");
-  GLADE_HOOKUP_OBJECT (window1, label2, "label2");
+  GLADE_HOOKUP_OBJECT_NO_REF (window2, window2, "window2");
+  GLADE_HOOKUP_OBJECT (window2, label2, "label2");
 
-  return window1;
+  return window2;
 }
 

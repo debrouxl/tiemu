@@ -3,4 +3,4 @@
  */
 
 GtkWidget* create_skin_dbox (void);
-GtkWidget* create_window1 (void);
+GtkWidget* create_window2 (void);

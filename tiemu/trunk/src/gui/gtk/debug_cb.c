@@ -161,6 +161,7 @@ on_debugger_dbox_destroy               (GtkObject       *object,
 */
 gint refresh_register_dbox()
 {
+#if 0 /* FUCKED */
   GtkWidget *text = reg_text;
   GdkColormap *cmap;
   GdkColor colour;
@@ -267,6 +268,7 @@ gint refresh_register_dbox()
   prev_SR = ti68k_getSrRegister();
   prev_SP = ti68k_getSpRegister();
   prev_PC = ti68k_getPcRegister();
+#endif /* 0 */
 
   return 0;
 }
@@ -278,6 +280,7 @@ gint refresh_register_dbox()
 /* Utility function */
 gint refresh_breakpoints(GtkWidget *widget)
 {
+#if 0 /* FUCKED */
   GtkWidget *clist = code_clist;
   GdkPixmap *pixmap_run;
   GdkBitmap *mask_run;
@@ -346,11 +349,14 @@ gint refresh_breakpoints(GtkWidget *widget)
   gdk_pixmap_unref(pixmap_void);
 
   gtk_clist_thaw((GtkCList *)clist);  
+#endif /* 0 */
+
   return 0;
 }
 
 gint refresh_code_dbox()
 {
+#if 0 /* FUCKED */
   GtkWidget *clist = code_clist;
   gchar *row_text[3];
   gint i, k;
@@ -419,6 +425,8 @@ gint refresh_code_dbox()
   refresh_breakpoints(debugger_dbox);
 
   gtk_clist_thaw((GtkCList *)clist);
+#endif /* 0 */
+
   return 0;
 }
 
@@ -427,6 +435,7 @@ gint refresh_code_dbox()
 */
 gint refresh_memory_dbox()
 {
+#if 0 /* FUCKED */
   GtkWidget *clist = mem_clist;
   GtkStyle *style;
   GdkColormap *cmap;
@@ -496,6 +505,8 @@ gint refresh_memory_dbox()
     }
   
   gtk_clist_thaw((GtkCList *)clist);
+#endif /* 0 */
+
   return 0;
 }
 
@@ -504,6 +515,7 @@ gint refresh_memory_dbox()
 */
 gint refresh_stack_dbox()
 {
+#if 0 /* FUCKED */
   GtkWidget *clist = stack_clist;
   GtkStyle *style;
   GdkFont *fixed_font;
@@ -545,6 +557,8 @@ gint refresh_stack_dbox()
     }
       
   gtk_clist_thaw((GtkCList *)clist);
+#endif /* 0 */
+
   return 0;
 }
 

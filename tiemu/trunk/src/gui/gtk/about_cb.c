@@ -23,6 +23,7 @@ Image img = { NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0 };
 
 gint display_about_dbox()
 {
+#if 0 /* FUCKED */
   GtkWidget *dbox;
   gpointer user_data;
   FILE *fd;
@@ -133,6 +134,8 @@ gint display_about_dbox()
 #endif
 
   gtk_widget_show_all(dbox);
+#endif /* 0 */
+
   return 0;
 }
 

@@ -12,7 +12,6 @@
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <property name="has_separator">True</property>
-  <signal name="destroy" handler="on_edit_logged_addr_dbox_destroy"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox4">

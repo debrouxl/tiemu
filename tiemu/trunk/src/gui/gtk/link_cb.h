@@ -3,46 +3,6 @@
 gint display_linktype_dbox();
 
 void
-on_linktype_dbox_show1                 (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show2                 (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show3                 (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show4                 (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show5                 (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show6                 (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show7                 (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show8                 (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show10                (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show11                (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
 on_linktype_dbox_show20                (GtkWidget       *widget,
                                         gpointer         user_data);
 
@@ -368,22 +328,6 @@ on_fileselection_device_show           (GtkWidget       *widget,
 
 void
 on_fileselection_device_show           (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show                  (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show21                (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show23                (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show40                (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void

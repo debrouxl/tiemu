@@ -38,21 +38,21 @@ create_dbgopt_dbox (void)
   GtkObject *spinbutton1_adj;
   GtkWidget *spinbutton1;
   GtkWidget *label4;
-  GtkWidget *label3;
+  GtkWidget *label1;
   GtkWidget *frame3;
   GtkWidget *hbox4;
   GtkWidget *label5;
   GtkObject *spinbutton2_adj;
   GtkWidget *spinbutton2;
   GtkWidget *label6;
-  GtkWidget *label5;
+  GtkWidget *label2;
   GtkWidget *frame4;
   GtkWidget *hbox5;
   GtkWidget *label7;
   GtkObject *spinbutton3_adj;
   GtkWidget *spinbutton3;
   GtkWidget *label8;
-  GtkWidget *label7;
+  GtkWidget *label9;
   GtkWidget *dialog_action_area1;
   GtkWidget *hbuttonbox1;
   GtkWidget *cancel_button;
@@ -98,10 +98,10 @@ create_dbgopt_dbox (void)
   gtk_misc_set_alignment (GTK_MISC (label4), 0, 0.5);
   gtk_misc_set_padding (GTK_MISC (label4), 5, 0);
 
-  label3 = gtk_label_new (_("Dissasembly window"));
-  gtk_widget_show (label3);
-  gtk_frame_set_label_widget (GTK_FRAME (frame2), label3);
-  gtk_label_set_justify (GTK_LABEL (label3), GTK_JUSTIFY_LEFT);
+  label1 = gtk_label_new (_("Dissasembly window"));
+  gtk_widget_show (label1);
+  gtk_frame_set_label_widget (GTK_FRAME (frame2), label1);
+  gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_LEFT);
 
   frame3 = gtk_frame_new (NULL);
   gtk_widget_show (frame3);
@@ -130,10 +130,10 @@ create_dbgopt_dbox (void)
   gtk_misc_set_alignment (GTK_MISC (label6), 0, 0.5);
   gtk_misc_set_padding (GTK_MISC (label6), 5, 0);
 
-  label5 = gtk_label_new (_("Memory window"));
-  gtk_widget_show (label5);
-  gtk_frame_set_label_widget (GTK_FRAME (frame3), label5);
-  gtk_label_set_justify (GTK_LABEL (label5), GTK_JUSTIFY_LEFT);
+  label2 = gtk_label_new (_("Memory window"));
+  gtk_widget_show (label2);
+  gtk_frame_set_label_widget (GTK_FRAME (frame3), label2);
+  gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_LEFT);
 
   frame4 = gtk_frame_new (NULL);
   gtk_widget_show (frame4);
@@ -162,10 +162,10 @@ create_dbgopt_dbox (void)
   gtk_misc_set_alignment (GTK_MISC (label8), 0, 0.5);
   gtk_misc_set_padding (GTK_MISC (label8), 5, 0);
 
-  label7 = gtk_label_new (_("Stack window"));
-  gtk_widget_show (label7);
-  gtk_frame_set_label_widget (GTK_FRAME (frame4), label7);
-  gtk_label_set_justify (GTK_LABEL (label7), GTK_JUSTIFY_LEFT);
+  label9 = gtk_label_new (_("Stack window"));
+  gtk_widget_show (label9);
+  gtk_frame_set_label_widget (GTK_FRAME (frame4), label9);
+  gtk_label_set_justify (GTK_LABEL (label9), GTK_JUSTIFY_LEFT);
 
   dialog_action_area1 = GTK_DIALOG (dbgopt_dbox)->action_area;
   gtk_widget_show (dialog_action_area1);
@@ -220,19 +220,19 @@ create_dbgopt_dbox (void)
   GLADE_HOOKUP_OBJECT (dbgopt_dbox, label3, "label3");
   GLADE_HOOKUP_OBJECT (dbgopt_dbox, spinbutton1, "spinbutton1");
   GLADE_HOOKUP_OBJECT (dbgopt_dbox, label4, "label4");
-  GLADE_HOOKUP_OBJECT (dbgopt_dbox, label3, "label3");
+  GLADE_HOOKUP_OBJECT (dbgopt_dbox, label1, "label1");
   GLADE_HOOKUP_OBJECT (dbgopt_dbox, frame3, "frame3");
   GLADE_HOOKUP_OBJECT (dbgopt_dbox, hbox4, "hbox4");
   GLADE_HOOKUP_OBJECT (dbgopt_dbox, label5, "label5");
   GLADE_HOOKUP_OBJECT (dbgopt_dbox, spinbutton2, "spinbutton2");
   GLADE_HOOKUP_OBJECT (dbgopt_dbox, label6, "label6");
-  GLADE_HOOKUP_OBJECT (dbgopt_dbox, label5, "label5");
+  GLADE_HOOKUP_OBJECT (dbgopt_dbox, label2, "label2");
   GLADE_HOOKUP_OBJECT (dbgopt_dbox, frame4, "frame4");
   GLADE_HOOKUP_OBJECT (dbgopt_dbox, hbox5, "hbox5");
   GLADE_HOOKUP_OBJECT (dbgopt_dbox, label7, "label7");
   GLADE_HOOKUP_OBJECT (dbgopt_dbox, spinbutton3, "spinbutton3");
   GLADE_HOOKUP_OBJECT (dbgopt_dbox, label8, "label8");
-  GLADE_HOOKUP_OBJECT (dbgopt_dbox, label7, "label7");
+  GLADE_HOOKUP_OBJECT (dbgopt_dbox, label9, "label9");
   GLADE_HOOKUP_OBJECT_NO_REF (dbgopt_dbox, dialog_action_area1, "dialog_action_area1");
   GLADE_HOOKUP_OBJECT (dbgopt_dbox, hbuttonbox1, "hbuttonbox1");
   GLADE_HOOKUP_OBJECT (dbgopt_dbox, cancel_button, "cancel_button");
