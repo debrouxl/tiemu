@@ -132,7 +132,7 @@ loop:
 			ti68k_bkpt_set_range(start, stop, mode);
 		}
 
-		refresh_dbgbkpts_window();
+		display_dbgbkpts_window();
 
 		break;
 	default:

@@ -218,7 +218,7 @@ static gint already_open = 0;
 /*
 	Display registers window
 */
-GtkWidget* display_dbgbkpts_window(void)
+GtkWidget* create_dbgbkpts_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -242,21 +242,19 @@ GtkWidget* display_dbgbkpts_window(void)
 
 	gtk_window_resize(GTK_WINDOW(dbox), options3.bkpts.w, options3.bkpts.h);
 	gtk_window_move(GTK_WINDOW(dbox), options3.bkpts.x, options3.bkpts.y);
-    gtk_widget_show(GTK_WIDGET(dbox));
 
 	already_open = !0;
 
 	return dbox;
 }
 
-GtkWidget* refresh_dbgbkpts_window(void)
+GtkWidget* display_dbgbkpts_window(void)
 {
     static GtkWidget *wnd = NULL;
 
 	if(!already_open)
-		wnd = display_dbgbkpts_window();
-    else
-        gtk_widget_show(wnd);
+		wnd = create_dbgbkpts_window();
+    gtk_widget_show(wnd);
 
 	gtk_list_store_clear(store);
     clist_populate(store);
@@ -270,7 +268,6 @@ static GtkWidget* display_popup_menu(void)
 	GladeXML *xml;
 	GtkWidget *data;
   
-	//menu = create_popup_menu();
 	xml = glade_xml_new
 	    (tilp_paths_build_glade("dbg_bkpts-2.glade"), "dbgbkpts_popup",
 	     PACKAGE);
@@ -379,7 +376,7 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
         g_strfreev(row_text);
     }
 
-    refresh_dbgbkpts_window();
+    display_dbgbkpts_window();
 }
 
 

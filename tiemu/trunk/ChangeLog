@@ -2,8 +2,14 @@ SubVersion: $Id$
 
 - 30/06/2004, version 1.71: roms
 	Julein Debroux's suggestions:
-	- debug access is slow: fixed
+	- debugger access is slow: improved by pre-loading windows.
+	- can't scroll into the code window: 
 	- window focus: ...
+	- shortcuts:
+	- key mapping pb:
+	- pb with Alpha key:
+	- disasm listing:
+	- SR flags (VTi emulation):
 
 - 05/05/2004, version 1.70: roms
 	Rework in progress.	

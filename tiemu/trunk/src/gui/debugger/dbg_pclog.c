@@ -120,7 +120,7 @@ static gint already_open = 0;
 /*
 	Display registers window
 */
-GtkWidget* display_dbgpclog_window(void)
+GtkWidget* create_dbgpclog_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -144,21 +144,19 @@ GtkWidget* display_dbgpclog_window(void)
 
 	gtk_window_resize(GTK_WINDOW(dbox), options3.pclog.w, options3.pclog.h);
 	gtk_window_move(GTK_WINDOW(dbox), options3.pclog.x, options3.pclog.y);
-    gtk_widget_show(GTK_WIDGET(dbox));
 
 	already_open = !0;
 
 	return dbox;
 }
 
-GtkWidget* refresh_dbgpclog_window(void)
+GtkWidget* display_dbgpclog_window(void)
 {
     static GtkWidget *wnd = NULL;
 
 	if(!already_open)
-		wnd = display_dbgpclog_window();
-    else
-        gtk_widget_show(wnd);
+		wnd = create_dbgpclog_window();
+    gtk_widget_show(wnd);
 
 	gtk_list_store_clear(store);
     clist_populate(store);

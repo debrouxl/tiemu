@@ -485,7 +485,7 @@ void rcfile_write(void)
 #ifndef __WIN32__
 	mkdir(CONF_DIR, 0755);
 #else
-	mkdir(CONF_DIR);
+	_mkdir(CONF_DIR);
 #endif
 	txt=fopen(rc_file, "wt");
 

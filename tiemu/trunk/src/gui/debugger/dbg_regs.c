@@ -476,7 +476,7 @@ static gint already_open = 0;
 /*
 	Display registers window
 */
-GtkWidget* display_dbgregs_window(void)
+GtkWidget* create_dbgregs_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -500,21 +500,19 @@ GtkWidget* display_dbgregs_window(void)
 
 	gtk_window_resize(GTK_WINDOW(dbox), options3.regs.w, options3.regs.h);
 	gtk_window_move(GTK_WINDOW(dbox), options3.regs.x, options3.regs.y);
-    gtk_widget_show(GTK_WIDGET(dbox));
 
 	already_open = !0;
 
 	return dbox;
 }
 
-GtkWidget* refresh_dbgregs_window(void)
+GtkWidget* display_dbgregs_window(void)
 {
     static GtkWidget *wnd = NULL;
 
 	if(!already_open)
-		wnd = display_dbgregs_window();
-    else
-        gtk_widget_show(wnd);
+		wnd = create_dbgregs_window();
+    gtk_widget_show(wnd);
 
 	ctree_refresh(store);
 

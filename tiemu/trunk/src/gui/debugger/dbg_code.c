@@ -240,7 +240,7 @@ static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6)
 /*
 	Display source code window
 */
-GtkWidget* display_dbgcode_window(void)
+GtkWidget* create_dbgcode_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -272,21 +272,19 @@ GtkWidget* display_dbgcode_window(void)
 
 	gtk_window_resize(GTK_WINDOW(dbox), options3.code.w, options3.code.h);
 	gtk_window_move(GTK_WINDOW(dbox), options3.code.x, options3.code.y);
-    gtk_widget_show(GTK_WIDGET(dbox));
 
 	already_open = !0;
 
 	return dbox;
 }
 
-GtkWidget* refresh_dbgcode_window(void)
+GtkWidget* display_dbgcode_window(void)
 {
 	static GtkWidget *wnd = NULL;
 
 	if(!already_open)
-		wnd = display_dbgcode_window();
-    else
-        gtk_widget_show(wnd);
+		wnd = create_dbgcode_window();
+    gtk_widget_show(wnd);
 
 	gtk_widget_set_sensitive(list, TRUE);	
 	tb_set_states(1, 1, 1, 1, 0, 1);
@@ -434,7 +432,7 @@ dbgcode_button6_clicked                     (GtkButton       *button,
         ti68k_bkpt_del_address(addr);
 
     clist_refresh(store);
-    refresh_dbgbkpts_window();
+    display_dbgbkpts_window();
 }
 
 /***** Popup menu *****/
@@ -538,6 +536,6 @@ on_set_pc_to_selection1_activate       (GtkMenuItem     *menuitem,
     sscanf(str, "%x", &addr);
 
     ti68k_register_set_pc(addr);
-    refresh_dbgcode_window();
-    refresh_dbgregs_window();
+    display_dbgcode_window();
+    display_dbgregs_window();
 }

@@ -1,1 +1,1 @@
-Change prefix into /usr in sdl-config.
+See the TiLP/build/mingw/ReadMe.txt.

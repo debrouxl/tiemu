@@ -44,6 +44,15 @@
 DbgOptions options3;
 DbgWidgets dbgw = { 0 };
 
+void preload_gtk_debugger(void)
+{
+	//create_dbgregs_window();
+	//create_dbgcode_window();
+	//create_dbgmem_window();
+	//create_dbgbkpts_window();
+	//create_dbgpclog_window();
+}
+
 int enter_gtk_debugger(int context)
 {
     // show breakpoint source
@@ -56,12 +65,12 @@ int enter_gtk_debugger(int context)
         break;
     }
 
-    // open debugger, if not already opened
-	dbgw.regs = refresh_dbgregs_window();
-	dbgw.code = refresh_dbgcode_window();
-	dbgw.mem  = refresh_dbgmem_window();
-	dbgw.bkpts = refresh_dbgbkpts_window();
-    dbgw.pclog = refresh_dbgpclog_window();
+    // refresh debugger windows (open debugger, if not already opened)
+	dbgw.regs = display_dbgregs_window();
+	dbgw.code = display_dbgcode_window();
+	dbgw.mem  = display_dbgmem_window();
+	dbgw.bkpts = display_dbgbkpts_window();
+    dbgw.pclog = display_dbgpclog_window();
 
 	return 0;
 }
@@ -75,7 +84,7 @@ on_registers1_activate                 (GtkMenuItem     *menuitem,
     if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
         gtk_widget_hide(dbgw.regs);
   	else
-        refresh_dbgregs_window();
+        display_dbgregs_window();
 }
 
 
@@ -86,7 +95,7 @@ on_breakpoints1_activate               (GtkMenuItem     *menuitem,
     if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
         gtk_widget_hide(dbgw.bkpts);
   	else
-        refresh_dbgbkpts_window();
+        display_dbgbkpts_window();
 }
 
 
@@ -97,7 +106,7 @@ on_memory1_activate                    (GtkMenuItem     *menuitem,
     if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
         gtk_widget_hide(dbgw.mem);
   	else
-        refresh_dbgmem_window();
+        display_dbgmem_window();
 }
 
 GLADE_CB void
@@ -107,7 +116,7 @@ on_pc_log1_activate                    (GtkMenuItem     *menuitem,
     if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
         gtk_widget_hide(dbgw.pclog);
   	else
-        refresh_dbgpclog_window();
+        display_dbgpclog_window();
 }
 
 

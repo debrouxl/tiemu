@@ -204,7 +204,7 @@ int main(int argc, char **argv)
 
 	/* 
 		Override refresh functions of the libticalcs library 
-		(must be done after init of ti68k engine
+		(must be done after init of ti68k engine)
 	*/
 	gt_init_refresh_functions();
 
@@ -222,6 +222,12 @@ int main(int argc, char **argv)
 		err = ti68k_state_load(params.sav_file);
 		handle_error();
 	}
+
+	/*
+		Cache debugger windows to speed-up display
+	*/
+	splash_screen_set_label(_("Pre-loading debugger..."));
+	preload_gtk_debugger();
   
 	/* 
 		Start thread (emulation engine) and run main loop 

@@ -360,7 +360,7 @@ static gint already_open = 0;
 /*
 	Display memory window
 */
-GtkWidget* display_dbgmem_window(void)
+GtkWidget* create_dbgmem_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -382,7 +382,6 @@ GtkWidget* display_dbgmem_window(void)
 
     gtk_window_resize(GTK_WINDOW(dbox), options3.mem.w, options3.mem.h);
     gtk_window_move(GTK_WINDOW(dbox), options3.mem.x, options3.mem.y);
-    gtk_widget_show(GTK_WIDGET(dbox));
 
 	already_open = !0;
 
@@ -391,14 +390,13 @@ GtkWidget* display_dbgmem_window(void)
 
 static void refresh_page(int page, int offset);
 
-GtkWidget* refresh_dbgmem_window(void)
+GtkWidget* display_dbgmem_window(void)
 {
     static GtkWidget *wnd = NULL;
 
 	if(!already_open)
-		wnd = display_dbgmem_window();
-    else
-        gtk_widget_show(wnd);
+		wnd = create_dbgmem_window();
+    gtk_widget_show(wnd);
 
 	refresh_page(0, 0);
 
