@@ -26,10 +26,7 @@
     Gray-scale detection and management (many ideas from K. Kofler).
 	Can manages 1 (b&w), 2 (4 colors) or 3 (7/8 colors) planes
 
-	The HW1 part could be greatly optimized.
-
-	The current algorithm are simple but fast (no time ratio detection).
-	This will be improved later...
+	Many ideas from K. Kofler (as exposure time and opcode signature).
 */
 
 
@@ -48,154 +45,132 @@
 #include "ti68k_def.h"
 
 #define BUFSIZE			12	// store 12 plane addresses
-#define UPDATE_PLANES	32	// update plane addresses every 16 LCD refresh
-
-double round(double v)
-{
-	double f = v - (int)v;
-	if(f > 0.5)
-		return ceil(v);
-	else
-		return floor(v);
-}
+#define UPDATE_PLANES	16	// update plane addresses every 16 LCD refresh
 
 uint32_t lcd_planes[3];
 int ngc = 1;
 
-int gp_seq[9][8] = {			// gray plane sequences
-	{ -1 },						// unused
-	{ 0, -1 },					// b&w		(1 plane)
-	{ -1 },						// unused
-	{ 0, 0, 1, -1 },			// 4 colors (2 planes)
-	{ -1 },						// unused
-	{ -1 },						// unused
-	{ -1 },						// unused
-	{ 2, 0, 1, 0, 1, 0, -1 },	// 7 colors (3 planes)
-	{ 1, 0, 2, 0, 0, 1, 0, -1 },// 8 colors (3 planes)
-};
+/*
+	Grayscale management (common)
+*/
+static void process_address(uint32_t plane_addr)
+{
+	uint32_t tmp;
+	static uint32_t lcd_addrs[BUFSIZE];
+	static int		lcd_ticks[BUFSIZE];
+	static int		lcd_exptime[3];
+	static int cnt;
+
+	lcd_addrs[cnt % BUFSIZE] = plane_addr;
+	lcd_ticks[cnt++ % BUFSIZE] = tihw.lcd_tick;
+	tihw.lcd_tick = 0;
+
+	if(!(cnt % UPDATE_PLANES))
+	{
+		int ngp = 0;
+		int i;
+
+		// reset exposure times
+		memset(lcd_exptime, 0, sizeof(lcd_exptime));
+
+		// get address of plane #0
+		lcd_planes[0] = lcd_planes[1] = lcd_planes[2] = lcd_addrs[0];		
+		ngp++;
+
+		// get address of plane #1
+		for(i = 0; i < BUFSIZE; i++)
+		{
+			if(lcd_addrs[i] != lcd_planes[0])
+			{
+				lcd_planes[1] = lcd_addrs[i];
+				ngp++;
+				break;
+			}
+		}
+
+		// get address of plane #2
+		for(i = 0; i < BUFSIZE; i++)
+		{
+			if((lcd_addrs[i] != lcd_planes[0]) && (lcd_addrs[i] != lcd_planes[1]))
+			{
+				lcd_planes[2] = lcd_addrs[i];
+				ngp++;
+				break;
+			}
+		}
+
+		// get exposure time of plane #0
+		for(i = 0; i < BUFSIZE; i++)
+		{
+			if(lcd_addrs[i] == lcd_planes[0])
+				lcd_exptime[0] += lcd_ticks[i];
+		}
+
+		// get exposure time of plane #1
+		for(i = 0; i < BUFSIZE; i++)
+		{
+			if(lcd_addrs[i] == lcd_planes[1])
+				lcd_exptime[1] += lcd_ticks[i];
+		}
+
+		// get exposure time of plane #2
+		for(i = 0; (i < BUFSIZE) && (ngp > 2); i++)
+		{
+			if(lcd_addrs[i] == lcd_planes[2])
+				lcd_exptime[2] += lcd_ticks[i];
+		}
+
+		// sort plane addresses by exposition times (0,1), (0,2), (1,2)
+		// note: sorting does not works fine and I don't see where the error is...
+		if(lcd_exptime[0] < lcd_exptime[1])
+		{
+			tmp = lcd_planes[1];
+			lcd_planes[1] = lcd_planes[0];
+			lcd_planes[0] = tmp;
+		}
+		if(lcd_exptime[0] < lcd_exptime[2])
+		{
+			tmp = lcd_planes[2];
+			lcd_planes[2] = lcd_planes[0];
+			lcd_planes[0] = tmp;
+		}
+		if(lcd_exptime[1] < lcd_exptime[2])
+		{
+			tmp = lcd_planes[2];
+			lcd_planes[2] = lcd_planes[1];
+			lcd_planes[1] = tmp;
+		}
+
+		// now, determine number of grayscales (kevin)
+		if(ngp == 1)
+			ngc = 1;
+		else if(ngp == 2)
+			ngc = 3;
+		else if(ngp == 3)
+		{
+			// check using fast integer computation and no possible divisions by 0
+			// whether lcd_exptime[0] / lcd_exptime[2] > 3.5 = 7/2
+			if (lcd_exptime[0] * 2 > lcd_exptime[2] * 7)
+				ngc = 8;
+			else
+				ngc = 7;
+		}
+
+#if 1
+		printf("%i: %06x-%06x-%06x (%i-%i-%i)\n", ngp,
+				lcd_planes[0], lcd_planes[1], lcd_planes[2],
+				lcd_exptime[0]>>4, lcd_exptime[1]>>4, lcd_exptime[2]>>4
+				);
+#endif
+	}
+}
 
 /*
 	HW1 grayscale management
 */
 void lcd_hook_hw1(void)
 {
-	static uint32_t lcd_addrs[BUFSIZE];
-	static int cnt;
-	static int t;
-	static double fir;
-	uint32_t tmp;
-
-	lcd_addrs[cnt++ % BUFSIZE] = tihw.lcd_adr;
-
-	if(!(cnt % UPDATE_PLANES))
-	{
-		int np, i, ngp=1;
-		static int old_ngp=1;
-
-		// get address of plane #0
-		np = 1;
-		lcd_planes[0] = lcd_planes[1] = lcd_planes[2] = lcd_addrs[0];		
-
-		// get address of plane #1
-		for(i = 1; i < BUFSIZE; i++)
-		{
-			if(lcd_addrs[i] != lcd_planes[0])
-			{
-				lcd_planes[1] = lcd_addrs[i];
-				np++;
-				break;
-			}
-		}
-
-		// get address of plane #2
-		for(i = 1; i < BUFSIZE; i++)
-		{
-			if((lcd_addrs[i] != lcd_planes[0]) && (lcd_addrs[i] != lcd_planes[1]))
-			{
-				lcd_planes[2] = lcd_addrs[i];
-				np++;
-				break;
-			}
-		}
-
-#ifdef FIR
-		// FIR filter: get number of planes (don't need any more: 
-		// I have implemented pending interrupts)
-		fir = (np + 1.1*fir) / 2;
-		ngp = (int)round(fir);
-#else
-		ngp = np;
-#endif
-
-		// keep plane address in the right order (to test ...)
-		if(lcd_planes[0] > lcd_planes[1])
-		{
-			tmp = lcd_planes[0];
-			lcd_planes[0] = lcd_planes[1];
-			lcd_planes[1] = tmp;
-		}
-
-		if((ngp == 3) && (lcd_planes[1] > lcd_planes[2]))
-		{
-			tmp = lcd_planes[1];
-			lcd_planes[1] = lcd_planes[2];
-			lcd_planes[2] = tmp;
-		}
-
-#if 0
-		printf("%06x-%06x-%06x\n", lcd_planes[0], lcd_planes[1], lcd_planes[2]);
-		//printf("%1.1f/%1.1f %i\n", round(fir), fir, c);				 
-		//for(i = 0; i < 8; i++)	printf("%06x ", lcd_addrs[i]); printf("\n");
-#endif
-
-		if(old_ngp != ngp)
-			printf("Detected %i planes !\n", ngp);
-		old_ngp = ngp;
-
-		if(ngp == 1)
-			ngc = 1;
-		else if(ngp == 2)
-			ngc = 3;
-		else if(ngp == 3)
-			ngc = 7;
-	}
-}
-
-static void process_address(uint32_t plane_addr)
-{
-	static uint32_t min=0;
-	static uint32_t max=0;
-	static uint32_t mid=0;
-	uint32_t tmp;
-	static int cnt;
-	const int ngp2ngc[] = { 1, 1, 3, 7 }; 
-
-	tmp = plane_addr;
-
-	if(tmp < min)
-		min = tmp;
-	if((tmp > min) && (tmp < max))
-		mid = tmp;
-	if(tmp > max)
-		max = tmp;
-
-	if(!(cnt++ % 8))
-	{
-		int ngp = 1;
-
-		lcd_planes[0] = min;
-		lcd_planes[1] = mid;
-		lcd_planes[2] = max;
-
-		if(min != mid)
-			ngp++;
-		if(mid != max)
-			ngp++;
-
-		ngc = ngp2ngc[ngp];
-		//printf("$%06x: %06x, %06x-%06x-%06x  %i\n", m68k_getpc(), tmp+0xa00, min+0xa00, mid+0xa00, max+0xa00, ngp);
-		min = max = mid = tmp;
-	}
+	process_address(tihw.lcd_adr);
 }
 
 /*
@@ -241,8 +216,11 @@ void lcd_hook_hw2(int refresh)
 
 			//printf("$%06x\n", m68k_getpc());
 			//printf("%06x %06x\n", regs.a[0], regs.a[1]);
+			//process_address_2(a0);
 
+			//printf("%i\n", tihw.lcd_tick);
 			process_address(a0);
+			
 			fs_toggled = 0;
 			dead_cnt = 0;
 		}

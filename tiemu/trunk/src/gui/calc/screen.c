@@ -205,6 +205,19 @@ void redraw_lcd(void)
 	gtk_widget_queue_draw_area(area, r.x, r.y, r.w, r.h);
 }
 
+// gray plane sequences in relation with gscales.c
+const int gp_seq[9][8] = {			
+	{ -1 },						// unused
+	{ 0, -1 },					// b&w		(1 plane)
+	{ -1 },						// unused
+	{ 0, 0, 1, -1 },			// 4 colors (2 planes)
+	{ -1 },						// unused
+	{ -1 },						// unused
+	{ -1 },						// unused
+	{ 2, 0, 1, 0, 1, 0, -1 },	// 7 colors (3 planes)
+	{ 1, 0, 2, 0, 0, 1, 0, -1 },// 8 colors (3 planes)
+};
+
 /* Update LCD screen part */
 int hid_update_lcd(void)
 {
@@ -216,7 +229,6 @@ int hid_update_lcd(void)
 
 	extern uint32_t lcd_planes[3];
 	extern int ngc;
-	extern int gp_seq[9][8];
 
     if(!pixmap || !lcd || !tihw.lcd_ptr)
         return 0;

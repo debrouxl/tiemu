@@ -153,6 +153,9 @@ void hw_update(void)
 {
 	static int timer;	// -> tihw.timer_value
 
+	// Used by grayscale for time plane exposure
+	tihw.lcd_tick++;
+
     // OSC2 enable (bit clear means oscillator stopped!)
     if(!io_bit_tst(0x15,1))
 	{
@@ -252,7 +255,7 @@ void hw_update(void)
   	if(!(timer & 7))		// 1 and 3 don't work, 7 and 15 are ok
   		hw_kbd_update();
   		
-  	// Update LCD (HW1: every 16Th timer tick, HW2: unrelated)
+  	// Update LCD (HW1: every 16th timer tick, HW2: unrelated)
   	if((tihw.hw_type == HW1) && !(timer & 15))
     {
         G_LOCK(lcd_flag);
