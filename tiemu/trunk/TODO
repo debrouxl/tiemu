@@ -39,14 +39,6 @@ première fois, j'ai converti, puis choisi la nouvelle ROM dans la liste, et
 TiEmu a planté (fenêtre de plantage Windows). La deuxième fois, la ROM était
 déjà dans la liste, je l'ai choisie et tout a marché...
 
-* Ce serait bien d'avoir aussi une option 8 niveaux de gris (moyenne de 7
-plans plutôt que de 6).
-Les nombres de niveaux de gris interessants sont 2, 4, 7 et 8:
-  2: plane0 (1/1)
-  4: plane0, plane0, plane1 (2/3, 1/3)
-  7: plane2, plane0, plane1, plane0, plane1, plane0 (3/6, 2/6, 1/6)
-  8: plane1, plane0, plane2, plane0, plane0, plane1, plane0 (4/7, 2/7, 1/7)
-
 *  Tiens, je viens de t'écrire un mail:
 Tiens, encore un truc, dans le débogueur cette fois-ci: Actuellement, F8 sur
 un trap rentre dans un trap. Pourrais-tu s'il te plaît faire en sorte que F8
@@ -54,8 +46,6 @@ ne rentre pas dans le trap, mais le traîte comme un JSR? VTI fait ça et
 c'est bien pratique. En revanche, F7 devrait rentrer dans le trap.
 
 * Et encore un autre bogue: l'écriture en FlashROM n'est pas émulée correctement, même si je saute tous mes astuces anti-débogage, HW3Patch ne fonctionne pas.
-
-*Oui. C'est comme ça sous VTI et c'est bien utile. Parce que souvent, j'ai une idée de la position où se trouve le truc (par exemple >0x800000), et c'est lourd de devoir tout passer en partant de 0.
 
 Lionel
 ======

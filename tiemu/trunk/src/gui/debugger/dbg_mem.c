@@ -670,7 +670,19 @@ GLADE_CB void
 on_find1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    display_dbgmem_search();
+	GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+    gint page = gtk_notebook_get_current_page(nb);
+	GtkWidget *tab;
+	GtkWidget *label;
+	G_CONST_RETURN gchar *text;
+	uint32_t addr;
+
+	tab = gtk_notebook_get_nth_page(nb, page);
+	label = gtk_notebook_get_tab_label(nb, tab);
+	text = gtk_label_get_text(GTK_LABEL(label));
+    sscanf(text, "%06x", &addr);
+
+    display_dbgmem_search(addr);
 }
 
 
@@ -1104,7 +1116,7 @@ static void search_next(void)
     blk_adr += blk_len;
 }
 
-gint display_dbgmem_search(void)
+gint display_dbgmem_search(uint32_t addr)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -1142,7 +1154,7 @@ gint display_dbgmem_search(void)
 
         if(result == GTK_RESPONSE_OK)
         {
-            blk_adr = 0x000000;
+            blk_adr = addr;	//0x000000;
             blk_len = 0;
         }
 
