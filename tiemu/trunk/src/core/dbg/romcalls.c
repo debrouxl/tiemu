@@ -143,7 +143,8 @@ int romcalls_load_from_file(const char* filename)
 
     f = fopen(filename, "rt");
     if(f == NULL) {
-			printf("Failed: %s (%d)\n", strerror(errno), errno);
+			printf("Failed to open <%s> with error %s (%d)\n", 
+			       filename, strerror(errno), errno);
         return -1;
 		}
 

@@ -181,16 +181,20 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 romsdir = $(pkgdatadir)/ROMs
-dist_roms_DATA = *.rom
+dist_roms_DATA = #*.rom
+
+romcallsdir = $(pkgdatadir)
+dist_romcalls_DATA = romcalls.*
 subdir = ROMs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
-DATA = $(dist_roms_DATA)
+DATA = $(dist_romcalls_DATA) $(dist_roms_DATA)
 
-DIST_COMMON = $(dist_roms_DATA) $(srcdir)/Makefile.in Makefile.am
+DIST_COMMON = $(dist_romcalls_DATA) $(dist_roms_DATA) \
+	$(srcdir)/Makefile.in Makefile.am
 all: all-am
 
 .SUFFIXES:
@@ -209,6 +213,24 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+dist_romcallsDATA_INSTALL = $(INSTALL_DATA)
+install-dist_romcallsDATA: $(dist_romcalls_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(romcallsdir)
+	@list='$(dist_romcalls_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(dist_romcallsDATA_INSTALL) $$d$$p $(DESTDIR)$(romcallsdir)/$$f"; \
+	  $(dist_romcallsDATA_INSTALL) $$d$$p $(DESTDIR)$(romcallsdir)/$$f; \
+	done
+
+uninstall-dist_romcallsDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_romcalls_DATA)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(romcallsdir)/$$f"; \
+	  rm -f $(DESTDIR)$(romcallsdir)/$$f; \
+	done
 dist_romsDATA_INSTALL = $(INSTALL_DATA)
 install-dist_romsDATA: $(dist_roms_DATA)
 	@$(NORMAL_INSTALL)
@@ -270,7 +292,7 @@ check: check-am
 all-am: Makefile $(DATA)
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(romsdir)
+	$(mkinstalldirs) $(DESTDIR)$(romcallsdir) $(DESTDIR)$(romsdir)
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
@@ -311,7 +333,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-dist_romsDATA
+install-data-am: install-dist_romcallsDATA install-dist_romsDATA
 
 install-exec-am:
 
@@ -337,18 +359,19 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-dist_romsDATA uninstall-info-am
+uninstall-am: uninstall-dist_romcallsDATA uninstall-dist_romsDATA \
+	uninstall-info-am
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
 	dvi-am info info-am install install-am install-data \
-	install-data-am install-dist_romsDATA install-exec \
-	install-exec-am install-info install-info-am install-man \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	uninstall uninstall-am uninstall-dist_romsDATA \
-	uninstall-info-am
+	install-data-am install-dist_romcallsDATA install-dist_romsDATA \
+	install-exec install-exec-am install-info install-info-am \
+	install-man install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
+	ps ps-am uninstall uninstall-am uninstall-dist_romcallsDATA \
+	uninstall-dist_romsDATA uninstall-info-am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

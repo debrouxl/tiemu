@@ -5,8 +5,9 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
-- 23/09/2004, version 1.80c: roms
-	- ...
+- 11/10/2004, version 1.80c: roms
+	- applied patch from Christian Walther <cwalther@gmx.ch>
+	- fixed some Linux bugs
 
 - 14/09/2004, version 1.80b: roms
 	- fixed HW3 support
