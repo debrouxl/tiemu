@@ -23,13 +23,12 @@
  */
 
 /*
-    Memory management: RAM, PROM/FLASH, I/O ports
+    Memory management: RAM, PROM/FLASH, I/O ports and bkpts
 */
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <math.h>
 
 #include "libuae.h"
 #include "ports.h"
@@ -42,7 +41,7 @@
 #include "ti68k_int.h"
 #include "flash.h"
 
-static IMG_INFO *img = &img_infos; // a shortcut
+static IMG_INFO *img = &img_infos;
 
 uint8_t *mem_tab[16];		// 1MB per banks
 uint32_t mem_mask[16];		// pseudo chip-select (allow wrapping / ghost space)
@@ -64,7 +63,6 @@ uint32_t mem_mask[16];		// pseudo chip-select (allow wrapping / ghost space)
 // e00000-efffff :   ...
 // d00000-ffffff : unused
 
-extern FLASH_WSM   wsm;
 
 /* Mem init/exit */
 

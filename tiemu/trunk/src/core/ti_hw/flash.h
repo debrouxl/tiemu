@@ -39,6 +39,8 @@ typedef struct
     int erase_phase;
 } FLASH_WSM;
 
+extern FLASH_WSM   wsm;
+
 /* Functions */
 
 void FlashWriteByte(uint32_t addr, int v);

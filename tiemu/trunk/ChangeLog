@@ -6,6 +6,7 @@ SubVersion: $Id$
 	Synch item disabled for now.
 	Fixed bugs in state image loading as well as in LCD initialization 
 		(no LCD updates after state image loading).
+	Linkport reworked but seems to be buggy with HW2 ?!
 
 	Still to do:
 	- link port is broken
