@@ -170,7 +170,7 @@ gint display_romversion_dbox()
 	{
         DISPLAY("Unable to open this file: %s\n", filename);
         gtk_widget_destroy(dbox);
-		ti68k_unhalt();
+		ti68k_engine_unhalt();
         return -1;
     }
 
@@ -246,7 +246,7 @@ gint display_romversion_dbox()
 		break;
 	}
 
-    ti68k_unhalt();
+    ti68k_engine_unhalt();
 
 	return 0;
 }

@@ -36,7 +36,7 @@
 #include "ti68k_int.h"
 #include "tilibs.h"
 #include "./ti_hw/memory.h"
-#include "linkport.h"
+#include "dbus.h"
 #include "ti68k_err.h"
 #include "timer.h"
 #include "lcd.h"

@@ -71,7 +71,7 @@ gint display_skin_dbox()
         
     if(!ok) {
         msg_box(_("Error"), _("Skin incompatible with the current calc model."));
-        ti68k_unhalt();
+        ti68k_engine_unhalt();
         return -1;
     }
 
@@ -80,7 +80,7 @@ gint display_skin_dbox()
     options.skin_file = g_strconcat(filename, NULL);
     
     hid_change_skin(options.skin_file);
-    ti68k_unhalt();
+    ti68k_engine_unhalt();
 
 	return 0;
 }
@@ -98,7 +98,7 @@ gint display_load_state_dbox()
     params.ram_file = g_strdup(filename);
     
     ti68k_state_load(params.ram_file);
-    ti68k_unhalt();
+    ti68k_engine_unhalt();
 
 	return 0;
 }
@@ -129,7 +129,7 @@ gint display_save_state_dbox()
 #endif
     }
 
-    ti68k_unhalt();
+    ti68k_engine_unhalt();
 
 	return 0;
 }
@@ -163,7 +163,7 @@ gint display_tifile_dbox()
     if(!tifiles_is_a_ti_file(filename) || 
         !tifiles_is_ti9x(tifiles_which_calc_type(filename))) {
         msg_box(_("Error"), _("This file is not a valid TI file."));
-        ti68k_unhalt();
+        ti68k_engine_unhalt();
         return -1;
     }
 
@@ -178,7 +178,7 @@ gint display_tifile_dbox()
         create_pbar_type4(_("Sending variable"), "");
     }
 
-    ti68k_unhalt();
+    ti68k_engine_unhalt();
     ti68k_linkport_send_file(filename);
 
 	return 0;
@@ -200,7 +200,7 @@ gint display_set_rom_dbox(void)
     cmd = g_strdup_printf("cp %s %s", src, dst);
     system(cmd); //copy_file(src, dst);    
 
-    ti68k_unhalt();
+    ti68k_engine_unhalt();
 }
 
 gint display_set_tib_dbox(void)
@@ -219,11 +219,11 @@ gint display_set_tib_dbox(void)
     params.tib_file = g_strdup(filename);
     if(ti68k_loadImage(params.tib_file))  {
         msg_box(_("Error"), _("Can not open the ROM/FLASH file."));
-        ti68k_unhalt();
+        ti68k_engine_unhalt();
         return -1;
     }    
 */
-    ti68k_unhalt();
+    ti68k_engine_unhalt();
 }
 
 

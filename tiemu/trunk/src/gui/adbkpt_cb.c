@@ -210,5 +210,5 @@ void
 on_add_data_bkpt_dbox_destroy          (GtkObject       *object,
                                         gpointer         user_data)
 {
-  ti68k_unhalt();
+  ti68k_engine_unhalt();
 }

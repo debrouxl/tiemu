@@ -92,7 +92,7 @@ gint display_manpage_dbox()
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) {
 	case GTK_RESPONSE_OK:
-		ti68k_unhalt();
+		ti68k_engine_unhalt();
 		break;
 	default:
 		break;

@@ -219,7 +219,7 @@ on_debugger_dbox_destroy               (GtkObject       *object,
     }
   
   // Emulation core in free running
-  ti68k_unhalt();
+  ti68k_engine_unhalt();
 }
 
 
@@ -583,7 +583,7 @@ on_run1_activate                       (GtkMenuItem     *menuitem,
   put_in_sb(_("Running..."));
 
   // Run the emulation core
-  ti68k_unhalt();
+  ti68k_engine_unhalt();
 }
 
 
@@ -605,7 +605,7 @@ on_step1_activate                      (GtkMenuItem     *menuitem,
   addr = ti68k_register_get_pc();
   DISPLAY("addr=$%06x\n", addr);
   ti68k_debug_do_single_step(); // set trap
-  ti68k_unhalt();    // emulator in free running
+  ti68k_engine_unhalt();    // emulator in free running
 }
 
 
@@ -689,7 +689,7 @@ on_break1_activate                     (GtkMenuItem     *menuitem,
   CODE_BKPT *s;
 
   put_in_sb(_("Break !"));
-  ti68k_halt();
+  ti68k_engine_halt();
   fprintf(stderr, "Break (F11)\n");
 
   /* Place a breakpoint */
@@ -1184,7 +1184,7 @@ void
 on_gotocode_dbox_destroy               (GtkObject       *object,
                                         gpointer         user_data)
 {
-  //ti68k_unhalt();
+  //ti68k_engine_unhalt();
 }
 
 
@@ -1192,7 +1192,7 @@ void
 on_gotodata_dbox_destroy               (GtkObject       *object,
                                         gpointer         user_data)
 {
-  //ti68k_unhalt();
+  //ti68k_engine_unhalt();
 }
 
 /**/

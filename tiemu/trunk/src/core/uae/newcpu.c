@@ -22,7 +22,7 @@
 #include "tilibs.h"
 #include "ti68k_def.h"
 #include "../ti_hw/memory.h"
-#include "../ti_hw/linkport.h"
+#include "../ti_hw/dbus.h"
 #include "bkpts.h"
 #include "hardware.h" //do_cycles
 // tiemu end

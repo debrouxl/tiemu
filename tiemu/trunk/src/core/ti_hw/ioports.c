@@ -32,7 +32,7 @@
 #include "memory.h"
 #include "lcd.h"
 #include "keyboard.h"
-#include "linkport.h"
+#include "dbus.h"
 //#include "params.h"
 #include "timer.h"
 #include "callbacks.h"

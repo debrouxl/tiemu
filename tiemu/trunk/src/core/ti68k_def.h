@@ -30,6 +30,12 @@
 
 #include "tilibs.h"
 
+/* Equivalences */
+
+#ifdef __WIN32__
+# define strcasecmp _stricmp
+#endif
+
 /* Constants */
 
 #define MAXCHARS	256
@@ -102,8 +108,8 @@ typedef struct
 
 } Ti68kHardware;
 
-extern Ti68kParameters params;
+extern Ti68kParameters 	params;
 extern TicableLinkParam link_cable;
-extern Ti68kHardware tihw;
+extern Ti68kHardware 	tihw;
 
 #endif

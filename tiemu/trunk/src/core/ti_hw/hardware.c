@@ -32,7 +32,7 @@
 #include "memory.h"
 #include "lcd.h"
 #include "keyboard.h"
-#include "linkport.h"
+#include "dbus.h"
 #include "ti68k_def.h"
 #include "timer.h"
 #include "ioports.h"

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: hid.c 163 2004-05-13 06:40:57Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -116,7 +116,7 @@ void
 on_dbgopt_dbox_destroy                 (GtkObject       *object,
                                         gpointer         user_data)
 {
-  //ti68k_unhalt();
+  //ti68k_engine_unhalt();
 }
 
 /* */

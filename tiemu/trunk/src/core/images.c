@@ -55,10 +55,7 @@
 #include "m68k.h"
 #include "bkpts.h"
 #include "ti68k_err.h"
-
-#ifdef __WIN32__
-# define strcasecmp _stricmp
-#endif
+#include "ti68k_def.h"
 
 #define is_num(c)   isdigit(c)
 #define is_alnum(c) isalnum(c)
@@ -548,8 +545,8 @@ int ti68k_load_upgrade(const char *filename)
 	img->has_boot = 1;	// still bootable
 	memcpy(ti_rom+0x12000, img->data+0x12000, img->size-0x12000);
 
-  	tihw.rom_size = img->size;
-  	tihw.ram_size = (img->size == 1024*1024) ? 128 : 256;
+  	//tihw.rom_size = img->size;
+  	//tihw.ram_size = (img->size == 1024*1024) ? 128 : 256;
 
   	img_loaded = 2;
 	return 0;

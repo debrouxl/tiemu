@@ -118,24 +118,3 @@ void ti68k_engine_unhalt(void)
 	running = 1;
 	//G_UNLOCK(running);
 }
-
-// compat
-
-int ti68k_is_halted() 
-{
-	return !running;
-}
-
-void ti68k_halt(void) 
-{
-	//G_LOCK(running);
-	running = 0;
-	//G_UNLOCK(running);
-}
-
-void ti68k_unhalt(void) 
-{
-	//G_LOCK(running);
-	running = 1;
-	//G_UNLOCK(running);
-}
