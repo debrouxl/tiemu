@@ -43,7 +43,7 @@ int hw_m68k_init(void)
 
     // init instruction logging
     bkpts.pc_log_size = 1;  //50;
-    bkpts.pc_log = malloc(bkpts.pc_log_size * sizeof(uint32_t));
+    bkpts.pc_log = (uint32_t *)malloc(bkpts.pc_log_size * sizeof(uint32_t));
     if(bkpts.pc_log == NULL)
         return ERR_MALLOC;
     bkpts.pc_rd_ptr = 0;

@@ -33,7 +33,7 @@
 #include <time.h>
 #include <string.h>
 
-#include "uae.h"
+#include "libuae.h"
 #include "ports.h"
 #include "dbus.h"
 

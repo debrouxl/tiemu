@@ -107,7 +107,12 @@ static INLINE_DECLARATION ULONG nextilong(void)
 }
 
 //roms
+#ifdef __WIN32__
 extern unsigned char* hw_get_real_address(unsigned long adr);
+#else
+#include <stdint.h>
+extern uint8_t* hw_get_real_address(uint32_t addr);
+#endif
 
 static INLINE_DECLARATION void m68k_setpc(CPTR newpc)
 {

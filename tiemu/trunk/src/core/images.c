@@ -42,7 +42,7 @@
 #include <unistd.h>
 #include <glib.h>
 
-#include "../core/uae/uae.h"
+#include "libuae.h"
 
 #include "intl.h"
 #include "ti68k_int.h"

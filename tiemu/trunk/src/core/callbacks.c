@@ -30,7 +30,7 @@
 # include <config.h>
 #endif
 
-#include "uae.h"
+#include "libuae.h"
 
 #include "callbacks.h"
 #include "update.h"

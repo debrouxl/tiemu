@@ -47,12 +47,12 @@ uae_OBJ = \
 
 tihw_OBJ = \
 	core/ti_hw/dbus.o	\
-	core/ti_hw/hardware.o 	\
-	core/ti_hw/ioports.o 	\
-	core/ti_hw/keyboard.o 	\
+	core/ti_hw/hw.o 	\
+	core/ti_hw/ports.o 	\
+	core/ti_hw/kbd.o 	\
 	core/ti_hw/lcd.o 	\
 	core/ti_hw/m68k.o	\
-	core/ti_hw/memory.o 	\
+	core/ti_hw/mem.o 	\
 	core/ti_hw/timer.o	
 
 core_OBJ = 			\
@@ -83,6 +83,7 @@ gui_OBJ = \
 	./gui/debugger/dbg_code.o					\
 	./gui/debugger/dbg_data.o					\
 	./gui/debugger/dbg_mem.o					\
+	./gui/debugger/dbg_pclog.o					\
 	./gui/debugger/dbg_regs.o					\
 	./gui/debugger/dbg_vectors.o					\
 	./gui/about.o							\
