@@ -49,15 +49,15 @@ Source: "C:\Program Files\Common Files\GTK\2.0\lib\libwimp.dll"; DestDir: "{code
 Name: "{app}\My Skins"; Flags: uninsneveruninstall;
 
 [INI]
-Filename: "{app}\skinedit.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://lpg.ticalc.org/prj_skinedit"
+Filename: "{app}\skinedit.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://lpg.ticalc.org/prj_tiemu"
 
 [Icons]
-Name: "{group}\skinedit"; Filename: "{app}\skinedit.exe"; WorkingDir: "{app}\My Skins"
-Name: "{group}\skinedit on the Web"; Filename: "{app}\skinedit.url"
-Name: "{group}\Uninstall skinedit"; Filename: "{uninstallexe}"
+Name: "{group}\SkinEdit"; Filename: "{app}\skinedit.exe"; WorkingDir: "{app}\My Skins"
+Name: "{group}\SkinEdit on the Web"; Filename: "{app}\skinedit.url"
+Name: "{group}\Uninstall SkinEdit"; Filename: "{uninstallexe}"
 
-Name: "{userdesktop}\skinedit"; Filename: "{app}\skinedit.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: desktopicon
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\skinedit"; Filename: "{app}\skinedit.exe"; WorkingDir: "{app}\My Skins"; MinVersion: 4,4; Tasks: quicklaunchicon
+Name: "{userdesktop}\SkinEdit"; Filename: "{app}\skinedit.exe"; WorkingDir: "{app}\My Skins"; MinVersion: 4,4; Tasks: desktopicon
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\SkinEdit"; Filename: "{app}\skinedit.exe"; WorkingDir: "{app}\My Skins"; MinVersion: 4,4; Tasks: quicklaunchicon
 
 [Run]
 ; Boost GTK2 (Win9x/Me)
@@ -78,7 +78,7 @@ Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environmen
 Root: HKCR; Subkey: ".skn"; ValueType: string; ValueName: ""; ValueData: "SkinEdit.skin";
 Root: HKCR; Subkey: "SkinEdit.skin"; ValueType: string; ValueName: ""; ValueData: "VTi/TiEmu skin";
 Root: HKCR; Subkey: "SkinEdit.skin\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\icons\String.ico"
-Root: HKCR; Subkey: "SkinEdit.skin\shell\open";  ValueType: string; ValueData: "Open with &skinedit"
+Root: HKCR; Subkey: "SkinEdit.skin\shell\open";  ValueType: string; ValueData: "Open with &SkinEdit"
 Root: HKCR; Subkey: "SkinEdit.skin\shell\open\command"; ValueType: string; ValueName: ""; ValueData: "{app}\skinedit.exe '%1'"
 
 [UninstallDelete]

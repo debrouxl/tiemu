@@ -57,8 +57,9 @@
 #if defined(__WIN32__) && !defined(__MINGW32__)
 # undef PACKAGE
 # define PACKAGE "skinedit"	// name of package
-# define LOCALEDIR ""		// place of the translated file
-# define VERSION "1.24"		// version
+# define LOCALEDIR ""			  // place of the translated file
+# define VERSION "1.24"			// version
+# define GETTEXT_PACKAGE	PACKAGE
 #endif
 
 #endif

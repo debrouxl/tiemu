@@ -13,8 +13,6 @@
 
 #include <gtk/gtk.h>
 
-#include "intl.h"
-
 #include "main_intf.h"
 #include "support.h"
 #include "utils.h"
@@ -68,10 +66,39 @@ main (int argc, char *argv[])
     const char *p;
     char arg[128];
 
+#ifdef __WIN32__
+	HMODULE hModule;
+	char *sBuffer;
+	DWORD dWord;
+	char *dirname;
+	char *base_dir;
+	char *pixmap_dir;
+	char *locale_dir;
+
+	// Init the path for the Windows version by getting the 
+	// executable location.
+	hModule = GetModuleHandle("skinedit.exe");
+	sBuffer = (char *) malloc(4096 * sizeof(char));
+	dWord = GetModuleFileName(hModule, sBuffer, 4096);
+	dirname = g_dirname(sBuffer);
+	base_dir = g_strconcat(dirname, "\\", NULL);
+	g_free(dirname);
+	free(sBuffer);
+
+	pixmap_dir = g_strconcat(base_dir, "pixmaps\\", NULL);
+	locale_dir = g_strconcat(base_dir, "locale\\", NULL);
+#endif
+
 #ifdef ENABLE_NLS
+#ifndef __WIN32__
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
+#else
+	bindtextdomain(PACKAGE, locale_dir);
+  bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+	textdomain (GETTEXT_PACKAGE);
+#endif
 #endif
 
   gtk_set_locale ();
@@ -79,12 +106,14 @@ main (int argc, char *argv[])
 
 #ifndef __WIN32__
   add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");
+#else
+  add_pixmap_directory (pixmap_dir);
 #endif
 
   signal(SIGINT, signal_handler);
 
   fprintf(stdout, _("SkinEdit v%s, (C) 2002-2003 Julien BLACHE <jb@tilp.info>\n"), VERSION);
-  fprintf(stdout, _("                     2004      Romain Liévin <roms@tilp.info>\n"));
+  fprintf(stdout, _("                    2004      Romain Liévin <roms@tilp.info>\n"));
   fprintf(stdout, "\n");
   fprintf(stdout, _("This program is free software; you can redistribute it and/or modify\n"));
   fprintf(stdout, _("it under the terms of the GNU General Public License as published by\n"));
@@ -136,14 +165,6 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 		     HINSTANCE hPrevInstance,
 		     LPSTR lpCmdLine, int nCmdShow)
 {
-/*
-	HANDLE hMutex;
-
-	hMutex = CreateMutex(NULL, TRUE, "TiLP");
-	if (GetLastError() == ERROR_ALREADY_EXISTS) {
-		g_error("WinMain: TiLP is already running.");
-	}
-*/
 	return main(__argc, __argv);
 }
 #endif

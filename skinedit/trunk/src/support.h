@@ -11,6 +11,7 @@
 /*
  * Standard gettext macros.
  */
+/*
 #ifdef ENABLE_NLS
 #  include <libintl.h>
 #  undef _
@@ -29,6 +30,8 @@
 #  define _(String) (String)
 #  define N_(String) (String)
 #endif
+*/
+#include "intl.h"
 
 
 /*
