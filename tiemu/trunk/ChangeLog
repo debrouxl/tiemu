@@ -12,6 +12,7 @@ To do:
 	- fixed grayscale routines: they are now rock-stable !
 	- fixed grayscales with HW2
 	- implemented 'increment rate' of $600017 port
+	- fixed AI3: it was never raised because counter was never incremented
 
 - 03/01/2005, version 1.80i: roms
 	- implemented new method for grayscale computing & management (idea from Kevin)

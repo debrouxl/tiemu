@@ -12,18 +12,9 @@ aboutir.
 
 * le link ne marche pas convenablement. Voir plus bas.
 
-- tthdex ne marche pas convenablement, les 
++ tthdex ne marche pas convenablement, les 
 Je ne pourrais pas trop de dire d'où ça vient, mais si c'est idle()
 qui pose problème, ce doit être le port $600005 qui est mal émulé.
-
-* l'AI3 ne semble pas être émulée correctement. Le 
-programme de test que j'utilise regarde les contenus 
-des ports 700014, 70001C, 70001D, 70001F et le 
-compteur de ticks d'AI3 (utilisé comme timer sur HW2 
-mais pas HW3). Aucun port ne change (70001D devrait 
-changer périodiquement, avec FS tantôt à 1 tantôt à 
-0), le compteur de ticks reste à 0, et la boucle de 
-réaffichage est relancée bien trop souvent.
 
 * sur 89, l'interprétation des touches se mélange 
 parfois les pinceaux (4 au lieu de l, 6 au lieu de o,
@@ -142,12 +133,6 @@ des ROM_CALLs, sélectionner l'un d'entre eux
 certificate).
         * aller dans la fenêtre de debug: TIEmu est parti
 dans le décor, je ne sais pas s'il exécute ou pas
-
-* Il y a toujours un problème avec le programme de
-test de l'AI3, fait par Greg Dietsche, que
-j'utilise.
-Cette fois-ci, la calculette semble se bloquer, il
-faut un double reset pour tout remettre d'aplomb.
 
 
 -------------

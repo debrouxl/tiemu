@@ -143,7 +143,7 @@ typedef struct
     // timer.c
     uint8_t     timer_value;
     uint8_t     timer_init;
-    int         heartbeat;
+    int         heartbeat;	// not used any longer
 
 	uint8_t		rtc_value;
 

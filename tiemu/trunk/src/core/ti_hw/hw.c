@@ -151,7 +151,7 @@ extern int lcd_hook(void);
 */
 void hw_update(void)
 {
-	static int timer;
+	static int timer;	// -> tihw.timer_value
 
     // OSC2 enable (bit clear means oscillator stopped!)
     if(!io_bit_tst(0x15,1))
@@ -167,8 +167,8 @@ void hw_update(void)
 			tihw.timer_value++; 
 		else 
 			tihw.timer_value = tihw.io[0x17];
+
 		timer++;
-		tihw.heartbeat--;
     }
 
 	// Increment RTC timer every 8192 seconds
@@ -198,9 +198,8 @@ void hw_update(void)
 
 	// Auto-int 3: disabled by default by AMS
 	// When enabled, it is triggered at a fixed rate: OSC2/2^19 = 1/1024 of timer rate = 1Hz
-	if(io_bit_tst(0x15,1) && !tihw.heartbeat)
+	if(io_bit_tst(0x15,1) && !(timer & 1023))
 	{
-        tihw.heartbeat = 1024;
         if(!io_bit_tst(0x15,7) && io_bit_tst(0x15,2))
 			if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
 				hw_m68k_irq(3);
