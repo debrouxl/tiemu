@@ -75,6 +75,14 @@ int enter_gtk_debugger(int context)
 	return 0;
 }
 
+void set_other_windows_sensitivity(int state)
+{
+    gtk_widget_set_sensitive(dbgw.regs, state);
+    gtk_widget_set_sensitive(dbgw.bkpts, state);
+    gtk_widget_set_sensitive(dbgw.mem, state);
+    gtk_widget_set_sensitive(dbgw.pclog, state);
+}
+
 // callbacks from dbg_code.c
 
 GLADE_CB void
@@ -124,7 +132,6 @@ GLADE_CB void
 on_quit1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    // close all other windows
     if(dbgw.regs)
         gtk_widget_hide(dbgw.regs);
     if(dbgw.bkpts)
@@ -157,3 +164,4 @@ on_maximize_all1_activate              (GtkMenuItem     *menuitem,
     gtk_window_deiconify(GTK_WINDOW(dbgw.mem));
     gtk_window_deiconify(GTK_WINDOW(dbgw.pclog));
 }
+

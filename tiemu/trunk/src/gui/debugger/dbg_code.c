@@ -314,6 +314,7 @@ GtkWidget* display_dbgcode_window(void)
 
 	gtk_widget_set_sensitive(list, TRUE);	
 	tb_set_states(1, 1, 1, 1, 0, 1);
+    set_other_windows_sensitivity(TRUE);
      
     gtk_list_store_clear(store);
 	clist_refresh(store);
@@ -361,6 +362,8 @@ on_run1_activate                       (GtkMenuItem     *menuitem,
 
 	tb_set_states(1, 0, 0, 0, 1, 0);
     gtk_widget_set_sensitive(list, FALSE);
+    set_other_windows_sensitivity(FALSE);
+
     ti68k_engine_unhalt();
 }
 
@@ -404,8 +407,11 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
     sscanf(str, "%x", &addr);
 
 	tb_set_states(1, 0, 0, 0, 1, 0);
+    set_other_windows_sensitivity(FALSE);
     ti68k_debug_skip(addr);
+
 	tb_set_states(1, 1, 1, 1, 0, 1);
+    set_other_windows_sensitivity(TRUE);
     clist_refresh(store);
 }
 
@@ -424,6 +430,7 @@ on_break1_activate                     (GtkMenuItem     *menuitem,
     ti68k_engine_halt();
     gtk_widget_set_sensitive(list, TRUE);
 	tb_set_states(1, 1, 1, 1, 0, 1);
+    set_other_windows_sensitivity(TRUE);
     clist_refresh(store);
 #else
     ti68k_debug_break();
