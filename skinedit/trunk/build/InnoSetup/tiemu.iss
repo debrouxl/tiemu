@@ -25,18 +25,18 @@ Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescri
 
 [Files]
 ; Glade files
-Source: "C:\sources\roms\skinedit\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
+Source: "C:\home\devel\skinedit\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
 ; Pixmaps files
-Source: "C:\sources\roms\skinedit\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
+Source: "C:\home\devel\skinedit\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
 ; i18n files
-Source: "C:\sources\roms\skinedit\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "skinedit.mo"; Flags: ignoreversion;
+Source: "C:\home\devel\skinedit\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "skinedit.mo"; Flags: ignoreversion;
 ; Misc files
-Source: "C:\sources\roms\skinedit\README"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\skinedit\AUTHORS"; DestDir: "{app}"; DestName: "Authors.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\skinedit\CHANGELOG"; DestDir: "{app}"; DestName: "ChangeLog.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\skinedit\COPYING"; DestDir: "{app}"; DestName: "License.txt"; Flags: ignoreversion
+Source: "C:\home\devel\skinedit\README"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: ignoreversion
+Source: "C:\home\devel\skinedit\AUTHORS"; DestDir: "{app}"; DestName: "Authors.txt"; Flags: ignoreversion
+Source: "C:\home\devel\skinedit\CHANGELOG"; DestDir: "{app}"; DestName: "ChangeLog.txt"; Flags: ignoreversion
+Source: "C:\home\devel\skinedit\COPYING"; DestDir: "{app}"; DestName: "License.txt"; Flags: ignoreversion
 ; Executable files
-Source: "C:\sources\roms\skinedit\build\msvc\skinedit.exe"; DestDir: "{app}"; DestName: "skinedit.exe"; Flags: ignoreversion
+Source: "C:\home\devel\skinedit\build\msvc\skinedit.exe"; DestDir: "{app}"; DestName: "skinedit.exe"; Flags: ignoreversion
 
 ; Script to modify AUTOEXEC.bat
 ; Install helper

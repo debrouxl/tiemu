@@ -290,12 +290,6 @@ create_main_window (void)
   g_signal_connect ((gpointer) drawingarea1, "expose_event",
                     G_CALLBACK (on_drawingarea1_expose_event),
                     NULL);
-  g_signal_connect ((gpointer) drawingarea1, "size_allocate",
-                    G_CALLBACK (on_drawingarea1_size_allocate),
-                    NULL);
-  g_signal_connect ((gpointer) drawingarea1, "size_request",
-                    G_CALLBACK (on_drawingarea1_size_request),
-                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (main_window, main_window, "main_window");
