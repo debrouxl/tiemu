@@ -224,7 +224,7 @@ SOURCE=..\..\src\core\callbacks.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\error.c
+SOURCE=..\..\src\core\errors.c
 # End Source File
 # Begin Source File
 
@@ -353,10 +353,6 @@ SOURCE=..\..\src\gui\logaddr_cb.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\logaddr_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\main.c
 # End Source File
 # Begin Source File
 
@@ -500,7 +496,7 @@ SOURCE=..\..\src\gui\wizard_dbox.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\hid\files.c
+SOURCE=..\..\src\hid\cmdline.c
 # End Source File
 # Begin Source File
 
@@ -508,11 +504,11 @@ SOURCE=..\..\src\hid\jdatasrc.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\hid\misc.c
+SOURCE=..\..\src\hid\paths.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\hid\paths.c
+SOURCE=..\..\src\hid\printl.c
 # End Source File
 # Begin Source File
 
@@ -528,9 +524,17 @@ SOURCE=..\..\src\hid\ticalc.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\hid\tie_error.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\hid\tikeys.c
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\src\gui\main.c
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
