@@ -95,8 +95,7 @@ typedef struct
     int     lc_timeout;     // timeout for internal link
 
     // ioports.c
-    //int     io0Bit7;
-    //int     io0Bit2;
+	//...
 
     // keyboard.c
     int     on_key;
@@ -108,14 +107,7 @@ typedef struct
 	int		lcd_power;
 
     // linkport.c
-    TicableLinkParam lc;
-
-	int		tx_empty;
-	int		rx_full;
-	int		dbus_raw;
-	int		dbus_auto;
-	int		dbus_to;
-	int		dbus_err;
+	//...
 
     // memory.c
     UBYTE	*rom;
@@ -124,9 +116,6 @@ typedef struct
     UBYTE   *io2;
     int     initial_pc;
 
-	int		ram256;
-	int		ram_wrap;
-	int		mem_prot;
     int		flash_prot;
 
     // timer.c

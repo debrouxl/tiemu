@@ -59,5 +59,12 @@ extern void io2_put_long(CPTR adr, ULONG arg);
 extern void io2_put_word(CPTR adr, UWORD arg);
 extern void io2_put_byte(CPTR adr, UBYTE arg);
 
+#define io2_bit_get(a,b)		bit_get(tihw.io2[a],b)
+#define io2_bit_set(a,b)		bit_set(tihw.io2[a],b)
+#define io2_bit_clr(a,b)		bit_clr(tihw.io2[a],b)
+
+#define io2_bit_tst(a,b)		bit_tst(tihw.io2[a],b)
+#define io2_bit_chg(a,b,s)		bit_chg(tihw.io2[a],b,s)	
+
 
 #endif

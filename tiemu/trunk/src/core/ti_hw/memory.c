@@ -32,6 +32,7 @@
 #include <math.h>
 
 #include "uae.h"
+#include "ioports.h"
 #include "hardware.h"
 #include "images.h"
 #include "memory.h"
@@ -101,9 +102,6 @@ int hw_mem_init(void)
 	}
 
 	// init vars
-	tihw.ram256 = (tihw.ram_size == 256*KB);
-	//tihw.ram_wrap = 
-	tihw.mem_prot = 1;
     tihw.flash_prot = 1;
 	memset(&wsm, 0, sizeof(wsm));
 
@@ -512,7 +510,7 @@ void put_long(CPTR adr, ULONG arg)
     
     // Protected memory violation. Triggered when memory below [$000120] is
 	// written while bit 2 of [$600001] is set
-	if((adr < 0x120) && tihw.mem_prot)
+	if((adr < 0x120) && io_bit_tst(0x01,2))
 	{
 		specialflags |= SPCFLAG_INT;
         currIntLev = 7;
@@ -607,7 +605,7 @@ void put_word(CPTR adr, UWORD arg)
 
     // Protected memory violation. Triggered when memory below [$000120] is
 	// written while bit 2 of [$600001] is set
-    if((adr < 0x120) && tihw.mem_prot)
+    if((adr < 0x120) && io_bit_tst(0x01,2))
 	{
 		specialflags |= SPCFLAG_INT;
         currIntLev = 7;
@@ -684,7 +682,7 @@ void put_byte(CPTR adr, UBYTE arg)
 
     // Protected memory violation. Triggered when memory below [$000120] is
 	// written while bit 2 of [$600001] is set
-    if((adr < 0x120) && tihw.mem_prot)
+    if((adr < 0x120) && io_bit_tst(0x01,2))
 	{
 		specialflags |= SPCFLAG_INT;
         currIntLev = 7;

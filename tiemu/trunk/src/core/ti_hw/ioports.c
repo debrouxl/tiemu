@@ -48,6 +48,9 @@ int hw_io_init(void)
 	// current link status
 	tihw.io[0x0d] = 0x40;
 
+	// interleaving
+	io_bit_chg(0x01,0,!(tihw.ram_size == 256));
+
 	return 0;
 }
 
@@ -69,18 +72,13 @@ void io_put_byte(CPTR adr, UBYTE arg)
         case 0x00:	// rw <76...2..>
 			// bit 0 of contrast
             tihw.contrast = bit_clr(tihw.contrast,0) | bit_get(arg,5);
-
-			// update contrast
-            if(tihw.calc_type != TI92)
-	            cb_set_contrast(tihw.contrast); // avoid flickering with 92
+			cb_set_contrast(tihw.contrast);            
         break;
         case 0x01:	// rw <.....2.0>
 			// clr: interleave RAM (allows use of 256K of RAM)
-			tihw.ram256 = bit_get(arg,0);
-			//mem_mask[0] = tihw.ram256 ? 0x1fffff : 0x3fffff;
+			//mem_mask[0] = bit_tst(arg,0) ? 0x1fffff : 0x3fffff;
 
 			// set: protected memory violation triggered when memory below [$000120] is written
-			tihw.mem_prot = bit_get(arg,2);
 	    break;
 	    case 0x02:	// ??
 	    break;
@@ -90,9 +88,11 @@ void io_put_byte(CPTR adr, UBYTE arg)
         break;
         case 0x05:	// -w <...43210>
         	// set: 000000..1FFFFF mapped to 200000..3FFFFF
-			tihw.ram_wrap = bit_get(arg,3);
-            //mem_tab[2] = mem_tab[0];
-            //mem_tab[3] = mem_tab[1];
+			if(bit_tst(arg,3))
+			{
+				//mem_tab[2] = mem_tab[0];
+				//mem_tab[3] = mem_tab[1];
+			}
             
 			// writing to this register will stop the system oscillator
 			if (!(arg&0x10)) specialflags |= SPCFLAG_STOP; 
@@ -110,7 +110,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
 			break;
         case 0x0e:	// rw <....3210>
 			// set red/white wires (if direct access)			
-			if(tihw.dbus_raw)
+			if(io_bit_tst(0x0c,6))
 	        {
 	            lc.set_red_wire(bit_get(arg,0));
 	            lc.set_white_wire(bit_get(arg,1));
@@ -165,7 +165,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
         break;
         case 0x1d:	// -w <7..43210>
 			// bits <5> of contrast (hw2)
-			if(tihw.hw_type == 2)
+			if(io2_bit_tst(0x1f,0))
 				tihw.contrast = bit_clr(tihw.contrast,5) | (bit_get(arg,4) << 1);
 			else
 				tihw.lcd_power = bit_get(arg,4);
@@ -208,9 +208,7 @@ UBYTE io_get_byte(CPTR adr)
 			// something to do with keyboard
             v |= 4;
         case 0x01:	// rw <.....2.0>
-			// interleave RAM (allows use of 256K of RAM)
 			// protected memory violation triggered when memory below [$000120] is written
-            return (tihw.mem_prot << 2) | tihw.ram256;
         case 0x02:
         	return 0x14;
         case 0x03:	// -w <.654.210>
@@ -235,7 +233,7 @@ UBYTE io_get_byte(CPTR adr)
 		break;
         case 0x0e:	// rw <....3210>
 			// read red/white wires if raw access
-			if(tihw.dbus_raw)
+			if(io_bit_tst(0x0c,6))
 			{
 				v |= lc.get_white_wire() << 3;
 				v |= lc.get_white_wire() << 2;
