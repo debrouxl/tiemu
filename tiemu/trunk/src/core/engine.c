@@ -39,7 +39,6 @@
 #include <windows.h>
 
 #include "intl.h"
-#include "struct.h"
 #include "engine.h"
 
 #if defined(__LINUX__)

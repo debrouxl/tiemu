@@ -31,9 +31,9 @@
   	Note:0x12000 is the beginning of the system privileged part.
 */
 
-#include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -46,16 +46,10 @@
 
 #include "intl.h"
 #include "ti68k_int.h"
-#include "../ti_hw/memory.h"
-#include "packets.h"
-#include "hardware.h"
-#include "keyboard.h"
-#include "callbacks.h"
-#include "images.h"
-#include "m68k.h"
-#include "bkpts.h"
 #include "ti68k_err.h"
 #include "ti68k_def.h"
+#include "../ti_hw/memory.h"
+#include "images.h"
 
 #define is_num(c)   isdigit(c)
 #define is_alnum(c) isalnum(c)
@@ -507,8 +501,9 @@ int ti68k_load_image(const char *filename)
 	img->data = malloc(img->size + 4);
     fread(img->data, 1, img->size, f);	
   	
-  	tihw.rom_size = img->size;
-  	tihw.ram_size = (img->size == 1024*1024) ? 128 : 256;
+	// Set hardware informations
+//  	tihw.rom_size = img->size;
+//  	tihw.ram_size = (img->size == 1024*1024) ? 128 : 256;
   
   	img_loaded = 1;
   	return 0;
@@ -526,9 +521,11 @@ int ti68k_load_upgrade(const char *filename)
 	int nheaders;
 	int i;
 	IMG_INFO tib = { 0 };
-	//IMG_INFO *img = &img_infos;
 	IMG_INFO *img = &tib;
   	int err;
+
+	if(img_loaded < 2)
+		return -1;
 
 	// No filename, exits
 	if(!strcmp(filename, ""))
@@ -544,9 +541,6 @@ int ti68k_load_upgrade(const char *filename)
 
 	img->has_boot = 1;	// still bootable
 	memcpy(ti_rom+0x12000, img->data+0x12000, img->size-0x12000);
-
-  	//tihw.rom_size = img->size;
-  	//tihw.ram_size = (img->size == 1024*1024) ? 128 : 256;
 
   	img_loaded = 2;
 	return 0;
@@ -619,12 +613,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 
   	DISPLAY(_("Scanning images/upgrades... "));
 
-    
-
-
-
-
-  	// First, check if cache file exists
+	// First, check if cache file exists
   	if(!access(filename, F_OK))
     {
       	// if yes, ...

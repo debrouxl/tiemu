@@ -40,13 +40,17 @@
 
 #define MAXCHARS	256
 
-#define TI92 		1
-#define TI89 		2
-#define MODULEPLUS 	4
+#define TI92 		(1 << 0)
+#define TI89 		(1 << 1)
+#define MODULEPLUS 	(1 << 2)
 #define TI92p 		(TI92 | MODULEPLUS)
-#define V200		8
+#define V200		(1 << 3)
+//#define TI89TI		(1 << 4)
   
+#define EXTERNAL	0
 #define INTERNAL 	1
+
+#define EPROM_ROM	0
 #define FLASH_ROM 	2
 
 /* Structures */

@@ -101,8 +101,9 @@ int hw_dbus_init(void)
   init_linkfile();
 }
 
-int hw_dbux_reset(void)
+int hw_dbus_reset(void)
 {
+	return 0;
 }
 
 int hw_dbus_exit(void)

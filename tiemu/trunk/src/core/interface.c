@@ -103,7 +103,7 @@ int ti68k_config_load_default(void)
   This should be the THIRD function to call. 
   Load a ROM image (images.c).
 */
-//int ti68k_loadImage(char *filename, char *file_loaded);
+int ti68k_load_image(const char *filename);
 
 /*
   This is the FOURTH function to call for completely initializing the
@@ -111,26 +111,28 @@ int ti68k_config_load_default(void)
 */
 int ti68k_init(void)
 {
+	// init libs
     ticable_init();
 	tifiles_init();
 	ticalc_init();
 
-    tihw.calc_type = img_infos.calc_type;
+	// check image has been loaded
+	if(img_loaded == 0)
+		return ERR_68K_INVALID_ROM;
 
+	// set calc type and init hardware
+    tihw.calc_type = img_infos.calc_type;
 	hw_init();
 
-  cb_init_specific();
-  cb_screen_on_off(!0);
+	// init hid
+	cb_init_specific();
+	cb_screen_on_off(!0);
 
-#ifdef PENT_COUNTER
-  calibrate_pcounter();	// crash under Win32
-#endif
+	// note: TI92+ does not flicker when LCD is refresh on IRQ1 (??)
+	if(tihw.calc_type == (TI92|MODULEPLUS))
+		params.sync_one = 0;
 
-  /* I have noticed that TI92+ does not flicker when LCD is refresh on IRQ1 */
-  if(tihw.calc_type == (TI92|MODULEPLUS))
-     params.sync_one = 0;
-
-  return 0;
+	return 0;
 }
 
 /*
@@ -139,12 +141,11 @@ int ti68k_init(void)
 */
 int ti68k_reset(void)
 {
-  listBkptAddress = 0;
-  cycle_instr = params.i_tick;
+	cycle_instr = params.i_tick;
 
-  hw_reset();
+	hw_reset();
 
-  return 0;
+	return 0;
 }
 
 /*
@@ -160,7 +161,7 @@ int ti68k_exit(void)
 	tifiles_exit();
 	ticalc_exit();
 
-  return 1;
+	return 1;
 }
 
 /*
