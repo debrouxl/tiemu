@@ -12,17 +12,6 @@
 #include "struct.h"
 #include "pbar_cb.h"
 
-/* 
-   For Win32 platforms, it is better to use discrete pbar 
-   because they are faster 
-*/
-#ifdef __WIN32__
-//#define PROGRESS_TYPE GTK_PROGRESS_DISCRETE
-#define PROGRESS_TYPE GTK_PROGRESS_CONTINUOUS
-#else
-#define PROGRESS_TYPE GTK_PROGRESS_CONTINUOUS
-#endif
-
 #define UNLOCK 0
 #define LOCK   1
 

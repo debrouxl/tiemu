@@ -118,16 +118,6 @@ static int put_in_sb(gchar *s)
 
 
 /*
-  Called when the Debuger dbox is displayed
-*/
-void
-on_debugger_dbox_show                  (GtkWidget       *widget,
-                                        gpointer         user_data)
-{
-}
-
-
-/*
   Called when the Debugger Dbox is destroyed 
 */
 void

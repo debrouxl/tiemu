@@ -11,26 +11,6 @@ on_debugger_dbox_destroy               (GtkObject       *object,
                                         gpointer         user_data);
 
 void
-on_debugger_dbox_show1                 (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_debugger_dbox_show2                 (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_debugger_dbox_show3                 (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_debugger_dbox_show4                 (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_debugger_dbox_show                  (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
 on_run1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
@@ -110,20 +90,6 @@ on_clist1_button_press_event           (GtkWidget       *widget,
                                         GdkEventButton  *event,
                                         gpointer         user_data);
 
-void
-on_clist1_select_row                   (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
-on_clist1_unselect_row                 (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
 gboolean
 on_clist2_key_press_event              (GtkWidget       *widget,
                                         GdkEventKey     *event,
@@ -175,27 +141,9 @@ on_clist2_click_column                 (GtkCList        *clist,
                                         gint             column,
                                         gpointer         user_data);
 
-void
-on_clist2_select_row                   (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
-on_clist2_select_row                   (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
 gboolean
 on_clist2_event                        (GtkWidget       *widget,
                                         GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
-on_debugger_dbox_show5                 (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void
@@ -224,10 +172,6 @@ on_button47_clicked                    (GtkButton       *button,
 
 void
 on_button99_clicked                    (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_exit2_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void

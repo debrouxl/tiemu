@@ -2,6 +2,7 @@
 #  include <config.h>
 #endif
 
+#include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
 
@@ -91,7 +92,7 @@ on_flashfile_ok_button2_clicked        (GtkButton       *button,
                                         gpointer         user_data)
 {
   GtkWidget *w;
-  gchar *filename;
+  const gchar *filename;
   gchar buffer[1024];
   gchar *ext = NULL;
 
@@ -188,14 +189,6 @@ step1_b3_button_clicked                (GtkButton       *button,
 }
 
 
-void
-on_step1_dbox_show1                    (GtkWidget       *widget,
-                                        gpointer         user_data)
-{
-
-}
-
-
 /****************/
 /* Message1 box */
 /****************/
@@ -276,7 +269,7 @@ void
 on_romfile_ok_button2_clicked          (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gchar *filename;
+  const gchar *filename;
   gchar *ext = NULL;
 
   filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data));
