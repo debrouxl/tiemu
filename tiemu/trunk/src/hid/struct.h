@@ -71,5 +71,4 @@ extern TieOptions options;
 extern ScrOptions options2;
 extern DbgOptions options3;
 
-
 #endif

@@ -34,6 +34,8 @@
 #include "support.h"
 #include "ti68k_int.h"
 #include "dbg_bkpts.h"
+#include "dbg_regs.h"
+#include "dbg_mem.h"
 #include "struct.h"
 
 enum { 
@@ -275,7 +277,7 @@ GtkWidget* display_dbgcode_window(void)
 	return data;
 }
 
-gint refresh_dbgcode_window(void)
+GtkWidget* refresh_dbgcode_window(void)
 {
 	static GtkWidget *list = NULL;
 
@@ -286,7 +288,7 @@ gint refresh_dbgcode_window(void)
 	tb_set_states(1, 1, 1, 1, 0, 1);
 	clist_refresh(store);
 
-    return 0;
+    return list;
 }
 
 GLADE_CB gboolean
@@ -423,3 +425,75 @@ dbgcode_button6_clicked                     (GtkButton       *button,
     refresh_dbgbkpts_window();
 }
 
+/******** Menu ********/
+
+GLADE_CB void
+on_run1_activate                       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    dbgcode_button1_clicked(GTK_BUTTON(menuitem), user_data);
+}
+
+
+GLADE_CB void
+on_step1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    dbgcode_button2_clicked(GTK_BUTTON(menuitem), user_data);
+}
+
+
+GLADE_CB void
+on_step_over1_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    dbgcode_button3_clicked(GTK_BUTTON(menuitem), user_data);
+}
+
+
+GLADE_CB void
+on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    dbgcode_button4_clicked(GTK_BUTTON(menuitem), user_data);
+}
+
+
+GLADE_CB void
+on_break1_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    dbgcode_button5_clicked(GTK_BUTTON(menuitem), user_data);
+}
+
+
+GLADE_CB void
+on_registers1_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    refresh_dbgregs_window();
+}
+
+
+GLADE_CB void
+on_breakpoints1_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    refresh_dbgbkpts_window();
+}
+
+
+GLADE_CB void
+on_memory1_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    refresh_dbgmem_window();
+}
+
+
+GLADE_CB void
+on_quit1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    gtk_widget_destroy(GTK_WIDGET(menuitem));   //args are swapped
+}

@@ -481,7 +481,7 @@ static gint already_open = 0;
 /*
 	Display registers window
 */
-gint display_dbgregs_window(void)
+GtkWidget* display_dbgregs_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -509,17 +509,19 @@ gint display_dbgregs_window(void)
 
 	already_open = !0;
 
-	return 0;
+	return dbox;
 }
 
-gint refresh_dbgregs_window(void)
+GtkWidget* refresh_dbgregs_window(void)
 {
+    static GtkWidget *wnd = NULL;
+
 	if(!already_open)
-		display_dbgregs_window();
+		wnd = display_dbgregs_window();
 
 	ctree_refresh(store);
 
-	return 0;
+	return wnd;
 }
 
 

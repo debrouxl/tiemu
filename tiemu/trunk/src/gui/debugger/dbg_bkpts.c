@@ -221,7 +221,7 @@ static gint already_open = 0;
 /*
 	Display registers window
 */
-gint display_dbgbkpts_window(void)
+GtkWidget* display_dbgbkpts_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -249,17 +249,19 @@ gint display_dbgbkpts_window(void)
 
 	already_open = !0;
 
-	return 0;
+	return dbox;
 }
 
-gint refresh_dbgbkpts_window(void)
+GtkWidget* refresh_dbgbkpts_window(void)
 {
+    static GtkWidget *list = NULL;
+
 	if(!already_open)
-		display_dbgbkpts_window();
+		list = display_dbgbkpts_window();
 
 	clist_refresh(store);
 
-	return 0;
+	return list;
 }
 
 

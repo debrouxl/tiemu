@@ -3,4 +3,11 @@
 
 int enter_gtk_debugger(int context);
 
+typedef struct {
+        GtkWidget *mem;
+        GtkWidget *regs;
+        GtkWidget *bkpts;
+        GtkWidget *code;
+} DbgWidgets;
+
 #endif

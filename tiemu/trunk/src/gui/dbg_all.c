@@ -37,8 +37,11 @@
 #include "./debugger/dbg_vectors.h"
 #include "ti68k_int.h"
 #include "struct.h"
+#include "dbg_all.h"
+#include "support.h"
 
 DbgOptions options3;
+DbgWidgets dbgw = { 0 };
 
 int enter_gtk_debugger(int context)
 {
@@ -53,12 +56,26 @@ int enter_gtk_debugger(int context)
     }
 
     // open debugger, if not already opened
-	refresh_dbgregs_window();
-	refresh_dbgcode_window();
-	refresh_dbgmem_window();
-	refresh_dbgbkpts_window();
+	dbgw.regs = refresh_dbgregs_window();
+	/*dbgw.code = */refresh_dbgcode_window();
+	dbgw.mem = refresh_dbgmem_window();
+	dbgw.bkpts = refresh_dbgbkpts_window();
 
 	return 0;
+}
+
+GLADE_CB void
+on_close_all1_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    if(dbgw.regs)
+        gtk_widget_destroy(dbgw.regs);
+    if(dbgw.bkpts)
+        gtk_widget_destroy(dbgw.bkpts);
+    if(dbgw.mem)
+        gtk_widget_destroy(dbgw.mem);
+    if(dbgw.code)
+        gtk_widget_destroy(dbgw.code);
 }
 
 

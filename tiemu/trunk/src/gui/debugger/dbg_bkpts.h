@@ -1,4 +1,4 @@
 #include <gtk/gtk.h>
 
-gint display_dbgbkpts_window(void);
-gint refresh_dbgbkpts_window(void);
+GtkWidget* display_dbgbkpts_window(void);
+GtkWidget* refresh_dbgbkpts_window(void);

@@ -360,7 +360,7 @@ static gint already_open = 0;
 /*
 	Display memory window
 */
-gint display_dbgmem_window(void)
+GtkWidget* display_dbgmem_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -386,19 +386,21 @@ gint display_dbgmem_window(void)
 
 	already_open = !0;
 
-	return 0;
+	return dbox;
 }
 
 static void refresh_page(int offset);
 
 gint refresh_dbgmem_window(void)
 {
+    static GtkWidget *wnd = NULL;
+
 	if(!already_open)
-		display_dbgmem_window();
+		wnd = display_dbgmem_window();
 
 	refresh_page(0);
 
-    return 0;
+    return wnd;
 }
 
 GLADE_CB gboolean
