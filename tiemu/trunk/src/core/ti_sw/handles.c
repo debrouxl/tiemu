@@ -30,6 +30,22 @@
 	Handles[1] => block 1 ....
 
 	The first word just before the beginning of the block is the block size.
+
+	- HeapAlloc: | size | block |
+				  		  |
+	HeapDeref           --+
+
+	- HeapAllocPtr:		--+
+						  |
+		| size | handle | block |
+				 |
+	HeapDeref  --+
+
+	- PedRom: | size | handle |
+			    |
+	HeapDeref --+
+
+
 */
 
 #include <stdio.h>
@@ -39,26 +55,34 @@
 #include "ti68k_def.h"
 #include "ti68k_int.h"
 
+static int pedrom = 0;
+
 /*
 	Retrieve address of heap (pointed by $5D42 on TI92).
 */
 void heap_get_addr(uint32_t *base)
 {
-	uint32_t ptr;
+	pedrom = (mem_rd_word(0x32) == (('R'<<8)+'O'));
 
-	if(tihw.ti92v2)
+	if(pedrom)
 	{
-		ptr = 0x4720 + 0x1902;		//tios::main_lcd equ tios::globals+$0000
+		// PedRom
+		uint32_t ptr = 0x5d58;				// fixed by PPhD for AMS1 compat
+		*base = mem_rd_long(ptr);
+	}
+	else if(tihw.ti92v2)
+	{
+		uint32_t ptr = 0x4720 + 0x1902;		//tios::main_lcd equ tios::globals+$0000
 		*base = mem_rd_long(ptr);
 	}
 	else if(tihw.ti92v1)
 	{
-		ptr = 0x4440 + 0x1902;		//and tios::heap equ tios::globals+$1902
+		uint32_t ptr = 0x4440 + 0x1902;		//and tios::heap equ tios::globals+$1902
 		*base = mem_rd_long(ptr);
 	}
 	else
 	{
-		uint32_t b, size, addr;
+		uint32_t b, size, addr, ptr;
 
 		romcalls_get_table_infos(&b, &size);
 		if(size < 0x441)
@@ -73,7 +97,7 @@ void heap_get_addr(uint32_t *base)
 			romcalls_get_symbol_address(0x441, &addr);	// tios::HeapTable	(#0x441)
 			*base  = addr;
 		}
-	}	
+	}
 }
 
 /*
@@ -106,14 +130,19 @@ void heap_get_block_addr(int handle, uint32_t *addr)
 
 	heap_get_addr(&base);
 	*addr = mem_rd_long(base + 4*handle);
+	if(pedrom) *addr += 2;
 }
 
 uint32_t heap_deref(int handle)
 {
-	uint32_t base;
+	uint32_t base, addr;
 
 	heap_get_addr(&base);
-	return mem_rd_long(base + 4*handle);
+	addr = mem_rd_long(base + 4*handle);
+
+	if(pedrom) addr += 2;
+
+	return addr;
 }
 
 /*
@@ -127,7 +156,10 @@ void heap_get_block_size(int handle, uint16_t *size)
 	heap_get_addr(&base);
 
 	addr = mem_rd_long(base + 4*handle);
-	*size = mem_rd_word(addr - 2);
+	if(!pedrom)
+		*size = mem_rd_word(addr - 2);
+	else
+		*size = mem_rd_word(addr);
 
 	*size &= ~(1 << 16);	// remove lock
 	*size <<= 1;			// size is twice
@@ -143,7 +175,10 @@ uint16_t heap_size(int handle)
 	heap_get_addr(&base);
 
 	addr = mem_rd_long(base + 4*handle);
-	size = mem_rd_word(addr - 2);
+	if(!pedrom)
+		size = mem_rd_word(addr - 2);
+	else
+		size = mem_rd_word(addr);
 
 	size &= ~(1 << 16);	// remove lock
 	size <<= 1;			// size is twice
@@ -162,7 +197,13 @@ void heap_get_block_addr_and_size(int handle, uint32_t *addr, uint16_t *size)
 	heap_get_addr(&base);
 
 	*addr = mem_rd_long(base + 4*handle);
-	*size = mem_rd_word(*addr - 2);
+	if(!pedrom)
+		*size = mem_rd_word(*addr - 2);
+	else
+	{
+		*size = mem_rd_word(*addr);
+		*addr += 2;
+	}
 
 	*size &= ~(1 << 16);	// remove lock
 	*size <<= 1;			// size is twice
