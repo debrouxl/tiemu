@@ -50,7 +50,7 @@
 
 #define NGS 16                // Number of gray scales
 
-char *sTitle = "TiEmu";       // Name of app in title bar
+char *sTitle = "TiEmu II";    // Name of app in title bar
 
 SDL_Color sdlPal[256];        // global palette: greyscale + skin
 SDL_Surface *sdlWindow;       // SDL formatted surface (window)
@@ -209,7 +209,7 @@ static int hid_init_subsystem(void)
   	sdlWindow = SDL_SetVideoMode(iWinW, iWinH, DEFAULT_BPP, DEFAULT_FLAGS);
   	if(sdlWindow == NULL)
     {
-	  	gchar *s = g_strdup_printf("SDL: could not set video mode: %s\n", SDL_GetError());
+	  	gchar *s = g_strdup_printf("SDL: can't set video mode: %s\n", SDL_GetError());
 	  	tiemu_error(0, s);
 	  	g_free(s);
 	  	return -1;
@@ -239,14 +239,6 @@ static int hid_init_subsystem(void)
 */
 static int hid_quit_subsystem(void)
 {
-	/*
-	if(sdlLcdDst != NULL)
-	{
-		SDL_FreeSurface(sdlLcdDst);
-  		sdlLcdDst = NULL;
-  	}
-	*/
-	
 	if(sdlLcdSrc != NULL)
 	{
   		SDL_FreeSurface(sdlLcdSrc);
@@ -277,6 +269,7 @@ static int hid_restart_subsystem(void)
 int hid_init(void)
 {
   	int i;
+	gchar *icon;
 
   	// Init SDL
   	DISPLAY("Initializing Simple Directmedia Layer (SDL)... ");
@@ -290,7 +283,9 @@ int hid_init(void)
   	DISPLAY("Done.\n");
 
   	// Set application title
-  	SDL_WM_SetCaption(sTitle, "gtktiemu.xpm");
+	icon = g_strconcat(inst_paths.pixmap_dir, "icon.xpm", NULL);
+  	SDL_WM_SetCaption(sTitle, icon);
+	g_free(icon);
 
   	// Init the SDL key -> TI key conversion table
   	for(i=0; i<256; i++)
@@ -420,15 +415,9 @@ static int sdl_to_ti(int key)
 			case SDLK_PAGEUP : return TIKEY_TAN;
 			case SDLK_PAGEDOWN : return TIKEY_MODE;
 			case SDLK_SCROLLOCK : return TIKEY_ON;
-			case SDLK_F9  : return TIKEY_APPS;	//return OPT_SCREENCAPTURE;
-			case SDLK_F10 : break;		// send file
-			case SDLK_F11 : return OPT_DEBUGGER;
-			case SDLK_F12 : break;		// set ROM
+			case SDLK_F9  : return TIKEY_APPS;
 			case SDLK_PRINT : break;
-	  		/*  
-	      		case SDLK_BREAK_ALTERNATIVE :
-	      		case SDLK_BREAK : return OPT_QUITNOSAVE;
-	  		*/
+
 			default : return TIKEY_NU;
 		}
     }
@@ -530,9 +519,6 @@ static int sdl_to_ti(int key)
 			case SDLK_SCROLLOCK : return TIKEY_ON;
 			case SDLK_PRINT : return TIKEY_APPS;
 		
-			case SDLK_F9 : return OPT_DEBUGGER;
-			case SDLK_F10 : return OPT_SCREENCAPTURE;
-		
 			default : return TIKEY_NU;
 		}
     }
@@ -552,7 +538,7 @@ int hid_update_keys(void)
   
   	while(SDL_PollEvent(&event)) 
     {
-      	if(event.type==SDL_MOUSEBUTTONDOWN) 
+      	if(event.type == SDL_MOUSEBUTTONDOWN) 
 		{
 	  		if(event.button.button==1) 
 	    	{
@@ -571,18 +557,20 @@ int hid_update_keys(void)
 	    	{
 	      		if(!bFullscreen) 
 				{
-		      		SDL_WaitEvent(&event); // flush event
+					// flush event
+		      		SDL_WaitEvent(&event);
+					// and popup menu
 			  		gui_popup_menu();
 				}
 	      		else
 					hid_switch_windowed();
 	    	}
 		}
-      	else if(event.button.button==3) 
+      	else if(event.button.button == 3) 
 		{
 	  		printf("$*#!?\n");
 		}
-      	else if(event.type==SDL_MOUSEBUTTONUP) 
+      	else if(event.type == SDL_MOUSEBUTTONUP) 
 		{
 	  		if(event.button.button==1) 
 	    	{
@@ -593,7 +581,7 @@ int hid_update_keys(void)
 				}
 	    	}
 		}
-      	else if(event.type==SDL_KEYDOWN) 
+      	else if(event.type == SDL_KEYDOWN) 
 		{
 	  		if((event.key.keysym.mod & KMOD_RALT || 
 	      		event.key.keysym.mod & KMOD_LALT) && 
@@ -606,13 +594,21 @@ int hid_update_keys(void)
 	    	}
 	  		else if(event.key.keysym.sym == SDLK_F9)
 	    	{
-	      		ti68k_kbd_set_key(OPT_DEBUGGER, 0);
-	      		ti68k_debug_launch();
+				ti68k_kbd_set_key(OPT_SCREENCAPTURE, 0);
+	      		hid_screenshot(NULL);
 	    	}
 	  		else if(event.key.keysym.sym == SDLK_F10)
 	    	{
-	      		ti68k_kbd_set_key(OPT_SCREENCAPTURE, 0);
-	      		hid_screenshot(NULL);
+				display_tifile_dbox();
+	    	}
+			else if(event.key.keysym.sym == SDLK_F11)
+	    	{
+				ti68k_kbd_set_key(OPT_DEBUGGER, 0);
+	      		ti68k_debug_launch();
+	    	}
+			else if(event.key.keysym.sym == SDLK_F12)
+	    	{
+	      		display_romversion_dbox();
 	    	}
 	  		else
 	    	{
@@ -622,7 +618,7 @@ int hid_update_keys(void)
 	      		ti68k_kbd_set_key(sdl_to_ti(event.key.keysym.sym), 1);
 	    	}
 		}
-      	else if(event.type==SDL_KEYUP) 
+      	else if(event.type == SDL_KEYUP) 
 		{
 	  		if(iAlpha)
 	    	{
@@ -631,17 +627,18 @@ int hid_update_keys(void)
 	    	}
 	  		ti68k_kbd_set_key(sdl_to_ti(event.key.keysym.sym), 0);
 		}
-      	else if(event.type==SDL_QUIT) 
+      	else if(event.type == SDL_QUIT) 
 		{
 	  		//DISPLAY("SDL_QUIT\n");
 	  		ti68k_exit();
+			gtk_main_quit();
 
 	  		exit(0);
 		}
-      	else if(event.type==SDL_VIDEORESIZE)
+      	else if(event.type == SDL_VIDEORESIZE)
 		{
 	  		iScale = MAX(event.resize.w / skin_infos.width, 
-		       event.resize.h / skin_infos.height);
+						 event.resize.h / skin_infos.height);
 	  		iScale--;
 	  		if(iScale > 1) 
 	    		iScale = 1;
@@ -831,9 +828,9 @@ int hid_update_lcd(void)
 		Uint8 *ptr = (Uint8 *)pLcdBuf;
 		Uint8 *ptr8 = (Uint8 *)sdlLcdSrc->pixels;
       
-		for(j=0; j<iScrH; j++) 
+		for(j = 0; j < iScrH; j++) 
 		{
-			for (i=0;i<iScrW;i++) 
+			for (i = 0; i < iScrW; i++) 
 			{
 				ptr8[(j*iLcdLineSize + i) << iScale] = *ptr;
 				if(iScale != 0) 
@@ -925,7 +922,8 @@ static void redraw_skin(void)
 	  		g = skin_infos.cmap[1][skin_infos.img[j*skin_infos.width + i]];
 	  		b = skin_infos.cmap[2][skin_infos.img[j*skin_infos.width + i]];
 	  		
-	  		ptr[(j*iWinLineSize + i) << iScale] = NGS + skin_infos.img[j*skin_infos.width+i];
+
+			ptr[(j*iWinLineSize + i) << iScale] = NGS + skin_infos.img[j*skin_infos.width+i];
 	  		if(iScale != 0) 
 	  		{
 	    		ptr[((j*iWinLineSize + i) << iScale) + 1] = NGS + skin_infos.img[j*skin_infos.width+i];
@@ -994,16 +992,19 @@ void hid_switch_with_skin(void)
 {
   	SDL_FreeSurface(sdlWindow);
   
-  	if (!(sdlWindow = SDL_SetVideoMode(iWinW, iWinH, DEFAULT_BPP, DEFAULT_FLAGS))) 
+	sdlWindow = SDL_SetVideoMode(iWinW, iWinH, DEFAULT_BPP, DEFAULT_FLAGS);
+  	if(sdlWindow == NULL) 
     {
-      	fprintf(stderr, "Couldn't switch to fullscreen\n");
+		gchar *s = g_strdup_printf("SDL: can't set video mode: %s\n", SDL_GetError());
+	  	tiemu_error(0, s);
+	  	g_free(s);
+		return;
     }
   	iWinLineSize = (sdlWindow->pitch) >> (iBpp >> 1);
   
   	params.background = 1;
 
   	redraw_skin();
-  	//set_colors();
 }
 
 /*
@@ -1013,14 +1014,17 @@ void hid_switch_without_skin(void)
 {
   	SDL_FreeSurface(sdlWindow);
   
-  	if (!(sdlWindow = SDL_SetVideoMode(iLcdW, iLcdH, DEFAULT_BPP, DEFAULT_FLAGS))) 
+  	sdlWindow = SDL_SetVideoMode(iWinW, iWinH, DEFAULT_BPP, DEFAULT_FLAGS);
+  	if(sdlWindow == NULL) 
     {
-      	fprintf(stderr, "Couldn't switch without skin\n");
+      	gchar *s = g_strdup_printf("SDL: can't set video mode: %s\n", SDL_GetError());
+	  	tiemu_error(0, s);
+	  	g_free(s);
+		return;
     }
   	iWinLineSize = (sdlWindow->pitch) >> (iBpp >> 1);
   
   	params.background = 0;
-  	//set_colors();
 }
 
 /*
@@ -1035,6 +1039,7 @@ void hid_change_skin(const char *filename)
   	{
     	if (!skin_load(filename))
       		return;
+
     	redraw_skin();
     	set_colors();
   	}
@@ -1047,10 +1052,14 @@ void hid_switch_fullscreen(void)
 {
   	SDL_FreeSurface(sdlWindow);
   
-  	if (!(sdlWindow = SDL_SetVideoMode(iWinW, iWinH, DEFAULT_BPP, DEFAULT_FLAGS | SDL_FULLSCREEN))) 
+	sdlWindow = SDL_SetVideoMode(iWinW, iWinH, DEFAULT_BPP, DEFAULT_FLAGS | SDL_FULLSCREEN);
+  	if(sdlWindow == NULL)
     {
-      	fprintf(stderr, "Couldn't switch with skin\n");
-      	if (!bWindowedFailed)
+		gchar *s = g_strdup_printf("SDL: can't switch to fullscreen: %s\n", SDL_GetError());
+	  	tiemu_error(0, s);
+	  	g_free(s);
+      	
+		if (!bWindowedFailed)
 			hid_switch_windowed();
       	else
 			exit(1);
@@ -1060,8 +1069,8 @@ void hid_switch_fullscreen(void)
   
   	bFullscreen = 1;
   	bFullscreenFailed = 0;
+
   	redraw_skin();
-  	DISPLAY("Done.\n");
 }
 
 /*
@@ -1071,10 +1080,14 @@ void hid_switch_windowed(void)
 {
   	SDL_FreeSurface(sdlWindow);
   
-  	if (!(sdlWindow = SDL_SetVideoMode(iWinW, iWinH, DEFAULT_BPP, DEFAULT_FLAGS))) 
+	sdlWindow = SDL_SetVideoMode(iWinW, iWinH, DEFAULT_BPP, DEFAULT_FLAGS);
+  	if(sdlWindow == NULL) 
     {
-      	DISPLAY("Couldn't switch to window mode\n");
-      	if (!bFullscreenFailed)
+      	gchar *s = g_strdup_printf("SDL: can't switch from fullscreen: %s\n", SDL_GetError());
+	  	tiemu_error(0, s);
+	  	g_free(s);
+      	
+		if (!bFullscreenFailed)
 			hid_switch_fullscreen();
       	else
 			exit(1);
@@ -1084,6 +1097,7 @@ void hid_switch_windowed(void)
   
   	bFullscreen = 0;
   	bWindowedFailed = 0;
+
   	redraw_skin();
 }
 

@@ -43,7 +43,7 @@ int version(void)
 	fprintf(stdout, "  (C) Romain Lievin & Thomas Corvazier  2000-2001\n");
 	fprintf(stdout, "  (C) Romain Lievin 2001-2003\n");
 	fprintf(stdout, "  (C) Julien Blache 2003\n");
-	fprintf(stdout, "  (C) Romain Liévin 2004\n");
+	fprintf(stdout, "  (C) Romain Lievin 2004\n");
 	fprintf(stdout, "THIS PROGRAM COMES WITH ABSOLUTELY NO WARRANTY\n");
 	fprintf(stdout, "PLEASE READ THE DOCUMENTATION FOR DETAILS\n");
 
