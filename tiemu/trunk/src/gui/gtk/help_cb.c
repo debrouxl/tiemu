@@ -18,7 +18,7 @@
 #include "files.h"
 #include "main.h"
 
-gint display_help_dbox()
+gint display_help_dbox(void)
 {
   GtkWidget *dbox;
   GtkWidget *text;
@@ -40,8 +40,8 @@ gint display_help_dbox()
 
 void
 help_ok_button_clicked                     (GtkButton       *button,
-                                        gpointer         user_data)
+					    gpointer         user_data)
 {
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "help_dbox"));
   unhalt();
 }

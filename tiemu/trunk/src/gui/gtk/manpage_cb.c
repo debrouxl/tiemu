@@ -16,7 +16,7 @@
 #include "files.h"
 #include "main.h"
 
-gint display_manpage_dbox()
+gint display_manpage_dbox(void)
 {
   GtkWidget *dbox;
   GtkWidget *text;
@@ -39,8 +39,8 @@ gint display_manpage_dbox()
 
 void
 manpage_ok_button_clicked                     (GtkButton       *button,
-                                        gpointer         user_data)
+					       gpointer         user_data)
 {
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "manpage_dbox"));
   unhalt();
 }

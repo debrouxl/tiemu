@@ -71,46 +71,40 @@
 #include "tiemu_dbox.h"
 #include "skin_cb.h"
 #include "main.h"
+#include "support.h"
 
 /*
   Display the GTK popup menu and configure some items
 */
-GtkWidget* display_popup_menu()
+GtkWidget* display_popup_menu(void)
 {
   GtkWidget *menu;
-  gpointer user_data;
+  GtkWidget *w;
   gchar *s;
-  GtkCheckMenuItem *i; 
   
   menu = create_popup_menu();
 
-  user_data = gtk_object_get_data(GTK_OBJECT(menu), "popup_menu_header");
+  w = lookup_widget(menu, "popup_menu_header");
   s = g_strdup_printf("TiEmu, version %s", TIEMU_VERSION);
-  gtk_label_set_text(GTK_LABEL(GTK_BIN(user_data)->child), s);
+  gtk_label_set_text(GTK_LABEL(GTK_BIN(w)->child), s);
   g_free(s);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(menu), "sync1");
-  i = (GtkCheckMenuItem *) user_data;
-  gtk_check_menu_item_set_show_toggle(i, TRUE);
-  gtk_check_menu_item_set_active(i, (options.params)->sync_one);
+  w = lookup_widget(menu, "sync1");
+  gtk_check_menu_item_set_show_toggle(GTK_CHECK_MENU_ITEM(w), TRUE);
+  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(w), (options.params)->sync_one);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(menu), "restrict1");
-  i = (GtkCheckMenuItem *) user_data;
-  gtk_check_menu_item_set_show_toggle(i, TRUE);
-  gtk_check_menu_item_set_active(i, !((options.params)->background));
+  w = lookup_widget(menu, "restrict1");
+  gtk_check_menu_item_set_show_toggle(GTK_CHECK_MENU_ITEM(w), TRUE);
+  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(w), !((options.params)->background));
 
-  user_data = gtk_object_get_data(GTK_OBJECT(menu), "skin1");
-  i = (GtkCheckMenuItem *) user_data;
-  gtk_label_set_text(GTK_LABEL(GTK_BIN(user_data)->child),
+  w = lookup_widget(menu, "skin1");
+  gtk_label_set_text(GTK_LABEL(GTK_BIN(w)->child),
   	     g_basename(options.skin_file));
   
   if(ti68k_getCalcType() & TI92)
-    gtk_label_set_text(GTK_LABEL(GTK_BIN(user_data)->child), ("Skin 92"));
+    gtk_label_set_text(GTK_LABEL(GTK_BIN(w)->child), ("Skin 92"));
   else
-    gtk_label_set_text(GTK_LABEL(GTK_BIN(user_data)->child), ("Skin 89"));
-
-  user_data = gtk_object_get_data(GTK_OBJECT(menu), "none1");
-  i = (GtkCheckMenuItem *) user_data;
+    gtk_label_set_text(GTK_LABEL(GTK_BIN(w)->child), ("Skin 89"));
 
   return menu;
 }

@@ -4,7 +4,7 @@
 
 #include <gtk/gtk.h>
 
-gint display_trap_dbox();
+gint display_trap_dbox(void);
 
 
 void

@@ -19,29 +19,29 @@
 
 gint tmp_gray_scales;
 
-gint display_ncolors_dbox()
+gint display_ncolors_dbox(void)
 {
   GtkWidget *dbox;
-  gpointer user_data;
+  GtkWidget *w;
 
   dbox = create_ncolors_dbox();
   tmp_gray_scales = (options.params)->n_grayplanes;
   
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "radiobutton24");
+  w = lookup_widget(dbox, "radiobutton24");
   if(tmp_gray_scales == 0)
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (user_data), TRUE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(w), TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "radiobutton25");
+  w = lookup_widget(dbox, "radiobutton25");
   if(tmp_gray_scales == 2)
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (user_data), TRUE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(w), TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "radiobutton26");
+  w = lookup_widget(dbox, "radiobutton26");
   if(tmp_gray_scales == 5)
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (user_data), TRUE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(w), TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "radiobutton27");
+  w = lookup_widget(dbox, "radiobutton27");
   if(tmp_gray_scales == 11)
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (user_data), TRUE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(w), TRUE);
 
   gtk_widget_show_all(dbox);
   return 0;
@@ -84,7 +84,7 @@ on_button29_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
   (options.params)->n_grayplanes = tmp_gray_scales;
-  gtk_widget_destroy(user_data);
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "colors_dbox"));
 }
 
 
@@ -92,7 +92,7 @@ void
 on_button30_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gtk_widget_destroy(user_data);
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "colors_dbox"));
 }
 
 

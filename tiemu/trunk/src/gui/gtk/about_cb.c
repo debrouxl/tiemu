@@ -22,7 +22,7 @@
 
 Image img = { NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0 };
 
-gint display_about_dbox()
+gint display_about_dbox(void)
 {
   GtkWidget *dbox;
   GtkWidget *text;
@@ -64,6 +64,6 @@ about_ok_button_clicked                (GtkButton       *button,
                                         gpointer         user_data)
 {
   //delete_image(&img);
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "about_dbox"));
   unhalt();
 }

@@ -14,19 +14,18 @@ static gint ret_val = 0;
 gint user1_box(const char *title, char *message, const char *button1)
 {
   GtkWidget *dbox;
-  gpointer data;
+  GtkWidget *w;
   ret_val = 0;
 
   dbox = create_user1_dbox();
   
-  data = gtk_object_get_data(GTK_OBJECT(dbox), "user1_dbox");
-  gtk_window_set_title (GTK_WINDOW(data), title);
+  gtk_window_set_title (GTK_WINDOW(dbox), title);
 
-  data = gtk_object_get_data(GTK_OBJECT(dbox), "label2");
-  gtk_label_set_text(GTK_LABEL(data), message);
+  w = lookup_widget(dbox, "label2");
+  gtk_label_set_text(GTK_LABEL(w), message);
 
-  data = gtk_object_get_data(GTK_OBJECT(dbox), "label3");
-  gtk_label_set_text(GTK_LABEL(data), button1);
+  w = lookup_widget(dbox, "label3");
+  gtk_label_set_text(GTK_LABEL(w), button1);
   
   gtk_widget_show_all(dbox);
 
@@ -44,22 +43,21 @@ gint user2_box(const char *title, char *message,
 	       const char *button1, const char *button2)
 {
   GtkWidget *dbox;
-  gpointer data;
+  GtkWidget *w;
   ret_val = 0;
 
   dbox = create_user2_dbox();
   
-  data = gtk_object_get_data(GTK_OBJECT(dbox), "user2_dbox");
-  gtk_window_set_title (GTK_WINDOW(data), title);
+  gtk_window_set_title (GTK_WINDOW(dbox), title);
 
-  data = gtk_object_get_data(GTK_OBJECT(dbox), "label3");
-  gtk_label_set_text(GTK_LABEL(data), message);
+  w = lookup_widget(dbox, "label3");
+  gtk_label_set_text(GTK_LABEL(w), message);
 
-  data = gtk_object_get_data(GTK_OBJECT(dbox), "label4");
-  gtk_label_set_text(GTK_LABEL(data), button1);
+  w = lookup_widget(dbox, "label4");
+  gtk_label_set_text(GTK_LABEL(w), button1);
 
-  data = gtk_object_get_data(GTK_OBJECT(dbox), "label5");
-  gtk_label_set_text(GTK_LABEL(data), button2);
+  w = lookup_widget(dbox, "label5");
+  gtk_label_set_text(GTK_LABEL(w), button2);
   
   gtk_widget_show_all(dbox);
 
@@ -77,25 +75,24 @@ gint user3_box(const char *title, char *message,
 	       const char *button1, const char *button2, const char *button3)
 {
   GtkWidget *dbox;
-  gpointer data;
+  GtkWidget *w;
   ret_val = 0;
 
   dbox = create_user3_dbox();
   
-  data = gtk_object_get_data(GTK_OBJECT(dbox), "user3_dbox");
-  gtk_window_set_title (GTK_WINDOW(data), title);
+  gtk_window_set_title (GTK_WINDOW(dbox), title);
 
-  data = gtk_object_get_data(GTK_OBJECT(dbox), "label6");
-  gtk_label_set_text(GTK_LABEL(data), message);
+  w = lookup_widget(dbox, "label6");
+  gtk_label_set_text(GTK_LABEL(w), message);
 
-  data = gtk_object_get_data(GTK_OBJECT(dbox), "label7");
-  gtk_label_set_text(GTK_LABEL(data), button1);
+  w = lookup_widget(dbox, "label7");
+  gtk_label_set_text(GTK_LABEL(w), button1);
 
-  data = gtk_object_get_data(GTK_OBJECT(dbox), "label8");
-  gtk_label_set_text(GTK_LABEL(data), button2);
+  w = lookup_widget(dbox, "label8");
+  gtk_label_set_text(GTK_LABEL(w), button2);
 
-  data = gtk_object_get_data(GTK_OBJECT(dbox), "label9");
-  gtk_label_set_text(GTK_LABEL(data), button3);
+  w = lookup_widget(dbox, "label9");
+  gtk_label_set_text(GTK_LABEL(w), button3);
   
   gtk_widget_show_all(dbox);
 
@@ -111,10 +108,9 @@ gint user3_box(const char *title, char *message,
 /* First button clicked */
 void
 user1_ok_button_clicked                  (GtkButton       *button,
-                                        gpointer         user_data)
+					  gpointer         user_data)
 {
   ret_val = 1;
-  //gtk_widget_destroy(GTK_WIDGET(user_data));
 }
 
 
@@ -124,7 +120,6 @@ user2_ok_button_clicked                (GtkButton       *button,
                                         gpointer         user_data)
 {
   ret_val = 2;
-  //gtk_widget_destroy(GTK_WIDGET(user_data));
 }
 
 void
@@ -132,5 +127,4 @@ user3_ok_button_clicked                (GtkButton       *button,
                                         gpointer         user_data)
 {
   ret_val = 3;
-  //gtk_widget_destroy(GTK_WIDGET(user_data));
 }

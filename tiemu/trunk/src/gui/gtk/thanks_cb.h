@@ -4,7 +4,7 @@
 
 #include <gtk/gtk.h>
 
-gint display_thanks_dbox();
+gint display_thanks_dbox(void);
 
 void
 thanks_ok_button_clicked               (GtkButton       *button,

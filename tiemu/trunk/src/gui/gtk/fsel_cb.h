@@ -4,10 +4,10 @@
 
 #include <gtk/gtk.h>
 
-gint display_rom_fileselection();
-gint display_tifile_fileselection();
-gint display_tib_fileselection();
-gint display_ams_fileselection();
+gint display_rom_fileselection(void);
+gint display_tifile_fileselection(void);
+gint display_tib_fileselection(void);
+gint display_ams_fileselection(void);
 
 
 void

@@ -23,15 +23,13 @@
 /* Load state */
 /**************/
 
-gint display_fs_load_state()
+gint display_fs_load_state(void)
 {
   GtkWidget *dbox;
-  gpointer user_data;
    
   dbox = create_fs_load_state();
   
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "fs_load_state");
-  gtk_file_selection_complete(GTK_FILE_SELECTION(user_data), 
+  gtk_file_selection_complete(GTK_FILE_SELECTION(dbox), 
 			      "*.sav");
   
   gtk_widget_show_all(dbox);
@@ -43,14 +41,17 @@ void
 load_state_on_ok_button1_clicked       (GtkButton       *button,
                                         gpointer         user_data)
 {
+  GtkWidget *w;
   const gchar *s;
 
-  s = gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data));
+  w = lookup_widget(GTK_WIDGET(button), "fs_load_state");
+
+  s = gtk_file_selection_get_filename(GTK_FILE_SELECTION(w));
   g_free((options.params)->ram_file);
   (options.params)->ram_file =g_strdup(s);
   ti68k_loadState((options.params)->ram_file);
 
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(w);
 }
 
 
@@ -58,7 +59,7 @@ void
 load_state_on_cancel_button1_clicked   (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "fs_load_state"));
 }
 
 
@@ -66,15 +67,13 @@ load_state_on_cancel_button1_clicked   (GtkButton       *button,
 /* Save state */
 /**************/
 
-gint display_fs_save_state()
+gint display_fs_save_state(void)
 {
   GtkWidget *dbox;
-  gpointer user_data;
   gchar *s;
    
   dbox = create_fs_save_state();
   
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "fs_save_state");
   s = (options.params)->ram_file;
 #ifdef __LINUX__
   if(!strcmp(s, ""))
@@ -83,7 +82,7 @@ gint display_fs_save_state()
   if(!strcmp(s, ""))
     s = g_strconcat("default.sav", NULL);
 #endif
-  gtk_file_selection_complete(GTK_FILE_SELECTION(user_data), s);
+  gtk_file_selection_complete(GTK_FILE_SELECTION(dbox), s);
   
   gtk_widget_show_all(dbox);
   if(!strcmp((options.params)->ram_file, ""))
@@ -96,9 +95,12 @@ void
 save_state_on_ok_button2_clicked       (GtkButton       *button,
                                         gpointer         user_data)
 {
+  GtkWidget *w;
   const gchar *s;
 
-  s = gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data));
+  w = lookup_widget(GTK_WIDGET(button), "fs_save_state");
+
+  s = gtk_file_selection_get_filename(GTK_FILE_SELECTION(w));
   g_free((options.params)->ram_file);
   (options.params)->ram_file = g_strdup(s);
   ti68k_saveState((options.params)->ram_file);
@@ -116,7 +118,7 @@ save_state_on_ok_button2_clicked       (GtkButton       *button,
       while( gtk_events_pending() ) { gtk_main_iteration(); }
     }
 
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(w);
 }
 
 
@@ -124,7 +126,7 @@ void
 save_state_on_cancel_button2_pressed   (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "fs_save_state"));
 }
 
 

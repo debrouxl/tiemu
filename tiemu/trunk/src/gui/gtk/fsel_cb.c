@@ -19,69 +19,59 @@
 #include "interface.h"
 #include "main.h"
 
-gint display_rom_fileselection()
+gint display_rom_fileselection(void)
 {
   GtkWidget *dbox;
-  gpointer user_data;
    
   dbox = create_rom_fileselection();
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "rom_fileselection");
-  gtk_file_selection_complete(GTK_FILE_SELECTION(user_data), "*.rom;*.tib;*.89u;*.9Xu");
+  gtk_file_selection_complete(GTK_FILE_SELECTION(dbox), "*.rom;*.tib;*.89u;*.9Xu");
   gtk_widget_show_all(dbox);
   return 0;
 }
 
-gint display_tifile_fileselection()
+gint display_tifile_fileselection(void)
 {
   GtkWidget *dbox;
-  gpointer user_data;
+  gchar *s;
    
   dbox = create_tifile_fileselection();
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "tifile_fileselection");
   switch(ti68k_getCalcType())
     {
     case TI92:
-      gtk_file_selection_complete(GTK_FILE_SELECTION(user_data), 
-				  "*.92?");
+      s = "*.92?";
       break;
     case TI89:
-      gtk_file_selection_complete(GTK_FILE_SELECTION(user_data), 
-				  "*.89?");
+      s = "*.89?";
       break;
     case TI92 | MODULEPLUS:
-      gtk_file_selection_complete(GTK_FILE_SELECTION(user_data), 
-				  "*.9x?");
+      s = "*.9x?";
       break;
     default:
-      gtk_file_selection_complete(GTK_FILE_SELECTION(user_data), 
-				  "*.???");
+      s = "*.???";
       break;
     }
+  gtk_file_selection_complete(GTK_FILE_SELECTION(dbox), s);
   gtk_widget_show_all(dbox);
   return 0;
 }
 
-gint display_tib_fileselection()
+gint display_tib_fileselection(void)
 {
   GtkWidget *dbox;
-  gpointer user_data;
    
   dbox = create_tib_fileselection();
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "tib_fileselection");
-  gtk_file_selection_complete(GTK_FILE_SELECTION(user_data),
+  gtk_file_selection_complete(GTK_FILE_SELECTION(dbox),
 			      "*.89u;*.9xu;*.tib");
   gtk_widget_show_all(dbox);
   return 0;
 }
 
-gint display_ams_fileselection()
+gint display_ams_fileselection(void)
 {
   GtkWidget *dbox;
-  gpointer user_data;
    
   dbox = create_ams_fileselection();
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "ams_fileselection");
-  gtk_file_selection_complete(GTK_FILE_SELECTION(user_data),
+  gtk_file_selection_complete(GTK_FILE_SELECTION(dbox),
 			      "*.89u;*.9xu;*.tib");
   gtk_widget_show_all(dbox);
   return 0;
@@ -97,14 +87,17 @@ on_rom_fileselection_destroy           (GtkObject       *object,
 
 void
 on_rom_ok_button2_clicked                  (GtkButton       *button,
-                                        gpointer         user_data)
+					    gpointer         user_data)
 {
+  GtkWidget *w;
   const gchar *src;
   gchar *dst;
   gchar *cmd;
 
+  w = lookup_widget(GTK_WIDGET(button), "rom_fileselection");
+
   src = gtk_file_selection_get_filename 
-    (GTK_FILE_SELECTION(user_data));
+    (GTK_FILE_SELECTION(w));
 
   dst = g_strconcat(inst_paths.rom_dir, g_basename(src), NULL);
 
@@ -112,7 +105,7 @@ on_rom_ok_button2_clicked                  (GtkButton       *button,
 
   system(cmd); //copy_file(src, dst);
 
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(w);
   unhalt();
 }
 
@@ -121,7 +114,7 @@ void
 on_rom_cancel_button2_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "rom_fileselection"));
 }
 
 
@@ -138,12 +131,15 @@ void
 on_tifile_ok_button2_clicked           (GtkButton       *button,
                                         gpointer         user_data)
 {
+  GtkWidget *w;
   const gchar *filename;
   gchar *ext;
 
+  w = lookup_widget(GTK_WIDGET(button), "tifile_fileselection");
+
   /* Retrieve filename */
-  filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data));
-  gtk_widget_hide(GTK_WIDGET(user_data));
+  filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(w));
+  gtk_widget_hide(w);
   while( gtk_events_pending() ) { gtk_main_iteration(); }
 
   /* Get extension */
@@ -207,7 +203,7 @@ on_tifile_ok_button2_clicked           (GtkButton       *button,
     gtk_main_iteration(); 
   }
 
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(w);
 }
 
 
@@ -215,7 +211,7 @@ void
 on_tifile_cancel_button2_clicked       (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "tifile_fileselection"));
 }
 
 
@@ -239,9 +235,12 @@ void
 on_tib_ok_button2_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
+  GtkWidget *w;
   const gchar *filename;
 
-  filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data));
+  w = lookup_widget(GTK_WIDGET(button), "tib_fileselection");
+
+  filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(w));
 
   g_free((options.params)->tib_file);
   (options.params)->tib_file = g_strdup(filename);
@@ -251,7 +250,7 @@ on_tib_ok_button2_clicked              (GtkButton       *button,
       return;
     }
   
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(w);
 }
 
 
@@ -259,7 +258,7 @@ void
 on_tib_cancel_button2_clicked          (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "tib_fileselection"));
 }
 
 
@@ -276,15 +275,18 @@ on_ams_ok_button2_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
   /*
+  GtkWidget *w;
   gchar *filename;
   gchar buffer[1024];
 
-  filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data));
+  w = lookup_widget(GTK_WIDGET(button), "ams_fileselection");
+
+  filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(w));
   //msg_box(_("Information"), _("Conversion in progress. Please wait..."));
   //while( gtk_events_pending() ) { gtk_main_iteration(); }
   ti68k_convertTibToRom(filename, buffer);
 
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(w);
   */
 }
 
@@ -293,5 +295,5 @@ void
 on_ams_cancel_button2_clicked          (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "ams_fileselection"));
 }

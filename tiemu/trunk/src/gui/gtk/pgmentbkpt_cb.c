@@ -29,7 +29,7 @@ void
 on_button21_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gtk_widget_destroy(user_data);
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "pgmentbkpt_dbox"));
 }
 
 
@@ -37,7 +37,7 @@ void
 on_button22_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gtk_widget_destroy(user_data);
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "pgmentbkpt_dbox"));
 }
 
 

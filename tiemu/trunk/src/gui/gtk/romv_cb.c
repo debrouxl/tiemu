@@ -25,10 +25,9 @@
 
 gchar *chosen_file = NULL;
 
-gint display_romversion_dbox()
+gint display_romversion_dbox(void)
 {
   GtkWidget *dbox, *dbox2;
-  gpointer user_data;
   GtkWidget *list = NULL;
   gchar *text[6]; // 6 columns
   gchar buffer[MAXCHARS];
@@ -39,8 +38,7 @@ gint display_romversion_dbox()
 
   dbox = create_romversion_dbox();
   
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "clist1");
-  list = GTK_WIDGET(user_data);
+  list = lookup_widget(dbox, "clist1");
 
   /* List all ROMs available in the ROM directory */
   gtk_widget_show_all(dbox2 = create_window1());
@@ -142,7 +140,7 @@ on_button6_clicked                     (GtkButton       *button,
 	}
     }
   
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "romversion_dbox"));
   while( gtk_events_pending() ) { 
     gtk_main_iteration(); 
   }
@@ -153,7 +151,7 @@ void
 on_button7_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "romversion_dbox"));
 }
 
 

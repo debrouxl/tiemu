@@ -41,44 +41,34 @@ static GtkWidget *stack_clist;
 static GtkWidget *reg_text;
 static GtkWidget *statusbar; // statusbar
 
-gint refresh_register_dbox();
-gint refresh_code_dbox();
-gint refresh_stack_dbox();
-gint refresh_memory_dbox();
+gint refresh_register_dbox(void);
+gint refresh_code_dbox(void);
+gint refresh_stack_dbox(void);
+gint refresh_memory_dbox(void);
 
 gint display_debugger_dbox(void)
 {
   GtkWidget *dbox;
-  gpointer user_data;
   
   if(debugger_dbox == NULL)
     {
       dbox = create_debugger_dbox();
+      debugger_dbox = dbox;
+
+      reg_text = lookup_widget(dbox, "text5");
       
-      user_data = gtk_object_get_data(GTK_OBJECT(dbox), "debugger_dbox");
-      debugger_dbox = GTK_WIDGET(user_data);
+      code_clist = lookup_widget(dbox, "clist1");
       
-      user_data = gtk_object_get_data(GTK_OBJECT(dbox), "text5");
-      reg_text = GTK_WIDGET(user_data);
+      mem_clist = lookup_widget(dbox, "clist2");
       
-      user_data = gtk_object_get_data(GTK_OBJECT(dbox), "clist1");
-      code_clist = GTK_WIDGET(user_data);
+      stack_clist = lookup_widget(dbox, "clist3");
       
-      user_data = gtk_object_get_data(GTK_OBJECT(dbox), "clist2");
-      mem_clist = GTK_WIDGET(user_data);
-      
-      user_data = gtk_object_get_data(GTK_OBJECT(dbox), "clist3");
-      stack_clist = GTK_WIDGET(user_data);
-      
-      user_data = gtk_object_get_data(GTK_OBJECT(dbox), "statusbar1");
-      statusbar = GTK_WIDGET(user_data);
+      statusbar = lookup_widget(dbox, "statusbar1");
       
       gtk_widget_show_all(dbox);
       display_bkpt_cause();
     }
-  else
-    {
-    }
+
   refresh_stack_dbox();
   refresh_memory_dbox();
   refresh_code_dbox();
@@ -149,7 +139,7 @@ on_debugger_dbox_destroy               (GtkObject       *object,
 /*
   Initialize the 'Registers' box
 */
-gint refresh_register_dbox()
+gint refresh_register_dbox(void)
 {
 #if 0 /* FUCKED */
   GtkWidget *text = reg_text;
@@ -344,7 +334,7 @@ gint refresh_breakpoints(GtkWidget *widget)
   return 0;
 }
 
-gint refresh_code_dbox()
+gint refresh_code_dbox(void)
 {
 #if 0 /* FUCKED */
   GtkWidget *clist = code_clist;
@@ -423,7 +413,7 @@ gint refresh_code_dbox()
 /*
   Initialize the 'memory' box
 */
-gint refresh_memory_dbox()
+gint refresh_memory_dbox(void)
 {
 #if 0 /* FUCKED */
   GtkWidget *clist = mem_clist;
@@ -503,7 +493,7 @@ gint refresh_memory_dbox()
 /*
   Initialize the 'stack' box
 */
-gint refresh_stack_dbox()
+gint refresh_stack_dbox(void)
 {
 #if 0 /* FUCKED */
   GtkWidget *clist = stack_clist;
@@ -692,7 +682,7 @@ void
 on_exit2_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(debugger_dbox);
 }
 
 
@@ -701,7 +691,7 @@ on_set_breakpoint_at_selection1_activate
                                         (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  GtkWidget *clist = code_clist; //user_data;
+  GtkWidget *clist = code_clist;
   GdkPixmap *pixmap;
   GdkBitmap *mask;
   gint addr;
@@ -1065,7 +1055,7 @@ on_entry10_changed                     (GtkEditable     *editable,
 {
   gchar *s;
 
-  s = gtk_editable_get_chars((GtkEditable *)(user_data), 0, -1);
+  s = gtk_editable_get_chars(editable, 0, -1);
   if(sscanf(s, "0x%6x", &code_addr_to_go) < 1)
     code_addr_to_go =  0x000000;
 
@@ -1080,7 +1070,7 @@ on_button45_clicked                    (GtkButton       *button,
   ti68k_setPcRegister(code_addr_to_go);
   gtk_signal_emit_by_name((GtkObject *)debugger_dbox, "show");  
 
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "gotocode_dbox"));
 }
 
 /* 'Address mem to go' dialog box */
@@ -1091,7 +1081,7 @@ on_entry11_changed                     (GtkEditable     *editable,
 {
   gchar *s;
 
-  s = gtk_editable_get_chars((GtkEditable *)(user_data), 0, -1);
+  s = gtk_editable_get_chars(editable, 0, -1);
   if(sscanf(s, "0x%6x", &data_addr_to_go) < 1)
     data_addr_to_go =  0x000000;
 
@@ -1106,7 +1096,7 @@ on_button99_clicked                    (GtkButton       *button,
   data_addr = data_addr_to_go;
   gtk_signal_emit_by_name((GtkObject *)debugger_dbox, "show");  
 
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "gotodata_dbox"));
 }
 
 

@@ -4,8 +4,8 @@
 
 #include <gtk/gtk.h>
 
-gint display_fs_load_state();
-gint display_fs_save_state();
+gint display_fs_load_state(void);
+gint display_fs_save_state(void);
 
 void
 load_state_on_ok_button1_clicked       (GtkButton       *button,

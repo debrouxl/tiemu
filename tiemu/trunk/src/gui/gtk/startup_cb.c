@@ -113,7 +113,7 @@ void
 startup_ok_button_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "startup_dbox"));
   unhalt();
 }
 

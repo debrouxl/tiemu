@@ -20,11 +20,10 @@
 
 extern DATA_BKPT db;
 
-gint display_data_bkpts_dbox()
+gint display_data_bkpts_dbox(void)
 {
 #if 0 /* FUCKED */
   GtkWidget *dbox;
-  gpointer user_data;
   GtkWidget *clist;
   GtkStyle *style;
   GdkFont *fixed_font;
@@ -35,11 +34,9 @@ gint display_data_bkpts_dbox()
   DATA_BKPT *s;
 
   dbox = create_data_bkpts_dbox(); 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "data_bkpts_dbox");
-  data_bkpt_dbox = GTK_WIDGET(user_data);
+  data_bkpt_dbox = dbox; /* ahem ? */
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "clist4");
-  clist = user_data;
+  clist = lookup_widget(dbox, "clist4");
   gtk_clist_clear((GtkCList *)clist);
 
   fixed_font = gdk_font_load("-adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1");
@@ -137,9 +134,11 @@ on_button_del_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
   gint id;
-  GtkWidget *clist = GTK_WIDGET(user_data);
+  GtkWidget *clist;
   int i;
   DATA_BKPT *s = NULL;
+
+  clist = lookup_widget(GTK_WIDGET(button), "clist1");
 
   if(data_bkpt_selected_row != -1)
     {
@@ -172,7 +171,7 @@ void
 on_button_ok39_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gtk_widget_destroy(user_data);
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "dbkpt_dbox"));
 }
 
 

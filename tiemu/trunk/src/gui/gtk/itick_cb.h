@@ -4,9 +4,9 @@
 
 #include <gtk/gtk.h>
 
-gint display_tickrate_dbox();
-gint display_cyclerate_dbox();
-gint display_itick_dbox();
+gint display_tickrate_dbox(void);
+gint display_cyclerate_dbox(void);
+gint display_itick_dbox(void);
 
 
 void

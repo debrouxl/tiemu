@@ -324,27 +324,6 @@ create_linktype_dbox (void)
                               GDK_Escape, 0,
                               GTK_ACCEL_VISIBLE);
 
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show30),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show31),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show20),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show21),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show22),
-                    NULL);
-  g_signal_connect ((gpointer) linktype_dbox, "show",
-                    G_CALLBACK (on_linktype_dbox_show23),
-                    NULL);
   g_signal_connect ((gpointer) button1, "clicked",
                     G_CALLBACK (on_linktype_button_fs_clicked),
                     NULL);
@@ -477,9 +456,6 @@ create_fileselection_device (void)
                               GDK_Escape, 0,
                               GTK_ACCEL_VISIBLE);
 
-  g_signal_connect ((gpointer) fileselection_device, "show",
-                    G_CALLBACK (on_fileselection_device_show),
-                    NULL);
   g_signal_connect ((gpointer) ok_button1, "clicked",
                     G_CALLBACK (on_seldev_ok_button1_clicked),
                     NULL);

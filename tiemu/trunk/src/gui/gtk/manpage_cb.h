@@ -4,7 +4,7 @@
 
 #include <gtk/gtk.h>
 
-gint display_manpage_dbox();
+gint display_manpage_dbox(void);
 
 
 void

@@ -12,13 +12,6 @@
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <property name="has_separator">True</property>
-  <signal name="show" handler="on_linktype_dbox_show"/>
-  <signal name="show" handler="on_linktype_dbox_show30"/>
-  <signal name="show" handler="on_linktype_dbox_show31"/>
-  <signal name="show" handler="on_linktype_dbox_show20"/>
-  <signal name="show" handler="on_linktype_dbox_show21"/>
-  <signal name="show" handler="on_linktype_dbox_show22"/>
-  <signal name="show" handler="on_linktype_dbox_show23"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox1">
@@ -737,7 +730,6 @@ AVRlink</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <property name="show_fileops">True</property>
-  <signal name="show" handler="on_fileselection_device_show"/>
 
   <child internal-child="cancel_button">
     <widget class="GtkButton" id="cancel_button1">

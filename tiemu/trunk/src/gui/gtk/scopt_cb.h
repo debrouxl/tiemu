@@ -4,7 +4,7 @@
 
 #include <gtk/gtk.h>
 
-gint display_scopt_dbox();
+gint display_scopt_dbox(void);
 
 
 void

@@ -22,7 +22,7 @@ DATA_BKPT db;
 static gint single_or_range = 1;
 extern GtkWidget *data_bkpt_dbox;
 
-gint display_add_data_bkpt_dbox()
+gint display_add_data_bkpt_dbox(void)
 {
   db.mode = BK_READ | BK_BYTE;
   db.address  = 0x0;
@@ -178,7 +178,7 @@ on_button_ok_clicked                   (GtkButton       *button,
   /* Refresh some dboxes */
   gtk_signal_emit_by_name((GtkObject *)data_bkpt_dbox, "show");
 
-  gtk_widget_destroy(user_data);
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "adbkpt_dbox"));
 }
 
 /* Cancel button of the 'Add data breakpoint' dialog box */
@@ -186,7 +186,7 @@ void
 on_button_cancel_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gtk_widget_destroy(user_data);
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "adbkpt_dbox"));
 }
 
 void

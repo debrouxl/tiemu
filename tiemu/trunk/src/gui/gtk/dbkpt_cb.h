@@ -4,7 +4,7 @@
 
 #include <gtk/gtk.h>
 
-gint display_data_bkpts_dbox();
+gint display_data_bkpts_dbox(void);
 
 
 void

@@ -4,7 +4,7 @@
 
 #include <gtk/gtk.h>
 
-gint display_about_dbox();
+gint display_about_dbox(void);
 
 
 void

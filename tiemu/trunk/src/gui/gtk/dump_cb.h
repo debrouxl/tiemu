@@ -4,9 +4,9 @@
 
 #include <gtk/gtk.h>
 
-gint display_ramdump_fileselection();
-gint display_romdump_fileselection();
-gint display_wait_conversion_dbox();
+gint display_ramdump_fileselection(void);
+gint display_romdump_fileselection(void);
+gint display_wait_conversion_dbox(void);
 
 void
 on_ramdump_fileselection_destroy       (GtkObject       *object,

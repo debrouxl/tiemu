@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 
-gint display_skinlist_dbox();
+gint display_skinlist_dbox(void);
 
 void
 on_skin_dbox_destroy                   (GtkObject       *object,

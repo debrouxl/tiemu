@@ -80,10 +80,9 @@ static Traps tmp_traps;
 /* D Box */
 /*********/
 
-gint display_trap_dbox()
+gint display_trap_dbox(void)
 {
   GtkWidget *dbox;
-  gpointer user_data;
 
   dbox = create_trap_dbox();
   memcpy(&tmp_exceptions, &exceptions, sizeof(Exceptions));
@@ -91,131 +90,131 @@ gint display_trap_dbox()
   memcpy(&tmp_traps, &traps, sizeof(Traps));
 
   /* 'Exception' frame */
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton1");
   if(tmp_exceptions.address_error != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton1")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton2");
   if(tmp_exceptions.illegal_instruction != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton2")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton3");
   if(tmp_exceptions.divide_by_zero != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton3")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton4");
   if(tmp_exceptions.chk_instruction != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton4")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton5");
   if(tmp_exceptions.trapv_instruction != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton5")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton6");
   if(tmp_exceptions.privilege_violation != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton6")),
+				 TRUE);
   
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton7");
   if(tmp_exceptions.trace != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton7")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton8");
   if(tmp_exceptions.line_1010 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton8")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton9");
   if(tmp_exceptions.line_1111 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton9")),
+				 TRUE);
 
   /* 'Auto-ints' frame */
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton10");
   if(tmp_autoints.int1 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton10")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton11");
   if(tmp_autoints.int2 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton11")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton12");
   if(tmp_autoints.int4 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton12")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton13");
   if(tmp_autoints.int5 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton13")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton14");
   if(tmp_autoints.int6 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton14")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton15");
   if(tmp_autoints.int7 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton15")),
+				 TRUE);
 
   /* 'Traps' frame */
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton16");
   if(tmp_traps.trap0 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton16")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton17");
   if(tmp_traps.trap1 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton17")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton18");
   if(tmp_traps.trap2 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton18")),
+				 TRUE);
   
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton19");
   if(tmp_traps.trap3 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton19")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton20");
   if(tmp_traps.trap4 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton20")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton21");
   if(tmp_traps.trap5 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton21")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton22");
   if(tmp_traps.trap6 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton22")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton23");
   if(tmp_traps.trap7 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton23")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton24");
   if(tmp_traps.trap8 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton24")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton25");
   if(tmp_traps.trap9 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton25")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton26");
   if(tmp_traps.trap10 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton26")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton27");
   if(tmp_traps.trap11 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton27")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton28");
   if(tmp_traps.trap12 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton28")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton29");
   if(tmp_traps.trap13 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton29")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton30");
   if(tmp_traps.trap14 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton30")),
+				 TRUE);
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "checkbutton31");
   if(tmp_traps.trap15 != 0)
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(user_data), TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "checkbutton31")),
+				 TRUE);
 
   gtk_widget_show_all(dbox);
   return 0;
@@ -906,7 +905,7 @@ on_button46_clicked                    (GtkButton       *button,
       traps.trap15 = 0;
     }
 
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "trap_dbox"));
 }
 
 
@@ -915,5 +914,5 @@ on_button47_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
   // cancel button
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "trap_dbox"));
 }

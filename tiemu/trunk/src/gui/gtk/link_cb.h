@@ -1,30 +1,7 @@
 #include <gtk/gtk.h>
 
-gint display_linktype_dbox();
+gint display_linktype_dbox(void);
 
-void
-on_linktype_dbox_show20                (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show21                (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show22                (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show23                (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show24                (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_linktype_dbox_show30                (GtkWidget       *widget,
-                                        gpointer         user_data);
 
 void
 linktype_entry1_changed                (GtkEditable     *editable,
@@ -259,10 +236,6 @@ linktype_cancel_button_clicked         (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_linktype_dbox_show                  (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
 linktype_radiobutton1_toggled15        (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
@@ -307,10 +280,6 @@ on_seldev_cancel_button1_clicked       (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_linktype_dbox_show31                (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
 on_linktype_button1_clicked            (GtkButton       *button,
                                         gpointer         user_data);
 
@@ -320,14 +289,6 @@ on_linktype_button_fs_clicked          (GtkButton       *button,
 
 void
 linktype_entry2_changed                (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
-on_fileselection_device_show           (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_fileselection_device_show           (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void

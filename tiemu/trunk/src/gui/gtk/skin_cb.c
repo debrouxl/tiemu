@@ -23,11 +23,10 @@
 static gchar *chosen_file = NULL;
 static gint valid = 0;
 
-gint display_skinlist_dbox()
+gint display_skinlist_dbox(void)
 {
   GtkWidget *dbox;
-  gpointer user_data;
-  GtkWidget *list = NULL;
+  GtkWidget *list;
   gchar *filename;
 
   DIR *dir;
@@ -38,8 +37,7 @@ gint display_skinlist_dbox()
 
   dbox = create_skin_dbox();
   
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "clist1");
-  list = GTK_WIDGET(user_data);
+  list = lookup_widget(dbox, "clist1");
 
   if( (dir=opendir(inst_paths.skin_dir)) == NULL)
     {
@@ -137,7 +135,7 @@ on_skin_clist1_button_press_event      (GtkWidget       *widget,
 /* OK button */
 void
 on_skin_button6_clicked                     (GtkButton       *button,
-                                        gpointer         user_data)
+					     gpointer         user_data)
 {
   /* Check for a valid skin */
   if(!valid)
@@ -154,15 +152,15 @@ on_skin_button6_clicked                     (GtkButton       *button,
 
   hid_change_skin(options.skin_file);
 
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "skin_dbox"));
 }
 
 /* Cancel button */
 void
 on_skin_button7_clicked                     (GtkButton       *button,
-                                        gpointer         user_data)
+					     gpointer         user_data)
 {
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "skin_dbox"));
 }
 
 

@@ -4,7 +4,7 @@
 
 #include <gtk/gtk.h>
 
-gint display_romversion_dbox();
+gint display_romversion_dbox(void);
 
 void
 on_button6_clicked                     (GtkButton       *button,

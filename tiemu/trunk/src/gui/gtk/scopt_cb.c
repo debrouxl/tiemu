@@ -23,63 +23,72 @@ static gchar *i_screen_file;
 static GtkWidget *label = NULL;
 void refresh_label(void);
 
-gint display_scopt_dbox()
+gint display_scopt_dbox(void)
 {
   GtkWidget *dbox;
-  gpointer user_data;
 
   dbox = create_scopt_dbox();
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "radiobutton18");
   i_image_format = options.img_format;
-  if(options.img_format == IMG_PCX)
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (user_data), TRUE);
-  
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "radiobutton19");
-  i_image_format = options.img_format;
-  if(options.img_format == IMG_XPM)
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (user_data), TRUE);
+  switch (options.img_format)
+    {
+      case IMG_PCX:
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "radiobutton18")),
+				     TRUE);
+	break;
+      case IMG_XPM:
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "radiobutton19")),
+				     TRUE);
+	break;
+      case IMG_JPG:
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "radiobutton20")),
+				     TRUE);
+	break;
+      case IMG_BMP:
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "radiobutton21")),
+				     TRUE);
+	break;
+      default:
+	break;
+    }
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "radiobutton20");
-  i_image_format = options.img_format;
-  if(options.img_format == IMG_JPG)
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (user_data), TRUE);
-
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "radiobutton21");
-  i_image_format = options.img_format;
-  if(options.img_format == IMG_BMP)
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (user_data), TRUE);
-
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "radiobutton22");
   i_image_type = options.img_type;
-  if(options.img_type == IMG_BW )
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (user_data), TRUE);
+  switch (options.img_type)
+    {
+      case IMG_BW:
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "radiobutton22")),
+				     TRUE);
+	break;
+      case IMG_COL:
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "radiobutton23")),
+				     TRUE);
+	break;
+      default:
+	break;
+    }
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "radiobutton23");
-  i_image_type = options.img_type;
-  if(options.img_type == IMG_COL )
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (user_data), TRUE);
-
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "radiobutton24");
   i_image_size = options.img_size;
-  if(options.img_size == IMG_LCD )
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (user_data), TRUE);
-
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "radiobutton25");
-  i_image_size = options.img_size;
-  if(options.img_size == IMG_SKIN )
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (user_data), TRUE);
+  switch (options.img_size)
+    {
+      case IMG_LCD:
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "radiobutton24")),
+				     TRUE);
+	break;
+      case IMG_SKIN:
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(dbox, "radiobutton25")),
+				     TRUE);
+	break;
+      default:
+	break;
+    }
   
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "label3");
-  label = GTK_WIDGET(user_data);
+  label = lookup_widget(dbox, "label3");
   refresh_label();
 
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "entry1");
-  //gtk_entry_set_visibility(GTK_ENTRY(user_data), FALSE);
-  //gtk_entry_set_editable(GTK_ENTRY(user_data), TRUE);
   i_screen_file = g_strdup(options.screen_file);
   i_screen_counter = options.screen_counter;
-  gtk_entry_set_text(GTK_ENTRY(user_data), options.screen_file);
+  gtk_entry_set_text(GTK_ENTRY(lookup_widget(dbox, "entry1")),
+		     options.screen_file);
 
   gtk_widget_show_all(dbox);
   return 0;
@@ -172,7 +181,7 @@ on_scopt_ok_button_clicked             (GtkButton       *button,
   options.screen_counter = i_screen_counter;
   g_free(options.screen_file);
   options.screen_file = g_strdup(i_screen_file);
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "scopt_dbox"));
 }
 
 
@@ -180,7 +189,7 @@ void
 on_scopt_cancel_button_clicked         (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gtk_widget_destroy(GTK_WIDGET(user_data));
+  gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "scopt_dbox"));
 }
 
 void
@@ -215,7 +224,7 @@ on_entry1_changed                      (GtkEditable     *editable,
   gchar *s;
 
   g_free(options.screen_file);
-  s = gtk_editable_get_chars(GTK_EDITABLE(user_data), 0, -1);
+  s = gtk_editable_get_chars(editable, 0, -1);
   i_screen_file = g_strdup(s);
   refresh_label();
 }

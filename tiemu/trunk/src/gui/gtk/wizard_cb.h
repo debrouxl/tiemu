@@ -4,8 +4,8 @@
 
 #include <gtk/gtk.h>
 
-gint display_flash_fileselection();
-gint display_romfile_fileselection();
+gint display_flash_fileselection(void);
+gint display_romfile_fileselection(void);
 
 void
 on_flashfile_fileselection_destroy     (GtkObject       *object,
