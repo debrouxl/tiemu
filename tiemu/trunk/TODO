@@ -203,7 +203,7 @@ This is a bug. Please report it.
 * Dans le débogueur, la fenêtre Breakpoints n'a pas de "QuickInfos" dans la
 toolbar. (En revanche, dans la fenêtre Code/Source, ils y sont maintenant.)
 
-+ Un truc qui serait bien serait une fonction "breakpoint on program entry".
+* Un truc qui serait bien serait une fonction "breakpoint on program entry".
 Mais comme la feature dans VTI est implémentée plutôt avec les pieds, il
 faudrait qu'on discute de ça ensemble pour ne pas faire les mêmes erreurs.
 Le problème n°1 dans VTI est sa manière foireuse de récupérer l'adresse du
@@ -228,7 +228,7 @@ première fois, j'ai converti, puis choisi la nouvelle ROM dans la liste, et
 TiEmu a planté (fenêtre de plantage Windows). La deuxième fois, la ROM était
 déjà dans la liste, je l'ai choisie et tout a marché...
 
-* Donc l'émulation de la V200 marche bel et bien. En revanche, pour la
++ Donc l'émulation de la V200 marche bel et bien. En revanche, pour la
 Titanium, ça ne marche pas encore. J'ai essayé le 89u de AMS 3.00, et il y a
 des trucs bizarres à l'écran. Je ne sais pas si le reste marche parce que je
 ne vois rien.
@@ -264,7 +264,7 @@ pas l'air de planter l'émulateur). Il faut faire un
 Reset Calculator pour avoir une calculette à nouveau
 d'aplomb.
 
-* La fenêtre qui affiche les noms de ROM_CALLs est 
++ La fenêtre qui affiche les noms de ROM_CALLs est 
 difficile à utiliser, car on ne peut pas accéder à 
 un ROM_CALL en tapant les premières lettres, et il 
 faut savoir le numéro du ROM_CALL pour pouvoir y 

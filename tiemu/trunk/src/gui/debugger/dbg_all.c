@@ -55,8 +55,6 @@ void gtk_debugger_preload(void)
 
 int gtk_debugger_enter(int context)
 {
-	gchar *path;
-
     // show breakpoint source (modal)
     switch(context)
     {
@@ -67,11 +65,6 @@ int gtk_debugger_enter(int context)
         display_dbgcause_dbox();
         break;
     }
-
-	// load symbols
-	path = g_strconcat(inst_paths.base_dir, "romcalls.txt", NULL);
-	ti68k_debug_load_symbols(path);
-	g_free(path);
 
     // open debugger windows (if not already opened)
 	dbgw.regs = dbgregs_display_window();

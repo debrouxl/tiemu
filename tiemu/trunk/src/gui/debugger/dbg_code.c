@@ -259,6 +259,7 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
 static GtkWidget *list;
 static GtkListStore *store;
 static gint already_open = 0;
+static GtkWidget *combo;
 
 typedef struct {
 	GtkWidget *b1;
@@ -338,17 +339,16 @@ GtkWidget* dbgcode_create_window(void)
     mi.m5 = glade_xml_get_widget(xml, "run_to_cursor1");
     mi.m6 = glade_xml_get_widget(xml, "break1");	
 
-    list = glade_xml_get_widget(xml, "treeview1");
-
-	data = glade_xml_get_widget(xml, "treeview1");
-    store = clist_create(data);
+	list = glade_xml_get_widget(xml, "treeview1");
+    store = clist_create(list);
 	clist_populate(store, ti68k_debug_get_pc());
 
-	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
-	gtk_widget_show(data);
+	gtk_tree_view_expand_all(GTK_TREE_VIEW(list));
+	gtk_widget_show(list);
 
-	data = glade_xml_get_widget(xml, "comboboxentry1");
-	dbgromcall_fill_window(data);
+	combo = glade_xml_get_widget(xml, "comboboxentry1");
+	dbgromcall_create_window(combo);
+	dbgromcall_refresh_window(combo);
 
 	gtk_window_resize(GTK_WINDOW(dbox), options3.code.w, options3.code.h);
 	gtk_window_move(GTK_WINDOW(dbox), options3.code.x, options3.code.y);
@@ -374,6 +374,8 @@ GtkWidget* dbgcode_display_window(void)
      
     gtk_list_store_clear(store);
 	clist_refresh(store, TRUE);
+
+	dbgromcall_refresh_window(combo);
 
     return wnd;
 }

@@ -36,6 +36,7 @@
 
 static int old_ct = -1;		// previous calc type for reloading
 static int loaded = 0;		// loaded
+static int reload = 0;		// reload ?
 
 static ROM_CALL table[NMAX_ROMCALLS];	// list by id
 static GList	*list = NULL;			// sorted list (by id, addr or name)
@@ -210,7 +211,7 @@ static int merge_from_flash(void)
 		list = g_list_append (list, &table[i]);
 	}
 	
-	list = g_list_reverse(list);
+	//list = g_list_reverse(list);
 	printf("Done !\n");
 
 	return 0;
@@ -225,10 +226,10 @@ int romcalls_preload(const char* filename)
 
 	// check for reloading
 	if(!img_loaded || (img->calc_type == TI92))
-		return -1;
+		return -2;
 
 	if((old_ct == img->calc_type) && loaded)
-		return 0;
+		return -1;
 	else
 		old_ct = img->calc_type;
 
@@ -236,7 +237,7 @@ int romcalls_preload(const char* filename)
 	merge_from_flash();
 	loaded = !0;
 /*
-	for(i = 0x500; i < 0x505; i++)
+	for(i = 0x0; i < 0x10; i++)
 	{
 		ROM_CALL *elt = (ROM_CALL *)g_list_nth_data(list, i);
 
@@ -309,7 +310,7 @@ static gint compare_func_by_iname(gconstpointer a, gconstpointer b)
 
 GList* romcalls_sort_by_iname(void)
 {
-	return g_list_sort(list, compare_func_by_name);
+	return g_list_sort(list, compare_func_by_iname);
 }
 
 /* =========== */
