@@ -67,7 +67,7 @@ export_skin_vti(const char *path, unsigned int version)
 	  return -1;
 	}
       
-      jpeg_data = read_jpeg(jpeg, &jpeg_length);
+      jpeg_data = read_image(jpeg, &jpeg_length);
       
       if (jpeg_data == NULL)
 	{

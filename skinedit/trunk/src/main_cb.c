@@ -67,6 +67,9 @@ on_new_activate                        (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   GtkWidget *filesel;
+	GSList *formats;
+	int i;
+	gchar *ext_list = NULL;
 
   /* must save & destroy pixbuf */
 
@@ -118,7 +121,27 @@ on_new_activate                        (GtkMenuItem     *menuitem,
 
   gtk_window_set_title(GTK_WINDOW(filesel), _("Select JPEG image"));
 
-  gtk_file_selection_complete(GTK_FILE_SELECTION(filesel), "*.jpg");
+	formats = gdk_pixbuf_get_formats ();
+	for(i=0; i < g_slist_length(formats); i++)
+		{
+			GSList *elt;
+			GdkPixbufFormat *fmt;
+			gchar **exts;
+
+			elt = g_slist_nth(formats, i);
+			fmt = (GdkPixbufFormat *)elt->data;
+			exts = gdk_pixbuf_format_get_extensions(fmt);
+/*
+			strcat(ext_list, "*.");
+			strcat(ext_list, exts[0]);
+			strcat(ext_list, "; ");
+			*/
+			ext_list = g_strconcat(ext_list, "*.", exts[0], "; ", NULL);
+			g_strfreev(exts);
+		}
+	g_slist_free (formats);
+
+  gtk_file_selection_complete(GTK_FILE_SELECTION(filesel), ext_list);
 
   gtk_signal_connect (GTK_OBJECT(GTK_FILE_SELECTION(filesel)->ok_button), "clicked",
                       GTK_SIGNAL_FUNC(on_filesel_new_ok_clicked),
@@ -184,7 +207,7 @@ on_open_activate                       (GtkMenuItem     *menuitem,
 
   gtk_window_set_title(GTK_WINDOW(filesel), _("Select skin"));
 
-    gtk_file_selection_complete(GTK_FILE_SELECTION(filesel), "*.skn");
+  gtk_file_selection_complete(GTK_FILE_SELECTION(filesel), "*.skn");
 
   gtk_signal_connect (GTK_OBJECT(GTK_FILE_SELECTION(filesel)->ok_button), "clicked",
                       GTK_SIGNAL_FUNC(on_filesel_open_ok_clicked),
@@ -691,7 +714,7 @@ on_filesel_new_ok_clicked                  (GtkButton       *button,
       
       if (fp != NULL)
 	{
-	  if (load_jpeg(fp) == 0)
+	  if (load_image(fp) == 0)
 	    {
 	      skin_infos.changed = 1;
 	      skin_infos.type = SKIN_TYPE_NEW;
@@ -798,7 +821,6 @@ on_drawingarea1_configure_event        (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data)
 {
-  //printf("%i %i %i %i\n", event->x, event->y, event->width, event->height);
   return FALSE;
 }
 

@@ -151,7 +151,7 @@ load_skin_old_vti(FILE *fp)
 
   fseek(fp, 1384, SEEK_SET);
 
-  return load_jpeg(fp);
+  return load_image(fp);
 }
 
 
@@ -232,7 +232,7 @@ load_skin_vti(FILE *fp)
 
   fseek(fp, 1448, SEEK_SET);
 
-  return load_jpeg(fp);
+  return load_image(fp);
 }
 
 int
@@ -348,13 +348,13 @@ load_skin_tiemu(FILE *fp)
 
   fseek(fp, jpeg_offset, SEEK_SET);
   
-  return load_jpeg(fp);
+  return load_image(fp);
 }
 
 GtkWidget *main_wnd;
 
 int
-load_jpeg(FILE *fp)
+load_image(FILE *fp)
 {
   char pattern[] = "fnXXXXXX";
   char *filename;
@@ -363,7 +363,7 @@ load_jpeg(FILE *fp)
   GdkGeometry geometry;
   
   /*
-   * Extract image from file by creating a temp file
+   * Extract image from skin by creating a temp file
    */
   filename = mktemp(pattern); // use tmpfile instead of stdio.h
   ft = fopen(filename, "wb");
@@ -462,7 +462,7 @@ write_skin(void)
 
 	     write_header(fp);
 	     
-	     jpeg_data = read_jpeg(jpeg, &jpeg_length);
+	     jpeg_data = read_image(jpeg, &jpeg_length);
 
 	     if (jpeg_data == NULL)
 	       {
@@ -491,7 +491,7 @@ write_skin(void)
 	 if (fp != NULL)
 	   {
 
-	     jpeg_data = read_jpeg(fp, &jpeg_length);
+	     jpeg_data = read_image(fp, &jpeg_length);
 
 	     if (jpeg_data == NULL)
 	       {
@@ -529,7 +529,7 @@ write_skin(void)
 	     else
 	       fseek(fp, 1384, SEEK_SET);
 	     
-	     jpeg_data = read_jpeg(fp, &jpeg_length);
+	     jpeg_data = read_image(fp, &jpeg_length);
 
 	     if (jpeg_data == NULL)
 	       {
@@ -600,7 +600,7 @@ write_skin_as(const char *dest)
 		 return -1;
 	       }
 
-	     jpeg_data = read_jpeg(jpeg, &jpeg_length);
+	     jpeg_data = read_image(jpeg, &jpeg_length);
 
 	     if (jpeg_data == NULL)
 	       {
@@ -716,7 +716,7 @@ write_header(FILE *fp)
 
 
 unsigned char *
-read_jpeg(FILE *fp, unsigned int *length)
+read_image(FILE *fp, unsigned int *length)
 {
   unsigned char *buf = NULL;
   unsigned char *data = NULL;

@@ -37,7 +37,7 @@ int
 load_skin_tiemu(FILE *fp);
 
 int
-load_jpeg(FILE *fp);
+load_image(FILE *fp);
 
 int
 write_skin(void);
@@ -49,7 +49,7 @@ void
 write_header(FILE *fp);
 
 unsigned char *
-read_jpeg(FILE *fp, unsigned int *length);
+read_image(FILE *fp, unsigned int *length);
 
 
 #endif /* !__SKINOPS_H__ */

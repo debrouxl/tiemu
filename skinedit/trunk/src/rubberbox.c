@@ -75,9 +75,6 @@ mouse_motion(GtkWidget *drawingarea, GdkEventMotion *event, gpointer action)
   if (y > skin_infos.height - 1)
     y = skin_infos.height - 1;
 
-	printf("<%i %i => %i %i>\n", (int)event->x, (int)event->y, x, y);
-
-    
   if (x >= ox)
     {
       tmp_rect.x = ox;
