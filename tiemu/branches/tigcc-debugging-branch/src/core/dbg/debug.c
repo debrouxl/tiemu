@@ -121,11 +121,9 @@ int ti68k_debug_step_over(void)
 	// check current instruction
 	if(!is_bsr_inst((uint16_t)curriword()))
 	{
-		printf("single step !\n");
 		ti68k_debug_step();
 		return 0;
 	}
-	printf("step over !\n");
 
 	// run emulation until address after instruction is reached
 	do

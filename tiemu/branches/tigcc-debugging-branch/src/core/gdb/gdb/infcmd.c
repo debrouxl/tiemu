@@ -689,6 +689,11 @@ which has no line number information.\n", name);
 
 	  if (!stop_step)
 	    break;
+
+	  /* (TiEmu 20050330 Kevin Kofler) */
+	  extern int gtk_events_pending(void);
+	  extern void gtk_main_iteration(void);
+	  while (gtk_events_pending()) gtk_main_iteration();
 	}
 
       if (!single_inst || skip_subroutines)

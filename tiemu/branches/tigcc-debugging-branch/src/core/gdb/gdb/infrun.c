@@ -2282,6 +2282,30 @@ process_event_stop_test:
       return;
     }
 
+  /* (TiEmu 20050401 Kevin Kofler) If we are in supervisor mode and we aren't stepping
+                                   at assembly level, just keep going. */
+  extern int m68k_sim_supervisor_mode_p (void);
+  if ((step_range_end != 1) && m68k_sim_supervisor_mode_p ())
+    {
+      keep_going (ecs);
+      return;
+    }
+
+#if 0
+  /* (TiEmu 20050401 Kevin Kofler) If we are in an F-Line handler and we aren't stepping
+                                   at assembly level, just keep going. */
+  if (step_range_end != 1)
+    {
+      struct minimal_symbol *msym = lookup_minimal_symbol_by_pc (get_frame_address_in_block (
+                                      get_current_frame ()));
+      if (msym && !strncmp (DEPRECATED_SYMBOL_NAME (msym), "__fline_", 8))
+        {
+          keep_going (ecs);
+          return;
+        }
+    }
+#endif
+
   if (frame_id_eq (frame_unwind_id (get_current_frame ()), step_frame_id))
     {
       /* It's a subroutine call.  */

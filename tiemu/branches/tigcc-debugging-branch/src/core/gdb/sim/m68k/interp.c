@@ -341,12 +341,23 @@ sim_info (sd, verbose)
 {
 }
 
+enum step_over_calls_kind
+  {
+    STEP_OVER_NONE,
+    STEP_OVER_ALL,
+    STEP_OVER_UNDEBUGGABLE
+  };
+extern enum step_over_calls_kind step_over_calls;
+extern void ti68k_debug_step_over(void);
 extern int hw_m68k_run(int n, unsigned maxcycles);
 static void m68k_go_sim(int step)
 {
-  if (step)
-    hw_m68k_run(1, 0);
-  else {
+  if (step) {
+    if (step_over_calls == STEP_OVER_ALL)
+      ti68k_debug_step_over ();
+    else
+      hw_m68k_run(1, 0);
+  } else {
     engine_start();
     gtk_main();
     /* If we get here, we were interrupted by the normal course of action. */
@@ -730,4 +741,10 @@ sim_trace_one(pc)
       }
 
   printf("\n");
+}
+
+int
+m68k_sim_supervisor_mode_p (void)
+{
+  return regs.s;
 }
