@@ -11,7 +11,7 @@
 #include "support.h"
 
 #include "interface.h"
-#include "platform.h"
+//#include "platform.h"
 #include "struct.h"
 #include "rcfile.h"
 #include "ticalc.h"

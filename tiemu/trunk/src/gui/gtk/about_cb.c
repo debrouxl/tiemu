@@ -10,17 +10,14 @@
 #include "support.h"
 #include "utils.h"
 
-#include "platform.h"
+//#include "platform.h"
 #include "struct.h"
 #include "version.h"
-#include "img/fmt.h"
 #include "ticalc.h"
 #include "paths.h"
 #include "files.h"
 #include "tilibs.h"
 #include "main.h"
-
-Image img = { NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0 };
 
 gint display_about_dbox(void)
 {

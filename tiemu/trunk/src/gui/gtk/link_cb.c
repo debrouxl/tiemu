@@ -11,7 +11,7 @@
 #include "support.h"
 
 #include "tilibs.h"
-#include "platform.h"
+//#include "platform.h"
 #include "struct.h"
 #include "ticalc.h"
 #include "msg_cb.h"

@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 
-#include "platform.h"
+#include "intl.h"
 #include "msg_cb.h" // msg_box()
 #include "user_cb.h"
 #include "tilibs.h"

@@ -27,7 +27,7 @@
 
 #define MAXCHARS 256
 
-#include "img/fmt.h"
+//#include "img/fmt.h"
 #include "params.h"
 #include "paths.h"
 

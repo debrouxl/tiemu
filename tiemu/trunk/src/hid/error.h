@@ -19,7 +19,7 @@
 #ifndef ERROR_H
 #define ERROR_H
 
-#include "platform.h"
+//#include "platform.h"
 
 DLLEXPORT
 int tiemu_error(int err_num);

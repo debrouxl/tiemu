@@ -12,7 +12,7 @@
 
 #include "bkpt_cause.h"
 #include "support.h"
-#include "platform.h"
+//#include "platform.h"
 #include "struct.h"
 #include "interface.h"
 #include "bkpts.h"

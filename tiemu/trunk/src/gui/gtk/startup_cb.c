@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include <gtk/gtk.h>
+#include <unistd.h>
 
 #include "startup_cb.h"
 #include "startup_dbox.h"
@@ -11,7 +12,7 @@
 #include "utils.h"
 
 #include "tilibs.h"
-#include "platform.h"
+//#include "platform.h"
 #include "struct.h"
 #include "paths.h"
 #include "version.h"

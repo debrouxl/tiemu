@@ -29,15 +29,14 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-//#include <unistd.h>
+#include <unistd.h>
 
 #include "tilibs.h"
-#include "platform.h"
+#include "intl.h"
 #include "paths.h"
 #include "struct.h"
 #include "version.h"
 #include "paths.h"
-#include "img/fmt.h"
 #include "files.h"
 #include "ticalc.h"
 #include "interface.h"

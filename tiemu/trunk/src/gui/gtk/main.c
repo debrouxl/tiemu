@@ -25,8 +25,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "intl.h"
 #include "tilibs.h"
-#include "platform.h"
+//#include "platform.h"
 #include "struct.h"
 #include "ticalc.h"
 #include "version.h"
@@ -110,15 +111,16 @@ int main(int argc, char **argv)
   gtk_init(&argc, &argv);
   if(ti68k_loadImage((options.params)->rom_file)) 
     {
-
+/*
       gtk_widget_show(create_step1_dbox());
       while(!wizard_ok) {
 	while( gtk_events_pending() ) { 
 	  gtk_main_iteration(); 
 	}
       }
+*/
       g_free((options.params)->rom_file);
-      (options.params)->rom_file = g_strdup(wizard_rom);
+      (options.params)->rom_file = g_strdup("C:\\Program Files\\Common Files\\GTK\\2.0\\lib\\ti92.rom");	//wizard_rom);
       g_free(wizard_rom);
       ti68k_loadImage((options.params)->rom_file);
     }

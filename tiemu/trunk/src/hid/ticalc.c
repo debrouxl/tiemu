@@ -29,7 +29,7 @@
 #include <string.h>
 
 /* Program dependencies */
-#include "platform.h"
+//#include "platform.h"
 #include "support.h"
 #include "ticalc.h"
 #include "skn/skin.h"

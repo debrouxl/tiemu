@@ -9,7 +9,7 @@
 #include "trap_dbox.h"
 #include "support.h"
 
-#include "platform.h"
+//#include "platform.h"
 #include "struct.h"
 
 #include "interface.h"

@@ -7,7 +7,7 @@
 #include <gtk/gtk.h>
 #include <gmodule.h> // GModule
 
-#include "platform.h"
+//#include "platform.h"
 #include "tilibs.h"
 #include "interface.h"
 

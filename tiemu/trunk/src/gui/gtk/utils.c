@@ -21,8 +21,9 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <gtk/gtk.h>
+#include <unistd.h>
 
-#include "platform.h"
+//#include "platform.h"
 #include "struct.h"
 #include "paths.h"
 

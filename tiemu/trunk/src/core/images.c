@@ -29,7 +29,7 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <sys/types.h>
-//#include <unistd.h>
+#include <unistd.h>
 #ifndef __WIN32__
 # include <dirent.h>
 #else
@@ -38,6 +38,7 @@
 
 #include "../core/uae/uae.h"
 
+#include "intl.h"
 #include "interface.h"
 #include "../ti_hw/memory.h"
 #include "packets.h"
@@ -48,7 +49,7 @@
 #include "intlist.h"
 #include "errcodes.h"
 #include "images.h"
-#include "platform.h"
+//#include "platform.h"
 #include "m68k.h"
 #include "bkpts.h"
 
@@ -312,8 +313,8 @@ int ti68k_loadRom(const char *filename)
   DISPLAY(_("  Version : %s\n"), cri->version);
   DISPLAY(_("  Type : %s "), (cri->internal) ? "internal" : "external");
   DISPLAY(_("%s\n"), (cri->flash) ? "FLASH" : "PROM");
-  DISPLAY(_("  Size : %i bytes (%1.2f MB)\n"), cri->size, 
-	  (float)(cri->size >> 10)/1024.0);
+  //DISPLAY(_("  Size : %i bytes (%1.2f MB)\n"), cri->size,  (float)((cri->size >> 10) / 1024.0));
+  DISPLAY(_("  Size : %i bytes\n"), cri->size);
   
   params.rom_size = cri->size;
   params.ram_size = (cri->size == 1024*1024) ? 128 : 256;

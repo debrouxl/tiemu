@@ -19,7 +19,7 @@
 #ifndef __RCFILE_H__
 #define __RCFILE_H__
 
-#include "platform.h"
+//#include "platform.h"
 
 
 int check_access();

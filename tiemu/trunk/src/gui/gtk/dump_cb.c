@@ -9,7 +9,7 @@
 #include "support.h"
 
 #include "interface.h"
-#include "platform.h"
+//#include "platform.h"
 #include "struct.h"
 #include "ticalc.h"
 #include "pbar_cb.h"

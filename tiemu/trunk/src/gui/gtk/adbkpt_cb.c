@@ -10,7 +10,7 @@
 #include "adbkpt_dbox.h"
 #include "support.h"
 
-#include "platform.h"
+//#include "platform.h"
 #include "struct.h"
 #include "extern.h"
 #include "ticalc.h"

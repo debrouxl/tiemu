@@ -8,7 +8,7 @@
 #include "colors_dbox.h"
 #include "support.h"
 
-#include "platform.h"
+//#include "platform.h"
 #include "struct.h"
 #include "ticalc.h"
 #include "main.h"

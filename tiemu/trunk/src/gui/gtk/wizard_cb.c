@@ -10,7 +10,7 @@
 #include "wizard_dbox.h"
 #include "support.h"
 
-#include "platform.h"
+//#include "platform.h"
 #include "struct.h"
 #include "ticalc.h"
 #include "msg_cb.h"
