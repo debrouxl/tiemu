@@ -353,7 +353,7 @@ int hid_exit(void)
 /* Converts a keyboard key (an SDL event) into a TI key */
 static int sdl_to_ti(int key) 
 {
-  	if(tihw.calc_type & TI92)
+  	if((tihw.calc_type == TI92) || (tihw.calc_type == TI92p) || (tihw.calc_type == V200))
     {
       	switch(key) 
 		{
@@ -821,7 +821,6 @@ static void hid_lcd_on_off(int i)
 		redraw_skin(); 	// to clear LCD 
 	}
 }
-
 
 /*
   Update the LCD screen by converting and blitting LCD memory
