@@ -44,12 +44,12 @@ extern void io_put_long(CPTR adr, ULONG arg);
 extern void io_put_word(CPTR adr, UWORD arg);
 extern void io_put_byte(CPTR adr, UBYTE arg);
 
-#define io_bit_get(a,b)		bit_get(tihw.io[adr],b)
-#define io_bit_set(a,b)		bit_set(tihw.io[adr],b)
-#define io_bit_clr(a,b)		bit_clr(tihw.io[adr],b)
+#define io_bit_get(a,b)		bit_get(tihw.io[a],b)
+#define io_bit_set(a,b)		bit_set(tihw.io[a],b)
+#define io_bit_clr(a,b)		bit_clr(tihw.io[a],b)
 
-#define io_bit_tst(a,b)		bit_tst(tihw.io[adr],b)
-#define io_bit_chg(a,b,s)	bit_chg(tihw.io[adr],b,s)	
+#define io_bit_tst(a,b)		bit_tst(tihw.io[a],b)
+#define io_bit_chg(a,b,s)	bit_chg(tihw.io[a],b,s)	
 
 extern UBYTE io2_get_byte(CPTR adr);
 extern UWORD io2_get_word(CPTR adr);

@@ -125,6 +125,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
         case 0x0f: 	// rw <76543210>
 			// write a byte to the transmit buffer (1 byte buffer)
             hw_dbus_putbyte(arg);
+			io_bit_clr(0x0c,1);		// tx buffer empty flag
             break;
         case 0x10: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8
@@ -259,6 +260,7 @@ UBYTE io_get_byte(CPTR adr)
             break;
         case 0x0f: 	// rw <76543210>
 			// read one byte from receive (incoming) buffer
+			io_bit_clr(0x0c,0);		// rx buffer full
             return hw_dbus_getbyte();
         case 0x10: 	// -w <76543210> (hw1)
         break;
