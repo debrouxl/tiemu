@@ -393,21 +393,29 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
     switch(addr) 
     {
         case 0x00:	// rw <76543210>
-			break;
+			if(!tihw.protect) tihw.io2[addr] = arg;
+			return;
 		case 0x01:	// rw <76543210>
-			break;
+			if(!tihw.protect) tihw.io2[addr] = arg;
+			return;
 		case 0x02:	// rw <76543210>
-			break;
+			if(!tihw.protect) tihw.io2[addr] = arg;
+			return;
 		case 0x03:	// rw <76543210>
-			break;
+			if(!tihw.protect) tihw.io2[addr] = arg;
+			return;
 		case 0x04:	// rw <76543210>
-			break;
+			if(!tihw.protect) tihw.io2[addr] = arg;
+			return;
 		case 0x05:	// rw <76543210>
-			break;
+			if(!tihw.protect) tihw.io2[addr] = arg;
+			return;
 		case 0x06:	// rw <76543210>
-			break;
+			if(!tihw.protect) tihw.io2[addr] = arg;
+			return;
 		case 0x07:	// rw <76543210>
-			break;
+			if(!tihw.protect) tihw.io2[addr] = arg;
+			return;
 		case 0x11:	// -w <76543210>
 			break;
 		case 0x12:
@@ -415,12 +423,13 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 		case 0x13:  // rw <..543210>
 			break;
 		case 0x14:	// rw <76543210>
+			if(!tihw.protect) tihw.io2[addr] = arg; else return;
 			// RTC, incremented every 2^13. The whole word must be read: 
 			// reading the port byte by byte can return wrong
-			tihw.rtc_value = (tihw.io[0x14] << 8) | tihw.io2[0x15];
+			tihw.rtc_value = (tihw.io2[0x14] << 8) | tihw.io2[0x15];
 			break;
 		case 0x15:	// rw <76543210>
-			tihw.rtc_value = (tihw.io[0x14] << 8) | tihw.io2[0x15];
+			tihw.rtc_value = (tihw.io2[0x14] << 8) | tihw.io2[0x15];
 			break;
 		case 0x17:	// rw <......10>
 			// Display memory snoop range
@@ -434,6 +443,7 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 	            cb_screen_on_off(0);
 			break;
 		case 0x1f:	// rw <.....210>
+			if(!tihw.protect) tihw.io2[addr] = arg; else return;
 			// %0 set: use 5 contrast bits (default for AMS).
 
 			// %1 

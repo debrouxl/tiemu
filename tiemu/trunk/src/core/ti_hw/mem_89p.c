@@ -52,216 +52,468 @@
 
 #define IN_RANGE(a,v,b)	(((v) >= (a)) && ((v) <= (b)))
 
+static int access = 0;
+static int crash = 0;
+
 uint32_t ti89p_get_long(uint32_t adr) 
 {
-    //$1C0000-$1FFFFF: "the Protection" enable/disable
-    //Note: Four consecutive accesses to this range crashes a HW1 calc!
-    //READ:  Enable the Protection
-    //WRITE: Disable the Protection
-    //Note: No access to this range will have any effect unless the access is
-    //"authorized," see below.
-    if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-    {
-        tihw.protect = 1;
-        return lget(adr);
-    }
+	// stealth I/O
+	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
+	{
+		access = crash = 0;
+		cb_screen_on_off(0);
+	}
+	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
+	{
+		if(crash >= 4)
+			hw_m68k_reset();
+		if(access >= 3)
+			tihw.protect = !0;
+		access = 0;
+	}
+	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+	}
+	else if(IN_RANGE(0x210000, adr, 0x21ffff))			// certificate
+	{
+		access = crash = 0;
+		if(tihw.protect) return 0x14141414;
+	}
+	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+	}
+	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
+	{
+		access = crash = 0;
+		return 0x14141414;
+	}
+	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+	}
 
-    // The certificate memory ($210000-$211FFF) is read protected.
-    else if (tihw.protect && adr>=0x210000 && adr<=0x211fff)
-        return 0x14141414;
-  
-    // RAM access
-    else if (adr<0x200000) 
+    // memory
+    if (IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
+	{
         return lget(adr);
-  
-    // FLASH access
-    else if (adr >= 0x200000 && adr<0x600000) 
+	}
+    else if (IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+	{
         return (lget(adr) | wsm.ret_or);
-
-    // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000) 
-        return io_get_long(adr & 0x1f);
-
-	// memory-mapped I/O (hw2)
-	else if(adr >= 0x700000 && adr < 0x800000)
+	}
+    else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
+	{
+       return io_get_long(adr & 0x1f);
+	}
+	else if(IN_RANGE(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
+	{
 		return io2_get_long(adr & 0x1f);
+	}
 
-    else
-        return 0;
+    return 0;
 }
 
 uint16_t ti89p_get_word(uint32_t adr) 
 {
-    //$1C0000-$1FFFFF: "the Protection" enable/disable
-    //Note: Four consecutive accesses to this range crashes a HW1 calc!
-    //READ:  Enable the Protection
-    //WRITE: Disable the Protection
-    //Note: No access to this range will have any effect unless the access is
-    //"authorized," see below.
-    if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-    {
-        tihw.protect = 1;
-        return wget(adr);
-    }
+    // stealth I/O
+	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
+	{
+		access = crash = 0;
+		cb_screen_on_off(0);
+	}
+	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
+	{
+		if(crash >= 4)
+			hw_m68k_reset();
+		if(access >= 3)
+			tihw.protect = !0;
+		access = 0;
+	}
+	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+	}
+	else if(IN_RANGE(0x210000, adr, 0x21ffff))			// certificate
+	{
+		access = crash = 0;
+		if(tihw.protect) return 0x1414;
+	}
+	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+	}
+	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
+	{
+		access = crash = 0;
+		return 0x1414;
+	}
+	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+	}
 
-    // The certificate memory ($210000-$211FFF) is read protected.
-    else if (tihw.protect && adr>=0x210000 && adr<=0x211fff)
-        return 0x1414;
-  
-    // RAM access
-    else if (adr<0x200000) 
+    // memory
+    if (IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
+	{
         return wget(adr);
-  
-    // FLASH access
-    else if (adr >= 0x200000 && adr<0x600000) 
+	}
+    else if (IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+	{
         return (wget(adr) | wsm.ret_or);
-
-    // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000) 
-        return io_get_word(adr & 0x1f);
-
-	// memory-mapped I/O (hw2)
-	else if(adr >= 0x700000 && adr < 0x800000)
+	}
+    else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
+	{
+       return io_get_word(adr & 0x1f);
+	}
+	else if(IN_RANGE(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
+	{
 		return io2_get_word(adr & 0x1f);
+	}
 
-    else
-        return 0;
+    return 0;
 }
 
 uint8_t ti89p_get_byte(uint32_t adr) 
 {
-    //$1C0000-$1FFFFF: "the Protection" enable/disable
-    //Note: Four consecutive accesses to this range crashes a HW1 calc!
-    //READ:  Enable the Protection
-    //WRITE: Disable the Protection
-    //Note: No access to this range will have any effect unless the access is
-    //"authorized," see below.
-    if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-    {
-        tihw.protect = 1;
-        return bget(adr);
-    }
+    // stealth I/O
+	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
+	{
+		access = crash = 0;
+		cb_screen_on_off(0);
+	}
+	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
+	{
+		if(crash >= 4)
+			hw_m68k_reset();
+		if(access >= 3)
+			tihw.protect = !0;
+		access = 0;
+	}
+	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+	}
+	else if(IN_RANGE(0x210000, adr, 0x21ffff))			// certificate
+	{
+		access = crash = 0;
+		if(tihw.protect) return 0x14;
+	}
+	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+	}
+	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
+	{
+		access = crash = 0;
+		return 0x14;
+	}
+	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+	}
 
-    // The certificate memory ($210000-$211FFF) is read protected.
-    else if (tihw.protect && adr>=0x210000 && adr<=0x211fff)
-        return 0x14;
-  
-    // RAM access
-    else if (adr<0x200000) 
+    // memory
+    if (IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
+	{
         return bget(adr);
-  
-    // FLASH access
-    else if (adr >= 0x200000 && adr<0x600000) 
+	}
+    else if (IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+	{
         return (bget(adr) | wsm.ret_or);
-
-    // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000) 
-        return io_get_byte(adr & 0x1f);
-
-	// memory-mapped I/O (hw2)
-	else if(adr >= 0x700000 && adr < 0x800000)
+	}
+    else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
+	{
+       return io_get_byte(adr & 0x1f);
+	}
+	else if(IN_RANGE(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
+	{
 		return io2_get_byte(adr & 0x1f);
+	}
 
-    else
-        return 0;
+    return 0;
 }
 
 void ti89p_put_long(uint32_t adr, uint32_t arg) 
 {
-    // Write accesses to the boot installer sector ($200000-$20FFFF) are
-    // filtered and never reach the flash ROM.
-    if(adr >= 0x200000 && adr < 0x210000)
-        return;
+	// stealth I/O
+	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
+	{
+		access = crash = 0;
+		cb_screen_on_off(!0);
+	}
+	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
+	{
+		if(crash >= 4)
+			hw_m68k_reset();
+		if(access >= 3)
+			tihw.protect = 0;
+		access = 0;
+	}
+	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+		return;		// boot installer
+	}
+	else if(IN_RANGE(0x210000, adr, 0x21ffff))			// certificate
+	{
+		access = crash = 0;
+		if(tihw.protect) return;
+	}
+	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+		if(tihw.protect) return;
+	}
+	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
+	{
+		access = crash = 0;
+		if(tihw.protect) return;
+	}
+	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+		if(tihw.protect) return;
+	}
 
-    //$1C0000-$1FFFFF: "the Protection" enable/disable
-    //Note: Four consecutive accesses to this range crashes a HW1 calc!
-    //READ:  Enable the Protection
-    //WRITE: Disable the Protection
-    //Note: No access to this range will have any effect unless the access is
-    //"authorized," see below.
-    else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-        tihw.protect = 0;
-  
-    // write to internal/external FLASH
-    else if (adr >= 0x200000 && adr < 0x600000)
-    {
+    // memory
+    if (IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
+	{
+        lput(adr, arg);
+	}
+    else if (IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+	{
         FlashWriteByte(adr,(arg>>24)&0xff);
         FlashWriteByte(adr+1,(arg>>16)&0xff);
         FlashWriteByte(adr+2,(arg>>8)&0xff);
         FlashWriteByte(adr+3,arg&0xff);
-    }
-
-    // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000)
-        io_put_long(adr & 0x1f, arg);
-
-	// memory-mapped I/O (hw2)
-	else if(adr >= 0x700000 && adr < 0x800000)
+	}
+    else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
+	{
+		io_put_long(adr & 0x1f, arg);
+	}
+	else if(IN_RANGE(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
+	{
 		io2_put_long(adr & 0x1f, arg);
+	}
 
-    // standard access
-    else
-        lput(adr, arg);
+    return;
 }
 
 void ti89p_put_word(uint32_t adr, uint16_t arg) 
 {
-	if(adr >= 0x200000 && adr < 0x210000)
-        return;
-	else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-        tihw.protect = 0;
+	// stealth I/O
+	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
+	{
+		access = crash = 0;
+		cb_screen_on_off(!0);
+	}
+	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
+	{
+		if(crash >= 4)
+			hw_m68k_reset();
+		if(access >= 3)
+			tihw.protect = 0;
+		access = 0;
+	}
+	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+		return;		// boot installer
+	}
+	else if(IN_RANGE(0x210000, adr, 0x21ffff))			// certificate
+	{
+		access = crash = 0;
+		if(tihw.protect) return;
+	}
+	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+		if(tihw.protect) return;
+	}
+	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
+	{
+		access = crash = 0;
+		if(tihw.protect) return;
+	}
+	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+		if(tihw.protect) return;
+	}
 
-    else if (adr < 0x200000) // pb here
-    {
-	    if (adr >=0x1c0000)
-	        tihw.protect=0;
-	    wput(adr, arg);
-    }
-
-    else if (adr >= 0x200000 && adr < 0x600000) 
-    {
-	    FlashWriteByte(adr,(arg>>8)&0xff);
+    // memory
+    if (IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
+	{
+        wput(adr, arg);
+	}
+    else if (IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+	{
+        FlashWriteByte(adr,(arg>>8)&0xff);
 	    FlashWriteByte(adr+1,arg&0xff);
-    }
-    else if(adr >= 0x600000 && adr < 0x700000)
+	}
+    else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
+	{
 		io_put_word(adr & 0x1f, arg);
-	else if(adr >= 0x700000 && adr < 0x800000)
+	}
+	else if(IN_RANGE(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
+	{
 		io2_put_word(adr & 0x1f, arg);
-	else
-		wput(adr, arg);
+	}
+
+    return;
 }
 
 void ti89p_put_byte(uint32_t adr, uint8_t arg) 
 {
-    // Write accesses to the boot installer sector ($200000-$20FFFF) are
-    // filtered and never reach the flash ROM.
-    if(adr >= 0x200000 && adr < 0x210000)
-        return;
+    // stealth I/O
+	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
+	{
+		access = crash = 0;
+	}
+	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
+	{
+		access = crash = 0;
+		cb_screen_on_off(!0);
+	}
+	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
+	{
+		if(crash >= 4)
+			hw_m68k_reset();
+		if(access >= 3)
+			tihw.protect = 0;
+		access = 0;
+	}
+	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+		return;		// boot installer
+	}
+	else if(IN_RANGE(0x210000, adr, 0x21ffff))			// certificate
+	{
+		access = crash = 0;
+		if(tihw.protect) return;
+	}
+	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+		if(tihw.protect) return;
+	}
+	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
+	{
+		access = crash = 0;
+		if(tihw.protect) return;
+	}
+	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
+	{
+		access++;
+		crash = 0;
+		if(tihw.protect) return;
+	}
 
-    //$1C0000-$1FFFFF: "the Protection" enable/disable
-    //Note: Four consecutive accesses to this range crashes a HW1 calc!
-    //READ:  Enable the Protection
-    //WRITE: Disable the Protection
-    //Note: No access to this range will have any effect unless the access is
-    //"authorized," see below.
-    else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-        tihw.protect = 0;
-  
-    // write to internal/external FLASH
-    else if (adr >= 0x200000 && adr < 0x600000)
-    {
-        FlashWriteByte(adr,arg&0xff);
-    }
-
-    // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000)
-        io_put_byte(adr & 0x1f, arg);
-
-	// memory-mapped I/O (hw2)
-	else if(adr >= 0x700000 && adr < 0x800000)
-		io2_put_byte(adr & 0x1f, arg);
-
-    // standard access
-    else
+    // memory
+    if (IN_RANGE(0x000000, adr, 0x1f0000))				// RAM access
+	{
         bput(adr, arg);
+	}
+    else if (IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+	{
+        FlashWriteByte(adr,arg&0xff);
+	}
+    else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
+	{
+		io_put_byte(adr & 0x1f, arg);
+	}
+	else if(IN_RANGE(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
+	{
+		io2_put_byte(adr & 0x1f, arg);
+	}
+
+    return;
 }

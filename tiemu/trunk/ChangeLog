@@ -5,6 +5,8 @@ SubVersion: $Id$
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect
 
+	HW1 protection is emulated excepted for archive memory limit.
+
 - 07/07/2004, version 1.72: roms
 	Error management connected and updated.
 	Fixed 'restrict to current speed'.
