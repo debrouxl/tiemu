@@ -864,50 +864,50 @@ int rcfile_default()
 void options3_set_default(void)
 {
 	// Optimized for 1024x768
-	options3.bkpts.rect.x = 490;
-	options3.bkpts.rect.y = 380;
+	options3.bkpts.rect.x = 700;
+	options3.bkpts.rect.y = 560;	// XP: tiemu.ini -= 20
 	options3.bkpts.rect.w = 320;
-	options3.bkpts.rect.h = 120;
+	options3.bkpts.rect.h = 145;
 	options3.bkpts.visible = !0;
 	options3.bkpts.minimized = 0;
 
-	options3.code.rect.x = 490;
-	options3.code.rect.y = 30;
+	options3.code.rect.x = 510;
+	options3.code.rect.y = 10;
 	options3.code.rect.w = 320;
-	options3.code.rect.h = 240;
+	options3.code.rect.h = 290;
 	options3.bkpts.visible = !0;
 	options3.bkpts.minimized = 0;
 
 	options3.mem.rect.x = 0;
-	options3.mem.rect.y = 380;
-	options3.mem.rect.w = 480;
-	options3.mem.rect.h = 200;
+	options3.mem.rect.y = 470;
+	options3.mem.rect.w = 520;
+	options3.mem.rect.h = 240;
 	options3.mem.visible = !0;
 	options3.mem.minimized = 0;
 
-	options3.regs.rect.x = 830;
-	options3.regs.rect.y = 0;
+	options3.regs.rect.x = 840;
+	options3.regs.rect.y = 10;
 	options3.regs.rect.w = 180;
 	options3.regs.rect.h = 540;
 	options3.regs.visible = !0;
 	options3.regs.minimized = 0;
 
-	options3.pclog.rect.x = 0;
-	options3.pclog.rect.y = 0;
+	options3.pclog.rect.x = 260;
+	options3.pclog.rect.y = 20;
 	options3.pclog.rect.w = 160;
 	options3.pclog.rect.h = 240;
 	options3.pclog.visible = !0;
 	options3.pclog.minimized = 0;
 
-    options3.stack.rect.x = 0;
-    options3.stack.rect.y = 0;
+    options3.stack.rect.x = 300;
+    options3.stack.rect.y = 180;
     options3.stack.rect.w = 160;
-    options3.stack.rect.h = 240;
+    options3.stack.rect.h = 250;
 	options3.stack.visible = !0;
 	options3.stack.minimized = 0;
 
-	options3.heap.rect.x = 0;
-	options3.heap.rect.y = 0;
+	options3.heap.rect.x = 530;
+	options3.heap.rect.y = 470;
 	options3.heap.rect.w = 160;
 	options3.heap.rect.h = 240;
 	options3.heap.visible = !0;

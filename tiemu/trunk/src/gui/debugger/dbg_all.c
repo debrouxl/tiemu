@@ -310,6 +310,8 @@ on_restore_all1_activate               (GtkMenuItem     *menuitem,
 {
 	// restore windows with default settings
 	options3_set_default();
+
+	//???
 }
 
 void update_submenu(GtkWidget *widget, gpointer user_data)
@@ -385,11 +387,9 @@ on_dbgregs_window_state_event		   (GtkWidget       *widget,
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
 		options3.regs.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-		if(options3.regs.visible)
-		{
-			gtk_window_get_size(GTK_WINDOW(widget), &options3.regs.rect.w, &options3.regs.rect.h);
-			gtk_window_get_position(GTK_WINDOW(widget), &options3.regs.rect.x, &options3.regs.rect.y);
-		}
+
+		gtk_window_get_size(GTK_WINDOW(widget), &options3.regs.rect.w, &options3.regs.rect.h);
+		gdk_window_get_position(widget->window, &options3.regs.rect.x, &options3.regs.rect.y);
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -418,11 +418,9 @@ on_dbgpclog_window_state_event		   (GtkWidget       *widget,
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
 		options3.pclog.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-		if(options3.pclog.visible)
-		{
-			gtk_window_get_size(GTK_WINDOW(widget), &options3.pclog.rect.w, &options3.pclog.rect.h);
-			gtk_window_get_position(GTK_WINDOW(widget), &options3.pclog.rect.x, &options3.pclog.rect.y);
-		}
+
+		gtk_window_get_size(GTK_WINDOW(widget), &options3.pclog.rect.w, &options3.pclog.rect.h);
+		gdk_window_get_position(widget->window, &options3.pclog.rect.x, &options3.pclog.rect.y);
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -452,11 +450,9 @@ on_dbgmem_window_state_event		   (GtkWidget       *widget,
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
 		options3.mem.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-		if(options3.mem.visible)
-		{
-			gtk_window_get_size(GTK_WINDOW(widget), &options3.mem.rect.w, &options3.mem.rect.h);
-			gtk_window_get_position(GTK_WINDOW(widget), &options3.mem.rect.x, &options3.mem.rect.y);
-		}
+
+		gtk_window_get_size(GTK_WINDOW(widget), &options3.mem.rect.w, &options3.mem.rect.h);
+		gdk_window_get_position(widget->window, &options3.mem.rect.x, &options3.mem.rect.y);
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -487,11 +483,9 @@ on_dbgcode_window_state_event		   (GtkWidget       *widget,
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
 		options3.code.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-		if(options3.code.visible)
-		{
-			gtk_window_get_size(GTK_WINDOW(widget), &options3.code.rect.w, &options3.code.rect.h);
-			gtk_window_get_position(GTK_WINDOW(widget), &options3.code.rect.x, &options3.code.rect.y);
-		}
+
+		gtk_window_get_size(GTK_WINDOW(widget), &options3.code.rect.w, &options3.code.rect.h);
+		gdk_window_get_position(widget->window, &options3.code.rect.x, &options3.code.rect.y);
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -521,11 +515,9 @@ on_dbgbkpts_window_state_event		   (GtkWidget       *widget,
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
 		options3.bkpts.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-		if(options3.bkpts.visible)
-		{
-			gtk_window_get_size(GTK_WINDOW(widget), &options3.bkpts.rect.w, &options3.bkpts.rect.h);
-			gtk_window_get_position(GTK_WINDOW(widget), &options3.bkpts.rect.x, &options3.bkpts.rect.y);
-		}
+
+		gtk_window_get_size(GTK_WINDOW(widget), &options3.bkpts.rect.w, &options3.bkpts.rect.h);
+		gdk_window_get_position(widget->window, &options3.bkpts.rect.x, &options3.bkpts.rect.y);
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -554,11 +546,9 @@ on_dbgstack_window_state_event		   (GtkWidget       *widget,
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
 		options3.stack.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-		if(options3.stack.visible)
-		{
-			gtk_window_get_size(GTK_WINDOW(widget), &options3.stack.rect.w, &options3.stack.rect.h);
-			gtk_window_get_position(GTK_WINDOW(widget), &options3.stack.rect.x, &options3.stack.rect.y);
-		}
+
+		gtk_window_get_size(GTK_WINDOW(widget), &options3.stack.rect.w, &options3.stack.rect.h);
+		gdk_window_get_position(widget->window, &options3.stack.rect.x, &options3.stack.rect.y);
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -587,11 +577,9 @@ on_dbgheap_window_state_event		   (GtkWidget       *widget,
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
 		options3.heap.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-		if(options3.heap.visible)
-		{
-			gtk_window_get_size(GTK_WINDOW(widget), &options3.heap.rect.w, &options3.heap.rect.h);
-			gtk_window_get_position(GTK_WINDOW(widget), &options3.heap.rect.x, &options3.heap.rect.y);
-		}
+
+		gtk_window_get_size(GTK_WINDOW(widget), &options3.heap.rect.w, &options3.heap.rect.h);
+		gdk_window_get_position(widget->window, &options3.heap.rect.x, &options3.heap.rect.y);
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
