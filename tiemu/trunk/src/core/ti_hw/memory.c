@@ -105,16 +105,7 @@ int hw_mem_init(void)
 	//tihw.ram_wrap = 
 	tihw.mem_prot = 1;
     tihw.flash_prot = 1;
-
-  /* Init vars */
-  wsm.write_ready=0; 
-  wsm.write_phase=0; 
-  wsm.ret_or=0;
-  wsm.erase=0;
-  wsm.write_ready = 0;
-  wsm.write_phase = 0;
-  wsm.ret_or = 0;
-  //tihw.flash_prot = 0;
+	memset(&wsm, 0, sizeof(wsm));
 
     // clear breakpoints
 	ti68k_bkpt_clear_address();

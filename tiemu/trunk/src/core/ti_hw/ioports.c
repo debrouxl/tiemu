@@ -118,13 +118,13 @@ void io_put_byte(CPTR adr, UBYTE arg)
 
 void io_put_word(CPTR adr, UWORD arg) 
 {
-    io_put_byte(adr, arg>>8);
+    io_put_byte(adr,   arg>>8);
     io_put_byte(adr+1, arg&0xff);
 }
 
 void io_put_long(CPTR adr, ULONG arg) 
 {
-    io_put_word(adr, arg>>16);
+    io_put_word(adr,   arg>>16);
     io_put_word(adr+2, arg&0xffff);
 }
 
