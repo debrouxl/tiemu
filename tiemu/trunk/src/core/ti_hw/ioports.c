@@ -37,6 +37,7 @@
 #include "keyboard.h"
 #include "dbus.h"
 #include "callbacks.h"
+#include "ioports.h"
 #include "ti68k_def.h"
 
 int hw_io_init(void)
@@ -56,13 +57,6 @@ int hw_io_exit(void)
     return 0;
 }
 
-#define bit_get(i,b)	((b) &  (1 << i))
-#define bit_set(i,b)	((b) |  (1 << i))
-#define bit_clr(i,b)	((b) & ~(1 << i))
-
-#define bit_tst(i,b)	(((b) & (1 << i)) >> i)
-
-#define bit_chg(i,b,s)	{if(s) bit_set(i,b); else bit_clr(i, b);}
 
 void io_put_byte(CPTR adr, UBYTE arg)
 {
@@ -70,7 +64,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
     {
         case 0x00:	// rw <76...2..>
 			// bit 0 of contrast
-            tihw.contrast = bit_clr(0, tihw.contrast) | bit_tst(5, arg);
+            tihw.contrast = bit_clr(tihw.contrast,0) | bit_get(arg,5);
 
 			// update contrast
             if(tihw.calc_type != TI92)
@@ -78,11 +72,11 @@ void io_put_byte(CPTR adr, UBYTE arg)
         break;
         case 0x01:	// rw <.....2.0>
 			// clr: interleave RAM (allows use of 256K of RAM)
-			tihw.ram256 = bit_tst(0, arg);
+			tihw.ram256 = bit_get(arg,0);
 			//mem_mask[0] = tihw.ram256 ? 0x1fffff : 0x3fffff;
 
 			// set: protected memory violation triggered when memory below [$000120] is written
-			tihw.mem_prot = bit_tst(2, arg);
+			tihw.mem_prot = bit_get(arg,2);
 	    break;
 	    case 0x02:	// ??
 	    break;
@@ -92,7 +86,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
         break;
         case 0x05:	// -w <...43210>
         	// set: 000000..1FFFFF mapped to 200000..3FFFFF
-			tihw.ram_wrap = bit_tst(3, arg);
+			tihw.ram_wrap = bit_get(arg,3);
             //mem_tab[2] = mem_tab[0];
             //mem_tab[3] = mem_tab[1];
             
@@ -107,13 +101,13 @@ void io_put_byte(CPTR adr, UBYTE arg)
         break;
         case 0x0c:	// rw <765.3210>
 			// autostart enable, should be set if $600005:3 is set
-			tihw.dbus_auto = bit_tst(7, arg);
+			tihw.dbus_auto = bit_get(arg,7);
 			
 			// disable byte sender/receiver (also disables interrupts)
-			tihw.dbus_raw = bit_tst(6, arg);
+			tihw.dbus_raw = bit_get(arg,6);
 
 			// link timeout disable
-			tihw.dbus_to = bit_tst(5, arg);
+			tihw.dbus_to = bit_get(arg,5);
 
 			// trigger int level 4 on ...
 
@@ -124,8 +118,8 @@ void io_put_byte(CPTR adr, UBYTE arg)
 			// set red/white wires (if direct access)			
 			if(tihw.dbus_raw)
 	        {
-	            lc.set_red_wire(bit_get(0, arg));
-	            lc.set_white_wire(bit_get(1, arg));
+	            lc.set_red_wire(bit_get(arg,0));
+	            lc.set_white_wire(bit_get(arg,1));
 	        }
         break;
         case 0x0f: 	// rw <76543210>
@@ -169,7 +163,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
         	// Write any value to $60001B to acknowledge this interrupt (AutoInt2)
         break;
         case 0x1c:	// -w <..5432..>
-            tihw.lcd_off = bit_tst(7, arg);
+            tihw.lcd_off = bit_get(arg,7);
             if(tihw.lcd_off)
 	        {
 	            specialflags |= SPCFLAG_STOP;
@@ -181,9 +175,9 @@ void io_put_byte(CPTR adr, UBYTE arg)
         case 0x1d:	// -w <7..43210>
 			// bits <5> of contrast (hw2)
 			if(tihw.hw_type == 2)
-				tihw.contrast = bit_clr(5, tihw.contrast) | (bit_tst(4, arg) << 1);
+				tihw.contrast = bit_clr(tihw.contrast,5) | (bit_get(arg,4) << 1);
 			else
-				tihw.lcd_power = bit_tst(4, arg);
+				tihw.lcd_power = bit_get(arg,4);
 
 			// bits <.4321.> of contrast
             tihw.contrast = (tihw.contrast & 1) | ((arg & 15) << 1);
@@ -350,7 +344,7 @@ void io2_put_byte(CPTR adr, UBYTE arg)
 		case 0x17:	// rw <......10>
 			break;
 		case 0x1d:	// rw <7...3210>
-				tihw.lcd_power = bit_tst(1, arg);
+				tihw.lcd_power = bit_get(arg,1);
 			break;
 		case 0x1f:	// rw <.....210>
 			break;
