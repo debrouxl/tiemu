@@ -1,3 +1,27 @@
+/* Hey EMACS -*- linux-c -*- */
+/* $Id$ */
+
+/*  TiEmu - an TI emulator
+ *
+ *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
+ *  Copyright (c) 2003-2004, Romain Liévin
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -68,10 +92,11 @@ static GtkListStore* clist_create(GtkWidget *list)
 	return store;
 }
 
-static void clist_populate(GtkListStore *store)
+static void clist_refresh(GtkListStore *store)
 {
     GtkTreeIter iter;
 	gint i;
+    GdkPixbuf *pix;
 
 	for(i = 0; i < 128; i++)
 	{
@@ -81,8 +106,9 @@ static void clist_populate(GtkListStore *store)
 		COL_DISASM, ti68k_exception_to_string(i),
 		-1);
 	}
-	/*
-	pix1 = create_pixbuf("up.ico");
+
+    /*
+	pix1 = create_pixbuf("run.ico");
 	COL_ICON, pix1
 	*/
 }
@@ -120,6 +146,7 @@ gint display_dbgcode_window(void)
 	return 0;
 }
 
+
 GLADE_CB void
 on_dbgcode_window_destroy               (GtkObject       *object,
                                         gpointer         user_data)
@@ -127,14 +154,8 @@ on_dbgcode_window_destroy               (GtkObject       *object,
     gtk_widget_destroy(GTK_WIDGET(object));
 }
 
-GLADE_CB void
-dbgcode_dbgcode_window_destroy              (GtkObject       *object,
-                                        gpointer         user_data)
-{
 
-}
-
-
+// Run
 GLADE_CB void
 dbgcode_button1_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
@@ -143,6 +164,7 @@ dbgcode_button1_clicked                     (GtkButton       *button,
 }
 
 
+// Step
 GLADE_CB void
 dbgcode_button2_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
@@ -151,6 +173,7 @@ dbgcode_button2_clicked                     (GtkButton       *button,
 }
 
 
+// Step over
 GLADE_CB void
 dbgcode_button3_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
@@ -159,6 +182,7 @@ dbgcode_button3_clicked                     (GtkButton       *button,
 }
 
 
+// Run to cursor
 GLADE_CB void
 dbgcode_button4_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
@@ -167,6 +191,7 @@ dbgcode_button4_clicked                     (GtkButton       *button,
 }
 
 
+// Break
 GLADE_CB void
 dbgcode_button5_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
@@ -175,6 +200,7 @@ dbgcode_button5_clicked                     (GtkButton       *button,
 }
 
 
+// Set breakpoint
 GLADE_CB void
 dbgcode_button6_clicked                     (GtkButton       *button,
                                         gpointer         user_data)

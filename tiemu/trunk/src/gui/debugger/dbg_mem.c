@@ -1,3 +1,27 @@
+/* Hey EMACS -*- linux-c -*- */
+/* $Id$ */
+
+/*  TiEmu - an TI emulator
+ *
+ *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
+ *  Copyright (c) 2003-2004, Romain Liévin
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -203,7 +227,7 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 
         gtk_list_store_append(store, &iter);
 
-		str = g_strdup_printf("0x%06x", addr);
+		str = g_strdup_printf("%06x", addr);
 		gtk_list_store_set(store, &iter, 
 			COL_ADDR, str, 
 			COL_COLOR, &color,
@@ -261,7 +285,7 @@ static void notebook_add_tab(GtkWidget *notebook, const char* tab_name)
     else
     {
 		// display normal
-		sscanf(tab_name, "0x%06x", &addr);
+		sscanf(tab_name, "%06x", &addr);
     	clist_populate(store, addr, 64);
     }
 	gtk_widget_show(child);
@@ -356,7 +380,7 @@ on_add1_activate                       (GtkMenuItem     *menuitem,
 	
 	display_dbgmem_dbox(&addr);
 	
-	str = g_strdup_printf("0x%06x", addr);
+	str = g_strdup_printf("%06x", addr);
 	notebook_add_tab(notebook, str);
 	g_free(str);
 }
