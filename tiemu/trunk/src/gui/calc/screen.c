@@ -101,6 +101,7 @@ void compute_grayscale(void)
 
 	printf("# planes: %i | contrast: %i\n", max_plane, contrast);
 
+	// Compute RBG bsaic values
   	sr = (white & 0xff0000) >> 8;
   	sg = (white & 0x00ff00);
   	sb = (white & 0x0000ff) << 8;
@@ -109,6 +110,7 @@ void compute_grayscale(void)
   	eg = (black & 0x00ff00);
   	eb = (black & 0x0000ff) << 8;
 
+	// Compute RGB values tuned with contrast
   	if(contrast < NGS) 
     {
       	sr = sr - (sr-er) * (NGS - contrast)/NGS;
@@ -121,6 +123,8 @@ void compute_grayscale(void)
       	eg = eg - (eg-sg)*(contrast - NGS)/NGS;
       	eb = eb - (eb-sb)*(contrast - NGS)/NGS;
     }
+
+	printf("a: %02x%02x%02x | %02x%02x%02x\n", sr>>8, sg>>8, sb>>8, er>>8, eg>>8, eb>>8);
   
   	r = sr;
   	g = sg;
@@ -140,19 +144,22 @@ void compute_grayscale(void)
 		}
     }
 
-	// 2: 00, ff
-	// 4: 00, 55, aa, ff
-	/*
-	for(i = 0; i < max_plane; i++)
+	// Compute grayscale palette
+	if(!max_plane)
+		return;
+	
+	// testing purposes
+	//for(i = 0; i <= max_plane; i++) grayscales[i].r = grayscales[i].g = grayscales[i].b = 255 - (i*255)/(max_plane);
+
+	//grayscales[0].r = sr>>8; grayscales[0].g = sg>>8; grayscales[0].b = sb>>8;
+	//grayscales[1].r = er>>8; grayscales[1].g = eg>>8; grayscales[1].b = eb>>8;
+	
+	for(i = 0; i <= max_plane; i++)
 	{
-		grayscales[i].r = grayscales[i].g = grayscales[i].b = (i*255)/(max_plane - 1);
-		printf("%i: %i %02x\n", i, (i*255)/(max_plane-1), (i*255)/(max_plane-1));
+		grayscales[i].r = ((sr-er)/max_plane * (max_plane-i) + er) >> 8;
+		grayscales[i].g = ((sg-eg)/max_plane * (max_plane-i) + eg) >> 8;
+		grayscales[i].b = ((sb-eb)/max_plane * (max_plane-i) + eb) >> 8;
 	}
-	*/
-	/*
-	grayscales[0].r = grayscales[0].g = grayscales[0].b = 0xff;
-	grayscales[1].r = grayscales[1].g = grayscales[1].b = 0x00;
-	*/
 }
 
 /* Redraw the skin into window but don't reload skin file */
