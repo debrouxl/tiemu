@@ -159,7 +159,7 @@ int hw_mem_init(void)
     tihw.initial_pc = find_pc();
 
 	// set memory mappers for hw protection
-	if(params.hw_protect && (tihw.calc_type == TI89))
+	if(params.hw_protect && (tihw.calc_type != TI92))
 	{
 		get_byte_ptr = hwp_get_byte;
 		get_word_ptr = hwp_get_word;

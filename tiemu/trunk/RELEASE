@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.80n		(25/02/2005)
-Current version:  1.80o		(09/03/2005)
+Previous version: 1.80o		(09/03/2005)
+Current version:  1.80p		(19/03/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,38 +20,34 @@ For the other link cables, no driver is needed because it's provided.
 New capabilities:
 -----------------
 
-	- program entry breakpoint feature now useable with AMS >= 2.00 
-	- added Win32 file selector
+	- added KDE file selector support (Kevin)
+	- full hw1/2/3 protection support for all calcs
 
 
 Improvements:
 -------------
 
-	- handles are now displayed fine with PedRom
-	- improved dbg windows behaviour: save/restore size, position and state (hide/minimized)
-	- updated manpage
-	- command line improved and up-to-date
-	- cleaned-up configure.ac script (CygWin & MinGW)
+	- increased link timeout from 1.5 to 10s (no more transfer interrupts)
+  - grayscale support (dual buffer) from Kevin Kofler
+  - can send all of 89?, 92?, 9x? and v2? to all the models
+  - clean-up in ti68k_scan_images (no more cache, useless now)
+  - can remove (=file delete) image from list
 		
 
 Bug fixes:
 ----------
 
-	- bug in ti68k_get_hw_param_block (wrong search/replace)
-	- TAB char (0x09) pb in the dbg_mem window (Lionel)
-	- Step Over
-	- dependancy problem with tiemu&uae rule in src/Makefile.in
-	- bad use of sizeof in hw_io_init
-	- MinGW path with Kevin
-	- -mms-bitfields issue with UAE Makefile under MinGW (Kevin)
-	- out-of-range access with io_bit_tst in ports.c (Kevin)
-	- contrast on TI92+
+	- fixed ghost of RAM in $100000 on TI89,92,92+,V200
+	- fixed ghost of RAM in $000000 on Tinanium
+	- fixed timer incrementing/reloading (PPhd: loop freeze)
+	- fixed size for archived handles on PedRom
+	- fixed file pattern for Win32 file selector; fixed default 
+					path and pattern for the new GTK file selector.
 
 
 To do:
 ------
 
-	- implement the HW2 Protection (HW1 protection if almost complete)
 	- implement the RTC introduced with AMS 2.09
 
 	

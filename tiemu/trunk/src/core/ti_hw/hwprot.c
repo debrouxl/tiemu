@@ -38,19 +38,21 @@
 #include "ti68k_def.h"
 #include "ti68k_int.h"
 
-static uint32_t ba;			// FLASH ROM base address
+static uint32_t ba;			// FLASH ROM base address (shortcut)
 
 static int access1;			// protection access authorization (hw1)
 static int access2;			// protection access authorization (hw2)
 static int crash;			// access counter before crashing
 static int arch_mem_crash;	// same
 
+#define IN_RANGE2(a,v,b)	(((v) >= ((a)+ba)) && ((v) <= ((b)+ba)))
 #define HWP
 
 int hw_hwp_init(void)
 {
 	tihw.protect = 0;
-	ba = tihw.rom_base << 24;
+	ba = (tihw.rom_base << 16) - 0x200000;
+	printf("ba = %06x\n", ba);
 	access1 = access2 = crash = arch_mem_crash = 0;
 
 	return 0;
@@ -93,7 +95,7 @@ int hwp_fetch(uint32_t adr)
 	// protections (hw1)
 	if(tihw.hw_type == HW1)
 	{
-		if(IN_RANGE(0x390000+tihw.archive_limit*0x10000, 
+		if(IN_RANGE2(0x390000+tihw.archive_limit*0x10000, 
 								adr, 0x3fffff))				// archive memory limit (hw1)
 		{
 			// three consecutive access to any adress >=$390000+limit*$10000 and <$400000 crashes the calc
@@ -125,10 +127,12 @@ int hwp_fetch(uint32_t adr)
 				return 2;
 			}
 		}
-		else if(IN_RANGE(0x210000, adr, 0x3fffff))			// FLASH page execution protection
+		else if(IN_RANGE2(0x210000, adr, 0x3fffff))			// FLASH page execution protection
 		{
-			if(adr >= (uint32_t)(0x210000 + tihw.io2[0x12]*0x10000)) 
+			printf("$%06x ", adr);
+			if(adr >= (uint32_t)(0x210000 + tihw.io2[0x12]*0x10000 + ba)) 
 			{
+				//printf("$%06x ", adr);
 				//freeze_calc();
 				//return 3;
 			}
@@ -159,7 +163,7 @@ uint8_t hwp_get_byte(uint32_t adr)
 	}
 	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
 	{
-		tihw.on_off = 0;
+		//tihw.on_off = 0;
 	}
 	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable
 	{
@@ -178,7 +182,7 @@ uint8_t hwp_get_byte(uint32_t adr)
 			}
 		}
 	}
-	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
+	else if(IN_RANGE2(0x200000, adr, 0x20ffff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
@@ -187,12 +191,12 @@ uint8_t hwp_get_byte(uint32_t adr)
 			if(!(adr & 1)) 
 				access2++;
 	}
-	else if(IN_RANGE(0x210000, adr, 0x211fff))			// certificate (read protected)
+	else if(IN_RANGE2(0x210000, adr, 0x211fff))			// certificate (read protected)
 	{
 		if(tihw.protect)
 			return 0x14;
 	}
-	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
+	else if(IN_RANGE2(0x212000, adr, 0x217fff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
@@ -201,12 +205,12 @@ uint8_t hwp_get_byte(uint32_t adr)
 			if(!(adr & 1)) 
 				access2++;
 	}
-	else if(IN_RANGE(0x218000, adr, 0x219fff))			// read protected
+	else if(IN_RANGE2(0x218000, adr, 0x219fff))			// read protected
 	{
 		if(tihw.protect)
 			return 0x14;
 	}
-	else if(IN_RANGE(0x21a000, adr, 0x21ffff))			// protection access authorization
+	else if(IN_RANGE2(0x21a000, adr, 0x21ffff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
@@ -257,7 +261,7 @@ void hwp_put_byte(uint32_t adr, uint8_t arg)
 	}
 	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
 	{
-		tihw.on_off = !0;
+		//tihw.on_off = !0;
 	}
 	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection disable
 	{
@@ -276,7 +280,7 @@ void hwp_put_byte(uint32_t adr, uint8_t arg)
 			}
 		}
 	}
-	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
+	else if(IN_RANGE2(0x200000, adr, 0x20ffff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
@@ -291,7 +295,7 @@ void hwp_put_byte(uint32_t adr, uint8_t arg)
 	else if(IN_RANGE(0x210000, adr, 0x211fff))			// certificate (read protected)
 	{
 	}
-	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
+	else if(IN_RANGE2(0x212000, adr, 0x217fff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
@@ -300,11 +304,11 @@ void hwp_put_byte(uint32_t adr, uint8_t arg)
 			if(!(adr & 1)) 
 				access2++;
 	}
-	else if(IN_RANGE(0x218000, adr, 0x219fff))			// read protected
+	else if(IN_RANGE2(0x218000, adr, 0x219fff))			// read protected
 	{
 		return;
 	}
-	else if(IN_RANGE(0x21a000, adr, 0x21ffff))			// protection access authorization
+	else if(IN_RANGE2(0x21a000, adr, 0x21ffff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
