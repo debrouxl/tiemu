@@ -45,7 +45,6 @@ uae_OBJ = \
 
 tihw_OBJ = \
 	core/ti_hw/dbus.o	\
-	core/ti_hw/debugger.o 	\
 	core/ti_hw/hardware.o 	\
 	core/ti_hw/ioports.o 	\
 	core/ti_hw/keyboard.o 	\

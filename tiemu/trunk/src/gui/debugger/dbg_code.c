@@ -111,19 +111,26 @@ static void clist_populate(GtkListStore *store)
     {
         char output[128];
         int offset;
-        gchar** row_text;
+	gchar** split;
+        gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
         uint32_t value;
         
         // disassemble at 'addr' address into 'output' and returns offset to the
         // next instruction address
         offset = ti68k_debug_disassemble(addr, output);
 
-        row_text = g_strsplit(output, " ", 3);
-        if(row_text[2] == NULL)
-            row_text[2] = g_strdup("");
-        if(row_text[1] == NULL)
+        split = g_strsplit(output, " ", 3);
+
+	row_text[0] = g_strdup(split[0]);
+	sscanf(row_text[0], "%lx", (long *)&value);
+        if(split[1] == NULL)
             row_text[1] = g_strdup("");
-        sscanf(row_text[0], "%lx", (long *)&value);
+	else
+	    row_text[1] = g_strdup(split[1]);
+	if(split[2] == NULL)
+            row_text[2] = g_strdup("");
+	else
+	    row_text[2] = g_strdup(split[2]);
 
         pix = create_pixbuf("void.xpm");
 
@@ -136,8 +143,9 @@ static void clist_populate(GtkListStore *store)
         COL_HEXADDR, value,
 		-1);
 
-        g_strfreev(row_text);
         addr += offset;
+        g_strfreev(split);
+	g_strfreev(row_text);
     }
 }
 

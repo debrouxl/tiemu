@@ -1,7 +1,21 @@
-gladedir = $(pkgdatadir)/glade
-dist_glade_DATA = *-2.glade *-2.gladep
+SHELL=/bin/sh
+INSTALL=@INSTALL@
 
-EXTRA_DIST = *-2.str
+GLADE_FILES = *-2.glade *-2.gladep
+STR_FILES = *-2.str
+EXTRA_DIST = $(GLADE_FILES) $(STR_FILES)
+
+install: $(GLADE-FILES)
+	@echo Installing glade files...
+	@$(INSTALL) -m755 -d /usr/share/tiemu/glade	#$(tilp_glade_dir)
+	@for I in ./$(GLADE_FILES) ; do \
+		$(INSTALL) -m644 $$I /usr/share/tiemu/glade/; \
+	done
+	@echo Done
+
+uninstall:
+	@echo Removing pixmaps...
+	$(RM) $(tilp_glade_dir)/$(GLADE_FILES)
 
 dos2unix:
 	dos2unix
