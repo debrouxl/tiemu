@@ -54,27 +54,6 @@ PPhd
  tiemu.ini file. Where is this file? It is not in $HOME/.tiemu,
  and not in $prefix/. Neither in the source files.
 
-* For the handle which are archived on PedroM, the display size is wrong. 
- Fix in heap_get_block_size:
-  if (!pedrom)
-  --> 
-  if (!pedrom || addr > rom_base) 
- By the way, it would be a good idea to factorize this code (It is duplicated 4 times).
-
-* It is nothing real annoying (in facts, it has helped me), but the interrupts are not
-handled exactly like on real
- calculators. In fact, there was a bug in PedroM 0.80: the completion fails sometimes. It
-sends a KEY_ENTER
- instead of the command. 
- It never happens on VTI. It happens rarely on real calc. And it always happen on tiemu :)
- 
- The bug was due to the fact than int1 is not called inside a long loop of code, which is
-perfectly possible but quite 
- rarely.
- 
- So it isn"t really a bug report, just a notice of difference between tiemu and real
-calculators.
-
 
 roms
 ====

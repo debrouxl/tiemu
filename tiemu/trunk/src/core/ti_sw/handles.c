@@ -150,7 +150,7 @@ uint16_t heap_size(int handle)
 	heap_get_addr(&base);
 
 	addr = mem_rd_long(base + 4*handle);
-	if(!pedrom)
+	if(!pedrom || addr > rom_base)
 	{
 		size = mem_rd_word(addr - 2);
 		size &= ~(1 << 16);	// remove lock
