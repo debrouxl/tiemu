@@ -259,7 +259,7 @@ SOURCE="..\..\..\..\..\SDL-1.2.7\lib\SDL.lib"
 # End Source File
 # Begin Source File
 
-SOURCE=.\jpeg.lib
+SOURCE=..\..\..\..\..\Gtk2Dev\lib\libjpeg.lib
 # End Source File
 # End Group
 # End Target
