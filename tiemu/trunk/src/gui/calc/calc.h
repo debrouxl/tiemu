@@ -82,6 +82,8 @@ typedef struct
 
 typedef struct
 {
+	int			t;	// twice
+
 	float		x;	// x ratio
 	float		y;	// y ratio
 

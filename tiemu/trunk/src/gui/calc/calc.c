@@ -30,6 +30,7 @@
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "intl.h"
 #include "paths.h"
@@ -377,7 +378,7 @@ int  hid_init(void)
 	lcd_bytmap = (uint32_t *)malloc(LCDMEM_W * LCDMEM_H);
 
     // Allocate the lcd pixbuf
-    lcd = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, LCDMEM_W, LCDMEM_H);
+    lcd = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, si.t * LCDMEM_W, si.t * LCDMEM_H);
     if(lcd == NULL)
     {
         gchar *s = g_strdup_printf("unable to create LCD pixbuf.\n");
@@ -393,6 +394,7 @@ int  hid_init(void)
 	li.height = gdk_pixbuf_get_height (lcd);
 	li.rowstride = gdk_pixbuf_get_rowstride (lcd);
 	li.pixels = gdk_pixbuf_get_pixels (lcd);
+	printf("%i %i %i\n", li.width, li.height, li.rowstride);
 
 	// Create main window
 	display_main_wnd();
@@ -486,6 +488,7 @@ int hid_switch_fullscreen(void)
 		gint sw = gdk_screen_get_width(screen);
 		gint sh = gdk_screen_get_height(screen);
 
+		si.t = 1;
 		si.x = (float)sw / li.pos.w;
 		si.y = (float)sh / li.pos.h;
 		//printf("%i %i %f\n", sw, li.pos.w, si.x);
@@ -509,6 +512,7 @@ int hid_switch_normal_view(void)
 {
 	if(view_mode != VW_NORMAL)
 	{
+		si.t = 1;
 		si.x = si.y = 1;
 		params.background = 1;
 
@@ -526,6 +530,7 @@ int hid_switch_large_view(void)
 {
 	if(view_mode != VW_LARGE)
 	{
+		si.t = 2;
 		si.x = si.y = 2;
 		params.background = 1;		
 		
