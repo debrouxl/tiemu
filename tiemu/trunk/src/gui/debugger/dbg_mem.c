@@ -45,6 +45,8 @@
 #include "struct.h"
 #include "dbg_all.h"
 
+#define FORCE_REFRESH
+
 #define DUMP_SIZE       128
 
 static GtkWidget *notebook;
@@ -492,6 +494,16 @@ dbgmem_button4_clicked                     (GtkButton       *button,
 }
 
 GLADE_CB void
+dbgmem_button5_clicked                     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+	gint page = gtk_notebook_get_current_page(nb);
+
+	refresh_page(page, 0);
+}
+
+GLADE_CB void
 on_notebook1_switch_page               (GtkNotebook     *notebook,
                                         GtkNotebookPage *page,
                                         guint            page_num,
@@ -538,6 +550,7 @@ static void refresh_page(int page, int offset)
 	addr &= 0xffffff;
 
     // refresh only if mem changed (speed-up)
+#ifndef FORCE_REFRESH
     if(!offset)
     {
         static uint8_t old[DUMP_SIZE] = { 0 };
@@ -558,6 +571,7 @@ static void refresh_page(int page, int offset)
 
         if(!diff) return;
     }
+#endif
 
     // refresh tab
 	str = g_strdup_printf("%06x", addr);

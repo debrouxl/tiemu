@@ -73,7 +73,7 @@ that the maximum is usually 1 Mb.
 TI-89 ROMs use:
 
 000000-03FFFF to address RAM.
-200000-2FFFFF to address ROM (soldered onto the board).
+200000-3FFFFF to address ROM (soldered onto the board).
 600000-60001F to address I/O.
 
 TI-92+/TI92 2.1 ROMs use:

@@ -128,6 +128,7 @@ typedef struct
     uchar	*ram;
     uchar	*io;
     uchar	*io2;
+    uchar   *unused;
     int     initial_pc;
 
     int		protect;		// the Hardware Protection

@@ -42,7 +42,7 @@
 #include "ti68k_int.h"
 
 // 000000-0fffff : RAM (128 or 256 KB)
-// 100000-1fffff : 
+// 100000-1fffff : ghost
 // 200000-2fffff : internal ROM (TI92) or unused
 // 300000-3fffff : idem
 // 400000-4fffff : external ROM (TI92,+) or unused
@@ -61,13 +61,6 @@
 int ti92_mem_init(void)
 {
     int i;
-
-    // set all banks to RAM (with mask 0 per default)
-    for(i=0; i<16; i++)
-    {
-        mem_tab[i] = tihw.ram; 
-        mem_msk[i] = 0;
-    }
 
     // map RAM
     mem_tab[0] = tihw.ram;

@@ -108,11 +108,15 @@ int hw_mem_init(void)
     tihw.rom = malloc(tihw.rom_size + 4);
     tihw.io  = malloc(tihw.io_size + 4);
     tihw.io2 = malloc(tihw.io_size + 4);
+    tihw.unused = malloc(1*MB + 4);
 
     // clear RAM/ROM/IO
     memset(tihw.ram, 0x00, tihw.ram_size);
     memset(tihw.io , 0x00, tihw.io_size);  
 	memset(tihw.io2, 0x00, tihw.io_size);
+    memset(tihw.rom, 0xff, tihw.rom_size);
+    memset(tihw.unused, 0x00, 1*MB + 4);
+    /*
     for (i=0; i<tihw.rom_size; i++)
     {
         if (i & 1)
@@ -120,12 +124,20 @@ int hw_mem_init(void)
         else
 	        tihw.rom[i] = 0x14;
     }
+    */
 
 	// clear banks
 	memset(&mem_tab, 0, sizeof(mem_tab));
 	memset(&mem_msk, 0, sizeof(mem_msk));
 
-    // set banks
+    // default: set all banks to UNUSED (with mask 0 per default)
+    for(i=0; i<16; i++)
+    {
+        mem_tab[i] = tihw.unused; 
+        mem_msk[i] = 0;
+    }
+
+    // set banks on per calc basis
     switch(tihw.calc_type)
     {
     case TI92:

@@ -42,7 +42,7 @@
 #include "flash.h"
 
 // 000000-0fffff : RAM (256 KB)
-// 100000-1fffff : ?
+// 100000-1fffff : ghost
 // 200000-2fffff : internal ROM (TI89)
 // 300000-3fffff : idem
 // 400000-4fffff : ?
@@ -60,14 +60,7 @@
 
 int ti89_mem_init(void)
 {
-	int i;
- 
-    // set all banks to RAM (with mask 0 per default)
-    for(i=0; i<16; i++)
-    {
-        mem_tab[i] = tihw.ram; 
-        mem_msk[i] = 0;
-    }
+    int i = 0;
 
     // map RAM
     mem_tab[0] = tihw.ram;
@@ -77,8 +70,14 @@ int ti89_mem_init(void)
     mem_tab[2] = tihw.rom;
     mem_msk[2] = MIN(tihw.rom_size - 0*MB, 1*MB) - 1;
 
-    mem_tab[3] = tihw.rom + 0x100000;
-    mem_msk[3] = MIN(tihw.rom_size - 1*MB, 1*MB) - 1;
+    mem_tab[5] = mem_tab[3] = tihw.rom + 0x100000;
+    mem_msk[5] = mem_msk[3] = MIN(tihw.rom_size - 1*MB, 1*MB) - 1;
+
+    // ghosts
+    mem_tab[4] = mem_tab[2];
+    mem_msk[4] = mem_msk[2];
+    mem_tab[5] = mem_tab[3];
+    mem_msk[5] = mem_msk[3];
 
     // map IO
     mem_tab[6] = tihw.io;

@@ -42,7 +42,7 @@
 #include "flash.h"
 
 // 000000-0fffff : RAM (256 KB)
-// 100000-1fffff : ?
+// 100000-1fffff : ghost
 // 200000-2fffff : unused
 // 300000-3fffff : unused
 // 400000-4fffff : external FLASH
@@ -62,13 +62,6 @@ int ti92p_mem_init(void)
 {
 	int i;
 
-    // set all banks to RAM (with mask 0 per default)
-    for(i=0; i<16; i++)
-    {
-        mem_tab[i] = tihw.ram; 
-        mem_msk[i] = 0;
-    }
-
     // map RAM
     mem_tab[0] = tihw.ram;
     mem_msk[0] = tihw.ram_size-1;
@@ -79,6 +72,12 @@ int ti92p_mem_init(void)
 
     mem_tab[5] = tihw.rom + 0x100000;
     mem_msk[5] = MIN(tihw.rom_size - 1*MB, 1*MB) - 1;
+
+    // ghosts
+    mem_tab[2] = mem_tab[4];
+    mem_msk[2] = mem_msk[4];
+    mem_tab[3] = mem_tab[5];
+    mem_msk[3] = mem_msk[5];
 
     // map IO
     mem_tab[6] = tihw.io;

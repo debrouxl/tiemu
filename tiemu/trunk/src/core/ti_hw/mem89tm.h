@@ -29,7 +29,7 @@
 
 /* Functions */
 
-int ti89_mem_init(void);
+int ti89t_mem_init(void);
 
 uint8_t  ti89t_get_byte(uint32_t addr);
 uint16_t ti89t_get_word(uint32_t addr);
