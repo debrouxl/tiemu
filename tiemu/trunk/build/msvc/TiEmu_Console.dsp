@@ -495,6 +495,10 @@ SOURCE=..\..\src\gui\debugger\dbg_mem.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gui\debugger\dbg_pclog.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\debugger\dbg_regs.c
 # End Source File
 # Begin Source File

@@ -42,7 +42,7 @@ int hw_m68k_init(void)
     bkpts.mode = bkpts.type = bkpts.id = 0;
 
     // init instruction logging
-    bkpts.pc_log_size = 1;
+    bkpts.pc_log_size = 1;  //50;
     bkpts.pc_log = malloc(bkpts.pc_log_size * sizeof(uint32_t));
     if(bkpts.pc_log == NULL)
         return ERR_MALLOC;
@@ -97,7 +97,6 @@ int hw_m68k_run(int n)
 
         if(bkpts.pc_log_size > 1)
             bkpts.pc_log[bkpts.pc_wr_ptr++ % bkpts.pc_log_size] = m68k_getpc();
-        //printf(".");
 
       opcode = nextiword();
       (*cpufunctbl[opcode])(opcode);

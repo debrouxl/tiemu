@@ -8,6 +8,7 @@ typedef struct {
         GtkWidget *regs;
         GtkWidget *bkpts;
         GtkWidget *code;
+        GtkWidget *pclog;
 } DbgWidgets;
 
 #endif

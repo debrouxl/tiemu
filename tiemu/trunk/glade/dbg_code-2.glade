@@ -42,7 +42,7 @@
 		      <accelerator key="F5" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image31">
+			<widget class="GtkImage" id="image49">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-yes</property>
 			  <property name="icon_size">1</property>
@@ -64,7 +64,7 @@
 		      <accelerator key="F7" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image32">
+			<widget class="GtkImage" id="image50">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-jump-to</property>
 			  <property name="icon_size">1</property>
@@ -86,7 +86,7 @@
 		      <accelerator key="F8" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image33">
+			<widget class="GtkImage" id="image51">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-redo</property>
 			  <property name="icon_size">1</property>
@@ -108,7 +108,7 @@
 		      <accelerator key="F4" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image34">
+			<widget class="GtkImage" id="image52">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-goto-last</property>
 			  <property name="icon_size">1</property>
@@ -130,7 +130,7 @@
 		      <accelerator key="F11" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image35">
+			<widget class="GtkImage" id="image53">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-no</property>
 			  <property name="icon_size">1</property>
@@ -195,6 +195,16 @@
 		  </child>
 
 		  <child>
+		    <widget class="GtkCheckMenuItem" id="pc_log1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">PC log</property>
+		      <property name="use_underline">True</property>
+		      <property name="active">True</property>
+		      <signal name="activate" handler="on_pc_log1_activate" last_modification_time="Sun, 13 Jun 2004 16:29:36 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
 		    <widget class="GtkMenuItem" id="separator2">
 		      <property name="visible">True</property>
 		    </widget>
@@ -205,11 +215,11 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Quit</property>
 		      <property name="use_underline">True</property>
-		      <signal name="activate" handler="on_quit1_activate" object="dbgcode_window" last_modification_time="Sat, 12 Jun 2004 20:24:01 GMT"/>
+		      <signal name="activate" handler="on_quit1_activate" last_modification_time="Sat, 12 Jun 2004 20:24:01 GMT"/>
 		      <accelerator key="Q" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image39">
+			<widget class="GtkImage" id="image54">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-quit</property>
 			  <property name="icon_size">1</property>

@@ -35,6 +35,7 @@
 #include "./debugger/dbg_mem.h"
 #include "./debugger/dbg_regs.h"
 #include "./debugger/dbg_vectors.h"
+#include "./debugger/dbg_pclog.h"
 #include "ti68k_int.h"
 #include "struct.h"
 #include "dbg_all.h"
@@ -60,6 +61,7 @@ int enter_gtk_debugger(int context)
 	/*dbgw.code = */refresh_dbgcode_window();
 	dbgw.mem = refresh_dbgmem_window();
 	dbgw.bkpts = refresh_dbgbkpts_window();
+    dbgw.pclog = refresh_dbgpclog_window();
 
 	return 0;
 }
@@ -96,6 +98,16 @@ on_memory1_activate                    (GtkMenuItem     *menuitem,
         gtk_widget_destroy(dbgw.mem);
   	else
         refresh_dbgmem_window();
+}
+
+GLADE_CB void
+on_pc_log1_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
+        gtk_widget_destroy(dbgw.pclog);
+  	else
+        refresh_dbgpclog_window();
 }
 
 
