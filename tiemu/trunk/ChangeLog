@@ -32,6 +32,7 @@ To do:
 	- don't save configuration any longer when upgrading calculator
 	- removed bkpt cause dbox for status bar in the bkpt dbox
 	- fixed TIB support for V200 & TI89Ti (libtifiles)
+	- merge read & write bkpts as r/w bkpts
 
 - 08/11/2004, version 1.80f: roms
 	- PedRom is now provided with TiEmu as default OS.

@@ -183,7 +183,7 @@ void ti68k_bkpt_del_range(uint32_t min, uint32_t max, int mode)
     
 	if (mode & BK_WRITE) 
     {   
-        elt = g_list_find_custom(bkpts.mem_rng_r, &s, compare_func);       
+        elt = g_list_find_custom(bkpts.mem_rng_w, &s, compare_func);       
         if(elt != NULL)
 			bkpts.mem_rng_w = g_list_delete_link(bkpts.mem_rng_w, elt);
     }
@@ -267,7 +267,7 @@ void ti68k_bkpt_set_range(uint32_t min, uint32_t max, int mode, uint32_t new_min
     
 	if (mode & BK_WRITE) 
     {   
-        elt = g_list_find_custom(bkpts.mem_rng_r, &s, compare_func);       
+        elt = g_list_find_custom(bkpts.mem_rng_w, &s, compare_func);       
 		if(elt == NULL)
 			return;
 

@@ -68,7 +68,7 @@ typedef struct
 #define BK_LONG     4
 #define BK_READ     16
 #define BK_WRITE    32
-#define BK_RW      (BK_READ | KB_WRITE)
+#define BK_RW      (BK_READ | BK_WRITE)
 
 #define BK_READ_BYTE	(BK_READ | BK_BYTE)
 #define BK_READ_WORD 	(BK_READ | BK_WORD)

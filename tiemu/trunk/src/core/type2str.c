@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: interface.c 234 2004-05-21 15:49:39Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -221,34 +221,39 @@ int ti68k_string_to_bkpt_type(const char *str)
 
 const char *ti68k_bkpt_mode_to_string(int type, int mode)
 {
-	switch(type)
+	// don't use type, it's implicit.
+	if( (mode & BK_READ) && !(mode & BK_WRITE) )
 	{
-	case BK_CAUSE_ACCESS:
-		switch(mode)
-		{
-		case BK_READ_BYTE:	return "byte-read";
-		case BK_READ_WORD:	return "word-read";
-		case BK_READ_LONG:	return "long-read";
-		case BK_WRITE_BYTE:	return "byte-write";
-		case BK_WRITE_WORD:	return "word-write";
-		case BK_WRITE_LONG:	return "long-write";
-		case BK_RW_BYTE:	return "r/w byte";
-		case BK_RW_WORD:	return "r/w word";
-		case BK_RW_LONG:	return "r/w long";
-		default: return "unknwon (bug)";
-		}
-		break;
-	case BK_CAUSE_RANGE:
-        if((mode & BK_READ) && (mode & BK_WRITE))
-            return "any";
-		else if(mode & BK_READ)
-            return "read";
-        else if(mode & BK_WRITE)
-            return "write";
-		break;
-	case BK_CAUSE_ADDRESS:
-		return "n/a";
-		break;
+		if(mode & BK_BYTE)
+			return "byte-read";
+		else if(mode & BK_WORD)
+			return "word-read";
+		else if(mode & BK_LONG)
+			return "long-read";
+		else
+			return "read";
+	}
+	else if( !(mode & BK_READ) && (mode & BK_WRITE) )
+	{
+		if(mode & BK_BYTE)
+			return "byte-write";
+		else if(mode & BK_WORD)
+			return "word-write";
+		else if(mode & BK_LONG)
+			return "long-write";
+		else
+			return "write";
+	}
+	else if( (mode & BK_READ) && (mode & BK_WRITE) )
+	{
+		if(mode & BK_BYTE)
+			return "r/w byte";
+		else if(mode & BK_WORD)
+			return "r/w word";
+		else if(mode & BK_LONG)
+			return "r/w long";
+		else
+			return "r/w";
 	}
 
     return "unknown (bug)";
@@ -256,7 +261,7 @@ const char *ti68k_bkpt_mode_to_string(int type, int mode)
 
 int ti68k_string_to_bkpt_mode(const char * str)
 {
-    if(!strcmp(str, "any"))
+    if(!strcmp(str, "any") || !strcmp(str, "r/w"))
         return BK_READ | BK_WRITE;
     else if(!strcmp(str, "read"))
         return BK_READ;

@@ -112,8 +112,12 @@ static const int bkpts_memrng_rw[2] = {
 static void clist_populate(GtkListStore *store)
 {
 	GList *l;
-    GtkTreeIter iter;
+    GtkTreeIter iter, iter2;
 	gint i;
+
+	GtkTreeModel *model = GTK_TREE_MODEL(store);
+	gboolean valid, valid2, removed;
+	uint32_t mode, mode2;
 
 	// Code breakpoints
 	for(l = bkpts.code; l != NULL; l = g_list_next(l))
@@ -208,6 +212,64 @@ static void clist_populate(GtkListStore *store)
 			g_free(str1);
 			g_free(str2);
 		}
+	}
+
+	// parse list to merge informations: ugly/heavy code !
+	for(valid = gtk_tree_model_get_iter_first(model, &iter);
+        valid; 
+        valid = gtk_tree_model_iter_next(model, &iter))
+    {
+		gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
+
+		gtk_tree_model_get(model, &iter, 
+				COL_SYMBOL, &row_text[COL_SYMBOL], 
+				COL_TYPE, &row_text[COL_TYPE], 
+				COL_START, &row_text[COL_START], 
+				COL_END, &row_text[COL_END],
+				COL_MODE, &row_text[COL_MODE],
+				-1);
+		mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
+
+		memcpy(&iter2, &iter, sizeof(GtkTreeIter));
+		for(valid2 = gtk_tree_model_iter_next(model, &iter2);
+			valid2; 
+			removed = FALSE)
+		{
+				gchar** row_text2 = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
+
+				gtk_tree_model_get(model, &iter2, 
+				COL_SYMBOL, &row_text2[COL_SYMBOL], 
+				COL_TYPE, &row_text2[COL_TYPE], 
+				COL_START, &row_text2[COL_START], 
+				COL_END, &row_text2[COL_END],
+				COL_MODE, &row_text2[COL_MODE],
+				-1);
+				mode2 = ti68k_string_to_bkpt_mode(row_text2[COL_MODE]);
+
+				if(!strcmp(row_text2[COL_TYPE], _("access")) || !strcmp(row_text2[COL_TYPE], _("range")))
+				{
+					if(!strcmp(row_text[COL_START], row_text2[COL_START]) && !strcmp(row_text[COL_END], row_text2[COL_END]))
+					{
+						if( (mode & BK_READ) && (mode2 & BK_WRITE) || (mode & BK_WRITE) && (mode2 & BK_READ) )
+						{
+							const gchar *new_str;
+							
+							new_str = ti68k_bkpt_mode_to_string(0, mode | BK_RW);
+							gtk_list_store_set(store, &iter, COL_MODE, new_str, -1);
+
+							valid2 = gtk_list_store_remove(store, &iter2);
+							removed = TRUE;
+						}						
+					}
+				}
+
+				g_strfreev(row_text2);
+
+				if(!removed)
+					valid2 = gtk_tree_model_iter_next(model, &iter2);
+		}		
+
+		g_strfreev(row_text);
 	}
 }
 
@@ -611,6 +673,7 @@ on_treeview2_button_press_event        (GtkWidget       *widget,
 			if(type != new_type)
 				return TRUE;
 
+			//???
 			if(new_type == BK_TYPE_ACCESS)
 			{
 				ti68k_bkpt_del_access(old_min, old_mode);

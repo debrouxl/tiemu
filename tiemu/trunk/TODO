@@ -178,6 +178,13 @@ breakpoint déclenché, en tout cas pour les breakpoints sur
 instruction. Ca fait perdre un peu de temps pour rien du tout.
 Peut-être une désactivation possible dans la configuration ?
 
++ Un data breakpoint de type 'either' serait quand même mieux que deux
+breakpoints read et write, sinon on est vite submergé pour rien, et on
+perd du temps à les supprimer en 2 fois. D'ailleurs l'édition d'un des
+deux breakpoints provoque l'apparition d'un doublon si on laisse
+'either' coché.
+Mais bon ça reste utilisable.
+
 ---
 
 * Un bug non reproduit : l'ouverture du débugger faisait défiler très
@@ -191,13 +198,6 @@ fait le read ou le write a été exécutée. Est-ce ça ne pourra pas être
 fait avant qu'elle s'exécute, afin que l'instruction selectionnée à
 l'arrêt soit celle-ci (pour éviter d'avoir à scroller vers le haut
 d'une instruction à chaque fois) ?
-
-* Un data breakpoint de type 'either' serait quand même mieux que deux
-breakpoints read et write, sinon on est vite submergé pour rien, et on
-perd du temps à les supprimer en 2 fois. D'ailleurs l'édition d'un des
-deux breakpoints provoque l'apparition d'un doublon si on laisse
-'either' coché.
-Mais bon ça reste utilisable.
 
 * Est-ce que TiEmu pourrait se souvenir du dernier OS émulé et le
 charger automatiquement au démarrage ? (Voire que ce soit désactivable
