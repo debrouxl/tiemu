@@ -36,7 +36,7 @@ typedef struct
 	long	header_size;	// size of this structure
 	long	data_offset;	// offset to pure data
 	char	calc_type;		// calculator type
-	char	revision[4];	// firmware revision
+	char	revision[5];	// firmware revision
 	char	internal;		// internal/external
 	char	flash;			// EPROM or FLASH
 	char	has_boot;		// FLASH upgrade does not have boot

@@ -357,7 +357,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	header.header_size = sizeof(IMG_INFO);
 	header.data_offset = 0x40;
 	header.calc_type = ri.calc_type;
-	memcpy(&header.revision, &ri.version, 4);
+	strcpy(&header.revision, &ri.version);
 	header.internal = ri.internal;
 	header.flash = ri.flash;
 	header.has_boot = !ri.tib;
@@ -425,7 +425,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	header.header_size = sizeof(IMG_INFO);
 	header.data_offset = 0x40;
 	header.calc_type = ri.calc_type;
-	memcpy(&header.revision, &ri.version, 4);
+	strcpy(&header.revision, &ri.version);
 	header.internal = ri.internal;
 	header.flash = ri.flash;
 	header.has_boot = !ri.tib;
@@ -575,7 +575,6 @@ int ti68k_scan_files(const char *dirname, const char *filename)
 	struct stat f_info;
 	int ret;  	
   	char *line[7];
-	char version[5];
 	char *p1, *p2, *p3, *p5;
 	int err;
 
@@ -670,7 +669,7 @@ int ti68k_scan_files(const char *dirname, const char *filename)
 						break;
 					}
 					ii.calc_type = ti.calc_type;
-					memcpy(ii.revision, ti.version, 4);
+					strcpy(ii.revision, ti.version);
 					ii.internal = ti.internal;
 					ii.flash = ti.flash;
 					ii.has_boot = !ti.tib;
@@ -690,8 +689,7 @@ int ti68k_scan_files(const char *dirname, const char *filename)
 
 		  		line[0] = dirent;
 		  		line[1] = ti68k_calctype_to_string(ii.calc_type);
-				memcpy(version, ii.revision, 4); version[4] = '\0';
-	  			line[2] = version;
+	  			line[2] = ii.revision;
 	  			line[3] = ti68k_romtype_to_string(ii.internal | ii.flash);
 	  			sprintf(str, "%iKB", ii.data_size >> 10);
 	  			line[4] = str;

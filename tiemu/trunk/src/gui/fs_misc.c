@@ -232,6 +232,7 @@ gint display_import_romversion_dbox(void)
 {
     const gchar *filename;
 	char *dstname;
+	char *basename;
 	int ret;
     
     // get filename
@@ -260,7 +261,12 @@ gint display_import_romversion_dbox(void)
 		else
 		{
 			//copy
-			CopyFile(filename, inst_paths.img_dir, FALSE);
+			basename = g_path_get_basename(filename);
+			dstname = g_strconcat(inst_paths.img_dir, basename, NULL);
+			g_free(basename);
+
+			CopyFile(filename, dstname, FALSE);
+			g_free(dstname);
 		}
 	}
 }
