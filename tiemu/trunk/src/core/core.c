@@ -1,7 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: main.c 151 2004-05-12 11:19:18Z roms $ */
+/* $Id$ */
 
-/*  TiEmu - a TI emulator
+/*  TiEmu - an TI emulator
+ *
  *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
  *  Copyright (c) 2003-2004, Romain Liévin

@@ -1,6 +1,11 @@
-/*  gtktiemu - a TI89/92/92+ emulator
- *  (c) Copyright 2000, Romain Lievin and Thomas Corvazier
- *  (c) Copyright 2001, Romain Lievin
+/* Hey EMACS -*- linux-c -*- */
+/* $Id$ */
+
+/*  TiEmu - an TI emulator
+ *
+ *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
+ *  Copyright (c) 2003-2004, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
