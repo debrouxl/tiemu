@@ -40,10 +40,32 @@
 #include "ti68k_def.h"
 #include "ti68k_int.h"
 
-/* Internal link port */
+/*
+	Linkport (lp) / directfile (df) mappers
+*/
+void  (*hw_dbus_putbyte)    (UBYTE arg);
+UBYTE (*hw_dbus_getbyte)    (void);
+int   (*hw_dbus_byteavail)	(void);
+int   (*hw_dbus_checkread)  (void);
+
+void  lp_putbyte(UBYTE arg);
+UBYTE lp_getbyte(void);
+int   lp_byteavail(void);
+int   lp_checkread(void);
+
+void  df_putbyte(UBYTE arg);
+UBYTE df_getbyte(void);
+int   df_byteavail(void);
+int   df_checkread(void);
+
+/* 
+	Variables: External link port for direct file loading	
+*/
+
 TicableLinkCable *ilc = NULL;
 TicalcFncts itc;
 TicalcInfoUpdate iu = { 0 };
+
 int lc_internal = 0;
 int lc_speedy = 0;
 int byte_t2f, byte_f2t;
@@ -51,7 +73,9 @@ int iput = 0;
 int iget = 0;
 int init_linkfile();
 
-/* External link port */
+/* 
+	Variables: Internal link port for D-BUS emulation
+*/
 TicableLinkCable lc;
 int byteAvail = 0;
 UBYTE lastByte;
@@ -63,7 +87,6 @@ int transbyte;
 int transnotready;
 int recvflag=0;
 int recvbyte;
-//int emuLink=1;
 int lc_raw_access;
 
 int TO_VALUE = 1000;
@@ -83,27 +106,35 @@ void print_lc_error(int errnum)
 
 int hw_dbus_init(void)
 {
-  int err;
+	int err;
 
-  transflag=0; recvflag=0;
-  transnotready=0;
-  lc_raw_access=0;
+	transflag=0; recvflag=0;
+	transnotready=0;
+	lc_raw_access=0;
 
-  ticable_init();
-  ticable_set_param(&link_cable);
-  ticable_set_cable(link_cable.link_type, &lc);
-  if( (err=lc.init()) )
+	// init linkport
+	ticable_init();
+	ticable_set_param(&link_cable);
+	ticable_set_cable(link_cable.link_type, &lc);
+	if( (err=lc.init()) )
     {
-      print_lc_error(err);
-      return;
+		print_lc_error(err);
+		return;
     }
-  if( (err=lc.open()) )
+	if( (err=lc.open()) )
     {
-      print_lc_error(err);
-      return;
+		print_lc_error(err);
+		return;
     }
 
-  init_linkfile();
+	// init directfile
+	init_linkfile();
+
+	// set mappers to linkport
+	hw_dbus_putbyte = lp_putbyte;
+	hw_dbus_getbyte = lp_getbyte;
+	hw_dbus_byteavail = lp_byteavail;
+	hw_dbus_checkread = lp_checkread;
 }
 
 int hw_dbus_reset(void)
@@ -113,19 +144,119 @@ int hw_dbus_reset(void)
 
 int hw_dbus_exit(void)
 {
-  int err;
+	int err;
 
-  if( (err=lc.close()) )
+	// exit linkport
+	if( (err=lc.close()) )
     {
-      print_lc_error(err);
-      return;
+		print_lc_error(err);
+		return;
     }
-  if( (err=lc.exit()) )
+	if( (err=lc.exit()) )
     { 
-      print_lc_error(err);
-      return;
+		print_lc_error(err);
+		return;
     }
+
+	// exit directfile
 }
+
+/*
+	Linkport access
+*/
+
+static int   lp_avail_byte;
+static UBYTE lp_last_byte;
+
+static void lp_putbyte(UBYTE arg)
+{
+	int err;
+  
+	lc_timeout = 0;
+
+	if( (err=lc.put(arg)) )
+	{
+	  print_lc_error(err);
+	  return;
+	}
+}
+
+static UBYTE lp_getbyte(void)
+{
+	lc_timeout = 0;
+	lp_avail_byte = 0;
+
+	return lp_last_byte;
+}
+
+static int lp_byteavail(void)
+{
+	return lp_avail_byte;
+}
+
+static int lp_checkread(void)
+{
+	int err = 0;
+	int status = 0;
+
+	if(lp_avail_byte)
+		return 0;
+
+	if( (err=lc.check(&status)) )
+    {
+		print_lc_error(err);
+		byteAvail = 0;
+    }
+  
+	if(status & STATUS_RX)
+    {
+		if( (err=lc.get(&lp_last_byte)) )
+        {
+			print_lc_error(err);
+        }
+		lp_avail_byte = 1;
+    }
+	else
+		lp_avail_byte = 0;
+  
+	return lp_avail_byte;
+}
+
+
+/*
+	Directfile access
+ */
+
+void df_putbyte(UBYTE arg)
+{
+	lc_timeout = 0;
+
+	byte_t2f = arg;
+	iget = 1;
+}
+
+UBYTE df_getbyte(void)
+{
+	lc_timeout = 0;
+
+	iput = 0;
+    return byte_f2t;
+}
+
+int df_byteavail(void)
+{
+    return iput;
+}
+
+int df_checkread(void)
+{
+	int err = 0;
+	int status = 0;
+
+    return iput;
+}
+
+/***************/
 
 void linkport_putbyte(UBYTE arg)
 {

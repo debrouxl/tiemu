@@ -41,8 +41,9 @@
 
 int hw_io_init(void)
 {
-    //tihw.io0Bit2=1; 
-    //tihw.io0Bit7=1;
+	memset(tihw.io, 0x14, sizeof(tihw.io));
+	memset(tihw.io2, 0x14, sizeof(tihw.io2));
+	return 0;
 }
 
 int hw_io_reset(void)
