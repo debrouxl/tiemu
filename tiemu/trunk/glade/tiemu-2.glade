@@ -1,0 +1,29 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
+
+<glade-interface>
+
+<widget class="GtkWindow" id="main_wnd">
+  <property name="visible">True</property>
+  <property name="title" translatable="yes">TiEmu II</property>
+  <property name="type">GTK_WINDOW_TOPLEVEL</property>
+  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="modal">False</property>
+  <property name="resizable">True</property>
+  <property name="destroy_with_parent">False</property>
+
+  <child>
+    <widget class="GtkDrawingArea" id="drawingarea1">
+      <property name="visible">True</property>
+      <signal name="configure_event" handler="on_drawingarea1_configure_event" last_modification_time="Tue, 13 Jul 2004 13:28:21 GMT"/>
+      <signal name="button_press_event" handler="on_drawingarea1_button_press_event" last_modification_time="Tue, 13 Jul 2004 13:28:26 GMT"/>
+      <signal name="delete_event" handler="on_drawingarea1_delete_event" last_modification_time="Tue, 13 Jul 2004 13:28:34 GMT"/>
+      <signal name="destroy_event" handler="on_drawingarea1_destroy_event" last_modification_time="Tue, 13 Jul 2004 13:28:37 GMT"/>
+      <signal name="key_press_event" handler="on_drawingarea1_key_press_event" last_modification_time="Tue, 13 Jul 2004 13:28:44 GMT"/>
+      <signal name="key_release_event" handler="on_drawingarea1_key_release_event" last_modification_time="Tue, 13 Jul 2004 13:28:49 GMT"/>
+      <signal name="expose_event" handler="on_drawingarea1_expose_event" last_modification_time="Tue, 13 Jul 2004 13:29:02 GMT"/>
+    </widget>
+  </child>
+</widget>
+
+</glade-interface>

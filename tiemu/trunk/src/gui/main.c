@@ -68,6 +68,7 @@ static gint hid_refresh (gpointer data)
     {
 		// TI92+: jackycar, TI89: baballe
         hid_update_lcd();
+		//gtk_update_lcd();
         G_LOCK(lcd_flag);
         lcd_flag = 0;
 		//printf("<");
@@ -192,6 +193,8 @@ int main(int argc, char **argv)
 	handle_error();
 	if(err)
 		return -1;
+
+	display_main_wnd();
 
 	/*
 		Load FLASH upgrade (if any)

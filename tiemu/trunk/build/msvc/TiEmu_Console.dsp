@@ -372,6 +372,10 @@ SOURCE=..\..\src\gui\wizard.c
 
 SOURCE=..\..\src\gui\main.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\tiemu.c
+# End Source File
 # End Group
 # Begin Group "Header Files"
 

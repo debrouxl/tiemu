@@ -94,7 +94,7 @@ extern const char sknKey92[];   // in tikeys.c
 extern const char sknKey89[];
 extern const char sknKeyV2[];
 
-static void compute_convtable(void);
+/*static*/ void compute_convtable(void);
 static int sdl_to_ti(int key);
 static void set_colors(void);
 static void redraw_skin(void);
@@ -1051,7 +1051,7 @@ static void redraw_skin(void)
 }	
 
 /* Bitmap to bytemap conversion table */
-static void compute_convtable(void) 
+/*static*/ void compute_convtable(void) 
 {
   	int i, j;
   	Uint8 k;
