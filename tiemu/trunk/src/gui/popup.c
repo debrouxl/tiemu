@@ -169,6 +169,7 @@ on_save_config1_activate               (GtkMenuItem     *menuitem,
   	msg_box(_("Information"), 
 	  _("Configuration file saved (in tiemu.ini)."));
 #endif
+	ti68k_unhalt();
 }
 
 

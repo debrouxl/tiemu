@@ -39,80 +39,80 @@ gint display_infos_dbox()
 	GtkWidget *dbox;
 	GtkWidget *label;
 	gint result;
-    gchar *str;
-    const char *p;
-    const char *p1, *p2;
-    int i = 0;
-
+	gchar *str;
+	const char *p;
+	const char *p1, *p2;
+	int i = 0;
+	
 	xml = glade_xml_new
-	    (tilp_paths_build_glade("infos-2.glade"), "infos_dbox",
-	     PACKAGE);
+		(tilp_paths_build_glade("infos-2.glade"), "infos_dbox",
+		 PACKAGE);
 	if (!xml)
 		g_error("GUI loading failed !\n");
 	glade_xml_signal_autoconnect(xml);
-
+	
 	dbox = glade_xml_get_widget(xml, "infos_dbox");
 
-	label = glade_xml_get_widget(xml, "label41");
-    str = g_strdup_printf("%s", "TiEmu v2.00");
-    gtk_label_set_text(GTK_LABEL(label), str);
-    g_free(str);
-
-    label = glade_xml_get_widget(xml, "label42");
-    str = g_strdup_printf("%s", skin_infos.name);
-    gtk_label_set_text(GTK_LABEL(label), str);
-    g_free(str);
-
-    label = glade_xml_get_widget(xml, "label43");
-    str = g_strdup_printf("%s", skin_infos.author);
-    gtk_label_set_text(GTK_LABEL(label), str);
-    g_free(str);
-
-    switch(ti68k_getCalcType())
-    {
-    case TI92: p = "TI92";
-      break;
-    case TI89: p = "TI89";
-      break;
-    case TI92 | MODULEPLUS: p = "TI92+";
-      break;
-    default: p = "Unknown";
-      break;
-    }
-    label = glade_xml_get_widget(xml, "label44");
-    str = g_strdup_printf("%s", p);
-    gtk_label_set_text(GTK_LABEL(label), str);
-    g_free(str);
-
-    label = glade_xml_get_widget(xml, "label45");
-    str = g_strdup_printf("%s", ti68k_getRomVersion());
-    gtk_label_set_text(GTK_LABEL(label), str);
-    g_free(str);
-
-    label = glade_xml_get_widget(xml, "label46");
-    str = g_strdup_printf("%i KB", ti68k_getRamSize());
-    gtk_label_set_text(GTK_LABEL(label), str);
-    g_free(str);
-
-    label = glade_xml_get_widget(xml, "label47");
-    str = g_strdup_printf("%i KB", ti68k_getRomSize());
-    gtk_label_set_text(GTK_LABEL(label), str);
-    g_free(str);
-
-    i = ti68k_getRomType();
-  if(i & INTERNAL) 
-    p1 = _("internal"); 
-  else 
-    p1 = _("external");
-  if(i & FLASH_ROM) 
-    p2 = _("FLASH"); 
-  else 
-    p2 = _("PROM");
-    label = glade_xml_get_widget(xml, "label48");
-    str = g_strdup_printf("%s %s", p1, p2);
-    gtk_label_set_text(GTK_LABEL(label), str);
-    g_free(str);
-
+	label = glade_xml_get_widget(xml, "label20");
+	str = g_strdup_printf("%s", "TiEmu v2.00");
+	gtk_label_set_text(GTK_LABEL(label), str);
+	g_free(str);
+	
+	label = glade_xml_get_widget(xml, "label21");
+	str = g_strdup_printf("%s", skin_infos.name);
+	gtk_label_set_text(GTK_LABEL(label), str);
+	g_free(str);
+	
+	label = glade_xml_get_widget(xml, "label22");
+	str = g_strdup_printf("%s", skin_infos.author);
+	gtk_label_set_text(GTK_LABEL(label), str);
+	g_free(str);
+	
+	switch(ti68k_getCalcType())
+	{
+	case TI92: p = "TI92";
+		break;
+	case TI89: p = "TI89";
+		break;
+	case TI92 | MODULEPLUS: p = "TI92+";
+		break;
+	default: p = "Unknown";
+		break;
+	}
+	label = glade_xml_get_widget(xml, "label23");
+	str = g_strdup_printf("%s", p);
+	gtk_label_set_text(GTK_LABEL(label), str);
+	g_free(str);
+	
+	label = glade_xml_get_widget(xml, "label24");
+	str = g_strdup_printf("%s", ti68k_getRomVersion());
+	gtk_label_set_text(GTK_LABEL(label), str);
+	g_free(str);
+	
+	label = glade_xml_get_widget(xml, "label25");
+	str = g_strdup_printf("%i KB", ti68k_getRamSize());
+	gtk_label_set_text(GTK_LABEL(label), str);
+	g_free(str);
+	
+	label = glade_xml_get_widget(xml, "label26");
+	str = g_strdup_printf("%i KB", ti68k_getRomSize());
+	gtk_label_set_text(GTK_LABEL(label), str);
+	g_free(str);
+	
+	i = ti68k_getRomType();
+	if(i & INTERNAL) 
+		p1 = _("internal"); 
+	else 
+		p1 = _("external");
+	if(i & FLASH_ROM) 
+		p2 = _("FLASH"); 
+	else 
+		p2 = _("PROM");
+	label = glade_xml_get_widget(xml, "label27");
+	str = g_strdup_printf("%s %s", p1, p2);
+	gtk_label_set_text(GTK_LABEL(label), str);
+	g_free(str);
+	
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) {
 	case GTK_RESPONSE_OK:

@@ -5,7 +5,7 @@
 
 <widget class="GtkDialog" id="infos_dbox">
   <property name="visible">True</property>
-  <property name="title" translatable="yes">About TiEmu</property>
+  <property name="title" translatable="yes">Infos...</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
@@ -14,34 +14,25 @@
   <property name="has_separator">True</property>
 
   <child internal-child="vbox">
-    <widget class="GtkVBox" id="dialog-vbox1">
+    <widget class="GtkVBox" id="dialog-vbox2">
       <property name="visible">True</property>
       <property name="homogeneous">False</property>
       <property name="spacing">0</property>
 
       <child internal-child="action_area">
-	<widget class="GtkHButtonBox" id="dialog-action_area1">
+	<widget class="GtkHButtonBox" id="dialog-action_area2">
 	  <property name="visible">True</property>
 	  <property name="layout_style">GTK_BUTTONBOX_END</property>
 
 	  <child>
-	    <widget class="GtkHButtonBox" id="hbuttonbox1">
+	    <widget class="GtkButton" id="okbutton1">
 	      <property name="visible">True</property>
-	      <property name="layout_style">GTK_BUTTONBOX_DEFAULT_STYLE</property>
-	      <property name="spacing">30</property>
-
-	      <child>
-		<widget class="GtkButton" id="button4">
-		  <property name="visible">True</property>
-		  <property name="can_default">True</property>
-		  <property name="can_focus">True</property>
-		  <property name="label">gtk-close</property>
-		  <property name="use_stock">True</property>
-		  <property name="relief">GTK_RELIEF_NORMAL</property>
-		  <accelerator key="Escape" modifiers="0" signal="clicked"/>
-		  <accelerator key="Return" modifiers="0" signal="clicked"/>
-		</widget>
-	      </child>
+	      <property name="can_default">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="label">gtk-ok</property>
+	      <property name="use_stock">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="response_id">-5</property>
 	    </widget>
 	  </child>
 	</widget>
@@ -54,7 +45,7 @@
       </child>
 
       <child>
-	<widget class="GtkTable" id="table1">
+	<widget class="GtkTable" id="table2">
 	  <property name="border_width">5</property>
 	  <property name="visible">True</property>
 	  <property name="n_rows">8</property>
@@ -64,7 +55,7 @@
 	  <property name="column_spacing">5</property>
 
 	  <child>
-	    <widget class="GtkLabel" id="label31">
+	    <widget class="GtkLabel" id="label10">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Skin version:</property>
 	      <property name="use_underline">False</property>
@@ -88,7 +79,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label32">
+	    <widget class="GtkLabel" id="label11">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Skin name:</property>
 	      <property name="use_underline">False</property>
@@ -112,7 +103,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label33">
+	    <widget class="GtkLabel" id="label12">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Skin author:</property>
 	      <property name="use_underline">False</property>
@@ -136,31 +127,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label34">
-	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Calc type:</property>
-	      <property name="use_underline">False</property>
-	      <property name="use_markup">False</property>
-	      <property name="justify">GTK_JUSTIFY_LEFT</property>
-	      <property name="wrap">False</property>
-	      <property name="selectable">False</property>
-	      <property name="xalign">0</property>
-	      <property name="yalign">0.5</property>
-	      <property name="xpad">0</property>
-	      <property name="ypad">0</property>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">0</property>
-	      <property name="right_attach">1</property>
-	      <property name="top_attach">3</property>
-	      <property name="bottom_attach">4</property>
-	      <property name="x_options">fill</property>
-	      <property name="y_options"></property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkLabel" id="label35">
+	    <widget class="GtkLabel" id="label14">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Version:</property>
 	      <property name="use_underline">False</property>
@@ -184,7 +151,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label36">
+	    <widget class="GtkLabel" id="label15">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">RAM size:</property>
 	      <property name="use_underline">False</property>
@@ -208,7 +175,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label37">
+	    <widget class="GtkLabel" id="label16">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">ROM size:</property>
 	      <property name="use_underline">False</property>
@@ -232,7 +199,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label38">
+	    <widget class="GtkLabel" id="label17">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">ROM type:</property>
 	      <property name="use_underline">False</property>
@@ -256,7 +223,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label41">
+	    <widget class="GtkLabel" id="label20">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">TiEmu v2.00</property>
 	      <property name="use_underline">False</property>
@@ -280,7 +247,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label42">
+	    <widget class="GtkLabel" id="label21">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Default TI-92</property>
 	      <property name="use_underline">False</property>
@@ -304,7 +271,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label43">
+	    <widget class="GtkLabel" id="label22">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Julien Blache</property>
 	      <property name="use_underline">False</property>
@@ -328,7 +295,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label44">
+	    <widget class="GtkLabel" id="label23">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">TI92</property>
 	      <property name="use_underline">False</property>
@@ -352,7 +319,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label45">
+	    <widget class="GtkLabel" id="label24">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">1.11</property>
 	      <property name="use_underline">False</property>
@@ -376,7 +343,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label46">
+	    <widget class="GtkLabel" id="label25">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">128KB</property>
 	      <property name="use_underline">False</property>
@@ -400,7 +367,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label47">
+	    <widget class="GtkLabel" id="label26">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">2MB</property>
 	      <property name="use_underline">False</property>
@@ -424,7 +391,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label48">
+	    <widget class="GtkLabel" id="label27">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">external ROM</property>
 	      <property name="use_underline">False</property>
@@ -446,10 +413,34 @@
 	      <property name="y_options"></property>
 	    </packing>
 	  </child>
+
+	  <child>
+	    <widget class="GtkLabel" id="label13">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Calc type:</property>
+	      <property name="use_underline">False</property>
+	      <property name="use_markup">False</property>
+	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+	      <property name="wrap">False</property>
+	      <property name="selectable">False</property>
+	      <property name="xalign">0</property>
+	      <property name="yalign">0.5</property>
+	      <property name="xpad">0</property>
+	      <property name="ypad">0</property>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">0</property>
+	      <property name="right_attach">1</property>
+	      <property name="top_attach">3</property>
+	      <property name="bottom_attach">4</property>
+	      <property name="x_options">fill</property>
+	      <property name="y_options"></property>
+	    </packing>
+	  </child>
 	</widget>
 	<packing>
-	  <property name="padding">1</property>
-	  <property name="expand">False</property>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
 	  <property name="fill">True</property>
 	</packing>
       </child>
