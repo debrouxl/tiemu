@@ -44,6 +44,56 @@ versions :)) facilement le problème avec la Titanium.
 comme la fenêtre 'Add breakpoint', mais initialisée avec les valeurs
 du breakpoint choisi).
 
+==
+
+* La fenêtre Memory n'est pas toujours rafraîchie. Il y a le bouton
+refresh, mais on ne pense pas toujours à l'utiliser. Elle n'est pas
+rafraîchie notamment lorsque un breakpoint est touché, ce serait
+possible de forcer le rafraîchissement à ce moment là ?
+
+* Pour le problème de scroll d'instructions gênant dont je te parlais
+: va n'importe où dans l'AMS où il y a des instructions valides,
+scroll instruction par instruction vers le bas, tu verras que sur
+certaines instructions le scroll est effectué en haut, mais pas en bas
+de la fenêtre (la dernière instruction reste la même).
+
+* Quelques idées pas forcément très urgentes mais qui seraient
+intéressantes à implémenter :
+- L'AMS utilise le registre a6 comme frame pointer, et accède
+relativement à ce registre aux variables locales créées et aux
+paramètres de la fonction exécutée.
+Le problème est qu'avec des instructions de type cmp.w -$54(a6),d0, on
+voudrait savoir ce qu'il y a à la variable à l'offset $54 : il faut
+alors sortir une calculatrice hexa, calculer l'adresse réelle et aller
+dans la fenêtre Memory trouver la valeur.
+L'idéal serait d'avoir dans la même fenêtre que stack frame, un memory
+dumper qui ressemble à celui de la pile, mais avec les offsets
+relatifs au registre a6 plutôt que des adresses réelles (offsets
+positifs et négatifs pour pouvoir regarder à la fois les variables
+locales et les paramètres de la fonction). Par exemple :
+-6  0084
+-4  5600
+-2  0000
+0   0090
+2   4924
+4   2828
+6   0000
+Il faudrait que la fenêtre puisse être scrollable à l'infini dans les
+deux sens, on ne peut pas savoir la quantité de variables que la
+fonction peut utiliser.
+Si c'est trop compliquer à réaliser, écrire à côté de l'instruction
+l'adresse correspondant à -$54(a6) dans l'exemple précédent suffirait
+pour pouvoir se débrouiller, mais serait beaucoup moins bien.
+
+* Un système de breakpoint temporaire sur instruction, comme sous GDB,
+serait pratique (breakpoint qui disparaît la première fois qu'il est
+touché) : il m'arrive souvent de placer un breakpoint après un bsr ou
+un jsr de l'AMS avant de faire un step into dans la sous-routine au
+cas où elle serait trop profonde et que j'abandonne le déboguage à
+quelques niveaux d'appels plus profond. Je fais un run et mon
+breakpoint est touché; je l'enlève et je continue. Un breakpoint
+temporaire éviterait d'avoir à l'enlever à chaque fois.
+
 
 Kevin:
 

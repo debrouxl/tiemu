@@ -57,7 +57,7 @@ Source: "C:\sources\roms\tifiles\tests\tifiles.dll"; DestDir: "{app}"; Flags: ig
 Source: "C:\sources\roms\ticables\tests\ticables.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticalcs\tests\ticalcs.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu\build\msvc\tiemu.exe"; DestDir: "{app}"; DestName: "tiemu.exe"; Flags: ignoreversion
-;Source: "C:\WinNT\system32\MSVCRTD.DLL"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Windows\system32\MSVCRTD.DLL"; DestDir: "{app}"; Flags: ignoreversion
 ; Copy PortTalk driver for Windows NT4/2000/XP
 Source: "C:\sources\roms\Porttalk22\PortTalk.sys"; DestDir: "{sys}\drivers"; Flags: ignoreversion
 Source: "C:\sources\roms\Porttalk22\PortTalk.sys"; DestDir: "{app}"; Flags: ignoreversion
