@@ -169,6 +169,8 @@ GtkWidget* dbgstack_create_window(void)
 	gtk_window_resize(GTK_WINDOW(dbox), options3.stack.w, options3.stack.h);
 	gtk_window_move(GTK_WINDOW(dbox), options3.stack.x, options3.stack.y);
 
+    gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
+
 	already_open = !0;
 
 	return dbox;

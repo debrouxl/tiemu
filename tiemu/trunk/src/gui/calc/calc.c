@@ -44,7 +44,7 @@
 #include "dbg_all.h"
 #include "screenshot.h"
 
-GtkWidget *wnd = NULL;
+GtkWidget *main_wnd = NULL;
 GtkWidget *area = NULL;
 
 gint w, h;
@@ -72,13 +72,13 @@ gint display_main_wnd(void)
 		g_error(_("%s: GUI loading failed !\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	
-	wnd = glade_xml_get_widget(xml, "calc_wnd");
+	main_wnd = glade_xml_get_widget(xml, "calc_wnd");
 	area = glade_xml_get_widget(xml, "drawingarea1");
 
-	gtk_window_set_policy (GTK_WINDOW (wnd), TRUE, TRUE, FALSE);
+	gtk_window_set_policy (GTK_WINDOW (main_wnd), TRUE, TRUE, FALSE);
 
     gtk_widget_show(area);
-	gtk_widget_show(wnd);
+	gtk_widget_show(main_wnd);
 
 	return 0;
 }
@@ -114,7 +114,7 @@ static void resize(void)
 	}
 		
 	gtk_drawing_area_size(GTK_DRAWING_AREA(area), w, h);
-	gtk_window_resize(GTK_WINDOW(wnd), w, h);
+	gtk_window_resize(GTK_WINDOW(main_wnd), w, h);
 
 	if(params.background)
 		redraw_skin();
@@ -340,7 +340,7 @@ int  hid_init(void)
 	display_main_wnd();
 
     // Allocate the backing pixmap
-    pixmap = gdk_pixmap_new(wnd->window, si->width, si->height, -1);
+    pixmap = gdk_pixmap_new(main_wnd->window, si->width, si->height, -1);
     if(pixmap == NULL)
     {
         gchar *s = g_strdup_printf("unable to create backing pixbuf.\n");
@@ -388,7 +388,7 @@ int  hid_exit(void)
     }
 
     // Destroy window
-    gtk_widget_destroy(wnd);
+    gtk_widget_destroy(main_wnd);
 
     return 0;
 }
@@ -423,7 +423,7 @@ static gint fullscreen = 0;
 
 int hid_switch_fullscreen(void)
 {
-	gdk_window_fullscreen(wnd->window);
+	gdk_window_fullscreen(main_wnd->window);
     fullscreen = !0;
 
 	return 0;
@@ -431,7 +431,7 @@ int hid_switch_fullscreen(void)
 
 int hid_switch_windowed(void)
 {
-	gdk_window_unfullscreen(wnd->window);
+	gdk_window_unfullscreen(main_wnd->window);
     fullscreen = 0;
 
 	return 0;
@@ -493,7 +493,7 @@ int  hid_screenshot(char *filename)
 	{
 		// get pixbuf from backing pixmap
 		pixbuf = gdk_pixbuf_get_from_drawable(
-					NULL, wnd->window, NULL,
+					NULL, main_wnd->window, NULL,
 					0, 0, 0, 0, skin_infos.width, skin_infos.height);
 	}
 

@@ -48,7 +48,7 @@
 
 /* Variables */
 
-extern GtkWidget *wnd;
+extern GtkWidget *main_wnd;
 extern GtkWidget *area;
 
 GdkPixbuf *lcd = NULL;
@@ -152,7 +152,7 @@ void redraw_skin(void)
 	if(skn == NULL)
 	    return;
 
-    gdk_draw_pixbuf(pixmap, wnd->style->fg_gc[GTK_WIDGET_STATE(wnd)],
+    gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
 		  skn, 0, 0, 0, 0, -1, -1,
 		  GDK_RGB_DITHER_NONE, 0, 0);
   
@@ -253,7 +253,7 @@ int hid_update_lcd(void)
         dst.w = src.w;
         dst.h = src.h;
 
-        gdk_draw_pixbuf(pixmap, wnd->style->fg_gc[GTK_WIDGET_STATE(wnd)],
+        gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
 		  lcd, src.x, src.y, dst.x, dst.y, src.w, src.h,
 		  GDK_RGB_DITHER_NONE, 0, 0);
 

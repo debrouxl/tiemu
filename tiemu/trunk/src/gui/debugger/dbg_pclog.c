@@ -151,6 +151,8 @@ GtkWidget* dbgpclog_create_window(void)
 	gtk_window_resize(GTK_WINDOW(dbox), options3.pclog.w, options3.pclog.h);
 	gtk_window_move(GTK_WINDOW(dbox), options3.pclog.x, options3.pclog.y);
 
+    gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
+
 	already_open = !0;
 
 	return dbox;

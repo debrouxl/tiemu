@@ -43,4 +43,6 @@ void gtk_debugger_deminimize_all(void);
 void gtk_debugger_show_all(void);
 void gtk_debugger_hide_all(void);
 
+extern GtkWidget *main_wnd;
+
 #endif
