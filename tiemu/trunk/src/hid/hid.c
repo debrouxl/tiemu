@@ -323,32 +323,35 @@ static int sdl_to_ti(int key)
     {
       	switch(key) 
 		{
-			case SDLK_a : return TIKEY_A;
-			case SDLK_b : return TIKEY_B;
-			case SDLK_c : return TIKEY_C;
-			case SDLK_d : return TIKEY_D;
-			case SDLK_e : return TIKEY_E;
-			case SDLK_f : return TIKEY_F;
-			case SDLK_g : return TIKEY_G;
-			case SDLK_h : return TIKEY_H;
-			case SDLK_i : return TIKEY_I;
-			case SDLK_j : return TIKEY_J;
-			case SDLK_k : return TIKEY_K;
-			case SDLK_l : return TIKEY_L;
-			case SDLK_m : return TIKEY_M;
-			case SDLK_n : return TIKEY_N;
-			case SDLK_o : return TIKEY_O;
-			case SDLK_p : return TIKEY_P;
-			case SDLK_q : return TIKEY_Q;
-			case SDLK_r : return TIKEY_R;
-			case SDLK_s : return TIKEY_S;
-			case SDLK_t : return TIKEY_T;
-			case SDLK_u : return TIKEY_U;
-			case SDLK_v : return TIKEY_V;
-			case SDLK_w : return TIKEY_W;
-			case SDLK_x : return TIKEY_X;
-			case SDLK_y : return TIKEY_Y;
-			case SDLK_z : return TIKEY_Z;
+			// Alphabetical
+			case SDLK_a : 	return TIKEY_A;
+			case SDLK_b : 	return TIKEY_B;
+			case SDLK_c : 	return TIKEY_C;
+			case SDLK_d : 	return TIKEY_D;
+			case SDLK_e : 	return TIKEY_E;
+			case SDLK_f : 	return TIKEY_F;
+			case SDLK_g : 	return TIKEY_G;
+			case SDLK_h : 	return TIKEY_H;
+			case SDLK_i : 	return TIKEY_I;
+			case SDLK_j : 	return TIKEY_J;
+			case SDLK_k : 	return TIKEY_K;
+			case SDLK_l : 	return TIKEY_L;
+			case SDLK_m : 	return TIKEY_M;
+			case SDLK_n : 	return TIKEY_N;
+			case SDLK_o : 	return TIKEY_O;
+			case SDLK_p : 	return TIKEY_P;
+			case SDLK_q : 	return TIKEY_Q;
+			case SDLK_r : 	return TIKEY_R;
+			case SDLK_s : 	return TIKEY_S;
+			case SDLK_t : 	return TIKEY_T;
+			case SDLK_u : 	return TIKEY_U;
+			case SDLK_v : 	return TIKEY_V;
+			case SDLK_w : 	return TIKEY_W;
+			case SDLK_x : 	return TIKEY_X;
+			case SDLK_y : 	return TIKEY_Y;
+			case SDLK_z : 	return TIKEY_Z;
+			
+			// Numerical
 			case SDLK_KP0 : return TIKEY_0;
 			case SDLK_KP1 : return TIKEY_1;
 			case SDLK_KP2 : return TIKEY_2;
@@ -359,20 +362,24 @@ static int sdl_to_ti(int key)
 			case SDLK_KP7 : return TIKEY_7;
 			case SDLK_KP8 : return TIKEY_8;
 			case SDLK_KP9 : return TIKEY_9;
-			case SDLK_0 : return TIKEY_0;
-			case SDLK_1 : return TIKEY_1;
-			case SDLK_2 : return TIKEY_2;
-			case SDLK_3 : return TIKEY_3;
-			case SDLK_4 : return TIKEY_4;
-			case SDLK_5 : return TIKEY_5;
-			case SDLK_6 : return TIKEY_6;
-			case SDLK_7 : return TIKEY_7;
-			case SDLK_8 : return TIKEY_8;
-			case SDLK_9 : return TIKEY_9;
-			case SDLK_UP : return TIKEY_UP;
-			case SDLK_LEFT : return TIKEY_LEFT;
-			case SDLK_RIGHT : return TIKEY_RIGHT;
-			case SDLK_DOWN : return TIKEY_DOWN;
+			case SDLK_0 : 	return TIKEY_0;
+			case SDLK_1 : 	return TIKEY_1;
+			case SDLK_2 : 	return TIKEY_2;
+			case SDLK_3 : 	return TIKEY_3;
+			case SDLK_4 : 	return TIKEY_4;
+			case SDLK_5 : 	return TIKEY_5;
+			case SDLK_6 : 	return TIKEY_6;
+			case SDLK_7 : 	return TIKEY_7;
+			case SDLK_8 : 	return TIKEY_8;
+			case SDLK_9 : 	return TIKEY_9;
+			
+			// Arrows
+			case SDLK_UP : 		return TIKEY_UP;
+			case SDLK_LEFT : 	return TIKEY_LEFT;
+			case SDLK_RIGHT : 	return TIKEY_RIGHT;
+			case SDLK_DOWN : 	return TIKEY_DOWN;
+			
+			// Functions
 			case SDLK_F1 : return TIKEY_F1;
 			case SDLK_F2 : return TIKEY_F2;
 			case SDLK_F3 : return TIKEY_F3;
@@ -381,42 +388,44 @@ static int sdl_to_ti(int key)
 			case SDLK_F6 : return TIKEY_F6;
 			case SDLK_F7 : return TIKEY_F7;
 			case SDLK_F8 : return TIKEY_F8;
-			case SDLK_RETURN : return TIKEY_ENTER1;
-			case SDLK_KP_ENTER : return TIKEY_ENTER2;
-			case SDLK_LSHIFT : return TIKEY_SHIFT;
-			case SDLK_RSHIFT : return TIKEY_SHIFT;
-			case SDLK_RCTRL : return TIKEY_DIAMOND;
-			case SDLK_LCTRL : return TIKEY_DIAMOND;
-			case SDLK_LALT : return TIKEY_2ND;
-			case SDLK_RALT : return TIKEY_2ND;
-			case SDLK_CAPSLOCK : return TIKEY_HAND;
-			case SDLK_TAB : return TIKEY_STORE;
-			case SDLK_SPACE : return TIKEY_SPACE;
-			case SDLK_ESCAPE : return TIKEY_ESCAPE;
-			case SDLK_BACKSPACE : return TIKEY_BACKSPACE;
-			case SDLK_LEFTPAREN : return TIKEY_PALEFT;
-			case SDLK_RIGHTPAREN : return TIKEY_PARIGHT;
-			case SDLK_PERIOD : return TIKEY_PERIOD;
-			case SDLK_COMMA : return TIKEY_COMMA;
-			case SDLK_KP_PLUS : return TIKEY_PLUS;
+			
+			// Standard
+			case SDLK_RETURN :	return TIKEY_ENTER1;
+			case SDLK_KP_ENTER: return TIKEY_ENTER2;
+			case SDLK_LSHIFT : 	return TIKEY_SHIFT;
+			case SDLK_RSHIFT : 	return TIKEY_SHIFT;
+			case SDLK_RCTRL : 	return TIKEY_DIAMOND;
+			case SDLK_LCTRL : 	return TIKEY_DIAMOND;
+			case SDLK_LALT : 	return TIKEY_2ND;
+			case SDLK_RALT : 	return TIKEY_2ND;
+			case SDLK_SPACE : 		return TIKEY_SPACE;
+			case SDLK_ESCAPE : 		return TIKEY_ESCAPE;
+			case SDLK_BACKSPACE : 	return TIKEY_BACKSPACE;
+			case SDLK_LEFTPAREN : 	return TIKEY_PALEFT;
+			case SDLK_RIGHTPAREN : 	return TIKEY_PARIGHT;
+			case SDLK_PERIOD : 		return TIKEY_PERIOD;
+			case SDLK_COMMA : 		return TIKEY_COMMA;
+			case SDLK_KP_PLUS : 	return TIKEY_PLUS;
 			case SDLK_KP_MULTIPLY : return TIKEY_MULTIPLY;
-			case SDLK_KP_DIVIDE : return TIKEY_DIVIDE;    
-			case SDLK_KP_MINUS : return TIKEY_MINUS;
-			case SDLK_MINUS : return TIKEY_NEGATE;
-			case SDLK_BACKSLASH : return TIKEY_ON;
-			case SDLK_SLASH : return TIKEY_DIVIDE;
-			case SDLK_SEMICOLON : return TIKEY_THETA;
-			case SDLK_EQUALS : return TIKEY_EQUALS;
-			case SDLK_LESS : return TIKEY_NEGATE;
-			case SDLK_INSERT : return TIKEY_SIN;
-			case SDLK_DELETE : return TIKEY_CLEAR;
-			case SDLK_HOME : return TIKEY_COS;
-			case SDLK_END : return TIKEY_LN;
-			case SDLK_PAGEUP : return TIKEY_TAN;
-			case SDLK_PAGEDOWN : return TIKEY_MODE;
-			case SDLK_SCROLLOCK : return TIKEY_ON;
-			case SDLK_F9  : return TIKEY_APPS;
-			case SDLK_PRINT : break;
+			case SDLK_KP_DIVIDE : 	return TIKEY_DIVIDE;    
+			case SDLK_SLASH : 		return TIKEY_DIVIDE;
+			case SDLK_KP_MINUS : 	return TIKEY_MINUS;			
+			case SDLK_MINUS : 		return TIKEY_NEGATE;
+			case SDLK_EQUALS : 		return TIKEY_EQUALS;
+			case SDLK_LESS : 		return TIKEY_NEGATE;			
+			
+			// Specific
+			case SDLK_F9  : 		return TIKEY_APPS;
+			case SDLK_SEMICOLON : 	return TIKEY_THETA;
+			case SDLK_TAB : 		return TIKEY_STORE;
+			case SDLK_CAPSLOCK : 	return TIKEY_HAND;
+			case SDLK_PAGEDOWN : 	return TIKEY_MODE;
+			case SDLK_BACKSLASH : 	return TIKEY_LN;			
+			case SDLK_INSERT : 		return TIKEY_SIN;
+			case SDLK_HOME : 		return TIKEY_COS;
+			case SDLK_PAGEUP : 		return TIKEY_TAN;
+			case SDLK_DELETE : 		return TIKEY_CLEAR;
+			case SDLK_SCROLLOCK : 	return TIKEY_ON;			
 
 			default : return TIKEY_NU;
 		}
@@ -426,32 +435,35 @@ static int sdl_to_ti(int key)
       	iAlpha = 0;
       	switch(key) 
 		{
-			case SDLK_a : iAlpha = 1; return TIKEY_EQUALS;
-			case SDLK_b : iAlpha = 1; return TIKEY_PALEFT;
-			case SDLK_c : iAlpha = 1; return TIKEY_PARIGHT;
-			case SDLK_d : iAlpha = 1; return TIKEY_COMMA;
-			case SDLK_e : iAlpha = 1; return TIKEY_DIVIDE;
-			case SDLK_f : iAlpha = 1; return TIKEY_F;
-			case SDLK_g : iAlpha = 1; return TIKEY_7;
-			case SDLK_h : iAlpha = 1; return TIKEY_8;
-			case SDLK_i : iAlpha = 1; return TIKEY_9;
-			case SDLK_j : iAlpha = 1; return TIKEY_MULTIPLY;
-			case SDLK_k : iAlpha = 1; return TIKEY_EE;
-			case SDLK_l : iAlpha = 1; return TIKEY_4;
-			case SDLK_m : iAlpha = 1; return TIKEY_5;
-			case SDLK_n : iAlpha = 1; return TIKEY_6;
-			case SDLK_o : iAlpha = 1; return TIKEY_MINUS;
-			case SDLK_p : iAlpha = 1; return TIKEY_STORE;
-			case SDLK_q : iAlpha = 1; return TIKEY_1;
-			case SDLK_r : iAlpha = 1; return TIKEY_2;
-			case SDLK_s : iAlpha = 1; return TIKEY_3;
-			case SDLK_t : return TIKEY_T;
-			case SDLK_u : iAlpha = 1; return TIKEY_PLUS;
-			case SDLK_v : iAlpha = 1; return TIKEY_0;
-			case SDLK_w : iAlpha = 1; return TIKEY_PERIOD;
-			case SDLK_x : return TIKEY_X;
-			case SDLK_y : return TIKEY_Y;
-			case SDLK_z : return TIKEY_Z;
+			// Alphabetical
+			case SDLK_a : iAlpha = 1; 	return TIKEY_EQUALS;
+			case SDLK_b : iAlpha = 1; 	return TIKEY_PALEFT;
+			case SDLK_c : iAlpha = 1; 	return TIKEY_PARIGHT;
+			case SDLK_d : iAlpha = 1; 	return TIKEY_COMMA;
+			case SDLK_e : iAlpha = 1; 	return TIKEY_DIVIDE;
+			case SDLK_f : iAlpha = 1; 	return TIKEY_F;
+			case SDLK_g : iAlpha = 1; 	return TIKEY_7;
+			case SDLK_h : iAlpha = 1; 	return TIKEY_8;
+			case SDLK_i : iAlpha = 1; 	return TIKEY_9;
+			case SDLK_j : iAlpha = 1; 	return TIKEY_MULTIPLY;
+			case SDLK_k : iAlpha = 1; 	return TIKEY_EE;
+			case SDLK_l : iAlpha = 1; 	return TIKEY_4;
+			case SDLK_m : iAlpha = 1; 	return TIKEY_5;
+			case SDLK_n : iAlpha = 1; 	return TIKEY_6;
+			case SDLK_o : iAlpha = 1; 	return TIKEY_MINUS;
+			case SDLK_p : iAlpha = 1; 	return TIKEY_STORE;
+			case SDLK_q : iAlpha = 1; 	return TIKEY_1;
+			case SDLK_r : iAlpha = 1; 	return TIKEY_2;
+			case SDLK_s : iAlpha = 1; 	return TIKEY_3;
+			case SDLK_t : 				return TIKEY_T;
+			case SDLK_u : iAlpha = 1; 	return TIKEY_PLUS;
+			case SDLK_v : iAlpha = 1; 	return TIKEY_0;
+			case SDLK_w : iAlpha = 1; 	return TIKEY_PERIOD;
+			case SDLK_x : 				return TIKEY_X;
+			case SDLK_y : 				return TIKEY_Y;
+			case SDLK_z : 				return TIKEY_Z;
+			
+			// Numerical
 			case SDLK_KP0 : return TIKEY_0;
 			case SDLK_KP1 : return TIKEY_1;
 			case SDLK_KP2 : return TIKEY_2;
@@ -462,62 +474,70 @@ static int sdl_to_ti(int key)
 			case SDLK_KP7 : return TIKEY_7;
 			case SDLK_KP8 : return TIKEY_8;
 			case SDLK_KP9 : return TIKEY_9;
-			case SDLK_0 : return TIKEY_0;
-			case SDLK_1 : return TIKEY_1;
-			case SDLK_2 : return TIKEY_2;
-			case SDLK_3 : return TIKEY_3;
-			case SDLK_4 : return TIKEY_4;
-			case SDLK_5 : return TIKEY_5;
-			case SDLK_6 : return TIKEY_6;
-			case SDLK_7 : return TIKEY_7;
-			case SDLK_8 : return TIKEY_8;
-			case SDLK_9 : return TIKEY_9;
-			case SDLK_UP : return TIKEY_UP;
-			case SDLK_LEFT : return TIKEY_LEFT;
-			case SDLK_RIGHT : return TIKEY_RIGHT;
-			case SDLK_DOWN : return TIKEY_DOWN;
+			case SDLK_0 : 	return TIKEY_0;
+			case SDLK_1 : 	return TIKEY_1;
+			case SDLK_2 : 	return TIKEY_2;
+			case SDLK_3 : 	return TIKEY_3;
+			case SDLK_4 : 	return TIKEY_4;
+			case SDLK_5 : 	return TIKEY_5;
+			case SDLK_6 : 	return TIKEY_6;
+			case SDLK_7 : 	return TIKEY_7;
+			case SDLK_8 : 	return TIKEY_8;
+			case SDLK_9 : 	return TIKEY_9;
+			
+			// Arrows
+			case SDLK_UP : 		return TIKEY_UP;
+			case SDLK_LEFT : 	return TIKEY_LEFT;
+			case SDLK_RIGHT : 	return TIKEY_RIGHT;
+			case SDLK_DOWN : 	return TIKEY_DOWN;
+			
+			// Functions
 			case SDLK_F1 : return TIKEY_F1;
 			case SDLK_F2 : return TIKEY_F2;
 			case SDLK_F3 : return TIKEY_F3;
 			case SDLK_F4 : return TIKEY_F4;
 			case SDLK_F5 : return TIKEY_F5;
-			case SDLK_F6 : return TIKEY_CATALOG;
 			case SDLK_F7 : return TIKEY_F7;
 			case SDLK_F8 : return TIKEY_F8;
-			case SDLK_RETURN : return TIKEY_ENTER1;
-			case SDLK_KP_ENTER : return TIKEY_ENTER2;
-			case SDLK_LSHIFT : return TIKEY_SHIFT;
-			case SDLK_RSHIFT : return TIKEY_SHIFT;
-			case SDLK_RCTRL : return TIKEY_DIAMOND;
-			case SDLK_LCTRL : return TIKEY_DIAMOND;
-			case SDLK_LALT : return TIKEY_2ND;
-			case SDLK_RALT : return TIKEY_2ND;
-			case SDLK_CAPSLOCK : return TIKEY_ALPHA;
-			case SDLK_TAB : return TIKEY_STORE;
-			case SDLK_SPACE : return TIKEY_SPACE;
-			case SDLK_ESCAPE : return TIKEY_ESCAPE;
-			case SDLK_BACKSPACE : return TIKEY_BACKSPACE;
-			case SDLK_LEFTPAREN : return TIKEY_PALEFT;
-			case SDLK_RIGHTPAREN : return TIKEY_PARIGHT;
-			case SDLK_PERIOD : return TIKEY_PERIOD;
-			case SDLK_COMMA : return TIKEY_COMMA;
-			case SDLK_KP_PLUS : return TIKEY_PLUS;
+			
+			// Standard
+			case SDLK_RETURN : 	return TIKEY_ENTER1;
+			case SDLK_KP_ENTER: return TIKEY_ENTER2;
+			case SDLK_LSHIFT : 	return TIKEY_SHIFT;
+			case SDLK_RSHIFT : 	return TIKEY_SHIFT;
+			case SDLK_RCTRL : 	return TIKEY_DIAMOND;
+			case SDLK_LCTRL : 	return TIKEY_DIAMOND;
+			case SDLK_LALT : 	return TIKEY_2ND;
+			case SDLK_RALT : 	return TIKEY_2ND;
+
+			case SDLK_TAB : 		return TIKEY_STORE;
+			case SDLK_SPACE : 		return TIKEY_SPACE;
+			case SDLK_ESCAPE : 		return TIKEY_ESCAPE;
+			case SDLK_BACKSPACE : 	return TIKEY_BACKSPACE;
+			case SDLK_LEFTPAREN : 	return TIKEY_PALEFT;
+			case SDLK_RIGHTPAREN : 	return TIKEY_PARIGHT;
+			case SDLK_PERIOD : 		return TIKEY_PERIOD;
+			case SDLK_COMMA : 		return TIKEY_COMMA;
+			case SDLK_KP_PLUS : 	return TIKEY_PLUS;
 			case SDLK_KP_MULTIPLY : return TIKEY_MULTIPLY;
-			case SDLK_KP_DIVIDE : return TIKEY_DIVIDE;    
-			case SDLK_KP_MINUS : return TIKEY_MINUS;
-			case SDLK_MINUS : return TIKEY_NEGATE;
-			case SDLK_BACKSLASH : return TIKEY_ON;
-			case SDLK_SLASH : return TIKEY_DIVIDE;
-			case SDLK_EQUALS : return TIKEY_EQUALS;
-			case SDLK_LESS : return TIKEY_NEGATE;
-			case SDLK_INSERT : return TIKEY_SIN;
-			case SDLK_DELETE : return TIKEY_CLEAR;
-			case SDLK_HOME : return TIKEY_COS;
-			case SDLK_END : return TIKEY_LN;
-			case SDLK_PAGEUP : return TIKEY_EE;	
-			case SDLK_PAGEDOWN : return TIKEY_POWER;
+			case SDLK_KP_DIVIDE : 	return TIKEY_DIVIDE;    
+			case SDLK_KP_MINUS : 	return TIKEY_MINUS;
+			case SDLK_MINUS : 		return TIKEY_NEGATE;
+			case SDLK_BACKSLASH : 	return TIKEY_ON;
+			case SDLK_SLASH : 		return TIKEY_DIVIDE;
+			case SDLK_EQUALS : 		return TIKEY_EQUALS;
+			case SDLK_LESS : 		return TIKEY_NEGATE;
+			
+			// Specific
+			case SDLK_F6 : 			return TIKEY_CATALOG;
+			case SDLK_F9  : 		return TIKEY_APPS;
+			case SDLK_TAB : 		return TIKEY_STORE;
+			case SDLK_CAPSLOCK : 	return TIKEY_ALPHA;			
+			case SDLK_PAGEDOWN : 	return TIKEY_MODE;
+			// missing key here
+			case SDLK_PAGEUP : 		return TIKEY_EE;	
+			case SDLK_DELETE : 		return TIKEY_CLEAR;
 			case SDLK_SCROLLOCK : return TIKEY_ON;
-			case SDLK_PRINT : return TIKEY_APPS;
 		
 			default : return TIKEY_NU;
 		}
@@ -592,7 +612,7 @@ int hid_update_keys(void)
 	      		else
 					hid_switch_fullscreen();
 	    	}
-	  		else if(event.key.keysym.sym == SDLK_F9)
+	  		else if(event.key.keysym.sym == SDLK_PRINT)
 	    	{
 				ti68k_kbd_set_key(OPT_SCREENCAPTURE, 0);
 	      		hid_screenshot(NULL);
