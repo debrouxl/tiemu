@@ -182,6 +182,12 @@ void hw_update(void)
 		}
 	}
 
+    // Toggles every FS (every time the LCD restarts at line 0) -> 90 Hz ~ timer/12
+    // Don't use the actual LCD count (and use 12 rather than 11) to keep exposure
+    // times consistent
+    if(!(timer % 12) && tihw.hw_type >= HW2) 
+    	tihw.io2[0x1d] ^= 0x80;
+
 	/* Auto-int management */
 
 	// Auto-int 1: 1/4 of timer rate

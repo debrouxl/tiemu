@@ -44,8 +44,8 @@
 #include "images.h"
 #include "ti68k_def.h"
 
-#define BUFSIZE			12	// store 12 plane addresses
-#define UPDATE_PLANES	16	// update plane addresses every 16 LCD refresh
+#define BUFSIZE			16	// store 16 plane addresses
+#define UPDATE_PLANES	16	// must be a multiple of BUFSIZE
 
 uint32_t lcd_planes[3];
 int ngc = 1;
@@ -55,91 +55,159 @@ int ngc = 1;
 */
 static void process_address(uint32_t plane_addr)
 {
-	uint32_t tmp;
 	static uint32_t lcd_addrs[BUFSIZE];
-	static int		lcd_ticks[BUFSIZE];
-	static int		lcd_exptime[3];
+	static int lcd_cumulative_tickcounts[BUFSIZE];
+	int lcd_exptime[3] = {0, 0, 0};
+	int lcd_apparitions[3] = {0, 0, 0};
+	int lcd_first_apparition[3] = {0, 0, 0};
+	int cycle_start, cycle_end; // cycle = [cycle_start, cycle_end[ (semi-open interval)
 	static int cnt;
+	static int t;
+	uint32_t tmp;
 
 	lcd_addrs[cnt % BUFSIZE] = plane_addr;
-	lcd_ticks[cnt++ % BUFSIZE] = tihw.lcd_tick;
-	tihw.lcd_tick = 0;
+	lcd_cumulative_tickcounts[cnt++ % BUFSIZE] = tihw.lcd_tick;
 
 	if(!(cnt % UPDATE_PLANES))
 	{
-		int ngp = 0;
-		int i;
-
-		// reset exposure times
-		memset(lcd_exptime, 0, sizeof(lcd_exptime));
+		int np, i, j, ngp=1;
+		static int old_ngp=1;
 
 		// get address of plane #0
+		np = 1;
 		lcd_planes[0] = lcd_planes[1] = lcd_planes[2] = lcd_addrs[0];		
-		ngp++;
 
 		// get address of plane #1
-		for(i = 0; i < BUFSIZE; i++)
+		for(i = 1; i < BUFSIZE; i++)
 		{
 			if(lcd_addrs[i] != lcd_planes[0])
 			{
 				lcd_planes[1] = lcd_addrs[i];
-				ngp++;
+				np++;
 				break;
 			}
 		}
 
 		// get address of plane #2
-		for(i = 0; i < BUFSIZE; i++)
+		for(i = 1; i < BUFSIZE; i++)
 		{
 			if((lcd_addrs[i] != lcd_planes[0]) && (lcd_addrs[i] != lcd_planes[1]))
 			{
 				lcd_planes[2] = lcd_addrs[i];
-				ngp++;
+				np++;
 				break;
 			}
 		}
 
-		// get exposure time of plane #0
-		for(i = 0; i < BUFSIZE; i++)
+		ngp = np;
+
+		// search for a full cycle
+		// Use the fact that if there are only 2 planes, plane 2 is the same as plane 0.
+		if (ngp >= 2)
 		{
-			if(lcd_addrs[i] == lcd_planes[0])
-				lcd_exptime[0] += lcd_ticks[i];
+			// skip the first plane (not a complete exposition)
+			for (i = 0; lcd_addrs[i] == lcd_addrs[0]; i++);
+			for (; i < BUFSIZE; i++)
+			{
+				// only count an apparition if the plane has actually changed
+				if (lcd_addrs[i] == lcd_planes[0]
+				    && lcd_addrs[i-1] != lcd_planes[0])
+					if (!(lcd_apparitions[0]++))
+						lcd_first_apparition[0] = i;
+
+				if (lcd_addrs[i] == lcd_planes[1]
+				    && lcd_addrs[i-1] != lcd_planes[1])
+					if (!(lcd_apparitions[1]++))
+						lcd_first_apparition[1] = i;
+
+				if (lcd_addrs[i] == lcd_planes[2]
+				    && lcd_addrs[i-1] != lcd_planes[2])
+					if (!(lcd_apparitions[2]++))
+						lcd_first_apparition[2] = i;
+
+				// stop (WITHOUT incrementing i) if all planes appeared at least twice
+				if (lcd_apparitions[0] >= 2
+				    && lcd_apparitions[1] >= 2
+				    && lcd_apparitions[2] >= 2)
+					break;
+			}
+			if (i == BUFSIZE)
+			{
+//				printf("Warning: no full grayscale cycle found (BUFSIZE too small?)\n");
+				cycle_start = 0;
+				cycle_end = BUFSIZE - 1; // -1 because we'll need to read
+				                         // up to cycle_end for the
+				                         // exposition times
+			}
+			else
+			{
+				if (lcd_addrs[i] == lcd_planes[0])
+					cycle_start = lcd_first_apparition[0];
+				else if (lcd_addrs[i] == lcd_planes[1])
+					cycle_start = lcd_first_apparition[1];
+				else if (lcd_addrs[i] == lcd_planes[2])
+					cycle_start = lcd_first_apparition[2];
+				cycle_end = i;
+			}
+
+
+			// compute exposure time of plane #0 within the cycle
+			for(i = cycle_start; i < cycle_end; i++)
+			{
+				if(lcd_addrs[i] == lcd_planes[0])
+					lcd_exptime[0] += (lcd_cumulative_tickcounts[i+1]
+					                   - lcd_cumulative_tickcounts[i]);
+			}
+
+			// compute exposure time of plane #1 within the cycle
+			for(i = cycle_start; i < cycle_end; i++)
+			{
+				if(lcd_addrs[i] == lcd_planes[1])
+					lcd_exptime[1] += (lcd_cumulative_tickcounts[i+1]
+					                   - lcd_cumulative_tickcounts[i]);
+			}
+
+			// compute exposure time of plane #2 within the cycle
+			for(i = cycle_start; i < cycle_end; i++)
+			{
+				if(lcd_addrs[i] == lcd_planes[2])
+					lcd_exptime[2] += (lcd_cumulative_tickcounts[i+1]
+					                   - lcd_cumulative_tickcounts[i]);
+			}
+
+			// sort plane addresses by exposition times
+			if(lcd_exptime[0] < lcd_exptime[1])
+			{
+				tmp = lcd_planes[0];
+				lcd_planes[0] = lcd_planes[1];
+				lcd_planes[1] = tmp;
+				tmp = lcd_exptime[0];
+				lcd_exptime[0] = lcd_exptime[1];
+				lcd_exptime[1] = tmp;
+			}
+			if((ngp >= 3) && (lcd_exptime[0] < lcd_exptime[2]))
+			{
+				tmp = lcd_planes[0];
+				lcd_planes[0] = lcd_planes[2];
+				lcd_planes[2] = tmp;
+				tmp = lcd_exptime[0];
+				lcd_exptime[0] = lcd_exptime[2];
+				lcd_exptime[2] = tmp;
+			}
+			if((ngp >= 3) && (lcd_exptime[1] < lcd_exptime[2]))
+			{
+				tmp = lcd_planes[1];
+				lcd_planes[1] = lcd_planes[2];
+				lcd_planes[2] = tmp;
+				tmp = lcd_exptime[1];
+				lcd_exptime[1] = lcd_exptime[2];
+				lcd_exptime[2] = tmp;
+			}
 		}
 
-		// get exposure time of plane #1
-		for(i = 0; i < BUFSIZE; i++)
-		{
-			if(lcd_addrs[i] == lcd_planes[1])
-				lcd_exptime[1] += lcd_ticks[i];
-		}
-
-		// get exposure time of plane #2
-		for(i = 0; (i < BUFSIZE) && (ngp > 2); i++)
-		{
-			if(lcd_addrs[i] == lcd_planes[2])
-				lcd_exptime[2] += lcd_ticks[i];
-		}
-
-		// sort plane addresses by exposition times (0,1), (0,2), (1,2)
-		// note: sorting does not works fine and I don't see where the error is...
-		if(lcd_exptime[0] < lcd_exptime[1])
-		{
-			tmp = lcd_planes[1];
-			lcd_planes[1] = lcd_planes[0];
-			lcd_planes[0] = tmp;
-		}
-		if(lcd_exptime[0] < lcd_exptime[2])
-		{
-			tmp = lcd_planes[2];
-			lcd_planes[2] = lcd_planes[0];
-			lcd_planes[0] = tmp;
-		}
-		if(lcd_exptime[1] < lcd_exptime[2])
-		{
-			tmp = lcd_planes[2];
-			lcd_planes[2] = lcd_planes[1];
-			lcd_planes[1] = tmp;
-		}
+		if(old_ngp != ngp)
+			printf("Detected %i planes !\n", ngp);
+		old_ngp = ngp;
 
 		// now, determine number of grayscales (kevin)
 		if(ngp == 1)
@@ -157,7 +225,13 @@ static void process_address(uint32_t plane_addr)
 		}
 
 #if 0
-		printf("%i: %06x-%06x-%06x (%i-%i-%i)\n", ngp,
+		for (i=cycle_start; i<cycle_end; i++)
+				printf("%05x ", lcd_addrs[i]);
+		printf("\n");
+		for (i=cycle_start; i<cycle_end; i++)
+				printf("%05x ", lcd_cumulative_tickcounts[i]>>8);
+		printf("\n");
+		printf("%i (%i): %06x-%06x-%06x (%i-%i-%i)\n", ngp, ngc,
 				lcd_planes[0], lcd_planes[1], lcd_planes[2],
 				lcd_exptime[0]>>4, lcd_exptime[1]>>4, lcd_exptime[2]>>4
 				);
@@ -179,7 +253,6 @@ void lcd_hook_hw1(void)
 void lcd_hook_hw2(int refresh)
 {
 	static int dead_cnt = 0;
-	static int fs_toggled = 0;
 #pragma warning( push )
 #pragma warning( disable : 4305 )
 	static const char moveml_a0p_d0d7a2a6_moveml_d0d7a2a6_a1[8] = {0x4c,0xd8,0x7c,0xff,0x48,0xd1,0x7c,0xff};
@@ -188,18 +261,15 @@ void lcd_hook_hw2(int refresh)
 	// if refresh from GTK (calc.c), set 1 plane
 	if(refresh)
 	{
-		fs_toggled = !0;
-
 		if(++dead_cnt < 5)
 			return;
 
 		lcd_planes[0] = tihw.lcd_adr;
 		ngc = 1;
-		return;
 	}	
 
 	// if refresh from CPU loop (m68k.c), search for opcode signature:
-	if(fs_toggled)
+	else
 	{
 		UWORD opcode = curriword();
 
@@ -221,7 +291,6 @@ void lcd_hook_hw2(int refresh)
 			//printf("%i\n", tihw.lcd_tick);
 			process_address(a0);
 			
-			fs_toggled = 0;
 			dead_cnt = 0;
 		}
 	}

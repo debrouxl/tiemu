@@ -311,16 +311,8 @@ static gint hid_refresh (gpointer data)
         lcd_flag = 0;
         G_UNLOCK(lcd_flag);
 
-        // Toggles every FS (every time the LCD restarts at line 0)
 		if(tihw.hw_type >= HW2)
-		{
-			if(tihw.io2[0x1d] & 0x80)
-				tihw.io2[0x1d] &= ~0x80;
-			else
-				tihw.io2[0x1d] |= 0x80;
-
 			lcd_hook_hw2(TRUE);
-		}
     }
 
     return TRUE;
