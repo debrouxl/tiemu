@@ -146,9 +146,10 @@ static void clist_populate(GtkListStore *store)
 	{
 		gint n = GPOINTER_TO_INT(l->data);
 		gchar *str1, *str2;
+		gint bn = BKPT_ADDR(n);
 		
-		str1 = g_strdup_printf("#%i", BKPT_ADDR(n));
-		str2 = g_strdup_printf("0x%06x", 4 * BKPT_ADDR(n));
+		str1 = g_strdup_printf("#%i - %s", bn, ti68k_exception_to_string(bn));
+		str2 = g_strdup_printf("0x%06x", 4 * bn);
 		
 		gtk_list_store_append(store, &iter);
 		gtk_list_store_set(store, &iter, 
