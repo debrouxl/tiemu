@@ -132,47 +132,8 @@ int hw_mem_init(void)
     // map RAM
     mem_tab[0] = tihw.ram;
     mem_mask[0] = tihw.ram_size-1;
-#if 0
-    // map ROM (internal)
-	//if(tihw.rom_internal)
-    if(tihw.rom_base == 0x20)
-	{
-        if(tihw.rom_size > 0*MB)
-        {
-		    mem_tab[2] = tihw.rom;
-		    mem_mask[2] = MIN(tihw.rom_size, 1*MB)-1;
-        }
 
-        if(tihw.rom_size > 1*MB)
-        {
-		    mem_tab[3] = tihw.rom + 0x100000;
-		    mem_mask[3] = MIN(tihw.rom_size - 1*MB, 1*MB)-1;
-        }
-
-        if(tihw.rom_size > 2*MB)
-        {
-            mem_tab[4] = tihw.rom + 0x200000;
-		    mem_mask[4] = MIN(tihw.rom_size - 2*MB, 1*MB)-1;
-        }
-
-        if(tihw.rom_size > 3*MB)
-        {
-            mem_tab[5] = tihw.rom + 0x300000;
-		    mem_mask[5] = MIN(tihw.rom_size - 3*MB, 1*MB)-1;
-        }
-	}
-
-    // map ROM (external)
-	//if(!tihw.rom_internal)
-    if(tihw.rom_base == 0x40)
-	{
-		mem_tab[4] = tihw.rom;
-		mem_mask[4] = MIN(tihw.rom_size, 1*MB)-1;
-
-		mem_tab[5] = tihw.rom + 0x100000;
-		mem_mask[5] = MIN(tihw.rom_size - 1*MB, 1*MB)-1;
-	}
-#else
+	// map EPROM/FLASH internal/external
     bank_s = (tihw.rom_base & 0xff) >> 4;               // starting bank
     bank_n = (int)ceil((double)(tihw.rom_size >> 20));  // number of banks
 
@@ -192,7 +153,6 @@ int hw_mem_init(void)
         mem_tab[bank_i + bank_n] = tihw.rom + i*0x100000;
         mem_mask[bank_i + bank_n] = MIN(tihw.rom_size - i*MB, 1*MB) - 1;
     }
-#endif
 
     // map IO
     mem_tab[6] = tihw.io;
@@ -232,7 +192,7 @@ int hw_mem_init(void)
 		put_word_ptr = ti89t_put_word;
 		put_long_ptr = ti89t_put_long;
 	}
-#if 1
+#if 0
 	else
 	{
 		get_byte_ptr = ti89_get_byte;

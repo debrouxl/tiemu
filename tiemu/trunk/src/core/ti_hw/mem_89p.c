@@ -55,10 +55,12 @@
 static int access = 0;
 static int crash = 0;
 
+//#define HWP			// HW1 protection if define set
+
 uint32_t ti89p_get_long(uint32_t adr) 
 {
+#ifdef HWP
 	// stealth I/O
-	/*
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
 	{
 		access = crash = 0;
@@ -109,7 +111,7 @@ uint32_t ti89p_get_long(uint32_t adr)
 		access++;
 		crash = 0;
 	}
-	*/
+#endif	
 
     // memory
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
@@ -134,7 +136,7 @@ uint32_t ti89p_get_long(uint32_t adr)
 
 uint16_t ti89p_get_word(uint32_t adr) 
 {
-	/*
+#ifdef HWP
     // stealth I/O
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
 	{
@@ -186,7 +188,7 @@ uint16_t ti89p_get_word(uint32_t adr)
 		access++;
 		crash = 0;
 	}
-	*/
+#endif
 
     // memory
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
@@ -212,7 +214,7 @@ uint16_t ti89p_get_word(uint32_t adr)
 uint8_t ti89p_get_byte(uint32_t adr) 
 {
     // stealth I/O
-	/*
+#ifdef HWP
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
 	{
 		access = crash = 0;
@@ -246,7 +248,7 @@ uint8_t ti89p_get_byte(uint32_t adr)
 	else if(IN_RANGE(0x210000, adr, 0x21ffff))			// certificate
 	{
 		access = crash = 0;
-		if(tihw.protect) return 0x14;
+		//if(tihw.protect) return 0x14;
 	}
 	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
 	{
@@ -263,7 +265,7 @@ uint8_t ti89p_get_byte(uint32_t adr)
 		access++;
 		crash = 0;
 	}
-	*/
+#endif
 
     // memory
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
@@ -289,7 +291,7 @@ uint8_t ti89p_get_byte(uint32_t adr)
 void ti89p_put_long(uint32_t adr, uint32_t arg) 
 {
 	// stealth I/O
-	/*
+#ifdef HWP
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
 	{
 		access = crash = 0;
@@ -343,7 +345,7 @@ void ti89p_put_long(uint32_t adr, uint32_t arg)
 		crash = 0;
 		if(tihw.protect) return;
 	}
-	*/
+#endif
 
     // memory
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
@@ -371,7 +373,7 @@ void ti89p_put_long(uint32_t adr, uint32_t arg)
 
 void ti89p_put_word(uint32_t adr, uint16_t arg) 
 {
-	/*
+#ifdef HWP
 	// stealth I/O
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
 	{
@@ -426,7 +428,7 @@ void ti89p_put_word(uint32_t adr, uint16_t arg)
 		crash = 0;
 		if(tihw.protect) return;
 	}
-	*/
+#endif
 
     // memory
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
@@ -452,7 +454,7 @@ void ti89p_put_word(uint32_t adr, uint16_t arg)
 
 void ti89p_put_byte(uint32_t adr, uint8_t arg) 
 {
-	/*
+#ifdef HWP
     // stealth I/O
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
 	{
@@ -507,7 +509,7 @@ void ti89p_put_byte(uint32_t adr, uint8_t arg)
 		crash = 0;
 		if(tihw.protect) return;
 	}
-	*/
+#endif
 
     // memory
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
