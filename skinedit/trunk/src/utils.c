@@ -61,6 +61,10 @@ set_calc_keymap(void)
     {
       skin_infos.keymap = 1;
     }
+  else if (strcmp(skin_infos.calc, CALC_TI84P) == 0)
+    {
+      skin_infos.keymap = 1;
+    }
   else if (strcmp(skin_infos.calc, CALC_TI85) == 0)
     {
       skin_infos.keymap = 2;
@@ -70,6 +74,10 @@ set_calc_keymap(void)
       skin_infos.keymap = 2;
     }
   else if (strcmp(skin_infos.calc, CALC_TI89) == 0)
+    {
+      skin_infos.keymap = 3;
+    }
+  else if (strcmp(skin_infos.calc, CALC_TI89T) == 0)
     {
       skin_infos.keymap = 3;
     }

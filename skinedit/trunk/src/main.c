@@ -16,6 +16,10 @@
 
 #include <gtk/gtk.h>
 
+#ifdef __WIN32__
+#include <windows.h>
+#endif
+
 #include "main_intf.h"
 #include "support.h"
 #include "utils.h"

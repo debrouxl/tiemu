@@ -60,16 +60,18 @@
 
 #define SKIN_KEYS 80
 
-#define CALC_TI73 "TI-73"
-#define CALC_TI82 "TI-82"
-#define CALC_TI83 "TI-83"
-#define CALC_TI83P "TI-83+"
-#define CALC_TI85 "TI-85"
-#define CALC_TI86 "TI-86"
-#define CALC_TI89 "TI-89"
-#define CALC_TI92 "TI-92"
-#define CALC_TI92P "TI-92+"
-#define CALC_V200 "V200PLT"
+#define CALC_TI73	"TI-73"
+#define CALC_TI82	"TI-82"
+#define CALC_TI83	"TI-83"
+#define CALC_TI83P	"TI-83+"
+#define CALC_TI84P	"TI-84+"
+#define CALC_TI85	"TI-85"
+#define CALC_TI86	"TI-86"
+#define CALC_TI89	"TI-89"
+#define CALC_TI89T	"TI-89TM"
+#define CALC_TI92	"TI-92"
+#define CALC_TI92P	"TI-92+"
+#define CALC_V200	"V200PLT"
 
 #define SKIN_TYPE_TIEMU   10
 #define SKIN_TYPE_VTI     2
