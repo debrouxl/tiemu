@@ -85,6 +85,7 @@ int ti68k_state_load(char *filename)
 	FILE *f;
   	IMG_INFO img;
   	SAV_INFO sav;
+	Ti68kHardware thw;
     int ret;
 	long pos;
   
@@ -131,7 +132,9 @@ int ti68k_state_load(char *filename)
 
 	// Load extra infos
 	ret = fseek(f, sav.misc_offset, SEEK_SET);
-	fread(&tihw.on_off, sizeof(long), 1, f);
+	fread(&thw, sizeof(Ti68kHardware), 1, f);
+	tihw.on_off = thw.on_off;
+	tihw.lcd_adr = thw.lcd_adr;
 
     // Load bkpts
     ti68k_bkpt_clear_access();
@@ -222,7 +225,7 @@ int ti68k_state_save(char *filename)
     sav.io_offset = sav.regs_offset + sizeof(regs) + sizeof(specialflags);
     sav.ram_offset = sav.io_offset + 2*tihw.io_size;
 	sav.misc_offset = sav.ram_offset + tihw.ram_size;
-    sav.bkpts_offset = sav.misc_offset + sizeof(long);
+    sav.bkpts_offset = sav.misc_offset + sizeof(Ti68kHardware);
     fwrite(&sav, 1, sizeof(SAV_INFO), f);
 	
 	// Update UAE structures
@@ -241,7 +244,7 @@ int ti68k_state_save(char *filename)
     fwrite(tihw.ram, tihw.ram_size, 1, f);
 
 	// Save misc informations
-	fwrite(&tihw.on_off, sizeof(long), 1, f);
+	fwrite(&tihw, sizeof(Ti68kHardware), 1, f);
 
     // Save breakpoints (address, access, range, exception)
     save_bkpt(f, bkpts.code);

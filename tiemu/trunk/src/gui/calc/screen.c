@@ -186,7 +186,7 @@ void redraw_lcd(void)
 int hid_update_lcd(void)
 {
 	int i, j, k;
-	uint8_t *lcd_bitmap = tihw.lcd_ptr;
+	uint8_t *lcd_bitmap = tihw.lcd_ptr = &tihw.ram[tihw.lcd_adr];
 	uint8_t *lcd_buf = (uint8_t *)lcd_bytmap;
 	GdkRect src, dst;
 	guchar *p;
