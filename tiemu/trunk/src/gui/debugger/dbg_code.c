@@ -248,6 +248,8 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
 
         if(g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL)
             pix = create_pixbuf("bkpt.xpm");
+		else if(g_list_find(bkpts.code, GINT_TO_POINTER(addr|BKPT_TMP_MASK)) != NULL)
+            pix = create_pixbuf("bkpt_tmp.xpm");
         else
             pix = create_pixbuf("void.xpm");
 
@@ -591,6 +593,41 @@ dbgcode_button6_clicked                     (GtkButton       *button,
 	dbgstack_refresh_window();
 }
 
+// Toggle tmp breakpoint
+GLADE_CB void
+dbgcode_button7_clicked                     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+    //GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
+    GtkTreeSelection *selection;
+    GtkTreeIter iter;
+    gboolean valid;
+    gchar *str;
+    uint32_t addr;
+
+    selection = gtk_tree_view_get_selection(view);
+    valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
+	if(!valid) return;
+
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "%x", &addr);
+
+    if(g_list_find(bkpts.code, GINT_TO_POINTER(addr | BKPT_TMP_MASK)) == NULL)
+        ti68k_bkpt_add_address(addr | BKPT_TMP_MASK);
+    else
+        ti68k_bkpt_del_address(addr | BKPT_TMP_MASK);
+
+    clist_refresh(store, FALSE);
+    dbgregs_refresh_window();
+	dbgpclog_refresh_window();
+    //dbgmem_refresh_window();
+    dbgbkpts_refresh_window();
+	dbgstack_refresh_window();
+}
+
 /***** Popup menu *****/
 
 /*
@@ -647,6 +684,9 @@ on_treeview1_button_press_event        (GtkWidget       *widget,
 GLADE_CB void
 on_go_to_address1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+GLADE_CB void
+on_set_tmp_bkpt1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
 
 GLADE_CB gboolean
 on_treeview1_key_press_event           (GtkWidget       *widget,
@@ -692,6 +732,9 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
 	{
 	case GDK_F2:
 		// already managed by toolbar button
+		return FALSE;
+	case GDK_F3:
+		on_set_tmp_bkpt1_activate(NULL, NULL);
 		return FALSE;
 	case GDK_G:
 	case GDK_g:
@@ -789,6 +832,14 @@ on_set_breakpoint1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     dbgcode_button6_clicked(NULL, NULL);
+}
+
+
+GLADE_CB void
+on_set_tmp_bkpt1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    dbgcode_button7_clicked(NULL, NULL);
 }
 
 

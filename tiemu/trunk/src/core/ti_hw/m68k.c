@@ -109,12 +109,14 @@ int hw_m68k_run(int n)
 	  */
 		
         // save log to disk (internal use)
+#ifdef __WIN32__
         if(flog != NULL)
         {
             //fprintf(flog, "0x%06lx\n", m68k_getpc());
         }
         else
             flog = fopen("C:\\tiemu.log", "wt");        
+#endif
 
         // search for breakpoint
         if(((l = bkpts.code) != NULL) && !(specialflags & SPCFLAG_DBSKIP))
@@ -122,8 +124,11 @@ int hw_m68k_run(int n)
             bkpts.id = 0;
             while(l)
             {
-                if(GPOINTER_TO_INT(l->data) == (int)m68k_getpc())
+                if(BKPT_ADDR(GPOINTER_TO_INT(l->data)) == (int)m68k_getpc())
                 {
+					if(BKPT_IS_TMP(GPOINTER_TO_INT(l->data)))
+						bkpts.code = g_list_remove(bkpts.code, l->data);
+
                     bkpts.type = BK_TYPE_CODE;
 		            //specialflags |= SPCFLAG_BRK;
                     return 1;

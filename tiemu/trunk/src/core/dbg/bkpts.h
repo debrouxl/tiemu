@@ -40,11 +40,18 @@
 #define BKPT_ADDR(addr)		((addr) & ~BKPT_MASK)
 #define BKPT_INFO(addr)		((addr) & BKPT_MASK)
 
-#define BKPT_ENABLE(addr)	((addr) &= ~BKPT_MASK)
-#define BKPT_DISABLE(addr)	((addr) |= BKPT_MASK)
+#define BKPT_ENABLE_BIT		31
+#define BKPT_TMP_BIT		30
 
-#define BKPT_IS_ENABLED(addr)	(!((addr) & BKPT_MASK))
-#define BKPT_ENABLED(addr)		(!((addr) & BKPT_MASK))
+#define BKPT_ENABLE_MASK		(1 << BKPT_ENABLE_BIT)
+#define BKPT_ENABLE(addr)		((addr) &= ~BKPT_ENABLE_MASK)
+#define BKPT_DISABLE(addr)		((addr) |= BKPT_ENABLE_MASK)
+#define BKPT_IS_ENABLED(addr)	(!((addr) & BKPT_ENABLE_MASK))
+
+#define BKPT_TMP_MASK		(1 << BKPT_TMP_BIT)
+#define BKPT_NOTMP(addr)	((addr) &= ~BKPT_TMP_MASK)
+#define BKPT_TMP(addr)		((addr) |= BKPT_TMPSK)
+#define BKPT_IS_TMP(addr)	(((addr) & BKPT_TMP_MASK))
 
 /* Types */
 

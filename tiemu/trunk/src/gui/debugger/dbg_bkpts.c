@@ -131,7 +131,7 @@ static void clist_populate(GtkListStore *store)
 		COL_STATUS, BKPT_IS_ENABLED(addr) ? _("enabled") : _("disabled"),
 		COL_START, str,
 		COL_END, "",		
-        COL_MODE, "",
+        COL_MODE, BKPT_IS_TMP(addr) ? _("one-shot") : "",
 		-1);
 		
 		g_free(str);

@@ -509,6 +509,16 @@
       <accelerator key="F2" modifiers="0" signal="activate"/>
     </widget>
   </child>
+  
+  <child>
+    <widget class="GtkMenuItem" id="set_tmp_bkpt1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">Set _tmp bkpt</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_set_tmp_bkpt1_activate" last_modification_time="Sun, 13 Jun 2004 09:36:25 GMT"/>
+      <accelerator key="F3" modifiers="0" signal="activate"/>
+    </widget>
+  </child>
 
   <child>
     <widget class="GtkMenuItem" id="set_pc_to_selection1">
