@@ -131,6 +131,8 @@ volatile int lcd_flag = !0;
 */
 void hw_update(void)
 {
+	static int timer;
+
     // OSC2 enable (bit clear means oscillator stopped!)
     if(!io_bit_tst(0x15,1))
 	{
@@ -141,7 +143,7 @@ void hw_update(void)
     // Increment timer
     if(io_bit_tst(0x15,3))
     {
-    	tihw.timer_value++;
+    	tihw.timer_value++; timer++;
     	tihw.heartbeat--;
     }
 
@@ -155,7 +157,7 @@ void hw_update(void)
 
 	// Auto-int 1: 1/4 of timer rate
 	// Triggered at a fixed rate: OSC2/2^11
-    if(!(tihw.timer_value & 3)) 
+    if(!(timer & 3)) 
     {
     	if(!io_bit_tst(0x15,7))
 			hw_m68k_irq(1);
@@ -207,11 +209,11 @@ void hw_update(void)
 	/* Hardware refresh */
   
   	// Update keyboard (~600Hz). Not related to timer but as a convenience
-  	if(!(tihw.timer_value & 7))		// 1 and 3 don't work, 7 and 15 are ok
+  	if(!(timer & 7))		// 1 and 3 don't work, 7 and 15 are ok
   		hw_kbd_update();
   		
   	// Update LCD (HW1: every 16Th timer tick, HW2: unrelated)
-  	if((tihw.hw_type == HW1) && !(tihw.timer_value & 15))
+  	if((tihw.hw_type == HW1) && !(timer & 15))
     {
         G_LOCK(lcd_flag);
         lcd_flag = !0;
