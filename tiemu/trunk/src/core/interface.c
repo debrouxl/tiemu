@@ -191,13 +191,18 @@ int ti68k_debug_break(void)
     return 0;
 }
 
-int ti68k_debug_step(void)
+int ti68k_debug_trace(void)
 {
     // Set up an internal trap (DBTRACE) which will 
     // launch/refresh the debugger when encountered
     specialflags |= SPCFLAG_DBTRACE;
 
     return 0;
+}
+
+int ti68k_debug_step(void)
+{
+	return ti68k_debug_do_instructions(1);
 }
 
 int ti68k_debug_step_over(void)
@@ -216,12 +221,12 @@ int ti68k_debug_skip(uint32_t next_pc)
 
     do 
     {
-        specialflags |= SPCFLAG_DBTRACE;
-		ti68k_engine_start();
+		ti68k_debug_step();
 
 		// too far: stop
 		if(m68k_getpc() > next_pc)
 			break;
+
 		// jump back: stop
 		if(next_pc - m68k_getpc() > 0x80)
 			break;

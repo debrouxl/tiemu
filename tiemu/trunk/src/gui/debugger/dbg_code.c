@@ -358,8 +358,10 @@ GLADE_CB void
 on_step1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    ti68k_debug_step();
-	ti68k_engine_start();
+	ti68k_debug_step();
+
+	display_dbgcode_window();
+    display_dbgregs_window();
 }
 
 
@@ -367,7 +369,10 @@ GLADE_CB void
 on_step_over1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    // not implemented yet
+    ti68k_debug_step_over();
+
+	display_dbgcode_window();
+    display_dbgregs_window();
 }
 
 
@@ -395,11 +400,14 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
 
 	tb_set_states(1, 0, 0, 0, 1, 0);
     set_other_windows_sensitivity(FALSE);
+
     ti68k_debug_skip(addr);
 
 	tb_set_states(1, 1, 1, 1, 0, 1);
     set_other_windows_sensitivity(TRUE);
-    clist_refresh(store);
+    
+	display_dbgcode_window();
+    display_dbgregs_window();
 }
 
 
@@ -408,7 +416,7 @@ on_break1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     // Mode 1 is fastest
-#if 1
+#if 0
     //GtkWidget *list = (GtkWidget *)(menuitem);   // arg are swapped, why ?
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
