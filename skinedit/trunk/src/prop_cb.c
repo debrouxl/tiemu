@@ -71,13 +71,18 @@ on_lcd_color_ok_clicked                (GtkButton       *button,
                                         gpointer         user_data)
 {
   GtkWidget *colorsel;
+	GtkColorSelectionDialog *csd;
+	GtkColorSelection *cs;
 
-  gdouble gcolor[3];
+  gdouble gcolor[4];
   unsigned char r, g, b;
 
   colorsel = lookup_widget(GTK_WIDGET(button), "lcd_color_select");
+	printf("colorsel = %p\n", colorsel);
 
-  gtk_color_selection_get_color(GTK_COLOR_SELECTION(GTK_COLOR_SELECTION_DIALOG(colorsel)->colorsel), gcolor);
+	csd = GTK_COLOR_SELECTION_DIALOG(colorsel);
+	cs = GTK_COLOR_SELECTION(csd->colorsel);
+	gtk_color_selection_get_color(cs, gcolor);
 
   r = (unsigned char)(gcolor[0] * 0xff);
   g = (unsigned char)(gcolor[1] * 0xff);

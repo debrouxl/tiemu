@@ -241,7 +241,7 @@ create_about_box (void)
   gtk_box_pack_start (GTK_BOX (dialog_vbox3), frame3, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame3), 5);
 
-  label9 = gtk_label_new (_("Skinedit was written by Julien BLACHE <jb@tilp.info>\n\nThis program is released under the terms of the \nGNU GENERAL PUBLIC LICENSE\nVERSION 2\n\nIt is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the\nimplied warranty of MERCHANTABILITY or FITNESS\nFOR A PARTICULAR PURPOSE. See the GNU\nGeneral Public License for more details."));
+  label9 = gtk_label_new (_("Skinedit was written by Julien BLACHE <jb@tilp.info>\nImproved by Romain Lievin <roms@tilp.info>\nIcons designed by Jesse Palmer <jp@jp3d.net>\n\nThis program is released under the terms of the \nGNU GENERAL PUBLIC LICENSE\nVERSION 2\n\nIt is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the\nimplied warranty of MERCHANTABILITY or FITNESS\nFOR A PARTICULAR PURPOSE. See the GNU\nGeneral Public License for more details."));
   gtk_widget_show (label9);
   gtk_container_add (GTK_CONTAINER (frame3), label9);
   gtk_misc_set_padding (GTK_MISC (label9), 5, 5);
