@@ -49,6 +49,8 @@ dans le décor, je ne sais pas s'il exécute ou pas
 roms
 ====
 
+* manpage to update and command line to check/rewrite
+
 * MOVEA.W diassembled as MOVEA.L (HeapDeref)
 
 -------------

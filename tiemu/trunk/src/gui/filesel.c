@@ -30,6 +30,7 @@
 #include "intl.h"
 #include "filesel.h"
 #include "refresh.h"
+#include "struct.h"
 
 static gchar *filename = NULL;
 
@@ -45,7 +46,7 @@ static void cancel_filename(GtkButton * button, gpointer user_data)
 	filename = "";
 } 
 
-const gchar *create_fsel(gchar *dirname, gchar *ext)
+static const gchar *create_fsel_1(gchar *dirname, gchar *ext, gboolean save)
 {
 	GtkWidget *fs;
 	gchar *mask;
@@ -85,11 +86,8 @@ const gchar *create_fsel(gchar *dirname, gchar *ext)
 		return filename;
 }
 
-const gchar *create_fsel2(gchar *dirname, gchar *ext, gboolean save)
+static const gchar *create_fsel_2(gchar *dirname, gchar *ext, gboolean save)
 {
-#if 1
-	return create_fsel(dirname, ext);
-#else
 	GtkWidget *dialog;
 	GtkFileFilter *filter;
     
@@ -113,7 +111,14 @@ const gchar *create_fsel2(gchar *dirname, gchar *ext, gboolean save)
 	gtk_widget_destroy (dialog);
 
 	return filename;
-#endif
+}
+
+const gchar *create_fsel(gchar *dirname, gchar *ext, gboolean save)
+{
+	if(options.fs_type == 0)
+		return create_fsel_1(dirname, ext, save);
+	else
+		return create_fsel_2(dirname, ext, save);
 }
 
 

@@ -433,6 +433,12 @@ void rcfile_read(void)
 	  if(!strcmp(p, "no")) options.kbd_dbg = 0;
 	  else if(!strcmp(p, "yes")) options.kbd_dbg = 1;
 	}
+
+	if( (p=find_str(buffer, "fs_type=")) )
+	{
+	  if(!strcmp(p, "old")) options.fs_type = 0;
+	  else if(!strcmp(p, "new")) options.fs_type = 1;
+	}
 	
 	if( (p=find_str(buffer, "skin_file=")) )
 	{
@@ -781,11 +787,16 @@ void rcfile_write(void)
   fprintf(txt, "kbd_dbg=%s\n", options.kbd_dbg ? "yes" : "no");
   fprintf(txt, "\n");
 
+  fprintf(txt, "# File selector to use(old (GTK1/2) or new (GTK 2.6))\n");
+  fprintf(txt, "fs_type=%s\n", options.fs_type ? "new" : "old");
+  fprintf(txt, "\n");
+
 	fprintf(txt, "# Geometry hints of debugger windows (x,y,w,h,m,v)\n");
 	fprintf(txt, "bkpts_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.bkpts.rect.x, options3.bkpts.rect.y, 
 		options3.bkpts.rect.w, options3.bkpts.rect.h,
 		options3.bkpts.minimized, options3.bkpts.visible);
+
 	fprintf(txt, "\n");
 	fprintf(txt, "code_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.code.rect.x, options3.code.rect.y, 
@@ -847,6 +858,12 @@ int rcfile_default()
 	options.console = !0;
 #else
 	options.console = 0;
+#endif
+	options.kbd_dbg = 0;
+#ifdef __WIN32__
+	options.fs_type = 0;
+#else
+	options.fs_type = 1;
 #endif
     options.view = VIEW_NORMAL;
 

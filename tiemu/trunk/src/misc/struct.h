@@ -48,6 +48,7 @@ typedef struct
 	gint	console;
     gint    view;
 	gint	kbd_dbg;
+	gint    fs_type;
 
 } TieOptions;
 

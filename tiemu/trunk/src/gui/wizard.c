@@ -222,7 +222,7 @@ gint display_wz_rom_dbox(void)
 	int err;
 
     // get filename
-	filename = (char *)create_fsel2(inst_paths.rom_dir, "*.rom", FALSE);
+	filename = (char *)create_fsel(inst_paths.rom_dir, "*.rom", FALSE);
 	if (filename == NULL)
 	{
 		display_step1_dbox();
@@ -253,7 +253,7 @@ gint display_wz_tib_dbox(void)
 	int err;
 
     // get filename
-	filename = (char *)create_fsel2(inst_paths.rom_dir, "*.89u;*.9xu;*.v2u;*.tib", FALSE);
+	filename = (char *)create_fsel(inst_paths.rom_dir, "*.89u;*.9xu;*.v2u;*.tib", FALSE);
 	if (filename == NULL)
 	{
 		display_step1_dbox();
