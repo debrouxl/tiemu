@@ -209,12 +209,15 @@ static const gchar* create_fsel_4(gchar *dirname, gchar *filename, gchar *ext, g
 #if WITH_KDE
 	gchar *p;
 	gchar *extspaces = g_strdup(ext);
+
 	p = extspaces;
 	while ((p = strchr(p, ';'))) *p = ' ';
+
 	if(save)
-		filename = sp_kde_get_write_filename(dirname, extspaces, _("Save file"));
+		filename = sp_kde_get_write_filename(filename ? filename : dirname, extspaces, _("Save file"));
 	else
 		filename = sp_kde_get_open_filename(dirname, extspaces, _("Open file"));
+
 	g_free(extspaces);
 	return filename;
 #endif
@@ -313,7 +316,7 @@ static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext, gbool
 	// create box
 	dialog = gtk_file_chooser_dialog_new ("Open File",
 				      NULL,
-					  save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN,
+					  GTK_FILE_CHOOSER_ACTION_OPEN,
 				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 				      NULL);
@@ -368,7 +371,7 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext, gbool
 {
 #ifdef WIN32
 	OPENFILENAME o;
-	char lpstrFile[1024] = "\0";
+	char lpstrFile[65536] = "\0";
 	char lpstrFilter[256];
 	char *p;
 	gchar **sarray;
@@ -408,23 +411,21 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext, gbool
 				 OFN_NOCHANGEDIR | OFN_EXPLORER | OFN_LONGNAMES | OFN_NONETWORKBUTTON |
 				 OFN_ALLOWMULTISELECT;
 
-	// open/close
-	if(!save)
-	{
-		if(!GetOpenFileName(&o))
-			return NULL;
-		filenames = NULL;
+	// open selector
+	if(!GetOpenFileName(&o))
+		return NULL;
+	filenames = NULL;
 
-		for(p = lpstrFile, i=0; *p; p += strlen(p)+1, i++)
+	// converts resulting string
+	for(p = lpstrFile, i=0; *p; p += strlen(p)+1, i++)
+	{
+		if(i)	// skip directory
 		{
-			if(i)	// skip directory
-			{
-				filenames = g_realloc(filenames, (i+1) * sizeof(gchar *));
-				filenames[i-1] = g_strconcat(lpstrFile, G_DIR_SEPARATOR_S, p, NULL);
-			}
+			filenames = g_realloc(filenames, (i+1) * sizeof(gchar *));
+			filenames[i-1] = g_strconcat(lpstrFile, G_DIR_SEPARATOR_S, p, NULL);
 		}
-		filenames[i-1] = NULL;
 	}
+	filenames[i-1] = NULL;
 
 	return filenames;
 #endif
