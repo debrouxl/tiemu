@@ -177,7 +177,7 @@ gint display_tifile_dbox()
     }
 
     // set pbar title
-    /*
+    
     if(tifiles_is_a_tib_file(filename) || tifiles_is_a_flash_file(filename)) {
         create_pbar_type5(_("Flash"), "");
     } else if(tifiles_is_a_backup_file(filename)) {
@@ -187,7 +187,7 @@ gint display_tifile_dbox()
     } else if(tifiles_is_a_single_file(filename)) {
         create_pbar_type4(_("Sending variable"), "");
     }
-    */
+    
 
     ti68k_linkport_send_file(filename);
     ti68k_engine_unhalt();  // _must_ be put after !

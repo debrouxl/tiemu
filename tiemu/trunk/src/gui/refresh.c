@@ -26,6 +26,7 @@
 #include "intl.h"
 #include "dboxes.h"
 #include "tilibs.h"
+#include "refresh.h"
 
 extern TicalcInfoUpdate info_update;
 extern struct progress_window
@@ -56,14 +57,18 @@ static void refresh_pbar1()
   gchar buffer[32];
   gfloat rate;
 
-  if(p_win.pbar != NULL) 
+  info_update.percentage = (float) info_update.count / info_update.total;
+
+  if(p_win.pbar != NULL)
     {
+    info_update.percentage = (float) info_update.count / info_update.total;
+
       /* Refresh if necessary (for speeding up !) */
       if( (info_update.percentage - info_update.prev_percentage) < 0.05)
 	{
 	  if( (info_update.percentage - info_update.prev_percentage) < 0)
 	    info_update.prev_percentage = info_update.percentage;
-	  else
+      else
 	    return;
 	}
       else
@@ -71,11 +76,10 @@ static void refresh_pbar1()
 
       rate = dr->count / toCURRENT(dr->start);
       g_snprintf(buffer, 32, "Rate: %1.1f Kbytes/s", rate / 1000);
-      gtk_label_set_text(GTK_LABEL(p_win.label_rate), buffer);
-      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(p_win.pbar), 
-				    info_update.percentage / 100.0);
+      //gtk_label_set_text(GTK_LABEL(p_win.label_rate), buffer);
+      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(p_win.pbar), info_update.percentage);
       
-      while( gtk_events_pending() ) { gtk_main_iteration(); }
+      GTK_REFRESH();
     }
 }
 
@@ -90,9 +94,9 @@ static void refresh_pbar2()
       else
 	info_update.prev_main_percentage = info_update.main_percentage;
       
-      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(p_win.pbar2), 
-				    info_update.main_percentage / 100.0);
-      while( gtk_events_pending() ) { gtk_main_iteration(); }
+      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(p_win.pbar2), info_update.main_percentage);
+      
+      GTK_REFRESH();
     }
 }
 
@@ -106,7 +110,8 @@ static void gt_label()
 {
   if(p_win.label == NULL) return;
   gtk_label_set_text(GTK_LABEL(p_win.label), info_update.label_text);
-  while( gtk_events_pending() ) { gtk_main_iteration(); }
+  
+  GTK_REFRESH();
 }
 
 static void gt_refresh()
