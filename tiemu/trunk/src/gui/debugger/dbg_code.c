@@ -203,6 +203,25 @@ static void clist_refresh(GtkListStore *store)
 
 static GtkListStore *store;
 static gint already_open = 0;
+typedef struct {
+	GtkWidget *b1;
+	GtkWidget *b2;
+	GtkWidget *b3;
+	GtkWidget *b4;
+	GtkWidget *b5;
+	GtkWidget *b6;
+} TB;
+static TB tb;
+
+static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6)
+{
+	gtk_widget_set_sensitive(tb.b1, s1);
+	gtk_widget_set_sensitive(tb.b2, s2);
+	gtk_widget_set_sensitive(tb.b3, s3);
+	gtk_widget_set_sensitive(tb.b4, s4);
+	gtk_widget_set_sensitive(tb.b5, s5);
+	gtk_widget_set_sensitive(tb.b6, s6);
+}
 
 /*
 	Display source code window
@@ -221,6 +240,13 @@ GtkWidget* display_dbgcode_window(void)
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgcode_window");
+
+	tb.b1 = glade_xml_get_widget(xml, "button1");
+	tb.b2 = glade_xml_get_widget(xml, "button2");
+	tb.b3 = glade_xml_get_widget(xml, "button3");
+	tb.b4 = glade_xml_get_widget(xml, "button4");
+	tb.b5 = glade_xml_get_widget(xml, "button5");
+	tb.b6 = glade_xml_get_widget(xml, "button6");
 
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
@@ -280,6 +306,7 @@ dbgcode_button1_clicked                     (GtkButton       *button,
 {
     GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
 
+	tb_set_states(1, 0, 0, 0, 1, 0);
     gtk_widget_set_sensitive(list, FALSE);
     ti68k_engine_unhalt();
 }
@@ -326,7 +353,9 @@ dbgcode_button4_clicked                     (GtkButton       *button,
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
     sscanf(str, "%lx", &addr);
 
+	tb_set_states(1, 0, 0, 0, 1, 0);
     ti68k_debug_skip(addr);
+	tb_set_states(1, 1, 1, 1, 0, 1);
     clist_refresh(store);
 }
 
@@ -345,6 +374,7 @@ dbgcode_button5_clicked                     (GtkButton       *button,
 
     ti68k_engine_halt();
     gtk_widget_set_sensitive(list, TRUE);
+	tb_set_states(1, 1, 1, 1, 0, 1);
     clist_refresh(store);
 #else
     ti68k_debug_break();
