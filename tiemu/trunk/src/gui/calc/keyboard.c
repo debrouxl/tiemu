@@ -382,7 +382,8 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
     }
     else if(event->keyval == GDK_F11)
     {
-        ti68k_debug_break();
+        if(!dbg_on)
+            ti68k_debug_break();
         return TRUE;
     }
     else if(event->keyval == GDK_F12)

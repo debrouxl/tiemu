@@ -1,20 +1,21 @@
 SubVersion: $Id$
 
 - 14/07/2004, version 1.74: roms
-	Fixes from Lionel, Kevin and Oliver's suggestions:
+	Fixes from Lionel, Kevin and Olivier's suggestions:
 	- when scrolling down in the code window, the bar is now reset (hide first instruction).
 	- reject some SAV images due to IMG_INFO structure (memcmp)
 	- improved popup menu (slow down)
-	- popup menu available when debugger is opened.
+	- popup menu available when debugger is opened
+
+	To do:
+	- Run to cursor s'arrête au mauvais endroit s'il y a des JSR.
+	- video scaling
+	- link port is broken (HW2 only ?!)
+	- stealth I/O and mem protect
 
 - 12/07/2004, version 1.73: roms
 	SDL removed for GTK: screen and keyboard support rewritten from scratch !
 	Debugger raised on event from m68k thread: less CPU intensive but could be better.
-
-	To do:
-	- link port is broken (HW2 only ?!)
-	- stealth I/O and mem protect
-
 	HW1 protection is emulated excepted for archive memory limit.
 
 - 07/07/2004, version 1.72: roms

@@ -235,7 +235,7 @@ gint display_comm_dbox()
 	}
 
 	gtk_widget_destroy(dbox);
-    ti68k_engine_start();
+    ti68k_engine_release();
 
 	return 0;
 }

@@ -199,15 +199,6 @@ static gint hid_refresh (gpointer data)
         tihw.io2[0x1d] |= (1 << 7);
     }
 
-	// gruik, should be removed later...
-	/*
-    if(debugger)
-    {
-        enter_gtk_debugger(debugger);
-        debugger = 0;
-    }
-	*/
-
     return TRUE;
 }
 

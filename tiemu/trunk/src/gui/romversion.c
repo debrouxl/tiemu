@@ -177,7 +177,7 @@ gint display_romversion_dbox()
 	{
         DISPLAY("Unable to open this file: %s\n", filename);
         gtk_widget_destroy(dbox);
-		ti68k_engine_start();
+		ti68k_engine_release();
         return -1;
     }
 
@@ -236,7 +236,7 @@ gint display_romversion_dbox()
 				if(err) 
 				{
 					//msg_box("Error", "Can not load the image.");
-					ti68k_engine_start();
+					ti68k_engine_release();
 					return -1;
 				}
 
@@ -264,7 +264,7 @@ gint display_romversion_dbox()
 				if(err)
 				{
 					//msg_box("Error", "Can not load the upgrade.");
-					ti68k_engine_start();
+					ti68k_engine_release();
 					return -1;
 				}
                 
@@ -289,7 +289,7 @@ gint display_romversion_dbox()
 		break;
 	}
 
-    ti68k_engine_start();
+    ti68k_engine_release();
 
 	return 0;
 }

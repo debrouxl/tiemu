@@ -126,7 +126,6 @@ gpointer ti68k_engine(gpointer data)
                 sleep(TIME_LIMIT - ms);
 
             g_timer_reset(tmr);
-			// use g_thread_yield rather than sleep ?
 		}
 	}
 
@@ -140,19 +139,23 @@ int ti68k_engine_is_stopped()
 
 void ti68k_engine_stop(void) 
 {
-    printf("stopping engine... ");
+    //printf("stopping engine... ");
 	G_LOCK(running);
 	running = 0;				// request termination
 	G_UNLOCK(running);
 
-	g_thread_join(thread);		// wait for thread termination
-	thread = NULL;
-    printf("done.\n");
+    if(thread != NULL)
+	    g_thread_join(thread);		// wait for thread termination
+    thread = NULL;
+    //printf("done.\n");
 }
 
 void ti68k_engine_start(void) 
 {
-    printf("starting engine... ");
+    //printf("starting engine... ");
+
+    //while(gtk_events_pending()) gtk_main_iteration();
+
 	G_LOCK(running);
 	if(!running)
 	{
@@ -160,5 +163,5 @@ void ti68k_engine_start(void)
 		thread = g_thread_create(ti68k_engine, NULL, TRUE, &error);		
 	}
 	G_UNLOCK(running);
-    printf("done.\n");
+    //printf("done.\n");
 }

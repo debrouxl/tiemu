@@ -48,42 +48,11 @@
 #include "manpage.h"
 #include "scroptions.h"
 #include "tie_error.h"
-#include "./debugger/dbg_mem.h"
+#include "dbg_mem.h"
 
 #include "ti68k_int.h"
 #include "ti68k_def.h"
 
-extern int dbg_on;
-
-/* 
-   Display a popup menu: entry point used by hid.c (SDL)
-*/
-/*
-void gui_popup_menu(void)
-{
-	GtkWidget *menu;
-	guint button;
-	guint32 time;
-
-	// check whether debugger is opened...
-    if(dbg_on)
-        return;
-
-	// don't have time event due to SDL
-	time = gtk_get_current_event_time();
-	
-	// don't have button event due to SDL
-	button = 0;
-
-	// halt emulation engine
-	ti68k_engine_stop();
-
-	// display popup menu
-	menu = display_popup_menu();
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, button, time);
-	gtk_widget_show(menu);
-}
-*/
 
 GLADE_CB void
 on_popup_menu_cancel                   (GtkMenuShell    *menushell,
@@ -91,7 +60,7 @@ on_popup_menu_cancel                   (GtkMenuShell    *menushell,
 {
 	// called on ESC
 	//DISPLAY("on_popup_menu_cancel\n");
-    ti68k_engine_start();
+    ti68k_engine_release();
 }
 
 
@@ -108,7 +77,7 @@ on_popup_menu_button_press_event       (GtkWidget       *widget,
     if((event->x > alloc->width) || (event->y > alloc->height) ||
         (event->x < alloc->x) || (event->y < alloc->y)) 
     {
-        ti68k_engine_start();
+        ti68k_engine_release();
     }
 
   	return TRUE;
@@ -131,7 +100,7 @@ GLADE_CB void
 on_popup_menu_header                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	ti68k_engine_start();
+	ti68k_engine_release();
 }
 
 
@@ -164,7 +133,7 @@ on_save_config1_activate               (GtkMenuItem     *menuitem,
   	msg_box(_("Information"), 
 	  _("Configuration file saved (in tiemu.ini)."));
 #endif
-	ti68k_engine_start();
+	ti68k_engine_release();
 }
 
 
@@ -199,7 +168,7 @@ on_revert_to_saved_state1_activate     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	ti68k_state_load(params.sav_file);
-  	ti68k_engine_start();
+  	ti68k_engine_release();
 }
 
 
@@ -207,8 +176,10 @@ GLADE_CB void
 on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+    if(dbg_on) return;
+
     ti68k_debug_break();
-	ti68k_engine_start();
+	ti68k_engine_release();
 }
 
 
@@ -217,7 +188,7 @@ on_reset_calc1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	ti68k_reset();
-  	ti68k_engine_start();
+  	ti68k_engine_release();
 }
 
 
@@ -238,7 +209,7 @@ on_restrict_to_actual_speed1_activate  (GtkMenuItem     *menuitem,
   	else
     		params.restricted = 1;
 
-  	ti68k_engine_start();
+  	ti68k_engine_release();
 }
 
 
@@ -252,7 +223,7 @@ on_sync1_activate                      (GtkMenuItem     *menuitem,
   	else
     		params.sync_one = 1;
 */
-  	ti68k_engine_start();
+  	ti68k_engine_release();
 }
 
 
@@ -261,7 +232,7 @@ on_2_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     params.grayplanes = 2;
-    ti68k_engine_start();
+    ti68k_engine_release();
 }
 
 
@@ -270,7 +241,7 @@ on_4_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     params.grayplanes = 4;
-    ti68k_engine_start();
+    ti68k_engine_release();
 }
 
 
@@ -279,7 +250,7 @@ on_7_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     params.grayplanes = 7;
-    ti68k_engine_start();
+    ti68k_engine_release();
 }
 
 
@@ -288,7 +259,7 @@ on_11_colors1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     params.grayplanes = 11;
-    ti68k_engine_start();
+    ti68k_engine_release();
 }
 
 
@@ -298,7 +269,7 @@ on_normal_view1_activate          (GtkMenuItem     *menuitem,
 {
     printf("normal !\n");
 	//hid_switch_normal_view();
-  	//ti68k_engine_start();
+  	//ti68k_engine_release();
 }
 
 
@@ -308,7 +279,7 @@ on_large_view1_activate           (GtkMenuItem     *menuitem,
 {
     printf("large !\n");
 	//hid_switch_large_view();
-  	//ti68k_engine_start();
+  	//ti68k_engine_release();
 }
 
 
@@ -318,7 +289,7 @@ on_full_screen1_activate               (GtkMenuItem     *menuitem,
 {
     printf("full !\n");
 	//hid_switch_fullscreen();
-  	//ti68k_engine_start();
+  	//ti68k_engine_release();
 }
 
 
@@ -327,7 +298,7 @@ on_no_skin1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	hid_switch_without_skin();
-  	ti68k_engine_start();
+  	ti68k_engine_release();
 }
 
 
@@ -336,7 +307,7 @@ on_default_skin1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	hid_switch_with_skin();
-  	ti68k_engine_start();
+  	ti68k_engine_release();
 }
 
 
@@ -353,7 +324,7 @@ on_now1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	hid_screenshot(NULL);
-  	ti68k_engine_start();
+  	ti68k_engine_release();
 }
 
 
