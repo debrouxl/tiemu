@@ -93,7 +93,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 		case 0:	// Ax
 			if(validate_value(new_text, 8))
 			{
-				sscanf(new_text, "%lx", (long *)&value);			
+				sscanf(new_text, "%x", &value);			
 				gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
 				ti68k_register_set_addr(n, value);
 			}
@@ -101,7 +101,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 		case 1:	// Dx
 			if(validate_value(new_text, 8))
 			{
-				sscanf(new_text, "%lx", (long *)&value);			
+				sscanf(new_text, "%x", &value);			
 				gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
 				ti68k_register_set_data(n, value);
 			}
@@ -112,7 +112,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 				case 0:	// pc
 					if(validate_value(new_text, 8))
 					{
-						sscanf(new_text, "%lx", (long *)&value);			
+						sscanf(new_text, "%x", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
 						ti68k_register_set_pc(value);
 					}
@@ -120,7 +120,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 				case 1:	// sp
 					if(validate_value(new_text, 8))
 					{
-						sscanf(new_text, "%lx", (long *)&value);			
+						sscanf(new_text, "%x", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
 						ti68k_register_set_sp(value);
 					}
@@ -128,7 +128,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 				case 2: // sr
 					if(validate_value(new_text, 4))
 					{
-						sscanf(new_text, "%lx", (long *)&value);			
+						sscanf(new_text, "%x", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
 						ti68k_register_set_sr(value);
 					}
@@ -530,10 +530,8 @@ on_dbgregs_window_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-	gdk_window_get_size(widget->window, &options3.regs.w, &options3.regs.h);
-	gdk_window_get_root_origin(widget->window, &options3.regs.x, &options3.regs.y);
-	//gtk_window_get_size(GTK_WINDOW(widget), &options3.regs.w, &options3.regs.h);
-	//gtk_window_get_position(GTK_WINDOW(widget), &options3.regs.x, &options3.regs.y);
+    gtk_window_get_size(GTK_WINDOW(widget), &options3.regs.w, &options3.regs.h);
+    gtk_window_get_position(GTK_WINDOW(widget), &options3.regs.x, &options3.regs.y);
 
 	return FALSE;
 }

@@ -244,6 +244,7 @@ gint display_dbgbkpts_window(void)
 	gtk_widget_show(data);
 
 	gtk_window_resize(GTK_WINDOW(dbox), options3.bkpts.w, options3.bkpts.h);
+	gtk_window_move(GTK_WINDOW(dbox), options3.bkpts.x, options3.bkpts.y);
     gtk_widget_show(GTK_WIDGET(dbox));
 
 	already_open = !0;
@@ -285,10 +286,10 @@ on_dbgbkpts_window_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-	gdk_window_get_size(widget->window, &options3.bkpts.w, &options3.bkpts.h);
-	gdk_window_get_root_origin(widget->window, &options3.bkpts.x, &options3.bkpts.y);
+    gtk_window_get_size(GTK_WINDOW(widget), &options3.bkpts.w, &options3.bkpts.h);
+    gtk_window_get_position(GTK_WINDOW(widget), &options3.bkpts.x, &options3.bkpts.y);
 
-	return FALSE;
+    return FALSE;
 }
 
 GLADE_CB void
@@ -347,7 +348,7 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
         switch(type)
         {
         case BK_TYPE_CODE:
-            sscanf(row_text[COL_START], "%lx", (long *)&min);
+            sscanf(row_text[COL_START], "%x", &min);
             ti68k_bkpt_del_address(min);
             break;
         case BK_TYPE_EXCEPTION:
@@ -356,13 +357,13 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
             break;
         case BK_TYPE_ACCESS:
             mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
-            sscanf(row_text[COL_START], "%lx", (long *)&min);
+            sscanf(row_text[COL_START], "%x", &min);
             ti68k_bkpt_del_access(min, mode);
             break;
         case BK_TYPE_RANGE:
             mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
-            sscanf(row_text[COL_START], "%lx", (long *)&min);
-            sscanf(row_text[COL_END], "%lx", (long *)&max);
+            sscanf(row_text[COL_START], "%x", &min);
+            sscanf(row_text[COL_END], "%x", &max);
             ti68k_bkpt_del_range(min, max, mode);        
             break;
         }

@@ -122,7 +122,7 @@ static void clist_populate(GtkListStore *store)
         split = g_strsplit(output, " ", 3);
 
 	row_text[0] = g_strdup(split[0]);
-	sscanf(row_text[0], "%lx", (long *)&value);
+	sscanf(row_text[0], "%x", &value);
         if(split[1] == NULL)
             row_text[1] = g_strdup("");
 	else
@@ -169,7 +169,7 @@ static void clist_refresh(GtkListStore *store)
         gchar *str;
 
         gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-        sscanf(str, "%lx", (long *)&addr);
+        sscanf(str, "%x", &addr);
 
         if(addr == pc)
             found = !0;
@@ -189,7 +189,7 @@ static void clist_refresh(GtkListStore *store)
             gchar *str;
 
             gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-            sscanf(str, "%lx", (long *)&addr);
+            sscanf(str, "%x", &addr);
 
             if(addr == pc)
             {
@@ -264,7 +264,7 @@ GtkWidget* display_dbgcode_window(void)
 	gtk_widget_show(data);
 
 	gtk_window_resize(GTK_WINDOW(dbox), options3.code.w, options3.code.h);
-	gtk_widget_set_uposition(GTK_WIDGET(dbox), options3.code.x, options3.code.y);
+	gtk_window_move(GTK_WINDOW(dbox), options3.code.x, options3.code.y);
     gtk_widget_show(GTK_WIDGET(dbox));
 
 	already_open = !0;
@@ -291,10 +291,10 @@ on_dbgcode_window_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-	gdk_window_get_size(widget->window, &options3.code.w, &options3.code.h);
-	gdk_window_get_root_origin(widget->window, &options3.code.x, &options3.code.y);
+    gtk_window_get_size(GTK_WINDOW(widget), &options3.code.w, &options3.code.h);
+    gtk_window_get_position(GTK_WINDOW(widget), &options3.code.x, &options3.code.y);
 
-	return FALSE;
+    return FALSE;
 }
 
 GLADE_CB void
@@ -359,7 +359,7 @@ dbgcode_button4_clicked                     (GtkButton       *button,
 
     // Get address to go
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-    sscanf(str, "%lx", (long *)&addr);
+    sscanf(str, "%x", &addr);
 
 	tb_set_states(1, 0, 0, 0, 1, 0);
     ti68k_debug_skip(addr);
@@ -409,7 +409,7 @@ dbgcode_button6_clicked                     (GtkButton       *button,
     valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
 
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-    sscanf(str, "%lx", (long *)&addr);
+    sscanf(str, "%x", &addr);
 
     if(g_list_find(bkpts.code, GINT_TO_POINTER(addr)) == NULL)
         ti68k_bkpt_set_address(addr);

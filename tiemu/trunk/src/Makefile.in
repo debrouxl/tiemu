@@ -139,4 +139,4 @@ distdir: clean
 
 install: tiemu
 	#@$(INSTALL) -m755 -d $(DESTDIR)$(tilp_help_dir)
-	$(INSTALL) -m644 tiemu ${prefix}/bin
+	$(INSTALL) -m755 tiemu ${prefix}/bin

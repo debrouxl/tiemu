@@ -111,11 +111,11 @@ loop:
 		}
 
 		// Convert values and check
-		result = sscanf(s_start, "%lx", (long *)&start);
+		result = sscanf(s_start, "%x", &start);
 		if(result < 1)
 			goto loop;
 
-		result = sscanf(s_stop, "%lx", (long *)&stop);
+		result = sscanf(s_stop, "%x", &stop);
 		if((result < 1) && (type == 2))
 			goto loop;
 

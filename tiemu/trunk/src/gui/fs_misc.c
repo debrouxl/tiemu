@@ -44,8 +44,6 @@
 gint display_skin_dbox()
 {
 	const gchar *filename;
-    SKIN_INFOS si;
-    gint ok;
 
 	filename = (char *)create_fsel(inst_paths.skin_dir, "*.skn");
 	if (!filename)

@@ -234,7 +234,7 @@ int main(int argc, char **argv)
         Timeout handler is used to refresh display. This way is 10% less CPU 
         intensive than direct updating from hardware at hardware rate.
 	*/
-    gtk_timeout_add((params.lcd_rate == -1) ? 10 : params.lcd_rate, 
+    g_timeout_add((params.lcd_rate == -1) ? 10 : params.lcd_rate, 
            (GtkFunction)hid_refresh, NULL);
 
    	gdk_threads_enter();
