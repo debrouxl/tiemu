@@ -1,5 +1,9 @@
 2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+      * interp.c (sim_exception): Delete oldpc argument.
+
+2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
       * interp.c (m68k_go_sim): Raise SIGQUIT, not SIGINT. Raise it to regs, not saved_state.
 
 2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>

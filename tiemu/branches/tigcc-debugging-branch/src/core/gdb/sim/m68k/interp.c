@@ -573,7 +573,7 @@ sim_do_command (sd, cmd)
   
   
 void
-sim_exception (int which, int pc, int oldpc)
+sim_exception (int which, int pc)
 {
   /*  if (trace)*/
   switch (which) {
