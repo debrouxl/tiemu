@@ -46,8 +46,8 @@
    If you think this values are a bit too big, you can slow down 
    the emulator by changing them 
 */
-#define NB_CYCLES_PER_LOOP_HW1 300000	// 300000 cycles
-#define NB_CYCLES_PER_LOOP_HW2 360000	// 360000 cycles
+#define NB_CYCLES_PER_LOOP_HW1 300000	// 300000 cycles in 30ms
+#define NB_CYCLES_PER_LOOP_HW2 360000	// 360000 cycles in 30ms
 #define TIME_LIMIT               30	    // 30 ms
 #define MIN_INSTRUCTIONS_PER_CYCLE 4 	// instructions take at least 4 cycles
 
@@ -74,11 +74,11 @@ static gboolean engine_func(gint *data)
 	GTimer *tmr = g_timer_new();
 	gdouble ms;
 
-	// set instruction rate
+	// set instruction rate (default or custom value)
     if(params.cpu_rate != -1)
         cpu_cycles = params.cpu_rate;
     else
-        cpu_cycles = tihw.hw_type == HW1 ? NB_CYCLES_PER_LOOP_HW1 : NB_CYCLES_PER_LOOP_HW2;
+        cpu_cycles = (tihw.hw_type == HW1) ? NB_CYCLES_PER_LOOP_HW1 : NB_CYCLES_PER_LOOP_HW2;
 
 	// run emulation core
 	g_timer_start(tmr);
@@ -89,10 +89,11 @@ static gboolean engine_func(gint *data)
 	if(*data)
 		return FALSE;
 
-	// get time needed to execute 'cpu_cycles' cycles
-	ms = 1000 * g_timer_elapsed(tmr, NULL); // return 0, why ?
+	// compute duration of hw_m68k_run (used to update engine calibration)
+	ms = 1000 * g_timer_elapsed(tmr, NULL);
 	g_timer_destroy(tmr);
-	//cal = (guint)ms;
+	cal = (guint)(ms);
+	printf("%u ", cal);
 
 	return TRUE;
 }
@@ -143,20 +144,26 @@ void engine_calibrate(void)
 	int i;
 	gdouble ms;
 	GTimer *tmr = g_timer_new();
-	int cycles = tihw.hw_type == HW1 ? NB_CYCLES_PER_LOOP_HW1 : NB_CYCLES_PER_LOOP_HW2;
+	int cycles = (tihw.hw_type == HW1) ? NB_CYCLES_PER_LOOP_HW1 : NB_CYCLES_PER_LOOP_HW2;
 
+	// wait for a while (needed to stabilize things before measurement)
+	g_usleep(500 * 1000);
+
+	// begin calibration loop
 	fprintf(stdout, "Calibrating engine: ");
+	
 	g_timer_start(tmr);
-
 	for(i = 0; i < NLOOPS; i++)
 	{
 		hw_m68k_run(cycles / MIN_INSTRUCTIONS_PER_CYCLE, cycles);
 	}
-
 	g_timer_stop(tmr);
+
+	// compute result and display
 	ms = 1000 * g_timer_elapsed(tmr, NULL);
 	g_timer_destroy(tmr);
-	
 	cal = (guint)(ms / NLOOPS);
+	
+	// and display
 	fprintf(stdout, "%i loops in %.1f ms => %i ms\n", i, ms, cal);
 }
