@@ -33,7 +33,7 @@ int hw_lcd_init(void)
 	if(tihw.calc_type == TI92)
 		tihw.contrast = 13;
 	else if((tihw.calc_type == TI89) && (tihw.hw_type == 2))
-		tihw.contrast = 3;
+		tihw.contrast = 13;
     tihw.lcd_off = 0;
 
 	// On 92 with ROM 1.x, the memory used by the system is at address $4440 and

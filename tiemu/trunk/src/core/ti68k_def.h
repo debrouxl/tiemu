@@ -113,6 +113,7 @@ typedef struct
 
 	int		ram256;
 	int		ram_wrap;
+	int		prot_mem;
 
     // timer.c
     int     timer_value;

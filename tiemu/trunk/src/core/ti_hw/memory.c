@@ -57,7 +57,7 @@ ULONG mem_mask[8] = { 0 };
 
 int rom_changed[32]; // FLASH segments which have been (re)programmed
 
-int memprotect;
+//int memprotect;
 //int ram128;
 //int ram_wrap;
 int mem_and;
@@ -94,8 +94,13 @@ int hw_mem_init(void)
 		tihw.ram_size = ram_sizes[log2(tihw.calc_type)];
 	}
 
+	// Init vars
+	tihw.ram256 = (tihw.ram_size == 256*KB);
+	//tihw.ram_wrap = 
+	tihw.prot_mem = 1;
+
   /* Init vars */
-  memprotect=0;
+  //memprotect=0;
   //ram_wrap=0; 
   mem_and=0x1ffff;
   
@@ -426,33 +431,40 @@ void put_long(CPTR adr, ULONG arg)
     if(adr & 1)
     {
         specialflags |= SPCFLAG_ADRERR;
-        return 0;
+        return;
     }
-    else 
-    {
-        if (adr < 0x200000) 
-	    {
-	        if (adr >=0x1c0000)
-	            flash_protect=0;
-	        lput(adr, arg);
-	    }
-        else if (adr < 0x400000)
-	    {
-	        extRomWriteByte(adr,(arg>>24)&0xff);
-            extRomWriteByte(adr+1,(arg>>16)&0xff);
-            extRomWriteByte(adr+2,(arg>>8)&0xff);
-            extRomWriteByte(adr+3,arg&0xff);
-	    }
-        else if (adr < 0x600000) 
-	    {
-	        extRomWriteByte(adr,(arg>>24)&0xff);
-	        extRomWriteByte(adr+1,(arg>>16)&0xff);
-	        extRomWriteByte(adr+2,(arg>>8)&0xff);
-	        extRomWriteByte(adr+3,arg&0xff);
-	    }
-        else
-	        io_put_long(adr&0x1f, arg);
-    }   
+    
+	if((adr < 0x120) && tihw.prot_mem)
+	{
+		// Protected memory violation. Triggered when memory below [$000120] is
+		// written while bit 2 of [$600001] is set
+		specialflags |= SPCFLAG_INT;
+        currIntLev = 7;
+	}
+
+    if (adr < 0x200000) 
+	{
+	    if (adr >=0x1c0000)
+	        flash_protect=0;
+	    lput(adr, arg);
+	}
+    else if (adr < 0x400000)
+	{
+	    extRomWriteByte(adr,(arg>>24)&0xff);
+        extRomWriteByte(adr+1,(arg>>16)&0xff);
+        extRomWriteByte(adr+2,(arg>>8)&0xff);
+        extRomWriteByte(adr+3,arg&0xff);
+	}
+    else if (adr < 0x600000) 
+	{
+	    extRomWriteByte(adr,(arg>>24)&0xff);
+	    extRomWriteByte(adr+1,(arg>>16)&0xff);
+	    extRomWriteByte(adr+2,(arg>>8)&0xff);
+	    extRomWriteByte(adr+3,arg&0xff);
+	}
+    else
+	    io_put_long(adr&0x1f, arg);
+
 }
 
 void put_word(CPTR adr, UWORD arg) 
@@ -500,28 +512,29 @@ void put_word(CPTR adr, UWORD arg)
     }
   
     if(adr & 1)
+	{
         specialflags |= SPCFLAG_ADRERR;
-    else 
+		return;
+	}
+
+    if (adr < 0x200000) 
     {
-        if (adr < 0x200000) 
-        {
-	        if (adr >=0x1c0000)
-	            flash_protect=0;
-	        wput(adr, arg);
-        }
-        else if (adr < 0x400000)
-        {
-	        extRomWriteByte(adr,(arg>>8)&0xff);
-            extRomWriteByte(adr+1,arg&0xff);
-        }
-        else if (adr < 0x600000) 
-        {
-	        extRomWriteByte(adr,(arg>>8)&0xff);
-	        extRomWriteByte(adr+1,arg&0xff);
-        }
-        else
-        io_put_word(adr&0x1f, arg);
-    }  
+	    if (adr >=0x1c0000)
+	        flash_protect=0;
+	    wput(adr, arg);
+    }
+    else if (adr < 0x400000)
+    {
+	    extRomWriteByte(adr,(arg>>8)&0xff);
+        extRomWriteByte(adr+1,arg&0xff);
+    }
+    else if (adr < 0x600000) 
+    {
+	    extRomWriteByte(adr,(arg>>8)&0xff);
+	    extRomWriteByte(adr+1,arg&0xff);
+    }
+    else
+		io_put_word(adr&0x1f, arg);
 }
 
 void put_byte(CPTR adr, UBYTE arg) 

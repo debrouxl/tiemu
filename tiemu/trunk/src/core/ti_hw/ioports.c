@@ -57,8 +57,11 @@ void io_put_byte(CPTR adr, UBYTE arg)
         case 0x01:
 			// clr: interleave RAM (allows use of 256K of RAM)
 			tihw.ram256 = bit_get(0, arg);
+			//mem_mask[0] = tihw.ram256 ? 0x1fffff : 0x3fffff;
 
-			memprotect=(arg>>2)&1;
+			// set: protected memory violation triggered when memory below [$000120] is written
+			tihw.prot_mem = bit_get(2, arg);
+
             mem_and=(tihw.ram_wrap)?0x1ffff:(!tihw.ram256?0x1ffff:0x3ffff);
             //mem_mask[0] = (mem_and==0x1fffff) ? (128*1024) : (256 * 1024);
 	    break;
@@ -140,7 +143,8 @@ UBYTE io_get_byte(CPTR adr)
             return v|0x4;
         case 0x01:
 			// interleave RAM (allows use of 256K of RAM)
-            return (memprotect<<2) | tihw.ram256;
+			// protected memory violation triggered when memory below [$000120] is written
+            return (tihw.prot_mem << 2) | tihw.ram256;
         case 2: case 4: case 6: case 8: case 0xa: return 0x14;
         case 3: case 5: case 7: case 9: case 0xb: return 1;      
         case 0x0c: //link status
