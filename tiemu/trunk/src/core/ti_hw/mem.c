@@ -40,6 +40,7 @@
 #include "m68k.h"
 #include "ti68k_def.h"
 #include "ti68k_int.h"
+#include "flash.h"
 
 static IMG_INFO *img = &img_infos; // a shortcut
 
@@ -68,18 +69,7 @@ uint32_t mem_mask[16];		// pseudo chip-select (allow wrapping / ghost space)
 
 //#define MAX(a,b)	((a) > (b) ? (a) : (b))
 
-typedef struct
-{
-    int changed[32]; // FLASH segments which have been (re)programmed
-    int ret_or;
-    int write_ready;
-    int write_phase;
-    int erase;
-    int erasePhase;
-} FLASH_WSM;
-FLASH_WSM   wsm;
-
-static int find_pc(void);
+extern FLASH_WSM   wsm;
 
 /* Mem init/exit */
 
@@ -230,6 +220,13 @@ int hw_mem_exit(void)
     return 0;
 }
 
+GETBYTE_FUNC	*get_byte;
+GETWORD_FUNC	*get_word;
+GETLONG_FUNC	*get_long;
+PUTBYTE_FUNC	*put_byte;
+PUTWORD_FUNC	*put_word;
+PUTLONG_FUNC	*put_long;
+
 /* Put/Get byte/word/longword */
 #define bput(adr, arg) { mem_tab[(adr)>>20][(adr) & mem_mask[(adr)>>20]] = (arg); }
 #define wput(adr, arg) { bput((adr), (arg)>> 8); bput((adr)+1, (arg)&0x00ff); }
@@ -238,8 +235,6 @@ int hw_mem_exit(void)
 #define bget(adr) (mem_tab[(adr)>>20][(adr)&mem_mask[(adr)>>20]])
 #define wget(adr) ((uint16_t)(((uint16_t)bget(adr))<< 8 | bget((adr)+1)))
 #define lget(adr) ((uint32_t)(((uint32_t)wget(adr))<<16 | wget((adr)+2)))
-
-static void FlashWriteByte(int addr,int v);
 
 uint32_t hw_get_long(uint32_t adr) 
 {
@@ -755,130 +750,4 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 uint8_t* hw_get_real_address(uint32_t adr) 
 {
     return &mem_tab[(adr>>20)&0xf][adr&mem_mask[(adr>>20)&0xf]];
-}
-
-// not reworked yet (from Corvazier)
-static void FlashWriteByte(int addr, int v)
-{
-    uint8_t *rom = mem_tab[2];
-    int i;
-
-    // map ROM accesses
-    if(tihw.rom_internal)
-        rom = mem_tab[2];
-    else
-        rom = mem_tab[4];
-  
-    addr &= 0x1fffff;
-  
-    if(tihw.flash_prot) 
-        return;
-
-    // TI92 has EPROM
-    if(tihw.calc_type == TI92)
-        return;
-
-    // Write State Machine (WSM, Sharp's data sheet)
-    if (wsm.write_ready)
-    {
-        if ((rom[addr]==0xff)||(wsm.write_ready==1))
-	    {
-	        rom[addr]=v;
-	        wsm.changed[addr>>16]=1;
-	    }
-        else
-	        wsm.write_ready--;
-            wsm.write_ready--;
-            wsm.ret_or=0xffffffff;
-    }
-    else if (v==0x50)
-        wsm.write_phase=0x50;
-    else if (v==0x10)
-    {
-        if (wsm.write_phase==0x50)
-	        wsm.write_phase=0x51;
-        else if (wsm.write_phase==0x51)
-        {
-	        wsm.write_ready=2;
-	        wsm.write_phase=0x50;
-        }
-    }
-    else if (v==0x20)
-    {
-        if (wsm.write_phase==0x50)
-	        wsm.write_phase=0x20;
-    }
-    else if (v==0xd0)
-    {
-        if (wsm.write_phase==0x20)
-        {
-	        wsm.write_phase=0xd0;
-	        wsm.ret_or=0xffffffff;
-	        wsm.erase=0xffffffff;
-	        wsm.erasePhase=0;
-	        for (i=0;i<0x10000;i++)
-	            rom[(addr&0x1f0000)+i]=0xff;
-	        wsm.changed[addr>>16]=1;
-        } 
-    }
-    else if (v==0xff)
-    {
-        if (wsm.write_phase==0x50)
-        {
-	        wsm.write_ready=0;
-	        wsm.ret_or=0;
-        }
-    }
-}
-
-/*
-    Find the PC reset vector in ROM dump or FLASH upgrade.
-    If we have a FLASH upgrade, we copy the vector table into RAM.
-    This allow to use FLASH upgrade as fake ROM dump.
-*/
-static int find_pc()
-{
-    int vt = 0x000000; // vector table
-    int i;
-    uint32_t pc;
-  
-    // find PC reset vector
-    if(tihw.rom_flash)
-    { 
-        // TI89 or TI92+
-        for (vt = 0x12000; vt < tihw.rom_size; vt++)
-	    {
-	        if (*((int*)(tihw.rom + vt)) == 0xcccccccc) 
-            {
-	            vt += 4;
-	            break;
-	        }
-        }
-    
-        vt += 4; // skip SP
-   
-        pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
-            (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
-    }
-  else
-    { 
-      // TI92
-      vt = 0;
-      vt += 4; // skip SP
-      
-      pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
-        (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
-    }
-
-    // copy vector table into RAM for boot
-    for (i = 0; i < 256; i++)
-        tihw.ram[i] = tihw.rom[vt + i];
-
-    return (pc);
-}
-
-// Used to read/modify/write memory directly from debugger
-uint8_t* ti68k_get_real_address(uint32_t addr)
-{
-	return hw_get_real_address(addr);
 }

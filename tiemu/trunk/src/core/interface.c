@@ -241,6 +241,12 @@ int ti68k_debug_do_instructions(int n)
     return hw_m68k_run(n);
 }
 
+// Used to read/modify/write memory directly from debugger
+uint8_t* ti68k_get_real_address(uint32_t addr)
+{
+	return hw_get_real_address(addr);
+}
+
 
 /******************/
 /* Link functions */

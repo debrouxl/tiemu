@@ -27,6 +27,16 @@
 
 #include "stdint.h"
 
+/* Typedefs */
+
+typedef uint8_t  (*GETBYTE_FUNC) (uint32_t);
+typedef uint16_t (*GETWORD_FUNC) (uint32_t);
+typedef uint32_t (*GETLONG_FUNC) (uint32_t);
+
+typedef void	 (*PUTLONG_FUNC) (uint32_t, uint8_t );
+typedef void	 (*PUTWORD_FUNC) (uint32_t, uint16_t);
+typedef void	 (*PUTBYTE_FUNC) (uint32_t, uint32_t);
+
 /* Functions */
 
 int hw_mem_init(void);
@@ -38,9 +48,9 @@ extern uint8_t  hw_get_byte(uint32_t addr);
 extern uint16_t hw_get_word(uint32_t addr);
 extern uint32_t hw_get_long(uint32_t addr);
 
-extern void hw_put_long(uint32_t addr, uint32_t arg);
-extern void hw_put_word(uint32_t addr, uint16_t arg);
 extern void hw_put_byte(uint32_t addr, uint8_t  arg);
+extern void hw_put_word(uint32_t addr, uint16_t arg);
+extern void hw_put_long(uint32_t addr, uint32_t arg);
 
 extern uint8_t* hw_get_real_address(uint32_t addr);
 
