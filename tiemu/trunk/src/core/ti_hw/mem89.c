@@ -43,7 +43,7 @@
 
 // 000000-0fffff : RAM (256 KB)
 // 100000-1fffff : ghost of RAM
-// 200000-2fffff : internal FLASH (TI89)
+// 200000-2fffff : internal FLASH (TI89/V200)
 // 300000-3fffff : 
 // 400000-4fffff : internal FLASH (V200) or nothing (TI89)
 // 500000-5fffff : 

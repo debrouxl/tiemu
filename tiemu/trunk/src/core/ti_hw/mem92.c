@@ -43,9 +43,9 @@
 
 // 000000-0fffff : RAM (128 or 256 KB)
 // 100000-1fffff : ghost of RAM
-// 200000-2fffff : internal ROM (TI92) or unused
+// 200000-2fffff : internal ROM (TI92 1.x) or unused
 // 300000-3fffff : idem
-// 400000-4fffff : external ROM (TI92,+) or unused
+// 400000-4fffff : external ROM (TI92 2.x) or unused
 // 500000-5fffff : idem
 // 600000-6fffff : memory mapped I/O
 // 700000-7fffff : unused

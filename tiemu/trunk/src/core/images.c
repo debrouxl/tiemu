@@ -482,6 +482,15 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
       	return ERR_CANT_OPEN;
     }
 
+	// Some V200 and TI89 Titanium ROMs are half the size
+	if(img.calc_type == V200 || img.calc_type == TI89t)
+	{
+		img.size = 4*MB;
+		img.data = realloc(img.data, 4*MB + 4);
+		printf("Completing image to 4MB !\n");
+		memset(img.data + 2*MB, 0xff, 2*MB);
+	}
+
 	// Fill header
 	strcpy(img.signature, "TiEmu img v2.00");
 	img.header_size = sizeof(IMG_INFO);

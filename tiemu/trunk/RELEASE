@@ -3,7 +3,7 @@
 
 
 Previous version: 1.80		(28/08/2004)
-Current version:  1.80		(14/09/2004)
+Current version:  1.80		(15/09/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -23,6 +23,9 @@ New capabilities:
 	- code window: can jump to ROM call
 	- bkpts window: can jump to code breakpoint
 	- can stop debugger at any time (infinite loop)
+	- TI89 Titanium patched as TI89 work
+	- V200 patched as TI92+ work
+	- V200 work
 
 
 Improvements:
@@ -40,6 +43,8 @@ Bug fixes:
 	- loading of ROM calls on V200
 	- fixed HW3 support => V200 patched (ExtendeD) work
 	- fixed bug in LCD snoop range register: TI89 Titanium patched (ExtendeD) work.
+	- fixed bug in FLASH emulation (algorithm)
+	- fixed ROM size handling with TI89 Titanium & V200
 
 
 To do:

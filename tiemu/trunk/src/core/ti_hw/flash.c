@@ -41,8 +41,8 @@ FLASH_WSM   wsm;
 */
 void FlashWriteByte(uint32_t addr, int v)
 {
-	int i;
-    uint8_t *rom;
+	//int i;
+    uint8_t *rom = tihw.rom;
   
 	if(tihw.calc_type == TI92)
         return;
@@ -50,7 +50,7 @@ void FlashWriteByte(uint32_t addr, int v)
     if(tihw.protect) 
         return;
 
-	rom = tihw.rom;
+	addr -= tihw.rom_base << 16;
 	addr &= tihw.rom_size - 1;
 
     // Write State Machine (WSM, Sharp's data sheet)
@@ -91,8 +91,13 @@ void FlashWriteByte(uint32_t addr, int v)
 	        wsm.ret_or = 0xffffffff;
 	        wsm.erase = 0xffffffff;
 	        wsm.erase_phase = 0;
+
+			memset(&rom[addr & 0xff0000], 0xff, 64*KB);
+			/*
 	        for (i = 0; i < 0x10000; i++)
 	            rom[(addr & 0x1f0000) + i] = 0xff;	// 64KB block
+				*/
+			
 	        wsm.changed[addr >> 16] = 1;
         } 
     }
