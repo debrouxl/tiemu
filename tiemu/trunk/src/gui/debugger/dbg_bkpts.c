@@ -344,6 +344,7 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
         case BK_TYPE_CODE:
             sscanf(row_text[COL_START], "%x", &min);
             ti68k_bkpt_del_address(min);
+			dbgcode_refresh_window();
             break;
         case BK_TYPE_EXCEPTION:
             sscanf(row_text[COL_SYMBOL], "#%i", &n);

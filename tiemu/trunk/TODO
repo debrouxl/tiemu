@@ -169,6 +169,63 @@ serait pratique, comme sous VTI.
 dernier dossier visité avec l'explorateur de fichier soit gardé en
 mémoire et utilisé comme répertoire de départ au prochain envoi.
 
+---
+
++ Si on place un breakpoint dans la fenêtre Code, et si on le supprime
+depuis la fenêtre Breakpoints, le symbole breakpoint n'est pas
+supprimé de la fenêtre Code (à moins de scroller).
+
+* Il arrive parfois que lorsque le débogueur est ouvert et en mode
+Run, l'appui sur Break provoque le plantage de TiEmu. Je ne vois pas
+trop dans quelles conditions.
+
+* Plusieurs comportements étrange :
+Bon je sais pas trop comment te reporter ça, après  10 min de tests je
+comprends rien à la logique.
+- Une importation de Flash Update (de 92+) en tant que fake image ne
+peut pas être utilisée directement ('can't open file' ou 'can't
+upgrade calculator'). Parfois c'est possible, quand on la charge
+depuis un autre modèle de calc, je ne suis pas sûr.
+- L'utilisation d'une Flash Update sans l'avoir mise en fake image
+affiche parfois 'Your configuration has been saved', et parfois 'Can't
+upgrade calculator' en fonction de ce qu'on émulait avant (je ne suis
+pas sûr de la logique7).
+En tout cas tout ça n'est pas normal même si c'est voulu, il faut
+qu'on puisse changer de ROM comme on veut que ce soit une fake image
+ou non.
+
+* Un bug non reproduit : l'ouverture du débugger faisait défiler très
+rapidement toute seule la fenêtre Code sans s'arrêter à n'importe quel
+adresses (trop hautes pour être du code).
+
+Les suggestions, par priorité :
+
+* Afficher le nom des ROM Calls dans la fenêtre Code / Source juste
+avant leur adresse de début (entre les instructions), comme le fait
+VTI.
+
+* Les data breakpoints se déclenchent une fois que l'instruction ayant
+fait le read ou le write a été exécutée. Est-ce ça ne pourra pas être
+fait avant qu'elle s'exécute, afin que l'instruction selectionnée à
+l'arrêt soit celle-ci (pour éviter d'avoir à scroller vers le haut
+d'une instruction à chaque fois) ?
+
+* Personnellement Je ne suis pas vraiment fan du popup affichant le
+breakpoint déclenché, en tout cas pour les breakpoints sur
+instruction. Ca fait perdre un peu de temps pour rien du tout.
+Peut-être une désactivation possible dans la configuration ?
+
+* Un data breakpoint de type 'either' serait quand même mieux que deux
+breakpoints read et write, sinon on est vite submergé pour rien, et on
+perd du temps à les supprimer en 2 fois. D'ailleurs l'édition d'un des
+deux breakpoints provoque l'apparition d'un doublon si on laisse
+'either' coché.
+Mais bon ça reste utilisable.
+
+* Est-ce que TiEmu pourrait se souvenir du dernier OS émulé et le
+charger automatiquement au démarrage ? (Voire que ce soit désactivable
+dans la config si ça gêne certains)
+
 
 Kevin
 =====
