@@ -54,18 +54,18 @@ int enter_gtk_debugger(int context)
     // open debugger, if not already opened
     if(!dbg_active)    
     {
-	    display_dbgmem_window();
-	    display_dbgregs_window();
-	    display_dbgbkpts_window();
+	    //display_dbgmem_window();
+        //display_dbgbkpts_window();
+	    display_dbgregs_window();	    
         display_dbgcode_window();
 
         dbg_active = !0;
     }
     else
     {
-        refresh_dbgmem_window();
+        //refresh_dbgmem_window();
+        //refresh_dbgbkpts_window();
 	    refresh_dbgregs_window();
-	    refresh_dbgbkpts_window();
         refresh_dbgcode_window();
     }
 

@@ -219,7 +219,6 @@ int ti68k_debug_skip(uint32_t next_pc)
     specialflags |= SPCFLAG_BRK;
     do 
     {
-      //MC68000_step();
         ti68k_debug_step();
     } 
     while (next_pc != m68k_getpc() && !broken_in);

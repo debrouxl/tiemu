@@ -46,7 +46,6 @@ gint display_dbgcause_dbox()
 
     // get context
 	ti68k_bkpt_get_cause(&type, &mode, &id);
-    printf("<%i %i %i>\n", type, mode, id);
     if(!type && !mode && !id)
         return 0;
 	

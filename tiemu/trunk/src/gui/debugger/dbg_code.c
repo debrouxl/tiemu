@@ -106,7 +106,7 @@ static void clist_populate(GtkListStore *store)
     gtk_list_store_clear(store);
     ti68k_register_get_pc(&addr);
 
-    for(i = 0; i < 32; i++)
+    for(i = 0; i < 10; i++)
     {
         char output[128];
         int offset;
@@ -151,7 +151,6 @@ static void clist_refresh(GtkListStore *store)
     int found = 0;
 
     ti68k_register_get_pc(&pc);
-    printf("pc at %06x\n", pc);
 
     // check for refresh
     for(valid = gtk_tree_model_get_iter_first(model, &iter);
@@ -255,6 +254,9 @@ GLADE_CB void
 dbgcode_button1_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
+    GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
+
+    gtk_widget_set_sensitive(list, FALSE);
     ti68k_engine_unhalt();
 }
 
@@ -273,7 +275,7 @@ GLADE_CB void
 dbgcode_button3_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+    // not implemented yet
 }
 
 
@@ -300,20 +302,8 @@ dbgcode_button4_clicked                     (GtkButton       *button,
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
     sscanf(str, "%lx", &addr);
 
-    ti68k_bkpt_set_address(addr);
+    ti68k_debug_skip(addr);
     clist_refresh(store);
-    //refresh_dbgbkpts_window();
-    ti68k_engine_unhalt();
-    /*
-    for(i=1, next_addr = ti68k_register_get_pc(); next_addr < addr_to_go; i++)
-	{
-	  next_addr += ti68k_debug_disassemble(next_addr, buffer);
-	  printf("-> buffer: <%s>\n", buffer);
-	  if(i > options.code_lines)
-	    break;
-	}
-      //bkpt_encountered = !doInstructions(i, 0);
-      */
 }
 
 
@@ -329,6 +319,7 @@ dbgcode_button5_clicked                     (GtkButton       *button,
 	GtkListStore *store = GTK_LIST_STORE(model);
 
     ti68k_engine_halt();
+    gtk_widget_set_sensitive(list, TRUE);
     clist_refresh(store);
 #else
     ti68k_debug_break();
@@ -336,7 +327,7 @@ dbgcode_button5_clicked                     (GtkButton       *button,
 }
 
 
-// Set breakpoint
+// Toggle breakpoint
 GLADE_CB void
 dbgcode_button6_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
@@ -357,7 +348,11 @@ dbgcode_button6_clicked                     (GtkButton       *button,
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
     sscanf(str, "%lx", &addr);
 
-    ti68k_bkpt_set_address(addr);
+    if(g_list_find(bkpts.code, GINT_TO_POINTER(addr)) == NULL)
+        ti68k_bkpt_set_address(addr);
+    else
+        ti68k_bkpt_del_address(addr);
+
     clist_refresh(store);
     refresh_dbgbkpts_window();
 }

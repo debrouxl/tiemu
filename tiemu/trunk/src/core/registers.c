@@ -61,7 +61,7 @@ void ti68k_register_set_sp(uint32_t val)
 
 void ti68k_register_set_pc(uint32_t val)
 {
-    regs.pc = val;
+    m68k_setpc(val);
 }
 
 void ti68k_register_set_sr(uint32_t val)
@@ -120,8 +120,8 @@ int ti68k_register_get_pc(uint32_t *val)
 {
 	int c = 0;
 
-    *val = regs.pc;
-	if(regs.pc != old_pc)
+    *val = m68k_getpc();
+	if(*val != old_pc)
 		c = !0;
 
 	old_pc = regs.pc;
