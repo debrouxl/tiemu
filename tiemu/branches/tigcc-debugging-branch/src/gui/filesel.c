@@ -209,12 +209,19 @@ static const gchar* create_fsel_4(gchar *dirname, gchar *filename, gchar *ext, g
 #if WITH_KDE
 	gchar *p;
 	gchar *extspaces = g_strdup(ext);
+
 	p = extspaces;
 	while ((p = strchr(p, ';'))) *p = ' ';
+
 	if(save)
+	{
+		if (filename)
+			dirname = g_strconcat(dirname, filename, NULL);
 		filename = sp_kde_get_write_filename(dirname, extspaces, _("Save file"));
+	}
 	else
 		filename = sp_kde_get_open_filename(dirname, extspaces, _("Open file"));
+
 	g_free(extspaces);
 	return filename;
 #endif
@@ -266,7 +273,7 @@ static void cancel_filenames(GtkButton * button, gpointer user_data)
 } 
 
 // GTK 1.x/2.x (x < 4)
-static gchar** create_fsels_1(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
+static gchar** create_fsels_1(gchar *dirname, gchar *filename, gchar *ext)
 {
 	GtkWidget *fs;
     
@@ -302,7 +309,7 @@ static gchar** create_fsels_1(gchar *dirname, gchar *filename, gchar *ext, gbool
 }
 
 // GTK >= 2.4
-static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
+static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext)
 {
 	GtkWidget *dialog;
 	GtkFileFilter *filter;
@@ -313,7 +320,7 @@ static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext, gbool
 	// create box
 	dialog = gtk_file_chooser_dialog_new ("Open File",
 				      NULL,
-					  save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN,
+					  GTK_FILE_CHOOSER_ACTION_OPEN,
 				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 				      NULL);
@@ -364,11 +371,11 @@ static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext, gbool
 }
 
 // WIN32
-static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
+static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
 {
 #ifdef WIN32
 	OPENFILENAME o;
-	char lpstrFile[1024] = "\0";
+	char lpstrFile[65536] = "\0";
 	char lpstrFilter[256];
 	char *p;
 	gchar **sarray;
@@ -408,23 +415,21 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext, gbool
 				 OFN_NOCHANGEDIR | OFN_EXPLORER | OFN_LONGNAMES | OFN_NONETWORKBUTTON |
 				 OFN_ALLOWMULTISELECT;
 
-	// open/close
-	if(!save)
-	{
-		if(!GetOpenFileName(&o))
-			return NULL;
-		filenames = NULL;
+	// open selector
+	if(!GetOpenFileName(&o))
+		return NULL;
+	filenames = NULL;
 
-		for(p = lpstrFile, i=0; *p; p += strlen(p)+1, i++)
+	// converts resulting string
+	for(p = lpstrFile, i=0; *p; p += strlen(p)+1, i++)
+	{
+		if(i)	// skip directory
 		{
-			if(i)	// skip directory
-			{
-				filenames = g_realloc(filenames, (i+1) * sizeof(gchar *));
-				filenames[i-1] = g_strconcat(lpstrFile, G_DIR_SEPARATOR_S, p, NULL);
-			}
+			filenames = g_realloc(filenames, (i+1) * sizeof(gchar *));
+			filenames[i-1] = g_strconcat(lpstrFile, G_DIR_SEPARATOR_S, p, NULL);
 		}
-		filenames[i-1] = NULL;
 	}
+	filenames[i-1] = NULL;
 
 	return filenames;
 #endif
@@ -432,25 +437,14 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext, gbool
 	return NULL;
 }
 
-static gchar** create_fsels_4(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
+static gchar** create_fsels_4(gchar *dirname, gchar *filename, gchar *ext)
 {
 #if WITH_KDE
 	gchar *p;
 	gchar *extspaces = g_strdup(ext);
 	p = extspaces;
 	while ((p = strchr(p, ';'))) *p = ' ';
-	if(save) { // multi-select doesn't make much sense when saving, and KDE doesn't support it
-		p = sp_kde_get_write_filename(dirname, extspaces, _("Save file"));
-		if (!p)
-			filenames = NULL;
-		else {
-			filenames = g_malloc(2 * sizeof(gchar *));
-			filenames[0] = p;
-			filenames[1] = NULL;
-		}
-	}
-	else
-		filenames = sp_kde_get_open_filenames(dirname, extspaces, _("Open file"));
+	filenames = sp_kde_get_open_filenames(dirname, extspaces, _("Open file"));
 	g_free(extspaces);
 	return filenames;
 #endif
@@ -459,7 +453,7 @@ static gchar** create_fsels_4(gchar *dirname, gchar *filename, gchar *ext, gbool
 }
 
 // Front-end
-gchar** create_fsels(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
+gchar** create_fsels(gchar *dirname, gchar *filename, gchar *ext)
 {
 #ifndef __WIN32__
 	if(options.fs_type == 2)
@@ -469,14 +463,14 @@ gchar** create_fsels(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 	if(options.fs_type == 3)
 		options.fs_type = 1;
 #endif
-	//printf("%i: <%s> <%s> <%s> %i\n", options.fs_type, dirname, filename, ext, save);
+	//printf("%i: <%s> <%s> <%s>\n", options.fs_type, dirname, filename, ext);
 
 	switch(options.fs_type)
 	{
-	case 0:	return create_fsels_1(dirname, filename, ext, save);
-	case 1:	return create_fsels_2(dirname, filename, ext, save);
-	case 2: return create_fsels_3(dirname, filename, ext, save);
-	case 3: return create_fsels_4(dirname, filename, ext, save);
+	case 0:	return create_fsels_1(dirname, filename, ext);
+	case 1:	return create_fsels_2(dirname, filename, ext);
+	case 2: return create_fsels_3(dirname, filename, ext);
+	case 3: return create_fsels_4(dirname, filename, ext);
 	default: return NULL;
 	}
 

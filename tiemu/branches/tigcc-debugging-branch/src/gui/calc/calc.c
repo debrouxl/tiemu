@@ -28,12 +28,9 @@
 #  include <config.h>
 #endif				/*  */
 
-//#ifdef GTK_DISABLE_DEPRECATED
-//#undef GTK_DISABLE_DEPRECATED
 #include <gtk/gtk.h>
-//#define GTK_DISABLE_DEPRECATED
-//#endif
 #include <glade/glade.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "intl.h"
 #include "paths.h"
@@ -68,8 +65,8 @@ static void set_infos(void)	// set window & lcd sizes
 {
 	if(params.background) 
 	{
-		li.pos.x = si.s * skin_infos.lcd_pos.left; 
-		li.pos.y = si.s * skin_infos.lcd_pos.top;
+		li.pos.x = (int)(si.x * skin_infos.lcd_pos.left); 
+		li.pos.y = (int)(si.y * skin_infos.lcd_pos.top);
 	}
 	else 
 	{
@@ -77,18 +74,18 @@ static void set_infos(void)	// set window & lcd sizes
 		li.pos.y = 0;
 	}  
 
-	li.pos.w = si.s * tihw.lcd_w;
-	li.pos.h = si.s * tihw.lcd_h;
+	li.pos.w = (int)(si.x * tihw.lcd_w);
+	li.pos.h = (int)(si.y * tihw.lcd_h);
 
 	if(params.background)
 	{
-		wi.w = si.s * skin_infos.width;
-		wi.h = si.s * skin_infos.height;
+		wi.w = (int)(si.x * skin_infos.width);
+		wi.h = (int)(si.y * skin_infos.height);
 	}
 	else
 	{
-		wi.w = si.s * tihw.lcd_w;
-		wi.h = si.s * tihw.lcd_h;
+		wi.w = (int)(si.x * tihw.lcd_w);
+		wi.h = (int)(si.y * tihw.lcd_h);
 	}
 }
 
@@ -381,7 +378,7 @@ int  hid_init(void)
 	lcd_bytmap = (uint32_t *)malloc(LCDMEM_W * LCDMEM_H);
 
     // Allocate the lcd pixbuf
-    lcd = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, LCDMEM_W, LCDMEM_H);
+    lcd = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, si.t * LCDMEM_W, si.t * LCDMEM_H);
     if(lcd == NULL)
     {
         gchar *s = g_strdup_printf("unable to create LCD pixbuf.\n");
@@ -397,6 +394,7 @@ int  hid_init(void)
 	li.height = gdk_pixbuf_get_height (lcd);
 	li.rowstride = gdk_pixbuf_get_rowstride (lcd);
 	li.pixels = gdk_pixbuf_get_pixels (lcd);
+	printf("%i %i %i\n", li.width, li.height, li.rowstride);
 
 	// Create main window
 	display_main_wnd();
@@ -482,23 +480,29 @@ int hid_change_skin(const char *filename)
 
 static gint view_mode = VW_NORMAL;
 
-int hid_switch_unfullscreen(void)
-{
-	if(view_mode & VW_FULL)
-	{
-		gdk_window_unfullscreen(main_wnd->window);
-		view_mode &= ~VW_FULL;
-	}
-
-	return 0;
-}
-
 int hid_switch_fullscreen(void)
 {
-	if(!(view_mode & VW_FULL))
+	if(view_mode != VW_FULL)
 	{
+		GdkScreen* screen = gdk_screen_get_default();
+		gint sw = gdk_screen_get_width(screen);
+		gint sh = gdk_screen_get_height(screen);
+
+		si.t = 1;
+		si.x = (float)sw / li.pos.w;
+		si.y = (float)sh / li.pos.h;
+		//printf("%i %i %f\n", sw, li.pos.w, si.x);
+		//printf("%i %i %f\n", sh, li.pos.h, si.y);
+
+		si.x = (float)4.0;	// restricted to 4.0, too CPU intensive !
+		si.y = (float)4.0;
+		params.background = 0;
+		
+		hid_exit();
+		hid_init();
+
+		view_mode = VW_FULL;
 		gdk_window_fullscreen(main_wnd->window);
-		view_mode |= VW_FULL;
 	}
 
 	return 0;
@@ -506,16 +510,17 @@ int hid_switch_fullscreen(void)
 
 int hid_switch_normal_view(void)
 {
-	if(!(view_mode & VW_NORMAL))
+	if(view_mode != VW_NORMAL)
 	{
-		hid_switch_unfullscreen();
+		si.t = 1;
+		si.x = si.y = 1;
+		params.background = 1;
 
-		si.s = 1;		
 		hid_exit();
 		hid_init();
 
-		view_mode &= ~VW_LARGE;
-		view_mode |= VW_NORMAL;
+		view_mode = VW_NORMAL;
+		//gdk_window_unfullscreen(main_wnd->window);
 	}
 
     return 0;
@@ -523,16 +528,17 @@ int hid_switch_normal_view(void)
 
 int hid_switch_large_view(void)
 {
-	if(!(view_mode & VW_LARGE))
+	if(view_mode != VW_LARGE)
 	{
-		hid_switch_unfullscreen();
-
-		si.s = 2;		
+		si.t = 2;
+		si.x = si.y = 2;
+		params.background = 1;		
+		
 		hid_exit();
 		hid_init();
 
-		view_mode &= ~VW_NORMAL;
-		view_mode |= VW_LARGE;
+		view_mode = VW_LARGE;
+		//gdk_window_unfullscreen(main_wnd->window);
 	}
 
     return 0;

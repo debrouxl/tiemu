@@ -954,7 +954,7 @@ on_treeview1_size_allocate             (GtkWidget       *widget,
 		return;
 
 	NLINES = allocation->height / rect.height - 1;
-	printf("#lines: %i (%i %i)\n", NLINES, allocation->height, rect.height);
+	//printf("#lines: %i (%i %i)\n", NLINES, allocation->height, rect.height);
 
 	if(old != NLINES)
 	{	
