@@ -41,7 +41,7 @@
 /* Types */
 
 #define BPP 8               // 8 bits per pixel
-#define NGS 16              // Number of gray scales
+#define NGS 16              // number of gray scales (contrast level)
 
 #define SCREEN_ON   (!0)
 #define SCREEN_OFF	0
@@ -98,6 +98,8 @@ void compute_grayscale(void)
   	int r, g ,b;
     uint32_t white = skin_infos.lcd_white;  // 0xcfe0ce
     uint32_t black = skin_infos.lcd_black;  // 0x222e31
+
+	printf("# planes: %i | contrast: %i\n", max_plane, contrast);
 
   	sr = (white & 0xff0000) >> 8;
   	sg = (white & 0x00ff00);
