@@ -182,429 +182,401 @@ int hw_mem_exit(void)
 
 ULONG get_long(CPTR adr) 
 {
-  GList* l;
+    GList* l;
   
     adr &= 0xFFFFFF;
 
-  if (l=listBkptAsRL) 
+    if (l=listBkptAsRL) 
     {
-       breakId=0;
-      while (l) 
-	{
-	  if (l->data==adr) 
+        breakId=0;
+        while (l) 
 	    {
-	      breakMode = BK_READ_LONG; 
-	      specialflags|=SPCFLAG_BRK; 
-	      breakType = BK_CAUSE_ACCESS;
-	      break;
+	        if (l->data==adr) 
+	        {
+	            breakMode = BK_READ_LONG; 
+	            specialflags|=SPCFLAG_BRK; 
+	            breakType = BK_CAUSE_ACCESS;
+	            break;
+	        }
+	        
+            breakId++;
+	        l=l->next;
 	    }
-	  breakId++;
-	  l=l->next;
-	}
-    }
-  if (l=listBkptAsRgR) 
-    {
-      breakId=0;
-      while (l) 
-	{
-        ADDR_RANGE *r = l->data;
-
-	  if (r->val>=adr && (adr+3)<=r->val2) 
-	    {
-	      breakMode = BK_READ_LONG; 
-	      specialflags|=SPCFLAG_BRK; 
-	      breakType = BK_CAUSE_ACCESS_RANGE;
-	      break;
-	    }
-	  breakId++;
-	  l=l->next;
-	}
     }
   
-  if(adr&1) 
+    if (l=listBkptAsRgR) 
     {
-      specialflags |= SPCFLAG_ADRERR;
-      return 0;
+        breakId=0;
+        while (l) 
+	    {
+            ADDR_RANGE *r = l->data;
+
+	        if (r->val>=adr && (adr+3)<=r->val2) 
+	        {
+	            breakMode = BK_READ_LONG; 
+	            specialflags|=SPCFLAG_BRK; 
+	            breakType = BK_CAUSE_ACCESS_RANGE;
+	            break;
+	        }
+	  
+            breakId++;
+	        l=l->next;
+	    }
     }
-  if (adr>=0x1c0000 && adr<0x200000)
-    flash_protect = 1;
-  if (flash_protect && adr>=0x210000 && adr<=0x211fff)
-    return 0x14141414;
-  if (adr<0x200000) 
-    return lget(adr);
-  if (adr<0x600000) 
-    return (lget(adr)|rom_ret_or);
-  else 
-    return io_get_long(adr&0x1f);
+  
+    if(adr & 1) 
+    {
+        specialflags |= SPCFLAG_ADRERR;
+        return 0;
+    }
+
+    if (adr>=0x1c0000 && adr<0x200000)
+        flash_protect = 1;
+  
+    if (flash_protect && adr>=0x210000 && adr<=0x211fff)
+        return 0x14141414;
+  
+    if (adr<0x200000) 
+        return lget(adr);
+    
+    if (adr<0x600000) 
+        return (lget(adr)|rom_ret_or);
+    else 
+        return io_get_long(adr&0x1f);
 }
 
 UWORD get_word(CPTR adr) 
 {
-  GList* l;
+    GList* l;
 	
-  adr &= 0xFFFFFF;
-  if (l=listBkptAsRW) 
-    {
-      breakId = 0;
-      while (l) 
-	{
-	  if (l->data==adr) 
-	    {
-	      breakMode = BK_READ_WORD;
-	      specialflags|=SPCFLAG_BRK;
-	      breakType = BK_CAUSE_ACCESS;
-	      break;
-	    }
-	  breakId++;
-	  l=l->next;
-	}
-    }
-  if (l=listBkptAsRgR) 
-    {
-      breakId=0;
-      while (l) 
-	{
-          ADDR_RANGE *r = l->data;
+    adr &= 0xFFFFFF;
 
-	  if (r->val>=adr && (adr+1)<=r->val2) 
+    if (l=listBkptAsRW) 
+    {
+        breakId = 0;
+        while (l) 
 	    {
-	      breakMode = BK_READ_WORD; 
-	      specialflags|=SPCFLAG_BRK; 
-	      breakType = BK_CAUSE_ACCESS_RANGE;
-	      break;
+	        if (l->data==adr) 
+	        {
+	            breakMode = BK_READ_WORD;
+	            specialflags|=SPCFLAG_BRK;
+	            breakType = BK_CAUSE_ACCESS;
+	            break;
+	        }
+	    
+            breakId++;
+	        l=l->next;
 	    }
-	  breakId++;
-	  l=l->next;
-	}
     }
   
-  if(adr&1) 
+    if (l=listBkptAsRgR) 
     {
-      specialflags |= SPCFLAG_ADRERR;
-      return 0;
+        breakId=0;
+        while (l) 
+	    {
+            ADDR_RANGE *r = l->data;
+
+	        if (r->val>=adr && (adr+1)<=r->val2) 
+	        {
+	            breakMode = BK_READ_WORD; 
+	            specialflags|=SPCFLAG_BRK; 
+	            breakType = BK_CAUSE_ACCESS_RANGE;
+	            break;
+	        }
+	  
+            breakId++;
+	        l=l->next;
+	    }
     }
-  if (adr>=0x1c0000 && adr <0x200000)
-    flash_protect = 1;
-  if (flash_protect && adr>=0x210000 && adr<=0x211fff)
-    return 0x1414;
-  if (adr<0x200000) 
-    return wget(adr);
-  if (adr<0x600000) 
-    return (wget(adr)|rom_ret_or);
-  else 
-    return io_get_word(adr&0x1f);
+  
+    if(adr & 1) 
+    {
+        specialflags |= SPCFLAG_ADRERR;
+        return 0;
+    }
+
+    if (adr>=0x1c0000 && adr <0x200000)
+        flash_protect = 1;
+    if (flash_protect && adr>=0x210000 && adr<=0x211fff)
+        return 0x1414;
+    if (adr<0x200000) 
+        return wget(adr);
+    if (adr<0x600000) 
+        return (wget(adr)|rom_ret_or);
+    else 
+        return io_get_word(adr&0x1f);
 }
 
 UBYTE get_byte(CPTR adr) 
 {
-  GList* l;
+    GList* l;
   
-  adr &= 0xFFFFFF;
-  if (l=listBkptAsRB) 
-    {
-      breakId = 0;
-      while (l) {
-	if (l->data==adr) 
-	  {
-	    breakMode = BK_READ_BYTE;
-	    specialflags|=SPCFLAG_BRK;
-	    breakType = BK_CAUSE_ACCESS;
-	    break;
-	  }
-	breakId++;
-	l=l->next;
-      }
-    }
-  if (l=listBkptAsRgR) 
-    {
-      breakId=0;
-      while (l) 
-	{
-        ADDR_RANGE *r = l->data;
+    adr &= 0xFFFFFF;
 
-	  if (r->val>=adr && adr<=r->val2) 
+    if (l=listBkptAsRB) 
+    {
+        breakId = 0;
+        while (l) {
+	        if (l->data==adr) 
+	        {
+	            breakMode = BK_READ_BYTE;
+	            specialflags|=SPCFLAG_BRK;
+	            breakType = BK_CAUSE_ACCESS;
+	            break;
+	        }
+	    
+            breakId++;
+	        l=l->next;
+        }
+    }
+
+    if (l=listBkptAsRgR) 
+    {
+        breakId=0;
+        while (l) 
 	    {
-	      breakMode = BK_READ_BYTE; 
-	      specialflags|=SPCFLAG_BRK; 
-	      breakType = BK_CAUSE_ACCESS_RANGE;
-	      break;
+        
+            ADDR_RANGE *r = l->data;
+
+	        if (r->val>=adr && adr<=r->val2) 
+	        {
+	            breakMode = BK_READ_BYTE; 
+	            specialflags|=SPCFLAG_BRK; 
+	            breakType = BK_CAUSE_ACCESS_RANGE;
+	            break;
+	        }
+	  
+            breakId++;
+	  
+            l=l->next;
 	    }
-	  breakId++;
-	  l=l->next;
-	}
     }
   
-  if (adr>=0x1c0000 && adr <0x200000)
-    flash_protect = 1;
-  if (flash_protect && adr>=0x210000 && adr<=0x211fff)
-    return 0x14;
+    if (adr>=0x1c0000 && adr <0x200000)
+        flash_protect = 1;
+
+    if (flash_protect && adr>=0x210000 && adr<=0x211fff)
+        return 0x14;
   
-  if (adr<0x200000) 
-    return bget(adr);
-  if (adr<0x600000) 
-    return (bget(adr)|rom_ret_or);
-  else 
-    return io_get_byte(adr&0x1f);
+    if (adr<0x200000) 
+        return bget(adr);
+  
+    if (adr<0x600000) 
+        return (bget(adr)|rom_ret_or);
+    else 
+        return io_get_byte(adr&0x1f);
 }
 
 void put_long(CPTR adr, ULONG arg) 
 {
-  GList* l;
+    GList* l;
 
-  adr &= 0xFFFFFF;
-  if (l=listBkptAsWL) 
+    adr &= 0xFFFFFF;
+
+    if (l=listBkptAsWL) 
     {
-      breakId = 0;
-      while (l) 
-	{
-	  if (l->data==adr) 
+        breakId = 0;
+        while (l) 
 	    {
-	      breakMode = BK_WRITE_LONG;
-	      specialflags|=SPCFLAG_BRK;
-	      breakType = BK_CAUSE_ACCESS;
-	      break;
+	        if (l->data==adr) 
+	        {
+	            breakMode = BK_WRITE_LONG;
+	            specialflags|=SPCFLAG_BRK;
+	            breakType = BK_CAUSE_ACCESS;
+	            break;
+	        }
+	  
+            breakId++;
+	        l=l->next;
 	    }
-	  breakId++;
-	  l=l->next;
-	}
     }
-  if (l=listBkptAsRgW) 
+  
+    if (l=listBkptAsRgW) 
     {
-      breakId=0;
-      while (l) 
-	{
-	    ADDR_RANGE *r = l->data;
-
-          if (r->val>=adr && (adr+3)<=r->val2) 
+        breakId=0;
+        while (l) 
 	    {
-	      breakMode = BK_WRITE_LONG; 
-	      specialflags|=SPCFLAG_BRK; 
-	      breakType = BK_CAUSE_ACCESS_RANGE;
-	      break;
+	        ADDR_RANGE *r = l->data;
+
+            if (r->val>=adr && (adr+3)<=r->val2) 
+	        {
+	            breakMode = BK_WRITE_LONG; 
+	            specialflags|=SPCFLAG_BRK; 
+	            breakType = BK_CAUSE_ACCESS_RANGE;
+	            break;
+	        }
+	  
+            breakId++;
+	        l=l->next;
 	    }
-	  breakId++;
-	  l=l->next;
-	}
     }
 
-  if(adr&1)
-    specialflags |= SPCFLAG_ADRERR;
-  else 
+    if(adr & 1)
     {
-      if (adr < 0x200000) 
-	{
-	  if (adr >=0x1c0000)
-	    flash_protect=0;
-	  lput(adr, arg);
-	}
-      else if (adr < 0x400000)
-	{
-	  intRomWriteByte(adr,(arg>>24)&0xff);
-          intRomWriteByte(adr+1,(arg>>16)&0xff);
-          intRomWriteByte(adr+2,(arg>>8)&0xff);
-          intRomWriteByte(adr+3,arg&0xff);
-	}
-      else if (adr < 0x600000) 
-	{
-	  extRomWriteByte(adr,(arg>>24)&0xff);
-	  extRomWriteByte(adr+1,(arg>>16)&0xff);
-	  extRomWriteByte(adr+2,(arg>>8)&0xff);
-	  extRomWriteByte(adr+3,arg&0xff);
-	}
-      else
-	io_put_long(adr&0x1f, arg);
+        specialflags |= SPCFLAG_ADRERR;
+        return 0;
+    }
+    else 
+    {
+        if (adr < 0x200000) 
+	    {
+	        if (adr >=0x1c0000)
+	            flash_protect=0;
+	        lput(adr, arg);
+	    }
+        else if (adr < 0x400000)
+	    {
+	        extRomWriteByte(adr,(arg>>24)&0xff);
+            extRomWriteByte(adr+1,(arg>>16)&0xff);
+            extRomWriteByte(adr+2,(arg>>8)&0xff);
+            extRomWriteByte(adr+3,arg&0xff);
+	    }
+        else if (adr < 0x600000) 
+	    {
+	        extRomWriteByte(adr,(arg>>24)&0xff);
+	        extRomWriteByte(adr+1,(arg>>16)&0xff);
+	        extRomWriteByte(adr+2,(arg>>8)&0xff);
+	        extRomWriteByte(adr+3,arg&0xff);
+	    }
+        else
+	        io_put_long(adr&0x1f, arg);
     }   
 }
 
 void put_word(CPTR adr, UWORD arg) 
 {
-  GList* l;
+    GList* l;
 	
-  adr &= 0xFFFFFF;
-  if (l=listBkptAsWW) 
-    {
-      breakId = 0;
-      while (l) 
-	{
-	  if (l->data==adr) 
-	    {
-	      breakMode = BK_WRITE_WORD;
-	      specialflags|=SPCFLAG_BRK;
-	      breakType = BK_CAUSE_ACCESS;
-	      break;
-	    }
-	  breakId++;
-	  l=l->next;
-	}
-    }
-  if (l=listBkptAsRgW)
-    {
-      breakId=0;
-      while (l) 
-	{
-          ADDR_RANGE *r = l->data;
+    adr &= 0xFFFFFF;
 
-	  if (r->val>=adr && (adr+1)<=r->val2) 
+    if (l=listBkptAsWW) 
+    {
+        breakId = 0;
+        while (l) 
 	    {
-	      breakMode = BK_WRITE_WORD; 
-	      specialflags|=SPCFLAG_BRK; 
-	      breakType = BK_CAUSE_ACCESS_RANGE;
-	      break;
+	        if (l->data==adr) 
+	        {
+	            breakMode = BK_WRITE_WORD;
+	            specialflags|=SPCFLAG_BRK;
+	            breakType = BK_CAUSE_ACCESS;
+	            break;
+	        }
+	  
+            breakId++;
+            l=l->next;
 	    }
-	  breakId++;
-	  l=l->next;
-	}
     }
   
-  if(adr&1)
-    specialflags |= SPCFLAG_ADRERR;
-  else {
-    if (adr < 0x200000) 
-      {
-	if (adr >=0x1c0000)
-	  flash_protect=0;
-	wput(adr, arg);
-      }
-    else if (adr < 0x400000)
-      {
-	intRomWriteByte(adr,(arg>>8)&0xff);
-        intRomWriteByte(adr+1,arg&0xff);
-      }
-    else if (adr < 0x600000) 
-      {
-	extRomWriteByte(adr,(arg>>8)&0xff);
-	extRomWriteByte(adr+1,arg&0xff);
-      }
-    else
-      io_put_word(adr&0x1f, arg);
-  }  
+    if (l=listBkptAsRgW)
+    {
+        breakId=0;
+        while (l) 
+	    {
+            ADDR_RANGE *r = l->data;
+
+	        if (r->val>=adr && (adr+1)<=r->val2) 
+	        {
+	            breakMode = BK_WRITE_WORD; 
+	            specialflags|=SPCFLAG_BRK; 
+	            breakType = BK_CAUSE_ACCESS_RANGE;
+	            break;
+	        }
+	  
+            breakId++;
+	        l=l->next;
+	    }
+    }
+  
+    if(adr & 1)
+        specialflags |= SPCFLAG_ADRERR;
+    else 
+    {
+        if (adr < 0x200000) 
+        {
+	        if (adr >=0x1c0000)
+	            flash_protect=0;
+	        wput(adr, arg);
+        }
+        else if (adr < 0x400000)
+        {
+	        extRomWriteByte(adr,(arg>>8)&0xff);
+            extRomWriteByte(adr+1,arg&0xff);
+        }
+        else if (adr < 0x600000) 
+        {
+	        extRomWriteByte(adr,(arg>>8)&0xff);
+	        extRomWriteByte(adr+1,arg&0xff);
+        }
+        else
+        io_put_word(adr&0x1f, arg);
+    }  
 }
 
 void put_byte(CPTR adr, UBYTE arg) 
 {
-  GList* l;
+    GList* l;
 	
-  adr &= 0xFFFFFF;
+    adr &= 0xFFFFFF;
   
-  if (l=listBkptAsWB) 
+    if (l=listBkptAsWB) 
     {
-      breakId = 0;
-      while (l) 
-	{
-	  if (l->data==adr) 
+        breakId = 0;
+        while (l) 
 	    {
-	      breakMode = BK_WRITE_BYTE;
-	      specialflags|=SPCFLAG_BRK;
-	      breakType = BK_CAUSE_ACCESS;
-	      break;
+	        if (l->data==adr) 
+	        {
+	            breakMode = BK_WRITE_BYTE;
+	            specialflags|=SPCFLAG_BRK;
+	            breakType = BK_CAUSE_ACCESS;
+	            break;
+	        }
+	  
+            breakId++;
+	        l=l->next;
 	    }
-	  breakId++;
-	  l=l->next;
-	}
     }
-  if (l=listBkptAsRgW) 
-    {
-      breakId=0;
-      while (l) 
-	{
-          ADDR_RANGE *r = l->data;
 
-	  if (r->val>=adr && adr<=r->val2) 
+    if (l=listBkptAsRgW) 
+    {
+        breakId=0;
+        while (l) 
 	    {
-	      breakMode = BK_WRITE_BYTE; 
-	      specialflags|=SPCFLAG_BRK; 
-	      breakType = BK_CAUSE_ACCESS_RANGE;
-	      break;
+            ADDR_RANGE *r = l->data;
+
+	        if (r->val>=adr && adr<=r->val2) 
+	        {
+	            breakMode = BK_WRITE_BYTE; 
+	            specialflags|=SPCFLAG_BRK; 
+	            breakType = BK_CAUSE_ACCESS_RANGE;
+	            break;
+	        }
+	  
+            breakId++;
+	        l=l->next;
 	    }
-	  breakId++;
-	  l=l->next;
-	}
     }
   
-  if (adr < 0x200000) 
+    if (adr < 0x200000) 
     {
-      if (adr >=0x1c0000)
-	flash_protect=0;
-      bput(adr, arg);
+        if (adr >=0x1c0000)
+	        flash_protect=0;
+        bput(adr, arg);
     }
-  else if (adr < 0x400000)
-    intRomWriteByte(adr,arg&0xff);
-  else if (adr < 0x600000)
-    extRomWriteByte(adr,arg&0xff);
-  else
-    io_put_byte(adr&0x1f, arg);
+    else if (adr < 0x400000)
+        extRomWriteByte(adr,arg&0xff);
+    else if (adr < 0x600000)
+        extRomWriteByte(adr,arg&0xff);
+    else
+        io_put_byte(adr&0x1f, arg);
 }
 
+// Use: ??
 UBYTE *get_real_address(CPTR adr) 
 {
-  return &mem_tab[(adr>>21)&0x7][adr&mem_mask[(adr>>21)&0x7]];
+    return &mem_tab[(adr>>21)&0x7][adr&mem_mask[(adr>>21)&0x7]];
 }
 
-
-void intRomWriteByte(int addr,int v)
-{
-  UBYTE *intRom = mem_tab[2];
-  int i;
-
-  addr &= 0x1fffff;
-  
-  //if (getCalcType() != TI89) return;
-  if(img->calc_type != TI89)
-    return;
-
-  if (rom_write_ready)
-    {
-      if ((intRom[addr]==0xff)||(rom_write_ready==1))
-        {
-	  intRom[addr]=v;
-	  rom_changed[addr>>16]=1;
-        }
-      else
-	rom_write_ready--;
-      rom_write_ready--;
-      rom_ret_or=0xffffffff;
-    }
-  else if (v==0x50)
-    rom_write_phase=0x50;
-  else if (v==0x10)
-    {
-      if (rom_write_phase==0x50)
-	rom_write_phase=0x51;
-      else if (rom_write_phase==0x51)
-        {
-	  rom_write_ready=2;
-	  rom_write_phase=0x50;
-        }
-    }
-  else if (v==0x20)
-    {
-      if (rom_write_phase==0x50)
-	rom_write_phase=0x20;
-    }
-  else if (v==0xd0)
-    {
-      if (rom_write_phase==0x20)
-        {
-	  rom_write_phase=0xd0;
-	  rom_ret_or=0xffffffff;
-	  rom_erase=0xffffffff;
-	  rom_erasePhase=0;
-	  for (i=0;i<0x10000;i++)
-	    intRom[(addr&0x1f0000)+i]=0xff;
-	  rom_changed[addr>>16]=1;
-        }
-    }
-  else if (v==0xff)
-    {
-      if (rom_write_phase==0x50)
-        {
-	  rom_write_ready=0;
-	  rom_ret_or=0;
-        }
-    }
-}
-
-void extRomWriteByte(int addr,int v)
+static void extRomWriteByte(int addr,int v)
 {
   UBYTE *extRom = mem_tab[1];
   int i;
