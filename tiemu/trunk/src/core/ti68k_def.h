@@ -109,6 +109,7 @@ typedef struct
     UBYTE	*rom;
     UBYTE	*ram;
     UBYTE	*io;
+    UBYTE   *io2;
     int     initial_pc;
 
 	int		ram256;

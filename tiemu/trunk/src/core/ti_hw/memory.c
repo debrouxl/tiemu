@@ -44,33 +44,25 @@ const int rom_sizes[] = { 1*MB, 2*MB, 2*MB, 4*MB };	// 92, 89, 92+, V200
 const int ram_sizes[] = { 128*KB, 256*KB, 256*KB, 256*KB };
 const int io_size = 32;
 
-UBYTE *mem_tab[16];
+UBYTE *mem_tab[16];     // 1MB per banks
 ULONG mem_mask[16];		// pseudo chip-select
-	// 000000-1FFFFF : RAM
-  	// 200000-3FFFFF : internal ROM (TI89)
-  	// 400000-5FFFFF : external ROM (TI92/TI92+)
-  	// 600000-7FFFFF : memory mapped I/O (lower 6 bits)
-  	// 800000-9FFFFF : nothing
-  	// A00000-BFFFFF : nothing
-	// B00000-DFFFFF : nothing
-	// C00000-FFFFFF : nothing
 
-// 000000-0fffff : 
+// 000000-0fffff : RAM (128 or 256 KB)
 // 100000-1fffff : 
-// 200000-2fffff : 
-// 300000-3fffff : 
-// 400000-4fffff : 
-// 500000-5fffff : 
-// 600000-6fffff : 
-// 700000-7fffff : 
-// 800000-8fffff : 
-// 900000-9fffff : 
+// 200000-2fffff : internal ROM (TI89 or V200 ?)
+// 300000-3fffff : idem
+// 400000-4fffff : external ROM (TI92, TI92-II, TI92+)
+// 500000-5fffff : idem
+// 600000-6fffff : memory mapped I/O
+// 700000-7fffff : memory mapped I/O (HW2)
+// 800000-8fffff : unused
+// 900000-9fffff :   ...
 // a00000-afffff : 
 // b00000-bfffff : 
 // c00000-cfffff : 
 // d00000-dfffff : 
-// e00000-efffff : 
-// d00000-ffffff : 
+// e00000-efffff :   ...
+// d00000-ffffff : unused
 
 int rom_changed[32]; // FLASH segments which have been (re)programmed
 int flash_protect;
@@ -129,9 +121,10 @@ int hw_mem_init(void)
 	ti68k_bkpt_clear_trap();
 
     // allocate mem
-    tihw.ram = malloc(tihw.ram_size + 4);   //RAM_SIZE+4);
-    tihw.rom = malloc(tihw.rom_size + 4);   //ROM_SIZE+4);
+    tihw.ram = malloc(tihw.ram_size + 4);
+    tihw.rom = malloc(tihw.rom_size + 4);
     tihw.io  = malloc(32 + 4);
+    tihw.io2 = malloc(32 + 4);
 
     // clear RAM/ROM/IO
     memset(tihw.ram, 0x00, tihw.ram_size);
@@ -149,28 +142,38 @@ int hw_mem_init(void)
 	memset(&mem_mask, 0, sizeof(mem_mask));
 
     // set all banks to RAM (with mask 0 per default)
-    for(i=0; i<8; i++)
+    for(i=0; i<16; i++)
         mem_tab[i] = tihw.ram; 
 
     // map RAM
     mem_tab[0] = tihw.ram;
     mem_mask[0] = tihw.ram_size-1;
+    mem_tab[1] = tihw.ram;
+    mem_mask[1] = tihw.ram_size-1;
 
-    // map ROM in two places
-    mem_tab[1] = tihw.rom;
-    mem_mask[1] = tihw.rom_size-1;
+    // map ROM (internal)
     mem_tab[2] = tihw.rom;
-    mem_mask[2] = tihw.rom_size-1;
+    mem_mask[2] = tihw.rom_size/2-1;
+    mem_tab[3] = tihw.rom + 0x100000;
+    mem_mask[3] = tihw.rom_size/2-1;
+
+    // map ROM (internal)
+    mem_tab[4] = tihw.rom;
+    mem_mask[4] = tihw.rom_size/2-1;
+    mem_tab[5] = tihw.rom + 0x100000;
+    mem_mask[5] = tihw.rom_size/2-1;
 
     // map IO
-    mem_tab[3] = tihw.io;
-    mem_mask[3] = io_size-1;
+    mem_tab[6] = tihw.io;
+    mem_mask[6] = io_size-1;
+    mem_tab[7] = tihw.io2;
+    mem_mask[7] = io_size-1;
   
     // blit ROM
     memcpy(tihw.rom, img->data, img->size);
     free(img->data);
 
-    if(!tihw.ram || !tihw.rom || !tihw.io)
+    if(!tihw.ram || !tihw.rom || !tihw.io || !tihw.io2)
         return -1;
 
     tihw.initial_pc = find_pc();
@@ -198,6 +201,10 @@ int hw_mem_exit(void)
         free(tihw.io);  
     tihw.io = NULL;
 
+    if(tihw.io2)
+        free(tihw.io2);
+    tihw.io2 = NULL;
+
 	// clear breakpoints
 	ti68k_bkpt_clear_address();
 	ti68k_bkpt_clear_access();
@@ -210,13 +217,13 @@ int hw_mem_exit(void)
 }
 
 /* Put/Get byte/word/longword */
-#define bput(adr, arg) { mem_tab[(adr)>>21][(adr) & mem_mask[(adr)>>21]] = (arg); }
+#define bput(adr, arg) { mem_tab[(adr)>>20][(adr) & mem_mask[(adr)>>20]] = (arg); }
 #define wput(adr, arg) { bput((adr), (arg)>> 8); bput((adr)+1, (arg)&0x00ff); }
 #define lput(adr, arg) { wput((adr), (arg)>>16); wput((adr)+2, (arg)&0xffff); }
 
-#define bget(adr) (mem_tab[(adr)>>21][(adr)&mem_mask[(adr)>>21]])
-#define wget(adr) ((UWORD)(((UWORD)bget(adr))<<8|bget((adr)+1)))
-#define lget(adr) ((ULONG)(((ULONG)wget(adr))<<16|wget((adr)+2)))
+#define bget(adr) (mem_tab[(adr)>>20][(adr)&mem_mask[(adr)>>20]])
+#define wget(adr) ((UWORD)(((UWORD)bget(adr))<< 8 | bget((adr)+1)))
+#define lget(adr) ((ULONG)(((ULONG)wget(adr))<<16 | wget((adr)+2)))
 
 static void extRomWriteByte(int addr,int v);
 
@@ -603,30 +610,55 @@ void put_byte(CPTR adr, UBYTE arg)
 	        l=l->next;
 	    }
     }
+
+    // Protected memory violation. Triggered when memory below [$000120] is
+	// written while bit 2 of [$600001] is set
+    if((adr < 0x120) && tihw.prot_mem)
+	{
+		specialflags |= SPCFLAG_INT;
+        currIntLev = 7;
+	}
+
+    // Write accesses to the boot installer sector ($200000-$20FFFF) are
+    // filtered and never reach the flash ROM.
+    else if(adr >= 0x200000 && adr < 0x210000)
+        return;
+
+    //$1C0000-$1FFFFF: "the Protection" enable/disable
+    //Note: Four consecutive accesses to this range crashes a HW1 calc!
+    //READ:  Enable the Protection
+    //WRITE: Disable the Protection
+    //Note: No access to this range will have any effect unless the access is
+    //"authorized," see below.
+    else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
+        flash_protect = 0;
   
-    if (adr < 0x200000) 
-    {
-        if (adr >=0x1c0000)
-	        flash_protect=0;
-        bput(adr, arg);
-    }
-    else if (adr < 0x400000)
+    // write to internal FLASH
+    else if (adr >= 0x200000 && adr < 0x400000)
         extRomWriteByte(adr,arg&0xff);
-    else if (adr < 0x600000)
+
+    // write to external FLASH
+    else if (adr >= 0x400000 && adr < 0x600000)
         extRomWriteByte(adr,arg&0xff);
-    else
+
+    // memory-mapped I/O
+    else if(adr >= 0x600000)
         io_put_byte(adr&0x1f, arg);
+
+    // standard access
+    else
+        bput(adr, arg);
 }
 
 // Use: ??
 UBYTE *get_real_address(CPTR adr) 
 {
-    return &mem_tab[(adr>>21)&0x7][adr&mem_mask[(adr>>21)&0x7]];
+    return &mem_tab[(adr>>20)&0xf][adr&mem_mask[(adr>>20)&0xf]];
 }
 
 static void extRomWriteByte(int addr,int v)
 {
-  UBYTE *extRom = mem_tab[1];
+  UBYTE *extRom = mem_tab[2];
   int i;
   
   addr &= 0x1fffff;
