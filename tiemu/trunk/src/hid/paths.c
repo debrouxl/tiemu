@@ -48,15 +48,16 @@ static void init_linux_paths(void)
 	inst_paths.help_dir =
 	    g_strconcat(inst_paths.base_dir, "help/", NULL);
 	inst_paths.manpage_dir = 
-            g_strconcat(inst_paths.base_dir, "", NULL);
-	inst_paths.rom_dir = 
-            g_strconcat(inst_paths.base_dir, "images/", NULL);
+        g_strconcat(inst_paths.base_dir, "", NULL);
 	inst_paths.skin_dir =
 	    g_strconcat(inst_paths.base_dir, "skins/", NULL);
 	inst_paths.glade_dir =
 	    g_strconcat(inst_paths.base_dir, "glade/", NULL);
 	inst_paths.home_dir =
 		g_strdup(g_get_home_dir());
+	inst_paths.rom_dir = 
+            g_strconcat(inst_paths.home_dir, CONF_DIR, "images/", NULL);
+	mkdir(inst_paths.rom_dir);
 
 	/* bintextdomain(PACKAGE, "/usr/share/locale"); ->
 	   '/usr/share/locale/  fr/LC_MESSAGES/tilp.mo' */
@@ -94,22 +95,21 @@ static void init_win32_paths(void)
 	    g_strconcat(inst_paths.base_dir, "help\\", NULL);
 	inst_paths.manpage_dir =
 	    g_strconcat(inst_paths.base_dir, "", NULL);
-	inst_paths.rom_dir =
-	    g_strconcat(inst_paths.base_dir, "images\\", NULL);
 	inst_paths.skin_dir =
 	    g_strconcat(inst_paths.base_dir, "skins\\", NULL);
 	inst_paths.glade_dir =
 	    g_strconcat(inst_paths.base_dir, "glade\\", NULL);
 	inst_paths.home_dir = 
 	    g_strconcat(inst_paths.base_dir, "", NULL);
+	inst_paths.rom_dir = 
+            g_strconcat(inst_paths.home_dir, CONF_DIR, "images/", NULL);
+    mkdir(inst_paths.rom_dir, 0755);
 
-	/* bintextdomain(PACKAGE, "/usr/share/locale"); ->
-	   '/usr/share/locale/  fr/LC_MESSAGES/tilp.mo' */
 #ifdef ENABLE_NLS
 	inst_paths.locale_dir =
 	    g_strconcat(inst_paths.base_dir, "locale\\", NULL);
 #endif				/*  */
-	// on WIN32 systems, 'My TI Files' by default
+	// on WIN32 systems, local by default
 	_chdir(inst_paths.home_dir);
 }
 #endif				/*  */
@@ -129,7 +129,9 @@ int initialize_paths(void)
 const char *tilp_paths_build_glade(const char *name)
 {
 	static char *path = NULL;
+	
 	g_free(path);
 	path = g_strconcat(inst_paths.glade_dir, name, NULL);
+	
 	return path;
 }
