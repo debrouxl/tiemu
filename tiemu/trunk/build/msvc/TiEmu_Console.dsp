@@ -440,47 +440,11 @@ SOURCE=..\..\src\gui\about.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\adbkpt_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\adbkpt_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\bkpt_cause.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\gui\comm.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\dbgopt_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\dbgopt_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\dbkpt_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\dbkpt_dbox.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\gui\dboxes.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\debug_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\debug_dbox.c
 # End Source File
 # Begin Source File
 
@@ -500,27 +464,11 @@ SOURCE=..\..\src\gui\infos.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\logaddr_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\logaddr_dbox.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\gui\manpage.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\gui\pbars.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\pgmentbkpt_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\pgmentbkpt_dbox.c
 # End Source File
 # Begin Source File
 
@@ -549,22 +497,6 @@ SOURCE=..\..\src\gui\splash.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\support.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\trap_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\trap_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\viewlog_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\viewlog_dbox.c
 # End Source File
 # Begin Source File
 

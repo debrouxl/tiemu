@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: hid.c 163 2004-05-13 06:40:57Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -26,7 +26,7 @@
 
 #include <gtk/gtk.h>
 
-#include "viewlog_cb.h"
-#include "viewlog_dbox.h"
+#include "logaddr_cb.h"
+#include "logaddr_dbox.h"
 #include "support.h"
 
