@@ -50,6 +50,7 @@ core_uae_OBJ = \
 core_tihw_OBJ = \
 	core/ti_hw/dbus.o	\
 	core/ti_hw/flash.o	\
+	core/ti_hw/gscales.o	\
 	core/ti_hw/hw.o 	\
 	core/ti_hw/kbd.o 	\
 	core/ti_hw/m68k.o	\
@@ -88,6 +89,7 @@ misc_OBJ = \
 	misc/tie_error.o 
 
 gui_calc_OBJ = \
+	gui/calc/calc_if.o	\
 	gui/calc/calc.o		\
 	gui/calc/kbd_mapper.o	\
 	gui/calc/keyboard.o	\

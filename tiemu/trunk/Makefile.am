@@ -2,7 +2,7 @@
 
 # subdirectories to scan
 SUBDIRS = \
-	build glade man pixmaps ROMs skins src
+	build glade help man pixmaps ROMs skins src
 
 dist_pkgdata_DATA = COPYING RELEASE AUTHORS
 

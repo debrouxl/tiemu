@@ -3,7 +3,7 @@ dnl $Id: configure.in 409 2004-06-07 21:10:20Z roms $
 
 dnl Init.
 AC_PREREQ(2.57)
-AC_INIT(TiEmu, 1.80-041108, [tilp-users@lists.sourceforge.net])
+AC_INIT(TiEmu, 1.80-050115, [tilp-users@lists.sourceforge.net])
 
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
@@ -17,6 +17,7 @@ AC_CONFIG_FILES([
   Makefile
   build/Makefile
   glade/Makefile
+  help/Makefile
   man/Makefile
   pixmaps/Makefile
   ROMs/Makefile
