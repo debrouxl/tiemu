@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.80m		(18/02/2005)
-Current version:  1.80n		(25/02/2005)
+Previous version: 1.80n		(25/02/2005)
+Current version:  1.80o		(09/03/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,35 +20,32 @@ For the other link cables, no driver is needed because it's provided.
 New capabilities:
 -----------------
 
-	- linkport support with real cables: GrayLink, BlackLink, VTi and TiEmu
-	- FPU dis-assembler (bcd_math)
-	- program entry breakpoint feature (AMS < 2.00 only, 1 bkpt)
+	- program entry breakpoint feature now useable with AMS >= 2.00 
+	- added Win32 file selector
 
 
 Improvements:
 -------------
 
-	- the Windows(tm) MENU key raises the popup menu for now
-	- changed engine_start/stop architecture to remove some menu locks/bugs
-	- show vector name rather than number
-	- dis-assemble FLINE with __ld_entry_point
-	- dis-assemble FLINE with _bcd_math followed by FPU pseudo-opcode
-	- some items of the popup menu are disabled when the engine is running
-	- save FLASH segment which have been written/erased
-	- fixed/improved some endianess issues
-	- pedrom tibs are now placed in the 'pedrom' folder. The wizard let you import them automatically.
+	- handles are now displayed fine with PedRom
+	- improved dbg windows behaviour: save/restore size, position and state (hide/minimized)
+	- updated manpage
+	- command line improved and up-to-date
+	- cleaned-up configure.ac script (CygWin & MinGW)
 		
 
 Bug fixes:
 ----------
 
-	- FLASH writes with HW3 patch
-	- Step Over on the following FLINEs : 0xfff0, 0xfff2, 0xffee.
-	- Hardware Parameter Block when converting FLASH upgrade
-	- disassemblling of 0xffee and 0xffef FLINEs
-	- ROM call combo box: does not jump to call when names contains '/'
-	- don't reload ROM calls when changing AMS without chaning calc type
-	- status bar display in the bkpts dbox
+	- bug in ti68k_get_hw_param_block (wrong search/replace)
+	- TAB char (0x09) pb in the dbg_mem window (Lionel)
+	- Step Over
+	- dependancy problem with tiemu&uae rule in src/Makefile.in
+	- bad use of sizeof in hw_io_init
+	- MinGW path with Kevin
+	- -mms-bitfields issue with UAE Makefile under MinGW (Kevin)
+	- out-of-range access with io_bit_tst in ports.c (Kevin)
+	- contrast on TI92+
 
 
 To do:

@@ -73,7 +73,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
     {
         case 0x00:	// rw <76...2..>
 			// %5: bit 0 of contrast (TI92)
-			if(tihw.calc_type == TI92 || tihw.calc_type == TI92p)
+			if(tihw.calc_type == TI92)
                 bit_chg(tihw.contrast,0,bit_get(arg,5));
         break;
         case 0x01:	// rw <.....2.0>
@@ -229,7 +229,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         break;
         case 0x1d:	// -w <7..43210>
 			// %[3-0]: contrast
-			if(tihw.calc_type == TI92 || tihw.calc_type == TI92p)
+			if(tihw.calc_type == TI92)
 			{
 				// %[3-0]: bits <4321.> of contrast
 				static int avg = 0;				

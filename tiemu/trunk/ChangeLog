@@ -18,8 +18,11 @@ To do:
 	- fixed Step Over
 	- added Win32 file selector
 	- fixed dependancy problem with tiemu&uae rule in src/Makefile.in
-	- to do: fixed bad use of sizeof in hw_io_init
+	- fixed bad use of sizeof in hw_io_init
 	- fixed MinGW path with Kevin
+	- fixed -mms-bitfields issue with UAE Makefile under MinGW (Kevin)
+	- fixed out-of-range access with io_bit_tst in ports.c (Kevin)
+	- fixed contrast on TI92+
 	
 - 18/02/2005, version 1.80n: roms
 	- fixed FLASH writes with HW3 patch
