@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: main.c 245 2004-05-23 20:45:43Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -47,10 +47,10 @@
 	Linkport (lp) / directfile (df) mappers
 */
 
-void  (*hw_dbus_putbyte)    (uint8_t arg);
-uint8_t (*hw_dbus_getbyte)    (void);
-int   (*hw_dbus_byteavail)	(void);
-int   (*hw_dbus_checkread)  (void);
+void	(*hw_dbus_putbyte)		(uint8_t arg);
+uint8_t (*hw_dbus_getbyte)		(void);
+int		(*hw_dbus_byteavail)	(void);
+int		(*hw_dbus_checkread)	(void);
 
 static void    lp_putbyte(uint8_t arg);
 static uint8_t lp_getbyte(void);
@@ -127,6 +127,9 @@ int hw_dbus_init(void)
 
 int hw_dbus_reset(void)
 {
+	exit_linkfile();
+	init_linkfile();
+
 	return 0;
 }
 
@@ -159,6 +162,7 @@ int hw_dbus_exit(void)
 static int   lp_avail_byte;
 static uint8_t lp_last_byte;
 
+// TI -> DBus
 static void lp_putbyte(uint8_t arg)
 {
 	int err;
@@ -171,9 +175,10 @@ static void lp_putbyte(uint8_t arg)
 		return;
 	}
 	io_bit_set(0x0d,6);		// tx buffer empty
-	io_bit_set(0x0d,3);		// link activity
+	io_bit_set(0x0d,2);		// link activity
 }
 
+// DBus -> TI
 static uint8_t lp_getbyte(void)
 {
 	lp_avail_byte = 0;
@@ -212,7 +217,7 @@ static int lp_checkread(void)
         }
 
 		io_bit_set(0x0d,5);		// rx buf full
-		io_bit_set(0x0d,3);		// link activity
+		io_bit_set(0x0d,2);		// link activity
 		lp_avail_byte = 1;
     }
 	else

@@ -140,6 +140,9 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         case 0x0c:	// rw <765.3210>
         	// %[3:0]: Trigger interrupt level 4 on error, activity, tx empty, rx full
         	// see hardware.c
+			// %6: link disable (usually reset link port or direct access to wires)
+			if(io_bit_tst(arg, 6))
+				hw_dbus_reset();
         break;
         case 0x0d:	// r- <76543210>
 			break;
@@ -147,8 +150,8 @@ void io_put_byte(uint32_t addr, uint8_t arg)
 			// set red/white wires (if direct access)			
 			if(io_bit_tst(0x0c,6))
 	        {
-	            lc.set_red_wire(bit_get(arg,0));
-	            lc.set_white_wire(bit_get(arg,1));
+	            lc.set_red_wire(!bit_get(arg,0));
+	            lc.set_white_wire(!bit_get(arg,1));
 	        }
         break;
         case 0x0f: 	// rw <76543210>
@@ -302,7 +305,7 @@ uint8_t io_get_byte(uint32_t addr)
 			v |= (hw_dbus_byteavail() ? 0x60 : 0x40);
 			
 			// reading the DBus status register resets that register
-			tihw.io[0x0d] = 0x00;
+			//tihw.io[0x0d] = 0x40;
 		break;
         case 0x0e:	// rw <....3210>
 			// %[2-3]: read red/white wires if raw access

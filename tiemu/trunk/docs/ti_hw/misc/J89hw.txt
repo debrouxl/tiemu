@@ -40,7 +40,7 @@ stuff can be found at Olle's site >>>  http://alh.dhs.org/ti89/
 Johan Eilert <johei804@student.liu.se>
 
 --
-Updated by Romain Lievin <roms@tilp.info> from ExtendeD's informations 
+Updated by Romain Lievin <roms@tilp.info> from Olivier Armand's informations 
 (7000xx_ports.zip). Needed by the TiEmu project.
 CVS: $Id$ <http://svn.technologeek.org/cgi-bin/viewcvs.cgi/tiemu/trunk/docs/ti_hw/misc/J89hw.txt?rev=774&root=tiemu&view=auto>
 
@@ -243,15 +243,16 @@ $600005	-W Turn off OSC1 (and the CPU), wake on int level 6 (ON key) and ...
 
 $60000C RW ($8D when idle, write $E0 then $8D to reset, $8F when sending)
 	Read to begin acknowledging link interrupt (level 4)
-	:7	Autostart enable, should be set if $600005:3 is set
-	:6	Disable byte sender/receiver (also disables interrupts)
-	:5	Link timeout disable
+	:7 AE   Autostart enable, should be set if $600005:3 is set
+	:6 LD   Disable byte sender/receiver (also disables interrupts)
+	:5 LTO  Link timeout disable
 	:4	-
 	Trigger interrupt level 4 on ...
-	:3	... error (timeout or protocol violation)
-	:2	... any link activity
-	:1	... transmit buffer empty
-	:0	... byte in receive buffer
+	:3 CL	... error (timeout or protocol violation)
+	:2 CA	... any link activity
+	:1 CTX	... transmit buffer empty
+	:0 CRX	... byte in receive buffer
+
 	Note: The link hardware generates lots of interrupts and the
 	interrupt handler must know the reason for every one to be able to
 	acknowledge them properly.  Otherwise the CPU will loop the
@@ -261,19 +262,20 @@ $60000C RW ($8D when idle, write $E0 then $8D to reset, $8F when sending)
 	processor) is "any link activity" (:2).
 
 $60000D R- Current link status (interrupt reason)
-	:7	Error (undefined if :3 =1)
+	:7 SLE	Error (undefined if :3 =1)
 		Reset link (#$E0 then #$8D to $60000C) to finish acknowledge.
-	:6	Transmit buffer empty (undefined if :5 =1 or :7 =1)
+	:6 STX	Transmit buffer empty (undefined if :5 =1 or :7 =1)
 		Write another byte to $60000F or clear $60000C:1 to finish
 		acknowledge.
-	:5	Byte in receive buffer (undefined if :7 =1)
+	:5 SRX	Byte in receive buffer (undefined if :7 =1)
 		Read the byte from $60000F to finish acknowledge
-	:4	Interrupt pending (always =1 in interrupt handler)
-	:3	Link activity (AMS int handler quits immediately)
-	:2	(?)External activity ("someone's talking to me!")
-	:1	?? Almost always set
-	:0	?? Always zero?
-	The bits must be checked in this order: :3, :7, :5, :6.
+	:4 SLI	Interrupt pending (always =1 in interrupt handler), never used
+	:3 SA	Link activity (AMS int handler quits immediately if 0), used by AMS >= 208
+	:2 ??	External activity ("someone's talking to me!")
+	:1 ?? 	Almost always set
+	:0 ??	Always zero?
+	The bits must be checked in this order: :3, :7, :5, :6 (AMS < 2.08)
+	Else: :3, :7, :5, :2, :6.
 
 $60000E RW Direct link port access
 	:7-4	-
@@ -299,7 +301,7 @@ $60000E RW Direct link port access
 $60000F RW One-byte link buffer
 	:7-0	READ:  Read one byte from receive (incoming) buffer
 		WRITE: Write one byte to transmit (outgoing) buffer
-	See also $60000D.
+		See also $60000D.
 
 $600010 -W ($0980 = $4C00/8)
 	:15-0	HW1: LCD frame buffer address, divided by 8

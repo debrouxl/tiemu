@@ -43,7 +43,7 @@
 /*
 	Some explanations:
 	
-	OSC2 ---[$600015=/2^9]---> Fcnt ---[/4]--->		AI1
+	OSC2 ---[$600015=/2^9]---> Fcnt +--[/4]--->		AI1
 									+--[/timer]--->	AI5
 									+--[/1024]--->	AI3
 
@@ -208,7 +208,10 @@ void hw_update(void)
 	// Triggered by the link hardware for various reasons.
 	// External link activity ?
 	if(!lc.get_red_wire() || !lc.get_white_wire())
+	{
 		io_bit_set(0x0d,3);
+		io_bit_set(0x0d,2);
+	}
 
 	// DBUS enabled ?
 	if(!io_bit_tst(0x0c,6))
@@ -218,7 +221,7 @@ void hw_update(void)
 			hw_m68k_irq(4);
 
 		// Trigger int4 on: error, link act, txbuf empty or rxbuf full
-		if((io_bit_tst(0x0c,3) && io_bit_tst(0x0d,7)) ||
+		if((io_bit_tst(0x0c,3) && io_bit_tst(0x0d,7))  ||
 			(io_bit_tst(0x0c,2) && io_bit_tst(0x0d,3)) ||
 			(io_bit_tst(0x0c,1) && io_bit_tst(0x0d,6)) ||
 			(io_bit_tst(0x0c,0) && io_bit_tst(0x0d,5)))

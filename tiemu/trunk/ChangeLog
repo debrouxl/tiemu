@@ -5,6 +5,9 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
+- 19:01/2005, version 1.80k: roms
+	- link port is now reset when error occurs: great improvement
+
 - 12/01/2005, version 1.80j: roms
 	- rewrite of the m68k loop:
 		* UAE fixedto handle multiple pending interrupts and some other fixes
