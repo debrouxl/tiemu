@@ -28,10 +28,7 @@
 
 
 #include <stdlib.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <signal.h>
-#include <time.h>
+#include <glib.h>
 
 #include "uae.h"
 #include "memory.h"
@@ -115,6 +112,9 @@ int hw_exit(void)
     return 0;
 }
 
+//G_LOCK_DEFINE(lcd_flag);
+int lcd_flag = !0;
+
 /*
     This function is called by do_cycles to regularly updates the hardware.
     Rate is the same as the timer tick rate.
@@ -197,9 +197,9 @@ void hw_update(void)
   		hw_kbd_update();
   		
   	// Update LCD (HW1: every 16Th timer tick, HW2: unrelated)
-  	//if((tihw.hw_type == HW1) && !(tihw.timer_value & 15))
-	//if(!(tihw.timer_value & 15))
-  	//	cb_update_screen();
+  	if((tihw.hw_type == HW1) && !(tihw.timer_value & 15))
+        lcd_flag = !0;
+
 }
 
 /*

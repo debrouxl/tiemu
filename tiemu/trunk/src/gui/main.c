@@ -26,6 +26,7 @@
 #include <config.h>
 #endif
 
+#include <glib.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
@@ -56,9 +57,20 @@ ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
+//G_LOCK_EXTERN(lcd_flag);
+extern int lcd_flag;
+
 static gint hid_refresh (gpointer data)
 {
-    hid_update_lcd();
+    if(lcd_flag || (tihw.calc_type == HW2))
+    {
+        hid_update_lcd();
+        lcd_flag = 0;
+
+        // Toggles every FS (every time the LCD restarts at line 0)
+        tihw.io2[0x1d] |= (1 << 7);
+    }
+    
     hid_update_keys();
 
     return TRUE;
