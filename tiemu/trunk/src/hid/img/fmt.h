@@ -24,7 +24,7 @@
 #endif
 
 #include <stdio.h>
-#include <stdint.h>
+#include "stdint.h"
 
 #define MAXCHARS 256
 

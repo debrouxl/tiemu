@@ -715,8 +715,11 @@ int ti68k_getRomType(void)
 */
 int ti68k_scanFiles(const char *dirname, const char *filename)
 {
-  DIR *dir;
-  struct dirent *dirent;
+  //DIR *dir;
+	//struct dirent *dirent;
+	GDir *dir;
+	GError *error;
+	G_CONST_RETURN gchar *dirent;
   struct stat f_info;
   char *path, *path2;
   char *text[6];
@@ -774,20 +777,29 @@ int ti68k_scanFiles(const char *dirname, const char *filename)
     }  
 
   /* List all ROMs available in the ROM directory */
-  path = (char *)dirname;
+  /*
+	path = (char *)dirname;
   if( (dir=opendir(dirname)) == NULL)
     {
       fprintf(stderr, _("Opendir error\n"));
       return ERR_68K_CANT_OPEN_DIR;
     }
+	*/
+
+	dir = g_dir_open(dirname, 0, &error);
+	if (dir == NULL) {
+		fprintf(stderr, _("Opendir error\n"));
+      return ERR_68K_CANT_OPEN_DIR;
+	}
   
-  while( (dirent=readdir(dir)) != NULL)
-    {
-      if(!strcmp(dirent->d_name, ".")) { continue; }
-      if(!strcmp(dirent->d_name, "..")) { continue; }
+	while ((dirent = g_dir_read_name(dir)) != NULL) {
+  //while( (dirent=readdir(dir)) != NULL)
+      //if(!strcmp(dirent->d_name, ".")) { continue; }
+      //if(!strcmp(dirent->d_name, "..")) { continue; }
+			if (dirent[0] == '.') continue;
       for(j=0; j<i; j++)
 	{
-	  if(!strcmp(rom_names[j], dirent->d_name))
+	  if(!strcmp(rom_names[j], dirent))
 	    break;
 	}
       if(i==j)
@@ -796,16 +808,16 @@ int ti68k_scanFiles(const char *dirname, const char *filename)
 	  //strcpy(iupdate->label_text, dirent->d_name);
 	  //iupdate_label();
 	  path2 = (char *)malloc((strlen(path) + 1 +
-				  strlen(dirent->d_name) + 1) *
+				  strlen(dirent) + 1) *
 				 sizeof(char));
 	  strcpy(path2, path);
-	  strcat(path2, dirent->d_name);
+	  strcat(path2, dirent);
 	  if( (err=stat(path2, &f_info)) != -1)
 	    {
 	      res = ti68k_getFileInfo(path2, &ri);
 	      if(!res)
 		{
-		  text[0] = dirent->d_name;
+		  text[0] = dirent;
 		  
 		  switch(ri.calc_type)
 		    {
@@ -854,17 +866,20 @@ int ti68k_scanFiles(const char *dirname, const char *filename)
 	  else
 	    {
 	      fprintf(stderr, _("Can not stat: <%s> %i\n"), 
-		      dirent->d_name, err);
+		      dirent, err);
 	      perror("stat: ");
 	    }
 	  free(path2);
 	}
     }      
+		/*
   if(closedir(dir)==-1)
     {
       fprintf(stderr, _("Closedir error\n"));
       return ERR_68K_CANT_CLOSE_DIR;
     }
+		*/
+	g_dir_close(dir);
   
   fclose(file);
   DISPLAY(_("Done.\n"));

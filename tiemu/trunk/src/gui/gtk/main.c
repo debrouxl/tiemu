@@ -57,6 +57,9 @@ extern gchar *wizard_rom;
 TieOptions options;        // general gtktiemu options
 TicalcInfoUpdate info_update;    // pbar, msg_box, refresh, ...
 
+#ifdef __WIN32__
+#undef main
+#endif
 
 /* Main function */		
 int main(int argc, char **argv) 

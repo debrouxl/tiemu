@@ -2,7 +2,7 @@
 #include <gtk/gtk.h>
 
 #ifdef __WIN32__
-# include "D:\devel\tiemu_project\SDL-1.2.0\include\SDL.h"
+# include "C:\SDL-1.2.7\include\SDL.h"
 #else
 # include <SDL/SDL.h>
 #endif

@@ -33,8 +33,12 @@ gint display_skinlist_dbox(void)
   GtkTreeSelection *sel;
   gchar *filename;
 
-  DIR *dir;
-  struct dirent *dirent;
+  //DIR *dir;
+  //struct dirent *dirent;
+	GDir *dir;
+	GError *error;
+	G_CONST_RETURN gchar *dirent;
+
   skinInfos si;
   int i;
   gchar *text[5] = { _("Filename"), _("Version"),
@@ -61,24 +65,34 @@ gint display_skinlist_dbox(void)
 						"text", i, NULL);
   gtk_list_store_clear(list); 
 
+	/*
   if( (dir=opendir(inst_paths.skin_dir)) == NULL)
     {
       msg_box("Error", "Unable to open directory.");
       gtk_widget_destroy(dbox);
       return 0;
     }
+	*/
+	dir = g_dir_open(inst_paths.skin_dir, 0, &error);
+	if (dir == NULL) {
+		msg_box("Error", "Unable to open directory.");
+      gtk_widget_destroy(dbox);
+      return 0;
+	}
   
-  while( (dirent=readdir(dir)) != NULL)
+	while ((dirent = g_dir_read_name(dir)) != NULL)
+  //while( (dirent=readdir(dir)) != NULL)
     {
-      if(!strcmp(dirent->d_name, ".")) { continue; }
-      if(!strcmp(dirent->d_name, "..")) { continue; }
+      //if(!strcmp(dirent->d_name, ".")) { continue; }
+      //if(!strcmp(dirent->d_name, "..")) { continue; }
+			if (dirent[0] == '.') continue;
 
       //printf("skin = <%s>\n", dirent->d_name);
-      filename = g_strconcat(inst_paths.skin_dir, dirent->d_name, NULL);
+      filename = g_strconcat(inst_paths.skin_dir, dirent, NULL);
 
       if(!skin_read_header(filename, &si))
 	{
-	  text[0] = g_strdup(dirent->d_name);
+	  text[0] = g_strdup(dirent);
 	  switch(si.type)
 	    {
 	    case SKIN_TYPE_TIEMU: text[1] = g_strdup("TiEmu"); break;
@@ -101,8 +115,9 @@ gint display_skinlist_dbox(void)
 	} 
     }
   
-  if(closedir(dir)==-1)
-    msg_box("Error", "Unable to close directory.");
+  /*if(closedir(dir)==-1)
+    msg_box("Error", "Unable to close directory.");*/
+	g_dir_close(dir);
   
   sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(clist));
   gtk_tree_selection_set_mode(sel, GTK_SELECTION_SINGLE);
