@@ -6,3 +6,4 @@
 
 gchar *s = N_("Show registers");
 gchar *s = N_("Registers");
+gchar *s = N_("_Go to address");

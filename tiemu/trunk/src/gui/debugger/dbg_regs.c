@@ -50,6 +50,21 @@ enum {
 
 #define FONT_NAME	"courier"
 
+static gint column2index(GtkWidget *list, GtkTreeViewColumn * column)
+{
+	gint i;
+
+	for (i = 0; i < CLIST_NVCOLS; i++) {
+		GtkTreeViewColumn *col;
+
+		col = gtk_tree_view_get_column(GTK_TREE_VIEW(list), i);
+		if (col == column)
+			return i;
+	}
+
+	return -1;
+}
+
 static int validate_value(const char *str, int ndigits)
 {
 	int i;
@@ -556,4 +571,109 @@ void dbgregs_refresh_window(void)
 	{
 		ctree_refresh(store);
 	}
+}
+
+/***** Popup menu *****/
+
+/*
+	Display popup menu (right click)
+*/
+static GtkWidget* display_popup_menu(void)
+{
+	GladeXML *xml;
+	GtkWidget *menu;
+
+	xml = glade_xml_new
+	    (tilp_paths_build_glade("dbg_regs-2.glade"), "dbgregs_popup",
+	     PACKAGE);
+	if (!xml)
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+	glade_xml_signal_autoconnect(xml);
+
+	menu = glade_xml_get_widget(xml, "dbgregs_popup");
+	return menu;
+}
+
+static uint32_t value = -1; //I'm lazy today !
+
+GLADE_CB gboolean
+on_treeview3_button_press_event        (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data)
+{
+    GtkTreeView *view = GTK_TREE_VIEW(widget);
+    GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkTreePath *path;
+	GtkTreeViewColumn *column;
+    GtkTreeIter iter;
+    gboolean ret;
+    gchar *spath;
+    gint i, j;
+    gint col;
+
+    switch (event->type) 
+    {
+    case GDK_BUTTON_PRESS:	// third button clicked
+	    if (event->button == 3) 
+        {
+            GdkEventButton *bevent;
+            GtkWidget *menu;
+
+            // cell selection
+            gint tx = (gint) event->x;
+	        gint ty = (gint) event->y;
+	        gint cx, cy;
+
+            ret = gtk_tree_view_get_path_at_pos(view, tx, ty, &path, &column, &cx, &cy);
+            if(ret == FALSE)
+                return FALSE;
+
+            col = column2index((GtkWidget *)view, column);
+            spath = gtk_tree_path_to_string(path);
+            sscanf(spath, "%i:%i", &i, &j);
+            
+            //gtk_tree_path_free(path);
+            g_free(spath);
+
+            // check for regs
+            if(!((i>= 0) && (i <= 1) && (j >= 0) && (j <= 7) && (col == 1)))
+                return FALSE;
+
+            // get iterator
+	        if (!gtk_tree_model_get_iter(model, &iter, path))
+		        return FALSE;
+            gtk_tree_path_free(path);
+            gtk_tree_model_get(model, &iter, COL_VALUE, &spath, -1);
+            sscanf(spath, "%x", &value);
+            printf("value = %x\n", value);
+
+            // popup menu
+       	    bevent = (GdkEventButton *) (event);
+            menu = display_popup_menu();
+
+		    gtk_menu_popup(GTK_MENU(menu),
+				       NULL, NULL, NULL, NULL,
+				       bevent->button, bevent->time);
+	        gtk_widget_show(menu);
+
+		    return TRUE;
+	    }
+	    break;
+    default:
+        break;
+    }
+
+    return FALSE;
+}
+
+GLADE_CB void
+on_go_to_address4_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    if(value == -1)
+        return;
+    
+    dbgmem_add_tab(value);
+
+    value = -1;
 }

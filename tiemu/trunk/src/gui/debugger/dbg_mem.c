@@ -677,6 +677,7 @@ on_treeview_btn_press_event        (GtkWidget       *widget,
 
 	        ret = gtk_tree_view_get_path_at_pos(view, tx, ty, &path, &column, &cx, &cy);
             gtk_tree_view_set_cursor(view, path, column, FALSE);
+            gtk_tree_path_free(path);
             //printf("%i %i %i %i (%i)\n", tx, ty, cx, cy, ret);
             //---
 
