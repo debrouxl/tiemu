@@ -55,6 +55,8 @@ char *ROMAddrName(int addr)
     return tmpStr;
 }
 
+int DasmFPU(uint16_t code, char *buf);
+
 static char *MakeEA (int lo, unsigned char *pBase, int size, int *count)
 {
 	static char buffer[2][80];
@@ -250,7 +252,6 @@ static char *MakeRevRegList (char *p, unsigned short pm)
 	return p;
 }
 
-
 int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
 {
 	unsigned char *ea, *ea2, *p = pBase;
@@ -288,54 +289,37 @@ int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
 			return 4;
 		case 0xffee:	// jmp __ld_entry_point_plus_0x8000+word (branchement avec offset signé de 2 octets rajouté à (début du programme)+0x8000)
 			PARAM_WORD(pm);
-			if (pm & 0x8000)
 			{
 				int handle;
 				uint32_t addr;
 				
 				heap_search_for_address(pc + (signed short)pm + 2 + 0x8000, &handle);
 				heap_get_block_addr(handle, &addr);				
-				sprintf (buffer, "FLINE    jmp.w *-$%lX [%lX]", (int)(-(signed short)pm) - 2 + 0x8000, addr);
-			}
-			else
-			{
-				int handle;
-				uint32_t addr;
-
-				heap_search_for_address(pc + pm + 2 + 0x8000, &handle);
-				heap_get_block_addr(handle, &addr);				
-				sprintf (buffer, "FLINE    jmp.w *+$%lX [%lX]", pm + 2 + 0x8000, addr);
+				sprintf (buffer, "FLINE    jmp.w *+$%lX [%lX]", (signed short)pm + 0x8000, addr + 2 + (signed short)pm + 0x8000);
 			}
 			return 4;
 		case 0xffef:	// jsr __ld_entry_point_plus_0x8000+word (appel de fonction avec offset signé de 2 octets rajouté à (début du programme)+0x8000)
 			PARAM_WORD(pm);
-			if (pm & 0x8000)
 			{
 				int handle;
 				uint32_t addr;
 				
 				heap_search_for_address(pc + (signed short)pm + 2 + 0x8000, &handle);
-				heap_get_block_addr(handle, &addr);	
-				sprintf (buffer, "FLINE    jsr.w *-$%lX [%lX]", (int)(-(signed short)pm) - 2 + 0x8000, addr);
-			}
-			else
-			{
-				int handle;
-				uint32_t addr;
-
-				heap_search_for_address(pc + pm + 2 + 0x8000, &handle);
 				heap_get_block_addr(handle, &addr);
-				sprintf (buffer, "FLINE    jsr.w *+$%lX [%lX]", pm + 2 + 0x8000, addr);
+				sprintf (buffer, "FLINE    jsr.w *+$%lX [%lX]", (signed short)pm + 0x8000, addr + 2 + (signed short)pm + 0x8000);
 			}
 			return 4;
-		case 0xf8b5:	// 2 byte ROM call (special case: _bcd_math)
-			sprintf (buffer, "FLINE    $%03x.w [%s] w/ FPU", op & 0x7ff, romcalls_get_name(op & 0x7ff));
-			return 6;
-			break;
+		case 0xf8b5:	// 2 byte ROM call followed by an FPU opcode (special case: _bcd_math)
+			{
+				char buf[64];
+				PARAM_WORD(pm);
+				DasmFPU(pm, buf);
+				sprintf (buffer, "JSR      _bcd_math (FPU: %s)", buf);
+				return 4;
+			}
 		default:		// 2 byte ROM CALL
 			sprintf (buffer, "FLINE    $%03x.w [%s]", op & 0x7ff, romcalls_get_name(op & 0x7ff));
 			return 2;
-			break;
 		}
 	}
 

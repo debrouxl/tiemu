@@ -30,6 +30,48 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
+
+typedef struct
+{
+	uint16_t	code;
+	char*		name;
+} TUPLE;
+
+// 6 chars max
+TUPLE operators[9] = {
+	{ 0x0000, "FCMP" }, { 0x1000, "FADD" }, { 0x2000, "FDIV" }, { 0x3000, "FMUL" }, 
+	{ 0x4000, "FSUB" }, { 0x5000, "FINTRZ" }, { 0x6000, "FMOVE" }, { 0x7000, "FNEG" },
+	{ 0x8000, "FTST" },
+};
+
+// 7 chars max
+TUPLE sizes[6] = {
+	{ 0x0000, "BYTE"}, { 0x0200, "WORD"}, { 0x0400, "LONG"},
+	{ 0x0600, "SINGLE"}, { 0x0800, "DOUBLE"}, { 0x0a00, "UNSGNED"}, 
+};
+
+// 11 chars max
+TUPLE srcs[21] = {
+	{ 0x0000, "FP0"}, { 0x0010, "FP1"}, { 0x0020, "FP2"}, { 0x0030, "FP3"}, 
+	{ 0x0040, "FP4"}, { 0x0050, "FP5"}, { 0x0060, "FP6"}, { 0x0070, "FP7"}, 
+	{ 0x0080, "D0"}, { 0x0090, "D1"}, { 0x00a0, "D2"}, { 0x00b0, "D3"}, 
+	{ 0x00c0, "D4"}, { 0x00d0, "D5"}, { 0x00e0, "D6"}, { 0x00f0, "D7"}, 
+	{ 0x0100, "IMMED_LONG"}, { 0x0110, "IMMED_SHORT"}, { 0x0120, "FRAME_OFF"},
+	{ 0x0130, "EFFECT_ADDR"}, { 0x0140, "IMMED_ZERO"},
+};
+
+// 11 chars max
+TUPLE dsts[11] = {
+	{ 0x0000, "R0"}, { 0x0001, "R1"}, { 0x0002, "R2"}, { 0x0003, "R3"}, 
+	{ 0x0004, "R4"}, { 0x0005, "R5"}, { 0x0006, "R6"}, { 0x0007, "R7"}, 
+	{ 0x0008, "FRAME_OFF"}, { 0x0009, "EFFECT_ADDR"}, { 0x000a, "RETURN_REG"}, 
+};
+
+#define GET_OPERATOR(x)		((x) & 0xf000)
+#define GET_SIZE(x)			((x) & 0x0e00)
+#define GET_SRC(x)			((x) & 0x01f0)
+#define GET_DST(x)			((x) & 0x000f)
 
 /*
 ; BCD arithmetic package
@@ -107,8 +149,95 @@ bcdAbsDest      = 0x0009
 bcdRetReg       = 0x000A
 */
 
-int DasmFPU(uint16_t code)
+/*
+	Input: FPU opcode in 'code'
+	Output: FPU disassembled in 'buf'. sizeof(buf) >= 6+1+7+1+11+1+11 = 38
+*/
+int DasmFPU(uint16_t code, char *buf)
 {
+	int	operator = GET_OPERATOR(code);
+	int size = GET_SIZE(code);
+	int src = GET_SRC(code);
+	int dst = GET_DST(code);
+	int idx[4] = { 0 };
+	int i;
+	int j = 0;
+
+	for(i = 0; i < sizeof(operators) / sizeof(TUPLE); i++)
+	{
+		if(operators[i].code == operator)
+		{
+			idx[j++] = i;
+			break;
+		}
+	}
+
+	for(i = 0; i < sizeof(sizes) / sizeof(TUPLE); i++)
+	{
+		if(sizes[i].code == size)
+		{
+			idx[j++] = i;
+			break;
+		}
+	}
+	
+	for(i = 0; i < sizeof(srcs) / sizeof(TUPLE); i++)
+	{
+		if(srcs[i].code == src)
+		{
+			idx[j++] = i;
+			break;
+		}
+	}
+
+	for(i = 0; i < sizeof(dsts) / sizeof(TUPLE); i++)
+	{
+		if(dsts[i].code == dst)
+		{
+			idx[j++] = i;
+			break;
+		}
+	}
+
+	sprintf(buf, "%s.%s %s,%s", 
+		operators[idx[0]].name, sizes[idx[1]].name,
+		srcs[idx[2]].name, dsts[idx[3]].name);
 
 	return 0;
 }
+
+/*
+
+Et sinon, il y a un autre cas particulier bizarre, je ne sais pas 
+s'il vaut le coup de le traîter, mais _bcd_math est un ROM_CALL qui s'appelle comme ça:
+- n'importe quelle méthode d'appel d'un ROM_CALL (jsr, F-Line etc.)
+- 2 octets: opcode FPU
+et le ROM_CALL saute ces 2 octets en retournant, donc retourne à next_pc+2. Si tu veux 
+gérer ça, tu devrais regarder le target du jsr ou F-Line et comparer avec l'adresse de 
+_bcd_math.
+Précisions:
+- la "FPU" est purement émulée en logiciel par _bcd_math, et les opcodes ne correspondent 
+à aucune FPU réelle
+- Pour le F-Line, tu peux comparer l'opcode avec 0xF8B5, mais pour les appels par jsr, 
+tu n'as pas d'autre choix que de tester le target du saut pour savoir si on saute vers 
+_bcd_math ou aillers
+
+Il y en a un dans TIGCCLIB:
+
+__floatunssibf:
+ link.w %a6,#-36
+ pea.l 8(%a6)
+ move.l 0xC8,%a0
+ move.l 0xB5*4(%a0),%a0 // _bcd_math
+ jsr (%a0)
+ .word 0x6B30 // bcdMove | bcdUnsigned | bcdAbsSrc | bcdR0
+ move.l -10(%a6),%d0
+ move.l -6(%a6),%d1
+ move.w -2(%a6),%d2
+ unlk %a6
+ rts
+
+Le .word 0x6B30 est le code de la pseudo-FPU dont je parle. Et ce n'est pas
+exécuté par le processeur, _bcd_math rajoute 2 octets à l'adresse de retour.
+
+*/
