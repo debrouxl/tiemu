@@ -92,7 +92,6 @@ void dbgromcall_refresh_window(GtkWidget *widget)
 	// (re)load symbols
 	path = g_strconcat(inst_paths.base_dir, "romcalls.txt", NULL);
 	result = ti68k_debug_load_symbols(path);
-	printf("result = %i\n", result);
 	g_free(path);
 
 	if(result == -1)

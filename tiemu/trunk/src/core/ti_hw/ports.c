@@ -132,13 +132,13 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         case 0x10: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8 (msb)
 			tihw.lcd_adr = ((arg << 8) | tihw.io[0x11]) << 3;
-			printf("$600010: lcd_addr = %04x (%04x at @%06x)\n", tihw.lcd_adr, curriword(), m68k_getpc());
+			//printf("$600010: lcd_addr = %04x (%04x at @%06x)\n", tihw.lcd_adr, curriword(), m68k_getpc());
         break;
         case 0x11: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8 (lsb)
 			tihw.lcd_adr = ((tihw.io[0x10] << 8) | arg) << 3;
 			//tihw.lcd_ptr = &tihw.ram[((tihw.io[0x10] << 8) | arg) << 3];
-			printf("$600011: lcd_addr = %04x (%04x at @%06x)\n", tihw.lcd_adr, curriword(), m68k_getpc());
+			//printf("$600011: lcd_addr = %04x (%04x at @%06x)\n", tihw.lcd_adr, curriword(), m68k_getpc());
         break;
         case 0x12:	// -w <76543210>
 			// LCD logical width = (64-n)*2 bytes = (64-n)*16 pixels <=> n = 64-w/16
@@ -402,8 +402,7 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 		case 0x17:	// rw <......10>
 			// Display memory snoop range
 			//tihw.lcd_ptr = &tihw.ram[0x4c00 + 0x1000*(arg&3)];
-			//printf("arg = %1x ($%x)\n", arg&3, 0x4c00 + 0x1000*(arg&3));
-			printf("$700017: lcd_addr = %04x (%04x at @%06x)\n", 0x4c00 + 0x1000*(arg&3), curriword(), m68k_getpc());
+			//printf("$700017: lcd_addr = %04x (%04x at @%06x)\n", 0x4c00 + 0x1000*(arg&3), curriword(), m68k_getpc());
 		break;
 		case 0x1d:	// rw <7...3210>
 			// %1: Screen enable (clear this bit to shut down LCD)
