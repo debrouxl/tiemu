@@ -156,13 +156,13 @@ void ti68k_display_hw_param_block(HW_PARM_BLOCK *s)
     if(s->len > 2+(4*i++))
         DISPLAY(_("  gateArray        : %i\n"), s->gateArray);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  physDisplayBitsWide : %i\n"), s->physDisplayBitsWide);
+        DISPLAY(_("  physDisplayBitsWide : %u\n"), s->physDisplayBitsWide);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  physDisplayBitsTall : %i\n"), s->physDisplayBitsTall);
+        DISPLAY(_("  physDisplayBitsTall : %u\n"), s->physDisplayBitsTall);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  LCDBitsWide         : %i\n"), s->LCDBitsWide);
+        DISPLAY(_("  LCDBitsWide         : %u\n"), s->LCDBitsWide);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  LCDBitsTall         : %i\n"), s->LCDBitsTall);
+        DISPLAY(_("  LCDBitsTall         : %u\n"), s->LCDBitsTall);
 }
 
 /*
@@ -209,8 +209,6 @@ int ti68k_get_hw_param_block(IMG_INFO *rom, HW_PARM_BLOCK *block)
 int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
 {
   	FILE *file;
-	uint32_t addr;
-	uint16_t data;
     HW_PARM_BLOCK hwblock;
 
 	// No filename, exits
@@ -241,40 +239,39 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
   	fread(rom->data, 1, rom->size, file);
   	fclose(file);
 
+    rom->has_boot = 1;
   	rom->internal = ((rom->data[0x05] & 0x60) == 0x20) ? INTERNAL : 0;
   	rom->flash = (rom->data[0x65] & 0xf) ? 0 : FLASH_ROM;
-  	rom->has_boot = 1;
 
-  	if(rom->internal && rom->flash)
-    	rom->calc_type = TI89;
-  	else if (rom->flash)
-    	rom->calc_type = TI92p;
-  	else 
-    	rom->calc_type = TI92;
-  
-  	get_rom_version(rom->data, rom->size, rom->version);
+    get_rom_version(rom->data, rom->size, rom->version);
 
-	// Determine hw type by analysing hw param block
-    //ti68k_get_hw_param_block(rom, &hwblock);
-    //ti68k_display_hw_param_block(&hwblock);
+    if(!rom->flash)
+    {
+        rom->calc_type = TI92;
+        rom->hw_type = HW1;
+    }
+    else
+    {
+        // Get hw param block to determine calc type & hw type
+        ti68k_get_hw_param_block(rom, &hwblock);
+        ti68k_display_hw_param_block(&hwblock);
 
-	addr = rd_long(&rom->data[0x104]);
-	if(rom->internal)
-		addr -= 0x200000;
-	else
-		addr -= 0x400000;
+        switch(hwblock.hardwareID)
+        {
+        case 1: rom->calc_type = TI92p; break;
+        case 3: rom->calc_type = TI89;  break;
+        case 8: rom->calc_type = V200;  break;
+        default: break;
+        }
 
-	if(addr > 0x10000)
-		rom->hw_type = 1;
-	else
-	{
-		data = rd_word(&(rom->data[addr]));
-
-		if(data < 22)
-			rom->hw_type = 1;
-		else
-			rom->hw_type = 2;
-	}
+        if(rom->flash)
+        {
+            if(hwblock.len < 24)
+                rom->hw_type = HW1;
+            else
+                rom->hw_type = (char)hwblock.gateArray;
+        }
+    }
 
 	if(!preload)
 		free(rom->data);
@@ -334,7 +331,10 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 		break;
 		case DEVICE_TYPE_92P:
       		tib->internal = 0;
-      		tib->calc_type = TI92p;
+            if(tifiles_which_calc_type(filename) == CALC_TI92P)
+      		    tib->calc_type = TI92p;
+            else
+                tib->calc_type = V200;
 		break;
 		default:
 			DISPLAY("TIB problem: <%i>!\n", 0xff & ptr->device_type);
@@ -465,6 +465,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 /*
 	Convert an upgrade into an image.
   	The image has neither boot block nor certificate.
+    We should add prameter block...
 */
 int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **dstname)
 {
@@ -533,6 +534,28 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
     	fputc(0xff, f);
 
   	fputc(0xf0, f); 		// FLASH ROM
+
+    for(i = 0x66; i < 0x104; i++)
+        fputc(0xff, f);
+
+    // hardware param block
+    fputc(0x00, f);
+    fputc(img.internal ? 0x20: 0x40, f);
+    fputc(0x01, f);
+    fputc(0x08, f);
+
+    fputc(0x04, f);
+    fputc(0x00, f);
+
+    switch(img.calc_type)
+    {
+        case TI89:  fputc(0x03, f); break;
+        case TI92p: fputc(0x01, f); break;
+        case V200:  fputc(0x08, f); break;
+    }
+    fputc(0x00, f);
+    fputc(0x00, f);
+    fputc(0x00, f);
 
   	for(i = 0x66; i < 0x12000; i++)
     	fputc(0xff, f);
