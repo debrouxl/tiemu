@@ -328,6 +328,10 @@ int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
 				sprintf (buffer, "FLINE    jsr.w *+$%lX [%lX]", pm + 2 + 0x8000, addr);
 			}
 			return 4;
+		case 0xf8b5:	// 2 byte ROM call (special case: _bcd_math)
+			sprintf (buffer, "FLINE    $%03x.w [%s] w/ FPU", op & 0x7ff, romcalls_get_name(op & 0x7ff));
+			return 6;
+			break;
 		default:		// 2 byte ROM CALL
 			sprintf (buffer, "FLINE    $%03x.w [%s]", op & 0x7ff, romcalls_get_name(op & 0x7ff));
 			return 2;

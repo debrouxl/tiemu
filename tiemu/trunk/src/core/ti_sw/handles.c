@@ -73,14 +73,11 @@ void heap_get_addr(uint32_t *base)
 			romcalls_get_symbol_address(0x441, &addr);		// tios::HeapTable	(#0x441)
 			*base  = addr;
 		}
-	}
-
-	
+	}	
 }
 
 /*
-	Retrieve size of the heap (how many handles are allocated at the time when
-	this function is called).
+	Retrieve how many handles are allocated at the time when this function is called.
 */
 void heap_get_size(uint16_t *size)
 {
@@ -103,7 +100,7 @@ void heap_get_size(uint16_t *size)
 }
 
 /*
-	Dereference an handle (like HeapDeref)
+	Get address of an allocated block (like HeapDeref)
 */
 void heap_get_block_addr(int handle, uint32_t *addr)
 {
@@ -149,6 +146,7 @@ void heap_get_block_addr_and_size(int handle, uint32_t *addr, uint16_t *size)
 }
 
 /*
+	Walk in the heap to search for a block address.
 */
 void heap_search_for_address(uint32_t address, int *handle)
 {
@@ -173,12 +171,3 @@ void heap_search_for_address(uint32_t address, int *handle)
 
 //#define HeapDeref(handle) HeapTable[handle]
 //#define HeapSize(handle) ((short*)HeapDeref(handle))[-1]<<1;
-/*
-for (handle=0; handle<n_handles; handle++)
-{
-  if (instruction_address>=HeapDeref(handle)
-      && instruction_address<HeapDeref(handle)+HeapSize(handle)) break;
-}
-if (handle==n_handles) error;
-__ld_entry_point=HeapDeref(handle)+2;
-*/

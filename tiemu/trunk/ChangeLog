@@ -16,6 +16,7 @@ To do:
 	- fix: don't reload ROM calls when changing AMS without chaning calc type
 	- show vector name rather than number
 	- dis-assemble FLINE with __ld_entry_point
+	- dis-assemble FLINE with _bcd_math followed by FPU pseudo-opcode
 
 - 07/02/2005, version 1.80m: roms
 	- dbus architecture improved (reset)
