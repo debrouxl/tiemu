@@ -391,7 +391,7 @@ GtkWidget* display_dbgmem_window(void)
 
 static void refresh_page(int offset);
 
-gint refresh_dbgmem_window(void)
+GtkWidget* refresh_dbgmem_window(void)
 {
     static GtkWidget *wnd = NULL;
 
@@ -501,9 +501,11 @@ static void refresh_page(int offset)
 	if(!strcmp(text, "STACK"))
 		return;
 
-	sscanf(text, "%06x", &addr);
+	printf("text = !%s!\n", text);
+	sscanf(text, "%x", &addr);
 	addr += offset;
 	addr &= 0xffffff;
+	printf("addr = !%06x!\n", addr);
 
 	str = g_strdup_printf("%06x", addr);
 	gtk_label_set_text(GTK_LABEL(label), str);
