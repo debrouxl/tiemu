@@ -30,6 +30,10 @@
 #include "intl.h"
 #include "support.h"
 
+#ifdef __WIN32__
+# define strcasecmp _stricmp
+#endif
+
 gchar *wizard_rom = NULL;
 gint wizard_ok = FALSE;
 
