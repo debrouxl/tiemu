@@ -17,31 +17,27 @@
  */
 
 /*
-  TI screen (LCD) management
+    TI screen (LCD) management
 */
 
-#include "uae.h"
-#include "images.h"
 #include "ti68k_def.h"
-
-//extern UBYTE *ti_ram;
-
-int lcd_off;
-int contrast;
-int lcd_base_addr;
 
 int hw_lcd_init(void)
 {
-  contrast=13; //16
-  lcd_base_addr=(img_infos.flash)?0x4c00:0x4440;
-  tihw.lcd_ptr = &tihw.ram[lcd_base_addr];
-  lcd_off=0;
+    tihw.contrast = 13;
+    tihw.lcd_addr = (tihw.rom_flash) ? 0x4c00 : 0x4440;
+    tihw.lcd_ptr = &tihw.ram[tihw.lcd_addr];
+    tihw.lcd_off = 0;
+    
+    return 0;
 }
 
 int hw_lcd_reset(void)
 {
+    return 0;
 }
 
 int hw_lcd_exit(void)
 {
+    return 0;
 }

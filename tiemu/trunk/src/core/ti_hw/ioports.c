@@ -46,9 +46,9 @@ void io_put_byte(CPTR adr, UBYTE arg)
   switch(adr) 
     {
     case 0x00: 
-      contrast=(contrast&(~1))|((arg>>5)&1);
+      tihw.contrast=(tihw.contrast&(~1))|((arg>>5)&1);
       if(tihw.calc_type != TI92)
-	cb_set_contrast(contrast); // avoid flickering with 92
+	cb_set_contrast(tihw.contrast); // avoid flickering with 92
       io0Bit7=(arg>>7)&1;
       io0Bit2=(arg>>2)&1;
       break;
@@ -78,18 +78,18 @@ void io_put_byte(CPTR adr, UBYTE arg)
       linkport_putbyte(arg);
       break;
     case 0x10: 
-      lcd_base_addr=(((lcd_base_addr>>3)&0xff)|((arg&0xff)<<8))<<3;
-      //cb_set_screen_ptr((int)(&ti_ram[lcd_base_addr]));
+      tihw.lcd_addr=(((tihw.lcd_addr>>3)&0xff)|((arg&0xff)<<8))<<3;
+      //cb_set_screen_ptr((int)(&ti_ram[tihw.lcd_addr]));
       break;
     case 0x11: 
-      lcd_base_addr=(((lcd_base_addr>>3)&0xff00)|(arg&0xff))<<3;
-      //cb_set_screen_ptr((int)(&ti_ram[lcd_base_addr]));
+      tihw.lcd_addr=(((tihw.lcd_addr>>3)&0xff00)|(arg&0xff))<<3;
+      //cb_set_screen_ptr((int)(&ti_ram[tihw.lcd_addr]));
       break;
     case 0x17: 
       tihw.timer_init = arg; 
       break;
     case 0x1c:
-      lcd_off=(arg&0x80)>>7;
+      tihw.lcd_off=(arg&0x80)>>7;
       if((arg&0x80)>>7)
 	{
 	  specialflags |= SPCFLAG_STOP;
@@ -99,8 +99,8 @@ void io_put_byte(CPTR adr, UBYTE arg)
 	  cb_screen_on_off(!0);
       break;
     case 0x1d:
-      contrast=(contrast&1)|((arg&15)<<1);
-      cb_set_contrast(contrast);
+      tihw.contrast=(tihw.contrast&1)|((arg&15)<<1);
+      cb_set_contrast(tihw.contrast);
       break;
     }
   tihw.io[adr] = arg;
@@ -125,7 +125,7 @@ UBYTE io_get_byte(CPTR adr)
   switch(adr) 
     {
       case 0x00: 
-      v=((contrast&1)<<5)|(io0Bit7<<7)|(io0Bit2<<2);
+      v=((tihw.contrast&1)<<5)|(io0Bit7<<7)|(io0Bit2<<2);
       io0Bit2=1;
       return v|0x4;
     case 0x01:

@@ -88,8 +88,8 @@ int ti68k_state_load(char *filename)
   fread(&transnotready,4,1,fp);
   fread(&recvflag,4,1,fp); fread(&recvbyte,4,1,fp);
   fread(&rom_ret_or,4,1,fp);
-  fread(&lcd_base_addr,4,1,fp); fread(&lcd_off,4,1,fp);
-  fread(&contrast,4,1,fp);
+  fread(&tihw.lcd_addr,4,1,fp); fread(&tihw.lcd_off,4,1,fp);
+  fread(&tihw.contrast,4,1,fp);
   fread(&cpuCompleteStop,4,1,fp);
   for (i=0;i<32;i++)
     mem[i]=&tihw.ram[(i&(mem_and>>16))<<16];
@@ -139,8 +139,8 @@ int ti68k_state_save(char *filename)
       fwrite(&transnotready,4,1,fp);
       fwrite(&recvflag,4,1,fp); fwrite(&recvbyte,4,1,fp);
       fwrite(&rom_ret_or,4,1,fp);
-      fwrite(&lcd_base_addr,4,1,fp); fwrite(&lcd_off,4,1,fp);
-      fwrite(&contrast,4,1,fp);
+      fwrite(&tihw.lcd_addr,4,1,fp); fwrite(&tihw.lcd_off,4,1,fp);
+      fwrite(&tihw.contrast,4,1,fp);
       fwrite(&cpuCompleteStop,4,1,fp);
       
       // GtkTiEmu specific

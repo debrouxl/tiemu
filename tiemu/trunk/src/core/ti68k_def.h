@@ -95,7 +95,7 @@ typedef struct
     // lcd.c
     int     lcd_off;
     int     contrast;
-    int     lcd_base_addr;
+    int     lcd_addr;
     char	*lcd_ptr;
 
     // linkport.c
