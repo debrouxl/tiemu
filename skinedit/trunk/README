@@ -1,0 +1,37 @@
+SubVersion revision: $Id$
+
+
+
+DESCRIPTION
+-----------
+
+SkinEdit is a powerful skin editor for VTi and TiEmu.
+It can read/modify/write VTi-formatted skins and TiEmu-formatted skins.
+
+
+FEATURES
+--------
+
+To do...
+
+For documentation about the skin internals and key mapping, 
+see the doc directory.
+
+
+AVAILABILITY
+------------
+
+  http://lpg.ticalc.org/prj_tiemu
+
+
+COPYRIGHT
+---------
+
+SkinEdit is Copyright (C) 2002 by Julien Blache <jb@jblache.org>.
+
+Copying is allowed under the terms of GNU General Public License.  
+See the file COPYING for more details.
+
+
+----------------------------------------------------------------------
+Please report any bugs, questions at <tiemu-users@lists.sf.net>.
