@@ -222,6 +222,16 @@ int hw_m68k_run(int n, unsigned maxcycles)
 		// HW2/3 grayscales management
 		lcd_hook_hw2(0);
 
+// FIXME: Need to enable this once GDB can be linked in.
+#if 0
+		if (verbose_trace)
+			m68k_dumpstate (stdout, regs.pc_p);
+		else if (trace)
+		{
+			sim_trace_one(m68k_getpc());
+		}
+#endif
+
 		// process (pending) interrupts
 		if(pending_ints)
 		{

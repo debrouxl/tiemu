@@ -9,6 +9,8 @@
 #include "readcpu.h"
 #include "machdep/maccess.h"
 
+#define CYGNUS_SIM 1
+
 #define SPCFLAG_DBTRACE 1
 #define SPCFLAG_DBSKIP 2
 #define SPCFLAG_STOP 4
@@ -110,9 +112,39 @@ extern struct regstruct
      * The way this is implemented now seems like a good compromise.
      */
     uae_u32 prefetch;
+
+  /* NOTE stuff related to simulator framework */
+
+    /* NOTE need to have m68k performance information here */
+
+    unsigned char *insn_end;
+
+    /* NOTE control information */
+
+    int prevlock;
+    int thislock;
+    int exception;
+
+    int end_of_registers;
+
+    /* NOTE simulator information */
+    int msize;
+#define PROFILE_FREQ 1
+#define PROFILE_SHIFT 2
+    int profile;
+    unsigned short *profile_hist;
+    unsigned char *memory;
+    int xyram_select, xram_start, yram_start;
+    unsigned char *xmem;
+    unsigned char *ymem;
+    unsigned char *xmem_offset;
+    unsigned char *ymem_offset;
 } regs, lastint_regs;
 
 #include "machdep/m68k.h"
+
+extern int trace;
+extern int verbose_trace;
 
 STATIC_INLINE void set_special (uae_u32 x)
 {

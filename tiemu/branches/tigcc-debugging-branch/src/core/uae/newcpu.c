@@ -700,6 +700,9 @@ void Exception(int nr, uaecptr oldpc)
 {
     GList *l;
 
+// FIXME: Should we call this instead of our code below?
+//    sim_exception (nr, currpc);
+
     uae_u32 currpc = m68k_getpc ();
 
     compiler_flush_jsr_stack();
