@@ -344,9 +344,9 @@ void MakeFromSR(void)
     the internal link 
   */  
   if(lc_speedy && regs.intmask < 4 && 
-     (ti_io[0xc]&0x2 || linkport_checkread())) 
+     (tihw.io[0xc]&0x2 || linkport_checkread())) 
     {
-      ti_io[0xc] |= 0x2;
+      tihw.io[0xc] |= 0x2;
       specialflags |= SPCFLAG_INT;
       currIntLev = 4;
     }

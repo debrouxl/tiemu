@@ -144,7 +144,7 @@ UBYTE read_keyboard_mask(void)
   static UWORD mask;
 
   arg=0;
-  mask = (((UWORD)ti_io[0x18])<<8)|ti_io[0x19];
+  mask = (((UWORD)tihw.io[0x18])<<8)|tihw.io[0x19];
   for(i=0; i<10; i++)
     {
       if(!(mask & (1<<i)))

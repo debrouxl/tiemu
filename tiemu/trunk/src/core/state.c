@@ -95,7 +95,7 @@ int ti68k_state_load(char *filename)
     mem[i]=&tihw.ram[(i&(mem_and>>16))<<16];
 
   // GtkTiEmu specific
-  fread(ti_io, 1, IO_SIZE, fp);      // write IO
+  fread(tihw.io, 1, IO_SIZE, fp);      // write IO
   fread(&specialflags, sizeof(specialflags), 1, fp); // and flags
   fclose(fp);
   
@@ -144,7 +144,7 @@ int ti68k_state_save(char *filename)
       fwrite(&cpuCompleteStop,4,1,fp);
       
       // GtkTiEmu specific
-      fwrite(ti_io, 1, IO_SIZE, fp);      // write IO
+      fwrite(tihw.io, 1, IO_SIZE, fp);      // write IO
       fwrite(&specialflags, sizeof(specialflags), 1, fp); // and flags
       fclose(fp);
     }

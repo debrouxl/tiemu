@@ -29,6 +29,7 @@
 #endif
 
 #include "tilibs.h"
+#include "sysdeps.h"	//UBYTE
 
 /* Equivalences */
 
@@ -93,18 +94,18 @@ typedef struct
     int     lcd_off;
     int     contrast;
     int     lcd_base_addr;
-    uint8_t	*lcd_ptr;
+    char	*lcd_ptr;
 
     // linkport.c
     TicableLinkParam lc;
 
     // memory.c
-    uint8_t *int_rom;
-    uint8_t *ext_rom;
-    uint8_t *rom;
-    uint8_t *ram;
-    uint8_t *io;
-    uint8_t *garbage;
+    UBYTE	*int_rom;
+    UBYTE	*ext_rom;
+    UBYTE	*rom;
+    UBYTE	*ram;
+    UBYTE	*io;
+    UBYTE	*garbage;
 
     // timer.c
     int     timer_value;

@@ -73,10 +73,10 @@ void update_hardware()
 
   /* Link status */
   if(linkport_checkread())
-    ti_io[0xc] |= 0x2;
+    tihw.io[0xc] |= 0x2;
 
   /* Link interrupt */ 
-  if(ti_io[0xc]&0x2) 
+  if(tihw.io[0xc]&0x2) 
     {
       specialflags |= SPCFLAG_INT;
       currIntLev = 4;

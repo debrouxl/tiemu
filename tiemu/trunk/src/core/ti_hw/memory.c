@@ -35,12 +35,8 @@
 
 /* Memory blocks */
 
-//UBYTE *ti.rom;
 UBYTE *ti_int_rom;
 UBYTE *ti_ext_rom;
-//UBYTE *ti.ram;
-UBYTE *ti_io;
-UBYTE garbage_mem[0x10000];
 
 UBYTE *mem_tab[8] = 
 {
@@ -110,11 +106,11 @@ int hw_mem_init(void)
   tihw.ram     = malloc(RAM_SIZE+4);
   ti_int_rom = malloc(ROM_SIZE+4);
   ti_ext_rom = malloc(ROM_SIZE+4);
-  ti_io      = malloc(IO_SIZE+4);
+  tihw.io      = malloc(IO_SIZE+4);
 
   /* Clear RAM/ROM/IO */
   memset(tihw.ram, 0x00, RAM_SIZE);
-  memset(ti_io , 0x00, IO_SIZE);  
+  memset(tihw.io , 0x00, IO_SIZE);  
   for (i=0; i<2048*1024; i++)
     {
       if (i&1) { 
@@ -126,8 +122,6 @@ int hw_mem_init(void)
 	ti_ext_rom[i]=0x14; 
       }
     }
-  for (i=0;i<0x10000;i++) 
-    garbage_mem[i]=0x14;
 
   /* Set all banks to RAM (with mask 0 per default) */
   for(i=0; i<8; i++) { 
@@ -145,12 +139,8 @@ int hw_mem_init(void)
   mem_mask[2] = ROM_SIZE-1;
 
   /* Map IO */
-  mem_tab[3] = ti_io;
+  mem_tab[3] = tihw.io;
   mem_mask[3] = IO_SIZE-1;
-
-  /* Map garbage mem */
-  mem_tab[4] = garbage_mem;
-  mem_mask[4] = 0x10000-1;
 
   if(cri->internal)
     tihw.rom = ti_int_rom;
@@ -161,7 +151,7 @@ int hw_mem_init(void)
   memcpy(tihw.rom, cri->data, cri->size);
   free(cri->data);
 
-  return (tihw.ram && ti_int_rom && ti_ext_rom && ti_io);
+  return (tihw.ram && ti_int_rom && ti_ext_rom && tihw.io);
 }
 
 int hw_mem_reset(void)
@@ -182,9 +172,9 @@ int hw_mem_exit(void)
     free(ti_ext_rom); 
   ti_ext_rom=NULL;
   
-  if(ti_io)  
-    free(ti_io);  
-  ti_io=NULL;
+  if(tihw.io)  
+    free(tihw.io);  
+  tihw.io=NULL;
   
   mem_initialized = 0;
 

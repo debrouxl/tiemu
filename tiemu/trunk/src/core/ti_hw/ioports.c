@@ -103,7 +103,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
       cb_set_contrast(contrast);
       break;
     }
-  ti_io[adr] = arg;
+  tihw.io[adr] = arg;
 }
 
 void io_put_word(CPTR adr, UWORD arg) 
@@ -160,7 +160,7 @@ UBYTE io_get_byte(CPTR adr)
     case 0x1c: case 0x1e: return 0x14;
     case 0x1d: case 0x1f: return 1;
     }
-  return ti_io[adr];
+  return tihw.io[adr];
 }
 
 UWORD io_get_word(CPTR adr) 
