@@ -130,7 +130,7 @@ int ti68k_display_tib_infos(TIB_INFO *s)
 int ti68k_display_img_infos(IMG_INFO *s)
 {
 	DISPLAY(_("Image informations:\n"));
-  	DISPLAY(_("  Calculator  : %s\n"), tifiles_calctype_to_string(s->calc_type));
+  	DISPLAY(_("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
   	DISPLAY(_("  Firmware    : v%s\n"), s->revision);
   	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->internal | s->flash));
   	DISPLAY(_("  Memory size : %iMB (%i bytes)\n"), s->data_size >> 20, s->data_size);
@@ -238,16 +238,21 @@ int ti68k_get_tib_infos(const char *filename, TIB_INFO *ti, int preload)
   	memcpy(ti->content + SPP, ptr->data_part, ptr->data_length);
   	
   	// Update current rom infos
-  	if (((ti->content+SPP)[0x88+0x05] & 0x60) == 0x20)
-    {
-      	ti->internal = INTERNAL;
-      	ti->calc_type = TI89;
-    }
-	else
-    {
-      	ti->internal = 0;
-      	ti->calc_type = TI92 | MODULEPLUS;
-    }
+	switch(ptr->device_type & 0xff)
+	{
+		case DEVICE_TYPE_89:
+	   		ti->internal = INTERNAL;
+      		ti->calc_type = TI89;
+		break;
+		case DEVICE_TYPE_92P:
+      		ti->internal = 0;
+      		ti->calc_type = TI92 | MODULEPLUS;
+		break;
+		default:
+			DISPLAY("TIB problem: <%i>!\n", 0xff & ptr->device_type);
+			return ERR_68K_INVALID_FLASH;
+		break;
+	}
     
   	ti->flash = FLASH_ROM;
   	ti->tib = 1;
@@ -357,7 +362,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	header.header_size = sizeof(IMG_INFO);
 	header.data_offset = 0x40;
 	header.calc_type = ri.calc_type;
-	strcpy(&header.revision, &ri.version);
+	strcpy(header.revision, ri.version);
 	header.internal = ri.internal;
 	header.flash = ri.flash;
 	header.has_boot = !ri.tib;
@@ -383,7 +388,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 {
 	FILE *f; 
   	int err;
-	TIB_INFO ri;
+	TIB_INFO ti;
 	char *ext;
 	gchar *basename;
 	IMG_INFO header;
@@ -395,13 +400,13 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 		return 0;
 
 	// Preload upgrade
-	err = ti68k_get_tib_infos(srcname, &ri, !0);
+	err = ti68k_get_tib_infos(srcname, &ti, !0);
 	if(err)
     {
       	DISPLAY(_("Unable to get informations on FLASH upgrade.\n"));
       	return err;
     }
-	ti68k_display_tib_infos(&ri);
+	ti68k_display_tib_infos(&ti);
 
 	// Create destination file
 	basename = g_path_get_basename(srcname);
@@ -424,12 +429,12 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	strcpy(header.signature, "TiEmu img v2.00");
 	header.header_size = sizeof(IMG_INFO);
 	header.data_offset = 0x40;
-	header.calc_type = ri.calc_type;
-	strcpy(&header.revision, &ri.version);
-	header.internal = ri.internal;
-	header.flash = ri.flash;
-	header.has_boot = !ri.tib;
-	header.data_size = 2 << 20;	//ri.size;
+	header.calc_type = ti.calc_type;
+	strcpy(header.revision, ti.version);
+	header.internal = ti.internal;
+	header.flash = ti.flash;
+	header.has_boot = !ti.tib;
+	header.data_size = 2 << 20;	//ti.size;
 	
 	// Write header
 	fwrite(&header, 1, sizeof(IMG_INFO), f);
@@ -440,7 +445,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
   	for(i=0; i<0x05; i++)
     	fputc(0xff, f);
     
-    if(ri.internal)
+    if(ti.internal)
     	fputc(0x20, f); 	// internal
   	else
     	fputc(0x40, f); 	// external
@@ -454,21 +459,21 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
     	fputc(0xff, f);
   
   	// Copy FLASH upgrade
-  	num_blocks = ri.size / 65536;
+  	num_blocks = ti.size / 65536;
   	for(i = 0; i < num_blocks; i++ )
     {
       	DISPLAY(".");
       	fflush(stdout);
 
-      	fwrite(&ri.content[65536 * i], sizeof(char), 65536, f);
+      	fwrite(&ti.content[65536 * i], sizeof(char), 65536, f);
     }
 
-  	last_block = ri.size % 65536;
-   	fwrite(&ri.content[65536 * i], sizeof(char), last_block, f);
+  	last_block = ti.size % 65536;
+   	fwrite(&ti.content[65536 * i], sizeof(char), last_block, f);
   
   	DISPLAY("\n");
   	DISPLAY("Completing to 2MB size\n");
-  	for(j = SPP + ri.size; j < (2 << 20); j++)
+  	for(j = SPP + ti.size; j < (2 << 20); j++)
   		fputc(0xff, f);
   
   	// Close file
@@ -532,19 +537,27 @@ int ti68k_load_upgrade(const char *filename)
 	int nheaders;
 	int i;
 	IMG_INFO *header = &current_img_info;
+	TIB_INFO ti;
   	int err;
 
 	// No filename, exits
 	if(!strcmp(filename, ""))
 		return 0;
 
-	err = ti68k_get_tib_infos(filename, header, !0);
+	err = ti68k_get_tib_infos(filename, &ti, !0);
 	if(err)
     {
       	DISPLAY(_("Unable to get informations on FLASH upgrade.\n"));
       	return err;
     }
-	ti68k_display_tib_infos(header);
+	ti68k_display_tib_infos(&ti);
+
+	header->calc_type = ti.calc_type;
+	strcpy(header->revision, ti.version);
+	header->internal = ti.internal;
+	header->flash = ti.flash;
+	header->has_boot = !ti.tib;
+	header->data_size = ti.size;
 
   	params.rom_size = header->data_size;
   	params.ram_size = (header->data_size == 1024*1024) ? 128 : 256;

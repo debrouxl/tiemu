@@ -134,7 +134,7 @@ int main(int argc, char **argv)
 	/*
 		For developers only
 	*/
-/*
+
 #ifndef __WIN32__
 	// linux
 	g_free((options.params)->rom_file);
@@ -142,9 +142,11 @@ int main(int argc, char **argv)
 #else
 	//win32
 	g_free((options.params)->rom_file);
-	(options.params)->rom_file = g_strdup("C:\\msvc\\tilp\\images\\ti92.img");
+	(options.params)->rom_file = g_strdup("C:\\msvc\\tilp\\images\\ti92p.img");
+
+	g_free((options.params)->tib_file);
+	(options.params)->tib_file = g_strdup("C:\\msvc\\tilp\\images\\os.9xu");
 #endif
-*/
 
 	/*
 		Attempt to load an image
