@@ -92,6 +92,7 @@ typedef struct
 	char	*lcd_ptr;		// direct pointer to LCD
 	int		lc_file;		// direct file loading mode
 	int		lc_speedy;		// speedy mode for direct file
+    int     lc_timeout;     // timeout for internal link
 
     // ioports.c
     //int     io0Bit7;

@@ -58,22 +58,7 @@ UBYTE df_getbyte(void);
 int   df_byteavail(void);
 int   df_checkread(void);
 
-/* 
-	Variables: External link port for direct file loading	
-*/
-
-
-int lc_internal = 0;
-int lc_speedy = 0;
-int init_linkfile();
-
-/* 
-	Variables: Internal link port for D-BUS emulation
-*/
 TicableLinkCable lc;
-int byteAvail = 0;
-UBYTE lastByte;
-int lc_timeout = 0;
 
 int comError;
 int transflag=0;
@@ -85,13 +70,13 @@ int lc_raw_access;
 
 int TO_VALUE = 1000;
 
-void print_lc_error(int errnum)
+static void print_lc_error(int errnum)
 {
-  char msg[MAXCHARS] = "No error -> bug !\n";
+    char msg[MAXCHARS] = "No error -> bug !\n";
 
-  ticable_get_error(errnum, msg);
-  DISPLAY("Link cable error: code = %i, msg = %s\n", errnum, msg);
-  //iupdate_msgbox("Error", msg);
+    ticable_get_error(errnum, msg);
+    DISPLAY("Link cable error: code = %i, msg = %s\n", errnum, msg);
+    //iupdate_msgbox("Error", msg);
 }
 
 /*
@@ -166,9 +151,10 @@ static void lp_putbyte(UBYTE arg)
 {
 	int err;
   
-	lc_timeout = 0;
+	tihw.lc_timeout = 0;
 
-	if( (err=lc.put(arg)) )
+    err=lc.put(arg);
+	if(err)
 	{
 	  print_lc_error(err);
 	  return;
@@ -177,7 +163,7 @@ static void lp_putbyte(UBYTE arg)
 
 static UBYTE lp_getbyte(void)
 {
-	lc_timeout = 0;
+	tihw.lc_timeout = 0;
 	lp_avail_byte = 0;
 
 	return lp_last_byte;
@@ -196,15 +182,17 @@ static int lp_checkread(void)
 	if(lp_avail_byte)
 		return 0;
 
-	if( (err=lc.check(&status)) )
+    err=lc.check(&status);
+	if(err)
     {
 		print_lc_error(err);
-		byteAvail = 0;
+		lp_last_byte = 0;
     }
   
 	if(status & STATUS_RX)
     {
-		if( (err=lc.get(&lp_last_byte)) )
+        err=lc.get(&lp_last_byte);
+		if(err)
         {
 			print_lc_error(err);
         }
@@ -228,7 +216,7 @@ int iget;
 
 void df_putbyte(UBYTE arg)
 {
-	lc_timeout = 0;
+	tihw.lc_timeout = 0;
 
 	byte_t2f = arg;
 	iget = 1;
@@ -236,7 +224,7 @@ void df_putbyte(UBYTE arg)
 
 UBYTE df_getbyte(void)
 {
-	lc_timeout = 0;
+	tihw.lc_timeout = 0;
 
 	iput = 0;
     return byte_f2t;
@@ -361,13 +349,13 @@ int init_linkfile()
 
 int test_sendfile()
 {
-  lc_speedy = 1;
-  lc_internal = 1;  
-  itc.send_var("/root/str.89s", 0, NULL);
-  lc_internal = 0;
-  lc_speedy = 0;
+    tihw.lc_speedy = 1;
+    tihw.lc_file = 1;  
+    itc.send_var("/root/str.89s", 0, NULL);
+    tihw.lc_file = 0;
+    tihw.lc_speedy = 0;
 
-  return 0;
+    return 0;
 }
 
 int send_ti_file(const char *filename)
@@ -394,51 +382,51 @@ int send_ti_file(const char *filename)
   /* FLASH APP file ? */
   else if( (ext[2] == 'k') || (ext[2] =='K'))
     {
-      lc_speedy = 1;
-      lc_internal = 1;  
+      tihw.lc_speedy = 1;
+      tihw.lc_file = 1;  
       itc.send_flash(filename, MODE_APPS);
-      lc_internal = 0;
-      lc_speedy = 0;
+      tihw.lc_file = 0;
+      tihw.lc_speedy = 0;
     }
 
   /* FLASH OS file ? */
   else if( (ext[2] == 'u') || (ext[2] == 'U'))
     {
-      lc_speedy = 1;
-      lc_internal = 1;  
+      tihw.lc_speedy = 1;
+      tihw.lc_file = 1;  
       itc.send_flash(filename, MODE_AMS);
-      lc_internal = 0;
-      lc_speedy = 0;
+      tihw.lc_file = 0;
+      tihw.lc_speedy = 0;
     }
   
   /* Backup file ? */
   else if( (ext[2] == 'b') || (ext[2] == 'B'))
     {
-      lc_speedy = 1;
-      lc_internal = 1;  
+      tihw.lc_speedy = 1;
+      tihw.lc_file = 1;  
       itc.send_backup(filename, MODE_NORMAL);
-      lc_internal = 0;
-      lc_speedy = 0;
+      tihw.lc_file = 0;
+      tihw.lc_speedy = 0;
     }
 
   /* Group file ? */
   else if( (ext[2] == 'g') || (ext[2] == 'G'))
     {
-      lc_speedy = 1;
-      lc_internal = 1;  
+      tihw.lc_speedy = 1;
+      tihw.lc_file = 1;  
       itc.send_var(filename, MODE_NORMAL, NULL);
-      lc_internal = 0;
-      lc_speedy = 0;
+      tihw.lc_file = 0;
+      tihw.lc_speedy = 0;
     }
 
   /* Single file */
   else
     {
-      lc_speedy = 1;
-      lc_internal = 1;  
+      tihw.lc_speedy = 1;
+      tihw.lc_file = 1;  
       itc.send_var(filename, MODE_NORMAL, NULL);
-      lc_internal = 0;
-      lc_speedy = 0;
+      tihw.lc_file = 0;
+      tihw.lc_speedy = 0;
     }
 
   return 0;

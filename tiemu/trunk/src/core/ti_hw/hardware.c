@@ -120,13 +120,13 @@ void hw_update()
     /* LCD is refreshed every 16th time */
     if(!(tihw.timer_value&15))
     {
-        if(lc_internal) 
+        if(tihw.lc_file) 
 	    {
-	        if(lc_timeout++ >= TO_VALUE) 
+	        if(tihw.lc_timeout++ >= TO_VALUE) 
 	        {
 	            DISPLAY("Warning: internal link timeout !!!\n");
-	            lc_internal = 0;
-	            lc_timeout = 0;
+	            tihw.lc_file = 0;
+	            tihw.lc_timeout = 0;
 	        }
 	    }
 
