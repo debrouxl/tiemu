@@ -182,7 +182,7 @@ plus, et il y a probablement d'autres combines de touches "suspectes".
 ne répond plus à aucun appui de touches (mais on peut le fermer à travers le
 popup au moins). L'"engine" est "stoppée" et pas re"start"ée.
 
-* J'ai essayé d'envoyer un fichier TI-89 (bgammon.89z) à une TI-92+ émulée,
++ J'ai essayé d'envoyer un fichier TI-89 (bgammon.89z) à une TI-92+ émulée,
 j'ai eu un "This file is not recognized as a TI file." Ce serait bien si on
 pouvait envoyer les fichiers TI-89 à la TI-92+...
 

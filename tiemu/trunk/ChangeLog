@@ -22,6 +22,7 @@ To do:
 	- added frame pointer window
 	- stack & frame pointer window are now scrollable
 	- remind folder when sending variable
+	- allow cross-compatibility when sending TI files
 
 - 08/11/2004, version 1.80f: roms
 	- PedRom is now provided with TiEmu as default OS.

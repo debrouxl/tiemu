@@ -162,7 +162,6 @@ gint display_tifile_dbox()
 	// keep folder
 	g_free(folder);
 	folder = g_path_get_dirname(filename);
-	return 0;
 
     // check extension
     if(!tifiles_is_a_ti_file(filename) || 

@@ -404,10 +404,11 @@ int send_ti_file(const char *filename)
     if(!tifiles_is_a_ti_file(filename))
         return ERR_NOT_TI_FILE;
 
-    if(((tifiles_which_calc_type(filename) == CALC_TI89) && (tihw.calc_type == TI89)) ||
-        ((tifiles_which_calc_type(filename) == CALC_TI92) && (tihw.calc_type == TI92)) ||
-        ((tifiles_which_calc_type(filename) == CALC_TI92P) && (tihw.calc_type == TI92p)) ||
-        ((tifiles_which_calc_type(filename) == CALC_V200) && (tihw.calc_type == V200)))
+	if(((tifiles_which_calc_type(filename) == CALC_TI92) && (tihw.calc_type == TI92)) ||
+		(tifiles_which_calc_type(filename) == CALC_TI89) ||
+		(tifiles_which_calc_type(filename) == CALC_TI92P) ||
+		(tifiles_which_calc_type(filename) == CALC_V200)
+	  )
     {
         ok = 1;
     } else
