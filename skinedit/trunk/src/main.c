@@ -140,7 +140,6 @@ main (int argc, char *argv[])
             // filename
             if(load_skin(p) == 0)
 	            skin_infos.changed = 1;
-            //on_properties_activate(NULL, NULL);
         }
 		
         strcpy(arg, p);
