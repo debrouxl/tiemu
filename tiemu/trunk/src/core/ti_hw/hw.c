@@ -196,13 +196,7 @@ void hw_update(void)
 	}
 
     // Auto-int 5: triggered by the programmable timer.
-	// The default rate is OSC2/(K*2^9), where K=79 for HW1 and K=53 for HW2
-    if(tihw.timer_value == 0)
-    {
-        tihw.timer_value = tihw.io[0x17];
-		if(!io_bit_tst(0x15,7))
-			hw_m68k_irq(5);
-    }
+	// see below (after LCD refresh)
 
 	// Auto-int 6: triggered when [ON] is pressed.
 	// see keyboard.c
@@ -224,6 +218,14 @@ void hw_update(void)
         G_UNLOCK(lcd_flag);
     }
 
+	// Auto-int 5: triggered by the programmable timer.
+	// The default rate is OSC2/(K*2^9), where K=79 for HW1 and K=53 for HW2
+    if(tihw.timer_value == 0)
+    {
+        tihw.timer_value = tihw.io[0x17] - 1;
+		if(!io_bit_tst(0x15,7))
+			hw_m68k_irq(5);
+    }
 }
 
 /*
