@@ -7870,7 +7870,7 @@ if AC_TRY_EVAL(ac_compile); then
   done
 
   # Clean up.
-  rm -f a.out
+  rm -f a.out a.exe
 else
   echo "libtool.m4: error: problem compiling C++ test program"
 fi
@@ -9201,8 +9201,7 @@ EOF
       _LT_AC_TAGVAR(allow_undefined_flag, $1)=unsupported
       _LT_AC_TAGVAR(always_export_symbols, $1)=yes
 
-      extract_expsyms_cmds='test -f $output_objdir/impgen.c || \
-	sed -e "/^# \/\* impgen\.c starts here \*\//,/^# \/\* impgen.c ends here \*\// { s/^# //;s/^# *$//; p; }" -e d < $''0 > $output_objdir/impgen.c~
+      extract_expsyms_cmds='test -f $output_objdir/impgen.c || sed -e "/^# \/\* impgen\.c starts here \*\//,/^# \/\* impgen.c ends here \*\// { s/^# //;s/^# *$//; p; }" -e d < $''0 > $output_objdir/impgen.c~
 	test -f $output_objdir/impgen.exe || (cd $output_objdir && \
 	if test "x$HOST_CC" != "x" ; then $HOST_CC -o impgen impgen.c ; \
 	else $CC -o impgen impgen.c ; fi)~

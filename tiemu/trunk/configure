@@ -6304,8 +6304,7 @@ EOF
       allow_undefined_flag=unsupported
       always_export_symbols=yes
 
-      extract_expsyms_cmds='test -f $output_objdir/impgen.c || \
-	sed -e "/^# \/\* impgen\.c starts here \*\//,/^# \/\* impgen.c ends here \*\// { s/^# //;s/^# *$//; p; }" -e d < $''0 > $output_objdir/impgen.c~
+      extract_expsyms_cmds='test -f $output_objdir/impgen.c || sed -e "/^# \/\* impgen\.c starts here \*\//,/^# \/\* impgen.c ends here \*\// { s/^# //;s/^# *$//; p; }" -e d < $''0 > $output_objdir/impgen.c~
 	test -f $output_objdir/impgen.exe || (cd $output_objdir && \
 	if test "x$HOST_CC" != "x" ; then $HOST_CC -o impgen impgen.c ; \
 	else $CC -o impgen impgen.c ; fi)~
@@ -9913,7 +9912,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   done
 
   # Clean up.
-  rm -f a.out
+  rm -f a.out a.exe
 else
   echo "libtool.m4: error: problem compiling C++ test program"
 fi
@@ -12428,8 +12427,7 @@ EOF
       allow_undefined_flag_GCJ=unsupported
       always_export_symbols_GCJ=yes
 
-      extract_expsyms_cmds='test -f $output_objdir/impgen.c || \
-	sed -e "/^# \/\* impgen\.c starts here \*\//,/^# \/\* impgen.c ends here \*\// { s/^# //;s/^# *$//; p; }" -e d < $''0 > $output_objdir/impgen.c~
+      extract_expsyms_cmds='test -f $output_objdir/impgen.c || sed -e "/^# \/\* impgen\.c starts here \*\//,/^# \/\* impgen.c ends here \*\// { s/^# //;s/^# *$//; p; }" -e d < $''0 > $output_objdir/impgen.c~
 	test -f $output_objdir/impgen.exe || (cd $output_objdir && \
 	if test "x$HOST_CC" != "x" ; then $HOST_CC -o impgen impgen.c ; \
 	else $CC -o impgen impgen.c ; fi)~
