@@ -96,15 +96,6 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\newcpu.c
-
-!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
-
-# ADD CPP /w /W0
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -344,6 +335,10 @@ SOURCE=..\..\src\gui\main.c
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\..\src\core\uae\newcpu.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\registers.h
