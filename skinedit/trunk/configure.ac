@@ -33,6 +33,8 @@ AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_BIGENDIAN
+AC_CHECK_PROG(GROFF, groff, yes, no)
+AM_CONDITIONAL(USE_GROFF, test "$GROFF" != "no")
 
 # Checks for libraries.
 #AM_GNU_GETTEXT

@@ -69,6 +69,7 @@ F77 = @F77@
 FFLAGS = @FFLAGS@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
+GROFF = @GROFF@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
 INSTALL_DATA = @INSTALL_DATA@
@@ -99,6 +100,8 @@ RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+USE_GROFF_FALSE = @USE_GROFF_FALSE@
+USE_GROFF_TRUE = @USE_GROFF_TRUE@
 VERSION = @VERSION@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_AS = @ac_ct_AS@
@@ -153,7 +156,8 @@ bin_PROGRAMS = skinedit
 # build instructions
 skinedit_CPPFLAGS = \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\"
+	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
+	 @GLIB_CFLAGS@ @GTK_CFLAGS@
 
 
 skinedit_LDADD = \
@@ -894,7 +898,6 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am
 	tags uninstall uninstall-am uninstall-binPROGRAMS \
 	uninstall-info-am
 
-	 @GLIB_CFLAGS@ @GTK_CFLAGS@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -9,7 +9,7 @@ bin_PROGRAMS = skinedit
 # build instructions
 skinedit_CPPFLAGS = \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\"
+	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	 @GLIB_CFLAGS@ @GTK_CFLAGS@
 
 skinedit_LDADD = \
