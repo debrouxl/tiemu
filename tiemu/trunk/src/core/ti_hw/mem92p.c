@@ -23,7 +23,7 @@
  */
 
 /*
-    Memory management: TI89/92+/V200 FLASH with Hardware Protection
+    Memory management: TI92+/V200 FLASH with Hardware Protection
 */
 
 #include <stdlib.h>
@@ -57,7 +57,7 @@ static int crash = 0;
 
 //#define HWP			// HW1 protection if define set
 
-uint32_t ti89p_get_long(uint32_t adr) 
+uint32_t ti92p_get_long(uint32_t adr) 
 {
 #ifdef HWP
 	// stealth I/O
@@ -134,7 +134,7 @@ uint32_t ti89p_get_long(uint32_t adr)
     return 0x14141414;
 }
 
-uint16_t ti89p_get_word(uint32_t adr) 
+uint16_t ti92p_get_word(uint32_t adr) 
 {
 #ifdef HWP
     // stealth I/O
@@ -211,7 +211,7 @@ uint16_t ti89p_get_word(uint32_t adr)
     return 0x1414;
 }
 
-uint8_t ti89p_get_byte(uint32_t adr) 
+uint8_t ti92p_get_byte(uint32_t adr) 
 {
     // stealth I/O
 #ifdef HWP
@@ -288,7 +288,7 @@ uint8_t ti89p_get_byte(uint32_t adr)
     return 0x14;
 }
 
-void ti89p_put_long(uint32_t adr, uint32_t arg) 
+void ti92p_put_long(uint32_t adr, uint32_t arg) 
 {
 	// stealth I/O
 #ifdef HWP
@@ -371,7 +371,7 @@ void ti89p_put_long(uint32_t adr, uint32_t arg)
     return;
 }
 
-void ti89p_put_word(uint32_t adr, uint16_t arg) 
+void ti92p_put_word(uint32_t adr, uint16_t arg) 
 {
 #ifdef HWP
 	// stealth I/O
@@ -452,7 +452,7 @@ void ti89p_put_word(uint32_t adr, uint16_t arg)
     return;
 }
 
-void ti89p_put_byte(uint32_t adr, uint8_t arg) 
+void ti92p_put_byte(uint32_t adr, uint8_t arg) 
 {
 #ifdef HWP
     // stealth I/O

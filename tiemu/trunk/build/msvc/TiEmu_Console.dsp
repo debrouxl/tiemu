@@ -148,19 +148,19 @@ SOURCE=..\..\src\core\ti_hw\mem.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\mem_89.c
+SOURCE=..\..\src\core\ti_hw\mem89.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\mem_89p.c
+SOURCE=..\..\src\core\ti_hw\mem89tm.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\mem_89t.c
+SOURCE=..\..\src\core\ti_hw\mem92.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\mem_92.c
+SOURCE=..\..\src\core\ti_hw\mem92p.c
 # End Source File
 # Begin Source File
 

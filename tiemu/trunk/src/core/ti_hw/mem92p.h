@@ -22,8 +22,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TI68K_MEM89P__
-#define __TI68K_MEM89P__
+#ifndef __TI68K_MEM92p__
+#define __TI68K_MEM92p__
 
 #include "stdint.h"
 
@@ -31,12 +31,12 @@
 
 int ti89_mem_init(void);
 
-uint8_t  ti89p_get_byte(uint32_t addr);
-uint16_t ti89p_get_word(uint32_t addr);
-uint32_t ti89p_get_long(uint32_t addr);
+uint8_t  ti92p_get_byte(uint32_t addr);
+uint16_t ti92p_get_word(uint32_t addr);
+uint32_t ti92p_get_long(uint32_t addr);
 
-void ti89p_put_long(uint32_t addr, uint32_t arg);
-void ti89p_put_word(uint32_t addr, uint16_t arg);
-void ti89p_put_byte(uint32_t addr, uint8_t  arg);
+void ti92p_put_long(uint32_t addr, uint32_t arg);
+void ti92p_put_word(uint32_t addr, uint16_t arg);
+void ti92p_put_byte(uint32_t addr, uint8_t  arg);
 
 #endif

@@ -40,10 +40,10 @@
 #include "ti68k_def.h"
 #include "ti68k_int.h"
 #include "flash.h"
-#include "mem_89.h"
-#include "mem_92.h"
-#include "mem_89p.h"
-#include "mem_89t.h"
+#include "mem89.h"
+#include "mem92.h"
+#include "mem92p.h"
+#include "mem89tm.h"
 
 static IMG_INFO *img = &img_infos;
 
@@ -174,45 +174,45 @@ int hw_mem_init(void)
     tihw.initial_pc = find_pc();
 
 	// set memory specific parts mappers
-	if(tihw.calc_type == TI92)
+	switch(tihw.calc_type)
 	{
+	case TI92:
 		get_byte_ptr = ti92_get_byte;
 		get_word_ptr = ti92_get_word;
 		get_long_ptr = ti92_get_long;
 		put_byte_ptr = ti92_put_byte;
 		put_word_ptr = ti92_put_word;
 		put_long_ptr = ti92_put_long;
-	}
-	else if(tihw.calc_type == TI89t)
-	{
-		get_byte_ptr = ti89t_get_byte;
-		get_word_ptr = ti89t_get_word;
-		get_long_ptr = ti89t_get_long;
-		put_byte_ptr = ti89t_put_byte;
-		put_word_ptr = ti89t_put_word;
-		put_long_ptr = ti89t_put_long;
-	}
-#if 0
-	else
-	{
+	break;
+	
+	case TI89:
 		get_byte_ptr = ti89_get_byte;
 		get_word_ptr = ti89_get_word;
 		get_long_ptr = ti89_get_long;
 		put_byte_ptr = ti89_put_byte;
 		put_word_ptr = ti89_put_word;
 		put_long_ptr = ti89_put_long;
+	break;
+	
+	case TI92p:
+	case V200:
+		get_byte_ptr = ti92p_get_byte;
+		get_word_ptr = ti92p_get_word;
+		get_long_ptr = ti92p_get_long;
+		put_byte_ptr = ti92p_put_byte;
+		put_word_ptr = ti92p_put_word;
+		put_long_ptr = ti92p_put_long;
+	break;
+
+	case TI89t:
+		get_byte_ptr = ti89t_get_byte;
+		get_word_ptr = ti89t_get_word;
+		get_long_ptr = ti89t_get_long;
+		put_byte_ptr = ti89t_put_byte;
+		put_word_ptr = ti89t_put_word;
+		put_long_ptr = ti89t_put_long;
+	break;
 	}
-#else
-	else
-	{
-		get_byte_ptr = ti89p_get_byte;
-		get_word_ptr = ti89p_get_word;
-		get_long_ptr = ti89p_get_long;
-		put_byte_ptr = ti89p_put_byte;
-		put_word_ptr = ti89p_put_word;
-		put_long_ptr = ti89p_put_long;
-	}
-#endif
 
     return 0;
 }
