@@ -10,8 +10,8 @@ REQUIREMENTS
 ------------
 
  - a Windows computer: Windows 95/98/Me or Windows NT4/2000/XP
- - the GTK+ 2.4.x libraries
-    Location: <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.4.14-rc3.exe>
+ - the GTK+ 2.6 libraries
+    Location: <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.4-rc2.exe?download>
  - the SilverLink driver v3.x if you have a SilverLink cable
 	Location: http://www.ticalc.org/pub/win/link/tiglusbinf3.zip
 	
@@ -22,7 +22,7 @@ NOTES
 -----
 
 1°) You need some extra libraries 
-(GTK+ 2.4). The GTK+ package includes the Wimp (Windows IMPersonator) theme 
+(GTK+ 2.6). The GTK+ package includes the Wimp (Windows IMPersonator) theme 
 engine which gives Windows look & feel (includes XP theming). Is also included the GTK theme selector.
 You may need to use it on non-NT systems if you get a lot of warnings about a font. Simply disable the
 WiMP theme for another one.
@@ -54,9 +54,11 @@ to produce a derivative program which may only be distributed in compiled object
 COMPILATION
 -----------
 
-1°) MSVC: use projects with MSVC 5.0 or 6.0
+1°) MSVC: use projects with 6.0
 
 2°) MinGW: ./configure, make, make install
+
+See the build folder (source archive) for more informations.
 
 
 AVAILABILITY

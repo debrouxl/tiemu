@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.80o		(09/03/2005)
-Current version:  1.80p		(19/03/2005)
+Previous version: 1.80p		(19/03/2005)
+Current version:  1.80q		(27/03/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,29 +20,27 @@ For the other link cables, no driver is needed because it's provided.
 New capabilities:
 -----------------
 
-	- added KDE file selector support (Kevin)
-	- full hw1/2/3 protection support for all calcs
+	- updated copyright notice.
+	- added scaling support for skin & lcd 
+	- implemented full-screen view (maybe CPU intensive)
+	- can send several TI files at once
 
 
 Improvements:
 -------------
 
-	- increased link timeout from 1.5 to 10s (no more transfer interrupts)
-  - grayscale support (dual buffer) from Kevin Kofler
-  - can send all of 89?, 92?, 9x? and v2? to all the models
-  - clean-up in ti68k_scan_images (no more cache, useless now)
-  - can remove (=file delete) image from list
+	- TiEmu don't use threads any longer
+	- set main window title (for TIGCC-IDE)
+	- switched to GTK+ 2.6.4 for Windows
+	- set default filename in file selectors
+	- more dissassembled lines of code in the debugger (resizeable)
+	- close the debugger when you press F5
 		
 
 Bug fixes:
 ----------
 
-	- fixed ghost of RAM in $100000 on TI89,92,92+,V200
-	- fixed ghost of RAM in $000000 on Tinanium
-	- fixed timer incrementing/reloading (PPhd: loop freeze)
-	- fixed size for archived handles on PedRom
-	- fixed file pattern for Win32 file selector; fixed default 
-					path and pattern for the new GTK file selector.
+	- one or two...
 
 
 To do:
