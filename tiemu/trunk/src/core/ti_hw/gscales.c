@@ -105,7 +105,7 @@ static void process_address(uint32_t plane_addr)
 
 		// get address of plane #0
 		np = 1;
-		lcd_planes[0] = lcd_planes[1] = lcd_planes[2] = lcd_planes[3] = lcd_planes[4] = lcd_planes[5] = lcd_addrs[0];		
+		lcd_planes[0] = lcd_planes[1] = lcd_planes[2] = lcd_planes[3] = lcd_planes[4] = lcd_addrs[0];		
 
 		// get address of plane #1
 		for(i = 1; i < BUFSIZE; i++)
