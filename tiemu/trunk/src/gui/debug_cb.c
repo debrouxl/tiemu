@@ -32,7 +32,7 @@
 #include "debug_dbox.h"
 #include "support.h"
 
-#include "interface.h"
+#include "ti68k_int.h"
 #include "struct.h"
 #include "hid.h"
 #include "paths.h"

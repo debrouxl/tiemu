@@ -33,7 +33,7 @@
 #include "hid.h"
 #include "skinops.h"
 #include "struct.h"
-#include "interface.h"
+#include "ti68k_int.h"
 #include "screenshot.h"
 #include "tie_error.h"
 

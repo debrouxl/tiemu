@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: hid.c 163 2004-05-13 06:40:57Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -37,7 +37,7 @@
 #include "adbkpt_cb.h"
 #include "adbkpt_dbox.h"
 
-#include "interface.h"
+#include "ti68k_int.h"
 #include "bkpts.h"
 
 extern DATA_BKPT db;

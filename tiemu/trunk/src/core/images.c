@@ -45,7 +45,7 @@
 #include "../core/uae/uae.h"
 
 #include "intl.h"
-#include "interface.h"
+#include "ti68k_int.h"
 #include "../ti_hw/memory.h"
 #include "packets.h"
 #include "hardware.h"
@@ -53,10 +53,10 @@
 #include "params.h"
 #include "callbacks.h"
 #include "intlist.h"
-#include "errcodes.h"
 #include "images.h"
 #include "m68k.h"
 #include "bkpts.h"
+#include "ti68k_err.h"
 
 #ifdef __WIN32__
 # define strcasecmp _stricmp

@@ -30,7 +30,7 @@
 #include <string.h>
 
 #include "intl.h"
-#include "errcodes.h"
+#include "ti68k_err.h"
 
 /* 
    This function put in err_msg the error message corresponding to the 

@@ -33,7 +33,7 @@
 #include "paths.h"
 #include "struct.h"
 #include "skinops.h"
-#include "interface.h"
+#include "ti68k_int.h"
 #include "screenshot.h"
 
 static ScrOptions tmp_options;

@@ -27,7 +27,7 @@
 #include <time.h>
 
 #include "uae.h"
-#include "consts.h"
+#include "ti68k_def.h"
 #include "images.h"
 #include "memory.h"
 #include "lcd.h"
@@ -36,7 +36,6 @@
 #include "params.h"
 #include "timer.h"
 #include "callbacks.h"
-#include "lib68k.h"
 
 //int init_int_tab_offset;
 int io0Bit7;

@@ -11,19 +11,17 @@
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
- *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
+ *  GNU General Public License for more details. *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 /*
-  Manage state images
+  	Manage state images
 */
 
 #ifdef HAVE_CONFIG_H
@@ -33,73 +31,25 @@
 #include <string.h>
 
 #include "uae.h"
-#include "interface.h"
+#include "ti68k_int.h"
 #include "tilibs.h"
 #include "./ti_hw/memory.h"
 #include "linkport.h"
-#include "errcodes.h"
+#include "ti68k_err.h"
 #include "timer.h"
 #include "lcd.h"
 #include "../ti_hw/ioports.h"
 
-int loadState_old(char *filename)
-{
-  FILE *fp;
-  int m;
 
-  DISPLAY("Loading RAM image (TiEmu format): %s\n", filename);
-  if(!strcmp(filename, ""))
-	  return ERR_68K_NONE;
-  if( (fp = fopen(filename, "rb")) == NULL)
-    return ERR_68K_CANT_OPEN;
+/*
+  Must be done between init_hardware and M68000_run.
+  Typically called after initLib68k.
+  This function (re)load the state of the calculator.
+  It automagically determine the state file format.
 
-  fread(&m, 1, sizeof(int), fp);
-  if(m != RAM_SIZE) 
-    {
-      fclose(fp);
-      return -2;
-    }
-  else
-    {
-      fread(ti_ram, 1, RAM_SIZE, fp);
-      fread(ti_io, 1, IO_SIZE, fp);
-      fread(&regs, sizeof(regs), 1, fp);
-      fread(&timer_init, sizeof(timer_init), 1, fp);
-      fread(&specialflags, sizeof(specialflags), 1, fp);
-      fclose(fp);
-      MakeFromSR();
-      m68k_setpc(regs.pc);
-      //update_contrast();
-    }
-  
-  return ERR_68K_NONE;
-}
-
-int ti68k_saveState_old(char *filename)
-{
-  FILE *fp;
-  int m = RAM_SIZE;
-
-  if(strlen(filename)) // name exist ?
-    {
-      if( (fp = fopen(filename, "wb")) == NULL)
-	return ERR_68K_CANT_OPEN;
-      
-      m68k_setpc(m68k_getpc());
-      MakeSR();
-      fwrite(&m, sizeof(int), 1, fp);     // write RAM_SIZE
-      fwrite(ti_ram, 1, RAM_SIZE, fp);    // write RAM mem
-      fwrite(ti_io, 1, IO_SIZE, fp);      // write IO  mem
-      fwrite(&regs, sizeof(regs), 1, fp); // dump registers
-      fwrite(&timer_init, sizeof(timer_init), 1, fp);       // write timer
-      fwrite(&specialflags, sizeof(specialflags), 1, fp); // and flags
-      fclose(fp);
-    }
-
-  return ERR_68K_NONE;
-}
-
-int loadState_vti(char *filename)
+  Return an error code if an error occured, 0 otherwise
+*/
+int ti68k_state_load(char *filename)
 {
   FILE *fp;
   int kbmask=0;
@@ -151,10 +101,14 @@ int loadState_vti(char *filename)
   return ERR_68K_NONE;
 }
 
+
 /*
-  This function saves emulator settings in the VTi format
+  This function save the state of the calculator.
+  Can be called at any time.
+
+  Return an error code if an error occured, 0 otherwise
 */
-int saveState_vti(char *filename)
+int ti68k_state_save(char *filename)
 {
   FILE *fp;
   int kbmask=0;
@@ -195,44 +149,4 @@ int saveState_vti(char *filename)
     }
 
   return ERR_68K_NONE;
-}
-
-/*
-  Must be done between init_hardware and M68000_run.
-  Typically called after initLib68k.
-  This function (re)load the state of the calculator.
-  It automagically determine the state file format.
-
-  Return an error code if an error occured, 0 otherwise
-*/
-int ti68k_loadState(char *filename)
-{
-  FILE *fp;
-  char str[MAXCHARS];
-
-  if(!strcmp(filename, ""))
-    return ERR_68K_NONE;
-  if( (fp = fopen(filename, "rb")) == NULL)
-    return ERR_68K_CANT_OPEN;
-  else
-    {
-      fgets(str, MAXCHARS, fp);
-      if(strstr(str, "VTIv2.0 ") || strstr(str, "GTKTIEMU"))
-	return loadState_vti(filename);
-      else
-	return loadState_old(filename);
-    }
-
-  return ERR_68K_NONE;
-}
-
-/*
-  This function save the state of the calculator.
-  Can be called at any time.
-
-  Return an error code if an error occured, 0 otherwise
-*/
-int ti68k_saveState(char *filename)
-{
-  return saveState_vti(filename);
 }

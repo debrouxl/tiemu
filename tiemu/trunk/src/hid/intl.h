@@ -25,8 +25,8 @@
   Contains the right headers for the internationalization library
 */
 
-#ifndef GTKTIEMU_INTL_H
-#define GTKTIEMU_INTL_H
+#ifndef __TIEMU_INTL__
+#define __TIEMU_INTL__
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -69,12 +69,8 @@
 */
 
 #ifdef __WIN32__
-#  define PACKAGE 		"tiemu"        	// name of package
+#  define PACKAGE 				"tiemu"	// name of package
 #  define PACKAGE_LOCALE_DIR 	""		// place of the translated file
-#endif
-
-#ifdef __WIN32__
-# define strcasecmp _stricmp
 #endif
 
 #endif

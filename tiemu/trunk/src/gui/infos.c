@@ -31,7 +31,7 @@
 #include "intl.h"
 #include "paths.h"
 #include "skinops.h"
-#include "interface.h"
+#include "ti68k_int.h"
 
 gint display_infos_dbox()
 {

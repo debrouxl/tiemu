@@ -36,7 +36,7 @@
 #include "cmdline.h"
 #include "files.h"
 #include "rcfile.h"
-#include "interface.h"
+#include "ti68k_int.h"
 
 #include "hid.h"
 #include "core.h"
@@ -196,7 +196,7 @@ int main(int argc, char **argv)
 	*/
     splash_screen_set_label(_("Loading saved state..."));
 	if(options.params->ram_file != NULL) {
-		ti68k_loadState((options.params)->ram_file);
+		ti68k_state_load((options.params)->ram_file);
 	}
   
 	/* 

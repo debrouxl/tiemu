@@ -45,7 +45,7 @@
 #include "version.h"
 #include "paths.h"
 #include "files.h"
-#include "interface.h"
+#include "ti68k_int.h"
 #include "screenshot.h"
 
 static char *rc_file; 

@@ -31,7 +31,7 @@
 
 #include "intl.h"
 #include "paths.h"
-#include "interface.h"
+#include "ti68k_int.h"
 #include "refresh.h"
 #include "struct.h"
 

@@ -32,7 +32,7 @@
 #include "refresh.h"
 #include "paths.h"
 #include "struct.h"
-#include "interface.h"
+#include "ti68k_int.h"
 
 gint display_skin_dbox()
 {
@@ -97,7 +97,7 @@ gint display_load_state_dbox()
     g_free((options.params)->ram_file);
     (options.params)->ram_file = g_strdup(filename);
     
-    ti68k_loadState((options.params)->ram_file);
+    ti68k_state_load((options.params)->ram_file);
     ti68k_unhalt();
 
 	return 0;
@@ -114,7 +114,7 @@ gint display_save_state_dbox()
 
     g_free((options.params)->ram_file);
     (options.params)->ram_file = g_strdup(filename);
-    ti68k_saveState((options.params)->ram_file);
+    ti68k_state_save((options.params)->ram_file);
     
     if(!rcfile_exist())
     {

@@ -1,11 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: cabl_err.h 651 2004-04-25 15:22:07Z roms $ */
 
-/*  TiEmu - an TI emulator
- *
- *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
- *  Copyright (c) 2003-2004, Romain Liévin
+/*  libticables - Ti Link Cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2004  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,8 +22,8 @@
 #ifndef __TI68K_ERRCODES__
 #define __TI68K_ERRCODES__
 
-
-/* Error codes: ERR_...  */
+/* Error codes ERR_...  */
+/* Error codes must begin at 512 up to 1023 */
 #define ERR_68K_NONE             0 // No error
 #define ERR_68K_INVALID_ROM      1 // Invalid ROM file
 #define ERR_68K_INVALID_SIZE     2 // ROM has an invalid size
@@ -44,6 +41,3 @@
 #define ERR_68K_MALLOC          14 // Cant allocate memory
 
 #endif
-
-
-

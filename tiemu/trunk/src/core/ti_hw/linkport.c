@@ -32,8 +32,8 @@
 #include "tilibs.h"
 #include "errcodes.h"
 #include "params.h"
-#include "consts.h"
-#include "interface.h"
+#include "ti68k_def.h"
+#include "ti68k_int.h"
 
 /* Internal link port */
 TicableLinkCable *ilc = NULL;

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: interface.h 224 2004-05-19 14:04:04Z roms $ */
 
 /*  TiEmu - an TI emulator
  *
@@ -29,7 +29,7 @@
 #include "keydefs.h"
 #include "bkpts.h"
 #include "state.h"
-#include "consts.h"
+#include "ti68k_def.h"
 
 #include "callbacks.h"
 #include "images.h"

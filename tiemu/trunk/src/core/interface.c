@@ -44,7 +44,7 @@
 #include <string.h>
 
 #include "uae.h"
-#include "interface.h"
+#include "ti68k_int.h"
 
 #include "packets.h"
 #include "debugger.h"
@@ -53,7 +53,7 @@
 #include "params.h"
 #include "callbacks.h"
 #include "intlist.h"
-#include "errcodes.h"
+#include "ti68k_err.h"
 #include "images.h"
 #include "tilibs.h"
 #include "./ti_hw/memory.h"
