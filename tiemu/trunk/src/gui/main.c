@@ -246,6 +246,7 @@ int main(int argc, char **argv)
 	/* 
 		Close the emulator engine
 	*/
+	ti68k_engine_halt();
 	err = ti68k_exit();
 	handle_error();
   

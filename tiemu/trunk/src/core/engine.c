@@ -63,10 +63,10 @@
 static int cpu_instr = NB_INSTRUCTIONS_PER_LOOP;
 
 G_LOCK_DEFINE(running);
-static int running = 0;
+static volatile int running = 0;
 
 G_LOCK_DEFINE(debugger);
-int debugger = 0;
+volatile int debugger = 0;
 
 // run as a separate thread
 gpointer ti68k_engine(gpointer data)
@@ -85,7 +85,8 @@ gpointer ti68k_engine(gpointer data)
 		// Check engine status
 		G_LOCK(running);
 		if (!running) {
-			g_thread_yield ();
+			G_UNLOCK(running);
+			g_thread_yield ();			
 			continue;
 		}
 		G_UNLOCK(running);
@@ -96,9 +97,10 @@ gpointer ti68k_engine(gpointer data)
 		res = ti68k_debug_do_instructions(NB_INSTRUCTIONS_PER_LOOP);
 		if(res) {  
 			// a bkpt has been encountered
-			//G_LOCK(running);
+			G_LOCK(running);
             running = 0;
-			//G_UNLOCK(running);
+			G_UNLOCK(running);
+
             debugger = res;
 		} else { 
 			// normal execution
@@ -123,14 +125,14 @@ int ti68k_engine_is_halted()
 
 void ti68k_engine_halt(void) 
 {
-	//G_LOCK(running);
+	G_LOCK(running);
 	running = 0;
-	//G_UNLOCK(running);
+	G_UNLOCK(running);
 }
 
 void ti68k_engine_unhalt(void) 
 {
-	//G_LOCK(running);
+	G_LOCK(running);
 	running = 1;
-	//G_UNLOCK(running);
+	G_UNLOCK(running);
 }
