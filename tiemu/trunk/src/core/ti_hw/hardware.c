@@ -157,8 +157,6 @@ void hw_update(void)
         if(currIntLev < 5)
 	        currIntLev = 5;
     }
-    else
-        tihw.timer_value &= 0xff;
 
 	// Auto-int 6: triggered when [ON] is pressed.
 	// see keyboard.c

@@ -49,12 +49,12 @@
 
 /* 
    The TI92/89 should approximately execute NB_INSTRUCTIONS_PER_LOOP in 
-   TIME_LIMIT milliseconds
+   TIME_LIMIT milliseconds (1.500.000 instructions/s).
    If you think this values are a bit too big, you can slow down 
    the emulator by changing them 
 */
-#define NB_INSTRUCTIONS_PER_LOOP 50000	//50000
-#define TIME_LIMIT               30	// 30
+#define NB_INSTRUCTIONS_PER_LOOP 50000	// 50000
+#define TIME_LIMIT               30	    // 30
 
 
 G_LOCK_DEFINE(running);
