@@ -52,6 +52,7 @@
 Ti68kParameters     params = { 0 };
 Ti68kHardware       tihw = { 0 };
 TicableLinkParam    link_cable = { 0 };
+Ti68kBreakpoints	bkpts = { 0 };
 
 
 /***********************************/

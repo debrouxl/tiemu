@@ -75,21 +75,21 @@ int hw_m68k_run(int n)
       (*cpufunctbl[opcode])(opcode);
       do_cycles();
 
-      if(l = listBkptAddress)
+      if(l = bkpts.listBkptAddress)
       {
-          breakId = 0;
+          bkpts.breakId = 0;
           while(l)
           {
               if(GPOINTER_TO_INT(l->data) == (int)regs.pc)
               {
-                breakType = BK_CAUSE_ADDRESS;
+                bkpts.breakType = BK_CAUSE_ADDRESS;
 		        cb_update_screen();
 		        cb_launch_debugger();
 
 		        return 1;
               }
 
-              breakId++;
+              bkpts.breakId++;
               l = g_list_next(l);
           }
       }

@@ -252,40 +252,40 @@ ULONG get_long(CPTR adr)
   
     adr &= 0xFFFFFF;
 
-    if (l=listBkptAsRL) 
+    if (l=bkpts.listBkptAsRL) 
     {
-        breakId=0;
+        bkpts.breakId=0;
         while (l) 
 	    {
 	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
 	        {
-	            breakMode = BK_READ_LONG; 
+	            bkpts.breakMode = BK_READ_LONG; 
 	            specialflags|=SPCFLAG_BRK; 
-	            breakType = BK_CAUSE_ACCESS;
+	            bkpts.breakType = BK_CAUSE_ACCESS;
 	            break;
 	        }
 	        
-            breakId++;
+            bkpts.breakId++;
 	        l=l->next;
 	    }
     }
   
-    if (l=listBkptAsRgR) 
+    if (l=bkpts.listBkptAsRgR) 
     {
-        breakId=0;
+        bkpts.breakId=0;
         while (l) 
 	    {
             ADDR_RANGE *r = l->data;
 
 	        if (r->val1>=adr && (adr+3)<=r->val2) 
 	        {
-	            breakMode = BK_READ_LONG; 
+	            bkpts.breakMode = BK_READ_LONG; 
 	            specialflags|=SPCFLAG_BRK; 
-	            breakType = BK_CAUSE_RANGE;
+	            bkpts.breakType = BK_CAUSE_RANGE;
 	            break;
 	        }
 	  
-            breakId++;
+            bkpts.breakId++;
 	        l=l->next;
 	    }
     }
@@ -339,40 +339,40 @@ UWORD get_word(CPTR adr)
 	
     adr &= 0xFFFFFF;
 
-    if (l=listBkptAsRW) 
+    if (l=bkpts.listBkptAsRW) 
     {
-        breakId = 0;
+        bkpts.breakId = 0;
         while (l) 
 	    {
 	        if ((CPTR)GPOINTER_TO_INT(l->data)==adr) 
 	        {
-	            breakMode = BK_READ_WORD;
+	            bkpts.breakMode = BK_READ_WORD;
 	            specialflags|=SPCFLAG_BRK;
-	            breakType = BK_CAUSE_ACCESS;
+	            bkpts.breakType = BK_CAUSE_ACCESS;
 	            break;
 	        }
 	    
-            breakId++;
+            bkpts.breakId++;
 	        l=l->next;
 	    }
     }
   
-    if (l=listBkptAsRgR) 
+    if (l=bkpts.listBkptAsRgR) 
     {
-        breakId=0;
+        bkpts.breakId=0;
         while (l) 
 	    {
             ADDR_RANGE *r = l->data;
 
 	        if (r->val1>=adr && (adr+1)<=r->val2) 
 	        {
-	            breakMode = BK_READ_WORD; 
+	            bkpts.breakMode = BK_READ_WORD; 
 	            specialflags|=SPCFLAG_BRK; 
-	            breakType = BK_CAUSE_RANGE;
+	            bkpts.breakType = BK_CAUSE_RANGE;
 	            break;
 	        }
 	  
-            breakId++;
+            bkpts.breakId++;
 	        l=l->next;
 	    }
     }
@@ -426,26 +426,26 @@ UBYTE get_byte(CPTR adr)
   
     adr &= 0xFFFFFF;
 
-    if (l=listBkptAsRB) 
+    if (l=bkpts.listBkptAsRB) 
     {
-        breakId = 0;
+        bkpts.breakId = 0;
         while (l) {
 	        if ((CPTR)GPOINTER_TO_INT(l->data)==adr) 
 	        {
-	            breakMode = BK_READ_BYTE;
+	            bkpts.breakMode = BK_READ_BYTE;
 	            specialflags|=SPCFLAG_BRK;
-	            breakType = BK_CAUSE_ACCESS;
+	            bkpts.breakType = BK_CAUSE_ACCESS;
 	            break;
 	        }
 	    
-            breakId++;
+            bkpts.breakId++;
 	        l=l->next;
         }
     }
 
-    if (l=listBkptAsRgR) 
+    if (l=bkpts.listBkptAsRgR) 
     {
-        breakId=0;
+        bkpts.breakId=0;
         while (l) 
 	    {
         
@@ -453,13 +453,13 @@ UBYTE get_byte(CPTR adr)
 
 	        if (r->val1>=adr && adr<=r->val2) 
 	        {
-	            breakMode = BK_READ_BYTE; 
+	            bkpts.breakMode = BK_READ_BYTE; 
 	            specialflags|=SPCFLAG_BRK; 
-	            breakType = BK_CAUSE_RANGE;
+	            bkpts.breakType = BK_CAUSE_RANGE;
 	            break;
 	        }
 	  
-            breakId++;
+            bkpts.breakId++;
 	  
             l=l->next;
 	    }
@@ -507,40 +507,40 @@ void put_long(CPTR adr, ULONG arg)
 
     adr &= 0xFFFFFF;
 
-    if (l=listBkptAsWL) 
+    if (l=bkpts.listBkptAsWL) 
     {
-        breakId = 0;
+        bkpts.breakId = 0;
         while (l) 
 	    {
 	        if ((CPTR)GPOINTER_TO_INT(l->data)==adr) 
 	        {
-	            breakMode = BK_WRITE_LONG;
+	            bkpts.breakMode = BK_WRITE_LONG;
 	            specialflags|=SPCFLAG_BRK;
-	            breakType = BK_CAUSE_ACCESS;
+	            bkpts.breakType = BK_CAUSE_ACCESS;
 	            break;
 	        }
 	  
-            breakId++;
+            bkpts.breakId++;
 	        l=l->next;
 	    }
     }
   
-    if (l=listBkptAsRgW) 
+    if (l=bkpts.listBkptAsRgW) 
     {
-        breakId=0;
+        bkpts.breakId=0;
         while (l) 
 	    {
 	        ADDR_RANGE *r = l->data;
 
             if (r->val1>=adr && (adr+3)<=r->val2) 
 	        {
-	            breakMode = BK_WRITE_LONG; 
+	            bkpts.breakMode = BK_WRITE_LONG; 
 	            specialflags|=SPCFLAG_BRK; 
-	            breakType = BK_CAUSE_RANGE;
+	            bkpts.breakType = BK_CAUSE_RANGE;
 	            break;
 	        }
 	  
-            breakId++;
+            bkpts.breakId++;
 	        l=l->next;
 	    }
     }
@@ -602,40 +602,40 @@ void put_word(CPTR adr, UWORD arg)
 	
     adr &= 0xFFFFFF;
 
-    if (l=listBkptAsWW) 
+    if (l=bkpts.listBkptAsWW) 
     {
-        breakId = 0;
+        bkpts.breakId = 0;
         while (l) 
 	    {
 	        if ((CPTR)GPOINTER_TO_INT(l->data)==adr) 
 	        {
-	            breakMode = BK_WRITE_WORD;
+	            bkpts.breakMode = BK_WRITE_WORD;
 	            specialflags|=SPCFLAG_BRK;
-	            breakType = BK_CAUSE_ACCESS;
+	            bkpts.breakType = BK_CAUSE_ACCESS;
 	            break;
 	        }
 	  
-            breakId++;
+            bkpts.breakId++;
             l=l->next;
 	    }
     }
   
-    if (l=listBkptAsRgW)
+    if (l=bkpts.listBkptAsRgW)
     {
-        breakId=0;
+        bkpts.breakId=0;
         while (l) 
 	    {
             ADDR_RANGE *r = l->data;
 
 	        if (r->val1>=adr && (adr+1)<=r->val2) 
 	        {
-	            breakMode = BK_WRITE_WORD; 
+	            bkpts.breakMode = BK_WRITE_WORD; 
 	            specialflags|=SPCFLAG_BRK; 
-	            breakType = BK_CAUSE_RANGE;
+	            bkpts.breakType = BK_CAUSE_RANGE;
 	            break;
 	        }
 	  
-            breakId++;
+            bkpts.breakId++;
 	        l=l->next;
 	    }
     }
@@ -686,40 +686,40 @@ void put_byte(CPTR adr, UBYTE arg)
 	
     adr &= 0xFFFFFF;
   
-    if (l=listBkptAsWB) 
+    if (l=bkpts.listBkptAsWB) 
     {
-        breakId = 0;
+        bkpts.breakId = 0;
         while (l) 
 	    {
 	        if ((CPTR)GPOINTER_TO_INT(l->data)==adr) 
 	        {
-	            breakMode = BK_WRITE_BYTE;
+	            bkpts.breakMode = BK_WRITE_BYTE;
 	            specialflags|=SPCFLAG_BRK;
-	            breakType = BK_CAUSE_ACCESS;
+	            bkpts.breakType = BK_CAUSE_ACCESS;
 	            break;
 	        }
 	  
-            breakId++;
+            bkpts.breakId++;
 	        l=l->next;
 	    }
     }
 
-    if (l=listBkptAsRgW) 
+    if (l=bkpts.listBkptAsRgW) 
     {
-        breakId=0;
+        bkpts.breakId=0;
         while (l) 
 	    {
             ADDR_RANGE *r = l->data;
 
 	        if (r->val1>=adr && adr<=r->val2) 
 	        {
-	            breakMode = BK_WRITE_BYTE; 
+	            bkpts.breakMode = BK_WRITE_BYTE; 
 	            specialflags|=SPCFLAG_BRK; 
-	            breakType = BK_CAUSE_RANGE;
+	            bkpts.breakType = BK_CAUSE_RANGE;
 	            break;
 	        }
 	  
-            breakId++;
+            bkpts.breakId++;
 	        l=l->next;
 	    }
     }

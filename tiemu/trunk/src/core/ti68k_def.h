@@ -156,9 +156,9 @@ typedef struct
 	int nBkptTrap;
 
 	// Breakpoint cause
-	int mode;	// = access type
-	int type;	// = cause
-	int id;		// = n°
+	int breakMode;	// = access type
+	int breakType;	// = cause
+	int breakId;		// = n°
 } Ti68kBreakpoints;
 
 extern Ti68kParameters 	params;

@@ -90,7 +90,7 @@ typedef enum {
 /*
   Variables
 */
-
+/*
 // Memory
 extern int breakMode;
 extern int breakType;
@@ -126,7 +126,7 @@ extern int listBkptTrap[16];
 extern int nBkptVector;
 extern int nBkptAutoint;
 extern int nBkptTrap;
-
+*/
 /* Functions */
 
 int ti68k_bkpt_set_address(int address);
