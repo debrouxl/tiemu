@@ -4,7 +4,7 @@
 #CPUFLAGS = -O3 -mpentium -fomit-frame-pointer -Wall -Wno-unused -Wno-format -W -Wmissing-prototypes -Wstrict-prototypes -DX86_ASSEMBLY -D__inline__=inline -DSTATFS_NO_ARGS=2 -DSTATBUF_BAVAIL=f_bavail
 
 # trying to be portable... *TRYING*
-CFLAGS   = -mms-bitfields
+#CFLAGS   = -mms-bitfields
 CPUFLAGS = $(CFLAGS) -fomit-frame-pointer -Wno-unused -Wno-format -W -Wmissing-prototypes -Wstrict-prototypes -D__inline__=inline -DSTATFS_NO_ARGS=2 -DSTATBUF_BAVAIL=f_bavail #-Wall
 
 gen: cpudefs.c cpustbl.c cputbl.h cpu0.c cpu1.c cpu2.c cpu3.c cpu4.c cpu5.c cpu6.c cpu7.c cpu8.c cpu9.c cpuA.c cpuB.c cpuC.c cpuD.c cpuE.c cpuF.c
