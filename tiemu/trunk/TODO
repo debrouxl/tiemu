@@ -1,6 +1,100 @@
 List of stuffs to do:
 
-- use latest UAE engine
+ExtendeD:
+
+- Mais il semble y avoir un problème avec certaines instructions, c'est
+assez bizarre : le scroll n'incrémente pas l'adresse de l'instruction du
+bas, mais incrémente celle de la première instruction (scroll n'importe où d
+ans l'AMS, tu devrais tomber sur ce bug).
+Par contre il reste toujours ce problème de saut d'écran lorsque l'on avance
+avec du 'step'. Mais là ce serait vraiment mieux que le scroll se fasse par
+demi écran plutôt qu'une seule ligne, sinon l'instruction courante est
+toujours la dernière et on n'a plus de visibilité sur les instructions
+suivantes (VTI se comporte comme ça, c'est pas terrible).
+
+- Le problème apparait lorsque le breakpoint est placé sur une instruction qui
+n'est pas dans la fenêtre que l'instruction (ie à plus de de 10 instructions
+de PC) : après le 'set breakpoint', l'instruction courante est affichée,
+plutôt que l'instruction où on a placé le breakpoint (c'est gênant si l'on
+veut placer plusieurs breakpoints dans la même région).
+
+- Mais ça en a fait apparaître un autre : le scroll vers le bas avec le
+clavier dans la fenêtre Memory ne fait pas défiler les lignes (mais va au
+bon endroit quand on arrête d'appuyer sur 'bas'). Le scroll vers le haut n'a
+pas ce problème.
+
+-  On dirait que  "Step" over ne marche plus du tout (pas d'effet).
+Ok. En fait il manque aussi 'dbra', 'dbne', etc. Il y est sur VTI, et il y
+était dans la version précédente de TiEmu. Je trouvais ça pratique.
+
+- Je viens de me rendre compte de quelque chose d'un peu gênant, je ne sais
+pas si ça peut être corrigé : lorsqu'on laisse F7 appuyé pour faire une
+série de 'step' rapidement,  la sélection en vert ne passe que sur
+instruction sur 5 environ, on s'y perd un peu, ça saute un peu partout. Je
+faisait souvent ça sous VTI pour sauter une séquence d'instructions, là ce
+n'est plus vraiment faisable avec 'step'.
+
+Kevin:
+
+1. Avec GTK-Runtime-Environment-2.2.4-2, il n'arrive pas à ouvrir le JPEG du
+skin sous WinMe. J'ai été obligé de récupérer
+GTK-Runtime-Environment-2.2.4-3 qui corrige ce problème, il faudrait le
+mettre quelque part dans le readme.
+
+2. L'installation de GTK-Runtime-Environment-2.2.4-3 m'a réactivé le thème
+WIMP avec tous ses warnings. J'ai été obligé de renommer libwimp.dll en
+libwimp.dl_ pour me débarasser de ces warnings.
+
+3. Le menu popup ne reste ouvert que si on garde la touche de la souris
+appuyée, ce qui est peu pratique. Et si on appuie 2 fois de suite trop
+rapidement, TiEmu plante. (Il s'embrouille avec les engine starts/stops.)
+
+4. La conversion des ROMs au format 89u n'a pas l'air de marcher
+correctement. À chaque lancement, il me redemande d'importer une ROM avec le
+wizard, alors que je venais de le faire au lancement d'avant (j'ai pris une
+TI89OS209.89u). Et la calculatrice émulée résultante ne peut même pas être
+allumée. Avec un .rom, ça marche.
+
+5. Toujours pas moyen d'entrer des parenthèses avec mon clavier allemand.
+:-( Voilà à quoi ressemble mon clavier:
+http://www.uni-regensburg.de/EDV/Misc/KeyBoards/keys11.jpg .
+
+6. La conversion de la touche espace en alpha+(-) sur la TI-89 n'est pas
+gérée. :-(
+
+7. Je ne sais pas si on peut y faire quelque chose, mais Alt+ESC, Ctrl+ESC,
+Alt+TAB (quand on les appuie en même temps et pas l'une après l'autre) sont
+avalées par Windows, pour Alt+F4, Windows ne le voit pas, mais TiEmu non
+plus, et il y a probablement d'autres combines de touches "suspectes".
+
+8. Si j'appuie sur la touche Windows et que je reviens à TiEmu ensuite, il
+ne répond plus à aucun appui de touches (mais on peut le fermer à travers le
+popup au moins). L'"engine" est "stoppée" et pas re"start"ée.
+
+9. Si on défile vers le bas dans le débogueur, le curseur vert (PC actuel)
+disparaît même si l'instruction actuelle est encore visible.
+
+10. Le débogueur est toujours très lent. :-( Déjà, le défilement du curseur
+vers le bas pourrait être plus rapide. Et ensuite tout ce qui touche au
+single-step rame à fond si on a la fenêtre des registres activée, cacher la
+fenêtre des registres le rend nettement plus rapide ("lent, mais utilisable"
+plutôt que "très lent"). Je suspecte la coloration des registres modifiés en
+rouge d'être à l'origine de la lenteur.
+
+Lionel:
+
+* le désassembleur de F-Line désassemble toujours mal
+les ROM_CALLs dont le numéro est en-dessus de 0x10:
+0x53 (sprintf) est désassemblé comme 0x43.
+
+* le transfert d'un fichier vers TIEmu par F10 donne
+une erreur 400 dans la fenêtre command-line (mais n'a
+pas l'air de planter l'émulateur). Il faut faire un
+Reset Calculator pour avoir une calculette à nouveau
+d'aplomb.
+
+* TIEmu n'apprécie pas la ROM de V200 modifiée pour
+VTI par ExtendeD, il crashe.
 
 -------------
 + done
