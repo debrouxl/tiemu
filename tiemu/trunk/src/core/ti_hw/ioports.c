@@ -63,14 +63,14 @@ void io_put_byte(CPTR adr, UBYTE arg)
 {
     switch(adr) 
     {
-        case 0x00:
+        case 0x00:	// rw <76...2..>
             tihw.contrast=(tihw.contrast&(~1))|((arg>>5)&1);
             if(tihw.calc_type != TI92)
 	            cb_set_contrast(tihw.contrast); // avoid flickering with 92
             tihw.io0Bit7=(arg>>7)&1;
             tihw.io0Bit2=(arg>>2)&1;
         break;
-        case 0x01:
+        case 0x01:	// rw <.....2.0>
 			// clr: interleave RAM (allows use of 256K of RAM)
 			tihw.ram256 = bit_get(0, arg);
 			//mem_mask[0] = tihw.ram256 ? 0x1fffff : 0x3fffff;
@@ -78,18 +78,29 @@ void io_put_byte(CPTR adr, UBYTE arg)
 			// set: protected memory violation triggered when memory below [$000120] is written
 			tihw.mem_prot = bit_get(2, arg);
 	    break;
+	    case 0x02:	// ??
+	    break;
+		case 0x03:	// -w <.654.210>
+			break;
         case 0x04:
-			// set: 000000..1FFFFF mapped to 200000..3FFFFF
-			tihw.ram_wrap = bit_get(3, arg);
-            //mem_tab[1] = mem_tab[0];
         break;
-        case 0x05: if (!(arg&0x10)) specialflags |= SPCFLAG_STOP; 
+        case 0x05:	// -w <...43210>
+        	// set: 000000..1FFFFF mapped to 200000..3FFFFF
+			tihw.ram_wrap = bit_get(3, arg);
+            //mem_tab[2] = mem_tab[0];
+            //mem_tab[3] = mem_tab[1];
+            
+			if (!(arg&0x10)) specialflags |= SPCFLAG_STOP; 
             break;
-        case 0x0c: //link status
+        case 0x06: case 0x07: case 0x08: case 0x09: case 0x0a: case 0x0b:
+        break;
+        case 0x0c:	// rw <765.3210>
             lc_raw_access=(arg>>6)&1;
         break;
-        case 0x0d: break;
-        case 0x0e: // write link port w/ direct access
+        case 0x0d:	// r- <76543210>
+			break;
+        case 0x0e:	// rw <....3210>
+			// write link port w/ direct access
             lc_raw_access=(arg>>6)&1;
             if (lc_raw_access)
 	        {
@@ -97,23 +108,42 @@ void io_put_byte(CPTR adr, UBYTE arg)
 	            lc.set_white_wire((arg>>1)&1);
 	        }
         break;
-        case 0x0f: //tx buffer
+        case 0x0f: 	// rw <76543210>
+        //tx buffer
             linkport_putbyte(arg);
             break;
-        case 0x10: 
+        case 0x10: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8
             tihw.lcd_addr = (((tihw.lcd_addr >> 3) & 0xff) | 
 						((arg & 0xff) << 8)) << 3;
         break;
-        case 0x11: 
+        case 0x11: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8
             tihw.lcd_addr=(((tihw.lcd_addr >> 3) & 0xff00) |
 						(arg & 0xff)) << 3;
         break;
-        case 0x17: 
+        case 0x12:	// -w <76543210>
+        break;
+        case 0x13:	// -w <..543210>
+        break;
+        case 0x14:
+        break;
+        case 0x15:	// rw <7.6543210>
+        break;
+        case 0x16:
+        break;
+        case 0x17: 	// rw <76543210>
             tihw.timer_init = arg; 
             break;
-        case 0x1c:
+        case 0x18:	// rw <76543210>
+        break;    
+        case 0x19:	// rw <......10>
+        break;
+        case 0x1a:	// rw <......10> <76543210>
+        break;
+        case 0x1b:	// r- <76543210>
+        break;
+        case 0x1c:	// -w <..5432..>
             tihw.lcd_off=(arg&0x80)>>7;
             if((arg&0x80)>>7)
 	        {
@@ -123,9 +153,13 @@ void io_put_byte(CPTR adr, UBYTE arg)
             else
 	            cb_screen_on_off(!0);
         break;
-        case 0x1d:
+        case 0x1d:	// -w <7..43210>
             tihw.contrast=(tihw.contrast&1)|((arg&15)<<1);
             cb_set_contrast(tihw.contrast);
+        break;
+        case 0x1e:
+        break;
+        case 0x1f:
         break;
     }
   
@@ -150,43 +184,79 @@ UBYTE io_get_byte(CPTR adr)
 
     switch(adr) 
     {
-        case 0x00: 
+        case 0x00:	// rw <76...2..>
             v=((tihw.contrast&1)<<5)|(tihw.io0Bit7<<7)|(tihw.io0Bit2<<2);
             tihw.io0Bit2=1;
             return v|0x4;
-        case 0x01:
+        case 0x01:	// rw <.....2.0>
 			// interleave RAM (allows use of 256K of RAM)
 			// protected memory violation triggered when memory below [$000120] is written
             return (tihw.mem_prot << 2) | tihw.ram256;
-        case 2: case 4: case 6: case 8: case 0xa: return 0x14;
-        case 3: case 5: case 7: case 9: case 0xb: return 1;      
-        case 0x0c: //link status
+        case 0x02:
+        	return 0x14;
+        case 0x03:	// -w <.654.210>
+        break;
+        case 0x04:	// ??
+        break;        
+        case 0x05:	// -w <...43210>
+        break;
+        case 0x06:  // ??
+        case 0x07: 
+        case 0x08: 
+        case 0x09: 
+        case 0x0a: 
+        case 0x0b:
+        return 0x14;
+        case 0x0c:	// rw <765.3210>
+         //link status
             //link bug here !!!
             //return 5|((1-transflag)<<1)|(lc_raw_access?0x40:0);
         break;
-        case 0x0d :
+        case 0x0d:	// r- <76543210>
             /* 0x40 -> always return tx buffer as empty */
             return (linkport_byteavail() ? 0x60 : 0x40);
-        case 0x0e:
+        case 0x0e:	// rw <....3210>
             if (lc_raw_access)
 	            return 0x50|(lc.get_white_wire()<<1)|lc.get_red_wire();
             break;
-        case 0x0f :
+        case 0x0f: 	// rw <76543210>
             recvflag = 0;
             recvbyte = linkport_getbyte();
             return recvbyte;
-        case 0x10: case 0x12: return 0x14;
-        case 0x11: case 0x13: return 1;
-        case 0x14: return 0x14;
-        case 0x15: return 0x1b;
-        case 0x16: return 0x14;
-        case 0x17: return tihw.timer_value;
-        case 0x18: break;
-        case 0x19: break;
-        case 0x1a: return 0x14|((1-read_onkey())<<1); 
-        case 0x1b: return hw_kbd_read_mask();
-        case 0x1c: case 0x1e: return 0x14;
-        case 0x1d: case 0x1f: return 1;
+        case 0x10: 	// -w <76543210> (hw1)
+        break;
+        case 0x11: 	// -w <76543210> (hw1) 
+        return 0x14;
+        case 0x12: 	// -w <76543210>
+        return 0x14;
+        case 0x13: 	// -w <..543210>
+        return 1;
+        case 0x14:	// ??
+        return 0x14;
+        case 0x15:	// rw <7.6543210> 
+        return 0x1b;
+        case 0x16:	// ??
+        return 0x14;
+        case 0x17: 	// rw <76543210>
+        return tihw.timer_value;
+        case 0x18: 	// rw <76543210>
+        break;
+        case 0x19:	// rw <......10>
+        break;
+        case 0x1a:	// rw <......10> <76543210> 
+        return 0x14|((1-read_onkey())<<1); 
+        case 0x1b:	// r- <76543210> 
+        return hw_kbd_read_mask();
+        case 0x1c:	// -w <..5432..> 
+        break;
+        case 0x1d:	// -w <7..43210>
+        break;
+        case 0x1e:	// ??
+        return 0x14;
+        case 0x1f:	// ??
+        return 0x14;
+		default:
+        return 0x14;
     }
   
     return tihw.io[adr];
@@ -208,8 +278,38 @@ void io2_put_byte(CPTR adr, UBYTE arg)
 {
     switch(adr) 
     {
-        case 0x00:
-        break;
+        case 0x00:	// rw <76543210>
+			break;
+		case 0x01:	// rw <76543210>
+			break;
+		case 0x02:	// rw <76543210>
+			break;
+		case 0x03:	// rw <76543210>
+			break;
+		case 0x04:	// rw <76543210>
+			break;
+		case 0x05:	// rw <76543210>
+			break;
+		case 0x06:	// rw <76543210>
+			break;
+		case 0x07:	// rw <76543210>
+			break;
+		case 0x11:	// -w <76543210>
+			break;
+		case 0x12:
+			break;
+		case 0x13:  // rw <..543210>
+			break;
+		case 0x14:	// rw <76543210>
+			break;
+		case 0x15:	// rw <76543210>
+			break;
+		case 0x17:	// rw <......10>
+			break;
+		case 0x1d:	// rw <7...3210>
+			break;
+		case 0x1f:	// rw <.....210>
+			break;
     }
 
     tihw.io2[adr] = arg;
@@ -233,8 +333,38 @@ UBYTE io2_get_byte(CPTR adr)
 
     switch(adr) 
     {
-        case 0x00: 
-			return 0x00;
+        case 0x00:
+			break;
+		case 0x01:
+			break;
+		case 0x02:
+			break;
+		case 0x03:
+			break;
+		case 0x04:
+			break;
+		case 0x05:
+			break;
+		case 0x06:
+			break;
+		case 0x07:
+			break;
+		case 0x11:
+			break;
+		case 0x12:
+			break;
+		case 0x13:
+			break;
+		case 0x14:
+			break;
+		case 0x15:
+			break;
+		case 0x17:
+			break;
+		case 0x1d:
+			break;
+		case 0x1f:
+			break;
     }
   
     return tihw.io2[adr];
