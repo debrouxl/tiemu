@@ -150,6 +150,8 @@ static void renderer_edited(GtkCellRendererText * cell,
 
         mem_ptr = (uint8_t *)ti68k_get_real_address(addr);
 	    *mem_ptr++ = data;
+
+		dbgstack_refresh_window();	// refresh stack, too
     }
 
     g_free(str_addr);

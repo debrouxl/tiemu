@@ -94,7 +94,7 @@ refresh, mais on ne pense pas toujours à l'utiliser. Elle n'est pas
 rafraîchie notamment lorsque un breakpoint est touché, ce serait
 possible de forcer le rafraîchissement à ce moment là ?
 
-* Pour le problème de scroll d'instructions gênant dont je te parlais
++ Pour le problème de scroll d'instructions gênant dont je te parlais
 : va n'importe où dans l'AMS où il y a des instructions valides,
 scroll instruction par instruction vers le bas, tu verras que sur
 certaines instructions le scroll est effectué en haut, mais pas en bas
@@ -144,7 +144,7 @@ assertion failed: (win32_gc->hdc == NULL)
 Puis TiEmu quitte. Après un redémarrage de TiEmu, il n'y a plus de
 problème à la sélection de la ROM.
 
-* Quand on édite avec l'éditeur hexa dans la mémoire correspondant à
++ Quand on édite avec l'éditeur hexa dans la mémoire correspondant à
 la pile, la fenêtre Stack Frame n'est pas rafraîchie.
 
 + Le mode 'either' des data breakpoints ne semble pas être pris en
