@@ -9,6 +9,7 @@
 #include "support.h"
 #include "pbars.h"
 #include "struct.h"
+#include "tilibs.h"
 
 /* 
     For Win32 platforms, it is better to use discrete pbar 

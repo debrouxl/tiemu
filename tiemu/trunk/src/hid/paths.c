@@ -27,6 +27,7 @@
 */
 
 #include <stdio.h>
+#include <windows.h>
 
 #include "struct.h"
 #include "paths.h"

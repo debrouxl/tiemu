@@ -50,7 +50,7 @@
 #include "packets.h"
 #include "hardware.h"
 #include "keyboard.h"
-#include "params.h"
+//#include "params.h"
 #include "callbacks.h"
 //#include "intlist.h"
 #include "images.h"

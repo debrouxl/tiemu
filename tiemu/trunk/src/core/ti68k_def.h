@@ -28,6 +28,10 @@
 # include <config.h>
 #endif
 
+#include "tilibs.h"
+
+/* Constants */
+
 #define MAXCHARS	256
 
 #define TI92 		1
@@ -38,5 +42,30 @@
   
 #define INTERNAL 	1
 #define FLASH_ROM 	2
+
+/* Structures */
+
+struct global_param {
+  char *rom_file;
+  char *ram_file;
+  char *tib_file;
+
+  int ram_size;
+  int rom_size;
+
+  int background;
+  int n_grayplanes;
+
+  int tick_rate;
+  int cycle_rate;
+  int i_tick;
+  int sync_one;
+  int restrict;
+};
+typedef struct global_param Ti68kParameters;
+
+extern Ti68kParameters params;
+
+extern TicableLinkParam link_cable;
 
 #endif

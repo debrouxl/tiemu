@@ -33,7 +33,7 @@
 #include "lcd.h"
 #include "keyboard.h"
 #include "linkport.h"
-#include "params.h"
+//#include "params.h"
 #include "timer.h"
 #include "callbacks.h"
 

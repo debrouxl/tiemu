@@ -25,20 +25,26 @@
 #ifndef __TI68K_CORE__
 #define __TI68K_CORE__
 
+#include "ti68k_def.h"
 #include "tilibs.h"
 #include "keydefs.h"
-#include "bkpts.h"
+
+
+// roms
+#include "type2str.h"
 #include "state.h"
-#include "ti68k_def.h"
-
-#include "callbacks.h"
 #include "images.h"
+#include "core.h"
+#include "callbacks.h"
+#include "bkpts.h"
 
+/*
 #ifdef __WIN32__
 # define str_cmp(s1, s2) (stricmp((s1), (s2)))
 #else
 # define str_cmp(s1, s2) (strcasecmp((s1), (s2)))
 #endif
+*/
 
 /*************/
 /* Constants */

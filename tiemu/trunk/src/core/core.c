@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h> // usleep
+#include <windows.h>
 
 #include "intl.h"
 #include "struct.h"

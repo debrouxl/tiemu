@@ -26,11 +26,13 @@
 #include <config.h>
 #endif
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "struct.h"
 #include "version.h"
+#include "ti68k_def.h"
 
 /*
   Display the program version

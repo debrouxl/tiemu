@@ -32,7 +32,7 @@
 
 #define MAXCHARS 256
 
-#include "params.h"
+//#include "params.h"
 #include "paths.h"
 
 /*

@@ -31,7 +31,7 @@
 #include "images.h"
 #include "memory.h"
 #include "bkpts.h"
-#include "params.h"
+//#include "params.h"
 #include "ti68k_def.h"
 
 /* Memory blocks */
