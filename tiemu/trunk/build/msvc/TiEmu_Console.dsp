@@ -490,10 +490,6 @@ SOURCE="..\..\..\..\..\Gtk2Dev\lib\pango-1.0.lib"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\..\..\..\Gtk2Dev\lib\libglade-2.0.lib"
-# End Source File
-# Begin Source File
-
 SOURCE="..\..\..\..\..\Gtk2Dev\lib\atk-1.0.lib"
 # End Source File
 # Begin Source File

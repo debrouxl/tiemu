@@ -47,8 +47,8 @@
 	Linkport (lp) / directfile (df) mappers
 */
 
-void	(*hw_dbus_putbyte)		(uint8_t arg);
-uint8_t (*hw_dbus_getbyte)		(void);
+void	(*hw_dbus_putbyte)		(uint8_t arg);	// TI -> outside
+uint8_t (*hw_dbus_getbyte)		(void);			// outside -> TI
 int		(*hw_dbus_byteavail)	(void);
 int		(*hw_dbus_checkread)	(void);
 
@@ -80,18 +80,6 @@ static void map_dbus_to_file(void)
 
 TicableLinkCable lc;
 
-
-static void print_lc_error(int errnum)
-{
-	tiemu_error(errnum, NULL);
-	/*
-    char msg[MAXCHARS] = "No error -> bug !\n";
-
-    ticable_get_error(errnum, msg);
-    DISPLAY("Link cable error: code = %i, msg = %s\n", errnum, msg);
-    msg_box("Error", msg);
-	*/
-}
 
 /*
     D-bus management (HW linkport)
@@ -146,14 +134,16 @@ static int init_linkcable(void)
 	ticable_init();
 	ticable_set_param(&link_cable);
 	ticable_set_cable(link_cable.link_type, &lc);
+
 	if((err = lc.init()))
 	{
-		print_lc_error(err);
+		tiemu_error(err, NULL);
 		return -1;
 	}
+
 	if((err = lc.open()))
 	{
-		print_lc_error(err);
+		tiemu_error(err, NULL);
 		return -1;
 	}
 
@@ -166,12 +156,13 @@ static int exit_linkcable(void)
 
 	if((err = lc.close()))
 	{
-		print_lc_error(err);
+		tiemu_error(err, NULL);
 		return -1;
 	}
+
 	if((err = lc.exit()))
 	{ 
-		print_lc_error(err);
+		tiemu_error(err, NULL);
 		return -1;
 	}
 
@@ -181,7 +172,6 @@ static int exit_linkcable(void)
 static int   lp_avail_byte;
 static uint8_t lp_last_byte;
 
-// TI -> DBus
 static void lp_putbyte(uint8_t arg)
 {
 	int err;
@@ -190,14 +180,13 @@ static void lp_putbyte(uint8_t arg)
 	if(err)
 	{
 		io_bit_set(0x0d,7);	// error
-		print_lc_error(err);
+		tiemu_error(err, NULL);
 		return;
 	}
 	io_bit_set(0x0d,6);		// tx buffer empty
 	io_bit_set(0x0d,2);		// link activity
 }
 
-// DBus -> TI
 static uint8_t lp_getbyte(void)
 {
 	lp_avail_byte = 0;
@@ -222,7 +211,7 @@ static int lp_checkread(void)
 	if(err)
 	{
 	    io_bit_set(0x0d,7);		// error
-	    print_lc_error(err);
+	    tiemu_error(err, NULL);
 	    lp_last_byte = 0;
 	}
   
@@ -232,7 +221,7 @@ static int lp_checkread(void)
 		if(err)
         {
 			io_bit_set(0x0d,7);	// error
-			print_lc_error(err);
+			tiemu_error(err, NULL);
         }
 
 		io_bit_set(0x0d,5);		// rx buf full
@@ -249,6 +238,8 @@ static int lp_checkread(void)
 /*
 	Link file access
 */
+
+static int sip = 0;	// sending in progress
  
 int t2f_data;   // ti => file data
 int t2f_flag;   // data available
@@ -260,6 +251,12 @@ void df_putbyte(uint8_t arg)
 {
 	t2f_data = arg;
 	t2f_flag = 1;
+
+	if(sip == 0)
+	{
+		printf("attempted to send data !\n");
+		io_bit_set(0x0d,7);	// SLE=1
+	}
 }
 
 uint8_t df_getbyte(void)
@@ -330,7 +327,7 @@ static int ilp_put(uint8_t data)
 	hw_m68k_irq(4);		// this turbo-boost transfer !
 
 	toSTART(clk);
-  	while(f2t_flag) 
+  	while(f2t_flag/* && !iu.cancel*/) 
     { 
       	ti68k_debug_do_instructions(1); 
 		if(toELAPSED(clk, 15))	// 2s
@@ -345,7 +342,7 @@ static int ilp_get(uint8_t *data)
 	tiTIME clk;
 
 	toSTART(clk);
-  	while(!t2f_flag) 
+  	while(!t2f_flag/* && !iu.cancel*/) 
     { 
       	ti68k_debug_do_instructions(1);
 		if(toELAPSED(clk, 15))
@@ -466,6 +463,7 @@ int send_ti_file(const char *filename)
 	// Use direct file loading
     map_dbus_to_file();
 	start = clock();
+	sip = 1;
 
     // FLASH APP file ?
     if(tifiles_is_a_flash_file(filename) && !strcasecmp(tifiles_flash_app_file_ext(), tifiles_get_extension(filename)))
@@ -499,17 +497,17 @@ int send_ti_file(const char *filename)
     }
 
 	// Restore link cable use
-	map_dbus_to_cable();
+	sip = 0;
 	finish = clock();
+	map_dbus_to_cable();
 	duration = (double)(finish - start) / CLOCKS_PER_SEC;
-	printf("Duration: %2.1f seconds.\n", duration);
+	//printf("Duration: %2.1f seconds.\n", duration);
 
 	// Transfer aborted ? Set hw link error
 	if(ret != 0)
 	{
-		print_lc_error(ret);
+		tiemu_error(ret, NULL);
 		io_bit_set(0x0d,7);	// SLE=1
-		tihw.io[0x0d] = 0;
 	}
 
   return 0;
