@@ -258,6 +258,7 @@ void df_putbyte(uint8_t arg)
 	{
 		printf("receiving %02x !\n", arg);
 		io_bit_set(0x0d,7);	// SLE=1
+		t2f_flag = f2t_flag = 0;
 	}
 }
 
@@ -274,7 +275,7 @@ int df_byteavail(void)
 
 int df_checkread(void)
 {
-    return f2t_flag;    // useless
+    return f2t_flag;
 }
 
 
@@ -301,10 +302,10 @@ static TicalcFncts			itc;
 static TicalcInfoUpdate 	iu = { 0 };
 static TicableDataRate		*tdr;
 #else
-TicableLinkCable*	ilc = NULL;
-TicalcFncts			itc;
+TicableLinkCable	ilc = { 0 };
+TicalcFncts			itc;	// = { 0 };	// make release crash !
 TicalcInfoUpdate 	iu = { 0 };
-TicableDataRate		*tdr;
+TicableDataRate*	tdr = NULL;
 #endif
 
 
@@ -386,20 +387,16 @@ static void ilp_label(void)   { }
 /* Initialize a pseudo link cable to be connected with HW */
 static int init_link_file(void)
 {
-  	ilc = (TicableLinkCable *)malloc(sizeof(TicableLinkCable));
-  	if(ilc == NULL)
-    	return ERR_MALLOC;
+  	ilc.init  = ilp_init;
+  	ilc.open  = ilp_open;
+  	ilc.put   = ilp_put;
+  	ilc.get   = ilp_get;
+  	ilc.close = ilp_close;
+  	ilc.exit  = ilp_term;
+  	ilc.probe = ilp_probe;
+  	ilc.check = ilp_check;
 
-  	ilc->init  = ilp_init;
-  	ilc->open  = ilp_open;
-  	ilc->put   = ilp_put;
-  	ilc->get   = ilp_get;
-  	ilc->close = ilp_close;
-  	ilc->exit  = ilp_term;
-  	ilc->probe = ilp_probe;
-  	ilc->check = ilp_check;
-
-  	ticalc_set_cable(ilc);
+  	ticalc_set_cable(&ilc);
 
   	switch(tihw.calc_type)
     {
@@ -421,19 +418,14 @@ static int init_link_file(void)
 
     t2f_flag = f2t_flag = 0;
 
-	ilc->init();
+	ilc.init();
 
   	return 0;
 }
 
 static int exit_link_file(void)
 {
-	ilc->exit();
-
-    if(ilc != NULL)
-	    free(ilc);
-    ilc = NULL;
-
+	ilc.exit();
 	t2f_flag = f2t_flag = 0;
 
     return 0;
@@ -517,6 +509,7 @@ int send_ti_file(const char *filename)
 	{
 		tiemu_error(ret, NULL);
 		io_bit_set(0x0d,7);	// SLE=1
+		t2f_flag = f2t_flag = 0;
 	}
 
   return 0;
