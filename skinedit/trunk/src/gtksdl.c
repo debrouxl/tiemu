@@ -181,8 +181,10 @@ static void gtk_sdl_surface_attach (GtkSDL *sdl)
   gchar SDL_windowhack[32];
 
   /* Attach the SDL_Surface */
+#ifndef __WIN32__
   sprintf (SDL_windowhack, "SDL_WINDOWID=%ld",
 	   GDK_WINDOW_XWINDOW ( GTK_WIDGET(sdl)->window ) );
+#endif
 #if 0
   puts (SDL_windowhack);
 #endif

@@ -6,7 +6,13 @@
 --------------------Configuration: SkinEdit - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\rlievin\LOCALS~1\Temp\RSP5B1.tmp" with contents
+Creating temporary file "C:\DOCUME~1\rlievin\LOCALS~1\Temp\RSP5FB.tmp" with contents
+[
+/nologo /MLd /W2 /Gm /GX /ZI /Od /I "..\..\build\msvc" /I "C:\SDL-1.2.7\include" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "__WIN32__" /Fp"Debug/SkinEdit.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\sources\roms\skinedit\src\main.c"
+]
+Creating command line "cl.exe @C:\DOCUME~1\rlievin\LOCALS~1\Temp\RSP5FB.tmp" 
+Creating temporary file "C:\DOCUME~1\rlievin\LOCALS~1\Temp\RSP5FC.tmp" with contents
 [
 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/SkinEdit.pdb" /debug /machine:I386 /out:"Debug/SkinEdit.exe" /pdbtype:sept 
 .\Debug\boxes_cb.obj
@@ -36,18 +42,16 @@ kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32
 "..\..\..\..\..\SDL-1.2.7\lib\SDL.lib"
 .\libjpeg.lib
 ]
-Creating command line "link.exe @C:\DOCUME~1\rlievin\LOCALS~1\Temp\RSP5B1.tmp"
+Creating command line "link.exe @C:\DOCUME~1\rlievin\LOCALS~1\Temp\RSP5FC.tmp"
 <h3>Output Window</h3>
+Compiling...
+main.c
 Linking...
-gtksdl.obj : error LNK2001: unresolved external symbol _GDK_WINDOW_XWINDOW
-LIBCD.lib(wincrt0.obj) : error LNK2001: unresolved external symbol _WinMain@16
-Debug/SkinEdit.exe : fatal error LNK1120: 2 unresolved externals
-Error executing link.exe.
 
 
 
 <h3>Results</h3>
-SkinEdit.exe - 3 error(s), 0 warning(s)
+SkinEdit.exe - 0 error(s), 0 warning(s)
 </pre>
 </body>
 </html>

@@ -33,6 +33,11 @@ signal_handler(int sig)
   exit(0);
 }
 
+// remove SDL redefinition of main
+#ifdef __WIN32__
+#undef main
+#endif
+
 int
 main (int argc, char *argv[])
 {
@@ -51,7 +56,7 @@ main (int argc, char *argv[])
 
   signal(SIGINT, signal_handler);
 
-  fprintf(stdout, _("Skinedit v%s, (C) 2002-2003 Julien BLACHE <jb@tilp.info>\n"), VERSION);
+  fprintf(stdout, _("SkinEdit v%s, (C) 2002-2003 Julien BLACHE <jb@tilp.info>\n"), VERSION);
   fprintf(stdout, _("Using GTKSDL v0.2.1 by <derethor@users.sourceforge.net>\n"));
   fprintf(stdout, "\n");
   fprintf(stdout, _("This program is free software; you can redistribute it and/or modify\n"));
@@ -71,3 +76,25 @@ main (int argc, char *argv[])
   return 0;
 }
 
+/* 
+   If TiEmu is compiled in console mode (_CONSOLE), 
+   then we use the 'main' entry point.
+   If TiEmu is compiled as a windowed application (_WINDOWS), 
+   then we use the 'WinMain' entry point.
+*/
+#if defined(__WIN32__) && defined(_WINDOWS)	// && !defined(_CONSOLE)
+int APIENTRY WinMain(HINSTANCE hInstance,
+		     HINSTANCE hPrevInstance,
+		     LPSTR lpCmdLine, int nCmdShow)
+{
+/*
+	HANDLE hMutex;
+
+	hMutex = CreateMutex(NULL, TRUE, "TiLP");
+	if (GetLastError() == ERROR_ALREADY_EXISTS) {
+		g_error("WinMain: TiLP is already running.");
+	}
+*/
+	return main(__argc, __argv);
+}
+#endif
