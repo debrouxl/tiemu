@@ -142,7 +142,7 @@ void lcd_hook_hw1(void)
 			lcd_planes[2] = tmp;
 		}
 
-#if 1
+#if 0
 		printf("%06x-%06x-%06x\n", lcd_planes[0], lcd_planes[1], lcd_planes[2]);
 		//printf("%1.1f/%1.1f %i\n", round(fir), fir, c);				 
 		//for(i = 0; i < 8; i++)	printf("%06x ", lcd_addrs[i]); printf("\n");
@@ -205,6 +205,10 @@ void lcd_hook_hw2(int refresh)
 {
 	static int dead_cnt = 0;
 	static int fs_toggled = 0;
+#pragma warning( push )
+#pragma warning( disable : 4305 )
+	static const char moveml_a0p_d0d7a2a6_moveml_d0d7a2a6_a1[8] = {0x4c,0xd8,0x7c,0xff,0x48,0xd1,0x7c,0xff};
+#pragma warning( pop ) 
 
 	// if refresh from GTK (calc.c), set 1 plane
 	if(refresh)
@@ -220,15 +224,12 @@ void lcd_hook_hw2(int refresh)
 	}	
 
 	// if refresh from CPU loop (m68k.c), search for opcode signature:
-	// TIGGL lib : 
-	//		movem.l  (%a0)+,%d0-%d7/%a2-%a6 ; (%a1)==0x4c00, alors plan:=(%a0)
-	// graphlib-titanik et graphlib-iceberg : 
-	//		movem.l  (%a0)+,%d0-%d7/%a2-%a6 ; (%a1)==0x4c00+12, alors plan:=-12(%a0)
 	if(fs_toggled)
 	{
 		UWORD opcode = curriword();
 
-		if(opcode == 0x4cd8)
+		if(!memcmp(regs.pc_p, moveml_a0p_d0d7a2a6_moveml_d0d7a2a6_a1, 8))
+		//if(opcode == 0x4cd8)
 		{
 			uint32_t a0 = regs.a[0]-0xa00;
 			uint32_t a1 = regs.a[1]-0xa00;
@@ -237,6 +238,7 @@ void lcd_hook_hw2(int refresh)
 				a0 -= 12;
 			else if(a1 != 0x4c00)
 				return;
+
 			//printf("$%06x\n", m68k_getpc());
 			//printf("%06x %06x\n", regs.a[0], regs.a[1]);
 
@@ -246,3 +248,9 @@ void lcd_hook_hw2(int refresh)
 		}
 	}
 }
+
+// opcode signature:
+	// TIGGL lib : 
+	//		movem.l  (%a0)+,%d0-%d7/%a2-%a6 ; (%a1)==0x4c00, alors plan:=(%a0)
+	// graphlib-titanik et graphlib-iceberg : 
+	//		movem.l  (%a0)+,%d0-%d7/%a2-%a6 ; (%a1)==0x4c00+12, alors plan:=-12(%a0)
