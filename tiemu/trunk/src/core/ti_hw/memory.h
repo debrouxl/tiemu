@@ -48,9 +48,9 @@ extern void intRomWriteByte(int adr, int v);
 
 /* Variables */
 
-extern UBYTE *ti_ram;
+extern unsigned char /*UBYTE*/ *ti_ram;
 extern UBYTE *ti_rom, *ti_int_rom, *ti_ext_rom;
-extern UBYTE *ti_io;
+extern unsigned char /*UBYTE*/ *ti_io;
 
 extern UBYTE *mem_tab[8];
 extern ULONG mem_mask[8];

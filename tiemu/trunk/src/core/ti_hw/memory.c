@@ -38,8 +38,8 @@
 UBYTE *ti_rom;
 UBYTE *ti_int_rom;
 UBYTE *ti_ext_rom;
-UBYTE *ti_ram;
-UBYTE *ti_io;
+unsigned char /*UBYTE*/ *ti_ram;
+unsigned char /*UBYTE*/ *ti_io;
 UBYTE garbage_mem[0x10000];
 
 UBYTE *mem_tab[8] = 
