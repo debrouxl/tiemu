@@ -44,6 +44,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h> //memset
 
 #include "intl.h"
 #include "hwpm.h"

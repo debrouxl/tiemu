@@ -32,6 +32,8 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h> //memset
 
 #include "mem.h"
 #include "ti68k_def.h"

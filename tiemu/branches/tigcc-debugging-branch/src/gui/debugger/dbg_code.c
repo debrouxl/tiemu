@@ -31,6 +31,7 @@
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <gdk/gdkkeysyms.h>
+#include <string.h>
 
 #include "intl.h"
 #include "paths.h"
@@ -304,7 +305,7 @@ static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6, int s7
 	Display source code window
 */
 
-extern update_submenu(GtkWidget*, gpointer);
+extern int update_submenu(GtkWidget*, gpointer);
 
 GtkWidget* dbgcode_create_window(void)
 {

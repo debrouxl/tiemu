@@ -31,6 +31,7 @@
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <gdk/gdkkeysyms.h>
+#include <stdlib.h>
 
 #include "intl.h"
 #include "paths.h"

@@ -343,13 +343,13 @@ void lcd_hook_hw2(int refresh)
 	// if refresh from CPU loop (m68k.c), search for opcode signature:
 	else
 	{
-		UWORD opcode = curriword();
+//		uae_u16 opcode = curriword();
 
 		if(!memcmp(regs.pc_p, moveml_a0p_d0d7a2a6_moveml_d0d7a2a6_a1, 8))
 		//if(opcode == 0x4cd8)
 		{
-			uint32_t a0 = regs.a[0]-0xa00;
-			uint32_t a1 = regs.a[1]-0xa00;
+			uint32_t a0 = m68k_areg(regs,0)-0xa00;
+			uint32_t a1 = m68k_areg(regs,1)-0xa00;
 
 			if(a1 == 0x4c0c)
 				a0 -= 12;

@@ -29,10 +29,13 @@
     M68K management (wrapper for the UAE engine)
 */
 
+#include <stdlib.h>
+
 #include "libuae.h"
 #include "ti68k_def.h"
 #include "mem.h"
 #include "hw.h"
+#include "hwprot.h"
 #include "bkpts.h"
 #include "images.h"
 #include "handles.h"
@@ -65,7 +68,7 @@ int hw_m68k_init(void)
 int hw_m68k_reset(void)
 {
     rom_at_0();
-    MC68000_reset();
+    m68k_reset();
     ram_at_0();
 
 	pending_ints = 0;
@@ -95,7 +98,7 @@ void Interrupt2(int nr)
 
 void hw_m68k_irq(int n)
 {
-	specialflags |= SPCFLAG_INT;
+	regs.spcflags |= SPCFLAG_INT;
     currIntLev = n;
 
 	pending_ints |= (1 << n);
@@ -120,11 +123,11 @@ int hw_m68k_run(int n)
     int i=n;
     GList *l = NULL;
     static FILE *f = NULL;
-    static foo = 0;
+    static int foo = 0;
 
 	for(i = 0; i < n; i++)
 	{
-		UWORD opcode;
+		uae_u16 opcode;
 
 		// refresh hardware
 		do_cycles();
@@ -132,7 +135,7 @@ int hw_m68k_run(int n)
 		tihw.lcd_tick++;
 
 		// OSC1 stopped ? Refresh hardware and wake-up on interrupt. No opcode execution.
-		if ((specialflags & SPCFLAG_STOP))
+		if ((regs.spcflags & SPCFLAG_STOP))
 	    {
 			if(pending_ints)
 			{
@@ -143,7 +146,7 @@ int hw_m68k_run(int n)
 				{
 					Interrupt2(level);
 					regs.stopped = 0;
-					specialflags &= ~SPCFLAG_STOP;
+					regs.spcflags &= ~SPCFLAG_STOP;
 				}
 			}
 
@@ -151,7 +154,7 @@ int hw_m68k_run(int n)
 	    }		
 
 		// search for code breakpoint
-        if(((l = bkpts.code) != NULL) && !(specialflags & SPCFLAG_DBSKIP))
+        if(((l = bkpts.code) != NULL) && !(regs.spcflags & SPCFLAG_DBSKIP))
         {
             bkpts.id = 0;
             while(l)
@@ -162,7 +165,7 @@ int hw_m68k_run(int n)
 						bkpts.code = g_list_remove(bkpts.code, l->data);
 
                     bkpts.type = BK_TYPE_CODE;
-		            //specialflags |= SPCFLAG_BRK;
+		            //regs.spcflags |= SPCFLAG_BRK;
                     return 1;
                 }
 
@@ -172,7 +175,7 @@ int hw_m68k_run(int n)
         }
 
 		// search for pgrm entry breakpoint
-		if((bkpts.pgmentry != NULL) && !(specialflags & SPCFLAG_DBSKIP))
+		if((bkpts.pgmentry != NULL) && !(regs.spcflags & SPCFLAG_DBSKIP))
 		{
 			uint16_t handle = GPOINTER_TO_INT(bkpts.pgmentry->data);
 			bkpts.id = 0;
@@ -217,39 +220,39 @@ int hw_m68k_run(int n)
 		}
 
 		// management of special flags
-        if(specialflags) 
+        if(regs.spcflags) 
 	    {
-    	    if(specialflags & SPCFLAG_ADRERR) 
+    	    if(regs.spcflags & SPCFLAG_ADRERR) 
 	        {
-	            Exception(3);
-				specialflags &= ~SPCFLAG_ADRERR;
+	            Exception(3,0);
+				regs.spcflags &= ~SPCFLAG_ADRERR;
 	        }
 	  
-	        if (specialflags & SPCFLAG_DOTRACE) 
+	        if (regs.spcflags & SPCFLAG_DOTRACE) 
 	        {
-	            Exception(9);
+	            Exception(9,0);
 	        }
 	      
-	        if (specialflags & SPCFLAG_TRACE) 
+	        if (regs.spcflags & SPCFLAG_TRACE) 
 	        {
-	            specialflags &= ~SPCFLAG_TRACE;
-	            specialflags |= SPCFLAG_DOTRACE;
+	            regs.spcflags &= ~SPCFLAG_TRACE;
+	            regs.spcflags |= SPCFLAG_DOTRACE;
 			}
 
-	        if (specialflags & SPCFLAG_BRK) 
+	        if (regs.spcflags & SPCFLAG_BRK) 
 	        {		
-	          specialflags &= ~SPCFLAG_BRK;
+	          regs.spcflags &= ~SPCFLAG_BRK;
 	          return 1;		// DBG_BREAK
 	        }
 
-	        if(specialflags & SPCFLAG_DBTRACE) 
+	        if(regs.spcflags & SPCFLAG_DBTRACE) 
 	        {
-	          specialflags &= ~SPCFLAG_DBTRACE;
+	          regs.spcflags &= ~SPCFLAG_DBTRACE;
               return 2;     // DBG_TRACE
 	        }
 
-            if(specialflags & SPCFLAG_DBSKIP)
-                specialflags &= ~SPCFLAG_DBSKIP;
+            if(regs.spcflags & SPCFLAG_DBSKIP)
+                regs.spcflags &= ~SPCFLAG_DBSKIP;
 	    }
 	}
 

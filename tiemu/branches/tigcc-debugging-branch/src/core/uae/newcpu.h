@@ -1,30 +1,59 @@
- /* 
+ /*
   * UAE - The Un*x Amiga Emulator
-  * 
+  *
   * MC68000 emulation
   *
   * Copyright 1995 Bernd Schmidt
   */
 
-#define REGPARAM
-
-extern unsigned long specialflags;
+#include "readcpu.h"
+#include "machdep/maccess.h"
 
 #define SPCFLAG_DBTRACE 1
-#define SPCFLAG_STOP 2
-#define SPCFLAG_DBSKIP 4
+#define SPCFLAG_DBSKIP 2
+#define SPCFLAG_STOP 4
 #define SPCFLAG_INT  8
 #define SPCFLAG_BRK  16
-#define SPCFLAG_EXTRA_CYCLES 32
-#define SPCFLAG_TRACE 64
-#define SPCFLAG_DOTRACE 128
-#define SPCFLAG_DOINT 256
-#define SPCFLAG_TIMER 512
-#define SPCFLAG_DELAY 1024
-#define SPCFLAG_ADRERR 2048
+#define SPCFLAG_TRACE 32
+#define SPCFLAG_DOTRACE 64
+#define SPCFLAG_DOINT 128
+#define SPCFLAG_ADRERR 256
+#define SPCFLAG_MODE_CHANGE 512
+
+#if 0 //ndef SET_CFLG
+
+#define SET_CFLG(x) (CFLG = (x))
+#define SET_NFLG(x) (NFLG = (x))
+#define SET_VFLG(x) (VFLG = (x))
+#define SET_ZFLG(x) (ZFLG = (x))
+#define SET_XFLG(x) (XFLG = (x))
+
+#define GET_CFLG CFLG
+#define GET_NFLG NFLG
+#define GET_VFLG VFLG
+#define GET_ZFLG ZFLG
+#define GET_XFLG XFLG
+
+#define CLEAR_CZNV do { \
+ SET_CFLG (0); \
+ SET_ZFLG (0); \
+ SET_NFLG (0); \
+ SET_VFLG (0); \
+} while (0)
+
+#define COPY_CARRY (SET_XFLG (GET_CFLG))
+#endif
 
 extern int areg_byteinc[];
 extern int imm8_table[];
+
+extern int movem_index1[256];
+extern int movem_index2[256];
+extern int movem_next[256];
+
+extern int fpp_movem_index1[256];
+extern int fpp_movem_index2[256];
+extern int fpp_movem_next[256];
 
 extern int broken_in;
 
@@ -32,163 +61,245 @@ extern int uae_initial_pc;
 extern int currIntLev;
 extern void Interrupt(int);
 
-typedef void cpuop_func(ULONG) REGPARAM;
+typedef unsigned long cpuop_func (uae_u32) REGPARAM;
 
 struct cputbl {
     cpuop_func *handler;
     int specific;
-    UWORD opcode;
+    uae_u16 opcode;
 };
 
-extern struct cputbl smallcputbl[];
+extern unsigned long op_illg (uae_u32) REGPARAM;
 
-extern cpuop_func *cpufunctbl[65536];
-extern void op_illg(ULONG) REGPARAM;
+typedef char flagtype;
 
-typedef char flagtype; 
-
-union flagu {
-    struct {
-	/* v must be at the start so that the x86 seto instruction
-	 * changes the V flag. C must follow after V. */
-	char v;
-	char c;
-	char n;
-	char z;
-    } flags;
-    ULONG longflags;
+struct flag_struct {
+    unsigned int cznv;
+    unsigned int x;
 };
 
-extern struct regstruct 
+extern struct regstruct
 {
-    ULONG d[8];
-    CPTR  a[8],usp;
-    UWORD sr;
-    flagtype t;
+    uae_u32 regs[16];
+    uaecptr  usp,isp,msp;
+    uae_u16 sr;
+    flagtype t1;
+    flagtype t0;
     flagtype s;
+    flagtype m;
     flagtype x;
     flagtype stopped;
+    struct flag_struct flags;
     int intmask;
-    ULONG pc;
-    UBYTE *pc_p;
-    UBYTE *pc_oldp;
-    
-    ULONG vbr,sfc,dfc;
-} regs;
 
-#ifdef INTEL_FLAG_OPT
-extern union flagu intel_flag_lookup[256] __asm__ ("intel_flag_lookup");
-extern union flagu regflags __asm__ ("regflags");
-#else
-extern union flagu regflags;
-#endif
+    uae_u32 pc;
+    uae_u8 *pc_p;
+    uae_u8 *pc_oldp;
 
-#define ZFLG (regflags.flags.z)
-#define NFLG (regflags.flags.n)
-#define CFLG (regflags.flags.c)
-#define VFLG (regflags.flags.v)
+    uae_u32 vbr,sfc,dfc;
 
-#ifdef PENT_COUNTER
-extern float calibrate_pcounter(void);
-#endif
+    double fp[8];
+    uae_u32 fpcr,fpsr,fpiar;
 
-extern void MC68000_oldstep(UWORD opcode);
+    uae_u32 spcflags;
+    uae_u32 kick_mask;
 
-static INLINE_DECLARATION UWORD curriword(void)
+    /* Fellow sources say this is 4 longwords. That's impossible. It needs
+     * to be at least a longword. The HRM has some cryptic comment about two
+     * instructions being on the same longword boundary.
+     * The way this is implemented now seems like a good compromise.
+     */
+    uae_u32 prefetch;
+} regs, lastint_regs;
+
+#include "machdep/m68k.h"
+
+STATIC_INLINE void set_special (uae_u32 x)
 {
-	UWORD r = (((UWORD)regs.pc_p[0])<<8) | regs.pc_p[1];
-	return r;
+    regs.spcflags |= x;
 }
 
-static INLINE_DECLARATION UWORD nextiword(void)
+STATIC_INLINE void unset_special (uae_u32 x)
 {
-  UWORD r = (((UWORD)regs.pc_p[0])<<8) | regs.pc_p[1];
-  regs.pc_p += 2;
+    regs.spcflags &= ~x;
+}
+
+#define m68k_dreg(r,num) ((r).regs[(num)])
+#define m68k_areg(r,num) (((r).regs + 8)[(num)])
+
+#define get_ibyte(o) do_get_mem_byte((uae_u8 *)(regs.pc_p + (o) + 1))
+#define get_iword(o) do_get_mem_word((uae_u16 *)(regs.pc_p + (o)))
+#define get_ilong(o) do_get_mem_long((uae_u32 *)(regs.pc_p + (o)))
+
+STATIC_INLINE uae_u32 get_ibyte_prefetch (uae_s32 o)
+{
+    if (o > 3 || o < 0)
+	return do_get_mem_byte((uae_u8 *)(regs.pc_p + o + 1));
+
+    return do_get_mem_byte((uae_u8 *)(((uae_u8 *)&regs.prefetch) + o + 1));
+}
+STATIC_INLINE uae_u32 get_iword_prefetch (uae_s32 o)
+{
+    if (o > 3 || o < 0)
+	return do_get_mem_word((uae_u16 *)(regs.pc_p + o));
+
+    return do_get_mem_word((uae_u16 *)(((uae_u8 *)&regs.prefetch) + o));
+}
+STATIC_INLINE uae_u32 get_ilong_prefetch (uae_s32 o)
+{
+    if (o > 3 || o < 0)
+	return do_get_mem_long((uae_u32 *)(regs.pc_p + o));
+    if (o == 0)
+	return do_get_mem_long(&regs.prefetch);
+    return (do_get_mem_word (((uae_u16 *)&regs.prefetch) + 1) << 16) | do_get_mem_word ((uae_u16 *)(regs.pc_p + 4));
+}
+
+#define m68k_incpc(o) (regs.pc_p += (o))
+
+#define curriword() get_iword_prefetch(0)
+
+STATIC_INLINE uae_u16 nextiword(void)
+{
+  uae_u16 r = get_iword_prefetch(0);
+  m68k_incpc (2);
   return r;
 }
 
-static INLINE_DECLARATION ULONG nextilong(void)
+STATIC_INLINE void fill_prefetch_0 (void)
 {
-    return (nextiword()<<16) | nextiword();
+    uae_u32 r;
+#ifdef UNALIGNED_PROFITABLE
+    r = *(uae_u32 *)regs.pc_p;
+    regs.prefetch = r;
+#else
+    r = do_get_mem_long ((uae_u32 *)regs.pc_p);
+    do_put_mem_long (&regs.prefetch, r);
+#endif
 }
 
-//roms
-#if defined(__WIN32__) && !defined(__MINGW32__)
-extern unsigned char* hw_get_real_address(unsigned long adr);
+#if 0
+STATIC_INLINE void fill_prefetch_2 (void)
+{
+    uae_u32 r = do_get_mem_long (&regs.prefetch) << 16;
+    uae_u32 r2 = do_get_mem_word (((uae_u16 *)regs.pc_p) + 1);
+    r |= r2;
+    do_put_mem_long (&regs.prefetch, r);
+}
 #else
-#include <stdint.h>
-extern uint8_t* hw_get_real_address(uint32_t addr);
+#define fill_prefetch_2 fill_prefetch_0
 #endif
 
-static INLINE_DECLARATION void m68k_setpc(CPTR newpc)
+/* These are only used by the 68020/68881 code, and therefore don't
+ * need to handle prefetch.  */
+STATIC_INLINE uae_u32 next_ibyte (void)
 {
-    regs.pc = newpc&0xffffff;
-    regs.pc_p = regs.pc_oldp = get_real_address(regs.pc);
+    uae_u32 r = get_ibyte (0);
+    m68k_incpc (2);
+    return r;
 }
 
-static INLINE_DECLARATION CPTR m68k_getpc(void)
+STATIC_INLINE uae_u32 next_iword (void)
 {
-    return regs.pc + regs.pc_p - regs.pc_oldp;
+    uae_u32 r = get_iword (0);
+    m68k_incpc (2);
+    return r;
 }
 
-static INLINE_DECLARATION void m68k_setstopped(int stop)
+STATIC_INLINE uae_u32 next_ilong (void)
+{
+    uae_u32 r = get_ilong (0);
+    m68k_incpc (4);
+    return r;
+}
+
+#if !defined USE_COMPILER
+STATIC_INLINE void m68k_setpc (uaecptr newpc)
+{
+    regs.pc_p = regs.pc_oldp = get_real_address(newpc);
+    regs.pc = newpc & 0xffffff;
+}
+#else
+extern void m68k_setpc (uaecptr newpc);
+#endif
+
+STATIC_INLINE uaecptr m68k_getpc (void)
+{
+    return regs.pc + ((char *)regs.pc_p - (char *)regs.pc_oldp);
+}
+
+STATIC_INLINE uaecptr m68k_getpc_p (uae_u8 *p)
+{
+    return regs.pc + ((char *)p - (char *)regs.pc_oldp);
+}
+
+#ifdef USE_COMPILER
+extern void m68k_setpc_fast (uaecptr newpc);
+extern void m68k_setpc_bcc (uaecptr newpc);
+extern void m68k_setpc_rte (uaecptr newpc);
+#else
+#define m68k_setpc_fast m68k_setpc
+#define m68k_setpc_bcc  m68k_setpc
+#define m68k_setpc_rte  m68k_setpc
+#endif
+
+STATIC_INLINE void m68k_setstopped (int stop)
 {
     regs.stopped = stop;
     if (stop)
-	specialflags |= SPCFLAG_STOP;
+	regs.spcflags |= SPCFLAG_STOP;
 }
 
-static INLINE_DECLARATION int cctrue(const int cc)
-{
-    switch(cc){
-     case 0: return 1;                       /* T */
-     case 1: return 0;                       /* F */
-     case 2: return !CFLG && !ZFLG;          /* HI */
-     case 3: return CFLG || ZFLG;            /* LS */
-     case 4: return !CFLG;                   /* CC */
-     case 5: return CFLG;                    /* CS */
-     case 6: return !ZFLG;                   /* NE */
-     case 7: return ZFLG;                    /* EQ */
-     case 8: return !VFLG;                   /* VC */
-     case 9: return VFLG;                    /* VS */
-     case 10:return !NFLG;                   /* PL */
-     case 11:return NFLG;                    /* MI */
-     case 12:return NFLG == VFLG;            /* GE */
-     case 13:return NFLG != VFLG;            /* LT */
-     case 14:return !ZFLG && (NFLG == VFLG); /* GT */
-     case 15:return ZFLG || (NFLG != VFLG);  /* LE */
-    }
-    //abort();
-    return 0;
-}
+extern uae_u32 get_disp_ea_020 (uae_u32 base, uae_u32 dp);
+extern uae_u32 get_disp_ea_000 (uae_u32 base, uae_u32 dp);
 
-static INLINE_DECLARATION ULONG get_disp_ea (ULONG base, UWORD dp)
-{
-    int reg = (dp >> 12) & 7;
-    LONG regd;
-    
-    if (dp & 0x8000)
-	regd = regs.a[reg];
-    else
-	regd = regs.d[reg];
-    if (!(dp & 0x800))
-	regd = (LONG)(WORD)regd;
-    return base + (BYTE)(dp) + regd;
-}
+extern uae_s32 ShowEA (FILE *, int reg, amodes mode, wordsizes size, char *buf);
 
-
-extern void MakeSR(void);
-extern void MakeFromSR(void);
-extern void Exception(int);
-extern void m68k_move2c(int, ULONG *);
-extern void m68k_movec2(int, ULONG *);
-extern void m68k_divl (UWORD, ULONG, UWORD);
-extern void m68k_mull (UWORD, ULONG, UWORD);
+extern void MakeSR (void);
+extern void MakeFromSR (void);
+extern void Exception (int, uaecptr);
+extern void dump_counts (void);
+extern int m68k_move2c (int, uae_u32 *);
+extern int m68k_movec2 (int, uae_u32 *);
+extern void m68k_divl (uae_u32, uae_u32, uae_u16, uaecptr);
+extern void m68k_mull (uae_u32, uae_u32, uae_u16);
 extern void init_m68k (void);
-extern void MC68000_step(void);
-extern void MC68000_run(void);
-extern void MC68000_skip(CPTR);
-extern void MC68000_dumpstate(CPTR *);
-extern void MC68000_disasm(CPTR, CPTR *, int, char*);
-extern void MC68000_reset(void);
+extern void m68k_go (int);
+extern void m68k_dumpstate (uaecptr *);
+extern void m68k_disasm (uaecptr, uaecptr *, int, char*);
+extern void m68k_reset (void);
 extern int intlev(void);
+
+extern void mmu_op (uae_u32, uae_u16);
+
+extern void fpp_opp (uae_u32, uae_u16);
+extern void fdbcc_opp (uae_u32, uae_u16);
+extern void fscc_opp (uae_u32, uae_u16);
+extern void ftrapcc_opp (uae_u32,uaecptr);
+extern void fbcc_opp (uae_u32, uaecptr, uae_u32);
+extern void fsave_opp (uae_u32);
+extern void frestore_opp (uae_u32);
+
+/* Opcode of faulting instruction */
+extern uae_u16 last_op_for_exception_3;
+/* PC at fault time */
+extern uaecptr last_addr_for_exception_3;
+/* Address that generated the exception */
+extern uaecptr last_fault_for_exception_3;
+
+#define CPU_OP_NAME(a) op ## a
+
+/* 68040 */
+extern struct cputbl op_smalltbl_0_ff[];
+/* 68020 + 68881 */
+extern struct cputbl op_smalltbl_1_ff[];
+/* 68020 */
+extern struct cputbl op_smalltbl_2_ff[];
+/* 68010 */
+extern struct cputbl op_smalltbl_3_ff[];
+/* 68000 */
+extern struct cputbl op_smalltbl_4_ff[];
+/* 68000 slow but compatible.  */
+extern struct cputbl op_smalltbl_5_ff[];
+
+extern cpuop_func *cpufunctbl[65536] ASM_SYM_FOR_FUNC ("cpufunctbl");
+

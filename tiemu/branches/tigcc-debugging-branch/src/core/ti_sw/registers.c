@@ -71,23 +71,23 @@ static char old_uf[32];
 
 void ti68k_register_set_data(int n, uint32_t val)
 {
-    if (n>=0 && n<8) regs.d[n] = val;
+    if (n>=0 && n<8) m68k_dreg(regs,n) = val;
 }
 
 void ti68k_register_set_addr(int n, uint32_t val)
 {
-    if (n>=0 && n<8) regs.a[n] = val;
+    if (n>=0 && n<8) m68k_areg(regs,n) = val;
 }
 
 void ti68k_register_set_sp(uint32_t val)
 {
-    regs.a[7] = val;
+    m68k_areg(regs,7) = val;
 }
 
 void ti68k_register_set_usp(uint32_t val)
 {
     if(!regs.s)
-        regs.a[7] = val;
+        m68k_areg(regs,7) = val;
     else
         regs.usp = val;
 }
@@ -95,7 +95,7 @@ void ti68k_register_set_usp(uint32_t val)
 void ti68k_register_set_ssp(uint32_t val)
 {
     if(regs.s)
-        regs.a[7] = val;
+        m68k_areg(regs,7) = val;
     else
         regs.usp = val;
 }
@@ -164,12 +164,12 @@ int ti68k_register_get_data(int n, uint32_t *val)
 	int c = 0;
 	
     if (n>=0 && n<8)
-    	*val = regs.d[n];
+    	*val = m68k_dreg(regs,n);
     	
-    if(regs.d[n] != old_d[n])
+    if(m68k_dreg(regs,n) != old_d[n])
     	c = !0;
     	
-    old_d[n] = regs.d[n];
+    old_d[n] = m68k_dreg(regs,n);
     return c;
 }
 
@@ -178,12 +178,12 @@ int ti68k_register_get_addr(int n, uint32_t *val)
 	int c = 0;
 
     if (n>=0 && n<8) 
-    	*val = regs.a[n];
+    	*val = m68k_areg(regs,n);
     
-    if(regs.a[n] != old_a[n])
+    if(m68k_areg(regs,n) != old_a[n])
     	c = !0;
     	
-    old_a[n] = regs.a[n];
+    old_a[n] = m68k_areg(regs,n);
     return c;
 }
 	
@@ -191,11 +191,11 @@ int ti68k_register_get_sp(uint32_t *val)
 {
 	int c = 0;
 	
-	*val = regs.a[7];
-	if(regs.a[7] != old_sp)
+	*val = m68k_areg(regs,7);
+	if(m68k_areg(regs,7) != old_sp)
 		c = !0;
 
-	old_sp = regs.a[7];
+	old_sp = m68k_areg(regs,7);
     return c;
 }
 
@@ -205,7 +205,7 @@ int ti68k_register_get_usp(uint32_t *val)
     uint32_t *reg;
 
     if(!regs.s)
-        reg = &regs.a[7];
+        reg = &m68k_areg(regs,7);
     else
         reg = &regs.usp;
 
@@ -223,7 +223,7 @@ int ti68k_register_get_ssp(uint32_t *val)
     uint32_t *reg;
 
     if(regs.s)
-        reg = &regs.a[7];
+        reg = &m68k_areg(regs,7);
     else
         reg = &regs.usp;
 

@@ -44,7 +44,7 @@ extern int cycle_count;
 # define INLINE
 #endif
 
-static void INLINE do_cycles(void)
+static void INLINE do_cycles()
 {
     if(cycle_count++ >= cycle_instr) 
     {

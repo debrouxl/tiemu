@@ -31,6 +31,7 @@
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <string.h>
 
 #include "intl.h"
 #include "paths.h"

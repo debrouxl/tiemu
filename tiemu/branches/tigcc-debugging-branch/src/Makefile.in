@@ -50,16 +50,13 @@ INCLUDES = \
 
 # source files to build
 core_uae_OBJ = \
-	core/uae/cpu0.o core/uae/cpu1.o \
-	core/uae/cpu2.o core/uae/cpu3.o \
-	core/uae/cpu4.o core/uae/cpu5.o \
-	core/uae/cpu6.o core/uae/cpu7.o \
-	core/uae/cpu8.o core/uae/cpu9.o \
-	core/uae/cpuA.o core/uae/cpuB.o \
-	core/uae/cpuC.o core/uae/cpuD.o \
-	core/uae/cpuE.o core/uae/cpuF.o \
+	core/uae/cpuemu1.o core/uae/cpuemu2.o \
+	core/uae/cpuemu3.o core/uae/cpuemu4.o \
+	core/uae/cpuemu5.o core/uae/cpuemu6.o \
+	core/uae/cpuemu7.o core/uae/cpuemu8.o \
 	core/uae/cpudefs.o core/uae/cpustbl.o \
-	core/uae/readcpu.o
+	core/uae/readcpu.o core/uae/fpp.o \
+	core/uae/missing.o
 
 core_tihw_OBJ = \
 	core/ti_hw/dbus.o	\
