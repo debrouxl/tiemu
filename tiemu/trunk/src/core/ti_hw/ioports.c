@@ -46,7 +46,7 @@ int hw_io_init(void)
 	memset(tihw.io2, 0x14, sizeof(tihw.io2));
 
 	tihw.io[0x00] = 0x00;
-	tihw.io[0x01] = 0x04;   // | (tihw.ti92v1 ? 1 : 0);
+	tihw.io[0x01] = 0x04 | (tihw.ti92v1 ? 1 : 0);
 	tihw.io[0x03] = 0xff;
 	tihw.io[0x05] = 0x00;
 	tihw.io[0x0c] = 0x8d;

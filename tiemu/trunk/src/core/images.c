@@ -476,13 +476,14 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	gchar *basename;
 	int i, j;
 	int num_blocks, last_block;
+    int real_size;
 
 	// No filename, exits
 	if(!strcmp(srcname, ""))
 		return 0;
 		
 	// Erase boot block
-	memset(img.data, 0xff, SPP);
+	//memset(img.data, 0xff, SPP);
 
 	// Preload upgrade
 	err = ti68k_get_tib_infos(srcname, &img, !0);
@@ -514,6 +515,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	strcpy(img.signature, "TiEmu img v2.00");
 	img.header_size = sizeof(IMG_INFO);
 	img.data_offset = 0x40;
+    real_size = img.size;
 	img.size = 2 << 20;
 	
 	// Write header
@@ -557,11 +559,11 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
     fputc(0x00, f);
     fputc(0x00, f);
 
-  	for(i = 0x66; i < 0x12000; i++)
+  	for(i = 0x10e; i < SPP; i++)
     	fputc(0xff, f);
   
   	// Copy FLASH upgrade
-  	num_blocks = img.size / 65536;
+  	num_blocks = real_size / 65536;
   	for(i = 0; i < num_blocks; i++ )
     {
       	DISPLAY(".");
@@ -570,12 +572,12 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
       	fwrite(&img.data[65536 * i], sizeof(char), 65536, f);
     }
 
-  	last_block = img.size % 65536;
+  	last_block = real_size % 65536;
    	fwrite(&img.data[65536 * i], sizeof(char), last_block, f);
   
   	DISPLAY("\n");
   	DISPLAY("Completing to 2MB size\n");
-  	for(j = SPP + img.size; j < (2 << 20); j++)
+  	for(j = SPP + real_size; j < (2 << 20); j++)
   		fputc(0xff, f);
   
   	// Close file

@@ -272,12 +272,12 @@ gint display_import_romversion_dbox(void)
 			"On the other hand, if you load it as a fake ROM image, TiEmu will convert the FLASH "	\
 			"upgrade into an image but your image will suffer from some limitations "	\
 			"(no boot block, no certificate, problems with fonts)");
-		if(ret == 1)
+		if(ret == 2)
 		{	// fake rom
 			ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname);
 			g_free(dstname);
 		}
-		else
+		else if(ret ==1)
 		{
 			//copy
 			basename = g_path_get_basename(filename);

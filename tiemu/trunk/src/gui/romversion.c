@@ -234,6 +234,7 @@ gint display_romversion_dbox()
 				}
 			}
 
+            ti68k_reset();
 			ti68k_restart();
 		break;
 
