@@ -95,7 +95,7 @@ void update_hardware()
 	    }
 	}
 
-      hw_update_kbd();
+      hw_kbd_update();
 
       if(!params.sync_one)
 	cb_update_screen();

@@ -90,7 +90,7 @@ typedef struct
     int     io0Bit2;
 
     // keyboard.c
-    int     on_key0;
+    int     on_key;
 
     // lcd.c
     int     lcd_off;

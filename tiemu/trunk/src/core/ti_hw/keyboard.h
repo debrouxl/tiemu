@@ -37,11 +37,11 @@ UBYTE read_keyboard_mask(void);
 
 void  ti68k_setActiveKey(int key, int active);
 int   ti68k_isKeyPressed(int key);
-#define read_onkey() ((UBYTE)on_key)
+#define read_onkey() ((UBYTE)tihw.on_key)
 
 /* Variables */
 
 extern int key_states[NB_MAX_KEYS];
-extern int on_key;
+//extern int on_key;
 
 #endif

@@ -156,7 +156,7 @@ UBYTE io_get_byte(CPTR adr)
     case 0x18: break;
     case 0x19: break;
     case 0x1a: return 0x14|((1-read_onkey())<<1); 
-    case 0x1b: return read_keyboard_mask();
+    case 0x1b: return hw_kbd_read_mask();
     case 0x1c: case 0x1e: return 0x14;
     case 0x1d: case 0x1f: return 1;
     }

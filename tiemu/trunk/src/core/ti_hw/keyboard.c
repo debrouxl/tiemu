@@ -26,12 +26,9 @@
 
 #include "uae.h"
 #include "keydefs.h"
-#include "memory.h"
 #include "callbacks.h"
-#include "images.h"
 #include "ti68k_def.h"
 
-int on_key = 0;
 static int key_states[NB_MAX_KEYS];
 
 int keyRow92[10][8] =
@@ -80,93 +77,108 @@ int keyRow89[10][8] =
    TIKEY_VOID, TIKEY_VOID}
 };
 
+int keyRowV200[10][8] = { 0 };
+
 int *key_row;
+
+int hw_kbd_init(void)
+{
+    switch(tihw.calc_type)
+    {
+    case TI89:
+        key_row = (int*)keyRow89;
+        break;
+    case TI92:
+    case TI92p:
+        key_row = (int*)keyRow92;
+        break;
+    case V200:
+        key_row = (int*)keyRowV200;
+    default:
+        break;
+    }
+
+    return 0;
+}
+
+int hw_kbd_reset(void)
+{
+    return 0;
+}
+
+int hw_kbd_exit(void)
+{
+    key_row = NULL;
+}
 
 /* Press a key */
 void ti68k_kbd_set_key(int key, int active)
 {
-  key_states[key] = active;
+    key_states[key] = active;
 }
 
 /* Returns true if the corresponding key was pressed */
 int ti68k_isKeyPressed(int key)
 {
-  return key_states[key];
+    return key_states[key];
 }
 
-int hw_update_kbd(void) 
+int hw_kbd_update(void) 
 {
-  int rc = cb_update_keys();
+    int rc = cb_update_keys();
 
-  if( (on_key = ti68k_isKeyPressed(TIKEY_ON)) ) 
+    if((tihw.on_key = ti68k_isKeyPressed(TIKEY_ON))) 
     {
-      if(specialflags & SPCFLAG_STOP)
-	specialflags &= ~SPCFLAG_STOP;
-      if(specialflags < 6) // no ints: ON works but FARGO do not
-	//if(currIntLev < 6)
-	{
-	  specialflags |= SPCFLAG_INT;
-	  currIntLev = 6;
-	}
-      key_states[TIKEY_ON] = 0;
+        if(specialflags & SPCFLAG_STOP)
+	        specialflags &= ~SPCFLAG_STOP;
+        if(specialflags < 6) // no ints: ON works but FARGO do not
+	    //if(currIntLev < 6)
+	    {
+	        specialflags |= SPCFLAG_INT;
+	        currIntLev = 6;
+	    }
+      
+        key_states[TIKEY_ON] = 0;
     }
-  else if(rc)
+    else if(rc)
     {
-      if(currIntLev < 2)
-	{
-	  specialflags |= SPCFLAG_INT;
-	  currIntLev = 2;
-	}
-    }
-  
-  return rc;
-}
-
-
-UBYTE get_rowmask(UBYTE r) 
-{
-  UBYTE rc = 0;
-  int i;
-  int *row = key_row+(r<<3);
-  
-  for(i=0; i<8; i++)
-    {
-      rc |= key_states[row[i]]<<(7-i);
+        if(currIntLev < 2)
+	    {
+	        specialflags |= SPCFLAG_INT;
+	        currIntLev = 2;
+	    }
     }
   
-  return rc;
+    return rc;
 }
 
-UBYTE read_keyboard_mask(void)
+static UBYTE get_rowmask(UBYTE r) 
 {
-  static int i;
-  static UBYTE arg;
-  static UWORD mask;
-
-  arg=0;
-  mask = (((UWORD)tihw.io[0x18])<<8)|tihw.io[0x19];
-  for(i=0; i<10; i++)
+    UBYTE rc = 0;
+    int i;
+    int *row = key_row + (r << 3);
+  
+    for(i=0; i<8; i++)
     {
-      if(!(mask & (1<<i)))
-        arg |= get_rowmask(i);
+        rc |= key_states[row[i]]<<(7-i);
+    }
+  
+    return rc;
+}
+
+UBYTE hw_kbd_read_mask(void)
+{
+    static int i;
+    static UBYTE arg;
+    static UWORD mask;
+
+    arg=0;
+    mask = (((UWORD)tihw.io[0x18])<<8)|tihw.io[0x19];
+    for(i=0; i<10; i++)
+    {
+        if(!(mask & (1<<i)))
+            arg |= get_rowmask(i);
     }
 
-  return (UBYTE)(~arg);
-}
-
-int hw_kbd_init(void)
-{
-  if((tihw.calc_type == TI92) || (tihw.calc_type == TI92p))
-    key_row = (int*)keyRow92;
-  else
-    key_row = (int*)keyRow89;
-}
-
-int hw_kbd_reset(void)
-{
-}
-
-int hw_kbd_exit(void)
-{
-  key_row = NULL;
+    return (UBYTE)(~arg);
 }
