@@ -14,6 +14,7 @@ To do:
 	- fixed main window which appears when the whole window is ready
 	- fixed V200 and Titanium crash under Linux (buffer overflow). V200 transfers don't crash
 		any more under Windows (probably same bug).
+	- added kbd_dbg variable in tiemu.ini file to display keystrokes in console (useful for creating keymaps).
 
 - 20/01/2005, version 1.80k: roms
 	- link port is now reset when error occurs: great improvement

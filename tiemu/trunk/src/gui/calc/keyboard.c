@@ -50,7 +50,8 @@ static int hwkey_to_tikey(guint16 hardware_keycode, int action)
 {
     int i;
 
-    //printf("pckey = %4x (%s)\n", hardware_keycode, keymap_value_to_string(pckeys, hardware_keycode));
+	if(options.kbd_dbg)
+		printf("pckey = %02x (%s)\n", hardware_keycode, keymap_value_to_string(pckeys, hardware_keycode));
 
     for(i = 0; i < KEYMAP_MAX; i++)
     {
@@ -60,12 +61,14 @@ static int hwkey_to_tikey(guint16 hardware_keycode, int action)
         {
             ti_key = kbd_keymap[i].ti_key;
             modifier = kbd_keymap[i].modifier;
+
 #if 0
-            printf("pckey = %4x (%s), tikey = %2x (%s), modifier = %2x (%s)\n", 
+				printf("pckey = %4x (%s), tikey = %2x (%s), modifier = %2x (%s)\n", 
                 hardware_keycode, keymap_value_to_string(pckeys, hardware_keycode),
                 ti_key, keymap_value_to_string(tikeys, ti_key),
                 modifier, keymap_value_to_string(tikeys, modifier));
 #endif
+
 			if(modifier != -1)
                 ti68k_kbd_set_key(modifier, action);
             ti68k_kbd_set_key(ti_key, action);
@@ -93,9 +96,9 @@ static int pos_to_key(int x, int y)
       	if((x >= kp[i].left) && (x < kp[i].right) && 
 	 	   (y >= kp[i].top) && (y < kp[i].bottom)) 
 		{
-#if 0
-			printf("tikey = %2x (%s)\n", skn_keymap[i], keymap_value_to_string(tikeys, skn_keymap[i]));		
-#endif
+			if(options.kbd_dbg)
+				printf("tikey = %02x (%s)\n", skn_keymap[i], keymap_value_to_string(tikeys, skn_keymap[i]));		
+
 			return skn_keymap[i];
 		}
     }

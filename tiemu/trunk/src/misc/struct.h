@@ -47,6 +47,7 @@ typedef struct
     gchar*  keys_file;
 	gint	console;
     gint    view;
+	gint	kbd_dbg;
 
 } TieOptions;
 

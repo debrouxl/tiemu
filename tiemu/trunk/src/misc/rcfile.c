@@ -427,6 +427,12 @@ void rcfile_read(void)
 	  else stop(l);
 	  continue;
 	}
+
+	if( (p=find_str(buffer, "kbd_dbg=")) )
+	{
+	  if(!strcmp(p, "no")) options.kbd_dbg = 0;
+	  else if(!strcmp(p, "yes")) options.kbd_dbg = 1;
+	}
 	
 	if( (p=find_str(buffer, "skin_file=")) )
 	{
@@ -745,6 +751,11 @@ void rcfile_write(void)
   default: fprintf(txt, "no\n"); break;
   }
   fprintf(txt, "\n");
+
+  fprintf(txt, "# Display key bindings (keyboard map files)\n");
+  fprintf(txt, "kbd_dbg=%s\n", options.kbd_dbg ? "yes" : "no");
+  fprintf(txt, "\n");
+
 	fprintf(txt, "# Geometry hints of debugger windows (x,y,w,h)\n");
 	fprintf(txt, "bkpts_wnd=(%i;%i;%i;%i)", options3.bkpts.x, options3.bkpts.y, 
 											options3.bkpts.w, options3.bkpts.h);
