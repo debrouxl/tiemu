@@ -140,7 +140,7 @@ gint display_dbgcause2_dbox()
 	ti68k_register_get_addr(7, &sp);//ti68k_register_get_sp(&sp);
 	p_sr = (uint16_t *)ti68k_get_real_address(sp);
 	sr =  GUINT16_SWAP_LE_BE(*p_sr);
-	str = g_strdup_printf("%04lx", sr);
+	str = g_strdup_printf("%04x", sr);
 	label = glade_xml_get_widget(xml, "label43");
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
@@ -149,7 +149,7 @@ gint display_dbgcause2_dbox()
 	ti68k_register_get_addr(7, &sp);
 	p_pc = (uint32_t *)ti68k_get_real_address(sp+2);
 	pc =  GUINT32_SWAP_LE_BE(*p_pc);
-	str = g_strdup_printf("%06lx", pc);
+	str = g_strdup_printf("%06x", pc);
 	label = glade_xml_get_widget(xml, "label44");
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);

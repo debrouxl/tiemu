@@ -127,14 +127,19 @@ static int match_skin(int calc_type)
 {
 	SKIN_INFOS si;
 	int ok;
-	//gchar *str;
+	gchar *skn_name, *s;
+
+	s = g_strdup(ti68k_calctype_to_string(calc_type));
+	skn_name = g_ascii_strdown(s, strlen(s));
+	printf("%s %s\n", s, skn_name);
 
 	// filename is "", load default skin
 	if(!strcmp(g_basename(options.skin_file), ""))
 	{
 		g_free(options.skin_file);
-      	options.skin_file = g_strdup_printf("%s%s.skn", 
-			inst_paths.skin_dir, ti68k_calctype_to_string(calc_type));
+		options.skin_file = g_strdup_printf("%s%s.skn", 
+					    inst_paths.skin_dir, skn_name);
+		g_free(skn_name);
 		return -1;
 	}
 
@@ -143,8 +148,9 @@ static int match_skin(int calc_type)
 	{
 		g_free(options.skin_file);
       	options.skin_file = g_strdup_printf("%s%s.skn", 
-			inst_paths.skin_dir, ti68k_calctype_to_string(calc_type));
-		return -1;
+					    inst_paths.skin_dir, skn_name);
+	g_free(skn_name);
+	return -1;
 	}
 
 	// is skin compatible
@@ -169,12 +175,14 @@ static int match_skin(int calc_type)
 	{
 		g_free(options.skin_file);
       	options.skin_file = g_strdup_printf("%s%s.skn", 
-			inst_paths.skin_dir, ti68k_calctype_to_string(calc_type));
+			inst_paths.skin_dir, skn_name);
 
-		//tiemu_error(0, _("skin incompatible with the current calc model. Falling back to default skin."));
+	//tiemu_error(0, _("skin incompatible with the current calc model. Falling back to default skin."));
+	g_free(skn_name);
 		return -1;
 	}
 
+g_free(skn_name);
 	return 0;
 }
 
@@ -697,6 +705,7 @@ int hid_update_keys(void)
 	  	else if(event.type == SDL_VIDEOEXPOSE)
 	  	{
 		  	redraw_skin();
+			hid_update_lcd();
 	  	}
     }
 
@@ -803,7 +812,6 @@ static int hid_set_contrast(int c)
 */
 static void hid_lcd_on_off(int i) 
 {
-	printf("on/off: %i\n", i);
 	if(i) 
 	{
 		iScrState = SCREEN_ON;
@@ -942,7 +950,6 @@ static void redraw_skin(void)
   	Uint8 r, g, b;
   	Uint8 *ptr;
 
-	printf("redraw_skin\n");
   	if(!params.background) 
     	return;
   

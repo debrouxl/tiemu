@@ -26,6 +26,9 @@
 #  include <config.h>
 #endif
 
+// set_page, to remove...
+#undef GTK_DISABLE_DEPRECATED
+
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <stdio.h>
@@ -496,7 +499,7 @@ static void refresh_page(int offset)
 	addr += offset;
 	addr &= 0xffffff;
 
-	str = g_strdup_printf("%06lx", addr);
+	str = g_strdup_printf("%06x", addr);
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
    	clist_refresh(store, addr, 128);
