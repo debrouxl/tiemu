@@ -69,30 +69,30 @@ the string before use.
         This integer gives the position of the JPEG data in the
         file. A call to fseek() will bring you to the beginning of the
         JPEG image.
-  0x018 - 0x01F (S) (8 bytes) : calc type (NULL-padded)
+  0x018 - 0x01B (I) (4 bytes) : string length
+        Length of the following string.
+  0x01C - 0x*** (S) (?? bytes): skin's name
+        This string is used to store the skin's name.
+  0x*** - 0x*** (I) (4 bytes) : string length
+        Length of the following string.
+  0x*** - 0x*** (S) (?? bytes): author's name
+        This string is used to store the author's name.
+  0x*** - 0x*** (I) (4 bytes) : color type
+        This integer determines which color scheme is to be used for
+        the LCD black/white pixels.
+        It is either 0 (low contrast), 1 (high contrast) or 2 (custom
+        colors).
+  0x*** - 0x*** (I) (4 bytes) : LCD white color
+        24 bits R/G/B value.
+  0x*** - 0x*** (I) (4 bytes) : LCD black color
+        24 bits R/G/B value.
+  0x*** - 0x*** (S) (8 bytes) : calc type
         This string determines the calc type. Types are allocated as
         follows :
          "TI-73",         "TI-82",          "TI-83",
          "TI-83+",        "TI-85",          "TI-86",
          "Ti-89",         "TI-92",          "TI-92+",
          "V200PLT".
-  0x020 - 0x023 (I) (4 bytes) : color type
-        This integer determines which color scheme is to be used for
-        the LCD black/white pixels.
-        It is either 0 (low contrast), 1 (high contrast) or 2 (custom
-        colors).
-  0x024 - 0x027 (I) (4 bytes) : LCD white color
-        24 bits R/G/B value.
-  0x028 - 0x02B (I) (4 bytes) : LCD black color
-        24 bits R/G/B value.
-  0x02C - 0x02F (I) (4 bytes) : string length
-        Length of the following string.
-  0x030 - 0x*** (S) (?? bytes): skin's name
-        This string is used to store the skin's name.
-  0x*** - 0x*** (I) (4 bytes) : string length
-        Length of the following string.
-  0x*** - 0x*** (S) (?? bytes): author's name
-        This string is used to store the author's name.
   0x*** - 0x*** (R) (16 bytes) : LCD position
         A RECT struct, indicating the LCD position.
   0x*** - 0x*** (I) (4 bytes) : number of RECT structs
