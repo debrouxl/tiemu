@@ -115,7 +115,7 @@ int main(int argc, char **argv)
 
 #if WITH_KDE
     splash_screen_set_label(_("Initializing KDE..."));
-    sp_kde_init(argc, argv, "TiEmu");
+    sp_kde_init(argc, argv, "tiemu", _("TiEmu"), VERSION, _("TI calculator emulator"), "Copyright (c) 2000, Thomas Corvazier, Romain Lievin\nCopyright (c) 2001-2002, Romain Lievin, Julien Blache\nCopyright (c) 2003-2004, Romain Liévin\nCopyright (c) 2005, Romain Liévin, Kevin Kofler", "http://lpg.ticalc.org/prj_tiemu/", "gtktiemu-users@lists.sf.net");
     atexit(sp_kde_finish);
 #endif
 

@@ -19,6 +19,8 @@
 #include <qlabel.h>
 #include <qcombobox.h>
 #include <kapp.h>
+#include <kaboutdata.h>
+#include <kcmdlineargs.h>
 #include <kfiledialog.h>
 #include <ktoolbar.h>
 #include <gtk/gtkmain.h>
@@ -48,6 +50,7 @@ SPKDEBridge::TimerHook (void) {
 }
 
 static KApplication *KDESodipodi = NULL;
+static KAboutData *KDEAbout = NULL;
 static SPKDEBridge *Bridge = NULL;
 static bool SPKDEModal = FALSE;
 
@@ -82,9 +85,11 @@ sp_kde_gdk_event_handler (GdkEvent *event)
 }
 
 void
-sp_kde_init (int argc, char **argv, const char *name)
+sp_kde_init (int argc, char **argv, const char *appName, const char *programName, const char *version, const char *shortDescription, const char *copyrightStatement, const char *homePageAddress, const char *bugsEmailAddress)
 {
-	KDESodipodi = new KApplication (argc, argv, name);
+	KDEAbout = new KAboutData(appName, programName, version, shortDescription, KAboutData::License_GPL, copyrightStatement, NULL, homePageAddress, bugsEmailAddress);
+	KCmdLineArgs::init(argc, argv, KDEAbout);
+	KDESodipodi = new KApplication;
 	Bridge = new SPKDEBridge ("KDE Bridge");
 
 	QObject::connect (KDESodipodi, SIGNAL (guiThreadAwake ()), Bridge, SLOT (EventHook ()));
@@ -97,6 +102,7 @@ sp_kde_finish (void)
 {
 	delete Bridge;
 	delete KDESodipodi;
+	delete KDEAbout;
 }
 
 char *

@@ -17,7 +17,7 @@
 
 G_BEGIN_DECLS
 
-void sp_kde_init (int argc, char **argv, const char *name);
+void sp_kde_init (int argc, char **argv, const char *appName, const char *programName, const char *version, const char *shortDescription, const char *copyrightStatement, const char *homePageAddress, const char *bugsEmailAddress);
 void sp_kde_finish (void);
 
 char *sp_kde_get_open_filename (unsigned char *dir, unsigned char *filter, unsigned char *title);

@@ -161,8 +161,8 @@ tiemu_OBJ = core/uae/newcpu.o \
 all: uae tiemu
 
 uae:
-	cd core/uae && $(MAKE) CFLAGS="$(CFLAGS)" gen
-	cd core/uae && $(MAKE) CFLAGS="$(CFLAGS)" all
+	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" gen
+	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" all
 
 tiemu: $(tiemu_OBJ)
 #	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu $(LDFLAGS) $(CFLAGS)

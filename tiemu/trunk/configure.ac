@@ -115,7 +115,6 @@ AC_ARG_WITH(kde, AC_HELP_STRING([--with-kde], [Compile with KDE support]), [kde=
 if test "x$kde" = "xyes"; then
         AC_PROG_CXX
         AC_PATH_KDE
-        KDE_CHECK_NEWLIBS
         AC_DEFINE(WITH_KDE, 1, [Use KDE support])
 fi
 AC_SUBST(kde)
