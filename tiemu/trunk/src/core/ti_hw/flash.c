@@ -133,9 +133,9 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
     // Write State Machine (WSM, Sharp's data sheet)
     if (wsm.write_ready)
     {
-	    rom[addr] = v;
-		wsm.changed[addr>>16] = !0;
-		//printf("%i written\n", addr>>16);
+		if(rom[addr] != v)
+			wsm.changed[addr>>16] = !0;
+		rom[addr] = v;
             
 		wsm.write_ready--;
         wsm.ret_or = 0xffffffff;
