@@ -1,14 +1,14 @@
 ## Process this file with autoconf to produce Makefile
 
-#if OS_WIN32
-	extra_ldflags = -lcomdlg32
-#endif
-
 @SET_MAKE@
 CC        = @CC@
 CPP       = @CPP@
 CFLAGS    = @CFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GTHREAD_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@
 LDFLAGS   = @LDFLAGS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GTHREAD_LIBS@ @GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ $(extra_ldflags)
+
+ifneq (,$(findstring __WIN32__,$(CFLAGS)))
+	LDFLAGS += -lcomdlg32
+endif
 
 INSTALL         = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -182,5 +182,10 @@ distdir: clean
 	cp -rl * ../tiemu-@VERSION@/src
 
 install: tiemu
+ifeq (,$(findstring __WIN32__,$(CFLAGS)))
 	@$(INSTALL) -d $(prefix)/bin
 	$(INSTALL) -m755 tiemu ${prefix}/bin/
+else
+	@$(INSTALL) -d $(prefix)/share/tiemu
+	$(INSTALL) -m755 tiemu ${prefix}/share/tiemu/
+endif

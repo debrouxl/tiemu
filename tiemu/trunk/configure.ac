@@ -91,7 +91,7 @@ AC_C_VOLATILE
 # Checks for libraries.
 AC_CHECK_LIB(m, pow)
 AC_CHECK_LIB(pthread, pthread_create) dnl needed by GThread
-AC_CHECK_LIB(comdlg32, GetOpenFileName)
+#AC_CHECK_LIB(comdlg32, GetOpenFileName)
 
 # Checks for library functions.
 AC_FUNC_MALLOC
@@ -147,7 +147,7 @@ case $host_os in
   ;;
 esac
 
-AM_CONDITIONAL(OS_WIN32, test "$msnative_struct")
+#AM_CONDITIONAL(OS_WIN32, test "$msnative_struct")
 
 # some extra flags
 CFLAGS="$CFLAGS -DGTK_DISABLE_DEPRECATED -DDEBUGGER"
