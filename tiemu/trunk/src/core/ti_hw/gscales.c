@@ -44,8 +44,8 @@
 #include "images.h"
 #include "ti68k_def.h"
 
-#define BUFSIZE	12			// store 12 plane addresses
-#define UPDATE_PLANES	16	// update plane addresses every 16 LCD refresh
+#define BUFSIZE	8			// store 12 plane addresses
+#define UPDATE_PLANES	32	// update plane addresses every 16 LCD refresh
 
 double round(double v)
 {
@@ -79,9 +79,6 @@ extern void lcd_hook(void)
 	static int cnt;
 	static double fir;
 	uint32_t tmp;
-
-	//printf("%02X ", tihw.timer_value);
-	if(++t % 2) return;
 
 	// unused on HW2/HW3
 	if(tihw.hw_type >= HW2)
@@ -124,9 +121,14 @@ extern void lcd_hook(void)
 			}
 		}
 
-		// FIR filter: get number of planes
+#ifdef FIR
+		// FIR filter: get number of planes (don't need any more: 
+		// I have implemented pending interrupts)
 		fir = (np + 1.1*fir) / 2;
 		ngp = (int)round(fir);
+#else
+		ngp = np;
+#endif
 
 		// keep plane address in the right order (to test ...)
 		if(lcd_planes[0] > lcd_planes[1])
@@ -144,7 +146,7 @@ extern void lcd_hook(void)
 		}
 
 #if 0
-		printf("%06x-%06x-%06x\n", lcd_planes[0], lcd_planes[1], lcd_planes[2]);
+		//printf("%06x-%06x-%06x\n", lcd_planes[0], lcd_planes[1], lcd_planes[2]);
 		//printf("%1.1f/%1.1f %i\n", round(fir), fir, c);				 
 		//for(i = 0; i < 8; i++)	printf("%06x ", lcd_addrs[i]); printf("\n");
 #endif

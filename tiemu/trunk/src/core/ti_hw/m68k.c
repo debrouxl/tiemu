@@ -120,9 +120,6 @@ int hw_m68k_run(int n)
 	{
 		UWORD opcode;
 
-		if(specialflags & SPCFLAG_DBSKIP)
-			printf("skip !\n");
-
 		// refresh hardware
 		do_cycles();
 
@@ -172,6 +169,9 @@ int hw_m68k_run(int n)
         {
             bkpts.pclog_buf[bkpts.pclog_ptr++ % bkpts.pclog_size] = m68k_getpc();
         }
+
+		//if((int)m68k_getpc() == 0x3f7e0) printf(".");
+		//if((int)m68k_getpc() == 0x2a2568) printf(".");
 
 		// search for next opcode and execute it
 		opcode = nextiword();
@@ -257,7 +257,7 @@ int hw_m68k_run(int n)
         }
 
 		// TI89 HW1 AMS203 and gray3pt() test program
-		//if((int)m68k_getpc() == 0x3f83c) printf(".");
+		//if((int)m68k_getpc() == 0x3f7e0) printf(".");
 		//if((int)m68k_getpc() == 0x2a2568) printf(".");
 
         // search for next opcode, execute it and refresh hardware (if not STOP'ed)
@@ -302,7 +302,6 @@ int hw_m68k_run(int n)
 					Interrupt2(intr);
 					regs.stopped = 0;
 					specialflags &= ~SPCFLAG_STOP;
-					printf("%R");
 				}
 	        }
 	      
