@@ -11,6 +11,7 @@ SubVersion: $Id$
 	- no key auto-repeat: no needs
 	- disasm listing:
 	- SR flags (VTi emulation):
+	- long names with the ROM version box: fixed.
 
 - 05/05/2004, version 1.70: roms
 	Rework in progress.	

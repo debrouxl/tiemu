@@ -116,6 +116,8 @@ static GtkListStore* clist_init(GtkWidget *clist)
 	return list;
 }
 
+#define NTOKENS 7
+
 gint display_romversion_dbox()
 {
 	GtkWidget *dialog;
@@ -128,8 +130,6 @@ gint display_romversion_dbox()
     GtkListStore *list;
     GtkTreeIter iter;
 
-    gchar buffer[MAXCHARS];
-    int i;
     FILE *fp;
     gchar *filename;
     struct stat s;
@@ -182,13 +182,15 @@ gint display_romversion_dbox()
 
     while(!feof(fp)) 
 	{
-		gchar **row_text = g_malloc0((CLIST_NCOLS+1) * sizeof(gchar *));
+		gchar **row_text;
+        char line[256];
 
-        for(i=0; i<CLIST_NCOLS; i++) 
-		{
-	        fscanf(fp, "%s\t", buffer);
-	        row_text[i] = g_strdup(buffer);
-	    }
+        fgets(line, sizeof(line), fp);
+        if(feof(fp))
+            break;
+        line[strlen(line) - 1] = '\0';
+
+        row_text = g_strsplit(line, ",", NTOKENS);
 
         gtk_list_store_append(list, &iter);
         gtk_list_store_set(list, &iter, 

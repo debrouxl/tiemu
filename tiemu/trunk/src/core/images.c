@@ -810,6 +810,8 @@ int ti68k_scan_files(const char *src_dir, const char *dst_dir)
     return 0;
 }
 
+#define NTOKENS 7
+
 /*
   	Scan images in a given directory 
   	and build the cache file.
@@ -829,7 +831,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 	gchar *path;
 	struct stat f_info;
 	int ret;  	
-  	char *line[7];
+  	char *line[NTOKENS];
 
   	DISPLAY(_("Scanning images/upgrades... "));
 
@@ -847,12 +849,18 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 		// read it and store ROM names
       	for(nlines = 0; !feof(file) && (nlines < 255); nlines++)
 		{
+            gchar **row_text;
+
 	  		fgets(buffer, sizeof(buffer), file);
 			if(feof(file))
 				break;
+            buffer[strlen(buffer) - 1] = '\0';
 
-	  		sscanf(buffer, "%s\t", str);
-	  		rom_names[nlines] = g_strdup(str);
+            row_text = g_strsplit(buffer, ",", NTOKENS);
+
+	  		rom_names[nlines] = g_strdup(row_text[0]);
+
+            g_strfreev(row_text);
 		}		
       
 		// ready to add new entries
@@ -948,7 +956,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 	  				line[5] = _("no");
 				line[6] = (char *)ti68k_hwtype_to_string(img.hw_type);
 		  
-		  			fprintf(file, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", 
+		  			fprintf(file, "%s,%s,%s,%s,%s,%s,%s\n", 
 		  				line[0], line[1], line[2], 
 		  				line[3], line[4], line[5], line[6]);
 			}
