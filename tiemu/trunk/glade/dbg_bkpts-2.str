@@ -12,5 +12,6 @@ gchar *s = N_("Disable breakpoint");
 gchar *s = N_("Enable breakpoint");
 gchar *s = N_("Go to breakpoint location");
 gchar *s = N_("Double-click a row to edit breakpoint values.");
+gchar *s = N_("Breakpoint context:");
 gchar *s = N_("Data");
 gchar *s = N_("Vectors");

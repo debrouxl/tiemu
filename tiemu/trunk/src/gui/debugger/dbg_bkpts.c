@@ -213,6 +213,7 @@ static void clist_populate(GtkListStore *store)
 
 static GtkListStore *store = NULL;
 static gint already_open = 0;
+GtkWidget *statbar;
 
 /*
 	Display registers window
@@ -232,9 +233,8 @@ GtkWidget* dbgbkpts_create_window(void)
 	
 	dbox = glade_xml_get_widget(xml, "dbgbkpts_window");
 
-	data = glade_xml_get_widget(xml, "button3");
-	data = glade_xml_get_widget(xml, "button4");
-
+	statbar = glade_xml_get_widget(xml, "statusbar1");
+	
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
 	clist_populate(store);
@@ -262,6 +262,10 @@ GtkWidget* dbgbkpts_display_window(void)
 
 	gtk_list_store_clear(store);
     clist_populate(store);
+
+	display_dbgcause_dbox2(statbar);
+	//dbgbkpts_statusbar_add(statbar);
+
 
 	return wnd;
 }

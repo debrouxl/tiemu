@@ -61,8 +61,7 @@ int gtk_debugger_enter(int context)
     case DBG_TRACE:
         break;
     case DBG_BREAK:
-        //dbgcause1_display_dbox();
-        display_dbgcause_dbox();
+        //display_dbgcause_dbox();
         break;
     }
 

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: main.c 187 2004-05-14 14:22:36Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -275,8 +275,8 @@ gint display_romversion_dbox(gboolean file_only)
 					return -1;
 				}
                 
-                msg_box(_("Information"), _("Your configuration has been saved."));
-                rcfile_write();
+                //msg_box(_("Information"), _("Your configuration has been saved."));
+                //rcfile_write();
 
                 // Simply reset, don't restart
                 ti68k_reset();

@@ -203,3 +203,79 @@ gint display_dbgcause_dbox()
 
 	return 0;
 }
+
+gint display_dbgcause_dbox2(GtkWidget *sb)
+{
+	gint type, id, mode;
+	guint sb_id;
+	gchar *str = NULL;
+
+    // get context
+	ti68k_bkpt_get_cause(&type, &mode, &id);
+    if(!type && !mode && !id)
+        return 0;
+
+	// exception or code/mem ?
+	if(type == BK_TYPE_EXCEPTION)
+	{
+		// exception
+		uint32_t sp;
+		uint16_t* p_sr;
+		uint32_t* p_pc;
+		uint32_t pc;
+		uint32_t sr;
+
+		ti68k_register_get_sp(&sp);
+		p_sr = (uint16_t *)ti68k_get_real_address(sp);
+		sr =  GUINT16_SWAP_LE_BE(*p_sr);
+
+		ti68k_register_get_sp(&sp);
+		p_pc = (uint32_t *)ti68k_get_real_address(sp+2);
+		pc =  GUINT32_SWAP_LE_BE(*p_pc);
+
+		str = g_strdup_printf("<%s>, id=#%i, SR=%04x, PC=%06x\n", 
+			ti68k_exception_to_string(mode), id, str, pc);
+
+	}
+	else
+	{
+		// code
+		uint32_t value, min, max;
+		gchar *str1, *str2;
+
+		ti68k_register_get_pc(&value);
+		str1 = g_strdup_printf("pc=$0x%06x, type=<%s>, mode=<%s>, id=#%i", 
+			value, ti68k_bkpt_type_to_string(type),
+			ti68k_bkpt_mode_to_string(type, mode), id);
+	
+		switch(type)
+		{
+		case BK_TYPE_ACCESS:
+			ti68k_bkpt_get_access(id, &min, mode);
+			str2 = g_strdup_printf("mem=$0x%06x", min);
+			break;
+		case BK_TYPE_RANGE:
+			ti68k_bkpt_get_range(id, &min, &max, mode);
+			str2 = g_strdup_printf("mem=$0x%06x-$0x%06x", min, max);
+			break;
+		default:
+			str2 = g_strdup("n/a");
+			break;
+		}
+
+		str = g_strconcat(str1, ", ", str2, NULL);
+		g_free(str1);
+		g_free(str2);
+	}
+
+	sb_id = gtk_statusbar_get_context_id(GTK_STATUSBAR(sb), str);
+	gtk_statusbar_push(GTK_STATUSBAR(sb), sb_id, str);
+	g_free(str);
+
+	return 0;
+}
+
+/*
+	id = gtk_statusbar_get_context_id(GTK_STATUSBAR(sb), str);
+	gtk_statusbar_push(GTK_STATUSBAR(sb), id, str);
+}*/
