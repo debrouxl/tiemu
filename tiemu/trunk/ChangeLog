@@ -5,6 +5,9 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
+- 03/01/2005, version 1.80i: roms
+	- implemented new method for grayscale computing & management (idea from Kevin)
+
 - 13/12/2004, version 1.80h: roms
 	- simplified skin/keymap management (TI92+ => TI92, TI89t => TI89)
 	- simplified ROM image/upgrade access

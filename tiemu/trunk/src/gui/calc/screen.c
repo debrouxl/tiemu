@@ -208,12 +208,15 @@ void redraw_lcd(void)
 /* Update LCD screen part */
 int hid_update_lcd(void)
 {
-	int i, j, k;
-	//uint8_t *lcd_bitmap = tihw.lcd_ptr;
+	int i, j, k, l;
 	uint8_t *lcd_bitmap = tihw.lcd_ptr = &tihw.ram[tihw.lcd_adr];	
 	uint8_t *lcd_buf = (uint8_t *)lcd_bytmap;
 	GdkRect src, dst;
 	guchar *p;
+
+	extern uint32_t lcd_planes[3];
+	extern int ngc;
+	extern int gp_seq[9][8];
 
     if(!pixmap || !lcd || !tihw.lcd_ptr)
         return 0;
@@ -238,10 +241,10 @@ int hid_update_lcd(void)
 		compute_grayscale();
 	}
 
-	// Check for gray plane change (menu)
-    if(max_plane != params.grayplanes) 
+	// Check for gray plane change (menu/hw)
+    if(max_plane != ngc) 
     {
-		max_plane = params.grayplanes;
+		max_plane = ngc;
 		compute_grayscale();
     }
 
@@ -249,22 +252,15 @@ int hid_update_lcd(void)
 	if(!lcd_state)
 		return 0;
 
-	// Convert the bitmap screen to a bytemap screen and grayscales
-	if(!max_plane || !cur_plane) 
-    { 
-		// no gray scale or init gray plane
-		for(j = 0, k = 0; k < LCDMEM_H; k++)
-		{
-			for(i = 0; i < LCDMEM_W/8; i++, lcd_bitmap++) 
-			{
-				lcd_bytmap[j++] = convtab[(*lcd_bitmap << 1)  ];
-				lcd_bytmap[j++] = convtab[(*lcd_bitmap << 1)+1];
-			}
-		}
-    }
-	else 
-    { 
-		// compute gray scale
+	// Convert the bitmap screen to a bytemap screen and grayscalize
+	memset(lcd_bytmap, 0, LCDMEM_H*LCDMEM_W);	
+	for(l = 0; l < 8; l++)
+	{
+		int pp = gp_seq[ngc][l];
+		if(pp == -1) break;
+
+		lcd_bitmap = &tihw.ram[lcd_planes[pp]];
+
 		for(j = 0, k = 0; k < LCDMEM_H; k++)
 		{
 			for(i = 0; i < LCDMEM_W/8; i++, lcd_bitmap++) 
@@ -275,7 +271,7 @@ int hid_update_lcd(void)
 		}
     }
 
-    if(++cur_plane >= max_plane) 
+    if(1)
 	{
 		// Copy LCD from buffer to pixbuf
 		for(j = 0; j < LCDMEM_H; j++) 
@@ -290,8 +286,6 @@ int hid_update_lcd(void)
 				lcd_buf++;
 			}
 		}
-
-        cur_plane = 0;
 
         // Copy surface into window
         src.x = 0;

@@ -417,7 +417,7 @@ int  hid_init(void)
   	compute_convtable();
 
     // Install LCD refresh: 100 FPS (10 ms)
-    tid = g_timeout_add((params.lcd_rate == -1) ? 10 : params.lcd_rate, 
+    tid = g_timeout_add((params.lcd_rate == -1) ? 25 : params.lcd_rate, 
 		(GtkFunction)hid_refresh, NULL);
 	
     return 0;

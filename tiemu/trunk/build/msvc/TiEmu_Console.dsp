@@ -128,6 +128,10 @@ SOURCE=..\..\src\core\ti_hw\flash.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\ti_hw\gscales.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\ti_hw\hw.c
 # End Source File
 # Begin Source File
