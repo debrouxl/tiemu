@@ -31,10 +31,10 @@ int hw_dbus_init(void);
 int hw_dbus_reset(void);
 int hw_dbus_exit(void);
 
-void  linkport_putbyte(UBYTE arg);
-UBYTE linkport_getbyte(void);
-int   linkport_byteavail(void);
-int   linkport_checkread(void);
+void  (*hw_dbus_putbyte)    (UBYTE arg);
+UBYTE (*hw_dbus_getbyte)    (void);
+int   (*hw_dbus_byteavail)	(void);
+int   (*hw_dbus_checkread)  (void);
 
 int init_linkfile();
 int send_ti_file(const char *filename);
@@ -54,7 +54,6 @@ extern int transnotready;
 extern int recvflag;
 extern int recvbyte;
 extern int lc_raw_access;
-
 
 #endif
 

@@ -89,11 +89,13 @@ typedef struct
     char	rom_version[5];
 	int		hw_type;
 
-	char	*lcd_ptr;
+	char	*lcd_ptr;		// direct pointer to LCD
+	int		lc_file;		// direct file loading mode
+	int		lc_speedy;		// speedy mode for direct file
 
     // ioports.c
-    int     io0Bit7;
-    int     io0Bit2;
+    //int     io0Bit7;
+    //int     io0Bit2;
 
     // keyboard.c
     int     on_key;

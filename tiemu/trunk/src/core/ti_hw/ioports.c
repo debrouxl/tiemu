@@ -130,7 +130,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
         break;
         case 0x0f: 	// rw <76543210>
 			// write a byte to the transmit buffer (1 byte buffer)
-            linkport_putbyte(arg);
+            hw_dbus_putbyte(arg);
             break;
         case 0x10: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8
@@ -251,7 +251,7 @@ UBYTE io_get_byte(CPTR adr)
 			v |= tihw.dbus_err << 7;
 			v |= tihw.tx_empty << 6;
 			v |= tihw.rx_full << 5;
-            //return (linkport_byteavail() ? 0x60 : 0x40);	/* 0x40 -> always return tx buffer as empty */
+            //return (hw_dbus_byteavail() ? 0x60 : 0x40);	/* 0x40 -> always return tx buffer as empty */
         case 0x0e:	// rw <....3210>
 			// read red/white wires if raw access
 			if(tihw.dbus_raw)
@@ -263,7 +263,7 @@ UBYTE io_get_byte(CPTR adr)
         case 0x0f: 	// rw <76543210>
 			// read one byte from receive (incoming) buffer
             recvflag = 0;
-            return linkport_getbyte();
+            return hw_dbus_getbyte();
         case 0x10: 	// -w <76543210> (hw1)
         break;
         case 0x11: 	// -w <76543210> (hw1) 

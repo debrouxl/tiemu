@@ -62,15 +62,9 @@ int   df_checkread(void);
 	Variables: External link port for direct file loading	
 */
 
-TicableLinkCable *ilc = NULL;
-TicalcFncts itc;
-TicalcInfoUpdate iu = { 0 };
 
 int lc_internal = 0;
 int lc_speedy = 0;
-int byte_t2f, byte_f2t;
-int iput = 0;
-int iget = 0;
 int init_linkfile();
 
 /* 
@@ -225,7 +219,12 @@ static int lp_checkread(void)
 
 /*
 	Directfile access
- */
+*/
+ 
+int byte_t2f;
+int byte_f2t;
+int iput;
+int iget;
 
 void df_putbyte(UBYTE arg)
 {
@@ -256,78 +255,6 @@ int df_checkread(void)
     return iput;
 }
 
-/***************/
-
-void linkport_putbyte(UBYTE arg)
-{
-  int err;
-  
-  lc_timeout = 0;
-  if(lc_internal)
-    {
-      byte_t2f = arg;
-      iget = 1;
-    }  
-  else
-    {
-      if( (err=lc.put(arg)) )
-	{
-	  print_lc_error(err);
-	  return;
-	}
-    }
-}
-
-UBYTE linkport_getbyte(void)
-{
-  lc_timeout = 0;
-  if(lc_internal) 
-    {
-      iput = 0;
-      return byte_f2t;
-    }
-
-  byteAvail = 0;
-  return lastByte;
-}
-
-int linkport_byteavail(void)
-{
-  if(lc_internal) 
-    return iput;
-
-  return byteAvail;  
-}
-
-int linkport_checkread(void)
-{
-  int err = 0;
-  int status = 0;
-
-  if(lc_internal) 
-    return iput;
-
-  if(byteAvail)
-    return 0;
-
-  if( (err=lc.check(&status)) )
-    {
-      print_lc_error(err);
-      byteAvail = 0;
-    }
-  if(status & STATUS_RX)
-    {
-      if( (err=lc.get(&lastByte)) )
-        {
-          print_lc_error(err);
-        }
-      byteAvail = 1;
-    }
-  else
-    byteAvail = 0;
-  
-  return byteAvail;
-}
 
 /*
   Internal link port emulation for direct sending/receiving files.
@@ -342,7 +269,13 @@ int linkport_checkread(void)
   used by libticalcs for sending/receiving data. These functions exchange
   bytes with the linkport at HW level (io.c).
   The libticalcs provided the abstraction we need for this.
+
+	Wonderful, isn't it ?! Take a look at the 'TiLP framework' power ;-)
 */
+
+TicableLinkCable* 	ilc = NULL;
+TicalcFncts			itc;
+TicalcInfoUpdate 	iu = { 0 };
 
 /* libticables functions (link API) */
 int ilp_init_port()     { return 0; }
@@ -350,31 +283,33 @@ int ilp_open_port()     { return 0; }
 
 int ilp_put(uint8_t data)
 { 
-  byte_f2t = data; 
-  iput = 1;
-  while(iput) 
+  	byte_f2t = data; 
+  	iput = 1;
+  	
+  	while(iput) 
     { 
-      ti68k_debug_do_instructions(1); 
+      	ti68k_debug_do_instructions(1); 
     };
   
-  return 0; 
+  	return 0; 
 }
 
 int ilp_get(uint8_t *data)
 { 
-  while(!iget) 
+  	while(!iget) 
     { 
-      ti68k_debug_do_instructions(1); 
+      	ti68k_debug_do_instructions(1);
     };
-  *data = byte_t2f;
-  iget = 0; 
+    
+  	*data = byte_t2f;
+  	iget = 0; 
   
   return 0; 
 }
 
-int ilp_probe_port()    { return 0; }
-int ilp_close_port()    { return 0; }
-int ilp_term_port()     { return 0; }
+int ilp_probe_port()    	{ return 0; }
+int ilp_close_port()    	{ return 0; }
+int ilp_term_port()     	{ return 0; }
 int ilp_check_port(int *st) { return 0; }
 
 void ilp_start()   { }
@@ -386,41 +321,42 @@ void ilp_label()   { }
 /* Initialize a pseudo link cable to be connected with HW */
 int init_linkfile()
 {
-  if(ilc != NULL)
-    free(ilc);
-  ilc = (TicableLinkCable *)malloc(sizeof(TicableLinkCable));
-  if(ilc == NULL)
-    return ERR_68K_MALLOC;
+  	if(ilc != NULL)
+	    free(ilc);
+  	
+  	ilc = (TicableLinkCable *)malloc(sizeof(TicableLinkCable));
+  	if(ilc == NULL)
+    	return ERR_68K_MALLOC;
 
-  ilc->init  = ilp_init_port;
-  ilc->open  = ilp_open_port;
-  ilc->put   = ilp_put;
-  ilc->get   = ilp_get;
-  ilc->close = ilp_close_port;
-  ilc->exit  = ilp_term_port;
-  ilc->probe = ilp_probe_port;
-  ilc->check = ilp_check_port;
+  	ilc->init  = ilp_init_port;
+  	ilc->open  = ilp_open_port;
+  	ilc->put   = ilp_put;
+  	ilc->get   = ilp_get;
+  	ilc->close = ilp_close_port;
+  	ilc->exit  = ilp_term_port;
+  	ilc->probe = ilp_probe_port;
+  	ilc->check = ilp_check_port;
 
-  ticalc_set_cable(ilc);
+  	ticalc_set_cable(ilc);
 
-  switch(tihw.calc_type)
+  	switch(tihw.calc_type)
     {
-    case TI92: ticalc_set_calc(CALC_TI92, &itc);
-      break;
-    case TI89: ticalc_set_calc(CALC_TI89, &itc);
-      break;
-    case TI92p: ticalc_set_calc(CALC_TI92P, &itc);
-      break;
-	case V200: ticalc_set_calc(CALC_V200, &itc);
-      break;
-    default: return ERR_68K_INTERNAL;
-      break;
+    	case TI92: ticalc_set_calc(CALC_TI92, &itc);
+      	break;
+    	case TI89: ticalc_set_calc(CALC_TI89, &itc);
+      	break;
+    	case TI92p: ticalc_set_calc(CALC_TI92P, &itc);
+      	break;
+		case V200: ticalc_set_calc(CALC_V200, &itc);
+      	break;
+    	default: return ERR_68K_INTERNAL;
+      	break;
     }
 
-  ticalc_set_update(&iu, ilp_start, ilp_stop, ilp_refresh,
+  	ticalc_set_update(&iu, ilp_start, ilp_stop, ilp_refresh,
 		    ilp_pbar, ilp_label);
 
-  return 0;
+  	return 0;
 }
 
 int test_sendfile()

@@ -107,7 +107,7 @@ void hw_update()
     }
 
     /* Link status */
-    if(linkport_checkread())
+    if(hw_dbus_checkread())
         tihw.io[0xc] |= 0x2;
 
     /* Link interrupt */ 
