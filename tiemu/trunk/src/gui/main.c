@@ -131,23 +131,6 @@ int main(int argc, char **argv)
     ti68k_scan_files(inst_paths.img_dir, inst_paths.img_dir);
 
 	/*
-		For developers only
-	*/
-/*
-#ifndef __WIN32__
-	// linux
-	g_free(params.rom_file);
-	params.rom_file = g_strdup("/home/romain/ti92.img");
-#else
-	//win32
-	g_free(params.rom_file);
-	params.rom_file = g_strdup("C:\\msvc\\tilp\\images\\ti92p.img");
-
-	g_free(params.tib_file);
-	params.tib_file = g_strdup("C:\\msvc\\tilp\\images\\os.9xu");
-#endif
-*/
-	/*
 		Attempt to load an image (step 3)
 	*/
 	if(ti68k_load_image(params.rom_file)) {
@@ -193,7 +176,7 @@ int main(int argc, char **argv)
 	/* 
 		Load calculator state image 
 	*/
-    splash_screen_set_label(_("Loading saved state..."));
+    splash_screen_set_label(_("Loading previously saved state..."));
 	if(params.ram_file != NULL) {
 		ti68k_state_load(params.ram_file);
 	}
