@@ -157,8 +157,8 @@ typedef struct
 	int n_traps;
 
 	// Breakpoint cause
-	int mode;		// = access type
 	int type;		// = cause
+	int mode;		// = access type
 	int id;			// = n°
 } Ti68kBreakpoints;
 

@@ -203,7 +203,7 @@ void ti68k_bkpt_del_trap(int trap)
     bkpts.n_traps--;
 }
 
-void ti68k_bkpt_get_cause(int *type, int *id, int *mode) 
+void ti68k_bkpt_get_cause(int *type, int *mode, int *id) 
 {
     *type = bkpts.type;
     *mode = bkpts.mode;
