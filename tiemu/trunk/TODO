@@ -56,10 +56,10 @@ l'adresse 0x000000 (qui est en fait manifestement
 une copie de 0x200000 au moment où il charge la 
 table, l'init de la RAM est sûrement faite après). 
 
-* la fenêtre Stack Frame ne semble pas updatée en 
++ la fenêtre Stack Frame ne semble pas updatée en 
 temps réel.
 
-* F2 ne marche plus pour mettre un breakpoint. 
++ F2 ne marche plus pour mettre un breakpoint. 
 Peut-être lié aux six warnings
 (tiemu.exe:936): Gtk-WARNING **: gtkwidget.c:3075: 
 widget 'GtkToolButoon' has no activatable signal 
