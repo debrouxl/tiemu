@@ -180,6 +180,9 @@ int hid_update_lcd(void)
 	int width, height, rowstride, n_channels;
 	guchar *pixels, *p;
 
+    if(!pixmap || !lcd)
+        return 0;
+
     iScrW = tihw.lcd_w;
     iScrH = tihw.lcd_h;
 

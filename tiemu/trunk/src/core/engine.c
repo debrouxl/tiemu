@@ -84,7 +84,8 @@ gpointer ti68k_engine(gpointer data)
 	{
 		// Check engine status
 		G_LOCK(running);
-		if (!running) {
+		if (!running) 
+        {
 			G_UNLOCK(running);
 			g_thread_yield ();			
 			continue;
@@ -95,14 +96,17 @@ gpointer ti68k_engine(gpointer data)
       
 		// Run emulator core
 		res = ti68k_debug_do_instructions(cpu_instr);
-		if(res) {  
+		if(res) 
+        {  
 			// a bkpt has been encountered
 			G_LOCK(running);
             running = 0;
 			G_UNLOCK(running);
 
             debugger = res;
-		} else { 
+		} 
+        else 
+        { 
 			// normal execution
 			ftime(&tCurrentTime);
 			

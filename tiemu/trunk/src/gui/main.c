@@ -58,36 +58,9 @@ ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
-G_LOCK_EXTERN(lcd_flag);
-extern volatile int lcd_flag;
-extern volatile int debugger;
-
-static gint hid_refresh (gpointer data)
-{
-    if(lcd_flag || (tihw.calc_type == HW2))
-    {
-		// TI92+: jackycar, TI89: baballe
-        hid_update_lcd();
-        G_LOCK(lcd_flag);
-        lcd_flag = 0;
-		//printf("<");
-        G_UNLOCK(lcd_flag);
-
-        // Toggles every FS (every time the LCD restarts at line 0)
-        tihw.io2[0x1d] |= (1 << 7);
-    }
-
-	// gruik, should be removed later...
-    if(debugger)
-    {
-        enter_gtk_debugger(debugger);
-        debugger = 0;
-    }
-
-    return TRUE;
-}
 
 /* Main function */		
+
 int main(int argc, char **argv) 
 {
 	GThread *thread = NULL;
@@ -149,11 +122,6 @@ int main(int argc, char **argv)
     //ticable_set_printl(ticables_printl);
 	//tifiles_set_printl(tifiles_printl);
     //ticalc_set_printl(ticalcs_printl);
-
-	/* 
-		Assign an GUI to the emulation engine
-	*/
-	hid_set_callbacks();
 
     /*
         Search for ROM in the image directory
@@ -234,16 +202,6 @@ int main(int argc, char **argv)
 	thread = g_thread_create(ti68k_engine, NULL, FALSE, &error);
 	ti68k_engine_unhalt();
     splash_screen_stop();
-
-	/*
-		Surprisingly, using gtk_main_iteration is less CPU intensive than 
-        gtk_main() and the hid_update_key in a gtk_idle function.
-		GTK popup menu is called from SDL in hid.c
-        Timeout handler is used to refresh display. This way is 10% less CPU 
-        intensive than direct updating from hardware at hardware rate.
-	*/
-    g_timeout_add((params.lcd_rate == -1) ? 10 : params.lcd_rate, 
-           (GtkFunction)hid_refresh, NULL);
 
    	gdk_threads_enter();
     gtk_main();

@@ -189,10 +189,6 @@ SOURCE=..\..\src\core\dbg\romcalls.c
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\core\callbacks.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\core\engine.c
 # End Source File
 # Begin Source File
@@ -272,6 +268,10 @@ SOURCE=..\..\src\gui\calc\keyboard.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gui\popup.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\calc\screen.c
 # End Source File
 # Begin Source File
@@ -321,10 +321,6 @@ SOURCE=..\..\src\gui\manpage.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\pbars.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\popup.c
 # End Source File
 # Begin Source File
 

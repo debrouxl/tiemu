@@ -71,21 +71,19 @@ gint display_main_wnd(void)
 	return 0;
 }
 
+GLADE_CB void
+on_calc_wnd_destroy                    (GtkObject       *object,
+                                        gpointer         user_data)
+{
+    gtk_main_quit();
+}
+
 GLADE_CB gboolean
 on_calc_wnd_delete_event           (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-    return FALSE;
-}
-
-
-GLADE_CB gboolean
-on_calc_wnd_destroy_event          (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-    return FALSE;
+    return TRUE;
 }
 
 GLADE_CB gboolean
@@ -169,13 +167,43 @@ static int match_skin(int calc_type)
       	options.skin_file = g_strdup_printf("%s%s.skn", 
 			inst_paths.skin_dir, skn_name);
 
-	//tiemu_error(0, _("skin incompatible with the current calc model. Falling back to default skin."));
-	g_free(skn_name);
+	    tiemu_error(0, _("skin incompatible with the current calc model. Falling back to default skin."));
+	    g_free(skn_name);
 		return -1;
 	}
 
     g_free(skn_name);
 	return 0;
+}
+
+G_LOCK_EXTERN(lcd_flag);
+extern volatile int lcd_flag;
+extern volatile int debugger;
+static gint tid = -1;
+
+static gint hid_refresh (gpointer data)
+{
+    if(lcd_flag || (tihw.calc_type == HW2))
+    {
+		// TI92+: jackycar, TI89: baballe
+        hid_update_lcd();
+        G_LOCK(lcd_flag);
+        lcd_flag = 0;
+		//printf("<");
+        G_UNLOCK(lcd_flag);
+
+        // Toggles every FS (every time the LCD restarts at line 0)
+        tihw.io2[0x1d] |= (1 << 7);
+    }
+
+	// gruik, should be removed later...
+    if(debugger)
+    {
+        enter_gtk_debugger(debugger);
+        debugger = 0;
+    }
+
+    return TRUE;
 }
 
 void compute_convtable(void);
@@ -260,14 +288,21 @@ int  hid_init(void)
   	set_colors();
   	redraw_skin();
 
+    // Install LCD refresh
+    tid = g_timeout_add((params.lcd_rate == -1) ? 10 : params.lcd_rate, (GtkFunction)hid_refresh, NULL);
+
     return 0;
 }
 
 int  hid_exit(void)
 {
+
+    // Uninstall LCD refresh
+    g_source_remove(tid);
+
     if(lcd != NULL)
     {
-        g_object_unref(lcd);
+        //g_object_unref(lcd);
         lcd = NULL;
     }
 
@@ -276,6 +311,8 @@ int  hid_exit(void)
         g_object_unref(pixmap);
         pixmap = NULL;
     }
+
+    
 
     return 0;
 }
@@ -333,18 +370,6 @@ int hid_update_keys(void)
 
 void hid_lcd_on_off(int i);
 int hid_set_contrast(int c);
-
-void hid_set_callbacks(void)
-{
-    ti68k_gui_set_callbacks(
-			       hid_init,
-			       hid_exit,
-			       hid_update_lcd,
-			       hid_update_keys,
-			       hid_lcd_on_off,
-			       hid_set_contrast
-			       );
-}
 
 int  hid_screenshot(char *filename)
 {
