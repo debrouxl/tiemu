@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: gdbcall.c 1038 2005-03-28 21:45:40Z kevinkofler $ */
+/* $Id$ */
 
 /*  TiEmu - a TI emulator
  *
