@@ -75,6 +75,7 @@ static gint hid_refresh (gpointer data)
     
     hid_update_keys();
 
+	// gruik, should be removed later...
     if(debugger)
     {
         enter_gtk_debugger(debugger);
@@ -83,7 +84,6 @@ static gint hid_refresh (gpointer data)
 
     return TRUE;
 }
-
 
 /* Main function */		
 int main(int argc, char **argv) 

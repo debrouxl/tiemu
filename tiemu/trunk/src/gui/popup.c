@@ -61,6 +61,10 @@ void gui_popup_menu(void)
 	guint button;
 	guint32 time;
 
+	// check whether debugger is opened...
+	if(ti68k_engine_is_halted())
+		return;
+
 	// don't have time event due to SDL
 	time = gtk_get_current_event_time();
 	

@@ -124,7 +124,7 @@ static void clist_populate(GtkListStore *store)
         if(row_text[1] == NULL)
             row_text[1] = g_strdup("");
         sscanf(row_text[0], "%lx", &value);
-    
+
         pix = create_pixbuf("void.xpm");
 
         gtk_list_store_append(store, &iter);
@@ -207,7 +207,7 @@ static gint already_open = 0;
 /*
 	Display source code window
 */
-gint display_dbgcode_window(void)
+GtkWidget* display_dbgcode_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -236,14 +236,17 @@ gint display_dbgcode_window(void)
 
 	already_open = !0;
 
-	return 0;
+	return data;
 }
 
 gint refresh_dbgcode_window(void)
 {
+	static GtkWidget *list = NULL;
+
 	if(!already_open)
-		display_dbgcode_window();
-	
+		list = display_dbgcode_window();
+
+	gtk_widget_set_sensitive(list, TRUE);	
 	clist_refresh(store);
 
     return 0;
@@ -333,6 +336,7 @@ GLADE_CB void
 dbgcode_button5_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
+	// Mode 1 is fastest
 #if 1
     GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
 	GtkTreeView *view = GTK_TREE_VIEW(list);

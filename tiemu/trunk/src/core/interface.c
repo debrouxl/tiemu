@@ -221,9 +221,18 @@ int ti68k_debug_skip(uint32_t next_pc)
 {
     broken_in = 0;
     specialflags |= SPCFLAG_BRK;
+
     do 
     {
         ti68k_debug_step();
+		printf("pc: %lx dst: %lx\n", m68k_getpc(), next_pc);
+
+		// too far: stop
+		if(m68k_getpc() > next_pc)
+			break;
+		// jump back: stop
+		if(next_pc - m68k_getpc() > 0x80)
+			break;
     } 
     while (next_pc != m68k_getpc() && !broken_in);
 
