@@ -42,7 +42,7 @@
 #include "ti68k_int.h"
 
 // 000000-0fffff : RAM (128 or 256 KB)
-// 100000-1fffff : ghost
+// 100000-1fffff : ghost of RAM
 // 200000-2fffff : internal ROM (TI92) or unused
 // 300000-3fffff : idem
 // 400000-4fffff : external ROM (TI92,+) or unused

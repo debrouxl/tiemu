@@ -7,19 +7,6 @@ ExtendeD:
 
 Kevin:
 
-+ Avec GTK-Runtime-Environment-2.2.4-2, il n'arrive pas à ouvrir le JPEG du
-skin sous WinMe. J'ai été obligé de récupérer
-GTK-Runtime-Environment-2.2.4-3 qui corrige ce problème, il faudrait le
-mettre quelque part dans le readme.
-
-+ L'installation de GTK-Runtime-Environment-2.2.4-3 m'a réactivé le thème
-WIMP avec tous ses warnings. J'ai été obligé de renommer libwimp.dll en
-libwimp.dl_ pour me débarasser de ces warnings.
-
-+ Le menu popup ne reste ouvert que si on garde la touche de la souris
-appuyée, ce qui est peu pratique. Et si on appuie 2 fois de suite trop
-rapidement, TiEmu plante. (Il s'embrouille avec les engine starts/stops.)
-
 - La conversion des ROMs au format 89u n'a pas l'air de marcher
 correctement. À chaque lancement, il me redemande d'importer une ROM avec le
 wizard, alors que je venais de le faire au lancement d'avant (j'ai pris une
@@ -64,8 +51,60 @@ idée d'attendre que le pointeur de pile soit revenu
 à la même valeur (ça ne marchera pas dans plusieurs 
 cas de figure
 
-+ je n'ai pas trouvé d'option permettant d'aller
-directement à un ROM_CALL donné. C'est pourtant utile.
+* Sur la V200, la table des ROM_CALLs est trouvée à 
+l'adresse 0x000000 (qui est en fait manifestement 
+une copie de 0x200000 au moment où il charge la 
+table, l'init de la RAM est sûrement faite après). 
+
+* la fenêtre Stack Frame ne semble pas updatée en 
+temps réel.
+
+* F2 ne marche plus pour mettre un breakpoint. 
+Peut-être lié aux six warnings
+(tiemu.exe:936): Gtk-WARNING **: gtkwidget.c:3075: 
+widget 'GtkToolButoon' has no activatable signal 
+"clicked" without arguments'.
+
+* La fenêtre qui affiche les noms de ROM_CALLs est 
+difficile à utiliser, car on ne peut pas accéder à 
+un ROM_CALL en tapant les premières lettres, et il 
+faut savoir le numéro du ROM_CALL pour pouvoir y 
+accéder. A l'affichage, inverse simplement juste le 
+nom et le numéro (en gardant l'adresse, c'est bien).
+Au fait, si on sélectionne un ROM_CALL qui a une 
+adresse invalide (ce qui arrive souvent quand la 
+table des ROM_CALLs est trouvée à 0x000000), par 
+exemple l'adresse 30390020, le désassembleur devrait 
+aller à l'adresse 390020 (les 24 bits de poids 
+faible), comme le fait le Memory View, plutôt que 
+d'aller à l'adresse 303900.
+
+* il faudrait une indication que le curseur est sur 
+la première instruction d'un ROM_CALL. Si c'est 
+difficile de faire comme VTI (noms au milieu du 
+désassemblage), je ne sais pas, une façon similaire 
+à celle de Command Post Plus (afficher le nom du 
+ROM_CALL dans la status line - ici, en-dessous de 
+Symbol: [...] par exemple) suffit.
+
+* F8 ne compte pas le niveau des subroutines, cela 
+rend moins facile le debug (surtout que F2 ne marche 
+plus, comme dit plus haut). Il m'est difficile de 
+m'habituer à ce que F8 ne marche pas sur les 
+branches...
+
+* Au passage, un autre bug que je connais depuis 
+longtemps dans le désassembleur de VTI/ttdasm mais 
+que je n'ai pas pensé à te signaler: l'instruction 
+STOP est mal désassemblée. STOP est une instruction 
+sans taille dont l'adressage (un unique mot 
+immédiat) est implicite: "STOP #$2700".
+Contrairement à celui de VTI il me semble, l'UAE de 
+TIEmu l'émule correctement (TIEmu n'arrive jamais 
+sur le bra.s).
+Il y a un tel STOP à 2008F6 sur la ROM de V200 
+(boucle infinie d'erreur à laquelle l'exécution 
+finit actuellement par arriver sur la ROM de V200).
 
 -------------
 + done

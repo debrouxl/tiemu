@@ -42,11 +42,11 @@
 #include "flash.h"
 
 // 000000-0fffff : RAM (256 KB)
-// 100000-1fffff : ghost
-// 200000-2fffff : internal ROM (TI89)
-// 300000-3fffff : idem
-// 400000-4fffff : ?
-// 500000-5fffff : ?
+// 100000-1fffff : ghost of RAM
+// 200000-2fffff : internal FLASH (TI89)
+// 300000-3fffff : 
+// 400000-4fffff : internal FLASH (V200) or nothing (TI89)
+// 500000-5fffff : 
 // 600000-6fffff : memory mapped I/O (all HW)
 // 700000-7fffff : memory mapped I/O (HW2, HW3)
 // 800000-8fffff : unused
@@ -67,19 +67,20 @@ int ti89_mem_init(void)
     mem_msk[0] = tihw.ram_size-1;
 
 	// map FLASH
-    mem_tab[2] = tihw.rom;
+    mem_tab[2] = tihw.rom + 0x000000;
     mem_msk[2] = MIN(tihw.rom_size - 0*MB, 1*MB) - 1;
 
-    mem_tab[5] = mem_tab[3] = tihw.rom + 0x100000;
-    mem_msk[5] = mem_msk[3] = MIN(tihw.rom_size - 1*MB, 1*MB) - 1;
+    mem_tab[3] = tihw.rom + 0x100000;
+    mem_msk[3] = MIN(tihw.rom_size - 1*MB, 1*MB) - 1;
 
     // ghosts
     if(tihw.calc_type == V200)
 	{
-		mem_tab[4] = mem_tab[2];
-		mem_msk[4] = mem_msk[2];
-		mem_tab[5] = mem_tab[3];
-		mem_msk[5] = mem_msk[3];
+		mem_tab[4] = tihw.rom + 0x200000;
+		mem_msk[4] = MIN(tihw.rom_size - 2*MB, 1*MB) - 1;
+
+		mem_tab[5] = tihw.rom + 0x300000;
+		mem_msk[5] = MIN(tihw.rom_size - 3*MB, 1*MB) - 1;
     }
 
     // map IO

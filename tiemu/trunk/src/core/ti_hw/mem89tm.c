@@ -43,9 +43,9 @@
 
 // 000000-03ffff : RAM (256 KB), non ghost'ed
 // 100000-1fffff : 
-// 200000-2fffff : image of 0x000000 (ghost)
+// 200000-2fffff : image of 0x000000 (ghost), not emulated for compatibility
 // 300000-3fffff : 
-// 400000-4fffff : image of 0x000000 (ghost)
+// 400000-4fffff : image of 0x000000 (ghost), not emulated for compatibility
 // 500000-5fffff : 
 // 600000-6fffff : memory mapped I/O (all HW)
 // 700000-7fffff : memory mapped I/O (HW2, HW3)

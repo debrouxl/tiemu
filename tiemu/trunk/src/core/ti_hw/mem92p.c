@@ -42,8 +42,8 @@
 #include "flash.h"
 
 // 000000-0fffff : RAM (256 KB)
-// 100000-1fffff : ghost
-// 200000-2fffff : unused
+// 100000-1fffff : ghost of RAM
+// 200000-2fffff : ghost of FLASH (HW2)
 // 300000-3fffff : unused
 // 400000-4fffff : external FLASH
 // 500000-5fffff : idem
@@ -72,10 +72,13 @@ int ti92p_mem_init(void)
     mem_msk[5] = MIN(tihw.rom_size - 1*MB, 1*MB) - 1;
 
     // ghosts
-    mem_tab[2] = mem_tab[4];
-    mem_msk[2] = mem_msk[4];
-    mem_tab[3] = mem_tab[5];
-    mem_msk[3] = mem_msk[5];
+	if(tihw.hw_type == HW2)
+	{
+		mem_tab[2] = mem_tab[4];
+		mem_msk[2] = mem_msk[4];
+		mem_tab[3] = mem_tab[5];
+		mem_msk[3] = mem_msk[5];
+	}
 
     // map IO
     mem_tab[6] = tihw.io;

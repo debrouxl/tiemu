@@ -51,7 +51,7 @@ static int hwkey_to_tikey(guint16 hardware_keycode, int action)
 {
     int i;
 
-    printf("pckey = %4x (%s)\n", hardware_keycode, keymap_value_to_string(pckeys, hardware_keycode));
+    //printf("pckey = %4x (%s)\n", hardware_keycode, keymap_value_to_string(pckeys, hardware_keycode));
 
     for(i = 0; i < KEYMAP_MAX; i++)
     {
