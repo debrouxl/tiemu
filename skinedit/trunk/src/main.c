@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <signal.h>
+#include <string.h>
 
 #include <SDL/SDL.h>
 #include <gtk/gtk.h>
@@ -18,7 +19,10 @@
 #include "main_intf.h"
 #include "support.h"
 #include "utils.h"
+
 #include "struct.h"
+#include "skinops.h"
+#include "main_cb.h"
 
 static void help(void)
 {
@@ -49,7 +53,7 @@ signal_handler(int sig)
 
   clear_skin_infos();
 
-  SDL_Quit();
+  //  SDL_Quit();
 
   gtk_main_quit();
 
@@ -68,7 +72,6 @@ main (int argc, char *argv[])
 {
     int cnt;
     const char *p;
-    char *q;
     char arg[128];
 
 #ifdef ENABLE_NLS
@@ -113,7 +116,7 @@ main (int argc, char *argv[])
             // filename
             if(load_skin(p) == 0)
 	            skin_infos.changed = 1;
-            on_properties_activate(NULL, NULL);
+            //on_properties_activate(NULL, NULL);
         }
 		
         strcpy(arg, p);

@@ -223,13 +223,9 @@ static gint gtk_sdl_expose (GtkWidget *widget, GdkEventExpose *event)
   SDL_Surface *surface;
   /* SDL_Rect dest; */
 
-  fprintf(stderr, "EXPOSE\n");
-
   g_return_val_if_fail (widget != NULL, FALSE);
   g_return_val_if_fail (GTK_IS_SDL (widget), FALSE);
   g_return_val_if_fail (event != NULL, FALSE);
-
-  fprintf(stderr, "EXPOSE 2\n");
 
   if (event->count > 0) return FALSE;
 
@@ -276,13 +272,9 @@ static void gtk_sdl_display_update (GtkSDL *sdl)
 
   SDL_Surface *surface = NULL;
 
-  fprintf(stderr, "UPDATE\n");
-
   g_return_if_fail (sdl != NULL);
   g_return_if_fail (GTK_IS_SDL (sdl));
   g_return_if_fail (sdl->surface);
-
-  fprintf(stderr, "UPDATE 2\n");
 
   if ( (sdl->flags &=SDL_OPENGL) || (sdl->flags &= SDL_OPENGLBLIT) )
     {
@@ -300,12 +292,10 @@ static void gtk_sdl_display_update (GtkSDL *sdl)
       surface = SDL_GetVideoSurface ();
 	    
       SDL_Flip (surface);
-      fprintf(stderr, "BLA 2\n");
-    }
+     }
 	
   if (surface != NULL)
     {
       SDL_UpdateRect (surface, 0, 0, 0, 0);
-      fprintf(stderr, "BLA 3\n");
     }
 }
