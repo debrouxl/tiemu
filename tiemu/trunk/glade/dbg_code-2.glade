@@ -3,17 +3,17 @@
 
 <glade-interface>
 
-<widget class="GtkWindow" id="dbgbkpts_window">
+<widget class="GtkWindow" id="dbgcode_window">
   <property name="visible">True</property>
-  <property name="title" translatable="yes">Breakpoints</property>
+  <property name="title" translatable="yes">Code / Source</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
-  <property name="default_width">160</property>
-  <property name="default_height">120</property>
+  <property name="default_width">320</property>
+  <property name="default_height">240</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
-  <signal name="destroy" handler="on_dbgbkpts_window_destroy" last_modification_time="Thu, 03 Jun 2004 14:41:58 GMT"/>
+  <signal name="destroy" handler="on_dbgcode_window_destroy" last_modification_time="Thu, 03 Jun 2004 15:12:40 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox1">
@@ -25,22 +25,23 @@
 	<widget class="GtkToolbar" id="toolbar1">
 	  <property name="visible">True</property>
 	  <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
-	  <property name="toolbar_style">GTK_TOOLBAR_ICONS</property>
+	  <property name="toolbar_style">GTK_TOOLBAR_TEXT</property>
 	  <property name="tooltips">True</property>
 
 	  <child>
 	    <widget class="button" id="button1">
 	      <property name="visible">True</property>
-	      <property name="label">gtk-add</property>
-	      <property name="use_stock">True</property>
+	      <property name="label" translatable="yes">Run</property>
+	      <property name="use_underline">True</property>
+	      <signal name="clicked" handler="on_button1_clicked" last_modification_time="Thu, 03 Jun 2004 15:14:38 GMT"/>
 	    </widget>
 	  </child>
 
 	  <child>
 	    <widget class="button" id="button2">
 	      <property name="visible">True</property>
-	      <property name="label">gtk-remove</property>
-	      <property name="use_stock">True</property>
+	      <property name="label" translatable="yes">Step</property>
+	      <property name="use_underline">True</property>
 	      <signal name="clicked" handler="on_button2_clicked" last_modification_time="Thu, 03 Jun 2004 14:56:54 GMT"/>
 	    </widget>
 	  </child>
@@ -48,18 +49,36 @@
 	  <child>
 	    <widget class="button" id="button3">
 	      <property name="visible">True</property>
-	      <property name="label">gtk-dialog-error</property>
-	      <property name="use_stock">True</property>
-	      <signal name="clicked" handler="on_button3_clicked" last_modification_time="Thu, 03 Jun 2004 15:15:19 GMT"/>
+	      <property name="label" translatable="yes">Over</property>
+	      <property name="use_underline">True</property>
+	      <signal name="clicked" handler="on_button3_clicked" last_modification_time="Thu, 03 Jun 2004 15:14:52 GMT"/>
 	    </widget>
 	  </child>
 
 	  <child>
 	    <widget class="button" id="button4">
 	      <property name="visible">True</property>
-	      <property name="label">gtk-apply</property>
-	      <property name="use_stock">True</property>
+	      <property name="label" translatable="yes">Run to</property>
+	      <property name="use_underline">True</property>
 	      <signal name="clicked" handler="on_button4_clicked" last_modification_time="Thu, 03 Jun 2004 14:57:02 GMT"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="button" id="button5">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Break</property>
+	      <property name="use_underline">True</property>
+	      <signal name="clicked" handler="on_button5_clicked" last_modification_time="Thu, 03 Jun 2004 15:14:58 GMT"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="button" id="button6">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Bkpt</property>
+	      <property name="use_underline">True</property>
+	      <signal name="clicked" handler="on_button6_clicked" last_modification_time="Thu, 03 Jun 2004 15:15:02 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
@@ -96,54 +115,6 @@
 	  <property name="fill">True</property>
 	</packing>
       </child>
-    </widget>
-  </child>
-</widget>
-
-<widget class="GtkMenu" id="dbgbkpts_popup">
-
-  <child>
-    <widget class="GtkMenuItem" id="access1">
-      <property name="visible">True</property>
-      <property name="label" translatable="yes">Data access</property>
-      <property name="use_underline">True</property>
-      <signal name="activate" handler="on_access1_activate" last_modification_time="Thu, 03 Jun 2004 14:55:04 GMT"/>
-    </widget>
-  </child>
-
-  <child>
-    <widget class="GtkMenuItem" id="range1">
-      <property name="visible">True</property>
-      <property name="label" translatable="yes">Data range</property>
-      <property name="use_underline">True</property>
-      <signal name="activate" handler="on_range1_activate" last_modification_time="Thu, 03 Jun 2004 14:55:04 GMT"/>
-    </widget>
-  </child>
-
-  <child>
-    <widget class="GtkMenuItem" id="trap1">
-      <property name="visible">True</property>
-      <property name="label" translatable="yes">Trap</property>
-      <property name="use_underline">True</property>
-      <signal name="activate" handler="on_trap1_activate" last_modification_time="Thu, 03 Jun 2004 14:55:04 GMT"/>
-    </widget>
-  </child>
-
-  <child>
-    <widget class="GtkMenuItem" id="exception1">
-      <property name="visible">True</property>
-      <property name="label" translatable="yes">Exception</property>
-      <property name="use_underline">True</property>
-      <signal name="activate" handler="on_exception1_activate" last_modification_time="Thu, 03 Jun 2004 14:55:04 GMT"/>
-    </widget>
-  </child>
-
-  <child>
-    <widget class="GtkMenuItem" id="autoint1">
-      <property name="visible">True</property>
-      <property name="label" translatable="yes">Auto-int</property>
-      <property name="use_underline">True</property>
-      <signal name="activate" handler="on_autoint1_activate" last_modification_time="Thu, 03 Jun 2004 14:55:04 GMT"/>
     </widget>
   </child>
 </widget>
