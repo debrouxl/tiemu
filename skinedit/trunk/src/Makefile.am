@@ -16,7 +16,6 @@ skinedit_SOURCES = \
 	boxes_cb.c boxes_cb.h \
 	prop_intf.c prop_intf.h \
 	prop_cb.c prop_cb.h \
-	gtksdl.c gtksdl.h \
 	rubberbox.c rubberbox.h \
 	skinops.c skinops.h \
 	utils.c utils.h \

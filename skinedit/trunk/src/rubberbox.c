@@ -62,11 +62,11 @@ mouse_motion(GtkWidget *drawingarea, GdkEventMotion *event, gpointer action)
 
   /* be careful with GDK ... */
 
-  if (x > skin_infos.width)
-    x = skin_infos.width;
-  
-  if (y > skin_infos.height)
-    y = skin_infos.height;
+  if (x > skin_infos.width - 1)
+    x = skin_infos.width - 1;
+
+  if (y > skin_infos.height - 1)
+    y = skin_infos.height - 1;
 
   if (x < 0)
     x = 0;
@@ -171,8 +171,8 @@ button_press(GtkWidget *drawing_area, GdkEventButton *event, gpointer action)
   return FALSE;
 }
 
-void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue);
-void get_pixel (GdkPixbuf *pixbuf, int x, int y, guchar *red, guchar *green, guchar *blue);
+static void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue);
+static void get_pixel (GdkPixbuf *pixbuf, int x, int y, guchar *red, guchar *green, guchar *blue);
 
 
 void
@@ -187,17 +187,14 @@ draw_rubberbox(GtkWidget *drawing_area, GdkRect rect)
   c = rect;
   oc = old_rect;
 
-  if ((c.x > skin_infos.width) || 
-      (c.y > skin_infos.height) || 
-      ((c.x + c.w) > skin_infos.width) || 
-      ((c.y + c.h) > skin_infos.height))
+  if ((c.x > skin_infos.width) || (c.y > skin_infos.height) || 
+      ((c.x + c.w) > skin_infos.width) || ((c.y + c.h) > skin_infos.height))
     return;
     
   g_object_unref(pixbuf);
   pixbuf = gdk_pixbuf_copy(skin_infos.img_orig);
 
   /* vertical lines at c.x and (c.x + c.w), c.y < y < (c.y + c.h) */
-  /* !!! must multiply by 2 because uint16_t !!! */
   for (y = c.y; y < (c.y + c.h); y++)
     {
       get_pixel (pixbuf, c.x, y, &r, &g, &b);
@@ -210,8 +207,6 @@ draw_rubberbox(GtkWidget *drawing_area, GdkRect rect)
     }
 
   /* horizontal lines at c.y and (c.y + c.h), c.x < x < (c.x + c.w) */
-  /* !!! must multiply by 2 because uint16_t !!! */
-
   for (x = c.x; x < c.x + c.w; x++)
     {
       get_pixel (pixbuf, x, c.y, &r, &g, &b);
@@ -259,8 +254,6 @@ draw_rubberbox(GtkWidget *drawing_area, GdkRect rect)
 void
 erase_rubberbox(GtkWidget *drawing_area)
 {
-  GdkRect update_rect;
-	
   // copy original image
   g_object_unref(pixbuf);
   pixbuf = gdk_pixbuf_copy(skin_infos.img_orig);

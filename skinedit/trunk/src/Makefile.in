@@ -93,7 +93,7 @@ INCLUDES =  	-DPACKAGE_DATA_DIR=\""$(datadir)"\" 	-DPACKAGE_LOCALE_DIR=\""$(pref
 
 bin_PROGRAMS = skinedit
 
-skinedit_SOURCES =  	main.c defs.h struct.h keymaps.h 	support.c support.h 	main_intf.c main_intf.h 	main_cb.c main_cb.h 	boxes_intf.c boxes_intf.h 	boxes_cb.c boxes_cb.h 	prop_intf.c prop_intf.h 	prop_cb.c prop_cb.h 	gtksdl.c gtksdl.h 	rubberbox.c rubberbox.h 	skinops.c skinops.h 	utils.c utils.h 	vti_export.c vti_export.h
+skinedit_SOURCES =  	main.c defs.h struct.h keymaps.h 	support.c support.h 	main_intf.c main_intf.h 	main_cb.c main_cb.h 	boxes_intf.c boxes_intf.h 	boxes_cb.c boxes_cb.h 	prop_intf.c prop_intf.h 	prop_cb.c prop_cb.h 	rubberbox.c rubberbox.h 	skinops.c skinops.h 	utils.c utils.h 	vti_export.c vti_export.h
 
 
 skinedit_LDADD = @PACKAGE_LIBS@ @SDL_LIBS@ $(INTLLIBS)
@@ -108,7 +108,7 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 skinedit_OBJECTS =  main.o support.o main_intf.o main_cb.o boxes_intf.o \
-boxes_cb.o prop_intf.o prop_cb.o gtksdl.o rubberbox.o skinops.o utils.o \
+boxes_cb.o prop_intf.o prop_cb.o rubberbox.o skinops.o utils.o \
 vti_export.o
 skinedit_DEPENDENCIES = 
 skinedit_LDFLAGS = 
@@ -123,10 +123,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/boxes_cb.P .deps/boxes_intf.P .deps/gtksdl.P \
-.deps/main.P .deps/main_cb.P .deps/main_intf.P .deps/prop_cb.P \
-.deps/prop_intf.P .deps/rubberbox.P .deps/skinops.P .deps/support.P \
-.deps/utils.P .deps/vti_export.P
+DEP_FILES =  .deps/boxes_cb.P .deps/boxes_intf.P .deps/main.P \
+.deps/main_cb.P .deps/main_intf.P .deps/prop_cb.P .deps/prop_intf.P \
+.deps/rubberbox.P .deps/skinops.P .deps/support.P .deps/utils.P \
+.deps/vti_export.P
 SOURCES = $(skinedit_SOURCES)
 OBJECTS = $(skinedit_OBJECTS)
 

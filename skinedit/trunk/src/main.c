@@ -23,6 +23,8 @@
 #include "skinops.h"
 #include "main_cb.h"
 
+GtkWidget *main_wnd;
+
 static void help(void)
 {
 	fprintf(stdout, "\n");
@@ -92,7 +94,7 @@ main (int argc, char *argv[])
   fprintf(stdout, _("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"));
   fprintf(stdout, _("GNU General Public License for more details.\n"));
 
-  gtk_widget_show (create_main_window());
+  gtk_widget_show (main_wnd = create_main_window());
 
   sbar_print(_("Skinedit v%s -- Supported formats : TiEmu v2.00 (R/W), VTiv2.1 (R/W), VTiv2.5 (R/W)"), VERSION);
 

@@ -134,3 +134,13 @@ gboolean
 on_drawingarea1_expose_event           (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data);
+
+void
+on_drawingarea1_size_allocate          (GtkWidget       *widget,
+                                        GdkRectangle    *allocation,
+                                        gpointer         user_data);
+
+void
+on_drawingarea1_size_request           (GtkWidget       *widget,
+                                        GtkRequisition  *requisition,
+                                        gpointer         user_data);

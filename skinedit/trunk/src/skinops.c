@@ -351,6 +351,8 @@ load_skin_tiemu(FILE *fp)
   return load_jpeg(fp);
 }
 
+GtkWidget *main_wnd;
+
 int
 load_jpeg(FILE *fp)
 {
@@ -358,11 +360,12 @@ load_jpeg(FILE *fp)
   char *filename;
   FILE *ft;
   GError *error = NULL;
+  GdkGeometry geometry;
   
   /*
    * Extract image from file by creating a temp file
    */
-  filename = _mktemp(pattern);
+  filename = mktemp(pattern); // use tmpfile instead of stdio.h
   ft = fopen(filename, "wb");
   if(ft == NULL) {
 		fprintf(stderr, "Unable to open this file: <%s>\n", filename);
@@ -402,6 +405,19 @@ load_jpeg(FILE *fp)
 
   gtk_drawing_area_size(GTK_DRAWING_AREA(drawingarea1), 
 			skin_infos.width, skin_infos.height);
+  /*
+  geometry.min_width = 640;
+  geometry.min_height = 480;
+  geometry.max_width = skin_infos.width;
+  geometry.max_height = skin_infos.height;
+  geometry.base_height = -1;
+  geometry.base_width = -1;
+
+  gtk_window_set_geometry_hints(GTK_WINDOW(main_wnd),
+				GTK_WIDGET(drawingarea1),
+				&geometry,
+				GDK_HINT_MAX_SIZE);
+  */
   
   /*
    * Display image in the back-end pixbuf

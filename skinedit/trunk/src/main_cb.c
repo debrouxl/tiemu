@@ -798,6 +798,7 @@ on_drawingarea1_configure_event        (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data)
 {
+  //printf("%i %i %i %i\n", event->x, event->y, event->width, event->height);
   return FALSE;
 }
 
@@ -820,4 +821,18 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
 		  GDK_RGB_DITHER_NONE, 0, 0);
    
   return TRUE;
+}
+
+void
+on_drawingarea1_size_allocate          (GtkWidget       *widget,
+                                        GdkRectangle    *allocation,
+                                        gpointer         user_data)
+{
+}
+
+void
+on_drawingarea1_size_request           (GtkWidget       *widget,
+                                        GtkRequisition  *requisition,
+                                        gpointer         user_data)
+{
 }

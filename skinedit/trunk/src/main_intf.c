@@ -63,8 +63,8 @@ create_main_window (void)
   GtkWidget *tb_key_pos;
   GtkWidget *scrolledwindow1;
   GtkWidget *viewport1;
-  //  GtkWidget *drawingarea1;
-  //  GtkWidget *statusbar;
+  //GtkWidget *drawingarea1;
+  //GtkWidget *statusbar;
   GtkAccelGroup *accel_group;
 
   accel_group = gtk_accel_group_new ();
@@ -289,6 +289,12 @@ create_main_window (void)
                     NULL);
   g_signal_connect ((gpointer) drawingarea1, "expose_event",
                     G_CALLBACK (on_drawingarea1_expose_event),
+                    NULL);
+  g_signal_connect ((gpointer) drawingarea1, "size_allocate",
+                    G_CALLBACK (on_drawingarea1_size_allocate),
+                    NULL);
+  g_signal_connect ((gpointer) drawingarea1, "size_request",
+                    G_CALLBACK (on_drawingarea1_size_request),
                     NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
