@@ -1092,6 +1092,10 @@ int hid_screenshot(char *filename)
 	gchar *type;
 	int gap = iScrW - iLcdW;
 
+    char *map;
+    int x, y;
+    int i, j;
+
 	if(filename == NULL) {
 		switch(options2.format) {
 			case IMG_JPG: ext = "jpg"; type = "jpeg"; break;
@@ -1100,9 +1104,7 @@ int hid_screenshot(char *filename)
 			default: break;
 		}
       
-		outfile = g_strdup_printf("%s%03i.%s", 
-			options2.file, 
-			options2.counter, ext);
+		outfile = g_strdup_printf("%s%03i.%s", options2.file, options2.counter, ext);
 	} else {
 		outfile = g_strdup(filename);
 	}
@@ -1122,16 +1124,17 @@ int hid_screenshot(char *filename)
 		gboolean result = FALSE;
 		GError *error = NULL;
 
+        // RGB 24 bits
 		fmt.palette = NULL;
 		fmt.BitsPerPixel = 24;
 		fmt.BytesPerPixel = 3;
-		fmt.Rmask = 255;
-		fmt.Gmask = 255;
-		fmt.Bmask = 255;
+		fmt.Rmask = 0x0000ff;
+		fmt.Gmask = 0x00ff00;
+		fmt.Bmask = 0xff0000;
 		fmt.Amask = 0;
 		fmt.Rshift = 0;
-		fmt.Gshift = 0;
-		fmt.Bshift = 0;
+		fmt.Gshift = 8;
+		fmt.Bshift = 16;
 		fmt.Ashift = 0;
 		fmt.Rloss = 0;
 		fmt.Gloss = 0;
@@ -1144,7 +1147,7 @@ int hid_screenshot(char *filename)
 		pixels = (Uint8 *)sdlCapture->pixels;
 
 		pixbuf = gdk_pixbuf_new_from_data(pixels, GDK_COLORSPACE_RGB, FALSE,
-				8, iWinW, iWinH, iWinLineSize, NULL, NULL);
+				8, iWinW, iWinH, sdlCapture->pitch, NULL, NULL);
 
 		//result = gdk_pixbuf_save(pixbuf, outfile, type, &error, "quality", "100", NULL);
 		result = gdk_pixbuf_save(pixbuf, outfile, type, &error, NULL);
@@ -1154,6 +1157,8 @@ int hid_screenshot(char *filename)
 		}
 
 		SDL_FreeSurface(sdlCapture);
+
+        exit(0);
 	}
 
 	DISPLAY("Done !\n");
