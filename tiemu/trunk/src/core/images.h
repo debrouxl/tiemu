@@ -47,8 +47,8 @@ typedef struct
 	char	hw_type;		// hw1 or hw2
     char    rom_base;       // ROM base address (MSB)
 
-	char*	data;			// pure data (temporary use, 8 bytes)
     char    fill[0x40-47];  // round up struct to 0x40 bytes
+	char*	data;			// pure data (temporary use, 8 bytes)
 } IMG_INFO;
 
 extern int		img_loaded;

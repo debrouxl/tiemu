@@ -116,9 +116,6 @@ int romcalls_load_from_file(const char* filename)
 			list[i].name = strdup("unknown");
 
 		list[i].addr = rd_long(&tihw.rom[(addr & 0x0fffff) + (i << 2)]); 
-
-		if(list[i].addr == 0x46af0a)
-			printf("tios::%s (0x%03x) => $%06x\n", list[i].name, i, list[i].addr);
 	}
 
 	printf("Done !\n");

@@ -3,7 +3,7 @@ SubVersion: $Id$
 - 14/07/2004, version 1.74: roms
 	Fixes from Lionel, Kevin and Oliver's suggestions:
 	- when scrolling down in the code window, the bar is now reset (hide first instruction).
-	- add .rom files in images: to fix
+	- reject some SAV images due to IMG_INFO structure (memcmp)
 	- 
 
 - 12/07/2004, version 1.73: roms

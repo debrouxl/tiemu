@@ -97,7 +97,7 @@ int ti68k_state_load(char *filename)
   	
   	// Compare image infos with current image
 	fread(&img, 1, sizeof(IMG_INFO), f);
-	if(memcmp(&img, &img_infos, sizeof(IMG_INFO)))
+	if(memcmp(&img, &img_infos, sizeof(IMG_INFO) - sizeof(char *)))
 		return ERR_INVALID_STATE;
 
     // Load state image infos
