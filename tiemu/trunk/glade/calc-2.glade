@@ -21,6 +21,7 @@
   <signal name="key_release_event" handler="on_calc_wnd_key_release_event" last_modification_time="Wed, 14 Jul 2004 17:21:00 GMT"/>
   <signal name="destroy" handler="on_calc_wnd_destroy" last_modification_time="Wed, 14 Jul 2004 20:10:55 GMT"/>
   <signal name="size_request" handler="on_calc_wnd_size_request" last_modification_time="Mon, 19 Jul 2004 14:20:32 GMT"/>
+  <signal name="expose_event" handler="on_calc_wnd_expose_event" last_modification_time="Fri, 23 Jul 2004 12:46:29 GMT"/>
 
   <child>
     <widget class="GtkDrawingArea" id="drawingarea1">

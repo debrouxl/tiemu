@@ -98,6 +98,58 @@ on_calc_wnd_delete_event           (GtkWidget       *widget,
     return TRUE;	// block destroy
 }
 
+void redraw_skin(void);
+static void resize(void)
+{
+	// Get window size depending on windowed/fullscreen
+	if(params.background)
+	{
+		w = skin_infos.width;
+		h = skin_infos.height;
+	}
+	else
+	{
+		w = tihw.lcd_w;
+		h = tihw.lcd_h;
+	}
+		
+	gtk_drawing_area_size(GTK_DRAWING_AREA(area), w, h);
+	gtk_window_resize(GTK_WINDOW(wnd), w, h);
+
+	if(params.background)
+		redraw_skin();
+}
+
+typedef void (*VCB) (void);
+
+GLADE_CB gboolean
+on_calc_wnd_expose_event           (GtkWidget       *widget,
+                                    GdkEventExpose  *event,
+                                    gpointer         user_data)
+{
+	SKIN_INFOS *si = & skin_infos;
+	guint width, height;
+
+	width = event->area.width;
+	height = event->area.height;
+	//if(width < si->width || height < si->height)
+	//	return;
+
+	sc.w = width;
+	sc.h = (int)(sc.w / sc.r);
+	sc.s = (float)sc.w / si->width;
+	printf("expose: scaling w/ %ix%i %1.2f %1.2f\n", sc.w, sc.h, sc.r, sc.s);
+
+	//w = width;
+	//h = height;
+
+	g_signal_handlers_block_by_func(GTK_OBJECT(widget), (VCB)on_calc_wnd_expose_event, NULL);
+	//resize();
+	g_signal_handlers_unblock_by_func(GTK_OBJECT(widget), (VCB)on_calc_wnd_expose_event, NULL);
+
+	return TRUE;
+}
+
 GLADE_CB gboolean
 on_drawingarea1_configure_event        (GtkWidget       *widget,
                                         GdkEventConfigure *event,
@@ -125,50 +177,13 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
 	return FALSE;
 }
 
-void redraw_skin(void);
-static void resize(void)
-{
-	// Get window size depending on windowed/fullscreen
-	if(params.background)
-	{
-		w = skin_infos.width;
-		h = skin_infos.height;
-	}
-	else
-	{
-		w = tihw.lcd_w;
-		h = tihw.lcd_h;
-	}
-		
-	gtk_drawing_area_size(GTK_DRAWING_AREA(area), w, h);
-	gtk_window_resize(GTK_WINDOW(wnd), w, h);
-
-	if(params.background)
-		redraw_skin();
-}
 
 GLADE_CB void
 on_calc_wnd_size_request           (GtkWidget       *widget,
                                     GtkRequisition  *requisition,
                                     gpointer         user_data)
 {
-	SKIN_INFOS *si = & skin_infos;
-	guint width, height;
-
-	//printf("size request: %i x %i\n", requisition->width, requisition->height);
-	gtk_window_get_size(GTK_WINDOW(widget), &width, &height);
-	if(width < si->width || height < si->height)
-		return;
-
-	sc.w = width;
-	sc.h = (int)(sc.w / sc.r);
-	sc.s = (float)sc.w / si->width;
-	printf("size request: scaling w/ %ix%i %1.2f %1.2f\n", sc.w, sc.h, sc.r, sc.s);
-
-	//w = width;
-	//h = height;
-
-	resize();
+	// to remove !
 }
 
 static int match_skin(int calc_type)
