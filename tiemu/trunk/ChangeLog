@@ -19,6 +19,7 @@ To do:
 	- added Win32 file selector
 	- fixed dependancy problem with tiemu&uae rule in src/Makefile.in
 	- to do: fixed bad use of sizeof in hw_io_init
+	- fixed MinGW path with Kevin
 	
 - 18/02/2005, version 1.80n: roms
 	- fixed FLASH writes with HW3 patch

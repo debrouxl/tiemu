@@ -23,7 +23,7 @@
  */
 
 /*
-  Platform independant paths
+	Platform independant paths
 */
 
 #include <stdio.h>
@@ -43,7 +43,7 @@ TiemuInstPaths inst_paths;      // installation paths
 
 
 /*
-  Called by TiEmu at startup for initializing platform dependant paths.
+	Called by TiEmu at startup for initializing platform dependant paths.
 */
 #if defined(__LINUX__) || defined(__BSD__) || defined(__MACOSX__)
 static void init_linux_paths(void)
@@ -89,25 +89,46 @@ static void init_linux_paths(void)
 }
 #endif				/*  */
 
+#define MINGW_REL	"share\\tiemu"
+
+/*
+	Same for Win32
+*/
 #if defined(__WIN32__)
 static void init_win32_paths(void)
 {
 	HMODULE hModule;
 	DWORD dWord;
-	char *dirname;
 	char *sBuffer;
+	gchar *dirname;
+	gchar *basename;
+	gchar **sarray;
 
 	// Init the path for the Windows version by getting the 
 	// executable location.
 	hModule = GetModuleHandle("tiemu.exe");
 	sBuffer = (char *) malloc(4096 * sizeof(char));
 	dWord = GetModuleFileName(hModule, sBuffer, 4096);
-	dirname = g_dirname(sBuffer);
+	dirname = g_path_get_dirname(sBuffer);
+	basename = g_path_get_basename(dirname);
 
-	// set base dir
+	// modify exec path if we are running an Msys path (MinGW)
+	// do nothing if we are running from local path (MSVC & InnoSetup)
+	if(g_str_has_suffix(basename, "bin"))
+	{
+		gchar *token;
+
+		dirname = g_realloc(dirname, strlen(dirname) + strlen(MINGW_REL) + 1);
+		token = g_strrstr(dirname, "bin");
+		strcpy(token, MINGW_REL);
+	}	
+
+	// set base dir	
 	inst_paths.base_dir = g_strconcat(dirname, "\\", NULL);
-	g_free(dirname);
 	free(sBuffer);  // malloc -> free
+	g_free(dirname);
+	g_free(basename);
+	fprintf(stdout, "base path: <%s>\n", inst_paths.base_dir);
 
 	// set others
 	inst_paths.pixmap_dir =

@@ -182,10 +182,5 @@ distdir: clean
 	cp -rl * ../tiemu-@VERSION@/src
 
 install: tiemu
-ifeq (,$(findstring __WIN32__,$(CFLAGS)))
 	@$(INSTALL) -d $(prefix)/bin
 	$(INSTALL) -m755 tiemu ${prefix}/bin/
-else
-	@$(INSTALL) -d $(prefix)/share/tiemu
-	$(INSTALL) -m755 tiemu ${prefix}/share/tiemu/
-endif
