@@ -1,5 +1,7 @@
 /* Simulator for the Motorola 68k architecture.
 
+   Original version:
+   -----
    Written by William Cohen of Red Hat,
    wcohen@redhat.com
 
@@ -15,11 +17,28 @@
    CYGNUS DISCLAIMS ANY WARRANTIES, EXPRESS OR IMPLIED, WITH REGARD TO
    THIS SOFTWARE INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
    MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+   -----
+
+   Modifications for TiEmu:
+   -----
+   Copyright (C) 2005 Kevin Kofler
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+ 
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+ 
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+   -----
 
 */
-
-#include "sysconfig.h"
-#include "sysdeps.h"
 
 #include "config.h"
 
@@ -37,13 +56,7 @@
 #include "gdb/remote-sim.h"
 
 #include "config.h"
-#include "options.h"
-#include "uae.h"
-#include "memory.h"
-#include "custom.h"
-#include "newcpu.h"
-#include "autoconf.h"
-#include "uaeexe.h"
+#include "../../../uae/libuae.h"
 #include "dis-asm.h"
 
 int trace = 0;
@@ -79,7 +92,7 @@ static jmp_buf interp_trap;
 
 struct regstruct saved_state;
 struct uae_prefs currprefs;
-static int opt_cpu_level = 4; /* 68040 default */
+static int opt_cpu_level = 0; /* 68000 default */
 static int opt_mem_size = 20; /* 1M default */
 
 /* These variables are at file scope so that functions other than
@@ -169,6 +182,7 @@ static void
 parse_and_set_memory_size (str)
      char *str;
 {
+#if 0
   int n;
 
   /* NOTE figure out the amount of memory that should be allocated */
@@ -180,6 +194,7 @@ parse_and_set_memory_size (str)
     callback->printf_filtered (callback, "Bad memory size %d; must be 1 to 24, inclusive\n", n);
 
   currprefs.chipmem_size = n * 1024*1024;
+#endif
 }
 
 
@@ -207,9 +222,11 @@ sim_open (kind, cb, abfd, argv)
   myname = argv[0];
   callback = cb;
 
+#if 0
   /* default 1Mb memory, at 0x80000000 */
   currprefs.chipmem_size = 1 << opt_mem_size;
   currprefs.cpu_level = opt_cpu_level;
+#endif
 
   if (getenv("VERBOSE_TRACE"))
     verbose_trace = 1;
@@ -255,6 +272,7 @@ sim_open (kind, cb, abfd, argv)
 void
 sim_set_cpu_variant(int which)
 {
+#if 0
   switch (which)
     {
     case '0':
@@ -268,6 +286,7 @@ sim_set_cpu_variant(int which)
       break;
     }
   printf("cpu_variant set to %d\n", opt_cpu_level);
+#endif
 }
 
 SIM_RC
@@ -290,7 +309,7 @@ sim_create_inferior (sd, prog_bfd, argv, env)
   saved_state.regs[7+8] = /* $a7 */
     saved_state.usp =
     saved_state.isp =
-    saved_state.msp = 0x80000000 + currprefs.chipmem_size - 16;
+    /*saved_state.msp =*/ 0x4c00 /*0x80000000 + currprefs.chipmem_size - 16*/;
   return SIM_RC_OK;
 }
 
@@ -382,6 +401,7 @@ sim_info (sd, verbose)
      SIM_DESC sd;
      int verbose;
 {
+#if 0
   char *cpu;
   switch (currprefs.cpu_level)
     {
@@ -395,9 +415,18 @@ sim_info (sd, verbose)
   callback->printf_filtered (callback, "Memory: %dKb from 0x%08x to 0x%08x\n",
                            currprefs.chipmem_size/1024,
                            0x80000000, 0x80000000 + currprefs.chipmem_size);
+#endif
 }
 
-extern int in_m68k_go;
+// FIXME: This is crude and will most likely not work as expected.
+extern int hw_m68k_run(int n, unsigned maxcycles);
+static void m68k_go_sim(int step)
+{
+  if (step)
+    hw_m68k_run(1, 0);
+  else
+    while(1) hw_m68k_run(1, 0);
+}
 
 void
 sim_resume (sd, step, siggnal)
@@ -419,8 +448,7 @@ sim_resume (sd, step, siggnal)
   saved_state.pc_p = saved_state.pc_oldp = get_real_address(saved_state.pc);
   memcpy (&regs, &saved_state, sizeof(regs));
   if (setjmp(interp_trap) == 0)
-    m68k_go (1, step);
-  in_m68k_go = 0;
+    m68k_go_sim (step);
   memcpy (&saved_state, &regs, sizeof(regs));
   saved_state.pc = m68k_getpc();
 
@@ -759,8 +787,10 @@ sim_os_trap (int which)
 
     case 17:
       rv = 0;
+#if 0
       if (get_arg(0) > 0x80000000 + currprefs.chipmem_size)
       rv  = -1;
+#endif
       if (trace)
       printf("brk (0x%08x) = %d\n", get_arg(0), rv);
       S_ERR(rv<0);

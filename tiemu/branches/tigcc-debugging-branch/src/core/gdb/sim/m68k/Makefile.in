@@ -18,13 +18,10 @@
 
 ## COMMON_PRE_CONFIG_FRAG
 
-SIM_OBJS = interp.o sim-load.o cpuemu.o memory.o newcpu.o cpustbl.o fpp.o support.o \
-      readcpu.o cpudefs.o
+SIM_OBJS = interp.o sim-load.o
 SIM_EXTRA_LIBS = -lm
-SIM_EXTRA_CLEAN = m68k-clean
-# NOTE -DREGPARAM define is a hack.
-SIM_EXTRA_CFLAGS = -DHAVE_ENDIAN_H=1 -I$(srcdir)/include -DREGPARAM="__attribute__((regparm(3)))" \
-      -DNO_INLINE_MEMORY_ACCESS -DSIM_HAVE_ENVIRONMENT -DSIM_M68K -MMD
+SIM_EXTRA_CFLAGS = -DHAVE_ENDIAN_H=1 -I$(srcdir)/include \
+      -DSIM_HAVE_ENVIRONMENT -DSIM_M68K -MMD
 
 # Flags to use when cross-building m68k sim.
 # Prefix to apply to names of object files when using them
@@ -48,21 +45,3 @@ HOST_DOPRINT=$(DOPRINT)
 
 
 ## COMMON_POST_CONFIG_FRAG
-
-gencpu: gencpu.o readcpu.o cpudefs.o missing.o
-	$(HOST_CC) $(HOST_LDFLAGS) -o gencpu gencpu.o readcpu.o \
-	              missing.o cpudefs.o
-
-build68k: build68k.o
-	$(HOST_CC) $(HOST_LDFLAGS) -o build68k build68k.o
-
-
-cpudefs.c: build68k $(srcdir)/table68k
-	./build68k <$(srcdir)/table68k >cpudefs.c
-
-cpuemu.c cpustbl.c cputbl.h: gencpu
-	./gencpu
-
-m68k-clean:
-	-rm -f build68k cpudefs.c 
-	-rm -f gencpu cpuemu.c cpustbl.c cputbl.h

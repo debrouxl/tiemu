@@ -1,3 +1,18 @@
+2005-03-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+      * Delete in-tree copy of UAE, changes merged into the TiEmu copy.
+      * interp.c: Include ../../../uae/libuae.h instead on individual UAE headers.
+        (in_m68k_go): Delete declaration.
+        (sim_resume): Don't use it.
+        (m68k_go_sim): Try to implement in terms of hw_m68k_run, needs proper implementation.
+        (sim_resume): Use m68k_go_sim instead of m68k_go.
+        (parse_and_set_memory_size, sim_open, sim_create_inferior, sim_info, sim_os_trap): Comment out use of 
+                                                                                           chipmem_size.
+        (opt_cpu_level): Default to 0.
+        (sim_open, sim_set_cpu_variant, sim_info): Comment out uses of cpu_level.
+        (sim_create_inferior): Comment out use of msp.
+      * ../common/Make-commin.in (all): Don't build run executable.
+
 2005-03-25  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
       * interp.c: Include gdb/callback.h and  gdb/remote-sim.h instead of callback.h and remote-sim.h.
