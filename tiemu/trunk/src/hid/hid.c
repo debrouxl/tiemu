@@ -928,9 +928,9 @@ static void compute_convtable(void)
 }
 
 
-int hid_set_gui_callbacks(void)
+int hid_set_callbacks(void)
 {
-  return ti68k_setGuiCallbacks(
+  return ti68k_gui_set_callbacks(
 			       hid_init,
 			       hid_exit,
 			       hid_update_lcd,

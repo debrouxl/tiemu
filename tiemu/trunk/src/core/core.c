@@ -68,12 +68,12 @@ gpointer ti68k_engine(gpointer data)
 	while (1) 
 	{
 		// Check engine status
-		//G_LOCK(running);
+		G_LOCK(running);
 		if (!running) {
 			g_thread_yield ();
 			continue;
 		}
-		//G_UNLOCK(running);
+		G_UNLOCK(running);
 		
 		ftime(&tLastTime);
       
@@ -113,21 +113,3 @@ void ti68k_unhalt(void)
 	running = 1;
 	//G_UNLOCK(running);
 }
-
-/* compat */
-/*
-int is_halted()
-{
-    return ti68k_is_halted();
-}
-
-void halt(void)
-{
-    return ti68k_halt();
-}
-
-void unhalt(void) 
-{
-    return ti68k_unhalt();
-}
-*/

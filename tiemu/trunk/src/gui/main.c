@@ -128,7 +128,7 @@ int main(int argc, char **argv)
 		Assign an GUI to the emulation engine 
 		adn a debugger
 	*/
-	hid_set_gui_callbacks();
+	hid_set_callbacks();
 	//ti68k_defineDebugger(enter_gtk_debugger);
 
     /*

@@ -101,7 +101,8 @@ Ti68kParameters params = { 0 };
    HID callbacks.
    The callbacks will not be used until ti68k_init().
 */
-int ti68k_setGuiCallbacks(callback_iv_t initSpecific,
+int ti68k_set_gui_callbacks(
+              callback_iv_t initSpecific,
 			  callback_iv_t exitSpecific,
 			  callback_iv_t updateScreen,
 			  callback_iv_t updateKeys,

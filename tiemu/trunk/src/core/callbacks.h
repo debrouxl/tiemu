@@ -26,7 +26,6 @@
 #define __TI68K_CALLBACKS__
 
 #include <time.h>
-//#include "tilibs.h"
 
 /*
   Variables
@@ -50,51 +49,8 @@ extern callback_iv_t cb_update_keys;
 extern callback_vi_t cb_screen_on_off;
 
 /* 
-   Refresh/progress functions
-   This structure allows to implement a kind of callbacks mechanism (which
-   allow libti68k to interact with user without being dependant of a GUI).
-*/
-
-  struct ti68k_info_update
-  {
-    /* Variables to update */
-    int cancel;                // Abort the current transfer
-    char label_text[256];      // A text to display (varname, ...)
-    float percentage;          // Percentage of the current operation
-    float main_percentage;     // Percentage of all operations
-    float prev_percentage;     // Previous percentage of current operation
-    float prev_main_percentage;// Previous percentage of all operations
-    int count;                 // Number of bytes exchanged
-    int total;                 // Number of bytes to exchange
-    clock_t start_time;        // Time when transfer has begun
-    clock_t current_time;      // Current time
-    
-    /* Functions for updating */
-    void (*start)   (void);                   // Init internal variables
-    void (*stop)    (void);                   // Release internal variables
-    void (*refresh) (void);                   // Pass control to GUI for refresh
-    void (*msg_box) (const char *t, char *s); // Display a message box
-    void (*pbar)    (void);                   // Refresh the progress bar
-    void (*label)   (void);                   // Refresh the label
-    int  (*choose)  (char *cur_name, 
-		     char *new_name);         // Display choice box
-  };
-  typedef struct ti68k_info_update Ti68kInfoUpdate;
-
-
-/* 
    Functions 
 */
-
-void ti68k_set_update(Ti68kInfoUpdate *iu,
-		      void (*start)    (void),
-		      void (*stop)     (void),
-		      void (*resfresh) (void),
-		      void (*msg_box)  (const char *t, char *s),
-		      void (*pbar)     (void),
-		      void (*label)    (void),
-		      int  (*choose)   (char *cur_name, 
-					char *new_name));
 
 int ti68k_setGuiCallbacks(callback_iv_t initSpecific, 
 			  callback_iv_t exitSpecific,
