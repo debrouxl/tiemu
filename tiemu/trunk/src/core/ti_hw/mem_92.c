@@ -29,7 +29,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <math.h>
 
 #include "libuae.h"
 #include "ports.h"

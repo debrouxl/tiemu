@@ -26,9 +26,8 @@
     Memory management: RAM, PROM/FLASH, I/O ports and bkpts
 */
 
-#include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "libuae.h"
 #include "ports.h"
