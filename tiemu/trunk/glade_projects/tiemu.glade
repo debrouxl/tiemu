@@ -1,554 +1,542 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
-<!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd" >
+<!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
 
 <glade-interface>
-  <widget class="GtkMenu" id="popup_menu">
-    <property name="visible">yes</property>
-
-    <signal name="configure_event" handler="on_popup_menu_configure_event" />
-    <signal name="cancel" handler="on_popup_menu_cancel" />
-    <signal name="deactivate" handler="on_popup_menu_deactivate" />
-
-    <child>
-      <widget class="GtkMenuItem" id="popup_menu_header">
-        <property name="label" translatable="yes">TiEmu II menu (v2.0)</property>
-        <property name="visible">yes</property>
-
-        <signal name="activate" handler="on_popup_menu_header" />
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="separator10">
-        <property name="visible">yes</property>
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="send_file_to_gtktiemu1">
-        <property name="tooltip" translatable="yes">Send the selected file to the emulator. This file can be of any type (single, group, backup, FLASH app or FLASH OS).</property>
-        <property name="label" translatable="yes">Send _file to TIEmu</property>
-        <property name="visible">yes</property>
-        <property name="use_underline">yes</property>
-
-        <signal name="activate" handler="on_send_file_to_gtktiemu1_activate" />
-
-        <accelerator key="F10" modifiers="0" signal="activate" />
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="link_cable1">
-        <property name="tooltip" translatable="yes">Link cable setup</property>
-        <property name="label" translatable="yes">Link _options...</property>
-        <property name="visible">yes</property>
-        <property name="use_underline">yes</property>
-
-        <signal name="activate" handler="on_link_cable1_activate" />
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="separator11">
-        <property name="visible">yes</property>
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="config1">
-        <property name="label" translatable="yes">_Configuration</property>
-        <property name="visible">yes</property>
-        <property name="use_underline">yes</property>
-
-        <child>
-          <widget class="GtkMenu" id="config1_menu">
-            <property name="visible">yes</property>
-
-            <child>
-              <widget class="GtkMenuItem" id="save_config1">
-                <property name="tooltip" translatable="yes">Save the actual configuration</property>
-                <property name="label" translatable="yes">Save config...</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_save_config1_activate" />
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="load_config1">
-                <property name="tooltip" translatable="yes">Load the configuration previously saved</property>
-                <property name="label" translatable="yes">Load config...</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_load_config1_activate" />
-              </widget>
-            </child>
-          </widget>
-        </child>
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="calculator_state1">
-        <property name="label" translatable="yes">Calculator state</property>
-        <property name="visible">yes</property>
-
-        <child>
-          <widget class="GtkMenu" id="calculator_state1_menu">
-            <property name="visible">yes</property>
-
-            <child>
-              <widget class="GtkMenuItem" id="load_state_image1">
-                <property name="label" translatable="yes">Load state image...</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_load_state_image1_activate" />
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="save_state_image1">
-                <property name="label" translatable="yes">Save state image...</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_save_state_image1_activate" />
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="revert_to_saved_state1">
-                <property name="label" translatable="yes">Revert to saved state</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_revert_to_saved_state1_activate" />
-              </widget>
-            </child>
-          </widget>
-        </child>
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="separator20">
-        <property name="visible">yes</property>
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="enter_debugger1">
-        <property name="tooltip" translatable="yes">Go to debugger</property>
-        <property name="label" translatable="yes">Enter _debugger...</property>
-        <property name="visible">yes</property>
-        <property name="use_underline">yes</property>
-
-        <signal name="activate" handler="on_enter_debugger1_activate" />
-
-        <accelerator key="F9" modifiers="0" signal="activate" />
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="reset_calc1">
-        <property name="label" translatable="yes">_Reset calc</property>
-        <property name="visible">yes</property>
-        <property name="use_underline">yes</property>
-
-        <signal name="activate" handler="on_reset_calc1_activate" />
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="separator12">
-        <property name="visible">yes</property>
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="emulator_options1">
-        <property name="label" translatable="yes">Emulator _options</property>
-        <property name="visible">yes</property>
-        <property name="use_underline">yes</property>
-
-        <child>
-          <widget class="GtkMenu" id="emulator_options1_menu">
-            <property name="visible">yes</property>
-
-            <child>
-              <widget class="GtkMenuItem" id="speed2">
-                <property name="label" translatable="yes">Speed</property>
-                <property name="visible">yes</property>
-
-                <child>
-                  <widget class="GtkMenu" id="speed2_menu">
-                    <property name="visible">yes</property>
-
-                    <child>
-                      <widget class="GtkCheckMenuItem" id="restrict1">
-                        <property name="label" translatable="yes">Restrict to actual speed</property>
-                        <property name="active">yes</property>
-                        <property name="always_show_toggle">yes</property>
-                        <property name="visible">yes</property>
-
-                        <signal name="activate" handler="on_restrict_to_actual_speed1_activate" />
-                      </widget>
-                    </child>
-
-                    <child>
-                      <widget class="GtkMenuItem" id="change_speed1">
-                        <property name="tooltip" translatable="yes">Set number the rate of the timer</property>
-                        <property name="label" translatable="yes">Tickrate...</property>
-                        <property name="visible">yes</property>
-
-                        <signal name="activate" handler="on_change_speed1_activate" />
-                      </widget>
-                    </child>
-
-                    <child>
-                      <widget class="GtkMenuItem" id="cycle_rate1">
-                        <property name="tooltip" translatable="yes">Set the rate of instructions</property>
-                        <property name="label" translatable="yes">Cycle rate...</property>
-                        <property name="visible">yes</property>
-
-                        <signal name="activate" handler="on_cycle_rate1_activate" />
-                      </widget>
-                    </child>
-
-                    <child>
-                      <widget class="GtkMenuItem" id="itick1">
-                        <property name="tooltip" translatable="yes">Set numbers of instructions per timertick</property>
-                        <property name="label" translatable="yes">Itick</property>
-                        <property name="visible">yes</property>
-
-                        <signal name="activate" handler="on_itick1_activate" />
-                      </widget>
-                    </child>
-
-                    <child>
-                      <widget class="GtkCheckMenuItem" id="sync1">
-                        <property name="tooltip" translatable="yes">If you uncheck this, screen updating will be synchronized with the timer which means it always be updated regularly. This may cause grayscale pictures to flicker when you press keys and other things happen in the code. If you check this, screen updating will be synced with IRQ 1. This means that if IRQ 1 does not run, the screen is not updated. This options usually makes grayscales rock-stable, but wont work at all in programs that turn off IRQ 1 (like &quot;tunnel&quot; and &quot;torus&quot;).</property>
-                        <property name="label" translatable="yes">Sync</property>
-                        <property name="active">no</property>
-                        <property name="always_show_toggle">yes</property>
-                        <property name="visible">yes</property>
-
-                        <signal name="activate" handler="on_sync1_activate" />
-                      </widget>
-                    </child>
-                  </widget>
-                </child>
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="number_of_colors1">
-                <property name="tooltip" translatable="yes">Set current number of emulated extra grayscales colors</property>
-                <property name="label" translatable="yes">Number of colors...</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_number_of_colors1_activate" />
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="screen1">
-                <property name="label" translatable="yes">_Screen</property>
-                <property name="visible">yes</property>
-                <property name="use_underline">yes</property>
-
-                <child>
-                  <widget class="GtkMenu" id="screen1_menu">
-                    <property name="visible">yes</property>
-
-                    <child>
-                      <widget class="GtkMenuItem" id="normal_view_(1x)1">
-                        <property name="label" translatable="yes">_Normal view (1x)</property>
-                        <property name="visible">yes</property>
-                        <property name="use_underline">yes</property>
-
-                        <signal name="activate" handler="on_normal_view_(1x)1_activate" />
-                      </widget>
-                    </child>
-
-                    <child>
-                      <widget class="GtkMenuItem" id="large_view_(x2)1">
-                        <property name="label" translatable="yes">_Large view (x2)</property>
-                        <property name="visible">yes</property>
-                        <property name="use_underline">yes</property>
-
-                        <signal name="activate" handler="on_large_view_(x2)1_activate" />
-                      </widget>
-                    </child>
-
-                    <child>
-                      <widget class="GtkMenuItem" id="full_screen1">
-                        <property name="label" translatable="yes">_Full screen (Alt+Enter)</property>
-                        <property name="visible">yes</property>
-                        <property name="use_underline">yes</property>
-
-                        <signal name="activate" handler="on_full_screen1_activate" />
-                      </widget>
-                    </child>
-                  </widget>
-                </child>
-              </widget>
-            </child>
-          </widget>
-        </child>
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="skin_for_current_calc1">
-        <property name="label" translatable="yes">Skin for current calc</property>
-        <property name="visible">yes</property>
-
-        <child>
-          <widget class="GtkMenu" id="skin_for_current_calc1_menu">
-            <property name="visible">yes</property>
-
-            <child>
-              <widget class="GtkMenuItem" id="skin1">
-                <property name="label" translatable="yes">Skin92</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_skin1_activate" />
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="none1">
-                <property name="label" translatable="yes">None</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_none1_activate" />
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="set_skin1">
-                <property name="label" translatable="yes">Set skin...</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_set_skin1_activate" />
-              </widget>
-            </child>
-          </widget>
-        </child>
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="screenshot1">
-        <property name="label" translatable="yes">_Screenshot</property>
-        <property name="visible">yes</property>
-        <property name="use_underline">yes</property>
-
-        <child>
-          <widget class="GtkMenu" id="screenshot1_menu">
-            <property name="visible">yes</property>
-
-            <child>
-              <widget class="GtkMenuItem" id="now_!1">
-                <property name="label" translatable="yes">_Now !</property>
-                <property name="visible">yes</property>
-                <property name="use_underline">yes</property>
-
-                <signal name="activate" handler="on_now_!1_activate" />
-
-                <accelerator key="F10" modifiers="0" signal="activate" />
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="options1">
-                <property name="label" translatable="yes">_Options</property>
-                <property name="visible">yes</property>
-                <property name="use_underline">yes</property>
-
-                <signal name="activate" handler="on_rbm_options1_activate" />
-              </widget>
-            </child>
-          </widget>
-        </child>
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="ram1">
-        <property name="tooltip" translatable="yes">RAM parameters</property>
-        <property name="label" translatable="yes">RAM</property>
-        <property name="visible">yes</property>
-
-        <child>
-          <widget class="GtkMenu" id="ram1_menu">
-            <property name="visible">yes</property>
-
-            <child>
-              <widget class="GtkMenuItem" id="dump_ram1">
-                <property name="label" translatable="yes">Dump RAM...</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_dump_ram1_activate" />
-              </widget>
-            </child>
-          </widget>
-        </child>
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="rom1">
-        <property name="tooltip" translatable="yes">ROM parameters</property>
-        <property name="label" translatable="yes">ROM</property>
-        <property name="visible">yes</property>
-
-        <child>
-          <widget class="GtkMenu" id="rom1_menu">
-            <property name="visible">yes</property>
-
-            <child>
-              <widget class="GtkMenuItem" id="dump_rom1">
-                <property name="tooltip" translatable="yes">Make a ROM dump to link port</property>
-                <property name="label" translatable="yes">Dump ROM...</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_dump_rom1_activate" />
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="rom_file1">
-                <property name="tooltip" translatable="yes">Add a ROM image or a FLASH upgrade...</property>
-                <property name="label" translatable="yes">Add image/upgrade...</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_rom_file1_activate" />
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="set_rom1">
-                <property name="tooltip" translatable="yes">Set emulation ROM version</property>
-                <property name="label" translatable="yes">Set ROM (image/upgrade)</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_set_rom1_activate" />
-              </widget>
-            </child>
-          </widget>
-        </child>
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="separator13">
-        <property name="visible">yes</property>
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="help1">
-        <property name="label" translatable="yes">_Help</property>
-        <property name="visible">yes</property>
-        <property name="use_underline">yes</property>
-
-        <child>
-          <widget class="GtkMenu" id="help1_menu">
-            <property name="visible">yes</property>
-
-            <child>
-              <widget class="GtkMenuItem" id="help3">
-                <property name="label" translatable="yes">Help</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_help3_activate" />
-
-                <accelerator key="H" modifiers="GDK_CONTROL_MASK" signal="activate" />
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="manpage1">
-                <property name="label" translatable="yes">Manpage</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_manpage1_activate" />
-
-                <accelerator key="M" modifiers="GDK_CONTROL_MASK" signal="activate" />
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="separator15">
-                <property name="visible">yes</property>
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="changelog1">
-                <property name="label" translatable="yes">ChangeLog</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_changelog1_activate" />
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="separator14">
-                <property name="visible">yes</property>
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="thanks1">
-                <property name="label" translatable="yes">Thanks</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_thanks1_activate" />
-              </widget>
-            </child>
-
-            <child>
-              <widget class="GtkMenuItem" id="about1">
-                <property name="tooltip" translatable="yes">More informations</property>
-                <property name="label" translatable="yes">About...</property>
-                <property name="visible">yes</property>
-
-                <signal name="activate" handler="on_about1_activate" />
-              </widget>
-            </child>
-          </widget>
-        </child>
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="infos1">
-        <property name="label" translatable="yes">Infos...</property>
-        <property name="visible">yes</property>
-
-        <signal name="activate" handler="on_infos1_activate" />
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="exit1">
-        <property name="label" translatable="yes">E_xit and save state</property>
-        <property name="visible">yes</property>
-        <property name="use_underline">yes</property>
-
-        <signal name="activate" handler="on_exit1_activate" />
-      </widget>
-    </child>
-
-    <child>
-      <widget class="GtkMenuItem" id="exit_without_saving_state1">
-        <property name="label" translatable="yes">Exit _without saving state</property>
-        <property name="visible">yes</property>
-        <property name="use_underline">yes</property>
-
-        <signal name="activate" handler="on_exit_without_saving_state1_activate" />
-      </widget>
-    </child>
-  </widget>
+
+<widget class="GtkMenu" id="popup_menu">
+  <property name="visible">True</property>
+  <signal name="configure_event" handler="on_popup_menu_configure_event"/>
+  <signal name="cancel" handler="on_popup_menu_cancel"/>
+  <signal name="deactivate" handler="on_popup_menu_deactivate"/>
+
+  <child>
+    <widget class="GtkMenuItem" id="popup_menu_header">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">TiEmu II menu (v2.0)</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_popup_menu_header"/>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="separator10">
+      <property name="visible">True</property>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="send_file_to_gtktiemu1">
+      <property name="visible">True</property>
+      <property name="tooltip" translatable="yes">Send the selected file to the emulator. This file can be of any type (single, group, backup, FLASH app or FLASH OS).</property>
+      <property name="label" translatable="yes">Send _file to TIEmu</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_send_file_to_gtktiemu1_activate"/>
+      <accelerator key="F10" modifiers="0" signal="activate"/>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="link_cable1">
+      <property name="visible">True</property>
+      <property name="tooltip" translatable="yes">Link cable setup</property>
+      <property name="label" translatable="yes">Link _options...</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_link_cable1_activate"/>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="separator11">
+      <property name="visible">True</property>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="config1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">_Configuration</property>
+      <property name="use_underline">True</property>
+
+      <child>
+	<widget class="GtkMenu" id="config1_menu">
+	  <property name="visible">True</property>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="save_config1">
+	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Save the actual configuration</property>
+	      <property name="label" translatable="yes">Save config...</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_save_config1_activate"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="load_config1">
+	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Load the configuration previously saved</property>
+	      <property name="label" translatable="yes">Load config...</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_load_config1_activate"/>
+	    </widget>
+	  </child>
+	</widget>
+      </child>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="calculator_state1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">Calculator state</property>
+      <property name="use_underline">True</property>
+
+      <child>
+	<widget class="GtkMenu" id="calculator_state1_menu">
+	  <property name="visible">True</property>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="load_state_image1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Load state image...</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_load_state_image1_activate"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="save_state_image1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Save state image...</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_save_state_image1_activate"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="revert_to_saved_state1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Revert to saved state</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_revert_to_saved_state1_activate"/>
+	    </widget>
+	  </child>
+	</widget>
+      </child>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="separator20">
+      <property name="visible">True</property>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="enter_debugger1">
+      <property name="visible">True</property>
+      <property name="tooltip" translatable="yes">Go to debugger</property>
+      <property name="label" translatable="yes">Enter _debugger...</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_enter_debugger1_activate"/>
+      <accelerator key="F9" modifiers="0" signal="activate"/>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="reset_calc1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">_Reset calc</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_reset_calc1_activate"/>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="separator12">
+      <property name="visible">True</property>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="emulator_options1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">Emulator _options</property>
+      <property name="use_underline">True</property>
+
+      <child>
+	<widget class="GtkMenu" id="emulator_options1_menu">
+	  <property name="visible">True</property>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="speed2">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Speed</property>
+	      <property name="use_underline">True</property>
+
+	      <child>
+		<widget class="GtkMenu" id="speed2_menu">
+		  <property name="visible">True</property>
+
+		  <child>
+		    <widget class="GtkCheckMenuItem" id="restrict1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Restrict to actual speed</property>
+		      <property name="use_underline">True</property>
+		      <property name="active">True</property>
+		      <signal name="activate" handler="on_restrict_to_actual_speed1_activate"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="change_speed1">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Set number the rate of the timer</property>
+		      <property name="label" translatable="yes">Tickrate...</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_change_speed1_activate"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="cycle_rate1">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Set the rate of instructions</property>
+		      <property name="label" translatable="yes">Cycle rate...</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_cycle_rate1_activate"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="itick1">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Set numbers of instructions per timertick</property>
+		      <property name="label" translatable="yes">Itick</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_itick1_activate"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkCheckMenuItem" id="sync1">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">If you uncheck this, screen updating will be synchronized with the timer which means it always be updated regularly. This may cause grayscale pictures to flicker when you press keys and other things happen in the code. If you check this, screen updating will be synced with IRQ 1. This means that if IRQ 1 does not run, the screen is not updated. This options usually makes grayscales rock-stable, but wont work at all in programs that turn off IRQ 1 (like &quot;tunnel&quot; and &quot;torus&quot;).</property>
+		      <property name="label" translatable="yes">Sync</property>
+		      <property name="use_underline">True</property>
+		      <property name="active">False</property>
+		      <signal name="activate" handler="on_sync1_activate"/>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="number_of_colors1">
+	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Set current number of emulated extra grayscales colors</property>
+	      <property name="label" translatable="yes">Number of colors...</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_number_of_colors1_activate"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="screen1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">_Screen</property>
+	      <property name="use_underline">True</property>
+
+	      <child>
+		<widget class="GtkMenu" id="screen1_menu">
+		  <property name="visible">True</property>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="normal_view_(1x)1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">_Normal view (1x)</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_normal_view_(1x)1_activate"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="large_view_(x2)1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">_Large view (x2)</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_large_view_(x2)1_activate"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="full_screen1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">_Full screen (Alt+Enter)</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_full_screen1_activate"/>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
+	    </widget>
+	  </child>
+	</widget>
+      </child>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="skin_for_current_calc1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">Skin for current calc</property>
+      <property name="use_underline">True</property>
+
+      <child>
+	<widget class="GtkMenu" id="skin_for_current_calc1_menu">
+	  <property name="visible">True</property>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="skin1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Skin92</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_skin1_activate"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="none1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">None</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_none1_activate"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="set_skin1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Set skin...</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_set_skin1_activate"/>
+	    </widget>
+	  </child>
+	</widget>
+      </child>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="screenshot1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">_Screenshot</property>
+      <property name="use_underline">True</property>
+
+      <child>
+	<widget class="GtkMenu" id="screenshot1_menu">
+	  <property name="visible">True</property>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="now_!1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">_Now !</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_now_!1_activate"/>
+	      <accelerator key="F10" modifiers="0" signal="activate"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="options1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">_Options</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_rbm_options1_activate"/>
+	    </widget>
+	  </child>
+	</widget>
+      </child>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="ram1">
+      <property name="visible">True</property>
+      <property name="tooltip" translatable="yes">RAM parameters</property>
+      <property name="label" translatable="yes">RAM</property>
+      <property name="use_underline">True</property>
+
+      <child>
+	<widget class="GtkMenu" id="ram1_menu">
+	  <property name="visible">True</property>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="dump_ram1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Dump RAM...</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_dump_ram1_activate"/>
+	    </widget>
+	  </child>
+	</widget>
+      </child>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="rom1">
+      <property name="visible">True</property>
+      <property name="tooltip" translatable="yes">ROM parameters</property>
+      <property name="label" translatable="yes">ROM</property>
+      <property name="use_underline">True</property>
+
+      <child>
+	<widget class="GtkMenu" id="rom1_menu">
+	  <property name="visible">True</property>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="dump_rom1">
+	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Make a ROM dump to link port</property>
+	      <property name="label" translatable="yes">Dump ROM...</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_dump_rom1_activate"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="rom_file1">
+	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Add a ROM image or a FLASH upgrade...</property>
+	      <property name="label" translatable="yes">Add image/upgrade...</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_rom_file1_activate"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="set_rom1">
+	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Set emulation ROM version</property>
+	      <property name="label" translatable="yes">Set ROM (image/upgrade)</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_set_rom1_activate"/>
+	    </widget>
+	  </child>
+	</widget>
+      </child>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="separator13">
+      <property name="visible">True</property>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="help1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">_Help</property>
+      <property name="use_underline">True</property>
+
+      <child>
+	<widget class="GtkMenu" id="help1_menu">
+	  <property name="visible">True</property>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="help3">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Help</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_help3_activate"/>
+	      <accelerator key="H" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="manpage1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Manpage</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_manpage1_activate"/>
+	      <accelerator key="M" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="separator15">
+	      <property name="visible">True</property>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="changelog1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">ChangeLog</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_changelog1_activate"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="separator14">
+	      <property name="visible">True</property>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="thanks1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Thanks</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_thanks1_activate"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="about1">
+	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">More informations</property>
+	      <property name="label" translatable="yes">About...</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_about1_activate"/>
+	    </widget>
+	  </child>
+	</widget>
+      </child>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="infos1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">Infos...</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_infos1_activate"/>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="exit1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">E_xit and save state</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_exit1_activate"/>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkMenuItem" id="exit_without_saving_state1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">Exit _without saving state</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_exit_without_saving_state1_activate"/>
+    </widget>
+  </child>
+</widget>
+
 </glade-interface>
