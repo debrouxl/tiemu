@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.65				(11/11/2002)
-Current version:  1.71 (2.00-a4)	(16/06/2004)
+Previous version: 1.70 (2.00-a3)	(15/06/2004)
+Current version:  1.71 (2.00-a4)	(03/07/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -26,13 +26,21 @@ New capabilities:
 Improvements:
 -------------
 
-	- completely reworked
-	
+	- slow access to debugger
+	- ability to load weird updates (.89u)
+	- TI89 key mapping pbs (EE, |)
+	- some broken shortcuts (G => Go to address)
+	- window focus & code window has default focus
+	- Alpha was not working properly
+	- can navigate in the code window (down only)
+	- handle long names with spaces in the ROM version box
+		
 	
 Future capabilities:
 --------------------
 
-	- use the latest & faster UAE.
+	- use the latest & faster UAE
+	- or, develop my own m68k emulation engine (PME, Portable M68k Engine)
 
 	
 Notes:

@@ -3,14 +3,14 @@ SubVersion: $Id$
 - 30/06/2004, version 1.71: roms
 	Julein Debroux's suggestions:
 	- debugger access is slow: improved by pre-loading windows.
-	- can't scroll into the code window: VTi uses a fixed size list without scrollers
+	- can't scroll into the code window: fixed (VTi uses a fixed size list without scrollers)
 	- window focus: fixed (list of the code window has default focus)
 	- shortcuts (F2, G, ...): fixed
 	- key mapping pb (EE, |): fixed
 	- pb with Alpha key: fixed
 	- no key auto-repeat: no needs
-	- disasm listing:
-	- SR flags (VTi emulation):
+	- disasm listing: need to modify the UAE
+	- SR flags (VTi emulation): need to modify the UAE
 	- long names with the ROM version box: fixed.
 
 - 05/05/2004, version 1.70: roms

@@ -510,6 +510,9 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
     gchar *row;
     gint row_idx, row_max;
     uint32_t addr;
+    char output[128];
+    int offset;
+    int i, j;
 
     selection = gtk_tree_view_get_selection(view);
     valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
@@ -536,39 +539,58 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
 		return TRUE;
 
     case GDK_Up:
+#if 0
         if(row_max == -1)
             break;
 
-        printf("Up: %i/%i %x\n", row_idx, row_max, addr);
+        //printf("Up: %i/%i %x\n", row_idx, row_max, addr);
 
         if(row_idx > 0)
             break;
 
         gtk_list_store_clear(store);
         clist_populate(store, addr - 2);
-
+#endif
         return FALSE;
+
     case GDK_Down:
         if(row_max == -1)
             break;
 
-        printf("Down: %i/%i %x\n", row_idx, row_max, addr);
+        //printf("Down: %i/%i %x\n", row_idx, row_max, addr);
 
         if(row_idx < row_max)
             break;
 
+        offset = ti68k_debug_disassemble(addr, output);
+        printf("<%x %i>\n", addr, offset);
+
         gtk_list_store_clear(store);
-        clist_populate(store, addr + 2);
+        clist_populate(store, addr + offset);
 
         return FALSE;
 
     case GDK_Page_Up:
+        break;
     case GDK_Page_Down:
+#if 0
         if(row_max == -1)
             break;
 
-        printf("Page Up/Down: %i/%i <%s> %i\n", row_idx, row_max, str);
+        //printf("Down: %i/%i %x\n", row_idx, row_max, addr);
 
+        if(row_idx < row_max)
+            break;
+
+        for(i = 0, offset = 0; i < row_max; i++)
+        {
+            j = ti68k_debug_disassemble(addr + offset, output);
+            offset += j;
+        }
+
+        gtk_list_store_clear(store);
+        clist_populate(store, addr + offset);
+#endif
         return FALSE;
 
 	default:
