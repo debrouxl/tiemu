@@ -83,9 +83,29 @@ int keyRow89[10][8] =
    TIKEY_VOID, TIKEY_VOID}
 };
 
-int keyRowV200[10][8] = { 0 };
+int keyRowV200[10][8] =
+{
+  {TIKEY_DOWN, TIKEY_RIGHT, TIKEY_UP, TIKEY_LEFT, TIKEY_HAND, 
+   TIKEY_SHIFT, TIKEY_DIAMOND, TIKEY_2ND},
+  {TIKEY_3, TIKEY_2, TIKEY_1, TIKEY_F8, TIKEY_W, TIKEY_S, TIKEY_Z, TIKEY_NU},
+  {TIKEY_6, TIKEY_5, TIKEY_4, TIKEY_F3, TIKEY_E, TIKEY_D, TIKEY_X, TIKEY_NU},
+  {TIKEY_9, TIKEY_8, TIKEY_7, TIKEY_F7, TIKEY_R, TIKEY_F, TIKEY_C, 
+   TIKEY_STORE},
+  {TIKEY_COMMA, TIKEY_PARIGHT, TIKEY_PALEFT, TIKEY_F2, TIKEY_T, TIKEY_G, 
+   TIKEY_V, TIKEY_SPACE},
+  {TIKEY_TAN, TIKEY_COS, TIKEY_SIN, TIKEY_F6, TIKEY_Y, TIKEY_H, TIKEY_B, 
+   TIKEY_DIVIDE},
+  {TIKEY_P, TIKEY_ENTER2, TIKEY_LN, TIKEY_F1, TIKEY_U, TIKEY_J, TIKEY_N, 
+   TIKEY_POWER},
+  {TIKEY_MULTIPLY, TIKEY_APPS, TIKEY_CLEAR, TIKEY_F5, TIKEY_I, TIKEY_K, 
+   TIKEY_M, TIKEY_EQUALS},
+  {TIKEY_NU, TIKEY_ESCAPE, TIKEY_MODE, TIKEY_PLUS, TIKEY_O, TIKEY_L, 
+   TIKEY_THETA, TIKEY_BACKSPACE},
+  {TIKEY_NEGATE, TIKEY_PERIOD, TIKEY_0, TIKEY_F4, TIKEY_Q, TIKEY_A, 
+   TIKEY_ENTER1, TIKEY_MINUS}
+};
 
-int *key_row;
+static int *key_row;
 
 int hw_kbd_init(void)
 {
@@ -124,21 +144,24 @@ void ti68k_kbd_set_key(int key, int active)
 }
 
 /* Returns true if the corresponding key was pressed */
-int ti68k_isKeyPressed(int key)
+int ti68k_kbd_is_key_pressed(int key)
 {
     return key_states[key];
 }
 
 int hw_kbd_update(void) 
 {
-    int rc = cb_update_keys();
+    int rc = cb_update_keys();	// ~600Hz
 
-    if((tihw.on_key = ti68k_isKeyPressed(TIKEY_ON))) 
+    if((tihw.on_key = ti68k_kbd_is_key_pressed(TIKEY_ON))) 
     {
+    	// set calc on
         if(specialflags & SPCFLAG_STOP)
 	        specialflags &= ~SPCFLAG_STOP;
-        if(specialflags < 6) // no ints: ON works but FARGO do not
-	    //if(currIntLev < 6)
+	        
+	    // Auto-Int 6 triggered when [ON] is pressed.
+	    //if(currIntLev < 6)	// don't work 
+	    if(specialflags < 6)	// work (why ?!)
 	    {
 	        specialflags |= SPCFLAG_INT;
 	        currIntLev = 6;
@@ -148,6 +171,7 @@ int hw_kbd_update(void)
     }
     else if(rc)
     {
+    	// Auto-Int 2 triggered periodically while key(s) other than [ON] are held down.
         if(currIntLev < 2)
 	    {
 	        specialflags |= SPCFLAG_INT;
@@ -166,7 +190,7 @@ static UBYTE get_rowmask(UBYTE r)
   
     for(i=0; i<8; i++)
     {
-        rc |= key_states[row[i]]<<(7-i);
+        rc |= key_states[row[i]] << (7-i);
     }
   
     return rc;
@@ -178,8 +202,8 @@ UBYTE hw_kbd_read_mask(void)
     static UBYTE arg;
     static UWORD mask;
 
-    arg=0;
-    mask = (((UWORD)tihw.io[0x18])<<8)|tihw.io[0x19];
+    arg = 0;
+    mask = (((UWORD)tihw.io[0x18]) << 8) | tihw.io[0x19];
     for(i=0; i<10; i++)
     {
         if(!(mask & (1<<i)))

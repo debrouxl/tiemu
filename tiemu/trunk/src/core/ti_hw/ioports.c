@@ -140,8 +140,10 @@ void io_put_byte(CPTR adr, UBYTE arg)
         case 0x19:	// rw <......10>
         break;
         case 0x1a:	// rw <......10> <76543210>
+        	// Write any value to $60001A to acknowledge this interrupt (AutoInt6)
         break;
         case 0x1b:	// r- <76543210>
+        	// Write any value to $60001B to acknowledge this interrupt (AutoInt2)
         break;
         case 0x1c:	// -w <..5432..>
             tihw.lcd_off=(arg&0x80)>>7;

@@ -33,9 +33,10 @@ int hw_kbd_exit(void);
 
 UBYTE read_keyboard_mask(void);
 
-void  ti68k_setActiveKey(int key, int active);
-int   ti68k_isKeyPressed(int key);
+void ti68k_kbd_set_key(int key, int active);
+int ti68k_kbd_is_key_pressed(int key);
 
+UBYTE hw_kbd_read_mask(void);
 #define read_onkey() ((UBYTE)tihw.on_key)
 
 #endif
