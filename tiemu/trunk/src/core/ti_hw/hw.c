@@ -125,6 +125,8 @@ int hw_exit(void)
 G_LOCK_DEFINE(lcd_flag);
 volatile int lcd_flag = !0;
 
+extern int lcd_hook(void);
+
 /*
     This function is called by do_cycles to regularly updates the hardware.
     Rate is the same as the timer tick rate.
@@ -143,8 +145,12 @@ void hw_update(void)
     // Increment timer
     if(io_bit_tst(0x15,3))
     {
-    	tihw.timer_value++; timer++;
-    	tihw.heartbeat--;
+		if (tihw.timer_value) 
+			tihw.timer_value++; 
+		else 
+			tihw.timer_value = tihw.io[0x17];
+		timer++;
+		tihw.heartbeat--;
     }
 
 	// Increment RTC timer every 8192 seconds
@@ -158,7 +164,7 @@ void hw_update(void)
 	// Auto-int 1: 1/4 of timer rate
 	// Triggered at a fixed rate: OSC2/2^11
     if(!(timer & 3)) 
-    {
+    {		
     	if(!io_bit_tst(0x15,7))
 			hw_m68k_irq(1);
     }
@@ -198,7 +204,13 @@ void hw_update(void)
 	}
 
     // Auto-int 5: triggered by the programmable timer.
-	// see below (after LCD refresh)
+	// The default rate is OSC2/(K*2^9), where K=79 for HW1 and K=53 for HW2
+    if(tihw.timer_value == 0)
+    {
+        tihw.timer_value = tihw.io[0x17] - 1;
+		if(!io_bit_tst(0x15,7))	
+			hw_m68k_irq(5);
+    }
 
 	// Auto-int 6: triggered when [ON] is pressed.
 	// see keyboard.c
@@ -218,15 +230,7 @@ void hw_update(void)
         G_LOCK(lcd_flag);
         lcd_flag = !0;
         G_UNLOCK(lcd_flag);
-    }
-
-	// Auto-int 5: triggered by the programmable timer.
-	// The default rate is OSC2/(K*2^9), where K=79 for HW1 and K=53 for HW2
-    if(tihw.timer_value == 0)
-    {
-        tihw.timer_value = tihw.io[0x17] - 1;
-		if(!io_bit_tst(0x15,7))
-			hw_m68k_irq(5);
+		lcd_hook();
     }
 }
 
