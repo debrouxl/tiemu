@@ -86,7 +86,7 @@ int hw_init_mem()
     hw_exit_mem();
 
   /* Init vars */
-  ram128 = (params.ram_size == 128);
+  ram128 = (tihw.ram_size == 128);
   memprotect=0;
   ram_wrap=0; 
   mem_and=0x1ffff;

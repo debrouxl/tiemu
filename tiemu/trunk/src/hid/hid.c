@@ -746,9 +746,9 @@ static int hid_update_lcd(void)
   int i, j, k;
   Uint8 *pLcdMem = ti68k_getLcdPtr();
   
-  if(iGrayPlanes != params.n_grayplanes) 
+  if(iGrayPlanes != params.grayplanes) 
     {
-      iGrayPlanes = params.n_grayplanes;
+      iGrayPlanes = params.grayplanes;
       set_colors();
     }
 

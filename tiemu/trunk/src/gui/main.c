@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 	*/
 	version();
 	initialize_paths();
-	rcfile_default();
+	rcfile_default();   // (step 2)
 	rcfile_read();
 	scan_cmdline(argc, argv);
 
@@ -129,7 +129,7 @@ int main(int argc, char **argv)
 
 	/* 
 		Assign an GUI to the emulation engine 
-		adn a debugger
+		adn a debugger (step 1)
 	*/
 	hid_set_callbacks();
 	//ti68k_defineDebugger(enter_gtk_debugger);
@@ -158,7 +158,7 @@ int main(int argc, char **argv)
 #endif
 */
 	/*
-		Attempt to load an image
+		Attempt to load an image (step 3)
 	*/
 	if(ti68k_load_image(params.rom_file)) {
       
@@ -174,7 +174,7 @@ int main(int argc, char **argv)
 	}
 
 	/* 
-		Initialize emulation engine
+		Initialize emulation engine (step 4)
 	*/
     splash_screen_set_label(_("Initializing m68k emulation engine..."));
 	if(ti68k_init()) {
@@ -196,7 +196,7 @@ int main(int argc, char **argv)
 	gt_init_refresh_functions();
 
 	/* 
-		Reset emulation engine
+		Reset emulation engine (step 5)
 	*/
 	ti68k_reset();
 
@@ -208,12 +208,6 @@ int main(int argc, char **argv)
 		ti68k_state_load(params.ram_file);
 	}
   
-	/* 
-		Close the start-up console (Win32) 
-	*/
-	//if(options.console == DSP_OFF)
-		//close_console();
-
 	/* 
 		Start thread (emulation engine) and run main loop 
 	*/

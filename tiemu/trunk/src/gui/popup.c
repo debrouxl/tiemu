@@ -92,7 +92,7 @@ GtkWidget* display_popup_menu(void)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.sync_one);
 
     // init radio buttons
-    switch(params.n_grayplanes) {
+    switch(params.grayplanes) {
     case 2:
         data = glade_xml_get_widget(xml, "2_colors1");
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
@@ -306,7 +306,7 @@ on_2_colors1_activate                  (GtkMenuItem     *menuitem,
 {
     //if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
     //if (!gtk_toggle_button_get_active(togglebutton))
-    params.n_grayplanes = 2;
+    params.grayplanes = 2;
     ti68k_unhalt();
 }
 
@@ -315,7 +315,7 @@ GLADE_CB void
 on_4_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    params.n_grayplanes = 4;
+    params.grayplanes = 4;
     ti68k_unhalt();
 }
 
@@ -324,7 +324,7 @@ GLADE_CB void
 on_7_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    params.n_grayplanes = 7;
+    params.grayplanes = 7;
     ti68k_unhalt();
 }
 
@@ -333,7 +333,7 @@ GLADE_CB void
 on_11_colors1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    params.n_grayplanes = 11;
+    params.grayplanes = 11;
     ti68k_unhalt();
 }
 

@@ -511,8 +511,8 @@ int ti68k_load_image(const char *filename)
 	img->data = malloc(img->size + 4);
     fread(img->data, 1, img->size, f);	
   	
-  	params.rom_size = img->size;
-  	params.ram_size = (img->size == 1024*1024) ? 128 : 256;
+  	tihw.rom_size = img->size;
+  	tihw.ram_size = (img->size == 1024*1024) ? 128 : 256;
   
   	img_loaded = 1;
   	return 0;
@@ -549,8 +549,8 @@ int ti68k_load_upgrade(const char *filename)
 	img->has_boot = 1;	// still bootable
 	memcpy(ti_rom+0x12000, img->data+0x12000, img->size-0x12000);
 
-  	params.rom_size = img->size;
-  	params.ram_size = (img->size == 1024*1024) ? 128 : 256;
+  	tihw.rom_size = img->size;
+  	tihw.ram_size = (img->size == 1024*1024) ? 128 : 256;
 
   	img_loaded = 2;
 	return 0;

@@ -102,7 +102,7 @@ int ti68k_gui_set_callbacks(
 int ti68k_loadDefaultConfig(void)
 {
   params.background = 1;
-  params.n_grayplanes = 2;
+  params.grayplanes = 2;
   params.i_tick = 640;
   params.tick_rate = 40000;
   params.cycle_rate = 150;
@@ -193,7 +193,7 @@ void* ti68k_getRomPtr(void)
 
 int ti68k_getRomSize(void)
 {
-  return params.rom_size;
+  return tihw.rom_size;
 }
 
 const char *ti68k_getRomVersion(void)
@@ -224,7 +224,7 @@ void* ti68k_getRamPtr(void)
 	
 int ti68k_getRamSize(void)
 {
-  return params.ram_size;
+  return tihw.ram_size;
 }
 
 

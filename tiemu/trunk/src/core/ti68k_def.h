@@ -51,11 +51,11 @@ typedef struct
   char *ram_file;
   char *tib_file;
 
-  int ram_size;
-  int rom_size;
+  //int ram_size;
+  //int rom_size;
 
   int background;
-  int n_grayplanes;
+  int grayplanes;
 
   int tick_rate;
   int cycle_rate;
@@ -76,31 +76,31 @@ typedef struct
     char	rom_version[5];
 
     // ioports.c
-    int io0Bit7;
-    int io0Bit2;
+    int     io0Bit7;
+    int     io0Bit2;
 
     // keyboard.c
-    int on_key0;
+    int     on_key0;
 
     // lcd.c
-    int lcd_off;
-    int contrast;
-    int lcd_base_addr;
+    int     lcd_off;
+    int     contrast;
+    int     lcd_base_addr;
 
     // linkport.c
     TicableLinkParam lc;
 
     // memory.c
-    char *ti_rom;
-    char *ti_int_rom;
-    char *ti_ext_rom;
-    char *ti_ram;
-    char *ti_io;
-    char garbage_mem[0x10000];
+    char    *ti_rom;
+    char    *ti_int_rom;
+    char    *ti_ext_rom;
+    char    *ti_ram;
+    char    *ti_io;
+    char    garbage_mem[0x10000];
 
     // timer.c
-    int timer_value;
-    int timer_init;
+    int     timer_value;
+    int     timer_init;
 
 } Ti68kHardware;
 

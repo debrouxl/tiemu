@@ -358,7 +358,7 @@ void rcfile_read(void)
 
 	if( (p=find_str(buffer, "gray_planes=")) )
 	{
-	  sscanf(p, "%i", &(params.n_grayplanes));
+	  sscanf(p, "%i", &(params.grayplanes));
 	  continue;
 	}
 
@@ -663,7 +663,7 @@ void rcfile_write(void)
   fprintf(txt, "tib_file=%s\n", params.tib_file);
   fprintf(txt, "\n");
   fprintf(txt, "# Number of gray planes (0, 2, 5, 11)\n");
-  fprintf(txt, "gray_planes=%i\n", params.n_grayplanes);
+  fprintf(txt, "gray_planes=%i\n", params.grayplanes);
   fprintf(txt, "\n");
   fprintf(txt, "# Timer Tick rate\n");
   fprintf(txt, "tick_rate=%u\n", params.tick_rate);
