@@ -52,7 +52,7 @@ extern callback_vi_t cb_screen_on_off;
    Functions 
 */
 
-int ti68k_setGuiCallbacks(callback_iv_t initSpecific, 
+int ti68k_gui_set_callbacks(
 			  callback_iv_t exitSpecific,
 			  callback_iv_t updateScreen,
 			  callback_iv_t updateKeys,
@@ -60,8 +60,7 @@ int ti68k_setGuiCallbacks(callback_iv_t initSpecific,
 			  callback_ii_t setContrast
 			  );
 
-callback_iv_t ti68k_defineDebugger(callback_iv_t new_debugger);
+callback_iv_t ti68k_debugger_define(callback_iv_t new_debugger);
 
-callback_vi_t ti68k_defineProgbar(callback_vi_t new_progbar);
 
 #endif

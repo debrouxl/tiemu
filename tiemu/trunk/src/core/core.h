@@ -31,8 +31,4 @@ int ti68k_is_halted() ;
 void ti68k_halt(void);
 void ti68k_unhalt(void);
 
-//#define is_halted	ti68k_is_halted
-//#define halt		ti68k_halt
-//#define unhalt		ti68k_unhalt
-
 #endif

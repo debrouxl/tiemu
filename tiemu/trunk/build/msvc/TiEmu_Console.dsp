@@ -240,10 +240,6 @@ SOURCE=..\..\src\core\interface.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\intlist.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\core\state.c
 # End Source File
 # Begin Source File

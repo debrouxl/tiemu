@@ -76,7 +76,7 @@ int ti68k_gui_set_callbacks(
     is restored to internal debugger (text mode).
     Return the default callback, too.
 */
-callback_iv_t ti68k_define_debugger(callback_iv_t new_debugger)
+callback_iv_t ti68k_debugger_define(callback_iv_t new_debugger)
 {
     if(new_debugger == NULL)
     {

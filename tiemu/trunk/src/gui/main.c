@@ -59,6 +59,10 @@ TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
 extern gpointer ti68k_engine(gpointer data);
 
+extern int ticables_printl(int level, const char *format, ...);
+extern int ticalcs_printl(int level, const char *format, ...);
+extern int tifiles_printl(int level, const char *format, ...);
+
 /* Main function */		
 int main(int argc, char **argv) 
 {
@@ -116,11 +120,11 @@ int main(int argc, char **argv)
 	   Initialize the libti* libraries
 	 */
 	
-        //ticable_set_printl(ticables_printl);
+    //ticable_set_printl(ticables_printl);
 	ticable_init();
 	//tifiles_set_printl(tifiles_printl);
 	tifiles_init();
-        //ticalc_set_printl(ticalcs_printl);
+    //ticalc_set_printl(ticalcs_printl);
 	ticalc_init();
 
 	/* 
