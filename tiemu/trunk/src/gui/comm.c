@@ -275,6 +275,7 @@ comm_cable_changed                     (GtkOptionMenu   *optionmenu,
 	
 	// force port to avoid libticables bad argument 
 	if(!init) {
+		printf("port forced !\n");
 		switch(tmp_lp.link_type) {
 		case LINK_TGL:
 		case LINK_SER:
@@ -282,10 +283,12 @@ comm_cable_changed                     (GtkOptionMenu   *optionmenu,
 		case LINK_VTI:
 		case LINK_TIE:
 		case LINK_VTL:
+			gtk_option_menu_set_history(GTK_OPTION_MENU(port), 5);
 			gtk_option_menu_set_history(GTK_OPTION_MENU(port), 2);
 			break;
 		case LINK_PAR:
 		case LINK_SLV:
+			gtk_option_menu_set_history(GTK_OPTION_MENU(port), 5);
 			gtk_option_menu_set_history(GTK_OPTION_MENU(port), 1);
                         break;
         case LINK_NUL:

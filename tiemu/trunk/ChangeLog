@@ -7,9 +7,9 @@ To do:
 
 - 07/02/2005, version 1.80m: roms
 	- dbus architecture improved (reset)
-	- fixed and tested linkport support with real cables: GrayLink, BlackLink.
-	SilverLink makes TiEmu crash.
-	Virtual links don't work !
+	- fixed and tested linkport support with real cables: GrayLink, BlackLink, VTi and TiEmu.
+	- tested: TiLP/VTi (vti), VTi/TiEmu (vti), TiLP/TiEmu (tie).
+	- SilverLink makes TiEmu crash.
 
 - 21/01/2005, version 1.80l: roms
 	- switched to GTK+ package 2.4-rc26 (2.4.14): compatible with GiMP and fixes toolbar tooltips

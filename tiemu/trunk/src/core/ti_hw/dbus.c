@@ -132,9 +132,13 @@ static int init_link_cable(void)
 {
 	int err;
 
-	ticable_init();
 	ticable_set_param(&link_cable);
-	ticable_set_cable(link_cable.link_type, &lc);
+	err = ticable_set_cable(link_cable.link_type, &lc);
+	if(err)
+	{
+		tiemu_error(err, NULL);
+		return -1;
+	}
 
 	if((err = lc.init()))
 	{
@@ -173,6 +177,7 @@ static int exit_link_cable(void)
 static void lp_reinit(void)
 {
 	avail = 0;
+	printf("reinit !\n");
 }
 
 static void lp_putbyte(uint8_t arg)
