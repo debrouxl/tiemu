@@ -591,8 +591,8 @@ static void extRomWriteByte(int addr,int v)
   if(flash_protect) 
     return;
 
-  if(img->calc_type != TI92p) 
-    return;
+  if(tihw.calc_type == TI92)
+        return;
 
   if (rom_write_ready)
     {
