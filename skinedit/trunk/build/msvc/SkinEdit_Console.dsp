@@ -136,6 +136,10 @@ SOURCE=..\..\..\..\..\Gtk2Dev\lib\intl.lib
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\skinedit.ico
+# End Source File
+# Begin Source File
+
 SOURCE=.\skinedit.rc
 # End Source File
 # End Group

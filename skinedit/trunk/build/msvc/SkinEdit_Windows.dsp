@@ -208,7 +208,7 @@ SOURCE=..\..\src\vti_export.h
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # Begin Source File
 
-SOURCE=.\bitmap1.bmp
+SOURCE=.\skinedit.ico
 # End Source File
 # Begin Source File
 
