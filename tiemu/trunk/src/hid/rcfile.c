@@ -770,8 +770,8 @@ int rcfile_default()
 	ti68k_loadDefaultConfig();
 
 	(options.params)->rom_file = g_strconcat(inst_paths.rom_dir, "", NULL);
-	(options.params)->ram_file = g_strdup("");
-	(options.params)->tib_file = g_strdup("");
+	(options.params)->ram_file = NULL;
+	(options.params)->tib_file = NULL;
 
 	// other fields
 	options.skin_file = g_strconcat(inst_paths.skin_dir, "ti92.skn", NULL);

@@ -191,7 +191,9 @@ int main(int argc, char **argv)
 		Load calculator state image 
 	*/
     splash_screen_set_label(_("Loading saved state..."));
-	ti68k_loadState((options.params)->ram_file);
+	if(options.params->ram_file != NULL) {
+		ti68k_loadState((options.params)->ram_file);
+	}
   
 	/* 
 		Close the start-up console (Win32) 

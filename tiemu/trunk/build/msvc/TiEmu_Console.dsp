@@ -232,7 +232,7 @@ SOURCE=..\..\src\core\errors.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\images.c
+SOURCE=..\..\src\core\images2.c
 # End Source File
 # Begin Source File
 

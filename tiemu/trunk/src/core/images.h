@@ -25,26 +25,37 @@
 #ifndef __TI68K_IMAGES__
 #define __TI68K_IMAGES__
 
-//#include "uae.h"
 
 /*
   Definitions
 */
 
-/* Store informations about TIB files or ROM images */
-  struct ti68k_rom_infos_
-  {
-    int loaded;
+typedef struct
+{
+	char	signature[16];	// "TiEmu v2.00"
+	long	header_size;	// size of this structure
+	long	data_offset;	// offset to pure data
+	char	calc_type;		// calculator type
+	char	revision[4];	// firmware revision
+	char	internal;		// internal/external
+	char	flash;			// EPROM or FLASH
+	char	img_type;		// FLASH upgrade or ROM image
+	char	data_size;		// size of pure data
+} IMG_HEADER;
+
+typedef struct
+{
     int calc_type;
     char version[20];
     int flash;
     int internal;
+	int tib;
     int size;
-    int tib;
-    unsigned char *content;
-  };
-typedef struct ti68k_rom_infos_ ROM_INFO;
-typedef struct ti68k_rom_infos_ Ti68kRomInfo;
+    char *content;
+	int loaded;
+} ROM_INFO;
+
+typedef ROM_INFO Ti68kRomInfo;
 
 /*
   Variables
