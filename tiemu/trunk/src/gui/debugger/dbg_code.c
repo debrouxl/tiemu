@@ -844,7 +844,6 @@ GLADE_CB void
 on_combo_entry1_changed                (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-	//printf(".");
 	gchar *str = gtk_editable_get_chars(editable, 0, -1);
 	uint32_t addr;
 	int id;
@@ -856,4 +855,12 @@ on_combo_entry1_changed                (GtkEditable     *editable,
 		dbgcode_disasm_at(addr & 0xffffff);
 
 	g_free(str);
+}
+
+GLADE_CB void
+on_combo_entry1_populate_popup         (GtkEntry        *entry,
+                                        GtkMenu         *menu,
+                                        gpointer         user_data)
+{
+	printf("hello !\n");
 }

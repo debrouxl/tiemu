@@ -15,6 +15,7 @@ To do:
 	- fixed disassembling of STOP instruction
 	- highlight ROM call
 	- fixed loading of ROM calls (load from FLASH)
+	- ROM calls are sorted by name instead of by id
 
 - 20/08/2004, version 1.79: roms
 	- LCD background is less dark
