@@ -70,7 +70,7 @@ gint display_help_dbox()
 	    (tilp_paths_build_glade("manpage-2.glade"), "manpage_dbox",
 	     PACKAGE);
 	if (!xml)
-		g_error("GUI loading failed !\n");
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 
 	dbox = glade_xml_get_widget(xml, "manpage_dbox");

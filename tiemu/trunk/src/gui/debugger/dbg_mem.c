@@ -284,7 +284,7 @@ gint display_dbgmem_dbox(uint32_t *addr)
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_dbox", PACKAGE);
 	if (!xml)
-		g_error("GUI loading failed !\n");
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	
 	entry = glade_xml_get_widget(xml, "entry1");

@@ -47,7 +47,7 @@
 #include "manpage.h"
 #include "scroptions.h"
 #include "tie_error.h"
-#include "dbg_mem.h"
+#include "./debugger/dbg_mem.h"
 
 #include "ti68k_int.h"
 #include "ti68k_def.h"
@@ -91,7 +91,7 @@ GtkWidget* display_popup_menu(void)
 	    (tilp_paths_build_glade("popup-2.glade"), "popup_menu",
 	     PACKAGE);
 	if (!xml)
-		g_error(_("popup.c: GUI loading failed !\n"));
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 
 	menu = glade_xml_get_widget(xml, "popup_menu");

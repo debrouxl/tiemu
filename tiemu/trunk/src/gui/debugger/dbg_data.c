@@ -33,56 +33,30 @@
 #include "skinops.h"
 #include "ti68k_int.h"
 
-gint display_dbgcause_dbox()
+
+gint display_dbgdata_dbox(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
-	GtkWidget *label;
+	GtkWidget *data;
 	gint result;
-	gchar *str;
-	gint type, id, mode;
-	uint32_t value;
 	
 	xml = glade_xml_new
-		(tilp_paths_build_glade("dbg_cause-2.glade"), "dbgcause_dbox",
+		(tilp_paths_build_glade("dbg_data-2.glade"), "dbgdata_dbox",
 		 PACKAGE);
 	if (!xml)
-		g_error("GUI loading failed !\n");
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	
-	dbox = glade_xml_get_widget(xml, "dbgcause_dbox");
-
-	// get context
-	ti68k_bkpt_get_cause(&type, &mode, &id);
-
-	// set PC
-	label = glade_xml_get_widget(xml, "label21");
-	ti68k_register_get_pc(&value);
-	str = g_strdup_printf("0x%06x", value);
-	gtk_label_set_text(GTK_LABEL(label), str);
-	g_free(str);
-
-	// set type
-	label = glade_xml_get_widget(xml, "label22");
-	str = g_strdup_printf("%s", ti68k_bkpt_type_to_string(type));
-	gtk_label_set_text(GTK_LABEL(label), str);
-	g_free(str);
-
-	// set mode
-	label = glade_xml_get_widget(xml, "label23");
-	str = g_strdup_printf("%s", ti68k_bkpt_mode_to_string(type, mode));
-	gtk_label_set_text(GTK_LABEL(label), str);
-	g_free(str);
-
-	// set id
-	label = glade_xml_get_widget(xml, "label24");
-	str = g_strdup_printf("%i", id);
-	gtk_label_set_text(GTK_LABEL(label), str);
-	g_free(str);
+	dbox = glade_xml_get_widget(xml, "dbgdata_dbox");
+	gtk_window_resize(GTK_WINDOW(dbox), 320, 240);
+		
+	//data = glade_xml_get_widget(xml, "treeview1");
 	
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) {
 	case GTK_RESPONSE_OK:
+		//clist_get_selection(data);
 		break;
 	default:
 		break;
@@ -92,3 +66,7 @@ gint display_dbgcause_dbox()
 
 	return 0;
 }
+
+
+
+

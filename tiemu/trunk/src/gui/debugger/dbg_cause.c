@@ -33,73 +33,56 @@
 #include "skinops.h"
 #include "ti68k_int.h"
 
-gint display_infos_dbox()
+gint display_dbgcause_dbox()
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
 	GtkWidget *label;
 	gint result;
 	gchar *str;
-	int i = 0;
+	gint type, id, mode;
+	uint32_t value;
 	
 	xml = glade_xml_new
-		(tilp_paths_build_glade("infos-2.glade"), "infos_dbox",
+		(tilp_paths_build_glade("dbg_cause-2.glade"), "dbgcause_dbox",
 		 PACKAGE);
 	if (!xml)
 		g_error(_("%s: GUI loading failed !\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	
-	dbox = glade_xml_get_widget(xml, "infos_dbox");
+	dbox = glade_xml_get_widget(xml, "dbgcause_dbox");
 
-	label = glade_xml_get_widget(xml, "label20");
-	str = g_strdup_printf("%s", "TiEmu v2.00");
-	gtk_label_set_text(GTK_LABEL(label), str);
-	g_free(str);
-	
+	// get context
+	ti68k_bkpt_get_cause(&type, &mode, &id);
+
+	// set PC
 	label = glade_xml_get_widget(xml, "label21");
-	str = g_strdup_printf("%s", skin_infos.name);
-	gtk_label_set_text(GTK_LABEL(label), str);
-	g_free(str);
-	
-	label = glade_xml_get_widget(xml, "label22");
-	str = g_strdup_printf("%s", skin_infos.author);
-	gtk_label_set_text(GTK_LABEL(label), str);
-	g_free(str);
-	
-	label = glade_xml_get_widget(xml, "label23");
-	str = g_strdup_printf("%s", ti68k_calctype_to_string(tihw.calc_type));
-	gtk_label_set_text(GTK_LABEL(label), str);
-	g_free(str);
-	
-	label = glade_xml_get_widget(xml, "label24");
-	str = g_strdup_printf("%s", tihw.rom_version);
-	gtk_label_set_text(GTK_LABEL(label), str);
-	g_free(str);
-	
-	label = glade_xml_get_widget(xml, "label25");
-	str = g_strdup_printf("%i KB", tihw.ram_size >> 10);
-	gtk_label_set_text(GTK_LABEL(label), str);
-	g_free(str);
-	
-	label = glade_xml_get_widget(xml, "label26");
-	str = g_strdup_printf("%i KB", tihw.rom_size >> 10);
-	gtk_label_set_text(GTK_LABEL(label), str);
-	g_free(str);
-	
-	label = glade_xml_get_widget(xml, "label27");
-	str = g_strdup_printf("%s", ti68k_romtype_to_string(tihw.rom_flash | tihw.rom_internal));
+	ti68k_register_get_pc(&value);
+	str = g_strdup_printf("0x%06x", value);
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 
-	label = glade_xml_get_widget(xml, "label28");
-	str = g_strdup_printf("%s", ti68k_hwtype_to_string(tihw.hw_type));
+	// set type
+	label = glade_xml_get_widget(xml, "label22");
+	str = g_strdup_printf("%s", ti68k_bkpt_type_to_string(type));
+	gtk_label_set_text(GTK_LABEL(label), str);
+	g_free(str);
+
+	// set mode
+	label = glade_xml_get_widget(xml, "label23");
+	str = g_strdup_printf("%s", ti68k_bkpt_mode_to_string(type, mode));
+	gtk_label_set_text(GTK_LABEL(label), str);
+	g_free(str);
+
+	// set id
+	label = glade_xml_get_widget(xml, "label24");
+	str = g_strdup_printf("%i", id);
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 	
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) {
 	case GTK_RESPONSE_OK:
-		ti68k_engine_unhalt();
 		break;
 	default:
 		break;

@@ -202,7 +202,7 @@ gint display_dbgbkpts_window(void)
 		(tilp_paths_build_glade("dbg_bkpts-2.glade"), "dbgbkpts_window",
 		 PACKAGE);
 	if (!xml)
-		g_error("GUI loading failed !\n");
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgbkpts_window");

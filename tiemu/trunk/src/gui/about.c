@@ -74,7 +74,7 @@ gint display_about_dbox()
 	    (tilp_paths_build_glade("about-2.glade"), "about_dbox",
 	     PACKAGE);
 	if (!xml)
-		g_error(_("about.c: GUI loading failed !\n"));
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 
 	dbox = glade_xml_get_widget(xml, "about_dbox");

@@ -51,7 +51,7 @@
 #include "splash.h"
 #include "tie_error.h"
 #include "dboxes.h"
-#include "dbg_mem.h"
+#include "./debugger/dbg_mem.h"
 
 
 ScrOptions options2;

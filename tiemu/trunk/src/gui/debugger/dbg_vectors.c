@@ -136,7 +136,7 @@ gint display_dbgvectors_dbox(void)
 		(tilp_paths_build_glade("dbg_vectors-2.glade"), "dbgvectors_dbox",
 		 PACKAGE);
 	if (!xml)
-		g_error("GUI loading failed !\n");
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgvectors_dbox");

@@ -63,7 +63,7 @@ gint display_comm_dbox()
 	xml = glade_xml_new
 	    (tilp_paths_build_glade("comm-2.glade"), "comm_dbox", PACKAGE);
 	if (!xml)
-		g_error(_("comm.c: GUI loading failed !\n"));
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 
 	dbox = glade_xml_get_widget(xml, "comm_dbox");

@@ -439,27 +439,31 @@ SOURCE=..\..\src\core\type2str.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\gui\dbg_bkpts.c
+SOURCE=..\..\src\gui\debugger\dbg_bkpts.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\dbg_cause.c
+SOURCE=..\..\src\gui\debugger\dbg_cause.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\dbg_code.c
+SOURCE=..\..\src\gui\debugger\dbg_code.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\dbg_mem.c
+SOURCE=..\..\src\gui\debugger\dbg_data.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\dbg_regs.c
+SOURCE=..\..\src\gui\debugger\dbg_mem.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\dbg_vectors.c
+SOURCE=..\..\src\gui\debugger\dbg_regs.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\debugger\dbg_vectors.c
 # End Source File
 # End Group
 # Begin Source File

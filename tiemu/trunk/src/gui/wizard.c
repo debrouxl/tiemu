@@ -66,7 +66,7 @@ static gint display_msg_dbox(void)
     xml = glade_xml_new
 	    (tilp_paths_build_glade("wizard-2.glade"), "msg_dbox", PACKAGE);
 	if (!xml)
-		g_error(_("comm.c: GUI loading failed !\n"));
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 
 	dbox = glade_xml_get_widget(xml, "msg_dbox");

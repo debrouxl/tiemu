@@ -215,7 +215,7 @@ char *msg_entry(const char *title, const char *message,
 	    (tilp_paths_build_glade("user_boxes-2.glade"), "entry_dbox",
 	     PACKAGE);
 	if (!xml)
-		g_error("dboxes.c: GUI loading failed !\n");
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	dbox = data = glade_xml_get_widget(xml, "entry_dbox");
 	gtk_window_set_title(GTK_WINDOW(data), title);
