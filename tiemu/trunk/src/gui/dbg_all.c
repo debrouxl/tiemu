@@ -46,7 +46,7 @@ int enter_gtk_debugger(void)
 	//display_dbgvectors_dbox();
 	//display_dbgdata_dbox();
 	//display_dbgbkpts_window();
-    display_dbgcode_dbox();
+    display_dbgcode_window();
 
 	return 0;
 }

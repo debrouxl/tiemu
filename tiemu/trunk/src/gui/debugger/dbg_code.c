@@ -98,15 +98,27 @@ static void clist_refresh(GtkListStore *store)
 	gint i;
     GdkPixbuf *pix;
 
+    gtk_list_store_clear(store);
+
+
+    pix = create_pixbuf("run.xpm");
+    gtk_list_store_append(store, &iter);
+	gtk_list_store_set(store, &iter, 
+        COL_ICON, pix,
+	    COL_ADDR, "1", 
+		COL_DISASM, "2",
+		-1);
+
+#if 0
 	for(i = 0; i < 128; i++)
 	{
 	    gtk_list_store_append(store, &iter);
 		gtk_list_store_set(store, &iter, 
 		COL_ADDR, i, 
-		COL_DISASM, ti68k_exception_to_string(i),
+		COL_DISASM, "???"/*ti68k_exception_to_string(i)*/,
 		-1);
 	}
-
+#endif
     /*
 	pix1 = create_pixbuf("run.ico");
 	COL_ICON, pix1
@@ -134,8 +146,8 @@ gint display_dbgcode_window(void)
 
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
-	clist_populate(store);
-	//clist_refresh(store);
+	//clist_populate(store);
+	clist_refresh(store);
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
@@ -160,7 +172,7 @@ GLADE_CB void
 dbgcode_button1_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+    printf("clicked !\n");
 }
 
 

@@ -51,7 +51,7 @@
 #include "splash.h"
 #include "tie_error.h"
 #include "dboxes.h"
-#include "debugger.h"
+#include "dbg_all.h"
 
 
 ScrOptions options2;
@@ -99,6 +99,7 @@ int main(int argc, char **argv)
 	*/
 	g_thread_init(NULL);
 	gtk_init(&argc, &argv);
+    add_pixmap_directory(inst_paths.pixmap_dir);
 
     /*
         Set splash screen
