@@ -24,8 +24,11 @@
 static char *ccodes[16] = { "T ", "F ", "HI", "LS", "CC", "CS", "NE", "EQ", "VC", "VS", "PL", "MI", "GE", "LT", "GT", "LE" };
 static int pc;
 
-#define PARAM_WORD(v) ((v) = *(unsigned short *)&p[0], p += 2)
-#define PARAM_LONG(v) ((v) = (*(unsigned short *)&p[0] << 16) + *(unsigned short *)&p[2], p += 4)
+//#define PARAM_WORD(v) ((v) = *(unsigned short *)&p[0], p += 2)
+//#define PARAM_LONG(v) ((v) = (*(unsigned short *)&p[0] << 16) + *(unsigned short *)&p[2], p += 4)
+
+#define PARAM_WORD(v) ((v) = GUINT16_SWAP_LE_BE(*(unsigned short *)&p[0]), p += 2)
+#define PARAM_LONG(v) ((v) = GUINT16_SWAP_LE_BE((*(unsigned short *)&p[0] << 16) + *(unsigned short *)&p[2]), p += 4)
 
 static char tmpStr[64];
 
@@ -331,8 +334,6 @@ int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
     pc=_pc;
 
 	PARAM_WORD(op);
-	// tiemu: swap LSB/MSB
-	op = GUINT16_SWAP_LE_BE(op);
 
 	lo = op & 0x3f;
 	rhi = (op >> 9) & 7;

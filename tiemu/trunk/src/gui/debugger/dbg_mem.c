@@ -211,7 +211,7 @@ static GtkWidget* clist_create(GtkListStore **st)
 	}
 	
 	selection = gtk_tree_view_get_selection(view);
-	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_NONE);
 
 	*st = store;
 	return list;

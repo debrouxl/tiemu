@@ -265,6 +265,9 @@ gint display_romversion_dbox()
                 // Simply reset, don't restart
                 ti68k_reset();
 			}
+
+			g_free(params.sav_file);
+			params.sav_file = g_strdup("");
 			
 		break;
 

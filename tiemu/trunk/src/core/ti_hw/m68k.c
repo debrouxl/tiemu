@@ -89,11 +89,23 @@ int hw_m68k_run(int n)
   int i;
   GList *l;
   static FILE *flog;
+  //static once = 0;
   
   for(i=0; i<n; i++) 
   {
       UWORD opcode;
 
+		// V200 debug purpose
+	  /*
+	  if(!once && (m68k_getpc() < 0x200000 || m68k_getpc() >= 0x600000))
+	  {
+		  printf("<%06x>\n", m68k_getpc());
+			bkpts.type = BK_TYPE_CODE;
+		    specialflags |= SPCFLAG_BRK;
+			once = !0;
+	  }
+	  */
+		
         if(flog != NULL)
         {
             //fprintf(flog, "0x%06lx\n", m68k_getpc());

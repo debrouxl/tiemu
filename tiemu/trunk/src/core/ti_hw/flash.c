@@ -151,8 +151,8 @@ uint32_t find_pc(void)
         (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
     }
 
-    // copy vector table into RAM for boot
-    for (i = 0; i < 256; i++)
+    // copy vector table into RAM for boot (256 vectors, 1KB)
+    for (i = 0; i < 1024; i++)
         tihw.ram[i] = tihw.rom[vt + i];
 
     return (pc);
