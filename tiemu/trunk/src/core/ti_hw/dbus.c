@@ -107,7 +107,6 @@ int hw_dbus_reset(void)
 {
     //hw_dbus_exit();
     //hw_dbus_init();
-    printf("D-Bus reset !\n");
 
 	return 0;
 }

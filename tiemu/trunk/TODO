@@ -25,21 +25,12 @@ marche pas; une utilisation du menu F12 semble le
 faire marcher définitivement (jusqu'au prochain
 reset).
 
-* Alors qu'un AMS est déjà émulé, une importation de ROM puis sa
-sélection lance une erreur (en popup) :
-GGdk-ERROR **: file gdkgc-win32.c: line 905 (gdk_win32_hdc_get):
-assertion failed: (win32_gc->hdc == NULL)
-Puis TiEmu quitte. Après un redémarrage de TiEmu, il n'y a plus de
-problème à la sélection de la ROM.
-
 * J'ai aussi plusieurs crash de cause difficile à déterminer en
 utilisant le débogueur. Il y en a peut-être un lié à la fonction
 'disable' de breakpoint.
 
 * Pouvoir envoyer un fichier en le glissant déplaçant vers la calc
-serait pratique, comme sous VTI. 
-
----
+serait pratique, comme sous VTI.
 
 * Un bug non reproduit : l'ouverture du débugger faisait défiler très
 rapidement toute seule la fenêtre Code sans s'arrêter à n'importe quel
@@ -119,7 +110,7 @@ dans le décor, je ne sais pas s'il exécute ou pas
 roms
 ====
 
-* Support FLASH à revoir (.changed)
+* XML file instead of .ini file with saving of all debuggers parameters (bkpts, window sizes, ...)
 
 
 -------------

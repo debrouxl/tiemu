@@ -54,7 +54,9 @@ uint8_t FlashReadByte(uint32_t addr)
 		}
 	}
 	else
+	{
 		return (bget(addr) | wsm.ret_or);
+	}
 }
 
 uint16_t FlashReadWord(uint32_t addr)
@@ -69,7 +71,9 @@ uint16_t FlashReadWord(uint32_t addr)
 		}
 	}
 	else
+	{
 		return (wget(addr) | wsm.ret_or);
+	}
 }
 
 uint32_t FlashReadLong(uint32_t addr)
@@ -100,12 +104,14 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
         if ((rom[addr] == 0xff) || (wsm.write_ready == 1))
 	    {
 	        rom[addr] = v;
-	        //wsm.changed[addr >> 16] = 1;
 	    }
         else
+		{
 	        wsm.write_ready--;
-            wsm.write_ready--;
-            wsm.ret_or = 0xffffffff;
+		}
+            
+		wsm.write_ready--;
+        wsm.ret_or = 0xffffffff;
     }
     else if (v == 0x50)
 	{
@@ -116,7 +122,9 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
     {
 		//byte write setup/confirm
         if (wsm.write_phase == 0x50)
+		{
 	        wsm.write_phase = 0x51;
+		}
         else if (wsm.write_phase == 0x51)
         {
 	        wsm.write_ready = 2;
@@ -127,7 +135,9 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
     {
 		// block erase setup/confirm
         if (wsm.write_phase == 0x50)
+		{
 	        wsm.write_phase = 0x20;
+		}
     }
     else if (v == 0xd0)
     {
@@ -140,8 +150,6 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
 	        wsm.erase_phase = 0;
 
 			memset(&rom[addr & 0xff0000], 0xff, 64*KB);
-			
-				//wsm.changed[addr >> 16] = 1;
         } 
     }
     else if (v == 0xff)
