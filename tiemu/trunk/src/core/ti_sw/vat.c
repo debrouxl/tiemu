@@ -60,14 +60,42 @@ typedef struct
 	uint16_t offset; 
 } TI89_HSym;
 
+/*
+	"a" To "z", "A" To "Z", Chr(128), Chr(129), Chr(130), Chr(131), Chr(132), Chr(133), Chr(134), 
+	Chr(135), Chr(136), Chr(137), Chr(138), Chr(139), Chr(141), Chr(142), Chr(143), Chr(144), 
+	Chr(145), Chr(146), Chr(147), Chr(148), "À" To "Ö", "Ø" To "ö", "ø" To "ÿ", "_", Chr(154), 
+	Chr(155), Chr(178), "\"
+	and "0" To "9" (apart from first position)
+*/
+static int valid_chars[256] = {
+	0, 0, 0, 0, 0, 0, 0, 0,		0, 0, 0, 0, 0, 0, 0, 0,	// 0x00
+	0, 0, 0, 0, 0, 0, 0, 0,		0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0,		0, 0, 0, 0, 0, 0, 0, 0,	// 0x20
+	1, 1, 1, 1, 1, 1, 1, 1,		1, 1, 0, 0, 0, 0, 0, 0,
+	0, 1, 1, 1, 1, 1, 1, 1,		1, 1, 1, 1, 1, 1, 1, 1,	// 0x40
+	1, 1, 1, 1, 1, 1, 1, 1,		1, 1, 1, 0, 1, 0, 0, 1,
+	0, 1, 1, 1, 1, 1, 1, 1,		1, 1, 1, 1, 1, 1, 1, 1,	// 0x60
+	1, 1, 1, 1, 1, 1, 1, 1,		1, 1, 1, 0, 0, 0, 0, 0,
+	1, 1, 1, 1, 1, 1, 1, 1,		1, 1, 1, 1, 0, 1, 1, 1,	// 0x80
+	1, 1, 1, 1, 1, 0, 0, 0,		0, 0, 1, 1, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0,		0, 0, 0, 0, 0, 0, 0, 0,	// 0xa0
+	0, 0, 1, 0, 0, 0, 0, 0,		0, 0, 0, 0, 0, 0, 0, 0,
+	1, 1, 1, 1, 1, 1, 1, 0,		1, 1, 1, 1, 1, 1, 1, 1,	// 0xc0
+	1, 1, 1, 1, 1, 1, 1, 0,		1, 1, 1, 1, 1, 1, 1, 1,
+	1, 1, 1, 1, 1, 1, 1, 0,		1, 1, 1, 1, 1, 1, 1, 1,	// 0xe0
+	1, 1, 1, 1, 1, 1, 1, 0,		1, 1, 1, 1, 1, 1, 1, 1,
+};
 
-#define is_alnum(c)		isalnum((char)(c))
+#define is_allowed_char(x)	(valid_chars[(x) & 0xff])
+#define is_alnum(c)			isalnum((char)(c))
 
 // Return TRUE if there is a NULL terminated string starting at *mem.
 static int is_varname(uint8_t *mem)
 {
 	static char buf[10];
-	int i;
+	int i=0;
+
+	printf("%i %i %i %02x\n", is_alnum(mem[i]) ? 1 : 0, is_allowed_char(mem[i]), mem[i], mem[i]);
 
 	if(!is_alnum(mem[0]))
 		return 0;
