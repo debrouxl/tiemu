@@ -79,7 +79,9 @@ int hw_init(void)
 	hw_m68k_init();
 
     // Set hardware update rate (dependant from io[0x15])
-    if(tihw.hw_type == HW1)
+    if(params.hw_rate != -1)
+        cycle_instr = params.hw_rate;
+    else if(tihw.hw_type == HW1)
         cycle_instr = HW1_RATE;
     else if(tihw.hw_type == HW2)
         cycle_instr = HW2_RATE;

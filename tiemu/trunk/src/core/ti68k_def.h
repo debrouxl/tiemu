@@ -71,11 +71,11 @@ typedef struct
     int background;
     int grayplanes;
 
-    int tick_rate;
-    int cycle_rate;
-    int i_tick;
-    //int sync_one;
     int restrict;
+    int cpu_rate;       // OSC1
+    int hw_rate;        // OSC2
+    int lcd_rate;       // synched OSC2 (hw1) or OSC3 (hw2)
+    
 } Ti68kParameters;
 
 typedef struct

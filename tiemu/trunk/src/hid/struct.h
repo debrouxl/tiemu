@@ -32,7 +32,6 @@
 
 #define MAXCHARS 256
 
-//#include "params.h"
 #include "paths.h"
 
 /*
@@ -55,7 +54,7 @@ typedef struct {
 	int		type;
 	int		size;
 
-	char*	        file;
+	char*	file;
 	int		counter;
 } ScrOptions;
 

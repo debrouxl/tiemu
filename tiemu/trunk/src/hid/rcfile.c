@@ -363,21 +363,21 @@ void rcfile_read(void)
 	  continue;
 	}
 
-	if( (p=find_str(buffer, "tick_rate=")) )
+	if( (p=find_str(buffer, "cpu_rate=")) )
 	{
-	  sscanf(p, "%u", &(params.tick_rate));
+	  sscanf(p, "%u", &(params.cpu_rate));
 	  continue;
 	}
 
-	if( (p=find_str(buffer, "cycle_rate=")) )
+	if( (p=find_str(buffer, "hw_rate=")) )
 	{
-	  sscanf(p, "%u", &(params.cycle_rate));
+	  sscanf(p, "%u", &(params.hw_rate));
 	  continue;
 	}
 
-	if( (p=find_str(buffer, "itick=")) )
+	if( (p=find_str(buffer, "lcd_rate=")) )
 	{
-	  sscanf(p, "%i", &(params.i_tick));
+	  sscanf(p, "%i", &(params.lcd_rate));
 	  continue;
 	}
 	
@@ -666,14 +666,14 @@ void rcfile_write(void)
   fprintf(txt, "# Number of gray planes (0, 2, 5, 11)\n");
   fprintf(txt, "gray_planes=%i\n", params.grayplanes);
   fprintf(txt, "\n");
-  fprintf(txt, "# Timer Tick rate\n");
-  fprintf(txt, "tick_rate=%u\n", params.tick_rate);
+  fprintf(txt, "# CPU instructions rate (50000 per 30ms)\n");
+  fprintf(txt, "cpu_rate=%i\n", params.cpu_rate);
   fprintf(txt, "\n");
-  fprintf(txt, "# Cycle rate\n");
-  fprintf(txt, "cycle_rate=%u\n", params.cycle_rate);
+  fprintf(txt, "# Hardware update rate (625 (hw1) or 1172 (hw2)\n");
+  fprintf(txt, "hw_rate=%i\n", params.hw_rate);
   fprintf(txt, "\n");
-  fprintf(txt, "# Instructions per timertick\n");
-  fprintf(txt, "itick=%i\n", params.i_tick);
+  fprintf(txt, "# LCD update rate (100 fps max.)\n");
+  fprintf(txt, "lcd_rate=%i\n", params.lcd_rate);
   fprintf(txt, "\n");
   fprintf(txt, "# Number of lines in the disassembly window\n");
   fprintf(txt, "code_lines=%i\n", options.code_lines);

@@ -60,6 +60,7 @@
 #define NB_INSTRUCTIONS_PER_LOOP 50000	// 50000
 #define TIME_LIMIT               30	    // 30
 
+static int cpu_instr = NB_INSTRUCTIONS_PER_LOOP;
 
 G_LOCK_DEFINE(running);
 static int running = 0;
@@ -72,6 +73,9 @@ gpointer ti68k_engine(gpointer data)
 	unsigned long int iCurrentTime;
 	unsigned long int iLastTime; 
 	gint res = 0;
+
+    if(params.cpu_rate != -1)
+        cpu_instr = params.cpu_rate;
 
 	while (1) 
 	{

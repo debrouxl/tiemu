@@ -88,18 +88,19 @@ void ti68k_gui_set_callbacks(
  */
 int ti68k_config_load_default(void)
 {
-  params.background = 1;
-  params.grayplanes = 2;
-  params.i_tick = 640;
-  params.tick_rate = 40000;
-  params.cycle_rate = 150;
-  params.restrict = 1;
+    params.background = 1;
+    params.grayplanes = 2;
 
-  ticable_get_default_param(&link_cable);
-  link_cable.link_type = LINK_NUL;
-  link_cable.port = NULL_PORT;
+    params.restrict = 1;
+    params.cpu_rate = -1;
+    params.hw_rate = -1;
+    params.lcd_rate = -1;
 
-  return 0;
+    ticable_get_default_param(&link_cable);
+    link_cable.link_type = LINK_NUL;
+    link_cable.port = NULL_PORT;
+
+    return 0;
 }
 
 /*
@@ -140,8 +141,6 @@ int ti68k_init(void)
 */
 int ti68k_reset(void)
 {
-	cycle_instr = params.i_tick;
-
 	hw_reset();
 
 	return 0;
