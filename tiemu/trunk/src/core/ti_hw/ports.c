@@ -47,6 +47,9 @@ int hw_io_init(void)
 	memset(tihw.io, 0x14, sizeof(tihw.io));
 	memset(tihw.io2, 0x14, sizeof(tihw.io2));
 
+	if(tihw.hw_type > HW1)
+		tihw.lcd_adr = 0x4c00;
+
 	return 0;
 }
 
@@ -165,6 +168,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
 			// address of LCD memory divided by 8 (msb)
 			//if(tihw.hw_type == HW1)
 				tihw.lcd_adr = ((arg << 8) | tihw.io[0x11]) << 3;
+			printf("$600010: lcd_adr = %04x\n", tihw.lcd_adr);
         break;
         case 0x11: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8 (lsb)
@@ -431,8 +435,8 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 			break;
 		case 0x17:	// rw <......10>
 			// Display memory snoop range
-			//tihw.lcd_ptr = &tihw.ram[0x4c00 + 0x1000*(arg&3)];
-			//printf("$700017: lcd_addr = %04x (%04x at @%06x)\n", 0x4c00 + 0x1000*(arg&3), curriword(), m68k_getpc());
+			//tihw.lcd_adr = 0x4c00 + 0x1000*(arg&3);
+			//printf("$700017: lcd_adr = %04x (%04x at @%06x)\n", tihw.lcd_adr, curriword(), m68k_getpc());
 		break;
 		case 0x1d:	// rw <7...3210>
 			// %1: Screen enable (clear this bit to shut down LCD)

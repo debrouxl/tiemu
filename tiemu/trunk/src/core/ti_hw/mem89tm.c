@@ -43,9 +43,9 @@
 
 // 000000-03ffff : RAM (256 KB), non ghost'ed
 // 100000-1fffff : 
-// 200000-2fffff : image of 0x000000 (ghost), not emulated for compatibility
+// 200000-2fffff : image of 0x000000 (ghost)
 // 300000-3fffff : 
-// 400000-4fffff : image of 0x000000 (ghost), not emulated for compatibility
+// 400000-4fffff : image of 0x000000 (ghost)
 // 500000-5fffff : 
 // 600000-6fffff : memory mapped I/O (all HW)
 // 700000-7fffff : memory mapped I/O (HW2, HW3), non ghost'ed
@@ -67,13 +67,11 @@ int ti89t_mem_init(void)
     mem_msk[0] = 1*MB - 1;  // avoid ghost
 
     // ghost of RAM
-    /*
     for(i = 0; i < 4; i++)
     {
         mem_tab[2+i] = mem_tab[i]; 
         mem_msk[2+i] = mem_msk[i];
     }
-    */
     
 	// map FLASH
     for(i = 0; i < 4; i++)
