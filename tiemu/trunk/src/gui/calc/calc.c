@@ -74,15 +74,6 @@ on_drawingarea1_configure_event        (GtkWidget       *widget,
 
 
 GLADE_CB gboolean
-on_drawingarea1_button_press_event     (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
-{
-	return FALSE;
-}
-
-
-GLADE_CB gboolean
 on_drawingarea1_delete_event           (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
@@ -95,26 +86,6 @@ on_drawingarea1_delete_event           (GtkWidget       *widget,
 GLADE_CB gboolean
 on_drawingarea1_destroy_event          (GtkWidget       *widget,
                                         GdkEvent        *event,
-                                        gpointer         user_data)
-{
-
-  return FALSE;
-}
-
-
-GLADE_CB gboolean
-on_drawingarea1_key_press_event        (GtkWidget       *widget,
-                                        GdkEventKey     *event,
-                                        gpointer         user_data)
-{
-
-  return FALSE;
-}
-
-
-GLADE_CB gboolean
-on_drawingarea1_key_release_event      (GtkWidget       *widget,
-                                        GdkEventKey     *event,
                                         gpointer         user_data)
 {
 

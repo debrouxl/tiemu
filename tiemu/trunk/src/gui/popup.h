@@ -2,7 +2,7 @@
 
 #include "support.h"
 
-static GtkWidget* display_popup_menu(void);
+GtkWidget* display_popup_menu(void);
 
 GLADE_CB void
 on_popup_menu_cancel                   (GtkMenuShell    *menushell,

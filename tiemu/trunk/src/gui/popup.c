@@ -86,7 +86,7 @@ void gui_popup_menu(void)
 /*
   Display the GTK popup menu and configure some items
 */
-static GtkWidget* display_popup_menu(void)
+GtkWidget* display_popup_menu(void)
 {
 	GladeXML *xml;
 	GtkWidget *menu;
@@ -136,7 +136,6 @@ static GtkWidget* display_popup_menu(void)
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
         break;
     }
-
 
 	return menu;
 }
