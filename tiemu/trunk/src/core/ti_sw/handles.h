@@ -29,6 +29,6 @@
 
 void heap_get_base_address(uint32_t *base);
 void heap_get_size(uint16_t *size);
-void heap_get_block_size(uint8_t handle, uint32_t *addr, uint16_t *size);
+void heap_get_block_size(int handle, uint32_t *addr, uint16_t *size);
 
 #endif

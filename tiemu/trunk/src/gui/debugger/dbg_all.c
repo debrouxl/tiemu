@@ -50,6 +50,7 @@ void gtk_debugger_preload(void)
 	//create_dbgbkpts_window();
 	//create_dbgpclog_window();
     //create_dbgstack_window();
+	//create_dbgheap_window();
 }
 
 int gtk_debugger_enter(int context)
@@ -78,14 +79,10 @@ int gtk_debugger_enter(int context)
 	dbgw.bkpts = dbgbkpts_display_window();
     dbgw.pclog = dbgpclog_display_window();
     dbgw.stack = dbgstack_display_window();
+	dbgw.heap = dbgheap_display_window();
 	dbgw.code = dbgcode_display_window();	// the last has focus
 
     dbg_on = !0;
-
-	{
-		uint16_t size;
-		heap_get_size(&size);
-	}
 
 	return 0;
 }
@@ -104,6 +101,8 @@ void gtk_debugger_refresh(void)
 		dbgcode_refresh_window();
     if(dbgs.stack)
 		dbgstack_refresh_window();
+	if(dbgs.heap)
+		dbgheap_refresh_window();
 }
 
 void set_other_windows_sensitivity(int state)
@@ -118,6 +117,8 @@ void set_other_windows_sensitivity(int state)
         gtk_widget_set_sensitive(dbgw.pclog, state);
     if(dbgs.stack)
         gtk_widget_set_sensitive(dbgw.stack, state);
+	if(dbgs.heap)
+        gtk_widget_set_sensitive(dbgw.heap, state);
 }
 
 void gtk_debugger_minimize_all(void)
@@ -134,6 +135,8 @@ void gtk_debugger_minimize_all(void)
         gtk_window_iconify(GTK_WINDOW(dbgw.code));
     if(dbgs.stack)
         gtk_window_iconify(GTK_WINDOW(dbgw.stack));
+	if(dbgs.heap)
+        gtk_window_iconify(GTK_WINDOW(dbgw.heap));
 }
 
 void gtk_debugger_deminimize_all(void)
@@ -150,6 +153,8 @@ void gtk_debugger_deminimize_all(void)
         gtk_window_deiconify(GTK_WINDOW(dbgw.code));
     if(dbgs.stack)
         gtk_window_deiconify(GTK_WINDOW(dbgw.stack));
+	if(dbgs.heap)
+        gtk_window_deiconify(GTK_WINDOW(dbgw.heap));
 }
 
 void gtk_debugger_show_all(void)
@@ -169,6 +174,8 @@ void gtk_debugger_show_all(void)
         gtk_widget_show(dbgw.code);
     if(!dbgs.stack)
         gtk_widget_show(dbgw.stack);
+	if(!dbgs.heap)
+        gtk_widget_show(dbgw.heap);
 }
 
 void gtk_debugger_hide_all(void)
@@ -188,6 +195,8 @@ void gtk_debugger_hide_all(void)
         gtk_widget_hide(dbgw.code);
     if(dbgs.stack)
         gtk_widget_hide(dbgw.stack);
+	if(dbgs.heap)
+        gtk_widget_hide(dbgw.heap);
 }
 
 /* Callbacks */
@@ -247,6 +256,16 @@ on_stack_frame1_activate                    (GtkMenuItem     *menuitem,
         dbgstack_display_window();
 }
 
+GLADE_CB void
+on_heap_frame1_activate                    (GtkMenuItem     *menuitem,
+                                             gpointer         user_data)
+{
+    if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
+        gtk_widget_hide(dbgw.heap);
+  	else
+        dbgheap_display_window();
+}
+
 
 GLADE_CB void
 on_quit1_activate                      (GtkMenuItem     *menuitem,
@@ -257,6 +276,7 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
     gtk_widget_hide(dbgw.mem);
     gtk_widget_hide(dbgw.pclog);
     gtk_widget_hide(dbgw.stack);
+	gtk_widget_hide(dbgw.heap);
     gtk_widget_hide(dbgw.code);
 
     while(gtk_events_pending()) gtk_main_iteration();
@@ -278,6 +298,7 @@ on_minimize_all1_activate              (GtkMenuItem     *menuitem,
     gtk_widget_hide(dbgw.mem);
     gtk_widget_hide(dbgw.pclog);
     gtk_widget_hide(dbgw.stack);
+	gtk_widget_hide(dbgw.heap);
 }
 
 
@@ -290,6 +311,7 @@ on_maximize_all1_activate              (GtkMenuItem     *menuitem,
     gtk_widget_show(dbgw.mem);
     gtk_widget_show(dbgw.pclog);
     gtk_widget_show(dbgw.stack);
+	gtk_widget_show(dbgw.heap);
 }
 
 void update_submenu(GtkWidget *widget, gpointer user_data)
@@ -333,6 +355,13 @@ void update_submenu(GtkWidget *widget, gpointer user_data)
     g_signal_handlers_block_by_func(GTK_OBJECT(item), on_stack_frame1_activate, NULL);
     gtk_check_menu_item_set_active(item, dbgs.stack);
     g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_stack_frame1_activate, NULL);
+	
+	// heap
+    elt = g_list_nth(list, 5);
+    item = GTK_CHECK_MENU_ITEM(elt->data);
+    g_signal_handlers_block_by_func(GTK_OBJECT(item), on_heap_frame1_activate, NULL);
+    gtk_check_menu_item_set_active(item, dbgs.heap);
+    g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_heap_frame1_activate, NULL);
 }
 
 // callbacks from dbg_regs.c
@@ -494,6 +523,32 @@ on_dbgstack_window_show                (GtkWidget       *widget,
                                         gpointer         user_data)
 {
     dbgs.stack = !0;
+}
+
+// callbacks from dbg_heap.c
+GLADE_CB gboolean
+on_dbgheap_window_delete_event       (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+    gtk_widget_hide(widget);    
+    return TRUE;
+}
+
+GLADE_CB void
+on_dbgheap_window_hide                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    dbgs.heap = 0;
+    gtk_window_get_size(GTK_WINDOW(widget), &options3.heap.w, &options3.heap.h);
+    gtk_window_get_position(GTK_WINDOW(widget), &options3.heap.x, &options3.heap.y);
+}
+
+GLADE_CB void
+on_dbgheap_window_show                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    dbgs.heap = !0;
 }
 
 // misc

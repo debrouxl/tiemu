@@ -43,7 +43,7 @@ void heap_get_base_address(uint32_t *base)
 	case TI92:
 		ptr = 0x5D42;
 		*base = rd_long(&tihw.ram[ptr]);
-		printf("heap_get_base_address: $%06x\n", *base);
+		//printf("heap_get_base_address: $%06x\n", *base);
 		break;
 	default:
 		*base = 0;
@@ -71,14 +71,14 @@ void heap_get_size(uint16_t *size)
 			break;
 	}
 
-	*size = --i;
+	*size = i;
 	//printf("heap_get_size: %i\n", *size);
 }
 
 /*
 	Given an handle, retrieve block size and block address
 */
-void heap_get_block_size(uint8_t handle, uint32_t *addr, uint16_t *size)
+void heap_get_block_size(int handle, uint32_t *addr, uint16_t *size)
 {
 	uint32_t base;
 

@@ -133,6 +133,7 @@
 	  <child>
 	    <widget class="GtkTreeView" id="treeview1">
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Double-click a row to edit breakpoint values.</property>
 	      <property name="can_focus">True</property>
 	      <property name="headers_visible">True</property>
 	      <property name="rules_hint">False</property>

@@ -829,6 +829,11 @@ int rcfile_default()
     options3.stack.w = 160;
     options3.stack.h = 240;
 
+	options3.heap.x = 0;
+	options3.heap.y = 0;
+	options3.heap.w = 160;
+	options3.heap.h = 240;
+
 	return 0;
 }
 
