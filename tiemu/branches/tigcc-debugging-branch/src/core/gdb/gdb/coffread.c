@@ -825,6 +825,19 @@ coff_symtab_read (long symtab_offset, unsigned int nsyms,
             if (sect && main_sym.n_value == sect->vma && !strncmp (cs->c_name, sect->name, 8))
               {
                 sect->name = cs->c_name;
+	      if (DEPRECATED_STREQ (cs->c_name, ".text"))
+		{
+		  /* FIXME:  don't wire in ".text" as section name
+		     or symbol name! */
+		  /* Check for in_source_file deals with case of
+		     a file with debugging symbols
+		     followed by a later file with no symbols.  */
+		  if (in_source_file)
+		    complete_symtab (filestring,
+		    cs->c_value + ANOFFSET (objfile->section_offsets, SECT_OFF_TEXT (objfile)),
+				     main_aux.x_scn.x_scnlen);
+		  in_source_file = 0;
+		}
                 break;
               }
           }
@@ -862,6 +875,9 @@ coff_symtab_read (long symtab_offset, unsigned int nsyms,
 		       || strncmp (cs->c_name, "LPBX%", 5) == 0))
 	    /* At least on a 3b1, gcc generates swbeg and string labels
 	       that look like this.  Ignore them.  */
+	    break;
+	  /* (TiEmu 20050405 Kevin Kofler) Don't import ld-tigcc section symbols and segment delimiters. */
+	  else if (strchr (cs->c_name, ' '))
 	    break;
 	  /* fall in for static symbols that don't start with '.' */
 	case C_THUMBEXT:

@@ -1,3 +1,8 @@
+2005-04-05  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * coffread.c (coff_symtab_read): Fix handling of ".text". Don't import ld-tigcc section symbols and segment
+                                         delimiters.
+
 2005-04-03  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * coffread.c (coff_symtab_read): Fudge long section names the same way TIGCC does it.
