@@ -26,39 +26,6 @@
 #include "struct.h"
 #include "paths.h"
 
-/* Open the pixmap stored on the file 'filename' and put it in the 'pixmap' 
-variable according to the 'mask' variable */
-void open_xpm (char *filename, GtkWidget *parent, 
-	       GdkPixmap **pixmap, GdkBitmap **mask)
-{
-  gchar *s;
-  GtkStyle *style;
-
-  style = gtk_widget_get_style (parent);
-#if defined(__LINUX__)
-  s = g_strconcat(inst_paths.base_dir, SHARE_DIR "/pixmaps/", filename, NULL);
-#elif defined(__WIN32__)
-  s = g_strconcat(inst_paths.base_dir, SHARE_DIR "\\pixmaps\\", filename, NULL);
-#endif
-  
-  if (access (s, F_OK) != 0) 
-    {
-      g_error("Error: unable to access this file: '%s'\n", s);
-      g_free(s);
-      exit (1);
-    }
-  *pixmap = gdk_pixmap_create_from_xpm (parent->window, mask, 
-					&style->bg[GTK_STATE_NORMAL], s);
-  if (*pixmap == NULL) 
-    {
-      fprintf(stderr, "Error: unable to load this file into a pixmap: '%s'\n", s);
-      g_free(s);
-      exit (1);
-    }
-  g_free(s);
-}
-
-
 /* Load a text file into a TextView */
 void
 load_text (GtkWidget *text, gchar *file)

@@ -22,10 +22,6 @@
 #include <gtk/gtk.h>
 
 void
-open_xpm (char *filename, GtkWidget *parent,
-	  GdkPixmap **pixmap, GdkBitmap **mask);
-
-void
 load_text (GtkWidget *text,
 	   gchar *file);
 
