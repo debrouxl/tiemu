@@ -60,6 +60,7 @@ int hw_io_exit(void)
     return 0;
 }
 
+void set_cycle_rate(int);
 
 void io_put_byte(uint32_t addr, uint8_t arg)
 {
@@ -177,7 +178,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         	// see hardware.c
         	
         	// %[5-4]: Increment rate of $600017 
-        	// (we should set 'cycle_instr')
+			set_cycle_rate((arg >> 4) & 3);
         	
         	// %3 set: Enable incrementing of $600017
         	// see hardware.c        	
@@ -189,7 +190,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         	// see hardware.c
         	
         	// %0 set: LCD controller DMA enable else LCD blank ("white")
-        	// to do...        	
+        	// could be implemented but redundant with tihw.on_off
         break;
         case 0x16:
         break;

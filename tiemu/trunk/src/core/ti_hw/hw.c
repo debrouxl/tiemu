@@ -40,11 +40,29 @@
 #include "images.h"
 #include "ti68k_def.h"
 
+/*
+	Some explanations:
+	
+	OSC2 ---[$600015=/2^9]---> Fcnt ---[/4]--->		AI1
+									+--[/timer]--->	AI5
+									+--[/1024]--->	AI3
+
+	HW1: OSC2 is incremented every 6250 OSC1 cycles
+*/
+
 #define HW1_RATE    625     // 10MHz / 1600 (timer rate)
-#define HW2_RATE    1172    // 12MHz / 1024 (timer rate)    732, 11720, 93750, 6E6
+#define HW2_RATE    1172    // 12MHz / 1024 (timer rate)
+
+// Cycle rate for HW1/HW2 at 2^5, 2^9, 2^12, 2^18 (port $600015)
+const int cycle_rate[2][4] = { { 391, 6250, 50000, 3200000 }, { 732, 11720, 93750, 6000000 } };
 
 int cycle_instr = HW1_RATE;
 int cycle_count = 0;
+
+void set_cycle_rate(int i)
+{
+	cycle_instr = cycle_rate[(tihw.hw_type == HW1) ? 0 : 1][i] / 10;
+}
 
 /*
 	Init hardware...
