@@ -389,7 +389,7 @@ GtkWidget* display_dbgmem_window(void)
 	return dbox;
 }
 
-static void refresh_page(int offset);
+static void refresh_page(int page, int offset);
 
 GtkWidget* refresh_dbgmem_window(void)
 {
@@ -398,7 +398,7 @@ GtkWidget* refresh_dbgmem_window(void)
 	if(!already_open)
 		wnd = display_dbgmem_window();
 
-	refresh_page(0);
+	refresh_page(0, 0);
 
     return wnd;
 }
@@ -450,14 +450,20 @@ GLADE_CB void
 dbgmem_button3_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-	refresh_page(-0x10);
+	GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+	gint page = gtk_notebook_get_current_page(nb);
+
+	refresh_page(page, -0x10);
 }
 
 GLADE_CB void
 dbgmem_button4_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-	refresh_page(+0x10);
+	GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+	gint page = gtk_notebook_get_current_page(nb);
+
+	refresh_page(page, +0x10);
 }
 
 GLADE_CB void
@@ -466,17 +472,16 @@ on_notebook1_switch_page               (GtkNotebook     *notebook,
                                         guint            page_num,
                                         gpointer         user_data)
 {
-	refresh_page(0);
+	refresh_page(page_num, 0);
 }
 
-static void refresh_page(int offset)
+static void refresh_page(int page, int offset)
 {
 	GtkNotebook *nb = GTK_NOTEBOOK(notebook);
 	GtkWidget *tab;
 	GtkWidget *label;
-	gint page;
 	G_CONST_RETURN gchar *text;
-	uint32_t addr;
+	uint32_t addr, len = 128;
 
 	GList *l;
 	GtkWidget *list;
@@ -486,7 +491,6 @@ static void refresh_page(int offset)
 	gchar *str;
 
 	// retrieve addr by tab name
-	page = gtk_notebook_get_current_page(nb);
 	tab = gtk_notebook_get_nth_page(nb, page);
 	label = gtk_notebook_get_tab_label(nb, tab);
 	text = gtk_label_get_text(GTK_LABEL(label));
@@ -498,15 +502,35 @@ static void refresh_page(int offset)
 	model = gtk_tree_view_get_model(view);
 	store = GTK_LIST_STORE(model);
 
+#if 0
+	if(!strcmp(text, "STACK"))
+	{
+		uint32_t sp_start, sp_end;
+		uint32_t *mem_ptr = (uint32_t *)ti68k_get_real_address(0x000000);
+
+		sp_start = GUINT32_SWAP_LE_BE(*mem_ptr);
+		ti68k_register_get_sp(&sp_end);
+		len = sp_end - sp_start;
+		addr = sp_start;
+	}
+	else
+	{
+		sscanf(text, "%x", &addr);
+		len = 128;
+	}
+
+	addr += offset;
+	addr &= 0xffffff;
+#else
 	if(!strcmp(text, "STACK"))
 		return;
 
 	sscanf(text, "%x", &addr);
 	addr += offset;
 	addr &= 0xffffff;
-
+#endif
 	str = g_strdup_printf("%06x", addr);
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
-   	clist_refresh(store, addr, 128);
+   	clist_refresh(store, addr, len <= 128 ? len : 128);
 }

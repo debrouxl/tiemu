@@ -1,4 +1,4 @@
-/* Hey EMACS -*- linux-c -*- */
+ /* Hey EMACS -*- linux-c -*- */
 /* $Id: dbg_code.c 450 2004-06-13 13:48:31Z roms $ */
 
 /*  TiEmu - an TI emulator
@@ -169,8 +169,8 @@ on_dbgpclog_window_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-    gtk_window_get_size(GTK_WINDOW(widget), &options3.bkpts.w, &options3.bkpts.h);
-    gtk_window_get_position(GTK_WINDOW(widget), &options3.bkpts.x, &options3.bkpts.y);
+    gtk_window_get_size(GTK_WINDOW(widget), &options3.pclog.w, &options3.pclog.h);
+    gtk_window_get_position(GTK_WINDOW(widget), &options3.pclog.x, &options3.pclog.y);
 
     return FALSE;
 }

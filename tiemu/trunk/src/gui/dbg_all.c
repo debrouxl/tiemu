@@ -122,6 +122,8 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
         gtk_widget_destroy(dbgw.bkpts);
     if(dbgw.mem)
         gtk_widget_destroy(dbgw.mem);
+	if(dbgw.pclog)
+        gtk_widget_destroy(dbgw.pclog);
 
     // and this one
     gtk_widget_destroy(GTK_WIDGET(menuitem));   //args are swapped

@@ -459,6 +459,12 @@ void rcfile_read(void)
 				&(options3.regs.w), &(options3.regs.h));
 	  continue;
 	}
+	if( (p=find_str(buffer, "pclog_wnd=")) )
+	{
+	  sscanf(p, "(%i;%i;%i;%i)", &(options3.pclog.x), &(options3.pclog.y), 
+				&(options3.pclog.w), &(options3.pclog.h));
+	  continue;
+	}
 
 	
     }
@@ -738,6 +744,9 @@ void rcfile_write(void)
 	fprintf(txt, "regs_wnd=(%i;%i;%i;%i)", options3.regs.x, options3.regs.y, 
 											options3.regs.w, options3.regs.h);
 	fprintf(txt, "\n");
+	fprintf(txt, "pclog_wnd=(%i;%i;%i;%i)", options3.pclog.x, options3.pclog.y, 
+											options3.pclog.w, options3.pclog.h);
+	fprintf(txt, "\n");
 
 	fprintf(txt, "\n");
   fprintf(txt, "RC_END\n");
@@ -794,6 +803,11 @@ int rcfile_default()
 	options3.regs.y = 0;
 	options3.regs.w = 180;
 	options3.regs.h = 500;
+
+	options3.pclog.x = 0;
+	options3.pclog.y = 0;
+	options3.pclog.w = 160;
+	options3.pclog.h = 120;
 
 	return 0;
 }
