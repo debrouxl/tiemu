@@ -458,12 +458,30 @@ GLADE_CB void
 on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	gchar *basename;
+	gchar *dot;
+	gchar *path;
 	int err;
 
-	ti68k_state_save(params.sav_file);
-  	if(!rcfile_exist())
-    		rcfile_write();
+	// build name
+	basename = g_path_get_basename(params.rom_file);
+	dot = strrchr(basename, '.');
+	if(dot != NULL)
+		*dot = '\0';
 
+	// set path
+	path = g_strconcat(inst_paths.base_dir, basename, ".sav", NULL);
+	g_free(basename);
+
+	// save state and and path
+	ti68k_state_save(params.sav_file);
+	rcfile_read();
+	g_free(params.sav_file);
+	params.sav_file = g_strdup(path);
+	g_free(path);
+    rcfile_write();
+
+	// exits
   	err = ti68k_exit();
 	handle_error();
   	exit(0);

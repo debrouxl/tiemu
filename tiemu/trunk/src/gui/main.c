@@ -219,7 +219,7 @@ int main(int argc, char **argv)
     splash_screen_set_label(_("Loading previously saved state..."));
 	if(params.sav_file != NULL) 
 	{
-		err = ti68k_state_load(params.sav_file);
+		//err = ti68k_state_load(params.sav_file);
 		handle_error();
 	}
 
