@@ -721,10 +721,17 @@ dbgbkpts_data_activate                    (GtkMenuItem     *menuitem,
 
 
 GLADE_CB void
-dbgbkpts_vector_activate                      (GtkMenuItem     *menuitem,
+dbgbkpts_vector_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	dbgvectors_display_dbox();
+}
+
+GLADE_CB void
+dbgbkpts_prgmentry1_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	dbgentry_display_dbox();
 }
 
 

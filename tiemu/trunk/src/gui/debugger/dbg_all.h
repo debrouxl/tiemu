@@ -11,6 +11,7 @@
 #include "dbg_pclog.h"
 #include "dbg_stack.h"
 #include "dbg_heap.h"
+#include "dbg_entry.h"
 
 typedef struct {
     GtkWidget *mem;

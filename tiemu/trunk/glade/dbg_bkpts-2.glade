@@ -207,11 +207,11 @@
   </child>
 
   <child>
-    <widget class="GtkMenuItem" id="prgm_entry1">
+    <widget class="GtkMenuItem" id="prgmentry1">
       <property name="visible">True</property>
       <property name="label" translatable="yes">Prgm entry</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="on_prgm_entry1_activate" last_modification_time="Tue, 22 Feb 2005 22:41:34 GMT"/>
+      <signal name="activate" handler="dbgbkpts_prgmentry1_activate" last_modification_time="Wed, 23 Feb 2005 09:34:13 GMT"/>
     </widget>
   </child>
 </widget>
