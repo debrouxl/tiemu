@@ -24,17 +24,15 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TI68K_CORE__
-#define __TI68K_CORE__
+#ifndef __ENGINE_H__
+#define __ENGINE_H__
 
-gpointer ti68k_engine(gpointer data);
+void engine_calibrate(void);
 
-int  ti68k_engine_is_stopped(void) ;
-void ti68k_engine_stop(void);
-void ti68k_engine_start(void);
+void engine_start(void); 
+void engine_stop(void);
 
-extern int dbg_on;
-#define dbg_run	ti68k_engine_is_stopped()
-//#define ti68k_engine_release()          { if(!dbg_on) ti68k_engine_start(); }
+int engine_is_stopped(void);
+int engine_is_running(void);
 
 #endif

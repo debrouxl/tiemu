@@ -32,12 +32,7 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
-/*
-#ifdef __WIN32__
-#define _WIN32_WINNT 0x0400
-#include <windows.h>
-#endif
-*/
+
 #if WITH_KDE
 #include "kde.h"
 #endif
@@ -70,27 +65,19 @@ ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
-/* 
-	Debugger callback raised by our own GSource (gsource.c) 
-	m68k_run() -> engine() -> debugger=0/1 -> gsource -> callback -> gtk_dbg_enter
-*/
+/* Special */
 
-GSource* attach_dbg_gsource(void);
+static gint exit_loop = 0;
 
-gboolean on_dbg_event(gpointer data)
+void exit_main_loop(void)
 {
-	gtk_debugger_enter(GPOINTER_TO_INT(data));
-
-	return TRUE;	// don't automatically remove callback
+	exit_loop = !0;
 }
 
-/* Main function */		
-
-gint exit_loop = 0;
+/* Main function */
 
 int main(int argc, char **argv) 
 {
-	GSource *source;
     int err;	
 
 	/*
@@ -103,9 +90,8 @@ int main(int argc, char **argv)
 	scan_cmdline(argc, argv);
 
     /* 
-		Init GTK+ (popup menu, boxes, ...) and threads
+		Init GTK+ (popup menu, boxes, ...)
 	*/
-	g_thread_init(NULL);
 	gtk_init(&argc, &argv);
     add_pixmap_directory(inst_paths.pixmap_dir);
 
@@ -249,28 +235,21 @@ int main(int argc, char **argv)
 		*/
 		splash_screen_set_label(_("Pre-loading debugger..."));
 		gtk_debugger_preload();
-
-		source = attach_dbg_gsource();
-		g_source_set_callback(source, on_dbg_event, NULL, NULL);
   
 		/* 
-			Start thread (emulation engine) and run main loop 
+			Start emulation engine and run main loop 
 		*/
+		splash_screen_set_label(_("TiEmu starting..."));
+		engine_calibrate();
+		
 		splash_screen_stop();
-		ti68k_engine_start();    
-
-   		gdk_threads_enter();
+		engine_start();
 		gtk_main();
-		gdk_threads_leave();
-		{
-			GTimer *tmr;
-			for(tmr = g_timer_new(); g_timer_elapsed(tmr, NULL) < 0.5; );
-		}
 
 		/* 
 			Close the emulator engine
 		*/
-		ti68k_engine_stop();
+		engine_stop();
 
 		err = hid_exit();
 		handle_error();

@@ -29,6 +29,10 @@
 #include <stdint.h>
 #include "struct.h"
 
+/* Variables */
+
+extern GtkWidget *main_wnd;
+
 /* Functions */
 
 int hid_init(void);

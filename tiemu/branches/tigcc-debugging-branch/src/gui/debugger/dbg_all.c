@@ -57,13 +57,15 @@ void gtk_debugger_preload(void)
 
 int gtk_debugger_enter(int context)
 {
+	// debugger is open
+	dbg_on = !0;
+
     // show breakpoint source (modal)
     switch(context)
     {
     case DBG_TRACE:
         break;
     case DBG_BREAK:
-        //display_dbgcause_dbox();
         break;
     }
 
@@ -75,8 +77,6 @@ int gtk_debugger_enter(int context)
     dbgw.stack = dbgstack_display_window();
 	dbgw.heap = dbgheap_display_window();
 	dbgw.code = dbgcode_display_window();	// the last has focus
-
-    dbg_on = !0;
 
 	return 0;
 }
@@ -265,13 +265,13 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	gtk_debugger_hide_all(!0);
-    while(gtk_events_pending()) gtk_main_iteration();
+    //while(gtk_events_pending()) gtk_main_iteration();
 
     dbg_on = 0;
 
     // Closing the debugger starts the emulator
 	ti68k_bkpt_set_cause(0, 0, 0);
-    ti68k_engine_start();
+    engine_start();
 }
 
 GLADE_CB void

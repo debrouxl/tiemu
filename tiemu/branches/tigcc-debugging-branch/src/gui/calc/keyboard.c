@@ -44,6 +44,7 @@
 #include "fs_misc.h"
 #include "calc.h"
 #include "kbd_mapper.h"
+#include "dbg_all.h"
 
 Pc2TiKey*       kbd_keymap = keymap;
 const char*     skn_keymap;
