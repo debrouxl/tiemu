@@ -208,6 +208,14 @@ SOURCE=..\..\src\core\ti_sw\romcalls.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\ti_sw\timem.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_sw\vat.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\uae\libuae.lib
 # End Source File
 # End Group
