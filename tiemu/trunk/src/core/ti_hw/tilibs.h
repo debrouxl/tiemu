@@ -1,5 +1,8 @@
-/*  tilp - a linking program for TI graphing calculators
- *  Copyright (C) 1999-2002  Romain Lievin
+/* Hey EMACS -*- linux-c -*- */
+/* $Id: tilibs.h 366 2004-03-22 18:04:07Z roms $ */
+
+/*  tilp - Ti Linking Program
+ *  Copyright (C) 1999-2004  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,22 +31,18 @@
 # include <config.h>
 #endif
 
-#define HAVE_TILP_TICABLES_H
-
-#if defined(HAVE_TILP_TICABLES_H) && !defined(__MACOSX__)
+#if !defined(__MACOSX__) && !defined(__WIN32__)
 # include <tilp/ticables.h>
-#elif defined(HAVE_TILP_TICABLES_H) && defined(__MACOSX__)
+#elif defined(__MACOSX__)
 # include <libticables/ticables.h>
 #else
 # include "ticables.h"
 #endif
 
-#define HAVE_TILP_TIFILES_H
-
-#if defined(HAVE_TILP_TIFILES_H) && !defined(__MACOSX__)
+#if !defined(__MACOSX__) && !defined(__WIN32__)
 # include <tilp/tifiles.h>
 # include <tilp/macros.h>
-#elif defined(HAVE_TILP_TIFILES_H) && defined(__MACOSX__)
+#elif defined(__MACOSX__)
 # include <libtifiles/tifiles.h>
 # include <libtifiles/macros.h>
 #else
@@ -51,11 +50,9 @@
 # include "macros.h"
 #endif
 
-#define HAVE_TILP_TICALCS_H
-
-#if defined(HAVE_TILP_TICALCS_H) && !defined(__MACOSX__)
+#if !defined(__MACOSX__) && !defined(__WIN32__)
 # include <tilp/ticalcs.h>
-#elif defined(HAVE_TILP_TICALCS_H) && defined(__MACOSX__)
+#elif defined(__MACOSX__)
 # include <libticalcs/ticalcs.h>
 #else
 # include "ticalcs.h"

@@ -3,34 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "TiEmu_gtk_console"=.\TiEmu_gtk_console.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name lib68k
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ti_cables
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ti_calcs
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ticables
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ticalcs
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "TiEmu_gtk_gui"=.\TiEmu_gtk_gui.dsp - Package Owner=<4>
+Project: "TiEmu_Console"=.\TiEmu_Console.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -42,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "ticables"=..\..\ti_libs\cables\win32\ticables.dsp - Package Owner=<4>
+Project: "TiEmu_Windows"=.\TiEmu_Windows.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -54,7 +27,19 @@ Package=<4>
 
 ###############################################################################
 
-Project: "ticalcs"=..\..\ti_libs\calcs\win32\ticalcs.dsp - Package Owner=<4>
+Project: "ticables"=..\..\..\ticables\build\msvc\ticables.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ticalcs"=..\..\..\ticalcs\build\msvc\ticalcs.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -65,6 +50,21 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name ticables
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name tifiles
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "tifiles"=..\..\..\tifiles\build\msvc\tifiles.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
 }}}
 
 ###############################################################################

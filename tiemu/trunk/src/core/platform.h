@@ -36,10 +36,10 @@
 # include <unistd.h>
 #else
 # if defined(__WIN32__)
-#  include "win32/pwd.h"
-#  include "win32/grp.h"
-#  include "win32/unistd.h"
-#  include "win32/dirent.h"
+#  include "../hid/win32/pwd.h"
+#  include "../hid/win32/grp.h"
+#  include "../hid/win32/unistd.h"
+#  include "../hid/win32/dirent.h"
 # endif
 #endif
 
