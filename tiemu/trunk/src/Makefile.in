@@ -30,7 +30,7 @@ DEFS=@DEFS@ \
 INCLUDES = \
 	-I@top_srcdir@ -I$(includedir) \
 	-DPREFIX=\"${prefix}\" -I. \
-	-I./core -I./core/uae -I./core/ti_hw -I./core/dbg \
+	-I./core -I./core/uae -I./core/ti_hw -I./core/ti_sw -I./core/dbg \
 	-I./misc \
 	-I./gui -I./gui/calc -I./gui/debugger
 
@@ -52,15 +52,18 @@ core_tihw_OBJ = \
 	core/ti_hw/flash.o	\
 	core/ti_hw/hw.o 	\
 	core/ti_hw/kbd.o 	\
-	core/ti_hw/lcd.o 	\
 	core/ti_hw/m68k.o	\
 	core/ti_hw/mem.o 	\
 	core/ti_hw/mem89.o	\
 	core/ti_hw/mem89tm.o	\
 	core/ti_hw/mem92.o	\
 	core/ti_hw/mem92p.o	\
-	core/ti_hw/ports.o 	\
-	core/ti_hw/timer.o	
+	core/ti_hw/ports.o
+
+core_tisw_OBJ = \
+	core/ti_sw/handles.o	\
+	core/ti_sw/registers.o	\
+	core/ti_sw/romcalls.o
 
 core_OBJ = 			\
 	core/engine.o		\
@@ -74,9 +77,7 @@ core_dbg_OBJ = \
 	core/dbg/bkpts.o	\
 	core/dbg/debug.o	\
 	core/dbg/disasm.o	\
-	core/dbg/m68kdasm.o	\
-	core/dbg/registers.o	\
-	core/dbg/romcalls.o
+	core/dbg/m68kdasm.o
 
 misc_OBJ = \
 	misc/cmdline.o 	\
@@ -102,9 +103,11 @@ gui_debugger_OBJ = \
 	gui/debugger/dbg_cause.o	\
 	gui/debugger/dbg_code.o		\
 	gui/debugger/dbg_data.o		\
+	gui/debugger/dbg_heap.o		\
 	gui/debugger/dbg_mem.o		\
 	gui/debugger/dbg_pclog.o	\
 	gui/debugger/dbg_regs.o		\
+	gui/debugger/dbg_romcall.o	\
 	gui/debugger/dbg_stack.o	\
 	gui/debugger/dbg_vectors.o	\
 	gui/debugger/gsource.o		
@@ -129,7 +132,8 @@ gui_OBJ = \
 	gui/wizard.o
 
 tiemu_OBJ = core/uae/newcpu.o \
-	$(core_uae_OBJ) $(core_OBJ) $(core_tihw_OBJ) $(core_dbg_OBJ) \
+	$(core_uae_OBJ) $(core_OBJ) $(core_tihw_OBJ) $(core_tisw_OBJ) \
+	$(core_dbg_OBJ) \
 	$(misc_OBJ) \
 	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ)
 
