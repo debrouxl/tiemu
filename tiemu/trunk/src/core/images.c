@@ -777,6 +777,7 @@ int ti68k_load_upgrade(const char *filename)
     }
 
 	tib.has_boot = 1;	// still bootable
+	memset(tihw.rom+SPP, 0xff, tihw.rom_size-SPP);	// clear FLASH
 	memcpy(tihw.rom+SPP, tib.data+SPP, tib.size-SPP);
     free(tib.data);
 

@@ -30,13 +30,12 @@ d'un long mot à 0.
 comme la fenêtre 'Add breakpoint', mais initialisée avec les valeurs
 du breakpoint choisi).
 
-* la Flash n'est pas entièrement remise à neuf 
++ la Flash n'est pas entièrement remise à neuf 
 lors d'un load d'update de 89 (trafiqué, avec des 
 FlashApps écrites à la fin) succédant à un load 
 de ROM dump de 89.
 
-* le link ne marche pas convenablement. Voir plus 
-bas.
+* le link ne marche pas convenablement. Voir plus bas.
 
 * le grayscale ne semble pas fonctionner 
 convenablement, quel que soit le réglage du 
@@ -86,9 +85,9 @@ en double dans la fenêtre console, bien qu'elle ne
 soit prise en compte qu'une fois par l'émulateur.
 
 * j'ai eu une erreur disant que GTK n'avait pas trouvé
-
 un device context, mais je ne sais plus ce que j'ai 
 fait pour l'avoir.
+
 * le dropdown (ou quelque soit son nom) des ROM_CALLs 
 n'est pas protégé contre les ROM_CALLs invalides à 
 des adresses farfelues (n'existant pas sur la version 
