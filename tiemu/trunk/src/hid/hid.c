@@ -186,57 +186,28 @@ static int hid_init_subsystem(void)
 {
 	// Allocate the TI screen buffer
 	pLcdBuf = malloc((iScrW << iScale) * (iScrH << iScale));
+
+	// Get LCD size
+	iLcdW = tihw.lcd_w;
+	iLcdH = tihw.lcd_h;
+
+	// Found a skin
+	match_skin(tihw.calc_type);
+
+    if(skin_load(options.skin_file) == -1) {
+	    gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
+	    tiemu_error(0, s);
+	    g_free(s);
+	    return -1;
+    }
   
-	// Get LCD size depending on calculator type
+	// Set keymap depending on calculator type
 	if((tihw.calc_type == TI92) || (tihw.calc_type == TI92p))
-    {
-      	iLcdW = 240 << iScale; 
-      	iLcdH = 128 << iScale;
-
-		match_skin(tihw.calc_type);
-
-      	if(skin_load(options.skin_file) == -1) {
-	      	gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
-	      	tiemu_error(0, s);
-	      	g_free(s);
-	      	return -1;
-      	}
-      
       	key_mapping = sknKey92;
-    }
 	else if (tihw.calc_type == TI89)
-    {
-    	iLcdW = 160 << iScale; 
-    	iLcdH = 100 << iScale;
-      
-      	match_skin(tihw.calc_type);
-
-      	if(skin_load(options.skin_file) == -1) {
-	      	gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
-	      	tiemu_error(0, s);
-	      	g_free(s);
-	      	return -1;
-      	}
-
       	key_mapping = sknKey89;
-    }
 	else if(tihw.calc_type == V200)
-    {
-      	iLcdW = 240 << iScale; 
-      	iLcdH = 128 << iScale;
-
-      	g_free(options.skin_file);
-      	options.skin_file = g_strconcat(inst_paths.skin_dir, "v200plt.skn", NULL);
-
-      	if(skin_load(options.skin_file) == -1) {
-	      	gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
-	      	tiemu_error(0, s);
-	      	g_free(s);
-	      	return -1;
-      	}
-      
       	key_mapping = sknKeyV2;
-    }
 	else
 	{
 	  	gchar *s = g_strdup_printf("no skin found for this calc\n");
@@ -928,10 +899,11 @@ int hid_update_lcd(void)
 		// Copy surface into window
 		src_rect.x = 0; 
 		src_rect.y = 0; 
-		//src_rect.w = iLcdW; 
-		//src_rect.h = iLcdH;
-		src_rect.w = (tihw.log_w << iScale) > iLcdW ? iLcdW : (tihw.log_w << iScale);
-		src_rect.h = (tihw.log_h << iScale) > iLcdH ? iLcdH : (tihw.log_h << iScale);
+		src_rect.w = tihw.log_w > iLcdW ? iLcdW : tihw.log_w;
+		src_rect.h = tihw.log_h > iLcdH ? iLcdH : tihw.log_h;
+
+		src_rect.w <<= iScale;
+		src_rect.h <<= iScale;
 
 		if(params.background) 
 		{

@@ -32,15 +32,6 @@ int hw_lcd_init(void)
 {
 	uint16_t lcd_addr;
 
-	// Set contrast
-	/*
-	if(tihw.calc_type == TI92)
-		tihw.contrast = 13;
-	else if((tihw.calc_type == TI89) && (tihw.hw_type == 2))
-		tihw.contrast = 13;
-    tihw.lcd_off = 0;
-	*/
-
 	// TI92 ROM 1.x : $4440
 	// TI92 ROM 2.x : $4720
 	// TI89/92+/V200: $4c00;

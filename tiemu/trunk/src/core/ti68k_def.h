@@ -47,7 +47,7 @@
 #define TI89 		(1 << 1)
 #define TI92p	 	(1 << 2)
 #define V200		(1 << 3)
-//#define TI89TI		(1 << 4)
+#define TI89t		(1 << 4)
 #define CALC_MAX    V200
   
 #define EXTERNAL	0
@@ -85,7 +85,7 @@ typedef struct
 
 typedef struct
 {
-    // misc (non hardware)
+    // misc (non hardware pseudo-constants)
     int     calc_type;
 
     int     ram_size;
@@ -95,13 +95,11 @@ typedef struct
     char	rom_version[5];
 	int		hw_type;
 
-	char	*lcd_ptr;		// direct pointer to LCD
-	int		lc_file;		// direct file loading mode
-	int		lc_speedy;		// speedy mode for direct file
-    int     lc_timeout;     // timeout for internal link
+	int		ti92v1;			// ROm v1.x(y)
+	int		ti92v2;			// ROM v2.x
 
-	int		ti92v1;
-	int		ti92v2;
+	int		lcd_w;			// LCD width
+	int		lcd_h;			// LCD height
 
     // ioports.c
 	//...
@@ -110,12 +108,15 @@ typedef struct
     int     on_key;
 
     // lcd.c
+	char	*lcd_ptr;		// direct pointer to LCD
     int     contrast;
-	int		log_w;		// LCD logical width
-	int		log_h;		// LCD logical height
+	int		log_w;			// LCD logical width
+	int		log_h;			// LCD logical height
 
     // linkport.c
-	//...
+	int		lc_file;		// direct file loading mode
+	int		lc_speedy;		// speedy mode for direct file
+    int     lc_timeout;     // timeout for internal link
 
     // memory.c
     UBYTE	*rom;

@@ -55,8 +55,8 @@ int hw_io_init(void)
 	tihw.io[0x0e] = 0xff;
 	tihw.io[0x0f] = 0x00;
 
-	tihw.io[0x12] = (tihw.calc_type != TI89) ? 0x31 : 0x36;
-	tihw.io[0x13] = (tihw.calc_type != TI89) ? 0x80 : 0x9c;
+	tihw.io[0x12] = tihw.lcd_w/16 - 64;	//(tihw.calc_type != TI89) ? 0x31 : 0x36;
+	tihw.io[0x13] = 256 - tihw.lcd_h;	//(tihw.calc_type != TI89) ? 0x80 : 0x9c;
 	tihw.io[0x15] = 0x1b;
 
 	tihw.io[0x18] = 0x03;
