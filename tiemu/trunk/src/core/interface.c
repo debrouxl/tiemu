@@ -144,19 +144,6 @@ int ti68k_exit(void)
 	return 0;
 }
 
-/*
-    Full restart of the library (not tested).
-*/
-int ti68k_restart(void)
-{
-  TRY(ti68k_exit());
-  TRY(ti68k_init());
-  TRY(ti68k_reset());
-  
-  return 0;
-}
-
-
 /******************/
 /* Link functions */
 /******************/

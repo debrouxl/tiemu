@@ -252,11 +252,19 @@ gint display_romversion_dbox(gboolean file_only)
 				handle_error();
 				if(err) return -1;
 
-                ti68k_restart();
-				
+				err = ti68k_exit();
+				handle_error();
+				if(err) return -1;
+
+				err = ti68k_init();
+				handle_error();
+				if(err)	return -1;
+
 				err = hid_init();
 				handle_error();
 				if(err)	return -1;
+
+				ti68k_reset();
 			}
 
 			g_free(params.sav_file);

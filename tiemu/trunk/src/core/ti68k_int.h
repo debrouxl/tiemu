@@ -40,7 +40,6 @@ int ti68k_config_load_default(void);
 int ti68k_init(void);
 int ti68k_reset(void);
 int ti68k_exit(void);
-int ti68k_restart(void);
 
 // Link
 int ti68k_linkport_send_file(const char *filename);
