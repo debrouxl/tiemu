@@ -189,15 +189,16 @@ int ti68k_debug_get_pc(void)
 
 // some instructions use a weird naming scheme, remap !
 static const char* instr[] = { 
-	"ORSR.B", "ORSR.W",		/* ORI to SR #<data>,SR		*/
-	"ANDSR.B", "ANDSR.W",	/* ANDI to SR #<data>,SR	*/
-	"EORSR.B", "EORSR.W",	/* EORI to SR #<data>,SR	*/
-	"MVSR2.W", "MVSR2.B",	/* MOVE from SR SR,<ea>		*/
-	"MV2SR.B", "MV2SR.W",	/* MOVE to SR <ea>,SR		*/
-	"MVR2USP.L",			/* MOVE An,USP	*/
-	"MVUSP2R.L",			/* MOVE USP,An	*/
-    "MVMEL.W", "MVMEL.L",   /* MOVEM < ea > , < list >  */
-    "MVMLE.W", "MVMLE.L",   /* MOVEM < list > , < ea >  */
+	"ORSR.B", "ORSR.W",		/* ORI  #<data>,SR		*/
+	"ANDSR.B", "ANDSR.W",	/* ANDI #<data>,SR		*/
+	"EORSR.B", "EORSR.W",	/* EORI #<data>,SR		*/
+	"MVSR2.W", "MVSR2.B",	/* MOVE SR,<ea>			*/
+	"MV2SR.B", "MV2SR.W",	/* MOVE <ea>,SR			*/
+	"MVR2USP.L",			/* MOVE An,USP			*/
+	"MVUSP2R.L",			/* MOVE USP,An			*/
+    "MVMEL.W", "MVMEL.L",   /* MOVEM <ea>,<list>  	*/
+    "MVMLE.W", "MVMLE.L",   /* MOVEM <list>,<ea>	*/
+	"TRAP",					/* TRAP	#<vector>		*/
 	NULL
 };
 
@@ -210,14 +211,12 @@ static int match_opcode(const char *opcode)
 
 	for(i = 0; instr[i] != NULL; i++)
 	{
-		if(!strcmp(opcode, (char *)instr[i]))
+		if(!strncmp(opcode, (char *)instr[i], strlen(instr[i])))
 			return i;
 	}
 
 	return -1;
 }
-
-// TRAP need to be splitted
 
 uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 {
@@ -349,14 +348,31 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 			break;
         case 12:    /* MOVEM <ea>,<list>  */
         case 14:    /* MOVEM <list>,<ea>  */
+        {	// UAE does not fully disasm this instruction
+			/*
+        	uint16_t d;
+			
             g_free(split[1]);
 			split[1] = g_strdup("MOVEM.W");
+			
+			d = *((uint16_t *)get_real_address(next));
+			printf("%04X\n", d);
+			//???
+			next += 2;	
+			*/
+		}
             break;
         case 13:    /* MOVEM <ea>,<list>  */
         case 15:    /* MOVEM <list>,<ea>  */
             g_free(split[1]);
 			split[1] = g_strdup("MOVEM.L");
+			next += 2;
             break;
+		case 16:	/* TRAP #<vector>	*/
+			tmp = split[1] + strlen("TRAP");
+			split[2] = g_strdup(tmp);
+			*tmp = '\0';
+			break;
 		default:
 			break;
 		}
