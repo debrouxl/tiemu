@@ -5,8 +5,5 @@
  */
 
 gchar *s = N_("Breakpoints");
-gchar *s = N_("Data access");
-gchar *s = N_("Data range");
-gchar *s = N_("Trap");
-gchar *s = N_("Exception");
-gchar *s = N_("Auto-int");
+gchar *s = N_("Data");
+gchar *s = N_("Vectors");

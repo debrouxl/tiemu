@@ -80,7 +80,7 @@ static GtkListStore* clist_create(GtkWidget *list)
 	}
 	
 	selection = gtk_tree_view_get_selection(view);
-	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
 
 	return store;
 }
@@ -103,7 +103,6 @@ static void clist_populate(GtkListStore *store)
 static void clist_get_selection(GtkWidget *list)
 {
 	GtkTreeView *view = GTK_TREE_VIEW(list);
-	//GtkTreeModel *model = gtk_tree_view_get_model(view);
 	GtkTreeSelection *selection;
 	GtkTreeModel *model;
 	GList *l;
@@ -119,6 +118,7 @@ static void clist_get_selection(GtkWidget *list)
 			
 		gtk_tree_model_get_iter(model, &iter, path);
 		gtk_tree_model_get(model, &iter, COL_NUMBER, &n, -1);
+		printf("sel: %i\n", n);
 		
 		ti68k_bkpt_set_exception(n);
 	}	
@@ -140,6 +140,7 @@ gint display_dbgvectors_dbox(void)
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgvectors_dbox");
+	gtk_window_resize(GTK_WINDOW(dbox), 320, 240);
 		
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);

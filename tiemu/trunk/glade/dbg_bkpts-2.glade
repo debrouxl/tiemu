@@ -104,47 +104,20 @@
 <widget class="GtkMenu" id="dbgbkpts_popup">
 
   <child>
-    <widget class="GtkMenuItem" id="access1">
+    <widget class="GtkMenuItem" id="data1">
       <property name="visible">True</property>
-      <property name="label" translatable="yes">Data access</property>
+      <property name="label" translatable="yes">Data</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="dbgbkpts_access1_activate" last_modification_time="Fri, 04 Jun 2004 05:58:16 GMT"/>
+      <signal name="activate" handler="dbgbkpts_data_activate" last_modification_time="Fri, 04 Jun 2004 12:55:32 GMT"/>
     </widget>
   </child>
 
   <child>
-    <widget class="GtkMenuItem" id="range1">
+    <widget class="GtkMenuItem" id="vector1">
       <property name="visible">True</property>
-      <property name="label" translatable="yes">Data range</property>
+      <property name="label" translatable="yes">Vectors</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="dbgbkpts_range1_activate" last_modification_time="Fri, 04 Jun 2004 05:58:47 GMT"/>
-    </widget>
-  </child>
-
-  <child>
-    <widget class="GtkMenuItem" id="trap1">
-      <property name="visible">True</property>
-      <property name="label" translatable="yes">Trap</property>
-      <property name="use_underline">True</property>
-      <signal name="activate" handler="dbgbkpts_trap1_activate" last_modification_time="Fri, 04 Jun 2004 05:58:47 GMT"/>
-    </widget>
-  </child>
-
-  <child>
-    <widget class="GtkMenuItem" id="exception1">
-      <property name="visible">True</property>
-      <property name="label" translatable="yes">Exception</property>
-      <property name="use_underline">True</property>
-      <signal name="activate" handler="dbgbkpts_exception1_activate" last_modification_time="Fri, 04 Jun 2004 05:58:47 GMT"/>
-    </widget>
-  </child>
-
-  <child>
-    <widget class="GtkMenuItem" id="autoint1">
-      <property name="visible">True</property>
-      <property name="label" translatable="yes">Auto-int</property>
-      <property name="use_underline">True</property>
-      <signal name="activate" handler="dbgbkpts_autoint1_activate" last_modification_time="Fri, 04 Jun 2004 05:58:47 GMT"/>
+      <signal name="activate" handler="dbgbkpts_vector_activate" last_modification_time="Fri, 04 Jun 2004 12:54:23 GMT"/>
     </widget>
   </child>
 </widget>

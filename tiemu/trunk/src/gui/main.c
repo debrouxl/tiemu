@@ -83,8 +83,8 @@ int enter_gtk_debugger(void)
     
 	//display_dbgmem_window();
 	//display_dbgregs_window();
-	display_dbgvectors_dbox();
-	//display_dbgbkpts_window();
+	//display_dbgvectors_dbox();
+	display_dbgbkpts_window();
 
 	return 0;
 }

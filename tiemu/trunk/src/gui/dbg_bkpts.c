@@ -9,6 +9,7 @@
 #include "paths.h"
 #include "support.h"
 #include "ti68k_int.h"
+#include "dbg_vectors.h"
 
 
 enum { 
@@ -288,41 +289,20 @@ dbgbkpts_button4_clicked                     (GtkButton       *button,
 
 
 GLADE_CB void
-dbgbkpts_access1_activate                    (GtkMenuItem     *menuitem,
+dbgbkpts_data_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 
 }
+
 
 
 GLADE_CB void
-dbgbkpts_range1_activate                     (GtkMenuItem     *menuitem,
+dbgbkpts_vector_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+	display_dbgvectors_dbox();
+	//clist_refresh();
 }
 
-
-GLADE_CB void
-dbgbkpts_trap1_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-
-}
-
-
-GLADE_CB void
-dbgbkpts_exception1_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-
-}
-
-
-GLADE_CB void
-dbgbkpts_autoint1_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-
-}
 
