@@ -10,6 +10,8 @@ To do:
 	- simplified ROM image/upgrade access
 	- display ROM calls in RAM in the mem panel
 	- fixed contrast with TI89
+	- fixed grayscale computing but grayscales are still flickering
+	- switched to gtk-win32-devel-2.4-rc24.exe package: fix tooltips with toolbars
 
 - 15/11/2004, version 1.80g: roms
 	- idle() fixed (port $600005)

@@ -99,7 +99,7 @@ void compute_grayscale(void)
     uint32_t white = skin_infos.lcd_white;  // 0xcfe0ce
     uint32_t black = skin_infos.lcd_black;  // 0x222e31
 
-	printf("# planes: %i | contrast: %i\n", max_plane, contrast);
+	//printf("# planes: %i | contrast: %i\n", max_plane, contrast);
 
 	// Compute RBG bsaic values
   	sr = (white & 0xff0000) >> 8;
@@ -124,7 +124,7 @@ void compute_grayscale(void)
       	eb = eb - (eb-sb)*(contrast - NGS)/NGS;
     }
 
-	printf("a: %02x%02x%02x | %02x%02x%02x\n", sr>>8, sg>>8, sb>>8, er>>8, eg>>8, eb>>8);
+	//printf("a: %02x%02x%02x | %02x%02x%02x\n", sr>>8, sg>>8, sb>>8, er>>8, eg>>8, eb>>8);
   
   	r = sr;
   	g = sg;

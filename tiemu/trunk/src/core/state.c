@@ -135,6 +135,7 @@ int ti68k_state_load(char *filename)
 	fread(&thw, sizeof(Ti68kHardware), 1, f);
 	tihw.on_off = thw.on_off;
 	tihw.lcd_adr = thw.lcd_adr;
+	tihw.contrast = thw.contrast;
 
     // Load bkpts
     ti68k_bkpt_clear_access();
