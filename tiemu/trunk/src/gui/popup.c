@@ -84,11 +84,11 @@ GtkWidget* display_popup_menu(void)
 	g_free(s);
 
 	// init check buttons
+    data = glade_xml_get_widget(xml, "restrict1");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), (options.params)->restrict);
+
 	data = glade_xml_get_widget(xml, "sync1");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), (options.params)->sync_one);
-
-	data = glade_xml_get_widget(xml, "restrict1");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), !((options.params)->background));
 
     // init radio buttons
     switch((options.params)->n_grayplanes) {
@@ -166,7 +166,7 @@ on_send_file_to_gtktiemu1_activate     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	//test_sendfile();
-	display_tifile_fileselection();
+	display_tifile_dbox();
 }
 
 
@@ -278,7 +278,12 @@ GLADE_CB void
 on_restrict_to_actual_speed1_activate  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+    if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
+    		(options.params)->restrict = 0;
+  	else
+    		(options.params)->restrict = 1;
 
+  	ti68k_unhalt();
 }
 
 

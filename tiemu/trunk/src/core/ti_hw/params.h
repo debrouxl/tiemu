@@ -37,6 +37,7 @@ struct global_param {
   int cycle_rate;
   int i_tick;
   int sync_one;
+  int restrict;
   
   TicableLinkParam link_cable;
 };

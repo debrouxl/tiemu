@@ -296,11 +296,11 @@ SOURCE=..\..\src\gui\debug_dbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\dump_cb.c
+SOURCE=..\..\src\gui\fs_skin.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\dump_dbox.c
+SOURCE=..\..\src\gui\fs_tifile.c
 # End Source File
 # Begin Source File
 
@@ -373,10 +373,6 @@ SOURCE=..\..\src\gui\romv_dbox.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\scroptions.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\setskin.c
 # End Source File
 # Begin Source File
 

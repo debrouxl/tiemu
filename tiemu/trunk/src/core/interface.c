@@ -122,6 +122,7 @@ int ti68k_loadDefaultConfig(void)
   params.tick_rate = 40000;
   params.cycle_rate = 150;
   params.sync_one = 0;
+  params.restrict = 1;
 
   ticable_get_default_param(&(params.link_cable));
   params.link_cable.link_type = LINK_NUL;
