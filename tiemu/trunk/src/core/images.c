@@ -219,7 +219,7 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
   	if(file == NULL)
     {
       DISPLAY(_("Unable to open this file: <%s>\n"), filename);
-      return ERR_68K_CANT_OPEN;
+      return ERR_CANT_OPEN;
     }
 
   	// Retrieve ROM size
@@ -228,12 +228,14 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
   	fseek(file, 0, SEEK_SET);
 
   	if(rom->size < 256) 
-    	return ERR_68K_INVALID_SIZE;
+    	return ERR_INVALID_ROM_SIZE;
   	if (rom->size > 4*MB)
-    	return ERR_68K_INVALID_SIZE;
+    	return ERR_INVALID_ROM_SIZE;
   
 	if(rom->data == NULL)
   		rom->data = malloc(rom->size + 4);
+	if(rom->data == NULL)
+		return ERR_MALLOC;
   	memset(rom->data, 0xff, rom->size);
   	fread(rom->data, 1, rom->size, file);
   	fclose(file);
@@ -299,10 +301,10 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 
 	// Check valid file
 	if(!tifiles_is_a_ti_file(filename))
-		return ERR_68K_TI_FILE;
+		return ERR_NOT_TI_FILE;
 		
 	if(!ti68k_is_a_tib_file(filename))
-		return ERR_68K_INVALID_FLASH;
+		return ERR_INVALID_UPGRADE;
 
 	// Load file
 	ti9x_read_flash_file(filename, &content);
@@ -318,6 +320,8 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
   	// Load TIB into memory and relocate at SPP
 	if(tib->data == NULL)
   		tib->data = malloc(SPP + ptr->data_length + 4);
+	if(tib->data == NULL)
+		return ERR_MALLOC;
   	//memset(tib->data, 0xff, SPP + ptr->data_length);
     memset(tib->data + SPP, 0xff, ptr->data_length);
   	memcpy(tib->data + SPP, ptr->data_part, ptr->data_length);
@@ -343,7 +347,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 		break;
 		default:
 			DISPLAY("TIB problem: <%i>!\n", 0xff & ptr->device_type);
-			return ERR_68K_INVALID_FLASH;
+			return ERR_INVALID_UPGRADE;
 		break;
 	}
     
@@ -382,7 +386,7 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
 	if(!ti68k_is_a_img_file(filename))
 	{
 		fprintf(stderr, "Images must have '.img' extension.\n", filename);
-      	return ERR_68K_CANT_OPEN;
+      	return ERR_CANT_OPEN;
 	}
 	
 	// Open dest file
@@ -390,7 +394,7 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
   	if(f == NULL)
     {
       	fprintf(stderr, "Unable to open this file: <%s>\n", filename);
-      	return ERR_68K_CANT_OPEN;
+      	return ERR_CANT_OPEN;
     }
     
     // Read header
@@ -398,7 +402,7 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
     if(strcmp(ri->signature, "TiEmu img v2.00"))
    	{
    		fprintf(stderr, "Bad image: <%s>\n", filename);
-      	return ERR_68K_INVALID_FLASH;
+      	return ERR_INVALID_UPGRADE;
    	}
     
     // Close file
@@ -447,7 +451,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
   	if(f == NULL)
     {
       	fprintf(stderr, "Unable to open this file: <%s>\n", *dstname);
-      	return ERR_68K_CANT_OPEN;
+      	return ERR_CANT_OPEN;
     }
 
 	// Fill header
@@ -509,7 +513,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
   	if(f == NULL)
     {
       	fprintf(stderr, "Unable to open this file: <%s>\n", *dstname);
-      	return ERR_68K_CANT_OPEN;
+      	return ERR_CANT_OPEN;
     }
 
 	// Fill header
@@ -648,7 +652,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
   	if(f == NULL)
     {
       	fprintf(stderr, "Unable to open this file: <%s>\n", *dstname);
-      	return ERR_68K_CANT_OPEN;
+      	return ERR_CANT_OPEN;
     }
 
 	// Fill header
@@ -700,12 +704,14 @@ int ti68k_load_image(const char *filename)
 	if(f == NULL)
     {
       	fprintf(stderr, "Unable to open this file: <%s>\n", filename);
-      	return ERR_68K_CANT_OPEN;
+      	return ERR_CANT_OPEN;
     }
 
 	// Read pure data
     fseek(f, img->data_offset, SEEK_SET);
 	img->data = malloc(img->size + 4);
+	if(img->data == NULL)
+		return ERR_MALLOC;
     fread(img->data, 1, img->size, f);	
   
   	img_loaded = 1;
@@ -772,7 +778,7 @@ int ti68k_scan_files(const char *src_dir, const char *dst_dir)
 	if (dir == NULL) 
 	{
 		fprintf(stderr, _("Opendir error\n"));
-      	return ERR_68K_CANT_OPEN_DIR;
+      	return ERR_CANT_OPEN_DIR;
 	}
 
     while ((dirent = g_dir_read_name(dir)) != NULL) 
@@ -828,7 +834,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
       	if(file == NULL)
 		{
 	  		fprintf(stderr, _("Unable to open this file: <%s>\n"), filename);
-	  		return ERR_68K_CANT_OPEN;
+	  		return ERR_CANT_OPEN;
 		}
 
 		// read it and store ROM names
@@ -848,7 +854,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
       	if(file == NULL)
         {
           	fprintf(stderr, _("Unable to reopen this file: <%s>\n"), filename);
-          	return ERR_68K_CANT_OPEN;
+          	return ERR_CANT_OPEN;
         }
     }
   	else
@@ -872,7 +878,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 	if (dir == NULL) 
 	{
 		fprintf(stderr, _("Opendir error\n"));
-      	return ERR_68K_CANT_OPEN_DIR;
+      	return ERR_CANT_OPEN_DIR;
 	}
   
 	while ((dirent = g_dir_read_name(dir)) != NULL) 

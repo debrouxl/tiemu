@@ -25,6 +25,8 @@
 /* Error codes ERR_...  */
 /* Error codes must begin at 512 up to 1023 */
 #define ERR_68K_NONE             0 // No error
+
+// Obsolete
 #define ERR_68K_INVALID_ROM      1 // Invalid ROM file
 #define ERR_68K_INVALID_SIZE     2 // ROM has an invalid size
 #define ERR_68K_CANT_OPEN        3 // Unable to open the file
@@ -39,5 +41,18 @@
 #define ERR_68K_INVALID_STATE   12 // Invalid state file
 #define ERR_68K_INVALID_MODE    13 // Bkpt, invalid mode
 #define ERR_68K_MALLOC          14 // Cant allocate memory
+
+// New codes
+#define ERR_NONE				0
+#define ERR_CANT_OPEN			512
+#define ERR_INVALID_STATE		513
+#define ERR_INVALID_IMAGE		514
+#define ERR_INVALID_UPGRADE		515
+#define ERR_NO_IMAGE			516
+#define ERR_HID_FAILED			517
+#define ERR_INVALID_ROM_SIZE	518
+#define ERR_NOT_TI_FILE			519
+//#define ERR_MALLOC				520
+#define ERR_CANT_OPEN_DIR		521
 
 #endif

@@ -26,4 +26,6 @@
 
 int tiemu_error(int err_code, char *err_str);
 
+#define check_error()	{ if(err) tiemu_error(err, NULL); }
+
 #endif

@@ -57,19 +57,20 @@ int ti68k_state_load(char *filename)
   	IMG_INFO *img = &img_infos;
   	IMG_INFO sav;
   
-  	if(!strlen(filename))
-  		return ERR_68K_CANT_OPEN;
+  	// No filename, exits
+	if(!strcmp(filename, ""))
+		return 0;
   
   	// Open file
   	DISPLAY("Loading state image (TiEmu v2.00 format): %s\n", filename);
   	f = fopen(filename, "rb");
   	if(f == NULL)
-  		return ERR_68K_CANT_OPEN;
+  		return ERR_CANT_OPEN;
   	
   	// Compare image infos
 	fread(&sav, 1, sizeof(IMG_INFO), f);
 	if(memcmp(&sav, img, sizeof(IMG_INFO)))
-		return ERR_68K_INVALID_STATE;
+		return ERR_INVALID_STATE;
 	
 	// Load internal hardware (registers and special flags)
     fwrite(&regs, sizeof(regs), 1, f);
@@ -101,13 +102,13 @@ int ti68k_state_save(char *filename)
   	IMG_INFO *img = &img_infos;
   
   	if(!strlen(filename))
-  		return ERR_68K_CANT_OPEN;
+  		return ERR_CANT_OPEN;
   
   	// Open file
   	DISPLAY("Saving state image (TiEmu v2.00 format): %s\n", filename);
   	f = fopen(filename, "wb");
   	if(f == NULL)
-  		return ERR_68K_CANT_OPEN;
+  		return ERR_CANT_OPEN;
   	
   	// Save current image infos
 	fwrite(img, 1, sizeof(IMG_INFO), f);

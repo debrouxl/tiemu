@@ -81,7 +81,7 @@ int main(int argc, char **argv)
 {
 	GThread *thread = NULL;
 	GError *error = NULL;
-    //char *dstname;
+    int err;
 
 	/*
 		Do primary initializations 
@@ -140,7 +140,7 @@ int main(int argc, char **argv)
 
 	/* 
 		Assign an GUI to the emulation engine 
-		adn a debugger (step 1)
+		and a debugger (step 1)
 	*/
 	hid_set_callbacks();
 	//ti68k_defineDebugger(enter_gtk_debugger);
@@ -149,15 +149,15 @@ int main(int argc, char **argv)
         Search for ROM in the image directory
     */
     splash_screen_set_label(_("Searching for ROM dumps..."));
-    ti68k_scan_files(inst_paths.img_dir, inst_paths.img_dir);
-
-////test
-    //ti68k_merge_rom_and_tib_to_image("C:\\msvc\\tilp\\v200kk.rom", "C:\\msvc\\tilp\\os.v2u", inst_paths.img_dir, &dstname);
+    err = ti68k_scan_files(inst_paths.img_dir, inst_paths.img_dir);
+	check_error();
 
 	/*
 		Attempt to load an image (step 3)
 	*/
-	if(ti68k_load_image(params.rom_file)) {
+	err = ti68k_load_image(params.rom_file);
+	if(err) 
+	{
       
 		display_wizard_dbox();
 		while(!wizard_ok)
@@ -166,24 +166,28 @@ int main(int argc, char **argv)
 		g_free(params.rom_file);
 		params.rom_file = g_strdup(wizard_rom);
 		g_free(wizard_rom);
+
         splash_screen_set_label(_("Loading image..."));
-		ti68k_load_image(params.rom_file);
+		err = ti68k_load_image(params.rom_file);
+		check_error();
 	}
 
 	/* 
 		Initialize emulation engine (step 4)
 	*/
     splash_screen_set_label(_("Initializing m68k emulation engine..."));
-	if(ti68k_init()) {
-		tiemu_error(0, "failed to init the ti68k engine.\n");
+	err = ti68k_init();
+	check_error();
+	if(err)
 		return -1;
-	}
 
 	/*
 		Load FLASH upgrade (if any)
 	*/
-	if(params.tib_file != NULL) {
-		ti68k_load_upgrade(params.tib_file);
+	if(params.tib_file != NULL) 
+	{
+		err = ti68k_load_upgrade(params.tib_file);
+		check_error();
 	}
 
 	/* 
@@ -201,8 +205,10 @@ int main(int argc, char **argv)
 		Load calculator state image 
 	*/
     splash_screen_set_label(_("Loading previously saved state..."));
-	if(params.sav_file != NULL) {
-		ti68k_state_load(params.sav_file);
+	if(params.sav_file != NULL) 
+	{
+		err = ti68k_state_load(params.sav_file);
+		check_error();
 	}
   
 	/* 
@@ -230,7 +236,8 @@ int main(int argc, char **argv)
 	/* 
 		Close the emulator engine
 	*/
-	ti68k_exit();
+	err = ti68k_exit();
+	check_error();
   
 	return 0;
 }

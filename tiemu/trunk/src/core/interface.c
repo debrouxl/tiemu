@@ -122,14 +122,15 @@ int ti68k_init(void)
 
 	// check if image has been loaded
 	if(img_loaded == 0)
-		return ERR_68K_INVALID_ROM;
+		return ERR_NO_IMAGE;
 
 	// set calc type and init hardware
-        tihw.calc_type = img_infos.calc_type;
-	hw_init();
+    tihw.calc_type = img_infos.calc_type;
+	TRY(hw_init());
 
 	// init hid
-	cb_init_specific();
+	if(cb_init_specific() != 0)
+		return ERR_HID_FAILED;
 	cb_screen_on_off(!0);
 
 	return 0;
@@ -152,14 +153,15 @@ int ti68k_reset(void)
 */
 int ti68k_exit(void)
 {
-    cb_exit_specific();
-    hw_exit();
+    if(cb_exit_specific() != 0)
+		return ERR_HID_FAILED;
+    TRY(hw_exit());
 
     ticable_exit();
 	tifiles_exit();
 	ticalc_exit();
 
-	return 1;
+	return 0;
 }
 
 /*
@@ -167,9 +169,9 @@ int ti68k_exit(void)
 */
 int ti68k_restart(void)
 {
-  ti68k_exit();
-  ti68k_init();
-  ti68k_reset();
+  TRY(ti68k_exit());
+  TRY(ti68k_init());
+  TRY(ti68k_reset());
   
   return 0;
 }
@@ -209,7 +211,7 @@ int ti68k_debug_do_single_step(void)
 int ti68k_debug_do_instructions(int n)
 {
     if(!img_loaded)
-        return ERR_68K_ROM_NOT_LOADED;
+        return ERR_NO_IMAGE;
 
     return hw_m68k_run(n);
 }
@@ -246,8 +248,8 @@ int ti68k_linkport_get_timeout(int value)
 
 int ti68k_linkport_reconfigure(void)
 {
-    hw_dbus_init();
-    hw_dbus_exit();
+    TRY(hw_dbus_init());
+    TRY(hw_dbus_exit());
 
     return 0;
 }
