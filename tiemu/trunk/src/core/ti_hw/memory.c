@@ -152,7 +152,7 @@ int hw_mem_init(void)
     mem_tab[3] = tihw.rom + 0x100000;
     mem_mask[3] = tihw.rom_size/2-1;
 
-    // map ROM (internal)
+    // map ROM (external)
     mem_tab[4] = tihw.rom;
     mem_mask[4] = tihw.rom_size/2-1;
     mem_tab[5] = tihw.rom + 0x100000;

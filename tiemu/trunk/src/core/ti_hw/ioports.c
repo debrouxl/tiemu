@@ -254,6 +254,7 @@ UBYTE io_get_byte(CPTR adr)
             //return (hw_dbus_byteavail() ? 0x60 : 0x40);	/* 0x40 -> always return tx buffer as empty */
             v |= 0x40;  // stx
             v |= hw_dbus_byteavail() ? 0x20 : 0x00;
+            return (hw_dbus_byteavail() ? 0x60 : 0x40);
         case 0x0e:	// rw <....3210>
 			// read red/white wires if raw access
 			if(tihw.dbus_raw)

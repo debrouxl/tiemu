@@ -43,6 +43,7 @@
 /*
 	Linkport (lp) / directfile (df) mappers
 */
+
 void  (*hw_dbus_putbyte)    (UBYTE arg);
 UBYTE (*hw_dbus_getbyte)    (void);
 int   (*hw_dbus_byteavail)	(void);
@@ -57,6 +58,22 @@ void  df_putbyte(UBYTE arg);
 UBYTE df_getbyte(void);
 int   df_byteavail(void);
 int   df_checkread(void);
+
+static void map_to_linkport(void)
+{
+    hw_dbus_putbyte = lp_putbyte;
+	hw_dbus_getbyte = lp_getbyte;
+	hw_dbus_byteavail = lp_byteavail;
+	hw_dbus_checkread = lp_checkread;
+}
+
+static void map_to_directfile(void)
+{
+    hw_dbus_putbyte = df_putbyte;
+	hw_dbus_getbyte = df_getbyte;
+	hw_dbus_byteavail = df_byteavail;
+	hw_dbus_checkread = df_checkread;
+}
 
 TicableLinkCable lc;
 
@@ -98,10 +115,7 @@ int hw_dbus_init(void)
 	init_linkfile();
 
 	// set mappers to linkport
-	hw_dbus_putbyte = lp_putbyte;
-	hw_dbus_getbyte = lp_getbyte;
-	hw_dbus_byteavail = lp_byteavail;
-	hw_dbus_checkread = lp_checkread;
+	map_to_linkport();
 }
 
 int hw_dbus_reset(void)
@@ -342,12 +356,14 @@ int exit_linkfile(void)
 
 int test_sendfile()
 {
+    map_to_directfile();
     tihw.lc_speedy = 1;
-    tihw.lc_file = 1;  
+    tihw.lc_file = 1;
     //itc.send_var("/root/str.89s", 0, NULL);
     itc.send_var("C:\\str.9xs", 0, NULL);
     tihw.lc_file = 0;
     tihw.lc_speedy = 0;
+    map_to_linkport();
 
     return 0;
 }
