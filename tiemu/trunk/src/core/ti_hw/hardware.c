@@ -42,6 +42,7 @@
 #include "lcd.h"
 #include "m68k.h"
 #include "callbacks.h"
+#include "images.h"
 #include "ti68k_def.h"
 
 #define HW1_RATE    625     // 10MHz / 1600 (timer rate)
@@ -56,6 +57,19 @@ int cycle_count = 0;
 */
 int hw_init(void)
 {
+    IMG_INFO *img = &img_infos;
+
+    // Get infos from image
+	tihw.calc_type = img_infos.calc_type;
+	tihw.rom_internal = img->internal;
+	tihw.rom_flash = img->flash;
+	strcpy(tihw.rom_version, img->version);
+	tihw.hw_type = img->hw_type;
+	
+	tihw.ti92v1 = (tihw.calc_type == TI92) && (strcmp(tihw.rom_version, "2.0") < 0);
+	tihw.ti92v2 = (tihw.calc_type == TI92) && (strcmp(tihw.rom_version, "2.0") >= 0);
+
+    // Do sub-initializations.
 	hw_mem_init();
 	hw_io_init();
 	hw_dbus_init();

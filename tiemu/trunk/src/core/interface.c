@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "uae.h"
 #include "hardware.h"
@@ -255,4 +256,38 @@ int ti68k_linkport_reconfigure(void)
     hw_dbus_exit();
 
     return 0;
+}
+
+/******************/
+/* Misc functions */
+/******************/
+
+const int ti_rom_sizes[] = { 1*MB, 2*MB, 2*MB, 4*MB, 4*MB };	// 92, 89, 92+, V200, TI89 Titanium
+const int ti_ram_sizes[] = { 128*KB, 256*KB, 256*KB, 256*KB, 256*KB };
+
+static int log2(int i)
+{
+	return (int)(log10(i) / log10(2));
+}
+
+int ti68k_get_rom_size(int calc_type)
+{
+    if(calc_type > CALC_MAX)
+    {
+        DISPLAY("Bad argument !\n");
+        exit(0);
+    }
+
+    return ti_rom_sizes[log2(calc_type)];
+}
+
+int ti68k_get_ram_size(int calc_type)
+{
+    if(calc_type > CALC_MAX)
+    {
+        DISPLAY("Bad argument !\n");
+        exit(0);
+    }
+
+    return ti_ram_sizes[log2(calc_type)];
 }

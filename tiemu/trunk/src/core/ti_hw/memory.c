@@ -38,11 +38,12 @@
 #include "memory.h"
 #include "bkpts.h"
 #include "ti68k_def.h"
+#include "ti68k_int.h"
 
 static IMG_INFO *img = &img_infos; // a shortcut
 
-const int rom_sizes[] = { 1*MB, 2*MB, 2*MB, 4*MB, 4*MB };	// 92, 89, 92+, V200, TI89 Titanium
-const int ram_sizes[] = { 256*KB, 256*KB, 256*KB, 256*KB, 256*KB };
+//const int rom_sizes[] = { 1*MB, 2*MB, 2*MB, 4*MB, 4*MB };	// 92, 89, 92+, V200, TI89 Titanium
+//const int ram_sizes[] = { 256*KB, 256*KB, 256*KB, 256*KB, 256*KB };
 const int rom_base[] = { 0x400000, 0x200000, 0x400000, 0x800000 };
 const int io_size = 32;
 
@@ -87,26 +88,16 @@ int hw_mem_init(void)
 {
 	int i;
 
-	// get infos from image
-	tihw.calc_type = img_infos.calc_type;
-	tihw.rom_internal = img->internal;
-	tihw.rom_flash = img->flash;
-	strcpy(tihw.rom_version, img->version);
-	tihw.hw_type = img->hw_type;
-	
-	tihw.ti92v1 = (tihw.calc_type == TI92) && (strcmp(tihw.rom_version, "2.0") < 0);
-	tihw.ti92v2 = (tihw.calc_type == TI92) && (strcmp(tihw.rom_version, "2.0") >= 0);
-
 	if(tihw.ti92v2)
 	{
 		// TI92 II is same as TI92+
-		tihw.rom_size = rom_sizes[1];
-		tihw.ram_size = ram_sizes[1];
+		tihw.rom_size = ti68k_get_rom_size(TI92p);
+		tihw.ram_size = ti68k_get_ram_size(TI92p);
 	}
 	else
 	{
-		tihw.rom_size = rom_sizes[log2(tihw.calc_type)];
-		tihw.ram_size = ram_sizes[log2(tihw.calc_type)];
+		tihw.rom_size = ti68k_get_rom_size(tihw.calc_type);
+		tihw.ram_size = ti68k_get_ram_size(tihw.calc_type);
 	}
 
 	// init vars

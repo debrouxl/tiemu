@@ -57,6 +57,10 @@ int ti68k_linkport_reconfigure(void);
 // Keyboard
 void ti68k_kbd_set_key(int key, int active);
 
+// Misc
+int ti68k_get_rom_size(int calc_type);
+int ti68k_get_ram_size(int calc_type);
+
 // Others
 #include "bkpts.h"
 #include "callbacks.h"

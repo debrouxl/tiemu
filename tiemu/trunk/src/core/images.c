@@ -59,7 +59,6 @@
 IMG_INFO	img_infos = { 0 };
 int			img_loaded = 0;
 
-
 /*
 	Utility functions
 */
@@ -512,7 +511,10 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	img.header_size = sizeof(IMG_INFO);
 	img.data_offset = 0x40;
     real_size = img.size - SPP;
-	img.size = 2 << 20;
+    if(img.calc_type != V200)
+        img.size = 4*MB;
+    else
+	    img.size = 2*MB;
 	
 	// Write header
 	fwrite(&img, 1, sizeof(IMG_INFO), f);

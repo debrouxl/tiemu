@@ -46,6 +46,7 @@
 #define TI92p	 	(1 << 2)
 #define V200		(1 << 3)
 //#define TI89TI		(1 << 4)
+#define CALC_MAX    V200
   
 #define EXTERNAL	0
 #define INTERNAL 	1
