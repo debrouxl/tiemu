@@ -60,5 +60,5 @@ about_ok_button_clicked                (GtkButton       *button,
 {
   //delete_image(&img);
   gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "about_dbox"));
-  unhalt();
+  ti68k_unhalt();
 }

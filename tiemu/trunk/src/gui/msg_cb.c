@@ -59,5 +59,5 @@ on_msg_dbox_destroy                    (GtkObject       *object,
                                         gpointer         user_data)
 {
   if(b)
-    unhalt(); // free running
+    ti68k_unhalt(); // free running
 }

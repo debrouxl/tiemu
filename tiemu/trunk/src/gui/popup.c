@@ -46,7 +46,7 @@ void gui_popup_menu(void)
 	button = 0;
 
 	// halt emulation engine
-	halt();
+	ti68k_halt();
 
 	// display popup menu
 	menu = GTK_MENU(display_popup_menu());

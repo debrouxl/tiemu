@@ -41,5 +41,5 @@ help_ok_button_clicked                     (GtkButton       *button,
 					    gpointer         user_data)
 {
   gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "help_dbox"));
-  unhalt();
+  ti68k_unhalt();
 }

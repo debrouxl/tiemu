@@ -35,6 +35,11 @@
 #include "struct.h"
 #include "core.h"
 
+#if defined(__LINUX__)
+#define sleep(x)	usleep(1000 * (x))
+#elif defined(__WIN32__)
+#define sleep(x)	Sleep((x))
+#endif
 
 /* 
    The TI92/89 should approximately execute NB_INSTRUCTIONS_PER_LOOP in 
@@ -81,13 +86,8 @@ gpointer ti68k_engine(gpointer data)
 			iLastTime    = 1000 * tLastTime.time + tLastTime.millitm;
 			iCurrentTime = 1000 * tCurrentTime.time + tCurrentTime.millitm;
 			
-			if ((iCurrentTime - iLastTime) < TIME_LIMIT) {
-#if defined(__LINUX__)
-				usleep(1000 * (TIME_LIMIT - iCurrentTime + iLastTime));
-#elif defined(__WIN32__)
-				Sleep((TIME_LIMIT - iCurrentTime + iLastTime));
-#endif
-			}
+			if ((iCurrentTime - iLastTime) < TIME_LIMIT)
+				sleep((TIME_LIMIT - iCurrentTime + iLastTime));
 		}
 	}
 }
@@ -112,7 +112,7 @@ void ti68k_unhalt(void)
 }
 
 /* compat */
-
+/*
 int is_halted()
 {
     return ti68k_is_halted();
@@ -127,3 +127,4 @@ void unhalt(void)
 {
     return ti68k_unhalt();
 }
+*/

@@ -79,7 +79,7 @@ void
 on_rom_fileselection_destroy           (GtkObject       *object,
                                         gpointer         user_data)
 {
-  unhalt();
+  ti68k_unhalt();
 }
 
 
@@ -104,7 +104,7 @@ on_rom_ok_button2_clicked                  (GtkButton       *button,
   system(cmd); //copy_file(src, dst);
 
   gtk_widget_destroy(w);
-  unhalt();
+  ti68k_unhalt();
 }
 
 
@@ -121,7 +121,7 @@ on_tifile_fileselection_destroy        (GtkObject       *object,
                                         gpointer         user_data)
 {
   destroy_pbar();
-  unhalt();
+  ti68k_unhalt();
 }
 
 
@@ -225,7 +225,7 @@ void
 on_tib_fileselection_destroy           (GtkObject       *object,
                                         gpointer         user_data)
 {
-  unhalt();
+  ti68k_unhalt();
 }
 
 
@@ -264,7 +264,7 @@ void
 on_ams_fileselection_destroy           (GtkObject       *object,
                                         gpointer         user_data)
 {
-  unhalt();
+  ti68k_unhalt();
 }
 
 

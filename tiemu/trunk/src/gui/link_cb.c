@@ -672,7 +672,7 @@ linktype_ok_button_clicked             (GtkButton       *button,
 
   ti68k_reconfigure_linkport();
 
-  unhalt();
+  ti68k_unhalt();
 }
 
 
@@ -681,7 +681,7 @@ linktype_cancel_button_clicked         (GtkButton       *button,
                                         gpointer         user_data)
 {
   gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "linktype_dbox"));
-  unhalt();
+  ti68k_unhalt();
 }
 
 

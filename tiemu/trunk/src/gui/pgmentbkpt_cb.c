@@ -20,7 +20,7 @@ void
 on_pgmentrybkpt_dbox_destroy           (GtkObject       *object,
                                         gpointer         user_data)
 {
-  unhalt();
+  ti68k_unhalt();
 }
 
 

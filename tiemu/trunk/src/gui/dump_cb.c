@@ -57,7 +57,7 @@ void
 on_ramdump_fileselection_destroy       (GtkObject       *object,
                                         gpointer         user_data)
 {
-  unhalt();
+  ti68k_unhalt();
 }
 
 
@@ -91,7 +91,7 @@ void
 on_romd_fileselection_destroy          (GtkObject       *object,
                                         gpointer         user_data)
 {
-  unhalt();
+  ti68k_unhalt();
 }
 
 

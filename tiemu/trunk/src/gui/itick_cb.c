@@ -65,7 +65,7 @@ void
 on_tickrate_dbox_destroy               (GtkObject       *object,
                                         gpointer         user_data)
 {
-  unhalt();
+  ti68k_unhalt();
 }
 
 /*--*/
@@ -124,7 +124,7 @@ void
 on_cyclerate_dbox_destroy              (GtkObject       *object,
                                         gpointer         user_data)
 {
-  unhalt();
+  ti68k_unhalt();
 }
 
 /* -- */
@@ -183,7 +183,7 @@ void
 on_itick_dbox_destroy                  (GtkObject       *object,
                                         gpointer         user_data)
 {
-  unhalt();
+  ti68k_unhalt();
 }
 
 /* */

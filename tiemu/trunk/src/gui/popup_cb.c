@@ -131,7 +131,7 @@ on_popup_menu_button_press_event      (GtkWidget *widget,
     //DISPLAY("%i %i %i %i\n", alloc->x, alloc->y, alloc->width, alloc->height);
     if((event->x > alloc->width) || (event->y > alloc->height) ||
         (event->x < alloc->x) || (event->y < alloc->y)) {
-           unhalt();
+           ti68k_unhalt();
     }
 }
 
@@ -149,7 +149,7 @@ void
 on_popup_menu_header                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	unhalt();
+	ti68k_unhalt();
 }
 
 
@@ -218,7 +218,7 @@ on_revert_to_saved_state1_activate     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   ti68k_loadState((options.params)->ram_file);
-  unhalt();
+  ti68k_unhalt();
 }
 
 
@@ -231,12 +231,12 @@ on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
   CODE_BKPT *s;
 
   // Suspend emulation core
-  halt();
+  ti68k_halt();
 /*
 #ifdef __WIN32__
 	msg_box("Information",
 		"The debugger crashes in the Win32 version so it is has been temporarily disabled. It will be available in a next release.\n");
-	unhalt();
+	ti68k_unhalt();
 	return ;
 #endif
 */
@@ -267,7 +267,7 @@ on_reset_calc1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   ti68k_reset();
-  unhalt();
+  ti68k_unhalt();
 }
 
 
@@ -315,7 +315,7 @@ on_sync1_activate                      (GtkMenuItem     *menuitem,
   else
     (options.params)->sync_one = 1;
 
-  unhalt();
+  ti68k_unhalt();
 }
 
 void
@@ -331,7 +331,7 @@ on_normal_view__1x_1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   hid_switch_normal_view();
-  unhalt();
+  ti68k_unhalt();
 }
 
 
@@ -340,7 +340,7 @@ on_large_view__x2_1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   hid_switch_large_view();
-  unhalt();
+  ti68k_unhalt();
 }
 
 
@@ -349,7 +349,7 @@ on_full_screen1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   hid_switch_fullscreen();
-  unhalt();
+  ti68k_unhalt();
 }
 
 
@@ -358,7 +358,7 @@ on_skin1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   hid_switch_with_skin();
-  unhalt();
+  ti68k_unhalt();
 }
 
 
@@ -367,7 +367,7 @@ on_none1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   hid_switch_without_skin();
-  unhalt();
+  ti68k_unhalt();
 }
 
 void
@@ -383,7 +383,7 @@ on_now__1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   hid_screenshot(NULL);
-  unhalt();
+  ti68k_unhalt();
 }
 
 

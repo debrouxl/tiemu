@@ -133,7 +133,7 @@ void
 on_fs_load_state_destroy               (GtkObject       *object,
                                         gpointer         user_data)
 {
-  unhalt();
+  ti68k_unhalt();
 }
 
 
@@ -141,6 +141,6 @@ void
 on_fs_save_state_destroy               (GtkObject       *object,
                                         gpointer         user_data)
 {
-  unhalt();
+  ti68k_unhalt();
 }
 

@@ -136,7 +136,7 @@ void
 on_skin_dbox_destroy                   (GtkObject       *object,
                                         gpointer         user_data)
 {
-  unhalt();
+  ti68k_unhalt();
 }
 
 void 
