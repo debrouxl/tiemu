@@ -103,10 +103,14 @@ int hw_dbus_init(void)
     return 0;
 }
 
+int t2f_flag, f2t_flag;
+
 int hw_dbus_reset(void)
 {
-	hw_dbus_exit();
-	hw_dbus_init();
+    //hw_dbus_exit();
+    //hw_dbus_init();
+    //t2f_flag = f2t_flag = 0;
+    printf("D-Bus reset !\n");
 
 	return 0;
 }
@@ -294,10 +298,10 @@ int df_checkread(void)
 	Wonderful, isn't it ?! Take a look at the 'TiLP framework' power ;-)
 */
 
-TicableLinkCable* 	ilc = NULL;
-TicalcFncts			itc;
-TicalcInfoUpdate 	iu = { 0 };
-TicableDataRate		*tdr;
+static TicableLinkCable*	ilc = NULL;
+static TicalcFncts		itc;
+static TicalcInfoUpdate 	iu = { 0 };
+static TicableDataRate		*tdr;
 
 /* libticables functions (link API) */
 static int ilp_init(void)     
@@ -306,11 +310,12 @@ static int ilp_init(void)
 
 	tdr->count = 0;
   	toSTART(tdr->start);
+
 	return 0; 
 }
 
 static int ilp_open(void)     
-{ 
+{
 	return 0; 
 }
 
