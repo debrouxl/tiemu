@@ -50,7 +50,8 @@ enum {
 
 #define FONT_NAME	"courier"
 
-#define NLINES      10
+//#define NLINES      10
+static gint NLINES = 10;
 
 static GtkListStore* clist_create(GtkWidget *widget)
 {
@@ -932,4 +933,34 @@ on_view_memory1_activate       (GtkMenuItem     *menuitem,
     
     printf("addr = %x\n", addr);
     dbgmem_add_tab(addr);
+}
+
+
+GLADE_CB void
+on_treeview1_size_allocate             (GtkWidget       *widget,
+                                        GdkRectangle    *allocation,
+                                        gpointer         user_data)
+{
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreePath *path;
+	GdkRectangle rect;
+	static int old = 0;
+
+	path = gtk_tree_path_new_from_string("0");
+	gtk_tree_view_get_background_area(view, path, NULL, &rect);
+	g_free(path);
+
+	if(rect.height == 0)
+		return;
+
+	NLINES = allocation->height / rect.height - 1;
+	printf("#lines: %i (%i %i)\n", NLINES, allocation->height, rect.height);
+
+	if(old != NLINES)
+	{	
+		gtk_list_store_clear(store);
+		clist_refresh(store, TRUE);
+	}
+
+	old = NLINES;
 }
