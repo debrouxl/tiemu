@@ -30,6 +30,7 @@ Source: "C:\sources\roms\tiemu\glade\*.glade"; DestDir: "{app}\glade"; Flags: ig
 Source: "C:\sources\roms\tiemu\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
 ; Skin files
 Source: "C:\sources\roms\tiemu\skins\*.skn"; DestDir: "{app}\skins"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu\skins\ti92.skn"; DestDir: "{app}\skins"; DestName: "ti92+.skn"; Flags: ignoreversion;
 ; i18n files
 ;Source: "C:\sources\roms\libs\files\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tifiles.mo"; Flags: ignoreversion;
 ;Source: "C:\sources\roms\libs\cables\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "ticables.mo"; Flags: ignoreversion;

@@ -277,7 +277,7 @@ int skin_unload(void)
   	return 0;
 }
 
-/* Load a skin (automatically detects the format and version) */
+/* Load a skin (TiEMu v2.00 only) */
 int skin_load(const char *filename)
 {
 	FILE *fp = NULL;

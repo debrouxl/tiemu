@@ -760,7 +760,7 @@ int rcfile_default()
 	params.tib_file = g_strdup("");
 
 	// other fields
-	options.skin_file = g_strconcat(inst_paths.skin_dir, "ti92.skn", NULL);
+	options.skin_file = g_strconcat(inst_paths.skin_dir, "", NULL);
 
 	options2.file = g_strdup("screenshot");
 	options2.counter = 0;

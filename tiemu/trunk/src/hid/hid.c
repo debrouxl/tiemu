@@ -123,6 +123,61 @@ static void SDL_ComplainAndExit(void)
 /* Init/Exit entry points */
 /**************************/
 
+static int match_skin(int calc_type)
+{
+	SKIN_INFOS si;
+	int ok;
+	gchar *str;
+
+	// filename is "", load default skin
+	if(!strcmp(g_basename(options.skin_file), ""))
+	{
+		g_free(options.skin_file);
+      	options.skin_file = g_strdup_printf("%s%s.skn", 
+			inst_paths.skin_dir, ti68k_calctype_to_string(calc_type));
+		return -1;
+	}
+
+	// load skin header
+	if(skin_read_header(options.skin_file, &si) == -1)
+	{
+		g_free(options.skin_file);
+      	options.skin_file = g_strdup_printf("%s%s.skn", 
+			inst_paths.skin_dir, ti68k_calctype_to_string(calc_type));
+		return -1;
+	}
+
+	// is skin compatible
+	switch(tihw.calc_type)
+	{
+	    case TI92:
+		case TI92p:
+            ok = !strcmp(si.calc, SKIN_TI92) || !strcmp(si.calc, SKIN_TI92P);
+		break;
+	    case TI89:
+            ok = !strcmp(si.calc, SKIN_TI89);
+		break;
+		case V200:
+			ok = !strcmp(si.calc, SKIN_V200);
+		break;
+	    default: 
+            ok = 0;
+		break;
+	}
+
+	if(!ok)
+	{
+		g_free(options.skin_file);
+      	options.skin_file = g_strdup_printf("%s%s.skn", 
+			inst_paths.skin_dir, ti68k_calctype_to_string(calc_type));
+
+		tiemu_error(0, _("skin incompatible with the current calc model. Falling back to default skin."));
+		return -1;
+	}
+
+	return 0;
+}
+
 /*
   	Initialize SDL, buffers and some other stuffs.
   	This function can be called at any time
@@ -138,8 +193,7 @@ static int hid_init_subsystem(void)
       	iLcdW = 240 << iScale; 
       	iLcdH = 128 << iScale;
 
-      	g_free(options.skin_file);
-      	options.skin_file = g_strconcat(inst_paths.skin_dir, "ti92.skn", NULL);
+		match_skin(tihw.calc_type);
 
       	if(skin_load(options.skin_file) == -1) {
 	      	gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
@@ -155,8 +209,7 @@ static int hid_init_subsystem(void)
     	iLcdW = 160 << iScale; 
     	iLcdH = 100 << iScale;
       
-      	g_free(options.skin_file);
-      	options.skin_file = g_strconcat(inst_paths.skin_dir, "ti89.skn", NULL);
+      	match_skin(tihw.calc_type);
 
       	if(skin_load(options.skin_file) == -1) {
 	      	gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
@@ -1052,17 +1105,7 @@ void hid_switch_without_skin(void)
 */
 void hid_change_skin(const char *filename)
 {
-  	hid_quit_subsystem();
-  	hid_init_subsystem();
-  
-  	//if((skin_infos.type == TI92) && (tihw.calc_type & TI92))
-  	{
-    	if (!skin_load(filename))
-      		return;
-
-    	redraw_skin();
-    	set_colors();
-  	}
+  	hid_restart_subsystem();
 }
 
 /*

@@ -51,43 +51,9 @@ gint display_skin_dbox()
 	if (!filename)
 		return 0;
 
-    // Read skin header
-    if(skin_read_header(filename, &si) == -1) {
-
-        msg_box(_("Error"), _("Unable to use this skin."));
-        return -1;
-    }
-
-    // Check skin header
-    switch(tihw.calc_type)
-	{
-	    case TI92:
-            ok = !strcmp(si.calc, SKIN_TI92);
-		break;
-	    case TI89:
-            ok = !strcmp(si.calc, SKIN_TI89);
-		break;
-	    case TI92p:
-            ok = !strcmp(si.calc, SKIN_TI92P);
-		break;
-		case V200:
-			ok = !strcmp(si.calc, SKIN_V200);
-		break;
-	    default: 
-            ok = 0;
-		break;
-	}
-
-        
-    if(!ok) {
-        msg_box(_("Error"), _("Skin incompatible with the current calc model."));
-        ti68k_engine_unhalt();
-        return -1;
-    }
-
     // Load new skin
     g_free(options.skin_file);
-    options.skin_file = g_strconcat(filename, NULL);
+    options.skin_file = g_strdup(filename);
     
     hid_change_skin(options.skin_file);
     ti68k_engine_unhalt();
