@@ -35,18 +35,18 @@ typedef enum {
     REG_A4, REG_A5, REG_A6, REG_A7,
 } Ti68kAddrRegister;
 
-void ti68k_register_set_data(int n,int val);
-void ti68k_register_set_addr(int n,int val);
-void ti68k_register_set_sp(int val);
-void ti68k_register_set_pc(int val);
-void ti68k_register_set_sr(int val);
-void ti68k_register_set_flag(unsigned char flag);
+void ti68k_register_set_data(int n, uint32_t val);
+void ti68k_register_set_addr(int n, uint32_t val);
+void ti68k_register_set_sp(uint32_t val);
+void ti68k_register_set_pc(uint32_t val);
+void ti68k_register_set_sr(uint32_t val);
+void ti68k_register_set_flag(uint8_t flag);
 
-int ti68k_register_get_data(int n);
-int ti68k_register_get_addr(int n);
-int ti68k_register_get_sp(void);
-int ti68k_register_get_pc(void);
-int ti68k_register_get_sr(void);
+uint32_t ti68k_register_get_data(int n);
+uint32_t ti68k_register_get_addr(int n);
+uint32_t ti68k_register_get_sp(void);
+uint32_t ti68k_register_get_pc(void);
+uint32_t ti68k_register_get_sr(void);
 char *ti68k_register_get_flag(void);
 
 #endif

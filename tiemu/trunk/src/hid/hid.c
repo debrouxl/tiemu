@@ -510,7 +510,6 @@ static int sdl_to_ti(int key)
 			case SDLK_LALT : 	return TIKEY_2ND;
 			case SDLK_RALT : 	return TIKEY_2ND;
 
-			case SDLK_TAB : 		return TIKEY_STORE;
 			case SDLK_SPACE : 		return TIKEY_SPACE;
 			case SDLK_ESCAPE : 		return TIKEY_ESCAPE;
 			case SDLK_BACKSPACE : 	return TIKEY_BACKSPACE;

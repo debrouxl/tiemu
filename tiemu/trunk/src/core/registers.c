@@ -35,32 +35,32 @@
 #include "ti68k_def.h"
 
 
-void ti68k_register_set_data(int n,int val)
+void ti68k_register_set_data(int n, uint32_t val)
 {
     if (n>=0 && n<8) regs.d[n] = val;
 }
 
-void ti68k_register_set_addr(int n,int val)
+void ti68k_register_set_addr(int n, uint32_t val)
 {
     if (n>=0 && n<8) regs.a[n] = val;
 }
 
-void ti68k_register_set_sp(int val)
+void ti68k_register_set_sp(uint32_t val)
 {
-    regs.usp=val;
+    regs.usp = val;
 }
 
-void ti68k_register_set_pc(int val)
+void ti68k_register_set_pc(uint32_t val)
 {
-    regs.pc=val;
+    regs.pc = val;
 }
 
-void ti68k_register_set_sr(int val)
+void ti68k_register_set_sr(uint32_t val)
 {
-    regs.sr=val;
+    regs.sr = (int)val;
 }
 
-void ti68k_register_set_flag(unsigned char flag)
+void ti68k_register_set_flag(uint8_t flag)
 {
   //TODO
 }

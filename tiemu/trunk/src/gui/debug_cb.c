@@ -252,7 +252,7 @@ gint refresh_register_dbox(void)
     {
       sprintf(buffer, "D%i=%08X", i, ti68k_register_get_data(i));
       gtk_text_buffer_insert(buf, &end, buffer, -1);
-      if(prev_Dx[i] != ti68k_register_get_data(i))
+      if(prev_Dx[i] != (int)ti68k_register_get_data(i))
 	gtk_text_buffer_apply_tag(buf, red_tag, &start, &end);
       
       start = end;
@@ -262,7 +262,7 @@ gint refresh_register_dbox(void)
       
       sprintf(buffer, "A%i=%08X\n", i, ti68k_register_get_addr(i));
       gtk_text_buffer_insert(buf, &end, buffer, -1);
-      if(prev_Ax[i] != ti68k_register_get_addr(i))
+      if(prev_Ax[i] != (int)ti68k_register_get_addr(i))
 	gtk_text_buffer_apply_tag(buf, red_tag, &start, &end);
       
       start = end;
@@ -274,7 +274,7 @@ gint refresh_register_dbox(void)
   /* Display the SP register */
   sprintf(buffer, "SP=%06X\n", ti68k_register_get_sp());
   gtk_text_buffer_insert(buf, &end, buffer, -1);
-  if(prev_SP != ti68k_register_get_sp())
+  if(prev_SP != (int)ti68k_register_get_sp())
     gtk_text_buffer_apply_tag(buf, red_tag, &start, &end);
 
   start = end;
@@ -282,7 +282,7 @@ gint refresh_register_dbox(void)
   /* Display the SR register */
   sprintf(buffer, "SR=%04X      ", ti68k_register_get_sr());
   gtk_text_buffer_insert(buf, &end, buffer, -1);
-  if(prev_SR != ti68k_register_get_sr())
+  if(prev_SR != (int)ti68k_register_get_sr())
     gtk_text_buffer_apply_tag(buf, red_tag, &start, &end);
 
   start = end;
@@ -290,7 +290,7 @@ gint refresh_register_dbox(void)
   /* Display the PC register */
   sprintf(buffer, "PC=%06X  \n", ti68k_register_get_pc());
   gtk_text_buffer_insert(buf, &end, buffer, -1);
-  if(prev_PC != ti68k_register_get_pc())
+  if(prev_PC != (int)ti68k_register_get_pc())
     gtk_text_buffer_apply_tag(buf, red_tag, &start, &end);
 
   /* Display the status flag register */

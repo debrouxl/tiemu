@@ -478,7 +478,7 @@ on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem
     		rcfile_write();
 
   	err = ti68k_exit();
-	handle_error(err);
+	handle_error();
   	exit(0);
 }
 
@@ -490,6 +490,6 @@ on_exit_without_saving_state1_activate (GtkMenuItem     *menuitem,
 	int err;
 
 	err = ti68k_exit();
-	handle_error(err);
+	handle_error();
   	exit(0);
 }

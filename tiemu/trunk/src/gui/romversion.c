@@ -224,7 +224,7 @@ gint display_romversion_dbox()
                 chosen_file = NULL;
 
 				err = ti68k_load_image(params.rom_file);
-				handle_error(err);
+				handle_error();
 				if(err) 
 				{
 					msg_box("Error", "Can not load the image.");
@@ -243,7 +243,7 @@ gint display_romversion_dbox()
                 chosen_file = NULL;
 
 				err = ti68k_load_upgrade(params.tib_file);
-				handle_error(err);
+				handle_error();
 				if(err)
 				{
 					msg_box("Error", "Can not load the upgrade.");

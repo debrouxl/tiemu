@@ -277,11 +277,11 @@ ULONG get_long(CPTR adr)
 	    {
             ADDR_RANGE *r = l->data;
 
-	        if (r->val>=adr && (adr+3)<=r->val2) 
+	        if (r->val1>=adr && (adr+3)<=r->val2) 
 	        {
 	            breakMode = BK_READ_LONG; 
 	            specialflags|=SPCFLAG_BRK; 
-	            breakType = BK_CAUSE_ACCESS_RANGE;
+	            breakType = BK_CAUSE_RANGE;
 	            break;
 	        }
 	  
@@ -364,11 +364,11 @@ UWORD get_word(CPTR adr)
 	    {
             ADDR_RANGE *r = l->data;
 
-	        if (r->val>=adr && (adr+1)<=r->val2) 
+	        if (r->val1>=adr && (adr+1)<=r->val2) 
 	        {
 	            breakMode = BK_READ_WORD; 
 	            specialflags|=SPCFLAG_BRK; 
-	            breakType = BK_CAUSE_ACCESS_RANGE;
+	            breakType = BK_CAUSE_RANGE;
 	            break;
 	        }
 	  
@@ -451,11 +451,11 @@ UBYTE get_byte(CPTR adr)
         
             ADDR_RANGE *r = l->data;
 
-	        if (r->val>=adr && adr<=r->val2) 
+	        if (r->val1>=adr && adr<=r->val2) 
 	        {
 	            breakMode = BK_READ_BYTE; 
 	            specialflags|=SPCFLAG_BRK; 
-	            breakType = BK_CAUSE_ACCESS_RANGE;
+	            breakType = BK_CAUSE_RANGE;
 	            break;
 	        }
 	  
@@ -532,11 +532,11 @@ void put_long(CPTR adr, ULONG arg)
 	    {
 	        ADDR_RANGE *r = l->data;
 
-            if (r->val>=adr && (adr+3)<=r->val2) 
+            if (r->val1>=adr && (adr+3)<=r->val2) 
 	        {
 	            breakMode = BK_WRITE_LONG; 
 	            specialflags|=SPCFLAG_BRK; 
-	            breakType = BK_CAUSE_ACCESS_RANGE;
+	            breakType = BK_CAUSE_RANGE;
 	            break;
 	        }
 	  
@@ -627,11 +627,11 @@ void put_word(CPTR adr, UWORD arg)
 	    {
             ADDR_RANGE *r = l->data;
 
-	        if (r->val>=adr && (adr+1)<=r->val2) 
+	        if (r->val1>=adr && (adr+1)<=r->val2) 
 	        {
 	            breakMode = BK_WRITE_WORD; 
 	            specialflags|=SPCFLAG_BRK; 
-	            breakType = BK_CAUSE_ACCESS_RANGE;
+	            breakType = BK_CAUSE_RANGE;
 	            break;
 	        }
 	  
@@ -711,11 +711,11 @@ void put_byte(CPTR adr, UBYTE arg)
 	    {
             ADDR_RANGE *r = l->data;
 
-	        if (r->val>=adr && adr<=r->val2) 
+	        if (r->val1>=adr && adr<=r->val2) 
 	        {
 	            breakMode = BK_WRITE_BYTE; 
 	            specialflags|=SPCFLAG_BRK; 
-	            breakType = BK_CAUSE_ACCESS_RANGE;
+	            breakType = BK_CAUSE_RANGE;
 	            break;
 	        }
 	  

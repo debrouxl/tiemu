@@ -37,7 +37,7 @@
 */
 typedef struct
 {
-  uint32_t	 val;
+  uint32_t	 val1;
   uint32_t 	 val2;
 } ADDR_RANGE;
 
@@ -51,65 +51,44 @@ typedef struct
 #define BK_READ     16
 #define BK_WRITE    32
 
-#define BK_READ_BYTE (BK_READ | BK_BYTE)
-#define BK_READ_WORD (BK_READ | BK_WORD)
-#define BK_READ_LONG (BK_READ | BK_LONG)
-#define BK_READ_LONG_WORD BK_READ_LONG
-#define BK_WRITE_BYTE (BK_WRITE | BK_BYTE)
-#define BK_WRITE_WORD (BK_WRITE | BK_WORD)
-#define BK_WRITE_LONG (BK_WRITE | BK_LONG)
-#define BK_WRITE_LONG_WORD BK_WRITE_LONG
+#define BK_READ_BYTE	(BK_READ | BK_BYTE)
+#define BK_READ_WORD 	(BK_READ | BK_WORD)
+#define BK_READ_LONG 	(BK_READ | BK_LONG)
 
-// Constants for setBreakpointVector()
-#define BK_NONE                -1
-#define BK_BUS_ERROR           2
-#define BK_ADDRESS_ERROR       3
-#define BK_ILLEGAL_INSTRUCTION 4
-#define BK_ZERO_DIVIDE         5
-#define BK_CHK_INSTRUCTION     6
-#define BK_TRAPV_INSTRUCTION   7
-#define BK_PRIVILEGE_VIOLATION 8
-#define BK_TRACE               9
-#define BK_LINE_1010           10
-#define BK_LINE_1111           11
-#define BK_NONINIT_INTERRUPT   15
+#define BK_WRITE_BYTE 	(BK_WRITE | BK_BYTE)
+#define BK_WRITE_WORD 	(BK_WRITE | BK_WORD)
+#define BK_WRITE_LONG 	(BK_WRITE | BK_LONG)
 
-// Constants for setBreakpointAutoint()
-#define BK_SPURIOUS  0
-#define BK_AUTOINT_1 1
-#define BK_AUTOINT_2 2
-#define BK_AUTOINT_3 3
-#define BK_AUTOINT_4 4
-#define BK_AUTOINT_5 5
-#define BK_AUTOINT_6 6
-#define BK_AUTOINT_7 7
+//#define BK_READ_LONG_WORD BK_READ_LONG
+//#define BK_WRITE_LONG_WORD BK_WRITE_LONG
 
-// Constants for setBreakpointTrap()
-#define BK_TRAP_NONE -1
-#define BK_TRAP_0 0
-#define BK_TRAP_1 1
-#define BK_TRAP_2 2
-#define BK_TRAP_3 3
-#define BK_TRAP_4 4
-#define BK_TRAP_5 5
-#define BK_TRAP_6 6
-#define BK_TRAP_7 7
-#define BK_TRAP_8 8
-#define BK_TRAP_9 9
-#define BK_TRAP_A 10
-#define BK_TRAP_B 11
-#define BK_TRAP_C 12
-#define BK_TRAP_D 13
-#define BK_TRAP_E 14
-#define BK_TRAP_F 15
+// Constants for ti68k_bkpt_set_vector()
+typedef enum {
+    BK_NONE=-1, BK_RESET_SSP=0, BK_RESET_PC, BK_BUS_ERROR, BK_ADDRESS_ERROR,
+    BK_ILLEGAL_INSTRUCTION, BK_ZERO_DIVIDE, BK_CHK_INSTRUCTION, BK_TRAPV_INSTRUCTION,
+    BK_PRIVILEGE_VIOLATION, BK_TRACE, BK_LINE_1010, BK_LINE_1111, 
+    BK_UNUSED1, BK_UNUSED2, BK_UNUSED3, BK_NONINIT_INTERRUPT
+} Ti68kBkptVector;
 
-// Breakpoints cause (get with getBkptCause())
-#define BK_CAUSE_ACCESS       1
-#define BK_CAUSE_ACCESS_RANGE 2
-#define BK_CAUSE_ADDRESS      3
-#define BK_CAUSE_VECTOR       4
-#define BK_CAUSE_TRAP         5
-#define BK_CAUSE_AUTOINT      6
+// Constants for ti68k_bkpt_set_autoint()
+typedef enum {
+    BK_SPURIOUS=0, BK_AUTOINT_1, BK_AUTOINT_2, BK_AUTOINT_3, 
+    BK_AUTOINT_4, BK_AUTOINT_5, BK_AUTOINT_6, BK_AUTOINT_7
+} Ti68kBkptAutoint;
+
+// Constants for ti68k_bkpt_set_trap
+typedef enum {
+    BK_TRAP_NONE=1, BK_TRAP_0=0, BK_TRAP_1, BK_TRAP_2, BK_TRAP_3, 
+    BK_TRAP_4, BK_TRAP_5, BK_TRAP_6, BK_TRAP_7, 
+    BK_TRAP_8, BK_TRAP_9, BK_TRAP_A, BK_TRAP_B, 
+    BK_TRAP_C, BK_TRAP_D, BK_TRAP_E, BK_TRAP_F,
+} Ti68kBkptTrap;
+
+// Breakpoints cause (ti68k_bkpt_get_cause())
+typedef enum {
+    BK_CAUSE_ACCESS=1, BK_CAUSE_RANGE, BK_CAUSE_ADDRESS,
+    BK_CAUSE_VECTOR, BK_CAUSE_TRAP, BK_CAUSE_AUTOINT
+} Ti68kBkptCause;
 
 /*
   Variables
@@ -155,7 +134,7 @@ extern int nBkptTrap;
 
 int ti68k_bkpt_set_address(int address);
 int ti68k_bkpt_set_access(int address, int mode);
-int ti68k_bkpt_set_access_range(int addressMin, int addressMax, int mode);
+int ti68k_bkpt_set_access_range(int min, int max, int mode);
 int ti68k_bkpt_set_vector(int vector);
 int ti68k_bkpt_set_autoint(int autoint);
 int ti68k_bkpt_set_trap(int trap);

@@ -120,7 +120,7 @@ void display_bkpt_cause()
 	  break;
 	}
       break;
-    case BK_CAUSE_ACCESS_RANGE:
+    case BK_CAUSE_RANGE:
       sType = "Access range";
       break;
     case BK_CAUSE_ADDRESS:
