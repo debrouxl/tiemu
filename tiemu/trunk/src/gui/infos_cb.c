@@ -8,11 +8,9 @@
 #include "infos_dbox.h"
 #include "support.h"
 
-//#include "platform.h"
 #include "struct.h"
 #include "version.h"
 #include "interface.h"
-#include "main.h"
 
 gint display_infos_dbox(void)
 {

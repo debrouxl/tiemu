@@ -8,10 +8,8 @@
 #include "msg_dbox.h"
 #include "support.h"
 
-//#include "platform.h"
 #include "struct.h"
 #include "hid.h"
-#include "main.h"
 
 static gboolean b = TRUE;
 

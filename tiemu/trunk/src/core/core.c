@@ -33,6 +33,7 @@
 
 #include "intl.h"
 #include "struct.h"
+#include "core.h"
 
 
 /* 
@@ -46,7 +47,7 @@
 
 
 G_LOCK_DEFINE(running);
-static volatile byte running = 1;
+static volatile byte running = 0;
 
 // run as a separate thread
 gpointer ti68k_engine(gpointer data)
@@ -96,9 +97,9 @@ int ti68k_is_halted()
 
 void ti68k_halt(void) 
 {
-	G_LOCK(running);
+	//G_LOCK(running);
 	running = 0;
-	G_UNLOCK(running);
+	//G_UNLOCK(running);
 }
 
 void ti68k_unhalt(void) 
@@ -106,4 +107,21 @@ void ti68k_unhalt(void)
 	//G_LOCK(running);
 	running = 1;
 	//G_UNLOCK(running);
+}
+
+/* compat */
+
+int is_halted()
+{
+    return ti68k_is_halted();
+}
+
+void halt(void)
+{
+    return ti68k_halt();
+}
+
+void unhalt(void) 
+{
+    return ti68k_unhalt();
 }

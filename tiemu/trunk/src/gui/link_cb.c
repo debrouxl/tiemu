@@ -11,12 +11,10 @@
 #include "support.h"
 
 #include "tilibs.h"
-//#include "platform.h"
 #include "struct.h"
 #include "hid.h"
 #include "msg_cb.h"
 #include "interface.h"
-#include "main.h"
 
 static gint  link_type;
 static gchar device[MAXCHARS];

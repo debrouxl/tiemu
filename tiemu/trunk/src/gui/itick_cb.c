@@ -10,7 +10,6 @@
 
 #include "struct.h"
 #include "hid.h"
-#include "main.h"
 
 gint tmp_cyclerate, tmp_tickrate, tmp_itick;
 

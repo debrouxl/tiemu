@@ -10,14 +10,12 @@
 #include "support.h"
 #include "utils.h"
 
-//#include "platform.h"
 #include "struct.h"
 #include "version.h"
 #include "hid.h"
 #include "paths.h"
 #include "files.h"
 #include "tilibs.h"
-#include "main.h"
 
 gint display_about_dbox(void)
 {

@@ -10,13 +10,11 @@
 #include "adbkpt_dbox.h"
 #include "support.h"
 
-//#include "platform.h"
 #include "struct.h"
 #include "extern.h"
 #include "hid.h"
 #include "interface.h"
 #include "bkpts.h"
-#include "main.h"
 
 DATA_BKPT db;
 static gint single_or_range = 1;

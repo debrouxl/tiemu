@@ -10,14 +10,12 @@
 #include "fsel_dbox.h"
 #include "support.h"
 
-//#include "platform.h"
 #include "struct.h"
 #include "hid.h"
 #include "pbar_cb.h"
 #include "msg_cb.h"
 #include "tilibs.h"
 #include "interface.h"
-#include "main.h"
 
 gint display_rom_fileselection(void)
 {

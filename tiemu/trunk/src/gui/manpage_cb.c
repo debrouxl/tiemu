@@ -10,11 +10,9 @@
 #include "support.h"
 #include "utils.h"
 
-//#include "platform.h"
 #include "struct.h"
 #include "hid.h"
 #include "files.h"
-#include "main.h"
 
 gint display_manpage_dbox(void)
 {

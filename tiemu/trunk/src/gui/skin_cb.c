@@ -17,8 +17,9 @@
 #include "msg_cb.h"
 #include "skin.h"
 #include "hid.h"
+#include "core.h"
 #include "interface.h"
-#include "main.h"
+#include "consts.h"
 
 static gchar *chosen_file = NULL;
 static gint valid = 0;

@@ -11,13 +11,11 @@
 #include "support.h"
 
 #include "interface.h"
-//#include "platform.h"
 #include "struct.h"
 #include "rcfile.h"
 #include "hid.h"
 #include "msg_cb.h"
 #include "paths.h"
-#include "main.h"
 
 /**************/
 /* Load state */

@@ -68,7 +68,6 @@
 #include "thanks_cb.h"
 #include "popup_dbox.h"
 #include "skin_cb.h"
-#include "main.h"
 #include "support.h"
 
 

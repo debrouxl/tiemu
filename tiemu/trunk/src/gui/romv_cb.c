@@ -14,13 +14,11 @@
 #include "support.h"
 
 #include "interface.h"
-//#include "platform.h"
 #include "struct.h"
 #include "hid.h"
 #include "msg_cb.h"
 #include "paths.h"
 #include "tilibs.h"
-#include "main.h"
 #include "user_cb.h"
 
 gchar *chosen_file = NULL;

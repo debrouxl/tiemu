@@ -12,14 +12,12 @@
 #include "utils.h"
 
 #include "tilibs.h"
-//#include "platform.h"
 #include "struct.h"
 #include "paths.h"
 #include "version.h"
 #include "rcfile.h"
 #include "files.h"
 #include "hid.h"
-#include "main.h"
 
 
 static void

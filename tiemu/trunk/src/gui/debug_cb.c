@@ -27,7 +27,6 @@
 #include "dbkpt_dbox.h"
 #include "dbkpt_cb.h"
 #include "bkpt_cause.h"
-#include "main.h"
 
 #include "sysdeps.h"
 

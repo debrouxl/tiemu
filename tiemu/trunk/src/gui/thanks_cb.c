@@ -10,12 +10,10 @@
 #include "utils.h"
 
 #include "tilibs.h"
-//#include "platform.h"
 #include "struct.h"
 #include "hid.h"
 #include "paths.h"
 #include "files.h"
-#include "main.h"
 
 gint display_thanks_dbox(void)
 {

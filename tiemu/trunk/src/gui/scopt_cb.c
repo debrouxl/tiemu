@@ -11,7 +11,6 @@
 #include "struct.h"
 #include "hid.h"
 #include "screenshot.h"
-#include "main.h"
 
 static gint i_image_format;
 static gint i_image_type;
