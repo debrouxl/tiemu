@@ -291,7 +291,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	hMutex = CreateMutex(NULL, TRUE, "TiEmu");
 	if (GetLastError() == ERROR_ALREADY_EXISTS) 
 	{
-		MessageBox(NULL, _("Error"), _("An TiEmu session is already running. Check the task list."), MB_OK);
+		MessageBox(NULL, _("Error"), _("A TiEmu session is already running. Check the task list."), MB_OK);
 	}
 
 	return main(__argc, __argv);
