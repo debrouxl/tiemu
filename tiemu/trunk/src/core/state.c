@@ -80,6 +80,9 @@ int ti68k_state_load(char *filename)
     fread(tihw.io , IO_SIZE, 1, f);
     fread(tihw.io2, IO_SIZE, 1, f);
     
+    // Load RAM content
+    fread(tihw.ram, 256*KB, 1, f);
+    
     fclose(f); 
   
   	return 0;
@@ -120,6 +123,9 @@ int ti68k_state_save(char *filename)
     // Save I/O ports state
     fwrite(tihw.io , IO_SIZE, 1, f);
     fwrite(tihw.io2, IO_SIZE, 1, f);
+    
+    // Save RAM content
+    fwrite(tihw.ram, 256*KB, 1, f);
     
     fclose(f);
 
