@@ -20,6 +20,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name tifiles
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name uae
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -67,6 +70,18 @@ Package=<4>
 ###############################################################################
 
 Project: "tifiles"=..\..\..\tifiles\build\msvc\tifiles.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "uae"=..\..\src\core\uae\uae.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
