@@ -41,18 +41,18 @@ extern struct progress_window
 
 TicableDataRate *dr;
 
-static void gt_start()
+static void gt_start(void)
 {
   info_update.prev_percentage = info_update.percentage = 0.0;
   ticable_get_datarate(&dr);
 }
 
-static void gt_stop()
+static void gt_stop(void)
 {
   info_update.prev_percentage = info_update.percentage = 0.0;
 }
 
-static void refresh_pbar1()
+static void refresh_pbar1(void)
 {
   gchar buffer[32];
   gfloat rate;
@@ -83,7 +83,7 @@ static void refresh_pbar1()
     }
 }
 
-static void refresh_pbar2()
+static void refresh_pbar2(void)
 {
   if(p_win.pbar2 != NULL)
     {
@@ -100,13 +100,13 @@ static void refresh_pbar2()
     }
 }
 
-static void gt_pbar()
+static void gt_pbar(void)
 {
   refresh_pbar1();
   refresh_pbar2();
 }
 
-static void gt_label()
+static void gt_label(void)
 {
   if(p_win.label == NULL) return;
   gtk_label_set_text(GTK_LABEL(p_win.label), info_update.label_text);
@@ -114,7 +114,7 @@ static void gt_label()
   GTK_REFRESH();
 }
 
-static void gt_refresh()
+static void gt_refresh(void)
 {
   while( gtk_events_pending() ) { gtk_main_iteration(); }
 }

@@ -254,7 +254,7 @@ ULONG get_long(CPTR adr)
         breakId=0;
         while (l) 
 	    {
-	        if (l->data==adr) 
+	        if (GPOINTER_TO_INT(l->data)==adr) 
 	        {
 	            breakMode = BK_READ_LONG; 
 	            specialflags|=SPCFLAG_BRK; 
@@ -301,7 +301,10 @@ ULONG get_long(CPTR adr)
     //Note: No access to this range will have any effect unless the access is
     //"authorized," see below.
     if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
+    {
         tihw.flash_prot = 1;
+        return lget(adr);
+    }
 
     // The certificate memory ($210000-$211FFF) is read protected.
     else if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
@@ -322,6 +325,9 @@ ULONG get_long(CPTR adr)
 	// memory-mapped I/O (hw2)
 	else if(adr >= 0x700000 && adr < 0x800000)
 		return io2_get_long(adr & 0x1f);
+
+    else
+        return 0;
 }
 
 UWORD get_word(CPTR adr) 
@@ -335,7 +341,7 @@ UWORD get_word(CPTR adr)
         breakId = 0;
         while (l) 
 	    {
-	        if (l->data==adr) 
+	        if (GPOINTER_TO_INT(l->data)==adr) 
 	        {
 	            breakMode = BK_READ_WORD;
 	            specialflags|=SPCFLAG_BRK;
@@ -382,7 +388,10 @@ UWORD get_word(CPTR adr)
     //Note: No access to this range will have any effect unless the access is
     //"authorized," see below.
     if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
+    {
         tihw.flash_prot = 1;
+        return lget(adr);
+    }
 
     // The certificate memory ($210000-$211FFF) is read protected.
     else if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
@@ -403,6 +412,9 @@ UWORD get_word(CPTR adr)
 	// memory-mapped I/O (hw2)
 	else if(adr >= 0x700000 && adr < 0x800000)
 		return io2_get_word(adr & 0x1f);
+
+    else
+        return 0;
 }
 
 UBYTE get_byte(CPTR adr) 
@@ -415,7 +427,7 @@ UBYTE get_byte(CPTR adr)
     {
         breakId = 0;
         while (l) {
-	        if (l->data==adr) 
+	        if (GPOINTER_TO_INT(l->data)==adr) 
 	        {
 	            breakMode = BK_READ_BYTE;
 	            specialflags|=SPCFLAG_BRK;
@@ -457,7 +469,10 @@ UBYTE get_byte(CPTR adr)
     //Note: No access to this range will have any effect unless the access is
     //"authorized," see below.
     if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
+    {
         tihw.flash_prot = 1;
+        return lget(adr);
+    }
 
     // The certificate memory ($210000-$211FFF) is read protected.
     else if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
@@ -478,6 +493,9 @@ UBYTE get_byte(CPTR adr)
 	// memory-mapped I/O (hw2)
 	else if(adr >= 0x700000 && adr < 0x800000)
 		return io2_get_byte(adr & 0x1f);
+
+    else
+        return 0;
 }
 
 void put_long(CPTR adr, ULONG arg) 
@@ -491,7 +509,7 @@ void put_long(CPTR adr, ULONG arg)
         breakId = 0;
         while (l) 
 	    {
-	        if (l->data==adr) 
+	        if (GPOINTER_TO_INT(l->data)==adr) 
 	        {
 	            breakMode = BK_WRITE_LONG;
 	            specialflags|=SPCFLAG_BRK;
@@ -568,7 +586,7 @@ void put_long(CPTR adr, ULONG arg)
 
 	// memory-mapped I/O (hw2)
 	else if(adr >= 0x700000 && adr < 0x800000)
-		io2_put_byte(adr & 0x1f, arg);
+		io2_put_long(adr & 0x1f, arg);
 
     // standard access
     else
@@ -586,7 +604,7 @@ void put_word(CPTR adr, UWORD arg)
         breakId = 0;
         while (l) 
 	    {
-	        if (l->data==adr) 
+	        if (GPOINTER_TO_INT(l->data)==adr) 
 	        {
 	            breakMode = BK_WRITE_WORD;
 	            specialflags|=SPCFLAG_BRK;
@@ -654,7 +672,7 @@ void put_word(CPTR adr, UWORD arg)
     else if(adr >= 0x600000 && adr < 0x700000)
 		io_put_word(adr & 0x1f, arg);
 	else if(adr >= 0x700000 && adr < 0x800000)
-		io2_put_byte(adr & 0x1f, arg);
+		io2_put_word(adr & 0x1f, arg);
 	else
 		wput(adr, arg);
 }
@@ -670,7 +688,7 @@ void put_byte(CPTR adr, UBYTE arg)
         breakId = 0;
         while (l) 
 	    {
-	        if (l->data==adr) 
+	        if (GPOINTER_TO_INT(l->data)==adr) 
 	        {
 	            breakMode = BK_WRITE_BYTE;
 	            specialflags|=SPCFLAG_BRK;

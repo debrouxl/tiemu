@@ -42,7 +42,7 @@ static gint action = 1;
 
 gint display_wizard_dbox(void)
 {
-    display_step1_dbox();
+    return display_step1_dbox();
 }
 
 static gint display_step1_dbox(void)
@@ -193,7 +193,7 @@ gint display_wz_rom_dbox(void)
 	gchar *dstname;
 
     // get filename
-	filename = create_fsel("", "*.rom");
+	filename = (char *)create_fsel("", "*.rom");
 	if (filename == NULL)
 	{
 		display_step1_dbox();
@@ -204,7 +204,7 @@ gint display_wz_rom_dbox(void)
     {
         msg_box(_("Error"), _("Invalid ROM dump."));
         display_step1_dbox();     
-        return;
+        return -1;
     }
   
 	ti68k_convert_rom_to_image(filename, inst_paths.img_dir, &dstname);
@@ -222,7 +222,7 @@ gint display_wz_tib_dbox(void)
     gchar *dstname;
 
     // get filename
-	filename = create_fsel("", "*.89u;*.9xu;*.tib");
+	filename = (char *)create_fsel("", "*.89u;*.9xu;*.tib");
 	if (filename == NULL)
 	{
 		display_step1_dbox();
@@ -233,7 +233,7 @@ gint display_wz_tib_dbox(void)
     {
         msg_box(_("Error"), _("Invalid FLASH upgrade."));
         display_step1_dbox();
-        return;
+        return -1;
     }
 
     ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname);

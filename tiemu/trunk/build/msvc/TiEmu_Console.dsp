@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /w /W0 /GX /ZI /Od /I "." /I "../../../ticables/src" /I "../../../tifiles/src" /I "../../../ticalcs/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\sources\roms\tiemu\src\core\uae" /I "C:\sources\roms\tiemu\src\core" /I "C:\sources\roms\tiemu\src\core\ti_hw" /I "C:\sources\roms\tiemu\src\hid" /I "C:\sources\roms\tiemu\src\gui" /I ".\libjpeg" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /FD /GZ /c
+# ADD CPP /nologo /MDd /W1 /GX /ZI /Od /I "." /I "../../../ticables/src" /I "../../../tifiles/src" /I "../../../ticalcs/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\sources\roms\tiemu\src\core\uae" /I "C:\sources\roms\tiemu\src\core" /I "C:\sources\roms\tiemu\src\core\ti_hw" /I "C:\sources\roms\tiemu\src\hid" /I "C:\sources\roms\tiemu\src\gui" /I ".\libjpeg" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /FD /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x40c /d "_DEBUG"
 # ADD RSC /l 0x40c /d "_DEBUG"
@@ -96,82 +96,302 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpu0.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpu1.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpu2.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpu3.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpu4.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpu5.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpu6.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpu7.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpu8.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpu9.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpuA.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpuB.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpuC.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpuD.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpudefs.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpuE.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpuF.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\cpustbl.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\newcpu.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\uae\readcpu.c
+
+!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+
+# ADD CPP /w /W0
+
+!ENDIF 
+
+# End Source File
+# End Group
+# Begin Group "ti_hw"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\dbus.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\debugger.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\hardware.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\ioports.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\keyboard.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\lcd.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\m68k.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\memory.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\timer.c
 # End Source File
 # End Group
 # Begin Source File
@@ -389,46 +609,6 @@ SOURCE=..\..\src\hid\tie_error.c
 # Begin Source File
 
 SOURCE=..\..\src\hid\tikeys.c
-# End Source File
-# End Group
-# Begin Group "ti_hw"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\dbus.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\debugger.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\hardware.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\ioports.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\keyboard.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\lcd.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\m68k.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\memory.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\timer.c
 # End Source File
 # End Group
 # Begin Source File

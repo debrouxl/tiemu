@@ -30,6 +30,7 @@
 #include "intl.h"
 #include "dboxes.h"
 #include "support.h"
+#include "paths.h"
 
 static gint ret_val = 0;
 

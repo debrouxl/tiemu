@@ -170,7 +170,7 @@ static int hid_init_subsystem(void)
       iLcdH = 128 << iScale;
 
       g_free(options.skin_file);
-      options.skin_file = g_strconcat(inst_paths.skin_dir, "v200.skn", NULL);
+      options.skin_file = g_strconcat(inst_paths.skin_dir, "v200plt.skn", NULL);
 
       if(skin_load(options.skin_file) == -1) {
 	      gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
@@ -522,6 +522,8 @@ static int sdl_to_ti(int key)
 	default : return TIKEY_NU;
 	}
     }
+
+    return 0;
 }
 
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
@@ -944,9 +946,9 @@ static void compute_convtable(void)
 }
 
 
-int hid_set_callbacks(void)
+void hid_set_callbacks(void)
 {
-  return ti68k_gui_set_callbacks(
+    ti68k_gui_set_callbacks(
 			       hid_init,
 			       hid_exit,
 			       hid_update_lcd,
@@ -1115,7 +1117,7 @@ int hid_screenshot(char *filename)
 
 		SDL_Surface *sdlCapture;
 		SDL_PixelFormat fmt;
-		Uint8 pixels;
+		Uint8 *pixels;
 		GdkPixbuf *pixbuf = { 0 };
 		gboolean result = FALSE;
 		GError *error = NULL;

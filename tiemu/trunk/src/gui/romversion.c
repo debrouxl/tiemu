@@ -147,7 +147,7 @@ gint display_romversion_dbox()
 	dbox = glade_xml_get_widget(xml, "romversion_dbox");
     
     data = glade_xml_get_widget(xml, "applybutton1");
-    gtk_button_set_label(data, "Import...");
+    gtk_button_set_label(GTK_BUTTON(data), "Import...");
 
     data = glade_xml_get_widget(xml, "clist1");
     list = clist_init(data);
@@ -216,7 +216,7 @@ gint display_romversion_dbox()
 				if(ti68k_load_image(params.rom_file)) 
 				{
 					msg_box("Error", "Can not load the image.");
-					return;
+					return -1;
 				}
 			} 
 			else if(ti68k_is_a_tib_file(chosen_file))
@@ -228,7 +228,7 @@ gint display_romversion_dbox()
 				if(ti68k_load_upgrade(params.tib_file)) 
 				{
 					msg_box("Error", "Can not load the upgrade.");
-					return;
+					return -1;
 				}
 			}
 

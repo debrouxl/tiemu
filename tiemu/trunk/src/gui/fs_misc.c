@@ -40,9 +40,9 @@ gint display_skin_dbox()
     SKIN_INFOS si;
     gint ok;
 
-	filename = create_fsel(inst_paths.skin_dir, "*.skn");
+	filename = (char *)create_fsel(inst_paths.skin_dir, "*.skn");
 	if (!filename)
-		return;
+		return 0;
 
     // Read skin header
     if(skin_read_header(filename, &si) == -1) {
@@ -95,7 +95,7 @@ gint display_load_state_dbox()
     // get filename
 	filename = create_fsel(inst_paths.base_dir, "*.sav");
 	if (!filename)
-		return;
+		return 0;
 
     g_free(params.ram_file);
     params.ram_file = g_strdup(filename);
@@ -113,7 +113,7 @@ gint display_save_state_dbox()
     // get filename
 	filename = create_fsel(inst_paths.base_dir, "*.sav");
 	if (!filename)
-		return;
+		return 0;
 
     g_free(params.ram_file);
     params.ram_file = g_strdup(filename);
@@ -161,7 +161,7 @@ gint display_tifile_dbox()
     }
 
     // get filename
-	filename = create_fsel(inst_paths.base_dir, ext);
+	filename = (char *)create_fsel(inst_paths.base_dir, (char *)ext);
 	if (!filename)
     {
         ti68k_engine_unhalt();
@@ -198,20 +198,22 @@ gint display_tifile_dbox()
 gint display_set_rom_dbox(void)
 {
     const gchar *filename;
-    const gchar *src;
+    const gchar *src = NULL;
     gchar *dst;
     gchar *cmd;
 
     // get filename
 	filename = create_fsel(inst_paths.base_dir, "*.rom");
 	if (!filename)
-		return;
+		return 0;
 
     dst = g_strconcat(inst_paths.img_dir, g_basename(src), NULL);
     cmd = g_strdup_printf("cp %s %s", src, dst);
     system(cmd); //copy_file(src, dst);    
 
     ti68k_engine_unhalt();
+
+    return 0;
 }
 
 gint display_set_tib_dbox(void)
@@ -224,7 +226,7 @@ gint display_set_tib_dbox(void)
     // get filename
 	filename = create_fsel(inst_paths.base_dir, "*.89u;*.9xu;*.tib");
 	if (!filename)
-		return;
+		return 0;
 /*
     g_free(params.tib_file);
     params.tib_file = g_strdup(filename);
@@ -235,6 +237,8 @@ gint display_set_tib_dbox(void)
     }    
 */
     ti68k_engine_unhalt();
+
+    return 0;
 }
 
 
@@ -249,7 +253,7 @@ gint display_import_romversion_dbox(void)
     // get filename
 	filename = create_fsel(inst_paths.base_dir, "*.rom;*.89u;*.9xu;*.tib");
 	if (!filename)
-		return;
+		return 0;
 
     if(ti68k_is_a_rom_file(filename))
 	{
@@ -283,4 +287,6 @@ gint display_import_romversion_dbox(void)
 			g_free(dstname);
 		}
 	}
+
+    return 0;
 }

@@ -62,9 +62,9 @@ int ti68k_is_a_rom_file(const char *filename);
 int ti68k_is_a_tib_file(const char *filename);
 int ti68k_is_a_img_file(const char *filename);
 
-int ti68k_display_rom_infos(IMG_INFO *rom);
-int ti68k_display_tib_infos(IMG_INFO *tib);
-int ti68k_display_img_infos(IMG_INFO *img);
+void ti68k_display_rom_infos(IMG_INFO *rom);
+void ti68k_display_tib_infos(IMG_INFO *tib);
+void ti68k_display_img_infos(IMG_INFO *img);
 
 int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload);
 int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload);

@@ -77,5 +77,7 @@ int build_home_path(char **path, char *fileaname);
 
 int initialize_paths(void);
 
+const char *tilp_paths_build_glade(const char *name);
+
 #endif
 

@@ -30,6 +30,7 @@
 
 #include "intl.h"
 #include "version.h"
+#include "support.h"
 
 typedef struct {
 	GtkWidget *window;

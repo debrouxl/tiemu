@@ -69,7 +69,7 @@ Ti68kHardware       tihw = { 0 };
    HID callbacks.
    The callbacks will not be used until ti68k_init().
 */
-int ti68k_gui_set_callbacks(
+void ti68k_gui_set_callbacks(
               callback_iv_t initSpecific,
 			  callback_iv_t exitSpecific,
 			  callback_iv_t updateScreen,

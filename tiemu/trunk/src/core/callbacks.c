@@ -51,7 +51,7 @@ callback_ii_t cb_set_contrast   = NULL;
 /* 
     Register HID callbacks (hid.c) 
 */
-int ti68k_gui_set_callbacks(
+void ti68k_gui_set_callbacks(
               callback_iv_t initSpecific,
 			  callback_iv_t exitSpecific,
 			  callback_iv_t updateScreen,
@@ -86,5 +86,5 @@ callback_iv_t ti68k_debugger_define(callback_iv_t new_debugger)
         cb_launch_debugger = new_debugger;
     }
   
-    return enter_debugger;
+    return (callback_iv_t)enter_debugger;
 }

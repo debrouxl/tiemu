@@ -137,6 +137,8 @@ int hw_kbd_reset(void)
 int hw_kbd_exit(void)
 {
     key_row = NULL;
+
+    return 0;
 }
 
 /* Press a key */
@@ -210,7 +212,7 @@ UBYTE hw_kbd_read_mask(void)
     for(i=0; i<10; i++)
     {
         if(!(mask & (1<<i)))
-            arg |= get_rowmask(i);
+            arg |= get_rowmask((UBYTE)i);
     }
 
     return (UBYTE)(~arg);

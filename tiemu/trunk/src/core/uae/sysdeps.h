@@ -1,3 +1,5 @@
+#pragma warning( disable : 4142 )
+
 #ifndef SYSDEPS_H
 #define SYSDEPS_H
 

@@ -107,7 +107,7 @@ static uint32_t rd_long(uint8_t *p)
 /*
 	Display informations
 */
-int ti68k_display_rom_infos(IMG_INFO *s)
+void ti68k_display_rom_infos(IMG_INFO *s)
 {
 	DISPLAY(_("Rom informations:\n"));
   	DISPLAY(_("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
@@ -117,7 +117,7 @@ int ti68k_display_rom_infos(IMG_INFO *s)
 	DISPLAY(_("  Hardware    : %i\n"), s->hw_type);
 }
 
-int ti68k_display_tib_infos(IMG_INFO *s)
+void ti68k_display_tib_infos(IMG_INFO *s)
 {
 	DISPLAY(_("Tib informations:\n"));
   	DISPLAY(_("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
@@ -126,7 +126,7 @@ int ti68k_display_tib_infos(IMG_INFO *s)
   	DISPLAY(_("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
 }
 
-int ti68k_display_img_infos(IMG_INFO *s)
+void ti68k_display_img_infos(IMG_INFO *s)
 {
 	DISPLAY(_("Image informations:\n"));
   	DISPLAY(_("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
@@ -625,6 +625,8 @@ int ti68k_scan_files(const char *src_dir, const char *dst_dir)
     }
 
     g_dir_close(dir);
+
+    return 0;
 }
 
 /*
@@ -727,7 +729,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 			ret = stat(path, &f_info);
 			if(ret == -1)
 			{
-				fprintf(stderr, _("Can not stat: <%s> %i\n"), dirent, err);
+				fprintf(stderr, _("Can not stat: <%s>\n"), dirent);
 	      		perror("stat: ");
 			}
 			else
@@ -755,17 +757,17 @@ int ti68k_scan_images(const char *dirname, const char *filename)
                 else
 					continue;
 
-		  		line[0] = dirent;
-		  		line[1] = ti68k_calctype_to_string(img.calc_type);
+		  		line[0] = (char *)dirent;
+		  		line[1] = (char *)ti68k_calctype_to_string(img.calc_type);
 	  			line[2] = img.version;
-	  			line[3] = ti68k_romtype_to_string(img.internal | img.flash);
+	  			line[3] = (char *)ti68k_romtype_to_string(img.internal | img.flash);
 	  			sprintf(str, "%iKB", img.size >> 10);
 	  			line[4] = str;
 	  			if(img.has_boot)
 	  				line[5] = _("yes");
 	  			else
 	  				line[5] = _("no");
-				line[6] = ti68k_hwtype_to_string(img.hw_type);
+				line[6] = (char *)ti68k_hwtype_to_string(img.hw_type);
 		  
 		  			fprintf(file, "%s\t%s\t%s\t%s\t%s\t%s\n", 
 		  				line[0], line[1], line[2], 

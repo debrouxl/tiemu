@@ -104,12 +104,12 @@ int hw_dbus_init(void)
 	if(err = lc.init())
     {
 		print_lc_error(err);
-		return;
+		return -1;
     }
 	if(err = lc.open())
     {
 		print_lc_error(err);
-		return;
+		return -1;
     }
 
 	// init directfile
@@ -117,6 +117,8 @@ int hw_dbus_init(void)
 
 	// set mappers to linkport
 	map_to_linkport();
+
+    return 0;
 }
 
 int hw_dbus_reset(void)
@@ -132,16 +134,18 @@ int hw_dbus_exit(void)
 	if(err = lc.close())
     {
 		print_lc_error(err);
-		return;
+		return -1;
     }
 	if(err = lc.exit())
     { 
 		print_lc_error(err);
-		return;
+		return -1;
     }
 
 	// exit directfile
     exit_linkfile();
+
+    return 0;
 }
 
 /*
@@ -277,8 +281,8 @@ TicalcFncts			itc;
 TicalcInfoUpdate 	iu = { 0 };
 
 /* libticables functions (link API) */
-static int ilp_init_port()     { return 0; }
-static int ilp_open_port()     { return 0; }
+static int ilp_init_port(void)     { return 0; }
+static int ilp_open_port(void)     { return 0; }
 
 static int ilp_put(uint8_t data)
 { 
@@ -310,19 +314,19 @@ static int ilp_get(uint8_t *data)
 	return 0; 
 }
 
-static int ilp_probe_port()    	{ return 0; }
-static int ilp_close_port()    	{ return 0; }
-static int ilp_term_port()     	{ return 0; }
+static int ilp_probe_port(void)    	{ return 0; }
+static int ilp_close_port(void)    	{ return 0; }
+static int ilp_term_port(void)     	{ return 0; }
 static int ilp_check_port(int *st) { return 0; }
 
-static void ilp_start()   { }
-static void ilp_stop()    { }
-static void ilp_refresh() { }
-static void ilp_pbar()    { }
-static void ilp_label()   { }
+static void ilp_start(void)   { }
+static void ilp_stop(void)    { }
+static void ilp_refresh(void) { }
+static void ilp_pbar(void)    { }
+static void ilp_label(void)   { }
 
 /* Initialize a pseudo link cable to be connected with HW */
-static int init_linkfile()
+static int init_linkfile(void)
 {
   	ilc = (TicableLinkCable *)malloc(sizeof(TicableLinkCable));
   	if(ilc == NULL)
@@ -364,9 +368,11 @@ static int exit_linkfile(void)
     if(ilc != NULL)
 	    free(ilc);
     ilc = NULL;
+
+    return 0;
 }
 
-int test_sendfile()
+int test_sendfile(void)
 {
     map_to_directfile();
     tihw.lc_speedy = 1;

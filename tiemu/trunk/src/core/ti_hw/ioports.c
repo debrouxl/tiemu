@@ -208,14 +208,14 @@ void io_put_byte(CPTR adr, UBYTE arg)
 
 void io_put_word(CPTR adr, UWORD arg) 
 {
-    io_put_byte(adr,   arg>>8);
-    io_put_byte(adr+1, arg&0xff);
+    io_put_byte(adr,   MSB(arg));
+    io_put_byte(adr+1, LSB(arg));
 }
 
 void io_put_long(CPTR adr, ULONG arg) 
 {
-    io_put_word(adr,   arg>>16);
-    io_put_word(adr+2, arg&0xffff);
+    io_put_word(adr,   MSW(arg));
+    io_put_word(adr+2, LSW(arg));
 }
 
 UBYTE io_get_byte(CPTR adr) 
@@ -369,14 +369,14 @@ void io2_put_byte(CPTR adr, UBYTE arg)
 
 void io2_put_word(CPTR adr, UWORD arg) 
 {
-    io2_put_byte(adr,   arg>>8);
-    io2_put_byte(adr+1, arg&0xff);
+    io2_put_byte(adr,   MSB(arg));
+    io2_put_byte(adr+1, LSB(arg));
 }
 
 void io2_put_long(CPTR adr, ULONG arg) 
 {
-    io2_put_word(adr,   arg>>16);
-    io2_put_word(adr+2, arg&0xffff);
+    io2_put_word(adr,   MSW(arg));
+    io2_put_word(adr+2, LSW(arg));
 }
 
 UBYTE io2_get_byte(CPTR adr) 

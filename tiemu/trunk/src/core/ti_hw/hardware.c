@@ -64,6 +64,8 @@ int hw_init(void)
         cycle_instr = HW1_RATE;
     else if(tihw.hw_type == HW2)
         cycle_instr = HW2_RATE;
+
+    return 0;
 }
 
 int hw_reset(void)
@@ -75,6 +77,8 @@ int hw_reset(void)
 	hw_lcd_reset();
 	hw_dbus_reset();
 	hw_m68k_reset();
+
+    return 0;
 }
 
 int hw_exit(void)
@@ -86,6 +90,8 @@ int hw_exit(void)
 	hw_kbd_exit();
 	hw_io_exit();
 	hw_mem_exit();
+
+    return 0;
 }
 
 /*

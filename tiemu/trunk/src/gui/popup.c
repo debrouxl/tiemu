@@ -33,6 +33,7 @@
 #include "version.h"
 #include "popup.h"
 #include "ti68k_def.h"
+#include "paths.h"
 
 /* 
    Display a popup menu: entry point used by hid.c (SDL)
@@ -53,8 +54,8 @@ void gui_popup_menu(void)
 	ti68k_engine_halt();
 
 	// display popup menu
-	menu = GTK_MENU(display_popup_menu());
-	gtk_menu_popup(menu, NULL, NULL, NULL, NULL, button, time);
+	menu = display_popup_menu();
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, button, time);
 	gtk_widget_show(menu);
 }
 

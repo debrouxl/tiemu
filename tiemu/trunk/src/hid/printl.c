@@ -34,6 +34,9 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef __WIN32__
+#include <windows.h>
+#endif
 
 #include "intl.h"
 #include "struct.h"
@@ -149,7 +152,9 @@ skip_console:
 int close_console(void)
 {
 #ifdef __WIN32__
-	FreeConsole(hConsole);
+	return FreeConsole();
+#else
+    return 0;
 #endif
 }
 
