@@ -39,7 +39,7 @@
 #include "callbacks.h"
 #include "ti68k_def.h"
 
-#define bit(i,b)	((b) & (1 << i))
+#define bit(i,b)	(((b) & (1 << i)) >> i)
 
 void io_put_byte(CPTR adr, UBYTE arg) 
 {
