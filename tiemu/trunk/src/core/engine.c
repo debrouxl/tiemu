@@ -162,8 +162,11 @@ void ti68k_engine_start(void)
 	if(!running)
 	{
         // if not already running, create new thread
-		thread = g_thread_create(ti68k_engine, NULL, TRUE, &error);		
+		thread = g_thread_create(ti68k_engine, NULL, TRUE, &error);
+        running = 1;
 	}
+    else
+        printf("warning: engine is already running... ");
 	G_UNLOCK(running);
     printf("done.\n");
 }

@@ -59,7 +59,7 @@ on_popup_menu_cancel                   (GtkMenuShell    *menushell,
                                         gpointer         user_data)
 {
 	// called on ESC
-	//DISPLAY("on_popup_menu_cancel\n");
+	DISPLAY("on_popup_menu_cancel\n");
     ti68k_engine_release();
 }
 
@@ -71,12 +71,13 @@ on_popup_menu_button_press_event       (GtkWidget       *widget,
 {
 	GtkAllocation *alloc = &(widget->allocation);
 
-    //DISPLAY("on_popup_menu_button_press_event\n");
+    DISPLAY("on_popup_menu_button_press_event\n");
     //DISPLAY("%i %i %i %i\n", (gint)event->x, (gint)event->y, (gint)event->x_root, (gint)event->y_root);
     //DISPLAY("%i %i %i %i\n", alloc->x, alloc->y, alloc->width, alloc->height);
     if((event->x > alloc->width) || (event->y > alloc->height) ||
         (event->x < alloc->x) || (event->y < alloc->y)) 
     {
+        printf("release engine !\n");
         ti68k_engine_release();
     }
 
@@ -252,6 +253,7 @@ on_7_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     params.grayplanes = 7;
+    printf("hello !\n");
     ti68k_engine_release();
 }
 
