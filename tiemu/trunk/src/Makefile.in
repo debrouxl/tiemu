@@ -44,32 +44,34 @@ uae_OBJ = \
 	core/uae/readcpu.o
 
 tihw_OBJ = \
-	core/ti_hw/debugger.o \
-	core/ti_hw/hardware.o \
-	core/ti_hw/lcd.o \
-        core/ti_hw/keyboard.o \
-        core/ti_hw/linkport.o \
-        core/ti_hw/memory.o \
-	core/ti_hw/timer.o \
-	core/ti_hw/ioports.o \
+	core/ti_hw/debugger.o 	\
+	core/ti_hw/hardware.o 	\
+	core/ti_hw/lcd.o 	\
+        core/ti_hw/keyboard.o 	\
+        core/ti_hw/linkport.o 	\
+        core/ti_hw/memory.o 	\
+	core/ti_hw/timer.o 	\
+	core/ti_hw/ioports.o 	\
 	core/ti_hw/m68k.o
 
 core_OBJ = \
-	core/intlist.o \
-	core/bkpts.o \
-	core/error.o \
-	core/images.o \
-	core/state.o \
+	core/intlist.o 	\
+	core/bkpts.o 	\
+	core/errors.o 	\
+	core/images.o 	\
+	core/state.o 	\
 	core/callbacks.o \
 	core/interface.o
 
 hid_OBJ = \
+	hid/cmdline.o 	\
+	hid/files.o 	\
+	hid/paths.o 	\
+	hid/printl.o	\
+	hid/rcfile.o 	\
 	hid/skin.o	\
-	hid/files.o \
-	hid/misc.o \
-	hid/rcfile.o \
-	hid/ticalc.o \
-	hid/paths.o \
+	hid/ticalc.o 	\
+	hid/tie_error.o \
 	hid/tikeys.o
 
 gui_OBJ = \

@@ -55,13 +55,8 @@ display_startup_dbox (void)
   char *home_dir;
 
   /* Display the startup box */
-#if defined(__LINUX__)
-  get_home_path(&home_dir);
-  buffer = g_strconcat(home_dir, DIR_SEPARATOR, ST_FILE, NULL);
-  g_free(home_dir);
-#elif defined(__WIN32__)
-  buffer = g_strconcat(inst_paths.base_dir, DIR_SEPARATOR, ST_FILE, NULL);
-#endif
+  
+  buffer = g_strconcat(inst_paths.home_dir, DIR_SEPARATOR, ST_FILE, NULL);
 
   /* Try to access the file */
   if(access(buffer, F_OK) != 0 )

@@ -37,7 +37,7 @@
 #include "struct.h"
 #include "ticalc.h"
 #include "version.h"
-#include "misc.h"
+#include "cmdline.h"
 #include "files.h"
 #include "rcfile.h"
 #include "interface.h"
@@ -116,14 +116,15 @@ int main(int argc, char **argv)
   /* Load a ROM image */
   gtk_init(&argc, &argv);
 
+#ifndef __WIN32__
   // linux
   g_free((options.params)->rom_file);
   (options.params)->rom_file = g_strdup("/home/romain/ti92.rom");
-
+#else
   //win32
   g_free((options.params)->rom_file);
   (options.params)->rom_file = g_strdup("C:\\Program Files\\Common Files\\GTK\\2.0\\lib\\ti92.rom");
-
+#endif
   if(ti68k_loadImage((options.params)->rom_file)) 
     {
       gtk_widget_show(create_step1_dbox());

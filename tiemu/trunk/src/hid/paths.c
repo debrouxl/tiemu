@@ -33,10 +33,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-#ifndef __WIN32__
-# include <pwd.h>
-# include <grp.h>
-#endif
+#include <glib.h>
 
 #include "struct.h"
 #include "paths.h"
@@ -52,20 +49,20 @@ TiemuInstPaths inst_paths;      // installation paths
 static void init_linux_paths(void)
 {
 	inst_paths.base_dir =
-	    g_strconcat(inst_paths.base_dir, SHARE_DIR, G_DIR_SEPARATOR_S,
-			NULL);
+	    g_strconcat(SHARE_DIR, G_DIR_SEPARATOR_S, NULL);
 	inst_paths.pixmap_dir =
 	    g_strconcat(inst_paths.base_dir, "pixmaps/", NULL);
 	inst_paths.help_dir =
 	    g_strconcat(inst_paths.base_dir, "help/", NULL);
 	inst_paths.manpage_dir = 
             g_strconcat(inst_paths.base_dir, "", NULL);
-	inst_paths.roms = 
+	inst_paths.rom_dir = 
             g_strconcat(inst_paths.base_dir, "images/", NULL);
 	inst_paths.skin_dir =
 	    g_strconcat(inst_paths.base_dir, "skins/", NULL);
+	printf("!!! %s !!!\n", inst_paths.skin_dir);
 	inst_paths.home_dir =
-		g_strdup(g_get_homedir());
+		g_strdup(g_get_home_dir());
 
 	/* bintextdomain(PACKAGE, "/usr/share/locale"); ->
 	   '/usr/share/locale/  fr/LC_MESSAGES/tilp.mo' */

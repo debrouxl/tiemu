@@ -57,19 +57,10 @@ static char *rc_file;
 */
 int get_rcfile_path(char **path)
 {
-#if defined(__LINUX__)
-  char *home_dir;
-  
-  get_home_path(&home_dir);
-  *path = g_strconcat(home_dir, G_DIR_SEPARATOR_S, CONF_DIR, 
-		      DIR_SEPARATOR, RC_FILE, NULL);
-  g_free(home_dir);
-#elif defined(__WIN32__)
-  *path = g_strconcat(inst_paths.base_dir, DIR_SEPARATOR_S, CONF_DIR,
-		     DIR_SEPARATOR, RC_FILE, NULL);
-#endif
-
-  return 0;
+	*path = g_strconcat(inst_paths.home_dir, 
+			    DIR_SEPARATOR_S, CONF_DIR, 
+			    DIR_SEPARATOR, RC_FILE, NULL); 
+	return 0;
 }
 
 /* 
