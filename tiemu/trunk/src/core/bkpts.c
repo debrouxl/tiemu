@@ -44,7 +44,7 @@ int ti68k_bkpt_set_address(int address)
     return g_list_length(bkpts.code);
 }
 
-int ti68k_bkpt_set_address_range(int addressMin, int addressMax, int mode) 
+int ti68k_bkpt_set_access_range(int addressMin, int addressMax, int mode) 
 {
     if(mode & BK_READ) 
     {
@@ -67,35 +67,35 @@ int ti68k_bkpt_set_address_range(int addressMin, int addressMax, int mode)
 
 int ti68k_bkpt_set_access(int address, int mode) 
 {
-    if(mode==BK_READ_BYTE) 
+    if((mode & BK_READ) && (mode & BK_BYTE))
     {		
         bkpts.mem_rb = g_list_append(bkpts.mem_rb, GINT_TO_POINTER(address));
         return g_list_length(bkpts.mem_rb);
     }
-    else if(mode==BK_READ_WORD) 
+    else if((mode & BK_READ) && (mode & BK_WORD))
     {
-      bkpts.mem_rw = g_list_append(bkpts.mem_rw, GINT_TO_POINTER(address));
-      return g_list_length(bkpts.mem_rw);
+		bkpts.mem_rw = g_list_append(bkpts.mem_rw, GINT_TO_POINTER(address));
+		return g_list_length(bkpts.mem_rw);
     }
-    else if(mode==BK_READ_LONG) 
+    else if((mode & BK_READ) && (mode & BK_LONG))
     {
-      bkpts.mem_rl = g_list_append(bkpts.mem_rl, GINT_TO_POINTER(address));
-      return g_list_length(bkpts.mem_rl);
+		bkpts.mem_rl = g_list_append(bkpts.mem_rl, GINT_TO_POINTER(address));
+		return g_list_length(bkpts.mem_rl);
     }
-    else if (mode==BK_WRITE_BYTE) 
+    else if((mode & BK_WRITE) && (mode & BK_BYTE))
     {
-      bkpts.mem_wb = g_list_append(bkpts.mem_wb, GINT_TO_POINTER(address));
-      return g_list_length(bkpts.mem_wb);
+		bkpts.mem_wb = g_list_append(bkpts.mem_wb, GINT_TO_POINTER(address));
+		return g_list_length(bkpts.mem_wb);
     }
-    else if (mode==BK_WRITE_WORD) 
+    else if((mode & BK_WRITE) && (mode & BK_WORD))
     {
-      bkpts.mem_ww = g_list_append(bkpts.mem_ww, GINT_TO_POINTER(address));
-      return g_list_length(bkpts.mem_ww);
+		bkpts.mem_ww = g_list_append(bkpts.mem_ww, GINT_TO_POINTER(address));
+		return g_list_length(bkpts.mem_ww);
     }
-    else if (mode==BK_WRITE_LONG) 
+    else if((mode & BK_WRITE) && (mode & BK_LONG))
     {
-      bkpts.mem_wl = g_list_append(bkpts.mem_wl, GINT_TO_POINTER(address));
-      return g_list_length(bkpts.mem_wl);
+		bkpts.mem_wl = g_list_append(bkpts.mem_wl, GINT_TO_POINTER(address));
+		return g_list_length(bkpts.mem_wl);
     }
     else
         return -1;
@@ -141,7 +141,7 @@ void ti68k_bkpt_del_access(int i, int mode)
     }
 }
 
-void ti68k_bkpt_delaccess_range(int i,int mode) 
+void ti68k_bkpt_del_access_range(int i,int mode) 
 {
     if (mode & BK_READ) 
     {
