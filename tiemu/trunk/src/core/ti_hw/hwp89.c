@@ -43,29 +43,31 @@
 
 static int access = 0;		// protection access authorization
 static int crash = 0;
+static int arch_mem_limit = 0;
 
-#define HWP1				// HW1 protection if define set
+#define HWP
+//#define HWP1				// HW1 protection if define set
 //#define HWP2				// HW2 protection if define set
 
 uint8_t ti89_hwp_get_byte(uint32_t adr) 
 {
-#ifdef HWP1
+#ifdef HWP
 	// stealth I/O
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
 	{
-		
+		bit_clr(arch_mem_limit, 0);
 	}
 	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
 	{
-		
+		bit_clr(arch_mem_limit, 1);
 	}
 	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
 	{
-		
+		bit_clr(arch_mem_limit, 2);
 	}
 	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
 	{
-		
+		tihw.on_off = 0;
 	}
 	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable
 	{
@@ -76,9 +78,10 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 	{
 		access++;
 	}
-	else if(IN_RANGE(0x210000, adr, 0x21ffff))			// certificate (read protected)
+	else if(IN_RANGE(0x210000, adr, 0x211fff))			// certificate (read protected)
 	{
-		return 0x14;
+		if(tihw.protect)
+			return 0x14;
 	}
 	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
 	{
@@ -86,7 +89,8 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 	}
 	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
 	{
-		return 0x14;
+		if(tihw.protect)
+			return 0x14;
 	}
 	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
 	{
@@ -129,25 +133,25 @@ uint32_t ti89_hwp_get_long(uint32_t adr)
 
 void ti89_hwp_put_byte(uint32_t adr, uint8_t arg) 
 {
-#ifdef HWP1
+#ifdef HWP
     // stealth I/O
 	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
 	{
-
+		bit_set(arch_mem_limit, 0);
 	}
 	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
 	{
-		
+		bit_set(arch_mem_limit, 1);
 	}
 	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
 	{
-		
+		bit_set(arch_mem_limit, 2);
 	}
 	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
 	{
-		
+		tihw.on_off = !0;
 	}
-	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
+	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection disable
 	{
 		if(access >= 3) tihw.protect = 0;
 		access = 0;
@@ -156,9 +160,8 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 	{
 		access++;
 	}
-	else if(IN_RANGE(0x210000, adr, 0x21ffff))			// certificate
+	else if(IN_RANGE(0x210000, adr, 0x211fff))			// certificate (read protected)
 	{
-		return;
 	}
 	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
 	{

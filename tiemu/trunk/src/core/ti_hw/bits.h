@@ -25,8 +25,6 @@
 #ifndef __BITS__
 #define __BITS__
 
-#if 1   // linkport is broken
-
 #define bit_get(v,b)	(((v) & (1 << (b))) >> (b))
 #define bit_set(v,b)	v |=  (1 << (b));
 #define bit_clr(v,b)	v &= ~(1 << (b));
@@ -38,16 +36,5 @@
                             else                    \
                                 { bit_clr(v,b); }   \
                         }
-
-#else
-
-#define bit_get(v,b)	(((v) &  (1 << b)) >> b)
-#define bit_set(v,b)	 ((v) |  (1 << b))
-#define bit_clr(v,b)	 ((v) & ~(1 << b))
-
-#define bit_tst(v,b)	 ((v) &  (1 << b))
-#define bit_chg(v,b,s)	{ if(s) bit_set(v,b); else bit_clr(v,b); }
-
-#endif
 
 #endif

@@ -101,7 +101,7 @@ int hw_mem_init(void)
 		tihw.ram_size = 2*MB;	// used to avoid mirroring of segments
 
 	// init vars
-    tihw.protect = 0;
+    tihw.protect = 0;	//params.hw_protect;
 	hw_flash_init();
 
     // clear breakpoints

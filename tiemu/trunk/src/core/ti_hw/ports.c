@@ -388,7 +388,6 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 		case 0x13:  // rw <..543210>
 			break;
 		case 0x14:	// rw <76543210>
-			//if(!tihw.protect) tihw.io2[addr] = arg; else return;
 			// RTC, incremented every 2^13 seconds. The whole word must be read: 
 			// reading the port byte by byte can return wrong value
 			tihw.rtc_value = (tihw.io2[0x14] << 8) | tihw.io2[0x15];
