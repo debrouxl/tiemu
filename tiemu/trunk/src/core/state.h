@@ -23,22 +23,13 @@
 #ifndef __TI68K_STATE__
 #define __TI68K_STATE__
 
-// Same as IMG_INFO
+// Used to locate sections
 typedef struct
 {
-	char	signature[16];	// "TiEmu v2.00"
-	long	header_size;	// size of this structure
-	long	data_offset;	// offset to pure data
-
-	char	calc_type;		// calculator type
-	char	version[5];		// firmware revision
-	char	internal;		// internal/external
-	char	flash;			// EPROM or FLASH
-	char	has_boot;		// FLASH upgrade does not have boot
-	long	size;			// size of pure data
-	char	hw_type;		// hw1 or hw2
-
-	char*	data;			// pure data (temporary use)
+	long    regs_offset;    // offset to M68K area
+    long    io_offset;      // offset to IO area
+    long    ram_offset;     // offset to RAM area
+    long    bkpts_offset;   // offset to bkpts area
 } SAV_INFO;
 
 int ti68k_state_load(char *filename);

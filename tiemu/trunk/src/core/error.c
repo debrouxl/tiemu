@@ -47,7 +47,7 @@ int ti68k_error_get(int err_num, char *error_msg)
 		break;
 
 	case ERR_CANT_OPEN:
-		strcpy(error_msg, _("Can not open ROM."));
+		strcpy(error_msg, _("Can not open file."));
 		break;
 
 	case ERR_INVALID_STATE:

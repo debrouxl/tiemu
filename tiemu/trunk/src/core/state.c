@@ -36,6 +36,40 @@
 #include "ti68k_int.h"
 #include "ti68k_err.h"
 
+static int load_bkpt(FILE *f, GList **l)
+{
+    int ret;
+    int i;
+    long n, v;
+
+    ret = fread(&n, sizeof(n), 1, f);
+    for(i = 0; i < n; i++)
+    {
+        ret = fread(&v, sizeof(v), 1, f);
+        *l = g_list_append(*l, GINT_TO_POINTER(v));
+    }
+
+    return ret;
+}
+
+static int load_bkpt2(FILE *f, GList **l)
+{
+    int ret;
+    int i;
+    long n;
+
+    ret = fread(&n, sizeof(n), 1, f);
+    for(i = 0; i < n; i++)
+    {
+        ADDR_RANGE *s = g_malloc(sizeof(ADDR_RANGE));
+
+        ret = fread(s, sizeof(ADDR_RANGE), 1, f);
+        *l = g_list_append(*l, s);
+    }
+
+    return ret;
+}
+
 /*
   Must be done between init_hardware and M68000_run.
   Typically called after initLib68k.
@@ -47,8 +81,9 @@
 int ti68k_state_load(char *filename)
 {
 	FILE *f;
-  	IMG_INFO *img = &img_infos;
-  	IMG_INFO sav;
+  	IMG_INFO img;
+  	SAV_INFO sav;
+    int ret;
   
   	// No filename, exits
 	if(!strcmp(filename, ""))
@@ -60,21 +95,47 @@ int ti68k_state_load(char *filename)
   	if(f == NULL)
   		return ERR_CANT_OPEN;
   	
-  	// Compare image infos
-	fread(&sav, 1, sizeof(IMG_INFO), f);
-	if(memcmp(&sav, img, sizeof(IMG_INFO) - sizeof(char*)))
+  	// Compare image infos with current image
+	fread(&img, 1, sizeof(IMG_INFO), f);
+	if(memcmp(&img, &img_infos, sizeof(IMG_INFO)))
 		return ERR_INVALID_STATE;
+
+    // Load state image infos
+    fread(&sav, 1, sizeof(SAV_INFO), f);
 	
 	// Load internal hardware (registers and special flags)
+    ret = fseek(f, sav.regs_offset, SEEK_SET);
     fread(&regs, sizeof(regs), 1, f);
     fread(&specialflags, sizeof(specialflags), 1, f);
     
     // Load I/O ports state
+    ret = fseek(f, sav.io_offset, SEEK_SET);
     fread(tihw.io , tihw.io_size, 1, f);
     fread(tihw.io2, tihw.io_size, 1, f);
     
     // Load RAM content
+    ret = fseek(f, sav.ram_offset, SEEK_SET);
     fread(tihw.ram, tihw.ram_size, 1, f);
+
+    // Load bkpts
+    ti68k_bkpt_clear_access();
+	ti68k_bkpt_clear_range();
+    ti68k_bkpt_clear_address();
+	ti68k_bkpt_clear_exception();
+
+    ret = fseek(f, sav.bkpts_offset, SEEK_SET);
+    load_bkpt(f, &bkpts.code);
+    load_bkpt(f, &bkpts.exception);
+
+    load_bkpt(f, &bkpts.mem_rb);
+	load_bkpt(f, &bkpts.mem_rw);
+	load_bkpt(f, &bkpts.mem_rl);
+	load_bkpt(f, &bkpts.mem_wb);
+	load_bkpt(f, &bkpts.mem_ww);
+	load_bkpt(f, &bkpts.mem_wl);
+
+    load_bkpt2(f, &bkpts.mem_rng_r);
+	load_bkpt2(f, &bkpts.mem_rng_w);
     
 	// Update UAE structures
 	m68k_setpc(m68k_getpc());
@@ -85,6 +146,34 @@ int ti68k_state_load(char *filename)
   	return 0;
 }
 
+static void save_bkpt(FILE *f, GList *l)
+{
+    int i;
+    long n, v;
+
+    n = g_list_length(l);
+    fwrite(&n, sizeof(n), 1, f);
+    for(i = 0; i < n; i++)
+    {
+        v = GPOINTER_TO_INT(g_list_nth(l, i)->data);
+        fwrite(&v, sizeof(v), 1, f);
+    }
+}
+
+static void save_bkpt2(FILE *f, GList *l)
+{
+    int i;
+    long n;
+
+    n = g_list_length(l);
+    fwrite(&n, sizeof(n), 1, f);
+    for(i = 0; i < n; i++)
+    {
+        ADDR_RANGE *s = g_list_nth(l, i)->data;
+
+        fwrite(s, sizeof(ADDR_RANGE), 1, f);
+    }
+}
 
 /*
   	This function saves the state of the calculator.
@@ -96,6 +185,7 @@ int ti68k_state_save(char *filename)
 {
   	FILE *f;
   	IMG_INFO *img = &img_infos;
+    SAV_INFO sav;
   
   	if(!strlen(filename))
   		return ERR_CANT_OPEN;
@@ -108,6 +198,14 @@ int ti68k_state_save(char *filename)
   	
   	// Save current image infos
 	fwrite(img, 1, sizeof(IMG_INFO), f);
+
+    // Fill state image infos
+    sav.regs_offset = sizeof(IMG_INFO) + sizeof(SAV_INFO);
+    sav.io_offset = sav.regs_offset + sizeof(regs) + sizeof(specialflags);
+    sav.ram_offset = sav.io_offset + 2*tihw.io_size;
+    sav.bkpts_offset = sav.ram_offset + tihw.ram_size;
+
+    fwrite(&sav, 1, sizeof(SAV_INFO), f);
 	
 	// Update UAE structures
     MakeSR();
@@ -123,6 +221,20 @@ int ti68k_state_save(char *filename)
     
     // Save RAM content
     fwrite(tihw.ram, tihw.ram_size, 1, f);
+
+    // Save breakpoints (address, access, range, exception)
+    save_bkpt(f, bkpts.code);
+    save_bkpt(f, bkpts.exception);
+
+    save_bkpt(f, bkpts.mem_rb);
+	save_bkpt(f, bkpts.mem_rw);
+	save_bkpt(f, bkpts.mem_rl);
+	save_bkpt(f, bkpts.mem_wb);
+	save_bkpt(f, bkpts.mem_ww);
+	save_bkpt(f, bkpts.mem_wl);
+
+    save_bkpt2(f, bkpts.mem_rng_r);
+	save_bkpt2(f, bkpts.mem_rng_w);
     
     fclose(f);
 
