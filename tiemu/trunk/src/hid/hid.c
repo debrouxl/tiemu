@@ -11,10 +11,12 @@
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details. *
+ *  GNU General Public License for more details.
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -86,11 +88,10 @@ int iGrayPlanes = -1;         // number of grayscales to emulate
 int iCurrPlane = 0;           // ?
 int iScrState = 0;            // screen state
 
-int popup_menu = 0;	      // popup menu state
-
 const char* key_mapping = NULL; // key mapping
 extern const char sknKey92[];   // in tikeys.c
 extern const char sknKey89[];
+extern const char sknKeyV2[];
 
 static void compute_convtable(void);
 static int sdl_to_ti(int key);
@@ -100,18 +101,18 @@ static void redraw_skin(void);
 static int pos_to_key(int x, int y);
 
 #define SCREEN_ON  (!0)
-#define SCREEN_OFF 0
+#define SCREEN_OFF	0
 
-
-/* Note */
-/* TI89: RGB = 49:46:34 & 204:204:207 */
+/* TI89: RGB = 49:46:34 & 204:204:207	*/
 /* TI92: RGB = 83:111:138 & 174:204:176 */
+/* V200: RGB = ?						*/
 
 static void SDL_ComplainAndExit(void)
 {
 	gchar *s = g_strdup_printf("SDL problem: %s\n", SDL_GetError());
 	tiemu_error(0, s);
 	g_free(s);
+
 	exit(-1);
 }
 
@@ -125,18 +126,17 @@ static void SDL_ComplainAndExit(void)
 */
 static int hid_init_subsystem(void)
 {
-  // Allocate the TI screen buffer
-  pLcdBuf = malloc((iScrW << iScale) * (iScrH << iScale));
+	// Allocate the TI screen buffer
+	pLcdBuf = malloc((iScrW << iScale) * (iScrH << iScale));
   
-  // Get LCD size depending on calculator type
-  if((tihw.calc_type == TI92) || (tihw.calc_type == TI92p))
+	// Get LCD size depending on calculator type
+	if((tihw.calc_type == TI92) || (tihw.calc_type == TI92p))
     {
       iLcdW = 240 << iScale; 
       iLcdH = 128 << iScale;
 
       g_free(options.skin_file);
-      options.skin_file = g_strconcat(inst_paths.skin_dir,
-				      "ti92.skn", NULL);
+      options.skin_file = g_strconcat(inst_paths.skin_dir, "ti92.skn", NULL);
 
       if(skin_load(options.skin_file) == -1) {
 	      gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
@@ -147,14 +147,13 @@ static int hid_init_subsystem(void)
       
       key_mapping = sknKey92;
     }
-  else if (tihw.calc_type == TI89)
+	else if (tihw.calc_type == TI89)
     {
       iLcdW = 160 << iScale; 
       iLcdH = 100 << iScale;
       
       g_free(options.skin_file);
-      options.skin_file = g_strconcat(inst_paths.skin_dir,
-				      "ti89.skn", NULL);
+      options.skin_file = g_strconcat(inst_paths.skin_dir, "ti89.skn", NULL);
 
       if(skin_load(options.skin_file) == -1) {
 	      gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
@@ -165,13 +164,30 @@ static int hid_init_subsystem(void)
 
       key_mapping = sknKey89;
     }
-  else
-  {
+	else if(tihw.calc_type == V200)
+    {
+      iLcdW = 240 << iScale; 
+      iLcdH = 128 << iScale;
+
+      g_free(options.skin_file);
+      options.skin_file = g_strconcat(inst_paths.skin_dir, "v200.skn", NULL);
+
+      if(skin_load(options.skin_file) == -1) {
+	      gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
+	      tiemu_error(0, s);
+	      g_free(s);
+	      return -1;
+      }
+      
+      key_mapping = sknKeyV2;
+    }
+	else
+	{
 	  gchar *s = g_strdup_printf("no skin found for this calc\n");
 	  tiemu_error(0, s);
 	  g_free(s);
 	  return -1;
-  }
+	}
   
   // Init B&W pixel values)
   whitePixel = skin_infos.lcd_white;
@@ -190,8 +206,7 @@ static int hid_init_subsystem(void)
     }
 
   // Set VIDEO mode and create the window surface
-  sdlWindow = SDL_SetVideoMode(iWinW, iWinH, 
-				     DEFAULT_BPP, DEFAULT_FLAGS);
+  sdlWindow = SDL_SetVideoMode(iWinW, iWinH, DEFAULT_BPP, DEFAULT_FLAGS);
   if(sdlWindow == NULL)
     {
 	  gchar *s = g_strdup_printf("could not set video mode: %s\n", SDL_GetError());
@@ -620,6 +635,10 @@ int hid_update_keys(void)
 	  hid_quit_subsystem();
 	  hid_init_subsystem();
 	}
+	  else if(event.type == SDL_VIDEOEXPOSE)
+	  {
+		  redraw_skin();
+	  }
     }
 
   return iKeyWasPressed;
