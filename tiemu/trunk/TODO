@@ -61,6 +61,8 @@ roms
 
 * make AC_CHECK_LIB(comdlg32, GetOpenFileName) work
 
+* AI2 to fix (keyboard)
+
 -------------
 + done
 - in progress
