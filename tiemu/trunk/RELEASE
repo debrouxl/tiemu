@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.80k		(20/01/2005)
-Current version:  1.80l		(06/02/2005)
+Previous version: 1.80l		(06/02/2005)
+Current version:  1.80m		(17?/02/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,36 +20,24 @@ For the other link cables, no driver is needed because it's provided.
 New capabilities:
 -----------------
 
-	- rewrite of the m68k loop:
-		* UAE fixed to handle multiple pending interrupts and some other fixes
-		* idle mode and STOP improved but problems with ON key
-	- added kbd_dbg variable in tiemu.ini file to display keystrokes in console (useful for creating keymaps).
+	- linkport support with real cables: GrayLink, BlackLink, VTi and TiEmu
+	- real grayscale emulation for HW2/HW3
+	- removed VTi signature (buggy SR)
 
 
 Improvements:
 -------------
 
-	- linkport (D-Bus)
-	- boosted linkport speed (direct file)
-	- switched to GTK+ package 2.4-rc26 (2.4.14): compatible with GiMP and fixes toolbar tooltips
-	- main loop modified: main loop is restarted whenever a new ROM is loaded.
-	- fixed main window which appears when the whole window is ready
+	- dbus architecture improved (reset)
+	- added 0x7100xx ports and fixed LCD address on HW2/HW3
+	- searching of data begins at the current tab address
 		
 
 Bug fixes:
 ----------
 
-	- fixed grayscale routines: they are now rock-stable !
-	- fixed grayscales with HW2 (still use HW1 routine thru VTi detection)
-	- implemented 'increment rate' of $600017 port
-	- fixed AI3: it was never raised because counter was never incremented
-	- port $700014 (Real Time Clock) is incremented every 8192 seconds
-	- linkport has been fixed and improved (EA bit on AMS >= 2.08)
-	- progress bars for linkport fixed
-	- fixed size of handles in handle wnd
-	- fixed AI2 (need to be raised whenever a key is pressed)
-	- fixed V200 and Titanium crash under Linux (buffer overflow). V200 transfers don't crash
-		any more under Windows (probably same bug).
+	- 0x200000 and 0x400000 are ghost of 0x000000 (Titanium only)
+	- fixed heap listing with AMS300
 
 
 To do:

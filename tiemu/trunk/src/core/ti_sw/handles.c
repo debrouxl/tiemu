@@ -53,13 +53,22 @@ void heap_get_addr(uint32_t *base)
 		{
 			// AMS1
 			romcalls_get_symbol_address(0x96, &addr);		// tios::HeapDeref (#0x096)
-			ptr = rd_word(ti68k_get_real_address(addr + 8));// MOVEA.L $7592,A0
+			ptr = rd_word(ti68k_get_real_address(addr + 8));// MOVEA.W $7592,A0
 		} else
 		{
 			// AMS2
 			//romcalls_get_symbol_address(0x441, base);
 			romcalls_get_symbol_address(0x96, &addr);		// tios::HeapDeref (#0x096)
-			ptr = rd_word(ti68k_get_real_address(addr + 10));// MOVEA.L $7592,A0
+			ptr = rd_word(ti68k_get_real_address(addr + 8));
+			if(ptr == 0x2078)
+				ptr = rd_word(ti68k_get_real_address(addr + 10));// MOVEA.W $7592,A0 (AMS203)
+			else if(ptr == 0x2079)
+				ptr = rd_word(ti68k_get_real_address(addr + 12));// MOVEA.W $79F2,A0 (AMS300)
+			else
+			{
+				fprintf(stderr, "Warning/Bug: heap_get_addr: unhandled case !\n");
+				ptr = 0;
+			}
 		}
 	}
 

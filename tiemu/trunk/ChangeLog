@@ -15,6 +15,7 @@ To do:
 	- real grayscale emulation for HW2/HW3
 	- removed VTi signature (buggy SR)
 	- searching of data begins at the current tab address
+	- fixed heap listing with AMS300
 
 - 21/01/2005, version 1.80l: roms
 	- switched to GTK+ package 2.4-rc26 (2.4.14): compatible with GiMP and fixes toolbar tooltips
