@@ -29,8 +29,6 @@ appuyé.)
 sont pas du tout initialisés (tout est à 0), donc je suspecte un problème
 quelque part dans la gestion des TIBs Titanium dans TiEmu.
 
-* Utiliser le win32 file selector
-
 
 Lionel
 ======

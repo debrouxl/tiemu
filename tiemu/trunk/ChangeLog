@@ -16,6 +16,7 @@ To do:
 	- command line improved and up-to-date
 	- cleaned-up configure.ac script (CygWin & MinGW)
 	- fixed Step Over
+	- added Win32 file selector
 	
 - 18/02/2005, version 1.80n: roms
 	- fixed FLASH writes with HW3 patch

@@ -24,8 +24,13 @@
 #  include <config.h>
 #endif				/*  */
 
+#include <stdio.h>
 #include <gtk/gtk.h>
 #include <string.h>
+
+#ifdef __WIN32__
+#include <windows.h>
+#endif
 
 #include "intl.h"
 #include "filesel.h"
@@ -46,6 +51,7 @@ static void cancel_filename(GtkButton * button, gpointer user_data)
 	filename = "";
 } 
 
+// GTK 1.x/2.x (x <= 4)
 static const gchar *create_fsel_1(gchar *dirname, gchar *ext, gboolean save)
 {
 	GtkWidget *fs;
@@ -86,6 +92,7 @@ static const gchar *create_fsel_1(gchar *dirname, gchar *ext, gboolean save)
 		return filename;
 }
 
+// GTK >= 2.6
 static const gchar *create_fsel_2(gchar *dirname, gchar *ext, gboolean save)
 {
 	GtkWidget *dialog;
@@ -113,12 +120,73 @@ static const gchar *create_fsel_2(gchar *dirname, gchar *ext, gboolean save)
 	return filename;
 }
 
-const gchar *create_fsel(gchar *dirname, gchar *ext, gboolean save)
+// Win32 fs
+static const gchar *create_fsel_3(gchar *dirname, gchar *ext, gboolean save)
 {
+#ifdef WIN32
+	OPENFILENAME o;
+	char lpstrFile[1024] = "\0";
+	char lpstrFilter[256];
+	char *p;
+	gchar **sarray;
+	int i, n;
+
+	// clear structure
+	memset (&o, 0, sizeof (o));
+
+	// format filter
+	sarray = g_strsplit(ext, ";", -1);
+	for(n = 0; sarray[n] != NULL; n++);
+
+	for(i = 0, p = lpstrFilter; i < n; i++)
+	{
+		strcpy(p, sarray[i]);
+		p += strlen(sarray[i]);
+		*p++ = '\0';
+
+		strcpy(p, sarray[i]);
+		p += strlen(sarray[i]);
+		*p++ = '\0';
+	}
+	*p++ = '\0';
+	g_strfreev(sarray);
+
+	// set structure
+	o.lStructSize = sizeof (o);	
+	o.lpstrFilter = lpstrFilter;	//"All\0*.*\0Text\0*.TXT\0";
+	o.lpstrFile = lpstrFile;
+	o.nMaxFile = sizeof(lpstrFile);
+	o.lpstrInitialDir = dirname;
+	o.Flags = 0x02000000 | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY |
+				 OFN_NOCHANGEDIR | OFN_EXPLORER | OFN_LONGNAMES | OFN_NONETWORKBUTTON;
+
+	// open/close
+	if(save)
+	{
+		if(!GetSaveFileName(&o))
+			return filename = NULL;
+	}
+	else
+	{
+		if(!GetOpenFileName(&o))
+			return filename = NULL;
+	}
+
+	return filename = g_strdup(lpstrFile);
+#endif
+}
+
+const gchar *create_fsel(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
+{
+	options.fs_type = 2;
+	//printf("<%s> <%s> <%s> %i\n", dirname, filename, ext, save);
+
 	if(options.fs_type == 0)
 		return create_fsel_1(dirname, ext, save);
-	else
+	else if(options.fs_type == 1)
 		return create_fsel_2(dirname, ext, save);
+	else
+		return create_fsel_3(dirname, ext, save);
 }
 
 
