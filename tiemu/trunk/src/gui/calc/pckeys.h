@@ -188,7 +188,7 @@
 #define PCKEY_BACK 0x16
 #define PCKEY_TAB 0x17
 #define PCKEY_CLEAR 0xff
-#define PCKEY_RETURN 024
+#define PCKEY_RETURN 0x24
 #define PCKEY_SHIFT 0x32
 #define PCKEY_CONTROL 0x25
 #define PCKEY_MENU 0x40
