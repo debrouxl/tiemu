@@ -341,6 +341,8 @@ void io2_put_byte(CPTR adr, UBYTE arg)
 		case 0x15:	// rw <76543210>
 			break;
 		case 0x17:	// rw <......10>
+			// Display memory snoop range
+			tihw.lcd_ptr = &tihw.ram[0x4c000 + 0x1000*(arg&3)];
 			break;
 		case 0x1d:	// rw <7...3210>
 				tihw.lcd_power = bit_get(arg,1);

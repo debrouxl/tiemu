@@ -54,7 +54,10 @@ int hw_lcd_init(void)
 
 	tihw.io[0x10] = MSB(lcd_addr);
 	tihw.io[0x11] = LSB(lcd_addr);
-    
+
+    if(tihw.hw_type == HW2)
+		tihw.io2[0x17] = 0x00;
+
 	tihw.lcd_ptr = &tihw.ram[lcd_addr << 3];
 
     return 0;
