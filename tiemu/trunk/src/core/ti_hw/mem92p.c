@@ -23,7 +23,8 @@
  */
 
 /*
-    Memory management: TI92+ FLASH with Hardware Protection
+    Memory management: TI92+ FLASH without Hardware Protection
+	Except for ti92p_mem_init/ti89_mem_init, code is the same.
 */
 
 #include <stdlib.h>
@@ -67,7 +68,7 @@ int ti92p_mem_init(void)
     mem_msk[1] = tihw.ram_size-1;
 
 	// map FLASH
-    mem_tab[4] = tihw.rom;
+    mem_tab[4] = tihw.rom + 0x000000;;
     mem_msk[4] = MIN(tihw.rom_size - 0*MB, 1*MB) - 1;
 
     mem_tab[5] = tihw.rom + 0x100000;
@@ -95,68 +96,8 @@ int ti92p_mem_init(void)
     return 0;
 }
 
-static int access = 0;
-static int crash = 0;
-
-//#define HWP			// HW1 protection if define set
-
 uint32_t ti92p_get_long(uint32_t adr) 
 {
-#ifdef HWP
-	// stealth I/O
-	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
-	{
-		access = crash = 0;
-		//cb_screen_on_off(0);
-	}
-	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
-	{
-		if(crash >= 4)
-			hw_m68k_reset();
-		if(access >= 3)
-			tihw.protect = !0;
-		access = 0;
-	}
-	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-	}
-	else if(IN_RANGE(0x210000, adr, 0x21ffff))			// certificate
-	{
-		access = crash = 0;
-		if(tihw.protect) return 0x14141414;
-	}
-	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-	}
-	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
-	{
-		access = crash = 0;
-		return 0x14141414;
-	}
-	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-	}
-#endif	
-
-    // memory
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
 	{
         return lget(adr);
@@ -179,61 +120,6 @@ uint32_t ti92p_get_long(uint32_t adr)
 
 uint16_t ti92p_get_word(uint32_t adr) 
 {
-#ifdef HWP
-    // stealth I/O
-	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
-	{
-		access = crash = 0;
-		//cb_screen_on_off(0);
-	}
-	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
-	{
-		if(crash >= 4)
-			hw_m68k_reset();
-		if(access >= 3)
-			tihw.protect = !0;
-		access = 0;
-	}
-	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-	}
-	else if(IN_RANGE(0x210000, adr, 0x21ffff))			// certificate
-	{
-		access = crash = 0;
-		if(tihw.protect) return 0x1414;
-	}
-	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-	}
-	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
-	{
-		access = crash = 0;
-		return 0x1414;
-	}
-	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-	}
-#endif
-
-    // memory
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
 	{
         return wget(adr);
@@ -256,61 +142,6 @@ uint16_t ti92p_get_word(uint32_t adr)
 
 uint8_t ti92p_get_byte(uint32_t adr) 
 {
-    // stealth I/O
-#ifdef HWP
-	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
-	{
-		access = crash = 0;
-		//cb_screen_on_off(0);
-	}
-	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
-	{
-		if(crash >= 4)
-			hw_m68k_reset();
-		if(access >= 3)
-			tihw.protect = !0;
-		access = 0;
-	}
-	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-	}
-	else if(IN_RANGE(0x210000, adr, 0x21ffff))			// certificate
-	{
-		access = crash = 0;
-		//if(tihw.protect) return 0x14;
-	}
-	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-	}
-	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
-	{
-		access = crash = 0;
-		return 0x14;
-	}
-	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-	}
-#endif
-
-    // memory
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
 	{
         return bget(adr);
@@ -333,65 +164,7 @@ uint8_t ti92p_get_byte(uint32_t adr)
 
 void ti92p_put_long(uint32_t adr, uint32_t arg) 
 {
-	// stealth I/O
-#ifdef HWP
-	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
-	{
-		access = crash = 0;
-		//cb_screen_on_off(!0);
-	}
-	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
-	{
-		if(crash >= 4)
-			hw_m68k_reset();
-		if(access >= 3)
-			tihw.protect = 0;
-		access = 0;
-	}
-	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-		return;		// boot installer
-	}
-	else if(IN_RANGE(0x210000, adr, 0x21ffff))			// certificate
-	{
-		access = crash = 0;
-		if(tihw.protect) return;
-	}
-	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-		if(tihw.protect) return;
-	}
-	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
-	{
-		access = crash = 0;
-		if(tihw.protect) return;
-	}
-	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-		if(tihw.protect) return;
-	}
-#endif
-
-    // memory
-    if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
+	    if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
 	{
         lput(adr, arg);
 	}
@@ -413,64 +186,6 @@ void ti92p_put_long(uint32_t adr, uint32_t arg)
 
 void ti92p_put_word(uint32_t adr, uint16_t arg) 
 {
-#ifdef HWP
-	// stealth I/O
-	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
-	{
-		access = crash = 0;
-		//cb_screen_on_off(!0);
-	}
-	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
-	{
-		if(crash >= 4)
-			hw_m68k_reset();
-		if(access >= 3)
-			tihw.protect = 0;
-		access = 0;
-	}
-	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-		return;		// boot installer
-	}
-	else if(IN_RANGE(0x210000, adr, 0x21ffff))			// certificate
-	{
-		access = crash = 0;
-		if(tihw.protect) return;
-	}
-	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-		if(tihw.protect) return;
-	}
-	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
-	{
-		access = crash = 0;
-		if(tihw.protect) return;
-	}
-	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-		if(tihw.protect) return;
-	}
-#endif
-
-    // memory
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
 	{
         wput(adr, arg);
@@ -493,63 +208,6 @@ void ti92p_put_word(uint32_t adr, uint16_t arg)
 
 void ti92p_put_byte(uint32_t adr, uint8_t arg) 
 {
-#ifdef HWP
-    // stealth I/O
-	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2
-	{
-		access = crash = 0;
-	}
-	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
-	{
-		access = crash = 0;
-		//cb_screen_on_off(!0);
-	}
-	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable/disable
-	{
-		if(crash >= 4)
-			hw_m68k_reset();
-		if(access >= 3)
-			tihw.protect = 0;
-		access = 0;
-	}
-	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-		return;		// boot installer
-	}
-	else if(IN_RANGE(0x210000, adr, 0x21ffff))			// certificate
-	{
-		access = crash = 0;
-		if(tihw.protect) return;
-	}
-	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-		if(tihw.protect) return;
-	}
-	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
-	{
-		access = crash = 0;
-		if(tihw.protect) return;
-	}
-	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
-	{
-		access++;
-		crash = 0;
-		if(tihw.protect) return;
-	}
-#endif
-
     // memory
     if(IN_RANGE(0x000000, adr, 0x1fffff))				// RAM access
 	{

@@ -44,6 +44,7 @@
 #include "mem92.h"
 #include "mem92p.h"
 #include "mem89tm.h"
+#include "hwp89.h"
 
 static IMG_INFO *img = &img_infos;
 

@@ -86,6 +86,7 @@ typedef struct
     int cpu_rate;       // OSC1
     int hw_rate;        // OSC2
     int lcd_rate;       // synched OSC2 (hw1) or OSC3 (hw2)
+	int protect_on;		// HW protection
     
 } Ti68kParameters;
 

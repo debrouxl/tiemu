@@ -387,6 +387,12 @@ void rcfile_read(void)
 	  continue;
 	}
 
+	if( (p=find_str(buffer, "protect_on=")) )
+	{
+	  sscanf(p, "%i", &(params.protect_on));
+	  continue;
+	}
+
 	if( (p=find_str(buffer, "img_format=")) )
 	{
 	  if(!strcmp(p, "jpg")) options2.format=IMG_JPG;
@@ -745,6 +751,9 @@ void rcfile_write(void)
   fprintf(txt, "# LCD update rate (100 fps max.) = OSC3\n");
   fprintf(txt, "lcd_rate=%i\n", params.lcd_rate);
   fprintf(txt, "\n");
+  fprintf(txt, "# HW2 protection\n");
+  fprintf(txt, "protect_on=%i\n", params.protect_on);
+  fprintf(txt, "\n");
   fprintf(txt, "#\n");
   fprintf(txt, "# SCREENSHOT SECTION\n");
   fprintf(txt, "#\n");
@@ -870,13 +879,13 @@ int rcfile_default()
 #else
 	options.console = 0;
 #endif
+	options.view = VIEW_NORMAL;
 	options.kbd_dbg = 0;
 #ifdef __WIN32__
 	options.fs_type = 2;
 #else
 	options.fs_type = 1;
 #endif
-    options.view = VIEW_NORMAL;
 
 	options2.file = g_strdup("screenshot");
 	options2.counter = 0;

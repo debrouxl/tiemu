@@ -33,6 +33,7 @@
 #include "hw.h"
 #include "bkpts.h"
 #include "images.h"
+#include "handles.h"
 
 int pending_ints;
 

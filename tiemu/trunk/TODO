@@ -41,14 +41,7 @@ dans le décor, je ne sais pas s'il exécute ou pas
 PPhd
 ====
 
-* I am sorry I can"t send any files to TIEMU.
- The "Send Files to TIEMU" doesn"t provide any "Input File Name" field, and
- it doesn"t select any TI file , but only folders (ie the files .9xz, 89z, etc are not
- listed).
- 
- By the way, it has been said you can select your "Open File" dialog box by editing the
- tiemu.ini file. Where is this file? It is not in $HOME/.tiemu,
- and not in $prefix/. Neither in the source files.
+* ...
 
 
 roms
