@@ -257,8 +257,6 @@ uint8_t* hw_get_real_address(uint32_t adr)
 #define wget(adr) ((uint16_t)(((uint16_t)bget(adr))<< 8 | bget((adr)+1)))
 #define lget(adr) ((uint32_t)(((uint32_t)wget(adr))<<16 | wget((adr)+2)))
 
-#define MAPPED
-
 uint32_t hw_get_long(uint32_t adr) 
 {
     GList* l;
@@ -310,44 +308,7 @@ uint32_t hw_get_long(uint32_t adr)
         return 0;
     }
 
-#ifdef MAPPED
 	return get_long_ptr(adr);
-#else
-    //$1C0000-$1FFFFF: "the Protection" enable/disable
-    //Note: Four consecutive accesses to this range crashes a HW1 calc!
-    //READ:  Enable the Protection
-    //WRITE: Disable the Protection
-    //Note: No access to this range will have any effect unless the access is
-    //"authorized," see below.
-    if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-    {
-        tihw.flash_prot = 1;
-        return lget(adr);
-    }
-
-    // The certificate memory ($210000-$211FFF) is read protected.
-    else if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
-        return 0x14141414;
-  
-    // RAM access
-    else if (adr<0x200000) 
-        return lget(adr);
-  
-    // FLASH access
-    else if (adr >= 0x200000 && adr<0x600000) 
-        return (lget(adr) | wsm.ret_or);
-
-    // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000) 
-        return io_get_long(adr & 0x1f);
-
-	// memory-mapped I/O (hw2)
-	else if(adr >= 0x700000 && adr < 0x800000)
-		return io2_get_long(adr & 0x1f);
-
-    else
-        return 0;
-#endif
 }
 
 uint16_t hw_get_word(uint32_t adr) 
@@ -401,44 +362,7 @@ uint16_t hw_get_word(uint32_t adr)
         return 0;
     }
 
-#ifdef MAPPED
 	return get_word_ptr(adr);
-#else
-    //$1C0000-$1FFFFF: "the Protection" enable/disable
-    //Note: Four consecutive accesses to this range crashes a HW1 calc!
-    //READ:  Enable the Protection
-    //WRITE: Disable the Protection
-    //Note: No access to this range will have any effect unless the access is
-    //"authorized," see below.
-    if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-    {
-        tihw.flash_prot = 1;
-        return wget(adr);
-    }
-
-    // The certificate memory ($210000-$211FFF) is read protected.
-    else if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
-        return 0x1414;
-  
-    // RAM access
-    else if (adr<0x200000) 
-        return wget(adr);
-  
-    // FLASH access
-    else if (adr >= 0x200000 && adr<0x600000) 
-        return (wget(adr) | wsm.ret_or);
-
-    // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000) 
-        return io_get_word(adr & 0x1f);
-
-	// memory-mapped I/O (hw2)
-	else if(adr >= 0x700000 && adr < 0x800000)
-		return io2_get_word(adr & 0x1f);
-
-    else
-        return 0;
-#endif
 }
 
 uint8_t hw_get_byte(uint32_t adr) 
@@ -486,44 +410,7 @@ uint8_t hw_get_byte(uint32_t adr)
 	    }
     }
   
-#ifdef MAPPED
 	return get_byte_ptr(adr);
-#else
-    //$1C0000-$1FFFFF: "the Protection" enable/disable
-    //Note: Four consecutive accesses to this range crashes a HW1 calc!
-    //READ:  Enable the Protection
-    //WRITE: Disable the Protection
-    //Note: No access to this range will have any effect unless the access is
-    //"authorized," see below.
-    if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-    {
-        tihw.flash_prot = 1;
-        return bget(adr);
-    }
-
-    // The certificate memory ($210000-$211FFF) is read protected.
-    else if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
-        return 0x14;
-  
-    // RAM access
-    else if (adr<0x200000) 
-        return bget(adr);
-  
-    // FLASH access
-    else if (adr >= 0x200000 && adr<0x600000) 
-        return (bget(adr) | wsm.ret_or);
-
-    // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000) 
-        return io_get_byte(adr & 0x1f);
-
-	// memory-mapped I/O (hw2)
-	else if(adr >= 0x700000 && adr < 0x800000)
-		return io2_get_byte(adr & 0x1f);
-
-    else
-        return 0;
-#endif
 }
 
 void hw_put_long(uint32_t adr, uint32_t arg) 
@@ -581,45 +468,8 @@ void hw_put_long(uint32_t adr, uint32_t arg)
 	// written while bit 2 of [$600001] is set
 	if((adr < 0x120) && io_bit_tst(0x01,2))
 		hw_m68k_irq(7);
-
-#ifdef MAPPED
-	put_long_ptr(adr, arg);
-#else
-    // Write accesses to the boot installer sector ($200000-$20FFFF) are
-    // filtered and never reach the flash ROM.
-    else if(adr >= 0x200000 && adr < 0x210000)
-        return;
-
-    //$1C0000-$1FFFFF: "the Protection" enable/disable
-    //Note: Four consecutive accesses to this range crashes a HW1 calc!
-    //READ:  Enable the Protection
-    //WRITE: Disable the Protection
-    //Note: No access to this range will have any effect unless the access is
-    //"authorized," see below.
-    else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-        tihw.flash_prot = 0;
-  
-    // write to internal/external FLASH
-    else if (adr >= 0x200000 && adr < 0x600000)
-    {
-        FlashWriteByte(adr,(arg>>24)&0xff);
-        FlashWriteByte(adr+1,(arg>>16)&0xff);
-        FlashWriteByte(adr+2,(arg>>8)&0xff);
-        FlashWriteByte(adr+3,arg&0xff);
-    }
-
-    // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000)
-        io_put_long(adr & 0x1f, arg);
-
-	// memory-mapped I/O (hw2)
-	else if(adr >= 0x700000 && adr < 0x800000)
-		io2_put_long(adr & 0x1f, arg);
-
-    // standard access
-    else
-        lput(adr, arg);
-#endif
+	else
+		put_long_ptr(adr, arg);
 }
 
 void hw_put_word(uint32_t adr, uint16_t arg) 
@@ -677,33 +527,8 @@ void hw_put_word(uint32_t adr, uint16_t arg)
 	// written while bit 2 of [$600001] is set
     if((adr < 0x120) && io_bit_tst(0x01,2))
 		hw_m68k_irq(7);
-#ifdef MAPPED
-	put_word_ptr(adr, arg);
-#else
-	else if(adr >= 0x200000 && adr < 0x210000)
-        return;
-	else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-        tihw.flash_prot = 0;
-
-    else if (adr < 0x200000) // pb here
-    {
-	    if (adr >=0x1c0000)
-	        tihw.flash_prot=0;
-	    wput(adr, arg);
-    }
-
-    else if (adr >= 0x200000 && adr < 0x600000) 
-    {
-	    FlashWriteByte(adr,(arg>>8)&0xff);
-	    FlashWriteByte(adr+1,arg&0xff);
-    }
-    else if(adr >= 0x600000 && adr < 0x700000)
-		io_put_word(adr & 0x1f, arg);
-	else if(adr >= 0x700000 && adr < 0x800000)
-		io2_put_word(adr & 0x1f, arg);
 	else
-		wput(adr, arg);
-#endif
+		put_word_ptr(adr, arg);
 }
 
 void hw_put_byte(uint32_t adr, uint8_t arg) 
@@ -754,39 +579,6 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 	// written while bit 2 of [$600001] is set
     if((adr < 0x120) && io_bit_tst(0x01,2))
 		hw_m68k_irq(7);
-#ifdef MAPPED
-	put_byte_ptr(adr, arg);
-#else
-    // Write accesses to the boot installer sector ($200000-$20FFFF) are
-    // filtered and never reach the flash ROM.
-    else if(adr >= 0x200000 && adr < 0x210000)
-        return;
-
-    //$1C0000-$1FFFFF: "the Protection" enable/disable
-    //Note: Four consecutive accesses to this range crashes a HW1 calc!
-    //READ:  Enable the Protection
-    //WRITE: Disable the Protection
-    //Note: No access to this range will have any effect unless the access is
-    //"authorized," see below.
-    else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-        tihw.flash_prot = 0;
-  
-    // write to internal/external FLASH
-    else if (adr >= 0x200000 && adr < 0x600000)
-    {
-        FlashWriteByte(adr,arg&0xff);
-    }
-
-    // memory-mapped I/O
-    else if(adr >= 0x600000 && adr < 0x700000)
-        io_put_byte(adr & 0x1f, arg);
-
-	// memory-mapped I/O (hw2)
-	else if(adr >= 0x700000 && adr < 0x800000)
-		io2_put_byte(adr & 0x1f, arg);
-
-    // standard access
-    else
-        bput(adr, arg);
-#endif
+	else
+		put_byte_ptr(adr, arg);
 }
