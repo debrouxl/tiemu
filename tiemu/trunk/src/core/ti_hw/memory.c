@@ -37,6 +37,7 @@ static IMG_INFO *img = &img_infos; // a shortcut
 
 const int rom_sizes[] = { 1*MB, 2*MB, 2*MB, 4*MB };	// 92, 89, 92+, V200
 const int ram_sizes[] = { 128*KB, 256*KB, 256*KB, 256*KB };
+const int io_size = 32;
 
 UBYTE *mem_tab[8] = 
 {
@@ -65,7 +66,7 @@ int rom_write_phase;
 int rom_erase;
 int rom_erasePhase;
 
-int log2(int i);
+static int log2(int i);
 
 /* Mem init/exit */
 
@@ -96,99 +97,83 @@ int hw_mem_init(void)
   rom_ret_or = 0;
   flash_protect = 0;
 
-  /* Initialize bkpts */
-  listBkptAsRB = listBkptAsRW = listBkptAsRL = NULL;
-  listBkptAsWB = listBkptAsWW = listBkptAsWL = NULL;
-  listBkptAsRgW = listBkptAsRgR = NULL;
+    // Initialize bkpts
+    listBkptAsRB = listBkptAsRW = listBkptAsRL = NULL;
+    listBkptAsWB = listBkptAsWW = listBkptAsWL = NULL;
+    listBkptAsRgW = listBkptAsRgR = NULL;
 
-  /* Allocate memory */  
-  tihw.ram     = malloc(RAM_SIZE+4);
-  tihw.rom = malloc(ROM_SIZE+4);
-  //ti_int_rom = malloc(ROM_SIZE+4);
-  //ti_ext_rom = malloc(ROM_SIZE+4);
-  tihw.io      = malloc(IO_SIZE+4);
+    // allocate mem
+    tihw.ram = malloc(tihw.ram_size + 4);   //RAM_SIZE+4);
+    tihw.rom = malloc(tihw.rom_size + 4);   //ROM_SIZE+4);
+    tihw.io  = malloc(32 + 4);
 
-  /* Clear RAM/ROM/IO */
-  memset(tihw.ram, 0x00, RAM_SIZE);
-  memset(tihw.io , 0x00, IO_SIZE);  
-  for (i=0; i<2048*1024; i++)
+    // clear RAM/ROM/IO
+    memset(tihw.ram, 0x00, tihw.ram_size);
+    memset(tihw.io , 0x00, io_size);  
+    for (i=0; i<tihw.rom_size; i++)
     {
-      if (i&1) { 
-	tihw.rom[i] = 0x00;
-	//ti_int_rom[i]=0x00; 
-	//ti_ext_rom[i]=0x00; 
-      }      
-      else { 
-	tihw.rom[i] = 0x14;
-	//ti_int_rom[i]=0x14; 
-	//ti_ext_rom[i]=0x14; 
-      }
+        if (i & 1)
+	        tihw.rom[i] = 0x00;
+        else
+	        tihw.rom[i] = 0x14;
     }
 
-  /* Set all banks to RAM (with mask 0 per default) */
-  for(i=0; i<8; i++) { 
-    mem_tab[i] = tihw.ram; 
-  }
+    // set all banks to RAM (with mask 0 per default)
+    for(i=0; i<8; i++)
+        mem_tab[i] = tihw.ram; 
 
-  /* Map RAM */
-  mem_tab[0] = tihw.ram;
-  mem_mask[0] = RAM_SIZE-1;
+    // map RAM
+    mem_tab[0] = tihw.ram;
+    mem_mask[0] = tihw.ram_size-1;
 
-  /* Map ROM in two places */
-  mem_tab[1] = tihw.rom;	//ti_int_rom;
-  mem_mask[1] = ROM_SIZE-1;
-  mem_tab[2] = tihw.rom;	//ti_ext_rom;
-  mem_mask[2] = ROM_SIZE-1;
+    // map ROM in two places
+    mem_tab[1] = tihw.rom;
+    mem_mask[1] = tihw.rom_size-1;
+    mem_tab[2] = tihw.rom;
+    mem_mask[2] = tihw.rom_size-1;
 
-  /* Map IO */
-  mem_tab[3] = tihw.io;
-  mem_mask[3] = IO_SIZE-1;
-
-  /*
-  if(img->internal)
-    tihw.rom = ti_int_rom;
-  else
-    tihw.rom = ti_ext_rom;
-	*/
+    // map IO
+    mem_tab[3] = tihw.io;
+    mem_mask[3] = io_size-1;
   
-  // blit ROM
-  memcpy(tihw.rom, img->data, img->size);
-  free(img->data);
+    // blit ROM
+    memcpy(tihw.rom, img->data, img->size);
+    free(img->data);
 
-  return (tihw.ram && tihw.rom /*ti_int_rom && ti_ext_rom*/ && tihw.io);
+    if(!tihw.ram || !tihw.rom || !tihw.io)
+        return -1;
+
+    tihw.initial_pc = find_pc();
+
+    return 0;
 }
 
 int hw_mem_reset(void)
 {
+    return 0;
 }
 
 int hw_mem_exit(void)
 {
-  if(tihw.ram) 
-    free(tihw.ram); 
-  tihw.ram=NULL;
+    if(tihw.ram)
+        free(tihw.ram); 
+    tihw.ram=NULL;
   
-  if(tihw.rom)
-	  free(tihw.rom);
-  /*
-  if(ti_int_rom) 
-    free(ti_int_rom); 
-  ti_int_rom=NULL;
-  
-  if(ti_ext_rom) 
-    free(ti_ext_rom); 
-  ti_ext_rom=NULL;
-  */
-  if(tihw.io)  
-    free(tihw.io);  
-  tihw.io=NULL;
+    if(tihw.rom)
+	    free(tihw.rom);
+    tihw.rom = NULL;
+ 
+    if(tihw.io)  
+        free(tihw.io);  
+    tihw.io=NULL;
 
-  return 0;
+    return 0;
 }
 
-#define bput(adr, arg) {mem_tab[(adr)>>21][(adr) & mem_mask[(adr)>>21]] = (arg);}
-#define wput(adr, arg) {bput((adr), (arg)>>8) ; bput((adr)+1, (arg)&0xff);}
-#define lput(adr, arg) {wput((adr), (arg)>>16) ; wput((adr)+2, (arg)&0xffff);}
+/* Put/Get byte/word/longword */
+#define bput(adr, arg) { mem_tab[(adr)>>21][(adr) & mem_mask[(adr)>>21]] = (arg); }
+#define wput(adr, arg) { bput((adr), (arg)>> 8); bput((adr)+1, (arg)&0x00ff); }
+#define lput(adr, arg) { wput((adr), (arg)>>16); wput((adr)+2, (arg)&0xffff); }
 
 #define bget(adr) (mem_tab[(adr)>>21][(adr)&mem_mask[(adr)>>21]])
 #define wget(adr) ((UWORD)(((UWORD)bget(adr))<<8|bget((adr)+1)))
@@ -685,56 +670,52 @@ void extRomWriteByte(int addr,int v)
 }
 
 /*
-  Find the PC reset vector in ROM image/FLASH upgrade.
-  If we have a FLASH upgrade, we copy the vector table into RAM.
-  This is 
+    Find the PC reset vector in ROM dump or FLASH upgrade.
+    If we have a FLASH upgrade, we copy the vector table into RAM.
+    This allow to use FLASH upgrade as fake ROM dump.
 */
-int find_pc()
+static int find_pc()
 {
-  int i;
-  int vt = 0x000000; // vector table
-
-  // wrap ROM
-  /*
-  if(img->size < (2048*1024))
-    {
-      for (i=0;i<0x100000;i++)
-	ti_int_rom[i+0x100000] = ti_int_rom[i];
-	}*/
-
-  // find PC reset vector
-  if(img->flash)
-    { // TI89 or TI92+
-      for (vt = 0x12000; vt<img->size; vt++)
-	{
-	  if (*((int*)(tihw.rom+vt)) == 0xcccccccc) {
-	    vt += 4;
-	    break;
-	  }
-	}
-      vt += 4; // skip SP
+    int vt = 0x000000; // vector table
+    int i;
+    uint32_t pc;
+  
+    // find PC reset vector
+    if(tihw.rom_flash)
+    { 
+        // TI89 or TI92+
+        for (vt = 0x12000; vt < tihw.rom_size; vt++)
+	    {
+	        if (*((int*)(tihw.rom + vt)) == 0xcccccccc) 
+            {
+	            vt += 4;
+	            break;
+	        }
+        }
+    
+        vt += 4; // skip SP
    
-      uae_initial_pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
-        (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
+        pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
+            (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
     }
   else
-    { // TI92
+    { 
+      // TI92
       vt = 0;
       vt += 4; // skip SP
       
-      uae_initial_pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
+      pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
         (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
     }
 
-  // copy vector table into RAM for boot
-  for (i=0; i<256; i++) {
-    tihw.ram[i] = tihw.rom[vt + i];
-  }  
+    // copy vector table into RAM for boot
+    for (i = 0; i < 256; i++)
+        tihw.ram[i] = tihw.rom[vt + i];
 
-  return 0;
+    return (pc);
 }
 
-int log2(int i)
+static int log2(int i)
 {
 	return (int)(log10(i) / log10(2));
 }

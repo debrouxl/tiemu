@@ -105,6 +105,7 @@ typedef struct
     UBYTE	*rom;
     UBYTE	*ram;
     UBYTE	*io;
+    int     initial_pc;
 
     // timer.c
     int     timer_value;

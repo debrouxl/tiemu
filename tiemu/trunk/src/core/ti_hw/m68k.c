@@ -35,7 +35,7 @@ int hw_m68k_init(void)
 
 int hw_m68k_reset(void)
 {
-  find_pc();
+  //find_pc();
   rom_at_0();
   MC68000_reset();
   ram_at_0();

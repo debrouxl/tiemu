@@ -35,7 +35,7 @@ unsigned long specialflags;
 int currIntLev = -1;
 int broken_in;
 int delayTime = 0;
-int uae_initial_pc;
+//int uae_initial_pc;
 
 #ifdef INTEL_FLAG_OPT
 union flagu intel_flag_lookup[256];
@@ -533,7 +533,7 @@ static char* ccnames[] =
 void MC68000_reset(void)
 {
   regs.a[7] = get_long(0x000000);
-  m68k_setpc(uae_initial_pc);
+  m68k_setpc(tihw.initial_pc);
   regs.s = 1;
   regs.stopped = 0;
   regs.t = 0;
