@@ -155,13 +155,13 @@ void ti68k_display_hw_param_block(HW_PARM_BLOCK *s)
     if(s->len > 2+(4*i++))
         DISPLAY(_("  gateArray        : %i\n"), s->gateArray);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  physDisplayBitsWide : %u\n"), s->physDisplayBitsWide);
+        DISPLAY(_("  physDisplayBitsWide : %i\n"), s->physDisplayBitsWide & 0xff);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  physDisplayBitsTall : %u\n"), s->physDisplayBitsTall);
+        DISPLAY(_("  physDisplayBitsTall : %i\n"), s->physDisplayBitsTall & 0xff);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  LCDBitsWide         : %u\n"), s->LCDBitsWide);
+        DISPLAY(_("  LCDBitsWide         : %i\n"), s->LCDBitsWide & 0xff);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  LCDBitsTall         : %u\n"), s->LCDBitsTall);
+        DISPLAY(_("  LCDBitsTall         : %i\n"), s->LCDBitsTall & 0xff);
 }
 
 /*
@@ -318,7 +318,8 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
   	// Load TIB into memory and relocate at SPP
 	if(tib->data == NULL)
   		tib->data = malloc(SPP + ptr->data_length + 4);
-  	memset(tib->data, 0xff, SPP + ptr->data_length);
+  	//memset(tib->data, 0xff, SPP + ptr->data_length);
+    memset(tib->data + SPP, 0xff, ptr->data_length);
   	memcpy(tib->data + SPP, ptr->data_part, ptr->data_length);
   	
   	// Update current rom infos
@@ -329,11 +330,16 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
       		tib->calc_type = TI89;
 		break;
 		case DEVICE_TYPE_92P:
-      		tib->internal = 0;
             if(tifiles_which_calc_type(filename) == CALC_TI92P)
+            {
       		    tib->calc_type = TI92p;
+                tib->internal = 0;
+            }
             else
+            {
                 tib->calc_type = V200;
+                tib->internal = INTERNAL;
+            }
 		break;
 		default:
 			DISPLAY("TIB problem: <%i>!\n", 0xff & ptr->device_type);
@@ -347,7 +353,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 
   	get_rom_version(tib->data, tib->size, tib->version);
 
-	tib->hw_type = 2;	// hw2 is default
+	//tib->hw_type = 2;	// hw2 is default
   	
   	ti9x_free_flash_content(&content);
 	if(!preload)
@@ -511,10 +517,8 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	img.header_size = sizeof(IMG_INFO);
 	img.data_offset = 0x40;
     real_size = img.size - SPP;
-    if(img.calc_type != V200)
-        img.size = 4*MB;
-    else
-	    img.size = 2*MB;
+    img.size = ti68k_get_rom_size(img.calc_type);
+    img.hw_type = HW2;  //default
 	
 	// Write header
 	fwrite(&img, 1, sizeof(IMG_INFO), f);
@@ -574,12 +578,93 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
    	fwrite(&img.data[65536 * i + SPP], sizeof(char), last_block, f);
   
   	DISPLAY("\n");
-  	DISPLAY("Completing to 2MB size\n");
-  	for(j = SPP + real_size; j < (2 << 20); j++)
+  	DISPLAY("Completing to %iMB size\n", img.size >> 20);
+  	for(j = SPP + real_size; j < img.size; j++)
   		fputc(0xff, f);
   
   	// Close file
   	fclose(f);
+
+  	return 0;
+}
+
+/*
+    Convert an romdump into image and replace SPP by upgrade.
+    The resulting image has boot block.
+*/
+int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2, 
+                                     const char *dirname, char **dstname)
+{
+    FILE *f; 
+  	int err;
+	IMG_INFO img = { 0 };
+	char *ext;
+	gchar *basename;
+	int i;
+    int real_size;
+
+	// No filename, exits
+	if(!strcmp(srcname1, ""))
+		return 0;
+
+    if(!strcmp(srcname2, ""))
+		return 0;
+
+	// Preload romdump
+	err = ti68k_get_rom_infos(srcname1, &img, !0);
+	if(err)
+    {
+      	DISPLAY(_("Unable to get informations on ROM dump.\n"));
+      	return err;
+    }
+	ti68k_display_rom_infos(&img);
+
+    // Save size
+    real_size = img.size;
+
+    // Load upgrade
+    err = ti68k_get_tib_infos(srcname2, &img, !0);
+	if(err)
+    {
+      	DISPLAY(_("Unable to get informations on ROM dump.\n"));
+      	return err;
+    }
+	ti68k_display_tib_infos(&img);
+
+	// Create destination file
+	basename = g_path_get_basename(srcname1);
+	ext = strrchr(basename, '.');
+  	*ext='\0';
+	strcat(basename, ".img");
+
+	*dstname = g_strconcat(dirname, basename, NULL);
+	g_free(basename);
+
+    // Restore size
+    img.size = real_size;
+
+	// Open dest file
+  	f = fopen(*dstname, "wb");
+  	if(f == NULL)
+    {
+      	fprintf(stderr, "Unable to open this file: <%s>\n", *dstname);
+      	return ERR_68K_CANT_OPEN;
+    }
+
+	// Fill header
+	strcpy(img.signature, "TiEmu img v2.00");
+	img.header_size = sizeof(IMG_INFO);
+	img.data_offset = 0x40;
+    img.has_boot = 1;
+
+	// Write file
+	fwrite(&img, 1, sizeof(IMG_INFO), f);
+	for(i = img.header_size; i < img.data_offset; i++)
+		fputc(0, f);
+	fwrite(img.data, sizeof(char), img.size, f);
+
+	// Close file
+	fclose(f);
 
   	return 0;
 }

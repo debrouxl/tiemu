@@ -64,6 +64,7 @@ int main(int argc, char **argv)
 {
 	GThread *thread = NULL;
 	GError *error = NULL;
+    char *dstname;
 
 	/*
 		Do primary initializations 
@@ -132,6 +133,9 @@ int main(int argc, char **argv)
     */
     splash_screen_set_label(_("Searching for ROM dumps..."));
     ti68k_scan_files(inst_paths.img_dir, inst_paths.img_dir);
+
+////test
+    //ti68k_merge_rom_and_tib_to_image("C:\\msvc\\tilp\\v200kk.rom", "C:\\msvc\\tilp\\os.v2u", inst_paths.img_dir, &dstname);
 
 	/*
 		Attempt to load an image (step 3)

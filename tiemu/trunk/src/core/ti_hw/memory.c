@@ -42,8 +42,6 @@
 
 static IMG_INFO *img = &img_infos; // a shortcut
 
-//const int rom_sizes[] = { 1*MB, 2*MB, 2*MB, 4*MB, 4*MB };	// 92, 89, 92+, V200, TI89 Titanium
-//const int ram_sizes[] = { 256*KB, 256*KB, 256*KB, 256*KB, 256*KB };
 const int rom_base[] = { 0x400000, 0x200000, 0x400000, 0x800000 };
 const int io_size = 32;
 

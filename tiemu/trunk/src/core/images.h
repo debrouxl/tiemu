@@ -89,6 +89,8 @@ int ti68k_get_hw_param_block(IMG_INFO *img, HW_PARM_BLOCK *block);
 
 int ti68k_convert_rom_to_image(const char *src, const char *dirname, char **dst);
 int ti68k_convert_tib_to_image(const char *src, const char *dirname, char **dst);
+int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2, 
+                                     const char *dirname, char **dstname);
 
 int ti68k_load_image(const char *filename);
 int ti68k_load_upgrade(const char *filename);
