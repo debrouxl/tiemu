@@ -430,6 +430,10 @@ SOURCE=.\libjpeg.lib
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\ChangeLog
+# End Source File
+# Begin Source File
+
 SOURCE="..\..\docs\ti_hw\tie\IO-PORTS.TXT"
 # End Source File
 # Begin Source File

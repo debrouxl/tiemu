@@ -585,9 +585,7 @@ void gui_popup_menu(void);
 int hid_update_keys(void) 
 {
 	static int iKeyWasPressed;			// a key was pressed
-	static int lastKey = -1;            // the latest key pressed
   	SDL_Event event;
-  	int i;
 
   	iKeyWasPressed = 0;
   
@@ -595,15 +593,14 @@ int hid_update_keys(void)
     {
       	if(event.type == SDL_MOUSEBUTTONDOWN) 
 		{
-	  		if(event.button.button==1) 
+	  		if(event.button.button == 1) 
 	    	{
-	      		i = pos_to_key(event.button.x,event.button.y);
-	      		if(i >= 0) 
+	      		int key = pos_to_key(event.button.x,event.button.y);
+	      		if(key >= 0) 
 				{
 		  			if(event.button.button == 1) 
 		    		{
-		      			lastKey = i;
-		      			ti68k_kbd_set_key(i,1);
+		      			ti68k_kbd_set_key(key, 1);
 		      			iKeyWasPressed = 1;
 		    		}
 				}
@@ -611,11 +608,9 @@ int hid_update_keys(void)
 			else if(event.button.button == 3)
 	    	{
 	      		if(!bFullscreen) 
-				{
-					// flush event
-		      		SDL_WaitEvent(&event);
-					// and popup menu
-			  		gui_popup_menu();
+				{					
+		      		SDL_WaitEvent(&event);  // flush event
+			  		gui_popup_menu();       // and popup menu
 				}
 	      		else
 					hid_switch_windowed();
@@ -627,12 +622,15 @@ int hid_update_keys(void)
 		}
       	else if(event.type == SDL_MOUSEBUTTONUP) 
 		{
-	  		if(event.button.button==1) 
+	  		if(event.button.button == 1) 
 	    	{
-	      		if(lastKey!=-1) 
+	      		int key = pos_to_key(event.button.x,event.button.y);
+	      		if(key >= 0) 
 				{
-		  			ti68k_kbd_set_key(lastKey,0);
-		  			lastKey = -1;
+		  			if(event.button.button == 1) 
+		    		{
+		      			ti68k_kbd_set_key(key, 0);
+		    		}
 				}
 	    	}
 		}
@@ -665,26 +663,28 @@ int hid_update_keys(void)
 	    	}
 	  		else
 	    	{
-	      		iKeyWasPressed = 1;
-
+                /*
 				if(iAlpha)
 				{
 					ti68k_kbd_set_key(TIKEY_ALPHA, 1);
-					iAlpha = 0;
+					//iAlpha = 0;
 				}
+                */
 
 	      		ti68k_kbd_set_key(sdl_to_ti(event.key.keysym.sym), 1);
+                iKeyWasPressed = 1;
 	    	}
 		}
       	else if(event.type == SDL_KEYUP) 
 		{
-	  		if(iAlpha)
+	  		ti68k_kbd_set_key(sdl_to_ti(event.key.keysym.sym), 0);
+/*
+            if(iAlpha)
 	    	{
 	      		ti68k_kbd_set_key(TIKEY_ALPHA, 0);
 	      		iAlpha = 0;
 	    	}
-
-	  		ti68k_kbd_set_key(sdl_to_ti(event.key.keysym.sym), 0);
+            */
 		}
       	else if(event.type == SDL_QUIT) 
 		{
