@@ -52,11 +52,11 @@ int cycle_count = 0;
 int hw_init(void)
 {
 	hw_mem_init();
+	hw_io_init();
 	hw_dbus_init();
 	hw_kbd_init();
 	hw_timer_init();
 	hw_lcd_init();
-	hw_io_init();
 	hw_m68k_init();
 
     // Set hardware update rate (dependant from io[0x15])

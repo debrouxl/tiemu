@@ -53,11 +53,10 @@ int hw_io_init(void)
 	tihw.io[0x0d] = 0x40;
 	tihw.io[0x0e] = 0xff;
 	tihw.io[0x0f] = 0x00;
-	tihw.io[0x10] = 0x4c;
-	tihw.io[0x11] = 0x00;
+
 	tihw.io[0x12] = 0x00;
 	tihw.io[0x15] = 0x1b;
-	tihw.io[0x17] = (tihw.hw_type == HW1) ? 0xB2 : 0xCC;
+
 	tihw.io[0x18] = 0x03;
 	tihw.io[0x19] = 0x80;
 	tihw.io[0x1a] = 0xff;
@@ -136,12 +135,13 @@ void io_put_byte(CPTR adr, UBYTE arg)
             break;
         case 0x10: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8
-			if(tihw.hw_type == 1)
-				tihw.lcd_addr = (((tihw.lcd_addr >> 3) & 0x00ff) | ((arg & 0xff) << 8)) << 3;
+			if(tihw.hw_type == HW1)
+				tihw.lcd_ptr = &tihw.ram[((tihw.io[0x10] << 8) | tihw.io[0x11]) << 3];
         break;
         case 0x11: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8
-            tihw.lcd_addr = (((tihw.lcd_addr >> 3) & 0xff00) | (arg & 0xff)) << 3;
+			if(tihw.hw_type == HW1)
+				tihw.lcd_ptr = &tihw.ram[((tihw.io[0x10] << 8) | tihw.io[0x11]) << 3];
         break;
         case 0x12:	// -w <76543210>
         break;

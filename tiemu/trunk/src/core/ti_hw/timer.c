@@ -37,7 +37,12 @@
 int hw_timer_init(void)
 {
     tihw.timer_value = 0;
-    tihw.timer_init = 0xB2;
+	if(tihw.hw_type == HW1)
+		tihw.timer_init = 0xB2;
+	else if(tihw.hw_type == HW2)
+		tihw.timer_init = 0xCC;
+
+	tihw.io[0x17] = tihw.timer_init;
 
     return 0;
 }

@@ -29,6 +29,8 @@
 
 int hw_lcd_init(void)
 {
+	uint16_t lcd_addr;
+
 	// Set contrast
 	/*
 	if(tihw.calc_type == TI92)
@@ -42,15 +44,19 @@ int hw_lcd_init(void)
 	// TI92 ROM 2.x : $4720
 	// TI89/92+/V200: $4c00;
 	if(tihw.rom_flash)
-		tihw.lcd_addr = 0x4c00;
+		lcd_addr = 0x4c00;
 	else if(tihw.ti92v2)
-		tihw.lcd_addr = 0x4720;
+		lcd_addr = 0x4720;
 	else if(tihw.ti92v1)
-		tihw.lcd_addr = 0x4440;
+		lcd_addr = 0x4440;
 
-	// for use by HID
-	tihw.lcd_ptr = &tihw.ram[tihw.lcd_addr];
+	lcd_addr >>= 3;
+
+	tihw.io[0x10] = MSB(lcd_addr);
+	tihw.io[0x11] = LSB(lcd_addr);
     
+	tihw.lcd_ptr = &tihw.ram[lcd_addr << 3];
+
     return 0;
 }
 
