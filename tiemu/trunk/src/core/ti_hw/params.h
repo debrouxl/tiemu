@@ -38,8 +38,6 @@ struct global_param {
   int i_tick;
   int sync_one;
   int restrict;
-  
-  //TicableLinkParam link_cable;
 };
 typedef struct global_param Ti68kParameters;
 
