@@ -99,8 +99,8 @@ static void init_win32_paths(void)
 	inst_paths.skin_dir =
 	    g_strconcat(inst_paths.base_dir, "skins\\", NULL);
 	inst_paths.glade_dir =
-		g_strdup("C:\\source\\roms\\tiemu\\glade\\");
-	    //g_strconcat(inst_paths.base_dir, "glade\\", NULL);
+		//g_strdup("C:\\source\\roms\\tiemu\\glade\\");
+	    g_strconcat(inst_paths.base_dir, "glade\\", NULL);
 	inst_paths.home_dir = 
 	    g_strconcat(inst_paths.base_dir, "My ROM images\\", NULL);
 

@@ -28,6 +28,7 @@
 #include <glade/glade.h>
 
 #include "intl.h"
+#include "support.h"
 #include "struct.h"
 #include "version.h"
 #include "popup.h"
@@ -77,22 +78,22 @@ GtkWidget* display_popup_menu(void)
 	menu = glade_xml_get_widget(xml, "popup_menu");
 
 	// set version
-	w = lookup_widget(menu, "popup_menu_header");
+	w = glade_xml_get_widget(xml, "popup_menu_header");
 	s = g_strdup_printf("TiEmu, version %s", TIEMU_VERSION);
 	gtk_label_set_text(GTK_LABEL(GTK_BIN(w)->child), s);
 	g_free(s);
 
 	// init check buttons
-	w = lookup_widget(menu, "sync1");
+	w = glade_xml_get_widget(xml, "sync1");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(w), (options.params)->sync_one);
 
-	w = lookup_widget(menu, "restrict1");
+	w = glade_xml_get_widget(xml, "restrict1");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(w), !((options.params)->background));
 
 	return menu;
 }
 
-void
+GLADE_CB void
 on_popup_menu_cancel                   (GtkMenuShell    *menushell,
                                         gpointer         user_data)
 {
@@ -101,7 +102,7 @@ on_popup_menu_cancel                   (GtkMenuShell    *menushell,
 }
 
 
-gboolean
+GLADE_CB gboolean
 on_popup_menu_button_press_event       (GtkWidget       *widget,
                                         GdkEventButton  *event,
                                         gpointer         user_data)
@@ -119,7 +120,7 @@ on_popup_menu_button_press_event       (GtkWidget       *widget,
 }
 
 
-gboolean
+GLADE_CB gboolean
 on_popup_menu_key_press_event          (GtkWidget       *widget,
                                         GdkEventKey     *event,
                                         gpointer         user_data)
@@ -130,7 +131,7 @@ on_popup_menu_key_press_event          (GtkWidget       *widget,
 }
 
 
-void
+GLADE_CB void
 on_popup_menu_header                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -138,7 +139,7 @@ on_popup_menu_header                   (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_send_file_to_gtktiemu1_activate     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -147,7 +148,7 @@ on_send_file_to_gtktiemu1_activate     (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_link_cable1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -155,7 +156,7 @@ on_link_cable1_activate                (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_save_config1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -171,7 +172,7 @@ on_save_config1_activate               (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_load_config1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -181,7 +182,7 @@ on_load_config1_activate               (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_load_state_image1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -189,7 +190,7 @@ on_load_state_image1_activate          (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_save_state_image1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -197,7 +198,7 @@ on_save_state_image1_activate          (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_revert_to_saved_state1_activate     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -206,7 +207,7 @@ on_revert_to_saved_state1_activate     (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -232,7 +233,7 @@ on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_reset_calc1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -241,7 +242,7 @@ on_reset_calc1_activate                (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_set_rom1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -250,7 +251,7 @@ on_set_rom1_activate                   (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_restrict_to_actual_speed1_activate  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -258,7 +259,7 @@ on_restrict_to_actual_speed1_activate  (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_sync1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -271,15 +272,15 @@ on_sync1_activate                      (GtkMenuItem     *menuitem,
 }
 
 
-void
-on_number_of_colors1_activate          (GtkMenuItem     *menuitem,
+GLADE_CB void
+on_1_colors1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 
 }
 
 
-void
+GLADE_CB void
 on_2_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -287,7 +288,7 @@ on_2_colors1_activate                  (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_4_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -295,7 +296,7 @@ on_4_colors1_activate                  (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_7_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -303,16 +304,16 @@ on_7_colors1_activate                  (GtkMenuItem     *menuitem,
 }
 
 
-void
-on_blurry1_activate                    (GtkMenuItem     *menuitem,
+GLADE_CB void
+on_11_colors1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 
 }
 
 
-void
-on_normal_view__1x_1_activate          (GtkMenuItem     *menuitem,
+GLADE_CB void
+on_normal_view1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	hid_switch_normal_view();
@@ -320,8 +321,8 @@ on_normal_view__1x_1_activate          (GtkMenuItem     *menuitem,
 }
 
 
-void
-on_large_view__x2_1_activate           (GtkMenuItem     *menuitem,
+GLADE_CB void
+on_large_view1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	hid_switch_large_view();
@@ -329,7 +330,7 @@ on_large_view__x2_1_activate           (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_full_screen1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -338,8 +339,8 @@ on_full_screen1_activate               (GtkMenuItem     *menuitem,
 }
 
 
-void
-on_none1_activate                      (GtkMenuItem     *menuitem,
+GLADE_CB void
+on_no_skin1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	hid_switch_without_skin();
@@ -347,8 +348,8 @@ on_none1_activate                      (GtkMenuItem     *menuitem,
 }
 
 
-void
-on_skin1_activate                      (GtkMenuItem     *menuitem,
+GLADE_CB void
+on_default_skin1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	hid_switch_with_skin();
@@ -356,7 +357,7 @@ on_skin1_activate                      (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_set_skin1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -364,8 +365,8 @@ on_set_skin1_activate                  (GtkMenuItem     *menuitem,
 }
 
 
-void
-on_now__1_activate                     (GtkMenuItem     *menuitem,
+GLADE_CB void
+on_now1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	hid_screenshot(NULL);
@@ -373,23 +374,23 @@ on_now__1_activate                     (GtkMenuItem     *menuitem,
 }
 
 
-void
-on_rbm_options1_activate               (GtkMenuItem     *menuitem,
+GLADE_CB void
+on_screen_options1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	display_scopt_dbox();
 }
 
 
-void
-on_help3_activate                      (GtkMenuItem     *menuitem,
+GLADE_CB void
+on_help1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	display_help_dbox();
 }
 
 
-void
+GLADE_CB void
 on_manpage1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -397,7 +398,7 @@ on_manpage1_activate                   (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_changelog1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -405,7 +406,7 @@ on_changelog1_activate                 (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_about1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -413,7 +414,7 @@ on_about1_activate                     (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_infos1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -421,8 +422,8 @@ on_infos1_activate                     (GtkMenuItem     *menuitem,
 }
 
 
-void
-on_exit1_activate                      (GtkMenuItem     *menuitem,
+GLADE_CB void
+on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	ti68k_saveState((options.params)->ram_file);
@@ -434,7 +435,7 @@ on_exit1_activate                      (GtkMenuItem     *menuitem,
 }
 
 
-void
+GLADE_CB void
 on_exit_without_saving_state1_activate (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {

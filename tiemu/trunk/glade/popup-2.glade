@@ -208,10 +208,8 @@
 	  <child>
 	    <widget class="GtkMenuItem" id="number_of_colors1">
 	      <property name="visible">True</property>
-	      <property name="tooltip" translatable="yes">Set current number of emulated extra grayscales colors</property>
 	      <property name="label" translatable="yes">Number of colors...</property>
 	      <property name="use_underline">True</property>
-	      <signal name="activate" handler="on_number_of_colors1_activate"/>
 
 	      <child>
 		<widget class="GtkMenu" id="number_of_colors1_menu">
@@ -221,8 +219,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">2 colors</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
-			  <property name="group">ncolors1</property>
+		      <property name="active">True</property>
 		      <signal name="activate" handler="on_2_colors1_activate" last_modification_time="Fri, 14 May 2004 05:55:42 GMT"/>
 		    </widget>
 		  </child>
@@ -233,7 +230,7 @@
 		      <property name="label" translatable="yes">4 colors</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">True</property>
-		      <property name="group">ncolors1</property>
+		      <property name="group">2_colors1</property>
 		      <signal name="activate" handler="on_4_colors1_activate" last_modification_time="Fri, 14 May 2004 05:55:42 GMT"/>
 		    </widget>
 		  </child>
@@ -243,20 +240,20 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">7 colors</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
-		      <property name="group">ncolors1</property>
+		      <property name="active">True</property>
+		      <property name="group">2_colors1</property>
 		      <signal name="activate" handler="on_7_colors1_activate" last_modification_time="Fri, 14 May 2004 05:55:42 GMT"/>
 		    </widget>
 		  </child>
 
 		  <child>
-		    <widget class="GtkRadioMenuItem" id="blurry1">
+		    <widget class="GtkRadioMenuItem" id="11_colors1">
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">blurry</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
-		      <property name="group">ncolors1</property>
-		      <signal name="activate" handler="on_blurry1_activate" last_modification_time="Fri, 14 May 2004 05:55:42 GMT"/>
+		      <property name="active">True</property>
+		      <property name="group">2_colors1</property>
+		      <signal name="activate" handler="on_11_colors1_activate" last_modification_time="Fri, 14 May 2004 15:26:48 GMT"/>
 		    </widget>
 		  </child>
 		</widget>
@@ -271,20 +268,20 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkMenuItem" id="normal_view_(1x)1">
+	    <widget class="GtkMenuItem" id="normal_view1">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">_Normal view (1x)</property>
+	      <property name="label" translatable="yes">_Normal view (x1)</property>
 	      <property name="use_underline">True</property>
-	      <signal name="activate" handler="on_normal_view_(1x)1_activate"/>
+	      <signal name="activate" handler="on_normal_view1_activate" last_modification_time="Fri, 14 May 2004 15:28:18 GMT"/>
 	    </widget>
 	  </child>
 
 	  <child>
-	    <widget class="GtkMenuItem" id="large_view_(x2)1">
+	    <widget class="GtkMenuItem" id="large_view1">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Large view (x2)</property>
 	      <property name="use_underline">True</property>
-	      <signal name="activate" handler="on_large_view_(x2)1_activate"/>
+	      <signal name="activate" handler="on_large_view1_activate" last_modification_time="Fri, 14 May 2004 15:28:18 GMT"/>
 	    </widget>
 	  </child>
 
@@ -311,20 +308,20 @@
 	<widget class="GtkMenu" id="skin_for_current_calc1_menu">
 
 	  <child>
-	    <widget class="GtkMenuItem" id="none1">
+	    <widget class="GtkMenuItem" id="no_skin1">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">None</property>
 	      <property name="use_underline">True</property>
-	      <signal name="activate" handler="on_none1_activate"/>
+	      <signal name="activate" handler="on_no_skin1_activate" last_modification_time="Fri, 14 May 2004 15:29:13 GMT"/>
 	    </widget>
 	  </child>
 
 	  <child>
-	    <widget class="GtkMenuItem" id="skin1">
+	    <widget class="GtkMenuItem" id="default_skin1">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Default</property>
 	      <property name="use_underline">True</property>
-	      <signal name="activate" handler="on_skin1_activate"/>
+	      <signal name="activate" handler="on_default_skin1_activate" last_modification_time="Fri, 14 May 2004 15:29:13 GMT"/>
 	    </widget>
 	  </child>
 
@@ -351,11 +348,11 @@
 	<widget class="GtkMenu" id="screenshot1_menu">
 
 	  <child>
-	    <widget class="GtkMenuItem" id="now_!1">
+	    <widget class="GtkMenuItem" id="now1">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Now !</property>
 	      <property name="use_underline">True</property>
-	      <signal name="activate" handler="on_now_!1_activate"/>
+	      <signal name="activate" handler="on_now1_activate" last_modification_time="Fri, 14 May 2004 15:29:13 GMT"/>
 	      <accelerator key="F9" modifiers="0" signal="activate"/>
 	    </widget>
 	  </child>
@@ -365,7 +362,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Options</property>
 	      <property name="use_underline">True</property>
-	      <signal name="activate" handler="on_rbm_options1_activate"/>
+	      <signal name="activate" handler="on_screen_options1_activate" last_modification_time="Fri, 14 May 2004 15:34:09 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
@@ -380,20 +377,20 @@
   </child>
 
   <child>
-    <widget class="GtkMenuItem" id="help1">
+    <widget class="GtkMenuItem" id="misc1">
       <property name="visible">True</property>
-      <property name="label" translatable="yes">_Help</property>
+      <property name="label" translatable="yes">_Misc</property>
       <property name="use_underline">True</property>
 
       <child>
-	<widget class="GtkMenu" id="help1_menu">
+	<widget class="GtkMenu" id="misc1_menu">
 
 	  <child>
-	    <widget class="GtkMenuItem" id="help3">
+	    <widget class="GtkMenuItem" id="help1">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Help</property>
 	      <property name="use_underline">True</property>
-	      <signal name="activate" handler="on_help3_activate"/>
+	      <signal name="activate" handler="on_help1_activate" last_modification_time="Fri, 14 May 2004 15:30:18 GMT"/>
 	      <accelerator key="H" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 	    </widget>
 	  </child>
@@ -457,12 +454,12 @@
       <property name="visible">True</property>
       <property name="label" translatable="yes">E_xit and save state</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="on_exit1_activate"/>
+      <signal name="activate" handler="on_exit_and_save_state1_activate" last_modification_time="Fri, 14 May 2004 15:30:18 GMT"/>
     </widget>
   </child>
 
   <child>
-    <widget class="GtkMenuItem" id="exit_without_saving_state1">
+    <widget class="GtkMenuItem" id="exit2">
       <property name="visible">True</property>
       <property name="label" translatable="yes">Exit _without saving state</property>
       <property name="use_underline">True</property>
