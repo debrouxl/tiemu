@@ -132,12 +132,13 @@ static int hid_init_subsystem(void)
       iLcdW = 240 << iScale; 
       iLcdH = 128 << iScale;
 
-      printf("<<%s>>\n", inst_paths.skin_dir);
       g_free(options.skin_file);
       options.skin_file = g_strconcat(inst_paths.skin_dir,
 				      "ti92.skn", NULL);
       if(skin_load(options.skin_file) == -1)
 	      exit(-1);
+
+      printf("<%i %i>\n", skin_infos.lcd_pos.left, skin_infos.lcd_pos.top);
       
       key_mapping = sknKey92;
     }
@@ -172,7 +173,6 @@ static int hid_init_subsystem(void)
     }
 
   // Set VIDEO mode and create the window surface
-  printf("<%i %i>\n", iWinW, iWinH);
   if(!iWinW && !iWinH)
     exit(-1);
   if (!(sdlWindow = SDL_SetVideoMode(iWinW, iWinH, 

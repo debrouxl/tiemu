@@ -76,7 +76,7 @@ void change_runlevel(int new, int min)
 /**********************/
 
 Ti68kRomInfo current_rom_info = { 0 };
-Ti68kParameters params;
+Ti68kParameters params = { 0 };
 
 
 /***********************************/
@@ -117,14 +117,9 @@ int ti68k_loadDefaultConfig(void)
   params.tick_rate = 40000;
   params.cycle_rate = 150;
   params.sync_one = 0;
-  /*
-  params.link_cable.link_type = LINK_TIE;
-  params.link_cable.io_addr = VLINK0;
-  params.link_cable.timeout = 10;
-  params.link_cable.delay = 5;
-  //params.link_cable.baudrate(BR9600);
-  */
+
   ticable_get_default_param(&(params.link_cable));
+  params.link_cable.link_type = LINK_NUL;
 
   return 0;
 }
