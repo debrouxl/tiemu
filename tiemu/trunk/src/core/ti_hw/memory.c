@@ -637,8 +637,8 @@ void extRomWriteByte(int addr,int v)
   
   if(flash_protect) 
     return;
-  //if (getCalcType() != (TI92 | MODULEPLUS)) return;
-  if(img->calc_type != (TI92 | MODULEPLUS)) 
+
+  if(img->calc_type != TI92p) 
     return;
 
   if (rom_write_ready)

@@ -129,7 +129,7 @@ static int hid_init_subsystem(void)
   pLcdBuf = malloc((iScrW << iScale) * (iScrH << iScale));
   
   // Get LCD size depending on calculator type
-  if (tihw.calc_type & TI92) 
+  if((tihw.calc_type == TI92) || (tihw.calc_type == TI92p))
     {
       iLcdW = 240 << iScale; 
       iLcdH = 128 << iScale;
@@ -147,7 +147,7 @@ static int hid_init_subsystem(void)
       
       key_mapping = sknKey92;
     }
-  else if (tihw.calc_type & TI89)
+  else if (tihw.calc_type == TI89)
     {
       iLcdW = 160 << iScale; 
       iLcdH = 100 << iScale;
@@ -165,6 +165,13 @@ static int hid_init_subsystem(void)
 
       key_mapping = sknKey89;
     }
+  else
+  {
+	  gchar *s = g_strdup_printf("no skin found for this calc\n");
+	  tiemu_error(0, s);
+	  g_free(s);
+	  return -1;
+  }
   
   // Init B&W pixel values)
   whitePixel = skin_infos.lcd_white;

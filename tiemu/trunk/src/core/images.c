@@ -175,7 +175,7 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
   	if(rom->internal && rom->flash)
     	rom->calc_type = TI89;
   	else if (rom->flash)
-    	rom->calc_type = TI92 | MODULEPLUS;
+    	rom->calc_type = TI92p;
   	else 
     	rom->calc_type = TI92;
   
@@ -239,7 +239,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 		break;
 		case DEVICE_TYPE_92P:
       		tib->internal = 0;
-      		tib->calc_type = TI92 | MODULEPLUS;
+      		tib->calc_type = TI92p;
 		break;
 		default:
 			DISPLAY("TIB problem: <%i>!\n", 0xff & ptr->device_type);

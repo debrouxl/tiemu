@@ -129,7 +129,7 @@ int ti68k_init(void)
 	cb_screen_on_off(!0);
 
 	// note: TI92+ does not flicker when LCD is refresh on IRQ1 (??)
-	if(tihw.calc_type == (TI92|MODULEPLUS))
+	if(tihw.calc_type == TI92p)
 		params.sync_one = 0;
 
 	return 0;

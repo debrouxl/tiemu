@@ -60,8 +60,11 @@ gint display_skin_dbox()
 	    case TI89:
             ok = !strcmp(si.calc, SKIN_TI89);
 		break;
-	    case TI92 | MODULEPLUS:
+	    case TI92p:
             ok = !strcmp(si.calc, SKIN_TI92P);
+		break;
+		case V200:
+			ok = !strcmp(si.calc, SKIN_V200);
 		break;
 	    default: 
             ok = 0;
@@ -146,9 +149,12 @@ gint display_tifile_dbox()
     case TI89:
         ext = "*.89?";
         break;
-    case TI92 | MODULEPLUS:
+    case TI92p:
         ext = "*.9x?";
         break;
+	case V200:
+		ext = "*.v2?";
+		break;
     default:
         ext = "*.???";
         break;

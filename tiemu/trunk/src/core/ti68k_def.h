@@ -43,8 +43,7 @@
 
 #define TI92 		(1 << 0)
 #define TI89 		(1 << 1)
-#define MODULEPLUS 	(1 << 2)
-#define TI92p 		(TI92 | MODULEPLUS)
+#define TI92p	 	(1 << 2)
 #define V200		(1 << 3)
 //#define TI89TI		(1 << 4)
   

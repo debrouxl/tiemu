@@ -273,7 +273,9 @@ int init_linkfile()
       break;
     case TI89: ticalc_set_calc(CALC_TI89, &itc);
       break;
-    case TI92 | MODULEPLUS: ticalc_set_calc(CALC_TI92P, &itc);
+    case TI92p: ticalc_set_calc(CALC_TI92P, &itc);
+      break;
+	case V200: ticalc_set_calc(CALC_V200, &itc);
       break;
     default: return ERR_68K_INTERNAL;
       break;
