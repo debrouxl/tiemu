@@ -193,7 +193,7 @@ int romcalls_is_loaded(void)
 }
 
 /*
-	Parsing of ROM call address from FLASH (list is supposed to sorted by id !)
+	Parsing of ROM call address from FLASH (list is supposed to be sorted by id !)
 */
 
 // cache last search

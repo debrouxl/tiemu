@@ -12,7 +12,7 @@ aboutir.
 * Un Step To sur une instruction suffisamment loin de l'instruction
 courante n'a aucun effet, c'est bizarre...
 
-* Comment fait-on pour faire passer en 'disable' un breakpoint ? Il y
++ Comment fait-on pour faire passer en 'disable' un breakpoint ? Il y
 a deux boutons dans la fenêtre qui mais il sont toujours grisés, je ne
 sais plus à quoi ils servent, c'est pas ça ?
 

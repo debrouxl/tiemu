@@ -37,18 +37,7 @@
 #include "ti68k_int.h"
 #include "struct.h"
 #include "dbg_all.h"
-
-/* Macros: addresses are 24-bits. We use the MSb to encode 
-	bkpt state (enabled/disabled) */
-
-#define BKPT_MASK			0x80000000
-#define BKPT_ADDR(addr)		(addr & ~BKPT_MASK)
-
-#define ENABLE_BKPT(addr)	(addr |= BKPT_MASK)
-#define DISABLE_BKPT(addr)	(addr &= ~BKPT_MASK)
-
-#define BKPT_IS_ENABLED(addr)	(!(addr & BKPT_MASK))
-#define BKPT_ENABLED(addr)		(!(addr & BKPT_MASK))
+#include "bkpts.h"
 
 enum { 
 	    COL_SYMBOL, COL_TYPE, COL_STATUS, COL_START, COL_END, COL_MODE,
@@ -154,8 +143,8 @@ static void clist_populate(GtkListStore *store)
 		gint n = GPOINTER_TO_INT(l->data);
 		gchar *str1, *str2;
 		
-		str1 = g_strdup_printf("#%i", n);
-		str2 = g_strdup_printf("0x%06x", 4 * n);
+		str1 = g_strdup_printf("#%i", BKPT_ADDR(n));
+		str2 = g_strdup_printf("0x%06x", 4 * BKPT_ADDR(n));
 		
 		gtk_list_store_append(store, &iter);
 		gtk_list_store_set(store, &iter, 
@@ -354,7 +343,7 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
         {
         case BK_TYPE_CODE:
             sscanf(row_text[COL_START], "%x", &min);
-            ti68k_bkpt_del_address(BKPT_ADDR(min));
+            ti68k_bkpt_del_address(min);
             break;
         case BK_TYPE_EXCEPTION:
             sscanf(row_text[COL_SYMBOL], "#%i", &n);
@@ -363,13 +352,13 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
         case BK_TYPE_ACCESS:
             mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
             sscanf(row_text[COL_START], "%x", &min);
-            ti68k_bkpt_del_access(BKPT_ADDR(min), mode);
+            ti68k_bkpt_del_access(min, mode);
             break;
         case BK_TYPE_RANGE:
             mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
             sscanf(row_text[COL_START], "%x", &min);
             sscanf(row_text[COL_END], "%x", &max);
-            ti68k_bkpt_del_range(BKPT_ADDR(min), BKPT_ADDR(max), mode);        
+            ti68k_bkpt_del_range(min, max, mode);        
             break;
         }
         g_strfreev(row_text);
@@ -385,8 +374,59 @@ dbgbkpts_button3_clicked                     (GtkButton       *button,
                                               GtkWidget       *widget,
                                               gpointer         user_data)
 {
+	GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GList *l;
+	
+	// get selection
+	selection = gtk_tree_view_get_selection(view);
+	for (l = gtk_tree_selection_get_selected_rows(selection, &model);
+	     l != NULL; l = l->next) 
+	{
+		GtkTreeIter iter;
+		GtkTreePath *path = l->data;
+        gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
+        uint32_t n, type, min, max, mode;
+			
+		gtk_tree_model_get_iter(model, &iter, path);
+		gtk_tree_model_get(model, &iter, 
+            COL_SYMBOL, &row_text[COL_SYMBOL], 
+            COL_TYPE, &row_text[COL_TYPE], 
+            COL_START, &row_text[COL_START], 
+            COL_END, &row_text[COL_END],
+            COL_MODE, &row_text[COL_MODE],
+            -1);
+		
+        type = ti68k_string_to_bkpt_type(row_text[COL_TYPE]);
+        switch(type)
+        {
+        case BK_TYPE_CODE:
+            sscanf(row_text[COL_START], "%x", &min);
+            ti68k_bkpt_set_address(BKPT_ADDR(min), BKPT_DISABLE(min));
+            break;
+        case BK_TYPE_EXCEPTION:
+            sscanf(row_text[COL_SYMBOL], "#%i", &n);
+            ti68k_bkpt_set_exception(BKPT_ADDR(n), BKPT_DISABLE(n));
+            break;
+        case BK_TYPE_ACCESS:
+            mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
+            sscanf(row_text[COL_START], "%x", &min);
+            ti68k_bkpt_set_access(BKPT_ADDR(min), mode, BKPT_DISABLE(min));
+            break;
+        case BK_TYPE_RANGE:
+            mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
+            sscanf(row_text[COL_START], "%x", &min);
+            sscanf(row_text[COL_END], "%x", &max);
+            ti68k_bkpt_set_range(BKPT_ADDR(min), BKPT_ADDR(max), mode,
+								BKPT_DISABLE(min), BKPT_DISABLE(max));
+            break;
+        }
+        g_strfreev(row_text);
+    }
 
-	dbgbkpts_display_window();
+    dbgbkpts_display_window();
 }
 
 
@@ -395,8 +435,59 @@ GLADE_CB void
 dbgbkpts_button4_clicked                     (GtkButton       *button,
                                               gpointer         user_data)
 {
+	GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GList *l;
+	
+	// get selection
+	selection = gtk_tree_view_get_selection(view);
+	for (l = gtk_tree_selection_get_selected_rows(selection, &model);
+	     l != NULL; l = l->next) 
+	{
+		GtkTreeIter iter;
+		GtkTreePath *path = l->data;
+        gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
+        uint32_t n, type, min, max, mode;
+			
+		gtk_tree_model_get_iter(model, &iter, path);
+		gtk_tree_model_get(model, &iter, 
+            COL_SYMBOL, &row_text[COL_SYMBOL], 
+            COL_TYPE, &row_text[COL_TYPE], 
+            COL_START, &row_text[COL_START], 
+            COL_END, &row_text[COL_END],
+            COL_MODE, &row_text[COL_MODE],
+            -1);
+		
+        type = ti68k_string_to_bkpt_type(row_text[COL_TYPE]);
+        switch(type)
+        {
+        case BK_TYPE_CODE:
+            sscanf(row_text[COL_START], "%x", &min);
+            ti68k_bkpt_set_address(BKPT_ADDR(min), BKPT_ENABLE(min));
+            break;
+        case BK_TYPE_EXCEPTION:
+            sscanf(row_text[COL_SYMBOL], "#%i", &n);
+            ti68k_bkpt_set_exception(BKPT_ADDR(n), BKPT_ENABLE(n));
+            break;
+        case BK_TYPE_ACCESS:
+            mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
+            sscanf(row_text[COL_START], "%x", &min);
+            ti68k_bkpt_set_access(BKPT_ADDR(min), mode, BKPT_ENABLE(min));
+            break;
+        case BK_TYPE_RANGE:
+            mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
+            sscanf(row_text[COL_START], "%x", &min);
+            sscanf(row_text[COL_END], "%x", &max);
+            ti68k_bkpt_set_range(BKPT_ADDR(min), BKPT_ADDR(max), mode,
+								BKPT_ENABLE(min), BKPT_ENABLE(max));
+            break;
+        }
+        g_strfreev(row_text);
+    }
 
-	dbgbkpts_display_window();
+    dbgbkpts_display_window();
 }
 
 

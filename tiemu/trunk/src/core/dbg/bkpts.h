@@ -32,6 +32,20 @@
 #include <glib.h>
 #include <stdint.h>
 
+/* Macros: addresses are 24-bits. We use the MSB to encode 
+	bkpt state (enabled/disabled) */
+
+#define BKPT_MASK			0xff000000
+
+#define BKPT_ADDR(addr)		((addr) & ~BKPT_MASK)
+#define BKPT_INFO(addr)		((addr) & BKPT_MASK)
+
+#define BKPT_ENABLE(addr)	((addr) &= ~BKPT_MASK)
+#define BKPT_DISABLE(addr)	((addr) |= BKPT_MASK)
+
+#define BKPT_IS_ENABLED(addr)	(!((addr) & BKPT_MASK))
+#define BKPT_ENABLED(addr)		(!((addr) & BKPT_MASK))
+
 /* Types */
 
 typedef struct
@@ -83,22 +97,22 @@ typedef enum {
 int ti68k_bkpt_add_address(uint32_t address);
 int ti68k_bkpt_add_access(uint32_t address, int mode);
 int ti68k_bkpt_add_range(uint32_t min, uint32_t max, int mode);
-int ti68k_bkpt_add_exception(int n);
+int ti68k_bkpt_add_exception(uint32_t n);
 
 void ti68k_bkpt_del_address(uint32_t address);
 void ti68k_bkpt_del_access(uint32_t address, int mode);
 void ti68k_bkpt_del_range(uint32_t min, uint32_t max, int mode);
-void ti68k_bkpt_del_exception(int n);
+void ti68k_bkpt_del_exception(uint32_t n);
 
-void ti68k_bkpt_set_address(int id, uint32_t address);
-void ti68k_bkpt_set_access(int id, uint32_t address, int mode);
-void ti68k_bkpt_set_range(int id, uint32_t min, uint32_t max, int mode);
-void ti68k_bkpt_set_exception(int id, int n);
+void ti68k_bkpt_set_address(uint32_t address, uint32_t new_address);
+void ti68k_bkpt_set_access(uint32_t address, int mode, uint32_t new_address);
+void ti68k_bkpt_set_range(uint32_t min, uint32_t max, int mode, uint32_t new_min, uint32_t new_max);
+void ti68k_bkpt_set_exception(uint32_t n, uint32_t new_n);
 
-void ti68k_bkpt_get_address(int id, uint32_t *address);
-void ti68k_bkpt_get_access(int id, uint32_t *address, int mode);
-void ti68k_bkpt_get_range(int id, uint32_t *min, uint32_t *max, int mode);
-void ti68k_bkpt_get_exception(int id, int *n);
+void ti68k_bkpt_get_address(int idx, uint32_t *address);
+void ti68k_bkpt_get_access(int idx, uint32_t *address, int mode);
+void ti68k_bkpt_get_range(int idx, uint32_t *min, uint32_t *max, int mode);
+void ti68k_bkpt_get_exception(int idx, uint32_t *n);
 
 void ti68k_bkpt_clear_address(void);
 void ti68k_bkpt_clear_access(void);
