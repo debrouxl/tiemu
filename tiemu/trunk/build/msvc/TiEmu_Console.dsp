@@ -444,6 +444,10 @@ SOURCE=..\..\src\gui\comm.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gui\dbg_cause.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\dbg_mem.c
 # End Source File
 # Begin Source File

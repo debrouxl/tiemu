@@ -1,4 +1,3 @@
-#if 0
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -14,156 +13,191 @@
 #include "support.h"
 #include "ti68k_int.h"
 
-static GtkWidget *notebook;
-static GtkWidget *clist;
-
 enum { 
-	    COLUMN_ADDR, 
-        COLUMN_0, COLUMN_1, COLUMN_2, COLUMN_3,
-        COLUMN_4, COLUMN_5, COLUMN_6, COLUMN_7,
-        COLUMN_8, COLUMN_9, COLUMN_A, COLUMN_B,
-        COLUMN_C, COLUMN_D, COLUMN_E, COLUMN_F,
-		COLUMN_ASCII
+	    COL_NAME, COL_VALUE, 
+		COL_EDITABLE, COL_COLORED,
 };
-#define CLIST_NVCOLS	(COLUMN_ASCII+1)
-#define CLIST_NCOLS		(CLIST_NVCOLS+16)
+#define CLIST_NVCOLS	(2)		// 2 visible columns
+#define CLIST_NCOLS		(4)		// 4 real columns
 
-static gint column2index(GtkTreeViewColumn * column)
+GtkWidget *ctree;
+
+static int validate_value(const char *str)
 {
-	gint i;
-
-	for (i = 0; i < CLIST_NVCOLS; i++) {
-		GtkTreeViewColumn *col;
-
-		col = gtk_tree_view_get_column(GTK_TREE_VIEW(clist), i);
-		if (col == column)
-			return i;
+	int i;
+	
+	 if(strlen(str) != 8)
+	 	return 0;
+	
+	for(i = 0; i < 8; i++)
+	{
+		if(!isxdigit(str[i]))
+			return 0;
 	}
-
-	return -1;
+	
+	return !0;
 }
 
 static void renderer_edited(GtkCellRendererText * cell,
 			    const gchar * path_string,
 			    const gchar * new_text, gpointer user_data)
 {
-    GtkWidget *list = clist;
+    GtkWidget *list = ctree;
 	GtkTreeView *view = GTK_TREE_VIEW(list);
-	GtkListStore *store = user_data;
+	GtkTreeStore *store = user_data;
 	GtkTreeModel *model = GTK_TREE_MODEL(store);
 
-    GtkTreeViewColumn *column;
-    GtkTreeIter iter;
-	GtkTreePath *path;	
-	gint col;
-    gchar *str_addr;
-    gchar *str_data = new_text;
-    int addr, data;
-    uint8_t *mem_ptr;
-
-    // get column
-    gtk_tree_view_get_cursor(view, &path, &column);
-    if(!path || !column)
-        return;
-
-    // get iterator
+	GtkTreePath *path = gtk_tree_path_new_from_string(path_string);
+	GtkTreeIter iter;
+	
+	uint32_t value;
+	gint n;
+	
 	if (!gtk_tree_model_get_iter(model, &iter, path))
 		return;
+		
+	if (strlen(path_string) < 3)
+		return;
+	
+	// set new value	
+	n = path_string[1] - '0';
+	switch(path_string[0] - '0')
+	{
+		case 0:	// Ax
+			if(validate_value(new_text))
+			{
+				sscanf(new_text, "%lx", value);			
+				gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
+				ti68k_register_set_addr(n, value);
+			}
+		break;
+		case 1:	// Dx
+			if(validate_value(new_text))
+			{
+				sscanf(new_text, "%lx", value);			
+				gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
+				ti68k_register_set_data(n, value);
+			}
+		break;
+		case 2:	// Others
+			switch(n)
+			{
+				case 0:	// pc
+					if(validate_value(new_text))
+					{
+						sscanf(new_text, "%lx", value);			
+						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
+						ti68k_register_set_pc(value);
+					}
+				break;		
+				case 1:	// usp
+					if(validate_value(new_text))
+					{
+						sscanf(new_text, "%lx", value);			
+						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
+						ti68k_register_set_pc(value);
+					}
+				break;
+				case 2:	// ssp
+					if(validate_value(new_text))
+					{
+						sscanf(new_text, "%lx", value);			
+						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
+						ti68k_register_set_sp(value);
+					}
+				break;
+				case 3: // sr
+					if(validate_value(new_text))
+					{
+						sscanf(new_text, "%lx", value);			
+						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
+						ti68k_register_set_sr(value);
+					}
+				break;
+				case 4: // flags
+					/*if(validate_value(new_text))
+					{
+						sscanf(new_text, "%lx", value);			
+						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
+						ti68k_register_set_flags(value);
+					}*/
+				break;
+			}
+		break;
+		default:
+		break;
+	}
 
-    // get old value
-	col = column2index(column);
-    gtk_tree_model_get(model, &iter, COLUMN_ADDR, &str_addr, -1);
-
-    printf("@<%s> = <%s>\n", str_addr, str_data);
-
-    // check for new value
-    if(!isxdigit(str_data[0]) || !isxdigit(str_data[1]) || (strlen(str_data) > 2))
-    {
-        gtk_tree_path_free(path);
-        return;
-    }
-
-    // set new value
-    gtk_list_store_set(store, &iter, col, new_text,	-1);
-
-    // and update memory
-    sscanf(str_addr, "%lx", &addr);
-    sscanf(str_data, "%x", &data);
-    addr += (col - COLUMN_0);
-    mem_ptr = (uint8_t *)ti68k_get_real_address(addr);
-	*mem_ptr = data;
-
-    g_free(str_addr);
 	gtk_tree_path_free(path);
 }
 
-static GtkWidget* clist_create(GtkListStore **st)
+static gboolean select_func(GtkTreeSelection * selection,
+			    GtkTreeModel * model,
+			    GtkTreePath * path,
+			    gboolean path_currently_selected,
+			    gpointer data)
 {
-	GtkWidget *list;
-	GtkTreeView *view;
-	GtkListStore *store;
+	GtkTreeIter iter;
+	gchar *str;
+
+	if (!gtk_tree_model_get_iter(model, &iter, path))
+		return FALSE;
+
+	gtk_tree_model_get(model, &iter, COL_VALUE, &str, -1);
+	
+	if(!strcmp(str, ""))
+	{
+		g_free(str);
+		return FALSE;
+	}
+	
+	g_free(str);	
+	return TRUE;
+}
+
+
+static GtkTreeStore* ctree_create(GtkWidget *tree)
+{
+	GtkTreeView *view = GTK_TREE_VIEW(tree);
+	GtkTreeStore *store;
 	GtkTreeModel *model;
 	GtkCellRenderer *renderer;
 	GtkTreeSelection *selection;
 	
-	const gchar *text[CLIST_NVCOLS] = { 
-            _("Address"), 
-            "+0", "+1", "+2", "+3", "+4", "+5", "+6", "+7",
-            "+8", "+9", "+A", "+B", "+C", "+D", "+E", "+F",
-			"ASCII"
-    };
+	const gchar *text[CLIST_NVCOLS] = { _("Name"), _("Value") };
     gint i;
 	
-	store = gtk_list_store_new(CLIST_NCOLS,
-				G_TYPE_STRING, 
-                G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-                G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-                G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-                G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-				G_TYPE_STRING,
-				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
-				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
-				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
-				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
+	store = gtk_tree_store_new(CLIST_NCOLS,
+				G_TYPE_STRING, G_TYPE_STRING, 
+				G_TYPE_BOOLEAN, GDK_TYPE_COLOR,
 				-1
             );
     model = GTK_TREE_MODEL(store);
 	
-	clist = list = gtk_tree_view_new_with_model(model);
-	view = GTK_TREE_VIEW(list);
+	//clist = tree = gtk_tree_view_new_with_model(model);
+	//view = GTK_TREE_VIEW(tree);
   
     gtk_tree_view_set_model(view, model); 
-    gtk_tree_view_set_headers_visible(view, TRUE);
-	gtk_tree_view_set_headers_clickable(view, TRUE);
+    gtk_tree_view_set_headers_visible(view, FALSE);
 	gtk_tree_view_set_rules_hint(view, FALSE);
   
-	i = COLUMN_ADDR;
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
-            text[i], renderer, 
-            "text", i,
+            text[0], renderer, 
+            "text", COL_NAME,
 			NULL);
 
-    for (i = COLUMN_0; i <= COLUMN_F; i++)
-    {
-    	renderer = gtk_cell_renderer_text_new();
-
-        gtk_tree_view_insert_column_with_attributes(view, -1, 
-            text[i], renderer, 
-            "text", i, 
-            "editable", i + CLIST_NVCOLS - 1,
-            NULL);
-
-        g_signal_connect(G_OBJECT(renderer), "edited",
-			 G_CALLBACK(renderer_edited), store);
-    }
-
-	i = COLUMN_ASCII;
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
-            text[i], renderer, 
-            "text", i,
+            text[1], renderer, 
+            "text", COL_VALUE,
+			"editable", COL_EDITABLE,
+			"foreground-gdk", COL_COLORED,
 			NULL);
+			
+	//g_signal_connect(G_OBJECT(renderer), "edited",
+	//		 G_CALLBACK(renderer_edited), store);
+
     
     for (i = 0; i < CLIST_NVCOLS; i++) 
     {
@@ -175,179 +209,234 @@ static GtkWidget* clist_create(GtkListStore **st)
 	
 	selection = gtk_tree_view_get_selection(view);
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
+	gtk_tree_selection_set_select_function(selection, select_func, NULL, NULL);
 
-	*st = store;
-	return list;
+	return store;
 }
 
-static void clist_populate(GtkListStore *store, uint32_t start, int length)
+static void ctree_populate(GtkTreeStore *store)
 {
+	GtkTreeIter node1, node2, node3;
     GtkTreeIter iter;
     int i;
-    gchar *str;
-    char ascii[17];
-    uint32_t addr;
+    const char *others[] = { "PC", "USP", "SSP", "SR" , "Flags"};
 
-    for(addr = start; addr < start+length; addr += 0x10)
-    {
-		uint8_t *mem_ptr;
-
-        gtk_list_store_append(store, &iter);
-
-		str = g_strdup_printf("0x%06x", addr);
-		gtk_list_store_set(store, &iter, COLUMN_ADDR, str, -1);
-		g_free(str);
-
-		for(i = COLUMN_0; i <= COLUMN_F; i++)
-		{
-			mem_ptr = ti68k_get_real_address(addr + (i-COLUMN_0));
-
-			str = g_strdup_printf("%02x", *mem_ptr);
-			ascii[i-COLUMN_0] = (isprint(*mem_ptr) ? *mem_ptr : '.');
-
-			gtk_list_store_set(store, &iter, 
-				i, str, 
-				i + CLIST_NVCOLS - COLUMN_0, TRUE, 
-				-1);
-
-			g_free(str);
-        }
+	// clear tree
+	gtk_tree_store_clear(store);
+	
+	// set the 3 main nodes
+	gtk_tree_store_append(store, &node1, NULL);
+	gtk_tree_store_set(store, &node1, 
+		COL_NAME, "Adress", 
+		COL_VALUE, "",  
+		COL_EDITABLE, FALSE,
+		-1);
 		
-		ascii[16] = '\0';
-		gtk_list_store_set(store, &iter, COLUMN_ASCII, ascii, -1);
-    }
+	gtk_tree_store_set(store, &node2, 
+		COL_NAME, "Data", 
+		COL_VALUE, "",  
+		COL_EDITABLE, FALSE,
+		-1);
+		
+	gtk_tree_store_set(store, &node3, 
+		COL_NAME, "Other", 
+		COL_VALUE, "",  
+		COL_EDITABLE, FALSE,
+		-1);
+		
+	// populate Ax node
+	for(i = 0; i < 8; i++)
+	{
+		gchar *str = g_strdup_printf("A%i", i);
+		
+		gtk_tree_store_append(store, &iter, &node1);
+		gtk_tree_store_set(store, &iter,
+			COL_NAME, str,
+			COL_VALUE, "0x000000",
+			COL_EDITABLE, TRUE,
+	   		-1);
+	   		
+	   	g_free(str);
+	}
+	
+	// populate Dx node
+	for(i = 0; i < 8; i++)
+	{
+		gchar *str = g_strdup_printf("D%i", i);
+		
+		gtk_tree_store_append(store, &iter, &node2);
+		gtk_tree_store_set(store, &iter,
+			COL_NAME, str,
+			COL_VALUE, "0x000000",
+			COL_EDITABLE, TRUE,
+	   		-1);
+	   		
+	   	g_free(str);
+	}
+	
+	// populate Others node
+	for(i = 0; i < 5; i++)
+	{
+		gtk_tree_store_append(store, &iter, &node3);
+		gtk_tree_store_set(store, &iter,
+			COL_NAME, others[i],
+			COL_VALUE, "0x000000",
+			COL_EDITABLE, TRUE,
+	   		-1);
+	}
 }
 
-static void notebook_add_tab(GtkWidget *notebook, const char* tab_name)
+static void ctree_refresh(GtkTreeStore *store)
 {
-	GtkListStore *store;
-	GtkWidget *label;
-	GtkWidget *child;
-	gint current_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
-	uint32_t addr;
-	uint32_t len;
+	GtkTreeModel *model = GTK_TREE_MODEL(store);
+    int i;
+
+	gchar *spath;
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	gchar *sdata;    
+
+	// refresh Ax nodes
+	for(i = 0; i < 8; i++)
+	{
+		spath = g_strdup_printf("0:%i", i);
+		path = gtk_tree_path_new_from_string(spath);
+		if(!gtk_tree_model_get_iter(model, &iter, path))
+			continue;
+		
+		sdata = g_strdup_printf("%06x", ti68k_register_get_addr(i));
+		gtk_tree_store_set(store, &iter, COL_VALUE, sdata,	-1);
+		g_free(sdata);
+	   		
+	   	g_free(spath);
+	   	gtk_tree_path_free(path);
+	}
 	
-	label = gtk_label_new(tab_name);
-	gtk_widget_show(label);
-
-    child = clist_create(&store);
-    if(!strcmp(tab_name, _("STACK")))
-    {
-		// display stack
-		uint32_t sp_start, sp_end;
-		uint32_t *mem_ptr = (uint32_t *)ti68k_get_real_address(0x000000);
-
-		sp_start = GUINT32_SWAP_LE_BE(*mem_ptr);
-		sp_end = ti68k_register_get_sp();
-		len = sp_end - sp_start;
-
-		clist_populate(store, sp_start, len <= 128 ? len : 128);
-    }
-    else
-    {
-		// display normal
-		sscanf(tab_name, "0x%06x", &addr);
-    	clist_populate(store, addr, 64);
-    }
-	gtk_widget_show(child);
-
-	gtk_notebook_insert_page(GTK_NOTEBOOK(notebook), child, label, current_page);
+	// refresh Dx nodes
+	for(i = 0; i < 8; i++)
+	{
+		spath = g_strdup_printf("1:%i", i);
+		path = gtk_tree_path_new_from_string(spath);
+		if(!gtk_tree_model_get_iter(model, &iter, path))
+			continue;
+		
+		sdata = g_strdup_printf("%06x", ti68k_register_get_data(i));
+		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
+		g_free(sdata);
+	   		
+	   	g_free(spath);
+	   	gtk_tree_path_free(path);
+	}
+	
+	// refresh Others node (PC)
+	{
+		spath = g_strdup_printf("2:%i", 0);
+		path = gtk_tree_path_new_from_string(spath);
+		if(!gtk_tree_model_get_iter(model, &iter, path))
+			return;
+		
+		sdata = g_strdup_printf("%06x", ti68k_register_get_pc());
+		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
+		g_free(sdata);
+	   		
+	   	g_free(spath);
+	   	gtk_tree_path_free(path);	
+	}
+	
+	// refresh Others node (USP)
+	{
+		spath = g_strdup_printf("2:%i", 1);
+		path = gtk_tree_path_new_from_string(spath);
+		if(!gtk_tree_model_get_iter(model, &iter, path))
+			return;
+		
+		sdata = g_strdup_printf("%06x", ti68k_register_get_addr(8));
+		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
+		g_free(sdata);
+	   		
+	   	g_free(spath);
+	   	gtk_tree_path_free(path);	
+	}
+	
+	// refresh Others node (SSP)
+	{
+		spath = g_strdup_printf("2:%i", 2);
+		path = gtk_tree_path_new_from_string(spath);
+		if(!gtk_tree_model_get_iter(model, &iter, path))
+			return;
+		
+		sdata = g_strdup_printf("%06x", ti68k_register_get_sp());
+		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
+		g_free(sdata);
+	   		
+	   	g_free(spath);
+	   	gtk_tree_path_free(path);	
+	}
+	
+	// refresh Others node (SR)
+	{
+		spath = g_strdup_printf("2:%i", 3);
+		path = gtk_tree_path_new_from_string(spath);
+		if(!gtk_tree_model_get_iter(model, &iter, path))
+			return;
+		
+		sdata = g_strdup_printf("%06x", ti68k_register_get_sr());
+		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
+		g_free(sdata);
+	   		
+	   	g_free(spath);
+	   	gtk_tree_path_free(path);	
+	}
+	
+	// refresh Others node (flags)
+	{
+		spath = g_strdup_printf("2:%i", 0);
+		path = gtk_tree_path_new_from_string(spath);
+		if(!gtk_tree_model_get_iter(model, &iter, path))
+			return;
+		
+		sdata = g_strdup_printf("%06x", ti68k_register_get_flag());
+		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
+		g_free(sdata);
+	   		
+	   	g_free(spath);
+	   	gtk_tree_path_free(path);	
+	}
 }
 
 
 /*
-	Type address in a box.
+	Display registers window
 */
-gint display_dbgmem_dbox(uint32_t *addr)
+gint display_dbgregs_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
-	GtkWidget *entry;
-	gint result;
-	gchar *str;
-	
-	xml = glade_xml_new
-		(tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_dbox", PACKAGE);
-	if (!xml)
-		g_error("GUI loading failed !\n");
-	glade_xml_signal_autoconnect(xml);
-	
-	entry = glade_xml_get_widget(xml, "entry1");
-	gtk_entry_set_text(GTK_ENTRY(entry), "0x000000");
-	*addr = 0;
-	
-	dbox = glade_xml_get_widget(xml, "dbgmem_dbox");	
-	result = gtk_dialog_run(GTK_DIALOG(dbox));
-	
-	switch (result) {
-	case GTK_RESPONSE_OK:
-		str = g_strdup(gtk_entry_get_text(GTK_ENTRY(entry)));
-		sscanf(str, "%lx", addr);
-		break;
-	default:
-		break;
-	}
-
-	gtk_widget_destroy(dbox);
-	return 0;
-}
-
-/*
-	Display memory window
-*/
-gint display_dbgmem_window(void)
-{
-	GladeXML *xml;
     GtkWidget *data;
+	GtkTreeStore *store;
 	
 	xml = glade_xml_new
-		(tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_window",
+		(tilp_paths_build_glade("dbg_regs-2.glade"), "dbgregs_window",
 		 PACKAGE);
 	if (!xml)
 		g_error("GUI loading failed !\n");
 	glade_xml_signal_autoconnect(xml);
 	
-	data = glade_xml_get_widget(xml, "dbgmem_window");
+	dbox = glade_xml_get_widget(xml, "dbgregs_window");
 
-    notebook = glade_xml_get_widget(xml, "notebook1");
-    gtk_notebook_popup_enable(GTK_NOTEBOOK(notebook));
-    
-    notebook_add_tab(notebook, _("STACK"));
+	ctree = data = glade_xml_get_widget(xml, "treeview1");
+    store = ctree_create(data);
+	ctree_populate(store);
+	gtk_widget_show(data);
 
-    gtk_widget_show(GTK_WIDGET(data));
+    gtk_widget_show(GTK_WIDGET(dbox));
 
 	return 0;
 }
 
 GLADE_CB void
-on_dbgmem_window_destroy               (GtkObject       *object,
+on_dbgregs_window_destroy               (GtkObject       *object,
                                         gpointer         user_data)
 {
     gtk_widget_destroy(GTK_WIDGET(object));
 }
-
-
-GLADE_CB void
-on_add1_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	uint32_t addr;
-	gchar *str;
-	
-	display_dbgmem_dbox(&addr);
-	
-	str = g_strdup_printf("0x%06x", addr);
-	notebook_add_tab(notebook, str);
-	g_free(str);
-}
-
-
-GLADE_CB void
-on_del1_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	gint current_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
-	
-	gtk_notebook_remove_page(GTK_NOTEBOOK(notebook), current_page);
-}
-#endif

@@ -17,14 +17,14 @@ static GtkWidget *notebook;
 static GtkWidget *clist;
 
 enum { 
-	    COLUMN_ADDR, 
-        COLUMN_0, COLUMN_1, COLUMN_2, COLUMN_3,
-        COLUMN_4, COLUMN_5, COLUMN_6, COLUMN_7,
-        COLUMN_8, COLUMN_9, COLUMN_A, COLUMN_B,
-        COLUMN_C, COLUMN_D, COLUMN_E, COLUMN_F,
-		COLUMN_ASCII
+	    COL_ADDR, 
+        COL_0, COL_1, COL_2, COL_3,
+        COL_4, COL_5, COL_6, COL_7,
+        COL_8, COL_9, COL_A, COL_B,
+        COL_C, COL_D, COL_E, COL_F,
+		COL_ASCII
 };
-#define CLIST_NVCOLS	(COLUMN_ASCII+1)
+#define CLIST_NVCOLS	(COL_ASCII+1)
 #define CLIST_NCOLS		(CLIST_NVCOLS+16)
 
 static gint column2index(GtkTreeViewColumn * column)
@@ -56,7 +56,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 	GtkTreePath *path;	
 	gint col;
     gchar *str_addr;
-    gchar *str_data = new_text;
+    gchar *str_data = (char *)new_text;
     int addr, data;
     uint8_t *mem_ptr;
 
@@ -71,7 +71,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 
     // get old value
 	col = column2index(column);
-    gtk_tree_model_get(model, &iter, COLUMN_ADDR, &str_addr, -1);
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str_addr, -1);
 
     printf("@<%s> = <%s>\n", str_addr, str_data);
 
@@ -88,7 +88,7 @@ static void renderer_edited(GtkCellRendererText * cell,
     // and update memory
     sscanf(str_addr, "%lx", &addr);
     sscanf(str_data, "%x", &data);
-    addr += (col - COLUMN_0);
+    addr += (col - COL_0);
     mem_ptr = (uint8_t *)ti68k_get_real_address(addr);
 	*mem_ptr = data;
 
@@ -136,14 +136,14 @@ static GtkWidget* clist_create(GtkListStore **st)
 	gtk_tree_view_set_headers_clickable(view, TRUE);
 	gtk_tree_view_set_rules_hint(view, FALSE);
   
-	i = COLUMN_ADDR;
+	i = COL_ADDR;
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i,
 			NULL);
 
-    for (i = COLUMN_0; i <= COLUMN_F; i++)
+    for (i = COL_0; i <= COL_F; i++)
     {
     	renderer = gtk_cell_renderer_text_new();
 
@@ -157,7 +157,7 @@ static GtkWidget* clist_create(GtkListStore **st)
 			 G_CALLBACK(renderer_edited), store);
     }
 
-	i = COLUMN_ASCII;
+	i = COL_ASCII;
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
@@ -194,26 +194,26 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
         gtk_list_store_append(store, &iter);
 
 		str = g_strdup_printf("0x%06x", addr);
-		gtk_list_store_set(store, &iter, COLUMN_ADDR, str, -1);
+		gtk_list_store_set(store, &iter, COL_ADDR, str, -1);
 		g_free(str);
 
-		for(i = COLUMN_0; i <= COLUMN_F; i++)
+		for(i = COL_0; i <= COL_F; i++)
 		{
-			mem_ptr = ti68k_get_real_address(addr + (i-COLUMN_0));
+			mem_ptr = ti68k_get_real_address(addr + (i-COL_0));
 
 			str = g_strdup_printf("%02x", *mem_ptr);
-			ascii[i-COLUMN_0] = (isprint(*mem_ptr) ? *mem_ptr : '.');
+			ascii[i-COL_0] = (isprint(*mem_ptr) ? *mem_ptr : '.');
 
 			gtk_list_store_set(store, &iter, 
 				i, str, 
-				i + CLIST_NVCOLS - COLUMN_0, TRUE, 
+				i + CLIST_NVCOLS - COL_0, TRUE, 
 				-1);
 
 			g_free(str);
         }
 		
 		ascii[16] = '\0';
-		gtk_list_store_set(store, &iter, COLUMN_ASCII, ascii, -1);
+		gtk_list_store_set(store, &iter, COL_ASCII, ascii, -1);
     }
 }
 
