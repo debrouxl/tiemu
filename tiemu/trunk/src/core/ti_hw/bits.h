@@ -25,7 +25,7 @@
 #ifndef __BITS__
 #define __BITS__
 
-#if 0   // linkport is broken
+#if 1   // linkport is broken
 
 #define bit_get(v,b)	(((v) & (1 << (b))) >> (b))
 #define bit_set(v,b)	v |=  (1 << (b));

@@ -309,7 +309,7 @@ int intlev(void)
   return rc;
 }
 
-//tiemu: added to be VTi compatible (VTi does not keep some SR bits at 0)
+//tiemu: added to be VTi compatible (VTi does not maintain SR unused bits at 0)
 static char u14, u12, u11, u7, u6, u5;
 
 void MakeSR(void)

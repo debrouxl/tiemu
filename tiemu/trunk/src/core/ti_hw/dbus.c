@@ -265,7 +265,7 @@ int df_checkread(void)
     (hardware protocol).
     In fact, I simply reimplement the basic functions of libticables usually 
     used by libticalcs for sending/receiving data. These functions exchange
-    bytes with the linkport at HW level (ioports.c).
+    bytes with the linkport at HW level (ports.c).
     The libticalcs provides the abstraction we need for this.
 
 	Wonderful, isn't it ?! Take a look at the 'TiLP framework' power ;-)
@@ -286,8 +286,8 @@ static int ilp_put(uint8_t data)
   	f2t_data = data; 
   	f2t_flag = 1;
 
-	io_bit_set(0x0d,5);		// rx buffer full
-	io_bit_set(0x0d,3);		// link activity
+	//io_bit_set(0x0d,5);		// rx buffer full
+	//io_bit_set(0x0d,3);		// link activity
 
 	toSTART(clk);
   	while(f2t_flag) 
@@ -315,8 +315,8 @@ static int ilp_get(uint8_t *data)
   	*data = t2f_data;
   	t2f_flag = 0;
 
-	io_bit_set(0x0d,6);		// tx buffer empty
-	io_bit_set(0x0d,3);		// link activity
+	//io_bit_set(0x0d,6);		// tx buffer empty
+	//io_bit_set(0x0d,3);		// link activity
   
 	return 0; 
 }

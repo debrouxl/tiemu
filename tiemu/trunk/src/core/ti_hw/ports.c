@@ -144,7 +144,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         	// see hardware.c
         break;
         case 0x0d:	// r- <76543210>
-			// reading teh DBus status register resets that register
+			// reading the DBus status register resets that register
 			tihw.io[0x0d] = 0x00;
 			break;
         case 0x0e:	// rw <....3210>
