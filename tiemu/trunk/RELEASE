@@ -3,9 +3,9 @@
 
 
 Previous version: 1.65	     (11/11/2002)
-Current version:  2.00-alpha (08/06/2004)
+Current version:  2.00-a2	 (13/06/2004)
 
-SubVersion (CVS) revision: $Id: RELEASE 655 2004-04-26 18:12:16Z roms $
+SubVersion (CVS) revision: $Id$
 
 TiEmu is available for 2 platforms:
 Linux (GTK), Windows (GTK).

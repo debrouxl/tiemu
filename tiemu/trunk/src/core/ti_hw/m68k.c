@@ -36,9 +36,18 @@
 
 int hw_m68k_init(void)
 {
+    // init breakpoints
 	ti68k_bkpt_clear_exception();
 	ti68k_bkpt_set_exception(4);	// illegal instruction
     bkpts.mode = bkpts.type = bkpts.id = 0;
+
+    // init instruction logging
+    bkpts.pc_log_size = 1;
+    bkpts.pc_log = malloc(bkpts.pc_log_size * sizeof(uint32_t));
+    if(bkpts.pc_log == NULL)
+        return ERR_MALLOC;
+    bkpts.pc_rd_ptr = 0;
+    bkpts.pc_wr_ptr = 0;
 
     init_m68k();
 
@@ -58,6 +67,8 @@ int hw_m68k_exit(void)
 {
 	ti68k_bkpt_clear_exception();
 
+    free(bkpts.pc_log);
+
     return 0;
 }
 
@@ -72,10 +83,9 @@ int hw_m68k_run(int n)
   int i;
   GList *l;
   static FILE *flog;
-  static uint32_t pa;
   
   for(i=0; i<n; i++) 
-    {
+  {
       UWORD opcode;
 
         if(flog != NULL)
@@ -84,6 +94,10 @@ int hw_m68k_run(int n)
         }
         else
             flog = fopen("C:\\tiemu.log", "wt");
+
+        if(bkpts.pc_log_size > 1)
+            bkpts.pc_log[bkpts.pc_wr_ptr++ % bkpts.pc_log_size] = m68k_getpc();
+        //printf(".");
 
       opcode = nextiword();
       (*cpufunctbl[opcode])(opcode);

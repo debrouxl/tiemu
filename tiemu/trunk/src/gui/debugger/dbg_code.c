@@ -485,6 +485,7 @@ on_go_to_address1_activate             (GtkMenuItem     *menuitem,
     uint32_t addr;
 
     display_dbgmem_dbox(&addr);
+    gtk_list_store_clear(store);
     clist_populate(store, addr);
 }
 

@@ -115,7 +115,6 @@ typedef struct
 
     // linkport.c
 	int		lc_speedy;		// speedy mode for direct file
-    int     lc_timeout;     // timeout for internal link
 
     // memory.c
     UBYTE	*rom;
@@ -157,6 +156,12 @@ typedef struct
 	int type;       // Ti68kBkptType
     int mode;       // Ti68kBkptMode
 	int id;
+
+    // Logging
+    int         pc_log_size;
+    uint32_t*   pc_log;
+    int         pc_rd_ptr;
+    int         pc_wr_ptr;
 } Ti68kBreakpoints;
 
 extern Ti68kParameters 	params;

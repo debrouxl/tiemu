@@ -131,7 +131,6 @@ static int match_skin(int calc_type)
 
 	s = g_strdup(ti68k_calctype_to_string(calc_type));
 	skn_name = g_ascii_strdown(s, strlen(s));
-	printf("%s %s\n", s, skn_name);
 
 	// filename is "", load default skin
 	if(!strcmp(g_basename(options.skin_file), ""))

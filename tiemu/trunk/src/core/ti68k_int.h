@@ -52,8 +52,6 @@ int ti68k_debug_do_instructions(int n);
 
 // Link
 int ti68k_linkport_send_file(const char *filename);
-int ti68k_linkport_set_timeout(int value);
-int ti68k_linkport_set_timeout(int value);
 int ti68k_linkport_reconfigure(void);
 
 // Keyboard

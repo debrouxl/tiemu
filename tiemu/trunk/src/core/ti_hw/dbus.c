@@ -79,7 +79,6 @@ static void map_to_directfile(void)
 
 TicableLinkCable lc;
 
-int TO_VALUE = 1000;
 
 static void print_lc_error(int errnum)
 {
@@ -163,8 +162,6 @@ static void lp_putbyte(UBYTE arg)
 {
 	int err;
   
-	tihw.lc_timeout = 0;
-
     err = lc.put(arg);
 	if(err)
 	{
@@ -178,7 +175,6 @@ static void lp_putbyte(UBYTE arg)
 
 static UBYTE lp_getbyte(void)
 {
-	tihw.lc_timeout = 0;
 	lp_avail_byte = 0;
 
 	return lp_last_byte;
@@ -236,16 +232,12 @@ int iget;
 
 void df_putbyte(UBYTE arg)
 {
-	tihw.lc_timeout = 0;
-
 	byte_t2f = arg;
 	iget = 1;
 }
 
 UBYTE df_getbyte(void)
 {
-	tihw.lc_timeout = 0;
-
 	iput = 0;
     return byte_f2t;
 }

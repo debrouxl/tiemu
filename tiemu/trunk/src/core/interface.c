@@ -265,19 +265,6 @@ int ti68k_linkport_send_file(const char *filename)
     return send_ti_file(filename);
 }
 
-extern int TO_VALUE;
-
-int ti68k_linkport_set_timeout(int value)
-{
-    TO_VALUE = value;
-    return value;
-}
-
-int ti68k_linkport_get_timeout(int value)
-{
-    return TO_VALUE;
-}
-
 int ti68k_linkport_reconfigure(void)
 {
     TRY(hw_dbus_init());
