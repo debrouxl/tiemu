@@ -67,7 +67,7 @@ static int contrast = NGS;          // current contrast level
 static int old_contrast = 0;        // previous contrast level
 static int new_contrast = NGS;		// new contrast level
 
-static int max_plane = -1;         	// number of grayscales to emulate
+static int max_plane = 0;         	// number of grayscales to emulate
 static int cur_plane = 0;           // current grayscale plane
 
 /* Compute conversion table */

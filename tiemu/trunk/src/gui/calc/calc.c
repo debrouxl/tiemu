@@ -320,7 +320,7 @@ static gint hid_refresh (gpointer data)
     if(lcd_flag || (tihw.hw_type >= HW2))
     {
 		// TI92+: jackycar, TI89: baballe
-        hid_update_lcd();
+	    //hid_update_lcd();
         G_LOCK(lcd_flag);
         lcd_flag = 0;
 		//printf("<");
@@ -437,9 +437,6 @@ int  hid_init(void)
 	sc.h = si->height;
 	sc.r = (float)sc.w / sc.h;
 	sc.s = (float)1.0;
-
-    //test
-    //kbd_read_keymap("C:\\sources\\roms\\tiemu\\skins\\ti92+_fr.map", tihw.calc_type);
 
     return 0;
 }

@@ -121,7 +121,6 @@ static int printl_muxer(const char *domain, int level, const char *format, va_li
 #ifdef __WIN32__
 skip_console:
 #endif
-
 	if (flog == NULL) {
     		flog = fopen(LOG_FILE, "wt");
                 //flog = fopen(inst_paths.base_dir, "wt");
