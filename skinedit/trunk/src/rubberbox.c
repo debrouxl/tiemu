@@ -129,7 +129,7 @@ button_press(GtkWidget *drawing_area, GdkEventButton *event, gpointer action)
       ox = (int)event->x;
       oy = (int)event->y;
       
-      erase_rubberbox(NULL);
+      erase_rubberbox(drawing_area);
     }
   else if (event->button == 3) /* right button */
     {
@@ -149,7 +149,7 @@ button_press(GtkWidget *drawing_area, GdkEventButton *event, gpointer action)
 	  lcd_mouse_motion = 0;
 	  lcd_button_press = 0;
 
-	  erase_rubberbox(NULL);
+	  erase_rubberbox(drawing_area);
 
 	  sbar_print(_("Saved LCD coordinates"));
 	}
@@ -237,32 +237,19 @@ draw_rubberbox(GtkWidget *drawing_area, GdkRect rect)
   update_rect.y = oc.y;
   update_rect.w = ((oc.w + oc.x + 2) <= skin_infos.width) ? (oc.w + 2) : oc.w;  /* add 2 to really erase the lines (right, bottom) ... */
   update_rect.h = ((oc.h + oc.y + 2) <= skin_infos.height) ? (oc.h + 2) : oc.h; /* ... but be careful */
+  printf("<oc: %i %i %i %i>\n", update_rect.x, update_rect.y, update_rect.w, update_rect.h);
 
-	printf("<oc: %i %i %i %i>\n", update_rect.x, update_rect.y, update_rect.w, update_rect.h);
-/*
-  gdk_draw_pixbuf(drawing_area->window,
-		  drawing_area->style->fg_gc[GTK_WIDGET_STATE(drawing_area)],
-		  pixbuf, 
-		  update_rect.x, update_rect.y,
-      update_rect.x, update_rect.y,
-      update_rect.w, update_rect.h,
-		  GDK_RGB_DITHER_NONE, 0, 0);
-*/
+  gtk_widget_draw (drawing_area, (GdkRectangle *)&update_rect);
+  //gdk_window_invalidate_rect(drawing_area->window, (GdkRectangle *)&update_rect, FALSE);
+
   update_rect.x = c.x;
   update_rect.y = c.y;
   update_rect.w = ((c.w + c.x + 2) <= skin_infos.width) ? (c.w + 2) : c.w;  /* add 2 to really erase the lines (right, bottom) ... */
   update_rect.h = ((c.h + c.y + 2) <= skin_infos.height) ? (c.h + 2) : c.h; /* ... but be careful */
-
-	printf("<c: %i %i %i %i>\n", update_rect.x, update_rect.y, update_rect.w, update_rect.h);
-/* 
-  gdk_draw_pixbuf(drawing_area->window,
-		  drawing_area->style->fg_gc[GTK_WIDGET_STATE(drawing_area)],
-		  pixbuf, 
-		  update_rect.x, update_rect.y,
-      update_rect.x, update_rect.y,
-      update_rect.w, update_rect.h,
-		  GDK_RGB_DITHER_NONE, 0, 0);
-*/
+  printf("<c: %i %i %i %i>\n", update_rect.x, update_rect.y, update_rect.w, update_rect.h);
+  
+  gtk_widget_draw (drawing_area, (GdkRectangle *)&update_rect);
+  //gdk_window_invalidate_rect(drawing_area->window, (GdkRectangle *)&update_rect, FALSE);
 
   tmp_rect = rect; /* when called from callbacks.c (for LCD or keys) */
   old_rect = rect; /* save coords */
@@ -272,19 +259,16 @@ draw_rubberbox(GtkWidget *drawing_area, GdkRect rect)
 void
 erase_rubberbox(GtkWidget *drawing_area)
 {
+	GdkRect update_rect;
+	
+	printf("erase\n");
+
   // copy original image
   g_object_unref(pixbuf);
   pixbuf = gdk_pixbuf_copy(skin_infos.img_orig);
   
-  // force redraw
-  /*
-  gdk_draw_pixbuf(drawing_area->window,
-		  drawing_area->style->fg_gc[GTK_WIDGET_STATE(drawing_area)],
-		  pixbuf, 
-			0, 0,
-		  0, 0, skin_infos.width, skin_infos.height,
-		  GDK_RGB_DITHER_NONE, 0, 0);
-	*/
+  // force full redraw
+  gtk_widget_queue_draw(drawing_area);
 }
 
 /* Taken from pixbuf doc */

@@ -807,11 +807,11 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data)
 {
-  GdkRectangle update_rect;
-
   if(pixbuf == NULL)
     return FALSE;
-     
+
+  //printf("expose: %i %i %i %i\n", event->area.x, event->area.y, event->area.width, event->area.height);
+
   gdk_draw_pixbuf(widget->window,
 		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
 		  pixbuf, 

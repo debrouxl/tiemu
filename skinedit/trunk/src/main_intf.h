@@ -14,3 +14,7 @@ GdkPixbuf *pixbuf;
 
 //GtkWidget *area;  // = drawingarea
 //GtkSDL *sdl_area; // = pixbuf
+
+
+// SDL surface = pixbuf
+// sdl_are = drawing_area
