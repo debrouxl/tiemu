@@ -115,11 +115,13 @@ int hw_m68k_run(int n)
     GList *l = NULL;
 
 #if 1
-	int j;
 
-	for(j=0; j<i; j++)
+	for(i = 0; i < n; i++)
 	{
 		UWORD opcode;
+
+		if(specialflags & SPCFLAG_DBSKIP)
+			printf("skip !\n");
 
 		// refresh hardware
 		do_cycles();
@@ -172,11 +174,8 @@ int hw_m68k_run(int n)
         }
 
 		// search for next opcode and execute it
-		if (!(specialflags & SPCFLAG_DBSKIP))
-		{
-			opcode = nextiword();
-			(*cpufunctbl[opcode])(opcode);
-		}
+		opcode = nextiword();
+		(*cpufunctbl[opcode])(opcode);
 
 		// process (pending) interrupts
 		if(pending_ints)
