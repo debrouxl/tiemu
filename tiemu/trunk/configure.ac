@@ -148,6 +148,8 @@ case $host_os in
   ;;
 esac
 
+AM_CONDITIONAL(OS_WIN32, test "$msnative_struct")
+
 # some extra flags
 CFLAGS="$CFLAGS -DGTK_DISABLE_DEPRECATED -DDEBUGGER"
 LDFLAGS="$LDFLAGS"
@@ -159,16 +161,14 @@ AC_SUBST(LDFLAGS)
 AC_OUTPUT
 
 echo
-echo "To run the TiEmu emulator, you will need a ROM image. As this file is"
-echo "copyrighted by Texas Instruments it will never be distributed with"
-echo "the emulator..."
+echo "To run the TiEmu emulator, you will need a ROM dump. As those files are"
+echo "copyrighted by Texas Instruments, they will never be distributed with"
+echo "the emulator... In replacement, you can use PedRom which is provided"
+echo "with TiEmu."
 echo
-echo "If you already have some ROMs, place them in the ./ROMs directory"
-echo "so that they can be installed with TiEmu."
-echo "It you have no ROM, you can get an ROM image of your calculator"
+echo "It you have no ROM, you can get an ROM dump of your calculator"
 echo "with the 'ROM dump' function of TiLP."
-echo "Else, you can use TI's FLASH OS upgrade (AMS). But, it contains less"
-echo "informations than an pure ROM image."
+echo "Otherwise, you can use a TI's FLASH OS upgrade (AMS) as image."
 echo
 echo "Note: TiLP is available at [http://lpg.ticalc.org/prj_tilp]."
 echo

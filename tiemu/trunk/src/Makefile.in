@@ -107,6 +107,7 @@ gui_debugger_OBJ = \
 	gui/debugger/dbg_cause.o	\
 	gui/debugger/dbg_code.o		\
 	gui/debugger/dbg_data.o		\
+	gui/debugger/dbg_entry.o	\
 	gui/debugger/dbg_heap.o		\
 	gui/debugger/dbg_mem.o		\
 	gui/debugger/dbg_pclog.o	\
