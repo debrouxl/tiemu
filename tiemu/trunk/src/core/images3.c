@@ -70,7 +70,7 @@ static int get_rom_version(char *ptr, int size, char *version);
 /*
 	Display informations
 */
-int ti68k_display_image_infos(ROM_INFO *ri)
+void ti68k_display_image_infos(ROM_INFO *ri)
 {
 	DISPLAY(_("Image informations:\n"));
   	DISPLAY(_("  Calculator : %s\n"), ti68k_calctype_to_string(ri->calc_type));
@@ -78,6 +78,31 @@ int ti68k_display_image_infos(ROM_INFO *ri)
   	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(ri->internal | ri->flash));
   	DISPLAY(_("  Memory size : %i bytes (%iMB)\n"), ri->size,  ri->size >> 20);
 	DISPLAY(_("  Image type : %s\n"), ri->tib ? "upgrade" : "dump");
+}
+
+int ti68k_get_image_infos(const char *filename, IMG_HEADER *img)
+{
+	FILE *f;
+
+	// open file
+	f = fopen(filename, "rb");
+  	if(f == NULL)
+    {
+		DISPLAY(_("Unable to open this file: <%s>\n"), filename);
+		return ERR_68K_CANT_OPEN;
+    }
+
+	// load header
+	fread(img, 1, sizeof(IMG_HEADER), f);
+
+	// close file
+	fclose(f);
+	return 0;
+}
+
+int ti68k_get_upgrade_infos(const char *filename, IMG_HEADER *img)
+{
+
 }
 
 /*

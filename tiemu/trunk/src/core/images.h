@@ -41,7 +41,7 @@ typedef struct
 	char	flash;			// EPROM or FLASH
 	char	img_type;		// FLASH upgrade or ROM image
 	char	data_size;		// size of pure data
-} IMG_HEADER;
+} IMG_INFO;
 
 typedef struct
 {
@@ -55,7 +55,8 @@ typedef struct
 	int loaded;
 } ROM_INFO;
 
-typedef ROM_INFO Ti68kRomInfo;
+typedef ROM_INFO	UPG_INFO;
+typedef ROM_INFO	Ti68kRomInfo;
 
 /*
   Variables
@@ -65,7 +66,7 @@ extern int rom_loaded;
 extern ROM_INFO current_rom_info;
 
 /*
-  Functions
+  Functions (old)
 */
 
 int ti68k_getImageInfo(const char *filename, ROM_INFO *ri);
@@ -82,5 +83,22 @@ int ti68k_scanFiles(const char *dirname, const char *filename);
 int ti68k_getRomType(void);
 int ti68k_dumpRom(const char *filename);
 
+/*
+	Functions (new)
+*/
+
+int ti68k_display_image_infos(ROM_INFO *ri);
+
+int ti68k_get_romdump_infos(const char *filename, ROM_INFO *img, int preload);
+int ti68k_get_upgrade_infos(const char *filename, UPG_INFO *upg, int preload);
+int ti68k_get_image_infos(const char *filename, IMG_INFO *img);
+
+int ti68k_convert_rom_to_image(const char *filename, const char *dirname);
+int ti68k_convert_tib_to_image(const char *filename, const char *dirname);
+
+int ti68k_load_image(const char *filename);
+int ti68k_load_upgrade(const char *filename);					
+
+int ti68k_scan_images(const char *dirname, const char *filename);
 
 #endif
