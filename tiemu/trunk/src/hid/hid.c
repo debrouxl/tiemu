@@ -803,6 +803,7 @@ static int hid_set_contrast(int c)
 */
 static void hid_lcd_on_off(int i) 
 {
+	printf("on/off: %i\n", i);
 	if(i) 
 	{
 		iScrState = SCREEN_ON;
@@ -941,6 +942,7 @@ static void redraw_skin(void)
   	Uint8 r, g, b;
   	Uint8 *ptr;
 
+	printf("redraw_skin\n");
   	if(!params.background) 
     	return;
   

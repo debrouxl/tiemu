@@ -288,14 +288,18 @@ static int ilp_open_port(void)     { return 0; }
 
 static int ilp_put(uint8_t data)
 { 
+	tiTIME clk;
   	byte_f2t = data; 
   	iput = 1;
 	io_bit_set(0x0d,5);		// rx buffer full
 	io_bit_set(0x0d,3);		// link activity
 
+	toSTART(clk);
   	while(iput) 
     { 
       	ti68k_debug_do_instructions(1); 
+		if(toELAPSED(clk, 20))	// 2s
+			return ERR_WRITE_TIMEOUT;
     };
   
   	return 0; 
@@ -303,9 +307,14 @@ static int ilp_put(uint8_t data)
 
 static int ilp_get(uint8_t *data)
 { 
+	tiTIME clk;
+
+	toSTART(clk);
   	while(!iget) 
     { 
       	ti68k_debug_do_instructions(1);
+		if(toELAPSED(clk, 20))
+			return ERR_WRITE_TIMEOUT;
     };
     
   	*data = byte_t2f;
@@ -390,6 +399,7 @@ int test_sendfile(void)
 int send_ti_file(const char *filename)
 {
     gint ok = 0;
+	int ret;
 
     // Check for TI file
     if(!tifiles_is_a_ti_file(filename))
@@ -409,7 +419,7 @@ int send_ti_file(const char *filename)
     {
         map_to_directfile();
         tihw.lc_speedy = 1;
-        itc.send_flash(filename, MODE_APPS);
+        ret = itc.send_flash(filename, MODE_APPS);
         tihw.lc_speedy = 0;
         map_to_linkport();
     }
@@ -419,7 +429,7 @@ int send_ti_file(const char *filename)
     {
         map_to_directfile();
         tihw.lc_speedy = 1;
-        itc.send_flash(filename, MODE_AMS);
+        ret = itc.send_flash(filename, MODE_AMS);
         tihw.lc_speedy = 0;
         map_to_linkport();
     }
@@ -429,7 +439,7 @@ int send_ti_file(const char *filename)
     {
         map_to_directfile();
         tihw.lc_speedy = 1;
-        itc.send_backup(filename, MODE_NORMAL);
+        ret = itc.send_backup(filename, MODE_NORMAL);
         tihw.lc_speedy = 0;
         map_to_linkport();
     }
@@ -439,7 +449,7 @@ int send_ti_file(const char *filename)
     {
         map_to_directfile();
         tihw.lc_speedy = 1;
-        itc.send_var(filename, MODE_NORMAL, NULL);
+        ret = itc.send_var(filename, MODE_NORMAL, NULL);
         tihw.lc_speedy = 0;
         map_to_linkport();
     }
@@ -449,10 +459,17 @@ int send_ti_file(const char *filename)
     {
         map_to_directfile();
         tihw.lc_speedy = 1;
-        itc.send_var(filename, MODE_NORMAL, NULL);
+        ret = itc.send_var(filename, MODE_NORMAL, NULL);
         tihw.lc_speedy = 0;
         map_to_linkport();
     }
+
+	// Transfer aborted ? Set hw link error
+	if(ret != 0)
+	{
+		print_lc_error(ret);
+		io_bit_set(0x0d,7);
+	}
 
   return 0;
 }
