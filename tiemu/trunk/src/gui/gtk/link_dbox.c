@@ -50,13 +50,11 @@ create_linktype_dbox (void)
   GSList *radiobutton3_group = NULL;
   GtkWidget *radiobutton2;
   GtkWidget *radiobutton4;
-  GtkWidget *radiobutton5;
-  GtkWidget *label4;
   GtkWidget *radiobutton6;
   GtkWidget *radiobutton7;
   GtkWidget *radiobutton8;
   GtkWidget *radiobutton1;
-  GtkWidget *label3;
+  GtkWidget *radiobutton5;
   GtkWidget *label10;
   GtkWidget *frame2;
   GtkWidget *vbox2;
@@ -195,18 +193,6 @@ create_linktype_dbox (void)
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton4), radiobutton3_group);
   radiobutton3_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton4));
 
-  radiobutton5 = gtk_radio_button_new_with_mnemonic (NULL, _("Black TIGraphLink\nHome-made serial"));
-  gtk_widget_show (radiobutton5);
-  gtk_table_attach (GTK_TABLE (table2), radiobutton5, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton5), radiobutton3_group);
-  radiobutton3_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton5));
-
-  label4 = gtk_label_new (_("Black TIGraphLink\nHome-made serial"));
-  gtk_widget_show (label4);
-  gtk_container_add (GTK_CONTAINER (radiobutton5), label4);
-
   radiobutton6 = gtk_radio_button_new_with_mnemonic (NULL, _("AVRlink"));
   gtk_widget_show (radiobutton6);
   gtk_table_attach (GTK_TABLE (table2), radiobutton6, 1, 2, 1, 2,
@@ -231,20 +217,21 @@ create_linktype_dbox (void)
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton8), radiobutton3_group);
   radiobutton3_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton8));
 
-  radiobutton1 = gtk_radio_button_new_with_mnemonic (NULL, _("Grey TIGraphLink\nAVRlink"));
+  radiobutton1 = gtk_radio_button_new_with_mnemonic (NULL, _("Grey TIGraphLink\nAVRLink"));
   gtk_widget_show (radiobutton1);
   gtk_table_attach (GTK_TABLE (table2), radiobutton1, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton1), radiobutton3_group);
   radiobutton3_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton1));
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radiobutton1), TRUE);
 
-  label3 = gtk_label_new (_("Grey TIGraphLink\nAVRlink"));
-  gtk_widget_show (label3);
-  gtk_container_add (GTK_CONTAINER (radiobutton1), label3);
-  gtk_label_set_justify (GTK_LABEL (label3), GTK_JUSTIFY_LEFT);
-  gtk_misc_set_alignment (GTK_MISC (label3), 0, 0.5);
+  radiobutton5 = gtk_radio_button_new_with_mnemonic (NULL, _("Black TIGraphLink\nHome-made serial"));
+  gtk_widget_show (radiobutton5);
+  gtk_table_attach (GTK_TABLE (table2), radiobutton5, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton5), radiobutton3_group);
+  radiobutton3_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton5));
 
   label10 = gtk_label_new (_("Link cable type:"));
   gtk_widget_show (label10);
@@ -345,9 +332,6 @@ create_linktype_dbox (void)
   g_signal_connect ((gpointer) radiobutton4, "toggled",
                     G_CALLBACK (linktype_radiobutton4_toggled),
                     NULL);
-  g_signal_connect ((gpointer) radiobutton5, "toggled",
-                    G_CALLBACK (linktype_radiobutton5_toggled),
-                    NULL);
   g_signal_connect ((gpointer) radiobutton6, "toggled",
                     G_CALLBACK (linktype_radiobutton6_toggled),
                     NULL);
@@ -359,6 +343,9 @@ create_linktype_dbox (void)
                     NULL);
   g_signal_connect ((gpointer) radiobutton1, "toggled",
                     G_CALLBACK (linktype_radiobutton1_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) radiobutton5, "toggled",
+                    G_CALLBACK (linktype_radiobutton5_toggled),
                     NULL);
   g_signal_connect ((gpointer) radiobutton10, "toggled",
                     G_CALLBACK (linktype_radiobutton10_toggled),
@@ -403,13 +390,11 @@ create_linktype_dbox (void)
   GLADE_HOOKUP_OBJECT (linktype_dbox, radiobutton3, "radiobutton3");
   GLADE_HOOKUP_OBJECT (linktype_dbox, radiobutton2, "radiobutton2");
   GLADE_HOOKUP_OBJECT (linktype_dbox, radiobutton4, "radiobutton4");
-  GLADE_HOOKUP_OBJECT (linktype_dbox, radiobutton5, "radiobutton5");
-  GLADE_HOOKUP_OBJECT (linktype_dbox, label4, "label4");
   GLADE_HOOKUP_OBJECT (linktype_dbox, radiobutton6, "radiobutton6");
   GLADE_HOOKUP_OBJECT (linktype_dbox, radiobutton7, "radiobutton7");
   GLADE_HOOKUP_OBJECT (linktype_dbox, radiobutton8, "radiobutton8");
   GLADE_HOOKUP_OBJECT (linktype_dbox, radiobutton1, "radiobutton1");
-  GLADE_HOOKUP_OBJECT (linktype_dbox, label3, "label3");
+  GLADE_HOOKUP_OBJECT (linktype_dbox, radiobutton5, "radiobutton5");
   GLADE_HOOKUP_OBJECT (linktype_dbox, label10, "label10");
   GLADE_HOOKUP_OBJECT (linktype_dbox, frame2, "frame2");
   GLADE_HOOKUP_OBJECT (linktype_dbox, vbox2, "vbox2");

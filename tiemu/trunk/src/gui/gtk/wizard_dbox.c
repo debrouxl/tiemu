@@ -132,13 +132,8 @@ create_step1_dbox (void)
   GtkWidget *hseparator1;
   GtkWidget *radiobutton1;
   GSList *radiobutton1_group = NULL;
-  GtkWidget *label14;
   GtkWidget *radiobutton2;
-  GSList *radiobutton2_group = NULL;
-  GtkWidget *label13;
   GtkWidget *radiobutton3;
-  GSList *radiobutton3_group = NULL;
-  GtkWidget *label12;
   GtkWidget *hseparator2;
   GtkWidget *label11;
   GtkWidget *dialog_action_area3;
@@ -178,47 +173,23 @@ create_step1_dbox (void)
   gtk_widget_show (hseparator1);
   gtk_box_pack_start (GTK_BOX (vbox1), hseparator1, TRUE, TRUE, 0);
 
-  radiobutton1 = gtk_radio_button_new_with_mnemonic (NULL, _("You can use TiLP or another dumping program for getting a ROM image of your calculator."));
+  radiobutton1 = gtk_radio_button_new_with_mnemonic (NULL, _("You can use TiLP or another dumping program \nto get a ROM image of your calculator."));
   gtk_widget_show (radiobutton1);
   gtk_box_pack_start (GTK_BOX (vbox1), radiobutton1, FALSE, FALSE, 0);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton1), radiobutton1_group);
   radiobutton1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton1));
 
-  label14 = gtk_label_new (_("You can use TiLP or another dumping program for getting a ROM image of your calculator."));
-  gtk_widget_show (label14);
-  gtk_container_add (GTK_CONTAINER (radiobutton1), label14);
-  gtk_label_set_justify (GTK_LABEL (label14), GTK_JUSTIFY_FILL);
-  gtk_label_set_line_wrap (GTK_LABEL (label14), TRUE);
-  gtk_misc_set_alignment (GTK_MISC (label14), 0, 0.5);
-  gtk_misc_set_padding (GTK_MISC (label14), 5, 0);
-
-  radiobutton2 = gtk_radio_button_new_with_mnemonic (NULL, _("You have downloaded a FLASH upgrade on the TI website and you would like to convert it."));
+  radiobutton2 = gtk_radio_button_new_with_mnemonic (NULL, _("You have downloaded a FLASH upgrade on the TI\nwebsite and would like to use it."));
   gtk_widget_show (radiobutton2);
   gtk_box_pack_start (GTK_BOX (vbox1), radiobutton2, FALSE, FALSE, 0);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton2), radiobutton2_group);
-  radiobutton2_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton2));
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton2), radiobutton1_group);
+  radiobutton1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton2));
 
-  label13 = gtk_label_new (_("You have downloaded a FLASH upgrade on the TI website and you would like to convert it."));
-  gtk_widget_show (label13);
-  gtk_container_add (GTK_CONTAINER (radiobutton2), label13);
-  gtk_label_set_justify (GTK_LABEL (label13), GTK_JUSTIFY_FILL);
-  gtk_label_set_line_wrap (GTK_LABEL (label13), TRUE);
-  gtk_misc_set_alignment (GTK_MISC (label13), 0, 0.5);
-  gtk_misc_set_padding (GTK_MISC (label13), 5, 0);
-
-  radiobutton3 = gtk_radio_button_new_with_mnemonic (NULL, _("You have already a ROM image and you would like to use it."));
+  radiobutton3 = gtk_radio_button_new_with_mnemonic (NULL, _("You already have a ROM image and would like to use it."));
   gtk_widget_show (radiobutton3);
   gtk_box_pack_start (GTK_BOX (vbox1), radiobutton3, FALSE, FALSE, 0);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton3), radiobutton3_group);
-  radiobutton3_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton3));
-
-  label12 = gtk_label_new (_("You have already a ROM image and you would like to use it."));
-  gtk_widget_show (label12);
-  gtk_container_add (GTK_CONTAINER (radiobutton3), label12);
-  gtk_label_set_justify (GTK_LABEL (label12), GTK_JUSTIFY_FILL);
-  gtk_label_set_line_wrap (GTK_LABEL (label12), TRUE);
-  gtk_misc_set_alignment (GTK_MISC (label12), 0, 0.5);
-  gtk_misc_set_padding (GTK_MISC (label12), 5, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton3), radiobutton1_group);
+  radiobutton1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton3));
 
   hseparator2 = gtk_hseparator_new ();
   gtk_widget_show (hseparator2);
@@ -279,15 +250,6 @@ create_step1_dbox (void)
   gtk_box_pack_start (GTK_BOX (hbox6), label18, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (label18), GTK_JUSTIFY_LEFT);
 
-  g_signal_connect ((gpointer) radiobutton1, "toggled",
-                    G_CALLBACK (step1_on_radiobutton1_toggled),
-                    NULL);
-  g_signal_connect ((gpointer) radiobutton2, "toggled",
-                    G_CALLBACK (step2_on_radiobutton2_toggled),
-                    NULL);
-  g_signal_connect ((gpointer) radiobutton3, "toggled",
-                    G_CALLBACK (step3_on_radiobutton3_toggled),
-                    NULL);
   g_signal_connect ((gpointer) button4, "clicked",
                     G_CALLBACK (step1_b1_button_clicked),
                     NULL);
@@ -305,11 +267,8 @@ create_step1_dbox (void)
   GLADE_HOOKUP_OBJECT (step1_dbox, label10, "label10");
   GLADE_HOOKUP_OBJECT (step1_dbox, hseparator1, "hseparator1");
   GLADE_HOOKUP_OBJECT (step1_dbox, radiobutton1, "radiobutton1");
-  GLADE_HOOKUP_OBJECT (step1_dbox, label14, "label14");
   GLADE_HOOKUP_OBJECT (step1_dbox, radiobutton2, "radiobutton2");
-  GLADE_HOOKUP_OBJECT (step1_dbox, label13, "label13");
   GLADE_HOOKUP_OBJECT (step1_dbox, radiobutton3, "radiobutton3");
-  GLADE_HOOKUP_OBJECT (step1_dbox, label12, "label12");
   GLADE_HOOKUP_OBJECT (step1_dbox, hseparator2, "hseparator2");
   GLADE_HOOKUP_OBJECT (step1_dbox, label11, "label11");
   GLADE_HOOKUP_OBJECT_NO_REF (step1_dbox, dialog_action_area3, "dialog_action_area3");
