@@ -329,9 +329,6 @@ GtkWidget* dbgbkpts_display_window(void)
 	display_dbgcause_dbox2(statbar);
 	//dbgbkpts_statusbar_add(statbar);
 
-	printf("Parsing VAT...\n");
-	parse_vat();
-
 	return wnd;
 }
 

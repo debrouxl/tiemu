@@ -40,7 +40,8 @@ typedef struct
 	Functions
 */
 
-int vat_parse(TNode **tree);
+int vat_parse(GNode **tree);
+int vat_free(GNode **tree);
 
 
 #endif

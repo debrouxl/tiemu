@@ -35,10 +35,10 @@
 #include "dbg_entry.h"
 
 enum { 
-	    COL_NAME,
+	    COL_NAME, COL_HANDLE
 };
 #define CTREE_NVCOLS	(1)		// 1 visible columns
-#define CTREE_NCOLS		(1)		// 1 real columns
+#define CTREE_NCOLS		(2)		// 1 real columns
 
 static GtkTreeStore* ctree_create(GtkWidget *tree)
 {
@@ -50,7 +50,7 @@ static GtkTreeStore* ctree_create(GtkWidget *tree)
     const gchar *text[CTREE_NVCOLS] = { _("Name") };
     gint i;
 	
-	store = gtk_tree_store_new(CTREE_NCOLS, G_TYPE_STRING, -1);
+	store = gtk_tree_store_new(CTREE_NCOLS, G_TYPE_STRING, G_TYPE_INT, -1);
     model = GTK_TREE_MODEL(store);
 	
     gtk_tree_view_set_model(view, model); 
@@ -82,30 +82,35 @@ static GtkTreeStore* ctree_create(GtkWidget *tree)
 
 static void ctree_populate(GtkTreeStore *store)
 {
-    GtkTreeIter node1, node2, iter;
-	gint i;
+	gint i, j;
+	GNode *tree;
 
-	gtk_tree_store_append(store, &node1, NULL);
-	gtk_tree_store_set(store, &node1, COL_NAME, "node1", -1);
-		
-	for(i = 0; i < 5; i++)
+	// Parse VAT
+	vat_parse(&tree);
+
+	// and show it
+	for (i = 0; i < (int)g_node_n_children(tree); i++) 
 	{
-	    gtk_tree_store_append(store, &iter, &node1);
-		gtk_tree_store_set(store, &iter, 
-		COL_NAME, "foobar",
-		-1);
+		GNode *fol_node = g_node_nth_child(tree, i);
+		VatSymEntry *vse = (VatSymEntry *)fol_node->data;
+		GtkTreeIter fol_iter;
+
+		gtk_tree_store_append(store, &fol_iter, NULL);
+		gtk_tree_store_set(store, &fol_iter, COL_NAME, vse->name, COL_HANDLE, vse->handle, -1);
+
+		for(j = 0; j < (int)g_node_n_children(fol_node); j++)
+		{
+			GNode *var_node = g_node_nth_child(fol_node, j);
+			VatSymEntry *vse = (VatSymEntry *)var_node->data;
+			GtkTreeIter var_iter;
+
+			gtk_tree_store_append(store, &var_iter, &fol_iter);
+			gtk_tree_store_set(store, &var_iter, COL_NAME, vse->name, COL_HANDLE, vse->handle, -1);
+		}
 	}
 
-	gtk_tree_store_append(store, &node2, NULL);
-	gtk_tree_store_set(store, &node2, COL_NAME, "node2", -1);
-		
-	for(i = 0; i < 5; i++)
-	{
-	    gtk_tree_store_append(store, &iter, &node2);
-		gtk_tree_store_set(store, &iter, 
-		COL_NAME, "foobar",
-		-1);
-	}
+	// Free copy of VAT
+	vat_free(&tree);
 }
 
 static void ctree_get_selection(GtkWidget *tree)
@@ -122,12 +127,14 @@ static void ctree_get_selection(GtkWidget *tree)
 	{
 		GtkTreeIter iter;
 		GtkTreePath *path = l->data;
-		gint n;
+		char *name;
+		int handle;
 			
 		gtk_tree_model_get_iter(model, &iter, path);
-		//gtk_tree_model_get(model, &iter, COL_NUMBER, &n, -1);
+		gtk_tree_model_get(model, &iter, COL_NAME, &name, COL_HANDLE, &handle, -1);
+		printf("Selected: %s\n", name);;
 		
-		ti68k_bkpt_add_exception(n);
+		//ti68k_bkpt_add_exception(n);
 	}	
 }
 

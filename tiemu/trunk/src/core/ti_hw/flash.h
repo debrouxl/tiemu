@@ -51,6 +51,8 @@ int hw_flash_init(void);
 int hw_flash_reset(void);
 int hw_flash_exit(void);
 
+int hw_flash_nblocks(void);
+
 uint8_t  FlashReadByte(uint32_t addr);
 uint16_t FlashReadWord(uint32_t addr);
 uint32_t FlashReadLong(uint32_t addr);
