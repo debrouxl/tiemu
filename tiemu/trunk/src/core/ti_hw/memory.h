@@ -46,16 +46,6 @@ extern UBYTE *get_real_address(CPTR adr);
 extern UBYTE *mem_tab[];
 extern ULONG mem_mask[];
 
-extern int memprotect, ram128;
-extern int mem_and, ram_wrap;
-
-extern int flash_protect;
-extern int rom_ret_or;
-extern int rom_write_ready;
-extern int rom_write_phase;
-extern int rom_erase;
-extern int rom_erasePhase;
-
 /* Defines */
 
 #define rom_at_0() { mem_tab[0] = tihw.rom; mem_mask[0] = tihw.rom_size-1; }

@@ -64,13 +64,16 @@ ULONG mem_mask[16];		// pseudo chip-select
 // e00000-efffff :   ...
 // d00000-ffffff : unused
 
-int rom_changed[32]; // FLASH segments which have been (re)programmed
-//int tihw.flash_prot;
-int rom_ret_or;
-int rom_write_ready;
-int rom_write_phase;
-int rom_erase;
-int rom_erasePhase;
+typedef struct
+{
+    int changed[32]; // FLASH segments which have been (re)programmed
+    int ret_or;
+    int write_ready;
+    int write_phase;
+    int erase;
+    int erasePhase;
+} FLASH_WSM;
+FLASH_WSM   wsm = { 0 };
 
 static int log2(int i);
 
@@ -104,13 +107,13 @@ int hw_mem_init(void)
     tihw.flash_prot = 1;
 
   /* Init vars */
-  rom_write_ready=0; 
-  rom_write_phase=0; 
-  rom_ret_or=0;
-  rom_erase=0;
-  rom_write_ready = 0;
-  rom_write_phase = 0;
-  rom_ret_or = 0;
+  wsm.write_ready=0; 
+  wsm.write_phase=0; 
+  wsm.ret_or=0;
+  wsm.erase=0;
+  wsm.write_ready = 0;
+  wsm.write_phase = 0;
+  wsm.ret_or = 0;
   //tihw.flash_prot = 0;
 
     // clear breakpoints
@@ -298,7 +301,7 @@ ULONG get_long(CPTR adr)
   
     // FLASH access
     else if (adr >= 0x200000 && adr<0x600000) 
-        return (lget(adr) | rom_ret_or);
+        return (lget(adr) | wsm.ret_or);
 
     // memory-mapped I/O
     else if(adr >= 0x600000) 
@@ -375,7 +378,7 @@ UWORD get_word(CPTR adr)
   
     // FLASH access
     else if (adr >= 0x200000 && adr<0x600000) 
-        return (wget(adr) | rom_ret_or);
+        return (wget(adr) | wsm.ret_or);
 
     // memory-mapped I/O
     else if(adr >= 0x600000) 
@@ -446,7 +449,7 @@ UBYTE get_byte(CPTR adr)
   
     // FLASH access
     else if (adr >= 0x200000 && adr<0x600000) 
-        return (bget(adr) | rom_ret_or);
+        return (bget(adr) | wsm.ret_or);
 
     // memory-mapped I/O
     else if(adr >= 0x600000) 
@@ -725,54 +728,54 @@ static void FlashWriteByte(int addr, int v)
         return;
 
     // Write State Machine (WSM, Sharp's data sheet)
-    if (rom_write_ready)
+    if (wsm.write_ready)
     {
-        if ((rom[addr]==0xff)||(rom_write_ready==1))
+        if ((rom[addr]==0xff)||(wsm.write_ready==1))
 	    {
 	        rom[addr]=v;
-	        rom_changed[addr>>16]=1;
+	        wsm.changed[addr>>16]=1;
 	    }
         else
-	        rom_write_ready--;
-            rom_write_ready--;
-            rom_ret_or=0xffffffff;
+	        wsm.write_ready--;
+            wsm.write_ready--;
+            wsm.ret_or=0xffffffff;
     }
     else if (v==0x50)
-        rom_write_phase=0x50;
+        wsm.write_phase=0x50;
     else if (v==0x10)
     {
-        if (rom_write_phase==0x50)
-	        rom_write_phase=0x51;
-        else if (rom_write_phase==0x51)
+        if (wsm.write_phase==0x50)
+	        wsm.write_phase=0x51;
+        else if (wsm.write_phase==0x51)
         {
-	        rom_write_ready=2;
-	        rom_write_phase=0x50;
+	        wsm.write_ready=2;
+	        wsm.write_phase=0x50;
         }
     }
     else if (v==0x20)
     {
-        if (rom_write_phase==0x50)
-	        rom_write_phase=0x20;
+        if (wsm.write_phase==0x50)
+	        wsm.write_phase=0x20;
     }
     else if (v==0xd0)
     {
-        if (rom_write_phase==0x20)
+        if (wsm.write_phase==0x20)
         {
-	        rom_write_phase=0xd0;
-	        rom_ret_or=0xffffffff;
-	        rom_erase=0xffffffff;
-	        rom_erasePhase=0;
+	        wsm.write_phase=0xd0;
+	        wsm.ret_or=0xffffffff;
+	        wsm.erase=0xffffffff;
+	        wsm.erasePhase=0;
 	        for (i=0;i<0x10000;i++)
 	            rom[(addr&0x1f0000)+i]=0xff;
-	        rom_changed[addr>>16]=1;
+	        wsm.changed[addr>>16]=1;
         } 
     }
     else if (v==0xff)
     {
-        if (rom_write_phase==0x50)
+        if (wsm.write_phase==0x50)
         {
-	        rom_write_ready=0;
-	        rom_ret_or=0;
+	        wsm.write_ready=0;
+	        wsm.ret_or=0;
         }
     }
 }
