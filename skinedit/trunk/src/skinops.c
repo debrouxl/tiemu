@@ -30,6 +30,9 @@
 #ifndef __WIN32__
 #include <byteswap.h>
 #endif
+#ifdef __WIN32__
+#include <io.h> // _mktemp
+#endif
 
 #include <gtk/gtk.h>
 
