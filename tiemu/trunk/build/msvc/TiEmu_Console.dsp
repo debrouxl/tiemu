@@ -268,6 +268,10 @@ SOURCE=..\..\src\gui\debugger\dbg_regs.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gui\debugger\dbg_romcall.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\debugger\dbg_stack.c
 # End Source File
 # Begin Source File

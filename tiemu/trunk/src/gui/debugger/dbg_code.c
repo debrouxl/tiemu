@@ -26,13 +26,9 @@
 #  include <config.h>
 #endif
 
-#undef GTK_DISABLE_DEPRECATED
-
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <gdk/gdkkeysyms.h>
-
-#define GTK_DISABLE_DEPRECATED
 
 #include "intl.h"
 #include "paths.h"
@@ -41,6 +37,7 @@
 #include "struct.h"
 #include "dbg_all.h"
 #include "romcalls.h"
+#include "dbg_romcall.h"
 
 enum { 
 	    COL_ICON, COL_ADDR, COL_OPCODE, COL_OPERAND,
@@ -312,9 +309,7 @@ GtkWidget* dbgcode_create_window(void)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
-    GtkWidget *data;
-	GList *items = NULL;
-	GList *lst, *ptr;
+    GtkWidget *data;	
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_code-2.glade"), "dbgcode_window",
@@ -352,28 +347,8 @@ GtkWidget* dbgcode_create_window(void)
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
 
-	data = glade_xml_get_widget(xml, "combo1");
-	items = g_list_append (items, "");
-
-	lst = romcalls_sort_by_id();
-	if(lst != NULL)
-	{
-		for(ptr = lst; ptr != NULL; ptr = g_list_next(ptr))
-		{
-			uint32_t addr = ROMCALL_ADDR(ptr);
-			const gchar *name = ROMCALL_NAME(ptr);
-			int id = ROMCALL_ID(ptr);
-			gchar *str;
-
-			if(!strcmp(name, "unknown") || (name == NULL))
-				continue;
-
-			str = g_strdup_printf("%s [$%x] - #%03x", name, addr, id);
-			printf("<%s>\n", str);
-			items = g_list_append (items, str);
-		}
-		gtk_combo_set_popdown_strings (GTK_COMBO (data), items);
-	}
+	data = glade_xml_get_widget(xml, "comboboxentry1");
+	dbgromcall_fill_window(data);
 
 	gtk_window_resize(GTK_WINDOW(dbox), options3.code.w, options3.code.h);
 	gtk_window_move(GTK_WINDOW(dbox), options3.code.x, options3.code.y);
@@ -889,29 +864,4 @@ on_view_memory1_activate       (GtkMenuItem     *menuitem,
     
     printf("addr = %x\n", addr);
     dbgmem_add_tab(addr);
-}
-
-GLADE_CB void
-on_combo_entry1_changed                (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-	gchar *str = gtk_editable_get_chars(editable, 0, -1);
-	uint32_t addr;
-	int id;
-	gchar name[256];
-	int ret;
-
-	ret = sscanf(str, "%s [$%x] - #%03x ",name, &addr, &id);
-	if(ret == 3)
-		dbgcode_disasm_at(addr & 0xffffff);
-
-	g_free(str);
-}
-
-GLADE_CB void
-on_combo_entry1_populate_popup         (GtkEntry        *entry,
-                                        GtkMenu         *menu,
-                                        gpointer         user_data)
-{
-	printf("hello !\n");
 }

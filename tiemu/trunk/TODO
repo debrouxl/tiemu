@@ -157,7 +157,7 @@ sur le moins ('-'), ça n'a aucun effet.
 utilisant le débogueur. Il y en a peut-être un lié à la fonction
 'disable' de breakpoint.
 
-* Dropdown 'Symbol' pour les ROM Calls dans la fenêtre source : il
++ Dropdown 'Symbol' pour les ROM Calls dans la fenêtre source : il
 faudrait trier insensible à la casse, et quand on tape le début d'un
 nom de ROM Call, amener à la première ROM call correspondante, comme
 dans la version de VTI de JM.

@@ -440,43 +440,13 @@
 	    </packing>
 	  </child>
 
-	  <child>
-	    <widget class="GtkCombo" id="combo1">
-	      <property name="visible">True</property>
-	      <property name="value_in_list">False</property>
-	      <property name="allow_empty">True</property>
-	      <property name="case_sensitive">False</property>
-	      <property name="enable_arrow_keys">True</property>
-	      <property name="enable_arrows_always">False</property>
-
-	      <child internal-child="entry">
-		<widget class="GtkEntry" id="combo-entry1">
-		  <property name="visible">True</property>
-		  <property name="can_focus">True</property>
-		  <property name="editable">True</property>
-		  <property name="visibility">True</property>
-		  <property name="max_length">0</property>
-		  <property name="text" translatable="yes"></property>
-		  <property name="has_frame">True</property>
-		  <property name="invisible_char" translatable="yes">*</property>
-		  <property name="activates_default">False</property>
-		  <signal name="changed" handler="on_combo_entry1_changed" last_modification_time="Sat, 28 Aug 2004 17:03:52 GMT"/>
-		</widget>
-	      </child>
-
-	      <child internal-child="list">
-		<widget class="GtkList" id="combo-list1">
-		  <property name="visible">True</property>
-		  <property name="selection_mode">GTK_SELECTION_BROWSE</property>
-		</widget>
-	      </child>
-	    </widget>
-	    <packing>
-	      <property name="padding">0</property>
-	      <property name="expand">True</property>
-	      <property name="fill">True</property>
-	    </packing>
-	  </child>
+	<child>
+    <widget class="GtkComboBoxEntry" id="comboboxentry1">
+      <property name="visible">True</property>
+      <signal name="changed" handler="on_combo_entry1_changed"  last_modification_time="Fri, 02 Jul 2004 14:35:43 GMT"/>
+    </widget>
+  </child>
+	
 	</widget>
 	<packing>
 	  <property name="padding">0</property>
