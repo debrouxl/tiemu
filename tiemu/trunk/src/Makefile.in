@@ -167,10 +167,11 @@ tiemu: uae $(tiemu_OBJ)
 
 clean:
 	@cd core/uae && $(MAKE) clean
-	@rm -f $(tiemu_OBJ) tiemu
+	@rm -f $(tiemu_OBJ) tiemu tiemu.exe
 
 distclean: clean
 	@cd core/uae && $(MAKE) distclean
+	@rm -Rf .libs
 
 dos2unix:
 	dos2unix

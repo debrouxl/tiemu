@@ -120,6 +120,7 @@ readcpu.o:  readcpu.h
 
 clean:
 	$(RM) build68k gencpu *.o
+	$(RM) build68k.exe gencpu.exe
 
 distclean: clean
 	$(RM) cpudefs.c cpustbl.c cputbl.? cpu?.?
