@@ -44,7 +44,7 @@
 #include "images.h"
 #include "ti68k_def.h"
 
-#define BUFSIZE	8			// store 12 plane addresses
+#define BUFSIZE	12			// store 12 plane addresses
 #define UPDATE_PLANES	32	// update plane addresses every 16 LCD refresh
 
 double round(double v)
@@ -138,7 +138,7 @@ extern void lcd_hook(void)
 		}
 
 #if 0
-		//printf("%06x-%06x-%06x\n", lcd_planes[0], lcd_planes[1], lcd_planes[2]);
+		printf("%06x-%06x-%06x\n", lcd_planes[0], lcd_planes[1], lcd_planes[2]);
 		//printf("%1.1f/%1.1f %i\n", round(fir), fir, c);				 
 		//for(i = 0; i < 8; i++)	printf("%06x ", lcd_addrs[i]); printf("\n");
 #endif
