@@ -93,7 +93,7 @@ static gboolean engine_func(gint *data)
 	ms = 1000 * g_timer_elapsed(tmr, NULL);
 	g_timer_destroy(tmr);
 	cal = (guint)(ms);
-	printf("%u ", cal);
+	//printf("%u ", cal);
 
 	return TRUE;
 }
