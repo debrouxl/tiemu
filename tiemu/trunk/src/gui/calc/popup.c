@@ -212,9 +212,7 @@ GLADE_CB void
 on_normal_view1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	//ti68k_engine_stop();
 	hid_switch_normal_view();
-  	//ti68k_engine_start();
 }
 
 
@@ -222,9 +220,7 @@ GLADE_CB void
 on_large_view1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	//ti68k_engine_stop();
 	hid_switch_large_view();
-  	//ti68k_engine_start();
 }
 
 
@@ -232,9 +228,10 @@ GLADE_CB void
 on_full_screen1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	//ti68k_engine_stop();
-	hid_switch_fullscreen();
-  	//ti68k_engine_start();
+	if(GTK_CHECK_MENU_ITEM(menuitem)->active == TRUE) 
+		hid_switch_fullscreen();
+	else
+		hid_switch_unfullscreen();
 }
 
 
@@ -439,12 +436,6 @@ GtkWidget* display_popup_menu(void)
         g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_large_view1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
         g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_large_view1_activate, NULL);
-        break;
-    case VIEW_FULL:
-        data = glade_xml_get_widget(xml, "full_view1");
-        g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_full_screen1_activate, NULL);
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_full_screen1_activate, NULL);
         break;
     default:
         break;

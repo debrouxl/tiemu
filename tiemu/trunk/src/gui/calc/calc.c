@@ -62,13 +62,14 @@ extern const char	sknKey89[];
 extern uint32_t*	lcd_bytmap;
 extern LCD_INFOS	li;
 extern WND_INFOS	wi;
+extern SCL_INFOS	si;
 
 static void set_infos(void)	// set window & lcd sizes
 {
 	if(params.background) 
 	{
-		li.pos.x = skin_infos.lcd_pos.left; 
-		li.pos.y = skin_infos.lcd_pos.top;
+		li.pos.x = si.s * skin_infos.lcd_pos.left; 
+		li.pos.y = si.s * skin_infos.lcd_pos.top;
 	}
 	else 
 	{
@@ -76,18 +77,18 @@ static void set_infos(void)	// set window & lcd sizes
 		li.pos.y = 0;
 	}  
 
-	li.pos.w = tihw.lcd_w;
-	li.pos.h = tihw.lcd_h;
+	li.pos.w = si.s * tihw.lcd_w;
+	li.pos.h = si.s * tihw.lcd_h;
 
 	if(params.background)
 	{
-		wi.w = wi.s * skin_infos.width;
-		wi.h = wi.s * skin_infos.height;
+		wi.w = si.s * skin_infos.width;
+		wi.h = si.s * skin_infos.height;
 	}
 	else
 	{
-		wi.w = wi.s * tihw.lcd_w;
-		wi.h = wi.s * tihw.lcd_h;
+		wi.w = si.s * tihw.lcd_w;
+		wi.h = si.s * tihw.lcd_h;
 	}
 }
 
@@ -327,8 +328,6 @@ void redraw_skin(void);
 
 int  hid_init(void)
 {
-    SKIN_INFOS *si = &skin_infos;
-
     // Found a PC keyboard keymap
     match_keymap(tihw.calc_type);
 
@@ -390,6 +389,7 @@ int  hid_init(void)
 	    g_free(s);
 	    return -1;
     }
+	si.l = gdk_pixbuf_new_subpixbuf(lcd, 0, 0, tihw.lcd_w, tihw.lcd_h);
     
 	// Constants for LCD update (speed-up)
     li.n_channels = gdk_pixbuf_get_n_channels (lcd);
@@ -480,14 +480,14 @@ int hid_change_skin(const char *filename)
 	return ret1 | ret2;
 }
 
-static gint fullscreen = 0;
+static gint view_mode = VW_NORMAL;
 
-int hid_switch_windowed(void)
+int hid_switch_unfullscreen(void)
 {
-	if(fullscreen)
+	if(view_mode & VW_FULL)
 	{
 		gdk_window_unfullscreen(main_wnd->window);
-		fullscreen = 0;
+		view_mode &= ~VW_FULL;
 	}
 
 	return 0;
@@ -495,10 +495,10 @@ int hid_switch_windowed(void)
 
 int hid_switch_fullscreen(void)
 {
-	if(!fullscreen)
+	if(!(view_mode & VW_FULL))
 	{
 		gdk_window_fullscreen(main_wnd->window);
-		fullscreen = !0;
+		view_mode |= VW_FULL;
 	}
 
 	return 0;
@@ -506,20 +506,34 @@ int hid_switch_fullscreen(void)
 
 int hid_switch_normal_view(void)
 {
-    hid_switch_windowed();
-	wi.s = 1;
-	set_infos();
-	redraw_skin();
+	if(!(view_mode & VW_NORMAL))
+	{
+		hid_switch_unfullscreen();
+
+		si.s = 1;		
+		hid_exit();
+		hid_init();
+
+		view_mode &= ~VW_LARGE;
+		view_mode |= VW_NORMAL;
+	}
 
     return 0;
 }
 
 int hid_switch_large_view(void)
 {
-	hid_switch_windowed();
-	wi.s = 2;
-	set_infos();
-	redraw_skin();
+	if(!(view_mode & VW_LARGE))
+	{
+		hid_switch_unfullscreen();
+
+		si.s = 2;		
+		hid_exit();
+		hid_init();
+
+		view_mode &= ~VW_NORMAL;
+		view_mode |= VW_LARGE;
+	}
 
     return 0;
 }

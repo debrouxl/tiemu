@@ -42,7 +42,7 @@ int hid_switch_without_skin(void);
 int hid_change_skin(const char *filename);
 
 int hid_switch_fullscreen(void);
-int hid_switch_windowed(void);
+int hid_switch_unfullscreen(void);
 
 int hid_switch_normal_view(void);
 int hid_switch_large_view(void);
@@ -78,17 +78,22 @@ typedef struct
 {
 	int w;
 	int h;
-
-	int s;
 } WND_INFOS;
 
 typedef struct
 {
-	int 		w;	// width
-	int 		h;	// height
-	float 		r;	// original ratio
-	float 		s;	// scaling factor
-	GdkPixbuf*	p;	// temp pointer
-} SCALE_INFOS;
+	//int 		w;	// width
+	//int 		h;	// height
+	//float 		r;	// original ratio
+	//float 		s;	// scaling factor
+
+	int			s;
+	GdkPixbuf*	l;	// lcd pixbuf
+	GdkPixbuf*	p;	// scaled pixbuf
+} SCL_INFOS;
+
+#define VW_NORMAL	1
+#define VW_LARGE	2
+#define VW_FULL		4
 
 #endif
