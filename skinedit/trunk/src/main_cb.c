@@ -28,7 +28,6 @@
 #include <string.h>
 
 #include <gtk/gtk.h>
-#include "gtksdl.h"
 
 #include "support.h"
 #include "struct.h"
@@ -69,7 +68,7 @@ on_new_activate                        (GtkMenuItem     *menuitem,
 {
   GtkWidget *filesel;
 
-  /* must save & destroy sdl_area */
+  /* must save & destroy pixbuf */
 
   if (skin_infos.changed)
     {
@@ -106,25 +105,12 @@ on_new_activate                        (GtkMenuItem     *menuitem,
   keys_mouse_motion = 0;
   keys_button_press = 0;
 
-#if ROMS
-  if (sdl_area != NULL)
-    {
-      gtk_widget_destroy(GTK_WIDGET(sdl_area));
-      SDL_Quit();
-
-      sdl_area = NULL;
-      area = NULL;
-
-      clear_skin_infos();
-    }
-#else
   if (pixbuf != NULL)
     {
       g_object_unref(pixbuf);
       pixbuf = NULL;
       clear_skin_infos();
     }
-#endif
 
   gtk_statusbar_pop(GTK_STATUSBAR(statusbar), 1);
 
@@ -148,7 +134,7 @@ on_open_activate                       (GtkMenuItem     *menuitem,
 {
   GtkWidget *filesel;
 
-  /* must save & destroy sdl_area */
+  /* must save & destroy pixbuf */
 
   if (skin_infos.changed)
     {
@@ -185,25 +171,12 @@ on_open_activate                       (GtkMenuItem     *menuitem,
   keys_mouse_motion = 0;
   keys_button_press = 0;
 
-#if ROMS
-  if (sdl_area != NULL)
-    {
-      gtk_widget_destroy(GTK_WIDGET(sdl_area));
-      SDL_Quit();
-
-      sdl_area = NULL;
-      area = NULL;
-
-      clear_skin_infos();
-    }
-#else
   if (pixbuf != NULL)
     {
       g_object_unref(pixbuf);
       pixbuf = NULL;
       clear_skin_infos();
     }
-#endif
 
   gtk_statusbar_pop(GTK_STATUSBAR(statusbar), 1);
 
@@ -342,8 +315,6 @@ on_exit_activate                       (GtkMenuItem     *menuitem,
 
   clear_skin_infos();
 
-  SDL_Quit();
-
   gtk_main_quit();
 }
 
@@ -462,13 +433,8 @@ on_lcd_position_activate               (GtkMenuItem     *menuitem,
 {
   SDL_Rect lcd_cur;
 
-#if ROMS
-  if (area == NULL)
-    return;
-#else
   if(pixbuf == NULL)
     return;
-#endif
 
   if (list_keys_dialog != NULL)
     {
@@ -499,11 +465,7 @@ on_lcd_position_activate               (GtkMenuItem     *menuitem,
   keys_mouse_motion = 0;
   keys_button_press = 0;
 
-#if ROMS
-  erase_rubberbox(sdl_area);
-#else
-  erase_rubberbox(NULL);
-#endif
+  erase_rubberbox(drawingarea1);
 
   if ((skin_infos.lcd_pos.top >= 0)
       && (skin_infos.lcd_pos.left >= 0)
@@ -516,11 +478,7 @@ on_lcd_position_activate               (GtkMenuItem     *menuitem,
       lcd_cur.w = skin_infos.lcd_pos.right - skin_infos.lcd_pos.left;
       lcd_cur.h = skin_infos.lcd_pos.bottom - skin_infos.lcd_pos.top;
 
-#if ROMS
-      draw_rubberbox(sdl_area, lcd_cur);
-#else
-      draw_rubberbox(NULL, lcd_cur);
-#endif
+      draw_rubberbox(drawingarea1, lcd_cur);
 
       sbar_print(_("Left click + drag to define LCD position, right click when done. Current size : %d x %d"),
 		 lcd_cur.w, lcd_cur.h);
@@ -643,8 +601,6 @@ on_main_window_delete_destroy_event            (GtkWidget       *widget,
     }
 
   clear_skin_infos();
-
-  SDL_Quit();
 
   gtk_main_quit();
 
@@ -833,11 +789,10 @@ on_filesel_cancel_clicked               (GtkButton       *button,
   gtk_widget_destroy(lookup_widget(GTK_WIDGET(button), "filesel"));
 }
 
-/* Backing pixmap for drawing area */
-//GdkPixmap *pixmap = NULL;
+/* Backing pixbuf for drawing area */
 GdkPixbuf *pixbuf = NULL;
 
-/* Create a new backing pixmap of the appropriate size */
+/* Create a new backing pixbuf of the appropriate size */
 gboolean
 on_drawingarea1_configure_event        (GtkWidget       *widget,
                                         GdkEventConfigure *event,
@@ -846,45 +801,24 @@ on_drawingarea1_configure_event        (GtkWidget       *widget,
   return FALSE;
 }
 
-/* Redraw the screen from the backing pixmap */
+/* Redraw the screen from the backing pixbuf */
 gboolean
 on_drawingarea1_expose_event           (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data)
 {
-    GdkRectangle update_rect;
+  GdkRectangle update_rect;
 
-   if(pixbuf == NULL)
-     return FALSE;
+  if(pixbuf == NULL)
+    return FALSE;
      
   gdk_draw_pixbuf(widget->window,
-		  widget->style->fg_gc[GTK_WIDGET_STATE(drawingarea1)],
+		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
 		  pixbuf, 
 		  event->area.x, event->area.y,
-                  event->area.x, event->area.y,
-                  event->area.width, event->area.height,
+      event->area.x, event->area.y,
+      event->area.width, event->area.height,
 		  GDK_RGB_DITHER_NONE, 0, 0);
-
-  /*
-  update_rect.x = 5;
-  update_rect.y = 5;
-  update_rect.width = 10;
-  update_rect.height = 10;
-  gdk_draw_rectangle (widget->window,
-                      widget->style->black_gc,
-                      TRUE,
-                      update_rect.x, update_rect.y,
-                      update_rect.width, update_rect.height);
-    gtk_widget_draw (widget, &update_rect);
-
-    printf("pixmap == %p\n", pixmap);
-
-  gdk_draw_pixmap(widget->window,
-                  widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
-                  pixmap,
-                  event->area.x, event->area.y,
-                  event->area.x, event->area.y,
-                  event->area.width, event->area.height);
-  */    
-  return FALSE;
+   
+  return TRUE;
 }

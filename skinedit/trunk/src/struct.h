@@ -56,5 +56,6 @@ struct skinInfos
   struct RECT keys_pos[SKIN_KEYS];
 };
 
+extern struct skinInfos skin_infos;
 
 #endif /* !__STRUCT_H__ */

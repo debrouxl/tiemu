@@ -11,7 +11,6 @@
 #include <signal.h>
 #include <string.h>
 
-#include <SDL/SDL.h>
 #include <gtk/gtk.h>
 
 #include "intl.h"
@@ -53,19 +52,12 @@ signal_handler(int sig)
 
   clear_skin_infos();
 
-  //  SDL_Quit();
-
   gtk_main_quit();
 
   exit(0);
 }
 
-// remove SDL redefinition of main
-#ifdef __WIN32__
 #undef main
-#endif
-
-extern struct skinInfos skin_infos;
 
 int
 main (int argc, char *argv[])
@@ -90,7 +82,7 @@ main (int argc, char *argv[])
   signal(SIGINT, signal_handler);
 
   fprintf(stdout, _("SkinEdit v%s, (C) 2002-2003 Julien BLACHE <jb@tilp.info>\n"), VERSION);
-  fprintf(stdout, _("Using GTKSDL v0.2.1 by <derethor@users.sourceforge.net>\n"));
+  fprintf(stdout, _("                  2004      Romain Liévin <roms@tilp.info>\n"), VERSION);
   fprintf(stdout, "\n");
   fprintf(stdout, _("This program is free software; you can redistribute it and/or modify\n"));
   fprintf(stdout, _("it under the terms of the GNU General Public License as published by\n"));

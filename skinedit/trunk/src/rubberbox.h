@@ -29,10 +29,10 @@ gboolean
 button_press(GtkWidget *drawingarea, GdkEventButton *event, gpointer action);
 
 void
-draw_rubberbox(GtkSDL *sdl_area, SDL_Rect rect);
+draw_rubberbox(GtkWidget *drawing_area, SDL_Rect rect);
 
 void
-erase_rubberbox(GtkSDL *sdl_area);
+erase_rubberbox(GtkWidget *drawing_area);
 
 int clist_row;
 int clist_max;

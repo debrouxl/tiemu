@@ -31,16 +31,11 @@
 #include <byteswap.h>
 #endif
 
-#include <SDL/SDL.h>
 #include <gtk/gtk.h>
-#include "gtksdl.h"
-#include <jpeglib.h>
 
 #include "support.h"
 #include "struct.h"
-
 #include "main_intf.h"
-
 #include "skinops.h"
 #include "utils.h"
 
@@ -353,214 +348,34 @@ load_skin_tiemu(FILE *fp)
   return load_jpeg(fp);
 }
 
-#ifdef ROMS
 int
 load_jpeg(FILE *fp)
 {
-  struct jpeg_decompress_struct cinfo;
-  struct jpeg_error_mgr jerr;
-
-  unsigned char *img, *img_ptr;
-  int i, j;
-
-  uint16_t *SDLpixels;
-  unsigned char r, g, b;
-
-  int ret = 0;
-
-
-  cinfo.err = jpeg_std_error(&jerr);
-  jpeg_create_decompress(&cinfo);
-  jpeg_stdio_src(&cinfo, fp);
-  jpeg_read_header(&cinfo, TRUE);
-  
-  cinfo.scale_num = 1;
-  cinfo.scale_denom = 1;
-
-  /*
-   * Colormapped output, only 128 colors
-   */
-
-  cinfo.quantize_colors = TRUE;
-  cinfo.desired_number_of_colors = 128;
-  
-  jpeg_start_decompress(&cinfo);
-  
-  if (cinfo.output_components != 1) /* 1: palettized */ 
-    return -1;
-
-  /*
-   * JPEG rounds down odd number to the lower even.
-   */
-  skin_infos.width = cinfo.output_width & 0xfffffffe;
-  skin_infos.height = cinfo.output_height & 0xfffffffe;
-
-  img = img_ptr = (unsigned char*) malloc(cinfo.output_width * cinfo.output_height);
-
-  if(img == NULL)
-    {
-      jpeg_destroy_decompress(&cinfo);
-      
-      return -1;
-    }
-
-  /*
-   * Load the JPEG
-   */
-
-  while(cinfo.output_scanline < cinfo.output_height)
-    {
-      img_ptr += skin_infos.width;
-      jpeg_read_scanlines(&cinfo, &img_ptr, 1);
-    }
-
-  /* 
-   * Initialise the SDL library
-   */
-  
-  if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
-    {
-      fprintf(stderr, _("Unable to init SDL: %s"), SDL_GetError());
-
-      jpeg_finish_decompress(&cinfo);
-      jpeg_destroy_decompress(&cinfo);
-      free(img);
-
-      return -1;
-    }
-
-#ifdef ROMS
-  /*
-   * Place a gtksdl in the eventbox
-   */
-  area = gtk_sdl_new(skin_infos.width, skin_infos.height, 16, SDL_HWSURFACE | SDL_HWPALETTE);
-  sdl_area = GTK_SDL(area);
-  
-  gtk_container_add(GTK_CONTAINER(sdl_eventbox), GTK_WIDGET(area));
-  gtk_widget_show(GTK_WIDGET(area));
-  /*
-   * gtksdl needs some time to be set up...
-   */
-
-  while (sdl_area->surface == NULL)
-    {
-      gtk_main_iteration();
-    }
-#endif
-  /*
-   * Feed the gtksdl with our jpg
-   */
-  if(SDL_MUSTLOCK(sdl_area->surface)) 
-    {
-      if(SDL_LockSurface(sdl_area->surface) < 0)
-	return -1;
-    }
-
-  SDLpixels = (uint16_t *)(sdl_area->surface)->pixels;
-
-  for (j = 0; j < skin_infos.height; j++)
-    for (i = 0; i < skin_infos.width; i++)
-      {
-	r = cinfo.colormap[0][img[j * skin_infos.width + i]];
-	g = cinfo.colormap[1][img[j * skin_infos.width + i]];
-	b = cinfo.colormap[2][img[j * skin_infos.width + i]];
-	
-	*SDLpixels++ = SDL_MapRGB((sdl_area->surface)->format, r, g, b);
-      }
-  
-  if (SDL_MUSTLOCK(sdl_area->surface)) 
-    {
-      SDL_UnlockSurface(sdl_area->surface);
-    }
-
-  skin_infos.img_orig = malloc(2 * (sdl_area->surface)->w * (sdl_area->surface)->h);
-  if (skin_infos.img_orig != NULL)
-    {
-      memcpy(skin_infos.img_orig, (sdl_area->surface)->pixels, (2 * (sdl_area->surface)->w * (sdl_area->surface)->h));
-      SDL_UpdateRect(sdl_area->surface, 0, 0, 0, 0);
-    }
-  else
-    {
-      gtk_widget_destroy(area);
-      sdl_area = NULL;
-      SDL_Quit();
-
-      ret = -1;
-    }
-
-  jpeg_finish_decompress(&cinfo);
-  jpeg_destroy_decompress(&cinfo);
-  free(img);
-
-  return ret;
-}
-#else
-int
-load_jpeg(FILE *fp)
-{
-  struct jpeg_decompress_struct cinfo;
-  struct jpeg_error_mgr jerr;
-  GtkWidget *widget = drawingarea1;
-
-  unsigned char *img, *img_ptr;
-  int i, j;
-
-  uint16_t *SDLpixels;
-  unsigned char r, g, b;
-
-  int ret = 0;
-
+  char template[] = "fnXXXXXX";
+  char *filename;
+  FILE *ft;
   GError *error = NULL;
-
-  cinfo.err = jpeg_std_error(&jerr);
-  jpeg_create_decompress(&cinfo);
-  jpeg_stdio_src(&cinfo, fp);
-  jpeg_read_header(&cinfo, TRUE);
   
-  cinfo.scale_num = 1;
-  cinfo.scale_denom = 1;
-
   /*
-   * Colormapped output, only 128 colors
+   * Extract image from file by creating a temp file
    */
-
-  cinfo.quantize_colors = TRUE;
-  cinfo.desired_number_of_colors = 128;
+  filename = _mktemp(template);
+  ft = fopen(filename, "wb");
+  if(ft == NULL) {
+		fprintf(stderr, "Unable to open this file: <%s>\n", filename);
+		return -1;
+  }
   
-  jpeg_start_decompress(&cinfo);
-  
-  if (cinfo.output_components != 1) /* 1: palettized */ 
-    return -1;
-
-  /*
-   * JPEG rounds down odd number to the lower even.
-   */
-  skin_infos.width = cinfo.output_width & 0xfffffffe;
-  skin_infos.height = cinfo.output_height & 0xfffffffe;
-
-  img = img_ptr = (unsigned char*) malloc(cinfo.output_width * cinfo.output_height);
-
-  if(img == NULL)
-    {
-      jpeg_destroy_decompress(&cinfo);
-      
-      return -1;
-    }
-
-  /*
-   * Load the JPEG
-   */
-
-  while(cinfo.output_scanline < cinfo.output_height)
-    {
-      img_ptr += skin_infos.width;
-      jpeg_read_scanlines(&cinfo, &img_ptr, 1);
-    }
+  while(!feof(fp)) {
+	fputc(fgetc(fp), ft);
+  }
+	
+  fclose(ft);
 
   /* 
-   * Initialise the pixmap and the drawing area
+   * Initialise the pixbuf and the drawing area
    */
-  gtk_drawing_area_size(GTK_DRAWING_AREA(widget), 
+  gtk_drawing_area_size(GTK_DRAWING_AREA(drawingarea1), 
 			skin_infos.width, skin_infos.height);
 
   if(pixbuf != NULL) {
@@ -568,35 +383,36 @@ load_jpeg(FILE *fp)
     pixbuf = NULL;
   }
 
-  orig = gdk_pixbuf_new_from_file("ti92.jpg", &error);
+  /*
+   * Feed the original pixbuf with our image
+   */
+  orig = gdk_pixbuf_new_from_file(filename, &error);
   if (!orig) 
     {
       printf("error");
       g_error_free(error);
-      exit(0);
+      return -1;
     }
-  pixbuf = gdk_pixbuf_copy(orig);
+
   /*
-  pixmap = gdk_pixmap_new(widget->window, 
-			  skin_infos.width, skin_infos.height, 
-			  -1);
-  printf("pixmap = %p\n", pixmap);
-  gdk_draw_pixbuf(pixmap,
-		  widget->style->fg_gc[GTK_WIDGET_STATE(drawingarea1)],
-		  orig, 
-		  0, 0, 0, 0, 
-		  skin_infos.width, skin_infos.height,
-		  GDK_RGB_DITHER_NONE, 0, 0);
-  */
-  jpeg_finish_decompress(&cinfo);
-  jpeg_destroy_decompress(&cinfo);
-  free(img);
+   * Set image size
+   */
+  skin_infos.width = gdk_pixbuf_get_width(pixbuf);
+  skin_infos.height = gdk_pixbuf_get_height(pixbuf);
+  
+  /*
+   * Display image in the back-end pixbuf
+   */
+  pixbuf = gdk_pixbuf_copy(orig);
+  //gtk_signal_emit_by_name
+  
+  /*
+   * Delete temp file
+   */
+  unlink(filename);
 
-  return ret;
+  return 0;
 }
-#endif
-
-
 
 int
 write_skin(void)
