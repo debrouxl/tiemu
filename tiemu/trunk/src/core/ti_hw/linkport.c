@@ -30,7 +30,7 @@
 #include "uae.h"
 
 #include "tilibs.h"
-#include "errcodes.h"
+#include "ti68k_err.h"
 #include "params.h"
 #include "ti68k_def.h"
 #include "ti68k_int.h"

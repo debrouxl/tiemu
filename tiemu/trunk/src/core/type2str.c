@@ -23,7 +23,7 @@
 #include <string.h>
 
 #include "intl.h"
-#include "consts.h"
+#include "ti68k_def.h"
 
 const char *ti68k_calctype_to_string(int type)
 {

@@ -32,9 +32,9 @@
 #include "uae.h"
 #include "bkpts.h"
 #include "intlist.h"
-#include "errcodes.h"
 #include "intl.h"
 #include "tilibs.h"
+#include "ti68k_err.h"
 
 /* Variables */
 

@@ -28,8 +28,8 @@
 #include "keydefs.h"
 #include "memory.h"
 #include "callbacks.h"
-#include "consts.h"
 #include "images.h"
+#include "ti68k_def.h"
 
 int on_key = 0;
 static int key_states[NB_MAX_KEYS];
