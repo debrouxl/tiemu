@@ -125,18 +125,6 @@ SOURCE="..\..\..\..\..\Gtk2Dev\lib\libglade-2.0.lib"
 
 SOURCE="..\..\..\..\..\Gtk2Dev\lib\atk-1.0.lib"
 # End Source File
-# Begin Source File
-
-SOURCE="..\..\..\..\..\SDL-1.2.7\lib\SDL.lib"
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\Gtk2Dev\lib\libjpeg.lib
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\..\..\..\SDL-1.2.7\lib\SDLmain.lib"
-# End Source File
 # End Group
 # Begin Group "Resource Files"
 
@@ -216,10 +204,6 @@ SOURCE=..\..\src\boxes_cb.c
 # Begin Source File
 
 SOURCE=..\..\src\boxes_intf.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gtksdl.c
 # End Source File
 # Begin Source File
 
