@@ -268,6 +268,10 @@ SOURCE=..\..\src\gui\bkpt_cause.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gui\comm.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\dbgopt_cb.c
 # End Source File
 # Begin Source File
@@ -317,14 +321,6 @@ SOURCE=..\..\src\gui\help.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\infos.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\link_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\link_dbox.c
 # End Source File
 # Begin Source File
 
