@@ -86,23 +86,48 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         break;
         case 0x05:	// -w <...43210>
         	// %3 set: 000000..1FFFFF mapped to 200000..3FFFFF
-			if(bit_tst(arg,3) && (tihw.calc_type == TI92))
+			if((tihw.calc_type == TI92) && bit_tst(arg,3))
 			{
 				//mem_tab[2] = mem_tab[0];
-				//mem_mask[2] = mem_mask[0];
+				//mem_msk[2] = mem_msk[0];
 				//mem_tab[3] = mem_tab[1];
-				//mem_mask[3] = mem_mask[1];
+				//mem_msk[3] = mem_msk[1];
+				/*
+				mem_tab[2] = tihw.ram;
+				mem_msk[2] = tihw.ram_size-1;
+				mem_tab[3] = tihw.ram;
+				mem_msk[3] = tihw.ram_size-1;
+				mem_tab[0] = tihw.rom;
+				mem_msk[0] = 1*MB - 1;
+				if(tihw.rom_size > 1*MB)
+				{
+					mem_tab[1] = tihw.rom + 0x100000;
+					mem_msk[1] = 1*MB - 1;
+				}
+				*/
             } else
             {
+				/*
+				mem_tab[0] = tihw.ram;
+				mem_msk[0] = tihw.ram_size-1;
+				mem_tab[1] = tihw.ram;
+				mem_msk[1] = tihw.ram_size-1;
+				mem_tab[2] = tihw.rom;
+				mem_msk[2] = 1*MB - 1;
+				if(tihw.rom_size > 1*MB)
+				{
+					mem_tab[3] = tihw.rom + 0x100000;
+					mem_msk[3] = 1*MB - 1;
+				}
+				*/
 				//mem_tab[2] = tihw.rom;
-				//mem_mask[2] = 0x1fffff;
+				//mem_msk[2] = 0x1fffff;
 				//mem_tab[3] = mem_tab[1];
-				//mem_mask[3] = mem_mask[1];
+				//mem_msk[3] = mem_msk[1];
             }
             
 			// turn off OSC1 (CPU), wake on int level 6 (ON key) and int level [5..1]
 			m68k_setstopped(1);
-			//printf("S");
         break;
         case 0x06: 
 		case 0x07: 
@@ -112,7 +137,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
 		case 0x0b:
         break;
         case 0x0c:	// rw <765.3210>
-        	// %[3:0]: Trigger interrupt level 4 on ...
+        	// %[3:0]: Trigger interrupt level 4 on error, activity, tx empty, rx full
         	// see hardware.c
         break;
         case 0x0d:	// r- <76543210>
@@ -136,7 +161,6 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         case 0x11: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8 (lsb)
 			tihw.lcd_adr = ((tihw.io[0x10] << 8) | arg) << 3;
-			//printf("lcd_addr=%06x ", tihw.lcd_adr); 
         break;
         case 0x12:	// -w <76543210>
 			// LCD logical width = (64-n)*2 bytes = (64-n)*16 pixels <=> n = 64-w/16
@@ -206,7 +230,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
 				tihw.contrast = arg & (io2_bit_tst(0x1f,0) ? 0x1f : 0x0f);
 				if(tihw.calc_type == TI89)
 				{
-					if(tihw.hw_type == HW1) //if(!io2_bit_tst(0x1f,0))
+					if(tihw.hw_type == HW1)
             			tihw.contrast = 31 - 2*tihw.contrast;
 					else
 						tihw.contrast = 31 - tihw.contrast;
@@ -305,18 +329,18 @@ uint8_t io_get_byte(uint32_t addr)
         case 0x16:	// ??
         return 0x14;
         case 0x17: 	// rw <76543210>
-        // Programmable rate generator
-        return tihw.timer_value;
+			// Programmable rate generator
+			return tihw.timer_value;
         case 0x18: 	// rw <76543210>
         break;
         case 0x19:	// rw <......10>
         break;
         case 0x1a:	// rw <......10>
-        // ON key status (0=down, 1=up)
+			// ON key status (0=down, 1=up)
 			bit_chg(v,1,!tihw.on_key);
         break;
         case 0x1b:	// r- <76543210> 
-        // keyboard row mask
+			// keyboard row mask
 	        v = hw_kbd_read_mask();
         case 0x1c:	// -w <..5432..> 
         break;
@@ -477,7 +501,6 @@ uint8_t io2_get_byte(uint32_t addr)
 		case 0x17:
 			break;
 		case 0x1d:
-			//printf("%02x ", tihw.io2[0x1d]);
 			break;
 		case 0x1f:
 			break;

@@ -171,7 +171,7 @@ void hw_update(void)
     if(!(timer & 3)) 
     {		
     	if(!io_bit_tst(0x15,7))
-			if(!(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)) || tihw.hw_type == HW1)
+			if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
 				hw_m68k_irq(1);
     }
 
@@ -184,7 +184,7 @@ void hw_update(void)
 	{
         tihw.heartbeat = 1024;
         if(!io_bit_tst(0x15,7) && io_bit_tst(0x15,2))
-			if(!(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)) || tihw.hw_type == HW1)
+			if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
 				hw_m68k_irq(3);
 	}
 
@@ -216,7 +216,7 @@ void hw_update(void)
     {
         tihw.timer_value = tihw.io[0x17] - 1;
 		if(!io_bit_tst(0x15,7))	
-			if(!(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)) || tihw.hw_type == HW1)
+			if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
 				hw_m68k_irq(5);
     }
 
