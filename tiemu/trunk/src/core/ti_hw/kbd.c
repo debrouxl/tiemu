@@ -92,6 +92,7 @@ int hw_kbd_init(void)
     switch(tihw.calc_type)
     {
     case TI89:
+    case TI89t:
         key_row = (int*)keyRow89;
         break;
     case TI92:

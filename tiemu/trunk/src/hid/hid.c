@@ -158,7 +158,8 @@ static int match_skin(int calc_type)
             ok = !strcmp(si.calc, SKIN_TI92) || !strcmp(si.calc, SKIN_TI92P);
 		break;
 	    case TI89:
-            ok = !strcmp(si.calc, SKIN_TI89);
+        case TI89t:
+            ok = !strcmp(si.calc, SKIN_TI89) || !strcmp(si.calc, SKIN_TI89T);
 		break;
 		case V200:
 			ok = !strcmp(si.calc, SKIN_V200);
@@ -209,7 +210,7 @@ static int hid_init_subsystem(void)
 	// Set keymap depending on calculator type
 	if((tihw.calc_type == TI92) || (tihw.calc_type == TI92p))
       	key_mapping = sknKey92;
-	else if (tihw.calc_type == TI89)
+	else if ((tihw.calc_type == TI89) || (tihw.calc_type == TI89t))
       	key_mapping = sknKey89;
 	else if(tihw.calc_type == V200)
       	key_mapping = sknKeyV2;
@@ -353,7 +354,7 @@ int hid_exit(void)
 /* Converts a keyboard key (an SDL event) into a TI key */
 static int sdl_to_ti(int key) 
 {
-  	if(tihw.calc_type != TI89)
+  	if((tihw.calc_type != TI89) && (tihw.calc_type != TI89t))
     {
       	switch(key) 
 		{
@@ -836,7 +837,7 @@ static void set_colors(void)
 
 static int hid_set_contrast(int c)
 {
-  	if(tihw.calc_type == TI89)
+  	if((tihw.calc_type == TI89) || (tihw.calc_type == TI89t))
     	c = 31-c;
 
   	iNewContrast = (c+iLastContrast) / 2;

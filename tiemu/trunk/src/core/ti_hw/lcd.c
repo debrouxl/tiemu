@@ -35,6 +35,7 @@ int hw_lcd_init(void)
 	// TI92 ROM 1.x : $4440
 	// TI92 ROM 2.x : $4720
 	// TI89/92+/V200: $4c00;
+    // TI89t: ??
 	if(tihw.rom_flash)
 		lcd_addr = 0x4c00;
 	else if(tihw.ti92v2)

@@ -67,16 +67,23 @@ int hw_init(void)
 	tihw.ti92v1 = (tihw.calc_type == TI92) && (strcmp(tihw.rom_version, "2.0") < 0);
 	tihw.ti92v2 = (tihw.calc_type == TI92) && (strcmp(tihw.rom_version, "2.0") >= 0);
 
-	if(tihw.calc_type == TI89)
-	{
+    switch(tihw.calc_type)
+    {
+    case TI89:
+    case TI89t:
 		tihw.log_w = tihw.lcd_w = 160;
 		tihw.log_h = tihw.lcd_h = 100;	
-	}
-	else
-	{
+        break;
+    case TI92:
+    case TI92p:
+    case V200:
 		tihw.log_w = tihw.lcd_w = 240;
 		tihw.log_h = tihw.lcd_h = 128;
-	}
+        break;
+    default:
+        return -1;
+        break;
+    }
 
     // Do sub-initializations.
 	TRY(hw_mem_init());

@@ -54,16 +54,17 @@
 #define MAX_COLORS (256 - 16)		// we need to keep 16 colors for grayscales
 #define SKIN_KEYS  80
 
-#define SKIN_TI73  "TI-73"
-#define SKIN_TI82  "TI-82"
-#define SKIN_TI83  "TI-83"
-#define SKIN_TI83P "TI-83+"
-#define SKIN_TI85  "TI-85"
-#define SKIN_TI86  "TI-86"
-#define SKIN_TI89  "TI-89"
-#define SKIN_TI92  "TI-92"
-#define SKIN_TI92P "TI-92+"
-#define SKIN_V200  "V200PLT"
+#define SKIN_TI73   "TI-73"
+#define SKIN_TI82   "TI-82"
+#define SKIN_TI83   "TI-83"
+#define SKIN_TI83P  "TI-83+"
+#define SKIN_TI85   "TI-85"
+#define SKIN_TI86   "TI-86"
+#define SKIN_TI89   "TI-89"
+#define SKIN_TI92   "TI-92"
+#define SKIN_TI92P  "TI-92+"
+#define SKIN_V200   "V200PLT"
+#define SKIN_TI89T  "TI89tm"
 
 #define SKIN_TYPE_TIEMU   10
 #define SKIN_TYPE_VTI     2
