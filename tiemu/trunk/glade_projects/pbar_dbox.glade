@@ -12,8 +12,6 @@
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <property name="has_separator">True</property>
-  <signal name="show" handler="on_pbar_dbox_show_pbar1"/>
-  <signal name="show" handler="on_pbar_dbox_show_rate"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox1">
@@ -330,9 +328,6 @@
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <property name="has_separator">True</property>
-  <signal name="show" handler="on_pbar_dbox_show_pbar1"/>
-  <signal name="show" handler="on_pbar_dbox_show_pbar2"/>
-  <signal name="show" handler="on_pbar_dbox_show_rate"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox3">
@@ -556,8 +551,6 @@
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <property name="has_separator">True</property>
-  <signal name="show" handler="on_pbar_dbox_show_pbar1"/>
-  <signal name="show" handler="on_pbar_dbox_show_rate"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox4">
@@ -760,9 +753,6 @@
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <property name="has_separator">True</property>
-  <signal name="show" handler="on_pbar_dbox_show_pbar1"/>
-  <signal name="show" handler="on_pbar_dbox_show_pbar2"/>
-  <signal name="show" handler="on_pbar_dbox_show_rate"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox5">

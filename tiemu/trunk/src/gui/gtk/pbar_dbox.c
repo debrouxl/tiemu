@@ -111,12 +111,6 @@ create_pbar1_dbox (void)
   gtk_box_pack_start (GTK_BOX (hbox7), label24, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (label24), GTK_JUSTIFY_LEFT);
 
-  g_signal_connect ((gpointer) pbar1_dbox, "show",
-                    G_CALLBACK (on_pbar_dbox_show_pbar1),
-                    NULL);
-  g_signal_connect ((gpointer) pbar1_dbox, "show",
-                    G_CALLBACK (on_pbar_dbox_show_rate),
-                    NULL);
   g_signal_connect ((gpointer) button1, "clicked",
                     G_CALLBACK (pbar1_ok_button_clicked),
                     NULL);
@@ -325,15 +319,6 @@ create_pbar3_dbox (void)
   gtk_box_pack_start (GTK_BOX (hbox9), label26, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (label26), GTK_JUSTIFY_LEFT);
 
-  g_signal_connect ((gpointer) pbar3_dbox, "show",
-                    G_CALLBACK (on_pbar_dbox_show_pbar1),
-                    NULL);
-  g_signal_connect ((gpointer) pbar3_dbox, "show",
-                    G_CALLBACK (on_pbar_dbox_show_pbar2),
-                    NULL);
-  g_signal_connect ((gpointer) pbar3_dbox, "show",
-                    G_CALLBACK (on_pbar_dbox_show_rate),
-                    NULL);
   g_signal_connect ((gpointer) button4, "clicked",
                     G_CALLBACK (pbar1_ok_button_clicked),
                     NULL);
@@ -449,12 +434,6 @@ create_pbar4_dbox (void)
   gtk_box_pack_start (GTK_BOX (hbox10), label27, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (label27), GTK_JUSTIFY_LEFT);
 
-  g_signal_connect ((gpointer) pbar4_dbox, "show",
-                    G_CALLBACK (on_pbar_dbox_show_pbar1),
-                    NULL);
-  g_signal_connect ((gpointer) pbar4_dbox, "show",
-                    G_CALLBACK (on_pbar_dbox_show_rate),
-                    NULL);
   g_signal_connect ((gpointer) button5, "clicked",
                     G_CALLBACK (pbar1_ok_button_clicked),
                     NULL);
@@ -585,15 +564,6 @@ create_pbar5_dbox (void)
   gtk_box_pack_start (GTK_BOX (hbox11), label28, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (label28), GTK_JUSTIFY_LEFT);
 
-  g_signal_connect ((gpointer) pbar5_dbox, "show",
-                    G_CALLBACK (on_pbar_dbox_show_pbar1),
-                    NULL);
-  g_signal_connect ((gpointer) pbar5_dbox, "show",
-                    G_CALLBACK (on_pbar_dbox_show_pbar2),
-                    NULL);
-  g_signal_connect ((gpointer) pbar5_dbox, "show",
-                    G_CALLBACK (on_pbar_dbox_show_rate),
-                    NULL);
   g_signal_connect ((gpointer) button6, "clicked",
                     G_CALLBACK (pbar1_ok_button_clicked),
                     NULL);
