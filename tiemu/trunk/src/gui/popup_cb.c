@@ -179,6 +179,7 @@ void
 on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	/*
 	gint i;
   	CODE_BKPT *s;
 
@@ -195,6 +196,8 @@ on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
 
   	// Launch debugger
   	display_debugger_dbox();
+	*/
+	ti68k_unhalt();
 }
 
 
