@@ -69,7 +69,7 @@ gint display_romversion_dbox(void)
   while( gtk_events_pending() ) { gtk_main_iteration(); }
   while( gtk_events_pending() ) { gtk_main_iteration(); }
 
-  build_home_path(&filename, CACHE_FILE);
+  filename = g_strconcat(inst_paths.home_dir, CACHE_FILE, NULL);
   ti68k_scanFiles(inst_paths.rom_dir, filename);
   gtk_widget_destroy(dbox2);
   while( gtk_events_pending() ) { gtk_main_iteration(); }

@@ -1,5 +1,11 @@
-/*  gtktilink - link program for TI calculators
- *  Copyright (C) 1999, 2000  Romain Lievin
+/* Hey EMACS -*- linux-c -*- */
+/* $Id: cabl_int.h 651 2004-04-25 15:22:07Z roms $ */
+
+/*  TiEmu - an TI emulator
+ *
+ *  Originally written by Jonas Minsberg
+ *  Copyright (C) 2000, Thomas Corvazier, Romain Lievin
+ *  Copyright (C) 2001-2004, Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,29 +58,26 @@
 /*
   Portable installation paths
 */
-struct InstPaths_
+typedef struct
 {
   char *base_dir;		// Windows directory (determined at startup)
-  
-  char *share_dir;		// shared directory
   char *locale_dir;		// locale
   char *manpage_dir;		// manpages
   char *help_dir;		// help files
   char *pixmap_dir;		// pixmaps
-  char *rom_dir;		// ROMs directory
-  char *skin_dir;		// Skins directory
+  char *rom_dir;		// ROMs
+  char *skin_dir;		// skins
+  char *home_dir;		// $HOME
 
   char current_dir[1024];	// current working directory
-} inst_paths;
-typedef struct InstPaths_ InstPaths;
+} TiemuInstPaths;
 
-extern InstPaths inst_paths;
+extern TiemuInstPaths inst_paths;
 
 /*
   Functions
 */
 
-int get_home_path(char **path);
 int build_home_path(char **path, char *fileaname);
 
 int initialize_paths(void);

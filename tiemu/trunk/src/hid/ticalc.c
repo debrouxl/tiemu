@@ -5,7 +5,7 @@
  *
  *  Originally written by Jonas Minsberg
  *  Copyright (C) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2004, Romain Lievin
+ *  Copyright (C) 2001-2004, Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

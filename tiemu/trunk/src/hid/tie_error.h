@@ -1,8 +1,11 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: cabl_err.h 651 2004-04-25 15:22:07Z roms $ */
+/* $Id: cabl_int.h 651 2004-04-25 15:22:07Z roms $ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
- *  Copyright (C) 1999-2004  Romain Lievin
+/*  TiEmu - an TI emulator
+ *
+ *  Originally written by Jonas Minsberg
+ *  Copyright (C) 2000, Thomas Corvazier, Romain Lievin
+ *  Copyright (C) 2001-2004, Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
