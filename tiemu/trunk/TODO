@@ -1,6 +1,7 @@
 List of stuffs to do:
 
-ExtendeD:
+ExtendeD
+========
 
 * bug sur Step Out
 
@@ -11,10 +12,6 @@ aboutir.
 
 * Un Step To sur une instruction suffisamment loin de l'instruction
 courante n'a aucun effet, c'est bizarre...
-
-+ Comment fait-on pour faire passer en 'disable' un breakpoint ? Il y
-a deux boutons dans la fenêtre qui mais il sont toujours grisés, je ne
-sais plus à quoi ils servent, c'est pas ça ?
 
 * Le scroll d'instructions vers le bas n'est pas bon du tout, Il
 n'avance pas d'instruction en instruction, mais se décale parfois, on
@@ -29,22 +26,70 @@ correctement. Si je place un breakpoint 'single byte' à 0, il n'est
 jamais atteint par le code du reset, alors qu'il y a bien une écriture
 d'un long mot à 0.
 
-+ La couleur de l'écran fait partie de la skin, comme sous VTI ? Ne
-serait-ce pas mieux d'avoir du noir sur blanc sur 92+, parce que le
-jaune c'est pas top :)
-
-+ Ce serait bien que la fenêtre PC log possède un bouton pour afficher
-dans la fenêtre Code l'adresse sélectionnée, ou que ça fonctionne par
-double-clique.
-En tout cas c'est une fenêtre bien pratique, elle m'a permis de
-trouver (ou de re-trouver, c'est le même problème depuis plusieurs
-versions :)) facilement le problème avec la Titanium.
-
 * Un bouton pour éditer un breakpoint serait pas mal (afficher une fenêtre
 comme la fenêtre 'Add breakpoint', mais initialisée avec les valeurs
 du breakpoint choisi).
 
-==
+* la Flash n'est pas entièrement remise à neuf 
+lors d'un load d'update de 89 (trafiqué, avec des 
+FlashApps écrites à la fin) succédant à un load 
+de ROM dump de 89.
+
+* le link ne marche pas convenablement. Voir plus 
+bas.
+
+* le grayscale ne semble pas fonctionner 
+convenablement, quel que soit le réglage du 
+nombre de plans et le contraste. J'ai testé avec 
+SlimeBall 0.96, tileeng (vieille demo du tilemap 
+engine d'ExtGraph, pas disponible dans ExtGraph) 
+et dissolve, seuls programmes en niveaux de 
+gris de mon rom dump.
+
+* tthdex ne marche pas convenablement, les 
+pressions de touches ne sont pas prises en compte. 
+En traçant dans la routine d'attente, qui utilise 
+OSdequeue (c'est la classique GetUserInput que 
+tu peux trouver dans la plupart des programmes de 
+TICT), je me suis rendu compte que le fautif est 
+idle();. Commenter cet appel (remplacement des 
+trois instructions par nop, 0x4E71) suffit à faire 
+marcher tthdex normalement. Il doit donc y avoir au 
+moins un port mal émulé.
+
+* l'AI3 ne semble pas être émulée correctement. Le 
+programme de test que j'utilise regarde les contenus 
+des ports 700014, 70001C, 70001D, 70001F et le 
+compteur de ticks d'AI3 (utilisé comme timer sur HW2 
+mais pas HW3). Aucun port ne change (70001D devrait 
+changer périodiquement, avec FS tantôt à 1 tantôt à 
+0), le compteur de ticks reste à 0, et la boucle de 
+réaffichage est relancée bien trop souvent.
+
+* sur 89, l'interprétation des touches se mélange 
+parfois les pinceaux (4 au lieu de l, 6 au lieu de o,
+. 
+au lieu de w).
+
+* le menu qui apparaît par un clic droit sur la 
+fenêtre skin+screen de l'émulateur marche 
+toujours mal. Au lancement ou après un reset, il ne 
+marche pas; une utilisation du menu F12 semble le 
+faire marcher définitivement (jusqu'au prochain
+reset).
+
+* chaque pression de touche semble être reportée 
+en double dans la fenêtre console, bien qu'elle ne 
+soit prise en compte qu'une fois par l'émulateur.
+
+* j'ai eu une erreur disant que GTK n'avait pas trouvé
+
+un device context, mais je ne sais plus ce que j'ai 
+fait pour l'avoir.
+* le dropdown (ou quelque soit son nom) des ROM_CALLs 
+n'est pas protégé contre les ROM_CALLs invalides à 
+des adresses farfelues (n'existant pas sur la version 
+de ROM émulée).
 
 * La fenêtre Memory n'est pas toujours rafraîchie. Il y a le bouton
 refresh, mais on ne pense pas toujours à l'utiliser. Elle n'est pas
@@ -95,18 +140,93 @@ breakpoint est touché; je l'enlève et je continue. Un breakpoint
 temporaire éviterait d'avoir à l'enlever à chaque fois.
 
 
-Kevin:
+Kevin
+=====
 
-- Je ne sais pas si on peut y faire quelque chose, mais Alt+ESC, Ctrl+ESC,
+* Je ne sais pas si on peut y faire quelque chose, mais Alt+ESC, Ctrl+ESC,
 Alt+TAB (quand on les appuie en même temps et pas l'une après l'autre) sont
 avalées par Windows, pour Alt+F4, Windows ne le voit pas, mais TiEmu non
 plus, et il y a probablement d'autres combines de touches "suspectes".
 
-- Si j'appuie sur la touche Windows et que je reviens à TiEmu ensuite, il
+* Si j'appuie sur la touche Windows et que je reviens à TiEmu ensuite, il
 ne répond plus à aucun appui de touches (mais on peut le fermer à travers le
 popup au moins). L'"engine" est "stoppée" et pas re"start"ée.
 
-Lionel:
+* J'ai essayé d'envoyer un fichier TI-89 (bgammon.89z) à une TI-92+ émulée,
+j'ai eu un "This file is not recognized as a TI file." Ce serait bien si on
+pouvait envoyer les fichiers TI-89 à la TI-92+...
+
+* Serait-il possible de se rappeler du répertoire courant dans le file
+selector pour la fonction F10? (Et d'ailleurs peut-être d'utiliser le "new
+file selector" - enfin, bon, je m'en sors très bien avec le vieux aussi.)
+
+* Le transfert de fichiers ne marche pas: Lors du premier transfert, j'ai:
+Link cable error: code = 4, msg = Msg: Timeout occured while writing to the
+devi
+ce.
+Cause: Check that your link cable is plugged and/or the calculator is ready.
+starting engine... done.
+puis ensuite:
+Link cable error: code = 400, msg = Error code not found in the list.
+This is a bug. Please report it.
+
+* Dans le débogueur, la fenêtre Breakpoints n'a pas de "QuickInfos" dans la
+toolbar. (En revanche, dans la fenêtre Code/Source, ils y sont maintenant.)
+
+* Un truc qui serait bien serait une fonction "breakpoint on program entry".
+Mais comme la feature dans VTI est implémentée plutôt avec les pieds, il
+faudrait qu'on discute de ça ensemble pour ne pas faire les mêmes erreurs.
+Le problème n°1 dans VTI est sa manière foireuse de récupérer l'adresse du
+heap. Voici une méthode qui fonctionne:
+ move.l $c8,a3 ;get ROM call table address
+ cmp.l #$441,-4(a3) ;check if HeapTable is present
+ bcs.s getheap_ams1
+ lea.l $441*4(a3),a0 ;get address of HeapTable
+ move.l a0,(a4)+ ;set Heap
+ bra.s getheap_ams2
+getheap_ams1:
+ move.l HeapDeref*4(a3),a0
+ clr.w (a4)+
+ move.w 8(a0),(a4)+ ;set Heap
+getheap_ams2:
+Ceci devrait être facilement implémentable en C dans l'émulateur, ce ne sont
+que des lookups d'adresses. Ce code pourrait aussi être utilisé pour
+afficher une fenêtre "Handles" comme le fait VTI.
+
+* Tiens, encore un bogue: lors du chargement de AMS 2.09 pour V200 en v2u, la
+première fois, j'ai converti, puis choisi la nouvelle ROM dans la liste, et
+TiEmu a planté (fenêtre de plantage Windows). La deuxième fois, la ROM était
+déjà dans la liste, je l'ai choisie et tout a marché...
+
+* Donc l'émulation de la V200 marche bel et bien. En revanche, pour la
+Titanium, ça ne marche pas encore. J'ai essayé le 89u de AMS 3.00, et il y a
+des trucs bizarres à l'écran. Je ne sais pas si le reste marche parce que je
+ne vois rien.
+
+* Maintenant que j'ai réussi à envoyer des fichiers, j'ai pu enfin tester
+des programmes. L'option 7 niveaux de gris ne marche pas correctement avec
+Backgammon. Backgammon est bel et bien en 7 ndg, donc l'option devrait
+marcher... Tu peux récupérer Backgammon (y compris les sources de la routine
+de gris) sur mon site:
+http://members.chello.at/gerhard.kofler/kevin/francais/ti89prog/
+
+* Ce serait bien d'avoir aussi une option 8 niveaux de gris (moyenne de 7
+plans plutôt que de 6).
+
+* Il y a apparemment un problème d'adresse d'écran sur la vieille TI-92
+aussi (pas seulement sur la Titanium). Quand Backgammon affiche un dialogue
+ou quitte vers l'écran HOME, normalement, l'écran devrait être remis sur
+LCD_MEM. Ça marche sur une vraie TI-92 et sur VTI, mais pas sur TiEmu, qui
+continue à m'afficher l'écran de jeu (maintenant en blanc et noir). Les
+lignes utilisées par Backgammon pour Fargo sont:
+ move.l   #tios__001c,%d0
+ lsr.l    #3,%d0
+ move.w   %d0,0x600010                        | restore used plane to
+tios__001c
+
+
+Lionel
+======
 
 * le transfert d'un fichier vers TIEmu par F10 donne
 une erreur 400 dans la fenêtre command-line (mais n'a
