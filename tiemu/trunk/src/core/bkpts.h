@@ -42,7 +42,7 @@ typedef struct
 
 /* Constants */
 
-// Constants for ti68k_bkpt_set_[address|access|access_range]()
+// Constants for ti68k_bkpt_set_[access|access_range]()
 #define BK_BYTE     1
 #define BK_WORD     2
 #define BK_LONG     4

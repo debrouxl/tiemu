@@ -81,7 +81,7 @@ int enter_gtk_debugger(void)
 {
 	ti68k_engine_halt();
     
-	//display_dbgmem_window();
+	display_dbgmem_window();
 	display_dbgregs_window();
 
 	return 0;

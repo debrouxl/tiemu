@@ -213,7 +213,7 @@ static void ctree_populate(GtkTreeStore *store)
 	GtkTreeIter node1, node2, node3;
     GtkTreeIter iter;
     int i;
-    const char *others[] = { "PC", "SP", "SR" , "S flags", "U flags"};
+    const char *others[] = { "PC", "SP", "SR" , "sf", "uf"};
 	GdkColor color;
 	gboolean success;
 
@@ -227,7 +227,7 @@ static void ctree_populate(GtkTreeStore *store)
 	// set the 3 main nodes
 	gtk_tree_store_append(store, &node1, NULL);
 	gtk_tree_store_set(store, &node1, 
-		COL_NAME, "Address", 
+		COL_NAME, "Addr", 
 		COL_VALUE, "",  
 		COL_EDITABLE, FALSE,
 		COL_FONT, FONT_NAME,
@@ -478,6 +478,7 @@ gint display_dbgregs_window(void)
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
 
+	gtk_window_resize(GTK_WINDOW(dbox), 160, 480);
     gtk_widget_show(GTK_WIDGET(dbox));
 
 	return 0;
