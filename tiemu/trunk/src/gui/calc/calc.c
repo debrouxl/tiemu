@@ -38,6 +38,7 @@
 #include "tie_error.h"
 #include "calc.h"
 #include "dbg_all.h"
+#include "screenshot.h"
 
 GtkWidget *wnd = NULL;
 GtkWidget *area = NULL;
@@ -389,5 +390,63 @@ int hid_switch_large_view(void)
 
 int  hid_screenshot(char *filename)
 {
-    return 0;
+	gchar *outfile;
+	gchar *ext = "???";
+	gchar *type = "???";
+
+	GdkPixbuf *pixbuf = { 0 };
+	gboolean result = FALSE;
+	GError *error = NULL;
+
+	if(filename == NULL) 
+	{
+		switch(options2.format) 
+		{
+			case IMG_JPG: ext = "jpg"; type = "jpeg"; break;
+			case IMG_PNG: ext = "png"; type = "png";  break;
+			case IMG_ICO: ext = "ico"; type = "ico";  break;
+			default: type = "???"; break;
+		}
+      
+		outfile = g_strdup_printf("%s%03i.%s", options2.file, options2.counter, ext);
+	} 
+	else 
+	{
+		outfile = g_strdup(filename);
+	}
+
+	DISPLAY("Screenshot to %s... ", outfile);
+
+	if((options2.size == IMG_LCD) && (options2.type == IMG_BW)) 
+	{
+		// get pixbuf from buffer	
+	} 
+	else if((options2.size == IMG_LCD) && (options2.type == IMG_COL)) 
+	{
+        // get pixbuf from grayscale lcd
+		pixbuf = gdk_pixbuf_copy(lcd);
+	} 
+	else if(options2.size == IMG_SKIN) 
+	{
+		// get pixbuf from backing pixmap
+		pixbuf = gdk_pixbuf_get_from_drawable(
+					NULL, 
+					wnd->window,
+					wnd->style->fg_gc[GTK_WIDGET_STATE (wnd)],
+					0, 0, skin_infos.width, skin_infos.height, 0, 0);
+	}
+
+	//result = gdk_pixbuf_save(pixbuf, outfile, type, &error, "quality", "100", NULL);
+	result = gdk_pixbuf_save(pixbuf, outfile, type, &error, NULL);
+	if (result == FALSE) 
+	{
+		DISPLAY("Failed to save pixbuf file: %s: %s\n", outfile, error->message);
+		g_error_free(error);
+	}
+
+	DISPLAY("Done !\n");
+	options2.counter++;
+	g_free(filename);
+
+	return 0;
 }

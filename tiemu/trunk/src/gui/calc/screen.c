@@ -59,7 +59,7 @@ uint32_t *lcd_bytmap;				// LCD buffer (color-mapped as grayscale)
 PIX_INFOS pi;
 
 static uint32_t convtab[512];      	// planar to chunky conversion table
-static RGBA     grayscales[16];		// gray scales rgb values (colormap)
+static RGB      grayscales[16];		// gray scales rgb values (colormap)
 static int lcd_state = 0;           // screen state
 
 static int contrast = NGS;          // current contrast level
@@ -130,7 +130,6 @@ void compute_grayscale(void)
 	  		grayscales[i].r = filter(r, 0x0000, 0xA800) >> 8;
 	  		grayscales[i].g = filter(g, 0x0000, 0xB400) >> 8;
 	  		grayscales[i].b = filter(b, 0x3400, 0xA800) >> 8;
-	  		grayscales[i].a = 0;
 
 	  		r -= ((sr-er) / (max_plane+1));
 	  		g -= ((sg-eg) / (max_plane+1));
@@ -216,24 +215,17 @@ int hid_update_lcd(void)
 
     if(cur_plane++ >= max_plane) 
 	{
-		// Copy the LCD into 
+		// Copy LCD from buffer to pixbuf
 		for(j = 0; j < LCDMEM_H; j++) 
 		{
 			for (i = 0; i < LCDMEM_W; i++) 
 			{
-#if 1
 				p = pi.pixels + j * pi.rowstride + i * pi.n_channels;
-
+				
 				p[0] = grayscales[*lcd_buf].r;
 				p[1] = grayscales[*lcd_buf].g;
 				p[2] = grayscales[*lcd_buf].b;
-				p[3] = 0;
-
 				lcd_buf++;
-#else				
-				((uint32_t *)pi.pixels)[j * pi.rowstride + i] = ((uint32_t *)grayscales)[*lcd_buf];
-				lcd_buf++;
-#endif
 			}
 		}
 
