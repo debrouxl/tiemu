@@ -112,6 +112,8 @@ static void renderer_edited(GtkCellRendererText * cell,
 				sscanf(new_text, "%x", &value);			
 				gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
 				ti68k_register_set_addr(n, value);
+				if((n == 6) || (n == 7))
+					dbgstack_refresh_window();
 			}
 		break;
 		case 0:	// Dx
