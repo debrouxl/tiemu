@@ -91,7 +91,6 @@ static jmp_buf interp_trap;
 
 
 struct regstruct saved_state;
-struct uae_prefs currprefs;
 static int opt_cpu_level = 0; /* 68000 default */
 static int opt_mem_size = 20; /* 1M default */
 
@@ -178,26 +177,6 @@ sim_size (power)
 
 static int initted_memory = 0;
 
-static void
-parse_and_set_memory_size (str)
-     char *str;
-{
-#if 0
-  int n;
-
-  /* NOTE figure out the amount of memory that should be allocated */
-  n = strtol (str, NULL, 10);
-
-  if (n > 0 && n <= 24)
-    sim_memory_size = n;
-  else
-    callback->printf_filtered (callback, "Bad memory size %d; must be 1 to 24, inclusive\n", n);
-
-  currprefs.chipmem_size = n * 1024*1024;
-#endif
-}
-
-
 SIM_DESC
 sim_open (kind, cb, abfd, argv)
      SIM_OPEN_KIND kind;
@@ -222,12 +201,6 @@ sim_open (kind, cb, abfd, argv)
   myname = argv[0];
   callback = cb;
 
-#if 0
-  /* default 1Mb memory, at 0x80000000 */
-  currprefs.chipmem_size = 1 << opt_mem_size;
-  currprefs.cpu_level = opt_cpu_level;
-#endif
-
   if (getenv("VERBOSE_TRACE"))
     verbose_trace = 1;
 
@@ -246,11 +219,7 @@ sim_open (kind, cb, abfd, argv)
         target_little_endian = strcmp (*p, "big") != 0;
           endian_set = 1;
       }
-      else if (isdigit (**p))
-      parse_and_set_memory_size (*p);
     }
-
-  memory_init();
 
   if (abfd != NULL && ! endian_set)
       target_little_endian = ! bfd_big_endian (abfd);
@@ -263,8 +232,6 @@ sim_open (kind, cb, abfd, argv)
     mem_word.c[i] = i;
   endianb = mem_word.i >> (target_little_endian ? 0 : 24) & 0xff;
 
-  init_m68k ();
-
   /* fudge our descriptor for now */
   return (SIM_DESC) 1;
 }
@@ -272,21 +239,6 @@ sim_open (kind, cb, abfd, argv)
 void
 sim_set_cpu_variant(int which)
 {
-#if 0
-  switch (which)
-    {
-    case '0':
-    case '1':
-    case '2':
-    case '4':
-      opt_cpu_level = which - '0';
-      break;
-    case 8:
-      opt_cpu_level = 3;
-      break;
-    }
-  printf("cpu_variant set to %d\n", opt_cpu_level);
-#endif
 }
 
 SIM_RC
@@ -297,19 +249,8 @@ sim_create_inferior (sd, prog_bfd, argv, env)
      char **env;
 {
   current_bfd = prog_bfd;
-  setlinebuf(stdout);
-  /* clear the registers */
-  memset (&saved_state, 0,
-        (char*)&saved_state.end_of_registers - (char*)&saved_state);
-  /* set the PC */
-  saved_state.pc = 0x80000000;
-  if (prog_bfd != NULL)
-    saved_state.pc = bfd_get_start_address (prog_bfd);
-  saved_state.pc_p = saved_state.pc_oldp = get_real_address(saved_state.pc);
-  saved_state.regs[7+8] = /* $a7 */
-    saved_state.usp =
-    saved_state.isp =
-    /*saved_state.msp =*/ 0x4c00 /*0x80000000 + currprefs.chipmem_size - 16*/;
+  memcpy (&saved_state, &regs, sizeof(regs));
+  saved_state.pc = m68k_getpc();
   return SIM_RC_OK;
 }
 
@@ -401,31 +342,19 @@ sim_info (sd, verbose)
      SIM_DESC sd;
      int verbose;
 {
-#if 0
-  char *cpu;
-  switch (currprefs.cpu_level)
-    {
-    case 1: cpu="68010"; break;
-    case 2: cpu="68020"; break;
-    case 3: cpu="68020/881"; break;
-    case 4: cpu="68040"; break;
-    default: cpu="68000"; break;
-    }
-  callback->printf_filtered (callback, "\nCPU Configuration: %s\n", cpu);
-  callback->printf_filtered (callback, "Memory: %dKb from 0x%08x to 0x%08x\n",
-                           currprefs.chipmem_size/1024,
-                           0x80000000, 0x80000000 + currprefs.chipmem_size);
-#endif
 }
 
-// FIXME: This is crude and will most likely not work as expected.
 extern int hw_m68k_run(int n, unsigned maxcycles);
 static void m68k_go_sim(int step)
 {
   if (step)
     hw_m68k_run(1, 0);
-  else
-    while(1) hw_m68k_run(1, 0);
+  else {
+    engine_start();
+    gtk_main();
+    /* If we get here, we were interrupted by the normal course of action. */
+    raise_exception(SIGINT);
+  }
 }
 
 void
@@ -449,6 +378,8 @@ sim_resume (sd, step, siggnal)
   memcpy (&regs, &saved_state, sizeof(regs));
   if (setjmp(interp_trap) == 0)
     m68k_go_sim (step);
+  if (!step)
+    engine_stop();
   memcpy (&saved_state, &regs, sizeof(regs));
   saved_state.pc = m68k_getpc();
 
@@ -641,54 +572,6 @@ sim_do_command (sd, cmd)
 }
   
   
-/* stuff from UAE's main.c */
-
-void write_log_standard (const char *fmt, ...)
-{
-    va_list ap;
-    va_start (ap, fmt);
-#ifdef HAVE_VFPRINTF
-    vfprintf (stderr, fmt, ap);
-#else
-    /* Technique stolen from GCC.  */
-    {
-      int x1, x2, x3, x4, x5, x6, x7, x8;
-      x1 = va_arg (ap, int);
-      x2 = va_arg (ap, int);
-      x3 = va_arg (ap, int);
-      x4 = va_arg (ap, int);
-      x5 = va_arg (ap, int);
-      x6 = va_arg (ap, int);
-      x7 = va_arg (ap, int);
-      x8 = va_arg (ap, int);
-      fprintf (stderr, fmt, x1, x2, x3, x4, x5, x6, x7, x8);
-    }
-#endif
-}
-
-int quit_program = 0;
-
-void uae_reset (void)
-{
-    if (quit_program == 0)
-      quit_program = -2;
-}
-
-void uae_quit (void)
-{
-    if (quit_program != -1)
-      quit_program = -1;
-}
-
-REGPARAM void call_calltrap (int which)
-{
-  fprintf(stderr, "calltrap %d\n", which);
-}
-
-void customreset ()
-{
-}
-
 void
 sim_exception (int which, int pc, int oldpc)
 {
@@ -705,131 +588,6 @@ sim_exception (int which, int pc, int oldpc)
   }
   longjmp(interp_trap, 1);
 }
-
-static int
-get_arg (int which)
-{
-  return get_long (m68k_areg(regs, 7) + 4 + 4*which);
-}
-
-static void
-put_arg (int which, int value)
-{
- put_long (m68k_areg(regs, 7) + 4 + 4*which, value);
-}
-
-#define S_ERR(c) \
-      if (c) { \
-              put_arg(0, errno); SET_CFLG(1); \
-      } else { \
-              m68k_dreg(regs,0) = rv; SET_CFLG(0); \
-      }; return
-
-static void
-put (unsigned char *addr, int size, int value)
-{
-  switch (size)
-    {
-    case 1:
-      do_put_mem_byte (addr, value);
-      break;
-    case 2:
-      do_put_mem_word ((uae_u16 *)addr, value);
-      break;
-    case 4:
-      do_put_mem_long ((uae_u32 *)addr, value);
-      break;
-    }
-}
-
-int
-sim_os_trap (int which)
-{
-  int rv;
-  unsigned char *addr;
-  struct stat s;
-
-  switch (which)
-    {
-    case 1:
-      if (trace)
-      printf("exit (%d)\n", get_arg(0));
-      regs.exception = SIGQUIT;
-      exit_code = get_arg(0);
-      longjmp(interp_trap, 1);
-
-    case 3:
-      rv = read(get_arg(0), get_real_address(get_arg(1)), get_arg(2));
-      if (trace)
-      printf("read (%d,%08x,%d) = %d\n", get_arg(0), get_arg(1), get_arg(2), rv);
-      S_ERR(rv<0);
-
-    case 4:
-      rv = write(get_arg(0), get_real_address(get_arg(1)), get_arg(2));
-      if (trace)
-      printf("write (%d,%08x,%d) = %d\n", get_arg(0), get_arg(1), get_arg(2), rv);
-      S_ERR(rv<0);
-
-    case 5:
-      rv = open(get_real_address(get_arg(0)), get_arg(1), get_arg(2));
-      if (trace)
-      printf("open (%s,%d,%d) = %d\n", get_real_address(get_arg(0)), get_arg(1), get_arg(2), rv);
-      S_ERR(rv<0);
-
-    case 6:
-      if (get_arg(0) >= 3)
-      rv = close(get_arg(0));
-      else
-      rv = 0;
-      if (trace)
-      printf("close (%d) = %d\n", get_arg(0), rv);
-      S_ERR(rv<0);
-
-    case 17:
-      rv = 0;
-#if 0
-      if (get_arg(0) > 0x80000000 + currprefs.chipmem_size)
-      rv  = -1;
-#endif
-      if (trace)
-      printf("brk (0x%08x) = %d\n", get_arg(0), rv);
-      S_ERR(rv<0);
-
-    case 28:
-      rv = fstat(get_arg(0), &s);
-      addr = get_real_address(get_arg(1));
-      put(addr+0, 2, s.st_dev);
-      put(addr+2, 2, s.st_ino);
-      put(addr+4, 4, s.st_mode);
-      put(addr+8, 2, s.st_nlink);
-      put(addr+10, 2, s.st_uid);
-      put(addr+12, 2, s.st_gid);
-      put(addr+14, 2, s.st_rdev);
-      put(addr+16, 4, s.st_size);
-      put(addr+20, 4, s.st_atime);
-      put(addr+28, 4, s.st_mtime);
-      put(addr+36, 4, s.st_ctime);
-      put(addr+44, 4, s.st_blksize);
-      put(addr+48, 4, s.st_blocks);
-      S_ERR(rv<0);
-
-    case 29:
-      rv = isatty(get_arg(0));
-      S_ERR(0);
-
-    case 199:
-      rv = lseek(get_arg(0), get_arg(1), get_arg(2));
-      if (trace)
-      printf("lseek (%d,%d,%d) = %d\n", get_arg(0), get_arg(1), get_arg(2), rv);
-      S_ERR(rv<0);
-
-    default:
-      printf("sim_os_trap(%d)\n", which);
-      abort();
-    }
-  return 2;
-}
-
 
 static int
 sim_dis_read (memaddr, ptr, length, info)

@@ -41,7 +41,7 @@
 /*
   Display the program version
 */
-int version(void)
+int tiemu_version(void)
 {
 	fprintf(stdout, "TiEmu II - Version %s\n", TIEMU_VERSION);
 	fprintf(stdout, "  (C) Romain Lievin & Thomas Corvazier  2000-2001\n");
@@ -62,7 +62,7 @@ int help(void)
 {
 	fprintf(stdout, "\n");
 
-	version();
+	tiemu_version();
 
 	fprintf(stdout, "usage: tiemu [-options] [image]\n");
 	fprintf(stdout, "\n");

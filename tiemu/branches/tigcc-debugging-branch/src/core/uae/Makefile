@@ -14,9 +14,9 @@ all: cpudefs.c cpustbl.o cputbl.h cpuemu1.o cpuemu2.o cpuemu3.o cpuemu4.o cpuemu
 build68k: build68k.o
 	@echo "-> Compiling 68k builder..."
 	$(CC) $(LDFLAGS) -o $@ $?
-gencpu: gencpu.o readcpu.o cpudefs.o missing.o
+gencpu: gencpu.o readcpu.o cpudefs.o missing.o xmalloc.o
 	@echo "-> Compiling CPU generator..."
-	$(CC) $(LDFLAGS) -o $@ gencpu.o readcpu.o cpudefs.o missing.o
+	$(CC) $(LDFLAGS) -o $@ gencpu.o readcpu.o cpudefs.o missing.o xmalloc.o
 
 cpudefs.c: build68k table68k
 	@echo "-> Building CPU definitions..."

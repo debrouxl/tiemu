@@ -28,7 +28,7 @@
 #define __MISC_H__
 
 int help(void);
-int version(void);
+int tiemu_version(void);
 int scan_cmdline(int argc, char **argv);
 
 #endif

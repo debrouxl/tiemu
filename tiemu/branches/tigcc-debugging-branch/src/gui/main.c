@@ -61,6 +61,10 @@
 #include "romversion.h"
 
 
+#include "../core/gdb/gdb/main.h"
+#include "../core/gdb/gdb/gdb_string.h"
+#include "../core/gdb/gdb/interps.h"
+
 ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
@@ -83,7 +87,7 @@ int main(int argc, char **argv)
 	/*
 		Do primary initializations 
 	*/
-	version();
+	tiemu_version();
 	initialize_paths();
 	rcfile_default();   // (step 2)
 	rcfile_read();
@@ -243,13 +247,17 @@ int main(int argc, char **argv)
 		engine_calibrate();
 		
 		splash_screen_stop();
-		engine_start();
-		gtk_main();
 
-		/* 
-			Close the emulator engine
+		/*
+			Run the GDB CLI for now
 		*/
-		engine_stop();
+		struct captured_main_args args;
+		memset (&args, 0, sizeof args);
+		args.argc = argc;
+		args.argv = argv;
+		args.use_windows = 0;
+		args.interpreter_p = INTERP_CONSOLE;
+		gdb_main (&args);
 
 		err = hid_exit();
 		handle_error();

@@ -1,3 +1,16 @@
+2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+      * interp.c (call_calltrap, customreset, sim_os_trap, write_log_standard, uae_reset, uae_quit, S_ERR, put,
+          put_arg, get_arg): Delete.
+        (currprefs): Delete variable.
+        (parse_and_set_memory_size): Delete.
+        (sim_open): Don't call it.
+        (sim_open, sim_set_cpu_variant, sim_info): Delete #if 0'ed currprefs-using code.
+        (m68k_go_sim): Call engine_start and gtk_main for the non-single-step case.
+        (sim_resume): Stop engine if we started it.
+        (sim_create_inferior): Don't initialize registers here. Copy them from regs instead.
+        (sim_open): Don't call memory_init and init_m68k here.
+
 2005-03-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
       * Delete in-tree copy of UAE, changes merged into the TiEmu copy.

@@ -13,14 +13,12 @@
 #include "uconfig.h"
 #include "options.h"
 
-#ifndef HAVE_STRDUP
-
-char *my_strdup (const char *s)
+void *xmalloc(size_t n)
 {
-    /* The casts to char * are there to shut up the compiler on HPUX */
-    char *x = (char*)xmalloc(strlen((char *)s) + 1);
-    strcpy(x, (char *)s);
-    return x;
+    void *a = malloc (n);
+    if (a == NULL) {
+	fprintf (stderr, "virtual memory exhausted\n");
+	abort ();
+    }
+    return a;
 }
-
-#endif

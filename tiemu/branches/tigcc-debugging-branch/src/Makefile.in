@@ -159,7 +159,8 @@ tiemu_OBJ = core/uae/newcpu.o \
 	$(core_uae_OBJ) $(core_OBJ) $(core_tihw_OBJ) $(core_tisw_OBJ) \
 	$(core_dbg_OBJ) \
 	$(misc_OBJ) \
-	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(kde_OBJ)
+	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(kde_OBJ) \
+	$(core_gdb_ARC)
 
 #rules:
 all: uae gdb tiemu
@@ -174,7 +175,7 @@ gdb:
 tiemu: $(tiemu_OBJ)
 #	$(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) -o tiemu $(LDFLAGS) $(CFLAGS)
 	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) \
-	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
+	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries) -lcurses
 
 .c.o:
 	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) $< -o $@
