@@ -280,23 +280,16 @@ int main(int argc, char **argv)
    then we use the 'WinMain' entry point.
 */
 #if defined(__WIN32__) && defined(_WINDOWS)// && !defined(_CONSOLE)
+
 #ifdef __MINGW32__
 #include <windows.h>
 #endif
+
 int APIENTRY WinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      LPSTR     lpCmdLine,
                      int       nCmdShow)
 {
-	/* Check whether a TiEmu session is already running */
-	HANDLE hMutex;
-
-	hMutex = CreateMutex(NULL, TRUE, "TiEmu");
-	if (GetLastError() == ERROR_ALREADY_EXISTS) 
-	{
-		MessageBox(NULL, _("Error"), _("A TiEmu session is already running. Check the task list."), MB_OK);
-	}
-
 	return main(__argc, __argv);
 }
 #endif

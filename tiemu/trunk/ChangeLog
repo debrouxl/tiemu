@@ -6,11 +6,12 @@ To do:
 	- stealth I/O and mem protect (done but not enabled)
 
 - 12/03/2005n version 1.80p:
-	- [kevin] $933: increased link timeout from 1.5 to 10s
-	- [kevin] $934: fixed grayscale support
-	- [kevin] $935: fixed grayscale support with double buffering
-	- [kevin] $937: allow building with -mwindows -D_WINDOWS on MinGW
-	- [roms]  $xxx: ...
+	- [kevin] $933: increased link timeout from 1.5 to 10s.
+	- [kevin] $934: fixed grayscale support.
+	- [kevin] $935: fixed grayscale support with double buffering.
+	- [kevin] $937: allow building with -mwindows -D_WINDOWS on MinGW.
+	- [roms]  $940: removed mutex at startup because we should be able to run 
+		2 instances of TiEmu for virtual linking.
 
 - 25/02/2005, version 1.80o: roms
 	- fixed bug in ti68k_get_hw_param_block (wrong search/replace)
