@@ -210,6 +210,8 @@ static const gchar *create_fsel_4(gchar *dirname, gchar *ext, gboolean save)
 	g_free(extspaces);
 	return filename;
 #endif
+
+	return NULL;
 }
 
 const gchar *create_fsel(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
