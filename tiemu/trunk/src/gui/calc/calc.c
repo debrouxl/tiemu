@@ -26,7 +26,11 @@
 #  include <config.h>
 #endif				/*  */
 
+#ifdef GTK_DISABLE_DEPRECATED
+#undef GTK_DISABLE_DEPRECATED
 #include <gtk/gtk.h>
+#define GTK_DISABLE_DEPRECATED
+#endif
 #include <glade/glade.h>
 
 #include "intl.h"
@@ -70,6 +74,8 @@ gint display_main_wnd(void)
 	
 	wnd = glade_xml_get_widget(xml, "calc_wnd");
 	area = glade_xml_get_widget(xml, "drawingarea1");
+
+	gtk_window_set_policy (GTK_WINDOW (wnd), TRUE, TRUE, FALSE);
 
     gtk_widget_show(area);
 	gtk_widget_show(wnd);
@@ -147,17 +153,20 @@ on_calc_wnd_size_request           (GtkWidget       *widget,
                                     gpointer         user_data)
 {
 	SKIN_INFOS *si = & skin_infos;
-	guint w, h;
+	guint width, height;
 
 	//printf("size request: %i x %i\n", requisition->width, requisition->height);
-	gtk_window_get_size(GTK_WINDOW(widget), &w, &h);
-	if(w < si->width || h < si->height)
+	gtk_window_get_size(GTK_WINDOW(widget), &width, &height);
+	if(width < si->width || height < si->height)
 		return;
 
-	sc.w = w;
+	sc.w = width;
 	sc.h = (int)(sc.w / sc.r);
 	sc.s = (float)sc.w / si->width;
 	printf("size request: scaling w/ %ix%i %1.2f %1.2f\n", sc.w, sc.h, sc.r, sc.s);
+
+	//w = width;
+	//h = height;
 
 	resize();
 }
