@@ -163,7 +163,7 @@ int ti68k_debug_skip(uint32_t next_pc)
     do 
     {
 		ti68k_debug_step();
-
+/*
 		// too far: stop
 		if(m68k_getpc() > next_pc) 
 			break;
@@ -171,7 +171,7 @@ int ti68k_debug_skip(uint32_t next_pc)
 		// jump back: stop
 		if(next_pc - m68k_getpc() > 0x80) 
 			break;
-
+*/
 		// force GUI refresh in order to be able to cancel operation
 		while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
     } 
