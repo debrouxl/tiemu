@@ -68,8 +68,8 @@ mouse_motion(GtkWidget *drawingarea, GdkEventMotion *event, gpointer action)
   
   if (y < 0)
     y = 0;
-	
-	if (x > skin_infos.width - 1)
+  
+  if (x > skin_infos.width - 1)
     x = skin_infos.width - 1;
 
   if (y > skin_infos.height - 1)

@@ -832,16 +832,34 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data)
 {
+  GdkRect rect;
+
   if(pixbuf == NULL)
     return FALSE;
 
+  memcpy(&rect, &(event->area), sizeof(GdkRectangle));
+  /*
+  if (rect.x < 0) 
+    rect.x = 0;
+  if (rect.y < 0) 
+    rect.y = 0;	
+  */
+  if (rect.x > skin_infos.width - 1) 
+    rect.x = skin_infos.width - 1;
+  if (rect.y > skin_infos.height - 1) 
+    rect.y = skin_infos.height - 1;
+
+  if (rect.x + rect.w > skin_infos.width - 1) 
+    rect.w = skin_infos.width - rect.x - 1;
+  if (rect.y + rect.h > skin_infos.height - 1) 
+    rect.h = skin_infos.height - rect.y - 1;
+  
   gdk_draw_pixbuf(widget->window,
 		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
 		  pixbuf, 
-		  event->area.x, event->area.y,
-		  event->area.x, event->area.y,
-		  (event->area.width > skin_infos.width) ? skin_infos.width : event->area.width,
-		  (event->area.height > skin_infos.height) ? skin_infos.height : event->area.height,
+		  rect.x, rect.y,
+		  rect.x, rect.y,
+		  rect.w, rect.h,
 		  GDK_RGB_DITHER_NONE, 0, 0);
   
   return TRUE;

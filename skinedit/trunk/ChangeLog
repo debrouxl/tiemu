@@ -1,5 +1,9 @@
 List of changes:
 
+- 08/05/2004, version 1.25: roms
+	Fixed out of bounds coords when the scroll area is larger than
+	the drawing area.
+	
 - 03/05/2004, version 1.24: roms
 	Clean-up. Win32 installer.
 	Bug fixes.
