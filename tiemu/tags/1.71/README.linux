@@ -1,0 +1,74 @@
+				*****************
+				*     TiEmu     *
+				* Linux version *
+				*****************
+
+
+DESCRIPTION
+-----------
+
+Development platform: GNU/Linux Debian, 2.5.64 kernel, XFree 4.2.1, GTK+ 2.2.
+Ported on PowerPC platforms by JB (Julien Blache, jb@jblache.org).
+
+
+REQUIREMENTS
+------------
+
+ - A UNIX computer (Intel x86 or PPC) and C compiler (gcc)
+ - X11 (X Window System)
+ - SDL (Simple Directmedia Layer)
+ - GTK+ 2.x (http://www.gtk.org)
+ - ticables, tifiles and ticalcs libraries from the TiLP project 
+	(http://tilp.info)
+ - JPEG library (jpeg62)
+
+
+INSTALLATION
+------------
+
+At first, you must have the ticables and ticalcs libraries installed. See
+the documentation of these libraries for the installation procedure.
+
+Untar the tiemu-X.XX.tar.gz archive (tar -xvzf), change directory to
+tiemu directory.
+
+Go the tiemu directory and type './configure' in order to be sure
+that all it is OK. Next, type 'make' to make a binary for your machine.
+
+If the compile suceeds without any errors, you can type 'make install' to
+install the binary in /usr/bin. This will also copy some necessary
+files to /usr/local/share/tiemu and will install the manpage and the
+help.
+
+If you already have some ROM images, place them into the ROMs directory before
+typing 'make install'. This will install your ROMs at the right place.
+
+
+USAGE
+-----
+
+Type tiemu for using it.
+A manpage is available by 'man tiemu'.
+
+
+AVAILABILITY
+------------
+
+  http://lpg.ticalc.org/prj_tiemu/index.html
+
+
+COPYRIGHT
+---------
+
+TiEmu is Copyright (C) 2000-2004 by the TiLP team <tilp-users@lists.sf.net>
+
+Copying is allowed under the terms of GNU General Public License (LGPL).  
+See the file COPYING for more details.
+
+
+---------------------------------------------------------------------------
+Please report any bugs, questions, ...  (please give us your platform, your 
+calculator type (with ROM version) and your link cable model).
+
+
+The TiLP team <tilp-users@lists.sf.net>

@@ -1,0 +1,96 @@
+*****************************************************************
+* File format of the VTi 2.5 skin files				*
+* Documentation by Romain Lievin <roms@lpg.ticalc.org>		*
+*								*
+* These informations have been extracted from the Vti source	*
+* code (rom.cpp) which have been released by R. Wagner.		*
+*								*
+* Begin: 17/04/2002						*
+* Last update: 25/04/2002					*
+*****************************************************************
+
+
+Remark: I use the C notation for numbers (12: decimal, 0x1A: hexadecimal, 
+'C': character). Moreover, all words are in LSB-MSB format.
+
+This document describes the file format of VTi v2.1 & v2.5 skins.
+A skin file (.skn) is a composite file which contains informations and data 
+(image).
+
+
+The VTi v2.1 skin file format
+-----------------------------
+
+  The following is a table of the bytes that make up a skin file.
+
+  Adress				What It Contains
+  ---------------------------------------------------------------------------
+  0x000-0x007	0-7		An header: "VTIv2.1 "
+   ???
+  0x050-0x053	80-83		The value of the 'White' LCD pixel (32 bits)
+  0x054-0x057	84-87		The value of the 'Black' LCD pixel (true color)
+  0x058-0x067	88-103		1x RECT structure (the display coords in skin)
+  0x068-0x567	104-1383	80x RECT structures (the keys coords in skin)
+
+  0x568-0x...	1384-...	A JPEG encoded image placed right after
+
+
+The VTi v2.5 skin file format
+-----------------------------
+
+  The following is a table of the bytes that make up a skin file.
+
+  Adress                                What It Contains
+  ---------------------------------------------------------------------------
+  0x000-0x007   0-7             An header: "VTIv2.5 "
+  0x008-0x047   8-71		Skin's name (64 chars)
+  0x048-0x087	72-135		Skin's author (64 chars)
+  0x088-0x08F	136-143		Calculator type ?
+  0x090-0x093   144-147         The value of the 'White' LCD pixel (32 bits)
+  0x094-0x097   148-151         The value of the 'Black' LCD pixel (true color)
+  0x098-0x0A7   152-167         1x RECT structure (the display coords in skin)
+  0x0A8-0x5A7   168-1447        80x RECT structures (the keys coords in skin)
+
+  0x5A8-0x...   1448-...        A JPEG encoded image placed right after
+
+
+
+
+  RECT is a common Win32 structure which has the following format:
+
+	typedef struct tagRECT {
+		uint32_t left;
+		uint32_t top;
+		uint32_t right;
+		uint32_t bottom;
+	} RECT;
+
+  The keys coordinates are stored in an array of 80 structures. These 
+  structures are parsed for searching a mouse position which fits into. Once 
+  found, the index is mapped into a TI key by an array such as:
+
+  const char sknKey89[] = {
+    TIKEY_F1, TIKEY_F2, TIKEY_F3, TIKEY_F4, TIKEY_F5,
+    TIKEY_2ND, TIKEY_SHIFT, TIKEY_ESCAPE, TIKEY_LEFT, TIKEY_RIGHT,
+    TIKEY_UP, TIKEY_DOWN, TIKEY_DIAMOND, TIKEY_ALPHA, TIKEY_APPS,
+    TIKEY_COS, TIKEY_MODE, TIKEY_F6, TIKEY_BACKSPACE, TIKEY_CLEAR,
+    TIKEY_X, TIKEY_Y, TIKEY_Z, TIKEY_T, TIKEY_POWER,
+    TIKEY_EQUALS, TIKEY_PALEFT, TIKEY_PARIGHT, TIKEY_COMMA, TIKEY_DIVIDE,
+    TIKEY_LN, TIKEY_7, TIKEY_8, TIKEY_9, TIKEY_MULTIPLY,
+    TIKEY_SIN, TIKEY_4, TIKEY_5, TIKEY_6, TIKEY_MINUS,
+    TIKEY_STORE, TIKEY_1, TIKEY_2, TIKEY_3, TIKEY_PLUS,
+    TIKEY_ON, TIKEY_0, TIKEY_PERIOD, TIKEY_NEGATE, TIKEY_ENTER1
+    };
+
+  This array contains some values which come from an enumeration. Values 
+  contained in this array must match with the keys placed in the skin in the 
+  same order.
+
+  The enumeration is also used for keyboard mapping. The order is not 
+  important but this enumeration is a basis for some other transcoding arrays 
+  (TIKEY_XXX to row/col hardware key).
+
+  enum {	
+	TIKEY_DOWN, TIKEY_RIGHT, TIKEY_UP, TIKEY_LEFT, TIKEY_HAND, TIKEY_SHIFT, 		...
+	MAX_KEY // important !
+	};

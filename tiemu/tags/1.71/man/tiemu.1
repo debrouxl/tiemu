@@ -1,0 +1,140 @@
+.TH (GTK)TIEMU 1 "June 11, 2004"
+.SH NAME
+tiemu - a TI emulator for TI89/92/92+/V200PLT hand-helds
+.SH SYNOPSYS
+\fBgtktiemu\fP [-h] [-v] [-rom_file=] [-sav_file=] [image] [--help] [--version] 
+.SH DESCRIPTION
+The \fBTiEmu\fP program allows you to emulate a Texas Instruments calculators such as a TI89, TI92, TI92+ or V200PLT gand-held.
+The emulator has also a virtual link capability which allows to connect it to another program (such as a linking program for instance).
+.SH OPTIONS
+The command line options override the default options (startup options) and the config file options even.
+The \fBTiEmu\fP accepts the following options:
+.TP
+\fB-h, --help\fP
+Display a list of all command line options.
+.TP
+\fB-v, --version\fP
+Output the version info.
+.TP
+\fB-rom_file=\fP
+Load the specified ROM image. Must be a valid TI89/92/92+/V200 ROM image.
+.TP
+\fB-sav_file=\fP
+Load the specified state file. Must be a valid TI89/92/92+/V200 state image.
+.SH SEE ALSO
+tilp(1) for the latest information on the link cable parameters.
+.SH CONFIG FILE FORMAT
+This section describes the format of the .tiemu config file which is in the home directory of the user (Linux). A line preceded by the '#' symbol is a comment. 
+Each line has the following format: option=something.
+The config file must have the 'RC_END' string at end.
+Every line can be put in any order.
+Take in mind that any comment added in the config file will be overwritten.
+Below is described each option and the possible values:
+
+\fBcalctype=\fP
+Defines the calculator type. Choose one of the following value: ti89, ti92, ti92+.
+
+\fBlinktype=\fP
+Define the link cable type. Choose one of the following value: TIGraphLink, parallel, serial, AVRlink, fastAVRlink, virtual, TiEmulator, VTi, UsbGraphLink, TiPcUsbLink.
+
+\fBadr_port=\fP
+places the I/O address of the I/O port to use. It can be 0x3F8 for a serial port or 0x378 for a parallel port for instance.
+
+\fBserial_device=\fP
+places the character device name of the serial port to use with a Grey TIGL.
+
+\fBtimeout=\fP
+with the timeout value to use in tenth of seconds. Default value: 20.
+
+\fBdelay=\fP
+with the delay value to use in micro-seconds for home-made cables. Default value: 10
+
+\fBuse_tidev=\fP
+Define whether gtktilink will use or not the 'tidev kernel module' for handling your link cable. The link cable is managed thru the libTicable but with the kernel module and not with low-level I/O routines.
+Options: 'yes' or 'no'.
+
+\fBbackground=\fP
+Define whether GtkTiEmu display the background (keyboard) or only the LCD screen. Put 0 if you do not want the keyboard.
+
+\fBrom_file=\fP
+Define the ROM image to load at startup.
+
+\fBram_file=\fP
+Define the RAM image to load at startup.
+
+\fBgray_planes=\fP
+Define the number of gray scales. Valid values are 0, 2, 5 or 11.
+
+\fBtick_rate=\fP
+Define the tick rate.
+
+\fBcycle_rate=\fP
+Define the cycle rate.
+
+\fBdark_color=\fP
+Set the dark color to the given RGB value. Format is 0xrrggbb.
+
+\fBlight_color=\fP
+Set the light color to the given RGB value. Format is 0xrrggbb.
+
+\fBsync_one=\fP
+Enable or disable synchronization on IRQ1 (m68k IRQs). Valid value is: 0 or 1.
+
+\fBcode_lines=\fP
+Defines the number of lines which are displayed in the code box of th debugger window.
+
+\fBstack_lines=\fP
+Defines the number of lines which are displayed in the stack box of th debugger window.
+
+\fBmem_lines=\fP
+Defines the number of lines which are displayed in the memory box of th debugger window.
+
+\fBimg_format=\fP
+Defines the image format of the screenshots. Several formats are available: PCX, XPM, JPG or BMP (SDL only).
+
+\fBimg_type=\fP
+You can do screenshots in Black&White or in colors.
+
+\fBimg_size=\fP
+The size of the image that is to say you can shots only the LCD or the entire window (skin+LCD).
+
+\fBscreen_file=\fP
+Defines the base filename where the screenshot will be stored.
+
+\fBscreen_counter=\fP
+This allows you to save the current screenshot counter. In fact, the resulting filename is computed as 'screenfile[screen_counter].[img_format]. Example: 'screenshot001.xpm'.
+
+\fBconsole=\fP
+Available under Windows platform only. You can hide or show the console at startup or even display it only during boot.
+
+Think to terminate your config script with the 'RC_END' word !!!
+
+.SH COPYRIGHT
+Copyright (C) 2000-2001, Romain Lievin and Thomas Corvazier. 
+Permission to use, copy, modify, and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appear in all copies and that both that copyright notice and this permission notice appear in supporting documentation.
+
+This program and its source code is distributed under the terms of the 
+terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+.SH SUGGESTIONS AND BUG REPORTS
+The  canonical place to find GtkTiEmu and some miscellenaous informations is at 
+http://lpg.ticalc.org/prj_gtktiemu (redirected on http://gtktiemu.sourceforge.net).
+You can also look at http://lpg.ticalc.org and http://www.ticalc.org for others TI related programs for Linux.
+.SH AUTHOR
+Romain Lievin.
+Thomas Corvazier
+.SH SPECIAL THANKS
+- Jonas Minnberg (Sasq) for Tiger
+- UAE, the Universal Amiga Emulator (http:// ??)
+.TP
+- Benjamin Gordon <ben@bxg.org> for creating rpm packages: he is the official maintainer of this package.
+.TP
+- Julien Blache <jb@jblache.org> for creating deb packages: he is the official maintainer of this package.
+.SH THANKS
+
+
+

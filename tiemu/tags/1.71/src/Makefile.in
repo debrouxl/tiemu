@@ -1,0 +1,145 @@
+## Process this file with autoconf to produce Makefile
+
+#if OS_WIN32
+# no_undefined = -no-undefined
+#endif
+
+@SET_MAKE@
+CC        = @CC@
+CPP       = @CPP@
+CFLAGS    = @CFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GTHREAD_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@ @SDL_CFLAGS@
+LDFLAGS   = @LDFLAGS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GTHREAD_LIBS@ @GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ @SDL_LIBS@ $(no_undefined) -ljpeg
+
+INSTALL         = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA    = @INSTALL_DATA@
+prefix          = @prefix@
+exec_prefix     = @exec_prefix@
+bindir          = @bindir@
+libdir          = @libdir@
+sysconfdir      = @sysconfdir@
+
+.SUFFIXES: .o .c .h .m .i .S .rc .res
+
+DEFS=@DEFS@ \
+	-DSHARE_DIR=\"${prefix}/share/tiemu\" \
+	-DLOCALEDIR=\"${prefix}/share/locale\"
+#	-DSHARE_DIR=\"$(pkgdatadir)\" \
+#	-DLOCALEDIR=\"$(datadir)/locale\"
+
+INCLUDES = \
+	-I@top_srcdir@ -I$(includedir) \
+	-DPREFIX=\"${prefix}\" -I. \
+	-I./core/uae -I./core/ti_hw -I./core -I./hid -I./gui
+
+# source files to build
+uae_OBJ = \
+	core/uae/cpu0.o core/uae/cpu1.o \
+	core/uae/cpu2.o core/uae/cpu3.o \
+	core/uae/cpu4.o core/uae/cpu5.o \
+	core/uae/cpu6.o core/uae/cpu7.o \
+	core/uae/cpu8.o core/uae/cpu9.o \
+	core/uae/cpuA.o core/uae/cpuB.o \
+	core/uae/cpuC.o core/uae/cpuD.o \
+	core/uae/cpuE.o core/uae/cpuF.o \
+	core/uae/cpudefs.o core/uae/cpustbl.o \
+	core/uae/readcpu.o
+
+tihw_OBJ = \
+	core/ti_hw/dbus.o	\
+	core/ti_hw/hw.o 	\
+	core/ti_hw/ports.o 	\
+	core/ti_hw/kbd.o 	\
+	core/ti_hw/lcd.o 	\
+	core/ti_hw/m68k.o	\
+	core/ti_hw/mem.o 	\
+	core/ti_hw/timer.o	
+
+core_OBJ = 			\
+	core/bkpts.o 		\
+	core/callbacks.o 	\
+	core/engine.o		\
+	core/error.o 		\
+	core/images.o 		\
+	core/interface.o	\
+	core/registers.o	\
+	core/state.o		\
+	core/type2str.o
+
+hid_OBJ = \
+	hid/cmdline.o 	\
+	hid/files.o 	\
+	hid/hid.o	\
+	hid/paths.o 	\
+	hid/printl.o	\
+	hid/rcfile.o 	\
+	hid/skinops.o	\
+	hid/tie_error.o \
+	hid/tikeys.o
+
+gui_OBJ = \
+	./gui/debugger/dbg_bkpts.o					\
+	./gui/debugger/dbg_cause.o					\
+	./gui/debugger/dbg_code.o					\
+	./gui/debugger/dbg_data.o					\
+	./gui/debugger/dbg_mem.o					\
+	./gui/debugger/dbg_pclog.o					\
+	./gui/debugger/dbg_regs.o					\
+	./gui/debugger/dbg_vectors.o					\
+	./gui/about.o							\
+	./gui/comm.o							\
+	./gui/dbg_all.o							\
+	./gui/dboxes.o							\
+	./gui/filesel.o							\
+	./gui/fs_misc.o							\
+	./gui/help.o	 						\
+	./gui/infos.o							\
+	./gui/main.o							\
+	./gui/manpage.o							\
+	./gui/pbars.o							\
+	./gui/popup.o							\
+	./gui/refresh.o							\
+	./gui/release.o							\
+	./gui/romversion.o						\
+	./gui/scroptions.o						\
+	./gui/splash.o							\
+	./gui/support.o 						\
+	./gui/wizard.o
+
+tiemu_OBJ = core/uae/newcpu.o $(tihw_OBJ) $(core_OBJ) $(hid_OBJ) $(gui_OBJ)
+
+#rules:
+all: tiemu
+
+uae:
+	cd core/uae && $(MAKE) gen
+	cd core/uae && $(MAKE) all
+
+tiemu: $(tiemu_OBJ) uae
+#	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu $(LDFLAGS) $(CFLAGS)
+	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) \
+	-o tiemu $(LDFLAGS) $(CFLAGS)
+
+.c.o:
+	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) $< -o $@
+	#../libtool --mode=compile $(CC) $(INCLUDES) $(DEFS) \
+	#-c $(CFLAGS) $< -o $@
+
+clean:
+	@cd core/uae && $(MAKE) clean
+	@rm -f $(tiemu_OBJ) tiemu
+
+distclean: clean
+	@cd core/uae && $(MAKE) distclean
+
+dos2unix:
+	dos2unix
+	lowercase
+	uppercase
+
+distdir: clean
+	cp -rl * ../tiemu-@VERSION@/src
+
+install: tiemu
+	#@$(INSTALL) -m755 -d $(DESTDIR)$(tilp_help_dir)
+	$(INSTALL) -m755 tiemu ${prefix}/bin

@@ -1,0 +1,41 @@
+			[ Release notes ]
+
+
+
+Previous version: 1.65				(11/11/2002)
+Current version:  1.71 (2.00-a4)	(16/06/2004)
+
+SubVersion (CVS) revision: $Id$
+
+TiEmu is available for 2 platforms:
+Linux (GTK), Windows (GTK).
+
+If you have a SilverLink cable (TI-GRAPH LINK USB), you will need to retrieve
+a Linux/Win32/Mac OS-X driver on the Linux Programmer Group at 
+<http://lpg.ticalc.org/prj_usb>.
+
+For the other link cables, no driver is needed because it's provided.
+
+
+New capabilities:
+-----------------
+
+	- none
+
+
+Improvements:
+-------------
+
+	- completely reworked
+	
+	
+Future capabilities:
+--------------------
+
+	- use the latest & faster UAE.
+
+	
+Notes:
+------
+
+	- none.

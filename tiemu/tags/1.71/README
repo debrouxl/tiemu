@@ -1,0 +1,333 @@
+				***************
+				*  TiEmu II   *
+				***************
+
+
+
+
+For the installation procedure, see INSTALL
+For a more specific README, see README.linux or README.win32
+
+
++-------------+
+| DESCRIPTION |
++-------------+
+
+TiEmu is a program allowing a PC to emulate a TI89/92(+)/V200PLT hand-held.
+It works on Linux and Windows platforms actually.
+
+It uses GTK+ (the Gimp ToolKit, http://www.gimp.org/gtk) for the GUI and the SDL 
+(Simple Directmedia Layer) for the display. 
+
+All link cables are supported by the link port: parallel, serial, 
+Black TI Graph Link, Gray TI Graph Link and the SilverLink.
+
+TiEmu is based on XTiger, the original TI emulator for Linux (see the AUTHORS file for 
+more details) which uses the m68k emulation core from UAE (The Ultimate Amiga Emulator).
+It also uses the TiLP framework (ti* libraries).
+
+
++----------+
+| FEATURES |
++----------+
+
+Some features:
+
+o Works on 8, 16, 24/32 planes display (256, 65565, 16M/True colors)
+o Easy to use thanks to a GUI developped with GTK+
+o Nice debugger (memory, breakpoints, traps, vectors, ...)
+o Ability to load/save the emulator state
+o Full linkport emulation (all link cables: hardware, virtual)
+o File linkport emulation (direct loading files)
+o Works with 1/2/4MB ROMS, 128 or 256k RAM
+o Emulate both HW1 & HW2
+o Can run from ROM dumps or FLASH upgrades
+o Automatic ROM version/model detection
+o Constrast emulated (Try [Alt] + [+] & [-])
+o Pretty fast
+o Sreenshot of LCD and/or calculator in several images format (JPG/PNG/ICO)
+o TI keyboard useable directly from PC keyboard or with the mouse on the skin
+o Archive memory support as well as ghost spaces
+o 4-level and 7-level grayscale support
+o Can emulate at either the real speed of the calculator or the fastest the computer can handle.
+o The letter keys are aliased to produce their respective letters.  No need to press the Alpha
+  key, just type.
+o A full-featured graphical debugger:
+    * Code disassembly pane: disassembly, code breakpoints.
+    * Breakpoints pane: data, code, exceptions.
+    	Data breakpoints can be set on a single byte,
+      	word, or dword, or a range of addresses.
+      Exceptions can be set on any one.
+    * Registers pane: view and change the value of the registers.
+    * Memory pane: view/edit values as well as user stack.
+    * PC trace pane: keep the latest executed instructions.
+    * Real time updates to the LCD, even with grayscale
+o Keyboard mapping and menu shortcuts are fully VTi-compatible.
+
+Limitations:
+
+o Receiving from the virtual calculator is not implemented
+o No logging capabilites yet
+
++---------------------+
+| SYSTEM REQUIREMENTS |
++---------------------+
+
+You will need a PC Intel (486) computer. A 100MHz processor is a minimum.
+TiEmu uses roughly 10MB of RAM.
+
+
++-----------------------------+
+| IMAGES (ROMDUMPS & UPGRADES |
++-----------------------------+
+
+To run this emulator you will need an 'TiEmu v2' image. An image can be obtained from:
+- a ROM dump,
+- a FLASH upgrade (not applicable to TI92).
+
+As ROM dumps are copyrighted by Texas Instruments Inc, they will never be distributed 
+with the emulator. To get a ROM dump, you can use TiLP or any other ROM dumping program. 
+TiLP may be interessant because it can be virtually linked with the emulator. 
+
+If you can't get a ROM image (because you don't own the calculator or you want to test the emulator), 
+you can download a FLASH upgrade from the TI web site (http://education.ti.com).
+
+Please not that images converted from a FLASH upgrade (fake image) does not have boot 
+block nor certificate. They are not as complete as ROM dumps (true image).
+
+If you already have a ROM dump or an upgrade, place it in the 'images' directory. 
+Make sure it has the right extension (.rom or .89u). It will be automatically converted.
+
+
++-----------------+
+| HOW TO USE IT ? |
++-----------------+
+
+When you launch it, TiEmu take some a while for initializing it. Once you 
+have launched, you should see a window with the look of your calculator. 
+You can either click with the left button on a TI key, either press the 
+correspondant key of your PC keyboard.
+
+Else, the right button of your mouse let you access a popup menu which contains
+all you need for configuring/using the emulator.
+
+
++------------------+
+| KEYBOARD MAPPING |
++------------------+
+
+The keyboard mapping is the same as VTi, the well 
+known TI emulator for Windows.
+
+TI92(+)    	PC
+---------  	------------
+APPS		F9
+THETA		;
+STO>		Tab
+DIAMOND		Ctrl
+2ND			Alt
+(			[
+)			]
+HAND/LOCK	Caps Lock
+MODE		`
+LN			\
+SIN			Insert
+COS			Home
+TAN			Page Up
+CLEAR		Delete
+ON			Scroll Lock
+ENTER		Num Pad Enter
+
+TI89       	PC
+---------  	------------
+CATALOG		F6
+APPS		F9
+STO>		Tab
+DIAMOND		Ctrl
+2ND			Alt
+(			[
+)			]
+HAND/LOCK	Alpha
+MODE		`
+|			\
+EE			Insert
+CLEAR		Delete
+ON			Scroll Lock
+
+Letters, Numbers, Cursor movement, F1-F8 + some others are the
+same keys on both keyboards
+
+Special Keys
+
+F10			Send TI file
+F11			Enter Debugger
+F12			Set ROM version
+
+
++-------------------+
+| RIGHT BUTTON MENU |
++-------------------+
+
+$$To udpate...$$
+
+The right button menu give you access to the functionnalities of the emulator. If you let your mouse on the 
+item during some while, a tooltip will appear.
+This menu is organized as follow:
+
+- Send file to TiEmu: directly load a file and transfer it into the emulator.
+- Link options: for configuring a link cable to use for the linkport emulation.
+- Config: load/save the current configuration in the config file (~/.tiemu ou tiemu.ini). The current state is not saved but loaded if it has been previously saved.
+- Calculator state: save/load the current state or load the latest saved stated
+- Enter debugger: see the DEBUGGER section further in the text
+- Reset calc: reset the calculator (RAM, FLASH: all !).
+- Emulator options: 
+	
+Speed: for tuning TiEmu. Only the 'Sync' item is implemented.
+Number of colors: allows you to choose the number of grayscales.
+Screen: with the  normal/large items, you can modify the size of the application window. Useful if you are working with high resolution. The same effect can be got by resizing the window with the mouse. 
+The fullscreen item switch in fullscreen mode. You can also press 'Alt+Enter' for toggling the full-screen mode.
+
+- Skin for current calc: you can choose to display the emulator with a skin or only the LCD display. You can change for a compatible skinn, too.
+- Screenshot: do a screenshot of the LCD display. The screenshot file is automatically incremented.
+- RAM: dump the RAM content into a file. The file is a text file and contains
+an hexadecimal & character dump.
+- ROM:
+
+Dump ROM: dump the ROM content into a file. The file is a text file and contains an hexadecimal & character dump. Beware, this may take some time and space disk for writing the file (roughly 10 MB).
+Add image/upgrade: add a file to the list of images/upgrades (see below).
+Set ROM: choose a file to load. It can be a true ROM image or a FLASH upgrade.
+If you select a FLASH upgrade, TiEmu will dislpay a choice: either convert the upgrade into a fake ROM image (for using the upgrade as a new ROM image), either load the upgrade for FLASHing your calc.
+- Help: display the logo and the license as well as misc informations.
+- Infos: some informations about the calc and the developper
+- Exit and save state: save the current state and quit
+- Exit without saving state: exit immediately without saving the curren state.
+
+
++--------------------+
+| LINKPORT EMULATION |
++--------------------+
+
+TiEmu emulates the linkport in two ways:
+- through an external link cable
+- from file
+
+With a link cable, TiEmu can communicate with the hardware (parallel, serial, ... link cable) or 
+virtually (TiLP, VTi, another TiEmu/VTi application).
+
+Remark about virtual links: you have the choice between the TiEmu and the VTi virtual link.
+For Windows users: the Vti virtual link allows you to make TiEmu 
+communicate with VTi. It provides also a different linking method of the 
+TiEmu virtual link.
+For Linux users: the 2 possible virtual link are useable.
+Simply choose the best or the fastest.
+
+For the TiEmu virtual link, the emulator must be set on the channel #0 and the linking program on the channel #1.
+
+TiEmu can load files directly from disk without using any linkink program. 
+To send a file to the emulator, press F10 or enter the popup menu. Useful and fast !
+
+
++----------+
+| DEBUGGER |
++----------+
+
+
+To enter the debugger, you can press F11 at any time. This will stop the emulation engine but
+the LCD is still refreshed.
+The debugger is made up of several windows which can be moved and resized (TiEmu save/restore these settings):
+- source code
+- registers
+- memory
+- breakpoints
+- PC trace
+Please note these windows are automatically refreshed when a change occurs from another window.
+
+From the source code window, you can view disassembly code, set code breakpoints and do classical 
+debugging actions (step, over, run, break, etc).
+
+With the registers window, you can view and modify registers contents. 
+When a register is updated, it's colored.
+To edit register content, click value.
+
+The memory window is made up of tabs. Each tab show a memory dump with address, data and ASCII.
+This window always starts with one tab, the user stack location.
+You can add/remove tabs from toolbar as well as browsing memory with the arrows.
+
+The breakpoints window displays pending breakpoints. Breakpoints can be put on:
+- source code (from the source code window only),
+- exceptions (all exception from 0 to 255 which includes traps, autoints)
+- memory access (read/write & byte/word/long)
+- memory range access
+
+The PC trace shows the PC execution history. Enabling this feature is more CPU intensive.
+
+At the time being, there is no logging capabilities.
+
+
++-------------+
+| SCREENSHOTS |
++-------------+
+
+Simply press F9 for doing a screenshot with the current options. The different options can be easily 
+modified in the 'Screenshot options' dialog box. In this box, you can choose between:
+- different image types (color or b/w), 
+- LCD only or full skin,
+- image format (JPEG, PNG, ICO).
+
+The screenshot filename is build from the pattern (foo) and an auto-incrementing counter (XYZ).
+Result: fooXYZ.png.
+
+
++--------------+
+| COMMAND LINE |
++--------------+
+
+All the informations about the command line and the configuration file format 
+(~/.tiemu or tiemu.ini) are available in:
+-  the manpage for the Linux users ('man tiemu'),
+-  the Manpage.txt file for the Windows users.
+
+
++--------+
+| THANKS |
++--------+
+
+Jonas Minnberg for making (X)Tiger from which we have developped TiEmu.
+Rusty Wagner for the calculator skins.
+Julien Blache for SkinEdit (a VTi 2.1, VTi 2.5, TiEmu v2 skin editor).
+Kevin Kofler which have time to answer to many questions because I'm not a TI hardware expert.
+
+
++------+
+| BUGS |
++------+
+
+If you find a bug, please give your:
+- calc type
+- ROM version & HW type
+- any infos you think interessant.
+Please report any bugs at <tilp-devel@lists.sf.net>.
+
+
++------+
+| TODO |
++------+
+
+See the TODO file for more informations.
+Conttributing, help, testing is welcome :-))
+
+
++-----------+
+| COPYRIGHT |
++-----------+
+
+TiEmu is copyright (C) 2001-2004 by Romain Lievin. 
+TiLP framework is copyright (c) 1999-2004 by Romain Lievin <roms@tilp.info>
+GtkTiEmu and the libti68k library are copyright (C) 2000-2001 by Romain Lievin 
+<roms@lpg.ticalc.org> and Thomas Corvazier <corvazier@yahoo.com>
+
+TiEmu is based on the XTiger emulator (see AUTHORS for more details) which is based on UAE (Universal Amiga Emulator).
+
+
+Copying is allowed under the terms of GNU General Public License (GPL).  
+See the file COPYING for more details.
