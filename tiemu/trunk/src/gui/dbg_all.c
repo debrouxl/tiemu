@@ -136,3 +136,24 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
 	if(dbgw.code)
 	    gtk_widget_hide(dbgw.code);
 }
+
+GLADE_CB void
+on_minimize_all1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    gtk_window_iconify(GTK_WINDOW(dbgw.regs));
+    gtk_window_iconify(GTK_WINDOW(dbgw.bkpts));
+    gtk_window_iconify(GTK_WINDOW(dbgw.mem));
+    gtk_window_iconify(GTK_WINDOW(dbgw.pclog));
+}
+
+
+GLADE_CB void
+on_maximize_all1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    gtk_window_deiconify(GTK_WINDOW(dbgw.regs));
+    gtk_window_deiconify(GTK_WINDOW(dbgw.bkpts));
+    gtk_window_deiconify(GTK_WINDOW(dbgw.mem));
+    gtk_window_deiconify(GTK_WINDOW(dbgw.pclog));
+}

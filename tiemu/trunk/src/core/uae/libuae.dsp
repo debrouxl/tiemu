@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
+# ADD CPP /nologo /w /W0 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "__WIN32__" /YX /FD /c
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
 # ADD RSC /l 0x40c /d "NDEBUG"
 BSC32=bscmake.exe
@@ -49,7 +49,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo
+# ADD LIB32 /nologo /out:"libuae.lib"
 
 !ELSEIF  "$(CFG)" == "libuae - Win32 Debug"
 

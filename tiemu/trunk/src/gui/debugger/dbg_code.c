@@ -653,24 +653,3 @@ on_set_pc_to_selection1_activate       (GtkMenuItem     *menuitem,
     display_dbgcode_window();
     display_dbgregs_window();
 }
-
-/*
-{
-    GtkTreeView *view = GTK_TREE_VIEW(list);
-	GtkTreeModel *model = gtk_tree_view_get_model(view);
-	GtkListStore *store = GTK_LIST_STORE(model);
-    GtkTreeSelection *selection;
-    GtkTreeIter iter;
-    gboolean valid;
-    gchar *str;    
-
-    selection = gtk_tree_view_get_selection(view);
-    valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
-    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-
-    printf("move: %i %s <%s>", count, step_to_string(step), str);
-
-  return FALSE;
-}
-
-  */
