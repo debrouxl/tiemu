@@ -10,6 +10,7 @@ To do:
 	- fixed bug in LCD snoop range register: TI89 Titanium (patched) and V200 (patched) work.
 	- fixed bug in FLASH emulation (algorithm)
 	- fixed ROM size handling with TI89 Titanium & V200
+	- removed copying of vector table from FLASH to RAM at startup
 
 - 28/08/2004, version 1.80: roms
 	- fixed vectors copy

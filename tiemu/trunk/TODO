@@ -1,12 +1,54 @@
 List of stuffs to do:
 
-Roms:
-
-- conversion de upgrade TI92+ en .ROM: marche pas
-
 ExtendeD:
 
-- bug sur Step Out
+* bug sur Step Out
+
+* Les Step over sont anormalement lent, sans raison. Certains bsr de
+l'AMS ont des sous-bsr qui ont eux-mêmes plusieurs sous-bsr, etc.,
+certains step over sur ces bsr mettent plusieurs dizaines de seconde à
+aboutir.
+
+* Un Step To sur une instruction suffisamment loin de l'instruction
+courante n'a aucun effet, c'est bizarre...
+
+* Comment fait-on pour faire passer en 'disable' un breakpoint ? Il y
+a deux boutons dans la fenêtre qui mais il sont toujours grisés, je ne
+sais plus à quoi ils servent, c'est pas ça ?
+
+* Le scroll d'instructions vers le bas n'est pas bon du tout, Il
+n'avance pas d'instruction en instruction, mais se décale parfois, on
+s'y perd complètement.
+
+* Si après un breakpoint sur instruction se fait toucher, et si on
+fait 'run', le même breakpoint se fait retoucher, il faudrait plutôt
+continuer.
+
+* Je ne suis pas sûr que les data breakpoints fionctionnent
+correctement. Si je place un breakpoint 'single byte' à 0, il n'est
+jamais atteint par le code du reset, alors qu'il y a bien une écriture
+d'un long mot à 0.
+
+Quelques questions :
+
+* La couleur de l'écran fait partie de la skin, comme sous VTI ? Ne
+serait-ce pas mieux d'avoir du noir sur blanc sur 92+, parce que le
+jaune c'est pas top :)
+
+* A quoi sert le menu 'log' de la fenêtre 'Code' ?
+
+Quelques suggestions :
+
+* Ce serait bien que la fenêtre PC log possède un bouton pour afficher
+dans la fenêtre Code l'adresse sélectionnée, ou que ça fonctionne par
+double-clique.
+En tout cas c'est une fenêtre bien pratique, elle m'a permis de
+trouver (ou de re-trouver, c'est le même problème depuis plusieurs
+versions :)) facilement le problème avec la Titanium.
+
+* Un bouton pour éditer un breakpoint serait mal (afficher une fenêtre
+comme la fenêtre 'Add breakpoint', mais initialisée avec les valeurs
+du breakpoint choisi).
 
 
 Kevin:
@@ -60,5 +102,5 @@ dans la fenêtre ASCII de la memory view (Win ME ?).
 
 -------------
 + done
-* in progress
-- to do...
+- in progress
+* to do...

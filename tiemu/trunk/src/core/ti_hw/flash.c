@@ -151,8 +151,8 @@ uint32_t find_pc(void)
     }
 
     // copy vector table into RAM for boot (72 vectors, 288 bytes)
-    for (i = 0; i < 0x120; i++)
-        tihw.ram[i] = tihw.rom[vt + i];
+    //for (i = 0; i < 0x120; i++)
+      //  tihw.ram[i] = tihw.rom[vt + i];
 
 	printf("found PC ($%06x) at offset 0x%x\n", pc, vt - 0x12000);
 
