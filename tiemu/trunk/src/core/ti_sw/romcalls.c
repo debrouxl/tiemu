@@ -34,9 +34,10 @@
 #include "images.h"
 #include "ti68k_def.h"
 
-static int old_ct = -1;		// previous calc type for reloading
-static int loaded = 0;		// loaded
-static int reload = 0;		// reload ?
+static int old_ct = -1;			// previous calc type for reloading
+static char old_av[5] = "0.00";	// previous AMS version
+static int loaded = 0;			// loaded
+static int reload = 0;			// reload ?
 
 static ROM_CALL table[NMAX_ROMCALLS];	// list by id
 static GList	*list = NULL;			// sorted list (by id, addr or name)
@@ -228,10 +229,13 @@ int romcalls_preload(const char* filename)
 	if(!img_loaded || (img->calc_type == TI92))
 		return -2;
 
-	if((old_ct == img->calc_type) && loaded)
+	if((old_ct == img->calc_type) && !strcmp(old_av, img->version) && loaded)
 		return -1;
 	else
+	{
 		old_ct = img->calc_type;
+		strcpy(old_av, img->version);
+	}
 
 	load_from_file(filename);
 	merge_from_flash();
