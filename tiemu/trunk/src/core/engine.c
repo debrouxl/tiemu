@@ -141,7 +141,7 @@ int ti68k_engine_is_stopped()
 
 void ti68k_engine_stop(void) 
 {
-    printf("stopping engine... ");
+    printf("stopping engine... (%i)", running);
 	G_LOCK(running);
 	running = 0;				// request termination
 	G_UNLOCK(running);
@@ -154,7 +154,7 @@ void ti68k_engine_stop(void)
 
 void ti68k_engine_start(void) 
 {
-    printf("starting engine... ");
+    printf("starting engine... (%i)", running);
 
     //while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
 

@@ -228,9 +228,8 @@ wizard:
 	/* 
 		Start thread (emulation engine) and run main loop 
 	*/
-    splash_screen_set_label(_("Starting engine..."));
-	ti68k_engine_start();
-    splash_screen_stop();
+	splash_screen_stop();
+	ti68k_engine_start();    
 
    	gdk_threads_enter();
     gtk_main();

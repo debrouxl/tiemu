@@ -14,6 +14,8 @@ To do:
 	- PC highlight lost when scrolling: fixed
 	- restart engine when clicking outside of the popup menu
 	- important bug: FLINE instructions were not executed !
+	- popup menu slowed down in non-restricted speed mode (fixed)
+	- removed lock-ups at startup (start engine after splash screen)
 
 - 13/08/2004, version 1.78: roms
 	- changed keyboard mapping to pure VTi mapping

@@ -444,7 +444,9 @@ GtkWidget* display_popup_menu(void)
 
 	// init check buttons
     data = glade_xml_get_widget(xml, "restrict1");
+	g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_restrict_to_actual_speed1_activate, NULL);
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.restricted);
+	g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_restrict_to_actual_speed1_activate, NULL);
 
 	data = glade_xml_get_widget(xml, "sync1");
 	gtk_widget_set_sensitive(data, FALSE);
@@ -481,7 +483,6 @@ GtkWidget* display_popup_menu(void)
     {
     case VIEW_NORMAL:
         data = glade_xml_get_widget(xml, "normal_view1");
-        printf("data = %p\n", data);
         g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_normal_view1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
         g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_normal_view1_activate, NULL);
