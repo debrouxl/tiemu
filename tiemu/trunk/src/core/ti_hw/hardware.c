@@ -170,24 +170,9 @@ void hw_update(void)
   		hw_kbd_update();
   		
   	// Update LCD (HW1: every 16Th timer tick, HW2: unrelated)
-  	if(!(tihw.timer_value & 15))
+  	//if((tihw.hw_type == HW1) && !(tihw.timer_value & 15))
+	if(!(tihw.timer_value & 15))
   		cb_update_screen();
-  
-    /* LCD is refreshed every 16th time */
-    if(!(tihw.timer_value & 15))
-    {
-        if(tihw.lc_file && !io_bit_tst(0x0c,5)) 
-	    {
-	        if(tihw.lc_timeout++ >= TO_VALUE) 
-	        {
-	            DISPLAY("Warning: internal link timeout !!!\n");
-	            tihw.lc_file = 0;
-	            tihw.lc_timeout = 0;
-	        }
-	    }       
-
-        //cb_update_screen();
-    }
 }
 
 /*
