@@ -41,6 +41,7 @@ gint display_dbgcause_dbox()
 	gint result;
 	gchar *str;
 	gint type, id, mode;
+	uint32_t value;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_cause-2.glade"), "dbgcause_dbox",
@@ -56,7 +57,8 @@ gint display_dbgcause_dbox()
 
 	// set PC
 	label = glade_xml_get_widget(xml, "label21");
-	str = g_strdup_printf("0x%06x", ti68k_register_get_pc());
+	ti68k_register_get_pc(&value);
+	str = g_strdup_printf("0x%06x", value);
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 

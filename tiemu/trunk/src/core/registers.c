@@ -35,6 +35,15 @@
 #include "ti68k_def.h"
 
 
+// Previous state to detect change
+static uint32_t old_d[8];
+static uint32_t old_a[8];
+static uint32_t old_sp;
+static uint32_t old_pc;
+static uint16_t old_sr;
+static char old_sf[32];
+static char old_uf[32];
+
 void ti68k_register_set_data(int n, uint32_t val)
 {
     if (n>=0 && n<8) regs.d[n] = val;
@@ -45,14 +54,9 @@ void ti68k_register_set_addr(int n, uint32_t val)
     if (n>=0 && n<8) regs.a[n] = val;
 }
 
-void ti68k_register_set_usp(uint32_t val)
+void ti68k_register_set_sp(uint32_t val)
 {
     regs.usp = val;
-}
-
-void ti68k_register_set_ssp(uint32_t val)
-{
-    regs.a[7] = val;
 }
 
 void ti68k_register_set_pc(uint32_t val)
@@ -69,52 +73,71 @@ void ti68k_register_set_flag(uint8_t flag)
 {
   	//TODO
   	/* T  0  S  0  0  I2 I1 I0 0  0  0  X  N  Z  V  C */	  
-  	/*
-	sprintf(str, "%s - %s - - %s %s %s - - - %s %s %s %s %s",
-		regs.t ? "T " : "0 ",
-		regs.s ? "S " : "0 ",
-		(regs.intmask & 4) ? "I2" : "0 ",
-		(regs.intmask & 2) ? "I1" : "0 ",
-		(regs.intmask & 1) ? "I0" : "0 ",
-		regs.x ? "X " : "0 ",
-		regflags.flags.n ? "N " : "0 ",
-		regflags.flags.z ? "Z " : "0 ",
-		regflags.flags.v ? "V " : "0 ",
-		regflags.flags.c ? "C " : "0 "
-		);	
-	*/
 }
 
-int ti68k_register_get_data(int n)
+
+int ti68k_register_get_data(int n, uint32_t *val)
 {
-    if (n>=0 && n<8) return regs.d[n];
-    return 0;
+	int c = 0;
+	
+    if (n>=0 && n<8)
+    	*val = regs.d[n];
+    	
+    if(regs.d[n] != old_d[n])
+    	c = !0;
+    	
+    old_d[n] = regs.d[n];
+    return c;
 }
 
-int ti68k_register_get_addr(int n)
+int ti68k_register_get_addr(int n, uint32_t *val)
 {
-    if (n>=0 && n<8) return regs.a[n];
-    return 0;
+	int c = 0;
+
+    if (n>=0 && n<8) 
+    	*val = regs.a[n];
+    
+    if(regs.a[n] != old_a[n])
+    	c = !0;
+    	
+    old_a[n] = regs.a[n];
+    return c;
 }
 	
-int ti68k_register_get_usp(void)
+int ti68k_register_get_sp(uint32_t *val)
 {
-    return regs.usp;
+	int c = 0;
+	
+	*val = regs.usp;
+	if(regs.usp != old_sp)
+		c = !0;
+
+	old_sp = regs.usp;
+    return c;
 }
 
-int ti68k_register_get_ssp(void)
+int ti68k_register_get_pc(uint32_t *val)
 {
-    return regs.a[7];
+	int c = 0;
+
+    *val = regs.pc;
+	if(regs.pc != old_pc)
+		c = !0;
+
+	old_pc = regs.pc;
+	return c;
 }
 
-int ti68k_register_get_pc(void)
+int ti68k_register_get_sr(uint32_t *val)
 {
-    return regs.pc;
-}
+	int c =0;
 
-int ti68k_register_get_sr(void)
-{
-    return regs.sr;
+    *val = regs.sr;
+	if(regs.sr != old_sr)
+		c = !0;
+
+	old_sr = regs.sr;
+	return c;
 }
 
 const char *ti68k_register_get_flag(void)
@@ -129,9 +152,18 @@ const char *ti68k_register_get_flag(void)
     return str;
 }
 
-void ti68k_register_get_flags(char *sf, char *uf)
+int ti68k_register_get_flags(char *sf, char *uf)
 {
+	int c =0;
+
 	/* SR: T 0 S 0 0 I2 I1 I0 0 0 0 X N Z V C */	  
-    printf(sf, "T=%d S=%d I=%d", regs.t, regs.s, regs.intmask);
-	printf(uf, regs.x, NFLG, ZFLG, VFLG, CFLG);
+    sprintf(sf, "T=%d S=%d I=%d", regs.t, regs.s, regs.intmask);
+	sprintf(uf, "X=%d N=%d\nZ=%d V=%d C=%d", regs.x, NFLG, ZFLG, VFLG, CFLG);
+
+	if(strcmp(sf, old_sf) || strcmp(uf, old_uf))
+		c = !0;
+
+	strcpy(old_sf, sf);
+	strcpy(old_uf, uf);
+	return c;
 }

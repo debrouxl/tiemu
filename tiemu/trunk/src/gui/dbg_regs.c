@@ -92,23 +92,15 @@ static void renderer_edited(GtkCellRendererText * cell,
 						ti68k_register_set_pc(value);
 					}
 				break;		
-				case 1:	// usp
+				case 1:	// sp
 					if(validate_value(new_text, 8))
 					{
 						sscanf(new_text, "%lx", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
-						ti68k_register_set_usp(value);
+						ti68k_register_set_sp(value);
 					}
 				break;
-				case 2:	// ssp
-					if(validate_value(new_text, 8))
-					{
-						sscanf(new_text, "%lx", &value);			
-						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
-						ti68k_register_set_ssp(value);
-					}
-				break;
-				case 3: // sr
+				case 2: // sr
 					if(validate_value(new_text, 4))
 					{
 						sscanf(new_text, "%lx", &value);			
@@ -116,7 +108,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 						ti68k_register_set_sr(value);
 					}
 				break;
-				case 4: // flags
+				case 3: // flags
 					/*if(validate_value(new_text))
 					{
 						sscanf(new_text, "%lx", &value);			
@@ -221,7 +213,7 @@ static void ctree_populate(GtkTreeStore *store)
 	GtkTreeIter node1, node2, node3;
     GtkTreeIter iter;
     int i;
-    const char *others[] = { "PC", "USP", "SSP", "SR" , "S flags", "U flags"};
+    const char *others[] = { "PC", "SP", "SR" , "S flags", "U flags"};
 	GdkColor color;
 	gboolean success;
 
@@ -314,10 +306,20 @@ static void ctree_refresh(GtkTreeStore *store)
 	gchar *spath;
 	GtkTreePath *path;
 	GtkTreeIter iter;
-	gchar *sdata;    
+	uint32_t data;
+	gchar *sdata;
+	int changed;
 
-	uint32_t nextpc;
-	MC68000_dumpstate(&nextpc);
+	GdkColor red, blue;
+	gboolean success;
+	GdkColor *color;
+
+	gdk_color_parse("Blue", &blue);
+	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &blue, 1,
+				  FALSE, FALSE, &success);
+	gdk_color_parse("Red", &red);
+	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &red, 1,
+				  FALSE, FALSE, &success);
 
 	// refresh Ax nodes
 	for(i = 0; i < 8; i++)
@@ -327,8 +329,12 @@ static void ctree_refresh(GtkTreeStore *store)
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			continue;
 		
-		sdata = g_strdup_printf("%08x", ti68k_register_get_addr(i));
+		changed = ti68k_register_get_addr(i, &data);
+		sdata = g_strdup_printf("%08x", data);
+		color = changed ? &red : &blue;
+
 		gtk_tree_store_set(store, &iter, COL_VALUE, sdata,	-1);
+		gtk_tree_store_set(store, &iter, COL_COLOR, color,	-1);
 		g_free(sdata);
 	   		
 	   	g_free(spath);
@@ -343,8 +349,12 @@ static void ctree_refresh(GtkTreeStore *store)
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			continue;
 		
-		sdata = g_strdup_printf("%08x", ti68k_register_get_data(i));
+		changed = ti68k_register_get_data(i, &data);
+		sdata = g_strdup_printf("%08x", data);
+		color = changed ? &red : &blue;
+		
 		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
+		gtk_tree_store_set(store, &iter, COL_COLOR, color, -1);
 		g_free(sdata);
 	   		
 	   	g_free(spath);
@@ -358,38 +368,31 @@ static void ctree_refresh(GtkTreeStore *store)
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			return;
 		
-		sdata = g_strdup_printf("%08x", ti68k_register_get_pc());
+		changed = ti68k_register_get_pc(&data);
+		sdata = g_strdup_printf("%08x", data);
+		color = changed ? &red : &blue;
+		
 		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
+		gtk_tree_store_set(store, &iter, COL_COLOR, color, -1);
 		g_free(sdata);
 	   		
 	   	g_free(spath);
 	   	gtk_tree_path_free(path);	
 	}
 	
-	// refresh Others node (USP)
+	// refresh Others node (SP)
 	{
 		spath = g_strdup_printf("2:%i", 1);
 		path = gtk_tree_path_new_from_string(spath);
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			return;
 		
-		sdata = g_strdup_printf("%08x", ti68k_register_get_addr(8));
-		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
-		g_free(sdata);
-	   		
-	   	g_free(spath);
-	   	gtk_tree_path_free(path);	
-	}
-	
-	// refresh Others node (SSP)
-	{
-		spath = g_strdup_printf("2:%i", 2);
-		path = gtk_tree_path_new_from_string(spath);
-		if(!gtk_tree_model_get_iter(model, &iter, path))
-			return;
+		changed = ti68k_register_get_sp(&data);
+		sdata = g_strdup_printf("%08x", data);
+		color = changed ? &red : &blue;
 		
-		sdata = g_strdup_printf("%08x", ti68k_register_get_ssp());
 		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
+		gtk_tree_store_set(store, &iter, COL_COLOR, color, -1);
 		g_free(sdata);
 	   		
 	   	g_free(spath);
@@ -398,45 +401,53 @@ static void ctree_refresh(GtkTreeStore *store)
 	
 	// refresh Others node (SR)
 	{
-		spath = g_strdup_printf("2:%i", 3);
+		spath = g_strdup_printf("2:%i", 2);
 		path = gtk_tree_path_new_from_string(spath);
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			return;
+
+		changed = ti68k_register_get_sr(&data);
+		sdata = g_strdup_printf("%04x", data);
+		color = changed ? &red : &blue;
 		
-		sdata = g_strdup_printf("%04x", ti68k_register_get_sr());
 		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
+		gtk_tree_store_set(store, &iter, COL_COLOR, color, -1);
 		g_free(sdata);
 	   		
 	   	g_free(spath);
 	   	gtk_tree_path_free(path);	
 	}
-	
+
 	// refresh Others node (S & U flags)
 	{
 		char s_flags[32], u_flags[32];
 
-		ti68k_register_get_flags(s_flags, u_flags);
+		changed = ti68k_register_get_flags(s_flags, u_flags);		
+		color = changed ? &red : &blue;
+
+		spath = g_strdup_printf("2:%i", 3);
+		path = gtk_tree_path_new_from_string(spath);
+		if(!gtk_tree_model_get_iter(model, &iter, path))
+			return;
+		
+		gtk_tree_store_set(store, &iter, COL_VALUE, s_flags, -1);
+		gtk_tree_store_set(store, &iter, COL_COLOR, color, -1);
+	   		
+	   	g_free(spath);
+	   	gtk_tree_path_free(path);
 
 		spath = g_strdup_printf("2:%i", 4);
 		path = gtk_tree_path_new_from_string(spath);
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			return;
 		
-		gtk_tree_store_set(store, &iter, COL_VALUE, s_flags, -1);
-	   		
-	   	g_free(spath);
-	   	gtk_tree_path_free(path);
-
-		spath = g_strdup_printf("2:%i", 5);
-		path = gtk_tree_path_new_from_string(spath);
-		if(!gtk_tree_model_get_iter(model, &iter, path))
-			return;
-		
 		gtk_tree_store_set(store, &iter, COL_VALUE, u_flags, -1);
+		gtk_tree_store_set(store, &iter, COL_COLOR, color, -1);
 	   		
 	   	g_free(spath);
 	   	gtk_tree_path_free(path);
 	}
+
 }
 
 

@@ -254,7 +254,7 @@ static void notebook_add_tab(GtkWidget *notebook, const char* tab_name)
 		uint32_t *mem_ptr = (uint32_t *)ti68k_get_real_address(0x000000);
 
 		sp_start = GUINT32_SWAP_LE_BE(*mem_ptr);
-		sp_end = ti68k_register_get_usp();
+		ti68k_register_get_sp(&sp_end);
 		len = sp_end - sp_start;
 
 		clist_populate(store, sp_start, len <= 128 ? len : 128);
