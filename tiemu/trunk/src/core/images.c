@@ -179,7 +179,7 @@ int ti68k_get_hw_param_block(IMG_INFO *rom, HW_PARM_BLOCK *block)
     addr = rd_long(&rom->data[0x104]);
     addr &= 0x000fffff;
 
-    printf("%x %x\n", rom->rom_base, addr);
+    //printf("!!! %x %x !!!\n", rom->rom_base, addr);
 /*
 #if 0
     //addr -= (rom->rom_base << 16);
@@ -207,6 +207,12 @@ int ti68k_get_hw_param_block(IMG_INFO *rom, HW_PARM_BLOCK *block)
     {
         fprintf(stdout, "Detected V200 patched ROM (ExtendeD): emulated as TI92+ by changing the hwID from 8 to 1.\n");
         block->hardwareID = 1;
+    }
+
+	if((block->hardwareID == 9) && (rom->rom_base == 0x20))
+    {
+        fprintf(stdout, "Detected TI89 Titanium patched ROM (ExtendeD): emulated as TI89 by changing the hwID from 9 to 3.\n");
+        block->hardwareID = 3;
     }
 
     return 0;
