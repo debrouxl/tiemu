@@ -102,12 +102,10 @@ AC_CHECK_FUNCS([bzero ftime memset mkdir select strchr strrchr strstr])
 # Platform specific tests.
 dnl AC_CANONICAL_HOST
 case $host in
-  *-*-mingw*) ARCH="-D__WIN32__ -D__MINGW32__ -Os -s" ;;
-  *-*-cygwin) ARCH="-D__WIN32__ -D__CYGWIN__ -mno-cygwin" ;;
-  *-*-*bsd*)  ARCH="-D__BSD__" ;;
-  i[[34]]86-*-linux-*) ARCH="-D__I386__ -D__LINUX__" ;; 
-  i[[56]]86-*-linux-*) ARCH="-O3 -mcpu=pentium -DX86_ASSEMBLY -D__LINUX__" ;;
-  *)          ARCH="-D__LINUX__" ;;
+  *-*-mingw*)            ARCH="-D__WIN32__ -D__MINGW32__" ;;
+  *-*-*bsd*)             ARCH="-D__BSD__" ;;
+  i[[3456]]86-*-linux-*) ARCH="-D__I386__ -D__LINUX__" ;; 
+  *)                     ARCH="-D__LINUX__" ;;
 esac
 CFLAGS="$CFLAGS $ARCH"
 

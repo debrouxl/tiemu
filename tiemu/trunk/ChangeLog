@@ -10,11 +10,12 @@ To do:
 	- fixed TAB char (0x09) pb in the dbg_mem window (Lionel)
 	- handles are now displayed fine with PedRom
 	- program entry breakpoint feature now useable with AMS >= 2.00
-	- improved dbg windows behaviour: save/restore size, position and state (hide/minimized);
-		fixed ini file, too
+	- improved dbg windows behaviour: save/restore size, position and 
+	state (hide/minimized);	fixed ini file, too
 	- updated manpage
 	- command line improved and up-to-date
-
+	- cleaned-up configure.ac script (CygWin & MinGW)
+	
 - 18/02/2005, version 1.80n: roms
 	- fixed FLASH writes with HW3 patch
 	- fixed Step Over on the following FLINEs : 0xfff0, 0xfff2, 0xffee.
