@@ -3,7 +3,7 @@
 
 
 Previous version: 1.80		(28/08/2004)
-Current version:  1.80		(02/09/2004)
+Current version:  1.80		(14/09/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -37,7 +37,9 @@ Bug fixes:
 	- fixed vectors copy
 	- update stack frame when stepping
 	- disassembling of STOP instruction
-	- loading of ROM calls on V200 
+	- loading of ROM calls on V200
+	- fixed HW3 support => V200 patched (ExtendeD) work
+	- fixed bug in LCD snoop range register: TI89 Titanium patched (ExtendeD) work.
 
 
 To do:
