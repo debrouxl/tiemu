@@ -663,14 +663,7 @@ write_header(FILE *fp)
   fwrite(&endian, 4, 1, fp);  
 
   /* write the jpeg_offset, reserving 4 bytes */
-
   fwrite(&jpeg_offset, 4, 1, fp);
-
-  fwrite(skin_infos.calc, 8, 1, fp);
-
-  fwrite(&skin_infos.colortype, 4, 1, fp);
-  fwrite(&skin_infos.lcd_white, 4, 1, fp);
-  fwrite(&skin_infos.lcd_black, 4, 1, fp);
 
 
   if (skin_infos.name != NULL)
@@ -694,6 +687,12 @@ write_header(FILE *fp)
   if (length > 0)
     fwrite(skin_infos.author, length, 1, fp);
 
+
+  fwrite(&skin_infos.colortype, 4, 1, fp);
+  fwrite(&skin_infos.lcd_white, 4, 1, fp);
+  fwrite(&skin_infos.lcd_black, 4, 1, fp);
+
+  fwrite(skin_infos.calc, 8, 1, fp);
 
   fwrite(&skin_infos.lcd_pos.left, 4, 1, fp);
   fwrite(&skin_infos.lcd_pos.top, 4, 1, fp);
