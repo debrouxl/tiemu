@@ -47,7 +47,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
     {
     case 0x00: 
       contrast=(contrast&(~1))|((arg>>5)&1);
-      if(ti68k_getCalcType() != TI92)
+      if(tihw.calc_type != TI92)
 	cb_set_contrast(contrast); // avoid flickering with 92
       io0Bit7=(arg>>7)&1;
       io0Bit2=(arg>>2)&1;

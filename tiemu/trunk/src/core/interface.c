@@ -128,6 +128,8 @@ int ti68k_loadDefaultConfig(void)
 */
 int ti68k_init(void)
 {
+    tihw.calc_type = img_infos.calc_type;
+
   init_hardware();
 
   cb_init_specific();
@@ -138,7 +140,7 @@ int ti68k_init(void)
 #endif
 
   /* I have noticed that TI92+ does not flicker when LCD is refresh on IRQ1 */
-  if(ti68k_getCalcType() == (TI92|MODULEPLUS))
+  if(tihw.calc_type == (TI92|MODULEPLUS))
      params.sync_one = 0;
 
   return 0;
@@ -171,7 +173,7 @@ int ti68k_exit(void)
 }
 
 /*
-  Completely restart the library
+    Full restart of the library.
 */
 int ti68k_restart(void)
 {
@@ -182,50 +184,7 @@ int ti68k_restart(void)
   return 0;
 }
 
-/*****************/
-/* ROM functions */
-/*****************/
 
-void* ti68k_getRomPtr(void)
-{
-  return ti_rom;
-}
-
-int ti68k_getRomSize(void)
-{
-  return tihw.rom_size;
-}
-
-const char *ti68k_getRomVersion(void)
-{
-  return img_infos.version;
-}
-
-int ti68k_isRomOk(void)
-{
-  return img_loaded;
-}
-
-int ti68k_getRomInfo(IMG_INFO *img)
-{
-  img = &img_infos;
-  return 0;
-}
-
-
-/*****************/
-/* RAM functions */
-/*****************/
-
-void* ti68k_getRamPtr(void)
-{
-  return ti_ram;
-}
-	
-int ti68k_getRamSize(void)
-{
-  return tihw.ram_size;
-}
 
 
 /*****************/
@@ -239,11 +198,12 @@ void* ti68k_getLcdPtr(void)
   return (&ti_ram[lcd_base_addr]);
 }
 
-
+/*
 int ti68k_getCalcType(void)
 {
   return img_infos.calc_type;
 }
+*/
 
 /***********************/
 /* Debugging functions */
@@ -284,10 +244,10 @@ int ti68k_doSingleStep(void)
 */
 int ti68k_doInstructions(int n) //fait n instructions
 {
-  if (!ti68k_isRomOk())
-    return ERR_68K_ROM_NOT_LOADED;
+    if(!img_loaded)
+        return ERR_68K_ROM_NOT_LOADED;
 
-  return hw_run_m68k(n);
+    return hw_run_m68k(n);
 }
 
 
@@ -295,56 +255,35 @@ int ti68k_doInstructions(int n) //fait n instructions
 /* Link functions */
 /******************/
 
-extern int cmdState;
-extern UBYTE *backBuf;
 /*
-  Remark: there is a bug here... If the buffer is allocated with malloc, GtkTiEmu will segfault (backBuf address out of bounds). If the buffer is allocated on the heap as an array, there will be no problem. Moreover, this problem does not appear when we send a file via the command mode, only in GUI mode.
-Then, there may be a problem of shared memory or something else...
+    Remark: there is a bug here... If the buffer is allocated with malloc, GtkTiEmu will 
+    segfault (backBuf address out of bounds). If the buffer is allocated on the heap 
+    as an array, there will be no problem. Moreover, this problem does not appear when we send 
+    a file via the command mode, only in GUI mode.
+    Then, there may be a problem of shared memory or something else...
 */
-int ti68k_sendFile(const char *filename)
+int ti68k_linkport_send_file(const char *filename)
 {
-  return send_ti_file(filename);
+    return send_ti_file(filename);
 }
 
 extern int TO_VALUE;
 
-int ti68k_setInternalLinkTimeout(int value)
+int ti68k_linkport_set_timeout(int value)
 {
-  TO_VALUE = value;
-  return value;
+    TO_VALUE = value;
+    return value;
 }
 
-int ti68k_getInternalLinkTimeout(int value)
+int ti68k_linkport_get_timeout(int value)
 {
-  return TO_VALUE;
+    return TO_VALUE;
 }
 
-int ti68k_reconfigure_linkport()
+int ti68k_linkport_reconfigure(void)
 {
-  hw_exit_dbus();
-  hw_init_dbus();
+    hw_exit_dbus();
+    hw_init_dbus();
 
-  return 0;
-}
-
-
-
-
-
-
-
-
-/*
-  	Return ROM type:
-  	- internal/external
-  	- EPROM/FLASH
-*/
-int ti68k_getRomType(void)
-{
-  	int internal, flashrom;
-
-  	internal = ((ti_rom[5] & 0x60) == 0x20) ? INTERNAL : 0;
-  	flashrom = (ti_rom[0x65] & 0xf) ? 0 : FLASH_ROM;
-  
-  	return internal | flashrom;
+    return 0;
 }

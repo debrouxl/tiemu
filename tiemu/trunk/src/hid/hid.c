@@ -129,7 +129,7 @@ static int hid_init_subsystem(void)
   pLcdBuf = malloc((iScrW << iScale) * (iScrH << iScale));
   
   // Get LCD size depending on calculator type
-  if (ti68k_getCalcType() & TI92) 
+  if (tihw.calc_type & TI92) 
     {
       iLcdW = 240 << iScale; 
       iLcdH = 128 << iScale;
@@ -147,7 +147,7 @@ static int hid_init_subsystem(void)
       
       key_mapping = sknKey92;
     }
-  else if (ti68k_getCalcType() & TI89)
+  else if (tihw.calc_type & TI89)
     {
       iLcdW = 160 << iScale; 
       iLcdH = 100 << iScale;
@@ -298,7 +298,7 @@ int hid_popup_menu(void)
 /* Converts a keyboard key (an SDL event) into a TI key */
 static int sdl_to_ti(int key) 
 {
-  if(ti68k_getCalcType() & TI92)
+  if(tihw.calc_type & TI92)
     {
       switch(key) 
 	{
@@ -715,7 +715,7 @@ static void set_colors(void)
 
 static int hid_set_contrast(int c)
 {
-  if(ti68k_getCalcType() == TI89)
+  if(tihw.calc_type == TI89)
     c = 31-c;
 
   iNewContrast = (c+iLastContrast)/2;
@@ -989,7 +989,7 @@ void hid_change_skin(const char *filename)
   hid_quit_subsystem();
   hid_init_subsystem();
   
-  //if((skin_infos.type == TI92) && (ti68k_getCalcType() & TI92))
+  //if((skin_infos.type == TI92) && (tihw.calc_type & TI92))
   {
     if (!skin_load(filename))
       return;

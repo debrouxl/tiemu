@@ -487,7 +487,7 @@ gint refresh_memory_dbox(void)
   GtkTreeIter iter;
   gchar *text[3];
   gint i, k;
-  UBYTE *ti_ram = (UBYTE *)ti68k_getRamPtr();
+  UBYTE *ti_ram = (UBYTE *)tihw.ti_ram;
   gint addr = data_addr;
 
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
@@ -542,7 +542,7 @@ gint refresh_stack_dbox(void)
   gchar *text[2];
   gint i;
   gint sp = ti68k_register_get_sp();
-  UWORD *ti_ram = (UWORD *)ti68k_getRamPtr();
+  UWORD *ti_ram = (UWORD *)tihw.ti_ram;
   gint addr;
 
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));

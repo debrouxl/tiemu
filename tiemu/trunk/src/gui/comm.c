@@ -220,7 +220,7 @@ gint display_comm_dbox()
 	switch (result) {
 	case GTK_RESPONSE_OK:
         memcpy(&link_cable, &tmp_lp, sizeof(TicableLinkParam));
-        ti68k_reconfigure_linkport();
+        ti68k_linkport_reconfigure();
 		break;
 	case GTK_RESPONSE_HELP:
 		break;

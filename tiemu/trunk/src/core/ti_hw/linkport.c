@@ -262,7 +262,7 @@ int init_linkfile()
 
   ticalc_set_cable(ilc);
 
-  switch(ti68k_getCalcType())
+  switch(tihw.calc_type)
     {
     case TI92: ticalc_set_calc(CALC_TI92, &itc);
       break;
@@ -304,10 +304,10 @@ int send_ti_file(const char *filename)
   
   /* TI file ? */
   if(0) /*
-  if(!(strstr(ext, "89") && (ti68k_getCalcType() == TI89)) ||
-     (strstr(ext, "92") && (ti68k_getCalcType() == TI92))  ||
-     (strstr(ext, "9x") && (ti68k_getCalcType() == TI92p)) ||
-     (strstr(ext, "9X") && (ti68k_getCalcType() == TI92p)) ) */
+  if(!(strstr(ext, "89") && (tihw.calc_type == TI89)) ||
+     (strstr(ext, "92") && (tihw.calc_type == TI92))  ||
+     (strstr(ext, "9x") && (tihw.calc_type == TI92p)) ||
+     (strstr(ext, "9X") && (tihw.calc_type == TI92p)) ) */
     {
       return ERR_68K_TI_FILE;
     }

@@ -51,9 +51,6 @@ typedef struct
   char *ram_file;
   char *tib_file;
 
-  //int ram_size;
-  //int rom_size;
-
   int background;
   int grayplanes;
 

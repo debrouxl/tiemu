@@ -52,7 +52,7 @@ gint display_skin_dbox()
     }
 
     // Check skin header
-    switch(ti68k_getCalcType())
+    switch(tihw.calc_type)
 	{
 	    case TI92:
             ok = !strcmp(si.calc, SKIN_TI92);
@@ -140,7 +140,7 @@ gint display_tifile_dbox()
     const gchar *ext;
 
     // set mask
-    switch(ti68k_getCalcType()) {
+    switch(tihw.calc_type) {
     case TI92:
         ext = "*.92?";
     case TI89:
@@ -179,7 +179,7 @@ gint display_tifile_dbox()
     }
 
     ti68k_unhalt();
-    ti68k_sendFile(filename);
+    ti68k_linkport_send_file(filename);
 
 	return 0;
 }

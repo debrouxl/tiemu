@@ -65,9 +65,8 @@
 
 #define SPP	0x12000		// system privileged part
 
-
-int			img_loaded = 0;
 IMG_INFO	img_infos = { 0 };
+int			img_loaded = 0;
 
 
 /*

@@ -69,27 +69,27 @@ gint display_infos_dbox()
 	g_free(str);
 	
 	label = glade_xml_get_widget(xml, "label23");
-	str = g_strdup_printf("%s", ti68k_calctype_to_string(ti68k_getCalcType()));
+	str = g_strdup_printf("%s", ti68k_calctype_to_string(tihw.calc_type));
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 	
 	label = glade_xml_get_widget(xml, "label24");
-	str = g_strdup_printf("%s", ti68k_getRomVersion());
+	str = g_strdup_printf("%s", tihw.rom_version);
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 	
 	label = glade_xml_get_widget(xml, "label25");
-	str = g_strdup_printf("%i KB", ti68k_getRamSize());
+	str = g_strdup_printf("%i KB", tihw.ram_size);
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 	
 	label = glade_xml_get_widget(xml, "label26");
-	str = g_strdup_printf("%i KB", ti68k_getRomSize() >> 10);
+	str = g_strdup_printf("%i KB", tihw.rom_size >> 10);
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 	
 	label = glade_xml_get_widget(xml, "label27");
-	str = g_strdup_printf("%s", ti68k_romtype_to_string(ti68k_getRomType()));
+	str = g_strdup_printf("%s", ti68k_romtype_to_string(tihw.rom_flash | tihw.rom_internal));
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 	
