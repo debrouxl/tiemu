@@ -283,13 +283,13 @@
 		  <property name="shadow_type">GTK_SHADOW_IN</property>
 
 		  <child>
-		    <widget class="GtkEventBox" id="sdl_eventbox">
+		    <widget class="GtkDrawingArea" id="drawingarea1">
 		      <property name="visible">True</property>
 		      <property name="events">GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON_PRESS_MASK</property>
-
-		      <child>
-			<placeholder/>
-		      </child>
+		      <signal name="configure_event" handler="on_drawingarea1_configure_event" last_modification_time="Sun, 02 May 2004 14:05:10 GMT"/>
+		      <signal name="expose_event" handler="on_drawingarea1_expose_event" last_modification_time="Sun, 02 May 2004 14:05:20 GMT"/>
+		      <signal name="size_allocate" handler="on_drawingarea1_size_allocate" last_modification_time="Mon, 03 May 2004 20:42:51 GMT"/>
+		      <signal name="size_request" handler="on_drawingarea1_size_request" last_modification_time="Mon, 03 May 2004 20:42:57 GMT"/>
 		    </widget>
 		  </child>
 		</widget>
