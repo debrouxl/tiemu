@@ -89,10 +89,11 @@ int iGrayPlanes = -1;         // number of grayscales to emulate
 int iCurrPlane = 0;           // ?
 int iScrState = 0;            // screen state
 
-const char* key_mapping = NULL; // key mapping
+const char* skn_keymap = NULL;  // key mapping (mouse)
+Pc2TiKey *kbd_keymap;           // key mapping (keyboard)
+
 extern const char sknKey92[];   // in tikeys.c
 extern const char sknKey89[];
-extern const char sknKeyV2[];
 
 /*static*/ void compute_convtable(void);
 static int sdl_to_ti(int key);
@@ -180,7 +181,7 @@ static int match_skin(int calc_type)
 		return -1;
 	}
 
-g_free(skn_name);
+    g_free(skn_name);
 	return 0;
 }
 
@@ -200,20 +201,21 @@ static int hid_init_subsystem(void)
 	// Found a skin
 	match_skin(tihw.calc_type);
 
-    if(skin_load(options.skin_file) == -1) {
+    if(skin_load(options.skin_file) == -1) 
+    {
 	    gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
 	    tiemu_error(0, s);
 	    g_free(s);
 	    return -1;
     }
   
-	// Set keymap depending on calculator type
+	// Set skin keymap depending on calculator type
 	if((tihw.calc_type == TI92) || (tihw.calc_type == TI92p))
-      	key_mapping = sknKey92;
+      	skn_keymap = sknKey92;
 	else if ((tihw.calc_type == TI89) || (tihw.calc_type == TI89t))
-      	key_mapping = sknKey89;
+      	skn_keymap = sknKey89;
 	else if(tihw.calc_type == V200)
-      	key_mapping = sknKeyV2;
+      	skn_keymap = sknKeyV2;
 	else
 	{
 	  	gchar *s = g_strdup_printf("no skin found for this calc\n");

@@ -104,7 +104,7 @@ int hw_kbd_init(void)
         break;
     }
 
-	for(i = 0; i < MAX_KEY; i++)
+	for(i = 0; i < MAX_TIKEYS; i++)
 		key_states[i] = 0;
 
     return 0;

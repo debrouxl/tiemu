@@ -284,7 +284,15 @@ SOURCE=..\..\src\gui\calc\calc.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gui\calc\kbd_mapper.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\calc\keyboard.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\calc\keynames.c
 # End Source File
 # Begin Source File
 
@@ -296,11 +304,11 @@ SOURCE=..\..\src\gui\calc\screen.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\calc\skinops.c
+SOURCE=..\..\src\gui\calc\skinkeys.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\calc\tikeys.c
+SOURCE=..\..\src\gui\calc\skinops.c
 # End Source File
 # End Group
 # Begin Group "dlgbox"
@@ -486,11 +494,19 @@ SOURCE=..\..\ChangeLog
 # End Source File
 # Begin Source File
 
+SOURCE="..\..\..\..\..\Gtk2Dev\include\gtk-2.0\gdk\gdkkeysyms.h"
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\README
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\TODO
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\Program Files\Microsoft Visual Studio\VC98\Include\WINUSER.H"
 # End Source File
 # End Group
 # End Target

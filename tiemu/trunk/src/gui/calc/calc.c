@@ -43,6 +43,7 @@
 #include "calc.h"
 #include "dbg_all.h"
 #include "screenshot.h"
+#include "kbd_mapper.h"
 
 GtkWidget *main_wnd = NULL;
 GtkWidget *area = NULL;
@@ -53,7 +54,8 @@ extern GdkPixbuf*	lcd;
 extern GdkPixbuf*	skn;
 extern GdkPixmap*	pixmap;
 
-extern const char*	key_mapping;
+extern Pc2TiKey*    kbd_keymap;
+extern const char*	skn_keymap;
 extern const char	sknKey92[];
 extern const char	sknKey89[];
 
@@ -190,18 +192,18 @@ static int match_skin(int calc_type)
 {
 	SKIN_INFOS si;
 	int ok;
-	gchar *skn_name, *s;
+	gchar *skin_name, *s;
 
 	s = g_strdup(ti68k_calctype_to_string(calc_type));
-	skn_name = g_ascii_strdown(s, strlen(s));
+	skin_name = g_ascii_strdown(s, strlen(s));
 
 	// filename is "", load default skin
 	if(!strcmp(g_basename(options.skin_file), ""))
 	{
 		g_free(options.skin_file);
 		options.skin_file = g_strdup_printf("%s%s.skn", 
-					    inst_paths.skin_dir, skn_name);
-		g_free(skn_name);
+					    inst_paths.skin_dir, skin_name);
+		g_free(skin_name);
 		return -1;
 	}
 
@@ -210,9 +212,9 @@ static int match_skin(int calc_type)
 	{
 		g_free(options.skin_file);
       	options.skin_file = g_strdup_printf("%s%s.skn", 
-					    inst_paths.skin_dir, skn_name);
-	g_free(skn_name);
-	return -1;
+					    inst_paths.skin_dir, skin_name);
+	    g_free(skin_name);
+	    return -1;
 	}
 
 	// is skin compatible
@@ -238,14 +240,73 @@ static int match_skin(int calc_type)
 	{
 		g_free(options.skin_file);
       	options.skin_file = g_strdup_printf("%s%s.skn", 
-			inst_paths.skin_dir, skn_name);
+			inst_paths.skin_dir, skin_name);
 
 	    //tiemu_error(0, _("skin incompatible with the current calc model. Falling back to default skin."));
-	    g_free(skn_name);
+	    g_free(skin_name);
 		return -1;
 	}
 
-    g_free(skn_name);
+    g_free(skin_name);
+	return 0;
+}
+
+static int match_keymap(int calc_type)
+{
+	gchar *keys_name, *s;
+    int ct, ok;
+
+	s = g_strdup(ti68k_calctype_to_string(calc_type));
+	keys_name = g_ascii_strdown(s, strlen(s));
+
+	// filename is "", load default keymap
+	if(!strcmp(g_basename(options.keys_file), ""))
+	{
+		g_free(options.keys_file);
+		options.keys_file = g_strdup_printf("%s%s.map", 
+					    inst_paths.skin_dir, keys_name);
+	}
+
+	// load keymap header
+    ct = keymap_read_header(options.keys_file);
+	if(ct == -1)
+	{
+		g_free(options.keys_file);
+      	options.keys_file = g_strdup_printf("%s%s.map", 
+					    inst_paths.skin_dir, keys_name);
+	    g_free(keys_name);
+	    return -1;
+	}
+
+    // is keymap compatible
+	switch(tihw.calc_type)
+	{
+	    case TI92:
+		case TI92p:
+        case V200:
+            ok = (ct == TI92) || (ct == TI92p) || (ct == V200);
+		break;
+	    case TI89:
+        case TI89t:
+            ok = (ct == TI89) || (ct == TI89t);
+		break;
+	    default: 
+            ok = 0;
+		break;
+	}
+
+	if(!ok)
+	{
+		g_free(options.keys_file);
+      	options.keys_file = g_strdup_printf("%s%s.map", 
+			inst_paths.skin_dir, keys_name);
+
+	    //tiemu_error(0, _("keymap incompatible with the current calc model. Falling back to default keymap."));
+	    g_free(keys_name);
+		return -1;
+	}
+
+    g_free(keys_name);
 	return 0;
 }
 
@@ -279,11 +340,20 @@ int  hid_init(void)
 {
     SKIN_INFOS *si = &skin_infos;
 
+    // Found a PC keyboard keymap
+    match_keymap(tihw.calc_type);
+
+    // Load kbd keymap
+    if(keymap_load(options.keys_file) == -1)
+    {
+	    gchar *s = g_strdup_printf("unable to load this keymap: <%s>\n", options.keys_file);
+	    tiemu_error(0, s);
+	    g_free(s);
+	    return -1;
+    }
+
     // Found a skin
 	match_skin(tihw.calc_type);
-
-    // Init the planar/chunky conversion table for LCD
-  	compute_convtable();
 
     // Load skin
     if(skin_load(options.skin_file) == -1) 
@@ -295,17 +365,17 @@ int  hid_init(void)
     }
     skn = skin_infos.image;
   
-	// Set keymap depending on calculator type
+	// Set skin keymap depending on calculator type
     switch(tihw.calc_type)
     {
     case TI92:
     case TI92p:
     case V200:
-        key_mapping = sknKey92;
+        skn_keymap = sknKey92;
         break;
     case TI89:
     case TI89t:
-      	key_mapping = sknKey89;
+      	skn_keymap = sknKey89;
         break;
     default:
         {
@@ -315,7 +385,7 @@ int  hid_init(void)
 	  	return -1;
         }
 	}
-        
+
     // Allocate the TI screen buffer
 	lcd_bytmap = (uint32_t *)malloc(LCDMEM_W * LCDMEM_H);
 
@@ -353,6 +423,9 @@ int  hid_init(void)
   	compute_grayscale();
   	resize();
 
+    // Init the planar/chunky conversion table for LCD
+  	compute_convtable();
+
     // Install LCD refresh: 100 FPS (10 ms)
     tid = g_timeout_add((params.lcd_rate == -1) ? 10 : params.lcd_rate, 
 		(GtkFunction)hid_refresh, NULL);
@@ -364,6 +437,9 @@ int  hid_init(void)
 	sc.h = si->height;
 	sc.r = (float)sc.w / sc.h;
 	sc.s = (float)1.0;
+
+    //test
+    //kbd_read_keymap("C:\\sources\\roms\\tiemu\\skins\\ti92+_fr.map", tihw.calc_type);
 
     return 0;
 }

@@ -43,7 +43,8 @@
 /* General options */
 typedef struct
 {
-	gchar* skin_file;	
+	gchar*  skin_file;	
+    gchar*  keys_file;
 	gint	console;
     gint    view;
 

@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.74		(21/07/2004)
-Current version:  1.75		(07/08/2004)
+Previous version: 1.75		(07/08/2004)
+Current version:  1.78		(15/08/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,35 +20,29 @@ For the other link cables, no driver is needed because it's provided.
 New capabilities:
 -----------------
 
-	- step out mode
-	- disasm FLINE rom calls
-	- minimize/maximize all debugger windows with the calc window (could be optimized)
-	- show hexdump from source/code window
-	- can disasm at address from memory window
-	- can change several bytes at once in the mem window
-	- can open a hexdump from register value
-	- new window: stack
-	- status register window (1 check button per bits)
-	- searching capability in the mem window (no case cmp yet)
+	- added refresh button in the mem window	
+	- use Lionel's ROM call list (but can use TIGCC os.h file, too)
+	- check for image at startup and can select it
+	- accept ExtendeD's V200 ROM (patched)
+	- can load keymap (PC to TI keyboard translation) from file
 
 
 Improvements:
 -------------
 
-	
-	- debugging layer rewritten
-	- popup menu available even if the debugger is open and faster
-	- can't step after bkpt: fixed
-	- mem window refreshed (if needed) on step
-	- mem window: show headers with absolute address (rather than relative)
-	- many others such as popup menu in the mem window and in the register window
-		and the scrolling behaviour of the mem/code windows
+	- update registers when modifying the supervisor bit
+	- minimizing/maximizing of windows improved
+	- step over fixed again
+	- FLINE > 5 was mis-disassembled
+	- code window: don't reload source when setting a bkpt
+	- code window: show PC in the middle of the window and leave 3 isntructions at bottom
+	- changed keyboard mapping to pure VTi mapping
 		
 
 Bug fixes:
 ----------
 
-	- SDCB in the VTi's disassembler (exists into VTi and ttdasm, too).
+	- few bugs fixes
 
 To do:
 ------

@@ -435,6 +435,13 @@ void rcfile_read(void)
 	  continue;
 	}
 
+    if( (p=find_str(buffer, "keys_file=")) )
+	{
+	  g_free(options.keys_file);
+	  options.keys_file = g_strdup(p);
+	  continue;
+	}
+
 	if( (p=find_str(buffer, "bkpts_wnd=")) )
 	{
 	  sscanf(p, "(%i;%i;%i;%i)", &(options3.bkpts.x), &(options3.bkpts.y), 
@@ -673,6 +680,9 @@ void rcfile_write(void)
 	fprintf(txt, "# SKIN file\n");
 	fprintf(txt, "skin_file=%s\n", options.skin_file);
 	fprintf(txt, "\n");
+    fprintf(txt, "# KEYS file\n");
+	fprintf(txt, "keys_file=%s\n", options.keys_file);
+	fprintf(txt, "\n");
 	fprintf(txt, "# ROM file\n");
 	fprintf(txt, "rom_file=%s\n", params.rom_file);
 	fprintf(txt, "\n");
@@ -774,6 +784,7 @@ int rcfile_default()
 
 	// other fields
 	options.skin_file = g_strconcat(inst_paths.skin_dir, "", NULL);
+    options.keys_file = g_strconcat(inst_paths.skin_dir, "", NULL);
 #if defined(__WIN32__) && defined(_CONSOLE)
 	options.console = !0;
 #else
