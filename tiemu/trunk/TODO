@@ -29,6 +29,22 @@ appuyé.)
 sont pas du tout initialisés (tout est à 0), donc je suspecte un problème
 quelque part dans la gestion des TIBs Titanium dans TiEmu.
 
+* Je viens de m'apercevoir que make install relinke tiemu.exe, parce qu'il
+cherche apparemment un fichier "tiemu" en tant que dépendance, qu'il ne
+trouve pas.
+
+Je pense que autoconf propose une solution (AC_EXEEXT ou un truc comme ça)
+pour ce problème. Sinon, voici la solution que j'utilise personnellement
+pour ce genre de problèmes:
+
+ifeq ($(OSTYPE), msys)
+EXEEXT = .exe
+else
+EXEEXT =
+endif
+
+LD_TIGCC = ld-tigcc$(EXEEXT)
+
 
 Lionel
 ======

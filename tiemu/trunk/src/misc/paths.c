@@ -50,8 +50,11 @@ static void init_linux_paths(void)
 {
 	gchar *tmp;
 
+	// set base dir
 	inst_paths.base_dir =
 	    g_strconcat(SHARE_DIR, G_DIR_SEPARATOR_S, NULL);
+
+	// set others
 	inst_paths.pixmap_dir =
 	    g_strconcat(inst_paths.base_dir, "pixmaps/", NULL);
 	inst_paths.help_dir =
@@ -69,6 +72,7 @@ static void init_linux_paths(void)
 	inst_paths.rom_dir =
 		g_strconcat(inst_paths.base_dir, "pedrom/", NULL);
 
+	// create image repository
 	tmp = g_strconcat(inst_paths.home_dir, CONF_DIR, NULL);
 	mkdir(tmp, 0777);
 	g_free(tmp);
@@ -99,15 +103,13 @@ static void init_win32_paths(void)
 	sBuffer = (char *) malloc(4096 * sizeof(char));
 	dWord = GetModuleFileName(hModule, sBuffer, 4096);
 	dirname = g_dirname(sBuffer);
-	fprintf(stdout, "executable path: <%s>\n", dirname);
-#if defined(__MINGW32__)
-	inst_paths.base_dir = g_strconcat(dirname, "\\..\\share\\tiemu\\", NULL);
-#else
+
+	// set base dir
 	inst_paths.base_dir = g_strconcat(dirname, "\\", NULL);
-#endif
 	g_free(dirname);
 	free(sBuffer);  // malloc -> free
 
+	// set others
 	inst_paths.pixmap_dir =
 	    g_strconcat(inst_paths.base_dir, "pixmaps\\", NULL);
 	inst_paths.help_dir =
