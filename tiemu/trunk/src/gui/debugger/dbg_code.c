@@ -681,7 +681,7 @@ on_go_to_address1_activate             (GtkMenuItem     *menuitem,
 {
     uint32_t addr;
 
-    if(display_dbgmem_dbox(&addr) == -1)
+    if(display_dbgmem_address(&addr) == -1)
 		return;
 
     gtk_list_store_clear(store);

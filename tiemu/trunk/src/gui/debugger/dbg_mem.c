@@ -439,7 +439,7 @@ dbgmem_button1_clicked                     (GtkButton       *button,
 	uint32_t addr;
 	gchar *str;
 	
-	if(display_dbgmem_dbox(&addr) == -1)
+	if(display_dbgmem_address(&addr) == -1)
 		return;
 	
 	str = g_strdup_printf("%06x", addr);
@@ -725,8 +725,8 @@ on_treeview_btn_press_event        (GtkWidget       *widget,
 	        gint cx, cy;
 
 	        ret = gtk_tree_view_get_path_at_pos(view, tx, ty, &path, &column, &cx, &cy);
-            gtk_tree_view_set_cursor(view, path, column, TRUE);    // select cell
-            //gtk_tree_view_row_activated(view, path, column);        // show selection
+            gtk_tree_view_set_cursor(view, path, column, FALSE);    // select cell
+            gtk_tree_view_row_activated(view, path, column);        // show selection
             gtk_tree_path_free(path);
             //printf("%i %i %i %i (%i)\n", tx, ty, cx, cy, ret);
             //---
@@ -753,7 +753,7 @@ GLADE_CB void
 on_find1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+    display_dbgmem_search();
 }
 
 
@@ -775,7 +775,7 @@ on_go_to_address2_activate             (GtkMenuItem     *menuitem,
     uint32_t addr;
 	gchar *str;
 	
-	if(display_dbgmem_dbox(&addr) == -1)
+	if(display_dbgmem_address(&addr) == -1)
 		return;
 
     gtk_notebook_remove_page(nb, page);
@@ -835,7 +835,7 @@ on_dissassemble1_activate              (GtkMenuItem     *menuitem,
 /*
 	Type address in a box.
 */
-gint display_dbgmem_dbox(uint32_t *addr)
+gint display_dbgmem_address(uint32_t *addr)
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
@@ -845,7 +845,7 @@ gint display_dbgmem_dbox(uint32_t *addr)
 	gint ret = -1;
 	
 	xml = glade_xml_new
-		(tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_dbox", PACKAGE);
+		(tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_address", PACKAGE);
 	if (!xml)
 		g_error(_("%s: GUI loading failed !\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
@@ -854,13 +854,136 @@ gint display_dbgmem_dbox(uint32_t *addr)
 	gtk_entry_set_text(GTK_ENTRY(entry), "000000");
 	*addr = 0;
 	
-	dbox = glade_xml_get_widget(xml, "dbgmem_dbox");	
+	dbox = glade_xml_get_widget(xml, "dbgmem_address");	
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	
 	switch (result) {
 	case GTK_RESPONSE_OK:
 		str = g_strdup(gtk_entry_get_text(GTK_ENTRY(entry)));
 		sscanf(str, "%x", addr);
+		ret = 0;
+		break;
+	default:
+		break;
+	}
+
+	gtk_widget_destroy(dbox);
+	return ret;
+}
+
+/*
+    Search string/data
+
+  Note: 'casse' is a French'ized word taken from the English word 'case'. It means 
+  'case sensitive' or in good French 'respect des majuscules'.
+*/
+
+static gint search_engine(char *str, int ascii, int casse)
+{
+    uint8_t *data;
+    uint16_t len;
+    gchar *tmp;
+    gint i;
+    uint32_t addr;
+
+    data = g_strdup(str);
+    len = strlen(data);
+
+    // ASCII mode ?
+    if(!ascii)
+    {
+        char *p, *q;
+
+        // compact string
+        p = str;
+        q = tmp = g_strdup(str);
+
+        while(*p)
+        {
+            if(*p != ' ')
+                *q++ = *p++;
+            else
+                p++;
+        }
+        *q = '\0';
+
+        // and converts
+        len = strlen(tmp) / 2;
+        for(i = 0; i < len; i++)
+        {
+            char digits[3];
+
+            strncpy(digits, &tmp[2*i], 2); 
+            digits[2] = '\0';
+            sscanf(digits, "%02x", &data[i]);
+            //data = 
+        }
+
+        g_free(tmp);
+    }
+
+    // search (we don't use memcmp because mem space may be not contiguous)
+    i = 0;
+    for(addr = 0x212000; addr <= 0xffffff; addr++)
+    {
+        uint8_t *mem_ptr = (uint8_t *)ti68k_get_real_address(addr);
+
+        if(*mem_ptr == data[i])
+            i++;
+        else
+            i = 0;
+
+        if(i == len)
+            break;
+    }
+
+    if(i == len)
+        printf("found at $%06x !\n", addr - len + 1);
+
+    return 0;
+}
+
+gint display_dbgmem_search(void)
+{
+	GladeXML *xml;
+	GtkWidget *dbox;
+	GtkWidget *entry, *check1, *check2;
+	gint result;
+	gchar *str;
+	gint ret = -1;
+    
+    static gchar *old_str = NULL;
+    gint ascii, casse;
+	
+	xml = glade_xml_new
+		(tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_search", PACKAGE);
+	if (!xml)
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+	glade_xml_signal_autoconnect(xml);
+	
+    if(old_str == NULL)
+         old_str = g_strdup("");
+
+	entry = glade_xml_get_widget(xml, "entry1");
+	gtk_entry_set_text(GTK_ENTRY(entry), old_str);
+
+    check1 = glade_xml_get_widget(xml, "checkbutton1");    
+    check2 = glade_xml_get_widget(xml, "checkbutton2");    
+
+	dbox = glade_xml_get_widget(xml, "dbgmem_search");	
+	result = gtk_dialog_run(GTK_DIALOG(dbox));
+	
+	switch (result) {
+	case GTK_RESPONSE_OK:
+		str = (gchar *)gtk_entry_get_text(GTK_ENTRY(entry));
+
+        g_free(old_str);
+        old_str = g_strdup(str);
+
+        ascii = GTK_TOGGLE_BUTTON(check1)->active;
+        casse = GTK_TOGGLE_BUTTON(check2)->active;
+
+		search_engine(old_str, ascii, casse);
 		ret = 0;
 		break;
 	default:
