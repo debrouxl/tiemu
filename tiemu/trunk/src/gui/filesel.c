@@ -25,6 +25,7 @@
 #endif				/*  */
 
 #include <gtk/gtk.h>
+#include <string.h>
 
 #include "intl.h"
 #include "filesel.h"

@@ -34,8 +34,13 @@
 #include <time.h>
 
 #include "uae.h"
-#include "dbus.h"
+#include "memory.h"
 #include "ioports.h"
+#include "dbus.h"
+#include "keyboard.h"
+#include "timer.h"
+#include "lcd.h"
+#include "m68k.h"
 #include "callbacks.h"
 #include "ti68k_def.h"
 

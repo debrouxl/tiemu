@@ -34,6 +34,8 @@
 #include "ti68k_int.h"
 #include "refresh.h"
 #include "struct.h"
+#include "dboxes.h"
+#include "fs_misc.h"
 
 gchar *chosen_file = NULL;
 

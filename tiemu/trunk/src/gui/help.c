@@ -34,6 +34,7 @@
 #include "intl.h"
 #include "help.h"
 #include "paths.h"
+#include "engine.h"
 
 gint display_help_dbox()
 {

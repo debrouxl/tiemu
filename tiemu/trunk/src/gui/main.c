@@ -47,6 +47,9 @@
 
 #include "wizard.h"
 #include "popup.h"
+#include "splash.h"
+#include "tie_error.h"
+#include "dboxes.h"
 
 
 ScrOptions options2;

@@ -230,7 +230,7 @@ int enter_debugger(void)
 	  while(len > 0) 
 	    {
 	      printf("\n0x%08x:", mempos);
-	      for(i=0; i<(len > 16 ? 16 : len); i++)
+	      for(i=0; i<(len > 16 ? 16 : (int)len); i++)
 		printf(" %02x", (*ptr++)&0xff);
 	      mempos+=16;
 	      len-=16;

@@ -34,7 +34,10 @@
 #include "tilibs.h"
 #include "support.h"
 #include "struct.h"
+#include "engine.h"
+
 #include "ti68k_def.h"
+#include "ti68k_int.h"
 
 // uncomment it to get more than 1 USB port
 //#define MORE_USB_PORTS

@@ -33,6 +33,7 @@
 
 #include "intl.h"
 #include "paths.h"
+#include "engine.h"
 
 gint display_release_dbox()
 {

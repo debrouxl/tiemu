@@ -40,8 +40,6 @@ gint display_infos_dbox()
 	GtkWidget *label;
 	gint result;
 	gchar *str;
-	const char *p;
-	const char *p1, *p2;
 	int i = 0;
 	
 	xml = glade_xml_new

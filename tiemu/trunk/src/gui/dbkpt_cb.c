@@ -78,7 +78,7 @@ gint display_data_bkpts_dbox(void)
 						"text", i, NULL);
   gtk_list_store_clear(list); 
 
-  for(i=0; i<g_list_length(bkpt_access_list); i++)
+  for(i=0; i<(int)g_list_length(bkpt_access_list); i++)
     {
       s = (DATA_BKPT *)g_list_nth_data(bkpt_access_list, i);
       //DISPLAY("%i, s->id: %i\n", i, s->id);
@@ -192,7 +192,7 @@ on_button_del_clicked                  (GtkButton       *button,
       //DISPLAY("id: %i\n", id);
       
       // retrieve structure associated with id
-      for(i=0; i<g_list_length(bkpt_access_list); i++)
+      for(i=0; i<(int)g_list_length(bkpt_access_list); i++)
 	{
 	  s = (DATA_BKPT *)g_list_nth_data(bkpt_access_list, i);
 	  if((s->id) == id)

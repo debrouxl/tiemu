@@ -35,6 +35,7 @@
 
 #include "uae.h"
 #include "ioports.h"
+#include "dbus.h"
 
 #include "tilibs.h"
 #include "ti68k_err.h"
@@ -389,7 +390,6 @@ int test_sendfile(void)
 int send_ti_file(const char *filename)
 {
     gint ok = 0;
-    gchar *ext;
 
     // Check for TI file
     if(!tifiles_is_a_ti_file(filename))

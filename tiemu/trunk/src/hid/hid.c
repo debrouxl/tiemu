@@ -527,6 +527,7 @@ static int sdl_to_ti(int key)
 }
 
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
+void gui_popup_menu(void);
 
 int hid_update_keys(void) 
 {
@@ -834,8 +835,8 @@ static int hid_update_lcd(void)
       src_rect.w = iLcdW; 
       src_rect.h = iLcdH;
       if(params.background) {
-	dst_rect.x = skin_infos.lcd_pos.left << iScale; 
-	dst_rect.y = skin_infos.lcd_pos.top << iScale;
+	dst_rect.x = (short)(skin_infos.lcd_pos.left << iScale); 
+	dst_rect.y = (short)(skin_infos.lcd_pos.top << iScale);
       }
       else {
 	dst_rect.x = 0;
@@ -887,9 +888,9 @@ static void redraw_skin(void)
   SDL_SetColors(sdlSkin, &(sdlPal[NGS]), NGS, skin_infos.ncolors);
  
   ptr = (Uint8 *)sdlSkin->pixels;
-  for (j=0;j<skin_infos.height;j++)
+  for (j=0;j<(int)skin_infos.height;j++)
     {
-      for (i=0;i<skin_infos.width;i++) 
+      for (i=0;i<(int)skin_infos.width;i++) 
 	{
 	  r = skin_infos.cmap[0][skin_infos.img[j*skin_infos.width+i]];
 	  g = skin_infos.cmap[1][skin_infos.img[j*skin_infos.width+i]];
@@ -1089,7 +1090,6 @@ int hid_screenshot(char *filename)
 	gchar *outfile;
 	gchar *ext = "???";
 	gchar *type;
-	int row, col, k;
 	int gap = iScrW - iLcdW;
 
 	if(filename == NULL) {

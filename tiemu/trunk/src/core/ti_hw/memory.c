@@ -85,8 +85,6 @@ static int log2(int i);
 int hw_mem_init(void)
 {
 	int i;
-	int ti92v1;
-	int ti92v2;
 
 	// get infos from image
 	tihw.calc_type = img_infos.calc_type;
@@ -254,7 +252,7 @@ ULONG get_long(CPTR adr)
         breakId=0;
         while (l) 
 	    {
-	        if (GPOINTER_TO_INT(l->data)==adr) 
+	        if ((CPTR)GPOINTER_TO_INT(l->data) == adr) 
 	        {
 	            breakMode = BK_READ_LONG; 
 	            specialflags|=SPCFLAG_BRK; 
@@ -341,7 +339,7 @@ UWORD get_word(CPTR adr)
         breakId = 0;
         while (l) 
 	    {
-	        if (GPOINTER_TO_INT(l->data)==adr) 
+	        if ((CPTR)GPOINTER_TO_INT(l->data)==adr) 
 	        {
 	            breakMode = BK_READ_WORD;
 	            specialflags|=SPCFLAG_BRK;
@@ -427,7 +425,7 @@ UBYTE get_byte(CPTR adr)
     {
         breakId = 0;
         while (l) {
-	        if (GPOINTER_TO_INT(l->data)==adr) 
+	        if ((CPTR)GPOINTER_TO_INT(l->data)==adr) 
 	        {
 	            breakMode = BK_READ_BYTE;
 	            specialflags|=SPCFLAG_BRK;
@@ -509,7 +507,7 @@ void put_long(CPTR adr, ULONG arg)
         breakId = 0;
         while (l) 
 	    {
-	        if (GPOINTER_TO_INT(l->data)==adr) 
+	        if ((CPTR)GPOINTER_TO_INT(l->data)==adr) 
 	        {
 	            breakMode = BK_WRITE_LONG;
 	            specialflags|=SPCFLAG_BRK;
@@ -604,7 +602,7 @@ void put_word(CPTR adr, UWORD arg)
         breakId = 0;
         while (l) 
 	    {
-	        if (GPOINTER_TO_INT(l->data)==adr) 
+	        if ((CPTR)GPOINTER_TO_INT(l->data)==adr) 
 	        {
 	            breakMode = BK_WRITE_WORD;
 	            specialflags|=SPCFLAG_BRK;
@@ -688,7 +686,7 @@ void put_byte(CPTR adr, UBYTE arg)
         breakId = 0;
         while (l) 
 	    {
-	        if (GPOINTER_TO_INT(l->data)==adr) 
+	        if ((CPTR)GPOINTER_TO_INT(l->data)==adr) 
 	        {
 	            breakMode = BK_WRITE_BYTE;
 	            specialflags|=SPCFLAG_BRK;

@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include "support.h"
 
 extern struct progress_window {
 	GtkWidget *window;

@@ -31,7 +31,7 @@ int hw_kbd_init(void);
 int hw_kbd_reset(void);
 int hw_kbd_exit(void);
 
-UBYTE read_keyboard_mask(void);
+int hw_kbd_update(void);
 
 void ti68k_kbd_set_key(int key, int active);
 int ti68k_kbd_is_key_pressed(int key);

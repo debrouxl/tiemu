@@ -309,7 +309,6 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
 {
 	FILE *f;
-	char *ext;
 
 	// No filename, exits
 	if(!strcmp(filename, ""))
@@ -512,8 +511,6 @@ int ti68k_load_image(const char *filename)
 	IMG_INFO *img = &img_infos;
   	FILE *f;  	
   	int err;
-	uint32_t addr;
-	uint16_t data;
 
 	// Clear infos
 	memset(img, 0, sizeof(IMG_INFO));
@@ -555,10 +552,6 @@ int ti68k_load_image(const char *filename)
 */
 int ti68k_load_upgrade(const char *filename)
 {
-	Ti9xFlash content;
-	Ti9xFlash *ptr;
-	int nheaders;
-	int i;
 	IMG_INFO tib = { 0 };
 	IMG_INFO *img = &tib;
   	int err;
@@ -644,13 +637,11 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 	char str[20];
 	char *rom_names[256] = { 0 };
 	int nlines;
-	int i,j;
+	int j;
 	gchar *path;
 	struct stat f_info;
 	int ret;  	
   	char *line[7];
-	char *p1, *p2, *p3, *p5;
-	int err;
 
   	DISPLAY(_("Scanning images/upgrades... "));
 

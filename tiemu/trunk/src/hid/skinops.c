@@ -115,7 +115,7 @@ int skin_read_header(const char *filename, SKIN_INFOS* si)
   	if (length > SKIN_KEYS)
     		return -1;
 
-  	for (i = 0; i < length; i++)
+  	for (i = 0; i < (int)length; i++)
     	{
       		fread(&si->keys_pos[i].left, 4, 1, fp);
       		fread(&si->keys_pos[i].top, 4, 1, fp);
@@ -134,7 +134,7 @@ int skin_read_header(const char *filename, SKIN_INFOS* si)
 		si->lcd_pos.bottom = bswap_32(si->lcd_pos.bottom);
 		si->lcd_pos.right = bswap_32(si->lcd_pos.right);
 
-		for (i = 0; i < length; i++)
+		for (i = 0; i < (int)length; i++)
 		{
 			si->keys_pos[i].top = bswap_32(si->keys_pos[i].top);
 			si->keys_pos[i].bottom = bswap_32(si->keys_pos[i].bottom);
@@ -147,6 +147,8 @@ int skin_read_header(const char *filename, SKIN_INFOS* si)
   	
     	return 0;
 }
+
+void jpeg_file_src (j_decompress_ptr cinfo, FILE * infile);
 
 int skin_read_image(const char *filename, SKIN_INFOS* si)
 {

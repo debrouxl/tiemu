@@ -126,7 +126,6 @@ gint display_scroptions_dbox()
 
 void refresh_label(void)
 {
-	gchar buffer[MAXCHARS];
 	gchar *ext = "???";
     gchar *str;
 	

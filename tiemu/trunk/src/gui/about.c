@@ -35,6 +35,8 @@
 #include "about.h"
 #include "paths.h"
 #include "version.h"
+#include "tilibs.h"
+#include "engine.h"
 
 gint display_about_dbox()
 {

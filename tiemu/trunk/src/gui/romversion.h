@@ -1,4 +1,4 @@
 #include <gtk/gtk.h>
 
 
-gint display_infos_dbox();
+gint display_romversion_dbox(void);

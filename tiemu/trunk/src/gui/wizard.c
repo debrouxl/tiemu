@@ -26,10 +26,16 @@
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
+#include <stdlib.h>
 
 #include "intl.h"
 #include "support.h"
 #include "struct.h"
+#include "dboxes.h"
+#include "wizard.h"
+#include "engine.h"
+#include "filesel.h"
+#include "ti68k_int.h"
 
 #ifdef __WIN32__
 # define strcasecmp _stricmp
@@ -40,9 +46,36 @@ gint wizard_ok = FALSE;
 
 static gint action = 1;
 
+static gint display_step1_dbox(void);
+gint display_wz_rom_dbox(void);
+gint display_wz_tib_dbox(void);
+
 gint display_wizard_dbox(void)
 {
     return display_step1_dbox();
+}
+
+static gint display_msg_dbox(void)
+{
+    GladeXML *xml;
+	GtkWidget *dbox;
+//	GtkWidget *data;
+	gint result;
+
+    xml = glade_xml_new
+	    (tilp_paths_build_glade("wizard-2.glade"), "msg_dbox", PACKAGE);
+	if (!xml)
+		g_error(_("comm.c: GUI loading failed !\n"));
+	glade_xml_signal_autoconnect(xml);
+
+	dbox = glade_xml_get_widget(xml, "msg_dbox");
+
+    result = gtk_dialog_run(GTK_DIALOG(dbox));
+	
+    gtk_widget_destroy(dbox);
+    exit(0);
+
+	return 0;
 }
 
 static gint display_step1_dbox(void)
@@ -134,35 +167,11 @@ static gint display_step3_dbox(void)
 	return 0;
 }
 
-
-static gint display_msg_dbox(void)
-{
-    GladeXML *xml;
-	GtkWidget *dbox;
-	GtkWidget *data;
-	gint result;
-
-    xml = glade_xml_new
-	    (tilp_paths_build_glade("wizard-2.glade"), "msg_dbox", PACKAGE);
-	if (!xml)
-		g_error(_("comm.c: GUI loading failed !\n"));
-	glade_xml_signal_autoconnect(xml);
-
-	dbox = glade_xml_get_widget(xml, "msg_dbox");
-
-    result = gtk_dialog_run(GTK_DIALOG(dbox));
-	
-    gtk_widget_destroy(dbox);
-    exit(0);
-
-	return 0;
-}
-
 gint display_wait_dbox(void)
 {
     GladeXML *xml;
 	GtkWidget *dbox;
-	GtkWidget *data;
+	//GtkWidget *data;
 	gint result;
 
     xml = glade_xml_new

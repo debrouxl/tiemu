@@ -23,10 +23,6 @@
 #ifndef GTK_REFRESH_H
 #define GTK_REFRESH_H
 
-void gt_refresh(); 
-void gt_pbar();
-void gt_label();
-void gt_gui();
 void gt_init_refresh_functions(void);
 
 #define GTK_REFRESH() { while( gtk_events_pending() ) { gtk_main_iteration(); }}

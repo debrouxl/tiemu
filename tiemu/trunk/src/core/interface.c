@@ -36,6 +36,9 @@
 
 #include "uae.h"
 #include "hardware.h"
+#include "m68k.h"
+#include "dbus.h"
+
 #include "ti68k_int.h"
 #include "ti68k_err.h"
 

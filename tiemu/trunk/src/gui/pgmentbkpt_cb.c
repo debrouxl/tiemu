@@ -31,6 +31,7 @@
 #include "support.h"
 
 #include "hid.h"
+#include "engine.h"
 
 gint display_pgmentrybkpt_dbox (void)
 {

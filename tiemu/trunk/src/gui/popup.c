@@ -32,8 +32,23 @@
 #include "struct.h"
 #include "version.h"
 #include "popup.h"
-#include "ti68k_def.h"
 #include "paths.h"
+#include "engine.h"
+#include "fs_misc.h"
+#include "comm.h"
+#include "rcfile.h"
+#include "dboxes.h"
+#include "romversion.h"
+#include "hid.h"
+#include "help.h"
+#include "release.h"
+#include "about.h"
+#include "infos.h"
+#include "manpage.h"
+#include "scroptions.h"
+
+#include "ti68k_int.h"
+#include "ti68k_def.h"
 
 /* 
    Display a popup menu: entry point used by hid.c (SDL)

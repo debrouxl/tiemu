@@ -29,6 +29,7 @@
 #include <stdio.h>
 #ifdef __WIN32__
 #include <windows.h>
+#include <direct.h> // _mkdir
 #endif
 
 #include "struct.h"
@@ -106,7 +107,11 @@ static void init_win32_paths(void)
 	    g_strconcat(inst_paths.base_dir, "", NULL);
 	inst_paths.img_dir = 
             g_strconcat(inst_paths.home_dir, CONF_DIR, "images\\", NULL);
+#ifndef __WIN32__
     mkdir(inst_paths.img_dir, 0755);
+#else
+    mkdir(inst_paths.img_dir);
+#endif
 
 #ifdef ENABLE_NLS
 	inst_paths.locale_dir =

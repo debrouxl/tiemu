@@ -154,7 +154,7 @@ int ti68k_kbd_is_key_pressed(int key)
     return key_states[key];
 }
 
-int hw_kbd_update(void) 
+int hw_kbd_update(void)
 {
 	int rc = key_change;	// ~600Hz
 

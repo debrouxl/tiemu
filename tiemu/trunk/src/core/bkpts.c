@@ -28,10 +28,12 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 #include <glib.h>
 
 #include "intl.h"
 #include "bkpts.h"
+#include "verbose.h"
 #include "ti68k_err.h"
 
 /* Variables */

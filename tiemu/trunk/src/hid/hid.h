@@ -32,6 +32,8 @@
 int  hid_init(void);
 int  hid_exit(void);
 
+int hid_update_keys(void);
+
 void hid_switch_with_skin(void);
 void hid_switch_without_skin(void);
 void hid_change_skin(const char *filename);

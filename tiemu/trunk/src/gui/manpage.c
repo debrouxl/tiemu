@@ -35,6 +35,7 @@
 #include "intl.h"
 #include "manpage.h"
 #include "paths.h"
+#include "engine.h"
 
 gint display_manpage_dbox()
 {

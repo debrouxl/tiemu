@@ -36,24 +36,19 @@ UBYTE (*hw_dbus_getbyte)    (void);
 int   (*hw_dbus_byteavail)	(void);
 int   (*hw_dbus_checkread)  (void);
 
-int init_linkfile();
+static int init_linkfile(void);
+static int exit_linkfile(void);
+
 int send_ti_file(const char *filename);
 
 /* Variables */
 
 extern TicableLinkCable lc;
 
-extern int lc_internal;
-extern int lc_timeout;
-extern int lc_speedy;
-extern int TO_VALUE;
-
-extern int transflag;
-extern int transbyte;
-extern int transnotready;
-extern int recvflag;
-extern int recvbyte;
-extern int lc_raw_access;
+//extern int lc_internal;
+//extern int lc_timeout;
+//extern int lc_speedy;
+//extern int TO_VALUE;
 
 #endif
 

@@ -381,7 +381,7 @@ void io2_put_long(CPTR adr, ULONG arg)
 
 UBYTE io2_get_byte(CPTR adr) 
 {
-    int v;
+    int v = tihw.io2[adr];
 
     switch(adr) 
     {
@@ -419,7 +419,7 @@ UBYTE io2_get_byte(CPTR adr)
 			break;
     }
   
-    return tihw.io2[adr];
+    return v;
 }
 
 UWORD io2_get_word(CPTR adr) 

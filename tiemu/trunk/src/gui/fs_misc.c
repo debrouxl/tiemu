@@ -33,6 +33,10 @@
 #include "paths.h"
 #include "struct.h"
 #include "ti68k_int.h"
+#include "dboxes.h"
+#include "hid.h"
+#include "rcfile.h"
+#include "pbars.h"
 
 gint display_skin_dbox()
 {
@@ -219,9 +223,9 @@ gint display_set_rom_dbox(void)
 gint display_set_tib_dbox(void)
 {
     const gchar *filename;
-    const gchar *src;
-    gchar *dst;
-    gchar *cmd;
+    //const gchar *src;
+    //gchar *dst;
+    //gchar *cmd;
 
     // get filename
 	filename = create_fsel(inst_paths.base_dir, "*.89u;*.9xu;*.tib");

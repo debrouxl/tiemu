@@ -211,7 +211,7 @@ on_debugger_dbox_destroy               (GtkObject       *object,
   // Restore breakpoints
   // Bkpts are removed when the debugger is launched so
   // that we can 'single step'
-  for(i=0; i<g_list_length(bkpt_address_list); i++)
+  for(i=0; i<(int)g_list_length(bkpt_address_list); i++)
     {
       s = (CODE_BKPT *)g_list_nth_data(bkpt_address_list, i);
       
@@ -364,7 +364,7 @@ gint refresh_breakpoints(void)
       //printf("Looking for a breakpoint at 0x%06x\n", addr);
 
       /* Look for a matching breakpoint */
-      for (i = 0; i < g_list_length(bkpt_address_list); i++)
+      for (i = 0; i < (int)g_list_length(bkpt_address_list); i++)
 	{
 	  bp = (CODE_BKPT *)g_list_nth_data(bkpt_address_list, i);
 	  addr_bp = bp->address;
@@ -746,7 +746,7 @@ on_set_breakpoint_at_selection1_activate
       addr = GPOINTER_TO_INT(addrp);
 
       /* Check whether we already have a breakpoint */      
-      for(i=0; i<g_list_length(bkpt_address_list); i++)
+      for(i=0; i< (int)g_list_length(bkpt_address_list); i++)
 	{
 	  s1 = (CODE_BKPT *)g_list_nth_data(bkpt_address_list, i);
 	  if(addr == s1->address)

@@ -43,6 +43,7 @@
 
 #include "intl.h"
 #include "engine.h"
+#include "ti68k_int.h"
 
 #if defined(__LINUX__)
 #define sleep(x)	usleep(1000 * (x))

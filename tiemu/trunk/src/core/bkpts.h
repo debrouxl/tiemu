@@ -30,14 +30,15 @@
 #define __TI68K_BKPTS__
 
 #include <glib.h>
+#include <stdint.h>
 
 /*
     To remove...
 */
 typedef struct
 {
-  int	 val;
-  int 	 val2;
+  uint32_t	 val;
+  uint32_t 	 val2;
 } ADDR_RANGE;
 
 
@@ -156,8 +157,8 @@ int ti68k_bkpt_set_address(int address);
 int ti68k_bkpt_set_access(int address, int mode);
 int ti68k_bkpt_set_access_range(int addressMin, int addressMax, int mode);
 int ti68k_bkpt_set_vector(int vector);
-int ti68k_bkpt_set_autointoint(int autoint);
-int ti68k_bkpt_set_trapTrap(int trap);
+int ti68k_bkpt_set_autoint(int autoint);
+int ti68k_bkpt_set_trap(int trap);
 
 void ti68k_bkpt_del_address(int i);
 void ti68k_bkpt_del_access(int i, int mode);
@@ -165,6 +166,8 @@ void ti68k_bkpt_del_access_range(int i, int mode);
 void ti68k_bkpt_del_vector(int i);
 void ti68k_bkpt_del_autoint(int i);
 void ti68k_bkpt_del_trap(int i);
+
+void ti68k_bkpt_get_cause(int *type, int *id, int *mode);
 
 void ti68k_bkpt_clear_address(void);
 void ti68k_bkpt_clear_access(void);

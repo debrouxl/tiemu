@@ -1,4 +1,4 @@
 #include <gtk/gtk.h>
 
 
-gint display_manpage_dbox();
+gint display_help_dbox();

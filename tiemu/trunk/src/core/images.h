@@ -77,6 +77,7 @@ int ti68k_convert_tib_to_image(const char *src, const char *dirname, char **dst)
 int ti68k_load_image(const char *filename);
 int ti68k_load_upgrade(const char *filename);
 
-int ti68k_scan_files(const char *dirname, const char *filename);
+int ti68k_scan_files(const char *src_dir, const char *dst_dir);
+int ti68k_scan_images(const char *dirname, const char *filename);
 
 #endif
