@@ -405,11 +405,11 @@ load_jpeg(FILE *fp)
 
   gtk_drawing_area_size(GTK_DRAWING_AREA(drawingarea1), 
 			skin_infos.width, skin_infos.height);
-  /*
-  geometry.min_width = 640;
-  geometry.min_height = 480;
-  geometry.max_width = skin_infos.width;
-  geometry.max_height = skin_infos.height;
+/*
+  geometry.min_width = -1;
+  geometry.min_height = -1;
+  geometry.max_width = -1;	//skin_infos.width;
+  geometry.max_height = -1; //skin_infos.height;
   geometry.base_height = -1;
   geometry.base_width = -1;
 
@@ -417,13 +417,13 @@ load_jpeg(FILE *fp)
 				GTK_WIDGET(drawingarea1),
 				&geometry,
 				GDK_HINT_MAX_SIZE);
-  */
-  
+*/
+
   /*
    * Display image in the back-end pixbuf
    */
   pixbuf = gdk_pixbuf_copy(skin_infos.img_orig);
-  //gtk_signal_emit_by_name
+	//gtk_widget_draw (GTK_DRAWING_AREA(drawingarea1), (GdkRectangle *)&update_rect);
   
   /*
    * Delete temp file

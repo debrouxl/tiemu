@@ -39,6 +39,7 @@ static int ox, oy;       /* origin */
 extern unsigned int lcd_mouse_motion; /* main_cb.c */
 extern unsigned int lcd_button_press; /* main_cb.c */
 
+#define FAST_DRAW
 
 gboolean
 mouse_motion(GtkWidget *drawingarea, GdkEventMotion *event, gpointer action)
@@ -171,9 +172,8 @@ button_press(GtkWidget *drawing_area, GdkEventButton *event, gpointer action)
   return FALSE;
 }
 
-static void put_pixel (GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue);
-static void get_pixel (GdkPixbuf *pixbuf, int x, int y, guchar *red, guchar *green, guchar *blue);
-
+static void draw_hline(int x, int y, int w);
+static void draw_vline(int x, int y, int h);
 
 void
 draw_rubberbox(GtkWidget *drawing_area, GdkRect rect)
@@ -194,29 +194,11 @@ draw_rubberbox(GtkWidget *drawing_area, GdkRect rect)
   g_object_unref(pixbuf);
   pixbuf = gdk_pixbuf_copy(skin_infos.img_orig);
 
-  /* vertical lines at c.x and (c.x + c.w), c.y < y < (c.y + c.h) */
-  for (y = c.y; y < (c.y + c.h); y++)
-    {
-      get_pixel (pixbuf, c.x, y, &r, &g, &b);
-      r = ~r; g = ~g; b = ~b;
-      put_pixel (pixbuf, c.x, y, r, g, b);
-      
-      get_pixel (pixbuf, c.x + c.w, y, &r, &g, &b);
-      r = ~r; g = ~g; b = ~b;
-      put_pixel (pixbuf, c.x + c.w, y, r, g, b);
-    }
+   	draw_hline(c.x, c.y, c.w);
+		draw_hline(c.x, c.y + c.h, c.w);
 
-  /* horizontal lines at c.y and (c.y + c.h), c.x < x < (c.x + c.w) */
-  for (x = c.x; x < c.x + c.w; x++)
-    {
-      get_pixel (pixbuf, x, c.y, &r, &g, &b);
-      r = ~r; g = ~g; b = ~b;
-      put_pixel (pixbuf, x, c.y, r, g, b);
-      
-      get_pixel (pixbuf, x, c.y + c.h, &r, &g, &b);
-      r = ~r; g = ~g; b = ~b;
-      put_pixel (pixbuf, x, c.y + c.h, r, g, b);
-    } 
+		draw_vline(c.x, c.y, c.h);
+		draw_vline(c.x + c.w, c.y, c.h);
 
 /*
    * 2 calls to SDL_UpdateRect :
@@ -319,4 +301,92 @@ get_pixel (GdkPixbuf *pixbuf, int x, int y, guchar *red, guchar *green, guchar *
   *red   = p[0];
   *green = p[1];
   *blue  = p[2];
+}
+
+static void
+draw_hline(int x, int y, int w)
+{
+#ifndef FAST_DRAW
+	guchar r, g, b;
+  int i;
+	
+  for (i = x; i < x + w; i++)
+    {
+      get_pixel (pixbuf, i, y, &r, &g, &b);
+      r = ~r; g = ~g; b = ~b;
+      put_pixel (pixbuf, i, y, r, g, b);
+    }
+#else
+  int width, height, rowstride, n_channels;
+  guchar *pixels, *p;
+	int i;
+
+  n_channels = gdk_pixbuf_get_n_channels (pixbuf);
+
+  g_assert (gdk_pixbuf_get_colorspace (pixbuf) == GDK_COLORSPACE_RGB);
+  g_assert (gdk_pixbuf_get_bits_per_sample (pixbuf) == 8);
+  g_assert (!gdk_pixbuf_get_has_alpha (pixbuf));
+  g_assert (n_channels == 3);
+
+  width = gdk_pixbuf_get_width (pixbuf);
+  height = gdk_pixbuf_get_height (pixbuf);
+
+  g_assert (x >= 0 && x < width);
+  g_assert (y >= 0 && y < height);
+
+  rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+  pixels = gdk_pixbuf_get_pixels (pixbuf);
+
+  for (i = x; i < x + w; i++)
+    {
+	p = pixels + y * rowstride + i * n_channels;
+	p[0] = ~p[0]; 
+	p[1] = ~p[1]; 
+	p[2] = ~p[2];
+    }
+#endif
+}
+
+static void
+draw_vline(int x, int y, int h)
+{
+#ifndef FAST_DRAW
+  guchar r, g, b;
+	int j;
+
+	for (j = y; j < y + h; j++)
+    {
+      get_pixel (pixbuf, x, j, &r, &g, &b);
+      r = ~r; g = ~g; b = ~b;
+      put_pixel (pixbuf, x, j, r, g, b);
+		}
+#else
+  int width, height, rowstride, n_channels;
+  guchar *pixels, *p;
+	int j;
+
+  n_channels = gdk_pixbuf_get_n_channels (pixbuf);
+
+  g_assert (gdk_pixbuf_get_colorspace (pixbuf) == GDK_COLORSPACE_RGB);
+  g_assert (gdk_pixbuf_get_bits_per_sample (pixbuf) == 8);
+  g_assert (!gdk_pixbuf_get_has_alpha (pixbuf));
+  g_assert (n_channels == 3);
+
+  width = gdk_pixbuf_get_width (pixbuf);
+  height = gdk_pixbuf_get_height (pixbuf);
+
+  g_assert (x >= 0 && x < width);
+  g_assert (y >= 0 && y < height);
+
+  rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+  pixels = gdk_pixbuf_get_pixels (pixbuf);
+
+  for (j = y; j < y + h; j++)
+    {
+	p = pixels + j * rowstride + x * n_channels;
+	p[0] = ~p[0]; 
+	p[1] = ~p[1]; 
+	p[2] = ~p[2];
+    }
+#endif
 }
