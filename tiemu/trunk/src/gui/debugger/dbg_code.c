@@ -381,6 +381,7 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
 
     selection = gtk_tree_view_get_selection(view);
     valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
+	if(!valid) return;
 
     // Get address to go
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
@@ -435,6 +436,7 @@ dbgcode_button6_clicked                     (GtkButton       *button,
 
     selection = gtk_tree_view_get_selection(view);
     valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
+	if(!valid) return;
 
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
     sscanf(str, "%x", &addr);
@@ -656,6 +658,7 @@ on_set_pc_to_selection1_activate       (GtkMenuItem     *menuitem,
 
     selection = gtk_tree_view_get_selection(view);
     valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
+	if(!valid) return;
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
     sscanf(str, "%x", &addr);
 

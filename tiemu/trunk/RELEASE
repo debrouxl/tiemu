@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.70 (2.00-a3)	(15/06/2004)
-Current version:  1.71 (2.00-a4)	(03/07/2004)
+Previous version: 1.71 (2.00-a4)	(03/07/2004)
+Current version:  1.72 (2.00-a5)	(08/07/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,20 +20,27 @@ For the other link cables, no driver is needed because it's provided.
 New capabilities:
 -----------------
 
-	- none
+	- dis-assembly window: use VTi syntax
+	- VTi-style SR flags (don't reset)
 
 
 Improvements:
 -------------
 
 	- slow access to debugger
-	- ability to load weird updates (.89u)
-	- TI89 key mapping pbs (EE, |)
-	- some broken shortcuts (G => Go to address)
+	- can navigate in the code window (up/down)
 	- window focus & code window has default focus
+	- some broken shortcuts (G => Go to address)
+	- TI89 key mapping pbs (EE, |)
 	- Alpha was not working properly
-	- can navigate in the code window (down only)
+	- no key auto-repeat
 	- handle long names with spaces in the ROM version box
+	- ability to load weird updates (.89u)	
+	- disable menu access when debugger is opened
+	- ON key (and set on/off LCD screen)
+	- error management
+	- fixed 'restrict to current speed'
+	- bugs in state image loading and LCD init: works fine now
 		
 	
 Future capabilities:
@@ -46,4 +53,7 @@ Future capabilities:
 Notes:
 ------
 
-	- none.
+	Big thanks to Kevin Kofler, Lionel Debroux and Julien Armand who have take some time
+	to answer all my questions, providing me help and documentation.
+
+	All Thanks to my wife & my baby which let me work on my PC ;-) Well, I love them a lot !
