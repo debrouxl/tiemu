@@ -191,8 +191,8 @@ void init_m68k (void)
     read_table68k ();
     do_merges ();
 
-    sprintf (warning_buffer, "%d CPU functions\n", nr_cpuop_funcs);
-    write_log (warning_buffer);
+	//roms
+    printf ("%d CPU functions\n", nr_cpuop_funcs);
 
     build_cpufunctbl ();
 }
@@ -964,6 +964,9 @@ void m68k_reset(void)
     customreset ();
 }
 
+//roms
+int quit_program = 0;
+
 void REGPARAM2 op_illg(uae_u32 opcode)
 {
     uaecptr pc = m68k_getpc ();
@@ -980,8 +983,8 @@ void REGPARAM2 op_illg(uae_u32 opcode)
 	write_log("Your Kickstart requires a 68020 CPU. Giving up.\n");
 	broken_in = 1;
 	regs.spcflags |= SPCFLAG_BRK;
-	//quit_program = 1;
-	//roms
+	quit_program = 1;
+
     }
     if (opcode == 0xFF0D) {
 	if ((pc & 0xF80000) == 0xF80000) {
@@ -1018,8 +1021,8 @@ void REGPARAM2 op_illg(uae_u32 opcode)
 	Exception(0xA,0);
 	return;
     }
-    sprintf (warning_buffer, "Illegal instruction: %04x at %08lx\n", opcode, pc);
-    write_log (warning_buffer);
+	//roms
+    printf ("Illegal instruction: %04x at %08lx\n", opcode, pc);
     Exception (4,0);
 }
 

@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <assert.h>
+//roms
+#include "sysconfig.h"
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>

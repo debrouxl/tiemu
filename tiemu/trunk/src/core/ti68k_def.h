@@ -117,10 +117,10 @@ typedef struct
 	int		lc_speedy;		// speedy mode for direct file
 
     // memory.c
-    UBYTE	*rom;
-    UBYTE	*ram;
-    UBYTE	*io;
-    UBYTE   *io2;
+    uint8_t	*rom;
+    uint8_t	*ram;
+    uint8_t	*io;
+    uint8_t   *io2;
     int     initial_pc;
 
     int		flash_prot;

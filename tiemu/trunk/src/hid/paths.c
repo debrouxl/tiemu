@@ -110,7 +110,7 @@ static void init_win32_paths(void)
 	    g_strconcat(inst_paths.base_dir, "", NULL);
 	inst_paths.img_dir = 
             g_strconcat(inst_paths.home_dir, CONF_DIR, "images\\", NULL);
-	mkdir(inst_paths.img_dir);
+	_mkdir(inst_paths.img_dir);
 
 #ifdef ENABLE_NLS
 	inst_paths.locale_dir =
