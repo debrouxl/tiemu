@@ -381,7 +381,7 @@ void Exception(int nr)
   // added for capturing the exception and next launch a debugger
   if (l = bkpts.exception) 
     {
-        bkpts.id = 0;
+        bkpts.id = nr;
         while (l) 
 	    {
 	        if ((CPTR)GPOINTER_TO_INT(l->data) == nr) 
@@ -392,7 +392,6 @@ void Exception(int nr)
 	            break;
 	        }
 	        
-            bkpts.id++;
 	        l = l->next;
 	    }
     }

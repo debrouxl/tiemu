@@ -244,7 +244,7 @@ int skin_read_image(const char *filename, SKIN_INFOS* si)
 		return -1;
 
     // Get skin size
-	printf("image :<%i x %i>\n", cinfo.output_width, cinfo.output_height);
+	//printf("image :<%i x %i>\n", cinfo.output_width, cinfo.output_height);
     si->width = cinfo.output_width + (cinfo.output_width & 3);
     si->height = cinfo.output_height + (cinfo.output_height & 3);
 
