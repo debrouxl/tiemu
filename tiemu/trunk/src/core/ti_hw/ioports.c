@@ -92,7 +92,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
     {
         case 0x00:	// rw <76...2..>
 			// %5: bit 0 of contrast (TI92)
-			if(tihw.calc_type == TI92)
+			if(tihw.calc_type == TI92 || tihw.calc_type == TI92p)
 			{
             	tihw.contrast = bit_clr(tihw.contrast,0) | bit_get(arg,5);
 				cb_set_contrast(tihw.contrast);
@@ -118,12 +118,17 @@ void io_put_byte(CPTR adr, UBYTE arg)
 			{
 				mem_tab[2] = mem_tab[0];
 				mem_mask[2] = mem_mask[0];
+				/*
 				mem_tab[3] = mem_tab[1];
 				mem_mask[3] = mem_mask[1];
+				*/	
             } else
             {
-                //mem_tab[2] = mem_tab[0];
+				mem_tab[2] = tihw.rom;
+				mem_mask[2] = 0x1fffff;
+				//mem_mask[2] = mem_mask[0];
 				//mem_tab[3] = mem_tab[1];
+				//mem_mask[3] = mem_mask[1];
             }
             
 			// turn off OSC1 (CPU), wake on int level 6 (ON key) and int level [5..1]
@@ -221,7 +226,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
         break;
         case 0x1d:	// -w <7..43210>
 			// %[3-1]: contrast
-			if(tihw.calc_type == TI92)
+			if(tihw.calc_type == TI92 || tihw.calc_type == TI92p)
 			{
 				// %[3-1]: bits <4321.> of contrast
             	tihw.contrast = (tihw.contrast & 1) | ((arg & 15) << 1);
