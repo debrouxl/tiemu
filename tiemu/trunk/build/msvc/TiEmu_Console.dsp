@@ -254,6 +254,10 @@ SOURCE=..\..\src\gui\debugger\dbg_regs.c
 
 SOURCE=..\..\src\gui\debugger\dbg_vectors.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\debugger\gsource.c
+# End Source File
 # End Group
 # Begin Group "calc"
 

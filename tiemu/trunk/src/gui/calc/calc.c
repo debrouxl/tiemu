@@ -200,11 +200,13 @@ static gint hid_refresh (gpointer data)
     }
 
 	// gruik, should be removed later...
+	/*
     if(debugger)
     {
         enter_gtk_debugger(debugger);
         debugger = 0;
     }
+	*/
 
     return TRUE;
 }

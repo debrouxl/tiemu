@@ -31,6 +31,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <io.h>		// _pipe
+#include <fcntl.h>	// _O_BINARY
+
 #include "intl.h"
 #include "tilibs.h"
 #include "struct.h"
@@ -58,6 +61,16 @@ ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
+/* Debugger callback raised by our own GSource (gsource.c) */
+
+GSource* attach_dbg_gsource(void);
+
+gboolean on_dbg_event(gpointer data)
+{
+	enter_gtk_debugger(GPOINTER_TO_INT(data));
+
+	return TRUE;	// don't automatically remove callback
+}
 
 /* Main function */		
 
@@ -66,6 +79,7 @@ int main(int argc, char **argv)
 	GThread *thread = NULL;
 	GError *error = NULL;
     int err;
+	GSource *source;
 
 	/*
 		Do primary initializations 
@@ -94,21 +108,24 @@ int main(int argc, char **argv)
 	 */
     splash_screen_set_label(_("Initializing TiLP framework..."));
 
-	if (strcmp(tifiles_get_version(), TIEMU_REQUIRES_LIBFILES_VERSION) < 0) {
+	if (strcmp(tifiles_get_version(), TIEMU_REQUIRES_LIBFILES_VERSION) < 0) 
+	{
 		printl(0, _("libtifiles library version <%s> mini required.\n"),
 			TIEMU_REQUIRES_LIBFILES_VERSION);
 		msg_box(_("Error"), _("Libtifiles: version mismatches."));
 		exit(-1);
 	}
 	
-	if (strcmp(ticable_get_version(), TIEMU_REQUIRES_LIBCABLES_VERSION) < 0) {
+	if (strcmp(ticable_get_version(), TIEMU_REQUIRES_LIBCABLES_VERSION) < 0) 
+	{
 		printl(0, _("libticables library version <%s> mini required.\n"),
 			TIEMU_REQUIRES_LIBCABLES_VERSION);
 		msg_box(_("Error"), _("Libticables: version mismatches."));
 		exit(-1);
 	}
 	
-	if (strcmp(ticalc_get_version(), TIEMU_REQUIRES_LIBCALCS_VERSION) < 0) {
+	if (strcmp(ticalc_get_version(), TIEMU_REQUIRES_LIBCALCS_VERSION) < 0) 
+	{
 		printl(0, _("libticalcs library version <%s> mini required.\n"),
 			TIEMU_REQUIRES_LIBCALCS_VERSION);
 		msg_box(_("Error"), _("Libticalcs: version mismatches."));
@@ -193,16 +210,18 @@ int main(int argc, char **argv)
 	}
 
 	/*
-		Cache debugger windows to speed-up display
+		Cache debugger windows to speed-up display and install custom event
 	*/
 	splash_screen_set_label(_("Pre-loading debugger..."));
 	preload_gtk_debugger();
+
+	source = attach_dbg_gsource();
+	g_source_set_callback(source, on_dbg_event, NULL, NULL);
   
 	/* 
 		Start thread (emulation engine) and run main loop 
 	*/
     splash_screen_set_label(_("Starting engine..."));
-	//thread = g_thread_create(ti68k_engine, NULL, FALSE, &error);
 	ti68k_engine_unhalt();
     splash_screen_stop();
 

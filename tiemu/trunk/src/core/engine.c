@@ -187,14 +187,16 @@ gpointer ti68k_engine(gpointer data)
 		res = ti68k_debug_do_instructions(cpu_instr);
 		if(res) 
         {  
-			// a bkpt has been encountered
+			// a bkpt has been encountered: stop engine
 			G_LOCK(running);
             running = 0;
 			G_UNLOCK(running);
 
+			// show debug mode has been entered and pass bkpt type 
+			G_LOCK(debugger);
 			debugger = res;
+			G_UNLOCK(debugger);
 			
-			// send a signal to GTK ?
 			g_thread_exit(GINT_TO_POINTER(res));
 		} 
         else 
