@@ -76,8 +76,6 @@ Uint32 *pLcdBuf = NULL;       // LCD screen  (TI screen: bytemapped)
 Uint32 convtab[512] = { 0 };  // Planar to chunky conversion table
 
 Uint8 sdl2ti[512] = { 0 };    // SDL to TI key conversion table
-int iKeyWasPressed;			  // true if a TI key has been pressed
-int lastKey = -1;             // the latest key pressed
 int iAlpha = 0;               // The TI89 Alpha key has been pressed
 
 int bFullscreen=0;            // true if toggled in FullScreen mode
@@ -327,6 +325,8 @@ int hid_init(void)
 
   	for(i=0; i<256; i++)
     	sdl2ti[i+256] = sdl_to_ti(i+65288);
+
+	SDL_EnableKeyRepeat(500, 500);	//SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
   	// Init the planar/chunky conversion table for LCD
   	compute_convtable();
@@ -584,6 +584,8 @@ void gui_popup_menu(void);
 
 int hid_update_keys(void) 
 {
+	static int iKeyWasPressed;			// a key was pressed
+	static int lastKey = -1;            // the latest key pressed
   	SDL_Event event;
   	int i;
 
@@ -664,8 +666,13 @@ int hid_update_keys(void)
 	  		else
 	    	{
 	      		iKeyWasPressed = 1;
-	      		if(iAlpha)
+
+				if(iAlpha)
+				{
 					ti68k_kbd_set_key(TIKEY_ALPHA, 1);
+					iAlpha = 0;
+				}
+
 	      		ti68k_kbd_set_key(sdl_to_ti(event.key.keysym.sym), 1);
 	    	}
 		}
@@ -676,6 +683,7 @@ int hid_update_keys(void)
 	      		ti68k_kbd_set_key(TIKEY_ALPHA, 0);
 	      		iAlpha = 0;
 	    	}
+
 	  		ti68k_kbd_set_key(sdl_to_ti(event.key.keysym.sym), 0);
 		}
       	else if(event.type == SDL_QUIT) 

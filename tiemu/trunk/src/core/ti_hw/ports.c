@@ -355,7 +355,7 @@ uint8_t io_get_byte(uint32_t addr)
         break;
         case 0x1b:	// r- <76543210> 
         // keyboard row mask
-        return hw_kbd_read_mask();
+	        v = hw_kbd_read_mask();
         case 0x1c:	// -w <..5432..> 
         break;
         case 0x1d:	// -w <7..43210>
