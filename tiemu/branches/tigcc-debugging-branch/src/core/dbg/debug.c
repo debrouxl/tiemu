@@ -69,6 +69,18 @@ int ti68k_debug_trace(void)
 
 int ti68k_debug_step(void)
 {
+    /* Handle GDB "software" breakpoint */
+    if (curriword() == 0x4e4f) { // trap #15
+      extern int remove_breakpoints(void);
+      extern int insert_breakpoints(void);
+      int retval;
+      remove_breakpoints();
+      regs.spcflags |= SPCFLAG_DBSKIP;
+      retval = ti68k_debug_do_instructions(1);
+      insert_breakpoints();
+      return retval;
+    }
+
     regs.spcflags |= SPCFLAG_DBSKIP;
 	return ti68k_debug_do_instructions(1);
 }
