@@ -308,16 +308,16 @@ on_dbgcode_window_destroy               (GtkObject       *object,
 {
 	already_open = 0;
 	// Closing the debugger starts the emulator
+    bkpts.mode = bkpts.type = bkpts.id = 0;
     ti68k_engine_unhalt();
 }
 
 
-// Run
 GLADE_CB void
-dbgcode_button1_clicked                     (GtkButton       *button,
+on_run1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
+    GtkWidget *list = (GtkWidget *)(menuitem);   // arg are swapped, why ?
 
 	tb_set_states(1, 0, 0, 0, 1, 0);
     gtk_widget_set_sensitive(list, FALSE);
@@ -325,9 +325,8 @@ dbgcode_button1_clicked                     (GtkButton       *button,
 }
 
 
-// Step
 GLADE_CB void
-dbgcode_button2_clicked                     (GtkButton       *button,
+on_step1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     ti68k_debug_step();
@@ -335,21 +334,19 @@ dbgcode_button2_clicked                     (GtkButton       *button,
 }
 
 
-// Step over
 GLADE_CB void
-dbgcode_button3_clicked                     (GtkButton       *button,
+on_step_over1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     // not implemented yet
 }
 
 
-// Run to cursor
 GLADE_CB void
-dbgcode_button4_clicked                     (GtkButton       *button,
+on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
+    GtkWidget *list = (GtkWidget *)(menuitem);   // arg are swapped, why ?
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
 	GtkListStore *store = GTK_LIST_STORE(model);
@@ -373,14 +370,13 @@ dbgcode_button4_clicked                     (GtkButton       *button,
 }
 
 
-// Break
 GLADE_CB void
-dbgcode_button5_clicked                     (GtkButton       *button,
+on_break1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	// Mode 1 is fastest
+    // Mode 1 is fastest
 #if 1
-    GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
+    GtkWidget *list = (GtkWidget *)(menuitem);   // arg are swapped, why ?
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
 	GtkListStore *store = GTK_LIST_STORE(model);
@@ -423,77 +419,4 @@ dbgcode_button6_clicked                     (GtkButton       *button,
 
     clist_refresh(store);
     refresh_dbgbkpts_window();
-}
-
-/******** Menu ********/
-
-GLADE_CB void
-on_run1_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    dbgcode_button1_clicked(GTK_BUTTON(menuitem), user_data);
-}
-
-
-GLADE_CB void
-on_step1_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    dbgcode_button2_clicked(GTK_BUTTON(menuitem), user_data);
-}
-
-
-GLADE_CB void
-on_step_over1_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    dbgcode_button3_clicked(GTK_BUTTON(menuitem), user_data);
-}
-
-
-GLADE_CB void
-on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    dbgcode_button4_clicked(GTK_BUTTON(menuitem), user_data);
-}
-
-
-GLADE_CB void
-on_break1_activate                     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    dbgcode_button5_clicked(GTK_BUTTON(menuitem), user_data);
-}
-
-
-GLADE_CB void
-on_registers1_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    refresh_dbgregs_window();
-}
-
-
-GLADE_CB void
-on_breakpoints1_activate               (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    refresh_dbgbkpts_window();
-}
-
-
-GLADE_CB void
-on_memory1_activate                    (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    refresh_dbgmem_window();
-}
-
-
-GLADE_CB void
-on_quit1_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    gtk_widget_destroy(GTK_WIDGET(menuitem));   //args are swapped
 }

@@ -46,7 +46,7 @@ gint display_dbgcause1_dbox()
 
     // get context
 	ti68k_bkpt_get_cause(&type, &mode, &id);
-    if(!type && !mode && !id)
+    if(!type && !mode)
         return 0;
 	
     // load GUI

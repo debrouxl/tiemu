@@ -38,6 +38,8 @@ int hw_m68k_init(void)
 {
 	ti68k_bkpt_clear_exception();
 	ti68k_bkpt_set_exception(4);	// illegal instruction
+    bkpts.mode = bkpts.type = bkpts.id = 0;
+
     init_m68k();
 
     return 0;

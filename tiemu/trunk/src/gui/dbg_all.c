@@ -64,18 +64,53 @@ int enter_gtk_debugger(int context)
 	return 0;
 }
 
+// callbacks from dbg_code.c
+
 GLADE_CB void
-on_close_all1_activate                 (GtkMenuItem     *menuitem,
+on_registers1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+    if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
+        gtk_widget_destroy(dbgw.regs);
+  	else
+        refresh_dbgregs_window();
+}
+
+
+GLADE_CB void
+on_breakpoints1_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
+        gtk_widget_destroy(dbgw.bkpts);
+  	else
+        refresh_dbgbkpts_window();
+}
+
+
+GLADE_CB void
+on_memory1_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
+        gtk_widget_destroy(dbgw.mem);
+  	else
+        refresh_dbgmem_window();
+}
+
+
+GLADE_CB void
+on_quit1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    // close all other windows
     if(dbgw.regs)
         gtk_widget_destroy(dbgw.regs);
     if(dbgw.bkpts)
         gtk_widget_destroy(dbgw.bkpts);
     if(dbgw.mem)
         gtk_widget_destroy(dbgw.mem);
-    if(dbgw.code)
-        gtk_widget_destroy(dbgw.code);
+
+    // and this one
+    gtk_widget_destroy(GTK_WIDGET(menuitem));   //args are swapped
 }
-
-

@@ -208,3 +208,15 @@ void ti68k_bkpt_get_cause(int *type, int *mode, int *id)
     *mode = bkpts.mode;
     *id   = bkpts.id;
 }
+
+void ti68k_bkpt_clear_all(void)
+{
+    ti68k_bkpt_clear_address();
+	ti68k_bkpt_clear_access();
+	ti68k_bkpt_clear_range();
+    ti68k_bkpt_clear_exception();
+
+    bkpts.type = 0;
+    bkpts.mode = 0;
+    bkpts.id = 0;
+}
