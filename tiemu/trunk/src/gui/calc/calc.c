@@ -299,6 +299,8 @@ extern volatile int lcd_flag;
 extern volatile int debugger;
 static gint tid = -1;
 
+extern int lcd_hook(void);
+
 static gint hid_refresh (gpointer data)
 {
     if(lcd_flag || (tihw.hw_type >= HW2))
@@ -314,6 +316,8 @@ static gint hid_refresh (gpointer data)
 			tihw.io2[0x1d] &= ~0x80;
 		else
 			tihw.io2[0x1d] |= 0x80;
+
+		lcd_hook();
     }
 
     return TRUE;

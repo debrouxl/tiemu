@@ -101,8 +101,9 @@ void io_put_byte(uint32_t addr, uint8_t arg)
             }
             
 			// turn off OSC1 (CPU), wake on int level 6 (ON key) and int level [5..1]
-			//if(!(arg & 0x10))	PedRom
-			specialflags |= SPCFLAG_STOP; 
+			//arg = 0x1f;	//if(!(arg & 0x10))	PedRom
+			//printf("%02X ", arg);
+			m68k_setstopped(1);
         break;
         case 0x06: 
 		case 0x07: 
@@ -132,14 +133,11 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         case 0x10: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8 (msb)
 			tihw.lcd_adr = ((arg << 8) | tihw.io[0x11]) << 3;
-			//printf("$600010: lcd_addr = %04x (%04x at @%06x)\n", tihw.lcd_adr, curriword(), m68k_getpc());
         break;
         case 0x11: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8 (lsb)
 			tihw.lcd_adr = ((tihw.io[0x10] << 8) | arg) << 3;
-			//tihw.lcd_ptr = &tihw.ram[((tihw.io[0x10] << 8) | arg) << 3];
 			//printf("lcd_addr=%06x ", tihw.lcd_adr); 
-			//printf("$600011: lcd_addr = %04x (%04x at @%06x)\n", tihw.lcd_adr, curriword(), m68k_getpc());
         break;
         case 0x12:	// -w <76543210>
 			// LCD logical width = (64-n)*2 bytes = (64-n)*16 pixels <=> n = 64-w/16

@@ -83,6 +83,14 @@ extern void lcd_hook(void)
 	//printf("%02X ", tihw.timer_value);
 	if(++t % 2) return;
 
+	// unused on HW2/HW3
+	if(tihw.hw_type >= HW2)
+	{
+		ngc = 1;
+		lcd_planes[0] = lcd_planes[1] = lcd_planes[2] = tihw.lcd_adr;
+		return;
+	}
+
 	lcd_addrs[cnt++ % BUFSIZE] = tihw.lcd_adr;
 
 	if(!(cnt % UPDATE_PLANES))
@@ -135,7 +143,7 @@ extern void lcd_hook(void)
 			lcd_planes[2] = tmp;
 		}
 
-#if 0
+#if 1
 		printf("%06x-%06x-%06x\n", lcd_planes[0], lcd_planes[1], lcd_planes[2]);
 		//printf("%1.1f/%1.1f %i\n", round(fir), fir, c);				 
 		//for(i = 0; i < 8; i++)	printf("%06x ", lcd_addrs[i]); printf("\n");

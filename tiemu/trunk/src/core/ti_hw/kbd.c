@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: main.c 245 2004-05-23 20:45:43Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -141,6 +141,7 @@ int hw_kbd_update(void)		// ~600Hz
     if(tihw.on_key) 
     {
 		// set calc on
+		//m68k_setstopped(0);
         if(specialflags & SPCFLAG_STOP)
 		{
 	        specialflags &= ~SPCFLAG_STOP;
