@@ -698,6 +698,46 @@ on_filesel_delete_destroy_event                (GtkWidget       *widget,
 }
 
 
+static int convert_image_to_jpeg(char *filename)
+{
+	GdkPixbuf *img;
+	GError *error = NULL;
+	gboolean status;
+	gchar *s, *d;
+
+	img = gdk_pixbuf_new_from_file(filename, &error);
+  if (img == NULL) 
+    {
+			fprintf(stderr, "Failed to load pixbuf file: %s: %s\n", filename, error->message);
+      g_error_free(error);
+      return -1;
+    }
+
+  d = strrchr(filename, '.');
+  if (d == NULL)
+		s = g_strconcat(filename, ".jpg");
+  else
+	{
+		s = g_strdup(filename);
+		strcpy(++d, "jpg");
+	}
+
+	printf("s = %s\n", s);
+
+	status = gdk_pixbuf_save (img, s, "jpeg", &error, "quality", "100", NULL);
+	if(status == FALSE) 
+		{
+			fprintf(stderr, "Failed to save pixbuf file: %s: %s\n", filename, error->message);
+			g_error_free(error);
+			g_free(s);
+      return -1;
+		}
+
+	g_free(s);
+
+	return 0;
+}
+
 void
 on_filesel_new_ok_clicked                  (GtkButton       *button,
 					    gpointer         user_data)

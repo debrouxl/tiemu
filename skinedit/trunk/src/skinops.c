@@ -392,7 +392,7 @@ load_image(FILE *fp)
   skin_infos.img_orig = gdk_pixbuf_new_from_file(filename, &error);
   if (skin_infos.img_orig == NULL) 
     {
-      printf("error");
+			fprintf(stderr, "Failed to load pixbuf file: %s: %s\n", filename, error->message);
       g_error_free(error);
       return -1;
     }
