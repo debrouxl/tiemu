@@ -5,6 +5,9 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
+- 13/12/2004, version 1.80h: roms
+	- 
+
 - 15/11/2004, version 1.80g: roms
 	- idle() fixed (port $600005)
 	- erase FLASH whenever an OS upgrade is loaded.

@@ -10,31 +10,6 @@ l'AMS ont des sous-bsr qui ont eux-mêmes plusieurs sous-bsr, etc.,
 certains step over sur ces bsr mettent plusieurs dizaines de seconde à
 aboutir.
 
-+ Un Step To sur une instruction suffisamment loin de l'instruction
-courante n'a aucun effet, c'est bizarre...
-
-+ Le scroll d'instructions vers le bas n'est pas bon du tout, Il
-n'avance pas d'instruction en instruction, mais se décale parfois, on
-s'y perd complètement.
-
-+ Si après un breakpoint sur instruction se fait toucher, et si on
-fait 'run', le même breakpoint se fait retoucher, il faudrait plutôt
-continuer.
-
-+ Je ne suis pas sûr que les data breakpoints fionctionnent
-correctement. Si je place un breakpoint 'single byte' à 0, il n'est
-jamais atteint par le code du reset, alors qu'il y a bien une écriture
-d'un long mot à 0.
-
-+ Un bouton pour éditer un breakpoint serait pas mal (afficher une fenêtre
-comme la fenêtre 'Add breakpoint', mais initialisée avec les valeurs
-du breakpoint choisi).
-
-+ la Flash n'est pas entièrement remise à neuf 
-lors d'un load d'update de 89 (trafiqué, avec des 
-FlashApps écrites à la fin) succédant à un load 
-de ROM dump de 89.
-
 * le link ne marche pas convenablement. Voir plus bas.
 
 * le grayscale ne semble pas fonctionner 
@@ -46,17 +21,6 @@ et dissolve, seuls programmes en niveaux de
 gris de mon rom dump.
 
 - tthdex ne marche pas convenablement, les 
-pressions de touches ne sont pas prises en compte. 
-En traçant dans la routine d'attente, qui utilise 
-OSdequeue (c'est la classique GetUserInput que 
-tu peux trouver dans la plupart des programmes de 
-TICT), je me suis rendu compte que le fautif est 
-idle();. Commenter cet appel (remplacement des 
-trois instructions par nop, 0x4E71) suffit à faire 
-marcher tthdex normalement. Il doit donc y avoir au 
-moins un port mal émulé.
-En effet, sur 89 les touches ne répondent pas, et sur 92+ il n'y a pas
-de scrolling quand on laisse appuyé une touche.
 Je ne pourrais pas trop de dire d'où ça vient, mais si c'est idle()
 qui pose problème, ce doit être le port $600005 qui est mal émulé.
 
@@ -80,63 +44,6 @@ marche pas; une utilisation du menu F12 semble le
 faire marcher définitivement (jusqu'au prochain
 reset).
 
-+ chaque pression de touche semble être reportée 
-en double dans la fenêtre console, bien qu'elle ne 
-soit prise en compte qu'une fois par l'émulateur.
-
-+ le dropdown (ou quelque soit son nom) des ROM_CALLs 
-n'est pas protégé contre les ROM_CALLs invalides à 
-des adresses farfelues (n'existant pas sur la version 
-de ROM émulée).
-
-- La fenêtre Memory n'est pas toujours rafraîchie. Il y a le bouton
-refresh, mais on ne pense pas toujours à l'utiliser. Elle n'est pas
-rafraîchie notamment lorsque un breakpoint est touché, ce serait
-possible de forcer le rafraîchissement à ce moment là ?
-
-+ Pour le problème de scroll d'instructions gênant dont je te parlais
-: va n'importe où dans l'AMS où il y a des instructions valides,
-scroll instruction par instruction vers le bas, tu verras que sur
-certaines instructions le scroll est effectué en haut, mais pas en bas
-de la fenêtre (la dernière instruction reste la même).
-
-+ Quelques idées pas forcément très urgentes mais qui seraient
-intéressantes à implémenter :
-- L'AMS utilise le registre a6 comme frame pointer, et accède
-relativement à ce registre aux variables locales créées et aux
-paramètres de la fonction exécutée.
-Le problème est qu'avec des instructions de type cmp.w -$54(a6),d0, on
-voudrait savoir ce qu'il y a à la variable à l'offset $54 : il faut
-alors sortir une calculatrice hexa, calculer l'adresse réelle et aller
-dans la fenêtre Memory trouver la valeur.
-L'idéal serait d'avoir dans la même fenêtre que stack frame, un memory
-dumper qui ressemble à celui de la pile, mais avec les offsets
-relatifs au registre a6 plutôt que des adresses réelles (offsets
-positifs et négatifs pour pouvoir regarder à la fois les variables
-locales et les paramètres de la fonction). Par exemple :
--6  0084
--4  5600
--2  0000
-0   0090
-2   4924
-4   2828
-6   0000
-Il faudrait que la fenêtre puisse être scrollable à l'infini dans les
-deux sens, on ne peut pas savoir la quantité de variables que la
-fonction peut utiliser.
-Si c'est trop compliquer à réaliser, écrire à côté de l'instruction
-l'adresse correspondant à -$54(a6) dans l'exemple précédent suffirait
-pour pouvoir se débrouiller, mais serait beaucoup moins bien.
-
-+ Un système de breakpoint temporaire sur instruction, comme sous GDB,
-serait pratique (breakpoint qui disparaît la première fois qu'il est
-touché) : il m'arrive souvent de placer un breakpoint après un bsr ou
-un jsr de l'AMS avant de faire un step into dans la sous-routine au
-cas où elle serait trop profonde et que j'abandonne le déboguage à
-quelques niveaux d'appels plus profond. Je fais un run et mon
-breakpoint est touché; je l'enlève et je continue. Un breakpoint
-temporaire éviterait d'avoir à l'enlever à chaque fois.
-
 * Alors qu'un AMS est déjà émulé, une importation de ROM puis sa
 sélection lance une erreur (en popup) :
 GGdk-ERROR **: file gdkgc-win32.c: line 905 (gdk_win32_hdc_get):
@@ -144,53 +51,12 @@ assertion failed: (win32_gc->hdc == NULL)
 Puis TiEmu quitte. Après un redémarrage de TiEmu, il n'y a plus de
 problème à la sélection de la ROM.
 
-+ Quand on édite avec l'éditeur hexa dans la mémoire correspondant à
-la pile, la fenêtre Stack Frame n'est pas rafraîchie.
-
-+ Le mode 'either' des data breakpoints ne semble pas être pris en
-compte (la colonne 'Mode' est toujours mise à 'read')
-
-+ Il est parfois impossible d'enlever un data breakpoint en cliquant
-sur le moins ('-'), ça n'a aucun effet.
-
 * J'ai aussi plusieurs crash de cause difficile à déterminer en
 utilisant le débogueur. Il y en a peut-être un lié à la fonction
 'disable' de breakpoint.
 
-+ Dropdown 'Symbol' pour les ROM Calls dans la fenêtre source : il
-faudrait trier insensible à la casse, et quand on tape le début d'un
-nom de ROM Call, amener à la première ROM call correspondante, comme
-dans la version de VTI de JM.
-
 * Pouvoir envoyer un fichier en le glissant déplaçant vers la calc
 serait pratique, comme sous VTI. 
-
-+ Ou il faudrait au moins que le
-dernier dossier visité avec l'explorateur de fichier soit gardé en
-mémoire et utilisé comme répertoire de départ au prochain envoi.
-
-+ Si on place un breakpoint dans la fenêtre Code, et si on le supprime
-depuis la fenêtre Breakpoints, le symbole breakpoint n'est pas
-supprimé de la fenêtre Code (à moins de scroller).
-
-+ Personnellement Je ne suis pas vraiment fan du popup affichant le
-breakpoint déclenché, en tout cas pour les breakpoints sur
-instruction. Ca fait perdre un peu de temps pour rien du tout.
-Peut-être une désactivation possible dans la configuration ?
-
-+ Un data breakpoint de type 'either' serait quand même mieux que deux
-breakpoints read et write, sinon on est vite submergé pour rien, et on
-perd du temps à les supprimer en 2 fois. D'ailleurs l'édition d'un des
-deux breakpoints provoque l'apparition d'un doublon si on laisse
-'either' coché.
-Mais bon ça reste utilisable.
-
-* Les ports à $710000 sont tous reservés à la HW3 pour l'instant, et ne
-sont pas des reflets des ports $700000. Ils correspondent aux ports de
-l'USB et de la clock HW. TiEmu doit ignorer toutes les écritures vers
-ces ports tant qu'on a pas réunis d'infos préçises dessus (pour la
-clock une implémentation serait éventuellement possible avec ma doc,
-pour l'USB les recherches sont en cours mais pas pour tout de suite).
 
 ---
 
@@ -210,14 +76,6 @@ plus, et il y a probablement d'autres combines de touches "suspectes".
 * Si j'appuie sur la touche Windows et que je reviens à TiEmu ensuite, il
 ne répond plus à aucun appui de touches (mais on peut le fermer à travers le
 popup au moins). L'"engine" est "stoppée" et pas re"start"ée.
-
-+ J'ai essayé d'envoyer un fichier TI-89 (bgammon.89z) à une TI-92+ émulée,
-j'ai eu un "This file is not recognized as a TI file." Ce serait bien si on
-pouvait envoyer les fichiers TI-89 à la TI-92+...
-
-+ Serait-il possible de se rappeler du répertoire courant dans le file
-selector pour la fonction F10? (Et d'ailleurs peut-être d'utiliser le "new
-file selector" - enfin, bon, je m'en sors très bien avec le vieux aussi.)
 
 * Le transfert de fichiers ne marche pas: Lors du premier transfert, j'ai:
 Link cable error: code = 4, msg = Msg: Timeout occured while writing to the
@@ -257,11 +115,6 @@ première fois, j'ai converti, puis choisi la nouvelle ROM dans la liste, et
 TiEmu a planté (fenêtre de plantage Windows). La deuxième fois, la ROM était
 déjà dans la liste, je l'ai choisie et tout a marché...
 
-+ Donc l'émulation de la V200 marche bel et bien. En revanche, pour la
-Titanium, ça ne marche pas encore. J'ai essayé le 89u de AMS 3.00, et il y a
-des trucs bizarres à l'écran. Je ne sais pas si le reste marche parce que je
-ne vois rien.
-
 * Maintenant que j'ai réussi à envoyer des fichiers, j'ai pu enfin tester
 des programmes. L'option 7 niveaux de gris ne marche pas correctement avec
 Backgammon. Backgammon est bel et bien en 7 ndg, donc l'option devrait
@@ -283,13 +136,7 @@ lignes utilisées par Backgammon pour Fargo sont:
  move.w   %d0,0x600010                        | restore used plane to
 tios__001c
 
-+ J'en ai déjà un nouveau: le règlage du contraste est bizarre: Sur V200, il
-est à l'envers! Sur TI-92+ HW2, il va dans le bon sens, mais il devient
-d'abord tout noir et ensuite repart du blanc, il faudrait faire attention au
-fait que les HW2 ont plus de bits pour le contraste que les HW1. Sur TI-92,
-tout marche.
-
-+ Les nombres de niveaux de gris interessants sont 2, 4, 7 et 8:
+* Les nombres de niveaux de gris interessants sont 2, 4, 7 et 8:
 * 2: plane0 (1/1)
 * 4: plane0, plane0, plane1 (2/3, 1/3)
 * 7: plane2, plane0, plane1, plane0, plane1, plane0 (3/6, 2/6, 1/6)
@@ -305,22 +152,30 @@ pas l'air de planter l'émulateur). Il faut faire un
 Reset Calculator pour avoir une calculette à nouveau
 d'aplomb.
 
-+ La fenêtre qui affiche les noms de ROM_CALLs est 
-difficile à utiliser, car on ne peut pas accéder à 
-un ROM_CALL en tapant les premières lettres, et il 
-faut savoir le numéro du ROM_CALL pour pouvoir y 
-accéder. A l'affichage, inverse simplement juste le 
-nom et le numéro (en gardant l'adresse, c'est bien).
-Au fait, si on sélectionne un ROM_CALL qui a une 
-adresse invalide (ce qui arrive souvent quand la 
-table des ROM_CALLs est trouvée à 0x000000), par 
-exemple l'adresse 30390020, le désassembleur devrait 
-aller à l'adresse 390020 (les 24 bits de poids 
-faible), comme le fait le Memory View, plutôt que 
-d'aller à l'adresse 303900.
-
 * j'ai de nouveau des problèmes avec le caractère 0x09
 dans la fenêtre ASCII de la memory view (Win ME ?).
+
+* Bon point pour la possibilité de sélectionner un
+ROM_CALL à travers son nom, et de ne plus aller aux
+ROM_CALLs non disponibles. Petite suggestion: si un
+ROM_CALL est dans la RAM, il faudrait aller plutôt
+dans la fenêtre Memory (comme la VTI de JM)
+
+* Toujours le problème avec TAB (0x09) mal interprété.
+J'utilise le GTK téléchargé en même temps que The GIMP
+2.0.5, un GTK+ du 01/10/2004, version 2.4.10.
+
+* Un bug bizarre, dont les instructions de
+reproduction semblent être:
+        * utiliser un AMS "récent" (2.07+), sur une 92+ ou
+V200 (peut-être 89 aussi ?).
+        * aller dans la fenêtre de debug, partie sélection
+des ROM_CALLs, sélectionner l'un d'entre eux
+(_bcd_math par exemple).
+        * passer à une AMS 2.05 (testé: ROM dump de 89 avec
+certificate).
+        * aller dans la fenêtre de debug: TIEmu est parti
+dans le décor, je ne sais pas s'il exécute ou pas
 
 me/moi
 ======
@@ -329,6 +184,9 @@ me/moi
 Due à idle: il suffit de décommenter "if(!(arg & 0x10))" sur le port $600005.
 
 * pb de contraste 
+
+* simplify ti92+ & ti92.skn
+* simplify ROM/upgrade
 
 -------------
 + done
