@@ -466,7 +466,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE am__leading_dot MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT build build_cpu build_vendor build_os host host_cpu host_vendor host_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE EGREP LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB DLLTOOL ac_ct_DLLTOOL AS ac_ct_AS OBJDUMP ac_ct_OBJDUMP CPP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL GROFF USE_GROFF_TRUE USE_GROFF_FALSE MKINSTALLDIRS USE_NLS MSGFMT GMSGFMT XGETTEXT MSGMERGE ALLOCA GLIBC21 HAVE_POSIX_PRINTF HAVE_ASPRINTF HAVE_SNPRINTF HAVE_WPRINTF LIBICONV LTLIBICONV INTLBISON BUILD_INCLUDED_LIBINTL USE_INCLUDED_LIBINTL CATOBJEXT DATADIRNAME INSTOBJEXT GENCAT INTLOBJS INTL_LIBTOOL_SUFFIX_PREFIX INTLLIBS LIBINTL LTLIBINTL POSUB PKG_CONFIG TICABLES_CFLAGS TICABLES_LIBS TIFILES_CFLAGS TIFILES_LIBS TICALCS_CFLAGS TICALCS_LIBS GTHREAD_CFLAGS GTHREAD_LIBS GLIB_CFLAGS GLIB_LIBS GTK_CFLAGS GTK_LIBS GLADE_CFLAGS GLADE_LIBS LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE am__leading_dot MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT build build_cpu build_vendor build_os host host_cpu host_vendor host_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE EGREP LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB DLLTOOL ac_ct_DLLTOOL AS ac_ct_AS OBJDUMP ac_ct_OBJDUMP CPP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL GROFF USE_GROFF_TRUE USE_GROFF_FALSE MKINSTALLDIRS USE_NLS MSGFMT GMSGFMT XGETTEXT MSGMERGE ALLOCA GLIBC21 HAVE_POSIX_PRINTF HAVE_ASPRINTF HAVE_SNPRINTF HAVE_WPRINTF LIBICONV LTLIBICONV INTLBISON BUILD_INCLUDED_LIBINTL USE_INCLUDED_LIBINTL CATOBJEXT DATADIRNAME INSTOBJEXT GENCAT INTLOBJS INTL_LIBTOOL_SUFFIX_PREFIX INTLLIBS LIBINTL LTLIBINTL POSUB PKG_CONFIG TICABLES_CFLAGS TICABLES_LIBS TIFILES_CFLAGS TIFILES_LIBS TICALCS_CFLAGS TICALCS_LIBS GTHREAD_CFLAGS GTHREAD_LIBS GLIB_CFLAGS GLIB_LIBS GTK_CFLAGS GTK_LIBS GLADE_CFLAGS GLADE_LIBS LIBOBJS OS_WIN32_TRUE OS_WIN32_FALSE LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -29347,6 +29347,17 @@ echo "${ECHO_T}${msnative_struct}" >&6
   ;;
 esac
 
+
+
+if test "$msnative_struct"; then
+  OS_WIN32_TRUE=
+  OS_WIN32_FALSE='#'
+else
+  OS_WIN32_TRUE='#'
+  OS_WIN32_FALSE=
+fi
+
+
 # some extra flags
 CFLAGS="$CFLAGS -DGTK_DISABLE_DEPRECATED -DDEBUGGER"
 LDFLAGS="$LDFLAGS"
@@ -29485,6 +29496,13 @@ if test -z "${USE_GROFF_TRUE}" && test -z "${USE_GROFF_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"USE_GROFF\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"USE_GROFF\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${OS_WIN32_TRUE}" && test -z "${OS_WIN32_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"OS_WIN32\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"OS_WIN32\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -30155,6 +30173,8 @@ s,@GTK_LIBS@,$GTK_LIBS,;t t
 s,@GLADE_CFLAGS@,$GLADE_CFLAGS,;t t
 s,@GLADE_LIBS@,$GLADE_LIBS,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
+s,@OS_WIN32_TRUE@,$OS_WIN32_TRUE,;t t
+s,@OS_WIN32_FALSE@,$OS_WIN32_FALSE,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
 CEOF
 
@@ -30989,16 +31009,14 @@ fi
 
 
 echo
-echo "To run the TiEmu emulator, you will need a ROM image. As this file is"
-echo "copyrighted by Texas Instruments it will never be distributed with"
-echo "the emulator..."
+echo "To run the TiEmu emulator, you will need a ROM dump. As those files are"
+echo "copyrighted by Texas Instruments, they will never be distributed with"
+echo "the emulator... In replacement, you can use PedRom which is provided"
+echo "with TiEmu."
 echo
-echo "If you already have some ROMs, place them in the ./ROMs directory"
-echo "so that they can be installed with TiEmu."
-echo "It you have no ROM, you can get an ROM image of your calculator"
+echo "It you have no ROM, you can get an ROM dump of your calculator"
 echo "with the 'ROM dump' function of TiLP."
-echo "Else, you can use TI's FLASH OS upgrade (AMS). But, it contains less"
-echo "informations than an pure ROM image."
+echo "Otherwise, you can use a TI's FLASH OS upgrade (AMS) as image."
 echo
 echo "Note: TiLP is available at http://lpg.ticalc.org/prj_tilp."
 echo
