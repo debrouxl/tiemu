@@ -39,7 +39,7 @@
 #include "ti68k_err.h"
 #include "flash.h"
 
-#define SAV_REVISION	4
+#define SAV_REVISION	5
 
 static int load_bkpt(FILE *f, GList **l)
 {
@@ -123,7 +123,6 @@ int ti68k_state_load(char *filename)
 	// Load internal hardware (registers and special flags)
     ret = fseek(f, sav.regs_offset, SEEK_SET);
     fread(&regs, sizeof(regs), 1, f);
-    fread(&specialflags, sizeof(specialflags), 1, f);
     
     // Load I/O ports state
     ret = fseek(f, sav.io_offset, SEEK_SET);
@@ -243,7 +242,7 @@ int ti68k_state_save(char *filename)
 	sav.size = sizeof(SAV_INFO);
 
     sav.regs_offset = sizeof(IMG_INFO) + sizeof(SAV_INFO);
-    sav.io_offset = sav.regs_offset + sizeof(regs) + sizeof(specialflags);
+    sav.io_offset = sav.regs_offset + sizeof(regs);
     sav.ram_offset = sav.io_offset + 2*tihw.io_size;
 	sav.misc_offset = sav.ram_offset + tihw.ram_size;
 #if 1
@@ -261,7 +260,6 @@ int ti68k_state_save(char *filename)
     
     // Save registers and special flags
     fwrite(&regs, sizeof(regs), 1, f);
-    fwrite(&specialflags, sizeof(specialflags), 1, f);
     
     // Save I/O ports state
     fwrite(tihw.io , tihw.io_size, 1, f);

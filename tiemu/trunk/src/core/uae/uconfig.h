@@ -3,7 +3,7 @@
   * 
   * User configuration options
   *
-  * Copyright 1995, 1996 Bernd Schmidt
+  * Copyright 1995 - 1998 Bernd Schmidt
   */
 
 /*
@@ -11,86 +11,67 @@
  * and you can put anything you can pass on the command line into a 
  * configuration file ~/.uaerc. Please read the documentation for more
  * information.
+ * 
+ * NOTE NOTE NOTE
+ * Whenever you change something in this file, you have to "make clean"
+ * afterwards.
+ * Don't remove the '#' signs. If you want to enable something, move it out
+ * of the C comment block, if you want to disable something, move it inside
+ * the block.
  */
 
 /*
- * Define this when you are compiling UAE for the first time. If it works, you
- * can try to undefine it to get (much) better performance. It does not seem
- * to work on all machines, though.
- */
-#define DONT_WANT_SHM
-
-/*
- * If you are running UAE over the network on a remote X server, this can
- * boost performance quite a bit. It can even boost performance on a 
- * non-networked system.
- */
-#define LOW_BANDWIDTH
-
-/*
- * The blitter emulator contains some optimization methods that are, strictly
- * speaking, invalid, but very unlikely to break anything. 
- * You can set the optimization level from 0 (normal emulation) to 3 (max.
- * optimization). 
- * Methods 2 and 3 are really a lot faster with games and demos.
- * Careful: method 3 will break most RISC chips. You'll see bus errors.
- */
-#define FAST_BLITTER 2
-
-/*
- * Define this if you have the AF System and want sound in UAE.
- * You also have to set the right paths in the Makefile.
-#define AF_SOUND
+ * When USE_COMPILER is defined, a m68k->i386 instruction compiler will be
+ * used. This is experimental. It has only been tested on a Linux/i386 ELF
+ * machine, although it might work on other i386 Unices.
+ * This is supposed to speed up application programs. It will not work very
+ * well for hardware bangers like games and demos, in fact it will be much
+ * slower. It can also be slower for some applications and/or benchmarks.
+ * It needs a lot of tuning. Please let me know your results with this.
+ * The second define, RELY_ON_LOADSEG_DETECTION, decides how the compiler 
+ * tries to detect self-modifying code. If it is not set, the first bytes
+ * of every compiled routine are used as checksum before executing the
+ * routine. If it is set, the UAE filesystem will perform some checks to 
+ * detect whether an executable is being loaded. This is less reliable
+ * (it won't work if you don't use the harddisk emulation, so don't try to
+ * use floppies or even the RAM disk), but much faster.
+ *
+ * @@@ NOTE: This option is unfortunately broken in this version. Don't
+ * try to use it. @@@
+ *
+#define USE_COMPILER
+#define RELY_ON_LOADSEG_DETECTION
  */
 
 /*
- * When these two are enabled, a subset of the ECS features is emulated.
- * Actually, it's only the chip identification and big blits. This may be
- * enough to persuade some ECS programs to run.
- * DON'T enable SuperHires or Productivity modes. They are not emulated,
- * and will look very messy. NTSC doesn't work either.
+ * Set USER_PROGRAMS_BEHAVE to 1 or 2 to indicate that you are only running
+ * non-hardware banging programs which leave all the dirty work to the
+ * Kickstart. This affects the compiler. Any program that is _not_ in the ROM
+ * (i.e. everything but the Kickstart) will use faster memory access 
+ * functions.
+ * There is of course the problem that the Amiga doesn't really distinguish
+ * between user programs and the kernel. Not all of the OS is in the ROM,
+ * e.g. the parallel.device is on the disk and gets loaded into RAM at least
+ * with Kickstart 1.3 (don't know about newer Kickstarts). So you probably
+ * can't print, and some other stuff may also fail to work.
+ * A useless option, really, given the way lots of Amiga software is written.
+#define USER_PROGRAMS_BEHAVE 0
  */
-#define ECS_AGNUS
-#define ECS_DENISE
-
-#ifdef __linux /* This line protects you if you don't use Linux */
-/***************************************************************************
- * Linux specific options. Ignore these if you are using another OS.
- */
-
-/*
- * Define if you have installed the Linux sound driver and if you have read
- * the section about sound in the README.
- * Turn off sound at run-time with the "-S" option.
-#define LINUX_SOUND
- */
-
-/*
- * Try defining this if you don't get steady sound output. 
-#define LINUX_SOUND_SLOW_MACHINE
- */
-
-#endif /* __linux */
 
 /***************************************************************************
- * Support for broken software. These options are set to default values
- * that are reasonable for most uses. You should not need to change these.
+ * Operating system/machine specific options
+ * Configure these for your CPU. The default settings should work on any
+ * machine, but may not give optimal performance everywhere.
+ * (These don't do very much yet, except HAVE_RDTSC
  */
 
 /*
- * Some STUPID programs access a longword at an odd address and expect to
- * end up at the routine given in the vector for exception 3.
- * (For example, Katakis does this). And yes, I know it's legal, but it's dumb
- * anyway.
- * If you leave this commented in, memory accesses will be faster,
- * but some programs may fail for an obscure reason.
+ * Define this on PPro's, K6's and maybe other non-x86 CPUs.
+#define MULTIPLICATION_PROFITABLE
  */
-#define NO_EXCEPTION_3
 
 /*
- * If you want to see the "Hardwired" demo, you need to define this.
- * Otherwise, it will say "This demo don't like Axel" - apparently, Axel
- * has a 68040.
-#define WANT_SLOW_MULTIPLY
+ * PPros don't like branches. With this option, UAE tries to avoid them in some
+ * places.
+#define BRANCHES_ARE_EXPENSIVE
  */
-

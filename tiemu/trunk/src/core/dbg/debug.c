@@ -32,7 +32,9 @@
 # include <config.h>
 #endif
 
+#include <gtk/gtk.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "libuae.h"
 #include "m68k.h"
@@ -49,7 +51,7 @@ int ti68k_debug_get_pc(void)
 
 int ti68k_debug_break(void)
 {
-    specialflags |= SPCFLAG_BRK;
+    regs.spcflags |= SPCFLAG_BRK;
     return 0;
 }
 
@@ -57,14 +59,14 @@ int ti68k_debug_trace(void)
 {
     // Set up an internal trap (DBTRACE) which will 
     // launch/refresh the debugger when encountered
-    specialflags |= SPCFLAG_DBTRACE;
+    regs.spcflags |= SPCFLAG_DBTRACE;
 
     return 0;
 }
 
 int ti68k_debug_step(void)
 {
-    specialflags |= SPCFLAG_DBSKIP;
+    regs.spcflags |= SPCFLAG_DBSKIP;
 	return ti68k_debug_do_instructions(1);
 }
 
@@ -77,7 +79,7 @@ static const uint16_t rets[] = {
 	0x4e72,		// STOP
 };
 
-static inline is_ret_inst(uint16_t inst)
+static inline int is_ret_inst(uint16_t inst)
 {
 	int i;
 	for(i = 0; i < sizeof(rets) / sizeof(uint16_t); i++)
@@ -86,7 +88,7 @@ static inline is_ret_inst(uint16_t inst)
 	return 0;
 }
 
-static inline is_bsr_inst(uint16_t ci)
+static inline int is_bsr_inst(uint16_t ci)
 {
 	int t1, t2, t3, t4, t5;
 	
@@ -130,10 +132,10 @@ int ti68k_debug_step_over(void)
 		// force GUI refresh in order to be able to cancel operation
 		while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
 	}
-	while ((next_pc != m68k_getpc()) && !(specialflags & SPCFLAG_BRK));
+	while ((next_pc != m68k_getpc()) && !(regs.spcflags & SPCFLAG_BRK));
 
-	if(specialflags & SPCFLAG_BRK)
-		specialflags &= ~SPCFLAG_BRK;
+	if(regs.spcflags & SPCFLAG_BRK)
+		regs.spcflags &= ~SPCFLAG_BRK;
 
     return 0;
 }
@@ -185,10 +187,10 @@ int ti68k_debug_skip(uint32_t next_pc)
 		// force GUI refresh in order to be able to cancel operation
 		while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
     } 
-    while ((next_pc != m68k_getpc()) && !(specialflags & SPCFLAG_BRK));
+    while ((next_pc != m68k_getpc()) && !(regs.spcflags & SPCFLAG_BRK));
 
-	if(specialflags & SPCFLAG_BRK)
-		specialflags &= ~SPCFLAG_BRK;
+	if(regs.spcflags & SPCFLAG_BRK)
+		regs.spcflags &= ~SPCFLAG_BRK;
 
     return 0;
 }

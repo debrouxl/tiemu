@@ -30,6 +30,8 @@
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <sys/stat.h>
+#include <string.h>
+#include <unistd.h> // unlink
 
 #include "support.h"
 #include "intl.h"

@@ -29,6 +29,8 @@
 */
 
 #include <stdio.h>
+#include <ctype.h>
+#include <string.h>
 
 #include "ti68k_def.h"
 #include "ti68k_int.h"

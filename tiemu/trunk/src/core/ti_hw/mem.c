@@ -28,6 +28,7 @@
     Memory management: RAM, PROM/FLASH, I/O ports and bkpts
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -235,7 +236,7 @@ uint32_t hw_get_long(uint32_t adr)
 	        {
 				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_READ_LONG; 
-	            specialflags |= SPCFLAG_BRK;	            
+	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	        
@@ -255,7 +256,7 @@ uint32_t hw_get_long(uint32_t adr)
 	        {
 				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_READ_LONG; 
-	            specialflags |= SPCFLAG_BRK;	            
+	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
@@ -267,7 +268,7 @@ uint32_t hw_get_long(uint32_t adr)
     // Odd address: exception !
     if(adr & 1) 
     {
-        specialflags |= SPCFLAG_ADRERR;
+        regs.spcflags |= SPCFLAG_ADRERR;
         return 0;
     }
 
@@ -289,7 +290,7 @@ uint16_t hw_get_word(uint32_t adr)
 	        {
 				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_READ_WORD;
-	            specialflags |= SPCFLAG_BRK;
+	            regs.spcflags |= SPCFLAG_BRK;
 	            break;
 	        }
 	    
@@ -309,7 +310,7 @@ uint16_t hw_get_word(uint32_t adr)
 	        {
 				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_READ_WORD; 
-	            specialflags |= SPCFLAG_BRK;	            
+	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
@@ -321,7 +322,7 @@ uint16_t hw_get_word(uint32_t adr)
     // Odd address: exception !
     if(adr & 1) 
     {
-        specialflags |= SPCFLAG_ADRERR;
+        regs.spcflags |= SPCFLAG_ADRERR;
         return 0;
     }
 
@@ -342,7 +343,7 @@ uint8_t hw_get_byte(uint32_t adr)
 	        {
 				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_READ_BYTE;
-	            specialflags |= SPCFLAG_BRK;	            
+	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	    
@@ -363,7 +364,7 @@ uint8_t hw_get_byte(uint32_t adr)
 	        {
 				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_READ_BYTE; 
-	            specialflags |= SPCFLAG_BRK;	            
+	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
@@ -391,7 +392,7 @@ void hw_put_long(uint32_t adr, uint32_t arg)
 	        {
 				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_WRITE_LONG;
-	            specialflags |= SPCFLAG_BRK;	            
+	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
@@ -411,7 +412,7 @@ void hw_put_long(uint32_t adr, uint32_t arg)
 	        {
 				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_WRITE_LONG; 
-	            specialflags |= SPCFLAG_BRK;	            
+	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
@@ -423,7 +424,7 @@ void hw_put_long(uint32_t adr, uint32_t arg)
     // Odd address: exception !
     if(adr & 1)
     {
-        specialflags |= SPCFLAG_ADRERR;
+        regs.spcflags |= SPCFLAG_ADRERR;
         return;
     }
     
@@ -450,7 +451,7 @@ void hw_put_word(uint32_t adr, uint16_t arg)
 	        {
 				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_WRITE_WORD;
-	            specialflags |= SPCFLAG_BRK;	            
+	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
@@ -470,7 +471,7 @@ void hw_put_word(uint32_t adr, uint16_t arg)
 	        {
 				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_WRITE_WORD; 
-	            specialflags |= SPCFLAG_BRK;	            
+	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
@@ -482,7 +483,7 @@ void hw_put_word(uint32_t adr, uint16_t arg)
     // Odd address: exception !
     if(adr & 1)
 	{
-        specialflags |= SPCFLAG_ADRERR;
+        regs.spcflags |= SPCFLAG_ADRERR;
 		return;
 	}
 
@@ -509,7 +510,7 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 	        {
 				bkpts.type = BK_TYPE_ACCESS;
 	            bkpts.mode = BK_WRITE_BYTE;
-	            specialflags |= SPCFLAG_BRK;	            
+	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  
@@ -529,7 +530,7 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 	        {
 				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_WRITE_BYTE; 
-	            specialflags |= SPCFLAG_BRK;	            
+	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	  

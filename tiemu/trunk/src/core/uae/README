@@ -1,11 +1,22 @@
-This is version 0.7.6 of UAE, the Un*x Amiga Emulator.
+This is version 0.8.15 of UAE, the Un*x Amiga Emulator.
+
+Versions numbered 0.8.x are beta versions, to be used for development only.
+If you are only a user of UAE, you are better off using the latest 0.7.x
+version or waiting for 0.9.0.
+
 
 License
 =======
 
-UAE is available under the terms of the GNU General Public License. See the
-file COPYING that is included in the top level directory of this archive for
-details.
+UAE is available under the terms of the GNU General Public License. This means
+that it is free software: you are welcome to distribute copies of it and/or
+modify it, under certain conditions. It also means that there is no warranty
+for UAE.
+See the file COPYING that is included in the top level directory of this
+archive for details.
+
+The SCSI code distributed with UAE is also available under the terms of the
+GPL and was written by J. Schilling.
 
 
 Overview
@@ -48,21 +59,21 @@ Features
 
 This version of UAE emulates:
 
-- An Amiga 500 Computer, with 68000 or 68020 CPU (68020 includes 68881 FPU)
+- A 68000, 68010 or 68020 CPU, optionally a 68881 FPU
 - OCS Graphics Chipset, plus big blits from the ECS Chipset
-- Up to 2MB Chip RAM and up to 8MB Fast RAM, or 8MB Chip RAM without Fast RAM.
-- Up to 64MB Zorro III Fast RAM, independent of Chip RAM setting.
+- Up to 2MB Chip RAM and up to 8MB Fast RAM, or 8MB Chip RAM without Fast RAM
+- Up to 64MB Zorro III Fast RAM, independent of Chip RAM setting (68020 only)
 - Up to 1MB Slow RAM, for extended compatibility with problem software
 - Up to 8MB of graphics card memory, usable by software that supports
-  Picasso 96 compatible graphics cards.
-- 4 x 3.5" floppy disk drives (DF0:, DF1:, DF2: and DF3:)
-- Hard-disk emulation
+  Picasso 96 compatible graphics cards
+- 4 x 3.5" floppy disk drives (DF0:, DF1:, DF2: and DF3:). It's not possible to
+  read Amiga disks, so these are emulated with disk files.
+- A hard-disk: either a harddisk image file or part of the native filesystem
 - Joystick support (with option of mapping joystick to numeric keypad)
 - Mouse support
 - Ability to run in various screen modes (for better display quality or
   better speed)
-- Full sound support, consisting of 4 x 8bit channels (mixed into one, so
-  output is mono for now).
+- Full stereo sound support, consisting of 4 x 8bit channels
 - Beta parallel and serial port support
 - some other things which don't work well enough to mention them here...
 
@@ -119,151 +130,201 @@ Invoking UAE
 
 First, read the system-specific documents for information how to set up UAE.
 You should have an executable program called "uae". You can simply execute it,
-but you can also optionally give it one or more of the following options:
+but you can also optionally give it one or more of the following parameters:
+
+ -h              : Print out a help text.
+ -f file         : Load a configuration file
+ -s opt=val      : Set the emulator's option "opt" to value "val".
+
+Configuration files consist of several lines of the form "opt=val", just as
+with the "-s" parameter.  You can use the following options with the "-s"
+option, or in a config file.
+[Here, "=n" means the option takes a number as value.  "=bool" means the option
+takes a value of either "yes" or "no" (or "true", "false", or abbreviations of
+any of these).  There are other classes as well.]
 
 General options:
- -h      : Give help on the options.
- -A n    : Set emulator accuracy to n. The default is n = 2, which means the
-           emulator will try to be as accurate as possible. This no longer
-	   does much in this version, and I'll probably remove it.
- -f n    : Sets the frame rate to 1/n. Only every nth screen will be drawn.
- -a      : Add no expansion devices. This will disable fastmem and harddisk
-           emulation, but some extremely badly-written games may need this.
-	   (Kickstart 1.2 needs it, too)
- -l lang : Set the keyboard language. Currently, the following values can be 
-	   used for lang: "us" for U.S. keyboard (default), "se" for swedish, 
-	   "fr" for french, "it" for italian, "es" for spanish, or "de" for
-	   german keyboard.
-	   This setting only affects the X11 version.
- -0 file : Try to use file as diskfile for drive 0 instead of df0.adf.
-           The options -1, -2 and -3 also exist for the other drives.
- -r file : Use file instead of kick.rom as Kickstart image.
- -J xy   : Specify how to emulate joystick port 0 (x) and 1 (y). Both x and y
-           can be one of the following characters: 0 = joystick 0, 1 =
-           joystick 1, M for mouse, and a, b or c stand for various keyboard
-	   replacements (a is the numeric pad with '0' as fire button, b the
-	   cursor keys with right control as fire button and c is T/F/H/B with
-	   Alt as fire button.
-	   The default is "-J M0" (mouse and joystick as usual)
- -G      : Disable the user interface (if present).
- -n specs: Set blitter emulation. "specs" is a string of characters. If it
-           contains a "3", the blitter will use 32 bit operations where that
-	   seems profitable (note that this will cause bus errors on most
-	   RISC machines). If you specify "i", all blits will finish 
-	   immediately, which can be nice for speed. To enable both options,
-	   say "-n 3i"
- -w n    : Set CPU emulation speed to n. The default value is 4; higher values
-           will give the custom chip emulation a higher priority over the CPU,
-	   but some programs crash if this is higher than 4. Setting it to 1
-	   is a good way to make the emulator run slower on machines which are
-	   too fast.
- -C specs: Controls how the CPU is emulated. The first letter must be '0' for
-           68000 emulation, '1' for 68010, '2' for 68020 or '3' for
-	   68020 + 68881. It can be followed by a 'c', which enables a slower
-	   but more compatible version of 68000 emulation, or by an 'a', which
-	   enables a 24 bit address space for 68020 emulation. Normally you
-	   don't want either; use the more compatible emulation if some game or
-	   demo does not work. The 24 bit address space option appears to be
-	   necessary for some Kickstart ROMs, so try that if things don't work
-	   at all.
+accuracy=n [default=2]
+  Set emulator accuracy to n. The default is n = 2, which means the
+  emulator will try to be as accurate as possible. This no longer
+  does much in this version, and I'll probably remove it.
+framerate=n [default=1]
+  Sets the frame rate to 1/n. Only every nth screen will be drawn.  Using a
+  higher value can speed up the emulator, at the expense of graphics quality.
+autoconfig=bool [default=yes]
+  If this is enabled, all expansion devices provided by the emulation will be
+  automounted. You should only disable this if you have a Kickstart ROM
+  earlier than 1.3 which can't cope with this. Some badly written games and
+  demos might also be incompatible with this.
+kbd_lang=lang [default=us]
+  Set the keyboard language. Currently, the following values can be used: "us"
+  for U.S. keyboard (default), "se" for swedish, "fr" for french, "it" for
+  italian, "es" for spanish, or "de" for german keyboard.
+  This setting only affects the X11 version.
+floppy0=file [default=df0.adf]
+  Try to use the specified file as diskfile for drive 0 instead of df0.adf.
+  The options floppy1, floppy2, and floppy3 also exist.
+kickstart_rom_file=file [default=kick.rom]
+  Use the specified file instead of kick.rom as Kickstart image.
+joyport0=mode [default=mouse]
+  Specify how to emulate joystick port 0. You can use "mouse", "joy0", or
+  "joy1" to use the corresponding input devices of your machine, or you can
+  select several different keyboard replacements for a joystick:
+    "kbd1" for the numeric pad.  '0' is the fire button.  Three keys on the
+           numeric pad act as autofire toggle: '.' (or ',' depending on your
+           keyboard language), Enter and the division key.
+    "kbd2" for the cursor keys with right control key as fire button and the
+           right shift key as autofire toggle
+    "kbd3" for T/F/H/B with the left Alt key as fire button and the left Shift
+           key as autofire toggle.
+  The autofire toggle keys will turn on autofire (25 shots per second), it
+  will stay enabled until you hit the autofire toggle again.
+joyport1=mode [default=joy0]
+  Like joyport0, but for the Amiga's joystick port 1.
+use_gui=bool [default=yes]
+  Show a user-interface that enables changing these options at run-time.
+32bit_blits=bool [default=no]
+  If enabled, the blitter emulation will use 32 bit operations where that
+  seems profitable (note that this will cause bus errors on most  RISC
+  machines)
+immediate_blits=bool [default=no]
+  If enabled, all blits will finish immediately, which can be nice for speed,
+  but may cause incompatibilities.
+cpu_speed=speed [default=4]
+  This can have a value of "real", "max", or an integer between 1 and 20.
+  "real" will try to give the CPU emulation exactly as many cycles, relative
+  to the other chips, as on a real A500.  "max" will try to give you the
+  maximum CPU emulation speed achievable on your machine.  Numeric values
+  specify a fixed relation between CPU and custom chip emulation, where lower
+  values prioritize CPU emulation, while higher values prioritize custom chip
+  emulation.
+cpu_type=type [default=68000]
+  Controls which CPU is emulated. This can be "68000", "68010", "68020" or
+  "68020/68881".  In some cases, you may need to use "68ec020" or
+  "68ec020/68881" to emulate a crippled variant of the 68020 that has only a
+  24 bit address bus.  Some software, including some Kickstart versions, does
+  not work with a normal 68020 that has a 32 bit address bus.
+  Careful: using an "ec" variant has harmful side effects, and should be
+  disabled unless absolutely needed (you lose Z3 memory and Picasso
+  emulation).
+cpu_compatible=bool [default=no]
+  If enabled, a slower but slightly more accurate variant of the CPU emulation
+  will be used.  This is needed for some types of copy protection, among other
+  things. This is only meaningful for a CPU type of "68000".
+nr_floppies=n [default=4]
+  The emulator will emulate this many external floppy drives.  Some very old
+  games apparently have problems if this is larger than 1, but for all normal
+  programs the default is good enough.
 
 Emulating external devices (harddisk, CD-ROM, printer, serial port):
- -M VOLUME:path
- -m VOLUME:path
-           Mount the unix file system at "path" as an Amiga filesystem with
-	   volume name "VOLUME:". For example, "-M sound:/usr/amiga/modules"
-	   If you use -M instead of -m, the volume will be read only. Use this
-	   for mounting CD-ROMs. See below.
- -W secs:heads:nr:file
-           Mount the hardfile "file" as an emulated harddisk, using a geometry
-	   of "secs" sectors per track, "heads" surfaces and "nr" reserved
-	   blocks. Can be abused to mount floppy images. See below.
- -p cmd  : Enable printing. See below.
- -I dev  : Use "dev" as serial device (e.g. /dev/ttyS1 on Linux).
+filesystem=access,volume:path [default=no filesystems mounted]
+  Mount the host's file system at "path" as an Amiga filesystem with volume
+  name "VOLUME:".  "access" can be either "ro" (for readonly), or "rw" (for
+  read-write).  If you want to mount a CD-ROM, you should use a readonly
+  mount.  You can mount multiple file systems.
+  See below.
+hardfile=access,secs,heads,reserved,bsize,file [default=no hardfiles mounted]
+  Mount the hardfile "file" as an emulated harddisk, using a geometry of
+  "secs" sectors per track, "heads" surfaces and "nr" reserved blocks.
+  Each sector should have "bsize" bytes. This can be abused to mount
+  floppy images.  You can mount multiple hardfiles.
+  See below.
 
 Sound options:
- -S specs: If your version of UAE supports sound, this option allows you to
-	   tell the emulator how to produce sound. The specs parameter is
-	   made up as follows:
-	   n:stereo:bits:frequency:minimum buffer size:maximum buffer size
-           You can use one of the following values for "n":
-	   n = 0: No proper sound emulation at all. May be incompatible 
-	          (unlikely). This is the default.
-	   n = 1: Emulate the sound hardware, but don't output sound. May be
-	          needed for compatibility, but can be much slower
-	   n = 2: Emulate the sound hardware and output sound. Recommended.
-	   n = 3: Emulate the sound hardware _exactly_. I don't think you'll
-	          hear a difference. SIDmon modules will be emulated 
-		  correctly, but painfully slow with this setting.
-		  Unfortunately, this may also be needed to get some programs
-		  to work (AIBB, for example).
-	   Use either 's' or 'm' to set the "stereo" value.
-	   For "bits", common values are 8 (low quality) or 16 (high quality).
-	   For "frequency", common values are 22050 or 44100. The quality of
-	   sound output increases with the frequency.
-	   You can specify the minimum and maximum size of the sound buffer.
-	   Smaller buffers reduce latency.
-	   You don't need to specify all of the options, you can stop after
-	   each subpart. Examples: "-S0" (sound off), "-S2:s" (sound on, 
-	   stereo), "-S3:m:16:44100" (complete emulation, mono, 16 bits,
-           44100 Hz).
-	   Note: high quality sound requires a lot of computing power, so try
-	   with different settings if your machine is not fast enough.
+sound_output=type [default=none]
+  The type of sound output can be "none" (no sound at all), "interrupts"
+  (emulated for the internal side effects that can be noticed by programs,
+  but no sound output), "normal" (emulated, and sound output), "exact" (a
+  slightly more accurate emulation that may be necessary in some cases, but
+  can also be slower).
+sound_channels=type [default=mono]
+  Can be "mono" or "stereo".
+sound_bits=n [default varies across UAE versions on different OS types]
+  Common values are 8 (low quality) or 16 (high quality)
+sound_frequency=n [default varies across UAE versions on different OS types]
+  Common values are 22050 or 44100. The quality of sound output increases with
+  the frequency.
+sound_min_buff=n
+sound_max_buff=n [default varies across UAE versions on different OS types]
+  You can specify the minimum and maximum size of the sound buffer.
+  Smaller buffers reduce latency.  Usually only the minimum size is used.
+sound_interpol=type [default none]
+  Normally, sound samples are output exactly as they are computed, without
+  any post-processing.  This can generate errors in the sound output when the
+  output frequency isn't an even multiple of the input frequency.  These
+  errors are usuable perceived as a high-frequency noise.
+  There are currently two types of interpolation available, both under
+  experimentation.  You can use either "rh" or "crux" as value for this
+  option.  Note that no interpolation is supported for 8 bit output; you need
+  to use 16 bit output to hear a difference.  If you have any comments about
+  the effects of either method on audio quality, I'd be very interested to
+  hear them.
 
 Memory options:
- -s n    : Emulate n*256K slow memory at 0xC00000. Some demos/games need this.
- -F n    : Emulate n megabytes of fast memory as an expansion board.
- -Z n    : Emulate n megabytes of Zorro III fast memory as an expansion board.
- -c n    : Emulate n*512K chip memory. The default is 2MB chipram. Some very
-           broken programs need "-c 1" to work properly. The largest legal
-	   value is "-c 16", which means 8MB chip memory.
- -4 n    : Usually, UAE uses a 24 bit address space when it emulates a 68000,
-           and a 32 bit address space when it emulates a 68020. If n is 1,
-	   this option turns on a 24 bit address space in 68020 emulation. It
-	   appears to be necessary for some Kickstart images. Careful: this
-	   option has harmful side effects, and should be disabled by default.
-
-Debugging options (not interesting for most users):
- -D      : Don't start the emulator at once, use the built-in debugger.
- -i      : Print illegal memory accesses
+bogomem_size=n [default=0]
+  Emulate n*256K slow memory at 0xC00000. Some demos/games need this.
+fastmem_size=n [default=0]
+  Emulate n megabytes of fast memory as an expansion board.
+z3mem_size=n [default=0]
+  Emulate n megabytes of Zorro III fast memory as an expansion board.
+chipmem_size=n [default=4]
+  Emulate n*512K chip memory. Some very broken programs need specific amounts
+  of chip mem to work properly. The largest valid value is 16, which means 8MB
+  chip memory.
 
 Display options:
- -H mode : Select a color mode to use.
- -O specs: Select a display mode, see below how the specs parameter is
-           interpreted.
- -U n    : Emulate a Picasso 96 compatible graphics card with n MB graphics
-           memory.
+gfx_width=n [default=800]
+  Use a window that is n pixels wide for displaying the Amiga screen.
+gfx_height=n [default=300]
+  Use a window that is n pixels high for displaying the Amiga screen.
+gfx_lores=bool [default=no]
+  Enable this option if you use a very small window width (320 to 400 pixels)
+  to shrink the display horizontally.
+gfx_linemode=type [default=none]
+  The type can be none (every line is drawn once), "double" (every line is
+  drawn twice), and "scanlines" (every line is drawn once, but the image is
+  stretched vertically by inserting a black line every other line to simulate
+  the display on an old monitor).
+  The "double" mode gives best results, but slows down the emulation quite a
+  lot. Don't use the "none" mode if you want a decent interlace emulation.
+  If you use "double" or "scanlines", your window needs to be twice as high
+  as when using the "none" mode.
+gfx_correct_aspect=bool [default=none]
+  Try to fit the image into the specified window dimensions by leaving out
+  certain lines.  Useful if you want to fit a 640x512 Amiga display in a
+  640x480 window.
+gfx_center_vertical=bool [default=no]
+gfx_center_horizontal=bool [default=no]
+  If you use a smaller window than 800x300 (400x300 with "gfx_lores" option or
+  800x600 with a gfx_linemode other than "none"), not all parts of the display
+  will fit on the screen. By enabling the necessary centering options, you can
+  ask the emulator to try and move the screen contents so that the relevant
+  parts are displayed. If you are unlucky, this can cause the contents to jump
+  around a bit in certain cases.
+gfx_fullscreen_amiga=bool [default=no]
+  Enable if you want to use the full screen, not a window on the desktop, for
+  the Amiga display.  Some ports (DOS, SVGAlib) always use fullscreen mode.
+gfx_fullscreen_picasso=bool [default=no]
+  Like gfx_fullscreen_amiga, but for the Picasso graphics card display.
+gfx_color_mode=mode [default=8bit]
+  Select a color mode to use.
+  Color modes: 8bit (256 colors), 15bit (32768 colors), 16bit (65536 colors),
+	       8bit_dithered (256 colors, with dithering to improve quality),
+	       4bit_dithered (16 colors, dithered); 32bit (16 million colors)
+gfxcard_size=n [default=0]
+  Emulate a Picasso 96 compatible graphics card with n MB graphics memory.
+  This requires that you use set the CPU type to "68020" or higher, and that
+  you do not use 24 bit addressing.
 
-Color modes: 0 (256 colors, default); 1 (32768 colors); 2 (65536 colors)
-             3 (256 colors, with dithering to improve color quality)
-	     4 (16 colors, dithered); 5 (16 million colors)
+Debugging options (not interesting for most users):
+use_debugger=bool [default=no]
+  If enabled, don't start the emulator at once, use the built-in debugger.
+log_illegal_mem [default=no]
+  If enabled, print illegal memory accesses
 
-About the "-O" display specs. These consist of the width and height of the
-mode, plus optional modifiers. One valid option to pass to UAE would be
-"-O 640:300:" which means use a display 640 pixels wide and 300 pixels high,
-with no modifiers (nothing after the second ":"). You may specify the
-following modifiers:
- l: Tell UAE to omit drawing every second pixel horizontally (for "lores"
-    modes). Example: "-O 320:200:l"
- x: Tell UAE to try to fit the image horizontally into the displayed
-    window. For example, if you have a mode that is 640 pixels wide, and the
-    displayed image is also 640 pixels wide, the picture may still be
-    partially invisible because it is displayed too wide to the left or to
-    the right. With the "x" modifier, UAE tries to prevent this.
-    You can also specify a capital "X", in that case, UAE tries to be
-    extremely clever when doing this.
- y: The same thing in green, for fitting the image vertically into the
-    window. (Y also exists)
- d: Draw every line twice. This allows interlace mode to be emulated nicely,
-    but of course you also need a display that is twice as high
- c: Correct the aspect. This will omit certain lines of the display to make
-    it fit better into the screen.
 
 Whew. You'll probably have to experiment a little to get a feeling for it.
 
-
-UAE may choose to ignore and/or refuse some combinations of these two
-parameters. Some of these modes may also fail to work on your system.
 
 You can also put these options into a configuration file in your home
 directory. Simply create ~/.uaerc and put some of these options in it. On
@@ -506,6 +567,52 @@ After that is complete, reboot, and you should be able to select the new
 modes from the ScreenModes program.
 
 
+UAE SCSI device
+===============
+
+To enable SCSI support, use --enable-scsi-device when running configure.
+The emulator provides a uaescsi.device. This device only supports
+direct SCSI, which is sufficient to run applications like MakeCD. The
+device does not support reading or writing with the normal Exec commands,
+so you cannot mount filesystems on it right now.
+
+The unit numbers of the uaescsi.device follow the Amiga SCSI
+conventions: unit number "xyz" maps to the lun y of target z on bus
+x. Wide SCSI busses can have targets with numbers larger than 9. In
+this case the uaescsi.device pretends that there is another SCSI
+bus. To avoid confusion, all available SCSI targets are listed
+together with their unit number when starting UAE. Devices cannot be
+added while the emulator is running.  Reseting it is not sufficient
+either for technical reasons.
+
+The implementation of the uaescsi.device uses cdrecord's libscg as
+interface to the native SCSI system. The Linux implementation of this
+library used to be included into UAE, but now the library as generated
+by the cdrecord source package (ftp://ftp.fokus.gmd.de/pub/unix/cdrecord/)
+is used. As the library is not distributed seperately, you will have
+to get the whole cdrecord sources, compile it and then make several
+header and lib files available to the compiler if (and only if) building
+UAE with SCSI support. The script "src/install_libscg" copies the files
+required for the libscg in cdrecord 1.8.1.
+
+Using threads is strongly recommended, because some SCSI commands can
+run for extended periods of time and would block the whole emulation
+during this time without threads. Use --enable-threads when starting
+configure.
+
+Depending on the hosts capabilities the uaescsi.device may be limited
+compared to other Amiga SCSI devices. The Linux kernel by default only
+allows 32KB of data per SCSI command and does not always perform SCSI
+requests in parallel.
+
+Setting the chunk size in MakeCD to 30KB is already too much and
+causes an IO error -4 (IOERR_BADLENGTH), because the setting is only
+used as a guideline. You can work around this by setting the Tooltypes
+BUFFER_CHUNK_XXX to 29. On a Pentium II 350MHz with Adaptec UW SCSI
+controller on board on-the-fly copying was possible from a Philips
+CDD2600 (SCSI) to a Yamaha CRW4416E (IDE) at 4x.
+
+
 The UAE_CONTROL program
 =======================
 
@@ -515,6 +622,15 @@ shell-based and works with any Kickstart, while uae_control needs the
 gadtools.library and a recent version of reqtools.library, so it only works
 with Kick 2.0 and upwards. Copy these two programs to the directory that you
 use for harddisk emulation. They should be self-explanatory.
+
+
+The timehack
+============
+
+Another tool in the "amiga" subdirectory, timehack, synchronizes the
+emulated Amiga's system time with the host's time every second. This
+is useful when the emulation is not done in real-time or is suspended
+completely.
 
 
 Quick overview of the debugger commands
@@ -537,6 +653,8 @@ q:                    Quit the emulator. You don't want to use this command.
 M:                    hunt for sound modules
 S <filename> <address> <len>:
                       save a sound module
+C <value>:            Search for values like energy or lifes in games
+W <address> <value>:  Write into Amiga memory
 
 
 Sound
@@ -565,17 +683,14 @@ UAE.
 
 The new "official" UAE page is located at
 
-http://www.freiburg.linux.de/~uae
+  http://www.freiburg.linux.de/~uae
 
 thanks to Stefan Reinauer who is now maintaining it.
 
 There, you will find links to other UAE pages. One which is especially useful
 is the "UAE Discussion Board" set up by Gustavo Goedert, the address is
 
-http://www.netrunner.com.br/dosuae/uaeboard/index.html
-
-Not quite as good as a newsgroup due to braindamaged reader software
-(Ratscope), but still a blessing.
+  http://amiga.nvg.org/uaeboard
 
 There is supposedly a newsgroup named "alt.emulators.amiga", but I don't get
 it here.
@@ -588,7 +703,7 @@ Petter Schau has written another Amiga emulator named "Fellow".  It's mostly
 written in x86 assembly and only runs under DOS.  It's quite compatible and
 generally faster than UAE.  The Fellow homepage is at
 
-http://www.geocities.com/SiliconValley/Peaks/5244/
+  http://www.geocities.com/SiliconValley/Peaks/5244/
 
 
 Thanks & Acknowledgements
@@ -604,12 +719,26 @@ Special thanks to:
   - Felix Bardos, whose HRM I "borrowed".
   - Hetz Ben Hamo mailed Peter Kittel from Commodore asking for permission to
     give Kick 1.3 away. Unfortunately, the response was negative :-(
-  - Bruno Coste, Ed Hanway, Alessandro Soldo and Marko Nippula provided 
-    documentation
+  - Stefan Reinauer, for hosting the UAE Web page after the RWTH decided it's
+    too dangerous to let students have their own Web pages.
+  - Bruno Coste, Ed Hanway, Alessandro Soldo and Marko Nippula provided useful
+    documentation about the Amiga
   - Fabio Ciucci gets the "Best bug reports" award for his help with the
     blitter line emulation and other problem areas.
   - Michael C. Battilana and Cloanto Software, for all their support.
-  - Julian Eggebrecht of Factor 5, for providing several F5 games.
+  - Julian Eggebrecht of Factor 5, for providing several F5 games and a lot
+    of valuable input.
+    Factor 5 has made Katakis, one of their classic Amiga games, freely
+    available for download. There are still some good people left in the
+    world...
+  - Jens Schönfeld, inventor of the Catweasel controller, donated one
+    controller card.
+  - Jürgen Beck, maintainer of the Amiga emulation web site "Back to the
+    Roots" (http://back2roots.emuunlim.com) and everyone else who spends
+    time writing to software companies asking for permission to distribute
+    old Amiga games.
+  - all the software companies who allow distribution of their Amiga games on
+    sites like "Back to the Roots".
 
 
 Authors/Maintainers
@@ -671,18 +800,23 @@ pOS port:
   Samuel Devulder <devulder@info.unicaen.fr>
   Available: Not quite sure yet.
   Sourcecode: Included in the main source. Should compile OK.
-  
+
+OS/2 port:
+  Pressenna Sockalingasamy <deathlok@cww.de>
+  Available: ftp://hobbes.nmsu.edu/pub/os2/apps/emulator/uae2_0810_a1.zip
+  Sourcecode: working on including it
+
 XFree86/OS2 port:
   Krister Bergman <bellman@kuai.se>
   Available: http://www.kuai.se/~bellman/html/xfreeapps.html
   Sourcecode: nothing special, apparently the Unix stuff compiles cleanly (?)
 
 Win32 port:
-  Mathias Ortmann <ortmann@informatik.tu-muenchen.de>
-  Brian King <Brian_King@codepoet.com>
-  Available: http://www.informatik.tu-muenchen.de/~ortmann
-             http://www.codepoet.com/uae
-  Sourcecode: we're working on it
+  Originally: Mathias Ortmann <ortmann@informatik.tu-muenchen.de>
+  Currently: Brian King <Brian_King@codepoet.com>
+  Available: http://www.codepoet.com/uae
+  Sourcecode: bits merged into the main source, the rest available from the
+              URL above. Still trying to merge more of it...
 
 Acorn RISC PC port:
   Peter Teichmann <sol@Space.WH1.TU-Dresden.De>

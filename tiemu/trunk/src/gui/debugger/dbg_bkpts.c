@@ -30,6 +30,7 @@
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
+#include <string.h>
 
 #include "intl.h"
 #include "paths.h"

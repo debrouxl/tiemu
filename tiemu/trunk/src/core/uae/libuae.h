@@ -25,6 +25,5 @@
 #include "options.h"
 #include "memory.h"
 #include "newcpu.h"
-#include "readcpu.h"
 
 #endif

@@ -1,21 +1,18 @@
-/* UAE - The Un*x Amiga Emulator
- *
- * MC68000 emulation
- *
- * Copyright 1995 Bernd Schmidt
- */
+ /*
+  * UAE - The Un*x Amiga Emulator
+  *
+  * memory management - reimplementation for TiEmu
+  *
+  *  TiEmu - an TI emulator
+  *
+  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+  *  Copyright (c) 2001-2003, Romain Lievin
+  *  Copyright (c) 2003, Julien Blache
+  *  Copyright (c) 2004, Romain Liévin
+  *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+  */
 
-/*
-extern UBYTE get_byte(CPTR adr);
-extern UWORD get_word(CPTR adr);
-extern ULONG get_long(CPTR adr);
-extern void put_long(CPTR adr, ULONG arg);
-extern void put_word(CPTR adr, UWORD arg);
-extern void put_byte(CPTR adr, UBYTE arg);
-
-//extern UBYTE *get_real_address(CPTR adr);
-extern int valid_address(CPTR adr, ULONG size);
-*/
+#include "../ti_hw/mem.h"
 
 //wrappers
 #define get_byte(addr)	hw_get_byte(addr)
@@ -25,5 +22,6 @@ extern int valid_address(CPTR adr, ULONG size);
 #define put_long(adr, arg)	hw_put_long(adr, arg)
 #define put_word(adr, arg)	hw_put_word(adr, arg)
 #define put_byte(adr, arg)	hw_put_byte(adr, arg)
-
+ 
 #define get_real_address(addr)	hw_get_real_address(addr)
+#define valid_address(addr, size)	1
