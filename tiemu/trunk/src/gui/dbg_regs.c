@@ -60,13 +60,13 @@ static void renderer_edited(GtkCellRendererText * cell,
 		return;
 	
 	// set new value	
-	n = path_string[1] - '0';
+	n = path_string[2] - '0';
 	switch(path_string[0] - '0')
 	{
 		case 0:	// Ax
 			if(validate_value(new_text))
 			{
-				sscanf(new_text, "%lx", value);			
+				sscanf(new_text, "%lx", &value);			
 				gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
 				ti68k_register_set_addr(n, value);
 			}
@@ -74,7 +74,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 		case 1:	// Dx
 			if(validate_value(new_text))
 			{
-				sscanf(new_text, "%lx", value);			
+				sscanf(new_text, "%lx", &value);			
 				gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
 				ti68k_register_set_data(n, value);
 			}
@@ -85,7 +85,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 				case 0:	// pc
 					if(validate_value(new_text))
 					{
-						sscanf(new_text, "%lx", value);			
+						sscanf(new_text, "%lx", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
 						ti68k_register_set_pc(value);
 					}
@@ -93,7 +93,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 				case 1:	// usp
 					if(validate_value(new_text))
 					{
-						sscanf(new_text, "%lx", value);			
+						sscanf(new_text, "%lx", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
 						ti68k_register_set_usp(value);
 					}
@@ -101,7 +101,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 				case 2:	// ssp
 					if(validate_value(new_text))
 					{
-						sscanf(new_text, "%lx", value);			
+						sscanf(new_text, "%lx", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
 						ti68k_register_set_ssp(value);
 					}
@@ -109,7 +109,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 				case 3: // sr
 					if(validate_value(new_text))
 					{
-						sscanf(new_text, "%lx", value);			
+						sscanf(new_text, "%lx", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
 						ti68k_register_set_sr(value);
 					}
@@ -117,7 +117,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 				case 4: // flags
 					/*if(validate_value(new_text))
 					{
-						sscanf(new_text, "%lx", value);			
+						sscanf(new_text, "%lx", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
 						ti68k_register_set_flags(value);
 					}*/
@@ -195,8 +195,8 @@ static GtkTreeStore* ctree_create(GtkWidget *tree)
 			"foreground-gdk", COL_COLORED,
 			NULL);
 			
-	//g_signal_connect(G_OBJECT(renderer), "edited",
-	//		G_CALLBACK(renderer_edited), store);
+	g_signal_connect(G_OBJECT(renderer), "edited",
+			G_CALLBACK(renderer_edited), store);
 
     
     for (i = 0; i < CLIST_NVCOLS; i++) 
@@ -232,12 +232,14 @@ static void ctree_populate(GtkTreeStore *store)
 		COL_EDITABLE, FALSE,
 		-1);
 		
+	gtk_tree_store_append(store, &node2, NULL);
 	gtk_tree_store_set(store, &node2, 
 		COL_NAME, "Data", 
 		COL_VALUE, "",  
 		COL_EDITABLE, FALSE,
 		-1);
 		
+	gtk_tree_store_append(store, &node3, NULL);
 	gtk_tree_store_set(store, &node3, 
 		COL_NAME, "Other", 
 		COL_VALUE, "",  
@@ -296,6 +298,9 @@ static void ctree_refresh(GtkTreeStore *store)
 	GtkTreeIter iter;
 	gchar *sdata;    
 
+	uint32_t nextpc;
+	MC68000_dumpstate(&nextpc);
+
 	// refresh Ax nodes
 	for(i = 0; i < 8; i++)
 	{
@@ -304,7 +309,7 @@ static void ctree_refresh(GtkTreeStore *store)
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			continue;
 		
-		sdata = g_strdup_printf("%06x", ti68k_register_get_addr(i));
+		sdata = g_strdup_printf("%08x", ti68k_register_get_addr(i));
 		gtk_tree_store_set(store, &iter, COL_VALUE, sdata,	-1);
 		g_free(sdata);
 	   		
@@ -320,7 +325,7 @@ static void ctree_refresh(GtkTreeStore *store)
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			continue;
 		
-		sdata = g_strdup_printf("%06x", ti68k_register_get_data(i));
+		sdata = g_strdup_printf("%08x", ti68k_register_get_data(i));
 		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
 		g_free(sdata);
 	   		
@@ -335,7 +340,7 @@ static void ctree_refresh(GtkTreeStore *store)
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			return;
 		
-		sdata = g_strdup_printf("%06x", ti68k_register_get_pc());
+		sdata = g_strdup_printf("%08x", ti68k_register_get_pc());
 		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
 		g_free(sdata);
 	   		
@@ -350,7 +355,7 @@ static void ctree_refresh(GtkTreeStore *store)
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			return;
 		
-		sdata = g_strdup_printf("%06x", ti68k_register_get_addr(8));
+		sdata = g_strdup_printf("%08x", ti68k_register_get_addr(8));
 		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
 		g_free(sdata);
 	   		
@@ -365,7 +370,7 @@ static void ctree_refresh(GtkTreeStore *store)
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			return;
 		
-		sdata = g_strdup_printf("%06x", ti68k_register_get_sp());
+		sdata = g_strdup_printf("%08x", ti68k_register_get_ssp());
 		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
 		g_free(sdata);
 	   		
@@ -380,7 +385,7 @@ static void ctree_refresh(GtkTreeStore *store)
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			return;
 		
-		sdata = g_strdup_printf("%06x", ti68k_register_get_sr());
+		sdata = g_strdup_printf("%08x", ti68k_register_get_sr());
 		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
 		g_free(sdata);
 	   		
@@ -395,7 +400,7 @@ static void ctree_refresh(GtkTreeStore *store)
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			return;
 		
-		sdata = g_strdup_printf("%06x", ti68k_register_get_flag());
+		sdata = g_strdup_printf("%08x", ti68k_register_get_flag());
 		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
 		g_free(sdata);
 	   		
@@ -427,6 +432,9 @@ gint display_dbgregs_window(void)
 	ctree = data = glade_xml_get_widget(xml, "treeview1");
     store = ctree_create(data);
 	ctree_populate(store);
+	ctree_refresh(store);
+
+	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
 
     gtk_widget_show(GTK_WIDGET(dbox));
