@@ -389,8 +389,6 @@ void Exception(int nr)
 {
 	GList *l;
 
-//printf("before: <0x%06lx>\n", m68k_getpc());
-
   MakeSR();
   if (!regs.s) 
     {
@@ -407,8 +405,6 @@ void Exception(int nr)
   m68k_setpc(get_long(regs.vbr + 4*nr));
   regs.t = 0;
   specialflags &= ~(SPCFLAG_TRACE | SPCFLAG_DOTRACE);
-
-//printf("after: <0x%06lx>\n", m68k_getpc());
 
   // added for capturing the exception and next launch a debugger
   if (l = bkpts.exception) 

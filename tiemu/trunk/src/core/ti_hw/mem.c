@@ -79,8 +79,8 @@ static PUTLONG_FUNC	put_long_ptr;
 int hw_mem_init(void)
 {
 	int i;
-    int bank_s, bank_i, bank_n;
 
+    // get memory sizes
 	if(tihw.ti92v2)
 	{
 		// TI92 II is same as TI92+ in memory size
@@ -125,44 +125,29 @@ int hw_mem_init(void)
 	memset(&mem_tab, 0, sizeof(mem_tab));
 	memset(&mem_msk, 0, sizeof(mem_msk));
 
-    // set all banks to RAM (with mask 0 per default)
-    for(i=0; i<16; i++)
-        mem_tab[i] = tihw.ram; 
-
-    // map RAM
-    mem_tab[0] = tihw.ram;
-    mem_msk[0] = tihw.ram_size-1;
-
-	// map EPROM/FLASH internal/external
-    bank_s = (tihw.rom_base & 0xff) >> 4;               // starting bank
-    bank_n = (int)ceil((double)(tihw.rom_size >> 20));  // number of banks
-
-    for(i = 0, bank_i = bank_s; i < bank_n; bank_i++, i++)
+    // set banks
+    switch(tihw.calc_type)
     {
-        // map ROM
-        mem_tab[bank_i] = tihw.rom + i*0x100000;
-        mem_msk[bank_i] = MIN(tihw.rom_size - i*MB, 1*MB) - 1;
+    case TI92:
+        ti92_mem_init();
+        break;
 
-        // and ghost spaces
-        if((bank_i + bank_n >= 6) && (tihw.calc_type != TI89t))
-            continue;
+    case TI92p:
+        ti92p_mem_init();
+        break;
 
-        if(bank_i + bank_n > 15)
-            continue;
+    case TI89:
+    case V200:
+        ti89_mem_init();
+        break;
 
-        mem_tab[bank_i + bank_n] = tihw.rom + i*0x100000;
-        mem_msk[bank_i + bank_n] = MIN(tihw.rom_size - i*MB, 1*MB) - 1;
+    case TI89t:
+        ti89t_mem_init();
+        break;
+
+    default:
+        break;
     }
-
-    // map IO
-    mem_tab[6] = tihw.io;
-    mem_msk[6] = tihw.io_size-1;
-	
-	if(tihw.hw_type == HW2)
-	{
-		mem_tab[7] = tihw.io2;
-		mem_msk[7] = tihw.io_size-1;
-	}
   
     // blit ROM
     memcpy(tihw.rom, img->data, img->size);
@@ -186,6 +171,7 @@ int hw_mem_init(void)
 	break;
 	
 	case TI89:
+    case V200:
 		get_byte_ptr = ti89_get_byte;
 		get_word_ptr = ti89_get_word;
 		get_long_ptr = ti89_get_long;
@@ -195,7 +181,6 @@ int hw_mem_init(void)
 	break;
 	
 	case TI92p:
-	case V200:
 		get_byte_ptr = ti92p_get_byte;
 		get_word_ptr = ti92p_get_word;
 		get_long_ptr = ti92p_get_long;

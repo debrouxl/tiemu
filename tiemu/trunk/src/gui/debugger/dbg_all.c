@@ -56,13 +56,14 @@ int gtk_debugger_enter(int context)
 {
 	gchar *path;
 
-    // show breakpoint source
+    // show breakpoint source (modal)
     switch(context)
     {
     case DBG_TRACE:
         break;
     case DBG_BREAK:
-        dbgcause1_display_dbox();
+        //dbgcause1_display_dbox();
+        display_dbgcause_dbox();
         break;
     }
 

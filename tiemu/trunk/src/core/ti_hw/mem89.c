@@ -23,7 +23,7 @@
  */
 
 /*
-    Memory management: TI89 FLASH with Hardware Protection
+    Memory management: TI89/V200 FLASH with Hardware Protection
 */
 
 #include <stdlib.h>
@@ -40,6 +40,58 @@
 #include "ti68k_def.h"
 #include "ti68k_int.h"
 #include "flash.h"
+
+// 000000-0fffff : RAM (256 KB)
+// 100000-1fffff : ?
+// 200000-2fffff : internal ROM (TI89)
+// 300000-3fffff : idem
+// 400000-4fffff : ?
+// 500000-5fffff : ?
+// 600000-6fffff : memory mapped I/O (all HW)
+// 700000-7fffff : memory mapped I/O (HW2, HW3)
+// 800000-8fffff : unused
+// 900000-9fffff :	 ... 
+// a00000-afffff : 
+// b00000-bfffff : 
+// c00000-cfffff : 
+// d00000-dfffff :
+// e00000-efffff :   ...
+// d00000-ffffff : unused
+
+int ti89_mem_init(void)
+{
+	int i;
+ 
+    // set all banks to RAM (with mask 0 per default)
+    for(i=0; i<16; i++)
+    {
+        mem_tab[i] = tihw.ram; 
+        mem_msk[i] = 0;
+    }
+
+    // map RAM
+    mem_tab[0] = tihw.ram;
+    mem_msk[0] = tihw.ram_size-1;
+
+	// map FLASH
+    mem_tab[2] = tihw.rom;
+    mem_msk[2] = MIN(tihw.rom_size - 0*MB, 1*MB) - 1;
+
+    mem_tab[3] = tihw.rom + 0x100000;
+    mem_msk[3] = MIN(tihw.rom_size - 1*MB, 1*MB) - 1;
+
+    // map IO
+    mem_tab[6] = tihw.io;
+    mem_msk[6] = tihw.io_size-1;
+	
+	if(tihw.hw_type == HW2)
+	{
+		mem_tab[7] = tihw.io2;
+		mem_msk[7] = tihw.io_size-1;
+	}
+
+    return 0;
+}
 
 /* Put/Get byte/word/longword */
 #define bput(adr, arg) { mem_tab[(adr)>>20][(adr) & mem_msk[(adr)>>20]] = (arg); }

@@ -3,7 +3,7 @@
 
 
 Previous version: 1.74		(21/07/2004)
-Current version:  1.75		(06/08/2004)
+Current version:  1.75		(07/08/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -29,7 +29,7 @@ New capabilities:
 	- can open a hexdump from register value
 	- new window: stack
 	- status register window (1 check button per bits)
-	- searching capability in the mem window (90% done)
+	- searching capability in the mem window (no case cmp yet)
 
 
 Improvements:

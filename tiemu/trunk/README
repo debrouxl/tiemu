@@ -247,15 +247,15 @@ The debugger is made up of several windows which can be moved and resized (TiEmu
 Please note these windows are automatically refreshed when a change occurs from another window.
 
 From the source code window, you can view disassembly code, set code breakpoints and do classical 
-debugging actions (step, over, run, break, etc).
+debugging actions (step in/over/out, run, break, etc). Right click to get popup menu.
 
-With the registers window, you can view and modify registers contents. 
+With the registers window, you can view and modify registers content. 
 When a register is updated, it's colored.
-To edit register content, click value.
+To edit register content, click value. To view memory at the register content, right click.
 
 The memory window is made up of tabs. Each tab show a memory dump with address, data and ASCII.
-This window always starts with one tab, the user stack location.
 You can add/remove tabs from toolbar as well as browsing memory with the arrows.
+Right click to get popup menu which will allow you to search ASCII strings or data.
 
 The breakpoints window displays pending breakpoints. Breakpoints can be put on:
 - source code (from the source code window only),
@@ -264,6 +264,8 @@ The breakpoints window displays pending breakpoints. Breakpoints can be put on:
 - memory range access
 
 The PC trace shows the PC execution history. Enabling this feature is more CPU intensive.
+
+The stack frame window displays active stack and stack content.
 
 At the time being, there is no logging capabilities.
 

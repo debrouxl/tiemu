@@ -34,11 +34,77 @@
 #include "ports.h"
 #include "hw.h"
 #include "mem.h"
+#include "flash.h"
 #include "images.h"
 #include "bkpts.h"
 #include "m68k.h"
 #include "ti68k_def.h"
 #include "ti68k_int.h"
+
+// 000000-0fffff : RAM (128 or 256 KB)
+// 100000-1fffff : 
+// 200000-2fffff : internal ROM (TI92) or unused
+// 300000-3fffff : idem
+// 400000-4fffff : external ROM (TI92,+) or unused
+// 500000-5fffff : idem
+// 600000-6fffff : memory mapped I/O
+// 700000-7fffff : unused
+// 800000-8fffff : unused
+// 900000-9fffff :   ...
+// a00000-afffff : 
+// b00000-bfffff : 
+// c00000-cfffff : 
+// d00000-dfffff :
+// e00000-efffff :   ...
+// d00000-ffffff : unused
+
+int ti92_mem_init(void)
+{
+    int i;
+
+    // set all banks to RAM (with mask 0 per default)
+    for(i=0; i<16; i++)
+    {
+        mem_tab[i] = tihw.ram; 
+        mem_msk[i] = 0;
+    }
+
+    // map RAM
+    mem_tab[0] = tihw.ram;
+    mem_msk[0] = tihw.ram_size-1;
+
+	// map EPROM
+    if(tihw.rom_base == 0x20)
+    {
+        // internal
+        mem_tab[2] = tihw.rom;
+        mem_msk[2] = 1*MB - 1;
+
+        if(tihw.rom_size > 1*MB)
+        {
+            mem_tab[3] = tihw.rom + 0x100000;
+            mem_msk[3] = 1*MB - 1;
+        }
+    }
+    else
+    {
+        // external
+        mem_tab[4] = tihw.rom;
+        mem_msk[4] = 1*MB - 1;
+
+        if(tihw.rom_size > 1*MB)
+        {
+            mem_tab[5] = tihw.rom + 0x100000;
+            mem_msk[5] = 1*MB - 1;
+        }
+    }
+
+    // map IO
+    mem_tab[6] = tihw.io;
+    mem_msk[6] = tihw.io_size-1;
+
+    return 0;
+}
 
 /* Put/Get byte/word/longword */
 #define bput(adr, arg) { mem_tab[(adr)>>20][(adr) & mem_msk[(adr)>>20]] = (arg); }
