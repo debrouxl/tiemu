@@ -44,7 +44,7 @@ gint display_data_bkpts_dbox(void)
 
   /* Set up the GtkTreeView */
   list = gtk_list_store_new(4, G_TYPE_STRING, G_TYPE_STRING,
-			    G_TYPE_STRING, G_TYPE_INT);
+			    G_TYPE_STRING, G_TYPE_POINTER);
   model = GTK_TREE_MODEL(list);
   
   gtk_tree_view_set_model(GTK_TREE_VIEW(clist), model); 
@@ -53,7 +53,7 @@ gint display_data_bkpts_dbox(void)
   for (i = 0; i < 3; i++)
     gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), i, text[i],
 						gtk_cell_renderer_text_new(),
-						"text", 0, NULL);
+						"text", i, NULL);
   gtk_list_store_clear(list); 
 
   for(i=0; i<g_list_length(bkpt_access_list); i++)
@@ -93,7 +93,7 @@ gint display_data_bkpts_dbox(void)
       gtk_list_store_append(list, &iter);
       gtk_list_store_set(list, &iter,
 			 0, text[0], 1, text[1],
-			 2, text[2], 3, s->id, -1);
+			 2, text[2], 3, GINT_TO_POINTER(s->id), -1);
     }
   for(i=0; i<3; i++) 
     g_free(text[i]);
@@ -144,6 +144,7 @@ on_button_del_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
   gint id;
+  gpointer idp;
   GtkWidget *clist;
   GtkTreeModel *model;
   GtkTreeIter iter;
@@ -163,7 +164,8 @@ on_button_del_clicked                  (GtkButton       *button,
       /* Remove data breakpoint */
       // get id associated with the row
       gtk_tree_model_get(model, &iter,
-			 3, &id, -1);
+			 3, &idp, -1);
+      id = GPOINTER_TO_INT(idp);
       //DISPLAY("Selected row: %i\n", sel_row);
       //DISPLAY("id: %i\n", id);
       

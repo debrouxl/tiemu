@@ -58,7 +58,7 @@ gint display_skinlist_dbox(void)
   for (i = 0; i < 5; i++)
     gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), i, text[i],
 						gtk_cell_renderer_text_new(),
-						"text", 0, NULL);
+						"text", i, NULL);
   gtk_list_store_clear(list); 
 
   if( (dir=opendir(inst_paths.skin_dir)) == NULL)
