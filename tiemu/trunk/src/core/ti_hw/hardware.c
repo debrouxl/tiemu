@@ -108,10 +108,10 @@ void hw_update()
 
     /* Link status */
     if(hw_dbus_checkread())
-        tihw.io[0xc] |= 0x2;
+        tihw.io[0xc] |= 2;
 
     /* Link interrupt */ 
-    if(tihw.io[0xc]&0x2) 
+    if(tihw.io[0xc] & 2) 
     {
         specialflags |= SPCFLAG_INT;
         currIntLev = 4;

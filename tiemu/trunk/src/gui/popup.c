@@ -166,8 +166,8 @@ GLADE_CB void
 on_send_file_to_gtktiemu1_activate     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	//test_sendfile();
-	display_tifile_dbox();
+	test_sendfile();
+	//display_tifile_dbox();
 }
 
 

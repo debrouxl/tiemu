@@ -60,14 +60,6 @@ int   df_checkread(void);
 
 TicableLinkCable lc;
 
-int comError;
-int transflag=0;
-int transbyte;
-int transnotready;
-int recvflag=0;
-int recvbyte;
-int lc_raw_access;
-
 int TO_VALUE = 1000;
 
 static void print_lc_error(int errnum)
@@ -80,16 +72,12 @@ static void print_lc_error(int errnum)
 }
 
 /*
-  D-bus management (HW linkport)
+    D-bus management (HW linkport)
 */
 
 int hw_dbus_init(void)
 {
 	int err;
-
-	transflag=0; recvflag=0;
-	transnotready=0;
-	lc_raw_access=0;
 
 	// init linkport
 	ticable_init();
@@ -138,6 +126,7 @@ int hw_dbus_exit(void)
     }
 
 	// exit directfile
+    exit_linkfile();
 }
 
 /*
@@ -153,7 +142,7 @@ static void lp_putbyte(UBYTE arg)
   
 	tihw.lc_timeout = 0;
 
-    err=lc.put(arg);
+    err = lc.put(arg);
 	if(err)
 	{
 	  print_lc_error(err);
@@ -182,7 +171,7 @@ static int lp_checkread(void)
 	if(lp_avail_byte)
 		return 0;
 
-    err=lc.check(&status);
+    err = lc.check(&status);
 	if(err)
     {
 		print_lc_error(err);
@@ -191,7 +180,7 @@ static int lp_checkread(void)
   
 	if(status & STATUS_RX)
     {
-        err=lc.get(&lp_last_byte);
+        err = lc.get(&lp_last_byte);
 		if(err)
         {
 			print_lc_error(err);
@@ -245,18 +234,18 @@ int df_checkread(void)
 
 
 /*
-  Internal link port emulation for direct sending/receiving files.
-  The code below is not very obvious at first glance. This is the
-  reason why I am explaining the idea and mechanisms.
+    Internal link port emulation for direct sending/receiving files.
+    The code below is not very obvious at first glance. This is the
+    reason why I am explaining the idea and mechanisms.
 
-  The idea is to use TiLP's libticalcs since libticalcs contains all the code
-  needed for communicating with a TI (software protocol, file handling). 
-  The libticalcs is built on libticables, a library which handles link cables
-  (hardware protocol).
-  In fact, I simply reimplement the basic functions of libticables usually 
-  used by libticalcs for sending/receiving data. These functions exchange
-  bytes with the linkport at HW level (io.c).
-  The libticalcs provided the abstraction we need for this.
+    The idea is to use TiLP's libticalcs since libticalcs contains all the code
+    needed for communicating with a TI (software protocol, file handling). 
+    The libticalcs is built on libticables, a library which handles link cables
+    (hardware protocol).
+    In fact, I simply reimplement the basic functions of libticables usually 
+    used by libticalcs for sending/receiving data. These functions exchange
+    bytes with the linkport at HW level (io.c).
+    The libticalcs provided the abstraction we need for this.
 
 	Wonderful, isn't it ?! Take a look at the 'TiLP framework' power ;-)
 */
@@ -266,10 +255,10 @@ TicalcFncts			itc;
 TicalcInfoUpdate 	iu = { 0 };
 
 /* libticables functions (link API) */
-int ilp_init_port()     { return 0; }
-int ilp_open_port()     { return 0; }
+static int ilp_init_port()     { return 0; }
+static int ilp_open_port()     { return 0; }
 
-int ilp_put(uint8_t data)
+static int ilp_put(uint8_t data)
 { 
   	byte_f2t = data; 
   	iput = 1;
@@ -282,7 +271,7 @@ int ilp_put(uint8_t data)
   	return 0; 
 }
 
-int ilp_get(uint8_t *data)
+static int ilp_get(uint8_t *data)
 { 
   	while(!iget) 
     { 
@@ -295,23 +284,20 @@ int ilp_get(uint8_t *data)
   return 0; 
 }
 
-int ilp_probe_port()    	{ return 0; }
-int ilp_close_port()    	{ return 0; }
-int ilp_term_port()     	{ return 0; }
-int ilp_check_port(int *st) { return 0; }
+static int ilp_probe_port()    	{ return 0; }
+static int ilp_close_port()    	{ return 0; }
+static int ilp_term_port()     	{ return 0; }
+static int ilp_check_port(int *st) { return 0; }
 
-void ilp_start()   { }
-void ilp_stop()    { }
-void ilp_refresh() { }
-void ilp_pbar()    { }
-void ilp_label()   { }
+static void ilp_start()   { }
+static void ilp_stop()    { }
+static void ilp_refresh() { }
+static void ilp_pbar()    { }
+static void ilp_label()   { }
 
 /* Initialize a pseudo link cable to be connected with HW */
 int init_linkfile()
 {
-  	if(ilc != NULL)
-	    free(ilc);
-  	
   	ilc = (TicableLinkCable *)malloc(sizeof(TicableLinkCable));
   	if(ilc == NULL)
     	return ERR_68K_MALLOC;
@@ -347,11 +333,19 @@ int init_linkfile()
   	return 0;
 }
 
+int exit_linkfile(void)
+{
+    if(ilc != NULL)
+	    free(ilc);
+    ilc = NULL;
+}
+
 int test_sendfile()
 {
     tihw.lc_speedy = 1;
     tihw.lc_file = 1;  
-    itc.send_var("/root/str.89s", 0, NULL);
+    //itc.send_var("/root/str.89s", 0, NULL);
+    itc.send_var("C:\\str.9xs", 0, NULL);
     tihw.lc_file = 0;
     tihw.lc_speedy = 0;
 
@@ -360,73 +354,70 @@ int test_sendfile()
 
 int send_ti_file(const char *filename)
 {
-  char *ext;
+    gint ok = 0;
+    gchar *ext;
 
-  /* Get extension */
-  ext = strrchr(filename, '.');
-  if(ext == NULL)
-    return ERR_68K_TI_FILE;
-  else
-    ext++;
-  
-  /* TI file ? */
-  if(0) /*
-  if(!(strstr(ext, "89") && (tihw.calc_type == TI89)) ||
-     (strstr(ext, "92") && (tihw.calc_type == TI92))  ||
-     (strstr(ext, "9x") && (tihw.calc_type == TI92p)) ||
-     (strstr(ext, "9X") && (tihw.calc_type == TI92p)) ) */
+    // Check for TI file
+    if(!tifiles_is_a_ti_file(filename))
+        return ERR_68K_TI_FILE;
+
+    if(((tifiles_which_calc_type(filename) == CALC_TI89) && (tihw.calc_type == TI89)) ||
+        ((tifiles_which_calc_type(filename) == CALC_TI92) && (tihw.calc_type == TI92)) ||
+        ((tifiles_which_calc_type(filename) == CALC_TI92P) && (tihw.calc_type == TI92p)) ||
+        ((tifiles_which_calc_type(filename) == CALC_V200) && (tihw.calc_type == V200)))
     {
-      return ERR_68K_TI_FILE;
+        ok = 1;
+    } else
+        return ERR_68K_TI_FILE;
+
+    // FLASH APP file ?
+    if(tifiles_is_a_flash_file(filename) && !strcmp(tifiles_flash_app_file_ext(), tifiles_get_extension(filename)))
+    {
+        tihw.lc_speedy = 1;
+        tihw.lc_file = 1;  
+        itc.send_flash(filename, MODE_APPS);
+        tihw.lc_file = 0;
+        tihw.lc_speedy = 0;
     }
 
-  /* FLASH APP file ? */
-  else if( (ext[2] == 'k') || (ext[2] =='K'))
+    // FLASH OS file ?
+    if(tifiles_is_a_flash_file(filename) && !strcmp(tifiles_flash_os_file_ext(), tifiles_get_extension(filename)))
     {
-      tihw.lc_speedy = 1;
-      tihw.lc_file = 1;  
-      itc.send_flash(filename, MODE_APPS);
-      tihw.lc_file = 0;
-      tihw.lc_speedy = 0;
-    }
-
-  /* FLASH OS file ? */
-  else if( (ext[2] == 'u') || (ext[2] == 'U'))
-    {
-      tihw.lc_speedy = 1;
-      tihw.lc_file = 1;  
-      itc.send_flash(filename, MODE_AMS);
-      tihw.lc_file = 0;
-      tihw.lc_speedy = 0;
+        tihw.lc_speedy = 1;
+        tihw.lc_file = 1;  
+        itc.send_flash(filename, MODE_AMS);
+        tihw.lc_file = 0;
+        tihw.lc_speedy = 0;
     }
   
-  /* Backup file ? */
-  else if( (ext[2] == 'b') || (ext[2] == 'B'))
+    // Backup file ?
+    else if(tifiles_is_a_backup_file(filename))
     {
-      tihw.lc_speedy = 1;
-      tihw.lc_file = 1;  
-      itc.send_backup(filename, MODE_NORMAL);
-      tihw.lc_file = 0;
-      tihw.lc_speedy = 0;
+        tihw.lc_speedy = 1;
+        tihw.lc_file = 1;  
+        itc.send_backup(filename, MODE_NORMAL);
+        tihw.lc_file = 0;
+        tihw.lc_speedy = 0;
     }
 
-  /* Group file ? */
-  else if( (ext[2] == 'g') || (ext[2] == 'G'))
+    // Group file ?
+    else if(tifiles_is_a_group_file(filename))
     {
-      tihw.lc_speedy = 1;
-      tihw.lc_file = 1;  
-      itc.send_var(filename, MODE_NORMAL, NULL);
-      tihw.lc_file = 0;
-      tihw.lc_speedy = 0;
+        tihw.lc_speedy = 1;
+        tihw.lc_file = 1;  
+        itc.send_var(filename, MODE_NORMAL, NULL);
+        tihw.lc_file = 0;
+        tihw.lc_speedy = 0;
     }
 
-  /* Single file */
-  else
+    // Single file
+    else if(tifiles_is_a_single_file(filename))
     {
-      tihw.lc_speedy = 1;
-      tihw.lc_file = 1;  
-      itc.send_var(filename, MODE_NORMAL, NULL);
-      tihw.lc_file = 0;
-      tihw.lc_speedy = 0;
+        tihw.lc_speedy = 1;
+        tihw.lc_file = 1;  
+        itc.send_var(filename, MODE_NORMAL, NULL);
+        tihw.lc_file = 0;
+        tihw.lc_speedy = 0;
     }
 
   return 0;

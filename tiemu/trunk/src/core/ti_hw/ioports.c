@@ -248,10 +248,12 @@ UBYTE io_get_byte(CPTR adr)
         break;
         case 0x0d:	// r- <76543210>
 			// linkport status
-			v |= tihw.dbus_err << 7;
-			v |= tihw.tx_empty << 6;
-			v |= tihw.rx_full << 5;
+			//v |= tihw.dbus_err << 7;
+			//v |= tihw.tx_empty << 6;
+			//v |= tihw.rx_full << 5;
             //return (hw_dbus_byteavail() ? 0x60 : 0x40);	/* 0x40 -> always return tx buffer as empty */
+            v |= 0x40;  // stx
+            v |= hw_dbus_byteavail() ? 0x20 : 0x00;
         case 0x0e:	// rw <....3210>
 			// read red/white wires if raw access
 			if(tihw.dbus_raw)
@@ -262,7 +264,6 @@ UBYTE io_get_byte(CPTR adr)
             break;
         case 0x0f: 	// rw <76543210>
 			// read one byte from receive (incoming) buffer
-            recvflag = 0;
             return hw_dbus_getbyte();
         case 0x10: 	// -w <76543210> (hw1)
         break;

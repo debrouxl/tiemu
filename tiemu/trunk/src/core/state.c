@@ -86,9 +86,9 @@ int ti68k_state_load(char *filename)
   fread(&kbmask,4,1,fp);
   fread(&tihw.ram_wrap,4,1,fp); fread(&(mem_and),4,1,fp);
   fread(&comError,4,1,fp);
-  fread(&transflag,4,1,fp); fread(&transbyte,4,1,fp);
-  fread(&transnotready,4,1,fp);
-  fread(&recvflag,4,1,fp); fread(&recvbyte,4,1,fp);
+  //fread(&transflag,4,1,fp); fread(&transbyte,4,1,fp);
+  //fread(&transnotready,4,1,fp);
+  //fread(&recvflag,4,1,fp); fread(&recvbyte,4,1,fp);
   //fread(&rom_ret_or,4,1,fp);
   fread(&tihw.lcd_addr,4,1,fp); fread(&tihw.lcd_off,4,1,fp);
   fread(&tihw.contrast,4,1,fp);
@@ -138,9 +138,9 @@ int ti68k_state_save(char *filename)
       fwrite(&kbmask,4,1,fp);
       fwrite(&tihw.ram_wrap,4,1,fp); fwrite(&(mem_and),4,1,fp);
       fwrite(&comError,4,1,fp);
-      fwrite(&transflag,4,1,fp); fwrite(&transbyte,4,1,fp);
-      fwrite(&transnotready,4,1,fp);
-      fwrite(&recvflag,4,1,fp); fwrite(&recvbyte,4,1,fp);
+      //fwrite(&transflag,4,1,fp); fwrite(&transbyte,4,1,fp);
+      //fwrite(&transnotready,4,1,fp);
+      //fwrite(&recvflag,4,1,fp); fwrite(&recvbyte,4,1,fp);
       //fwrite(&rom_ret_or,4,1,fp);
       fwrite(&tihw.lcd_addr,4,1,fp); fwrite(&tihw.lcd_off,4,1,fp);
       fwrite(&tihw.contrast,4,1,fp);
