@@ -309,7 +309,8 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 		return ERR_INVALID_UPGRADE;
 
 	// Load file
-	ti9x_read_flash_file(filename, &content);
+	if(ti9x_read_flash_file(filename, &content) != 0)
+        return ERR_68K_INVALID_FLASH;
 	
 	// count headers
   	for (ptr = &content; ptr != NULL; ptr = ptr->next)
@@ -348,7 +349,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
             }
 		break;
 		default:
-			DISPLAY("TIB problem: <%i>!\n", 0xff & ptr->device_type);
+			DISPLAY("TIB problem: %02x!\n", 0xff & ptr->device_type);
 			return ERR_INVALID_UPGRADE;
 		break;
 	}
