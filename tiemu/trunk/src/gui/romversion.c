@@ -43,10 +43,11 @@ gchar *chosen_file = NULL;
 
 enum { 
 	COLUMN_FILENAME, COLUMN_CALC, COLUMN_VERSION, 
-	COLUMN_MEMORY, COLUMN_SIZE, COLUMN_TYPE, COLUMN_NCOLS
+	COLUMN_MEMORY, COLUMN_SIZE, COLUMN_TYPE, 
+    COLUMN_HW
 };
-
-#define CLIST_NCOLS (COLUMN_NCOLS)
+#define CLIST_NVCOLS	(7)
+#define CLIST_NCOLS		(7)
 
 static void clist_selection_changed(GtkTreeSelection * sel,
 				   					gpointer user_data)
@@ -76,12 +77,14 @@ static GtkListStore* clist_init(GtkWidget *clist)
 	gint i;
 	const gchar *text[CLIST_NCOLS] = { 
 		_("Filename"), _("Model"), _("Version"), 
-		_("Type"), _("Size"), _("Boot") };
+		_("Type"), _("Size"), _("Boot"), _("HW") };
 	
-	list = gtk_list_store_new(6, 
+	list = gtk_list_store_new(CLIST_NCOLS,
     			G_TYPE_STRING, G_TYPE_STRING,
 			    G_TYPE_STRING, G_TYPE_STRING,
-			    G_TYPE_STRING, G_TYPE_STRING);
+			    G_TYPE_STRING, G_TYPE_STRING,
+                G_TYPE_STRING,
+                -1);
     model = GTK_TREE_MODEL(list);
   
     gtk_tree_view_set_model(view, model); 
@@ -181,7 +184,7 @@ gint display_romversion_dbox()
 	{
 		gchar **row_text = g_malloc0((CLIST_NCOLS+1) * sizeof(gchar *));
 
-        for(i=0; i<6; i++) 
+        for(i=0; i<CLIST_NCOLS; i++) 
 		{
 	        fscanf(fp, "%s\t", buffer);
 	        row_text[i] = g_strdup(buffer);
@@ -194,7 +197,9 @@ gint display_romversion_dbox()
 			2, row_text[2],
 			3, row_text[3], 
 			4, row_text[4],
-			5, row_text[5], -1);
+			5, row_text[5],
+            6, row_text[6],
+            -1);
 
 			g_strfreev(row_text);
     } 

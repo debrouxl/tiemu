@@ -947,9 +947,9 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 	  				line[5] = _("no");
 				line[6] = (char *)ti68k_hwtype_to_string(img.hw_type);
 		  
-		  			fprintf(file, "%s\t%s\t%s\t%s\t%s\t%s\n", 
+		  			fprintf(file, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", 
 		  				line[0], line[1], line[2], 
-		  				line[3], line[4], line[5]);
+		  				line[3], line[4], line[5], line[6]);
 			}
 	  		g_free(path);
 		}
