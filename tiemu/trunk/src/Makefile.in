@@ -89,7 +89,6 @@ misc_OBJ = \
 	misc/tie_error.o 
 
 gui_calc_OBJ = \
-	gui/calc/calc_if.o	\
 	gui/calc/calc.o		\
 	gui/calc/kbd_mapper.o	\
 	gui/calc/keyboard.o	\
