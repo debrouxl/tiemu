@@ -352,10 +352,6 @@ SOURCE=..\..\src\gui\fs_misc.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\help.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\gui\infos.c
 # End Source File
 # Begin Source File

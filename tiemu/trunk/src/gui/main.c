@@ -245,9 +245,7 @@ int main(int argc, char **argv)
 		gdk_threads_leave();
 		{
 			GTimer *tmr;
-			gulong us = 0;
-
-			for(tmr = g_timer_new(); us < 250000; g_timer_elapsed(tmr, &us));
+			for(tmr = g_timer_new(); g_timer_elapsed(tmr, NULL) < 0.5; );
 		}
 
 		/* 

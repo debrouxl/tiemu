@@ -91,16 +91,15 @@ certificate).
         * aller dans la fenêtre de debug: TIEmu est parti
 dans le décor, je ne sais pas s'il exécute ou pas
 
-* Il y a un petit bug dans la fenêtre des breakpoints
-(c'est le bug mineur dont je ne me souvenais plus
-l'autre fois): quand on a breaké le debugger par F11,
-le mode de break est inconnu, et ça affiche <unknown
-(bug)>...
 
 roms
 ====
 
 * MOVEA.W diassembled as MOVEA.L (HeapDeref)
+
+* dbg engine
+
+* rom calls & handles to make more reliable
 
 -------------
 + done

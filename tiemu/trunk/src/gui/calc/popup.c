@@ -41,7 +41,6 @@
 #include "dboxes.h"
 #include "romversion.h"
 #include "calc.h"
-#include "help.h"
 #include "release.h"
 #include "about.h"
 #include "infos.h"
@@ -57,7 +56,7 @@ GLADE_CB void
 on_popup_menu_header                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	fprintf(stdout, _("* TiEmu version %s (cables=%s, files=%s, calcs=%s)"),
+	fprintf(stdout, _("* TiEmu version %s (cables=%s, files=%s, calcs=%s)\n"),
 	     TIEMU_VERSION, ticable_get_version(), tifiles_get_version(),
 	     ticalc_get_version());
 }
@@ -275,12 +274,16 @@ on_screen_options1_activate               (GtkMenuItem     *menuitem,
 	display_scroptions_dbox();
 }
 
+static void go_to_bookmark(const char *link);
 
 GLADE_CB void
 on_help1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	display_help_dbox();
+	gchar *path = g_strconcat(inst_paths.help_dir, _("Manual_en.html"), NULL);
+
+	go_to_bookmark(path);
+	g_free(path);
 }
 
 
@@ -291,12 +294,35 @@ on_manpage1_activate                   (GtkMenuItem     *menuitem,
 	display_manpage_dbox();
 }
 
+GLADE_CB void
+on_bookmarks1_activate				   (GtkMenuItem		*menuitem,
+										gpointer		user_data)
+{
+	GtkTooltipsData* data = gtk_tooltips_data_get(GTK_WIDGET(menuitem));
+	go_to_bookmark(data->tip_text);
+}
+
 
 GLADE_CB void
-on_changelog1_activate                 (GtkMenuItem     *menuitem,
+on_bugreport1_activate				   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	display_release_dbox();
+	GtkWidget *dialog;
+	const gchar *message =
+    "There are several ways to get in touch if you encounter a problem with TiEMu or if you have questions, suggestions, bug reports, etc:\n- if you have general questions or problems, please consider the users' mailing list first (http://tiemu-users@list.sf.net).\n- if you want to discuss about TiEmu, you can use the TiEmu forum (http://sourceforge.net/forum/?group_id=23169).\n- for bug reports, use the 'Bug Tracking System' (http://sourceforge.net/tracker/?group_id=23169).\n\nBefore e-mailing the TiEmu team, make sure you have read the manual and/or the FAQ....";
+  
+	dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+				  GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
+				  message);
+	gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
+}
+
+GLADE_CB void
+on_changelog1_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	display_release_dbox ();
 }
 
 
@@ -419,4 +445,49 @@ GtkWidget* display_popup_menu(void)
 	//while(gtk_events_pending()) gtk_main_iteration();
 
 	return menu;
+}
+
+
+/* */
+
+static void go_to_bookmark(const char *link)
+{
+	gboolean result;
+	gchar **argv = g_malloc0(3 * sizeof(gchar *));
+
+#ifdef __LINUX__
+	argv[0] = g_strdup("/usr/bin/mozilla");
+#else
+	argv[0] = g_strdup("C:\\Program Files\\Internet Explorer\\IExplore.exe");
+#endif
+	argv[1] = g_strdup(link);
+	argv[2] = NULL;
+
+	result = g_spawn_async(NULL, argv, NULL, 0, NULL, NULL, NULL, NULL);
+	g_strfreev(argv);
+
+	if (result == FALSE) 
+	{
+		msg_box("Error", "Spawn error: do you have Mozilla/IE installed ?");
+	} 
+	else 
+	{
+		GtkWidget *dialog;
+		GTimer *timer;
+		const gchar *message = "A web browser has been launched: this may take a while before it appears. If it is already launched, the page will be opened in the existing frame.";
+
+		dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+					   GTK_MESSAGE_INFO,
+					   GTK_BUTTONS_CLOSE, message);
+		g_signal_connect_swapped(GTK_OBJECT(dialog), "response",
+					 G_CALLBACK(gtk_widget_destroy),
+					 GTK_OBJECT(dialog));
+		gtk_widget_show_all(GTK_WIDGET(dialog));
+		
+		while(gtk_events_pending()) gtk_main_iteration();
+		for(timer = g_timer_new(); g_timer_elapsed(timer, NULL) < 3.0;);
+
+		g_timer_destroy(timer);
+		gtk_widget_destroy(GTK_WIDGET(dialog));
+	}
 }
