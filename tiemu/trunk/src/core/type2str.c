@@ -63,10 +63,8 @@ const char *ti68k_romtype_to_string(int type)
 {
 	switch(type)
 	{
-		case 0:						return "external-EPROM";
-		case INTERNAL:				return "internal-EPROM";
-		case FLASH_ROM:				return "external-FLASH";
-		case FLASH_ROM | INTERNAL: 	return "internal-FLASH";
+		case 0:						return "EPROM";
+		case FLASH_ROM:				return "FLASH";
 	}
 		
 	return 0;
@@ -74,14 +72,10 @@ const char *ti68k_romtype_to_string(int type)
 
 int         ti68k_string_to_romtype(const char *str)
 {
-	if(!strcmp(str, "external-EPROM"))
+	if(!strcmp(str, "EPROM"))
 		return 0;
-	else if(!strcmp(str, "internal-EPROM"))
-		return INTERNAL;
-	else if(!strcmp(str, "external-FLASH"))
+	else if(!strcmp(str, "FLASH"))
 		return FLASH_ROM;
-	else if(!strcmp(str, "internal-FLASH"))
-		return FLASH_ROM | INTERNAL;
 		
 	return 0;
 }

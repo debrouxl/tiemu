@@ -131,7 +131,8 @@ int hw_mem_init(void)
     mem_mask[0] = tihw.ram_size-1;
 
     // map ROM (internal)
-	if(tihw.rom_internal)
+	//if(tihw.rom_internal)
+    if(tihw.rom_base == 0x20)
 	{
         if(tihw.rom_size > 0*MB)
         {
@@ -159,7 +160,8 @@ int hw_mem_init(void)
 	}
 
     // map ROM (external)
-	if(!tihw.rom_internal)
+	//if(!tihw.rom_internal)
+    if(tihw.rom_base == 0x40)
 	{
 		mem_tab[4] = tihw.rom;
 		mem_mask[4] = MIN(tihw.rom_size, 1*MB)-1;

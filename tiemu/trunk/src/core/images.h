@@ -30,22 +30,25 @@
   Definitions
 */
 
+#define IMG_REV 2           // increase this number when changing the structure below
+
 // dc = don't care for rom/tib
 typedef struct
 {
 	char	signature[16];	// "TiEmu v2.00" (dc)
-	long	header_size;	// size of this structure (dc)
-	long	data_offset;	// offset to pure data (dc)
+    long    revision;       // structure revision (compatibility)
+	long	header_size;	// size of this structure and offset to pure data (dc)
 
 	char	calc_type;		// calculator type
 	char	version[5];		// firmware revision
-	char	internal;		// internal or external ROM
 	char	flash;			// EPROM or FLASH
 	char	has_boot;		// FLASH upgrade does not have boot
 	long	size;			// size of pure data
 	char	hw_type;		// hw1 or hw2
+    char    rom_base;       // ROM base address (MSB)
 
-	char*	data;			// pure data (temporary use)
+	char*	data;			// pure data (temporary use, 8 bytes)
+    char    fill[0x40-47];  // round up struct to 0x40 bytes
 } IMG_INFO;
 
 extern int		img_loaded;

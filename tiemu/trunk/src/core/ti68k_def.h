@@ -92,7 +92,7 @@ typedef struct
 
     int     ram_size;
     int     rom_size;
-    int     rom_internal;
+    int     rom_base;
     int     rom_flash;
     char	rom_version[5];
 	int		hw_type;

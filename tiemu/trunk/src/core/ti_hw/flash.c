@@ -45,7 +45,7 @@ void FlashWriteByte(uint32_t addr, int v)
     int i;
 
     // map ROM accesses
-    if(tihw.rom_internal)
+    if(tihw.rom_base == 0x20)
         rom = mem_tab[2];
     else
         rom = mem_tab[4];

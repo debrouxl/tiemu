@@ -86,7 +86,7 @@ gint display_infos_dbox()
 	g_free(str);
 	
 	label = glade_xml_get_widget(xml, "label27");
-	str = g_strdup_printf("%s", ti68k_romtype_to_string(tihw.rom_flash | tihw.rom_internal));
+	str = g_strdup_printf("%s", ti68k_romtype_to_string(tihw.rom_flash));
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 

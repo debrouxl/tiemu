@@ -112,8 +112,9 @@ void ti68k_display_rom_infos(IMG_INFO *s)
 	DISPLAY(_("Rom informations:\n"));
   	DISPLAY(_("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
   	DISPLAY(_("  Firmware    : v%s\n"), s->version);
-  	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->internal | s->flash));
+  	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->flash));
   	DISPLAY(_("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
+    DISPLAY(_("  ROM base    : %02x\n"), s->rom_base);
 	DISPLAY(_("  Hardware    : %i\n"), s->hw_type);
 }
 
@@ -122,8 +123,9 @@ void ti68k_display_tib_infos(IMG_INFO *s)
 	DISPLAY(_("Tib informations:\n"));
   	DISPLAY(_("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
   	DISPLAY(_("  Firmware    : v%s\n"), s->version);
-  	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->internal | s->flash));
+  	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->flash));
   	DISPLAY(_("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
+    DISPLAY(_("  ROM base    : %02x\n"), s->rom_base);
 }
 
 void ti68k_display_img_infos(IMG_INFO *s)
@@ -131,10 +133,11 @@ void ti68k_display_img_infos(IMG_INFO *s)
 	DISPLAY(_("Image informations:\n"));
   	DISPLAY(_("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
   	DISPLAY(_("  Firmware    : v%s\n"), s->version);
-  	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->internal | s->flash));
+  	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->flash));
   	DISPLAY(_("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
-	DISPLAY(_("  Has boot    : %s\n"), s->has_boot ? "yes" : "no");
-	DISPLAY(_("  Hardware    : %i\n"), s->hw_type);
+    DISPLAY(_("  ROM base    : %02x\n"), s->rom_base);
+    DISPLAY(_("  Hardware    : %i\n"), s->hw_type);
+	DISPLAY(_("  Has boot    : %s\n"), s->has_boot ? "yes" : "no");	
 }
 
 void ti68k_display_hw_param_block(HW_PARM_BLOCK *s)
@@ -173,12 +176,22 @@ int ti68k_get_hw_param_block(IMG_INFO *rom, HW_PARM_BLOCK *block)
     uint32_t addr;
 
     addr = rd_long(&rom->data[0x104]);
+    /*
+#if 0
 	if(rom->internal)
 		addr -= 0x200000;
 	else
 		addr -= 0x400000;
+#else
+    // In order to use V200 patched ROM image from ExtendeD
+    addr -= 0x200000;
+    if(addr > 0x200000)
+        addr -= 0x200000;
+#endif
+        */
+    addr -= (rom->rom_base << 16);
 
-	if(addr < 0x200000 || addr > 0x600000)
+	if(addr < 0x000000 || addr >= 0x200000)
 		return -1;
 
     memset(block, 0, sizeof(HW_PARM_BLOCK));
@@ -186,7 +199,7 @@ int ti68k_get_hw_param_block(IMG_INFO *rom, HW_PARM_BLOCK *block)
     block->hardwareID = rd_long(&(rom->data[addr+2]));
     block->hardwareRevision = rd_long(&(rom->data[addr+6]));
     block->bootMajor = rd_long(&(rom->data[addr+10]));
-    block ->bootRevision = rd_long(&(rom->data[addr+14]));
+    block->bootRevision = rd_long(&(rom->data[addr+14]));
     block->bootBuild = rd_long(&(rom->data[addr+18]));
     block->gateArray = rd_long(&(rom->data[addr+22]));
     block->physDisplayBitsWide = rd_long(&(rom->data[addr+26]));
@@ -201,7 +214,7 @@ int ti68k_get_hw_param_block(IMG_INFO *rom, HW_PARM_BLOCK *block)
 /*
 	Get some informations on the ROM dump:
 	- size
-	- internal/external
+	- ROM base address
 	- FLASH/EPROM
 	- os version
 	- calc type
@@ -245,7 +258,7 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
   	fclose(file);
 
     rom->has_boot = 1;
-  	rom->internal = ((rom->data[0x05] & 0x60) == 0x20) ? INTERNAL : 0;
+    rom->rom_base = rom->data[0x05];
   	rom->flash = (rom->data[0x65] & 0xf) ? 0 : FLASH_ROM;
 
     get_rom_version(rom->data, rom->size, rom->version);
@@ -289,7 +302,7 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
 /*
   Get some informations on the FLASH upgrade:
   - size
-  - internal/external
+  - ROM base address
   - os version
   - calc type
 */
@@ -336,19 +349,19 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 	switch(ptr->device_type & 0xff)
 	{
 		case DEVICE_TYPE_89:
-	   		tib->internal = INTERNAL;
       		tib->calc_type = TI89;
+            tib->rom_base = 0x20;
 		break;
 		case DEVICE_TYPE_92P:
             if(tifiles_which_calc_type(filename) == CALC_TI92P)
             {
       		    tib->calc_type = TI92p;
-                tib->internal = 0;
+                tib->rom_base = 0x40;
             }
             else
             {
                 tib->calc_type = V200;
-                tib->internal = INTERNAL;
+                tib->rom_base = 0x20;
             }
 		break;
 		default:
@@ -375,7 +388,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 /*
 	Try to get some informations on the ROM dump:
 	- size
-	- internal/external
+	- ROM base address
 	- FLASH/EPROM
 	- soft version
 	- calc type
@@ -428,7 +441,6 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	IMG_INFO img;
 	char *ext;
 	gchar *basename;
-	int i;
 
 	// No filename, exits
 	if(!strcmp(srcname, ""))
@@ -464,12 +476,10 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	// Fill header
 	strcpy(img.signature, "TiEmu img v2.00");
 	img.header_size = sizeof(IMG_INFO);
-	img.data_offset = 0x40;
+    img.revision = IMG_REV;
 
 	// Write file
 	fwrite(&img, 1, sizeof(IMG_INFO), f);
-	for(i = img.header_size; i < img.data_offset; i++)
-		fputc(0, f);
 	fwrite(img.data, sizeof(char), img.size, f);
 
 	// Close file
@@ -527,24 +537,19 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	// Fill header
 	strcpy(img.signature, "TiEmu img v2.00");
 	img.header_size = sizeof(IMG_INFO);
-	img.data_offset = 0x40;
+	img.revision = IMG_REV;
     real_size = img.size - SPP;
     img.size = ti68k_get_rom_size(img.calc_type);
     img.hw_type = HW2;  //default
 	
 	// Write header
 	fwrite(&img, 1, sizeof(IMG_INFO), f);
-	for(i = img.header_size; i < img.data_offset; i++)
-		fputc(0, f);
   
   	// Write boot block
   	for(i=0; i<0x05; i++)
     	fputc(0xff, f);
     
-    if(img.internal)
-    	fputc(0x20, f); 	// internal
-  	else
-    	fputc(0x40, f); 	// external
+    fputc(img.rom_base, f); // base address for detection
 
   	for(i=0x06; i<0x65; i++)
     	fputc(0xff, f);
@@ -556,7 +561,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 
     // hardware param block
     fputc(0x00, f);
-    fputc(img.internal ? 0x20: 0x40, f);
+    fputc(img.rom_base, f);
     fputc(0x01, f);
     fputc(0x08, f);
 
@@ -612,7 +617,6 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 	IMG_INFO img;
 	char *ext;
 	gchar *basename;
-	int i;
     int real_size;
 
 	// No filename, exits
@@ -667,13 +671,11 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 	// Fill header
 	strcpy(img.signature, "TiEmu img v2.00");
 	img.header_size = sizeof(IMG_INFO);
-	img.data_offset = 0x40;
+	img.revision = IMG_REV;
     img.has_boot = 1;
 
 	// Write file
 	fwrite(&img, 1, sizeof(IMG_INFO), f);
-	for(i = img.header_size; i < img.data_offset; i++)
-		fputc(0, f);
 	fwrite(img.data, sizeof(char), img.size, f);
 
 	// Close file
@@ -716,7 +718,7 @@ int ti68k_load_image(const char *filename)
       	return ERR_CANT_OPEN;
     }
 	// Read pure data
-    fseek(f, img->data_offset, SEEK_SET);
+    fseek(f, img->header_size, SEEK_SET);
 	img->data = malloc(img->size + 4);
 	if(img->data == NULL)
 		return ERR_MALLOC;
@@ -949,7 +951,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 		  		line[0] = (char *)dirent;
 		  		line[1] = (char *)ti68k_calctype_to_string(img.calc_type);
 	  			line[2] = img.version;
-	  			line[3] = (char *)ti68k_romtype_to_string(img.internal | img.flash);
+	  			line[3] = (char *)ti68k_romtype_to_string(img.flash);
 	  			sprintf(str, "%iKB", (int)(img.size >> 10));
 	  			line[4] = str;
 	  			if(img.has_boot)

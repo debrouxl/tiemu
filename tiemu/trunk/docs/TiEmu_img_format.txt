@@ -35,7 +35,8 @@ The TiEmu v2.00 image format
   0x21		32		1	has boot (1/0)
   0x22-0x26	33-36	4	pure data size
   0x27		37		1	hw1/hw2 (1/2) if applicable
-  0x28-0x3F	38-64	n	filled with 0
+  0x28		38		1	ROM base address
+  0x29-0x3F	39-64	n	filled with 0
   
   0x40-...	64-...		pure data (ROM image)
  
