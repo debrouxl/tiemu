@@ -84,13 +84,13 @@ static inline is_ret_inst(uint16_t inst)
 	return 0;
 }
 
-static inline is_bsr_inst(uint16_t isnt)
+static inline is_bsr_inst(uint16_t ci)
 {
 	return 
-		((curriword() & 0x4e80) == 0x4e80) || 
-        (LSB(curriword()) == 0x61) ||
-        (curriword() & 0xf800) ||
-        (curriword() & 0x5fc8)
+		((ci >> 6) == 0x13a) ||									/* jsr */
+        ((ci >> 8) == 0x61)  ||									/* bsr */
+        (ci >= 0xf800 && ci <= 0xffef) ||						/* fline */
+		((ci & 0xf000) == 0x5000) && ((ci & 0x00f8) == 0x00c8)	/* dbcc */
 		;
 }
 
@@ -98,7 +98,6 @@ int ti68k_debug_step_over(void)
 {
     uint32_t curr_pc, next_pc;
 	gchar *output;
-	int i;
 
 	// get current PC and next PC
 	curr_pc = m68k_getpc();	
@@ -106,26 +105,25 @@ int ti68k_debug_step_over(void)
 	//printf("$%06x => $%06x %04x <%s>\n", curr_pc, next_pc, curriword(), output);
 	g_free(output);	
 
-	// check current instruction (JSR or BSR or FLINE or DBcc)
+	// check current instruction
 	if(!is_bsr_inst(curriword()))
 	{
 		ti68k_debug_step();
 		return 0;
 	}
 
-	// run emulation until address after instruction is reached or another condition
+	// run emulation until address after instruction is reached
 	do
 	{
-		if(is_ret_inst(curriword()))
-		{
-			//printf("step_over aborted!\n");
-			hw_m68k_run(1);
-			return 1;
-		}
-		
 		hw_m68k_run(1);
+
+		// force GUI refresh in order to be able to cancel operation
+		while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
 	}
-	while (next_pc != m68k_getpc());
+	while ((next_pc != m68k_getpc()) && !(specialflags & SPCFLAG_BRK));
+
+	if(specialflags & SPCFLAG_BRK)
+		specialflags &= ~SPCFLAG_BRK;
 
     return 0;
 }
@@ -134,7 +132,7 @@ int ti68k_debug_step_out(void)
 {
 	uint32_t curr_pc, next_pc;
 	gchar *output;
-	int i;
+	//int i;
 
 	// get current PC and next PC
 	curr_pc = m68k_getpc();	
@@ -161,6 +159,7 @@ int ti68k_debug_step_out(void)
 
 int ti68k_debug_skip(uint32_t next_pc)
 {
+	// run emulation until address is reached
     do 
     {
 		ti68k_debug_step();
@@ -172,8 +171,14 @@ int ti68k_debug_skip(uint32_t next_pc)
 		// jump back: stop
 		if(next_pc - m68k_getpc() > 0x80) 
 			break;
+
+		// force GUI refresh in order to be able to cancel operation
+		while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
     } 
-    while (next_pc != m68k_getpc());
+    while ((next_pc != m68k_getpc()) && !(specialflags & SPCFLAG_BRK));
+
+	if(specialflags & SPCFLAG_BRK)
+		specialflags &= ~SPCFLAG_BRK;
 
     return 0;
 }

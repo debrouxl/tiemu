@@ -447,13 +447,18 @@ GLADE_CB void
 on_step_over1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	tb_set_states(0, 0, 0, 0, 0, 1, 0);
     ti68k_debug_step_over();
+	tb_set_states(1, 1, 1, 1, 1, 0, 1);
 
 	clist_refresh(store, TRUE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
     //dbgmem_refresh_window();
 	dbgstack_refresh_window();
+
+	// force refresh !
+    while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
 }
 
 GLADE_CB void
@@ -467,6 +472,9 @@ on_step_out1_activate                 (GtkMenuItem     *menuitem,
 	dbgpclog_refresh_window();
     //dbgmem_refresh_window();
 	dbgstack_refresh_window();
+
+	// force refresh !
+    while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
 }
 
 
@@ -827,9 +835,9 @@ on_combo_entry1_changed                (GtkEditable     *editable,
 	gchar name[256];
 	int ret;
 
-	ret = sscanf(str, "%03x: %s [%06x]", &id, name, &addr);
+	ret = sscanf(str, "%03x: %s [%x]", &id, name, &addr);
 	if(ret == 3)
-		dbgcode_disasm_at(addr);
+		dbgcode_disasm_at(addr & 0xffffff);
 
 	g_free(str);
 }

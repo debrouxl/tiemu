@@ -1,5 +1,9 @@
 List of stuffs to do:
 
+Roms:
+
+- conversion de upgrade TI92+ en .ROM: marche pas
+
 ExtendeD:
 
 - bug sur Step Out
@@ -40,7 +44,7 @@ pas l'air de planter l'émulateur). Il faut faire un
 Reset Calculator pour avoir une calculette à nouveau
 d'aplomb.
 
-* F8 ne fait "silencieusement" pas l'appel complet 
++ F8 ne fait "silencieusement" pas l'appel complet 
 à une subroutine, mais seulement une partie.
 Actuellement, TIEmu s'arrête manifestement après le
 premier rts rencontré, ce qui n'est bon que si la
