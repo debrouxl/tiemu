@@ -225,7 +225,6 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         	// %[5-2] set: LCD RS (row sync) frequency, OSC2/((16-n)*8)
         	// %1111 turns off the RS completely (used when LCD is off)        	
 			tihw.on_off = ((arg & 0x3c) == 0x3c) ? 0 : 1;
-			printf("tihw.on_off = %i\n", tihw.on_off);
         break;
         case 0x1d:	// -w <7..43210>
 			// %[3-0]: contrast

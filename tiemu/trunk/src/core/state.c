@@ -36,6 +36,8 @@
 #include "ti68k_int.h"
 #include "ti68k_err.h"
 
+#define SAV_REVISION	1
+
 static int load_bkpt(FILE *f, GList **l)
 {
     int ret;
@@ -84,6 +86,7 @@ int ti68k_state_load(char *filename)
   	IMG_INFO img;
   	SAV_INFO sav;
     int ret;
+	long pos;
   
   	// No filename, exits
 	if(!strcmp(filename, ""))
@@ -100,7 +103,16 @@ int ti68k_state_load(char *filename)
 	if(memcmp(&img, &img_infos, sizeof(IMG_INFO) - sizeof(char *)))
 		return ERR_INVALID_STATE;
 
-    // Load state image infos
+    // Determine state image revision for backwards compatibility
+	pos = ftell(f);
+	fread(&sav.revision, sizeof(sav.revision), 1, f);
+	fread(&sav.size, sizeof(sav.revision), 1, f);
+	fseek(f, pos, SEEK_SET);
+
+	if(sav.revision != SAV_REVISION)
+		return ERR_INVALID_STATE;
+
+	// Load state image infos
     fread(&sav, 1, sizeof(SAV_INFO), f);
 	
 	// Load internal hardware (registers and special flags)
@@ -116,6 +128,10 @@ int ti68k_state_load(char *filename)
     // Load RAM content
     ret = fseek(f, sav.ram_offset, SEEK_SET);
     fread(tihw.ram, tihw.ram_size, 1, f);
+
+	// Load extra infos
+	ret = fseek(f, sav.misc_offset, SEEK_SET);
+	fread(&tihw.on_off, sizeof(long), 1, f);
 
     // Load bkpts
     ti68k_bkpt_clear_access();
@@ -200,11 +216,13 @@ int ti68k_state_save(char *filename)
 	fwrite(img, 1, sizeof(IMG_INFO), f);
 
     // Fill state image infos
+	sav.revision = SAV_REVISION;
+	sav.size = sizeof(SAV_INFO);
     sav.regs_offset = sizeof(IMG_INFO) + sizeof(SAV_INFO);
     sav.io_offset = sav.regs_offset + sizeof(regs) + sizeof(specialflags);
     sav.ram_offset = sav.io_offset + 2*tihw.io_size;
-    sav.bkpts_offset = sav.ram_offset + tihw.ram_size;
-
+	sav.misc_offset = sav.ram_offset + tihw.ram_size;
+    sav.bkpts_offset = sav.misc_offset + sizeof(long);
     fwrite(&sav, 1, sizeof(SAV_INFO), f);
 	
 	// Update UAE structures
@@ -221,6 +239,9 @@ int ti68k_state_save(char *filename)
     
     // Save RAM content
     fwrite(tihw.ram, tihw.ram_size, 1, f);
+
+	// Save misc informations
+	fwrite(&tihw.on_off, sizeof(long), 1, f);
 
     // Save breakpoints (address, access, range, exception)
     save_bkpt(f, bkpts.code);

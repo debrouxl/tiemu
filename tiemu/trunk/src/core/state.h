@@ -26,9 +26,12 @@
 // Used to locate sections
 typedef struct
 {
+	long	revision;		// structure revision
+	long	size;			// and size (backwards compatibility)
 	long    regs_offset;    // offset to M68K area
     long    io_offset;      // offset to IO area
     long    ram_offset;     // offset to RAM area
+	long	misc_offset;	// offset to extra informations
     long    bkpts_offset;   // offset to bkpts area
 } SAV_INFO;
 
