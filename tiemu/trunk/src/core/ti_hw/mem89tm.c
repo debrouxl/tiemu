@@ -102,7 +102,6 @@ uint32_t ti89t_get_long(uint32_t adr)
     else if(IN_RANGE(0x800000, adr, 0xbfffff))			// FLASH access
 	{
 		return FlashReadLong(adr);
-        //return (lget(adr) | wsm.ret_or);
 	}
     else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
 	{
@@ -125,7 +124,6 @@ uint16_t ti89t_get_word(uint32_t adr)
     else if(IN_RANGE(0x800000, adr, 0xbfffff))			// FLASH access
 	{
 		return FlashReadWord(adr);
-        //return (wget(adr) | wsm.ret_or);
 	}
     else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
 	{
@@ -148,7 +146,6 @@ uint8_t ti89t_get_byte(uint32_t adr)
     else if(IN_RANGE(0x800000, adr, 0xbfffff))			// FLASH access
 	{
 		return FlashReadByte(adr);
-        //return (bget(adr) | wsm.ret_or);
 	}
     else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
 	{

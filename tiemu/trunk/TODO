@@ -48,10 +48,7 @@ dans le décor, je ne sais pas s'il exécute ou pas
 PPhd
 ====
 
-* Le contraste bug toujours autant sur 92+ (OS209.9xu mais ca le fait sous
-PedroM aussi). Ce n'est pas la faute de preos mais TIEMU ne gere pas le bit
-de poids faible/fort correctement il me semble (Faire diamond+ ou diamond-
-sans rien installer).
+* 
 
 
 roms
