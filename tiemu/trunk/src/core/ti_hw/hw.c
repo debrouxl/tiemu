@@ -36,7 +36,6 @@
 #include "ports.h"
 #include "dbus.h"
 #include "kbd.h"
-#include "lcd.h"
 #include "m68k.h"
 #include "images.h"
 #include "ti68k_def.h"
@@ -88,7 +87,6 @@ int hw_init(void)
 	TRY(hw_io_init());
 	TRY(hw_dbus_init());
 	TRY(hw_kbd_init());
-	TRY(hw_lcd_init());
 	TRY(hw_m68k_init());
 
     // Set hardware update rate (dependant from io[0x15])
@@ -107,7 +105,6 @@ int hw_reset(void)
 	TRY(hw_mem_reset());
 	TRY(hw_io_reset());
 	TRY(hw_kbd_reset());
-	TRY(hw_lcd_reset());
 	TRY(hw_dbus_reset());
 	TRY(hw_m68k_reset());
 
@@ -118,7 +115,6 @@ int hw_exit(void)
 {
 	TRY(hw_m68k_exit());
 	TRY(hw_dbus_exit());
-	TRY(hw_lcd_exit());
 	TRY(hw_kbd_exit());
 	TRY(hw_io_exit());
 	TRY(hw_mem_exit());

@@ -111,6 +111,7 @@ int ti68k_init(void)
 		return ERR_NO_IMAGE;
 
 	// set calc type and init hardware
+	memset(&tihw, 0, sizeof(Ti68kHardware));
     tihw.calc_type = img_infos.calc_type;
 	TRY(hw_init());
 

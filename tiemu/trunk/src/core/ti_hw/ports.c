@@ -155,20 +155,16 @@ void io_put_byte(uint32_t addr, uint8_t arg)
             hw_dbus_putbyte(arg);
             break;
         case 0x10: 	// -w <76543210> (hw1)
-			// address of LCD memory divided by 8 (mutex pb !)-
-			if(tihw.hw_type == HW1)
-			{
-				tihw.lcd_ptr = &tihw.ram[((tihw.io[0x10] << 8) | tihw.io[0x11]) << 3];
-				//printf("@%04x ", ((tihw.io[0x10] << 8) | tihw.io[0x11]) << 3);
-			}
+			// address of LCD memory divided by 8 (msb)
+			printf("msb: %02x\n", arg);
+			//if(tihw.hw_type == HW1)
+				tihw.lcd_ptr = &tihw.ram[((arg << 8) | tihw.io[0x11]) << 3];
         break;
         case 0x11: 	// -w <76543210> (hw1)
-			// address of LCD memory divided by 8
-			if(tihw.hw_type == HW1)
-			{
-				//tihw.lcd_ptr = &tihw.ram[((tihw.io[0x10] << 8) | tihw.io[0x11]) << 3];
-				//printf("$%04x ", ((tihw.io[0x10] << 8) | tihw.io[0x11]) << 3);
-			}
+			// address of LCD memory divided by 8 (lsb)
+			printf("lsb: %02x\n", arg);
+			//if(tihw.hw_type == HW1)
+				tihw.lcd_ptr = &tihw.ram[((tihw.io[0x10] << 8) | arg) << 3];
         break;
         case 0x12:	// -w <76543210>
 			// LCD logical width = (64-n)*2 bytes = (64-n)*16 pixels <=> n = 64-w/16
@@ -432,6 +428,7 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 		case 0x17:	// rw <......10>
 			// Display memory snoop range
 			tihw.lcd_ptr = &tihw.ram[0x4c00 + 0x1000*(arg&3)];
+			printf("arg = %04x\n", arg);
 		break;
 		case 0x1d:	// rw <7...3210>
 			// %1: Screen enable (clear this bit to shut down LCD)

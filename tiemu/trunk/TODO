@@ -286,6 +286,8 @@ me/moi
 
 * bug de contraste avec pedrom en rev $695 ou 696 ou 697.
 
+* Titanium boot seems to be broken after tiemu-1.80-041024 release...
+
 -------------
 + done
 - in progress

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: dbg_cause.c 446 2004-06-13 09:11:07Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -191,7 +191,7 @@ int hid_update_lcd(void)
 	GdkRect src, dst;
 	guchar *p;
 
-    if(!pixmap || !lcd)
+    if(!pixmap || !lcd || !tihw.lcd_ptr)
         return 0;
 
 	// Check for LCD state change (from TI HW)
