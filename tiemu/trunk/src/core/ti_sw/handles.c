@@ -110,4 +110,5 @@ void heap_get_block_size(int handle, uint32_t *addr, uint16_t *size)
 
 	*size &= ~(1 << 16);	// remove lock
 	*size <<= 1;			// size is twice
+	*size -= 2;
 }
