@@ -44,8 +44,8 @@ const int rom_sizes[] = { 1*MB, 2*MB, 2*MB, 4*MB };	// 92, 89, 92+, V200
 const int ram_sizes[] = { 128*KB, 256*KB, 256*KB, 256*KB };
 const int io_size = 32;
 
-UBYTE *mem_tab[8] = { 0 };
-ULONG mem_mask[8] = { 0 };
+UBYTE *mem_tab[16];
+ULONG mem_mask[16];		// pseudo chip-select
 	// 000000-1FFFFF : RAM
   	// 200000-3FFFFF : internal ROM (TI89)
   	// 400000-5FFFFF : external ROM (TI92/TI92+)
@@ -54,6 +54,23 @@ ULONG mem_mask[8] = { 0 };
   	// A00000-BFFFFF : nothing
 	// B00000-DFFFFF : nothing
 	// C00000-FFFFFF : nothing
+
+// 000000-0fffff : 
+// 100000-1fffff : 
+// 200000-2fffff : 
+// 300000-3fffff : 
+// 400000-4fffff : 
+// 500000-5fffff : 
+// 600000-6fffff : 
+// 700000-7fffff : 
+// 800000-8fffff : 
+// 900000-9fffff : 
+// a00000-afffff : 
+// b00000-bfffff : 
+// c00000-cfffff : 
+// d00000-dfffff : 
+// e00000-efffff : 
+// d00000-ffffff : 
 
 int rom_changed[32]; // FLASH segments which have been (re)programmed
 int flash_protect;
@@ -71,7 +88,7 @@ int hw_mem_init(void)
 {
 	int i;
 
-	// Get infos from image
+	// get infos from image
 	tihw.rom_internal = img->internal;
 	tihw.rom_flash = img->flash;
 	strcpy(tihw.rom_version, img->version);
@@ -88,7 +105,7 @@ int hw_mem_init(void)
 		tihw.ram_size = ram_sizes[log2(tihw.calc_type)];
 	}
 
-	// Init vars
+	// init vars
 	tihw.ram256 = (tihw.ram_size == 256*KB);
 	//tihw.ram_wrap = 
 	tihw.prot_mem = 1;
@@ -103,7 +120,7 @@ int hw_mem_init(void)
   rom_ret_or = 0;
   flash_protect = 0;
 
-    // Clear breakpoints
+    // clear breakpoints
 	ti68k_bkpt_clear_address();
 	ti68k_bkpt_clear_access();
 	ti68k_bkpt_clear_access_range();
@@ -126,6 +143,10 @@ int hw_mem_init(void)
         else
 	        tihw.rom[i] = 0x14;
     }
+
+	// clear banks
+	memset(&mem_tab, 0, sizeof(mem_tab));
+	memset(&mem_mask, 0, sizeof(mem_mask));
 
     // set all banks to RAM (with mask 0 per default)
     for(i=0; i<8; i++)
@@ -164,7 +185,7 @@ int hw_mem_reset(void)
 
 int hw_mem_exit(void)
 {
-	// Free memory
+	// free memory
     if(tihw.ram)
         free(tihw.ram); 
     tihw.ram=NULL;
@@ -177,7 +198,7 @@ int hw_mem_exit(void)
         free(tihw.io);  
     tihw.io = NULL;
 
-	// Clear breakpoints
+	// clear breakpoints
 	ti68k_bkpt_clear_address();
 	ti68k_bkpt_clear_access();
 	ti68k_bkpt_clear_access_range();

@@ -61,6 +61,7 @@ int ti68k_state_load(char *filename)
   int i;
   UBYTE* mem[256];
   int int0Count = 0;
+  int mem_and;
 
   DISPLAY("Loading RAM image (VTi format): %s\n", filename);
   if(!strcmp(filename, ""))
@@ -117,6 +118,7 @@ int ti68k_state_save(char *filename)
   int comError=0;
   int cpuCompleteStop=0;
   int int0Count = 0;
+  int mem_and;
 
   if(strlen(filename)) // name exist ?
     {

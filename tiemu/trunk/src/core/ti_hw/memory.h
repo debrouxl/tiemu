@@ -43,8 +43,8 @@ extern UBYTE *get_real_address(CPTR adr);
 
 /* Variables */
 
-extern UBYTE *mem_tab[8];
-extern ULONG mem_mask[8];
+extern UBYTE *mem_tab[];
+extern ULONG mem_mask[];
 
 extern int memprotect, ram128;
 extern int mem_and, ram_wrap;
