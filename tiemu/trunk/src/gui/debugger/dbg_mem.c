@@ -97,7 +97,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 	gint col;
     gchar *str_addr;
     gchar *str_data = (char *)new_text;
-    int addr, data;
+    int addr, data, i;
     uint8_t *mem_ptr;
 
     // get column
@@ -109,26 +109,41 @@ static void renderer_edited(GtkCellRendererText * cell,
 	if (!gtk_tree_model_get_iter(model, &iter, path))
 		return;
 
-    // get old value
+    // get address
 	col = column2index(list, column);
     gtk_tree_model_get(model, &iter, COL_ADDR, &str_addr, -1);
 
     // check for new value
-    if(!isxdigit(str_data[0]) || !isxdigit(str_data[1]) || (strlen(str_data) > 2))
+    if((strlen(str_data) % 2) != 0)
     {
         gtk_tree_path_free(path);
         return;
     }
 
-    // set new value
-    gtk_list_store_set(store, &iter, col, new_text,	-1);
+    for(i = 0; i < (int)strlen(str_data); i++)
+        if(!isxdigit(str_data[i]))
+            {
+                gtk_tree_path_free(path);
+                return;
+            }
 
-    // and update memory
-    sscanf(str_addr, "%x", &addr);
-    sscanf(str_data, "%x", &data);
-    addr += (col - COL_0);
-    mem_ptr = (uint8_t *)ti68k_get_real_address(addr);
-	*mem_ptr = data;
+    // set new value(s) and update memory
+    for(i = 0; (i < (int)strlen(str_data)/2) && ((col+i) <= COL_F); i++)
+    {
+        char digits[3];
+
+        strncpy(digits, &new_text[2*i], 2); 
+        digits[2] = '\0';
+
+        gtk_list_store_set(store, &iter, col+i, digits, -1);
+
+        sscanf(str_addr, "%x", &addr);
+        sscanf(digits, "%x", &data);
+        addr += (col - COL_0) + i;
+
+        mem_ptr = (uint8_t *)ti68k_get_real_address(addr);
+	    *mem_ptr++ = data;
+    }
 
     g_free(str_addr);
 	gtk_tree_path_free(path);

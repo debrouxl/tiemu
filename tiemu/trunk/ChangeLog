@@ -10,13 +10,14 @@ To do:
 	- synch Code/Window menu with state of other windows (show/hide)
 	- minimize/maximize all windows when touching calc or code window. Could be better...
 	- can't step after bkpt: fixed.
-	- mem dbox: show headers, removed stack, refreshed on step, tab refreshed when scrolling,
+	- mem_dbox: show headers, removed stack, refreshed on step, tab refreshed when scrolling,
 	- mem_dbox:	improved scrolling and browsing
 	- step over was buggy (no single step on insts other than jsr/bsr)
 	- code_dbox: improved scrolling and browsing
 	- avoid selection and green bar to be masked
-	- dbg_code: can add mem tab at address
-	- mem_code: can disasm at address and added popup menu
+	- code_dbox: can add mem tab at address
+	- mem_dbox: can disasm at address and added popup menu
+	- mem_dbox: can update multiple bytes at once
 
 - 14/07/2004, version 1.74: roms
 	Fixes from Lionel, Kevin and Olivier's suggestions:
