@@ -137,6 +137,63 @@ void ti68k_display_img_infos(IMG_INFO *s)
 	DISPLAY(_("  Hardware    : %i\n"), s->hw_type);
 }
 
+void ti68k_display_hw_param_block(HW_PARM_BLOCK *s)
+{
+    gint i = 0;
+
+    DISPLAY(_("Hardware Parameters Block:\n"));
+    DISPLAY(_("Length           : %i\n"), s->len);
+    if(s->len > 2+(4*i++))
+        DISPLAY(_("  hardwareID       : %i\n"), s->hardwareID);
+    if(s->len > 2+(4*i++))
+        DISPLAY(_("  hardwareRevision : %i\n"), s->hardwareRevision);
+    if(s->len > 2+(4*i++))
+        DISPLAY(_("  bootMajor        : %i\n"), s->bootMajor);
+    if(s->len > 2+(4*i++))
+        DISPLAY(_("  bootRevision     : %i\n"), s->bootRevision);
+    if(s->len > 2+(4*i++))
+        DISPLAY(_("  bootBuild        : %i\n"), s->bootBuild);
+    if(s->len > 2+(4*i++))
+        DISPLAY(_("  gateArray        : %i\n"), s->gateArray);
+    if(s->len > 2+(4*i++))
+        DISPLAY(_("  physDisplayBitsWide : %i\n"), s->physDisplayBitsWide);
+    if(s->len > 2+(4*i++))
+        DISPLAY(_("  physDisplayBitsTall : %i\n"), s->physDisplayBitsTall);
+    if(s->len > 2+(4*i++))
+        DISPLAY(_("  LCDBitsWide         : %i\n"), s->LCDBitsWide);
+    if(s->len > 2+(4*i++))
+        DISPLAY(_("  LCDBitsTall         : %i\n"), s->LCDBitsTall);
+}
+
+/*
+    Read hardware parameter block from image.
+*/
+int ti68k_get_hw_param_block(IMG_INFO *rom, HW_PARM_BLOCK *block)
+{
+    uint32_t addr;
+
+    addr = rd_long(&rom->data[0x104]);
+	if(rom->internal)
+		addr -= 0x200000;
+	else
+		addr -= 0x400000;
+
+    memset(block, 0, sizeof(HW_PARM_BLOCK));
+    block->len = rd_word(&(rom->data[addr+0]));
+    block->hardwareID = rd_long(&(rom->data[addr+2]));
+    block->hardwareRevision = rd_long(&(rom->data[addr+6]));
+    block->bootMajor = rd_long(&(rom->data[addr+10]));
+    block ->bootRevision = rd_long(&(rom->data[addr+14]));
+    block->bootBuild = rd_long(&(rom->data[addr+18]));
+    block->gateArray = rd_long(&(rom->data[addr+22]));
+    block->physDisplayBitsWide = rd_long(&(rom->data[addr+26]));
+    block->physDisplayBitsTall = rd_long(&(rom->data[addr+30]));
+    block->LCDBitsWide = rd_long(&(rom->data[addr+34]));
+    block->LCDBitsTall = rd_long(&(rom->data[addr+38]));
+
+    return 0;
+}
+
 
 /*
 	Get some informations on the ROM dump:
@@ -154,6 +211,7 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
   	FILE *file;
 	uint32_t addr;
 	uint16_t data;
+    HW_PARM_BLOCK hwblock;
 
 	// No filename, exits
 	if(!strcmp(filename, ""))
@@ -197,19 +255,20 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
   	get_rom_version(rom->data, rom->size, rom->version);
 
 	// Determine hw type by analysing hw param block
+    //ti68k_get_hw_param_block(rom, &hwblock);
+    //ti68k_display_hw_param_block(&hwblock);
+
 	addr = rd_long(&rom->data[0x104]);
 	if(rom->internal)
 		addr -= 0x200000;
 	else
 		addr -= 0x400000;
-	printf("addr = <%x>\n", addr);
 
 	if(addr > 0x10000)
 		rom->hw_type = 1;
 	else
 	{
 		data = rd_word(&(rom->data[addr]));
-		printf("data = %x\n", data);
 
 		if(data < 22)
 			rom->hw_type = 1;

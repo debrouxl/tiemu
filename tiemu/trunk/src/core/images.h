@@ -39,7 +39,7 @@ typedef struct
 
 	char	calc_type;		// calculator type
 	char	version[5];		// firmware revision
-	char	internal;		// internal/external
+	char	internal;		// internal or external ROM
 	char	flash;			// EPROM or FLASH
 	char	has_boot;		// FLASH upgrade does not have boot
 	long	size;			// size of pure data
@@ -51,6 +51,21 @@ typedef struct
 extern int		img_loaded;
 extern IMG_INFO img_infos;
 
+// Hardware parameter block from TIGCC documentation
+// Exists only on FLASH calculators
+typedef struct {
+	unsigned short len;                 /* length of parameter block    */
+    unsigned long  hardwareID;          /* 1 = TI-92 Plus, 3 = TI-89    */
+    unsigned long  hardwareRevision;    /* hardware revision number     */
+    unsigned long  bootMajor;           /* boot code version number     */
+    unsigned long  bootRevision;        /* boot code revision number    */
+    unsigned long  bootBuild;           /* boot code build number       */
+    unsigned long  gateArray;           /* gate array version number    */
+    unsigned long  physDisplayBitsWide; /* display width                */
+    unsigned long  physDisplayBitsTall; /* display height               */
+    unsigned long  LCDBitsWide;         /* visible display width        */
+    unsigned long  LCDBitsTall;         /* visible display height       */
+} HW_PARM_BLOCK;
 
 /*
 	Functions
@@ -65,11 +80,12 @@ int ti68k_is_a_img_file(const char *filename);
 void ti68k_display_rom_infos(IMG_INFO *rom);
 void ti68k_display_tib_infos(IMG_INFO *tib);
 void ti68k_display_img_infos(IMG_INFO *img);
+void ti68k_display_hw_param_block(HW_PARM_BLOCK *block);
 
 int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload);
 int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload);
 int ti68k_get_img_infos(const char *filename, IMG_INFO *img);
-
+int ti68k_get_hw_param_block(IMG_INFO *img, HW_PARM_BLOCK *block);
 
 int ti68k_convert_rom_to_image(const char *src, const char *dirname, char **dst);
 int ti68k_convert_tib_to_image(const char *src, const char *dirname, char **dst);
