@@ -413,9 +413,9 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 		case 0x13:  // rw <..543210>
 			break;
 		case 0x14:	// rw <76543210>
-			if(!tihw.protect) tihw.io2[addr] = arg; else return;
-			// RTC, incremented every 2^13. The whole word must be read: 
-			// reading the port byte by byte can return wrong
+			//if(!tihw.protect) tihw.io2[addr] = arg; else return;
+			// RTC, incremented every 2^13 seconds. The whole word must be read: 
+			// reading the port byte by byte can return wrong value
 			tihw.rtc_value = (tihw.io2[0x14] << 8) | tihw.io2[0x15];
 			break;
 		case 0x15:	// rw <76543210>
@@ -434,8 +434,7 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 			if(!tihw.protect) tihw.io2[addr] = arg; else return;
 			// %0 set: use 5 contrast bits (default for AMS).
 
-			// %1 
-
+			// %[2:1]
 			// %2 set: activates the incrementation of $700014.w
 			break;
     }
@@ -493,7 +492,7 @@ uint8_t io2_get_byte(uint32_t addr)
 			break;
 		case 0x14:	// rw <7...3210>	word
 			// RTC, incremented every 2^13. The whole word must be read: 
-			// reading the port byte per byte can return wrong
+			// reading the port byte per byte can return wrong value
 			return MSB(tihw.rtc_value);
 			break;
 		case 0x15:
