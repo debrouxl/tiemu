@@ -117,7 +117,6 @@ int ti68k_display_rom_infos(IMG_INFO *s)
   	DISPLAY(_("  Firmware    : v%s\n"), s->version);
   	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->internal | s->flash));
   	DISPLAY(_("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
-	DISPLAY(_("  Image type  : dump\n"));
 }
 
 int ti68k_display_tib_infos(IMG_INFO *s)
@@ -127,7 +126,6 @@ int ti68k_display_tib_infos(IMG_INFO *s)
   	DISPLAY(_("  Firmware    : v%s\n"), s->version);
   	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->internal | s->flash));
   	DISPLAY(_("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
-	DISPLAY(_("  Image type  : upgrade\n"));
 }
 
 int ti68k_display_img_infos(IMG_INFO *s)
@@ -238,7 +236,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
   	for (i = 0, ptr = &content; i < nheaders - 1; i++)
     	ptr = ptr->next;
     	
-  	// Load TIB into memory
+  	// Load TIB into memory and relocate at SPP
 	if(tib->data == NULL)
   		tib->data = malloc(SPP + ptr->data_length + 4);
   	memset(tib->data + SPP, 0xff, ptr->data_length);
@@ -328,7 +326,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 {
   	FILE *f; 
   	int err;
-	IMG_INFO img;
+	IMG_INFO img = { 0 };
 	char *ext;
 	gchar *basename;
 	int i;
@@ -388,7 +386,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 {
 	FILE *f; 
   	int err;
-	IMG_INFO img;
+	IMG_INFO img = { 0 };
 	char *ext;
 	gchar *basename;
 	int i, j;
@@ -533,8 +531,9 @@ int ti68k_load_upgrade(const char *filename)
 	Ti9xFlash *ptr;
 	int nheaders;
 	int i;
-	IMG_INFO *img = &img_infos;
-	IMG_INFO tib;
+	IMG_INFO tib = { 0 };
+	//IMG_INFO *img = &img_infos;
+	IMG_INFO *img = &tib;
   	int err;
 
 	// No filename, exits
@@ -550,6 +549,7 @@ int ti68k_load_upgrade(const char *filename)
 	ti68k_display_tib_infos(img);
 
 	img->has_boot = 1;	// still bootable
+	memcpy(ti_rom+0x12000, img->data+0x12000, img->size-0x12000);
 
   	params.rom_size = img->size;
   	params.ram_size = (img->size == 1024*1024) ? 128 : 256;
@@ -566,7 +566,7 @@ int ti68k_load_upgrade(const char *filename)
 int ti68k_scan_files(const char *dirname, const char *filename)
 {
 	FILE *file;
-	IMG_INFO img;
+	IMG_INFO img = { 0 };
 	GDir *dir;
 	GError *error = NULL;
 	G_CONST_RETURN gchar *dirent;
