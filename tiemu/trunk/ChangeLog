@@ -12,6 +12,7 @@ To do:
 	- the Windows(tm) MENU key raises the popup menu for now
 	- fixed disassemblling of 0xffee and 0xffef FLINEs
 	- changed engine_start/stop architecture to remove some menu locks/bugs
+	- ROM call combo box: does not jump to call when names contains '/'
 
 - 07/02/2005, version 1.80m: roms
 	- dbus architecture improved (reset)

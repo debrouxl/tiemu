@@ -143,18 +143,21 @@ void dbgromcall_erase_window(GtkWidget *widget)
 
 static void goto_romcall(const char *str)
 {
+	gchar *ptr;
 	uint32_t addr;
 	int id;
-	gchar name[256];
-	int ret;
 
-	ret = sscanf(str, "%s [$%x] - #%03x ",name, &addr, &id);
-	if(ret == 3)
+	ptr = strchr(str, '[');
+	if(ptr != NULL)
 	{
-		if(addr < 0x200000)
-			dbgmem_add_tab(addr & 0xffffff);
-		else
-			dbgcode_disasm_at(addr & 0xffffff);
+		int ret = sscanf(ptr, "[$%x] - #%03x ", &addr, &id);
+		if(ret == 2)
+		{
+			if(addr < 0x200000)
+				dbgmem_add_tab(addr & 0xffffff);
+			else
+				dbgcode_disasm_at(addr & 0xffffff);
+		}
 	}
 }
 
