@@ -2,8 +2,8 @@
 <!DOCTYPE glade-project SYSTEM "http://glade.gnome.org/glade-project-2.0.dtd">
 
 <glade-project>
-  <name>Popup Menu</name>
-  <program_name>popup-menu</program_name>
+  <name>Calc</name>
+  <program_name>calc</program_name>
   <gnome_support>FALSE</gnome_support>
   <use_widget_names>TRUE</use_widget_names>
   <output_main_file>FALSE</output_main_file>

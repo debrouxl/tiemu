@@ -38,175 +38,7 @@
 #include "tie_error.h"
 #include "hid.h"
 
-
-GtkWidget *wnd = NULL;
-GtkWidget *area = NULL;
-
-gint display_main_wnd(void)
-{
-	GladeXML *xml;
-
-	xml = glade_xml_new
-		(tilp_paths_build_glade("tiemu-2.glade"), "main_wnd",
-		 PACKAGE);
-	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
-	glade_xml_signal_autoconnect(xml);
-	
-	wnd = glade_xml_get_widget(xml, "main_wnd");
-	area = glade_xml_get_widget(xml, "drawingarea1");
-
-	gtk_widget_show(wnd);
-
-	return 0;
-}
-
-
-
-GLADE_CB gboolean
-on_drawingarea1_configure_event        (GtkWidget       *widget,
-                                        GdkEventConfigure *event,
-                                        gpointer         user_data)
-{
-
-  return FALSE;
-}
-
-
-GLADE_CB gboolean
-on_drawingarea1_button_press_event     (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
-{
-	return FALSE;
-}
-
-
-GLADE_CB gboolean
-on_drawingarea1_delete_event           (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-
-  return FALSE;
-}
-
-
-GLADE_CB gboolean
-on_drawingarea1_destroy_event          (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-
-  return FALSE;
-}
-
-
-GLADE_CB gboolean
-on_drawingarea1_key_press_event        (GtkWidget       *widget,
-                                        GdkEventKey     *event,
-                                        gpointer         user_data)
-{
-
-  return FALSE;
-}
-
-
-GLADE_CB gboolean
-on_drawingarea1_key_release_event      (GtkWidget       *widget,
-                                        GdkEventKey     *event,
-                                        gpointer         user_data)
-{
-
-  return FALSE;
-}
-
-static void redraw_skin(void) ;
-
-GLADE_CB gboolean
-on_drawingarea1_expose_event           (GtkWidget       *widget,
-                                        GdkEventExpose  *event,
-                                        gpointer         user_data)
-{
-    /*
-	GdkRectangle rect;
-
-	if(pixbuf == NULL)
-	    return FALSE;
-
-	memcpy(&rect, &(event->area), sizeof(GdkRectangle));
-  
-	gdk_draw_pixbuf(widget->window,
-		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-		  pixbuf, 
-		  rect.x, rect.y,
-		  rect.x, rect.y,
-		  rect.width, rect.height,
-		  GDK_RGB_DITHER_NONE, 0, 0);
-
-	return TRUE;
-  */
-    return FALSE;
-}
-
-extern int iScrW, iScrH;
-extern uint32_t *pLcdBuf;
-uint32_t convtab[];
-
-int gtk_update_lcd(void)
-{
-    /*
-	int i, j, k;
-	uint8_t *pLcdMem = tihw.lcd_ptr;
-	uint8_t *ptr = (uint8_t *)pLcdBuf;
-	GdkRectangle update_rect;
-
-	int width, height, rowstride, n_channels;
-	guchar *pixels, *p;
-
-	n_channels = gdk_pixbuf_get_n_channels (pixbuf);
-	width = gdk_pixbuf_get_width (pixbuf);
-	height = gdk_pixbuf_get_height (pixbuf);
-	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-	pixels = gdk_pixbuf_get_pixels (pixbuf);
-
-	//
-		for(j=0, k=0; k<iScrH; k++)
-		{
-			for(i=0; i<iScrW>>3; i++, pLcdMem++) 
-			{
-				pLcdBuf[j++] = convtab[((*pLcdMem)<<1)  ];
-				pLcdBuf[j++] = convtab[((*pLcdMem)<<1)+1];
-			}
-		}
-
-	//		
-		for(j = 0; j < iScrH; j++) 
-		{
-			for (i = 0; i < iScrW; i++) 
-			{
-				p = pixels + j * rowstride + i * n_channels;
-
-				p[0] = *ptr ? 0x00 : 0xff;
-				p[1] = *ptr ? 0x00 : 0xff;
-				p[2] = *ptr ? 0x00 : 0xff;
-				p[3] = 0;
-
-				ptr++;
-			}
-		}
-
-		update_rect.x = update_rect.y = 0;
-		update_rect.width = iScrW;
-		update_rect.height = iScrH;
-
-		gtk_widget_draw(da, (GdkRectangle *)(&update_rect));
-        */
-    return -1;
-}
-
-
-/* Compat */
+/* Types */
 
 typedef struct
 {
@@ -223,17 +55,17 @@ typedef struct
 #define SCREEN_ON   1
 #define SCREEN_OFF	0
 
-GdkPixbuf *lcd;
-GdkPixbuf *skn;
-GdkPixbuf *img;
+/* Variables */
+
+extern GtkWidget *wnd;
+extern GtkWidget *area;
+
+GdkPixbuf *lcd = NULL;
+GdkPixbuf *skn = NULL;
+GdkPixmap *pixmap = NULL;
 
 uint32_t convtab[512];      // Planar to chunky conversion table
 RGBA     grayscales[16];    // Gray scales rgb values
-
-const char* key_mapping = NULL; // key mapping
-extern const char sknKey92[];   // in tikeys.c
-extern const char sknKey89[];
-extern const char sknKeyV2[];
 
 int iContrast = NGS;          // current contrast level
 int iLastContrast = 0;        // previous contrast level
@@ -242,18 +74,21 @@ int iGrayPlanes = -1;         // number of grayscales to emulate
 int iCurrPlane = 0;           // ?
 int iScrState = 0;            // screen state
 
+int iScrW, iScrH;
+uint32_t *pLcdBuf;
+uint32_t convtab[];
 
-static void compute_convtable(void) 
+void compute_convtable(void) 
 {
   	int i, j;
   	uint8_t k;
-  	uint8_t *tmptab = (uint8_t *)convtab;
+  	uint8_t *tab = (uint8_t *)convtab;
 
   	for(i=0, j=0; i<256; i++) 
     {
       	for(k = 1<<7; k; k>>=1)
 		{
-			tmptab[j++] = (i & k) ? 1 : 0;
+			tab[j++] = (i & k) ? 1 : 0;
 		}
     }
 }
@@ -262,7 +97,7 @@ static void compute_convtable(void)
 #define filter(v, l, h) (v<l ? l : (v>h ? h : v))
 
 /* Computes the 16 grays level colors and allocates a colormap */
-static void set_colors(void)
+void set_colors(void)
 {
   	int i;
   	int sr, sg, sb;
@@ -311,73 +146,10 @@ static void set_colors(void)
     }
 }
 
-static int match_skin(int calc_type)
-{
-	SKIN_INFOS si;
-	int ok;
-	gchar *skn_name, *s;
-
-	s = g_strdup(ti68k_calctype_to_string(calc_type));
-	skn_name = g_ascii_strdown(s, strlen(s));
-
-	// filename is "", load default skin
-	if(!strcmp(g_basename(options.skin_file), ""))
-	{
-		g_free(options.skin_file);
-		options.skin_file = g_strdup_printf("%s%s.skn", 
-					    inst_paths.skin_dir, skn_name);
-		g_free(skn_name);
-		return -1;
-	}
-
-	// load skin header
-	if(skin_read_header(options.skin_file, &si) == -1)
-	{
-		g_free(options.skin_file);
-      	options.skin_file = g_strdup_printf("%s%s.skn", 
-					    inst_paths.skin_dir, skn_name);
-	g_free(skn_name);
-	return -1;
-	}
-
-	// is skin compatible
-	switch(tihw.calc_type)
-	{
-	    case TI92:
-		case TI92p:
-            ok = !strcmp(si.calc, SKIN_TI92) || !strcmp(si.calc, SKIN_TI92P);
-		break;
-	    case TI89:
-        case TI89t:
-            ok = !strcmp(si.calc, SKIN_TI89) || !strcmp(si.calc, SKIN_TI89T);
-		break;
-		case V200:
-			ok = !strcmp(si.calc, SKIN_V200);
-		break;
-	    default: 
-            ok = 0;
-		break;
-	}
-
-	if(!ok)
-	{
-		g_free(options.skin_file);
-      	options.skin_file = g_strdup_printf("%s%s.skn", 
-			inst_paths.skin_dir, skn_name);
-
-	//tiemu_error(0, _("skin incompatible with the current calc model. Falling back to default skin."));
-	g_free(skn_name);
-		return -1;
-	}
-
-g_free(skn_name);
-	return 0;
-}
-
 /* 
    Redraw the skin into window but don't reload skin file
 */
-static void redraw_skin(void) 
+void redraw_skin(void) 
 {
     GdkRect rect;
 
@@ -386,157 +158,145 @@ static void redraw_skin(void)
   
 	if(skn == NULL)
 	    return;
-  
-	gdk_draw_pixbuf(wnd->window, wnd->style->fg_gc[GTK_WIDGET_STATE(wnd)],
+
+    gdk_draw_pixbuf(pixmap, wnd->style->fg_gc[GTK_WIDGET_STATE(wnd)],
 		  skn, 0, 0, 0, 0, -1, -1,
 		  GDK_RGB_DITHER_NONE, 0, 0);
-
-    rect.x = rect.y = 0;
+  
+    rect.x = 0;
+    rect.y = 0;
     rect.w = skin_infos.width;
     rect.h = skin_infos.height;
     gtk_widget_draw(area, (GdkRectangle *)&rect);
 }
 
-int  hid_init(void)
-{
-    // Create main window
-    if(wnd == NULL)
-        display_main_wnd();
-
-    // Found a skin
-	match_skin(tihw.calc_type);
-
-    // Init the planar/chunky conversion table for LCD
-  	compute_convtable();
-
-    // Allocate the TI screen buffer
-    lcd = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, BPP, 240, 128);
-    if(lcd == NULL)
-    {
-        gchar *s = g_strdup_printf("unable to create LCD pixbuf.\n");
-	    tiemu_error(0, s);
-	    g_free(s);
-	    return -1;
-    }
-
-    if(skin_load(options.skin_file) == -1) 
-    {
-	    gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
-	    tiemu_error(0, s);
-	    g_free(s);
-	    return -1;
-    }
-    skn = skin_infos.image;
-  
-	// Set keymap depending on calculator type
-	if((tihw.calc_type == TI92) || (tihw.calc_type == TI92p))
-      	key_mapping = sknKey92;
-	else if ((tihw.calc_type == TI89) || (tihw.calc_type == TI89t))
-      	key_mapping = sknKey89;
-	else if(tihw.calc_type == V200)
-      	key_mapping = sknKeyV2;
-	else
-	{
-	  	gchar *s = g_strdup_printf("no skin found for this calc\n");
-	  	tiemu_error(0, s);
-	  	g_free(s);
-	  	return -1;
-	}
-
-    // Get window size depending on windowed/fullscreen
-  	if(params.background)
-        gtk_drawing_area_size(GTK_DRAWING_AREA(area), skin_infos.width, skin_infos.height);
-    else
-        gtk_drawing_area_size(GTK_DRAWING_AREA(area), tihw.lcd_w, tihw.lcd_h);  
-    
-    // Allocate the backing pixbuf
-    img = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, BPP, skin_infos.width, skin_infos.height);
-    if(img == NULL)
-    {
-        gchar *s = g_strdup_printf("unable to create LCD pixbuf.\n");
-	    tiemu_error(0, s);
-	    g_free(s);
-	    return -1;
-    }
-
-    // Draw the skin and compute grayscale palette
-  	set_colors();
-  	redraw_skin();
-
-    return 0;
-}
-
-int  hid_exit(void)
-{
-    if(lcd != NULL)
-    {
-        g_object_unref(lcd);
-        lcd = NULL;
-    }
-
-    return 0;
-}
-
-int hid_update_keys(void)
-{
-    return 0;
-}
-
 int hid_update_lcd(void)
 {
-    return 0;
+	int i, j, k;
+	uint8_t *pLcdMem = tihw.lcd_ptr;
+	uint8_t *ptr = (uint8_t *)pLcdBuf;
+	GdkRect src, dst;
+
+	int width, height, rowstride, n_channels;
+	guchar *pixels, *p;
+
+    iScrW = tihw.lcd_w;
+    iScrH = tihw.lcd_h;
+
+	n_channels = gdk_pixbuf_get_n_channels (lcd);
+	width = gdk_pixbuf_get_width (lcd);
+	height = gdk_pixbuf_get_height (lcd);
+	rowstride = gdk_pixbuf_get_rowstride (lcd);
+	pixels = gdk_pixbuf_get_pixels (lcd);
+
+    if(iGrayPlanes != params.grayplanes) 
+    {
+		iGrayPlanes = params.grayplanes;
+		set_colors();
+    }
+
+	if(iScrState == SCREEN_OFF)
+		return 0;
+
+	if(iContrast != iNewContrast) 
+    {
+		iContrast = iNewContrast;
+		set_colors();
+    }
+
+	// Convert the bitmap screen to a bytemap screen */
+	if(!iGrayPlanes || !iCurrPlane) 
+    { 
+		// no gray scale or init gray plane
+		for(j=0, k=0; k<iScrH; k++)
+		{
+			for(i=0; i<iScrW>>3; i++, pLcdMem++) 
+			{
+				pLcdBuf[j++] = convtab[((*pLcdMem)<<1)  ];
+				pLcdBuf[j++] = convtab[((*pLcdMem)<<1)+1];
+			}
+		}
+    }
+	else 
+    { 
+		// compute gray scale
+		for(j=0, k=0; k<iScrH; k++)
+		{
+			for(i=0; i<iScrW>>3; i++, pLcdMem++) 
+			{
+				pLcdBuf[j++] += convtab[((*pLcdMem)<<1)  ];
+				pLcdBuf[j++] += convtab[((*pLcdMem)<<1)+1];
+			}
+		}
+    }
+
+    if(iCurrPlane++ >= iGrayPlanes) 
+	{
+		// Copy the LCD into 
+		for(j = 0; j < iScrH; j++) 
+		{
+			for (i = 0; i < iScrW; i++, ptr++) 
+			{
+				p = pixels + j * rowstride + i * n_channels;
+
+				p[0] = grayscales[*ptr].r;
+				p[1] = grayscales[*ptr].g;
+				p[2] = grayscales[*ptr].b;
+				p[3] = 0;
+			}
+		}
+
+        iCurrPlane = 0;
+
+        // Copy surface into window
+        src.x = 0;
+        src.y = 0;
+		src.w = tihw.log_w > 240 ? 240 : tihw.log_w;
+		src.h = tihw.log_h > 128 ? 128 : tihw.log_h;
+
+        if(params.background) 
+		{
+			dst.x = skin_infos.lcd_pos.left; 
+			dst.y = skin_infos.lcd_pos.top;
+		}
+		else 
+		{
+			dst.x = 0;
+			dst.y = 0;
+		}  
+        dst.w = width;
+        dst.h = height;
+
+        gdk_draw_pixbuf(pixmap, wnd->style->fg_gc[GTK_WIDGET_STATE(wnd)],
+		  lcd, src.x, src.y, dst.x, dst.y, -1, -1,
+		  GDK_RGB_DITHER_NONE, 0, 0);
+
+		gtk_widget_draw(area, (GdkRectangle *)&dst);
+    }
+
+    return -1;
 }
 
-static void hid_lcd_on_off(int i) 
+void hid_lcd_on_off(int i) 
 {
+    if(i) 
+	{
+		iScrState = SCREEN_ON;
+	} 
+	else 
+	{
+		iScrState = SCREEN_OFF;
+		redraw_skin(); 	// to clear LCD 
+	}
 }
 
-static int hid_set_contrast(int c)
+int hid_set_contrast(int c)
 {
-    return 0;
-}
+    if((tihw.calc_type == TI89) || (tihw.calc_type == TI89t))
+    	c = 31-c;
 
-void hid_switch_with_skin(void)
-{
-}
+  	iNewContrast = (c+iLastContrast) / 2;
+  	iLastContrast = c;
 
-void hid_switch_without_skin(void)
-{
-}
-
-void hid_change_skin(const char *filename)
-{
-}
-
-void hid_switch_fullscreen(void)
-{
-}
-
-void hid_switch_windowed(void)
-{
-}
-
-void hid_switch_normal_view(void)
-{
-}
-
-void hid_switch_large_view(void)
-{
-}
-
-void hid_set_callbacks(void)
-{
-    ti68k_gui_set_callbacks(
-			       hid_init,
-			       hid_exit,
-			       hid_update_lcd,
-			       hid_update_keys,
-			       hid_lcd_on_off,
-			       hid_set_contrast
-			       );
-}
-
-int  hid_screenshot(char *filename)
-{
     return 0;
 }

@@ -68,7 +68,6 @@ static gint hid_refresh (gpointer data)
     {
 		// TI92+: jackycar, TI89: baballe
         hid_update_lcd();
-		//gtk_update_lcd();
         G_LOCK(lcd_flag);
         lcd_flag = 0;
 		//printf("<");
@@ -77,8 +76,6 @@ static gint hid_refresh (gpointer data)
         // Toggles every FS (every time the LCD restarts at line 0)
         tihw.io2[0x1d] |= (1 << 7);
     }
-
-    hid_update_keys();
 
 	// gruik, should be removed later...
     if(debugger)

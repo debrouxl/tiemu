@@ -44,6 +44,7 @@ Source: "C:\sources\roms\tiemu\COPYING"; DestDir: "{app}"; DestName: "License.tx
 Source: "C:\sources\roms\tiemu\man\ManPage.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu\README"; DestDir: "{app}"; DestName: "ReadMe.txt"; Flags: ignoreversion isreadme
 Source: "C:\sources\roms\tiemu\RELEASE"; DestDir: "{app}"; DestName: "Release.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu\ROMs"; DestDir: "{app}"; Flags: ignoreversion
 ; TiEmu/GTK
 Source: "C:\SDL-1.2.7\lib\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\tifiles\tests\tifiles.dll"; DestDir: "{app}"; Flags: ignoreversion

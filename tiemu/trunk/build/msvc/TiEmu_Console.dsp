@@ -264,11 +264,19 @@ SOURCE=..\..\src\gui\debugger\dbg_vectors.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\hid\skinops.c
+SOURCE=..\..\src\gui\calc\calc.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\tiemu.c
+SOURCE=..\..\src\gui\calc\keyboard.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\calc\screen.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\skinops.c
 # End Source File
 # Begin Source File
 
@@ -412,10 +420,6 @@ SOURCE=.\TiEMu.rc
 # Begin Group "Library Files"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE="..\..\..\..\..\SDL-1.2.7\lib\SDL.lib"
-# End Source File
 # Begin Source File
 
 SOURCE="..\..\..\..\..\Gtk2Dev\lib\glib-2.0.lib"

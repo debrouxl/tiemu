@@ -5,3 +5,4 @@
  */
 
 gchar *s = N_("TiEmu II");
+gchar *s = N_("Use mouse or press a key.");

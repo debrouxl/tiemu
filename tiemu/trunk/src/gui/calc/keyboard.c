@@ -302,12 +302,13 @@ static int pos_to_key(int x, int y)
 }
 
 GLADE_CB gboolean
-on_drawingarea1_button_press_event     (GtkWidget       *widget,
+on_calc_wnd_button_press_event     (GtkWidget       *widget,
                                         GdkEventButton  *event,
                                         gpointer         user_data)
 {
     int key;
 
+    printf("button_press\n");
     switch (event->type) 
     {
     case GDK_BUTTON_PRESS:
@@ -357,12 +358,22 @@ on_drawingarea1_button_press_event     (GtkWidget       *widget,
 	return FALSE;
 }
 
+GLADE_CB gboolean
+on_calc_wnd_button_release_event     (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data)
+{
+    return FALSE;
+}
+
 
 GLADE_CB gboolean
-on_drawingarea1_key_press_event        (GtkWidget       *widget,
+on_calc_wnd_key_press_event        (GtkWidget       *widget,
                                         GdkEventKey     *event,
                                         gpointer         user_data)
 {
+    printf("key_press\n");
+
     if(event->keyval == GDK_Print)
 	{
         //hid_screenshot(NULL);
@@ -395,10 +406,12 @@ on_drawingarea1_key_press_event        (GtkWidget       *widget,
 
 
 GLADE_CB gboolean
-on_drawingarea1_key_release_event      (GtkWidget       *widget,
+on_calc_wnd_key_release_event      (GtkWidget       *widget,
                                         GdkEventKey     *event,
                                         gpointer         user_data)
 {
+    printf("key_release\n");
+
     {
         int key = gdk_to_ti(event->keyval);
         ti68k_kbd_set_key(key, 0);
