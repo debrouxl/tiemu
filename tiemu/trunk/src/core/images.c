@@ -203,16 +203,16 @@ int ti68k_get_hw_param_block(IMG_INFO *rom, HW_PARM_BLOCK *block)
     block->LCDBitsWide = rd_long(&(rom->data[addr+34]));
     block->LCDBitsTall = rd_long(&(rom->data[addr+38]));
 
-    if((block->hardwareID == 8) && (rom->rom_base == 0x40))
+    if((block->hardwareID == HWID_V200) && (rom->rom_base == 0x40))
     {
         fprintf(stdout, "Detected V200 patched ROM (ExtendeD): emulated as TI92+ by changing the hwID from 8 to 1.\n");
-        block->hardwareID = 1;
+        block->hardwareID = HWID_TI92P;
     }
 
-	if((block->hardwareID == 9) && (rom->rom_base == 0x20))
+	if((block->hardwareID == HWID_TI89T) && (rom->rom_base == 0x20))
     {
         fprintf(stdout, "Detected TI89 Titanium patched ROM (ExtendeD): emulated as TI89 by changing the hwID from 9 to 3.\n");
-        block->hardwareID = 3;
+        block->hardwareID = HWID_TI89;
     }
 
     return 0;
@@ -285,10 +285,10 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
 
         switch(hwblock.hardwareID)
         {
-        case 1: rom->calc_type = TI92p; break;
-        case 3: rom->calc_type = TI89;  break;
-        case 8: rom->calc_type = V200;  break;
-        case 9: rom->calc_type = TI89t; break;
+        case HWID_TI92P: rom->calc_type = TI92p; break;
+        case HWID_TI89: rom->calc_type = TI89;  break;
+        case HWID_V200: rom->calc_type = V200;  break;
+        case HWID_TI89T: rom->calc_type = TI89t; break;
         default: break;
         }
 
@@ -357,6 +357,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
   	// Update current rom infos
     tib->rom_base = tib->data[BO+5 + SPP] & 0xf0;
 
+	// libtifiles can't distinguish TI89/TI89t and 92+/V200. We need to look.
 	switch(ptr->device_type & 0xff)
 	{
 		case DEVICE_TYPE_89:    // can be a Titanium, too
@@ -372,7 +373,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
             {
             case 0x20: tib->calc_type = V200;  break;
             case 0x40: tib->calc_type = TI92p; break;
-                default: return ERR_INVALID_UPGRADE;
+            default: return ERR_INVALID_UPGRADE;
             }
 		break;
 		default:

@@ -14,7 +14,7 @@ For a more specific README, see README.linux or README.win32
 +-------------+
 
 TiEmu is a program allowing a PC to emulate a TI89/92(+) hand-held. 
-V200PLT and Titanium are supported but are not working yet.
+V200PLT and Titanium are working but may be somewhat buggy.
 It works on Linux and Windows platforms actually.
 
 It uses GTK+ (the Gimp ToolKit, http://www.gimp.org/gtk) for the GUI and
