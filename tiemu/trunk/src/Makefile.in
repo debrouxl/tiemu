@@ -55,10 +55,10 @@ core_tihw_OBJ = \
 	core/ti_hw/lcd.o 	\
 	core/ti_hw/m68k.o	\
 	core/ti_hw/mem.o 	\
-	core/ti_hw/mem_89.o	\
-	core/ti_hw/mem_89p.o	\
-	core/ti_hw/mem_89t.o	\
-	core/ti_hw/mem_92.o	\
+	core/ti_hw/mem89.o	\
+	core/ti_hw/mem89tm.o	\
+	core/ti_hw/mem92.o	\
+	core/ti_hw/mem92p.o	\
 	core/ti_hw/ports.o 	\
 	core/ti_hw/timer.o	
 
@@ -72,6 +72,7 @@ core_OBJ = 			\
 
 core_dbg_OBJ = \
 	core/dbg/bkpts.o	\
+	core/dbg/debug.o	\
 	core/dbg/disasm.o	\
 	core/dbg/m68kdasm.o	\
 	core/dbg/registers.o	\
@@ -102,6 +103,7 @@ gui_debugger_OBJ = \
 	gui/debugger/dbg_mem.o		\
 	gui/debugger/dbg_pclog.o	\
 	gui/debugger/dbg_regs.o		\
+	gui/debugger/dbg_stack.o	\
 	gui/debugger/dbg_vectors.o	\
 	gui/debugger/gsource.o		
 

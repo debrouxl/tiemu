@@ -317,7 +317,7 @@ int  hid_init(void)
 	}
         
     // Allocate the TI screen buffer
-	lcd_bytmap = malloc(LCDMEM_W * LCDMEM_H);
+	lcd_bytmap = (uint32_t *)malloc(LCDMEM_W * LCDMEM_H);
 
     // Allocate the lcd pixbuf
     lcd = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, LCDMEM_W, LCDMEM_H);
