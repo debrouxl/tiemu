@@ -418,7 +418,7 @@ GLADE_CB void
 on_run1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-#if 1
+#if 0
 	tb_set_states(0, 0, 0, 0, 0, 1, 0);
     gtk_widget_set_sensitive(list, FALSE);
     set_other_windows_sensitivity(FALSE);

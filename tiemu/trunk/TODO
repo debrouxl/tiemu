@@ -42,10 +42,7 @@ PPhd
 ====
 
 * 1. Cycle counts ? Even they were wrong, they could be useless.
-  2. More dissassembled lines of code in the debugger.
   3. Multiple windows for dissassembled code ?
-  4. When you press F5, it should close the debugger, otherwise some
-	strange bugs appear.
 
 * Also the ability to send multiple files to tiemu and not only one file
 per "send file".
