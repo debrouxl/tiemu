@@ -87,10 +87,13 @@ int ti68k_debug_step_over(void)
 	//printf("$%06x => $%06x %04x <%s>\n", curr_pc, next_pc, curriword(), output);
 	g_free(output);	
 
-	// check current instruction (JSR or BSR or FLINE)
-	if(!((curriword() == 0x4e80) || 
-		(curriword() == 0x6100) || (curriword() == 0x6140) &&
-		(curriword() == 0x6180) || (curriword() == 0x61c0) || (curriword() & 0xf800)))
+	// check current instruction (JSR or BSR or FLINE or DBcc)
+	if(!(
+        ((curriword() & 0x4e80) == 0x4e80) || 
+        (LSB(curriword()) == 0x61) ||
+        (curriword() & 0xf800) ||
+        (curriword() & 0x5fc8)
+        ))
 	{
 		ti68k_debug_step();
 		return 0;

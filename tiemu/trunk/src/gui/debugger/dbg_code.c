@@ -108,11 +108,14 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
     GtkTreeIter iter;
     GdkPixbuf *pix;
     gint i;
-    GdkColor color;
+    GdkColor *color, color1, color2;
 	gboolean success;
+    uint32_t pc = ti68k_debug_get_pc();
 
-	gdk_color_parse("White", &color);
-	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color, 1, FALSE, FALSE, &success);
+	gdk_color_parse("White", &color1);
+	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color1, 1, FALSE, FALSE, &success);
+	gdk_color_parse("Green", &color2);
+	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color2, 1, FALSE, FALSE, &success);
 
     for(i = 0; i < NLINES; i++)
     {
@@ -145,6 +148,8 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
         else
                 pix = create_pixbuf("void.xpm");
 
+        color = (addr == pc) ? &color2 : &color1;
+
         gtk_list_store_append(store, &iter);
 	    gtk_list_store_set(store, &iter, 
         COL_ICON, pix,
@@ -153,7 +158,7 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
         COL_OPERAND, row_text[2],
         COL_HEXADDR, value,
 		COL_FONT, FONT_NAME,
-		COL_COLOR, &color,
+		COL_COLOR, color,
 		-1);
 
         addr += offset;

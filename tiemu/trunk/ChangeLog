@@ -8,6 +8,10 @@ To do:
 - 20/08/2004, version 1.79: roms
 	- LCD background is less dark
 	- force mem window refresh when scrolling up/down
+	- no ghost in 0x400000-0x5FFFFF on TI89
+	- stack frame display 1 word on 2
+	- fixed step over: works on DBcc
+	- PC highlight lost when scrolling: fixed
 
 - 13/08/2004, version 1.78: roms
 	- changed keyboard mapping to pure VTi mapping

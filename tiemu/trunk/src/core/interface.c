@@ -75,7 +75,7 @@ Ti68kBreakpoints	bkpts = { 0 };
 int ti68k_config_load_default(void)
 {
     params.background = 1;
-    params.grayplanes = 2;
+    params.grayplanes = 4;
 
     params.restricted = 1;
     params.cpu_rate = -1;

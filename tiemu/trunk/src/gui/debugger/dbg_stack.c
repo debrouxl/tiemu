@@ -106,11 +106,11 @@ static void clist_populate(GtkListStore *store)
     ti68k_register_get_sp(&sp);
 	mem = (uint16_t *)ti68k_get_real_address(sp);
 
-    for(i = 0; i < DUMP_SIZE; i += 2)
+    for(i = 0; i < DUMP_SIZE; i++)
     {
         gtk_list_store_append(store, &iter);
 
-        str = g_strdup_printf("0x%06x:", sp + i);
+        str = g_strdup_printf("0x%06x:", sp + 2*i);
 		gtk_list_store_set(store, &iter, COL_ADDR, str, -1);
         g_free(str);
 

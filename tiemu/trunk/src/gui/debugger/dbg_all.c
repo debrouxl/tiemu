@@ -237,9 +237,9 @@ on_stack_frame1_activate                    (GtkMenuItem     *menuitem,
                                              gpointer         user_data)
 {
     if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
-        gtk_widget_hide(dbgw.pclog);
+        gtk_widget_hide(dbgw.stack);
   	else
-        dbgpclog_display_window();
+        dbgstack_display_window();
 }
 
 
