@@ -34,7 +34,7 @@
 #include <string.h>
 
 #include "uae.h"
-#include "ioports.h"
+#include "ports.h"
 #include "dbus.h"
 
 #include "tilibs.h"

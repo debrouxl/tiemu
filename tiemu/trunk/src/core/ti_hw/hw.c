@@ -32,10 +32,10 @@
 #include <glib.h>
 
 #include "uae.h"
-#include "memory.h"
-#include "ioports.h"
+#include "mem.h"
+#include "ports.h"
 #include "dbus.h"
-#include "keyboard.h"
+#include "kbd.h"
 #include "timer.h"
 #include "lcd.h"
 #include "m68k.h"

@@ -33,11 +33,9 @@
 #include <string.h>
 
 #include "uae.h"
-#include "./ti_hw/memory.h"
 #include "dbus.h"
 #include "timer.h"
 #include "lcd.h"
-#include "../ti_hw/ioports.h"
 #include "ti68k_int.h"
 #include "ti68k_err.h"
 

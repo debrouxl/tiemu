@@ -32,10 +32,10 @@
 #include <math.h>
 
 #include "uae.h"
-#include "ioports.h"
-#include "hardware.h"
+#include "ports.h"
+#include "hw.h"
+#include "mem.h"
 #include "images.h"
-#include "memory.h"
 #include "bkpts.h"
 #include "ti68k_def.h"
 #include "ti68k_int.h"

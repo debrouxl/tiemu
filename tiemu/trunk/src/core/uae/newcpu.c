@@ -20,10 +20,10 @@
 // tiemu begin
 #include "tilibs.h"
 #include "ti68k_def.h"
-#include "../ti_hw/memory.h"
+#include "memory.h"
 #include "../ti_hw/dbus.h"
 #include "bkpts.h"
-#include "hardware.h" //do_cycles
+#include "hw.h" //do_cycles
 // tiemu end
 
 int areg_byteinc[] = { 1,1,1,1,1,1,1,2 };

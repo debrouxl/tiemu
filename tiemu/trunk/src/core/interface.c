@@ -36,7 +36,7 @@
 #include <math.h>
 
 #include "uae.h"
-#include "hardware.h"
+#include "hw.h"
 #include "m68k.h"
 #include "dbus.h"
 

@@ -48,7 +48,7 @@
 #include "ti68k_int.h"
 #include "ti68k_err.h"
 #include "ti68k_def.h"
-#include "../ti_hw/memory.h"
+//#include "mem.h"
 #include "images.h"
 
 #define is_num(c)   isdigit(c)

@@ -34,11 +34,11 @@
 #include <time.h>
 
 #include "uae.h"
-#include "memory.h"
-#include "keyboard.h"
+#include "mem.h"
+#include "kbd.h"
 #include "dbus.h"
 #include "callbacks.h"
-#include "ioports.h"
+#include "ports.h"
 #include "ti68k_def.h"
 
 int hw_io_init(void)

@@ -27,9 +27,10 @@
 */
 
 #include "uae.h"
-#include "ti68k_def.h"
 #include "memory.h"
-#include "hardware.h"
+#include "ti68k_def.h"
+#include "mem.h"
+#include "hw.h"
 #include "bkpts.h"
 #include "images.h"
 #include "callbacks.h"

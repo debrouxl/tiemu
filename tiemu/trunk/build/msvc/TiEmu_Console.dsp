@@ -120,15 +120,11 @@ SOURCE=..\..\src\core\ti_hw\dbus.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\hardware.c
+SOURCE=..\..\src\core\ti_hw\hw.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\ioports.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\keyboard.c
+SOURCE=..\..\src\core\ti_hw\kbd.c
 # End Source File
 # Begin Source File
 
@@ -140,7 +136,11 @@ SOURCE=..\..\src\core\ti_hw\m68k.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\memory.c
+SOURCE=..\..\src\core\ti_hw\mem.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\ports.c
 # End Source File
 # Begin Source File
 
