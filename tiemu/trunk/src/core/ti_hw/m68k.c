@@ -71,11 +71,19 @@ int hw_m68k_run(int n)
 {
   int i;
   GList *l;
-  //char inst[100];
+  static FILE *flog;
+  static uint32_t pa;
   
   for(i=0; i<n; i++) 
     {
       UWORD opcode;
+
+        if(flog != NULL)
+        {
+            //fprintf(flog, "0x%06lx\n", m68k_getpc());
+        }
+        else
+            flog = fopen("C:\\tiemu.log", "wt");
 
       opcode = nextiword();
       (*cpufunctbl[opcode])(opcode);

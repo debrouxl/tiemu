@@ -321,8 +321,6 @@ static void ctree_populate(GtkTreeStore *store)
 	}
 }
 
-extern void MC68000_dumpstate(CPTR *nextpc);
-
 static void ctree_refresh(GtkTreeStore *store)
 {
 	GtkTreeModel *model = GTK_TREE_MODEL(store);

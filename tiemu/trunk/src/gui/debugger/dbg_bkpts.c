@@ -254,14 +254,14 @@ GtkWidget* display_dbgbkpts_window(void)
 
 GtkWidget* refresh_dbgbkpts_window(void)
 {
-    static GtkWidget *list = NULL;
+    static GtkWidget *wnd = NULL;
 
 	if(!already_open)
-		list = display_dbgbkpts_window();
+		wnd = display_dbgbkpts_window();
 
 	clist_refresh(store);
 
-	return list;
+	return wnd;
 }
 
 

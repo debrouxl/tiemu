@@ -214,6 +214,7 @@ static void clist_refresh(GtkListStore *store)
         }
 }
 
+static GtkWidget *list;
 static GtkListStore *store;
 static gint already_open = 0;
 typedef struct {
@@ -260,6 +261,7 @@ GtkWidget* display_dbgcode_window(void)
 	tb.b4 = glade_xml_get_widget(xml, "button4");
 	tb.b5 = glade_xml_get_widget(xml, "button5");
 	tb.b6 = glade_xml_get_widget(xml, "button6");
+    list = glade_xml_get_widget(xml, "treeview1");
 
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
@@ -274,21 +276,21 @@ GtkWidget* display_dbgcode_window(void)
 
 	already_open = !0;
 
-	return data;
+	return dbox;
 }
 
 GtkWidget* refresh_dbgcode_window(void)
 {
-	static GtkWidget *list = NULL;
+	static GtkWidget *wnd = NULL;
 
 	if(!already_open)
-		list = display_dbgcode_window();
+		wnd = display_dbgcode_window();
 
 	gtk_widget_set_sensitive(list, TRUE);	
 	tb_set_states(1, 1, 1, 1, 0, 1);
 	clist_refresh(store);
 
-    return list;
+    return wnd;
 }
 
 GLADE_CB gboolean
@@ -317,7 +319,7 @@ GLADE_CB void
 on_run1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    GtkWidget *list = (GtkWidget *)(menuitem);   // arg are swapped, why ?
+    //GtkWidget *list = (GtkWidget *)(menuitem);   // arg are swapped, why ?
 
 	tb_set_states(1, 0, 0, 0, 1, 0);
     gtk_widget_set_sensitive(list, FALSE);
@@ -346,7 +348,7 @@ GLADE_CB void
 on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    GtkWidget *list = (GtkWidget *)(menuitem);   // arg are swapped, why ?
+    //GtkWidget *list = (GtkWidget *)(menuitem);   // arg are swapped, why ?
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
 	GtkListStore *store = GTK_LIST_STORE(model);
@@ -376,7 +378,7 @@ on_break1_activate                     (GtkMenuItem     *menuitem,
 {
     // Mode 1 is fastest
 #if 1
-    GtkWidget *list = (GtkWidget *)(menuitem);   // arg are swapped, why ?
+    //GtkWidget *list = (GtkWidget *)(menuitem);   // arg are swapped, why ?
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
 	GtkListStore *store = GTK_LIST_STORE(model);
@@ -396,7 +398,7 @@ GLADE_CB void
 dbgcode_button6_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-    GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
+    //GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
 	GtkListStore *store = GTK_LIST_STORE(model);
@@ -419,4 +421,108 @@ dbgcode_button6_clicked                     (GtkButton       *button,
 
     clist_refresh(store);
     refresh_dbgbkpts_window();
+}
+
+/***** Popup menu *****/
+
+/*
+	Display popup menu (right click)
+*/
+static GtkWidget* display_popup_menu(void)
+{
+	GladeXML *xml;
+	GtkWidget *menu;
+
+	xml = glade_xml_new
+	    (tilp_paths_build_glade("dbg_code-2.glade"), "dbgcode_popup",
+	     PACKAGE);
+	if (!xml)
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+	glade_xml_signal_autoconnect(xml);
+
+	menu = glade_xml_get_widget(xml, "dbgcode_popup");
+	return menu;
+}
+
+GLADE_CB gboolean
+on_treeview1_button_press_event        (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data)
+{
+    switch (event->type) 
+    {
+    case GDK_BUTTON_PRESS:	// third button clicked
+	    if (event->button == 3) 
+        {
+            GdkEventButton *bevent;
+            GtkWidget *menu;
+
+		    bevent = (GdkEventButton *) (event);
+            menu = display_popup_menu();
+
+		    gtk_menu_popup(GTK_MENU(menu),
+				       NULL, NULL, NULL, NULL,
+				       bevent->button, bevent->time);
+	        gtk_widget_show(menu);
+
+		    return TRUE;
+	    }
+	    break;
+    default:
+        break;
+    }
+
+    return FALSE;
+}
+
+// note: user_data data passing ha been manually added to Glade file
+GLADE_CB void
+on_go_to_address1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    uint32_t addr;
+
+    display_dbgmem_dbox(&addr);
+    //???
+}
+
+
+GLADE_CB void
+on_go_to_pc1_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    clist_refresh(store);
+}
+
+
+GLADE_CB void
+on_set_breakpoint1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    dbgcode_button6_clicked(NULL, NULL);
+}
+
+
+GLADE_CB void
+on_set_pc_to_selection1_activate       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    //GtkWidget *list = GTK_WIDGET(user_data);
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkListStore *store = GTK_LIST_STORE(model);
+    GtkTreeSelection *selection;
+    GtkTreeIter iter;
+    gboolean valid;
+    gchar *str;
+    uint32_t addr;
+
+    selection = gtk_tree_view_get_selection(view);
+    valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "%x", &addr);
+
+    ti68k_register_set_pc(addr);
+    refresh_dbgcode_window();
+    refresh_dbgregs_window();
 }

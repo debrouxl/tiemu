@@ -84,7 +84,7 @@ void gui_popup_menu(void)
 /*
   Display the GTK popup menu and configure some items
 */
-GtkWidget* display_popup_menu(void)
+static GtkWidget* display_popup_menu(void)
 {
 	GladeXML *xml;
 	GtkWidget *menu;
