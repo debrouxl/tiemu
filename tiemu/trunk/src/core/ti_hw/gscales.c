@@ -80,14 +80,6 @@ extern void lcd_hook(void)
 	static double fir;
 	uint32_t tmp;
 
-	// unused on HW2/HW3
-	if(tihw.hw_type >= HW2)
-	{
-		ngc = 1;
-		lcd_planes[0] = lcd_planes[1] = lcd_planes[2] = tihw.lcd_adr;
-		return;
-	}
-
 	lcd_addrs[cnt++ % BUFSIZE] = tihw.lcd_adr;
 
 	if(!(cnt % UPDATE_PLANES))

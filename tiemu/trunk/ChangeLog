@@ -10,6 +10,7 @@ To do:
 		* UAE fixedto handle multiple pending interrupts and some other fixes
 		* idle mode and STOP improved but problems with ON key
 	- fixed grayscale routines: they are now rock-stable !
+	- fixed grayscales with HW2
 
 - 03/01/2005, version 1.80i: roms
 	- implemented new method for grayscale computing & management (idea from Kevin)
