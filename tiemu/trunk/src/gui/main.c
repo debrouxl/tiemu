@@ -131,10 +131,16 @@ int main(int argc, char **argv)
 	hid_set_gui_callbacks();
 	//ti68k_defineDebugger(enter_gtk_debugger);
 
+    /*
+        Search for ROM in the image directory
+    */
+    splash_screen_set_label(_("Searching for ROM dumps..."));
+    ti68k_scan_files(inst_paths.img_dir, inst_paths.img_dir);
+
 	/*
 		For developers only
 	*/
-
+/*
 #ifndef __WIN32__
 	// linux
 	g_free((options.params)->rom_file);
@@ -147,7 +153,7 @@ int main(int argc, char **argv)
 	g_free((options.params)->tib_file);
 	(options.params)->tib_file = g_strdup("C:\\msvc\\tilp\\images\\os.9xu");
 #endif
-
+*/
 	/*
 		Attempt to load an image
 	*/

@@ -560,10 +560,51 @@ int ti68k_load_upgrade(const char *filename)
 
 
 /*
-  	Scan ROM images in a given directory 
+    Search for ROM dumps in a given directory and
+    converts them into images.
+*/
+int ti68k_scan_files(const char *src_dir, const char *dst_dir)
+{
+    GDir *dir;
+	GError *error = NULL;
+	G_CONST_RETURN gchar *dirent;
+    gchar *path;
+    int ret;
+    gchar *dstname;
+
+    // Search for *.rom files and convert them
+	dir = g_dir_open(src_dir, 0, &error);
+	if (dir == NULL) 
+	{
+		fprintf(stderr, _("Opendir error\n"));
+      	return ERR_68K_CANT_OPEN_DIR;
+	}
+
+    while ((dirent = g_dir_read_name(dir)) != NULL) 
+	{
+  		if (dirent[0] == '.') 
+  			continue;
+
+        path = g_strconcat(src_dir, dirent, NULL);
+
+        if(ti68k_is_a_rom_file(dirent))
+        {
+            ret = ti68k_convert_rom_to_image(path, dst_dir, &dstname);
+            if(!ret)
+                unlink(path);
+        }
+
+        g_free(path);
+    }
+
+    g_dir_close(dir);
+}
+
+/*
+  	Scan images in a given directory 
   	and build the cache file.
 */
-int ti68k_scan_files(const char *dirname, const char *filename)
+int ti68k_scan_images(const char *dirname, const char *filename)
 {
 	FILE *file;
 	IMG_INFO img = { 0 };
@@ -583,6 +624,11 @@ int ti68k_scan_files(const char *dirname, const char *filename)
 	int err;
 
   	DISPLAY(_("Scanning images/upgrades... "));
+
+    
+
+
+
 
   	// First, check if cache file exists
   	if(!access(filename, F_OK))
@@ -682,7 +728,7 @@ int ti68k_scan_files(const char *dirname, const char *filename)
 						break;
 					}
 				}
-				else
+                else
 					continue;
 
 		  		line[0] = dirent;

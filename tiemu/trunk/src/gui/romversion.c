@@ -156,7 +156,7 @@ gint display_romversion_dbox()
 
 	// scan ROM images
     filename = g_strconcat(inst_paths.img_dir, CACHE_FILE, NULL);
-    ti68k_scan_files(inst_paths.img_dir, filename);
+    ti68k_scan_images(inst_paths.img_dir, filename);
 
     stat(filename, &s);
     if(s.st_size == 0) 
