@@ -206,13 +206,7 @@ int hid_update_lcd(void)
 	// Check for contrast change (from TI HW)
 	if(contrast != tihw.contrast)
 	{
-		gint c;
-
-		//printf("%i %i\n", contrast, tihw.contrast);
-		c = contrast = tihw.contrast;
-
-		if((tihw.calc_type == TI89) || (tihw.calc_type == TI89t))
-    		c = 31-c;
+		gint c = contrast = tihw.contrast;
 
 		new_contrast = (c + old_contrast) / 2;
   		old_contrast = c;
