@@ -32,6 +32,7 @@ void ti68k_engine_stop(void);
 void ti68k_engine_start(void);
 
 extern int dbg_on;
-#define ti68k_engine_release()          { if(!dbg_on) ti68k_engine_start(); }
+#define dbg_run	ti68k_engine_is_stopped()
+//#define ti68k_engine_release()          { if(!dbg_on) ti68k_engine_start(); }
 
 #endif

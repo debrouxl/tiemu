@@ -18,7 +18,8 @@ To do:
 	- dis-assemble FLINE with __ld_entry_point
 	- dis-assemble FLINE with _bcd_math followed by FPU pseudo-opcode
 	- clean-up and improvements in the misc menu (help)
-	- fixed status bar display in the bkpts dbox.
+	- fixed status bar display in the bkpts dbox
+	- some items of the popup menu are disabled when the engine is running
 
 - 07/02/2005, version 1.80m: roms
 	- dbus architecture improved (reset)

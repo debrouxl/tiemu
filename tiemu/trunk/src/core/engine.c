@@ -104,7 +104,6 @@ gpointer ti68k_engine(gpointer data)
         g_timer_start(tmr);
 		
 		// Run emulation core
-		//res = ti68k_debug_do_instructions(cpu_instr);
 		res = hw_m68k_run(cpu_instr);
 		if(res) 
         {  

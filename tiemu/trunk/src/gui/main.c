@@ -63,7 +63,10 @@ ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
-/* Debugger callback raised by our own GSource (gsource.c) */
+/* 
+	Debugger callback raised by our own GSource (gsource.c) 
+	m68k_run() -> engine() -> debugger=0/1 -> gsource -> callback -> gtk_dbg_enter
+*/
 
 GSource* attach_dbg_gsource(void);
 

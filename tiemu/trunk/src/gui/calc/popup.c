@@ -66,6 +66,7 @@ GLADE_CB void
 on_send_file_to_gtktiemu1_activate     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	if(dbg_run) return;
 	ti68k_engine_stop();
 	display_tifile_dbox();
 	ti68k_engine_start();
@@ -76,6 +77,7 @@ GLADE_CB void
 on_link_cable1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	if(dbg_run) return;
 	ti68k_engine_stop();
 	display_comm_dbox();
 	ti68k_engine_start();
@@ -122,6 +124,7 @@ GLADE_CB void
 on_save_state_image1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	if(dbg_run) return;
 	ti68k_engine_stop();
 	display_save_state_dbox();
 	ti68k_engine_start();
@@ -132,6 +135,7 @@ GLADE_CB void
 on_revert_to_saved_state1_activate     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	if(dbg_run) return;
 	ti68k_engine_stop();
 	ti68k_state_load(params.sav_file);
   	ti68k_engine_start();
@@ -143,7 +147,6 @@ on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     if(dbg_on) return;
-
 	ti68k_engine_stop();
     ti68k_debug_break();
 	ti68k_engine_start();
@@ -154,6 +157,7 @@ GLADE_CB void
 on_reset_calc1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	if(dbg_run) return;
 	ti68k_engine_stop();
 	ti68k_reset();
   	ti68k_engine_start();
@@ -163,8 +167,7 @@ GLADE_CB void
 on_upgrade_calc1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	if(dbg_on) return;
-
+	if(dbg_run) return;
 	ti68k_engine_stop();
   	display_set_tib_dbox();
 	ti68k_engine_start();
@@ -175,8 +178,7 @@ GLADE_CB void
 on_set_rom1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	if(dbg_on) return;
-
+	if(dbg_run) return;
 	ti68k_engine_stop();
 	display_romversion_dbox (FALSE);
 	ti68k_engine_start();
@@ -231,9 +233,7 @@ GLADE_CB void
 on_no_skin1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	ti68k_engine_stop();
 	hid_switch_without_skin();
-  	ti68k_engine_start();
 }
 
 
@@ -241,9 +241,7 @@ GLADE_CB void
 on_default_skin1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	ti68k_engine_stop();
 	hid_switch_with_skin();
-  	ti68k_engine_start();
 }
 
 
@@ -251,9 +249,7 @@ GLADE_CB void
 on_set_skin1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	ti68k_engine_stop();
 	display_skin_dbox();
-	ti68k_engine_start();
 }
 
 
@@ -261,9 +257,7 @@ GLADE_CB void
 on_now1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	ti68k_engine_stop();
 	hid_screenshot(NULL);
-  	ti68k_engine_start();
 }
 
 
@@ -441,6 +435,28 @@ GtkWidget* display_popup_menu(void)
     default:
         break;
     }
+
+	// if debugger is open, blocks some items
+	if(dbg_run)
+	{
+		data = glade_xml_get_widget(xml, "send_file_to_gtktiemu1");
+		gtk_widget_set_sensitive(data, FALSE);
+
+		data = glade_xml_get_widget(xml, "link_cable1");
+		gtk_widget_set_sensitive(data, FALSE);
+
+		data = glade_xml_get_widget(xml, "calculator_state1");
+		gtk_widget_set_sensitive(data, FALSE);
+
+		data = glade_xml_get_widget(xml, "reset_calc1");
+		gtk_widget_set_sensitive(data, FALSE);
+
+		data = glade_xml_get_widget(xml, "upgrade_calc1");
+		gtk_widget_set_sensitive(data, FALSE);
+
+		data = glade_xml_get_widget(xml, "set_rom1");
+		gtk_widget_set_sensitive(data, FALSE);
+	}
 
 	//while(gtk_events_pending()) gtk_main_iteration();
 

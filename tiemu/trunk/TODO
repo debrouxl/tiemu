@@ -3,14 +3,7 @@ List of stuffs to do (in French, sorry):
 ExtendeD
 ========
 
-* Un bug non reproduit : l'ouverture du débugger faisait défiler très
-rapidement toute seule la fenêtre Code sans s'arrêter à n'importe quel
-adresses (trop hautes pour être du code).
-
-* Si le débogueur est ouvert, qu'on est en mode 'run' : si on charge
- une state image, et qu'on essaie de faire un 'break', celui-ci ne
- répond pas (il répond si on ferme le débogeur : il se réouvre tout de
- suite).
+* none
 
 Kevin
 =====
@@ -76,6 +69,8 @@ __floatunssibf:
 Le .word 0x6B30 est le code de la pseudo-FPU dont je parle. Et ce n'est pas
 exécuté par le processeur, _bcd_math rajoute 2 octets à l'adresse de retour.
 
+Au fait, si tu veux savoir exactement les opcodes permis par _bcd_math et peut-être les afficher de manière lisible, cf. ftp://ftp.ti.com/pub/graph-ti/calc-apps/89/asm/exec.inc . (Mais ça ne va marcher que pour les appels que tu peux détecter à l'avance, évidemment.)
+
 Lionel
 ======
 
@@ -96,8 +91,6 @@ roms
 ====
 
 * MOVEA.W diassembled as MOVEA.L (HeapDeref)
-
-* dbg engine
 
 * rom calls & handles to make more reliable
 
