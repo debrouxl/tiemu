@@ -345,7 +345,7 @@ clean:
 	$(RM) ./msvc/*.opt
 	$(RM) -Rfv ./msvc/output
 	$(RM) -Rfv ./msvc/test
-	$(RM) ./msvc/*.exe
+	$(RM) ./msvc/tiemu*.exe
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
