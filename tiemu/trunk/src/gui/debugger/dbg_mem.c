@@ -134,7 +134,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 	gtk_tree_path_free(path);
 }
 
-static void clist_refresh(GtkListStore *store, uint32_t start, int length);
+static void refresh_page(int page, int offset);
 
 static gboolean
 on_treeview_key_press_event            (GtkWidget       *widget,
@@ -151,7 +151,24 @@ on_treeview_key_press_event            (GtkWidget       *widget,
     gchar *row;
     gint row_idx, row_max;
     uint32_t addr;
+    uint32_t min, max;
+    gint n;
 
+    GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+	gint page = gtk_notebook_get_current_page(nb);
+
+    // get min address
+    gtk_tree_model_get_iter_first(model, &iter);
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "%x", &min);
+
+    // get max address
+    n = gtk_tree_model_iter_n_children(model, NULL);
+    gtk_tree_model_iter_nth_child(model, &iter, NULL, n-1);
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "%x", &max);
+
+    // retrieve selection
     selection = gtk_tree_view_get_selection(view);
     valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
     if(valid)
@@ -175,7 +192,7 @@ on_treeview_key_press_event            (GtkWidget       *widget,
         if(row_idx > 0)
             break;
 
-        clist_refresh(store, (addr - 0x10) & 0xffffff, DUMP_SIZE);
+        refresh_page(page, -0x10);
 
         return FALSE;
 
@@ -186,35 +203,46 @@ on_treeview_key_press_event            (GtkWidget       *widget,
         if(row_idx < row_max)
             break;
 
-        clist_refresh(store, addr + 0x10, DUMP_SIZE);
+        refresh_page(page, +0x10);
 
-        return FALSE;
+        {
+            GtkTreePath *path = gtk_tree_path_new_from_string("7");
+            gtk_tree_selection_select_path(selection, path);
+        }
+        
+        return TRUE;
 
     case GDK_Page_Up:
         if(row_max == -1)
             break;
 
-        //printf("PageUp: %i/%i %x\n", row_idx, row_max, addr);
-
         if(row_idx > 0)
             break;
 
-        //clist_refresh(store, addr - DUMP_SIZE, DUMP_SIZE);
+        refresh_page(page, -DUMP_SIZE);
 
-        return FALSE;
+        {
+            GtkTreePath *path = gtk_tree_path_new_from_string("0");
+            gtk_tree_selection_select_path(selection, path);
+        }
+
+        return TRUE;
 
     case GDK_Page_Down:
         if(row_max == -1)
             break;
 
-        //printf("PageDown: %i/%i %x\n", row_idx, row_max, addr);
-
         if(row_idx < row_max)
             break;
 
-        //clist_refresh(store, addr + DUMP_SIZE, DUMP_SIZE);
+        refresh_page(page, +DUMP_SIZE);
 
-        return FALSE;
+        {
+            GtkTreePath *path = gtk_tree_path_new_from_string("7");
+            gtk_tree_selection_select_path(selection, path);
+        }
+
+        return TRUE;
 
 	default:
 		return FALSE;
@@ -260,7 +288,7 @@ static GtkWidget* clist_create(GtkListStore **st)
 	view = GTK_TREE_VIEW(list);
   
     gtk_tree_view_set_model(view, model); 
-    gtk_tree_view_set_headers_visible(view, FALSE);
+    gtk_tree_view_set_headers_visible(view, TRUE);
 	gtk_tree_view_set_rules_hint(view, TRUE);
   
 	i = COL_ADDR;
@@ -384,74 +412,20 @@ static void notebook_add_page(GtkWidget *notebook, const char* tab_name)
 	GtkNotebook *nb = GTK_NOTEBOOK(notebook);
 	gint page = gtk_notebook_get_current_page(nb);
 	uint32_t addr;
-	uint32_t len;
 	
 	label = gtk_label_new(tab_name);
 	gtk_widget_show(label);
 
     child = clist_create(&store);
-    if(!strcmp(tab_name, _("STACK")))
-    {
-		// display stack
-		uint32_t sp_start, sp_end;
-		uint32_t *mem_ptr = (uint32_t *)ti68k_get_real_address(0x000000);
 
-		sp_start = GUINT32_SWAP_LE_BE(*mem_ptr);
-		ti68k_register_get_sp(&sp_end);
-		len = sp_end - sp_start;
+	// display normal
+	sscanf(tab_name, "%06x", &addr);
+   	clist_populate(store, addr, DUMP_SIZE);
 
-		clist_populate(store, sp_start, len <= DUMP_SIZE ? len : DUMP_SIZE);
-    }
-    else
-    {
-		// display normal
-		sscanf(tab_name, "%06x", &addr);
-    	clist_populate(store, addr, DUMP_SIZE);
-    }
 	gtk_widget_show(child);
 
 	gtk_notebook_insert_page(nb, child, label, page);
 	gtk_notebook_set_page(nb, page);
-}
-
-
-/*
-	Type address in a box.
-*/
-gint display_dbgmem_dbox(uint32_t *addr)
-{
-	GladeXML *xml;
-	GtkWidget *dbox;
-	GtkWidget *entry;
-	gint result;
-	gchar *str;
-	gint ret = -1;
-	
-	xml = glade_xml_new
-		(tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_dbox", PACKAGE);
-	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
-	glade_xml_signal_autoconnect(xml);
-	
-	entry = glade_xml_get_widget(xml, "entry1");
-	gtk_entry_set_text(GTK_ENTRY(entry), "000000");
-	*addr = 0;
-	
-	dbox = glade_xml_get_widget(xml, "dbgmem_dbox");	
-	result = gtk_dialog_run(GTK_DIALOG(dbox));
-	
-	switch (result) {
-	case GTK_RESPONSE_OK:
-		str = g_strdup(gtk_entry_get_text(GTK_ENTRY(entry)));
-		sscanf(str, "%x", addr);
-		ret = 0;
-		break;
-	default:
-		break;
-	}
-
-	gtk_widget_destroy(dbox);
-	return ret;
 }
 
 static gint already_open = 0;
@@ -476,7 +450,6 @@ GtkWidget* dbgmem_create_window(void)
     notebook = glade_xml_get_widget(xml, "notebook1");
     gtk_notebook_popup_enable(GTK_NOTEBOOK(notebook));
     
-    notebook_add_page(notebook, _("STACK"));
 	notebook_add_page(notebook, "0x000000");
 
     gtk_window_resize(GTK_WINDOW(dbox), options3.mem.w, options3.mem.h);
@@ -486,8 +459,6 @@ GtkWidget* dbgmem_create_window(void)
 
 	return dbox;
 }
-
-static void refresh_page(int page, int offset);
 
 GtkWidget* dbgmem_display_window(void)
 {
@@ -506,6 +477,10 @@ void dbgmem_refresh_window(void)
 {
 	if(dbgs.mem)
 	{
+        GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+	    gint page = gtk_notebook_get_current_page(nb);
+
+        refresh_page(page, 0);
 	}
 }
 
@@ -578,6 +553,9 @@ static void refresh_page(int page, int offset)
 	GtkListStore *store;
 	gchar *str;
 
+    static uint8_t *cpy[DUMP_SIZE] = { 0 };
+
+
 	// retrieve addr by tab name
 	tab = gtk_notebook_get_nth_page(nb, page);
 	label = gtk_notebook_get_tab_label(nb, tab);
@@ -591,27 +569,69 @@ static void refresh_page(int page, int offset)
 	model = gtk_tree_view_get_model(view);
 	store = GTK_LIST_STORE(model);
 
-	if(!strcmp(text, "STACK"))
-	{
-		uint32_t sp_start, sp_end;
-		uint32_t *mem_ptr = (uint32_t *)ti68k_get_real_address(0x000000);
-
-		sp_start = GUINT32_SWAP_LE_BE(*mem_ptr);
-		ti68k_register_get_sp(&sp_end);
-		len = sp_end - sp_start;
-		addr = sp_start;
-	}
-	else
-	{
+    // get new address
 		sscanf(text, "%x", &addr);
 		len = DUMP_SIZE;
-	}
 
 	addr += offset;
 	addr &= 0xffffff;
 
+    // refresh only if mem changed (speed-up)
+    if(!offset)
+    {
+        uint8_t *mem = (uint8_t *)ti68k_get_real_address(addr);
+
+        if(!memcmp(mem, cpy, DUMP_SIZE))
+            return;
+
+        memcpy(cpy, mem, DUMP_SIZE);
+    }
+
+    // refresh tab
 	str = g_strdup_printf("%06x", addr);
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
+
+    // and list
    	clist_refresh(store, addr, len <= DUMP_SIZE ? len : DUMP_SIZE);
+}
+
+
+/*
+	Type address in a box.
+*/
+gint display_dbgmem_dbox(uint32_t *addr)
+{
+	GladeXML *xml;
+	GtkWidget *dbox;
+	GtkWidget *entry;
+	gint result;
+	gchar *str;
+	gint ret = -1;
+	
+	xml = glade_xml_new
+		(tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_dbox", PACKAGE);
+	if (!xml)
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+	glade_xml_signal_autoconnect(xml);
+	
+	entry = glade_xml_get_widget(xml, "entry1");
+	gtk_entry_set_text(GTK_ENTRY(entry), "000000");
+	*addr = 0;
+	
+	dbox = glade_xml_get_widget(xml, "dbgmem_dbox");	
+	result = gtk_dialog_run(GTK_DIALOG(dbox));
+	
+	switch (result) {
+	case GTK_RESPONSE_OK:
+		str = g_strdup(gtk_entry_get_text(GTK_ENTRY(entry)));
+		sscanf(str, "%x", addr);
+		ret = 0;
+		break;
+	default:
+		break;
+	}
+
+	gtk_widget_destroy(dbox);
+	return ret;
 }

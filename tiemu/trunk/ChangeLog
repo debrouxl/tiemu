@@ -10,6 +10,8 @@ To do:
 	- synch Code/Window menu with state of other windows (show/hide)
 	- minimize/maximize all windows when touching calc or code window. Could be better...
 	- can't step after bkpt: fixed.
+	- mem dbox: show headers, removed stack, refreshed on step, tab refreshed when scrolling,
+		improved scrolling and browsing
 
 - 14/07/2004, version 1.74: roms
 	Fixes from Lionel, Kevin and Olivier's suggestions:
