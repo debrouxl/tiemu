@@ -28,6 +28,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #include "libuae.h"
 #include "ports.h"
@@ -76,6 +77,7 @@ static PUTLONG_FUNC	put_long_ptr;
 int hw_mem_init(void)
 {
 	int i;
+    int bank_s, bank_i, bank_n;
 
 	if(tihw.ti92v2)
 	{
@@ -129,7 +131,7 @@ int hw_mem_init(void)
     // map RAM
     mem_tab[0] = tihw.ram;
     mem_mask[0] = tihw.ram_size-1;
-
+#if 0
     // map ROM (internal)
 	//if(tihw.rom_internal)
     if(tihw.rom_base == 0x20)
@@ -169,6 +171,27 @@ int hw_mem_init(void)
 		mem_tab[5] = tihw.rom + 0x100000;
 		mem_mask[5] = MIN(tihw.rom_size - 1*MB, 1*MB)-1;
 	}
+#else
+    bank_s = (tihw.rom_base & 0xff) >> 4;                        // starting bank
+    bank_n = (int)ceil((double)(tihw.rom_size >> 20));  // number of banks
+
+    for(i = 0, bank_i = bank_s; i < bank_n; bank_i++, i++)
+    {
+        // map ROM
+        mem_tab[bank_i] = tihw.rom + i*0x100000;
+        mem_mask[bank_i] = MIN(tihw.rom_size - i*MB, 1*MB) - 1;
+
+        // and ghost spaces
+        if((bank_i + bank_n >= 6) && (tihw.calc_type != TI89t))
+            continue;
+
+        if(bank_i + bank_n > 15)
+            continue;
+
+        mem_tab[bank_i + bank_n] = tihw.rom + i*0x100000;
+        mem_mask[bank_i + bank_n] = MIN(tihw.rom_size - i*MB, 1*MB) - 1;
+    }
+#endif
 
     // map IO
     mem_tab[6] = tihw.io;
