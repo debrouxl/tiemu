@@ -28,6 +28,8 @@
 # include <config.h>
 #endif
 
+#include <glib.h>
+
 #include "tilibs.h"
 #include "sysdeps.h"	//UBYTE
 
@@ -128,8 +130,40 @@ typedef struct
 
 } Ti68kHardware;
 
+typedef struct
+{
+	// Memory
+	GList *listBkptAsRB;
+	GList *listBkptAsWB;
+	GList *listBkptAsRW;
+	GList *listBkptAsWW;
+	GList *listBkptAsRL;
+	GList *listBkptAsWL;
+
+	GList *listBkptAsRgR;
+	GList *listBkptAsRgW;
+
+	// Code
+	GList *listBkptAddress;
+
+	// Vectors, AutoInts and Traps
+	int listBkptVector[16];
+	int listBkptAutoint[8];
+	int listBkptTrap[16];
+
+	int nBkptVector;
+	int nBkptAutoint;
+	int nBkptTrap;
+
+	// Breakpoint cause
+	int mode;	// = access type
+	int type;	// = cause
+	int id;		// = n°
+} Ti68kBreakpoints;
+
 extern Ti68kParameters 	params;
-extern TicableLinkParam link_cable;
 extern Ti68kHardware 	tihw;
+extern TicableLinkParam link_cable;
+extern Ti68kBreakpoints	bkpts;
 
 #endif

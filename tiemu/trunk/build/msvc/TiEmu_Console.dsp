@@ -354,6 +354,46 @@ SOURCE=..\..\src\core\uae\readcpu.c
 
 # End Source File
 # End Group
+# Begin Group "ti_hw"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\dbus.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\debugger.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\hardware.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\ioports.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\keyboard.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\lcd.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\m68k.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\memory.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\timer.c
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\..\src\core\bkpts.c
@@ -569,46 +609,6 @@ SOURCE=..\..\src\hid\tie_error.c
 # Begin Source File
 
 SOURCE=..\..\src\hid\tikeys.c
-# End Source File
-# End Group
-# Begin Group "ti_hw"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\dbus.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\debugger.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\hardware.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\ioports.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\keyboard.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\lcd.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\m68k.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\memory.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\timer.c
 # End Source File
 # End Group
 # Begin Source File

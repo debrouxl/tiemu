@@ -44,7 +44,7 @@ typedef struct
 
 /* Constants */
 
-// Bkpts types (access)
+// Constants for ti68k_bkpt_set_[address|access|access_range]()
 #define BK_BYTE     1
 #define BK_WORD     2
 #define BK_LONG     4
@@ -58,9 +58,6 @@ typedef struct
 #define BK_WRITE_BYTE 	(BK_WRITE | BK_BYTE)
 #define BK_WRITE_WORD 	(BK_WRITE | BK_WORD)
 #define BK_WRITE_LONG 	(BK_WRITE | BK_LONG)
-
-//#define BK_READ_LONG_WORD BK_READ_LONG
-//#define BK_WRITE_LONG_WORD BK_WRITE_LONG
 
 // Constants for ti68k_bkpt_set_vector()
 typedef enum {
