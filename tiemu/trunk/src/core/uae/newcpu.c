@@ -365,9 +365,12 @@ void MakeFromSR(void)
     This part of code (turbo)boost the direct transfer of files through
     the internal link 
   */  
-#if 0
+#if 1
+
   if(tihw.lc_speedy && regs.intmask < 4 && 
      (tihw.io[0xc]&0x2 || hw_dbus_checkread())) 
+     //((tihw.io[0xc] & 2) && (tihw.io[0xd] & 0x40)) ||
+	 //((tihw.io[0xc] & 1) && (tihw.io[0xd] & 0x20)))
     {
       tihw.io[0xc] |= 0x2;
       specialflags |= SPCFLAG_INT;

@@ -175,23 +175,17 @@ void hw_update(void)
 		io_bit_set(0x0d,3);
 
 	// DBUS enabled ?
-	/*
 	if(!io_bit_tst(0x0c,6))
 	{
-		// Check for data in buffer (and link activity)
-		hw_dbus_checkread();
-
 		// Trigger int4 on: error, link act, txbuf empty or rxbuf full
 		if((io_bit_tst(0x0c,3) && io_bit_tst(0x0d,7)) ||
 			(io_bit_tst(0x0c,2) && io_bit_tst(0x0d,3)) ||
 			(io_bit_tst(0x0c,1) && io_bit_tst(0x0d,6)) ||
 			(io_bit_tst(0x0c,0) && io_bit_tst(0x0d,5)))
 		{
-			io_bit_set(0x0d,4);					// interrupt pending
 			hw_m68k_irq(4);
 		}
 	}
-	*/
 
     // Auto-int 5: triggered by the programmable timer.
 	// The default rate is OSC2/(K*2^9), where K=79 for HW1 and K=53 for HW2
