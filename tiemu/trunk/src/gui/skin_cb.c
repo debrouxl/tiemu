@@ -15,7 +15,7 @@
 #include "skin_dbox.h"
 #include "support.h"
 #include "msg_cb.h"
-#include "skn/skin.h"
+#include "skin.h"
 #include "ticalc.h"
 #include "interface.h"
 #include "main.h"

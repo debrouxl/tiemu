@@ -32,7 +32,7 @@
 //#include "platform.h"
 #include "support.h"
 #include "ticalc.h"
-#include "skn/skin.h"
+#include "skin.h"
 #include "struct.h"
 #include "tilibs.h"
 #include "interface.h"
