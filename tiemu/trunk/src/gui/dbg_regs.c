@@ -95,7 +95,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 					{
 						sscanf(new_text, "%lx", value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
-						ti68k_register_set_pc(value);
+						ti68k_register_set_usp(value);
 					}
 				break;
 				case 2:	// ssp
@@ -103,7 +103,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 					{
 						sscanf(new_text, "%lx", value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
-						ti68k_register_set_sp(value);
+						ti68k_register_set_ssp(value);
 					}
 				break;
 				case 3: // sr
@@ -196,7 +196,7 @@ static GtkTreeStore* ctree_create(GtkWidget *tree)
 			NULL);
 			
 	//g_signal_connect(G_OBJECT(renderer), "edited",
-	//		 G_CALLBACK(renderer_edited), store);
+	//		G_CALLBACK(renderer_edited), store);
 
     
     for (i = 0; i < CLIST_NVCOLS; i++) 

@@ -45,9 +45,14 @@ void ti68k_register_set_addr(int n, uint32_t val)
     if (n>=0 && n<8) regs.a[n] = val;
 }
 
-void ti68k_register_set_sp(uint32_t val)
+void ti68k_register_set_usp(uint32_t val)
 {
     regs.usp = val;
+}
+
+void ti68k_register_set_ssp(uint32_t val)
+{
+    regs.a[7] = val;
 }
 
 void ti68k_register_set_pc(uint32_t val)
@@ -62,7 +67,22 @@ void ti68k_register_set_sr(uint32_t val)
 
 void ti68k_register_set_flag(uint8_t flag)
 {
-  //TODO
+  	//TODO
+  	/* T  0  S  0  0  I2 I1 I0 0  0  0  X  N  Z  V  C */	  
+  	/*
+	sprintf(str, "%s - %s - - %s %s %s - - - %s %s %s %s %s",
+		regs.t ? "T " : "0 ",
+		regs.s ? "S " : "0 ",
+		(regs.intmask & 4) ? "I2" : "0 ",
+		(regs.intmask & 2) ? "I1" : "0 ",
+		(regs.intmask & 1) ? "I0" : "0 ",
+		regs.x ? "X " : "0 ",
+		regflags.flags.n ? "N " : "0 ",
+		regflags.flags.z ? "Z " : "0 ",
+		regflags.flags.v ? "V " : "0 ",
+		regflags.flags.c ? "C " : "0 "
+		);	
+	*/
 }
 
 int ti68k_register_get_data(int n)
@@ -77,9 +97,14 @@ int ti68k_register_get_addr(int n)
     return 0;
 }
 	
-int ti68k_register_get_sp(void)
+int ti68k_register_get_usp(void)
 {
     return regs.usp;
+}
+
+int ti68k_register_get_ssp(void)
+{
+    return regs.a[7];
 }
 
 int ti68k_register_get_pc(void)
@@ -92,12 +117,26 @@ int ti68k_register_get_sr(void)
     return regs.sr;
 }
 
-char *ti68k_register_get_flag(void)
+const char *ti68k_register_get_flag(void)
 {
-    static char str_SR[128];
+    static char str[64];
 
-    sprintf(str_SR, "T=%d S=%d X=%d N=%d\nZ=%d V=%d C=%d IMASK=%d\n",
+    printf("T=%d S=%d X=%d N=%d\nZ=%d V=%d C=%d IMASK=%d\n",
 	  regs.t, regs.s, regs.x, NFLG, ZFLG, VFLG, CFLG, regs.intmask);
+	  
+	/* T  0  S  0  0  I2 I1 I0 0  0  0  X  N  Z  V  C */	  
+	sprintf(str, "%s - %s - - %s %s %s - - - %s %s %s %s %s",
+		regs.t ? "T " : "0 ",
+		regs.s ? "S " : "0 ",
+		(regs.intmask & 4) ? "I2" : "0 ",
+		(regs.intmask & 2) ? "I1" : "0 ",
+		(regs.intmask & 1) ? "I0" : "0 ",
+		regs.x ? "X " : "0 ",
+		regflags.flags.n ? "N " : "0 ",
+		regflags.flags.z ? "Z " : "0 ",
+		regflags.flags.v ? "V " : "0 ",
+		regflags.flags.c ? "C " : "0 "
+		);
 
-    return str_SR;
+    return str;
 }
