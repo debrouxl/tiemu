@@ -115,7 +115,7 @@ typedef struct
 	int		ram256;
 	int		ram_wrap;
 	int		mem_prot;
-    //int   flash_prot;
+    int   flash_prot;
 
     // timer.c
     int     timer_value;

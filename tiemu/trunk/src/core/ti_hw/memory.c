@@ -65,7 +65,7 @@ ULONG mem_mask[16];		// pseudo chip-select
 // d00000-ffffff : unused
 
 int rom_changed[32]; // FLASH segments which have been (re)programmed
-int flash_protect;
+//int tihw.flash_prot;
 int rom_ret_or;
 int rom_write_ready;
 int rom_write_phase;
@@ -101,6 +101,7 @@ int hw_mem_init(void)
 	tihw.ram256 = (tihw.ram_size == 256*KB);
 	//tihw.ram_wrap = 
 	tihw.mem_prot = 1;
+    tihw.flash_prot = 1;
 
   /* Init vars */
   rom_write_ready=0; 
@@ -110,7 +111,7 @@ int hw_mem_init(void)
   rom_write_ready = 0;
   rom_write_phase = 0;
   rom_ret_or = 0;
-  flash_protect = 0;
+  //tihw.flash_prot = 0;
 
     // clear breakpoints
 	ti68k_bkpt_clear_address();
@@ -278,9 +279,9 @@ ULONG get_long(CPTR adr)
     }
 
     if (adr>=0x1c0000 && adr<0x200000)
-        flash_protect = 1;
+        tihw.flash_prot = 1;
   
-    if (flash_protect && adr>=0x210000 && adr<=0x211fff)
+    if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
         return 0x14141414;
   
     if (adr<0x200000) 
@@ -343,8 +344,8 @@ UWORD get_word(CPTR adr)
     }
 
     if (adr>=0x1c0000 && adr <0x200000)
-        flash_protect = 1;
-    if (flash_protect && adr>=0x210000 && adr<=0x211fff)
+        tihw.flash_prot = 1;
+    if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
         return 0x1414;
     if (adr<0x200000) 
         return wget(adr);
@@ -399,10 +400,16 @@ UBYTE get_byte(CPTR adr)
 	    }
     }
   
-    if (adr>=0x1c0000 && adr <0x200000)
-        flash_protect = 1;
+    //$1C0000-$1FFFFF: "the Protection" enable/disable
+    //Note: Four consecutive accesses to this range crashes a HW1 calc!
+    //READ:  Enable the Protection
+    //WRITE: Disable the Protection
+    //Note: No access to this range will have any effect unless the access is
+    //"authorized," see below.
+    if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
+        tihw.flash_prot = 1;
 
-    if (flash_protect && adr>=0x210000 && adr<=0x211fff)
+    if (tihw.flash_prot && adr>=0x210000 && adr<=0x211fff)
         return 0x14;
   
     if (adr<0x200000) 
@@ -466,8 +473,6 @@ void put_long(CPTR adr, ULONG arg)
     
 	if((adr < 0x120) && tihw.mem_prot)
 	{
-		// Protected memory violation. Triggered when memory below [$000120] is
-		// written while bit 2 of [$600001] is set
 		specialflags |= SPCFLAG_INT;
         currIntLev = 7;
 	}
@@ -475,7 +480,7 @@ void put_long(CPTR adr, ULONG arg)
     if (adr < 0x200000) 
 	{
 	    if (adr >=0x1c0000)
-	        flash_protect=0;
+	        tihw.flash_prot=0;
 	    lput(adr, arg);
 	}
     else if (adr < 0x400000)
@@ -550,7 +555,7 @@ void put_word(CPTR adr, UWORD arg)
     if (adr < 0x200000) 
     {
 	    if (adr >=0x1c0000)
-	        flash_protect=0;
+	        tihw.flash_prot=0;
 	    wput(adr, arg);
     }
     else if (adr < 0x400000)
@@ -631,7 +636,7 @@ void put_byte(CPTR adr, UBYTE arg)
     //Note: No access to this range will have any effect unless the access is
     //"authorized," see below.
     else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
-        flash_protect = 0;
+        tihw.flash_prot = 0;
   
     // write to internal FLASH
     else if (adr >= 0x200000 && adr < 0x400000)
@@ -663,7 +668,7 @@ static void extRomWriteByte(int addr,int v)
   
   addr &= 0x1fffff;
   
-  if(flash_protect) 
+  if(tihw.flash_prot) 
     return;
 
   if(tihw.calc_type == TI92)
