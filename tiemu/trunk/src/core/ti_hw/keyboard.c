@@ -168,23 +168,16 @@ int hw_kbd_update(void)
 	        specialflags &= ~SPCFLAG_STOP;
 	        
 	    // Auto-Int 6 triggered when [ON] is pressed.
-	    if(currIntLev < 6)	// don't work 
-	    //if(specialflags < 6)	// work (why ?!)
-	    {
-	        specialflags |= SPCFLAG_INT;
-	        currIntLev = 6;
-	    }
+        specialflags |= SPCFLAG_INT;
+        currIntLev = 6;
       
         key_states[TIKEY_ON] = 0;
     }
     else if(rc)
     {
     	// Auto-Int 2 triggered periodically while key(s) other than [ON] are held down.
-        if(currIntLev < 2)
-	    {
-	        specialflags |= SPCFLAG_INT;
-	        currIntLev = 2;
-	    }
+        specialflags |= SPCFLAG_INT;
+        currIntLev = 2;
     }
   
     return rc;
