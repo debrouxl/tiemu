@@ -188,11 +188,19 @@ int skin_read_image(const char *filename, SKIN_INFOS* si)
     	jpeg_read_header(&cinfo, TRUE);
 
     	// Rescale image to half if necessary
-    	if ((cinfo.image_width > 600) || (cinfo.image_height > 600)) {
+    	if ((cinfo.image_width > 800) || (cinfo.image_height > 600)) {
 		cinfo.scale_num = 1;
 		cinfo.scale_denom = 2;
 		scaled = 1;
     	}
+
+        // Rescale image if LCD size is too small
+        if((si->lcd_pos.right - si->lcd_pos.left) < 240 || 
+                (si->lcd_pos.bottom - si->lcd_pos.top) < 128)
+        {
+            printf("<%i %i %i %i>\n", si->lcd_pos.left, si->lcd_pos.right,
+            si->lcd_pos.top, si->lcd_pos.bottom);
+        }
     
     	// Require a colormapped output with a limited number of colors
     	cinfo.quantize_colors = TRUE;

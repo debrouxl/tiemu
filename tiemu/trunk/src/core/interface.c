@@ -120,12 +120,12 @@ int ti68k_init(void)
 	tifiles_init();
 	ticalc_init();
 
-	// check image has been loaded
+	// check if image has been loaded
 	if(img_loaded == 0)
 		return ERR_68K_INVALID_ROM;
 
 	// set calc type and init hardware
-    tihw.calc_type = img_infos.calc_type;
+        tihw.calc_type = img_infos.calc_type;
 	hw_init();
 
 	// init hid
