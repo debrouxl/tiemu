@@ -36,6 +36,7 @@
 #include "params.h"
 #include "timer.h"
 #include "callbacks.h"
+#include "lib68k.h"
 
 //int init_int_tab_offset;
 int io0Bit7;

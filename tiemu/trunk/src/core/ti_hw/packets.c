@@ -365,7 +365,7 @@ int query_libs(char *fname, char *libBuf, char **libPtrs)
 }
 
 
-int send_ti_file(char *fname) 
+int send_ti_file(const char *fname) 
 {
   FILE *fp;
   char vname[10];

@@ -61,7 +61,7 @@
 /* Used for checking the calling order of some functions */
 int runlevel = 0;
 
-int change_runlevel(int new, int min)
+void change_runlevel(int new, int min)
 {
   if(new < min)
     {
@@ -293,7 +293,7 @@ int ti68k_getRamSize(void)
   return params.ram_size;
 }
 
-int ti68k_dumpRam(char *filename)
+int ti68k_dumpRam(const char *filename)
 {
   FILE *f;
   int i;
@@ -478,7 +478,7 @@ extern UBYTE *backBuf;
   Remark: there is a bug here... If the buffer is allocated with malloc, GtkTiEmu will segfault (backBuf address out of bounds). If the buffer is allocated on the heap as an array, there will be no problem. Moreover, this problem does not appear when we send a file via the command mode, only in GUI mode.
 Then, there may be a problem of shared memory or something else...
 */
-int ti68k_sendFile(char *filename)
+int ti68k_sendFile(const char *filename)
 {
   return send_ti_file(filename);
 }

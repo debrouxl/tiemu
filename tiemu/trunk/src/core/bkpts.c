@@ -20,14 +20,15 @@
   Breakpoints management
 */
 
+#include <stdlib.h>
 #include <assert.h>
 
-#include "../core/uae/uae.h"
+#include "uae.h"
 #include "bkpts.h"
 #include "intlist.h"
 #include "errcodes.h"
 #include "intl.h"
-#include "../core/ti_hw/tilibs.h"
+#include "tilibs.h"
 
 /* Variables */
 

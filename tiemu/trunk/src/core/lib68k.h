@@ -64,7 +64,7 @@ int ti68k_dumpRom(const char *filename);
 // RAM
 void* ti68k_getRamPtr(void);
 int ti68k_getRamSize(void);
-int ti68k_dumpRam(char *filename);
+int ti68k_dumpRam(const char *filename);
 
 // LCD
 void* ti68k_getLcdPtr(void);
@@ -93,7 +93,7 @@ int ti68k_getSrRegister();
 char *ti68k_getFlagRegister(void);
 
 // Link
-int ti68k_sendFile(char *filename);
+int ti68k_sendFile(const char *filename);
 int ti68k_setInternalLinkTimeout(int value);
 int ti68k_getInternalLinkTimeout(int value);
 int ti68k_reconfigure_linkport(void);

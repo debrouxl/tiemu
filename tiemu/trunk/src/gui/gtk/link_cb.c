@@ -2,6 +2,8 @@
 #  include <config.h>
 #endif
 
+#include <string.h>
+
 #include <gtk/gtk.h>
 
 #include "link_cb.h"
@@ -737,7 +739,7 @@ void
 on_seldev_ok_button1_clicked           (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gchar *s;
+  const gchar *s;
 
   s = gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data));
   gtk_entry_set_text(GTK_ENTRY(wentry2), s);

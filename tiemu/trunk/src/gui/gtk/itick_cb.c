@@ -25,7 +25,7 @@ gint display_tickrate_dbox()
   
   user_data = gtk_object_get_data(GTK_OBJECT(dbox), "entry7");
   tmp_tickrate = (options.params)->tick_rate;
-  g_snprintf(buffer, MAXCHARS, "%lu", (options.params)->tick_rate);
+  g_snprintf(buffer, MAXCHARS, "%i", (options.params)->tick_rate);
   gtk_entry_set_text((GtkEntry *)user_data, buffer);
 
   gtk_widget_show_all(dbox);
@@ -82,7 +82,7 @@ gint display_cyclerate_dbox()
   
   user_data = gtk_object_get_data(GTK_OBJECT(dbox), "entry8");
   tmp_cyclerate = (options.params)->cycle_rate;
-  g_snprintf(buffer, MAXCHARS, "%lu", (options.params)->cycle_rate);
+  g_snprintf(buffer, MAXCHARS, "%i", (options.params)->cycle_rate);
   gtk_entry_set_text((GtkEntry *)user_data, buffer);
 
   gtk_widget_show_all(dbox);

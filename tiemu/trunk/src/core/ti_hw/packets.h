@@ -39,7 +39,7 @@ extern void start_send_backup(UBYTE *ptr, int size);
 extern void start_send_variable(UBYTE *var, char *name, UBYTE type, int size);
 extern void start_get_directory(tifile *buffer , int size);
 extern int prot_bytes_left(void);
-extern int send_ti_file(char *fname);
+extern int send_ti_file(const char *fname);
 extern int query_libs(char *fname, char *libBuf, char **libsPtrs);
 
 void receive_packet(int type, int size, UBYTE *data);

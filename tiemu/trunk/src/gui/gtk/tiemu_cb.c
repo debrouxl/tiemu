@@ -3,6 +3,7 @@
 #endif
 
 #include <ctype.h>
+#include <stdlib.h>
 #include <gtk/gtk.h>
 #include <gmodule.h> // GModule
 

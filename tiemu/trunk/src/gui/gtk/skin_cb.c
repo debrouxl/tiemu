@@ -6,6 +6,8 @@
 #include <dirent.h>
 #endif
 
+#include <string.h>
+
 #include <gtk/gtk.h>
 
 #include "struct.h"

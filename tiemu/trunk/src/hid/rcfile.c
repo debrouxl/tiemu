@@ -175,7 +175,7 @@ void read_rc_file(void)
 	}
       if( (p=find_str(buffer, "baudrate=")) )
 	{
-	  sscanf(p, "%i", &((options.link_cable)->baud_rate));
+	  sscanf(p, "%i", (int *)&((options.link_cable)->baud_rate));
 	  continue;
 	}
       if( (p=find_str(buffer, "delay=")) )

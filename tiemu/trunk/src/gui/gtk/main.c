@@ -22,7 +22,8 @@
 
 #include <sys/timeb.h>
 #include <sys/types.h>
-//#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "tilibs.h"
 #include "platform.h"

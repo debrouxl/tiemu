@@ -2,6 +2,8 @@
 #  include <config.h>
 #endif
 
+#include <string.h>
+
 #include <gtk/gtk.h>
 
 #include "state_cb.h"
@@ -41,7 +43,7 @@ void
 load_state_on_ok_button1_clicked       (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gchar *s;
+  const gchar *s;
 
   s = gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data));
   g_free((options.params)->ram_file);
@@ -94,7 +96,7 @@ void
 save_state_on_ok_button2_clicked       (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gchar *s;
+  const gchar *s;
 
   s = gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data));
   g_free((options.params)->ram_file);

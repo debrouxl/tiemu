@@ -33,7 +33,7 @@ int   linkport_byteavail(void);
 int   linkport_checkread(void);
 
 int init_linkfile();
-int send_ti_file(char *filename);
+int send_ti_file(const char *filename);
 
 /* Variables */
 

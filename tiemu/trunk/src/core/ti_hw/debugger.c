@@ -32,6 +32,7 @@
 #include "tilibs.h"
 //#include "interface.h"
 #include "images.h"
+#include "callbacks.h"
 
 int breakPoints = 0;
 ULONG breakAdr[16];

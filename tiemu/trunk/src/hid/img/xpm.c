@@ -144,8 +144,6 @@ int read_xpm_256_colors(FILE *file, Image *img) // not tested
     //fprintf(stdout, "pal: <%s>\n", buffer);
     if(strstr(buffer, "None")) continue;
     index = buffer[1];
-    if(index > 256)
-      fprintf(stdout, "Image error\n");
 
     if(sscanf(buffer, "\"%c\tc #%02X%02X%02X\",", (uint8_t *)&index, 
 	      (int *)(&rr), (int *)(&gg), (int *)(&bb)) < 4)

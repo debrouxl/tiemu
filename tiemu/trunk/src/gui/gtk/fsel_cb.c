@@ -99,7 +99,7 @@ void
 on_rom_ok_button2_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gchar *src;
+  const gchar *src;
   gchar *dst;
   gchar *cmd;
 
@@ -138,7 +138,7 @@ void
 on_tifile_ok_button2_clicked           (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gchar *filename;
+  const gchar *filename;
   gchar *ext;
 
   /* Retrieve filename */
@@ -239,7 +239,7 @@ void
 on_tib_ok_button2_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
-  gchar *filename;
+  const gchar *filename;
 
   filename = gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data));
 

@@ -111,42 +111,6 @@ static void gt_refresh()
   while( gtk_events_pending() ) { gtk_main_iteration(); }
 }
 
-static int gt_choose(char *cur_varname, char *new_varname)
-{
-  /*
-  int ret=0;
-  int action = ACTION_NONE;
-  gchar *s;
-  
-  strcpy(new_varname, "");
-  ret = user3_box(_("Action"), 
-		  _("The variable already exists..."), 
-		  _("Skip"), _("Overwrite"), _("Rename"));
-  switch(ret)
-    {
-    case 1:
-      action = ACTION_SKIP;
-      break;
-    case 2:
-      action = ACTION_OVERWRITE;
-      break;
-    case 3:
-      action = ACTION_RENAME;
-      s = gif->dlgbox_entry(_("Rename the variable"),
-			    _("New name: "), cur_varname);
-      if((s == NULL) || (strlen(s)>17)) { action=ACTION_SKIP; break; }
-      strcpy(new_varname, s);
-      g_free(s);
-      break;
-    default:
-      break;
-    }
-
-    return action;
-  */
-  return 0;
-}
-
 void gt_init_refresh_functions(void)
 {
   ticalc_set_update(&info_update, 

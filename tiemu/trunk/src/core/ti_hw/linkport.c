@@ -291,7 +291,7 @@ int test_sendfile()
   return 0;
 }
 
-int send_ti_file(char *filename)
+int send_ti_file(const char *filename)
 {
   char *ext;
 

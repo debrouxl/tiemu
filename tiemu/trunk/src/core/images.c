@@ -336,7 +336,7 @@ int ti68k_loadRom(const char *filename)
 */
 int ti68k_convertTibToRom(const char *f_in, char *f_out)
 {
-  char *filename = f_in;
+  const char *filename = f_in;
   char *filename2 = f_out;
   FILE *file, *fo;
   uint8_t data;
