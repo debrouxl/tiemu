@@ -745,7 +745,7 @@ void rcfile_write(void)
     fprintf(txt, "# SAV file\n");
 	fprintf(txt, "sav_file=%s\n", params.sav_file);
     fprintf(txt, "\n");
-  fprintf(txt, "# CPU instructions rate (50000 per 30ms) = OSC1\n");
+  fprintf(txt, "# CPU cycles rate (360000 per 30ms) = OSC1\n");
   fprintf(txt, "cpu_rate=%i\n", params.cpu_rate);
   fprintf(txt, "\n");
   fprintf(txt, "# Hardware update rate (625 (hw1) or 1172 (hw2) = OSC2/OSC3\n");

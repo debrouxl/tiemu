@@ -117,8 +117,8 @@ extern void lcd_hook_hw2(int);
 /*
 	Returns cycle count.
 */
-static int cycles = 0;
-int hw_m68k_get_cycle_count(int reset)
+static unsigned int cycles = 0;
+unsigned int hw_m68k_get_cycle_count(int reset)
 {
 	if(reset) cycles = 0;
 	return cycles;
@@ -131,12 +131,13 @@ int hw_m68k_get_cycle_count(int reset)
   - 2 if trace,
   - 0 otherwise.
 */
-int hw_m68k_run(int n)
+int hw_m68k_run(int n, unsigned maxcycles)
 {
     int i=n;
     GList *l = NULL;
+    unsigned int cycles_at_start = cycles;
 
-	for(i = 0; i < n; i++)
+	for(i = 0; i < n && (!maxcycles || cycles - cycles_at_start < maxcycles); i++)
 	{
 		uae_u32 opcode;
 
