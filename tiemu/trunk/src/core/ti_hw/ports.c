@@ -39,7 +39,13 @@
 #include "dbus.h"
 #include "callbacks.h"
 #include "ports.h"
+#include "m68k.h"
 #include "ti68k_def.h"
+
+//vti
+extern int recvflag, transflag;
+extern int count;
+extern uint8_t recvbyte, transbyte;
 
 int hw_io_init(void)
 {
@@ -147,7 +153,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         break;
         case 0x0d:	// r- <76543210>
 			// reading the DBus status register resets that register
-			tihw.io[0x0d] = 0x00;
+			//tihw.io[0x0d] = 0x00;
 			break;
         case 0x0e:	// rw <....3210>
 			// set red/white wires (if direct access)			
@@ -159,7 +165,11 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         break;
         case 0x0f: 	// rw <76543210>
 			// write a byte to the transmit buffer (1 byte buffer)
-            hw_dbus_putbyte(arg);
+            //hw_dbus_putbyte(arg);
+
+			//vti
+			transflag=1; transbyte=arg;
+			hw_m68k_irq(4);
             break;
         case 0x10: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8 (mutex pb !)-
@@ -314,10 +324,16 @@ uint8_t io_get_byte(uint32_t addr)
         case 0x0c:	// rw <765.3210>
         	// linkport status
         	// see hardware.c or dbus.c
+
+			//vti
+			return 5|((1-transflag)<<1);
         break;
         case 0x0d:	// r- <76543210>
 			// linkport status
 			v |= (hw_dbus_byteavail() ? 0x60 : 0x40);	// needed, why ?
+
+			//vti
+			return (recvflag<<5)|((1-transflag)<<6);
 		break;
         case 0x0e:	// rw <....3210>
 			// %[2-3]: read red/white wires if raw access
@@ -329,8 +345,11 @@ uint8_t io_get_byte(uint32_t addr)
             break;
         case 0x0f: 	// rw <76543210>
 			// read one byte from receive (incoming) buffer
-			io_bit_clr(0x0c,0);		// rx buffer full
-            return hw_dbus_getbyte();
+			//io_bit_clr(0x0c,0);		// rx buffer full
+            //return hw_dbus_getbyte();
+
+			//vti
+			recvflag=0; return recvbyte;
         case 0x10: 	// -w <76543210> (hw1)
         break;
         case 0x11: 	// -w <76543210> (hw1) 

@@ -36,11 +36,17 @@
 #include "libuae.h"
 #include "ports.h"
 #include "dbus.h"
+#include "m68k.h"
 
 #include "tilibs.h"
 #include "ti68k_err.h"
 #include "ti68k_def.h"
 #include "ti68k_int.h"
+
+//vti
+int recvflag, transflag;
+int count;
+uint8_t recvbyte, transbyte;
 
 /*
 	Linkport (lp) / directfile (df) mappers
@@ -120,6 +126,10 @@ int hw_dbus_init(void)
 
 	// set mappers to linkport
 	map_to_linkport();
+
+	//vti
+	transflag=0; 
+	recvflag=0;
 
     return 0;
 }
@@ -279,8 +289,50 @@ TicalcInfoUpdate 	iu = { 0 };
 static int ilp_init_port(void)     { return 0; }
 static int ilp_open_port(void)     { return 0; }
 
+//vti
+int SendByte(int c)
+{
+	int count=1000000;
+
+    recvflag=1;
+    recvbyte=c;
+    hw_m68k_irq(4);
+    
+    while ((recvflag)&&(count--))
+        ti68k_debug_do_instructions(1);		//Execute();
+
+    if (recvflag)
+        return 0;
+
+    return 1;
+}
+
+int GetByte(int *c)
+{
+    int count=1000000;
+
+    while ((!transflag)&&(count--))
+        ti68k_debug_do_instructions(1);		//Execute();
+
+    if (transflag)
+    {
+        *c=transbyte&0xff;
+        transflag=0;
+    }
+    else
+    {
+        //getError=1;
+		printf("error !\n");
+        return 0;
+    }
+
+    return 1;
+}
+//vti
+
 static int ilp_put(uint8_t data)
 { 
+	/*
 	tiTIME clk;
 
   	f2t_data = data; 
@@ -298,10 +350,13 @@ static int ilp_put(uint8_t data)
     };
   
   	return 0; 
+	*/
+	return SendByte(data);
 }
 
 static int ilp_get(uint8_t *data)
 { 
+	/*
 	tiTIME clk;
 
 	toSTART(clk);
@@ -318,7 +373,9 @@ static int ilp_get(uint8_t *data)
 	//io_bit_set(0x0d,6);		// tx buffer empty
 	//io_bit_set(0x0d,3);		// link activity
   
-	return 0; 
+	return 0;
+	*/
+	return GetByte((int *)data);
 }
 
 static int ilp_probe_port(void)    	{ return 0; }
@@ -475,7 +532,6 @@ int send_ti_file(const char *filename)
 
   return 0;
 }
-
 
 
 
