@@ -271,9 +271,6 @@ static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6, int s7
 	gtk_widget_set_sensitive(mi.m6, s6);
 }
 
-static GtkScrolledWindow *sw;
-static GtkAdjustment *adj;
-
 /*
 	Display source code window
 */
@@ -297,9 +294,6 @@ GtkWidget* dbgcode_create_window(void)
 
     data = glade_xml_get_widget(xml, "windows1_menu");
     g_signal_connect(G_OBJECT(data), "map", G_CALLBACK(update_submenu), NULL);
-
-    data = glade_xml_get_widget(xml, "scrolledwindow1");
-    sw = GTK_SCROLLED_WINDOW(data);
 
 	tb.b1 = glade_xml_get_widget(xml, "button1");
 	tb.b2 = glade_xml_get_widget(xml, "button2");
@@ -436,6 +430,7 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
     set_other_windows_sensitivity(FALSE);
 
     ti68k_debug_skip(addr);
+    gtk_tree_selection_unselect_iter(selection, &iter);
 
 	tb_set_states(1, 1, 1, 1, 1, 0, 1);
     set_other_windows_sensitivity(TRUE);
@@ -500,6 +495,7 @@ dbgcode_button6_clicked                     (GtkButton       *button,
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
     dbgmem_refresh_window();
+    dbgbkpts_refresh_window();
 }
 
 /***** Popup menu *****/
@@ -569,14 +565,21 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
 	GtkListStore *store = GTK_LIST_STORE(model);
     GtkTreeSelection *selection;
     GtkTreeIter iter;
+    GtkTreePath *path;
     gboolean valid;
     gchar *str;
     gchar *row;
     gint row_idx, row_max;
-    uint32_t addr;
+    uint32_t addr, start;
     gchar *output;
     int offset;
 
+    // starting address
+    gtk_tree_model_get_iter_first(model, &iter);
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
+    sscanf(str, "%x", &start);
+
+    // current address
     selection = gtk_tree_view_get_selection(view);
     valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
     if(valid)
@@ -591,6 +594,7 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
     else
         row_idx = row_max = -1;
 
+    // bind our key
 	switch(event->keyval) 
 	{
 	case GDK_F2:
@@ -605,8 +609,6 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         if(row_max == -1)
             break;
 
-        //printf("Up: %i/%i %x\n", row_idx, row_max, addr);
-
         if(row_idx > 0)
             break;
 
@@ -618,8 +620,6 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         if(row_max == -1)
             break;
 
-        //printf("Down: %i/%i %x\n", row_idx, row_max, addr);
-
         if(row_idx < row_max)
             break;
 
@@ -627,32 +627,28 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
 		g_free(output);
 
         gtk_list_store_clear(store);
-        clist_populate(store, addr + offset);
+        clist_populate(store, start + offset);
+    
+        path = gtk_tree_path_new_from_string("9");      // restore selection
+        gtk_tree_selection_select_path(selection, path);
 
-        adj = gtk_scrolled_window_get_vadjustment(sw);
-        gtk_adjustment_set_value(adj, 0.5);
-        gtk_scrolled_window_set_vadjustment(sw, adj); 
-
-        return FALSE;
+        return TRUE;
 
     case GDK_Page_Up:
         if(row_max == -1)
             break;
-
-        //printf("PageUp: %i/%i %x\n", row_idx, row_max, addr);
 
         if(row_idx > 0)
             break;
 
         gtk_list_store_clear(store);
         clist_populate(store, addr - 0x10);
-        return FALSE;
+
+        return TRUE;
 
     case GDK_Page_Down:
         if(row_max == -1)
             break;
-
-        //printf("PageDown: %i/%i %x\n", row_idx, row_max, addr);
 
         if(row_idx < row_max)
             break;
@@ -660,11 +656,10 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         gtk_list_store_clear(store);
         clist_populate(store, addr + 0x10);
 
-        adj = gtk_scrolled_window_get_vadjustment(sw);
-        gtk_adjustment_set_value(adj, 0.5);
-        gtk_scrolled_window_set_vadjustment(sw, adj); 
+        path = gtk_tree_path_new_from_string("9");      // restore selection
+        gtk_tree_selection_select_path(selection, path);
 
-        return FALSE;
+        return TRUE;
 
 	default:
 		return FALSE;

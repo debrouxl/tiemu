@@ -11,7 +11,10 @@ To do:
 	- minimize/maximize all windows when touching calc or code window. Could be better...
 	- can't step after bkpt: fixed.
 	- mem dbox: show headers, removed stack, refreshed on step, tab refreshed when scrolling,
-		improved scrolling and browsing
+	- mem_dbox:	improved scrolling and browsing
+	- step over was buggy (no single step on insts other than jsr/bsr)
+	- code_dbox: improved scrolling and browsing
+	- avoid selection and green bar to be masked
 
 - 14/07/2004, version 1.74: roms
 	Fixes from Lionel, Kevin and Olivier's suggestions:

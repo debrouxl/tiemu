@@ -66,7 +66,7 @@ int ti68k_debug_step(void)
 	return ti68k_debug_do_instructions(1);
 }
 
-static const uint16_t jmps[] = { 
+static const uint16_t rets[] = { 
 	
 	0x4e77,		// RTR
 	0x4e75,		// RTS
@@ -88,9 +88,9 @@ int ti68k_debug_step_over(void)
 	g_free(output);	
 
 	// check current instruction (JSR or BSR)
-	if(!(curriword() & 0x4e80) && 
-		(curriword() != 0x6100) && (curriword() != 0x6140) &&
-		(curriword() != 0x6180) && (curriword() != 0x61c0))
+	if(!((curriword() == 0x4e80) || 
+		(curriword() == 0x6100) || (curriword() == 0x6140) &&
+		(curriword() == 0x6180) || (curriword() == 0x61c0)))
 	{
 		ti68k_debug_step();
 		return 0;
@@ -100,8 +100,8 @@ int ti68k_debug_step_over(void)
 	do
 	{
 		//printf("$%06x: %06x\n", m68k_getpc(), curriword());
-		for(i = 0; i < sizeof(jmps) / sizeof(uint16_t); i++)
-			if(curriword() == jmps[i])
+		for(i = 0; i < sizeof(rets) / sizeof(uint16_t); i++)
+			if(curriword() == rets[i])
 			{
 				//printf("step_over aborted!\n");
 				hw_m68k_run(1);
@@ -114,15 +114,6 @@ int ti68k_debug_step_over(void)
 
     return 0;
 }
-
-// gruik...
-static const uint16_t rets[] = { 	
-	0x4e77,		// RTR
-	0x4e75,		// RTS
-	0x4e74,		// RTD
-	0x4e73,		// RTE
-	0x4e72,		// STOP
-};
 
 int ti68k_debug_step_out(void)
 {
