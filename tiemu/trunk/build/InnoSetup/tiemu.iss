@@ -53,8 +53,8 @@ Source: "C:\sources\roms\tiemu\RELEASE"; DestDir: "{app}"; DestName: "Release.tx
 Source: "C:\sources\roms\tiemu\LICENSES"; DestDir: "{app}"; DestName: "Licenses.txt"; Flags: ignoreversion
 ;Source: "C:\sources\roms\tiemu\ROMs\romcalls.lst"; DestDir: "{app}"; Flags: ignoreversion
 ; ROM files
-Source: "C:\sources\roms\tiemu\ROMs\romcalls.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\ROMs\pedrom*.tib"; DestDir: "{app}\pedrom"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu\pedrom\romcalls.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu\pedrom\pedrom*.tib"; DestDir: "{app}\pedrom"; Flags: ignoreversion
 ; TiEmu/GTK
 Source: "C:\sources\roms\tifiles\tests\tifiles.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticables\tests\ticables.dll"; DestDir: "{app}"; Flags: ignoreversion

@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.80l		(06/02/2005)
-Current version:  1.80m		(17?/02/2005)
+Previous version: 1.80m		(18/02/2005)
+Current version:  1.80n		(25/02/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -21,24 +21,34 @@ New capabilities:
 -----------------
 
 	- linkport support with real cables: GrayLink, BlackLink, VTi and TiEmu
-	- real grayscale emulation for HW2/HW3
-	- removed VTi signature (buggy SR)
+	- FPU dis-assembler (bcd_math)
+	- program entry breakpoint feature (AMS < 2.00 only, 1 bkpt)
 
 
 Improvements:
 -------------
 
-	- dbus architecture improved (reset)
-	- added 0x7100xx ports and fixed LCD address on HW2/HW3
-	- searching of data begins at the current tab address
+	- the Windows(tm) MENU key raises the popup menu for now
+	- changed engine_start/stop architecture to remove some menu locks/bugs
+	- show vector name rather than number
+	- dis-assemble FLINE with __ld_entry_point
+	- dis-assemble FLINE with _bcd_math followed by FPU pseudo-opcode
+	- some items of the popup menu are disabled when the engine is running
+	- save FLASH segment which have been written/erased
+	- fixed/improved some endianess issues
+	- pedrom tibs are now placed in the 'pedrom' folder. The wizard let you import them automatically.
 		
 
 Bug fixes:
 ----------
 
-	- 0x200000 and 0x400000 are ghost of 0x000000 (Titanium only)
-	- heap listing with AMS300
-	- Step Over on TRAP
+	- FLASH writes with HW3 patch
+	- Step Over on the following FLINEs : 0xfff0, 0xfff2, 0xffee.
+	- Hardware Parameter Block when converting FLASH upgrade
+	- disassemblling of 0xffee and 0xffef FLINEs
+	- ROM call combo box: does not jump to call when names contains '/'
+	- don't reload ROM calls when changing AMS without chaning calc type
+	- status bar display in the bkpts dbox
 
 
 To do:
