@@ -79,10 +79,10 @@ gint display_debugger_dbox(void)
 
 
 /* Local persistant variables */
- GtkWidget *data_bkpt_dbox = NULL;
- gint bkpt_encountered = 0;
- gint data_addr = 0x000000;
- gint selected_row = -1;
+GtkWidget *data_bkpt_dbox = NULL;
+gint bkpt_encountered = 0;
+gint data_addr = 0x000000;
+gint selected_row = -1;
 
 /* Some linked-list for breakpoints */
 GList *bkpt_address_list = NULL;
@@ -140,11 +140,10 @@ on_debugger_dbox_destroy               (GtkObject       *object,
 */
 gint refresh_register_dbox(void)
 {
-#if 0 /* FUCKED */
   GtkWidget *text = reg_text;
-  GdkColormap *cmap;
-  GdkColor colour;
-  GdkFont *fixed_font;
+  GtkTextBuffer *buf;
+  GtkTextIter start, end;
+  GtkTextTag *red_tag;
   gint i;
   gchar buffer[MAXCHARS];
   static gint prev_Dx[8] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -153,90 +152,69 @@ gint refresh_register_dbox(void)
   static gint prev_SR = 0;
   static gint prev_PC = 0;
 
-  if(text != NULL)
-    gtk_editable_delete_text((GtkEditable *)text, 0, -1);
+  buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+  gtk_text_buffer_set_text(buf, "", -1);
+  gtk_text_buffer_get_start_iter(buf, &start);
+  gtk_text_buffer_get_end_iter(buf, &end);
 
-  cmap = gdk_colormap_get_system();
-  colour.red = 0xffff;
-  colour.green = 0;
-  colour.blue = 0;
-  if (!gdk_color_alloc(cmap, &colour)) 
-    {
-      g_error("couldn't allocate colour");
-    }
+  red_tag = gtk_text_buffer_create_tag(buf, "red_text", "foreground", "red", NULL);
 
-  //fixed_font = gdk_font_load ("-misc-fixed-medium-r-*-*-*-100-*-*-*-*-*-*");
-  fixed_font = gdk_font_load("-adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1");
-
-  gtk_widget_realize (text);
-  gtk_text_freeze (GTK_TEXT (text));
-  
   /* Display the Dx & Ax registers */
   for(i=0; i<8; i++)
     {
       sprintf(buffer, "D%i=%08X", i, ti68k_getDataRegister(i));
-      if(prev_Dx[i] == ti68k_getDataRegister(i))
-	gtk_text_insert(GTK_TEXT(text), fixed_font, &text->style->black, 
-			NULL, buffer, -1);
-      else
-	gtk_text_insert(GTK_TEXT(text), fixed_font, &colour, 
-			NULL, buffer, -1);
+      gtk_text_buffer_insert(buf, &end, buffer, -1);
+      if(prev_Dx[i] != ti68k_getDataRegister(i))
+	gtk_text_buffer_apply_tag(buf, red_tag, &start, &end);
       
+      start = end;
+
       sprintf(buffer, "  ");
-      gtk_text_insert(GTK_TEXT(text), fixed_font, &text->style->black, 
-		      NULL, buffer, -1);
+      gtk_text_buffer_insert(buf, &end, buffer, -1);
       
       sprintf(buffer, "A%i=%08X\n", i, ti68k_getAddressRegister(i));
-      if(prev_Ax[i] == ti68k_getAddressRegister(i))
-	gtk_text_insert(GTK_TEXT(text), fixed_font, &text->style->black, 
-			NULL, buffer, -1);
-      else
-	gtk_text_insert(GTK_TEXT(text), fixed_font, &colour, 
-			NULL, buffer, -1);
+      gtk_text_buffer_insert(buf, &end, buffer, -1);
+      if(prev_Ax[i] != ti68k_getAddressRegister(i))
+	gtk_text_buffer_apply_tag(buf, red_tag, &start, &end);
+      
+      start = end;
     }
 
-  gtk_text_insert(GTK_TEXT(text), fixed_font, &text->style->black, 
-		  NULL, "\n", -1);
+  gtk_text_buffer_insert(buf, &end, "\n", -1);
+  start = end;
   
   /* Display the SP register */
   sprintf(buffer, "SP=%06X\n", ti68k_getSpRegister());
-  if(prev_SP == ti68k_getSpRegister())
-    gtk_text_insert(GTK_TEXT(text), fixed_font, &text->style->black, 
-		    NULL, buffer, -1);
-  else
-    gtk_text_insert(GTK_TEXT(text), fixed_font, &colour, NULL, buffer, -1);
+  gtk_text_buffer_insert(buf, &end, buffer, -1);
+  if(prev_SP != ti68k_getSpRegister())
+    gtk_text_buffer_apply_tag(buf, red_tag, &start, &end);
+
+  start = end;
 
   /* Display the SR register */
   sprintf(buffer, "SR=%04X      ", ti68k_getSrRegister());
-  if(prev_SR == ti68k_getSrRegister())
-    gtk_text_insert(GTK_TEXT(text), fixed_font, &text->style->black, 
-		    NULL, buffer, -1);
-  else
-    gtk_text_insert(GTK_TEXT(text), fixed_font, &colour, NULL, buffer, -1);
+  gtk_text_buffer_insert(buf, &end, buffer, -1);
+  if(prev_SR != ti68k_getSrRegister())
+    gtk_text_buffer_apply_tag(buf, red_tag, &start, &end);
+
+  start = end;
 
   /* Display the PC register */
   sprintf(buffer, "PC=%06X  \n", ti68k_getPcRegister());
-  if(prev_PC == ti68k_getPcRegister())
-    gtk_text_insert(GTK_TEXT(text), fixed_font, &text->style->black, 
-		    NULL, buffer, -1);
-  else
-    gtk_text_insert(GTK_TEXT(text), fixed_font, &colour, NULL, buffer, -1);
+  gtk_text_buffer_insert(buf, &end, buffer, -1);
+  if(prev_PC != ti68k_getPcRegister())
+    gtk_text_buffer_apply_tag(buf, red_tag, &start, &end);
 
   /* Display the status flag register */
   /*
   sprintf(buffer, "T=%i  S=%i  M=%i  I=%i  \n", 0, 0, 0, 0);
-  gtk_text_insert(GTK_TEXT(text), fixed_font, &text->style->black, 
-		  NULL, buffer, -1);
+  gtk_text_buffer_insert(buf, &end, buffer, -1);
 
   sprintf(buffer, "X=%i  N=%i  Z=%i  V=%i  C=%i\n", 0, 0, 0, 0, 0);
-  gtk_text_insert(GTK_TEXT(text), fixed_font, &text->style->black, 
-		  NULL, buffer, -1);
-  */
-  gtk_text_insert(GTK_TEXT(text), fixed_font, &text->style->black,
-                  NULL, ti68k_getFlagRegister(), -1);
-  reg_text = text;
+  gtk_text_buffer_insert(buf, &end, buffer, -1);
 
-  gtk_text_thaw (GTK_TEXT (text));
+  */
+  gtk_text_buffer_insert(buf, &end, ti68k_getFlagRegister(), -1);
 
   /* Store old values for colour display */
   for(i=0; i<8; i++)
@@ -247,7 +225,6 @@ gint refresh_register_dbox(void)
   prev_SR = ti68k_getSrRegister();
   prev_SP = ti68k_getSpRegister();
   prev_PC = ti68k_getPcRegister();
-#endif /* 0 */
 
   return 0;
 }
