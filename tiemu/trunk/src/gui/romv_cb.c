@@ -167,7 +167,7 @@ on_button6_clicked                     (GtkButton       *button,
     }
   else 
     { // FLASH upgrade
-      ret = msg_box2("Question", "Do you want to load it as a fake ROM image or as an FLASH upgrade ? \n\nClick FLASH if you want to directly upgrade the calculator operating system (AMS). \n\nOn the other hand, if you load it as a fake ROM image, TiEmu will convert the FLASH upgrade into a ROM image but your image will suffer from some limitations (no boot block, no certificate, problems with fonts).", "ROM", "FLASH");
+      ret = msg_box2("Question", "Do you want to load it as a fake ROM image or as an FLASH upgrade ? \n\nClick FLASH if you want to directly upgrade the calculator operating system (AMS). \n\nOn the other hand, if you load it as a fake ROM image, TiEmu will convert the FLASH upgrade into a ROM image but your image will suffer from some limitations (no boot block, no certificate, problems with fonts).");
 
       if(ret == 1) 
 	{ // ROM

@@ -70,22 +70,19 @@ hid_OBJ = \
 	hid/paths.o 	\
 	hid/printl.o	\
 	hid/rcfile.o 	\
-	hid/skin.o	\
+	hid/skinops.o	\
 	hid/hid.o 	\
 	hid/tie_error.o \
 	hid/tikeys.o
 
 gui_OBJ = \
 	./gui/support.o \
-	./gui/utils.o \
 	./gui/link_dbox.o ./gui/link_cb.o \
-	./gui/msg_dbox.o ./gui/msg_cb.o \
-	./gui/infos_dbox.o ./gui/infos_cb.o \
+	./gui/dboxes.o		\
+	./gui/infos.o		\
 	./gui/adbkpt_dbox.o ./gui/adbkpt_cb.o \
-	./gui/colors_dbox.o ./gui/colors_cb.o \
 	./gui/dbkpt_dbox.o ./gui/dbkpt_cb.o \
 	./gui/debug_dbox.o ./gui/debug_cb.o \
-	./gui/itick_dbox.o ./gui/itick_cb.o \
 	./gui/logaddr_dbox.o ./gui/logaddr_cb.o \
 	./gui/romv_dbox.o ./gui/romv_cb.o \
 	./gui/trap_dbox.o ./gui/trap_cb.o \
@@ -96,18 +93,18 @@ gui_OBJ = \
 	./gui/dump_dbox.o ./gui/dump_cb.o \
 	./gui/bkpt_cause.o \
 	./gui/scopt_dbox.o ./gui/scopt_cb.o \
-	./gui/user_dbox.o ./gui/user_cb.o \
 	./gui/fsel_dbox.o ./gui/fsel_cb.o \
 	./gui/wizard_dbox.o ./gui/wizard_cb.o \
 	./gui/help.o	 	\
 	./gui/manpage.o		\
 	./gui/about.o		\
-	./gui/release.o
-	./gui/pbar_dbox.o ./gui/pbar_cb.o \
+	./gui/release.o		\
+	./gui/pbars.o		\
 	./gui/skin_dbox.o ./gui/skin_cb.o \
-	./gui/refresh.o ./gui/popup.o \
-	./gui/popup_dbox.o ./gui/popup_cb.o \
-	./gui/main.o 
+	./gui/refresh.o		\
+	./gui/popup.o 		\
+	./gui/splash.o		\
+	./gui/main.o
 
 tiemu_OBJ = core/uae/newcpu.o $(tihw_OBJ) $(core_OBJ) $(hid_OBJ) $(gui_OBJ)
 
