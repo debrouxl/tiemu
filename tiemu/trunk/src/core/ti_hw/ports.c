@@ -91,47 +91,6 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         case 0x04:
         break;
         case 0x05:	// -w <...43210>
-        	// %3 set: 000000..1FFFFF mapped to 200000..3FFFFF
-			if((tihw.calc_type == TI92) && bit_tst(arg,3))
-			{
-				//mem_tab[2] = mem_tab[0];
-				//mem_msk[2] = mem_msk[0];
-				//mem_tab[3] = mem_tab[1];
-				//mem_msk[3] = mem_msk[1];
-				/*
-				mem_tab[2] = tihw.ram;
-				mem_msk[2] = tihw.ram_size-1;
-				mem_tab[3] = tihw.ram;
-				mem_msk[3] = tihw.ram_size-1;
-				mem_tab[0] = tihw.rom;
-				mem_msk[0] = 1*MB - 1;
-				if(tihw.rom_size > 1*MB)
-				{
-					mem_tab[1] = tihw.rom + 0x100000;
-					mem_msk[1] = 1*MB - 1;
-				}
-				*/
-            } else
-            {
-				/*
-				mem_tab[0] = tihw.ram;
-				mem_msk[0] = tihw.ram_size-1;
-				mem_tab[1] = tihw.ram;
-				mem_msk[1] = tihw.ram_size-1;
-				mem_tab[2] = tihw.rom;
-				mem_msk[2] = 1*MB - 1;
-				if(tihw.rom_size > 1*MB)
-				{
-					mem_tab[3] = tihw.rom + 0x100000;
-					mem_msk[3] = 1*MB - 1;
-				}
-				*/
-				//mem_tab[2] = tihw.rom;
-				//mem_msk[2] = 0x1fffff;
-				//mem_tab[3] = mem_tab[1];
-				//mem_msk[3] = mem_msk[1];
-            }
-            
 			// turn off OSC1 (CPU), wake on int level 6 (ON key) and int level [5..1]
 			m68k_setstopped(1);
         break;
