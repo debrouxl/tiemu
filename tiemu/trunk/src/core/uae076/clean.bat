@@ -1,0 +1,11 @@
+deltree /debug
+del *.ncb
+del *.plg
+del *.ilk
+del *.opt
+del cpu?.c
+del cpudefs.c
+del cpustbl.c
+del cputbl.c
+del cputbl.h
+del cpuemu.c
