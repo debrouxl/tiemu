@@ -75,6 +75,25 @@ static const uint16_t rets[] = {
 	0x4e72,		// STOP
 };
 
+static inline is_ret_inst(uint16_t inst)
+{
+	int i;
+	for(i = 0; i < sizeof(rets) / sizeof(uint16_t); i++)
+		if(curriword() == rets[i])
+			return !0;
+	return 0;
+}
+
+static inline is_bsr_inst(uint16_t isnt)
+{
+	return 
+		((curriword() & 0x4e80) == 0x4e80) || 
+        (LSB(curriword()) == 0x61) ||
+        (curriword() & 0xf800) ||
+        (curriword() & 0x5fc8)
+		;
+}
+
 int ti68k_debug_step_over(void)
 {
     uint32_t curr_pc, next_pc;
@@ -88,12 +107,7 @@ int ti68k_debug_step_over(void)
 	g_free(output);	
 
 	// check current instruction (JSR or BSR or FLINE or DBcc)
-	if(!(
-        ((curriword() & 0x4e80) == 0x4e80) || 
-        (LSB(curriword()) == 0x61) ||
-        (curriword() & 0xf800) ||
-        (curriword() & 0x5fc8)
-        ))
+	if(!is_bsr_inst(curriword()))
 	{
 		ti68k_debug_step();
 		return 0;
@@ -102,13 +116,12 @@ int ti68k_debug_step_over(void)
 	// run emulation until address after instruction is reached or another condition
 	do
 	{
-		for(i = 0; i < sizeof(rets) / sizeof(uint16_t); i++)
-			if(curriword() == rets[i])
-			{
-				//printf("step_over aborted!\n");
-				hw_m68k_run(1);
-				return 1;
-			}
+		if(is_ret_inst(curriword()))
+		{
+			//printf("step_over aborted!\n");
+			hw_m68k_run(1);
+			return 1;
+		}
 		
 		hw_m68k_run(1);
 	}
@@ -135,12 +148,11 @@ int ti68k_debug_step_out(void)
 		hw_m68k_run(1);
 
 		//printf("$%06x: %06x\n", m68k_getpc(), curriword());
-		for(i = 0; i < sizeof(rets) / sizeof(uint16_t); i++)
-			if(curriword() == rets[i])
-			{
-				hw_m68k_run(1);
-				return 0;
-			}	
+		if(is_ret_inst(curriword()))
+		{
+			hw_m68k_run(1);
+			return 0;
+		}	
 	}
 	while(1);
 

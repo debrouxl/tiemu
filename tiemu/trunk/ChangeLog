@@ -11,6 +11,7 @@ To do:
 	- code window: can jump to ROM call
 	- fixed warnings
 	- update stack frame when stepping
+	- improved step over: don't stop at the first RTS/RTE
 
 - 20/08/2004, version 1.79: roms
 	- LCD background is less dark
