@@ -35,6 +35,7 @@
 #endif
 
 #include <stdint.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 
 /***************/
@@ -94,9 +95,7 @@ typedef struct
 {
   int type;
 
-  unsigned char *img;
-  unsigned char cmap[3][MAX_COLORS];
-  int ncolors;
+  GdkPixbuf *image;
 
   unsigned int width;
   unsigned int height;

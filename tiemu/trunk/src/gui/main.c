@@ -194,8 +194,6 @@ int main(int argc, char **argv)
 	if(err)
 		return -1;
 
-	display_main_wnd();
-
 	/*
 		Load FLASH upgrade (if any)
 	*/

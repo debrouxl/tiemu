@@ -46,8 +46,6 @@
 SKIN_INFOS skin_infos = { 0 };
 static int skin_loaded = 0;
 
-void jpeg_file_src (j_decompress_ptr cinfo, FILE * infile);
-
 /*
 	Read skin informations (header)
 */
@@ -159,17 +157,19 @@ int skin_read_header(const char *filename, SKIN_INFOS* si)
 */
 int skin_read_image(const char *filename, SKIN_INFOS* si)
 {
-	FILE *fp = NULL;
+    FILE *fp = NULL;
+    char pattern[] = "fnXXXXXX";
+    char *tmpname;
+    FILE *ft;
+    GError *error = NULL;
+	
+    uint32_t jpeg_offset;
   	uint32_t endian;
-  	uint32_t jpeg_offset;
-  	struct jpeg_decompress_struct cinfo;
-   	struct jpeg_error_mgr jerr;
-	int i, j;
-	char *p;
-
+	//int i, j;
+	//char *p;
 	int h, w;
-	float rw, rh, r;
-	double s;
+	//float rw, rh, r;
+	//double s;
 	int lcd_w, lcd_h;
 	
 	// set lcd size
@@ -190,26 +190,40 @@ int skin_read_image(const char *filename, SKIN_INFOS* si)
     	return -1;
     }
     	
-    /* offsets */
+    // Get jpeg offset and endianess
   	fseek(fp, 16, SEEK_SET);  
   	fread(&endian, 4, 1, fp);
   	fread(&jpeg_offset, 4, 1, fp);
 	if (endian != ENDIANNESS_FLAG)
 		jpeg_offset = bswap_32(jpeg_offset);
 	fseek(fp, jpeg_offset, SEEK_SET);
-  	
-  	// Init JPEG
-    cinfo.err = jpeg_std_error(&jerr);
-    jpeg_create_decompress(&cinfo);
 
-#if defined(__WIN32__) && !defined(__MINGW32__)
-	jpeg_file_src(&cinfo, fp);
-#else
-	jpeg_stdio_src(&cinfo, fp);
-#endif
-    jpeg_read_header(&cinfo, TRUE);
+    // Extract image from skin by creating a temp file
+    tmpname = mktemp(pattern);
+    ft = fopen(tmpname, "wb");
+    if(ft == NULL) 
+    {
+		fprintf(stderr, "Unable to open this file: <%s>\n", filename);
+		return -1;
+    }
+  
+    while(!feof(fp))
+	    fputc(fgetc(fp), ft);
+	
+    fclose(ft);
+    fclose(fp);
+
+    // Feed the pixbuf with our jpeg data
+    si->image = gdk_pixbuf_new_from_file(tmpname, &error);
+    if (si->image == NULL) 
+    {
+      fprintf(stderr, "Failed to load pixbuf file: %s: %s\n", tmpname, error->message);
+      g_error_free(error);
+      return -1;
+    }
 
 	// Rescale image if needed (fixed LCD size)
+    /*
 	w = si->lcd_pos.right - si->lcd_pos.left;
 	h = si->lcd_pos.bottom - si->lcd_pos.top;
 	rw = (float)w / lcd_w;
@@ -220,51 +234,17 @@ int skin_read_image(const char *filename, SKIN_INFOS* si)
 	//printf("image :<%i x %i>\n", cinfo.image_width, cinfo.image_height);
 	//printf("lcd : <w = %i; h = %i>\n", w, h);
 	//printf("ratios : <%2.2f; %2.2f> => %2.1f\n", rw, rh, s);
-
-	cinfo.scale_num = 10;
-	cinfo.scale_denom = (int)(10 * s);
-	//printf("scaling: %i / %i\n", cinfo.scale_num, cinfo.scale_denom);
-
-    // Require a colormapped output with a limited number of colors
-    cinfo.quantize_colors = TRUE;
-    cinfo.desired_number_of_colors = MAX_COLORS;
-
-    // Load JPEG image
-    jpeg_start_decompress(&cinfo);
-    si->ncolors = cinfo.actual_number_of_colors;
-
-    // Copy the color palette
-    for (j = 0; j < cinfo.actual_number_of_colors; j++) {
-		si->cmap[0][j] = cinfo.colormap[0][j];
-		si->cmap[1][j] = cinfo.colormap[1][j];
-		si->cmap[2][j] = cinfo.colormap[2][j];
-    }
-
-    if (cinfo.output_components != 1)	// 1: palettized 
-		return -1;
+    */
+    w = gdk_pixbuf_get_width(si->image);
+    h = gdk_pixbuf_get_height(si->image);
+    si->image = gdk_pixbuf_scale_simple(si->image, w/2, h/2, GDK_INTERP_NEAREST);
 
     // Get skin size
-	//printf("image :<%i x %i>\n", cinfo.output_width, cinfo.output_height);
-    si->width = cinfo.output_width + (cinfo.output_width & 3);
-    si->height = cinfo.output_height + (cinfo.output_height & 3);
-
-    // Allocate image
-    si->img = p = (unsigned char *) malloc(si->width * si->height);
-    if (si->img == NULL)
-		return -1;
-
-    // Load jpeg image line by line //c += xx*yy;
-    while (cinfo.output_scanline < cinfo.output_height) 
-	{
-		p += si->width;
-		jpeg_read_scanlines(&cinfo, (JSAMPARRAY)&p, 1);
-    }
-
-    // Close JPEG
-    jpeg_finish_decompress(&cinfo);
-    jpeg_destroy_decompress(&cinfo);
+    si->width = gdk_pixbuf_get_width(si->image);
+    si->height = gdk_pixbuf_get_height(si->image);
 
 	// Rescale all coords
+    /*
 	si->lcd_pos.left = (long)(si->lcd_pos.left / s);
 	si->lcd_pos.right = (long)(si->lcd_pos.right / s);
 	si->lcd_pos.top = (long)(si->lcd_pos.top / s);
@@ -277,28 +257,9 @@ int skin_read_image(const char *filename, SKIN_INFOS* si)
       	si->keys_pos[i].right = (long)(long)(si->keys_pos[i].right / s);
       	si->keys_pos[i].bottom = (long)(long)(si->keys_pos[i].bottom / s);
     }
-    	
-   	/* Close file */
-   	fclose(fp);
+    */
     	
    	return 0;
-}
-
-/* Unload skin by freeing allocated memory */
-int skin_unload(void)
-{
-  	if (skin_loaded == FALSE)
-    		return -1;
-  	else
-    		skin_loaded = FALSE;
-  
-  	free(skin_infos.img);
-  	free(skin_infos.name);
-  	free(skin_infos.author);
-
-  	memset(&skin_infos, 0, sizeof(SKIN_INFOS));
-  
-  	return 0;
 }
 
 /* Load a skin (TiEMu v2.00 only) */
@@ -335,5 +296,19 @@ int skin_load(const char *filename)
   	return ret;
 }
 
+/* Unload skin by freeing allocated memory */
+int skin_unload(void)
+{
+    if(skin_infos.image != NULL)
+    {
+        g_object_unref(skin_infos.image);
+        skin_infos.image = NULL;
+    }
 
+  	free(skin_infos.name);
+  	free(skin_infos.author);
 
+  	memset(&skin_infos, 0, sizeof(SKIN_INFOS));
+  
+  	return 0;
+}

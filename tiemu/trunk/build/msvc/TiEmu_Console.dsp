@@ -216,46 +216,6 @@ SOURCE=..\..\src\core\state.c
 SOURCE=..\..\src\core\type2str.c
 # End Source File
 # End Group
-# Begin Group "hid"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\src\hid\cmdline.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\hid.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\jdatasrc.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\paths.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\printl.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\rcfile.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\skinops.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\tie_error.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\tikeys.c
-# End Source File
-# End Group
 # Begin Group "gui"
 
 # PROP Default_Filter ""
@@ -299,6 +259,25 @@ SOURCE=..\..\src\gui\debugger\dbg_regs.c
 SOURCE=..\..\src\gui\debugger\dbg_vectors.c
 # End Source File
 # End Group
+# Begin Group "calc"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\hid\skinops.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\tiemu.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\tikeys.c
+# End Source File
+# End Group
+# Begin Group "dlgbox"
+
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\src\gui\about.c
@@ -368,13 +347,34 @@ SOURCE=..\..\src\gui\support.c
 SOURCE=..\..\src\gui\wizard.c
 # End Source File
 # End Group
+# End Group
+# Begin Group "misc"
+
+# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\gui\main.c
+SOURCE=..\..\src\hid\cmdline.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\tiemu.c
+SOURCE=..\..\src\hid\paths.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\printl.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\rcfile.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hid\tie_error.c
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\src\gui\main.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
