@@ -24,6 +24,7 @@ To do:
 		path and patter for the new GTK file selector.
 	- [roms]  $960: improved management of ALPHA key on TI89 (letter/number).
 	- [roms]  $962: factorized TI89/V200 & TI92+ code (memory).
+	- [kevin] $966: added KDE file selector support.
 
 - 25/02/2005, version 1.80o: roms
 	- fixed bug in ti68k_get_hw_param_block (wrong search/replace)
