@@ -36,19 +36,23 @@
 
 int hw_m68k_init(void)
 {
-  init_m68k();
+    init_m68k();
+
+    return 0;
 }
 
 int hw_m68k_reset(void)
 {
-  //find_pc();
-  rom_at_0();
-  MC68000_reset();
-  ram_at_0();
+    rom_at_0();
+    MC68000_reset();
+    ram_at_0();
+
+    return 0;
 }
 
 int hw_m68k_exit(void)
 {
+    return 0;
 }
 
 /* Replace UAE's M68000_run() */

@@ -1,6 +1,11 @@
-/*  gtktiemu - a TI89/92/92+ emulator
- *  (c) Copyright 2000, Romain Lievin and Thomas Corvazier
- *  (c) Copyright 2001, Romain Lievin
+/* Hey EMACS -*- linux-c -*- */
+/* $Id: main.c 245 2004-05-23 20:45:43Z roms $ */
+
+/*  TiEmu - an TI emulator
+ *
+ *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
+ *  Copyright (c) 2003-2004, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,31 +22,20 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TI68K_KEYBOARD__
-#define __TI68K_KEYBOARD__
+#ifndef __TI68K_KBD__
+#define __TI68K_KBD__
 
 #include "keydefs.h"
-
-/* Functions */
 
 int hw_kbd_init(void);
 int hw_kbd_reset(void);
 int hw_kbd_exit(void);
 
 UBYTE read_keyboard_mask(void);
-//UBYTE get_rowmask(UBYTE r);
-
-// Turn into callback...
-#define set_active_key ti68k_setActiveKey
-#define is_key_pressed ti68k_isKeyPressed
 
 void  ti68k_setActiveKey(int key, int active);
 int   ti68k_isKeyPressed(int key);
+
 #define read_onkey() ((UBYTE)tihw.on_key)
-
-/* Variables */
-
-extern int key_states[NB_MAX_KEYS];
-//extern int on_key;
 
 #endif

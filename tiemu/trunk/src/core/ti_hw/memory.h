@@ -1,6 +1,11 @@
-/*  gtktiemu - a TI89/92/92+ emulator
- *  (c) Copyright 2000-2001, Romain Lievin and Thomas Corvazier
- *  (c) Copyright 2001-2002, Romain Lievin
+/* Hey EMACS -*- linux-c -*- */
+/* $Id: main.c 245 2004-05-23 20:45:43Z roms $ */
+
+/*  TiEmu - an TI emulator
+ *
+ *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
+ *  Copyright (c) 2003-2004, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,22 +40,8 @@ extern void put_word(CPTR adr, UWORD arg);
 extern void put_byte(CPTR adr, UBYTE arg);
 
 extern UBYTE *get_real_address(CPTR adr);
-extern int    valid_address(CPTR adr, ULONG size);
-
-extern void extRomWriteByte(int adr, int v);
-extern void intRomWriteByte(int adr, int v);
-
-/* Banks sizes. Must be a power of two */
-
-#define RAM_SIZE  (256 * 1024)
-#define ROM_SIZE  (2 * 1024 * 1024)
-#define IO_SIZE   (32)
 
 /* Variables */
-
-extern UBYTE *ti_ram;
-extern UBYTE *ti_rom, *ti_int_rom, *ti_ext_rom;
-extern UBYTE *ti_io;
 
 extern UBYTE *mem_tab[8];
 extern ULONG mem_mask[8];
@@ -67,14 +58,14 @@ extern int rom_erasePhase;
 
 /* Defines */
 
-#define rom_at_0() { mem_tab[0] = tihw.rom; mem_mask[0] = ROM_SIZE-1; }
-#define ram_at_0() { mem_tab[0] = tihw.ram; mem_mask[0] = RAM_SIZE-1; }
+#define rom_at_0() { mem_tab[0] = tihw.rom; mem_mask[0] = tihw.rom_size-1; }
+#define ram_at_0() { mem_tab[0] = tihw.ram; mem_mask[0] = tihw.ram_size-1; }
 
-#define LM_BYTE 0
-#define LM_WORD 1
-#define LM_LONG 2
+#define LM_BYTE     0
+#define LM_WORD     1
+#define LM_LONG     2
 
-#define LM_READ 0
-#define LM_WRITE 1
+#define LM_READ     0
+#define LM_WRITE    1
 
 #endif

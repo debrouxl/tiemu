@@ -41,6 +41,7 @@
 #include "ti68k_int.h"
 #include "ti68k_err.h"
 
+#define IO_SIZE     32
 
 /*
   Must be done between init_hardware and M68000_run.

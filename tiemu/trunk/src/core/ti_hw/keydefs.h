@@ -1,9 +1,11 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: cabl_int.h 651 2004-04-25 15:22:07Z roms $ */
+/* $Id: main.c 245 2004-05-23 20:45:43Z roms $ */
 
-/*  gtktiemu - a TI89/92/92+ emulator
- *  (c) Copyright 2000, Romain Lievin and Thomas Corvazier
- *  (c) Copyright 2001, Romain Lievin
+/*  TiEmu - an TI emulator
+ *
+ *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
+ *  Copyright (c) 2003-2004, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,8 +22,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TI68K_KEYDEF__
-#define __TI68K_KEYDEF__
+#ifndef __TI68K_KEYDEFS__
+#define __TI68K_KEYDEFS__
 
 #define NB_MAX_KEYS 120
 

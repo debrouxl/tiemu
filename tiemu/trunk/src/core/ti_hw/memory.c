@@ -184,6 +184,7 @@ int hw_mem_exit(void)
 #define wget(adr) ((UWORD)(((UWORD)bget(adr))<<8|bget((adr)+1)))
 #define lget(adr) ((ULONG)(((ULONG)wget(adr))<<16|wget((adr)+2)))
 
+static void extRomWriteByte(int addr,int v);
 
 ULONG get_long(CPTR adr) 
 {
