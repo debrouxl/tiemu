@@ -209,6 +209,7 @@
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-5</property>
 	      <accelerator key="Return" modifiers="0" signal="clicked"/>
+	      <accelerator key="KP_Enter" modifiers="0" signal="clicked"/>
 	    </widget>
 	  </child>
 	</widget>
