@@ -29,9 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "tilibs.h"
 #include "struct.h"
-#include "paths.h"
 #include "version.h"
 
 /*

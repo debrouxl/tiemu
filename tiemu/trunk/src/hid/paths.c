@@ -27,7 +27,6 @@
 */
 
 #include <stdio.h>
-#include <unistd.h>
 
 #include "struct.h"
 #include "paths.h"

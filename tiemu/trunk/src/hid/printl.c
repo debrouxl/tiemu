@@ -36,10 +36,9 @@
 #include <string.h>
 
 #include "intl.h"
-
-#include "tilibs.h"
-#include "printl.h"
 #include "struct.h"
+#include "printl.h"
+
 
 /* 
    Print to stdout as default behaviour unless changed by tifiles_set_print 
@@ -55,6 +54,7 @@
 /**************** printl muxer ************************/
 
 #ifdef __WIN32__
+#include <windows.h>
 static BOOL alloc_console_called = FALSE;
 static HANDLE hConsole = (HANDLE)-1;
 #endif

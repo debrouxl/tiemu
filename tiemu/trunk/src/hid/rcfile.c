@@ -33,18 +33,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <unistd.h>
 
-#include "tilibs.h"
 #include "intl.h"
+#include "tilibs.h"
 #include "paths.h"
 #include "struct.h"
 #include "version.h"
 #include "paths.h"
 #include "files.h"
-#include "hid.h"
 #include "interface.h"
 #include "screenshot.h"
 

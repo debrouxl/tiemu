@@ -29,12 +29,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Program dependencies */
 #include "support.h"
 #include "hid.h"
 #include "skin.h"
 #include "struct.h"
-#include "tilibs.h"
 #include "interface.h"
 #include "screenshot.h"
 #include "tie_error.h"
