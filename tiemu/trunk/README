@@ -138,7 +138,9 @@ COS			Home
 TAN			Page Up
 CLEAR		Delete
 ON			Scroll Lock
-ENTER		Num Pad Enter
+ENTER1		ENTER or NumPad Enter (TiEMu specific)
+ENTER2		End (TiEmu specific)
+^			Page Down
 
 TI89       	PC
 ---------  	------------
@@ -149,12 +151,13 @@ DIAMOND		Ctrl
 2ND			Alt
 (			[
 )			]
-HAND/LOCK	Alpha
+ALPHA		Caps Lock
 MODE		`
 |			\
 EE			Insert
 CLEAR		Delete
 ON			Scroll Lock
+^			Page Up
 
 Letters, Numbers, Cursor movement, F1-F8 + some others are the
 same keys on both keyboards

@@ -5,6 +5,9 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
+- 02/11/2004, version 1.80e: roms
+		Fixed various key binding bugs thanks to Kevin.
+
 - 24/10/2004, version 1.80d: roms
 	- fixed bug: directory creation in $HOME
 	- bug: 'unexpected Xlib async reply' (Linux) (not fixed yet)

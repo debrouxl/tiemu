@@ -93,8 +93,12 @@ static int pos_to_key(int x, int y)
     {
       	if((x >= kp[i].left) && (x < kp[i].right) && 
 	 	   (y >= kp[i].top) && (y < kp[i].bottom)) 
-		
-		return skn_keymap[i];
+		{
+#if 0
+			printf("tikey = %2x (%s)\n", skn_keymap[i], keymap_value_to_string(tikeys, skn_keymap[i]));		
+#endif
+			return skn_keymap[i];
+		}
     }
   
   	return -1;
@@ -168,12 +172,13 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
 {
     if(event->hardware_keycode == 0x0014)
         event->keyval = GDK_Caps_Lock;
-
+/*
 	if(event->keyval == GDK_F9)
 	{
         hid_screenshot(NULL);
         return TRUE;
     } 
+*/
 #ifdef __MACOSX__
 	/* Until we get the mouse working on Mac OS X, invoke the menu using the
 		Enter key, which can't be used for anything else anyway because it is

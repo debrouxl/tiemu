@@ -21,7 +21,7 @@
   </child>
 
   <child>
-    <widget class="GtkMenuItem" id="separator10">
+    <widget class="GtkSeparatorMenuItem" id="separator10">
       <property name="visible">True</property>
     </widget>
   </child>
@@ -48,7 +48,7 @@
   </child>
 
   <child>
-    <widget class="GtkMenuItem" id="separator11">
+    <widget class="GtkSeparatorMenuItem" id="separator11">
       <property name="visible">True</property>
     </widget>
   </child>
@@ -127,7 +127,7 @@
   </child>
 
   <child>
-    <widget class="GtkMenuItem" id="separator20">
+    <widget class="GtkSeparatorMenuItem" id="separator20">
       <property name="visible">True</property>
     </widget>
   </child>
@@ -153,7 +153,7 @@
   </child>
 
   <child>
-    <widget class="GtkMenuItem" id="separator12">
+    <widget class="GtkSeparatorMenuItem" id="separator12">
       <property name="visible">True</property>
     </widget>
   </child>
@@ -200,7 +200,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkMenuItem" id="separator22">
+	    <widget class="GtkSeparatorMenuItem" id="separator22">
 	      <property name="visible">True</property>
 	    </widget>
 	  </child>
@@ -219,7 +219,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">2 colors</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <signal name="activate" handler="on_2_colors1_activate" last_modification_time="Fri, 14 May 2004 05:55:42 GMT"/>
 		    </widget>
 		  </child>
@@ -229,7 +229,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">4 colors</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <property name="group">2_colors1</property>
 		      <signal name="activate" handler="on_4_colors1_activate" last_modification_time="Fri, 14 May 2004 05:55:42 GMT"/>
 		    </widget>
@@ -240,7 +240,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">7 colors</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <property name="group">2_colors1</property>
 		      <signal name="activate" handler="on_7_colors1_activate" last_modification_time="Fri, 14 May 2004 05:55:42 GMT"/>
 		    </widget>
@@ -251,7 +251,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">blurry</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <property name="group">2_colors1</property>
 		      <signal name="activate" handler="on_11_colors1_activate" last_modification_time="Fri, 14 May 2004 15:26:48 GMT"/>
 		    </widget>
@@ -262,7 +262,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkMenuItem" id="separator21">
+	    <widget class="GtkSeparatorMenuItem" id="separator21">
 	      <property name="visible">True</property>
 	    </widget>
 	  </child>
@@ -272,7 +272,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Normal view (x1)</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">False</property>
+	      <property name="active">True</property>
 	      <signal name="activate" handler="on_normal_view1_activate" last_modification_time="Fri, 14 May 2004 15:28:18 GMT"/>
 	    </widget>
 	  </child>
@@ -282,7 +282,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Large view (x2)</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">False</property>
+	      <property name="active">True</property>
 	      <property name="group">normal_view1</property>
 	      <signal name="activate" handler="on_large_view1_activate" last_modification_time="Fri, 14 May 2004 15:28:18 GMT"/>
 	    </widget>
@@ -293,7 +293,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Full screen</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">False</property>
+	      <property name="active">True</property>
 	      <property name="group">normal_view1</property>
 	      <signal name="activate" handler="on_full_screen1_activate"/>
 	    </widget>
@@ -358,7 +358,6 @@
 	      <property name="label" translatable="yes">_Now !</property>
 	      <property name="use_underline">True</property>
 	      <signal name="activate" handler="on_now1_activate" last_modification_time="Fri, 14 May 2004 15:29:13 GMT"/>
-	      <accelerator key="F9" modifiers="0" signal="activate"/>
 	    </widget>
 	  </child>
 
@@ -376,7 +375,7 @@
   </child>
 
   <child>
-    <widget class="GtkMenuItem" id="separator13">
+    <widget class="GtkSeparatorMenuItem" id="separator13">
       <property name="visible">True</property>
     </widget>
   </child>
@@ -411,7 +410,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkMenuItem" id="separator15">
+	    <widget class="GtkSeparatorMenuItem" id="separator15">
 	      <property name="visible">True</property>
 	    </widget>
 	  </child>
@@ -426,7 +425,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkMenuItem" id="separator14">
+	    <widget class="GtkSeparatorMenuItem" id="separator14">
 	      <property name="visible">True</property>
 	    </widget>
 	  </child>
