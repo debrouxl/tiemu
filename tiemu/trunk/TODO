@@ -19,7 +19,7 @@ de PC) : après le 'set breakpoint', l'instruction courante est affichée,
 plutôt que l'instruction où on a placé le breakpoint (c'est gênant si l'on
 veut placer plusieurs breakpoints dans la même région).
 
-- Mais ça en a fait apparaître un autre : le scroll vers le bas avec le
+O Mais ça en a fait apparaître un autre : le scroll vers le bas avec le
 clavier dans la fenêtre Memory ne fait pas défiler les lignes (mais va au
 bon endroit quand on arrête d'appuyer sur 'bas'). Le scroll vers le haut n'a
 pas ce problème.

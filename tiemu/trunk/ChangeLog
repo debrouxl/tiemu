@@ -7,9 +7,7 @@ To do:
 
 - 20/08/2004, version 1.79: roms
 	- LCD background is less dark
-
-	- force mem window refresh when scrolling up/down (to do)
-	- too many ASCII chars in the mem window (to do)
+	- force mem window refresh when scrolling up/down
 
 - 13/08/2004, version 1.78: roms
 	- changed keyboard mapping to pure VTi mapping

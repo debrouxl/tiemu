@@ -629,7 +629,7 @@ on_treeview_btn_press_event        (GtkWidget       *widget,
     switch (event->type) 
     {
     case GDK_BUTTON_PRESS:	// third button clicked
-	    if (event->button == 3) 
+        if (event->button == 3) 
         {
             GdkEventButton *bevent;
             GtkWidget *menu;
@@ -757,13 +757,13 @@ on_treeview_key_press_event            (GtkWidget       *widget,
     GtkTreeView *view = GTK_TREE_VIEW(widget);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
 	GtkListStore *store = GTK_LIST_STORE(model);
-    GtkTreeSelection *selection;
     GtkTreeIter iter;
-    gboolean valid;
+    GtkTreePath *path;
+    GtkTreeViewColumn *column;
+
     gchar *str;
     gchar *row;
     gint row_idx, row_max;
-    uint32_t addr;
     uint32_t min, max;
     gint n;
 
@@ -781,20 +781,18 @@ on_treeview_key_press_event            (GtkWidget       *widget,
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
     sscanf(str, "%x", &max);
 
-    // retrieve selection
-    selection = gtk_tree_view_get_selection(view);
-    valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
-    if(valid)
-    {
-        gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-        sscanf(str, "%x", &addr);
+    // retrieve cursor
+    gtk_tree_view_get_cursor(view, &path, &column);
+    if(path == NULL)
+        return FALSE;
 
-        row = gtk_tree_model_get_string_from_iter(model, &iter);
-        sscanf(row, "%i", &row_idx);
-        row_max = gtk_tree_model_iter_n_children(model, NULL) - 1;
-    }
-    else
-        row_idx = row_max = -1;
+    // get row
+    row_idx = row_max = -1;
+    row = gtk_tree_path_to_string(path);
+    sscanf(row, "%i", &row_idx);
+    g_free(row);
+    row_max = gtk_tree_model_iter_n_children(model, NULL) - 1;
+    //printf("row_idx = %i\n", row_idx);
 
     switch(event->keyval) 
 	{
@@ -818,12 +816,10 @@ on_treeview_key_press_event            (GtkWidget       *widget,
 
         refresh_page(page, +0x10);
 
-        {
-            GtkTreePath *path = gtk_tree_path_new_from_string("7");
-            gtk_tree_selection_select_path(selection, path);
-        }
+        path = gtk_tree_path_new_from_string("7");
+        gtk_tree_view_set_cursor(view, path, NULL, FALSE);
         
-        return TRUE;
+        return FALSE;
 
     case GDK_Page_Up:
         if(row_max == -1)
@@ -834,12 +830,10 @@ on_treeview_key_press_event            (GtkWidget       *widget,
 
         refresh_page(page, -DUMP_SIZE);
 
-        {
-            GtkTreePath *path = gtk_tree_path_new_from_string("0");
-            gtk_tree_selection_select_path(selection, path);
-        }
+        path = gtk_tree_path_new_from_string("0");
+        gtk_tree_view_set_cursor(view, path, NULL, FALSE);
 
-        return TRUE;
+        return FALSE;
 
     case GDK_Page_Down:
         if(row_max == -1)
@@ -850,12 +844,10 @@ on_treeview_key_press_event            (GtkWidget       *widget,
 
         refresh_page(page, +DUMP_SIZE);
 
-        {
-            GtkTreePath *path = gtk_tree_path_new_from_string("7");
-            gtk_tree_selection_select_path(selection, path);
-        }
+        path = gtk_tree_path_new_from_string("7");
+        gtk_tree_view_set_cursor(view, path, NULL, FALSE);
 
-        return TRUE;
+        return FALSE;
 
     case GDK_F3:
 		search_next();

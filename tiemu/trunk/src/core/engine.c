@@ -119,7 +119,7 @@ gpointer ti68k_engine(gpointer data)
 			
 			g_thread_exit(GINT_TO_POINTER(res));
 		} 
-        else 
+        else if(params.restricted)
         { 
 			// normal execution
             g_timer_elapsed(tmr, &us);

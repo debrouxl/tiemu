@@ -3,7 +3,7 @@
 
 
 Previous version: 1.75		(07/08/2004)
-Current version:  1.78		(15/08/2004)
+Current version:  1.79		(20/08/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -37,6 +37,8 @@ Improvements:
 	- code window: don't reload source when setting a bkpt
 	- code window: show PC in the middle of the window and leave 3 isntructions at bottom
 	- changed keyboard mapping to pure VTi mapping
+	- LCD background is less dark than before
+	- mem window: refresh when scrolling up/down
 		
 
 Bug fixes:
