@@ -343,17 +343,17 @@ void rcfile_read(void)
 	  continue;
 	}
 
-	if( (p=find_str(buffer, "ram_file=")) )
-	{
-	  g_free(params.ram_file);
-	  params.ram_file = g_strdup(p);
-	  continue;
-	}
-
 	if( (p=find_str(buffer, "tib_file=")) )
 	{
 	  g_free(params.tib_file);
 	  params.tib_file = g_strdup(p);
+	  continue;
+	}
+
+    if( (p=find_str(buffer, "sav_file=")) )
+	{
+	  g_free(params.sav_file);
+	  params.sav_file = g_strdup(p);
 	  continue;
 	}
 
@@ -657,12 +657,12 @@ void rcfile_write(void)
 	fprintf(txt, "# ROM file\n");
 	fprintf(txt, "rom_file=%s\n", params.rom_file);
 	fprintf(txt, "\n");
-	fprintf(txt, "# RAM file\n");
-	fprintf(txt, "ram_file=%s\n", params.ram_file);
-  fprintf(txt, "\n");
-  fprintf(txt, "# TIB file\n");
-  fprintf(txt, "tib_file=%s\n", params.tib_file);
-  fprintf(txt, "\n");
+    fprintf(txt, "# TIB file\n");
+    fprintf(txt, "tib_file=%s\n", params.tib_file);
+    fprintf(txt, "\n");
+    fprintf(txt, "# SAV file\n");
+	fprintf(txt, "sav_file=%s\n", params.sav_file);
+    fprintf(txt, "\n");
   fprintf(txt, "# Number of gray planes (0, 2, 5, 11)\n");
   fprintf(txt, "gray_planes=%i\n", params.grayplanes);
   fprintf(txt, "\n");
@@ -746,7 +746,7 @@ int rcfile_default()
 	ti68k_config_load_default();
 
 	params.rom_file = g_strconcat(inst_paths.img_dir, "", NULL);
-	params.ram_file = g_strdup("");
+	params.sav_file = g_strdup("");
 	params.tib_file = g_strdup("");
 
 	// other fields

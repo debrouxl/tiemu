@@ -51,7 +51,7 @@ const gchar *create_fsel(gchar *dirname, gchar *ext)
 	gchar *mask;
     
     mask = g_strconcat(dirname, ext, NULL);
-	fs = gtk_file_selection_new("Select a skin");
+	fs = gtk_file_selection_new("Select a file...");
 	gtk_file_selection_complete(GTK_FILE_SELECTION(fs), mask);
     g_free(mask);
 

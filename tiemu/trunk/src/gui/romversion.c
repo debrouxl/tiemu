@@ -36,6 +36,7 @@
 #include "struct.h"
 #include "dboxes.h"
 #include "fs_misc.h"
+#include "rcfile.h"
 
 gchar *chosen_file = NULL;
 
@@ -232,15 +233,18 @@ gint display_romversion_dbox()
 					msg_box("Error", "Can not load the upgrade.");
 					return -1;
 				}
+                
+                msg_box(_("Information"), _("Your configuration has been saved."));
+                rcfile_write();
 			}
 
             ti68k_reset();
-			ti68k_restart();
+			//ti68k_restart();
 		break;
 
 		case GTK_RESPONSE_APPLY:
 			display_import_romversion_dbox();
-			display_romversion_dbox();	// forece rescan but recursive
+			display_romversion_dbox();	// force rescan but recursive
         break;
 		
 		default:

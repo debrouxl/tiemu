@@ -243,7 +243,7 @@ GLADE_CB void
 on_revert_to_saved_state1_activate     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	ti68k_state_load(params.ram_file);
+	ti68k_state_load(params.sav_file);
   	ti68k_engine_unhalt();
 }
 
@@ -469,7 +469,7 @@ GLADE_CB void
 on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	ti68k_state_save(params.ram_file);
+	ti68k_state_save(params.sav_file);
   	if(!rcfile_exist())
     		rcfile_write();
 

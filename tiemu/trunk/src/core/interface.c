@@ -169,7 +169,7 @@ int ti68k_exit(void)
 }
 
 /*
-    Full restart of the library.
+    Full restart of the library (not tested).
 */
 int ti68k_restart(void)
 {

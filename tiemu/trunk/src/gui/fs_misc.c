@@ -101,10 +101,10 @@ gint display_load_state_dbox()
 	if (!filename)
 		return 0;
 
-    g_free(params.ram_file);
-    params.ram_file = g_strdup(filename);
+    g_free(params.sav_file);
+    params.sav_file = g_strdup(filename);
     
-    ti68k_state_load(params.ram_file);
+    ti68k_state_load(params.sav_file);
     ti68k_engine_unhalt();
 
 	return 0;
@@ -119,9 +119,9 @@ gint display_save_state_dbox()
 	if (!filename)
 		return 0;
 
-    g_free(params.ram_file);
-    params.ram_file = g_strdup(filename);
-    ti68k_state_save(params.ram_file);
+    g_free(params.sav_file);
+    params.sav_file = g_strdup(filename);
+    ti68k_state_save(params.sav_file);
     
     if(!rcfile_exist())
     {

@@ -64,7 +64,7 @@ int help(void)
 	fprintf(stdout, "-h, --help    display this information page and exit\n");
 	fprintf(stdout, "-v, --version display the version information and exit\n");
 	fprintf(stdout, "-rom_file=    ROM to load at startup\n");
-	fprintf(stdout, "-ram_file=    RAM image to load\n");
+	fprintf(stdout, "-sav_file=    RAM image to load\n");
 	fprintf(stdout, "-background=  enable(1) or disable(0) background\n");
 	fprintf(stdout, "\n");
 	fprintf(stdout, "filename      a filename which contains a ROM image\n");
@@ -105,10 +105,10 @@ int scan_cmdline(int argc, char **argv)
 		  g_free(params.rom_file);
 		  params.rom_file = g_strdup(p);
 		}
-	      if(strstr  (msg, "ram_file="     )) {
+	      if(strstr  (msg, "sav_file="     )) {
 		  q=msg+9;
-		  g_free(params.ram_file);
-		  params.ram_file = g_strdup(p);
+		  g_free(params.sav_file);
+		  params.sav_file = g_strdup(p);
 		}
 
 	      if(strexact(msg, "-help"       )) help();

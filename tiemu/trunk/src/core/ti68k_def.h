@@ -64,18 +64,18 @@
 
 typedef struct 
 {
-  char *rom_file;
-  char *ram_file;
-  char *tib_file;
+    char *rom_file;
+    char *tib_file;
+    char *sav_file;
 
-  int background;
-  int grayplanes;
+    int background;
+    int grayplanes;
 
-  int tick_rate;
-  int cycle_rate;
-  int i_tick;
-  int sync_one;
-  int restrict;
+    int tick_rate;
+    int cycle_rate;
+    int i_tick;
+    int sync_one;
+    int restrict;
 } Ti68kParameters;
 
 typedef struct

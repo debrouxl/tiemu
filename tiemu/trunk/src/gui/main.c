@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 {
 	GThread *thread = NULL;
 	GError *error = NULL;
-    char *dstname;
+    //char *dstname;
 
 	/*
 		Do primary initializations 
@@ -184,8 +184,8 @@ int main(int argc, char **argv)
 		Load calculator state image 
 	*/
     splash_screen_set_label(_("Loading previously saved state..."));
-	if(params.ram_file != NULL) {
-		ti68k_state_load(params.ram_file);
+	if(params.sav_file != NULL) {
+		ti68k_state_load(params.sav_file);
 	}
   
 	/* 
