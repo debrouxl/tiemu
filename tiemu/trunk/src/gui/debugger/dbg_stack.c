@@ -114,7 +114,6 @@ static void clist_populate(GtkListStore *store, gint target, gint offset)
 		ti68k_register_get_addr(6, &sp);
 	mem = (uint16_t *)ti68k_get_real_address(sp);
 
-	printf("offset = %i\n", offset);
     for(i = 0+(offset>>1); i < DUMP_SIZE+(offset>>1); i++)
     {
         gtk_list_store_append(store, &iter);
@@ -249,7 +248,6 @@ on_dbgstack_key_press_event           (GtkWidget       *widget,
     gtk_tree_view_get_cursor(view, &path, NULL);
     if(path == NULL)
         return FALSE;
-	printf("<%i:%i>\n", min, max);
 
 	// get row
     row_idx = row_max = -1;
