@@ -394,7 +394,6 @@ int  hid_init(void)
 	li.height = gdk_pixbuf_get_height (lcd);
 	li.rowstride = gdk_pixbuf_get_rowstride (lcd);
 	li.pixels = gdk_pixbuf_get_pixels (lcd);
-	printf("%i %i %i\n", li.width, li.height, li.rowstride);
 
 	// Create main window
 	display_main_wnd();

@@ -219,7 +219,6 @@ GLADE_CB void
 on_normal_view1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	printf("normal !\n");
 	hid_switch_normal_view();
 }
 
@@ -228,7 +227,6 @@ GLADE_CB void
 on_large_view1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	printf("large !\n");
 	hid_switch_large_view();
 }
 
@@ -237,7 +235,6 @@ GLADE_CB void
 on_full_view1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	printf("full !\n");
 	hid_switch_fullscreen();
 }
 
