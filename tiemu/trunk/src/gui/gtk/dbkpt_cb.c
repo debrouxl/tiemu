@@ -34,8 +34,8 @@ gint display_data_bkpts_dbox(void)
   gchar buffer[MAXCHARS];
   DATA_BKPT *s;
 
-  gchar *text[4] = { _("Id"), _("Type"),
-		     _("Mode"), _("Address") };
+  gchar *text[3] = { _("Type"), _("Mode"),
+		     _("Address") };
 
   dbox = create_data_bkpts_dbox(); 
   data_bkpt_dbox = dbox;
@@ -43,14 +43,14 @@ gint display_data_bkpts_dbox(void)
   clist = lookup_widget(dbox, "clist4");
 
   /* Set up the GtkTreeView */
-  list = gtk_list_store_new(4, G_TYPE_INT, G_TYPE_STRING,
-			    G_TYPE_STRING, G_TYPE_STRING);
+  list = gtk_list_store_new(4, G_TYPE_STRING, G_TYPE_STRING,
+			    G_TYPE_STRING, G_TYPE_INT);
   model = GTK_TREE_MODEL(list);
   
   gtk_tree_view_set_model(GTK_TREE_VIEW(clist), model); 
   gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(clist), TRUE); 
   
-  for (i = 0; i < 6; i++)
+  for (i = 0; i < 3; i++)
     gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), i, text[i],
 						gtk_cell_renderer_text_new(),
 						"text", 0, NULL);
@@ -91,9 +91,9 @@ gint display_data_bkpts_dbox(void)
       text[2] = g_strdup_printf("%06X", s->address);
 
       gtk_list_store_append(list, &iter);
-      gtk_list_store_set(list, &iter, 0, s->id,
-			 1, text[0], 2, text[1],
-			 3, text[2], -1);
+      gtk_list_store_set(list, &iter,
+			 0, text[0], 1, text[1],
+			 2, text[2], 3, s->id, -1);
     }
   for(i=0; i<3; i++) 
     g_free(text[i]);
@@ -163,7 +163,7 @@ on_button_del_clicked                  (GtkButton       *button,
       /* Remove data breakpoint */
       // get id associated with the row
       gtk_tree_model_get(model, &iter,
-			 0, &id, -1);
+			 3, &id, -1);
       //DISPLAY("Selected row: %i\n", sel_row);
       //DISPLAY("id: %i\n", id);
       
