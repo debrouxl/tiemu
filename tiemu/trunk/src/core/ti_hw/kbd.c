@@ -125,6 +125,9 @@ void ti68k_kbd_set_key(int key, int active)
 {
     key_states[key] = active;
 	key_change = !0;
+
+	if(key == TIKEY_ON)
+		tihw.on_key = active;
 }
 
 int ti68k_kbd_is_key_pressed(int key)
@@ -132,36 +135,30 @@ int ti68k_kbd_is_key_pressed(int key)
     return key_states[key];
 }
 
-int hw_kbd_update(void)
+int hw_kbd_update(void)		// ~600Hz
 {
-	int rc = key_change;	// ~600Hz
-
-    if(ti68k_kbd_is_key_pressed(TIKEY_ON))
-        tihw.on_key = 1;
-
     if(tihw.on_key) 
     {
     	// set calc on
         if(specialflags & SPCFLAG_STOP)
 	        specialflags &= ~SPCFLAG_STOP;
+		else
+			specialflags |= SPCFLAG_STOP;
 	        
 	    // Auto-Int 6 triggered when [ON] is pressed.
         specialflags |= SPCFLAG_INT;
         currIntLev = 6;
-      
-        key_states[TIKEY_ON] = 0;
     }
-    
-	if(rc)
+	else
     {
     	// Auto-Int 2 triggered periodically while key(s) other than [ON] are held down.
         specialflags |= SPCFLAG_INT;
         currIntLev = 2;
-
-		key_change = 0;
     }
+
+	key_change = 0;
   
-    return rc;
+    return 0;
 }
 
 static uint8_t get_rowmask(uint8_t r) 

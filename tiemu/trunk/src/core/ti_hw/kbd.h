@@ -37,6 +37,5 @@ void ti68k_kbd_set_key(int key, int active);
 int ti68k_kbd_is_key_pressed(int key);
 
 uint8_t hw_kbd_read_mask(void);
-#define read_onkey() ((uint8_t)tihw.on_key)
 
 #endif
