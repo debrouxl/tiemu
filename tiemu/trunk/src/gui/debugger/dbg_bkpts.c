@@ -280,31 +280,6 @@ static GtkWidget* display_popup_menu(void)
 	return data;
 }
 
-GLADE_CB gboolean
-on_dbgbkpts_window_delete_event       (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-    gtk_window_get_size(GTK_WINDOW(widget), &options3.bkpts.w, &options3.bkpts.h);
-    gtk_window_get_position(GTK_WINDOW(widget), &options3.bkpts.x, &options3.bkpts.y);
-
-    return FALSE;
-}
-
-GLADE_CB void
-on_dbgbkpts_window_hide                (GtkWidget       *widget,
-                                        gpointer         user_data)
-{
-    on_dbgbkpts_window_delete_event(widget, NULL, user_data);
-}
-
-GLADE_CB void
-on_dbgbkpts_window_destroy             (GtkObject       *object,
-                                        gpointer         user_data)
-{
-	already_open = 0;
-}
-
 /* Add bkpt */
 GLADE_CB void
 dbgbkpts_button1_clicked                     (GtkButton       *button,

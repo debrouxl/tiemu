@@ -11,9 +11,9 @@
   <property name="modal">False</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
-  <signal name="destroy" handler="on_dbgpclog_window_destroy" last_modification_time="Wed, 30 Jun 2004 12:57:05 GMT"/>
   <signal name="delete_event" handler="on_dbgpclog_window_delete_event" last_modification_time="Wed, 30 Jun 2004 12:57:10 GMT"/>
   <signal name="hide" handler="on_dbgpclog_window_hide" last_modification_time="Wed, 30 Jun 2004 13:13:03 GMT"/>
+  <signal name="show" handler="on_dbgpclog_window_show" last_modification_time="Sun, 04 Jul 2004 09:00:20 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox1">

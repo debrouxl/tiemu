@@ -163,29 +163,3 @@ GtkWidget* display_dbgpclog_window(void)
 
 	return wnd;
 }
-
-GLADE_CB gboolean
-on_dbgpclog_window_delete_event       (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-    gtk_window_get_size(GTK_WINDOW(widget), &options3.pclog.w, &options3.pclog.h);
-    gtk_window_get_position(GTK_WINDOW(widget), &options3.pclog.x, &options3.pclog.y);
-
-    return FALSE;
-}
-
-GLADE_CB void
-on_dbgpclog_window_hide                (GtkWidget       *widget,
-                                        gpointer         user_data)
-{
-    on_dbgpclog_window_delete_event(widget, NULL, user_data);
-}
-
-GLADE_CB void
-on_dbgpclog_window_destroy             (GtkObject       *object,
-                                        gpointer         user_data)
-{
-	already_open = 0;
-    printf("closed !\n");
-}

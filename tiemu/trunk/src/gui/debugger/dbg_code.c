@@ -323,38 +323,6 @@ GtkWidget* display_dbgcode_window(void)
     return wnd;
 }
 
-GLADE_CB gboolean
-on_dbgcode_window_delete_event       (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-    gtk_window_get_size(GTK_WINDOW(widget), &options3.code.w, &options3.code.h);
-    gtk_window_get_position(GTK_WINDOW(widget), &options3.code.x, &options3.code.y);
-
-    return FALSE;
-}
-
-GLADE_CB void
-on_dbgcode_window_destroy               (GtkObject       *object,
-                                        gpointer         user_data)
-{
-	already_open = 0;
-	// Closing the debugger starts the emulator
-    bkpts.mode = bkpts.type = bkpts.id = 0;
-    ti68k_engine_unhalt();
-}
-
-GLADE_CB void
-on_dbgcode_window_hide                (GtkWidget       *widget,
-                                        gpointer         user_data)
-{
-    on_dbgcode_window_delete_event(widget, NULL, user_data);
-
-    bkpts.mode = bkpts.type = bkpts.id = 0;
-    ti68k_engine_unhalt();
-}
-
-
 GLADE_CB void
 on_run1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
@@ -570,58 +538,57 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
 		return TRUE;
 
     case GDK_Up:
-#if 0
         if(row_max == -1)
             break;
 
-        //printf("Up: %i/%i %x\n", row_idx, row_max, addr);
+        printf("Up: %i/%i %x\n", row_idx, row_max, addr);
 
         if(row_idx > 0)
             break;
 
         gtk_list_store_clear(store);
         clist_populate(store, addr - 2);
-#endif
         return FALSE;
 
     case GDK_Down:
         if(row_max == -1)
             break;
 
-        //printf("Down: %i/%i %x\n", row_idx, row_max, addr);
+        printf("Down: %i/%i %x\n", row_idx, row_max, addr);
 
         if(row_idx < row_max)
             break;
 
         offset = ti68k_debug_disassemble(addr, output);
-        printf("<%x %i>\n", addr, offset);
 
         gtk_list_store_clear(store);
         clist_populate(store, addr + offset);
-
         return FALSE;
 
     case GDK_Page_Up:
-        break;
-    case GDK_Page_Down:
-#if 0
         if(row_max == -1)
             break;
 
-        //printf("Down: %i/%i %x\n", row_idx, row_max, addr);
+        printf("PageUp: %i/%i %x\n", row_idx, row_max, addr);
+
+        if(row_idx > 0)
+            break;
+
+        gtk_list_store_clear(store);
+        clist_populate(store, addr - 0x10);
+        return FALSE;
+
+    case GDK_Page_Down:
+        if(row_max == -1)
+            break;
+
+        printf("PageDown: %i/%i %x\n", row_idx, row_max, addr);
 
         if(row_idx < row_max)
             break;
 
-        for(i = 0, offset = 0; i < row_max; i++)
-        {
-            j = ti68k_debug_disassemble(addr + offset, output);
-            offset += j;
-        }
-
         gtk_list_store_clear(store);
-        clist_populate(store, addr + offset);
-#endif
+        clist_populate(store, addr + 0x10);
         return FALSE;
 
 	default:

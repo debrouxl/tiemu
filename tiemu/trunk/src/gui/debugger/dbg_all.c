@@ -43,6 +43,7 @@
 
 DbgOptions options3;
 DbgWidgets dbgw = { 0 };
+DbgStates dbgs = { 0 };
 
 void preload_gtk_debugger(void)
 {
@@ -83,13 +84,14 @@ void set_other_windows_sensitivity(int state)
     gtk_widget_set_sensitive(dbgw.pclog, state);
 }
 
-// callbacks from dbg_code.c
+// callbacks from dbg_code.c (window menu)
 
 GLADE_CB void
 on_registers1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
+    //if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
+    if(dbgs.regs)
         gtk_widget_hide(dbgw.regs);
   	else
         display_dbgregs_window();
@@ -165,3 +167,141 @@ on_maximize_all1_activate              (GtkMenuItem     *menuitem,
     gtk_window_deiconify(GTK_WINDOW(dbgw.pclog));
 }
 
+// callbacks from dbg_regs.c
+
+GLADE_CB gboolean
+on_dbgregs_window_delete_event       (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+    gtk_widget_hide(widget);
+	return TRUE;
+}
+
+GLADE_CB void
+on_dbgregs_window_hide                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    dbgs.regs = 0;
+    gtk_window_get_size(GTK_WINDOW(widget), &options3.regs.w, &options3.regs.h);
+    gtk_window_get_position(GTK_WINDOW(widget), &options3.regs.x, &options3.regs.y);
+}
+
+GLADE_CB void
+on_dbgregs_window_show                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    dbgs.regs = !0;
+}
+
+// callbacks from dbg_pclog.c
+GLADE_CB gboolean
+on_dbgpclog_window_delete_event       (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+    gtk_widget_hide(widget);    
+    return TRUE;
+}
+
+GLADE_CB void
+on_dbgpclog_window_hide                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    dbgs.pclog = 0;
+    gtk_window_get_size(GTK_WINDOW(widget), &options3.pclog.w, &options3.pclog.h);
+    gtk_window_get_position(GTK_WINDOW(widget), &options3.pclog.x, &options3.pclog.y);
+}
+
+GLADE_CB void
+on_dbgpclog_window_show                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    dbgs.pclog = !0;
+}
+
+// callbacks from dbg_mem.c
+
+GLADE_CB gboolean
+on_dbgmem_window_delete_event       (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+    gtk_widget_hide(widget);    
+    return TRUE;
+}
+
+GLADE_CB void
+on_dbgmem_window_hide                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    dbgs.mem = 0;
+    gtk_window_get_size(GTK_WINDOW(widget), &options3.mem.w, &options3.mem.h);
+    gtk_window_get_position(GTK_WINDOW(widget), &options3.mem.x, &options3.mem.y);
+}
+
+GLADE_CB void
+on_dbgmem_window_show                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    dbgs.mem = !0;
+}
+
+// callbacks from dbg_code.c
+
+GLADE_CB gboolean
+on_dbgcode_window_delete_event       (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+    gtk_widget_hide(widget);
+    return TRUE;
+}
+
+GLADE_CB void
+on_dbgcode_window_hide                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    dbgs.code = 0;
+    gtk_window_get_size(GTK_WINDOW(widget), &options3.code.w, &options3.code.h);
+    gtk_window_get_position(GTK_WINDOW(widget), &options3.code.x, &options3.code.y);
+    
+    // Closing the debugger starts the emulator
+    on_quit1_activate(NULL, NULL);
+    bkpts.mode = bkpts.type = bkpts.id = 0;
+    ti68k_engine_unhalt();
+}
+
+GLADE_CB void
+on_dbgcode_window_show                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    dbgs.code = !0;
+}
+
+// callbacks from dbg_bkpts.c
+
+GLADE_CB gboolean
+on_dbgbkpts_window_delete_event       (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+    gtk_widget_hide(widget);
+    return TRUE;
+}
+
+GLADE_CB void
+on_dbgbkpts_window_hide                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    dbgs.bkpts = 0;
+    gtk_window_get_size(GTK_WINDOW(widget), &options3.bkpts.w, &options3.bkpts.h);
+    gtk_window_get_position(GTK_WINDOW(widget), &options3.bkpts.x, &options3.bkpts.y);
+}
+
+GLADE_CB void
+on_dbgbkpts_window_show                (GtkWidget       *widget,
+                                        gpointer         user_data)
+{
+    dbgs.bkpts = !0;
+}

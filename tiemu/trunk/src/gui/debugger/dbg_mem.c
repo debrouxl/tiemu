@@ -405,32 +405,6 @@ GtkWidget* display_dbgmem_window(void)
     return wnd;
 }
 
-GLADE_CB gboolean
-on_dbgmem_window_delete_event       (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-    gtk_window_get_size(GTK_WINDOW(widget), &options3.mem.w, &options3.mem.h);
-    gtk_window_get_position(GTK_WINDOW(widget), &options3.mem.x, &options3.mem.y);
-    
-    return FALSE;
-}
-
-GLADE_CB void
-on_dbgmem_window_hide                (GtkWidget       *widget,
-                                        gpointer         user_data)
-{
-    on_dbgmem_window_delete_event(widget, NULL, user_data);
-}
-
-GLADE_CB void
-on_dbgmem_window_destroy               (GtkObject       *object,
-                                        gpointer         user_data)
-{
-    already_open = 0;
-}
-
-
 GLADE_CB void
 dbgmem_button1_clicked                     (GtkButton       *button,
                                         gpointer         user_data)

@@ -9,6 +9,14 @@ typedef struct {
     GtkWidget *pclog;
 } DbgWidgets;
 
+typedef struct {
+    gint    mem;
+    gint    regs;
+    gint    bkpts;
+    gint    code;
+    gint    pclog;
+} DbgStates;
+
 void preload_gtk_debugger(void);
 int enter_gtk_debugger(int context);
 

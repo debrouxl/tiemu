@@ -518,30 +518,3 @@ GtkWidget* display_dbgregs_window(void)
 
 	return wnd;
 }
-
-
-GLADE_CB gboolean
-on_dbgregs_window_delete_event       (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-    gtk_window_get_size(GTK_WINDOW(widget), &options3.regs.w, &options3.regs.h);
-    gtk_window_get_position(GTK_WINDOW(widget), &options3.regs.x, &options3.regs.y);
-
-	return FALSE;
-}
-
-GLADE_CB void
-on_dbgregs_window_hide                (GtkWidget       *widget,
-                                        gpointer         user_data)
-{
-    on_dbgregs_window_delete_event(widget, NULL, user_data);
-}
-
-GLADE_CB void
-on_dbgregs_window_destroy               (GtkObject       *object,
-                                        gpointer         user_data)
-{
-    already_open = 0;
-}
-
