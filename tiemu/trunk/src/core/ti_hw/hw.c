@@ -69,13 +69,13 @@ int hw_init(void)
 
 	if(tihw.calc_type == TI89)
 	{
-		tihw.lcd_w = 160;
-		tihw.lcd_h = 100;	
+		tihw.log_w = tihw.lcd_w = 160;
+		tihw.log_h = tihw.lcd_h = 100;	
 	}
 	else
 	{
-		tihw.lcd_w = 240;
-		tihw.lcd_h = 128;
+		tihw.log_w = tihw.lcd_w = 240;
+		tihw.log_h = tihw.lcd_h = 128;
 	}
 
     // Do sub-initializations.

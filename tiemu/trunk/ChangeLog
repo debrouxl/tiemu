@@ -4,6 +4,8 @@ SubVersion: $Id$
 	Error management connected and updated.
 	Fixed 'restrict to current speed'.
 	Synch item disabled for now.
+	Fixed bugs in state image loading as well as in LCD initialization 
+		(no LCD updates after state image loading).
 
 	Still to do:
 	- link port is broken

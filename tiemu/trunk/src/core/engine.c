@@ -94,7 +94,7 @@ gpointer ti68k_engine(gpointer data)
 		ftime(&tLastTime);
       
 		// Run emulator core
-		res = ti68k_debug_do_instructions(NB_INSTRUCTIONS_PER_LOOP);
+		res = ti68k_debug_do_instructions(cpu_instr);
 		if(res) {  
 			// a bkpt has been encountered
 			G_LOCK(running);

@@ -33,9 +33,6 @@
 #include <string.h>
 
 #include "libuae.h"
-#include "dbus.h"
-#include "timer.h"
-#include "lcd.h"
 #include "ti68k_int.h"
 #include "ti68k_err.h"
 
@@ -67,12 +64,12 @@ int ti68k_state_load(char *filename)
   	
   	// Compare image infos
 	fread(&sav, 1, sizeof(IMG_INFO), f);
-	if(memcmp(&sav, img, sizeof(IMG_INFO)))
+	if(memcmp(&sav, img, sizeof(IMG_INFO) - sizeof(char*)))
 		return ERR_INVALID_STATE;
 	
 	// Load internal hardware (registers and special flags)
-    fwrite(&regs, sizeof(regs), 1, f);
-    fwrite(&specialflags, sizeof(specialflags), 1, f);
+    fread(&regs, sizeof(regs), 1, f);
+    fread(&specialflags, sizeof(specialflags), 1, f);
     
     // Load I/O ports state
     fread(tihw.io , IO_SIZE, 1, f);
@@ -81,6 +78,7 @@ int ti68k_state_load(char *filename)
     // Load RAM content
     fread(tihw.ram, 256*KB, 1, f);
     
+	// Update UAE structures
 	m68k_setpc(m68k_getpc());
     MakeFromSR();
 
@@ -113,7 +111,7 @@ int ti68k_state_save(char *filename)
   	// Save current image infos
 	fwrite(img, 1, sizeof(IMG_INFO), f);
 	
-	// Save internal hardware
+	// Update UAE structures
     MakeSR();
     m68k_setpc(m68k_getpc());
     
