@@ -1,17 +1,20 @@
 SubVersion: $Id$
 
 - 30/06/2004, version 1.71: roms
-	Julein Debroux's suggestions:
+	Lionel Debroux's suggestions:
 	- debugger access is slow: improved by pre-loading windows.
 	- can't scroll into the code window: fixed (VTi uses a fixed size list without scrollers)
 	- window focus: fixed (list of the code window has default focus)
 	- shortcuts (F2, G, ...): fixed
 	- key mapping pb (EE, |): fixed
 	- pb with Alpha key: fixed
-	- no key auto-repeat: no needs
+	- no key auto-repeat: fixed
+	- long names with the ROM version box: fixed
 	- disasm listing: need to modify the UAE
 	- SR flags (VTi emulation): need to modify the UAE
-	- long names with the ROM version box: fixed.
+
+	Disable menu access when debugger is opened.
+	I/O bits manipulation functions moved into bits.h and fixed (bit_set/clr buggy).
 
 - 05/05/2004, version 1.70: roms
 	Rework in progress.	

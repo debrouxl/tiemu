@@ -53,6 +53,8 @@
 #include "ti68k_int.h"
 #include "ti68k_def.h"
 
+extern int dbg_on;
+
 /* 
    Display a popup menu: entry point used by hid.c (SDL)
 */
@@ -63,8 +65,8 @@ void gui_popup_menu(void)
 	guint32 time;
 
 	// check whether debugger is opened...
-	//if(ti68k_engine_is_halted())
-	//	return;
+    if(dbg_on)
+        return;
 
 	// don't have time event due to SDL
 	time = gtk_get_current_event_time();
@@ -310,8 +312,6 @@ GLADE_CB void
 on_2_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    //if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
-    //if (!gtk_toggle_button_get_active(togglebutton))
     params.grayplanes = 2;
     ti68k_engine_unhalt();
 }

@@ -45,6 +45,8 @@ DbgOptions options3;
 DbgWidgets dbgw = { 0 };
 DbgStates dbgs = { 0 };
 
+int dbg_on = 0;
+
 void preload_gtk_debugger(void)
 {
 	//create_dbgregs_window();
@@ -72,6 +74,8 @@ int enter_gtk_debugger(int context)
 	dbgw.bkpts = display_dbgbkpts_window();
     dbgw.pclog = display_dbgpclog_window();
 	dbgw.code = display_dbgcode_window();	// the last has focus
+
+    dbg_on = !0;
 
 	return 0;
 }
@@ -144,6 +148,8 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
         gtk_widget_hide(dbgw.pclog);
 	if(dbgw.code)
 	    gtk_widget_hide(dbgw.code);
+
+    dbg_on = 0;
 }
 
 GLADE_CB void

@@ -26,17 +26,11 @@
 #define __TI68K_IO__
 
 #include <stdint.h>
+#include "bits.h"
 
 int hw_io_init(void);
 int hw_io_reset(void);
 int hw_io_exit(void);
-
-#define bit_get(v,b)	(((v) &  (1 << b)) >> b)
-#define bit_set(v,b)	 ((v) |  (1 << b))
-#define bit_clr(v,b)	 ((v) & ~(1 << b))
-
-#define bit_tst(v,b)	 ((v) &  (1 << b))
-#define bit_chg(v,b,s)	{ if(s) bit_set(v,b); else bit_clr(v,b); }
 
 extern uint8_t  io_get_byte(uint32_t addr);
 extern uint16_t io_get_word(uint32_t addr);
@@ -67,6 +61,5 @@ extern void io2_put_byte(uint32_t addr, uint8_t  arg);
 
 #define io2_bit_tst(a,b)		bit_tst(tihw.io2[a],b)
 #define io2_bit_chg(a,b,s)		bit_chg(tihw.io2[a],b,s)	
-
 
 #endif

@@ -94,7 +94,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
 			// %5: bit 0 of contrast (TI92)
 			if(tihw.calc_type == TI92 || tihw.calc_type == TI92p)
 			{
-            	tihw.contrast = bit_clr(tihw.contrast,0) | bit_get(arg,5);
+                bit_chg(tihw.contrast,0,bit_get(arg,5));
 				cb_set_contrast(tihw.contrast);
 			}
         break;
@@ -248,7 +248,9 @@ void io_put_byte(uint32_t addr, uint8_t arg)
             	
             	// %4: HW1: Screen disable (power down), HW2: LCD contrast bit 4 (msb)
 				if(io2_bit_tst(0x1f,0))
-					tihw.contrast = bit_clr(tihw.contrast,5) | (bit_get(arg,4) << 1);
+                {
+                    bit_chg(tihw.contrast,4,bit_get(arg,4));
+                }
 				else
 					cb_screen_on_off(!bit_get(arg,4));
             }

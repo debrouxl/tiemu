@@ -133,12 +133,42 @@ static void renderer_edited(GtkCellRendererText * cell,
 						ti68k_register_set_sr(value);
 					}
 				break;
-				case 3: // s-flags
+				case 3: // super-flags
 					if(ti68k_register_set_flags(new_text, NULL))
+                    {
+                        uint32_t data;
+                        gchar *sdata;
+
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
-				case 4:
+                        
+                        // update sr, too
+                        gtk_tree_path_free(path);	
+                        path = gtk_tree_path_new_from_string("2:2");
+                        if (!gtk_tree_model_get_iter(model, &iter, path))
+		                    return;
+                        ti68k_register_get_sr(&data);
+                        sdata = g_strdup_printf("%04x", data);
+                        gtk_tree_store_set(store, &iter, COL_VALUE, sdata,	-1);
+                        g_free(sdata);	   	                
+                    }
+				case 4: // user-flags
 					if(ti68k_register_set_flags(NULL, new_text))
+                    {
+                        uint32_t data;
+                        gchar *sdata;
+
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
+
+                        // update sr, too
+                        gtk_tree_path_free(path);	
+                        path = gtk_tree_path_new_from_string("2:2");
+                        if (!gtk_tree_model_get_iter(model, &iter, path))
+		                    return;
+                        ti68k_register_get_sr(&data);
+                        sdata = g_strdup_printf("%04x", data);
+                        gtk_tree_store_set(store, &iter, COL_VALUE, sdata,	-1);
+                        g_free(sdata);
+                    }
 					break;
 				break;
 			}

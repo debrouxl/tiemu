@@ -620,7 +620,7 @@ int hid_update_keys(void)
 			else if(event.button.button == 3)
 	    	{
 	      		if(!bFullscreen) 
-				{					
+				{	
 		      		SDL_WaitEvent(&event);  // flush event
 			  		gui_popup_menu();       // and popup menu
 				}

@@ -35,7 +35,28 @@
 #include "libuae.h"
 #include "ti68k_int.h"
 #include "ti68k_def.h"
+#include "bits.h"
 
+// SR bits set/get modifiers
+#define SR_get_T(sr)        bit_get(sr, 15)
+#define SR_get_S(sr)        bit_get(sr, 13)
+#define SR_get_I(sr)        (((sr) >> 8) & 7)
+
+#define SR_get_X(sr)        bit_get(sr, 4)
+#define SR_get_N(sr)        bit_get(sr, 3)
+#define SR_get_Z(sr)        bit_get(sr, 2)
+#define SR_get_V(sr)        bit_get(sr, 1)
+#define SR_get_C(sr)        bit_get(sr, 0)
+
+#define SR_chg_T(sr, s)     bit_chg(sr, 15, s);
+#define SR_chg_S(sr, s)     bit_chg(sr, 13, s)
+#define SR_chg_I(sr, v)     { sr &= ~(7 << 8); sr |= (v << 8); }
+
+#define SR_chg_X(sr, s)     bit_chg(sr, 4, s)
+#define SR_chg_N(sr, s)     bit_chg(sr, 3, s)
+#define SR_chg_Z(sr, s)     bit_chg(sr, 2, s)
+#define SR_chg_V(sr, s)     bit_chg(sr, 1, s)
+#define SR_chg_C(sr, s)     bit_chg(sr, 0, s)
 
 // Previous state to detect change
 static uint32_t old_d[8];
@@ -69,6 +90,7 @@ void ti68k_register_set_pc(uint32_t val)
 void ti68k_register_set_sr(uint32_t val)
 {
     regs.sr = (int)val;
+    MakeFromSR();
 }
 
 void ti68k_register_set_flag(uint8_t flag)
@@ -83,6 +105,8 @@ int ti68k_register_set_flags(const char *sf, const char *uf)
 	int t, s, i, x, n, z, v, c;
 	int nargs;
 	
+    MakeSR();
+
 	if(sf != NULL)
 	{
 		nargs = sscanf(sf, "T=%d S=%d I=%d", &t, &s, &i);
@@ -91,10 +115,11 @@ int ti68k_register_set_flags(const char *sf, const char *uf)
 			return 0;
 		if((i < 0) || (i > 7))
 			return 0;
-
-		regs.t = t;
-		regs.s = s;
-		regs.intmask = i;
+    
+        SR_chg_T(regs.sr, 1);
+        SR_chg_T(regs.sr, t);
+        SR_chg_S(regs.sr, s);
+        SR_chg_I(regs.sr, i);
 	}
 
 	if(uf != NULL)
@@ -104,12 +129,14 @@ int ti68k_register_set_flags(const char *sf, const char *uf)
 		if(nargs < 5)
 			return 0;
 
-		regs.x = x;
-		NFLG = n;
-		ZFLG = z;
-		VFLG = v;
-		CFLG = c;
+        SR_chg_X(regs.sr, x);
+        SR_chg_N(regs.sr, n);
+        SR_chg_Z(regs.sr, z);
+        SR_chg_V(regs.sr, v);
+        SR_chg_C(regs.sr, c);
 	}
+
+    MakeFromSR();
 
 	return !0;
 }
@@ -170,6 +197,7 @@ int ti68k_register_get_sr(uint32_t *val)
 {
 	int c =0;
 
+    MakeSR();
     *val = regs.sr;
 	if(regs.sr != old_sr)
 		c = !0;
@@ -182,10 +210,14 @@ const char *ti68k_register_get_flag(void)
 {
     static char str[64];
 
-	/* T  0  S  0  0  I2 I1 I0 0  0  0  X  N  Z  V  C */	  
+	/* T  0  S  0  0  I2 I1 I0 0  0  0  X  N  Z  V  C */
+    MakeSR();
     printf("T=%d S=%d I=%d | X=%d N=%d\nZ=%d V=%d C=%d\n",
-	  regs.t, regs.s, regs.intmask,
-	  regs.x, NFLG, ZFLG, VFLG, CFLG);
+        SR_get_T(regs.sr), SR_get_S(regs.sr),
+        SR_get_I(regs.sr), SR_get_X(regs.sr),
+        SR_get_N(regs.sr), SR_get_Z(regs.sr),
+        SR_get_V(regs.sr), SR_get_C(regs.sr)
+        );
 
     return str;
 }
@@ -194,9 +226,12 @@ int ti68k_register_get_flags(char *sf, char *uf)
 {
 	int c =0;
 
-	/* SR: T 0 S 0 0 I2 I1 I0 0 0 0 X N Z V C */	  
-    sprintf(sf, "T=%d S=%d I=%d", regs.t, regs.s, regs.intmask);
-	sprintf(uf, "X=%d N=%d \nZ=%d V=%d C=%d", regs.x, NFLG, ZFLG, VFLG, CFLG);	 //%dSPC\n: SPC is important !
+	/* SR: T 0 S 0 0 I2 I1 I0 0 0 0 X N Z V C */
+    MakeSR();
+    sprintf(sf, "T=%d S=%d I=%d", SR_get_T(regs.sr), SR_get_S(regs.sr), SR_get_I(regs.sr));
+	sprintf(uf, "X=%d N=%d \nZ=%d V=%d C=%d",   /* %dSPC\n: SPC is important ! */
+        SR_get_X(regs.sr), SR_get_N(regs.sr), SR_get_Z(regs.sr), 
+        SR_get_V(regs.sr), SR_get_C(regs.sr));	 
 
 	if(strcmp(sf, old_sf) || strcmp(uf, old_uf))
 		c = !0;
