@@ -65,7 +65,7 @@
 
 Ti68kParameters params = { 0 };
 TicableLinkParam link_cable = { 0 };
-Ti68kHardware tihw;
+Ti68kHardware tihw = { 0 };
 
 
 /***********************************/
@@ -212,58 +212,6 @@ int ti68k_getRomInfo(IMG_INFO *img)
   return 0;
 }
 
-/*
-int ti68k_getUpdateInfo(ROM_INFO *ri)
-{
-  ri = &current_tib_info;
-  return 0;
-}
-*/
-
-/*
-  Write ROM to file
-*/
-int ti68k_dumpRom(const char *filename)
-{
-  FILE *f;
-  int i;
-  int j;
-  int c;
-  UBYTE *rom = ti_rom;
-
-  f = fopen(filename, "wt");
-  if(f == NULL)
-    return ERR_68K_CANT_OPEN;
-
-  //iupdate->total = params.rom_size;
-  for(i=0; i<params.rom_size; i+=16) // size in Bytes
-    {
-      //iupdate->count = i;
-      //iupdate->percentage = (float)i/params.rom_size;
-      //iupdate_pbar();
-      
-      fprintf(f, "%06X: ", i);
-      for(j=0; j<16; j++)
-	{
-	  fprintf(f, "%02X ", rom[i+j]);
-	}
-      fprintf(f, "| ");
-      for(j=0; j<16; j++)
-        {
-	  if( (rom[i+j] > 31) && (rom[i+j] < 128) )
-	    c = rom[i+j];
-	  else
-	    c = ' ';
-          fprintf(f, "%c", c);
-        }
-      fprintf(f, "\n");
-    }
-
-  fclose(f);
-
-  return 0;
-}
-
 
 /*****************/
 /* RAM functions */
@@ -279,42 +227,6 @@ int ti68k_getRamSize(void)
   return params.ram_size;
 }
 
-int ti68k_dumpRam(const char *filename)
-{
-  FILE *f;
-  int i;
-  int j;
-  int c;
-  UBYTE *ram = ti_ram;
-
-  f = fopen(filename, "wt");
-  if(f == NULL)
-    return ERR_68K_CANT_OPEN;
-
-  for(i=0; i<1024*params.ram_size; i+=16) // size in KB
-    {
-      fprintf(f, "%06X: ", i);
-      for(j=0; j<16; j++)
-	{
-	  fprintf(f, "%02X ", ram[i+j]);
-	}
-      fprintf(f, "| ");
-      for(j=0; j<16; j++)
-        {
-	  if( (ram[i+j] > 31) && (ram[i+j] < 128) )
-	    c = ram[i+j];
-	  else
-	    c = ' ';
-          fprintf(f, "%c", c);
-        }
-      fprintf(f, "\n");
-    }
-
-  fclose(f);
-
-  return 0;
-}
-
 
 /*****************/
 /* HID functions */
@@ -327,12 +239,6 @@ void* ti68k_getLcdPtr(void)
   return (&ti_ram[lcd_base_addr]);
 }
 
-char ti68k_getContrast(void)
-{
-  //return ( ((ti_io[0x1d] & 0xf) << 1) | ((ti_io[0] >> 5) & 1));
-  //return (io_get_byte(0x1d)&0x0e);
-  return contrast;
-}
 
 int ti68k_getCalcType(void)
 {

@@ -67,10 +67,13 @@ typedef struct
 typedef struct
 {
     // misc
-    int ram_size;
-    int rom_size;
-    int rom_internal;
-    int rom_flash;
+    int     calc_type;
+
+    int     ram_size;
+    int     rom_size;
+    int     rom_internal;
+    int     rom_flash;
+    char	rom_version[5];
 
     // ioports.c
     int io0Bit7;

@@ -18,7 +18,7 @@
  */
 
 /*
-  Internal debugger (text mode)
+    Internal debugger (text mode)
 */
 
 #include <stdlib.h>
@@ -30,7 +30,6 @@
 #include "uae.h"
 #include "memory.h"
 #include "tilibs.h"
-//#include "interface.h"
 #include "images.h"
 #include "callbacks.h"
 
