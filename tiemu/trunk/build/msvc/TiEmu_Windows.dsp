@@ -39,22 +39,22 @@ RSC=rc.exe
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir ""
-# PROP Intermediate_Dir "E:\msvc\Output\gtktiemu"
+# PROP Intermediate_Dir "C:\msvc\Output\tiemu"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /w /W0 /GX /O2 /I "..\..\ti_libs\cables\src" /I "..\..\ti_libs\calcs\src" /I "..\..\ti_libs\libti68k\src\\" /I "..\dep\win32" /D "NDEBUG" /D "HAVE_LIBJPEG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "PENT_COUNTER" /FD /c
+# ADD CPP /nologo /MD /w /W0 /GX /O2 /I "C:\sources\roms\tiemu\src\misc" /I "C:\sources\roms\tiemu\src\gui\calc" /I "C:\sources\roms\tiemu\src\core\dbg" /I "C:\sources\roms\tiemu\src\core\ti_sw" /I "C:\sources\roms\tiemu\src\gui\debugger" /I "." /I "../../../ticables/src" /I "../../../tifiles/src" /I "../../../ticalcs/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\sources\roms\tiemu\src\core\uae" /I "C:\sources\roms\tiemu\src\core" /I "C:\sources\roms\tiemu\src\core\ti_hw" /I "C:\sources\roms\tiemu\src\hid" /I "C:\sources\roms\tiemu\src\gui" /I ".\libjpeg" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
-# ADD RSC /l 0x40c /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib gnu-intl.lib glib-1.3.lib gdk-1.3.lib gtk-1.3.lib gmodule-1.3.lib /nologo /subsystem:windows /machine:I386 /out:"Test\GtkTiEmu.exe"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386 /out:"tiemu.exe"
 
 !ELSEIF  "$(CFG)" == "TiEmu_Windows - Win32 Debug"
 
@@ -65,12 +65,12 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "C:\msvc\tiemu"
+# PROP Output_Dir "C:\msvc\tilp"
 # PROP Intermediate_Dir "C:\msvc\Output\tiemu"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /w /W0 /GX /ZI /Od /I "../../ti_libs/cables/src/" /I "../../ti_libs/calcs/src/" /I "D:\devel\tiemu_project\tiemu\src\core" /I "D:\devel\tiemu_project\tiemu\src\core\uae" /I "D:\devel\tiemu_project\tiemu\src\core\ti_hw" /I "D:\devel\tiemu_project\tiemu\src\hid" /I "D:\devel\tiemu_project\tiemu\src\gui\gtk" /I "D:\devel\tiemu_project\tiemu\src\\" /I "D:\devel\tiemu_project\SDL-1.2.0\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "PENT_COUNTER" /D "HAVE_LIBJPEG" /FD /GZ /c
+# ADD CPP /nologo /w /W0 /GX /ZI /Od /I "C:\sources\roms\tiemu\src\misc" /I "C:\sources\roms\tiemu\src\gui\calc" /I "C:\sources\roms\tiemu\src\core\dbg" /I "C:\sources\roms\tiemu\src\core\ti_sw" /I "C:\sources\roms\tiemu\src\gui\debugger" /I "." /I "../../../ticables/src" /I "../../../tifiles/src" /I "../../../ticalcs/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\sources\roms\tiemu\src\core\uae" /I "C:\sources\roms\tiemu\src\core" /I "C:\sources\roms\tiemu\src\core\ti_hw" /I "C:\sources\roms\tiemu\src\hid" /I "C:\sources\roms\tiemu\src\gui" /I ".\libjpeg" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /FD /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -81,7 +81,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib gnu-intl.lib glib-1.3.lib gdk-1.3.lib gtk-1.3.lib gmodule-1.3.lib /nologo /subsystem:windows /debug /machine:I386 /out:"C:\msvc\tiemu\TiEmu.exe" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /out:"C:\Program Files\TiEmu\tiemu.exe" /pdbtype:sept
 
 !ENDIF 
 
@@ -89,30 +89,6 @@ LINK32=link.exe
 
 # Name "TiEmu_Windows - Win32 Release"
 # Name "TiEmu_Windows - Win32 Debug"
-# Begin Group "Library Files"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=C:\msvc\tilp\libticables.lib
-# End Source File
-# Begin Source File
-
-SOURCE=C:\msvc\tilp\libticalcs.lib
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\SDL-1.2.4\lib\SDL.lib"
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\SDL-1.2.4\lib\SDLmain.lib"
-# End Source File
-# Begin Source File
-
-SOURCE=.\jpeg.lib
-# End Source File
-# End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter ""
@@ -121,9 +97,85 @@ SOURCE=.\jpeg.lib
 SOURCE=.\TiEMu.rc
 # End Source File
 # End Group
+# Begin Group "Documentation"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\ChangeLog
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\README
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\RELEASE
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\TODO
+# End Source File
+# End Group
+# Begin Group "Library Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE="..\..\..\..\..\Gtk2Dev\lib\glib-2.0.lib"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\Gtk2Dev\lib\gdk-win32-2.0.lib"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\Gtk2Dev\lib\gtk-win32-2.0.lib"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\Gtk2Dev\lib\gobject-2.0.lib"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\Gtk2Dev\lib\gdk_pixbuf-2.0.lib"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\Gtk2Dev\lib\gthread-2.0.lib"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\Gtk2Dev\lib\gmodule-2.0.lib"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\Gtk2Dev\lib\pango-1.0.lib"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\Gtk2Dev\lib\atk-1.0.lib"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\GTK2DEV\lib\glade-2.0.lib"
+# End Source File
+# End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\core\uae\memory.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\uae\newcpu.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\misc\version.h
+# End Source File
 # End Group
 # Begin Group "Source Files"
 
@@ -131,32 +183,44 @@ SOURCE=.\TiEMu.rc
 # Begin Group "core"
 
 # PROP Default_Filter ""
+# Begin Group "uae"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\core\uae\newcpu.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\uae\table68k
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\uae\libuae.lib
+# End Source File
+# End Group
 # Begin Group "ti_hw"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\debugger.c
+SOURCE=..\..\src\core\ti_hw\dbus.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\hardware.c
+SOURCE=..\..\src\core\ti_hw\flash.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\ioports.c
+SOURCE=..\..\src\core\ti_hw\gscales.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\keyboard.c
+SOURCE=..\..\src\core\ti_hw\hw.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\lcd.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\linkport.c
+SOURCE=..\..\src\core\ti_hw\kbd.c
 # End Source File
 # Begin Source File
 
@@ -164,104 +228,68 @@ SOURCE=..\..\src\core\ti_hw\m68k.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\memory.c
+SOURCE=..\..\src\core\ti_hw\mem.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\timer.c
+SOURCE=..\..\src\core\ti_hw\mem89.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\mem89tm.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\mem92.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\mem92p.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\ports.c
 # End Source File
 # End Group
-# Begin Group "uae"
+# Begin Group "dbg"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\core\uae\cpu0.c
+SOURCE=..\..\src\core\dbg\bkpts.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\uae\cpu1.c
+SOURCE=..\..\src\core\dbg\debug.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\uae\cpu2.c
+SOURCE=..\..\src\core\dbg\disasm.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\uae\cpu3.c
+SOURCE=..\..\src\core\dbg\m68kdasm.c
+# End Source File
+# End Group
+# Begin Group "ti_sw"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_sw\handles.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\uae\cpu4.c
+SOURCE=..\..\src\core\ti_sw\registers.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\uae\cpu5.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\cpu6.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\cpu7.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\cpu8.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\cpu9.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\cpuA.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\cpuB.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\cpuC.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\cpuD.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\cpudefs.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\cpuE.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\cpuF.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\cpustbl.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\newcpu.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\uae\readcpu.c
+SOURCE=..\..\src\core\ti_sw\romcalls.c
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\core\bkpts.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\callbacks.c
+SOURCE=..\..\src\core\engine.c
 # End Source File
 # Begin Source File
 
@@ -277,333 +305,209 @@ SOURCE=..\..\src\core\interface.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\intlist.c
+SOURCE=..\..\src\core\state.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\state.c
+SOURCE=..\..\src\core\type2str.c
 # End Source File
 # End Group
 # Begin Group "gui"
 
 # PROP Default_Filter ""
-# Begin Group "gtk"
+# Begin Group "debug"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\about_cb.c
+SOURCE=..\..\src\gui\debugger\dbg_all.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\about_dbox.c
+SOURCE=..\..\src\gui\debugger\dbg_bkpts.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\adbkpt_cb.c
+SOURCE=..\..\src\gui\debugger\dbg_cause.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\adbkpt_dbox.c
+SOURCE=..\..\src\gui\debugger\dbg_code.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\bkpt_cause.c
+SOURCE=..\..\src\gui\debugger\dbg_data.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\colors_cb.c
+SOURCE=..\..\src\gui\debugger\dbg_heap.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\colors_dbox.c
+SOURCE=..\..\src\gui\debugger\dbg_mem.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\dbgopt_cb.c
+SOURCE=..\..\src\gui\debugger\dbg_pclog.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\dbgopt_dbox.c
+SOURCE=..\..\src\gui\debugger\dbg_regs.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\dbkpt_cb.c
+SOURCE=..\..\src\gui\debugger\dbg_romcall.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\dbkpt_dbox.c
+SOURCE=..\..\src\gui\debugger\dbg_stack.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\debug_cb.c
+SOURCE=..\..\src\gui\debugger\dbg_vectors.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\gtk\debug_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\dump_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\dump_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\fsel_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\fsel_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\gxpm.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\help_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\help_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\infos_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\infos_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\itick_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\itick_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\link_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\link_cb.c.old
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\link_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\logaddr_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\logaddr_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\main.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\main_wnd.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\manpage_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\manpage_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\msg_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\msg_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\pbar_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\pbar_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\pgmentbkpt_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\pgmentbkpt_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\refresh.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\romv_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\romv_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\scopt_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\scopt_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\skin_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\skin_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\startup_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\startup_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\state_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\state_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\support.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\thanks_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\thanks_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\tiemu_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\tiemu_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\trap_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\trap_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\user_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\user_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\viewlog_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\viewlog_dbox.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\wizard_cb.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\gtk\wizard_dbox.c
+SOURCE=..\..\src\gui\debugger\gsource.c
 # End Source File
 # End Group
-# End Group
-# Begin Group "hid"
-
-# PROP Default_Filter ""
-# Begin Group "img"
+# Begin Group "calc"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\hid\img\bmp.c
+SOURCE=..\..\src\gui\calc\calc.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\hid\img\cnv.c
+SOURCE=..\..\src\gui\calc\kbd_mapper.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\hid\img\jpg.c
+SOURCE=..\..\src\gui\calc\keyboard.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\hid\img\pcx.c
+SOURCE=..\..\src\gui\calc\keynames.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\hid\img\xpm.c
+SOURCE=..\..\src\gui\calc\popup.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\calc\screen.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\calc\skinkeys.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\calc\skinops.c
 # End Source File
 # End Group
-# Begin Group "skn"
+# Begin Group "dlgbox"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\hid\skn\skin.c
+SOURCE=..\..\src\gui\about.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\comm.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\dboxes.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\filesel.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\fs_misc.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\help.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\infos.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\manpage.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\pbars.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\refresh.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\release.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\romversion.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\scroptions.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\splash.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\support.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\wizard.c
+# End Source File
+# End Group
+# End Group
+# Begin Group "misc"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\misc\cmdline.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\misc\files.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\misc\paths.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\misc\printl.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\misc\rcfile.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\misc\tie_error.c
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\hid\files.c
+SOURCE=..\..\src\gui\main.c
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\misc.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\paths.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\rcfile.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\ticalc.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\hid\tikeys.c
-# End Source File
-# End Group
 # End Group
 # End Target
 # End Project

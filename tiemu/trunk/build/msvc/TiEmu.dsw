@@ -35,6 +35,18 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name ticables
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ticalcs
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name tifiles
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name uae
+    End Project Dependency
 }}}
 
 ###############################################################################

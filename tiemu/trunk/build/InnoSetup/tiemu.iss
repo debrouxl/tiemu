@@ -27,6 +27,7 @@ Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescri
 ; Glade files
 Source: "C:\sources\roms\tiemu\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
 ; Help files
+Source: "C:\sources\roms\tiemu\help\*.jpg"; DestDir: "{app}\help"; Flags: ignoreversion;
 Source: "C:\sources\roms\tiemu\help\*.png"; DestDir: "{app}\help"; Flags: ignoreversion;
 Source: "C:\sources\roms\tiemu\help\*.htm?"; DestDir: "{app}\help"; Flags: ignoreversion;
 ; Pixmaps files
@@ -80,7 +81,7 @@ Filename: "{app}\tiemu.url"; Section: "InternetShortcut"; Key: "URL"; String: "h
 Name: "{group}\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}\My TI files"
 Name: "{group}\TiEmu on the Web"; Filename: "{app}\tiemu.url"
 Name: "{group}\Uninstall TiEmu"; Filename: "{uninstallexe}"
-Name: "{group}\User's Manual"; Filename: "{app}\help\User_Manual.html"
+Name: "{group}\User's Manual"; Filename: "{app}\help\Manual_en.html"
 Name: "{group}\GTK theme selector"; Filename: "{app}\gtkthemeselector.exe";
 
 Name: "{userdesktop}\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: desktopicon

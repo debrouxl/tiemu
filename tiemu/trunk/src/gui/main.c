@@ -30,6 +30,10 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef __WIN32__
+#define _WIN32_WINNT 0x0400
+#include <windows.h>
+#endif
 
 #include "intl.h"
 #include "tilibs.h"
@@ -262,18 +266,56 @@ int main(int argc, char **argv)
    then we use the 'WinMain' entry point.
 */
 #if defined(__WIN32__) && defined(_WINDOWS)// && !defined(_CONSOLE)
+
+// Keyboard hook: prevents Alt+ESC, Ctrl+ESC and Alt+TAB to disturb TiEmu (NT only)
+LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) 
+{
+   BOOL fEatKeystroke = FALSE;
+
+   if (nCode == HC_ACTION) 
+   {
+      switch (wParam) 
+	  {
+		case WM_KEYDOWN:  case WM_SYSKEYDOWN:
+		case WM_KEYUP:    case WM_SYSKEYUP: 
+			{
+			PKBDLLHOOKSTRUCT p = (PKBDLLHOOKSTRUCT) lParam;
+			fEatKeystroke = 
+            /*((p->vkCode == VK_TAB) && ((p->flags & LLKHF_ALTDOWN) != 0)) ||*/
+            ((p->vkCode == VK_ESCAPE) && ((p->flags & LLKHF_ALTDOWN) != 0)) ||
+            ((p->vkCode == VK_ESCAPE) && ((GetKeyState(VK_CONTROL) & 0x8000) != 0));
+			}
+         break;
+      }
+   }
+   return(fEatKeystroke ? 1 : CallNextHookEx(NULL, nCode, wParam, lParam));
+}
+
 int APIENTRY WinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      LPSTR     lpCmdLine,
                      int       nCmdShow)
 {
-	/* Check whether a TiEmu session is already running */
-	HANDLE hMutex = CreateMutex(NULL, TRUE, "TiEmu");
+	int ret;
 
-	if (GetLastError() == ERROR_ALREADY_EXISTS) {
+	/* Check whether a TiEmu session is already running */
+	HANDLE hMutex;
+	HHOOK hhkLowLevelKybd;
+
+	hMutex = CreateMutex(NULL, TRUE, "TiEmu");
+	if (GetLastError() == ERROR_ALREADY_EXISTS) 
+	{
 		MessageBox(NULL, _("Error"), _("An TiEmu session is already running. Check the task list."), MB_OK);
 	}
+
+	// Install the low-level keyboard & mouse hooks (contribution from K. Kofler)
+	hhkLowLevelKybd  = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboardProc, hInstance, 0);
   
-	return main(__argc, __argv);
+	ret = main(__argc, __argv);
+
+	// Un-install the hook
+	UnhookWindowsHookEx(hhkLowLevelKybd);
+
+	return ret;
 }
 #endif

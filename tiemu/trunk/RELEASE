@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.80i		(03/01/2005)
-Current version:  1.80k		(20/01/2005)
+Previous version: 1.80k		(20/01/2005)
+Current version:  1.80l		(06/02/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -23,6 +23,7 @@ New capabilities:
 	- rewrite of the m68k loop:
 		* UAE fixed to handle multiple pending interrupts and some other fixes
 		* idle mode and STOP improved but problems with ON key
+	- added kbd_dbg variable in tiemu.ini file to display keystrokes in console (useful for creating keymaps).
 
 
 Improvements:
@@ -30,6 +31,9 @@ Improvements:
 
 	- linkport (D-Bus)
 	- boosted linkport speed (direct file)
+	- switched to GTK+ package 2.4-rc26 (2.4.14): compatible with GiMP and fixes toolbar tooltips
+	- main loop modified: main loop is restarted whenever a new ROM is loaded.
+	- fixed main window which appears when the whole window is ready
 		
 
 Bug fixes:
@@ -42,6 +46,10 @@ Bug fixes:
 	- port $700014 (Real Time Clock) is incremented every 8192 seconds
 	- linkport has been fixed and improved (EA bit on AMS >= 2.08)
 	- progress bars for linkport fixed
+	- fixed size of handles in handle wnd
+	- fixed AI2 (need to be raised whenever a key is pressed)
+	- fixed V200 and Titanium crash under Linux (buffer overflow). V200 transfers don't crash
+		any more under Windows (probably same bug).
 
 
 To do:
