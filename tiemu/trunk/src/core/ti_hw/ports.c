@@ -102,7 +102,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         case 0x01:	// rw <.....2.0>
 			// %0 clr: interleave RAM (allows use of 256K of RAM)
             if(tihw.hw_type == 1)
-			    mem_mask[0] = bit_tst(arg,0) ? 0x1ffff : 0x3ffff;
+			    mem_msk[0] = bit_tst(arg,0) ? 0x1ffff : 0x3ffff;
 
 			// %2 set: protected memory violation triggered when memory below [$000120] is written
 	    break;

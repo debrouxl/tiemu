@@ -48,7 +48,7 @@
 static IMG_INFO *img = &img_infos;
 
 uint8_t *mem_tab[16];		// 1MB per banks
-uint32_t mem_mask[16];		// pseudo chip-select (allow wrapping / ghost space)
+uint32_t mem_msk[16];		// pseudo chip-select (allow wrapping / ghost space)
 
 // 000000-0fffff : RAM (128 or 256 KB)
 // 100000-1fffff : 
@@ -123,7 +123,7 @@ int hw_mem_init(void)
 
 	// clear banks
 	memset(&mem_tab, 0, sizeof(mem_tab));
-	memset(&mem_mask, 0, sizeof(mem_mask));
+	memset(&mem_msk, 0, sizeof(mem_msk));
 
     // set all banks to RAM (with mask 0 per default)
     for(i=0; i<16; i++)
@@ -131,7 +131,7 @@ int hw_mem_init(void)
 
     // map RAM
     mem_tab[0] = tihw.ram;
-    mem_mask[0] = tihw.ram_size-1;
+    mem_msk[0] = tihw.ram_size-1;
 
 	// map EPROM/FLASH internal/external
     bank_s = (tihw.rom_base & 0xff) >> 4;               // starting bank
@@ -141,7 +141,7 @@ int hw_mem_init(void)
     {
         // map ROM
         mem_tab[bank_i] = tihw.rom + i*0x100000;
-        mem_mask[bank_i] = MIN(tihw.rom_size - i*MB, 1*MB) - 1;
+        mem_msk[bank_i] = MIN(tihw.rom_size - i*MB, 1*MB) - 1;
 
         // and ghost spaces
         if((bank_i + bank_n >= 6) && (tihw.calc_type != TI89t))
@@ -151,17 +151,17 @@ int hw_mem_init(void)
             continue;
 
         mem_tab[bank_i + bank_n] = tihw.rom + i*0x100000;
-        mem_mask[bank_i + bank_n] = MIN(tihw.rom_size - i*MB, 1*MB) - 1;
+        mem_msk[bank_i + bank_n] = MIN(tihw.rom_size - i*MB, 1*MB) - 1;
     }
 
     // map IO
     mem_tab[6] = tihw.io;
-    mem_mask[6] = tihw.io_size-1;
+    mem_msk[6] = tihw.io_size-1;
 	
 	if(tihw.hw_type == HW2)
 	{
 		mem_tab[7] = tihw.io2;
-		mem_mask[7] = tihw.io_size-1;
+		mem_msk[7] = tihw.io_size-1;
 	}
   
     // blit ROM
@@ -251,15 +251,15 @@ int hw_mem_exit(void)
 // Use: converts m68k address into PC-mapped address
 uint8_t* hw_get_real_address(uint32_t adr) 
 {
-    return &mem_tab[(adr>>20)&0xf][adr&mem_mask[(adr>>20)&0xf]];
+    return &mem_tab[(adr>>20)&0xf][adr&mem_msk[(adr>>20)&0xf]];
 }
 
 /* Put/Get byte/word/longword */
-#define bput(adr, arg) { mem_tab[(adr)>>20][(adr) & mem_mask[(adr)>>20]] = (arg); }
+#define bput(adr, arg) { mem_tab[(adr)>>20][(adr) & mem_msk[(adr)>>20]] = (arg); }
 #define wput(adr, arg) { bput((adr), (arg)>> 8); bput((adr)+1, (arg)&0x00ff); }
 #define lput(adr, arg) { wput((adr), (uint16_t)((arg)>>16)); wput((adr)+2, (uint16_t)((arg)&0xffff)); }
 
-#define bget(adr) (mem_tab[(adr)>>20][(adr)&mem_mask[(adr)>>20]])
+#define bget(adr) (mem_tab[(adr)>>20][(adr)&mem_msk[(adr)>>20]])
 #define wget(adr) ((uint16_t)(((uint16_t)bget(adr))<< 8 | bget((adr)+1)))
 #define lget(adr) ((uint32_t)(((uint32_t)wget(adr))<<16 | wget((adr)+2)))
 

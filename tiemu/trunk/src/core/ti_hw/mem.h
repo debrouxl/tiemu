@@ -56,12 +56,12 @@ extern uint8_t* hw_get_real_address(uint32_t addr);
 
 /* Variables */
 
-extern uint8_t  *mem_tab[];
-extern uint32_t mem_mask[];
+extern uint8_t* mem_tab[];
+extern uint32_t mem_msk[];
 
 /* Defines */
 
-#define rom_at_0() { mem_tab[0] = tihw.rom; mem_mask[0] = tihw.rom_size-1; }
-#define ram_at_0() { mem_tab[0] = tihw.ram; mem_mask[0] = tihw.ram_size-1; }
+#define rom_at_0() { mem_tab[0] = tihw.rom; mem_msk[0] = tihw.rom_size-1; }
+#define ram_at_0() { mem_tab[0] = tihw.ram; mem_msk[0] = tihw.ram_size-1; }
 
 #endif

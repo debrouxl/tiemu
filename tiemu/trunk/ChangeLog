@@ -5,6 +5,10 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect
 
+- 27/07/2004, version 1.75: roms
+	Olivier's suggestions:
+	- 
+
 - 14/07/2004, version 1.74: roms
 	Fixes from Lionel, Kevin and Olivier's suggestions:
 	- when scrolling down in the code window, the bar is now reset 
