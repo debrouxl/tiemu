@@ -41,6 +41,7 @@ const char *ti68k_calctype_to_string(int type)
 		case TI92:  return "TI92";
 		case TI92p: return "TI92+";
 		case V200:  return "V200PLT";
+        case TI89t: return "TI89t";
 		default:    return "none";
 	}
 }
@@ -55,7 +56,9 @@ int ti68k_string_to_calctype(const char *str)
 		return TI92p;
 	else if(!strcmp(str, "V200PLT"))
 		return V200;
-
+    else if(!strcmp(str, "TI89t"))
+		return TI89t;
+       
 	return 0;
 }
 
@@ -63,8 +66,8 @@ const char *ti68k_romtype_to_string(int type)
 {
 	switch(type)
 	{
-		case 0:						return "EPROM";
-		case FLASH_ROM:				return "FLASH";
+		case 0:			return "EPROM";
+		case FLASH_ROM:	return "FLASH";
 	}
 		
 	return 0;
@@ -84,18 +87,21 @@ const char *ti68k_hwtype_to_string(int type)
 {
 	switch(type)
 	{
-		case HW1:  return "hw1";
-		case HW2:  return "hw2";
-		default:   return "none";
+		case HW1:   return "HW1";
+		case HW2:   return "HW2";
+        case HW3:   return "HW3";
+		default:    return "none";
 	}
 }
 
 int ti68k_string_to_hwtype(const char *str)
 {
-	if(!strcmp(str, "hw1"))
+	if(!strcmp(str, "HW1"))
 		return HW1;
-	else if(!strcmp(str, "hw2"))
+	else if(!strcmp(str, "HW2"))
 		return HW2;
+    else if(!strcmp(str, "HW3"))
+		return HW3;
 
 	return 0;
 }

@@ -114,7 +114,7 @@ void ti68k_display_rom_infos(IMG_INFO *s)
   	DISPLAY(_("  Firmware    : v%s\n"), s->version);
   	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->flash));
   	DISPLAY(_("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
-    DISPLAY(_("  ROM base    : %02x\n"), s->rom_base);
+    DISPLAY(_("  ROM base    : %02x\n"), s->rom_base & 0xff);
 	DISPLAY(_("  Hardware    : %i\n"), s->hw_type);
 }
 
@@ -125,7 +125,7 @@ void ti68k_display_tib_infos(IMG_INFO *s)
   	DISPLAY(_("  Firmware    : v%s\n"), s->version);
   	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->flash));
   	DISPLAY(_("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
-    DISPLAY(_("  ROM base    : %02x\n"), s->rom_base);
+    DISPLAY(_("  ROM base    : %02x\n"), s->rom_base & 0xff);
 }
 
 void ti68k_display_img_infos(IMG_INFO *s)
@@ -135,7 +135,7 @@ void ti68k_display_img_infos(IMG_INFO *s)
   	DISPLAY(_("  Firmware    : v%s\n"), s->version);
   	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->flash));
   	DISPLAY(_("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
-    DISPLAY(_("  ROM base    : %02x\n"), s->rom_base);
+    DISPLAY(_("  ROM base    : %02x\n"), s->rom_base & 0xff);
     DISPLAY(_("  Hardware    : %i\n"), s->hw_type);
 	DISPLAY(_("  Has boot    : %s\n"), s->has_boot ? "yes" : "no");	
 }
@@ -176,19 +176,6 @@ int ti68k_get_hw_param_block(IMG_INFO *rom, HW_PARM_BLOCK *block)
     uint32_t addr;
 
     addr = rd_long(&rom->data[0x104]);
-    /*
-#if 0
-	if(rom->internal)
-		addr -= 0x200000;
-	else
-		addr -= 0x400000;
-#else
-    // In order to use V200 patched ROM image from ExtendeD
-    addr -= 0x200000;
-    if(addr > 0x200000)
-        addr -= 0x200000;
-#endif
-        */
     addr -= (rom->rom_base << 16);
 
 	if(addr < 0x000000 || addr >= 0x200000)
@@ -258,8 +245,8 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
   	fclose(file);
 
     rom->has_boot = 1;
-    rom->rom_base = rom->data[0x05];
-  	rom->flash = (rom->data[0x65] & 0xf) ? 0 : FLASH_ROM;
+    rom->rom_base = rom->data[0x05] & 0xf0;
+  	rom->flash = (rom->data[0x65] & 0x0f) ? 0 : FLASH_ROM;
 
     get_rom_version(rom->data, rom->size, rom->version);
 
@@ -280,6 +267,7 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
         case 1: rom->calc_type = TI92p; break;
         case 3: rom->calc_type = TI89;  break;
         case 8: rom->calc_type = V200;  break;
+        case 9: rom->calc_type = TI89t; break;
         default: break;
         }
 
@@ -341,27 +329,29 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
   		tib->data = malloc(SPP + ptr->data_length + 4);
 	if(tib->data == NULL)
 		return ERR_MALLOC;
-  	//memset(tib->data, 0xff, SPP + ptr->data_length);
+
     memset(tib->data + SPP, 0xff, ptr->data_length);
   	memcpy(tib->data + SPP, ptr->data_part, ptr->data_length);
   	
   	// Update current rom infos
+    tib->rom_base = tib->data[0x8d + SPP] & 0xf0;
+
 	switch(ptr->device_type & 0xff)
 	{
-		case DEVICE_TYPE_89:
-      		tib->calc_type = TI89;
-            tib->rom_base = 0x20;
+		case DEVICE_TYPE_89:    // can be a Titanium, too
+            switch(tib->rom_base & 0xff)
+            {
+            case 0x20: tib->calc_type = TI89;  break;
+            case 0x80: tib->calc_type = TI89t; break;
+            default: return ERR_INVALID_UPGRADE;
+            }
 		break;
 		case DEVICE_TYPE_92P:
-            if(tifiles_which_calc_type(filename) == CALC_TI92P)
+            switch(tib->rom_base & 0xff)
             {
-      		    tib->calc_type = TI92p;
-                tib->rom_base = 0x40;
-            }
-            else
-            {
-                tib->calc_type = V200;
-                tib->rom_base = 0x20;
+            case 0x20: tib->calc_type = V200;  break;
+            case 0x40: tib->calc_type = TI92p; break;
+                default: return ERR_INVALID_UPGRADE;
             }
 		break;
 		default:
@@ -375,8 +365,6 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
   	tib->size = ptr->data_length + SPP;
 
   	get_rom_version(tib->data, tib->size, tib->version);
-
-	//tib->hw_type = 2;	// hw2 is default
   	
   	ti9x_free_flash_content(&content);
 	if(!preload)
@@ -540,7 +528,10 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	img.revision = IMG_REV;
     real_size = img.size - SPP;
     img.size = ti68k_get_rom_size(img.calc_type);
-    img.hw_type = HW2;  //default
+    if(img.calc_type == TI89t)
+        img.hw_type = HW3;  //default
+    else
+        img.hw_type = HW2;  //default
 	
 	// Write header
 	fwrite(&img, 1, sizeof(IMG_INFO), f);
@@ -571,11 +562,12 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
     fputc(0x00, f);
     fputc(0x00, f);
     fputc(0x00, f);
-    switch(img.calc_type)
+    switch(img.calc_type)   // hw parm block
     {
         case TI89:  fputc(0x03, f); break;
         case TI92p: fputc(0x01, f); break;
         case V200:  fputc(0x08, f); break;
+        case TI89t: fputc(0x09, f); break;
     }
 
   	for(i = 0x10e; i < SPP; i++)

@@ -50,7 +50,7 @@ typedef unsigned char	uchar;	// can't replace UBYTE/uchar by uint8_t type, why ?
 #define TI92p	 	(1 << 2)
 #define V200		(1 << 3)
 #define TI89t		(1 << 4)
-#define CALC_MAX    V200
+#define CALC_MAX    TI89t
   
 #define EXTERNAL	0
 #define INTERNAL 	1
@@ -63,6 +63,7 @@ typedef unsigned char	uchar;	// can't replace UBYTE/uchar by uint8_t type, why ?
 
 #define HW1			1
 #define HW2			2
+#define HW3         3
 
 #define DBG_BREAK   1
 #define DBG_TRACE   2
