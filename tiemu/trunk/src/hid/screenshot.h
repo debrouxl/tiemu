@@ -24,11 +24,6 @@
 #ifndef __SCREENSHOT__
 #define __SCREENSHOT__
 
-
-/*******************************/
-/* Constants for do_screenshot */
-/*******************************/
-
 #define IMG_XPM 1 // unsupported
 #define IMG_PCX 2 // unsupported
 #define IMG_JPG 3 // supported by PixBuf

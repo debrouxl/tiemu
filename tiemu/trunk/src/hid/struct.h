@@ -40,24 +40,29 @@
 */
 typedef struct
 {
-  // TI core field
-  Ti68kParameters *params;
-  TicableLinkParam *link_cable;
-
-  gchar*	skin_file;
-  
-  gint		code_lines;
-  gint		stack_lines;
-  gint		mem_lines;
-  gint		img_type;
-  gint		img_format;
-  gint		img_size;
-  gchar*	img_file;
-  gint		img_counter;
-
-  gint		console;
+	// TI core field
+	Ti68kParameters  *params;
+	TicableLinkParam *link_cable;
+	
+	gchar* skin_file;
+	
+	gint	code_lines;
+	gint	stack_lines;
+	gint	mem_lines;
+	
+	gint	console;
 
 } TieOptions;
+
+
+typedef struct {
+	int		format;
+	int		type;
+	int		size;
+
+	char*	        file;
+	int		counter;
+} ScrOptions;
 
 extern TieOptions options;
 
