@@ -1,4 +1,9 @@
-2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+2005-04-03  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * coffread.c (coff_symtab_read): Fudge long section names the same way TIGCC does it.
+        * ../bfd/bfd.c (bfd_get_sign_extend_vma): Return 0 (as for m68k-elf) by default instead of erroring.
+
+2005-04-03  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         BCD floating point support:
         * ../libiberty/floatformats.c (floatformat_smapbcd_big): New floatformat structure.

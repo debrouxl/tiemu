@@ -857,6 +857,8 @@ bfd_get_sign_extend_vma (bfd *abfd)
       || strcmp (name, "pei-i386") == 0)
     return 1;
 
+  return 0; /* (TiEmu 20050403 Kevin Kofler) Well, see above... */
+
   bfd_set_error (bfd_error_wrong_format);
   return -1;
 }

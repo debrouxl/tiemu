@@ -814,6 +814,20 @@ coff_symtab_read (long symtab_offset, unsigned int nsyms,
 	     so filter them out (from phdm@macqel.be). */
 	  if (within_function)
 	    break;
+          /* (TiEmu 20050403 Kevin Kofler) This trick is used in TIGCC to
+             support long section names, so we need to support it as well. */
+          {
+            asection *sect = NULL;
+            struct find_targ_sec_arg args;
+            args.targ_index = cs->c_secnum;
+            args.resultp = &sect;
+            bfd_map_over_sections (objfile->obfd, find_targ_sec, &args);
+            if (sect && main_sym.n_value == sect->vma && !strncmp (cs->c_name, sect->name, 8))
+              {
+                sect->name = cs->c_name;
+                break;
+              }
+          }
 	case C_STAT:
 	case C_THUMBLABEL:
 	case C_THUMBSTAT:
