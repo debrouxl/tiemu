@@ -54,8 +54,12 @@ static void crash_calc(void)
 {
 	//hw_reset();
 	access = crash = 0;
-	//printf("Err, you've crashed the calc !\n");
+	printf("Grr, you've crashed the calc !\n");
 }
+
+// note: if(!(adr & 1)) is used to avoid multiple increment when reading/writing words
+// this don't work for longs but this problem will not exist when this code will be
+// splitted.
 
 uint8_t ti89_hwp_get_byte(uint32_t adr) 
 {
@@ -87,13 +91,17 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 		else
 		{
 			// any four consecutive access to $1c0000-1fffff crashes the calculator
-			if(++crash >= 4)
+			if(!(adr & 1)) crash++;
+			if(crash >= 4)
+			{
 				crash_calc();
+				printf("1");
+			}
 		}
 	}
 	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
 	{
-		access++;
+		if(!(adr & 1)) access++;
 	}
 	else if(IN_RANGE(0x210000, adr, 0x211fff))			// certificate (read protected)
 	{
@@ -102,7 +110,7 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 	}
 	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
 	{
-		access++;
+		if(!(adr & 1)) access++;
 	}
 	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
 	{
@@ -111,14 +119,18 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 	}
 	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
 	{
-		access++;
+		if(!(adr & 1)) access++;
 	}
 	else if(IN_RANGE(0x390000+arch_mem_limit*0x10000, 
 								adr, 0x3fffff))			// archive memory limit
 	{
 		// three consecutive access to any adress >=$390000+limit*$10000 and <$400000 crashes the calc
-		if(++arch_mem_crash >= 4)
-				crash_calc();
+		if(!(adr & 1)) arch_mem_crash++;
+		if(arch_mem_crash >= 4)
+		{
+			//crash_calc();
+			//printf("2");
+		}
 	}
 	else
 	{
@@ -151,12 +163,12 @@ uint8_t ti89_hwp_get_byte(uint32_t adr)
 
 uint16_t ti89_hwp_get_word(uint32_t adr) 
 {
-	return (ti89_hwp_get_byte(adr) << 8) | ti89_hwp_get_byte(adr+1);
+	return (ti89_hwp_get_byte(adr+0) << 8) | ti89_hwp_get_byte(adr+1);
 }
 
 uint32_t ti89_hwp_get_long(uint32_t adr) 
 {
-	return (ti89_hwp_get_word(adr) << 16) | ti89_hwp_get_word(adr+2);
+	return (ti89_hwp_get_word(adr+0) << 16) | ti89_hwp_get_word(adr+2);
 }
 
 void ti89_hwp_put_byte(uint32_t adr, uint8_t arg) 
@@ -189,14 +201,19 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 		else
 		{
 			// any four consecutive accesses to $1c0000-1fffff crashes the calculator
-			if(++crash >= 4)
+			if(!(adr & 1)) crash++;
+			if(crash >= 4)
+			{
 				crash_calc();
+				printf("3");
+			}
 		}
 	}
 	else if(IN_RANGE(0x200000, adr, 0x20ffff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
-			access++;
+			if(!(adr & 1)) 
+				access++;
 		return;		// don't write on boot code
 	}
 	else if(IN_RANGE(0x210000, adr, 0x211fff))			// certificate (read protected)
@@ -205,7 +222,8 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 	else if(IN_RANGE(0x212000, adr, 0x217fff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
-			access++;
+			if(!(adr & 1)) 
+				access++;
 	}
 	else if(IN_RANGE(0x2180000, adr, 0x219fff))			// read protected
 	{
@@ -214,14 +232,19 @@ void ti89_hwp_put_byte(uint32_t adr, uint8_t arg)
 	else if(IN_RANGE(0x21a0000, adr, 0x21ffff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
-			access++;
+			if(!(adr & 1)) 
+				access++;
 	}
 	else if(IN_RANGE(0x390000+arch_mem_limit*0x10000, 
 								adr, 0x3fffff))			// archive memory limit
 	{
 		// three consecutive access to any adress >=$390000+limit*$10000 and <$400000 crashes the calc
-		if(++arch_mem_crash >= 4)
-				crash_calc();
+		if(!(adr & 1)) arch_mem_crash++;
+		if(arch_mem_crash >= 4)
+		{
+			//crash_calc();
+			//printf("4");
+		}
 	}
 	else
 	{
