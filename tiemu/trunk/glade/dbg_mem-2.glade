@@ -21,37 +21,51 @@
       <property name="spacing">0</property>
 
       <child>
-	<widget class="GtkMenuBar" id="menubar1">
+	<widget class="GtkToolbar" id="toolbar1">
 	  <property name="visible">True</property>
+	  <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+	  <property name="toolbar_style">GTK_TOOLBAR_ICONS</property>
+	  <property name="tooltips">True</property>
 
 	  <child>
-	    <widget class="GtkMenuItem" id="menuitem1">
+	    <widget class="button" id="button1">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">_Tab</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-add</property>
+	      <property name="use_stock">True</property>
+	      <signal name="clicked" handler="dbgmem_button1_clicked" last_modification_time="Thu, 10 Jun 2004 10:32:18 GMT"/>
+	    </widget>
+	  </child>
 
-	      <child>
-		<widget class="GtkMenu" id="menuitem1_menu">
+	  <child>
+	    <widget class="button" id="button2">
+	      <property name="visible">True</property>
+	      <property name="label">gtk-remove</property>
+	      <property name="use_stock">True</property>
+	      <signal name="clicked" handler="dbgmem_button2_clicked" last_modification_time="Thu, 10 Jun 2004 10:32:25 GMT"/>
+	    </widget>
+	  </child>
 
-		  <child>
-		    <widget class="GtkImageMenuItem" id="add1">
-		      <property name="visible">True</property>
-		      <property name="label">gtk-add</property>
-		      <property name="use_stock">True</property>
-		      <signal name="activate" handler="on_add1_activate" last_modification_time="Wed, 02 Jun 2004 06:09:26 GMT"/>
-		    </widget>
-		  </child>
+	  <child>
+	    <widget class="GtkVSeparator" id="vseparator1">
+	      <property name="visible">True</property>
+	    </widget>
+	  </child>
 
-		  <child>
-		    <widget class="GtkImageMenuItem" id="del1">
-		      <property name="visible">True</property>
-		      <property name="label">gtk-remove</property>
-		      <property name="use_stock">True</property>
-		      <signal name="activate" handler="on_del1_activate" last_modification_time="Wed, 02 Jun 2004 06:09:26 GMT"/>
-		    </widget>
-		  </child>
-		</widget>
-	      </child>
+	  <child>
+	    <widget class="button" id="button3">
+	      <property name="visible">True</property>
+	      <property name="label">gtk-go-up</property>
+	      <property name="use_stock">True</property>
+	      <signal name="clicked" handler="dbgmem_button3_clicked" last_modification_time="Thu, 10 Jun 2004 10:32:46 GMT"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="button" id="button4">
+	      <property name="visible">True</property>
+	      <property name="label">gtk-go-down</property>
+	      <property name="use_stock">True</property>
+	      <signal name="clicked" handler="dbgmem_button4_clicked" last_modification_time="Thu, 10 Jun 2004 10:32:39 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
@@ -119,6 +133,7 @@
 	    <widget class="GtkButton" id="okbutton1">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
+	      <property name="has_default">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label">gtk-ok</property>
 	      <property name="use_stock">True</property>
@@ -146,6 +161,7 @@
 	    <widget class="GtkEntry" id="entry1">
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
+	      <property name="has_focus">True</property>
 	      <property name="editable">True</property>
 	      <property name="visibility">True</property>
 	      <property name="max_length">0</property>

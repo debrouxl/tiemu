@@ -499,14 +499,12 @@ gint display_dbgregs_window(void)
 	data = glade_xml_get_widget(xml, "treeview1");
     store = ctree_create(data);
 	ctree_populate(store);
-	//ctree_refresh(store);
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
 
 	gtk_window_resize(GTK_WINDOW(dbox), options3.regs.w, options3.regs.h);
 	gtk_window_move(GTK_WINDOW(dbox), options3.regs.x, options3.regs.y);
-	//gtk_widget_set_uposition(GTK_WIDGET(dbox), options3.regs.x, options3.regs.y);
     gtk_widget_show(GTK_WIDGET(dbox));
 
 	already_open = !0;

@@ -52,10 +52,12 @@ enum {
 		COL_4b, COL_5b, COL_6b, COL_7b, 
 		COL_8b, COL_9b, COL_Ab, COL_Bb, 
 		COL_Cb, COL_Db, COL_Eb, COL_Fb,
-		COL_COLOR
+		COL_COLOR, COL_FONT
 };
 #define CLIST_NVCOLS	(18)
-#define CLIST_NCOLS		(18+17)
+#define CLIST_NCOLS		(18+18)
+
+#define FONT_NAME	"courier"
 
 static gint column2index(GtkWidget *list, GtkTreeViewColumn * column)
 {
@@ -152,7 +154,7 @@ static GtkWidget* clist_create(GtkListStore **st)
 				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
 				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
 				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
-				GDK_TYPE_COLOR,
+				GDK_TYPE_COLOR, G_TYPE_STRING,
 				-1
             );
     model = GTK_TREE_MODEL(store);
@@ -169,6 +171,7 @@ static GtkWidget* clist_create(GtkListStore **st)
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i,
+			"font", COL_FONT,
 			"foreground-gdk", COL_COLOR,
 			NULL);
 
@@ -179,6 +182,7 @@ static GtkWidget* clist_create(GtkListStore **st)
         gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i, 
+			"font", COL_FONT,
             "editable", i + CLIST_NVCOLS - 1,
             NULL);
 
@@ -191,6 +195,7 @@ static GtkWidget* clist_create(GtkListStore **st)
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i,
+			"font", COL_FONT,
 			"foreground-gdk", COL_COLOR,
 			NULL);
     
@@ -215,7 +220,7 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
     int i;
     gchar *str;
     char ascii[17];
-    uint32_t addr;
+    uint32_t a;
 	GdkColor color;
 	gboolean success;
 
@@ -223,8 +228,9 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color, 1,
 				  FALSE, FALSE, &success);
 
-    for(addr = start; addr < start+length; addr += 0x10)
+    for(a = start; a < start+length; a += 0x10)
     {
+		uint32_t addr = a & 0xffffff;
 		uint8_t *mem_ptr;
 
         gtk_list_store_append(store, &iter);
@@ -233,6 +239,7 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 		gtk_list_store_set(store, &iter, 
 			COL_ADDR, str, 
 			COL_COLOR, &color,
+			COL_FONT, FONT_NAME,
 			-1);
 		g_free(str);
 
@@ -257,6 +264,12 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 			COL_COLOR, &color,
 			-1);
     }
+}
+
+static void clist_refresh(GtkListStore *store, uint32_t start, int length)
+{
+	gtk_list_store_clear(store);
+	clist_populate(store, start, length);
 }
 
 static void notebook_add_tab(GtkWidget *notebook, const char* tab_name)
@@ -288,11 +301,12 @@ static void notebook_add_tab(GtkWidget *notebook, const char* tab_name)
     {
 		// display normal
 		sscanf(tab_name, "%06x", &addr);
-    	clist_populate(store, addr, 64);
+    	clist_populate(store, addr, 128);
     }
 	gtk_widget_show(child);
 
 	gtk_notebook_insert_page(GTK_NOTEBOOK(notebook), child, label, current_page);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), current_page);
 }
 
 
@@ -397,7 +411,7 @@ on_dbgmem_window_destroy               (GtkObject       *object,
 
 
 GLADE_CB void
-on_add1_activate                       (GtkMenuItem     *menuitem,
+dbgmem_button1_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
 	uint32_t addr;
@@ -412,10 +426,98 @@ on_add1_activate                       (GtkMenuItem     *menuitem,
 
 
 GLADE_CB void
-on_del1_activate                       (GtkMenuItem     *menuitem,
+dbgmem_button2_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
 	gint current_page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
 	
 	gtk_notebook_remove_page(GTK_NOTEBOOK(notebook), current_page);
+}
+
+GLADE_CB void
+dbgmem_button3_clicked                     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	gint page;
+	GtkWidget *nb = notebook;
+	GtkWidget *tab;
+	GtkWidget *label;
+	G_CONST_RETURN gchar *text;
+	uint32_t addr;
+
+	GList *l;
+	GtkWidget *list;
+	GtkTreeView *view;
+	GtkTreeModel *model;
+	GtkListStore *store;
+	gchar *str;
+
+	// retrieve addr by tab name
+	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
+	tab = gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook), page);
+	label = gtk_notebook_get_tab_label(GTK_NOTEBOOK(notebook), tab);
+	text = gtk_label_get_text(GTK_LABEL(label));
+
+	// get list pointer (we have 1 child)
+	l = gtk_container_get_children(GTK_CONTAINER(GTK_NOTEBOOK(notebook)));
+	list = GTK_WIDGET(l->data);
+	view = GTK_TREE_VIEW(list);
+	model = gtk_tree_view_get_model(view);
+	store = GTK_LIST_STORE(model);
+
+	if(!strcmp(text, "STACK"))
+		return;
+
+	sscanf(text, "%06x", &addr);
+	addr -= 0x10;
+	addr &= 0xffffff;
+
+	str = g_strdup_printf("%06lx", addr);
+	gtk_label_set_text(GTK_LABEL(label), str);
+	g_free(str);
+   	clist_refresh(store, addr, 128);
+}
+
+GLADE_CB void
+dbgmem_button4_clicked                     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	gint page;
+	GtkWidget *nb = notebook;
+	GtkWidget *tab;
+	GtkWidget *label;
+	G_CONST_RETURN gchar *text;
+	uint32_t addr;
+
+	GList *l;
+	GtkWidget *list;
+	GtkTreeView *view;
+	GtkTreeModel *model;
+	GtkListStore *store;
+	gchar *str;
+
+	// retrieve addr by tab name
+	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(notebook));
+	tab = gtk_notebook_get_nth_page(GTK_NOTEBOOK(notebook), page);
+	label = gtk_notebook_get_tab_label(GTK_NOTEBOOK(notebook), tab);
+	text = gtk_label_get_text(GTK_LABEL(label));
+
+	// get list pointer (we have 1 child)
+	l = gtk_container_get_children(GTK_CONTAINER(GTK_NOTEBOOK(notebook)));
+	list = GTK_WIDGET(l->data);
+	view = GTK_TREE_VIEW(list);
+	model = gtk_tree_view_get_model(view);
+	store = GTK_LIST_STORE(model);
+
+	if(!strcmp(text, "STACK"))
+		return;
+
+	sscanf(text, "%06x", &addr);
+	addr += 0x10;
+	addr &= 0xffffff;
+
+	str = g_strdup_printf("%06lx", addr);
+	gtk_label_set_text(GTK_LABEL(label), str);
+	g_free(str);
+   	clist_refresh(store, addr, 128);
 }

@@ -38,10 +38,12 @@
 
 enum { 
 	    COL_ICON, COL_ADDR, COL_OPCODE, COL_OPERAND,
-        COL_HEXADDR
+        COL_HEXADDR, COL_FONT
 };
-#define CLIST_NVCOLS	(4)		// 3 visible columns
-#define CLIST_NCOLS		(5)		// 4 real columns
+#define CLIST_NVCOLS	(4)		// 4 visible columns
+#define CLIST_NCOLS		(6)		// 6 real columns
+
+#define FONT_NAME	"courier"
 
 static GtkListStore* clist_create(GtkWidget *list)
 {
@@ -56,7 +58,7 @@ static GtkListStore* clist_create(GtkWidget *list)
 	store = gtk_list_store_new(CLIST_NCOLS,
 				GDK_TYPE_PIXBUF, 
                 G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-                G_TYPE_INT
+                G_TYPE_INT, G_TYPE_STRING,
 				-1
             );
     model = GTK_TREE_MODEL(store);
@@ -111,7 +113,7 @@ static void clist_populate(GtkListStore *store)
     {
         char output[128];
         int offset;
-	gchar** split;
+		gchar** split;
         gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
         uint32_t value;
         
@@ -121,16 +123,16 @@ static void clist_populate(GtkListStore *store)
 
         split = g_strsplit(output, " ", 3);
 
-	row_text[0] = g_strdup(split[0]);
-	sscanf(row_text[0], "%x", &value);
+		row_text[0] = g_strdup(split[0]);
+		sscanf(row_text[0], "%x", &value);
         if(split[1] == NULL)
             row_text[1] = g_strdup("");
-	else
-	    row_text[1] = g_strdup(split[1]);
-	if(split[2] == NULL)
+		else
+			row_text[1] = g_strdup(split[1]);
+		if(split[2] == NULL)
             row_text[2] = g_strdup("");
-	else
-	    row_text[2] = g_strdup(split[2]);
+		else
+			row_text[2] = g_strdup(split[2]);
 
         pix = create_pixbuf("void.xpm");
 
@@ -141,11 +143,12 @@ static void clist_populate(GtkListStore *store)
 		COL_OPCODE, row_text[1],
         COL_OPERAND, row_text[2],
         COL_HEXADDR, value,
+		COL_FONT, FONT_NAME,
 		-1);
 
         addr += offset;
         g_strfreev(split);
-	g_strfreev(row_text);
+		g_strfreev(row_text);
     }
 }
 
