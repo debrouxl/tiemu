@@ -127,11 +127,8 @@ void io_put_byte(uint32_t addr, uint8_t arg)
             }
             
 			// turn off OSC1 (CPU), wake on int level 6 (ON key) and int level [5..1]
-			if(!(arg & 0x10) && (tihw.calc_type != TI92))	// should be 0x1f, does not work otherwise
-				specialflags |= SPCFLAG_STOP; 
-			if(!(arg & 0x10) && tihw.calc_type == TI92)
-				specialflags |= SPCFLAG_STOP;
-            break;
+			specialflags |= SPCFLAG_STOP; 
+        break;
         case 0x06: 
 		case 0x07: 
 		case 0x08: 

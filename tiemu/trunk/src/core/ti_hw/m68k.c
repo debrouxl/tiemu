@@ -146,6 +146,8 @@ int hw_m68k_run(int n)
 			opcode = nextiword();
 			(*cpufunctbl[opcode])(opcode);
 		}
+
+		// refresh hardware
         do_cycles();
 
         // management of special flags
@@ -161,9 +163,28 @@ int hw_m68k_run(int n)
 	        {
 	            Exception(9);
 	        }
-	      
-			if (specialflags & SPCFLAG_STOP)	//while (specialflags & SPCFLAG_STOP) 
+
+			// while (specialflags & SPCFLAG_STOP)
+			// need to be re-entrant so that hardware (ON key) is still running.
+			if (specialflags & SPCFLAG_STOP)
 	        {
+				int intr = intlev();
+				// wake on int level 6 (ON key) or level 1..5
+				if(
+					((intr == 5) && (tihw.io[0x05] & 0x10)) ||
+					((intr == 4) && (tihw.io[0x05] & 0x08)) ||
+					((intr == 3) && (tihw.io[0x05] & 0x04)) ||
+					((intr == 2) && (tihw.io[0x05] & 0x02)) ||
+					((intr == 1) && (tihw.io[0x05] & 0x01))
+					)
+				{
+					Interrupt(intr);
+					regs.stopped = 0;
+					specialflags &= ~SPCFLAG_STOP;
+				}
+
+				// useful ??
+				/*
 	            if (specialflags & (SPCFLAG_INT | SPCFLAG_DOINT)) 
 		        {
 		            int intr = intlev();
@@ -173,8 +194,10 @@ int hw_m68k_run(int n)
 		                Interrupt(intr);
 		                regs.stopped = 0;
 		                specialflags &= ~SPCFLAG_STOP;
+						printf("#*#\n");
 		            }	    
 		        }
+				*/
 	        }
 	      
 	        if (specialflags & SPCFLAG_TRACE) 

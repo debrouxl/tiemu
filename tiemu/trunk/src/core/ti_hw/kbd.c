@@ -140,11 +140,14 @@ int hw_kbd_update(void)		// ~600Hz
 {
     if(tihw.on_key) 
     {
-    	// set calc on
+		// set calc on
         if(specialflags & SPCFLAG_STOP)
+		{
 	        specialflags &= ~SPCFLAG_STOP;
-	        
-	    // Auto-Int 6 triggered when [ON] is pressed.
+			regs.stopped = 0;
+		}
+
+    	// Auto-Int 6 triggered when [ON] is pressed.
 		hw_m68k_irq(6);
     }
 	else

@@ -201,8 +201,6 @@ int hid_update_lcd(void)
 
 		if(!lcd_state)
 			redraw_lcd();	// to clear LCD
-
-		printf("lcd state: %i\n", lcd_state);
 	}
 
 	// Check for contrast change (from TI HW)

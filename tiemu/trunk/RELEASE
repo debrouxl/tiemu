@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.80c		(23/09/2004)
-Current version:  1.80d		(24/10/2004)
+Previous version: 1.80d		(23/09/2004)
+Current version:  1.80f		(13/11/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -26,14 +26,15 @@ New capabilities:
 Improvements:
 -------------
 
-	- none
+	- PedRom is now supported and provided as default OS
+	- modified .sav format to be backwards compatible in the future
 		
 
 Bug fixes:
 ----------
 
-	- FLASH device emulated for TI89 Titanium
-	- [linux] directory creation in $HOME
+	- 'unexpected Xlib async reply' (Linux)
+	- fixed various key binding bugs
 
 
 To do:

@@ -1,4 +1,4 @@
-List of stuffs to do:
+List of stuffs to do (in French, sorry):
 
 ExtendeD
 ========
@@ -46,7 +46,7 @@ engine d'ExtGraph, pas disponible dans ExtGraph)
 et dissolve, seuls programmes en niveaux de 
 gris de mon rom dump.
 
-* tthdex ne marche pas convenablement, les 
+- tthdex ne marche pas convenablement, les 
 pressions de touches ne sont pas prises en compte. 
 En traçant dans la routine d'attente, qui utilise 
 OSdequeue (c'est la classique GetUserInput que 
@@ -56,6 +56,10 @@ idle();. Commenter cet appel (remplacement des
 trois instructions par nop, 0x4E71) suffit à faire 
 marcher tthdex normalement. Il doit donc y avoir au 
 moins un port mal émulé.
+En effet, sur 89 les touches ne répondent pas, et sur 92+ il n'y a pas
+de scrolling quand on laisse appuyé une touche.
+Je ne pourrais pas trop de dire d'où ça vient, mais si c'est idle()
+qui pose problème, ce doit être le port $600005 qui est mal émulé.
 
 * l'AI3 ne semble pas être émulée correctement. Le 
 programme de test que j'utilise regarde les contenus 
@@ -68,8 +72,7 @@ réaffichage est relancée bien trop souvent.
 
 * sur 89, l'interprétation des touches se mélange 
 parfois les pinceaux (4 au lieu de l, 6 au lieu de o,
-. 
-au lieu de w).
+. au lieu de w).
 
 * le menu qui apparaît par un clic droit sur la 
 fenêtre skin+screen de l'émulateur marche 
@@ -138,6 +141,36 @@ cas où elle serait trop profonde et que j'abandonne le déboguage à
 quelques niveaux d'appels plus profond. Je fais un run et mon
 breakpoint est touché; je l'enlève et je continue. Un breakpoint
 temporaire éviterait d'avoir à l'enlever à chaque fois.
+
+* Alors qu'un AMS est déjà émulé, une importation de ROM puis sa
+sélection lance une erreur (en popup) :
+GGdk-ERROR **: file gdkgc-win32.c: line 905 (gdk_win32_hdc_get):
+assertion failed: (win32_gc->hdc == NULL)
+Puis TiEmu quitte. Après un redémarrage de TiEmu, il n'y a plus de
+problème à la sélection de la ROM.
+
+* Quand on édite avec l'éditeur hexa dans la mémoire correspondant à
+la pile, la fenêtre Stack Frame n'est pas rafraîchie.
+
+* Le mode 'either' des data breakpoints ne semble pas être pris en
+compte (la colonne 'Mode' est toujours mise à 'read')
+
+* Il est parfois impossible d'enlever un data breakpoint en cliquant
+sur le moins ('-'), ça n'a aucun effet.
+
+* J'ai aussi plusieurs crash de cause difficile à déterminer en
+utilisant le débogueur. Il y en a peut-être un lié à la fonction
+'disable' de breakpoint.
+
+* Dropdown 'Symbol' pour les ROM Calls dans la fenêtre source : il
+faudrait trier insensible à la casse, et quand on tape le début d'un
+nom de ROM Call, amener à la première ROM call correspondante, comme
+dans la version de VTI de JM.
+
+* Pouvoir envoyer un fichier en le glissant déplaçant vers la calc
+serait pratique, comme sous VTI. Ou il faudrait au moins que le
+dernier dossier visité avec l'explorateur de fichier soit gardé en
+mémoire et utilisé comme répertoire de départ au prochain envoi.
 
 
 Kevin
