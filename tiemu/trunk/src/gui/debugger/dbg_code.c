@@ -220,6 +220,7 @@ static void clist_refresh(GtkListStore *store)
 static GtkWidget *list;
 static GtkListStore *store;
 static gint already_open = 0;
+
 typedef struct {
 	GtkWidget *b1;
 	GtkWidget *b2;
@@ -230,6 +231,15 @@ typedef struct {
 } TB;
 static TB tb;
 
+typedef struct {
+    GtkWidget *m1;
+    GtkWidget *m2;
+    GtkWidget *m3;
+    GtkWidget *m4;
+    GtkWidget *m5;
+} MI;
+static MI mi;
+
 static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6)
 {
 	gtk_widget_set_sensitive(tb.b1, s1);
@@ -238,6 +248,12 @@ static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6)
 	gtk_widget_set_sensitive(tb.b4, s4);
 	gtk_widget_set_sensitive(tb.b5, s5);
 	gtk_widget_set_sensitive(tb.b6, s6);
+
+    gtk_widget_set_sensitive(mi.m1, s1);
+	gtk_widget_set_sensitive(mi.m2, s2);
+	gtk_widget_set_sensitive(mi.m3, s3);
+	gtk_widget_set_sensitive(mi.m4, s4);
+	gtk_widget_set_sensitive(mi.m5, s5);
 }
 
 /*
@@ -264,6 +280,13 @@ GtkWidget* create_dbgcode_window(void)
 	tb.b4 = glade_xml_get_widget(xml, "button4");
 	tb.b5 = glade_xml_get_widget(xml, "button5");
 	tb.b6 = glade_xml_get_widget(xml, "button6");
+
+    mi.m1 = glade_xml_get_widget(xml, "run1");
+    mi.m2 = glade_xml_get_widget(xml, "step1");
+    mi.m3 = glade_xml_get_widget(xml, "step_over1");
+    mi.m4 = glade_xml_get_widget(xml, "run_to_cursor1");
+    mi.m5 = glade_xml_get_widget(xml, "break1");
+
     list = glade_xml_get_widget(xml, "treeview1");
 
 	data = glade_xml_get_widget(xml, "treeview1");
