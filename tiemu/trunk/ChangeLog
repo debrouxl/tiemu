@@ -7,6 +7,8 @@ To do:
 
 - 19:01/2005, version 1.80k: roms
 	- link port is now reset when error occurs: great improvement
+	- added support of EA bit ($60000D:2): Titanium work
+	- clean-up of linkport support (no more hack)
 
 - 12/01/2005, version 1.80j: roms
 	- rewrite of the m68k loop:

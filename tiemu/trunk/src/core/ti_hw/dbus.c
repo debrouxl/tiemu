@@ -292,6 +292,9 @@ static int ilp_put(uint8_t data)
   	f2t_data = data; 
   	f2t_flag = 1;
 
+	io_bit_set(0x0d,5);	// SRX=1 (rx reg is full)
+	io_bit_set(0x0d,2);	// link activity
+
 	toSTART(clk);
   	while(f2t_flag) 
     { 
@@ -300,8 +303,6 @@ static int ilp_put(uint8_t data)
 			return ERR_WRITE_TIMEOUT;
     };
 
-	//printf("%02x ", data);
-  
   	return 0;
 }
 
@@ -320,8 +321,8 @@ static int ilp_get(uint8_t *data)
   	*data = t2f_data;
   	t2f_flag = 0;
 
-	//printf("%02x ", *data);
-  
+	io_bit_set(0x0d,6);	// STX=1 (tx reg is empty)
+
 	return 0;
 }
 

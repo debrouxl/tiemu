@@ -216,10 +216,6 @@ void hw_update(void)
 	// DBUS enabled ?
 	if(!io_bit_tst(0x0c,6))
 	{
-		// Hack for direct file loading
-		if(tihw.lc_speedy && (tihw.io[0x0c] & 0x2 || hw_dbus_checkread())) 
-			hw_m68k_irq(4);
-
 		// Trigger int4 on: error, link act, txbuf empty or rxbuf full
 		if((io_bit_tst(0x0c,3) && io_bit_tst(0x0d,7))  ||
 			(io_bit_tst(0x0c,2) && io_bit_tst(0x0d,3)) ||
