@@ -8,6 +8,7 @@ To do:
 - 19/03/2005, version 1.80q:
 	- [roms]  $985: updated copyright notice.
 	- [roms]  $990: set main window title (for TIGCC-IDE).
+	- [roms]  $993: switched to GTK+ 2.6.4 for Windows.
 
 - 12/03/2005, version 1.80p:
 	- [kevin] $933: increased link timeout from 1.5 to 10s.
