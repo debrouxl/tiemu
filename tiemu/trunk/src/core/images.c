@@ -413,8 +413,9 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
 	// Check file
 	if(!ti68k_is_a_img_file(filename))
 	{
-		fprintf(stderr, "Images must have '.img' extension.\n");
-      	return ERR_CANT_OPEN;
+		fprintf(stderr, "Images must have '.img' extension (%s).\n",
+			filename);
+		return ERR_CANT_OPEN;
 	}
 	
 	// Open dest file

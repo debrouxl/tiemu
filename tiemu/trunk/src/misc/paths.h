@@ -73,7 +73,7 @@ extern TiemuInstPaths inst_paths;
   Functions
 */
 
-int build_home_path(char **path, char *fileaname);
+//int build_home_path(char **path, char *fileaname);
 
 int initialize_paths(void);
 

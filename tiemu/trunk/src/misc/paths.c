@@ -48,6 +48,8 @@ TiemuInstPaths inst_paths;      // installation paths
 #if defined(__LINUX__) || defined(__BSD__) || defined(__MACOSX__)
 static void init_linux_paths(void)
 {
+	gchar *tmp;
+
 	inst_paths.base_dir =
 	    g_strconcat(SHARE_DIR, G_DIR_SEPARATOR_S, NULL);
 	inst_paths.pixmap_dir =
@@ -64,6 +66,10 @@ static void init_linux_paths(void)
 		g_strconcat(g_get_home_dir(), "/", NULL);
 	inst_paths.img_dir = 
             g_strconcat(inst_paths.home_dir, CONF_DIR, "images/", NULL);
+
+	tmp = g_strconcat(inst_paths.home_dir, CONF_DIR, NULL);
+	mkdir(tmp, 0777);
+	g_free(tmp);
 	mkdir(inst_paths.img_dir, 0777);
 
 	/* bintextdomain(PACKAGE, "/usr/share/locale"); ->
