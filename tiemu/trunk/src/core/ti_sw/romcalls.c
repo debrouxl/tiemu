@@ -33,6 +33,7 @@
 #include "romcalls.h"
 #include "images.h"
 #include "ti68k_def.h"
+#include "timem.h"
 
 static int old_ct = -1;			// previous calc type for reloading
 static char old_av[5] = "0.00";	// previous AMS version

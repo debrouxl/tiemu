@@ -36,4 +36,10 @@ void heap_get_block_addr_and_size(int handle, uint32_t *addr, uint16_t *size);
 
 void heap_search_for_address(uint32_t address, int *handle);
 
+// aliases
+uint32_t heap_deref(int handle);
+uint16_t heap_size(int handle);
+
+
+
 #endif
