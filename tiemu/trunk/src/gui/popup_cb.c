@@ -25,6 +25,7 @@
 #endif
 
 #include <gtk/gtk.h>
+#include <glade/glade.h>
 
 #include "popup_cb.h"
 #include "popup_dbox.h"
@@ -34,16 +35,49 @@
 #include "struct.h"
 #include "interface.h"
 
+/* 
+   Display a popup menu: entry point used by hid.c (SDL)
+*/
+void gui_popup_menu(void)
+{
+	GtkWidget *menu;
+	guint button;
+	guint32 time;
+
+	// don't have time event due to SDL
+	time = gtk_get_current_event_time();
+	
+	// don't have button event due to SDL
+	button = 0;
+
+	// halt emulation engine
+	ti68k_halt();
+
+	// display popup menu
+	menu = GTK_MENU(display_popup_menu());
+	gtk_menu_popup(menu, NULL, NULL, NULL, NULL, button, time);
+	gtk_widget_show(menu);
+}
+
 /*
   Display the GTK popup menu and configure some items
 */
 GtkWidget* display_popup_menu(void)
 {
+	GladeXML *xml;
 	GtkWidget *menu;
 	GtkWidget *w;
 	gchar *s;
   
-	menu = create_popup_menu();
+	//menu = create_popup_menu();
+	xml = glade_xml_new
+	    (tilp_paths_build_glade("popup-2.glade"), "popup_menu",
+	     PACKAGE);
+	if (!xml)
+		g_error(_("popup.c: GUI loading failed !\n"));
+	glade_xml_signal_autoconnect(xml);
+
+	menu = glade_xml_get_widget(xml, "popup_menu");
 
 	// set version
 	w = lookup_widget(menu, "popup_menu_header");
