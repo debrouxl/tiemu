@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.80d		(23/09/2004)
-Current version:  1.80f		(13/11/2004)
+Previous version: 1.80f		(13/11/2004)
+Current version:  1.80i		(03/01/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,7 +20,10 @@ For the other link cables, no driver is needed because it's provided.
 New capabilities:
 -----------------
 
-	- none
+	- added temporary breakpoint mode
+	- breakpoints are now editable
+	- added frame pointer window
+	- added heap window to show handles
 
 
 Improvements:
@@ -28,6 +31,17 @@ Improvements:
 
 	- PedRom is now supported and provided as default OS
 	- modified .sav format to be backwards compatible in the future
+	- improved LCD on/off and contrast
+	- remind folder when sending variable
+	- stack & frame pointer window are now scrollable
+	- allow cross-compatibility when sending TI files
+	- ROM call entry box has now auto-completion
+	- merge read & write bkpts as r/w bkpts
+	- simplified skin/keymap management (TI92+ => TI92, TI89t => TI89)
+	- simplified ROM image/upgrade access
+	- display ROM calls in RAM in the mem panel
+	- implemented new method for grayscale computing & management (idea from Kevin)
+	- clean-up of popup menu (#colors menu removed)
 		
 
 Bug fixes:
@@ -35,6 +49,26 @@ Bug fixes:
 
 	- 'unexpected Xlib async reply' (Linux)
 	- fixed various key binding bugs
+	- idle() fixed (except for PedRom)
+	- erase FLASH whenever an OS upgrade is loaded.
+	- fixed scrolling of instructions in code window
+	- data bkpt at $0 are now caught
+	- 'Run to cursor': work with far instructions
+	- fixed incrementing of $700014
+	- removed "C:\\tiemu.log" empty file under Linux	
+	- fixed bugs with data breakpoints
+	- fixed bug with 'Run': didn't run if a bkpt is on the current line
+	- update stack frame when editing memory hex dump
+	- don't list invalid ROM calls any more	
+	- switched to the new file selector (seems to be slow)
+	- fixed LCD address on all calculators
+	- improved ROM call management	
+	- refresh code window when removing code bkpt from bkpt window
+	- don't save configuration any longer when upgrading calculator
+	- removed bkpt cause dbox for status bar in the bkpt dbox
+	- fixed TIB support for V200 & TI89Ti (libtifiles)
+	- fixed contrast with TI89
+	- switched to gtk-win32-devel-2.4-rc24.exe package: fix tooltips with toolbars
 
 
 To do:
