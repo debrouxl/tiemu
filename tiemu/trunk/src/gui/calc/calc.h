@@ -78,6 +78,8 @@ typedef struct
 {
 	int w;
 	int h;
+
+	int s;
 } WND_INFOS;
 
 typedef struct

@@ -81,13 +81,13 @@ static void set_infos(void)	// set window & lcd sizes
 
 	if(params.background)
 	{
-		wi.w = skin_infos.width;
-		wi.h = skin_infos.height;
+		wi.w = wi.s * skin_infos.width;
+		wi.h = wi.s * skin_infos.height;
 	}
 	else
 	{
-		wi.w = tihw.lcd_w;
-		wi.h = tihw.lcd_h;
+		wi.w = wi.s * tihw.lcd_w;
+		wi.h = wi.s * tihw.lcd_h;
 	}
 }
 
@@ -156,8 +156,6 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data)
 {
-	//if(pixmap == NULL) return FALSE;
-
     gdk_draw_pixmap(
         widget->window,
 		widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
@@ -404,7 +402,7 @@ int  hid_init(void)
 	display_main_wnd();
 
     // Allocate the backing pixmap
-    pixmap = gdk_pixmap_new(main_wnd->window, si->width, si->height, -1);
+    pixmap = gdk_pixmap_new(main_wnd->window, wi.w, wi.h, -1);
     if(pixmap == NULL)
     {
         gchar *s = g_strdup_printf("unable to create backing pixbuf.\n");
@@ -509,6 +507,9 @@ int hid_switch_fullscreen(void)
 int hid_switch_normal_view(void)
 {
     hid_switch_windowed();
+	wi.s = 1;
+	set_infos();
+	redraw_skin();
 
     return 0;
 }
@@ -516,6 +517,9 @@ int hid_switch_normal_view(void)
 int hid_switch_large_view(void)
 {
 	hid_switch_windowed();
+	wi.s = 2;
+	set_infos();
+	redraw_skin();
 
     return 0;
 }

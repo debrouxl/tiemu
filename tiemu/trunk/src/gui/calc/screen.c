@@ -59,7 +59,7 @@ GdkPixmap *pixmap = NULL;
 
 uint32_t*	lcd_bytmap;				// LCD buffer (color-mapped as grayscale)
 LCD_INFOS	li;
-WND_INFOS	wi;
+WND_INFOS	wi = { 0, 0, 1 };
 
 static uint32_t convtab[512];      	// planar to chunky conversion table
 static RGB      grayscales[16];		// gray scales rgb values (colormap)
@@ -169,7 +169,6 @@ void redraw_skin(void)
 {
     GdkRect r;
 
-	//gtk_drawing_area_size(GTK_DRAWING_AREA(area), wi.w, wi.h);
 	gtk_widget_set_size_request(area, wi.w, wi.h);
 	gtk_window_resize(GTK_WINDOW(main_wnd), wi.w, wi.h);
 
@@ -181,8 +180,8 @@ void redraw_skin(void)
 
 	r.x = 0;
     r.y = 0;
-    r.w = skin_infos.width;
-    r.h = skin_infos.height;
+    r.w = wi.w;
+    r.h = wi.h;
 
     gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
 		  skn, 0, 0, 0, 0, -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
