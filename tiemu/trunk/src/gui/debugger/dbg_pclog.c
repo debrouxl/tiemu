@@ -44,6 +44,8 @@ enum {
 
 #define FONT_NAME	"courier"
 
+#define GET_STORE(w)    (GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(w))))
+
 static GtkListStore* clist_create(GtkWidget *list)
 {
 	GtkTreeView *view = GTK_TREE_VIEW(list);

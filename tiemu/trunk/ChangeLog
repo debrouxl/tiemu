@@ -21,6 +21,8 @@ To do:
 	- regs_dbox: can open a mem tab with register value
 	- new window: stack
 	- regs_dbox: added Status Register window (1 button per bit)
+	- mem_dbox: replaced '+A' header by absolute address
+	- mem_dbox: searching capability
 
 - 14/07/2004, version 1.74: roms
 	Fixes from Lionel, Kevin and Olivier's suggestions:

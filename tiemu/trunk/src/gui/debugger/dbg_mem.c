@@ -60,10 +60,11 @@ enum {
 		COL_4b, COL_5b, COL_6b, COL_7b, 
 		COL_8b, COL_9b, COL_Ab, COL_Bb, 
 		COL_Cb, COL_Db, COL_Eb, COL_Fb,
-		COL_COLOR, COL_FONT
+		COL_GRAY, COL_FONT,
+        COL_COLOR,
 };
 #define CLIST_NVCOLS	(18)
-#define CLIST_NCOLS		(18+18)
+#define CLIST_NCOLS		(18+19)
 
 #define FONT_NAME	"courier"
 
@@ -187,7 +188,7 @@ static GtkWidget* clist_create(GtkListStore **st)
 				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
 				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
 				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
-				GDK_TYPE_COLOR, G_TYPE_STRING,
+				GDK_TYPE_COLOR, G_TYPE_STRING, GDK_TYPE_COLOR,
 				-1
             );
     model = GTK_TREE_MODEL(store);
@@ -205,7 +206,7 @@ static GtkWidget* clist_create(GtkListStore **st)
             text[i], renderer, 
             "text", i,
 			"font", COL_FONT,
-			"foreground-gdk", COL_COLOR,
+			"foreground-gdk", COL_GRAY,
 			NULL);
 
     for (i = COL_0; i <= COL_F; i++)
@@ -217,6 +218,7 @@ static GtkWidget* clist_create(GtkListStore **st)
             "text", i, 
 			"font", COL_FONT,
             "editable", i + CLIST_NVCOLS - 1,
+            "foreground-gdk", COL_COLOR,
             NULL);
 
         g_signal_connect(G_OBJECT(renderer), "edited",
@@ -229,7 +231,7 @@ static GtkWidget* clist_create(GtkListStore **st)
             text[i], renderer, 
             "text", i,
 			"font", COL_FONT,
-			"foreground-gdk", COL_COLOR,
+			"foreground-gdk", COL_GRAY,
 			NULL);
     
     for (i = 0; i < CLIST_NVCOLS; i++) 
@@ -259,13 +261,26 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
     gchar *str;
     char ascii[17];
     uint32_t a;
-	GdkColor color;
+	GdkColor gray, black, red;
 	gboolean success;
+    GdkColor *color = &black;
 
-	gdk_color_parse("DarkGray", &color);
-	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color, 1,
+    static uint8_t old[DUMP_SIZE] = { 0 };
+    static uint8_t *old_ptr;
+
+	gdk_color_parse("DarkGray", &gray);
+	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &gray, 1,
 				  FALSE, FALSE, &success);
 
+	gdk_color_parse("Black", &black);
+	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &black, 1,
+				  FALSE, FALSE, &success);
+
+	gdk_color_parse("Red", &red);
+	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &red, 1,
+				  FALSE, FALSE, &success);
+
+    old_ptr = old;
     for(a = start; a < start+length; a += 0x10)
     {
 		uint32_t addr = a & 0xffffff;
@@ -279,7 +294,7 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 		str = g_strdup_printf("%06x", addr);
 		gtk_list_store_set(store, &iter, 
 			COL_ADDR, str, 
-			COL_COLOR, &color,
+			COL_GRAY, &gray,
 			COL_FONT, FONT_NAME,
 			-1);
 		g_free(str);
@@ -290,20 +305,33 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 
 			str = g_strdup_printf("%02x", *mem_ptr);
 			ascii[i-COL_0] = (isprint(*mem_ptr) ? *mem_ptr : '.');
-
+/*
+            if(*old_ptr != *mem_ptr)
+            {
+                *old_ptr++ = *mem_ptr;
+                color = &red;
+                printf("$");
+            }
+            else
+            {
+                old_ptr++;
+                color = &black;
+                printf(".");
+            }
+*/
 			gtk_list_store_set(store, &iter, 
 				i, str, 
 				i + CLIST_NVCOLS - COL_0, TRUE, 
+                COL_COLOR, color,
 				-1);
 
-			g_free(str);
+			g_free(str);            
         }
 	 
 		ascii[16] = '\0';
 		utf = g_locale_to_utf8(ascii, -1, NULL, &bw, NULL);
 		gtk_list_store_set(store, &iter, 
 			COL_ASCII, utf, 
-			COL_COLOR, &color,
 			-1);
     }
 }
@@ -473,8 +501,7 @@ static void refresh_page(int page, int offset)
 	GtkListStore *store;
 	gchar *str;
 
-    static uint8_t *cpy[DUMP_SIZE] = { 0 };
-
+    gint i;
 
 	// retrieve addr by tab name
 	tab = gtk_notebook_get_nth_page(nb, page);
@@ -490,8 +517,8 @@ static void refresh_page(int page, int offset)
 	store = GTK_LIST_STORE(model);
 
     // get new address
-		sscanf(text, "%x", &addr);
-		len = DUMP_SIZE;
+	sscanf(text, "%x", &addr);
+	len = DUMP_SIZE;
 
 	addr += offset;
 	addr &= 0xffffff;
@@ -499,12 +526,23 @@ static void refresh_page(int page, int offset)
     // refresh only if mem changed (speed-up)
     if(!offset)
     {
-        uint8_t *mem = (uint8_t *)ti68k_get_real_address(addr);
+        static uint8_t old[DUMP_SIZE] = { 0 };
+        static uint8_t *old_ptr;
+        gint diff = 0;
 
-        if(!memcmp(mem, cpy, DUMP_SIZE))
-            return;
+        // can't use memcmp due to banking
+        for(i = 0, old_ptr = old; i < DUMP_SIZE; i++, old_ptr++)
+        {
+            uint8_t *mem_ptr = (uint8_t *)ti68k_get_real_address(addr + i);
 
-        memcpy(cpy, mem, DUMP_SIZE);
+            if(*old_ptr != *mem_ptr)
+            {
+                *old_ptr = *mem_ptr;
+                diff = !0;
+            }
+        }
+
+        if(!diff) return;
     }
 
     // refresh tab
@@ -514,6 +552,17 @@ static void refresh_page(int page, int offset)
 
     // and list
    	clist_refresh(store, addr, len <= DUMP_SIZE ? len : DUMP_SIZE);
+
+    // set column
+	for(i = COL_0; i <= COL_F; i++)
+    {
+        GtkTreeViewColumn *col;
+
+		col = gtk_tree_view_get_column(view, i);
+        str = g_strdup_printf("%X", (addr + i - 1) & 0xf);
+        gtk_tree_view_column_set_title(col, str);
+        g_free(str);
+    }
 }
 
 static gboolean
@@ -676,7 +725,8 @@ on_treeview_btn_press_event        (GtkWidget       *widget,
 	        gint cx, cy;
 
 	        ret = gtk_tree_view_get_path_at_pos(view, tx, ty, &path, &column, &cx, &cy);
-            gtk_tree_view_set_cursor(view, path, column, FALSE);
+            gtk_tree_view_set_cursor(view, path, column, TRUE);    // select cell
+            //gtk_tree_view_row_activated(view, path, column);        // show selection
             gtk_tree_path_free(path);
             //printf("%i %i %i %i (%i)\n", tx, ty, cx, cy, ret);
             //---
