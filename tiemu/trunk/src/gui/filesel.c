@@ -27,14 +27,8 @@
 #include <gtk/gtk.h>
 
 #include "intl.h"
-#include "skinops.h"
-#include "fs_skin.h"
+#include "filesel.h"
 #include "refresh.h"
-#include "paths.h"
-#include "struct.h"
-#include "interface.h"
-
-/* File Selection box */
 
 static G_CONST_RETURN gchar *filename = NULL;
 
@@ -50,7 +44,7 @@ static void cancel_filename(GtkButton * button, gpointer user_data)
 	filename = "";
 } 
 
-static const gchar *create_fsel(gchar *dirname, gchar *ext)
+const gchar *create_fsel(gchar *dirname, gchar *ext)
 {
 	GtkWidget *fs;
 	gchar *mask;
@@ -90,55 +84,4 @@ static const gchar *create_fsel(gchar *dirname, gchar *ext)
 		return filename;
 }
 
-gint display_skin_dbox()
-{
-	const gchar *filename;
-    SKIN_INFOS si;
-    gint ok;
-
-	filename = create_fsel(inst_paths.skin_dir, "*.skn");
-	if (!filename)
-		return;
-
-    // Read skin header
-    if(skin_read_header(filename, &si) == -1) {
-
-        msg_box(_("Error"), _("Unable to use this skin."));
-        return -1;
-    }
-
-    // Check skin header
-   printf("<%s>\n", si.calc);
-    switch(ti68k_getCalcType())
-	{
-	    case TI92:
-            ok = !strcmp(si.calc, SKIN_TI92);
-		break;
-	    case TI89:
-            ok = !strcmp(si.calc, SKIN_TI89);
-		break;
-	    case TI92 | MODULEPLUS:
-            ok = !strcmp(si.calc, SKIN_TI92P);
-		break;
-	    default: 
-            ok = 0;
-		break;
-	}
-
-        
-    if(!ok) {
-        msg_box(_("Error"), _("Skin incompatible with the current calc model."));
-        ti68k_unhalt();
-        return -1;
-    }
-
-    // Load new skin
-    g_free(options.skin_file);
-    options.skin_file = g_strconcat(filename, NULL);
-    
-    hid_change_skin(options.skin_file);
-    ti68k_unhalt();
-
-	return 0;
-}
 
