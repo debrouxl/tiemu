@@ -53,22 +53,27 @@ GtkWidget *splash_screen_start(void)
 	gtk_window_set_role(GTK_WINDOW(splashscreen.window), "splash");
 	gtk_window_set_resizable(GTK_WINDOW(splashscreen.window), FALSE);
 	gtk_window_set_default_size(GTK_WINDOW(splashscreen.window), 150, 150);
+
 	color.red = 65535;
 	color.blue = 65535;
 	color.green = 65535;
 	gtk_widget_modify_bg(splashscreen.window, GTK_STATE_NORMAL,
 			     &color);
+
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(splashscreen.window), vbox);
 	gtk_widget_show(vbox);
+
 	splashscreen.label = gtk_label_new("starting TiLP...");
 	gtk_box_pack_end(GTK_BOX(vbox), splashscreen.label, FALSE, FALSE,
 			 0);
 	gtk_widget_show(splashscreen.label);
+
 	pixbuf = create_pixbuf("logo.xpm");
 	image = gtk_image_new_from_pixbuf(pixbuf);
 	gtk_box_pack_end(GTK_BOX(vbox), image, FALSE, FALSE, 0);
 	g_object_unref(pixbuf);
+
 	gtk_widget_show(image);
 	gtk_widget_show(splashscreen.window);
 
@@ -78,6 +83,7 @@ GtkWidget *splash_screen_start(void)
 
 	return splashscreen.window;
 }
+
 void splash_screen_stop(void)
 {
 	gtk_widget_destroy(splashscreen.window);

@@ -74,10 +74,24 @@ int main(int argc, char **argv)
 	rcfile_default();
 	rcfile_read();
 	scan_cmdline(argc, argv);
+
+    /* 
+		Init GTK+ (popup menu, boxes, ...) and threads
+	*/
+	g_thread_init(NULL);
+	gtk_init(&argc, &argv);
+
+    /*
+        Set splash screen
+    */
+    splash_screen_start();
+    splash_screen_set_label(_("Initializing GTK+..."));    
   
 	/* 
 	   Check the version of libraries 
 	 */
+    splash_screen_set_label(_("Initializing TiLP framework..."));
+
 	if (strcmp(tifiles_get_version(), TIEMU_REQUIRES_LIBFILES_VERSION) < 0) {
 		printl(0, _("libtifiles library version <%s> mini required.\n"),
 			TIEMU_REQUIRES_LIBFILES_VERSION);
@@ -117,12 +131,6 @@ int main(int argc, char **argv)
 	hid_set_gui_callbacks();
 	//ti68k_defineDebugger(enter_gtk_debugger);
 
-	/* 
-		Init GTK+ (popup menu, boxes, ...) and threads
-	*/
-	g_thread_init(NULL);
-	gtk_init(&argc, &argv);
-
 	/*
 		For developers only
 	*/
@@ -151,12 +159,14 @@ int main(int argc, char **argv)
 		g_free((options.params)->rom_file);
 		(options.params)->rom_file = g_strdup(wizard_rom);
 		g_free(wizard_rom);
+        splash_screen_set_label(_("Loading image..."));
 		ti68k_loadImage((options.params)->rom_file);
 	}
 
 	/* 
 		Initialize emulation engine
 	*/
+    splash_screen_set_label(_("Initializing m68k emulation engine..."));
 	if(ti68k_init()) {
 		tiemu_error(0, "failed to init the ti68k engine.\n");
 		return -1;
@@ -180,6 +190,7 @@ int main(int argc, char **argv)
 	/* 
 		Load calculator state image 
 	*/
+    splash_screen_set_label(_("Loading saved state..."));
 	ti68k_loadState((options.params)->ram_file);
   
 	/* 
@@ -191,8 +202,10 @@ int main(int argc, char **argv)
 	/* 
 		Start thread (emulation engine) and run main loop 
 	*/
+    splash_screen_set_label(_("Starting engine..."));
 	thread = g_thread_create(ti68k_engine, NULL, FALSE, &error);
 	ti68k_unhalt();
+    splash_screen_stop();
 
 	gdk_threads_enter();
 	while(1) {

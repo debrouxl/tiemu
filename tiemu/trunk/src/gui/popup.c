@@ -209,7 +209,7 @@ GLADE_CB void
 on_load_state_image1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	display_fs_load_state();
+	display_load_state_dbox();
 }
 
 
@@ -217,7 +217,7 @@ GLADE_CB void
 on_save_state_image1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	display_fs_save_state();
+	display_save_state_dbox();
 }
 
 
