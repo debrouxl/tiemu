@@ -54,9 +54,6 @@ PPhd
  tiemu.ini file. Where is this file? It is not in $HOME/.tiemu,
  and not in $prefix/. Neither in the source files.
 
-* For the moment, the only way to remove an image is to edit .tiemu/image directory.
-  Did you plan to add a way to remove the images using tiemu?
-
 * For the handle which are archived on PedroM, the display size is wrong. 
  Fix in heap_get_block_size:
   if (!pedrom)

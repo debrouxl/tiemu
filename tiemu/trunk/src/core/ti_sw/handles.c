@@ -124,13 +124,6 @@ void heap_get_size(uint16_t *size)
 /*
 	Get address of an allocated block (like HeapDeref)
 */
-void heap_get_block_addr(int handle, uint32_t *addr)
-{
-	uint32_t base;
-
-	heap_get_addr(&base);
-	*addr = mem_rd_long(base + 4*handle);
-}
 
 uint32_t heap_deref(int handle)
 {
@@ -140,31 +133,14 @@ uint32_t heap_deref(int handle)
 	return mem_rd_long(base + 4*handle);
 }
 
+void heap_get_block_addr(int handle, uint32_t *addr)
+{
+	*addr = heap_deref(handle);
+}
+
 /*
 	Get size of an allocated block (like HeapSize)
 */
-void heap_get_block_size(int handle, uint16_t *size)
-{
-	uint32_t base;
-	uint32_t addr;
-
-	heap_get_addr(&base);
-
-	addr = mem_rd_long(base + 4*handle);
-	if(!pedrom)
-	{
-		*size = mem_rd_word(addr - 2);
-		*size &= ~(1 << 16);	// remove lock
-		*size <<= 1;			// size is twice
-		*size -= 2;
-	}
-	else
-	{
-		*size = (uint16_t)mem_rd_long(addr - 6);
-		*size -= 6;
-	}
-}
-
 uint16_t heap_size(int handle)
 {
 	uint32_t base;
@@ -190,28 +166,18 @@ uint16_t heap_size(int handle)
 	return size;
 }
 
+void heap_get_block_size(int handle, uint16_t *size)
+{
+	*size = heap_size(handle);
+}
+
 /*
 	Given an handle, retrieve block size and block address
 */
 void heap_get_block_addr_and_size(int handle, uint32_t *addr, uint16_t *size)
 {
-	uint32_t base;
-
-	heap_get_addr(&base);
-
-	*addr = mem_rd_long(base + 4*handle);
-	if(!pedrom)
-	{
-		*size = mem_rd_word(*addr - 2);
-		*size &= ~(1 << 16);	// remove lock
-		*size <<= 1;			// size is twice
-		*size -= 2;
-	}
-	else
-	{
-		*size = (uint16_t)mem_rd_long(*addr - 6);
-		*size -= 6;
-	}
+	*addr = heap_deref(handle);
+	*size = heap_size(handle);
 }
 
 /*
