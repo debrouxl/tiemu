@@ -500,5 +500,4 @@ static void refresh_page(int offset)
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
    	clist_refresh(store, addr, 128);
-	gtk_notebook_set_page(nb, 0);
 }
