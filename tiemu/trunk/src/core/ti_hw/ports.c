@@ -46,33 +46,7 @@ int hw_io_init(void)
 {
 	memset(tihw.io, 0x14, sizeof(tihw.io));
 	memset(tihw.io2, 0x14, sizeof(tihw.io2));
-/*
-	tihw.io[0x00] = 0x00;
-	tihw.io[0x01] = 0x04 | (tihw.ti92v1 ? 1 : 0);
-	tihw.io[0x03] = (uint8_t)0xff;
-	tihw.io[0x05] = 0x00;
-	tihw.io[0x0c] = (uint8_t)0x8d;
-	tihw.io[0x0d] = 0x42;
-	tihw.io[0x0e] = (uint8_t)0xff;
-	tihw.io[0x0f] = 0x00;
 
-	tihw.io[0x12] = tihw.lcd_w/16 - 64;
-	tihw.io[0x13] = 256 - tihw.lcd_h;
-	tihw.io[0x15] = 0x1b;
-
-	tihw.io[0x18] = 0x03;
-	tihw.io[0x19] = (uint8_t)0x80;
-	tihw.io[0x1a] = (uint8_t)0xff;
-	tihw.io[0x1b] = (uint8_t)0xff;
-	tihw.io[0x1c] = 0x21;
-	tihw.io[0x1d] = (uint8_t)0x80;
-
-	tihw.io2[0x11] = 0x40;
-	tihw.io2[0x11] = 0x18;
-	tihw.io2[0x17] = 0x00;
-	tihw.io2[0x1d] = 0x06;
-	tihw.io2[0x1f] = 0x07;
-*/
 	return 0;
 }
 
@@ -156,15 +130,11 @@ void io_put_byte(uint32_t addr, uint8_t arg)
             break;
         case 0x10: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8 (msb)
-			printf("msb: %02x\n", arg);
-			//if(tihw.hw_type == HW1)
-				tihw.lcd_ptr = &tihw.ram[((arg << 8) | tihw.io[0x11]) << 3];
+			tihw.lcd_ptr = &tihw.ram[((arg << 8) | tihw.io[0x11]) << 3];
         break;
         case 0x11: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8 (lsb)
-			printf("lsb: %02x\n", arg);
-			//if(tihw.hw_type == HW1)
-				tihw.lcd_ptr = &tihw.ram[((tihw.io[0x10] << 8) | arg) << 3];
+			tihw.lcd_ptr = &tihw.ram[((tihw.io[0x10] << 8) | arg) << 3];
         break;
         case 0x12:	// -w <76543210>
 			// LCD logical width = (64-n)*2 bytes = (64-n)*16 pixels <=> n = 64-w/16
@@ -427,8 +397,8 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 			break;
 		case 0x17:	// rw <......10>
 			// Display memory snoop range
-			tihw.lcd_ptr = &tihw.ram[0x4c00 + 0x1000*(arg&3)];
-			printf("arg = %04x\n", arg);
+			//tihw.lcd_ptr = &tihw.ram[0x4c00 + 0x1000*(arg&3)];
+			//printf("arg = %1x ($%x)\n", arg&3, 0x4c00 + 0x1000*(arg&3));
 		break;
 		case 0x1d:	// rw <7...3210>
 			// %1: Screen enable (clear this bit to shut down LCD)

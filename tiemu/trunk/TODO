@@ -243,7 +243,7 @@ http://members.chello.at/gerhard.kofler/kevin/francais/ti89prog/
 * Ce serait bien d'avoir aussi une option 8 niveaux de gris (moyenne de 7
 plans plutôt que de 6).
 
-* Il y a apparemment un problème d'adresse d'écran sur la vieille TI-92
+- Il y a apparemment un problème d'adresse d'écran sur la vieille TI-92
 aussi (pas seulement sur la Titanium). Quand Backgammon affiche un dialogue
 ou quitte vers l'écran HOME, normalement, l'écran devrait être remis sur
 LCD_MEM. Ça marche sur une vraie TI-92 et sur VTI, mais pas sur TiEmu, qui

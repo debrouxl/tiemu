@@ -136,10 +136,6 @@ SOURCE=..\..\src\core\ti_hw\kbd.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\core\ti_hw\lcd.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\core\ti_hw\m68k.c
 # End Source File
 # Begin Source File
@@ -165,10 +161,6 @@ SOURCE=..\..\src\core\ti_hw\mem92p.c
 # Begin Source File
 
 SOURCE=..\..\src\core\ti_hw\ports.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\ti_hw\timer.c
 # End Source File
 # End Group
 # Begin Group "dbg"

@@ -25,6 +25,7 @@ To do:
 	- allow cross-compatibility when sending TI files
 	- switched to the new file selector (seems to be slow)
 	- added heap window to show handles
+	- fixed LCD address on all calculators
 
 - 08/11/2004, version 1.80f: roms
 	- PedRom is now provided with TiEmu as default OS.
