@@ -385,17 +385,18 @@ void Exception(int nr)
   // added for capturing the exception and next launch a debugger
   if (l = bkpts.exception) 
     {
-        bkpts.id = nr;
+        bkpts.id = 0;
         while (l) 
 	    {
 	        if ((CPTR)GPOINTER_TO_INT(l->data) == nr) 
 	        {
 				bkpts.type = BK_CAUSE_EXCEPTION;
-				bkpts.mode = 0; //BK_TRAP_4;
+				bkpts.mode = nr;
 	            specialflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
 	        
+			bkpts.id++;
 	        l = l->next;
 	    }
     }
@@ -569,8 +570,8 @@ void op_illg(ULONG opcode)
       return;
     }
   
-  fprintf(stderr, "UAE: illegal instruction: %04x at $%06x (intel = 0x%08x) %08x\n", opcode, regs.pc,
-	  get_real_address(regs.pc), m68k_getpc());
+  fprintf(stderr, "UAE: illegal instruction: %04x at $%06x (intel = 0x%08x) %08x\n", 
+	  opcode, regs.pc, get_real_address(regs.pc), m68k_getpc());
   Exception(4);
 }
 
