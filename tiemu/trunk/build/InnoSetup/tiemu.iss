@@ -26,6 +26,9 @@ Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescri
 [Files]
 ; Glade files
 Source: "C:\sources\roms\tiemu\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
+; Help files
+Source: "C:\sources\roms\tiemu\help\*.png"; DestDir: "{app}\help"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu\help\*.htm?"; DestDir: "{app}\help"; Flags: ignoreversion;
 ; Pixmaps files
 Source: "C:\sources\roms\tiemu\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
 ; Skin files
