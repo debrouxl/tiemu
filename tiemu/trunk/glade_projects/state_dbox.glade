@@ -1,83 +1,76 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
-<!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd" >
+<!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
 
 <glade-interface>
-  <widget class="GtkFileSelection" id="fs_load_state">
-    <property name="border_width">10</property>
-    <property name="title" translatable="yes">Select File</property>
-    <property name="type">GTK_WINDOW_TOPLEVEL</property>
-    <property name="modal">no</property>
-    <property name="allow_shrink">no</property>
-    <property name="allow_grow">yes</property>
-    <property name="show-fileops">yes</property>
-    <property name="visible">yes</property>
-    <property name="window-position">GTK_WIN_POS_NONE</property>
 
-    <signal name="destroy" handler="on_fs_load_state_destroy" />
+<widget class="GtkFileSelection" id="fs_load_state">
+  <property name="border_width">10</property>
+  <property name="visible">True</property>
+  <property name="title" translatable="yes">Select File</property>
+  <property name="type">GTK_WINDOW_TOPLEVEL</property>
+  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="modal">False</property>
+  <property name="resizable">True</property>
+  <property name="destroy_with_parent">False</property>
+  <property name="show_fileops">True</property>
+  <signal name="destroy" handler="on_fs_load_state_destroy"/>
 
-    <child internal-child="ok_button">
-      <widget class="GtkButton" id="ok_button1">
-        <property name="can_default">yes</property>
-        <property name="can_focus">yes</property>
-        <property name="label" translatable="yes">OK</property>
-        <property name="visible">yes</property>
+  <child internal-child="cancel_button">
+    <widget class="GtkButton" id="cancel_button1">
+      <property name="visible">True</property>
+      <property name="can_default">True</property>
+      <property name="can_focus">True</property>
+      <property name="relief">GTK_RELIEF_NORMAL</property>
+      <signal name="clicked" handler="load_state_on_cancel_button1_clicked"/>
+      <accelerator key="Escape" modifiers="0" signal="clicked"/>
+    </widget>
+  </child>
 
-        <signal name="clicked" handler="load_state_on_ok_button1_clicked" />
+  <child internal-child="ok_button">
+    <widget class="GtkButton" id="ok_button1">
+      <property name="visible">True</property>
+      <property name="can_default">True</property>
+      <property name="can_focus">True</property>
+      <property name="relief">GTK_RELIEF_NORMAL</property>
+      <signal name="clicked" handler="load_state_on_ok_button1_clicked"/>
+      <accelerator key="Return" modifiers="0" signal="clicked"/>
+    </widget>
+  </child>
+</widget>
 
-        <accelerator key="Return" modifiers="0" signal="clicked" />
-      </widget>
-    </child>
+<widget class="GtkFileSelection" id="fs_save_state">
+  <property name="border_width">10</property>
+  <property name="visible">True</property>
+  <property name="title" translatable="yes">Select File</property>
+  <property name="type">GTK_WINDOW_TOPLEVEL</property>
+  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="modal">False</property>
+  <property name="resizable">True</property>
+  <property name="destroy_with_parent">False</property>
+  <property name="show_fileops">True</property>
+  <signal name="destroy" handler="on_fs_save_state_destroy"/>
 
-    <child internal-child="cancel_button">
-      <widget class="GtkButton" id="cancel_button1">
-        <property name="can_default">yes</property>
-        <property name="can_focus">yes</property>
-        <property name="label" translatable="yes">Cancel</property>
-        <property name="visible">yes</property>
+  <child internal-child="cancel_button">
+    <widget class="GtkButton" id="cancel_button2">
+      <property name="visible">True</property>
+      <property name="can_default">True</property>
+      <property name="can_focus">True</property>
+      <property name="relief">GTK_RELIEF_NORMAL</property>
+      <signal name="clicked" handler="save_state_on_cancel_button2_pressed"/>
+      <accelerator key="Escape" modifiers="0" signal="clicked"/>
+    </widget>
+  </child>
 
-        <signal name="clicked" handler="load_state_on_cancel_button1_clicked" />
+  <child internal-child="ok_button">
+    <widget class="GtkButton" id="ok_button2">
+      <property name="visible">True</property>
+      <property name="can_default">True</property>
+      <property name="can_focus">True</property>
+      <property name="relief">GTK_RELIEF_NORMAL</property>
+      <signal name="clicked" handler="save_state_on_ok_button2_clicked"/>
+      <accelerator key="Return" modifiers="0" signal="clicked"/>
+    </widget>
+  </child>
+</widget>
 
-        <accelerator key="Escape" modifiers="0" signal="clicked" />
-      </widget>
-    </child>
-  </widget>
-  <widget class="GtkFileSelection" id="fs_save_state">
-    <property name="border_width">10</property>
-    <property name="title" translatable="yes">Select File</property>
-    <property name="type">GTK_WINDOW_TOPLEVEL</property>
-    <property name="modal">no</property>
-    <property name="allow_shrink">no</property>
-    <property name="allow_grow">yes</property>
-    <property name="show-fileops">yes</property>
-    <property name="visible">yes</property>
-    <property name="window-position">GTK_WIN_POS_NONE</property>
-
-    <signal name="destroy" handler="on_fs_save_state_destroy" />
-
-    <child internal-child="ok_button">
-      <widget class="GtkButton" id="ok_button2">
-        <property name="can_default">yes</property>
-        <property name="can_focus">yes</property>
-        <property name="label" translatable="yes">OK</property>
-        <property name="visible">yes</property>
-
-        <signal name="clicked" handler="save_state_on_ok_button2_clicked" />
-
-        <accelerator key="Return" modifiers="0" signal="clicked" />
-      </widget>
-    </child>
-
-    <child internal-child="cancel_button">
-      <widget class="GtkButton" id="cancel_button2">
-        <property name="can_default">yes</property>
-        <property name="can_focus">yes</property>
-        <property name="label" translatable="yes">Cancel</property>
-        <property name="visible">yes</property>
-
-        <signal name="clicked" handler="save_state_on_cancel_button2_pressed" />
-
-        <accelerator key="Escape" modifiers="0" signal="clicked" />
-      </widget>
-    </child>
-  </widget>
 </glade-interface>
