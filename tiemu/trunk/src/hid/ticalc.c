@@ -26,6 +26,7 @@
 #endif
 
 #include <stdlib.h>
+#include <string.h>
 
 /* Program dependencies */
 #include "platform.h"

@@ -230,27 +230,27 @@ load_skin_old_vti(FILE *fp, skinInfos *skin)
   
   fread(skin->keys_pos, 80*16, 1, fp);
 
-  // added by roms
-  for (i = 0; i < 80; i++) {
-	skin->keys_pos[i].top >>= 1;
-	skin->keys_pos[i].bottom >>= 1;
-	skin->keys_pos[i].left >>= 1;
-	skin->keys_pos[i].right >>= 1;
-    }
-    skin->lcd_pos.top >>= 1;
-    skin->lcd_pos.bottom >>= 1;
-    skin->lcd_pos.left >>= 1;
-    skin->lcd_pos.right >>= 1;
-
-
 #if G_BYTE_ORDER == G_BIG_ENDIAN
   /*
    * VTI skins are usually designed on a little endian architecture
    */
   
-  byteswap_vti_skin(&calc);
+  byteswap_vti_skin(&calc, skin);
 #endif
 
+  // added by roms
+  for (i = 0; i < 80; i++)
+    {
+      skin->keys_pos[i].top >>= 1;
+      skin->keys_pos[i].bottom >>= 1;
+      skin->keys_pos[i].left >>= 1;
+      skin->keys_pos[i].right >>= 1;
+    }
+  skin->lcd_pos.top >>= 1;
+  skin->lcd_pos.bottom >>= 1;
+  skin->lcd_pos.left >>= 1;
+  skin->lcd_pos.right >>= 1;
+  
   vti_calc_type_to_string(calc, skin);
 
   skin->type = SKIN_TYPE_OLD_VTI;
@@ -315,25 +315,26 @@ load_skin_vti(FILE *fp, skinInfos *skin)
   
   fread(skin->keys_pos, 80*16, 1, fp);
 
-  // added by roms
-  for (i = 0; i < 80; i++) {
-	skin->keys_pos[i].top >>= 1;
-	skin->keys_pos[i].bottom >>= 1;
-	skin->keys_pos[i].left >>= 1;
-	skin->keys_pos[i].right >>= 1;
-    }
-    skin->lcd_pos.top >>= 1;
-    skin->lcd_pos.bottom >>= 1;
-    skin->lcd_pos.left >>= 1;
-    skin->lcd_pos.right >>= 1;
-
 #if G_BYTE_ORDER == G_BIG_ENDIAN
   /*
    * VTI skins are usually designed on a little endian architecture
    */
 
-  byteswap_vti_skin(&calc);
+  byteswap_vti_skin(&calc, skin);
 #endif
+
+  // added by roms
+  for (i = 0; i < 80; i++)
+    {
+      skin->keys_pos[i].top >>= 1;
+      skin->keys_pos[i].bottom >>= 1;
+      skin->keys_pos[i].left >>= 1;
+      skin->keys_pos[i].right >>= 1;
+    }
+  skin->lcd_pos.top >>= 1;
+  skin->lcd_pos.bottom >>= 1;
+  skin->lcd_pos.left >>= 1;
+  skin->lcd_pos.right >>= 1;
   
   vti_calc_type_to_string(calc, skin);
 
