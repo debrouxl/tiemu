@@ -468,7 +468,7 @@ uint8_t io2_get_byte(uint32_t addr)
 			break;
 		case 0x14:	// rw <7...3210>	word
 			// RTC, incremented every 2^13. The whole word must be read: 
-			// reading the port byte by byte can return wrong
+			// reading the port byte per byte can return wrong
 			return MSB(tihw.rtc_value);
 			break;
 		case 0x15:

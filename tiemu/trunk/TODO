@@ -12,15 +12,7 @@ aboutir.
 
 * le link ne marche pas convenablement. Voir plus bas.
 
-+ le grayscale ne semble pas fonctionner 
-convenablement, quel que soit le réglage du 
-nombre de plans et le contraste. J'ai testé avec 
-SlimeBall 0.96, tileeng (vieille demo du tilemap 
-engine d'ExtGraph, pas disponible dans ExtGraph) 
-et dissolve, seuls programmes en niveaux de 
-gris de mon rom dump.
-
-* tthdex ne marche pas convenablement, les 
+- tthdex ne marche pas convenablement, les 
 Je ne pourrais pas trop de dire d'où ça vient, mais si c'est idle()
 qui pose problème, ce doit être le port $600005 qui est mal émulé.
 
@@ -87,9 +79,6 @@ puis ensuite:
 Link cable error: code = 400, msg = Error code not found in the list.
 This is a bug. Please report it.
 
-* Dans le débogueur, la fenêtre Breakpoints n'a pas de "QuickInfos" dans la
-toolbar. (En revanche, dans la fenêtre Code/Source, ils y sont maintenant.)
-
 * Un truc qui serait bien serait une fonction "breakpoint on program entry".
 Mais comme la feature dans VTI est implémentée plutôt avec les pieds, il
 faudrait qu'on discute de ça ensemble pour ne pas faire les mêmes erreurs.
@@ -115,32 +104,13 @@ première fois, j'ai converti, puis choisi la nouvelle ROM dans la liste, et
 TiEmu a planté (fenêtre de plantage Windows). La deuxième fois, la ROM était
 déjà dans la liste, je l'ai choisie et tout a marché...
 
-* Maintenant que j'ai réussi à envoyer des fichiers, j'ai pu enfin tester
-des programmes. L'option 7 niveaux de gris ne marche pas correctement avec
-Backgammon. Backgammon est bel et bien en 7 ndg, donc l'option devrait
-marcher... Tu peux récupérer Backgammon (y compris les sources de la routine
-de gris) sur mon site:
-http://members.chello.at/gerhard.kofler/kevin/francais/ti89prog/
-
 * Ce serait bien d'avoir aussi une option 8 niveaux de gris (moyenne de 7
 plans plutôt que de 6).
-
-+ Il y a apparemment un problème d'adresse d'écran sur la vieille TI-92
-aussi (pas seulement sur la Titanium). Quand Backgammon affiche un dialogue
-ou quitte vers l'écran HOME, normalement, l'écran devrait être remis sur
-LCD_MEM. Ça marche sur une vraie TI-92 et sur VTI, mais pas sur TiEmu, qui
-continue à m'afficher l'écran de jeu (maintenant en blanc et noir). Les
-lignes utilisées par Backgammon pour Fargo sont:
- move.l   #tios__001c,%d0
- lsr.l    #3,%d0
- move.w   %d0,0x600010                        | restore used plane to
-tios__001c
-
-* Les nombres de niveaux de gris interessants sont 2, 4, 7 et 8:
-* 2: plane0 (1/1)
-* 4: plane0, plane0, plane1 (2/3, 1/3)
-* 7: plane2, plane0, plane1, plane0, plane1, plane0 (3/6, 2/6, 1/6)
-* 8: plane1, plane0, plane2, plane0, plane0, plane1, plane0 (4/7, 2/7, 1/7)
+Les nombres de niveaux de gris interessants sont 2, 4, 7 et 8:
+  2: plane0 (1/1)
+  4: plane0, plane0, plane1 (2/3, 1/3)
+  7: plane2, plane0, plane1, plane0, plane1, plane0 (3/6, 2/6, 1/6)
+  8: plane1, plane0, plane2, plane0, plane0, plane1, plane0 (4/7, 2/7, 1/7)
 
 * Kevin Kofler vient de me (Olivier) faire remarquer qu'il n'est pas possible
 d'envoyer de fichiers à TiEmu lorsqu'il émule une Titanium 
@@ -153,12 +123,6 @@ l'USB dans l'AMS 3 ? (bizarrement un AMS 3 patché avec Titarom et
 
 Lionel
 ======
-
-* le transfert d'un fichier vers TIEmu par F10 donne
-une erreur 400 dans la fenêtre command-line (mais n'a
-pas l'air de planter l'émulateur). Il faut faire un
-Reset Calculator pour avoir une calculette à nouveau
-d'aplomb.
 
 * j'ai de nouveau des problèmes avec le caractère 0x09
 dans la fenêtre ASCII de la memory view (Win ME ?).
@@ -185,11 +149,6 @@ j'utilise.
 Cette fois-ci, la calculette semble se bloquer, il
 faut un double reset pour tout remettre d'aplomb.
 
-me/moi
-======
-
-+ le clavier ne fonctionne plus sur PedRom en rev $697 (idle).
-Due à idle: il suffit de décommenter "if(!(arg & 0x10))" sur le port $600005.
 
 -------------
 + done
