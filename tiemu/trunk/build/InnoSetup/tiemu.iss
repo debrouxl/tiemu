@@ -3,7 +3,7 @@
 ;
 ; (c) Copyright 2001-2004, the TiLP team
 ;
-; $Id: tilp_gtk2.iss 659 2004-04-27 09:10:27Z roms $
+; $Id$
 
 [Setup]
 AppName=TiEmu
