@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="SkinEdit" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="SkinEdit_Windows" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Application" 0x0101
 
-CFG=SkinEdit - Win32 Debug
+CFG=SkinEdit_Windows - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "SkinEdit.mak".
+!MESSAGE NMAKE /f "SkinEdit_Windows.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "SkinEdit.mak" CFG="SkinEdit - Win32 Debug"
+!MESSAGE NMAKE /f "SkinEdit_Windows.mak" CFG="SkinEdit_Windows - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "SkinEdit - Win32 Release" (based on "Win32 (x86) Application")
-!MESSAGE "SkinEdit - Win32 Debug" (based on "Win32 (x86) Application")
+!MESSAGE "SkinEdit_Windows - Win32 Release" (based on "Win32 (x86) Application")
+!MESSAGE "SkinEdit_Windows - Win32 Debug" (based on "Win32 (x86) Application")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "SkinEdit - Win32 Release"
+!IF  "$(CFG)" == "SkinEdit_Windows - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -54,7 +54,7 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
 
-!ELSEIF  "$(CFG)" == "SkinEdit - Win32 Debug"
+!ELSEIF  "$(CFG)" == "SkinEdit_Windows - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -65,6 +65,7 @@ LINK32=link.exe
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
 # ADD CPP /nologo /W2 /Gm /GX /ZI /Od /I "..\..\build\msvc" /I "C:\SDL-1.2.7\include" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "__WIN32__" /YX /FD /GZ /c
@@ -83,8 +84,8 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "SkinEdit - Win32 Release"
-# Name "SkinEdit - Win32 Debug"
+# Name "SkinEdit_Windows - Win32 Release"
+# Name "SkinEdit_Windows - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -254,15 +255,11 @@ SOURCE="..\..\..\..\..\..\Gtk2Dev\lib\atk-1.0.lib"
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\Gtk2Dev\lib\intl.lib
-# End Source File
-# Begin Source File
-
 SOURCE="..\..\..\..\..\SDL-1.2.7\lib\SDL.lib"
 # End Source File
 # Begin Source File
 
-SOURCE=.\libjpeg.lib
+SOURCE=.\jpeg.lib
 # End Source File
 # End Group
 # End Target
