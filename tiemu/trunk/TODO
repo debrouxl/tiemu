@@ -173,6 +173,11 @@ mémoire et utilisé comme répertoire de départ au prochain envoi.
 depuis la fenêtre Breakpoints, le symbole breakpoint n'est pas
 supprimé de la fenêtre Code (à moins de scroller).
 
++ Personnellement Je ne suis pas vraiment fan du popup affichant le
+breakpoint déclenché, en tout cas pour les breakpoints sur
+instruction. Ca fait perdre un peu de temps pour rien du tout.
+Peut-être une désactivation possible dans la configuration ?
+
 ---
 
 * Un bug non reproduit : l'ouverture du débugger faisait défiler très
@@ -186,11 +191,6 @@ fait le read ou le write a été exécutée. Est-ce ça ne pourra pas être
 fait avant qu'elle s'exécute, afin que l'instruction selectionnée à
 l'arrêt soit celle-ci (pour éviter d'avoir à scroller vers le haut
 d'une instruction à chaque fois) ?
-
-+ Personnellement Je ne suis pas vraiment fan du popup affichant le
-breakpoint déclenché, en tout cas pour les breakpoints sur
-instruction. Ca fait perdre un peu de temps pour rien du tout.
-Peut-être une désactivation possible dans la configuration ?
 
 * Un data breakpoint de type 'either' serait quand même mieux que deux
 breakpoints read et write, sinon on est vite submergé pour rien, et on
