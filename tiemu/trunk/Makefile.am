@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 # subdirectories to scan
-SUBDIRS = . ROMs man pixmaps skins src win32
+SUBDIRS = . ROMs man pixmaps skins src
 
 EXTRA_DIST = \
 	ABOUT-NLS AUTHORS ChangeLog COPYING INSTALL* NEWS 	\

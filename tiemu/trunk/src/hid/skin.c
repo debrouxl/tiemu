@@ -179,7 +179,11 @@ static int skin_read_image(const char *filename, SKIN_INFOS* infos)
     	cinfo.err = jpeg_std_error(&jerr);
     	jpeg_create_decompress(&cinfo);
 
-	jpeg_file_src(&cinfo, fp);		//jpeg_stdio_src(&cinfo, fp);
+#ifdef __WIN32__
+	jpeg_file_src(&cinfo, fp);
+#else
+	jpeg_stdio_src(&cinfo, fp);
+#endif
     	jpeg_read_header(&cinfo, TRUE);
 
     	// Rescale image to half if necessary

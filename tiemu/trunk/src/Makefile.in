@@ -28,7 +28,7 @@ DEFS=@DEFS@ \
 INCLUDES = \
 	-I@top_srcdir@ -I$(includedir) \
 	-DPREFIX=\"${prefix}\" -I. \
-	-I./core/uae -I./core/ti_hw -I./core -I./hid -I./gui/gtk
+	-I./core/uae -I./core/ti_hw -I./core -I./hid -I./gui
 
 # source files to build
 uae_OBJ = \
@@ -64,12 +64,7 @@ core_OBJ = \
 	core/interface.o
 
 hid_OBJ = \
-	hid/skn/skin.o	\
-	hid/img/cnv.o	\
-	hid/img/pcx.o 	\
-	hid/img/xpm.o	\
-	hid/img/jpg.o	\
-	hid/img/bmp.o	\
+	hid/skin.o	\
 	hid/files.o \
 	hid/misc.o \
 	hid/rcfile.o \
@@ -78,39 +73,39 @@ hid_OBJ = \
 	hid/tikeys.o
 
 gui_OBJ = \
-	./gui/gtk/support.o \
-	./gui/gtk/utils.o \
-	./gui/gtk/tiemu_dbox.o ./gui/gtk/tiemu_cb.o \
-	./gui/gtk/link_dbox.o ./gui/gtk/link_cb.o \
-	./gui/gtk/msg_dbox.o ./gui/gtk/msg_cb.o \
-	./gui/gtk/infos_dbox.o ./gui/gtk/infos_cb.o \
-	./gui/gtk/adbkpt_dbox.o ./gui/gtk/adbkpt_cb.o \
-	./gui/gtk/colors_dbox.o ./gui/gtk/colors_cb.o \
-	./gui/gtk/dbkpt_dbox.o ./gui/gtk/dbkpt_cb.o \
-	./gui/gtk/debug_dbox.o ./gui/gtk/debug_cb.o \
-	./gui/gtk/itick_dbox.o ./gui/gtk/itick_cb.o \
-	./gui/gtk/logaddr_dbox.o ./gui/gtk/logaddr_cb.o \
-	./gui/gtk/romv_dbox.o ./gui/gtk/romv_cb.o \
-	./gui/gtk/trap_dbox.o ./gui/gtk/trap_cb.o \
-	./gui/gtk/viewlog_dbox.o ./gui/gtk/viewlog_cb.o \
-	./gui/gtk/dbgopt_dbox.o ./gui/gtk/dbgopt_cb.o \
-	./gui/gtk/pgmentbkpt_dbox.o ./gui/gtk/pgmentbkpt_cb.o \
-	./gui/gtk/state_dbox.o ./gui/gtk/state_cb.o \
-	./gui/gtk/dump_dbox.o ./gui/gtk/dump_cb.o \
-	./gui/gtk/bkpt_cause.o \
-	./gui/gtk/scopt_dbox.o ./gui/gtk/scopt_cb.o \
-	./gui/gtk/user_dbox.o ./gui/gtk/user_cb.o \
-	./gui/gtk/fsel_dbox.o ./gui/gtk/fsel_cb.o \
-	./gui/gtk/wizard_dbox.o ./gui/gtk/wizard_cb.o \
-	./gui/gtk/help_dbox.o ./gui/gtk/help_cb.o \
-	./gui/gtk/manpage_dbox.o ./gui/gtk/manpage_cb.o \
-	./gui/gtk/startup_dbox.o ./gui/gtk/startup_cb.o \
-	./gui/gtk/thanks_dbox.o ./gui/gtk/thanks_cb.o \
-	./gui/gtk/about_dbox.o ./gui/gtk/about_cb.o \
-	./gui/gtk/pbar_dbox.o ./gui/gtk/pbar_cb.o \
-	./gui/gtk/skin_dbox.o ./gui/gtk/skin_cb.o \
-	./gui/gtk/refresh.o ./gui/gtk/main_wnd.o \
-	./gui/gtk/main.o 
+	./gui/support.o \
+	./gui/utils.o \
+	./gui/tiemu_dbox.o ./gui/tiemu_cb.o \
+	./gui/link_dbox.o ./gui/link_cb.o \
+	./gui/msg_dbox.o ./gui/msg_cb.o \
+	./gui/infos_dbox.o ./gui/infos_cb.o \
+	./gui/adbkpt_dbox.o ./gui/adbkpt_cb.o \
+	./gui/colors_dbox.o ./gui/colors_cb.o \
+	./gui/dbkpt_dbox.o ./gui/dbkpt_cb.o \
+	./gui/debug_dbox.o ./gui/debug_cb.o \
+	./gui/itick_dbox.o ./gui/itick_cb.o \
+	./gui/logaddr_dbox.o ./gui/logaddr_cb.o \
+	./gui/romv_dbox.o ./gui/romv_cb.o \
+	./gui/trap_dbox.o ./gui/trap_cb.o \
+	./gui/viewlog_dbox.o ./gui/viewlog_cb.o \
+	./gui/dbgopt_dbox.o ./gui/dbgopt_cb.o \
+	./gui/pgmentbkpt_dbox.o ./gui/pgmentbkpt_cb.o \
+	./gui/state_dbox.o ./gui/state_cb.o \
+	./gui/dump_dbox.o ./gui/dump_cb.o \
+	./gui/bkpt_cause.o \
+	./gui/scopt_dbox.o ./gui/scopt_cb.o \
+	./gui/user_dbox.o ./gui/user_cb.o \
+	./gui/fsel_dbox.o ./gui/fsel_cb.o \
+	./gui/wizard_dbox.o ./gui/wizard_cb.o \
+	./gui/help_dbox.o ./gui/help_cb.o \
+	./gui/manpage_dbox.o ./gui/manpage_cb.o \
+	./gui/startup_dbox.o ./gui/startup_cb.o \
+	./gui/thanks_dbox.o ./gui/thanks_cb.o \
+	./gui/about_dbox.o ./gui/about_cb.o \
+	./gui/pbar_dbox.o ./gui/pbar_cb.o \
+	./gui/skin_dbox.o ./gui/skin_cb.o \
+	./gui/refresh.o ./gui/main_wnd.o \
+	./gui/main.o 
 
 tiemu_OBJ = core/uae/newcpu.o $(tihw_OBJ) $(core_OBJ) $(hid_OBJ) $(gui_OBJ)
 
@@ -122,11 +117,14 @@ uae:
 	cd core/uae && $(MAKE) all
 
 tiemu: $(tiemu_OBJ) uae
-	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu $(LDFLAGS) $(CFLAGS)
+#	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu $(LDFLAGS) $(CFLAGS)
+	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) \
+	-o tiemu $(LDFLAGS) $(CFLAGS)
 
 .c.o:
 	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) $< -o $@
-
+	#../libtool --mode=compile $(CC) $(INCLUDES) $(DEFS) \
+	#-c $(CFLAGS) $< -o $@
 
 clean:
 	@cd core/uae && $(MAKE) clean
@@ -142,3 +140,7 @@ dos2unix:
 
 distdir: clean
 	cp -rl * ../tiemu-@VERSION@/src
+
+install: tiemu
+	#@$(INSTALL) -m755 -d $(DESTDIR)$(tilp_help_dir)
+	$(INSTALL) -m644 tiemu ${prefix}/bin

@@ -27,8 +27,11 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#ifndef __WIN32__
+# include <pwd.h>
+# include <grp.h>
+#endif
 
-//#include "platform.h"
 #include "tilibs.h"
 
 #include "struct.h"

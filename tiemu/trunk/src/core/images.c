@@ -30,11 +30,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
-#ifndef __WIN32__
-# include <dirent.h>
-#else
-# include <glib.h> // for readdir and some others
-#endif
+# include <glib.h>
 
 #include "../core/uae/uae.h"
 
