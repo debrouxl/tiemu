@@ -28,6 +28,8 @@ Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescri
 Source: "C:\sources\roms\tiemu\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
 ; Pixmaps files
 Source: "C:\sources\roms\tiemu\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
+; Skin files
+Source: "C:\sources\roms\tiemu\skins\*.skn"; DestDir: "{app}\skins"; Flags: ignoreversion;
 ; i18n files
 ;Source: "C:\sources\roms\libs\files\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tifiles.mo"; Flags: ignoreversion;
 ;Source: "C:\sources\roms\libs\cables\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "ticables.mo"; Flags: ignoreversion;
@@ -42,6 +44,7 @@ Source: "C:\sources\roms\tiemu\man\ManPage.txt"; DestDir: "{app}"; Flags: ignore
 Source: "C:\sources\roms\tiemu\README"; DestDir: "{app}"; DestName: "ReadMe.txt"; Flags: ignoreversion isreadme
 Source: "C:\sources\roms\tiemu\RELEASE"; DestDir: "{app}"; DestName: "Release.txt"; Flags: ignoreversion
 ; TiEmu/GTK
+Source: "C:\SDL-1.2.7\lib\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\tifiles\tests\tifiles.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticables\tests\ticables.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticalcs\tests\ticalcs.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -60,8 +63,8 @@ Source: "C:\sources\roms\tiemu\build\InnoSetup\AddEntry\AddEntry.exe"; DestDir: 
 Source: "C:\Program Files\Common Files\GTK\2.0\lib\libwimp.dll"; DestDir: "{code:GetGtkPath}\lib\gtk-2.0\2.2.0\engines"; Flags: onlyifdoesntexist uninsneveruninstall; MinVersion: 0,4;
 
 [Dirs]
-Name: "{app}\My TI images"; Flags: uninsneveruninstall;
-Name: "{app}\plugins"; Flags: uninsneveruninstall;
+;Name: "{app}\My TI images"; Flags: uninsneveruninstall;
+;Name: "{app}\plugins"; Flags: uninsneveruninstall;
 
 [INI]
 Filename: "{app}\tiemu.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://lpg.ticalc.org/prj_tiemu"
