@@ -34,6 +34,7 @@
 #include "intl.h"
 #include "paths.h"
 #include "ti68k_int.h"
+#include "dbg_code.h"
 
 gint dbgcause1_display_dbox()
 {
@@ -300,6 +301,17 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 			str = g_strdup("bug !\n"); 
 			break;
 		}
+	}
+	else if(type == BK_TYPE_PGMENTRY)
+	{
+		str = g_strdup("Program entry\n");
+	}
+	else if(type == BK_TYPE_GDBTRAP)
+	{
+		uint32_t value;
+
+		ti68k_register_get_pc(&value);
+		str = g_strdup_printf("GDB trap (pc=$0x%06x)", value);
 	}
 	else
 	{

@@ -1,6 +1,6 @@
 2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
-      * interp.c (sim_write): Call fill_prefetch_0 after writing.
+      * interp.c (sim_write): Call fill_prefetch_0 and gdbcallback_refresh_debugger after writing.
 
 2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 

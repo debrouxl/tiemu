@@ -88,7 +88,8 @@ typedef struct
 typedef enum {
     BK_TYPE_ACCESS=1, BK_TYPE_RANGE, 
     BK_TYPE_CODE, BK_TYPE_EXCEPTION,
-	BK_TYPE_PGMENTRY, BK_TYPE_PROTECT
+    BK_TYPE_PGMENTRY, BK_TYPE_PROTECT,
+    BK_TYPE_GDBTRAP
 } Ti68kBkptType;
 
 // Breakpoints cause (ti68k_bkpt_get_cause())

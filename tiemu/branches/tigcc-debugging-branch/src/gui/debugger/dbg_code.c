@@ -1024,7 +1024,7 @@ void gdbcallback_refresh_debugger(void)
 {
 	if (dbg_on)
 	{
-		clist_refresh(store, TRUE);
+		dbgcode_refresh_window();
 		dbgregs_refresh_window();
 		dbgpclog_refresh_window();
 		//dbgmem_refresh_window();
