@@ -46,9 +46,38 @@ gint refresh_code_dbox(void);
 gint refresh_stack_dbox(void);
 gint refresh_memory_dbox(void);
 
+static void
+setup_clist(GtkWidget *clist, gchar *title[], int n)
+{
+  GtkListStore *list;
+  GtkTreeModel *model;
+  int i;
+
+  if (n == 3)
+    list = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_STRING,
+			      G_TYPE_STRING);
+  else
+    list = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
+  model = GTK_TREE_MODEL(list);
+  
+  gtk_tree_view_set_model(GTK_TREE_VIEW(clist), model); 
+  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(clist), TRUE); 
+  
+  for (i = 0; i < n; i++)
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(clist), i, title[i],
+						gtk_cell_renderer_text_new(),
+						"text", 0, NULL);
+  gtk_list_store_clear(list);
+}
+
 gint display_debugger_dbox(void)
 {
   GtkWidget *dbox;
+  GtkTreeSelection *sel;
+    
+  gchar *t_code[3] = { _("B"), _("Adr"), _("Code") };
+  gchar *t_mem[3] = { _("Addr"), _("Dump"), _("Char") };
+  gchar *t_stack[2] = { _("SP"), _("Value") };
   
   if(debugger_dbox == NULL)
     {
@@ -58,14 +87,22 @@ gint display_debugger_dbox(void)
       reg_text = lookup_widget(dbox, "text5");
       
       code_clist = lookup_widget(dbox, "clist1");
-      
+      setup_clist(code_clist, t_code, 3);
       mem_clist = lookup_widget(dbox, "clist2");
-      
+      setup_clist(mem_clist, t_mem, 3);
       stack_clist = lookup_widget(dbox, "clist3");
-      
+      setup_clist(stack_clist, t_stack, 2);
+
       statusbar = lookup_widget(dbox, "statusbar1");
+
+      sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(code_clist));
+      gtk_tree_selection_set_mode(sel, GTK_SELECTION_SINGLE);
       
       gtk_widget_show_all(dbox);
+
+      g_signal_connect(G_OBJECT(sel), "changed",
+		       G_CALLBACK(on_code_clist_selection_changed), NULL);
+
       display_bkpt_cause();
     }
 
@@ -867,28 +904,24 @@ on_clist1_button_press_event           (GtkWidget       *widget,
 }
 
 
-#if 0 /* FUCKED */
-void
-on_clist1_select_row                   (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
+void 
+on_code_clist_selection_changed (GtkTreeSelection *sel, 
+				 gpointer user_data)
 {
-  selected_row = row;
+  GList *paths;
+  GtkTreeModel *model;
+
+  paths = gtk_tree_selection_get_selected_rows(sel, &model);
+
+  if (paths != NULL)
+    selected_row = *gtk_tree_path_get_indices(g_list_nth_data(paths, 0));
+  else
+    selected_row = -1;
+
+  g_list_foreach(paths, (GFunc)gtk_tree_path_free, NULL);
+  g_list_free(paths);
 }
 
-
-void
-on_clist1_unselect_row                 (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-  selected_row = -1;
-}
-#endif /* 0 */
 
 gboolean
 on_clist2_key_press_event              (GtkWidget       *widget,
@@ -1092,28 +1125,6 @@ on_options1_activate                   (GtkMenuItem     *menuitem,
 }
 
 /* Memory box events for test purposes */
-
-#if 0 /* FUCKED */
-void
-on_clist2_click_column                 (GtkCList        *clist,
-                                        gint             column,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_clist2_select_row                   (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-  //fprintf(stdout, "row: %i\n", row);
-}
-#endif /* 0 */
-
 gboolean
 on_clist2_event                        (GtkWidget       *widget,
                                         GdkEvent        *event,
