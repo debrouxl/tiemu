@@ -55,12 +55,13 @@ GdkPixbuf *lcd = NULL;
 GdkPixbuf *skn = NULL;
 GdkPixmap *pixmap = NULL;
 
-uint32_t *lcd_bytmap;				// LCD buffer (color-mapped as grayscale)
-PIX_INFOS pi;
+uint32_t*	lcd_bytmap;				// LCD buffer (color-mapped as grayscale)
+LCD_INFOS	li;
+SCALE_INFOS	sc;
 
 static uint32_t convtab[512];      	// planar to chunky conversion table
 static RGB      grayscales[16];		// gray scales rgb values (colormap)
-static int lcd_state = 0;           // screen state
+static int		lcd_state = 0;      // screen state
 
 static int contrast = NGS;          // current contrast level
 static int old_contrast = 0;        // previous contrast level
@@ -222,7 +223,7 @@ int hid_update_lcd(void)
 		{
 			for (i = 0; i < LCDMEM_W; i++) 
 			{
-				p = pi.pixels + j * pi.rowstride + i * pi.n_channels;
+				p = li.pixels + j * li.rowstride + i * li.n_channels;
 				
 				p[0] = grayscales[*lcd_buf].r;
 				p[1] = grayscales[*lcd_buf].g;

@@ -43,16 +43,17 @@
 GtkWidget *wnd = NULL;
 GtkWidget *area = NULL;
 
-extern GdkPixbuf *lcd;
-extern GdkPixbuf *skn;
-extern GdkPixmap *pixmap;
+extern GdkPixbuf*	lcd;
+extern GdkPixbuf*	skn;
+extern GdkPixmap*	pixmap;
 
-extern const char* key_mapping;
-extern const char  sknKey92[];
-extern const char  sknKey89[];
+extern const char*	key_mapping;
+extern const char	sknKey92[];
+extern const char	sknKey89[];
 
-extern uint32_t *lcd_bytmap;
-extern PIX_INFOS pi;
+extern uint32_t*	lcd_bytmap;
+extern LCD_INFOS	li;
+extern SCALE_INFOS	sc;
 
 gint display_main_wnd(void)
 {
@@ -78,7 +79,7 @@ GLADE_CB void
 on_calc_wnd_destroy                    (GtkObject       *object,
                                         gpointer         user_data)
 {
-    //gtk_main_quit();
+	return;
 }
 
 GLADE_CB gboolean
@@ -121,12 +122,19 @@ on_calc_wnd_size_request           (GtkWidget       *widget,
                                     GtkRequisition  *requisition,
                                     gpointer         user_data)
 {
-	gint w, h;
+	SKIN_INFOS *si = & skin_infos;
+	guint w, h;
 
-	printf("size request: %i x %i\n", requisition->width, requisition->height);
-
+	//printf("size request: %i x %i\n", requisition->width, requisition->height);
 	gtk_window_get_size(GTK_WINDOW(widget), &w, &h);
-	printf("%i x %i\n", w, h);
+	if(w < si->width || h < si->height)
+		return;
+	printf("size request: %i x %i\n", w, h);
+
+	sc.w = w;
+	sc.h = (int)(sc.w / sc.r);
+	sc.s = (float)sc.w / si->width;
+	printf("scaling: %i %i %1.2f %1.2f\n", sc.w, sc.h, sc.r, sc.s);
 }
 
 static int match_skin(int calc_type)
@@ -261,7 +269,7 @@ int  hid_init(void)
 	}
         
     // Allocate the TI screen buffer
-	lcd_bytmap = (uint32_t *)malloc(LCDMEM_W * LCDMEM_H);
+	lcd_bytmap = malloc(LCDMEM_W * LCDMEM_H);
 
     // Allocate the lcd pixbuf
     lcd = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, LCDMEM_W, LCDMEM_H);
@@ -273,11 +281,12 @@ int  hid_init(void)
 	    return -1;
     }
     
-    pi.n_channels = gdk_pixbuf_get_n_channels (lcd);
-	pi.width = gdk_pixbuf_get_width (lcd);
-	pi.height = gdk_pixbuf_get_height (lcd);
-	pi.rowstride = gdk_pixbuf_get_rowstride (lcd);
-	pi.pixels = gdk_pixbuf_get_pixels (lcd);
+	// Constants for LCD update (speed-up)
+    li.n_channels = gdk_pixbuf_get_n_channels (lcd);
+	li.width = gdk_pixbuf_get_width (lcd);
+	li.height = gdk_pixbuf_get_height (lcd);
+	li.rowstride = gdk_pixbuf_get_rowstride (lcd);
+	li.pixels = gdk_pixbuf_get_pixels (lcd);
 
 	// Create main window
 	display_main_wnd();
@@ -296,7 +305,8 @@ int  hid_init(void)
   	if(params.background)
         gtk_drawing_area_size(GTK_DRAWING_AREA(area), si->width, si->height);
     else
-        gtk_drawing_area_size(GTK_DRAWING_AREA(area), tihw.lcd_w, tihw.lcd_h);  
+        gtk_drawing_area_size(GTK_DRAWING_AREA(area), tihw.lcd_w, tihw.lcd_h);
+	//gtk_signal_emit_stop_by_name(GTK_OBJECT(wnd), "size_request");
     
     // Draw the skin and compute grayscale palette
   	compute_grayscale();
@@ -307,6 +317,12 @@ int  hid_init(void)
 		(GtkFunction)hid_refresh, NULL);
 
 	hid_lcd_on_off(1);
+
+	// Set scale infos
+	sc.w = si->width;
+	sc.h = si->height;
+	sc.r = (float)sc.w / sc.h;
+	sc.s = (float)1.0;
 
     return 0;
 }

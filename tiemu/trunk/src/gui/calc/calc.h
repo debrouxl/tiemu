@@ -67,6 +67,15 @@ typedef struct
 	int 	n_channels;
 	guchar*	pixels;
 	gulong*	pixels2;
-} PIX_INFOS;
+} LCD_INFOS;
+
+typedef struct
+{
+	int 		w;	// width
+	int 		h;	// height
+	float 		r;	// original ratio
+	float 		s;	// scaling factor
+	GdkPixbuf*	p;	// temp pointer
+} SCALE_INFOS;
 
 #endif
