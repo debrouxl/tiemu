@@ -44,18 +44,16 @@ const int rom_sizes[] = { 1*MB, 2*MB, 2*MB, 4*MB };	// 92, 89, 92+, V200
 const int ram_sizes[] = { 128*KB, 256*KB, 256*KB, 256*KB };
 const int io_size = 32;
 
-UBYTE *mem_tab[8] = 
-{
-  0, // 000000-1FFFFF : RAM
-  0, // 200000-3FFFFF : internal ROM (TI89)
-  0, // 400000-5FFFFF : external ROM (TI92/TI92+)
-  0, // 600000-7FFFFF : Memory mapped I/O (lower 6 bits)
-  0, //					Garbage ??
-  0,
-  0,
-  0
-};
-ULONG mem_mask[8] = {0,0,0,0,0,0,0,0};
+UBYTE *mem_tab[8] = { 0 };
+ULONG mem_mask[8] = { 0 };
+	// 000000-1FFFFF : RAM
+  	// 200000-3FFFFF : internal ROM (TI89)
+  	// 400000-5FFFFF : external ROM (TI92/TI92+)
+  	// 600000-7FFFFF : memory mapped I/O (lower 6 bits)
+  	// 800000-9FFFFF : nothing
+  	// A00000-BFFFFF : nothing
+	// B00000-DFFFFF : nothing
+	// C00000-FFFFFF : nothing
 
 int rom_changed[32]; // FLASH segments which have been (re)programmed
 
@@ -84,8 +82,17 @@ int hw_mem_init(void)
 	tihw.rom_flash = img->flash;
 	strcpy(tihw.rom_version, img->version);
 
-	tihw.rom_size = rom_sizes[log2(tihw.calc_type)];
-	tihw.ram_size = ram_sizes[log2(tihw.calc_type)];
+	if((tihw.calc_type == TI92) && (strcmp(tihw.rom_version, "2.0") > 0))
+	{
+		// TI92 II is same as TI92+
+		tihw.rom_size = rom_sizes[1];
+		tihw.ram_size = ram_sizes[1];
+	}
+	else
+	{
+		tihw.rom_size = rom_sizes[log2(tihw.calc_type)];
+		tihw.ram_size = ram_sizes[log2(tihw.calc_type)];
+	}
 
   /* Init vars */
   ram128 = (tihw.ram_size == 128);

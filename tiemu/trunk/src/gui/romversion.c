@@ -58,9 +58,7 @@ static void clist_selection_changed(GtkTreeSelection * sel,
 			chosen_file = NULL;
 		}
 
-		printf("before: <%p>\n", chosen_file);
         gtk_tree_model_get (model, &iter, 0, &chosen_file, -1);
-		printf("after: <%p>\n", chosen_file);
     }
 }
 
