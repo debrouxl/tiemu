@@ -10,7 +10,7 @@
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
   <property name="default_width">160</property>
-  <property name="default_height">120</property>
+  <property name="default_height">480</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <signal name="destroy" handler="on_dbgmem_window_destroy" last_modification_time="Tue, 01 Jun 2004 19:43:17 GMT"/>
@@ -19,8 +19,8 @@
     <widget class="GtkScrolledWindow" id="scrolledwindow1">
       <property name="visible">True</property>
       <property name="can_focus">True</property>
-      <property name="hscrollbar_policy">GTK_POLICY_ALWAYS</property>
-      <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>
+      <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+      <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
       <property name="shadow_type">GTK_SHADOW_NONE</property>
       <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
 

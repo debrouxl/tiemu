@@ -50,5 +50,6 @@ uint32_t ti68k_register_get_ssp(void);
 uint32_t ti68k_register_get_pc(void);
 uint32_t ti68k_register_get_sr(void);
 const char *ti68k_register_get_flag(void);
+void ti68k_register_get_flags(char *sf, char *uf);
 
 #endif

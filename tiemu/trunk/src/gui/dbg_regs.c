@@ -15,21 +15,23 @@
 
 enum { 
 	    COL_NAME, COL_VALUE, 
-		COL_EDITABLE, COL_COLORED,
+		COL_EDITABLE, COL_COLOR, COL_FONT
 };
 #define CLIST_NVCOLS	(2)		// 2 visible columns
-#define CLIST_NCOLS		(4)		// 4 real columns
+#define CLIST_NCOLS		(5)		// 5 real columns
+
+#define FONT_NAME	"courier"
 
 GtkWidget *ctree;
 
-static int validate_value(const char *str)
+static int validate_value(const char *str, int ndigits)
 {
 	int i;
 	
-	 if(strlen(str) != 8)
+	 if((int)strlen(str) != ndigits)
 	 	return 0;
 	
-	for(i = 0; i < 8; i++)
+	for(i = 0; i < ndigits; i++)
 	{
 		if(!isxdigit(str[i]))
 			return 0;
@@ -64,7 +66,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 	switch(path_string[0] - '0')
 	{
 		case 0:	// Ax
-			if(validate_value(new_text))
+			if(validate_value(new_text, 8))
 			{
 				sscanf(new_text, "%lx", &value);			
 				gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
@@ -72,7 +74,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 			}
 		break;
 		case 1:	// Dx
-			if(validate_value(new_text))
+			if(validate_value(new_text, 8))
 			{
 				sscanf(new_text, "%lx", &value);			
 				gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
@@ -83,7 +85,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 			switch(n)
 			{
 				case 0:	// pc
-					if(validate_value(new_text))
+					if(validate_value(new_text, 8))
 					{
 						sscanf(new_text, "%lx", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
@@ -91,7 +93,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 					}
 				break;		
 				case 1:	// usp
-					if(validate_value(new_text))
+					if(validate_value(new_text, 8))
 					{
 						sscanf(new_text, "%lx", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
@@ -99,7 +101,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 					}
 				break;
 				case 2:	// ssp
-					if(validate_value(new_text))
+					if(validate_value(new_text, 8))
 					{
 						sscanf(new_text, "%lx", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
@@ -107,7 +109,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 					}
 				break;
 				case 3: // sr
-					if(validate_value(new_text))
+					if(validate_value(new_text, 4))
 					{
 						sscanf(new_text, "%lx", &value);			
 						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
@@ -163,13 +165,11 @@ static GtkTreeStore* ctree_create(GtkWidget *tree)
 	GtkTreeModel *model;
 	GtkCellRenderer *renderer;
 	GtkTreeSelection *selection;
-	
-	const gchar *text[CLIST_NVCOLS] = { _("Name"), _("Value") };
     gint i;
 	
 	store = gtk_tree_store_new(CLIST_NCOLS,
 				G_TYPE_STRING, G_TYPE_STRING, 
-				G_TYPE_BOOLEAN, GDK_TYPE_COLOR,
+				G_TYPE_BOOLEAN, GDK_TYPE_COLOR, G_TYPE_STRING,
 				-1
             );
     model = GTK_TREE_MODEL(store);
@@ -179,20 +179,22 @@ static GtkTreeStore* ctree_create(GtkWidget *tree)
   
     gtk_tree_view_set_model(view, model); 
     gtk_tree_view_set_headers_visible(view, FALSE);
-	gtk_tree_view_set_rules_hint(view, FALSE);
+	gtk_tree_view_set_rules_hint(view, TRUE);
   
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
-            text[0], renderer, 
+            "", renderer, 
             "text", COL_NAME,
+			"font", COL_FONT,
 			NULL);
 
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
-            text[1], renderer, 
+            "", renderer, 
             "text", COL_VALUE,
 			"editable", COL_EDITABLE,
-			"foreground-gdk", COL_COLORED,
+			"foreground-gdk", COL_COLOR,
+			"font", COL_FONT,
 			NULL);
 			
 	g_signal_connect(G_OBJECT(renderer), "edited",
@@ -204,7 +206,7 @@ static GtkTreeStore* ctree_create(GtkWidget *tree)
 		GtkTreeViewColumn *col;
 		
 		col = gtk_tree_view_get_column(view, i);
-		gtk_tree_view_column_set_resizable(col, TRUE);
+		//gtk_tree_view_column_set_resizable(col, TRUE);
 	}
 	
 	selection = gtk_tree_view_get_selection(view);
@@ -219,7 +221,13 @@ static void ctree_populate(GtkTreeStore *store)
 	GtkTreeIter node1, node2, node3;
     GtkTreeIter iter;
     int i;
-    const char *others[] = { "PC", "USP", "SSP", "SR" , "Flags"};
+    const char *others[] = { "PC", "USP", "SSP", "SR" , "S flags", "U flags"};
+	GdkColor color;
+	gboolean success;
+
+	gdk_color_parse("Blue", &color);
+	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color, 1,
+				  FALSE, FALSE, &success);
 
 	// clear tree
 	gtk_tree_store_clear(store);
@@ -227,9 +235,10 @@ static void ctree_populate(GtkTreeStore *store)
 	// set the 3 main nodes
 	gtk_tree_store_append(store, &node1, NULL);
 	gtk_tree_store_set(store, &node1, 
-		COL_NAME, "Adress", 
+		COL_NAME, "Address", 
 		COL_VALUE, "",  
 		COL_EDITABLE, FALSE,
+		COL_FONT, FONT_NAME,
 		-1);
 		
 	gtk_tree_store_append(store, &node2, NULL);
@@ -237,6 +246,7 @@ static void ctree_populate(GtkTreeStore *store)
 		COL_NAME, "Data", 
 		COL_VALUE, "",  
 		COL_EDITABLE, FALSE,
+		COL_FONT, FONT_NAME,
 		-1);
 		
 	gtk_tree_store_append(store, &node3, NULL);
@@ -244,6 +254,7 @@ static void ctree_populate(GtkTreeStore *store)
 		COL_NAME, "Other", 
 		COL_VALUE, "",  
 		COL_EDITABLE, FALSE,
+		COL_FONT, FONT_NAME,
 		-1);
 		
 	// populate Ax node
@@ -256,6 +267,8 @@ static void ctree_populate(GtkTreeStore *store)
 			COL_NAME, str,
 			COL_VALUE, "0x000000",
 			COL_EDITABLE, TRUE,
+			COL_FONT, FONT_NAME,
+			COL_COLOR, &color,
 	   		-1);
 	   		
 	   	g_free(str);
@@ -271,6 +284,8 @@ static void ctree_populate(GtkTreeStore *store)
 			COL_NAME, str,
 			COL_VALUE, "0x000000",
 			COL_EDITABLE, TRUE,
+			COL_FONT, FONT_NAME,
+			COL_COLOR, &color,
 	   		-1);
 	   		
 	   	g_free(str);
@@ -284,9 +299,12 @@ static void ctree_populate(GtkTreeStore *store)
 			COL_NAME, others[i],
 			COL_VALUE, "0x000000",
 			COL_EDITABLE, TRUE,
+			COL_FONT, FONT_NAME,
 	   		-1);
 	}
 }
+
+extern void MC68000_dumpstate(CPTR *nextpc);
 
 static void ctree_refresh(GtkTreeStore *store)
 {
@@ -385,7 +403,7 @@ static void ctree_refresh(GtkTreeStore *store)
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			return;
 		
-		sdata = g_strdup_printf("%08x", ti68k_register_get_sr());
+		sdata = g_strdup_printf("%04x", ti68k_register_get_sr());
 		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
 		g_free(sdata);
 	   		
@@ -393,19 +411,31 @@ static void ctree_refresh(GtkTreeStore *store)
 	   	gtk_tree_path_free(path);	
 	}
 	
-	// refresh Others node (flags)
+	// refresh Others node (S & U flags)
 	{
-		spath = g_strdup_printf("2:%i", 0);
+		char s_flags[32], u_flags[32];
+
+		ti68k_register_get_flags(s_flags, u_flags);
+
+		spath = g_strdup_printf("2:%i", 4);
 		path = gtk_tree_path_new_from_string(spath);
 		if(!gtk_tree_model_get_iter(model, &iter, path))
 			return;
 		
-		sdata = g_strdup_printf("%08x", ti68k_register_get_flag());
-		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
-		g_free(sdata);
+		gtk_tree_store_set(store, &iter, COL_VALUE, s_flags, -1);
 	   		
 	   	g_free(spath);
-	   	gtk_tree_path_free(path);	
+	   	gtk_tree_path_free(path);
+
+		spath = g_strdup_printf("2:%i", 5);
+		path = gtk_tree_path_new_from_string(spath);
+		if(!gtk_tree_model_get_iter(model, &iter, path))
+			return;
+		
+		gtk_tree_store_set(store, &iter, COL_VALUE, u_flags, -1);
+	   		
+	   	g_free(spath);
+	   	gtk_tree_path_free(path);
 	}
 }
 

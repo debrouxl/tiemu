@@ -121,22 +121,17 @@ const char *ti68k_register_get_flag(void)
 {
     static char str[64];
 
-    printf("T=%d S=%d X=%d N=%d\nZ=%d V=%d C=%d IMASK=%d\n",
-	  regs.t, regs.s, regs.x, NFLG, ZFLG, VFLG, CFLG, regs.intmask);
-	  
 	/* T  0  S  0  0  I2 I1 I0 0  0  0  X  N  Z  V  C */	  
-	sprintf(str, "%s - %s - - %s %s %s - - - %s %s %s %s %s",
-		regs.t ? "T " : "0 ",
-		regs.s ? "S " : "0 ",
-		(regs.intmask & 4) ? "I2" : "0 ",
-		(regs.intmask & 2) ? "I1" : "0 ",
-		(regs.intmask & 1) ? "I0" : "0 ",
-		regs.x ? "X " : "0 ",
-		regflags.flags.n ? "N " : "0 ",
-		regflags.flags.z ? "Z " : "0 ",
-		regflags.flags.v ? "V " : "0 ",
-		regflags.flags.c ? "C " : "0 "
-		);
+    printf("T=%d S=%d I=%d | X=%d N=%d\nZ=%d V=%d C=%d\n",
+	  regs.t, regs.s, regs.intmask,
+	  regs.x, NFLG, ZFLG, VFLG, CFLG);
 
     return str;
+}
+
+void ti68k_register_get_flags(char *sf, char *uf)
+{
+	/* SR: T 0 S 0 0 I2 I1 I0 0 0 0 X N Z V C */	  
+    printf(sf, "T=%d S=%d I=%d", regs.t, regs.s, regs.intmask);
+	printf(uf, regs.x, NFLG, ZFLG, VFLG, CFLG);
 }

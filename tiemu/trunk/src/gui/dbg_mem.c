@@ -22,10 +22,15 @@ enum {
         COL_4, COL_5, COL_6, COL_7,
         COL_8, COL_9, COL_A, COL_B,
         COL_C, COL_D, COL_E, COL_F,
-		COL_ASCII
+		COL_ASCII,
+		COL_0b, COL_1b, COL_2b, COL_3b, 
+		COL_4b, COL_5b, COL_6b, COL_7b, 
+		COL_8b, COL_9b, COL_Ab, COL_Bb, 
+		COL_Cb, COL_Db, COL_Eb, COL_Fb,
+		COL_COLOR
 };
-#define CLIST_NVCOLS	(COL_ASCII+1)
-#define CLIST_NCOLS		(CLIST_NVCOLS+16)
+#define CLIST_NVCOLS	(18)
+#define CLIST_NCOLS		(18+17)
 
 static gint column2index(GtkTreeViewColumn * column)
 {
@@ -72,8 +77,6 @@ static void renderer_edited(GtkCellRendererText * cell,
     // get old value
 	col = column2index(column);
     gtk_tree_model_get(model, &iter, COL_ADDR, &str_addr, -1);
-
-    printf("@<%s> = <%s>\n", str_addr, str_data);
 
     // check for new value
     if(!isxdigit(str_data[0]) || !isxdigit(str_data[1]) || (strlen(str_data) > 2))
@@ -124,6 +127,7 @@ static GtkWidget* clist_create(GtkListStore **st)
 				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
 				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
 				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
+				GDK_TYPE_COLOR,
 				-1
             );
     model = GTK_TREE_MODEL(store);
@@ -132,15 +136,15 @@ static GtkWidget* clist_create(GtkListStore **st)
 	view = GTK_TREE_VIEW(list);
   
     gtk_tree_view_set_model(view, model); 
-    gtk_tree_view_set_headers_visible(view, TRUE);
-	gtk_tree_view_set_headers_clickable(view, TRUE);
-	gtk_tree_view_set_rules_hint(view, FALSE);
+    gtk_tree_view_set_headers_visible(view, FALSE);
+	gtk_tree_view_set_rules_hint(view, TRUE);
   
 	i = COL_ADDR;
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i,
+			"foreground-gdk", COL_COLOR,
 			NULL);
 
     for (i = COL_0; i <= COL_F; i++)
@@ -162,6 +166,7 @@ static GtkWidget* clist_create(GtkListStore **st)
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i,
+			"foreground-gdk", COL_COLOR,
 			NULL);
     
     for (i = 0; i < CLIST_NVCOLS; i++) 
@@ -186,6 +191,12 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
     gchar *str;
     char ascii[17];
     uint32_t addr;
+	GdkColor color;
+	gboolean success;
+
+	gdk_color_parse("DarkGray", &color);
+	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color, 1,
+				  FALSE, FALSE, &success);
 
     for(addr = start; addr < start+length; addr += 0x10)
     {
@@ -194,7 +205,10 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
         gtk_list_store_append(store, &iter);
 
 		str = g_strdup_printf("0x%06x", addr);
-		gtk_list_store_set(store, &iter, COL_ADDR, str, -1);
+		gtk_list_store_set(store, &iter, 
+			COL_ADDR, str, 
+			COL_COLOR, &color,
+			-1);
 		g_free(str);
 
 		for(i = COL_0; i <= COL_F; i++)
@@ -213,7 +227,10 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
         }
 		
 		ascii[16] = '\0';
-		gtk_list_store_set(store, &iter, COL_ASCII, ascii, -1);
+		gtk_list_store_set(store, &iter, 
+			COL_ASCII, ascii, 
+			COL_COLOR, &color,
+			-1);
     }
 }
 
