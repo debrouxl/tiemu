@@ -60,7 +60,7 @@ GdkPixmap *pixmap = NULL;
 uint32_t*	lcd_bytmap;				// LCD buffer (color-mapped as grayscale)
 LCD_INFOS	li;
 WND_INFOS	wi;
-SCL_INFOS	si = { 1, NULL };
+SCL_INFOS	si = { 1, 1, NULL, NULL };
 
 static uint32_t convtab[512];      	// planar to chunky conversion table
 static RGB      grayscales[16];		// gray scales rgb values (colormap)
@@ -150,12 +150,6 @@ void compute_grayscale(void)
 	// Compute grayscale palette
 	if(!max_plane)
 		return;
-	
-	// testing purposes
-	//for(i = 0; i <= max_plane; i++) grayscales[i].r = grayscales[i].g = grayscales[i].b = 255 - (i*255)/(max_plane);
-
-	//grayscales[0].r = sr>>8; grayscales[0].g = sg>>8; grayscales[0].b = sb>>8;
-	//grayscales[1].r = er>>8; grayscales[1].g = eg>>8; grayscales[1].b = eb>>8;
 	
 	for(i = 0; i <= max_plane; i++)
 	{
@@ -325,10 +319,10 @@ int hid_update_lcd(void)
 		src.h = tihw.log_h > tihw.lcd_h ? tihw.lcd_h : tihw.log_h;
 
 		// Copy surface into window
-		if(si.s > 1)
+		if((si.x > 1) && (si.y > 1))
 		{
-			src.w *= si.s;
-			src.h *= si.s;
+			src.w = (int)(si.x * src.w);
+			src.h = (int)(si.y * src.h);
 
 			// scale image
 			si.p = gdk_pixbuf_scale_simple(si.l, li.pos.w, li.pos.h, GDK_INTERP_NEAREST);

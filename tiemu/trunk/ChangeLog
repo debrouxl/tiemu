@@ -14,7 +14,8 @@ To do:
 	- [roms] $997: more dissassembled lines of code in the debugger (resizeable).
 	- [roms] $998: close the debugger when you press F5.
 	- [roms] $1001: added scaling support for skin & lcd (beware: CPU intensive).
-	- [roms] $1002: can send several TI files at once and added new file selectors
+	- [roms] $1002: can send several TI files at once and added new file selectors.
+	- [roms] $1008: implemented full-screen view.
 
 - 12/03/2005, version 1.80p:
 	- [kevin] $933: increased link timeout from 1.5 to 10s.

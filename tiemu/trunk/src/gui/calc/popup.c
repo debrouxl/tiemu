@@ -216,29 +216,29 @@ on_hw_protection1_activate             (GtkMenuItem     *menuitem,
 
 
 GLADE_CB void
-on_normal_view1_activate          (GtkMenuItem     *menuitem,
+on_normal_view1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	printf("normal !\n");
 	hid_switch_normal_view();
 }
 
 
 GLADE_CB void
-on_large_view1_activate           (GtkMenuItem     *menuitem,
+on_large_view1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	printf("large !\n");
 	hid_switch_large_view();
 }
 
 
 GLADE_CB void
-on_full_screen1_activate               (GtkMenuItem     *menuitem,
+on_full_view1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	if(GTK_CHECK_MENU_ITEM(menuitem)->active == TRUE) 
-		hid_switch_fullscreen();
-	else
-		hid_switch_unfullscreen();
+	printf("full !\n");
+	hid_switch_fullscreen();
 }
 
 
@@ -430,20 +430,20 @@ GtkWidget* display_popup_menu(void)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.hw_protect);
 	g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_hw_protection1_activate, NULL);
 
+	// init radio buttons
     switch(options.view)
     {
     case VIEW_NORMAL:
         data = glade_xml_get_widget(xml, "normal_view1");
-        g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_normal_view1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_normal_view1_activate, NULL);
         break;
     case VIEW_LARGE:
         data = glade_xml_get_widget(xml, "large_view1");
-        g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_large_view1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_large_view1_activate, NULL);
         break;
+	case VIEW_FULL:
+		data = glade_xml_get_widget(xml, "full_view1");
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
     default:
         break;
     }

@@ -82,12 +82,9 @@ typedef struct
 
 typedef struct
 {
-	//int 		w;	// width
-	//int 		h;	// height
-	//float 		r;	// original ratio
-	//float 		s;	// scaling factor
+	float		x;	// x ratio
+	float		y;	// y ratio
 
-	int			s;
 	GdkPixbuf*	l;	// lcd pixbuf
 	GdkPixbuf*	p;	// scaled pixbuf
 } SCL_INFOS;
