@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-project SYSTEM "http://glade.gnome.org/glade-project-2.0.dtd">
+
+<glade-project>
+  <name>Popup Menu</name>
+  <program_name>popup-menu</program_name>
+  <gnome_support>FALSE</gnome_support>
+  <use_widget_names>TRUE</use_widget_names>
+  <output_main_file>FALSE</output_main_file>
+  <output_build_files>FALSE</output_build_files>
+  <main_source_file>popup_dbox.c</main_source_file>
+  <main_header_file>popup_dbox.h</main_header_file>
+  <handler_source_file>popup_cb.c</handler_source_file>
+  <handler_header_file>popup_cb.h</handler_header_file>
+</glade-project>
