@@ -40,6 +40,7 @@
 #include "struct.h"
 #include "dbg_all.h"
 #include "support.h"
+#include "paths.h"
 
 DbgOptions options3;
 DbgWidgets dbgw = { 0 };

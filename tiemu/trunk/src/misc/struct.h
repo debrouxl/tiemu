@@ -30,15 +30,22 @@
 
 #include <glib.h>
 
+#include "paths.h"
+
+/* Constants */
+
 #define MAXCHARS 256
 
-#include "paths.h"
+#define VIEW_NORMAL 1
+#define VIEW_LARGE  2
+#define VIEW_FULL   3
 
 /* General options */
 typedef struct
 {
 	gchar* skin_file;	
 	gint	console;
+    gint    view;
 
 } TieOptions;
 

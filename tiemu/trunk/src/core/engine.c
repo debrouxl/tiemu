@@ -224,22 +224,26 @@ int ti68k_engine_is_stopped()
 
 void ti68k_engine_stop(void) 
 {
+    //printf("stopping engine... ");
 	G_LOCK(running);
 	running = 0;				// request termination
 	G_UNLOCK(running);
 
 	g_thread_join(thread);		// wait for thread termination
 	thread = NULL;
+    //printf("done.\n");
 }
 
 void ti68k_engine_start(void) 
 {
+    //printf("starting engine... ");
 	G_LOCK(running);
 	if(!running)
 	{
 		thread = g_thread_create(ti68k_engine, NULL, TRUE, &error);		
 	}
 	G_UNLOCK(running);
+    //printf("done.\n");
 }
 
 #endif

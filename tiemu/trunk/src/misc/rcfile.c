@@ -774,18 +774,18 @@ int rcfile_default()
 
 	// other fields
 	options.skin_file = g_strconcat(inst_paths.skin_dir, "", NULL);
+#if defined(__WIN32__) && defined(_CONSOLE)
+	options.console = !0;
+#else
+	options.console = 0;
+#endif
+    options.view = VIEW_NORMAL;
 
 	options2.file = g_strdup("screenshot");
 	options2.counter = 0;
 	options2.type = IMG_COL;	//IMG_BW;
 	options2.format = IMG_PNG;
 	options2.size = IMG_SKIN;	//IMG_LCD;
-
-#if defined(__WIN32__) && defined(_CONSOLE)
-	options.console = !0;
-#else
-	options.console = 0;
-#endif
 
 	// Optimized for 1024x768
 	options3.bkpts.x = 490;

@@ -58,6 +58,7 @@ extern int dbg_on;
 /* 
    Display a popup menu: entry point used by hid.c (SDL)
 */
+/*
 void gui_popup_menu(void)
 {
 	GtkWidget *menu;
@@ -82,64 +83,7 @@ void gui_popup_menu(void)
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, button, time);
 	gtk_widget_show(menu);
 }
-
-/*
-  Display the GTK popup menu and configure some items
 */
-GtkWidget* display_popup_menu(void)
-{
-	GladeXML *xml;
-	GtkWidget *menu;
-	GtkWidget *data;
-	gchar *s;
-  
-	//menu = create_popup_menu();
-	xml = glade_xml_new
-	    (tilp_paths_build_glade("popup-2.glade"), "popup_menu",
-	     PACKAGE);
-	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
-	glade_xml_signal_autoconnect(xml);
-
-	menu = glade_xml_get_widget(xml, "popup_menu");
-
-	// set version
-	data = glade_xml_get_widget(xml, "popup_menu_header");
-	s = g_strdup_printf("TiEmu, version %s", TIEMU_VERSION);
-	gtk_label_set_text(GTK_LABEL(GTK_BIN(data)->child), s);
-	g_free(s);
-
-	// init check buttons
-    data = glade_xml_get_widget(xml, "restrict1");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.restricted);
-
-	data = glade_xml_get_widget(xml, "sync1");
-	gtk_widget_set_sensitive(data, FALSE);
-	//gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.sync_one);
-
-    // init radio buttons
-    switch(params.grayplanes) {
-    case 2:
-        data = glade_xml_get_widget(xml, "2_colors1");
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        break;
-    case 4:
-        data = glade_xml_get_widget(xml, "4_colors1");
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        break;
-    case 7:
-        data = glade_xml_get_widget(xml, "7_colors1");
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        break;
-    case 11:
-        data = glade_xml_get_widget(xml, "11_colors1");
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
-        break;
-    }
-
-	return menu;
-}
-
 
 GLADE_CB void
 on_popup_menu_cancel                   (GtkMenuShell    *menushell,
@@ -352,8 +296,9 @@ GLADE_CB void
 on_normal_view1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	hid_switch_normal_view();
-  	ti68k_engine_start();
+    printf("normal !\n");
+	//hid_switch_normal_view();
+  	//ti68k_engine_start();
 }
 
 
@@ -361,8 +306,9 @@ GLADE_CB void
 on_large_view1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	hid_switch_large_view();
-  	ti68k_engine_start();
+    printf("large !\n");
+	//hid_switch_large_view();
+  	//ti68k_engine_start();
 }
 
 
@@ -370,11 +316,9 @@ GLADE_CB void
 on_full_screen1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
-    		hid_switch_windowed();
-  	else
-    		hid_switch_fullscreen();
-  	ti68k_engine_start();
+    printf("full !\n");
+	//hid_switch_fullscreen();
+  	//ti68k_engine_start();
 }
 
 
@@ -497,4 +441,94 @@ on_exit_without_saving_state1_activate (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	gtk_main_quit();
+}
+
+typedef void (*VCB) (void);
+
+/*
+  Display the GTK popup menu and configure some items
+*/
+GtkWidget* display_popup_menu(void)
+{
+	GladeXML *xml;
+	GtkWidget *menu;
+	GtkWidget *data;
+	gchar *s;
+  
+	//menu = create_popup_menu();
+	xml = glade_xml_new
+	    (tilp_paths_build_glade("popup-2.glade"), "popup_menu",
+	     PACKAGE);
+	if (!xml)
+		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+	glade_xml_signal_autoconnect(xml);
+
+	menu = glade_xml_get_widget(xml, "popup_menu");
+
+	// set version
+	data = glade_xml_get_widget(xml, "popup_menu_header");
+	s = g_strdup_printf("TiEmu, version %s", TIEMU_VERSION);
+	gtk_label_set_text(GTK_LABEL(GTK_BIN(data)->child), s);
+	g_free(s);
+
+	// init check buttons
+    data = glade_xml_get_widget(xml, "restrict1");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.restricted);
+
+	data = glade_xml_get_widget(xml, "sync1");
+	gtk_widget_set_sensitive(data, FALSE);
+
+    // init radio buttons
+    switch(params.grayplanes) {
+    case 2:
+        data = glade_xml_get_widget(xml, "2_colors1");
+        gtk_signal_handler_block_by_func(GTK_OBJECT(data), (VCB)on_2_colors1_activate, NULL);
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
+        gtk_signal_handler_unblock_by_func(GTK_OBJECT(data), (VCB)on_2_colors1_activate, NULL);
+        break;
+    case 4:
+        data = glade_xml_get_widget(xml, "4_colors1");
+        gtk_signal_handler_block_by_func(GTK_OBJECT(data), (VCB)on_4_colors1_activate, NULL);
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
+        gtk_signal_handler_unblock_by_func(GTK_OBJECT(data), (VCB)on_4_colors1_activate, NULL);
+        break;
+    case 7:
+        data = glade_xml_get_widget(xml, "7_colors1");
+        gtk_signal_handler_block_by_func(GTK_OBJECT(data), (VCB)on_7_colors1_activate, NULL);
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
+        gtk_signal_handler_unblock_by_func(GTK_OBJECT(data), (VCB)on_7_colors1_activate, NULL);
+        break;
+    case 11:
+        data = glade_xml_get_widget(xml, "11_colors1");
+        gtk_signal_handler_block_by_func(GTK_OBJECT(data), (VCB)on_11_colors1_activate, NULL);
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
+        gtk_signal_handler_unblock_by_func(GTK_OBJECT(data), (VCB)on_11_colors1_activate, NULL);
+        break;
+    }
+
+    switch(options.view)
+    {
+    case VIEW_NORMAL:
+        data = glade_xml_get_widget(xml, "normal_view1");
+        gtk_signal_handler_block_by_func(GTK_OBJECT(data), (VCB)on_normal_view1_activate, NULL);
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
+        gtk_signal_handler_unblock_by_func(GTK_OBJECT(data), (VCB)on_normal_view1_activate, NULL);
+        break;
+    case VIEW_LARGE:
+        data = glade_xml_get_widget(xml, "large_view1");
+        gtk_signal_handler_block_by_func(GTK_OBJECT(data), (VCB)on_large_view1_activate, NULL);
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
+        gtk_signal_handler_unblock_by_func(GTK_OBJECT(data), (VCB)on_large_view1_activate, NULL);
+        break;
+    case VIEW_FULL:
+        data = glade_xml_get_widget(xml, "full_view1");
+        gtk_signal_handler_block_by_func(GTK_OBJECT(data), (VCB)on_full_screen1_activate, NULL);
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
+        gtk_signal_handler_unblock_by_func(GTK_OBJECT(data), (VCB)on_full_screen1_activate, NULL);
+        break;
+    default:
+        break;
+    }
+
+	return menu;
 }

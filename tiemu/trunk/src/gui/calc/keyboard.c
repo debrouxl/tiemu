@@ -315,10 +315,10 @@ on_calc_wnd_button_press_event     (GtkWidget       *widget,
         GtkWidget *menu;
 
 		bevent = (GdkEventButton *) (event);
-        menu = display_popup_menu();
 
         ti68k_engine_stop();
 
+        menu = display_popup_menu();
 		gtk_menu_popup(GTK_MENU(menu),
 				   NULL, NULL, NULL, NULL,
 				   bevent->button, bevent->time);

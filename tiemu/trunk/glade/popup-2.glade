@@ -268,29 +268,33 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkMenuItem" id="normal_view1">
+	    <widget class="GtkRadioMenuItem" id="normal_view1">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Normal view (x1)</property>
 	      <property name="use_underline">True</property>
+	      <property name="active">False</property>
 	      <signal name="activate" handler="on_normal_view1_activate" last_modification_time="Fri, 14 May 2004 15:28:18 GMT"/>
 	    </widget>
 	  </child>
 
 	  <child>
-	    <widget class="GtkMenuItem" id="large_view1">
+	    <widget class="GtkRadioMenuItem" id="large_view1">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Large view (x2)</property>
 	      <property name="use_underline">True</property>
+	      <property name="active">False</property>
+	      <property name="group">normal_view1</property>
 	      <signal name="activate" handler="on_large_view1_activate" last_modification_time="Fri, 14 May 2004 15:28:18 GMT"/>
 	    </widget>
 	  </child>
 
 	  <child>
-	    <widget class="GtkCheckMenuItem" id="full_screen1">
+	    <widget class="GtkRadioMenuItem" id="full_view1">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Full screen</property>
 	      <property name="use_underline">True</property>
 	      <property name="active">False</property>
+	      <property name="group">normal_view1</property>
 	      <signal name="activate" handler="on_full_screen1_activate"/>
 	    </widget>
 	  </child>
