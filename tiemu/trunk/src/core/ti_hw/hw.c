@@ -153,9 +153,6 @@ void hw_update(void)
 {
 	static int timer;	// -> tihw.timer_value
 
-	// Used by grayscale for time plane exposure
-	tihw.lcd_tick++;
-
     // OSC2 enable (bit clear means oscillator stopped!)
     if(!io_bit_tst(0x15,1))
 	{

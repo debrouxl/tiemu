@@ -126,6 +126,8 @@ int hw_m68k_run(int n)
 
 		// refresh hardware
 		do_cycles();
+		// used by grayscale for time plane exposure
+		tihw.lcd_tick++;
 
 		// OSC1 stopped ? Refresh hardware and wake-up on interrupt. No opcode execution.
 		if ((specialflags & SPCFLAG_STOP))

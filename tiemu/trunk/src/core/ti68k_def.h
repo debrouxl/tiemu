@@ -127,7 +127,7 @@ typedef struct
 	int		log_w;			// LCD logical width
 	int		log_h;			// LCD logical height
 	int		on_off;
-	int		lcd_tick;		// used by grayscales
+	unsigned long	lcd_tick;		// used by grayscales
 
     // linkport.c
 	int		lc_speedy;		// not used any longer (free of use)
