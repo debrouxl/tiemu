@@ -1021,15 +1021,22 @@ void
 on_set_pc_to_selection1_activate       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+  GtkTreeModel *model;
+  GtkTreePath *path;
+  GtkTreeIter iter;
   gint addr;
+  gpointer addrp;
 
   /* Retrieve the selected line and its address */
   if(selected_row != -1)
     {
-#if 0 /* FUCKED */
-      addr = GPOINTER_TO_INT(gtk_clist_get_row_data((GtkCList *)code_clist, 
-						    selected_row));
-#endif /* 0 */
+      model = gtk_tree_view_get_model(GTK_TREE_VIEW(code_clist));
+      path = gtk_tree_path_new_from_indices(selected_row, -1);
+      gtk_tree_model_get_iter(model, &iter, path);
+      gtk_tree_path_free(path);
+      gtk_tree_model_get(model, &iter, 3, &addrp, -1);
+      addr = GPOINTER_TO_INT(addrp);
+      
       ti68k_setPcRegister(addr);
       refresh_register_dbox();
     }
