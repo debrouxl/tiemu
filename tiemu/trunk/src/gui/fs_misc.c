@@ -114,10 +114,10 @@ gint display_save_state_dbox()
 
 #if defined(__LINUX__)
         msg_box(_("Information"), 
-	      _("You do not seem to have saved your settings. Configuration file saved (in ~/.gtktiemu)."));
+	      _("You do not seem to have saved your settings. Configuration file saved (in ~/.tiemu)."));
 #elif defined(__WIN32__)
         msg_box(_("Information"), 
-	      _("You do not seem to have saved your settings. Configuration file saved (in gtktiemu.ini)."));
+	      _("You do not seem to have saved your settings. Configuration file saved (in tiemu.ini)."));
 #endif
     }
 

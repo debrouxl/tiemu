@@ -188,7 +188,7 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
 {
 	//printf("<%04x %04x %04x>\n", event->state, event->keyval, event->hardware_keycode);
 
-    if((event->keyval = 0xffff) && (event->hardware_keycode == 0x14))
+    if((event->keyval == 0xffff) && (event->hardware_keycode == 0x14))
 	{
         event->keyval = GDK_Caps_Lock;
 	}
