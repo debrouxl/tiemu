@@ -36,7 +36,7 @@
 /*
 	Retrieve address of heap (pointed by $5D42).
 */
-void heap_get_base_address(uint32_t *base)
+void heap_get_addr(uint32_t *base)
 {
 	uint32_t ptr;
 
@@ -76,7 +76,7 @@ void heap_get_size(uint16_t *size)
 	int i;
 
 	*size = 0;
-	heap_get_base_address(&base);
+	heap_get_addr(&base);
 	if(base == -1)
 		return;
 
@@ -97,7 +97,7 @@ void heap_get_block_size(int handle, uint32_t *addr, uint16_t *size)
 {
 	uint32_t base;
 
-	heap_get_base_address(&base);
+	heap_get_addr(&base);
 
 	*addr = rd_long(ti68k_get_real_address(base + 4*handle));
 	*size = rd_word(ti68k_get_real_address(*addr - 2));

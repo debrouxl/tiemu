@@ -356,26 +356,26 @@ GtkWidget* dbgcode_create_window(void)
 	data = glade_xml_get_widget(xml, "combo1");
 	items = g_list_append (items, "");
 	if (romcalls_is_loaded()) {
-	lst = romcalls_sort_by_name();
-	for(i = 0; i < romcalls_get_size(); i++)
-	{
-		uint32_t addr;
-		const gchar *name;
-		gchar *str;
-		int id;
+		lst = romcalls_sort_by_name();
+		for(i = 0; i < romcalls_get_size(); i++)
+		{
+			uint32_t addr;
+			const gchar *name;
+			gchar *str;
+			int id;
 
-		addr = lst[i].addr;	//romcalls_get_addr(i);
-		name = lst[i].name;	//romcalls_get_name(i);
-		id = lst[i].id;
+			addr = lst[i].addr;	//romcalls_get_addr(i);
+			name = lst[i].name;	//romcalls_get_name(i);
+			id = lst[i].id;
 
-		if(!strcmp(name, "unknown") || (name == NULL))
-			continue;
+			if(!strcmp(name, "unknown") || (name == NULL))
+				continue;
 
-		str = g_strdup_printf("%s [$%x] - #%03x", name, addr, id);
-		items = g_list_append (items, str);
-	}
-	gtk_combo_set_popdown_strings (GTK_COMBO (data), items);
-	g_free(lst);
+			str = g_strdup_printf("%s [$%x] - #%03x", name, addr, id);
+			items = g_list_append (items, str);
+		}
+		gtk_combo_set_popdown_strings (GTK_COMBO (data), items);
+		g_free(lst);
 	}
 
 	gtk_window_resize(GTK_WINDOW(dbox), options3.code.w, options3.code.h);
