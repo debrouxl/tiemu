@@ -33,6 +33,7 @@
 #include <windows.h>
 #include <direct.h> // _mkdir
 #endif
+#include <unistd.h>
 
 #include "struct.h"
 #include "paths.h"

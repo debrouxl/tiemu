@@ -123,7 +123,7 @@ static void clist_populate(GtkListStore *store)
             row_text[2] = g_strdup("");
         if(row_text[1] == NULL)
             row_text[1] = g_strdup("");
-        sscanf(row_text[0], "%lx", &value);
+        sscanf(row_text[0], "%lx", (long *)&value);
 
         pix = create_pixbuf("void.xpm");
 
@@ -161,7 +161,7 @@ static void clist_refresh(GtkListStore *store)
         gchar *str;
 
         gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-        sscanf(str, "%lx", &addr);
+        sscanf(str, "%lx", (long *)&addr);
 
         if(addr == pc)
             found = !0;
@@ -181,7 +181,7 @@ static void clist_refresh(GtkListStore *store)
             gchar *str;
 
             gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-            sscanf(str, "%lx", &addr);
+            sscanf(str, "%lx", (long *)&addr);
 
             if(addr == pc)
             {
@@ -255,8 +255,7 @@ GtkWidget* display_dbgcode_window(void)
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 	gtk_widget_show(data);
 
-	//gtk_window_resize(GTK_WINDOW(dbox), 320, 240);
-	gtk_widget_set_usize(GTK_WIDGET(dbox), options3.code.w, options3.code.h);
+	gtk_window_resize(GTK_WINDOW(dbox), options3.code.w, options3.code.h);
 	gtk_widget_set_uposition(GTK_WIDGET(dbox), options3.code.x, options3.code.y);
     gtk_widget_show(GTK_WIDGET(dbox));
 
@@ -352,7 +351,7 @@ dbgcode_button4_clicked                     (GtkButton       *button,
 
     // Get address to go
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-    sscanf(str, "%lx", &addr);
+    sscanf(str, "%lx", (long *)&addr);
 
 	tb_set_states(1, 0, 0, 0, 1, 0);
     ti68k_debug_skip(addr);
@@ -402,7 +401,7 @@ dbgcode_button6_clicked                     (GtkButton       *button,
     valid = gtk_tree_selection_get_selected(selection, NULL, &iter);
 
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
-    sscanf(str, "%lx", &addr);
+    sscanf(str, "%lx", (long *)&addr);
 
     if(g_list_find(bkpts.code, GINT_TO_POINTER(addr)) == NULL)
         ti68k_bkpt_set_address(addr);

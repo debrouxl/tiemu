@@ -30,6 +30,7 @@
 #include <glade/glade.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 #include <ctype.h>
 
 #include "intl.h"
@@ -113,7 +114,7 @@ static void renderer_edited(GtkCellRendererText * cell,
     gtk_list_store_set(store, &iter, col, new_text,	-1);
 
     // and update memory
-    sscanf(str_addr, "%lx", &addr);
+    sscanf(str_addr, "%lx", (long *)&addr);
     sscanf(str_data, "%x", &data);
     addr += (col - COL_0);
     mem_ptr = (uint8_t *)ti68k_get_real_address(addr);
@@ -322,7 +323,7 @@ gint display_dbgmem_dbox(uint32_t *addr)
 	switch (result) {
 	case GTK_RESPONSE_OK:
 		str = g_strdup(gtk_entry_get_text(GTK_ENTRY(entry)));
-		sscanf(str, "%lx", addr);
+		sscanf(str, "%lx", (long *)addr);
 		break;
 	default:
 		break;
@@ -356,7 +357,7 @@ gint display_dbgmem_window(void)
     
     notebook_add_tab(notebook, _("STACK"));
 
-	gtk_widget_set_usize(GTK_WIDGET(dbox), options3.mem.w, options3.mem.h);
+    gtk_window_resize(GTK_WINDOW(dbox), options3.mem.w, options3.mem.h);
 	gtk_widget_set_uposition(GTK_WIDGET(dbox), options3.mem.x, options3.mem.y);
     gtk_widget_show(GTK_WIDGET(dbox));
 

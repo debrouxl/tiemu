@@ -114,7 +114,6 @@ static void clist_refresh(GtkListStore *store)
 {
 	GList *l;
     GtkTreeIter iter;
-	gchar *str, *str1, *str2;
 	gint i;
 
 	g_assert(store != NULL);
@@ -124,6 +123,7 @@ static void clist_refresh(GtkListStore *store)
 	for(l = bkpts.code; l != NULL; l = g_list_next(l))
 	{
 		uint32_t addr = GPOINTER_TO_INT(l->data);
+		gchar *str;
 		
 		str = g_strdup_printf("0x%06x", addr);
 		
@@ -145,6 +145,7 @@ static void clist_refresh(GtkListStore *store)
 	for(l = bkpts.exception; l != NULL; l = g_list_next(l))
 	{
 		gint n = GPOINTER_TO_INT(l->data);
+		gchar *str1, *str2;
 		
 		str1 = g_strdup_printf("#%i", n);
 		str2 = g_strdup_printf("0x%06x", 4 * n);
@@ -159,7 +160,8 @@ static void clist_refresh(GtkListStore *store)
 		COL_MODE, "",
 		-1);
 		
-		g_free(str);
+		g_free(str1);
+		g_free(str2);
 	}
 	
 	// Memory access breakpoints
@@ -168,6 +170,7 @@ static void clist_refresh(GtkListStore *store)
 		for(l = *bkpts_mem_access[i]; l != NULL; l = g_list_next(l))
 		{
 			uint32_t addr = GPOINTER_TO_INT(l->data);
+			gchar *str;
 			
 			str = g_strdup_printf("0x%06x", addr);
 			
@@ -181,8 +184,7 @@ static void clist_refresh(GtkListStore *store)
             COL_MODE, ti68k_bkpt_mode_to_string(BK_TYPE_ACCESS, bkpts_memacc_rw[i]),
 			-1);
 			
-			g_free(str1);
-            g_free(str2);
+			g_free(str);
 		}
 	}
 	
@@ -192,6 +194,7 @@ static void clist_refresh(GtkListStore *store)
 		for(l = *(bkpts_mem_range[i]); l != NULL; l = g_list_next(l))
 		{
 			ADDR_RANGE *s = l->data;
+			gchar *str1, *str2;
 			
 			str1 = g_strdup_printf("0x%06x", s->val1);
 			str2 = g_strdup_printf("0x%06x", s->val2);
@@ -206,7 +209,8 @@ static void clist_refresh(GtkListStore *store)
             COL_MODE, ti68k_bkpt_mode_to_string(BK_TYPE_RANGE, bkpts_memrng_rw[i]),
 			-1);
 			
-			g_free(str);
+			g_free(str1);
+			g_free(str2);
 		}
 	}
 }
@@ -345,7 +349,7 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
         switch(type)
         {
         case BK_TYPE_CODE:
-            sscanf(row_text[COL_START], "%lx", &min);
+            sscanf(row_text[COL_START], "%lx", (long *)&min);
             ti68k_bkpt_del_address(min);
             break;
         case BK_TYPE_EXCEPTION:
@@ -354,13 +358,13 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
             break;
         case BK_TYPE_ACCESS:
             mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
-            sscanf(row_text[COL_START], "%lx", &min);
+            sscanf(row_text[COL_START], "%lx", (long *)&min);
             ti68k_bkpt_del_access(min, mode);
             break;
         case BK_TYPE_RANGE:
             mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
-            sscanf(row_text[COL_START], "%lx", &min);
-            sscanf(row_text[COL_END], "%lx", &max);
+            sscanf(row_text[COL_START], "%lx", (long *)&min);
+            sscanf(row_text[COL_END], "%lx", (long *)&max);
             ti68k_bkpt_del_range(min, max, mode);        
             break;
         }

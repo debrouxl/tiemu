@@ -38,7 +38,6 @@
 #include "support.h"
 #include "dbg_bkpts.h"
 
-static gint menu;
 static GladeXML *xml;
 
 gint display_dbgdata_dbox(void)
@@ -69,6 +68,8 @@ loop:
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) {
 	case GTK_RESPONSE_OK:
+		s_start = s_stop = "";
+		mode = type = access = 0;
 		// Retrieve settings from fields
 		data = glade_xml_get_widget(xml, "radiobutton10");
 		if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data)))
@@ -110,11 +111,11 @@ loop:
 		}
 
 		// Convert values and check
-		result = sscanf(s_start, "%lx", &start);
+		result = sscanf(s_start, "%lx", (long *)&start);
 		if(result < 1)
 			goto loop;
 
-		result = sscanf(s_stop, "%lx", &stop);
+		result = sscanf(s_stop, "%lx", (long *)&stop);
 		if((result < 1) && (type == 2))
 			goto loop;
 
