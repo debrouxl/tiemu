@@ -149,6 +149,8 @@ void io_put_byte(CPTR adr, UBYTE arg)
         case 0x14:
         break;
         case 0x15:	// rw <7.6543210>
+            // set timer increment rate
+            // we should set 'cycle_instr'
         break;
         case 0x16:
         break;

@@ -119,8 +119,9 @@ typedef struct
     int		flash_prot;
 
     // timer.c
-    int     timer_value;
-    int     timer_init;
+    uint8_t     timer_value;
+    uint8_t     timer_init;
+    int         heartbeat;
 
 } Ti68kHardware;
 

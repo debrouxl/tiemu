@@ -39,55 +39,18 @@
 #include "callbacks.h"
 #include "ti68k_def.h"
 
-int cycle_instr = 625;
+#define HW1_RATE    625     // 10MHz / 1600 (timer rate)
+#define HW2_RATE    1172    // 12MHz / 1024 (timer rate)    732, 11720, 93750, 6E6
+
+int cycle_instr = HW1_RATE;
 int cycle_count = 0;
 
 /*
 	Init hardware...
 	A ROM image must have been loaded before calling this function.
 */
-
-#include <glib.h>
-#include <sys/timeb.h>
-#include <sys/types.h>
-
-void hw_update(void);
-
-gpointer hw_engine(gpointer data)
-{
-	struct timeb tCurrentTime;
-	struct timeb tLastTime;
-	unsigned long int iCurrentTime;
-	unsigned long int iLastTime; 
-	gint res = 0;
-	int i;
-
-	while (1) 
-	{
-		g_thread_yield ();
-		
-		ftime(&tLastTime);
-      
-		for(i=0; i<164; i++)	// 16384Hz
-			hw_update();
-
-		// normal execution
-		ftime(&tCurrentTime);
-			
-		iLastTime    = 1000 * tLastTime.time + tLastTime.millitm;
-		iCurrentTime = 1000 * tCurrentTime.time + tCurrentTime.millitm;
-			
-		if((iCurrentTime - iLastTime) < 10)
-		    Sleep((10 - (iCurrentTime - iLastTime)));
-	}
-}
-
-
 int hw_init(void)
 {
-	GThread *thread = NULL;
-	GError *error = NULL;
-
 	hw_mem_init();
 	hw_dbus_init();
 	hw_kbd_init();
@@ -96,7 +59,11 @@ int hw_init(void)
 	hw_io_init();
 	hw_m68k_init();
 
-	thread = g_thread_create(hw_engine, NULL, FALSE, &error);
+    // Set hardware update rate (dependant from io[0x15])
+    if(tihw.hw_type == HW1)
+        cycle_instr = HW1_RATE;
+    else if(tihw.hw_type == HW2)
+        cycle_instr = HW2_RATE;
 }
 
 int hw_reset(void)
@@ -121,18 +88,25 @@ int hw_exit(void)
 	hw_mem_exit();
 }
 
-/* This function should be called everytime the counter increases */
-// OSC2 is the timing base for the timers, the link I/O hardware and (HW1 only)
-// the LCD controller.
-// HW1: 680 kHz to 770 kHz
-// HW2: ~520 kHz (= 2^19 Hz !)
+/*
+    This function is called by do_cycles to regularly updates the hardware.
+    Rate is the same as the timer tick rate.
+*/
 void hw_update(void)
 {
+    // OSC2 enable (bit clear means oscillator stopped!)
+    if(!io_bit_tst(0x15,1))
+        return;
+
+    // Increment timer
+    tihw.timer_value++;
+    tihw.heartbeat--;
+
 	/* Auto-int management */
 
 	// Auto-int 1: 1/4 of timer rate
 	// Triggered at a fixed rate: OSC2/2^11
-    if(/*io_bit_tst(0x15,7) && io_bit_tst(0x15,1) &&*/ !(tihw.timer_value&3)) 
+    if(!io_bit_tst(0x15,7) && !(tihw.timer_value & 3)) 
     {
         specialflags |= SPCFLAG_INT;
         currIntLev = 1;
@@ -142,9 +116,10 @@ void hw_update(void)
     // see keyboard.c
 
 	// Auto-int 3: disabled by default by AMS
-	// When enabled, it is triggered at a fixed rate: OSC2/2^19
-	if(/*io_bit_tst(0x15,7) && io_bit_tst(0x15,1) && io_bit_tst(0x15,2) &&*/ 0/*timer*/)
+	// When enabled, it is triggered at a fixed rate: OSC2/2^19 = 1/1024 of timer rate = 1Hz
+	if(io_bit_tst(0x15,7) && io_bit_tst(0x15,1) && io_bit_tst(0x15,2) && !tihw.heartbeat)
 	{
+        tihw.heartbeat = 1024;
 		specialflags |= SPCFLAG_INT;
         currIntLev = 3;
 	}
@@ -174,7 +149,7 @@ void hw_update(void)
 
     // Auto-int 5: triggered by the programmable timer.
 	// The default rate is OSC2/(K*2^9), where K=79 for HW1 and K=53 for HW2
-    if(/*io_bit_tst(0x15,7) &&*/ tihw.timer_value++ == 0)
+    if(!io_bit_tst(0x15,7) && tihw.timer_value == 0)
     {
         tihw.timer_value = tihw.timer_init;
         specialflags |= SPCFLAG_INT;
@@ -212,4 +187,25 @@ void hw_update(void)
 	        cb_update_screen();
     }
 }
+
+/*
+    This function is used to regularly update the hardware from CPU loop. 
+    Note that CPU is running against OSC1 (HW1 @10Mhz, HW2 @12MHz)
+    while hardware is synched against OSC2 (HW1 @700kHz,  HW2 @~520 kHz).
+    OSC2 is the timing base for the timers, the link I/O hardware and 
+    (HW1 only) the LCD controller.
+    These 2 oscillators are independants.
+
+    See hardware.h for inline definition.
+*/
+/*
+static void INLINE do_cycles(void);
+{
+    if(cycle_count++ >= cycle_instr) 
+    {
+        hw_update();
+        cycle_count = 0;
+    }
+}
+*/
 

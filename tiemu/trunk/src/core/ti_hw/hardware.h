@@ -31,12 +31,8 @@ int hw_exit(void);
 
 int hw_update(void);
 
-#define CYCLES_PER_INSTR    10
-#define CYCLES_PER_TICK     6400
-
 extern int cycle_instr;
 extern int cycle_count;
-extern int fast_cycle;
 
 #if defined(__LINUX__)
 #define INLINE inline
@@ -46,11 +42,11 @@ extern int fast_cycle;
 # define INLINE
 #endif
 
-static void INLINE do_cycles(void) 
+static void INLINE do_cycles(void)
 {
     if(cycle_count++ >= cycle_instr) 
     {
-        //hw_update();
+        hw_update();
         cycle_count = 0;
     }
 }
