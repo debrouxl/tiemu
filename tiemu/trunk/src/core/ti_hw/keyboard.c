@@ -201,10 +201,10 @@ uint8_t hw_kbd_read_mask(void)
 {
     static int i;
     static uint8_t arg;
-    static UWORD mask;
+    static uint16_t mask;
 
     arg = 0;
-    mask = (((UWORD)tihw.io[0x18]) << 8) | tihw.io[0x19];
+    mask = (((uint16_t)tihw.io[0x18]) << 8) | tihw.io[0x19];
     for(i=0; i<10; i++)
     {
         if(!(mask & (1<<i)))

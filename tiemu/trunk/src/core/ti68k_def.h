@@ -31,7 +31,9 @@
 #include <glib.h>
 
 #include "tilibs.h"
-#include "sysdeps.h"	//UBYTE
+#include <stdint.h>	// pn of inclusion ?
+
+typedef unsigned char	uchar;	// can't replace UBYTE/uchar by uint8_t type, why ?
 
 /* Equivalences */
 
@@ -117,10 +119,10 @@ typedef struct
 	int		lc_speedy;		// speedy mode for direct file
 
     // memory.c
-    UBYTE	*rom;	// can't replace UBYTE by uint8_t type, why ?
-    UBYTE	*ram;
-    UBYTE	*io;
-    UBYTE   *io2;
+    uchar	*rom;
+    uchar	*ram;
+    uchar	*io;
+    uchar	*io2;
     int     initial_pc;
 
     int		flash_prot;

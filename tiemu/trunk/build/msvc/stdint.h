@@ -33,17 +33,20 @@
 #ifdef HAVE_STDINT_H
 # include <stdint.h>
 #else
+
 # if defined(__WIN32__)
 #  include <windows.h>
-typedef BYTE uint8_t;
-typedef WORD uint16_t;
-typedef DWORD uint32_t;
+typedef unsigned char uint8_t;		//typedef unsigned __int8 uint8_t;
+typedef unsigned short uint16_t;	//typedef unsigned __int16 uint16_t;
+typedef unsigned long uint32_t;		//typedef unsigned __int32 uint32_t;
 typedef __int8 int8_t;
 typedef __int16 int16_t;
 typedef __int32 int32_t;
+
 # elif defined(__BSD__)
 #  include <inttypes.h>
 # else
+
 #  include <inttypes.h>
 # endif				/* __WIN32__, __BSD__ */
 

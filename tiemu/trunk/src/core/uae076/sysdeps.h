@@ -16,8 +16,6 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <assert.h>
-//roms
-#include "sysconfig.h"
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -178,7 +176,7 @@ struct utimbuf
 typedef unsigned char uae_u8;
 typedef signed char uae_s8;
 
-typedef struct { uae_u8 RGB[3]; } RGB;
+//typedef struct { uae_u8 RGB[3]; } RGB;
 
 #if SIZEOF_SHORT == 2
 typedef unsigned short uae_u16;
@@ -371,4 +369,5 @@ extern void mallocemu_free(void *ptr);
 #define NO_PREFETCH_BUFFER
 #endif
 
+//roms
 //#include "target.h"

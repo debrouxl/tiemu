@@ -31,7 +31,7 @@ int hw_mem_init(void);
 int hw_mem_reset(void);
 int hw_mem_exit(void);
 
-// defs similator to UAE's memory.h (interface)
+// defs similar to UAE's memory.h (interface)
 extern UBYTE get_byte(CPTR adr);
 extern UWORD get_word(CPTR adr);
 extern ULONG get_long(CPTR adr);
@@ -51,12 +51,5 @@ extern ULONG mem_mask[];
 
 #define rom_at_0() { mem_tab[0] = tihw.rom; mem_mask[0] = tihw.rom_size-1; }
 #define ram_at_0() { mem_tab[0] = tihw.ram; mem_mask[0] = tihw.ram_size-1; }
-
-#define LM_BYTE     0
-#define LM_WORD     1
-#define LM_LONG     2
-
-#define LM_READ     0
-#define LM_WRITE    1
 
 #endif
