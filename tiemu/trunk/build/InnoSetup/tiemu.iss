@@ -67,8 +67,8 @@ Source: "C:\sources\roms\Porttalk22\Uninstall.exe"; DestDir: "{app}"; Flags: ign
 ; GTK+ specific
 Source: "C:\Gtk2Dev\bin\gtkthemeselector.exe"; DestDir: "{app}";
 ;libglade/libxml add-on (ignore since no version checking is possible)
-Source: "C:\Gtk2Dev\bin\libxml2.dll"; DestDir: "{code:GetGtkPath}\lib"; Flags: onlyifdoesntexist;
-Source: "C:\Gtk2Dev\bin\libglade-2.0-0.dll"; DestDir: "{code:GetGtkPath}\lib"; Flags: onlyifdoesntexist;
+Source: "C:\Gtk2Dev\bin\libxml2.dll"; DestDir: "{app}"; Flags: onlyifdoesntexist;
+Source: "C:\Gtk2Dev\bin\libglade-2.0-0.dll"; DestDir: "{app}"; Flags: onlyifdoesntexist;
 
 [Dirs]
 ;Name: "{app}\My TI images"; Flags: uninsneveruninstall;
