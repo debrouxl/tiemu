@@ -295,8 +295,12 @@ ULONG get_long(CPTR adr)
         return (lget(adr) | wsm.ret_or);
 
     // memory-mapped I/O
-    else if(adr >= 0x600000) 
-        return io_get_long(adr&0x1f);
+    else if(adr >= 0x600000 && adr < 0x700000) 
+        return io_get_long(adr & 0x1f);
+
+	// memory-mapped I/O (hw2)
+	else if(adr >= 0x700000 && adr < 0x800000)
+		return io2_get_long(adr & 0x1f);
 }
 
 UWORD get_word(CPTR adr) 
@@ -372,8 +376,12 @@ UWORD get_word(CPTR adr)
         return (wget(adr) | wsm.ret_or);
 
     // memory-mapped I/O
-    else if(adr >= 0x600000) 
-        return io_get_word(adr&0x1f);
+    else if(adr >= 0x600000 && adr < 0x700000) 
+        return io_get_word(adr & 0x1f);
+
+	// memory-mapped I/O (hw2)
+	else if(adr >= 0x700000 && adr < 0x800000)
+		return io2_get_word(adr & 0x1f);
 }
 
 UBYTE get_byte(CPTR adr) 
@@ -443,8 +451,12 @@ UBYTE get_byte(CPTR adr)
         return (bget(adr) | wsm.ret_or);
 
     // memory-mapped I/O
-    else if(adr >= 0x600000) 
-        return io_get_byte(adr&0x1f);
+    else if(adr >= 0x600000 && adr < 0x700000) 
+        return io_get_byte(adr & 0x1f);
+
+	// memory-mapped I/O (hw2)
+	else if(adr >= 0x700000 && adr < 0x800000)
+		return io2_get_byte(adr & 0x1f);
 }
 
 void put_long(CPTR adr, ULONG arg) 
@@ -530,8 +542,12 @@ void put_long(CPTR adr, ULONG arg)
     }
 
     // memory-mapped I/O
-    else if(adr >= 0x600000)
-        io_put_long(adr&0x1f, arg);
+    else if(adr >= 0x600000 && adr < 0x700000)
+        io_put_long(adr & 0x1f, arg);
+
+	// memory-mapped I/O (hw2)
+	else if(adr >= 0x700000 && adr < 0x800000)
+		io2_put_byte(adr & 0x1f, arg);
 
     // standard access
     else
@@ -597,24 +613,29 @@ void put_word(CPTR adr, UWORD arg)
         currIntLev = 7;
 	}
 
-    if (adr < 0x200000) 
+	else if(adr >= 0x200000 && adr < 0x210000)
+        return;
+	else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
+        tihw.flash_prot = 0;
+
+    else if (adr < 0x200000) // pb here
     {
 	    if (adr >=0x1c0000)
 	        tihw.flash_prot=0;
 	    wput(adr, arg);
     }
-    else if (adr < 0x400000)
-    {
-	    FlashWriteByte(adr,(arg>>8)&0xff);
-        FlashWriteByte(adr+1,arg&0xff);
-    }
-    else if (adr < 0x600000) 
+
+    else if (adr >= 0x200000 && adr < 0x600000) 
     {
 	    FlashWriteByte(adr,(arg>>8)&0xff);
 	    FlashWriteByte(adr+1,arg&0xff);
     }
-    else
-		io_put_word(adr&0x1f, arg);
+    else if(adr >= 0x600000 && adr < 0x700000)
+		io_put_word(adr & 0x1f, arg);
+	else if(adr >= 0x700000 && adr < 0x800000)
+		io2_put_byte(adr & 0x1f, arg);
+	else
+		wput(adr, arg);
 }
 
 void put_byte(CPTR adr, UBYTE arg) 
@@ -690,8 +711,12 @@ void put_byte(CPTR adr, UBYTE arg)
     }
 
     // memory-mapped I/O
-    else if(adr >= 0x600000)
-        io_put_byte(adr&0x1f, arg);
+    else if(adr >= 0x600000 && adr < 0x700000)
+        io_put_byte(adr & 0x1f, arg);
+
+	// memory-mapped I/O (hw2)
+	else if(adr >= 0x700000 && adr < 0x800000)
+		io2_put_byte(adr & 0x1f, arg);
 
     // standard access
     else

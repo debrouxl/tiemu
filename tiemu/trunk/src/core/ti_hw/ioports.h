@@ -37,4 +37,12 @@ extern void io_put_long(CPTR adr, ULONG arg);
 extern void io_put_word(CPTR adr, UWORD arg);
 extern void io_put_byte(CPTR adr, UBYTE arg);
 
+extern UBYTE io2_get_byte(CPTR adr);
+extern UWORD io2_get_word(CPTR adr);
+extern ULONG io2_get_long(CPTR adr);
+
+extern void io2_put_long(CPTR adr, ULONG arg);
+extern void io2_put_word(CPTR adr, UWORD arg);
+extern void io2_put_byte(CPTR adr, UBYTE arg);
+
 #endif

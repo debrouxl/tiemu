@@ -39,11 +39,27 @@
 #include "callbacks.h"
 #include "ti68k_def.h"
 
+int hw_io_init(void)
+{
+    tihw.io0Bit2=1; 
+    tihw.io0Bit7=1;
+}
+
+int hw_io_reset(void)
+{
+    return 0;
+}
+
+int hw_io_exit(void)
+{
+    return 0;
+}
+
 #define bit_get(i,b)	(((b) & (1 << i)) >> i)
 #define bit_set(i,b)	((b) &  (1 << i))
 #define bit_clr(i,b)	((b) | ~(1 << i))
 
-void io_put_byte(CPTR adr, UBYTE arg) 
+void io_put_byte(CPTR adr, UBYTE arg)
 {
     switch(adr) 
     {
@@ -186,19 +202,51 @@ ULONG io_get_long(CPTR adr)
     return (((ULONG)io_get_word(adr))<<16) | io_get_word(adr+2);
 }
 
+/** HW2 **/
 
-int hw_io_init(void)
+void io2_put_byte(CPTR adr, UBYTE arg)
 {
-    tihw.io0Bit2=1; 
-    tihw.io0Bit7=1;
+    switch(adr) 
+    {
+        case 0x00:
+        break;
+    }
+
+    tihw.io2[adr] = arg;
 }
 
-int hw_io_reset(void)
+void io2_put_word(CPTR adr, UWORD arg) 
 {
-    return 0;
+    io2_put_byte(adr,   arg>>8);
+    io2_put_byte(adr+1, arg&0xff);
 }
 
-int hw_io_exit(void)
+void io2_put_long(CPTR adr, ULONG arg) 
 {
-    return 0;
+    io2_put_word(adr,   arg>>16);
+    io2_put_word(adr+2, arg&0xffff);
 }
+
+UBYTE io2_get_byte(CPTR adr) 
+{
+    int v;
+
+    switch(adr) 
+    {
+        case 0x00: 
+			return 0x00;
+    }
+  
+    return tihw.io2[adr];
+}
+
+UWORD io2_get_word(CPTR adr) 
+{
+    return (((UWORD)io2_get_byte(adr))<<8) | io2_get_byte(adr+1);
+}
+
+ULONG io2_get_long(CPTR adr) 
+{
+    return (((ULONG)io2_get_word(adr))<<16) | io2_get_word(adr+2);
+}
+
