@@ -5,14 +5,17 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
+- 20/08/2004, version 1.79: roms
+	- LCD background is less dark
+
+	- force mem window refresh when scrolling up/down (to do)
+	- too many ASCII chars in the mem window (to do)
+
 - 13/08/2004, version 1.78: roms
 	- changed keyboard mapping to pure VTi mapping
 	- added ability to load keymaps from file
 	- force code window refresh when maintaining F7 key pressed
 	- accept ExtendeD's V200 ROM (patched)
-
-	- force mem window refresh when scrolling up/down (to do)
-	- too many ASCII chars in the mem window (to do)
 
 - 10/08/2004, version 1.77: roms
 	- step over fixed again: stops on Bcc/DBcc, STOP, RTE, RTD, RTS, RTR, JMP.

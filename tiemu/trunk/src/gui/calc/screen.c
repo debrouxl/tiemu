@@ -99,7 +99,9 @@ void compute_grayscale(void)
     uint32_t white = skin_infos.lcd_white;  // 0xcfe0ce
     uint32_t black = skin_infos.lcd_black;  // 0x222e31
 
-    //printf("B&W: %08lx %08lx\n", skin_infos.lcd_black, skin_infos.lcd_white);
+    //white = skin_infos.lcd_white = 0xffffff;
+    //black = skin_infos.lcd_black = 0x000000;
+    printf("B&W: %08lx %08lx\n", skin_infos.lcd_black, skin_infos.lcd_white);
 
   	sr = (white & 0xff0000) >> 8;
   	sg = (white & 0x00ff00);
@@ -111,15 +113,15 @@ void compute_grayscale(void)
 
   	if(contrast < NGS) 
     {
-      	sr = sr - (sr-er) * (NGS - contrast)/13;
-      	sg = sg - (sg-eg) * (NGS - contrast)/13;
-      	sb = sb - (sb-eb) * (NGS - contrast)/13;
+      	sr = sr - (sr-er) * (NGS - contrast)/NGS;
+      	sg = sg - (sg-eg) * (NGS - contrast)/NGS;
+      	sb = sb - (sb-eb) * (NGS - contrast)/NGS;
     }
   	else 
     {
-      	er = er - (er-sr)*(contrast - NGS)/13;
-      	eg = eg - (eg-sg)*(contrast - NGS)/13;
-      	eb = eb - (eb-sb)*(contrast - NGS)/13;
+      	er = er - (er-sr)*(contrast - NGS)/NGS;
+      	eg = eg - (eg-sg)*(contrast - NGS)/NGS;
+      	eb = eb - (eb-sb)*(contrast - NGS)/NGS;
     }
   
   	r = sr;
@@ -130,9 +132,9 @@ void compute_grayscale(void)
     {
       	for(i = 0; i <= (max_plane+1); i++) 
 		{
-	  		grayscales[i].r = filter(r, 0x0000, 0xA800) >> 8;
-	  		grayscales[i].g = filter(g, 0x0000, 0xB400) >> 8;
-	  		grayscales[i].b = filter(b, 0x3400, 0xA800) >> 8;
+	  		grayscales[i].r = filter(r, 0x0000, 0xfff0) >> 8;
+	  		grayscales[i].g = filter(g, 0x0000, 0xff00) >> 8;
+	  		grayscales[i].b = filter(b, 0x0000, 0xff00) >> 8;
 
 	  		r -= ((sr-er) / (max_plane+1));
 	  		g -= ((sg-eg) / (max_plane+1));
