@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.72		(03/07/2004)
-Current version:  1.74		(21/07/2004)
+Previous version: 1.74		(21/07/2004)
+Current version:  1.75		(06/08/2004)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,44 +20,35 @@ For the other link cables, no driver is needed because it's provided.
 New capabilities:
 -----------------
 
-	- dis-assembly window: use VTi syntax
-	- VTi-style SR flags (don't reset)
-	- save/restore bkpts with state image
-	- symbolic debugger: code addresses are replaced by their 
-		counterpart name (ROM calls)
-	- V200PLT and TI89 Titanium support (don't work: illegal instruction)
-	- Step Out mode in the debugger
-	- disassemble FLINE instructions
+	- step out mode
+	- disasm FLINE rom calls
+	- minimize/maximize all debugger windows with the calc window (could be optimized)
+	- show hexdump from source/code window
+	- can disasm at address from memory window
+	- can change several bytes at once in the mem window
+	- can open a hexdump from register value
+	- new window: stack
+	- status register window (1 check button per bits)
+	- searching capability in the mem window (90% done)
 
 
 Improvements:
 -------------
 
-	- slow access to debugger
-	- can navigate in the code window (up/down)
-	- window focus & code window has default focus
-	- some broken shortcuts (G => Go to address)
-	- TI89 key mapping pbs (EE, |)
-	- Alpha was not working properly
-	- no key auto-repeat
-	- handle long names with spaces in the ROM version box
-	- ability to load weird updates (.89u)	
-	- disable menu access when debugger is opened
-	- ON key (and set on/off LCD screen)
-	- error management
-	- fixed 'restrict to current speed'
-	- bugs in state image loading and LCD init: works fine now
-	- linkport reworked but still buggy with HW2 (?!)
-	- fixed code bkpt
-	- ghost spaces
-	- popup menu (slow down)
-	- SDL (video library removed): less CPU intensive and cleaner
-	- scrolling in the dbg code window
-	- popup menu (slow down)
-	- popup menu available when debugger is opened
-	- fixed bug in the VTI's disassembler: SBCD handled as OR.B
-	- debugging layer completely reworked
+	
+	- debugging layer rewritten
+	- popup menu available even if the debugger is open and faster
+	- can't step after bkpt: fixed
+	- mem window refreshed (if needed) on step
+	- mem window: show headers with absolute address (rather than relative)
+	- many others such as popup menu in the mem window and in the register window
+		and the scrolling behaviour of the mem/code windows
 		
+
+Bug fixes:
+----------
+
+	- SDCB in the VTi's disassembler (exists into VTi and ttdasm, too).
 
 To do:
 ------
@@ -70,6 +61,6 @@ Notes:
 ------
 
 	Big thanks to Kevin Kofler, Lionel Debroux and Olivier Armand who have take some time
-	to answer all my questions, providing me help and documentation.
+	to answer all my questions, providing me suggestions, help and documentation.
 
 	All Thanks to my wife & my baby which let me work on my PC ;-) Well, I love them a lot !

@@ -3,7 +3,10 @@ SubVersion: $Id$
 To do:
 	- video scaling
 	- link port is broken (HW2 only ?!)
-	- stealth I/O and mem protect
+	- stealth I/O and mem protect (done but not enabled)
+
+- 07/08/2004, verison 1.76: roms
+	- splitted memory mapping (init/exit)
 
 - 27/07/2004, version 1.75: roms
 	Olivier's suggestions:
@@ -22,7 +25,7 @@ To do:
 	- new window: stack
 	- regs_dbox: added Status Register window (1 button per bit)
 	- mem_dbox: replaced '+A' header by absolute address
-	- mem_dbox: searching capability (find first only)
+	- mem_dbox: searching capability (find first & find next)
 
 - 14/07/2004, version 1.74: roms
 	Fixes from Lionel, Kevin and Olivier's suggestions:

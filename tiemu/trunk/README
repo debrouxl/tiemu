@@ -13,7 +13,8 @@ For a more specific README, see README.linux or README.win32
 | DESCRIPTION |
 +-------------+
 
-TiEmu is a program allowing a PC to emulate a TI89/92(+)/V200PLT hand-held.
+TiEmu is a program allowing a PC to emulate a TI89/92(+) hand-held. 
+V200PLT and Titanium are supported but are not working yet.
 It works on Linux and Windows platforms actually.
 
 It uses GTK+ (the Gimp ToolKit, http://www.gimp.org/gtk) for the GUI and
@@ -33,18 +34,17 @@ It also uses the TiLP framework (ti* libraries).
 
 Some features:
 
-o Works on 8, 16, 24/32 planes display (256, 65565, 16M/True colors)
 o Easy to use thanks to a GUI developped with GTK+
-o Nice debugger (memory, breakpoints, traps, vectors, ...)
+o Nice debugger (source, memory, breakpoints, traps, vectors, stack, trace, ...)
 o Ability to load/save the emulator state
 o Full linkport emulation (all link cables: hardware, virtual)
 o File linkport emulation (direct loading files)
-o Works with 1/2/4MB ROMS, 128 or 256k RAM
-o Emulate both HW1 & HW2
+o Works with 1/2/4 MB ROMS, 128 or 256 KB RAM
+o Emulate both HW1 & HW2 (hW3 not supported yet)
 o Can run from ROM dumps or FLASH upgrades
 o Automatic ROM version/model detection
-o Constrast emulated (Try [Alt] + [+] & [-])
-o Pretty fast
+o Constrast emulated (try [Alt] + [+] & [-])
+o Pretty fast emulation code
 o Sreenshot of LCD and/or calculator in several images format (JPG/PNG/ICO)
 o TI keyboard useable directly from PC keyboard or with the mouse on the skin
 o Archive memory support as well as ghost spaces
@@ -53,15 +53,17 @@ o Can emulate at either the real speed of the calculator or the fastest the comp
 o The letter keys are aliased to produce their respective letters.  No need to press the Alpha
   key, just type.
 o A full-featured graphical debugger:
-    * Code disassembly pane: disassembly, code breakpoints.
+    * Code disassembly pane: disassembly, code breakpoints
     * Breakpoints pane: data, code, exceptions.
     	Data breakpoints can be set on a single byte,
       	word, or dword, or a range of addresses.
       Exceptions can be set on any one.
     * Registers pane: view and change the value of the registers.
-    * Memory pane: view/edit values as well as user stack.
+    * Memory pane: view/edit values, disasm, searching of string/data.
     * PC trace pane: keep the latest executed instructions.
+	* Stack: show the stack frame
     * Real time updates to the LCD, even with grayscale
+	* and many other stuffs
 o Keyboard mapping and menu shortcuts are fully VTi-compatible.
 
 Limitations:
@@ -169,10 +171,10 @@ Pause		Screenshot
 | RIGHT BUTTON MENU |
 +-------------------+
 
-$$To udpate...$$
+$$ To update $$
 
-The right button menu give you access to the functionnalities of the emulator. If you let your mouse on the 
-item during some while, a tooltip will appear.
+The right button menu give you access to the functionnalities of the emulator. If you let 
+your mouse on the item during some while, a tooltip will appear.
 This menu is organized as follow:
 
 - Send file to TiEmu: directly load a file and transfer it into the emulator.
@@ -241,6 +243,7 @@ The debugger is made up of several windows which can be moved and resized (TiEmu
 - memory
 - breakpoints
 - PC trace
+- stack
 Please note these windows are automatically refreshed when a change occurs from another window.
 
 From the source code window, you can view disassembly code, set code breakpoints and do classical 

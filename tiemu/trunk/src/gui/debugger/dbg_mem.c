@@ -155,6 +155,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 }
 
 static void refresh_page(int page, int offset);
+
 static gboolean
 on_treeview_key_press_event            (GtkWidget       *widget,
                                         GdkEventKey     *event,
@@ -375,6 +376,8 @@ static void notebook_add_page(GtkWidget *notebook, const char* tab_name)
 
 	gtk_notebook_insert_page(nb, child, label, page);
 	gtk_notebook_set_page(nb, page);
+
+    gtk_widget_grab_focus(child);
 }
 
 static gint already_open = 0;
@@ -728,6 +731,8 @@ on_dissassemble1_activate              (GtkMenuItem     *menuitem,
     dbgcode_disasm_at(addr + (col-1));
 }
 
+static void search_next(void);
+
 static gboolean
 on_treeview_key_press_event            (GtkWidget       *widget,
                                         GdkEventKey     *event,
@@ -775,7 +780,6 @@ on_treeview_key_press_event            (GtkWidget       *widget,
     else
         row_idx = row_max = -1;
 
-    printf("keyval = %x\n", event->keyval);
     switch(event->keyval) 
 	{
     case GDK_Up:
@@ -838,9 +842,10 @@ on_treeview_key_press_event            (GtkWidget       *widget,
         return TRUE;
 
     case GDK_F3:
-		//
+		search_next();
 		return TRUE;
 
+    case GDK_a:
     case GDK_A:
         if(event->state & GDK_CONTROL_MASK)
         {
@@ -848,6 +853,7 @@ on_treeview_key_press_event            (GtkWidget       *widget,
             return TRUE;
         }
 
+    case GDK_f:
     case GDK_F:
         if(event->state & GDK_CONTROL_MASK)
         {
@@ -953,7 +959,7 @@ static gint search_engine(char *str, int ascii, int casse, uint32_t *address, in
 
     // search (we don't use memcmp because mem space may be not contiguous)
     i = 0;
-    for(addr = 0x212000; addr <= 0xffffff; addr++)
+    for(addr = *address; addr <= 0xffffff; addr++)
     {
         uint8_t *mem_ptr = (uint8_t *)ti68k_get_real_address(addr);
 
@@ -978,14 +984,16 @@ static gint search_engine(char *str, int ascii, int casse, uint32_t *address, in
 
 #define IS_BOUNDED(a,v,b) (((a) <= (v)) && ((v) <= (b)))
 
-static gint search_highlight(uint32_t start, int length, int state)
+static gint search_highlight(uint32_t blk_beg, uint32_t blk_end, int state)
 {
     GtkNotebook *nb = GTK_NOTEBOOK(notebook);
     gint page = gtk_notebook_get_current_page(nb);
 	GtkWidget *tab;
 	GtkWidget *label;
 	G_CONST_RETURN gchar *text;
-	uint32_t base, addr;
+	uint32_t tab_adr, addr, offset;
+    gint i;
+    gint start, stop;
 
 	GList *l, *elt;
 	GtkWidget *list;
@@ -1007,13 +1015,11 @@ static gint search_highlight(uint32_t start, int length, int state)
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &green, 1,
 				  FALSE, FALSE, &success);
 
-    printf("%x %i\n", start, length);
-
 	// retrieve addr by tab name
 	tab = gtk_notebook_get_nth_page(nb, page);
 	label = gtk_notebook_get_tab_label(nb, tab);
 	text = gtk_label_get_text(GTK_LABEL(label));
-    sscanf(text, "%06x", &base);
+    sscanf(text, "%06x", &tab_adr);
 
 	// get list pointer (we have 1 child)
 	l = gtk_container_get_children(GTK_CONTAINER(nb));
@@ -1023,19 +1029,38 @@ static gint search_highlight(uint32_t start, int length, int state)
 	model = gtk_tree_view_get_model(view);
 	store = GTK_LIST_STORE(model);
 
+    // scroll mem
+    if(!IS_BOUNDED(tab_adr, blk_beg, tab_adr + DUMP_SIZE))
+    {
+        GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+	    gint page = gtk_notebook_get_current_page(nb);
+
+        offset = (blk_beg - tab_adr) & 0xfffff0;
+        refresh_page(page, offset);
+
+        while(gtk_events_pending()) gtk_main_iteration();
+        tab_adr += offset;
+
+    }
+
     // change background color
-    for(valid = gtk_tree_model_get_iter_first(model, &iter), addr = base;
-        valid && (addr - base < DUMP_SIZE); 
+    for(valid = gtk_tree_model_get_iter_first(model, &iter), addr = tab_adr;
+        valid && (addr - tab_adr < DUMP_SIZE); 
         valid = gtk_tree_model_iter_next(model, &iter), addr += 0x10)
     {
-        gint i;
-
-        if(!((start > addr) || ((start + length) < (addr + 16))))
+        if(addr + 16 < blk_beg)
             continue;
 
-        //if(!IS_BOUNDED(addr, start, addr+16)) continue;
+        if(addr > blk_end)
+            continue;
 
-        for(i = start%addr; (i < 16) && (i < (start+length)%addr); i++)
+        start = !addr ? blk_beg : blk_beg % addr;
+        if(start > 15) start = 0;
+
+        stop = !addr ? blk_end : blk_end % addr;
+        if(stop > 15) stop = 16;
+
+        for(i = start; (i < 16) && (i < stop); i++)
 		{
             gchar *str = "XX";
 
@@ -1047,6 +1072,24 @@ static gint search_highlight(uint32_t start, int length, int state)
     return 0;
 }
 
+// searching engine context
+static gchar *old_str = NULL;
+static gint ascii = !0;
+static gint casse = !0;
+static uint32_t blk_adr = 0x000000;
+static gint blk_len = 0;
+
+static void search_next(void)
+{
+    if(search_engine(old_str, ascii, casse, &blk_adr, &blk_len))
+    {
+        search_highlight(blk_adr, blk_adr + blk_len, !0);
+        while(gtk_events_pending()) gtk_main_iteration();
+    }
+
+    blk_adr += blk_len;
+}
+
 gint display_dbgmem_search(void)
 {
 	GladeXML *xml;
@@ -1055,11 +1098,6 @@ gint display_dbgmem_search(void)
 	gint result;
 	gchar *str;
 	gint ret = -1;
-    
-    static gchar *old_str = NULL;
-    gint ascii, casse;
-    uint32_t block_addr;
-    int block_len;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_search", PACKAGE);
@@ -1075,7 +1113,7 @@ gint display_dbgmem_search(void)
 
     check1 = glade_xml_get_widget(xml, "checkbutton1");    
     check2 = glade_xml_get_widget(xml, "checkbutton2");
-    gtk_toggle_button_set_active(check2, TRUE);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check2), TRUE);
 
 	dbox = glade_xml_get_widget(xml, "dbgmem_search");	
 	
@@ -1083,11 +1121,21 @@ gint display_dbgmem_search(void)
     for(result = 0;;)
     {
         result = gtk_dialog_run(GTK_DIALOG(dbox));
-	    printf("result = %i\n", result);
-        if((result == GTK_RESPONSE_CANCEL) || (result == GTK_RESPONSE_DELETE_EVENT))
+
+        if((result == GTK_RESPONSE_CANCEL) || 
+            (result == GTK_RESPONSE_DELETE_EVENT))
             break;
 
-		str = (gchar *)gtk_entry_get_text(GTK_ENTRY(entry));
+        if(result == GTK_RESPONSE_OK)
+        {
+            blk_adr = 0x000000;
+            blk_len = 0;
+        }
+
+        //printf("searching at $%x\n", blk_adr);
+
+        // find first/next
+	    str = (gchar *)gtk_entry_get_text(GTK_ENTRY(entry));
 
         g_free(old_str);
         old_str = g_strdup(str);
@@ -1098,14 +1146,16 @@ gint display_dbgmem_search(void)
         gtk_widget_set_sensitive(entry, FALSE);
         while(gtk_events_pending()) gtk_main_iteration();
 
-		if(search_engine(old_str, ascii, casse, &block_addr, &block_len))
+	    if(search_engine(old_str, ascii, casse, &blk_adr, &blk_len))
         {
-            search_highlight(block_addr, block_len, !0);
+            search_highlight(blk_adr, blk_adr + blk_len, !0);
             while(gtk_events_pending()) gtk_main_iteration();
         }
 
         gtk_widget_set_sensitive(entry, TRUE);
         while(gtk_events_pending()) gtk_main_iteration();
+
+        blk_adr += blk_len;
 	}
 
 	gtk_widget_destroy(dbox);

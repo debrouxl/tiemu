@@ -64,7 +64,7 @@ Source: "C:\sources\roms\tiemu\build\InnoSetup\AddEntry\AddEntry.exe"; DestDir: 
 
 ; Fix Gtk-Wimp installation problem (file is not at the right location)
 ;Source: "C:\Program Files\Fichiers Communs\GTK\2.0\lib\libwimp.dll"; DestDir: "{code:GetGtkPath}\lib\gtk-2.0\2.2.0\engines"; Flags: onlyifdoesntexist uninsneveruninstall;
-Source: "C:\Program Files\Common Files\GTK\2.0\lib\libwimp.dll"; DestDir: "{code:GetGtkPath}\lib\gtk-2.0\2.2.0\engines"; Flags: onlyifdoesntexist uninsneveruninstall; MinVersion: 0,4;
+;Source: "C:\Program Files\Common Files\GTK\2.0\lib\libwimp.dll"; DestDir: "{code:GetGtkPath}\lib\gtk-2.0\2.2.0\engines"; Flags: onlyifdoesntexist uninsneveruninstall; MinVersion: 0,4;
 
 [Dirs]
 ;Name: "{app}\My TI images"; Flags: uninsneveruninstall;
