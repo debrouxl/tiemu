@@ -133,32 +133,33 @@ typedef struct
 typedef struct
 {
 	// Memory
-	GList *listBkptAsRB;
-	GList *listBkptAsWB;
-	GList *listBkptAsRW;
-	GList *listBkptAsWW;
-	GList *listBkptAsRL;
-	GList *listBkptAsWL;
+	GList *mem_rb;	// read byte
+	GList *mem_rw;
+	GList *mem_rl;
 
-	GList *listBkptAsRgR;
-	GList *listBkptAsRgW;
+	GList *mem_wb;	// write byte	
+	GList *mem_ww;	
+	GList *mem_wl;
+
+	GList *mem_rng_r;	// mem range
+	GList *mem_rng_w;
 
 	// Code
-	GList *listBkptAddress;
+	GList *code;
 
 	// Vectors, AutoInts and Traps
-	int listBkptVector[16];
-	int listBkptAutoint[8];
-	int listBkptTrap[16];
+	int vectors[16];
+	int autoints[8];
+	int traps[16];
 
-	int nBkptVector;
-	int nBkptAutoint;
-	int nBkptTrap;
+	int n_vectors;
+	int n_autoints;
+	int n_traps;
 
 	// Breakpoint cause
-	int breakMode;	// = access type
-	int breakType;	// = cause
-	int breakId;		// = n°
+	int mode;		// = access type
+	int type;		// = cause
+	int id;			// = n°
 } Ti68kBreakpoints;
 
 extern Ti68kParameters 	params;

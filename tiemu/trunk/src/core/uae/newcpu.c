@@ -378,35 +378,35 @@ void Exception(int nr)
   specialflags &= ~(SPCFLAG_TRACE | SPCFLAG_DOTRACE);
 
   // added for capturing the exception and next launch a debugger
-  if(bkpts.nBkptVector || bkpts.nBkptAutoint || bkpts.nBkptTrap) 
+  if(bkpts.n_vectors || bkpts.n_autoints || bkpts.n_traps) 
     {
-      bkpts.breakId = 0;
+      bkpts.id = 0;
 
       if(nr < 16)
 	{
-	  if(bkpts.listBkptVector[nr])
+	  if(bkpts.vectors[nr])
 	    {
 	      specialflags |= SPCFLAG_BRK;
-	      bkpts.breakType = BK_CAUSE_VECTOR;
-	      bkpts.breakId = bkpts.breakMode = nr;
+	      bkpts.type = BK_CAUSE_VECTOR;
+	      bkpts.id = nr;
 	    }
 	}
       else if( (nr>=24) && (nr<32) )
 	{
-	  if(bkpts.listBkptAutoint[nr-24])
+	  if(bkpts.autoints[nr-24])
 	    {
 	      specialflags |= SPCFLAG_BRK;
-	      bkpts.breakType = BK_CAUSE_AUTOINT;
-	      bkpts.breakId = bkpts.breakMode = nr-24;
+	      bkpts.type = BK_CAUSE_AUTOINT;
+	      bkpts.id = nr-24;
 	    }
 	}
       else if( (nr>=32) && (nr<48) )
 	{
-	  if(bkpts.listBkptTrap[nr-32])
+	  if(bkpts.traps[nr-32])
 	    {
 	      specialflags |= SPCFLAG_BRK;
-	      bkpts.breakType = BK_CAUSE_TRAP;
-	      bkpts.breakId = bkpts.breakMode = nr-32; // number of trap (0..15)
+	      bkpts.type = BK_CAUSE_TRAP;
+	      bkpts.id = nr-32; // number of trap (0..15)
 	    }
 	}
     }
