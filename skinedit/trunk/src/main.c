@@ -18,6 +18,29 @@
 #include "main_intf.h"
 #include "support.h"
 #include "utils.h"
+#include "struct.h"
+
+static void help(void)
+{
+	fprintf(stdout, "\n");
+	fprintf(stdout, _("Usage: skinedit [-options] [filename]\n"));
+	fprintf(stdout, "\n");
+	fprintf(stdout, _
+		("-h, --help    display this information page and exit\n"));
+	fprintf(stdout, _
+		("-v, --version display the version information and exit\n"));
+	fprintf(stdout, "\n");
+	fprintf(stdout, _("filename      a skin file to load\n"));
+	fprintf(stdout, "\n");
+	fprintf(stdout, _("See the manpage for more informations...\n"));
+	fprintf(stdout, "\n");
+	exit(0);
+}
+
+static int strexact(char *p1, char *p2)
+{
+	return (strstr(p1, p2) && strstr(p2, p1));
+}
 
 void
 signal_handler(int sig)
@@ -38,9 +61,16 @@ signal_handler(int sig)
 #undef main
 #endif
 
+extern struct skinInfos skin_infos;
+
 int
 main (int argc, char *argv[])
 {
+    int cnt;
+    const char *p;
+    char *q;
+    char arg[128];
+
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -62,7 +92,6 @@ main (int argc, char *argv[])
   fprintf(stdout, _("This program is free software; you can redistribute it and/or modify\n"));
   fprintf(stdout, _("it under the terms of the GNU General Public License as published by\n"));
   fprintf(stdout, _("the Free Software Foundation; version 2 of the License\n"));
-  fprintf(stdout, "\n");
   fprintf(stdout, _("This program is distributed in the hope that it will be useful,\n"));
   fprintf(stdout, _("but WITHOUT ANY WARRANTY; without even the implied warranty of\n"));
   fprintf(stdout, _("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"));
@@ -71,6 +100,29 @@ main (int argc, char *argv[])
   gtk_widget_show (create_main_window());
 
   sbar_print(_("Skinedit v%s -- Supported formats : TiEmu v2.00 (R/W), VTiv2.1 (R/W), VTiv2.5 (R/W)"), VERSION);
+
+    // scan command line
+    for (cnt = 1; cnt < argc; cnt++) {
+        
+        // get argument
+		p = argv[cnt];
+		if (*p == '-') {
+            // argument
+			p++;
+        } else {
+            // filename
+            if(load_skin(p) == 0)
+	            skin_infos.changed = 1;
+            on_properties_activate(NULL, NULL);
+        }
+		
+        strcpy(arg, p);
+
+		if (strexact(arg, "-help") || strexact(arg, "h"))
+			help();
+		if (strexact(arg, "-version") || strexact(arg, "v"))
+			exit(0);
+    }
 
   gtk_main ();
   return 0;

@@ -123,6 +123,8 @@ on_new_activate                        (GtkMenuItem     *menuitem,
 
   gtk_window_set_title(GTK_WINDOW(filesel), _("Select JPEG image"));
 
+  gtk_file_selection_complete(GTK_FILE_SELECTION(filesel), "*.jpg");
+
   gtk_signal_connect (GTK_OBJECT(GTK_FILE_SELECTION(filesel)->ok_button), "clicked",
                       GTK_SIGNAL_FUNC(on_filesel_new_ok_clicked),
                       NULL);
@@ -191,6 +193,8 @@ on_open_activate                       (GtkMenuItem     *menuitem,
 
   gtk_window_set_title(GTK_WINDOW(filesel), _("Select skin"));
 
+    gtk_file_selection_complete(GTK_FILE_SELECTION(filesel), "*.skn");
+
   gtk_signal_connect (GTK_OBJECT(GTK_FILE_SELECTION(filesel)->ok_button), "clicked",
                       GTK_SIGNAL_FUNC(on_filesel_open_ok_clicked),
                       NULL);
@@ -230,6 +234,8 @@ on_save_as_activate                    (GtkMenuItem     *menuitem,
   filesel = create_filesel();
   
   gtk_window_set_title(GTK_WINDOW(filesel), _("Select destination file"));
+
+  gtk_file_selection_complete(GTK_FILE_SELECTION(filesel), "*.skn");
   
   gtk_signal_connect (GTK_OBJECT(GTK_FILE_SELECTION(filesel)->ok_button), "clicked",
 		      GTK_SIGNAL_FUNC(on_filesel_save_as_ok_clicked),
@@ -251,6 +257,8 @@ on_vti_v21_activate                    (GtkMenuItem     *menuitem,
   filesel = create_filesel();
   
   gtk_window_set_title(GTK_WINDOW(filesel), _("Select destination file -- VTi v2.1 export"));
+
+    gtk_file_selection_complete(GTK_FILE_SELECTION(filesel), "*.skn");
   
   gtk_signal_connect (GTK_OBJECT(GTK_FILE_SELECTION(filesel)->ok_button), "clicked",
 		      GTK_SIGNAL_FUNC(on_filesel_vti_export_ok_clicked),
@@ -272,6 +280,8 @@ on_vti_v25_activate                    (GtkMenuItem     *menuitem,
   filesel = create_filesel();
   
   gtk_window_set_title(GTK_WINDOW(filesel), _("Select destination file -- VTi v2.5 export"));
+
+  gtk_file_selection_complete(GTK_FILE_SELECTION(filesel), "*.skn");
   
   gtk_signal_connect (GTK_OBJECT(GTK_FILE_SELECTION(filesel)->ok_button), "clicked",
 		      GTK_SIGNAL_FUNC(on_filesel_vti_export_ok_clicked),
