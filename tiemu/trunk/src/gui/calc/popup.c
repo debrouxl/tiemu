@@ -65,7 +65,7 @@ on_popup_menu_header                   (GtkMenuItem     *menuitem,
 #else
 	gchar **list, **ptr;
 
-	list = create_fsels(inst_paths.base_dir, NULL, "*.txt", FALSE);
+	list = create_fsels(inst_paths.base_dir, NULL, "*.txt");
 	for(ptr = list; *ptr; ptr++)	printf("<<%s>>\n", *ptr);
 #endif
 }

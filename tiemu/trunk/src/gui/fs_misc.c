@@ -213,7 +213,7 @@ gint display_tifiles_dbox()
 	if(folder == NULL)
 		folder = g_strdup(inst_paths.base_dir);
 
-	filenames = create_fsels(folder, NULL, (char *)ext, FALSE);
+	filenames = create_fsels(folder, NULL, (char *)ext);
 	if(!filenames)
 		return 0;
 
