@@ -327,7 +327,6 @@ GtkWidget* dbgbkpts_display_window(void)
     clist_populate(store);
 
 	display_dbgcause_dbox2(statbar);
-	//dbgbkpts_statusbar_add(statbar);
 
 	return wnd;
 }
@@ -431,6 +430,10 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
         g_strfreev(row_text);
     }
 
+	// free selection
+	g_list_foreach (l, (GFunc)gtk_tree_path_free, NULL);
+	g_list_free (l);
+
     dbgbkpts_display_window();
 }
 
@@ -493,6 +496,10 @@ dbgbkpts_button3_clicked                     (GtkButton       *button,
         g_strfreev(row_text);
     }
 
+	// free selection
+	g_list_foreach (l, (GFunc)gtk_tree_path_free, NULL);
+	g_list_free (l);
+
     dbgbkpts_display_window();
 }
 
@@ -554,6 +561,10 @@ dbgbkpts_button4_clicked                     (GtkButton       *button,
         g_strfreev(row_text);
     }
 
+	// free selection
+	g_list_foreach (l, (GFunc)gtk_tree_path_free, NULL);
+	g_list_free (l);
+
     dbgbkpts_display_window();
 }
 
@@ -599,6 +610,10 @@ dbgbkpts_button5_clicked                     (GtkButton       *button,
         }
         g_strfreev(row_text);
     }
+
+	// free selection
+	g_list_foreach (l, (GFunc)gtk_tree_path_free, NULL);
+	g_list_free (l);
 }
 
 GLADE_CB gboolean

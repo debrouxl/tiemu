@@ -121,7 +121,11 @@ static void clist_get_selection(GtkWidget *list)
 		gtk_tree_model_get(model, &iter, COL_NUMBER, &n, -1);
 		
 		ti68k_bkpt_add_exception(n);
-	}	
+	}
+
+	// free selection
+	g_list_foreach (l, (GFunc)gtk_tree_path_free, NULL);
+	g_list_free (l);
 }
 
 gint dbgvectors_display_dbox(void)

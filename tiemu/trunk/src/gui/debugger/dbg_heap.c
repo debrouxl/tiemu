@@ -204,6 +204,7 @@ on_heap_button_press_event        (GtkWidget       *widget,
 	// get selection
 	selection = gtk_tree_view_get_selection(view);
 	l = gtk_tree_selection_get_selected_rows(selection, &model);
+	if(l != NULL)
 	{
 		GtkTreeIter iter;
 		GtkTreePath *path = l->data;
@@ -220,6 +221,10 @@ on_heap_button_press_event        (GtkWidget       *widget,
 
         g_strfreev(row_text);
     }
+
+	// free selection
+	g_list_foreach (l, (GFunc)gtk_tree_path_free, NULL);
+	g_list_free (l);
 
     return FALSE;
 }
