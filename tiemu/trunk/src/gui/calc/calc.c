@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: dbg_cause.c 446 2004-06-13 09:11:07Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -175,6 +175,9 @@ static int match_skin(int calc_type)
 	s = g_strdup(ti68k_calctype_to_string(calc_type));
 	skin_name = g_ascii_strdown(s, strlen(s));
 
+	if(!strcmp(skin_name, "ti92+") || !strcmp(skin_name, "ti89t"))
+		skin_name[4] = '\0';
+
 	// filename is "", load default skin
 	if(!strcmp(g_basename(options.skin_file), ""))
 	{
@@ -236,6 +239,9 @@ static int match_keymap(int calc_type)
 
 	s = g_strdup(ti68k_calctype_to_string(calc_type));
 	keys_name = g_ascii_strdown(s, strlen(s));
+
+	if(!strcmp(keys_name, "ti92+") || !strcmp(keys_name, "ti89t"))
+		keys_name[4] = '\0';
 
 	// filename is "", load default keymap
 	if(!strcmp(g_basename(options.keys_file), ""))
