@@ -212,9 +212,8 @@ GLADE_CB void
 on_normal_view1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    //printf("normal !\n");
 	//ti68k_engine_stop();
-	//hid_switch_normal_view();
+	hid_switch_normal_view();
   	//ti68k_engine_start();
 }
 
@@ -223,9 +222,8 @@ GLADE_CB void
 on_large_view1_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    //printf("large !\n");
 	//ti68k_engine_stop();
-	//hid_switch_large_view();
+	hid_switch_large_view();
   	//ti68k_engine_start();
 }
 
@@ -234,9 +232,8 @@ GLADE_CB void
 on_full_screen1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    //printf("full !\n");
 	//ti68k_engine_stop();
-	//hid_switch_fullscreen();
+	hid_switch_fullscreen();
   	//ti68k_engine_start();
 }
 
@@ -474,17 +471,6 @@ GtkWidget* display_popup_menu(void)
 		data = glade_xml_get_widget(xml, "set_rom1");
 		gtk_widget_set_sensitive(data, FALSE);
 	}
-
-	// 
-	data = glade_xml_get_widget(xml, "normal_view1");
-	gtk_widget_set_sensitive(data, FALSE);
-	data = glade_xml_get_widget(xml, "large_view1");
-	gtk_widget_set_sensitive(data, FALSE);
-	data = glade_xml_get_widget(xml, "full_view1");
-	gtk_widget_set_sensitive(data, FALSE);
-
-
-	//while(gtk_events_pending()) gtk_main_iteration();
 
 	return menu;
 }

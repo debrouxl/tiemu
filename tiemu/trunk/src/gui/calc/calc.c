@@ -50,8 +50,6 @@
 GtkWidget *main_wnd = NULL;
 GtkWidget *area = NULL;
 
-gint w, h;
-
 extern GdkPixbuf*	lcd;
 extern GdkPixbuf*	skn;
 extern GdkPixmap*	pixmap;
@@ -486,32 +484,39 @@ int hid_change_skin(const char *filename)
 
 static gint fullscreen = 0;
 
-int hid_switch_fullscreen(void)
+int hid_switch_windowed(void)
 {
-	gdk_window_fullscreen(main_wnd->window);
-    fullscreen = !0;
+	if(fullscreen)
+	{
+		gdk_window_unfullscreen(main_wnd->window);
+		fullscreen = 0;
+	}
 
 	return 0;
 }
 
-int hid_switch_windowed(void)
+int hid_switch_fullscreen(void)
 {
-	gdk_window_unfullscreen(main_wnd->window);
-    fullscreen = 0;
+	if(!fullscreen)
+	{
+		gdk_window_fullscreen(main_wnd->window);
+		fullscreen = !0;
+	}
 
 	return 0;
 }
 
 int hid_switch_normal_view(void)
 {
-    if(fullscreen)
-        hid_switch_windowed();
+    hid_switch_windowed();
 
     return 0;
 }
 
 int hid_switch_large_view(void)
 {
+	hid_switch_windowed();
+
     return 0;
 }
 
