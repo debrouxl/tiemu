@@ -5,9 +5,11 @@
 
 <widget class="GtkMenu" id="popup_menu">
   <property name="visible">True</property>
-  <signal name="configure_event" handler="on_popup_menu_configure_event"/>
+  <property name="events">GDK_KEY_PRESS_MASK</property>
   <signal name="cancel" handler="on_popup_menu_cancel"/>
-  <signal name="deactivate" handler="on_popup_menu_deactivate"/>
+  <signal name="button_press_event" handler="on_popup_menu_button_press_event" last_modification_time="Tue, 11 May 2004 20:10:11 GMT"/>
+  <signal name="key_press_event" handler="on_popup_menu_key_press_event" last_modification_time="Tue, 11 May 2004 20:10:16 GMT"/>
+  <accelerator key="Escape" modifiers="0" signal="cancel"/>
 
   <child>
     <widget class="GtkMenuItem" id="popup_menu_header">

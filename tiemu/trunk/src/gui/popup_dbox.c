@@ -101,17 +101,25 @@ create_popup_menu (void)
   accel_group = gtk_accel_group_new ();
 
   popup_menu = gtk_menu_new ();
+  gtk_widget_set_name (popup_menu, "popup_menu");
+  gtk_widget_set_events (popup_menu, GDK_KEY_PRESS_MASK);
+  gtk_widget_add_accelerator (popup_menu, "cancel", accel_group,
+                              GDK_Escape, 0,
+                              GTK_ACCEL_VISIBLE);
 
   popup_menu_header = gtk_menu_item_new_with_mnemonic (_("TiEmu II menu (v2.0)"));
+  gtk_widget_set_name (popup_menu_header, "popup_menu_header");
   gtk_widget_show (popup_menu_header);
   gtk_container_add (GTK_CONTAINER (popup_menu), popup_menu_header);
 
   separator10 = gtk_menu_item_new ();
+  gtk_widget_set_name (separator10, "separator10");
   gtk_widget_show (separator10);
   gtk_container_add (GTK_CONTAINER (popup_menu), separator10);
   gtk_widget_set_sensitive (separator10, FALSE);
 
   send_file_to_gtktiemu1 = gtk_menu_item_new_with_mnemonic (_("Send _file to TIEmu"));
+  gtk_widget_set_name (send_file_to_gtktiemu1, "send_file_to_gtktiemu1");
   gtk_widget_show (send_file_to_gtktiemu1);
   gtk_container_add (GTK_CONTAINER (popup_menu), send_file_to_gtktiemu1);
   gtk_tooltips_set_tip (tooltips, send_file_to_gtktiemu1, _("Send the selected file to the emulator. This file can be of any type (single, group, backup, FLASH app or FLASH OS)."), NULL);
@@ -120,57 +128,70 @@ create_popup_menu (void)
                               GTK_ACCEL_VISIBLE);
 
   link_cable1 = gtk_menu_item_new_with_mnemonic (_("Link _options..."));
+  gtk_widget_set_name (link_cable1, "link_cable1");
   gtk_widget_show (link_cable1);
   gtk_container_add (GTK_CONTAINER (popup_menu), link_cable1);
   gtk_tooltips_set_tip (tooltips, link_cable1, _("Link cable setup"), NULL);
 
   separator11 = gtk_menu_item_new ();
+  gtk_widget_set_name (separator11, "separator11");
   gtk_widget_show (separator11);
   gtk_container_add (GTK_CONTAINER (popup_menu), separator11);
   gtk_widget_set_sensitive (separator11, FALSE);
 
   config1 = gtk_menu_item_new_with_mnemonic (_("_Configuration"));
+  gtk_widget_set_name (config1, "config1");
   gtk_widget_show (config1);
   gtk_container_add (GTK_CONTAINER (popup_menu), config1);
 
   config1_menu = gtk_menu_new ();
+  gtk_widget_set_name (config1_menu, "config1_menu");
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (config1), config1_menu);
 
   save_config1 = gtk_menu_item_new_with_mnemonic (_("Save config..."));
+  gtk_widget_set_name (save_config1, "save_config1");
   gtk_widget_show (save_config1);
   gtk_container_add (GTK_CONTAINER (config1_menu), save_config1);
   gtk_tooltips_set_tip (tooltips, save_config1, _("Save the actual configuration"), NULL);
 
   load_config1 = gtk_menu_item_new_with_mnemonic (_("Load config..."));
+  gtk_widget_set_name (load_config1, "load_config1");
   gtk_widget_show (load_config1);
   gtk_container_add (GTK_CONTAINER (config1_menu), load_config1);
   gtk_tooltips_set_tip (tooltips, load_config1, _("Load the configuration previously saved"), NULL);
 
   calculator_state1 = gtk_menu_item_new_with_mnemonic (_("Calculator state"));
+  gtk_widget_set_name (calculator_state1, "calculator_state1");
   gtk_widget_show (calculator_state1);
   gtk_container_add (GTK_CONTAINER (popup_menu), calculator_state1);
 
   calculator_state1_menu = gtk_menu_new ();
+  gtk_widget_set_name (calculator_state1_menu, "calculator_state1_menu");
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (calculator_state1), calculator_state1_menu);
 
   load_state_image1 = gtk_menu_item_new_with_mnemonic (_("Load state image..."));
+  gtk_widget_set_name (load_state_image1, "load_state_image1");
   gtk_widget_show (load_state_image1);
   gtk_container_add (GTK_CONTAINER (calculator_state1_menu), load_state_image1);
 
   save_state_image1 = gtk_menu_item_new_with_mnemonic (_("Save state image..."));
+  gtk_widget_set_name (save_state_image1, "save_state_image1");
   gtk_widget_show (save_state_image1);
   gtk_container_add (GTK_CONTAINER (calculator_state1_menu), save_state_image1);
 
   revert_to_saved_state1 = gtk_menu_item_new_with_mnemonic (_("Revert to saved state"));
+  gtk_widget_set_name (revert_to_saved_state1, "revert_to_saved_state1");
   gtk_widget_show (revert_to_saved_state1);
   gtk_container_add (GTK_CONTAINER (calculator_state1_menu), revert_to_saved_state1);
 
   separator20 = gtk_menu_item_new ();
+  gtk_widget_set_name (separator20, "separator20");
   gtk_widget_show (separator20);
   gtk_container_add (GTK_CONTAINER (popup_menu), separator20);
   gtk_widget_set_sensitive (separator20, FALSE);
 
   enter_debugger1 = gtk_menu_item_new_with_mnemonic (_("Enter _debugger..."));
+  gtk_widget_set_name (enter_debugger1, "enter_debugger1");
   gtk_widget_show (enter_debugger1);
   gtk_container_add (GTK_CONTAINER (popup_menu), enter_debugger1);
   gtk_tooltips_set_tip (tooltips, enter_debugger1, _("Go to debugger"), NULL);
@@ -179,104 +200,129 @@ create_popup_menu (void)
                               GTK_ACCEL_VISIBLE);
 
   reset_calc1 = gtk_menu_item_new_with_mnemonic (_("_Reset calc"));
+  gtk_widget_set_name (reset_calc1, "reset_calc1");
   gtk_widget_show (reset_calc1);
   gtk_container_add (GTK_CONTAINER (popup_menu), reset_calc1);
 
   separator12 = gtk_menu_item_new ();
+  gtk_widget_set_name (separator12, "separator12");
   gtk_widget_show (separator12);
   gtk_container_add (GTK_CONTAINER (popup_menu), separator12);
   gtk_widget_set_sensitive (separator12, FALSE);
 
   emulator_options1 = gtk_menu_item_new_with_mnemonic (_("Emulator _options"));
+  gtk_widget_set_name (emulator_options1, "emulator_options1");
   gtk_widget_show (emulator_options1);
   gtk_container_add (GTK_CONTAINER (popup_menu), emulator_options1);
 
   emulator_options1_menu = gtk_menu_new ();
+  gtk_widget_set_name (emulator_options1_menu, "emulator_options1_menu");
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (emulator_options1), emulator_options1_menu);
 
   speed2 = gtk_menu_item_new_with_mnemonic (_("Speed"));
+  gtk_widget_set_name (speed2, "speed2");
   gtk_widget_show (speed2);
   gtk_container_add (GTK_CONTAINER (emulator_options1_menu), speed2);
 
   speed2_menu = gtk_menu_new ();
+  gtk_widget_set_name (speed2_menu, "speed2_menu");
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (speed2), speed2_menu);
 
   restrict1 = gtk_check_menu_item_new_with_mnemonic (_("Restrict to actual speed"));
+  gtk_widget_set_name (restrict1, "restrict1");
   gtk_widget_show (restrict1);
   gtk_container_add (GTK_CONTAINER (speed2_menu), restrict1);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (restrict1), TRUE);
 
   change_speed1 = gtk_menu_item_new_with_mnemonic (_("Tickrate..."));
+  gtk_widget_set_name (change_speed1, "change_speed1");
   gtk_widget_show (change_speed1);
   gtk_container_add (GTK_CONTAINER (speed2_menu), change_speed1);
   gtk_tooltips_set_tip (tooltips, change_speed1, _("Set number the rate of the timer"), NULL);
 
   cycle_rate1 = gtk_menu_item_new_with_mnemonic (_("Cycle rate..."));
+  gtk_widget_set_name (cycle_rate1, "cycle_rate1");
   gtk_widget_show (cycle_rate1);
   gtk_container_add (GTK_CONTAINER (speed2_menu), cycle_rate1);
   gtk_tooltips_set_tip (tooltips, cycle_rate1, _("Set the rate of instructions"), NULL);
 
   itick1 = gtk_menu_item_new_with_mnemonic (_("Itick"));
+  gtk_widget_set_name (itick1, "itick1");
   gtk_widget_show (itick1);
   gtk_container_add (GTK_CONTAINER (speed2_menu), itick1);
   gtk_tooltips_set_tip (tooltips, itick1, _("Set numbers of instructions per timertick"), NULL);
 
   sync1 = gtk_check_menu_item_new_with_mnemonic (_("Sync"));
+  gtk_widget_set_name (sync1, "sync1");
   gtk_widget_show (sync1);
   gtk_container_add (GTK_CONTAINER (speed2_menu), sync1);
   gtk_tooltips_set_tip (tooltips, sync1, _("If you uncheck this, screen updating will be synchronized with the timer which means it always be updated regularly. This may cause grayscale pictures to flicker when you press keys and other things happen in the code. If you check this, screen updating will be synced with IRQ 1. This means that if IRQ 1 does not run, the screen is not updated. This options usually makes grayscales rock-stable, but wont work at all in programs that turn off IRQ 1 (like \"tunnel\" and \"torus\")."), NULL);
 
   number_of_colors1 = gtk_menu_item_new_with_mnemonic (_("Number of colors..."));
+  gtk_widget_set_name (number_of_colors1, "number_of_colors1");
   gtk_widget_show (number_of_colors1);
   gtk_container_add (GTK_CONTAINER (emulator_options1_menu), number_of_colors1);
   gtk_tooltips_set_tip (tooltips, number_of_colors1, _("Set current number of emulated extra grayscales colors"), NULL);
 
   screen1 = gtk_menu_item_new_with_mnemonic (_("_Screen"));
+  gtk_widget_set_name (screen1, "screen1");
   gtk_widget_show (screen1);
   gtk_container_add (GTK_CONTAINER (emulator_options1_menu), screen1);
 
   screen1_menu = gtk_menu_new ();
+  gtk_widget_set_name (screen1_menu, "screen1_menu");
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (screen1), screen1_menu);
 
   normal_view__1x_1 = gtk_menu_item_new_with_mnemonic (_("_Normal view (1x)"));
+  gtk_widget_set_name (normal_view__1x_1, "normal_view__1x_1");
   gtk_widget_show (normal_view__1x_1);
   gtk_container_add (GTK_CONTAINER (screen1_menu), normal_view__1x_1);
 
   large_view__x2_1 = gtk_menu_item_new_with_mnemonic (_("_Large view (x2)"));
+  gtk_widget_set_name (large_view__x2_1, "large_view__x2_1");
   gtk_widget_show (large_view__x2_1);
   gtk_container_add (GTK_CONTAINER (screen1_menu), large_view__x2_1);
 
   full_screen1 = gtk_menu_item_new_with_mnemonic (_("_Full screen (Alt+Enter)"));
+  gtk_widget_set_name (full_screen1, "full_screen1");
   gtk_widget_show (full_screen1);
   gtk_container_add (GTK_CONTAINER (screen1_menu), full_screen1);
 
   skin_for_current_calc1 = gtk_menu_item_new_with_mnemonic (_("Skin for current calc"));
+  gtk_widget_set_name (skin_for_current_calc1, "skin_for_current_calc1");
   gtk_widget_show (skin_for_current_calc1);
   gtk_container_add (GTK_CONTAINER (popup_menu), skin_for_current_calc1);
 
   skin_for_current_calc1_menu = gtk_menu_new ();
+  gtk_widget_set_name (skin_for_current_calc1_menu, "skin_for_current_calc1_menu");
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (skin_for_current_calc1), skin_for_current_calc1_menu);
 
   skin1 = gtk_menu_item_new_with_mnemonic (_("Skin92"));
+  gtk_widget_set_name (skin1, "skin1");
   gtk_widget_show (skin1);
   gtk_container_add (GTK_CONTAINER (skin_for_current_calc1_menu), skin1);
 
   none1 = gtk_menu_item_new_with_mnemonic (_("None"));
+  gtk_widget_set_name (none1, "none1");
   gtk_widget_show (none1);
   gtk_container_add (GTK_CONTAINER (skin_for_current_calc1_menu), none1);
 
   set_skin1 = gtk_menu_item_new_with_mnemonic (_("Set skin..."));
+  gtk_widget_set_name (set_skin1, "set_skin1");
   gtk_widget_show (set_skin1);
   gtk_container_add (GTK_CONTAINER (skin_for_current_calc1_menu), set_skin1);
 
   screenshot1 = gtk_menu_item_new_with_mnemonic (_("_Screenshot"));
+  gtk_widget_set_name (screenshot1, "screenshot1");
   gtk_widget_show (screenshot1);
   gtk_container_add (GTK_CONTAINER (popup_menu), screenshot1);
 
   screenshot1_menu = gtk_menu_new ();
+  gtk_widget_set_name (screenshot1_menu, "screenshot1_menu");
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (screenshot1), screenshot1_menu);
 
   now__1 = gtk_menu_item_new_with_mnemonic (_("_Now !"));
+  gtk_widget_set_name (now__1, "now__1");
   gtk_widget_show (now__1);
   gtk_container_add (GTK_CONTAINER (screenshot1_menu), now__1);
   gtk_widget_add_accelerator (now__1, "activate", accel_group,
@@ -284,57 +330,70 @@ create_popup_menu (void)
                               GTK_ACCEL_VISIBLE);
 
   options1 = gtk_menu_item_new_with_mnemonic (_("_Options"));
+  gtk_widget_set_name (options1, "options1");
   gtk_widget_show (options1);
   gtk_container_add (GTK_CONTAINER (screenshot1_menu), options1);
 
   ram1 = gtk_menu_item_new_with_mnemonic (_("RAM"));
+  gtk_widget_set_name (ram1, "ram1");
   gtk_widget_show (ram1);
   gtk_container_add (GTK_CONTAINER (popup_menu), ram1);
   gtk_tooltips_set_tip (tooltips, ram1, _("RAM parameters"), NULL);
 
   ram1_menu = gtk_menu_new ();
+  gtk_widget_set_name (ram1_menu, "ram1_menu");
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (ram1), ram1_menu);
 
   dump_ram1 = gtk_menu_item_new_with_mnemonic (_("Dump RAM..."));
+  gtk_widget_set_name (dump_ram1, "dump_ram1");
   gtk_widget_show (dump_ram1);
   gtk_container_add (GTK_CONTAINER (ram1_menu), dump_ram1);
 
   rom1 = gtk_menu_item_new_with_mnemonic (_("ROM"));
+  gtk_widget_set_name (rom1, "rom1");
   gtk_widget_show (rom1);
   gtk_container_add (GTK_CONTAINER (popup_menu), rom1);
   gtk_tooltips_set_tip (tooltips, rom1, _("ROM parameters"), NULL);
 
   rom1_menu = gtk_menu_new ();
+  gtk_widget_set_name (rom1_menu, "rom1_menu");
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (rom1), rom1_menu);
 
   dump_rom1 = gtk_menu_item_new_with_mnemonic (_("Dump ROM..."));
+  gtk_widget_set_name (dump_rom1, "dump_rom1");
   gtk_widget_show (dump_rom1);
   gtk_container_add (GTK_CONTAINER (rom1_menu), dump_rom1);
   gtk_tooltips_set_tip (tooltips, dump_rom1, _("Make a ROM dump to link port"), NULL);
 
   rom_file1 = gtk_menu_item_new_with_mnemonic (_("Add image/upgrade..."));
+  gtk_widget_set_name (rom_file1, "rom_file1");
   gtk_widget_show (rom_file1);
   gtk_container_add (GTK_CONTAINER (rom1_menu), rom_file1);
   gtk_tooltips_set_tip (tooltips, rom_file1, _("Add a ROM image or a FLASH upgrade..."), NULL);
 
   set_rom1 = gtk_menu_item_new_with_mnemonic (_("Set ROM (image/upgrade)"));
+  gtk_widget_set_name (set_rom1, "set_rom1");
   gtk_widget_show (set_rom1);
   gtk_container_add (GTK_CONTAINER (rom1_menu), set_rom1);
   gtk_tooltips_set_tip (tooltips, set_rom1, _("Set emulation ROM version"), NULL);
 
   separator13 = gtk_menu_item_new ();
+  gtk_widget_set_name (separator13, "separator13");
   gtk_widget_show (separator13);
   gtk_container_add (GTK_CONTAINER (popup_menu), separator13);
   gtk_widget_set_sensitive (separator13, FALSE);
 
   help1 = gtk_menu_item_new_with_mnemonic (_("_Help"));
+  gtk_widget_set_name (help1, "help1");
   gtk_widget_show (help1);
   gtk_container_add (GTK_CONTAINER (popup_menu), help1);
 
   help1_menu = gtk_menu_new ();
+  gtk_widget_set_name (help1_menu, "help1_menu");
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (help1), help1_menu);
 
   help3 = gtk_menu_item_new_with_mnemonic (_("Help"));
+  gtk_widget_set_name (help3, "help3");
   gtk_widget_show (help3);
   gtk_container_add (GTK_CONTAINER (help1_menu), help3);
   gtk_widget_add_accelerator (help3, "activate", accel_group,
@@ -342,6 +401,7 @@ create_popup_menu (void)
                               GTK_ACCEL_VISIBLE);
 
   manpage1 = gtk_menu_item_new_with_mnemonic (_("Manpage"));
+  gtk_widget_set_name (manpage1, "manpage1");
   gtk_widget_show (manpage1);
   gtk_container_add (GTK_CONTAINER (help1_menu), manpage1);
   gtk_widget_add_accelerator (manpage1, "activate", accel_group,
@@ -349,57 +409,56 @@ create_popup_menu (void)
                               GTK_ACCEL_VISIBLE);
 
   separator15 = gtk_menu_item_new ();
+  gtk_widget_set_name (separator15, "separator15");
   gtk_widget_show (separator15);
   gtk_container_add (GTK_CONTAINER (help1_menu), separator15);
   gtk_widget_set_sensitive (separator15, FALSE);
 
   changelog1 = gtk_menu_item_new_with_mnemonic (_("ChangeLog"));
+  gtk_widget_set_name (changelog1, "changelog1");
   gtk_widget_show (changelog1);
   gtk_container_add (GTK_CONTAINER (help1_menu), changelog1);
 
   separator14 = gtk_menu_item_new ();
+  gtk_widget_set_name (separator14, "separator14");
   gtk_widget_show (separator14);
   gtk_container_add (GTK_CONTAINER (help1_menu), separator14);
   gtk_widget_set_sensitive (separator14, FALSE);
 
   thanks1 = gtk_menu_item_new_with_mnemonic (_("Thanks"));
+  gtk_widget_set_name (thanks1, "thanks1");
   gtk_widget_show (thanks1);
   gtk_container_add (GTK_CONTAINER (help1_menu), thanks1);
 
   about1 = gtk_menu_item_new_with_mnemonic (_("About..."));
+  gtk_widget_set_name (about1, "about1");
   gtk_widget_show (about1);
   gtk_container_add (GTK_CONTAINER (help1_menu), about1);
   gtk_tooltips_set_tip (tooltips, about1, _("More informations"), NULL);
 
   infos1 = gtk_menu_item_new_with_mnemonic (_("Infos..."));
+  gtk_widget_set_name (infos1, "infos1");
   gtk_widget_show (infos1);
   gtk_container_add (GTK_CONTAINER (popup_menu), infos1);
 
   exit1 = gtk_menu_item_new_with_mnemonic (_("E_xit and save state"));
+  gtk_widget_set_name (exit1, "exit1");
   gtk_widget_show (exit1);
   gtk_container_add (GTK_CONTAINER (popup_menu), exit1);
 
   exit_without_saving_state1 = gtk_menu_item_new_with_mnemonic (_("Exit _without saving state"));
+  gtk_widget_set_name (exit_without_saving_state1, "exit_without_saving_state1");
   gtk_widget_show (exit_without_saving_state1);
   gtk_container_add (GTK_CONTAINER (popup_menu), exit_without_saving_state1);
 
-  g_signal_connect ((gpointer) popup_menu, "selection_done",
-                    G_CALLBACK (on_popup_menu_selection_done),
-                    NULL);
-  g_signal_connect ((gpointer) popup_menu, "button-press-event",
-                    G_CALLBACK (on_popup_menu_configure_event),
-                    NULL);
-  g_signal_connect ((gpointer) popup_menu, "key-press-event",
-                    G_CALLBACK (on_popup_menu_configure_event),
-                    NULL);
-  g_signal_connect ((gpointer) popup_menu, "configure_event",
-                    G_CALLBACK (on_popup_menu_configure_event),
-                    NULL);
   g_signal_connect ((gpointer) popup_menu, "cancel",
                     G_CALLBACK (on_popup_menu_cancel),
                     NULL);
-  g_signal_connect ((gpointer) popup_menu, "deactivate",
-                    G_CALLBACK (on_popup_menu_deactivate),
+  g_signal_connect ((gpointer) popup_menu, "button_press_event",
+                    G_CALLBACK (on_popup_menu_button_press_event),
+                    NULL);
+  g_signal_connect ((gpointer) popup_menu, "key_press_event",
+                    G_CALLBACK (on_popup_menu_key_press_event),
                     NULL);
   g_signal_connect ((gpointer) popup_menu_header, "activate",
                     G_CALLBACK (on_popup_menu_header),

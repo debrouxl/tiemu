@@ -14,6 +14,16 @@ on_popup_menu_configure_event          (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data);
 
+gboolean
+on_popup_menu_button_press_event          (GtkWidget       *widget,
+                                        GdkEventConfigure *event,
+                                        gpointer         user_data);
+
+gboolean
+on_popup_menu_key_press_event          (GtkWidget       *widget,
+                                        GdkEventConfigure *event,
+                                        gpointer         user_data);
+
 void
 on_popup_menu_cancel                   (GtkMenuShell    *menushell,
                                         gpointer         user_data);

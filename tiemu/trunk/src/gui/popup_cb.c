@@ -72,25 +72,6 @@
 #include "support.h"
 
 
-gboolean    
-on_popup_menu_key_press_event      (GtkWidget *widget,
-                                            GdkEventKey *event,
-                                            gpointer user_data)
-{
-	DISPLAY("on_popup_menu_key_press_event\n");
-}
-
-
-gboolean    
-on_popup_menu_button_press_event      (GtkWidget *widget,
-                                            GdkEventButton *event,
-                                            gpointer user_data)
-{
-	DISPLAY("on_popup_menu_button_press_event\n");
-}
-
-
-
 /*
   Display the GTK popup menu and configure some items
 */
@@ -124,19 +105,36 @@ GtkWidget* display_popup_menu(void)
 	return menu;
 }
 
+
 /*************/
 /* Callbacks */
 /*************/
 
 
 gboolean
-on_popup_menu_configure_event          (GtkWidget       *widget,
-                                        GdkEventConfigure *event,
-                                        gpointer         user_data)
+on_popup_menu_key_press_event      (GtkWidget *widget,
+                                            GdkEventKey *event,
+                                            gpointer user_data)
 {
-	DISPLAY("on_popup_menu_configure_event\n");
-	//unhalt();
-	return FALSE;
+    // never called (ESC)
+	DISPLAY("on_popup_menu_key_press_event\n");
+}
+
+
+gboolean    
+on_popup_menu_button_press_event      (GtkWidget *widget,
+                                            GdkEventButton *event,
+                                            gpointer user_data)
+{
+    GtkAllocation *alloc = &(widget->allocation);
+
+	DISPLAY("on_popup_menu_button_press_event: %p %p\n", widget, user_data);
+    //DISPLAY("%i %i %i %i\n", (gint)event->x, (gint)event->y, (gint)event->x_root, (gint)event->y_root);
+    //DISPLAY("%i %i %i %i\n", alloc->x, alloc->y, alloc->width, alloc->height);
+    if((event->x > alloc->width) || (event->y > alloc->height) ||
+        (event->x < alloc->x) || (event->y < alloc->y)) {
+           unhalt();
+    }
 }
 
 
@@ -144,25 +142,8 @@ void
 on_popup_menu_cancel                   (GtkMenuShell    *menushell,
                                         gpointer         user_data)
 {
-	// call when you press ESC during popup menu
+	// never called (ESC)
 	DISPLAY("on_popup_menu_cancel\n");
-	unhalt();
-}
-
-
-void
-on_popup_menu_selection_done           (GtkMenuShell    *menushell,
-                                        gpointer         user_data)
-{
-	DISPLAY("on_popup_menu_selection_done\n");
-}
-
-
-void
-on_popup_menu_deactivate               (GtkMenuShell    *menushell,
-                                        gpointer         user_data)
-{
-	DISPLAY("on_popup_menu_deactivate\n");
 }
 
 
