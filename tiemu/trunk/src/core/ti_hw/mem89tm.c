@@ -87,7 +87,7 @@ int ti89t_mem_init(void)
 	if(tihw.hw_type >= HW2)
 	{
 		mem_tab[7] = tihw.io2;
-		mem_msk[7] = 255;
+		mem_msk[7] = tihw.io2_size;
 	}
 
     return 0;
@@ -106,11 +106,11 @@ uint32_t ti89t_get_long(uint32_t adr)
 	}
     else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
 	{
-       return io_get_long(adr & 0x1f);
+       return io_get_long(adr);
 	}
 	else if(IN_RANGE(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
 	{
-		return io2_get_long(adr & 0x1f);
+		return io2_get_long(adr);
 	}
 
     return 0x14141414;
@@ -129,11 +129,11 @@ uint16_t ti89t_get_word(uint32_t adr)
 	}
     else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
 	{
-       return io_get_word(adr & 0x1f);
+       return io_get_word(adr);
 	}
 	else if(IN_RANGE(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
 	{
-		return io2_get_word(adr & 0x1f);
+		return io2_get_word(adr);
 	}
 
     return 0x1414;
@@ -152,11 +152,11 @@ uint8_t ti89t_get_byte(uint32_t adr)
 	}
     else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
 	{
-       return io_get_byte(adr & 0x1f);
+       return io_get_byte(adr);
 	}
 	else if(IN_RANGE(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
 	{
-		return io2_get_byte(adr & 0x1f);
+		return io2_get_byte(adr);
 	}
 
     return 0x14;
@@ -174,11 +174,11 @@ void ti89t_put_long(uint32_t adr, uint32_t arg)
 	}
     else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
 	{
-		io_put_long(adr & 0x1f, arg);
+		io_put_long(adr, arg);
 	}
 	else if(IN_RANGE(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
 	{
-		io2_put_long(adr & 0x1f, arg);
+		io2_put_long(adr, arg);
 	}
 
     return;
@@ -196,11 +196,11 @@ void ti89t_put_word(uint32_t adr, uint16_t arg)
 	}
     else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
 	{
-		io_put_word(adr & 0x1f, arg);
+		io_put_word(adr, arg);
 	}
 	else if(IN_RANGE(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
 	{
-		io2_put_word(adr & 0x1f, arg);
+		io2_put_word(adr, arg);
 	}
 
     return;
@@ -218,11 +218,11 @@ void ti89t_put_byte(uint32_t adr, uint8_t arg)
 	}
     else if(IN_RANGE(0x600000, adr, 0x6fffff))			// memory-mapped I/O
 	{
-		io_put_byte(adr & 0x1f, arg);
+		io_put_byte(adr, arg);
 	}
 	else if(IN_RANGE(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
 	{
-		io2_put_byte(adr & 0x1f, arg);
+		io2_put_byte(adr, arg);
 	}
 
     return;

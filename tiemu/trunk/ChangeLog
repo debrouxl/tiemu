@@ -10,6 +10,8 @@ To do:
 	- fixed and tested linkport support with real cables: GrayLink, BlackLink, VTi and TiEmu.
 	- tested: TiLP/VTi (vti), VTi/TiEmu (vti), TiLP/TiEmu (tie).
 	- SilverLink makes TiEmu crash.
+	- 0x200000 and 0x400000 are ghost of 0x000000 (Titanium only)
+	- added 0x7100xx ports and fixed LCD address on HW2/HW3
 
 - 21/01/2005, version 1.80l: roms
 	- switched to GTK+ package 2.4-rc26 (2.4.14): compatible with GiMP and fixes toolbar tooltips

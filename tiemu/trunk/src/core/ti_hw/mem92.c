@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: main.c 245 2004-05-23 20:45:43Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -108,7 +108,7 @@ uint32_t ti92_get_long(uint32_t adr)
     // memory-mapped I/O
 	else if(IN_RANGE(0x600000, adr, 0x6fffff))
 	{
-        return io_get_long(adr & 0x1f);
+        return io_get_long(adr);
 	}
 
     return 0x14141414;
@@ -125,7 +125,7 @@ uint16_t ti92_get_word(uint32_t adr)
     // memory-mapped I/O
     else if(IN_RANGE(0x600000, adr, 0x6fffff))
 	{
-        return io_get_word(adr & 0x1f);
+        return io_get_word(adr);
 	}
 
     return 0x1414;
@@ -142,7 +142,7 @@ uint8_t ti92_get_byte(uint32_t adr)
     // memory-mapped I/O
     else if(IN_RANGE(0x600000, adr, 0x6fffff))
 	{
-        return io_get_byte(adr & 0x1f);
+        return io_get_byte(adr);
 	}
 
     return 0x14;
@@ -159,7 +159,7 @@ void ti92_put_long(uint32_t adr, uint32_t arg)
     // memory-mapped I/O
     else if(IN_RANGE(0x600000, adr, 0x6fffff))
 	{
-        io_put_long(adr & 0x1f, arg);
+        io_put_long(adr, arg);
 	}
 }
 
@@ -174,7 +174,7 @@ void ti92_put_word(uint32_t adr, uint16_t arg)
     // memory-mapped I/O
     else if(IN_RANGE(0x600000, adr, 0x6fffff))
 	{
-        io_put_word(adr & 0x1f, arg);
+        io_put_word(adr, arg);
 	}
 }
 
@@ -189,6 +189,6 @@ void ti92_put_byte(uint32_t adr, uint8_t arg)
     // memory-mapped I/O
     else if(IN_RANGE(0x600000, adr, 0x6fffff))
 	{
-        io_put_byte(adr & 0x1f, arg);
+        io_put_byte(adr, arg);
 	}
 }

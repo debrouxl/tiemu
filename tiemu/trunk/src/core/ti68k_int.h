@@ -52,6 +52,7 @@ void ti68k_kbd_set_key(int key, int active);
 int ti68k_get_rom_size(int calc_type);
 int ti68k_get_ram_size(int calc_type);
 int ti68k_get_io_size(int calc_type);
+int ti68k_get_io2_size(int calc_type);
 
 uint8_t* ti68k_get_real_address(uint32_t addr);
 

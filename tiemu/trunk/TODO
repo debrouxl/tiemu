@@ -63,12 +63,21 @@ certificate).
         * aller dans la fenêtre de debug: TIEmu est parti
 dans le décor, je ne sais pas s'il exécute ou pas
 
+* Autre détail: les handles sont tous 2 octets trop
+gros. Et je revérifierai, mais je ne suis pas sûr que
+tous les handles soient affichés (je ne trouve pas des
+fichiers créés).
+
+* Il y a un petit bug dans la fenêtre des breakpoints
+(c'est le bug mineur dont je ne me souvenais plus
+l'autre fois): quand on a breaké le debugger par F11,
+le mode de break est inconnu, et ça affiche <unknown
+(bug)>...
 
 roms
 ====
 
 * XML file instead of .ini file with saving of all debuggers parameters (bkpts, window sizes, ...)
-
 
 -------------
 + done

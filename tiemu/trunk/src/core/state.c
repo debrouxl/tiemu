@@ -36,7 +36,7 @@
 #include "ti68k_int.h"
 #include "ti68k_err.h"
 
-#define SAV_REVISION	1
+#define SAV_REVISION	2
 
 static int load_bkpt(FILE *f, GList **l)
 {

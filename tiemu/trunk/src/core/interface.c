@@ -175,6 +175,7 @@ int ti68k_linkport_reconfigure(void)
 const int ti_rom_sizes[] = { 1*MB, 2*MB, 2*MB, 4*MB, 4*MB };	// 92, 89, 92+, V200, TI89 Titanium
 const int ti_ram_sizes[] = { 256*KB, 256*KB, 256*KB, 256*KB, 256*KB }; // should be 128
 const int ti_io_sizes[] = { 32, 32, 32, 32, 64 };
+const int ti_io2_sizes[] = { 32, 32, 32, 32, 128*KB };
 const int ti_rom_base[] = { 0, 0x200000, 0x400000, 0x200000, 0x800000 };
 
 static int log_b2(int i)
@@ -217,4 +218,15 @@ int ti68k_get_io_size(int calc_type)
     }
 
     return ti_io_sizes[log_b2(calc_type)];
+}
+
+int ti68k_get_io2_size(int calc_type)
+{
+	if(calc_type > CALC_MAX)
+    {
+        DISPLAY("Bad argument !\n");
+        exit(0);
+    }
+
+    return ti_io2_sizes[log_b2(calc_type)];
 }

@@ -67,6 +67,8 @@ void set_cycle_rate(int);
 
 void io_put_byte(uint32_t addr, uint8_t arg)
 {
+	addr &= tihw.io_size-1;
+
     switch(addr) 
     {
         case 0x00:	// rw <76...2..>
@@ -159,20 +161,18 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         break;
         case 0x0f: 	// rw <76543210>
 			// write a byte to the transmit buffer (1 byte buffer)
-			printf("putting... ");
 			io_bit_clr(0x0d, 0);	// STX=0 (tx reg is full)
             hw_dbus_putbyte(arg);
-			printf("%02X\n", arg);
             break;
         case 0x10: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8 (msb)
-			//if(tihw.hw_type == HW1)
+			if(tihw.hw_type == HW1)
 				tihw.lcd_adr = ((arg << 8) | tihw.io[0x11]) << 3;
-			printf("$600010: lcd_adr = %04x\n", tihw.lcd_adr);
+			//printf("$600010: lcd_adr = %04x\n", tihw.lcd_adr);
         break;
         case 0x11: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8 (lsb)
-			//if(tihw.hw_type == HW1)
+			if(tihw.hw_type == HW1)
 				tihw.lcd_adr = ((tihw.io[0x10] << 8) | arg) << 3;
         break;
         case 0x12:	// -w <76543210>
@@ -273,7 +273,10 @@ void io_put_long(uint32_t addr, uint32_t arg)
 
 uint8_t io_get_byte(uint32_t addr) 
 {
-    int v = tihw.io[addr];
+    int v;
+	
+	addr &= tihw.io_size-1;
+	v = tihw.io[addr];
 
     switch(addr) 
     {
@@ -323,10 +326,8 @@ uint8_t io_get_byte(uint32_t addr)
             break;
         case 0x0f: 	// rw <76543210>
 			// read one byte from receive (incoming) buffer
-			printf("getting... ");
             v = hw_dbus_getbyte();
 			io_bit_clr(0x0d, 5);	// SRX=0 (rx reg is empty)
-			printf("%02X\n", v);
         case 0x10: 	// -w <76543210> (hw1)
         break;
         case 0x11: 	// -w <76543210> (hw1) 
@@ -384,6 +385,8 @@ uint32_t io_get_long(uint32_t addr)
 
 void io2_put_byte(uint32_t addr, uint8_t arg)
 {
+	addr &= tihw.io2_size-1;
+
     switch(addr) 
     {
         case 0x00:	// rw <76543210>
@@ -435,8 +438,8 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 			break;
 		case 0x17:	// rw <......10>
 			// Display memory snoop range
-			//tihw.lcd_adr = 0x4c00 + 0x1000*(arg&3);
-			//printf("$700017: lcd_adr = %04x (%04x at @%06x)\n", tihw.lcd_adr, curriword(), m68k_getpc());
+			tihw.lcd_adr = 0x4c00 + 0x1000*(arg&3);
+			//printf("$700017: lcd_adr = %04x\n", tihw.lcd_adr);
 		break;
 		case 0x1d:	// rw <7...3210>
 			// %1: Screen enable (clear this bit to shut down LCD)
@@ -468,7 +471,10 @@ void io2_put_long(uint32_t addr, uint32_t arg)
 
 uint8_t io2_get_byte(uint32_t addr) 
 {
-    int v = tihw.io2[addr];
+    int v;
+	
+	addr &= tihw.io2_size-1;
+	v = tihw.io2[addr];
 
     switch(addr) 
     {
