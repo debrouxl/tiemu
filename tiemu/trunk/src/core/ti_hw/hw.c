@@ -163,11 +163,10 @@ void hw_update(void)
     // Increment timer
     if(io_bit_tst(0x15,3))
     {
-		if (tihw.timer_value) 
-			tihw.timer_value++; 
-		else 
+		if (tihw.timer_value == 0x00) 
 			tihw.timer_value = tihw.io[0x17];
-
+		else 
+			tihw.timer_value++;
 		timer++;
     }
 
@@ -240,11 +239,15 @@ void hw_update(void)
 	// The default rate is OSC2/(K*2^9), where K=79 for HW1 and K=53 for HW2
     if(tihw.timer_value == 0)
     {
-        tihw.timer_value = tihw.io[0x17] - 1;
 		if(!io_bit_tst(0x15,7))	
 			if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
+			{
 				hw_m68k_irq(5);
+			}
+			
     }
+
+	printf("%02x ", tihw.timer_value);
 
 	// Auto-int 6: triggered when [ON] is pressed.
 	// see keyboard.c

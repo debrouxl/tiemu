@@ -15,6 +15,7 @@ To do:
 	- [roms]  $941: fixed ghost of RAM in $100000 on TI89,92,92+,V200.
 	- [roms]  $943: fixed ghost of RAM in $000000 on Tinanium
 	//- [roms]  $946: fixed AI2 (keyboard) behaviour
+	- [roms]  $949: fixed timer incrementing/reloading (PPhd: loop freeze)
 
 - 25/02/2005, version 1.80o: roms
 	- fixed bug in ti68k_get_hw_param_block (wrong search/replace)
