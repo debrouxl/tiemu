@@ -35,20 +35,22 @@ extern int halt(void);
 */
 void gui_popup_menu(void)
 {
-	guint32 time;
 	GtkWidget *menu;
+	guint button;
+	guint32 time;
 
 	// don't have time event due to SDL
 	time = gtk_get_current_event_time();
+	
+	// don't have button event due to SDL
+	button = 0;
 
 	// halt emulation engine
 	halt();
 
 	// display popup menu
 	menu = GTK_MENU(display_popup_menu());
-	gtk_menu_popup(menu,
-		 NULL, NULL, NULL, NULL,
-		 GDK_3BUTTON_PRESS, time);
+	gtk_menu_popup(menu, NULL, NULL, NULL, NULL, button, time);
 
 	gtk_widget_show(menu);
 }
