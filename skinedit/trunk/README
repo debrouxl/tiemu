@@ -12,7 +12,7 @@ It can read/modify/write VTi-formatted skins and TiEmu-formatted skins.
 FEATURES
 --------
 
-- creating skins from scratch by loading a JPEG image
+- creating skins from scratch by loading an image (JPEG, PNG, ...)
 - modifying an existing skin
 - exporting the skin to various formats (VTi old & new format, TiEmu)
 
@@ -36,7 +36,7 @@ COPYRIGHT
 ---------
 
 SkinEdit is Copyright (C) 2002-2003 by Julien Blache <jb@jblache.org>.
-Modifications (c) 2004-2005 by Romain Liévin <gtktiemu-users@lists.sf.net>.
+Modifications (C) 2004-2005 by Romain Liévin <gtktiemu-users@lists.sf.net>.
 
 
 Copying is allowed under the terms of GNU General Public License.  
@@ -44,4 +44,4 @@ See the file COPYING for more details.
 
 
 ----------------------------------------------------------------------
-Please report any bugs, questions at <tilp-users@lists.sf.net>.
+Please report any bugs, questions at <gtktiemu-users@lists.sf.net>.
