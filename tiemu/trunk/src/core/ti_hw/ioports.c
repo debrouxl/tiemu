@@ -60,6 +60,7 @@ int hw_io_exit(void)
 //#define bit_get(i,b)	((b) &  (1 << i))
 #define bit_set(i,b)	((b) |  (1 << i))
 #define bit_clr(i,b)	((b) & ~(1 << i))
+#define bit_chg(i,b,s)	{if(s) bit_set(i,b); else bit_clr(i, b);}
 
 void io_put_byte(CPTR adr, UBYTE arg)
 {
@@ -166,6 +167,8 @@ void io_put_byte(CPTR adr, UBYTE arg)
 			// bits <5> of contrast (hw2)
 			if(tihw.hw_type == 2)
 				tihw.contrast = bit_clr(5, tihw.contrast) | (bit_tst(4, arg) << 1);
+			else
+				tihw.lcd_power = bit_tst(4, arg);
 
 			// bits <.4321.> of contrast
             tihw.contrast = (tihw.contrast & 1) | ((arg & 15) << 1);
@@ -194,14 +197,16 @@ void io_put_long(CPTR adr, ULONG arg)
 
 UBYTE io_get_byte(CPTR adr) 
 {
-    int v;
+    int v = tihw.io[adr];
 
     switch(adr) 
     {
         case 0x00:	// rw <76...2..>
-            v=((tihw.contrast&1)<<5);	//|(tihw.io0Bit7<<7)|(tihw.io0Bit2<<2);
-            //tihw.io0Bit2=1;
-            return v|0x4;
+			// bits <....0> of contrast
+            v = ((tihw.contrast & 1) << 5);
+
+			// something to do with keyboard
+            v |= 4;
         case 0x01:	// rw <.....2.0>
 			// interleave RAM (allows use of 256K of RAM)
 			// protected memory violation triggered when memory below [$000120] is written
@@ -321,6 +326,7 @@ void io2_put_byte(CPTR adr, UBYTE arg)
 		case 0x17:	// rw <......10>
 			break;
 		case 0x1d:	// rw <7...3210>
+				tihw.lcd_power = bit_tst(1, arg);
 			break;
 		case 0x1f:	// rw <.....210>
 			break;

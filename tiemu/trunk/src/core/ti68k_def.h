@@ -101,6 +101,7 @@ typedef struct
     int     contrast;
     int     lcd_addr;
     char	*lcd_ptr;
+	int		lcd_power;
 
     // linkport.c
     TicableLinkParam lc;
