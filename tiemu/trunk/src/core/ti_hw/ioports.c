@@ -55,8 +55,8 @@ int hw_io_init(void)
 	tihw.io[0x0e] = 0xff;
 	tihw.io[0x0f] = 0x00;
 
-	tihw.io[0x12] = 0x31;
-	tihw.io[0x13] = 0x80;
+	tihw.io[0x12] = (tihw.calc_type != TI89) ? 0x31 : 0x36;
+	tihw.io[0x13] = (tihw.calc_type != TI89) ? 0x80 : 0x9c;
 	tihw.io[0x15] = 0x1b;
 
 	tihw.io[0x18] = 0x03;
@@ -169,10 +169,12 @@ void io_put_byte(CPTR adr, UBYTE arg)
 				tihw.lcd_ptr = &tihw.ram[((tihw.io[0x10] << 8) | tihw.io[0x11]) << 3];
         break;
         case 0x12:	// -w <76543210>
-			// LCD logical width =(64-n)*2 bytes =(64-n)*16 pixels
+			// LCD logical width = (64-n)*2 bytes = (64-n)*16 pixels <=> n = 64-w/16
+			tihw.log_w = (64 - arg) * 16;
         break;
         case 0x13:	// -w <..543210>
-			// LCD logical height =(256-n)
+			// LCD logical height = (256-n) <=> n = 256-h
+			tihw.log_h = 0x100 - arg;
         break;
         case 0x14:
         break;
@@ -240,7 +242,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
 				if(io2_bit_tst(0x1f,0))
 					tihw.contrast = bit_clr(tihw.contrast,5) | (bit_get(arg,4) << 1);
 				else
-					tihw.lcd_power = bit_get(arg,4);
+					cb_screen_on_off(!bit_get(arg,4));
             }
         break;
         case 0x1e:

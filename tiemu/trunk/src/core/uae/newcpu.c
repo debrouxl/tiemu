@@ -361,6 +361,8 @@ void Exception(int nr)
 {
 	GList *l;
 
+//printf("before: <0x%06lx>\n", m68k_getpc());
+
   MakeSR();
   if (!regs.s) 
     {
@@ -377,6 +379,8 @@ void Exception(int nr)
   m68k_setpc(get_long(regs.vbr + 4*nr));
   regs.t = 0;
   specialflags &= ~(SPCFLAG_TRACE | SPCFLAG_DOTRACE);
+
+//printf("after: <0x%06lx>\n", m68k_getpc());
 
   // added for capturing the exception and next launch a debugger
   if (l = bkpts.exception) 
@@ -395,42 +399,6 @@ void Exception(int nr)
 	        l = l->next;
 	    }
     }
-  
-  /*
-  if(bkpts.n_vectors || bkpts.n_autoints || bkpts.n_traps) 
-    {
-      bkpts.id = 0;
-
-      if(nr < 16)
-	{
-	  if(bkpts.vectors[nr])
-	    {
-		  bkpts.type = BK_CAUSE_VECTOR;
-	      bkpts.id = nr;
-	      specialflags |= SPCFLAG_BRK;
-	      
-	    }
-	}
-      else if( (nr>=24) && (nr<32) )
-	{
-	  if(bkpts.autoints[nr-24])
-	    {
-		  bkpts.type = BK_CAUSE_AUTOINT;
-	      bkpts.id = nr-24;
-	      specialflags |= SPCFLAG_BRK;	      
-	    }
-	}
-      else if( (nr>=32) && (nr<48) )
-	{
-	  if(bkpts.traps[nr-32])
-	    {
-		  bkpts.type = BK_CAUSE_TRAP;
-	      bkpts.id = nr-32; // number of trap (0..15)
-	      specialflags |= SPCFLAG_BRK;	      
-	    }
-	}
-    }
-    */
 }
 
 int uscycle = 0;
@@ -601,7 +569,7 @@ void op_illg(ULONG opcode)
       return;
     }
   
-  fprintf(stderr, "UAE: illegal instruction: %04x at %08x (intel = %08x) %08x\n", opcode, regs.pc,
+  fprintf(stderr, "UAE: illegal instruction: %04x at $%06x (intel = 0x%08x) %08x\n", opcode, regs.pc,
 	  get_real_address(regs.pc), m68k_getpc());
   Exception(4);
 }

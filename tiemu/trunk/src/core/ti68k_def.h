@@ -110,9 +110,9 @@ typedef struct
     int     on_key;
 
     // lcd.c
-    int     lcd_off;
     int     contrast;
-	int		lcd_power;
+	int		log_w;		// LCD logical width
+	int		log_h;		// LCD logical height
 
     // linkport.c
 	//...

@@ -928,8 +928,10 @@ int hid_update_lcd(void)
 		// Copy surface into window
 		src_rect.x = 0; 
 		src_rect.y = 0; 
-		src_rect.w = iLcdW; 
-		src_rect.h = iLcdH;
+		//src_rect.w = iLcdW; 
+		//src_rect.h = iLcdH;
+		src_rect.w = (tihw.log_w << iScale) > iLcdW ? iLcdW : (tihw.log_w << iScale);
+		src_rect.h = (tihw.log_h << iScale) > iLcdH ? iLcdH : (tihw.log_h << iScale);
 
 		if(params.background) 
 		{
