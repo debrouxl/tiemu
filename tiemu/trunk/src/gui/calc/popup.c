@@ -240,6 +240,7 @@ on_sync1_activate                      (GtkMenuItem     *menuitem,
 }
 
 
+//note: #colors = #planes+1
 GLADE_CB void
 on_2_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
@@ -253,7 +254,7 @@ GLADE_CB void
 on_4_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    params.grayplanes = 4;
+    params.grayplanes = 3;
     ti68k_engine_release();
 }
 
@@ -262,7 +263,7 @@ GLADE_CB void
 on_7_colors1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    params.grayplanes = 7;
+    params.grayplanes = 6;
     ti68k_engine_release();
 }
 
@@ -271,7 +272,15 @@ GLADE_CB void
 on_8_colors1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    params.grayplanes = 8;
+    params.grayplanes = 7;
+    ti68k_engine_release();
+}
+
+GLADE_CB void
+on_b_colors1_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    params.grayplanes = 14;
     ti68k_engine_release();
 }
 
@@ -462,29 +471,35 @@ GtkWidget* display_popup_menu(void)
 
     // init radio buttons
     switch(params.grayplanes) {
-    case 2:
+    case 1:
         data = glade_xml_get_widget(xml, "2_colors1");
         g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_2_colors1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
         g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_2_colors1_activate, NULL);
         break;
-    case 4:
+    case 3:
         data = glade_xml_get_widget(xml, "4_colors1");
         g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_4_colors1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
         g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_4_colors1_activate, NULL);
         break;
-    case 7:
+    case 6:
         data = glade_xml_get_widget(xml, "7_colors1");
         g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_7_colors1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
         g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_7_colors1_activate, NULL);
         break;
-    case 11:
+    case 7:
         data = glade_xml_get_widget(xml, "8_colors1");
         g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_8_colors1_activate, NULL);
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
         g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_8_colors1_activate, NULL);
+        break;
+	case 14:
+        data = glade_xml_get_widget(xml, "b_colors1");
+        g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_b_colors1_activate, NULL);
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
+        g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_b_colors1_activate, NULL);
         break;
     }
 

@@ -139,6 +139,20 @@ void compute_grayscale(void)
 	  		b -= ((sb-eb) / (max_plane+1));
 		}
     }
+
+	// 2: 00, ff
+	// 4: 00, 55, aa, ff
+	/*
+	for(i = 0; i < max_plane; i++)
+	{
+		grayscales[i].r = grayscales[i].g = grayscales[i].b = (i*255)/(max_plane - 1);
+		printf("%i: %i %02x\n", i, (i*255)/(max_plane-1), (i*255)/(max_plane-1));
+	}
+	*/
+	/*
+	grayscales[0].r = grayscales[0].g = grayscales[0].b = 0xff;
+	grayscales[1].r = grayscales[1].g = grayscales[1].b = 0x00;
+	*/
 }
 
 /* Redraw the skin into window but don't reload skin file */
@@ -228,7 +242,7 @@ int hid_update_lcd(void)
 	if(!lcd_state)
 		return 0;
 
-	// Convert the bitmap screen to a bytemap screen */
+	// Convert the bitmap screen to a bytemap screen and grayscales
 	if(!max_plane || !cur_plane) 
     { 
 		// no gray scale or init gray plane
@@ -254,7 +268,7 @@ int hid_update_lcd(void)
 		}
     }
 
-    if(cur_plane++ >= max_plane) 
+    if(++cur_plane >= max_plane) 
 	{
 		// Copy LCD from buffer to pixbuf
 		for(j = 0; j < LCDMEM_H; j++) 

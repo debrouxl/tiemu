@@ -265,6 +265,18 @@
 		      <signal name="activate" handler="on_8_colors1_activate" last_modification_time="Fri, 14 May 2004 15:26:48 GMT"/>
 		    </widget>
 		  </child>
+		  
+		  <child>
+		    <widget class="GtkRadioMenuItem" id="b_colors1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">blurry</property>
+		      <property name="use_underline">True</property>
+		      <property name="active">False</property>
+		      <property name="group">2_colors1</property>
+		      <signal name="activate" handler="on_b_colors1_activate" last_modification_time="Fri, 14 May 2004 15:26:48 GMT"/>
+		    </widget>
+		  </child>
+		  
 		</widget>
 	      </child>
 	    </widget>
