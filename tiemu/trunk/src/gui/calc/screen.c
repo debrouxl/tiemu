@@ -251,7 +251,7 @@ int hid_update_lcd(void)
         dst.h = src.h;
 
         gdk_draw_pixbuf(pixmap, wnd->style->fg_gc[GTK_WIDGET_STATE(wnd)],
-		  lcd, src.x, src.y, dst.x, dst.y, -1, -1,
+		  lcd, src.x, src.y, dst.x, dst.y, src.w, src.h,
 		  GDK_RGB_DITHER_NONE, 0, 0);
 
 		gtk_widget_draw(area, (GdkRectangle *)&dst);

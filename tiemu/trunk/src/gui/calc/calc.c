@@ -78,7 +78,7 @@ GLADE_CB void
 on_calc_wnd_destroy                    (GtkObject       *object,
                                         gpointer         user_data)
 {
-    gtk_main_quit();
+    //gtk_main_quit();
 }
 
 GLADE_CB gboolean
@@ -217,8 +217,6 @@ int  hid_init(void)
 {
     SKIN_INFOS *si = &skin_infos;
 
-	//display_main_wnd();
-
     // Found a skin
 	match_skin(tihw.calc_type);
 
@@ -276,8 +274,7 @@ int  hid_init(void)
 	pi.pixels = gdk_pixbuf_get_pixels (lcd);
 
 	// Create main window
-	if(wnd == NULL)
-		display_main_wnd();
+	display_main_wnd();
 
     // Allocate the backing pixmap
     pixmap = gdk_pixmap_new(wnd->window, si->width, si->height, -1);
@@ -325,13 +322,14 @@ int  hid_exit(void)
         lcd = NULL;
     }
 
-   if(pixmap != NULL)
+    if(pixmap != NULL)
     {
         g_object_unref(pixmap);
         pixmap = NULL;
     }
 
-   //gtk_widget_destroy(wnd);
+    // Destroy window
+    gtk_widget_destroy(wnd);
 
     return 0;
 }
