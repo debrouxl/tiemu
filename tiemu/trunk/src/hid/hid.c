@@ -42,7 +42,6 @@
 #define DEFAULT_BPP   8
 #define DEFAULT_FLAGS (SDL_HWPALETTE | SDL_HWSURFACE | SDL_RESIZABLE) 
 
-int gui_popup = 0;
 
 /*****************************************/
 /* Various variables and short functions */
@@ -88,6 +87,8 @@ int iGrayPlanes = -1;         // number of grayscales to emulate
 int iCurrPlane = 0;           // ?
 int iScrState = 0;            // screen state
 
+int popup_menu = 0;	      // popup menu state
+
 const char* key_mapping = NULL; // key mapping
 extern const char sknKey92[];   // in tikeys.c
 extern const char sknKey89[];
@@ -102,8 +103,6 @@ static int pos_to_key(int x, int y);
 #define SCREEN_ON  (!0)
 #define SCREEN_OFF 0
 
-/* External GUI dependant function, called for showing popup menu */
-void gui_popup_menu(void);
 
 /* Note */
 /* TI89: RGB = 49:46:34 & 204:204:207 */
@@ -283,9 +282,19 @@ int hid_exit(void)
 }
 
 
-/***********************/
-/* Keyboard management */
-/***********************/
+/***********************************/
+/* Events management (kbd & mouse) */
+/***********************************/
+
+int hid_popup_menu(void)
+{
+	if(popup_menu) {
+		popup_menu = 0;
+		return (!0);
+	}
+
+	return 0;
+}
 
 /* Converts a keyboard key (an SDL event) into a TI key */
 static int sdl_to_ti(int key) 
@@ -540,9 +549,9 @@ static int hid_update_keys(void)
 	    {
 	      if(!bFullscreen) 
 		{
-		  SDL_WaitEvent(&event); // flush event
-		  gui_popup = !0;
-		  //gui_popup_menu();
+		      //SDL_WaitEvent(&event); // flush event
+			//gui_popup_menu();
+		      popup_menu = !0;
 		}
 	      else
 		hid_switch_windowed();

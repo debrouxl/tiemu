@@ -2,7 +2,6 @@
 /* $Id$ */
 
 /*  TiEmu - a TI emulator
- *  loader.c: loader for TiEmu skins
  *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
  *  Copyright (c) 2003-2004, Romain Liévin
@@ -26,17 +25,7 @@
 #include <config.h>
 #endif
 
-#ifdef __WIN32__
-#include "C:\SDL-1.2.7\include\SDL.h"
-#include "C:\SDL-1.2.7\include\SDL_thread.h"
-#else
-# include <SDL/SDL.h>
-# include "SDL_thread.h"
-#endif
-
 #include <gtk/gtk.h>
-#include <sys/timeb.h>
-#include <sys/types.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -51,94 +40,13 @@
 #include "interface.h"
 
 #include "hid.h"
+#include "core.h"
 #include "refresh.h"
-#include "main.h"
 #include "printl.h"
 
 #include "wizard_dbox.h"
 #include "popup_cb.h"
 
-/* 
-   The TI92/89 should approximately execute NB_INSTRUCTIONS_PER_LOOP in 
-   TIME_LIMIT milliseconds
-   If you think this values are a bit too big, you can slow down 
-   the emulator by changing them 
-*/
-#define NB_INSTRUCTIONS_PER_LOOP 50000 //50000
-#define TIME_LIMIT               30 // 30
-
-#define THREADED
-//#define LOOPED
-
-gpointer my_thread(gpointer data)
-{
-    struct timeb tCurrentTime;
-	struct timeb tLastTime;
-	unsigned long int iCurrentTime;
-	unsigned long int iLastTime; 
-    gint res = 0;
-
-    while (1) 
-	{
-		// Update GUI only if emulator core is halted
-		if(is_halted()) {
-			continue;
-		}
-      
-		// Run emulator core
-		ftime(&tLastTime);
-		if((res = ti68k_doInstructions(NB_INSTRUCTIONS_PER_LOOP))) {  
-			// a bkpt has been encountered
-		} else { 
-			// normal execution
-			ftime(&tCurrentTime);
-			iLastTime    = tLastTime.time*1000+tLastTime.millitm;
-			iCurrentTime = tCurrentTime.time*1000+tCurrentTime.millitm;
-			if ((iCurrentTime - iLastTime) < TIME_LIMIT) {
-#if defined(__LINUX__)
-				usleep((TIME_LIMIT - iCurrentTime + iLastTime)*1000);
-#elif defined(__WIN32__)
-				Sleep((TIME_LIMIT - iCurrentTime + iLastTime));
-#endif
-			}
-		}
-	}
-}
-
-int my_loop(gpointer data)
-{
-	    struct timeb tCurrentTime;
-	struct timeb tLastTime;
-	unsigned long int iCurrentTime;
-	unsigned long int iLastTime; 
-    gint res = 0;
-
-		// Update GUI only if emulator core is halted
-		if(is_halted())
-            return;
-      
-		// Run emulator core
-		ftime(&tLastTime);
-		if((res = ti68k_doInstructions(NB_INSTRUCTIONS_PER_LOOP))) {  
-			// a bkpt has been encountered
-		} else { 
-			// normal execution
-			ftime(&tCurrentTime);
-			iLastTime    = tLastTime.time*1000+tLastTime.millitm;
-			iCurrentTime = tCurrentTime.time*1000+tCurrentTime.millitm;
-			if ((iCurrentTime - iLastTime) < TIME_LIMIT) {
-#if defined(__LINUX__)
-				usleep((TIME_LIMIT - iCurrentTime + iLastTime)*1000);
-#elif defined(__WIN32__)
-				Sleep((TIME_LIMIT - iCurrentTime + iLastTime));
-#endif
-			}
-		}
-}
-
-/******************/
-
-extern int gui_popup;
 
 extern int wizard_ok;
 extern gchar *wizard_rom;
@@ -146,20 +54,17 @@ extern gchar *wizard_rom;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
+
 #ifdef __WIN32__
 #undef main			// undef main with SDL/Win32
 #endif
 
+
 /* Main function */		
 int main(int argc, char **argv) 
 {
-	struct timeb tCurrentTime;
-	struct timeb tLastTime;
-	unsigned long int iCurrentTime;
-	unsigned long int iLastTime; 
-	gint res=0;
-	GThread *thread;
-	GError *error;
+	GThread *thread = NULL;
+	GError *error = NULL;
 
 	/*
 		Do primary initializations 
@@ -206,14 +111,14 @@ int main(int argc, char **argv)
 	ticalc_init();
 
 	/* 
-		Assign an GUI to the ti68k engine 
+		Assign an GUI to the emulation engine 
 		adn a debugger
 	*/
 	hid_set_gui_callbacks();
 	ti68k_defineDebugger(enter_gtk_debugger);
 
 	/* 
-		Init GTK+ (popup menu, boxes, ...)
+		Init GTK+ (popup menu, boxes, ...) and threads
 	*/
 	g_thread_init(NULL);
 	gtk_init(&argc, &argv);
@@ -250,15 +155,16 @@ int main(int argc, char **argv)
 	}
 
 	/* 
-		Init ti68k engine
+		Initialize emulation engine
 	*/
 	if(ti68k_init()) {
 		tiemu_error(0, "failed to init the ti68k engine.\n");
 		return -1;
 	}
 
-	if(options.params->tib_file != NULL)
+	if(options.params->tib_file != NULL) {
 		ti68k_loadUpgrade((options.params)->tib_file);
+	}
 
 	/* 
 		Override refresh functions of the libticalcs library 
@@ -282,53 +188,26 @@ int main(int argc, char **argv)
 	//if(options.console == DSP_OFF)
 		//close_console();
 
-	/* Run main loop */
-#if !defined(THREADED) && !defined(LOOPED)
-	while (1) 
-	{
-		// Update GUI only if emulator core is halted
-		if(is_halted()) {
-			gtk_main_iteration_do(FALSE);
-			continue;
-		}
-      
-		// Run emulator core
-		ftime(&tLastTime);
-		if((res = ti68k_doInstructions(NB_INSTRUCTIONS_PER_LOOP))) {  
-			// a bkpt has been encountered
-		} else { 
-			// normal execution
-			ftime(&tCurrentTime);
-			iLastTime    = tLastTime.time*1000+tLastTime.millitm;
-			iCurrentTime = tCurrentTime.time*1000+tCurrentTime.millitm;
-			if ((iCurrentTime - iLastTime) < TIME_LIMIT) {
-#if defined(__LINUX__)
-				usleep((TIME_LIMIT - iCurrentTime + iLastTime)*1000);
-#elif defined(__WIN32__)
-				Sleep((TIME_LIMIT - iCurrentTime + iLastTime));
-#endif
-			}
-		}
-	}
-#elif defined(THREADED) && !defined(LOOPED)
-	thread = g_thread_create(my_thread, NULL, FALSE, &error);
-
+	/* 
+		Start thread (emulation engine) and run main loop 
+	*/
+	thread = g_thread_create(ti68k_engine, NULL, FALSE, &error);
+	ti68k_unhalt();
+	
 	gdk_threads_enter();
-	//gtk_main();
 	while(1) {
-		if(gui_popup) {
+		// we will remove polling by event later
+		if(hid_popup_menu()) {
 			gui_popup_menu();
-			gui_popup = 0;
 		}
-			gtk_main_iteration();
+		gtk_main_iteration();
 	}
 	gdk_threads_leave();
-#else
-	gtk_idle_add(my_loop, NULL);
-	gtk_main();
-#endif
+	//gtk_main();
 
-	/* Close the emulator library */
+	/* 
+		Close the emulator engine
+	*/
 	ti68k_exit();
   
 	return 0;
@@ -357,29 +236,3 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	return main(__argc, __argv);
 }
 #endif
-
-
-
-/*
-  These functions should be removed
-*/
-
-static int engine_halted = 0; // emulation engine is halted
-
-int is_halted() 
-{
-  return engine_halted;
-}
-
-void halt(void) 
-{
-  engine_halted = !0;
-}
-
-void unhalt(void) 
-{
-  engine_halted = 0;
-  while( gtk_events_pending() ) { 
-    gtk_main_iteration(); 
-  }
-}

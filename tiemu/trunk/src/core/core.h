@@ -1,11 +1,10 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: main.c 151 2004-05-12 11:19:18Z roms $ */
 
-/*  TiEmu - an TI emulator
- *
- *  Originally written by Jonas Minsberg
- *  Copyright (C) 2000, Thomas Corvazier, Romain Lievin
- *  Copyright (C) 2001-2004, Romain Lievin
+/*  TiEmu - a TI emulator
+ *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
+ *  Copyright (c) 2003-2004, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,36 +21,17 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __SPECIFIC_H__
-#define __SPECIFIC_H__
+#ifndef __TI68K_CORE__
+#define __TI68K_CORE__
 
+gpointer ti68k_engine(gpointer data);
 
-/**********************/
-/* Exported functions */
-/**********************/
+int ti68k_is_halted() ;
+void ti68k_halt(void);
+void ti68k_unhalt(void);
 
-int  hid_init(void);
-int  hid_exit(void);
-
-void hid_switch_with_skin(void);
-void hid_switch_without_skin(void);
-void hid_change_skin(const char *filename);
-
-void hid_switch_fullscreen(void);
-void hid_switch_windowed(void);
-
-void hid_switch_normal_view(void);
-void hid_switch_large_view(void);
-
-int  hid_set_gui_callbacks(void);
-
-int  hid_screenshot(char *filename);
-
-int hid_popup_menu(void);
+#define is_halted	ti68k_is_halted
+#define halt		ti68k_halt
+#define unhalt		ti68k_unhalt
 
 #endif
-
-
-
-
-

@@ -51,6 +51,4 @@ void gui_popup_menu(void)
 		 GDK_3BUTTON_PRESS, time);
 
 	gtk_widget_show(menu);
-	//gtk_signal_emit_by_name(menu, "configure-event");
-	// expose-event, map, show
 }
