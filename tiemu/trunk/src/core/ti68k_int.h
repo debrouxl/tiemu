@@ -27,14 +27,6 @@
 
 #include "ti68k_def.h"
 #include "tilibs.h"
-
-#include "bkpts.h"
-#include "callbacks.h"
-#include "engine.h"
-#include "images.h"
-#include "registers.h"
-#include "state.h"
-#include "type2str.h"
  
 /*************/
 /* Functions */
@@ -64,5 +56,14 @@ int ti68k_linkport_reconfigure(void);
 
 // Keyboard
 void ti68k_kbd_set_key(int key, int active);
+
+// Others
+#include "bkpts.h"
+#include "callbacks.h"
+#include "engine.h"
+#include "images.h"
+#include "registers.h"
+#include "state.h"
+#include "type2str.h"
 
 #endif

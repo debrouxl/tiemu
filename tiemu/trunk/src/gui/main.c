@@ -43,7 +43,7 @@
 #include "hid.h"
 #include "engine.h"
 #include "refresh.h"
-#include "printl.h"
+#include "../hid/printl.h"
 
 #include "wizard.h"
 #include "popup.h"
@@ -53,15 +53,6 @@ ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 
-//#ifdef __WIN32__
-//#undef main			// undef main with SDL/Win32
-//#endif
-
-extern gpointer ti68k_engine(gpointer data);
-
-extern int ticables_printl(int level, const char *format, ...);
-extern int ticalcs_printl(int level, const char *format, ...);
-extern int tifiles_printl(int level, const char *format, ...);
 
 /* Main function */		
 int main(int argc, char **argv) 
@@ -210,7 +201,7 @@ int main(int argc, char **argv)
 	*/
     splash_screen_set_label(_("Starting engine..."));
 	thread = g_thread_create(ti68k_engine, NULL, FALSE, &error);
-	ti68k_unhalt();
+	ti68k_engine_unhalt();
     splash_screen_stop();
 
 	gdk_threads_enter();

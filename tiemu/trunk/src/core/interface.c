@@ -30,33 +30,14 @@
 # include <config.h>
 #endif
 
-#include <stdlib.h>
-#include <assert.h>
 #include <stdio.h>
-#include <ctype.h>
-
-#include <sys/types.h>
-#include <sys/stat.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "uae.h"
-#include "ti68k_int.h"
-
-#include "packets.h"
-#include "debugger.h"
 #include "hardware.h"
-#include "keyboard.h"
-#include "callbacks.h"
+#include "ti68k_int.h"
 #include "ti68k_err.h"
-#include "images.h"
-#include "tilibs.h"
-#include "./ti_hw/memory.h"
-#include "bkpts.h"
-#include "lcd.h"
-#include "linkport.h"
-#include "ioports.h"
-#include "m68k.h"
-#include "ti68k_def.h"
 
 
 /**********************/
@@ -64,9 +45,9 @@
 /**********************/
 
 
-Ti68kParameters params = { 0 };
-TicableLinkParam link_cable = { 0 };
-Ti68kHardware tihw = { 0 };
+Ti68kParameters     params = { 0 };
+TicableLinkParam    link_cable = { 0 };
+Ti68kHardware       tihw = { 0 };
 
 
 /***********************************/
