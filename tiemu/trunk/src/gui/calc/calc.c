@@ -420,6 +420,7 @@ int  hid_screenshot(char *filename)
 	if((options2.size == IMG_LCD) && (options2.type == IMG_BW)) 
 	{
 		// get pixbuf from buffer	
+        return 0;
 	} 
 	else if((options2.size == IMG_LCD) && (options2.type == IMG_COL)) 
 	{
@@ -430,10 +431,8 @@ int  hid_screenshot(char *filename)
 	{
 		// get pixbuf from backing pixmap
 		pixbuf = gdk_pixbuf_get_from_drawable(
-					NULL, 
-					wnd->window,
-					wnd->style->fg_gc[GTK_WIDGET_STATE (wnd)],
-					0, 0, skin_infos.width, skin_infos.height, 0, 0);
+					NULL, wnd->window, NULL,
+					0, 0, 0, 0, skin_infos.width, skin_infos.height);
 	}
 
 	//result = gdk_pixbuf_save(pixbuf, outfile, type, &error, "quality", "100", NULL);
@@ -443,6 +442,7 @@ int  hid_screenshot(char *filename)
 		DISPLAY("Failed to save pixbuf file: %s: %s\n", outfile, error->message);
 		g_error_free(error);
 	}
+    g_object_unref(pixbuf);
 
 	DISPLAY("Done !\n");
 	options2.counter++;

@@ -220,6 +220,7 @@ int skin_read_image(const char *filename, SKIN_INFOS* si)
     {
       fprintf(stderr, "Failed to load pixbuf file: %s: %s\n", tmpname, error->message);
       g_error_free(error);
+      unlink(tmpname);
       return -1;
     }
 
@@ -261,7 +262,8 @@ int skin_read_image(const char *filename, SKIN_INFOS* si)
       	si->keys_pos[i].right = (long)(long)(si->keys_pos[i].right / s);
       	si->keys_pos[i].bottom = (long)(long)(si->keys_pos[i].bottom / s);
     }
-    	
+
+    unlink(tmpname);	
    	return 0;
 }
 

@@ -40,6 +40,7 @@
 #include "screenshot.h"
 #include "romversion.h"
 #include "fs_misc.h"
+#include "calc.h"
 
 const char* key_mapping;
 static int alpha = 0;
@@ -369,9 +370,9 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
     if(event->hardware_keycode == 0x0014)
         event->keyval = GDK_Caps_Lock;
 
-    if(event->keyval == GDK_Print)
+    if(event->hardware_keycode == 0x0013)
 	{
-        //hid_screenshot(NULL);
+        hid_screenshot(NULL);
         return TRUE;
     } 
     else if(event->keyval == GDK_F10)
