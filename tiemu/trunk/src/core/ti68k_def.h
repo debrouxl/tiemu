@@ -128,7 +128,7 @@ typedef struct
 	int		on_off;
 
     // linkport.c
-	int		lc_speedy;		// speedy mode for direct file
+	int		lc_speedy;		// not used any longer (free of use)
 
     // memory.c
     uchar	*rom;
@@ -143,7 +143,7 @@ typedef struct
     // timer.c
     uint8_t     timer_value;
     uint8_t     timer_init;
-    int         heartbeat;	// not used any longer
+    int         heartbeat;	// not used any longer (free of use)
 
 	uint8_t		rtc_value;
 

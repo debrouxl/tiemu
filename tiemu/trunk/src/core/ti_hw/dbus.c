@@ -327,6 +327,7 @@ static int ilp_put(uint8_t data)
 
 	io_bit_set(0x0d,5);	// SRX=1 (rx reg is full)
 	io_bit_set(0x0d,2);	// link activity
+	hw_m68k_irq(4);		// this turbo-boost transfer !
 
 	toSTART(clk);
   	while(f2t_flag) 
@@ -355,6 +356,7 @@ static int ilp_get(uint8_t *data)
   	t2f_flag = 0;
 
 	io_bit_set(0x0d,6);	// STX=1 (tx reg is empty)
+	hw_m68k_irq(4);		// this turbo-boost transfer !
 
 	tdr->count++;
 
@@ -432,9 +434,7 @@ static int exit_linkfile(void)
 static int test_sendfile(void)
 {
     map_dbus_to_file();
-    tihw.lc_speedy = 1;
     itc.send_var("C:\\str.9xs", 0, NULL);
-    tihw.lc_speedy = 0;
     map_dbus_to_cable();
 
     return 0;
@@ -444,6 +444,8 @@ int send_ti_file(const char *filename)
 {
     gint ok = 0;
 	int ret;
+	clock_t start, finish;
+	double duration;
 
     // Check for TI file
     if(!tifiles_is_a_ti_file(filename))
@@ -463,50 +465,44 @@ int send_ti_file(const char *filename)
 
 	// Use direct file loading
     map_dbus_to_file();
+	start = clock();
 
     // FLASH APP file ?
     if(tifiles_is_a_flash_file(filename) && !strcasecmp(tifiles_flash_app_file_ext(), tifiles_get_extension(filename)))
     {
         
-        tihw.lc_speedy = 1;
         ret = itc.send_flash(filename, MODE_APPS);
-        tihw.lc_speedy = 0;
     }
 
     // FLASH OS file ?
     if(tifiles_is_a_flash_file(filename) && !strcasecmp(tifiles_flash_os_file_ext(), tifiles_get_extension(filename)))
     {
-        tihw.lc_speedy = 1;
         ret = itc.send_flash(filename, MODE_AMS);
-        tihw.lc_speedy = 0;
     }
   
     // Backup file ?
     else if(tifiles_is_a_backup_file(filename))
     {
-        tihw.lc_speedy = 1;
         ret = itc.send_backup(filename, MODE_NORMAL);
-        tihw.lc_speedy = 0;
     }
 
     // Group file ?
     else if(tifiles_is_a_group_file(filename))
     {
-        tihw.lc_speedy = 1;
         ret = itc.send_var(filename, MODE_NORMAL, NULL);
-        tihw.lc_speedy = 0;
     }
 
     // Single file
     else if(tifiles_is_a_single_file(filename))
     {
-        tihw.lc_speedy = 1;
         ret = itc.send_var(filename, MODE_NORMAL, NULL);
-        tihw.lc_speedy = 0;
     }
 
 	// Restore link cable use
 	map_dbus_to_cable();
+	finish = clock();
+	duration = (double)(finish - start) / CLOCKS_PER_SEC;
+	printf("Duration: %2.1f seconds.\n", duration);
 
 	// Transfer aborted ? Set hw link error
 	if(ret != 0)

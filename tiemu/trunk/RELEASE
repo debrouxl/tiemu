@@ -3,7 +3,7 @@
 
 
 Previous version: 1.80i		(03/01/2005)
-Current version:  1.80j		(15/01/2005)
+Current version:  1.80k		(20/01/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -28,7 +28,8 @@ New capabilities:
 Improvements:
 -------------
 
-	- none
+	- linkport (D-Bus)
+	- boosted linkport speed (direct file)
 		
 
 Bug fixes:
@@ -39,6 +40,8 @@ Bug fixes:
 	- implemented 'increment rate' of $600017 port
 	- fixed AI3: it was never raised because counter was never incremented
 	- port $700014 (Real Time Clock) is incremented every 8192 seconds
+	- linkport has been fixed and improved (EA bit on AMS >= 2.08)
+	- progress bars for linkport fixed
 
 
 To do:

@@ -170,9 +170,6 @@ int hw_m68k_run(int n)
             bkpts.pclog_buf[bkpts.pclog_ptr++ % bkpts.pclog_size] = m68k_getpc();
         }
 
-		//if((int)m68k_getpc() == 0x3f7e0) printf(".");
-		//if((int)m68k_getpc() == 0x2a2568) printf(".");
-
 		// search for next opcode and execute it
 		opcode = nextiword();
 		(*cpufunctbl[opcode])(opcode);
