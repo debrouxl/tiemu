@@ -43,6 +43,8 @@
 GtkWidget *wnd = NULL;
 GtkWidget *area = NULL;
 
+gint w, h;
+
 extern GdkPixbuf*	lcd;
 extern GdkPixbuf*	skn;
 extern GdkPixmap*	pixmap;
@@ -117,6 +119,28 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
 	return FALSE;
 }
 
+void redraw_skin(void);
+static void resize(void)
+{
+	// Get window size depending on windowed/fullscreen
+	if(params.background)
+	{
+		w = skin_infos.width;
+		h = skin_infos.height;
+	}
+	else
+	{
+		w = tihw.lcd_w;
+		h = tihw.lcd_h;
+	}
+		
+	gtk_drawing_area_size(GTK_DRAWING_AREA(area), w, h);
+	gtk_window_resize(GTK_WINDOW(wnd), w, h);
+
+	if(params.background)
+		redraw_skin();
+}
+
 GLADE_CB void
 on_calc_wnd_size_request           (GtkWidget       *widget,
                                     GtkRequisition  *requisition,
@@ -129,12 +153,13 @@ on_calc_wnd_size_request           (GtkWidget       *widget,
 	gtk_window_get_size(GTK_WINDOW(widget), &w, &h);
 	if(w < si->width || h < si->height)
 		return;
-	printf("size request: %i x %i\n", w, h);
 
 	sc.w = w;
 	sc.h = (int)(sc.w / sc.r);
 	sc.s = (float)sc.w / si->width;
-	printf("scaling: %i %i %1.2f %1.2f\n", sc.w, sc.h, sc.r, sc.s);
+	printf("size request: scaling w/ %ix%i %1.2f %1.2f\n", sc.w, sc.h, sc.r, sc.s);
+
+	resize();
 }
 
 static int match_skin(int calc_type)
@@ -225,7 +250,6 @@ static gint hid_refresh (gpointer data)
 
 void compute_convtable(void);
 void compute_grayscale(void);
-void redraw_skin(void);
 
 int  hid_init(void)
 {
@@ -300,17 +324,10 @@ int  hid_init(void)
 	    g_free(s);
 	    return -1;
     }
-
-    // Get window size depending on windowed/fullscreen
-  	if(params.background)
-        gtk_drawing_area_size(GTK_DRAWING_AREA(area), si->width, si->height);
-    else
-        gtk_drawing_area_size(GTK_DRAWING_AREA(area), tihw.lcd_w, tihw.lcd_h);
-	//gtk_signal_emit_stop_by_name(GTK_OBJECT(wnd), "size_request");
     
     // Draw the skin and compute grayscale palette
   	compute_grayscale();
-  	redraw_skin();
+  	resize();
 
     // Install LCD refresh: 100 FPS (10 ms)
     tid = g_timeout_add((params.lcd_rate == -1) ? 10 : params.lcd_rate, 
@@ -355,8 +372,7 @@ int  hid_exit(void)
 int hid_switch_with_skin(void)
 {
     params.background = 1;
-    gtk_drawing_area_size(GTK_DRAWING_AREA(area), skin_infos.width, skin_infos.height);
-	redraw_skin();
+	resize();
 
     return 0;
 }
@@ -364,8 +380,7 @@ int hid_switch_with_skin(void)
 int hid_switch_without_skin(void)
 {
     params.background = 0;
-    gtk_drawing_area_size(GTK_DRAWING_AREA(area), tihw.lcd_w, tihw.lcd_h);
-	gtk_window_resize(GTK_WINDOW(wnd), tihw.lcd_w, tihw.lcd_h);
+	resize();
 
     return 0;
 }
