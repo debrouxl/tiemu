@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: interface.c 234 2004-05-21 15:49:39Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -93,16 +93,6 @@ int ti68k_is_a_img_file(const char *filename)
 		return !0;
 
 	return 0;
-}
-
-static uint16_t rd_word(uint8_t *p)
-{
-	return (p[0] << 8) | p[1];
-}
-
-static uint32_t rd_long(uint8_t *p)
-{
-	return (p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
 }
 
 /*

@@ -187,4 +187,7 @@ extern Ti68kHardware 	tihw;
 extern TicableLinkParam link_cable;
 extern Ti68kBreakpoints	bkpts;
 
+uint16_t rd_word(uint8_t *p);
+uint32_t rd_long(uint8_t *p);
+
 #endif

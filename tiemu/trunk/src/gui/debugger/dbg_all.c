@@ -82,6 +82,11 @@ int gtk_debugger_enter(int context)
 
     dbg_on = !0;
 
+	{
+		uint16_t size;
+		heap_get_size(&size);
+	}
+
 	return 0;
 }
 

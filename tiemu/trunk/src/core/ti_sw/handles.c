@@ -29,4 +29,61 @@
 #include <stdio.h>
 
 #include "handles.h"
+#include "ti68k_def.h"
 
+/*
+	Retrieve address of heap (pointed by $5D42).
+*/
+void heap_get_base_address(uint32_t *base)
+{
+	uint32_t ptr;
+
+	switch(tihw.calc_type)
+	{
+	case TI92:
+		ptr = 0x5D42;
+		*base = rd_long(&tihw.ram[ptr]);
+		printf("heap_get_base_address: $%06x\n", *base);
+		break;
+	default:
+		*base = 0;
+		break;
+	}
+}
+
+/*
+	Retrieve size of the heap (how many handles are allocated at the time when
+	this function is called).
+*/
+void heap_get_size(uint16_t *size)
+{
+	uint32_t base, addr;
+	int i;
+
+	heap_get_base_address(&base);
+	*size = 0;
+
+	for(i = 0; ; i++)
+	{
+		addr = rd_long(&tihw.ram[base + 4*i]);
+		//printf("%i: $%06x\n", i, addr);
+		if(addr == 0)
+			break;
+	}
+
+	*size = --i;
+	//printf("heap_get_size: %i\n", *size);
+}
+
+/*
+	Given an handle, retrieve block size and block address
+*/
+void heap_get_block_size(uint8_t handle, uint32_t *addr, uint16_t *size)
+{
+	uint32_t base;
+
+	heap_get_base_address(&base);
+
+	*addr = rd_long(&tihw.ram[base + 4*handle]);
+	*size = rd_word(&tihw.ram[*addr - 2]);
+}
