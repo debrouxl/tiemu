@@ -22,8 +22,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __PRINTL_H__
-#define __PRINTL_H__
+#ifndef __TIEMU_PRINTL_H__
+#define __TIEMU_PRINTL_H__
 
 #define	PRINT_STD	0
 #define PRINT_WRN	1
@@ -35,5 +35,12 @@ typedef int (*TIEMU_PRINTL) (int level, const char *format, ...);
 /* Callback */
 extern TIEMU_PRINTL printl;
 
+/* Functions */
+int ticables_printl(int level, const char *format, ...);
+int tifiles_printl(int level, const char *format, ...);
+int ticalcs_printl(int level, const char *format, ...);
+int tiemu_printl(int level, const char *format, ...);
+
+int close_console(void);
 
 #endif

@@ -56,12 +56,12 @@
 
 #ifdef __WIN32__
 static BOOL alloc_console_called = FALSE;
-HANDLE hConsole = (HANDLE)-1;
+static HANDLE hConsole = (HANDLE)-1;
 #endif
 
 static FILE *flog = NULL;
 
-int printl_muxer(const char *domain, int level, const char *format, va_list ap)
+static int printl_muxer(const char *domain, int level, const char *format, va_list ap)
 {
 	static int print_domain = !0;
 #ifdef __WIN32__
@@ -145,12 +145,10 @@ skip_console:
 	return 0;
 }
 
-int printl_flush(void)
-{
-	fflush(flog);
-	//Flush console...
 
-	return 0;
+int close_console(void)
+{
+	FreeConsole(hConsole);
 }
 
 /**************** printl callbacks ********************/

@@ -25,19 +25,15 @@
 #ifndef __RCFILE_H__
 #define __RCFILE_H__
 
+int rcfile_get_path(char **path);
+int rcfile_get_version(char *version);
 
-int check_access(void);
+int rcfile_exist(void);
+int rcfile_delete(void);
 
-void read_rc_file(void);
-
-void write_rc_file(void);
-
-int is_rcfile_exist(void);
-
-
-int load_default_config(void);
-
-int init_options(void);
+void rcfile_read(void);
+void rcfile_write(void);
+int rcfile_default(void);
 
 #endif
 

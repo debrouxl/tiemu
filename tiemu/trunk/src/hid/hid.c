@@ -31,7 +31,7 @@
 
 /* Program dependencies */
 #include "support.h"
-#include "ticalc.h"
+#include "hid.h"
 #include "skin.h"
 #include "struct.h"
 #include "tilibs.h"

@@ -44,7 +44,7 @@
 #include "version.h"
 #include "paths.h"
 #include "files.h"
-#include "ticalc.h"
+#include "hid.h"
 #include "interface.h"
 #include "screenshot.h"
 
@@ -761,7 +761,7 @@ void rcfile_write(void)
 /*
   Initialize the options structure with some default values
 */
-int load_default_config()
+int rcfile_default()
 {
 	// share structures fields
 	options.params = &params;
@@ -786,7 +786,11 @@ int load_default_config()
 	options.img_format = IMG_PNG;
 	options.img_size = IMG_SKIN;	//IMG_LCD;
 
-	options.console=0;
+#if defined(__WIN32__) && defined(_CONSOLE)
+	options.console = !0;
+#else
+	options.console = 0;
+#endif
 
 	return 0;
 }

@@ -117,7 +117,6 @@ on_popup_menu_configure_event          (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data)
 {
-  DISPLAY("configure\n");
 //  unhalt();
   return FALSE;
 }

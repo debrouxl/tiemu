@@ -3,7 +3,7 @@
 
 /*  TiEmu - a TI emulator
  *  loader.c: loader for TiEmu skins
- *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+ *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
  *  Copyright (c) 2003-2004, Romain Liévin
  *
