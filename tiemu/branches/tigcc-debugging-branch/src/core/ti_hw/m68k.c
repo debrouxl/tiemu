@@ -125,7 +125,7 @@ unsigned int hw_m68k_get_cycle_count(int reset)
 }
 
 /*
-  Do 'n' instructions. 
+  Do 'n' instructions (up to 'maxcycles', unless set to 0). 
   Returned value:
   - 1 if breakpoint has been encountered,
   - 2 if trace,

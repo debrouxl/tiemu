@@ -304,7 +304,14 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 	}
 	else if(type == BK_TYPE_PGMENTRY)
 	{
-		str = g_strdup("Program entry\n");
+		uint16_t handle;
+		uint32_t pc;
+
+		ti68k_register_get_pc(&pc);		
+		ti68k_bkpt_get_pgmentry(id, &handle);
+
+		str = g_strdup_printf("type=<%s>, id=#%i, handle=$%04x, PC=$0x%06x", 
+			ti68k_bkpt_type_to_string(type), id, handle, pc);
 	}
 	else if(type == BK_TYPE_GDBTRAP)
 	{

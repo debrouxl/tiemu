@@ -10,6 +10,11 @@ To do:
 	- [roms]  $1030: fixed MSVC compilation and support for new UAE
 		Note: there is a post-build lock with gencpu. To fix...
 	- [roms]  $1032: added instruction cycle count support
+	- [kevin] $1037: restrict to actual speed based on cycle count, not instruction count.
+	- [roms]  $1038: fixed Win32 multiple file selector
+	- [roms]  $1048: fixed calibration loop (updated on each engine restart)
+	- [roms]  $1051: added pgm_entry bkpt support in dbg_cause.c (merged from Kevin's branch)
+		need to remove 1 pgm entry bkpt limitation
 
 - 19/03/2005, version 1.80q:
 	- [roms] $985: updated copyright notice.

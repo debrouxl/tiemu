@@ -375,7 +375,7 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
 {
 #ifdef WIN32
 	OPENFILENAME o;
-	char lpstrFile[65536] = "\0";
+	char lpstrFile[1024] = "\0";
 	char lpstrFilter[256];
 	char *p;
 	gchar **sarray;
@@ -385,8 +385,9 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
 	memset (&o, 0, sizeof(OPENFILENAME));
 
 	// set default filename
+	printf("<%s>\n", filename);
 	if(filename)
-		strcpy(lpstrFile, filename);
+		strncpy(lpstrFile, filename, sizeof(lpstrFile));
 
 	// format filter
 	sarray = g_strsplit(ext, "|", -1);
@@ -429,7 +430,16 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
 			filenames[i-1] = g_strconcat(lpstrFile, G_DIR_SEPARATOR_S, p, NULL);
 		}
 	}
-	filenames[i-1] = NULL;
+
+	// one file selected ?
+	if(i == 1)
+	{
+		filenames = g_malloc(2 * sizeof(gchar *));
+		filenames[0] = g_strdup(lpstrFile);
+		filenames[1] = NULL;
+	}
+	else
+		filenames[i-1] = NULL;
 
 	return filenames;
 #endif

@@ -109,8 +109,8 @@ typedef uae_u32 uaecptr;
 #define UVAL64(a) (a)
 #elif ULONG_MAX > 0xFFFFFFFF
 #if ULONG_MAX == 0xFFFFFFFFFFFFFFFF
-#define uae_s64 long;
-#define uae_u64 unsigned long;
+#define uae_s64 long
+#define uae_u64 unsigned long
 #define VAL64(a) (a ## l)
 #define UVAL64(a) (a ## ul)
 #endif

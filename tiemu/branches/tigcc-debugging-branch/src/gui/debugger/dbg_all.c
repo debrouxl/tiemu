@@ -53,7 +53,7 @@ void gtk_debugger_preload(void)
 	//create_dbgbkpts_window();
 	//create_dbgpclog_window();
     //create_dbgstack_window();
-	//create_dbgheap_window();
+	//dbgheap_create_window();
 }
 
 int gtk_debugger_enter(int context)
