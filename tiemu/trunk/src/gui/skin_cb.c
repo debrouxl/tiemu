@@ -25,6 +25,7 @@ static gint valid = 0;
 
 gint display_skinlist_dbox(void)
 {
+#if 0
   GtkWidget *dbox;
   GtkWidget *clist;
   GtkListStore *list;
@@ -39,7 +40,7 @@ gint display_skinlist_dbox(void)
 	GError *error;
 	G_CONST_RETURN gchar *dirent;
 
-  skinInfos si;
+  SKIN_INFOS si;
   int i;
   gchar *text[5] = { _("Filename"), _("Version"),
 		     _("Skin name"), _("Author name"),
@@ -126,7 +127,7 @@ gint display_skinlist_dbox(void)
 
   g_signal_connect(G_OBJECT(sel), "changed",
                    G_CALLBACK(on_skin_clist_selection_changed), NULL);
-
+#endif
   return 0;
 }
 

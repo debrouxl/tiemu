@@ -135,7 +135,8 @@ static int hid_init_subsystem(void)
       g_free(options.skin_file);
       options.skin_file = g_strconcat(inst_paths.skin_dir,
 				      "ti92.skn", NULL);
-      skin_load(options.skin_file);
+      if(skin_load(options.skin_file) == -1)
+	      exit(-1);
       
       key_mapping = sknKey92;
     }
@@ -153,14 +154,14 @@ static int hid_init_subsystem(void)
     }
   
   // Init B&W pixel values)
-  whitePixel = skin.lcd_white;
-  blackPixel = skin.lcd_black;
+  whitePixel = skin_infos.lcd_white;
+  blackPixel = skin_infos.lcd_black;
 
   // Get window size depending on windowed/fullscreen
   if(params.background) 
     {
-      iWinH = skin.height << iScale;
-      iWinW = skin.width << iScale;
+      iWinH = skin_infos.height << iScale;
+      iWinW = skin_infos.width << iScale;
     }
   else 
     {
@@ -588,8 +589,8 @@ static int hid_update_keys(void)
 	}
       else if(event.type==SDL_VIDEORESIZE)
 	{
-	  iScale = MAX(event.resize.w / skin.width, 
-		       event.resize.h / skin.height);
+	  iScale = MAX(event.resize.w / skin_infos.width, 
+		       event.resize.h / skin_infos.height);
 	  iScale--;
 	  if(iScale > 1) 
 	    iScale = 1;
@@ -614,7 +615,7 @@ static int hid_update_keys(void)
 static int pos_to_key(int x, int y) 
 {
   int i;
-  RECT *rcRectKeys = skin.keys_pos;
+  RECT *rcRectKeys = skin_infos.keys_pos;
   
   for(i = 0; i<80 ;i++)
     {
@@ -793,8 +794,8 @@ static int hid_update_lcd(void)
       src_rect.w = iLcdW; 
       src_rect.h = iLcdH;
       if(params.background) {
-	dst_rect.x = skin.lcd_pos.left << iScale; 
-	dst_rect.y = skin.lcd_pos.top << iScale;
+	dst_rect.x = skin_infos.lcd_pos.left << iScale; 
+	dst_rect.y = skin_infos.lcd_pos.top << iScale;
       }
       else {
 	dst_rect.x = 0;
@@ -830,34 +831,34 @@ static void redraw_skin(void)
     return;
   
   // Load the skin colormap
-  for(i=0; i<skin.ncolors; i++)
+  for(i=0; i<skin_infos.ncolors; i++)
     {
-      sdlPal[i+NGS].r = skin.cmap[0][i];
-      sdlPal[i+NGS].g = skin.cmap[1][i];
-      sdlPal[i+NGS].b = skin.cmap[2][i];
+      sdlPal[i+NGS].r = skin_infos.cmap[0][i];
+      sdlPal[i+NGS].g = skin_infos.cmap[1][i];
+      sdlPal[i+NGS].b = skin_infos.cmap[2][i];
     }
 
   // and allocate colors
-  SDL_SetColors(sdlWindow, &(sdlPal[NGS]), NGS, skin.ncolors);
+  SDL_SetColors(sdlWindow, &(sdlPal[NGS]), NGS, skin_infos.ncolors);
 
   // Fill the surface with the skin image
   sdlSkin = SDL_CreateRGBSurface(SDL_HWSURFACE, iWinW, iWinH, DEFAULT_BPP, 
 				   255, 255, 255, 255);
-  SDL_SetColors(sdlSkin, &(sdlPal[NGS]), NGS, skin.ncolors);
+  SDL_SetColors(sdlSkin, &(sdlPal[NGS]), NGS, skin_infos.ncolors);
  
   ptr = (Uint8 *)sdlSkin->pixels;
-  for (j=0;j<skin.height;j++)
+  for (j=0;j<skin_infos.height;j++)
     {
-      for (i=0;i<skin.width;i++) 
+      for (i=0;i<skin_infos.width;i++) 
 	{
-	  r = skin.cmap[0][skin.img[j*skin.width+i]];
-	  g = skin.cmap[1][skin.img[j*skin.width+i]];
-	  b = skin.cmap[2][skin.img[j*skin.width+i]];
+	  r = skin_infos.cmap[0][skin_infos.img[j*skin_infos.width+i]];
+	  g = skin_infos.cmap[1][skin_infos.img[j*skin_infos.width+i]];
+	  b = skin_infos.cmap[2][skin_infos.img[j*skin_infos.width+i]];
 	  ptr[(j*iWinLineSize + i) << iScale] = 
-	    NGS + skin.img[j*skin.width+i];
+	    NGS + skin_infos.img[j*skin_infos.width+i];
 	  if(iScale != 0) {
 	    ptr[((j*iWinLineSize + i) << iScale) + 1] = 
-	      NGS + skin.img[j*skin.width+i];
+	      NGS + skin_infos.img[j*skin_infos.width+i];
 	    memcpy(ptr + (j*iWinLineSize << iScale) + iWinLineSize, 
 		   ptr + (j*iWinLineSize << iScale), iWinLineSize);
 	  }
@@ -965,7 +966,7 @@ void hid_change_skin(const char *filename)
   hid_quit_subsystem();
   hid_init_subsystem();
   
-  //if((skin.type == TI92) && (ti68k_getCalcType() & TI92))
+  //if((skin_infos.type == TI92) && (ti68k_getCalcType() & TI92))
   {
     if (!skin_load(filename))
       return;
@@ -1143,11 +1144,11 @@ int do_screenshot(int format, int type, int size, char *filename)
       Uint8 *ptr;
       img.height = iWinH;
       img.width  = iWinW;
-      img.depth = NGS + skin.ncolors;
+      img.depth = NGS + skin_infos.ncolors;
       img.encoding = IMG_COL_TYPE;
 
       alloc_colormap(&img);
-      for(k=0; k<NGS+skin.ncolors; k++)
+      for(k=0; k<NGS+skin_infos.ncolors; k++)
 	{
 	  (img.colormap)[3*k+0] = sdlPal[k].r;
 	  (img.colormap)[3*k+1] = sdlPal[k].g;

@@ -58,7 +58,7 @@ static int skin_read_header(const char *filename,SKIN_INFOS* infos)
 	fp = fopen(filename, "rb");
   	if (fp == NULL)
     	{
-      		printf("Unable to open this file: <%s>\n", filename);
+      		fprintf(stderr, "Unable to open this file: <%s>\n", filename);
       		return -1;
     	}
  
@@ -163,7 +163,7 @@ static int skin_read_image(const char *filename, SKIN_INFOS* infos)
     	fp = fopen(filename, "rb");
   	if (fp == NULL)
     	{
-      		printf("Unable to open this file: <%s>\n", filename);
+      		fprintf(stderr, "Unable to open this file: <%s>\n", filename);
       		return -1;
     	}
     	
@@ -258,14 +258,14 @@ int skin_load(const char *filename)
   	fp = fopen(filename, "rb");
   	if (fp == NULL)
     	{
-      		printf("Unable to open this file: <%s>\n", filename);
+      		fprintf(stderr, "Unable to open this file: <%s>\n", filename);
       		return -1;
     	}
 
   	fread(buf, 16, 1, fp);
   	if (strncmp(buf, "TiEmu v2.00", 16))
   	{
-  		printf("Bad skin format\n");
+  		fprintf(stderr, "Bad skin format\n");
       		return -1;
   	}
 
@@ -276,7 +276,7 @@ int skin_load(const char *filename)
 
   	if (ret == 0)
     	{
-      		printf("Skin loaded (%s): %d x %d, %s\n", filename, skin_infos.width, skin_infos.height, buf);
+      		fprintf(stderr, "Skin loaded (%s): %d x %d, %s\n", filename, skin_infos.width, skin_infos.height, buf);
     	}
   
   	return ret;
