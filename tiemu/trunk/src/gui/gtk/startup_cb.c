@@ -8,6 +8,7 @@
 #include "startup_cb.h"
 #include "startup_dbox.h"
 #include "support.h"
+#include "utils.h"
 
 #include "tilibs.h"
 #include "platform.h"
@@ -19,7 +20,33 @@
 #include "ticalc.h"
 #include "main.h"
 
-gint display_startup_dbox(void)
+
+static void
+show_startup_dbox (void)
+{
+  GtkWidget *dbox;
+  GtkWidget *text;
+  gchar *file;
+
+  dbox = create_startup_dbox();
+  text = lookup_widget(dbox, "text1");
+
+#ifdef __LINUX__
+  file = g_strconcat(inst_paths.base_dir, SHARE_DIR, DIR_SEPARATOR, "ChangeLog", NULL);
+#elif defined(__WIN32__)
+  file = g_strconcat(inst_paths.base_dir, SHARE_DIR, DIR_SEPARATOR, "ChangeLog.txt", NULL);
+#endif
+
+  load_text(text, file);
+
+  g_free(file);
+
+  gtk_widget_show_all(dbox);
+}
+
+
+gint
+display_startup_dbox (void)
 {
   gchar str[MAXCHARS];
   FILE *f;
@@ -46,9 +73,9 @@ gint display_startup_dbox(void)
 	  g_free(buffer);
 	  return -1;
 	}
-      fprintf(f, "%s\n", GTKTIEMU_VERSION);
+      fprintf(f, "%s\n", TIEMU_VERSION);
       fclose(f);
-      gtk_widget_show_all(create_startup_dbox());
+      show_startup_dbox();
     }
   else
     {
@@ -61,7 +88,7 @@ gint display_startup_dbox(void)
 	}
       fgets(str, MAXCHARS, f);
       //fprintf(stderr, "<%s>\n", str);
-      if(strcmp(GTKTIEMU_VERSION, str) > 0)
+      if(strcmp(TIEMU_VERSION, str) > 0)
 	{
 	  fclose(f);
 	  f = fopen(buffer, "wt");
@@ -71,62 +98,14 @@ gint display_startup_dbox(void)
 	      g_free(buffer);
 	      return -1;
 	    }
-	  fprintf(f, "%s\n", GTKTIEMU_VERSION);	
-	  gtk_widget_show_all(create_startup_dbox());
+	  fprintf(f, "%s\n", TIEMU_VERSION);	
+	  show_startup_dbox();
 	}
       fclose(f);
     }
 
   g_free(buffer);
   return 0;
-}
-
-void
-on_startup_dbox_show                   (GtkWidget       *widget,
-                                        gpointer         user_data)
-{
-#if 0 /* FUCKED */
-  FILE *fd;
-  gchar buffer[MAXCHARS];
-  GdkFont *fixed_font;
-  GtkWidget *text;
-
-  text = GTK_WIDGET(user_data);
-  gtk_text_freeze(GTK_TEXT (text));
-  gtk_editable_delete_text(GTK_EDITABLE(text), 0, -1);
-
-  /* Create the base filename */
-  strcpy(buffer, inst_paths.base_dir);  // retrieve base path
-  strcat(buffer, SHARE_DIR);          // 
-  strcat(buffer, DIR_SEPARATOR);
-#if defined(__LINUX__)
-  strcat(buffer, "ChangeLog");
-#elif defined(__WIN32__)
-  strcat(buffer, "ChangeLog.txt");
-#endif
-  
-  /* Try to access the file */
-  if(access(buffer, F_OK) == 0 )
-    {
-#if defined(__LINUX__)
-      fixed_font = gdk_font_load ("-misc-clean-medium-r-*-*-*-140-*-*-*-*-*-*");
-#elif defined(__WIN32__)
-	  fixed_font = gdk_font_load ("-adobe-courier-medium-r-normal--12-120-75-75-p-70-iso8859-1");
-#endif
-      if( (fd=fopen (buffer, "r")) != NULL)
-	{
-	  memset (buffer, 0, sizeof(buffer));
-	  while(fread (buffer, 1, sizeof(buffer)-1, fd))
-	    {
-	      process_buffer(buffer);
-	      gtk_text_insert (GTK_TEXT (text), fixed_font, NULL, NULL, buffer, strlen (buffer));
-	      memset (buffer, 0, sizeof(buffer));
-	    }
-	  fclose (fd);
-	}
-    }
-  gtk_text_thaw(GTK_TEXT (text));
-#endif /* 0 */
 }
 
 

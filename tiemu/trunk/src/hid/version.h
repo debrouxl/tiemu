@@ -26,9 +26,9 @@
 /* Some definitions */
 
 #if defined(__WIN32__)
-# define GTKTIEMU_VERSION "Version 1.60" // For Win32
+# define TIEMU_VERSION "Version 1.60" // For Win32
 #else
-# define GTKTIEMU_VERSION VERSION
+# define TIEMU_VERSION VERSION
 #endif
 #define LIB_CABLE_VERSION_REQUIRED "3.0.0"
 #define LIB_CALC_VERSION_REQUIRED "3.0.0"

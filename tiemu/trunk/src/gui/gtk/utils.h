@@ -16,12 +16,18 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef GXPM_H
-#define GXPM_H
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <gtk/gtk.h>
 
-void open_xpm (char *filename, GtkWidget *parent, GdkPixmap **pixmap, GdkBitmap **mask);
+void
+open_xpm (char *filename, GtkWidget *parent,
+	  GdkPixmap **pixmap, GdkBitmap **mask);
+
+void
+load_text (GtkWidget *text,
+	   gchar *file);
 
 #endif
 

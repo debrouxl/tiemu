@@ -106,9 +106,6 @@ create_startup_dbox (void)
                               GDK_Return, 0,
                               GTK_ACCEL_VISIBLE);
 
-  g_signal_connect ((gpointer) startup_dbox, "show",
-                    G_CALLBACK (on_startup_dbox_show),
-                    NULL);
   g_signal_connect ((gpointer) button1, "clicked",
                     G_CALLBACK (startup_ok_button_clicked),
                     NULL);

@@ -84,7 +84,7 @@ GtkWidget* display_popup_menu()
   menu = create_popup_menu();
 
   user_data = gtk_object_get_data(GTK_OBJECT(menu), "popup_menu_header");
-  s = g_strdup_printf("TiEmu, version %s", GTKTIEMU_VERSION);
+  s = g_strdup_printf("TiEmu, version %s", TIEMU_VERSION);
   gtk_label_set_text(GTK_LABEL(GTK_BIN(user_data)->child), s);
   g_free(s);
 

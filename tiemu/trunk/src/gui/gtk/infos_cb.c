@@ -25,7 +25,7 @@ gint display_infos_dbox()
   dbox = create_infos_dbox();
  
   user_data = gtk_object_get_data(GTK_OBJECT(dbox), "label1");
-  sprintf(buffer, "GtkTiEmu, version %s", GTKTIEMU_VERSION);
+  sprintf(buffer, "GtkTiEmu, version %s", TIEMU_VERSION);
   gtk_label_set_text(user_data, buffer);
 
   user_data = gtk_object_get_data(GTK_OBJECT(dbox), "label5");

@@ -369,7 +369,7 @@ void write_rc_file(void)
   fprintf(txt, "\n");
 
   /* Common part with TiLP */
-  fprintf(txt, "version=%s\n", GTKTIEMU_VERSION);
+  fprintf(txt, "version=%s\n", TIEMU_VERSION);
   fprintf(txt, "\n");
   fprintf(txt, "#\n");
   fprintf(txt, "# HARDWARE SECTION\n");

@@ -2,11 +2,13 @@
 #  include <config.h>
 #endif
 
+#include <stdlib.h>
 #include <gtk/gtk.h>
 
 #include "manpage_cb.h"
 #include "manpage_dbox.h"
 #include "support.h"
+#include "utils.h"
 
 #include "platform.h"
 #include "struct.h"
@@ -16,47 +18,20 @@
 
 gint display_manpage_dbox()
 {
-#if 0 /* FUCKED */
   GtkWidget *dbox;
-  gpointer user_data;
-  FILE *fd;
-  gchar *buffer;
-  GdkFont *fixed_font;
   GtkWidget *text;
+  gchar *file;
 
   dbox = create_manpage_dbox();
   
-  user_data = gtk_object_get_data(GTK_OBJECT(dbox), "text1");
-  text = GTK_WIDGET(user_data);
-  gtk_editable_delete_text(GTK_EDITABLE(text), 0, -1);
-  
-  /* Create the base filename */
-  //fprintf(stderr, "before: <%s>\n", inst_paths.manpage_dir); 
-  buffer = g_strconcat(inst_paths.manpage_dir, "manpage.txt", NULL);
-  
-  /* Try to access the file */
-  if(access(buffer, F_OK) == 0 )
-    {
-#if defined(__LINUX__)
-      fixed_font = gdk_font_load ("-misc-clean-medium-r-*-*-*-140-*-*-*-*-*-*");
-#elif defined(__WIN32__)
-      fixed_font = gdk_font_load ("-adobe-courier-medium-r-normal--12-120-75-75-p-70-iso8859-1");
-#endif
-      if( (fd=fopen (buffer, "r")) != NULL)
-	{
-	  memset (buffer, 0, sizeof(buffer));
-	  while(fread (buffer, 1, sizeof(buffer)-1, fd))
-	    {
-	      process_buffer(buffer);
-	      gtk_text_insert (GTK_TEXT (text), fixed_font, NULL, NULL, buffer, strlen (buffer));
-	      memset (buffer, 0, sizeof(buffer));
-	    }
-	  fclose (fd);
-	}
-    }
+  text = lookup_widget(dbox, "text1");
+  file = g_strconcat(inst_paths.manpage_dir, "manpage.txt", NULL);
+
+  load_text(text, file);
+
+  g_free(file);
 
   gtk_widget_show_all(dbox);
-#endif /* 0 */
 
   return 0;
 }

@@ -35,7 +35,7 @@
 int version(void)
 {
   fprintf(stdout, "TiEmu II - Version %s, (C) Romain Lievin & Thomas Corvazier  2000-2001, Romain Lievin 2001-2002\n",
-          GTKTIEMU_VERSION);
+          TIEMU_VERSION);
   fprintf(stdout, "THIS PROGRAM COMES WITH ABSOLUTELY NO WARRANTY\n");
   fprintf(stdout, "PLEASE READ THE DOCUMENTATION FOR DETAILS\n");
 

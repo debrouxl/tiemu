@@ -16,7 +16,7 @@
 #include "ticalc.h"
 #include "paths.h"
 #include "support.h"
-#include "gxpm.h"
+#include "utils.h"
 #include "pgmentbkpt_dbox.h"
 #include "pgmentbkpt_cb.h"
 #include "trap_dbox.h"

@@ -79,7 +79,7 @@ hid_OBJ = \
 
 gui_OBJ = \
 	./gui/gtk/support.o \
-	./gui/gtk/gxpm.o \
+	./gui/gtk/utils.o \
 	./gui/gtk/tiemu_dbox.o ./gui/gtk/tiemu_cb.o \
 	./gui/gtk/link_dbox.o ./gui/gtk/link_cb.o \
 	./gui/gtk/msg_dbox.o ./gui/gtk/msg_cb.o \

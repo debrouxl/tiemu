@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <gtk/gtk.h>
 
 #include "platform.h"
@@ -57,5 +58,38 @@ void open_xpm (char *filename, GtkWidget *parent,
   g_free(s);
 }
 
+
+/* Load a text file into a TextView */
+void
+load_text (GtkWidget *text, gchar *file)
+{
+  struct stat stbuf;
+  FILE *fp;
+  int len;
+  gchar *buffer;
+  GtkTextBuffer *txtbuf;
+
+  if (access(file, F_OK) == 0)
+    {
+      if (stat(file, &stbuf) != -1)
+	{
+	  len = stbuf.st_size;
+	  len -= 2;
+	  
+	  if ((fp = fopen(file, "r")) != NULL)
+	    {
+	      buffer = (gchar *) malloc(len * sizeof(gchar));
+	      memset(buffer, 0, len);
+	      len = fread(buffer, 1, len, fp);
+	      fclose(fp);
+	      
+	      txtbuf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	      gtk_text_buffer_set_text(txtbuf, buffer, len);
+	      
+	      free(buffer);  
+	    }
+	}
+    }
+}
 
 
