@@ -78,7 +78,7 @@ int ti68k_state_load(char *filename)
   MakeFromSR();
   fread(tihw.ram,256,1024,fp);
   fread(&memprotect,4,1,fp); fread(&ram128,4,1,fp);
-  fread(&timer_value,4,1,fp); fread(&timer_init,4,1,fp);
+  fread(&tihw.timer_value,4,1,fp); fread(&tihw.timer_init,4,1,fp);
   fread(&int0Count,4,1,fp);
   fread(&io0Bit7,4,1,fp); fread(&io0Bit2,4,1,fp);
   fread(&kbmask,4,1,fp);
@@ -129,7 +129,7 @@ int ti68k_state_save(char *filename)
       fwrite(&regs,sizeof(regs),1,fp); // struct format differs !
       fwrite(tihw.ram,256,1024,fp);
       fwrite(&memprotect,4,1,fp); fwrite(&ram128,4,1,fp);
-      fwrite(&timer_value,4,1,fp); fwrite(&timer_init,4,1,fp);
+      fwrite(&tihw.timer_value,4,1,fp); fwrite(&tihw.timer_init,4,1,fp);
       fwrite(&int0Count,4,1,fp);
       fwrite(&io0Bit7,4,1,fp); fwrite(&io0Bit2,4,1,fp);
       fwrite(&kbmask,4,1,fp);

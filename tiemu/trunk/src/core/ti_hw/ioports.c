@@ -86,7 +86,7 @@ void io_put_byte(CPTR adr, UBYTE arg)
       //cb_set_screen_ptr((int)(&ti_ram[lcd_base_addr]));
       break;
     case 0x17: 
-      timer_init = arg; 
+      tihw.timer_init = arg; 
       break;
     case 0x1c:
       lcd_off=(arg&0x80)>>7;
@@ -152,7 +152,7 @@ UBYTE io_get_byte(CPTR adr)
     case 0x14: return 0x14;
     case 0x15: return 0x1b;
     case 0x16: return 0x14;
-    case 0x17: return timer_value;
+    case 0x17: return tihw.timer_value;
     case 0x18: break;
     case 0x19: break;
     case 0x1a: return 0x14|((1-read_onkey())<<1); 

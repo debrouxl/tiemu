@@ -49,25 +49,25 @@ int cycle_count = 0;
 void update_hardware()
 {
   /* Auto-int 5: timer */
-  if(timer_value++ == 0)
+  if(tihw.timer_value++ == 0)
     {
-      timer_value = timer_init;
+      tihw.timer_value = tihw.timer_init;
       specialflags |= SPCFLAG_INT;
       if(currIntLev < 5)
 	currIntLev = 5;
     }
   else
-    timer_value &= 0xff;
+    tihw.timer_value &= 0xff;
 
   /* Auto-int 1: 1/4 of timer rate */
-  if(!(timer_value&3)) 
+  if(!(tihw.timer_value&3)) 
     {
       specialflags |= SPCFLAG_INT;
       currIntLev = 1;
     }
 
   /* Auto-int 2: keyboard scan */
-  if(!(timer_value&2))
+  if(!(tihw.timer_value & 2))
     {
     }
 
@@ -83,7 +83,7 @@ void update_hardware()
     }
   
   /* LCD is refreshed every 16th time */
-  if(!(timer_value&15))
+  if(!(tihw.timer_value&15))
     {
       if(lc_internal) 
 	{

@@ -17,7 +17,7 @@
  */
 
 /*
-  ASIC timers management
+    ASIC timers management
 */
 
 #include <stdlib.h>
@@ -26,21 +26,22 @@
 #include <signal.h>
 #include <time.h>
 
-#include "uae.h"
-
-int timer_value = 0;
-int timer_init = 0xB2;
+#include "ti68k_def.h"
 
 int hw_timer_init(void)
 {
-  timer_value = 0;
-  timer_init = 0xB2;
+    tihw.timer_value = 0;
+    tihw.timer_init = 0xB2;
+
+    return 0;
 }
 
 int hw_timer_reset(void)
 {
+    return 0;
 }
 
 int hw_timer_exit(void)
 {
+    return 0;
 }
