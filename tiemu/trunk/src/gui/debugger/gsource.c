@@ -50,14 +50,12 @@ static gboolean
 gs_prepare( GSource     *source,
             gint        *timeout )
 {
-	printf("$\n");
     return debugger ? TRUE : FALSE;
 }
 
 static gboolean
 gs_check( GSource     *source )
 {
-	printf("!\n");
 	return debugger ? TRUE : FALSE;
 }
 
