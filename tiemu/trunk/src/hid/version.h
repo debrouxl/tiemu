@@ -34,7 +34,7 @@
 */
 
 #ifdef __WIN32__
-# define TIEMU_VERSION "1.71"			// For Win32
+# define TIEMU_VERSION "1.72"			// For Win32
 #else
 # define TIEMU_VERSION VERSION
 #endif

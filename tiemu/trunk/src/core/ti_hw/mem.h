@@ -33,9 +33,9 @@ typedef uint8_t  (*GETBYTE_FUNC) (uint32_t);
 typedef uint16_t (*GETWORD_FUNC) (uint32_t);
 typedef uint32_t (*GETLONG_FUNC) (uint32_t);
 
-typedef void	 (*PUTLONG_FUNC) (uint32_t, uint8_t );
+typedef void	 (*PUTBYTE_FUNC) (uint32_t, uint8_t );
 typedef void	 (*PUTWORD_FUNC) (uint32_t, uint16_t);
-typedef void	 (*PUTBYTE_FUNC) (uint32_t, uint32_t);
+typedef void	 (*PUTLONG_FUNC) (uint32_t, uint32_t);
 
 /* Functions */
 

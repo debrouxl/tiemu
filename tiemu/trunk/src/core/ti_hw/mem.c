@@ -39,6 +39,8 @@
 #include "ti68k_def.h"
 #include "ti68k_int.h"
 #include "flash.h"
+#include "mem_89.h"
+#include "mem_92.h"
 
 static IMG_INFO *img = &img_infos;
 
@@ -62,6 +64,12 @@ uint32_t mem_mask[16];		// pseudo chip-select (allow wrapping / ghost space)
 // e00000-efffff :   ...
 // d00000-ffffff : unused
 
+static GETBYTE_FUNC	get_byte_ptr;
+static GETWORD_FUNC	get_word_ptr;
+static GETLONG_FUNC	get_long_ptr;
+static PUTBYTE_FUNC	put_byte_ptr;
+static PUTWORD_FUNC	put_word_ptr;
+static PUTLONG_FUNC	put_long_ptr;
 
 /* Mem init/exit */
 
@@ -179,6 +187,26 @@ int hw_mem_init(void)
 
     tihw.initial_pc = find_pc();
 
+	// set memory specific parts mappers
+	if(tihw.calc_type == TI92)
+	{
+		get_byte_ptr = ti92_get_byte;
+		get_word_ptr = ti92_get_word;
+		get_long_ptr = ti92_get_long;
+		put_byte_ptr = ti92_put_byte;
+		put_word_ptr = ti92_put_word;
+		put_long_ptr = ti92_put_long;
+	}
+	else
+	{
+		get_byte_ptr = ti89_get_byte;
+		get_word_ptr = ti89_get_word;
+		get_long_ptr = ti89_get_long;
+		put_byte_ptr = ti89_put_byte;
+		put_word_ptr = ti89_put_word;
+		put_long_ptr = ti89_put_long;
+	}
+
     return 0;
 }
 
@@ -214,12 +242,11 @@ int hw_mem_exit(void)
     return 0;
 }
 
-GETBYTE_FUNC	*get_byte;
-GETWORD_FUNC	*get_word;
-GETLONG_FUNC	*get_long;
-PUTBYTE_FUNC	*put_byte;
-PUTWORD_FUNC	*put_word;
-PUTLONG_FUNC	*put_long;
+// Use: converts m68k address into PC-mapped address
+uint8_t* hw_get_real_address(uint32_t adr) 
+{
+    return &mem_tab[(adr>>20)&0xf][adr&mem_mask[(adr>>20)&0xf]];
+}
 
 /* Put/Get byte/word/longword */
 #define bput(adr, arg) { mem_tab[(adr)>>20][(adr) & mem_mask[(adr)>>20]] = (arg); }
@@ -229,6 +256,8 @@ PUTLONG_FUNC	*put_long;
 #define bget(adr) (mem_tab[(adr)>>20][(adr)&mem_mask[(adr)>>20]])
 #define wget(adr) ((uint16_t)(((uint16_t)bget(adr))<< 8 | bget((adr)+1)))
 #define lget(adr) ((uint32_t)(((uint32_t)wget(adr))<<16 | wget((adr)+2)))
+
+#define MAPPED
 
 uint32_t hw_get_long(uint32_t adr) 
 {
@@ -281,6 +310,9 @@ uint32_t hw_get_long(uint32_t adr)
         return 0;
     }
 
+#ifdef MAPPED
+	return get_long_ptr(adr);
+#else
     //$1C0000-$1FFFFF: "the Protection" enable/disable
     //Note: Four consecutive accesses to this range crashes a HW1 calc!
     //READ:  Enable the Protection
@@ -315,6 +347,7 @@ uint32_t hw_get_long(uint32_t adr)
 
     else
         return 0;
+#endif
 }
 
 uint16_t hw_get_word(uint32_t adr) 
@@ -368,6 +401,9 @@ uint16_t hw_get_word(uint32_t adr)
         return 0;
     }
 
+#ifdef MAPPED
+	return get_word_ptr(adr);
+#else
     //$1C0000-$1FFFFF: "the Protection" enable/disable
     //Note: Four consecutive accesses to this range crashes a HW1 calc!
     //READ:  Enable the Protection
@@ -402,6 +438,7 @@ uint16_t hw_get_word(uint32_t adr)
 
     else
         return 0;
+#endif
 }
 
 uint8_t hw_get_byte(uint32_t adr) 
@@ -449,6 +486,9 @@ uint8_t hw_get_byte(uint32_t adr)
 	    }
     }
   
+#ifdef MAPPED
+	return get_byte_ptr(adr);
+#else
     //$1C0000-$1FFFFF: "the Protection" enable/disable
     //Note: Four consecutive accesses to this range crashes a HW1 calc!
     //READ:  Enable the Protection
@@ -483,6 +523,7 @@ uint8_t hw_get_byte(uint32_t adr)
 
     else
         return 0;
+#endif
 }
 
 void hw_put_long(uint32_t adr, uint32_t arg) 
@@ -541,6 +582,9 @@ void hw_put_long(uint32_t adr, uint32_t arg)
 	if((adr < 0x120) && io_bit_tst(0x01,2))
 		hw_m68k_irq(7);
 
+#ifdef MAPPED
+	put_long_ptr(adr, arg);
+#else
     // Write accesses to the boot installer sector ($200000-$20FFFF) are
     // filtered and never reach the flash ROM.
     else if(adr >= 0x200000 && adr < 0x210000)
@@ -575,6 +619,7 @@ void hw_put_long(uint32_t adr, uint32_t arg)
     // standard access
     else
         lput(adr, arg);
+#endif
 }
 
 void hw_put_word(uint32_t adr, uint16_t arg) 
@@ -632,7 +677,9 @@ void hw_put_word(uint32_t adr, uint16_t arg)
 	// written while bit 2 of [$600001] is set
     if((adr < 0x120) && io_bit_tst(0x01,2))
 		hw_m68k_irq(7);
-
+#ifdef MAPPED
+	put_word_ptr(adr, arg);
+#else
 	else if(adr >= 0x200000 && adr < 0x210000)
         return;
 	else if(adr >= 0x1C0000 && adr < 0x200000 && tihw.hw_type == 2)
@@ -656,6 +703,7 @@ void hw_put_word(uint32_t adr, uint16_t arg)
 		io2_put_word(adr & 0x1f, arg);
 	else
 		wput(adr, arg);
+#endif
 }
 
 void hw_put_byte(uint32_t adr, uint8_t arg) 
@@ -706,7 +754,9 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 	// written while bit 2 of [$600001] is set
     if((adr < 0x120) && io_bit_tst(0x01,2))
 		hw_m68k_irq(7);
-
+#ifdef MAPPED
+	put_byte_ptr(adr, arg);
+#else
     // Write accesses to the boot installer sector ($200000-$20FFFF) are
     // filtered and never reach the flash ROM.
     else if(adr >= 0x200000 && adr < 0x210000)
@@ -738,10 +788,5 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
     // standard access
     else
         bput(adr, arg);
-}
-
-// Use: converts m68k address into PC-mapped address
-uint8_t* hw_get_real_address(uint32_t adr) 
-{
-    return &mem_tab[(adr>>20)&0xf][adr&mem_mask[(adr>>20)&0xf]];
+#endif
 }
