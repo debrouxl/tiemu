@@ -34,4 +34,6 @@ int         ti68k_string_to_hwtype(const char *str);
 const char *ti68k_bkpt_type_to_string(int type);
 const char *ti68k_bkpt_mode_to_string(int type, int mode);
 
+const char *ti68k_exception_to_string(int number);
+
 #endif

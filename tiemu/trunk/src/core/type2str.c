@@ -143,6 +143,7 @@ const char *ti68k_bkpt_mode_to_string(int type, int mode)
 		return "n/a";
 		break;
 	case BK_CAUSE_VECTOR:
+	/*
 		switch(mode)
 		{
 		case BK_BUS_ERROR:			return "bus error";
@@ -158,8 +159,10 @@ const char *ti68k_bkpt_mode_to_string(int type, int mode)
 		case BK_NONINIT_INTERRUPT:	return "non initialized interruption";
 		default:					return "unknown (bug).";
 		}
+		*/
 		break;
 	case BK_CAUSE_TRAP:
+	/*
 		switch(mode)
         {
         case BK_TRAP_0: return "Trap #0";
@@ -180,8 +183,10 @@ const char *ti68k_bkpt_mode_to_string(int type, int mode)
 		case BK_TRAP_F: return "Trap #15 (ER_throw)";
 		default: return "unkwown (bug)";
 		}
+		*/
 		break;
 	case BK_CAUSE_AUTOINT:
+	/*
 		switch(mode)
         {
         case BK_SPURIOUS:	return "Spurious interrupt";
@@ -194,9 +199,84 @@ const char *ti68k_bkpt_mode_to_string(int type, int mode)
 		case BK_AUTOINT_7:	return "Auto-int 7 (protected mem)";  
 		default: return "unkwown (bug)";
 		}
+		*/
 		break;
 	default:				
 		return "unknown (bug)";
 	break;
+	}
+}
+
+const char *ti68k_exception_to_string(int number)
+{
+	switch(number)
+	{
+		case 0: return _("Initial SSP");
+		case 1: return _("Initial PC");
+		case 2: return _("Bus error vector");
+		case 3: return _("Address error vector");
+		case 4: return _("Illegal instruction vector");
+		case 5: return _("Zero divide vector");
+		case 6: return _("CHK instruction vector");
+		case 7: return _("TRAPV instruction vector");
+		case 8: return _("Privilege violation vector");
+		case 9: return _("Trace vector");
+		case 10: return _("Line 1010 emulator vectors");
+		case 11: return _("Line 1111 emulator vectors");
+		case 12: return _("Unassigned, reserved");
+		case 13: return _("Unassigned, reserved");
+		case 14: return _("Unassigned, reserved");
+		case 15: return _("Uninitialised interrupt vector");
+		case 16: return _("Unassigned, reserved");
+		case 17: return _("Unassigned, reserved");
+		case 18: return _("Unassigned, reserved");
+		case 19: return _("Unassigned, reserved");
+		case 20: return _("Unassigned, reserved");
+		case 21: return _("Unassigned, reserved");
+		case 22: return _("Unassigned, reserved");
+		case 23: return _("Unassigned, reserved");
+		case 24: return _("Spurious interrupt vector");
+		case 25: return _("Level 1 interrupt auto-vectors");
+		case 26: return _("Level 2 interrupt auto-vectors");
+		case 27: return _("Level 3 interrupt auto-vectors");
+		case 28: return _("Level 4 interrupt auto-vectors");
+		case 29: return _("Level 5 interrupt auto-vectors");
+		case 30: return _("Level 6 interrupt auto-vectors");
+		case 31: return _("Level 7 interrupt auto-vectors");
+		case 32: return _("TRAP #0 instruction vectors");
+		case 33: return _("TRAP #1 instruction vectors");
+		case 34: return _("TRAP #2 instruction vectors");
+		case 35: return _("TRAP #3 instruction vectors");
+		case 36: return _("TRAP #4 instruction vectors");
+		case 37: return _("TRAP #5 instruction vectors");
+		case 38: return _("TRAP #6 instruction vectors");
+		case 39: return _("TRAP #7 instruction vectors");
+		case 40: return _("TRAP #8 instruction vectors");
+		case 41: return _("TRAP #8 instruction vectors");
+		case 42: return _("TRAP #8 instruction vectors");
+		case 43: return _("TRAP #8 instruction vectors");
+		case 44: return _("TRAP #8 instruction vectors");
+		case 45: return _("TRAP #8 instruction vectors");
+		case 46: return _("TRAP #8 instruction vectors");
+		case 47: return _("TRAP #15 instruction vectors");	
+		case 48: 
+		case 49: 
+		case 50: 
+		case 51: 
+		case 52: 
+		case 53: 
+		case 54: 
+		case 55: 
+		case 56: 
+		case 57: 
+		case 58: 
+		case 59: 
+		case 60: 
+		case 61: 
+		case 62: 
+		case 63: return _("Unassigned, reserved");
+		case 64: return _("User interrupt vectors");
+		
+		default: return _("User interrupt vectors");
 	}
 }

@@ -13,6 +13,7 @@
 #include "support.h"
 #include "ti68k_int.h"
 
+
 enum { 
 	    COL_NAME, COL_VALUE, 
 		COL_EDITABLE, COL_COLOR, COL_FONT
@@ -21,8 +22,6 @@ enum {
 #define CLIST_NCOLS		(5)		// 5 real columns
 
 #define FONT_NAME	"courier"
-
-//GtkWidget *ctree;
 
 static int validate_value(const char *str, int ndigits)
 {

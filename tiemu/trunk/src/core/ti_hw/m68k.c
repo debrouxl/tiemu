@@ -36,6 +36,7 @@
 
 int hw_m68k_init(void)
 {
+	ti68k_bkpt_clear_exception();
     init_m68k();
 
     return 0;

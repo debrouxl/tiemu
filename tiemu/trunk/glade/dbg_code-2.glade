@@ -33,7 +33,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Run</property>
 	      <property name="use_underline">True</property>
-	      <signal name="clicked" handler="on_button1_clicked" last_modification_time="Thu, 03 Jun 2004 15:14:38 GMT"/>
+	      <signal name="clicked" handler="dbgcode_button1_clicked" last_modification_time="Fri, 04 Jun 2004 05:59:36 GMT"/>
 	    </widget>
 	  </child>
 
@@ -42,7 +42,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Step</property>
 	      <property name="use_underline">True</property>
-	      <signal name="clicked" handler="on_button2_clicked" last_modification_time="Thu, 03 Jun 2004 14:56:54 GMT"/>
+	      <signal name="clicked" handler="dbgcode_button2_clicked" last_modification_time="Fri, 04 Jun 2004 05:59:44 GMT"/>
 	    </widget>
 	  </child>
 
@@ -51,7 +51,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Over</property>
 	      <property name="use_underline">True</property>
-	      <signal name="clicked" handler="on_button3_clicked" last_modification_time="Thu, 03 Jun 2004 15:14:52 GMT"/>
+	      <signal name="clicked" handler="dbgcode_button3_clicked" last_modification_time="Fri, 04 Jun 2004 05:59:50 GMT"/>
 	    </widget>
 	  </child>
 
@@ -60,7 +60,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Run to</property>
 	      <property name="use_underline">True</property>
-	      <signal name="clicked" handler="on_button4_clicked" last_modification_time="Thu, 03 Jun 2004 14:57:02 GMT"/>
+	      <signal name="clicked" handler="dbgcode_button4_clicked" last_modification_time="Fri, 04 Jun 2004 05:59:56 GMT"/>
 	    </widget>
 	  </child>
 
@@ -69,7 +69,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Break</property>
 	      <property name="use_underline">True</property>
-	      <signal name="clicked" handler="on_button5_clicked" last_modification_time="Thu, 03 Jun 2004 15:14:58 GMT"/>
+	      <signal name="clicked" handler="dbgcode_button5_clicked" last_modification_time="Fri, 04 Jun 2004 06:00:02 GMT"/>
 	    </widget>
 	  </child>
 
@@ -78,7 +78,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Bkpt</property>
 	      <property name="use_underline">True</property>
-	      <signal name="clicked" handler="on_button6_clicked" last_modification_time="Thu, 03 Jun 2004 15:15:02 GMT"/>
+	      <signal name="clicked" handler="dbgcode_button6_clicked" last_modification_time="Fri, 04 Jun 2004 06:00:10 GMT"/>
 	    </widget>
 	  </child>
 	</widget>

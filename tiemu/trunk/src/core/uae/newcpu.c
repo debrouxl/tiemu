@@ -360,6 +360,8 @@ void MakeFromSR(void)
 
 void Exception(int nr)
 {
+	GList *l;
+
   MakeSR();
   if (!regs.s) 
     {
@@ -378,6 +380,25 @@ void Exception(int nr)
   specialflags &= ~(SPCFLAG_TRACE | SPCFLAG_DOTRACE);
 
   // added for capturing the exception and next launch a debugger
+  if (l = bkpts.exception) 
+    {
+        bkpts.id = 0;
+        while (l) 
+	    {
+	        if ((CPTR)GPOINTER_TO_INT(l->data) == nr) 
+	        {
+				bkpts.type = BK_CAUSE_EXCEPTION;
+				bkpts.mode = 0; //BK_TRAP_4;
+	            specialflags |= SPCFLAG_BRK;	            
+	            break;
+	        }
+	        
+            bkpts.id++;
+	        l = l->next;
+	    }
+    }
+  
+  /*
   if(bkpts.n_vectors || bkpts.n_autoints || bkpts.n_traps) 
     {
       bkpts.id = 0;
@@ -411,6 +432,7 @@ void Exception(int nr)
 	    }
 	}
     }
+    */
 }
 
 int uscycle = 0;

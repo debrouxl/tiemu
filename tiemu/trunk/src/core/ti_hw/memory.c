@@ -106,9 +106,6 @@ int hw_mem_init(void)
 	ti68k_bkpt_clear_address();
 	ti68k_bkpt_clear_access();
 	ti68k_bkpt_clear_access_range();
-	ti68k_bkpt_clear_vector();
-	ti68k_bkpt_clear_autoint();
-	ti68k_bkpt_clear_trap();
 
     // allocate mem
     tihw.ram = malloc(tihw.ram_size + 4);
@@ -228,9 +225,6 @@ int hw_mem_exit(void)
 	ti68k_bkpt_clear_address();
 	ti68k_bkpt_clear_access();
 	ti68k_bkpt_clear_access_range();
-	ti68k_bkpt_clear_vector();
-	ti68k_bkpt_clear_autoint();
-	ti68k_bkpt_clear_trap();
 
     return 0;
 }

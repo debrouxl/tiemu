@@ -133,11 +133,11 @@ typedef struct
 typedef struct
 {
 	// Memory
-	GList *mem_rb;	// read byte
+	GList *mem_rb;		// read byte
 	GList *mem_rw;
 	GList *mem_rl;
 
-	GList *mem_wb;	// write byte	
+	GList *mem_wb;		// write byte	
 	GList *mem_ww;	
 	GList *mem_wl;
 
@@ -148,13 +148,16 @@ typedef struct
 	GList *code;
 
 	// Vectors, AutoInts and Traps
-	int vectors[16];
-	int autoints[8];
-	int traps[16];
+	//int vectors[16];
+	//int autoints[8];
+	//int traps[16];
 
-	int n_vectors;
-	int n_autoints;
-	int n_traps;
+	//int n_vectors;
+	//int n_autoints;
+	//int n_traps;
+	
+	// Exceptions
+	GList *exception;
 
 	// Breakpoint cause
 	int type;		// = cause

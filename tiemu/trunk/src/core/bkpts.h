@@ -57,6 +57,7 @@ typedef struct
 #define BK_WRITE_WORD 	(BK_WRITE | BK_WORD)
 #define BK_WRITE_LONG 	(BK_WRITE | BK_LONG)
 
+/*
 // Constants for ti68k_bkpt_set_vector()
 typedef enum {
     BK_NONE=-1, BK_RESET_SSP=0, BK_RESET_PC, BK_BUS_ERROR, BK_ADDRESS_ERROR,
@@ -78,11 +79,12 @@ typedef enum {
     BK_TRAP_8, BK_TRAP_9, BK_TRAP_A, BK_TRAP_B, 
     BK_TRAP_C, BK_TRAP_D, BK_TRAP_E, BK_TRAP_F,
 } Ti68kBkptTrap;
-
+*/
 // Breakpoints cause (ti68k_bkpt_get_cause())
 typedef enum {
     BK_CAUSE_ACCESS=1, BK_CAUSE_RANGE, BK_CAUSE_ADDRESS,
-    BK_CAUSE_VECTOR, BK_CAUSE_TRAP, BK_CAUSE_AUTOINT
+    BK_CAUSE_VECTOR, BK_CAUSE_TRAP, BK_CAUSE_AUTOINT,
+    BK_CAUSE_EXCEPTION
 } Ti68kBkptCause;
 
 /* Functions */
@@ -90,24 +92,19 @@ typedef enum {
 int ti68k_bkpt_set_address(int address);
 int ti68k_bkpt_set_access(int address, int mode);
 int ti68k_bkpt_set_access_range(int min, int max, int mode);
-int ti68k_bkpt_set_vector(int vector);
-int ti68k_bkpt_set_autoint(int autoint);
-int ti68k_bkpt_set_trap(int trap);
+int ti68k_bkpt_set_exception(int n);
 
 void ti68k_bkpt_del_address(int i);
 void ti68k_bkpt_del_access(int i, int mode);
 void ti68k_bkpt_del_access_range(int i, int mode);
-void ti68k_bkpt_del_vector(int i);
-void ti68k_bkpt_del_autoint(int i);
-void ti68k_bkpt_del_trap(int i);
-
-void ti68k_bkpt_get_cause(int *type, int *id, int *mode);
+void ti68k_bkpt_del_exception(int n);
 
 void ti68k_bkpt_clear_address(void);
 void ti68k_bkpt_clear_access(void);
 void ti68k_bkpt_clear_access_range(void);
-void ti68k_bkpt_clear_vector(void);
-void ti68k_bkpt_clear_autoint(void);
-void ti68k_bkpt_clear_trap(void);
+void ti68k_bkpt_clear_exception(void);
+
+void ti68k_bkpt_get_cause(int *type, int *id, int *mode);
+
 
 #endif

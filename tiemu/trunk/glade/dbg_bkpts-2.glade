@@ -33,6 +33,7 @@
 	      <property name="visible">True</property>
 	      <property name="label">gtk-add</property>
 	      <property name="use_stock">True</property>
+	      <signal name="clicked" handler="dbgbkpts_button1_clicked" last_modification_time="Fri, 04 Jun 2004 05:57:39 GMT"/>
 	    </widget>
 	  </child>
 
@@ -41,7 +42,7 @@
 	      <property name="visible">True</property>
 	      <property name="label">gtk-remove</property>
 	      <property name="use_stock">True</property>
-	      <signal name="clicked" handler="on_button2_clicked" last_modification_time="Thu, 03 Jun 2004 14:56:54 GMT"/>
+	      <signal name="clicked" handler="dbgbkpts_button2_clicked" last_modification_time="Fri, 04 Jun 2004 05:57:28 GMT"/>
 	    </widget>
 	  </child>
 
@@ -50,7 +51,7 @@
 	      <property name="visible">True</property>
 	      <property name="label">gtk-dialog-error</property>
 	      <property name="use_stock">True</property>
-	      <signal name="clicked" handler="on_button3_clicked" last_modification_time="Thu, 03 Jun 2004 15:15:19 GMT"/>
+	      <signal name="clicked" handler="dbgbkpts_button3_clicked" last_modification_time="Fri, 04 Jun 2004 05:57:46 GMT"/>
 	    </widget>
 	  </child>
 
@@ -59,7 +60,7 @@
 	      <property name="visible">True</property>
 	      <property name="label">gtk-apply</property>
 	      <property name="use_stock">True</property>
-	      <signal name="clicked" handler="on_button4_clicked" last_modification_time="Thu, 03 Jun 2004 14:57:02 GMT"/>
+	      <signal name="clicked" handler="dbgbkpts_button4_clicked" last_modification_time="Fri, 04 Jun 2004 05:57:56 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
@@ -107,7 +108,7 @@
       <property name="visible">True</property>
       <property name="label" translatable="yes">Data access</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="on_access1_activate" last_modification_time="Thu, 03 Jun 2004 14:55:04 GMT"/>
+      <signal name="activate" handler="dbgbkpts_access1_activate" last_modification_time="Fri, 04 Jun 2004 05:58:16 GMT"/>
     </widget>
   </child>
 
@@ -116,7 +117,7 @@
       <property name="visible">True</property>
       <property name="label" translatable="yes">Data range</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="on_range1_activate" last_modification_time="Thu, 03 Jun 2004 14:55:04 GMT"/>
+      <signal name="activate" handler="dbgbkpts_range1_activate" last_modification_time="Fri, 04 Jun 2004 05:58:47 GMT"/>
     </widget>
   </child>
 
@@ -125,7 +126,7 @@
       <property name="visible">True</property>
       <property name="label" translatable="yes">Trap</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="on_trap1_activate" last_modification_time="Thu, 03 Jun 2004 14:55:04 GMT"/>
+      <signal name="activate" handler="dbgbkpts_trap1_activate" last_modification_time="Fri, 04 Jun 2004 05:58:47 GMT"/>
     </widget>
   </child>
 
@@ -134,7 +135,7 @@
       <property name="visible">True</property>
       <property name="label" translatable="yes">Exception</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="on_exception1_activate" last_modification_time="Thu, 03 Jun 2004 14:55:04 GMT"/>
+      <signal name="activate" handler="dbgbkpts_exception1_activate" last_modification_time="Fri, 04 Jun 2004 05:58:47 GMT"/>
     </widget>
   </child>
 
@@ -143,7 +144,7 @@
       <property name="visible">True</property>
       <property name="label" translatable="yes">Auto-int</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="on_autoint1_activate" last_modification_time="Thu, 03 Jun 2004 14:55:04 GMT"/>
+      <signal name="activate" handler="dbgbkpts_autoint1_activate" last_modification_time="Fri, 04 Jun 2004 05:58:47 GMT"/>
     </widget>
   </child>
 </widget>

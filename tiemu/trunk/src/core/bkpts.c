@@ -62,7 +62,7 @@ int ti68k_bkpt_set_address_range(int addressMin, int addressMax, int mode)
         return g_list_length(bkpts.mem_rng_w);
     }
     
-    return ERR_68K_INVALID_MODE;
+    return -1;
 }
 
 int ti68k_bkpt_set_access(int address, int mode) 
@@ -98,31 +98,13 @@ int ti68k_bkpt_set_access(int address, int mode)
       return g_list_length(bkpts.mem_wl);
     }
     else
-        return ERR_68K_INVALID_MODE;
+        return -1;
 }
 
-int ti68k_bkpt_set_vector(int vector) 
+int ti68k_bkpt_set_exception(int number) 
 {
-    assert( (vector >= 2) && (vector < 16) );
-    bkpts.vectors[vector] = !0;
-    bkpts.n_vectors++;
-    return (bkpts.n_vectors-1);
-}
-
-int ti68k_bkpt_set_autoint(int autoint)
-{
-    assert( (autoint >= 1) && (autoint < 8) );
-    bkpts.autoints[autoint] = !0;
-    bkpts.n_autoints++;
-    return (bkpts.n_autoints-1);
-}
-
-int ti68k_bkpt_set_trap(int trap) 
-{
-    assert( (trap >= 0) && (trap < 16) );
-    bkpts.traps[trap] = !0;
-    bkpts.n_traps++;
-    return (bkpts.n_traps-1);
+    bkpts.exception = g_list_append(bkpts.exception, GINT_TO_POINTER(number));
+    return g_list_length(bkpts.exception);
 }
 
 
@@ -182,33 +164,11 @@ void ti68k_bkpt_delaccess_range(int i,int mode)
     }
 }
 
-void ti68k_bkpt_del_vector(int vector) 
+void ti68k_bkpt_del_exception(int i) 
 {
-    assert( (vector >= 2) && (vector < 16) );
-    bkpts.vectors[vector] = 0;
-    bkpts.n_vectors--;
+    bkpts.exception = g_list_delete_link(bkpts.exception, g_list_nth(bkpts.exception, i));
 }
 
-void ti68k_bkpt_del_autoint(int autoint)
-{
-    assert( (autoint >= 1) && (autoint < 8) );
-    bkpts.autoints[autoint] = 0;
-    bkpts.n_autoints--;
-}
-
-void ti68k_bkpt_del_trap(int trap) 
-{
-    assert( (trap >= 0) && (trap < 16) );
-    bkpts.traps[trap] = 0;
-    bkpts.n_traps--;
-}
-
-void ti68k_bkpt_get_cause(int *type, int *mode, int *id) 
-{
-    *type = bkpts.type;
-    *mode = bkpts.mode;
-    *id   = bkpts.id;
-}
 
 void ti68k_bkpt_clear_address(void)
 {
@@ -256,20 +216,16 @@ void ti68k_bkpt_clear_access_range(void)
 	bkpts.mem_rng_w = NULL;
 }
 
-void ti68k_bkpt_clear_vector(void)
+void ti68k_bkpt_clear_exception(void)
 {
-	memset(bkpts.vectors, 0, 16);
-	bkpts.n_vectors = 0;
+	g_list_free(bkpts.exception);
+	bkpts.exception = NULL;
 }
 
-void ti68k_bkpt_clear_autoint(void)
-{
-	memset(bkpts.traps, 0, 16);
-	bkpts.n_traps = 0;
-}
 
-void ti68k_bkpt_clear_trap(void)
+void ti68k_bkpt_get_cause(int *type, int *mode, int *id) 
 {
-	memset(bkpts.autoints, 0, 8);
-	bkpts.n_autoints = 0;
+    *type = bkpts.type;
+    *mode = bkpts.mode;
+    *id   = bkpts.id;
 }

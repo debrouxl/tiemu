@@ -99,7 +99,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton10_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton20_toggled" object="0" last_modification_time="Fri, 04 Jun 2004 08:28:14 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -118,7 +118,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton11_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton21_toggled" object="1" last_modification_time="Fri, 04 Jun 2004 08:28:21 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -137,7 +137,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton12_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton23_toggled" object="3" last_modification_time="Fri, 04 Jun 2004 08:30:18 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -156,7 +156,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton13_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton24_toggled" object="4" last_modification_time="Fri, 04 Jun 2004 08:30:25 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -175,7 +175,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton15_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton25_toggled" object="5" last_modification_time="Fri, 04 Jun 2004 08:28:40 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -194,7 +194,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton14_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton26_toggled" object="6" last_modification_time="Fri, 04 Jun 2004 08:30:32 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -590,7 +590,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton16_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton30_toggled" object="0" last_modification_time="Fri, 04 Jun 2004 08:30:40 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="left_attach">0</property>
@@ -658,7 +658,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton3_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton10_toggled" object="1" last_modification_time="Fri, 04 Jun 2004 07:57:01 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="left_attach">0</property>
@@ -680,7 +680,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton4_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton10_toggled" object="2" last_modification_time="Fri, 04 Jun 2004 07:57:12 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="left_attach">0</property>
@@ -702,7 +702,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton5_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton10_toggled" object="3" last_modification_time="Fri, 04 Jun 2004 07:57:17 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="left_attach">0</property>
@@ -724,7 +724,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton6_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton10_toggled" object="4" last_modification_time="Fri, 04 Jun 2004 07:57:21 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="left_attach">0</property>
@@ -746,7 +746,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton7_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton10_toggled" object="6" last_modification_time="Fri, 04 Jun 2004 07:57:36 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="left_attach">1</property>
@@ -768,7 +768,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton8_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton10_toggled" object="7" last_modification_time="Fri, 04 Jun 2004 07:57:46 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="left_attach">1</property>
@@ -790,7 +790,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton2_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton10_toggled" object="5" last_modification_time="Fri, 04 Jun 2004 07:57:29 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="left_attach">1</property>
@@ -812,7 +812,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton9_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton10_toggled" object="8" last_modification_time="Fri, 04 Jun 2004 08:27:52 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="left_attach">1</property>
@@ -834,7 +834,7 @@
 		      <property name="active">False</property>
 		      <property name="inconsistent">False</property>
 		      <property name="draw_indicator">True</property>
-		      <signal name="toggled" handler="on_checkbutton1_toggled"/>
+		      <signal name="toggled" handler="on_checkbutton10_toggled" object="0" last_modification_time="Fri, 04 Jun 2004 07:57:05 GMT"/>
 		    </widget>
 		    <packing>
 		      <property name="left_attach">0</property>
