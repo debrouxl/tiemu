@@ -1,0 +1,106 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd" >
+
+<glade-interface>
+  <widget class="GtkFileSelection" id="ramdump_fileselection">
+    <property name="border_width">10</property>
+    <property name="title" translatable="yes">Select a ROM to load</property>
+    <property name="type">GTK_WINDOW_TOPLEVEL</property>
+    <property name="modal">yes</property>
+    <property name="allow_shrink">no</property>
+    <property name="allow_grow">yes</property>
+    <property name="show-fileops">yes</property>
+    <property name="visible">yes</property>
+    <property name="window-position">GTK_WIN_POS_NONE</property>
+
+    <signal name="destroy" handler="on_ramdump_fileselection_destroy" />
+
+    <child internal-child="ok_button">
+      <widget class="GtkButton" id="ok_button2">
+        <property name="can_default">yes</property>
+        <property name="can_focus">yes</property>
+        <property name="label" translatable="yes">OK</property>
+        <property name="visible">yes</property>
+
+        <signal name="clicked" handler="on_ramd_ok_button2_clicked" />
+
+        <accelerator key="Return" modifiers="0" signal="clicked" />
+      </widget>
+    </child>
+
+    <child internal-child="cancel_button">
+      <widget class="GtkButton" id="cancel_button2">
+        <property name="can_default">yes</property>
+        <property name="can_focus">yes</property>
+        <property name="label" translatable="yes">Cancel</property>
+        <property name="visible">yes</property>
+
+        <signal name="clicked" handler="on_ramd_cancel_button2_clicked" />
+
+        <accelerator key="Escape" modifiers="0" signal="clicked" />
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkFileSelection" id="romdump_fileselection">
+    <property name="border_width">10</property>
+    <property name="title" translatable="yes">Select a ROM to load</property>
+    <property name="type">GTK_WINDOW_TOPLEVEL</property>
+    <property name="modal">yes</property>
+    <property name="allow_shrink">no</property>
+    <property name="allow_grow">yes</property>
+    <property name="show-fileops">yes</property>
+    <property name="visible">yes</property>
+    <property name="window-position">GTK_WIN_POS_NONE</property>
+
+    <signal name="destroy" handler="on_romd_fileselection_destroy" />
+
+    <child internal-child="ok_button">
+      <widget class="GtkButton" id="ok_button2">
+        <property name="can_default">yes</property>
+        <property name="can_focus">yes</property>
+        <property name="label" translatable="yes">OK</property>
+        <property name="visible">yes</property>
+
+        <signal name="clicked" handler="on_romd_ok_button2_clicked" />
+
+        <accelerator key="Return" modifiers="0" signal="clicked" />
+      </widget>
+    </child>
+
+    <child internal-child="cancel_button">
+      <widget class="GtkButton" id="cancel_button2">
+        <property name="can_default">yes</property>
+        <property name="can_focus">yes</property>
+        <property name="label" translatable="yes">Cancel</property>
+        <property name="visible">yes</property>
+
+        <signal name="clicked" handler="on_romd_cancel_button2_clicked" />
+
+        <accelerator key="Escape" modifiers="0" signal="clicked" />
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkWindow" id="wait_conversion_dbox">
+    <property name="title" translatable="yes">In progress...</property>
+    <property name="type">GTK_WINDOW_TOPLEVEL</property>
+    <property name="modal">no</property>
+    <property name="allow_shrink">no</property>
+    <property name="allow_grow">yes</property>
+    <property name="window-position">GTK_WIN_POS_NONE</property>
+    <property name="visible">yes</property>
+
+    <child>
+      <widget class="GtkLabel" id="label1">
+        <property name="label" translatable="yes">File is being written. 
+Please wait...</property>
+        <property name="justify">GTK_JUSTIFY_FILL</property>
+        <property name="wrap">yes</property>
+        <property name="xalign">0</property>
+        <property name="yalign">0.5</property>
+        <property name="xpad">10</property>
+        <property name="ypad">10</property>
+        <property name="visible">yes</property>
+      </widget>
+    </child>
+  </widget>
+</glade-interface>
