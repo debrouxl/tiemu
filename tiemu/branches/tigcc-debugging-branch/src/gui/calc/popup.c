@@ -85,6 +85,18 @@ on_send_file_to_gtktiemu1_activate     (GtkMenuItem     *menuitem,
 
 
 GLADE_CB void
+on_debug_file_with_tiemu1_activate     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if(engine_is_stopped()) return;
+
+	engine_stop();
+	display_debug_dbox();
+	engine_start();
+}
+
+
+GLADE_CB void
 on_link_cable1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {

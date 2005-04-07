@@ -61,6 +61,9 @@ int ti68k_get_io2_size(int calc_type);
 
 uint8_t* ti68k_get_real_address(uint32_t addr);
 
+// HW protection for the debugger
+void ti68k_unprotect_64KB_range(uint32_t addr);
+
 // Others
 #include "bkpts.h"
 #include "engine.h"

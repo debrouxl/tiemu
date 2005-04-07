@@ -45,3 +45,17 @@ void gdbcall_continue(void)
 {
   gdbcall_exec_command("c");
 }
+
+void gdb_add_symbol_file(const char *filename, unsigned address)
+{
+  char command[strlen(filename) + 28];
+  sprintf(command, "add-symbol-file %s %u", filename, address);
+  gdbcall_exec_command(command);
+}
+
+void gdb_hbreak(const char *funcname)
+{
+  char command[strlen(funcname) + 8];
+  sprintf(command, "hbreak %s", funcname);
+  gdbcall_exec_command(command);
+}

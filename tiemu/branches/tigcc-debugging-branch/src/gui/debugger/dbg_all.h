@@ -45,6 +45,7 @@ void gtk_window_minimize(GtkWindow *window, gboolean action);
 /* Variables */
 
 extern int dbg_on;
+extern gchar *symfile;
 
 // convenient place (calc.h)
 extern GtkWidget *main_wnd;

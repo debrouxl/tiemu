@@ -37,6 +37,8 @@
 #include "paths.h"
 #include "gdbcall.h"
 
+gchar *symfile;
+
 DbgOptions options3;
 DbgWidgets dbgw = { 0 };
 
@@ -58,6 +60,8 @@ void gtk_debugger_preload(void)
 
 int gtk_debugger_enter(int context)
 {
+	gint type, id, mode;
+
 	// debugger is open
 	dbg_on = !0;
 
@@ -78,6 +82,33 @@ int gtk_debugger_enter(int context)
     dbgw.stack = dbgstack_display_window();
 	dbgw.heap = dbgheap_display_window();
 	dbgw.code = dbgcode_display_window();	// the last has focus
+
+	// handle automatic debugging requests
+	if (symfile)
+	{
+		// get context
+		ti68k_bkpt_get_cause(&type, &mode, &id);
+
+		if(type == BK_TYPE_PGMENTRY)
+		{
+			uint16_t handle;
+			uint32_t pc;
+
+			ti68k_bkpt_get_pgmentry(id, &handle);
+			ti68k_bkpt_del_pgmentry(handle);
+			if(options3.bkpts.visible)
+				dbgbkpts_refresh_window();
+
+			ti68k_register_get_pc(&pc);
+			gdb_add_symbol_file(symfile, pc);
+			g_free (symfile);
+			symfile = NULL;
+
+			ti68k_unprotect_64KB_range(pc);
+
+			gdb_hbreak("__main");
+		}
+	}
 
 	return 0;
 }

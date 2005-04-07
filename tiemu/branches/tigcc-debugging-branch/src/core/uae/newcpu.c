@@ -26,6 +26,7 @@
 #include "hw.h" //do_cycles
 #define write_log printf
 static const struct uae_prefs currprefs = {0, 1, 1};
+extern const char *symfile;
 // tiemu end
 
 /* Opcode of faulting instruction */
@@ -702,9 +703,8 @@ void Exception(int nr, uaecptr oldpc)
 
     uae_u32 currpc = m68k_getpc ();
 
-    /* FIXME: Trap #15 is used by GDB for "software" breakpoints. We should support the GDB
-              "hardware" breakpoint interface in the simulator instead, but for now, this will
-              have to do. */
+    /* FIXME: Trap #15 is used by GDB for "software" breakpoints. We should use the GDB
+              "hardware" breakpoint interface only, but for now, this will have to do. */
     if (nr == 47) {
       regs.pc = currpc - 2;
       regs.pc_p = regs.pc_oldp = get_real_address(regs.pc);
@@ -1217,6 +1217,13 @@ unsigned long REGPARAM2 op_illg (uae_u32 opcode)
 	    call_calltrap (opcode & 0xFFF);
 	}
 #endif
+	/* Ignore ER_ASAP_TOO_LONG when running a file to debug. */
+	if (symfile && opcode == 0xA000 + 161) {
+		m68k_incpc(2);
+		fill_prefetch_0 ();
+		return 4;
+	}
+
 	Exception(0xA,0);
 	return 4;
     }
