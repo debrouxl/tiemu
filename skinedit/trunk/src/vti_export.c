@@ -187,17 +187,25 @@ write_vti_core(FILE *fp)
   tmpint = bswap_32(skin_infos.lcd_black);
   fwrite(&tmpint, 4, 1, fp);
 
-  fwrite(&bswap_32(skin_infos.lcd_pos.top), 4, 1, fp);
-  fwrite(&bswap_32(skin_infos.lcd_pos.bottom), 4, 1, fp);
-  fwrite(&bswap_32(skin_infos.lcd_pos.left), 4, 1, fp);
-  fwrite(&bswap_32(skin_infos.lcd_pos.right), 4, 1, fp);
+  tmpint = bswap_32(skin_infos.lcd_pos.top);
+  fwrite(&tmpint, 4, 1, fp);
+  tmpint = bswap_32(skin_infos.lcd_pos.bottom);
+  fwrite(&tmpint, 4, 1, fp);
+  tmpint = bswap_32(skin_infos.lcd_pos.left);
+  fwrite(&tmpint, 4, 1, fp);
+  bswap_32(skin_infos.lcd_pos.right);
+  fwrite(&tmpint, 4, 1, fp);
 
   for (i = 0; i < 80; i++)
     {
-      fwrite(&bswap_32(skin_infos.keys_pos[i].top), 4, 1, fp);
-      fwrite(&bswap_32(skin_infos.keys_pos[i].bottom), 4, 1, fp);
-      fwrite(&bswap_32(skin_infos.keys_pos[i].left), 4, 1, fp);
-      fwrite(&bswap_32(skin_infos.keys_pos[i].right), 4, 1, fp);
+      tmpint = bswap_32(skin_infos.keys_pos[i].top);
+      fwrite(&tmpint, 4, 1, fp);
+      tmpint = bswap_32(skin_infos.keys_pos[i].bottom);
+      fwrite(&tmpint, 4, 1, fp);
+      tmpint = bswap_32(skin_infos.keys_pos[i].left); 
+      fwrite(&tmpint, 4, 1, fp);
+      tmpint = bswap_32(skin_infos.keys_pos[i].right); 
+      fwrite(&tmpint, 4, 1, fp);
     }
 #else
   fwrite(&tmpint, 4, 1, fp);
