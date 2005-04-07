@@ -243,8 +243,8 @@ int ti68k_get_io2_size(int calc_type)
 
 void ti68k_unprotect_64KB_range(uint32_t addr)
 {
-    unsigned blockid = addr >> 12, highestblockid = tihw.ram_size >> 12, i;
+    unsigned blockid = addr >> 12, i;
 
-    for (i = blockid; i <= blockid + 16 && i <= highestblockid; i++)
+    for (i = blockid; i <= blockid + 16 && i < 64; i++)
         tihw.ram_exec[i] = 1;
 }
