@@ -40,7 +40,6 @@
 #include "ti68k_int.h"
 #include "popup.h"
 #include "screenshot.h"
-#include "romversion.h"
 #include "fs_misc.h"
 #include "calc.h"
 #include "kbd_mapper.h"
@@ -223,18 +222,17 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
 #endif
     else if(event->keyval == GDK_F10)
     {
-        display_tifile_dbox();
+        on_send_file_to_gtktiemu1_activate(NULL, NULL);
         return TRUE;
     }
     else if(event->keyval == GDK_F11)
     {
-        if(!dbg_on)
-            ti68k_debug_break();
+        on_enter_debugger1_activate(NULL, NULL);
         return TRUE;
     }
     else if(event->keyval == GDK_F12)
     {
-        display_romversion_dbox(FALSE);
+        on_set_rom1_activate(NULL, NULL);
         return TRUE;
     }
     else
