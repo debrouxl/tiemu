@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -209,12 +209,13 @@ GLADE_CB void
 on_restrict_to_actual_speed1_activate  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	int engine_was_stopped = engine_is_stopped();
 	engine_stop();
     if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
     	params.restricted = 0;
   	else
     	params.restricted = 1;
-	engine_start();
+	if (!engine_was_stopped) engine_start();
 }
 
 GLADE_CB void
