@@ -4618,6 +4618,17 @@ read_subroutine_type (struct die_info *die, struct dwarf2_cu *cu)
 	      else
 		TYPE_FIELD_ARTIFICIAL (ftype, iparams) = 0;
 	      TYPE_FIELD_TYPE (ftype, iparams) = die_type (child_die, cu);
+	      /* (TiEmu 20050409 Kevin Kofler) Detect register parameters
+	         and remember them for use in the 68k code. */
+	      attr = dwarf2_attr (child_die, DW_AT_regparm_location, cu);
+	      if (attr
+	          && attr_form_is_block (attr)
+	          && DW_BLOCK (attr)->size == 1
+	          && DW_BLOCK (attr)->data[0] >= DW_OP_reg0
+	          && DW_BLOCK (attr)->data[0] < DW_OP_breg0)
+		TYPE_FIELD_REGNUM (ftype, iparams) = DW_BLOCK (attr)->data[0] - DW_OP_reg0;
+	      else
+	        TYPE_FIELD_REGNUM (ftype, iparams) = -1;
 	      iparams++;
 	    }
 	  child_die = sibling_die (child_die);
@@ -7823,6 +7834,8 @@ dwarf_attr_name (unsigned attr)
       return "DW_AT_body_end";
     case DW_AT_GNU_vector:
       return "DW_AT_GNU_vector";
+    case DW_AT_regparm_location:
+      return "DW_AT_regparm_location";
     default:
       return "DW_AT_<unknown>";
     }

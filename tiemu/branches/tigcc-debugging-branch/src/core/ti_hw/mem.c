@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -377,6 +377,15 @@ uint8_t hw_get_byte(uint32_t adr)
 	return get_byte_ptr(adr);
 }
 
+uint8_t hw_get_byte_noexcept(uint32_t adr) 
+{
+    GList* l;
+  
+    adr &= 0xFFFFFF;
+
+	return get_byte_ptr(adr);
+}
+
 void hw_put_long(uint32_t adr, uint32_t arg) 
 {
     GList* l;
@@ -545,4 +554,13 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 		hw_m68k_irq(7);
 	else
 		put_byte_ptr(adr, arg);
+}
+
+void hw_put_byte_noexcept(uint32_t adr, uint8_t arg) 
+{
+    GList* l;
+
+    adr &= 0xFFFFFF;
+  
+    put_byte_ptr(adr, arg);
 }

@@ -444,6 +444,12 @@ struct main_type
 
     unsigned int bitsize : 29;
 
+    /* (TiEmu 20050408 Kevin Kofler) Register number if it is a register
+       parameter, -1 if it is a stack parameter, undefined for anything
+       other than function parameters. */
+
+    int regnum;
+
     /* In a struct or union type, type of this field.
        In a function or member type, type of this argument.
        In an array type, the domain-type of the array.  */
@@ -859,6 +865,7 @@ extern void allocate_cplus_struct_type (struct type *);
 #define FIELD_BITPOS(thisfld) ((thisfld).loc.bitpos)
 #define FIELD_ARTIFICIAL(thisfld) ((thisfld).artificial)
 #define FIELD_BITSIZE(thisfld) ((thisfld).bitsize)
+#define FIELD_REGNUM(thisfld) ((thisfld).regnum)
 #define FIELD_STATIC_KIND(thisfld) ((thisfld).static_kind)
 #define FIELD_PHYSNAME(thisfld) ((thisfld).loc.physname)
 #define FIELD_PHYSADDR(thisfld) ((thisfld).loc.physaddr)
@@ -873,6 +880,7 @@ extern void allocate_cplus_struct_type (struct type *);
 #define TYPE_FIELD_ARTIFICIAL(thistype, n) FIELD_ARTIFICIAL(TYPE_FIELD(thistype,n))
 #define TYPE_FIELD_BITSIZE(thistype, n) FIELD_BITSIZE(TYPE_FIELD(thistype,n))
 #define TYPE_FIELD_PACKED(thistype, n) (FIELD_BITSIZE(TYPE_FIELD(thistype,n))!=0)
+#define TYPE_FIELD_REGNUM(thistype, n) FIELD_REGNUM(TYPE_FIELD(thistype, n))
 #define TYPE_TEMPLATE_ARG(thistype, n) TYPE_CPLUS_SPECIFIC(thistype)->template_args[n]
 #define TYPE_INSTANTIATION(thistype, n) TYPE_CPLUS_SPECIFIC(thistype)->instantiations[n]
 

@@ -428,7 +428,7 @@ sim_write (sd, addr, buffer, size)
 
   init_pointers ();
   for (i = 0; i < size; i++)
-    put_byte(addr + i, buffer[i]);
+    hw_put_byte_noexcept(addr + i, buffer[i]);
   fill_prefetch_0 (); /* Force reloading the prefetch in case we changed the bytes under prefetch. */
   extern void dbgwindow_refresh_code (void);
   gdbcallback_refresh_debugger (); /* Reload the code window for the same reason */
@@ -449,7 +449,7 @@ sim_read (sd, addr, buffer, size)
 
   for (i = 0; i < size; i++)
     {
-      buffer[i] = get_byte(addr+i);
+      buffer[i] = hw_get_byte_noexcept(addr+i);
     }
   return size;
 }

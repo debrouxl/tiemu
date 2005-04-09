@@ -237,6 +237,14 @@ m68k_extract_return_value (struct type *type, struct regcache *regcache,
       regcache_raw_read (regcache, M68K_D1_REGNUM,
 			 (char *) valbuf + (len - 4));
     }
+  /* (TiEmu 20050408 Kevin Kofler) This is for BCD floats, returned in %d0-%d2. */
+  else if (len == 10)
+    {
+      regcache_raw_read (regcache, M68K_D0_REGNUM, (char *) valbuf);
+      regcache_raw_read (regcache, M68K_D1_REGNUM, (char *) valbuf + 4);
+      regcache_raw_read (regcache, M68K_D2_REGNUM, buf);
+      memcpy ((char *) valbuf + 8, buf + 2, 2);
+    }
   else
     internal_error (__FILE__, __LINE__,
 		    "Cannot extract return value of %d bytes long.", len);
@@ -249,7 +257,7 @@ m68k_svr4_extract_return_value (struct type *type, struct regcache *regcache,
   int len = TYPE_LENGTH (type);
   char buf[M68K_MAX_REGISTER_SIZE];
 
-  if (TYPE_CODE (type) == TYPE_CODE_FLT)
+  if (0 /*TYPE_CODE (type) == TYPE_CODE_FLT*/) /* (TiEmu 20050408) */
     {
       regcache_raw_read (regcache, M68K_FP0_REGNUM, buf);
       convert_typed_floating (buf, builtin_type_m68881_ext, valbuf, type);
@@ -277,6 +285,16 @@ m68k_store_return_value (struct type *type, struct regcache *regcache,
       regcache_raw_write (regcache, M68K_D1_REGNUM,
 			  (char *) valbuf + (len - 4));
     }
+  /* (TiEmu 20050408 Kevin Kofler) This is for BCD floats, returned in %d0-%d2. */
+  else if (len == 10)
+    {
+      regcache_raw_write (regcache, M68K_D0_REGNUM,
+			  (char *) valbuf);
+      regcache_raw_write (regcache, M68K_D1_REGNUM,
+			  (char *) valbuf + 4);
+      regcache_raw_write_part (regcache, M68K_D2_REGNUM, 2, 2,
+			       (char *) valbuf + 8);
+    }
   else
     internal_error (__FILE__, __LINE__,
 		    "Cannot store return value of %d bytes long.", len);
@@ -288,7 +306,7 @@ m68k_svr4_store_return_value (struct type *type, struct regcache *regcache,
 {
   int len = TYPE_LENGTH (type);
 
-  if (TYPE_CODE (type) == TYPE_CODE_FLT)
+  if (0 /*TYPE_CODE (type) == TYPE_CODE_FLT*/) /* (TiEmu 20050408) */
     {
       char buf[M68K_MAX_REGISTER_SIZE];
       convert_typed_floating (valbuf, type, buf, builtin_type_m68881_ext);
@@ -343,10 +361,12 @@ m68k_return_value (struct gdbarch *gdbarch, struct type *type,
   if (code == TYPE_CODE_FLT && TYPE_LENGTH (type) == 12)
     return RETURN_VALUE_STRUCT_CONVENTION;
 
+  /* (TiEmu 20050408 Kevin Kofler) Pointers are returned in %a0 on AMS, so use
+     the SVR4 variant of these functions. */
   if (readbuf)
-    m68k_extract_return_value (type, regcache, readbuf);
+    m68k_svr4_extract_return_value (type, regcache, readbuf);
   if (writebuf)
-    m68k_store_return_value (type, regcache, writebuf);
+    m68k_svr4_store_return_value (type, regcache, writebuf);
 
   return RETURN_VALUE_REGISTER_CONVENTION;
 }
@@ -411,23 +431,41 @@ m68k_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 		      CORE_ADDR struct_addr)
 {
   struct gdbarch_tdep *tdep = gdbarch_tdep (gdbarch);
+  struct type *ftype = check_typedef (VALUE_TYPE (function));
   char buf[4];
   int i;
 
-  /* Push arguments in reverse order.  */
+  /* Push arguments in reverse order.
+     (TiEmu 20050409 Kevin Kofler) Also handle register parameters.  */
   for (i = nargs - 1; i >= 0; i--)
     {
       struct type *value_type = VALUE_ENCLOSING_TYPE (args[i]);
       int len = TYPE_LENGTH (value_type);
-      int container_len = (len + 3) & ~3;
+      /* (TiEmu 20050408 Kevin Kofler) Our parameters are only 16-bit aligned. */
+      int container_len = (len + 1) & ~1;
       int offset;
 
-      /* Non-scalars bigger than 4 bytes are left aligned, others are
+     /* (TiEmu 20050409 Kevin Kofler) We have a register parameter, put it in
+                                      the wanted registers.  */
+      if (i < TYPE_NFIELDS (ftype)
+          && TYPE_FIELD_REGNUM (ftype, i) >= 0)
+        {
+          if (len <= 4)
+            {
+              regcache_cooked_write_part (regcache, TYPE_FIELD_REGNUM (ftype, i),
+                                          4 - len, len, VALUE_CONTENTS_ALL (args[i]));
+              continue;
+            }
+          else
+            warning("Register parameter too long");
+        }
+
+      /* Non-scalars bigger than 2 bytes are left aligned, others are
 	 right aligned.  */
       if ((TYPE_CODE (value_type) == TYPE_CODE_STRUCT
 	   || TYPE_CODE (value_type) == TYPE_CODE_UNION
 	   || TYPE_CODE (value_type) == TYPE_CODE_ARRAY)
-	  && len > 4)
+	  && len > 2)
 	offset = 0;
       else
 	offset = container_len - len;

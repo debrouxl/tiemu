@@ -1,3 +1,15 @@
+2005-04-09  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * m68k-tdep.c (m68k_return_value): Use m68k_svr_extract_return_value and m68k_svr_store_return_value.
+          (m68k_extract_return_value, m68k_store_return_value): Handle 10-byte values.
+          (m68k_svr_extract_return_value, m68k_svr_store_return_value): Don't special-case floats.
+          (m68k_push_dummy_call): Only align stack to 16 bits. Handle register parameters.
+        * gdbtypes.h (struct field): Add regnum member.
+          (FIELD_REGNUM, TYPE_FIELD_REGNUM): Add accessors.
+        * ../include/elf/dwarf2.h (enum dwarf_attribute): Add DW_AT_regparm_location.
+        * dwarf2read.c (dwarf_attr_name): Likewise.
+          (read_subroutine_type): Detect and remember register parameters.
+
 2005-04-05  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * coffread.c (coff_symtab_read): Fix handling of ".text". Don't import ld-tigcc section symbols and segment
