@@ -16,7 +16,8 @@ To do:
 	- [roms]  $1059: added pgm_entry bkpt support in dbg_cause.c (merged from Kevin's branch)
 		need to remove 1 pgm entry bkpt limitation
 	- [kevin] $1079: don't start the engine when toggling "Restrict to actual speed" if it was stopped (crash fix).
-	- [roms]  $1080: TiEmu hang when using F10 instead of popup menu. Fixed.
+	- [roms]  $1081: TiEmu hang when using F10 instead of popup menu. Fixed.
+	- [roms]  $1082: use ShellExecute instead of g_spawn_async in go_to_bookmark (thx Kevin !).
 
 - 19/03/2005, version 1.80q:
 	- [roms] $985: updated copyright notice.

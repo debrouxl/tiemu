@@ -469,14 +469,19 @@ GtkWidget* display_popup_menu(void)
 
 static void go_to_bookmark(const char *link)
 {
+#ifdef __WIN32__
+	HINSTANCE hInst;
+
+	hInst = ShellExecute(NULL, "open", link, NULL, NULL, SW_SHOWNORMAL);
+	if((int)hInst <= 32)
+	{
+		msg_box("Error", "Unable to run ShellExecture extension.");
+	}
+#else
 	gboolean result;
 	gchar **argv = g_malloc0(3 * sizeof(gchar *));
 
-#ifdef __LINUX__
 	argv[0] = g_strdup("/usr/bin/mozilla");
-#else
-	argv[0] = g_strdup("C:\\Program Files\\Internet Explorer\\IExplore.exe");
-#endif
 	argv[1] = g_strdup(link);
 	argv[2] = NULL;
 
@@ -485,8 +490,9 @@ static void go_to_bookmark(const char *link)
 
 	if (result == FALSE) 
 	{
-		msg_box("Error", "Spawn error: do you have Mozilla/IE installed ?");
+		msg_box("Error", "Spawn error: do you have Mozilla installed ?");
 	} 
+#endif
 	else 
 	{
 		GtkWidget *dialog;
