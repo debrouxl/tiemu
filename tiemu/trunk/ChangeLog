@@ -18,6 +18,7 @@ To do:
 	- [kevin] $1079: don't start the engine when toggling "Restrict to actual speed" if it was stopped (crash fix).
 	- [roms]  $1081: TiEmu hang when using F10 instead of popup menu. Fixed.
 	- [roms]  $1082: use ShellExecute instead of g_spawn_async in go_to_bookmark (thx Kevin !).
+	- [roms]  $1084: use a list of browsers to get the good one under Linux
 
 - 19/03/2005, version 1.80q:
 	- [roms] $985: updated copyright notice.

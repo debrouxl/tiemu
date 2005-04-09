@@ -472,23 +472,50 @@ static void go_to_bookmark(const char *link)
 #ifdef __WIN32__
 	HINSTANCE hInst;
 
+	// Windows do the whole work for us, let's go...
 	hInst = ShellExecute(NULL, "open", link, NULL, NULL, SW_SHOWNORMAL);
 	if((int)hInst <= 32)
 	{
 		msg_box("Error", "Unable to run ShellExecture extension.");
 	}
 #else
+	// Kevin's list:
+	// * /usr/bin/gnome-open (GNOME 2.6+ default browser, this really should be
+	// first on the list to try, as this will honor the user's choice rather than
+	// guessing an arbitrary one)
+	// * /usr/bin/htmlview (old RHL/Fedora default browser script - if Debian has
+	// anything like that, we can add it to the list as well)
+	// * /usr/bin/firefox (Mozilla Firefox)
+	// * /usr/bin/mozilla (Mozilla Seamonkey)
+	// * /usr/bin/konqueror (Konqueror)
+	//
 	gboolean result;
-	gchar **argv = g_malloc0(3 * sizeof(gchar *));
+	char *apps[] = { 
+			"/usr/bin/gnome-open",
+			"/usr/bin/htmlview",
+			"/usr/bin/firefox",
+			"/usr/bin/mozilla",
+			"/usr/bin/konqueror",
+	};
+	gint i, n;
 
-	argv[0] = g_strdup("/usr/bin/mozilla");
-	argv[1] = g_strdup(link);
-	argv[2] = NULL;
+	n = sizeof(apps) / sizeof(char *);
+	for(i = 0; i < n; i++)
+	{
+		gchar **argv = g_malloc0(3 * sizeof(gchar *));
 
-	result = g_spawn_async(NULL, argv, NULL, 0, NULL, NULL, NULL, NULL);
-	g_strfreev(argv);
+		argv[0] = g_strdup(apps[i]);
+		argv[1] = g_strdup(link);
+		argv[2] = NULL;
 
-	if (result == FALSE) 
+		result = g_spawn_async(NULL, argv, NULL, 0, NULL, NULL, NULL, NULL);
+		g_strfreev(argv);
+
+		if(result != FALSE)
+			break;
+	}
+
+	if (i == n) 
 	{
 		msg_box("Error", "Spawn error: do you have Mozilla installed ?");
 	} 
