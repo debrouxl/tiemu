@@ -53,18 +53,18 @@
 	HW1: OSC2 is incremented every 6250 OSC1 cycles
 */
 
-#define HW1_RATE    625     // 10MHz / 1600 (timer rate)
-#define HW2_RATE    1172    // 12MHz / 1024 (timer rate)
+#define HW1_RATE    6250     // 10MHz / 1600 (timer rate)
+#define HW2_RATE    11720    // 12MHz / 1024 (timer rate)
 
 // Cycle rate for HW1/HW2 at 2^5, 2^9, 2^12, 2^18 (port $600015)
-const int cycle_rate[2][4] = { { 391, 6250, 50000, 3200000 }, { 732, 11720, 93750, 6000000 } };
+const unsigned int cycle_rate[2][4] = { { 391, 6250, 50000, 3200000 }, { 732, 11720, 93750, 6000000 } };
 
-int cycle_instr = HW1_RATE;
-int cycle_count = 0;
+unsigned int cycle_instr = HW1_RATE;
+unsigned int cycle_count = 0;
 
 void set_cycle_rate(int i)
 {
-	cycle_instr = cycle_rate[(tihw.hw_type == HW1) ? 0 : 1][i] / 10;
+	cycle_instr = cycle_rate[(tihw.hw_type == HW1) ? 0 : 1][i];
 }
 
 /*
@@ -290,12 +290,5 @@ void hw_update(void)
 */
 /*
 static void INLINE do_cycles(void);
-{
-    if(cycle_count++ >= cycle_instr) 
-    {
-        hw_update();
-        cycle_count = 0;
-    }
-}
 */
 
