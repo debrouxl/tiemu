@@ -481,24 +481,57 @@ GtkWidget* display_popup_menu(void)
 
 static void go_to_bookmark(const char *link)
 {
-	gboolean result;
-	gchar **argv = g_malloc0(3 * sizeof(gchar *));
+#ifdef __WIN32__
+	HINSTANCE hInst;
 
-#ifdef __LINUX__
-	argv[0] = g_strdup("/usr/bin/mozilla");
-#else
-	argv[0] = g_strdup("C:\\Program Files\\Internet Explorer\\IExplore.exe");
-#endif
-	argv[1] = g_strdup(link);
-	argv[2] = NULL;
-
-	result = g_spawn_async(NULL, argv, NULL, 0, NULL, NULL, NULL, NULL);
-	g_strfreev(argv);
-
-	if (result == FALSE) 
+	// Windows do the whole work for us, let's go...
+	hInst = ShellExecute(NULL, "open", link, NULL, NULL, SW_SHOWNORMAL);
+	if((int)hInst <= 32)
 	{
-		msg_box("Error", "Spawn error: do you have Mozilla/IE installed ?");
+		msg_box("Error", "Unable to run ShellExecture extension.");
+	}
+#else
+	// Kevin's list:
+	// * /usr/bin/gnome-open (GNOME 2.6+ default browser, this really should be
+	// first on the list to try, as this will honor the user's choice rather than
+	// guessing an arbitrary one)
+	// * /usr/bin/htmlview (old RHL/Fedora default browser script - if Debian has
+	// anything like that, we can add it to the list as well)
+	// * /usr/bin/firefox (Mozilla Firefox)
+	// * /usr/bin/mozilla (Mozilla Seamonkey)
+	// * /usr/bin/konqueror (Konqueror)
+	//
+	gboolean result;
+	char *apps[] = { 
+			"/usr/bin/gnome-open",
+			"/usr/bin/htmlview",
+			"/usr/bin/firefox",
+			"/usr/bin/mozilla",
+			"/usr/bin/konqueror",
+	};
+	gint i, n;
+
+	n = sizeof(apps) / sizeof(char *);
+	for(i = 0; i < n; i++)
+	{
+		gchar **argv = g_malloc0(3 * sizeof(gchar *));
+
+		argv[0] = g_strdup(apps[i]);
+		argv[1] = g_strdup(link);
+		argv[2] = NULL;
+
+		result = g_spawn_async(NULL, argv, NULL, 0, NULL, NULL, NULL, NULL);
+		g_strfreev(argv);
+
+		if(result != FALSE)
+			break;
+	}
+
+	if (i == n) 
+	{
+		msg_box("Error", "Spawn error: do you have Mozilla installed ?");
 	} 
+#endif
 	else 
 	{
 		GtkWidget *dialog;
