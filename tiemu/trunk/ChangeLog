@@ -5,6 +5,9 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 	
+- 11/04/2005, version 1.80s:
+	- ...
+
 - 28/03/2005, version 1.80r:
 	- [kevin] $1029: merged UAE 0.8.15 from tigcc-dbg branch
 	- [roms]  $1030: fixed MSVC compilation and support for new UAE

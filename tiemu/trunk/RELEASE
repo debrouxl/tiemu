@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.80p		(19/03/2005)
-Current version:  1.80q		(27/03/2005)
+Previous version: 1.80q		(27/03/2005)
+Current version:  1.80r		(10/04/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,27 +20,25 @@ For the other link cables, no driver is needed because it's provided.
 New capabilities:
 -----------------
 
-	- updated copyright notice.
-	- added scaling support for skin & lcd 
-	- implemented full-screen view (maybe CPU intensive)
-	- can send several TI files at once
+	- added instruction cycle count support
 
 
 Improvements:
 -------------
 
-	- TiEmu don't use threads any longer
-	- set main window title (for TIGCC-IDE)
-	- switched to GTK+ 2.6.4 for Windows
-	- set default filename in file selectors
-	- more dissassembled lines of code in the debugger (resizeable)
-	- close the debugger when you press F5
+	- merged UAE 0.8.15 from tigcc-dbg branch
+	- restrict to actual speed based on cycle count, not instruction count.
+	- added pgm_entry bkpt support in dbg_cause.c
+	- browser launching
+	-  trigger interrupts per cycle, not per instruction. Fix interrupt rates. 
+		Measure LCD exposure times in cycles rather than instructions to match the timers.
 		
 
 Bug fixes:
 ----------
 
-	- one or two...
+	- don't start the engine when toggling "Restrict to actual speed" if it was stopped (crash fix).
+	- TiEmu hang when using F10 instead of popup menu.
 
 
 To do:
@@ -52,7 +50,4 @@ To do:
 Notes:
 ------
 
-	Big thanks to Kevin Kofler, Lionel Debroux and Olivier Armand who have take some time
-	to answer all my questions, providing me suggestions, help and documentation.
-
-	All Thanks to my wife & my baby which let me work on my PC ;-) Well, I love them a lot !
+	Release candidate should arrive soon...
