@@ -67,9 +67,6 @@ static bfd *current_bfd = 0;
 
 static jmp_buf interp_trap;
 
-/* This file is local - if newlib changes, then so should this.  */
-#include "syscall.h"
-
 #include <math.h>
 
 #ifdef _WIN32

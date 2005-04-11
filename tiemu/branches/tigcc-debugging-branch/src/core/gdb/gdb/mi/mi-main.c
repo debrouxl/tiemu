@@ -48,6 +48,9 @@
 
 #include <ctype.h>
 #include <sys/time.h>
+#ifdef __MINGW32__
+#include <winsock.h> /* struct timeval */
+#endif
 
 enum
   {

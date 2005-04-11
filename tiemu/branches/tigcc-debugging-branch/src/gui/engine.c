@@ -42,6 +42,10 @@
 #include "engine.h"
 #include "dbg_all.h"
 void sim_exception(int which);
+#ifndef SIGTRAP
+/* WARNING: This MUST match the definitions in GDB and sim. */
+#define SIGTRAP 5
+#endif
 
 /* 
    The TI92/89 should approximately execute NB_CYCLES_PER_LOOP_HW[12] in 

@@ -1,3 +1,9 @@
+2005-04-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * remote-fileio.c: Include winsock.h under MinGW to get struct timeval declaration.
+        * mi/mi-main.c: Likewise.
+        * remote-sim.c: Define SIMTRAP if not defined.
+
 2005-04-09  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * m68k-tdep.c (m68k_return_value): Use m68k_svr_extract_return_value and m68k_svr_store_return_value.

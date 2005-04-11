@@ -65,6 +65,9 @@
 #include "../core/gdb/gdb/main.h"
 #include "../core/gdb/gdb/gdb_string.h"
 #include "../core/gdb/gdb/interps.h"
+#ifndef PARAMS
+#define PARAMS(x) x
+#endif
 #include "../core/gdb/readline/readline.h"
 
 ScrOptions options2;

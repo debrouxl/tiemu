@@ -30,6 +30,9 @@
 #include <glade/glade.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef __MINGW32__
+#include <windows.h>
+#endif
 
 #include "intl.h"
 #include "support.h"

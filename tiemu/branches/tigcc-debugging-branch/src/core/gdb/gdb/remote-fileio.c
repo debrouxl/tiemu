@@ -35,6 +35,9 @@
 #ifdef __CYGWIN__
 #include <sys/cygwin.h>		/* For cygwin_conv_to_full_posix_path.  */
 #endif
+#ifdef __MINGW32__
+#include <winsock.h> /* struct timeval */
+#endif
 #include <signal.h>
 
 static struct {
