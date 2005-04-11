@@ -215,7 +215,7 @@ int ti68k_register_get_sp(uint32_t *val)
 int ti68k_register_get_usp(uint32_t *val)
 {
     int c = 0;
-    uint32_t *reg;
+    uae_u32 *reg;
 
     if(!regs.s)
         reg = &m68k_areg(regs,7);
@@ -233,7 +233,7 @@ int ti68k_register_get_usp(uint32_t *val)
 int ti68k_register_get_ssp(uint32_t *val)
 {
     int c = 0;
-    uint32_t *reg;
+    uae_u32 *reg;
 
     if(regs.s)
         reg = &m68k_areg(regs,7);

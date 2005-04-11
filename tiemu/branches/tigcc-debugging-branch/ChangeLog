@@ -5,6 +5,9 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 	
+- 11/04/2005, version 1.80s:
+	- ...
+
 - 28/03/2005, version 1.80r:
 	- [kevin] $1029: merged UAE 0.8.15 from tigcc-dbg branch
 	- [roms]  $1030: fixed MSVC compilation and support for new UAE
@@ -19,6 +22,8 @@ To do:
 	- [roms]  $1081: TiEmu hang when using F10 instead of popup menu. Fixed.
 	- [roms]  $1082: use ShellExecute instead of g_spawn_async in go_to_bookmark (thx Kevin !).
 	- [roms]  $1084: use a list of browsers to get the good one under Linux
+	- [kevin] $1092: trigger interrupts per cycle, not per instruction. Fix interrupt rates. 
+		Measure LCD exposure times in cycles rather than instructions to match the timers.
 
 - 19/03/2005, version 1.80q:
 	- [roms] $985: updated copyright notice.

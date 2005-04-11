@@ -71,9 +71,9 @@ static void renderer_toggled			   (GtkCellRendererToggle *cell_renderer,
 	gtk_tree_store_set(store, &iter, COL_CHECK, check, COL_HANDLE, &handle, -1);
 
 	if(check)
-		sel = g_list_append(sel, GINT_TO_POINTER(handle));
+		sel = g_list_append(sel, GINT_TO_POINTER((uint32_t)handle));
 	else
-		sel = g_list_remove(sel, GINT_TO_POINTER(handle));
+		sel = g_list_remove(sel, GINT_TO_POINTER((uint32_t)handle));
 
 	gtk_tree_path_free(path);
 }
