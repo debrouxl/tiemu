@@ -64,7 +64,7 @@ int hw_io_exit(void)
     return 0;
 }
 
-void set_cycle_rate(int);
+void set_prescaler(int);
 
 void io_put_byte(uint32_t addr, uint8_t arg)
 {
@@ -148,8 +148,8 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         	// %7 set: Master disable timer interrupts (level 1, 3 and 5)
         	// see hardware.c
         	
-        	// %[5-4]: Increment rate of $600017 
-			set_cycle_rate((arg >> 4) & 3);
+        	// %[5-4]: Increment rate of $600017 (prescaler)
+			set_prescaler((arg >> 4) & 3);
         	
         	// %3 set: Enable incrementing of $600017
         	// see hardware.c        	

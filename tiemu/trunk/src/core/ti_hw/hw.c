@@ -43,7 +43,7 @@
 #include "images.h"
 #include "ti68k_def.h"
 
-// This is the rate OSC1/(OSC2/2^5). We express everything else in fractions of OSC2/2^5.
+// This is the ratio OSC1/(OSC2/2^5). We express everything else in fractions of OSC2/2^5.
 // On HW1, AI3 is triggered every ~10/7 of a second.
 #define HW1_RATE    427    // 10MHz / (2^19*(10/7)/2^5)
 #define HW2_RATE    732    // 12MHz / (2^19/2^5)
@@ -55,7 +55,7 @@ unsigned int timer_mask = 15;
 unsigned int cycle_instr = HW1_RATE;
 unsigned int cycle_count = 0;
 
-void set_cycle_rate(int i)
+void set_prescaler(int i)
 {
 	timer_mask = timer_masks[i];
 }
@@ -153,7 +153,7 @@ extern int lcd_hook_hw1(void);
 */
 void hw_update(void)
 {
-	static unsigned int timer;	// -> tihw.timer_value
+	static unsigned int timer;
 
 	// OSC2 enable (bit clear means oscillator stopped!)
 	int osc2_enabled = io_bit_tst(0x15,1);
@@ -190,10 +190,10 @@ void hw_update(void)
 
 	/* Auto-int management */
 
-	// Auto-int 1: 1/2^6 of timer rate
-	// Triggered at a fixed rate: OSC2/2^11 = (OSC2/2^5)/2^6
 	if (osc2_enabled)
 	{
+		// Auto-int 1: 1/2^6 of timer rate
+		// Triggered at a fixed rate: OSC2/2^11 = (OSC2/2^5)/2^6
 		if(!(timer & 63)) 
 		{
 			if(!io_bit_tst(0x15,7))
@@ -201,12 +201,12 @@ void hw_update(void)
 					hw_m68k_irq(1);
 		}
 
-	// Auto-int 2: keyboard scan
-	// see keyboard.c
+		// Auto-int 2: keyboard scan
+		// see keyboard.c
 
-	// Auto-int 3: disabled by default by AMS
-	// When enabled, it is triggered at a fixed rate: OSC2/2^19 = 1/16384 of timer rate = 1Hz
-		if(io_bit_tst(0x15,1) && !(timer & 16383))
+		// Auto-int 3: disabled by default by AMS
+		// When enabled, it is triggered at a fixed rate: OSC2/2^19 = 1/16384 of timer rate = 1Hz
+		if(!(timer & 16383))
 		{
 			if(!io_bit_tst(0x15,7) && io_bit_tst(0x15,2))
 				if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
