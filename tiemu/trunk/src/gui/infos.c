@@ -63,7 +63,10 @@ gint display_infos_dbox()
 	g_free(str);
 	
 	label = glade_xml_get_widget(xml, "label22");
-    str = g_strdup_printf("%s", skin_infos.author ? skin_infos.author : "");
+	if(skin_infos.author)
+	    str = g_strdup_printf("%s", skin_infos.author);
+	else
+	    str = g_strdup("");
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 	

@@ -104,7 +104,7 @@ int ti68k_bkpt_add_exception(uint32_t number)
 
 int ti68k_bkpt_add_pgmentry(uint16_t handle) 
 {
-    bkpts.pgmentry = g_list_append(bkpts.pgmentry, GINT_TO_POINTER(handle));
+    bkpts.pgmentry = g_list_append(bkpts.pgmentry, GINT_TO_POINTER((uint32_t)handle));
 	return g_list_length(bkpts.pgmentry)-1;
 }
 
@@ -235,7 +235,7 @@ int ti68k_bkpt_del_exception(uint32_t number)
 
 int ti68k_bkpt_del_pgmentry(uint16_t handle) 
 {
-	GList *elt = g_list_find_custom(bkpts.pgmentry, GINT_TO_POINTER(handle), compare_func2);
+	GList *elt = g_list_find_custom(bkpts.pgmentry, GINT_TO_POINTER((uint32_t)handle), compare_func2);
     if(elt != NULL)
 		bkpts.pgmentry = g_list_delete_link(bkpts.pgmentry, elt);
 	else
@@ -358,9 +358,11 @@ int ti68k_bkpt_set_exception(uint32_t number, uint32_t new_n)
 
 int ti68k_bkpt_set_pgmentry(uint16_t handle, uint16_t new_h)
 {
-	GList *elt = g_list_find_custom(bkpts.pgmentry, GINT_TO_POINTER(handle), compare_func2);
+	GList *elt = g_list_find_custom(bkpts.pgmentry, 
+					GINT_TO_POINTER((uint32_t)handle), 
+					compare_func2);
 	if(elt != NULL)
-		elt->data = GINT_TO_POINTER(new_h);
+		elt->data = GINT_TO_POINTER((uint32_t)new_h);
 	else
 		return -1;
 
