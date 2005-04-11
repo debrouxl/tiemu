@@ -144,8 +144,6 @@ int hw_m68k_run(int n, unsigned maxcycles)
 
 		// refresh hardware
 		do_cycles();
-		// used by grayscale for time plane exposure
-		tihw.lcd_tick++;
 
 		// OSC1 stopped ? Refresh hardware and wake-up on interrupt. No opcode execution.
 		if ((regs.spcflags & SPCFLAG_STOP))
@@ -165,6 +163,7 @@ int hw_m68k_run(int n, unsigned maxcycles)
 
 			cycles += 4; // cycle count for hw_m68k_run loop
 			cycle_count += 4; // cycle count for hw.c timers
+			tihw.lcd_tick += 4; // used by grayscale for time plane exposure
 
 			continue;
 	    }		
@@ -224,6 +223,7 @@ int hw_m68k_run(int n, unsigned maxcycles)
 		insn_cycles = (*cpufunctbl[opcode])(opcode) * 2; // increments PC automatically now
 		cycles += insn_cycles; // cycle count for hw_m68k_run loop
 		cycle_count += insn_cycles; // cycle count for hw.c timers
+		tihw.lcd_tick += insn_cycles; // used by grayscale for time plane exposure
 
 		// HW2/3 grayscales management
 		lcd_hook_hw2(0);
