@@ -1,3 +1,8 @@
+2005-04-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+      * ../common/callback.c (truncate, ftruncate): Disable (always return 1), as we don't need
+                                                    them and they don't build on MinGW.
+
 2005-04-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
       * interp.c: Don't include syscall.h.

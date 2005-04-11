@@ -34,6 +34,12 @@
 #include "gdb_string.h"
 #include "gdbtypes.h"
 #include <math.h>		/* ldexp */
+#if defined(__MINGW32__) && !defined(isinfl)
+/* (TiEmu 20050412 Kevin Kofler) The MinGW isinf is type-generic, so it is a
+   perfectly fine substitute for the non-existent isinfl. */
+#define isinfl isinf
+#endif
+
 
 /* The odds that CHAR_BIT will be anything but 8 are low enough that I'm not
    going to bother with trying to muck around with whether it is defined in

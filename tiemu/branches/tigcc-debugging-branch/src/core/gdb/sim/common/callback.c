@@ -413,6 +413,7 @@ os_ftruncate (p, fd, len)
      int fd;
      long len;
 {
+#if 0
   int result;
 
   result = fdbad (p, fd);
@@ -420,6 +421,8 @@ os_ftruncate (p, fd, len)
     return result;
   result = wrap (p, ftruncate (fdmap (p, fd), len));
   return result;
+#endif
+  return 1;
 }
 
 static int
@@ -428,7 +431,10 @@ os_truncate (p, file, len)
      const char *file;
      long len;
 {
+#if 0
   return wrap (p, truncate (file, len));
+#endif
+  return 1;
 }
 
 static int
