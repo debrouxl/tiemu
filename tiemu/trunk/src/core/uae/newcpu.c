@@ -23,7 +23,6 @@
 #include "memory.h"
 #include "../ti_hw/dbus.h"
 #include "bkpts.h"
-#include "hw.h" //do_cycles
 #define write_log printf
 static const struct uae_prefs currprefs = {0, 1, 1};
 // tiemu end
@@ -1268,9 +1267,9 @@ static void do_trace (void)
 }
 
 
+#if 0
 static int do_specialties (void)
 {
-#if 0
     if (regs.spcflags & SPCFLAG_COPPER)
 	do_copper ();
 
@@ -1280,7 +1279,6 @@ static int do_specialties (void)
 	if (regs.spcflags & SPCFLAG_COPPER)
 	    do_copper ();
     }
-#endif
 
     run_compiled_code();
     if(regs.spcflags & SPCFLAG_ADRERR) 
@@ -1293,8 +1291,8 @@ static int do_specialties (void)
     }
     while (regs.spcflags & SPCFLAG_STOP) {
 	do_cycles (4);
-//	if (regs.spcflags & SPCFLAG_COPPER)
-//	    do_copper ();
+	if (regs.spcflags & SPCFLAG_COPPER)
+	    do_copper ();
 	if (regs.spcflags & (SPCFLAG_INT | SPCFLAG_DOINT)){
 	    int intr = intlev ();
 	    unset_special (SPCFLAG_INT | SPCFLAG_DOINT);
@@ -1332,7 +1330,6 @@ static int do_specialties (void)
     return 0;
 }
 
-#if 0
 /* It's really sad to have two almost identical functions for this, but we
    do it all for performance... :( */
 static void m68k_run_1 (void)

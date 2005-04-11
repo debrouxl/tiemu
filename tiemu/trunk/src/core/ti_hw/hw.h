@@ -33,8 +33,8 @@ int hw_exit(void);
 
 int hw_update(void);
 
-extern int cycle_instr;
-extern int cycle_count;
+extern unsigned int cycle_instr;
+extern unsigned int cycle_count;
 
 #if defined(__LINUX__)
 #define INLINE inline
@@ -44,12 +44,12 @@ extern int cycle_count;
 # define INLINE
 #endif
 
-static void INLINE do_cycles()
+static void INLINE do_cycles(void)
 {
-    if(cycle_count++ >= cycle_instr) 
+    if(cycle_count >= cycle_instr)
     {
         hw_update();
-        cycle_count = 0;
+        cycle_count -= cycle_instr;
     }
 }
 

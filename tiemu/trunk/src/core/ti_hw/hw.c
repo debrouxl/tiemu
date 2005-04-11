@@ -43,28 +43,21 @@
 #include "images.h"
 #include "ti68k_def.h"
 
-/*
-	Some explanations:
-	
-	OSC2 ---[$600015=/2^9]---> Fcnt +--[/4]--->		AI1
-									+--[/timer]--->	AI5
-									+--[/1024]--->	AI3
+// This is the rate OSC1/(OSC2/2^5). We express everything else in fractions of OSC2/2^5.
+// On HW1, AI3 is triggered every ~10/7 of a second.
+#define HW1_RATE    427    // 10MHz / (2^19*(10/7)/2^5)
+#define HW2_RATE    732    // 12MHz / (2^19/2^5)
 
-	HW1: OSC2 is incremented every 6250 OSC1 cycles
-*/
+// Timer masks at 2^5, 2^9, 2^12, 2^18 (port $600015)
+const unsigned int timer_masks[4] = {0, 15, 127, 8191};
+unsigned int timer_mask = 15;
 
-#define HW1_RATE    625     // 10MHz / 1600 (timer rate)
-#define HW2_RATE    1172    // 12MHz / 1024 (timer rate)
-
-// Cycle rate for HW1/HW2 at 2^5, 2^9, 2^12, 2^18 (port $600015)
-const int cycle_rate[2][4] = { { 391, 6250, 50000, 3200000 }, { 732, 11720, 93750, 6000000 } };
-
-int cycle_instr = HW1_RATE;
-int cycle_count = 0;
+unsigned int cycle_instr = HW1_RATE;
+unsigned int cycle_count = 0;
 
 void set_cycle_rate(int i)
 {
-	cycle_instr = cycle_rate[(tihw.hw_type == HW1) ? 0 : 1][i] / 10;
+	timer_mask = timer_masks[i];
 }
 
 /*
@@ -160,24 +153,23 @@ extern int lcd_hook_hw1(void);
 */
 void hw_update(void)
 {
-	static int timer;	// -> tihw.timer_value
+	static unsigned int timer;	// -> tihw.timer_value
 
-    // OSC2 enable (bit clear means oscillator stopped!)
-    if(!io_bit_tst(0x15,1))
+	// OSC2 enable (bit clear means oscillator stopped!)
+	int osc2_enabled = io_bit_tst(0x15,1);
+
+	timer++;
+	if (osc2_enabled)
 	{
-		hw_kbd_update();	// scan ON key
-        return;
+		// Increment timer
+		if(!(timer & timer_mask) && io_bit_tst(0x15,3))
+		{
+			if (tihw.timer_value == 0x00) 
+				tihw.timer_value = tihw.io[0x17];
+			else 
+				tihw.timer_value++;
+		}
 	}
-
-    // Increment timer
-    if(io_bit_tst(0x15,3))
-    {
-		if (tihw.timer_value == 0x00) 
-			tihw.timer_value = tihw.io[0x17];
-		else 
-			tihw.timer_value++;
-		timer++;
-    }
 
 	// Increment RTC timer every 8192 seconds
 	if(io2_bit_tst(0x1f, 2) && io2_bit_tst(0x1f, 1))
@@ -190,33 +182,36 @@ void hw_update(void)
 		}
 	}
 
-    // Toggles every FS (every time the LCD restarts at line 0) -> 90 Hz ~ timer/12
-    // Don't use the actual LCD count (and use 12 rather than 11) to keep exposure
-    // times consistent
-    if(!(timer % 12) && tihw.hw_type >= HW2) 
-    	tihw.io2[0x1d] ^= 0x80;
+	// Toggles every FS (every time the LCD restarts at line 0) -> 90 Hz ~ timer/192
+	// Don't use the actual LCD count (and use 192 rather than 182) to keep exposure
+	// times consistent
+	if(!(timer % 192) && tihw.hw_type >= HW2) 
+		tihw.io2[0x1d] ^= 0x80;
 
 	/* Auto-int management */
 
-	// Auto-int 1: 1/4 of timer rate
-	// Triggered at a fixed rate: OSC2/2^11
-    if(!(timer & 3)) 
-    {		
-    	if(!io_bit_tst(0x15,7))
-			if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
-				hw_m68k_irq(1);
-    }
+	// Auto-int 1: 1/2^6 of timer rate
+	// Triggered at a fixed rate: OSC2/2^11 = (OSC2/2^5)/2^6
+	if (osc2_enabled)
+	{
+		if(!(timer & 63)) 
+		{
+			if(!io_bit_tst(0x15,7))
+				if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
+					hw_m68k_irq(1);
+		}
 
 	// Auto-int 2: keyboard scan
-    // see keyboard.c
+	// see keyboard.c
 
 	// Auto-int 3: disabled by default by AMS
-	// When enabled, it is triggered at a fixed rate: OSC2/2^19 = 1/1024 of timer rate = 1Hz
-	if(io_bit_tst(0x15,1) && !(timer & 1023))
-	{
-        if(!io_bit_tst(0x15,7) && io_bit_tst(0x15,2))
-			if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
-				hw_m68k_irq(3);
+	// When enabled, it is triggered at a fixed rate: OSC2/2^19 = 1/16384 of timer rate = 1Hz
+		if(io_bit_tst(0x15,1) && !(timer & 16383))
+		{
+			if(!io_bit_tst(0x15,7) && io_bit_tst(0x15,2))
+				if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
+					hw_m68k_irq(3);
+		}
 	}
 
 	// DBus: External link activity ?
@@ -244,17 +239,20 @@ void hw_update(void)
 		}
 	}
 
-    // Auto-int 5: triggered by the programmable timer.
-	// The default rate is OSC2/(K*2^9), where K=79 for HW1 and K=53 for HW2
-    if(tihw.timer_value == 0)
-    {
-		if(!io_bit_tst(0x15,7))	
-			if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
-			{
-				hw_m68k_irq(5);
-			}
-			
-    }
+	if (osc2_enabled)
+	{
+		// Auto-int 5: triggered by the programmable timer.
+		// The default rate is OSC2/(K*2^9), where K=79 for HW1 and K=53 for HW2
+		// Make sure AI5 is triggered only if the timer was actually incremented.
+		if(!(timer & timer_mask) && io_bit_tst(0x15,3) && tihw.timer_value == 0)
+		{
+			if(!io_bit_tst(0x15,7))	
+				if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
+				{
+					hw_m68k_irq(5);
+				}
+		}
+	}
 
 	// Auto-int 6: triggered when [ON] is pressed.
 	// see keyboard.c
@@ -264,18 +262,18 @@ void hw_update(void)
 
 	/* Hardware refresh */
   
-  	// Update keyboard (~600Hz). Not related to timer but as a convenience
-  	if(!(timer & 7))		// 1 and 3 don't work, 7 and 15 are ok
-  		hw_kbd_update();
-  		
-  	// Update LCD (HW1: every 16th timer tick, HW2: unrelated)
-  	if((tihw.hw_type == HW1) && !(timer & 15))
-    {
-        G_LOCK(lcd_flag);
-        lcd_flag = !0;
-        G_UNLOCK(lcd_flag);
+	// Update keyboard (~600Hz). Not related to timer but as a convenience
+	if(!(timer & 127))	// 31 and 63 don't work, 127 and 255 are ok
+		hw_kbd_update();
+
+	// Update LCD (HW1: every 256th timer tick, HW2: unrelated)
+	if((tihw.hw_type == HW1) && !(timer & 255))
+	{
+		G_LOCK(lcd_flag);
+		lcd_flag = !0;
+		G_UNLOCK(lcd_flag);
 		lcd_hook_hw1();
-    }
+	}
 }
 
 /*
@@ -290,12 +288,5 @@ void hw_update(void)
 */
 /*
 static void INLINE do_cycles(void);
-{
-    if(cycle_count++ >= cycle_instr) 
-    {
-        hw_update();
-        cycle_count = 0;
-    }
-}
 */
 
