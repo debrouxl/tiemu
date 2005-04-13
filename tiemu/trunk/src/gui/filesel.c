@@ -45,19 +45,19 @@
 
 /* Single file selectors */
 
-static gchar *filename = NULL;
+static gchar *fname = NULL;
 static gint action = 0;
 
 static void store_filename(GtkFileSelection * file_selector,
 			   gpointer user_data)
 {
-	filename = (gchar *)gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data));
+	fname = g_strdup((gchar *)gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data)));
 	action = 1;
 } 
 
 static void cancel_filename(GtkButton * button, gpointer user_data)
 {
-	filename = NULL;
+	fname = NULL;
 	action = 2;
 } 
 
@@ -90,10 +90,12 @@ static const gchar* create_fsel_1(gchar *dirname, gchar *filename, gchar *ext, g
 				 (gpointer) fs);
 
 	gtk_widget_show(fs);
+
+	g_free(fname);
 	for(action = 0; !action; )
 		GTK_REFRESH();
 
-	return filename;
+	return fname;
 }
 
 // GTK >= 2.4
@@ -131,11 +133,11 @@ static const gchar* create_fsel_2(gchar *dirname, gchar *filename, gchar *ext, g
 	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
 
 	// get result
-	g_free(filename);
+	g_free(fname);
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
-		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+		fname = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 	else
-		filename = NULL;
+		fname = NULL;
 	gtk_widget_destroy (dialog);
 
 	return filename;
@@ -197,7 +199,7 @@ static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, g
 			return filename = NULL;
 	}
 
-	return filename = g_strdup(lpstrFile);
+	return fname = g_strdup(lpstrFile);
 #endif
 
 	return NULL;
@@ -217,13 +219,13 @@ static const gchar* create_fsel_4(gchar *dirname, gchar *filename, gchar *ext, g
 	{
 		if (filename)
 			dirname = g_strconcat(dirname, filename, NULL);
-		filename = sp_kde_get_write_filename(dirname, extspaces, _("Save file"));
+		fname = sp_kde_get_write_filename(dirname, extspaces, _("Save file"));
 	}
 	else
-		filename = sp_kde_get_open_filename(dirname, extspaces, _("Open file"));
+		fname = sp_kde_get_open_filename(dirname, extspaces, _("Open file"));
 
 	g_free(extspaces);
-	return filename;
+	return fname;
 #endif
 
 	return NULL;
