@@ -1,3 +1,8 @@
+2005-04-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * ../readline/rldefs.h (WAIT_FOR_INPUT): Decrease from 200 to 30.
+        * ../readline/input.c (rl_getc (__MINGW32__)): Call gtk_main_iteration if gtk_events_pending.
+
 2005-04-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * doublest.c (isinfl): Define to isinf under MinGW if not defined.

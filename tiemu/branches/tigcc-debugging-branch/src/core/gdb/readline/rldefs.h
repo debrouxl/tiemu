@@ -154,7 +154,7 @@ extern char *_rl_strpbrk PARAMS((const char *, const char *));
 #endif
 
 #if defined (__MINGW32__)
-#define WAIT_FOR_INPUT 200	/* milliseconds to suspend maximally 
+#define WAIT_FOR_INPUT 30	/* milliseconds to suspend maximally 
  				   when waiting for input */
 #define FOR_INPUT	1	/* flags for open state of the console  */
 #define FOR_OUTPUT	2

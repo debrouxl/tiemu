@@ -520,6 +520,11 @@ int rl_getc (stream)
     {
       DWORD dummy;
 
+      /* (TiEmu 20050413 Kevin Kofler) */
+      extern int gtk_events_pending(void);
+      extern void gtk_main_iteration(void);
+      while (gtk_events_pending()) gtk_main_iteration();
+
       if (WaitForSingleObject(hStdin, WAIT_FOR_INPUT) != WAIT_OBJECT_0)
         {
           if ( rl_done )
