@@ -13,7 +13,7 @@ kde       = @kde@
 
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	LDFLAGS += -lcomdlg32
-	GDBLIBS = -luser32 -lwsock32 -lpsapi -lpdcurses
+	GDBLIBS = -luser32 -lwsock32
 else
 	GDBLIBS = -lcurses
 endif
