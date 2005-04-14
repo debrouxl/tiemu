@@ -41,10 +41,12 @@ Bug fixes:
 	- TiEmu hang when using F10 instead of popup menu.
 
 
-To do:
-------
+Planned:
+--------
 
 	- implement the RTC introduced with AMS 2.09
+	- do a release candidate
+	- merge main branch with tigcc-debugging-branch
 
 	
 Notes:

@@ -51,7 +51,6 @@ int ti68k_linkport_reconfigure(void);
 
 // Keyboard
 void ti68k_kbd_set_key(int key, int active);
-void ti68k_kbd_set_keys(int *keys, int *actives, int n);
 
 // Misc
 int ti68k_get_rom_size(int calc_type);

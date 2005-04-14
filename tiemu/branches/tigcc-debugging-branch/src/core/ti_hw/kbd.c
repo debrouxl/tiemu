@@ -125,14 +125,6 @@ int hw_kbd_exit(void)
     return 0;
 }
 
-void ti68k_kbd_set_keys(int *keys, int *actives, int n)
-{
-	int i;
-	for(i = 0; i < n; i++)
-		key_states[keys[i]] = actives[i];
-	key_change = !0;
-}
-
 void ti68k_kbd_set_key(int key, int active)
 {
 	if(key == TIKEY_ALPHA)
