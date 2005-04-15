@@ -102,6 +102,7 @@ case $host in
   *-*-mingw*)            ARCH="-D__WIN32__ -D__MINGW32__ -mwindows -D_WINDOWS" ;;
   *-*-*bsd*)             ARCH="-D__BSD__" ;;
   i[[3456]]86-*-linux-*) ARCH="-D__I386__ -D__LINUX__" ;; 
+  arm*-*-linux-*)        ARCH="-D__ARM__  -D__LINUX__" ;;
   *)                     ARCH="-D__LINUX__" ;;
 esac
 CFLAGS="$CFLAGS $ARCH"

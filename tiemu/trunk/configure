@@ -25143,6 +25143,7 @@ case $host in
   *-*-mingw*)            ARCH="-D__WIN32__ -D__MINGW32__ -mwindows -D_WINDOWS" ;;
   *-*-*bsd*)             ARCH="-D__BSD__" ;;
   i[3456]86-*-linux-*) ARCH="-D__I386__ -D__LINUX__" ;;
+  arm*-*-linux-*)        ARCH="-D__ARM__  -D__LINUX__" ;;
   *)                     ARCH="-D__LINUX__" ;;
 esac
 CFLAGS="$CFLAGS $ARCH"
@@ -30582,7 +30583,7 @@ for i in $jpeg_incdirs;
 do
   for j in jpeglib.h;
   do
-    echo "configure: 30585: $i/$j" >&5
+    echo "configure: 30586: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       jpeg_incdir=$i
@@ -30817,7 +30818,7 @@ for i in $qt_incdirs;
 do
   for j in $kde_qt_header;
   do
-    echo "configure: 30820: $i/$j" >&5
+    echo "configure: 30821: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       qt_incdir=$i
@@ -31612,7 +31613,7 @@ for i in $kde_incdirs;
 do
   for j in $kde_check_header;
   do
-    echo "configure: 31615: $i/$j" >&5
+    echo "configure: 31616: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       kde_incdir=$i
@@ -31642,7 +31643,7 @@ for i in $kde_libdirs;
 do
   for j in $kde_check_lib;
   do
-    echo "configure: 31645: $i/$j" >&5
+    echo "configure: 31646: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       kde_libdir=$i
@@ -32725,7 +32726,7 @@ for i in $kde_sharedirs;
 do
   for j in apps/ksgmltools2/customization/kde-chunk.xsl;
   do
-    echo "configure: 32728: $i/$j" >&5
+    echo "configure: 32729: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       KDE_XSL_STYLESHEET=$i
