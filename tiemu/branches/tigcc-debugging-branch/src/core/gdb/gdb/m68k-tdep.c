@@ -68,9 +68,14 @@
 static const unsigned char *
 m68k_local_breakpoint_from_pc (CORE_ADDR *pcptr, int *lenptr)
 {
+#if 0 /* (TiEmu 20050415) We don't want to use software breakpoints. */
   static unsigned char break_insn[] = {0x4e, (0x40 | BPT_VECTOR)};
   *lenptr = sizeof (break_insn);
   return break_insn;
+#else
+  *lenptr = 0;
+  return NULL;
+#endif
 }
 
 

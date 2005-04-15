@@ -610,6 +610,7 @@ extern void print_section_info (struct target_ops *, bfd *);
 #define	target_files_info()	\
      (*current_target.to_files_info) (&current_target)
 
+#ifndef target_insert_breakpoint
 /* Insert a breakpoint at address ADDR in the target machine.  SAVE is
    a pointer to memory allocated for saving the target contents.  It
    is guaranteed by the caller to be long enough to save the number of
@@ -626,6 +627,7 @@ extern void print_section_info (struct target_ops *, bfd *);
 
 #define	target_remove_breakpoint(addr, save)	\
      (*current_target.to_remove_breakpoint) (addr, save)
+#endif
 
 /* Initialize the terminal settings we record for the inferior,
    before we actually run the inferior.  */

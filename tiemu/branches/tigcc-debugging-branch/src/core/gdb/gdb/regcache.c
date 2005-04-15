@@ -31,6 +31,7 @@
 #include "gdb_string.h"
 #include "gdbcmd.h"		/* For maintenanceprintlist.  */
 #include "observer.h"
+#include "../../uae/libuae.h"
 
 /*
  * DATA STRUCTURE
@@ -1138,6 +1139,7 @@ write_pc_pid (CORE_ADDR pc, ptid_t ptid)
   inferior_ptid = ptid;
 
   TARGET_WRITE_PC (pc, ptid);
+  fill_prefetch_0 (); /* (TiEmu 20050415) Force reloading the prefetch. */
 
   inferior_ptid = saved_inferior_ptid;
 }

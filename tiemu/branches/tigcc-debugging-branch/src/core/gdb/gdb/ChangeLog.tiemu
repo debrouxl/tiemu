@@ -1,3 +1,11 @@
+2005-04-15  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * m68k-tdep.c (m68k_local_breakpoint_from_pc): Return NULL.
+        * config/m68k/tm-monitor.h (target_remove_breakpoint): Define to target_remove_hw_breakpoint.
+          (target_insert_breakpoint): Define to target_insert_hw_breakpoint.
+        * target.h (target_insert_breakpoint, target_remove_breakpoint): Only define #ifndef target_insert_breakpoint.
+        * regcache.c (write_pc_pid): Update the prefetch (call fill_prefetch_0) after changing the PC.
+
 2005-04-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * ../readline/rldefs.h (WAIT_FOR_INPUT): Decrease from 200 to 30.

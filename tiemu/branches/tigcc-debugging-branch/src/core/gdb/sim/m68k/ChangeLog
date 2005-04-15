@@ -1,3 +1,8 @@
+2005-04-15  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+      * Revert:
+        2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+                * interp.c (sim_write): Call fill_prefetch_0 and gdbcallback_refresh_debugger after writing.
+
 2005-04-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
       * ../common/callback.c (truncate, ftruncate): Disable (always return 1), as we don't need

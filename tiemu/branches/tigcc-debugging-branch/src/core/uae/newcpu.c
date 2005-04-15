@@ -702,16 +702,6 @@ void Exception(int nr, uaecptr oldpc)
 
     uae_u32 currpc = m68k_getpc ();
 
-    /* FIXME: Trap #15 is used by GDB for "software" breakpoints. We should use the GDB
-              "hardware" breakpoint interface only, but for now, this will have to do. */
-    if (nr == 47) {
-      regs.pc = currpc - 2;
-      regs.pc_p = regs.pc_oldp = get_real_address(regs.pc);
-      bkpts.type = BK_CAUSE_GDBTRAP;
-      regs.spcflags |= SPCFLAG_BRK;	            
-      return;
-    }
-
     compiler_flush_jsr_stack();
     MakeSR();
 
