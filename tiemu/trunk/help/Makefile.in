@@ -349,7 +349,6 @@ installdirs:
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
-uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
@@ -425,6 +424,11 @@ uninstall-am: uninstall-dist_helpDATA uninstall-info-am
 	uninstall uninstall-am uninstall-dist_helpDATA \
 	uninstall-info-am
 
+
+uninstall:
+	rm -f $(pkgdatadir)/help/*.html
+	rm -f $(pkgdatadir)/help/*.png
+	rm -f $(pkgdatadir)/help/*.jpg
 
 dos2unix:
 	dos2unix

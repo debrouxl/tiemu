@@ -350,7 +350,6 @@ installdirs:
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
-uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
@@ -426,6 +425,10 @@ uninstall-am: uninstall-dist_skinsDATA uninstall-info-am
 	uninstall uninstall-am uninstall-dist_skinsDATA \
 	uninstall-info-am
 
+
+uninstall:
+	rm -f $(pkgdatadir)/skins/*.skn
+	rm -f $(pkgdatadir)/skins/*.map
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
