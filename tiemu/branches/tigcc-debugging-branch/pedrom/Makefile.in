@@ -371,7 +371,6 @@ installdirs:
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
-uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
@@ -449,6 +448,10 @@ uninstall-am: uninstall-dist_pedromDATA uninstall-dist_romcallsDATA \
 	uninstall-dist_pedromDATA uninstall-dist_romcallsDATA \
 	uninstall-info-am
 
+
+uninstall:
+	rm -f $(pkgdatadir)/pedrom/*.tib
+	rm -f $(pkgdatadir)/pedrom/romcalls.*
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -212,3 +212,6 @@ distdir: clean
 install: tiemu
 	@$(INSTALL) -d $(prefix)/bin
 	$(INSTALL) -m755 tiemu ${prefix}/bin/
+
+uninstall:
+	rm -f ${prefix}/bin/tiemu
