@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -55,6 +55,7 @@ int hw_hwp_init(void)
 	tihw.protect = 0;
 	ba = (tihw.rom_base << 16) - 0x200000;
 	access1 = access2 = crash = arch_mem_crash = 0;
+	if (tihw.hw_type >= HW2) tihw.io2[0x13] = 0x18;
 
 	return 0;
 }
@@ -110,7 +111,7 @@ int hwp_fetch(uint32_t adr)
 	}
 
 	// protections (hw2)
-	else if(tihw.hw_type == HW2)
+	else
 	{
 		if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM page execution protection
 		{
@@ -128,13 +129,13 @@ int hwp_fetch(uint32_t adr)
 				return 2;
 			}
 		}
-		else if(IN_RANGE2(0x210000, adr, 0x3fffff))			// FLASH page execution protection
+		else if(IN_RANGE2(0x210000, adr, 0x1fffff + tihw.rom_size))	// FLASH page execution protection
 		{
-			if(adr >= (0x210000+ba + (uint32_t)tihw.io2[0x12]*0x10000)) 
+			if(adr >= (0x210000+ba + (uint32_t)tihw.io2[0x13]*0x10000)) 
 			{
-				//printf(">> $%06x-%06x ", adr, 0x210000+ba + (uint32_t)tihw.io2[0x12]*0x10000);
-				//freeze_calc();
-				//return 3;
+				//printf(">> $%06x-%06x ", adr, 0x210000+ba + (uint32_t)tihw.io2[0x13]*0x10000);
+				freeze_calc();
+				return 3;
 			}
 		}
 	}
@@ -187,7 +188,7 @@ uint8_t hwp_get_byte(uint32_t adr)
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
 				access1++;
-		if(tihw.hw_type == HW2)
+		if(tihw.hw_type != HW1)
 			if(!(adr & 1)) 
 				access2++;
 	}
@@ -201,7 +202,7 @@ uint8_t hwp_get_byte(uint32_t adr)
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
 				access1++;
-		if(tihw.hw_type == HW2)
+		if(tihw.hw_type != HW1)
 			if(!(adr & 1)) 
 				access2++;
 	}
@@ -215,7 +216,7 @@ uint8_t hwp_get_byte(uint32_t adr)
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
 				access1++;
-		if(tihw.hw_type == HW2)
+		if(tihw.hw_type != HW1)
 			if(!(adr & 1)) 
 				access2++;
 	}
@@ -232,7 +233,87 @@ uint8_t hwp_get_byte(uint32_t adr)
 
 uint16_t hwp_get_word(uint32_t adr) 
 {
-	return (hwp_get_byte(adr+0) << 8) | hwp_get_byte(adr+1);
+// We can't implement this in terms of hwp_get_word, because the FlashROM
+// hardware behaves differently for byte and word reads (see flash.c).
+#ifdef HWP
+	// stealth I/O
+	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0 (hw1)
+	{
+		if(!tihw.protect && (tihw.hw_type == HW1))
+			bit_clr(tihw.archive_limit, 0);
+	}
+	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1 (hw1)
+	{
+		if(!tihw.protect && (tihw.hw_type == HW1))
+			bit_clr(tihw.archive_limit, 1);
+	}
+	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2 (hw1)
+	{
+		if(!tihw.protect && (tihw.hw_type == HW1))
+			bit_clr(tihw.archive_limit, 2);
+	}
+	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
+	{
+		//tihw.on_off = 0;
+	}
+	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable
+	{
+		access2 += 2;
+		if((access1 >= 3) || (access2 == 8) || (access2 == 9)) 
+		{
+			tihw.protect = !0;
+			access1 = access2 = 0;
+		}
+		else if(tihw.hw_type == HW1)
+		{
+			// any four consecutive access to $1c0000-1fffff crashes a HW1 calc
+			crash++;
+			if(crash >= 4)
+			{
+				freeze_calc();
+			}
+		}
+	}
+	else if(IN_RANGE2(0x200000, adr, 0x20ffff))			// protection access authorization
+	{
+		if(tihw.hw_type == HW1)
+			access1++;
+		else
+			access2++;
+	}
+	else if(IN_RANGE2(0x210000, adr, 0x211fff))			// certificate (read protected)
+	{
+		if(tihw.protect)
+			return 0x1414;
+	}
+	else if(IN_RANGE2(0x212000, adr, 0x217fff))			// protection access authorization
+	{
+		if(tihw.hw_type == HW1)
+			access1++;
+		else
+			access2++;
+	}
+	else if(IN_RANGE2(0x218000, adr, 0x219fff))			// read protected
+	{
+		if(tihw.protect)
+			return 0x1414;
+	}
+	else if(IN_RANGE2(0x21a000, adr, 0x21ffff))			// protection access authorization
+	{
+		if(tihw.hw_type == HW1)
+			access1++;
+		else
+			access2++;
+	}
+	else
+	{
+		access1 = access2 = 0;
+		crash = arch_mem_crash = 0;
+	}
+#endif
+
+    // memory
+	return mem_get_word_ptr(adr);
 }
 
 uint32_t hwp_get_long(uint32_t adr) 
@@ -285,14 +366,14 @@ void hwp_put_byte(uint32_t adr, uint8_t arg)
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
 				access1++;
-		if(tihw.hw_type == HW2)
+		if(tihw.hw_type != HW1)
 			if(!(adr & 1)) 
 				access2++;
 
 		// don't write on boot code
 		return;		
 	}
-	else if(IN_RANGE(0x210000, adr, 0x211fff))			// certificate (read protected)
+	else if(IN_RANGE2(0x210000, adr, 0x211fff))			// certificate (read protected)
 	{
 	}
 	else if(IN_RANGE2(0x212000, adr, 0x217fff))			// protection access authorization
@@ -300,20 +381,19 @@ void hwp_put_byte(uint32_t adr, uint8_t arg)
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
 				access1++;
-		if(tihw.hw_type == HW2)
+		if(tihw.hw_type != HW1)
 			if(!(adr & 1)) 
 				access2++;
 	}
 	else if(IN_RANGE2(0x218000, adr, 0x219fff))			// read protected
 	{
-		return;
 	}
 	else if(IN_RANGE2(0x21a000, adr, 0x21ffff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
 				access1++;
-		if(tihw.hw_type == HW2)
+		if(tihw.hw_type != HW1)
 			if(!(adr & 1)) 
 				access2++;
 	}

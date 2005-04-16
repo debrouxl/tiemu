@@ -246,5 +246,5 @@ void ti68k_unprotect_64KB_range(uint32_t addr)
     unsigned blockid = addr >> 12, i;
 
     for (i = blockid; i <= blockid + 16 && i < 64; i++)
-        tihw.ram_exec[i] = 1;
+        tihw.ram_exec[i] = 0;
 }

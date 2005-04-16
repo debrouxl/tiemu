@@ -295,7 +295,7 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 			str = g_strdup_printf("hw protection violation: RAM execution at $%06x.\n", value);
 			break;
 		case 3:
-			str = g_strdup_printf("hw protection violation: FLASH execution at $%06x.\nExecution allowed until $%06x.", value, 0x210000 + tihw.io2[0x12]*0x10000);
+			str = g_strdup_printf("hw protection violation: FLASH execution at $%06x.\nExecution allowed until $%06x.", value, (tihw.rom_base<<16) + 0x10000 + tihw.io2[0x13]*0x10000);
 			break;
 		default: 
 			str = g_strdup("bug !\n"); 
