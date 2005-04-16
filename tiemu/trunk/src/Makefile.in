@@ -161,9 +161,9 @@ uae:
 	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" all
 
 tiemu: $(tiemu_OBJ)
-#	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu $(LDFLAGS) $(CFLAGS)
-	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) \
-	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
+	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu $(LDFLAGS) $(CFLAGS)
+	#../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) \
+	#-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
 
 .c.o:
 	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) $< -o $@

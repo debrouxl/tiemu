@@ -14,11 +14,11 @@ To cross-compile TiEmu and the TiLP framework, copy the cross-config.sh script a
 
  a GPE application you need to do this:
 
-1. export PKG_CONFIG_PATH=/usr/local/arm/oe/arm-linux/lib/pkgconfig:/target/lib/pkgconfig
+1. export PKG_CONFIG_PATH=/usr/local/arm/oe/arm-linux/lib/pkgconfig
 2. export PATH=/usr/local/arm/oe/bin:$PATH
 3. Change to the location of your source
-4. Run ./configure --host=arm-linux --disable-nls --prefix=/target
-5. Files are installed in /target (you can change this...).
+4. Run ./configure --host=arm-linux --disable-nls --prefix=/usr/local/arm/oe/arm-linux
+5. Files are installed in /usr/local/arm/oe/arm-linux
 
 That's all !
 
