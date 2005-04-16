@@ -13,24 +13,24 @@ all: cpudefs.o cpustbl.o readcpu.o fpp.o missing.o cpuemu1.o cpuemu2.o cpuemu3.o
 
 # For cross-compiling (generators are run on host)
 build68k_host.o: build68k.c
-	cc -c -o $@ $?
+	gcc -c -o $@ $?
 gencpu_host.o: gencpu.c
-	cc -c -o $@ $?
+	gcc -c -o $@ $?
 readcpu_host.o: readcpu.c
-	cc -c -o $@ $?
+	gcc -c -o $@ $?
 cpudefs_host.o: cpudefs.c
-	cc -c -o $@ $?
+	gcc -c -o $@ $?
 missing_host.o: missing.c
-	cc -c -o $@ $?
+	gcc -c -o $@ $?
 
 # Build generators and files to generate
 build68k: build68k_host.o
 	@echo "-> Compiling 68k builder..."
-	cc $(LDFLAGS) -o $@ $?
+	gcc $(LDFLAGS) -o $@ $?
 
 gencpu: gencpu_host.o readcpu_host.o cpudefs_host.o missing_host.o
 	@echo "-> Compiling CPU generator..."
-	cc $(LDFLAGS) -o $@ $?
+	gcc $(LDFLAGS) -o $@ $?
 
 cpudefs.c: build68k table68k
 	@echo "-> Building CPU definitions..."
