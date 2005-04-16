@@ -97,10 +97,10 @@ int hw_init(void)
     }
 
     // Do sub-initializations.
-	TRY(hw_hwp_init());
 	TRY(hw_mem_init());
 	TRY(hw_flash_init());
 	TRY(hw_io_init());
+	TRY(hw_hwp_init());
 	TRY(hw_dbus_init());
 	TRY(hw_kbd_init());
 	TRY(hw_m68k_init());
@@ -118,10 +118,10 @@ int hw_init(void)
 
 int hw_reset(void)
 {
-	TRY(hw_hwp_reset());
 	TRY(hw_mem_reset());
 	TRY(hw_flash_reset());
 	TRY(hw_io_reset());
+	TRY(hw_hwp_reset());
 	TRY(hw_kbd_reset());
 	TRY(hw_dbus_reset());
 	TRY(hw_m68k_reset());
