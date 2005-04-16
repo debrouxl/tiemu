@@ -90,7 +90,6 @@ AC_CHECK_LIB(pthread, pthread_create) dnl needed by GThread
 #AC_CHECK_LIB(comdlg32, GetOpenFileName)
 
 # Checks for library functions.
-AC_FUNC_MALLOC
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT 
 AC_FUNC_VPRINTF
@@ -104,7 +103,7 @@ case $host in
   *-*-mingw*)            ARCH="-D__WIN32__ -D__MINGW32__" ;;
   *-*-*bsd*)             ARCH="-D__BSD__" ;;
   i[[3456]]86-*-linux-*) ARCH="-D__I386__ -D__LINUX__" ;; 
-  arm*-*-linux-*)        ARCH="-D__ARM__  -D__LINUX__" ;;
+  arm*-*-linux-*)        ARCH="-D__IPAQ__ -D__LINUX__" ;;
   *)                     ARCH="-D__LINUX__" ;;
 esac
 CFLAGS="$CFLAGS $ARCH"

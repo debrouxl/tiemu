@@ -177,9 +177,10 @@ gdb:
 	cd core/gdb && $(MAKE)
 
 tiemu: $(tiemu_OBJ)
-#	$(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) -o tiemu $(LDFLAGS) $(CFLAGS)
-	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) \
-	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries) $(GDBLIBS)
+	$(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) -o tiemu \
+	$(LDFLAGS) $(CFLAGS) $(kdelibraries) $(GDBLIBS)
+	#../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) \
+	#-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries) $(GDBLIBS)
 
 .c.o:
 	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) $< -o $@
