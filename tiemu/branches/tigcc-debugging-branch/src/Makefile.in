@@ -178,7 +178,7 @@ gdb:
 
 tiemu: $(tiemu_OBJ)
 	$(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) -o tiemu \
-	$(LDFLAGS) $(CFLAGS) $(kdelibraries) $(GDBLIBS)
+	$(LDFLAGS) $(CFLAGS) $(kdelibraries) $(GDBLIBS) -Wl,--rpath,"$(prefix)/lib"
 	#../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) \
 	#-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries) $(GDBLIBS)
 
