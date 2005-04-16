@@ -10,17 +10,15 @@ We will use the easier method (and probably the best one): OpenEmbedded based
 GPE SDK. The latest one is available here: <http://handhelds.org/~florian/sdk/gpe-sdk-20050210.tar.bz2>.
 Almost everything you need should be included in the archive, just unpack it to /.
 
-To crosscompile a GPE application you need to do this:
+To cross-compile TiEmu and the TiLP framework, copy the cross-config.sh script at the top of the source and run it. That's all !
 
-1. export PKG_CONFIG_PATH=/usr/local/arm/oe/arm-linux/lib/pkgconfig
+ a GPE application you need to do this:
 
+1. export PKG_CONFIG_PATH=/usr/local/arm/oe/arm-linux/lib/pkgconfig:/target/lib/pkgconfig
 2. export PATH=/usr/local/arm/oe/bin:$PATH
-
 3. Change to the location of your source
-
-4. Run make CC=arm-linux-gcc to build your application
-
-If you use autotools you will usually need to run ./configure --host=arm-linux 
+4. Run ./configure --host=arm-linux --disable-nls --prefix=/target
+5. Files are installed in /target (you can change this...).
 
 That's all !
 
