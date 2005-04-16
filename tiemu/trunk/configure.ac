@@ -90,7 +90,6 @@ AC_CHECK_LIB(pthread, pthread_create) dnl needed by GThread
 #AC_CHECK_LIB(comdlg32, GetOpenFileName)
 
 # Checks for library functions.
-AC_FUNC_MALLOC
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT 
 AC_FUNC_VPRINTF
