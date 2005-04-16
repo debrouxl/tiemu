@@ -28,7 +28,7 @@ sysconfdir      = @sysconfdir@
 
 ifeq ($(kde), yes)
 kdeincludes = @all_includes@
-kdelibraries = @LIB_KDECORE@ @LIB_KDEUI@ @LIB_KIO@ @LIB_QT@ @KDE_LDFLAGS@
+kdelibraries = @LIB_KDECORE@ @LIB_KDEUI@ @LIB_KIO@ @LIB_QT@ @KDE_LDFLAGS@ @QT_LDFLAGS@ @X_LDFLAGS@
 kde_OBJ = gui/kde.o gui/kde-private.o
 kdeprivsources = gui/kde-private.cpp
 gui/kde-private.cpp: gui/kde-private.h
