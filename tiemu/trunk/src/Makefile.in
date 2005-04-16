@@ -162,7 +162,7 @@ uae:
 
 tiemu: $(tiemu_OBJ)
 	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
-	$(LDFLAGS) $(CFLAGS) $(kdelibraries)
+	$(LDFLAGS) $(CFLAGS) $(kdelibraries) -Wl,--rpath,"$(prefix)/lib"
 	#../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) \
 	#-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
 
