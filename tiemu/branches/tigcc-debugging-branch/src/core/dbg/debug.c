@@ -109,7 +109,7 @@ static inline int is_bsr_inst(uint16_t ci)
 
 int ti68k_debug_step_over(void)
 {
-    uint32_t curr_pc, next_pc;
+    uint32_t curr_pc, next_pc, bcd_math_pc;
 	gchar *output;
 
 	// get current PC and next PC
@@ -126,14 +126,19 @@ int ti68k_debug_step_over(void)
 	}
 
 	// run emulation until address after instruction is reached
-	do
+	hw_m68k_run(1, 0);
+	// _bcd_math returns to pc + 2 rather than pc
+	// This works only for jsr calls. F-Line calls are handled in the disassembler.
+	romcalls_get_symbol_address(0xb5, &bcd_math_pc);
+	if (m68k_getpc() == bcd_math_pc)
+		next_pc += 2;
+	while ((next_pc != m68k_getpc()) && !(regs.spcflags & SPCFLAG_BRK))
 	{
 		hw_m68k_run(1, 0);
 
 		// force GUI refresh in order to be able to cancel operation
 		while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
 	}
-	while ((next_pc != m68k_getpc()) && !(regs.spcflags & SPCFLAG_BRK));
 
 	registers_changed();
 
