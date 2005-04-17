@@ -1,5 +1,9 @@
 2005-04-17  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * signals/signals.c: Define SIMTRAP if not defined.
+
+2005-04-17  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * valprint.c (print_floating): Always print <=16 digits of the mantissa.
 
 2005-04-17  Kevin Kofler  <Kevin@tigcc.ticalc.org>
