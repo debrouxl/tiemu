@@ -1,3 +1,7 @@
+2005-04-17  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * doublest.c (convert_smapbcd_to_doublest): Use arbitrary precision to do the conversion to 1 ulp.
+
 2005-04-15  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * m68k-tdep.c (m68k_local_breakpoint_from_pc): Return NULL.

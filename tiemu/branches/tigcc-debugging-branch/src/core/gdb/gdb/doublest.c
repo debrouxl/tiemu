@@ -456,14 +456,6 @@ convert_doublest_to_floatformat (CONST struct floatformat *fmt,
     }
 }
 
-/* Isn't portability fun... */
-#undef exp10l /* Don't use broken exp10l from glibc */
-#ifdef HAVE_LONG_DOUBLE
-#define exp10l(x) powl((DOUBLEST)10.,x)
-#else
-#define exp10l(x) pow((DOUBLEST)10.,x)
-#endif
-
 #ifndef INFINITY
 #ifdef HUGE_VAL
 #define INFINITY HUGE_VAL
@@ -475,54 +467,6 @@ convert_doublest_to_floatformat (CONST struct floatformat *fmt,
 #ifndef NAN
 #define NAN (0.0 / 0.0)
 #endif
-
-/* Convert from FMT to a DOUBLEST.
-   FROM is the address of the extended float.
-   Store the DOUBLEST in *TO.  */
-
-static void
-convert_smapbcd_to_doublest (const struct floatformat *fmt,
-			     const void *from,
-			     DOUBLEST *to)
-{
-  long exponent;
-  unsigned long mantissa;
-  int i;
-  unsigned char *uval = (unsigned char *) from;
-
-  gdb_assert (fmt != NULL);
-
-  exponent = get_field (uval, fmt->byteorder, fmt->totalsize, 0, 16);
-
-  switch (exponent & 0x7fff)
-    {
-      case 0:
-        *to = (DOUBLEST)0.;
-        break;
-
-      case 0x7fff:
-        if (floatformat_is_nan (fmt, (void *)from))
-          *to = (DOUBLEST)NAN;
-        else
-          *to = (DOUBLEST)INFINITY;
-        break;
-
-      default:
-        *to = (DOUBLEST)0.;
-
-        for (i=16; i<80; i+=4)
-          {
-            *to *= (DOUBLEST)10.;
-            mantissa = get_field (uval, fmt->byteorder, fmt->totalsize, i, 4);
-            *to += (DOUBLEST)mantissa;
-          }
-
-        *to *= exp10l((exponent & 0x7fff) - (0x4000 + 15));
-        break;
-    }
-
-  if (exponent & 0x8000) *to = -*to;
-}
 
 #ifndef HAVE_LONG_DOUBLE
 #define isnanl isnan
@@ -762,6 +706,91 @@ static void real_value_htof (REAL_VALUE_TYPE *res, DOUBLEST from)
 		*res = REAL_VALUE_NEGATE (*res);
 }
 
+
+/* Convert from FMT to a DOUBLEST.
+   FROM is the address of the extended float.
+   Store the DOUBLEST in *TO.  */
+
+static void
+convert_smapbcd_to_doublest (const struct floatformat *fmt,
+			     const void *from,
+			     DOUBLEST *to)
+{
+  long exponent;
+  unsigned long mantissa;
+  unsigned char *uval = (unsigned char *) from;
+
+  gdb_assert (fmt != NULL);
+
+  exponent = get_field (uval, fmt->byteorder, fmt->totalsize, 0, 16);
+
+  switch (exponent & 0x7fff)
+    {
+      case 0:
+        *to = (DOUBLEST)0.;
+        break;
+
+      case 0x7fff:
+        if (floatformat_is_nan (fmt, (void *)from))
+          *to = (DOUBLEST)NAN;
+        else
+          *to = (DOUBLEST)INFINITY;
+        break;
+
+      default:
+        {
+          /* Convert the BCD number to an arbitrary precision decimal first. */
+          int i, j;
+          arbprec_decimal r = {16, NULL, 0};
+          r.digits = xmalloc (16);
+          for (i=0, j=16; j<80; i++, j+=4)
+            r.digits[i] = get_field (uval, fmt->byteorder, fmt->totalsize, j, 4);
+          r.effexp = (exponent & 0x7fff) - (0x4000 + 15);
+          arbprec_pack (&r);
+
+          /* If it is zero (happens for UNSIGNED_ZERO), the float is zero. */
+          *to = (DOUBLEST)0.;
+          if (r.ndigits)
+            {
+              /* Scale the decimal to a number in [1,2[ first. */
+              DOUBLEST scale = (DOUBLEST)1.;
+              while (r.effexp + r.ndigits <= 0)
+                {
+                  arbprec_mul2 (&r);
+                  scale *= (DOUBLEST).5;
+                }
+              while (r.effexp + r.ndigits > 1
+                     || (r.effexp + r.ndigits == 1 && *r.digits >= 2))
+                {
+                  arbprec_div2 (&r);
+                  scale *= (DOUBLEST)2.;
+                }
+
+              /* Now do successive division by 2 to extract the mantissa. */
+              while (r.ndigits && (*to + scale != *to))
+                {
+                  if (r.effexp + r.ndigits == 1) /* r >= 1.0 */
+                    {
+                      /* r -= 1.0 */
+                      r.digits[0] = 0;
+                      arbprec_pack (&r);
+
+                      *to += scale;
+                    }
+
+                  arbprec_mul2 (&r);
+                  scale *= (DOUBLEST).5;
+                }
+            }
+
+          /* Clean up. */
+          free (r.digits);
+        }
+        break;
+    }
+
+  if (exponent & 0x8000) *to = -*to;
+}
 
 /* The converse: convert the DOUBLEST *FROM to an extended float
    and store where TO points.  Neither FROM nor TO have any alignment
