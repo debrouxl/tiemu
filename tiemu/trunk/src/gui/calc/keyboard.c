@@ -142,6 +142,15 @@ on_calc_wnd_button_press_event     (GtkWidget       *widget,
     if(event->type != GDK_BUTTON_PRESS)
         return FALSE;
 
+#ifdef __IPAQ__
+    if (!params.background && 
+	event->button == 1 && event->type == GDK_BUTTON_PRESS)
+    {
+	do_popup_menu(widget, event);
+	return TRUE;
+    }
+#endif
+
 	if (event->button == 3 && event->type == GDK_BUTTON_PRESS)
     {
 		do_popup_menu(widget, event);

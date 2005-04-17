@@ -96,12 +96,20 @@ static gint display_step1_dbox(void)
 
 	dbox = glade_xml_get_widget(xml, "step1_dbox");
 
-    //data = glade_xml_get_widget(xml, "cancelbutton1");
-    //gtk_button_set_label(data, "<= Back");
     data = glade_xml_get_widget(xml, "applybutton1");
     gtk_widget_hide(data);
-    //data = glade_xml_get_widget(xml, "okbutton1");
-    //gtk_button_set_label(data, "Next =>");
+
+#ifdef __IPAQ__
+    // make menu smaller
+    data = glade_xml_get_widget(xml, "radiobutton1");
+    gtk_button_set_label(GTK_BUTTON(data), _("Use PedRom"));
+    data = glade_xml_get_widget(xml, "radiobutton2");
+    gtk_button_set_label(GTK_BUTTON(data), _("Use FLASH OS"));
+    data = glade_xml_get_widget(xml, "radiobutton3");
+    gtk_button_set_label(GTK_BUTTON(data), _("Use ROM dump"));
+    data = glade_xml_get_widget(xml, "radiobutton4");
+    gtk_widget_hide(data);
+#endif
 
 	action = 1;	// default button
     result = gtk_dialog_run(GTK_DIALOG(dbox));

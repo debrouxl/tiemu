@@ -76,7 +76,11 @@ Ti68kBreakpoints	bkpts = { 0 };
  */
 int ti68k_config_load_default(void)
 {
+#ifdef __IPAQ__
+    params.background = 0;
+#else
     params.background = 1;
+#endif
     params.grayplanes = 4;
 
     params.restricted = 1;
