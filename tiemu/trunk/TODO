@@ -39,9 +39,6 @@ dans le décor, je ne sais pas s'il exécute ou pas
 PPhd
 ====
 
-* 1. Cycle counts ? Even they were wrong, they could be useless.
-  3. Multiple windows for dissassembled code ?
-
 * If you could save the exact debugger state in the config file (which windows are
 openned, relative position of the windows and window size), I think it
 shouldn't matter very much.
@@ -50,7 +47,7 @@ shouldn't matter very much.
 roms
 ====
 
-* MOVEA.W diassembled as MOVEA.L (HeapDeref)
+* MOVEA.W dis-assembled as MOVEA.L (HeapDeref)
 
 * make AC_CHECK_LIB(comdlg32, GetOpenFileName) work
 
@@ -59,6 +56,10 @@ roms
 *  Bon, déjà ça dépend du matériel, le HW2 se comporte différemment du HW3. Le 
 fonctionnement de l'horloge sur HW3 est très peu connu. Sur HW2, il devrait marcher...
 Regarde si tous les ports liés à l'auto-int 3 sont émulés correctement sur HW2.
+
+* RTC
+
+* ON key
 
 -------------
 + done

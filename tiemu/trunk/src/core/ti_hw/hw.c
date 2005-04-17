@@ -211,6 +211,7 @@ void hw_update(void)
 			if(!io_bit_tst(0x15,7) && io_bit_tst(0x15,2))
 				if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
 					hw_m68k_irq(3);
+					printf(".");
 		}
 	}
 
