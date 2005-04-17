@@ -329,17 +329,21 @@ print_floating (char *valaddr, struct type *type, struct ui_file *stream)
      instead uses the type's length to determine the precision of the
      floating-point value being printed.  */
 
+/* (TiEmu 20050417 Kevin Kofler) We want to print 16 digits no matter
+                                 what. */
+#if 0
   if (len < sizeof (double))
       fprintf_filtered (stream, "%.9g", (double) doub);
   else if (len == sizeof (double))
       fprintf_filtered (stream, "%.17g", (double) doub);
   else
+#endif
 #ifdef PRINTF_HAS_LONG_DOUBLE
-    fprintf_filtered (stream, "%.35Lg", doub);
+    fprintf_filtered (stream, "%.16Lg", doub);
 #else
     /* This at least wins with values that are representable as
        doubles.  */
-    fprintf_filtered (stream, "%.17g", (double) doub);
+    fprintf_filtered (stream, "%.16g", (double) doub);
 #endif
 }
 
