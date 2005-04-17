@@ -33,6 +33,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <setjmp.h>
+#ifdef __WIN32__
+#include <locale.h>
+#endif
 
 #if WITH_KDE
 #include "kde.h"
@@ -160,6 +163,13 @@ int main(int argc, char **argv)
     splash_screen_set_label(_("Searching for ROM dumps..."));
     err = ti68k_scan_files(inst_paths.img_dir, inst_paths.img_dir, !0);
 	handle_error();
+
+#ifdef __WIN32__
+	/* Windows follows the locale settings even for basic stdio I/O functions.
+	   This is an annoyance for floating-point numbers in GDB, so we override
+	   it here. */
+	setlocale(LC_NUMERIC, "C");
+#endif
 
 	/*
 		Attempt to load an image (step 3)
