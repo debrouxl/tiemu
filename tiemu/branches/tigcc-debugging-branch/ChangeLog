@@ -6,7 +6,13 @@ To do:
 	- stealth I/O and mem protect (done but not enabled)
 	
 - 11/04/2005, version 1.80s:
-	- ...
+	- [roms]  $1102: fixed old file selector
+	- [kevin] $1112: fix incorrect shift of rom_base in handles.c.
+	- [kevin] $1112: fix several HW protection bugs which prevented booting TI-89 Titanium AMS 3.01.
+	- [kevin] $1112: fix and enable HW2/HW3 FlashROM execution protection.
+	- [kevin] $1114: properly step over jsr _bcd_math calls.
+	- [roms]  $1116: don't use libtool and fixed UAE makefile for cross-compilign support.
+	- [roms]  $1137: fixed clock on HW2
 
 - 28/03/2005, version 1.80r:
 	- [kevin] $1029: merged UAE 0.8.15 from tigcc-dbg branch

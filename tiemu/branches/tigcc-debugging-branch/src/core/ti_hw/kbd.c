@@ -37,6 +37,7 @@
 #include "ti68k_def.h"
 #include "m68k.h"
 #include "bits.h"
+#include "ports.h"
 
 static TiKey key_states[NB_MAX_KEYS];
 static int  *key_row;
@@ -159,7 +160,8 @@ int hw_kbd_update(void)		// ~600Hz
     	// Auto-Int 2 is triggered when the first unmasked key is pressed. Keeping the key
 		// pressed, or pressing another one without releasing the first key, will not generate
 		// additional interrupts.
-		hw_m68k_irq(2);
+		if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
+			hw_m68k_irq(2);
     }
 
 	key_change = 0;

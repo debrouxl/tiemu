@@ -254,7 +254,6 @@ uint8_t io_get_byte(uint32_t addr)
         break;
         case 0x02:
 		break;
-        break;
         case 0x03:	// -w <.654.210>
         break;
         case 0x04:	// ??
@@ -288,20 +287,21 @@ uint8_t io_get_byte(uint32_t addr)
 			// read one byte from receive (incoming) buffer
             v = hw_dbus_getbyte();
 			io_bit_clr(0x0d, 5);	// SRX=0 (rx reg is empty)
+		break;
         case 0x10: 	// -w <76543210> (hw1)
-        break;
+        return 0x14;
         case 0x11: 	// -w <76543210> (hw1) 
         return 0x14;
         case 0x12: 	// -w <76543210>
         return 0x14;
         case 0x13: 	// -w <..543210>
-        return 1;
+        return 0x14;
         case 0x14:	// ??
-        return 0x14;
+        break;
         case 0x15:	// rw <7.6543210> 
-        return 0x1b;
+        break;
         case 0x16:	// ??
-        return 0x14;
+        break;
         case 0x17: 	// rw <76543210>
 			// Programmable rate generator
 			return tihw.timer_value;
