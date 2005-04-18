@@ -383,6 +383,7 @@ static void notebook_add_page(GtkWidget *notebook, const char* tab_name)
     gtk_widget_grab_focus(child);
 }
 
+static GtkWidget *wnd = NULL;
 static gint already_open = 0;
 
 /*
@@ -410,13 +411,11 @@ GtkWidget* dbgmem_create_window(void)
 
 	already_open = !0;
 
-	return dbox;
+	return wnd = dbox;
 }
 
 GtkWidget* dbgmem_display_window(void)
 {
-    static GtkWidget *wnd = NULL;
-
 	if(!already_open)
 		wnd = dbgmem_create_window();
     

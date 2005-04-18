@@ -280,7 +280,6 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
 
 static GtkWidget *list;
 static GtkListStore *store;
-static gint already_open = 0;
 static GtkWidget *combo;
 
 typedef struct {
@@ -328,6 +327,9 @@ static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6, int s7
 
 extern int update_submenu(GtkWidget*, gpointer);
 
+static GtkWidget *wnd = NULL;
+static gint already_open = 0;
+
 GtkWidget* dbgcode_create_window(void)
 {
 	GladeXML *xml;
@@ -371,20 +373,17 @@ GtkWidget* dbgcode_create_window(void)
 
 	combo = glade_xml_get_widget(xml, "comboboxentry1");
 	dbgromcall_create_window(combo);
-	dbgromcall_refresh_window(combo);
 
 	lbl1 = glade_xml_get_widget(xml, "label3");
 	lbl2 = glade_xml_get_widget(xml, "label4");
 
 	already_open = !0;
 
-	return dbox;
+	return wnd = dbox;
 }
 
 GtkWidget* dbgcode_display_window(void)
 {
-	static GtkWidget *wnd = NULL;
-
 	if(!already_open)
 		wnd = dbgcode_create_window();
     

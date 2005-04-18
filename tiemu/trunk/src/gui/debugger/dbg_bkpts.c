@@ -295,8 +295,10 @@ static void clist_populate(GtkListStore *store)
 }
 
 static GtkListStore *store = NULL;
-static gint already_open = 0;
 GtkWidget *statbar;
+
+static GtkWidget *wnd = NULL;
+static gint already_open = 0;
 
 /*
 	Display registers window
@@ -327,13 +329,11 @@ GtkWidget* dbgbkpts_create_window(void)
 
 	already_open = !0;
 
-	return dbox;
+	return wnd = dbox;
 }
 
 GtkWidget* dbgbkpts_display_window(void)
 {
-    static GtkWidget *wnd = NULL;
-
 	if(!already_open)
 		wnd = dbgbkpts_create_window();
     

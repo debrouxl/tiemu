@@ -45,14 +45,14 @@ int dbg_on = 0;
 
 void gtk_debugger_preload(void)
 {
-	// Commented: make TiEmu crash
-	//create_dbgregs_window();
-	//create_dbgcode_window();
-	//create_dbgmem_window();
-	//create_dbgbkpts_window();
-	//create_dbgpclog_window();
-    //create_dbgstack_window();
-	//dbgheap_create_window();
+	// open debugger windows
+	dbgw.regs  = dbgregs_create_window();
+	dbgw.mem   = dbgmem_create_window();
+	dbgw.bkpts = dbgbkpts_create_window();
+	dbgw.pclog = dbgpclog_create_window();
+    dbgw.stack = dbgstack_create_window();
+	dbgw.heap  = dbgheap_create_window();
+	dbgw.code  = dbgcode_create_window();
 }
 
 int gtk_debugger_enter(int context)
@@ -69,14 +69,14 @@ int gtk_debugger_enter(int context)
         break;
     }
 
-    // open debugger windows (if not already opened)
-	dbgw.regs = dbgregs_display_window();
-	dbgw.mem  = dbgmem_display_window();
-	dbgw.bkpts = dbgbkpts_display_window();
-    dbgw.pclog = dbgpclog_display_window();
-    dbgw.stack = dbgstack_display_window();
-	dbgw.heap = dbgheap_display_window();
-	dbgw.code = dbgcode_display_window();	// the last has focus
+    // display debugger windows (if not)
+	dbgregs_display_window();
+	dbgmem_display_window();
+	dbgbkpts_display_window();
+    dbgpclog_display_window();
+    dbgstack_display_window();
+	dbgheap_display_window();
+	dbgcode_display_window();	// the last has focus
 
 	return 0;
 }

@@ -127,6 +127,8 @@ static void clist_refresh(GtkListStore *store)
 }
 
 static GtkListStore *store = NULL;
+
+static GtkWidget *wnd = NULL;
 static gint already_open = 0;
 
 /*
@@ -156,13 +158,11 @@ GtkWidget* dbgheap_create_window(void)
 
 	already_open = !0;
 
-	return dbox;
+	return wnd = dbox;
 }
 
 GtkWidget* dbgheap_display_window(void)
 {
-    static GtkWidget *wnd = NULL;
-
 	if(!already_open)
 		wnd = dbgheap_create_window();
     

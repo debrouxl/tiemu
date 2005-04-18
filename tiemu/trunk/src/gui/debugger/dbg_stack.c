@@ -145,6 +145,8 @@ static void clist_refresh(GtkListStore *store, gint target)
 
 static GtkListStore *store1 = NULL;
 static GtkListStore *store2 = NULL;
+
+static GtkWidget *wnd = NULL;
 static gint already_open = 0;
 
 /*
@@ -183,13 +185,11 @@ GtkWidget* dbgstack_create_window(void)
 
 	already_open = !0;
 
-	return dbox;
+	return wnd = dbox;
 }
 
 GtkWidget* dbgstack_display_window(void)
 {
-    static GtkWidget *wnd = NULL;
-
 	if(!already_open)
 		wnd = dbgstack_create_window();
     

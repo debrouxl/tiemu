@@ -55,8 +55,9 @@ roms
 
 * ON key doesn't turn calc off 
 * source code window: scrolling is somewhat broken
-* switch from no skin to skin: window is not refreshed
 * state of debugger windows is buggy
+* switch from no skin to skin w/ TI92: window is not refreshed (Linux only)
+* preload debugger
 
 -------------
 + done

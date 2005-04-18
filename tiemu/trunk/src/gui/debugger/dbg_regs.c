@@ -553,6 +553,8 @@ static void ctree_refresh(GtkTreeStore *store)
 }
 
 static GtkTreeStore *store;
+
+static GtkWidget *wnd = NULL;
 static gint already_open = 0;
 
 /*
@@ -582,13 +584,11 @@ GtkWidget* dbgregs_create_window(void)
 
 	already_open = !0;
 
-	return dbox;
+	return wnd = dbox;
 }
 
 GtkWidget* dbgregs_display_window(void)
 {
-    static GtkWidget *wnd = NULL;
-
 	if(!already_open)
 		wnd = dbgregs_create_window();
 
