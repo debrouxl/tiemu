@@ -4,7 +4,7 @@ List of stuffs to do (in French, sorry):
 ExtendeD
 ========
 
-*
+* none
 
 
 Kevin
@@ -53,7 +53,10 @@ roms
 
 * console mode (Win32)
 
-* ON key
+* ON key doesn't turn calc off 
+* source code window: scrolling is somewhat broken
+* switch from no skin to skin: window is not refreshed
+* state of debugger windows is buggy
 
 -------------
 + done
