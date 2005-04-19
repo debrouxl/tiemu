@@ -833,7 +833,9 @@ on_treeview_key_press_event            (GtkWidget       *widget,
 
         refresh_page(page, +0x10);
 
-        path = gtk_tree_path_new_from_string("7");
+		str = g_strdup_printf("%i", row_max);
+        path = gtk_tree_path_new_from_string(str);
+		g_free(str);
         gtk_tree_view_set_cursor(view, path, NULL, FALSE);
         
         return FALSE;
@@ -861,7 +863,9 @@ on_treeview_key_press_event            (GtkWidget       *widget,
 
         refresh_page(page, +DUMP_SIZE);
 
-        path = gtk_tree_path_new_from_string("7");
+        str = g_strdup_printf("%i", row_max);
+        path = gtk_tree_path_new_from_string(str);
+		g_free(str);
         gtk_tree_view_set_cursor(view, path, NULL, FALSE);
 
         return FALSE;

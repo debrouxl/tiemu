@@ -41,6 +41,8 @@
 #include "dbg_all.h"
 #include "dbg_romcall.h"
 
+//#define FIXED_SIZE
+
 static GladeXML *xml = NULL;
 static GtkWidget *wnd = NULL;
 static gint already_open = 0;
@@ -54,7 +56,11 @@ enum {
 
 #define FONT_NAME	"courier"
 
-static gint NLINES = 10;	//#define NLINES      10
+#ifdef FIXED_SIZE
+#define NLINES      10
+#else
+static gint NLINES = 10;	
+#endif
 
 static GtkListStore* clist_create(GtkWidget *widget)
 {
@@ -837,7 +843,9 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         gtk_list_store_clear(store);
         clist_populate(store, start + offset);
     
-        path = gtk_tree_path_new_from_string("9");      // restore selection
+        str = g_strdup_printf("%i", row_max);
+        path = gtk_tree_path_new_from_string(str);	// restore selection
+		g_free(str);
         gtk_tree_selection_select_path(selection, path);
 
         return TRUE;
@@ -852,6 +860,9 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         gtk_list_store_clear(store);
         clist_populate(store, addr - 0x10);
 
+		path = gtk_tree_path_new_from_string("0");
+        gtk_tree_view_set_cursor(view, path, NULL, FALSE);
+
         return TRUE;
 
     case GDK_Page_Down:
@@ -862,9 +873,11 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
             break;
 
         gtk_list_store_clear(store);
-        clist_populate(store, addr + 0x10);
+        clist_populate(store, addr/* + 0x10*/);
 
-        path = gtk_tree_path_new_from_string("9");      // restore selection
+		str = g_strdup_printf("%i", row_max);
+        path = gtk_tree_path_new_from_string(str);	// restore selection
+		g_free(str);
         gtk_tree_selection_select_path(selection, path);
 
         return TRUE;
@@ -971,6 +984,7 @@ on_treeview1_size_allocate             (GtkWidget       *widget,
                                         GdkRectangle    *allocation,
                                         gpointer         user_data)
 {
+#ifndef FIXED_SIZE
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreePath *path;
 	GdkRectangle rect;
@@ -993,4 +1007,5 @@ on_treeview1_size_allocate             (GtkWidget       *widget,
 	}
 
 	old = NLINES;
+#endif
 }

@@ -285,7 +285,9 @@ on_dbgstack_key_press_event           (GtkWidget       *widget,
 		gtk_list_store_clear(store);
         clist_populate(store, TARGET_SP, min+2);
 
-        path = gtk_tree_path_new_from_string("9");
+        str = g_strdup_printf("%i", row_max);
+        path = gtk_tree_path_new_from_string(str);
+		g_free(str);
         gtk_tree_view_set_cursor(view, path, NULL, FALSE);
 
         return TRUE;
@@ -315,7 +317,9 @@ on_dbgstack_key_press_event           (GtkWidget       *widget,
         gtk_list_store_clear(store);
         clist_populate(store, TARGET_SP, min+10);
 
-        path = gtk_tree_path_new_from_string("9");
+        str = g_strdup_printf("%i", row_max);
+        path = gtk_tree_path_new_from_string(str);
+		g_free(str);
         gtk_tree_view_set_cursor(view, path, NULL, FALSE);
 
         return TRUE;
