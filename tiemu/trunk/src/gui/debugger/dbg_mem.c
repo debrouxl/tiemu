@@ -417,7 +417,8 @@ GtkWidget* dbgmem_display_window(void)
 {
 	if(!already_open)
 		wnd = dbgmem_create_window();
-    
+   
+#ifdef WND_STATE
 	if(!options3.mem.minimized)
 	{
 		gtk_window_resize(GTK_WINDOW(wnd), options3.mem.rect.w, options3.mem.rect.h);
@@ -425,6 +426,7 @@ GtkWidget* dbgmem_display_window(void)
 	}
 	else
 		gtk_window_iconify(GTK_WINDOW(wnd));
+#endif
 
 	refresh_page(0, 0);
 	gtk_widget_show(wnd);

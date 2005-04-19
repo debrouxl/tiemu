@@ -334,6 +334,7 @@ GtkWidget* dbgbkpts_display_window(void)
 	if(!already_open)
 		wnd = dbgbkpts_create_window();
     
+#ifdef WND_STATE
 	if(!options3.bkpts.minimized)
 	{
 		gtk_window_resize(GTK_WINDOW(wnd), options3.bkpts.rect.w, options3.bkpts.rect.h);
@@ -341,6 +342,7 @@ GtkWidget* dbgbkpts_display_window(void)
 	}
 	else
 		gtk_window_iconify(GTK_WINDOW(wnd));
+#endif
 
 	gtk_list_store_clear(store);
     clist_populate(store);

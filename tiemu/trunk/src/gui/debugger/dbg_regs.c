@@ -591,6 +591,7 @@ GtkWidget* dbgregs_display_window(void)
 	if(!already_open)
 		wnd = dbgregs_create_window();
 
+#ifdef WND_STATE
 	if(!options3.regs.minimized)
 	{
 		gtk_window_resize(GTK_WINDOW(wnd), options3.regs.rect.w, options3.regs.rect.h);
@@ -598,6 +599,7 @@ GtkWidget* dbgregs_display_window(void)
 	}
 	else
 		gtk_window_iconify(GTK_WINDOW(wnd));
+#endif
     
 	ctree_refresh(store);
 	gtk_widget_show(wnd);

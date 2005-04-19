@@ -164,6 +164,7 @@ GtkWidget* dbgheap_display_window(void)
 	if(!already_open)
 		wnd = dbgheap_create_window();
     
+#ifdef WND_STATE
 	if(!options3.heap.minimized)
 	{
 		gtk_window_resize(GTK_WINDOW(wnd), options3.heap.rect.w, options3.heap.rect.h);
@@ -171,6 +172,7 @@ GtkWidget* dbgheap_display_window(void)
 	}
 	else
 		gtk_window_iconify(GTK_WINDOW(wnd));
+#endif
 
 	clist_refresh(store);
 	gtk_widget_show(wnd);

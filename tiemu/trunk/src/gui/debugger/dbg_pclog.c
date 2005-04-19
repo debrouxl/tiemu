@@ -157,6 +157,7 @@ GtkWidget* dbgpclog_display_window(void)
 	if(!already_open)
 		wnd = dbgpclog_create_window();
     
+#ifdef WND_STATE
 	if(!options3.pclog.minimized)
 	{
 		gtk_window_resize(GTK_WINDOW(wnd), options3.pclog.rect.w, options3.pclog.rect.h);
@@ -164,6 +165,7 @@ GtkWidget* dbgpclog_display_window(void)
 	}
 	else
 		gtk_window_iconify(GTK_WINDOW(wnd));
+#endif
 
 	clist_refresh(store);
 	gtk_widget_show(wnd);

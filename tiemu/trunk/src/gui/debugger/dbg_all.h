@@ -13,6 +13,8 @@
 #include "dbg_heap.h"
 #include "dbg_entry.h"
 
+#define WND_STATE
+
 /* Definitions */
 
 typedef struct {

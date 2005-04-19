@@ -382,7 +382,7 @@ GtkWidget* dbgcode_display_window(void)
 	if(!already_open)
 		wnd = dbgcode_create_window();
     
-//#if WND_STATE
+#ifdef WND_STATE
 	if(!options3.code.minimized)
 	{
 		gtk_window_resize(GTK_WINDOW(wnd), options3.code.rect.w, options3.code.rect.h);
@@ -390,7 +390,7 @@ GtkWidget* dbgcode_display_window(void)
 	}
 	else
 		gtk_window_iconify(GTK_WINDOW(wnd));
-//#endif
+#endif
 
 	gtk_widget_set_sensitive(list, TRUE);	
 	tb_set_states(1, 1, 1, 1, 1, 0, 1);
