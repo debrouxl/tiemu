@@ -183,7 +183,6 @@ gint dbgcause2_display_dbox()
 	return 0;
 }
 
-
 gint display_dbgcause_dbox()
 {
 	gint type, id, mode;

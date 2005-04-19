@@ -41,7 +41,6 @@ static GladeXML *xml;
 
 gint dbgdata_display_dbox(gint *mode, gint *type, uint32_t *start, uint32_t *stop)
 {
-	//GladeXML *xml;
 	GtkWidget *dbox;
 	GtkWidget *data;
 	gint result;

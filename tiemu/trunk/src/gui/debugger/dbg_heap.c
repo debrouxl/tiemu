@@ -39,6 +39,10 @@
 #include "dbg_all.h"
 #include "handles.h"
 
+static GladeXML *xml = NULL;
+static GtkWidget *wnd = NULL;
+static gint already_open = 0;
+
 enum { 
 	    COL_ID, COL_ADDR, COL_SIZE
 };
@@ -46,8 +50,6 @@ enum {
 #define CLIST_NCOLS		(3)		// real columns
 
 #define FONT_NAME	"courier"
-
-#define GET_STORE(w)    (GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(w))))
 
 static GtkListStore* clist_create(GtkWidget *widget)
 {
@@ -128,15 +130,11 @@ static void clist_refresh(GtkListStore *store)
 
 static GtkListStore *store = NULL;
 
-static GtkWidget *wnd = NULL;
-static gint already_open = 0;
-
 /*
 	Display registers window
 */
 GtkWidget* dbgheap_create_window(void)
 {
-	GladeXML *xml;
 	GtkWidget *dbox;
     GtkWidget *data;
 	

@@ -42,6 +42,10 @@
 #include "romcalls.h"
 #include "dbg_romcall.h"
 
+static GladeXML *xml = NULL;
+static GtkWidget *wnd = NULL;
+static gint already_open = 0;
+
 enum { 
 	    COL_ICON, COL_ADDR, COL_OPCODE, COL_OPERAND,
         COL_HEXADDR, COL_FONT, COL_COLOR
@@ -51,8 +55,7 @@ enum {
 
 #define FONT_NAME	"courier"
 
-//#define NLINES      10
-static gint NLINES = 10;
+static gint NLINES = 10;	//#define NLINES      10
 
 static GtkListStore* clist_create(GtkWidget *widget)
 {
@@ -171,8 +174,6 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
     }
 }
 
-static GtkWidget *lbl1, *lbl2;
-
 static void cyccnt_refresh(GtkWidget *l1, GtkWidget *l2)
 {
 	unsigned int count, diff;
@@ -275,7 +276,7 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
     }
 
 	// update cycle counter
-	cyccnt_refresh(lbl1, lbl2);
+	cyccnt_refresh(glade_get("label3"), glade_get("label4"));
 }
 
 static GtkWidget *list;
@@ -327,12 +328,8 @@ static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6, int s7
 
 extern int update_submenu(GtkWidget*, gpointer);
 
-static GtkWidget *wnd = NULL;
-static gint already_open = 0;
-
 GtkWidget* dbgcode_create_window(void)
 {
-	GladeXML *xml;
 	GtkWidget *dbox;
     GtkWidget *data;	
 	
@@ -373,9 +370,6 @@ GtkWidget* dbgcode_create_window(void)
 
 	combo = glade_xml_get_widget(xml, "comboboxentry1");
 	dbgromcall_create_window(combo);
-
-	lbl1 = glade_xml_get_widget(xml, "label3");
-	lbl2 = glade_xml_get_widget(xml, "label4");
 
 	already_open = !0;
 
@@ -646,7 +640,7 @@ dbgcode_button8_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
 	ti68k_get_cycle_count(!0, NULL);
-	gtk_label_set_text(GTK_LABEL(lbl1), "0");
+	gtk_label_set_text(GTK_LABEL(glade_get("label3")), "0");
 }
 
 /***** Popup menu *****/

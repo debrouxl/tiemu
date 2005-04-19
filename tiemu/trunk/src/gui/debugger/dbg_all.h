@@ -49,4 +49,8 @@ extern int dbg_on;
 // convenient place (calc.h)
 extern GtkWidget *main_wnd;
 
+/* Macros */
+
+#define glade_get(s)		glade_xml_get_widget(xml, (s))
+
 #endif

@@ -44,11 +44,12 @@
 #include "struct.h"
 #include "dbg_all.h"
 
+static GladeXML *xml = NULL;
+static GtkWidget *wnd = NULL;
+static gint already_open = 0;
+
 #define FORCE_REFRESH
-
 #define DUMP_SIZE       128
-
-static GtkWidget *notebook;
 
 enum { 
 	    COL_ADDR, 
@@ -383,15 +384,13 @@ static void notebook_add_page(GtkWidget *notebook, const char* tab_name)
     gtk_widget_grab_focus(child);
 }
 
-static GtkWidget *wnd = NULL;
-static gint already_open = 0;
+static GtkWidget *notebook;
 
 /*
 	Display memory window
 */
 GtkWidget* dbgmem_create_window(void)
 {
-	GladeXML *xml;
 	GtkWidget *dbox;
 	
 	xml = glade_xml_new
@@ -606,17 +605,17 @@ static void refresh_page(int page, int offset)
 */
 static GtkWidget* display_popup_menu(void)
 {
-	GladeXML *xml;
+	GladeXML *xml2;
 	GtkWidget *menu;
 
-	xml = glade_xml_new
+	xml2 = glade_xml_new
 	    (tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_popup",
 	     PACKAGE);
-	if (!xml)
+	if (!xml2)
 		g_error(_("%s: GUI loading failed !\n"), __FILE__);
-	glade_xml_signal_autoconnect(xml);
+	glade_xml_signal_autoconnect(xml2);
 
-	menu = glade_xml_get_widget(xml, "dbgmem_popup");
+	menu = glade_xml_get_widget(xml2, "dbgmem_popup");
 	return menu;
 }
 

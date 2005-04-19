@@ -42,6 +42,9 @@
 #include "struct.h"
 #include "dbg_all.h"
 
+static GladeXML *xml = NULL;
+static GtkWidget *wnd = NULL;
+static gint already_open = 0;
 
 enum { 
 	    COL_NAME, COL_VALUE, 
@@ -554,15 +557,11 @@ static void ctree_refresh(GtkTreeStore *store)
 
 static GtkTreeStore *store;
 
-static GtkWidget *wnd = NULL;
-static gint already_open = 0;
-
 /*
 	Display registers window
 */
 GtkWidget* dbgregs_create_window(void)
 {
-	GladeXML *xml;
 	GtkWidget *dbox;
     GtkWidget *data;	
 	

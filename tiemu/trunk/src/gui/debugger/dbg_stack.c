@@ -40,6 +40,10 @@
 #include "struct.h"
 #include "dbg_all.h"
 
+static GladeXML *xml = NULL;
+static GtkWidget *wnd = NULL;
+static gint already_open = 0;
+
 enum { 
 	    COL_ADDR, COL_DATA, COL_FONT
 };
@@ -47,7 +51,6 @@ enum {
 #define CLIST_NCOLS		(3)		// 1 real columns
 
 #define FONT_NAME		"courier"
-
 #define DUMP_SIZE       10
 
 static GtkListStore* clist_create(GtkWidget *widget)
@@ -146,15 +149,11 @@ static void clist_refresh(GtkListStore *store, gint target)
 static GtkListStore *store1 = NULL;
 static GtkListStore *store2 = NULL;
 
-static GtkWidget *wnd = NULL;
-static gint already_open = 0;
-
 /*
 	Display registers window
 */
 GtkWidget* dbgstack_create_window(void)
 {
-	GladeXML *xml;
 	GtkWidget *dbox;
     GtkWidget *data;
 	

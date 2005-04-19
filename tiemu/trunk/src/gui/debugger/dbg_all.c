@@ -43,6 +43,7 @@ int dbg_on = 0;
 
 /* Functions applicable to the whole debugger */
 
+// create windows but don't show them
 void gtk_debugger_preload(void)
 {
 	// open debugger windows
@@ -55,6 +56,7 @@ void gtk_debugger_preload(void)
 	dbgw.code  = dbgcode_create_window();
 }
 
+// show previously created window
 int gtk_debugger_enter(int context)
 {
 	// debugger is open
@@ -81,6 +83,7 @@ int gtk_debugger_enter(int context)
 	return 0;
 }
 
+// refresh content of all windows
 void gtk_debugger_refresh(void)
 {	
 	if(options3.regs.visible)
@@ -99,6 +102,7 @@ void gtk_debugger_refresh(void)
 		dbgheap_refresh_window();
 }
 
+// make windows (un-)modifiable
 void set_other_windows_sensitivity(int state)
 {
     if(options3.regs.visible)
@@ -115,6 +119,7 @@ void set_other_windows_sensitivity(int state)
         gtk_widget_set_sensitive(dbgw.heap, state);
 }
 
+// minimize all windows
 void gtk_debugger_minimize_all(int all)
 {
     if(options3.regs.visible)
@@ -133,6 +138,7 @@ void gtk_debugger_minimize_all(int all)
         gtk_window_iconify(GTK_WINDOW(dbgw.heap));
 }
 
+// unminimize all windows
 void gtk_debugger_unminimize_all(int all)
 {
     if(options3.regs.visible)
@@ -151,6 +157,7 @@ void gtk_debugger_unminimize_all(int all)
         gtk_window_deiconify(GTK_WINDOW(dbgw.heap));
 }
 
+// show all windows
 void gtk_debugger_show_all(int all)
 {
     if(!dbg_on)
@@ -172,6 +179,7 @@ void gtk_debugger_show_all(int all)
         gtk_widget_show(dbgw.heap);
 }
 
+// or hide them
 void gtk_debugger_hide_all(int all)
 {
     if(!dbg_on)
@@ -196,6 +204,7 @@ void gtk_debugger_hide_all(int all)
 /* Callbacks */
 
 // callbacks from dbg_code.c (window menu)
+// used to show/hide or minimize/un-minimize windows
 
 GLADE_CB void
 on_registers1_activate                 (GtkMenuItem     *menuitem,
@@ -264,12 +273,11 @@ GLADE_CB void
 on_quit1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	// hide all windows
 	gtk_debugger_hide_all(!0);
-    //while(gtk_events_pending()) gtk_main_iteration();
-
     dbg_on = 0;
 
-    // Closing the debugger starts the emulator
+    // and restarts the emulator
 	ti68k_bkpt_set_cause(0, 0, 0);
     engine_start();
 }
@@ -312,10 +320,9 @@ on_restore_all1_activate               (GtkMenuItem     *menuitem,
 {
 	// restore windows with default settings
 	options3_set_default();
-
-	//???
 }
 
+// reflects window state in menu
 void update_submenu(GtkWidget *widget, gpointer user_data)
 {
     GtkMenuShell *shell = GTK_MENU_SHELL(widget);
