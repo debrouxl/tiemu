@@ -14,6 +14,7 @@ To do:
 	- [roms]  $1116: don't use libtool and fixed UAE makefile for cross-compilign support.
 	- [roms]  $1137: fixed clock on HW2
 	- [roms]  $1143: fixed preloading of debugger 
+	- [roms]  $1145: can sort ROM calls by addr, name or id
 
 - 28/03/2005, version 1.80r:
 	- [kevin] $1029: merged UAE 0.8.15 from tigcc-dbg branch

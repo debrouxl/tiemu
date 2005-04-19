@@ -39,7 +39,6 @@
 #include "ti68k_int.h"
 #include "struct.h"
 #include "dbg_all.h"
-#include "romcalls.h"
 #include "dbg_romcall.h"
 
 static GladeXML *xml = NULL;
@@ -368,8 +367,10 @@ GtkWidget* dbgcode_create_window(void)
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(list));
 	gtk_widget_show(list);
 
-	combo = glade_xml_get_widget(xml, "comboboxentry1");
-	dbgromcall_create_window(combo);
+	data = glade_xml_get_widget(xml, "progressbar1");
+	gtk_widget_hide(data);
+
+	dbgromcall_create_window(xml);
 
 	already_open = !0;
 
@@ -381,6 +382,7 @@ GtkWidget* dbgcode_display_window(void)
 	if(!already_open)
 		wnd = dbgcode_create_window();
     
+//#if WND_STATE
 	if(!options3.code.minimized)
 	{
 		gtk_window_resize(GTK_WINDOW(wnd), options3.code.rect.w, options3.code.rect.h);
@@ -388,6 +390,7 @@ GtkWidget* dbgcode_display_window(void)
 	}
 	else
 		gtk_window_iconify(GTK_WINDOW(wnd));
+//#endif
 
 	gtk_widget_set_sensitive(list, TRUE);	
 	tb_set_states(1, 1, 1, 1, 1, 0, 1);
@@ -396,7 +399,7 @@ GtkWidget* dbgcode_display_window(void)
     gtk_list_store_clear(store);
 	clist_refresh(store, TRUE);
 
-	dbgromcall_refresh_window(combo);
+	dbgromcall_refresh_window();
 	gtk_widget_show(wnd);
 
     return wnd;

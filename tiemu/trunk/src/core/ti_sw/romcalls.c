@@ -224,17 +224,24 @@ static int merge_from_flash(void)
 
 /*
 	Load ROM calls from file and FLASH and merge.
+	Return value:
+	 0 if successful
+	-1 if error
+	-2 if no image
+	-3 if TI92
+	-4 if already loaded
 */
 int romcalls_preload(const char* filename)
 {
 	IMG_INFO *img = &img_infos;
 
-	// check for reloading
-	if(!img_loaded || (img->calc_type == TI92))
-		return -2;
+	// check whether parsing is possible
+	if(!img_loaded) return -2;
+	if(img->calc_type == TI92) return -3;
 
+	// check for reload
 	if((old_ct == img->calc_type) && !strcmp(old_av, img->version) && loaded)
-		return -1;
+		return -4;
 	else
 	{
 		old_ct = img->calc_type;
@@ -290,7 +297,7 @@ static gint compare_func_by_addr(gconstpointer a, gconstpointer b)
 
 GList* romcalls_sort_by_addr(void)
 {
-	return g_list_sort(list, compare_func_by_addr);
+	return list = g_list_sort(list, compare_func_by_addr);
 }
 
 // negative value if a < b; zero if a = b; positive value if a > b
@@ -304,7 +311,7 @@ static gint compare_func_by_name(gconstpointer a, gconstpointer b)
 
 GList* romcalls_sort_by_name(void)
 {
-	return g_list_sort(list, compare_func_by_name);
+	return list = g_list_sort(list, compare_func_by_name);
 }
 
 // negative value if a < b; zero if a = b; positive value if a > b
@@ -318,7 +325,7 @@ static gint compare_func_by_iname(gconstpointer a, gconstpointer b)
 
 GList* romcalls_sort_by_iname(void)
 {
-	return g_list_sort(list, compare_func_by_iname);
+	return list = g_list_sort(list, compare_func_by_iname);
 }
 
 /* =========== */
