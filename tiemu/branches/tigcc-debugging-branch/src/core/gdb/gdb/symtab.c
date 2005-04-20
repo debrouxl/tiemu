@@ -2084,6 +2084,10 @@ find_pc_sect_line (CORE_ADDR pc, struct bfd_section *section, int notcurrent)
 
 
   s = find_pc_sect_symtab (pc, section);
+  /* (TiEmu 20050420 Kevin Kofler) If this doesn't give us a valid symtab, we
+     want to search all our symtabs. This happens when debugging assembly
+     files. */
+#if 0
   if (!s)
     {
       /* if no symbol information, return previous pc */
@@ -2092,7 +2096,9 @@ find_pc_sect_line (CORE_ADDR pc, struct bfd_section *section, int notcurrent)
       val.pc = pc;
       return val;
     }
+#endif
 
+  if (s) {
   bv = BLOCKVECTOR (s);
 
   /* Look at all the symtabs that share this blockvector.
@@ -2163,10 +2169,86 @@ find_pc_sect_line (CORE_ADDR pc, struct bfd_section *section, int notcurrent)
           && (best_end == 0 || best_end > item->pc))
 	best_end = item->pc;
     }
+  }
+  else
+  {
+  /* (TiEmu 20050420) Look at all the symtabs.  */
+  struct partial_symtab *ps;
+  struct objfile *objfile;
+  bv = NULL;
+
+  ALL_PSYMTABS (objfile, ps)
+    {
+      s = PSYMTAB_TO_SYMTAB (ps);
+      if (!s) continue;
+
+      /* Find the best line in this symtab.  */
+      l = LINETABLE (s);
+      if (!l)
+	continue;
+      len = l->nitems;
+      if (len <= 0)
+	{
+	  /* I think len can be zero if the symtab lacks line numbers
+	     (e.g. gcc -g1).  (Either that or the LINETABLE is NULL;
+	     I'm not sure which, and maybe it depends on the symbol
+	     reader).  */
+	  continue;
+	}
+
+      prev = NULL;
+      item = l->item;		/* Get first line info */
+
+      /* Is this file's first line closer than the first lines of other files?
+         If so, record this file, and its first line, as best alternate.  */
+      if (item->pc > pc && (!alt || item->pc < alt->pc))
+	{
+	  alt = item;
+	  alt_symtab = s;
+	}
+
+      for (i = 0; i < len; i++, item++)
+	{
+	  /* Leave prev pointing to the linetable entry for the last line
+	     that started at or before PC.  */
+	  if (item->pc > pc)
+	    break;
+
+	  prev = item;
+	}
+
+      /* At this point, prev points at the line whose start addr is <= pc, and
+         item points at the next line.  If we ran off the end of the linetable
+         (pc >= start of the last line), then prev == item.  If pc < start of
+         the first line, prev will not be set.  */
+
+      /* Is this file's best line closer than the best in the other files?
+         If so, record this file, and its best line, as best so far.  Don't
+         save prev if it represents the end of a function (i.e. line number
+         0) instead of a real line.  */
+
+      if (prev && prev->line && (!best || prev->pc > best->pc))
+	{
+	  best = prev;
+	  best_symtab = s;
+
+	  /* Discard BEST_END if it's before the PC of the current BEST.  */
+	  if (best_end <= best->pc)
+	    best_end = 0;
+	}
+
+      /* If another line (denoted by ITEM) is in the linetable and its
+         PC is after BEST's PC, but before the current BEST_END, then
+	 use ITEM's PC as the new best_end.  */
+      if (best && i < len && item->pc > best->pc
+          && (best_end == 0 || best_end > item->pc))
+	best_end = item->pc;
+    }
+  }
 
   if (!best_symtab)
     {
-      if (!alt_symtab)
+      if (!alt_symtab || !bv)
 	{			/* If we didn't find any line # info, just
 				   return zeros.  */
 	  val.pc = pc;
@@ -2200,6 +2282,8 @@ find_pc_sect_line (CORE_ADDR pc, struct bfd_section *section, int notcurrent)
 	val.end = best_end;
       else if (alt)
 	val.end = alt->pc;
+      else if (bv == NULL)
+	val.end = 0;
       else
 	val.end = BLOCK_END (BLOCKVECTOR_BLOCK (bv, GLOBAL_BLOCK));
     }
