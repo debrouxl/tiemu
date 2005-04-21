@@ -109,9 +109,6 @@ int hw_mem_init(void)
 		tihw.io2_size = ti68k_get_io2_size(tihw.calc_type);
 	}
 
-	if(tihw.calc_type == TI89t)
-		tihw.ram_size = 2*MB;	// used to avoid mirroring of segments
-
     // clear breakpoints
 	ti68k_bkpt_clear_access();
 	ti68k_bkpt_clear_range();
