@@ -234,7 +234,10 @@ uint32_t find_pc(void)
         // FLASH (TI89, TI92+, 200, ...)
         for (vt = 0x12000; vt < tihw.rom_size; vt++)
 	    {
-	        if (*((int*)(tihw.rom + vt)) == 0xcccccccc) 
+		uint8_t *rom = tihw.rom + vt;
+
+		if(rom[0] == 0xcc && rom[1] == 0xcc && 
+		   rom[2] == 0xcc && rom[3] == 0xcc)
             {
 	            vt += 4;
 	            break;
