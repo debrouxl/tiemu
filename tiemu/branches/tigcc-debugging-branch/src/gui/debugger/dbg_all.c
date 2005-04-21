@@ -78,7 +78,7 @@ void gtk_debugger_preload(void)
   	os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   	GetVersionEx(&os);
 
-	if ((os.dwMajorVersion == 5 && os.dwMinorVersion >= 1) || os.dwMajorVersion >= 5)
+	if ((os.dwMajorVersion == 5 && os.dwMinorVersion >= 1) || os.dwMajorVersion > 5)
 	{
 		// Check if a theme is loaded
 		HINSTANCE handle;
