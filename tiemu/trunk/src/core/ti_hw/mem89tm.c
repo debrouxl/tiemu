@@ -106,7 +106,11 @@ int ti89t_mem_init(void)
 
 uint32_t ti89t_get_long(uint32_t adr) 
 {
-    if(IN_RANGE(0x000000, adr, 0x5fffff))				// RAM access
+	if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM access
+	{
+        return lget(adr);
+	}
+    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// ghost of RAM
 	{
         return lget(adr);
 	}
@@ -128,7 +132,11 @@ uint32_t ti89t_get_long(uint32_t adr)
 
 uint16_t ti89t_get_word(uint32_t adr) 
 {
-    if(IN_RANGE(0x000000, adr, 0x5fffff))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM access
+	{
+        return wget(adr);
+	}
+    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// ghost of RAM
 	{
         return wget(adr);
 	}
@@ -150,7 +158,11 @@ uint16_t ti89t_get_word(uint32_t adr)
 
 uint8_t ti89t_get_byte(uint32_t adr) 
 {
-    if(IN_RANGE(0x000000, adr, 0x5fffff))				// RAM access
+	if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM access
+	{
+        return bget(adr);
+	}
+    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// ghost of RAM
 	{
         return bget(adr);
 	}
@@ -172,7 +184,11 @@ uint8_t ti89t_get_byte(uint32_t adr)
 
 void ti89t_put_long(uint32_t adr, uint32_t arg) 
 {
-    if(IN_RANGE(0x000000, adr, 0x5fffff))				// RAM access
+    if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM access
+	{
+        lput(adr, arg);
+	}
+    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// ghost of RAM
 	{
         lput(adr, arg);
 	}
@@ -194,7 +210,11 @@ void ti89t_put_long(uint32_t adr, uint32_t arg)
 
 void ti89t_put_word(uint32_t adr, uint16_t arg) 
 {
-	if(IN_RANGE(0x000000, adr, 0x5fffff))				// RAM access
+	if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM access
+	{
+        wput(adr, arg);
+	}
+    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// ghost of RAM
 	{
         wput(adr, arg);
 	}
@@ -216,7 +236,11 @@ void ti89t_put_word(uint32_t adr, uint16_t arg)
 
 void ti89t_put_byte(uint32_t adr, uint8_t arg) 
 {
-    if(IN_RANGE(0x000000, adr, 0x5fffff))				// RAM access
+	if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM access
+	{
+        bput(adr, arg);
+	}
+    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// ghost of RAM
 	{
         bput(adr, arg);
 	}

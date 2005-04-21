@@ -4,6 +4,9 @@ To do:
 	- video scaling
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
+
+- 20/04/2005, version 1.80t:
+	- [roms]  $1151: fixed RAM space on Titanium
 	
 - 11/04/2005, version 1.80s:
 	- [roms]  $1102: fixed old file selector

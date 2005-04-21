@@ -51,7 +51,7 @@
 
 static IMG_INFO *img = &img_infos;
 
-uint8_t *mem_tab[16];		// 1MB per banks
+uint8_t *mem_tab[16];		// 1MB per banks  (or segments)
 uint32_t mem_msk[16];		// pseudo chip-select (allow wrapping / ghost space)
 
 // 000000-0fffff : RAM (128 or 256 KB)
