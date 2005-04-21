@@ -86,6 +86,7 @@ void gtk_debugger_preload(void)
 			wm_offset = 30;	// WinXP with XP theme, not classic
 		else
 			wm_offset = 20;	// WinXP with classic theme
+		FreeLibrary(handle);
 	}
 	else
 		wm_offset = 20;	// others
