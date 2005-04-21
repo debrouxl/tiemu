@@ -39,6 +39,10 @@
 #include "dbg_all.h"
 #include "handles.h"
 
+static GladeXML *xml = NULL;
+static GtkWidget *wnd = NULL;
+static gint already_open = 0;
+
 enum { 
 	    COL_ID, COL_ADDR, COL_SIZE
 };
@@ -46,8 +50,6 @@ enum {
 #define CLIST_NCOLS		(3)		// real columns
 
 #define FONT_NAME	"courier"
-
-#define GET_STORE(w)    (GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(w))))
 
 static GtkListStore* clist_create(GtkWidget *widget)
 {
@@ -127,14 +129,12 @@ static void clist_refresh(GtkListStore *store)
 }
 
 static GtkListStore *store = NULL;
-static gint already_open = 0;
 
 /*
 	Display registers window
 */
 GtkWidget* dbgheap_create_window(void)
 {
-	GladeXML *xml;
 	GtkWidget *dbox;
     GtkWidget *data;
 	
@@ -156,16 +156,15 @@ GtkWidget* dbgheap_create_window(void)
 
 	already_open = !0;
 
-	return dbox;
+	return wnd = dbox;
 }
 
 GtkWidget* dbgheap_display_window(void)
 {
-    static GtkWidget *wnd = NULL;
-
 	if(!already_open)
 		wnd = dbgheap_create_window();
     
+#ifdef WND_STATE
 	if(!options3.heap.minimized)
 	{
 		gtk_window_resize(GTK_WINDOW(wnd), options3.heap.rect.w, options3.heap.rect.h);
@@ -173,6 +172,7 @@ GtkWidget* dbgheap_display_window(void)
 	}
 	else
 		gtk_window_iconify(GTK_WINDOW(wnd));
+#endif
 
 	clist_refresh(store);
 	gtk_widget_show(wnd);

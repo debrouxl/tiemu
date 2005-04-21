@@ -387,7 +387,6 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
 	memset (&o, 0, sizeof(OPENFILENAME));
 
 	// set default filename
-	printf("<%s>\n", filename);
 	if(filename)
 		strncpy(lpstrFile, filename, sizeof(lpstrFile));
 

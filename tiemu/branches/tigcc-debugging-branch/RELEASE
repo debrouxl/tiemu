@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.80q		(27/03/2005)
-Current version:  1.80r		(10/04/2005)
+Previous version: 1.80r		(10/04/2005)
+Current version:  1.80s		(19/04/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,33 +20,32 @@ For the other link cables, no driver is needed because it's provided.
 New capabilities:
 -----------------
 
-	- added instruction cycle count support
+	- can sort ROM calls by addr, name or id (beware: slow !)
+	- properly step over jsr _bcd_math calls
 
 
 Improvements:
 -------------
 
-	- merged UAE 0.8.15 from tigcc-dbg branch
-	- restrict to actual speed based on cycle count, not instruction count.
-	- added pgm_entry bkpt support in dbg_cause.c
-	- browser launching
-	-  trigger interrupts per cycle, not per instruction. Fix interrupt rates. 
-		Measure LCD exposure times in cycles rather than instructions to match the timers.
+	- clock support on HW2
+	- preloading of debugger
 		
 
 Bug fixes:
 ----------
 
-	- don't start the engine when toggling "Restrict to actual speed" if it was stopped (crash fix).
-	- TiEmu hang when using F10 instead of popup menu.
+	- old file selector
+	- incorrect shift of rom_base in handles
+	- several HW protection bugs which prevented booting TI-89 Titanium AMS 3.01
+	- HW2/HW3 FlashROM execution protection
+	- window size/position with border size
+	- source code window: scrolling was somewhat weird/broken
 
 
 Planned:
 --------
 
-	- implement the RTC introduced with AMS 2.09
-	- do a release candidate
-	- merge main branch with tigcc-debugging-branch
+	- to do...
 
 	
 Notes:

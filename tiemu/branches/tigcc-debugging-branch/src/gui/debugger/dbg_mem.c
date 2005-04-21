@@ -44,11 +44,12 @@
 #include "struct.h"
 #include "dbg_all.h"
 
+static GladeXML *xml = NULL;
+static GtkWidget *wnd = NULL;
+static gint already_open = 0;
+
 #define FORCE_REFRESH
-
 #define DUMP_SIZE       128
-
-static GtkWidget *notebook;
 
 enum { 
 	    COL_ADDR, 
@@ -383,14 +384,13 @@ static void notebook_add_page(GtkWidget *notebook, const char* tab_name)
     gtk_widget_grab_focus(child);
 }
 
-static gint already_open = 0;
+static GtkWidget *notebook;
 
 /*
 	Display memory window
 */
 GtkWidget* dbgmem_create_window(void)
 {
-	GladeXML *xml;
 	GtkWidget *dbox;
 	
 	xml = glade_xml_new
@@ -410,16 +410,15 @@ GtkWidget* dbgmem_create_window(void)
 
 	already_open = !0;
 
-	return dbox;
+	return wnd = dbox;
 }
 
 GtkWidget* dbgmem_display_window(void)
 {
-    static GtkWidget *wnd = NULL;
-
 	if(!already_open)
 		wnd = dbgmem_create_window();
-    
+   
+#ifdef WND_STATE
 	if(!options3.mem.minimized)
 	{
 		gtk_window_resize(GTK_WINDOW(wnd), options3.mem.rect.w, options3.mem.rect.h);
@@ -427,6 +426,7 @@ GtkWidget* dbgmem_display_window(void)
 	}
 	else
 		gtk_window_iconify(GTK_WINDOW(wnd));
+#endif
 
 	refresh_page(0, 0);
 	gtk_widget_show(wnd);
@@ -607,17 +607,17 @@ static void refresh_page(int page, int offset)
 */
 static GtkWidget* display_popup_menu(void)
 {
-	GladeXML *xml;
+	GladeXML *xml2;
 	GtkWidget *menu;
 
-	xml = glade_xml_new
+	xml2 = glade_xml_new
 	    (tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_popup",
 	     PACKAGE);
-	if (!xml)
+	if (!xml2)
 		g_error(_("%s: GUI loading failed !\n"), __FILE__);
-	glade_xml_signal_autoconnect(xml);
+	glade_xml_signal_autoconnect(xml2);
 
-	menu = glade_xml_get_widget(xml, "dbgmem_popup");
+	menu = glade_xml_get_widget(xml2, "dbgmem_popup");
 	return menu;
 }
 
@@ -833,7 +833,9 @@ on_treeview_key_press_event            (GtkWidget       *widget,
 
         refresh_page(page, +0x10);
 
-        path = gtk_tree_path_new_from_string("7");
+		str = g_strdup_printf("%i", row_max);
+        path = gtk_tree_path_new_from_string(str);
+		g_free(str);
         gtk_tree_view_set_cursor(view, path, NULL, FALSE);
         
         return FALSE;
@@ -861,7 +863,9 @@ on_treeview_key_press_event            (GtkWidget       *widget,
 
         refresh_page(page, +DUMP_SIZE);
 
-        path = gtk_tree_path_new_from_string("7");
+        str = g_strdup_printf("%i", row_max);
+        path = gtk_tree_path_new_from_string(str);
+		g_free(str);
         gtk_tree_view_set_cursor(view, path, NULL, FALSE);
 
         return FALSE;

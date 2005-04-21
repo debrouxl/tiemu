@@ -40,6 +40,10 @@
 #include "struct.h"
 #include "dbg_all.h"
 
+static GladeXML *xml = NULL;
+static GtkWidget *wnd = NULL;
+static gint already_open = 0;
+
 enum { 
 	    COL_ADDR, COL_DATA, COL_FONT
 };
@@ -47,7 +51,6 @@ enum {
 #define CLIST_NCOLS		(3)		// 1 real columns
 
 #define FONT_NAME		"courier"
-
 #define DUMP_SIZE       10
 
 static GtkListStore* clist_create(GtkWidget *widget)
@@ -145,14 +148,12 @@ static void clist_refresh(GtkListStore *store, gint target)
 
 static GtkListStore *store1 = NULL;
 static GtkListStore *store2 = NULL;
-static gint already_open = 0;
 
 /*
 	Display registers window
 */
 GtkWidget* dbgstack_create_window(void)
 {
-	GladeXML *xml;
 	GtkWidget *dbox;
     GtkWidget *data;
 	
@@ -183,16 +184,15 @@ GtkWidget* dbgstack_create_window(void)
 
 	already_open = !0;
 
-	return dbox;
+	return wnd = dbox;
 }
 
 GtkWidget* dbgstack_display_window(void)
 {
-    static GtkWidget *wnd = NULL;
-
 	if(!already_open)
 		wnd = dbgstack_create_window();
     
+#ifdef WND_STATE
 	if(!options3.stack.minimized)
 	{
 		gtk_window_resize(GTK_WINDOW(wnd), options3.stack.rect.w, options3.stack.rect.h);
@@ -200,6 +200,7 @@ GtkWidget* dbgstack_display_window(void)
 	}
 	else
 		gtk_window_iconify(GTK_WINDOW(wnd));
+#endif
 
 	clist_refresh(store1, TARGET_SP);
 	clist_refresh(store2, TARGET_FP);
@@ -284,7 +285,9 @@ on_dbgstack_key_press_event           (GtkWidget       *widget,
 		gtk_list_store_clear(store);
         clist_populate(store, TARGET_SP, min+2);
 
-        path = gtk_tree_path_new_from_string("9");
+        str = g_strdup_printf("%i", row_max);
+        path = gtk_tree_path_new_from_string(str);
+		g_free(str);
         gtk_tree_view_set_cursor(view, path, NULL, FALSE);
 
         return TRUE;
@@ -314,7 +317,9 @@ on_dbgstack_key_press_event           (GtkWidget       *widget,
         gtk_list_store_clear(store);
         clist_populate(store, TARGET_SP, min+10);
 
-        path = gtk_tree_path_new_from_string("9");
+        str = g_strdup_printf("%i", row_max);
+        path = gtk_tree_path_new_from_string(str);
+		g_free(str);
         gtk_tree_view_set_cursor(view, path, NULL, FALSE);
 
         return TRUE;

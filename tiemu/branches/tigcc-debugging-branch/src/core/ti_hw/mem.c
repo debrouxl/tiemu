@@ -51,7 +51,7 @@
 
 static IMG_INFO *img = &img_infos;
 
-uint8_t *mem_tab[16];		// 1MB per banks
+uint8_t *mem_tab[16];		// 1MB per banks  (or segments)
 uint32_t mem_msk[16];		// pseudo chip-select (allow wrapping / ghost space)
 
 // 000000-0fffff : RAM (128 or 256 KB)
@@ -108,9 +108,6 @@ int hw_mem_init(void)
 		tihw.io_size = ti68k_get_io_size(tihw.calc_type);
 		tihw.io2_size = ti68k_get_io2_size(tihw.calc_type);
 	}
-
-	if(tihw.calc_type == TI89t)
-		tihw.ram_size = 2*MB;	// used to avoid mirroring of segments
 
     // clear breakpoints
 	ti68k_bkpt_clear_access();

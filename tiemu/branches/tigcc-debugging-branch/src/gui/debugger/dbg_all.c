@@ -44,20 +44,47 @@ DbgWidgets dbgw = { 0 };
 
 int dbg_on = 0;
 
+static int wm_offset = 0;
+
 /* Functions applicable to the whole debugger */
 
+// create windows but don't show them
 void gtk_debugger_preload(void)
 {
-	// Commented: make TiEmu crash
-	//create_dbgregs_window();
-	//create_dbgcode_window();
-	//create_dbgmem_window();
-	//create_dbgbkpts_window();
-	//create_dbgpclog_window();
-    //create_dbgstack_window();
-	//dbgheap_create_window();
+#ifdef __WIN32__
+	OSVERSIONINFO os;
+#endif
+
+	// open debugger windows
+	dbgw.regs  = dbgregs_create_window();
+	dbgw.mem   = dbgmem_create_window();
+	dbgw.bkpts = dbgbkpts_create_window();
+	dbgw.pclog = dbgpclog_create_window();
+    dbgw.stack = dbgstack_create_window();
+	dbgw.heap  = dbgheap_create_window();
+	dbgw.code  = dbgcode_create_window();
+
+	// Try and determine OS type for WM metric (heuristic). Reason follows...
+	/*
+		gtk_window_get_position() is not 100% reliable because the X Window System does not 
+		specify a way to obtain the geometry of the decorations placed on a window by the 
+		window manager. Thus GTK+ is using a "best guess" that works with most window managers.
+	*/
+#ifdef __LINUX__
+	wm_offset = 0;
+#else
+  	memset(&os, 0, sizeof(OSVERSIONINFO));
+  	os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+  	GetVersionEx(&os);
+
+	if(os.dwMajorVersion == 5 && os.dwMinorVersion == 1)
+		wm_offset = 30;	// WinXP with XP theme, not classic
+	else
+		wm_offset = 20;	// others
+#endif
 }
 
+// show previously created window
 int gtk_debugger_enter(int context)
 {
 	gint type, id, mode;
@@ -74,14 +101,14 @@ int gtk_debugger_enter(int context)
         break;
     }
 
-    // open debugger windows (if not already opened)
-	dbgw.regs = dbgregs_display_window();
-	dbgw.mem  = dbgmem_display_window();
-	dbgw.bkpts = dbgbkpts_display_window();
-    dbgw.pclog = dbgpclog_display_window();
-    dbgw.stack = dbgstack_display_window();
-	dbgw.heap = dbgheap_display_window();
-	dbgw.code = dbgcode_display_window();	// the last has focus
+    // display debugger windows (if not)
+	dbgregs_display_window();
+	dbgmem_display_window();
+	dbgbkpts_display_window();
+    dbgpclog_display_window();
+    dbgstack_display_window();
+	dbgheap_display_window();
+	dbgcode_display_window();	// the last has focus
 
 	// handle automatic debugging requests
 	if (symfile)
@@ -113,6 +140,7 @@ int gtk_debugger_enter(int context)
 	return 0;
 }
 
+// refresh content of all windows
 void gtk_debugger_refresh(void)
 {	
 	if(options3.regs.visible)
@@ -131,6 +159,7 @@ void gtk_debugger_refresh(void)
 		dbgheap_refresh_window();
 }
 
+// make windows (un-)modifiable
 void set_other_windows_sensitivity(int state)
 {
     if(options3.regs.visible)
@@ -147,6 +176,7 @@ void set_other_windows_sensitivity(int state)
         gtk_widget_set_sensitive(dbgw.heap, state);
 }
 
+// minimize all windows
 void gtk_debugger_minimize_all(int all)
 {
     if(options3.regs.visible)
@@ -165,6 +195,7 @@ void gtk_debugger_minimize_all(int all)
         gtk_window_iconify(GTK_WINDOW(dbgw.heap));
 }
 
+// unminimize all windows
 void gtk_debugger_unminimize_all(int all)
 {
     if(options3.regs.visible)
@@ -183,6 +214,7 @@ void gtk_debugger_unminimize_all(int all)
         gtk_window_deiconify(GTK_WINDOW(dbgw.heap));
 }
 
+// show all windows
 void gtk_debugger_show_all(int all)
 {
     if(!dbg_on)
@@ -204,6 +236,7 @@ void gtk_debugger_show_all(int all)
         gtk_widget_show(dbgw.heap);
 }
 
+// or hide them
 void gtk_debugger_hide_all(int all)
 {
     if(!dbg_on)
@@ -228,6 +261,7 @@ void gtk_debugger_hide_all(int all)
 /* Callbacks */
 
 // callbacks from dbg_code.c (window menu)
+// used to show/hide or minimize/un-minimize windows
 
 GLADE_CB void
 on_registers1_activate                 (GtkMenuItem     *menuitem,
@@ -296,12 +330,11 @@ GLADE_CB void
 on_quit1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	// hide all windows
 	gtk_debugger_hide_all(!0);
-    //while(gtk_events_pending()) gtk_main_iteration();
-
     dbg_on = 0;
 
-    // Closing the debugger starts the emulator
+    // and restarts the emulator
 	ti68k_bkpt_set_cause(0, 0, 0);
     if (engine_is_stopped()) gdbcall_continue();
 }
@@ -336,6 +369,17 @@ on_maximize_all1_activate              (GtkMenuItem     *menuitem,
     gtk_debugger_unminimize_all(0);
 }
 
+extern void options3_set_default(void);
+
+GLADE_CB void
+on_restore_all1_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	// restore windows with default settings
+	options3_set_default();
+}
+
+// reflects window state in menu
 extern void options3_set_default(void);
 
 GLADE_CB void
@@ -424,6 +468,7 @@ on_dbgregs_window_state_event		   (GtkWidget       *widget,
 
 		gtk_window_get_size(GTK_WINDOW(widget), &options3.regs.rect.w, &options3.regs.rect.h);
 		gdk_window_get_position(widget->window, &options3.regs.rect.x, &options3.regs.rect.y);
+		options3.regs.rect.y -= wm_offset;
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -455,6 +500,7 @@ on_dbgpclog_window_state_event		   (GtkWidget       *widget,
 
 		gtk_window_get_size(GTK_WINDOW(widget), &options3.pclog.rect.w, &options3.pclog.rect.h);
 		gdk_window_get_position(widget->window, &options3.pclog.rect.x, &options3.pclog.rect.y);
+		options3.pclog.rect.y -= wm_offset;
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -487,6 +533,7 @@ on_dbgmem_window_state_event		   (GtkWidget       *widget,
 
 		gtk_window_get_size(GTK_WINDOW(widget), &options3.mem.rect.w, &options3.mem.rect.h);
 		gdk_window_get_position(widget->window, &options3.mem.rect.x, &options3.mem.rect.y);
+		options3.mem.rect.y -= wm_offset;
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -520,6 +567,7 @@ on_dbgcode_window_state_event		   (GtkWidget       *widget,
 
 		gtk_window_get_size(GTK_WINDOW(widget), &options3.code.rect.w, &options3.code.rect.h);
 		gdk_window_get_position(widget->window, &options3.code.rect.x, &options3.code.rect.y);
+		options3.code.rect.y -= wm_offset;
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -552,6 +600,7 @@ on_dbgbkpts_window_state_event		   (GtkWidget       *widget,
 
 		gtk_window_get_size(GTK_WINDOW(widget), &options3.bkpts.rect.w, &options3.bkpts.rect.h);
 		gdk_window_get_position(widget->window, &options3.bkpts.rect.x, &options3.bkpts.rect.y);
+		options3.bkpts.rect.y -= wm_offset;
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -583,10 +632,43 @@ on_dbgstack_window_state_event		   (GtkWidget       *widget,
 
 		gtk_window_get_size(GTK_WINDOW(widget), &options3.stack.rect.w, &options3.stack.rect.h);
 		gdk_window_get_position(widget->window, &options3.stack.rect.x, &options3.stack.rect.y);
+		options3.stack.rect.y -= wm_offset;
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
 		options3.stack.minimized = state & GDK_WINDOW_STATE_ICONIFIED;
+}
+
+// callbacks from dbg_heap.c
+GLADE_CB gboolean
+on_dbgheap_window_delete_event       (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+    gtk_widget_hide(widget);    
+    return TRUE;
+}
+
+GLADE_CB void
+on_dbgheap_window_state_event		   (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+    GdkEventWindowState *wstate = (GdkEventWindowState *)event;
+    GdkWindowState state = wstate->new_window_state;
+    GdkWindowState mask = wstate->changed_mask;
+
+	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
+	{
+		options3.heap.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
+
+		gtk_window_get_size(GTK_WINDOW(widget), &options3.heap.rect.w, &options3.heap.rect.h);
+		gdk_window_get_position(widget->window, &options3.heap.rect.x, &options3.heap.rect.y);
+		options3.heap.rect.y -= wm_offset;
+	}
+
+	if(mask & GDK_WINDOW_STATE_ICONIFIED)
+		options3.heap.minimized = state & GDK_WINDOW_STATE_ICONIFIED;
 }
 
 // callbacks from dbg_heap.c

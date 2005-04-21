@@ -42,6 +42,10 @@ Debugging mode is entered when a breakpoint is encountered or when the
 user launches the debugger by the popup menu or by pressing the F11
 key. This will stop the emulation engine but the LCD is still refresh.<br>
 <br>
+Note : debugger windows are pre-loaded at startup in order to display
+them quicker. The source code window may take a while to be displayed
+at first run : this is due to ROM call parsing. <br>
+<br>
 The debugger is made-up of several frames :<br>
 - source code<br>
 - registers<br>
@@ -159,6 +163,10 @@ source frame at the selected address.<br>
     </tr>
   </tbody>
 </table>
+Note : the memory window may show aliases (ghosts) which does not
+really exist on the real calculator. For instance, RAM exists at
+$00000-3ffff only but if you open a tab at $40000, you will see RAM
+content at $000000. So, be careful !<br>
 <br>
 </div>
 </div>

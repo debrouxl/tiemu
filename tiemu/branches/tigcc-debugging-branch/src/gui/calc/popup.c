@@ -498,8 +498,8 @@ static void go_to_bookmark(const char *link)
 	// * /usr/bin/gnome-open (GNOME 2.6+ default browser, this really should be
 	// first on the list to try, as this will honor the user's choice rather than
 	// guessing an arbitrary one)
-	// * /usr/bin/htmlview (old RHL/Fedora default browser script - if Debian has
-	// anything like that, we can add it to the list as well)
+	// * /usr/bin/sensible-browser (Debian's browser script)
+	// * /usr/bin/htmlview (old RHL/Fedora default browser script)
 	// * /usr/bin/firefox (Mozilla Firefox)
 	// * /usr/bin/mozilla (Mozilla Seamonkey)
 	// * /usr/bin/konqueror (Konqueror)
@@ -507,6 +507,7 @@ static void go_to_bookmark(const char *link)
 	gboolean result;
 	char *apps[] = { 
 			"/usr/bin/gnome-open",
+			"/usr/bin/sensible-browser",
 			"/usr/bin/htmlview",
 			"/usr/bin/firefox",
 			"/usr/bin/mozilla",

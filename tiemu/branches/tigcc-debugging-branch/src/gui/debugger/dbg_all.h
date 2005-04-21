@@ -13,6 +13,8 @@
 #include "dbg_heap.h"
 #include "dbg_entry.h"
 
+#define WND_STATE
+
 /* Definitions */
 
 typedef struct {
@@ -49,5 +51,9 @@ extern gchar *symfile;
 
 // convenient place (calc.h)
 extern GtkWidget *main_wnd;
+
+/* Macros */
+
+#define glade_get(s)		glade_xml_get_widget(xml, (s))
 
 #endif

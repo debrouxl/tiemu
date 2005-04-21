@@ -39,9 +39,14 @@
 #include "ti68k_int.h"
 #include "struct.h"
 #include "dbg_all.h"
-#include "romcalls.h"
 #include "dbg_romcall.h"
 #include "engine.h"
+
+//#define FIXED_SIZE
+
+static GladeXML *xml = NULL;
+static GtkWidget *wnd = NULL;
+static gint already_open = 0;
 
 enum { 
 	    COL_ICON, COL_ADDR, COL_OPCODE, COL_OPERAND,
@@ -52,8 +57,11 @@ enum {
 
 #define FONT_NAME	"courier"
 
-//#define NLINES      10
-static gint NLINES = 10;
+#ifdef FIXED_SIZE
+#define NLINES      10
+#else
+static gint NLINES = 10;	
+#endif
 
 static GtkListStore* clist_create(GtkWidget *widget)
 {
@@ -172,8 +180,6 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
     }
 }
 
-static GtkWidget *lbl1, *lbl2;
-
 static void cyccnt_refresh(GtkWidget *l1, GtkWidget *l2)
 {
 	unsigned int count, diff;
@@ -276,12 +282,11 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
     }
 
 	// update cycle counter
-	cyccnt_refresh(lbl1, lbl2);
+	cyccnt_refresh(glade_get("label3"), glade_get("label4"));
 }
 
 static GtkWidget *list;
 static GtkListStore *store;
-static gint already_open = 0;
 static GtkWidget *combo;
 
 typedef struct {
@@ -331,7 +336,6 @@ extern int update_submenu(GtkWidget*, gpointer);
 
 GtkWidget* dbgcode_create_window(void)
 {
-	GladeXML *xml;
 	GtkWidget *dbox;
     GtkWidget *data;	
 	
@@ -370,25 +374,22 @@ GtkWidget* dbgcode_create_window(void)
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(list));
 	gtk_widget_show(list);
 
-	combo = glade_xml_get_widget(xml, "comboboxentry1");
-	dbgromcall_create_window(combo);
-	dbgromcall_refresh_window(combo);
+	data = glade_xml_get_widget(xml, "progressbar1");
+	gtk_widget_hide(data);
 
-	lbl1 = glade_xml_get_widget(xml, "label3");
-	lbl2 = glade_xml_get_widget(xml, "label4");
+	dbgromcall_create_window(xml);
 
 	already_open = !0;
 
-	return dbox;
+	return wnd = dbox;
 }
 
 GtkWidget* dbgcode_display_window(void)
 {
-	static GtkWidget *wnd = NULL;
-
 	if(!already_open)
 		wnd = dbgcode_create_window();
     
+#ifdef WND_STATE
 	if(!options3.code.minimized)
 	{
 		gtk_window_resize(GTK_WINDOW(wnd), options3.code.rect.w, options3.code.rect.h);
@@ -396,6 +397,7 @@ GtkWidget* dbgcode_display_window(void)
 	}
 	else
 		gtk_window_iconify(GTK_WINDOW(wnd));
+#endif
 
 	gtk_widget_set_sensitive(list, TRUE);	
 	tb_set_states(1, 1, 1, 1, 1, 0, 1);
@@ -404,7 +406,7 @@ GtkWidget* dbgcode_display_window(void)
     gtk_list_store_clear(store);
 	clist_refresh(store, TRUE);
 
-	dbgromcall_refresh_window(combo);
+	dbgromcall_refresh_window();
 	gtk_widget_show(wnd);
 
     return wnd;
@@ -648,7 +650,7 @@ dbgcode_button8_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
 	ti68k_get_cycle_count(!0, NULL);
-	gtk_label_set_text(GTK_LABEL(lbl1), "0");
+	gtk_label_set_text(GTK_LABEL(glade_get("label3")), "0");
 }
 
 /***** Popup menu *****/
@@ -842,7 +844,9 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         gtk_list_store_clear(store);
         clist_populate(store, start + offset);
     
-        path = gtk_tree_path_new_from_string("9");      // restore selection
+        str = g_strdup_printf("%i", row_max);
+        path = gtk_tree_path_new_from_string(str);	// restore selection
+		g_free(str);
         gtk_tree_selection_select_path(selection, path);
 
         return TRUE;
@@ -857,6 +861,9 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         gtk_list_store_clear(store);
         clist_populate(store, addr - 0x10);
 
+		path = gtk_tree_path_new_from_string("0");
+        gtk_tree_view_set_cursor(view, path, NULL, FALSE);
+
         return TRUE;
 
     case GDK_Page_Down:
@@ -867,9 +874,11 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
             break;
 
         gtk_list_store_clear(store);
-        clist_populate(store, addr + 0x10);
+        clist_populate(store, addr/* + 0x10*/);
 
-        path = gtk_tree_path_new_from_string("9");      // restore selection
+		str = g_strdup_printf("%i", row_max);
+        path = gtk_tree_path_new_from_string(str);	// restore selection
+		g_free(str);
         gtk_tree_selection_select_path(selection, path);
 
         return TRUE;
@@ -976,6 +985,7 @@ on_treeview1_size_allocate             (GtkWidget       *widget,
                                         GdkRectangle    *allocation,
                                         gpointer         user_data)
 {
+#ifndef FIXED_SIZE
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreePath *path;
 	GdkRectangle rect;
@@ -998,6 +1008,7 @@ on_treeview1_size_allocate             (GtkWidget       *widget,
 	}
 
 	old = NLINES;
+#endif
 }
 
 void gdbcallback_disable_debugger(void)

@@ -40,6 +40,10 @@
 #include "dbg_all.h"
 #include "bkpts.h"
 
+static GladeXML *xml = NULL;
+static GtkWidget *wnd = NULL;
+static gint already_open = 0;
+
 enum { 
 	    COL_SYMBOL, COL_TYPE, COL_STATUS, COL_START, COL_END, COL_MODE,
 };
@@ -295,15 +299,12 @@ static void clist_populate(GtkListStore *store)
 }
 
 static GtkListStore *store = NULL;
-static gint already_open = 0;
-GtkWidget *statbar;
 
 /*
 	Display registers window
 */
 GtkWidget* dbgbkpts_create_window(void)
 {
-	GladeXML *xml;
 	GtkWidget *dbox;
     GtkWidget *data;
 	
@@ -316,8 +317,6 @@ GtkWidget* dbgbkpts_create_window(void)
 	
 	dbox = glade_xml_get_widget(xml, "dbgbkpts_window");
 	gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
-
-	statbar = glade_xml_get_widget(xml, "statusbar1");
 	
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);
@@ -327,16 +326,15 @@ GtkWidget* dbgbkpts_create_window(void)
 
 	already_open = !0;
 
-	return dbox;
+	return wnd = dbox;
 }
 
 GtkWidget* dbgbkpts_display_window(void)
 {
-    static GtkWidget *wnd = NULL;
-
 	if(!already_open)
 		wnd = dbgbkpts_create_window();
     
+#ifdef WND_STATE
 	if(!options3.bkpts.minimized)
 	{
 		gtk_window_resize(GTK_WINDOW(wnd), options3.bkpts.rect.w, options3.bkpts.rect.h);
@@ -344,12 +342,13 @@ GtkWidget* dbgbkpts_display_window(void)
 	}
 	else
 		gtk_window_iconify(GTK_WINDOW(wnd));
+#endif
 
 	gtk_list_store_clear(store);
     clist_populate(store);
 	gtk_widget_show(wnd);
 
-	display_dbgcause_dbox2(statbar);
+	display_dbgcause_dbox2(glade_get("statusbar1"));
 
 	return wnd;
 }

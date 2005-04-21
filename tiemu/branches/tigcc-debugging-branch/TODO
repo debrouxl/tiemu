@@ -4,7 +4,7 @@ List of stuffs to do (in French, sorry):
 ExtendeD
 ========
 
-*
+* none
 
 
 Kevin
@@ -39,9 +39,7 @@ dans le décor, je ne sais pas s'il exécute ou pas
 PPhd
 ====
 
-* If you could save the exact debugger state in the config file (which windows are
-openned, relative position of the windows and window size), I think it
-shouldn't matter very much.
+* none
 
 
 roms
@@ -49,11 +47,11 @@ roms
 
 * MOVEA.W dis-assembled as MOVEA.L (HeapDeref)
 
-* make AC_CHECK_LIB(comdlg32, GetOpenFileName) work
+* why AC_CHECK_LIB(comdlg32, GetOpenFileName) does'nt work ?
 
-* console mode (Win32)
+* console mode (Win32) => TiLP framework v2 ??
 
-* ON key
+* ON key doesn't turn calc off 
 
 -------------
 + done
