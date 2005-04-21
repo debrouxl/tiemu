@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ void gtk_debugger_preload(void)
   	os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   	GetVersionEx(&os);
 
-	if ((os.dwMajorVersion == 5 && os.dwMinorVersion >= 1) || os.dwMajorVersion >= 5)
+	if ((os.dwMajorVersion == 5 && os.dwMinorVersion >= 1) || os.dwMajorVersion > 5)
 	{
 		// Check if a theme is loaded
 		HINSTANCE handle;
