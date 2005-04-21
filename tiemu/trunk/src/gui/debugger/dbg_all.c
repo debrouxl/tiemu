@@ -29,6 +29,9 @@
 #endif
 
 #include <gtk/gtk.h>
+#ifdef __MINGW32__
+#include <windows.h>
+#endif
 
 #include "ti68k_int.h"
 #include "struct.h"
@@ -67,17 +70,27 @@ void gtk_debugger_preload(void)
 		specify a way to obtain the geometry of the decorations placed on a window by the 
 		window manager. Thus GTK+ is using a "best guess" that works with most window managers.
 	*/
-#ifdef __LINUX__
-	wm_offset = 0;
-#else
+#ifdef __WIN32__
   	memset(&os, 0, sizeof(OSVERSIONINFO));
   	os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   	GetVersionEx(&os);
 
-	if(os.dwMajorVersion == 5 && os.dwMinorVersion == 1)
-		wm_offset = 30;	// WinXP with XP theme, not classic
+	if ((os.dwMajorVersion == 5 && os.dwMinorVersion >= 1) || os.dwMajorVersion >= 5)
+	{
+		// Check if a theme is loaded
+		HINSTANCE handle;
+		BOOL (*pIsThemeActive)(void);
+		handle = LoadLibrary("uxtheme.dll");
+		pIsThemeActive = GetProcAddress(handle, "IsThemeActive");
+		if (pIsThemeActive())
+			wm_offset = 30;	// WinXP with XP theme, not classic
+		else
+			wm_offset = 20;	// WinXP with classic theme
+	}
 	else
 		wm_offset = 20;	// others
+#else
+	wm_offset = 0;
 #endif
 }
 
