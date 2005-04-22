@@ -107,6 +107,8 @@ gint display_main_wnd(void)
 	main_wnd = glade_xml_get_widget(xml, "calc_wnd");
 	area = glade_xml_get_widget(xml, "drawingarea1");
 
+	gtk_window_move(GTK_WINDOW(main_wnd), options3.calc.rect.x, options3.calc.rect.y);
+
 	gtk_widget_realize(main_wnd);	// set drawing area valid
 
 	// set window title (useful for TIGCC-IDE for instance)
@@ -607,7 +609,6 @@ int  hid_screenshot(char *filename)
 
 	return 0;
 }
-
 
 GLADE_CB gboolean
 on_calc_wnd_window_state_event         (GtkWidget       *widget,

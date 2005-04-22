@@ -386,7 +386,7 @@ void update_submenu(GtkWidget *widget, gpointer user_data)
 	(Kevin: GDK uses GetClientRect and ClientToScreen).
 	We need that to save and restore windows position.
 */
-static void window_get_rect(GtkWidget *widget, GdkRect *rect)
+void window_get_rect(GtkWidget *widget, GdkRect *rect)
 {
 	gtk_window_get_size(GTK_WINDOW(widget), &rect->w, &rect->h);
 	gdk_window_get_position(widget->window, &rect->x, &rect->y);

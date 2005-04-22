@@ -470,6 +470,16 @@ void rcfile_read(void)
 	  continue;
 	}
 
+	if( (p=find_str(buffer, "calc_wnd=")) )
+	{
+	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
+		  &(options3.calc.rect.x), &(options3.calc.rect.y), 
+		  &(options3.calc.rect.w), &(options3.calc.rect.h),
+		  &(options3.calc.minimized), &(options3.calc.visible)
+		  );
+	  continue;
+	}
+
 	if( (p=find_str(buffer, "bkpts_wnd=")) )
 	{
 	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
@@ -816,37 +826,49 @@ void rcfile_write(void)
   fprintf(txt, "\n");
 
 	fprintf(txt, "# Geometry hints of debugger windows (x,y,w,h,m,v)\n");
+
+	fprintf(txt, "calc_wnd=(%i;%i;%i;%i;%i;%i)", 
+		options3.calc.rect.x, options3.calc.rect.y, 
+		options3.calc.rect.w, options3.calc.rect.h,
+		options3.bkpts.minimized, options3.calc.visible);
+	fprintf(txt, "\n");
+
 	fprintf(txt, "bkpts_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.bkpts.rect.x, options3.bkpts.rect.y, 
 		options3.bkpts.rect.w, options3.bkpts.rect.h,
 		options3.bkpts.minimized, options3.bkpts.visible);
-
 	fprintf(txt, "\n");
+
 	fprintf(txt, "code_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.code.rect.x, options3.code.rect.y, 
 		options3.code.rect.w, options3.code.rect.h,
 		options3.code.minimized, options3.code.visible);
 	fprintf(txt, "\n");
+
 	fprintf(txt, "mem_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.mem.rect.x, options3.mem.rect.y, 
 		options3.mem.rect.w, options3.mem.rect.h,
 		options3.mem.minimized, options3.mem.visible);
 	fprintf(txt, "\n");
+
 	fprintf(txt, "regs_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.regs.rect.x, options3.regs.rect.y, 
 		options3.regs.rect.w, options3.regs.rect.h,
 		options3.regs.minimized, options3.regs.visible);
 	fprintf(txt, "\n");
+
 	fprintf(txt, "pclog_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.pclog.rect.x, options3.pclog.rect.y, 
 		options3.pclog.rect.w, options3.pclog.rect.h,
 		options3.pclog.minimized, options3.pclog.visible);
 	fprintf(txt, "\n");
+
 	fprintf(txt, "stack_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.stack.rect.x, options3.stack.rect.y, 
 		options3.stack.rect.w, options3.stack.rect.h,
 		options3.stack.minimized, options3.stack.visible);
 	fprintf(txt, "\n");
+
 	fprintf(txt, "heap_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.heap.rect.x, options3.heap.rect.y, 
 		options3.heap.rect.w, options3.heap.rect.h,
@@ -909,8 +931,15 @@ int rcfile_default()
 void options3_set_default(void)
 {
 	// Optimized for 1024x768
+	options3.calc.rect.x = 0;
+	options3.calc.rect.y = 0;
+	options3.calc.rect.w = -1;	// unused yet
+	options3.calc.rect.h = -1;	// unused yet
+	options3.calc.visible = !0;
+	options3.calc.minimized = 0;
+
 	options3.bkpts.rect.x = 700;
-	options3.bkpts.rect.y = 560;	// XP: tiemu.ini -= 20
+	options3.bkpts.rect.y = 560;
 	options3.bkpts.rect.w = 320;
 	options3.bkpts.rect.h = 145;
 	options3.bkpts.visible = !0;
@@ -920,8 +949,8 @@ void options3_set_default(void)
 	options3.code.rect.y = 10;
 	options3.code.rect.w = 320;
 	options3.code.rect.h = 290;
-	options3.bkpts.visible = !0;
-	options3.bkpts.minimized = 0;
+	options3.code.visible = !0;
+	options3.code.minimized = 0;
 
 	options3.mem.rect.x = 0;
 	options3.mem.rect.y = 470;
