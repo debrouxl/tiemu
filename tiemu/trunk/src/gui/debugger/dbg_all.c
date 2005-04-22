@@ -29,6 +29,9 @@
 #endif
 
 #include <gtk/gtk.h>
+#ifdef __WIN32__
+#include <gdk/gdkwin32.h>
+#endif
 #ifdef __MINGW32__
 #include <windows.h>
 #endif
@@ -44,17 +47,11 @@ DbgWidgets dbgw = { 0 };
 
 int dbg_on = 0;
 
-static int wm_offset = 0;
-
 /* Functions applicable to the whole debugger */
 
 // create windows but don't show them
 void gtk_debugger_preload(void)
 {
-#ifdef __WIN32__
-	OSVERSIONINFO os;
-#endif
-
 	// open debugger windows
 	dbgw.regs  = dbgregs_create_window();
 	dbgw.mem   = dbgmem_create_window();
@@ -63,36 +60,6 @@ void gtk_debugger_preload(void)
     dbgw.stack = dbgstack_create_window();
 	dbgw.heap  = dbgheap_create_window();
 	dbgw.code  = dbgcode_create_window();
-
-	// Try and determine OS type for WM metric (heuristic). Reason follows...
-	/*
-		gtk_window_get_position() is not 100% reliable because the X Window System does not 
-		specify a way to obtain the geometry of the decorations placed on a window by the 
-		window manager. Thus GTK+ is using a "best guess" that works with most window managers.
-	*/
-#ifdef __WIN32__
-  	memset(&os, 0, sizeof(OSVERSIONINFO));
-  	os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  	GetVersionEx(&os);
-
-	if ((os.dwMajorVersion == 5 && os.dwMinorVersion >= 1) || os.dwMajorVersion > 5)
-	{
-		// Check if a theme is loaded
-		HINSTANCE handle;
-		BOOL (*pIsThemeActive)(void);
-		handle = LoadLibrary("uxtheme.dll");
-		pIsThemeActive = GetProcAddress(handle, "IsThemeActive");
-		if (pIsThemeActive())
-			wm_offset = 30;	// WinXP with XP theme, not classic
-		else
-			wm_offset = 20;	// WinXP with classic theme
-		FreeLibrary(handle);
-	}
-	else
-		wm_offset = 20;	// others
-#else
-	wm_offset = 0;
-#endif
 }
 
 // show previously created window
@@ -414,6 +381,30 @@ void update_submenu(GtkWidget *widget, gpointer user_data)
 
 // callbacks from dbg_regs.c
 
+/* 
+	This function exists because GDK retrieves client coordinates, not window ones.
+	(Kevin: GDK uses GetClientRect and ClientToScreen).
+	We need that to save and restore windows position.
+*/
+static void window_get_rect(GtkWidget *widget, GdkRect *rect)
+{
+	gtk_window_get_size(GTK_WINDOW(widget), &rect->w, &rect->h);
+	gdk_window_get_position(widget->window, &rect->x, &rect->y);
+
+#ifdef __WIN32__
+	{
+		BOOL bResult;
+		HWND hWnd = GDK_WINDOW_HWND(widget->window);
+		RECT lpRect;
+
+		bResult = GetWindowRect(hWnd, &lpRect);
+
+		rect->x = lpRect.left;
+		rect->y = lpRect.top;
+	}
+#endif
+}
+
 GLADE_CB gboolean
 on_dbgregs_window_delete_event         (GtkWidget       *widget,
                                         GdkEvent        *event,
@@ -435,10 +426,7 @@ on_dbgregs_window_state_event		   (GtkWidget       *widget,
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
 		options3.regs.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-
-		gtk_window_get_size(GTK_WINDOW(widget), &options3.regs.rect.w, &options3.regs.rect.h);
-		gdk_window_get_position(widget->window, &options3.regs.rect.x, &options3.regs.rect.y);
-		options3.regs.rect.y -= wm_offset;
+		window_get_rect(widget, &options3.regs.rect);
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -467,10 +455,7 @@ on_dbgpclog_window_state_event		   (GtkWidget       *widget,
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
 		options3.pclog.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-
-		gtk_window_get_size(GTK_WINDOW(widget), &options3.pclog.rect.w, &options3.pclog.rect.h);
-		gdk_window_get_position(widget->window, &options3.pclog.rect.x, &options3.pclog.rect.y);
-		options3.pclog.rect.y -= wm_offset;
+		window_get_rect(widget, &options3.pclog.rect);
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -500,10 +485,7 @@ on_dbgmem_window_state_event		   (GtkWidget       *widget,
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
 		options3.mem.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-
-		gtk_window_get_size(GTK_WINDOW(widget), &options3.mem.rect.w, &options3.mem.rect.h);
-		gdk_window_get_position(widget->window, &options3.mem.rect.x, &options3.mem.rect.y);
-		options3.mem.rect.y -= wm_offset;
+		window_get_rect(widget, &options3.mem.rect);
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -534,10 +516,7 @@ on_dbgcode_window_state_event		   (GtkWidget       *widget,
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
 		options3.code.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-
-		gtk_window_get_size(GTK_WINDOW(widget), &options3.code.rect.w, &options3.code.rect.h);
-		gdk_window_get_position(widget->window, &options3.code.rect.x, &options3.code.rect.y);
-		options3.code.rect.y -= wm_offset;
+		window_get_rect(widget, &options3.code.rect);
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -567,10 +546,7 @@ on_dbgbkpts_window_state_event		   (GtkWidget       *widget,
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
 		options3.bkpts.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-
-		gtk_window_get_size(GTK_WINDOW(widget), &options3.bkpts.rect.w, &options3.bkpts.rect.h);
-		gdk_window_get_position(widget->window, &options3.bkpts.rect.x, &options3.bkpts.rect.y);
-		options3.bkpts.rect.y -= wm_offset;
+		window_get_rect(widget, &options3.bkpts.rect);
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -599,10 +575,7 @@ on_dbgstack_window_state_event		   (GtkWidget       *widget,
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
 		options3.stack.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-
-		gtk_window_get_size(GTK_WINDOW(widget), &options3.stack.rect.w, &options3.stack.rect.h);
-		gdk_window_get_position(widget->window, &options3.stack.rect.x, &options3.stack.rect.y);
-		options3.stack.rect.y -= wm_offset;
+		window_get_rect(widget, &options3.stack.rect);
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
@@ -631,10 +604,7 @@ on_dbgheap_window_state_event		   (GtkWidget       *widget,
 	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
 	{
 		options3.heap.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-
-		gtk_window_get_size(GTK_WINDOW(widget), &options3.heap.rect.w, &options3.heap.rect.h);
-		gdk_window_get_position(widget->window, &options3.heap.rect.x, &options3.heap.rect.y);
-		options3.heap.rect.y -= wm_offset;
+		window_get_rect(widget, &options3.heap.rect);
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
