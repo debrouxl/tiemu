@@ -394,18 +394,6 @@ on_restore_all1_activate               (GtkMenuItem     *menuitem,
 }
 
 // reflects window state in menu
-extern void options3_set_default(void);
-
-GLADE_CB void
-on_restore_all1_activate               (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	// restore windows with default settings
-	options3_set_default();
-
-	//???
-}
-
 void update_submenu(GtkWidget *widget, gpointer user_data)
 {
     GtkMenuShell *shell = GTK_MENU_SHELL(widget);
@@ -679,37 +667,6 @@ on_dbgheap_window_state_event		   (GtkWidget       *widget,
 		gtk_window_get_size(GTK_WINDOW(widget), &options3.heap.rect.w, &options3.heap.rect.h);
 		gdk_window_get_position(widget->window, &options3.heap.rect.x, &options3.heap.rect.y);
 		options3.heap.rect.y -= wm_offset;
-	}
-
-	if(mask & GDK_WINDOW_STATE_ICONIFIED)
-		options3.heap.minimized = state & GDK_WINDOW_STATE_ICONIFIED;
-}
-
-// callbacks from dbg_heap.c
-GLADE_CB gboolean
-on_dbgheap_window_delete_event       (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-    gtk_widget_hide(widget);    
-    return TRUE;
-}
-
-GLADE_CB void
-on_dbgheap_window_state_event		   (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-    GdkEventWindowState *wstate = (GdkEventWindowState *)event;
-    GdkWindowState state = wstate->new_window_state;
-    GdkWindowState mask = wstate->changed_mask;
-
-	if(mask & GDK_WINDOW_STATE_WITHDRAWN)
-	{
-		options3.heap.visible = !(state & GDK_WINDOW_STATE_WITHDRAWN);
-
-		gtk_window_get_size(GTK_WINDOW(widget), &options3.heap.rect.w, &options3.heap.rect.h);
-		gdk_window_get_position(widget->window, &options3.heap.rect.x, &options3.heap.rect.y);
 	}
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
