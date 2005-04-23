@@ -11,22 +11,28 @@ web: http://lpg.ticalc.org
 mail: roms@lievin.net
 
 
-Julien Blache (jb): Debian packaging
-====================================
+Julien Blache (jb): GTK2 upgrade of TiEmu-I
+===========================================
 
 web: http://jblache.org
 mail: jb@jblache.org
 
 
-Kevin Kofler (kkofler): gdb integration and patches
-===================================================
+Kevin Kofler (kkofler): gdb integration, fixed and patches
+==========================================================
 
 web: http://tigcc.ticalc.org
 mail: Kevin@tigcc.ticalc.org
 
+Christian Walther (cw): Mac OS-X port
+=====================================
+
+web: ??
+mail: cwalther@gmx.ch
 
 Packagers:
 ==========
+
 - Julien Blache <jb@jblache.org>: Linux/Debian
 - Romain Lievin <roms@lievin.net>: Win32
 - Kevin Kofler <Kevin@tigcc.ticalc.org>: Linux/Fedora ?

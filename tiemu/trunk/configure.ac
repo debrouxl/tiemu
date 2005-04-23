@@ -102,6 +102,8 @@ case $host in
   *-*-*bsd*)             ARCH="-D__BSD__" ;;
   i[[3456]]86-*-linux-*) ARCH="-D__I386__ -D__LINUX__" ;; 
   arm*-*-linux-*)        ARCH="-D__IPAQ__ -D__LINUX__" ;;
+  powerpc-*-linux-*)     ARCH="-D__PPC__  -D__LINUX__" ;;
+  powerpc-apple-darwin*) ARCH="-D__PPC__  -D__MACOSX__" ;;
   *)                     ARCH="-D__LINUX__" ;;
 esac
 CFLAGS="$CFLAGS $ARCH"

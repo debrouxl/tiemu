@@ -319,16 +319,16 @@ int df_checkread(void)
 	Wonderful, isn't it ?! Take a look at the 'TiLP framework' power ;-)
 */
 
-#ifdef __LINUX__
-static TicableLinkCable 	ilc = { 0 };
-static TicalcFncts			itc = { 0 };
-static TicalcInfoUpdate 	iu = { 0 };
-static TicableDataRate*     tdr;
-#else
+#ifdef __WIN32__
 TicableLinkCable	ilc = { 0 };
 TicalcFncts			itc = { 0 };
 TicalcInfoUpdate 	iu = { 0 };
 TicableDataRate*	tdr = NULL;
+#else
+static TicableLinkCable 	ilc = { 0 };
+static TicalcFncts			itc = { 0 };
+static TicalcInfoUpdate 	iu = { 0 };
+static TicableDataRate*     tdr;
 #endif
 
 

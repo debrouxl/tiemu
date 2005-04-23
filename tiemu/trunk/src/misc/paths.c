@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005, Christian Walther (patches for Mac OS-X port)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -160,14 +161,11 @@ static void init_win32_paths(void)
 #endif				/*  */
 int initialize_paths(void)
 {
-
-#if defined(__LINUX__) || defined(__BSD__)
-	init_linux_paths();
-
-#elif defined(__WIN32__)
+#ifdef __WIN32__
 	init_win32_paths();
-
-#endif				/*  */
+#else
+	init_linux_paths();
+#endif
 	return 0;
 }
 

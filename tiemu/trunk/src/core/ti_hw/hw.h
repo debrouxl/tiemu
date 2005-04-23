@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Christian Walther (patches for Mac OS-X port)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,12 +37,10 @@ int hw_update(void);
 extern unsigned int cycle_instr;
 extern unsigned int cycle_count;
 
-#if defined(__LINUX__)
-#define INLINE inline
-#elif defined(__WIN32__)
+#ifdef __WIN32__
 #define INLINE __inline
 #else
-# define INLINE
+#define INLINE __inline
 #endif
 
 static void INLINE do_cycles(void)
