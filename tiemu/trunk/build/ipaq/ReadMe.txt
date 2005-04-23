@@ -27,13 +27,15 @@ To build a GPE application, you need to do this:
 
 To debug:
 
-1. Get gdb source (the same version as arm-linux-gdb if possible)
-2. Go to gdb, run ./configure --host=arm-linux and do make
-3. You will get a gdbserver executable targetted for ARM. You can strip it to reduce size.
-3. Copy gdbserver executable onto the iPAQ (with scp). 
-4. Run 'gdbserver tiemu host:1234'
-5. Run locally 'gdb ./tiemu'
-6. Type in 'remote target ipaq:1234'
+1. Get gdb source (the same version as arm-linux-gdb if possible, 6.2)
+2. Go to gdb/gdbserver, run ./configure --host=arm-linux and do make
+3. You will get a gdbserver executable targetted for ARM. You can strip it 
+   to reduce size.
+4. Copy gdbserver executable onto the iPAQ (with scp). 
+5. Run 'gdbserver tiemu host:1234'
+6. Run locally 'gdb ./tiemu'
+7. Type in 'remote target ipaq:1234'
+8. Type in 'continue' for running (bug: don't type run !)
 
 That's all !
 

@@ -233,9 +233,11 @@ int main(int argc, char **argv)
 		/*
 			Cache debugger windows to speed-up display and install custom event
 		*/
+#ifndef __IPAQ__
 		splash_screen_set_label(_("Pre-loading debugger..."));
 		gtk_debugger_preload();
-  
+#endif  
+
 		/* 
 			Start emulation engine and run main loop 
 		*/

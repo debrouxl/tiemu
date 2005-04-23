@@ -165,11 +165,13 @@ GLADE_CB void
 on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+#ifndef __IPAQ__
     if(dbg_on) return;
 
 	engine_stop();
     ti68k_debug_break();
 	engine_start();
+#endif
 }
 
 

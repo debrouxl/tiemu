@@ -161,10 +161,13 @@ uae:
 	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" all
 
 tiemu: $(tiemu_OBJ)
+ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
 	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
 	$(LDFLAGS) $(CFLAGS) $(kdelibraries) -Wl,--rpath,"$(prefix)/lib"
+else
 	#../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) \
 	#-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
+endif
 
 .c.o:
 	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) $< -o $@
