@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Christian Walther (patches for Mac OS-X port)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -111,13 +112,13 @@ gint display_save_state_dbox()
     if(!rcfile_exist())
     {
         rcfile_write();
-
-#if defined(__LINUX__)
-        msg_box(_("Information"), 
-	      _("You do not seem to have saved your settings. Configuration file saved (in ~/.tiemu)."));
-#elif defined(__WIN32__)
+   
+#ifdef __WIN32__
         msg_box(_("Information"), 
 	      _("You do not seem to have saved your settings. Configuration file saved (in tiemu.ini)."));
+#else
+		msg_box(_("Information"), 
+	      _("You do not seem to have saved your settings. Configuration file saved (in ~/.tiemu)."));
 #endif
     }
 
