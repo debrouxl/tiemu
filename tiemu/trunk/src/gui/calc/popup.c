@@ -111,12 +111,12 @@ on_save_config1_activate               (GtkMenuItem     *menuitem,
 	//write config
 	rcfile_write();
 
-#if defined(__LINUX__)
-  	msg_box(_("Information"), 
-	  _("Configuration file saved (in ~/.tiemu)."));
-#elif defined(__WIN32__)
+#ifdef __WIN32__
   	msg_box(_("Information"), 
 	  _("Configuration file saved (in tiemu.ini)."));
+#else
+	msg_box(_("Information"), 
+	  _("Configuration file saved (in ~/.tiemu)."));
 #endif
 }
 
