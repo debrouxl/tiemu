@@ -111,10 +111,16 @@ on_link_cable1_activate                (GtkMenuItem     *menuitem,
 }
 
 
+void window_get_rect(GtkWidget *widget, GdkRect *rect);
+
 GLADE_CB void
 on_save_config1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+	// save main window position
+	window_get_rect(main_wnd, &options3.calc.rect);
+
+	//write config
 	rcfile_write();
 
 #if defined(__LINUX__)
@@ -385,8 +391,11 @@ on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem
 	params.sav_file = g_strconcat(inst_paths.home_dir, basename, ".sav", NULL);
 	g_free(basename);
 
-	// save state and and config
+	// save state
 	ti68k_state_save(params.sav_file);
+
+	// and config
+	window_get_rect(main_wnd, &options3.calc.rect);
     rcfile_write();
 
 	// exit
