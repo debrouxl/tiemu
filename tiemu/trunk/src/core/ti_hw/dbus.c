@@ -274,7 +274,8 @@ void df_reinit(void)
 
 void df_putbyte(uint8_t arg)
 {
-	static int cnt = 0;
+	static int foo = 0;
+
 
 	t2f_data = arg;
 	t2f_flag = 1;
@@ -282,11 +283,11 @@ void df_putbyte(uint8_t arg)
 	if(!sip)
 	{
 		recfile(arg);
-		cnt = 0;
+		foo = 0;
 	}
 
-	//cnt++;
-	//printf("putbyte (%03i): %02x\n", cnt, arg);
+	foo++;
+	//printf("putbyte (%03i): %02x\n", foo, arg);
 }
 
 uint8_t df_getbyte(void)
@@ -559,7 +560,7 @@ static int recfile(void)
 static int recfile(uint8_t mid)
 {
 	int ret;
-	char filename[32];
+	char filename[32] = "group.92g";
 
 	// Make this function not re-entrant
 	if(rip)
@@ -567,11 +568,9 @@ static int recfile(uint8_t mid)
 	else
 		rip = 1;
 
-	printf("recfile begin!\n");
-
 	// Some models and AMS versions sends an RDY packet when entering in
 	// the VAR-Link menu or just before sending variable. We skip it !
-	if(mid == 0x89)
+	if(mid == 0x89 && tihw.calc_type != TI92)
 	{
 		uint8_t arg;
 		int i;
@@ -598,8 +597,6 @@ static int recfile(uint8_t mid)
 
 		tiemu_error(ret, NULL);
 	}
-
-	printf("recfile end!\n");
 
 	// end
 recfile_end:
