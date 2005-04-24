@@ -67,7 +67,7 @@ int ti68k_debug_trace(void)
 int ti68k_debug_step(void)
 {
     regs.spcflags |= SPCFLAG_DBSKIP;
-	return ti68k_debug_do_instructions(1);
+	return hw_m68k_run(1, 0);
 }
 
 static const uint16_t rets[] = { 

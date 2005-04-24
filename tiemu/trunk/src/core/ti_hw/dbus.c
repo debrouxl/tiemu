@@ -180,7 +180,6 @@ static int exit_link_cable(void)
 static void lp_reinit(void)
 {
 	avail = 0;
-	//printf("reinit !\n");
 }
 
 static void lp_putbyte(uint8_t arg)
@@ -259,6 +258,8 @@ static int lp_checkread(void)
 */
 
 static int sip = 0;	// sending in progress
+static int rip = 0;	// receive in progress
+static int recfile(uint8_t data);
  
 int t2f_data;   // ti => file data
 int t2f_flag;   // data available
@@ -273,15 +274,19 @@ void df_reinit(void)
 
 void df_putbyte(uint8_t arg)
 {
+	static int cnt = 0;
+
 	t2f_data = arg;
 	t2f_flag = 1;
 
-	if(sip == 0)
+	if(!sip)
 	{
-		printf("receiving <%02x>\n", arg);
-		io_bit_set(0x0d,7);	// SLE=1
-		t2f_flag = f2t_flag = 0;
+		recfile(arg);
+		cnt = 0;
 	}
+
+	//cnt++;
+	//printf("putbyte (%03i): %02x\n", cnt, arg);
 }
 
 uint8_t df_getbyte(void)
@@ -445,15 +450,6 @@ static int exit_link_file(void)
     return 0;
 }
 
-static int test_sendfile(void)
-{
-    map_dbus_to_file();
-    itc.send_var("C:\\str.9xs", 0, NULL);
-    map_dbus_to_cable();
-
-    return 0;
-}
-
 int send_ti_file(const char *filename)
 {
     gint ok = 0;
@@ -519,7 +515,7 @@ int send_ti_file(const char *filename)
 	//printf("Duration: %2.1f seconds.\n", duration);
 
 	// Transfer aborted ? Set hw link error
-	if(ret != 0)
+	if(ret)
 	{
 		tiemu_error(ret, NULL);
 		io_bit_set(0x0d,7);	// SLE=1
@@ -528,3 +524,86 @@ int send_ti_file(const char *filename)
 
   return 0;
 }
+
+#if 0
+static int recfile(void)
+{
+	uint8_t arg;
+
+	if(rip)
+		return 0;
+	else
+		rip = 1;
+
+	ilp_get(&arg);
+	printf("receiving <%02x>\n", arg);
+
+	if(arg == 0x89)
+	{
+		ilp_get(&arg);
+		printf("purging <%02x>\n", arg);
+		ilp_get(&arg);
+		printf("purging <%02x>\n", arg);
+		ilp_get(&arg);
+		printf("purging <%02x>\n", arg);
+	}
+
+
+	io_bit_set(0x0d,7);	// SLE=1
+	t2f_flag = f2t_flag = 0;
+
+	rip = 0;
+	return 0;	
+}
+#else
+static int recfile(uint8_t mid)
+{
+	int ret;
+	char filename[32];
+
+	// Make this function not re-entrant
+	if(rip)
+		return 0;
+	else
+		rip = 1;
+
+	printf("recfile begin!\n");
+
+	// Some models and AMS versions sends an RDY packet when entering in
+	// the VAR-Link menu or just before sending variable. We skip it !
+	if(mid == 0x89)
+	{
+		uint8_t arg;
+		int i;
+
+		for(i=0; i<4; i++)
+		{
+			ilp_get(&arg);
+			printf("purging <%02x>\n", arg);
+		}
+
+		if(tihw.calc_type != TI89t)
+			goto recfile_end;
+	}
+
+	// Receive variable in non-silent mode
+	ret = itc.recv_var_2(filename, 0, NULL);
+	printf("filename: <%s>\n", filename);
+
+	// Check for error
+	if(ret)
+	{
+		io_bit_set(0x0d,7);	// SLE=1
+		t2f_flag = f2t_flag = 0;
+
+		tiemu_error(ret, NULL);
+	}
+
+	printf("recfile end!\n");
+
+	// end
+recfile_end:
+	rip = 0;
+	return 0;	
+}
+#endif
