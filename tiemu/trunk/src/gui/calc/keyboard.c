@@ -231,7 +231,7 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
 #endif
     else if(event->keyval == GDK_F10)
     {
-        on_send_file_to_gtktiemu1_activate(NULL, NULL);
+        on_send_file_to_tiemu1_activate(NULL, NULL);
         return TRUE;
     }
     else if(event->keyval == GDK_F11)

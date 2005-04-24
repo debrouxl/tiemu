@@ -274,20 +274,16 @@ void df_reinit(void)
 
 void df_putbyte(uint8_t arg)
 {
-	static int foo = 0;
-
-
 	t2f_data = arg;
 	t2f_flag = 1;
 
 	if(!sip)
 	{
-		recfile(arg);
-		foo = 0;
+		if(params.recv_file)
+			recfile(arg);
+		else
+			io_bit_set(0x0d,7);	// SLE=1: error
 	}
-
-	foo++;
-	//printf("putbyte (%03i): %02x\n", foo, arg);
 }
 
 uint8_t df_getbyte(void)
@@ -526,38 +522,6 @@ int send_ti_file(const char *filename)
   return 0;
 }
 
-#if 0
-static int recfile(void)
-{
-	uint8_t arg;
-
-	if(rip)
-		return 0;
-	else
-		rip = 1;
-
-	ilp_get(&arg);
-	printf("receiving <%02x>\n", arg);
-
-	if(arg == 0x89)
-	{
-		ilp_get(&arg);
-		printf("purging <%02x>\n", arg);
-		ilp_get(&arg);
-		printf("purging <%02x>\n", arg);
-		ilp_get(&arg);
-		printf("purging <%02x>\n", arg);
-	}
-
-
-	io_bit_set(0x0d,7);	// SLE=1
-	t2f_flag = f2t_flag = 0;
-
-	rip = 0;
-	return 0;	
-}
-#else
-
 int display_recv_files_dbox(const char *path);
 
 static int recfile(uint8_t mid)
@@ -612,4 +576,4 @@ recfile_end:
 	rip = 0;
 	return 0;	
 }
-#endif
+

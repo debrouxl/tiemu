@@ -76,14 +76,22 @@ on_popup_menu_header                   (GtkMenuItem     *menuitem,
 
 
 GLADE_CB void
-on_send_file_to_gtktiemu1_activate     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_send_file_to_tiemu1_activate     (GtkMenuItem     *menuitem,
+                                     gpointer         user_data)
 {
 	if(engine_is_stopped()) return;
 
 	engine_stop();
 	display_send_files_dbox();
 	engine_start();
+}
+
+GLADE_CB void
+on_recv_file_from_tiemu1_activate     (GtkMenuItem     *menuitem,
+                                       gpointer         user_data)
+{
+	if(engine_is_stopped()) return;
+	params.recv_file = GTK_CHECK_MENU_ITEM(menuitem)->active;
 }
 
 
@@ -462,7 +470,10 @@ GtkWidget* display_popup_menu(void)
 	// if debugger is open, blocks some items
 	if(dbg_on)
 	{
-		data = glade_xml_get_widget(xml, "send_file_to_gtktiemu1");
+		data = glade_xml_get_widget(xml, "send_file_to_tiemu1");
+		gtk_widget_set_sensitive(data, FALSE);
+
+		data = glade_xml_get_widget(xml, "recv_file_to_tiemu1");
 		gtk_widget_set_sensitive(data, FALSE);
 
 		data = glade_xml_get_widget(xml, "link_cable1");
