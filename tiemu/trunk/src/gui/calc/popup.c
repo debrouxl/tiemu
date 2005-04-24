@@ -82,7 +82,7 @@ on_send_file_to_gtktiemu1_activate     (GtkMenuItem     *menuitem,
 	if(engine_is_stopped()) return;
 
 	engine_stop();
-	display_tifiles_dbox();
+	display_send_files_dbox();
 	engine_start();
 }
 

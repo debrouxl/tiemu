@@ -124,75 +124,7 @@ gint display_save_state_dbox()
 	return 0;
 }
 
-gint display_tifile_dbox()
-{
-	const gchar *filename;
-    const gchar *ext;
-	int err;
-	static gchar *folder = NULL;
-
-    // set mask
-    switch(tihw.calc_type) 
-	{
-    case TI92:
-        ext = "*.92?";
-		break;
-	default:
-        ext = "*.89?;*.92?;*.9x?;*.v2?";
-        break;
-    }
-
-	// get filename
-	if(folder == NULL)
-		folder = g_strdup(inst_paths.base_dir);
-
-	filename = (char *)create_fsel(folder, NULL, (char *)ext, FALSE);
-	if (!filename)
-    {
-		return 0;
-    }
-
-	// keep folder
-	g_free(folder);
-	folder = g_path_get_dirname(filename);
-
-    // check extension
-    if(!tifiles_is_a_ti_file(filename) || 
-        !tifiles_is_ti9x(tifiles_which_calc_type(filename))) 
-	{
-        msg_box(_("Error"), _("This file is not a valid TI file."));
-        return -1;
-    }
-
-    // set pbar title
-    if(tifiles_is_a_tib_file(filename) || tifiles_is_a_flash_file(filename)) 
-	{
-        create_pbar_type5(_("Flash"), "");
-    } 
-	else if(tifiles_is_a_backup_file(filename)) 
-	{
-        create_pbar_type3(_("Backup"));
-    } 
-	else if(tifiles_is_a_group_file(filename)) 
-	{
-        create_pbar_type5(_("Sending group file"), "");
-    } 
-	else if(tifiles_is_a_single_file(filename)) 
-	{
-        create_pbar_type4(_("Sending variable"), "");
-    }
-
-    // note that core is currently not bkpt-interruptible when
-    // transferring file
-    GTK_REFRESH();
-    err = ti68k_linkport_send_file(filename);
-    handle_error();
-    destroy_pbar();	
-
-	return 0;
-}
-
-gint display_tifiles_dbox()
+gint display_send_files_dbox()
 {
 	const gchar *ext;
 	gchar **filenames, **ptr;
@@ -259,6 +191,40 @@ gint display_tifiles_dbox()
 	}
 
 	g_strfreev(filenames);
+	return 0;
+}
+
+gint display_recv_files_dbox(const char *filename)
+{
+	const gchar *fn;
+	gchar *src_folder;
+	gchar *dst_folder;
+	gchar *basename;
+	gchar *ext;
+
+	// get file components
+	src_folder = g_path_get_dirname(filename);
+	dst_folder = inst_paths.home_dir;
+	basename = g_path_get_basename(filename);
+
+	 // set mask
+    switch(tihw.calc_type) 
+	{
+    case TI92:
+        ext = "*.92?";
+		break;
+	default:
+        ext = "*.89?;*.92?;*.9x?;*.v2?";
+        break;
+    }
+
+	fn = create_fsel(dst_folder, basename, ext, TRUE);
+	if(fn)
+		g_rename(filename, fn);
+
+	g_free(src_folder);
+	g_free(basename);
+
 	return 0;
 }
 

@@ -557,10 +557,13 @@ static int recfile(void)
 	return 0;	
 }
 #else
+
+int display_recv_files_dbox(const char *path);
+
 static int recfile(uint8_t mid)
 {
 	int ret;
-	char filename[32];
+	char filename[1024];
 
 	// Make this function not re-entrant
 	if(rip)
@@ -586,8 +589,8 @@ static int recfile(uint8_t mid)
 	}
 
 	// Receive variable in non-silent mode
-	strcpy(filename, "group.");
-	strcat(filename, tifiles_group_file_ext());
+	strcpy(filename, g_get_tmp_dir());
+	strcat(filename, G_DIR_SEPARATOR_S);
 
 	ret = itc.recv_var_2(filename, 0, NULL);
 	printf("filename: <%s>\n", filename);
@@ -600,6 +603,9 @@ static int recfile(uint8_t mid)
 
 		tiemu_error(ret, NULL);
 	}
+
+	// Open a box
+	display_recv_files_dbox(filename);
 
 	// end
 recfile_end:
