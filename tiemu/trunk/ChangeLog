@@ -15,6 +15,7 @@ To do:
 	- [kevin] $1167: increased link timeout from 10 to 60s.
 	- [roms]  $1172: added receive of file
 	- [roms]  $1173: improved to support group files
+	- [roms]  $1174: show a dialog box when a file is received
 
 - 11/04/2005, version 1.80s:
 	- [roms]  $1102: fixed old file selector
