@@ -13,6 +13,8 @@ To do:
 	- [roms]  $1163: implementing receive file feature
 	- [roms]  $1166: merged Christian Walther's patch for Mac OS-X port.
 	- [kevin] $1167: increased link timeout from 10 to 60s.
+	- [roms]  $1172: added receive of file
+	- [roms]  $1173: improved to support group files
 
 - 11/04/2005, version 1.80s:
 	- [roms]  $1102: fixed old file selector

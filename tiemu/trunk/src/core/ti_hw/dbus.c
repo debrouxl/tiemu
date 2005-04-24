@@ -560,7 +560,7 @@ static int recfile(void)
 static int recfile(uint8_t mid)
 {
 	int ret;
-	char filename[32] = "group.92g";
+	char filename[32];
 
 	// Make this function not re-entrant
 	if(rip)
@@ -586,6 +586,9 @@ static int recfile(uint8_t mid)
 	}
 
 	// Receive variable in non-silent mode
+	strcpy(filename, "group.");
+	strcat(filename, tifiles_group_file_ext());
+
 	ret = itc.recv_var_2(filename, 0, NULL);
 	printf("filename: <%s>\n", filename);
 
