@@ -1770,7 +1770,10 @@ _bfd_generic_link_add_one_symbol (struct bfd_link_info *info,
 	  /* Fall through.  */
 	case MDEF:
 	  /* Handle a multiple definition.  */
-	  if (!info->allow_multiple_definition)
+	  /* (TiEmu 20050424 Kevin Kofler) TIGCC allows multiple definitions.
+	     Without this patch, not only would valid object files be rejected,
+	     they'd even crash GDB because the pointer isn't set correctly. */
+	  if (0 /*!info->allow_multiple_definition*/)
 	    {
 	      asection *msec = NULL;
 	      bfd_vma mval = 0;
