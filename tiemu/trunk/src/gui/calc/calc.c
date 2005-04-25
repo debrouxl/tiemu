@@ -132,7 +132,11 @@ on_calc_wnd_delete_event           (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
+#ifdef __IPAQ__
+    return FALSE;
+#else
     return TRUE;	// block destroy
+#endif
 }
 
 typedef void (*VCB) (void);

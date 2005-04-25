@@ -98,8 +98,10 @@ int main(int argc, char **argv)
     /*
         Set splash screen
     */
+#ifndef __IPAQ__
     splash_screen_start();
     splash_screen_set_label(_("Initializing GTK+..."));    
+#endif
 
 #if WITH_KDE
     splash_screen_set_label(_("Initializing KDE..."));

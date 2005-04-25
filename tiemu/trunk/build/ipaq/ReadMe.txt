@@ -22,8 +22,10 @@ To build a GPE application, you need to do this:
 2. export PATH=/usr/local/arm/oe/bin:$PATH
 3. Change to the location of your source
 4. Run ./configure --host=arm-linux --disable-nls 
-   Option: --prefix=/usr/local/arm/oe/arm-linux --datadir=/usr/local
+   Option: --prefix=/usr/local/arm/oe/arm-linux
 5. Files are installed in /usr/local/arm/oe/arm-linux if you choose the option.
+6. On the iPAQ, you must copy files with the same directory tree (aka
+/usr/local/arm/oe/arm-linux)
 
 To debug:
 

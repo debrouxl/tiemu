@@ -272,7 +272,9 @@ GLADE_CB void
 on_default_skin1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+#ifndef __IPAQ__
 	hid_switch_with_skin();
+#endif
 }
 
 
