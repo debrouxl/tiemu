@@ -165,8 +165,8 @@ ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
 	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
 	$(LDFLAGS) $(CFLAGS) $(kdelibraries) -Wl,--rpath,"$(prefix)/lib"
 else
-	#../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) \
-	#-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
+	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) \
+	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
 endif
 
 .c.o:
