@@ -163,7 +163,8 @@ uae:
 tiemu: $(tiemu_OBJ)
 ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
 	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
-	$(LDFLAGS) $(CFLAGS) $(kdelibraries) -Wl,--rpath,"$(prefix)/lib"
+	$(LDFLAGS) $(CFLAGS) $(kdelibraries) \
+	-Wl,--rpath,"$(prefix)/lib" -Wl,--export-dynamic
 else
 	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) \
 	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
