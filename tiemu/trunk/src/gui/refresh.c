@@ -129,10 +129,6 @@ void gt_init_refresh_functions(void)
 		    gt_pbar, 
 		    gt_label 
 		    );
-
-  fprintf(stdout, _("Initialized in GTK+ mode.\n"));
-
-  return;
 }
 
 
