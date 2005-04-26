@@ -33,10 +33,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#if !defined(__WIN32__) && !defined(__MACOSX__)
-#include <byteswap.h>
-#endif
 #include <math.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "skinops.h"
 
@@ -159,12 +158,7 @@ int skin_read_header(SKIN_INFOS *si, const char *filename)
 */
 int skin_read_image(SKIN_INFOS *si, const char *filename)
 {
-    FILE *fp = NULL;
-    char pattern[] = "fnXXXXXX";
-    char *tmpname;
-    FILE *ft;
-    GError *error = NULL;
-	
+    FILE *fp = NULL;	
     uint32_t jpeg_offset;
   	uint32_t endian;
 	int i;
@@ -174,6 +168,13 @@ int skin_read_image(SKIN_INFOS *si, const char *filename)
 	double s;
 	int lcd_w, lcd_h;
     GdkPixbuf *tmp;
+
+	GdkPixbufLoader *loader;
+	GError *error = NULL;
+	gboolean result;
+	guchar *buf;
+	gsize count;
+	struct stat st;
 
 	printf("-> skin_read_image\n");
 	
@@ -202,31 +203,43 @@ int skin_read_image(SKIN_INFOS *si, const char *filename)
   	fread(&jpeg_offset, 4, 1, fp);
 	if (endian != ENDIANNESS_FLAG)
 		jpeg_offset = GUINT32_SWAP_LE_BE(jpeg_offset);
-	fseek(fp, jpeg_offset, SEEK_SET);
-
-    // Extract image from skin by creating a temp file
-    tmpname = mktemp(pattern);
-	fprintf(stdout, "<%s> <%s>\n", g_get_current_dir(), tmpname);
-    ft = fopen(tmpname, "wb");
-    if(ft == NULL) 
-    {
-		fprintf(stderr, "Unable to open this file: <%s>\n", filename);
-		return -1;
-    }
-  
-    while(!feof(fp))
-	    fputc(fgetc(fp), ft);
 	
-    fclose(ft);
-    fclose(fp);
 
-    // Feed the pixbuf with our jpeg data
-    si->image = gdk_pixbuf_new_from_file(tmpname, &error);
-    if (si->image == NULL) 
-    {
-		fprintf(stderr, "Failed to load pixbuf file: %s: %s\n", tmpname, error->message);
+    // Extract image from skin
+	fseek(fp, jpeg_offset, SEEK_SET);
+	fstat(fileno(fp), &st);
+	count = st.st_size - jpeg_offset;
+
+	buf = g_malloc(count * sizeof(guchar));
+	count = fread(buf, sizeof(guchar), count, fp);
+	
+	// Feed the pixbuf loader with our jpeg data
+	loader = gdk_pixbuf_loader_new();	
+	result = gdk_pixbuf_loader_write(loader, buf, count, &error);
+	if(result == FALSE)
+	{
+		fprintf(stderr, "Failed to load pixbuf file: %s\n", filename);
 		g_error_free(error);
-		unlink(tmpname);
+
+		return -1;
+	}
+    
+	result = gdk_pixbuf_loader_close(loader, &error);
+	if(result == FALSE)
+	{
+		fprintf(stderr, "Failed to close pixbuf file: %s\n", filename);
+		g_error_free(error);
+
+		return -1;
+	}
+	
+    // and get the pixbuf
+	si->image = gdk_pixbuf_loader_get_pixbuf(loader);
+	if(si->image == NULL)
+	{
+		fprintf(stderr, "Failed to load pixbuf file: %s\n", filename);
+		g_error_free(error);
+
 		return -1;
     }
 
@@ -269,7 +282,6 @@ int skin_read_image(SKIN_INFOS *si, const char *filename)
       	si->keys_pos[i].bottom = (long)(long)(si->keys_pos[i].bottom / s);
     }
 
-    unlink(tmpname);	
    	return 0;
 }
 
