@@ -49,6 +49,8 @@
 GtkWidget *main_wnd = NULL;
 GtkWidget *area = NULL;
 
+SKIN_INFOS skin_infos = { 0 };
+
 extern GdkPixbuf*	lcd;
 extern GdkPixbuf*	skn;
 extern GdkPixmap*	pixmap;
@@ -196,7 +198,7 @@ static int match_skin(int calc_type)
 	}
 
 	// load skin header
-	if(skin_read_header(options.skin_file, &si) == -1)
+	if(skin_read_header(&skin_infos, options.skin_file) == -1)
 	{
 		g_free(options.skin_file);
       	options.skin_file = g_strdup_printf("%s%s.skn", 
@@ -349,7 +351,7 @@ int  hid_init(void)
 	match_skin(tihw.calc_type);
 
     // Load skin
-    if(skin_load(options.skin_file) == -1) 
+    if(skin_load(&skin_infos, options.skin_file) == -1) 
     {
 	    gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
 	    tiemu_error(0, s);

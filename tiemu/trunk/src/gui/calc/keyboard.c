@@ -48,6 +48,8 @@
 Pc2TiKey*       kbd_keymap = keymap;
 const char*     skn_keymap;
 
+extern SKIN_INFOS skin_infos;
+
 static int hwkey_to_tikey(guint16 hardware_keycode, int action)
 {
     int i;

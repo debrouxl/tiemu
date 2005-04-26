@@ -55,6 +55,8 @@
 extern GtkWidget *main_wnd;
 extern GtkWidget *area;
 
+extern SKIN_INFOS skin_infos;
+
 GdkPixbuf *lcd = NULL;
 GdkPixbuf *skn = NULL;
 GdkPixmap *pixmap = NULL;

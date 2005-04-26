@@ -16,6 +16,11 @@ To do:
 	- [roms]  $1172: added receive of file
 	- [roms]  $1173: improved to support group files
 	- [roms]  $1176: show a dialog box when a file is received
+	- [roms]  $1177: file receiving can be disabled for games which uses linkport for sound
+	- [roms]  $1182: TI89 Titanium entry was missing in the communication box
+	- [roms]  $1183: iPAQ: glade callbacks were not found due to a missing --export-dynamic
+	- [roms]  $1185: clean-up and improvements in the skin loader
+					 improvements in the skin loading (avoid multiple loading and load only when necessary)
 
 - 11/04/2005, version 1.80s:
 	- [roms]  $1102: fixed old file selector
