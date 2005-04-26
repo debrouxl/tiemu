@@ -196,7 +196,7 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
 
 static int match_skin(int calc_type)
 {
-	SKIN_INFOS si;
+	SKIN_INFOS *sk = &skin_infos;
 	int ok;
 	gchar *skin_name, *s;
 
@@ -217,7 +217,7 @@ static int match_skin(int calc_type)
 	}
 
 	// load skin header
-	if(skin_read_header(&skin_infos, options.skin_file) == -1)
+	if(skin_read_header(sk, options.skin_file) == -1)
 	{
 		g_free(options.skin_file);
       	options.skin_file = g_strdup_printf("%s%s.skn", 
@@ -231,14 +231,14 @@ static int match_skin(int calc_type)
 	{
 	    case TI92:
 		case TI92p:
-            ok = !strcmp(si.calc, SKIN_TI92) || !strcmp(si.calc, SKIN_TI92P);
+            ok = !strcmp(sk->calc, SKIN_TI92) || !strcmp(sk->calc, SKIN_TI92P);
 		break;
 	    case TI89:
         case TI89t:
-            ok = !strcmp(si.calc, SKIN_TI89) || !strcmp(si.calc, SKIN_TI89T);
+            ok = !strcmp(sk->calc, SKIN_TI89) || !strcmp(sk->calc, SKIN_TI89T);
 		break;
 		case V200:
-			ok = !strcmp(si.calc, SKIN_V200);
+			ok = !strcmp(sk->calc, SKIN_V200);
 		break;
 	    default: 
             ok = 0;
