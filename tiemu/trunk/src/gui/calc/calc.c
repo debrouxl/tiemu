@@ -350,15 +350,26 @@ int  hid_init(void)
     // Found a skin
 	match_skin(tihw.calc_type);
 
-    // Load skin
-    if(skin_load(&skin_infos, options.skin_file) == -1) 
+    // Load skin (2 parts)
+    if(skin_read_header(&skin_infos, options.skin_file) == -1) 
     {
 	    gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
 	    tiemu_error(0, s);
 	    g_free(s);
 	    return -1;
     }
-    skn = skin_infos.image;
+
+	if(skin_read_image(&skin_infos, options.skin_file) == -1) 
+	{
+		gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
+		tiemu_error(0, s);
+		g_free(s);
+		return -1;
+	}
+
+	// Allocate the skn pixbuf (if needed)
+	//skn = params.background ? skin_infos.image : NULL;
+	skn = skin_infos.image;
   
 	// Set skin keymap depending on calculator type
     switch(tihw.calc_type)
@@ -408,7 +419,7 @@ int  hid_init(void)
 	// Create main window
 	display_main_wnd();
 
-    // Allocate the backing pixmap
+    // Allocate the backing pixmap (used for drawing and refresh)
     pixmap = gdk_pixmap_new(main_wnd->window, wi.w, wi.h, -1);
     if(pixmap == NULL)
     {

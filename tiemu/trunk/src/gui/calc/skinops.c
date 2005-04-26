@@ -49,6 +49,7 @@ int skin_read_header(SKIN_INFOS *si, const char *filename)
   	uint32_t endian;
   	uint32_t jpeg_offset;
   	uint32_t length;
+	char str[17];
 
 	printf("-> skin_read_header\n");
   
@@ -60,7 +61,12 @@ int skin_read_header(SKIN_INFOS *si, const char *filename)
     }
  
 	/* offsets */
-  	fseek(fp, 16, SEEK_SET);  
+	fread(str, 16, 1, fp);
+  	if (strncmp(str, "TiEmu v2.00", 16))
+  	{
+  		fprintf(stderr, "Bad skin format\n");
+      	return -1;
+  	}
   	fread(&endian, 4, 1, fp);
   	fread(&jpeg_offset, 4, 1, fp);
 
@@ -168,6 +174,7 @@ int skin_read_image(SKIN_INFOS *si, const char *filename)
 	double s;
 	int lcd_w, lcd_h;
     GdkPixbuf *tmp;
+	char str[17];
 
 	GdkPixbufLoader *loader;
 	GError *error = NULL;
@@ -198,7 +205,12 @@ int skin_read_image(SKIN_INFOS *si, const char *filename)
     }
     	
     // Get jpeg offset and endianess
-  	fseek(fp, 16, SEEK_SET);  
+  	fread(str, 16, 1, fp);
+  	if (strncmp(str, "TiEmu v2.00", 16))
+  	{
+  		fprintf(stderr, "Bad skin format\n");
+      	return -1;
+  	}
   	fread(&endian, 4, 1, fp);
   	fread(&jpeg_offset, 4, 1, fp);
 	if (endian != ENDIANNESS_FLAG)
@@ -288,33 +300,20 @@ int skin_read_image(SKIN_INFOS *si, const char *filename)
 /* Load a skin (TiEMu v2.00 only) */
 int skin_load(SKIN_INFOS *si, const char *filename)
 {
-	FILE *fp = NULL;
-  	char buf[17];
   	int ret = 0;
 
 	printf("-> skin_read_load\n");
-
-  	fp = fopen(filename, "rb");
-  	if (fp == NULL)
-    	{
-      		fprintf(stderr, "Unable to open this file: <%s>\n", filename);
-      		return -1;
-    	}
-
-  	fread(buf, 16, 1, fp);
-  	if (strncmp(buf, "TiEmu v2.00", 16))
-  	{
-  		fprintf(stderr, "Bad skin format\n");
-      		return -1;
-  	}
-
-	fclose(fp);
   	
   	ret = skin_read_header(si, filename);
+	if(ret)
+		return ret;
+
   	ret = skin_read_image(si, filename);
+	if(ret)
+		return ret;
 
 	if(!ret)
-   		fprintf(stdout, "loading skin: %s (%d x %d) %s\n", g_basename(filename), si->width, si->height, buf);
+   		fprintf(stdout, "loading skin: %s (%d x %d) %s\n", g_basename(filename), si->width, si->height, filename);
   
   	return ret;
 }

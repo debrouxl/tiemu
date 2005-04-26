@@ -173,11 +173,8 @@ void redraw_skin(void)
 	gtk_window_resize(GTK_WINDOW(main_wnd), wi.w, wi.h);
 
 	// no skin ?
-  	if(!params.background) 
+  	if(!params.background || !skn) 
     	return;
-  
-	if(skn == NULL)
-	    return;
 
 	// set region to update
 	r.x = 0;
@@ -202,7 +199,7 @@ void redraw_lcd(void)
 {
 	GdkRect r;
 
-	if(pixmap == NULL)
+	if(!skn || !pixmap)
 		return;
 
 	// set region to update
