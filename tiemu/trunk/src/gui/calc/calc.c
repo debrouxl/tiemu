@@ -145,7 +145,11 @@ GLADE_CB void
 on_calc_wnd_destroy                    (GtkObject       *object,
                                         gpointer         user_data)
 {
+#ifdef __IPAQ__
+    on_exit_without_saving_state1_activate(NULL, NULL);
+#else
 	return;
+#endif
 }
 
 GLADE_CB gboolean
