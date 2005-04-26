@@ -51,8 +51,6 @@ int skin_read_header(SKIN_INFOS *si, const char *filename)
   	uint32_t length;
 	char str[17];
 
-	printf("-> skin_read_header\n");
-  
 	fp = fopen(filename, "rb");
   	if (fp == NULL)
     {
@@ -183,8 +181,6 @@ int skin_read_image(SKIN_INFOS *si, const char *filename)
 	gsize count;
 	struct stat st;
 
-	printf("-> skin_read_image\n");
-	
 	// set lcd size
 	if(!strcmp(si->calc, SKIN_TI89))
 	{
@@ -302,8 +298,6 @@ int skin_load(SKIN_INFOS *si, const char *filename)
 {
   	int ret = 0;
 
-	printf("-> skin_read_load\n");
-  	
   	ret = skin_read_header(si, filename);
 	if(ret)
 		return ret;
@@ -321,8 +315,6 @@ int skin_load(SKIN_INFOS *si, const char *filename)
 /* Unload skin by freeing allocated memory */
 int skin_unload(SKIN_INFOS *si)
 {
-	printf("-> skin_unload\n");
-
     if(si->image != NULL)
     {
         g_object_unref(si->image);

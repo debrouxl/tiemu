@@ -19,8 +19,9 @@ To do:
 	- [roms]  $1177: file receiving can be disabled for games which uses linkport for sound
 	- [roms]  $1182: TI89 Titanium entry was missing in the communication box
 	- [roms]  $1183: iPAQ: glade callbacks were not found due to a missing --export-dynamic
-	- [roms]  $1185: clean-up and improvements in the skin loader
+	- [roms]  $1185: clean-up and improvements in the skin loader (no tmp file any longer)
 					 improvements in the skin loading (avoid multiple loading and load only when necessary)
+	- [roms]  $1188: removed flicker at startup, code slightly reworked
 
 - 11/04/2005, version 1.80s:
 	- [roms]  $1102: fixed old file selector

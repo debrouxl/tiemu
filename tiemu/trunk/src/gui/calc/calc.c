@@ -61,35 +61,54 @@ extern const char	sknKey92[];
 extern const char	sknKey89[];
 
 extern uint32_t*	lcd_bytmap;
+
 extern LCD_INFOS	li;
-extern WND_INFOS	wi;
 extern SCL_INFOS	si;
+
+extern LCD_RECT		ls;
+extern LCD_RECT		lr;
+extern SKN_RECT		sr;
+extern WND_RECT		wr;
 
 static void set_infos(void)	// set window & lcd sizes
 {
+	// LCD rectangle (source: skin)
+	ls.x = (int)(si.x * skin_infos.lcd_pos.left); 
+	ls.y = (int)(si.y * skin_infos.lcd_pos.top);
+	ls.w = (int)(si.x * tihw.lcd_w);
+	ls.h = (int)(si.y * tihw.lcd_h);
+
+	// LCD rectangle (target: window)
 	if(params.background) 
 	{
-		li.pos.x = (int)(si.x * skin_infos.lcd_pos.left); 
-		li.pos.y = (int)(si.y * skin_infos.lcd_pos.top);
+		lr.x = ls.x; 
+		lr.y = ls.y;
 	}
 	else 
 	{
-		li.pos.x = 0;
-		li.pos.y = 0;
+		lr.x = 0;
+		lr.y = 0;
 	}  
+	lr.w = (int)(si.x * tihw.lcd_w);
+	lr.h = (int)(si.y * tihw.lcd_h);
 
-	li.pos.w = (int)(si.x * tihw.lcd_w);
-	li.pos.h = (int)(si.y * tihw.lcd_h);
 
+	// SKN rectangle
+	sr.x = sr.y = 0;
+	sr.w = (int)(si.x * skin_infos.width);
+	sr.h = (int)(si.y * skin_infos.height);
+
+	// WND rectangle (= LCD or SKN depending on w/ or w/o skin)
+	wr.x = wr.y = 0;
 	if(params.background)
 	{
-		wi.w = (int)(si.x * skin_infos.width);
-		wi.h = (int)(si.y * skin_infos.height);
+		wr.w = sr.w;
+		wr.h = sr.h;
 	}
 	else
 	{
-		wi.w = (int)(si.x * tihw.lcd_w);
-		wi.h = (int)(si.y * tihw.lcd_h);
+		wr.w = lr.w;
+		wr.h = lr.h;
 	}
 }
 
@@ -351,7 +370,7 @@ int  hid_init(void)
 	match_skin(tihw.calc_type);
 
     // Load skin (2 parts)
-    if(skin_read_header(&skin_infos, options.skin_file) == -1) 
+    if(skin_load(&skin_infos, options.skin_file) == -1) 
     {
 	    gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
 	    tiemu_error(0, s);
@@ -359,16 +378,7 @@ int  hid_init(void)
 	    return -1;
     }
 
-	if(skin_read_image(&skin_infos, options.skin_file) == -1) 
-	{
-		gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
-		tiemu_error(0, s);
-		g_free(s);
-		return -1;
-	}
-
 	// Allocate the skn pixbuf (if needed)
-	//skn = params.background ? skin_infos.image : NULL;
 	skn = skin_infos.image;
   
 	// Set skin keymap depending on calculator type
@@ -392,7 +402,7 @@ int  hid_init(void)
         }
 	}
 
-	// Set window/LCD infos
+	// Set window/LCD sizes
 	set_infos();
 
     // Allocate the TI screen buffer
@@ -407,6 +417,8 @@ int  hid_init(void)
 	    g_free(s);
 	    return -1;
     }
+
+	// Used by TI89 (the LCD view is clipped from memory view)
 	si.l = gdk_pixbuf_new_subpixbuf(lcd, 0, 0, tihw.lcd_w, tihw.lcd_h);
     
 	// Constants for LCD update (speed-up)
@@ -420,7 +432,7 @@ int  hid_init(void)
 	display_main_wnd();
 
     // Allocate the backing pixmap (used for drawing and refresh)
-    pixmap = gdk_pixmap_new(main_wnd->window, wi.w, wi.h, -1);
+    pixmap = gdk_pixmap_new(main_wnd->window, wr.w, wr.h, -1);
     if(pixmap == NULL)
     {
         gchar *s = g_strdup_printf("unable to create backing pixbuf.\n");
@@ -509,10 +521,10 @@ int hid_switch_fullscreen(void)
 		gint sh = gdk_screen_get_height(screen);
 
 		si.t = 1;
-		si.x = (float)sw / li.pos.w;
-		si.y = (float)sh / li.pos.h;
-		//printf("%i %i %f\n", sw, li.pos.w, si.x);
-		//printf("%i %i %f\n", sh, li.pos.h, si.y);
+		si.x = (float)sw / lr.w;
+		si.y = (float)sh / lr.h;
+		//printf("%i %i %f\n", sw, lr.w, si.x);
+		//printf("%i %i %f\n", sh, lr.h, si.y);
 
 		si.x = (float)4.0;	// restricted to 4.0, too CPU intensive !
 		si.y = (float)4.0;
