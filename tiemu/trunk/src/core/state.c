@@ -38,6 +38,7 @@
 #include "ti68k_int.h"
 #include "ti68k_err.h"
 #include "flash.h"
+#include "printl.h"
 
 #define SAV_REVISION	5
 
@@ -98,7 +99,7 @@ int ti68k_state_load(char *filename)
 		return 0;
   
   	// Open file
-  	DISPLAY("Loading state image (TiEmu v2.00 format): %s\n", filename);
+  	printl(0, "loading state image: %s\n", g_basename(filename));
   	f = fopen(filename, "rb");
   	if(f == NULL)
   		return ERR_CANT_OPEN;
@@ -229,7 +230,7 @@ int ti68k_state_save(char *filename)
   		return ERR_CANT_OPEN;
   
   	// Open file
-  	DISPLAY("Saving state image (TiEmu v2.00 format): %s\n", filename);
+  	printl(0, "Saving state image (TiEmu v2.00 format): %s\n", filename);
   	f = fopen(filename, "wb");
   	if(f == NULL)
   		return ERR_CANT_OPEN;

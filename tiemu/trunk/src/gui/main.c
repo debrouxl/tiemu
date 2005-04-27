@@ -141,10 +141,12 @@ int main(int argc, char **argv)
 	/* 
 	    Change logging domains
 	*/
-	
-    //ticable_set_printl(ticables_printl);
-	//tifiles_set_printl(tifiles_printl);
-    //ticalc_set_printl(ticalcs_printl);
+#if 0
+    ticable_set_printl(ticables_printl);
+	tifiles_set_printl(tifiles_printl);
+    ticalc_set_printl(ticalcs_printl);
+	tiemu_set_printl(tiemu_printl);
+#endif
 
     /*
         Search for dumps or upgrades to convert (in the image directory)

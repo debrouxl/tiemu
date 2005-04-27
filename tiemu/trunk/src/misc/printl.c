@@ -209,7 +209,19 @@ int tiemu_printl(int level, const char *format, ...)
 	return ret;
 }
 
-TIEMU_PRINTL printl = tiemu_printl;
+static int tiemu_default(int level, const char *format, ...)
+{
+	va_list ap;
+	int ret = 0;
+
+	va_start(ap, format);
+	vfprintf(stdout, format, ap);
+    va_end(ap);
+
+	return ret;
+}
+
+TIEMU_PRINTL printl = tiemu_default;
 
 /*
 	Change print behaviour (callback).

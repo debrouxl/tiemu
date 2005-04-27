@@ -41,6 +41,7 @@
 #include "hw.h"
 #include "m68k.h"
 #include "dbus.h"
+#include "printl.h"
 
 #include "ti68k_int.h"
 #include "ti68k_err.h"
@@ -206,7 +207,7 @@ int ti68k_get_rom_size(int calc_type)
 {
     if(calc_type > CALC_MAX)
     {
-        DISPLAY("Bad argument !\n");
+        printl(0, "Bad argument !\n");
         exit(0);
     }
 
@@ -217,7 +218,7 @@ int ti68k_get_ram_size(int calc_type)
 {
     if(calc_type > CALC_MAX)
     {
-        DISPLAY("Bad argument !\n");
+        printl(0, "Bad argument !\n");
         exit(0);
     }
 
@@ -228,7 +229,7 @@ int ti68k_get_io_size(int calc_type)
 {
 	if(calc_type > CALC_MAX)
     {
-        DISPLAY("Bad argument !\n");
+        printl(0, "Bad argument !\n");
         exit(0);
     }
 
@@ -239,7 +240,7 @@ int ti68k_get_io2_size(int calc_type)
 {
 	if(calc_type > CALC_MAX)
     {
-        DISPLAY("Bad argument !\n");
+        printl(0, "Bad argument !\n");
         exit(0);
     }
 

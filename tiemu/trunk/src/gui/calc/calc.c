@@ -45,6 +45,7 @@
 #include "dbg_all.h"
 #include "screenshot.h"
 #include "kbd_mapper.h"
+#include "printl.h"
 
 GtkWidget *main_wnd = NULL;
 GtkWidget *area = NULL;
@@ -607,7 +608,7 @@ int  hid_screenshot(char *filename)
 		outfile = g_strdup(filename);
 	}
 
-	DISPLAY("Screenshot to %s... ", outfile);
+	printl(0, "Screenshot to %s... ", outfile);
 
 	if((options2.size == IMG_LCD) && (options2.type == IMG_BW)) 
 	{
@@ -631,12 +632,12 @@ int  hid_screenshot(char *filename)
 	result = gdk_pixbuf_save(pixbuf, outfile, type, &error, NULL);
 	if (result == FALSE) 
 	{
-		DISPLAY("Failed to save pixbuf file: %s: %s\n", outfile, error->message);
+		printl(0, "Failed to save pixbuf file: %s: %s\n", outfile, error->message);
 		g_error_free(error);
 	}
     g_object_unref(pixbuf);
 
-	DISPLAY("Done !\n");
+	printl(0, "Done !\n");
 	options2.counter++;
 	g_free(filename);
 

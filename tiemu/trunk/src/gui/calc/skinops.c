@@ -38,6 +38,7 @@
 #include <sys/stat.h>
 
 #include "skinops.h"
+#include "printl.h"
 
 /*
 	Read skin informations (header)
@@ -307,7 +308,7 @@ int skin_load(SKIN_INFOS *si, const char *filename)
 		return ret;
 
 	if(!ret)
-   		fprintf(stdout, "loading skin: %s (%d x %d) %s\n", g_basename(filename), si->width, si->height, filename);
+   		printl(0, "loading skin: %s (%d x %d)\n", g_basename(filename), si->width, si->height);
   
   	return ret;
 }

@@ -50,6 +50,7 @@
 #include "hwpm.h"
 #include "timem.h"
 #include "ti68k_def.h"
+#include "printl.h"
 
 /* -- */
 
@@ -57,28 +58,28 @@ void ti68k_display_hw_param_block(HW_PARM_BLOCK *s)
 {
     int i = 0;
 
-    DISPLAY(_("Hardware Parameters Block:\n"));
-    DISPLAY(_("Length           : %i\n"), s->len);
+    printl(0, _("Hardware Parameters Block:\n"));
+    printl(0, _("Length           : %i\n"), s->len);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  hardwareID       : %i\n"), s->hardwareID);
+        printl(0, _("  hardwareID       : %i\n"), s->hardwareID);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  hardwareRevision : %i\n"), s->hardwareRevision);
+        printl(0, _("  hardwareRevision : %i\n"), s->hardwareRevision);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  bootMajor        : %i\n"), s->bootMajor);
+        printl(0, _("  bootMajor        : %i\n"), s->bootMajor);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  bootRevision     : %i\n"), s->bootRevision);
+        printl(0, _("  bootRevision     : %i\n"), s->bootRevision);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  bootBuild        : %i\n"), s->bootBuild);
+        printl(0, _("  bootBuild        : %i\n"), s->bootBuild);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  gateArray        : %i\n"), s->gateArray);
+        printl(0, _("  gateArray        : %i\n"), s->gateArray);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  physDisplayBitsWide : %i\n"), s->physDisplayBitsWide & 0xff);
+        printl(0, _("  physDisplayBitsWide : %i\n"), s->physDisplayBitsWide & 0xff);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  physDisplayBitsTall : %i\n"), s->physDisplayBitsTall & 0xff);
+        printl(0, _("  physDisplayBitsTall : %i\n"), s->physDisplayBitsTall & 0xff);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  LCDBitsWide         : %i\n"), s->LCDBitsWide & 0xff);
+        printl(0, _("  LCDBitsWide         : %i\n"), s->LCDBitsWide & 0xff);
     if(s->len > 2+(4*i++))
-        DISPLAY(_("  LCDBitsTall         : %i\n"), s->LCDBitsTall & 0xff);
+        printl(0, _("  LCDBitsTall         : %i\n"), s->LCDBitsTall & 0xff);
 }
 
 /*

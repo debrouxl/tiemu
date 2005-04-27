@@ -52,6 +52,7 @@
 #include "ti68k_def.h"
 #include "images.h"
 #include "hwpm.h"
+#include "printl.h"
 
 #define is_num(c)   isdigit(c)
 #define is_alnum(c) isalnum(c)
@@ -106,35 +107,35 @@ int ti68k_is_a_img_file(const char *filename)
 */
 void ti68k_display_rom_infos(IMG_INFO *s)
 {
-	DISPLAY(_("Rom informations:\n"));
-  	DISPLAY(_("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
-  	DISPLAY(_("  Firmware    : v%s\n"), s->version);
-  	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->flash));
-  	DISPLAY(_("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
-    DISPLAY(_("  ROM base    : %02x\n"), s->rom_base & 0xff);
-	DISPLAY(_("  Hardware    : %i\n"), s->hw_type);
+	printl(0, _("Rom informations:\n"));
+  	printl(0, _("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
+  	printl(0, _("  Firmware    : v%s\n"), s->version);
+  	printl(0, _("  Memory type : %s\n"), ti68k_romtype_to_string(s->flash));
+  	printl(0, _("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
+    printl(0, _("  ROM base    : %02x\n"), s->rom_base & 0xff);
+	printl(0, _("  Hardware    : %i\n"), s->hw_type);
 }
 
 void ti68k_display_tib_infos(IMG_INFO *s)
 {
-	DISPLAY(_("Tib informations:\n"));
-  	DISPLAY(_("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
-  	DISPLAY(_("  Firmware    : v%s\n"), s->version);
-  	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->flash));
-  	DISPLAY(_("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
-    DISPLAY(_("  ROM base    : %02x\n"), s->rom_base & 0xff);
+	printl(0, _("Tib informations:\n"));
+  	printl(0, _("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
+  	printl(0, _("  Firmware    : v%s\n"), s->version);
+  	printl(0, _("  Memory type : %s\n"), ti68k_romtype_to_string(s->flash));
+  	printl(0, _("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
+    printl(0, _("  ROM base    : %02x\n"), s->rom_base & 0xff);
 }
 
 void ti68k_display_img_infos(IMG_INFO *s)
 {
-	DISPLAY(_("Image informations:\n"));
-  	DISPLAY(_("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
-  	DISPLAY(_("  Firmware    : v%s\n"), s->version);
-  	DISPLAY(_("  Memory type : %s\n"), ti68k_romtype_to_string(s->flash));
-  	DISPLAY(_("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
-    DISPLAY(_("  ROM base    : %02x\n"), s->rom_base & 0xff);
-    DISPLAY(_("  Hardware    : %i\n"), s->hw_type);
-	DISPLAY(_("  Has boot    : %s\n"), s->has_boot ? "yes" : "no");	
+	printl(0, _("Image informations:\n"));
+  	printl(0, _("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
+  	printl(0, _("  Firmware    : v%s\n"), s->version);
+  	printl(0, _("  Memory type : %s\n"), ti68k_romtype_to_string(s->flash));
+  	printl(0, _("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
+    printl(0, _("  ROM base    : %02x\n"), s->rom_base & 0xff);
+    printl(0, _("  Hardware    : %i\n"), s->hw_type);
+	printl(0, _("  Has boot    : %s\n"), s->has_boot ? "yes" : "no");	
 }
 
 /*
@@ -161,7 +162,7 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
   	file = fopen(filename, "rb");
   	if(file == NULL)
     {
-      DISPLAY(_("Unable to open this file: <%s>\n"), filename);
+      printl(0, _("Unable to open this file: <%s>\n"), filename);
       return ERR_CANT_OPEN;
     }
 
@@ -295,7 +296,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
             }
 		break;
 		default:
-			DISPLAY("TIB problem: %02x!\n", 0xff & ptr->device_type);
+			printl(0, "TIB problem: %02x!\n", 0xff & ptr->device_type);
 			return ERR_INVALID_UPGRADE;
 		break;
 	}
@@ -383,7 +384,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	if(err)
     {
 	    free(img.data);
-      	DISPLAY(_("Unable to get informations on ROM dump: %s\n"), srcname);
+      	printl(0, _("Unable to get informations on ROM dump: %s\n"), srcname);
       	return err;
     }
 	ti68k_display_rom_infos(&img);
@@ -457,7 +458,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	if(err)
     {
 	    free(img.data);
-      	DISPLAY(_("Unable to get informations on FLASH upgrade: %s\n"), srcname);
+      	printl(0, _("Unable to get informations on FLASH upgrade: %s\n"), srcname);
       	return err;
     }
 	ti68k_display_tib_infos(&img);
@@ -559,7 +560,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
   	num_blocks = real_size / 65536;
   	for(i = 0; i < num_blocks; i++ )
     {
-      	DISPLAY(".");
+      	printl(0, ".");
       	fflush(stdout);
 
       	fwrite(&img.data[65536 * i + SPP], sizeof(char), 65536, f);
@@ -568,8 +569,8 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
   	last_block = real_size % 65536;
    	fwrite(&img.data[65536 * i + SPP], sizeof(char), last_block, f);
   
-  	DISPLAY("\n");
-  	DISPLAY("Completing to %iMB size\n", img.size >> 20);
+  	printl(0, "\n");
+  	printl(0, "Completing to %iMB size\n", img.size >> 20);
   	for(j = SPP + real_size; j < img.size; j++)
   		fputc(0xff, f);
   
@@ -608,7 +609,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 	if(err)
     {
 	    free(img.data);
-      	DISPLAY(_("Unable to get informations on ROM dump: %s\n"), srcname1);
+      	printl(0, _("Unable to get informations on ROM dump: %s\n"), srcname1);
       	return err;
     }
 	ti68k_display_rom_infos(&img);
@@ -622,7 +623,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 	if(err)
     {
 	    free(img.data);
-      	DISPLAY(_("Unable to get informations on ROM dump: %s\n"), srcname2);
+      	printl(0, _("Unable to get informations on ROM dump: %s\n"), srcname2);
       	return err;
     }
 	ti68k_display_tib_infos(&img);
@@ -684,7 +685,7 @@ int ti68k_load_image(const char *filename)
 	err = ti68k_get_img_infos(filename, img);
   	if(err)
     {
-      	DISPLAY(_("Unable to get informations on image: %s\n"), filename);
+      	printl(0, _("Unable to get informations on image: %s\n"), filename);
       	return err;
     }
 	ti68k_display_img_infos(img);
@@ -740,7 +741,7 @@ int ti68k_load_upgrade(const char *filename)
 	if(err)
     {
 		free(img->data);
-      	DISPLAY(_("Unable to get informations on FLASH upgrade: %s\n"), filename);
+      	printl(0, _("Unable to get informations on FLASH upgrade: %s\n"), filename);
       	return err;
     }
 	ti68k_display_tib_infos(&tib);
@@ -863,7 +864,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 	struct stat f_info;
   	char *line[7];
 
-  	DISPLAY(_("Scanning images/upgrades... "));
+  	printl(0, _("Scanning images/upgrades... "));
 
 	// Create file (and overwrite)
 	file = fopen(filename, "wt");
@@ -931,7 +932,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 	g_dir_close(dir);
   
   	fclose(file);
-  	DISPLAY(_("Done.\n"));
+  	printl(0, _("Done.\n"));
   
   	return 0;
 }
