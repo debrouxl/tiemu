@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.80r		(10/04/2005)
-Current version:  1.80s		(19/04/2005)
+Previous version: 1.80s		(19/04/2005)
+Current version:  1.80t		(26/04/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,26 +20,26 @@ For the other link cables, no driver is needed because it's provided.
 New capabilities:
 -----------------
 
-	- can sort ROM calls by addr, name or id (beware: slow !)
-	- properly step over jsr _bcd_math calls
+	- receiving of file(s) from TiEmu as single or group	
 
 
 Improvements:
 -------------
 
-	- clock support on HW2
-	- preloading of debugger
+	- save main window position
+	- merged Christian Walther's patch for Mac OS-X port
+	- clean-up and improvements in the skin loader (no tmp file any longer)
+	- improvements in the skin loading (avoid multiple loading and load only when necessary)
+	- removed flicker at startup due to bad copy of skin
 		
 
 Bug fixes:
 ----------
 
-	- old file selector
-	- incorrect shift of rom_base in handles
-	- several HW protection bugs which prevented booting TI-89 Titanium AMS 3.01
-	- HW2/HW3 FlashROM execution protection
-	- window size/position with border size
-	- source code window: scrolling was somewhat weird/broken
+	- RAM space on Titanium
+	- window position again (better fix-up)
+	- TI89 Titanium entry was missing in the communication box
+	- iPAQ: glade callbacks were not found due to a missing --export-dynamic
 
 
 Planned:
