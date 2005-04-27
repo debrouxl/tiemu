@@ -180,7 +180,6 @@ static int exit_link_cable(void)
 static void lp_reinit(void)
 {
 	avail = 0;
-	//printf("reinit !\n");
 }
 
 static void lp_putbyte(uint8_t arg)
@@ -259,6 +258,8 @@ static int lp_checkread(void)
 */
 
 static int sip = 0;	// sending in progress
+static int rip = 0;	// receive in progress
+static int recfile(uint8_t data);
  
 int t2f_data;   // ti => file data
 int t2f_flag;   // data available
@@ -276,11 +277,12 @@ void df_putbyte(uint8_t arg)
 	t2f_data = arg;
 	t2f_flag = 1;
 
-	if(sip == 0)
+	if(!sip)
 	{
-		printf("receiving <%02x>\n", arg);
-		io_bit_set(0x0d,7);	// SLE=1
-		t2f_flag = f2t_flag = 0;
+		if(params.recv_file)
+			recfile(arg);
+		else
+			io_bit_set(0x0d,7);	// SLE=1: error
 	}
 }
 
@@ -319,18 +321,10 @@ int df_checkread(void)
 	Wonderful, isn't it ?! Take a look at the 'TiLP framework' power ;-)
 */
 
-#ifdef __WIN32__
-TicableLinkCable	ilc = { 0 };
-TicalcFncts			itc = { 0 };
-TicalcInfoUpdate 	iu = { 0 };
-TicableDataRate*	tdr = NULL;
-#else
 static TicableLinkCable 	ilc = { 0 };
 static TicalcFncts			itc = { 0 };
 static TicalcInfoUpdate 	iu = { 0 };
 static TicableDataRate*     tdr;
-#endif
-
 
 /* libticables functions (link API) */
 static int ilp_init(void)     
@@ -364,7 +358,7 @@ static int ilp_put(uint8_t data)
 	toSTART(clk);
   	while(f2t_flag/* && !iu.cancel*/) 
     { 
-      	ti68k_debug_do_instructions(1); 
+		hw_m68k_run(1, 0);
 		if(toELAPSED(clk, 600))	// 60s
 			return ERR_WRITE_TIMEOUT;
     };
@@ -379,7 +373,7 @@ static int ilp_get(uint8_t *data)
 	toSTART(clk);
   	while(!t2f_flag/* && !iu.cancel*/) 
     { 
-      	ti68k_debug_do_instructions(1);
+      	hw_m68k_run(1, 0);
 		if(toELAPSED(clk, 600))
 			return ERR_WRITE_TIMEOUT;
     };
@@ -453,15 +447,6 @@ static int exit_link_file(void)
     return 0;
 }
 
-static int test_sendfile(void)
-{
-    map_dbus_to_file();
-    itc.send_var("C:\\str.9xs", 0, NULL);
-    map_dbus_to_cable();
-
-    return 0;
-}
-
 int send_ti_file(const char *filename)
 {
     gint ok = 0;
@@ -527,7 +512,7 @@ int send_ti_file(const char *filename)
 	//printf("Duration: %2.1f seconds.\n", duration);
 
 	// Transfer aborted ? Set hw link error
-	if(ret != 0)
+	if(ret)
 	{
 		tiemu_error(ret, NULL);
 		io_bit_set(0x0d,7);	// SLE=1
@@ -536,3 +521,59 @@ int send_ti_file(const char *filename)
 
   return 0;
 }
+
+int display_recv_files_dbox(const char *path);
+
+static int recfile(uint8_t mid)
+{
+	int ret;
+	char filename[1024];
+
+	// Make this function not re-entrant
+	if(rip)
+		return 0;
+	else
+		rip = 1;
+
+	// Some models and AMS versions sends an RDY packet when entering in
+	// the VAR-Link menu or just before sending variable. We skip it !
+	if(mid == 0x89 && tihw.calc_type != TI92)
+	{
+		uint8_t arg;
+		int i;
+
+		for(i=0; i<4; i++)
+		{
+			ilp_get(&arg);
+			printf("purging <%02x>\n", arg);
+		}
+
+		if(tihw.calc_type != TI89t)
+			goto recfile_end;
+	}
+
+	// Receive variable in non-silent mode
+	strcpy(filename, g_get_tmp_dir());
+	strcat(filename, G_DIR_SEPARATOR_S);
+
+	ret = itc.recv_var_2(filename, 0, NULL);
+	printf("filename: <%s>\n", filename);
+
+	// Check for error
+	if(ret)
+	{
+		io_bit_set(0x0d,7);	// SLE=1
+		t2f_flag = f2t_flag = 0;
+
+		tiemu_error(ret, NULL);
+	}
+
+	// Open a box
+	display_recv_files_dbox(filename);
+
+	// end
+recfile_end:
+	rip = 0;
+	return 0;	
+}
+

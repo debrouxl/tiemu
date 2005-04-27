@@ -101,6 +101,8 @@ static gint display_step1_dbox(void)
 
 #ifdef __IPAQ__
     // make menu smaller
+    data = glade_xml_get_widget(xml, "label19");
+    gtk_widget_hide(data);
     data = glade_xml_get_widget(xml, "radiobutton1");
     gtk_button_set_label(GTK_BUTTON(data), _("Use PedRom"));
     data = glade_xml_get_widget(xml, "radiobutton2");
@@ -108,6 +110,8 @@ static gint display_step1_dbox(void)
     data = glade_xml_get_widget(xml, "radiobutton3");
     gtk_button_set_label(GTK_BUTTON(data), _("Use ROM dump"));
     data = glade_xml_get_widget(xml, "radiobutton4");
+    gtk_widget_hide(data);
+    data = glade_xml_get_widget(xml, "label20");
     gtk_widget_hide(data);
 #endif
 

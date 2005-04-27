@@ -184,6 +184,7 @@ void init_m68k (void)
 {
     int i;
 
+	printf ("UAE: version 0.8.15\n");
 //    update_68k_cycles ();
 
     for (i = 0 ; i < 256 ; i++) {
@@ -1570,37 +1571,37 @@ void m68k_dumpstate (uaecptr *nextpc)
     char buffer[256];
 
     for (i = 0; i < 8; i++){
-	DISPLAY ("D%d: %08lx ", i, m68k_dreg(regs, i));
-	if ((i & 3) == 3) DISPLAY ("\n");
+	printf ("D%d: %08lx ", i, m68k_dreg(regs, i));
+	if ((i & 3) == 3) printf ("\n");
     }
     for (i = 0; i < 8; i++){
-	DISPLAY ("A%d: %08lx ", i, m68k_areg(regs, i));
-	if ((i & 3) == 3) DISPLAY ("\n");
+	printf ("A%d: %08lx ", i, m68k_areg(regs, i));
+	if ((i & 3) == 3) printf ("\n");
     }
     if (regs.s == 0) regs.usp = m68k_areg(regs, 7);
 //    if (regs.s && regs.m) regs.msp = m68k_areg(regs, 7);
     if (regs.s /*&& regs.m == 0*/) regs.isp = m68k_areg(regs, 7);
-    DISPLAY ("USP=%08lx SSP=%08lx VBR=%08lx\n",
+    printf ("USP=%08lx SSP=%08lx VBR=%08lx\n",
 	     regs.usp,regs.isp/*,regs.msp*/,regs.vbr);
-    DISPLAY ("T=%d S=%d X=%d N=%d Z=%d V=%d C=%d IMASK=%d\n",
+    printf ("T=%d S=%d X=%d N=%d Z=%d V=%d C=%d IMASK=%d\n",
 	     regs.t1/*, regs.t0*/, regs.s, /*regs.m,*/
 	     GET_XFLG, GET_NFLG, GET_ZFLG, GET_VFLG, GET_CFLG, regs.intmask);
     for (i = 0; i < 8; i++){
-	DISPLAY ("FP%d: %g ", i, regs.fp[i]);
-	if ((i & 3) == 3) DISPLAY ("\n");
+	printf ("FP%d: %g ", i, regs.fp[i]);
+	if ((i & 3) == 3) printf ("\n");
     }
-    DISPLAY ("N=%d Z=%d I=%d NAN=%d\n",
+    printf ("N=%d Z=%d I=%d NAN=%d\n",
 	     (regs.fpsr & 0x8000000) != 0,
 	     (regs.fpsr & 0x4000000) != 0,
 	     (regs.fpsr & 0x2000000) != 0,
 	     (regs.fpsr & 0x1000000) != 0);
     if (currprefs.cpu_compatible)
-	DISPLAY ("prefetch %08lx\n", (unsigned long)do_get_mem_long(&regs.prefetch));
+	printf ("prefetch %08lx\n", (unsigned long)do_get_mem_long(&regs.prefetch));
 
     m68k_disasm (m68k_getpc (), nextpc, 1, buffer);
-    DISPLAY("%s\n", buffer);
+    printf("%s\n", buffer);
     if (nextpc)
-	DISPLAY ("next PC: %08lx\n", *nextpc);
+	printf ("next PC: %08lx\n", *nextpc);
 }
  
 #endif /* DEBUGGER */

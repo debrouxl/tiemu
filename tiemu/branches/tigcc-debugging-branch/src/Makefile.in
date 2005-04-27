@@ -177,10 +177,14 @@ gdb:
 	cd core/gdb && $(MAKE)
 
 tiemu: $(tiemu_OBJ)
+ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
 	$(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) -o tiemu \
-	$(LDFLAGS) $(CFLAGS) $(kdelibraries) $(GDBLIBS) -Wl,--rpath,"$(prefix)/lib"
-	#../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) \
-	#-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries) $(GDBLIBS)
+	$(LDFLAGS) $(CFLAGS) $(kdelibraries) $(GDBLIBS) \
+	-Wl,--rpath,"$(prefix)/lib" -Wl,--export-dynamic
+else
+	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) \
+	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries) $(GDBLIBS)
+endif
 
 .c.o:
 	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) $< -o $@

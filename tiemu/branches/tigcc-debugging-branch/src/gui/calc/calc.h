@@ -74,15 +74,7 @@ typedef struct
 	int 	n_channels;
 	guchar*	pixels;
 	gulong*	pixels2;
-
-	GdkRect pos;
 } LCD_INFOS;
-
-typedef struct
-{
-	int w;
-	int h;
-} WND_INFOS;
 
 typedef struct
 {
@@ -94,6 +86,10 @@ typedef struct
 	GdkPixbuf*	l;	// lcd pixbuf
 	GdkPixbuf*	p;	// scaled pixbuf
 } SCL_INFOS;
+
+typedef GdkRect LCD_RECT;
+typedef GdkRect SKN_RECT;
+typedef GdkRect WND_RECT;
 
 #define VW_NORMAL	1
 #define VW_LARGE	2

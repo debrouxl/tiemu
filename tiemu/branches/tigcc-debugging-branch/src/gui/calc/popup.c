@@ -76,14 +76,22 @@ on_popup_menu_header                   (GtkMenuItem     *menuitem,
 
 
 GLADE_CB void
-on_send_file_to_gtktiemu1_activate     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_send_file_to_tiemu1_activate     (GtkMenuItem     *menuitem,
+                                     gpointer         user_data)
 {
 	if(engine_is_stopped()) return;
 
 	engine_stop();
-	display_tifiles_dbox();
+	display_send_files_dbox();
 	engine_start();
+}
+
+GLADE_CB void
+on_recv_file_from_tiemu1_activate     (GtkMenuItem     *menuitem,
+                                       gpointer         user_data)
+{
+	if(engine_is_stopped()) return;
+	params.recv_file = GTK_CHECK_MENU_ITEM(menuitem)->active;
 }
 
 
@@ -123,12 +131,12 @@ on_save_config1_activate               (GtkMenuItem     *menuitem,
 	//write config
 	rcfile_write();
 
-#if defined(__LINUX__)
-  	msg_box(_("Information"), 
-	  _("Configuration file saved (in ~/.tiemu)."));
-#elif defined(__WIN32__)
+#ifdef __WIN32__
   	msg_box(_("Information"), 
 	  _("Configuration file saved (in tiemu.ini)."));
+#else
+	msg_box(_("Information"), 
+	  _("Configuration file saved (in ~/.tiemu)."));
 #endif
 }
 
@@ -177,11 +185,13 @@ GLADE_CB void
 on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+#ifndef __IPAQ__
     if(dbg_on) return;
 
 	engine_stop();
     ti68k_debug_break();
 	engine_start();
+#endif
 }
 
 
@@ -274,7 +284,9 @@ GLADE_CB void
 on_default_skin1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+#ifndef __IPAQ__
 	hid_switch_with_skin();
+#endif
 }
 
 
@@ -472,7 +484,10 @@ GtkWidget* display_popup_menu(void)
 	// if debugger is open, blocks some items
 	if(dbg_on)
 	{
-		data = glade_xml_get_widget(xml, "send_file_to_gtktiemu1");
+		data = glade_xml_get_widget(xml, "send_file_to_tiemu1");
+		gtk_widget_set_sensitive(data, FALSE);
+
+		data = glade_xml_get_widget(xml, "recv_file_to_tiemu1");
 		gtk_widget_set_sensitive(data, FALSE);
 
 		data = glade_xml_get_widget(xml, "link_cable1");

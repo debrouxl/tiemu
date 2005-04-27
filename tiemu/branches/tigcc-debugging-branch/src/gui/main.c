@@ -111,8 +111,10 @@ int main(int argc, char **argv)
     /*
         Set splash screen
     */
+#ifndef __IPAQ__
     splash_screen_start();
     splash_screen_set_label(_("Initializing GTK+..."));    
+#endif
 
 #if WITH_KDE
     splash_screen_set_label(_("Initializing KDE..."));
@@ -152,10 +154,12 @@ int main(int argc, char **argv)
 	/* 
 	    Change logging domains
 	*/
-	
-    //ticable_set_printl(ticables_printl);
-	//tifiles_set_printl(tifiles_printl);
-    //ticalc_set_printl(ticalcs_printl);
+#if 0
+    ticable_set_printl(ticables_printl);
+	tifiles_set_printl(tifiles_printl);
+    ticalc_set_printl(ticalcs_printl);
+	tiemu_set_printl(tiemu_printl);
+#endif
 
     /*
         Search for dumps or upgrades to convert (in the image directory)
@@ -253,9 +257,11 @@ int main(int argc, char **argv)
 		/*
 			Cache debugger windows to speed-up display and install custom event
 		*/
+#ifndef __IPAQ__
 		splash_screen_set_label(_("Pre-loading debugger..."));
 		gtk_debugger_preload();
-  
+#endif  
+
 		/* 
 			Start emulation engine and run main loop 
 		*/

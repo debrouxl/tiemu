@@ -5,6 +5,10 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
+- 27/04/2005, version 1.80u:
+	- [roms]  $1191: popup menu can be raised by clicking on the LCD (iPAQ)
+	- [roms]  $1192: fixed logging domain support (printl)
+
 - 20/04/2005, version 1.80t:
 	- [roms]  $1152: fixed RAM space on Titanium
 	- [kevin] $1156: added detection for WinXP with classic theme.
@@ -13,6 +17,15 @@ To do:
 	- [roms]  $1163: implementing receive file feature
 	- [roms]  $1166: merged Christian Walther's patch for Mac OS-X port.
 	- [kevin] $1167: increased link timeout from 10 to 60s.
+	- [roms]  $1172: added receive of file
+	- [roms]  $1173: improved to support group files
+	- [roms]  $1176: show a dialog box when a file is received
+	- [roms]  $1177: file receiving can be disabled for games which uses linkport for sound
+	- [roms]  $1182: TI89 Titanium entry was missing in the communication box
+	- [roms]  $1183: glade callbacks were not found due to a missing --export-dynamic (iPAQ)
+	- [roms]  $1185: clean-up and improvements in the skin loader (no tmp file any longer)
+					 improvements in the skin loading (avoid multiple loading and load only when necessary)
+	- [roms]  $1188: removed flicker at startup, code slightly reworked
 
 - 11/04/2005, version 1.80s:
 	- [roms]  $1102: fixed old file selector

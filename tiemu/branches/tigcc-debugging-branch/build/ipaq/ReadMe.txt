@@ -22,18 +22,22 @@ To build a GPE application, you need to do this:
 2. export PATH=/usr/local/arm/oe/bin:$PATH
 3. Change to the location of your source
 4. Run ./configure --host=arm-linux --disable-nls 
-   Option: --prefix=/usr/local/arm/oe/arm-linux --datadir=/usr/local
+   Option: --prefix=/usr/local/arm/oe/arm-linux
 5. Files are installed in /usr/local/arm/oe/arm-linux if you choose the option.
+6. On the iPAQ, you must copy files with the same directory tree (aka
+/usr/local/arm/oe/arm-linux)
 
 To debug:
 
-1. Get gdb source (the same version as arm-linux-gdb if possible)
-2. Go to gdb, run ./configure --host=arm-linux and do make
-3. You will get a gdbserver executable targetted for ARM. You can strip it to reduce size.
-3. Copy gdbserver executable onto the iPAQ (with scp). 
-4. Run 'gdbserver tiemu host:1234'
-5. Run locally 'gdb ./tiemu'
-6. Type in 'remote target ipaq:1234'
+1. Get gdb source (the same version as arm-linux-gdb if possible, 6.2)
+2. Go to gdb/gdbserver, run ./configure --host=arm-linux and do make
+3. You will get a gdbserver executable targetted for ARM. You can strip it 
+   to reduce size.
+4. Copy gdbserver executable onto the iPAQ (with scp). 
+5. Run 'gdbserver tiemu host:1234'
+6. Run locally 'gdb ./tiemu'
+7. Type in 'remote target ipaq:1234'
+8. Type in 'continue' for running (bug: don't type run !)
 
 That's all !
 

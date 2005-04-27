@@ -34,6 +34,7 @@ gchar *s = N_("TI84+");
 gchar *s = N_("TI85");
 gchar *s = N_("TI86");
 gchar *s = N_("TI89");
+gchar *s = N_("TI89 tm");
 gchar *s = N_("TI92");
 gchar *s = N_("TI92+");
 gchar *s = N_("V200PLT");

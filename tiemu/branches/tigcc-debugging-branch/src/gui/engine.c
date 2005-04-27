@@ -41,6 +41,7 @@
 #include "m68k.h"
 #include "engine.h"
 #include "dbg_all.h"
+#include "printl.h"
 void sim_exception(int which);
 #ifndef SIGTRAP
 /* WARNING: This MUST match the definitions in GDB and sim. */
@@ -158,7 +159,7 @@ void engine_calibrate(void)
 	g_usleep(500 * 1000);
 
 	// begin calibration loop
-	fprintf(stdout, "Calibrating engine: ");
+	printl(0, "Calibrating engine: ");
 	
 	g_timer_start(tmr);
 	for(i = 0; i < NLOOPS; i++)
@@ -173,5 +174,5 @@ void engine_calibrate(void)
 	cal = (guint)(ms / NLOOPS);
 	
 	// and display
-	fprintf(stdout, "%i loops in %.1f ms => %i ms\n", i, ms, cal);
+	printl(0, "%i loops in %.1f ms => %i ms\n", i, ms, cal);
 }

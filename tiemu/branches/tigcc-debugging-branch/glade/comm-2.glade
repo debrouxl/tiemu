@@ -447,7 +447,7 @@
 		    <widget class="GtkOptionMenu" id="optionmenu_comm_calc">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="history">4</property>
+		      <property name="history">0</property>
 		      <signal name="changed" handler="comm_calc_changed" last_modification_time="Mon, 05 Apr 2004 20:49:40 GMT"/>
 
 		      <child>
@@ -513,6 +513,14 @@
 			    <widget class="GtkMenuItem" id="ti89">
 			      <property name="visible">True</property>
 			      <property name="label" translatable="yes">TI89</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="ti89t">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">TI89 tm</property>
 			      <property name="use_underline">True</property>
 			    </widget>
 			  </child>

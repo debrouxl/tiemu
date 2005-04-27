@@ -37,6 +37,7 @@
 #include "pckeys.h"
 #include "ti68k_int.h"
 #include "kbd_mapper.h"
+#include "printl.h"
 
 
 Pc2TiKey keymap[KEYMAP_MAX] = { 0 };
@@ -189,7 +190,7 @@ int keymap_load(const char *filename)
     }
 
     // close file
-    fprintf(stdout, "loading keymap: %s (%i keys)\n", g_basename(filename), idx);
+    printl(0 ,"loading keymap: %s (%i keys)\n", g_basename(filename), idx);
     fclose(f);
 
     return 0;

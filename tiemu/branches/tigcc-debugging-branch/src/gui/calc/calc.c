@@ -45,9 +45,12 @@
 #include "dbg_all.h"
 #include "screenshot.h"
 #include "kbd_mapper.h"
+#include "printl.h"
 
 GtkWidget *main_wnd = NULL;
 GtkWidget *area = NULL;
+
+SKIN_INFOS skin_infos = { 0 };
 
 extern GdkPixbuf*	lcd;
 extern GdkPixbuf*	skn;
@@ -59,35 +62,54 @@ extern const char	sknKey92[];
 extern const char	sknKey89[];
 
 extern uint32_t*	lcd_bytmap;
+
 extern LCD_INFOS	li;
-extern WND_INFOS	wi;
 extern SCL_INFOS	si;
+
+extern LCD_RECT		ls;
+extern LCD_RECT		lr;
+extern SKN_RECT		sr;
+extern WND_RECT		wr;
 
 static void set_infos(void)	// set window & lcd sizes
 {
+	// LCD rectangle (source: skin)
+	ls.x = (int)(si.x * skin_infos.lcd_pos.left); 
+	ls.y = (int)(si.y * skin_infos.lcd_pos.top);
+	ls.w = (int)(si.x * tihw.lcd_w);
+	ls.h = (int)(si.y * tihw.lcd_h);
+
+	// LCD rectangle (target: window)
 	if(params.background) 
 	{
-		li.pos.x = (int)(si.x * skin_infos.lcd_pos.left); 
-		li.pos.y = (int)(si.y * skin_infos.lcd_pos.top);
+		lr.x = ls.x; 
+		lr.y = ls.y;
 	}
 	else 
 	{
-		li.pos.x = 0;
-		li.pos.y = 0;
+		lr.x = 0;
+		lr.y = 0;
 	}  
+	lr.w = (int)(si.x * tihw.lcd_w);
+	lr.h = (int)(si.y * tihw.lcd_h);
 
-	li.pos.w = (int)(si.x * tihw.lcd_w);
-	li.pos.h = (int)(si.y * tihw.lcd_h);
 
+	// SKN rectangle
+	sr.x = sr.y = 0;
+	sr.w = (int)(si.x * skin_infos.width);
+	sr.h = (int)(si.y * skin_infos.height);
+
+	// WND rectangle (= LCD or SKN depending on w/ or w/o skin)
+	wr.x = wr.y = 0;
 	if(params.background)
 	{
-		wi.w = (int)(si.x * skin_infos.width);
-		wi.h = (int)(si.y * skin_infos.height);
+		wr.w = sr.w;
+		wr.h = sr.h;
 	}
 	else
 	{
-		wi.w = (int)(si.x * tihw.lcd_w);
-		wi.h = (int)(si.y * tihw.lcd_h);
+		wr.w = lr.w;
+		wr.h = lr.h;
 	}
 }
 
@@ -124,7 +146,11 @@ GLADE_CB void
 on_calc_wnd_destroy                    (GtkObject       *object,
                                         gpointer         user_data)
 {
+#ifdef __IPAQ__
+    on_exit_without_saving_state1_activate(NULL, NULL);
+#else
 	return;
+#endif
 }
 
 GLADE_CB gboolean
@@ -132,7 +158,11 @@ on_calc_wnd_delete_event           (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
+#ifdef __IPAQ__
+    return FALSE;
+#else
     return TRUE;	// block destroy
+#endif
 }
 
 typedef void (*VCB) (void);
@@ -171,7 +201,7 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
 
 static int match_skin(int calc_type)
 {
-	SKIN_INFOS si;
+	SKIN_INFOS *sk = &skin_infos;
 	int ok;
 	gchar *skin_name, *s;
 
@@ -192,7 +222,7 @@ static int match_skin(int calc_type)
 	}
 
 	// load skin header
-	if(skin_read_header(options.skin_file, &si) == -1)
+	if(skin_read_header(sk, options.skin_file) == -1)
 	{
 		g_free(options.skin_file);
       	options.skin_file = g_strdup_printf("%s%s.skn", 
@@ -206,14 +236,14 @@ static int match_skin(int calc_type)
 	{
 	    case TI92:
 		case TI92p:
-            ok = !strcmp(si.calc, SKIN_TI92) || !strcmp(si.calc, SKIN_TI92P);
+            ok = !strcmp(sk->calc, SKIN_TI92) || !strcmp(sk->calc, SKIN_TI92P);
 		break;
 	    case TI89:
         case TI89t:
-            ok = !strcmp(si.calc, SKIN_TI89) || !strcmp(si.calc, SKIN_TI89T);
+            ok = !strcmp(sk->calc, SKIN_TI89) || !strcmp(sk->calc, SKIN_TI89T);
 		break;
 		case V200:
-			ok = !strcmp(si.calc, SKIN_V200);
+			ok = !strcmp(sk->calc, SKIN_V200);
 		break;
 	    default: 
             ok = 0;
@@ -344,15 +374,17 @@ int  hid_init(void)
     // Found a skin
 	match_skin(tihw.calc_type);
 
-    // Load skin
-    if(skin_load(options.skin_file) == -1) 
+    // Load skin (2 parts)
+    if(skin_load(&skin_infos, options.skin_file) == -1) 
     {
 	    gchar *s = g_strdup_printf("unable to load this skin: <%s>\n", options.skin_file);
 	    tiemu_error(0, s);
 	    g_free(s);
 	    return -1;
     }
-    skn = skin_infos.image;
+
+	// Allocate the skn pixbuf (if needed)
+	skn = skin_infos.image;
   
 	// Set skin keymap depending on calculator type
     switch(tihw.calc_type)
@@ -375,7 +407,7 @@ int  hid_init(void)
         }
 	}
 
-	// Set window/LCD infos
+	// Set window/LCD sizes
 	set_infos();
 
     // Allocate the TI screen buffer
@@ -390,6 +422,8 @@ int  hid_init(void)
 	    g_free(s);
 	    return -1;
     }
+
+	// Used by TI89 (the LCD view is clipped from memory view)
 	si.l = gdk_pixbuf_new_subpixbuf(lcd, 0, 0, tihw.lcd_w, tihw.lcd_h);
     
 	// Constants for LCD update (speed-up)
@@ -402,8 +436,8 @@ int  hid_init(void)
 	// Create main window
 	display_main_wnd();
 
-    // Allocate the backing pixmap
-    pixmap = gdk_pixmap_new(main_wnd->window, wi.w, wi.h, -1);
+    // Allocate the backing pixmap (used for drawing and refresh)
+    pixmap = gdk_pixmap_new(main_wnd->window, wr.w, wr.h, -1);
     if(pixmap == NULL)
     {
         gchar *s = g_strdup_printf("unable to create backing pixbuf.\n");
@@ -492,10 +526,10 @@ int hid_switch_fullscreen(void)
 		gint sh = gdk_screen_get_height(screen);
 
 		si.t = 1;
-		si.x = (float)sw / li.pos.w;
-		si.y = (float)sh / li.pos.h;
-		//printf("%i %i %f\n", sw, li.pos.w, si.x);
-		//printf("%i %i %f\n", sh, li.pos.h, si.y);
+		si.x = (float)sw / lr.w;
+		si.y = (float)sh / lr.h;
+		//printf("%i %i %f\n", sw, lr.w, si.x);
+		//printf("%i %i %f\n", sh, lr.h, si.y);
 
 		si.x = (float)4.0;	// restricted to 4.0, too CPU intensive !
 		si.y = (float)4.0;
@@ -574,7 +608,7 @@ int  hid_screenshot(char *filename)
 		outfile = g_strdup(filename);
 	}
 
-	DISPLAY("Screenshot to %s... ", outfile);
+	printl(0, "Screenshot to %s... ", outfile);
 
 	if((options2.size == IMG_LCD) && (options2.type == IMG_BW)) 
 	{
@@ -598,12 +632,12 @@ int  hid_screenshot(char *filename)
 	result = gdk_pixbuf_save(pixbuf, outfile, type, &error, NULL);
 	if (result == FALSE) 
 	{
-		DISPLAY("Failed to save pixbuf file: %s: %s\n", outfile, error->message);
+		printl(0, "Failed to save pixbuf file: %s: %s\n", outfile, error->message);
 		g_error_free(error);
 	}
     g_object_unref(pixbuf);
 
-	DISPLAY("Done !\n");
+	printl(0, "Done !\n");
 	options2.counter++;
 	g_free(filename);
 

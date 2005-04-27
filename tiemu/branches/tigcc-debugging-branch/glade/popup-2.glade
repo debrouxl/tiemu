@@ -25,12 +25,12 @@
   </child>
 
   <child>
-    <widget class="GtkMenuItem" id="send_file_to_gtktiemu1">
+    <widget class="GtkMenuItem" id="send_file_to_tiemu1">
       <property name="visible">True</property>
       <property name="tooltip" translatable="yes">Send the selected file to the emulator. This file can be of any type (single, group, backup, FLASH app or FLASH OS).</property>
-      <property name="label" translatable="yes">Send _file to TiEmu</property>
+      <property name="label" translatable="yes">Send _file to TIEmu</property>
       <property name="use_underline">True</property>
-      <signal name="activate" handler="on_send_file_to_gtktiemu1_activate"/>
+      <signal name="activate" handler="on_send_file_to_tiemu1_activate" last_modification_time="Sun, 24 Apr 2005 17:00:05 GMT"/>
       <accelerator key="F10" modifiers="0" signal="activate"/>
     </widget>
   </child>
@@ -41,6 +41,17 @@
       <property name="label" translatable="yes">Debug file with TiEmu</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="on_debug_file_with_tiemu1_activate" last_modification_time="Thu, 07 Apr 2005 15:54:54 GMT"/>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkCheckMenuItem" id="recv_file_from_tiemu1">
+      <property name="visible">True</property>
+      <property name="tooltip" translatable="yes">Uncheck it if you are running program which use the linkport for sound.</property>
+      <property name="label" translatable="yes">Receive file from TiEmu</property>
+      <property name="use_underline">True</property>
+      <property name="active">True</property>
+      <signal name="activate" handler="on_recv_file_from_tiemu1_activate" last_modification_time="Sun, 24 Apr 2005 17:00:05 GMT"/>
     </widget>
   </child>
 

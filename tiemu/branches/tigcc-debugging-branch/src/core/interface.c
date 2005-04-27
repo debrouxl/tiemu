@@ -41,6 +41,7 @@
 #include "hw.h"
 #include "m68k.h"
 #include "dbus.h"
+#include "printl.h"
 
 #include "ti68k_int.h"
 #include "ti68k_err.h"
@@ -88,6 +89,7 @@ int ti68k_config_load_default(void)
     params.hw_rate = -1;
     params.lcd_rate = -1;
 	params.hw_protect = 0;
+	params.recv_file = 1;
 
     ticable_get_default_param(&link_cable);
     link_cable.link_type = LINK_NUL;
@@ -205,7 +207,7 @@ int ti68k_get_rom_size(int calc_type)
 {
     if(calc_type > CALC_MAX)
     {
-        DISPLAY("Bad argument !\n");
+        printl(0, "Bad argument !\n");
         exit(0);
     }
 
@@ -216,7 +218,7 @@ int ti68k_get_ram_size(int calc_type)
 {
     if(calc_type > CALC_MAX)
     {
-        DISPLAY("Bad argument !\n");
+        printl(0, "Bad argument !\n");
         exit(0);
     }
 
@@ -227,7 +229,7 @@ int ti68k_get_io_size(int calc_type)
 {
 	if(calc_type > CALC_MAX)
     {
-        DISPLAY("Bad argument !\n");
+        printl(0, "Bad argument !\n");
         exit(0);
     }
 
@@ -238,7 +240,7 @@ int ti68k_get_io2_size(int calc_type)
 {
 	if(calc_type > CALC_MAX)
     {
-        DISPLAY("Bad argument !\n");
+        printl(0, "Bad argument !\n");
         exit(0);
     }
 

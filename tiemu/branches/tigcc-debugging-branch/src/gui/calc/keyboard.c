@@ -48,6 +48,8 @@
 Pc2TiKey*       kbd_keymap = keymap;
 const char*     skn_keymap;
 
+extern SKIN_INFOS skin_infos;
+
 static int hwkey_to_tikey(guint16 hardware_keycode, int action)
 {
     int i;
@@ -109,6 +111,20 @@ static int pos_to_key(int x, int y)
   	return -1;
 }
 
+/*
+	Check if the mouse cursor is within the LCD rectangle.
+*/
+static int pos_to_mnu(int x, int y)
+{
+	extern LCD_RECT		lr;
+
+	if((x >= lr.x) && (x <= lr.x + lr.w) && 
+		(y >= lr.y) && (y <= lr.y + lr.h))
+		return !0;
+
+	return 0;
+}
+
 // raise the main popup menu
 static void
 do_popup_menu (GtkWidget *my_widget, GdkEventButton *event)
@@ -142,15 +158,6 @@ on_calc_wnd_button_press_event     (GtkWidget       *widget,
     if(event->type != GDK_BUTTON_PRESS)
         return FALSE;
 
-#ifdef __IPAQ__
-    if (!params.background && 
-	event->button == 1 && event->type == GDK_BUTTON_PRESS)
-    {
-	do_popup_menu(widget, event);
-	return TRUE;
-    }
-#endif
-
 	if (event->button == 3 && event->type == GDK_BUTTON_PRESS)
     {
 		do_popup_menu(widget, event);
@@ -160,12 +167,24 @@ on_calc_wnd_button_press_event     (GtkWidget       *widget,
     if(event->button == 1)
     {
         int key = pos_to_key((int)event->x, (int)event->y);
-        if(key < 0)
-            return FALSE;
-
-        ti68k_kbd_set_key(key, 1);
-        return TRUE;
+        if(key >= 0)
+		{
+			ti68k_kbd_set_key(key, 1);
+			return TRUE;
+		}
     }
+
+#ifdef __IPAQ__
+	if(event->button == 1)
+	{
+		printf(".");
+		if(pos_to_mnu((int)event->x, (int)event->y))
+		{
+			do_popup_menu(widget, event);
+			return TRUE;
+		}
+	}
+#endif
 
 	return FALSE;
 }
@@ -231,7 +250,7 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
 #endif
     else if(event->keyval == GDK_F10)
     {
-        on_send_file_to_gtktiemu1_activate(NULL, NULL);
+        on_send_file_to_tiemu1_activate(NULL, NULL);
         return TRUE;
     }
     else if(event->keyval == GDK_F11)

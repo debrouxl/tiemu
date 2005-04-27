@@ -23,8 +23,12 @@ on_popup_menu_header                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 GLADE_CB void
-on_send_file_to_gtktiemu1_activate     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+on_send_file_to_tiemu1_activate     (GtkMenuItem     *menuitem,
+                                     gpointer         user_data);
+
+GLADE_CB void
+on_recv_file_from_tiemu1_activate     (GtkMenuItem     *menuitem,
+                                       gpointer         user_data);
 
 GLADE_CB void
 on_link_cable1_activate                (GtkMenuItem     *menuitem,

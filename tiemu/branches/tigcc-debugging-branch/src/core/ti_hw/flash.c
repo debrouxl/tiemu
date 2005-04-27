@@ -38,6 +38,7 @@
 #include "mem.h"
 #include "ti68k_def.h"
 #include "flash.h"
+#include "printl.h"
 
 FLASH_WSM   wsm;
 
@@ -263,7 +264,7 @@ uint32_t find_pc(void)
     //for (i = 0; i < 0x120; i++)
       //  tihw.ram[i] = tihw.rom[vt + i];
 
-	printf("found PC ($%06x) at offset 0x%x\n", pc, vt - 0x12000);
+	printl(0, "found PC ($%06x) at offset 0x%x\n", pc, vt - 0x12000);
 
     return (pc);
 }

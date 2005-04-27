@@ -37,6 +37,8 @@ typedef int (*TIEMU_PRINTL) (int level, const char *format, ...);
 extern TIEMU_PRINTL printl;
 
 /* Functions */
+TIEMU_PRINTL tiemu_set_printl(TIEMU_PRINTL new_printl);
+
 int ticables_printl(int level, const char *format, ...);
 int tifiles_printl(int level, const char *format, ...);
 int ticalcs_printl(int level, const char *format, ...);
