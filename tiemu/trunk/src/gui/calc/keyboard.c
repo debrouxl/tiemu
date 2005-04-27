@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Christian Walther (patches for Mac OS-X port)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -227,27 +228,6 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
 		do_popup_menu(widget, NULL);
 		return TRUE;
 	}
-
-#ifdef __MACOSX__
-	/* Until we get the mouse working on Mac OS X, invoke the menu using the
-		Enter key, which can't be used for anything else anyway because it is
-		not among the keys defined in pckeys.h */
-	else if (event->hardware_keycode == 0x3C) 
-	{
-		GdkEventButton *bevent;
-		GtkWidget *menu;
-		
-		bevent = (GdkEventButton *) (event);
-		
-		menu = display_popup_menu();
-		gtk_menu_popup(GTK_MENU(menu),
-									 NULL, NULL, NULL, NULL,
-									 bevent->button, bevent->time);
-		gtk_widget_show(menu);
-		
-		return TRUE;
-	}
-#endif
     else if(event->keyval == GDK_F10)
     {
         on_send_file_to_tiemu1_activate(NULL, NULL);

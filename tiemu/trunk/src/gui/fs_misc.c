@@ -221,7 +221,7 @@ gint display_recv_files_dbox(const char *filename)
 
 	fn = create_fsel(dst_folder, basename, ext, TRUE);
 	if(fn)
-		g_rename(filename, fn);
+		rename(filename, fn);
 
 	g_free(src_folder);
 	g_free(basename);

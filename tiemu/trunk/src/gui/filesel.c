@@ -108,7 +108,8 @@ static const gchar* create_fsel_2(gchar *dirname, gchar *filename, gchar *ext, g
 	gint i;
     
 	// create box
-	dialog = gtk_file_chooser_dialog_new ("Open File",
+	dialog = gtk_file_chooser_dialog_new (
+					  save ? "Save File" : "Open File",
 				      NULL,
 					  save ? GTK_FILE_CHOOSER_ACTION_SAVE : GTK_FILE_CHOOSER_ACTION_OPEN,
 				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -140,7 +141,7 @@ static const gchar* create_fsel_2(gchar *dirname, gchar *filename, gchar *ext, g
 		fname = NULL;
 	gtk_widget_destroy (dialog);
 
-	return filename;
+	return fname;
 }
 
 // WIN32
