@@ -41,6 +41,8 @@
 
 /* Flushes GDB's register cache */
 extern void registers_changed(void);
+/* Flushes GDB's frame cache */
+extern void reinit_frame_cache(void);
 
 // SR bits set/get modifiers
 #define SR_get_T(sr)        bit_get(sr, 15)
@@ -88,6 +90,7 @@ void ti68k_register_set_sp(uint32_t val)
 {
     m68k_areg(regs,7) = val;
     registers_changed ();
+    reinit_frame_cache ();
 }
 
 void ti68k_register_set_usp(uint32_t val)
@@ -97,6 +100,7 @@ void ti68k_register_set_usp(uint32_t val)
     else
         regs.usp = val;
     registers_changed ();
+    reinit_frame_cache ();
 }
 
 void ti68k_register_set_ssp(uint32_t val)
@@ -106,6 +110,7 @@ void ti68k_register_set_ssp(uint32_t val)
     else
         regs.usp = val;
     registers_changed ();
+    reinit_frame_cache ();
 }
 
 void ti68k_register_set_pc(uint32_t val)
@@ -113,6 +118,7 @@ void ti68k_register_set_pc(uint32_t val)
     m68k_setpc(val);
     fill_prefetch_0 (); /* Force reloading the prefetch. */
     registers_changed ();
+    reinit_frame_cache ();
 }
 
 void ti68k_register_set_sr(uint32_t val)

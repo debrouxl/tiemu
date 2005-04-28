@@ -1,3 +1,7 @@
+2005-04-28  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+      * interp.c (m68k_go_sim): Use ti68k_step_over_noflush instead of ti68k_debug_step_over.
+
 2005-04-15  Kevin Kofler  <Kevin@tigcc.ticalc.org>
       * Revert:
         2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>

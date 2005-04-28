@@ -45,6 +45,8 @@
 
 /* Flushes GDB's register cache */
 extern void registers_changed(void);
+/* Flushes GDB's frame cache */
+extern void reinit_frame_cache(void);
 
 
 int ti68k_debug_get_pc(void)
@@ -107,7 +109,7 @@ static inline int is_bsr_inst(uint16_t ci)
 	return t1 || t2 || t3 || t4 || t5;
 }
 
-int ti68k_debug_step_over(void)
+int ti68k_step_over_noflush(void)
 {
     uint32_t curr_pc, next_pc;
 	gchar *output;
@@ -146,12 +148,18 @@ int ti68k_debug_step_over(void)
 		while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
 	}
 
-	registers_changed();
-
 	if(regs.spcflags & SPCFLAG_BRK)
 		regs.spcflags &= ~SPCFLAG_BRK;
 
     return 0;
+}
+
+int ti68k_debug_step_over(void)
+{
+	int result = ti68k_step_over_noflush();
+    registers_changed();
+	reinit_frame_cache();
+    return result;
 }
 
 int ti68k_debug_step_out(void)
@@ -176,6 +184,7 @@ int ti68k_debug_step_out(void)
 		{
 			hw_m68k_run(1, 0);
 			registers_changed();
+			reinit_frame_cache();
 			return 0;
 		}	
 	}
@@ -212,8 +221,10 @@ int ti68k_debug_skip(uint32_t next_pc)
 
 int ti68k_debug_do_instructions(int n)
 {
+	int result = hw_m68k_run(n, 0);
     registers_changed();
-    return hw_m68k_run(n, 0);
+	reinit_frame_cache();
+    return result;
 }
 
 // Used to read/modify/write memory directly from debugger

@@ -345,13 +345,13 @@ enum step_over_calls_kind
     STEP_OVER_UNDEBUGGABLE
   };
 extern enum step_over_calls_kind step_over_calls;
-extern void ti68k_debug_step_over(void);
+extern void ti68k_step_over_noflush(void);
 extern int hw_m68k_run(int n, unsigned maxcycles);
 static void m68k_go_sim(int step)
 {
   if (step) {
     if (step_over_calls == STEP_OVER_ALL)
-      ti68k_debug_step_over ();
+      ti68k_step_over_noflush ();
     else
       hw_m68k_run(1, 0);
   } else {
