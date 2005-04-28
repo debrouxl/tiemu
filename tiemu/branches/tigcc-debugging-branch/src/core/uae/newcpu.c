@@ -1606,4 +1606,4 @@ void m68k_dumpstate (uaecptr *nextpc)
 	printf ("next PC: %08lx\n", *nextpc);
 }
  
-#endif /* DEBUGGER */
+#endif /* 0 */
