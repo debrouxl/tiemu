@@ -228,12 +228,8 @@ int hw_m68k_run(int n, unsigned maxcycles)
 		// HW2/3 grayscales management
 		lcd_hook_hw2(0);
 
-		if (verbose_trace)
-			m68k_dumpstate (NULL);
-		else if (trace)
-		{
+		if (trace)
 			sim_trace_one(m68k_getpc());
-		}
 
 		// process (pending) interrupts
 		if(pending_ints)

@@ -60,7 +60,6 @@
 #include "dis-asm.h"
 
 int trace = 0;
-int verbose_trace = 0;
 int cloanto_rom = 0;
 
 static bfd *current_bfd = 0;
@@ -196,9 +195,6 @@ sim_open (kind, cb, abfd, argv)
   sim_kind = kind;
   myname = argv[0];
   callback = cb;
-
-  if (getenv("VERBOSE_TRACE"))
-    verbose_trace = 1;
 
   for (p = argv + 1; *p != NULL; ++p)
     {

@@ -1,5 +1,10 @@
 2005-04-28  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+      * interp.c (verbose_trace): Delete variable.
+        (sim_open): Don't set verbose_trace.
+
+2005-04-28  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
       * interp.c (m68k_go_sim): Use ti68k_step_over_noflush instead of ti68k_debug_step_over.
 
 2005-04-15  Kevin Kofler  <Kevin@tigcc.ticalc.org>

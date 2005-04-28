@@ -264,6 +264,7 @@ int lastint_no;
 #define get_iword_1(o) get_word(regs.pc + (regs.pc_p - regs.pc_oldp) + (o))
 #define get_ilong_1(o) get_long(regs.pc + (regs.pc_p - regs.pc_oldp) + (o))
 
+#if 0
 uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 {
     uae_u16 dp;
@@ -437,6 +438,7 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	strcat (buf, buffer);
     return offset;
 }
+#endif /* 0 */
 
 /* The plan is that this will take over the job of exception 3 handling -
  * the CPU emulation functions will just do a longjmp to m68k_go whenever
@@ -1499,7 +1501,7 @@ static void m68k_verify (uaecptr addr, uaecptr *nextpc)
     }
 }
 
-#ifdef DEBUGGER
+#if 0
 
 void m68k_disasm (uaecptr addr, uaecptr *nextpc, int cnt, char *output)
 {

@@ -147,7 +147,6 @@ extern struct regstruct
 #include "machdep/m68k.h"
 
 extern int trace;
-extern int verbose_trace;
 
 STATIC_INLINE void set_special (uae_u32 x)
 {
