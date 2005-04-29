@@ -1,0 +1,18 @@
+2005-04-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * opcodes/m68k-dis.c (print_insn_arg): Use Motorola syntax. Use %ssp, not %isp.
+          (print_indexed): Use Motorola syntax.
+        * opcodes/m68k-opc.c (m68k_opcode_aliases): Disable.
+          (m68k_opcodes): Add the optional dots to increase readability.
+
+2005-04-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * Merge from TIGCC:
+          2002-01-10  Stephan Effelsberg  <b012414@dvz.fh-koeln.de>
+          * opcodes/m68k-opc.c (m68k_opcodes): Fix cmpi operand constraints when aliased as cmp. 
+                                               (Don't allow PC-relative or indexed PC-relative
+                                                second operand.)
+        * opcodes/m68k-dis.c: Include handles.h and romcalls.h.
+          (NEXTUWORD): New macro.
+          (print_insn_m68k): Handle F-Line instructions (ported from Romain Liévin's code in m68kdasm.c).
+          (print_insn_arg): Print both displacement and target for branches.
