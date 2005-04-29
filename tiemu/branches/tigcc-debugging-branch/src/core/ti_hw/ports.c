@@ -201,7 +201,8 @@ void io_put_byte(uint32_t addr, uint8_t arg)
             {
             	// %[4/3-0]: LCD contrast bits 4/3-0 (bit 4/3 is msb on HW2/HW1)
 				tihw.contrast = arg & (io2_bit_tst(0x1f,0) ? 0x1f : 0x0f);
-				if(tihw.calc_type == TI89)
+				
+				if(tihw.calc_type == TI89 || tihw.calc_type == TI89t)
 				{
 					if(tihw.hw_type == HW1)
             			tihw.contrast = 31 - 2*tihw.contrast;
