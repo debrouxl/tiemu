@@ -156,7 +156,7 @@ gint dbgvectors_display_dbox(void)
 	{
 	case GTK_RESPONSE_OK:
 		clist_get_selection(data);
-		dbgbkpts_display_window();
+		dbgbkpts_refresh_window();
 		break;
 	default:
 		break;
