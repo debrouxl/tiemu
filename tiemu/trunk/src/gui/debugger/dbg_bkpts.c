@@ -456,7 +456,7 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
 	g_list_foreach (l, (GFunc)gtk_tree_path_free, NULL);
 	g_list_free (l);
 
-    dbgbkpts_display_window();
+    dbgbkpts_refresh_window();
 }
 
 
@@ -522,7 +522,7 @@ dbgbkpts_button3_clicked                     (GtkButton       *button,
 	g_list_foreach (l, (GFunc)gtk_tree_path_free, NULL);
 	g_list_free (l);
 
-    dbgbkpts_display_window();
+    dbgbkpts_refresh_window();
 }
 
 
@@ -587,7 +587,7 @@ dbgbkpts_button4_clicked                     (GtkButton       *button,
 	g_list_foreach (l, (GFunc)gtk_tree_path_free, NULL);
 	g_list_free (l);
 
-    dbgbkpts_display_window();
+    dbgbkpts_refresh_window();
 }
 
 
@@ -752,7 +752,7 @@ dbgbkpts_data_activate                    (GtkMenuItem     *menuitem,
 		ti68k_bkpt_add_range(min, max, mode);
 
 	// and refresh
-	dbgbkpts_display_window();
+	dbgbkpts_refresh_window();
 }
 
 

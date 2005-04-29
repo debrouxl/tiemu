@@ -218,7 +218,7 @@ gint dbgentry_display_dbox(void)
 	{
 	case GTK_RESPONSE_OK:
 		ctree_get_selection();
-		dbgbkpts_display_window();
+		dbgbkpts_refresh_window();
 		break;
 	default:
 		break;
