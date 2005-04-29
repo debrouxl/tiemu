@@ -174,7 +174,7 @@ int hw_m68k_run(int n, unsigned maxcycles)
             bkpts.id = 0;
             while(l)
             {
-                if(BKPT_ADDR(GPOINTER_TO_INT(l->data)) == (int)m68k_getpc())
+                if(GPOINTER_TO_INT(l->data) == (int)m68k_getpc())
                 {
 					if(BKPT_IS_TMP(GPOINTER_TO_INT(l->data)))
 						bkpts.code = g_list_remove(bkpts.code, l->data);

@@ -33,8 +33,11 @@
 
 #include <stdint.h>
 
-/* Macros: addresses are 24-bits. We use the MSB to encode 
-	bkpt state (enabled/disabled) */
+/* 
+	Macros: addresses are 24-bits. We use the MSB to encode 
+	bkpt state (enabled/disabled or temporary). This is more 
+	efficient than complex structures.
+*/
 
 #define BKPT_MASK			0xff000000
 

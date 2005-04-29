@@ -249,7 +249,7 @@ uint32_t hw_get_long(uint32_t adr)
 	    {
             ADDR_RANGE *r = l->data;
 
-	        if ((r->val1 >= adr) && ((adr+3) <= r->val2)) 
+	        if ((adr >= r->val1) && ((adr+3) <= r->val2)) 
 	        {
 				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_READ_LONG; 
@@ -303,7 +303,7 @@ uint16_t hw_get_word(uint32_t adr)
 	    {
             ADDR_RANGE *r = l->data;
 
-	        if ((r->val1 >= adr) && ((adr+1) <= r->val2)) 
+	        if ((adr >= r->val1) && ((adr+1) <= r->val2)) 
 	        {
 				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_READ_WORD; 
@@ -335,7 +335,8 @@ uint8_t hw_get_byte(uint32_t adr)
     if ((l = bkpts.mem_rb) != NULL) 
     {
         bkpts.id = 0;
-        while (l) {
+        while (l) 
+		{
 	        if ((uint32_t)GPOINTER_TO_INT(l->data) == adr) 
 	        {
 				bkpts.type = BK_TYPE_ACCESS;
@@ -357,7 +358,7 @@ uint8_t hw_get_byte(uint32_t adr)
         
             ADDR_RANGE *r = l->data;
 
-	        if ((r->val1 >= adr) && (adr <= r->val2))
+	        if ((adr >= r->val1) && (adr <= r->val2))
 	        {
 				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_READ_BYTE; 
@@ -405,7 +406,7 @@ void hw_put_long(uint32_t adr, uint32_t arg)
 	    {
 	        ADDR_RANGE *r = l->data;
 
-            if ((r->val1 >= adr) && ((adr+3) <= r->val2))
+            if ((adr >= r->val1) && ((adr+3) <= r->val2))
 	        {
 				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_WRITE_LONG; 
@@ -464,7 +465,7 @@ void hw_put_word(uint32_t adr, uint16_t arg)
 	    {
             ADDR_RANGE *r = l->data;
 
-	        if ((r->val1 >= adr) && ((adr+1) <= r->val2))
+	        if ((adr >= r->val1) && ((adr+1) <= r->val2))
 	        {
 				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_WRITE_WORD; 
@@ -523,7 +524,7 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 	    {
             ADDR_RANGE *r = l->data;
 
-	        if ((r->val1 >= adr) && (adr <= r->val2)) 
+	        if ((adr >= r->val1) && (adr <= r->val2)) 
 	        {
 				bkpts.type = BK_TYPE_RANGE;
 	            bkpts.mode = BK_WRITE_BYTE; 

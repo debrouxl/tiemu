@@ -10,6 +10,7 @@ To do:
 	- [roms]  $1192: fixed logging domain support (printl)
 	- [roms]  $1195: some bug fixes by Christian Walther.
 	- [roms]  $1213: fixed contrast on Titanium
+	- [roms]  $1214: fixed range breakpoints (completely broken) and code bkpt
 
 - 20/04/2005, version 1.80t:
 	- [roms]  $1152: fixed RAM space on Titanium
