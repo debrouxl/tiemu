@@ -1,3 +1,12 @@
+2005-04-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * disasm.c (sprintf_disasm, strcat_disasm, dis_asm_sprint_address): New static functions.
+          (gdb_disassemble_info): Make non-static and allow file==NULL (to use a buffer instead) and gdbarch==NULL.
+        * printcmd.c (print_address_symbolic, print_address): Rename to print_address_symbolic_1 and print_address_1
+            respectively, add fputs_filtered and fprintf_filtered parameters and provide interface-compatible
+            wrappers with the original names.
+          (print_address_numeric_1): New static function.
+
 2005-04-24  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * ../bfd/linker.c (_bfd_generic_link_add_one_symbol): Allow multiple definitions.

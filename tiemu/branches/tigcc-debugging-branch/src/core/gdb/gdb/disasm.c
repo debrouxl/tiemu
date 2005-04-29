@@ -324,14 +324,51 @@ fprintf_disasm (void *stream, const char *format, ...)
   return 0;
 }
 
-static struct disassemble_info
+/* (TiEmu 20050429 Kevin Kofler) Same with a buffer.  */
+static int
+sprintf_disasm (void *stream, const char *format, ...)
+{
+  int result;
+  va_list args;
+  va_start (args, format);
+  result = vsprintf ((char *)stream + strlen((char *)stream), format, args);
+  va_end (args);
+  return result;
+}
+
+static void
+strcat_disasm (const char *format, void *stream)
+{
+  strcat ((char *)stream, format);
+}
+
+void print_address_1 (CORE_ADDR, void *, void (*) (void *, const char *, ...),
+                      void (*) (const char *, void *));
+static void
+dis_asm_sprint_address (bfd_vma addr, struct disassemble_info *info)
+{
+  print_address_1 (addr, info->stream, sprintf_disasm, strcat_disasm);
+}
+
+/* (TiEmu 20050429 Kevin Kofler) If no file is given, use sprintf instead. Also
+                                 allow for a NULL gdbarch. */
+struct disassemble_info
 gdb_disassemble_info (struct gdbarch *gdbarch, struct ui_file *file)
 {
   struct disassemble_info di;
-  init_disassemble_info (&di, file, fprintf_disasm);
+  if (file)
+    {
+      init_disassemble_info (&di, file, fprintf_disasm);
+      di.print_address_func = dis_asm_print_address;
+    }
+  else
+    {
+      static char buffer[256];
+      init_disassemble_info (&di, buffer, sprintf_disasm);
+      di.print_address_func = dis_asm_sprint_address;
+    }
   di.flavour = bfd_target_unknown_flavour;
   di.memory_error_func = dis_asm_memory_error;
-  di.print_address_func = dis_asm_print_address;
   /* NOTE: cagney/2003-04-28: The original code, from the old Insight
      disassembler had a local optomization here.  By default it would
      access the executable file, instead of the target memory (there
@@ -341,9 +378,12 @@ gdb_disassemble_info (struct gdbarch *gdbarch, struct ui_file *file)
      Further, it has been supperseeded by trust-read-only-sections
      (although that should be superseeded by target_trust..._p()).  */
   di.read_memory_func = dis_asm_read_memory;
-  di.arch = gdbarch_bfd_arch_info (gdbarch)->arch;
-  di.mach = gdbarch_bfd_arch_info (gdbarch)->mach;
-  di.endian = gdbarch_byte_order (gdbarch);
+  if (gdbarch)
+    {
+      di.arch = gdbarch_bfd_arch_info (gdbarch)->arch;
+      di.mach = gdbarch_bfd_arch_info (gdbarch)->mach;
+      di.endian = gdbarch_byte_order (gdbarch);
+    }
   return di;
 }
 

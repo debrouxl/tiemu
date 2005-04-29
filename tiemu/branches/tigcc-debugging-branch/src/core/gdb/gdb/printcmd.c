@@ -523,6 +523,9 @@ set_next_address (CORE_ADDR addr)
 				       addr));
 }
 
+/* (TiEmu 20050429 Kevin Kofler) I changed all the address printing functions so
+   they accept any buffer, allowing to disassemble without a struct ui_out. */
+
 /* Optionally print address ADDR symbolically as <SYMBOL+OFFSET> on STREAM,
    after LEADIN.  Print nothing if no symbolic name is found nearby.
    Optionally also print source file and line number, if available.
@@ -531,9 +534,10 @@ set_next_address (CORE_ADDR addr)
    form.  However note that DO_DEMANGLE can be overridden by the specific
    settings of the demangle and asm_demangle variables.  */
 
-void
-print_address_symbolic (CORE_ADDR addr, struct ui_file *stream, int do_demangle,
-			char *leadin)
+static void
+print_address_symbolic_1 (CORE_ADDR addr, void *stream, int do_demangle,
+			char *leadin, void (*fprintf_filtered) (void *, const char *, ...),
+			void (*fputs_filtered) (const char *, void *))
 {
   char *name = NULL;
   char *filename = NULL;
@@ -575,6 +579,15 @@ print_address_symbolic (CORE_ADDR addr, struct ui_file *stream, int do_demangle,
     fputs_filtered (">", stream);
 
   do_cleanups (cleanup_chain);
+}
+
+void
+print_address_symbolic (CORE_ADDR addr, struct ui_file *stream, int do_demangle,
+			char *leadin)
+{
+  print_address_symbolic_1 (addr, stream, do_demangle, leadin,
+                            (void (*) (void *, const char *, ...)) fprintf_filtered,
+                            (void (*) (const char *, void *)) fputs_filtered);
 }
 
 /* Given an address ADDR return all the elements needed to print the
@@ -714,15 +727,37 @@ print_address_numeric (CORE_ADDR addr, int use_local, struct ui_file *stream)
   print_longest (stream, 'x', use_local, (ULONGEST) addr);
 }
 
+static void
+print_address_numeric_1 (CORE_ADDR addr, int use_local, void *stream,
+                         void (*fprintf_f) (void *, const char *, ...))
+{
+  int addr_bit = TARGET_ADDR_BIT;
+
+  if (addr_bit < (sizeof (CORE_ADDR) * HOST_CHAR_BIT))
+    addr &= ((CORE_ADDR) 1 << addr_bit) - 1;
+  fprintf_f (stream, "0x%lx", (unsigned long) addr);
+}
+
 /* Print address ADDR symbolically on STREAM.
    First print it as a number.  Then perhaps print
    <SYMBOL + OFFSET> after the number.  */
 
 void
+print_address_1 (CORE_ADDR addr, void *stream,
+                 void (*fprintf_filtered) (void *, const char *, ...),
+                 void (*fputs_filtered) (const char *, void *))
+{
+  print_address_numeric_1 (addr, 1, stream, fprintf_filtered);
+  print_address_symbolic_1 (addr, stream, asm_demangle, " ", fprintf_filtered,
+                            fputs_filtered);
+}
+
+void
 print_address (CORE_ADDR addr, struct ui_file *stream)
 {
-  print_address_numeric (addr, 1, stream);
-  print_address_symbolic (addr, stream, asm_demangle, " ");
+  print_address_1 (addr, stream,
+                   (void (*) (void *, const char *, ...)) fprintf_filtered,
+                   (void (*) (const char *, void *)) fputs_filtered);
 }
 
 /* Print address ADDR symbolically on STREAM.  Parameter DEMANGLE
