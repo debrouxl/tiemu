@@ -123,6 +123,11 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
 	gboolean success;
     uint32_t pc = ti68k_debug_get_pc();
 
+	/* We can't start disassembling stuff before GDB is even loaded, and in the
+	   cases where we have GDB running, but not the debugger, it's just a waste
+	   of time. */
+	if (!dbg_on) return;
+
 	gdk_color_parse("White", &color1);
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color1, 1, FALSE, FALSE, &success);
 	gdk_color_parse("Green", &color2);
