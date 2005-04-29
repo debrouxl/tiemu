@@ -1,5 +1,9 @@
 2005-04-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * disasm.c (gdb_disassemble_info): Increase buffer size from 256 to 65536.
+
+2005-04-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * disasm.c (sprintf_disasm, strcat_disasm, dis_asm_sprint_address): New static functions.
           (gdb_disassemble_info): Make non-static and allow file==NULL (to use a buffer instead) and gdbarch==NULL.
         * printcmd.c (print_address_symbolic, print_address): Rename to print_address_symbolic_1 and print_address_1

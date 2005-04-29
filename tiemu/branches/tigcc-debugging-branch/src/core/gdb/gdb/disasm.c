@@ -363,7 +363,7 @@ gdb_disassemble_info (struct gdbarch *gdbarch, struct ui_file *file)
     }
   else
     {
-      static char buffer[256];
+      static char buffer[65536];
       init_disassemble_info (&di, buffer, sprintf_disasm);
       di.print_address_func = dis_asm_sprint_address;
     }

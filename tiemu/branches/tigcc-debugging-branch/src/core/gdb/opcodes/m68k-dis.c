@@ -25,6 +25,10 @@
 
 #include "opcode/m68k.h"
 
+#include "../../ti_sw/romcalls.h"
+#include "../../ti_sw/handles.h"
+int DasmFPU(uint16_t code, char *buf);
+
 /* Local function prototypes */
 
 static int
@@ -85,6 +89,11 @@ static char *const reg_half_names[] =
 #define NEXTWORD(p)  \
   (p += 2, FETCH_DATA (info, p), \
    COERCE16 ((p[-2] << 8) + p[-1]))
+
+/* Get a 2 byte unsigned integer.  */
+#define NEXTUWORD(p)  \
+  (p += 2, FETCH_DATA (info, p), \
+   (unsigned int) ((p[-2] << 8) + p[-1]))
 
 /* Get a 4 byte signed integer.  */
 #define COERCE32(x) ((bfd_signed_vma) ((x) ^ 0x80000000) - 0x80000000)
@@ -436,6 +445,80 @@ print_insn_m68k (memaddr, info)
   FETCH_DATA (info, buffer + 2);
   major_opcode = (buffer[0] >> 4) & 15;
 
+  /* F-Line ROM calls (see KerNO doc and thanks to Lionel Debroux)
+     Code written by Romain Liévin for TiEmu */
+  if (major_opcode == 0xf)
+    {
+      int op = (buffer[0] << 8) + buffer[1];
+      int pm;
+      if ((op >= 0xf800) && (op <= 0xfff2))
+        {
+          switch (op)
+            {
+              case 0xfff0:  /* 6 byte bsr w/long word displacement */
+                pm = NEXTLONG(buffer);
+                if (pm < 0)
+                  info->fprintf_func (info->stream, "FLINE    bsr.l .-0x%x [", (-pm) - 2);
+                else
+                  info->fprintf_func (info->stream, "FLINE    bsr.l .+0x%x [", pm + 2);
+                info->print_address_func (memaddr + pm + 2, info);
+                info->fprintf_func (info->stream, "]");
+                return 6;
+              case 0xfff1:  /* 6 byte bra w/long word displacement */
+                pm = NEXTLONG(buffer);
+                if (pm < 0)
+                  info->fprintf_func (info->stream, "FLINE    bra.l .-0x%x [", (-pm) - 2);
+                else
+                  info->fprintf_func (info->stream, "FLINE    bra.l .+0x%x [", pm + 2);
+                info->print_address_func (memaddr + pm + 2, info);
+                info->fprintf_func (info->stream, "]");
+                return 6;
+              case 0xfff2:  /* 4 byte ROM CALL */
+                pm = NEXTUWORD(buffer);
+                info->fprintf_func (info->stream, "FLINE    $%04x.l [%s]", pm/4, romcalls_get_name(pm / 4));
+                return 4;
+              case 0xffee:  /* jmp __ld_entry_point_plus_0x8000+word */
+                pm = NEXTWORD(buffer);
+                {
+                  int handle;
+                  uint32_t addr;
+
+                  heap_search_for_address(memaddr + pm + 2 + 0x8000, &handle);
+                  heap_get_block_addr(handle, &addr);				
+                  info->fprintf_func (info->stream, "FLINE    jmp.w .+0x%x [", pm + 0x8000);
+                  info->print_address_func (addr + 2 + pm + 0x8000, info);
+                  info->fprintf_func (info->stream, "]");
+                }
+                return 4;
+              case 0xffef: /* jsr __ld_entry_point_plus_0x8000+word */
+                pm = NEXTWORD(buffer);
+                {
+                  int handle;
+                  uint32_t addr;
+
+                  heap_search_for_address(memaddr + pm + 2 + 0x8000, &handle);
+                  heap_get_block_addr(handle, &addr);
+                  info->fprintf_func (info->stream, "FLINE    jsr.w .+0x%x [", pm + 0x8000);
+                  info->print_address_func (addr + 2 + pm + 0x8000, info);
+                  info->fprintf_func (info->stream, "]");
+                }
+                return 4;
+              case 0xf8b5:  /* 2 byte ROM call followed by an FPU opcode (special case: _bcd_math) */
+                {
+                  char buf[64];
+                  pm = NEXTUWORD(buffer);
+                  DasmFPU(pm, buf);
+                  info->fprintf_func (info->stream, "FLINE      _bcd_math (FPU: %s)", buf);
+                  return 4;
+                }
+              default:  /* 2 byte ROM CALL */
+                info->fprintf_func (info->stream, "FLINE    0x%03x.w [%s]", op & 0x7ff, romcalls_get_name(op & 0x7ff));
+                return 2;
+            }
+        }
+    }
+
+  /* standard m68k instructions */
   for (i = 0; i < numopcodes[major_opcode]; i++)
     {
       const struct m68k_opcode *opc = opcodes[major_opcode][i];
@@ -750,7 +833,12 @@ print_insn_arg (d, buffer, p0, addr, info)
       else
 	return -2;
 
+      if (disp < 0)
+        (*info->fprintf_func) (info->stream, ".-0x%x [", (int)-disp);
+      else
+        (*info->fprintf_func) (info->stream, ".+0x%x [", (int)disp);
       (*info->print_address_func) (addr + disp, info);
+      (*info->fprintf_func) (info->stream, "]");
       break;
 
     case 'd':
