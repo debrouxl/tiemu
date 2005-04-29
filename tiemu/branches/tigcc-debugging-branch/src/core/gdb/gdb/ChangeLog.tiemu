@@ -1,5 +1,10 @@
 2005-04-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * printcmd.c: Include romcalls.h.
+          (print_address_1): Handle ROM_CALLs. Only print symbolic address if addr>=0x8000.
+
+2005-04-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * disasm.c (gdb_disassemble_info): Increase buffer size from 256 to 65536.
 
 2005-04-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>

@@ -44,6 +44,8 @@
 #include "block.h"
 #include "disasm.h"
 
+#include "../../ti_sw/romcalls.h"
+
 #ifdef TUI
 #include "tui/tui.h"		/* For tui_active et.al.   */
 #endif
@@ -744,12 +746,20 @@ print_address_numeric_1 (CORE_ADDR addr, int use_local, void *stream,
 
 void
 print_address_1 (CORE_ADDR addr, void *stream,
-                 void (*fprintf_filtered) (void *, const char *, ...),
-                 void (*fputs_filtered) (const char *, void *))
+                 void (*fprintf_f) (void *, const char *, ...),
+                 void (*fputs_f) (const char *, void *))
 {
-  print_address_numeric_1 (addr, 1, stream, fprintf_filtered);
-  print_address_symbolic_1 (addr, stream, asm_demangle, " ", fprintf_filtered,
-                            fputs_filtered);
+  int rcid;
+  const char *rcname;
+  print_address_numeric_1 (addr, 1, stream, fprintf_f);
+  if (((rcid = romcalls_is_addr (addr)) != -1)
+      && ((rcname = romcalls_get_name (rcid)) != NULL))
+    fprintf_f (stream, " <tios::%s>", rcname);
+  /* (TiEmu 20050429 Kevin Kofler) Anything below 0x8000 can't possibly be a
+     properly-relocated label, so don't match (unrelocated) labels. */
+  else if (addr >= 0x8000)
+    print_address_symbolic_1 (addr, stream, asm_demangle, " ", fprintf_f,
+                              fputs_f);
 }
 
 void
