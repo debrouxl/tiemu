@@ -13,10 +13,10 @@ Release:	%{release}
 Vendor:		Romain Liévin 
 Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
-Group:		Application/Generic
+Group:		Applications/Communications
 Copyright:	GPL
-BuildRequires:	libticables = ${version}, libtifiles = ${version}, libticalcs = ${version}
-Requires:	libticables = ${version}, libtifiles = ${version}, libticalcs = ${version}
+BuildRequires:	libticables = ${version}, libtifiles = ${version}, libticalcs = ${version}, glib2-devel >= 2.4.0, gtk2-devel >= 2.4.0, libglade2-devel >= 2.4.0
+Requires:	libticables = ${version}, libtifiles = ${version}, libticalcs = ${version}, glib2 >= 2.4.0, gtk2 >= 2.4.0, libglade2 >= 2.4.0
 BuildRoot:	/usr/src/redhat/BUILD
 Summary:	TiLP is a TI<->PC linking program
 %description

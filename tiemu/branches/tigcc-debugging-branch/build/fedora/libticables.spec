@@ -13,7 +13,7 @@ Release:	%{release}
 Vendor:		Romain Liévin 
 Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
-Group:		Application/Generic
+Group:		System Environment/Libraries
 Copyright:	LGPL
 #BuildRequires:	
 #Requires:	
