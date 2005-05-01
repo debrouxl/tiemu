@@ -40,7 +40,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 /usr/bin/tilp
 /usr/include/tilp/tilp_plugin.h
-/usr/man/man1/tiemu.1
+/usr/man/man1/tilp.1
 /usr/share/tilp
 
 %defattr(-,root,root)
