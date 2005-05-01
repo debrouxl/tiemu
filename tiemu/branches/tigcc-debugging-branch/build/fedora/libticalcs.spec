@@ -48,10 +48,10 @@ rm -rf $RPM_BUILD_ROOT
 /usr/include/tilp/calc_int.h
 /usr/include/tilp/calc_ver.h
 /usr/include/tilp/headers.h
-/usr/include/tilp/keys_73.h
-/usr/include/tilp/keys_83p.h
-/usr/include/tilp/keys_89.h
-/usr/include/tilp/keys_92p.h
+/usr/include/tilp/keys73.h
+/usr/include/tilp/keys83p.h
+/usr/include/tilp/keys89.h
+/usr/include/tilp/keys92p.h
 /usr/include/tilp/pause.h
 /usr/include/tilp/ticalcs.h
 /usr/include/tilp/tikeys.h
