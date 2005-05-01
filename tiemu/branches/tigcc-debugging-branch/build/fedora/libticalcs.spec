@@ -17,7 +17,7 @@ Group:		System Environment/Libraries
 Copyright:	LGPL
 BuildRequires:	libticables = ${version}, libtifiles = ${version}
 Requires:	libticables = ${version}, libtifiles = ${version}
-BuildRoot:	/usr/src/redhat/BUILD
+BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Summary:	Library for handling TI calculators through a common API
 %description
 Library for handling TI calculators through a common API

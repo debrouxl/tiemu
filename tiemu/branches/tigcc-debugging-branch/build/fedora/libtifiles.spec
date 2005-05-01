@@ -17,7 +17,7 @@ Group:		System Environment/Libraries
 Copyright:	LGPL
 BuildRequires:	libticables = ${version}
 Requires:	libticables = ${version}
-BuildRoot:	/usr/src/redhat/BUILD
+BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Summary: Ti File Format management
 %description
 Ti File Format management

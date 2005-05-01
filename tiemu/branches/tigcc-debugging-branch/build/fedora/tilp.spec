@@ -17,7 +17,7 @@ Group:		Applications/Communications
 Copyright:	GPL
 BuildRequires:	libticables = ${version}, libtifiles = ${version}, libticalcs = ${version}, glib2-devel >= 2.4.0, gtk2-devel >= 2.4.0, libglade2-devel >= 2.4.0
 Requires:	libticables = ${version}, libtifiles = ${version}, libticalcs = ${version}, glib2 >= 2.4.0, gtk2 >= 2.4.0, libglade2 >= 2.4.0
-BuildRoot:	/usr/src/redhat/BUILD
+BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Summary:	TiLP is a TI<->PC linking program
 %description
 TiLP is a TI<->PC linking program

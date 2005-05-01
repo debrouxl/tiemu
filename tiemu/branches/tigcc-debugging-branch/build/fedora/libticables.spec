@@ -15,9 +15,7 @@ Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		System Environment/Libraries
 Copyright:	LGPL
-#BuildRequires:	
-#Requires:	
-BuildRoot:	/usr/src/redhat/BUILD
+BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Summary:	Library for handling TI link cables
 %description
 Library for handling TI link cables

@@ -17,7 +17,7 @@ Group:		Applications/Emulators
 Copyright:	GPL
 BuildRequires:	libticables = ${version}, libtifiles = ${version}, libticalcs = ${version}, glib2-devel >= 2.4.0, gtk2-devel >= 2.4.0, libglade2-devel >= 2.4.0, kdelibs-devel >= 3.3.0, ncurses-devel >= 5.4
 Requires:	libticables = ${version}, libtifiles = ${version}, libticalcs = ${version}, glib2 >= 2.4.0, gtk2 >= 2.4.0, libglade2 >= 2.4.0, kdelibs >= 3.3.0, ncurses >= 5.4
-BuildRoot:	/usr/src/redhat/BUILD
+BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Obsoletes:	tiemu < 2.00
 Conflicts:	tiemu >= 2.00
 Provides:	tiemu = ${version}
@@ -35,7 +35,7 @@ make
 %install
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT prefix=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
