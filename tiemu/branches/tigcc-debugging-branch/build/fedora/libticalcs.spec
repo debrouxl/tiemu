@@ -15,8 +15,8 @@ Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		System Environment/Libraries
 Copyright:	LGPL
-BuildRequires:	libticables = ${version}, libtifiles = ${version}
-Requires:	libticables = ${version}, libtifiles = ${version}
+BuildRequires:	libticables = %{version}, libtifiles = %{version}
+Requires:	libticables = %{version}, libtifiles = %{version}
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Summary:	Library for handling TI calculators through a common API
 %description
