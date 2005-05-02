@@ -71,6 +71,7 @@
 #ifndef PARAMS
 #define PARAMS(x) x
 #endif
+#define READLINE_LIBRARY
 #include "../core/gdb/readline/readline.h"
 
 ScrOptions options2;
