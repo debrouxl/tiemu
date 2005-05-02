@@ -6,14 +6,6 @@ Planned features:
 - add GUI front-end to GDB
 - ...
 
-- A strange behavor of the dropdown list for the ROM Calls: just after
-having started TiEmu, when I sort the symbols, I need to click 2 times
-on the arrow to see the list of symbols. This only happens just after
-a sort, and it disappears completely once characters are entered in
-the text field.
-
-- "Disable breakpoint" doesn't work on data breakpoints of type "range".
-
 -------------
 + done
 - in progress

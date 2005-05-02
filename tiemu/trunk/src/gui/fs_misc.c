@@ -166,6 +166,7 @@ gint display_send_files_dbox()
 		}
 
 		// set pbar title
+#if 0
 		if(tifiles_is_a_tib_file(*ptr) || tifiles_is_a_flash_file(*ptr)) 
 		{
 			create_pbar_type5(_("Flash"), "");
@@ -182,6 +183,7 @@ gint display_send_files_dbox()
 		{
 			create_pbar_type4(_("Sending variable"), "");
 		}
+#endif
 
 		// note that core is currently not bkpt-interruptible when
 		// transferring file

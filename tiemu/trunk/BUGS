@@ -4,7 +4,11 @@ List of known bugs to fix (may be in French, sorry):
 ExtendeD
 ========
 
-* none
+* A strange behaviour of the dropdown list for the ROM Calls: just after
+having started TiEmu, when I sort the symbols, I need to click 2 times
+on the arrow to see the list of symbols. This only happens just after
+a sort, and it disappears completely once characters are entered in
+the text field.
 
 
 Kevin
@@ -18,6 +22,16 @@ TiEmu reprend son comportement normal.
 Ce problème est apparemment causée par le fait qu'une touche (ENTER) est appuyée au moment 
 où on entre dans le débogueur. (Le BP sur le trap 11 s'active au moment où ENTER est encore 
 appuyé.)
+
+* Voilà mon report du 17 avril, c'était un mail à la liste:
+By the way, while debugging this, I found out that my TI-89 AMS 2.09 .89u
+file isn't emulated properly, I get a Memory error whenever I want to enter
+the MODE screen.
+J'ai une hypothèse: TiEmu émule les écritures en 0x1c0000-0x1fffff comme des 
+écritures en RAM (ghost space). Le vrai matériel les filtre. Peut-être que la 
+déprotection Flash corrompt une var système sous TI-89 AMS 2.09?
+
+* transfers lents
 
 
 Lionel
@@ -35,6 +49,13 @@ certificate).
         * aller dans la fenêtre de debug: TIEmu est parti
 dans le décor, je ne sais pas s'il exécute ou pas
 
+
+* <LionelA> ah oui un autre pb
+<LionelA> j'ai une rom 2.05 et ca la detecte invalide
+<Kevin_Kofler> C'est une TI-89?
+<LionelA> oui
+<LionelA> elle marche avec VTI
+<Kevin_Kofler> Il doit y avoir un bogue dans l'émulation des TI-89, parce que AMS 2.09 se comporte bizarrement quand on le charge.
 
 PPhd
 ====
