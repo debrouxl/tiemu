@@ -15,6 +15,7 @@ To do:
 	- [jb]	  $1230: fixed va_list in printl
 	- [kevin] $1231: allow setting a range breakpoint on a single byte
 	- [kevin] $1232: fixed range breakpoint (overlap)
+	- [roms]  $1233: fixed SSP/USP registers in registers.c
 
 - 20/04/2005, version 1.80t:
 	- [roms]  $1152: fixed RAM space on Titanium

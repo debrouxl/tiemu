@@ -97,7 +97,7 @@ void ti68k_register_set_ssp(uint32_t val)
     if(regs.s)
         m68k_areg(regs,7) = val;
     else
-        regs.usp = val;
+        regs.isp = val;
 }
 
 void ti68k_register_set_pc(uint32_t val)
@@ -225,7 +225,7 @@ int ti68k_register_get_ssp(uint32_t *val)
     if(regs.s)
         reg = &m68k_areg(regs,7);
     else
-        reg = &regs.usp;
+        reg = &regs.isp;
 
     *val = *reg;
 	if(*reg != old_ssp)
