@@ -169,7 +169,8 @@ int hw_m68k_run(int n, unsigned maxcycles)
 	    }		
 
 		// search for code breakpoint
-        if(((l = bkpts.code) != NULL) && !(regs.spcflags & SPCFLAG_DBSKIP))
+        if(((l = bkpts.code) != NULL) && !(regs.spcflags & SPCFLAG_DBSKIP)
+           && !(regs.spcflags & SPCFLAG_BRK))
         {
             bkpts.id = 0;
             while(l)
@@ -190,7 +191,8 @@ int hw_m68k_run(int n, unsigned maxcycles)
         }
 
 		// search for pgrm entry breakpoint
-		if((bkpts.pgmentry != NULL) && !(regs.spcflags & SPCFLAG_DBSKIP))
+		if((bkpts.pgmentry != NULL) && !(regs.spcflags & SPCFLAG_DBSKIP)
+		   && !(regs.spcflags & SPCFLAG_BRK))
 		{
 			uint16_t handle = GPOINTER_TO_INT(bkpts.pgmentry->data);
 			bkpts.id = 0;

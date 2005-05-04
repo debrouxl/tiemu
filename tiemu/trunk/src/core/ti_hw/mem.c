@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -224,7 +224,7 @@ uint32_t hw_get_long(uint32_t adr)
   
     adr &= 0xFFFFFF;
 
-    if ((l = bkpts.mem_rl) != NULL) 
+    if ((l = bkpts.mem_rl) != NULL && !(regs.spcflags & SPCFLAG_BRK))
     {
         bkpts.id = 0;
         while (l) 
@@ -242,7 +242,7 @@ uint32_t hw_get_long(uint32_t adr)
 	    }
     }
   
-    if ((l = bkpts.mem_rng_r) != NULL) 
+    if ((l = bkpts.mem_rng_r) != NULL && !(regs.spcflags & SPCFLAG_BRK))
     {
         bkpts.id = 0;
         while (l) 
@@ -278,7 +278,7 @@ uint16_t hw_get_word(uint32_t adr)
 	
     adr &= 0xFFFFFF;
 
-    if ((l = bkpts.mem_rw) != NULL) 
+    if ((l = bkpts.mem_rw) != NULL && !(regs.spcflags & SPCFLAG_BRK))
     {
         bkpts.id = 0;
         while (l) 
@@ -296,7 +296,7 @@ uint16_t hw_get_word(uint32_t adr)
 	    }
     }
   
-    if ((l = bkpts.mem_rng_r) != NULL) 
+    if ((l = bkpts.mem_rng_r) != NULL && !(regs.spcflags & SPCFLAG_BRK))
     {
         bkpts.id = 0;
         while (l) 
@@ -332,7 +332,7 @@ uint8_t hw_get_byte(uint32_t adr)
   
     adr &= 0xFFFFFF;
 
-    if ((l = bkpts.mem_rb) != NULL) 
+    if ((l = bkpts.mem_rb) != NULL && !(regs.spcflags & SPCFLAG_BRK))
     {
         bkpts.id = 0;
         while (l) 
@@ -350,7 +350,7 @@ uint8_t hw_get_byte(uint32_t adr)
         }
     }
 
-    if ((l = bkpts.mem_rng_r) != NULL)
+    if ((l = bkpts.mem_rng_r) != NULL && !(regs.spcflags & SPCFLAG_BRK))
     {
         bkpts.id = 0;
         while (l) 
@@ -381,7 +381,7 @@ void hw_put_long(uint32_t adr, uint32_t arg)
 
     adr &= 0xFFFFFF;
 
-    if ((l = bkpts.mem_wl) != NULL) 
+    if ((l = bkpts.mem_wl) != NULL && !(regs.spcflags & SPCFLAG_BRK))
     {
         bkpts.id = 0;
         while (l) 
@@ -399,7 +399,7 @@ void hw_put_long(uint32_t adr, uint32_t arg)
 	    }
     }
   
-    if ((l = bkpts.mem_rng_w) != NULL) 
+    if ((l = bkpts.mem_rng_w) != NULL && !(regs.spcflags & SPCFLAG_BRK))
     {
         bkpts.id = 0;
         while (l) 
@@ -440,7 +440,7 @@ void hw_put_word(uint32_t adr, uint16_t arg)
 	
     adr &= 0xFFFFFF;
 
-    if ((l = bkpts.mem_ww) != NULL) 
+    if ((l = bkpts.mem_ww) != NULL && !(regs.spcflags & SPCFLAG_BRK))
     {
         bkpts.id = 0;
         while (l) 
@@ -458,7 +458,7 @@ void hw_put_word(uint32_t adr, uint16_t arg)
 	    }
     }
   
-    if ((l = bkpts.mem_rng_w) != NULL)
+    if ((l = bkpts.mem_rng_w) != NULL && !(regs.spcflags & SPCFLAG_BRK))
     {
         bkpts.id = 0;
         while (l) 
@@ -499,7 +499,7 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 	
     adr &= 0xFFFFFF;
   
-    if ((l = bkpts.mem_wb) != NULL) 
+    if ((l = bkpts.mem_wb) != NULL && !(regs.spcflags & SPCFLAG_BRK))
     {
         bkpts.id = 0;
         while (l) 
@@ -517,7 +517,7 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 	    }
     }
 
-    if ((l = bkpts.mem_rng_w) != NULL) 
+    if ((l = bkpts.mem_rng_w) != NULL && !(regs.spcflags & SPCFLAG_BRK))
     {
         bkpts.id = 0;
         while (l) 

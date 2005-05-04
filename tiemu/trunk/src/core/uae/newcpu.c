@@ -774,7 +774,7 @@ kludge_me_do:
     unset_special (SPCFLAG_TRACE | SPCFLAG_DOTRACE);
 
   // added for capturing the exception and next launch a debugger
-  if ((l = bkpts.exception))
+  if ((l = bkpts.exception) && !(regs.spcflags & SPCFLAG_BRK))
     {
         bkpts.id = 0;
         while (l) 
