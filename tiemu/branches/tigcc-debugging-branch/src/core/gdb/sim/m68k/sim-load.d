@@ -6,5 +6,5 @@ sim-load.o: ./../common/sim-load.c ./../common/cconfig.h \
   ./../common/sim-signal.h ./../common/sim-arange.h \
   ./../common/sim-arange.c ../../include/libiberty.h \
   ../../include/ansidecl.h ./../common/sim-assert.h \
-  ./../common/sim-utils.h ../../bfd/bfd.h ../../include/ansidecl.h \
-  ../../include/symcat.h
+  ./../common/sim-utils.h ../../bfd/bfd.h ../../bfd/../include/ansidecl.h \
+  ../../bfd/../include/symcat.h
