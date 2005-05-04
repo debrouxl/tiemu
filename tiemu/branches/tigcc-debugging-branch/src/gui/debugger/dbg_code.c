@@ -730,7 +730,11 @@ static int export_disasm_to_file(GtkWidget *widget)
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
     sscanf(str, "%x", &start);
 
+#ifdef __WIN32__
 	f = fopen("C:\\disasm.txt", "a+t");
+#else
+	f = fopen("/tmp/disasm.txt", "a+t");
+#endif
 	if(f == NULL)
 		return -1;
 
@@ -767,6 +771,10 @@ on_set_tmp_bkpt1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 GLADE_CB void
 on_set_breakpoint1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+GLADE_CB void
+on_set_pc_to_selection1_activate       (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 GLADE_CB gboolean
@@ -811,14 +819,22 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
     // bind our key
 	switch(event->keyval) 
 	{
-	case GDK_F6:
-		export_disasm_to_file(widget);
-		return FALSE;
 	case GDK_F2:
 		on_set_breakpoint1_activate(NULL, NULL);
 		return FALSE;
 	case GDK_F3:
 		on_set_tmp_bkpt1_activate(NULL, NULL);
+		return FALSE;
+	case GDK_F6:
+		export_disasm_to_file(widget);
+		return FALSE;
+	case GDK_F1:
+		printf("row_idx = %i\n", row_idx);
+		str = g_strdup_printf("%i", row_idx+1);
+        path = gtk_tree_path_new_from_string(str);	// restore selection
+		g_free(str);
+        gtk_tree_selection_select_path(selection, path);
+		on_set_pc_to_selection1_activate(NULL, user_data);
 		return FALSE;
 	case GDK_G:
 	case GDK_g:

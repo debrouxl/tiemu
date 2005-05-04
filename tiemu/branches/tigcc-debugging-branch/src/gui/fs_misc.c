@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *  Copyright (c) 2005, Christian Walther (patches for Mac OS-X port)
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -167,6 +167,7 @@ gint display_send_files_dbox()
 		}
 
 		// set pbar title
+#if 0
 		if(tifiles_is_a_tib_file(*ptr) || tifiles_is_a_flash_file(*ptr)) 
 		{
 			create_pbar_type5(_("Flash"), "");
@@ -183,6 +184,7 @@ gint display_send_files_dbox()
 		{
 			create_pbar_type4(_("Sending variable"), "");
 		}
+#endif
 
 		// note that core is currently not bkpt-interruptible when
 		// transferring file
