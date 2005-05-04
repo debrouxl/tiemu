@@ -16,6 +16,8 @@ To do:
 	- [kevin] $1231: allow setting a range breakpoint on a single byte
 	- [kevin] $1232: fixed range breakpoint (overlap)
 	- [roms]  $1233: fixed SSP/USP registers in registers.c
+	- [roms]  $1234: 'exit & save state' moved in popup menu
+	- [roms]  $1235: added accelator key to select & set PC on next line
 
 - 20/04/2005, version 1.80t:
 	- [roms]  $1152: fixed RAM space on Titanium
