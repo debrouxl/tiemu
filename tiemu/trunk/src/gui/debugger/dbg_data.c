@@ -174,7 +174,7 @@ loop:
 		if((result < 1) && (*type == 2))
 			goto loop;
 
-		if((*start >= *stop) && (*type == 2))
+		if((*start > *stop) && (*type == 2))
 			goto loop;
 
 		gtk_widget_destroy(dbox);
