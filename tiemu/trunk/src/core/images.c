@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -502,13 +502,24 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 
 	// fill structure
 	hwpb.len = 24;
-	hwpb.hardwareRevision = img.hw_type;
 	switch(img.calc_type)
 	{
-		case TI89:  hwpb.hardwareID = HWID_TI89;  break;
-		case TI92p: hwpb.hardwareID = HWID_TI92P; break;
-		case V200:  hwpb.hardwareID = HWID_V200;  break;
-		case TI89t: hwpb.hardwareID = HWID_TI89T; break;
+		case TI89:
+			hwpb.hardwareID = HWID_TI89;
+			hwpb.hardwareRevision = img.hw_type - 1;
+			break;
+		case TI92p:
+			hwpb.hardwareID = HWID_TI92P;
+			hwpb.hardwareRevision = img.hw_type - 1;
+			break;
+		case V200:
+			hwpb.hardwareID = HWID_V200;
+			hwpb.hardwareRevision = 2;
+			break;
+		case TI89t:
+			hwpb.hardwareID = HWID_TI89T;
+			hwpb.hardwareRevision = 2;
+			break;
 	}
 	hwpb.bootMajor = hwpb.bootRevision = hwpb.bootBuild = 1;
 	hwpb.gateArray = img.hw_type;
