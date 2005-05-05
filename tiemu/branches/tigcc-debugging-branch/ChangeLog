@@ -20,7 +20,8 @@ To do:
 	- [roms]  $1235: added accelator key to select & set PC on next line
 	- [kevin] $1237/1238: don't clobber bkpts.id if we are already breaking
 	- [kevin] $1239/1240: no FlashROM ghost space at 0x400000 on the TI-89
-	- [kevin] $1239/1240: fix hardwareRevision in the HW parameter block
+	- [kevin] $1239/1240: fixed hardwareRevision in the HW parameter block
+	- [kevin] $1241/1242: fixed reads from wrong offsets in the stack window
 
 - 20/04/2005, version 1.80t:
 	- [roms]  $1152: fixed RAM space on Titanium
