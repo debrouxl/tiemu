@@ -74,6 +74,11 @@ void exit_main_loop(void)
 	exit_loop = !0;
 }
 
+static void my_log_handler                  (const gchar *log_domain,
+                                             GLogLevelFlags log_level,
+                                             const gchar *message,
+                                             gpointer user_data) {}
+
 /* Main function */
 
 int main(int argc, char **argv) 
@@ -94,6 +99,26 @@ int main(int argc, char **argv)
 	*/
 	gtk_init(&argc, &argv);
     add_pixmap_directory(inst_paths.pixmap_dir);
+
+	/*
+		Get rid of glib, gdk, gtk warnings when compiled in Release mode
+	*/
+	//g_warning("foo");
+#if !defined(_DEBUG)
+	g_log_set_handler ("GLib", 
+		G_LOG_LEVEL_WARNING | G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO | G_LOG_LEVEL_DEBUG,
+		my_log_handler, NULL);
+	g_log_set_handler ("Gdk", 
+		G_LOG_LEVEL_WARNING | G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO | G_LOG_LEVEL_DEBUG,
+		my_log_handler, NULL);
+	g_log_set_handler ("Gtk", 
+		G_LOG_LEVEL_WARNING | G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO | G_LOG_LEVEL_DEBUG,
+		my_log_handler, NULL);
+
+	g_log_set_handler ("GLib", G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION, 
+		my_log_handler, NULL);
+#endif
+	//g_warning("bar");
 
     /*
         Set splash screen
