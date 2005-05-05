@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -112,7 +112,7 @@ uint32_t ti89_get_long(uint32_t adr)
 	{
         return lget(adr);
 	}
-    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x200000, adr, 0x1fffff + tihw.rom_size))	// FLASH access
 	{
         return (lget(adr) | wsm.ret_or);
 	}
@@ -134,7 +134,7 @@ uint16_t ti89_get_word(uint32_t adr)
 	{
         return wget(adr);
 	}
-    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x200000, adr, 0x1fffff + tihw.rom_size))	// FLASH access
 	{
         return (wget(adr) | wsm.ret_or);
 	}
@@ -156,7 +156,7 @@ uint8_t ti89_get_byte(uint32_t adr)
 	{
         return bget(adr);
 	}
-    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x200000, adr, 0x1fffff + tihw.rom_size))	// FLASH access
 	{
         return (bget(adr) | wsm.ret_or);
 	}
@@ -178,7 +178,7 @@ void ti89_put_long(uint32_t adr, uint32_t arg)
 	{
         lput(adr, arg);
 	}
-    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x200000, adr, 0x1fffff + tihw.rom_size))	// FLASH access
 	{
 		FlashWriteLong(adr, arg);
 	}
@@ -200,7 +200,7 @@ void ti89_put_word(uint32_t adr, uint16_t arg)
 	{
         wput(adr, arg);
 	}
-    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x200000, adr, 0x1fffff + tihw.rom_size))	// FLASH access
 	{
         FlashWriteWord(adr, arg);
 	}
@@ -222,7 +222,7 @@ void ti89_put_byte(uint32_t adr, uint8_t arg)
 	{
         bput(adr, arg);
 	}
-    else if(IN_RANGE(0x200000, adr, 0x5fffff))			// FLASH access
+    else if(IN_RANGE(0x200000, adr, 0x1fffff + tihw.rom_size))	// FLASH access
 	{
         FlashWriteByte(adr,arg);
 	}
