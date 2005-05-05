@@ -91,6 +91,10 @@ int gtk_debugger_enter(int context)
 	dbgheap_display_window();
 	dbgcode_display_window();	// the last has focus
 
+	// enable the debugger if GDB disabled it
+	if (!GTK_WIDGET_SENSITIVE(dbgw.regs))
+		set_other_windows_sensitivity(TRUE);
+
 	// handle automatic debugging requests
 	if (symfile)
 	{
@@ -143,18 +147,12 @@ void gtk_debugger_refresh(void)
 // make windows (un-)modifiable
 void set_other_windows_sensitivity(int state)
 {
-    if(options3.regs.visible)
-        gtk_widget_set_sensitive(dbgw.regs, state);
-    if(options3.bkpts.visible)
-        gtk_widget_set_sensitive(dbgw.bkpts, state);
-    if(options3.mem.visible)
-        gtk_widget_set_sensitive(dbgw.mem, state);
-    if(options3.pclog.visible)
-        gtk_widget_set_sensitive(dbgw.pclog, state);
-    if(options3.stack.visible)
-        gtk_widget_set_sensitive(dbgw.stack, state);
-	if(options3.heap.visible)
-        gtk_widget_set_sensitive(dbgw.heap, state);
+    gtk_widget_set_sensitive(dbgw.regs, state);
+    gtk_widget_set_sensitive(dbgw.bkpts, state);
+    gtk_widget_set_sensitive(dbgw.mem, state);
+    gtk_widget_set_sensitive(dbgw.pclog, state);
+    gtk_widget_set_sensitive(dbgw.stack, state);
+    gtk_widget_set_sensitive(dbgw.heap, state);
 }
 
 // minimize all windows
