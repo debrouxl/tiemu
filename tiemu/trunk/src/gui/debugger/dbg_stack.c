@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -123,7 +123,7 @@ static void clist_populate(GtkListStore *store, gint target, gint offset)
 		gtk_list_store_set(store, &iter, COL_ADDR, str, -1);
         g_free(str);
 
-		data = mem_rd_word(sp+i);	
+		data = mem_rd_word(sp+2*i);	
 		str = g_strdup_printf("%04x", data);
         gtk_list_store_set(store, &iter, COL_DATA, str, -1);
         g_free(str);
