@@ -134,7 +134,7 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
     if(tihw.protect) 
         return;
 
-	addr -= tihw.rom_base << 16;
+	addr -= tihw.rom_base;
 	addr &= tihw.rom_size - 1;
 
     // Write State Machine (WSM, Sharp's data sheet)
@@ -286,7 +286,7 @@ void FlashWriteWord(uint32_t addr, uint16_t data)
     if(tihw.protect) 
         return;
 
-	addr -= tihw.rom_base << 16;
+	addr -= tihw.rom_base;
 	addr &= tihw.rom_size - 1;
 
 	if((addr & 0x1fff) == 0x1000)

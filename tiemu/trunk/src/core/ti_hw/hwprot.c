@@ -53,7 +53,7 @@ static int arch_mem_crash;	// same
 int hw_hwp_init(void)
 {
 	tihw.protect = 0;
-	ba = (tihw.rom_base << 16) - 0x200000;
+	ba = tihw.rom_base - 0x200000;
 	access1 = access2 = crash = arch_mem_crash = 0;
 	if (tihw.hw_type >= HW2) tihw.io2[0x13] = 0x18;
 

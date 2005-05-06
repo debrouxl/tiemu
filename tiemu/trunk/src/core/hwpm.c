@@ -139,7 +139,7 @@ int ti68k_put_hw_param_block(uint8_t *rom_data, uint8_t rom_base, const HW_PARM_
 	int i = 0;
     uint32_t addr = 0x108;
 
-	wr_long(&rom_data[0x104], (rom_base << 24) || addr);
+	wr_long(&rom_data[0x104], (rom_base << 16) || addr);
 	wr_word(&(rom_data[addr+0]), s->len);
 
 	if(s->len > 2+(4*i++))

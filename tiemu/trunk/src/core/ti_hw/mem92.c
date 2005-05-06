@@ -70,7 +70,7 @@ int ti92_mem_init(void)
     mem_msk[1] = tihw.ram_size-1;
 
 	// map EPROM
-    if(tihw.rom_base == 0x20)
+    if(tihw.rom_base == 0x200000)
     {
         // internal
         mem_tab[2] = tihw.rom;

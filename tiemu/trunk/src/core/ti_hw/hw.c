@@ -70,7 +70,7 @@ int hw_init(void)
 
     // Get infos from image
 	tihw.calc_type = img_infos.calc_type;
-	tihw.rom_base = img->rom_base;
+	tihw.rom_base = img->rom_base << 16;
 	tihw.rom_flash = img->flash;
 	strcpy(tihw.rom_version, img->version);
 	tihw.hw_type = img->hw_type;
