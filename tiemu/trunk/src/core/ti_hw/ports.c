@@ -47,6 +47,7 @@ int hw_io_init(void)
 {
 	memset(tihw.io, 0x00, tihw.io_size);
 	memset(tihw.io2, 0x00, tihw.io2_size);
+	memset(tihw.io3, 0x00, tihw.io3_size);
 
 	if(tihw.hw_type > HW1)
 		tihw.lcd_adr = 0x4c00;
@@ -515,5 +516,55 @@ uint16_t io2_get_word(uint32_t addr)
 uint32_t io2_get_long(uint32_t addr) 
 {
     return (((uint32_t)io2_get_word(addr))<<16) | io2_get_word(addr+2);
+}
+
+/** HW3 **/
+
+void io3_put_byte(uint32_t addr, uint8_t arg)
+{
+    switch(addr) 
+    {
+        case 0x00:	// rw <76543210>
+			break;
+    }
+
+    tihw.io3[addr] = arg;
+}
+
+void io3_put_word(uint32_t addr, uint16_t arg) 
+{
+    io3_put_byte(addr,   MSB(arg));
+    io3_put_byte(addr+1, LSB(arg));
+}
+
+void io3_put_long(uint32_t addr, uint32_t arg) 
+{
+    io3_put_word(addr,   MSW(arg));
+    io3_put_word(addr+2, LSW(arg));
+}
+
+uint8_t io3_get_byte(uint32_t addr) 
+{
+    int v;
+	
+	v = tihw.io3[addr];
+
+    switch(addr) 
+    {
+        case 0x00:
+			break;
+    }
+  
+    return v;
+}
+
+uint16_t io3_get_word(uint32_t addr) 
+{
+    return (((uint16_t)io3_get_byte(addr))<<8) | io3_get_byte(addr+1);
+}
+
+uint32_t io3_get_long(uint32_t addr) 
+{
+    return (((uint32_t)io3_get_word(addr))<<16) | io3_get_word(addr+2);
 }
 

@@ -108,6 +108,7 @@ int hw_mem_init(void)
 		tihw.ram_size = ti68k_get_ram_size(tihw.calc_type);
 		tihw.io_size = ti68k_get_io_size(tihw.calc_type);
 		tihw.io2_size = ti68k_get_io2_size(tihw.calc_type);
+		tihw.io3_size = ti68k_get_io3_size(tihw.calc_type);
 	}
 
     // clear breakpoints
@@ -119,12 +120,14 @@ int hw_mem_init(void)
     tihw.rom = malloc(tihw.rom_size);
     tihw.io  = malloc(tihw.io_size);
     tihw.io2 = malloc(tihw.io2_size);
+	tihw.io3 = malloc(tihw.io3_size);
     tihw.unused = malloc(1*MB);
 
     // clear RAM/ROM/IO
     memset(tihw.ram, 0x00, tihw.ram_size);
     memset(tihw.io , 0x00, tihw.io_size);  
 	memset(tihw.io2, 0x00, tihw.io2_size);
+	memset(tihw.io2, 0x00, tihw.io3_size);
     memset(tihw.rom, 0xff, tihw.rom_size);
     memset(tihw.unused, 0x00, 1*MB);
 
@@ -205,6 +208,10 @@ int hw_mem_exit(void)
     if(tihw.io2)
         free(tihw.io2);
     tihw.io2 = NULL;
+
+	if(tihw.io3)
+        free(tihw.io3);
+    tihw.io3 = NULL;
 
 	// clear breakpoints
 	ti68k_bkpt_clear_access();

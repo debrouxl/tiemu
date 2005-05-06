@@ -107,7 +107,8 @@ typedef struct
     int     ram_size;		// RAM size
     int     rom_size;		// ROM size
 	int		io_size;		// HWx io size
-	int		io2_size;		// HW2/3 io size
+	int		io2_size;		// HW2 io size
+	int		io3_size;		// HW3 io size
 
    uint32_t	rom_base;		// ROM base address (MSB)
     int     rom_flash;		// ROM type
@@ -138,6 +139,7 @@ typedef struct
     uchar	*ram;
     uchar	*io;
     uchar	*io2;
+	uchar	*io3;
     uchar   *unused;		// unused
     int     initial_pc;
 

@@ -49,6 +49,8 @@ extern void io_put_byte(uint32_t addr, uint8_t  arg);
 #define io_bit_tst(a,b)		bit_tst(tihw.io[a],b)
 #define io_bit_chg(a,b,s)	bit_chg(tihw.io[a],b,s)	
 
+// ---
+
 extern uint8_t  io2_get_byte(uint32_t addr);
 extern uint16_t io2_get_word(uint32_t addr);
 extern uint32_t io2_get_long(uint32_t addr);
@@ -63,5 +65,15 @@ extern void io2_put_byte(uint32_t addr, uint8_t  arg);
 
 #define io2_bit_tst(a,b)		bit_tst(tihw.io2[a],b)
 #define io2_bit_chg(a,b,s)		bit_chg(tihw.io2[a],b,s)	
+
+// ---
+
+extern uint8_t  io3_get_byte(uint32_t addr);
+extern uint16_t io3_get_word(uint32_t addr);
+extern uint32_t io3_get_long(uint32_t addr);
+
+extern void io3_put_long(uint32_t addr, uint32_t arg);
+extern void io3_put_word(uint32_t addr, uint16_t arg);
+extern void io3_put_byte(uint32_t addr, uint8_t  arg);
 
 #endif
