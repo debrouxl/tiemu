@@ -117,7 +117,7 @@ uint32_t ti89_get_long(uint32_t adr)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))
+	else if(IN_RANGE(adr, 0x700000, 32))
 	{
 		return io2_get_long(adr);
 	}
@@ -146,7 +146,7 @@ uint16_t ti89_get_word(uint32_t adr)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))
+	else if(IN_RANGE(adr, 0x700000, 32))
 	{
 		return io2_get_word(adr);
 	}
@@ -175,7 +175,7 @@ uint8_t ti89_get_byte(uint32_t adr)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))
+	else if(IN_RANGE(adr, 0x700000, 32))
 	{
 		return io2_get_byte(adr);
 	}
@@ -204,7 +204,7 @@ void ti89_put_long(uint32_t adr, uint32_t arg)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))
+	else if(IN_RANGE(adr, 0x700000, 32))
 	{
 		io2_put_long(adr, arg);
 	}
@@ -233,7 +233,7 @@ void ti89_put_word(uint32_t adr, uint16_t arg)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))
+	else if(IN_RANGE(adr, 0x700000, 32))
 	{
 		io2_put_word(adr, arg);
 	}
@@ -262,7 +262,7 @@ void ti89_put_byte(uint32_t adr, uint8_t arg)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))
+	else if(IN_RANGE(adr, 0x700000, 32))
 	{
 		io2_put_byte(adr, arg);
 	}
