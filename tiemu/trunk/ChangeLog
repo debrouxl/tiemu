@@ -5,6 +5,10 @@ To do:
 	- link port is broken (HW2 only ?!)
 	- stealth I/O and mem protect (done but not enabled)
 
+- 06/05/2005, version 1.80v:
+	- [roms]  $1248: changed rom_base from 0x20 to 0x200000 whenever applicable
+	- [roms]  $1249: memory layout management rewritten (to do)
+
 - 27/04/2005, version 1.80u:
 	- [roms]  $1191: popup menu can be raised by clicking on the LCD (iPAQ)
 	- [roms]  $1192: fixed logging domain support (printl)

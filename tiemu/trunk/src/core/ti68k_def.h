@@ -95,21 +95,27 @@ typedef struct
     
 } Ti68kParameters;
 
+/* 
+	Beware: if you want to modify this structure, you must 
+	increment SAV_REVISION in state.c.
+*/
 typedef struct
 {
     // misc (non hardware pseudo-constants)
     int     calc_type;
 
-    int     ram_size;
-    int     rom_size;
-    int     rom_base;
-    int     rom_flash;
-    char	rom_version[5];
-	int		hw_type;
-	int		io_size;
-	int		io2_size;
+    int     ram_size;		// RAM size
+    int     rom_size;		// ROM size
+	int		io_size;		// HWx io size
+	int		io2_size;		// HW2/3 io size
 
-	int		ti92v1;			// ROm v1.x(y)
+	int		rom_base;		// ROM base address (MSB)
+    int     rom_flash;		// ROM type
+    char	rom_version[5];	// ROM/AMS version 
+
+	int		hw_type;		// HW1/2/3	
+
+	int		ti92v1;			// ROM v1.x(y)
 	int		ti92v2;			// ROM v2.x
 
 	int		lcd_w;			// LCD physical width
@@ -132,13 +138,13 @@ typedef struct
     uchar	*ram;
     uchar	*io;
     uchar	*io2;
-    uchar   *unused;
+    uchar   *unused;		// unused
     int     initial_pc;
 
     // timer & rtc
-    uint8_t     timer_value;
-    uint8_t     timer_init;
-	uint8_t		rtc_value;
+    uint8_t     timer_value;	// Current timer value
+    uint8_t     timer_init;		// Value to reload
+	uint8_t		rtc_value;		// RTC value
 
 	// protection
 	int			protect;		// hw protection state
