@@ -349,7 +349,7 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 {
 	int i;
 
-	addr &= tihw.io2_size-1;
+	addr &= 63;	//tihw.io2_size-1;
 
     switch(addr) 
     {
@@ -454,7 +454,7 @@ uint8_t io2_get_byte(uint32_t addr)
 {
     int v;
 	
-	addr &= tihw.io2_size-1;
+	addr &= 63;	//tihw.io2_size-1;
 	v = tihw.io2[addr];
 
     switch(addr) 
@@ -522,6 +522,8 @@ uint32_t io2_get_long(uint32_t addr)
 
 void io3_put_byte(uint32_t addr, uint8_t arg)
 {
+	addr &= 255;	//tihw.io3_size-1;
+
     switch(addr) 
     {
         case 0x00:	// rw <76543210>
@@ -547,6 +549,7 @@ uint8_t io3_get_byte(uint32_t addr)
 {
     int v;
 	
+	addr &= 255;	//tihw.io3_size-1;
 	v = tihw.io3[addr];
 
     switch(addr) 

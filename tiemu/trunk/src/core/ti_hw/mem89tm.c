@@ -128,9 +128,15 @@ uint32_t ti89t_get_long(uint32_t adr)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))
+	else if(IN_RANGE(adr, 0x700000, 64))
 	{
 		return io2_get_long(adr);
+	}
+
+	// memory-mapped I/O (hw3)
+	else if(IN_RANGE(adr, 0x710000, 256))
+	{
+		return io3_get_long(adr);
 	}
 
     return 0x14141414;
@@ -159,9 +165,15 @@ uint16_t ti89t_get_word(uint32_t adr)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))
+	else if(IN_RANGE(adr, 0x700000, 64))
 	{
 		return io2_get_word(adr);
+	}
+
+	// memory-mapped I/O (hw3)
+	else if(IN_RANGE(adr, 0x710000, 256))
+	{
+		return io3_get_word(adr);
 	}
 
     return 0x1414;
@@ -190,9 +202,15 @@ uint8_t ti89t_get_byte(uint32_t adr)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))
+	else if(IN_RANGE(adr, 0x700000, 64))
 	{
 		return io2_get_byte(adr);
+	}
+
+	// memory-mapped I/O (hw3)
+	else if(IN_RANGE(adr, 0x710000, 256))
+	{
+		return io3_get_byte(adr);
 	}
 
     return 0x14;
@@ -221,9 +239,15 @@ void ti89t_put_long(uint32_t adr, uint32_t arg)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))			
+	else if(IN_RANGE(adr, 0x700000, 64))
 	{
 		io2_put_long(adr, arg);
+	}
+
+	// memory-mapped I/O (hw3)
+	else if(IN_RANGE(adr, 0x710000, 256))
+	{
+		io3_put_long(adr, arg);
 	}
 
     return;
@@ -252,9 +276,15 @@ void ti89t_put_word(uint32_t adr, uint16_t arg)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))			
+	else if(IN_RANGE(adr, 0x700000, 64))
 	{
 		io2_put_word(adr, arg);
+	}
+
+	// memory-mapped I/O (hw3)
+	else if(IN_RANGE(adr, 0x710000, 256))
+	{
+		io3_put_word(adr, arg);
 	}
 
     return;
@@ -283,9 +313,15 @@ void ti89t_put_byte(uint32_t adr, uint8_t arg)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))			
+	else if(IN_RANGE(adr, 0x700000, 64))
 	{
 		io2_put_byte(adr, arg);
+	}
+
+	// memory-mapped I/O (hw3)
+	else if(IN_RANGE(adr, 0x710000, 256))
+	{
+		io3_put_byte(adr, arg);
 	}
 
     return;
