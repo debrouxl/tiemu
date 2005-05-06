@@ -15,8 +15,10 @@ Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		Applications/Emulators
 Copyright:	GPL
-BuildRequires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2-devel >= 2.4.0, gtk2-devel >= 2.4.0, libglade2-devel >= 2.4.0, kdelibs-devel >= 3.3.0, ncurses-devel >= 5.4
+BuildRequires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2-devel >= 2.4.0, gtk2-devel >= 2.4.0, libglade2-devel >= 2.4.0, kdelibs-devel >= 3.3.0, ncurses-devel >= 5.4, desktop-file-utils >= 0.9
 Requires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2 >= 2.4.0, gtk2 >= 2.4.0, libglade2 >= 2.4.0, kdelibs >= 3.3.0, ncurses >= 5.4
+Requires(post):	desktop-file-utils >= 0.9
+Requires(postun): desktop-file-utils >= 0.9
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Obsoletes:	tiemu < 2.00
 Conflicts:	tiemu >= 2.00
@@ -36,6 +38,29 @@ make
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install prefix=$RPM_BUILD_ROOT%{_prefix}
+mkdir -p ${RPM_BUILD_ROOT}/usr/share/applications
+cat >${RPM_BUILD_ROOT}/usr/share/applications/%{name}.desktop <<EOF
+[Desktop Entry]
+Name=TiEmu
+Comment=TI89(Ti)/92(+)/V200 emulator
+GenericName=TI89(Ti)/92(+)/V200 emulator
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Exec=/usr/bin/tiemu
+Icon=/usr/share/tiemu/pixmaps/logo.xpm
+Terminal=true
+Categories=Development;
+EOF
+desktop-file-install --delete-original --vendor lpg     \
+  --dir ${RPM_BUILD_ROOT}%{_datadir}/applications          \
+  ${RPM_BUILD_ROOT}/usr/share/applications/%{name}.desktop
+
+%post
+update-desktop-database %{_datadir}/applications > /dev/null 2>&1 || :
+
+%postun
+update-desktop-database %{_datadir}/applications > /dev/null 2>&1 || :
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -44,8 +69,12 @@ rm -rf $RPM_BUILD_ROOT
 /usr/bin/tiemu
 /usr/man/man1/tiemu.1
 /usr/share/tiemu
+%{_datadir}/applications/lpg-%{name}.desktop
 
 %defattr(-,root,root)
 %changelog
+* Fri May 6 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Menu entry support.
+
 * Mon May 2 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 First Fedora RPM.
