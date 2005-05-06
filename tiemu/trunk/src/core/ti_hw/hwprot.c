@@ -47,7 +47,7 @@ static int access2;			// protection access authorization (hw2)
 static int crash;			// access counter before crashing
 static int arch_mem_crash;	// same
 
-#define IN_RANGE2(a,v,b)	(((v) >= ((a)+ba)) && ((v) <= ((b)+ba)))
+#define IN_BOUNDS2(a,v,b)	(((v) >= ((a)+ba)) && ((v) <= ((b)+ba)))
 #define HWP
 
 int hw_hwp_init(void)
@@ -97,7 +97,7 @@ int hwp_fetch(uint32_t adr)
 	// protections (hw1)
 	if(tihw.hw_type == HW1)
 	{
-		if(IN_RANGE2(0x390000+tihw.archive_limit*0x10000, 
+		if(IN_BOUNDS2(0x390000+tihw.archive_limit*0x10000, 
 								adr, 0x3fffff))				// archive memory limit (hw1)
 		{
 			// three consecutive access to any adress >=$390000+limit*$10000 and <$400000 crashes the calc
@@ -113,7 +113,7 @@ int hwp_fetch(uint32_t adr)
 	// protections (hw2)
 	else
 	{
-		if(IN_RANGE(0x000000, adr, 0x03ffff))				// RAM page execution protection
+		if(IN_BOUNDS(0x000000, adr, 0x03ffff))				// RAM page execution protection
 		{
 			if(tihw.ram_exec[adr >> 12]) 
 			{
@@ -121,7 +121,7 @@ int hwp_fetch(uint32_t adr)
 				return 2;
 			}
 		}
-		else if(IN_RANGE(0x040000, adr, 0x1fffff))			// RAM page execution protection
+		else if(IN_BOUNDS(0x040000, adr, 0x1fffff))			// RAM page execution protection
 		{
 			if(io2_bit_tst(6, 7)) 
 			{
@@ -129,7 +129,7 @@ int hwp_fetch(uint32_t adr)
 				return 2;
 			}
 		}
-		else if(IN_RANGE2(0x210000, adr, 0x1fffff + tihw.rom_size))	// FLASH page execution protection
+		else if(IN_BOUNDS2(0x210000, adr, 0x1fffff + tihw.rom_size))	// FLASH page execution protection
 		{
 			if(adr >= (0x210000+ba + (uint32_t)tihw.io2[0x13]*0x10000)) 
 			{
@@ -147,26 +147,26 @@ uint8_t hwp_get_byte(uint32_t adr)
 {
 #ifdef HWP
 	// stealth I/O
-	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0 (hw1)
+	if(IN_BOUNDS(0x040000, adr, 0x07ffff))				// archive memory limit bit 0 (hw1)
 	{
 		if(!tihw.protect && (tihw.hw_type == HW1))
 			bit_clr(tihw.archive_limit, 0);
 	}
-	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1 (hw1)
+	else if(IN_BOUNDS(0x080000, adr, 0x0bffff))			// archive memory limit bit 1 (hw1)
 	{
 		if(!tihw.protect && (tihw.hw_type == HW1))
 			bit_clr(tihw.archive_limit, 1);
 	}
-	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2 (hw1)
+	else if(IN_BOUNDS(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2 (hw1)
 	{
 		if(!tihw.protect && (tihw.hw_type == HW1))
 			bit_clr(tihw.archive_limit, 2);
 	}
-	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
+	else if(IN_BOUNDS(0x180000, adr, 0x1bffff))			// screen power control
 	{
 		//tihw.on_off = 0;
 	}
-	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable
+	else if(IN_BOUNDS(0x1c0000, adr, 0x1fffff))			// protection enable
 	{
 		if((access1 >= 3) || (++access2 == 8)) 
 		{
@@ -183,7 +183,7 @@ uint8_t hwp_get_byte(uint32_t adr)
 			}
 		}
 	}
-	else if(IN_RANGE2(0x200000, adr, 0x20ffff))			// protection access authorization
+	else if(IN_BOUNDS2(0x200000, adr, 0x20ffff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
@@ -192,12 +192,12 @@ uint8_t hwp_get_byte(uint32_t adr)
 			if(!(adr & 1)) 
 				access2++;
 	}
-	else if(IN_RANGE2(0x210000, adr, 0x211fff))			// certificate (read protected)
+	else if(IN_BOUNDS2(0x210000, adr, 0x211fff))			// certificate (read protected)
 	{
 		if(tihw.protect)
 			return 0x14;
 	}
-	else if(IN_RANGE2(0x212000, adr, 0x217fff))			// protection access authorization
+	else if(IN_BOUNDS2(0x212000, adr, 0x217fff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
@@ -206,12 +206,12 @@ uint8_t hwp_get_byte(uint32_t adr)
 			if(!(adr & 1)) 
 				access2++;
 	}
-	else if(IN_RANGE2(0x218000, adr, 0x219fff))			// read protected
+	else if(IN_BOUNDS2(0x218000, adr, 0x219fff))			// read protected
 	{
 		if(tihw.protect)
 			return 0x14;
 	}
-	else if(IN_RANGE2(0x21a000, adr, 0x21ffff))			// protection access authorization
+	else if(IN_BOUNDS2(0x21a000, adr, 0x21ffff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
@@ -237,26 +237,26 @@ uint16_t hwp_get_word(uint32_t adr)
 // hardware behaves differently for byte and word reads (see flash.c).
 #ifdef HWP
 	// stealth I/O
-	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0 (hw1)
+	if(IN_BOUNDS(0x040000, adr, 0x07ffff))				// archive memory limit bit 0 (hw1)
 	{
 		if(!tihw.protect && (tihw.hw_type == HW1))
 			bit_clr(tihw.archive_limit, 0);
 	}
-	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1 (hw1)
+	else if(IN_BOUNDS(0x080000, adr, 0x0bffff))			// archive memory limit bit 1 (hw1)
 	{
 		if(!tihw.protect && (tihw.hw_type == HW1))
 			bit_clr(tihw.archive_limit, 1);
 	}
-	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2 (hw1)
+	else if(IN_BOUNDS(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2 (hw1)
 	{
 		if(!tihw.protect && (tihw.hw_type == HW1))
 			bit_clr(tihw.archive_limit, 2);
 	}
-	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
+	else if(IN_BOUNDS(0x180000, adr, 0x1bffff))			// screen power control
 	{
 		//tihw.on_off = 0;
 	}
-	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection enable
+	else if(IN_BOUNDS(0x1c0000, adr, 0x1fffff))			// protection enable
 	{
 		access2 += 2;
 		if((access1 >= 3) || (access2 == 8) || (access2 == 9)) 
@@ -274,31 +274,31 @@ uint16_t hwp_get_word(uint32_t adr)
 			}
 		}
 	}
-	else if(IN_RANGE2(0x200000, adr, 0x20ffff))			// protection access authorization
+	else if(IN_BOUNDS2(0x200000, adr, 0x20ffff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			access1++;
 		else
 			access2++;
 	}
-	else if(IN_RANGE2(0x210000, adr, 0x211fff))			// certificate (read protected)
+	else if(IN_BOUNDS2(0x210000, adr, 0x211fff))			// certificate (read protected)
 	{
 		if(tihw.protect)
 			return 0x1414;
 	}
-	else if(IN_RANGE2(0x212000, adr, 0x217fff))			// protection access authorization
+	else if(IN_BOUNDS2(0x212000, adr, 0x217fff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			access1++;
 		else
 			access2++;
 	}
-	else if(IN_RANGE2(0x218000, adr, 0x219fff))			// read protected
+	else if(IN_BOUNDS2(0x218000, adr, 0x219fff))			// read protected
 	{
 		if(tihw.protect)
 			return 0x1414;
 	}
-	else if(IN_RANGE2(0x21a000, adr, 0x21ffff))			// protection access authorization
+	else if(IN_BOUNDS2(0x21a000, adr, 0x21ffff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			access1++;
@@ -325,26 +325,26 @@ void hwp_put_byte(uint32_t adr, uint8_t arg)
 {
 #ifdef HWP
     // stealth I/O
-	if(IN_RANGE(0x040000, adr, 0x07ffff))				// archive memory limit bit 0 (hw1)
+	if(IN_BOUNDS(0x040000, adr, 0x07ffff))				// archive memory limit bit 0 (hw1)
 	{
 		if(!tihw.protect && (tihw.hw_type == HW1))
 			bit_set(tihw.archive_limit, 0);
 	}
-	else if(IN_RANGE(0x080000, adr, 0x0bffff))			// archive memory limit bit 1 (hw1)
+	else if(IN_BOUNDS(0x080000, adr, 0x0bffff))			// archive memory limit bit 1 (hw1)
 	{
 		if(!tihw.protect && (tihw.hw_type == HW1))
 			bit_set(tihw.archive_limit, 1);
 	}
-	else if(IN_RANGE(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2 (hw1)
+	else if(IN_BOUNDS(0x0c0000, adr, 0x0fffff))			// archive memory limit bit 2 (hw1)
 	{
 		if(!tihw.protect && (tihw.hw_type == HW1))
 			bit_set(tihw.archive_limit, 2);
 	}
-	else if(IN_RANGE(0x180000, adr, 0x1bffff))			// screen power control
+	else if(IN_BOUNDS(0x180000, adr, 0x1bffff))			// screen power control
 	{
 		//tihw.on_off = !0;
 	}
-	else if(IN_RANGE(0x1c0000, adr, 0x1fffff))			// protection disable
+	else if(IN_BOUNDS(0x1c0000, adr, 0x1fffff))			// protection disable
 	{
 		if((access1 >= 3) || (++access2 == 8)) 
 		{
@@ -361,7 +361,7 @@ void hwp_put_byte(uint32_t adr, uint8_t arg)
 			}
 		}
 	}
-	else if(IN_RANGE2(0x200000, adr, 0x20ffff))			// protection access authorization
+	else if(IN_BOUNDS2(0x200000, adr, 0x20ffff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
@@ -373,10 +373,10 @@ void hwp_put_byte(uint32_t adr, uint8_t arg)
 		// don't write on boot code
 		return;		
 	}
-	else if(IN_RANGE2(0x210000, adr, 0x211fff))			// certificate (read protected)
+	else if(IN_BOUNDS2(0x210000, adr, 0x211fff))			// certificate (read protected)
 	{
 	}
-	else if(IN_RANGE2(0x212000, adr, 0x217fff))			// protection access authorization
+	else if(IN_BOUNDS2(0x212000, adr, 0x217fff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 
@@ -385,10 +385,10 @@ void hwp_put_byte(uint32_t adr, uint8_t arg)
 			if(!(adr & 1)) 
 				access2++;
 	}
-	else if(IN_RANGE2(0x218000, adr, 0x219fff))			// read protected
+	else if(IN_BOUNDS2(0x218000, adr, 0x219fff))			// read protected
 	{
 	}
-	else if(IN_RANGE2(0x21a000, adr, 0x21ffff))			// protection access authorization
+	else if(IN_BOUNDS2(0x21a000, adr, 0x21ffff))			// protection access authorization
 	{
 		if(tihw.hw_type == HW1)
 			if(!(adr & 1)) 

@@ -113,13 +113,13 @@ int ti92_mem_init(void)
 uint32_t ti92_get_long(uint32_t adr) 
 {
     // RAM or PROM access
-	if(IN_RANGE(0x000000, adr, 0x5fffff))
+	if(IN_BOUNDS(0x000000, adr, 0x5fffff))
 	{
         return lget(adr);
 	}
 
     // memory-mapped I/O
-	else if(IN_RANGE(0x600000, adr, 0x6fffff))
+	else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
         return io_get_long(adr);
 	}
@@ -130,13 +130,13 @@ uint32_t ti92_get_long(uint32_t adr)
 uint16_t ti92_get_word(uint32_t adr) 
 {
 	// RAM or PROM access
-    if(IN_RANGE(0x000000, adr, 0x5fffff))
+    if(IN_BOUNDS(0x000000, adr, 0x5fffff))
 	{
         return wget(adr);
 	}
 
     // memory-mapped I/O
-    else if(IN_RANGE(0x600000, adr, 0x6fffff))
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
         return io_get_word(adr);
 	}
@@ -147,13 +147,13 @@ uint16_t ti92_get_word(uint32_t adr)
 uint8_t ti92_get_byte(uint32_t adr) 
 {
 	// RAM or PROM access
-    if(IN_RANGE(0x000000, adr, 0x5fffff))
+    if(IN_BOUNDS(0x000000, adr, 0x5fffff))
 	{
         return bget(adr);
 	}
 
     // memory-mapped I/O
-    else if(IN_RANGE(0x600000, adr, 0x6fffff))
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
         return io_get_byte(adr);
 	}
@@ -164,13 +164,13 @@ uint8_t ti92_get_byte(uint32_t adr)
 void ti92_put_long(uint32_t adr, uint32_t arg) 
 {
     // write to RAM
-	if(IN_RANGE(0x000000, adr, 0x1fffff))
+	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
 		lput(adr, arg);
 	}
 
     // memory-mapped I/O
-    else if(IN_RANGE(0x600000, adr, 0x6fffff))
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
         io_put_long(adr, arg);
 	}
@@ -179,13 +179,13 @@ void ti92_put_long(uint32_t adr, uint32_t arg)
 void ti92_put_word(uint32_t adr, uint16_t arg) 
 {
     // write to RAM
-	if(IN_RANGE(0x000000, adr, 0x1fffff))
+	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
 		wput(adr, arg);
 	}
 
     // memory-mapped I/O
-    else if(IN_RANGE(0x600000, adr, 0x6fffff))
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
         io_put_word(adr, arg);
 	}
@@ -194,13 +194,13 @@ void ti92_put_word(uint32_t adr, uint16_t arg)
 void ti92_put_byte(uint32_t adr, uint8_t arg) 
 {
 	// write to RAM
-	if(IN_RANGE(0x000000, adr, 0x1fffff))
+	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
 		bput(adr, arg);
 	}
 
     // memory-mapped I/O
-    else if(IN_RANGE(0x600000, adr, 0x6fffff))
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
         io_put_byte(adr, arg);
 	}

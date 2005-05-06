@@ -84,6 +84,9 @@ extern uint32_t mem_msk[];
 #define wget(adr) ((uint16_t)(((uint16_t)bget(adr))<< 8 | bget((adr)+1)))
 #define lget(adr) ((uint32_t)(((uint32_t)wget(adr))<<16 | wget((adr)+2)))
 
-#define IN_RANGE(a,v,b)	(((v) >= (a)) && ((v) <= (b)))
+/* Useful macros for memory access */
+
+#define IN_BOUNDS(a,v,b)	(((v) >= (a)) && ((v) <= (b)))
+#define IN_RANGE(v,b,r)		(((v) >= (b)) && ((v) <= ((b) + (r))))
 
 #endif
