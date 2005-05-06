@@ -44,22 +44,11 @@
 #include "ti68k_def.h"
 #include "ti68k_int.h"
 
-// 000000-0fffff : RAM (128 or 256 KB)
-// 100000-1fffff : ghost of RAM
-// 200000-2fffff : internal ROM (TI92 1.x) or unused
-// 300000-3fffff : idem
-// 400000-4fffff : external ROM (TI92 2.x) or unused
-// 500000-5fffff : idem
+// 000000-1fffff : RAM (128 or 256 KB)
+// 200000-3fffff : internal ROM (TI92 1.x) or unused
+// 400000-5fffff : external ROM (TI92 2.x) or unused
 // 600000-6fffff : memory mapped I/O
-// 700000-7fffff : unused
-// 800000-8fffff : unused
-// 900000-9fffff :   ...
-// a00000-afffff : 
-// b00000-bfffff : 
-// c00000-cfffff : 
-// d00000-dfffff :
-// e00000-efffff :   ...
-// d00000-ffffff : unused
+// 700000-ffffff : unused
 
 int ti92_mem_init(void)
 {
@@ -112,10 +101,16 @@ int ti92_mem_init(void)
 
 uint32_t ti92_get_long(uint32_t adr) 
 {
-    // RAM or PROM access
-	if(IN_BOUNDS(0x000000, adr, 0x5fffff))
+	// RAM access
+	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-        return lget(adr);
+		return getl(tihw.ram, adr, tihw.ram_size - 1);
+	}
+
+    // PROM access
+	else if(IN_RANGE(adr, tihw.rom_base, 2*MB))
+	{
+		return getl(tihw.rom, adr, tihw.rom_size - 1);
 	}
 
     // memory-mapped I/O
@@ -129,10 +124,16 @@ uint32_t ti92_get_long(uint32_t adr)
 
 uint16_t ti92_get_word(uint32_t adr) 
 {
-	// RAM or PROM access
-    if(IN_BOUNDS(0x000000, adr, 0x5fffff))
+	// RAM access
+	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-        return wget(adr);
+		return getw(tihw.ram, adr, tihw.ram_size - 1);
+	}
+
+    // PROM access
+	else if(IN_RANGE(adr, tihw.rom_base, 2*MB))
+	{
+		return getw(tihw.rom, adr, tihw.rom_size - 1);
 	}
 
     // memory-mapped I/O
@@ -146,10 +147,16 @@ uint16_t ti92_get_word(uint32_t adr)
 
 uint8_t ti92_get_byte(uint32_t adr) 
 {
-	// RAM or PROM access
-    if(IN_BOUNDS(0x000000, adr, 0x5fffff))
+	// RAM access
+	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-        return bget(adr);
+		return getb(tihw.ram, adr, tihw.ram_size - 1);
+	}
+
+    // PROM access
+	else if(IN_RANGE(adr, tihw.rom_base, 2*MB))
+	{
+		return getb(tihw.rom, adr, tihw.rom_size - 1);
 	}
 
     // memory-mapped I/O
@@ -163,10 +170,16 @@ uint8_t ti92_get_byte(uint32_t adr)
 
 void ti92_put_long(uint32_t adr, uint32_t arg) 
 {
-    // write to RAM
+    // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		lput(adr, arg);
+		putl(tihw.ram, adr, tihw.ram_size - 1, arg);
+	}
+
+    // PROM access
+	else if(IN_RANGE(adr, tihw.rom_base, 2*MB))
+	{
+		putl(tihw.rom, adr, tihw.rom_size - 1, arg);
 	}
 
     // memory-mapped I/O
@@ -178,10 +191,16 @@ void ti92_put_long(uint32_t adr, uint32_t arg)
 
 void ti92_put_word(uint32_t adr, uint16_t arg) 
 {
-    // write to RAM
+    // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		wput(adr, arg);
+		putw(tihw.ram, adr, tihw.ram_size - 1, arg);
+	}
+
+    // PROM access
+	else if(IN_RANGE(adr, tihw.rom_base, 2*MB))
+	{
+		putw(tihw.rom, adr, tihw.rom_size - 1, arg);
 	}
 
     // memory-mapped I/O
@@ -193,10 +212,16 @@ void ti92_put_word(uint32_t adr, uint16_t arg)
 
 void ti92_put_byte(uint32_t adr, uint8_t arg) 
 {
-	// write to RAM
+	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		bput(adr, arg);
+		putb(tihw.ram, adr, tihw.ram_size - 1, arg);
+	}
+
+    // PROM access
+	else if(IN_RANGE(adr, tihw.rom_base, 2*MB))
+	{
+		putb(tihw.rom, adr, tihw.rom_size - 1, arg);
 	}
 
     // memory-mapped I/O

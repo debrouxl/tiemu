@@ -106,21 +106,29 @@ int ti89t_mem_init(void)
 
 uint32_t ti89t_get_long(uint32_t adr) 
 {
+	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x03ffff) ||
 	   IN_BOUNDS(0x200000, adr, 0x23ffff) ||
-	   IN_BOUNDS(0x400000, adr, 0x43ffff))				// RAM access
+	   IN_BOUNDS(0x400000, adr, 0x43ffff))
 	{
-        return lget(adr);
+		return getl(tihw.ram, adr, 0x03ffff);
 	}
-    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))			// FLASH access
+
+	// FLASH access
+    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))			
 	{
+		// use FlashReadLong due to Epson Device ID
 		return FlashReadLong(adr);
 	}
-    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))			// memory-mapped I/O
+
+	// memory-mapped I/O
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
        return io_get_long(adr);
 	}
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
+
+	// memory-mapped I/O (hw2)
+	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))
 	{
 		return io2_get_long(adr);
 	}
@@ -130,21 +138,28 @@ uint32_t ti89t_get_long(uint32_t adr)
 
 uint16_t ti89t_get_word(uint32_t adr) 
 {
+	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x03ffff) ||
 	   IN_BOUNDS(0x200000, adr, 0x23ffff) ||
-	   IN_BOUNDS(0x400000, adr, 0x43ffff))				// RAM access
+	   IN_BOUNDS(0x400000, adr, 0x43ffff))
 	{
-        return wget(adr);
+		return getw(tihw.ram, adr, 0x03ffff);
 	}
-    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))			// FLASH access
+
+	// FLASH access
+    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))			
 	{
 		return FlashReadWord(adr);
 	}
-    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))			// memory-mapped I/O
+
+	// memory-mapped I/O
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
        return io_get_word(adr);
 	}
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
+
+	// memory-mapped I/O (hw2)
+	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))
 	{
 		return io2_get_word(adr);
 	}
@@ -154,21 +169,28 @@ uint16_t ti89t_get_word(uint32_t adr)
 
 uint8_t ti89t_get_byte(uint32_t adr) 
 {
+	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x03ffff) ||
 	   IN_BOUNDS(0x200000, adr, 0x23ffff) ||
-	   IN_BOUNDS(0x400000, adr, 0x43ffff))				// RAM access
+	   IN_BOUNDS(0x400000, adr, 0x43ffff))
 	{
-        return bget(adr);
+		return getb(tihw.ram, adr, 0x03ffff);
 	}
-    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))			// FLASH access
+
+	// FLASH access
+    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))			
 	{
 		return FlashReadByte(adr);
 	}
-    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))			// memory-mapped I/O
+
+	// memory-mapped I/O
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
        return io_get_byte(adr);
 	}
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
+
+	// memory-mapped I/O (hw2)
+	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))
 	{
 		return io2_get_byte(adr);
 	}
@@ -178,21 +200,28 @@ uint8_t ti89t_get_byte(uint32_t adr)
 
 void ti89t_put_long(uint32_t adr, uint32_t arg) 
 {
+	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x03ffff) ||
 	   IN_BOUNDS(0x200000, adr, 0x23ffff) ||
-	   IN_BOUNDS(0x400000, adr, 0x43ffff))				// RAM access
+	   IN_BOUNDS(0x400000, adr, 0x43ffff))
 	{
-        lput(adr, arg);
+		putl(tihw.ram, adr, 0x03ffff, arg);
 	}
-    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))			// FLASH access
+
+	// FLASH access
+    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))
 	{
 		FlashWriteLong(adr, arg);
 	}
-    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))			// memory-mapped I/O
+
+	// memory-mapped I/O
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))			
 	{
 		io_put_long(adr, arg);
 	}
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
+
+	// memory-mapped I/O (hw2)
+	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))			
 	{
 		io2_put_long(adr, arg);
 	}
@@ -202,21 +231,28 @@ void ti89t_put_long(uint32_t adr, uint32_t arg)
 
 void ti89t_put_word(uint32_t adr, uint16_t arg) 
 {
+	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x03ffff) ||
 	   IN_BOUNDS(0x200000, adr, 0x23ffff) ||
-	   IN_BOUNDS(0x400000, adr, 0x43ffff))				// RAM access
+	   IN_BOUNDS(0x400000, adr, 0x43ffff))
 	{
-        wput(adr, arg);
+		putw(tihw.ram, adr, 0x03ffff, arg);
 	}
-    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))			// FLASH access
+
+	// FLASH access
+    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))
 	{
 		FlashWriteWord(adr, arg);
 	}
-    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))			// memory-mapped I/O
+
+	// memory-mapped I/O
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))			
 	{
 		io_put_word(adr, arg);
 	}
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
+
+	// memory-mapped I/O (hw2)
+	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))			
 	{
 		io2_put_word(adr, arg);
 	}
@@ -226,21 +262,28 @@ void ti89t_put_word(uint32_t adr, uint16_t arg)
 
 void ti89t_put_byte(uint32_t adr, uint8_t arg) 
 {
+	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x03ffff) ||
 	   IN_BOUNDS(0x200000, adr, 0x23ffff) ||
-	   IN_BOUNDS(0x400000, adr, 0x43ffff))				// RAM access
+	   IN_BOUNDS(0x400000, adr, 0x43ffff))
 	{
-        bput(adr, arg);
+		putb(tihw.ram, adr, 0x03ffff, arg);
 	}
-    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))			// FLASH access
+
+	// FLASH access
+    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))
 	{
-        FlashWriteByte(adr,arg);
+		FlashWriteByte(adr, arg);
 	}
-    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))			// memory-mapped I/O
+
+	// memory-mapped I/O
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))			
 	{
 		io_put_byte(adr, arg);
 	}
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))			// memory-mapped I/O (hw2)
+
+	// memory-mapped I/O (hw2)
+	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))			
 	{
 		io2_put_byte(adr, arg);
 	}

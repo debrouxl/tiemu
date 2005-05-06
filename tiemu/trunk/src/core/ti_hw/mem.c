@@ -47,6 +47,7 @@
 #include "mem92.h"
 #include "mem92p.h"
 #include "mem89tm.h"
+#include "memv2.h"
 #include "hwprot.h"
 
 static IMG_INFO *img = &img_infos;
@@ -143,8 +144,8 @@ int hw_mem_init(void)
     {
     case TI92:  ti92_mem_init();  break;
     case TI92p: ti92p_mem_init(); break;
-    case TI89:
-    case V200:  ti89_mem_init();  break;
+    case TI89:  ti89_mem_init();  break;
+    case V200:  tiv2_mem_init();  break;
     case TI89t: ti89t_mem_init(); break;
     default: break;
     }

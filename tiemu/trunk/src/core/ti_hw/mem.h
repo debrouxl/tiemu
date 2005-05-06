@@ -87,6 +87,14 @@ extern uint32_t mem_msk[];
 /* Useful macros for memory access */
 
 #define IN_BOUNDS(a,v,b)	(((v) >= (a)) && ((v) <= (b)))
-#define IN_RANGE(v,b,r)		(((v) >= (b)) && ((v) <= ((b) + (r))))
+#define IN_RANGE(v,b,r)		(((v) >= (b)) && ((v) <= ((b) + ((r)-1))))
+
+#define putb(ptr,adr,mask,arg)	{ ptr[(adr) & (mask)] = (arg); }
+#define putw(ptr,adr,mask,arg)	{ putb(ptr,adr,mask,(uint8_t )((arg) >>  8)); putb(ptr,(adr)+1,mask,(uint8_t )((arg) & 0x00ff)); }
+#define putl(ptr,adr,mask,arg)	{ putw(ptr,adr,mask,(uint16_t)((arg) >> 16)); putw(ptr,(adr)+2,mask,(uint16_t)((arg) & 0xffff)); }
+
+#define getb(ptr,adr,mask)	(ptr[(adr) & (mask)])
+#define getw(ptr,adr,mask)	((uint16_t) ((getb(ptr,adr,mask) <<  8) | getb(ptr,(adr)+1,mask)))
+#define getl(ptr,adr,mask)	((uint32_t)	((getw(ptr,adr,mask) << 16) | getw(ptr,(adr)+2,mask)))
 
 #endif

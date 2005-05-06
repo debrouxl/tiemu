@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: memv2.c 1250 2005-05-06 09:41:01Z roms $ */
 
 /*  TiEmu - an TI emulator
  *
@@ -7,8 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
- *
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -25,7 +24,8 @@
  */
 
 /*
-    Memory management: TI92+ FLASH without Hardware Protection
+    Memory management: V200 FLASH without Hardware Protection
+	Except for ti92p_mem_init/tiv2_mem_init, code is the same.
 */
 
 #include <stdlib.h>
@@ -36,7 +36,7 @@
 #include "ports.h"
 #include "hw.h"
 #include "mem.h"
-#include "mem92p.h"
+#include "memv2.h"
 #include "images.h"
 #include "bkpts.h"
 #include "m68k.h"
@@ -46,12 +46,12 @@
 
 // 000000-0fffff : RAM (256 KB)
 // 100000-1fffff : ghost of RAM
-// 200000-2fffff : ghost of FLASH (HW2)
-// 300000-3fffff : unused
-// 400000-4fffff : external FLASH
-// 500000-5fffff : idem
+// 200000-2fffff : internal FLASH (TIv2/V200)
+// 300000-3fffff : 
+// 400000-4fffff : internal FLASH (V200) or nothing (TIv2)
+// 500000-5fffff : 
 // 600000-6fffff : memory mapped I/O (all HW)
-// 700000-7fffff : memory mapped I/O (HW2)
+// 700000-7fffff : memory mapped I/O (HW2, HW3)
 // 800000-8fffff : unused
 // 900000-9fffff :	 ... 
 // a00000-afffff : 
@@ -61,7 +61,7 @@
 // e00000-efffff :   ...
 // d00000-ffffff : unused
 
-int ti92p_mem_init(void)
+int tiv2_mem_init(void)
 {
     // map RAM
     mem_tab[0] = tihw.ram;
@@ -70,20 +70,17 @@ int ti92p_mem_init(void)
     mem_msk[1] = tihw.ram_size-1;
 
 	// map FLASH
-    mem_tab[4] = tihw.rom + 0x000000;;
-    mem_msk[4] = MIN(tihw.rom_size - 0*MB, 1*MB) - 1;
+    mem_tab[2] = tihw.rom + 0x000000;
+    mem_msk[2] = MIN(tihw.rom_size - 0*MB, 1*MB) - 1;
 
-    mem_tab[5] = tihw.rom + 0x100000;
-    mem_msk[5] = MIN(tihw.rom_size - 1*MB, 1*MB) - 1;
+    mem_tab[3] = tihw.rom + 0x100000;
+    mem_msk[3] = MIN(tihw.rom_size - 1*MB, 1*MB) - 1;
 
-    // ghosts
-	if(tihw.hw_type == HW2)
-	{
-		mem_tab[2] = mem_tab[4];
-		mem_msk[2] = mem_msk[4];
-		mem_tab[3] = mem_tab[5];
-		mem_msk[3] = mem_msk[5];
-	}
+	mem_tab[4] = tihw.rom + 0x200000;
+	mem_msk[4] = MIN(tihw.rom_size - 2*MB, 1*MB) - 1;
+
+	mem_tab[5] = tihw.rom + 0x300000;
+	mem_msk[5] = MIN(tihw.rom_size - 3*MB, 1*MB) - 1;
 
     // map IO
     mem_tab[6] = tihw.io;
@@ -96,17 +93,17 @@ int ti92p_mem_init(void)
 	}
 
 	// set mappers
-	mem_get_byte_ptr = ti92p_get_byte;
-	mem_get_word_ptr = ti92p_get_word;
-	mem_get_long_ptr = ti92p_get_long;
-	mem_put_byte_ptr = ti92p_put_byte;
-	mem_put_word_ptr = ti92p_put_word;
-	mem_put_long_ptr = ti92p_put_long;
-  
+	mem_get_byte_ptr = tiv2_get_byte;
+	mem_get_word_ptr = tiv2_get_word;
+	mem_get_long_ptr = tiv2_get_long;
+	mem_put_byte_ptr = tiv2_put_byte;
+	mem_put_word_ptr = tiv2_put_word;
+	mem_put_long_ptr = tiv2_put_long;
+
     return 0;
 }
 
-uint32_t ti92p_get_long(uint32_t adr) 
+uint32_t tiv2_get_long(uint32_t adr) 
 {
 	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
@@ -114,12 +111,12 @@ uint32_t ti92p_get_long(uint32_t adr)
 		return getl(tihw.ram, adr, tihw.ram_size - 1);
 	}
 
-    // FLASH access
+	// FLASH access
 	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
 	{
-		return getl(tihw.rom, adr, tihw.rom_size - 1) | wsm.ret_or;
+		return getl(tihw.rom, adr-0x200000, tihw.rom_size - 1) | wsm.ret_or;
 	}
-	
+
 	// memory-mapped I/O
     else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
@@ -127,7 +124,7 @@ uint32_t ti92p_get_long(uint32_t adr)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))
+	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))			
 	{
 		return io2_get_long(adr);
 	}
@@ -135,7 +132,7 @@ uint32_t ti92p_get_long(uint32_t adr)
     return 0x14141414;
 }
 
-uint16_t ti92p_get_word(uint32_t adr) 
+uint16_t tiv2_get_word(uint32_t adr) 
 {
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
@@ -143,12 +140,12 @@ uint16_t ti92p_get_word(uint32_t adr)
 		return getw(tihw.ram, adr, tihw.ram_size - 1);
 	}
 
-    // FLASH access
+	// FLASH access
 	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
 	{
-		return getw(tihw.rom, adr, tihw.rom_size - 1) | wsm.ret_or;
+		return getw(tihw.rom, adr-0x200000, tihw.rom_size - 1) | wsm.ret_or;
 	}
-	
+
 	// memory-mapped I/O
     else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
@@ -156,7 +153,7 @@ uint16_t ti92p_get_word(uint32_t adr)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))
+	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))			
 	{
 		return io2_get_word(adr);
 	}
@@ -164,7 +161,7 @@ uint16_t ti92p_get_word(uint32_t adr)
     return 0x1414;
 }
 
-uint8_t ti92p_get_byte(uint32_t adr) 
+uint8_t tiv2_get_byte(uint32_t adr) 
 {    
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
@@ -172,12 +169,12 @@ uint8_t ti92p_get_byte(uint32_t adr)
 		return getb(tihw.ram, adr, tihw.ram_size - 1);
 	}
 
-    // FLASH access
+	// FLASH access
 	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
 	{
-		return getb(tihw.rom, adr, tihw.rom_size - 1) | wsm.ret_or;
+		return getb(tihw.rom, adr-0x200000, tihw.rom_size - 1) | wsm.ret_or;
 	}
-	
+
 	// memory-mapped I/O
     else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
@@ -185,7 +182,7 @@ uint8_t ti92p_get_byte(uint32_t adr)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))
+	else if(IN_BOUNDS(0x700000, adr, 0x7fffff))			
 	{
 		return io2_get_byte(adr);
 	}
@@ -193,7 +190,7 @@ uint8_t ti92p_get_byte(uint32_t adr)
     return 0x14;
 }
 
-void ti92p_put_long(uint32_t adr, uint32_t arg) 
+void tiv2_put_long(uint32_t adr, uint32_t arg) 
 {
 	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
@@ -222,7 +219,7 @@ void ti92p_put_long(uint32_t adr, uint32_t arg)
     return;
 }
 
-void ti92p_put_word(uint32_t adr, uint16_t arg) 
+void tiv2_put_word(uint32_t adr, uint16_t arg) 
 {
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
@@ -251,7 +248,7 @@ void ti92p_put_word(uint32_t adr, uint16_t arg)
     return;
 }
 
-void ti92p_put_byte(uint32_t adr, uint8_t arg) 
+void tiv2_put_byte(uint32_t adr, uint8_t arg) 
 {
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
@@ -279,4 +276,3 @@ void ti92p_put_byte(uint32_t adr, uint8_t arg)
 
     return;
 }
-
