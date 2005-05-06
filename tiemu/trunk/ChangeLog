@@ -7,7 +7,9 @@ To do:
 
 - 06/05/2005, version 1.80v:
 	- [roms]  $1248: changed rom_base from 0x20 to 0x200000 whenever applicable
-	- [roms]  $1249: memory layout management rewritten (to do)
+	- [roms]  $1249-1253: memory layout management rewritten
+	- [roms]  $1254: splitted I/O ports on HW3
+	- [roms]  $1255: finished to use new memory  layout
 
 - 27/04/2005, version 1.80u:
 	- [roms]  $1191: popup menu can be raised by clicking on the LCD (iPAQ)
