@@ -11,6 +11,9 @@ To do:
 	- [roms]  $1254: splitted I/O ports on HW3
 	- [roms]  $1255: finished to use new memory layout; the memory window shows 
 					 the exact memory mapping
+	- [roms]  $1263: hw_get_real_address is a function pointer which depends on the 
+					 calculator type for now (part of memory management rewrite attempt).
+
 
 - 27/04/2005, version 1.80u:
 	- [roms]  $1191: popup menu can be raised by clicking on the LCD (iPAQ)

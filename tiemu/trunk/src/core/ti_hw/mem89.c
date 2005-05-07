@@ -104,25 +104,25 @@ uint8_t* ti89_get_real_addr(uint32_t adr)
 	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		return getp(tihw.ram, adr, tihw.ram_size - 1);
+		return getp(tihw.ram, adr, RAM_SIZE_TI89 - 1);
 	}
 
     // FLASH access
 	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
 	{
-		return getp(tihw.rom, adr, tihw.rom_size - 1);
+		return getp(tihw.rom, adr, ROM_SIZE_TI89 - 1);
 	}
 	
 	// memory-mapped I/O
     else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
-		return getp(tihw.io, adr, 32 - 1);
+		return getp(tihw.io, adr, IO1_SIZE_TI89 - 1);
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_RANGE(adr, 0x700000, 32))
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89))
 	{
-		return getp(tihw.io2, adr, 32 - 1);
+		return getp(tihw.io2, adr, IO2_SIZE_TI89 - 1);
 	}
 
 	return tihw.unused;
@@ -133,13 +133,13 @@ uint32_t ti89_get_long(uint32_t adr)
 	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		return getl(tihw.ram, adr, tihw.ram_size - 1);
+		return getl(tihw.ram, adr, RAM_SIZE_TI89 - 1);
 	}
 
     // FLASH access
 	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
 	{
-		return getl(tihw.rom, adr, tihw.rom_size - 1) | wsm.ret_or;
+		return getl(tihw.rom, adr, ROM_SIZE_TI89 - 1) | wsm.ret_or;
 	}
 	
 	// memory-mapped I/O
@@ -149,7 +149,7 @@ uint32_t ti89_get_long(uint32_t adr)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_RANGE(adr, 0x700000, 32))
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89))
 	{
 		return io2_get_long(adr);
 	}
@@ -162,13 +162,13 @@ uint16_t ti89_get_word(uint32_t adr)
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		return getw(tihw.ram, adr, tihw.ram_size - 1);
+		return getw(tihw.ram, adr, RAM_SIZE_TI89 - 1);
 	}
 
     // FLASH access
 	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
 	{
-		return getw(tihw.rom, adr, tihw.rom_size - 1) | wsm.ret_or;
+		return getw(tihw.rom, adr, ROM_SIZE_TI89 - 1) | wsm.ret_or;
 	}
 	
 	// memory-mapped I/O
@@ -178,7 +178,7 @@ uint16_t ti89_get_word(uint32_t adr)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_RANGE(adr, 0x700000, 32))
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89))
 	{
 		return io2_get_word(adr);
 	}
@@ -191,13 +191,13 @@ uint8_t ti89_get_byte(uint32_t adr)
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		return getb(tihw.ram, adr, tihw.ram_size - 1);
+		return getb(tihw.ram, adr, RAM_SIZE_TI89 - 1);
 	}
 
     // FLASH access
 	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
 	{
-		return getb(tihw.rom, adr, tihw.rom_size - 1) | wsm.ret_or;
+		return getb(tihw.rom, adr, ROM_SIZE_TI89 - 1) | wsm.ret_or;
 	}
 	
 	// memory-mapped I/O
@@ -207,7 +207,7 @@ uint8_t ti89_get_byte(uint32_t adr)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_RANGE(adr, 0x700000, 32))
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89))
 	{
 		return io2_get_byte(adr);
 	}
@@ -220,7 +220,7 @@ void ti89_put_long(uint32_t adr, uint32_t arg)
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		putl(tihw.ram, adr, tihw.ram_size - 1, arg);
+		putl(tihw.ram, adr, RAM_SIZE_TI89 - 1, arg);
 	}
 
     // FLASH access
@@ -236,7 +236,7 @@ void ti89_put_long(uint32_t adr, uint32_t arg)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_RANGE(adr, 0x700000, 32))
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89))
 	{
 		io2_put_long(adr, arg);
 	}
@@ -249,7 +249,7 @@ void ti89_put_word(uint32_t adr, uint16_t arg)
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		putw(tihw.ram, adr, tihw.ram_size - 1, arg);
+		putw(tihw.ram, adr, RAM_SIZE_TI89 - 1, arg);
 	}
 
     // FLASH access
@@ -265,7 +265,7 @@ void ti89_put_word(uint32_t adr, uint16_t arg)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_RANGE(adr, 0x700000, 32))
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89))
 	{
 		io2_put_word(adr, arg);
 	}
@@ -278,7 +278,7 @@ void ti89_put_byte(uint32_t adr, uint8_t arg)
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		putb(tihw.ram, adr, tihw.ram_size - 1, arg);
+		putb(tihw.ram, adr, RAM_SIZE_TI89 - 1, arg);
 	}
 
     // FLASH access
@@ -294,7 +294,7 @@ void ti89_put_byte(uint32_t adr, uint8_t arg)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_RANGE(adr, 0x700000, 32))
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89))
 	{
 		io2_put_byte(adr, arg);
 	}

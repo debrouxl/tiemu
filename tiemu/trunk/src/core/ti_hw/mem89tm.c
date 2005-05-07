@@ -120,25 +120,25 @@ uint8_t* ti89t_get_real_addr(uint32_t adr)
 	// FLASH access
     else if(IN_BOUNDS(0x800000, adr, 0xbfffff))			
 	{
-		return getp(tihw.rom, adr, tihw.rom_size - 1);
+		return getp(tihw.rom, adr, ROM_SIZE_TI89T - 1);
 	}
 
 	// memory-mapped I/O
     else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
-		return getp(tihw.io, adr, 32 - 1);
+		return getp(tihw.io, adr, IO1_SIZE_TI89T - 1);
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_RANGE(adr, 0x700000, 64))
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89T))
 	{
-		return getp(tihw.io2, adr, 64 - 1);
+		return getp(tihw.io2, adr, IO2_SIZE_TI89T - 1);
 	}
 
 	// memory-mapped I/O (hw3)
-	else if(IN_RANGE(adr, 0x710000, 256))
+	else if(IN_RANGE(adr, 0x710000, IO3_SIZE_TI89T))
 	{
-		return getp(tihw.io3, adr, 256 - 1);
+		return getp(tihw.io3, adr, IO3_SIZE_TI89T - 1);
 	}
 
 	return tihw.unused;
@@ -168,13 +168,13 @@ uint32_t ti89t_get_long(uint32_t adr)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_RANGE(adr, 0x700000, 64))
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89T))
 	{
 		return io2_get_long(adr);
 	}
 
 	// memory-mapped I/O (hw3)
-	else if(IN_RANGE(adr, 0x710000, 256))
+	else if(IN_RANGE(adr, 0x710000, IO3_SIZE_TI89T))
 	{
 		return io3_get_long(adr);
 	}
@@ -205,13 +205,13 @@ uint16_t ti89t_get_word(uint32_t adr)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_RANGE(adr, 0x700000, 64))
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89T))
 	{
 		return io2_get_word(adr);
 	}
 
 	// memory-mapped I/O (hw3)
-	else if(IN_RANGE(adr, 0x710000, 256))
+	else if(IN_RANGE(adr, 0x710000, IO3_SIZE_TI89T))
 	{
 		return io3_get_word(adr);
 	}
@@ -242,13 +242,13 @@ uint8_t ti89t_get_byte(uint32_t adr)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_RANGE(adr, 0x700000, 64))
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89T))
 	{
 		return io2_get_byte(adr);
 	}
 
 	// memory-mapped I/O (hw3)
-	else if(IN_RANGE(adr, 0x710000, 256))
+	else if(IN_RANGE(adr, 0x710000, IO3_SIZE_TI89T))
 	{
 		return io3_get_byte(adr);
 	}
@@ -279,13 +279,13 @@ void ti89t_put_long(uint32_t adr, uint32_t arg)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_RANGE(adr, 0x700000, 64))
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89T))
 	{
 		io2_put_long(adr, arg);
 	}
 
 	// memory-mapped I/O (hw3)
-	else if(IN_RANGE(adr, 0x710000, 256))
+	else if(IN_RANGE(adr, 0x710000, IO3_SIZE_TI89T))
 	{
 		io3_put_long(adr, arg);
 	}
@@ -316,13 +316,13 @@ void ti89t_put_word(uint32_t adr, uint16_t arg)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_RANGE(adr, 0x700000, 64))
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89T))
 	{
 		io2_put_word(adr, arg);
 	}
 
 	// memory-mapped I/O (hw3)
-	else if(IN_RANGE(adr, 0x710000, 256))
+	else if(IN_RANGE(adr, 0x710000, IO3_SIZE_TI89T))
 	{
 		io3_put_word(adr, arg);
 	}
@@ -353,13 +353,13 @@ void ti89t_put_byte(uint32_t adr, uint8_t arg)
 	}
 
 	// memory-mapped I/O (hw2)
-	else if(IN_RANGE(adr, 0x700000, 64))
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89T))
 	{
 		io2_put_byte(adr, arg);
 	}
 
 	// memory-mapped I/O (hw3)
-	else if(IN_RANGE(adr, 0x710000, 256))
+	else if(IN_RANGE(adr, 0x710000, IO3_SIZE_TI89T))
 	{
 		io3_put_byte(adr, arg);
 	}
