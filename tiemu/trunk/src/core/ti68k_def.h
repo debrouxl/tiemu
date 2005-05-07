@@ -68,12 +68,8 @@ typedef unsigned char	uchar;	// can't replace UBYTE/uchar by uint8_t type, why ?
 #define HW2			2
 #define HW3         3
 
-#define DBG_BREAK   1	// user breakpoint
-#define DBG_TRACE   2	// trace (T)
-#define DBG_HWPV	3	// hardware protection violation
-
-#define LCDMEM_W	240		// LCD memory height
-#define LCDMEM_H	128		// LCD memory height
+#define LCDMEM_W	240		// LCD _memory_ height
+#define LCDMEM_H	128		// LCD _memory_ height
 
 /* Structures */
 
