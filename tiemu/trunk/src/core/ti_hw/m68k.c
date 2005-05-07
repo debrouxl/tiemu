@@ -200,7 +200,7 @@ int hw_m68k_run(int n, unsigned maxcycles)
 			if(heap_deref(handle)+2 == (int)m68k_getpc())
 			{
 				bkpts.type = BK_TYPE_PGMENTRY;
-				return 1;
+				return DBG_BREAK;
 			}
 		}
 
@@ -216,7 +216,7 @@ int hw_m68k_run(int n, unsigned maxcycles)
 			if(bkpts.id = hwp_fetch(m68k_getpc()))
 			{
 				bkpts.type = BK_TYPE_PROTECT;
-				return 3;
+				return DBG_HWPV;
 			}
 		}
 
@@ -261,13 +261,13 @@ int hw_m68k_run(int n, unsigned maxcycles)
 	        if (regs.spcflags & SPCFLAG_BRK) 
 	        {		
 				unset_special(SPCFLAG_BRK);
-				return 1;		// DBG_BREAK
+				return DBG_BREAK;
 	        }
 
 	        if(regs.spcflags & SPCFLAG_DBTRACE) 
 	        {
 				unset_special(SPCFLAG_DBTRACE);
-				return 2;     // DBG_TRACE
+				return DBG_TRACE;
 	        }
 
             if(regs.spcflags & SPCFLAG_DBSKIP)
