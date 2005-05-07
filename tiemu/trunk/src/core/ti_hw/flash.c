@@ -92,10 +92,8 @@ uint8_t FlashReadByte(uint32_t addr)
 		default: return 0xff;
 		}
 	}
-	else
-	{
-		return (bget(addr) | wsm.ret_or);
-	}
+	
+	return getb(tihw.rom, addr, tihw.rom_size - 1) | wsm.ret_or;
 }
 
 uint16_t FlashReadWord(uint32_t addr)
@@ -109,15 +107,13 @@ uint16_t FlashReadWord(uint32_t addr)
 		default: return 0xffff;
 		}
 	}
-	else
-	{
-		return (wget(addr) | wsm.ret_or);
-	}
+
+	return getw(tihw.rom, addr, tihw.rom_size - 1) | wsm.ret_or;
 }
 
 uint32_t FlashReadLong(uint32_t addr)
 {
-	return (lget(addr) | wsm.ret_or);
+	return getl(tihw.rom, addr, tihw.rom_size - 1) | wsm.ret_or;
 }
 
 /*

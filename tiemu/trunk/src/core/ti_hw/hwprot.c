@@ -70,14 +70,6 @@ int hw_hwp_exit(void)
 	return 0;
 }
 
-extern GETBYTE_FUNC	mem_get_byte_ptr;
-extern GETWORD_FUNC	mem_get_word_ptr;
-extern GETLONG_FUNC	mem_get_long_ptr;
-
-extern PUTBYTE_FUNC	mem_put_byte_ptr;
-extern PUTWORD_FUNC	mem_put_word_ptr;
-extern PUTLONG_FUNC	mem_put_long_ptr;
-
 static void freeze_calc(void)
 {
 	access1 = access2 = crash = 0;
