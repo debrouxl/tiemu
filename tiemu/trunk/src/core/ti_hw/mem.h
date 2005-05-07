@@ -39,6 +39,8 @@ typedef void	 (*PUTBYTE_FUNC) (uint32_t, uint8_t );
 typedef void	 (*PUTWORD_FUNC) (uint32_t, uint16_t);
 typedef void	 (*PUTLONG_FUNC) (uint32_t, uint32_t);
 
+typedef uint8_t* (*REALADR_FUNC) (uint32_t addr);
+
 extern GETBYTE_FUNC	mem_get_byte_ptr;
 extern GETWORD_FUNC	mem_get_word_ptr;
 extern GETLONG_FUNC	mem_get_long_ptr;
@@ -46,6 +48,8 @@ extern GETLONG_FUNC	mem_get_long_ptr;
 extern PUTBYTE_FUNC	mem_put_byte_ptr;
 extern PUTWORD_FUNC	mem_put_word_ptr;
 extern PUTLONG_FUNC	mem_put_long_ptr;
+
+extern REALADR_FUNC mem_get_real_addr_ptr;
 
 /* Functions */
 
@@ -75,7 +79,7 @@ extern uint32_t mem_msk[];
 #define ram_at_0() { mem_tab[0] = tihw.ram; mem_msk[0] = tihw.ram_size-1; }
 
 /* Put/Get byte/word/longword */
-
+/*
 #define bput(adr, arg) { mem_tab[(adr)>>20][(adr) & mem_msk[(adr)>>20]] = (arg); }
 #define wput(adr, arg) { bput((adr), (arg)>> 8); bput((adr)+1, (arg)&0x00ff); }
 #define lput(adr, arg) { wput((adr), (uint16_t)((arg)>>16)); wput((adr)+2, (uint16_t)((arg)&0xffff)); }
@@ -83,7 +87,7 @@ extern uint32_t mem_msk[];
 #define bget(adr) (mem_tab[(adr)>>20][(adr)&mem_msk[(adr)>>20]])
 #define wget(adr) ((uint16_t)(((uint16_t)bget(adr))<< 8 | bget((adr)+1)))
 #define lget(adr) ((uint32_t)(((uint32_t)wget(adr))<<16 | wget((adr)+2)))
-
+*/
 /* Useful macros for memory access */
 
 #define IN_BOUNDS(a,v,b)	(((v) >= (a)) && ((v) <= (b)))
@@ -96,5 +100,7 @@ extern uint32_t mem_msk[];
 #define getb(ptr,adr,mask)	(ptr[(adr) & (mask)])
 #define getw(ptr,adr,mask)	((uint16_t) ((getb(ptr,adr,mask) <<  8) | getb(ptr,(adr)+1,mask)))
 #define getl(ptr,adr,mask)	((uint32_t)	((getw(ptr,adr,mask) << 16) | getw(ptr,(adr)+2,mask)))
+
+#define getp(ptr,adr,mask)  ((ptr) + ((adr) & (mask)))
 
 #endif

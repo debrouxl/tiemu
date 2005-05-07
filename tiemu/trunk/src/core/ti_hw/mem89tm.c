@@ -26,6 +26,7 @@
 
 /*
     Memory management: TI89 Titanium without any HW protection
+	Some values may be hard-coded for performance reasons !
 */
 
 #include <stdlib.h>
@@ -101,7 +102,46 @@ int ti89t_mem_init(void)
 	mem_put_word_ptr = ti89t_put_word;
 	mem_put_long_ptr = ti89t_put_long;
 
+	mem_get_real_addr_ptr = ti89t_get_real_addr;
+
     return 0;
+}
+
+uint8_t* ti89t_get_real_addr(uint32_t adr)
+{
+	// RAM access
+	if(IN_BOUNDS(0x000000, adr, 0x03ffff) ||
+	   IN_BOUNDS(0x200000, adr, 0x23ffff) ||
+	   IN_BOUNDS(0x400000, adr, 0x43ffff))
+	{
+		return getp(tihw.ram, adr, 0x03ffff);
+	}
+
+	// FLASH access
+    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))			
+	{
+		return getp(tihw.rom, adr, tihw.rom_size - 1);
+	}
+
+	// memory-mapped I/O
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
+	{
+		return getp(tihw.io, adr, 32 - 1);
+	}
+
+	// memory-mapped I/O (hw2)
+	else if(IN_RANGE(adr, 0x700000, 64))
+	{
+		return getp(tihw.io2, adr, 64 - 1);
+	}
+
+	// memory-mapped I/O (hw3)
+	else if(IN_RANGE(adr, 0x710000, 256))
+	{
+		return getp(tihw.io3, adr, 256 - 1);
+	}
+
+	return tihw.unused;
 }
 
 uint32_t ti89t_get_long(uint32_t adr) 

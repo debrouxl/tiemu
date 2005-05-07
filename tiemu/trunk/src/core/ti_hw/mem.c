@@ -72,7 +72,7 @@ uint32_t mem_msk[16];		// pseudo chip-select (allow wrapping / ghost space)
 // e00000-efffff :   ...
 // d00000-ffffff : unused
 
-static GETBYTE_FUNC	get_byte_ptr;
+static GETBYTE_FUNC	get_byte_ptr;	// set on memXX.c or hwprot.c
 static GETWORD_FUNC	get_word_ptr;
 static GETLONG_FUNC	get_long_ptr;
 
@@ -80,13 +80,15 @@ static PUTBYTE_FUNC	put_byte_ptr;
 static PUTWORD_FUNC	put_word_ptr;
 static PUTLONG_FUNC	put_long_ptr;
 
-GETBYTE_FUNC	mem_get_byte_ptr;
+GETBYTE_FUNC	mem_get_byte_ptr;	// set by memXX.c:tiXX_mem_init
 GETWORD_FUNC	mem_get_word_ptr;
 GETLONG_FUNC	mem_get_long_ptr;
 
 PUTBYTE_FUNC	mem_put_byte_ptr;
 PUTWORD_FUNC	mem_put_word_ptr;
 PUTLONG_FUNC	mem_put_long_ptr;
+
+REALADR_FUNC	mem_get_real_addr_ptr;
 
 /* Mem init/exit */
 
@@ -148,7 +150,7 @@ int hw_mem_init(void)
     case TI92:  ti92_mem_init();  break;
     case TI92p: ti92p_mem_init(); break;
     case TI89:  ti89_mem_init();  break;
-    case V200:  tiv2_mem_init();  break;
+    case V200:  v200_mem_init();  break;
     case TI89t: ti89t_mem_init(); break;
     default: break;
     }
@@ -220,10 +222,9 @@ int hw_mem_exit(void)
     return 0;
 }
 
-// Use: converts m68k address into PC-mapped address
-uint8_t* hw_get_real_address(uint32_t adr) 
+uint8_t* hw_get_real_address(uint32_t adr)
 {
-    return &mem_tab[(adr>>20)&0xf][adr&mem_msk[(adr>>20)&0xf]];
+	return mem_get_real_addr_ptr(adr);
 }
 
 uint32_t hw_get_long(uint32_t adr) 

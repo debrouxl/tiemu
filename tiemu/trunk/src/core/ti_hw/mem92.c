@@ -26,6 +26,7 @@
 
 /*
     Memory management: TI92 ROM v1.x & v2.x
+	Some values may be hard-coded for performance reasons !
 */
 
 #include <stdlib.h>
@@ -96,7 +97,32 @@ int ti92_mem_init(void)
 	mem_put_word_ptr = ti92_put_word;
 	mem_put_long_ptr = ti92_put_long;
 
+	mem_get_real_addr_ptr = ti92_get_real_addr;
+
     return 0;
+}
+
+uint8_t* ti92_get_real_addr(uint32_t adr)
+{
+	// RAM access
+	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
+	{
+		return getp(tihw.ram, adr, tihw.ram_size - 1);
+	}
+
+    // PROM access
+	else if(IN_RANGE(adr, tihw.rom_base, 2*MB))
+	{
+		return getp(tihw.rom, adr, tihw.rom_size - 1);
+	}
+
+    // memory-mapped I/O
+	else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
+	{
+        return getp(tihw.io, adr, 32 - 1);
+	}
+
+    return tihw.unused;
 }
 
 uint32_t ti92_get_long(uint32_t adr) 

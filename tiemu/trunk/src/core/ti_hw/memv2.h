@@ -31,14 +31,16 @@
 
 /* Functions */
 
-int tiv2_mem_init(void);
+int v200_mem_init(void);
 
-uint8_t  tiv2_get_byte(uint32_t addr);
-uint16_t tiv2_get_word(uint32_t addr);
-uint32_t tiv2_get_long(uint32_t addr);
+uint8_t  v200_get_byte(uint32_t addr);
+uint16_t v200_get_word(uint32_t addr);
+uint32_t v200_get_long(uint32_t addr);
 
-void tiv2_put_long(uint32_t addr, uint32_t arg);
-void tiv2_put_word(uint32_t addr, uint16_t arg);
-void tiv2_put_byte(uint32_t addr, uint8_t  arg);
+void v200_put_long(uint32_t addr, uint32_t arg);
+void v200_put_word(uint32_t addr, uint16_t arg);
+void v200_put_byte(uint32_t addr, uint8_t  arg);
+
+uint8_t* v200_get_real_addr(uint32_t addr);
 
 #endif

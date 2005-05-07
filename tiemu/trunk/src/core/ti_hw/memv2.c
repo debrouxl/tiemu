@@ -25,7 +25,7 @@
 
 /*
     Memory management: V200 FLASH without Hardware Protection
-	Except for ti92p_mem_init/tiv2_mem_init, code is the same.
+	Some values may be hard-coded for performance reasons !
 */
 
 #include <stdlib.h>
@@ -46,9 +46,9 @@
 
 // 000000-0fffff : RAM (256 KB)
 // 100000-1fffff : ghost of RAM
-// 200000-2fffff : internal FLASH (TIv2/V200)
+// 200000-2fffff : internal FLASH (v200/V200)
 // 300000-3fffff : 
-// 400000-4fffff : internal FLASH (V200) or nothing (TIv2)
+// 400000-4fffff : internal FLASH (V200) or nothing (v200)
 // 500000-5fffff : 
 // 600000-6fffff : memory mapped I/O (all HW)
 // 700000-7fffff : memory mapped I/O (HW2, HW3)
@@ -61,7 +61,7 @@
 // e00000-efffff :   ...
 // d00000-ffffff : unused
 
-int tiv2_mem_init(void)
+int v200_mem_init(void)
 {
     // map RAM
     mem_tab[0] = tihw.ram;
@@ -93,17 +93,48 @@ int tiv2_mem_init(void)
 	}
 
 	// set mappers
-	mem_get_byte_ptr = tiv2_get_byte;
-	mem_get_word_ptr = tiv2_get_word;
-	mem_get_long_ptr = tiv2_get_long;
-	mem_put_byte_ptr = tiv2_put_byte;
-	mem_put_word_ptr = tiv2_put_word;
-	mem_put_long_ptr = tiv2_put_long;
+	mem_get_byte_ptr = v200_get_byte;
+	mem_get_word_ptr = v200_get_word;
+	mem_get_long_ptr = v200_get_long;
+	mem_put_byte_ptr = v200_put_byte;
+	mem_put_word_ptr = v200_put_word;
+	mem_put_long_ptr = v200_put_long;
+
+	mem_get_real_addr_ptr = v200_get_real_addr;
 
     return 0;
 }
 
-uint32_t tiv2_get_long(uint32_t adr) 
+uint8_t* v200_get_real_addr(uint32_t adr)
+{
+	// RAM access
+	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
+	{
+		return getp(tihw.ram, adr, tihw.ram_size - 1);
+	}
+
+	// FLASH access
+	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
+	{
+		return getp(tihw.rom, adr-0x200000, tihw.rom_size - 1);
+	}
+
+	// memory-mapped I/O
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
+	{
+		return getp(tihw.io, adr, 32 - 1);
+	}
+
+	// memory-mapped I/O (hw2)
+	else if(IN_RANGE(adr, 0x700000, 32))
+	{
+		return getp(tihw.io2, adr, 32 - 1);
+	}
+
+	return tihw.unused;
+}
+
+uint32_t v200_get_long(uint32_t adr) 
 {
 	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
@@ -132,7 +163,7 @@ uint32_t tiv2_get_long(uint32_t adr)
     return 0x14141414;
 }
 
-uint16_t tiv2_get_word(uint32_t adr) 
+uint16_t v200_get_word(uint32_t adr) 
 {
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
@@ -161,7 +192,7 @@ uint16_t tiv2_get_word(uint32_t adr)
     return 0x1414;
 }
 
-uint8_t tiv2_get_byte(uint32_t adr) 
+uint8_t v200_get_byte(uint32_t adr) 
 {    
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
@@ -190,7 +221,7 @@ uint8_t tiv2_get_byte(uint32_t adr)
     return 0x14;
 }
 
-void tiv2_put_long(uint32_t adr, uint32_t arg) 
+void v200_put_long(uint32_t adr, uint32_t arg) 
 {
 	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
@@ -219,7 +250,7 @@ void tiv2_put_long(uint32_t adr, uint32_t arg)
     return;
 }
 
-void tiv2_put_word(uint32_t adr, uint16_t arg) 
+void v200_put_word(uint32_t adr, uint16_t arg) 
 {
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
@@ -248,7 +279,7 @@ void tiv2_put_word(uint32_t adr, uint16_t arg)
     return;
 }
 
-void tiv2_put_byte(uint32_t adr, uint8_t arg) 
+void v200_put_byte(uint32_t adr, uint8_t arg) 
 {
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))

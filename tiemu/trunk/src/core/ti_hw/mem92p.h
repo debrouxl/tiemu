@@ -41,4 +41,6 @@ void ti92p_put_long(uint32_t addr, uint32_t arg);
 void ti92p_put_word(uint32_t addr, uint16_t arg);
 void ti92p_put_byte(uint32_t addr, uint8_t  arg);
 
+uint8_t* ti92p_get_real_addr(uint32_t addr);
+
 #endif
