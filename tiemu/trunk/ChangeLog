@@ -2,8 +2,7 @@ SubVersion: $Id$
 
 To do:
 	- video scaling
-	- link port is broken (HW2 only ?!)
-	- stealth I/O and mem protect (done but not enabled)
+	- ti68k_def.h: l37 (uchar) to remove
 
 - 06/05/2005, version 1.80v:
 	- [roms]  $1248: changed rom_base from 0x20 to 0x200000 whenever applicable

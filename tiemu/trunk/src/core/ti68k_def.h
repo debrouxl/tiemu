@@ -34,7 +34,7 @@
 #include <glib.h>
 
 #include "tilibs.h"
-#include <stdint.h>	// pn of inclusion ?
+#include <stdint.h>
 
 typedef unsigned char	uchar;	// can't replace UBYTE/uchar by uint8_t type, why ?
 

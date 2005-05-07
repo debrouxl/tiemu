@@ -69,7 +69,7 @@ void set_prescaler(int);
 
 void io_put_byte(uint32_t addr, uint8_t arg)
 {
-	addr &= tihw.io_size-1;
+	addr &= 31;	//tihw.io_size-1;
 
     switch(addr) 
     {
@@ -237,7 +237,7 @@ uint8_t io_get_byte(uint32_t addr)
 {
     int v;
 	
-	addr &= tihw.io_size-1;
+	addr &= 31;	//tihw.io_size-1;
 	v = tihw.io[addr];
 
     switch(addr) 
