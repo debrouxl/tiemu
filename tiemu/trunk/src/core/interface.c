@@ -45,6 +45,7 @@
 
 #include "ti68k_int.h"
 #include "ti68k_err.h"
+#include "mem_size.h"
 
 
 /**********************/
@@ -188,12 +189,12 @@ int ti68k_linkport_reconfigure(void)
 /* Misc functions */
 /******************/
 
-const int ti_rom_sizes[] = { 1*MB, 2*MB, 2*MB, 4*MB, 4*MB };	// 92, 89, 92+, V200, TI89 Titanium
-const int ti_ram_sizes[] = { 256*KB, 256*KB, 256*KB, 256*KB, 256*KB }; // should be 128
-const int ti_io_sizes[] = { 32, 32, 32, 32, 64 };
-const int ti_io2_sizes[] = { 32, 32, 32, 32, 128*KB /*64*/ };
-const int ti_io3_sizes[] = { 1, 1, 1, 1, 256 };	// 1 instead of 0
-const int ti_rom_base[] = { 0, 0x200000, 0x400000, 0x200000, 0x800000 };
+const int ti_rom_base[]  = { ROM_BASE_TI92_I, ROM_BASE_TI89, ROM_BASE_TI92P, ROM_BASE_V200, ROM_BASE_TI89T };
+const int ti_rom_sizes[] = { ROM_SIZE_TI92_I, ROM_SIZE_TI89, ROM_SIZE_TI92P, ROM_SIZE_V200, ROM_SIZE_TI89T };
+const int ti_ram_sizes[] = { RAM_SIZE_TI92_I, RAM_SIZE_TI89, RAM_SIZE_TI92P, RAM_SIZE_V200, RAM_SIZE_TI89T };
+const int ti_io_sizes[]  = { IO1_SIZE_TI92_I, IO1_SIZE_TI89, IO1_SIZE_TI92P, IO1_SIZE_V200, IO1_SIZE_TI89T };
+const int ti_io2_sizes[] = { IO2_SIZE_TI92_I, IO2_SIZE_TI89, IO2_SIZE_TI92P, IO2_SIZE_V200, IO2_SIZE_TI89T };
+const int ti_io3_sizes[] = { IO3_SIZE_TI92_I, IO3_SIZE_TI89, IO3_SIZE_TI92P, IO3_SIZE_V200, IO3_SIZE_TI89T };
 
 static int log_b2(int i)
 {
