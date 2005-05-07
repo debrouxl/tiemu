@@ -1,0 +1,433 @@
+# This file is CYGNUS LOCAL.  It is a copy of makefile.vc modified for
+# GNU make.
+#  
+# Visual C++ 4.0 makefile
+#
+# Copyright (c) 1993-1996 Lucent Technologies
+#
+# See the file "license.terms" for information on usage and redistribution
+# of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+VPATH = @srcdir@:@srcdir@/../generic:@srcdir@/../unix
+srcdir = @srcdir@
+libdir=@libdir@
+bindir=@bindir@
+includedir=@includedir@
+mandir=@mandir@
+datadir=@datadir@
+
+CC = @CC@
+CFLAGS = @CFLAGS@
+NM = @NM@
+AS = @AS@
+LD = @LD@
+DLLTOOL = @DLLTOOL@
+WINDRES = @WINDRES@
+OBJEXT = @OBJEXT@
+
+DLL_LDFLAGS = @DLL_LDFLAGS@
+DLL_LDLIBS  = @DLL_LDLIBS@
+
+INSTALL		=	@INSTALL@
+INSTALL_PROGRAM =	@INSTALL_PROGRAM@
+INSTALL_DATA	=	@INSTALL_DATA@
+
+#
+# Project directories
+#
+# ROOT    = top of source tree
+#
+# TMPDIR  = location where .obj files should be stored during build
+#
+
+ROOT		= @ITK_SRC_DIR@
+TMPDIR		= .
+
+TCLLIBDIR	= @TCL_BIN_DIR@
+TKLIBDIR	= @TK_BIN_DIR@
+ITCLLIBDIR	= @ITCL_BIN_DIR@
+
+TCLSRCDIR     = @TCL_SRC_DIR@
+TKSRCDIR      = @TK_SRC_DIR@
+ITCLSRCDIR    = @ITCL_SRC_DIR@
+
+
+SRC_INC_DIR	=	$(ROOT)/generic
+SRC_WIN_DIR	=	$(ROOT)/win
+SRC_UNIX_DIR	=	$(ROOT)/unix
+SRC_LIB_DIR	=	$(ROOT)/library
+SRC_MAN_DIR	=	$(ROOT)/doc
+
+#
+# Here are all the built files we will need:
+#
+
+ITCL_VERSION = @ITCL_VERSION@
+VERSION = 30
+
+CYGITKLIB	= @CYGITKLIB@
+CYGITKDLL	= @CYGITKDLL@
+CYGITKWISH	= @CYGITKWISH@
+CYGITKDEF	= @CYGITKDEF@
+CYGITKTEST	= @CYGITKTEST@
+CYGIMPORTLIB	= @CYGIMPORTLIB@
+CYGITKRES	= @CYGITKRES@
+CYGITKWISHRES	= @CYGITKWISHRES@
+
+SNITKLIB	= @SNITKLIB@
+SNITKDLL	= @SNITKDLL@
+SNITKWISH	= @SNITKWISH@
+SNITKDEF	= @SNITKDEF@
+SNITKTEST	= @SNITKTEST@
+SNIMPORTLIB	= @SNIMPORTLIB@
+SNITKRES	= @SNITKRES@
+SNITKWISHRES	= @SNITKWISHRES@
+
+ITKLIB		= @ITKLIB@
+ITKDLL		= @ITKDLL@
+ITKWISH		= @ITKWISH@
+ITKDEF		= @ITKDEF@
+ITKTEST		= @ITKTEST@
+ITKIMPORTLIB	= @ITKIMPORTLIB@
+ITKRES		= @ITKRES@
+ITKWISHRES	= @ITKWISHRES@
+
+
+# Directory in which to install the library of Itcl scripts and demos
+# (note: you can set the ITK_LIBRARY environment variable at run-time to
+# override the compiled-in location):
+ITK_LIBRARY =	$(prefix)/share/itk$(ITCL_VERSION)
+
+# Directory in which to install the archive libitcl.a:
+INSTALL_LIB_DIR =	$(libdir)
+
+# Directory in which to install the program itclsh:
+INSTALL_BIN_DIR =	$(bindir)
+
+# Directory in which to install the include file itcl.h:
+INSTALL_INCLUDE_DIR =	$(includedir)
+
+# Top-level directory for manual entries:
+INSTALL_MAN_DIR =	$(mandir)
+
+# Directory in which to install manual entry for itclsh:
+INSTALL_MAN1_DIR =	$(INSTALL_MAN_DIR)/man1
+
+# Directory in which to install manual entries for Itcl's C library
+# procedures:
+INSTALL_MAN3_DIR =	$(INSTALL_MAN_DIR)/man3
+
+# Directory in which to install manual entries for the built-in
+# Tcl commands implemented by Itcl:
+INSTALL_MANN_DIR =	$(INSTALL_MAN_DIR)/mann
+
+
+# Comment the following line to compile with symbols
+NODEBUG=1
+
+# uncomment the following two lines to compile with TCL_MEM_DEBUG
+#DEBUGDEFINES	= -DTCL_MEM_DEBUG
+
+ITKWISHOBJS = \
+	$(TKLIBDIR)/tkConsole.$(OBJEXT) \
+	$(TMPDIR)/winMain.$(OBJEXT)
+
+TKTESTOBJS = \
+	$(TMPDIR)/tkConsole.$(OBJEXT) \
+	$(TMPDIR)/tkTest.$(OBJEXT) \
+	$(TMPDIR)/tkSquare.$(OBJEXT) \
+	$(TMPDIR)/testMain.$(OBJEXT)
+
+ITKOBJS = \
+	$(TMPDIR)/itk_archetype.$(OBJEXT) \
+	$(TMPDIR)/itk_cmds.$(OBJEXT) \
+	$(TMPDIR)/itk_option.$(OBJEXT) \
+	$(TMPDIR)/itk_util.$(OBJEXT) \
+	$(TMPDIR)/dllEntryPoint.$(OBJEXT)
+
+DUMPEXTS = $(TCLLIBDIR)/dumpexts.exe
+
+TCLLIB		= @TCL_LIB_FILE@
+TCL_BUILD_LIB_SPEC = @TCL_BUILD_LIB_SPEC@
+TCL_LIB_FULL_PATH = @TCL_LIB_FULL_PATH@
+TKLIB		= @TK_LIB_FILE@
+TK_BUILD_LIB_SPEC = @TK_BUILD_LIB_SPEC@
+TK_LIB_FULL_PATH = @TK_LIB_FULL_PATH@
+ITCLLIB		= @ITCL_LIB_FILE@
+ITCL_BUILD_LIB_SPEC = @ITCL_BUILD_LIB_SPEC@
+ITCL_LIB_FULL_PATH = @ITCL_LIB_FULL_PATH@
+
+TCL_INCLUDES  = -I$(TCLSRCDIR)/generic -I$(TCLSRCDIR)/win
+TK_INCLUDES   = -I$(TKSRCDIR)/generic -I$(TKSRCDIR)/win -I$(TKSRCDIR)/xlib
+ITCL_INCLUDES = -I$(ITCLSRCDIR)/generic -I$(ITCLSRCDIR)/win
+ITK_INCLUDES  = -I$(SRC_INC_DIR) -I$(SRC_WIN_DIR) $(ITCL_INCLUDES) \
+		$(TCL_INCLUDES) $(TK_INCLUDES) 
+
+ITK_DEFINES	= -D__WIN32__ $(DEBUGDEFINES) -DDLL_BUILD -DBUILD_itk -D_DLL
+ITK_CFLAGS	= $(ITK_INCLUDES) $(ITK_DEFINES) $(CFLAGS)
+
+CPU		   = i386
+
+######################################################################
+# Link flags
+######################################################################
+
+conlflags = -Wl,--subsystem,console -mwindows
+guilflags = -mwindows
+dlllflags =
+
+baselibs   = @BASELIBS@
+winlibs	   = @WINLIBS@
+libcdll	   = @LIBCDLL@
+
+guilibs	   = $(baselibs) $(winlibs)
+conlibs	   = $(baselibs)
+guilibsdll = $(libcdll) $(baselibs) $(winlibs)
+conlibsdll = $(libcdll) $(baselibs)
+
+#
+# Targets
+#
+
+release:  $(ITKDLL) $(ITKWISH) $(ITKLIB)
+all:	    $(ITKDLL) $(ITKWISH) $(ITKLIB)
+test:	    $(ITKWISH)
+	$(CP) $(TCLLIBDIR)\*.dll
+	$(ITKWISH) <<
+		cd ../tests
+		source all
+
+$(TMPDIR)/$(CYGITKDEF): $(ITKOBJS)
+	echo 'EXPORTS' > tmp.def
+	-for o in $(ITKOBJS); do \
+	  $(NM) --extern-only --defined-only $$o | sed -e 's/[^ ]* [^ ]* //' -e 's/^_//' | fgrep -v DllEntryPoint | fgrep -v DllMain | fgrep -v impure_ptr >> tmp.def; \
+	done
+	mv tmp.def $(TMPDIR)/$(CYGITKDEF)
+
+$(CYGITKDLL): $(ITKOBJS) $(TMPDIR)/$(CYGITKDEF) $(TMPDIR)/$(CYGITKRES)
+	$(CC) -s $(DLL_LDFLAGS) -Wl,--base-file,itk.base  \
+		-o $(CYGITKDLL) $(ITKOBJS)  $(TMPDIR)/$(CYGITKRES) \
+		$(TKLIBDIR)/$(TKLIB) $(ITCLLIBDIR)/$(ITCLLIB) $(TCLLIBDIR)/$(TCLLIB) \
+		$(DLL_LDLIBS) -mwindows  -Wl,-e,_DllMain@12  \
+		-Wl,--image-base,0x66800000
+	$(DLLTOOL) --as=$(AS) --dllname $(CYGITKDLL) --def $(TMPDIR)/$(CYGITKDEF) \
+		--base-file itk.base --output-exp itk.exp
+	$(CC) -s $(DLL_LDFLAGS) -Wl,--base-file,itk.base -Wl,itk.exp \
+		-o $(CYGITKDLL) $(ITKOBJS)  \
+		$(TKLIBDIR)/$(TKLIB) $(ITCLLIBDIR)/$(ITCLLIB) $(TCLLIBDIR)/$(TCLLIB) \
+		$(DLL_LDLIBS) -mwindows -Wl,-e,_DllMain@12 \
+		-Wl,--image-base,0x66800000
+	$(DLLTOOL) --as=$(AS) --dllname $(ITKDLL) --def $(TMPDIR)/$(CYGITKDEF) \
+		--base-file itk.base --output-exp itk.exp
+	$(CC) $(DLL_LDFLAGS) -Wl,itk.exp -o $(CYGITKDLL) $(ITKOBJS) \
+		$(TKLIBDIR)/$(TKLIB) $(ITCLLIBDIR)/$(ITCLLIB) $(TCLLIBDIR)/$(TCLLIB) \
+		$(DLL_LDLIBS) -mwindows \
+		-Wl,-e,_DllMain@12 -Wl,--image-base,0x66800000
+
+$(CYGITKLIB): $(TMPDIR)/$(CYGITKDEF)
+	$(DLLTOOL) --as=$(AS) --dllname $(ITKDLL) --def $(TMPDIR)/$(CYGITKDEF) \
+		--output-lib $(CYGITKLIB)
+
+$(CYGITKWISH): $(ITKWISHOBJS) $(CYGITKLIB) $(TMPDIR)/$(CYGITKWISHRES)
+	$(CC) $(ldebug) $(guilflags) $(ITKWISHOBJS) $(ITK_CFLAGS) $(TMPDIR)/$(CYGITKWISHRES) \
+		$(ITKLIB) $(TKLIBDIR)/$(TKLIB) \
+		$(ITCLLIBDIR)/$(ITCLLIB) $(TCLLIBDIR)/$(TCLLIB) \
+		$(guilibsdll) \
+		-o $(CYGITKWISH)
+ 
+$(CYGITKTEST): $(ITKTESTOBJS) $(CYGITKLIB) $(TMPDIR)/$(CYGITKWISHRES)
+	$(CC) $(ldebug) $(guilflags) $(WISHOBJS) $(ITK_CFLAGS) $(TMPDIR)/$(CYGITKWISHRES) \
+		$(CYGITKLIB) $(TKLIBDIR)/$(TKLIB) \
+		$(ITCLLIBDIR)/$(ITCLLIB) $(TCLLIBDIR)/$(TCLLIB) \
+		$(guilibsdll) \
+		-o $(CYGITKTEST)
+
+$(TMPDIR)/$(CYGITKRES): $(ROOT)/win/rc/itk.rc
+	$(WINDRES) --include $(ROOT)/win/rc --include $(ROOT)/generic \
+		--include $(ITCLSRCDIR)/generic \
+		--include $(TCLSRCDIR)/generic --include $(TKSRCDIR)/generic \
+		--define VS_VERSION_INFO=1 $(ROOT)/win/rc/itk.rc $(TMPDIR)/$(CYGITKRES)
+
+$(TMPDIR)/$(CYGITKWISHRES): $(ROOT)/win/rc/itkwish.rc
+	$(WINDRES) --include $(ROOT)/win/rc --include $(ITCLSRCDIR)/generic \
+		--include $(TCLSRCDIR)/generic --include $(TKSRCDIR)/generic\
+		--include $(ROOT)/generic --define VS_VERSION_INFO=1  \
+		$(ROOT)/win/rc/itkwish.rc $(TMPDIR)/$(CYGITKWISHRES)
+
+# Visual C++ specific targets
+
+$(TMPDIR)/$(SNITKDEF): $(DUMPEXTS) $(ITKOBJS)
+	$(DUMPEXTS) -o $@ $(SNITKDLL) $(ITKOBJS)
+
+$(SNITKDLL): $(ITKOBJS) $(TMPDIR)/$(SNITKDEF) $(TMPDIR)/$(SNITKRES) $(TCL_LIB_FULL_PATH) \
+		$(TK_LIB_FULL_PATH) $(ITCL_LIB_FULL_PATH)
+	link.exe -DEBUG -dll -def:$(TMPDIR)/$(SNITKDEF) -NODEFAULTLIB \
+		-out:$(SNITKDLL) $(guilibsdll) $(ITKOBJS) $(TMPDIR)/$(SNITKRES) \
+		$(TCL_BUILD_LIB_SPEC) $(TK_BUILD_LIB_SPEC) $(ITCL_BUILD_LIB_SPEC)
+
+$(SNITKLIB) $(SNIMPORTLIB):
+	cp $(SNIMPORTLIB) $(SNITKLIB)
+
+$(SNITKWISH): $(ITKWISHOBJS) $(SNITKLIB) $(TMPDIR)/$(SNITKWISHRES) $(TCL_LIB_FULL_PATH) \
+		$(TK_LIB_FULL_PATH) $(ITCL_LIB_FULL_PATH)
+	link.exe -DEBUG -NODEFAULTLIB -entry:WinMainCRTStartup \
+		-out:$@ $(guilibsdll) $(ITKWISHOBJS) $(TMPDIR)/$(SNITKWISHRES) \
+		$(SNITKLIB) $(TCL_BUILD_LIB_SPEC) $(TK_BUILD_LIB_SPEC) \
+		$(ITCL_BUILD_LIB_SPEC)
+
+$(SNITKTEST): $(ITKWISHOBJS) $(ITCLTESTOBJS) $(SNITKLIB) $(TMPDIR)/$(SNITKWISHRES) \
+		$(TCL_LIB_FULL_PATH) $(TK_LIB_FULL_PATH) $(ITCL_LIB_FULL_PATH)
+	link.exe -DEBUG -NODEFAULTLIB -entry:WinMainCRTStartup \
+		-out $@ $(guilibsdll) $(ITKWISHOBJS) $(TMPDIR)/$(SNITKWISHRES) \
+		$(SNITKLIB) $(TCL_BUILD_LIB_SPEC) $(TK_BUILD_LIB_SPEC) \
+		$(ITCL_BUILD_LIB_SPEC)
+
+$(TMPDIR)/$(SNITKWISHRES):: $(SRC_WIN_DIR)/rc/itkwish.rc
+	rc $(ITK_INCLUDES) -d__WIN32__ -dVS_VERSION_INFO=1 -fo$@ $?
+
+$(TMPDIR)/$(SNITKRES):: $(SRC_WIN_DIR)/rc/itk.rc
+	rc $(ITK_INCLUDES) -d__WIN32__ -dVS_VERSION_INFO=1 -fo$@ $?
+ 
+#
+# Special case object file targets
+#
+
+$(TMPDIR)/testMain.$(OBJEXT): $(ROOT)/win/winMain.c
+	$(CC) -c $(ITK_CFLAGS) -DTCL_TEST -DTK_TEST -DSTATIC_BUILD -o $@ $?
+
+$(TMPDIR)/winMain.$(OBJEXT): $(ROOT)/win/winMain.c
+	$(CC) -c $(ITK_CFLAGS) -DSTATIC_BUILD -o $@ $?
+
+#
+# Implicit rules
+#
+
+$(TMPDIR)/%.$(OBJEXT): $(SRC_INC_DIR)/%.c
+	$(CC) -c $(ITK_CFLAGS) -o $@ $<
+
+$(TMPDIR)/%.$(OBJEXT): $(SRC_WIN_DIR)/%.c
+	$(CC) -c $(ITK_CFLAGS) -o $@ $<
+
+clean:
+
+	rm -f $(TMPDIR)/*.$(OBJEXT) $(TMPDIR)/*.exp $(TMPDIR)/*.def 
+	rm -f $(ITKLIB) $(ITKDLL) $(ITKDLL) $(ITKWISH)
+
+
+Makefile: $(srcdir)/Makefile.in config.status
+	$(SHELL) config.status
+
+config.status: $(srcdir)/configure
+	./config.status --recheck
+
+#----------------------------------------------------------------------
+#
+#			Installation
+#
+#----------------------------------------------------------------------
+
+
+install:: install-basic install-binaries
+	@echo done
+
+install-binaries::
+	@for i in $(INSTALL_LIB_DIR) $(INSTALL_BIN_DIR) ; \
+	    do \
+	    if [ ! -d $$i ] ; then \
+		echo "Making directory $$i"; \
+		mkdir $$i; \
+		chmod 755 $$i; \
+		else true; \
+		fi; \
+	    done;
+	@echo "Installing $(ITKLIB) as $(INSTALL_LIB_DIR)/$(ITKLIB)"
+	@$(INSTALL_DATA) $(ITKLIB) $(INSTALL_LIB_DIR)/$(ITKLIB)
+	@echo "Installing $(ITKWISH) as $(INSTALL_BIN_DIR)/$(ITKWISH)"
+	@$(INSTALL_PROGRAM) $(ITKWISH) $(INSTALL_BIN_DIR)/$(ITKWISH)
+	@echo "Installing $(ITKDLL) as $(INSTALL_BIN_DIR)/$(ITKDLL)"
+	@$(INSTALL_PROGRAM) $(ITKDLL) $(INSTALL_BIN_DIR)/$(ITKDLL)
+
+#
+# Basic installation
+#
+install-basic:: install-libraries install-headers  \
+	install-man
+
+
+install-headers:
+	@for i in $(INSTALL_INCLUDE_DIR); \
+	    do \
+	    if [ ! -d $$i ] ; then \
+		echo "Making directory $$i"; \
+		mkdir $$i; \
+		chmod 755 $$i; \
+		else true; \
+		fi; \
+	    done;
+	@for i in $(SRC_INC_DIR)/itk.h; \
+	    do \
+	    echo "Installing $$i"; \
+	    $(INSTALL_DATA) $$i $(INSTALL_INCLUDE_DIR); \
+	    done;
+
+install-libraries: install-shared-libraries
+	@for i in $(prefix)/lib $(ITK_LIBRARY); \
+	    do \
+	    if [ ! -d $$i ] ; then \
+		echo "Making directory $$i"; \
+		mkdir $$i; \
+		chmod 755 $$i; \
+		else true; \
+		fi; \
+	    done;
+	@for i in $(SRC_LIB_DIR)/*.tcl $(SRC_LIB_DIR)/*.itk; \
+	    do \
+	    echo "Installing $$i"; \
+	    $(INSTALL_DATA) $$i $(ITK_LIBRARY); \
+	    done;
+
+	@echo "Installing pkgIndex.tcl"
+	@$(INSTALL_DATA) $(srcdir)/pkgIndex.tcl $(ITK_LIBRARY)
+
+	@echo "Installing tclIndex"
+	@$(INSTALL_DATA) $(SRC_LIB_DIR)/tclIndex $(ITK_LIBRARY)
+
+install-shared-libraries:
+	@echo "Installing $(ITKDLL) as $(INSTALL_BIN_DIR)/$(ITKDLL)"
+	@$(INSTALL_PROGRAM) $(ITKDLL) $(INSTALL_BIN_DIR)/$(ITKDLL)
+
+install-man:
+	@for i in $(INSTALL_MAN_DIR) $(INSTALL_MAN1_DIR) \
+	          $(INSTALL_MAN3_DIR) $(INSTALL_MANN_DIR) ; \
+	    do \
+	    if [ ! -d $$i ] ; then \
+		echo "Making directory $$i"; \
+		mkdir $$i; \
+		chmod 755 $$i; \
+		else true; \
+		fi; \
+	    done;
+	@cd $(SRC_MAN_DIR); for i in *.n ; \
+	    do \
+	    echo "Installing doc/$$i"; \
+	    rm -f $(INSTALL_MANN_DIR)/$$i; \
+	    sed -e '/man\.macros/r man.macros' -e '/man\.macros/d' \
+		    $$i > $(INSTALL_MANN_DIR)/$$i; \
+	    chmod 444 $(INSTALL_MANN_DIR)/$$i; \
+	    done; \
+	for i in *.1 ; \
+	    do \
+	    echo "Installing doc/$$i"; \
+	    rm -f $(INSTALL_MAN1_DIR)/$$i; \
+	    sed -e '/man\.macros/r man.macros' -e '/man\.macros/d' \
+		    $$i > $(INSTALL_MAN1_DIR)/$$i; \
+	    chmod 444 $(INSTALL_MAN1_DIR)/$$i; \
+	    done; 
+
+install-info info installcheck:
+
+install-minimal: install-libraries
+	@echo "Installing $(ITKDLL) as $(INSTALL_BIN_DIR)/$(ITKDLL)"
+	@$(INSTALL_PROGRAM) $(ITKDLL) $(INSTALL_BIN_DIR)/$(ITKDLL)
