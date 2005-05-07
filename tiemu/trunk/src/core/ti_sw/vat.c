@@ -37,7 +37,6 @@
 
 #include "handles.h"
 #include "vat.h"
-#include "timem.h"
 
 #if 0
 #define printg	printf
@@ -117,7 +116,6 @@ static int get_folder_list_handle(void)
 	int handle = -1;
 	uint16_t heap_size;
 	int h, i;
-	uint8_t buf[10];
 
 	// search for memory blocks which have a string at [5]
 	heap_get_size(&heap_size);
@@ -127,8 +125,7 @@ static int get_folder_list_handle(void)
 		uint16_t size;
 
 		heap_get_block_addr_and_size(h, &addr, &size);
-		mem_rd_block(addr + 4, buf, 10);
-		if(is_varname(buf))
+		if(is_varname(ti68k_get_real_address(addr + 4)))
 		{
 			// next, be sure we have found the folder list by comparing the number of (possible)
 			// folders with the number of identified folders
@@ -138,11 +135,8 @@ static int get_folder_list_handle(void)
 				break;
 
 			for(i = 0; i < nfolders; i++)
-			{
-				mem_rd_block(addr + 4 + i*sizeof(TI89_SYM_ENTRY), buf, 10);
-				if(!is_varname(buf))
+				if(!is_varname(ti68k_get_real_address(addr + 4 + i*sizeof(TI89_SYM_ENTRY))))
 					break;
-			}
 
 			if(i < nfolders)
 				return -1;
@@ -192,7 +186,7 @@ int parse_vat_89(GNode *node_top)
 		TI89_SYM_ENTRY se;
 		
 		// read struct
-		mem_rd_block(fa + i * sizeof(TI89_SYM_ENTRY), (uint8_t *)&se, sizeof(TI89_SYM_ENTRY));
+		memcpy(&se, ti68k_get_real_address(fa + i * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
 		se.handle = GUINT16_FROM_BE(se.handle);
 		printg("folder name: <%s>\n", se.name);
 
@@ -214,8 +208,7 @@ int parse_vat_89(GNode *node_top)
 			TI89_SYM_ENTRY se;
 
 			// read struct
-			
-			mem_rd_block(va + j * sizeof(TI89_SYM_ENTRY), (uint8_t *)&se, sizeof(TI89_SYM_ENTRY));
+			memcpy(&se, ti68k_get_real_address(va + j * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
 			se.handle = GUINT16_FROM_BE(se.handle);
 			printg("var name: <%s>\n", se.name);
 
@@ -277,7 +270,7 @@ int parse_vat_92(GNode *node_top)
 		TI92_SYM_ENTRY se;
 		
 		// read struct
-		mem_rd_block(fa + i * sizeof(TI92_SYM_ENTRY), (uint8_t *)&se, sizeof(TI92_SYM_ENTRY));
+		memcpy(&se, ti68k_get_real_address(fa + i * sizeof(TI92_SYM_ENTRY)), sizeof(TI92_SYM_ENTRY));
 		se.handle = GUINT16_FROM_BE(se.handle);
 		printg("folder name: <%s>\n", se.name);
 
@@ -299,8 +292,7 @@ int parse_vat_92(GNode *node_top)
 			TI92_SYM_ENTRY se;
 
 			// read struct
-	
-			mem_rd_block(va + j * sizeof(TI92_SYM_ENTRY), (uint8_t *)&se, sizeof(TI92_SYM_ENTRY));
+			memcpy(&se, ti68k_get_real_address(va + j * sizeof(TI92_SYM_ENTRY)), sizeof(TI92_SYM_ENTRY));
 			se.handle = GUINT16_FROM_BE(se.handle);
 			printg("var name: <%s>\n", se.name);
 
