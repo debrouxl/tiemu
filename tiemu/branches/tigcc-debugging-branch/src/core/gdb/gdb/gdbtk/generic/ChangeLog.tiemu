@@ -1,0 +1,5 @@
+2005-05-08  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk.c (gdbtk_init): Create Win32 commands under non-Cygwin as well.
+            Call FreeConsole on non-Cygwin Win32 as well.
+          (_initialize_gdbtk): Call AllocConsole on non-Cygwin Win32 as well.

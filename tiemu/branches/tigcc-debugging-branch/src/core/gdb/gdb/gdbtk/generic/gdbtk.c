@@ -524,7 +524,7 @@ gdbtk_init (void)
    * These are the commands to do some Windows Specific stuff...
    */
 
-#ifdef __CYGWIN32__
+#if defined(__CYGWIN__) || defined(_WIN32)
   if (ide_create_messagebox_command (gdbtk_interp) != TCL_OK)
     error ("messagebox command initialization failed");
   /* On Windows, create a sizebox widget command */
@@ -537,8 +537,10 @@ gdbtk_init (void)
   if (ide_create_win_grab_command (gdbtk_interp) != TCL_OK)
     error ("grab support command initialization failed");
   /* Path conversion functions.  */
+#ifdef __CYGWIN__
   if (ide_create_cygwin_path_command (gdbtk_interp) != TCL_OK)
     error ("cygwin path command initialization failed");
+#endif
   if (ide_create_shell_execute_command (gdbtk_interp) != TCL_OK)
     error ("cygwin shell execute command initialization failed");
 #endif
@@ -579,7 +581,7 @@ gdbtk_init (void)
       external_editor_command = NULL;
     }
 
-#ifdef __CYGWIN32__
+#if defined(__CYGWIN__) || defined(_WIN32)
   (void) FreeConsole ();
 #endif
 
@@ -685,7 +687,7 @@ _initialize_gdbtk ()
      insight is GOING to run. */
   if (strcmp (interpreter_p, "insight") == 0)
     deprecated_init_ui_hook = gdbtk_init_1;
-#ifdef __CYGWIN__
+#if defined(__CYGWIN__) || defined(_WIN32)
   else
     {
       DWORD ft = GetFileType (GetStdHandle (STD_INPUT_HANDLE));
@@ -698,6 +700,7 @@ _initialize_gdbtk ()
 	  break;
 	default:
 	  AllocConsole ();
+#ifdef __CYGWIN__
 	  cygwin32_attach_handle_to_fd ("/dev/conin", 0,
 					GetStdHandle (STD_INPUT_HANDLE),
 					1, GENERIC_READ);
@@ -707,6 +710,7 @@ _initialize_gdbtk ()
 	  cygwin32_attach_handle_to_fd ("/dev/conout", 2,
 					GetStdHandle (STD_ERROR_HANDLE),
 					0, GENERIC_WRITE);
+#endif
 	  break;
 	}
     }
