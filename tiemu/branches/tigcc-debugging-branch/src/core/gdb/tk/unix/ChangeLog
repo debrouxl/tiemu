@@ -1,0 +1,265 @@
+2002-07-15  Keith Seitz  <keiths@redhat.com>
+
+        From Mo DeJong  <supermo@bayarea.net>:
+        * configure.in: Use TCL_BUILD_STUB_LIB_SPEC instead of
+        TCL_STUB_LIB_SPEC when defining MAKE_LIB since we want to
+        link to the libtclstub in the build directory.
+        * configure: Regenerated.
+
+2002-02-09  Chris Demetriou  <cgd@broadcom.com>
+
+	* configure.in: When building for NetBSD host systems, tell
+	linker to provide RPATH for the X11 library directory.
+	* configure: Regenerate.
+
+2002-01-10  Keith Seitz  <keiths@redhat.com>
+
+	* unix/Makefile.in (TK_RANLIB): Renamed from just "RANLIB".
+	Changed all references to "RANLIB" to "TK_RANLIB" so that
+	toplevel Makefile doesn't override our own settings.
+
+2001-09-18  Ian Roxborough  <irox@redhat.com>
+
+	* Makefile.in: Fixed bad merge when installing
+	../doc/*.n man files.
+
+	* Makefile.in: Added TK_CFLAGS for flags that
+	shouldn't be supressed by the top level Makefile's
+	CFLAGS settings.
+	
+2001-02-13  Jeff Holcomb  <jeffh@redhat.com>
+
+	* configure.in: Use "*-*-solaris2*" so linking works correctly
+	on i386-pc-solaris machines.
+	* configure: Regenerated.
+
+Mon Aug 30 12:41:17 1999  Jeffrey A Law  (law@cygnus.com)
+
+	* configure.in: Do not force static linking for hpux11 in wide
+	mode since no static X libraries exist.
+	* configure: Rebuilt.
+
+Wed Jan  6 13:45:20 1999  Elena Zannoni  <ezannoni@kwikemart.cygnus.com>
+
+	* configure.in (TK_SHARED_LIB_FILE): init to dummy name.
+	(TK_UNSHARED_LIB_FILE): ditto.
+
+	* configure: regenerated.
+
+Thu Jul  9 14:35:35 1998  Felix Lee  <flee@cygnus.com>
+
+	* configure.in: typo.
+	* configure: rebuild.
+
+Tue Jul  7 16:59:07 1998  Felix Lee  <flee@cygnus.com>
+
+	* configure.in: Undo previous change, which didn't work right.
+  	Add specialcase to make static link of X work on solaris.
+	* configure: Rebuild.
+
+Wed Jun 17 11:40:56 1998  Felix Lee  <flee@cygnus.com>
+
+	* configure.in: When looking for the X libraries, set LDFLAGS to
+	find them statically if that is how we are going to link.
+	* configure: Rebuild.
+
+Mon Apr 13 17:55:38 1998  Ian Lance Taylor  <ian@cygnus.com>
+
+	* configure.in: Remove AC_REPLACE_FUNCS(memmove).
+	* Makefile.in (LIBOBJS): Remove variable.
+	(OBJS): Remove $(LIBOBJS).
+	(memmove.o): Remove target.
+	* configure: Rebuild.
+
+Mon Apr  6 20:07:55 1998  Ian Lance Taylor  <ian@cygnus.com>
+
+	* configure.in: Handle an empty x_libraries string correctly, in
+	case of Solaris when not using gcc.
+	* configure: Rebuild.
+
+Mon Dec 15 15:13:08 1997  Ian Lance Taylor  <ian@cygnus.com>
+
+	* tkUnixPort.h: Don't include <string.h> if _STRING is defined.
+
+	* configure.in: When checking for GNU ld on Solaris, don't
+	redirect stderr to /dev/null.
+	* configure: Rebuild.
+
+Thu Sep  4 20:03:38 1997  Ian Lance Taylor  <ian@cygnus.com>
+
+	* configure.in: If SHLIB_LD matches *gcc*, then don't remove the
+	-Wl from TK_LD_SEARCH_FLAGS.  Otherwise building shared libraries
+	fails on HP/UX.
+	* configure: Rebuild.
+
+Tue Oct 28 16:37:12 1997  Ian Lance Taylor  <ian@cygnus.com>
+
+	* Makefile.in (install-minimal): New target.
+
+Tue Oct 21 14:25:07 1997  Tom Tromey  <tromey@cygnus.com>
+
+	* tkUnixFont.c (TkpGetFontFamilies): Use XFreeFontNames, not
+	XFree.  From jkb@mrc-lmb.cam.ac.uk (James Bonfield).
+
+Wed Sep 17 13:43:58 1997  Tom Tromey  <tromey@cygnus.com>
+
+	* configure: Rebuilt.
+	* configure.in: Better error message if TCL_BIN_DIR can't be
+	found.
+
+Tue Aug  5 14:41:23 1997  Tom Tromey  <tromey@cygnus.com>
+
+	* configure: Rebuilt.
+	* configure.in: Preserved local changes.
+	* Makefile.in: Preserved local changes.
+	* mkLinks: Preserved local changes.
+
+Tue Jul  1 22:10:44 1997  Ian Lance Taylor  <ian@cygnus.com>
+
+	* configure.in: Fix -lnsl test.
+	* configure: Rebuild.
+
+Mon Jun 30 13:36:27 1997  Ian Lance Taylor  <ian@cygnus.com>
+
+	* configure.in: Rework check for socket libraries to use a cache
+	variable and to not set ac_cv_func cache variables
+	inappropriately.
+	* configure: Rebuild.
+
+Mon Jun  9 16:25:20 1997  Ian Lance Taylor  <ian@cygnus.com>
+
+	* tkConfig.sh.in: Set TK_BUILD_INCLUDES.
+	* configure.in: Set TK_BUILD_INCLUDES.
+	* configure: Rebuild.
+
+Fri May  9 09:26:51 1997  Tom Tromey  <tromey@cygnus.com>
+
+	* tkUnixPort.h (panic): Added prototype.  From Ian Taylor.
+
+Fri Apr 18 12:13:39 1997  Tom Tromey  <tromey@cygnus.com>
+
+	* configure: Regenerated.
+	* configure.in: Only statically link on Solaris if running GNU
+	ld.
+
+Thu Mar 13 10:40:55 1997  Tom Tromey  <tromey@cygnus.com>
+
+	* configure.in: Don't run AC_C_CROSS.
+	(AC_CONFIG_AUX_DIR): Look in srcdir.
+
+Sun Dec  8 23:07:48 1996  Martin Hunt <hunt@cygnus.com>
+
+	* Makefile.in (${TK_SHARED_LIB_FILE}): Don't run RANLIB on
+	shared libs.
+
+Mon Aug 26 09:44:57 1996  Tom Tromey  <tromey@creche.cygnus.com>
+
+	* Makefile.in: Use TK_SHARED_LIB_FILE, TK_UNSHARED_LIB_FILE.
+	* configure: Regenerated.
+	* configure.in: Introduct TK_SHARED_LIB_FILE and
+	TK_UNSHARED_LIB_FILE.
+
+	* configure: Regenerated.
+	* configure.in: AC_SUBST more variables so shared/unshared lib
+	targets can be separate.
+
+	* Makefile.in (libtk${TCL_SHARED_LIB_SUFFIX}): New target.
+	(libtk${TCL_SHARED_LIB_SUFFIX}): New target.
+
+Fri Aug 23 13:40:25 1996  Tom Tromey  <tromey@creche.cygnus.com>
+
+	* configure: Regenerated.
+	* configure.in: Suppress --enable-shared when statically linking
+	libX11.
+
+Wed Aug 14 09:21:16 1996  Tom Tromey  <tromey@creche.cygnus.com>
+
+	* Makefile.in (install-man): Man page permissions are 644, not
+	444.
+
+Mon Aug  5 10:47:45 1996  Tom Tromey  <tromey@creche.cygnus.com>
+
+	* Makefile.in (configure): Don't depend on configure.in.  Work
+	when not in srcdir.
+
+	* Makefile.in (config.status): New target.
+	(Makefile): Depend on config.status.
+
+Fri Aug  2 13:51:59 1996  Tom Tromey  <tromey@creche.cygnus.com>
+
+	* configure.in: Find Tcl source directory relative to $srcdir.
+	* configure: Regenerated.
+
+Wed Jun 26 12:51:49 1996  Jason Molenda  (crash@godzilla.cygnus.co.jp)
+
+	* Makefile.in (TK_LIBRARY, LIB_INSTALL_DIR, BIN_INSTALL_DIR,
+	BIN_DIR, INCLUDE_INSTALL_DIR, MAN_INSTALL_DIR): Use autoconf-set
+	values.
+	(install-libraries, install-demos): Use @datadir@ instead of 
+	hard-coded dirname.
+	* configure.in (AC_PREREQ): autoconf 2.5 or higher.
+	* configure: Rebuilt.
+
+Mon Jun 10 16:22:12 1996  Tom Tromey  <tromey@creche.cygnus.com>
+
+	* Makefile.in (install-binaries): Don't add version info to
+	installed wish.
+
+Tue Jun  4 17:57:46 1996  Gordon Irlam  <gordoni@snuffle.cygnus.com>
+
+	* install-sh: Add MIT copyright.
+
+Thu May  9 10:01:48 1996  Tom Tromey  <tromey@snuffle.cygnus.com>
+
+	* Makefile.in (CFLAGS): Set to @CFLAGS@.
+
+Wed May  8 08:57:06 1996  Tom Tromey  <tromey@snuffle.cygnus.com>
+
+	* configure: Regenerated.
+	* configure.in: In Solaris case, must link against libX11 twice.
+
+Tue May  7 11:22:10 1996  Tom Tromey  <tromey@snuffle.cygnus.com>
+
+	* configure: Regenerated.
+	* configure.in: Run AC_PROG_CC.
+
+	* mkLinks: Find man pages in section 3, not section n.
+
+	* Makefile.in (install-man): Install man pages in section 3, not
+	section n.
+
+	* mkLinks: Use cp, not ln.
+
+Tue Apr 23 13:13:59 1996  Tom Tromey  <tromey@creche.cygnus.com>
+
+	* Makefile.in (CC_SWITCHES): Define TK_LIB_TRAILER.
+	(TK_LIB_TRAILER): New macro.
+
+	* tkUnixInit.c (TkPlatformInit): Handle location independence.
+
+Fri Mar 29 08:23:15 1996  Tom Tromey  <tromey@creche.cygnus.com>
+
+	* mkLinks: Exit with status 0.
+
+Fri Mar  1 11:49:57 1996  Tom Tromey  <tromey@creche.cygnus.com>
+
+	* configure: Regenerated.
+	* configure.in: Use AC_CANONICAL_SYSTEM.  Look in Cygnus build
+	tree for config.sub and config.guess.
+
+Wed Jan 24 12:39:28 1996  Tom Tromey  <tromey@creche.cygnus.com>
+
+	* Makefile.in: Use maintainer-clean, not realclean.
+
+Thu Jan 11 09:13:11 1996  Tom Tromey  <tromey@creche.cygnus.com>
+
+	* configure.in: Look in ../../tcl, not ../../tcl7.5a.
+
+Wed Jan 10 12:09:58 1996  Tom Tromey  <tromey@creche.cygnus.com>
+
+	* configure.in: Use AC_CHECK_HEADERS, not AC_HAVE_HEADERS.
+
+	* Makefile.in (TCL_DIR): Look in tcl, not tcl7.5a2.
+	(TCL_BIN_DIR): Ditto.
+	(TCLDIR): Ditto.
+

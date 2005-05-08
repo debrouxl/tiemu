@@ -1,0 +1,14 @@
+
+	interp create x
+	x eval {set argc 2}
+	x eval {set argv "-geometry 10x10+0+0"}
+	x eval {load {} Tk}
+	x eval {
+	    button .b -text hello
+	    bind .b <Destroy> foo
+	}
+	x alias foo destroy_x
+	proc destroy_x {} {interp delete x}
+	update
+	exit
+    
