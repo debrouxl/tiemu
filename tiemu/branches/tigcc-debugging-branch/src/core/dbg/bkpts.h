@@ -100,6 +100,10 @@ typedef enum {
     BK_CAUSE_EXCEPTION, BK_CAUSE_PGMENTRY, BK_CAUSE_PROTECT
 } Ti68kBkptCause;
 
+#define DBG_BREAK   1	// user breakpoint
+#define DBG_TRACE   2	// trace (T)
+#define DBG_HWPV	3	// hardware protection violation
+
 /* Functions */
 
 int ti68k_bkpt_add_address(uint32_t address);

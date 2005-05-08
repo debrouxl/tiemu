@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.80s		(19/04/2005)
-Current version:  1.80t		(26/04/2005)
+Previous version: 1.80t		(26/04/2005)
+Current version:  1.80u		(05/05/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,27 +20,27 @@ For the other link cables, no driver is needed because it's provided.
 New capabilities:
 -----------------
 
-	- receiving of file(s) from TiEmu as single or group	
+	- added accelator key to select line & set PC on next line
 
 
 Improvements:
 -------------
 
-	- save main window position
-	- merged Christian Walther's patch for Mac OS-X port
-	- clean-up and improvements in the skin loader (no tmp file any longer)
-	- improvements in the skin loading (avoid multiple loading and load only when necessary)
-	- removed flicker at startup due to bad copy of skin
+	- Mac OS-X port by Cristian Walther
+	- allow setting a range breakpoint on a single byte
+	- 'exit & save state' moved elsewhere in popup menu
 		
 
 Bug fixes:
 ----------
 
-	- RAM space on Titanium
-	- window position again (better fix-up)
-	- TI89 Titanium entry was missing in the communication box
-	- iPAQ: glade callbacks were not found due to a missing --export-dynamic
-
+	- contrast on Titanium
+	- range breakpoints and code bkpts
+	- no FlashROM ghost space at 0x400000 on the TI-89
+	- hardwareRevision in the HW parameter block
+	- reads from wrong offsets in the stack window
+	- logging domain support
+	
 
 Planned:
 --------

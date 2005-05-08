@@ -760,7 +760,7 @@ void Exception(int nr, uaecptr oldpc)
 		put_word (m68k_areg(regs, 7)+4, last_op_for_exception_3);
 		put_long (m68k_areg(regs, 7)+8, last_addr_for_exception_3);
 	    }
-	    write_log ("Exception %i!\n", nr);
+	    //write_log ("Exception %i!\n", nr);
 	    goto kludge_me_do;
 	}
 //    }
@@ -1131,8 +1131,8 @@ static char* ccnames[] =
 
 void m68k_reset (void)
 {
-    regs.spcflags = 0;	// here; otherwise bkpt at $0 is not catched
-    m68k_areg (regs, 7) = get_long(0x000000);
+    regs.spcflags = 0;	// here; otherwise bkpt at $0 is not catched (roms)
+    m68k_areg (regs, 7) = tihw.initial_ssp;
     m68k_setpc(tihw.initial_pc);
     fill_prefetch_0 ();
     regs.kick_mask = 0xF80000;

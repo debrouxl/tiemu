@@ -24,23 +24,23 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TI68K_MEM92__
-#define __TI68K_MEM92__
+#ifndef __TI68K_MEMv2__
+#define __TI68K_MEMv2__
 
 #include "stdint.h"
 
 /* Functions */
 
-int ti92_mem_init(void);
+int v200_mem_init(void);
 
-uint8_t  ti92_get_byte(uint32_t addr);
-uint16_t ti92_get_word(uint32_t addr);
-uint32_t ti92_get_long(uint32_t addr);
+uint8_t  v200_get_byte(uint32_t addr);
+uint16_t v200_get_word(uint32_t addr);
+uint32_t v200_get_long(uint32_t addr);
 
-void ti92_put_long(uint32_t addr, uint32_t arg);
-void ti92_put_word(uint32_t addr, uint16_t arg);
-void ti92_put_byte(uint32_t addr, uint8_t  arg);
+void v200_put_long(uint32_t addr, uint32_t arg);
+void v200_put_word(uint32_t addr, uint16_t arg);
+void v200_put_byte(uint32_t addr, uint8_t  arg);
 
-uint8_t* ti92_get_real_addr(uint32_t addr);
+uint8_t* v200_get_real_addr(uint32_t addr);
 
 #endif

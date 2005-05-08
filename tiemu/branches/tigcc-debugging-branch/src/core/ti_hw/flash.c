@@ -92,10 +92,8 @@ uint8_t FlashReadByte(uint32_t addr)
 		default: return 0xff;
 		}
 	}
-	else
-	{
-		return (bget(addr) | wsm.ret_or);
-	}
+	
+	return getb(tihw.rom, addr, tihw.rom_size - 1) | wsm.ret_or;
 }
 
 uint16_t FlashReadWord(uint32_t addr)
@@ -109,15 +107,13 @@ uint16_t FlashReadWord(uint32_t addr)
 		default: return 0xffff;
 		}
 	}
-	else
-	{
-		return (wget(addr) | wsm.ret_or);
-	}
+
+	return getw(tihw.rom, addr, tihw.rom_size - 1) | wsm.ret_or;
 }
 
 uint32_t FlashReadLong(uint32_t addr)
 {
-	return (lget(addr) | wsm.ret_or);
+	return getl(tihw.rom, addr, tihw.rom_size - 1) | wsm.ret_or;
 }
 
 /*
@@ -134,7 +130,7 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
     if(tihw.protect) 
         return;
 
-	addr -= tihw.rom_base << 16;
+	addr -= tihw.rom_base;
 	addr &= tihw.rom_size - 1;
 
     // Write State Machine (WSM, Sharp's data sheet)
@@ -219,54 +215,51 @@ void FlashWriteLong(uint32_t addr, uint32_t data)
 }
 
 /*
-    Find the PC reset vector in ROM dump or FLASH upgrade.
-    If we have a FLASH upgrade, we copy the vector table into RAM.
-    This allow to use FLASH upgrade as fake ROM dump.
+	Search for a vector table and get SSP & PC values.
+	This is needed by m68k_reset() for booting.
 */
-uint32_t find_pc(void)
+void find_ssp_and_pc(uint32_t *ssp, uint32_t *pc)
 {
     int vt = 0x000000; // vector table
-    //int i;
-    uint32_t pc;
 
     // find PC reset vector
     if(tihw.rom_flash)
     { 
-        // FLASH (TI89, TI92+, 200, ...)
+        // FLASH (TI89, TI92+, V200, ...)
         for (vt = 0x12000; vt < tihw.rom_size; vt++)
 	    {
-		uint8_t *rom = tihw.rom + vt;
+			uint8_t *rom = tihw.rom + vt;
 
-		if(rom[0] == 0xcc && rom[1] == 0xcc && 
-		   rom[2] == 0xcc && rom[3] == 0xcc)
+			if(rom[0] == 0xcc && rom[1] == 0xcc && rom[2] == 0xcc && rom[3] == 0xcc)
             {
 	            vt += 4;
 	            break;
 	        }
         }
+
+		*ssp = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
+            (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
     
         vt += 4; // skip SP
    
-        pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
+        *pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
             (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
     }
-  else
+	else
     { 
-      // EPROM (TI92)
-      vt = 0;
-      vt += 4; // skip SP
+		// EPROM (TI92)
+		vt = 0;
+
+		*ssp = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
+            (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
+
+		vt += 4; // skip SP
       
-      pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
-        (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
+		*pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
+			(tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
     }
 
-    // copy vector table into RAM for boot (72 vectors, 288 bytes)
-    //for (i = 0; i < 0x120; i++)
-      //  tihw.ram[i] = tihw.rom[vt + i];
-
-	printl(0, "found PC ($%06x) at offset 0x%x\n", pc, vt - 0x12000);
-
-    return (pc);
+	printl(0, "found SSP=$%06x and PC=$%06x at offset 0x%x\n", *ssp, *pc, vt - 0x12000);
 }
 
 /*
@@ -286,7 +279,7 @@ void FlashWriteWord(uint32_t addr, uint16_t data)
     if(tihw.protect) 
         return;
 
-	addr -= tihw.rom_base << 16;
+	addr -= tihw.rom_base;
 	addr &= tihw.rom_size - 1;
 
 	if((addr & 0x1fff) == 0x1000)

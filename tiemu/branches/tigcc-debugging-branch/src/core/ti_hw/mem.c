@@ -42,17 +42,14 @@
 #include "m68k.h"
 #include "ti68k_def.h"
 #include "ti68k_int.h"
-#include "flash.h"
 #include "mem89.h"
 #include "mem92.h"
 #include "mem92p.h"
 #include "mem89tm.h"
+#include "memv2.h"
 #include "hwprot.h"
 
 static IMG_INFO *img = &img_infos;
-
-uint8_t *mem_tab[16];		// 1MB per banks  (or segments)
-uint32_t mem_msk[16];		// pseudo chip-select (allow wrapping / ghost space)
 
 // 000000-0fffff : RAM (128 or 256 KB)
 // 100000-1fffff : 
@@ -71,7 +68,7 @@ uint32_t mem_msk[16];		// pseudo chip-select (allow wrapping / ghost space)
 // e00000-efffff :   ...
 // d00000-ffffff : unused
 
-static GETBYTE_FUNC	get_byte_ptr;
+static GETBYTE_FUNC	get_byte_ptr;	// set on memXX.c or hwprot.c
 static GETWORD_FUNC	get_word_ptr;
 static GETLONG_FUNC	get_long_ptr;
 
@@ -79,7 +76,7 @@ static PUTBYTE_FUNC	put_byte_ptr;
 static PUTWORD_FUNC	put_word_ptr;
 static PUTLONG_FUNC	put_long_ptr;
 
-GETBYTE_FUNC	mem_get_byte_ptr;
+GETBYTE_FUNC	mem_get_byte_ptr;	// set by memXX.c:tiXX_mem_init
 GETWORD_FUNC	mem_get_word_ptr;
 GETLONG_FUNC	mem_get_long_ptr;
 
@@ -87,26 +84,27 @@ PUTBYTE_FUNC	mem_put_byte_ptr;
 PUTWORD_FUNC	mem_put_word_ptr;
 PUTLONG_FUNC	mem_put_long_ptr;
 
+REALADR_FUNC	mem_get_real_addr_ptr;
+
 /* Mem init/exit */
 
 int hw_mem_init(void)
 {
-	int i;
-
     // get memory sizes
 	if(tihw.ti92v2)
 	{
 		// TI92 II is same as TI92+ in memory size
 		tihw.rom_size = ti68k_get_rom_size(TI92p);
 		tihw.ram_size = ti68k_get_ram_size(TI92p);
-		tihw.io_size = ti68k_get_io_size(TI92p);
+		tihw.io_size  = ti68k_get_io_size(TI92p);
 	}
 	else
 	{
 		tihw.rom_size = ti68k_get_rom_size(tihw.calc_type);
 		tihw.ram_size = ti68k_get_ram_size(tihw.calc_type);
-		tihw.io_size = ti68k_get_io_size(tihw.calc_type);
+		tihw.io_size  = ti68k_get_io_size(tihw.calc_type);
 		tihw.io2_size = ti68k_get_io2_size(tihw.calc_type);
+		tihw.io3_size = ti68k_get_io3_size(tihw.calc_type);
 	}
 
     // clear breakpoints
@@ -118,33 +116,24 @@ int hw_mem_init(void)
     tihw.rom = malloc(tihw.rom_size);
     tihw.io  = malloc(tihw.io_size);
     tihw.io2 = malloc(tihw.io2_size);
-    tihw.unused = malloc(1*MB);
+	tihw.io3 = malloc(tihw.io3_size);
+    tihw.unused = malloc(16);
 
     // clear RAM/ROM/IO
     memset(tihw.ram, 0x00, tihw.ram_size);
     memset(tihw.io , 0x00, tihw.io_size);  
 	memset(tihw.io2, 0x00, tihw.io2_size);
+	memset(tihw.io2, 0x00, tihw.io3_size);
     memset(tihw.rom, 0xff, tihw.rom_size);
-    memset(tihw.unused, 0x00, 1*MB);
-
-	// clear banks
-	memset(&mem_tab, 0, sizeof(mem_tab));
-	memset(&mem_msk, 0, sizeof(mem_msk));
-
-    // default: set all banks to UNUSED (with mask 0 per default)
-    for(i=0; i<16; i++)
-    {
-        mem_tab[i] = tihw.unused; 
-        mem_msk[i] = 0;
-    }
+    memset(tihw.unused, 0x14, 16);
 
     // set banks and mappers on per calc basis
     switch(tihw.calc_type)
     {
     case TI92:  ti92_mem_init();  break;
     case TI92p: ti92p_mem_init(); break;
-    case TI89:
-    case V200:  ti89_mem_init();  break;
+    case TI89:  ti89_mem_init();  break;
+    case V200:  v200_mem_init();  break;
     case TI89t: ti89t_mem_init(); break;
     default: break;
     }
@@ -155,8 +144,6 @@ int hw_mem_init(void)
 
     if(!tihw.ram || !tihw.rom || !tihw.io || !tihw.io2)
         return -1;
-
-    tihw.initial_pc = find_pc();
 
 	// set memory mappers for hw protection
 	if(params.hw_protect && (tihw.calc_type != TI92))
@@ -205,6 +192,10 @@ int hw_mem_exit(void)
         free(tihw.io2);
     tihw.io2 = NULL;
 
+	if(tihw.io3)
+        free(tihw.io3);
+    tihw.io3 = NULL;
+
 	// clear breakpoints
 	ti68k_bkpt_clear_access();
 	ti68k_bkpt_clear_range();
@@ -212,10 +203,9 @@ int hw_mem_exit(void)
     return 0;
 }
 
-// Use: converts m68k address into PC-mapped address
-uint8_t* hw_get_real_address(uint32_t adr) 
+uint8_t* hw_get_real_address(uint32_t adr)
 {
-    return &mem_tab[(adr>>20)&0xf][adr&mem_msk[(adr>>20)&0xf]];
+	return mem_get_real_addr_ptr(adr);
 }
 
 uint32_t hw_get_long(uint32_t adr) 

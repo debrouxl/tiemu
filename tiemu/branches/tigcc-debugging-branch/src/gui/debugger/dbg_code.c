@@ -829,7 +829,6 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
 		export_disasm_to_file(widget);
 		return FALSE;
 	case GDK_F1:
-		printf("row_idx = %i\n", row_idx);
 		str = g_strdup_printf("%i", row_idx+1);
         path = gtk_tree_path_new_from_string(str);	// restore selection
 		g_free(str);

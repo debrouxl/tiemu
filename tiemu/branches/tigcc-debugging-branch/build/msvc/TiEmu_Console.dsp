@@ -164,6 +164,10 @@ SOURCE=..\..\src\core\ti_hw\mem92p.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\ti_hw\memv2.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\ti_hw\ports.c
 # End Source File
 # End Group

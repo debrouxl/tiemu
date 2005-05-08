@@ -62,32 +62,60 @@ void wr_long(uint8_t *p, uint32_t d)
 
 /* Memory access functions (TI memory) */
 
+/*
 uint8_t mem_rd_byte(uint32_t a)
 {
-	return *(hw_get_real_address(a));
+	return mem_get_byte_ptr(a);
 }
 
 uint16_t mem_rd_word(uint32_t a)
 {
-	return rd_word(hw_get_real_address(a));
+	return mem_get_word_ptr(a);
 }
 
 uint32_t mem_rd_long(uint32_t a)
 {
-	return rd_long(hw_get_real_address(a));
+	return mem_get_long_ptr(a);
 }
 
 void mem_wr_byte(uint32_t a, uint8_t  d)
 {
-	*(hw_get_real_address(a)) = d;
+	mem_put_byte_ptr(a, d);
 }
 
 void mem_wr_word(uint32_t a, uint16_t d)
 {
-	wr_word(hw_get_real_address(a), d);
+	mem_put_word_ptr(a, d);
 }
 
 void mem_wr_long(uint32_t a, uint32_t d)
 {
-	wr_long(hw_get_real_address(a), d);
+	mem_put_long_ptr(a, d);
+}
+*/
+
+void mem_rd_block(uint32_t a, uint8_t *d, uint16_t len)
+{
+	/*
+	int q = len / 4;
+	int r = len % 4;
+	int i, j;
+
+	for(i = 0; i < q; i++)
+		d[4*i] = mem_rd_long(a + 4*i);
+	for(j = 0; j < r; j++)
+		d[4*i+j] = mem_rd_byte(a + 4*i + j);
+	*/
+	int i;
+
+	for(i = 0; i < len; i++)
+		d[i] = mem_rd_byte(a+i);
+}
+
+void mem_wr_block(uint32_t a, uint8_t *d, uint16_t len)
+{
+	int i;
+
+	for(i = 0; i < len; i++)
+		mem_wr_byte(a+i, d[i]);
 }

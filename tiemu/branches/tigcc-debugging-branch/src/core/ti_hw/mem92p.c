@@ -26,7 +26,7 @@
 
 /*
     Memory management: TI92+ FLASH without Hardware Protection
-	Except for ti92p_mem_init/ti89_mem_init, code is the same.
+	Some values may be hard-coded for performance reasons !
 */
 
 #include <stdlib.h>
@@ -37,7 +37,7 @@
 #include "ports.h"
 #include "hw.h"
 #include "mem.h"
-#include "mem89.h"
+#include "mem92p.h"
 #include "images.h"
 #include "bkpts.h"
 #include "m68k.h"
@@ -64,47 +64,219 @@
 
 int ti92p_mem_init(void)
 {
-    // map RAM
-    mem_tab[0] = tihw.ram;
-    mem_msk[0] = tihw.ram_size-1;
-	mem_tab[1] = tihw.ram;
-    mem_msk[1] = tihw.ram_size-1;
-
-	// map FLASH
-    mem_tab[4] = tihw.rom + 0x000000;;
-    mem_msk[4] = MIN(tihw.rom_size - 0*MB, 1*MB) - 1;
-
-    mem_tab[5] = tihw.rom + 0x100000;
-    mem_msk[5] = MIN(tihw.rom_size - 1*MB, 1*MB) - 1;
-
-    // ghosts
-	if(tihw.hw_type == HW2)
-	{
-		mem_tab[2] = mem_tab[4];
-		mem_msk[2] = mem_msk[4];
-		mem_tab[3] = mem_tab[5];
-		mem_msk[3] = mem_msk[5];
-	}
-
-    // map IO
-    mem_tab[6] = tihw.io;
-    mem_msk[6] = tihw.io_size-1;
-	
-	if(tihw.hw_type == HW2)
-	{
-		mem_tab[7] = tihw.io2;
-		mem_msk[7] = tihw.io2_size-1;
-	}
-
 	// set mappers
-	mem_get_byte_ptr = ti89_get_byte;
-	mem_get_word_ptr = ti89_get_word;
-	mem_get_long_ptr = ti89_get_long;
-	mem_put_byte_ptr = ti89_put_byte;
-	mem_put_word_ptr = ti89_put_word;
-	mem_put_long_ptr = ti89_put_long;
+	mem_get_byte_ptr = ti92p_get_byte;
+	mem_get_word_ptr = ti92p_get_word;
+	mem_get_long_ptr = ti92p_get_long;
+	mem_put_byte_ptr = ti92p_put_byte;
+	mem_put_word_ptr = ti92p_put_word;
+	mem_put_long_ptr = ti92p_put_long;
+
+	mem_get_real_addr_ptr = ti92p_get_real_addr;
   
     return 0;
 }
 
-// see mem89.c
+uint8_t* ti92p_get_real_addr(uint32_t adr)
+{
+	// RAM access
+	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
+	{
+		return getp(tihw.ram, adr, RAM_SIZE_TI92P - 1);
+	}
+
+    // FLASH access
+	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
+	{
+		return getp(tihw.rom, adr, ROM_SIZE_TI92P - 1);
+	}
+	
+	// memory-mapped I/O
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
+	{
+		return getp(tihw.io, adr, IO1_SIZE_TI92P - 1);
+	}
+
+	// memory-mapped I/O (hw2)
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI92P))
+	{
+		return getp(tihw.io2, adr, IO2_SIZE_TI92P - 1);
+	}
+
+	return tihw.unused;
+}
+
+uint32_t ti92p_get_long(uint32_t adr) 
+{
+	// RAM access
+	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
+	{
+		return getl(tihw.ram, adr, RAM_SIZE_TI92P - 1);
+	}
+
+    // FLASH access
+	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
+	{
+		return getl(tihw.rom, adr, ROM_SIZE_TI92P - 1) | wsm.ret_or;
+	}
+	
+	// memory-mapped I/O
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
+	{
+       return io_get_long(adr);
+	}
+
+	// memory-mapped I/O (hw2)
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI92P))
+	{
+		return io2_get_long(adr);
+	}
+
+    return 0x14141414;
+}
+
+uint16_t ti92p_get_word(uint32_t adr) 
+{
+    // RAM access
+	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
+	{
+		return getw(tihw.ram, adr, RAM_SIZE_TI92P - 1);
+	}
+
+    // FLASH access
+	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
+	{
+		return getw(tihw.rom, adr, ROM_SIZE_TI92P - 1) | wsm.ret_or;
+	}
+	
+	// memory-mapped I/O
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
+	{
+       return io_get_word(adr);
+	}
+
+	// memory-mapped I/O (hw2)
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI92P))
+	{
+		return io2_get_word(adr);
+	}
+
+    return 0x1414;
+}
+
+uint8_t ti92p_get_byte(uint32_t adr) 
+{    
+    // RAM access
+	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
+	{
+		return getb(tihw.ram, adr, RAM_SIZE_TI92P - 1);
+	}
+
+    // FLASH access
+	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
+	{
+		return getb(tihw.rom, adr, ROM_SIZE_TI92P - 1) | wsm.ret_or;
+	}
+	
+	// memory-mapped I/O
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
+	{
+       return io_get_byte(adr);
+	}
+
+	// memory-mapped I/O (hw2)
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI92P))
+	{
+		return io2_get_byte(adr);
+	}
+
+    return 0x14;
+}
+
+void ti92p_put_long(uint32_t adr, uint32_t arg) 
+{
+	// RAM access
+	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
+	{
+		putl(tihw.ram, adr, RAM_SIZE_TI92P - 1, arg);
+	}
+
+    // FLASH access
+	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
+	{
+		FlashWriteLong(adr, arg);
+	}
+
+	// memory-mapped I/O
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
+	{
+		io_put_long(adr, arg);
+	}
+
+	// memory-mapped I/O (hw2)
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI92P))
+	{
+		io2_put_long(adr, arg);
+	}
+
+    return;
+}
+
+void ti92p_put_word(uint32_t adr, uint16_t arg) 
+{
+    // RAM access
+	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
+	{
+		putw(tihw.ram, adr, RAM_SIZE_TI92P - 1, arg);
+	}
+
+    // FLASH access
+	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
+	{
+		FlashWriteWord(adr, arg);
+	}
+
+	// memory-mapped I/O
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
+	{
+		io_put_word(adr, arg);
+	}
+
+	// memory-mapped I/O (hw2)
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI92P))
+	{
+		io2_put_word(adr, arg);
+	}
+
+    return;
+}
+
+void ti92p_put_byte(uint32_t adr, uint8_t arg) 
+{
+    // RAM access
+	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
+	{
+		putb(tihw.ram, adr, RAM_SIZE_TI92P - 1, arg);
+	}
+
+    // FLASH access
+	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
+	{
+		FlashWriteByte(adr, arg);
+	}
+
+	// memory-mapped I/O
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
+	{
+		io_put_byte(adr, arg);
+	}
+
+	// memory-mapped I/O (hw2)
+	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI92P))
+	{
+		io2_put_byte(adr, arg);
+	}
+
+    return;
+}
+

@@ -39,6 +39,7 @@
 #include "bkpts.h"
 #include "images.h"
 #include "handles.h"
+#include "flash.h"
 
 int pending_ints;
 
@@ -67,9 +68,11 @@ int hw_m68k_init(void)
 
 int hw_m68k_reset(void)
 {
-    rom_at_0();
+	// retrieve SSP & PC values for boot
+	find_ssp_and_pc(&tihw.initial_ssp, &tihw.initial_pc);
+
+	// and reset
     m68k_reset();
-    ram_at_0();
 
 	pending_ints = 0;
 
@@ -200,7 +203,7 @@ int hw_m68k_run(int n, unsigned maxcycles)
 			if(heap_deref(handle)+2 == (int)m68k_getpc())
 			{
 				bkpts.type = BK_TYPE_PGMENTRY;
-				return 1;
+				return DBG_BREAK;
 			}
 		}
 
@@ -216,7 +219,7 @@ int hw_m68k_run(int n, unsigned maxcycles)
 			if(bkpts.id = hwp_fetch(m68k_getpc()))
 			{
 				bkpts.type = BK_TYPE_PROTECT;
-				return 3;
+				return DBG_HWPV;
 			}
 		}
 
@@ -264,13 +267,13 @@ int hw_m68k_run(int n, unsigned maxcycles)
 	        if (regs.spcflags & SPCFLAG_BRK) 
 	        {		
 				unset_special(SPCFLAG_BRK);
-				return 1;		// DBG_BREAK
+				return DBG_BREAK;
 	        }
 
 	        if(regs.spcflags & SPCFLAG_DBTRACE) 
 	        {
 				unset_special(SPCFLAG_DBTRACE);
-				return 2;     // DBG_TRACE
+				return DBG_TRACE;
 	        }
 
             if(regs.spcflags & SPCFLAG_DBSKIP)

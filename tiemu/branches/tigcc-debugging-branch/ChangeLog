@@ -2,8 +2,17 @@ SubVersion: $Id$
 
 To do:
 	- video scaling
-	- link port is broken (HW2 only ?!)
-	- stealth I/O and mem protect (done but not enabled)
+	- ti68k_def.h: l37 (uchar) to remove
+
+- 06/05/2005, version 1.80v:
+	- [roms]  $1248: changed rom_base from 0x20 to 0x200000 whenever applicable
+	- [roms]  $1249-1253: memory layout management rewritten
+	- [roms]  $1254: splitted I/O ports on HW3
+	- [roms]  $1255: finished to use new memory layout; the memory window shows 
+					 the exact memory mapping
+	- [roms]  $1263: hw_get_real_address is a function pointer which depends on the 
+					 calculator type for now (part of memory management rewrite attempt)
+	- [roms]  $1278: completely removed old memory banking system (mem_tab & mem_msk)
 
 - 27/04/2005, version 1.80u:
 	- [roms]  $1191: popup menu can be raised by clicking on the LCD (iPAQ)

@@ -47,6 +47,7 @@ int hw_io_init(void)
 {
 	memset(tihw.io, 0x00, tihw.io_size);
 	memset(tihw.io2, 0x00, tihw.io2_size);
+	memset(tihw.io3, 0x00, tihw.io3_size);
 
 	if(tihw.hw_type > HW1)
 		tihw.lcd_adr = 0x4c00;
@@ -68,7 +69,7 @@ void set_prescaler(int);
 
 void io_put_byte(uint32_t addr, uint8_t arg)
 {
-	addr &= tihw.io_size-1;
+	addr &= 31;	//tihw.io_size-1;
 
     switch(addr) 
     {
@@ -80,7 +81,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         case 0x01:	// rw <.....2.0>
 			// %0 clr: interleave RAM (allows use of 256K of RAM)
             if(tihw.hw_type == 1)
-			    mem_msk[0] = bit_tst(arg,0) ? 0x1ffff : 0x3ffff;
+				tihw.ram_size = bit_tst(arg, 0) ? 128*KB : 256*KB;
 
 			// %2 set: protected memory violation triggered when memory below [$000120] is written
 	    break;
@@ -236,7 +237,7 @@ uint8_t io_get_byte(uint32_t addr)
 {
     int v;
 	
-	addr &= tihw.io_size-1;
+	addr &= 31;	//tihw.io_size-1;
 	v = tihw.io[addr];
 
     switch(addr) 
@@ -348,7 +349,7 @@ void io2_put_byte(uint32_t addr, uint8_t arg)
 {
 	int i;
 
-	addr &= tihw.io2_size-1;
+	addr &= 63;	//tihw.io2_size-1;
 
     switch(addr) 
     {
@@ -453,7 +454,7 @@ uint8_t io2_get_byte(uint32_t addr)
 {
     int v;
 	
-	addr &= tihw.io2_size-1;
+	addr &= 63;	//tihw.io2_size-1;
 	v = tihw.io2[addr];
 
     switch(addr) 
@@ -515,5 +516,58 @@ uint16_t io2_get_word(uint32_t addr)
 uint32_t io2_get_long(uint32_t addr) 
 {
     return (((uint32_t)io2_get_word(addr))<<16) | io2_get_word(addr+2);
+}
+
+/** HW3 **/
+
+void io3_put_byte(uint32_t addr, uint8_t arg)
+{
+	addr &= 255;	//tihw.io3_size-1;
+
+    switch(addr) 
+    {
+        case 0x00:	// rw <76543210>
+			break;
+    }
+
+    tihw.io3[addr] = arg;
+}
+
+void io3_put_word(uint32_t addr, uint16_t arg) 
+{
+    io3_put_byte(addr,   MSB(arg));
+    io3_put_byte(addr+1, LSB(arg));
+}
+
+void io3_put_long(uint32_t addr, uint32_t arg) 
+{
+    io3_put_word(addr,   MSW(arg));
+    io3_put_word(addr+2, LSW(arg));
+}
+
+uint8_t io3_get_byte(uint32_t addr) 
+{
+    int v;
+	
+	addr &= 255;	//tihw.io3_size-1;
+	v = tihw.io3[addr];
+
+    switch(addr) 
+    {
+        case 0x00:
+			break;
+    }
+  
+    return v;
+}
+
+uint16_t io3_get_word(uint32_t addr) 
+{
+    return (((uint16_t)io3_get_byte(addr))<<8) | io3_get_byte(addr+1);
+}
+
+uint32_t io3_get_long(uint32_t addr) 
+{
+    return (((uint32_t)io3_get_word(addr))<<16) | io3_get_word(addr+2);
 }
 

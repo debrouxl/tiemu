@@ -32,11 +32,10 @@
 #endif
 
 #include <glib.h>
+#include <stdint.h>
 
 #include "tilibs.h"
-#include <stdint.h>	// pn of inclusion ?
-
-typedef unsigned char	uchar;	// can't replace UBYTE/uchar by uint8_t type, why ?
+#include "mem_size.h"
 
 /* Equivalences */
 
@@ -68,12 +67,8 @@ typedef unsigned char	uchar;	// can't replace UBYTE/uchar by uint8_t type, why ?
 #define HW2			2
 #define HW3         3
 
-#define DBG_BREAK   1	// user breakpoint
-#define DBG_TRACE   2	// trace (T)
-#define DBG_HWPV	3	// hardware protection violation
-
-#define LCDMEM_W	240		// LCD memory height
-#define LCDMEM_H	128		// LCD memory height
+#define LCDMEM_W	240		// LCD _memory_ height
+#define LCDMEM_H	128		// LCD _memory_ height
 
 /* Structures */
 
@@ -95,50 +90,60 @@ typedef struct
     
 } Ti68kParameters;
 
+/* 
+	Beware: if you want to modify this structure,
+	you have to increment SAV_REVISION in state.c.
+*/
 typedef struct
 {
     // misc (non hardware pseudo-constants)
-    int     calc_type;
+    int			calc_type;
 
-    int     ram_size;
-    int     rom_size;
-    int     rom_base;
-    int     rom_flash;
-    char	rom_version[5];
-	int		hw_type;
-	int		io_size;
-	int		io2_size;
+    int			ram_size;	// RAM size
+    int			rom_size;	// ROM size
+	int			io_size;	// HWx io size
+	int			io2_size;	// HW2 io size
+	int			io3_size;	// HW3 io size
 
-	int		ti92v1;			// ROm v1.x(y)
-	int		ti92v2;			// ROM v2.x
+	uint32_t	rom_base;	// ROM base address (MSB)
+    int			rom_flash;	// ROM type
+    char		rom_version[5];	// ROM/AMS version 
 
-	int		lcd_w;			// LCD physical width
-	int		lcd_h;			// LCD physical height
+	int			hw_type;	// HW1/2/3	
+
+	int			ti92v1;		// ROM v1.x(y)
+	int			ti92v2;		// ROM v2.x
+
+	int			lcd_w;		// LCD physical width
+	int			lcd_h;		// LCD physical height
 
     // keyboard
-    int     on_key;
+    int			on_key;
 
     // lcd
-	uint32_t lcd_adr;		// LCD address (as $4c00)
-	char	*lcd_ptr;		// direct pointer to LCD in PC RAM
-    int		contrast;
-	int		log_w;			// LCD logical width
-	int		log_h;			// LCD logical height
-	int		on_off;
+	uint32_t	lcd_adr;	// LCD address (as $4c00)
+	char*		lcd_ptr;	// direct pointer to LCD in PC RAM
+    int			contrast;
+	int			log_w;		// LCD logical width
+	int			log_h;		// LCD logical height
+	int			on_off;
 	unsigned long	lcd_tick;// used by grayscales
 
     // memory
-    uchar	*rom;
-    uchar	*ram;
-    uchar	*io;
-    uchar	*io2;
-    uchar   *unused;
-    int     initial_pc;
+    uint8_t*	rom;		// ROM
+    uint8_t*	ram;		// RAM
+    uint8_t*	io;			// HW1/2/3 i/o ports
+    uint8_t*	io2;		// HW2/3 i/o ports
+	uint8_t*	io3;		// HW3 i/o ports
+    uint8_t*	unused;		// unused
+
+	uint32_t	initial_ssp;// SSP at vector #0
+    uint32_t	initial_pc;	// PC  at vector #1
 
     // timer & rtc
-    uint8_t     timer_value;
-    uint8_t     timer_init;
-	uint8_t		rtc_value;
+    uint8_t     timer_value;// Current timer value
+    uint8_t     timer_init;	// Value to reload
+	uint8_t		rtc_value;	// RTC value
 
 	// protection
 	int			protect;		// hw protection state

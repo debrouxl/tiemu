@@ -39,6 +39,8 @@ typedef void	 (*PUTBYTE_FUNC) (uint32_t, uint8_t );
 typedef void	 (*PUTWORD_FUNC) (uint32_t, uint16_t);
 typedef void	 (*PUTLONG_FUNC) (uint32_t, uint32_t);
 
+typedef uint8_t* (*REALADR_FUNC) (uint32_t addr);
+
 extern GETBYTE_FUNC	mem_get_byte_ptr;
 extern GETWORD_FUNC	mem_get_word_ptr;
 extern GETLONG_FUNC	mem_get_long_ptr;
@@ -46,6 +48,8 @@ extern GETLONG_FUNC	mem_get_long_ptr;
 extern PUTBYTE_FUNC	mem_put_byte_ptr;
 extern PUTWORD_FUNC	mem_put_word_ptr;
 extern PUTLONG_FUNC	mem_put_long_ptr;
+
+extern REALADR_FUNC mem_get_real_addr_ptr;
 
 /* Functions */
 
@@ -66,26 +70,19 @@ extern void hw_put_long(uint32_t addr, uint32_t arg);
 
 extern uint8_t* hw_get_real_address(uint32_t addr);
 
-/* Variables */
+/* Useful macros for memory access */
 
-extern uint8_t* mem_tab[];
-extern uint32_t mem_msk[];
+#define IN_BOUNDS(a,v,b)	(((v) >= (a)) && ((v) <= (b)))
+#define IN_RANGE(v,b,r)		(((v) >= (b)) && ((v) <= ((b) + ((r)-1))))
 
-/* Defines */
+#define putb(ptr,adr,mask,arg)	{ ptr[(adr) & (mask)] = (arg); }
+#define putw(ptr,adr,mask,arg)	{ putb(ptr,adr,mask,(uint8_t )((arg) >>  8)); putb(ptr,(adr)+1,mask,(uint8_t )((arg) & 0x00ff)); }
+#define putl(ptr,adr,mask,arg)	{ putw(ptr,adr,mask,(uint16_t)((arg) >> 16)); putw(ptr,(adr)+2,mask,(uint16_t)((arg) & 0xffff)); }
 
-#define rom_at_0() { mem_tab[0] = tihw.rom; mem_msk[0] = tihw.rom_size-1; }
-#define ram_at_0() { mem_tab[0] = tihw.ram; mem_msk[0] = tihw.ram_size-1; }
+#define getb(ptr,adr,mask)	(ptr[(adr) & (mask)])
+#define getw(ptr,adr,mask)	((uint16_t) ((getb(ptr,adr,mask) <<  8) | getb(ptr,(adr)+1,mask)))
+#define getl(ptr,adr,mask)	((uint32_t)	((getw(ptr,adr,mask) << 16) | getw(ptr,(adr)+2,mask)))
 
-/* Put/Get byte/word/longword */
-
-#define bput(adr, arg) { mem_tab[(adr)>>20][(adr) & mem_msk[(adr)>>20]] = (arg); }
-#define wput(adr, arg) { bput((adr), (arg)>> 8); bput((adr)+1, (arg)&0x00ff); }
-#define lput(adr, arg) { wput((adr), (uint16_t)((arg)>>16)); wput((adr)+2, (uint16_t)((arg)&0xffff)); }
-
-#define bget(adr) (mem_tab[(adr)>>20][(adr)&mem_msk[(adr)>>20]])
-#define wget(adr) ((uint16_t)(((uint16_t)bget(adr))<< 8 | bget((adr)+1)))
-#define lget(adr) ((uint32_t)(((uint32_t)wget(adr))<<16 | wget((adr)+2)))
-
-#define IN_RANGE(a,v,b)	(((v) >= (a)) && ((v) <= (b)))
+#define getp(ptr,adr,mask)  ((ptr) + ((adr) & (mask)))
 
 #endif

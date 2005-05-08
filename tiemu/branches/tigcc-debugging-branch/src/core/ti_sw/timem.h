@@ -27,6 +27,8 @@
 #ifndef __TIMEM__
 #define __TIMEM__
 
+#include "mem.h"
+
 /*
 	Functions
 */
@@ -37,12 +39,15 @@ uint32_t rd_long(uint8_t *p);
 void wr_word(uint8_t *p, uint16_t d);
 void wr_long(uint8_t *p, uint32_t d);
 
-uint8_t  mem_rd_byte(uint32_t a);
-uint16_t mem_rd_word(uint32_t a);
-uint32_t mem_rd_long(uint32_t a);
+#define mem_rd_byte		mem_get_byte_ptr
+#define mem_rd_word		mem_get_word_ptr
+#define mem_rd_long		mem_get_long_ptr
 
-void mem_wr_byte(uint32_t a, uint8_t  d);
-void mem_wr_word(uint32_t a, uint16_t d);
-void mem_wr_long(uint32_t a, uint32_t d);
+#define mem_wr_byte		mem_put_byte_ptr
+#define mem_wr_word		mem_put_word_ptr
+#define mem_wr_long		mem_put_long_ptr
+
+void mem_rd_block(uint32_t a, uint8_t *d, uint16_t len);
+void mem_wr_block(uint32_t a, uint8_t *d, uint16_t len);
 
 #endif

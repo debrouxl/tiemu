@@ -147,8 +147,6 @@ static void renderer_edited(GtkCellRendererText * cell,
         sscanf(digits, "%x", &data);
         addr += (col - COL_0) + i;
 
-        //mem_ptr = (uint8_t *)ti68k_get_real_address(addr);
-	    //*mem_ptr++ = data;
 		mem_wr_byte(addr, (uint8_t)data);
 
 		dbgstack_refresh_window();	// refresh stack, too
@@ -276,8 +274,8 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 	gboolean success;
     GdkColor *color = &black;
 
-    static uint8_t old[DUMP_SIZE] = { 0 };
-    static uint8_t *old_ptr;
+    //static uint8_t old[DUMP_SIZE] = { 0 };
+    //static uint8_t *old_ptr;
 
 	gdk_color_parse("DarkGray", &gray);
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &gray, 1,
@@ -295,11 +293,11 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &white, 1,
 				  FALSE, FALSE, &success);
 
-    old_ptr = old;
+    //old_ptr = old;
     for(a = start; a < start+length; a += 0x10)
     {
 		uint32_t addr = a & 0xffffff;
-		uint8_t *mem_ptr;
+		uint8_t mem;
 
 		char *utf;
 		gsize bw;
@@ -316,10 +314,10 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 
 		for(i = COL_0; i <= COL_F; i++)
 		{
-			mem_ptr = ti68k_get_real_address(addr + (i-COL_0));
+			mem = mem_rd_byte(addr + (i-COL_0)); 
 
-			str = g_strdup_printf("%02x", *mem_ptr);
-			ascii[i-COL_0] = (isprint(*mem_ptr) && !iscntrl(*mem_ptr) ? *mem_ptr : '.');
+			str = g_strdup_printf("%02x", mem);
+			ascii[i-COL_0] = (isprint(mem) && !iscntrl(mem) ? mem : '.');
 /*
             if(*old_ptr != *mem_ptr)
             {
@@ -560,18 +558,18 @@ static void refresh_page(int page, int offset)
 #ifndef FORCE_REFRESH
     if(!offset)
     {
-        static uint8_t old[DUMP_SIZE] = { 0 };
-        static uint8_t *old_ptr;
+        static uint8_t old_array[DUMP_SIZE] = { 0 };
         gint diff = 0;
 
         // can't use memcmp due to banking
-        for(i = 0, old_ptr = old; i < DUMP_SIZE; i++, old_ptr++)
+        for(i = 0; i < DUMP_SIZE; i++)
         {
-            uint8_t *mem_ptr = (uint8_t *)ti68k_get_real_address(addr + i);
+			uint8_t old = old_array[i];
+			uint8_t mem = mem_rd_byte(addr + i);
 
-            if(*old_ptr != *mem_ptr)
+            if(old != mem)
             {
-                *old_ptr = *mem_ptr;
+                old = mem;
                 diff = !0;
             }
         }

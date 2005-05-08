@@ -69,8 +69,12 @@ static FILE *flog = NULL;
 static int printl_muxer(const char *domain, int level, const char *format, va_list ap)
 {
 	static int print_domain = !0;
+
+#ifndef _MSC_VER
 	va_list log_ap;
 	va_copy(log_ap, ap);
+#endif
+
 #ifdef __WIN32__
         char buffer[128];
         int cnt;
@@ -122,7 +126,7 @@ static int printl_muxer(const char *domain, int level, const char *format, va_li
 	//
 	vfprintf(stdout, format, ap);
 #endif
-#ifdef __WIN32__
+#ifdef _MSC_VER
 skip_console:
 #endif
 	if (flog == NULL) {
@@ -142,7 +146,11 @@ skip_console:
 	}
 
 	// print same stuffs in file
+#ifndef __WIN32__
 	vfprintf(flog, format, log_ap);
+#else
+	vfprintf(flog, format, ap);
+#endif
 
 	// check for printing domain on next loop
 	if(strchr(format, '\n') || strchr(format, '\r'))
