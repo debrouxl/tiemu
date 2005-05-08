@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -108,7 +108,11 @@ static int printl_muxer(const char *domain, int level, const char *format, va_li
 	WriteConsole(hConsole, buffer, cnt, &nWritten, NULL);
 
 	// print format/args
+#ifdef _MSC_VER
         cnt = _vsnprintf(buffer, 128, format, ap);
+#else
+        cnt = _vsnprintf(buffer, 128, format, log_ap);
+#endif
         WriteConsole(hConsole, buffer, cnt, &nWritten, NULL);
 #else
 	//
@@ -124,9 +128,9 @@ static int printl_muxer(const char *domain, int level, const char *format, va_li
 	}
 	
 	//
-	vfprintf(stdout, format, ap);
+	vfprintf(stdout, format, log_ap);
 #endif
-#ifdef _MSC_VER
+#ifdef __WIN32__
 skip_console:
 #endif
 	if (flog == NULL) {
@@ -146,7 +150,7 @@ skip_console:
 	}
 
 	// print same stuffs in file
-#ifndef __WIN32__
+#ifndef _MSC_VER
 	vfprintf(flog, format, log_ap);
 #else
 	vfprintf(flog, format, ap);
