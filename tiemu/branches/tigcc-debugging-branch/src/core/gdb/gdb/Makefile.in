@@ -2765,7 +2765,7 @@ cli-utils.o: $(srcdir)/cli/cli-utils.c $(defs_h) $(cli_utils_h)
 # Need to explicitly specify the compile rule as make will do nothing
 # or try to compile the object file into the mi directory.
 
-all-gdbtk: insight$(EXEEXT)
+all-gdbtk: # insight$(EXEEXT)
 
 install-gdbtk:
 	transformed_name=`t='$(program_transform_name)'; \

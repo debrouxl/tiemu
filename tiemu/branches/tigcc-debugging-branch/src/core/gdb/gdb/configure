@@ -9719,10 +9719,13 @@ esac
 WIN32LIBS=
 if test x$gdb_cv_os_cygwin = xyes || test x$gdb_cv_os_mingw = xyes; then
     WIN32LIBS="-luser32"
+    case "${host}" in
+	*mingw*) WIN32LIBS="$WIN32LIBS -lwsock32" ;;
+    esac
     case "${target}" in
 	*cygwin*) WIN32LIBS="$WIN32LIBS -limagehlp"
 	;;
-	*mingw*) WIN32LIBS="$WIN32LIBS -lwsock32 -lpsapi"
+	*mingw*) WIN32LIBS="$WIN32LIBS -lpsapi"
 	;;
     esac
 fi

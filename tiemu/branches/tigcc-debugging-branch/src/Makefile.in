@@ -150,8 +150,8 @@ gui_OBJ = \
 	gui/support.o 							\
 	gui/wizard.o
 
-core_gdb_ARC = \
-	core/gdb/gdb/libgdb.a \
+core_gdb_DEP = \
+	core/gdb/gdb/libgdb.ldflags \
 	core/gdb/sim/m68k/libsim.a \
 	core/gdb/bfd/libbfd.a \
 	core/gdb/readline/libreadline.a \
@@ -163,7 +163,7 @@ tiemu_OBJ = core/uae/newcpu.o \
 	$(core_dbg_OBJ) \
 	$(misc_OBJ) \
 	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(kde_OBJ) \
-	$(core_gdb_ARC)
+	core/gdb/gdb/libgdb.a
 
 #rules:
 all: uae gdb tiemu
@@ -175,14 +175,16 @@ uae:
 gdb:
 	cd core/gdb && $(MAKE)
 
-tiemu: $(tiemu_OBJ)
+tiemu: $(tiemu_OBJ) $(core_gdb_DEP)
 ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
-	$(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) -o tiemu \
-	$(LDFLAGS) $(CFLAGS) $(kdelibraries) $(GDBLIBS) \
+	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
+    `sed <core/gdb/gdb/libgdb.ldflags 's,^\.\./,core/gdb/,;s, \.\./, core/gdb/,g'` \
+	$(LDFLAGS) $(CFLAGS) $(kdelibraries) \
 	-Wl,--rpath,"$(prefix)/lib" -Wl,--export-dynamic
 else
 	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) \
-	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries) $(GDBLIBS)
+    `sed <core/gdb/gdb/libgdb.ldflags 's,^\.\./,core/gdb/,;s, \.\./, core/gdb/,g'` \
+	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
 endif
 
 .c.o:

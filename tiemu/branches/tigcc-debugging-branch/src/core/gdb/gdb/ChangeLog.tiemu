@@ -1,5 +1,10 @@
 2005-05-08  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * Makefile.in: Don't build standalone insight executable.
+        * configure.in, configure: Add wsock32 to WIN32LIBS based on host, not target.
+
+2005-05-08  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * configure.in, configure: Build "win" in libgui on MinGW, not "unix".
             Add Win32 libs for gdbtk under MinGW as well.
             Remove -fwritable-strings from CFLAGS.

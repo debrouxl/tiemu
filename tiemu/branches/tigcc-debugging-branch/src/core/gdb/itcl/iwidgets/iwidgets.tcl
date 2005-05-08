@@ -6,15 +6,15 @@
 # ----------------------------------------------------------------------
 #  AUTHOR: Mark L. Ulferts               EMAIL: mulferts@spd.dsccc.com
 #
-#  @(#) $Id: iwidgets.tcl,v 1.1 2003/01/21 22:29:36 hunt Exp $
+#  @(#) $Id: iwidgets.tcl.in,v 1.3 2001/08/07 19:56:47 smithc Exp $
 # ----------------------------------------------------------------------
 #                Copyright (c) 1995  Mark L. Ulferts
 # ======================================================================
 # See the file "license.terms" for information on usage and
 # redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
 
-package require Tcl 8.4
-package require Tk 8.4
+package require Tcl 8.0
+package require Tk 8.0
 package require Itcl 3.2
 package require Itk 3.2
 
@@ -26,13 +26,6 @@ namespace eval ::iwidgets {
 }
 
 lappend auto_path $iwidgets::library \
-                  [file join $iwidgets::library generic] \
-                  [file join $iwidgets::library scripts]
-
+		  [file join $iwidgets::library generic] \
+		  [file join $iwidgets::library scripts]
 package provide Iwidgets $iwidgets::version
-
-# For now we need to import all of the itcl functions into the global
-# namespace. This should be removed once iwidgets are upgraded to use the
-# itcl:: names directly.
-
-namespace import -force itcl::*
