@@ -96,13 +96,13 @@ int hw_mem_init(void)
 		// TI92 II is same as TI92+ in memory size
 		tihw.rom_size = ti68k_get_rom_size(TI92p);
 		tihw.ram_size = ti68k_get_ram_size(TI92p);
-		tihw.io_size = ti68k_get_io_size(TI92p);
+		tihw.io_size  = ti68k_get_io_size(TI92p);
 	}
 	else
 	{
 		tihw.rom_size = ti68k_get_rom_size(tihw.calc_type);
 		tihw.ram_size = ti68k_get_ram_size(tihw.calc_type);
-		tihw.io_size = ti68k_get_io_size(tihw.calc_type);
+		tihw.io_size  = ti68k_get_io_size(tihw.calc_type);
 		tihw.io2_size = ti68k_get_io2_size(tihw.calc_type);
 		tihw.io3_size = ti68k_get_io3_size(tihw.calc_type);
 	}

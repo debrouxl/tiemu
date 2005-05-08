@@ -81,10 +81,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         case 0x01:	// rw <.....2.0>
 			// %0 clr: interleave RAM (allows use of 256K of RAM)
             if(tihw.hw_type == 1)
-			{
-				printf("%i ", arg);
-				//tihw.ram_size = bit_tst(arg, 0) ? 128*KB : 256*KB;
-			}
+				tihw.ram_size = bit_tst(arg, 0) ? 128*KB : 256*KB;
 
 			// %2 set: protected memory violation triggered when memory below [$000120] is written
 	    break;
