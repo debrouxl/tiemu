@@ -42,7 +42,6 @@
 #include "m68k.h"
 #include "ti68k_def.h"
 #include "ti68k_int.h"
-#include "flash.h"
 #include "mem89.h"
 #include "mem92.h"
 #include "mem92p.h"
@@ -161,8 +160,6 @@ int hw_mem_init(void)
 
     if(!tihw.ram || !tihw.rom || !tihw.io || !tihw.io2)
         return -1;
-
-    tihw.initial_pc = find_pc();
 
 	// set memory mappers for hw protection
 	if(params.hw_protect && (tihw.calc_type != TI92))

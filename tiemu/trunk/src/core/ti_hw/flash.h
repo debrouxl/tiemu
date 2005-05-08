@@ -63,7 +63,7 @@ void FlashWriteByte(uint32_t addr, uint8_t  v);
 void FlashWriteWord(uint32_t addr, uint16_t v);
 void FlashWriteLong(uint32_t addr, uint32_t v);
 
-uint32_t find_pc(void);
+void find_ssp_and_pc(uint32_t *ssp, uint32_t *pc);
 
 /* Command definitions */
 #define FCD_SETUP_BYTE_WRITE	0x10

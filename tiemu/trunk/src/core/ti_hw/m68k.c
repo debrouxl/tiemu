@@ -39,6 +39,7 @@
 #include "bkpts.h"
 #include "images.h"
 #include "handles.h"
+#include "flash.h"
 
 int pending_ints;
 
@@ -67,9 +68,11 @@ int hw_m68k_init(void)
 
 int hw_m68k_reset(void)
 {
-    rom_at_0();
+	// retrieve SSP & PC values for boot
+	find_ssp_and_pc(&tihw.initial_ssp, &tihw.initial_pc);
+
+	// and reset
     m68k_reset();
-    ram_at_0();
 
 	pending_ints = 0;
 

@@ -135,7 +135,9 @@ typedef struct
     uint8_t*	io2;		// HW2/3 i/o ports
 	uint8_t*	io3;		// HW3 i/o ports
     uint8_t*	unused;		// unused
-    uint32_t	initial_pc;
+
+	uint32_t	initial_ssp;// SSP at vector #0
+    uint32_t	initial_pc;	// PC  at vector #1
 
     // timer & rtc
     uint8_t     timer_value;// Current timer value
