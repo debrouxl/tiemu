@@ -759,7 +759,7 @@ void Exception(int nr, uaecptr oldpc)
 		put_word (m68k_areg(regs, 7)+4, last_op_for_exception_3);
 		put_long (m68k_areg(regs, 7)+8, last_addr_for_exception_3);
 	    }
-	    write_log ("Exception %i!\n", nr);
+	    //write_log ("Exception %i!\n", nr);
 	    goto kludge_me_do;
 	}
 //    }

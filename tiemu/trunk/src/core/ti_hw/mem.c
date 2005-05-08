@@ -117,7 +117,7 @@ int hw_mem_init(void)
     tihw.io  = malloc(tihw.io_size);
     tihw.io2 = malloc(tihw.io2_size);
 	tihw.io3 = malloc(tihw.io3_size);
-    tihw.unused = malloc(1*MB);
+    tihw.unused = malloc(16);
 
     // clear RAM/ROM/IO
     memset(tihw.ram, 0x00, tihw.ram_size);
@@ -125,7 +125,7 @@ int hw_mem_init(void)
 	memset(tihw.io2, 0x00, tihw.io2_size);
 	memset(tihw.io2, 0x00, tihw.io3_size);
     memset(tihw.rom, 0xff, tihw.rom_size);
-    memset(tihw.unused, 0x14, 1*MB);
+    memset(tihw.unused, 0x14, 16);
 
     // set banks and mappers on per calc basis
     switch(tihw.calc_type)
