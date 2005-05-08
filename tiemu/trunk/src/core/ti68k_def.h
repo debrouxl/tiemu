@@ -36,8 +36,6 @@
 #include "tilibs.h"
 #include <stdint.h>
 
-typedef unsigned char	uchar;	// can't replace UBYTE/uchar by uint8_t type, why ?
-
 /* Equivalences */
 
 #ifdef __WIN32__
@@ -92,57 +90,57 @@ typedef struct
 } Ti68kParameters;
 
 /* 
-	Beware: if you want to modify this structure, you must 
-	increment SAV_REVISION in state.c.
+	Beware: if you want to modify this structure,
+	you have to increment SAV_REVISION in state.c.
 */
 typedef struct
 {
     // misc (non hardware pseudo-constants)
-    int     calc_type;
+    int			calc_type;
 
-    int     ram_size;		// RAM size
-    int     rom_size;		// ROM size
-	int		io_size;		// HWx io size
-	int		io2_size;		// HW2 io size
-	int		io3_size;		// HW3 io size
+    int			ram_size;	// RAM size
+    int			rom_size;	// ROM size
+	int			io_size;	// HWx io size
+	int			io2_size;	// HW2 io size
+	int			io3_size;	// HW3 io size
 
-   uint32_t	rom_base;		// ROM base address (MSB)
-    int     rom_flash;		// ROM type
-    char	rom_version[5];	// ROM/AMS version 
+	uint32_t	rom_base;	// ROM base address (MSB)
+    int			rom_flash;	// ROM type
+    char		rom_version[5];	// ROM/AMS version 
 
-	int		hw_type;		// HW1/2/3	
+	int			hw_type;	// HW1/2/3	
 
-	int		ti92v1;			// ROM v1.x(y)
-	int		ti92v2;			// ROM v2.x
+	int			ti92v1;		// ROM v1.x(y)
+	int			ti92v2;		// ROM v2.x
 
-	int		lcd_w;			// LCD physical width
-	int		lcd_h;			// LCD physical height
+	int			lcd_w;		// LCD physical width
+	int			lcd_h;		// LCD physical height
 
     // keyboard
-    int     on_key;
+    int			on_key;
 
     // lcd
-	uint32_t lcd_adr;		// LCD address (as $4c00)
-	char	*lcd_ptr;		// direct pointer to LCD in PC RAM
-    int		contrast;
-	int		log_w;			// LCD logical width
-	int		log_h;			// LCD logical height
-	int		on_off;
+	uint32_t	lcd_adr;	// LCD address (as $4c00)
+	char*		lcd_ptr;	// direct pointer to LCD in PC RAM
+    int			contrast;
+	int			log_w;		// LCD logical width
+	int			log_h;		// LCD logical height
+	int			on_off;
 	unsigned long	lcd_tick;// used by grayscales
 
     // memory
-    uchar	*rom;
-    uchar	*ram;
-    uchar	*io;
-    uchar	*io2;
-	uchar	*io3;
-    uchar   *unused;		// unused
-    int     initial_pc;
+    uint8_t*	rom;		// ROM
+    uint8_t*	ram;		// RAM
+    uint8_t*	io;			// HW1/2/3 i/o ports
+    uint8_t*	io2;		// HW2/3 i/o ports
+	uint8_t*	io3;		// HW3 i/o ports
+    uint8_t*	unused;		// unused
+    uint32_t	initial_pc;
 
     // timer & rtc
-    uint8_t     timer_value;	// Current timer value
-    uint8_t     timer_init;		// Value to reload
-	uint8_t		rtc_value;		// RTC value
+    uint8_t     timer_value;// Current timer value
+    uint8_t     timer_init;	// Value to reload
+	uint8_t		rtc_value;	// RTC value
 
 	// protection
 	int			protect;		// hw protection state
