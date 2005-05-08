@@ -64,36 +64,6 @@
 
 int ti89t_mem_init(void)
 {
-	int i;
-
-    // map RAM
-    mem_tab[0] = tihw.ram;
-	mem_msk[0] = tihw.ram_size-1;
-	
-    // ghost of RAM
-    for(i = 0; i < 4; i++)
-    {
-        mem_tab[2+i] = mem_tab[i]; 
-        mem_msk[2+i] = mem_msk[i];
-    }
-   
-	// map FLASH
-    for(i = 0; i < 4; i++)
-    {
-        mem_tab[8+i] = tihw.rom + i*0x100000;
-        mem_msk[8+i] = MIN(tihw.rom_size - i*MB, 1*MB) - 1;
-    }
-
-    // map IO
-    mem_tab[6] = tihw.io;
-    mem_msk[6] = tihw.io_size-1;
-	
-	if(tihw.hw_type >= HW2)
-	{
-		mem_tab[7] = tihw.io2;
-		mem_msk[7] = tihw.io2_size;
-	}
-
 	// set mappers
 	mem_get_byte_ptr = ti89t_get_byte;
 	mem_get_word_ptr = ti89t_get_word;

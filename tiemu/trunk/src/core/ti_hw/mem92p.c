@@ -64,38 +64,6 @@
 
 int ti92p_mem_init(void)
 {
-    // map RAM
-    mem_tab[0] = tihw.ram;
-    mem_msk[0] = tihw.ram_size-1;
-	mem_tab[1] = tihw.ram;
-    mem_msk[1] = tihw.ram_size-1;
-
-	// map FLASH
-    mem_tab[4] = tihw.rom + 0x000000;;
-    mem_msk[4] = MIN(tihw.rom_size - 0*MB, 1*MB) - 1;
-
-    mem_tab[5] = tihw.rom + 0x100000;
-    mem_msk[5] = MIN(tihw.rom_size - 1*MB, 1*MB) - 1;
-
-    // ghosts
-	if(tihw.hw_type == HW2)
-	{
-		mem_tab[2] = mem_tab[4];
-		mem_msk[2] = mem_msk[4];
-		mem_tab[3] = mem_tab[5];
-		mem_msk[3] = mem_msk[5];
-	}
-
-    // map IO
-    mem_tab[6] = tihw.io;
-    mem_msk[6] = tihw.io_size-1;
-	
-	if(tihw.hw_type == HW2)
-	{
-		mem_tab[7] = tihw.io2;
-		mem_msk[7] = tihw.io2_size-1;
-	}
-
 	// set mappers
 	mem_get_byte_ptr = ti92p_get_byte;
 	mem_get_word_ptr = ti92p_get_word;

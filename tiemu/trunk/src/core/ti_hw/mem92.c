@@ -53,42 +53,6 @@
 
 int ti92_mem_init(void)
 {
-    // map RAM
-    mem_tab[0] = tihw.ram;
-    mem_msk[0] = tihw.ram_size-1;
-	mem_tab[1] = tihw.ram;
-    mem_msk[1] = tihw.ram_size-1;
-
-	// map EPROM
-    if(tihw.rom_base == 0x200000)
-    {
-        // internal
-        mem_tab[2] = tihw.rom;
-        mem_msk[2] = 1*MB - 1;
-
-        if(tihw.rom_size > 1*MB)
-        {
-            mem_tab[3] = tihw.rom + 0x100000;
-            mem_msk[3] = 1*MB - 1;
-        }
-    }
-    else
-    {
-        // external
-        mem_tab[4] = tihw.rom;
-        mem_msk[4] = 1*MB - 1;
-
-        if(tihw.rom_size > 1*MB)
-        {
-            mem_tab[5] = tihw.rom + 0x100000;
-            mem_msk[5] = 1*MB - 1;
-        }
-    }
-
-    // map IO
-    mem_tab[6] = tihw.io;
-    mem_msk[6] = tihw.io_size-1;
-
 	// set mappers
 	mem_get_byte_ptr = ti92_get_byte;
 	mem_get_word_ptr = ti92_get_word;

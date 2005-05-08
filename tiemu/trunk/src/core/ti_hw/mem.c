@@ -51,9 +51,6 @@
 
 static IMG_INFO *img = &img_infos;
 
-uint8_t *mem_tab[16];		// 1MB per banks  (or segments)
-uint32_t mem_msk[16];		// pseudo chip-select (allow wrapping / ghost space)
-
 // 000000-0fffff : RAM (128 or 256 KB)
 // 100000-1fffff : 
 // 200000-2fffff : internal ROM (TI92, TI89, V200) or unused
@@ -93,8 +90,6 @@ REALADR_FUNC	mem_get_real_addr_ptr;
 
 int hw_mem_init(void)
 {
-	int i;
-
     // get memory sizes
 	if(tihw.ti92v2)
 	{
@@ -130,18 +125,7 @@ int hw_mem_init(void)
 	memset(tihw.io2, 0x00, tihw.io2_size);
 	memset(tihw.io2, 0x00, tihw.io3_size);
     memset(tihw.rom, 0xff, tihw.rom_size);
-    memset(tihw.unused, 0x00, 1*MB);
-
-	// clear banks
-	memset(&mem_tab, 0, sizeof(mem_tab));
-	memset(&mem_msk, 0, sizeof(mem_msk));
-
-    // default: set all banks to UNUSED (with mask 0 per default)
-    for(i=0; i<16; i++)
-    {
-        mem_tab[i] = tihw.unused; 
-        mem_msk[i] = 0;
-    }
+    memset(tihw.unused, 0x14, 1*MB);
 
     // set banks and mappers on per calc basis
     switch(tihw.calc_type)

@@ -63,35 +63,6 @@
 
 int v200_mem_init(void)
 {
-    // map RAM
-    mem_tab[0] = tihw.ram;
-    mem_msk[0] = tihw.ram_size-1;
-	mem_tab[1] = tihw.ram;
-    mem_msk[1] = tihw.ram_size-1;
-
-	// map FLASH
-    mem_tab[2] = tihw.rom + 0x000000;
-    mem_msk[2] = MIN(tihw.rom_size - 0*MB, 1*MB) - 1;
-
-    mem_tab[3] = tihw.rom + 0x100000;
-    mem_msk[3] = MIN(tihw.rom_size - 1*MB, 1*MB) - 1;
-
-	mem_tab[4] = tihw.rom + 0x200000;
-	mem_msk[4] = MIN(tihw.rom_size - 2*MB, 1*MB) - 1;
-
-	mem_tab[5] = tihw.rom + 0x300000;
-	mem_msk[5] = MIN(tihw.rom_size - 3*MB, 1*MB) - 1;
-
-    // map IO
-    mem_tab[6] = tihw.io;
-    mem_msk[6] = tihw.io_size-1;
-	
-	if(tihw.hw_type == HW2)
-	{
-		mem_tab[7] = tihw.io2;
-		mem_msk[7] = tihw.io2_size-1;
-	}
-
 	// set mappers
 	mem_get_byte_ptr = v200_get_byte;
 	mem_get_word_ptr = v200_get_word;
