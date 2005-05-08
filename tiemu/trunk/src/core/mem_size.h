@@ -65,7 +65,7 @@
 #define IO2_SIZE_TI89		32
 #define IO2_SIZE_TI92P		32
 #define IO2_SIZE_V200		32
-#define IO2_SIZE_TI89T		128	// seems to be 128 instead of 64 ?!
+#define IO2_SIZE_TI89T		256	// seems to be 128 instead of 64 ?!
 
 #define IO3_SIZE_TI92_I		0
 #define IO3_SIZE_TI92_II	0
