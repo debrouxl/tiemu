@@ -48,7 +48,9 @@
 
 #include <fcntl.h>
 #include <sys/stat.h>
+#ifndef _WIN32
 #include <sys/ioctl.h>
+#endif
 #include <sys/time.h>
 #include <signal.h>
 
@@ -62,11 +64,13 @@
 
 extern void _initialize_gdbtk (void);
 
+#if 0
 /* For unix natives, we use a timer to periodically keep the gui alive.
    See comments before x_event. */
 static sigset_t nullsigmask;
 static struct sigaction act1, act2;
 static struct itimerval it_on, it_off;
+#endif /* 0 */
 
 static void
 x_event_wrapper (int signo)
@@ -255,6 +259,7 @@ gdbtk_interactive ()
 void
 gdbtk_start_timer ()
 {
+#if 0
   static int first = 1;
 
   if (first)
@@ -291,6 +296,7 @@ gdbtk_start_timer ()
 	  gdbtk_timer_going = 1;
 	}
     }
+#endif /* 0 */
   return;
 }
 
@@ -298,15 +304,18 @@ gdbtk_start_timer ()
 void
 gdbtk_stop_timer ()
 {
+#if 0
   if (gdbtk_timer_going)
     {
       gdbtk_timer_going = 0;
       setitimer (ITIMER_REAL, &it_off, NULL);
       sigaction (SIGALRM, &act2, NULL);
     }
+#endif /* 0 */
   return;
 }
 
+#if 0
 /* Should this target use the timer? See comments before
    x_event for the logic behind all this. */
 static int
@@ -314,6 +323,7 @@ target_should_use_timer (struct target_ops *t)
 {
   return target_is_native (t);
 }
+#endif /* 0 */
 
 /* Is T a native target? */
 int

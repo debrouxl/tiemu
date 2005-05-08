@@ -54,7 +54,9 @@
 
 #include <signal.h>
 #include <fcntl.h>
+#ifndef _WIN32
 #include <sys/ioctl.h>
+#endif
 #include <sys/time.h>
 #include <sys/stat.h>
 
