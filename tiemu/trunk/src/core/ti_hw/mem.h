@@ -28,7 +28,6 @@
 #define __TI68K_MEMORY__
 
 #include "stdint.h"
-#include "mem_size.h"
 
 /* Typedefs */
 

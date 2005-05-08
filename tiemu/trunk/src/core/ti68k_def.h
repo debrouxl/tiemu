@@ -32,9 +32,10 @@
 #endif
 
 #include <glib.h>
+#include <stdint.h>
 
 #include "tilibs.h"
-#include <stdint.h>
+#include "mem_size.h"
 
 /* Equivalences */
 
