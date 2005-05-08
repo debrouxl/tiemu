@@ -3,6 +3,7 @@
         * configure.in, configure: Build "win" in libgui on MinGW, not "unix".
             Add Win32 libs for gdbtk under MinGW as well.
             Remove -fwritable-strings from CFLAGS.
+        * Makefile.in: Save LDFLAGS so TiEmu can use them.
 
 2005-04-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 

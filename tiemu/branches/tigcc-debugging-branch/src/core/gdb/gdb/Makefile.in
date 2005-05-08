@@ -958,10 +958,14 @@ DISTSTUFF = $(YYFILES)
 	$(CC) -c $(INTERNAL_CFLAGS) $<
 
 # Kevin Kofler 2005-03-29 Don't build gdb executable, only libraries.
-all: libgdb.a $(ADD_DEPS) $(CDEPS) $(TDEPLIBS) $(CONFIG_ALL)
+all: libgdb.a libgdb.ldflags $(ADD_DEPS) $(CDEPS) $(TDEPLIBS) $(CONFIG_ALL)
 	@$(MAKE) $(FLAGS_TO_PASS) DO=all "DODIRS=`echo $(SUBDIRS) | sed 's/testsuite//'`" subdir_do
 .PHONY: all-tui
 all-tui: $(TUI)$(EXEEXT)
+
+# Kevin Kofler 2005-05-08 Save LDFLAGS so TiEmu can use them.
+libgdb.ldflags:
+	echo "$(CLIBS)" >libgdb.ldflags
 
 installcheck:
 
