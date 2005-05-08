@@ -393,7 +393,7 @@ TclpCheckStackSpace()
 }
 #ifdef HAVE_NO_SEH
 static
-__attribute__ ((cdecl))
+__attribute__ ((cdecl, used))
 EXCEPTION_DISPOSITION
 _except_checkstackspace_handler(
     struct _EXCEPTION_RECORD *ExceptionRecord,
