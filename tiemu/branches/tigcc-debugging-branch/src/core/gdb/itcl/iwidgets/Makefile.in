@@ -42,7 +42,7 @@ INSTALL_ROOT =
 
 # REDHAT LOCAL
 #SCRIPT_INSTALL_DIR = $(INSTALL_ROOT)$(prefix)/lib/iwidgets$(IWIDGETS_VERSION)
-SCRIPT_INSTALL_DIR = @datadir@/iwidgets$(IWIDGETS_VERSION)
+SCRIPT_INSTALL_DIR = $(INSTALL_ROOT)@datadir@/iwidgets$(IWIDGETS_VERSION)
 # END REDHAT LOCAL
 
 # Directory in which to install the archive libtcl.a:

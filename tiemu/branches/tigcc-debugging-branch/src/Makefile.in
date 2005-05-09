@@ -11,6 +11,8 @@ MOC       = @MOC@
 
 kde       = @kde@
 
+DESTDIR   =
+
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	LDFLAGS += -lcomdlg32
 	GDBLIBS = -luser32 -lwsock32
@@ -217,14 +219,13 @@ distdir: clean
 	cp -rl * ../tiemu-@VERSION@/src
 
 install: tiemu
-	@$(INSTALL) -d $(prefix)/bin
-	$(INSTALL) -m755 tiemu ${prefix}/bin/
-	cd core/gdb/tcl && $(MAKE) install
-	cd core/gdb/tk && $(MAKE) install
-	cd core/gdb/itcl && $(MAKE) install
-	cd core/gdb/tcl && $(MAKE) install
-	cd core/gdb/libgui && $(MAKE) install
-	cd core/gdb/gdb && $(MAKE) install-gdbtk
+	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
+	$(INSTALL) -m755 tiemu $(DESTDIR)${prefix}/bin/
+	cd core/gdb/tcl && $(MAKE) install INSTALL_ROOT="$(DESTDIR)"
+	cd core/gdb/tk && $(MAKE) install INSTALL_ROOT="$(DESTDIR)"
+	cd core/gdb/itcl && $(MAKE) install DESTDIR="$(DESTDIR)"
+	cd core/gdb/libgui && $(MAKE) install DESTDIR="$(DESTDIR)"
+	cd core/gdb/gdb && $(MAKE) install-gdbtk DESTDIR="$(DESTDIR)"
 
 uninstall:
 	rm -f ${prefix}/bin/tiemu

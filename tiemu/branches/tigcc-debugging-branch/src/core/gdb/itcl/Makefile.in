@@ -22,6 +22,8 @@ subdirs =	@subdirs@
 # determine which shell to use for executing commands:
 SHELL =		/bin/sh
 
+DESTDIR =
+
 all:
 	for dir in $(subdirs) ; do \
 		if test -d $$dir ; then \
@@ -76,7 +78,7 @@ install:
 	for dir in $(subdirs) ; do \
 		if test -d $$dir ; then \
 		    echo "$$dir: $(MAKE) $@" ;\
-		    if (cd $$dir; $(MAKE) $@) ; then true ; else exit 1 ; fi ; \
+		    if (cd $$dir; $(MAKE) $@ DESTDIR="$(DESTDIR)" INSTALL_ROOT="$(DESTDIR)") ; then true ; else exit 1 ; fi ; \
 		else \
 		    exit 1; \
 		fi \
@@ -86,7 +88,7 @@ install-binaries:
 	for dir in $(subdirs) ; do \
 		if test -d $$dir ; then \
 		    echo "$$dir: $(MAKE) $@" ;\
-		    if (cd $$dir; $(MAKE) $@) ; then true ; else exit 1 ; fi ; \
+		    if (cd $$dir; $(MAKE) $@ DESTDIR="$(DESTDIR)" INSTALL_ROOT="$(DESTDIR)") ; then true ; else exit 1 ; fi ; \
 		else \
 		    exit 1; \
 		fi \
@@ -96,7 +98,7 @@ install-libraries:
 	for dir in $(subdirs) ; do \
 		if test -d $$dir ; then \
 		    echo "$$dir: $(MAKE) $@" ;\
-		    if (cd $$dir; $(MAKE) $@) ; then true ; else exit 1 ; fi ; \
+		    if (cd $$dir; $(MAKE) $@ DESTDIR="$(DESTDIR)" INSTALL_ROOT="$(DESTDIR)") ; then true ; else exit 1 ; fi ; \
 		else \
 		    exit 1; \
 		fi \

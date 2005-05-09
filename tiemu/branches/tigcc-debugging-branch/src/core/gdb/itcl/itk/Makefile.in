@@ -271,12 +271,12 @@ install-libraries: libraries
 	@echo "Installing header files in $(includedir)"
 	@for i in $(GENERIC_HDRS) ; do \
 	    echo "Installing $$i" ; \
-	    $(INSTALL_DATA) $$i $(includedir) ; \
+	    $(INSTALL_DATA) $$i $(DESTDIR)$(includedir) ; \
 	done;
 	@echo "Installing library files in $(ITK_LIBRARY)"
 	@for i in $(srcdir)/library/*.* $(srcdir)/library/tclIndex ; do \
 	    echo "Installing $$i" ; \
-	    $(INSTALL_DATA) $$i $(ITK_LIBRARY) ; \
+	    $(INSTALL_DATA) $$i $(DESTDIR)$(ITK_LIBRARY) ; \
 	done;
 
 #========================================================================
@@ -285,12 +285,12 @@ install-libraries: libraries
 #========================================================================
 
 install-doc: doc
-	$(mkinstalldirs) $(mandir)/mann
+	$(mkinstalldirs) $(DESTDIR)$(mandir)/mann
 	@echo "Installing man pages in $(mandir)"
 	@for i in $(srcdir)/doc/*.n; \
 	    do \
 	    echo "Installing $$i info $(mandir)/mann"; \
-	    $(INSTALL_DATA) $$i $(mandir)/mann ; \
+	    $(INSTALL_DATA) $$i $(DESTDIR)$(mandir)/mann ; \
 	    done
 
 test: $(TCLSH_PROG)
@@ -419,7 +419,7 @@ install-lib-binaries: installdirs
 	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
-	$(INSTALL_DATA) pkgIndex.tcl $(pkglibdir)
+	$(INSTALL_DATA) pkgIndex.tcl $(DESTDIR)$(pkglibdir)
 
 #========================================================================
 # Install binary executables (e.g. .exe files)
@@ -457,7 +457,7 @@ installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir)
 	$(mkinstalldirs)  $(DESTDIR)$(bindir)
 	$(mkinstalldirs)  $(DESTDIR)$(pkglibdir)
-	$(mkinstalldirs)  $(ITK_LIBRARY)
+	$(mkinstalldirs)  $(DESTDIR)$(ITK_LIBRARY)
 
 .PHONY: all binaries clean depend distclean doc install installdirs \
 libraries test
