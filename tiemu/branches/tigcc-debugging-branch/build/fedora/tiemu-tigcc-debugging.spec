@@ -49,7 +49,7 @@ Version=1.0
 Type=Application
 Exec=/usr/bin/tiemu
 Icon=/usr/share/tiemu/pixmaps/logo.xpm
-Terminal=true
+Terminal=false
 Categories=Development;
 EOF
 desktop-file-install --delete-original --vendor lpg     \
@@ -75,6 +75,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Mon May 9 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Use now working DESTDIR support.
+Don't need terminal anymore.
 
 * Fri May 6 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Menu entry support.

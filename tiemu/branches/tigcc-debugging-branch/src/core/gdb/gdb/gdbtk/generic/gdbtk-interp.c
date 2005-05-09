@@ -37,6 +37,7 @@
 #include "tcl.h"
 #include "tk.h"
 #include "gdbtk.h"
+void gtk_main(void);
 
 static void gdbtk_command_loop (void);
 static void hack_disable_interpreter_exec (char *, int);
@@ -154,7 +155,7 @@ gdbtk_command_loop (void)
   close_bfds ();
 #endif
 
-  Tk_MainLoop ();
+  gtk_main ();
 }
 
 void

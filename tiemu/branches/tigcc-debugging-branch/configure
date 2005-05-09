@@ -2001,7 +2001,7 @@ fi
 
           ac_config_headers="$ac_config_headers config.h"
 
-                                                                                                              ac_config_files="$ac_config_files Makefile build/Makefile glade/Makefile help/Makefile man/Makefile pedrom/Makefile pixmaps/Makefile skins/Makefile src/Makefile tiemu.lsm tiemu.spec"
+                                                                                                                        ac_config_files="$ac_config_files  Makefile build/Makefile glade/Makefile help/Makefile man/Makefile pedrom/Makefile pixmaps/Makefile skins/Makefile src/Makefile tiemu.lsm tiemu.spec"
 
 
 echo "$as_me:$LINENO: checking for something to drink while compiling" >&5
@@ -29487,9 +29487,7 @@ done
 
 # Platform specific tests.
 case $host in
-# Need console mode for now, to use the GDB CLI.
-#  *-*-mingw*)            ARCH="-D__WIN32__ -D__MINGW32__ -mwindows -D_WINDOWS" ;;
-  *-*-mingw*)            ARCH="-D__WIN32__ -D__MINGW32__" ;;
+  *-*-mingw*)            ARCH="-D__WIN32__ -D__MINGW32__ -mwindows -D_WINDOWS" ;;
   *-*-*bsd*)             ARCH="-D__BSD__" ;;
   i[3456]86-*-linux-*) ARCH="-D__I386__ -D__LINUX__" ;;
   arm*-*-linux-*)        ARCH="-D__IPAQ__ -D__LINUX__" ;;
@@ -35005,7 +35003,7 @@ for i in $jpeg_incdirs;
 do
   for j in jpeglib.h;
   do
-    echo "configure: 35008: $i/$j" >&5
+    echo "configure: 35006: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       jpeg_incdir=$i
@@ -35240,7 +35238,7 @@ for i in $qt_incdirs;
 do
   for j in $kde_qt_header;
   do
-    echo "configure: 35243: $i/$j" >&5
+    echo "configure: 35241: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       qt_incdir=$i
@@ -36036,7 +36034,7 @@ for i in $kde_incdirs;
 do
   for j in $kde_check_header;
   do
-    echo "configure: 36039: $i/$j" >&5
+    echo "configure: 36037: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       kde_incdir=$i
@@ -36066,7 +36064,7 @@ for i in $kde_libdirs;
 do
   for j in $kde_check_lib;
   do
-    echo "configure: 36069: $i/$j" >&5
+    echo "configure: 36067: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       kde_libdir=$i
@@ -37149,7 +37147,7 @@ for i in $kde_sharedirs;
 do
   for j in apps/ksgmltools2/customization/kde-chunk.xsl;
   do
-    echo "configure: 37152: $i/$j" >&5
+    echo "configure: 37150: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       KDE_XSL_STYLESHEET=$i
@@ -37952,17 +37950,18 @@ for ac_config_target in $ac_config_targets
 do
   case "$ac_config_target" in
   # Handling of arguments.
-  "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-  "build/Makefile" ) CONFIG_FILES="$CONFIG_FILES build/Makefile" ;;
-  "glade/Makefile" ) CONFIG_FILES="$CONFIG_FILES glade/Makefile" ;;
-  "help/Makefile" ) CONFIG_FILES="$CONFIG_FILES help/Makefile" ;;
-  "man/Makefile" ) CONFIG_FILES="$CONFIG_FILES man/Makefile" ;;
-  "pedrom/Makefile" ) CONFIG_FILES="$CONFIG_FILES pedrom/Makefile" ;;
-  "pixmaps/Makefile" ) CONFIG_FILES="$CONFIG_FILES pixmaps/Makefile" ;;
-  "skins/Makefile" ) CONFIG_FILES="$CONFIG_FILES skins/Makefile" ;;
-  "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
-  "tiemu.lsm" ) CONFIG_FILES="$CONFIG_FILES tiemu.lsm" ;;
-  "tiemu.spec" ) CONFIG_FILES="$CONFIG_FILES tiemu.spec" ;;
+  "" ) CONFIG_FILES="$CONFIG_FILES " ;;
+  "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+  "build/Makefile" ) CONFIG_FILES="$CONFIG_FILES build/Makefile" ;;
+  "glade/Makefile" ) CONFIG_FILES="$CONFIG_FILES glade/Makefile" ;;
+  "help/Makefile" ) CONFIG_FILES="$CONFIG_FILES help/Makefile" ;;
+  "man/Makefile" ) CONFIG_FILES="$CONFIG_FILES man/Makefile" ;;
+  "pedrom/Makefile" ) CONFIG_FILES="$CONFIG_FILES pedrom/Makefile" ;;
+  "pixmaps/Makefile" ) CONFIG_FILES="$CONFIG_FILES pixmaps/Makefile" ;;
+  "skins/Makefile" ) CONFIG_FILES="$CONFIG_FILES skins/Makefile" ;;
+  "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+  "tiemu.lsm" ) CONFIG_FILES="$CONFIG_FILES tiemu.lsm" ;;
+  "tiemu.spec" ) CONFIG_FILES="$CONFIG_FILES tiemu.spec" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "default-1" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;

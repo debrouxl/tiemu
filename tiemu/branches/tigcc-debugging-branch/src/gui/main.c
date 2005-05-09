@@ -67,7 +67,6 @@
 
 #include "../core/gdb/gdb/main.h"
 #include "../core/gdb/gdb/gdb_string.h"
-#include "../core/gdb/gdb/interps.h"
 #ifndef PARAMS
 #define PARAMS(x) x
 #endif
@@ -297,7 +296,7 @@ int main(int argc, char **argv)
 		splash_screen_stop();
 
 		/*
-			Run the GDB CLI for now
+			Run Insight GDB
 		*/
 		if (setjmp(quit_gdb) == 0)
 		{
@@ -305,8 +304,8 @@ int main(int argc, char **argv)
 			memset (&args, 0, sizeof args);
 			args.argc = argc;
 			args.argv = argv;
-			args.use_windows = 0;
-			args.interpreter_p = INTERP_CONSOLE;
+			args.use_windows = 1;
+			args.interpreter_p = "insight";
 			gdb_main (&args);
 		}
 
@@ -326,6 +325,33 @@ int main(int argc, char **argv)
 	}
 
 	return 0;
+}
+
+/*
+   These functions are used by Insight to enable/disable its UI hook.
+*/
+int x_event(int);
+static guint gdbtk_timer_id = 0;
+
+static gint tiemu_x_event_wrapper(gpointer data)
+{
+  x_event(0);
+  return TRUE;
+}
+
+void gdbtk_start_timer(void)
+{
+  if (!gdbtk_timer_id)
+    gdbtk_timer_id = gtk_timeout_add(250, tiemu_x_event_wrapper, NULL); /* .25 sec */
+}
+
+void gdbtk_stop_timer(void)
+{
+  if (gdbtk_timer_id)
+    {
+      gtk_timeout_remove(gdbtk_timer_id);
+      gdbtk_timer_id = 0;
+    }
 }
 
 /* 
