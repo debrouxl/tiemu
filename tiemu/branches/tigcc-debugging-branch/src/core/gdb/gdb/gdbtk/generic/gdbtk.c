@@ -387,6 +387,9 @@ gdbtk_init (void)
   if (!gdbtk_interp)
     error ("Tcl_CreateInterp failed");
 
+#if 0 /* (TiEmu 20050510 Kevin Kofler) We only support running from an installed
+         location anyway. And if we wanted to use this, it'd need to be
+         case-insensitive on Win32.*/
   /* We need to check if we are being run from
      a bin directory, if not then we may have to
      set some environment variables. */
@@ -486,6 +489,7 @@ gdbtk_init (void)
     }
 
   Tcl_Free ((char *) exec_path);
+#endif /* 0 */
 
   if (Tcl_Init (gdbtk_interp) != TCL_OK)
     error ("Tcl_Init failed: %s", gdbtk_interp->result);
