@@ -304,10 +304,85 @@ void (*deprecated_error_hook) (void);
 #define SIGJMP_BUF		sigjmp_buf
 #define SIGSETJMP(buf)		sigsetjmp((buf), 1)
 #define SIGLONGJMP(buf,val)	siglongjmp((buf), (val))
+#elif defined(_WIN32)
+#define SIGJMP_BUF		jmp_buf
+#define SIGSETJMP(buf)		asm_setjmp(buf)
+#define SIGLONGJMP(buf,val)	asm_longjmp((buf), (val))
 #else
 #define SIGJMP_BUF		jmp_buf
 #define SIGSETJMP(buf)		setjmp(buf)
 #define SIGLONGJMP(buf,val)	longjmp((buf), (val))
+#endif
+
+/* (TiEmu 20050511 Kevin Kofler) The M$ setjmp/longjmp isn't very reliable, so
+   I'm using this much simpler implementation instead. This is taken from:
+     MzScheme
+     Copyright (c) 2004-2005 PLT Scheme, Inc.
+     Copyright (c) 1995 Matthew Flatt
+   LGPL'ed, relicensed to GPL under LGPL paragraph 3. */
+
+#ifdef _WIN32
+#ifdef __GNUC__
+extern int asm_setjmp(jmp_buf b);
+extern void asm_longjmp(jmp_buf b, int v) __attribute__((noreturn));
+asm(
+".text \n"
+"_asm_setjmp: \n"
+" movl (%esp),%ecx \n"
+" movl 4(%esp),%eax \n"
+" movl %ebp,(%eax) \n"
+" movl %ebx,4(%eax) \n"
+" movl %edi,8(%eax) \n"
+" movl %esi,12(%eax) \n"
+" movl %esp,16(%eax) \n"
+" movl %ecx,20(%eax) \n"
+" movl $0,%eax \n"
+" ret \n"
+"_asm_longjmp: \n"
+" movl 8(%esp),%eax \n"
+" movl 4(%esp),%ecx \n"
+" movl 16(%ecx),%esp \n"
+" movl (%ecx),%ebp \n"
+" movl 4(%ecx),%ebx \n"
+" movl 8(%ecx),%edi \n"
+" movl 12(%ecx),%esi \n"
+" movl 20(%ecx),%ecx \n"
+" movl %ecx,(%esp)\n"
+" ret\n"
+);
+#else /* assume M$VC */
+static int __declspec(naked) asm_setjmp(jmp_buf b)
+{
+  __asm {
+    mov ECX, [ESP]
+	mov EAX, [ESP+4]
+	mov [EAX], EBP
+	mov [EAX+4], EBX
+	mov [EAX+8], EDI
+	mov [EAX+12], ESI
+	mov [EAX+16], ESP
+	mov [EAX+20], ECX
+	mov EAX, 0
+	ret
+  }
+}
+
+static void __declspec(naked) asm_longjmp(jmp_buf b, int v)
+{
+  __asm {
+    mov EAX, [ESP+8]
+	mov ECX, [ESP+4]
+	mov ESP, [ECX+16]
+	mov EBP, [ECX]
+	mov EBX, [ECX+4]
+	mov EDI, [ECX+8]
+	mov ESI, [ECX+12]
+	mov ECX, [ECX+20]
+	mov [ESP], ECX
+	ret
+  }
+}
+#endif
 #endif
 
 /* Where to go for throw_exception().  */
