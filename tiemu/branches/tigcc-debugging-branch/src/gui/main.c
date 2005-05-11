@@ -34,6 +34,9 @@
 #include <string.h>
 #include <setjmp.h>
 #ifdef __WIN32__
+#undef setjmp
+extern int asm_setjmp(jmp_buf b);
+#define setjmp asm_setjmp
 #include <locale.h>
 #endif
 

@@ -327,6 +327,7 @@ extern int asm_setjmp(jmp_buf b);
 extern void asm_longjmp(jmp_buf b, int v) __attribute__((noreturn));
 asm(
 ".text \n"
+".globl _asm_setjmp \n"
 "_asm_setjmp: \n"
 " movl (%esp),%ecx \n"
 " movl 4(%esp),%eax \n"
@@ -338,6 +339,7 @@ asm(
 " movl %ecx,20(%eax) \n"
 " movl $0,%eax \n"
 " ret \n"
+".globl _asm_longjmp \n"
 "_asm_longjmp: \n"
 " movl 8(%esp),%eax \n"
 " movl 4(%esp),%ecx \n"
@@ -351,7 +353,7 @@ asm(
 " ret\n"
 );
 #else /* assume M$VC */
-static int __declspec(naked) asm_setjmp(jmp_buf b)
+int __declspec(naked) asm_setjmp(jmp_buf b)
 {
   __asm {
     mov ECX, [ESP]
@@ -367,7 +369,7 @@ static int __declspec(naked) asm_setjmp(jmp_buf b)
   }
 }
 
-static void __declspec(naked) asm_longjmp(jmp_buf b, int v)
+void __declspec(naked) asm_longjmp(jmp_buf b, int v)
 {
   __asm {
     mov EAX, [ESP+8]
@@ -1546,7 +1548,11 @@ quit_force (char *args, int from_tty)
   current_interpreter = NULL;
   reinitialize_more_filter ();
   extern jmp_buf quit_gdb;
+#ifdef _WIN32
+  asm_longjmp (quit_gdb, 1);
+#else
   longjmp (quit_gdb, 1);
+#endif
 }
 
 /* Returns whether GDB is running on a terminal and whether the user

@@ -1,5 +1,10 @@
 2005-05-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * top.c (asm_setjmp, asm_longjmp): Make non-static.
+          (quit_force): Use asm_longjmp on Win32.
+
+2005-05-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * main.c (captured_main): Don't run "target sim" and "run" automatically.
 
 2005-05-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
