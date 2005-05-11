@@ -27,15 +27,16 @@
 /*
 	Custom g_timeout_xxx support.
 
-	Timeout support provided by GLib is unusable for our job because 
-	we want to modify timeout value on the fly. 
-	Workaround : start a new timeout from callback but this doesn't work
-	because timeout finalizing wan be done at _any_ time !
+	Timeout support provided by GLib is unusable for our job because:
+	- we could start a new timeout from callback but this doesn't work
+	because timeout finalizing wan be done at _any_ time,
+	- if we want to modify timeout value on the fly, we can't,
+	- it does not try to 'catch up' time lost in delays.
 
-	Thus, I implement my own customized one. 
+	Solution used: I have re-implemented GLib timeout but this version
+	catch up time lost in delays (time spend in callback).
+
 	Widely taken from gmain.c of GLib.
-
-	In fact, the last function should be enough...
 */
 
 #ifdef HAVE_CONFIG_H
@@ -138,6 +139,7 @@ g_timeout_dispatch (GSource    *source,
 		    GSourceFunc callback,
 		    gpointer    user_data)
 {
+#if 0	// as GLib
   GTimeoutSource *timeout_source = (GTimeoutSource *)source;
 
   if (!callback)
@@ -158,6 +160,16 @@ g_timeout_dispatch (GSource    *source,
     }
   else
     return FALSE;
+
+#else
+	GTimeoutSource *timeout_source = (GTimeoutSource *)source;
+	GTimeVal current_time;
+
+	g_source_get_current_time (source, &current_time);
+    g_timeout_set_expiration (timeout_source, &current_time);
+
+	return (callback (user_data)); 
+#endif
 }
 
 GSourceFuncs g_timeout2_funcs =

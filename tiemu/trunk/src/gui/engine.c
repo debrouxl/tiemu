@@ -92,7 +92,7 @@ static void engine_notify(gint *data)
 void engine_start(void) 
 {
 	if(params.restricted)
-		tid = g_timeout_add_full(G_PRIORITY_DEFAULT_IDLE, TIME_LIMIT, 
+		tid = g_timeout2_add_full(G_PRIORITY_DEFAULT_IDLE, TIME_LIMIT, 
 				(GSourceFunc)engine_func, NULL, 
 				(GDestroyNotify)engine_notify);
 	else
