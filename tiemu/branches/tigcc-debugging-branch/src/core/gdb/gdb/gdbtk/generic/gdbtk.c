@@ -255,11 +255,11 @@ gdbtk_interactive ()
   /* Tk_DoOneEvent (TK_DONT_WAIT|TK_IDLE_EVENTS); */
 }
 
-#if 0
 /* Start a timer which will keep the GUI alive while in target_wait. */
 void
 gdbtk_start_timer ()
 {
+#if 0
   static int first = 1;
 
   if (first)
@@ -296,6 +296,7 @@ gdbtk_start_timer ()
 	  gdbtk_timer_going = 1;
 	}
     }
+#endif /* 0 */
   return;
 }
 
@@ -303,15 +304,18 @@ gdbtk_start_timer ()
 void
 gdbtk_stop_timer ()
 {
+#if 0
   if (gdbtk_timer_going)
     {
       gdbtk_timer_going = 0;
       setitimer (ITIMER_REAL, &it_off, NULL);
       sigaction (SIGALRM, &act2, NULL);
     }
+#endif /* 0 */
   return;
 }
 
+#if 0
 /* Should this target use the timer? See comments before
    x_event for the logic behind all this. */
 static int

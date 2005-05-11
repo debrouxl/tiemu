@@ -1,3 +1,8 @@
+2005-05-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk.c (gdbtk_start_timer, gdbtk_stop_timer): Enable as empty functions again.
+        * gdbtk-hooks.c (x_event): Refresh even if not running.
+
 2005-05-10  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * gdbtk.c (gdbtk_init): Always assume Insight is installed.

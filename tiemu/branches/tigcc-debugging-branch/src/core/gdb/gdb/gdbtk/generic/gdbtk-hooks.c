@@ -393,6 +393,7 @@ x_event (int signo)
   if (in_x_event || in_fputs)
     return 0;
 
+#if 0 /* (TiEmu 20050511 Kevin Kofler) */
   /* Also, only do things while the target is running (stops and redraws).
      FIXME: We wold like to at least redraw at other times but this is bundled
      together in the TCL_WINDOW_EVENTS group and we would also process user
@@ -400,6 +401,7 @@ x_event (int signo)
      in order to be able to redraw (removing this test here). */
   if (!running_now)
     return 0;
+#endif
 
   in_x_event = 1;
   gdbtk_force_detach = 0;

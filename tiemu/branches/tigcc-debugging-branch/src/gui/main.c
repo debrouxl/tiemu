@@ -78,6 +78,9 @@ TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 jmp_buf quit_gdb;               // longjmp target used when quitting GDB
 
+static void start_insight_timer(void);
+static void stop_insight_timer(void);
+
 /* Special */
 
 static gint exit_loop = 0;
@@ -298,6 +301,7 @@ int main(int argc, char **argv)
 		/*
 			Run Insight GDB
 		*/
+		start_insight_timer();
 		if (setjmp(quit_gdb) == 0)
 		{
 			struct captured_main_args args;
@@ -308,6 +312,7 @@ int main(int argc, char **argv)
 			args.interpreter_p = "insight";
 			gdb_main (&args);
 		}
+		stop_insight_timer();
 
 		/*
 			Clean up in case we interrupted GDB during command-line
@@ -339,13 +344,13 @@ static gint tiemu_x_event_wrapper(gpointer data)
   return TRUE;
 }
 
-void gdbtk_start_timer(void)
+static void start_insight_timer(void)
 {
   if (!gdbtk_timer_id)
-    gdbtk_timer_id = gtk_timeout_add(250, tiemu_x_event_wrapper, NULL); /* .25 sec */
+    gdbtk_timer_id = gtk_timeout_add(25, tiemu_x_event_wrapper, NULL); /* 25 ms */
 }
 
-void gdbtk_stop_timer(void)
+static void stop_insight_timer(void)
 {
   if (gdbtk_timer_id)
     {

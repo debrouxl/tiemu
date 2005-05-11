@@ -726,10 +726,6 @@ extern int gdbtk_test (char *);
     }
   xfree (cmdarg);
 
-  /* (TiEmu 20050330 Kevin Kofler)) */
-  catch_command_errors (execute_command, "target sim", 0, RETURN_MASK_ALL);
-  catch_command_errors (execute_command, "run", 0, RETURN_MASK_ALL);
-
   /* Read in the old history after all the command files have been read. */
   init_history ();
 

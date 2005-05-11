@@ -183,9 +183,9 @@ update
 # initialize IPC to enable multiple Insight's to communicate
 # with each other.
 set iipc 0
-if {[pref get gdb/ipc/enabled]} {
-  set ::insight_ipc [Iipc \#auto]
-}
+#if {[pref get gdb/ipc/enabled]} {
+#  set ::insight_ipc [Iipc \#auto]
+#}
 
 gdbtk_idle
 
