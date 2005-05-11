@@ -40,6 +40,7 @@
 #include "engine.h"
 #include "dbg_all.h"
 #include "printl.h"
+#include "tsource.h"
 
 /* 
    The TI92/89 should approximately execute NB_CYCLES_PER_LOOP_HW[12] in 
@@ -55,26 +56,23 @@
 static int cpu_cycles = NB_CYCLES_PER_LOOP_HW2;
 
 static guint tid = 0;
-static gint  res = 0;
-static guint cal = 0;
 
-// function called when the function below is exited
-static void engine_notify(gint *data)
+#define PERIOD	16	// ~500ms
+typedef struct
 {
-	// call debugger here
-	if(*data)
-		gtk_debugger_enter(GPOINTER_TO_INT(*data));
-
-	// and reset source id
-	tid = 0;
-}
+	guint	tmr;	// total time
+	guint	cnt;	// # loops
+	guint	cal;	// result
+} BENCH;
+static BENCH bench = { 0, 1, 0 };
 
 // function called by g_timeout_add_full/g_idle_add_full
 static gboolean engine_func(gint *data)
 {
-	GTimer *tmr = g_timer_new();
+	GTimer* tmr = g_timer_new();
 	gdouble ms;
-
+	gint    res;
+	
 	// set instruction rate (default or custom value)
     if(params.cpu_rate != -1)
         cpu_cycles = params.cpu_rate;
@@ -83,38 +81,58 @@ static gboolean engine_func(gint *data)
 
 	// run emulation core
 	g_timer_start(tmr);
-	*data = hw_m68k_run(cpu_cycles / MIN_INSTRUCTIONS_PER_CYCLE, cpu_cycles);
+	res = hw_m68k_run(cpu_cycles / MIN_INSTRUCTIONS_PER_CYCLE, cpu_cycles);
 	g_timer_stop(tmr);
-
-	// a bkpt has been encountered ? If yes, stop engine
-	if(*data)
-		return FALSE;
 
 	// compute duration of hw_m68k_run (used to update engine calibration)
 	ms = 1000 * g_timer_elapsed(tmr, NULL);
 	g_timer_destroy(tmr);
-	cal = (guint)(ms);
-	//printf("%u ", cal);
+	bench.tmr += (guint)ms;
+
+	// a bkpt has been encountered ? If yes, stop engine
+	if(res)
+	{
+		gtk_debugger_enter(GPOINTER_TO_INT(res));
+		return FALSE;
+	}
+
+	if((++bench.cnt > PERIOD))
+	{
+		bench.cal = bench.tmr / bench.cnt;
+		bench.tmr = 0; bench.cnt = 1;
+		//printf("%u ", bench.cal);
+		if(params.restricted && bench.cal < TIME_LIMIT)
+			g_timeout2_set_interval(tid, TIME_LIMIT - bench.cal);
+		else
+			g_timeout2_set_interval(tid, TIME_LIMIT);
+	}
 
 	return TRUE;
+}
+
+// function called when the function below is exited
+static void engine_notify(gint *data)
+{
+	// and reset source id
+	tid = 0;
 }
 
 // start emulation engine
 void engine_start(void) 
 {
-	if (cal >= TIME_LIMIT)
-		fprintf(stderr, "warning: emulation slower than TI (cal = %d, TIME_LIMIT = %d)\n", cal, TIME_LIMIT);
-	else if (cal >= TIME_LIMIT-5)
-		fprintf(stderr, "warning: emulation may be slower than TI (cal = %d, TIME_LIMIT = %d)\n", cal, TIME_LIMIT);
+	// compute calibration value
+	bench.cal = bench.tmr / bench.cnt;
 
-	if(params.restricted && cal < TIME_LIMIT)
-		tid = g_timeout_add_full(G_PRIORITY_DEFAULT_IDLE, TIME_LIMIT-cal, 
-					 (GSourceFunc)engine_func, &res, 
-					 (GDestroyNotify)engine_notify);
-	else
-		tid = g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, 
-				      (GSourceFunc)engine_func, &res, 
-				      (GDestroyNotify)engine_notify);
+	// display it for info
+	if (bench.cal >= TIME_LIMIT)
+		fprintf(stderr, "warning: emulation slower than TI (cal = %d, TIME_LIMIT = %d)\n", bench.cal, TIME_LIMIT);
+	else if (bench.cal >= TIME_LIMIT-5)
+		fprintf(stderr, "warning: emulation may be slower than TI (cal = %d, TIME_LIMIT = %d)\n", bench.cal, TIME_LIMIT);
+
+	// start engine
+	tid = g_timeout2_add_full(G_PRIORITY_DEFAULT_IDLE, TIME_LIMIT, 
+				(GSourceFunc)engine_func, NULL, 
+				(GDestroyNotify)engine_notify);
 }
 
 // stop it
@@ -130,41 +148,8 @@ int engine_is_stopped()
 	return !tid;
 }
 
+// state of engine
 int engine_is_running(void)
 {
 	return tid;
-}
-
-/*
-	Called at startup to know needed time for exec'ing hw_m68k_run.
-	This allow to make exec'ing more precise.
-*/
-#define NLOOPS	20
-void engine_calibrate(void)
-{
-	int i;
-	gdouble ms;
-	GTimer *tmr = g_timer_new();
-	int cycles = (tihw.hw_type == HW1) ? NB_CYCLES_PER_LOOP_HW1 : NB_CYCLES_PER_LOOP_HW2;
-
-	// wait for a while (needed to stabilize things before measurement)
-	g_usleep(500 * 1000);
-
-	// begin calibration loop
-	printl(0, "Calibrating engine: ");
-	
-	g_timer_start(tmr);
-	for(i = 0; i < NLOOPS; i++)
-	{
-		hw_m68k_run(cycles / MIN_INSTRUCTIONS_PER_CYCLE, cycles);
-	}
-	g_timer_stop(tmr);
-
-	// compute result and display
-	ms = 1000 * g_timer_elapsed(tmr, NULL);
-	g_timer_destroy(tmr);
-	cal = (guint)(ms / NLOOPS);
-	
-	// and display
-	printl(0, "%i loops in %.1f ms => %i ms\n", i, ms, cal);
 }

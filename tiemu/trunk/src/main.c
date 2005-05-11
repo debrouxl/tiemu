@@ -269,10 +269,7 @@ int main(int argc, char **argv)
 
 		/* 
 			Start emulation engine and run main loop 
-		*/
-		splash_screen_set_label(_("Calibrating TiEmu once..."));
-		engine_calibrate();
-		
+		*/		
 		splash_screen_stop();
 		engine_start();
 		gtk_main();
