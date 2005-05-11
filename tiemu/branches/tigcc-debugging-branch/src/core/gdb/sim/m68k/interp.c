@@ -44,6 +44,18 @@
 
 #include <sys/types.h>
 #include <setjmp.h>
+#ifdef _WIN32
+#undef setjmp
+#undef longjmp
+extern int asm_setjmp(jmp_buf b);
+extern void asm_longjmp(jmp_buf b, int v)
+#ifdef __GNUC__
+            __attribute__((noreturn))
+#endif
+            ;
+#define setjmp asm_setjmp
+#define longjmp asm_longjmp
+#endif
 
 #include <signal.h>
 #ifdef HAVE_UNISTD_H

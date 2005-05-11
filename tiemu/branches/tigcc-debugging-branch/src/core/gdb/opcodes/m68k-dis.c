@@ -132,6 +132,18 @@ static char *const reg_half_names[] =
 #define MAXLEN 22
 
 #include <setjmp.h>
+#ifdef _WIN32
+#undef setjmp
+#undef longjmp
+extern int asm_setjmp(jmp_buf b);
+extern void asm_longjmp(jmp_buf b, int v)
+#ifdef __GNUC__
+            __attribute__((noreturn))
+#endif
+            ;
+#define setjmp asm_setjmp
+#define longjmp asm_longjmp
+#endif
 
 struct private {
   /* Points to first byte not fetched.  */
