@@ -34,7 +34,7 @@
 #include "tilibs.h"
 #include "support.h"
 #include "struct.h"
-#include "engine.h"
+//#include "engine.h"
 #include "tie_error.h"
 
 #include "ti68k_def.h"

@@ -57,20 +57,9 @@ static int cpu_cycles = NB_CYCLES_PER_LOOP_HW2;
 
 static guint tid = 0;
 
-#define PERIOD	16	// ~500ms
-typedef struct
-{
-	guint	tmr;	// total time
-	guint	cnt;	// # loops
-	guint	cal;	// result
-} BENCH;
-static BENCH bench = { 0, 1, 0 };
-
 // function called by g_timeout_add_full/g_idle_add_full
 static gboolean engine_func(gint *data)
 {
-	GTimer* tmr = g_timer_new();
-	gdouble ms;
 	gint    res;
 	
 	// set instruction rate (default or custom value)
@@ -80,31 +69,13 @@ static gboolean engine_func(gint *data)
         cpu_cycles = (tihw.hw_type == HW1) ? NB_CYCLES_PER_LOOP_HW1 : NB_CYCLES_PER_LOOP_HW2;
 
 	// run emulation core
-	g_timer_start(tmr);
 	res = hw_m68k_run(cpu_cycles / MIN_INSTRUCTIONS_PER_CYCLE, cpu_cycles);
-	g_timer_stop(tmr);
-
-	// compute duration of hw_m68k_run (used to update engine calibration)
-	ms = 1000 * g_timer_elapsed(tmr, NULL);
-	g_timer_destroy(tmr);
-	bench.tmr += (guint)ms;
 
 	// a bkpt has been encountered ? If yes, stop engine
 	if(res)
 	{
 		gtk_debugger_enter(GPOINTER_TO_INT(res));
 		return FALSE;
-	}
-
-	if((++bench.cnt > PERIOD))
-	{
-		bench.cal = bench.tmr / bench.cnt;
-		bench.tmr = 0; bench.cnt = 1;
-		//printf("%u ", bench.cal);
-		if(params.restricted && bench.cal < TIME_LIMIT)
-			g_timeout2_set_interval(tid, TIME_LIMIT - bench.cal);
-		else
-			g_timeout2_set_interval(tid, TIME_LIMIT);
 	}
 
 	return TRUE;
@@ -120,17 +91,12 @@ static void engine_notify(gint *data)
 // start emulation engine
 void engine_start(void) 
 {
-	// compute calibration value
-	bench.cal = bench.tmr / bench.cnt;
-
-	// display it for info
-	if (bench.cal >= TIME_LIMIT)
-		fprintf(stderr, "warning: emulation slower than TI (cal = %d, TIME_LIMIT = %d)\n", bench.cal, TIME_LIMIT);
-	else if (bench.cal >= TIME_LIMIT-5)
-		fprintf(stderr, "warning: emulation may be slower than TI (cal = %d, TIME_LIMIT = %d)\n", bench.cal, TIME_LIMIT);
-
-	// start engine
-	tid = g_timeout2_add_full(G_PRIORITY_DEFAULT_IDLE, TIME_LIMIT, 
+	if(params.restricted)
+		tid = g_timeout_add_full(G_PRIORITY_DEFAULT_IDLE, TIME_LIMIT, 
+				(GSourceFunc)engine_func, NULL, 
+				(GDestroyNotify)engine_notify);
+	else
+		tid = g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, 
 				(GSourceFunc)engine_func, NULL, 
 				(GDestroyNotify)engine_notify);
 }

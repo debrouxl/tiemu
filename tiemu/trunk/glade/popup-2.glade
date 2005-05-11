@@ -246,6 +246,44 @@
 	  </child>
 
 	  <child>
+	    <widget class="GtkRadioMenuItem" id="high_lcd_update1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">High LCD update</property>
+	      <property name="use_underline">True</property>
+	      <property name="active">True</property>
+	      <signal name="activate" handler="on_high_lcd_update1_activate" last_modification_time="Wed, 11 May 2005 14:16:04 GMT"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkRadioMenuItem" id="med_lcd_update1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Med LCD update</property>
+	      <property name="use_underline">True</property>
+	      <property name="active">False</property>
+	      <property name="group">high_lcd_update1</property>
+	      <signal name="activate" handler="on_med_lcd_update1_activate" last_modification_time="Wed, 11 May 2005 14:21:37 GMT"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkRadioMenuItem" id="low_lcd_update1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Low LCD update</property>
+	      <property name="use_underline">True</property>
+	      <property name="active">False</property>
+	      <property name="group">high_lcd_update1</property>
+	      <signal name="activate" handler="on_low_lcd_update1_activate" last_modification_time="Wed, 11 May 2005 14:16:04 GMT"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkSeparatorMenuItem" id="séparateur2">
+	      <property name="visible">True</property>
+	    </widget>
+	  </child>
+
+	  <child>
 	    <widget class="GtkRadioMenuItem" id="normal_view1">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Normal view (x1)</property>
@@ -382,7 +420,7 @@
 	      <accelerator key="H" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image54">
+		<widget class="GtkImage" id="image62">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-help</property>
 		  <property name="icon_size">1</property>
@@ -405,7 +443,7 @@
 	      <accelerator key="M" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image55">
+		<widget class="GtkImage" id="image63">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-index</property>
 		  <property name="icon_size">1</property>
@@ -496,7 +534,7 @@
 	      <signal name="activate" handler="on_bugreport1_activate" last_modification_time="Sun, 20 Feb 2005 17:58:57 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image56">
+		<widget class="GtkImage" id="image64">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-execute</property>
 		  <property name="icon_size">1</property>

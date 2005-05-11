@@ -38,6 +38,8 @@ extern GtkWidget *main_wnd;
 int hid_init(void);
 int hid_exit(void);
 
+void hid_lcd_rate_set(void);
+
 int hid_update_keys(void);
 int hid_update_lcd(void);
 

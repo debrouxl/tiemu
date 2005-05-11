@@ -40,7 +40,7 @@
 #include "version.h"
 #include "popup.h"
 #include "paths.h"
-#include "engine.h"
+#include "../engine.h"
 #include "fs_misc.h"
 #include "comm.h"
 #include "rcfile.h"
@@ -235,6 +235,29 @@ on_hw_protection1_activate             (GtkMenuItem     *menuitem,
     	params.hw_protect = 1;
 }
 
+GLADE_CB void
+on_high_lcd_update1_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	params.lcd_rate = 25;
+	hid_lcd_rate_set();
+}
+
+GLADE_CB void
+on_med_lcd_update1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	params.lcd_rate = 55;
+	hid_lcd_rate_set();
+}
+
+GLADE_CB void
+on_low_lcd_update1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	params.lcd_rate = 85;
+	hid_lcd_rate_set();
+}
 
 GLADE_CB void
 on_normal_view1_activate               (GtkMenuItem     *menuitem,
@@ -468,6 +491,22 @@ GtkWidget* display_popup_menu(void)
     default:
         break;
     }
+
+	if(params.lcd_rate >= 10 && params.lcd_rate < 40)
+	{
+		data = glade_xml_get_widget(xml, "high_lcd_update1");
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
+	}
+	else if(params.lcd_rate >= 40 && params.lcd_rate < 70 || params.lcd_rate == -1)
+	{
+		data = glade_xml_get_widget(xml, "med_lcd_update1");
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
+	}
+	else if(params.lcd_rate >= 70 && params.lcd_rate < 100)
+	{
+		data = glade_xml_get_widget(xml, "low_lcd_update1");
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
+	}
 
 	// if debugger is open, blocks some items
 	if(dbg_on)
