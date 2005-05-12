@@ -24,17 +24,23 @@ itcl::body ManagedWin::constructor {args} {
 #  PUBLIC METHOD: destructor
 # ------------------------------------------------------------
 itcl::body ManagedWin::destructor {} {
+  global dont_quit_if_last
+
+  wm withdraw $_top
+
   # If no toplevels remain, quit.  However, check the quit_if_last
   # flag since we might be doing something like displaying a 
   # splash screen at startup...
 
-  if {!$numTopWins && [quit_if_last]} {
-    if {$::iipc && [pref get gdb/ipc/exit]} {
-      $::insight_ipc send quit
+  if {!$dont_quit_if_last} {
+    if {!$numTopWins && [quit_if_last]} {
+      if {$::iipc && [pref get gdb/ipc/exit]} {
+        $::insight_ipc send quit
+      }
+      gdb_force_quit
+    } else {
+      destroy_toplevel
     }
-    gdb_force_quit
-  } else {
-    destroy_toplevel
   }
 }
 

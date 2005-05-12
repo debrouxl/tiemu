@@ -1,3 +1,10 @@
+2005-05-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk-cmds.c (Gdbtk_Init): Register tiemu_close_debugger TCL command for
+                                     gdbcallback_close_debugger.
+        * gdbtk-hooks.c (gdbtk_hide_insight, gdbtk_show_insight): New functions (TCL
+                                                                  function wrappers).
+
 2005-05-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * gdbtk.c (gdbtk_start_timer, gdbtk_stop_timer): Enable as empty functions again.

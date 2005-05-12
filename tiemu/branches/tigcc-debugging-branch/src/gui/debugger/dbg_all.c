@@ -42,6 +42,8 @@
 #include "support.h"
 #include "paths.h"
 #include "gdbcall.h"
+void gdbtk_hide_insight(void);
+void gdbtk_show_insight(void);
 
 gchar *symfile;
 
@@ -83,6 +85,7 @@ int gtk_debugger_enter(int context)
     }
 
     // display debugger windows (if not)
+	gdbtk_show_insight();
 	dbgregs_display_window();
 	dbgmem_display_window();
 	dbgbkpts_display_window();
@@ -310,6 +313,7 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	// hide all windows
+	gdbtk_hide_insight();
 	gtk_debugger_hide_all(!0);
     dbg_on = 0;
 

@@ -1,3 +1,15 @@
+2005-05-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * interface.tcl (gdbtk_hide_insight, gdbtk_show_insight): New functions.
+        * tclIndex: Update accordingly.
+        * managedwin.itb (ManagedWin::destructor): Hide killed window. Check dont_quit_if_last flag.
+        * main.tcl: Initialize dont_quit_if_last flag to 0.
+
+2005-05-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * interface.tcl (gdbtk_tcl_preloop): Automatically run target sim and run on startup.
+          (gdbtk_quit): Call tiemu_close_debugger.
+
 2005-05-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * prefs.tcl (pref_set_defaults): Disable IPC by default.

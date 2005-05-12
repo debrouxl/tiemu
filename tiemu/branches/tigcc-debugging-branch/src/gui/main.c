@@ -75,6 +75,7 @@ extern int asm_setjmp(jmp_buf b);
 #endif
 #define READLINE_LIBRARY
 #include "../core/gdb/readline/readline.h"
+void gdbtk_hide_insight(void);
 
 ScrOptions options2;
 TieOptions options;		// general tiemu options
@@ -83,6 +84,7 @@ jmp_buf quit_gdb;               // longjmp target used when quitting GDB
 
 static void start_insight_timer(void);
 static void stop_insight_timer(void);
+static gint gdbtk_hide_insight_wrapper(gpointer data);
 
 /* Special */
 
@@ -313,6 +315,7 @@ int main(int argc, char **argv)
 			args.argv = argv;
 			args.use_windows = 1;
 			args.interpreter_p = "insight";
+			gtk_idle_add(gdbtk_hide_insight_wrapper, NULL);
 			gdb_main (&args);
 		}
 		stop_insight_timer();
@@ -360,6 +363,12 @@ static void stop_insight_timer(void)
       gtk_timeout_remove(gdbtk_timer_id);
       gdbtk_timer_id = 0;
     }
+}
+
+static gint gdbtk_hide_insight_wrapper(gpointer data)
+{
+  gdbtk_hide_insight();
+  return FALSE;
 }
 
 /* 

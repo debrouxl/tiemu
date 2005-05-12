@@ -227,5 +227,12 @@ install: tiemu
 	cd core/gdb/libgui && $(MAKE) install DESTDIR="$(DESTDIR)"
 	cd core/gdb/gdb && $(MAKE) install-gdbtk DESTDIR="$(DESTDIR)"
 
+install-without-tcl-tk: tiemu
+	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
+	$(INSTALL) -m755 tiemu $(DESTDIR)${prefix}/bin/
+	cd core/gdb/itcl && $(MAKE) install DESTDIR="$(DESTDIR)"
+	cd core/gdb/libgui && $(MAKE) install DESTDIR="$(DESTDIR)"
+	cd core/gdb/gdb && $(MAKE) install-gdbtk DESTDIR="$(DESTDIR)"
+
 uninstall:
 	rm -f ${prefix}/bin/tiemu

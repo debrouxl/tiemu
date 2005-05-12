@@ -108,7 +108,7 @@ proc gdbtk_tcl_preloop { } {
   # If there was an error loading an executible specified on the command line
   # then we will have called pre_add_symbol, which would set us to busy,
   # but not the corresponding post_add_symbol.  Do this here just in case...
-  after idle gdbtk_idle 
+  #after idle gdbtk_idle 
   ManagedWin::startup
 
   if {$gdb_exe_name != ""} {
@@ -126,6 +126,11 @@ proc gdbtk_tcl_preloop { } {
     }
   }
   
+  gdbtk_update
+
+  catch {gdb_cmd "target sim"}
+  catch {gdb_cmd "run"}
+
   gdbtk_update
 }
 
@@ -255,9 +260,7 @@ proc gdbtk_quit_check {} {
 #         exiting.
 # ------------------------------------------------------------------
 proc gdbtk_quit {} {
-  if {[gdbtk_quit_check]} {
-    gdbtk_force_quit
-  }
+  tiemu_close_debugger
 }
 
 # ------------------------------------------------------------------
@@ -1824,3 +1827,18 @@ proc gdbtk_console_read {} {
   debug "result=$result"
   return $result
 }
+
+proc gdbtk_hide_insight {} {
+  global dont_quit_if_last
+  set dont_quit_if_last 1
+  foreach win [ManagedWin::find ManagedWin] {
+    delete object $win
+  }
+  set dont_quit_if_last 0
+}
+
+proc gdbtk_show_insight {} {
+  ManagedWin::open Console
+  ManagedWin::open SrcWin
+}
+

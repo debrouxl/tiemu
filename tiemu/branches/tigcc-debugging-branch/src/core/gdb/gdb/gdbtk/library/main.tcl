@@ -27,6 +27,8 @@
 #set tcl_traceExec 2
 #set tcl_traceCompile 1
 
+set dont_quit_if_last 0
+
 # Add gdb's Tcl library directory to the end of the auto-load search path, if 
 # it isn't already on the path.
 # Also, add the plugins directory if it exists.

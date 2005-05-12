@@ -36,8 +36,12 @@ typedef void (catch_command_errors_ftype) (const char *, int);
 extern int catch_command_errors (catch_command_errors_ftype *func, const char *command, int from_tty, return_mask);
 #include "../gdb/gdb/top.h"
 
+/* This is for Insight. */
+extern int No_Update;
+
 static void gdbcall_exec_command(const char *command_str)
 {
+  No_Update = 0; /* Tell Insight to refresh itself. */
   catch_command_errors (execute_command, command_str, 0, RETURN_MASK_ALL); 
 }
 

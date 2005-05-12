@@ -272,6 +272,9 @@ Gdbtk_Init (Tcl_Interp *interp)
 			gdb_get_inferior_args, NULL);
   Tcl_CreateObjCommand (interp, "gdb_set_inferior_args", gdbtk_call_wrapper,
 			gdb_set_inferior_args, NULL);
+  extern Tcl_CmdProc gdbcallback_close_debugger;
+  Tcl_CreateObjCommand (interp, "tiemu_close_debugger",
+                        gdbcallback_close_debugger, NULL, NULL);
 
   /* gdb_context is used for debugging multiple threads or tasks */
   Tcl_LinkVar (interp, "gdb_context_id",

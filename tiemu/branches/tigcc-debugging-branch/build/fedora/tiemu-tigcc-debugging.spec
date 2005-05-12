@@ -37,7 +37,7 @@ make
 %install
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+make install-without-tcl-tk DESTDIR=$RPM_BUILD_ROOT
 mkdir -p ${RPM_BUILD_ROOT}/usr/share/applications
 cat >${RPM_BUILD_ROOT}/usr/share/applications/%{name}.desktop <<EOF
 [Desktop Entry]
@@ -73,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Thu May 12 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Use make install-without-tcl-tk.
+
 * Mon May 9 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Use now working DESTDIR support.
 Don't need terminal anymore.

@@ -793,3 +793,21 @@ gdbtk_architecture_changed (void)
 {
   Tcl_Eval (gdbtk_interp, "gdbtk_tcl_architecture_changed");
 }
+
+void
+gdbtk_hide_insight (void)
+{
+  if (Tcl_Eval (gdbtk_interp, "gdbtk_hide_insight") != TCL_OK)
+    {
+      report_error ();
+    }
+}
+
+void
+gdbtk_show_insight (void)
+{
+  if (Tcl_Eval (gdbtk_interp, "gdbtk_show_insight") != TCL_OK)
+    {
+      report_error ();
+    }
+}
