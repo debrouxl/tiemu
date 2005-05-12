@@ -1,3 +1,7 @@
+2005-05-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * main.c (captured_main): Set gdbtk_started to 0 and gdbtk_disable_fputs to 1.
+
 2005-05-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * top.c (asm_setjmp, asm_longjmp): Make non-static.

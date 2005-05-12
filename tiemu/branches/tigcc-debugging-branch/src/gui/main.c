@@ -76,6 +76,7 @@ extern int asm_setjmp(jmp_buf b);
 #define READLINE_LIBRARY
 #include "../core/gdb/readline/readline.h"
 void gdbtk_hide_insight(void);
+void gdbtk_delete_interp(void);
 
 ScrOptions options2;
 TieOptions options;		// general tiemu options
@@ -335,6 +336,7 @@ int main(int argc, char **argv)
 		ti68k_unload_image_or_upgrade();
 	}
 
+	gdbtk_delete_interp();
 	return 0;
 }
 

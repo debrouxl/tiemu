@@ -77,10 +77,11 @@ gdbtk_interpreter_init (void)
   return gdbtk_data;
 }
 
+int gdbtk_started = 0;
+
 static int
 gdbtk_interpreter_resume (void *data)
 {
-  static int started = 0;
   struct gdbtk_interp_data *d = (struct gdbtk_interp_data *) data;
   gdbtk_add_hooks ();
 
@@ -97,9 +98,9 @@ gdbtk_interpreter_resume (void *data)
      our interpreter init function to force gdb_stderr to our ui_file,
      we defer sourcing the startup file until now, when gdb is ready
      to let our interpreter run. */
-  if (!started)
+  if (!gdbtk_started)
     {
-      started = 1;
+      gdbtk_started = 1;
       gdbtk_source_start_file ();
     }
 

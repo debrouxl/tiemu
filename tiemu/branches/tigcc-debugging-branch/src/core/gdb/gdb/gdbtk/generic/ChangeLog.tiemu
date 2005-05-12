@@ -1,3 +1,13 @@
+2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gtbtk.c (cleanup_init): Don't delete gdbtk_interp. Code moved to...
+          (gdbtk_delete_inter): ... here. New function.
+
+2005-05-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk-interp.c (gdbtk_started): Move out of gdbtk_interpreter_resume, rename from "started".
+          (gdbtk_interpreter_resume): Use gdbtk_started instead of started.
+
 2005-05-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * gdbtk-cmds.c (Gdbtk_Init): Register tiemu_close_debugger TCL command for

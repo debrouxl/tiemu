@@ -40,6 +40,8 @@
 
 #include "interps.h"
 #include "main.h"
+extern int gdbtk_disable_fputs;
+extern int gdbtk_started;
 
 /* If nonzero, display time usage both at startup and for each command.  */
 
@@ -182,6 +184,10 @@ captured_main (void *data)
 
   getcwd (gdb_dirbuf, sizeof (gdb_dirbuf));
   current_directory = gdb_dirbuf;
+
+  /* (TiEmu 20050512 Kevin Kofler) Reinitialize Insight in case of a restart. */
+  gdbtk_started = 0;
+  gdbtk_disable_fputs = 1;
 
   gdb_stdout = stdio_fileopen (stdout);
   gdb_stderr = stdio_fileopen (stderr);
@@ -568,7 +574,6 @@ extern int gdbtk_test (char *);
     struct interp *interp = interp_lookup (interpreter_p);
     if (interp == NULL)
       error ("Interpreter `%s' unrecognized", interpreter_p);
-    /* Install it.  */
     if (!interp_set (interp))
       {
         fprintf_unfiltered (gdb_stderr,

@@ -236,10 +236,16 @@ TclDebug (char level, const char *fmt,...)
 /*
  * This cleanup function is added to the cleanup list that surrounds the Tk
  * main in gdbtk_init.  It deletes the Tcl interpreter.
+ * (TiEmu 20050513 Kevin Kofler) Not anymore, we delete it when TiEmu exists now.
  */
 
 static void
 cleanup_init (void *ignore)
+{
+}
+
+void
+gdbtk_delete_interp (void)
 {
   if (gdbtk_interp != NULL)
     Tcl_DeleteInterp (gdbtk_interp);
