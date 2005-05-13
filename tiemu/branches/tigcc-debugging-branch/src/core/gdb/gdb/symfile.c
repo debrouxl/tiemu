@@ -895,7 +895,10 @@ symbol_file_add_with_addrs_or_offsets (bfd *abfd, int from_tty,
       wrap_here ("");
     }
 
-  if (from_tty || info_verbose)
+  /* (TiEmu 20050513 Kevin Kofler) We need to run
+     deprecated_post_add_symbol_hook in all cases, whether from_tty is true or
+     not. */
+  if (deprecated_post_add_symbol_hook || from_tty || info_verbose)
     {
       if (deprecated_post_add_symbol_hook)
 	deprecated_post_add_symbol_hook ();
