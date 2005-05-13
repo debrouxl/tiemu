@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,6 +43,8 @@
 extern void registers_changed(void);
 /* Flushes GDB's frame cache */
 extern void reinit_frame_cache(void);
+/* Refreshes Insight */
+extern void gdbtk_update(void);
 
 // SR bits set/get modifiers
 #define SR_get_T(sr)        bit_get(sr, 15)
@@ -78,12 +80,14 @@ void ti68k_register_set_data(int n, uint32_t val)
 {
     if (n>=0 && n<8) m68k_dreg(regs,n) = val;
     registers_changed ();
+	gdbtk_update();
 }
 
 void ti68k_register_set_addr(int n, uint32_t val)
 {
     if (n>=0 && n<8) m68k_areg(regs,n) = val;
     registers_changed ();
+	gdbtk_update();
 }
 
 void ti68k_register_set_sp(uint32_t val)
@@ -91,6 +95,7 @@ void ti68k_register_set_sp(uint32_t val)
     m68k_areg(regs,7) = val;
     registers_changed ();
     reinit_frame_cache ();
+	gdbtk_update();
 }
 
 void ti68k_register_set_usp(uint32_t val)
@@ -101,6 +106,7 @@ void ti68k_register_set_usp(uint32_t val)
         regs.usp = val;
     registers_changed ();
     reinit_frame_cache ();
+	gdbtk_update();
 }
 
 void ti68k_register_set_ssp(uint32_t val)
@@ -111,6 +117,7 @@ void ti68k_register_set_ssp(uint32_t val)
         regs.isp = val;
     registers_changed ();
     reinit_frame_cache ();
+	gdbtk_update();
 }
 
 void ti68k_register_set_pc(uint32_t val)
@@ -119,6 +126,7 @@ void ti68k_register_set_pc(uint32_t val)
     fill_prefetch_0 (); /* Force reloading the prefetch. */
     registers_changed ();
     reinit_frame_cache ();
+	gdbtk_update();
 }
 
 void ti68k_register_set_sr(uint32_t val)
@@ -126,6 +134,7 @@ void ti68k_register_set_sr(uint32_t val)
     regs.sr = (int)val;
     MakeFromSR();
     registers_changed ();
+	gdbtk_update();
 }
 
 void ti68k_register_set_flag(uint8_t flag)
@@ -133,6 +142,7 @@ void ti68k_register_set_flag(uint8_t flag)
   	//TODO
   	/* T  0  S  0  0  I2 I1 I0 0  0  0  X  N  Z  V  C */	  
     registers_changed ();
+	gdbtk_update();
 }
 
 int ti68k_register_set_flags(const char *sf, const char *uf)
@@ -175,6 +185,7 @@ int ti68k_register_set_flags(const char *sf, const char *uf)
     MakeFromSR();
 
     registers_changed ();
+	gdbtk_update();
 
 	return !0;
 }

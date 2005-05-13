@@ -47,7 +47,8 @@
 extern void registers_changed(void);
 /* Flushes GDB's frame cache */
 extern void reinit_frame_cache(void);
-
+/* Refreshes Insight */
+extern void gdbtk_update(void);
 
 int ti68k_debug_get_pc(void)
 {
@@ -159,6 +160,7 @@ int ti68k_debug_step_over(void)
 	int result = ti68k_step_over_noflush();
     registers_changed();
 	reinit_frame_cache();
+	gdbtk_update();
     return result;
 }
 
@@ -185,6 +187,7 @@ int ti68k_debug_step_out(void)
 			hw_m68k_run(1, 0);
 			registers_changed();
 			reinit_frame_cache();
+			gdbtk_update();
 			return 0;
 		}	
 	}
@@ -224,6 +227,7 @@ int ti68k_debug_do_instructions(int n)
 	int result = hw_m68k_run(n, 0);
     registers_changed();
 	reinit_frame_cache();
+	gdbtk_update();
     return result;
 }
 

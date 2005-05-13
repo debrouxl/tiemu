@@ -1,3 +1,10 @@
+2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * interface.tcl (gdbtk_stop): Call tiemu_debug_break instead of the existing code.
+          (gdbtk_hide_insight): Use ManagedWin::shutdown.
+          (gdbtk_show_insight): Use ManagedWin::startup.
+        * managedwin.itb (ManagedWin::reveal): Reset geometry on all platforms.
+
 2005-05-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * interface.tcl (gdbtk_hide_insight, gdbtk_show_insight): New functions.

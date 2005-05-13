@@ -811,3 +811,12 @@ gdbtk_show_insight (void)
       report_error ();
     }
 }
+
+void
+gdbtk_update (void)
+{
+  if (Tcl_Eval (gdbtk_interp, "gdbtk_update") != TCL_OK)
+    {
+      report_error ();
+    }
+}

@@ -1513,13 +1513,14 @@ proc gdbtk_detached {} {
 # the gui's idle hooks are run), then open a dialog asking the user if
 # he'd like to detach.
 proc gdbtk_stop {} {
-  global _gdbtk_stop
-
-  if {$_gdbtk_stop(timer) == ""} {
-    add_hook gdb_idle_hook gdbtk_stop_idle_callback
-    set _gdbtk_stop(timer) [after 15000 gdbtk_detach]
-    catch {gdb_stop}
-  }
+#  global _gdbtk_stop
+#
+#  if {$_gdbtk_stop(timer) == ""} {
+#    add_hook gdb_idle_hook gdbtk_stop_idle_callback
+#    set _gdbtk_stop(timer) [after 15000 gdbtk_detach]
+#    catch {gdb_stop}
+#  }
+  tiemu_debug_break
 }
 
 # ------------------------------------------------------------------
@@ -1830,6 +1831,7 @@ proc gdbtk_console_read {} {
 
 proc gdbtk_hide_insight {} {
   global dont_quit_if_last
+  ManagedWin::shutdown
   set dont_quit_if_last 1
   foreach win [ManagedWin::find ManagedWin] {
     delete object $win
@@ -1838,6 +1840,8 @@ proc gdbtk_hide_insight {} {
 }
 
 proc gdbtk_show_insight {} {
+  ManagedWin::startup
+  #Show at the very least Console and SrcWin
   ManagedWin::open Console
   ManagedWin::open SrcWin
 }

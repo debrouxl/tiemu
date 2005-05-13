@@ -206,6 +206,13 @@ static int hex2bin (const char *hex, char *bin, int count);
 static int fromhex (int a);
 
 
+extern int ti68k_debug_break(void);
+static int tiemu_debug_break (ClientData clientData, Tcl_Interp *interp,
+		    int objc, Tcl_Obj *CONST objv[])
+{
+  return ti68k_debug_break ();
+}
+
 /* Gdbtk_Init
  *    This loads all the Tcl commands into the Tcl interpreter.
  *
@@ -275,6 +282,8 @@ Gdbtk_Init (Tcl_Interp *interp)
   extern Tcl_CmdProc gdbcallback_close_debugger;
   Tcl_CreateObjCommand (interp, "tiemu_close_debugger",
                         gdbcallback_close_debugger, NULL, NULL);
+  Tcl_CreateObjCommand (interp, "tiemu_debug_break",
+                        tiemu_debug_break, NULL, NULL);
 
   /* gdb_context is used for debugging multiple threads or tasks */
   Tcl_LinkVar (interp, "gdb_context_id",

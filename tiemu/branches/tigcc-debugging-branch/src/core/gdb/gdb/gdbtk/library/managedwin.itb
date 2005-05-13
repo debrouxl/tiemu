@@ -110,9 +110,9 @@ itcl::body ManagedWin::reveal {} {
   # the window is visible.
   if {[info exists ::$_top._init_geometry]} {
     upvar ::$_top._init_geometry gm
-    if {$::tcl_platform(platform) == "unix"} {
+#    if {$::tcl_platform(platform) == "unix"} {
       wm geometry $_top $gm
-    }
+#    }
     unset ::$_top._init_geometry
   }
   
