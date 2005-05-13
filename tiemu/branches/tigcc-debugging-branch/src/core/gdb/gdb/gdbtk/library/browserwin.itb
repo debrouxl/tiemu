@@ -453,7 +453,7 @@ itcl::body BrowserWin::_fill_funcs_combo {name} {
 	-message "This file can not be found or does not contain\ndebugging information."
       return
     }
-    foreach f [lsort $listfuncs] {
+    foreach f [lsort -unique $listfuncs] {
       lassign $f func mang
       if {$func == "global constructors keyed to main"} {continue}
       set _mangled_func($func) $mang

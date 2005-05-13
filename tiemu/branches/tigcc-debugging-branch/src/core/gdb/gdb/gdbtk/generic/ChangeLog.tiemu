@@ -1,5 +1,9 @@
 2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * gdbtk-cmds.c (gdb_listfuncs): Add support for files built using #line directives.
+
+2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * gdbtk-cmds.c (tiemu_debug_break): New function (wrapper around ti68k_debug_break).
           (Gdbtk_Init): Register tiemu_debug_break TCL command.
         * gdbtk-hooks.c (gdbtk_update): New function (TCL function wrapper).

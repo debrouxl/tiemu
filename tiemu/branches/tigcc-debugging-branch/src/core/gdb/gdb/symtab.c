@@ -2922,6 +2922,7 @@ search_symbols (char *regexp, domain_enum kind, int nfiles, char *files[],
 		struct symbol_search **matches)
 {
   struct symtab *s;
+  struct symtab *s1;
   struct partial_symtab *ps;
   struct blockvector *bv;
   struct blockvector *prev_bv = 0;
@@ -3119,7 +3120,16 @@ search_symbols (char *regexp, domain_enum kind, int nfiles, char *files[],
 	  ALL_BLOCK_SYMBOLS (b, iter, sym)
 	    {
 	      QUIT;
-	      if (file_matches (s->filename, files, nfiles)
+	      if (kind == FUNCTIONS_DOMAIN && SYMBOL_CLASS (sym) == LOC_BLOCK)
+	        {
+	          CORE_ADDR addr = BLOCK_START (SYMBOL_BLOCK_VALUE (sym));
+	          struct symtab *symtabj = addr ? find_pc_line (addr, 0).symtab : NULL;
+	          s1 = symtabj ? symtabj : s;
+	        }
+	      else
+	        s1 = s;
+
+	      if (file_matches (s1->filename, files, nfiles)
 		  && ((regexp == NULL
 		       || re_exec (SYMBOL_NATURAL_NAME (sym)) != 0)
 		      && ((kind == VARIABLES_DOMAIN && SYMBOL_CLASS (sym) != LOC_TYPEDEF
@@ -3132,7 +3142,7 @@ search_symbols (char *regexp, domain_enum kind, int nfiles, char *files[],
 		  /* match */
 		  psr = (struct symbol_search *) xmalloc (sizeof (struct symbol_search));
 		  psr->block = i;
-		  psr->symtab = s;
+		  psr->symtab = s1;
 		  psr->symbol = sym;
 		  psr->msymbol = NULL;
 		  psr->next = NULL;

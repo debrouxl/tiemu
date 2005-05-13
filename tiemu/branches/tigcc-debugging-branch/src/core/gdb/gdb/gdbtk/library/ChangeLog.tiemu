@@ -1,5 +1,10 @@
 2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * srcwin.itb (SrcWin::fillFuncCB): Use lsort -unique to remove duplicates.
+        * browserwin.itb (BrowserWin::_fill_funcs_combo): Likewise.
+
+2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * interface.tcl (gdbtk_stop): Call tiemu_debug_break instead of the existing code.
           (gdbtk_hide_insight): Use ManagedWin::shutdown.
           (gdbtk_show_insight): Use ManagedWin::startup.

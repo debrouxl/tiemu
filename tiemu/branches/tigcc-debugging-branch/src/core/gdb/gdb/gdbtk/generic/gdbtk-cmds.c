@@ -1420,6 +1420,7 @@ gdb_search (ClientData clientData, Tcl_Interp *interp,
 /* This implements the tcl command gdb_listfuncs
 
 * It lists all the functions defined in a given file
+* (TiEmu 20050513 Kevin Kofler) Added support for #line directives.
 * 
 * Arguments:
 *    file - the file to look in
@@ -1436,8 +1437,11 @@ gdb_listfuncs (clientData, interp, objc, objv)
      int objc;
      Tcl_Obj *CONST objv[];
 {
+  struct objfile *objfile;
   struct symtab *symtab;
+  struct symtab *symtabi;
   struct blockvector *bv;
+  struct blockvector *prev_bv = 0;
   struct block *b;
   struct symbol *sym;
   int i;
@@ -1468,7 +1472,11 @@ gdb_listfuncs (clientData, interp, objc, objv)
 
   Tcl_SetListObj (result_ptr->obj_ptr, 0, NULL);
 
-  bv = BLOCKVECTOR (symtab);
+  ALL_SYMTABS (objfile, symtabi)
+  {
+  bv = BLOCKVECTOR (symtabi);
+  if (bv == prev_bv) continue;
+  prev_bv = bv;
   for (i = GLOBAL_BLOCK; i <= STATIC_BLOCK; i++)
     {
       b = BLOCKVECTOR_BLOCK (bv, i);
@@ -1478,6 +1486,11 @@ gdb_listfuncs (clientData, interp, objc, objv)
 	    {
 
 	      char *name = SYMBOL_DEMANGLED_NAME (sym);
+	      CORE_ADDR addr = BLOCK_START (SYMBOL_BLOCK_VALUE (sym));
+	      struct symtab *symtabj = addr ? find_pc_line (addr, 0).symtab : NULL;
+
+	      if (!symtabj || FILENAME_CMP (symtabj->filename, symtab->filename))
+	        continue;
 
 	      if (name)
 		{
@@ -1508,6 +1521,7 @@ gdb_listfuncs (clientData, interp, objc, objv)
 	    }
 	}
     }
+  }
   return TCL_OK;
 }
 
