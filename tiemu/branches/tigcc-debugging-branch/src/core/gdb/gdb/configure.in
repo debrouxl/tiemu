@@ -1432,6 +1432,21 @@ if test "${target}" = "${host}"; then
   fi
   frags="$frags $host_makefile_frag"
 else
+  # (TiEmu 20050514 Kevin Kofler) Non-native hosts
+  host_makefile_frag=${srcdir}/config/${gdb_host_cpu}/${gdb_host}.mh
+  if test ! -f ${host_makefile_frag}; then
+    host_makefile_frag=/dev/null
+  fi
+  # NOTE: I intentionally do NOT add this to frags! I want to get only the
+  # XM header file, not all the NM stuff.
+fi
+
+changequote(,)dnl
+hostfile=`sed -n '
+s/XM_FILE[ 	]*=[ 	]*\([^ 	]*\)/\1/p
+' ${host_makefile_frag}`
+
+if test "${target}" != "${host}"; then
   host_makefile_frag=/dev/null
 fi
 
@@ -1444,11 +1459,6 @@ frags="$frags $target_makefile_frag"
 AC_SUBST_FILE(host_makefile_frag)
 AC_SUBST_FILE(target_makefile_frag)
 AC_SUBST(frags)
-
-changequote(,)dnl
-hostfile=`sed -n '
-s/XM_FILE[ 	]*=[ 	]*\([^ 	]*\)/\1/p
-' ${host_makefile_frag}`
 
 targetfile=`sed -n '
 s/DEPRECATED_TM_FILE[ 	]*=[ 	]*\([^ 	]*\)/\1/p

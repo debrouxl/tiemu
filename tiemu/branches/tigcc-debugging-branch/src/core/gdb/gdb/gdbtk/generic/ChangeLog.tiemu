@@ -1,5 +1,9 @@
 2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * gdbtk-cmds.c (gdb_disassemble_driver): Use find_pc_line to find symtab for MIXED mode.
+
+2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * gdbtk-cmds.c (gdb_listfuncs): Add support for files built using #line directives.
 
 2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>

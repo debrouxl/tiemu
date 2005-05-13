@@ -1996,7 +1996,7 @@ gdb_disassemble_driver (CORE_ADDR low, CORE_ADDR high,
       int next_line;
       
       /* Assume symtab is valid for whole PC range */
-      symtab = find_pc_symtab (low); 
+      symtab = find_pc_line (low, 0).symtab;
 
       if (!symtab || !symtab->linetable)
         goto assembly_only;
