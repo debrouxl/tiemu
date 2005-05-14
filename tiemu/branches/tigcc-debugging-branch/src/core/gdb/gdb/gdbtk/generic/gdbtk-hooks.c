@@ -820,3 +820,12 @@ gdbtk_update (void)
       report_error ();
     }
 }
+
+void
+gdbtk_clear_file (void)
+{
+  if (Tcl_Eval (gdbtk_interp, "gdbtk_clear_file") != TCL_OK)
+    {
+      report_error ();
+    }
+}

@@ -1,5 +1,9 @@
 2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * gdbtk-hooks.c (gdbtk_clear_file): New function (TCL function wrapper).
+
+2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * gdbtk-stack.c (gdb_stack): Don't backtrace beyond 100 levels.
 
 2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>

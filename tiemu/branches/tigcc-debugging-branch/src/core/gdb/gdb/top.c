@@ -29,6 +29,7 @@
 #include "cli/cli-setshow.h"
 #include "cli/cli-decode.h"
 #include "symtab.h"
+#include "symfile.h"
 #include "inferior.h"
 #include <signal.h>
 #include "target.h"
@@ -1544,6 +1545,10 @@ quit_force (char *args, int from_tty)
   catch_errors (quit_target, &qt,
 	        "Quitting: ", RETURN_MASK_ALL);
 
+  delete_command (NULL, 0);
+  symbol_file_clear (0);
+  void gdbtk_clear_file (void);
+  gdbtk_clear_file ();
   extern struct interp *current_interpreter;
   current_interpreter = NULL;
   reinitialize_more_filter ();

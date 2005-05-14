@@ -44,6 +44,9 @@
 #include "gdbcall.h"
 void gdbtk_hide_insight(void);
 void gdbtk_show_insight(void);
+void delete_command(void *, int);
+void symbol_file_clear(int);
+void gdbtk_clear_file(void);
 
 gchar *symfile;
 
@@ -72,6 +75,8 @@ int gtk_debugger_enter(int context)
 {
 	gint type, id, mode;
 
+	if (!dbg_on) gdbtk_show_insight();
+
 	// debugger is open
 	dbg_on = !0;
 
@@ -85,7 +90,6 @@ int gtk_debugger_enter(int context)
     }
 
     // display debugger windows (if not)
-	gdbtk_show_insight();
 	dbgregs_display_window();
 	dbgmem_display_window();
 	dbgbkpts_display_window();
@@ -114,6 +118,9 @@ int gtk_debugger_enter(int context)
 			if(options3.bkpts.visible)
 				dbgbkpts_refresh_window();
 
+			delete_command(NULL, 0);
+			symbol_file_clear(0);
+			gdbtk_clear_file ();
 			ti68k_register_get_pc(&pc);
 			gdb_add_symbol_file(symfile, pc);
 			g_free (symfile);
