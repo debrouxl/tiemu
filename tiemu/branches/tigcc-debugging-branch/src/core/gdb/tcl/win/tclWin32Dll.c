@@ -365,7 +365,7 @@ TclpCheckStackSpace()
     __asm__ __volatile__ (
             "movl  %fs:0, %eax" "\n\t"
             "movl  %eax, _HANDLER" "\n\t"
-            "movl  __except_checkstackspace_handler, %eax" "\n\t"
+            "movl  $__except_checkstackspace_handler, %eax" "\n\t"
             "movl  %eax, _HANDLER+4" "\n\t"
             "movl  $_HANDLER, %eax" "\n\t"
             "movl  %eax, %fs:0");
