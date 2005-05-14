@@ -454,7 +454,7 @@ static int
 gdb_stack (ClientData clientData, Tcl_Interp *interp,
 	   int objc, Tcl_Obj *CONST objv[])
 {
-  int start, count;
+  int start, count, i = 100;
 
   if (objc < 3)
     {
@@ -484,7 +484,7 @@ gdb_stack (ClientData clientData, Tcl_Interp *interp,
       if (r != GDB_OK)
 	return TCL_ERROR;
 
-      while (fi != NULL)
+      while (fi != NULL && i--)
         {
           top = fi;
 	  r = GDB_get_prev_frame (fi, &fi);
