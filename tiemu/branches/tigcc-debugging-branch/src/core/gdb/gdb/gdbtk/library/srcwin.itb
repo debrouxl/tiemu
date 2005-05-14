@@ -170,6 +170,11 @@ itcl::body SrcWin::_build_win {} {
       _update $loc
     }
   }
+
+  # (TiEmu 20050514 Kevin Kofler) Work around a bug in the Tk geometry manager
+  # (can't see the dropdowns without this)
+  wm withdraw $_top
+  wm deiconify $_top
 }
 
 
