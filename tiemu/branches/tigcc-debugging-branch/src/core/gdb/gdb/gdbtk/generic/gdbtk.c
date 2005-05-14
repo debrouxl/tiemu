@@ -611,6 +611,8 @@ gdbtk_init (void)
 void
 gdbtk_source_start_file (void)
 {
+  static int first_time = 1;
+
   /* find the gdb tcl library and source main.tcl */
 #ifdef NO_TCLPRO_DEBUGGER
   static char script[] = "\
@@ -642,6 +644,32 @@ gdbtk_find_main";
   /* now enable gdbtk to parse the output from gdb */
   gdbtk_disable_fputs = 0;
     
+  if (!first_time)
+    {
+      if (Tcl_Eval (gdbtk_interp, "gdbtk_reinit") != TCL_OK)
+        {
+          const char *msg;
+
+          /* Force errorInfo to be set up propertly.  */
+          Tcl_AddErrorInfo (gdbtk_interp, "");
+          msg = Tcl_GetVar (gdbtk_interp, "errorInfo", TCL_GLOBAL_ONLY);
+
+#ifdef _WIN32
+          /* On windows, display the error using a pop-up message box.
+	     If GDB wasn't started from the DOS prompt, the user won't
+	     get to see the failure reason.  */
+          MessageBox (NULL, msg, NULL, MB_OK | MB_ICONERROR | MB_TASKMODAL);
+          throw_exception (RETURN_ERROR);
+#else
+          /* FIXME: cagney/2002-04-17: Wonder what the lifetime of
+	     ``msg'' is - does it need a cleanup?  */
+          error ("%s", msg);
+#endif
+        }
+      return;
+    }
+
+  first_time = 0;
   if (Tcl_GlobalEval (gdbtk_interp, (char *) script) != TCL_OK)
     {
       const char *msg;

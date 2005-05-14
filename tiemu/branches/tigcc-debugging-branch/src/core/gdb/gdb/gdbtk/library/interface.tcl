@@ -1846,3 +1846,6 @@ proc gdbtk_show_insight {} {
   ManagedWin::open SrcWin
 }
 
+proc gdbtk_reinit {} {
+  # do nothing for now
+}

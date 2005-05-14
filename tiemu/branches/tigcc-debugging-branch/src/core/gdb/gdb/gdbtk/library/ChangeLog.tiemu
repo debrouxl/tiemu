@@ -1,5 +1,10 @@
 2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * interface.tcl (gdbtk_reinit): New functions.
+        * tclIndex: Update accordingly.
+
+2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * srcwin.itb (SrcWin::_build_win): Work around Tk geometry manager glitch.
 
 2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>

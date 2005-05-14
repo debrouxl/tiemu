@@ -89,6 +89,7 @@ set auto_index(gdbtk_tcl_architecture_changed) [list source [file join $dir inte
 set auto_index(gdbtk_console_read) [list source [file join $dir interface.tcl]]
 set auto_index(gdbtk_hide_insight) [list source [file join $dir interface.tcl]]
 set auto_index(gdbtk_show_insight) [list source [file join $dir interface.tcl]]
+set auto_index(gdbtk_reinit) [list source [file join $dir interface.tcl]]
 set auto_index(Iipc) [list source [file join $dir ipc.tcl]]
 set auto_index(LocalsWin) [list source [file join $dir locals.tcl]]
 set auto_index(ModalDialog) [list source [file join $dir modal.tcl]]
