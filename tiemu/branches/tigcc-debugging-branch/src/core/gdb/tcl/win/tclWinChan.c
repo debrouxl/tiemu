@@ -122,8 +122,8 @@ static Tcl_ChannelType fileChannelType = {
 };
 
 #ifdef HAVE_NO_SEH
-static void *ESP;
-static void *EBP;
+static void *__attribute__((used)) ESP;
+static void *__attribute__((used)) EBP;
 #endif /* HAVE_NO_SEH */
 
 
@@ -965,7 +965,7 @@ Tcl_MakeFileChannel(rawHandle, mode)
     DWORD consoleParams, type;
     TclFile readFile = NULL;
     TclFile writeFile = NULL;
-    BOOL result;
+    volatile BOOL result;
 
     if (mode == 0) {
 	return NULL;
@@ -1065,6 +1065,7 @@ Tcl_MakeFileChannel(rawHandle, mode)
 	    CloseHandle(dupedHandle);
 #ifdef HAVE_NO_SEH
         __asm__ __volatile__ (
+                "addl  $4, %esp" "\n\t"
                 "jmp   makefilechannel_pop" "\n"
                 "makefilechannel_reentry:" "\n\t"
                 "movl  _ESP, %esp" "\n\t"
