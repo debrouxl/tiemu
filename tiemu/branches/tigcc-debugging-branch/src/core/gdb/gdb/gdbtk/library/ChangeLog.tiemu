@@ -1,3 +1,7 @@
+2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * srctextwin.itb (_clear_cache): Delete old panes.
+
 2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * srcwin.itb (SrcWin::fillFuncCB): Use lsort -unique to remove duplicates.

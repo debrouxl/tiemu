@@ -2962,6 +2962,10 @@ itcl::body SrcTextWin::_clear_cache {} {
     }
   }
 
+  for {set i 0} {$i<filenum} {incr i} {
+    {$itk_interior.p delete pane$i}
+  }
+
   _initialize_srctextwin
   set filenum 0
   set Cname ""
