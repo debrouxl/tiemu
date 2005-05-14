@@ -170,6 +170,15 @@ captured_main (void *data)
     alloca (4 - i);
 #endif
 
+  if (already_initialized)
+    {
+      /* (TiEmu 20050512 Kevin Kofler) Reinitialize Insight in case of a restart. */
+      gdbtk_started = 0;
+      gdbtk_disable_fputs = 1;
+    }
+  else
+  {
+  /* (TiEmu 20050514 Kevin Kofler) Skip all these in case of a restart. */
   cmdsize = 1;
   cmdarg = (char **) xmalloc (cmdsize * sizeof (*cmdarg));
   ncmd = 0;
@@ -184,10 +193,6 @@ captured_main (void *data)
 
   getcwd (gdb_dirbuf, sizeof (gdb_dirbuf));
   current_directory = gdb_dirbuf;
-
-  /* (TiEmu 20050512 Kevin Kofler) Reinitialize Insight in case of a restart. */
-  gdbtk_started = 0;
-  gdbtk_disable_fputs = 1;
 
   gdb_stdout = stdio_fileopen (stdout);
   gdb_stderr = stdio_fileopen (stderr);
@@ -524,8 +529,6 @@ extern int gdbtk_test (char *);
 
   /* Initialize all files.  Give the interpreter a chance to take
      control of the console via the deprecated_init_ui_hook().  */
-  if (!already_initialized)
-  {
     gdb_init (argv[0]);
     already_initialized = 1;
   }

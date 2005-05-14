@@ -1,5 +1,10 @@
 2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * gdbtk.c (gdbtk_cleanup): Don't call TCL_Finalize here.
+          (gdbtk_delete_interp): Call it here.
+
+2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * gdbtk-hooks.c (gdbtk_clear_file): New function (TCL function wrapper).
 
 2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>

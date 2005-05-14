@@ -247,6 +247,7 @@ cleanup_init (void *ignore)
 void
 gdbtk_delete_interp (void)
 {
+  Tcl_Finalize ();
   if (gdbtk_interp != NULL)
     Tcl_DeleteInterp (gdbtk_interp);
   gdbtk_interp = NULL;
@@ -353,7 +354,6 @@ static void
 gdbtk_cleanup (PTR dummy)
 {
   Tcl_Eval (gdbtk_interp, "gdbtk_cleanup");
-  Tcl_Finalize ();
 }
 
 

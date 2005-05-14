@@ -1,5 +1,10 @@
 2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * main.c (captured_main): Skip more initializations if already initialized.
+        * ../readline/posixjmp.h: Use asm_setjmp and asm_longjmp on Win32.
+
+2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * top.c (quit_force): Call symbol_file_clear(0), delete_command(NULL,0) and
                               gdbtk_clear_file().
 
