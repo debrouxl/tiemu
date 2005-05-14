@@ -41,8 +41,6 @@ static int platformId;		/* Running under NT, or 95/98? */
 static void *__attribute__((used)) ESP;
 static void *__attribute__((used)) EBP;
 static void* __attribute__((used)) HANDLER[2];
-static void* __attribute__((used)) NEW_HANDLER = &(HANDLER[0]);
-static void* __attribute__((used)) OLD_HANDLER = &(HANDLER[1]);
 #endif /* HAVE_NO_SEH */
 
 /*
@@ -366,10 +364,10 @@ TclpCheckStackSpace()
 
     __asm__ __volatile__ (
             "movl  %fs:0, %eax" "\n\t"
-            "movl  %eax, _OLD_HANDLER" "\n\t"
+            "movl  %eax, _HANDLER" "\n\t"
             "movl  __except_checkstackspace_handler, %eax" "\n\t"
-            "movl  %eax, _NEW_HANDLER" "\n\t"
-            "movl  _HANDLER, %eax" "\n\t"
+            "movl  %eax, _HANDLER+4" "\n\t"
+            "movl  $_HANDLER, %eax" "\n\t"
             "movl  %eax, %fs:0");
 #else
     __try {
@@ -385,7 +383,7 @@ TclpCheckStackSpace()
 
     __asm__ __volatile__ (
             "checkstackspace_pop:" "\n\t"
-            "mov   _OLD_HANDLER, %eax"  "\n\t"
+            "mov   _HANDLER, %eax"  "\n\t"
             "mov   %eax, %fs:0");
 #else
     } __except (EXCEPTION_EXECUTE_HANDLER) {}
