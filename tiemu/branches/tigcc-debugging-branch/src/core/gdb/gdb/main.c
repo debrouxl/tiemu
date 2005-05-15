@@ -170,14 +170,6 @@ captured_main (void *data)
     alloca (4 - i);
 #endif
 
-  if (already_initialized)
-    {
-      /* (TiEmu 20050512 Kevin Kofler) Reinitialize Insight in case of a restart. */
-      gdbtk_started = 0;
-      gdbtk_disable_fputs = 1;
-    }
-  else
-  {
   /* (TiEmu 20050514 Kevin Kofler) Skip all these in case of a restart. */
   cmdsize = 1;
   cmdarg = (char **) xmalloc (cmdsize * sizeof (*cmdarg));
@@ -189,6 +181,14 @@ captured_main (void *data)
   quit_flag = 0;
   line = (char *) xmalloc (linesize);
   line[0] = '\0';		/* Terminate saved (now empty) cmd line */
+  if (already_initialized)
+    {
+      /* (TiEmu 20050512 Kevin Kofler) Reinitialize Insight in case of a restart. */
+      gdbtk_started = 0;
+      gdbtk_disable_fputs = 1;
+    }
+  else
+  {
   instream = stdin;
 
   getcwd (gdb_dirbuf, sizeof (gdb_dirbuf));
