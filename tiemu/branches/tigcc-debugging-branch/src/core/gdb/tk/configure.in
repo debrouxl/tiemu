@@ -23,6 +23,10 @@ case "${host}" in
 esac
 
 AC_PROG_MAKE_SET
+
+# Convert --enable-shared-tcl-tk to --enable-shared for the subdir
+ac_configure_args=`echo "$ac_configure_args" | sed "s,--enable-shared-tcl-tk,--enable-shared,g"`
+
 AC_CONFIG_SUBDIRS($CONFIGDIR)
 AC_OUTPUT(Makefile)
 

@@ -15,23 +15,23 @@ Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		Applications/Emulators
 Copyright:	GPL
-BuildRequires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2-devel >= 2.4.0, gtk2-devel >= 2.4.0, libglade2-devel >= 2.4.0, kdelibs-devel >= 3.3.0, ncurses-devel >= 5.4, desktop-file-utils >= 0.9
-Requires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2 >= 2.4.0, gtk2 >= 2.4.0, libglade2 >= 2.4.0, kdelibs >= 3.3.0, ncurses >= 5.4
+BuildRequires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2-devel >= 2.4.0, gtk2-devel >= 2.4.0, libglade2-devel >= 2.4.0, kdelibs-devel >= 3.3.0, xorg-x11-devel >= 6.8.1, ncurses-devel >= 5.4, desktop-file-utils >= 0.9
+Requires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2 >= 2.4.0, gtk2 >= 2.4.0, libglade2 >= 2.4.0, kdelibs >= 3.3.0, xorg-x11 >= 6.8.1, ncurses >= 5.4, tcl >= 8.4, tk >= 8.4
 Requires(post):	desktop-file-utils >= 0.9
 Requires(postun): desktop-file-utils >= 0.9
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Obsoletes:	tiemu < 2.00
-Conflicts:	tiemu >= 2.00
-Provides:	tiemu = ${version}
+Conflicts:	tiemu >= 2.00, insight
+Provides:	tiemu = ${version}, itcl = 3.2, itk = 3.2
 Summary: TiEmu is a TI89(Ti)/92(+)/V200 emulator.
 %description
-TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports debugging using GDB.
+TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debugging using Insight GDB.
 
 %prep
 %setup -n %{name}
 
 %build
-CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls --with-kde
+CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls --with-kde --enable-shared-tcl-tk
 make
 
 %install
@@ -67,12 +67,33 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 /usr/bin/tiemu
+/usr/include/itclDecls.h
+/usr/include/itcl.h
+/usr/include/itclIntDecls.h
+/usr/include/itclInt.h
+/usr/include/itkDecls.h
+/usr/include/itk.h
+/usr/lib/insight*
+/usr/lib/itcl*
+/usr/lib/itk*
+/usr/lib/libitcl*.a
+/usr/lib/libitk*.a
 /usr/man/man1/tiemu.1
+/usr/man/mann/*.n
+/usr/share/insight*
+/usr/share/itcl*
+/usr/share/itk*
+/usr/share/iwidgets*
+/usr/share/redhat/gui
 /usr/share/tiemu
 %{_datadir}/applications/lpg-%{name}.desktop
 
 %defattr(-,root,root)
 %changelog
+* Thu May 15 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Update description, file list, Requires, BuildReq, Provides and Conflicts.
+Use --enable-shared-tcl-tk.
+
 * Thu May 12 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Use make install-without-tcl-tk.
 
