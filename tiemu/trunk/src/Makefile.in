@@ -146,6 +146,7 @@ gui_OBJ = \
 	gui/scroptions.o						\
 	gui/splash.o							\
 	gui/support.o 							\
+	gui/tsource.o 							\
 	gui/wizard.o
 
 tiemu_OBJ = core/uae/newcpu.o \
