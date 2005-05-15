@@ -92,31 +92,26 @@ static gboolean engine_func(gint *data)
 	return TRUE;
 }
 
-// function called when the function below is exited
-static void engine_notify(gint *data)
-{
-	// and reset source id
-	tid = 0;
-}
-
 // start emulation engine
 void engine_start(void) 
 {
 	if(params.restricted)
 		tid = g_timeout2_add_full(G_PRIORITY_DEFAULT_IDLE, TIME_LIMIT, 
-				(GSourceFunc)engine_func, NULL, 
-				(GDestroyNotify)engine_notify);
+				(GSourceFunc)engine_func, NULL, NULL);
 	else
 		tid = g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, 
-				(GSourceFunc)engine_func, NULL, 
-				(GDestroyNotify)engine_notify);
+				(GSourceFunc)engine_func, NULL, NULL);
 }
 
 // stop it
 void engine_stop(void) 
 {
 	if(tid)
+	{
 		g_source_remove(tid);
+		// and reset source id
+		tid = 0;
+	}
 }
 
 // state of engine
