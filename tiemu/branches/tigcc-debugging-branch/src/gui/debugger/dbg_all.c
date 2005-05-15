@@ -540,8 +540,11 @@ on_dbgcode_window_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-    gtk_widget_hide(widget);
-    on_quit1_activate(NULL, NULL);    
+    if (dbgcode_quit_enabled())
+    {
+        gtk_widget_hide(widget);
+        on_quit1_activate(NULL, NULL);    
+    }
     return TRUE;
 }
 
