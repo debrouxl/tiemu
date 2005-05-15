@@ -42,6 +42,7 @@
 #include "engine.h"
 #include "dbg_all.h"
 #include "printl.h"
+#include "tsource.h"
 void sim_exception(int which);
 #ifndef SIGTRAP
 /* WARNING: This MUST match the definitions in GDB and sim. */
@@ -62,15 +63,12 @@ void sim_exception(int which);
 static int cpu_cycles = NB_CYCLES_PER_LOOP_HW2;
 
 static guint tid = 0;
-static gint  res = 0;
-static guint cal = 0;
 
 // function called by g_timeout_add_full/g_idle_add_full
 static gboolean engine_func(gint *data)
 {
-	GTimer *tmr = g_timer_new();
-	gdouble ms;
-
+	gint    res;
+	
 	// set instruction rate (default or custom value)
     if(params.cpu_rate != -1)
         cpu_cycles = params.cpu_rate;
@@ -78,58 +76,47 @@ static gboolean engine_func(gint *data)
         cpu_cycles = (tihw.hw_type == HW1) ? NB_CYCLES_PER_LOOP_HW1 : NB_CYCLES_PER_LOOP_HW2;
 
 	// run emulation core
-	g_timer_start(tmr);
-	*data = hw_m68k_run(cpu_cycles / MIN_INSTRUCTIONS_PER_CYCLE, cpu_cycles);
-	g_timer_stop(tmr);
-
-	// compute duration of hw_m68k_run (used to update engine calibration)
-	ms = 1000 * g_timer_elapsed(tmr, NULL);
-	g_timer_destroy(tmr);
+	res = hw_m68k_run(cpu_cycles / MIN_INSTRUCTIONS_PER_CYCLE, cpu_cycles);
 
 	// a bkpt has been encountered ? If yes, stop engine
-	if(*data)
+	if(res)
 	{
 		if (!dbg_on)
-			gtk_debugger_enter(GPOINTER_TO_INT(*data));
+			gtk_debugger_enter(GPOINTER_TO_INT(res));
 		sim_exception(bkpts.type ?
 		              ((bkpts.type == BK_CAUSE_EXCEPTION || bkpts.type == BK_CAUSE_PROTECT) ? SIGSEGV
 		                                                                                    : SIGTRAP)
 		              : SIGINT);
 	}
-	else
-	{
-		cal = (guint)(ms);
-		//printf("%u ", cal);
-	}
 
 	return TRUE;
+}
+
+// function called when the function below is exited
+static void engine_notify(gint *data)
+{
+	// and reset source id
+	tid = 0;
 }
 
 // start emulation engine
 void engine_start(void) 
 {
-	if (cal >= TIME_LIMIT)
-		fprintf(stderr, "warning: emulation slower than TI (cal = %d, TIME_LIMIT = %d)\n", cal, TIME_LIMIT);
-	else if (cal >= TIME_LIMIT-5)
-		fprintf(stderr, "warning: emulation may be slower than TI (cal = %d, TIME_LIMIT = %d)\n", cal, TIME_LIMIT);
-
-	if(params.restricted && cal < TIME_LIMIT)
-		tid = g_timeout_add_full(G_PRIORITY_DEFAULT_IDLE, TIME_LIMIT-cal, 
-					 (GSourceFunc)engine_func, &res, NULL);
+	if(params.restricted)
+		tid = g_timeout2_add_full(G_PRIORITY_DEFAULT_IDLE, TIME_LIMIT, 
+				(GSourceFunc)engine_func, NULL, 
+				(GDestroyNotify)engine_notify);
 	else
 		tid = g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, 
-				      (GSourceFunc)engine_func, &res, NULL);
+				(GSourceFunc)engine_func, NULL, 
+				(GDestroyNotify)engine_notify);
 }
 
 // stop it
 void engine_stop(void) 
 {
 	if(tid)
-	{
 		g_source_remove(tid);
-		// and reset source id
-		tid = 0;
-	}
 }
 
 // state of engine
@@ -138,41 +125,8 @@ int engine_is_stopped()
 	return !tid;
 }
 
+// state of engine
 int engine_is_running(void)
 {
 	return tid;
-}
-
-/*
-	Called at startup to know needed time for exec'ing hw_m68k_run.
-	This allow to make exec'ing more precise.
-*/
-#define NLOOPS	20
-void engine_calibrate(void)
-{
-	int i;
-	gdouble ms;
-	GTimer *tmr = g_timer_new();
-	int cycles = (tihw.hw_type == HW1) ? NB_CYCLES_PER_LOOP_HW1 : NB_CYCLES_PER_LOOP_HW2;
-
-	// wait for a while (needed to stabilize things before measurement)
-	g_usleep(500 * 1000);
-
-	// begin calibration loop
-	printl(0, "Calibrating engine: ");
-	
-	g_timer_start(tmr);
-	for(i = 0; i < NLOOPS; i++)
-	{
-		hw_m68k_run(cycles / MIN_INSTRUCTIONS_PER_CYCLE, cycles);
-	}
-	g_timer_stop(tmr);
-
-	// compute result and display
-	ms = 1000 * g_timer_elapsed(tmr, NULL);
-	g_timer_destroy(tmr);
-	cal = (guint)(ms / NLOOPS);
-	
-	// and display
-	printl(0, "%i loops in %.1f ms => %i ms\n", i, ms, cal);
 }

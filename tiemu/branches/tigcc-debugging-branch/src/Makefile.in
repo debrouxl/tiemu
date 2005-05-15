@@ -151,6 +151,7 @@ gui_OBJ = \
 	gui/scroptions.o						\
 	gui/splash.o							\
 	gui/support.o 							\
+	gui/tsource.o 							\
 	gui/wizard.o
 
 core_gdb_DEP = \

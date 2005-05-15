@@ -332,7 +332,7 @@ static int match_keymap(int calc_type)
 G_LOCK_EXTERN(lcd_flag);
 extern volatile int lcd_flag;
 extern volatile int debugger;
-static gint tid = -1;
+static guint tid = -1;
 
 extern int lcd_hook_hw2(int);
 
@@ -454,7 +454,7 @@ int  hid_init(void)
   	compute_convtable();
 
     // Install LCD refresh: 100 FPS (10 ms)
-    tid = g_timeout_add((params.lcd_rate == -1) ? 25 : params.lcd_rate, 
+    tid = g_timeout_add((params.lcd_rate == -1) ? 50 : params.lcd_rate, 
 		(GtkFunction)hid_refresh, NULL);
 
 	gtk_widget_show(main_wnd);	// show wnd here
@@ -485,6 +485,14 @@ int  hid_exit(void)
     gtk_widget_destroy(main_wnd);
 
     return 0;
+}
+
+void hid_lcd_rate_set(void)
+{
+	g_source_remove(tid);
+
+	tid = g_timeout_add((params.lcd_rate == -1) ? 50 : params.lcd_rate, 
+		(GtkFunction)hid_refresh, NULL);
 }
 
 int hid_switch_with_skin(void)

@@ -35,7 +35,7 @@
 #include "struct.h"
 #include "dboxes.h"
 #include "wizard.h"
-#include "engine.h"
+//#include "engine.h"
 #include "filesel.h"
 #include "ti68k_int.h"
 #include "tie_error.h"

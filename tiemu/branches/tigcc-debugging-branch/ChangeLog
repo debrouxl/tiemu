@@ -13,6 +13,9 @@ To do:
 	- [roms]  $1263: hw_get_real_address is a function pointer which depends on the 
 					 calculator type for now (part of memory management rewrite attempt)
 	- [roms]  $1278: completely removed old memory banking system (mem_tab & mem_msk)
+	- [roms]  $1293: fixed engine loop (every 30ms)
+	- [roms]  $1294: can change LCD rate from popup menu
+
 
 - 27/04/2005, version 1.80u:
 	- [roms]  $1191: popup menu can be raised by clicking on the LCD (iPAQ)
