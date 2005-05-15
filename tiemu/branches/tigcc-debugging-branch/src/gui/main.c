@@ -58,6 +58,7 @@ extern int asm_setjmp(jmp_buf b);
 #include "engine.h"
 #include "refresh.h"
 #include "calc.h"
+#include "gdbcall.h"
 
 #include "wizard.h"
 #include "popup.h"
@@ -85,7 +86,7 @@ jmp_buf quit_gdb;               // longjmp target used when quitting GDB
 
 static void start_insight_timer(void);
 static void stop_insight_timer(void);
-static gint gdbtk_hide_insight_wrapper(gpointer data);
+static gint gdbtk_hide_insight_and_run_wrapper(gpointer data);
 
 /* Special */
 
@@ -316,7 +317,7 @@ int main(int argc, char **argv)
 			args.argv = argv;
 			args.use_windows = 1;
 			args.interpreter_p = "insight";
-			gtk_idle_add(gdbtk_hide_insight_wrapper, NULL);
+			gtk_idle_add(gdbtk_hide_insight_and_run_wrapper, NULL);
 			gdb_main (&args);
 		}
 		stop_insight_timer();
@@ -367,9 +368,10 @@ static void stop_insight_timer(void)
     }
 }
 
-static gint gdbtk_hide_insight_wrapper(gpointer data)
+static gint gdbtk_hide_insight_and_run_wrapper(gpointer data)
 {
   gdbtk_hide_insight();
+  gdbcall_run();
   return FALSE;
 }
 

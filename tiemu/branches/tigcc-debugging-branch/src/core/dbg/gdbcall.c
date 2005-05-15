@@ -45,6 +45,11 @@ static void gdbcall_exec_command(const char *command_str)
   catch_command_errors (execute_command, command_str, 0, RETURN_MASK_ALL); 
 }
 
+void gdbcall_run(void)
+{
+  gdbcall_exec_command("run");
+}
+
 void gdbcall_continue(void)
 {
   gdbcall_exec_command("c");

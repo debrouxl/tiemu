@@ -129,9 +129,6 @@ proc gdbtk_tcl_preloop { } {
   gdbtk_update
 
   catch {gdb_cmd "target sim"}
-  catch {gdb_cmd "run"}
-
-  gdbtk_update
 }
 
 

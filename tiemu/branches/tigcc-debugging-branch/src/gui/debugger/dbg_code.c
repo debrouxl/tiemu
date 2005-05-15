@@ -1066,9 +1066,15 @@ void gdbcallback_refresh_debugger(void)
 	}
 }
 
+static int on_quit1_activate_wrapper(gpointer data)
+{
+	on_quit1_activate(NULL, NULL);
+	return FALSE;
+}
+
 int gdbcallback_close_debugger(void *clientdata, void *interp, int argc, const char **argv)
 {
-	if (dbg_on) on_quit1_activate(NULL, NULL);
-    return 0;
+	if (dbg_on) gtk_idle_add(on_quit1_activate_wrapper, NULL);
+	return 0;
 }
 

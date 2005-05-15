@@ -23,6 +23,7 @@
     Gdbcall: GDB interfacing functions
 */
 
+void gdb_run(void);
 void gdb_continue(void);
 void gdb_add_symbol_file(const char *filename, unsigned address);
 void gdb_hbreak(const char *funcname);
