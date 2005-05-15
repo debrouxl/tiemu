@@ -728,7 +728,8 @@ uninstall-info: uninstall-info-recursive
 
 # custom targets
 install-without-tcl-tk:
-	$(MAKE) install SUBDIRS="build glade help pedrom pixmaps skins" DESTDIR="$(DESTDIR)"
+@USE_GROFF_TRUE@	$(MAKE) install SUBDIRS="build glade help pedrom pixmaps skins man" DESTDIR="$(DESTDIR)"
+@USE_GROFF_FALSE@	$(MAKE) install SUBDIRS="build glade help pedrom pixmaps skins" DESTDIR="$(DESTDIR)"
 	cd src && $(MAKE) install-without-tcl-tk DESTDIR="$(DESTDIR)"
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

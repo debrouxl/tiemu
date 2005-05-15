@@ -21,8 +21,8 @@ Requires(post):	desktop-file-utils >= 0.9
 Requires(postun): desktop-file-utils >= 0.9
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Obsoletes:	tiemu < 2.00
-Conflicts:	tiemu >= 2.00, insight
-Provides:	tiemu = ${version}, itcl = 3.2, itk = 3.2
+Conflicts:	tiemu >= 2.00, insight, itcl, itk
+Provides:	tiemu = ${version}
 Summary: TiEmu is a TI89(Ti)/92(+)/V200 emulator.
 %description
 TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debugging using Insight GDB.
