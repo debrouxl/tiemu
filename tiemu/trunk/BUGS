@@ -23,14 +23,6 @@ Ce problème est apparemment causée par le fait qu'une touche (ENTER) est appuyée
 où on entre dans le débogueur. (Le BP sur le trap 11 s'active au moment où ENTER est encore 
 appuyé.)
 
-* Voilà mon report du 17 avril, c'était un mail à la liste:
-By the way, while debugging this, I found out that my TI-89 AMS 2.09 .89u
-file isn't emulated properly, I get a Memory error whenever I want to enter
-the MODE screen.
-J'ai une hypothèse: TiEmu émule les écritures en 0x1c0000-0x1fffff comme des 
-écritures en RAM (ghost space). Le vrai matériel les filtre. Peut-être que la 
-déprotection Flash corrompt une var système sous TI-89 AMS 2.09?
-
 * transfers lents
 
 
@@ -49,13 +41,6 @@ certificate).
         * aller dans la fenêtre de debug: TIEmu est parti
 dans le décor, je ne sais pas s'il exécute ou pas
 
-
-* <LionelA> ah oui un autre pb
-<LionelA> j'ai une rom 2.05 et ca la detecte invalide
-<Kevin_Kofler> C'est une TI-89?
-<LionelA> oui
-<LionelA> elle marche avec VTI
-<Kevin_Kofler> Il doit y avoir un bogue dans l'émulation des TI-89, parce que AMS 2.09 se comporte bizarrement quand on le charge.
 
 PPhd
 ====

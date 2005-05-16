@@ -444,6 +444,10 @@ SOURCE=..\..\src\gui\engine.c
 
 SOURCE=..\..\src\gui\main.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\tsource.c
+# End Source File
 # End Group
 # Begin Group "Header Files"
 

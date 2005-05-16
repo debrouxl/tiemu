@@ -7,11 +7,11 @@
 
 [Setup]
 AppName=TiEmu
-AppVerName=TiEmu 2.00
-AppPublisher=The TiLP Team
-AppPublisherURL=http://lpg.ticalc.org/prj_tilp/tilp-news.php
-AppSupportURL=http://lpg.ticalc.org/prj_tilp/tilp-staff.php
-AppUpdatesURL=http://lpg.ticalc.org/prj_tilp/tilp-download.php
+AppVerName=TiEmu 1.80
+AppPublisher=The TiEmu Team
+AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/tilp-news.php
+AppSupportURL=http://lpg.ticalc.org/prj_tiemu/tilp-staff.php
+AppUpdatesURL=http://lpg.ticalc.org/prj_tiemu/tilp-download.php
 DefaultDirName={pf}\TiEmu
 DefaultGroupName=TiEmu
 AllowNoIcons=yes
@@ -44,12 +44,14 @@ Source: "C:\sources\roms\tiemu\skins\ti92.map"; DestDir: "{app}\skins"; DestName
 ;Source: "C:\sources\roms\tiemu\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tiemu.mo"; Flags: ignoreversion;
 ; Misc files
 Source: "C:\sources\roms\tiemu\AUTHORS"; DestDir: "{app}"; DestName: "Authors.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu\BUGS"; DestDir: "{app}"; DestName: "Bugs.txt"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu\CHANGELOG"; DestDir: "{app}"; DestName: "ChangeLog.txt"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu\COPYING"; DestDir: "{app}"; DestName: "License.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu\LICENSES"; DestDir: "{app}"; DestName: "Licenses.txt"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu\man\ManPage.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu\README.win32"; DestDir: "{app}"; DestName: "ReadMe.txt"; Flags: ignoreversion isreadme
 Source: "C:\sources\roms\tiemu\RELEASE"; DestDir: "{app}"; DestName: "Release.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\LICENSES"; DestDir: "{app}"; DestName: "Licenses.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu\TODO"; DestDir: "{app}"; DestName: "ToDo.txt"; Flags: ignoreversion
 ;Source: "C:\sources\roms\tiemu\ROMs\romcalls.lst"; DestDir: "{app}"; Flags: ignoreversion
 ; ROM files
 Source: "C:\sources\roms\tiemu\pedrom\romcalls.txt"; DestDir: "{app}"; Flags: ignoreversion
@@ -69,8 +71,8 @@ Source: "C:\sources\roms\misc\Porttalk22\Uninstall.exe"; DestDir: "{app}"; Flags
 ; GTK+ specific
 Source: "C:\Gtk2Dev\bin\gtkthemeselector.exe"; DestDir: "{app}";
 ;libglade/libxml add-on (ignore since no version checking is possible)
-Source: "C:\Gtk2Dev\bin\libxml2.dll"; DestDir: "{app}"; Flags: onlyifdoesntexist;
-Source: "C:\Gtk2Dev\bin\libglade-2.0-0.dll"; DestDir: "{app}"; Flags: onlyifdoesntexist;
+Source: "C:\Gtk2Dev\bin\libxml2.dll"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "C:\Gtk2Dev\bin\libglade-2.0-0.dll"; DestDir: "{app}"; Flags: ignoreversion;
 
 [Dirs]
 ;Name: "{app}\My TI images"; Flags: uninsneveruninstall;
@@ -85,6 +87,7 @@ Name: "{group}\TiEmu on the Web"; Filename: "{app}\tiemu.url"
 Name: "{group}\Uninstall TiEmu"; Filename: "{uninstallexe}"
 Name: "{group}\User's Manual"; Filename: "{app}\help\Manual_en.html"
 Name: "{group}\GTK theme selector"; Filename: "{app}\gtkthemeselector.exe";
+Name: "{group}\Bugs"; Filename: "{app}\Bugs.txt"
 
 Name: "{userdesktop}\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: desktopicon
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: quicklaunchicon

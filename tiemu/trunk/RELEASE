@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.80t		(26/04/2005)
-Current version:  1.80u		(05/05/2005)
+Previous version: 1.80u		(05/05/2005)
+Current version:  1.80v		(16/05/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -26,20 +26,15 @@ New capabilities:
 Improvements:
 -------------
 
-	- Mac OS-X port by Cristian Walther
-	- allow setting a range breakpoint on a single byte
-	- 'exit & save state' moved elsewhere in popup menu
+	- memory layout management rewritten
+	- splitted I/O ports on HW3
+	- can change LCD rate from popup menu
 		
 
 Bug fixes:
 ----------
 
-	- contrast on Titanium
-	- range breakpoints and code bkpts
-	- no FlashROM ghost space at 0x400000 on the TI-89
-	- hardwareRevision in the HW parameter block
-	- reads from wrong offsets in the stack window
-	- logging domain support
+	- engine loop
 	
 
 Planned:
