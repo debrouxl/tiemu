@@ -9,9 +9,9 @@
 AppName=TiEmu
 AppVerName=TiEmu 1.80
 AppPublisher=The TiEmu Team
-AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/tilp-news.php
-AppSupportURL=http://lpg.ticalc.org/prj_tiemu/tilp-staff.php
-AppUpdatesURL=http://lpg.ticalc.org/prj_tiemu/tilp-download.php
+AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
+AppSupportURL=http://lpg.ticalc.org/prj_tiemu/mailing_list.html
+AppUpdatesURL=http://lpg.ticalc.org/prj_tiemu/win32_download.html
 DefaultDirName={pf}\TiEmu
 DefaultGroupName=TiEmu
 AllowNoIcons=yes
