@@ -98,7 +98,8 @@ static void clist_populate(GtkListStore *store)
 
 	// show progress bar
 	n = g_list_length(lst);
-	gtk_widget_show(GTK_WIDGET(pbar));
+	if(pbar != NULL)
+		gtk_widget_show(GTK_WIDGET(pbar));
 
 	// fill storage
 	gtk_list_store_clear(store);
@@ -129,14 +130,18 @@ static void clist_populate(GtkListStore *store)
 
 		if(!(i % 50))
 		{
-			gtk_progress_bar_set_fraction(pbar, (gdouble)i / n);
-			while(gtk_events_pending())	gtk_main_iteration();
+			if(pbar != NULL)
+			{
+				gtk_progress_bar_set_fraction(pbar, (gdouble)i / n);
+				while(gtk_events_pending())	gtk_main_iteration();
+			}
 		}
 
 		g_strfreev(row_text);
 	}
 
-	gtk_widget_hide(GTK_WIDGET(pbar));
+	if(pbar != NULL)
+		gtk_widget_hide(GTK_WIDGET(pbar));
 	old_order = order;
 }
 
