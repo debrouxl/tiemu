@@ -41,6 +41,7 @@
 #include "dbg_all.h"
 #include "support.h"
 #include "paths.h"
+#include "engine.h"
 #include "gdbcall.h"
 void gdbtk_hide_insight(void);
 void gdbtk_show_insight(void);

@@ -2,7 +2,9 @@ SubVersion: $Id$
 
 To do:
 	- video scaling
-	- ti68k_def.h: l37 (uchar) to remove
+
+//- 16/05/2005, version 2.00-rc1:
+//	- [roms] $1323: first release candidate
 
 - 06/05/2005, version 1.80v:
 	- [roms]  $1248: changed rom_base from 0x20 to 0x200000 whenever applicable
