@@ -15,9 +15,6 @@ DESTDIR   =
 
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	LDFLAGS += -lcomdlg32
-	GDBLIBS = -luser32 -lwsock32
-else
-	GDBLIBS = -lcurses
 endif
 
 INSTALL         = @INSTALL@
