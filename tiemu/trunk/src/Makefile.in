@@ -15,6 +15,10 @@ ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	LDFLAGS += -lcomdlg32
 endif
 
+ifneq (,$(findstring __LINUX__,$(CFLAGS)))
+	LDFLAGS += -Wl,--export-dynamic
+endif
+
 INSTALL         = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA    = @INSTALL_DATA@
@@ -166,7 +170,7 @@ tiemu: $(tiemu_OBJ)
 ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
 	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
 	$(LDFLAGS) $(CFLAGS) $(kdelibraries) \
-	-Wl,--rpath,"$(prefix)/lib" -Wl,--export-dynamic
+	-Wl,--rpath,"$(prefix)/lib"
 else
 	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) \
 	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
