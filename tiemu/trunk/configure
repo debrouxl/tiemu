@@ -27055,23 +27055,23 @@ fi
   else
      PKG_CONFIG_MIN_VERSION=0.9.0
      if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
-        echo "$as_me:$LINENO: checking for ticables >= 3.8.1" >&5
-echo $ECHO_N "checking for ticables >= 3.8.1... $ECHO_C" >&6
+        echo "$as_me:$LINENO: checking for ticables >= 3.9.1" >&5
+echo $ECHO_N "checking for ticables >= 3.9.1... $ECHO_C" >&6
 
-        if $PKG_CONFIG --exists "ticables >= 3.8.1" ; then
+        if $PKG_CONFIG --exists "ticables >= 3.9.1" ; then
             echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
             succeeded=yes
 
             echo "$as_me:$LINENO: checking TICABLES_CFLAGS" >&5
 echo $ECHO_N "checking TICABLES_CFLAGS... $ECHO_C" >&6
-            TICABLES_CFLAGS=`$PKG_CONFIG --cflags "ticables >= 3.8.1"`
+            TICABLES_CFLAGS=`$PKG_CONFIG --cflags "ticables >= 3.9.1"`
             echo "$as_me:$LINENO: result: $TICABLES_CFLAGS" >&5
 echo "${ECHO_T}$TICABLES_CFLAGS" >&6
 
             echo "$as_me:$LINENO: checking TICABLES_LIBS" >&5
 echo $ECHO_N "checking TICABLES_LIBS... $ECHO_C" >&6
-            TICABLES_LIBS=`$PKG_CONFIG --libs "ticables >= 3.8.1"`
+            TICABLES_LIBS=`$PKG_CONFIG --libs "ticables >= 3.9.1"`
             echo "$as_me:$LINENO: result: $TICABLES_LIBS" >&5
 echo "${ECHO_T}$TICABLES_LIBS" >&6
         else
@@ -27079,7 +27079,7 @@ echo "${ECHO_T}$TICABLES_LIBS" >&6
             TICABLES_LIBS=""
             ## If we have a custom action on failure, don't print errors, but
             ## do set a variable so people can do so.
-            TICABLES_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "ticables >= 3.8.1"`
+            TICABLES_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "ticables >= 3.9.1"`
             echo $TICABLES_PKG_ERRORS
         fi
 
@@ -27094,8 +27094,8 @@ echo "${ECHO_T}$TICABLES_LIBS" >&6
   if test $succeeded = yes; then
      :
   else
-     { { echo "$as_me:$LINENO: error: Library requirements (ticables >= 3.8.1) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&5
-echo "$as_me: error: Library requirements (ticables >= 3.8.1) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&2;}
+     { { echo "$as_me:$LINENO: error: Library requirements (ticables >= 3.9.1) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&5
+echo "$as_me: error: Library requirements (ticables >= 3.9.1) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&2;}
    { (exit 1); exit 1; }; }
   fi
 
@@ -27156,23 +27156,23 @@ fi
   else
      PKG_CONFIG_MIN_VERSION=0.9.0
      if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
-        echo "$as_me:$LINENO: checking for tifiles >= 0.6.1" >&5
-echo $ECHO_N "checking for tifiles >= 0.6.1... $ECHO_C" >&6
+        echo "$as_me:$LINENO: checking for tifiles >= 0.6.4" >&5
+echo $ECHO_N "checking for tifiles >= 0.6.4... $ECHO_C" >&6
 
-        if $PKG_CONFIG --exists "tifiles >= 0.6.1" ; then
+        if $PKG_CONFIG --exists "tifiles >= 0.6.4" ; then
             echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
             succeeded=yes
 
             echo "$as_me:$LINENO: checking TIFILES_CFLAGS" >&5
 echo $ECHO_N "checking TIFILES_CFLAGS... $ECHO_C" >&6
-            TIFILES_CFLAGS=`$PKG_CONFIG --cflags "tifiles >= 0.6.1"`
+            TIFILES_CFLAGS=`$PKG_CONFIG --cflags "tifiles >= 0.6.4"`
             echo "$as_me:$LINENO: result: $TIFILES_CFLAGS" >&5
 echo "${ECHO_T}$TIFILES_CFLAGS" >&6
 
             echo "$as_me:$LINENO: checking TIFILES_LIBS" >&5
 echo $ECHO_N "checking TIFILES_LIBS... $ECHO_C" >&6
-            TIFILES_LIBS=`$PKG_CONFIG --libs "tifiles >= 0.6.1"`
+            TIFILES_LIBS=`$PKG_CONFIG --libs "tifiles >= 0.6.4"`
             echo "$as_me:$LINENO: result: $TIFILES_LIBS" >&5
 echo "${ECHO_T}$TIFILES_LIBS" >&6
         else
@@ -27180,7 +27180,7 @@ echo "${ECHO_T}$TIFILES_LIBS" >&6
             TIFILES_LIBS=""
             ## If we have a custom action on failure, don't print errors, but
             ## do set a variable so people can do so.
-            TIFILES_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "tifiles >= 0.6.1"`
+            TIFILES_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "tifiles >= 0.6.4"`
             echo $TIFILES_PKG_ERRORS
         fi
 
@@ -27195,8 +27195,8 @@ echo "${ECHO_T}$TIFILES_LIBS" >&6
   if test $succeeded = yes; then
      :
   else
-     { { echo "$as_me:$LINENO: error: Library requirements (tifiles >= 0.6.1) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&5
-echo "$as_me: error: Library requirements (tifiles >= 0.6.1) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&2;}
+     { { echo "$as_me:$LINENO: error: Library requirements (tifiles >= 0.6.4) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&5
+echo "$as_me: error: Library requirements (tifiles >= 0.6.4) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&2;}
    { (exit 1); exit 1; }; }
   fi
 
@@ -27257,23 +27257,23 @@ fi
   else
      PKG_CONFIG_MIN_VERSION=0.9.0
      if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
-        echo "$as_me:$LINENO: checking for ticalcs >= 4.5.4" >&5
-echo $ECHO_N "checking for ticalcs >= 4.5.4... $ECHO_C" >&6
+        echo "$as_me:$LINENO: checking for ticalcs >= 4.5.9" >&5
+echo $ECHO_N "checking for ticalcs >= 4.5.9... $ECHO_C" >&6
 
-        if $PKG_CONFIG --exists "ticalcs >= 4.5.4" ; then
+        if $PKG_CONFIG --exists "ticalcs >= 4.5.9" ; then
             echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
             succeeded=yes
 
             echo "$as_me:$LINENO: checking TICALCS_CFLAGS" >&5
 echo $ECHO_N "checking TICALCS_CFLAGS... $ECHO_C" >&6
-            TICALCS_CFLAGS=`$PKG_CONFIG --cflags "ticalcs >= 4.5.4"`
+            TICALCS_CFLAGS=`$PKG_CONFIG --cflags "ticalcs >= 4.5.9"`
             echo "$as_me:$LINENO: result: $TICALCS_CFLAGS" >&5
 echo "${ECHO_T}$TICALCS_CFLAGS" >&6
 
             echo "$as_me:$LINENO: checking TICALCS_LIBS" >&5
 echo $ECHO_N "checking TICALCS_LIBS... $ECHO_C" >&6
-            TICALCS_LIBS=`$PKG_CONFIG --libs "ticalcs >= 4.5.4"`
+            TICALCS_LIBS=`$PKG_CONFIG --libs "ticalcs >= 4.5.9"`
             echo "$as_me:$LINENO: result: $TICALCS_LIBS" >&5
 echo "${ECHO_T}$TICALCS_LIBS" >&6
         else
@@ -27281,7 +27281,7 @@ echo "${ECHO_T}$TICALCS_LIBS" >&6
             TICALCS_LIBS=""
             ## If we have a custom action on failure, don't print errors, but
             ## do set a variable so people can do so.
-            TICALCS_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "ticalcs >= 4.5.4"`
+            TICALCS_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "ticalcs >= 4.5.9"`
             echo $TICALCS_PKG_ERRORS
         fi
 
@@ -27296,8 +27296,8 @@ echo "${ECHO_T}$TICALCS_LIBS" >&6
   if test $succeeded = yes; then
      :
   else
-     { { echo "$as_me:$LINENO: error: Library requirements (ticalcs >= 4.5.4) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&5
-echo "$as_me: error: Library requirements (ticalcs >= 4.5.4) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&2;}
+     { { echo "$as_me:$LINENO: error: Library requirements (ticalcs >= 4.5.9) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&5
+echo "$as_me: error: Library requirements (ticalcs >= 4.5.9) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&2;}
    { (exit 1); exit 1; }; }
   fi
 
