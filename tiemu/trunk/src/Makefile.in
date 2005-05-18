@@ -11,6 +11,8 @@ MOC       = @MOC@
 
 kde       = @kde@
 
+DESTDIR   =
+
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	LDFLAGS += -lcomdlg32
 endif
@@ -203,8 +205,8 @@ distdir: clean
 	cp -rl * ../tiemu-@VERSION@/src
 
 install: tiemu
-	@$(INSTALL) -d $(prefix)/bin
-	$(INSTALL) -m755 tiemu ${prefix}/bin/
+	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
+	$(INSTALL) -m755 tiemu $(DESTDIR)${prefix}/bin/
 
 uninstall:
 	rm -f ${prefix}/bin/tiemu

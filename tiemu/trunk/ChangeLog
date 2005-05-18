@@ -7,6 +7,7 @@ To do:
 //	- [roms] $1323: first release candidate
 	- [kevin] $1337/1338: fix --with-kde for Debian and derivatives
 	- [kevin] $1340/1341: add -Wl,--export-dynamic for all Linux targets to fix Ubuntu problem
+	- [kevin] $1346: fixed DESTDIR support (useful for RPM packaging)
 
 - 06/05/2005, version 1.80v:
 	- [roms]  $1248: changed rom_base from 0x20 to 0x200000 whenever applicable
