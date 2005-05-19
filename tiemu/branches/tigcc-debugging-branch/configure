@@ -27277,23 +27277,23 @@ fi
   else
      PKG_CONFIG_MIN_VERSION=0.9.0
      if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
-        echo "$as_me:$LINENO: checking for tifiles >= 0.6.3" >&5
-echo $ECHO_N "checking for tifiles >= 0.6.3... $ECHO_C" >&6
+        echo "$as_me:$LINENO: checking for tifiles >= 0.6.4" >&5
+echo $ECHO_N "checking for tifiles >= 0.6.4... $ECHO_C" >&6
 
-        if $PKG_CONFIG --exists "tifiles >= 0.6.3" ; then
+        if $PKG_CONFIG --exists "tifiles >= 0.6.4" ; then
             echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
             succeeded=yes
 
             echo "$as_me:$LINENO: checking TIFILES_CFLAGS" >&5
 echo $ECHO_N "checking TIFILES_CFLAGS... $ECHO_C" >&6
-            TIFILES_CFLAGS=`$PKG_CONFIG --cflags "tifiles >= 0.6.3"`
+            TIFILES_CFLAGS=`$PKG_CONFIG --cflags "tifiles >= 0.6.4"`
             echo "$as_me:$LINENO: result: $TIFILES_CFLAGS" >&5
 echo "${ECHO_T}$TIFILES_CFLAGS" >&6
 
             echo "$as_me:$LINENO: checking TIFILES_LIBS" >&5
 echo $ECHO_N "checking TIFILES_LIBS... $ECHO_C" >&6
-            TIFILES_LIBS=`$PKG_CONFIG --libs "tifiles >= 0.6.3"`
+            TIFILES_LIBS=`$PKG_CONFIG --libs "tifiles >= 0.6.4"`
             echo "$as_me:$LINENO: result: $TIFILES_LIBS" >&5
 echo "${ECHO_T}$TIFILES_LIBS" >&6
         else
@@ -27301,7 +27301,7 @@ echo "${ECHO_T}$TIFILES_LIBS" >&6
             TIFILES_LIBS=""
             ## If we have a custom action on failure, don't print errors, but
             ## do set a variable so people can do so.
-            TIFILES_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "tifiles >= 0.6.3"`
+            TIFILES_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "tifiles >= 0.6.4"`
             echo $TIFILES_PKG_ERRORS
         fi
 
@@ -27316,8 +27316,8 @@ echo "${ECHO_T}$TIFILES_LIBS" >&6
   if test $succeeded = yes; then
      :
   else
-     { { echo "$as_me:$LINENO: error: Library requirements (tifiles >= 0.6.3) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&5
-echo "$as_me: error: Library requirements (tifiles >= 0.6.3) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&2;}
+     { { echo "$as_me:$LINENO: error: Library requirements (tifiles >= 0.6.4) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&5
+echo "$as_me: error: Library requirements (tifiles >= 0.6.4) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them." >&2;}
    { (exit 1); exit 1; }; }
   fi
 
