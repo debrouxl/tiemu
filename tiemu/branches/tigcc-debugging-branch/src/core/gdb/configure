@@ -1077,9 +1077,9 @@ case "${host}" in
   powerpc-*-beos*)
     noconfigdirs="$noconfigdirs tk itcl libgui gdb dejagnu readline"
     ;;
-  *-*-darwin*)
-    noconfigdirs="$noconfigdirs tk itcl libgui"
-    ;;
+#  *-*-darwin*)
+#    noconfigdirs="$noconfigdirs tk itcl libgui"
+#    ;;
 esac
 
 
