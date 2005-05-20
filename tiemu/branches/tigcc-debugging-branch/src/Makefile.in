@@ -183,12 +183,12 @@ gdb:
 tiemu: $(tiemu_OBJ) $(core_gdb_DEP)
 ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
 	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
-    `sed <core/gdb/gdb/libgdb.ldflags 's,^\.\./,core/gdb/,;s, \.\./, core/gdb/,g'` \
+    `sed <core/gdb/gdb/libgdb.ldflags 's,^\.\./,core/gdb/,;s, \.\./, core/gdb/,g;s, \./\.\./, core/gdb/,g'` \
 	$(LDFLAGS) $(CFLAGS) $(kdelibraries) \
 	-Wl,--rpath,"$(prefix)/lib"
 else
 	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) \
-    `sed <core/gdb/gdb/libgdb.ldflags 's,^\.\./,core/gdb/,;s, \.\./, core/gdb/,g'` \
+    `sed <core/gdb/gdb/libgdb.ldflags 's,^\.\./,core/gdb/,;s, \.\./, core/gdb/,g;s, \./\.\./, core/gdb/,g'` \
 	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
 endif
 
