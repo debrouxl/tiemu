@@ -1,3 +1,7 @@
+2005-05-20  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * doublest.c (isinfl, isnanl): Define to isinf, isnan under both MinGW and OS X.
+
 2005-05-15  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * main.c (captured_main): Reset quit_flag even if already initialized.

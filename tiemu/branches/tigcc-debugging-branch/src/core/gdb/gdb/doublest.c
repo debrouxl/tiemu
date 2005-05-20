@@ -34,10 +34,12 @@
 #include "gdb_string.h"
 #include "gdbtypes.h"
 #include <math.h>		/* ldexp */
-#if defined(__MINGW32__) && !defined(isinfl)
-/* (TiEmu 20050412 Kevin Kofler) The MinGW isinf is type-generic, so it is a
-   perfectly fine substitute for the non-existent isinfl. */
+#if defined(__MINGW32__) || (defined(__MACH__) && defined(__APPLE__))
+/* (TiEmu 20050412 Kevin Kofler) The MinGW and OS X isinf/isnan are
+   type-generic, so they are perfectly fine substitutes for the non-existent
+   isinfl/isnanl (MinGW has only isnanl, OS X has neither). */
 #define isinfl isinf
+#define isnanl isnan
 #endif
 
 
