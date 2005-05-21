@@ -529,6 +529,13 @@ print_insn_m68k (memaddr, info)
             }
         }
     }
+  /* ER_throw */
+  else if (major_opcode == 0xa)
+    {
+      int op = (buffer[0] << 8) + buffer[1];
+      info->fprintf_func (info->stream, "ER_throw %d [%s]", op & 0xfff, ercodes_get_name(op & 0xfff));
+      return 2;
+    }
 
   /* standard m68k instructions */
   for (i = 0; i < numopcodes[major_opcode]; i++)

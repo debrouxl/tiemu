@@ -1,5 +1,5 @@
 interp.o: interp.c config.h ../../bfd/sysdep.h ../../include/ansidecl.h \
-  ../../bfd/config.h ../../include/fopen-same.h ../../include/filenames.h \
+  ../../bfd/config.h ../../include/fopen-bin.h ../../include/filenames.h \
   ../../bfd/bfd.h ../../bfd/../include/ansidecl.h \
   ../../bfd/../include/symcat.h ../../include/gdb/callback.h \
   ../../include/ansidecl.h ../../include/gdb/remote-sim.h \

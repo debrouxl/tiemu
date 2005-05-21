@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -67,6 +67,8 @@ int romcalls_is_name(const char *name);
 
 const char* romcalls_get_name(int id);
 uint32_t romcalls_get_addr(int id);
+
+const char* ercodes_get_name(unsigned id);
 
 #define ROMCALL_ID(elt)		(((ROM_CALL *)(elt->data))->id)
 #define ROMCALL_NAME(elt)	(((ROM_CALL *)(elt->data))->name)
