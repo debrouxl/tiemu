@@ -1,0 +1,47 @@
+			[ Release notes ]
+
+
+
+Previous version: 1.80v			(05/16/2005)
+Current version:  2.00-rc1	(05/22/2005)
+
+SubVersion (CVS) revision: $Id$
+
+TiEmu is available for 3 platforms:
+Linux (GTK), Windows (GTK), Mac OS-X (GTK)
+
+[ If you have a SilverLink cable (TI-GRAPH LINK USB), you will need to retrieve
+a Linux/Win32/Mac OS-X driver on the Linux Programmer Group at 
+<http://lpg.ticalc.org/prj_usb>. ]
+
+For the other link cables, no driver is needed.
+
+
+New capabilities:
+-----------------
+
+	- many from TiEmu-I
+
+
+Improvements:
+-------------
+
+	- 
+		
+
+Bug fixes:
+----------
+
+	- implement undocumented flags for ABCD, SBCD, NBCD and CHK
+	
+
+Planned:
+--------
+
+	- TiEmu v3.00 with GDB support
+
+	
+Notes:
+------
+
+	- we hope you will enjoy this Release Candidate !

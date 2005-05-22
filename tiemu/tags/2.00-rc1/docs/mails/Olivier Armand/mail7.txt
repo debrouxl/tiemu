@@ -1,0 +1,162 @@
+> PS: soit pas étonné si je réponds pas ce WE because LAN party + barbecue +
+> lac ;-)
+
+Ok, bah j'espère que c'était chouette :)
+
+J'ai testé cette nouvelle version, c'est vraiment génial :) Il n'y a plus un
+seul ralentissement, ni de CPU consommé pour rien. J'ai enfin pu tester le
+debugger en profondeur.
+Voilà une liste de remarques assez grosse, j'espère qu'elle pourra te donner
+des idées et premettre de corriger des bugs. Certaines idées de trucs à
+ajouter sont indispensables je pense, d'autres permettrait de vraiment
+beaucoup accélerer le travail le debug sous TiEmu.
+
+Les bugs :
+
+* Pour le problème du crash avec la Titanium : il vient de la routine
+décrite dans le commentaire '[1]' de mon titanium-info.txt, qui détermine
+dynamiquement la taille de la RAM disponible.
+Les blocs de 64ko de la RAM sont testés un à un pour voir s'ils sont valides
+(écriture puis lecture). Comme TiEmu émule pour l'instant des ghost spaces à
+0x40000, 0x80000, etc. qui n'existent pas, ces blocs semblent valides et
+l'AMS croit finalement avoir affaire à une RAM de 1Mo (tu as fait arrêter
+les reflets à 0x100000 on dirait. Pour l'émulation des 89 standard/92+/V200,
+il faudrait les faire arrêter à 0x200000 en fait).
+Puis plus loin dans le code du reset, une boucle efface un grosse partie de
+la RAM en utilisant la taille calculée par la routine précédente : les
+reflets sont aussi effacés, et donc les vecteurs à 0x0+n le sont. Les
+utilisations des vecteurs qui suivent feront ensuite planter l'AMS. Pour
+corriger le problème, il suffit d'empêcher l'écriture dans les ghost spaces,
+qui n'existent pas sur Titanium.
+Il y a peut-être d'autres problèmes pour cette émulation de la Titanium,
+mais il faut déjà corriger ça pour y voir plus clair.
+
+* Lorsqu'un code breakpoint a été touché, impossible de faire un step ou un
+step over ensuite (TiEmu crash).
+
+* Si on ferme une fenêtre du débugger, les choix cochés dans le menu Windows
+de la fenêtre 'Code/Source' ne correspondent plus car ils ne sont pas mis à
+jour.
+
+* Ctrl+F dans la fenêtre Memory fait apparaître une petite zone de texte
+éditable, je ne vois pas à quoi elle sert.
+
+* Au démarrage, la fenêtre Memory a deux onglets commençant à l'adresse 0,
+je ne sais pas si c'est normal (un seul suffirait).
+
+* lea $4C00,a0 est déssasemblé en lea tios::CALC_TI89,A0 ? (à 0x8123B4 sur
+Titanium) Pourquoi pas LCD_MEM ?
+
+* L'onglet visible de la fenêtre memory n'est pas rafraîchit après un 'Run
+to cursor' ou un 'step' par exemple, il faut changer d'onglet pour forcer le
+rafraîchissement.
+
+* Un 'step over' sur une instruction 'bra' doit sûrement mettre un
+breakpoint temporaire juste derrière l'instruction. Il faudrait plutôt qu'un
+'step over' se comporte de la même façon qu'un 'step' sur cette instruction.
+Pareil pour un 'jmp' (je n'ai pas regardé s'il y avait aussi le problème).
+
+* Impossible de quitter TiEmu quand des breakpoints sont à chaque fois
+touchés : TiEmu ne peut pas être fermé tant que les fenêtres du débugger ne
+sont pas fermées, et les breakpoints réouvrent immédiatement les fenêtres du
+débugger.
+
+
+Les trucs qui pourraient être modifiés :
+
+* Le scroll des instructions vers le bas dans la fenêtre Code/Source : lors
+du passage à l'écran d'après, on se perd (l'instruction sélectionnée devient
+la première). Peut-être que seulement un demi-écran pourrait être scrollé ?.
+Pareil pour la fenêtre Memory.
+
+* Les fenêtres du débogueur : il faudrait pouvoir toutes les réduire /
+restaurer d'un coup, lorsque la fenêtre de l'image de la calc est réduite ou
+restaurée par exemple. Et est-ce que ce serait possible qu'une seule fenêtre
+(ou 2 : une pour la calc et une pour le debugger) apparaisse dans la barre
+des tâches ? Parce que là ça fait pas mal de monde et ce n'est pas très
+utile.
+
+* Lors d'un set breakpoint dans la fenêtre Code / source, la sélection
+revient immédiatement à PC. Ce serait mieux qu'elle se place là où on a
+placé / retiré le breakpoint, ça provoque un saut un peu gênant
+actuellement.
+
+* Il est assez difficile de savoir exactement ou on est dans la fenêtre
+Memory avec des lignes de 16 octets. Il faudrait par exemple un affichage
+quelque part de l'adresse de l'octet selectionné, sinon on se retrouve la
+plupart du temps à recompter depuis le début de la ligne.
+
+* L'adresse affichée dans la fenêtre Memory comme titre d'un onglet devrait
+être plutôt l'adresse du premier octet affiché (pour l'instant elle reste
+constante), sinon elle ne correspond plus à rien quand on scroll.
+
+* La fenêtre Code/Source est un peu trop petite au démarrage de TiEmu, 2
+instructions sont cachées, la fenêtre doit être à chaque fois réagrandie.
+
+* Lorsque l'on fait un 'Run to cursor', tout reste immobile et on n'a pas
+l'impression qu'il a été exécuté : en fait l'instruction courante et la
+sélection sont confondues, et seule la couleur de la sélection apparaît. Il
+faudrait peut-être une troisième couleur lorsque les deux sont confondues,
+comme le fait VTI.
+
+
+Les trucs qui pourraient être ajoutés  (sachant que les premiers sont les
+plus indispensables) :
+
+* Une fenêtre ou une zone dans une fenêtre affichant la pile manque vraiment
+(un hexdump depuis a7).
+
+* Une fonction de recherche dans la fenêtre Memory est indispensable.
+L'idéal est la fonction fournie par DB92 : on tape une séquence d'octets en
+hexa, ou une séquence de caractères ASCII, aussi grande que l'on veut. VTI
+lui ne permet que de chercher des octets/mots/long mots, alignés pour les
+deux derniers en plus, c'est dommage. Il faudrait aussi une fonction (et son
+raccourci clavier) 'search next' pour continuer la recherche, comme sous
+DB92.
+
+* Il manque vraiment "goto address" comme sous VTI dans la fenêtre Memory.
+
+* Un "View memory" dans le menu clic-droit de Code / Source serait pratique,
+qui ouvrirait un onglet dans la fenêtre Memory avec pour adresse
+l'instruction cliquée (VTI ne l'a pas non plus, mais DB92 l'a).
+De la même manière une fonction  "view disassembly" dans Memory qui ferait
+un "goto address" dans la fenêtre Code/Source vers l'adresse sélectionnée
+serait très pratique (la version de VTI de JM l'a, je ne sais plus pour la
+version originale).
+
+* Dans la fenêtre Memory, ce serait bien de pouvoir modifier une trainée
+d'octets successifs comme sous DB92. Sous DB92, on passe en mode édition en
+appuyant sur 'E', puis on tape les octets digit par digit insérés un à un
+avec le curseur qui avance, comme un éditeur de texte. Je ne sais pas si
+c'est faisable avec les widgets GTK utilisés actuellement.
+
+* Des toggle buttons seraient pratiques plutôt que du texte à éditer, à la
+manière des versions de VTI de Julien Muchembled, pour modifier les états
+des bits de SR dans la fenêtre Registers.
+
+* Deux trucs très simples qui serait très pratique : dans la fenêtre
+Registers, un menu clic droit sur les registres d'adresses qui permettrait
+d'ouvrir un nouvel onglet dans la fenêtre Memory depuis l'adresse pointée
+par le registre cliqué, ou de faire un 'goto address' dans la fenêtre
+Code/Source vers cette adresse pointée.
+
+* Un truc peut-être un peu compliqué à réaliser : une fenêtre (voir dans la
+même fenêtre que PC log), similaire à Trace, qui contiendrait une call stack
+: les adresses des derniers jsr / bsr / FLine RomCalls / trap exécutés, et
+supprimés de la liste lors des rts / rte.
+Il faudrait faire attention au interruptions (pas de log de la call stack),
+et aux retours de fonction qui peuvent être fait à la main par certains
+programmes en lisant le contenu de la pile (dans ces cas là, le depilage de
+la call stack pourra être mis à jour au prochain retour de fonction effectué
+correctement, en regardant sur la pile à quel appelle rts / rte correspond).
+Je regarde souvent les appels à la main sous VTI en lisant le contenu de la
+pile, c'est extrêment difficile de retrouver quelle sont les adresses de
+retour.
+
+
+Je suis très content de ce que ça donne actuellement, TiEmu est très
+prometteur.
+
+++
+
+Olivier Armand

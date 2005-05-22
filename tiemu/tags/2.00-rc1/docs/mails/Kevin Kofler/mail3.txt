@@ -1,0 +1,21 @@
+> au fait, je te rappelles que, comme convenu, je n'ai pas implémenté les
+> ghosts:
+> <<
+> // 000000-03ffff : RAM (256 KB), non ghost'ed
+> // 100000-1fffff :
+> // 200000-2fffff : image of 0x000000 (ghost), not emulated for
+compatibility
+> // 300000-3fffff :
+> // 400000-4fffff : image of 0x000000 (ghost), not emulated for
+compatibility
+> // 500000-5fffff :
+> >>
+>
+> Dois-je l'implémenter en 0x400xx ?
+
+Surtout pas. Ça donnerait des tonnes de programmes qui ne marchent que sur
+TiEmu et pas sur le vrai matériel.
+
+En revanche, les ghosts en 0x200000 et 0x400000, tu devrais les mettre (sur
+HW3 seulement, évidemment). GhostBuster utilise ça pour convertir les
+programmes qui écrivent en 0x400xx pour les interruptions.
