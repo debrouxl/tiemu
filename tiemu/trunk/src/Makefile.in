@@ -14,6 +14,7 @@ kde       = @kde@
 DESTDIR   =
 
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
+	RESFILE = tiemu-rc.o 
 	LDFLAGS += -lcomdlg32
 endif
 
@@ -168,13 +169,13 @@ uae:
 	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" gen
 	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" all
 
-tiemu: $(tiemu_OBJ)
+tiemu: $(tiemu_OBJ) $(RESFILE)
 ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
 	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
 	$(LDFLAGS) $(CFLAGS) $(kdelibraries) \
 	-Wl,--rpath,"$(prefix)/lib"
 else
-	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) \
+	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(RESFILE) \
 	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
 endif
 
@@ -188,9 +189,12 @@ endif
 	#../libtool --mode=compile $(CC) $(INCLUDES) $(DEFS) \
 	#-c $(CFLAGS) $< -o $@
 
+tiemu-rc.o: ../build/mingw/tiemu.rc
+	cd ../build/mingw && windres tiemu.rc ../../src/tiemu-rc.o
+
 clean:
 	@cd core/uae && $(MAKE) clean
-	@rm -f $(tiemu_OBJ) tiemu tiemu.exe $(kdeprivsources)
+	@rm -f $(tiemu_OBJ) tiemu tiemu.exe tiemu-rc.o $(kdeprivsources)
 
 distclean: clean
 	@cd core/uae && $(MAKE) distclean

@@ -4,6 +4,7 @@ To do:
 	- video scaling
 
 	- [kevin] $1357/1362: added support for disassembling ER_throw
+	- [kevin] $1364/1365: link tiemu.rc in for MinGW
 
 - 16/05/2005, version 2.00-rc1:
 	- [kevin] $1337/1338: fix --with-kde for Debian and derivatives
