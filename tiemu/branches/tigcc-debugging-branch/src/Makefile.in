@@ -14,6 +14,7 @@ kde       = @kde@
 DESTDIR   =
 
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
+	RESFILE = tiemu-rc.o
 	LDFLAGS += -lcomdlg32
 endif
 
@@ -180,14 +181,14 @@ uae:
 gdb:
 	cd core/gdb && $(MAKE)
 
-tiemu: $(tiemu_OBJ) $(core_gdb_DEP)
+tiemu: $(tiemu_OBJ) $(core_gdb_DEP) $(RESFILE)
 ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
 	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
     `sed <core/gdb/gdb/libgdb.ldflags 's,^\.\./,core/gdb/,;s, \.\./, core/gdb/,g;s, \./\.\./, core/gdb/,g'` \
 	$(LDFLAGS) $(CFLAGS) $(kdelibraries) \
 	-Wl,--rpath,"$(prefix)/lib"
 else
-	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(core_gdb_ARC) \
+	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(RESFILE) \
     `sed <core/gdb/gdb/libgdb.ldflags 's,^\.\./,core/gdb/,;s, \.\./, core/gdb/,g;s, \./\.\./, core/gdb/,g'` \
 	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
 endif
@@ -201,6 +202,9 @@ endif
 	$(CXX) $(INCLUDES) $(DEFS) -c $(CXXFLAGS) $(kdeincludes) $< -o $@
 	#../libtool --mode=compile $(CC) $(INCLUDES) $(DEFS) \
 	#-c $(CFLAGS) $< -o $@
+
+tiemu-rc.o: ../build/mingw/tiemu.rc
+	cd ../build/mingw && windres tiemu.rc ../../src/tiemu-rc.o
 
 clean:
 	@cd core/uae && $(MAKE) clean
