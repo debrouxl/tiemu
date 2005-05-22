@@ -7,7 +7,7 @@
 
 [Setup]
 AppName=TiEmu
-AppVerName=TiEmu 1.80
+AppVerName=TiEmu 2.00-rc1
 AppPublisher=The TiEmu Team
 AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
 AppSupportURL=http://lpg.ticalc.org/prj_tiemu/mailing_list.html
@@ -61,7 +61,7 @@ Source: "C:\sources\roms\tifiles\tests\tifiles.dll"; DestDir: "{app}"; Flags: ig
 Source: "C:\sources\roms\ticables\tests\ticables.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticalcs\tests\ticalcs.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu\build\msvc\tiemu.exe"; DestDir: "{app}"; DestName: "tiemu.exe"; Flags: ignoreversion
-Source: "C:\Windows\system32\MSVCRTD.DLL"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "C:\Windows\system32\MSVCRTD.DLL"; DestDir: "{app}"; Flags: ignoreversion
 ; Copy PortTalk driver for Windows NT4/2000/XP
 Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{sys}\drivers"; Flags: ignoreversion
 Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{app}"; Flags: ignoreversion
