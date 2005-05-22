@@ -272,14 +272,14 @@ int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
 		case 0xfff0:	// 6 byte bsr w/long word displacement
 			PARAM_LONG(pm);
 			if (pm & 0x8000)
-				sprintf (buffer, "FLINE    bsr.l *-$%lX [%lX]", (int)(-(signed short)pm) - 2, pc + (signed short)pm + 2);
+				sprintf (buffer, "FLINE    bsr.l *-$%lX [%lX]", (-(signed long)(int32_t)pm) - 2, pc + (signed long)(int32_t)pm + 2);
 			else
 				sprintf (buffer, "FLINE    bsr.l *+$%lX [%lX]", pm + 2, pc + pm + 2);
 			return 6;
 		case 0xfff1:	// 6 byte bra w/long word displacement
 			PARAM_LONG(pm);
             if (pm & 0x8000)
-				sprintf (buffer, "FLINE    bra.l *-$%lX [%lX]", (int)(-(signed short)pm) - 2, pc + (signed short)pm + 2);
+				sprintf (buffer, "FLINE    bra.l *-$%lX [%lX]", (-(signed long)(int32_t)pm) - 2, pc + (signed long)(int32_t)pm + 2);
 			else
 				sprintf (buffer, "FLINE    bra.l *+$%lX [%lX]", pm + 2, pc + pm + 2);
 			return 6;
@@ -295,7 +295,7 @@ int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
 				
 				heap_search_for_address(pc + (signed short)pm + 2 + 0x8000, &handle);
 				heap_get_block_addr(handle, &addr);				
-				sprintf (buffer, "FLINE    jmp.w *+$%lX [%lX]", (signed short)pm + 0x8000, addr + 2 + (signed short)pm + 0x8000);
+				sprintf (buffer, "FLINE    jmp.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + 2 + (signed long)(signed short)pm + 0x8000);
 			}
 			return 4;
 		case 0xffef:	// jsr __ld_entry_point_plus_0x8000+word (appel de fonction avec offset signé de 2 octets rajouté à (début du programme)+0x8000)
@@ -306,7 +306,7 @@ int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
 				
 				heap_search_for_address(pc + (signed short)pm + 2 + 0x8000, &handle);
 				heap_get_block_addr(handle, &addr);
-				sprintf (buffer, "FLINE    jsr.w *+$%lX [%lX]", (signed short)pm + 0x8000, addr + 2 + (signed short)pm + 0x8000);
+				sprintf (buffer, "FLINE    jsr.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + 2 + (signed long)(signed short)pm + 0x8000);
 			}
 			return 4;
 		case 0xf8b5:	// 2 byte ROM call followed by an FPU opcode (special case: _bcd_math)
@@ -321,6 +321,12 @@ int Dasm68000 (unsigned char *pBase, char *buffer, int _pc)
 			sprintf (buffer, "FLINE    $%03x.w [%s]", op & 0x7ff, romcalls_get_name(op & 0x7ff));
 			return 2;
 		}
+	}
+	// ER_throw
+	else if ((op & 0xf000) == 0xa000)
+	{
+		sprintf (buffer, "ER_throw %d [%s]", op & 0xfff, ercodes_get_name(op & 0xfff));
+		return 2;
 	}
 
 	// standard m68k intructions
