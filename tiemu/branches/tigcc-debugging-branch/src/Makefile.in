@@ -209,7 +209,7 @@ tiemu-rc.o: ../build/mingw/tiemu.rc
 clean:
 	@cd core/uae && $(MAKE) clean
 	@cd core/gdb && $(MAKE) clean
-	@rm -f $(tiemu_OBJ) tiemu tiemu.exe $(kdeprivsources)
+	@rm -f $(tiemu_OBJ) tiemu tiemu.exe tiemu-rc.o $(kdeprivsources)
 
 distclean: clean
 	@cd core/uae && $(MAKE) distclean
