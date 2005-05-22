@@ -2,48 +2,46 @@
 
 
 
-Previous version: 1.80u		(05/05/2005)
-Current version:  1.80v		(16/05/2005)
+Previous version: 1.80v			(05/16/2005)
+Current version:  2.00-rc1	(05/22/2005)
 
 SubVersion (CVS) revision: $Id$
 
-TiEmu is available for 2 platforms:
-Linux (GTK), Windows (GTK).
+TiEmu is available for 3 platforms:
+Linux (GTK), Windows (GTK), Mac OS-X (GTK)
 
-If you have a SilverLink cable (TI-GRAPH LINK USB), you will need to retrieve
+[ If you have a SilverLink cable (TI-GRAPH LINK USB), you will need to retrieve
 a Linux/Win32/Mac OS-X driver on the Linux Programmer Group at 
-<http://lpg.ticalc.org/prj_usb>.
+<http://lpg.ticalc.org/prj_usb>. ]
 
-For the other link cables, no driver is needed because it's provided.
+For the other link cables, no driver is needed.
 
 
 New capabilities:
 -----------------
 
-	- added accelator key to select line & set PC on next line
+	- many from TiEmu-I
 
 
 Improvements:
 -------------
 
-	- memory layout management rewritten
-	- splitted I/O ports on HW3
-	- can change LCD rate from popup menu
+	- 
 		
 
 Bug fixes:
 ----------
 
-	- engine loop
+	- implement undocumented flags for ABCD, SBCD, NBCD and CHK
 	
 
 Planned:
 --------
 
-	- to do...
+	- TiEmu v3.00 with GDB support
 
 	
 Notes:
 ------
 
-	Release candidate should arrive soon...
+	- we hope you will enjoy this Release Candidate !

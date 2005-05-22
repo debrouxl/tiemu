@@ -3,12 +3,12 @@ SubVersion: $Id$
 To do:
 	- video scaling
 
-//- 16/05/2005, version 2.00-rc1:
-//	- [roms] $1323: first release candidate
+- 16/05/2005, version 2.00-rc1:
 	- [kevin] $1337/1338: fix --with-kde for Debian and derivatives
 	- [kevin] $1340/1341: add -Wl,--export-dynamic for all Linux targets to fix Ubuntu problem
 	- [kevin] $1351/1352: implement undocumented flags for ABCD, SBCD, NBCD and CHK
 	                      (source: 68knotes.txt by Bart Trzynadlowski)
+	- [roms] $1358: first release candidate
 
 - 06/05/2005, version 1.80v:
 	- [roms]  $1248: changed rom_base from 0x20 to 0x200000 whenever applicable

@@ -252,6 +252,10 @@ SOURCE=..\..\src\core\ti_hw\mem92p.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\ti_hw\memv2.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\ti_hw\ports.c
 # End Source File
 # End Group
@@ -311,10 +315,6 @@ SOURCE=..\..\src\core\ti_sw\vat.c
 SOURCE=..\..\src\core\uae\libuae.lib
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE=..\..\src\core\engine.c
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\error.c
@@ -393,10 +393,6 @@ SOURCE=..\..\src\gui\debugger\dbg_stack.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\debugger\dbg_vectors.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\debugger\gsource.c
 # End Source File
 # End Group
 # Begin Group "calc"
@@ -530,7 +526,15 @@ SOURCE=..\..\src\misc\tie_error.c
 # End Group
 # Begin Source File
 
+SOURCE=..\..\src\gui\engine.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\main.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\tsource.c
 # End Source File
 # End Group
 # End Target

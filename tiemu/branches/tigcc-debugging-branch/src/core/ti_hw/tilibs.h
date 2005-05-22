@@ -31,6 +31,7 @@
 # include <config.h>
 #endif
 
+/*
 #if !defined(__MACOSX__) && !defined(__WIN32__)
 # include <tilp/ticables.h>
 #elif defined(__MACOSX__)
@@ -57,5 +58,10 @@
 #else
 # include "ticalcs.h"
 #endif
+ */
+# include "ticables.h"
+# include "tifiles.h"
+# include "macros.h"
+# include "ticalcs.h"
 
 #endif
