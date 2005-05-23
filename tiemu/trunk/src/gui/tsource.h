@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: engine.h 1017 2005-03-26 10:18:28Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
