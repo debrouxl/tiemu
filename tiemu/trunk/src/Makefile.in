@@ -172,7 +172,11 @@ uae:
 	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" gen
 	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" all
 
+ifneq (,$(findstring __WIN32__,$(CFLAGS)))
+tiemu: $(tiemu_OBJ) $(RESFILE)
+else
 tiemu: $(tiemu_OBJ)
+endif
 ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
 	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
 	$(LDFLAGS) $(CFLAGS) $(kdelibraries) \
