@@ -10,7 +10,6 @@ on the arrow to see the list of symbols. This only happens just after
 a sort, and it disappears completely once characters are entered in
 the text field.
 
-
 Kevin
 =====
 
@@ -45,7 +44,11 @@ dans le décor, je ne sais pas s'il exécute ou pas
 PPhd
 ====
 
-* none
+* Au fait, le boutton "Add rom" au demarrage continue de freezer...
+(File Selector 0 si ca peut t'aider).
+
+Le seul moyen c'est de faire CANCEL, puis selectionne d'une nouvelle TIB, puis 
+on demarre. Pas pratique, ni evident !
 
 
 roms

@@ -1,15 +1,15 @@
 ## Process this file with autoconf to produce Makefile
 
-@SET_MAKE@
-CC        = @CC@
-CPP       = @CPP@
-CXX       = @CXX@
-CFLAGS    = @CFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@
-LDFLAGS   = @LDFLAGS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ $(extra_ldflags)
-CXXFLAGS  = @CXXFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@
-MOC       = @MOC@
 
-kde       = @kde@
+CC        = gcc
+CPP       = gcc -E
+CXX       = g++
+CFLAGS    = -g -O2 -D__I386__ -D__LINUX__ -DGTK_DISABLE_DEPRECATED -DDEBUGGER -I/usr/local/include/tilp   -I/usr/local/include/tilp   -I/usr/local/include/tilp   -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -DXTHREADS -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/X11R6/include -I/usr/include/atk-1.0 -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -DXTHREADS -I/usr/include/libglade-2.0 -I/usr/include/gtk-2.0 -I/usr/include/libxml2 -I/usr/lib/gtk-2.0/include -I/usr/X11R6/include -I/usr/include/atk-1.0 -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  
+LDFLAGS   =  -L/usr/local/lib -lticables   -L/usr/local/lib -ltifiles   -L/usr/local/lib -lticalcs -lticables -ltifiles   -lglib-2.0   -Wl,--export-dynamic -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -lpangoxft-1.0 -lpangox-1.0 -lpango-1.0 -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0   -Wl,--export-dynamic -lglade-2.0 -lgtk-x11-2.0 -lxml2 -lpthread -lz -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -lpangoxft-1.0 -lpangox-1.0 -lpango-1.0 -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0   $(extra_ldflags)
+CXXFLAGS  = -g -O2 -D__I386__ -D__LINUX__ -DGTK_DISABLE_DEPRECATED -DDEBUGGER -fno-rtti -fno-exceptions -I/usr/local/include/tilp   -I/usr/local/include/tilp   -I/usr/local/include/tilp   -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -DXTHREADS -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/X11R6/include -I/usr/include/atk-1.0 -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -DXTHREADS -I/usr/include/libglade-2.0 -I/usr/include/gtk-2.0 -I/usr/include/libxml2 -I/usr/lib/gtk-2.0/include -I/usr/X11R6/include -I/usr/include/atk-1.0 -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  
+MOC       = 
+
+kde       = no
 
 DESTDIR   =
 
@@ -22,34 +22,34 @@ ifneq (,$(findstring __LINUX__,$(CFLAGS)))
 	LDFLAGS += -Wl,--export-dynamic
 endif
 
-INSTALL         = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA    = @INSTALL_DATA@
-prefix          = @prefix@
-exec_prefix     = @exec_prefix@
-bindir          = @bindir@
-libdir          = @libdir@
-sysconfdir      = @sysconfdir@
+INSTALL         = /usr/bin/install -c -p
+INSTALL_PROGRAM = ${INSTALL} $(INSTALL_STRIP_FLAG)
+INSTALL_DATA    = ${INSTALL} -m 644
+prefix          = /usr/local
+exec_prefix     = ${prefix}
+bindir          = ${exec_prefix}/bin
+libdir          = ${exec_prefix}/lib
+sysconfdir      = ${prefix}/etc
 
 .SUFFIXES: .o .c .cpp .h .m .i .S .rc .res
 
 ifeq ($(kde), yes)
-kdeincludes = @all_includes@
-kdelibraries = @LIB_KDECORE@ @LIB_KDEUI@ @LIB_KIO@ @LIB_QT@ @KDE_LDFLAGS@ @QT_LDFLAGS@ @X_LDFLAGS@
+kdeincludes = 
+kdelibraries =       
 kde_OBJ = gui/kde.o gui/kde-private.o
 kdeprivsources = gui/kde-private.cpp
 gui/kde-private.cpp: gui/kde-private.h
 	$(MOC) gui/kde-private.h -o gui/kde-private.cpp
 endif
 
-DEFS=@DEFS@ \
+DEFS=-DHAVE_CONFIG_H \
 	-DSHARE_DIR=\"${prefix}/share/tiemu\" \
 	-DLOCALEDIR=\"${prefix}/share/locale\"
 #	-DSHARE_DIR=\"$(pkgdatadir)\" \
 #	-DLOCALEDIR=\"$(datadir)/locale\"
 
 INCLUDES = \
-	-I@top_srcdir@ -I$(includedir) \
+	-I.. -I$(includedir) \
 	-DPREFIX=\"${prefix}\" -I. \
 	-I./core -I./core/uae -I./core/ti_hw -I./core/ti_sw -I./core/dbg \
 	-I./misc \
@@ -206,7 +206,7 @@ dos2unix:
 	uppercase
 
 distdir: clean
-	cp -rl * ../tiemu-@VERSION@/src
+	cp -rl * ../tiemu-2.00-rc1/src
 
 install: tiemu
 	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
