@@ -16,6 +16,8 @@ DESTDIR   =
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	RESFILE = tiemu-rc.o
 	LDFLAGS += -lcomdlg32
+else
+	RESFILE =
 endif
 
 ifneq (,$(findstring __LINUX__,$(CFLAGS)))
@@ -82,6 +84,7 @@ core_tihw_OBJ = \
 	core/ti_hw/ports.o
 
 core_tisw_OBJ = \
+	core/ti_sw/er_codes.o \
 	core/ti_sw/handles.o	\
 	core/ti_sw/registers.o	\
 	core/ti_sw/romcalls.o	\
@@ -181,7 +184,11 @@ uae:
 gdb:
 	cd core/gdb && $(MAKE)
 
+ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 tiemu: $(tiemu_OBJ) $(core_gdb_DEP) $(RESFILE)
+else
+tiemu: $(tiemu_OBJ) $(core_gdb_DEP)
+endif
 ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
 	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
     `sed <core/gdb/gdb/libgdb.ldflags 's,^\.\./,core/gdb/,;s, \.\./, core/gdb/,g;s, \./\.\./, core/gdb/,g'` \

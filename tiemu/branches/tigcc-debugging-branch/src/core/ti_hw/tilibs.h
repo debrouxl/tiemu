@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: tilibs.h 366 2004-03-22 18:04:07Z roms $ */
+/* $Id$ */
 
 /*  tilp - Ti Linking Program
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -31,19 +31,13 @@
 # include <config.h>
 #endif
 
-/*
-#if !defined(__MACOSX__) && !defined(__WIN32__)
-# include <tilp/ticables.h>
-#elif defined(__MACOSX__)
+#if defined(__MACOSX__)
 # include <libticables/ticables.h>
 #else
 # include "ticables.h"
 #endif
 
-#if !defined(__MACOSX__) && !defined(__WIN32__)
-# include <tilp/tifiles.h>
-# include <tilp/macros.h>
-#elif defined(__MACOSX__)
+#if defined(__MACOSX__)
 # include <libtifiles/tifiles.h>
 # include <libtifiles/macros.h>
 #else
@@ -51,17 +45,10 @@
 # include "macros.h"
 #endif
 
-#if !defined(__MACOSX__) && !defined(__WIN32__)
-# include <tilp/ticalcs.h>
-#elif defined(__MACOSX__)
+#if defined(__MACOSX__)
 # include <libticalcs/ticalcs.h>
 #else
 # include "ticalcs.h"
 #endif
- */
-# include "ticables.h"
-# include "tifiles.h"
-# include "macros.h"
-# include "ticalcs.h"
 
 #endif
