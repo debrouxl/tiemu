@@ -1,3 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
+/* $Id$ */
+
 /*
  *   A MC68000/MC68010 disassembler
  *

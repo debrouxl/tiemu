@@ -1,3 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
+/* $Id$ */
+
 /*
  * UAE - The Un*x Amiga Emulator
  *

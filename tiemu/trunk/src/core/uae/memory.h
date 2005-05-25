@@ -10,6 +10,7 @@
   *  Copyright (c) 2003, Julien Blache
   *  Copyright (c) 2004, Romain Liévin
   *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+  *  $Id$
   */
 
 #ifndef BUILD_UAE

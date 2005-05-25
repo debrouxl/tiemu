@@ -5,6 +5,7 @@
   *
   * Copyright 1995, 1996 Ed Hanway
   * Copyright 1995-98 Bernd Schmidt
+  * $Id$
   */
 
 #include <stdio.h> // FILE

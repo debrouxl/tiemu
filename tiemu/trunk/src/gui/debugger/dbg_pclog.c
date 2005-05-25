@@ -1,4 +1,4 @@
- /* Hey EMACS -*- linux-c -*- */
+/* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
 /*  TiEmu - an TI emulator

@@ -10,6 +10,7 @@
   * it's actually needed by the .c file.
   *
   * Copyright 1996, 1997 Bernd Schmidt
+  * $Id$
   */
 
 #ifdef _MSC_VER

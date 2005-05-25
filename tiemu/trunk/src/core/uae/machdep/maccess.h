@@ -4,6 +4,7 @@
   * Memory access functions
   *
   * Copyright 1996 Bernd Schmidt
+  * $Id$
   */
 
 static __inline__ uae_u32 do_get_mem_long(uae_u32 *a)
