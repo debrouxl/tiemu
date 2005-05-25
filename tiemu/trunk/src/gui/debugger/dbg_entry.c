@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: dbg_vectors.c 676 2004-09-21 20:27:05Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *

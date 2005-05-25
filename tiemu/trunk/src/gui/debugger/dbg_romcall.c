@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: dbg_code.c 731 2004-11-28 16:05:10Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
