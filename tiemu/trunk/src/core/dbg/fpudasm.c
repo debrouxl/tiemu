@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: error.c 680 2004-10-11 16:45:27Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *

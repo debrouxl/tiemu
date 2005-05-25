@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: romcalls.h 864 2005-02-22 09:54:05Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *

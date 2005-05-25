@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: memv2.c 1250 2005-05-06 09:41:01Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *

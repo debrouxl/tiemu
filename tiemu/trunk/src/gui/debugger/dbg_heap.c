@@ -1,5 +1,5 @@
  /* Hey EMACS -*- linux-c -*- */
-/* $Id: dbg_pclog.c 718 2004-11-22 12:35:39Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
