@@ -9,6 +9,7 @@
  *   Kevin Kofler <Kevin@tigcc.ticalc.org>
  *
  * Copyright (C) 2003-2005 Authors
+ * $Id$
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
  */

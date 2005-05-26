@@ -4,6 +4,7 @@
   * MC68000 emulation
   *
   * Copyright 1995 Bernd Schmidt
+  * $Id$
   */
 
 #include "readcpu.h"

@@ -4,6 +4,7 @@
   * User configuration options
   *
   * Copyright 1995 - 1998 Bernd Schmidt
+  * $Id$
   */
 
 /*

@@ -4,6 +4,7 @@
   * m68k -> i386 compiler
   *
   * (c) 1995 Bernd Schmidt
+  * $Id$
   */
 
 typedef uaecptr (*code_execfunc)(void);
