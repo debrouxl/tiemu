@@ -200,6 +200,10 @@ SOURCE=..\..\src\core\dbg\m68kdasm.c
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\src\core\ti_sw\er_codes.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\ti_sw\handles.c
 # End Source File
 # Begin Source File

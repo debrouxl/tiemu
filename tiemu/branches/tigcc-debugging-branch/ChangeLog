@@ -3,8 +3,10 @@ SubVersion: $Id$
 To do:
 	- video scaling
 
+- 23/05/2005, version 2.00-rc2:
 	- [kevin] $1357/1362: added support for disassembling ER_throw
 	- [kevin] $1364/1365: link tiemu.rc in for MinGW
+	- [roms]  $1382: fixed HOME & CATALOG keys on Titanium (mouse only)
 
 - 16/05/2005, version 2.00-rc1:
 	- [kevin] $1337/1338: fix --with-kde for Debian and derivatives

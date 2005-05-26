@@ -24,10 +24,11 @@
     ER_throw support
 */
 
+#include <stdio.h>
 #include <stdlib.h>
 
 /* This table is converted and hand-edited from the TIGCC error.h. */
-static struct {int id; const char *name;} erthrow_table[] = {
+static struct {unsigned int id; const char *name;} erthrow_table[] = {
   {0, "ER_OK"},
   {1, "ER_EXIT"},
   {2, "ER_STOP"},
