@@ -77,6 +77,14 @@ gint display_scroptions_dbox()
 		data = glade_xml_get_widget(xml, "radiobutton32");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
 		break; 
+	case IMG_EPS:
+		data = glade_xml_get_widget(xml, "radiobutton33");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
+		break;
+	case IMG_PDF:
+		data = glade_xml_get_widget(xml, "radiobutton34");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
+		break;
 	}
 
 	switch (tmp_options.type)
@@ -103,7 +111,7 @@ gint display_scroptions_dbox()
 		break;
 	}
 
-    label = glade_xml_get_widget(xml, "label10");
+	label = glade_xml_get_widget(xml, "label10");
 	refresh_label();
 		
 	data = glade_xml_get_widget(xml, "entry10");
@@ -128,7 +136,7 @@ gint display_scroptions_dbox()
 
 void refresh_label(void)
 {
-	gchar *ext = "???";
+    gchar *ext = "???";
     gchar *str;
 	
     if(label == NULL)
@@ -139,6 +147,8 @@ void refresh_label(void)
 	    case IMG_JPG: ext = "jpg"; break;
 	    case IMG_PNG: ext = "png"; break;
 	    case IMG_ICO: ext = "ico"; break;
+	    case IMG_EPS: ext = "eps"; break;
+	    case IMG_PDF: ext = "pdf"; break;
 	    default: break;
 	}
 	
@@ -210,6 +220,26 @@ on_scopt_radiobutton32_toggled         (GtkToggleButton *togglebutton,
 {
     if(gtk_toggle_button_get_active(togglebutton))
         tmp_options.format = IMG_ICO;
+    refresh_label();
+}
+
+
+GLADE_CB void
+on_scopt_radiobutton33_toggled         (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+    if(gtk_toggle_button_get_active(togglebutton))
+        tmp_options.format = IMG_EPS;
+    refresh_label();
+}
+
+
+GLADE_CB void
+on_scopt_radiobutton34_toggled         (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+    if(gtk_toggle_button_get_active(togglebutton))
+        tmp_options.format = IMG_PDF;
     refresh_label();
 }
 
