@@ -81,8 +81,7 @@ Function .onInit
   StrCmp $0 "" 0 gtkfound
   ReadRegStr $0 HKCU "Software\GTK\2.0" "Path"
   StrCmp $0 "" 0 gtkfound
-  MessageBox MB_OK|MB_ICONSTOP 'Please install the "GTK+ 2.6.x Runtime Environment" (${GTK_MIN_VER} or higher). You can obtain GTK+ from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-${GTK_MIN_VER}${GTK_PKG_VER}.exe?download>.'
-  Abort
+  MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION 'GTK+ not found. Please install the "GTK+ 2.6.x Runtime Environment" (${GTK_MIN_VER} or higher). If you proceed, the setup program will be downloaded and launched automatically.' IDOK installgtk IDCANCEL abortinstall
 gtkfound:
   ReadRegStr $0 HKLM "Software\GTK\2.0" "Version"
   StrCmp $0 "" 0 gtkverfound
@@ -95,7 +94,35 @@ gtkverfound:
   Pop $0
   IntCmp $0 1 gtkverok
 gtkvernotok:
-  MessageBox MB_OK|MB_ICONSTOP 'Wrong GTK+ package version. You need at least version ${GTK_MIN_VER} from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-${GTK_MIN_VER}${GTK_PKG_VER}.exe?download>.'
+  MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION 'Wrong GTK+ package version. You need at least version ${GTK_MIN_VER}. If you proceed, the setup program will be downloaded and launched automatically.' IDCANCEL abortinstall
+installgtk:
+; Connect to the Internet
+  ClearErrors
+  Dialer::AttemptConnect
+  IfErrors gtkinstallfailed
+  Pop $0
+  StrCmp $0 "online" 0 gtkinstallfailed
+; Fetch installer (from a random mirror, dl.sourceforge.net is a round-robin DNS)
+; Do the download quietly because the GUI isn't even loaded at that point, and because I can't get
+; the progress meters to work with the "Modern UI" anyway.
+  NSISdl::download_quiet "http://dl.sourceforge.net/gladewin32/gtk-win32-${GTK_MIN_VER}${GTK_PKG_VER}.exe" "$TEMP\gtksetup.exe"
+  Pop $0
+  StrCmp $0 "cancel" abortinstall
+  StrCmp $0 "success" 0 gtkinstallfailed
+; Run the installer
+  ExecWait '"$TEMP\gtksetup.exe"' $0
+  Delete "$TEMP\gtksetup.exe"
+; The GTK+ installer is a NSIS installer as well. Errorlevel 1 means canceled by the user.
+  IntCmp $0 1 abortinstall
+  IntCmp $0 0 0 gtkinstallfailed gtkinstallfailed
+; Check again if GTK+ is installed
+  ReadRegStr $0 HKLM "Software\GTK\2.0" "Path"
+  StrCmp $0 "" 0 gtkverok
+  ReadRegStr $0 HKCU "Software\GTK\2.0" "Path"
+  StrCmp $0 "" 0 gtkverok
+gtkinstallfailed:
+  MessageBox MB_OK|MB_ICONSTOP "GTK+ installation failed."
+abortinstall:
   Abort
 gtkverok:
 FunctionEnd
