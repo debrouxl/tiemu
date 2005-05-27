@@ -26,12 +26,16 @@
 #ifndef __SCREENSHOT__
 #define __SCREENSHOT__
 
+#include <gdk-pixbuf/gdk-pixbuf.h>
+
 #define IMG_XPM 1 // unsupported
 #define IMG_PCX 2 // unsupported
 #define IMG_JPG 3 // supported by PixBuf
 #define IMG_PNG 4 // supported by PixBuf
 #define IMG_BMP 5 // unsupported
 #define IMG_ICO 6 // supported by PixBuf
+#define IMG_EPS 7 // unsupported by PixBuf, custom code
+#define IMG_PDF 8 // unsupported by PixBuf, custom code
 
 #define IMG_TYPE 64
 #define IMG_COL  (IMG_TYPE+1)
@@ -40,6 +44,9 @@
 #define IMG_SIZE 128
 #define IMG_LCD  (IMG_SIZE+1)
 #define IMG_SKIN (IMG_SIZE+2)
+
+gboolean tiemu_screen_write_eps(const gchar *filename, GdkPixbuf *pixbuf, GError **error);
+gboolean tiemu_screen_write_pdf(const gchar *filename, GdkPixbuf *pixbuf, GError **error);
 
 #endif
 

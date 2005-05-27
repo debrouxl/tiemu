@@ -400,6 +400,8 @@ void rcfile_read(void)
 	  if(!strcmp(p, "jpg")) options2.format=IMG_JPG;
 	  else if(!strcmp(p, "png")) options2.format=IMG_PNG;
 	  else if(!strcmp(p, "ico")) options2.format=IMG_ICO;
+	  else if(!strcmp(p, "eps")) options2.format=IMG_EPS;
+	  else if(!strcmp(p, "pdf")) options2.format=IMG_PDF;
 	  else stop(l);
 	  continue;
 	}
@@ -778,6 +780,8 @@ void rcfile_write(void)
     case IMG_JPG: fprintf(txt, "jpg\n"); break;
     case IMG_PNG: fprintf(txt, "png\n"); break;
     case IMG_ICO: fprintf(txt, "ico\n"); break;
+    case IMG_EPS: fprintf(txt, "eps\n"); break;
+    case IMG_PDF: fprintf(txt, "pdf\n"); break;
     }
   fprintf(txt, "\n");
   fprintf(txt, "# Screenshot: image type (bw, color)\n");

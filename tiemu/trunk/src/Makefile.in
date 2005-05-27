@@ -5,7 +5,7 @@ CC        = @CC@
 CPP       = @CPP@
 CXX       = @CXX@
 CFLAGS    = @CFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@
-LDFLAGS   = @LDFLAGS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ $(extra_ldflags)
+LDFLAGS   = @LDFLAGS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ @LIBZ@ $(extra_ldflags)
 CXXFLAGS  = @CXXFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@
 MOC       = @MOC@
 
@@ -17,7 +17,7 @@ ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	RESFILE = tiemu-rc.o 
 	LDFLAGS += -lcomdlg32
 else
-	RESFILE =
+	RESFILE = 
 endif
 
 ifneq (,$(findstring __LINUX__,$(CFLAGS)))
@@ -112,6 +112,7 @@ misc_OBJ = \
 	misc/paths.o 	\
 	misc/printl.o	\
 	misc/rcfile.o 	\
+	misc/screenshot.o \
 	misc/tie_error.o 
 
 gui_calc_OBJ = \

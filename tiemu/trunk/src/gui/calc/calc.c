@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Julien Blache
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -606,6 +607,8 @@ int  hid_screenshot(char *filename)
 			case IMG_JPG: ext = "jpg"; type = "jpeg"; break;
 			case IMG_PNG: ext = "png"; type = "png";  break;
 			case IMG_ICO: ext = "ico"; type = "ico";  break;
+ 		        case IMG_EPS: ext = "eps"; type = "eps";  break;
+ 		        case IMG_PDF: ext = "pdf"; type = "pdf";  break;
 			default: type = "???"; break;
 		}
       
@@ -636,14 +639,26 @@ int  hid_screenshot(char *filename)
 					0, 0, 0, 0, skin_infos.width, skin_infos.height);
 	}
 
-	//result = gdk_pixbuf_save(pixbuf, outfile, type, &error, "quality", "100", NULL);
-	result = gdk_pixbuf_save(pixbuf, outfile, type, &error, NULL);
+	switch (options2.format)
+	{
+	case IMG_EPS:
+		result = tiemu_screen_write_eps(outfile, pixbuf, &error);
+		break;
+	case IMG_PDF:
+		result = tiemu_screen_write_pdf(outfile, pixbuf, &error);
+		break;
+	default:
+		//result = gdk_pixbuf_save(pixbuf, outfile, type, &error, "quality", "100", NULL);
+		result = gdk_pixbuf_save(pixbuf, outfile, type, &error, NULL);
+		break;
+	}
+
 	if (result == FALSE) 
 	{
 		printl(0, "Failed to save pixbuf file: %s: %s\n", outfile, error->message);
 		g_error_free(error);
 	}
-    g_object_unref(pixbuf);
+	g_object_unref(pixbuf);
 
 	printl(0, "Done !\n");
 	options2.counter++;
