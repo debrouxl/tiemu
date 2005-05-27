@@ -287,7 +287,9 @@ GLADE_CB void
 on_no_skin1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+#ifndef __IPAQ__
 	hid_switch_without_skin();
+#endif
 }
 
 

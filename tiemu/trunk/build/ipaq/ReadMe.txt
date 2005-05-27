@@ -16,6 +16,20 @@ Almost everything you need should be included in the archive, just unpack it to 
 To cross-compile TiEmu and the TiLP framework, copy the cross-config.sh script at the top of the source and run it.
 If this does'nt work, you can follow the guidelines above...
 
+To install connection:
+1. modprobe usbnet
+2. ifconfig usb0 192.168.0.200 up
+3. ssh/scp
+
+To mount SD card:
+1. edit /etc/modutils
+2. Add into 'h3900_mmc':
+   h3900_asic
+   mmc_asic3
+   vfat
+3. run update-modules
+4. mount /dev/mmc/part1 /usr/local
+
 To build a GPE application, you need to do this:
 
 1. export PKG_CONFIG_PATH=/usr/local/arm/oe/arm-linux/lib/pkgconfig
