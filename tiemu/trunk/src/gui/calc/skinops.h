@@ -67,7 +67,7 @@
 #define SKIN_TI92   "TI-92"
 #define SKIN_TI92P  "TI-92+"
 #define SKIN_V200   "V200PLT"
-#define SKIN_TI89T  "TI89tm"
+#define SKIN_TI89T  "TI-89TM"
 
 #define SKIN_TYPE_TIEMU   10
 #define SKIN_TYPE_VTI     2
