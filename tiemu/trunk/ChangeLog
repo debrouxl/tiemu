@@ -1,8 +1,5 @@
 SubVersion: $Id$
 
-To do:
-	- video scaling
-
 - 23/05/2005, version 2.00-rc2:
 	- [jb] 1399: Added EPS/PDF screenshot output
 	- [kevin] $1357/1362: added support for disassembling ER_throw
