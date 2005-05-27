@@ -67,7 +67,7 @@ static int hwkey_to_tikey(guint16 hardware_keycode, int action)
             ti_key = kbd_keymap[i].ti_key;
             modifier = kbd_keymap[i].modifier;
 
-#if 1
+#if 0
 				printf("pckey = %4x (%s), tikey = %2x (%s), modifier = %2x (%s)\n", 
                 hardware_keycode, keymap_value_to_string(pckeys, hardware_keycode),
                 ti_key, keymap_value_to_string(tikeys, ti_key),

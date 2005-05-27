@@ -437,6 +437,10 @@ SOURCE=..\..\src\misc\rcfile.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\misc\screenshot.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\misc\tie_error.c
 # End Source File
 # End Group
