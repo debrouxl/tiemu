@@ -54,7 +54,7 @@ var ICONS_GROUP
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
 !define MUI_FINISHPAGE_RUN "$INSTDIR\bin\tiemu.exe"
-!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\share\tiemu\RELEASE"
+!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\share\tiemu\Readme.txt"
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
@@ -75,8 +75,8 @@ InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
 
-; Check if GTK+ is installed
 Function .onInit
+; Check if GTK+ is installed
   ReadRegStr $0 HKLM "Software\GTK\2.0" "Path"
   StrCmp $0 "" 0 gtkfound
   ReadRegStr $0 HKCU "Software\GTK\2.0" "Path"
@@ -125,6 +125,14 @@ gtkinstallfailed:
 abortinstall:
   Abort
 gtkverok:
+; If $INSTDIR points to a Bin\ directory, fix it to point to the root of the tree.
+  StrLen $0 $INSTDIR
+  IntCmp $0 4 notbin notbin
+  IntOp $0 $0 - 4
+  StrCpy $1 $INSTDIR "" $0
+  StrCmp $1 "\bin" 0 notbin
+  StrCpy $INSTDIR $INSTDIR $0
+notbin:
 FunctionEnd
 
 Section "MainSection" SEC01
@@ -356,6 +364,7 @@ Section "MainSection" SEC01
   File "..\..\..\..\TiEmu\share\tiemu\RELEASE"
   File "..\..\..\..\TiEmu\share\tiemu\AUTHORS"
   File "..\..\..\..\TiEmu\share\tiemu\LICENSES"
+  File "Readme.txt"
   SetOutPath "$INSTDIR\share\tcl8.4\http1.0"
   File "..\..\..\..\TiEmu\share\tcl8.4\http1.0\http.tcl"
   File "..\..\..\..\TiEmu\share\tcl8.4\http1.0\pkgIndex.tcl"
@@ -1128,6 +1137,7 @@ Section -AdditionalIcons
   WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk" "$INSTDIR\uninst.exe"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Readme.lnk" "$INSTDIR\share\tiemu\Readme.txt"
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
 
@@ -1891,6 +1901,7 @@ Section Uninstall
   Delete "$INSTDIR\share\tiemu\AUTHORS"
   Delete "$INSTDIR\share\tiemu\RELEASE"
   Delete "$INSTDIR\share\tiemu\COPYING"
+  Delete "$INSTDIR\share\tiemu\Readme.txt"
   Delete "$INSTDIR\share\tiemu\skins\ti92_fr.map"
   Delete "$INSTDIR\share\tiemu\skins\ti92.map"
   Delete "$INSTDIR\share\tiemu\skins\ti89_fr.map"
@@ -2092,6 +2103,7 @@ Section Uninstall
   Delete "$INSTDIR\lib\libticables.la"
   Delete "$INSTDIR\lib\libticables.dll.a"
 
+  Delete "$SMPROGRAMS\$ICONS_GROUP\Readme.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Website.lnk"
   Delete "$DESKTOP\TiEmu.lnk"
@@ -2108,6 +2120,7 @@ Section Uninstall
   RMDir "$INSTDIR\share\tiemu\pedrom"
   RMDir "$INSTDIR\share\tiemu\help"
   RMDir "$INSTDIR\share\tiemu\glade"
+  RMDir "$INSTDIR\share\tiemu\images"
   RMDir "$INSTDIR\share\tiemu"
   RMDir "$INSTDIR\share\tcl8.4\tcltest2.2"
   RMDir "$INSTDIR\share\tcl8.4\opt0.4"
@@ -2117,6 +2130,7 @@ Section Uninstall
   RMDir "$INSTDIR\share\tcl8.4\encoding"
   RMDir "$INSTDIR\share\tcl8.4"
   RMDir "$INSTDIR\share\redhat\gui"
+  RMDir "$INSTDIR\share\redhat"
   RMDir "$INSTDIR\share\iwidgets4.0.1\scripts"
   RMDir "$INSTDIR\share\iwidgets4.0.1\demos\images"
   RMDir "$INSTDIR\share\iwidgets4.0.1\demos\html"
@@ -2131,6 +2145,7 @@ Section Uninstall
   RMDir "$INSTDIR\share\insight1.0\help"
   RMDir "$INSTDIR\share\insight1.0"
   RMDir "$INSTDIR\man\mann"
+  RMDir "$INSTDIR\man"
   RMDir "$INSTDIR\lib\tk8.4"
   RMDir "$INSTDIR\lib\reg1.1"
   RMDir "$INSTDIR\lib\pkgconfig"
