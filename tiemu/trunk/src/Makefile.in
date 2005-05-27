@@ -183,7 +183,7 @@ ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
 	$(LDFLAGS) $(CFLAGS) $(kdelibraries) \
 	-Wl,--rpath,"$(prefix)/lib"
 else
-	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(RESFILE) \
+	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(RESFILE) \
 	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
 endif
 
