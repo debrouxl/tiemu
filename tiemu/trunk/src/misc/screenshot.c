@@ -116,7 +116,7 @@ static gboolean write_compressed_a85_screen(FILE *fp, GdkPixbuf *pixbuf, GError 
 			cbuflen = outlen - s.avail_out;
 #else
 			cbuf = ubuf;
-			cbuflen = len;
+			cbuflen = w * 3;
 #endif /* HAVE_LIBZ */
 			/* ASCII85 (base 85) encoding */
 			for (i = 0; i < cbuflen; i++) {
