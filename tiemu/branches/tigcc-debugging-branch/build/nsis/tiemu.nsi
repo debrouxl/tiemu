@@ -136,6 +136,8 @@ notbin:
 FunctionEnd
 
 Section "MainSection" SEC01
+  Delete "$INSTDIR\share\tiemu\skins\emuti92plus.skn"
+  Delete "$INSTDIR\share\tiemu\skins\emuti89.skn"
   SetOutPath "$INSTDIR\lib"
   File "..\..\..\..\TiEmu\lib\libticables.dll.a"
   File "..\..\..\..\TiEmu\lib\libticables.la"
@@ -350,8 +352,9 @@ Section "MainSection" SEC01
   File "..\..\..\..\TiEmu\share\tiemu\pixmaps\run.xpm"
   File "..\..\..\..\TiEmu\share\tiemu\pixmaps\void.xpm"
   SetOutPath "$INSTDIR\share\tiemu\skins"
-  File "..\..\..\..\TiEmu\share\tiemu\skins\emuti89.skn"
-  File "..\..\..\..\TiEmu\share\tiemu\skins\emuti92plus.skn"
+  File "..\..\..\..\TiEmu\share\tiemu\skins\ipaq_89.skn"
+  File "..\..\..\..\TiEmu\share\tiemu\skins\ipaq_92.skn"
+  File "..\..\..\..\TiEmu\share\tiemu\skins\ipaq_v200plt.skn"
   File "..\..\..\..\TiEmu\share\tiemu\skins\ti89.skn"
   File "..\..\..\..\TiEmu\share\tiemu\skins\ti92.skn"
   File "..\..\..\..\TiEmu\share\tiemu\skins\v200plt.skn"
@@ -1909,8 +1912,9 @@ Section Uninstall
   Delete "$INSTDIR\share\tiemu\skins\v200plt.skn"
   Delete "$INSTDIR\share\tiemu\skins\ti92.skn"
   Delete "$INSTDIR\share\tiemu\skins\ti89.skn"
-  Delete "$INSTDIR\share\tiemu\skins\emuti92plus.skn"
-  Delete "$INSTDIR\share\tiemu\skins\emuti89.skn"
+  Delete "$INSTDIR\share\tiemu\skins\ipaq_v200plt.skn"
+  Delete "$INSTDIR\share\tiemu\skins\ipaq_92.skn"
+  Delete "$INSTDIR\share\tiemu\skins\ipaq_89.skn"
   Delete "$INSTDIR\share\tiemu\pixmaps\void.xpm"
   Delete "$INSTDIR\share\tiemu\pixmaps\run.xpm"
   Delete "$INSTDIR\share\tiemu\pixmaps\logo.xpm"
