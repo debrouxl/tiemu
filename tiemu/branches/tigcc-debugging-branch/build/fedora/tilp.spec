@@ -99,6 +99,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Fri May 27 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Add Requires on zlib and BuildRequires on zlib-devel.
+
 * Fri May 6 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Menu entry and MIME type support.
 

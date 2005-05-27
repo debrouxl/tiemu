@@ -90,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Fri May 27 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Add Requires on zlib and BuildRequires on zlib-devel.
+
 * Thu May 15 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Update description, file list, Requires, BuildReq, Provides and Conflicts.
 Use --enable-shared-tcl-tk.
