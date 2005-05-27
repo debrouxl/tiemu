@@ -34,7 +34,7 @@
 #include "screenshot.h"
 #include "version.h"
 #include "struct.h"
-#include "../core/ti68k_def.h"
+#include "../core/ti68k_int.h"
 #include "intl.h"
 
 /*
@@ -145,7 +145,7 @@ static gboolean write_compressed_a85_screen(FILE *fp, GdkPixbuf *pixbuf, GError 
 						 * hence -> a85block[4-j]
 						 */
 						for (j = 0; j < 5; j++) {
-							a85block[4-j] = a85tuple % 85 + '!';
+							a85block[4-j] = (unsigned char)(a85tuple % 85 + '!');
 							a85tuple /= 85;
 						}
 					}
@@ -171,7 +171,7 @@ static gboolean write_compressed_a85_screen(FILE *fp, GdkPixbuf *pixbuf, GError 
 	if (a85count > 0) {
 		a85count++;
 		for (j = 0; j <= a85count; j++) {
-			a85block[j] = a85tuple % 85 + '!';
+			a85block[j] = (unsigned char)(a85tuple % 85 + '!');
 			a85tuple /= 85;
 		}
                 /* Reverse order */
