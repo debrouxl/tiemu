@@ -16,8 +16,8 @@ Source:		%{name}-%{version}.tar.bz2
 Patch0:		tilp-no-obsolete-desktop-and-mime-entries.diff
 Group:		Applications/Communications
 Copyright:	GPL
-BuildRequires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2-devel >= 2.4.0, gtk2-devel >= 2.4.0, libglade2-devel >= 2.4.0, desktop-file-utils >= 0.9
-Requires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2 >= 2.4.0, gtk2 >= 2.4.0, libglade2 >= 2.4.0
+BuildRequires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2-devel >= 2.4.0, gtk2-devel >= 2.4.0, libglade2-devel >= 2.4.0, zlib-devel >= 1.2.1.2, desktop-file-utils >= 0.9
+Requires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2 >= 2.4.0, gtk2 >= 2.4.0, libglade2 >= 2.4.0, zlib >= 1.2.1.2
 Requires(post):	shared-mime-info, desktop-file-utils >= 0.9
 Requires(postun): shared-mime-info, desktop-file-utils >= 0.9
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
