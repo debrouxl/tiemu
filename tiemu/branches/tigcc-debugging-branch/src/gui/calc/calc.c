@@ -208,9 +208,16 @@ static int match_skin(int calc_type)
 
 	s = g_strdup(ti68k_calctype_to_string(calc_type));
 	skin_name = g_ascii_strdown(s, strlen(s));
+	g_free(s);
 
 	if(!strcmp(skin_name, "ti92+") || !strcmp(skin_name, "ti89t"))
 		skin_name[4] = '\0';
+
+#ifdef __IPAQ__
+	s = g_strconcat("ipaq_", skin_name, NULL);
+	g_free(skin_name);
+	skin_name = s;
+#endif
 
 	// filename is "", load default skin
 	if(!strcmp(g_basename(options.skin_file), ""))
