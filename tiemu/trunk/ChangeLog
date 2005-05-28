@@ -7,7 +7,7 @@ SubVersion: $Id$
 	- [roms]  $1382: fixed HOME & CATALOG keys on Titanium (mouse only)
 	- [jb]    $1399: added EPS/PDF screenshot output
 	- [roms]  $1408: fixed check of Titanium skins (bug #1209813)
-	//- [roms]  $1404: fixed debugger display under SawFish (patch #1209183)
+	- [roms]  $1413: fixed debugger display under SawFish (patch #1209183)
 
 - 16/05/2005, version 2.00-rc1:
 	- [kevin] $1337/1338: fix --with-kde for Debian and derivatives

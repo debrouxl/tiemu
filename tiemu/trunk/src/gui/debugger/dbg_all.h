@@ -39,7 +39,12 @@
 #include "dbg_heap.h"
 #include "dbg_entry.h"
 
+// Save window state
 #define WND_STATE
+
+// This make dbg wnd's as children of the main window.
+// Thus, the taskbar is not filled-up with a lot of windows.
+//#define	WND_TRANSIENT
 
 /* Definitions */
 
