@@ -1,13 +1,14 @@
 SubVersion: $Id$
 
 - 23/05/2005, version 2.00-rc2:
-	- [jb] 1399: Added EPS/PDF screenshot output
 	- [kevin] $1357/1362: added support for disassembling ER_throw
 	- [kevin] $1364/1365: link tiemu.rc in for MinGW
 	- [roms]  $1382: fixed HOME & CATALOG keys on Titanium (mouse only)
 	- [jb]    $1399: added EPS/PDF screenshot output
 	- [roms]  $1408: fixed check of Titanium skins (bug #1209813)
 	- [roms]  $1413: fixed debugger display under SawFish (patch #1209183)
+	- [kevin] $1417/1418: fixed 0x600017 and implemented detection of Patrick
+                          Davidson's grayscale routine (bug #1207299)
 
 - 16/05/2005, version 2.00-rc1:
 	- [kevin] $1337/1338: fix --with-kde for Debian and derivatives
