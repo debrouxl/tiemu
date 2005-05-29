@@ -298,7 +298,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Large view (x2)</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">True</property>
+	      <property name="active">False</property>
 	      <property name="group">normal_view1</property>
 	      <signal name="activate" handler="on_large_view1_activate" last_modification_time="Fri, 14 May 2004 15:28:18 GMT"/>
 	    </widget>
@@ -309,7 +309,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Full screen</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">True</property>
+	      <property name="active">False</property>
 	      <property name="group">normal_view1</property>
 	      <signal name="activate" handler="on_full_view1_activate"/>
 	    </widget>
