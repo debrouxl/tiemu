@@ -168,6 +168,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         break;
         case 0x17: 	// rw <76543210>
 			// programmable rate generator
+			tihw.timer_value = arg; // reset timer
             break;
         case 0x18:	// rw <......10>
 			// keyboard row mask (see keyboard.c)

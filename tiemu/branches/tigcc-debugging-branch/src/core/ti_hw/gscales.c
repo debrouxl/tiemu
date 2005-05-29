@@ -325,10 +325,15 @@ void lcd_hook_hw1(void)
 void lcd_hook_hw2(int refresh)
 {
 	static int dead_cnt = 0;
+#ifdef _MSC_VER
 #pragma warning( push )
 #pragma warning( disable : 4305 )
+#endif
 	static const char moveml_a0p_d0d7a2a6_moveml_d0d7a2a6_a1[8] = {0x4c,0xd8,0x7c,0xff,0x48,0xd1,0x7c,0xff};
+	static const char moveml_a0p_d1d7a2a6_moveml_d1d7a2a6_a1[8] = {0x4c,0xd8,0x7c,0xfe,0x48,0xd1,0x7c,0xfe};
+#ifdef _MSC_VER
 #pragma warning( pop ) 
+#endif
 
 	// if refresh from GTK (calc.c), set 1 plane
 	if(refresh)
@@ -343,10 +348,7 @@ void lcd_hook_hw2(int refresh)
 	// if refresh from CPU loop (m68k.c), search for opcode signature:
 	else
 	{
-//		uae_u16 opcode = curriword();
-
 		if(!memcmp(regs.pc_p, moveml_a0p_d0d7a2a6_moveml_d0d7a2a6_a1, 8))
-		//if(opcode == 0x4cd8)
 		{
 			uint32_t a0 = m68k_areg(regs,0)-0xa00;
 			uint32_t a1 = m68k_areg(regs,1)-0xa00;
@@ -356,11 +358,18 @@ void lcd_hook_hw2(int refresh)
 			else if(a1 != 0x4c00)
 				return;
 
-			//printf("$%06x\n", m68k_getpc());
-			//printf("%06x %06x\n", regs.a[0], regs.a[1]);
-			//process_address_2(a0);
+			process_address(a0);
+			
+			dead_cnt = 0;
+		}
+		else if (!memcmp(regs.pc_p, moveml_a0p_d1d7a2a6_moveml_d1d7a2a6_a1, 8))
+		{
+			uint32_t a0 = m68k_areg(regs,0);
+			uint32_t a1 = m68k_areg(regs,1);
 
-			//printf("%i\n", tihw.lcd_tick);
+			if(a1 != 0x4c00)
+				return;
+
 			process_address(a0);
 			
 			dead_cnt = 0;
@@ -369,7 +378,9 @@ void lcd_hook_hw2(int refresh)
 }
 
 // opcode signature:
-	// TIGGL lib : 
-	//		movem.l  (%a0)+,%d0-%d7/%a2-%a6 ; (%a1)==0x4c00, alors plan:=(%a0)
-	// graphlib-titanik et graphlib-iceberg : 
-	//		movem.l  (%a0)+,%d0-%d7/%a2-%a6 ; (%a1)==0x4c00+12, alors plan:=-12(%a0)
+	// TIGCC grayscale lib and most others:
+	//		movem.l  (%a0)+,%d0-%d7/%a2-%a6 ; (%a1)==0x4c00+0xa00 => plane:=-0xa00(%a0)
+	// graphlib-titanik and graphlib-iceberg:
+	//		movem.l  (%a0)+,%d0-%d7/%a2-%a6 ; (%a1)==0x4c00+0xa00+12 => plane:=-0xa00-12(%a0)
+	// Patrick Davidson's gray.asm:
+	//		movem.l  (%a0)+,%d1-%d7/%a2-%a6 ; (%a1)==0x4c00 => plane:=(%a0)
