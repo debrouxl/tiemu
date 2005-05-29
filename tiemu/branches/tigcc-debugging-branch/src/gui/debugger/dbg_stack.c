@@ -165,7 +165,9 @@ GtkWidget* dbgstack_create_window(void)
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgstack_window");
+#ifdef WND_TRANSIENT
 	gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
+#endif
 
 	notebook = glade_xml_get_widget(xml, "notebook1");
     gtk_notebook_popup_enable(GTK_NOTEBOOK(notebook));
