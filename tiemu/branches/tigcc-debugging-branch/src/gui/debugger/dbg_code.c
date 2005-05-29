@@ -32,7 +32,6 @@
 #include <glade/glade.h>
 #include <gdk/gdkkeysyms.h>
 #include <string.h>
-#include <gdk/gdkwin32.h>
 
 #include "intl.h"
 #include "paths.h"
