@@ -189,7 +189,10 @@ on_reset_calc1_activate                (GtkMenuItem     *menuitem,
 {
 	engine_stop();
 	ti68k_reset();
-  	engine_start();
+	if (dbg_on)
+		on_quit1_activate(menuitem, user_data);
+	else
+	  	engine_start();
 }
 
 GLADE_CB void
