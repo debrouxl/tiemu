@@ -14,6 +14,9 @@ SubVersion: $Id$
 	- [kevin] $1424/1425: fixed checkboxes in the program entry breakpoint
 	                      dialog (a subtle 2-byte buffer overflow!)
 	- [kevin] $1427/1428: RTC port triggers every 8192 seconds (correct), not every 4 (dbg code)
+	- [kevin] $1430/1431: fixed resetting with the debugger open (closes the debugger
+	                      rather than starting the engine with the debugger still expecting
+	                      it to be stopped).
 
 - 16/05/2005, version 2.00-rc1:
 	- [kevin] $1337/1338: fix --with-kde for Debian and derivatives
