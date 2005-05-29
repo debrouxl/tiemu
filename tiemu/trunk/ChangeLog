@@ -11,6 +11,8 @@ SubVersion: $Id$
                           Davidson's grayscale routine (bug #1207299)
 	- [kevin] $1420/1421: when minimizing the main window, don't hide the others
                           (patch #1209183)
+	- [kevin] $1424/1425: fixed checkboxes in the program entry breakpoint
+	                      dialog (a subtle 2-byte buffer overflow!)
 
 - 16/05/2005, version 2.00-rc1:
 	- [kevin] $1337/1338: fix --with-kde for Debian and derivatives
