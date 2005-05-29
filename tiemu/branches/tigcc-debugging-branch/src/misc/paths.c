@@ -87,8 +87,11 @@ static void init_linux_paths(void)
 	inst_paths.locale_dir = g_strconcat(LOCALEDIR, "/", NULL);
 #endif				/*  */
 
+#if 0 /* This breaks Insight's path detection when running TiEmu from a relative
+         path. */
 	// on LINUX systems, HOME directory by default for security reasons
 	chdir(inst_paths.home_dir);
+#endif /* 0 */
 }
 #endif				/*  */
 
@@ -155,8 +158,11 @@ static void init_win32_paths(void)
 	inst_paths.locale_dir =
 	    g_strconcat(inst_paths.base_dir, "locale\\", NULL);
 #endif				/*  */
+#if 0 /* This breaks Insight's path detection when running TiEmu from a relative
+         path, at least it does on *nix. */
 	// on WIN32 systems, local by default
 	_chdir(inst_paths.home_dir);
+#endif /* 0 */
 }
 #endif				/*  */
 int initialize_paths(void)
