@@ -175,7 +175,7 @@ void hw_update(void)
 	if(io2_bit_tst(0x1f, 2) && io2_bit_tst(0x1f, 1))
 	{
 		static time_t old_clk;
-		if(((clock() - old_clk) / CLOCKS_PER_SEC) > 3/*8191*/)
+		if(((clock() - old_clk) / CLOCKS_PER_SEC) > 8191)
 		{
 			old_clk = clock();
 			tihw.rtc_value++;
