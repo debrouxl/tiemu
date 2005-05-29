@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -477,7 +477,7 @@ on_step1_activate                      (GtkMenuItem     *menuitem,
 	clist_refresh(store, TRUE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
-    //dbgmem_refresh_window();
+    dbgmem_refresh_window();
 	dbgstack_refresh_window();
 
     // force refresh !
@@ -496,7 +496,7 @@ on_step_over1_activate                 (GtkMenuItem     *menuitem,
 	clist_refresh(store, TRUE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
-    //dbgmem_refresh_window();
+    dbgmem_refresh_window();
 	dbgstack_refresh_window();
 
 	// force refresh !
@@ -512,7 +512,7 @@ on_step_out1_activate                 (GtkMenuItem     *menuitem,
 	clist_refresh(store, TRUE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
-    //dbgmem_refresh_window();
+    dbgmem_refresh_window();
 	dbgstack_refresh_window();
 
 	// force refresh !
@@ -554,7 +554,7 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
 	clist_refresh(store, FALSE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
-    //dbgmem_refresh_window();
+    dbgmem_refresh_window();
 	dbgstack_refresh_window();
 }
 
@@ -611,7 +611,7 @@ dbgcode_button6_clicked                     (GtkButton       *button,
     clist_refresh(store, FALSE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
-    //dbgmem_refresh_window();
+    dbgmem_refresh_window();
     dbgbkpts_refresh_window();
 	dbgstack_refresh_window();
 }
@@ -646,7 +646,7 @@ dbgcode_button7_clicked                     (GtkButton       *button,
     clist_refresh(store, FALSE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
-    //dbgmem_refresh_window();
+    dbgmem_refresh_window();
     dbgbkpts_refresh_window();
 	dbgstack_refresh_window();
 }
@@ -974,7 +974,7 @@ on_set_pc_to_selection1_activate       (GtkMenuItem     *menuitem,
     ti68k_register_set_pc(addr);
     dbgcode_refresh_window();
     dbgregs_refresh_window();
-    //dbgmem_refresh_window();
+    dbgmem_refresh_window();
 }
 
 GLADE_CB void
