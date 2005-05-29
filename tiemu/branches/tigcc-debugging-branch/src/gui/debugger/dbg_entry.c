@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: dbg_vectors.c 676 2004-09-21 20:27:05Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
-#endif				/*  */
+#endif
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
@@ -57,7 +57,7 @@ static void renderer_toggled			   (GtkCellRendererToggle *cell_renderer,
 	GtkTreePath *path;
 	GtkTreeIter iter;
 	gboolean check;
-	uint16_t handle;
+	gint handle;
 
 	path = gtk_tree_path_new_from_string(path_string);
 	if(!path)
