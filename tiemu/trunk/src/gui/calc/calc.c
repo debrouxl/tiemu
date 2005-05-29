@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005, Romain Liévin
  *  Copyright (c) 2005, Julien Blache
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -679,17 +679,18 @@ on_calc_wnd_window_state_event         (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
+/*
     GdkEventWindowState *wstate = (GdkEventWindowState *)event;
     GdkWindowState state = wstate->new_window_state;
     GdkWindowState mask = wstate->changed_mask;
 
     //printf("%04X %04X %i\n", wstate->new_window_state, wstate->changed_mask, GDK_WINDOW_STATE_ICONIFIED);
-#if 0
+
     if((mask & GDK_WINDOW_STATE_ICONIFIED) && (state & GDK_WINDOW_STATE_ICONIFIED))
         gtk_debugger_hide_all(!0);
         
     else if((mask & GDK_WINDOW_STATE_ICONIFIED) && !(state & GDK_WINDOW_STATE_ICONIFIED))
         gtk_debugger_show_all(!0);
-#endif
+*/
     return FALSE;
 }
