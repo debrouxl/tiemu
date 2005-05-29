@@ -9,6 +9,8 @@ SubVersion: $Id$
 	- [roms]  $1415: fixed debugger display under SawFish (patch #1209183)
 	- [kevin] $1417/1418: fixed 0x600017 and implemented detection of Patrick
                           Davidson's grayscale routine (bug #1207299)
+	- [kevin] $1420/1421: when minimizing the main window, don't hide the others
+                          (patch #1209183)
 
 - 16/05/2005, version 2.00-rc1:
 	- [kevin] $1337/1338: fix --with-kde for Debian and derivatives
