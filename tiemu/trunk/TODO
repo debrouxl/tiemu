@@ -6,6 +6,9 @@ Planned features:
 * ON key doesn't turn calc off 
 * var locked & link
 
+* Non, tu n'as pas corrigé le problème des boutons zoom!
+J'ai déjà essayé la modif que tu as faite dans popup-2.glade, ça ne suffit pas. Ça fait qu'il y a toujours un seul bouton sélectionné, certes, mais c'est toujours le même! Essaie de passer en zoom ×2 et tu verras que ça indique toujours le zoom ×1.
+
 -------------
 + done
 - in progress

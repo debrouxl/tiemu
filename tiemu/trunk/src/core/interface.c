@@ -83,8 +83,6 @@ int ti68k_config_load_default(void)
 #else
     params.background = 1;
 #endif
-    params.grayplanes = 4;
-
     params.restricted = 1;
     params.cpu_rate = -1;
     params.hw_rate = -1;

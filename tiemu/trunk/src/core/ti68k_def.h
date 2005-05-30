@@ -79,7 +79,6 @@ typedef struct
     char *sav_file;
 
     int background;		// no skin if 0
-    int grayplanes;		//
 
     int restricted;		// CPU rate of a real calc
     int cpu_rate;       // OSC1
