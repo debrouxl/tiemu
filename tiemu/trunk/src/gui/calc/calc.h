@@ -59,6 +59,8 @@ int hid_screenshot(char *filename);
 
 int hid_popup_menu(void);
 
+GdkPixbuf* hid_copy_lcd(void);
+
 /* Private Types */
 
 typedef struct
