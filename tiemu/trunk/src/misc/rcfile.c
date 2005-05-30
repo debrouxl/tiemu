@@ -334,13 +334,15 @@ void rcfile_read(void)
 	}
 
       /* GtkTiEmu specific part: emulator section */
-	if( (p=find_str(buffer, "rom_file=")) ) {
+	if( (p=find_str(buffer, "rom_file=")) ) 
+	{
 	  g_free(params.rom_file);
 	  params.rom_file = g_strdup(p);
 	  continue;
 	}
 
-	if( (p=find_str(buffer, "img_file=")) ) {
+	if( (p=find_str(buffer, "img_file=")) ) 
+	{
 	  g_free(params.rom_file);
 	  params.rom_file = g_strdup(p);
 	  continue;
@@ -372,16 +374,14 @@ void rcfile_read(void)
 	  continue;
 	}
 
-/*
 	if( (p=find_str(buffer, "view_mode=")) )
 	{
-	  if(!strcmp(p, "normal")) options2.format=IMG_JPG;
-	  else if(!strcmp(p, "large")) options2.format=IMG_PNG;
-	  else if(!strcmp(p, "full")) options2.format=IMG_ICO;
+	  if(!strcmp(p, "normal")) options.view=VIEW_NORMAL;
+	  else if(!strcmp(p, "large")) options.view=VIEW_LARGE;
+	  else if(!strcmp(p, "full")) options.view=VIEW_FULL;
 	  else stop(l);
 	  continue;
 	}
-*/
 
 	if( (p=find_str(buffer, "cpu_rate=")) )
 	{
@@ -777,11 +777,15 @@ void rcfile_write(void)
 	fprintf(txt, "skin=%i\n", options.skin);
 	fprintf(txt, "\n");
 
-	/*
-	fprintf(txt, "# View mode (normal/large/full\n");
-	fprintf(txt, "view_mode=%i\n", params.view);
+	fprintf(txt, "# View mode (normal/large/full)\n");
+	fprintf(txt, "view_mode=");
+	switch(options.view)
+    {
+    case VIEW_NORMAL: fprintf(txt, "normal\n"); break;
+    case VIEW_LARGE: fprintf(txt, "large\n"); break;
+    case VIEW_FULL: fprintf(txt, "full\n"); break;
+    }
 	fprintf(txt, "\n");
-	*/
 
 	fprintf(txt, "#\n");
 	fprintf(txt, "# HARDWARE SECTION\n");
@@ -940,11 +944,12 @@ int rcfile_default()
 {
 	ti68k_config_load_default();
 
+	// m68k options
 	params.rom_file = g_strconcat(inst_paths.img_dir, "", NULL);
 	params.sav_file = g_strdup("");
 	params.tib_file = g_strdup("");
 
-	// other fields
+	// emulator options
 	options.skin_file = g_strconcat(inst_paths.skin_dir, "", NULL);
     options.keys_file = g_strconcat(inst_paths.skin_dir, "", NULL);
 #if defined(__WIN32__) && defined(_CONSOLE)
@@ -969,12 +974,14 @@ int rcfile_default()
 #endif
 #endif
 
+	// screenshot options
 	options2.file = g_strdup("screenshot");
 	options2.counter = 0;
 	options2.type = IMG_COL;	//IMG_BW;
 	options2.format = IMG_PNG;
 	options2.size = IMG_SKIN;	//IMG_LCD;
 
+	// debugger options
 	options3_set_default();	
 
 	return 0;

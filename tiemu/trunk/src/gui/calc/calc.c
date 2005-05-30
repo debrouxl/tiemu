@@ -531,11 +531,9 @@ int hid_change_skin(const char *filename)
 	return ret1 | ret2;
 }
 
-static gint view_mode = VW_NORMAL;
-
 int hid_switch_fullscreen(void)
 {
-	if(view_mode != VW_FULL)
+	if(options.view != VW_FULL)
 	{
 		GdkScreen* screen = gdk_screen_get_default();
 		gint sw = gdk_screen_get_width(screen);
@@ -554,7 +552,7 @@ int hid_switch_fullscreen(void)
 		hid_exit();
 		hid_init();
 
-		view_mode = VW_FULL;
+		options.view = VW_FULL;
 		gdk_window_fullscreen(main_wnd->window);
 	}
 
@@ -563,7 +561,7 @@ int hid_switch_fullscreen(void)
 
 int hid_switch_normal_view(void)
 {
-	if(view_mode != VW_NORMAL)
+	if(options.view != VW_NORMAL)
 	{
 		si.t = 1;
 		si.x = si.y = 1;
@@ -572,7 +570,7 @@ int hid_switch_normal_view(void)
 		hid_exit();
 		hid_init();
 
-		view_mode = VW_NORMAL;
+		options.view = VW_NORMAL;
 		//gdk_window_unfullscreen(main_wnd->window);
 	}
 
@@ -581,7 +579,7 @@ int hid_switch_normal_view(void)
 
 int hid_switch_large_view(void)
 {
-	if(view_mode != VW_LARGE)
+	if(options.view != VW_LARGE)
 	{
 		si.t = 2;
 		si.x = si.y = 2;
@@ -590,7 +588,7 @@ int hid_switch_large_view(void)
 		hid_exit();
 		hid_init();
 
-		view_mode = VW_LARGE;
+		options.view = VW_LARGE;
 		//gdk_window_unfullscreen(main_wnd->window);
 	}
 

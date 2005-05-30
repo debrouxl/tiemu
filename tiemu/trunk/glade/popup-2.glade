@@ -1,4 +1,4 @@
-<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+﻿<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
 
 <glade-interface>
@@ -314,6 +314,7 @@
 	      <signal name="activate" handler="on_full_view1_activate"/>
 	    </widget>
 	  </child>
+
 	</widget>
       </child>
     </widget>
@@ -420,7 +421,7 @@
 	      <accelerator key="H" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image62">
+		<widget class="GtkImage" id="image66">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-help</property>
 		  <property name="icon_size">1</property>
@@ -443,7 +444,7 @@
 	      <accelerator key="M" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image63">
+		<widget class="GtkImage" id="image67">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-index</property>
 		  <property name="icon_size">1</property>
@@ -534,7 +535,7 @@
 	      <signal name="activate" handler="on_bugreport1_activate" last_modification_time="Sun, 20 Feb 2005 17:58:57 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image64">
+		<widget class="GtkImage" id="image68">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-execute</property>
 		  <property name="icon_size">1</property>
