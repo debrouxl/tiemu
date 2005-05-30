@@ -6,17 +6,6 @@ Planned features:
 * ON key doesn't turn calc off 
 * var locked & link
 
-* 
-
-Salut,
-
-J'ai committé le support EPS/PDF dans TiEmu (rev 1399). J'ai vu
-quelques problèmes avec les screenshots...
- - pas implémenté en B&W ?
- - sur la TI89, LCD only -> pas clipped ?
- - quand on prend toute la calc, on a le popup par dessus la calc, ça
-réduit l'utilité ...
-
 -------------
 + done
 - in progress

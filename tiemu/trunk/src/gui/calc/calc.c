@@ -647,7 +647,7 @@ int  hid_screenshot(char *filename)
 
 	if((options2.size == IMG_LCD) && (options2.type == IMG_BW)) 
 	{
-		// get pixbuf from buffer	
+		// get pixbuf from TI memory (LCD buffer)
 		pixbuf = hid_copy_lcd();
 	} 
 	else if((options2.size == IMG_LCD) && (options2.type == IMG_COL)) 
@@ -658,8 +658,7 @@ int  hid_screenshot(char *filename)
 	else if(options2.size == IMG_SKIN) 
 	{
 		// get pixbuf from backing pixmap
-		pixbuf = gdk_pixbuf_get_from_drawable(
-					NULL, main_wnd->window, NULL,
+		pixbuf = gdk_pixbuf_get_from_drawable(NULL, pixmap, NULL,
 					0, 0, 0, 0, skin_infos.width, skin_infos.height);
 	}
 
