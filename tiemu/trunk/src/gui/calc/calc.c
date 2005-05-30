@@ -517,6 +517,8 @@ int  hid_exit(void)
     {
         g_object_unref(lcd);
         lcd = NULL;
+		g_object_unref(si.l);
+		si.l = NULL;
     }
 
     if(pixmap != NULL)
@@ -646,7 +648,7 @@ int  hid_screenshot(char *filename)
 	if((options2.size == IMG_LCD) && (options2.type == IMG_BW)) 
 	{
 		// get pixbuf from buffer	
-        return 0;
+		return 0;
 	} 
 	else if((options2.size == IMG_LCD) && (options2.type == IMG_COL)) 
 	{
