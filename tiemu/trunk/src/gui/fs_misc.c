@@ -132,6 +132,13 @@ gint display_send_files_dbox()
 	int err;
 	static gchar *folder = NULL;
 
+	// Check for null cable
+	if(link_cable.link_type != LINK_NUL)
+	{
+		tiemu_error(0, "You can't use direct file loading when a cable is set. Change cable to 'null' in the Link Options menu item.");
+		return -1;
+	}
+
     // set mask
     switch(tihw.calc_type) 
 	{

@@ -2,8 +2,8 @@
 
 
 
-Previous version: 1.80v			(05/16/2005)
-Current version:  2.00-rc1	(05/22/2005)
+Previous version: 2.00-rc1	(05/22/2005)
+Current version:  2.00-rc2	(05/30/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,19 +20,37 @@ For the other link cables, no driver is needed.
 New capabilities:
 -----------------
 
-	- many from TiEmu-I
+	- EPS/PDF screenshot output (thanks to Julien Blache)
+	- B&W screenshot support added
 
 
 Improvements:
 -------------
 
-	- 
+	- disassembling ER_throw
+	- reenabled memory window refresh
+	- HW protection is enabled by default for now
+	- tiemu.ini file loader/saver: slightly re-arranged sections and cleaned-up.
+	- view mode is now saved in the config file and restored at startup
 		
 
 Bug fixes:
 ----------
 
-	- implement undocumented flags for ABCD, SBCD, NBCD and CHK
+	- HOME & CATALOG keys on Titanium (mouse only)
+	- check of Titanium skins (bug #1209813)
+	- debugger display under SawFish/Linux (patch #1209183)
+	- 0x600017 and implemented detection of Patrick
+		Davidson's grayscale routine (bug #1207299)
+	- when minimizing the main window, don't hide the others (patch #1209183)
+	- checkboxes in the program entry breakpoint dialog
+	- RTC port triggers every 8192 seconds (correct), not every 4 (dbg code)
+	- fixed resetting with the debugger open (closes the debugger
+		rather than starting the engine with the debugger still expecting
+	    it to be stopped)
+	- multiple check items in the popup menu (button group)
+	- screenshot of TI89 is now clipped
+	- screenshot of full skin with LCD
 	
 
 Planned:
