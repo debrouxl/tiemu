@@ -499,6 +499,9 @@ int  hid_init(void)
 		(GtkFunction)hid_refresh, NULL);
 
 	gtk_widget_show(main_wnd);	// show wnd here
+
+	if(options.view == VIEW_FULL)
+		gdk_window_fullscreen(main_wnd->window);
 	
     return 0;
 }
