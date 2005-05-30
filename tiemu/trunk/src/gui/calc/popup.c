@@ -182,6 +182,9 @@ on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
 #endif
 }
 
+GLADE_CB void
+on_quit1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
 
 GLADE_CB void
 on_reset_calc1_activate                (GtkMenuItem     *menuitem,
