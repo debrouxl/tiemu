@@ -615,8 +615,8 @@ int hid_switch_large_view(void)
 int  hid_screenshot(char *filename)
 {
 	gchar *outfile;
-	gchar *ext = "???";
-	gchar *type = "???";
+	gchar *ext = "";
+	gchar *type = "";
 
 	GdkPixbuf *pixbuf = { 0 };
 	gboolean result = FALSE;
@@ -629,9 +629,9 @@ int  hid_screenshot(char *filename)
 			case IMG_JPG: ext = "jpg"; type = "jpeg"; break;
 			case IMG_PNG: ext = "png"; type = "png";  break;
 			case IMG_ICO: ext = "ico"; type = "ico";  break;
- 		        case IMG_EPS: ext = "eps"; type = "eps";  break;
- 		        case IMG_PDF: ext = "pdf"; type = "pdf";  break;
-			default: type = "???"; break;
+ 		    case IMG_EPS: ext = "eps"; type = "eps";  break;
+ 		    case IMG_PDF: ext = "pdf"; type = "pdf";  break;
+			default: ext = "png"; type = "png";  break;
 		}
       
 		outfile = g_strdup_printf("%s%03i.%s", options2.file, options2.counter, ext);
@@ -651,7 +651,7 @@ int  hid_screenshot(char *filename)
 	else if((options2.size == IMG_LCD) && (options2.type == IMG_COL)) 
 	{
         // get pixbuf from grayscale lcd
-		pixbuf = gdk_pixbuf_copy(lcd);
+		pixbuf = gdk_pixbuf_copy(si.l);
 	} 
 	else if(options2.size == IMG_SKIN) 
 	{
@@ -670,7 +670,6 @@ int  hid_screenshot(char *filename)
 		result = tiemu_screen_write_pdf(outfile, pixbuf, &error);
 		break;
 	default:
-		//result = gdk_pixbuf_save(pixbuf, outfile, type, &error, "quality", "100", NULL);
 		result = gdk_pixbuf_save(pixbuf, outfile, type, &error, NULL);
 		break;
 	}

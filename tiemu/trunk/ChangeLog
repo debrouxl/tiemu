@@ -23,6 +23,7 @@ SubVersion: $Id$
 	- [roms]  $1440: tiemu.ini file loader/saver: slightly re-arranged sections and cleaned-up.
 	- [roms]  $1443: view mode is now saved in the config file.
 	- [roms]  $1444: view mode is restored at startup.
+	- [roms]  $1446: screenshot of TI89 is now clipped
 
 - 16/05/2005, version 2.00-rc1:
 	- [kevin] $1337/1338: fix --with-kde for Debian and derivatives
