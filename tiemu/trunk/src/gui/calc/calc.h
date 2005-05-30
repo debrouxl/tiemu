@@ -93,8 +93,4 @@ typedef GdkRect LCD_RECT;
 typedef GdkRect SKN_RECT;
 typedef GdkRect WND_RECT;
 
-#define VW_NORMAL	1
-#define VW_LARGE	2
-#define VW_FULL		4
-
 #endif

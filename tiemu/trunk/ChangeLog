@@ -21,7 +21,8 @@ SubVersion: $Id$
 	- [roms]  $1434: fixed multiple check items in the popup menu (button group)
 	- [roms]  $1436: HW protection is enabled by default for now
 	- [roms]  $1440: tiemu.ini file loader/saver: slightly re-arranged sections and cleaned-up.
-	- [roms]  $1443: view mode is now saved in the config file and used, too.
+	- [roms]  $1443: view mode is now saved in the config file.
+	- [roms]  $1444: view mode is restored at startup.
 
 - 16/05/2005, version 2.00-rc1:
 	- [kevin] $1337/1338: fix --with-kde for Debian and derivatives

@@ -114,6 +114,38 @@ static void set_infos(void)	// set window & lcd sizes
 	}
 }
 
+static void set_scale(int view_mode)
+{
+	if(view_mode == VIEW_NORMAL)
+	{
+		si.t = 1;
+		si.x = si.y = 1;
+		options.skin = 1;
+	}
+	else if(view_mode == VIEW_LARGE)
+	{
+		si.t = 2;
+		si.x = si.y = 2;
+		options.skin = 1;
+	}
+	else if(view_mode == VIEW_FULL)
+	{
+		GdkScreen* screen = gdk_screen_get_default();
+		gint sw = gdk_screen_get_width(screen);
+		gint sh = gdk_screen_get_height(screen);
+
+		si.t = 1;
+		si.x = (float)sw / lr.w;
+		si.y = (float)sh / lr.h;
+		//printf("%i %i %f\n", sw, lr.w, si.x);
+		//printf("%i %i %f\n", sh, lr.h, si.y);
+
+		si.x = (float)4.0;	// restricted to 4.0, too CPU intensive !
+		si.y = (float)4.0;
+		options.skin = 0;
+	}
+}
+
 // Main wnd by loading glade xml file or by executing glade generated code
 gint display_main_wnd(void)
 {
@@ -416,6 +448,7 @@ int  hid_init(void)
 	}
 
 	// Set window/LCD sizes
+	set_scale(options.view);
 	set_infos();
 
     // Allocate the TI screen buffer
@@ -533,26 +566,13 @@ int hid_change_skin(const char *filename)
 
 int hid_switch_fullscreen(void)
 {
-	if(options.view != VW_FULL)
+	if(options.view != VIEW_FULL)
 	{
-		GdkScreen* screen = gdk_screen_get_default();
-		gint sw = gdk_screen_get_width(screen);
-		gint sh = gdk_screen_get_height(screen);
-
-		si.t = 1;
-		si.x = (float)sw / lr.w;
-		si.y = (float)sh / lr.h;
-		//printf("%i %i %f\n", sw, lr.w, si.x);
-		//printf("%i %i %f\n", sh, lr.h, si.y);
-
-		si.x = (float)4.0;	// restricted to 4.0, too CPU intensive !
-		si.y = (float)4.0;
-		options.skin = 0;
+		set_scale(options.view = VIEW_FULL);
 		
 		hid_exit();
 		hid_init();
 
-		options.view = VW_FULL;
 		gdk_window_fullscreen(main_wnd->window);
 	}
 
@@ -561,16 +581,13 @@ int hid_switch_fullscreen(void)
 
 int hid_switch_normal_view(void)
 {
-	if(options.view != VW_NORMAL)
+	if(options.view != VIEW_NORMAL)
 	{
-		si.t = 1;
-		si.x = si.y = 1;
-		options.skin = 1;
+		set_scale(options.view = VIEW_NORMAL);
 
 		hid_exit();
 		hid_init();
-
-		options.view = VW_NORMAL;
+		
 		//gdk_window_unfullscreen(main_wnd->window);
 	}
 
@@ -579,16 +596,13 @@ int hid_switch_normal_view(void)
 
 int hid_switch_large_view(void)
 {
-	if(options.view != VW_LARGE)
+	if(options.view != VIEW_LARGE)
 	{
-		si.t = 2;
-		si.x = si.y = 2;
-		options.skin = 1;		
+		set_scale(options.view = VIEW_LARGE);		
 		
 		hid_exit();
 		hid_init();
-
-		options.view = VW_LARGE;
+		
 		//gdk_window_unfullscreen(main_wnd->window);
 	}
 
