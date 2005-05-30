@@ -26,6 +26,7 @@ SubVersion: $Id$
 	- [roms]  $1446: screenshot of TI89 is now clipped
 	- [roms]  $1447: B&W screenshot support added
 	- [roms]  $1448: fixed screenshot of full skin with LCD
+	- [roms]  $1449: timeout of direct file loading can be changed now
 
 - 16/05/2005, version 2.00-rc1:
 	- [kevin] $1337/1338: fix --with-kde for Debian and derivatives

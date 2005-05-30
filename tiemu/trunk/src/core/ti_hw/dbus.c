@@ -359,7 +359,7 @@ static int ilp_put(uint8_t data)
   	while(f2t_flag/* && !iu.cancel*/) 
     { 
 		hw_m68k_run(1, 0);
-		if(toELAPSED(clk, 600))	// 60s
+		if(toELAPSED(clk, params.timeout))
 			return ERR_WRITE_TIMEOUT;
     };
 
@@ -374,7 +374,7 @@ static int ilp_get(uint8_t *data)
   	while(!t2f_flag/* && !iu.cancel*/) 
     { 
       	hw_m68k_run(1, 0);
-		if(toELAPSED(clk, 600))
+		if(toELAPSED(clk, params.timeout))
 			return ERR_WRITE_TIMEOUT;
     };
     

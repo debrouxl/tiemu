@@ -48,6 +48,7 @@ static gint ad;
 static GtkWidget *button = NULL;
 static gint init = !0;
 static GtkWidget *port = NULL;
+static GtkWidget *tmo = NULL;
 
 
 gint display_comm_dbox()
@@ -222,8 +223,11 @@ gint display_comm_dbox()
 	}
 
 	// Timeout
-	data = glade_xml_get_widget(xml, "spinbutton_comm_timeout");
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), link_cable.timeout);
+	tmo = data = glade_xml_get_widget(xml, "spinbutton_comm_timeout");
+	if(link_cable.link_type != LINK_NUL)	
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), link_cable.timeout);
+	else
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), params.timeout);
 	
 	// Delay
 	data = glade_xml_get_widget(xml, "spinbutton_comm_delay");
@@ -238,7 +242,11 @@ gint display_comm_dbox()
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) {
 	case GTK_RESPONSE_OK:
+		tmp_lp.timeout = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmo));
+
         memcpy(&link_cable, &tmp_lp, sizeof(TicableLinkParam));
+		if(link_cable.link_type == LINK_NUL)
+			params.timeout = tmp_lp.timeout;
         err = ti68k_linkport_reconfigure();
 		handle_error();
 		break;
@@ -274,7 +282,6 @@ comm_cable_changed                     (GtkOptionMenu   *optionmenu,
 	
 	// force port to avoid libticables bad argument 
 	if(!init) {
-		printf("port forced !\n");
 		switch(tmp_lp.link_type) {
 		case LINK_TGL:
 		case LINK_SER:
@@ -297,6 +304,17 @@ comm_cable_changed                     (GtkOptionMenu   *optionmenu,
 			break;
 		}
 	}
+
+	// change value
+	/*
+	if(tmo != NULL)
+	{
+		if(tmp_lp.link_type != LINK_NUL)	
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmo), link_cable.timeout);
+		else
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmo), params.timeout);
+	}
+	*/
 }
 
 GLADE_CB void

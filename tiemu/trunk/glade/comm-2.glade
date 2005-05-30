@@ -253,7 +253,7 @@
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">10 1 50 1 10 10</property>
+		      <property name="adjustment">10 1 600 1 10 10</property>
 		      <signal name="changed" handler="comm_spinbutton_timeout_changed" object="spinbutton_comm_timeout" last_modification_time="Mon, 05 Apr 2004 19:01:19 GMT"/>
 		    </widget>
 		    <packing>

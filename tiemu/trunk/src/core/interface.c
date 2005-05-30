@@ -84,6 +84,7 @@ int ti68k_config_load_default(void)
     params.lcd_rate = -1;
 	params.hw_protect = !0;
 	params.recv_file = 1;
+	params.timeout = 600;	// 60s
 
     ticable_get_default_param(&link_cable);
     link_cable.link_type = LINK_NUL;
