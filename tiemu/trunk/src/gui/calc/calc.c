@@ -81,7 +81,7 @@ static void set_infos(void)	// set window & lcd sizes
 	ls.h = (int)(si.y * tihw.lcd_h);
 
 	// LCD rectangle (target: window)
-	if(params.background) 
+	if(options.skin) 
 	{
 		lr.x = ls.x; 
 		lr.y = ls.y;
@@ -102,7 +102,7 @@ static void set_infos(void)	// set window & lcd sizes
 
 	// WND rectangle (= LCD or SKN depending on w/ or w/o skin)
 	wr.x = wr.y = 0;
-	if(params.background)
+	if(options.skin)
 	{
 		wr.w = sr.w;
 		wr.h = sr.h;
@@ -505,7 +505,7 @@ void hid_lcd_rate_set(void)
 
 int hid_switch_with_skin(void)
 {
-    params.background = 1;
+    options.skin = 1;
 	set_infos();
 	redraw_skin();
 
@@ -514,7 +514,7 @@ int hid_switch_with_skin(void)
 
 int hid_switch_without_skin(void)
 {
-    params.background = 0;
+    options.skin = 0;
 	set_infos();
 	redraw_skin();
 
@@ -549,7 +549,7 @@ int hid_switch_fullscreen(void)
 
 		si.x = (float)4.0;	// restricted to 4.0, too CPU intensive !
 		si.y = (float)4.0;
-		params.background = 0;
+		options.skin = 0;
 		
 		hid_exit();
 		hid_init();
@@ -567,7 +567,7 @@ int hid_switch_normal_view(void)
 	{
 		si.t = 1;
 		si.x = si.y = 1;
-		params.background = 1;
+		options.skin = 1;
 
 		hid_exit();
 		hid_init();
@@ -585,7 +585,7 @@ int hid_switch_large_view(void)
 	{
 		si.t = 2;
 		si.x = si.y = 2;
-		params.background = 1;		
+		options.skin = 1;		
 		
 		hid_exit();
 		hid_init();

@@ -78,8 +78,6 @@ typedef struct
     char *tib_file;
     char *sav_file;
 
-    int background;		// no skin if 0
-
     int restricted;		// CPU rate of a real calc
     int cpu_rate;       // OSC1
     int hw_rate;        // OSC2

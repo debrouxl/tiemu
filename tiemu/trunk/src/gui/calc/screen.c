@@ -176,7 +176,7 @@ void redraw_skin(void)
 	gtk_window_resize(GTK_WINDOW(main_wnd), wr.w, wr.h);
 
 	// no skin ?
-  	if(!params.background) 
+  	if(!options.skin) 
     	return;
 
 	// scale image if needed

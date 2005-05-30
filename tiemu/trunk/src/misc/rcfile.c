@@ -362,15 +362,15 @@ void rcfile_read(void)
 
 	if( (p=find_str(buffer, "background=")) ) 
 	{
-	  sscanf(p, "%i", &(params.background));
+		// for compat
+	  sscanf(p, "%i", &(options.skin));
 	  continue;
 	}
-	/*
-	if( (p=find_str(buffer, "skin=")) ) {
-	  sscanf(p, "%i", &(params.skin));
+	if( (p=find_str(buffer, "skin=")) ) 
+	{
+	  sscanf(p, "%i", &(options.skin));
 	  continue;
 	}
-	*/
 
 /*
 	if( (p=find_str(buffer, "view_mode=")) )
@@ -774,7 +774,7 @@ void rcfile_write(void)
     fprintf(txt, "\n");
 
 	fprintf(txt, "# Skin (0 for LCD only, 1 with skin)\n");
-	fprintf(txt, "skin=%i\n", params.background);
+	fprintf(txt, "skin=%i\n", options.skin);
 	fprintf(txt, "\n");
 
 	/*
@@ -952,7 +952,11 @@ int rcfile_default()
 #else
 	options.console = 0;
 #endif
-
+#ifdef __IPAQ__
+    options.skin = 0;
+#else
+    options.skin = 1;
+#endif
 	options.view = VIEW_NORMAL;
 	options.kbd_dbg = 0;
 #ifdef __WIN32__
