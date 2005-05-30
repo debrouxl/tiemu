@@ -192,7 +192,7 @@ tiemu: $(tiemu_OBJ) $(core_gdb_DEP)
 endif
 # Force static linking for TCL-related stuff on OS X.
 ifneq (,$(findstring __MACOSX__,$(CFLAGS)))
-	sed <core/gdb/gdb/libgdb.ldflags >core/gdb/gdb/libgdb.ldflags.tmp 's,-L\([^ ]*\) -l\(tcl[0-9.]*\|tk[0-9.]*\|itcl[0-9.]*\|itk[0-9.]*\),\1/\2.a,g'
+	sed <core/gdb/gdb/libgdb.ldflags >core/gdb/gdb/libgdb.ldflags.tmp -e 's,-L\([^ ]*\) -l\(tcl[0-9.]*\),\1/lib\2.a,g' -e 's,-L\([^ ]*\) -l\(tk[0-9.]*\),\1/lib\2.a,g' -e 's,-L\([^ ]*\) -l\(itcl[0-9.]*\),\1/lib\2.a,g' -e 's,-L\([^ ]*\) -l\(itk[0-9.]*\),\1/lib\2.a,g'
 	mv -f core/gdb/gdb/libgdb.ldflags.tmp core/gdb/gdb/libgdb.ldflags
 endif
 ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
