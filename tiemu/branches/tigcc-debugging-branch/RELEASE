@@ -3,7 +3,7 @@
 
 
 Previous version: 2.00-rc1	(05/22/2005)
-Current version:  2.00-rc2	(05/30/2005)
+Current version:  2.00-rc2	(05/31/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -32,6 +32,7 @@ Improvements:
 	- HW protection is enabled by default for now
 	- tiemu.ini file loader/saver: slightly re-arranged sections and cleaned-up.
 	- view mode is now saved in the config file and restored at startup
+	- timeout of direct file loading can be changed now
 		
 
 Bug fixes:
