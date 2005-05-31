@@ -1,6 +1,6 @@
 SubVersion: $Id$
 
-- 23/05/2005, version 2.00-rc2:
+- 31/05/2005, version 2.00-rc2:
 	- [kevin] $1357/1362: added support for disassembling ER_throw
 	- [kevin] $1364/1365: link tiemu.rc in for MinGW
 	- [roms]  $1382: fixed HOME & CATALOG keys on Titanium (mouse only)
