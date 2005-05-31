@@ -18,6 +18,15 @@ SubVersion: $Id$
 	                      rather than starting the engine with the debugger still expecting
 	                      it to be stopped)
 	- [kevin] $1432/1433: reenabled memory window refresh
+	- [roms]  $1434: fixed multiple check items in the popup menu (button group)
+	- [roms]  $1436: HW protection is enabled by default for now
+	- [roms]  $1440: tiemu.ini file loader/saver: slightly re-arranged sections and cleaned-up.
+	- [roms]  $1443: view mode is now saved in the config file.
+	- [roms]  $1444: view mode is restored at startup.
+	- [roms]  $1446: screenshot of TI89 is now clipped
+	- [roms]  $1447: B&W screenshot support added
+	- [roms]  $1448: fixed screenshot of full skin with LCD
+	- [roms]  $1449: timeout of direct file loading can be changed now
 
 - 16/05/2005, version 2.00-rc1:
 	- [kevin] $1337/1338: fix --with-kde for Debian and derivatives

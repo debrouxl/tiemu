@@ -48,9 +48,10 @@ typedef struct
 	gchar*  skin_file;	
     gchar*  keys_file;
 	gint	console;
-    gint    view;
 	gint	kbd_dbg;
 	gint    fs_type;
+	gint	skin;
+	gint    view;
 
 } TieOptions;
 

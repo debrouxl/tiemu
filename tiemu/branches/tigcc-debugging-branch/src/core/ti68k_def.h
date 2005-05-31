@@ -78,15 +78,13 @@ typedef struct
     char *tib_file;
     char *sav_file;
 
-    int background;		// no skin if 0
-    int grayplanes;		//
-
     int restricted;		// CPU rate of a real calc
     int cpu_rate;       // OSC1
     int hw_rate;        // OSC2
     int lcd_rate;       // synched OSC2 (hw1) or OSC3 (hw2)
 	int hw_protect;		// HW protection
 	int	recv_file;		// receive file enabled/disabled
+	int timeout;		// link timeout (direct file)
     
 } Ti68kParameters;
 

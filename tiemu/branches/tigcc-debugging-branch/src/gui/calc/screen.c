@@ -176,7 +176,7 @@ void redraw_skin(void)
 	gtk_window_resize(GTK_WINDOW(main_wnd), wr.w, wr.h);
 
 	// no skin ?
-  	if(!params.background) 
+  	if(!options.skin) 
     	return;
 
 	// scale image if needed
@@ -360,4 +360,40 @@ int hid_update_lcd(void)
     }
 
     return -1;
+}
+
+// Copy LCD pixuf into B&W pixbuf
+GdkPixbuf* hid_copy_lcd(void)
+{
+	int i, j, k;
+	uint8_t *lcd_bitmap = tihw.lcd_ptr = &tihw.ram[tihw.lcd_adr];
+	uint8_t *lcd_buf = (uint8_t *)lcd_bytmap;
+	guchar *p;
+
+	// convert the bitmap screen to a bytemap screen and grayscalize
+	memset(lcd_bytmap, 0, LCDMEM_H*LCDMEM_W);	
+	for(j = 0, k = 0; k < LCDMEM_H; k++)
+	{
+		for(i = 0; i < LCDMEM_W/8; i++, lcd_bitmap++) 
+		{
+			lcd_bytmap[j++] = convtab[(*lcd_bitmap << 1)  ];
+			lcd_bytmap[j++] = convtab[(*lcd_bitmap << 1)+1];
+		}
+	}
+
+	// and copy
+	for(j = 0; j < LCDMEM_H; j++)
+	{
+		for (i = 0; i < LCDMEM_W; i++) 
+		{
+			p = li.pixels + j * li.rowstride + i * li.n_channels;
+			
+			p[0] = *lcd_buf ? 0x00: 0xff;
+			p[1] = *lcd_buf ? 0x00: 0xff;
+			p[2] = *lcd_buf ? 0x00: 0xff;
+			lcd_buf++;
+		}
+	}
+
+	return gdk_pixbuf_new_subpixbuf(lcd, 0, 0, tihw.lcd_w, tihw.lcd_h);
 }

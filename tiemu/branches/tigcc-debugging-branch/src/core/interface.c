@@ -78,19 +78,13 @@ Ti68kBreakpoints	bkpts = { 0 };
  */
 int ti68k_config_load_default(void)
 {
-#ifdef __IPAQ__
-    params.background = 0;
-#else
-    params.background = 1;
-#endif
-    params.grayplanes = 4;
-
     params.restricted = 1;
     params.cpu_rate = -1;
     params.hw_rate = -1;
     params.lcd_rate = -1;
-	params.hw_protect = 0;
+	params.hw_protect = !0;
 	params.recv_file = 1;
+	params.timeout = 600;	// 60s
 
     ticable_get_default_param(&link_cable);
     link_cable.link_type = LINK_NUL;

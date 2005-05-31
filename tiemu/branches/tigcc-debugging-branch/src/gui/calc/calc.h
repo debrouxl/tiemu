@@ -59,6 +59,8 @@ int hid_screenshot(char *filename);
 
 int hid_popup_menu(void);
 
+GdkPixbuf* hid_copy_lcd(void);
+
 /* Private Types */
 
 typedef struct
@@ -92,9 +94,5 @@ typedef struct
 typedef GdkRect LCD_RECT;
 typedef GdkRect SKN_RECT;
 typedef GdkRect WND_RECT;
-
-#define VW_NORMAL	1
-#define VW_LARGE	2
-#define VW_FULL		4
 
 #endif

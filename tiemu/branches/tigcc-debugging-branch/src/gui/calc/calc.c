@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005, Romain Liévin
  *  Copyright (c) 2005, Julien Blache
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -81,7 +81,7 @@ static void set_infos(void)	// set window & lcd sizes
 	ls.h = (int)(si.y * tihw.lcd_h);
 
 	// LCD rectangle (target: window)
-	if(params.background) 
+	if(options.skin) 
 	{
 		lr.x = ls.x; 
 		lr.y = ls.y;
@@ -102,7 +102,7 @@ static void set_infos(void)	// set window & lcd sizes
 
 	// WND rectangle (= LCD or SKN depending on w/ or w/o skin)
 	wr.x = wr.y = 0;
-	if(params.background)
+	if(options.skin)
 	{
 		wr.w = sr.w;
 		wr.h = sr.h;
@@ -111,6 +111,38 @@ static void set_infos(void)	// set window & lcd sizes
 	{
 		wr.w = lr.w;
 		wr.h = lr.h;
+	}
+}
+
+static void set_scale(int view_mode)
+{
+	if(view_mode == VIEW_NORMAL)
+	{
+		si.t = 1;
+		si.x = si.y = 1;
+		options.skin = 1;
+	}
+	else if(view_mode == VIEW_LARGE)
+	{
+		si.t = 2;
+		si.x = si.y = 2;
+		options.skin = 1;
+	}
+	else if(view_mode == VIEW_FULL)
+	{
+		GdkScreen* screen = gdk_screen_get_default();
+		gint sw = gdk_screen_get_width(screen);
+		gint sh = gdk_screen_get_height(screen);
+
+		si.t = 1;
+		si.x = (float)sw / lr.w;
+		si.y = (float)sh / lr.h;
+		//printf("%i %i %f\n", sw, lr.w, si.x);
+		//printf("%i %i %f\n", sh, lr.h, si.y);
+
+		si.x = (float)4.0;	// restricted to 4.0, too CPU intensive !
+		si.y = (float)4.0;
+		options.skin = 0;
 	}
 }
 
@@ -416,6 +448,7 @@ int  hid_init(void)
 	}
 
 	// Set window/LCD sizes
+	set_scale(options.view);
 	set_infos();
 
     // Allocate the TI screen buffer
@@ -466,6 +499,9 @@ int  hid_init(void)
 		(GtkFunction)hid_refresh, NULL);
 
 	gtk_widget_show(main_wnd);	// show wnd here
+
+	if(options.view == VIEW_FULL)
+		gdk_window_fullscreen(main_wnd->window);
 	
     return 0;
 }
@@ -481,6 +517,8 @@ int  hid_exit(void)
     {
         g_object_unref(lcd);
         lcd = NULL;
+		g_object_unref(si.l);
+		si.l = NULL;
     }
 
     if(pixmap != NULL)
@@ -505,7 +543,7 @@ void hid_lcd_rate_set(void)
 
 int hid_switch_with_skin(void)
 {
-    params.background = 1;
+    options.skin = 1;
 	set_infos();
 	redraw_skin();
 
@@ -514,7 +552,7 @@ int hid_switch_with_skin(void)
 
 int hid_switch_without_skin(void)
 {
-    params.background = 0;
+    options.skin = 0;
 	set_infos();
 	redraw_skin();
 
@@ -531,30 +569,15 @@ int hid_change_skin(const char *filename)
 	return ret1 | ret2;
 }
 
-static gint view_mode = VW_NORMAL;
-
 int hid_switch_fullscreen(void)
 {
-	if(view_mode != VW_FULL)
+	if(options.view != VIEW_FULL)
 	{
-		GdkScreen* screen = gdk_screen_get_default();
-		gint sw = gdk_screen_get_width(screen);
-		gint sh = gdk_screen_get_height(screen);
-
-		si.t = 1;
-		si.x = (float)sw / lr.w;
-		si.y = (float)sh / lr.h;
-		//printf("%i %i %f\n", sw, lr.w, si.x);
-		//printf("%i %i %f\n", sh, lr.h, si.y);
-
-		si.x = (float)4.0;	// restricted to 4.0, too CPU intensive !
-		si.y = (float)4.0;
-		params.background = 0;
+		set_scale(options.view = VIEW_FULL);
 		
 		hid_exit();
 		hid_init();
 
-		view_mode = VW_FULL;
 		gdk_window_fullscreen(main_wnd->window);
 	}
 
@@ -563,16 +586,13 @@ int hid_switch_fullscreen(void)
 
 int hid_switch_normal_view(void)
 {
-	if(view_mode != VW_NORMAL)
+	if(options.view != VIEW_NORMAL)
 	{
-		si.t = 1;
-		si.x = si.y = 1;
-		params.background = 1;
+		set_scale(options.view = VIEW_NORMAL);
 
 		hid_exit();
 		hid_init();
-
-		view_mode = VW_NORMAL;
+		
 		//gdk_window_unfullscreen(main_wnd->window);
 	}
 
@@ -581,16 +601,13 @@ int hid_switch_normal_view(void)
 
 int hid_switch_large_view(void)
 {
-	if(view_mode != VW_LARGE)
+	if(options.view != VIEW_LARGE)
 	{
-		si.t = 2;
-		si.x = si.y = 2;
-		params.background = 1;		
+		set_scale(options.view = VIEW_LARGE);		
 		
 		hid_exit();
 		hid_init();
-
-		view_mode = VW_LARGE;
+		
 		//gdk_window_unfullscreen(main_wnd->window);
 	}
 
@@ -600,8 +617,8 @@ int hid_switch_large_view(void)
 int  hid_screenshot(char *filename)
 {
 	gchar *outfile;
-	gchar *ext = "???";
-	gchar *type = "???";
+	gchar *ext = "";
+	gchar *type = "";
 
 	GdkPixbuf *pixbuf = { 0 };
 	gboolean result = FALSE;
@@ -614,9 +631,9 @@ int  hid_screenshot(char *filename)
 			case IMG_JPG: ext = "jpg"; type = "jpeg"; break;
 			case IMG_PNG: ext = "png"; type = "png";  break;
 			case IMG_ICO: ext = "ico"; type = "ico";  break;
- 		        case IMG_EPS: ext = "eps"; type = "eps";  break;
- 		        case IMG_PDF: ext = "pdf"; type = "pdf";  break;
-			default: type = "???"; break;
+ 		    case IMG_EPS: ext = "eps"; type = "eps";  break;
+ 		    case IMG_PDF: ext = "pdf"; type = "pdf";  break;
+			default: ext = "png"; type = "png";  break;
 		}
       
 		outfile = g_strdup_printf("%s%03i.%s", options2.file, options2.counter, ext);
@@ -630,19 +647,18 @@ int  hid_screenshot(char *filename)
 
 	if((options2.size == IMG_LCD) && (options2.type == IMG_BW)) 
 	{
-		// get pixbuf from buffer	
-        return 0;
+		// get pixbuf from TI memory (LCD buffer)
+		pixbuf = hid_copy_lcd();
 	} 
 	else if((options2.size == IMG_LCD) && (options2.type == IMG_COL)) 
 	{
         // get pixbuf from grayscale lcd
-		pixbuf = gdk_pixbuf_copy(lcd);
+		pixbuf = gdk_pixbuf_copy(si.l);
 	} 
 	else if(options2.size == IMG_SKIN) 
 	{
 		// get pixbuf from backing pixmap
-		pixbuf = gdk_pixbuf_get_from_drawable(
-					NULL, main_wnd->window, NULL,
+		pixbuf = gdk_pixbuf_get_from_drawable(NULL, pixmap, NULL,
 					0, 0, 0, 0, skin_infos.width, skin_infos.height);
 	}
 
@@ -655,7 +671,6 @@ int  hid_screenshot(char *filename)
 		result = tiemu_screen_write_pdf(outfile, pixbuf, &error);
 		break;
 	default:
-		//result = gdk_pixbuf_save(pixbuf, outfile, type, &error, "quality", "100", NULL);
 		result = gdk_pixbuf_save(pixbuf, outfile, type, &error, NULL);
 		break;
 	}
@@ -679,17 +694,18 @@ on_calc_wnd_window_state_event         (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
+/*
     GdkEventWindowState *wstate = (GdkEventWindowState *)event;
     GdkWindowState state = wstate->new_window_state;
     GdkWindowState mask = wstate->changed_mask;
 
     //printf("%04X %04X %i\n", wstate->new_window_state, wstate->changed_mask, GDK_WINDOW_STATE_ICONIFIED);
-#if 0
+
     if((mask & GDK_WINDOW_STATE_ICONIFIED) && (state & GDK_WINDOW_STATE_ICONIFIED))
         gtk_debugger_hide_all(!0);
         
     else if((mask & GDK_WINDOW_STATE_ICONIFIED) && !(state & GDK_WINDOW_STATE_ICONIFIED))
         gtk_debugger_show_all(!0);
-#endif
+*/
     return FALSE;
 }

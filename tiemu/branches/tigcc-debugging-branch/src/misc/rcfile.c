@@ -334,18 +334,15 @@ void rcfile_read(void)
 	}
 
       /* GtkTiEmu specific part: emulator section */
-	if( (p=find_str(buffer, "background=")) ) {
-	  sscanf(p, "%i", &(params.background));
-	  continue;
-	}
-
-	if( (p=find_str(buffer, "rom_file=")) ) {
+	if( (p=find_str(buffer, "rom_file=")) ) 
+	{
 	  g_free(params.rom_file);
 	  params.rom_file = g_strdup(p);
 	  continue;
 	}
 
-	if( (p=find_str(buffer, "img_file=")) ) {
+	if( (p=find_str(buffer, "img_file=")) ) 
+	{
 	  g_free(params.rom_file);
 	  params.rom_file = g_strdup(p);
 	  continue;
@@ -365,9 +362,24 @@ void rcfile_read(void)
 	  continue;
 	}
 
-	if( (p=find_str(buffer, "gray_planes=")) )
+	if( (p=find_str(buffer, "background=")) ) 
 	{
-	  sscanf(p, "%i", &(params.grayplanes));
+		// for compat
+	  sscanf(p, "%i", &(options.skin));
+	  continue;
+	}
+	if( (p=find_str(buffer, "skin=")) ) 
+	{
+	  sscanf(p, "%i", &(options.skin));
+	  continue;
+	}
+
+	if( (p=find_str(buffer, "view_mode=")) )
+	{
+	  if(!strcmp(p, "normal")) options.view=VIEW_NORMAL;
+	  else if(!strcmp(p, "large")) options.view=VIEW_LARGE;
+	  else if(!strcmp(p, "full")) options.view=VIEW_FULL;
+	  else stop(l);
 	  continue;
 	}
 
@@ -577,10 +589,12 @@ void rcfile_write(void)
 	/* Common part with TiLP */
 	fprintf(txt, "version=%s\n", TIEMU_VERSION);
 	fprintf(txt, "\n");
+
 	fprintf(txt, "#\n");
-	fprintf(txt, "# HARDWARE SECTION\n");
+	fprintf(txt, "# LINK SECTION\n");
 	fprintf(txt, "#\n");
 	fprintf(txt, "\n");
+
 	fprintf(txt, "# Calculator type\n");
 	fprintf(txt, "calctype=");
 	switch (link_cable.calc_type) {
@@ -615,11 +629,10 @@ void rcfile_write(void)
 		fprintf(txt, "ti73\n");
 		break;
 	}
-
 	fprintf(txt, "\n");
+
 	fprintf(txt, "# Link cable type\n");
 	fprintf(txt, "linktype=");
-
 	switch (link_cable.link_type) {
 	case LINK_PAR:
 		fprintf(txt, "parallel\n");
@@ -646,11 +659,10 @@ void rcfile_write(void)
 		fprintf(txt, "none\n");
 		break;
 	}
-
 	fprintf(txt, "\n");
+
 	fprintf(txt, "# Port to use (serial, parallel, ...\n");
 	fprintf(txt, "port=");
-
 	switch (link_cable.port) {
 	case USER_PORT:
 		fprintf(txt, "user\n");
@@ -698,8 +710,8 @@ void rcfile_write(void)
 		fprintf(txt, "null\n");
 		break;
 	}
-
 	fprintf(txt, "\n");
+
 	fprintf(txt, "# Method to use for I/O accesses\n");
 	fprintf(txt, "method=");
 	if (link_cable.method & IOM_AUTO)
@@ -718,61 +730,89 @@ void rcfile_write(void)
 	else
 		fprintf(txt, "automatic\n");
 	fprintf(txt, "\n");
-	fprintf(txt,
-		"# Parallel/serial/virtual port address (0=automatic)\n");
+
+	fprintf(txt, "# Parallel/serial/virtual port address (0=automatic)\n");
 	fprintf(txt, "adr_port=0x%03X\n", link_cable.io_addr);
 	fprintf(txt, "\n");
-	fprintf(txt,
-		"# Serial device or character device (empty=automatic)\n");
+
+	fprintf(txt, "# Serial device or character device (empty=automatic)\n");
 	fprintf(txt, "serial_device=%s\n", link_cable.device);
 	fprintf(txt, "\n");
+
 	fprintf(txt, "# Timeout value in 0.1 seconds\n");
 	fprintf(txt, "timeout=%i\n", link_cable.timeout);
 	fprintf(txt, "\n");
+
 	fprintf(txt, "# Delay value\n");
 	fprintf(txt, "delay=%i\n", link_cable.delay);
 	fprintf(txt, "\n");
-	fprintf(txt, "#\n");
 
   /* Specific part to TiEmu */
 	fprintf(txt, "#\n");
 	fprintf(txt, "# EMULATOR SECTION\n");
 	fprintf(txt, "#\n");
 	fprintf(txt, "\n");
-	fprintf(txt, "# Background (0 for LCD only, 1 with skin)\n");
-	fprintf(txt, "background=%i\n", params.background);
-	fprintf(txt, "\n");
+
 	fprintf(txt, "# SKIN file\n");
 	fprintf(txt, "skin_file=%s\n", options.skin_file);
 	fprintf(txt, "\n");
+
     fprintf(txt, "# KEYS file\n");
 	fprintf(txt, "keys_file=%s\n", options.keys_file);
 	fprintf(txt, "\n");
+
 	fprintf(txt, "# IMG file\n");
 	fprintf(txt, "img_file=%s\n", params.rom_file);
 	fprintf(txt, "\n");
+
     fprintf(txt, "# TIB file\n");
     fprintf(txt, "tib_file=%s\n", params.tib_file);
     fprintf(txt, "\n");
+
     fprintf(txt, "# SAV file\n");
 	fprintf(txt, "sav_file=%s\n", params.sav_file);
     fprintf(txt, "\n");
+
+	fprintf(txt, "# Skin (0 for LCD only, 1 with skin)\n");
+	fprintf(txt, "skin=%i\n", options.skin);
+	fprintf(txt, "\n");
+
+	fprintf(txt, "# View mode (normal/large/full)\n");
+	fprintf(txt, "view_mode=");
+	switch(options.view)
+    {
+    case VIEW_NORMAL: fprintf(txt, "normal\n"); break;
+    case VIEW_LARGE: fprintf(txt, "large\n"); break;
+    case VIEW_FULL: fprintf(txt, "full\n"); break;
+    }
+	fprintf(txt, "\n");
+
+	fprintf(txt, "#\n");
+	fprintf(txt, "# HARDWARE SECTION\n");
+	fprintf(txt, "#\n");
+	fprintf(txt, "\n");
+
   fprintf(txt, "# CPU cycles rate (360000 per 30ms) = OSC1\n");
   fprintf(txt, "cpu_rate=%i\n", params.cpu_rate);
   fprintf(txt, "\n");
+
   fprintf(txt, "# Hardware update rate (625 (hw1) or 1172 (hw2) = OSC2/OSC3\n");
   fprintf(txt, "hw_rate=%i\n", params.hw_rate);
   fprintf(txt, "\n");
+
   fprintf(txt, "# LCD update rate (100 fps max.) = OSC3\n");
   fprintf(txt, "lcd_rate=%i\n", params.lcd_rate);
   fprintf(txt, "\n");
+
   fprintf(txt, "# HW2 protection\n");
   fprintf(txt, "hw_protect=%i\n", params.hw_protect);
   fprintf(txt, "\n");
+
   fprintf(txt, "#\n");
   fprintf(txt, "# SCREENSHOT SECTION\n");
   fprintf(txt, "#\n");
   fprintf(txt, "\n");
+
   fprintf(txt, "# Screenshot: image format (xpm, pcx, jpg, bmp)\n");
   fprintf(txt, "img_format=");
   switch(options2.format)
@@ -784,9 +824,11 @@ void rcfile_write(void)
     case IMG_PDF: fprintf(txt, "pdf\n"); break;
     }
   fprintf(txt, "\n");
+
   fprintf(txt, "# Screenshot: image type (bw, color)\n");
   fprintf(txt, "img_type=%s\n", (options2.type == IMG_BW) ? "bw" : "color");
   fprintf(txt, "\n");
+
   fprintf(txt, "# Screenshot: image size (lcd, skin)\n");
   fprintf(txt, "img_size=%s\n", (options2.size == IMG_LCD) ? "lcd" : "skin");
   fprintf(txt, "\n");
@@ -794,14 +836,16 @@ void rcfile_write(void)
   fprintf(txt, "# Screenshot base file\n");
   fprintf(txt, "screen_file=%s\n", options2.file);
   fprintf(txt, "\n");
+
   fprintf(txt, "# Screenshot counter\n");
   fprintf(txt, "screen_counter=%i\n", options2.counter);
   fprintf(txt, "\n");
-  fprintf(txt, "\n");
+
   fprintf(txt, "#\n");
   fprintf(txt, "# MISC SECTION\n");
   fprintf(txt, "#\n");
   fprintf(txt, "\n");
+
   fprintf(txt, "# Console mode (no, yes, boot)\n");
   fprintf(txt, "console=");
   switch(options.console)
@@ -827,6 +871,11 @@ void rcfile_write(void)
   case 3: fprintf(txt, "kde\n"); break;
   default: fprintf(txt, "old\n"); break;
   }
+  fprintf(txt, "\n");
+
+  fprintf(txt, "#\n");
+  fprintf(txt, "# DEBUGGER SECTION\n");
+  fprintf(txt, "#\n");
   fprintf(txt, "\n");
 
 	fprintf(txt, "# Geometry hints of debugger windows (x,y,w,h,m,v)\n");
@@ -883,8 +932,6 @@ void rcfile_write(void)
   fprintf(txt, "RC_END\n");
   fflush(txt);
 
-  //setup_link_and_calc(options.server);
-
   fclose(txt);
 }
 
@@ -897,17 +944,23 @@ int rcfile_default()
 {
 	ti68k_config_load_default();
 
+	// m68k options
 	params.rom_file = g_strconcat(inst_paths.img_dir, "", NULL);
 	params.sav_file = g_strdup("");
 	params.tib_file = g_strdup("");
 
-	// other fields
+	// emulator options
 	options.skin_file = g_strconcat(inst_paths.skin_dir, "", NULL);
     options.keys_file = g_strconcat(inst_paths.skin_dir, "", NULL);
 #if defined(__WIN32__) && defined(_CONSOLE)
 	options.console = !0;
 #else
 	options.console = 0;
+#endif
+#ifdef __IPAQ__
+    options.skin = 0;
+#else
+    options.skin = 1;
 #endif
 	options.view = VIEW_NORMAL;
 	options.kbd_dbg = 0;
@@ -921,12 +974,14 @@ int rcfile_default()
 #endif
 #endif
 
+	// screenshot options
 	options2.file = g_strdup("screenshot");
 	options2.counter = 0;
 	options2.type = IMG_COL;	//IMG_BW;
 	options2.format = IMG_PNG;
 	options2.size = IMG_SKIN;	//IMG_LCD;
 
+	// debugger options
 	options3_set_default();	
 
 	return 0;
