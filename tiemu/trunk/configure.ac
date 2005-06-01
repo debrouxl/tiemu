@@ -176,7 +176,7 @@ AC_ARG_ENABLE(debugger,
 AC_CACHE_CHECK([whether to use the debugger],
   [tiemu_use_debugger], [tiemu_use_debugger=yes])
 if test x$tiemu_use_debugger = xno; then
-  AC_DEFINE(NO_DEBUGGER, 1, [Define to 1 to disable the debugger])
+  AC_DEFINE(NO_DEBUGGER, 1, [Defined to disable the debugger])
 fi
 
 # Output.

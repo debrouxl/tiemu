@@ -367,7 +367,7 @@ static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext)
 		*q = NULL;
 	}
 	else
-		filename = NULL;
+		filenames = NULL;
 	gtk_widget_destroy (dialog);
 
 	return filenames;
