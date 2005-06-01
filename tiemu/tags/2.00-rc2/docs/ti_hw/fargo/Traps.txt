@@ -1,0 +1,191 @@
+-----------------------------------------------------------------------------
+INTRODUCTION
+-----------------------------------------------------------------------------
+
+The 68000 processor keeps a 256(d) byte exception vector table at the bottom
+of memory (address $000000). This table contains pointers to 64(d) vectors;
+each vector is an absolute pointer to a specific location in memory. Most of
+these vectors point to routines, although some have other functions. Each
+vector is referred to with an index between 0(d) to 63(d) inclusive.
+
+The vectors are assigned as follows:
+
+Address in table   Assigned function
+----------------   -----------------
+0000 to 0007       Reset vector (initial SSP and PC)  (0-1)
+0008 to 000B       Bus error vector                     (2)
+000C to 000F       Address error vector                 (3)
+0010 to 0013       Illegal instruction vector           (4)
+0014 to 0017       Zero divide vector                   (5)
+0018 to 001B       CHK instruction vector               (6)
+001C to 001F       TRAPV instruction vector             (7)
+0020 to 0023       Privilege violation vector           (8)
+0024 to 0027       Trace vector                         (9)
+0028 to 002F       Line 1010/1111 emulator vectors  (10-11)
+0030 to 003B       Unassigned, reserved             (12-14)
+003C to 003F       Uninitialised interrupt vector      (15)
+0040 to 005F       Unassigned, reserved             (16-23)
+0060 to 0063       Spurious interrupt vector           (24)
+0064 to 007F       Level 1-7 interrupt auto-vectors (25-31)
+0080 to 00BF       TRAP #0-15 instruction vectors   (32-47)
+00C0 to 00FF       Unassigned, reserved             (48-63)
+0100 to 03FF       User interrupt vectors          (64-255)
+
+Some of these vectors are triggered when an error is encountered by the
+68000 processor. Others can be triggered directly by a TRAP instruction.
+The interrupt auto-vectors, or auto-ints, are triggered when a specific
+hardware event occurs.
+
+Note: Any RAM addresses found here apply only to ROM 1.2 through 1.12.
+
+-----------------------------------------------------------------------------
+VECTORS USED BY THE TI-92
+-----------------------------------------------------------------------------
+
+Line 1010 emulator
+------------------
+  Opcode $Axxx: Trigger error {xxx}, with identical numbering to that used
+  in the (TIOS) variable "errornum". Note that there are some error numbers
+  that are undocumented in Appendix B of the TI-92 manual.
+
+Line 1111 emulator
+------------------
+  Print "Line 1111 Emulator" and freeze. Unused.
+
+Auto-Int 1
+----------
+  Triggered every 4th time [600017] is incremented. It runs at
+  approximately 350 Hz. See Ports.txt.
+
+Auto-Int 2
+----------
+  Triggered periodically while key(s) other than [ON] are held down. The
+  rate depends both on battery strength and on which key(s) are being held
+  down, and is usually in the ballpark of about 600 Hz.
+
+Auto-Int 3
+----------
+  Print "Level 3 Autovector" and freeze. Never triggered.
+
+Auto-Int 4
+----------
+  Link Service
+
+Auto-Int 5
+----------
+  Triggered when [600017] is set to its initial value. After ROM
+  initialization, it runs at approximately 18 Hz. See Ports.txt.
+
+Auto-Int 6
+----------
+  Triggered when [ON] is pressed.
+
+Auto-Int 7
+----------
+  Protected memory violation. Triggered when memory below [$000120] is
+  written while bit 2 of [$600001] is set.
+
+Trap 0
+------
+  JSR ($40xxxx + D0.W)
+
+  D0.W  Subroutine
+  ----- ----------
+  $01A2 [60001A] = $FF, [05342] = $00
+  $01B8 flush word buffer, set size to 1 word (push *buffer)
+  $01E4 [05510] = $00000000, [0550C] = $00000000, JMP $400100 (reset)
+  $01F0 print error string and freeze (push *string)
+
+Trap 1
+------
+  Change Interrupt Mask
+
+  Input : D0.W = new interrupt mask (bits 10,9,8 of new SR)
+  Output: D0.L = old SR
+
+Trap 2
+------
+  Reset Calculator
+
+  Input : nothing
+  Output: calculator is reset
+
+Trap 3
+------
+  ?
+
+Trap 4
+------
+  Turn Off, Turn On (see also Auto-Int 6)
+
+  Input : nothing
+  Output: calculator turns off, waits for [ON]
+
+Trap 5
+------
+  ? same as trap 7
+
+Trap 6
+------
+  ?
+
+Trap 7
+------
+  ? same as trap 5
+
+Trap 8
+------
+  ?
+
+Trap 9
+------
+  A0.L = $4004F8 + 4 * D0.W
+
+  Input : D0.W = {00...11}
+  Output: A0.L = $4004F8 + 4 * D0.W
+	  D0.L = 4 * D0.W;
+
+  D0  pointer to
+  --  ----------
+  00       (ROM)  ?contrast_up()
+  01       (ROM)  WinOpen()
+  02       (ROM)  ?reset_link()
+  03  (RAM)       2 structures
+  04       (ROM)  ?contrast
+  05       (ROM)  WinStr()
+  06  (RAM)       ?key_buffer
+  07       (ROM)  flush word buffer, set size to 1 word (push *buffer)
+  08       (ROM)  table for isupper(), etc.
+  09       (ROM)  ?contrast_up()
+  0A       (ROM)  ?contrast_down()
+  0B       (ROM)  [60001A] = $FF, [05342] = $00
+  0C       (ROM)  getkey() table
+  0D       (ROM)  ?
+  0E  (RAM)       LCD memory
+  0F       (ROM)  Boolean ?read_word_buffer(WORD *a, BUFFER *b)
+  10       (ROM)  RAM test
+  11       (ROM)  WinMoveTo()
+
+TRAP 10
+-------
+  Enter self test
+
+TRAP 11
+-------
+  Print "Trap 11" and Freeze
+
+TRAP 12
+-------
+  Print "Trap 12" and Freeze
+
+TRAP 13
+-------
+  Print "Trap 13" and Freeze
+
+TRAP 14
+-------
+  Print "Trap 14" and Freeze
+
+TRAP 15
+-------
+  Print "ER_throw" and Freeze

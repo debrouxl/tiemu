@@ -1,0 +1,66 @@
+			[ Release notes ]
+
+
+
+Previous version: 2.00-rc1	(05/22/2005)
+Current version:  2.00-rc2	(05/31/2005)
+
+SubVersion (CVS) revision: $Id$
+
+TiEmu is available for 3 platforms:
+Linux (GTK), Windows (GTK), Mac OS-X (GTK)
+
+[ If you have a SilverLink cable (TI-GRAPH LINK USB), you will need to retrieve
+a Linux/Win32/Mac OS-X driver on the Linux Programmer Group at 
+<http://lpg.ticalc.org/prj_usb>. ]
+
+For the other link cables, no driver is needed.
+
+
+New capabilities:
+-----------------
+
+	- EPS/PDF screenshot output (thanks to Julien Blache)
+	- B&W screenshot support added
+
+
+Improvements:
+-------------
+
+	- disassembling ER_throw
+	- reenabled memory window refresh
+	- HW protection is enabled by default for now
+	- tiemu.ini file loader/saver: slightly re-arranged sections and cleaned-up.
+	- view mode is now saved in the config file and restored at startup
+	- timeout of direct file loading can be changed now
+		
+
+Bug fixes:
+----------
+
+	- HOME & CATALOG keys on Titanium (mouse only)
+	- check of Titanium skins (bug #1209813)
+	- debugger display under SawFish/Linux (patch #1209183)
+	- 0x600017 and implemented detection of Patrick
+		Davidson's grayscale routine (bug #1207299)
+	- when minimizing the main window, don't hide the others (patch #1209183)
+	- checkboxes in the program entry breakpoint dialog
+	- RTC port triggers every 8192 seconds (correct), not every 4 (dbg code)
+	- fixed resetting with the debugger open (closes the debugger
+		rather than starting the engine with the debugger still expecting
+	    it to be stopped)
+	- multiple check items in the popup menu (button group)
+	- screenshot of TI89 is now clipped
+	- screenshot of full skin with LCD
+	
+
+Planned:
+--------
+
+	- TiEmu v3.00 with GDB support
+
+	
+Notes:
+------
+
+	- we hope you will enjoy this Release Candidate !

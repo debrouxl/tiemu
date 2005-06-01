@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR" content="Mozilla 1.1 under Linux">
+  <title>TiEmu User's Manual</title>
+  <meta name="author" content="The TiEmu team">
+  <meta name="description" content="User's Manual">
+</head>
+<body style="background-color: rgb(255, 255, 255);">
+<div align="center">
+<div style="text-align: left;">
+<div class="NAVFOOTER">
+<hr align="left" width="100%">
+<table summary="Footer navigation table" border="0" cellpadding="0"
+ cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td align="left" valign="top" width="33%"><a href="chapter06.html"
+ accesskey="P">Prev</a></td>
+      <td align="center" valign="top" width="34%"><a
+ href="Manual_en.html" accesskey="H">Home</a></td>
+      <td align="right" valign="top" width="33%"><a
+ href="chapter08.html" accesskey="N">Next</a></td>
+    </tr>
+    <tr>
+      <td align="left" valign="top" width="33%">Popup menu<br>
+      </td>
+      <td align="center" valign="top" width="34%">&nbsp;</td>
+      <td align="right" valign="top" width="33%">Screenshots<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<hr align="left" width="100%">
+</div>
+</div>
+</div>
+<h1>7. Debugger</h1>
+Debugging mode is entered when a breakpoint is encountered or when the
+user launches the debugger by the popup menu or by pressing the F11
+key. This will stop the emulation engine but the LCD is still refresh.<br>
+<br>
+Note : debugger windows are pre-loaded at startup in order to display
+them quicker. The source code window may take a while to be displayed
+at first run : this is due to ROM call parsing. <br>
+<br>
+The debugger is made-up of several frames :<br>
+- source code<br>
+- registers<br>
+- memory<br>
+- breakpoints<br>
+- PC trace<br>
+- stack<br>
+- heap (handles)<br>
+<br>
+These frames can be moved and/or resized (TiEmu save/restore this with
+configuration).<br>
+Frames are automatically refreshed when a change occurs from another
+frame.<br>
+<h2>7.1 Source code<br>
+</h2>
+<div style="text-align: center;">
+<div style="text-align: left;">This frame is the main one :<br>
+</div>
+<img alt="" src="dbg_source.png" style="width: 328px; height: 321px;"><br>
+</div>
+<br>
+You can browse the source code with arrow and PageUp/Down keys. The
+green bar show current PC location. The blue one is the selection. The
+red cross is the breakpoint.<br>
+<br>
+By right-clicking, you get the popup menu :<br>
+- <span style="font-style: italic;">go to address</span> : enter the
+address to go,<br>
+- <span style="font-style: italic;">go to PC</span> : jump to PC
+location,<br>
+- <span style="font-style: italic;">set breakpoint (F2)</span> : place
+a breakpoint at the selection. The bkpt frame is updated,<br>
+- <span style="font-style: italic;">set temporary breakpoint</span> :
+place a breakpoint at the selection. This bkpt will be automatically
+removed when encountered.<br>
+- <span style="font-style: italic;">set PC to selection</span> : load
+PC with the address at the selection,<br>
+- <span style="font-style: italic;">view memory</span> : open a tab in
+the memory frame with the address at the selection.<br>
+<br>
+The combo box lets you choose a ROM call by using the arrow. You can
+type it, too. It has automatic completion. Once selected, the view is
+updated to begin on ROM call address.<br>
+<br>
+Debugging facilities provided are : <br>
+- <span style="font-style: italic;">run/break</span> : start/stop
+emulation engine without closing frames, <br>
+- <span style="font-style: italic;">step in/out/over</span> : <br>
+&nbsp;&nbsp;&nbsp; step in equals to step by step<br>
+&nbsp;&nbsp;&nbsp; step out runs PC until a RTS/RTR/RTD/RTE/STOP
+instruction is reached (go out of the sub-routine)<br>
+&nbsp;&nbsp;&nbsp; step over runs PC until instruction after the
+current one is reached (skips all code in a sub-routine for instance),
+except for branches. <br>
+&nbsp;&nbsp;&nbsp; This works for JSR/BSR/FLINE/DBCC/TRAP, <br>
+- <span style="font-style: italic;">run to cursor</span> : runs PC
+until cursor address is reached.<br>
+<br>
+Miscelaneous shortcuts:<br>
+- F6 : (internal use) copy source code window content to C:\disasm.txt<br>
+- F1 : set selection and PC to next line<br>
+<h2>7.2 Registers</h2>
+<table style="width: 100%; text-align: left;" border="0" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="text-align: center; vertical-align: top;"><img alt=""
+ src="dbg_registers.png" style="width: 188px; height: 392px;"><br>
+      </td>
+      <td style="vertical-align: top;">This frame displays all of the
+registers of the MC68000 processor. Take a look at the m68k
+user'smanual if needed.<br>
+      <br>
+USP = User stack Pointer (A7 in user mode, S=0).<br>
+SSP = System Stack Pointer (A7 is supervisor mode, S=1).<br>
+The active pointer is displayed in the stack frame.<br>
+      <br>
+SR is displayed in 2 modes : hexadecimal and single flags.<br>
+      <br>
+Each field is in-place editable.<br>
+      <br>
+By right-clicking on the address/data registers content, you will open
+a tab in the memory view at the adress contained in the register.
+Useful for browsing pointers and/or arrays.<br>
+      <br>
+If you double-click on sf/uf, you will be able to edit each flag :<br>
+      <div style="text-align: center;"><img alt="" src="dbg_sr.png"
+ style="width: 413px; height: 129px;"><br>
+      </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2>7.3 Memory</h2>
+<div style="text-align: center;">
+<div style="text-align: left;">
+<table style="width: 100%; text-align: left;" border="0" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><img alt="" src="dbg_mem.png"
+ style="width: 534px; height: 274px;"></td>
+      <td style="vertical-align: top;">You can add/remove how many tabs
+you want. Click on +/- to add_remove tabs.<br>
+Use arrow keys or Page Up/Down keys to browse memory.<br>
+      <br>
+Each value can be in-placed edited. Click the cell and you will be able
+to enter an hexadecimal string (like 12, 1234, 567890).<br>
+      <br>
+By right-clicking, you will get the popup menu:<br>
+- <span style="font-style: italic;">find / find next</span> : open a
+search engine,<br>
+- <span style="font-style: italic;">go to address</span> : let you
+enter an hexadecimal address to go to,<br>
+- <span style="font-style: italic;">dis-assemble</span> : update the
+source frame at the selected address.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+Note : the memory window may show aliases (ghosts) which does not
+really exist on the real calculator. For instance, RAM exists at
+$00000-3ffff only but if you open a tab at $40000, you will see RAM
+content at $000000. So, be careful !<br>
+<br>
+</div>
+</div>
+About the search engine:<br>
+<br>
+<table style="width: 100%; text-align: left;" border="0" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><img alt="" src="dbg_search.png"
+ style="width: 306px; height: 191px;"><br>
+      </td>
+      <td style="vertical-align: top;">You can search for hexadecimal
+values or strings with or without case sensitivity (strings only).<br>
+      <br>
+Click the right button to start search.<br>
+Click the middle button to find next occurence.<br>
+      <br>
+The occurence is green highlighted in the memory frame.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2>7.4 Breakpoints</h2>
+<br>
+<table style="width: 100%; text-align: left;" border="0" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><img alt="" src="dbg_bkpts.png"
+ style="width: 351px; height: 210px;"><br>
+      </td>
+      <td style="vertical-align: top;">This frame let you manage
+several kind of breakpoints :<br>
+- code (added from the source frame)<br>
+- exception (traps, auto-ints, ...)<br>
+- data (access or range)<br>
+- program entry (debugger is raised at the begininng of the program you
+have just launched).<br>
+      <br>
+Each breakpoint can be added or removed and enabled or disabled. You
+can go to the breakpoint location, too (last toolbar button).<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h2>7.5 PC trace</h2>
+This frame show the 10 latest PC values. Double-click the row will
+update the source frame with the row address.<br>
+<h2>7.6 Stack frame</h2>
+<br>
+<table style="width: 100%; text-align: left;" border="0" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><img alt="" src="dbg_stack.png"
+ style="width: 168px; height: 284px;"><br>
+      </td>
+      <td style="vertical-align: top;">The 'A7 (stack) is' shows the
+current active stack pointer (user/supervisor).<br>
+      <br>
+The frame displays the stack pointer (A7) and the frame pointer (A6)
+used on TI for function call and data storage.<br>
+      <br>
+Content is displayed as word values only. You can browse it by using
+the arrow or Page Up/Down keys.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2>7.7 Heap</h2>
+<br>
+<table style="width: 100%; text-align: left;" border="0" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><img alt="" src="dbg_heap.png"
+ style="width: 168px; height: 274px;"><br>
+      </td>
+      <td style="vertical-align: top;">This frame displays all the
+handles the calculator have. It shows: <br>
+- handler number,<br>
+- address in memory,<br>
+- and size.<br>
+      <br>
+Double click the row to open a tab in the memory frame at the address
+pointed by the handle.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<hr>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR" content="Mozilla 1.1 under Linux">
+  <title>TiEmu User's Manual</title>
+  <meta name="author" content="The TiEmu team">
+  <meta name="description" content="User's Manual">
+</head>
+<body style="background-color: rgb(255, 255, 255);">
+<div align="center">
+<div style="text-align: left;">
+<div class="NAVFOOTER">
+<hr align="left" width="100%">
+<table summary="Footer navigation table" border="0" cellpadding="0"
+ cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td align="left" valign="top" width="33%"><a href="chapter05.html"
+ accesskey="P">Prev</a></td>
+      <td align="center" valign="top" width="34%"><a
+ href="Manual_en.html" accesskey="H">Home</a></td>
+      <td align="right" valign="top" width="33%"><a
+ href="chapter07.html" accesskey="N">Next</a></td>
+    </tr>
+    <tr>
+      <td align="left" valign="top" width="33%">Keyboard mapping</td>
+      <td align="center" valign="top" width="34%">&nbsp;</td>
+      <td align="right" valign="top" width="33%">Debugger<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<hr align="left" width="100%">
+</div>
+</div>
+</div>
+<h1>6. Popup menu</h1>
+By clicking the right button menu anywhere on the main window, you gain
+access to the functionnalities of the emulator. If you let your mouse
+cursor on the item during some while, a tooltip will appear.<br>
+On iPAQ, you have to touch-point on the LCD region.<br>
+<br>
+The menu
+is organized as follow :<br>
+<div style="text-align: center;"><img alt="" src="popup_menu.png"
+ style="width: 184px; height: 323px;"><br>
+</div>
+<br>
+<h2>6.1 Link </h2>
+This is a large topic which is covered elsewhere. See the corresponding
+section...<br>
+<br>
+The <span style="font-style: italic;">Send file to TiEmu</span> item
+will let you choose a file to load into the emulator. You can choose
+one or several files at a time.<br>
+<br>
+The <span style="font-style: italic;">Link options</span> item open a
+dialog box. This is discussed elsewhere.<br>
+<br>
+The <span style="font-style: italic;">Receive file</span> item let you
+enabled (checked) or disable (unchecked) the receiving of variables
+from TiEmu. Use it if your program access the linkport for sound.<br>
+<h2>6.2 Configuration and State</h2>
+You can save or load a particular configuration. A configuration
+contains the current parameter of the emulator (emulator image to use,
+size of window, link cable type, ...). It does not contain any
+informations on the calculator state. The configuration is saved in the
+<span style="font-style: italic;">tiemu.ini</span> file. This is a text
+file and its format is described in the command lin e section.<br>
+<br>
+The calculator state can be saved, loaded or reverted. The state is
+saved in a file containing an image of the calculator content (LCD,
+registers, memory, ...).<br>
+This can be done at any time. The revert option is useful to reload the
+latest saved state.<br>
+<h2>6.3 Debugger</h2>
+This is a large topic which is covered elsewhere. See the corresponding
+section...<br>
+<br>
+<span style="font-style: italic;">Reset calc</span> : this completely
+resets the calculator (erase all). This is like you removed batteries
+for a while.<br>
+<br>
+<span style="font-style: italic;">Upgrade calc</span> : allow you to
+load a TI's OS FLASH upgrade into the calculator without needing to
+send it. If you save the calculator state, TiEmu will remind the
+upgrade and load it after image at startup.<br>
+<h2>6.4 Options</h2>
+<span style="font-style: italic;">Set ROM version</span> : let you
+choose an existing image from a list. If you want to add an image,
+click the <span style="font-style: italic;">Import</span> button to
+convert a ROM dump or a FLASH upgrade into an image. <br>
+Note : TiEmu scans the <span style="font-style: italic;">images</span>
+folder whenever you run this box.<br>
+<br>
+<div style="text-align: center;"><img alt="" src="romversion.png"
+ style="width: 328px; height: 274px;"><br>
+</div>
+<br>
+<span style="font-style: italic;">Misc options</span> : <br>
+- <span style="font-style: italic;">restrict to actual speed</span> :
+if checked, TiEmu will run hand-held at its nominal speed. Else, it
+will run it at the maximum the CPU is capable.<br>
+- <span style="font-style: italic;">HW protection</span> : if checked,
+the HW protection device is enabled and emulated. TiEmu need to be
+restarted (or an image to be load) for changes to take effect.<br>
+- <span style="font-style: italic;">normal view</span> : display skin
+and/or lcd with a 1x ratio,<br>
+- <span style="font-style: italic;">large view</span> : same with 2x
+ratio (note: until I fix this, it's CPU intensive),<br>
+- <span style="font-style: italic;">full screen</span> : display LCD
+only and make it fit the screen (note: until I fix this, it's limited
+to 3x ratio because excessively CPU intensive). <br>
+<br>
+<span style="font-style: italic;">Skin for current calc</span> : <span
+ style="font-style: italic;">none</span>, <span
+ style="font-style: italic;">default</span>, <span
+ style="font-style: italic;">other</span>. <br>
+The first option let you remove the skin to just display the LCD. In
+this mode, you keep access to the right menu but you have to use
+keyboard for TI keys :<br>
+<br>
+<div style="text-align: center;"><img alt="" src="no_skin.png"
+ style="width: 248px; height: 162px;"><br>
+</div>
+<br>
+The second option make TiEmu fall back on the built-in skin. <br>
+The third option let you choose a skin of your own. It must be a TiEmu
+compatible skin (see the Skin section) else it will be rejected.<br>
+<h2>6.5 Infos</h2>
+<span style="font-style: italic;">Misc</span> : give you access to this
+help and ManPage, ChangeLog, About.<br>
+<br>
+<span style="font-style: italic;">Info</span> : enumerates current
+calculator informations like this :<br>
+<br>
+<div style="text-align: center;"><img alt="" src="calc_infos.png"
+ style="width: 265px; height: 236px;"><br>
+</div>
+<br>
+<h2>6.6 Exiting</h2>
+<span style="font-style: italic;">Exit and save state</span> : TiEmu
+will save both <span style="font-weight: bold;">state</span> and <span
+ style="font-weight: bold;">configuration</span> before exiting.<br>
+<br>
+<span style="font-style: italic;">Exit without saving state</span> : no
+comment !<br>
+<br>
+<hr>
+</body>
+</html>

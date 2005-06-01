@@ -1,0 +1,53 @@
+
+
+Re-salut !
+
+Pour toute cette gestion de l'horloge, en résumé (tout ça est dans ma doc
+sur les nouvelles ROM Calls de l'AMS 2.07 mais éparpillé un peu partout) :
+L'AMS n'utilise que l'auto-int 3 pour gérer son horloge. Celle-ci se
+déclenche exactement toute les secondes de façon très préçise. L'AMS
+incrémente un timer interne (que j'ai appelé OneSecondTimer) stocké en RAM.
+Puis tout le reste de l'AMS se base dessus pour gérer la conversion en
+date/heure sous forme de chaîne, gérer les fuseaux horaires, etc.
+L'auto-int3 est contrôlée par le bit 2 de 0x600015, qui doit être armé pour
+qu'elle se déclenche.
+
+La ROM Call ClockOn fait : si pas HW1, bset #2,$600015.
+La ROM Call IsClockOn fait un btst #2,$600015
+
+Quand la calculatrice est éteinte, $600005 est fixé correctement par le trap
+#4 pour qu'elle soit aussi réveillée par l'auto-int3. OneSecondTimer est
+ainsi aussi incrémenté même pendant que la calc dort.
+
+$700014 n'est *jamais* utilisé par l'AMS ou le boot. Je découvert son
+fonctionnement un peu par hasard en bidouillant ces ports inconnus, et en
+plusieurs jours car c'était pas facile de se synchroniser avec une
+incrémentation aussi lente qu'on ne connait pas.
+
+Donc pour une bonne émulation de l'horloge, il suffit que $600015:2 puisse
+être fixé et lu, et contrôle correctement l'auto-int3. $600005 doit aussi
+être bien émulé.
+$700014 n'est pas vraiment nécessaire par contre.
+Et il faut que la calc soit détectée comme n'étant pas une HW1. Je n'ai pas
+regardé pour TiEmu, mais normalement un test d'HW par l'AMS sur une ROM avec
+boot retourne la bonne version correspondant au boot, et sur une ROM sans
+boot retourne "HW2" (dû aux valeurs aléatoires à la place du boot : l'AMS
+fournit alors un HWParmBlock de remplacement).
+
+Par contre sur Titanium, c'est nettement plus compliqué :) Toute l'horloge
+est gérée en hardware sans l'auto-int3, et donc sans utiliser $600015 ou
+$600005. Plusieurs des nouveaux ports à $7100xx sont utilisés. C'est assez
+complexe, le mieux est que tu regardes la partie "Horloge" de ma doc de mon
+package sur la Titanium.
+
+> il utilise le timer pour le comptage des
+> secondes (référence à court terme) et le décompte (référence à long terme)
+> pour venir se recaler dessus de façon périodique.
+
+De façon hardware ? Par quel matériel le décompte lent est-il fait ? (pour
+l'AI3, c'est avec l'OSC2).
+En tout cas ce timer ($700014) ne semble servir à rien actuellement.
+
+++
+
+Olivier

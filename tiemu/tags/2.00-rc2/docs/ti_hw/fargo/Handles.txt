@@ -1,0 +1,74 @@
+----------------------------------------------------------------------------
+INTRODUCTION
+----------------------------------------------------------------------------
+
+The TI-92 is capable of dynamically allocating memory blocks. There are
+routines built into its ROM for this. It keeps track of allocated memory by
+assigning a "handle" to each individual block of allocated memory. A handle
+is a convenient way of keeping track of a single memory block. Even if the
+block moves around, the handle does not change. Handles are, in a way,
+"pointers to pointers".
+
+On the TI-92, a handle is a word-sized integer. Each handle has a
+corresponding pointer which points to the memory block represented by the
+handle. This pointer is subject to change when other memory blocks are
+deleted or resized. These pointers are kept in a table; this table is
+pointed to by [$5D42], which usually points to $78B4.
+
+To find the address of a handle's memory block, use the following formula.
+Brackets [] are used to designate pointer indirection.
+
+  address = [[$5D42] + handle * 4].L - 2
+
+If this address evaluates to zero, the handle is unallocated. If it is
+nonzero, it points to the beginning of the memory block. The first word
+in the block, [address], contains the size of the block in words.
+
+Memory blocks are kept in a linked list, starting from handle $0000. From
+there, the handles may be in any order. The next block in the linked list
+may be found with the following formula:
+
+  next_address = address + [address].W * 2
+
+The linked list is terminated when [next_address] equals zero.
+
+----------------------------------------------------------------------------
+STATIC MEMORY HANDLES
+----------------------------------------------------------------------------
+
+Handles 0000 through 0014 are system handles; each one is reserved for a
+specific kind of data. These handles are always present, and are never
+deleted. All handles from 0015 inclusive can contain any kind of dynamic
+data, such as variables, folders other than "main", history entries, and
+the custom menu.
+
+NOTE: I'd advise against using these handles directly. They are probably
+      subject to change in future ROM versions, and are arbitrarily in the
+      order that they are in only because the ROM allocates them in that
+      order during bootup. Anyway, they are all pointed to by various RAM
+      globals, some of which may be documented in RAM-1_x.txt and/or
+      ROM-2_1.txt.
+
+Handle	Data Pointed to
+------	---------------
+0000    ?
+0001    ?
+0002    ?
+0003    ?
+0004    ?
+0005    ?
+0006    ?
+0007    ?
+0008    ?
+0009    ?
+000A	contents of clipboard
+000B	names and handles of all folders (including "main")
+000C	names and handles of all variables in the folder "main"
+000D    ?
+000E	current home screen entry
+000F	PrgmIO screen (239x103 bitmap)
+0010    ?
+0011    ?
+0012    ?
+0013	Graph screen (239x103 bitmap)
+0014	? menu data

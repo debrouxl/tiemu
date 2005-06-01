@@ -1,0 +1,981 @@
+		  ________
+		 /\  _____\
+		 \ \ \____/   __    __ __    __       __
+		  \ \  ___\ /'__`\ /\ `__\ /'__`\   /'__`\
+		   \ \ \__//\ \_\ \\ \ \  /\ \_\ \ /\ \_\ \
+		    \ \_\  \ \___/_\\ \_\ \ \____ \\ \____/
+		     \/_/   \/___/_/ \/_/  \/____\ \\/___/
+					     /\____/
+					     \/___/
+
+				Fargo v0.2.7.1
+		   Copyright (C) 1996-1998 David Ellsworth
+			     All rights reserved.
+
+==============================================================================
+			      Table of contents
+==============================================================================
+
+ Part 1: Using Fargo
+ -------------------
+ 1.1: Introduction
+ 1.2: Requirements
+ 1.3: Installing Fargo
+ 1.3.1: Installing Fargo from DOS
+ 1.3.2: Installing Fargo from Linux
+ 1.3.3: Installing Fargo without FLink
+ 1.4: Running Fargo programs
+ 1.5: Using FBrowser
+ 1.6: Running old Fargo programs
+ 1.7: Troubleshooting
+
+ Part 2: Programming for Fargo
+ ----------------------------
+ 2.1: Introduction
+ 2.2: Lists of helpful information
+ 2.3: Programming overview
+ 2.4: The Fargo source code format
+ 2.5: The Fargo object code format
+
+ Part 3: Other topics
+ --------------------
+ 3.1: Legal stuff
+ 3.2: Contacting the developer
+ 3.3: New versions and information
+ 3.4: Revision history
+ 3.5: Known bugs
+ 3.6: Planned features
+
+==============================================================================
+			     Part 1: Using Fargo
+==============================================================================
+------------------------------------------------------------------------------
+ 1.1: Introduction
+------------------------------------------------------------------------------
+
+Fargo is a software extension for the TI-92 graphing calculator that enables
+the execution of machine language programs. These programs are stored on your
+calculator as PRGM variables.
+
+Fargo itself consists of two primary components: the kernel and the shell.
+The kernel contains low level bootstrap routines that are used to load and
+run Fargo programs. It is also the interface whereby Fargo programs can
+communicate with the TI-92's built-in ROM OS while maintaining compatibility
+across all supported ROM versions. The shell provides an simple and organized
+way to list and execute Fargo programs that are stored in the calculator's
+memory. Fargo lets you use any program as your shell. The default shell
+packaged with Fargo is FBrowser.
+
+Fargo also includes a development toolkit for creating Fargo software. For
+more information on it, see the Part 2 of this document.
+
+------------------------------------------------------------------------------
+ 1.2: Requirements
+------------------------------------------------------------------------------
+
+You must have access to a Graph-Link cable if you have a Macintosh and/or
+want to use TI's software to transfer Fargo to your TI-92. A PC program is
+supplied with Fargo that will allow you to transfer group files and backups
+using a homemade link (both the parallel and serial cables are supported).
+
+Fargo currently supports the following ROMs:
+
++---------+--------------------+
+| Version |       Date         |
++---------+--------------------+
+| 1.0b1   | September 13, 1995 |
+| 1.2     | October 11, 1995   |
+| 1.3     | October 20, 1995   | /\
+| 1.4     | November 17, 1995  | /\ older date format: Month DD, YYYY
+| 1.5     | 01/02/96           | \/ newer date format: MM/DD/YY
+| 1.7     | 01/18/96           | \/
+| 1.8     | 02/28/96           |
+| 1.10    | 03/20/96           | \____ note that there are two
+| 1.10    | 03/26/96           | /     ROMs designated as 1.10
+| 1.11    | 04/11/96           |
+| 1.12    | 05/08/96           |
+| 2.1     | 08/19/96           | <--- TI-92 II (available in Europe only)
++---------+--------------------+
+
+If your ROM is not on the list, please contact me! (see section 3.2)
+
+To find out what ROM version your TI-92 has, press [Diamond] [(] from the
+PrgmIO screen. Then press [2nd] [QUIT] to go back.
+
+Note that "1.12" stands for "one point twelve" rather than "one point one
+two"; therefore ROM 1.12 is newer than, for example, ROM 1.7.
+
+------------------------------------------------------------------------------
+ 1.3.1: Installing Fargo from DOS
+------------------------------------------------------------------------------
+
+The following procedure details the process of putting Fargo onto your
+TI-92. This process will preserve all the files that you currently have on
+your calculator.
+
+The first step is to unzip Fargo into a directory on hard disk. For
+discussion purposes, let's call that directory "F:\FARGO".
+
+Next, make sure you set the environment variable FARGO to F:\FARGO and make
+sure F:\FARGO\BIN is in your path. To make this permanent, add the following
+lines to the file C:\AUTOEXEC.BAT:
+
+  SET FARGO=F:\FARGO
+  SET PATH=%PATH%;%FARGO%\BIN
+
+After you have made these settings, you may install Fargo on your calculator.
+If you have a homemade parallel link cable, you may install Fargo by typing
+"autofarg" at the DOS prompt. Otherwise, move on to section 1.3.3.
+
+------------------------------------------------------------------------------
+ 1.3.2: Installing Fargo from Linux
+------------------------------------------------------------------------------
+
+The first step is to untar Fargo into a directory in your filesystem. For
+discussion purposes, let's call that directory "/usr/fargo".
+
+Next, make sure you set the environment variable FARGO to "/usr/fargo" and
+make sure both $FARGO/bin and $FARGO/flink are in your path. To make this
+permanent, add the following lines to your global profile:
+
+  export FARGO=/usr/fargo
+  PATH=$PATH:$FARGO/bin:$FARGO/flink
+
+If you are using c-shell, use this instead:
+
+  setenv FARGO /usr/fargo
+  set path = ( $path $FARGO/bin $FARGO/flink )
+
+If you have a homemade parallel or serial link cable, go to $FARGO/tidev, read
+the README there, and install tidev. You may then install Fargo on your TI-92
+by typing "autofarg" at the shell prompt. Otherwise, you are out of luck. You
+will have to go to Windows to use TI-Graph Link.
+
+------------------------------------------------------------------------------
+ 1.3.3: Installing Fargo without FLink
+------------------------------------------------------------------------------
+
+First, make sure you have read and followed section 1.3.1.
+
+Transfer a backup from your TI-92 to F:\FARGO. You can give the backup any
+name you want. From the DOS command line, execute the following command:
+
+  F:\FARGO>putfargo <name of backup>
+
+where <name of backup> is the name of the backup file you made, including
+the .92b extension. This will load the Fargo core into the backup file. Now
+transfer this modified backup file to your TI-92. There is now one step
+remaining: transfer all the .92p files from F:\FARGO to your TI-92. You now
+have Fargo on your calculator.
+
+The following .92p files are required to run FBrowser:
+
+  asm\prgm\flib.92p
+	Fargolib. Contains useful routines not found in ROM.
+
+  asm\prgm\shell.92p
+	FBrowser; the listing of programs you will see by default
+	when you press [Shift] [ON].
+
+The remaining .92p files are sample Fargo programs and libraries.
+
+------------------------------------------------------------------------------
+ 1.4: Running Fargo programs
+------------------------------------------------------------------------------
+
+To launch the Fargo shell, use the hotkey [Shift] [ON]. This works from
+anywhere, provided that your TI-92 becomes idle within 1/4 second after the
+hotkey was pressed.
+
+You may also start Fargo programs in the same way that TI-BASIC programs are
+called. For example, to directly start the Sierpinski Triangle demo, you would
+enter "sierpin()" from the home screen.
+
+The Fargo shell can be executed just like any other Fargo program. As an
+alternative to pressing Shift-ON, you may execute the TI-BASIC command
+"shell()". Any Fargo program renamed to "shell" will be triggered when you
+press [Shift] [ON].
+
+If you press [Shift] [ON] and there is no variable called "shell" in your
+calculator's memory, Fargo will display the message "SHELL NOT FOUND" in the
+status line.
+
+If a program has been directly launched, and for some reason it cannot be
+executed, Fargo will display an error message on the status line at the
+bottom of the screen. The message briefly describes what went wrong.
+
+FBrowser requires the single library "flib". Different programs may require
+different libraries.
+
+If Fargo is not present on your TI-92, pressing [Shift] [ON] will have no
+effect, and Fargo programs launched from TI-BASIC will do absolutely nothing.
+To load Fargo into your TI-92, follow the instructions in Section 1.3.
+
+------------------------------------------------------------------------------
+ 1.5: Using FBrowser (a.k.a. the Fargo shell)
+------------------------------------------------------------------------------
+
+When you start the FBrowser, it displays a menu of the folders on your
+TI-92. There are two modes of operation; one is the folder view, which is
+the default upon startup, and the second is the program view.
+
+Use the following keys to navigate through FBrowser:
+
+ [Left]       - switch to folder view
+ [Right]      - switch to program view (enter folder)
+ [Up]         - move cursor up
+ [Down]       - move cursor down
+ [2nd] [Up]   - page up
+ [2nd] [Down] - page down
+ [ENTER]      - execute program / enter folder
+ [space]      - toggle file list filtering
+ [F1]         - display "about" dialog box
+ [EXIT]       - quit
+
+If a program you attempt to execute fails, FBrowser will display an error
+dialog box describing the error.
+
+You may bypass the Fargo shell by launching programs directly from TI-BASIC.
+
+Note that when you have file list filtering turned off, file types are no
+longer meaningful; therefore, Fargo programs will not have their comments
+displayed, and will not execute when you press [ENTER].
+
+------------------------------------------------------------------------------
+ 1.6: Running old Fargo programs
+------------------------------------------------------------------------------
+
+Before Fargo II was released, many programs had been written for the original
+Fargo. Since Fargo II used a completely redesigned program format, and even
+ran programs in a different processor mode, compatibility with older programs
+was broken. It was expected that all of the existing programs would need to be
+converted and recompiled in order to run under Fargo II.
+
+But with the release of Fargo 0.2.2, this changed. With the addition of the
+Fargo 0.1.x compatibility module, legacy Fargo programs could now be run under
+the same environment as Fargo II programs.
+
+The compatibility module is optional; you must specifically choose to install
+it. To do this, simply follow the same installation procedure outlined in
+Section 1.3, but use "pfcompat" instead of "putfargo". For an automatic
+installation, use "afcompat" instead of "autofarg". In a manual installation,
+make sure you send the files in "asm\oldfargo" to your TI-92 after the backup
+has been sent.
+
+The Fargo 0.1.x library "romlib" is integrated with the compatibility module.
+It does not need to be present on your calculator. All other Fargo 0.1.x libs
+will need to be put into the folder "OLDFARGO" in order to be recognized. This
+insures that they will not be confused with Fargo II libraries, which go in
+the folder "MAIN". However, programs themselves can be put into any folder,
+regardless.
+
+Note that if your TI-92's ROM version is not 1.x, most Fargo 0.1.x programs
+will need to be modified somewhat in order to run properly. 
+
+------------------------------------------------------------------------------
+ 1.7: Troubleshooting
+------------------------------------------------------------------------------
+
+Everything in this section is documented in the "In Case of Difficulty"
+section of the TI-92 manual, on page 498; however, since so many people post
+on the mailing lists asking about this, I've decided to include it here.
+
+If your TI-92 locks up, try holding down [2nd] and [HAND] and pressing [ON].
+If that does not reset it, try removing a battery, holding down [)] and [(-)],
+and inserting the battery while continuing to hold down the two keys until the
+calculator resets.
+
+==============================================================================
+			Part 2: Programming for Fargo
+==============================================================================
+------------------------------------------------------------------------------
+ 2.1: Introduction
+------------------------------------------------------------------------------
+
+Part 2 explains the fundamentals of creating Fargo II programs, including
+pointers to sources of information and a description of the high level source
+code format recognized by the Fargo development kit. Also described is the
+low level object code format recognized by Fargo itself, and generated when
+you compile a program.
+
+Fargo, along with the development kit included with it, automatically handles
+relocation, library linking, and many platform technicalities, such as
+support for multiple ROM versions. In order to use these features properly,
+Fargo requires that you follow a certain format in your source code files.
+This format is streamlined; the development kit takes care of the details of
+converting source code into object code that Fargo can recognize.
+
+There are several impediments to running assembly language programs on the
+TI-92. Fargo deals with all of these, leaving the programmer to concentrate
+on what is most important.
+
+Here are the three most predominant issues:
+
+ - Different versions of the ROM are very much alike, but differ slightly
+   in the offset of most calls. The Fargo kernel solves this by providing
+   a TIOS "pseudolibrary" of ROM calls and RAM addresses. This pseudolibrary
+   uses a table of addresses. This table is chosen from a master table of
+   ROM versions at the time the Fargo kernel is inserted into a backup file.
+
+ - The calculator dynamically rearranges its memory, so there is never a
+   sure way to pinpoint the location of a program in order to access data
+   and do JMPs and JSRs. The Fargo kernel does not face this problem, since
+   it is in a fixed location (the top of RAM). For programs, which do move
+   around, Fargo solves this problem by automatically relocating programs
+   before they are executed.
+
+ - There is very little RAM (about 69K on a 128K calc, or 196K on a 256K
+   calc) to work with, so routines should be optimized to work under low
+   memory conditions. In order to work with this difficulty, the Fargo kernel
+   and program format have been designed to take as little space as possible
+   while still being efficient and modular.
+
+------------------------------------------------------------------------------
+ 2.2: Lists of helpful information
+------------------------------------------------------------------------------
+
+The text files included in the distribution contain information that may be
+useful for writing Fargo programs. These files are nowhere near complete,
+so I welcome corrections and additions. If you have any, please refer to
+section 3.2.
+
+The files in this package are not meant teach you from scratch how to
+program in 68000 assembler; for this, please consult other sources.
+
+The text files are as follows:
+
+  Fargo.txt	Main documentation (this file)
+  Convert.txt	Describes how to convert Fargo 0.1.x programs and libraries
+		to Fargo II.
+  LowLevel.txt	Describes the TI-92's memory map, and lists all the known
+		I/O ports along with descriptions.
+  Traps.txt	Describes the TI-92's usage of the exception vector table.
+  Types.txt	Describes some of the data types used by the TI-92.
+  Handles.txt	Explains how memory handles are used by the TI-92.
+  RAM-1_x.txt	Lists some RAM addresses (low memory globals) along with
+		descriptions. Theses addresses are for ROM 1.x only. They
+		must be converted to be used with Fargo II.
+  ROM-2_1.txt	Contains lots of information gleaned from studying ROM 2.1.
+
+For all the text files, the following conventions apply:
+
+  All numbers are in hexadecimal, except for bit indices or numbers ending
+  with the suffix (d). In certain places, the prefix '$' will be used to
+  clarify that a number is in hex.
+
+  B = byte ( 8 bit integer)
+  W = word (16 bit integer)
+  L = long (32 bit integer)
+
+  Brackets [] designate pointer indirection. This may be followed by ".B",
+  ".W", or ".L" to designate the size of the integer being pointed to.
+
+Remember that the 68000 processor uses "Big Endian" to store integers in
+memory; the most significant byte (MSB) is stored first, and the least
+significant byte (LSB) is stored last. For example, the number $1234 is
+stored as 12 34 in memory.
+
+------------------------------------------------------------------------------
+ 2.3: Programming overview
+------------------------------------------------------------------------------
+
+Fargo executables (PRGM variables) consist of two classes: programs and
+libraries. Programs can be executed directly, and are displayed in the
+Fargo shell. Libraries provide commonly used routines to programs; these
+routines can be used by simply linking the library to the program. This is
+an alternative to copying the source for each routine into the source for
+the program that uses the routines.
+
+Fargo source code is contained in .ASM files. Compiling a program or library
+consists of two steps:
+
+1) Assembling the ASM source file(s) using A68k 2.71.F1.
+2) Using the Fargo Linker to link the object file(s) generated by A68k.
+   This generates a single .92p file.
+
+It is recommended that you use a makefile for compiling your Fargo programs
+and libraries. The way A68k and flinker work together makes this work very
+well. All you have to do is type "make" and everything that has changed is
+recompiled. (And everything that hasn't changed isn't recompiled.)
+
+However, you do not *need* one to compile Fargo programs. The file FARGO.BAT
+is supplied for development under DOS without the use of a makefile. In the
+Linux development kit, a sample makefile is included instead. If you're using
+DOS, you're on your own if you want to try using a makefile.
+
+------------------------------------------------------------------------------
+ 2.4: The Fargo source code format
+------------------------------------------------------------------------------
+
+This section describes how to create an .ASM file that will be assembled into
+an object file that the Fargo Linker can then link into a working Fargo .92p
+file.
+
+This section precisely describes how to create Fargo source code. It might
+also be hard to understand, especially for beginners. To see it in practical
+use, please examine the sample source code that is included with Fargo.
+
++-----------+
+| Libraries |
++-----------+
+
+To generate a library, you must export a symbol named "_library", and all the
+library functions, using the template "libname@XXXX" where "XXXX" is a hex
+number signifying the function index. The symbol "_library" must point to a
+null-terminated string specifying the library name.
+
+This is done like so:
+
+	...
+	xdef	_library
+	xdef	testlib@0000
+	xdef	testlib@0001
+	xdef	testlib@0002
+	...
+	xdef	testlib@XXXX
+
+testlib@0000:	; exported library symbol number $0000
+	...
+testlib@0001:	; exported library symbol number $0001
+	...
+testlib@0002:	; exported library symbol number $0002
+	...
+testlib@XXXX:	; exported library symbol number $XXXX
+	...
+_library	dc.b	"testlib",0
+
++----------+
+| Programs |
++----------+
+
+To generate a program, you must export a symbol named "_main". This symbol
+should point to the program entry point. If you want to give the program a
+comment/description, you must also export a symbol named "_comment", which
+should point to a null-terminated string.
+
+This is done like so:
+
+	...
+	xdef	_main
+	xdef	_comment	; include this only if you define _comment
+	...
+_main:		; program entry point
+	...
+	rts	; return from program
+	...
+_comment	dc.b	"Space Goobers version 19.8",0
+	...
+
++-----------------+
+| Using Libraries |
++-----------------+
+
+Library symbols are accessed as "libname@XXXX". However, each library should
+have its own include file which makes the names much more friendly. For
+example, "kernel@0000" is aliased to "kernel::find_var" and "flib@000C" is
+aliased to "flib::random".
+
+NOTE: Although exported library symbols are usually functions, they are not
+      required to be so. They may just as easily point to data.
+
++-----------+
+| Compiling |
++-----------+
+
+To compile a Fargo .ASM file into a .92p file under DOS:
+
+  F:\FARGO>fargo <name>
+
+Where <name> is the name of the .ASM file, without the extension.
+
+Using the Linux development kit, you may manually do this:
+
+ $ a68k <name>.asm
+ $ flinker -o <name>.92p <name>.o
+
+Or you may simply type "make" if you have already written a proper makefile.
+
+------------------------------------------------------------------------------
+ 2.5: The Fargo object code format
+------------------------------------------------------------------------------
+
+The section has been temporarily removed.
+
+==============================================================================
+			     Part 3: Other topics
+==============================================================================
+------------------------------------------------------------------------------
+ 3.1: Legal stuff
+------------------------------------------------------------------------------
+
+The distribution of Fargo is encouraged, as long as all the companion files
+are kept together, unmodified from the form in which they were originally
+released.
+
+I take no liability for any damage caused directly or indirectly by using
+Fargo or any of its companion files. Keep in mind, though, that it is
+extremely unlikely (if not impossible) for your calculator to be damaged by
+software.
+
+You may NOT put Fargo up on any WWW site, FTP site, BBS, or any other form of
+mass distribution, without my agreement. This is NOT to stop the distribution
+of Fargo. It is to allow me to keep track of all the distribution sites out
+there, so I can make sure a bug-fix or upgrade is always available.
+See section 3.2 below.
+
+------------------------------------------------------------------------------
+ 3.2: Contacting me
+------------------------------------------------------------------------------
+
+If you have a question that is about something very basic, that you think a
+normal user could handle, please use one of the mailing lists or newsgroups.
+See http://www.ticalc.org for FAQs and information on TI calculator mailing
+lists and newsgroups.
+
+However, if you have a comment, suggestion, bug report, or something advanced
+that would only be appropriately asked of the developer of Fargo, please
+contact me. I will try to respond to all mail sent to me that warrants a
+response, but please don't be disappointed if I don't -- I get a lot of mail;
+sometimes I don't answer all of it.
+
+You may email me at <davidell@ticalc.org> or <davidell@earthling.net>.
+I also have an account on ICQ; my ID is 2300673.
+
+NOTE: The Fargo development team used to include two other people, Rob Taylor
+      and Dan Eble. However, I (David Ellsworth) am currently the only one
+      developing it. So please don't try to contact them about Fargo.
+
+------------------------------------------------------------------------------
+ 3.3: New versions and information
+------------------------------------------------------------------------------
+
+New versions will always be available at http://www.ticalc.org.
+
+Updates will be announced on the "assembly-92" and "Calc-TI" mailing lists.
+The Calc-TI list echoes to the newsgroup "bit.listserv.calc-ti".
+
+You can download the latest version from:
+
+WEB: http://www.ticalc.org/pub/92/asm/shells
+FTP: ftp.ticalc.org in /pub/92/asm/shells
+
+However, the precise directory is subject to change. If you do not find it in
+one of the above locations, simply start from the top:
+
+WEB: http://www.ticalc.org
+FTP: ftp.ticalc.org in /pub
+
+------------------------------------------------------------------------------
+ 3.4: Revision history
+------------------------------------------------------------------------------
+
+yyyy.mm.dd
+----------
+
+1996.11.10: Fargo v1.0b12
+
+  First public release. This release was unofficial; in fact, it was leaked
+  to the public by a beta tester. (It was leaked by the very first beta tester
+  of Fargo. Rather ironic, isn't it?)
+
+1996.12.09: Fargo v1.0b12 - fixed version of CORE.O
+
+  * Fixed a single-instruction bug which caused programs and libraries to
+    improperly unrelocate when required libraries were not found, resulting in
+    a crash upon execution once all the required libraries were present.
+
+1997.01.02: Fargo v0.1.13
+
+  First official public release.
+
+  * Radically altered the directory organization scheme. It is now possible
+    to compile a Fargo program in any directory.
+  * Streamlined the Fargo distribution. Now only the necessary files, and
+    some small sample programs, are included.
+  * Ported the Fargo file manipulation programs (SUM92, PRGM92, ML92B) to
+    C++ for greater portability.
+  * Gave FLink a rudimentary scripting ability; created a new batch file
+    called AUTOFARG.BAT that automates the task of receiving a backup,
+    putting Fargo into it, and sending it back.
+  * Changed the name of the Fargo shell to "FBrowser" to eliminate
+    confusion between the shell and the core; they now have separate
+    version numbering.
+  * Modified FBrowser to allow folders other than MAIN to be browsed. This
+    does not change the fact that the shell must be in the MAIN folder,
+    though.
+  * Changed the version numbering scheme.
+
+  This release included the following utility versions:
+
+   FBrowser v0.2.0
+   FLink v0.1.5
+   ML92B v1.0
+   PRGM92 v1.0
+
+1997.02.26: Fargo v0.1.13 - masked ROM patch
+
+  * Released patched versions of CORE.O and ROMLIB.92P that allowed Fargo to
+    work on TI-92's with masked (internal) ROM. At the time, ROM 1.11 was the
+    only ROM version being manufactured in masked format, so this patch was
+    released as FIX111.ZIP.
+
+1997.11.01: Fargo v0.1.14
+
+  * Fargo now works on any ROM 1.x TI-92 regardless of how much RAM it has.
+    It will *not*, however, work under ROM 2.1. For that you will still need
+    to wait for Fargo II. NOTE: Fargo programs that hook interrupts using the
+    same method that Fargo 0.1.13 used will still need to be modified to work
+    with 256K of RAM.
+  * flib[idle_loop] now properly looks up the APD value.
+  * Switched over to using DJGPP for all the DOS utilities.
+  * ML92B v1.1.0: Can now patch backups using either of two methods, one
+    which generates large backups (107K or 235K), and one which does not
+    increase the size of a backup at all.
+  * TRIM92B v1.0.0: New program. Trims a 92B backup file to its natural size.
+    Can be used to "uninstall" Fargo from a backup if the wraparound method
+    was used to install it.
+  * PRGM92 v1.0.1: See below.
+  * SUM92: Although all the Fargo utility programs now automatically fix the
+    checksums of files generated or modified, this program is still included.
+    You may use it to fix the checksum on any TI-92 Graph Link file.
+  * FLink v0.1.6: The parallel port is now changable. Sound emulation has
+    been added. Note that when Linux FLink is ported to DOS, this version of
+    DOS FLink will become obsolete, which is why I haven't changed it much.
+
+1997.11.02: Fargo v0.1.15
+
+  * Fixed some bugs in the 0.1.14 distribution. (I probably should have
+    called this version 0.1.14.1.)
+
+1998.01.09: Fargo v0.2.0.1
+
+  First alpha release of Fargo II.
+
+  * ROM 2.1 support, plus a system that makes it easy for me to add support
+    for any new ROM version that may come out (i.e., the TI-92 Plus module)
+    I also added ROM 1.0b1 support. Not that anyone still has that ROM
+    version. But, I thought I might as well.
+  * The Linux development kit is now distributed. So is the DOS kit, of
+    course. But Linux has been my primary (and only) Fargo development
+    platform for quite some time. It is quite possible that you will find
+    bugs in the DOS development utilities, since I have not tested them much.
+    (This applied to Fargo 0.1.14 as well, though I didn't mention it.)
+  * A true linker, replacing PRGM92. The Fargo Linker is called flinker for
+    short, and can link multiple A68k-generated object files into one .92p
+    file. It also replaces ML92B, as it can read the kernel object file and
+    insert it into a backup file. It no longer supports the obsolete
+    wraparound installation method.
+  * Modified A68k 2.71 to work better with Fargo source code. I changed the
+    version number to 2.71.F1. The "F1" stands for Fargo patch #1.
+  * Because a linker is now used, libraries are accessed simply by including
+    a header file and accessing the library functions by name. The way
+    libraries are written is also different now. I also took the liberty of
+    changing the library symbol convention from "libname@funcname" to
+    "libname::funcname". See the included sample source files to see exactly
+    how things have changed.
+  * Another feature that the new linker allows is the use of one or more bss
+    sections, which the kernel now supports. A bss section is a dynamically
+    allocated, uninitialized block of memory that a program can use to store
+    temporary variables. I use the word "temporary" because the bss block is
+    freed when the program exits.
+  * What used to be "romlib" is now integrated with the kernel. The kernel
+    exports two pseudolibraries: "tios" and "kernel". "tios" contains both
+    ROM and RAM addresses. I've added a fair number of new ROM calls. Where
+    possible, I've used the genuine TI names for ROM symbols.
+  * ROM addresses are now looked up from a table rather than looked up
+    dynamically. It is now necessary for me to specifically add an entry in
+    my table for each ROM version. So far, I've implemented tables for
+    1.0b1, 1.2, 1.3, 1.4, 1.7, 1.8, 1.10, 1.11, 1.12, and 2.1. The table
+    lookup is done by flinker when it inserts the kernel into a backup file,
+    so there is no overhead involved; the kernel itself never has to do any
+    ROM version checking.
+  * A totally new program/library file format that takes advantage of the
+    new features provided by using a linker. This format contains both a type
+    and a subtype. This type may be used to associate different file types
+    with specific applications, allowing the application to use the subtype
+    any way it pleases.
+  * Fargo programs now run in User mode rather than Supervisor mode. This
+    should have been done from the very start, but wasn't because Fargo beta
+    was leaked before I finalized things. Therefore I felt obliged to keep
+    backwards compatibility with it in later versions. Since Fargo II is
+    completely new, I took the opportunity to finally switch to User mode.
+    Programmers: you will need to get rid of all STOP and MOVE xx,SR
+    instructions (unless they are used in trap handlers). MOVE xx,SR can be
+    replaced with a MOVE xx,D0 / TRAP #1 sequence.
+  * The TI-BASIC fork in a Fargo module now contains "Prgm:EndPrgm" rather
+    than "Prgm:Pause:EndPrgm". The kernel hooks to intercept calls to
+    programs from TI-BASIC are now much faster and cleaner. The same applies
+    to the Shift-ON hook. Also, the kernel now displays a message on the
+    status line rather than flashing the screen when an error is encountered.
+  * The 4-shade and 7-shade grayscale libraries, and FTerm 1.0b7, have been
+    packaged with Fargo. These were not included with Fargo 0.1.x.
+  * Since this is an alpha release, nothing is absolutely guaranteed to stay
+    the same in later releases. Although I can state with fair certainty that
+    backwards binary compatibility will be maintained, even that is not an
+    absolute certainty.
+  * Note that, although the codename for this project is "Fargo II", it is
+    still called Fargo.
+
+1998.01.10: Fargo v0.2.0.2
+
+  * Fixed an odd checksum bug that occurred in the DOS version of flinker
+    when patching a backup file (putfargo calls flinker). The same bug was
+    also in sum92, which has been fixed as well.
+  * Fixed an incompatibility bug in flinker that made it screw up when trying
+    to patch certain backups
+  * Improved flinker's name-guessing algorithm (which it uses on a program
+    if you leave out the `-n' option). It now skips over directory names.
+  * Added bin/fargo and bin/autofarg scripts and a sample Makefile to the
+    Linux distribution
+  * Removed trim92b from the distribution
+  * Fixed a typo in flib.asm. In zap_screen, it had "d0-d7/a0-d6" instead of
+    "d0-d7/a0-a6".
+  * Made Linux FLink's put92 and get92b check if the calculator is ready
+    before starting the transmission, and wait 5 seconds before giving up.
+    Made get92b return an exit value of 2 if the user chose not to overwrite
+    the file. Fixed a bug in get92 that was storing the wrong file size in the
+    header (the value it should have been plus 6). Incremented Linux FLink's
+    version to 1.2.1.
+  * Decreased the value of TIMAXTIME in tidev's ti.c. Change this if it
+    doesn't seem to work right for you.
+  * Documented the [space] key feature of FBrowser 0.3.0.
+  * Added a "known bugs" section to the documentation.
+  * Slightly modified the list of planned features.
+
+1998.01.10: Fargo v0.2.0.3
+
+  * Fixed a bug in the ROM 1.2 entry of the tios table
+    (HeapFreeIndir was incorrect)
+
+1998.01.13: Fargo v0.2.1
+
+  * Changed the executable file format. It now uses compressed relocation,
+    bss, and import tables. Large programs will now be in fact smaller than
+    they were in Fargo 0.1.x. Flinker can still generate files with the old
+    format, mainly so you can see how much smaller they are with the new one.
+    Note that the compressed tables take slightly longer to process, but I
+    think it is worth it.
+  * Restructured flinker to be cleaner and more modular. (The changes are
+    pretty much invisible to the user, though.) Also added rudimentary
+    support for recognizing XRef operand sizes.
+  * Optimized the kernel. It is now a lot smaller.
+  * Added an optional compatibility module. You may link this in with the
+    kernel to make it compatible with Fargo II programs and libraries that
+    were released before Fargo 0.2.1. If you don't link it in, the kernel
+    will be smaller. Patching a backup with the compatibility module enabled
+    is automated by "pfcompat" in DOS and "putfargo-compat" in Linux. Once
+    you're sure you won't need to execute pre-0.2.1 executables anymore, you
+    can go back to using "putfargo".
+  * Fixed a bug in FBrowser where, if there were multiple files at the end of
+    a list starting with the same letter, you couldn't cycle through them in
+    a loop by pressing that letter repeatedly. Incremented its version number
+    to 0.3.0.1.
+
+1998.01.13: Fargo v0.2.2
+
+  * Added a Fargo 0.1.x compatibility module. It is named "compat1x.o". When
+    executing Fargo 0.1.x programs, their required libraries must be in the
+    folder "oldfargo". Note that Fargo 0.1.x programs still do *not* work on
+    ROM 2.1; they still have all the limitations that "romlib" imposes. You
+    may install this into a backup by using "putfargo-compat1x" in Linux or
+    "pfcmpt1x" in DOS. If you want to combine both 0.1.x *and* pre-0.2.1
+    compatibility, you will need to run flinker manually.
+  * Fixed a bug in FBrowser where, if you tried to enter a folder other than
+    the first one listed, that had no Fargo programs in it, the cursor would
+    get messed up when the error dialog box popped up. Incremented its version
+    number to 0.3.0.2.
+
+1998.01.14: Fargo v0.2.3
+
+  * Optimized the kernel compatibility modules. The pre-0.2.1 module is now
+    much smaller.
+  * Fixed an error in the shell script "fargo" in the Linux toolkit; it had
+    the extra parameter `-p'.
+  * Fixed a bug in flinker where it would sometimes return a garbage exit code
+    even when there wasn't an error.
+  * Improved flinker's recognition of operand sizes.
+  * Improved the error reporting in flinker. It now shows both the section
+    name and offset for each error encountered, where applicable.
+  * Renamed "ROM_origin" to "ROM_base" in tios.h.
+
+1998.01.16: Fargo v0.2.4
+
+  * Made some changes to various documentation files.
+  * Added a "Troubleshooting" section to Fargo.txt.
+  * Fixed a bug in the ROM 2.1 entry of the tios table (WinOpen was incorrect)
+  * Added a new ROM call. I call it "vcbprintf", and it is a virtual callback
+    printf function. This means you can do printf with any custom putchar
+    routine, rather than having to use sprintf to print into a buffer.
+  * Modified FBrowser to display comments and allow program execution even in
+    no-filter mode. Incremented its version to 0.3.1.
+  * Made flinker report the size of the kernel when installing it in a backup
+    file, and the size of a variable when creating a 92p file.
+  * Added a second level of verbosity to flinker.
+  * Removed the '-C' compatibility option from flinker. It now only generates
+    Fargo programs for the current version of Fargo.
+  * Switched to a new directory scheme. There is now an "asm" directory under
+    the Fargo root, and there are four subdirectories under it: "include",
+    "kernel", "lib", and "prgm". All include files, including the ones for
+    libraries, go in "include". Yes, I think this makes more sense than
+    putting them in "lib".
+
+1998.01.22: Fargo v0.2.5
+
+  * Fixed a bug in the Fargo 0.1.x compatibility module where modules that
+    used the 0.1.x kernel pseudolibrary would not properly unrelocate;
+    therefore they would crash upon being run a second time.
+  * Fixed a bug that caused Fargo II programs to load whether or not their
+    required libraries were found, often causing crashes.
+  * Fixed a bug that caused LCD_MEM not to be saved and restored after a
+    module failed to load.
+  * Took the Fargo 0.2.0.x compatibility module out of the distribution. If
+    anyone wants it back, please contact me.
+  * Reworked the Fargo 0.1.x compatibility module so that it now has romlib
+    integrated with itself. If romlib is present in the "oldfargo" folder, it
+    will be ignored. Also removed the checking that caused the Fargo 0.1.x
+    compatibility module to refuse to work on incompatible ROMs.
+    WARNING: If you install the Fargo 0.1.x compatibility module on a TI-92
+             with a ROM version (such as 2.1) that was incompatible with Fargo
+             0.1.x, all the Fargo 0.1.x programs you run will have to have
+             been specially patched to work with your ROM! Otherwise your calc
+             will most likely crash.
+  * Fixed the sprite test program so that the sprite is visible everywhere on
+    the screen, without the compromise of flicker.
+  * Added strlen(), strncmp(), strncpy(), strcat(), and strchr() to the tios
+    pseudolibrary. Added ROM 1.5 support.
+  * Did another major overhaul of flinker. It now handles operand sizes and
+    error reporting even better (and more cleanly).
+  * Made some more modifications to A68k. It now properly differentiates
+    between PC-relative and absolute references to external symbols.
+    Incremented its version to 2.71.F2.
+
+1998.02.07: Fargo v0.2.6
+
+  * Added support for Fargo programs that interface with TI-BASIC. These can
+    be either functions or programs. Functions return a value on the estack.
+    Both functions and programs can take parameters.
+  * Added a sample Fargo/TI-BASIC function to the distribution. It is called
+    "testfunc", and takes a string as a parameter, returning the same string
+    doubled, with an "=" in between the two copies of the string.
+  * Fixed the ROM dumping programs so that they always dump memory in the
+    correct range.
+  * Fixed a bug in "ticat", the tidev-compatible version of "cat", where it
+    was buffering outputted characters instead of outputting them immediately.
+    One of the effects of this was that ROM dumps made using "ticat" would not
+    be complete.
+  * Fixed some bugs in FTerm. Now Diamond-<num>-. correctly outputs an ASCII
+    character, and the cursor keys echo themselves if local echo is enabled.
+    Changed FTerm's version number to 1.0.8.
+  * Put the 0.2.0.x compatibility module back in the distribution. It wasn't
+    requested, but I thought I might as well. If you want to use it, though,
+    you'll have to run flinker manually.
+  * Moved the tios tables to a kernel sourcefile, where they belong. Modified
+    flinker to look for the appropriate tios table in the linked kernel object
+    files, since the tables are no longer hardwired into flinker itself.
+  * Improved the tios naming convention a bit. "main_lcd" has been renamed to
+    "globals", and "kb_vars" has been renamed to "kb_globals". Both of the old
+    names are still provided as aliases in tios.h.
+  * Renamed the tios function ST_redraw to ST_eraseHelp, which is its real
+    name; renamed ST_message to ST_showHelp, since it is the complement of
+    ST_eraseHelp. ST_eraseHelp can be used to update the status line if you
+    set the flag specifying that a help message is being displayed.
+  * Added some functions to the tios pseudolibrary.
+    Misc: push_quantum(), check_estack_size(), OSAlexOut(), ERD_dialog()
+    C functions: memset(), memcmp(), memcpy(), memmove(), abs(), labs()
+    Integer math: _du32u32(), _ds32s32(), _ds16u16(), _ru32u32(), _rs32s32(),
+                  _ru16u16(), _rs16u16()
+  * Made many revisions to ROM-2_1.txt and a small revision to RAM-1_x.txt.
+
+1998.04.09: Fargo v0.2.7
+
+  * Fixed a bug in the Linux distribution: autofarg was missing.
+  * Fixed a bug in gray7lib. It was doing "add #4,sp" after pushing a word.
+  * Removed the note from tidev's readme saying that the "$4" serial link code
+    was untested. It has been tested and it works.
+  * Made some optimizations to FTerm; it should be faster now. Incremented the
+    version number to FTerm 1.0.9.
+  * Added a function to the tios pseudolibrary: DerefSym()
+  * Added support for an alternate version of ROM 1.10, which is dated
+    03/26/96 instead of 03/20/96.
+  * Added a section to the documenation: "Running old Fargo programs". This
+    describes how to install Fargo onto your calc in a configuration that will
+    allow Fargo 0.1.x programs to be run. To further facilitate this, I've
+    added an "afcompat" script, and an "asm/oldfargo" directory with three
+    Fargo 0.1.x libraries in it: flib, graylib, and graylib7.
+
+1998.04.09: Fargo v0.2.7.1
+
+  * Fixed some errors which made it into the distribution:
+    - The "preinstalled backups" uploaded to ticalc.org did not in fact have
+      Fargo installed in them; they were just clean backups.
+    - FTerm, and possibly other .92P files, were not properly recompiled.
+    - There was a small spelling mistake in the description for hexdump.
+
+------------------------------------------------------------------------------
+ 3.5: Known bugs
+------------------------------------------------------------------------------
+
+The following is a list of bugs in Fargo that have been reported to me and
+may have not been fixed yet.
+
+  * The Fargo ROM dumping programs sometimes insert an extraneous bit at the
+    beginning of the transfer, causing the whole transfer to be shifted by one
+    bit. This seems to happen only with homemade links, and only under certain
+    environments (on the PC end).
+
+  * The DOS version of flinker sometimes crashes, and/or generates corrupt
+    output files.
+
+------------------------------------------------------------------------------
+ 3.6: Planned features
+------------------------------------------------------------------------------
+
+The following features are planned for future releases of Fargo II. Once I'm
+satisfied with the feature list, it will go into the beta stage. Currently it
+is still in the alpha stage. Alpha releases will be numbered 0.2.x, 0.3.x,
+0.4.x, etc.; beta releases will start with 1.0.0 and go up from there. I will
+not be so bold as to speculate about a "final" release. I would prefer to keep
+Fargo in beta indefinately.
+
+* TI-92 Plus and TI-89 support. Of course this will have to wait until the
+  actual products are released by TI. ;-)
+
+* Static memory copying (TSR support and general heap reallocation support),
+  overlays, and module decompression
+
+* Many more ROM calls, and documentation for more of the calls.
+
+* A bitplane graphics library. This library will provide calls to allocate
+  and deallocate virtual screens (which will consist of 1, 2 or 3 bitplanes)
+  and to switch between screens. It will automatically do page flipping to
+  simulate grayscale. The LCD RAM at $4440 (or $4720 in ROM 2.1) will no
+  longer be used by Fargo directly; programs will be required to allocate
+  their own screens. This will not require any more memory than is used
+  already, because earlier versions of Fargo save the TIOS screen in a
+  temporary 3840 byte buffer and later restore it. It will also be possible
+  to mark screens as overwritable, so that nested program calls won't waste
+  memory allocating extra screens.
+
+* A graphics library with integrated bitplane support, so you will be able to
+  (for example) paste a non-aligned sprite, or draw a line in any shade of
+  gray. The library calls will of course also work for black and white (one
+  bitplane). Grayscale will no longer need to be treated as a special case.
+
+* Toolkit ports to additional platforms.
+
+* A DOS port of Linux FLink.
+
+* I may write a utility that will load multiple files into a backup file, so
+  that you won't have to send them separately. This may or may not be
+  integrated with flinker.
+
+* I may write a Fargo program that will allow you to send the Fargo kernel
+  to another TI-92 with a different ROM version.
+
+* FBrowser will support plugins, filtering by file type, and multiple views
+  (such as icons, comments only, file stats, etc.). It will also allow itself
+  to be called from another Fargo program (as a library) with the option of a
+  callback filter.
+
+* I am considering releasing the kernel, shell, and development kit source
+  code.
