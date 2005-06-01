@@ -90,9 +90,7 @@ AC_CHECK_LIB(pthread, pthread_create) dnl needed by GThread
 #AC_CHECK_LIB(comdlg32, GetOpenFileName)
 
 # Check for zlib
-AC_CHECK_HEADER(zlib.h,[
-        AC_CHECK_LIB(z, compress,,)
-],)
+AC_CHECK_HEADER(zlib.h,[AC_CHECK_LIB(z, compress,,)],)
 LIBZ="$LIBS"
 LIBS=""
 AC_SUBST(LIBZ)
@@ -162,8 +160,6 @@ case $host_os in
   ;;
 esac
 
-#AM_CONDITIONAL(OS_WIN32, test "$msnative_struct")
-
 # some extra flags
 CFLAGS="$CFLAGS -DGTK_DISABLE_DEPRECATED -DDEBUGGER"
 LDFLAGS="$LDFLAGS"
@@ -172,6 +168,16 @@ CXXFLAGS="$CFLAGS -fno-rtti -fno-exceptions"
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
 AC_SUBST(CXXFLAGS)
+
+# Debugger support
+AC_ARG_ENABLE(debugger,
+  AC_HELP_STRING([--disable-debugger], [disable the built-in debugger]),
+  [tiemu_use_debugger=$enableval], [tiemu_use_debugger=yes])
+AC_CACHE_CHECK([whether to use the debugger],
+  [tiemu_use_debugger], [tiemu_use_debugger=yes])
+if test x$tiemu_use_debugger = xno; then
+  AC_DEFINE(NO_DEBUGGER, 1, [Define to 1 to disable the debugger])
+fi
 
 # Output.
 AC_OUTPUT
