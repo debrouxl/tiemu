@@ -1664,12 +1664,26 @@ add_symbol_file_command (char *args, int from_tty)
       while (isspace (*args))
 	args++;
 
-      /* Point arg to the beginning of the argument. */
-      arg = args;
+      /* (TiEmu 20050601 Kevin Kofler) Quoted filename (allows spaces)? If so,
+         skip to the _last_ quote, so we can handle filenames containing quotes
+         as well. */
+      if (argcnt == 0 && *args == '\"')
+        {
+          /* Point arg to the beginning of the argument. */
+          arg = args + 1;
 
-      /* Move args pointer over the argument. */
-      while ((*args != '\000') && !isspace (*args))
-	args++;
+          /* Move args pointer over the argument. */
+          args = strrchr (args, '\"');
+        }
+      else
+        {
+          /* Point arg to the beginning of the argument. */
+          arg = args;
+
+          /* Move args pointer over the argument. */
+          while ((*args != '\000') && !isspace (*args))
+            args++;
+        }
 
       /* If there are more arguments, terminate arg and
          proceed past it. */
