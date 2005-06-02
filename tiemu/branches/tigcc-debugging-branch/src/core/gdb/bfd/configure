@@ -7524,6 +7524,7 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_lib_intl_bindtextdomain" >&5
 echo "${ECHO_T}$ac_cv_lib_intl_bindtextdomain" >&6
 if test $ac_cv_lib_intl_bindtextdomain = yes; then
+  LIBS="-lintl $LIBS"
   echo "$as_me:$LINENO: checking for gettext in libintl" >&5
 echo $ECHO_N "checking for gettext in libintl... $ECHO_C" >&6
 if test "${gt_cv_func_gettext_libintl+set}" = set; then
@@ -7535,7 +7536,7 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-
+#include <libintl.h>
 int
 main ()
 {

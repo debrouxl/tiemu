@@ -1,6 +1,7 @@
 2005-06-02  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
-        * ../gettext.m4, configure, ../intl/configure: Fix libintl detection.
+        * ../gettext.m4, configure, ../intl/aclocal.m4, ../intl/configure, ../bfd/configure,
+          ../opcodes/configure: Fix libintl detection.
 
 2005-06-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 

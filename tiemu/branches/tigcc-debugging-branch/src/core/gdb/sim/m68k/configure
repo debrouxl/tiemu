@@ -2437,6 +2437,7 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
+  LIBS="-lintl $LIBS"
   echo $ac_n "checking for gettext in libintl""... $ac_c" 1>&6
 echo "configure:2442: checking for gettext in libintl" >&5
 if eval "test \"`echo '$''{'gt_cv_func_gettext_libintl'+set}'`\" = set"; then
@@ -2445,7 +2446,7 @@ else
   cat > conftest.$ac_ext <<EOF
 #line 2447 "configure"
 #include "confdefs.h"
-
+#include <libintl.h>
 int main() {
 return (int) gettext ("")
 ; return 0; }
