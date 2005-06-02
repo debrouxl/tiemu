@@ -150,18 +150,19 @@ int ti68k_kbd_is_key_pressed(int key)
 
 int hw_kbd_update(void)		// ~600Hz
 {
-    if(tihw.on_key) 
-    {
-    	// Auto-Int 6 triggered when [ON] is pressed.
-		hw_m68k_irq(6);
-    }
-	else if(key_change)
+	if(key_change)
     {
     	// Auto-Int 2 is triggered when the first unmasked key is pressed. Keeping the key
 		// pressed, or pressing another one without releasing the first key, will not generate
 		// additional interrupts.
 		if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
 			hw_m68k_irq(2);
+    }
+	else if(tihw.on_key) 
+    {
+    	// Auto-Int 6 triggered when [ON] is pressed.
+		hw_m68k_irq(6);
+		printf(".");
     }
 
 	key_change = 0;
