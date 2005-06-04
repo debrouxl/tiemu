@@ -118,12 +118,12 @@ static void set_scale(int view_mode)
 {
 	if(view_mode == VIEW_NORMAL)
 	{
-		si.t = si.x = si.y = 1;
+		si.t = si.x = si.y = 1.0;
 		options.skin = 1;
 	}
 	else if(view_mode == VIEW_LARGE)
 	{
-		si.t = si.x = si.y = 2;
+		si.t = si.x = si.y = 2.0;
 		options.skin = 1;
 	}
 	else if(view_mode == VIEW_FULL)
@@ -527,10 +527,10 @@ int  hid_init(void)
 	display_main_wnd();
 
     // Allocate the backing pixmap (used for drawing and refresh)
-    pixmap = gdk_pixmap_new(main_wnd->window, wr.w, wr.h, -1);
+    pixmap = gdk_pixmap_new(main_wnd->window, 2*wr.w, 2*wr.h, -1);
     if(pixmap == NULL)
     {
-        gchar *s = g_strdup_printf("unable to create backing pixbuf.\n");
+        gchar *s = g_strdup_printf("unable to create backing pixmap.\n");
 	    tiemu_error(0, s);
 	    g_free(s);
 	    return -1;
@@ -623,10 +623,7 @@ int hid_switch_fullscreen(void)
 	if(options.view != VIEW_FULL)
 	{
 		set_scale(options.view = VIEW_FULL);
-		
-		hid_exit();
-		hid_init();
-
+		set_infos();
 		gdk_window_fullscreen(main_wnd->window);
 	}
 
@@ -638,10 +635,8 @@ int hid_switch_normal_view(void)
 	if(options.view != VIEW_NORMAL)
 	{
 		set_scale(options.view = VIEW_NORMAL);
-
-		hid_exit();
-		hid_init();
-		
+		set_infos();
+		redraw_skin();
 		//gdk_window_unfullscreen(main_wnd->window);
 	}
 
@@ -653,10 +648,8 @@ int hid_switch_large_view(void)
 	if(options.view != VIEW_LARGE)
 	{
 		set_scale(options.view = VIEW_LARGE);		
-		
-		hid_exit();
-		hid_init();
-		
+		set_infos();
+		redraw_skin();
 		//gdk_window_unfullscreen(main_wnd->window);
 	}
 
