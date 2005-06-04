@@ -112,6 +112,13 @@ static void set_infos(void)	// set window & lcd sizes
 		wr.w = lr.w;
 		wr.h = lr.h;
 	}
+
+#if 1
+	printf("LCD src: %3i %3i %3i %3i\n", ls.x, ls.y, ls.w, ls.h);
+	printf("LCD dst: %3i %3i %3i %3i\n", lr.x, lr.y, lr.w, lr.h);
+	printf("SKN    : %3i %3i %3i %3i\n", sr.x, sr.y, sr.w, sr.h);
+	printf("WND    : %3i %3i %3i %3i\n", wr.x, wr.y, wr.w, wr.h);
+#endif
 }
 
 static void set_scale(int view_mode)
@@ -260,26 +267,18 @@ on_calc_wnd_size_allocate          (GtkWidget       *widget,
                                         GdkRectangle    *allocation,
                                         gpointer         user_data)
 {
-	float r = (float)sr.w / sr.h;
-	float s = (float)sr.h / sr.w;
 	float f;
 
-	printf("on_drawingarea1_size_allocate: %i %i %i %i %1.1f %1.1f\n",
-		allocation->x, allocation->y, allocation->width, allocation->height, r, s);
-/*
-	si.r = (float)allocation->width / (float)skin_infos.width;
-*/
-	/*
+	//printf("on_drawingarea1_size_allocate: %i %i %i %i\n",
+	//	allocation->x, allocation->y, allocation->width, allocation->height);
+
 	f = (float)allocation->width / (float)skin_infos.width;
 	printf("factor: %1.2f\n", f);
-	si.r = f;
-	*/
+	//si.r = f;
 
 /*
 	if(widget->window != NULL )
-	{
 		gdk_window_resize (widget->window, allocation->width, (int)(s * allocation->width));
-	}
 */
 }
 
@@ -529,7 +528,7 @@ int  hid_init(void)
 	display_main_wnd();
 
     // Allocate the backing pixmap (used for drawing and refresh)
-    pixmap = gdk_pixmap_new(main_wnd->window, 2*wr.w, 2*wr.h, -1);
+    pixmap = gdk_pixmap_new(main_wnd->window, 4*wr.w, 4*wr.h, -1);
     if(pixmap == NULL)
     {
         gchar *s = g_strdup_printf("unable to create backing pixmap.\n");
@@ -626,6 +625,7 @@ int hid_switch_fullscreen(void)
 	{
 		set_scale(options.view = VIEW_FULL);
 		set_infos();
+		redraw_skin();
 		gdk_window_fullscreen(main_wnd->window);
 	}
 
@@ -639,7 +639,7 @@ int hid_switch_normal_view(void)
 		set_scale(options.view = VIEW_NORMAL);
 		set_infos();
 		redraw_skin();
-		//gdk_window_unfullscreen(main_wnd->window);
+		gdk_window_unfullscreen(main_wnd->window);
 	}
 
     return 0;
@@ -652,7 +652,7 @@ int hid_switch_large_view(void)
 		set_scale(options.view = VIEW_LARGE);		
 		set_infos();
 		redraw_skin();
-		//gdk_window_unfullscreen(main_wnd->window);
+		gdk_window_unfullscreen(main_wnd->window);
 	}
 
     return 0;

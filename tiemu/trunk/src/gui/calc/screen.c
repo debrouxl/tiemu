@@ -172,7 +172,7 @@ void compute_grayscale(void)
 void redraw_skin(void) 
 {
 	// resize window and drawing area
-	//gtk_widget_set_size_request(area, wr.w, wr.h);
+	gtk_widget_set_size_request(area, wr.w, wr.h);
 	gtk_window_resize(GTK_WINDOW(main_wnd), wr.w, wr.h);
 
 	// no skin ?
