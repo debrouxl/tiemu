@@ -11,7 +11,7 @@
   <property name="modal">False</property>
   <property name="default_width">1</property>
   <property name="default_height">1</property>
-  <property name="resizable">False</property>
+  <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
   <property name="decorated">True</property>
   <property name="skip_taskbar_hint">False</property>
@@ -24,8 +24,9 @@
   <signal name="key_press_event" handler="on_calc_wnd_key_press_event" last_modification_time="Wed, 14 Jul 2004 17:20:51 GMT"/>
   <signal name="key_release_event" handler="on_calc_wnd_key_release_event" last_modification_time="Wed, 14 Jul 2004 17:21:00 GMT"/>
   <signal name="destroy" handler="on_calc_wnd_destroy" last_modification_time="Wed, 14 Jul 2004 20:10:55 GMT"/>
-  <signal name="expose_event" handler="on_calc_wnd_expose_event" last_modification_time="Fri, 23 Jul 2004 12:46:29 GMT"/>
   <signal name="window_state_event" handler="on_calc_wnd_window_state_event" last_modification_time="Sat, 31 Jul 2004 16:45:27 GMT"/>
+  <signal name="size_allocate" handler="on_calc_wnd_size_allocate" last_modification_time="Sat, 04 Jun 2005 19:41:59 GMT"/>
+  <signal name="size_request" handler="on_calc_wnd_size_request" last_modification_time="Sat, 04 Jun 2005 19:42:05 GMT"/>
 
   <child>
     <widget class="GtkDrawingArea" id="drawingarea1">

@@ -172,6 +172,28 @@ gint display_main_wnd(void)
 	gtk_window_set_title(GTK_WINDOW(main_wnd), title);
 	g_free(title);
 
+	// Allows resizing of window with a constant ratio (aspect contraint)
+	{
+		GdkGeometry geom = { 0 };
+		GdkWindowHints mask = GDK_HINT_ASPECT;
+		double r = (float)sr.w / sr.h;
+		double o = r * 0.10;	// 10%
+
+		geom.min_width = 10;
+		geom.min_height = 10;
+		geom.max_width = 1024;
+		geom.max_height = 768;
+		geom.base_width = 0;
+		geom.base_height = 0;
+		geom.width_inc = 5;
+		geom.height_inc = 5;
+		geom.min_aspect = r - o;
+		geom.max_aspect = r + o;
+
+		printf("%i %i %1.2f", sr.w, sr.h, r);
+		gtk_window_set_geometry_hints(GTK_WINDOW(main_wnd), area, &geom, mask);
+	}
+
 	return 0;
 }
 
@@ -201,18 +223,14 @@ on_calc_wnd_delete_event           (GtkWidget       *widget,
 typedef void (*VCB) (void);
 
 GLADE_CB gboolean
-on_calc_wnd_expose_event           (GtkWidget       *widget,
-                                    GdkEventExpose  *event,
-                                    gpointer         user_data)
-{
-	return FALSE;
-}
-
-GLADE_CB gboolean
 on_drawingarea1_configure_event        (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data)
 {
+	/*
+	printf("on_drawingarea1_configure_event: %i %i %i %i\n", 
+		event->x, event->y, event->width, event->height);
+*/
     return FALSE;
 }
 
@@ -230,6 +248,34 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
 		event->area.width, event->area.height);
 
 	return FALSE;
+}
+
+GLADE_CB void
+on_calc_wnd_size_request           (GtkWidget       *widget,
+                                        GtkRequisition  *requisition,
+                                        gpointer         user_data)
+{
+	requisition->height = 100;
+	requisition->width = 100;
+}
+
+GLADE_CB void
+on_calc_wnd_size_allocate          (GtkWidget       *widget,
+                                        GdkRectangle    *allocation,
+                                        gpointer         user_data)
+{/*
+	float r = (float)sr.w / sr.h;
+	float s = (float)sr.h / sr.w;
+
+	printf("on_drawingarea1_size_allocate: %i %i %i %i %1.1f %1.1f\n",
+		allocation->x, allocation->y, allocation->width, allocation->height, r, s);
+*/
+/*
+	if(widget->window != NULL )
+	{
+		gdk_window_resize (widget->window, allocation->width, (int)(s * allocation->width));
+	}
+*/
 }
 
 static int match_skin(int calc_type)
