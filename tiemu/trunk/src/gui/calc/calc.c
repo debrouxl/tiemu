@@ -118,14 +118,12 @@ static void set_scale(int view_mode)
 {
 	if(view_mode == VIEW_NORMAL)
 	{
-		si.t = 1;
-		si.x = si.y = 1;
+		si.t = si.x = si.y = 1;
 		options.skin = 1;
 	}
 	else if(view_mode == VIEW_LARGE)
 	{
-		si.t = 2;
-		si.x = si.y = 2;
+		si.t = si.x = si.y = 2;
 		options.skin = 1;
 	}
 	else if(view_mode == VIEW_FULL)
@@ -134,7 +132,6 @@ static void set_scale(int view_mode)
 		gint sw = gdk_screen_get_width(screen);
 		gint sh = gdk_screen_get_height(screen);
 
-		si.t = 1;
 		si.x = (float)sw / lr.w;
 		si.y = (float)sh / lr.h;
 		//printf("%i %i %f\n", sw, lr.w, si.x);
@@ -142,6 +139,7 @@ static void set_scale(int view_mode)
 
 		si.x = (float)4.0;	// restricted to 4.0, too CPU intensive !
 		si.y = (float)4.0;
+		si.t = (float)4.0;
 		options.skin = 0;
 	}
 }
@@ -173,6 +171,7 @@ gint display_main_wnd(void)
 	g_free(title);
 
 	// Allows resizing of window with a constant ratio (aspect contraint)
+	if(0)
 	{
 		GdkGeometry geom = { 0 };
 		GdkWindowHints mask = GDK_HINT_ASPECT;
@@ -227,10 +226,10 @@ on_drawingarea1_configure_event        (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data)
 {
-	/*
-	printf("on_drawingarea1_configure_event: %i %i %i %i\n", 
-		event->x, event->y, event->width, event->height);
-*/
+	
+	//printf("on_drawingarea1_configure_event: %i %i %i %i\n", 
+	//	event->x, event->y, event->width, event->height);
+
     return FALSE;
 }
 
@@ -263,12 +262,16 @@ GLADE_CB void
 on_calc_wnd_size_allocate          (GtkWidget       *widget,
                                         GdkRectangle    *allocation,
                                         gpointer         user_data)
-{/*
+{
 	float r = (float)sr.w / sr.h;
 	float s = (float)sr.h / sr.w;
 
-	printf("on_drawingarea1_size_allocate: %i %i %i %i %1.1f %1.1f\n",
-		allocation->x, allocation->y, allocation->width, allocation->height, r, s);
+	//printf("on_drawingarea1_size_allocate: %i %i %i %i %1.1f %1.1f\n",
+	//	allocation->x, allocation->y, allocation->width, allocation->height, r, s);
+/*
+	si.t = 1;
+	si.x = si.y = (float)allocation->width / (float)skin_infos.width;
+	printf("factor: %1.2f\n", si.x);
 */
 /*
 	if(widget->window != NULL )
@@ -501,7 +504,7 @@ int  hid_init(void)
 	lcd_bytmap = (uint32_t *)malloc(LCDMEM_W * LCDMEM_H);
 
     // Allocate the lcd pixbuf
-    lcd = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, si.t * LCDMEM_W, si.t * LCDMEM_H);
+    lcd = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, LCDMEM_W, LCDMEM_H);
     if(lcd == NULL)
     {
         gchar *s = g_strdup_printf("unable to create LCD pixbuf.\n");
