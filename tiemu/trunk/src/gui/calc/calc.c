@@ -113,7 +113,7 @@ static void set_infos(void)	// set window & lcd sizes
 		wr.h = lr.h;
 	}
 
-#if 1
+#if 0
 	printf("LCD src: %3i %3i %3i %3i\n", ls.x, ls.y, ls.w, ls.h);
 	printf("LCD dst: %3i %3i %3i %3i\n", lr.x, lr.y, lr.w, lr.h);
 	printf("SKN    : %3i %3i %3i %3i\n", sr.x, sr.y, sr.w, sr.h);
@@ -262,6 +262,8 @@ on_calc_wnd_size_request           (GtkWidget       *widget,
 	requisition->width = 100;
 }
 
+extern void redraw_skin(int);
+
 GLADE_CB void
 on_calc_wnd_size_allocate          (GtkWidget       *widget,
                                         GdkRectangle    *allocation,
@@ -274,8 +276,11 @@ on_calc_wnd_size_allocate          (GtkWidget       *widget,
 
 	f = (float)allocation->width / (float)skin_infos.width;
 	printf("factor: %1.2f\n", f);
-	//si.r = f;
-
+/*
+	si.r = f;
+	set_infos();
+	redraw_skin(0);
+*/
 /*
 	if(widget->window != NULL )
 		gdk_window_resize (widget->window, allocation->width, (int)(s * allocation->width));
@@ -445,7 +450,6 @@ static gint hid_refresh (gpointer data)
 
 void compute_convtable(void);
 void compute_grayscale(void);
-void redraw_skin(void);
 
 int  hid_init(void)
 {
@@ -538,7 +542,7 @@ int  hid_init(void)
     }
     
     // Draw the skin and compute grayscale palette
-	redraw_skin();
+	redraw_skin(1);
   	compute_grayscale();
 
     // Init the planar/chunky conversion table for LCD
@@ -595,7 +599,7 @@ int hid_switch_with_skin(void)
 {
     options.skin = 1;
 	set_infos();
-	redraw_skin();
+	redraw_skin(1);
 
     return 0;
 }
@@ -604,7 +608,7 @@ int hid_switch_without_skin(void)
 {
     options.skin = 0;
 	set_infos();
-	redraw_skin();
+	redraw_skin(1);
 
     return 0;
 }
@@ -625,7 +629,7 @@ int hid_switch_fullscreen(void)
 	{
 		set_scale(options.view = VIEW_FULL);
 		set_infos();
-		redraw_skin();
+		redraw_skin(1);
 		gdk_window_fullscreen(main_wnd->window);
 	}
 
@@ -638,7 +642,7 @@ int hid_switch_normal_view(void)
 	{
 		set_scale(options.view = VIEW_NORMAL);
 		set_infos();
-		redraw_skin();
+		redraw_skin(1);
 		gdk_window_unfullscreen(main_wnd->window);
 	}
 
@@ -651,7 +655,7 @@ int hid_switch_large_view(void)
 	{
 		set_scale(options.view = VIEW_LARGE);		
 		set_infos();
-		redraw_skin();
+		redraw_skin(1);
 		gdk_window_unfullscreen(main_wnd->window);
 	}
 
