@@ -309,10 +309,10 @@ int hid_update_lcd(void)
 		src.h = (tihw.log_h > tihw.lcd_h) ? tihw.lcd_h : tihw.log_h;
 
 		// Copy surface into window
-		if((si.t > 1) && (si.x > 1) && (si.y > 1))
+		if(si.r)
 		{
-			src.w = (int)(si.x * src.w);
-			src.h = (int)(si.y * src.h);
+			src.w = (int)(si.r * src.w);
+			src.h = (int)(si.r * src.h);
 
 			// scale image
 			si.p = gdk_pixbuf_scale_simple(si.l, lr.w, lr.h, GDK_INTERP_NEAREST);

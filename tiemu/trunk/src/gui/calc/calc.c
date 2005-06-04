@@ -75,10 +75,10 @@ extern WND_RECT		wr;
 static void set_infos(void)	// set window & lcd sizes
 {
 	// LCD rectangle (source: skin)
-	ls.x = (int)(si.x * skin_infos.lcd_pos.left); 
-	ls.y = (int)(si.y * skin_infos.lcd_pos.top);
-	ls.w = (int)(si.x * tihw.lcd_w);
-	ls.h = (int)(si.y * tihw.lcd_h);
+	ls.x = (int)(si.r * skin_infos.lcd_pos.left); 
+	ls.y = (int)(si.r * skin_infos.lcd_pos.top);
+	ls.w = (int)(si.r * tihw.lcd_w);
+	ls.h = (int)(si.r * tihw.lcd_h);
 
 	// LCD rectangle (target: window)
 	if(options.skin) 
@@ -91,14 +91,14 @@ static void set_infos(void)	// set window & lcd sizes
 		lr.x = 0;
 		lr.y = 0;
 	}  
-	lr.w = (int)(si.x * tihw.lcd_w);
-	lr.h = (int)(si.y * tihw.lcd_h);
+	lr.w = (int)(si.r * tihw.lcd_w);
+	lr.h = (int)(si.r * tihw.lcd_h);
 
 
 	// SKN rectangle
 	sr.x = sr.y = 0;
-	sr.w = (int)(si.x * skin_infos.width);
-	sr.h = (int)(si.y * skin_infos.height);
+	sr.w = (int)(si.r * skin_infos.width);
+	sr.h = (int)(si.r * skin_infos.height);
 
 	// WND rectangle (= LCD or SKN depending on w/ or w/o skin)
 	wr.x = wr.y = 0;
@@ -118,12 +118,12 @@ static void set_scale(int view_mode)
 {
 	if(view_mode == VIEW_NORMAL)
 	{
-		si.t = si.x = si.y = 1.0;
+		si.r = 1.0;
 		options.skin = 1;
 	}
 	else if(view_mode == VIEW_LARGE)
 	{
-		si.t = si.x = si.y = 2.0;
+		si.r = 2.0;
 		options.skin = 1;
 	}
 	else if(view_mode == VIEW_FULL)
@@ -132,14 +132,12 @@ static void set_scale(int view_mode)
 		gint sw = gdk_screen_get_width(screen);
 		gint sh = gdk_screen_get_height(screen);
 
-		si.x = (float)sw / lr.w;
-		si.y = (float)sh / lr.h;
-		//printf("%i %i %f\n", sw, lr.w, si.x);
-		//printf("%i %i %f\n", sh, lr.h, si.y);
+		si.r = (float)sw / lr.w;
+		si.r = (float)sh / lr.h;
+		//printf("%i %i %f\n", sw, lr.w, si.r);
+		//printf("%i %i %f\n", sh, lr.h, si.r);
 
-		si.x = (float)4.0;	// restricted to 4.0, too CPU intensive !
-		si.y = (float)4.0;
-		si.t = (float)4.0;
+		si.r = (float)4.0;	// restricted to 4.0, too CPU intensive !
 		options.skin = 0;
 	}
 }
@@ -226,9 +224,8 @@ on_drawingarea1_configure_event        (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data)
 {
-	
-	//printf("on_drawingarea1_configure_event: %i %i %i %i\n", 
-	//	event->x, event->y, event->width, event->height);
+	printf("on_drawingarea1_configure_event: %i %i %i %i\n", 
+		event->x, event->y, event->width, event->height);
 
     return FALSE;
 }
@@ -265,14 +262,19 @@ on_calc_wnd_size_allocate          (GtkWidget       *widget,
 {
 	float r = (float)sr.w / sr.h;
 	float s = (float)sr.h / sr.w;
+	float f;
 
-	//printf("on_drawingarea1_size_allocate: %i %i %i %i %1.1f %1.1f\n",
-	//	allocation->x, allocation->y, allocation->width, allocation->height, r, s);
+	printf("on_drawingarea1_size_allocate: %i %i %i %i %1.1f %1.1f\n",
+		allocation->x, allocation->y, allocation->width, allocation->height, r, s);
 /*
-	si.t = 1;
-	si.x = si.y = (float)allocation->width / (float)skin_infos.width;
-	printf("factor: %1.2f\n", si.x);
+	si.r = (float)allocation->width / (float)skin_infos.width;
 */
+	/*
+	f = (float)allocation->width / (float)skin_infos.width;
+	printf("factor: %1.2f\n", f);
+	si.r = f;
+	*/
+
 /*
 	if(widget->window != NULL )
 	{

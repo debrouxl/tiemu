@@ -82,10 +82,10 @@ typedef struct
 
 typedef struct
 {
-	float		t;	// twice
+	float		r;
 
-	float		x;	// x ratio
-	float		y;	// y ratio
+	float		x;	// x ratio (unused)
+	float		y;	// y ratio (unused)
 
 	GdkPixbuf*	l;	// lcd pixbuf
 	GdkPixbuf*	p;	// scaled pixbuf
