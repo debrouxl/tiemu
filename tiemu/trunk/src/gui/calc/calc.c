@@ -113,7 +113,7 @@ static void set_infos(void)	// set window & lcd sizes
 		wr.h = lr.h;
 	}
 
-#if 0
+#if 1
 	printf("LCD src: %3i %3i %3i %3i\n", ls.x, ls.y, ls.w, ls.h);
 	printf("LCD dst: %3i %3i %3i %3i\n", lr.x, lr.y, lr.w, lr.h);
 	printf("SKN    : %3i %3i %3i %3i\n", sr.x, sr.y, sr.w, sr.h);
@@ -144,7 +144,7 @@ static void set_scale(int view_mode)
 		//printf("%i %i %f\n", sw, lr.w, si.r);
 		//printf("%i %i %f\n", sh, lr.h, si.r);
 
-		si.r = (float)4.0;	// restricted to 4.0, too CPU intensive !
+		si.r = (float)1.0;	// restricted to 3.0, too CPU intensive !
 		options.skin = 0;
 	}
 }
@@ -231,8 +231,13 @@ on_drawingarea1_configure_event        (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data)
 {
-	float factor = (float)event->width / (float)skin_infos.width;
-#if 0
+	float factor;
+	
+	if(options.skin)	
+		factor = (float)event->width / (float)skin_infos.width;
+	else
+		factor = (float)event->width / (float)tihw.lcd_w;
+#if 1
 	printf("on_drawingarea1_configure_event: %i %i %i %i\n", 
 		event->x, event->y, event->width, event->height);
 	printf("factor: %1.2f\n", factor);
@@ -510,7 +515,7 @@ int  hid_init(void)
 	display_main_wnd();
 
     // Allocate the backing pixmap (used for drawing and refresh)
-    pixmap = gdk_pixmap_new(main_wnd->window, 4*wr.w, 4*wr.h, -1);
+    pixmap = gdk_pixmap_new(main_wnd->window, 3*wr.w, 3*wr.h, -1);
     if(pixmap == NULL)
     {
         gchar *s = g_strdup_printf("unable to create backing pixmap.\n");
