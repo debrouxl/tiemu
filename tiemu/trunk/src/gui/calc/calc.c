@@ -113,7 +113,7 @@ static void set_infos(void)	// set window & lcd sizes
 		wr.h = lr.h;
 	}
 
-#if 1
+#if 0
 	printf("LCD src: %3i %3i %3i %3i\n", ls.x, ls.y, ls.w, ls.h);
 	printf("LCD dst: %3i %3i %3i %3i\n", lr.x, lr.y, lr.w, lr.h);
 	printf("SKN    : %3i %3i %3i %3i\n", sr.x, sr.y, sr.w, sr.h);
@@ -125,12 +125,12 @@ static void set_scale(int view_mode)
 {
 	if(view_mode == VIEW_NORMAL)
 	{
-		si.r = 1.0;
+		options.scale = si.r = 1.0;
 		options.skin = 1;
 	}
 	else if(view_mode == VIEW_LARGE)
 	{
-		si.r = 2.0;
+		options.scale = si.r = 2.0;
 		options.skin = 1;
 	}
 	else if(view_mode == VIEW_FULL)
@@ -144,7 +144,7 @@ static void set_scale(int view_mode)
 		//printf("%i %i %f\n", sw, lr.w, si.r);
 		//printf("%i %i %f\n", sh, lr.h, si.r);
 
-		si.r = (float)1.0;	// restricted to 3.0, too CPU intensive !
+		options.scale = si.r = (float)1.0;	// restricted to 3.0, too CPU intensive !
 		options.skin = 0;
 	}
 }
@@ -233,17 +233,25 @@ on_drawingarea1_configure_event        (GtkWidget       *widget,
 {
 	float factor;
 	
+	// compute scaling factor
 	if(options.skin)	
 		factor = (float)event->width / (float)skin_infos.width;
 	else
 		factor = (float)event->width / (float)tihw.lcd_w;
-#if 1
+
+#if 0
 	printf("on_drawingarea1_configure_event: %i %i %i %i\n", 
 		event->x, event->y, event->width, event->height);
 	printf("factor: %1.2f\n", factor);
 #endif
-	// set scale ratio
-	si.r = factor;
+
+	// if normal or large view then exits
+	if((factor == 1.0) || (factor == 2.0))
+		return FALSE;
+
+	// set scaling factor
+	options.scale = si.r = factor;
+	options.view = VIEW_CUSTOM;
 
 	// compute sizes
 	set_infos();
@@ -485,6 +493,7 @@ int  hid_init(void)
 	}
 
 	// Set window/LCD sizes
+	si.r = options.scale;
 	set_scale(options.view);
 	set_infos();
 
