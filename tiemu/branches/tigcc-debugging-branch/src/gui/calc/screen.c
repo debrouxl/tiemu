@@ -169,11 +169,16 @@ void compute_grayscale(void)
 }
 
 /* Redraw the skin into window but don't reload skin file */
-void redraw_skin(void) 
+void redraw_skin(int full_redraw) 
 {
+	if(main_wnd->window == NULL)
+		return;
+
 	// resize window and drawing area
-	gtk_widget_set_size_request(area, wr.w, wr.h);
-	gtk_window_resize(GTK_WINDOW(main_wnd), wr.w, wr.h);
+	if(full_redraw)
+		gtk_window_resize(GTK_WINDOW(main_wnd), wr.w, wr.h);
+	else
+		gdk_window_resize(main_wnd->window, wr.w, wr.h);
 
 	// no skin ?
   	if(!options.skin) 
@@ -290,35 +295,16 @@ int hid_update_lcd(void)
     if(1)
 	{
 		// Copy LCD from buffer to pixbuf
-		if(si.t == 1)
+		for(j = 0; j < LCDMEM_H; j++)
 		{
-			for(j = 0; j < LCDMEM_H; j++)
-				for (i = 0; i < LCDMEM_W; i++) 
-				{
-					p = li.pixels + j * li.rowstride + i * li.n_channels;
-					
-					p[0] = grayscales[*lcd_buf].r;
-					p[1] = grayscales[*lcd_buf].g;
-					p[2] = grayscales[*lcd_buf].b;
-					lcd_buf++;
-				}
-		}
-		else
-		{
-			memset(li.pixels, 0xff, li.rowstride * li.height);
-			for(j = 0; j < LCDMEM_H; j++) 
+			for (i = 0; i < LCDMEM_W; i++) 
 			{
-				for (i = 0; i < LCDMEM_W; i++) 
-				{
-					p = li.pixels + 2*(j * li.rowstride) + 2*(i * li.n_channels);
-					
-					p[0] = p[3] = grayscales[*lcd_buf].r;
-					p[1] = p[4] = grayscales[*lcd_buf].g;
-					p[2] = p[5] = grayscales[*lcd_buf].b;
-					lcd_buf++;
-				}
-				p = li.pixels + 2*(j * li.rowstride) + 2*(i * li.n_channels);
-				memcpy(p, p - li.rowstride, li.rowstride);
+				p = li.pixels + j * li.rowstride + i * li.n_channels;
+				
+				p[0] = grayscales[*lcd_buf].r;
+				p[1] = grayscales[*lcd_buf].g;
+				p[2] = grayscales[*lcd_buf].b;
+				lcd_buf++;
 			}
 		}
 
@@ -328,14 +314,13 @@ int hid_update_lcd(void)
 		src.h = (tihw.log_h > tihw.lcd_h) ? tihw.lcd_h : tihw.log_h;
 
 		// Copy surface into window
-		if((si.t == 1) && (si.x > 1) && (si.y > 1))
+		if(si.r)
 		{
-			src.w = (int)(si.x * src.w);
-			src.h = (int)(si.y * src.h);
+			src.w = (int)(si.r * src.w);
+			src.h = (int)(si.r * src.h);
 
 			// scale image
 			si.p = gdk_pixbuf_scale_simple(si.l, lr.w, lr.h, GDK_INTERP_NEAREST);
-			//si.p = gdk_pixbuf_scale_custom(si.l, 2);
 
 			// and draw image into pixmap (next, into window on expose event)
 			gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
@@ -348,9 +333,6 @@ int hid_update_lcd(void)
 		}
 		else
 		{
-			// scale image
-			src.w *= si.t; src.h *= si.t;
-
 			// and draw image into pixmap (next, into window on expose event)
 			gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
 			  lcd, src.x, src.y, lr.x, lr.y, src.w, src.h,

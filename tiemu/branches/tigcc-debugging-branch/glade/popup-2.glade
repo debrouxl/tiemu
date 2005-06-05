@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
 
 <glade-interface>
@@ -324,6 +324,16 @@
 	    </widget>
 	  </child>
 
+	  <child>
+	    <widget class="GtkRadioMenuItem" id="custom_view1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Custom view</property>
+	      <property name="use_underline">True</property>
+	      <property name="active">False</property>
+	      <property name="group">normal_view1</property>
+	      <signal name="activate" handler="on_custom_view1_activate" last_modification_time="Sun, 05 Jun 2005 08:47:19 GMT"/>
+	    </widget>
+	  </child>
 	</widget>
       </child>
     </widget>
@@ -430,7 +440,7 @@
 	      <accelerator key="H" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image66">
+		<widget class="GtkImage" id="image74">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-help</property>
 		  <property name="icon_size">1</property>
@@ -453,7 +463,7 @@
 	      <accelerator key="M" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image67">
+		<widget class="GtkImage" id="image75">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-index</property>
 		  <property name="icon_size">1</property>
@@ -544,7 +554,7 @@
 	      <signal name="activate" handler="on_bugreport1_activate" last_modification_time="Sun, 20 Feb 2005 17:58:57 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image68">
+		<widget class="GtkImage" id="image76">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-execute</property>
 		  <property name="icon_size">1</property>

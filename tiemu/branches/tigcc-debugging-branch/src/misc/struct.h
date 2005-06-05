@@ -41,6 +41,7 @@
 #define VIEW_NORMAL 1
 #define VIEW_LARGE  2
 #define VIEW_FULL   3
+#define VIEW_CUSTOM	4
 
 /* General options */
 typedef struct
@@ -52,6 +53,7 @@ typedef struct
 	gint    fs_type;
 	gint	skin;
 	gint    view;
+	gfloat	scale;
 
 } TieOptions;
 

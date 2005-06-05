@@ -376,9 +376,15 @@ void rcfile_read(void)
 
 	if( (p=find_str(buffer, "view_mode=")) )
 	{
-	  if(!strcmp(p, "normal")) options.view=VIEW_NORMAL;
-	  else if(!strcmp(p, "large")) options.view=VIEW_LARGE;
-	  else if(!strcmp(p, "full")) options.view=VIEW_FULL;
+	  if(!strcmp(p, "normal")) options.view = VIEW_NORMAL;
+	  else if(!strcmp(p, "large")) options.view = VIEW_LARGE;
+	  else if(!strcmp(p, "full")) options.view = VIEW_FULL;
+	  else if(!strncmp(p, "custom", strlen("custom"))) 
+	  {
+		  options.view = VIEW_CUSTOM;
+		  p=find_str(buffer, "view_mode=custom");
+		  sscanf(p, " (%f)", &(options.scale));
+	  }
 	  else stop(l);
 	  continue;
 	}
@@ -777,13 +783,14 @@ void rcfile_write(void)
 	fprintf(txt, "skin=%i\n", options.skin);
 	fprintf(txt, "\n");
 
-	fprintf(txt, "# View mode (normal/large/full)\n");
+	fprintf(txt, "# View mode (normal/large/full/custom)\n");
 	fprintf(txt, "view_mode=");
 	switch(options.view)
     {
     case VIEW_NORMAL: fprintf(txt, "normal\n"); break;
     case VIEW_LARGE: fprintf(txt, "large\n"); break;
     case VIEW_FULL: fprintf(txt, "full\n"); break;
+	case VIEW_CUSTOM: fprintf(txt, "custom (%1.2f)\n", options.scale); break;
     }
 	fprintf(txt, "\n");
 
@@ -963,6 +970,7 @@ int rcfile_default()
     options.skin = 1;
 #endif
 	options.view = VIEW_NORMAL;
+	options.scale = 1.0;
 	options.kbd_dbg = 0;
 #ifdef __WIN32__
 	options.fs_type = 2;

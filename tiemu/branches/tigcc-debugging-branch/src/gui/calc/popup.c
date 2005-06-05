@@ -303,6 +303,12 @@ on_full_view1_activate                 (GtkMenuItem     *menuitem,
 		hid_switch_fullscreen();
 }
 
+GLADE_CB void
+on_custom_view1_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+}
+
 
 GLADE_CB void
 on_no_skin1_activate                      (GtkMenuItem     *menuitem,
@@ -497,6 +503,10 @@ GtkWidget* display_popup_menu(void)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.hw_protect);
 	g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_hw_protection1_activate, NULL);
 
+	// hide the custom view radio button
+	data = glade_xml_get_widget(xml, "custom_view1");
+	gtk_widget_hide(data);
+
 	// init radio buttons
     switch(options.view)
     {
@@ -511,6 +521,11 @@ GtkWidget* display_popup_menu(void)
 	case VIEW_FULL:
 		data = glade_xml_get_widget(xml, "full_view1");
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
+		break;
+	case VIEW_CUSTOM:
+		data = glade_xml_get_widget(xml, "custom_view1");
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
+		break;
     default:
         break;
     }
