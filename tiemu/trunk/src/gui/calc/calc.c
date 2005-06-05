@@ -224,15 +224,27 @@ on_calc_wnd_delete_event           (GtkWidget       *widget,
 #endif
 }
 
-typedef void (*VCB) (void);
+extern void redraw_skin(int);
 
 GLADE_CB gboolean
 on_drawingarea1_configure_event        (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data)
 {
+	float factor = (float)event->width / (float)skin_infos.width;
+#if 0
 	printf("on_drawingarea1_configure_event: %i %i %i %i\n", 
 		event->x, event->y, event->width, event->height);
+	printf("factor: %1.2f\n", factor);
+#endif
+	// set scale ratio
+	si.r = factor;
+
+	// compute sizes
+	set_infos();
+
+	// and set window size
+	redraw_skin(0);
 
     return FALSE;
 }
@@ -251,40 +263,6 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
 		event->area.width, event->area.height);
 
 	return FALSE;
-}
-
-GLADE_CB void
-on_calc_wnd_size_request           (GtkWidget       *widget,
-                                        GtkRequisition  *requisition,
-                                        gpointer         user_data)
-{
-	requisition->height = 100;
-	requisition->width = 100;
-}
-
-extern void redraw_skin(int);
-
-GLADE_CB void
-on_calc_wnd_size_allocate          (GtkWidget       *widget,
-                                        GdkRectangle    *allocation,
-                                        gpointer         user_data)
-{
-	float f;
-
-	//printf("on_drawingarea1_size_allocate: %i %i %i %i\n",
-	//	allocation->x, allocation->y, allocation->width, allocation->height);
-
-	f = (float)allocation->width / (float)skin_infos.width;
-	printf("factor: %1.2f\n", f);
-/*
-	si.r = f;
-	set_infos();
-	redraw_skin(0);
-*/
-/*
-	if(widget->window != NULL )
-		gdk_window_resize (widget->window, allocation->width, (int)(s * allocation->width));
-*/
 }
 
 static int match_skin(int calc_type)
