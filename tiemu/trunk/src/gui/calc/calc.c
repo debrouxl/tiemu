@@ -149,6 +149,44 @@ static void set_scale(int view_mode)
 	}
 }
 
+static void set_constraints(int mode)
+{
+	// Allows resizing of window with a constant aspect ratio.
+        // Very annoying and not very useful under Windows but required under Linux.
+        // But, enabling it make not possible to switch to real large view (x2).
+#ifndef __WIN32__
+	if(1)
+	{
+		GdkGeometry geom = { 0 };
+		GdkWindowHints mask = GDK_HINT_MIN_SIZE | GDK_HINT_ASPECT;
+		double r = (float)sr.w / sr.h;
+		double o = r * 0.10;	// 10%
+
+		geom.min_width = 100;
+		geom.min_height = 100;
+		//geom.max_width = 1024;
+		//geom.max_height = 768;
+		//geom.base_width = 0;
+		//geom.base_height = 0;
+		//geom.width_inc = 5;
+		//geom.height_inc = 5;
+		if(mode)
+		{
+		    geom.min_aspect = r; //r - o;
+		    geom.max_aspect = r; //r + o;
+		    gtk_window_set_geometry_hints(GTK_WINDOW(main_wnd), area, &geom, mask);
+		}
+		else
+		{
+		    gtk_window_set_geometry_hints(GTK_WINDOW(main_wnd), area, &geom, 
+						  GDK_HINT_MIN_SIZE); 
+		}
+		
+		//printf("%i %i %1.2f", sr.w, sr.h, r);		
+	}
+#endif
+}
+
 // Main wnd by loading glade xml file or by executing glade generated code
 gint display_main_wnd(void)
 {
@@ -166,7 +204,7 @@ gint display_main_wnd(void)
 	area = glade_xml_get_widget(xml, "drawingarea1");
 
 	gtk_window_move(GTK_WINDOW(main_wnd), options3.calc.rect.x, options3.calc.rect.y);
-
+	set_constraints(1);
 	gtk_widget_realize(main_wnd);	// set drawing area valid
 
 	// set window title (useful for TIGCC-IDE for instance)
@@ -174,29 +212,6 @@ gint display_main_wnd(void)
 	title = g_strdup_printf("TiEmu (%s)", ti68k_calctype_to_string(tihw.calc_type));
 	gtk_window_set_title(GTK_WINDOW(main_wnd), title);
 	g_free(title);
-
-	// Allows resizing of window with a constant ratio (aspect contraint)
-	if(0)
-	{
-		GdkGeometry geom = { 0 };
-		GdkWindowHints mask = GDK_HINT_ASPECT;
-		double r = (float)sr.w / sr.h;
-		double o = r * 0.10;	// 10%
-
-		geom.min_width = 10;
-		geom.min_height = 10;
-		geom.max_width = 1024;
-		geom.max_height = 768;
-		geom.base_width = 0;
-		geom.base_height = 0;
-		geom.width_inc = 5;
-		geom.height_inc = 5;
-		geom.min_aspect = r - o;
-		geom.max_aspect = r + o;
-
-		printf("%i %i %1.2f", sr.w, sr.h, r);
-		gtk_window_set_geometry_hints(GTK_WINDOW(main_wnd), area, &geom, mask);
-	}
 
 	return 0;
 }
