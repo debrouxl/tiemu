@@ -7,6 +7,8 @@ SubVersion: $Id$
 		don't restart the whole GUI when switching view mode.
 		The main wnd can be resized by dragging it and its content is automatically scaled.
 	- [roms] $1478: popup menu and tiemu.ini updated to support custom scaling factor.
+	- [roms] $1480: changed logo for Kevin's one.
+	- [roms] $1483: fixed full-screen mode
 	
 - 31/05/2005, version 2.00-rc2:
 	- [kevin] $1357/1362: added support for disassembling ER_throw

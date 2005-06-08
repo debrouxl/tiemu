@@ -169,17 +169,8 @@ void compute_grayscale(void)
 }
 
 /* Redraw the skin into window but don't reload skin file */
-void redraw_skin(int full_redraw) 
+void redraw_skin(void) 
 {
-	if(main_wnd->window == NULL)
-		return;
-
-	// resize window and drawing area
-	if(full_redraw)
-		gtk_window_resize(GTK_WINDOW(main_wnd), wr.w, wr.h);
-	else
-		gdk_window_resize(main_wnd->window, wr.w, wr.h);
-
 	// no skin ?
   	if(!options.skin) 
     	return;
