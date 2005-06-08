@@ -539,7 +539,7 @@ int  hid_init(void)
 	display_main_wnd();
 
     // Allocate the backing pixmap (used for drawing and refresh)
-    pixmap = gdk_pixmap_new(main_wnd->window, 3*wr.w, 3*wr.h, -1);
+    pixmap = gdk_pixmap_new(main_wnd->window, 5*wr.w, 5*wr.h, -1);
     if(pixmap == NULL)
     {
         gchar *s = g_strdup_printf("unable to create backing pixmap.\n");
