@@ -72,6 +72,36 @@ extern LCD_RECT		lr;
 extern SKN_RECT		sr;
 extern WND_RECT		wr;
 
+// part 1: set scale factor
+static void set_scale(int view_mode)
+{
+	if(view_mode == VIEW_NORMAL)
+	{
+		options.scale = si.r = 1.0;
+		options.skin = 1;
+	}
+	else if(view_mode == VIEW_LARGE)
+	{
+		options.scale = si.r = 2.0;
+		options.skin = 1;
+	}
+	else if(view_mode == VIEW_FULL)
+	{
+		GdkScreen* screen = gdk_screen_get_default();
+		gint sw = gdk_screen_get_width(screen);
+		gint sh = gdk_screen_get_height(screen);
+
+		si.r = (float)sw / lr.w;
+		si.r = (float)sh / lr.h;
+		//printf("%i %i %f\n", sw, lr.w, si.r);
+		//printf("%i %i %f\n", sh, lr.h, si.r);
+
+		options.scale = si.r = (float)1.0;	// restricted to 3.0, too CPU intensive !
+		options.skin = 0;
+	}
+}
+
+// part 2: compute sizes
 static void set_infos(void)	// set window & lcd sizes
 {
 	// LCD rectangle (source: skin)
@@ -121,32 +151,73 @@ static void set_infos(void)	// set window & lcd sizes
 #endif
 }
 
-static void set_scale(int view_mode)
+// part 3: set changes on window
+static void set_window(int full_redraw) 
 {
-	if(view_mode == VIEW_NORMAL)
-	{
-		options.scale = si.r = 1.0;
-		options.skin = 1;
-	}
-	else if(view_mode == VIEW_LARGE)
-	{
-		options.scale = si.r = 2.0;
-		options.skin = 1;
-	}
-	else if(view_mode == VIEW_FULL)
-	{
-		GdkScreen* screen = gdk_screen_get_default();
-		gint sw = gdk_screen_get_width(screen);
-		gint sh = gdk_screen_get_height(screen);
+	if(main_wnd->window == NULL)
+		return;
 
-		si.r = (float)sw / lr.w;
-		si.r = (float)sh / lr.h;
-		//printf("%i %i %f\n", sw, lr.w, si.r);
-		//printf("%i %i %f\n", sh, lr.h, si.r);
+	// resize window and drawing area
+	if(full_redraw)
+		gtk_window_resize(GTK_WINDOW(main_wnd), wr.w, wr.h);
+	else
+		gdk_window_resize(main_wnd->window, wr.w, wr.h);
 
-		options.scale = si.r = (float)1.0;	// restricted to 3.0, too CPU intensive !
-		options.skin = 0;
+	// reallocate backing pixmap
+	if(pixmap != NULL)
+	{
+		// free current backing pixmap
+		g_object_unref(pixmap);
+		pixmap = NULL;
+
+		// and allocate a new one
+		pixmap = gdk_pixmap_new(main_wnd->window, wr.w, wr.h, -1);
+		if(pixmap == NULL)
+		{
+			gchar *s = g_strdup_printf("unable to create backing pixmap.\n");
+			tiemu_error(0, s);
+			g_free(s);
+			return;
+		}
 	}
+}
+
+static void set_constraints(int mode)
+{
+	// Allows resizing of window with a constant aspect ratio.
+	// Very annoying and not very useful under Windows but required under Linux.
+	// But, enabling it make not possible to switch to real large view (x2).
+#ifndef __WIN32__
+	if(1)
+	{
+		GdkGeometry geom = { 0 };
+		GdkWindowHints mask = GDK_HINT_MIN_SIZE | GDK_HINT_ASPECT;
+		double r = (float)sr.w / sr.h;
+		double o = r * 0.10;	// 10%
+
+		geom.min_width = 100;
+		geom.min_height = 100;
+		//geom.max_width = 1024;
+		//geom.max_height = 768;
+		//geom.base_width = 0;
+		//geom.base_height = 0;
+		//geom.width_inc = 5;
+		//geom.height_inc = 5;
+		if(mode)
+		{
+		    geom.min_aspect = r; //r - o;
+		    geom.max_aspect = r; //r + o;
+		    gtk_window_set_geometry_hints(GTK_WINDOW(main_wnd), area, &geom, mask);
+		}
+		else
+		{
+		    gtk_window_set_geometry_hints(GTK_WINDOW(main_wnd), area, &geom, 
+						  GDK_HINT_MIN_SIZE); 
+		}
+		
+		//printf("%i %i %1.2f", sr.w, sr.h, r);		
+	}
+#endif
 }
 
 // Main wnd by loading glade xml file or by executing glade generated code
@@ -166,7 +237,7 @@ gint display_main_wnd(void)
 	area = glade_xml_get_widget(xml, "drawingarea1");
 
 	gtk_window_move(GTK_WINDOW(main_wnd), options3.calc.rect.x, options3.calc.rect.y);
-
+	set_constraints(1);
 	gtk_widget_realize(main_wnd);	// set drawing area valid
 
 	// set window title (useful for TIGCC-IDE for instance)
@@ -174,29 +245,6 @@ gint display_main_wnd(void)
 	title = g_strdup_printf("TiEmu (%s)", ti68k_calctype_to_string(tihw.calc_type));
 	gtk_window_set_title(GTK_WINDOW(main_wnd), title);
 	g_free(title);
-
-	// Allows resizing of window with a constant ratio (aspect contraint)
-	if(0)
-	{
-		GdkGeometry geom = { 0 };
-		GdkWindowHints mask = GDK_HINT_ASPECT;
-		double r = (float)sr.w / sr.h;
-		double o = r * 0.10;	// 10%
-
-		geom.min_width = 10;
-		geom.min_height = 10;
-		geom.max_width = 1024;
-		geom.max_height = 768;
-		geom.base_width = 0;
-		geom.base_height = 0;
-		geom.width_inc = 5;
-		geom.height_inc = 5;
-		geom.min_aspect = r - o;
-		geom.max_aspect = r + o;
-
-		printf("%i %i %1.2f", sr.w, sr.h, r);
-		gtk_window_set_geometry_hints(GTK_WINDOW(main_wnd), area, &geom, mask);
-	}
 
 	return 0;
 }
@@ -224,7 +272,7 @@ on_calc_wnd_delete_event           (GtkWidget       *widget,
 #endif
 }
 
-extern void redraw_skin(int);
+extern void redraw_skin(void);
 
 GLADE_CB gboolean
 on_drawingarea1_configure_event        (GtkWidget       *widget,
@@ -257,7 +305,8 @@ on_drawingarea1_configure_event        (GtkWidget       *widget,
 	set_infos();
 
 	// and set window size
-	redraw_skin(0);
+	set_window(0);
+	redraw_skin();
 
     return FALSE;
 }
@@ -524,7 +573,7 @@ int  hid_init(void)
 	display_main_wnd();
 
     // Allocate the backing pixmap (used for drawing and refresh)
-    pixmap = gdk_pixmap_new(main_wnd->window, 3*wr.w, 3*wr.h, -1);
+    pixmap = gdk_pixmap_new(main_wnd->window, wr.w, wr.h, -1);
     if(pixmap == NULL)
     {
         gchar *s = g_strdup_printf("unable to create backing pixmap.\n");
@@ -534,7 +583,8 @@ int  hid_init(void)
     }
     
     // Draw the skin and compute grayscale palette
-	redraw_skin(1);
+	set_window(1);
+	redraw_skin();
   	compute_grayscale();
 
     // Init the planar/chunky conversion table for LCD
@@ -591,7 +641,8 @@ int hid_switch_with_skin(void)
 {
     options.skin = 1;
 	set_infos();
-	redraw_skin(1);
+	set_window(1);
+	redraw_skin();
 
     return 0;
 }
@@ -600,7 +651,8 @@ int hid_switch_without_skin(void)
 {
     options.skin = 0;
 	set_infos();
-	redraw_skin(1);
+	set_window(1);
+	redraw_skin();
 
     return 0;
 }
@@ -621,7 +673,8 @@ int hid_switch_fullscreen(void)
 	{
 		set_scale(options.view = VIEW_FULL);
 		set_infos();
-		redraw_skin(1);
+		set_window(1);
+		redraw_skin();
 		gdk_window_fullscreen(main_wnd->window);
 	}
 
@@ -634,7 +687,8 @@ int hid_switch_normal_view(void)
 	{
 		set_scale(options.view = VIEW_NORMAL);
 		set_infos();
-		redraw_skin(1);
+		set_window(1);
+		redraw_skin();
 		gdk_window_unfullscreen(main_wnd->window);
 	}
 
@@ -647,7 +701,8 @@ int hid_switch_large_view(void)
 	{
 		set_scale(options.view = VIEW_LARGE);		
 		set_infos();
-		redraw_skin(1);
+		set_window(1);
+		redraw_skin();
 		gdk_window_unfullscreen(main_wnd->window);
 	}
 
