@@ -99,8 +99,8 @@ static int pos_to_key(int x, int y)
   
   	for(i = 0; i < nkeys; i++)
     {
-      	if((x >= si.x*kp[i].left) && (x < si.x*kp[i].right) && 
-	 	   (y >= si.y*kp[i].top) && (y < si.y*kp[i].bottom)) 
+      	if((x >= si.r*kp[i].left) && (x < si.r*kp[i].right) && 
+	 	   (y >= si.r*kp[i].top) && (y < si.r*kp[i].bottom)) 
 		{
 			if(options.kbd_dbg)
 				printf("tikey = %02x (%s)\n", skn_keymap[i], keymap_value_to_string(tikeys, skn_keymap[i]));		
