@@ -11,6 +11,7 @@ SubVersion: $Id$
 	- [roms] $1478: popup menu and tiemu.ini updated to support custom scaling factor.
 	- [roms] $1480: changed logo for Kevin's one.
 	- [roms] $1483: fixed full-screen mode
+	- [roms] $1487: fixed resized window with key positions (mouse)
 	
 - 31/05/2005, version 2.00-rc2:
 	- [kevin] $1357/1362: added support for disassembling ER_throw
