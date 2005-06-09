@@ -42,6 +42,8 @@
 #include "dbg_romcall.h"
 #include "engine.h"
 
+gint reset_disabled = FALSE;
+
 //#define FIXED_SIZE
 
 static GladeXML *xml = NULL;
@@ -411,6 +413,7 @@ GtkWidget* dbgcode_display_window(void)
 
 	gtk_widget_set_sensitive(list, TRUE);	
 	tb_set_states(1, 1, 1, 1, 1, 0, 1, 1);
+	reset_disabled = FALSE;
     set_other_windows_sensitivity(TRUE);
      
     gtk_list_store_clear(store);
@@ -458,6 +461,7 @@ on_run1_activate                       (GtkMenuItem     *menuitem,
 {
 #if 0
 	tb_set_states(0, 0, 0, 0, 0, 1, 0, 0);
+	reset_disabled = TRUE;
     gtk_widget_set_sensitive(list, FALSE);
     set_other_windows_sensitivity(FALSE);
 
@@ -493,8 +497,10 @@ on_step_over1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	tb_set_states(0, 0, 0, 0, 0, 1, 0, 0);
+	reset_disabled = TRUE;
     ti68k_debug_step_over();
 	tb_set_states(1, 1, 1, 1, 1, 0, 1, 1);
+	reset_disabled = FALSE;
 
 	clist_refresh(store, TRUE);
     dbgregs_refresh_window();
@@ -546,12 +552,14 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
     sscanf(str, "%x", &addr);
 
 	tb_set_states(0, 0, 0, 0, 0, 1, 0, 0);
+	reset_disabled = TRUE;
     set_other_windows_sensitivity(FALSE);
 
     ti68k_debug_skip(addr);
     gtk_tree_selection_unselect_iter(selection, &iter);
 
 	tb_set_states(1, 1, 1, 1, 1, 0, 1, 1);
+	reset_disabled = FALSE;
     set_other_windows_sensitivity(TRUE);
     
 	clist_refresh(store, FALSE);
@@ -576,6 +584,7 @@ on_break1_activate                     (GtkMenuItem     *menuitem,
     ti68k_engine_stop();
     gtk_widget_set_sensitive(list, TRUE);
 	tb_set_states(1, 1, 1, 1, 1, 0, 1, 1);
+	reset_disabled = FALSE;
     set_other_windows_sensitivity(TRUE);
     clist_refresh(store);
 #else
@@ -1043,6 +1052,7 @@ void gdbcallback_disable_debugger(void)
 		tb_set_states(0, 0, 0, 0, 0, 1, 0, 0);
 		gtk_widget_set_sensitive(list, FALSE);
 		set_other_windows_sensitivity(FALSE);
+		reset_disabled = TRUE;
 	}
 }
 
@@ -1053,6 +1063,7 @@ void gdbcallback_enable_debugger(void)
 		gtk_widget_set_sensitive(list, TRUE);
 		tb_set_states(1, 1, 1, 1, 1, 0, 1, 1);
 		set_other_windows_sensitivity(TRUE);
+		reset_disabled = FALSE;
 	}
 }
 
