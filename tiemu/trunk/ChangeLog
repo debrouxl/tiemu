@@ -2,6 +2,9 @@ SubVersion: $Id$
 
 	- [kevin] $1485/1486: replaced TiLP logo in the HTML manual with my temporary TiEmu logo
 
+- 10/06/2005, version 2.00-rc4:
+	- [roms] $1488: replaced current icon by Jaime's one
+
 - 01/06/2005, version 2.00-rc3:
 	- [roms] $1462: fixed bug #1212619.
 	- [roms] $1467: fixed ON key
@@ -11,7 +14,7 @@ SubVersion: $Id$
 	- [roms] $1478: popup menu and tiemu.ini updated to support custom scaling factor.
 	- [roms] $1480: changed logo for Kevin's one.
 	- [roms] $1483: fixed full-screen mode
-	- [roms] $1487: fixed resized window with key positions (mouse)
+	- [roms] $1487: fixed resized window with key positions (mouse) (bug #1217627)
 	
 - 31/05/2005, version 2.00-rc2:
 	- [kevin] $1357/1362: added support for disassembling ER_throw

@@ -13,6 +13,27 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON    DISCARDABLE     "tiemu.ico"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
 // French (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
@@ -47,7 +68,7 @@ BEGIN
             VALUE "Comments", "This program is placed under GPL license. The license can be found on www.gnu.org\0"
             VALUE "CompanyName", "Linux Programmer Group\0"
             VALUE "FileDescription", "TiEmu\0"
-            VALUE "FileVersion", "2.00-rc1\0"
+            VALUE "FileVersion", "2.00-rc3\0"
             VALUE "InternalName", "TiEmu\0"
             VALUE "LegalCopyright", "Copyright © 2000-2005, The TiEmu Team\0"
             VALUE "LegalTrademarks", "The TiEmu Team\0"
@@ -92,15 +113,6 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Icon
-//
-
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-IDI_ICON1               ICON    DISCARDABLE     "tiemu.ico"
 #endif    // French (France) resources
 /////////////////////////////////////////////////////////////////////////////
 
