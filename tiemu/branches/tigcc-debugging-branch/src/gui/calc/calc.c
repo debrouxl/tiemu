@@ -750,12 +750,18 @@ int  hid_screenshot(char *filename)
         // get pixbuf from grayscale lcd
 		pixbuf = gdk_pixbuf_copy(si.l);
 	} 
-	else if(options2.size == IMG_SKIN) 
+	else if((options2.size == IMG_SKIN) && (options2.type == IMG_COL))
 	{
 		// get pixbuf from backing pixmap
 		pixbuf = gdk_pixbuf_get_from_drawable(NULL, pixmap, NULL,
 					0, 0, 0, 0, skin_infos.width, skin_infos.height);
 	}
+	else
+	{
+		printl(0, "Unsupported screenshot options combination, screenshot aborted.\n");
+		g_free(filename);
+		return 0;
+        }
 
 	switch (options2.format)
 	{
