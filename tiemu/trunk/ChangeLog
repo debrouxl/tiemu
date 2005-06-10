@@ -2,6 +2,13 @@ SubVersion: $Id$
 
 	- [kevin] $1485/1486: replaced TiLP logo in the HTML manual with my temporary TiEmu logo
 
+- 10/06/2005
+	- [jb] $Rev$: src/gui/calc.c: screenshot of the whole calc in BW
+	is not supported, error out in this case. It'd be nice to pop an
+	error message to the user.
+	- [jb] $Rev$: src/misc/screenshot.c: enable BW screenshot in EPS
+	and PDF; they're treated like color screenshots.
+
 - 10/06/2005, version 2.00-rc4:
 	- [roms] $1488: replaced current icon by Jaime's one
 	- [roms] $1489: removed logo from about box

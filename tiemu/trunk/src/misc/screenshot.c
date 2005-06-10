@@ -38,13 +38,6 @@
 #include "intl.h"
 
 /*
- * All the #if 0 regions are for black & white screenshots. For now,
- * TiEmu doesn't support B&W, so just return an error and we'll be
- * back to this code later.
- */
-
-
-/*
  * Utility function for the EPS and PDF output
  */
 static gboolean write_compressed_a85_screen(FILE *fp, GdkPixbuf *pixbuf, GError **error)
@@ -225,39 +218,15 @@ gboolean tiemu_screen_write_eps(const gchar *filename, GdkPixbuf *pixbuf, GError
 	fprintf(fp, "\n");
 	fprintf(fp, "%d %d scale\n", w, h);
 
-	if (options2.type == IMG_COL) {
 #ifdef HAVE_LIBZ
-		fprintf(fp, "%d %d 8 [%d 0 0 -%d 0 %d] currentfile /ASCII85Decode filter /FlateDecode filter false 3 colorimage\n", w, h, w, h, h);
+	fprintf(fp, "%d %d 8 [%d 0 0 -%d 0 %d] currentfile /ASCII85Decode filter /FlateDecode filter false 3 colorimage\n", w, h, w, h, h);
 #else
-		fprintf(fp, "%d %d 8 [%d 0 0 -%d 0 %d] currentfile /ASCII85Decode filter false 3 colorimage\n", w, h, w, h, h);
+	fprintf(fp, "%d %d 8 [%d 0 0 -%d 0 %d] currentfile /ASCII85Decode filter false 3 colorimage\n", w, h, w, h, h);
 #endif
-		ret = write_compressed_a85_screen(fp, pixbuf, &err);
+	ret = write_compressed_a85_screen(fp, pixbuf, &err);
 
-		if (!ret) {
-			g_propagate_error(error, err);
-			fclose(fp);
-			unlink(filename);
-			return FALSE;
-		}
-	}
-	else {
-#if 0
-#ifdef HAVE_LIBZ
-		fprintf(fp, "%d %d 1 [%d 0 0 -%d 0 %d] currentfile /ASCII85Decode filter /FlateDecode filter image\n", w, h, w, h, h);
-#else
-		fprintf(fp, "%d %d 1 [%d 0 0 -%d 0 %d] currentfile /ASCII85Decode filter image\n", w, h, w, h, h);
-#endif
-
-		ret = write_compressed_a85_screen(fp, pixbuf, &err);
-
-		if (!ret) {
-			g_propagate_error(error, err);
-			fclose(fp);
-			unlink(filename);
-			return FALSE;
-		}
-#endif /* 0 */
-		g_set_error(error, 0, 0, _("Black & white screenshot unsupported in this format"));
+	if (!ret) {
+		g_propagate_error(error, err);
 		fclose(fp);
 		unlink(filename);
 		return FALSE;
@@ -346,48 +315,20 @@ gboolean tiemu_screen_write_pdf(const gchar *filename, GdkPixbuf *pixbuf, GError
 	fprintf(fp, "  /W %d\n", w);
 	fprintf(fp, "  /H %d\n", h);
 
-	if (options2.type == IMG_COL) {
-		/* RGB, 8 bits per component, ASCIIHex encoding */
-		fprintf(fp, "  /CS /RGB\n");
-		fprintf(fp, "  /BPC 8\n");
+	/* RGB, 8 bits per component, ASCIIHex encoding */
+	fprintf(fp, "  /CS /RGB\n");
+	fprintf(fp, "  /BPC 8\n");
 #ifdef HAVE_LIBZ
-		fprintf(fp, "  /F [/A85 /FlateDecode]\n");
+	fprintf(fp, "  /F [/A85 /FlateDecode]\n");
 #else
-		fprintf(fp, "  /F /A85\n");
+	fprintf(fp, "  /F /A85\n");
 #endif
-		fprintf(fp, "ID\n");
+	fprintf(fp, "ID\n");
 
-		ret = write_compressed_a85_screen(fp, pixbuf, &err);
+	ret = write_compressed_a85_screen(fp, pixbuf, &err);
 
-		if (!ret) {
-			g_propagate_error(error, err);
-			fclose(fp);
-			unlink(filename);
-			return FALSE;
-		}
-	}
-	else {
-#if 0
-		/* GrayLevel, 1 bit per component, ASCIIHex encoding */
-		fprintf(fp, "  /CS /G\n");
-		fprintf(fp, "  /BPC 1\n");
-#ifdef HAVE_LIBZ
-		fprintf(fp, "  /F [/A85 /FlateDecode]\n");
-#else
-		fprintf(fp, "  /F /A85\n");
-#endif
-		fprintf(fp, "ID\n");
-
-		ret = write_compressed_a85_screen(fp, pixbuf, &err);
-
-		if (!ret) {
-			g_propagate_error(error, err);
-			fclose(fp);
-			unlink(filename);
-			return FALSE;
-		}
-#endif /* 0 */
-		g_set_error(error, 0, 0, _("Black & white screenshot unsupported in this format"));
+	if (!ret) {
+		g_propagate_error(error, err);
 		fclose(fp);
 		unlink(filename);
 		return FALSE;
