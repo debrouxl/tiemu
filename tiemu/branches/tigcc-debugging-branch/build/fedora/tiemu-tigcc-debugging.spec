@@ -48,7 +48,7 @@ Encoding=UTF-8
 Version=1.0
 Type=Application
 Exec=/usr/bin/tiemu
-Icon=/usr/share/tiemu/pixmaps/logo.xpm
+Icon=/usr/share/tiemu/pixmaps/icon.xpm
 Terminal=false
 Categories=Development;
 EOF
@@ -90,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Sat Jun 11 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Use Jaime Fernando Meza Meza's icon.
+
 * Fri May 27 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Add Requires on zlib and BuildRequires on zlib-devel.
 
