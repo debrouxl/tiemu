@@ -45,7 +45,6 @@ rm -rf $RPM_BUILD_ROOT
 /usr/include/tilp/cabl_err.h
 /usr/include/tilp/cabl_int.h
 /usr/include/tilp/cabl_ver.h
-/usr/include/tilp/cabl_def.h
 /usr/include/tilp/export.h
 /usr/include/tilp/ticables.h
 /usr/include/tilp/timeout.h
@@ -57,6 +56,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Change Copyright to License.
+Don't list cabl_def.h twice.
 
 * Mon May 2 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 First Fedora RPM.

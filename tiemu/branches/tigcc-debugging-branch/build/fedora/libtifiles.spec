@@ -54,7 +54,6 @@ rm -rf $RPM_BUILD_ROOT
 /usr/include/tilp/macros.h
 /usr/include/tilp/stdints.h
 /usr/include/tilp/tifiles.h
-/usr/include/tilp/file_ver.h
 /usr/include/tilp/types73.h
 /usr/include/tilp/types82.h
 /usr/include/tilp/types83.h
@@ -74,6 +73,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Change Copyright to License.
+Don't list file_ver.h twice.
 
 * Mon May 2 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 First Fedora RPM.
