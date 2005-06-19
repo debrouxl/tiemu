@@ -1,0 +1,13 @@
+--- Makefile.in	2005-05-29 20:54:31.000000000 +0200
++++ Makefile.in.patched	2005-06-19 19:22:55.000000000 +0200
+@@ -207,6 +207,10 @@
+ 	@GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ \
+ 	@LTLIBINTL@ @LIBZ@
+ 
++ifneq (,$(findstring __LINUX__,$(CFLAGS)))
++	tilp_LDADD += -Wl,--export-dynamic
++endif
++
+ tilp_SOURCES = *.h \
+ 	tilp_calcs.c tilp_error.c tilp_files.c tilp_indep.c tilp_main.c \
+ 	tilp_misc.c tilp_prompt.c tilp_rcfile.c tilp_refresh.c tilp_screen.c \
