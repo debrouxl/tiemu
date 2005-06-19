@@ -162,7 +162,6 @@ int hw_kbd_update(void)		// ~600Hz
     {
     	// Auto-Int 6 triggered when [ON] is pressed.
 		hw_m68k_irq(6);
-		printf(".");
     }
 
 	key_change = 0;
