@@ -14,7 +14,7 @@ Vendor:		Romain Liévin
 Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		System Environment/Libraries
-Copyright:	LGPL
+License:	LGPL
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Summary:	Library for handling TI link cables
 %description
@@ -55,5 +55,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Fri Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Change Copyright to License.
+
 * Mon May 2 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 First Fedora RPM.

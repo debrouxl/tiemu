@@ -14,7 +14,7 @@ Vendor:		Romain Liévin
 Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		Applications/Emulators
-Copyright:	GPL
+License:	GPL
 BuildRequires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.2.2, kdelibs-devel >= 3.4.0, xorg-x11-devel >= 6.8.2, ncurses-devel >= 5.4, desktop-file-utils >= 0.10
 Requires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2, kdelibs >= 3.4.0, xorg-x11 >= 6.8.2, ncurses >= 5.4, tcl >= 8.4, tk >= 8.4
 Requires(post):	desktop-file-utils >= 0.10
@@ -92,6 +92,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Bump version requirements for FC4.
+Change Copyright to License.
 
 * Sat Jun 11 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Use Jaime Fernando Meza Meza's icon.
