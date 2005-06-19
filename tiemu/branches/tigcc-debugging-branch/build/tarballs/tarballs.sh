@@ -1,7 +1,7 @@
 #! /bin/sh
-tar cfj libticables-`date +%Y%m%d`.tar.bz2 libticables --exclude='\.svn' --exclude='.*/\.svn'
-tar cfj libtifiles-`date +%Y%m%d`.tar.bz2 libtifiles --exclude='\.svn' --exclude='.*/\.svn'
-tar cfj libticalcs-`date +%Y%m%d`.tar.bz2 libticalcs --exclude='\.svn' --exclude='.*/\.svn'
-tar cfj tiemu-tigcc-debugging-`date +%Y%m%d`.tar.bz2 tiemu-tigcc-debugging --exclude='\.svn' --exclude='.*/\.svn'
-tar cfj tilp-`date +%Y%m%d`.tar.bz2 tilp --exclude='\.svn' --exclude='.*/\.svn'
+tar -cj --exclude='\.svn' --exclude='.*/\.svn' -f libticables-`date +%Y%m%d`.tar.bz2 libticables
+tar -cj --exclude='\.svn' --exclude='.*/\.svn' -f libtifiles-`date +%Y%m%d`.tar.bz2 libtifiles
+tar -cj --exclude='\.svn' --exclude='.*/\.svn' -f libticalcs-`date +%Y%m%d`.tar.bz2 libticalcs
+tar -cj --exclude='\.svn' --exclude='.*/\.svn' -f tiemu-tigcc-debugging-`date +%Y%m%d`.tar.bz2 tiemu-tigcc-debugging
+tar -cj --exclude='\.svn' --exclude='.*/\.svn' -f tilp-`date +%Y%m%d`.tar.bz2 tilp
 
