@@ -1,3 +1,18 @@
+20050619:
+* Changes from TiEmu trunk:
+	- [kevin] $1485/1486: replaced TiLP logo in the HTML manual with my temporary TiEmu logo
+	- [roms] $1487: fixed resized window with key positions (mouse) (bug #1217627)
+	- [roms] $1488: replaced current icon by Jaime's one
+	- [roms] $1489: removed logo from about box
+	- [jb]   $1493: src/gui/calc.c: screenshot of the whole calc in BW
+		is not supported, error out in this case. It'd be nice to pop an
+		error message to the user.
+	- [jb]   $1493: src/misc/screenshot.c: enable BW screenshot in EPS
+		and PDF; they're treated like color screenshots.
+	- [roms] $1497: added hibou's logo
+* Add XPM version (48x48) of Jaime Fernando Meza Meza's icon and use it for the Fedora .desktop file.
+* Fedora RPMs are now built on Fedora Core 4.
+
 20050609:
 * Changes from TiEmu trunk (synced with TiEmu 2.00 RC3):
 	- [roms]  $1434: fixed multiple check items in the popup menu (button group)
