@@ -42,6 +42,7 @@
 static TiKey key_states[NB_MAX_KEYS];
 static int  *key_row;
 static int   key_change;
+static int	 on_change;
 
 int keyRow92[10][8] =
 {
@@ -90,6 +91,7 @@ int hw_kbd_init(void)
 	int i;
 
 	key_change = 0;
+	on_change = 0;
     tihw.on_key = 0;
 
     switch(tihw.calc_type)
@@ -131,16 +133,25 @@ void ti68k_kbd_set_key(int key, int active)
 	if(key == TIKEY_ALPHA)
 	{
 		if(active)
+		{
 			key_states[key]++;
+			key_change = !0;
+		}
 		else
 			key_states[key]--;
 	}
 	else if(key == TIKEY_ON)
+	{
 		tihw.on_key = active;
+		if(active)
+			on_change = !0;
+	}
 	else
+	{
 		key_states[key] = active;
-
-	key_change = !0;	
+		if(active)
+			key_change = !0;	
+	}
 }
 
 int ti68k_kbd_is_key_pressed(int key)
@@ -157,14 +168,15 @@ int hw_kbd_update(void)		// ~600Hz
 		// additional interrupts.
 		if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
 			hw_m68k_irq(2);
+		key_change = 0;
     }
-	else if(tihw.on_key) 
+	
+	if((on_change == 1) && tihw.on_key) 
     {
     	// Auto-Int 6 triggered when [ON] is pressed.
 		hw_m68k_irq(6);
+		on_change = 0;
     }
-
-	key_change = 0;
   
     return 0;
 }

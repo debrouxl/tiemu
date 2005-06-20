@@ -93,25 +93,29 @@ int hw_m68k_exit(void)
 // I re-implement it as replacement of Interrupt()
 void Interrupt2(int nr)
 {
-	//if((nr > regs.intmask) || (nr == 7))	// ok, if idle disabled (bug ?!)
+	if((nr > regs.intmask) || (nr == 7))
+	{
 		Interrupt(nr);
-
-	pending_ints &= ~(1 << nr);
+		pending_ints &= ~(1 << nr);	// clr pending int
+	}
 }
 
 void hw_m68k_irq(int n)
 {
 	set_special(SPCFLAG_INT);
-    currIntLev = n;
+    currIntLev = n;				// unused, used for compat with old Interrupt()
 
-	pending_ints |= (1 << n);
+	pending_ints |= (1 << n);	// set pending int
 }
 
-#define GET_INT_LVL	\
-		int level, mask = 0x80;	\
+// parse pending ints for one to raise (up to low prority order)
+#define GET_INT_LVL(level)	\
+	{ \
+		int mask = 0x80;	\
 			for (level = 7; level; level--, mask >>= 1)	\
 				if (pending_ints & mask)	\
-					break;
+					break;	\
+	}
 
 extern void lcd_hook_hw2(int);
 
@@ -153,7 +157,8 @@ int hw_m68k_run(int n, unsigned maxcycles)
 	    {
 			if(pending_ints)
 			{
-				GET_INT_LVL;
+				int level;
+				GET_INT_LVL(level);
 
 				// wake-up on int level 6 (ON key) or level 1..5
 				if ((pending_ints & (tihw.io[5] << 1)) || (level == 6))
@@ -239,10 +244,12 @@ int hw_m68k_run(int n, unsigned maxcycles)
 		// process (pending) interrupts
 		if(pending_ints)
 		{
-			GET_INT_LVL;
-			if(level > regs.intmask)
-				Interrupt2 (level);
+			int level;
+			GET_INT_LVL(level);
+
+			Interrupt2 (level);
 			regs.stopped = 0;
+			//regs.spcflags &= ~SPCFLAG_STOP;
 		}
 
 		// management of special flags
