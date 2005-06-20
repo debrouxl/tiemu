@@ -14,7 +14,6 @@ Vendor:		Romain Li√©vin
 Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:		%{name}-%{version}.tar.bz2
 Patch0:		tilp-no-obsolete-desktop-and-mime-entries.diff
-Patch1:		tilp-export-dynamic.diff
 Group:		Applications/Communications
 License:	GPL
 BuildRequires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.2.2, desktop-file-utils >= 0.10
@@ -29,7 +28,6 @@ TiLP is a TI<->PC linking program
 %prep
 %setup -n %{name}
 patch desktop/Makefile.in <%{PATCH0}
-patch src/Makefile.in <%{PATCH1}
 
 %build
 CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls --enable-exit-homedir
@@ -101,10 +99,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
-* Fri Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+* Mon Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Revert -Wl,--export-dynamic addition (now upstream).
+
+* Sun Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Bump version requirements for FC4.
 Change Copyright to License.
-Add missing -Wl,--export-dynamic.
+Add†missing†-Wl,--export-dynamic.
 
 * Fri May 27 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Add Requires on zlib and BuildRequires on zlib-devel.

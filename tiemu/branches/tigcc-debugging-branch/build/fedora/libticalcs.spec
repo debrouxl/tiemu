@@ -63,7 +63,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
-* Fri Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+* Sun Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Change Copyright to License.
 
 * Mon May 2 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>

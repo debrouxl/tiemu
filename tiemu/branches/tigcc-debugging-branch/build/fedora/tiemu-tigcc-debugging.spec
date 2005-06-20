@@ -90,7 +90,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
-* Fri Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+* Sun Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Bump version requirements for FC4.
 Change Copyright to License.
 
