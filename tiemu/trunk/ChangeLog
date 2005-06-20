@@ -11,6 +11,8 @@ SubVersion: $Id$
 	- [jb]   $1493: src/misc/screenshot.c: enable BW screenshot in EPS
 		and PDF; they're treated like color screenshots.
 	- [roms] $1497: added hibou's logo
+	- [roms] $1507: cleanup and little fixes in interrupt support of m68k
+	- [roms] $1509: fixed behaviour of all keys and definitely fixed ON key
 
 - 01/06/2005, version 2.00-rc3:
 	- [roms] $1462: fixed bug #1212619.
