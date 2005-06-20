@@ -211,13 +211,25 @@ on_calc_wnd_button_release_event     (GtkWidget       *widget,
     return FALSE;
 }
 
-
 GLADE_CB gboolean
 on_calc_wnd_key_press_event        (GtkWidget       *widget,
                                         GdkEventKey     *event,
                                         gpointer         user_data)
 {
 	//printf("<%04x %04x %04x>\n", event->state, event->keyval, event->hardware_keycode);
+	/*
+	printf("KeyEvent:\n");
+	printf(" type:		%i\n", event->type);
+	printf(" window:	%p\n", event->window);
+	printf(" send_event: %i\n", event->send_event);
+	printf(" time:		%ul\n", event->time);
+	printf(" state:		%u\n", event->state);
+	printf(" keyval:	%08x\n", event->keyval);
+	printf(" length:	%i\n", event->length);
+	printf(" string:	%s\n", event->string);
+	printf(" hw key:	%04x\n", event->hardware_keycode);
+	printf(" group:		%u\n", event->group);
+	*/
 
     if((event->keyval == 0xffff) && (event->hardware_keycode == 0x14))
 	{

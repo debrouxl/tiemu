@@ -448,6 +448,28 @@ GLADE_CB void
 on_exit_without_saving_state1_activate (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+#if 0
+	{
+		//testing...
+		GdkEvent* event = gdk_event_new(GDK_KEY_PRESS);
+
+		event->key.type = GDK_KEY_PRESS;
+		event->key.window = main_wnd->window;
+		event->key.send_event = FALSE;
+		event->key.time = GDK_CURRENT_TIME;
+		event->key.state = GDK_LOCK_MASK;
+		event->key.keyval = -1;
+		event->key.length = 0;
+		event->key.string = "";
+		event->key.hardware_keycode = 0x14;
+		event->key.group = 0;	
+		
+		gdk_event_put(event);
+		while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
+		//gdk_event_free(event);
+	}
+#endif
+
 	exit_main_loop();
 	gtk_main_quit();
 }
