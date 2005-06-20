@@ -134,13 +134,15 @@ void ti68k_kbd_set_key(int key, int active)
 			key_states[key]++;
 		else
 			key_states[key]--;
+		key_change = !0;
 	}
 	else if(key == TIKEY_ON)
 		tihw.on_key = active;
 	else
+	{
 		key_states[key] = active;
-
-	key_change = !0;	
+		key_change = !0;	
+	}
 }
 
 int ti68k_kbd_is_key_pressed(int key)
@@ -158,7 +160,8 @@ int hw_kbd_update(void)		// ~600Hz
 		if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
 			hw_m68k_irq(2);
     }
-	else if(tihw.on_key) 
+	
+	if(tihw.on_key) 
     {
     	// Auto-Int 6 triggered when [ON] is pressed.
 		hw_m68k_irq(6);
