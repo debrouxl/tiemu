@@ -32,9 +32,11 @@
 #include "options.h"
 #include "memory.h"
 #include "newcpu.h"
+#include "cpu_prefetch.h"
 
 /* Backwards compatibility */
-#define curriword() get_iword_prefetch(0)
+#define curriword() get_word_prefetch(0)
+#define get_iword_prefetch get_word_prefetch
 #define fill_prefetch_0 fill_prefetch_slow
 
 #endif

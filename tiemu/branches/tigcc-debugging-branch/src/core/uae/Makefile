@@ -38,12 +38,12 @@ cpudefs.c: build68k table68k
 	@echo "-> Building CPU definitions..."
 	./build68k <table68k >cpudefs.c
 
-cpuemu.c: gencpu compiler.h
+cpuemu.c: gencpu
 	@echo "-> Generating CPU tables..."
 	./gencpu
 
 # gencpu also creates cpustbl.c and cputbl.h
-cpustbl.c: cpuemu.c compiler.h
+cpustbl.c: cpuemu.c
 cputbl.h: cpuemu.c
 
 # CPU engine

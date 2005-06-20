@@ -603,7 +603,6 @@ static void genastore (char *from, amodes mode, char *reg, wordsizes size, char 
      case Areg:
 	switch (size) {
 	 case sz_word:
-	    write_log ("Foo\n");
 	    printf ("\tm68k_areg(regs, %s) = (uae_s32)(uae_s16)(%s);\n", reg, from);
 	    break;
 	 case sz_long:

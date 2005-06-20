@@ -44,7 +44,8 @@ ENUMDECL {
 } ENUMNAME (wordsizes);
 
 ENUMDECL {
-    fa_set, fa_unset, fa_zero, fa_one, fa_dontcare, fa_unknown, fa_isjmp
+    fa_set, fa_unset, fa_zero, fa_one, fa_dontcare, fa_unknown, fa_isjmp,
+    fa_isbranch
 } ENUMNAME (flagaffect);
 
 ENUMDECL {
@@ -53,7 +54,7 @@ ENUMDECL {
 
 ENUMDECL {
     bit0, bit1, bitc, bitC, bitf, biti, bitI, bitj, bitJ, bitk, bitK,
-    bits, bitS, bitd, bitD, bitr, bitR, bitz, lastbit
+    bits, bitS, bitd, bitD, bitr, bitR, bitz, bitp, lastbit
 } ENUMNAME (bitvals);
 
 struct instr_def {
@@ -93,7 +94,8 @@ extern struct instr {
     unsigned int duse:1;
     unsigned int unused1:1;
     unsigned int clev:3;
-    unsigned int unused2:5;
+    unsigned int isjmp:1;
+    unsigned int unused2:4;
 } *table68k;
 
 extern void read_table68k (void);

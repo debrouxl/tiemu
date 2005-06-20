@@ -211,7 +211,7 @@ void init_m68k (void)
     int i;
 
     printf ("UAE: version 0.8.23\n");
-    update_68k_cycles ();
+//    update_68k_cycles ();
 
     for (i = 0 ; i < 256 ; i++) {
 	int j;
@@ -873,9 +873,11 @@ void Exception_normal (int nr, uaecptr oldpc)
 kludge_me_do:
     newpc = get_long (regs.vbr + 4 * nr);
     if (newpc & 1) {
+#if 0
 	if (nr == 2 || nr == 3)
 	    uae_reset (); /* there is nothing else we can do.. */
 	else
+#endif /* 0 */
 	    exception3 (regs.ir, m68k_getpc(), newpc);
 	return;
     }
