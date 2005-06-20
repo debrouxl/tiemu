@@ -99,7 +99,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
-* Mon Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+* Mon Jun 20 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Revert -Wl,--export-dynamic addition (now upstream).
 
 * Sun Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
