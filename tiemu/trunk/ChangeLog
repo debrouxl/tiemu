@@ -1,7 +1,5 @@
 SubVersion: $Id$
 
-	- [kevin] $1485/1486: replaced TiLP logo in the HTML manual with my temporary TiEmu logo
-
 - 10/06/2005, version 2.00-rc4:
 	- [roms] $1488: replaced current icon by Jaime's one
 	- [roms] $1489: removed logo from about box
@@ -23,6 +21,7 @@ SubVersion: $Id$
 	- [roms] $1478: popup menu and tiemu.ini updated to support custom scaling factor.
 	- [roms] $1480: changed logo for Kevin's one.
 	- [roms] $1483: fixed full-screen mode
+	- [kevin] $1485/1486: replaced TiLP logo in the HTML manual with my temporary TiEmu logo
 	- [roms] $1487: fixed resized window with key positions (mouse) (bug #1217627)
 	
 - 31/05/2005, version 2.00-rc2:
