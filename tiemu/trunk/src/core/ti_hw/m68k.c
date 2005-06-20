@@ -93,8 +93,7 @@ int hw_m68k_exit(void)
 // I re-implement it as replacement of Interrupt()
 void Interrupt2(int nr)
 {
-	//if((nr > regs.intmask) || (nr == 7))	// ok, if idle disabled (bug ?!)
-	if(nr > regs.intmask)
+	if((nr > regs.intmask) || (nr == 7))
 	{
 		Interrupt(nr);
 		pending_ints &= ~(1 << nr);	// clr pending int
