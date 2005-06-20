@@ -7,8 +7,9 @@
   * stubbed out for TiEmu - Copyright (C) 2005 Kevin Kofler
   */
 
-#include "sysdeps.h"
 #include <stdlib.h>
+#include <stdio.h>
+#include "sysdeps.h"
 
 void fdbcc_opp (uae_u32 opcode, uae_u16 extra)
 {
