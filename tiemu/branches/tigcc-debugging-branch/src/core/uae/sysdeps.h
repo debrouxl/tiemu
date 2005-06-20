@@ -96,7 +96,7 @@ typedef uae_u32 uaecptr;
 #if defined(ULONG_LONG_MAX) || defined(ULLONG_MAX)
 #if ULONG_LONG_MAX == 0xFFFFFFFFFFFFFFFFll || ULLONG_MAX == 0xFFFFFFFFFFFFFFFFll
 #define uae_s64 long long
-#define uae_u64 long long
+#define uae_u64 unsigned long long
 #define VAL64(a) (a ## LL)
 #define UVAL64(a) (a ## uLL)
 #endif
@@ -126,12 +126,20 @@ extern char *my_strdup (const char*s);
 
 #include <stddef.h>
 extern void *xmalloc(size_t);
+extern void *xcalloc(size_t, size_t);
 
 /* We can only rely on GNU C getting enums right. Mickeysoft VSC++ is known
  * to have problems, and it's likely that other compilers choke too. */
 #ifdef __GNUC__
 #define ENUMDECL typedef enum
 #define ENUMNAME(name) name
+
+/* While we're here, make abort more useful.  */
+#define abort() \
+  do { \
+    fprintf (stderr, "UAE: Internal error; file %s, line %d\n", __FILE__, __LINE__); \
+    (abort) (); \
+} while (0)
 #else
 #define ENUMDECL enum
 #define ENUMNAME(name) ; typedef int name
@@ -151,9 +159,35 @@ extern void *xmalloc(size_t);
 #endif
 
 #ifndef STATIC_INLINE
+#if __GNUC__ - 1 > 1 && __GNUC_MINOR__ - 1 >= 0
+#define STATIC_INLINE static __inline__ __attribute__ ((always_inline))
+#else
 #define STATIC_INLINE static __inline__
+#endif
 #endif
 
 #ifdef _MSC_VER
 #define __inline__ __inline
 #endif
+
+/* Every Amiga hardware clock cycle takes this many "virtual" cycles.  This
+   used to be hardcoded as 1, but using higher values allows us to time some
+   stuff more precisely.
+   512 is the official value from now on - it can't change, unless we want
+   _another_ config option "finegrain2_m68k_speed".
+
+   We define this value here rather than in events.h so that gencpu.c sees
+   it.  */
+#define CYCLE_UNIT 1 /* (TiEmu patch, was 512) */
+
+/* This one is used by cfgfile.c.  We could reduce the CYCLE_UNIT back to 1,
+   I'm not 100% sure this code is bug free yet.  */
+#define OFFICIAL_CYCLE_UNIT 1 /* (TiEmu patch, was 512) */
+
+/*
+ * You can specify numbers from 0 to 5 here. It is possible that higher
+ * numbers will make the CPU emulation slightly faster, but if the setting
+ * is too high, you will run out of memory while compiling.
+ * Best to leave this as it is.
+ */
+#define CPU_EMU_SIZE 0

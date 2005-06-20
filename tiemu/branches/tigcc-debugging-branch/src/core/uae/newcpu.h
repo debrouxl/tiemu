@@ -76,6 +76,17 @@ extern unsigned long op_illg (uae_u32) REGPARAM;
 
 typedef char flagtype;
 
+/* You can set this to long double to be more accurate. However, the
+   resulting alignment issues will cost a lot of performance in some
+   apps */
+#define USE_LONG_DOUBLE 0
+
+#if USE_LONG_DOUBLE
+typedef long double fptype;
+#else
+typedef double fptype;
+#endif
+
 struct flag_struct {
     unsigned int c;
     unsigned int z;
@@ -87,7 +98,7 @@ struct flag_struct {
 extern struct regstruct
 {
     uae_u32 regs[16];
-    uaecptr  usp,isp/*,msp*/;
+    uaecptr usp,isp/*,msp*/;
     uae_u16 sr;
     flagtype t1;
 //    flagtype t0;
@@ -104,18 +115,19 @@ extern struct regstruct
 
     uae_u32 vbr,sfc,dfc;
 
-    double fp[8];
+    fptype fp[8];
+    fptype fp_result;
+
     uae_u32 fpcr,fpsr,fpiar;
+    uae_u32 fpsr_highbyte;
 
     uae_u32 spcflags;
     uae_u32 kick_mask;
+    uae_u32 address_space_mask;
+    uae_u16 irc, ir;
 
-    /* Fellow sources say this is 4 longwords. That's impossible. It needs
-     * to be at least a longword. The HRM has some cryptic comment about two
-     * instructions being on the same longword boundary.
-     * The way this is implemented now seems like a good compromise.
-     */
-    uae_u32 prefetch;
+    uae_u8 panic;
+    uae_u32 panic_pc, panic_addr;
 
   /* NOTE stuff related to simulator framework */
 
@@ -149,6 +161,11 @@ extern struct regstruct
 
 extern int trace;
 
+STATIC_INLINE uae_u32 munge24(uae_u32 x)
+{
+    return x & regs.address_space_mask;
+}
+
 STATIC_INLINE void set_special (uae_u32 x)
 {
     regs.spcflags |= x;
@@ -162,60 +179,27 @@ STATIC_INLINE void unset_special (uae_u32 x)
 #define m68k_dreg(r,num) ((r).regs[(num)])
 #define m68k_areg(r,num) (((r).regs + 8)[(num)])
 
+STATIC_INLINE void m68k_setpc (uaecptr newpc)
+{
+    regs.pc_p = regs.pc_oldp = get_real_address (newpc);
+    regs.pc = newpc & 0xffffff;
+}
+
+STATIC_INLINE uaecptr m68k_getpc (void)
+{
+    return regs.pc + ((char *)regs.pc_p - (char *)regs.pc_oldp);
+}
+
+STATIC_INLINE uaecptr m68k_getpc_p (uae_u8 *p)
+{
+    return regs.pc + ((char *)p - (char *)regs.pc_oldp);
+}
+
 #define get_ibyte(o) do_get_mem_byte((uae_u8 *)(regs.pc_p + (o) + 1))
 #define get_iword(o) do_get_mem_word((uae_u16 *)(regs.pc_p + (o)))
 #define get_ilong(o) do_get_mem_long((uae_u32 *)(regs.pc_p + (o)))
 
-STATIC_INLINE uae_u32 get_ibyte_prefetch (uae_s32 o)
-{
-    if (o > 3 || o < 0)
-	return do_get_mem_byte((uae_u8 *)(regs.pc_p + o + 1));
-
-    return do_get_mem_byte((uae_u8 *)(((uae_u8 *)&regs.prefetch) + o + 1));
-}
-STATIC_INLINE uae_u32 get_iword_prefetch (uae_s32 o)
-{
-    if (o > 3 || o < 0)
-	return do_get_mem_word((uae_u16 *)(regs.pc_p + o));
-
-    return do_get_mem_word((uae_u16 *)(((uae_u8 *)&regs.prefetch) + o));
-}
-STATIC_INLINE uae_u32 get_ilong_prefetch (uae_s32 o)
-{
-    if (o > 3 || o < 0)
-	return do_get_mem_long((uae_u32 *)(regs.pc_p + o));
-    if (o == 0)
-	return do_get_mem_long(&regs.prefetch);
-    return (do_get_mem_word (((uae_u16 *)&regs.prefetch) + 1) << 16) | do_get_mem_word ((uae_u16 *)(regs.pc_p + 4));
-}
-
 #define m68k_incpc(o) (regs.pc_p += (o))
-
-#define curriword() get_iword_prefetch(0)
-
-STATIC_INLINE void fill_prefetch_0 (void)
-{
-    uae_u32 r;
-#ifdef UNALIGNED_PROFITABLE
-    r = *(uae_u32 *)regs.pc_p;
-    regs.prefetch = r;
-#else
-    r = do_get_mem_long ((uae_u32 *)regs.pc_p);
-    do_put_mem_long (&regs.prefetch, r);
-#endif
-}
-
-#if 0
-STATIC_INLINE void fill_prefetch_2 (void)
-{
-    uae_u32 r = do_get_mem_long (&regs.prefetch) << 16;
-    uae_u32 r2 = do_get_mem_word (((uae_u16 *)regs.pc_p) + 1);
-    r |= r2;
-    do_put_mem_long (&regs.prefetch, r);
-}
-#else
-#define fill_prefetch_2 fill_prefetch_0
-#endif
 
 /* These are only used by the 68020/68881 code, and therefore don't
  * need to handle prefetch.  */
@@ -240,40 +224,32 @@ STATIC_INLINE uae_u32 next_ilong (void)
     return r;
 }
 
-#if !defined USE_COMPILER
-STATIC_INLINE void m68k_setpc (uaecptr newpc)
+STATIC_INLINE void m68k_do_rts(void)
 {
-    regs.pc_p = regs.pc_oldp = get_real_address(newpc);
-    regs.pc = newpc & 0xffffff;
-}
-#else
-extern void m68k_setpc (uaecptr newpc);
-#endif
-
-STATIC_INLINE uaecptr m68k_getpc (void)
-{
-    return regs.pc + ((char *)regs.pc_p - (char *)regs.pc_oldp);
+    m68k_setpc(get_long(m68k_areg(regs, 7)));
+    m68k_areg(regs, 7) += 4;
 }
 
-STATIC_INLINE uaecptr m68k_getpc_p (uae_u8 *p)
+STATIC_INLINE void m68k_do_bsr(uaecptr oldpc, uae_s32 offset)
 {
-    return regs.pc + ((char *)p - (char *)regs.pc_oldp);
+    m68k_areg(regs, 7) -= 4;
+    put_long(m68k_areg(regs, 7), oldpc);
+    m68k_incpc(offset);
 }
 
-#ifdef USE_COMPILER
-extern void m68k_setpc_fast (uaecptr newpc);
-extern void m68k_setpc_bcc (uaecptr newpc);
-extern void m68k_setpc_rte (uaecptr newpc);
-#else
-#define m68k_setpc_fast m68k_setpc
-#define m68k_setpc_bcc  m68k_setpc
-#define m68k_setpc_rte  m68k_setpc
-#endif
+STATIC_INLINE void m68k_do_jsr(uaecptr oldpc, uaecptr dest)
+{
+    m68k_areg(regs, 7) -= 4;
+    put_long(m68k_areg(regs, 7), oldpc);
+    m68k_setpc(dest);
+}
 
 STATIC_INLINE void m68k_setstopped (int stop)
 {
     regs.stopped = stop;
-    if (stop)
+    /* A traced STOP instruction drops through immediately without
+       actually stopping.  */
+    if (stop && (regs.spcflags & SPCFLAG_DOTRACE) == 0)
 	regs.spcflags |= SPCFLAG_STOP;
 }
 
@@ -292,8 +268,10 @@ extern void m68k_divl (uae_u32, uae_u32, uae_u16, uaecptr);
 extern void m68k_mull (uae_u32, uae_u32, uae_u16);
 extern void init_m68k (void);
 extern void m68k_go (int);
-extern void m68k_dumpstate (uaecptr *);
-extern void m68k_disasm (uaecptr, uaecptr *, int, char*);
+#if 0
+extern void m68k_dumpstate (FILE *, uaecptr *);
+extern void m68k_disasm (FILE *, uaecptr, uaecptr *, int);
+#endif /* 0 */
 extern void m68k_reset (void);
 extern int intlev(void);
 
@@ -307,12 +285,14 @@ extern void fbcc_opp (uae_u32, uaecptr, uae_u32);
 extern void fsave_opp (uae_u32);
 extern void frestore_opp (uae_u32);
 
-/* Opcode of faulting instruction */
-extern uae_u16 last_op_for_exception_3;
-/* PC at fault time */
-extern uaecptr last_addr_for_exception_3;
-/* Address that generated the exception */
-extern uaecptr last_fault_for_exception_3;
+extern void exception3 (uae_u32 opcode, uaecptr addr, uaecptr fault);
+extern void exception3i (uae_u32 opcode, uaecptr addr, uaecptr fault);
+#if 0
+extern void exception2 (uaecptr addr, uaecptr fault);
+extern void cpureset (void);
+#endif /* 0 */
+
+extern void fill_prefetch_slow (void);
 
 #define CPU_OP_NAME(a) op ## a
 
@@ -331,3 +311,7 @@ extern struct cputbl op_smalltbl_5_ff[];
 
 extern cpuop_func *cpufunctbl[65536] ASM_SYM_FOR_FUNC ("cpufunctbl");
 
+#ifdef JIT
+#else
+#define flush_icache(X) do {} while (0)
+#endif

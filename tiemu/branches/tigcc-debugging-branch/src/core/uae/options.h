@@ -4,7 +4,7 @@
   * Stuff
   *
   * Copyright 1995, 1996 Ed Hanway
-  * Copyright 1995-98 Bernd Schmidt
+  * Copyright 1995-2001 Bernd Schmidt
   * $Id$
   */
 
@@ -12,10 +12,10 @@
 
 #define UAEMAJOR 0
 #define UAEMINOR 8
-#define UAESUBREV 15
+#define UAESUBREV 23
 
 #if 0
-typedef enum { KBD_LANG_US, KBD_LANG_DE, KBD_LANG_SE, KBD_LANG_FR, KBD_LANG_IT, KBD_LANG_ES } KbdLang;
+typedef enum { KBD_LANG_US, KBD_LANG_DK, KBD_LANG_DE, KBD_LANG_SE, KBD_LANG_FR, KBD_LANG_IT, KBD_LANG_ES } KbdLang;
 
 extern long int version;
 
@@ -32,13 +32,13 @@ struct uae_prefs {
     struct strlist *unknown_lines;
 
     char description[256];
+    char info[256];
 
     int illegal_mem;
     int no_xhair;
     int use_serial;
     int serial_demand;
     int parallel_demand;
-    int automount_uaedev;
     int use_gfxlib;
     int socket_emu;
 
@@ -53,7 +53,8 @@ struct uae_prefs {
     int test_drawing_speed;
 
     int produce_sound;
-    int stereo;
+    int sound_stereo;
+    int mixed_stereo;
     int sound_bits;
     int sound_freq;
     int sound_minbsiz;
@@ -79,11 +80,14 @@ struct uae_prefs {
     unsigned int chipset_mask;
     int ntscmode;
     int collision_level;
+    int fast_copper;
 
     char df[4][256];
     char romfile[256];
+    char romextfile[256];
     char keyfile[256];
     char prtname[256];
+    char sername[256];
 
     char path_floppy[256];
     char path_hardfile[256];
@@ -103,6 +107,8 @@ struct uae_prefs {
     uae_u32 a3000mem_size;
     uae_u32 gfxmem_size;
 
+    int kickshifter;
+
     struct uaedev_mount_info *mountinfo;
 
     int nr_floppies;
@@ -114,12 +120,13 @@ struct uae_prefs {
     int x11_hide_cursor;
     int svga_no_linear;
     int win32_middle_mouse;
-    int win32_sound_style;
-    int win32_sound_tweak;
     int win32_logfile;
     int win32_iconified_nospeed;
     int win32_iconified_nosound;
     int curses_reverse_video;
+    int win32_no_overlay; /* If this is set, we won't try and use any RGB overlays */
+    int win32_automount_drives;
+
 #endif
 };
 
@@ -168,12 +175,6 @@ extern const char *gameport_state (int n);
 
 extern struct uae_prefs currprefs, changed_prefs;
 
-#if __GNUC__ - 1 > 1 || __GNUC_MINOR__ - 1 > 6
-extern void write_log (const char *, ...) __attribute__ ((format (printf, 1, 2)));
-#else
-extern void write_log (const char *, ...);
-#endif
-
 extern void machdep_init (void);
 
 /* AIX doesn't think it is Unix. Neither do I. */
@@ -182,25 +183,8 @@ extern void machdep_init (void);
 #define __unix
 #endif
 
-extern char romfile[], keyfile[], prtname[], sername[];
-
-extern int cloanto_rom;
-
 #define MAX_COLOR_MODES 5
 
-extern int fast_memcmp(const void *foo, const void *bar, int len);
-extern int memcmpy(void *foo, const void *bar, int len);
-#endif
-
-/*
- * You can specify numbers from 0 to 5 here. It is possible that higher
- * numbers will make the CPU emulation slightly faster, but if the setting
- * is too high, you will run out of memory while compiling.
- * Best to leave this as it is.
- */
-#define CPU_EMU_SIZE 0
-
-#if 0
 /* #define NEED_TO_DEBUG_BADLY */
 
 #if !defined(USER_PROGRAMS_BEHAVE)
@@ -281,4 +265,4 @@ STATIC_INLINE void fuzzy_memset_le32_1 (void *p, uae_u32 c, int offset, int len)
 #if defined(AMIGA) && defined(__GNUC__)
 #include "od-amiga/amiga-kludges.h"
 #endif
-#endif
+#endif /* 0 */

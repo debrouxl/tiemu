@@ -13,9 +13,6 @@
 #include <string.h>
 #include "sysdeps.h"
 
-#include "uconfig.h"
-#include "options.h"
-
 #ifndef HAVE_STRDUP
 
 char *my_strdup (const char *s)

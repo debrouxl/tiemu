@@ -1,8 +1,7 @@
-This is version 0.8.15 of UAE, the Un*x Amiga Emulator.
+This is version 0.8.23 of UAE, the UAE Amiga Emulator.
 
-Versions numbered 0.8.x are beta versions, to be used for development only.
-If you are only a user of UAE, you are better off using the latest 0.7.x
-version or waiting for 0.9.0.
+Versions numbered 0.8.x are considered beta versions, but they generally
+tend to work better than the last "stable" release 0.7.
 
 
 License
@@ -14,9 +13,6 @@ modify it, under certain conditions. It also means that there is no warranty
 for UAE.
 See the file COPYING that is included in the top level directory of this
 archive for details.
-
-The SCSI code distributed with UAE is also available under the terms of the
-GPL and was written by J. Schilling.
 
 
 Overview
@@ -32,10 +28,10 @@ display, keyboard, harddisk and mouse taking the parts of their emulated
 counterparts.
 
 UAE was developed for Unixoid systems. Meanwhile, it has been ported to the
-Mac, DOS, the BeBox, NextStep, the XFree86/OS2 environment and the Amigas (it
-can run itself by now). You should have received several other files along
-with this document with details on how to install and use the version for your
-operating system.
+Mac, DOS, Windows, the BeBox, NextStep, the XFree86/OS2 environment and the
+Amigas (it can run itself by now). You should have received several other
+files along with this document with details on how to install and use the
+version for your operating system.
 
 This section is just what it says: an overview. Please read _all_ of this
 file, especially if you have problems. UAE has many, many features and
@@ -159,13 +155,20 @@ autoconfig=bool [default=yes]
 kbd_lang=lang [default=us]
   Set the keyboard language. Currently, the following values can be used: "us"
   for U.S. keyboard (default), "se" for swedish, "fr" for french, "it" for
-  italian, "es" for spanish, or "de" for german keyboard.
+  italian, "es" for spanish, "dk" for danish, or "de" for german keyboard.
   This setting only affects the X11 version.
 floppy0=file [default=df0.adf]
   Try to use the specified file as diskfile for drive 0 instead of df0.adf.
   The options floppy1, floppy2, and floppy3 also exist.
 kickstart_rom_file=file [default=kick.rom]
   Use the specified file instead of kick.rom as Kickstart image.
+  You can also use an 8k sized A1000 boot ROM.  The emulator will detect it
+  by its small size and behave like an A1000.
+kickstart_key_file=file [default=none]
+  For some strange licensing reasons, Cloanto had to encrypt the ROM images
+  they ship with the Amiga Forever package.  This option lets you select the
+  key file; this is only necessary if you are using one of the ROMs from
+  Amiga Forever.
 joyport0=mode [default=mouse]
   Specify how to emulate joystick port 0. You can use "mouse", "joy0", or
   "joy1" to use the corresponding input devices of your machine, or you can
@@ -181,15 +184,23 @@ joyport0=mode [default=mouse]
   will stay enabled until you hit the autofire toggle again.
 joyport1=mode [default=joy0]
   Like joyport0, but for the Amiga's joystick port 1.
-use_gui=bool [default=yes]
-  Show a user-interface that enables changing these options at run-time.
-32bit_blits=bool [default=no]
-  If enabled, the blitter emulation will use 32 bit operations where that
-  seems profitable (note that this will cause bus errors on most  RISC
-  machines)
+use_gui=state [default=yes]
+  If enabled, show a user-interface that enables changing these options at
+  run-time.  Possible settings are "no", "yes" and "nowait".  If "nowait" is
+  used, the GUI will be shown at program startup, but the emulator will also
+  start immediately without waiting for the user to change any of the
+  settings.
 immediate_blits=bool [default=no]
   If enabled, all blits will finish immediately, which can be nice for speed,
   but may cause incompatibilities.
+collision_level=level [default=sprites]
+  This can have a value of "none", "sprites", "playfields", or "full".  If
+  set to "sprites", the emulator will only compute collisions between sprites.
+  If set to "playfields", it will additionally compute collisions between
+  sprites and the background.  This is much slower and used only rarely.  When
+  "full" level is selected, collisions of the background with itself are also
+  computed.  This is also used very rarely, and makes the emulator even slower.
+  Using "sprites" or "none" will almost always be enough.
 cpu_speed=speed [default=4]
   This can have a value of "real", "max", or an integer between 1 and 20.
   "real" will try to give the CPU emulation exactly as many cycles, relative
@@ -198,6 +209,12 @@ cpu_speed=speed [default=4]
   specify a fixed relation between CPU and custom chip emulation, where lower
   values prioritize CPU emulation, while higher values prioritize custom chip
   emulation.
+finegrain_cpu_speed=speed
+  Like cpu_speed, but only accepts numeric values.  These numeric values are
+  equivalent to the ones given to cpu_speed multiplied by 512.  This means
+  that "cpu_speed=2" and "finegrain_cpu_speed=1024" have the same effect.
+  Using this option you can give the CPU emulation a much higher priority by
+  using small values.
 cpu_type=type [default=68000]
   Controls which CPU is emulated. This can be "68000", "68010", "68020" or
   "68020/68881".  In some cases, you may need to use "68ec020" or
@@ -238,7 +255,14 @@ sound_output=type [default=none]
   slightly more accurate emulation that may be necessary in some cases, but
   can also be slower).
 sound_channels=type [default=mono]
-  Can be "mono" or "stereo".
+  Can be "mono", "stereo", or "mixed".  If set to "stereo", the left and right
+  channels produce the same output as on a real Amiga - two of the four audio
+  channels are audible on the left, and the other two on the right.  This is
+  exactly what you want, except if you're using headphones - having the sound
+  split so strictly can lead to a strange listening experience at times.  This
+  is what "mixed" is trying to solve: it mixes the left channel with a low
+  volume into the right channel and vice versa.  (This mixing operation loses
+  a bit of precision in the output).
 sound_bits=n [default varies across UAE versions on different OS types]
   Common values are 8 (low quality) or 16 (high quality)
 sound_frequency=n [default varies across UAE versions on different OS types]
@@ -280,7 +304,7 @@ gfx_height=n [default=300]
 gfx_lores=bool [default=no]
   Enable this option if you use a very small window width (320 to 400 pixels)
   to shrink the display horizontally.
-gfx_linemode=type [default=none]
+gfx_linemode=type [default=scanlines]
   The type can be none (every line is drawn once), "double" (every line is
   drawn twice), and "scanlines" (every line is drawn once, but the image is
   stretched vertically by inserting a black line every other line to simulate
@@ -507,7 +531,7 @@ If you don't have much RAM and can't fit all of a disk image in the RAM disk,
 you can split up the transfer into multiple parts with the "-s" and "-e"
 parameters. To transfer the disk in four parts, you'd use the following 
 commands:
-  
+
   transdisk >ram:df0_1.adf -s 0 -e 19
   transdisk >ram:df0_2.adf -s 20 -e 39
   transdisk >ram:df0_3.adf -s 40 -e 59
@@ -556,7 +580,7 @@ Picasso 96 graphics card emulation
 ==================================
 
 To use this feature, you must select 68020 emulation with a 32 bit address
-space. You also need a Kickstart 3.x ROM.
+space (i.e. _not_ 68ec020). You also need a Kickstart 3.x ROM.
 
 To specify how much graphic memory you want to emulate, use the "-U" option,
 e.g. "-U 4" for 4 megabytes. Then, you need the Picasso 96 software which
@@ -567,10 +591,42 @@ After that is complete, reboot, and you should be able to select the new
 modes from the ScreenModes program.
 
 
+AHI sound card emulation
+========================
+
+In the "amiga" subdirectory of the UAE distribution, you will find a "Devs"
+directory that contains the necessary files for AHI sound support.  This is
+at an early stage and will not work very well in this release.  It is
+included mainly in the hope that someone with a clue about AHI will pick up
+this work and finish it properly.
+
+
+Saving and restoring snapshots
+==============================
+
+From version 0.8.17 onwards, the emulator has the capability to save the
+current state of the emulation into a "snapshot" file that can be restored
+later on.  This functionality is available through the GUI on some ports.
+It is mainly useful for computer games that either have no save game
+feature, or whose save game feature does not work on UAE (often, games try
+to save in a non-standard disk format, this can be tricky to emulate).
+
+There are several restrictions that apply to the save state feature:
+
+ - It is at the moment experimental.  It is not guaranteed that the
+   emulator can correctly restore every snapshot.  It is not guaranteed
+   that future versions of the emulator will be able to restore snapshots
+   saved by this version.
+ - The state of the harddisk emulation cannot be saved.  This makes it
+   essentially useless for applications, but remember it's designed for
+   games.  Be careful with games that have been installed to the harddisk.
+ - Neither ROM contents nor floppy disk contents are saved right now.
+
+
 UAE SCSI device
 ===============
 
-To enable SCSI support, use --enable-scsi-device when running configure.
+To enable SCSI support, use --enable-scsi-device when running configure. 
 The emulator provides a uaescsi.device. This device only supports
 direct SCSI, which is sufficient to run applications like MakeCD. The
 device does not support reading or writing with the normal Exec commands,
@@ -641,20 +697,38 @@ press ^C at any time to enter this debugger.
 Each debugger command consists of a single letter and occasionally some
 parameters.
 
-g:                    Start execution at the current address. 
-c:                    Dump state of the CIA and custom chips.
-r:                    Dump state of the CPU
-m <address> <lines>:  Memory dump starting at <address>
-d <address> <lines>:  Disassembly starting at <address>
-t:                    Step one instruction
-z:                    Step through one instruction - useful for JSR, DBRA etc.
-f <address>:          Step forward until PC == <address>
-q:                    Quit the emulator. You don't want to use this command.
-M:                    hunt for sound modules
-S <filename> <address> <len>:
-                      save a sound module
-C <value>:            Search for values like energy or lifes in games
-W <address> <value>:  Write into Amiga memory
+g [<address>]         Start execution at the current address or <address>
+c                     Dump state of the CIA, disk drives and custom registers
+r                     Dump state of the CPU
+m <address> [<lines>] Memory dump starting at <address>
+d <address> [<lines>] Disassembly starting at <address>
+t [instructions]      Step one or more instructions
+z                     Step through one instruction - useful for JSR, DBRA etc
+f                     Step forward until PC in RAM
+f <address>           Add/remove breakpoint
+fi                    Step forward until PC points to RTS/RTD or RTE
+fi <opcode>           Step forward until PC points to <opcode>
+fl                    List breakpoints
+fd                    Remove all breakpoints
+f <addr1> <addr2>     Step forward until <addr1> <= PC <= <addr2>
+e                     Dump contents of all custom registers
+i                     Dump contents of interrupt and trap vectors
+o <1|2|addr> [<lines>]View memory as Copper instructions
+O                     Display bitplane offsets
+O <plane> <offset>    Offset a bitplane
+H <count>             Show PC history <count> instructions
+M                     Search for *Tracker sound modules
+C <value>             Search for values like energy or lifes in games
+W <address> <value>   Write into Amiga memory
+w <num> <address> <length> <R/W/RW> [<value>]
+                      Add/remove memory watchpoints
+wd                    Enable illegal access logger
+S <file> <addr> <n>   Save a block of Amiga memory
+s <string>/<values> [<addr>] [<length>]
+                      Search for string/bytes
+T                     Show exec tasks and their PCs
+h,?                   Show this help page
+q                     Quit the emulator. You don't want to use this command.
 
 
 Sound
@@ -705,6 +779,11 @@ generally faster than UAE.  The Fellow homepage is at
 
   http://www.geocities.com/SiliconValley/Peaks/5244/
 
+The homepage of the Disk2FDI project, which allows you to read Amiga floppies
+if you have two PC drives, is
+
+  http://fast.emuunlim.com/disk2fdi/
+
 
 Thanks & Acknowledgements
 =========================
@@ -728,15 +807,15 @@ Special thanks to:
   - Michael C. Battilana and Cloanto Software, for all their support.
   - Julian Eggebrecht of Factor 5, for providing several F5 games and a lot
     of valuable input.
-    Factor 5 has made Katakis, one of their classic Amiga games, freely
+    Factor 5 has made several of their classic Amiga games freely
     available for download. There are still some good people left in the
     world...
   - Jens Schönfeld, inventor of the Catweasel controller, donated one
     controller card.
-  - Jürgen Beck, maintainer of the Amiga emulation web site "Back to the
-    Roots" (http://back2roots.emuunlim.com) and everyone else who spends
-    time writing to software companies asking for permission to distribute
-    old Amiga games.
+  - Jürgen Beck and Ralf Steines, maintainers of the Amiga emulation web
+    site "Back to the Roots" (http://www.back2roots.org) and everyone else
+    who spends time writing to software companies asking for permission to
+    distribute old Amiga games.
   - all the software companies who allow distribution of their Amiga games on
     sites like "Back to the Roots".
 
@@ -744,19 +823,19 @@ Special thanks to:
 Authors/Maintainers
 ===================
 
-My address is (please read the section "Before you send email" below):
+My email address is (please read the section "Before you send email" below):
 
-crux@pool.informatik.rwth-aachen.de
+bernds_cb1@t-online.de
 
 or, via snailmail
 
 Bernd Schmidt
-Schlossweiherstrasse 14
-52072 Aachen
+Toelzer Strasse 27a
+81379 Muenchen
 Germany
 
 Email is more likely to be answered, and will definitely be answered much
-faster. Please avoid phonecalls if you can.
+faster.
 I won't distribute software, neither PD or commercial. Don't send me floppy
 disks without at least asking first, you will not get them back.
 
@@ -847,14 +926,8 @@ and the file FAQ contains about every piece of information I can give you. I
 try to help people who have questions, but sometimes it takes too much time.
 
 Please don't ask for Kickstart ROM files or other copyrighted software. Don't
-_send_ me stuff like this either. If you want to send me something else which
-is big (>= 50K), ask me before or put it somewhere in Webspace.
-If I get 3MB of screen shots or a core dump ("it doesn't work, it generates
-this file"), I'm very likely to get extremely angry, I might complain to your
-sysadmin, and you might lose your account. Think twice.
-
-I'm also going to be extremely annoyed if you send email in HTML format.
-Fight this disease!
+_send_ me stuff like this either.  Don't send large attachments, at least not
+without asking first.
 
 Oh, and another thing: If I promise to do things (like implement new
 features), and forget about them, pester me. That happens occasionally, it's

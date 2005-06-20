@@ -7,15 +7,23 @@
   */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "sysdeps.h"
-
-#include "uconfig.h"
-#include "options.h"
 
 void *xmalloc(size_t n)
 {
     void *a = malloc (n);
+    if (a == NULL) {
+	fprintf (stderr, "virtual memory exhausted\n");
+	abort ();
+    }
+    return a;
+}
+
+void *xcalloc (size_t n, size_t size)
+{
+    void *a = calloc (n, size);
     if (a == NULL) {
 	fprintf (stderr, "virtual memory exhausted\n");
 	abort ();
