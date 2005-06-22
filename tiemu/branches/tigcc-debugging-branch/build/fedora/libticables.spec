@@ -46,8 +46,17 @@ cat >$RPM_BUILD_ROOT/etc/hotplug/usb/libticables <<EOF2
 
 # This file was installed by the libticables Fedora package.
 #
-# This script changes the permissions and ownership of a USB device under
-# /proc/bus/usb to grant access to this device to all users.
+# Sets up newly plugged in USB SilverLink so that the user who owns
+# the console according to pam_console can access it from user space
+#
+# Note that for this script to work, you'll need all of the following:
+# a) libticables.usermap shipped with the libticables Fedora package.
+# b) a setup using pam_console creates the respective lock files
+#    containing the name of the respective user. You can check for that
+#    by executing "echo `cat /var/{run,lock}/console.lock`" and 
+#    verifying the appropriate user is mentioned somewhere there.
+# c) a Linux kernel supporting hotplug and usbdevfs
+# d) the hotplug package (http://linux-hotplug.sourceforge.net/)
 #
 # Ownership is set to root:root, permissions are set to 0666.
 #
@@ -57,9 +66,29 @@ cat >$RPM_BUILD_ROOT/etc/hotplug/usb/libticables <<EOF2
 # DEVICE=/proc/bus/usb/BBB/DDD
 # TYPE=usb
 
-if [ "$ACTION" = "add" -a "$TYPE" = "usb" ]; then
-  chown root:root "$DEVICE"
-  chmod 0666 "$DEVICE"
+if [ "$ACTION" = "add" -a "$TYPE" = "usb" -a -f "${DEVICE}"]; then
+then
+    # New code, using lock files instead of copying /dev/console permissions
+    # This also works with non-gdm logins (e.g. on a virtual terminal)
+    # Idea and code from Nalin Dahyabhai <nalin@redhat.com>
+    if [ -f /var/run/console/console.lock ]
+    then
+        CONSOLEOWNER=`cat /var/run/console/console.lock`
+    elif [ -f /var/run/console.lock ]
+    then
+        CONSOLEOWNER=`cat /var/run/console.lock`
+    elif [ -f /var/lock/console.lock ]
+    then
+        CONSOLEOWNER=`cat /var/lock/console.lock`
+    else
+        CONSOLEOWNER=
+    fi
+    if [ -n "$CONSOLEOWNER" ]
+    then
+        chmod 0000 "${DEVICE}"
+        chown "$CONSOLEOWNER" "${DEVICE}"
+        chmod 0600 "${DEVICE}"
+    fi
 fi
 EOF2
 
@@ -88,7 +117,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %changelog
 * Wed Jun 22 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
-SilverLink support (based in part on Julien Blache's Debian packages)
+SilverLink support (based on Julien Blache's Debian packages and Nalin
+Dahyabhai's usbcam script)
 
 * Sun Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Change Copyright to License.
