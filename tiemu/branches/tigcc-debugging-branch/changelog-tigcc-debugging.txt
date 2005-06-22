@@ -1,3 +1,12 @@
+20050622:
+* Changes from TiEmu trunk:
+	- [roms] $1507: cleanup and little fixes in interrupt support of m68k
+	- [roms] $1509: fixed behaviour of all keys and definitely fixed ON key
+* Upgrade UAE core to UAE 0.8.23 and fix related latent bugs.
+* libticables RPM: SilverLink support (based in part on Julien's Debian packages)
+* libticalcs: Fixed buffer overflow (fatal on FC4).
+* TiLP: Fixed missing -Wl,--export-dynamic (FC4 fix, was in the spec file for 20050619).
+
 20050619:
 * Changes from TiEmu trunk:
 	- [kevin] $1485/1486: replaced TiLP logo in the HTML manual with my temporary TiEmu logo
