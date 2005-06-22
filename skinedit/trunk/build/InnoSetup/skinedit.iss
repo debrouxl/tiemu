@@ -35,6 +35,9 @@ Source: "C:\sources\roms\skinedit\README"; DestDir: "{app}"; DestName: "Readme.t
 Source: "C:\sources\roms\skinedit\AUTHORS"; DestDir: "{app}"; DestName: "Authors.txt"; Flags: ignoreversion
 Source: "C:\sources\roms\skinedit\CHANGELOG"; DestDir: "{app}"; DestName: "ChangeLog.txt"; Flags: ignoreversion
 Source: "C:\sources\roms\skinedit\COPYING"; DestDir: "{app}"; DestName: "License.txt"; Flags: ignoreversion
+; Doc format files
+Source: "C:\sources\roms\skinedit\doc\TiEmu_skin_format.txt"; DestDir: "{app}\docs"; DestName: "TiEmu Skin Format.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\skinedit\doc\VTi_skin_format.txt"; DestDir: "{app}\docs"; DestName: "VTi Skin Format.txt"; Flags: ignoreversion
 ; Executable files
 Source: "C:\sources\roms\skinedit\build\msvc\skinedit.exe"; DestDir: "{app}"; DestName: "skinedit.exe"; Flags: ignoreversion
 
@@ -126,7 +129,7 @@ begin
   // Retrieve GTK path
   Result := GetGtkInstalled ();
   if not Result then begin
-    MsgBox ('Please install the "GTK+ 2.6.x Runtime Environment" (2.6.4 mini). You can obtain GTK+ from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.4-rc1.exe?download>.', mbError, MB_OK);
+    MsgBox ('Please install the "GTK+ 2.6.x Runtime Environment" (2.6.4 mini). You can obtain GTK+ from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.7-rc1.exe?download>.', mbError, MB_OK);
   end;
 
   // Retrieve GTK version
@@ -135,7 +138,7 @@ begin
 
     // and check
     if CompareStr(GtkVersion, '2.6.4') < 0 then begin
-      MsgBox ('Wrong package version. You need at least version 2.6.4 from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.4-rc1.exe?download>.', mbError, MB_OK);
+      MsgBox ('Wrong package version. You need at least version 2.6.4 from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.7-rc1.exe?download>.', mbError, MB_OK);
     end;
   end;
 
