@@ -53,7 +53,7 @@ cat >$RPM_BUILD_ROOT/etc/hotplug/usb/libticables <<EOF2
 # a) libticables.usermap shipped with the libticables Fedora package.
 # b) a setup using pam_console creates the respective lock files
 #    containing the name of the respective user. You can check for that
-#    by executing "echo `cat /var/{run,lock}/console.lock`" and 
+#    by executing "echo \`cat /var/{run,lock}/console.lock\`" and 
 #    verifying the appropriate user is mentioned somewhere there.
 # c) a Linux kernel supporting hotplug and usbdevfs
 # d) the hotplug package (http://linux-hotplug.sourceforge.net/)
@@ -66,28 +66,28 @@ cat >$RPM_BUILD_ROOT/etc/hotplug/usb/libticables <<EOF2
 # DEVICE=/proc/bus/usb/BBB/DDD
 # TYPE=usb
 
-if [ "$ACTION" = "add" -a "$TYPE" = "usb" -a -f "${DEVICE}"]; then
+if [ "\$ACTION" = "add" -a "\$TYPE" = "usb" -a -f "\${DEVICE}"]; then
 then
     # New code, using lock files instead of copying /dev/console permissions
     # This also works with non-gdm logins (e.g. on a virtual terminal)
     # Idea and code from Nalin Dahyabhai <nalin@redhat.com>
     if [ -f /var/run/console/console.lock ]
     then
-        CONSOLEOWNER=`cat /var/run/console/console.lock`
+        CONSOLEOWNER=\`cat /var/run/console/console.lock\`
     elif [ -f /var/run/console.lock ]
     then
-        CONSOLEOWNER=`cat /var/run/console.lock`
+        CONSOLEOWNER=\`cat /var/run/console.lock\`
     elif [ -f /var/lock/console.lock ]
     then
-        CONSOLEOWNER=`cat /var/lock/console.lock`
+        CONSOLEOWNER=\`cat /var/lock/console.lock\`
     else
         CONSOLEOWNER=
     fi
-    if [ -n "$CONSOLEOWNER" ]
+    if [ -n "\$CONSOLEOWNER" ]
     then
-        chmod 0000 "${DEVICE}"
-        chown "$CONSOLEOWNER" "${DEVICE}"
-        chmod 0600 "${DEVICE}"
+        chmod 0000 "\${DEVICE}"
+        chown "\$CONSOLEOWNER" "\${DEVICE}"
+        chmod 0600 "\${DEVICE}"
     fi
 fi
 EOF2
