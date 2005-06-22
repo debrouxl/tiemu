@@ -40,6 +40,7 @@
 #include "images.h"
 #include "handles.h"
 #include "flash.h"
+#include "dbus.h"
 
 int pending_ints;
 
@@ -240,6 +241,9 @@ int hw_m68k_run(int n, unsigned maxcycles)
 
 		if (trace)
 			sim_trace_one(m68k_getpc());
+
+		if (recfile_flag)
+			recfile();
 
 		// process (pending) interrupts
 		if(pending_ints)
