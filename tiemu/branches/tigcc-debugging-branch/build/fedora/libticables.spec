@@ -58,8 +58,6 @@ cat >$RPM_BUILD_ROOT/etc/hotplug/usb/libticables <<EOF2
 # c) a Linux kernel supporting hotplug and usbdevfs
 # d) the hotplug package (http://linux-hotplug.sourceforge.net/)
 #
-# Ownership is set to root:root, permissions are set to 0666.
-#
 # Arguments :
 # -----------
 # ACTION=[add|remove]
