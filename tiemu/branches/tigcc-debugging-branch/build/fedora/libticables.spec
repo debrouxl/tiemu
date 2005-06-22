@@ -15,6 +15,8 @@ Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		System Environment/Libraries
 License:	LGPL
+BuildRequires:	libusb-devel >= 0.1.10a
+Requires:	libusb >= 0.1.10a
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Summary:	Library for handling TI link cables
 %description
@@ -31,6 +33,35 @@ make
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT/etc/hotplug/usb
+cat >$RPM_BUILD_ROOT/etc/hotplug/usb/libticables.usermap <<EOF1
+# This file is installed by the libticables Fedora package.
+#
+# usb module         match_flags idVendor idProduct bcdDevice_lo bcdDevice_hi bDeviceClass bDeviceSubClass bDeviceProtocol bInterfaceClass bInterfaceSubClass bInterfaceProtocol driver_info
+#
+libticables             0x0003      0x0451   0xe001    0x0000       0x0000       0x00         0x00            0x00            0x00            0x00               0x00               0x00000000
+EOF1
+cat >$RPM_BUILD_ROOT/etc/hotplug/usb/libticables <<EOF2
+#!/bin/sh
+
+# This file was installed by the libticables Fedora package.
+#
+# This script changes the permissions and ownership of a USB device under
+# /proc/bus/usb to grant access to this device to all users.
+#
+# Ownership is set to root:root, permissions are set to 0666.
+#
+# Arguments :
+# -----------
+# ACTION=[add|remove]
+# DEVICE=/proc/bus/usb/BBB/DDD
+# TYPE=usb
+
+if [ "$ACTION" = "add" -a "$TYPE" = "usb" ]; then
+  chown root:root "$DEVICE"
+  chmod 0666 "$DEVICE"
+fi
+EOF2
 
 %post
 /sbin/ldconfig
@@ -51,9 +82,14 @@ rm -rf $RPM_BUILD_ROOT
 /usr/lib/libticables.la
 /usr/lib/libticables.so*
 /usr/lib/pkgconfig/ticables.pc
+/etc/hotplug/usb/libticables.usermap
+/etc/hotplug/usb/libticables
 
 %defattr(-,root,root)
 %changelog
+* Wed Jun 22 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+SilverLink support (based in part on Julien Blache's Debian packages)
+
 * Sun Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Change Copyright to License.
 Don't list cabl_def.h twice.
