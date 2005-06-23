@@ -18,7 +18,6 @@ AC_CONFIG_FILES([
   build/Makefile
   man/Makefile
   pixmaps/Makefile
-  po/Makefile.in
   src/Makefile
 ])
 

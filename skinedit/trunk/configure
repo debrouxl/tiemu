@@ -1969,7 +1969,7 @@ fi
 
           ac_config_headers="$ac_config_headers config.h"
 
-                                                            ac_config_files="$ac_config_files Makefile build/Makefile man/Makefile pixmaps/Makefile po/Makefile.in src/Makefile"
+                                                  ac_config_files="$ac_config_files Makefile build/Makefile man/Makefile pixmaps/Makefile src/Makefile"
 
 
 # Setup libtool.
@@ -22048,7 +22048,6 @@ do
   "build/Makefile" ) CONFIG_FILES="$CONFIG_FILES build/Makefile" ;;
   "man/Makefile" ) CONFIG_FILES="$CONFIG_FILES man/Makefile" ;;
   "pixmaps/Makefile" ) CONFIG_FILES="$CONFIG_FILES pixmaps/Makefile" ;;
-  "po/Makefile.in" ) CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;

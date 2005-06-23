@@ -1,5 +1,8 @@
 List of changes:
 
+- 23/06/2005, version 1.26b: roms
+	Fixed configure.ac (po was not distributed).
+	
 - 05/05/2005, version 1.26: roms
 	Rebuilt under Linux.
 	Compiled under MinGW.

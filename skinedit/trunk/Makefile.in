@@ -150,10 +150,9 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
 # subdirectories to scan
-SUBDIRS = build man src #po intl $(am__append_1)
+SUBDIRS = build man pixmaps src po intl $(am__append_1)
 
 EXTRA_DIST = \
-	autogen.sh \
 	glade/main.glade \
 	glade/main.gladep
 
@@ -174,7 +173,7 @@ DIST_COMMON = README $(srcdir)/Makefile.in $(srcdir)/configure \
 	aclocal.m4 compile config.guess config.h.in config.rpath \
 	config.sub configure configure.ac depcomp install-sh ltmain.sh \
 	missing mkinstalldirs
-DIST_SUBDIRS = $(SUBDIRS)
+DIST_SUBDIRS = build man pixmaps src po intl
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -363,7 +362,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/glade $(distdir)/po
+	$(mkinstalldirs) $(distdir)/glade
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -390,7 +389,7 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	list='$(SUBDIRS)'; for subdir in $$list; do \
+	list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
 	  if test "$$subdir" = .; then :; else \
 	    test -d $(distdir)/$$subdir \
 	    || mkdir $(distdir)/$$subdir \
