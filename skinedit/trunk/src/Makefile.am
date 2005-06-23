@@ -13,8 +13,7 @@ skinedit_CPPFLAGS = \
 	 @GLIB_CFLAGS@ @GTK_CFLAGS@
 
 skinedit_LDADD = \
-        @GLIB_LIBS@ @GTK_LIBS@
-#        @LTLIBINTL@
+        @GLIB_LIBS@ @GTK_LIBS@ @LTLIBINTL@
 
 skinedit_SOURCES = \
 	main.c defs.h struct.h keymaps.h \
