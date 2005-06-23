@@ -3,7 +3,7 @@ dnl $Id$
 
 dnl Init.
 AC_PREREQ(2.57)
-AC_INIT(SkinEdit, 1.26, [tiemu-users@lists.sourceforge.net])
+AC_INIT(SkinEdit, 1.26b, [tiemu-users@lists.sourceforge.net])
 
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
@@ -19,6 +19,8 @@ AC_CONFIG_FILES([
   man/Makefile
   pixmaps/Makefile
   src/Makefile
+  intl/Makefile
+  po/Makefile.in
 ])
 
 # Setup libtool.
@@ -36,8 +38,8 @@ AC_CHECK_PROG(GROFF, groff, yes, no)
 AM_CONDITIONAL(USE_GROFF, test "$GROFF" != "no")
 
 # Checks for libraries.
-#AM_GNU_GETTEXT
-#AM_GNU_GETTEXT_VERSION(0.13.1)
+AM_GNU_GETTEXT
+AM_GNU_GETTEXT_VERSION(0.13.1)
 
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.4.0)
 AC_SUBST(GLIB_CFLAGS)
