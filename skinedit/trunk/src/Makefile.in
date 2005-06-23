@@ -204,7 +204,8 @@ skinedit_SOURCES = \
 	rubberbox.c rubberbox.h \
 	skinops.c skinops.h \
 	utils.c utils.h \
-	vti_export.c vti_export.h
+	vti_export.c vti_export.h \
+	intl.h
 
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4

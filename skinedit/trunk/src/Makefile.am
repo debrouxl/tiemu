@@ -27,5 +27,6 @@ skinedit_SOURCES = \
 	rubberbox.c rubberbox.h \
 	skinops.c skinops.h \
 	utils.c utils.h \
-	vti_export.c vti_export.h
+	vti_export.c vti_export.h \
+	intl.h
 
