@@ -40,6 +40,7 @@
 #include "images.h"
 #include "handles.h"
 #include "flash.h"
+#include "dbus.h"
 
 int pending_ints;
 
@@ -237,6 +238,10 @@ int hw_m68k_run(int n, unsigned maxcycles)
 
 		// HW2/3 grayscales management
 		lcd_hook_hw2(0);
+
+		// receive data from TI to file
+		if(recfile_flag)
+			recfile();
 
 		// process (pending) interrupts
 		if(pending_ints)

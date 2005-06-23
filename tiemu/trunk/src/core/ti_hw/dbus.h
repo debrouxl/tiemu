@@ -39,10 +39,12 @@ uint8_t (*hw_dbus_getbyte)		(void);
 int     (*hw_dbus_checkread)	(void);
 
 int send_ti_file(const char *filename);
+int recfile(void);
 
 /* Variables */
 
 extern TicableLinkCable lc;
+extern int recfile_flag;
 
 #endif
 

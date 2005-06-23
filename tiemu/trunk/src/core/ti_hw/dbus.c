@@ -259,13 +259,14 @@ static int lp_checkread(void)
 
 static int sip = 0;	// sending in progress
 static int rip = 0;	// receive in progress
-static int recfile(uint8_t data);
  
 int t2f_data;   // ti => file data
 int t2f_flag;   // data available
 
 int f2t_data;   // file => ti data
 int f2t_flag;   // data available
+
+int recfile_flag;	// receive file at end of instruction
 
 void df_reinit(void)
 {
@@ -280,7 +281,7 @@ void df_putbyte(uint8_t arg)
 	if(!sip)
 	{
 		if(params.recv_file)
-			recfile(arg);
+			recfile_flag = 1;
 		else
 			io_bit_set(0x0d,7);	// SLE=1: error
 	}
@@ -524,10 +525,12 @@ int send_ti_file(const char *filename)
 
 int display_recv_files_dbox(const char *path);
 
-static int recfile(uint8_t mid)
+int recfile(void)
 {
 	int ret;
 	char filename[1024];
+
+	recfile_flag = 0;
 
 	// Make this function not re-entrant
 	if(rip)
@@ -537,7 +540,7 @@ static int recfile(uint8_t mid)
 
 	// Some models and AMS versions sends an RDY packet when entering in
 	// the VAR-Link menu or just before sending variable. We skip it !
-	if(mid == 0x89 && tihw.calc_type != TI92)
+	if(t2f_data == 0x89 && tihw.calc_type != TI92)
 	{
 		uint8_t arg;
 		int i;
