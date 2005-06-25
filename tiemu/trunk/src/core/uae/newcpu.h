@@ -10,7 +10,7 @@
 #include "readcpu.h"
 #include "machdep/maccess.h"
 
-#define CYGNUS_SIM 1
+#define CYGNUS_SIM 0
 
 #define SPCFLAG_DBTRACE 1
 #define SPCFLAG_DBSKIP 2
@@ -129,6 +129,7 @@ extern struct regstruct
     uae_u8 panic;
     uae_u32 panic_pc, panic_addr;
 
+#if CYGNUS_SIM
   /* NOTE stuff related to simulator framework */
 
     /* NOTE need to have m68k performance information here */
@@ -155,11 +156,14 @@ extern struct regstruct
     unsigned char *ymem;
     unsigned char *xmem_offset;
     unsigned char *ymem_offset;
+#endif /* CYGNUS_SIM */
 } regs, lastint_regs;
 
 #include "machdep/m68k.h"
 
+#if CYGNUS_SIM
 extern int trace;
+#endif /* CYGNUS_SIM */
 
 STATIC_INLINE uae_u32 munge24(uae_u32 x)
 {
