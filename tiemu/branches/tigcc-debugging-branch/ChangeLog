@@ -1,5 +1,9 @@
 SubVersion: $Id$
 
+- 23/06/2005, version 2.00
+	- [roms] $1525: merged Kevin's change in rev $1524 (recfile).
+	//- [roms] $1526: cancel button
+
 - 10/06/2005, version 2.00-rc4:
 	- [roms] $1488: replaced current icon by Jaime's one
 	- [roms] $1489: removed logo from about box
