@@ -2,8 +2,8 @@
 
 
 
-Previous version: 2.00-rc3  (08/06/2006)
-Current version:  2.00-rc4  (20/06/2006)
+Previous version: 2.00-rc4  (20/06/2006)
+Current version:  2.00-rc5  (25/06/2006)
 
 SubVersion (CVS) revision: $Id$
 
@@ -26,16 +26,13 @@ New capabilities:
 Improvements:
 -------------
 
-	- replaced current icon by Jaime Fernando's one
-	- replaced current logo by hibou/hiboo's one
-	- enable BW screenshot in EPS and PDF formats
+	- upgraded m68k engine to latest version (add prefetch support among other things)
 		
 
 Bug fixes:
 ----------
 
-	- cleanup and little fixes in interrupt support of m68k
-	- fixed behaviour of all keys and definitely fixed the ON key
+	- 'Receive file' check item
 	
 
 Planned:

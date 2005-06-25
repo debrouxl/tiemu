@@ -4,6 +4,7 @@ SubVersion: $Id$
 	- [roms] $1525: merged Kevin's change in rev $1524 (recfile).
 	- [roms] $1542: merged Kevin's UAE upgrade.
 	- [roms] $1543: fixed 'Receive file' check item.
+	- [roms] $1544: fixed bug #1227179 (screenshot).
 
 - 10/06/2005, version 2.00-rc4:
 	- [roms] $1488: replaced current icon by Jaime's one
