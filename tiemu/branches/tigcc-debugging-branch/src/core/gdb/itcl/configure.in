@@ -24,6 +24,9 @@ AC_PROG_MAKE_SET
 AC_PREFIX_DEFAULT(/usr/local)
 AC_PREFIX_PROGRAM(itclsh)
 
+# Convert --enable-shared-itcl to --enable-shared for the subdirs
+ac_configure_args=`echo "$ac_configure_args" | sed "s,--enable-shared-itcl,--enable-shared,g"`
+
 # Source-Navigator does not use the iwidgets packag
 subdirs=
 

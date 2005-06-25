@@ -20,9 +20,9 @@ Requires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{vers
 Requires(post):	desktop-file-utils >= 0.10
 Requires(postun): desktop-file-utils >= 0.10
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
-Obsoletes:	tiemu < 2.00
-Conflicts:	tiemu >= 2.00, itcl, itk
-Provides:	tiemu = ${version}
+Obsoletes:	tiemu < 2.00, itcl < 3.3, itk < 3.3, iwidgets < 4.0.2
+Conflicts:	tiemu >= 2.00
+Provides:	tiemu = ${version}, itcl = 3.2, itk = 3.2, iwidgets = 4.0.1
 Summary: TiEmu is a TI89(Ti)/92(+)/V200 emulator.
 %description
 TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debugging using Insight GDB.
@@ -93,6 +93,8 @@ rm -rf $RPM_BUILD_ROOT
 * Sat Jun 25 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Drop "Conflicts: insight" because this package gets along just fine with
 Gérard Milmeister's Insight RPM.
+Add --enable-shared-itcl to build itcl/itk/iwidgets shared and Provide them
+rather than conflicting with them.
 
 * Sun Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Bump version requirements for FC4.
