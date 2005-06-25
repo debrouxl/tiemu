@@ -160,7 +160,9 @@ uint8_t hwp_get_byte(uint32_t adr)
 	}
 	else if(IN_BOUNDS(0x1c0000, adr, 0x1fffff))			// protection enable
 	{
-		if((access1 >= 3) || (++access2 == 8)) 
+		// FIXME: >=7 is probably too lax, but the actual number can vary a lot due to the prefetch.
+		// I guess we should check instructions rather than access counts on HW2.
+		if((access1 >= 3) || (++access2 >= 7)) 
 		{
 			tihw.protect = !0;
 			access1 = access2 = 0;
@@ -251,7 +253,9 @@ uint16_t hwp_get_word(uint32_t adr)
 	else if(IN_BOUNDS(0x1c0000, adr, 0x1fffff))			// protection enable
 	{
 		access2 += 2;
-		if((access1 >= 3) || (access2 == 8) || (access2 == 9)) 
+		// FIXME: >=7 is probably too lax, but the actual number can vary a lot due to the prefetch.
+		// I guess we should check instructions rather than access counts on HW2.
+		if((access1 >= 3) || (access2 >= 7)) 
 		{
 			tihw.protect = !0;
 			access1 = access2 = 0;
@@ -338,7 +342,9 @@ void hwp_put_byte(uint32_t adr, uint8_t arg)
 	}
 	else if(IN_BOUNDS(0x1c0000, adr, 0x1fffff))			// protection disable
 	{
-		if((access1 >= 3) || (++access2 == 8)) 
+		// FIXME: >=7 is probably too lax, but the actual number can vary a lot due to the prefetch.
+		// I guess we should check instructions rather than access counts on HW2.
+		if((access1 >= 3) || (++access2 >= 7)) 
 		{
 			tihw.protect = 0;
 			access1 = access2 = 0;

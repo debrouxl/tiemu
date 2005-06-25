@@ -33,4 +33,9 @@
 #include "memory.h"
 #include "newcpu.h"
 
+/* Backwards compatibility */
+#define curriword() (regs.ir)
+#define get_iword_prefetch(o) (o?get_iword(o):regs.ir)
+#define fill_prefetch_0 fill_prefetch_slow
+
 #endif

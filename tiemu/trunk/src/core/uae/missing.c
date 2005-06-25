@@ -13,9 +13,6 @@
 #include <string.h>
 #include "sysdeps.h"
 
-#include "uconfig.h"
-#include "options.h"
-
 #ifndef HAVE_STRDUP
 
 char *my_strdup (const char *s)
@@ -27,13 +24,3 @@ char *my_strdup (const char *s)
 }
 
 #endif
-
-void *xmalloc(size_t n)
-{
-    void *a = malloc (n);
-    if (a == NULL) {
-	fprintf (stderr, "virtual memory exhausted\n");
-	abort ();
-    }
-    return a;
-}

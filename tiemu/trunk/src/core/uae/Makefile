@@ -22,13 +22,15 @@ cpudefs_host.o: cpudefs.c
 	gcc -c -o $@ $?
 missing_host.o: missing.c
 	gcc -c -o $@ $?
+xmalloc_host.o: xmalloc.c
+	gcc -c -o $@ $?
 
 # Build generators and files to generate
 build68k: build68k_host.o
 	@echo "-> Compiling 68k builder..."
 	gcc $(LDFLAGS) -o $@ $?
 
-gencpu: gencpu_host.o readcpu_host.o cpudefs_host.o missing_host.o
+gencpu: gencpu_host.o readcpu_host.o cpudefs_host.o missing_host.o xmalloc_host.o
 	@echo "-> Compiling CPU generator..."
 	gcc $(LDFLAGS) -o $@ $?
 
@@ -36,12 +38,12 @@ cpudefs.c: build68k table68k
 	@echo "-> Building CPU definitions..."
 	./build68k <table68k >cpudefs.c
 
-cpuemu.c: gencpu compiler.h
+cpuemu.c: gencpu
 	@echo "-> Generating CPU tables..."
 	./gencpu
 
 # gencpu also creates cpustbl.c and cputbl.h
-cpustbl.c: cpuemu.c compiler.h
+cpustbl.c: cpuemu.c
 cputbl.h: cpuemu.c
 
 # CPU engine

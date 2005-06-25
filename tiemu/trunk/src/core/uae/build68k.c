@@ -16,8 +16,6 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "uconfig.h"
-#include "options.h"
 #include "readcpu.h"
 
 static FILE *tablef;
@@ -64,8 +62,6 @@ int main(int argc, char **argv)
 
     printf ("#include <stdlib.h>\n");   
     printf ("#include \"sysdeps.h\"\n");
-    printf ("#include \"uconfig.h\"\n");
-    printf ("#include \"options.h\"\n");
     printf ("#include \"readcpu.h\"\n");
     printf ("struct instr_def defs68k[] = {\n");
 #if 0
@@ -117,6 +113,7 @@ int main(int argc, char **argv)
 	     case 'r': currbit = bitr; break;
 	     case 'R': currbit = bitR; break;
 	     case 'z': currbit = bitz; break;
+	     case 'p': currbit = bitp; break;
 	     default: abort();
 	    }
 	    if (!(bitmask & 1)) {
@@ -165,6 +162,7 @@ int main(int argc, char **argv)
 	    switch(nextch){
 	     case '-': flagset[i] = fa_unset; break;
 	     case '/': flagset[i] = fa_isjmp; break;
+	     case '+': flagset[i] = fa_isbranch; break;
 	     case '0': flagset[i] = fa_zero; break;
 	     case '1': flagset[i] = fa_one; break;
 	     case 'x': flagset[i] = fa_dontcare; break;

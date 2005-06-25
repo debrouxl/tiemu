@@ -1,8 +1,8 @@
 SubVersion: $Id$
 
-- 23/06/2005, version 2.00
+- 23/06/2005, version 2.00-rc5
 	- [roms] $1525: merged Kevin's change in rev $1524 (recfile).
-	//- [roms] $1526: cancel button
+	- [roms] $1542: merged Kevin's UAE upgrade.
 
 - 10/06/2005, version 2.00-rc4:
 	- [roms] $1488: replaced current icon by Jaime's one

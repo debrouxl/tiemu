@@ -40,7 +40,7 @@
 #include "flash.h"
 #include "printl.h"
 
-#define SAV_REVISION	8
+#define SAV_REVISION	9
 
 static int load_bkpt(FILE *f, GList **l)
 {

@@ -103,5 +103,9 @@ SOURCE=.\missing.c
 
 SOURCE=.\readcpu.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\xmalloc.c
+# End Source File
 # End Target
 # End Project
