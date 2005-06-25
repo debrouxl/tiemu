@@ -205,7 +205,7 @@ int main(int argc, char **argv)
 
 	/* Windows follows the locale settings even for basic stdio I/O functions.
 	   This is an annoyance for floating-point numbers in GDB, so we override
-	   it here. Unfortunately, this diseases seems to have spread to glibc as
+	   it here. Unfortunately, this disease seems to have spread to glibc as
 	   well recently. */
 	setlocale(LC_NUMERIC, "C");
 
