@@ -28,7 +28,9 @@
 #include "bkpts.h"
 #define write_log printf
 static const struct uae_prefs currprefs = {0, 1, 1};
+#if CYGNUS_SIM
 extern const char *symfile;
+#endif /* CYGNUS_SIM */
 // tiemu end
 
 /* Opcode of faulting instruction */
@@ -1343,12 +1345,14 @@ unsigned long REGPARAM2 op_illg (uae_u32 opcode)
 	    call_calltrap (opcode & 0xFFF);
 	}
 #endif /* 0 */
+#if CYGNUS_SIM
 	/* Ignore ER_ASAP_TOO_LONG when running a file to debug. */
 	if (symfile && opcode == 0xA000 + 161) {
 		m68k_incpc(2);
 		fill_prefetch_slow ();
 		return 4;
 	}
+#endif /* CYGNUS_SIM */
 
 	Exception(0xA,0);
 	return 4;

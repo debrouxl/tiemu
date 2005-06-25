@@ -1550,6 +1550,7 @@ static void gen_opcode (unsigned long int opcode)
 	break;
     case i_BSR:
 	genamode (curi->smode, "srcreg", curi->size, "src", 1, 0, GF_AA|GF_NOREFILL);
+	printf("{");
 	printf ("\tuae_s32 s = (uae_s32)src + 2;\n");
 	if (using_exception_3) {
 	    printf ("\tif (src & 1) {\n");
@@ -1559,6 +1560,7 @@ static void gen_opcode (unsigned long int opcode)
 	    need_endlabel = 1;
 	}
 	printf ("\tm68k_do_bsr(m68k_getpc() + %d, s);\n", m68k_pc_offset);
+	printf("}");
 	m68k_pc_offset = 0;
 	fill_prefetch_full ();
 	break;
@@ -1663,8 +1665,10 @@ static void gen_opcode (unsigned long int opcode)
 	genamode (curi->smode, "srcreg", curi->size, "src", cpu_level == 0 ? 1 : 2, 0, 0);
 	start_brace ();
         fill_prefetch_next_cycles ();
+		printf("{");
 	printf ("\tint val = cctrue(%d) ? 0xff : 0;\n", curi->cc);
 	genastore ("val", curi->smode, "srcreg", curi->size, "src");
+	printf("}");
 	break;
     case i_DIVU:
 	printf ("\tuaecptr oldpc = m68k_getpc();\n");

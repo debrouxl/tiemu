@@ -53,11 +53,11 @@ int ti68k_error_get(int err_num, char *error_msg)
 		break;
 
 	case ERR_INVALID_STATE:
-		strcpy(error_msg, _("Invalid state image."));
+		strcpy(error_msg, _("Invalid state image. File is corrupted or revision changed."));
 		break;
 
 	case ERR_INVALID_IMAGE:
-		strcpy(error_msg, _("Invalid emulator image."));
+		strcpy(error_msg, _("Invalid emulator image. File is corrupted or revision changed."));
 		break;
 
 	case ERR_INVALID_UPGRADE:

@@ -3,6 +3,8 @@ SubVersion: $Id$
 - 23/06/2005, version 2.00
 	- [roms] $1525: merged Kevin's change in rev $1524 (recfile).
 	//- [roms] $1526: cancel button
+	- [roms] $1543: fixed 'Receive file' check item.
+	- [roms] $1544: fixed bug #1227179 (screenshot).
 
 - 10/06/2005, version 2.00-rc4:
 	- [roms] $1488: replaced current icon by Jaime's one

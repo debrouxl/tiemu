@@ -753,8 +753,7 @@ int  hid_screenshot(char *filename)
 	else if((options2.size == IMG_SKIN) && (options2.type == IMG_COL))
 	{
 		// get pixbuf from backing pixmap
-		pixbuf = gdk_pixbuf_get_from_drawable(NULL, pixmap, NULL,
-					0, 0, 0, 0, skin_infos.width, skin_infos.height);
+		pixbuf = gdk_pixbuf_get_from_drawable(NULL, pixmap, NULL, 0, 0, 0, 0, wr.w, wr.h);
 	}
 	else
 	{
