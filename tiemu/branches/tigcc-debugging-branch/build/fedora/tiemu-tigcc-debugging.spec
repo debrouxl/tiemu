@@ -21,7 +21,7 @@ Requires(post):	desktop-file-utils >= 0.10
 Requires(postun): desktop-file-utils >= 0.10
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Obsoletes:	tiemu < 2.00
-Conflicts:	tiemu >= 2.00, insight, itcl, itk
+Conflicts:	tiemu >= 2.00, itcl, itk
 Provides:	tiemu = ${version}
 Summary: TiEmu is a TI89(Ti)/92(+)/V200 emulator.
 %description
@@ -90,6 +90,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Sat Jun 25 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Drop "Conflicts: insight" because this package gets along just fine with
+Gérard Milmeister's Insight RPM.
+
 * Sun Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Bump version requirements for FC4.
 Change Copyright to License.
