@@ -31,7 +31,7 @@ TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debuggi
 %setup -n %{name}
 
 %build
-CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls --with-kde --enable-shared-tcl-tk
+CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls --with-kde --enable-shared-tcl-tk --enable-shared-itcl
 make
 
 %install
