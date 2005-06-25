@@ -203,17 +203,17 @@ int main(int argc, char **argv)
     err = ti68k_scan_files(inst_paths.img_dir, inst_paths.img_dir, !0);
 	handle_error();
 
-	/* Windows follows the locale settings even for basic stdio I/O functions.
-	   This is an annoyance for floating-point numbers in GDB, so we override
-	   it here. Unfortunately, this disease seems to have spread to glibc as
-	   well recently. */
-	setlocale(LC_NUMERIC, "C");
-
 	/*
 		Attempt to load an image (step 3)
 	*/
 	while(!exit_loop)
 	{
+
+		/* Windows follows the locale settings even for basic stdio I/O functions.
+		   This is an annoyance for floating-point numbers in GDB, so we override
+		   it here. Unfortunately, this disease seems to have spread to glibc as
+		   well recently. */
+		setlocale(LC_NUMERIC, "C");
 
 		err = ti68k_load_image(params.rom_file);
 		if(err) 
