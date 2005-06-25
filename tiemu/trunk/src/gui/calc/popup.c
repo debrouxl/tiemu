@@ -503,6 +503,9 @@ GtkWidget* display_popup_menu(void)
 	g_free(s);
 
 	// init check buttons
+	data = glade_xml_get_widget(xml, "recv_file_from_tiemu1");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.recv_file);
+
     data = glade_xml_get_widget(xml, "restrict1");
 	g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_restrict_to_actual_speed1_activate, NULL);
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.restricted);
