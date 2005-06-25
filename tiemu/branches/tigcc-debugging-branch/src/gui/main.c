@@ -33,11 +33,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <setjmp.h>
+#include <locale.h>
 #ifdef __WIN32__
 #undef setjmp
 extern int asm_setjmp(jmp_buf b);
 #define setjmp asm_setjmp
-#include <locale.h>
 #endif
 
 #if WITH_KDE
@@ -203,12 +203,11 @@ int main(int argc, char **argv)
     err = ti68k_scan_files(inst_paths.img_dir, inst_paths.img_dir, !0);
 	handle_error();
 
-#ifdef __WIN32__
 	/* Windows follows the locale settings even for basic stdio I/O functions.
 	   This is an annoyance for floating-point numbers in GDB, so we override
-	   it here. */
+	   it here. Unfortunately, this diseases seems to have spread to glibc as
+	   well recently. */
 	setlocale(LC_NUMERIC, "C");
-#endif
 
 	/*
 		Attempt to load an image (step 3)
