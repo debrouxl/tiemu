@@ -32,7 +32,7 @@ build68k: build68k_host.o
 
 gencpu: gencpu_host.o readcpu_host.o cpudefs_host.o missing_host.o xmalloc_host.o
 	@echo "-> Compiling CPU generator..."
-	gcc $(LDFLAGS) -o $@ $?
+	gcc $(LDFLAGS) -o $@ gencpu_host.o readcpu_host.o cpudefs_host.o missing_host.o xmalloc_host.o
 
 cpudefs.c: build68k table68k
 	@echo "-> Building CPU definitions..."
@@ -77,8 +77,8 @@ missing.o: missing.c
 	$(CC) $(INCLUDES) -c $(INCDIRS) $(CPUFLAGS) $< -o $@ 
 xmalloc.o: xmalloc.c
 	$(CC) $(INCLUDES) -c $(INCDIRS) $(CPUFLAGS) $< -o $@ 
-newcpu.o: newcpu.c newcpu.h compiler.h
-	$(CC) $(INCLUDES) -c $(INCDIRS) $(CPUFLAGS) $< -o $@
+newcpu.o: newcpu.c newcpu.h
+	$(CC) $(INCLUDES) -c $(INCDIRS) $(CPUFLAGS) $< -o newcpu.c newcpu.h
 
 clean:
 	$(RM) build68k gencpu *.o
