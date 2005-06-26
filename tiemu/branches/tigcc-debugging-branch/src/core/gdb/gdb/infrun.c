@@ -45,6 +45,8 @@
 #include "observer.h"
 #include "language.h"
 #include "gdb_assert.h"
+#include "linespec.h"
+#include "exec.h"
 
 /* Prototypes for local functions */
 
@@ -3043,6 +3045,37 @@ normal_stop (void)
 
 	  /* Display the auto-display expressions.  */
 	  do_displays ();
+
+	  /* (TiEmu 20050627 Kevin Kofler) If we are at __main, and if we have a BSS
+	     section, relocate it. FIXME: This hack doesn't work for kernel-based
+	     programs. */
+	  {
+	    char *main_func_name, *nameptr;
+	    struct symtabs_and_lines sals;
+
+	    main_func_name = xstrdup ("__main");
+	    nameptr = main_func_name;
+	    sals = decode_line_1 (&nameptr, 1, NULL, 0, NULL, NULL);
+	    if (sals.nelts != 0)
+	      {
+	        CORE_ADDR pc;
+	        find_line_pc (sals.sals[0].symtab, sals.sals[0].line, &pc);
+	        if (pc == read_register(17))
+	          {
+	            struct section_table *p;
+	            for (p = exec_ops.to_sections; p < exec_ops.to_sections_end; p++)
+	              {
+	                if (!strcmp (".bss", bfd_section_name (p->the_bfd, p->the_bfd_section)))
+	                  {
+	                    char command[] = "section .bss $d3";
+	                    execute_command (command, 0);
+	                    break;
+	                  }
+	              }
+              }
+	      }
+	    xfree (main_func_name);
+	  }
 	}
     }
 
