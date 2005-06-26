@@ -9,7 +9,8 @@ CPUFLAGS = $(CFLAGS) -fomit-frame-pointer -Wno-unused -Wno-format -W -Wmissing-p
 
 gen: cpudefs.c cpustbl.c cputbl.h cpuemu.c
 
-all: cpudefs.o cpustbl.o newcpu.o readcpu.o fpp.o missing.o xmalloc.o cpuemu1.o cpuemu2.o cpuemu3.o cpuemu4.o cpuemu5.o cpuemu6.o cpuemu7.o cpuemu8.o
+# WARNING: Don't try to build newcpu.o here, because newcpu.c references TiEmu include files.
+all: cpudefs.o cpustbl.o readcpu.o fpp.o missing.o xmalloc.o cpuemu1.o cpuemu2.o cpuemu3.o cpuemu4.o cpuemu5.o cpuemu6.o cpuemu7.o cpuemu8.o
 
 # For cross-compiling (generators are run on host)
 build68k_host.o: build68k.c
