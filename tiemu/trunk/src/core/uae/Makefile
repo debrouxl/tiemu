@@ -78,7 +78,7 @@ missing.o: missing.c
 xmalloc.o: xmalloc.c
 	$(CC) $(INCLUDES) -c $(INCDIRS) $(CPUFLAGS) $< -o $@ 
 newcpu.o: newcpu.c newcpu.h
-	$(CC) $(INCLUDES) -c $(INCDIRS) $(CPUFLAGS) $< -o newcpu.c newcpu.h
+	$(CC) $(INCLUDES) -c $(INCDIRS) $(CPUFLAGS) $< -o $@
 
 clean:
 	$(RM) build68k gencpu *.o
