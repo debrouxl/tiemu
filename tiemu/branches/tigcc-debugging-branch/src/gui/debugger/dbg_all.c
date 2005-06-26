@@ -48,6 +48,7 @@ void gdbtk_show_insight(void);
 void delete_command(void *, int);
 void symbol_file_clear(int);
 void gdbtk_clear_file(void);
+void exec_build_section_table(void);
 
 gchar *symfile;
 
@@ -126,6 +127,7 @@ int gtk_debugger_enter(int context)
 			gdb_add_symbol_file(symfile, pc);
 			g_free (symfile);
 			symfile = NULL;
+			exec_build_section_table();
 
 			ti68k_unprotect_64KB_range(pc);
 

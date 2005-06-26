@@ -815,7 +815,9 @@ coff_symtab_read (long symtab_offset, unsigned int nsyms,
 	  if (within_function)
 	    break;
           /* (TiEmu 20050403 Kevin Kofler) This trick is used in TIGCC to
-             support long section names, so we need to support it as well. */
+             support long section names, so we need to support it as well.
+             (TiEmu 20050626 Kevin Kofler) We need to copy the section symbol
+             name because it gets freed too early. */
           {
             asection *sect = NULL;
             struct find_targ_sec_arg args;
@@ -824,7 +826,7 @@ coff_symtab_read (long symtab_offset, unsigned int nsyms,
             bfd_map_over_sections (objfile->obfd, find_targ_sec, &args);
             if (sect && main_sym.n_value == sect->vma && !strncmp (cs->c_name, sect->name, 8))
               {
-                sect->name = cs->c_name;
+                sect->name = xstrdup (cs->c_name);
 	      if (DEPRECATED_STREQ (cs->c_name, ".text"))
 		{
 		  /* FIXME:  don't wire in ".text" as section name

@@ -75,11 +75,32 @@ struct target_ops exec_ops;
 
 bfd *exec_bfd = NULL;
 
+/* (TiEmu 20050626 Kevin Kofler) The object file for the executable. */
+
+struct objfile *exec_objfile = NULL;
+
 /* Whether to open exec and core files read-only or read-write.  */
 
 int write_files = 0;
 
 struct vmap *vmap;
+
+/* (TiEmu 20050626 Kevin Kofler) Build section table from the most recently
+                                 loaded symbol file. */
+void
+exec_build_section_table (void)
+{
+  struct section_table *sectab;
+  exec_bfd = last_symfile_bfd;
+  exec_objfile = last_symfile_objfile;
+  build_section_table (exec_bfd, &exec_ops.to_sections,
+                       &exec_ops.to_sections_end);
+  for (sectab = exec_ops.to_sections; sectab < exec_ops.to_sections_end; sectab++)
+    {
+      sectab->addr += exec_objfile->section_offsets->offsets[sectab->the_bfd_section->index];
+      sectab->endaddr += exec_objfile->section_offsets->offsets[sectab->the_bfd_section->index];
+    }
+}
 
 void
 exec_open (char *args, int from_tty)
@@ -650,6 +671,18 @@ set_section_command (char *args, int from_tty)
 	  offset = secaddr - p->addr;
 	  p->addr += offset;
 	  p->endaddr += offset;
+	  /* (TiEmu 20050626 Kevin Kofler) Relocate symbol file (objfile). The bad
+	     relocation API forces us to copy the entire offset table to change just
+	     that one offset. */
+	  if (exec_objfile)
+	    {
+	      struct section_offsets *new_offsets = ((struct section_offsets *) 
+	        alloca (SIZEOF_N_SECTION_OFFSETS (exec_objfile->num_sections)));
+	      memcpy (new_offsets, exec_objfile->section_offsets,
+	              SIZEOF_N_SECTION_OFFSETS (exec_objfile->num_sections));
+	      new_offsets->offsets[p->the_bfd_section->index] += offset;
+	      objfile_relocate (exec_objfile, new_offsets);
+	    }
 	  if (from_tty)
 	    exec_files_info (&exec_ops);
 	  return;

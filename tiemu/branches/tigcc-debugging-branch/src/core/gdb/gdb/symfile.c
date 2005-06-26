@@ -184,6 +184,14 @@ int auto_solib_add = 1;
    command. */
 
 int auto_solib_limit;
+
+/* (TiEmu 20050626 Kevin Kofler) BFD for last symbol file, to be used in
+                                 exec_build_section_table. */
+bfd *last_symfile_bfd = NULL;
+
+/* (TiEmu 20050626 Kevin Kofler) Objfile for last symbol file, to be used in
+                                 exec_build_section_table. */
+struct objfile *last_symfile_objfile = NULL;
 
 
 /* This compares two partial symbols by names, using strcmp_iw_ordered
@@ -815,6 +823,11 @@ symbol_file_add_with_addrs_or_offsets (bfd *abfd, int from_tty,
 
   objfile = allocate_objfile (abfd, flags);
   discard_cleanups (my_cleanups);
+
+  /* (TiEmu 20050626 Kevin Kofler) Remember BFD and objfile for last symbol
+                                   file, to be used in exec_build_section_table. */
+  last_symfile_bfd = abfd;
+  last_symfile_objfile = objfile;
 
   if (addrs)
     {

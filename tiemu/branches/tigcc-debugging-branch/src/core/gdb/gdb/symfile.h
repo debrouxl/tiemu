@@ -261,6 +261,14 @@ extern int auto_solib_limit;
 
 /* From symfile.c */
 
+/* (TiEmu 20050626 Kevin Kofler) BFD for last symbol file, to be used in
+                                 exec_build_section_table. */
+extern bfd *last_symfile_bfd;
+
+/* (TiEmu 20050626 Kevin Kofler) Objfile for last symbol file, to be used in
+                                 exec_build_section_table. */
+extern struct objfile *last_symfile_objfile;
+
 extern struct partial_symtab *allocate_psymtab (char *, struct objfile *);
 
 extern void discard_psymtab (struct partial_symtab *);

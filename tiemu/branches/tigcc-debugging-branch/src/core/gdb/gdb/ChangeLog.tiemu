@@ -1,3 +1,15 @@
+2005-06-26  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * coffread.c (coff_symtab_read): Copy the section symbol name before assigning it to
+                                         the section name.
+        * exec.c (exec_objfile): New variable.
+          (exec_build_section_table): New function. Build section table from the most recently
+                                      loaded symbol file.
+          (set_section_command): Also relocate the symbol file (objfile).
+        * symfile.c (last_symfile_bfd, last_symfile_objfile): New variables.
+          (symbol_file_add_with_addrs_or_offsets): Set them.
+        * symfile.h (last_symfile_bfd, last_symfile_objfile): Declare them.
+
 2005-06-02  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * ../gettext.m4, configure, ../intl/aclocal.m4, ../intl/configure, ../bfd/configure,
