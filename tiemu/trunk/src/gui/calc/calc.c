@@ -49,6 +49,7 @@
 #include "printl.h"
 
 GtkWidget *main_wnd = NULL;
+gboolean explicit_destroy = 0;
 GtkWidget *area = NULL;
 
 SKIN_INFOS skin_infos = { 0 };
@@ -253,23 +254,12 @@ GLADE_CB void
 on_calc_wnd_destroy                    (GtkObject       *object,
                                         gpointer         user_data)
 {
-#ifdef __IPAQ__
-    on_exit_without_saving_state1_activate(NULL, NULL);
-#else
-	return;
-#endif
-}
+	// When GTK called this signal, the widget has already been destroy
+	// thus set the pointer to a valid value, ie NULL .
+	main_wnd = NULL;
 
-GLADE_CB gboolean
-on_calc_wnd_delete_event           (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-#ifdef __IPAQ__
-    return FALSE;
-#else
-    return TRUE;	// block destroy
-#endif
+	if(!explicit_destroy)
+		on_exit_without_saving_state1_activate(NULL, NULL);
 }
 
 extern void redraw_skin(void);
@@ -594,6 +584,7 @@ int  hid_init(void)
     tid = g_timeout_add((params.lcd_rate == -1) ? 50 : params.lcd_rate, 
 		(GtkFunction)hid_refresh, NULL);
 
+	explicit_destroy = 0;
 	gtk_widget_show(main_wnd);	// show wnd here
 
 	if(options.view == VIEW_FULL)
@@ -624,7 +615,11 @@ int  hid_exit(void)
     }
 
     // Destroy window
-    gtk_widget_destroy(main_wnd);
+	if(main_wnd)
+	{
+		explicit_destroy = !0;
+		gtk_widget_destroy(main_wnd);
+	}		
 
     return 0;
 }
