@@ -3,7 +3,7 @@
 ; Other definitions
 !define UPXDIR "E:\UPX"
 !define MSYSDIR "e:\mingw32\msys\bin"
-!define GTK_MIN_VER "2.6.7"
+!define GTK_MIN_VER "2.6.8"
 !define GTK_PKG_VER "-rc1"
 ; This hack is there because ${__DATE__} uses a format dependent on the locale of the build
 ; machine, which is a bad idea.
