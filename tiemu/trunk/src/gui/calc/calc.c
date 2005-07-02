@@ -253,11 +253,23 @@ GLADE_CB void
 on_calc_wnd_destroy                    (GtkObject       *object,
                                         gpointer         user_data)
 {
-	// When GTK called this signal, the widget has already been destroy
-	// thus set the pointer to a valid value, ie NULL .
-	main_wnd = NULL;
+#ifdef __IPAQ__
+    on_exit_without_saving_state1_activate(NULL, NULL);
+#else
+	return;
+#endif
+}
 
-	on_exit_without_saving_state1_activate(NULL, NULL);
+GLADE_CB gboolean
+on_calc_wnd_delete_event           (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+#ifdef __IPAQ__
+    return FALSE;
+#else
+    return TRUE;	// block destroy
+#endif
 }
 
 extern void redraw_skin(void);
@@ -612,8 +624,7 @@ int  hid_exit(void)
     }
 
     // Destroy window
-	if(main_wnd)
-		gtk_widget_destroy(main_wnd);
+    gtk_widget_destroy(main_wnd);
 
     return 0;
 }
