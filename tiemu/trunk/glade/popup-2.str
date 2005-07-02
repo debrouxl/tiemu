@@ -7,9 +7,9 @@
 gchar *s = N_("Welcome to TiEmu II");
 gchar *s = N_("TiEmu II menu (v2.00)");
 gchar *s = N_("Send the selected file to the emulator. This file can be of any type (single, group, backup, FLASH app or FLASH OS).");
-gchar *s = N_("Send _file to TIEmu");
+gchar *s = N_("Send _file to TiEmu...");
 gchar *s = N_("Uncheck it if you are running program which use the linkport for sound.");
-gchar *s = N_("Receive file from TiEmu");
+gchar *s = N_("_Listen for files sent from TiEmu");
 gchar *s = N_("Do the link cable setup.");
 gchar *s = N_("Link _options...");
 gchar *s = N_("_Configuration");

@@ -11,6 +11,11 @@
   <property name="modal">False</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="has_separator">True</property>
 
   <child internal-child="vbox">
@@ -32,6 +37,7 @@
 	      <property name="label">gtk-cancel</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
 	      <signal name="pressed" handler="on_pbar_okbutton1_pressed" last_modification_time="Sun, 16 Feb 2003 13:08:26 GMT"/>
 	    </widget>
@@ -78,7 +84,7 @@
 	      <property name="visible">True</property>
 	      <property name="orientation">GTK_PROGRESS_LEFT_TO_RIGHT</property>
 	      <property name="fraction">0</property>
-	      <property name="pulse_step">0.1</property>
+	      <property name="pulse_step">0.10000000149</property>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -137,6 +143,11 @@
   <property name="modal">False</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="has_separator">True</property>
 
   <child internal-child="vbox">
@@ -158,6 +169,7 @@
 	      <property name="label">gtk-cancel</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
 	      <signal name="pressed" handler="on_pbar_okbutton1_pressed" last_modification_time="Sun, 16 Feb 2003 13:08:42 GMT"/>
 	    </widget>
@@ -173,6 +185,7 @@
 
       <child>
 	<widget class="GtkLabel" id="label3">
+	  <property name="width_request">150</property>
 	  <property name="visible">True</property>
 	  <property name="label" translatable="yes">Message.</property>
 	  <property name="use_underline">False</property>
@@ -203,6 +216,11 @@
   <property name="modal">False</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="has_separator">True</property>
 
   <child internal-child="vbox">
@@ -224,6 +242,7 @@
 	      <property name="label">gtk-cancel</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
 	      <signal name="pressed" handler="on_pbar_okbutton1_pressed" last_modification_time="Sun, 16 Feb 2003 13:08:54 GMT"/>
 	    </widget>
@@ -270,7 +289,7 @@
 	      <property name="visible">True</property>
 	      <property name="orientation">GTK_PROGRESS_LEFT_TO_RIGHT</property>
 	      <property name="fraction">0</property>
-	      <property name="pulse_step">0.1</property>
+	      <property name="pulse_step">0.10000000149</property>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -305,7 +324,7 @@
 	      <property name="visible">True</property>
 	      <property name="orientation">GTK_PROGRESS_LEFT_TO_RIGHT</property>
 	      <property name="fraction">0</property>
-	      <property name="pulse_step">0.1</property>
+	      <property name="pulse_step">0.10000000149</property>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -364,6 +383,11 @@
   <property name="modal">False</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="has_separator">True</property>
 
   <child internal-child="vbox">
@@ -385,6 +409,7 @@
 	      <property name="label">gtk-cancel</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
 	      <signal name="pressed" handler="on_pbar_okbutton1_pressed" last_modification_time="Sun, 16 Feb 2003 13:09:05 GMT"/>
 	    </widget>
@@ -431,7 +456,7 @@
 	      <property name="visible">True</property>
 	      <property name="orientation">GTK_PROGRESS_LEFT_TO_RIGHT</property>
 	      <property name="fraction">0</property>
-	      <property name="pulse_step">0.1</property>
+	      <property name="pulse_step">0.10000000149</property>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -511,6 +536,11 @@
   <property name="modal">False</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="has_separator">True</property>
 
   <child internal-child="vbox">
@@ -532,6 +562,7 @@
 	      <property name="label">gtk-cancel</property>
 	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-6</property>
 	      <signal name="pressed" handler="on_pbar_okbutton1_pressed" last_modification_time="Sun, 16 Feb 2003 13:09:16 GMT"/>
 	    </widget>
@@ -578,7 +609,7 @@
 	      <property name="visible">True</property>
 	      <property name="orientation">GTK_PROGRESS_LEFT_TO_RIGHT</property>
 	      <property name="fraction">0</property>
-	      <property name="pulse_step">0.1</property>
+	      <property name="pulse_step">0.10000000149</property>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -613,7 +644,7 @@
 	      <property name="visible">True</property>
 	      <property name="orientation">GTK_PROGRESS_LEFT_TO_RIGHT</property>
 	      <property name="fraction">0</property>
-	      <property name="pulse_step">0.1</property>
+	      <property name="pulse_step">0.10000000149</property>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>

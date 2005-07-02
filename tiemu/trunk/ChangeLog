@@ -1,7 +1,8 @@
 SubVersion: $Id$
 
 - 25/06/2005, version 2.00:
-	- [roms] $1545: replaced my hand-made about box by the generic one provided with GTK 2.6
+	- [roms] $1552: replaced my hand-made about box by the generic one provided with GTK 2.6
+	- [roms] $1560: TiEMu can be exited from the cross (WM)
 
 - 23/06/2005, version 2.00-rc5:
 	- [roms] $1525: merged Kevin's change in rev $1524 (recfile).
