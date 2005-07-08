@@ -75,6 +75,9 @@
 /* Define to 1 if you have the `ftime' function. */
 #undef HAVE_FTIME
 
+/* Use -fvisibility=hidden flag */
+#undef HAVE_FVISIBILITY
+
 /* Define to 1 if you have the `fwprintf' function. */
 #undef HAVE_FWPRINTF
 
@@ -314,7 +317,7 @@
    slash. */
 #undef LSTAT_FOLLOWS_SLASHED_SYMLINK
 
-/* Define to 1 to disable the debugger */
+/* Defined to disable the debugger */
 #undef NO_DEBUGGER
 
 /* Name of package */

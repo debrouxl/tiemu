@@ -126,7 +126,6 @@ int main(int argc, char **argv)
 	/*
 		Get rid of glib, gdk, gtk warnings when compiled in Release mode
 	*/
-	//g_warning("foo");
 #if !defined(_DEBUG)
 	g_log_set_handler ("GLib", 
 		G_LOG_LEVEL_WARNING | G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO | G_LOG_LEVEL_DEBUG,
@@ -141,7 +140,6 @@ int main(int argc, char **argv)
 	g_log_set_handler ("GLib", G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION, 
 		my_log_handler, NULL);
 #endif
-	//g_warning("bar");
 
     /*
         Set splash screen
