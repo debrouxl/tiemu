@@ -37,11 +37,10 @@
 #include <glib.h>
 
 #include "intl.h"
-#include "bkpts.h"
-#include "tilibs.h"
+#include "ti68k_int.h"
 #include "ti68k_err.h"
-#include "ti68k_def.h"
 #include "dbg_bkpts.h"
+#include "handles.h"
 
 /* Add */
 
@@ -111,7 +110,34 @@ static int ti68k_bkpt_add_pgmentry_offset(uint16_t handle, uint16_t offset)
 
 static uint16_t compute_pgmentry_offset(uint16_t handle)
 {
-    return 2;
+	uint32_t ptr = heap_deref(handle);
+	uint16_t fsize = mem_rd_word(ptr);
+	unsigned char tag = mem_rd_byte(ptr + fsize + 1);
+	switch (tag)
+	{
+		case 0xF3: /* ASM_TAG: nostub or kernel program */
+			if (mem_rd_long(ptr+6) == 0x36386B50) /* kernel program */
+				return mem_rd_word(ptr+14) + 2; /* offset to _main */
+			else /* nostub program (or kernel library, but it makes no sense to
+			        put a program entry breakpoint on a library) */
+				return 2;
+
+		case 0xDC: /* FUNC_TAG: Fargo or TI-BASIC program */
+			if (mem_rd_word(ptr+2) == 0x0032 && mem_rd_long(ptr+4) == 0x45584520
+			    && mem_rd_long(ptr+8) == 0x4150504C) /* Fargo II program */
+			{
+				uint16_t export_table_offset = mem_rd_word(ptr+20);
+				return mem_rd_word(ptr+export_table_offset+2); /* offset to _main */
+			}
+			else if (mem_rd_long(ptr+2) == 0x00503130) /* Fargo I program */
+				return mem_rd_word(ptr+16) + 2; /* offset to _main */
+			else /* Fargo library or TI-BASIC, it makes no sense to put a
+			        program entry breakpoint here... */
+				return 2;
+
+		default: /* unknown file, we should give some kind of error here... */
+			return 2;
+	}
 }
 
 int ti68k_bkpt_add_pgmentry(uint16_t handle) 

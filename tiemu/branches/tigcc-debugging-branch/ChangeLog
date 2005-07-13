@@ -3,8 +3,9 @@ SubVersion: $Id$
 - 25/06/2005, version 2.00:
 	- [roms] $1552: replaced my hand-made about box by the generic one provided with GTK 2.6
 	- [roms] $1560: TiEMu can be exited from the cross (WM)
-	- [roms] $1664: fixed 'backing pixmap problem' (bug #1227433): the scale factor
+	- [roms] $1564: fixed 'backing pixmap problem' (bug #1227433): the scale factor
 		was not retrieved fine from .ini file when the ratio contains ',' instead of '.'
+	- [kevin] $1572/1573: handle program entry breakpoints on _main for kernel/Fargo programs
 
 - 23/06/2005, version 2.00-rc5:
 	- [roms] $1525: merged Kevin's change in rev $1524 (recfile).
