@@ -37,10 +37,9 @@
 #include <glib.h>
 
 #include "intl.h"
-#include "bkpts.h"
-#include "tilibs.h"
+#include "ti68k_int.h"
 #include "ti68k_err.h"
-#include "ti68k_def.h"
+#include "handles.h"
 
 /* Add */
 
@@ -102,10 +101,47 @@ int ti68k_bkpt_add_exception(uint32_t number)
 	return g_list_length(bkpts.exception)-1;
 }
 
+static int ti68k_bkpt_add_pgmentry_offset(uint16_t handle, uint16_t offset)
+{
+    bkpts.pgmentry = g_list_append(bkpts.pgmentry, GINT_TO_POINTER(((uint32_t)handle << 16) + (uint32_t)offset));
+	return g_list_length(bkpts.pgmentry)-1;
+}
+
+static uint16_t compute_pgmentry_offset(uint16_t handle)
+{
+	uint32_t ptr = heap_deref(handle);
+	uint16_t fsize = mem_rd_word(ptr);
+	unsigned char tag = mem_rd_byte(ptr + fsize + 1);
+	switch (tag)
+	{
+		case 0xF3: /* ASM_TAG: nostub or kernel program */
+			if (mem_rd_long(ptr+6) == 0x36386B50) /* kernel program */
+				return mem_rd_word(ptr+14) + 2; /* offset to _main */
+			else /* nostub program (or kernel library, but it makes no sense to
+			        put a program entry breakpoint on a library) */
+				return 2;
+
+		case 0xDC: /* FUNC_TAG: Fargo or TI-BASIC program */
+			if (mem_rd_word(ptr+2) == 0x0032 && mem_rd_long(ptr+4) == 0x45584520
+			    && mem_rd_long(ptr+8) == 0x4150504C) /* Fargo II program */
+			{
+				uint16_t export_table_offset = mem_rd_word(ptr+20);
+				return mem_rd_word(ptr+export_table_offset+2); /* offset to _main */
+			}
+			else if (mem_rd_long(ptr+2) == 0x00503130) /* Fargo I program */
+				return mem_rd_word(ptr+16) + 2; /* offset to _main */
+			else /* Fargo library or TI-BASIC, it makes no sense to put a
+			        program entry breakpoint here... */
+				return 2;
+
+		default: /* unknown file, we should give some kind of error here... */
+			return 2;
+	}
+}
+
 int ti68k_bkpt_add_pgmentry(uint16_t handle) 
 {
-    bkpts.pgmentry = g_list_append(bkpts.pgmentry, GINT_TO_POINTER((uint32_t)handle));
-	return g_list_length(bkpts.pgmentry)-1;
+    return ti68k_bkpt_add_pgmentry_offset(handle, compute_pgmentry_offset(handle));
 }
 
 /* Delete */
@@ -125,6 +161,14 @@ static gint compare_func2(gconstpointer a, gconstpointer b)
 	uint32_t bb = GPOINTER_TO_INT(b);
 
 	return !(BKPT_ADDR(aa) == BKPT_ADDR(bb));
+}
+
+static gint compare_func3(gconstpointer a, gconstpointer b)
+{
+	uint32_t aa = GPOINTER_TO_INT(a);
+	uint32_t bb = GPOINTER_TO_INT(b);
+
+	return !(BKPT_ADDR(aa)>>16 == BKPT_ADDR(bb)>>16);
 }
 
 int ti68k_bkpt_del_address(uint32_t address) 
@@ -235,7 +279,7 @@ int ti68k_bkpt_del_exception(uint32_t number)
 
 int ti68k_bkpt_del_pgmentry(uint16_t handle) 
 {
-	GList *elt = g_list_find_custom(bkpts.pgmentry, GINT_TO_POINTER((uint32_t)handle), compare_func2);
+	GList *elt = g_list_find_custom(bkpts.pgmentry, GINT_TO_POINTER((uint32_t)handle << 16), compare_func3);
     if(elt != NULL)
 		bkpts.pgmentry = g_list_delete_link(bkpts.pgmentry, elt);
 	else
@@ -359,10 +403,10 @@ int ti68k_bkpt_set_exception(uint32_t number, uint32_t new_n)
 int ti68k_bkpt_set_pgmentry(uint16_t handle, uint16_t new_h)
 {
 	GList *elt = g_list_find_custom(bkpts.pgmentry, 
-					GINT_TO_POINTER((uint32_t)handle), 
+					GINT_TO_POINTER((uint32_t)handle << 16), 
 					compare_func2);
 	if(elt != NULL)
-		elt->data = GINT_TO_POINTER((uint32_t)new_h);
+		elt->data = GINT_TO_POINTER(((uint32_t)new_h << 16) + (uint32_t)compute_pgmentry_offset(new_h));
 	else
 		return -1;
 
@@ -458,7 +502,7 @@ int ti68k_bkpt_get_pgmentry(int id, uint16_t *handle)
 	if(g_list_length(bkpts.pgmentry) == 0)
 		return -1;
 	
-	*handle = GPOINTER_TO_INT(g_list_nth(bkpts.pgmentry, id)->data);
+	*handle = GPOINTER_TO_INT(g_list_nth(bkpts.pgmentry, id)->data) >> 16;
 	return 0;
 }
 

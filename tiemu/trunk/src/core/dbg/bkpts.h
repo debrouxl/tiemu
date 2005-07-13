@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@
 	efficient than complex structures.
 */
 
-#define BKPT_MASK			0xff000000
+#define BKPT_MASK			0xc0000000
 
 #define BKPT_ADDR(addr)		((addr) & ~BKPT_MASK)
 #define BKPT_INFO(addr)		((addr) & BKPT_MASK)

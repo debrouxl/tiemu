@@ -203,10 +203,11 @@ int hw_m68k_run(int n, unsigned maxcycles)
 		if((bkpts.pgmentry != NULL) && !(regs.spcflags & SPCFLAG_DBSKIP)
 		   && !(regs.spcflags & SPCFLAG_BRK))
 		{
-			uint16_t handle = GPOINTER_TO_INT(bkpts.pgmentry->data);
+			uint16_t handle = GPOINTER_TO_INT(bkpts.pgmentry->data) >> 16;
+			uint16_t offset = GPOINTER_TO_INT(bkpts.pgmentry->data) & 0xffff;
 			bkpts.id = 0;
 
-			if(heap_deref(handle)+2 == (int)m68k_getpc())
+			if(heap_deref(handle)+offset == (int)m68k_getpc())
 			{
 				bkpts.type = BK_TYPE_PGMENTRY;
 				return DBG_BREAK;
