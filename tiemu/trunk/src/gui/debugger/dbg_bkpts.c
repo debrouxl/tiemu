@@ -450,6 +450,10 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
             sscanf(row_text[COL_END], "%x", &max);
             ti68k_bkpt_del_range(min, max, mode);
             break;
+		case BK_TYPE_PGMENTRY:
+			sscanf(row_text[COL_SYMBOL], "#%04x", &n);
+			ti68k_bkpt_del_pgmentry((uint16_t)n);
+			break;
         }
         g_strfreev(row_text);
     }
@@ -516,6 +520,10 @@ dbgbkpts_button3_clicked                     (GtkButton       *button,
             ti68k_bkpt_set_range(BKPT_ADDR(min), BKPT_ADDR(max), mode,
 								BKPT_DISABLE(min), BKPT_DISABLE(max));
             break;
+		case BK_TYPE_PGMENTRY:
+			//sscanf(row_text[COL_SYMBOL], "#%04x", &n);
+			//ti68k_bkpt_set_pgmentry(BKPT_ADDR(n), BKPT_DISABLE(n));
+			break;
         }
         g_strfreev(row_text);
     }
@@ -581,6 +589,10 @@ dbgbkpts_button4_clicked                     (GtkButton       *button,
             ti68k_bkpt_set_range(BKPT_ADDR(min), BKPT_ADDR(max), mode,
 								BKPT_ENABLE(min), BKPT_ENABLE(max));
             break;
+		case BK_TYPE_PGMENTRY:
+			//sscanf(row_text[COL_SYMBOL], "#%04x", &n);
+			//ti68k_bkpt_set_pgmentry(BKPT_ADDR(n), BKPT_ENABLE(n));
+			break;
         }
         g_strfreev(row_text);
     }
@@ -712,7 +724,6 @@ on_treeview2_button_press_event        (GtkWidget       *widget,
 			if(type != new_type)
 				return TRUE;
 
-			//???
 			if(new_type == BK_TYPE_ACCESS)
 			{
 				ti68k_bkpt_del_access(old_min, old_mode);
