@@ -103,10 +103,20 @@ int ti68k_bkpt_add_exception(uint32_t number)
 	return g_list_length(bkpts.exception)-1;
 }
 
+static int ti68k_bkpt_add_pgmentry_offset(uint16_t handle, uint16_t offset)
+{
+    bkpts.pgmentry = g_list_append(bkpts.pgmentry, GINT_TO_POINTER(((uint32_t)handle << 16) + (uint32_t)offset));
+	return g_list_length(bkpts.pgmentry)-1;
+}
+
+static uint16_t compute_pgmentry_offset(uint16_t handle)
+{
+    return 2;
+}
+
 int ti68k_bkpt_add_pgmentry(uint16_t handle) 
 {
-    bkpts.pgmentry = g_list_append(bkpts.pgmentry, GINT_TO_POINTER((uint32_t)handle));
-	return g_list_length(bkpts.pgmentry)-1;
+    return ti68k_bkpt_add_pgmentry_offset(handle, compute_pgmentry_offset(handle));
 }
 
 /* Delete */
@@ -126,6 +136,14 @@ static gint compare_func2(gconstpointer a, gconstpointer b)
 	uint32_t bb = GPOINTER_TO_INT(b);
 
 	return !(BKPT_ADDR(aa) == BKPT_ADDR(bb));
+}
+
+static gint compare_func3(gconstpointer a, gconstpointer b)
+{
+	uint32_t aa = GPOINTER_TO_INT(a);
+	uint32_t bb = GPOINTER_TO_INT(b);
+
+	return !(BKPT_ADDR(aa)>>16 == BKPT_ADDR(bb)>>16);
 }
 
 int ti68k_bkpt_del_address(uint32_t address) 
@@ -236,7 +254,7 @@ int ti68k_bkpt_del_exception(uint32_t number)
 
 int ti68k_bkpt_del_pgmentry(uint16_t handle) 
 {
-	GList *elt = g_list_find_custom(bkpts.pgmentry, GINT_TO_POINTER((uint32_t)handle), compare_func2);
+	GList *elt = g_list_find_custom(bkpts.pgmentry, GINT_TO_POINTER((uint32_t)handle << 16), compare_func3);
     if(elt != NULL)
 		bkpts.pgmentry = g_list_delete_link(bkpts.pgmentry, elt);
 	else
@@ -360,10 +378,10 @@ int ti68k_bkpt_set_exception(uint32_t number, uint32_t new_n)
 int ti68k_bkpt_set_pgmentry(uint16_t handle, uint16_t new_h)
 {
 	GList *elt = g_list_find_custom(bkpts.pgmentry, 
-					GINT_TO_POINTER((uint32_t)handle), 
+					GINT_TO_POINTER((uint32_t)handle << 16), 
 					compare_func2);
 	if(elt != NULL)
-		elt->data = GINT_TO_POINTER((uint32_t)new_h);
+		elt->data = GINT_TO_POINTER(((uint32_t)new_h << 16) + (uint32_t)compute_pgmentry_offset(new_h));
 	else
 		return -1;
 
@@ -459,7 +477,7 @@ int ti68k_bkpt_get_pgmentry(int id, uint16_t *handle)
 	if(g_list_length(bkpts.pgmentry) == 0)
 		return -1;
 	
-	*handle = GPOINTER_TO_INT(g_list_nth(bkpts.pgmentry, id)->data);
+	*handle = GPOINTER_TO_INT(g_list_nth(bkpts.pgmentry, id)->data) >> 16;
 	return 0;
 }
 
