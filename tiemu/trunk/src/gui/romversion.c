@@ -48,9 +48,8 @@
 gchar *chosen_file = NULL;
 
 enum { 
-	COLUMN_FILENAME, COLUMN_CALC, COLUMN_VERSION, 
-	COLUMN_MEMORY, COLUMN_SIZE, COLUMN_TYPE, 
-    COLUMN_HW
+	COL_FILENAME, COL_CALC, COL_VERSION, 
+	COL_MEMORY, COL_SIZE, COL_TYPE, COL_HW
 };
 #define CLIST_NVCOLS	(7)
 #define CLIST_NCOLS		(7)
@@ -193,8 +192,10 @@ gint display_romversion_dbox(gboolean file_only)
 
     // display list box
 	dbox = glade_xml_get_widget(xml, "romversion_dbox");
+	printf("dbox = %p\n", dbox);
     
     data = glade_xml_get_widget(xml, "clist1");
+	printf("clist = %p\n", data);
     store = clist_create(data);
 	clist_populate(store);
     
@@ -265,7 +266,7 @@ on_romversion_del1_clicked             (GtkButton       *button,
 
 	if (gtk_tree_selection_get_selected (selection, &model, &iter))
     {
-		gtk_tree_model_get(model, &iter, COLUMN_FILENAME, &filename, -1);		
+		gtk_tree_model_get(model, &iter, COL_FILENAME, &filename, -1);		
 		path = g_strconcat(inst_paths.img_dir, filename, NULL);
 		
 		// delete
@@ -278,4 +279,46 @@ on_romversion_del1_clicked             (GtkButton       *button,
 	clist_refresh(store);
 }
 
+GLADE_CB gboolean
+on_romversion_button_press_event       (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data)
+{
+#if 0
+	GtkTreeView *view = GTK_TREE_VIEW(user_data);	//args are swapped, why ?
+    GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkTreeViewColumn *column;
+	GtkTreePath *path;
+    GtkTreeIter iter;
+    gboolean ret;
+
+	printf("<%p %p>\n", widget, user_data);
+
+    if (event->type != GDK_2BUTTON_PRESS)	// double-click ?
+		return FALSE;
+	else
+	{
+		// retrieve selection
+		gint tx = (gint) event->x;
+	    gint ty = (gint) event->y;
+	    gint cx, cy;
+		
+        ret = gtk_tree_view_get_path_at_pos(view, tx, ty, &path, &column, &cx, &cy);
+        if(ret == FALSE)
+            return FALSE;
+
+		if (!gtk_tree_model_get_iter(model, &iter, path))
+		    return FALSE;
+        gtk_tree_path_free(path);
+
+		g_free(chosen_file);
+        gtk_tree_model_get(model, &iter, COL_FILENAME, &chosen_file, -1);		
+		printf("<%s>\n", chosen_file);
+		gtk_widget_destroy(widget);
+                
+		return TRUE;
+    }
+#endif
+    return FALSE;
+}
 

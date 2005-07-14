@@ -73,7 +73,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload);
 int ti68k_get_img_infos(const char *filename, IMG_INFO *img);
 
 int ti68k_convert_rom_to_image(const char *src, const char *dirname, char **dst);
-int ti68k_convert_tib_to_image(const char *src, const char *dirname, char **dst);
+int ti68k_convert_tib_to_image(const char *src, const char *dirname, char **dst, int hw_type);
 int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2, 
                                      const char *dirname, char **dstname);
 
