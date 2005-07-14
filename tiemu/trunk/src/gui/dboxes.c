@@ -34,7 +34,7 @@
 
 static gint ret_val = 0;
 
-void msg_box(const gchar * title, gchar * message)
+int msg_box(const gchar * title, gchar * message)
 {
 	GtkWidget *dialog, *label;
 	gint result;
@@ -42,27 +42,24 @@ void msg_box(const gchar * title, gchar * message)
 
 	if (!strcmp(title, _("Information")))
 		msg_type = GTK_MESSAGE_INFO;
-
 	else if (!strcmp(title, _("Warning")))
 		msg_type = GTK_MESSAGE_WARNING;
-
 	else if (!strcmp(title, _("Question")))
 		msg_type = GTK_MESSAGE_QUESTION;
-
 	else if (!strcmp(title, _("Error")))
 		msg_type = GTK_MESSAGE_ERROR;
 
-	if (msg_type != -1) {
+	if (msg_type != -1) 
+	{
 		dialog =
 		    gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
 					   msg_type, GTK_BUTTONS_CLOSE,
 					   message);
-		while (gtk_events_pending())
-			gtk_main_iteration();
 		gtk_dialog_run(GTK_DIALOG(dialog));
-	} else {
-		dialog =
-		    gtk_dialog_new_with_buttons(title, GTK_WINDOW(NULL),
+	} 
+	else 
+	{
+		dialog = gtk_dialog_new_with_buttons(title, GTK_WINDOW(NULL),
 						(GtkDialogFlags)
 						(GTK_DIALOG_MODAL),
 						GTK_STOCK_OK,
@@ -70,15 +67,15 @@ void msg_box(const gchar * title, gchar * message)
 		gtk_dialog_set_default_response(GTK_DIALOG(dialog),
 						GTK_RESPONSE_OK);
 		label = gtk_label_new(message);
-		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox),
-				  label);
+		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), label);
 		gtk_widget_show(label);
 
 		while (gtk_events_pending())
 			gtk_main_iteration();
 
 		result = gtk_dialog_run(GTK_DIALOG(dialog));
-		switch (result) {
+		switch (result) 
+		{
 		case GTK_RESPONSE_OK:
 			break;
 		default:
@@ -86,6 +83,8 @@ void msg_box(const gchar * title, gchar * message)
 		}
 	}
 	gtk_widget_destroy(dialog);
+
+	return 0;
 }
 
 gint msg_box2(const char *title, char *message)
@@ -93,29 +92,26 @@ gint msg_box2(const char *title, char *message)
 	GtkWidget *dialog;
 	gint result;
 	gint msg_type = -1;
+
 	if (!strcmp(title, _("Information")))
 		msg_type = GTK_MESSAGE_INFO;
-
 	else if (!strcmp(title, _("Warning")))
 		msg_type = GTK_MESSAGE_WARNING;
-
 	else if (!strcmp(title, _("Question")))
 		msg_type = GTK_MESSAGE_QUESTION;
-
 	else if (!strcmp(title, _("Error")))
 		msg_type = GTK_MESSAGE_ERROR;
-
 	else
 		msg_type = GTK_MESSAGE_INFO;
-	dialog =
-	    gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, msg_type,
+
+	dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, msg_type,
 				   GTK_BUTTONS_OK_CANCEL, message);
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog),
 					GTK_RESPONSE_CANCEL);
-	while (gtk_events_pending())
-		gtk_main_iteration();
+
 	result = gtk_dialog_run(GTK_DIALOG(dialog));
-	switch (result) {
+	switch (result) 
+	{
 	case GTK_RESPONSE_OK:
 		gtk_widget_destroy(dialog);
 		return BUTTON1;
@@ -125,6 +121,7 @@ gint msg_box2(const char *title, char *message)
 		return BUTTON2;
 		break;
 	}
+
 	return 0;
 }
 
@@ -133,24 +130,22 @@ gint msg_box3(const char *title, char *message, const char *button1,
 {
 	GtkWidget *dialog, *label;
 	gint result;
+
 	dialog = gtk_dialog_new_with_buttons(title, GTK_WINDOW(NULL),
 					     (GtkDialogFlags)
 					     (GTK_DIALOG_MODAL),
-					     GTK_STOCK_YES,
-					     GTK_RESPONSE_YES,
-					     GTK_STOCK_NO,
-					     GTK_RESPONSE_NO,
-					     GTK_STOCK_CANCEL,
-					     GTK_RESPONSE_CANCEL, NULL);
-	gtk_dialog_set_default_response(GTK_DIALOG(dialog),
-					GTK_RESPONSE_CANCEL);
+					     button1, GTK_RESPONSE_YES,
+					     button2, GTK_RESPONSE_NO,
+					     button3, GTK_RESPONSE_CANCEL, 
+						 NULL);
+	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_CANCEL);
 	label = gtk_label_new(message);
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), label);
 	gtk_widget_show(label);
-	while (gtk_events_pending())
-		gtk_main_iteration();
+
 	result = gtk_dialog_run(GTK_DIALOG(dialog));
-	switch (result) {
+	switch (result) 
+	{
 	case GTK_RESPONSE_YES:
 		gtk_widget_destroy(dialog);
 		return BUTTON1;
@@ -164,6 +159,7 @@ gint msg_box3(const char *title, char *message, const char *button1,
 		return BUTTON3;
 		break;
 	}
+
 	return 0;
 }
 
@@ -171,6 +167,7 @@ gint msg_box4(const char *title, char *message)
 {
 	GtkWidget *dialog, *label;
 	gint result;
+
 	dialog = gtk_dialog_new_with_buttons(title, GTK_WINDOW(NULL),
 					     (GtkDialogFlags)
 					     (GTK_DIALOG_MODAL),
@@ -183,10 +180,10 @@ gint msg_box4(const char *title, char *message)
 	label = gtk_label_new(message);
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), label);
 	gtk_widget_show(label);
-	while (gtk_events_pending())
-		gtk_main_iteration();
+
 	result = gtk_dialog_run(GTK_DIALOG(dialog));
-	switch (result) {
+	switch (result) 
+	{
 	case GTK_RESPONSE_OK:
 		gtk_widget_destroy(dialog);
 		return BUTTON1;
@@ -196,6 +193,7 @@ gint msg_box4(const char *title, char *message)
 		return BUTTON2;
 		break;
 	}
+
 	return 0;
 }
 
@@ -217,15 +215,20 @@ char *msg_entry(const char *title, const char *message,
 	if (!xml)
 		g_error(_("%s: GUI loading failed !\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
+
 	dbox = data = glade_xml_get_widget(xml, "entry_dbox");
 	gtk_window_set_title(GTK_WINDOW(data), title);
+
 	data = glade_xml_get_widget(xml, "frame1");
 	gtk_frame_set_label(GTK_FRAME(data), message);
+
 	data = glade_xml_get_widget(xml, "entry1");
 	entry = GTK_WIDGET(data);
 	gtk_entry_set_text(GTK_ENTRY(data), content);
+
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
-	switch (result) {
+	switch (result) 
+	{
 	case GTK_RESPONSE_OK:
 		ret = g_strdup(gtk_entry_get_text(GTK_ENTRY(entry)));
 		break;
@@ -233,5 +236,6 @@ char *msg_entry(const char *title, const char *message,
 		break;
 	}
 	gtk_widget_destroy(dbox);
+
 	return ret;
 }
