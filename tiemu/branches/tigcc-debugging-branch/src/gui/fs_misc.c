@@ -388,8 +388,23 @@ gint display_import_romversion_dbox(void)
 	}
 	else if(ti68k_is_a_tib_file(filename))
 	{
+		IMG_INFO infos = { 0 };
+		int err = ti68k_get_tib_infos(filename, &infos, 0);
+		int hw_type = 1;
+
+		if(infos.calc_type == TI92p || infos.calc_type == TI89)
+		{
+			int ret = msg_box3(_("HW type"), 
+				_("The FLASH upgrade can be imported as HW1 or HW2. Please choose..."), 
+				"HW1", "HW2", "Default");
+			if(ret == BUTTON1)
+				hw_type = HW1;
+			else if(ret == BUTTON2)
+				hw_type = HW2;
+		}
+
 		// fake rom
-		err = ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname);
+		err = ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname, hw_type);
 		handle_error();
 		g_free(dstname);
 	}

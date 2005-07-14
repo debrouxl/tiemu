@@ -281,7 +281,7 @@ gint display_wz_tib_dbox(void)
         return -1;
     }
 
-    err = ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname);
+    err = ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname, -1);
 	handle_error();
     wizard_rom = g_strdup(dstname);
 	g_free(dstname);

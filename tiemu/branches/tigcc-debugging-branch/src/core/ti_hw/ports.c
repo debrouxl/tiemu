@@ -490,7 +490,7 @@ uint8_t io2_get_byte(uint32_t addr)
 			break;
 		case 0x13:
 			break;
-		case 0x14:	// rw <7...3210>	word
+		case 0x14:	// rw <7...3210>
 			// RTC, incremented every 2^13. The whole word must be read: 
 			// reading the port byte per byte can return wrong value
 			return MSB(tihw.rtc_value);
@@ -547,7 +547,7 @@ void io3_put_byte(uint32_t addr, uint8_t arg)
 			return;
 		// read-write port: bit 0 means clock enabled, bit 1 changing from 0 to
 		// 1 means currently setting clock
-		case 0x5f:
+		case 0x5f:	// rw <......10>
 			if ((tihw.io3[addr] & 3) == 1 && (arg & 3) == 3)
 			{
 				tihw.io3[0x46] = tihw.io3[0x40];
@@ -603,7 +603,7 @@ uint8_t io3_get_byte(uint32_t addr)
 			break;
 		// read-write port: bit 0 means clock enabled, bit 1 changing from 0 to
 		// 1 means currently setting clock, no need to handle it specially here
-		case 0x5f:
+		case 0x5f:	// rw <......10>
 			break;
 	}
   

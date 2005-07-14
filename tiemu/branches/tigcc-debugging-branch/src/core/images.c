@@ -434,7 +434,8 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	Convert an upgrade into an image.
   	The image has neither boot block nor certificate.
 */
-int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **dstname)
+int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **dstname,
+							   int hw_type)
 {
 	FILE *f; 
   	int err;
@@ -488,8 +489,10 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
     img.size = ti68k_get_rom_size(img.calc_type);
     if(img.calc_type == TI89t)
         img.hw_type = HW3;  //default
-    else
+    else if(hw_type == -1)
         img.hw_type = HW2;  //default
+	else
+		img.hw_type = hw_type;
 	
 	// Write header
 	fwrite(&img, 1, sizeof(IMG_INFO), f);
@@ -838,7 +841,7 @@ int ti68k_scan_files(const char *src_dir, const char *dst_dir, int erase)
 
 		if(ti68k_is_a_tib_file(path))
         {
-            ret = ti68k_convert_tib_to_image(path, dst_dir, &dstname);
+            ret = ti68k_convert_tib_to_image(path, dst_dir, &dstname, -1);
 			if(ret)
 				{
 					g_free(dstname);

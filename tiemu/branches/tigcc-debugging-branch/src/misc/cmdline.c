@@ -140,7 +140,7 @@ int scan_cmdline(int argc, char **argv)
 			}
 			else if(ti68k_is_a_tib_file(q))
 			{
-				int err = ti68k_convert_tib_to_image(q, inst_paths.img_dir, &dstname);
+				int err = ti68k_convert_tib_to_image(q, inst_paths.img_dir, &dstname, -1);
 				if(err) 
 				{
 					tiemu_error(err, NULL);
