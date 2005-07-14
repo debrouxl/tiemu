@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -75,5 +75,12 @@ extern uint32_t io3_get_long(uint32_t addr);
 extern void io3_put_long(uint32_t addr, uint32_t arg);
 extern void io3_put_word(uint32_t addr, uint16_t arg);
 extern void io3_put_byte(uint32_t addr, uint8_t  arg);
+
+#define io3_bit_get(a,b)		bit_get(tihw.io3[a],b)
+#define io3_bit_set(a,b)		bit_set(tihw.io3[a],b)
+#define io3_bit_clr(a,b)		bit_clr(tihw.io3[a],b)
+
+#define io3_bit_tst(a,b)		bit_tst(tihw.io3[a],b)
+#define io3_bit_chg(a,b,s)		bit_chg(tihw.io3[a],b,s)	
 
 #endif

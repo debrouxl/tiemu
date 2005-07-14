@@ -154,6 +154,7 @@ extern int lcd_hook_hw1(void);
 void hw_update(void)
 {
 	static unsigned int timer;
+	time_t curr_clock;
 
 	// OSC2 enable (bit clear means oscillator stopped!)
 	int osc2_enabled = io_bit_tst(0x15,1);
@@ -171,14 +172,28 @@ void hw_update(void)
 		}
 	}
 
-	// Increment RTC timer every 8192 seconds
-	if(io2_bit_tst(0x1f, 2) && io2_bit_tst(0x1f, 1))
+	curr_clock = clock();
+	// Increment HW2 RTC timer every 8192 seconds
+	if ((tihw.hw_type >= HW2) && io2_bit_tst(0x1f, 2) && io2_bit_tst(0x1f, 1))
 	{
 		static time_t old_clk;
-		if(((clock() - old_clk) / CLOCKS_PER_SEC) > 8191)
+		if(((curr_clock - old_clk) / CLOCKS_PER_SEC) > 8191)
 		{
-			old_clk = clock();
+			old_clk = curr_clock;
 			tihw.rtc_value++;
+		}
+	}
+	// Increment HW3 RTC timer every second
+	if ((tihw.hw_type >= HW3) && io3_bit_tst(0x5f, 0) && io3_bit_tst(0x5f, 1))
+	{
+		static time_t old_clk;
+		if(((curr_clock - old_clk) / CLOCKS_PER_SEC) > 0)
+		{
+			old_clk = curr_clock;
+			if (!++tihw.io3[0x49])
+				if (!++tihw.io3[0x48])
+					if (!++tihw.io3[0x47])
+						tihw.io3[0x46]++;
 		}
 	}
 

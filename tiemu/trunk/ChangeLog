@@ -6,6 +6,7 @@ SubVersion: $Id$
 	- [roms] $1564: fixed 'backing pixmap problem' (bug #1227433): the scale factor
 		was not retrieved fine from .ini file when the ratio contains ',' instead of '.'
 	- [kevin] $1572/1573: handle program entry breakpoints on _main for kernel/Fargo programs
+	- [kevin] $1574/1575: implemented HW3 RTC
 
 - 23/06/2005, version 2.00-rc5:
 	- [roms] $1525: merged Kevin's change in rev $1524 (recfile).
