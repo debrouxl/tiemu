@@ -525,13 +525,41 @@ void io3_put_byte(uint32_t addr, uint8_t arg)
 {
 	addr &= 255;	//tihw.io3_size-1;
 
-    switch(addr) 
-    {
-        case 0x00:	// rw <76543210>
+	switch(addr) 
+	{
+		case 0x00:	// rw <76543210>
 			break;
-    }
 
-    tihw.io3[addr] = arg;
+		// RTC ports:
+		// write-only ports
+		case 0x40:
+		case 0x41:
+		case 0x42:
+		case 0x43:
+		case 0x44:
+			break;
+		// read-only ports - don't allow writing these
+		case 0x45:
+		case 0x46:
+		case 0x47:
+		case 0x48:
+		case 0x49:
+			return;
+		// read-write port: bit 0 means clock enabled, bit 1 changing from 0 to
+		// 1 means currently setting clock
+		case 0x5f:
+			if ((tihw.io3[addr] & 3) == 1 && (arg & 3) == 3)
+			{
+				tihw.io3[0x46] = tihw.io3[0x40];
+				tihw.io3[0x47] = tihw.io3[0x41];
+				tihw.io3[0x48] = tihw.io3[0x42];
+				tihw.io3[0x49] = tihw.io3[0x43];
+				tihw.io3[0x45] = tihw.io3[0x44];
+			}
+			break;
+	}
+
+	tihw.io3[addr] = arg;
 }
 
 void io3_put_word(uint32_t addr, uint16_t arg) 
@@ -548,18 +576,38 @@ void io3_put_long(uint32_t addr, uint32_t arg)
 
 uint8_t io3_get_byte(uint32_t addr) 
 {
-    int v;
+	int v;
 	
 	addr &= 255;	//tihw.io3_size-1;
 	v = tihw.io3[addr];
 
-    switch(addr) 
-    {
-        case 0x00:
+	switch(addr) 
+	{
+		case 0x00:
 			break;
-    }
+
+		// RTC ports:
+		// write-only ports
+		case 0x40:
+		case 0x41:
+		case 0x42:
+		case 0x43:
+		case 0x44:
+			return 0x14;
+		// read-only ports - no special handling here
+		case 0x45:
+		case 0x46:
+		case 0x47:
+		case 0x48:
+		case 0x49:
+			break;
+		// read-write port: bit 0 means clock enabled, bit 1 changing from 0 to
+		// 1 means currently setting clock, no need to handle it specially here
+		case 0x5f:
+			break;
+	}
   
-    return v;
+	return v;
 }
 
 uint16_t io3_get_word(uint32_t addr) 
