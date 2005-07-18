@@ -25,7 +25,7 @@
  */
 
 /*
-    Symboles (ROM calls address and names)
+    Symbols (ROM calls address and names)
 */
 
 #include <stdlib.h>
@@ -38,10 +38,8 @@
 #include "ti68k_def.h"
 #include "timem.h"
 
-static int old_ct = -1;			// previous calc type for reloading
-static char old_av[5] = "0.00";	// previous AMS version
-static int loaded = 0;			// loaded
-static int reload = 0;			// reload ?
+extern int img_changed;		// set if image modified
+static int loaded = 0;		// loaded
 
 static ROM_CALL table[NMAX_ROMCALLS];	// list by id
 static GList	*list = NULL;			// sorted list (by id, addr or name)
@@ -240,18 +238,17 @@ int romcalls_preload(const char* filename)
 	if(img->calc_type == TI92) return -3;
 
 	// check for reload
-	if((old_ct == img->calc_type) && !strcmp(old_av, img->version) && loaded)
+	if(!img_changed)
 		return -4;
 	else
-	{
-		old_ct = img->calc_type;
-		strcpy(old_av, img->version);
-	}
+		img_changed = 0;
 
 	if(load_from_file(filename))
 		return -1;
+
 	if(merge_from_flash())
 		return -1;
+
 	loaded = !0;
 
     return 0;

@@ -62,6 +62,7 @@
 
 IMG_INFO	img_infos;
 int			img_loaded = 0;
+int			img_changed = 0;
 
 static int get_rom_version(char *ptr, int size, char *version);
 
@@ -729,6 +730,8 @@ int ti68k_load_image(const char *filename)
 	*/
  
   	img_loaded = 1;
+	img_changed = 1;
+
   	return 0;
 }
 
@@ -775,6 +778,8 @@ int ti68k_load_upgrade(const char *filename)
 	strcpy(tihw.rom_version, tib.version);
 
   	img_loaded = 2;
+	img_changed = 2;
+
 	return 0;
 }
 

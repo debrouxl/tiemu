@@ -1,7 +1,8 @@
 SubVersion: $Id$
 
 - 16/07/2005, version 2.00:
-
+	- [roms] $1583: fixed PPhD's bug (bno reload of ROM calls when upgrading)
+	- 
 
 - 25/06/2005, version 2.00-rc6:
 	- [roms] $1552: replaced my hand-made about box by the generic one provided with GTK 2.6
