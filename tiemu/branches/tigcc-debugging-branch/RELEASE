@@ -2,8 +2,8 @@
 
 
 
-Previous version: 2.00-rc4  (20/06/2006)
-Current version:  2.00-rc5  (25/06/2006)
+Previous version: 2.00-rc3  (08/06/2006)
+Current version:  2.00-rc6  (16/07/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,20 +20,30 @@ For the other link cables, no driver is needed.
 New capabilities:
 -----------------
 
-	- none
+	- RTC HW3 support added
+	- handle program entry breakpoints on _main for kernel/Fargo programs
 
 
 Improvements:
 -------------
 
-	- upgraded m68k engine to latest version (add prefetch support among other things)
+	- replaced current icon by Jaime Fernando's one
+	- enable BW screenshot in EPS and PDF; they're treated like color screenshots
+	- added hibou's logo
+	- cleanup and little fixes in interrupt support of m68k
+	- UAE engine upgraded to latest revision
+	- can choose HW1/HW2 when importing a tib/89u/9xu
+	- TiEMu can be exited from the cross (WM)
+	- replaced my hand-made about box by the generic one provided with GTK 2.6
 		
 
 Bug fixes:
 ----------
 
+	- fixed behaviour of all keys and definitely fixed ON key
 	- 'Receive file' check item
-	- bug #1227179 (screenshot).
+	- bug #1227179 (screenshot)
+	- bug #1227433 (backing pixmap problem)
 	
 
 Planned:
@@ -45,4 +55,4 @@ Planned:
 Notes:
 ------
 
-	- none.
+	- the SilverLink cable doesn't make TiEmu crash any longer but it's still unusable
