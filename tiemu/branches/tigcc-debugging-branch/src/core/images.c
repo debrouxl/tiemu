@@ -720,14 +720,14 @@ int ti68k_load_image(const char *filename)
 		return ERR_MALLOC;
     fread(img->data, 1, img->size, f);
 
-	/*
+#if 1
 	{
 		HW_PARM_BLOCK hwblock;
 
 		ti68k_get_hw_param_block(img->data, img->rom_base, &hwblock);
         ti68k_display_hw_param_block(&hwblock);
 	}
-	*/
+#endif
  
   	img_loaded = 1;
 	img_changed = 1;

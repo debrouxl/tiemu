@@ -34,22 +34,17 @@
 #include "tilibs.h"
 #include "support.h"
 #include "struct.h"
-//#include "engine.h"
 #include "tie_error.h"
 
 #include "ti68k_def.h"
 #include "ti68k_int.h"
 
-// uncomment it to get more than 1 USB port
-//#define MORE_USB_PORTS
-
 static TicableLinkParam tmp_lp;
-static gint ad;
 static GtkWidget *button = NULL;
 static gint init = !0;
 static GtkWidget *port = NULL;
 static GtkWidget *tmo = NULL;
-
+static GtkWidget *dly = NULL;
 
 gint display_comm_dbox()
 {
@@ -68,20 +63,11 @@ gint display_comm_dbox()
 	glade_xml_signal_autoconnect(xml);
 
 	dbox = glade_xml_get_widget(xml, "comm_dbox");
-	ad = 0; //options.auto_detect;
-
-	// Auto-detect
-	button = glade_xml_get_widget(xml, "checkbutton_calc_auto");
-	if (ad)
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
-					     TRUE);
-	else
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
-					     FALSE);
 
 	// Cable  
 	data = glade_xml_get_widget(xml, "optionmenu_comm_cable");
-	switch (link_cable.link_type) {
+	switch (link_cable.link_type) 
+	{
 	case LINK_TGL:
 		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 0);
 		break;
@@ -160,68 +146,6 @@ gint display_comm_dbox()
 	  break;
 	}
 
-	// Calc
-	data = glade_xml_get_widget(xml, "optionmenu_comm_calc");
-
-	switch(tihw.calc_type) 
-	{
-    case TI92:  link_cable.calc_type = CALC_TI92;  break;
-    case TI89:  link_cable.calc_type = CALC_TI89;  break;
-    case TI92p: link_cable.calc_type = CALC_TI92P; break;
-	case V200:	link_cable.calc_type = CALC_V200;  break;
-    default: break;
-    }
-
-	switch (link_cable.calc_type) {
-	case CALC_TI73:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 0);
-	  break;
-	  
-	case CALC_TI82:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 1);
-	  break;
-
-	case CALC_TI83:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 2);
-	  break;
-	  
-	case CALC_TI83P:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 3);
-	  break;
-
-	case CALC_TI84P:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 4);
-	  break;
-	  
-	case CALC_TI85:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 5);
-	  break;
-	  
-	case CALC_TI86:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 6);
-	  break;
-	  
-	case CALC_TI89:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 7);
-	  break;
-
-	case CALC_TI89T:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 8);
-	  break;
-	  
-	case CALC_TI92:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 9);
-	  break;
-	  
-	case CALC_TI92P:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 10);
-	  break;
-	  
-	case CALC_V200:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 11);
-	  break;
-	}
-
 	// Timeout
 	tmo = data = glade_xml_get_widget(xml, "spinbutton_comm_timeout");
 	if(link_cable.link_type != LINK_NUL)	
@@ -230,7 +154,7 @@ gint display_comm_dbox()
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), params.timeout);
 	
 	// Delay
-	data = glade_xml_get_widget(xml, "spinbutton_comm_delay");
+	dly = data = glade_xml_get_widget(xml, "spinbutton_comm_delay");
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), link_cable.delay);
 
 	// Avoid early callbacks
@@ -243,6 +167,16 @@ gint display_comm_dbox()
 	switch (result) {
 	case GTK_RESPONSE_OK:
 		tmp_lp.timeout = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmo));
+		tmp_lp.delay   = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(dly));
+
+		switch(tihw.calc_type)
+		{
+    	case TI89:  tmp_lp.calc_type = CALC_TI89;  break;
+		case TI89t: tmp_lp.calc_type = CALC_TI89T; break;
+		case TI92:  tmp_lp.calc_type = CALC_TI92;  break;
+		case TI92p: tmp_lp.calc_type = CALC_TI92P; break;
+		case V200:  tmp_lp.calc_type = CALC_V200;  break;
+		}
 
         memcpy(&link_cable, &tmp_lp, sizeof(TicableLinkParam));
 		if(link_cable.link_type == LINK_NUL)
@@ -281,8 +215,10 @@ comm_cable_changed                     (GtkOptionMenu   *optionmenu,
 	}
 	
 	// force port to avoid libticables bad argument 
-	if(!init) {
-		switch(tmp_lp.link_type) {
+	if(!init) 
+	{
+		switch(tmp_lp.link_type) 
+		{
 		case LINK_TGL:
 		case LINK_SER:
 		case LINK_AVR:
@@ -332,8 +268,9 @@ comm_port_changed                      (GtkOptionMenu   *optionmenu,
 	gchar *ed = menu_item->name;
 	
 	if(!strcmp(ed, "custom1"))
-    		tmp_lp.calc_type = USER_PORT;
-  	else {
+    		tmp_lp.port = USER_PORT;
+  	else 
+	{
     		switch(tmp_lp.link_type)
       		{
       		case LINK_TGL:
@@ -389,7 +326,7 @@ comm_port_changed                      (GtkOptionMenu   *optionmenu,
 
       		default: 
 		break;
-      		}
+      	}
   	}
 }
 
@@ -397,94 +334,6 @@ GLADE_CB void
 comm_port_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-}
-
-
-GLADE_CB void
-comm_calc_changed                      (GtkOptionMenu   *optionmenu,
-                                        gpointer         user_data)
-{
-	gint nitem = gtk_option_menu_get_history(optionmenu);
-
-	switch(nitem)
-	{
-	case 0: 
-			tmp_lp.calc_type = CALC_TI73;
-    		gtk_widget_set_sensitive(button, TRUE);
-	break;
-
-	case 1:
-    		tmp_lp.calc_type = CALC_TI82;
-    		gtk_widget_set_sensitive(button, FALSE);
-  	break;
-
-	case 2:
-	    	tmp_lp.calc_type = CALC_TI83;
-	    	gtk_widget_set_sensitive(button, FALSE);
-  	break;
-
-	case 3:
-    		tmp_lp.calc_type = CALC_TI83P;
-    		gtk_widget_set_sensitive(button, TRUE);
-  	break;
-
-	case 4:
-    		tmp_lp.calc_type = CALC_TI84P;
-    		gtk_widget_set_sensitive(button, TRUE);
-  	break;
-
-	case 5:
-    		tmp_lp.calc_type = CALC_TI85;
-    		gtk_widget_set_sensitive(button, FALSE);
-  	break;
-
-	case 6:
-    		tmp_lp.calc_type = CALC_TI86;
-    		gtk_widget_set_sensitive(button, FALSE);
-  	break;
-
-	case 7:
-    		tmp_lp.calc_type = CALC_TI89;
-    		gtk_widget_set_sensitive(button, TRUE);
-  	break;
-
-	case 8:
-    		tmp_lp.calc_type = CALC_TI89T;
-    		gtk_widget_set_sensitive(button, TRUE);
-  	break;
-
-	case 9:
-    		tmp_lp.calc_type = CALC_TI92;
-    		gtk_widget_set_sensitive(button, FALSE);
-  	break;
-
-	case 10:
-    		tmp_lp.calc_type = CALC_TI92P;
-    		gtk_widget_set_sensitive(button, TRUE);
-  	break;
-
-	case 11:
-    		tmp_lp.calc_type = CALC_V200;
-    		gtk_widget_set_sensitive(button, TRUE);
-	break;
-  	}	
-}
-
-GLADE_CB void
-comm_calc_activate                     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-}
-
-
-GLADE_CB void
-comm_checkbutton_calc_auto_toggled     (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  	if (togglebutton->active == TRUE)
-    		ad = TRUE;
-  	else
-    		ad = FALSE;
 }
 
 
@@ -503,12 +352,4 @@ comm_spinbutton_timeout_changed        (GtkEditable     *editable,
 {
   	tmp_lp.timeout =
     		gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(user_data));
-}
-
-
-GLADE_CB void
-comm_button_log_clicked                (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  	//display_logfile_dbox();
 }
