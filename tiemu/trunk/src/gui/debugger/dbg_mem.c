@@ -314,7 +314,10 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 
 		for(i = COL_0; i <= COL_F; i++)
 		{
-			mem = mem_rd_byte(addr + (i-COL_0)); 
+			if(addr + (i-COL_0) != 0x60000f)
+				mem = mem_rd_byte(addr + (i-COL_0)); 
+			else
+				mem = 0xff;
 
 			str = g_strdup_printf("%02x", mem);
 			ascii[i-COL_0] = (isprint(mem) && !iscntrl(mem) ? mem : '.');
