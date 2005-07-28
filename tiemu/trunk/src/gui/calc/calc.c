@@ -250,6 +250,8 @@ gint display_main_wnd(void)
 	return 0;
 }
 
+extern on_exit_without_saving_state1_activate(GtkMenuItem* item, gpointer data);
+
 GLADE_CB void
 on_calc_wnd_destroy                    (GtkObject       *object,
                                         gpointer         user_data)
