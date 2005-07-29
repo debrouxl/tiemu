@@ -276,8 +276,9 @@ uint8_t io_get_byte(uint32_t addr)
         break;
         case 0x0d:	// r- <76543210>
 			// reading the DBus status register resets that register (as specified by TI)
-			// practically, it's not possible (see the int handler !)
-			//tihw.io[0x0d] = 0x40;
+			// practically, it's not possible for TI92 (see the int handler !)
+			if(tihw.calc_type != TI92)
+				tihw.io[0x0d] = 0x40;
 		break;
         case 0x0e:	// rw <....3210>
 			// %[2-3]: read red/white wires if raw access
