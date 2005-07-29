@@ -3,6 +3,12 @@ SubVersion: $Id$
 - 16/07/2005, version 2.00:
 	- [roms] $1583: fixed PPhD's bug (bno reload of ROM calls when upgrading)
 	- [roms] $1585: fixed comm box (removed calc & autodetect because un-needed)
+	- [roms] $1586: fixed file patterns in file selector (case sensitivity)
+	- [roms] $1588: avoid linkport accesses when browsing memory from dbg window
+	- [roms] $1590: fixed severe bug in linkport (the status register was reset whenever read
+		like specified by TI but the int hanlder proves it's false).
+		TiEmu does not run an infinite loop when transfer is interrupted.
+	- [roms] $1593: previous bug fixed again for _all_ calcs
 
 - 25/06/2005, version 2.00-rc6:
 	- [roms] $1552: replaced my hand-made about box by the generic one provided with GTK 2.6

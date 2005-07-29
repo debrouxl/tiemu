@@ -107,7 +107,7 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         	// %[3:0]: Trigger interrupt level 4 on error, activity, tx empty, rx full
         	// see hardware.c
 			// %6: link disable (usually reset link port or direct access to wires)
-			if(bit_get(arg, 6))
+			if(bit_tst(arg,6) && bit_tst(arg,5))
 				hw_dbus_reset();
         break;
         case 0x0d:	// r- <76543210>
@@ -275,8 +275,9 @@ uint8_t io_get_byte(uint32_t addr)
         	// see hardware.c or dbus.c
         break;
         case 0x0d:	// r- <76543210>
-			// reading the DBus status register resets that register
-			tihw.io[0x0d] = 0x40;
+			// reading the DBus status register resets that register (as specified by TI)
+			// but don't touch the SLE bit
+			tihw.io[0x0d] = (v & 0x80) | 0x40;
 		break;
         case 0x0e:	// rw <....3210>
 			// %[2-3]: read red/white wires if raw access

@@ -109,6 +109,7 @@ int hw_dbus_init(void)
 int hw_dbus_reset(void)
 {
 	hw_dbus_reinit();
+	tihw.io[0x0d] = 0x40;
 
 	return 0;
 }
@@ -190,7 +191,6 @@ static void lp_putbyte(uint8_t arg)
 	if(err)
 	{
 		io_bit_set(0x0d,7);	// error
-		//tiemu_error(err, NULL);
 		printf("lp_putbyte error !\n");
 		return;
 	}
@@ -214,13 +214,11 @@ static uint8_t lp_getbyte(void)
 	if(err)
     {
 		io_bit_set(0x0d,7);	// error
-		//tiemu_error(err, NULL);
 		printf("lp_getbyte error !\n");
-		avail = 0;
 		return 0x00;
     }
-	avail = 0;
 
+	avail = 0;
 	return arg;
 }
 
@@ -236,9 +234,7 @@ static int lp_checkread(void)
 	if(err)
 	{
 	    io_bit_set(0x0d,7);		// error
-	    //tiemu_error(err, NULL);
 		printf("lp_checkread error !\n");
-		avail = 0;
 		return 0x00;
 	}
   
