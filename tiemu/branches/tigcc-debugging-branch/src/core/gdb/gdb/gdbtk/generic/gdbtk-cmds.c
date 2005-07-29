@@ -2466,9 +2466,17 @@ gdb_update_mem (ClientData clientData, Tcl_Interp *interp,
   rnum = 0;
   while (rnum < nbytes)
     {
-      int error;
-      int num = target_read_memory_partial (addr + rnum, mbuf + rnum,
-					    nbytes - rnum, &error);
+      /* (TiEmu 20050729 Kevin Kofler) Avoid link port access when browsing memory. */
+      int error, num;
+      if (addr + rnum == 0x60000f)
+        {
+          mbuf[rnum] = 0xff;
+          rnum++;
+        }
+      else
+        num = target_read_memory_partial (addr + rnum, mbuf + rnum,
+                                          (addr + rnum <= 0x60000f && addr + nbytes > 0x60000f) ?
+                                          (0x60000f - (addr + rnum)) : (nbytes - rnum), &error);
       if (num <= 0)
 	break;
       rnum += num;

@@ -1,3 +1,7 @@
+2005-07-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk-cmds.c (gdb_update_mem): Avoid link port access when browsing memory.
+
 2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * gdbtk.c (gdbtk_source_start_file): Call gdbtk_reinit instead of main.tcl when
