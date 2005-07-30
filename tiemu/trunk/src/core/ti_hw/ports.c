@@ -495,8 +495,8 @@ uint8_t io2_get_byte(uint32_t addr)
 		case 0x13:
 			break;
 		case 0x14:	// rw <7...3210>
-			// RTC, incremented every 2^13. The whole word must be read: 
-			// reading the port byte per byte can return wrong value
+			// RTC hw2 incremented every 2^13 seconds. The whole word must 
+			// be read: reading the port byte per byte can return wrong value.
 			return MSB(tihw.rtc_value);
 			break;
 		case 0x15:
@@ -525,6 +525,10 @@ uint32_t io2_get_long(uint32_t addr)
 
 /** HW3 **/
 
+static struct tm cur, ref;
+static time_t c, r;
+static double d;
+
 void io3_put_byte(uint32_t addr, uint8_t arg)
 {
 	addr &= 255;	//tihw.io3_size-1;
@@ -534,31 +538,58 @@ void io3_put_byte(uint32_t addr, uint8_t arg)
 		case 0x00:	// rw <76543210>
 			break;
 
-		// RTC ports:
-		// write-only ports
 		case 0x40:
 		case 0x41:
 		case 0x42:
-		case 0x43:
-		case 0x44:
+		case 0x43:	// rw <76543210>
+			// RTC hw3: seconds since January 1st, 1997 00:00:00 (loading register)
+			//tihw.rtc_sec =  (tihw.io3[0x40] << 24) | (tihw.io3[0x41] << 16) | (tihw.io3[0x42] <<  8) | (tihw.io3[0x43]);
+			ref.tm_year  = 1997 - 1900;
+			ref.tm_mon   = 0;
+			ref.tm_yday  = 0;
+			ref.tm_mday  = 1;
+			ref.tm_wday  = 3;
+			ref.tm_hour  = 0;
+			ref.tm_min   = 0;
+			ref.tm_sec   = 0;
+			ref.tm_isdst = 1;	// DST or not ?!
+			r = mktime(&ref);
+			//printf("<<%s>>\n", asctime(&ref));
 			break;
-		// read-only ports - don't allow writing these
-		case 0x45:
+		case 0x44:	// rw <....3210>
+			// RTC hw3: 1/16th of seconds, upper digit is always 0 (loading register)
+			//tihw.rtc_16th = arg;
+			break;
+		case 0x45:	// ro <....3210>
+			// RTC hw3: 1/16th of seconds, upper digit is always 0 (counting register)
+			arg &= 0x0f;
+			break;
 		case 0x46:
 		case 0x47:
 		case 0x48:
-		case 0x49:
-			return;
-		// read-write port: bit 0 means clock enabled, bit 1 changing from 0 to
-		// 1 means currently setting clock
-		case 0x5f:	// rw <......10>
-			if ((tihw.io3[addr] & 3) == 1 && (arg & 3) == 3)
+		case 0x49:	// ro <76543210>
+			// RTC hw3: seconds since January 1st, 1997 00:00:00 (counting register)
+			break;		
+		case 0x5f:	// ro/rw <......10>
+			// RTC hw3 control register
+			// bit 0 means clock enabled, 
+			// bit 1 changing from 0 to 1 means currently setting clock
+			arg &= 0x03;
+			if(!bit_tst(arg,0))
+			{
+				//tihw.rtc_sec = 0;
+				tihw.io3[0x40] = tihw.io3[0x41] = tihw.io3[0x42] = tihw.io3[0x43] = 0;				
+			}
+			else if(!bit_tst(arg,1))
 			{
 				tihw.io3[0x46] = tihw.io3[0x40];
 				tihw.io3[0x47] = tihw.io3[0x41];
 				tihw.io3[0x48] = tihw.io3[0x42];
 				tihw.io3[0x49] = tihw.io3[0x43];
 				tihw.io3[0x45] = tihw.io3[0x44];
+
+				//tihw.rtc_sec =  (tihw.io3[0x40] << 24) | (tihw.io3[0x41] << 16) | (tihw.io3[0x42] <<  8) | (tihw.io3[0x43]);
+				//tihw.rtc_16th = tihw.io3[0x44];
 			}
 			break;
 	}
@@ -590,24 +621,30 @@ uint8_t io3_get_byte(uint32_t addr)
 		case 0x00:
 			break;
 
-		// RTC ports:
-		// write-only ports
-		case 0x40:
-		case 0x41:
-		case 0x42:
-		case 0x43:
-		case 0x44:
-			return 0x14;
-		// read-only ports - no special handling here
-		case 0x45:
-		case 0x46:
-		case 0x47:
-		case 0x48:
-		case 0x49:
+		case 0x40: 
+		case 0x41: 
+		case 0x42: 
+		case 0x43: 
+				// rw <76543210>
+			// RTC hw3: seconds since January 1st, 1997 00:00:00 (loading register)
 			break;
-		// read-write port: bit 0 means clock enabled, bit 1 changing from 0 to
-		// 1 means currently setting clock, no need to handle it specially here
+		case 0x44:	// rw <....3210>
+			// RTC hw3: 1/16th of seconds, upper digit is always 0 (loading register)
+			break;
+		case 0x45:	// ro <....3210>
+			// RTC hw3: 1/16th of seconds, upper digit is always 0 (counting register)
+			return (uint8_t)(GetTickCount() % 16);
+		case 0x46: time(&c); v = MSB(MSW((time_t)difftime(c, r))); break;
+		case 0x47: time(&c); v = LSB(MSW((time_t)difftime(c, r))); break;
+		case 0x48: time(&c); v = MSB(LSW((time_t)difftime(c, r))); break;
+		case 0x49: time(&c); v = LSB(LSW((time_t)difftime(c, r))); 
+			// ro <76543210>
+			// RTC hw3: seconds since January 1st, 1997 00:00:00 (counting register)
+			memcpy(&cur, localtime(&c), sizeof(struct tm));
+			//printf("%i <%s>\n", (uint32_t)difftime(c, r), asctime(&cur));
+			break;
 		case 0x5f:	// rw <......10>
+			// RTC hw3 control register
 			break;
 	}
   

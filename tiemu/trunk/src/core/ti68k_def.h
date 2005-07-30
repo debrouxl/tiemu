@@ -138,10 +138,16 @@ typedef struct
 	uint32_t	initial_ssp;// SSP at vector #0
     uint32_t	initial_pc;	// PC  at vector #1
 
-    // timer & rtc
+    // timer
     uint8_t     timer_value;// Current timer value
     uint8_t     timer_init;	// Value to reload
+
+	// rtc (hw2)
 	uint8_t		rtc_value;	// RTC value
+
+	// rtc (hw3)
+	//uint32_t	rtc_sec;	// seconds
+	//uint8_t		rtc_16th;	// 1/16th of seconds
 
 	// protection
 	int			protect;		// hw protection state

@@ -42,6 +42,7 @@
 #include "m68k.h"
 #include "images.h"
 #include "ti68k_def.h"
+#include "time_ms.h"
 
 // This is the ratio OSC1/(OSC2/2^5). We express everything else in fractions of OSC2/2^5.
 // On HW1, AI3 is triggered every ~10/7 of a second.
@@ -154,7 +155,7 @@ extern int lcd_hook_hw1(void);
 void hw_update(void)
 {
 	static unsigned int timer;
-	time_t curr_clock;
+	//time_t curr_clock;
 
 	// OSC2 enable (bit clear means oscillator stopped!)
 	int osc2_enabled = io_bit_tst(0x15,1);
@@ -172,18 +173,21 @@ void hw_update(void)
 		}
 	}
 
-	curr_clock = clock();
 	// Increment HW2 RTC timer every 8192 seconds
 	if ((tihw.hw_type >= HW2) && io2_bit_tst(0x1f, 2) && io2_bit_tst(0x1f, 1))
 	{
-		static time_t old_clk;
-		if(((curr_clock - old_clk) / CLOCKS_PER_SEC) > 8191)
+		static tiTIME ref = 0;
+
+		if(TMS_ELAPSED(ref, 8191 * 1000))
 		{
-			old_clk = curr_clock;
+			TMS_START(ref);
 			tihw.rtc_value++;
 		}
 	}
+
 	// Increment HW3 RTC timer every second
+	/*
+	curr_clk = clock();
 	if ((tihw.hw_type >= HW3) && io3_bit_tst(0x5f, 0) && io3_bit_tst(0x5f, 1))
 	{
 		static time_t old_clk;
@@ -196,6 +200,7 @@ void hw_update(void)
 						tihw.io3[0x46]++;
 		}
 	}
+	*/
 
 	// Toggles every FS (every time the LCD restarts at line 0) -> 90 Hz ~ timer/192
 	// Don't use the actual LCD count (and use 192 rather than 182) to keep exposure
@@ -244,7 +249,7 @@ void hw_update(void)
 		// Check for data arrival (link cable)
 		hw_dbus_checkread();
 
-		// Trigger int4 on: error, link act, txbuf empty or rxbuf full
+		// Auto-int 4: triggered by linkport (error, link act, txbuf empty or rxbuf full)
 		if((io_bit_tst(0x0c,3) && io_bit_tst(0x0d,7))  ||
 			(io_bit_tst(0x0c,2) && io_bit_tst(0x0d,3)) ||
 			(io_bit_tst(0x0c,1) && io_bit_tst(0x0d,6)) ||
