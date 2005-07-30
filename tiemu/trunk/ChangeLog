@@ -9,6 +9,7 @@ SubVersion: $Id$
 		like specified by TI but the int hanlder proves it's false).
 		TiEmu does not run an infinite loop when transfer is interrupted.
 	- [roms] $1593: previous bug fixed again for _all_ calcs
+	- [roms] $1594: set link timeout to 60s for non-NT platforms, 1.5s for others
 
 - 25/06/2005, version 2.00-rc6:
 	- [roms] $1552: replaced my hand-made about box by the generic one provided with GTK 2.6
