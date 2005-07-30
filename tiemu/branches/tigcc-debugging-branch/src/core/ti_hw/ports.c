@@ -108,7 +108,10 @@ void io_put_byte(uint32_t addr, uint8_t arg)
         	// see hardware.c
 			// %6: link disable (usually reset link port or direct access to wires)
 			if(bit_tst(arg,6) && bit_tst(arg,5))
+			{
 				hw_dbus_reset();
+				tihw.io[0x0d] = 0x40;
+			}
         break;
         case 0x0d:	// r- <76543210>
 			break;

@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,6 +36,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+
+#ifdef __MINGW32__
+#include <windows.h>
+#endif
 
 #include "libuae.h"
 #include "hw.h"
@@ -72,6 +76,21 @@ Ti68kBreakpoints	bkpts = { 0 };
   - reset the lib
 */
 
+static int is_win_9x(void)
+{
+#ifdef __WIN32__
+	OSVERSIONINFO os;
+
+	memset(&os, 0, sizeof(OSVERSIONINFO));
+	os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+  	GetVersionEx(&os);
+
+	return (os.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS);
+#else
+	return 0;
+#endif;
+}
+
 /*
   This should be the FIRST function to call (unless the 'params' 
   structure has been properly initialized.
@@ -84,7 +103,8 @@ int ti68k_config_load_default(void)
     params.lcd_rate = -1;
 	params.hw_protect = !0;
 	params.recv_file = 1;
-	params.timeout = 600;	// 60s
+
+	params.timeout = is_win_9x() ? 600 : 15;	// 1.5 or 60s
 
     ticable_get_default_param(&link_cable);
     link_cable.link_type = LINK_NUL;

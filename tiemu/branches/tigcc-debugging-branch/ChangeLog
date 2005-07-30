@@ -6,9 +6,14 @@ SubVersion: $Id$
 	- [roms] $1586: fixed file patterns in file selector (case sensitivity)
 	- [roms] $1588: avoid linkport accesses when browsing memory from dbg window
 	- [roms] $1590: fixed severe bug in linkport (the status register was reset whenever read
-		like specified by TI but the int hanlder proves it's false).
+		like specified by TI but the int handler proves it's false).
 		TiEmu does not run an infinite loop when transfer is interrupted.
 	- [roms] $1593: previous bug fixed again for _all_ calcs
+	- [roms] $1597: set link timeout to 60s for non-NT platforms, 1.5s for others
+	- [roms] $1598: added a new function in the ticables library API (ticable_link_reset)
+		for use by TiEmu. It allows to reset/flush the pipes of virtual linking when the
+		DBus is reset (usually due to transmission error). Link is now resumable.
+	//- [roms] $1601: reimplemented HW3 RTC from latest/new O. Armand's information.
 
 - 25/06/2005, version 2.00-rc6:
 	- [roms] $1552: replaced my hand-made about box by the generic one provided with GTK 2.6
@@ -18,7 +23,7 @@ SubVersion: $Id$
 	- [kevin] $1572/1573: handle program entry breakpoints on _main for kernel/Fargo programs
 	- [kevin] $1574/1575: implemented HW3 RTC
 	- [roms]  $1577: can choose HW1/HW2 when importing a tib file
-    - [kevin] $1580/1581: fixed about box license display on MinGW
+	- [kevin] $1580/1581: fixed about box license display on MinGW
 
 - 23/06/2005, version 2.00-rc5:
 	- [roms] $1525: merged Kevin's change in rev $1524 (recfile).

@@ -109,7 +109,6 @@ int hw_dbus_init(void)
 int hw_dbus_reset(void)
 {
 	hw_dbus_reinit();
-	tihw.io[0x0d] = 0x40;
 
 	return 0;
 }
@@ -180,7 +179,11 @@ static int exit_link_cable(void)
 
 static void lp_reinit(void)
 {
+	int err;
+
 	avail = 0;
+	if((err = lc.reset()))
+		tiemu_error(err, NULL);
 }
 
 static void lp_putbyte(uint8_t arg)
@@ -386,6 +389,11 @@ static int ilp_get(uint8_t *data)
 	return 0;
 }
 
+static int ilp_reset(void)
+{
+	return t2f_flag = f2t_flag = 0;
+}
+
 static int ilp_probe(void)    	{ return 0; }
 static int ilp_close(void)    	{ return 0; }
 static int ilp_term(void)     	{ return 0; }
@@ -409,6 +417,7 @@ static int init_link_file(void)
   	ilc.exit  = ilp_term;
   	ilc.probe = ilp_probe;
   	ilc.check = ilp_check;
+	ilc.reset = ilp_reset;
 
   	ticalc_set_cable(&ilc);
 
