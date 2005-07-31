@@ -39,6 +39,7 @@
 #include "ti68k_err.h"
 #include "flash.h"
 #include "printl.h"
+#include "rtc_hw3.h"
 
 #define SAV_REVISION	11
 
@@ -145,6 +146,11 @@ int ti68k_state_load(char *filename)
 	tihw.archive_limit = thw.archive_limit;
 	memcpy(tihw.ram_exec, thw.ram_exec, 32);
 
+	tihw.rtc3_beg = thw.rtc3_beg;
+	tihw.rtc3_cur = thw.rtc3_cur;
+	tihw.rtc3_ref = thw.rtc3_ref;
+	tihw.rtc3_load = thw.rtc3_load;
+
 	// Load modified FLASH segments
 	ret = fseek(f, sav.rom_offset, SEEK_SET);
 	for(i=0; i<wsm.nblocks; i++)
@@ -247,12 +253,8 @@ int ti68k_state_save(char *filename)
     sav.io_offset = sav.regs_offset + sizeof(regs);
     sav.ram_offset = sav.io_offset + tihw.io_size + tihw.io2_size + tihw.io3_size;
 	sav.misc_offset = sav.ram_offset + tihw.ram_size;
-#if 1
 	sav.rom_offset = sav.misc_offset + sizeof(Ti68kHardware);
     sav.bkpts_offset = sav.rom_offset + wsm.nblocks*sizeof(int) + hw_flash_nblocks()*65536;
-#else
-	sav.bkpts_offset = sav.misc_offset + sizeof(Ti68kHardware);
-#endif
 
     fwrite(&sav, 1, sizeof(SAV_INFO), f);
 	
@@ -267,13 +269,13 @@ int ti68k_state_save(char *filename)
     fwrite(tihw.io , tihw.io_size, 1, f);
     fwrite(tihw.io2, tihw.io2_size, 1, f);
 	fwrite(tihw.io3, tihw.io3_size, 1, f);
-	printf("%i %i %i\n", tihw.io_size, tihw.io2_size, tihw.io3_size);
 	
     
     // Save RAM content
     fwrite(tihw.ram, tihw.ram_size, 1, f);
 
 	// Save misc informations
+	rtc3_state_save();
 	fwrite(&tihw, sizeof(Ti68kHardware), 1, f);
 
 	// Save modified FLASH segments

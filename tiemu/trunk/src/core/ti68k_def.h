@@ -131,8 +131,8 @@ typedef struct
     uint8_t*	rom;		// ROM
     uint8_t*	ram;		// RAM
     uint8_t*	io;			// HW1/2/3 i/o ports
-    uint8_t*	io2;		// HW2/3 i/o ports
-	uint8_t*	io3;		// HW3 i/o ports
+    uint8_t*	io2;		// HW2/3   i/o ports
+	uint8_t*	io3;		// HW3	   i/o ports
     uint8_t*	unused;		// unused
 
 	uint32_t	initial_ssp;// SSP at vector #0
@@ -146,8 +146,10 @@ typedef struct
 	uint8_t		rtc_value;	// RTC value
 
 	// rtc (hw3)
-	//uint32_t	rtc_sec;	// seconds
-	//uint8_t		rtc_16th;	// 1/16th of seconds
+	time_t		rtc3_ref;	// time reference
+	time_t		rtc3_beg;	// time begin
+	time_t		rtc3_cur;	// time current
+	uint32_t	rtc3_load;	// value loaded
 
 	// protection
 	int			protect;		// hw protection state
