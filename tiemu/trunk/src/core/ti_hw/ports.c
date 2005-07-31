@@ -567,18 +567,18 @@ void io3_put_byte(uint32_t addr, uint8_t arg)
 			// bit 1 changing from 0 to 1 loads $710040:44 to $710045-49 and set the clock
 			arg &= 0x03;
 			arg |= 0x80;
-			printf("%i ", arg & 3);
 
 			if(!bit_tst(arg,0))
 			{
 				// RTC is disabled
+				//printf("RTC disabled !\n");
 				tihw.io3[0x40] = tihw.io3[0x41] = tihw.io3[0x42] = tihw.io3[0x43] = 0;				
 				tihw.rtc3_beg = tihw.rtc3_ref;
 			}
 			else if(!bit_tst(arg,1))
 			{
 				// RTC reload
-				printf("RTC reload !\n");
+				//printf("RTC reload !\n");
 				tihw.io3[0x46] = tihw.io3[0x40];
 				tihw.io3[0x47] = tihw.io3[0x41];
 				tihw.io3[0x48] = tihw.io3[0x42];

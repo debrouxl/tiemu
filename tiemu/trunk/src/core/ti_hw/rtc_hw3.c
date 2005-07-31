@@ -60,7 +60,7 @@ int rtc3_init(void)
 	ref.tm_hour  = 0;
 	ref.tm_min   = 0;
 	ref.tm_sec   = 0;
-	tihw.rtc3_beg = tihw.rtc3_cur = mktime(&ref);
+	tihw.rtc3_beg = tihw.rtc3_ref = mktime(&ref);
 	//printf("<<%s>>\n", asctime(&ref));
 
 	return 0;
@@ -96,10 +96,31 @@ int rtc3_state_save(void)
 	return 0;
 }
 
-// call it after ti68k_state_load to fix clock
+// call it after ti68k_state_load to fix clock (fix the clock if calc has been exited)
+// we know calc shut down at 'tihw.rtc3_cur' and restart at 'now' => add elpased time
 int rtc3_state_load(void)
 {
-	
+	//time_t now;
+	//double elapsed;
+
+	// clock disabled ?
+	if(!io3_bit_tst(0x5f,0))
+		return 0;
+
+	// computes time difference
+#if 0
+	time(&now);
+	printf("%s\n", ctime(&tihw.rtc3_beg));
+	printf("%s\n", ctime(&tihw.rtc3_cur));
+	printf("%s\n", ctime(&now));
+
+	//elapsed = difftime(now, tihw.rtc3_cur);	
+	//elapsed = difftime(tihw.rtc3_cur, tihw.rtc3_beg);	
+	//printf("elapsed = %u\n", (unsigned int)elapsed);
+	//tihw.rtc3_load += (unsigned long)elapsed;
+#else
+	time(&tihw.rtc3_cur);
+#endif
 
 	return 0;
 }

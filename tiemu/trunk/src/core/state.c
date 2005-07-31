@@ -148,8 +148,8 @@ int ti68k_state_load(char *filename)
 
 	tihw.rtc3_beg = thw.rtc3_beg;
 	tihw.rtc3_cur = thw.rtc3_cur;
-	tihw.rtc3_ref = thw.rtc3_ref;
 	tihw.rtc3_load = thw.rtc3_load;
+	rtc3_state_load();
 
 	// Load modified FLASH segments
 	ret = fseek(f, sav.rom_offset, SEEK_SET);
@@ -277,6 +277,9 @@ int ti68k_state_save(char *filename)
 	// Save misc informations
 	rtc3_state_save();
 	fwrite(&tihw, sizeof(Ti68kHardware), 1, f);
+
+	time(&tihw.rtc3_cur);
+	//printf("save: %s %s\n", ctime(&tihw.rtc3_beg), ctime(&tihw.rtc3_cur));
 
 	// Save modified FLASH segments
 	for(i=0; i<wsm.nblocks; i++)
