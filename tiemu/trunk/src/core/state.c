@@ -40,7 +40,7 @@
 #include "flash.h"
 #include "printl.h"
 
-#define SAV_REVISION	10
+#define SAV_REVISION	11
 
 static int load_bkpt(FILE *f, GList **l)
 {
@@ -128,7 +128,8 @@ int ti68k_state_load(char *filename)
     // Load I/O ports state
     ret = fseek(f, sav.io_offset, SEEK_SET);
     fread(tihw.io , tihw.io_size, 1, f);
-    fread(tihw.io2, tihw.io_size, 1, f);
+    fread(tihw.io2, tihw.io2_size, 1, f);
+	fread(tihw.io3, tihw.io3_size, 1, f);
     
     // Load RAM content
     ret = fseek(f, sav.ram_offset, SEEK_SET);
@@ -244,7 +245,7 @@ int ti68k_state_save(char *filename)
 
     sav.regs_offset = sizeof(IMG_INFO) + sizeof(SAV_INFO);
     sav.io_offset = sav.regs_offset + sizeof(regs);
-    sav.ram_offset = sav.io_offset + 2*tihw.io_size;
+    sav.ram_offset = sav.io_offset + tihw.io_size + tihw.io2_size + tihw.io3_size;
 	sav.misc_offset = sav.ram_offset + tihw.ram_size;
 #if 1
 	sav.rom_offset = sav.misc_offset + sizeof(Ti68kHardware);
@@ -264,7 +265,10 @@ int ti68k_state_save(char *filename)
     
     // Save I/O ports state
     fwrite(tihw.io , tihw.io_size, 1, f);
-    fwrite(tihw.io2, tihw.io_size, 1, f);
+    fwrite(tihw.io2, tihw.io2_size, 1, f);
+	fwrite(tihw.io3, tihw.io3_size, 1, f);
+	printf("%i %i %i\n", tihw.io_size, tihw.io2_size, tihw.io3_size);
+	
     
     // Save RAM content
     fwrite(tihw.ram, tihw.ram_size, 1, f);
