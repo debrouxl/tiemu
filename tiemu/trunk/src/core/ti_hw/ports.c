@@ -34,6 +34,10 @@
 #include <sys/stat.h>
 #include <signal.h>
 #include <time.h>
+#ifdef __WIN32__
+#include <sys/types.h>
+#include <sys/timeb.h>
+#endif
 
 #include "libuae.h"
 #include "mem.h"
@@ -43,6 +47,12 @@
 #include "m68k.h"
 #include "ti68k_def.h"
 
+static struct tm cur, beg, ref;
+static time_t c, b, r;
+static time_t now;
+static double d;
+static uint32_t rtc_time;
+
 int hw_io_init(void)
 {
 	memset(tihw.io, 0x00, tihw.io_size);
@@ -51,6 +61,23 @@ int hw_io_init(void)
 
 	if(tihw.hw_type > HW1)
 		tihw.lcd_adr = 0x4c00;
+
+	// RTC hw3: compute pseudo-constant because:
+	// - TI counts seconds since January 1st, 1997 00:00:00
+	// - PC counts seconds since January 1st, 1970 00:00:00
+	time(&now);	
+	memcpy(&ref, localtime(&now), sizeof(struct tm));	// get tm_isdst field
+	ref.tm_year  = 1997 - 1900;
+	ref.tm_mon   = 0;
+	ref.tm_yday  = 0;
+	ref.tm_mday  = 1;
+	ref.tm_wday  = 3;
+	ref.tm_hour  = 0;
+	ref.tm_min   = 0;
+	ref.tm_sec   = 0;
+	r = mktime(&ref);
+	b = r;
+	//printf("<<%s>>\n", asctime(&ref));
 
 	return 0;
 }
@@ -525,10 +552,6 @@ uint32_t io2_get_long(uint32_t addr)
 
 /** HW3 **/
 
-static struct tm cur, ref;
-static time_t c, r;
-static double d;
-
 void io3_put_byte(uint32_t addr, uint8_t arg)
 {
 	addr &= 255;	//tihw.io3_size-1;
@@ -542,54 +565,46 @@ void io3_put_byte(uint32_t addr, uint8_t arg)
 		case 0x41:
 		case 0x42:
 		case 0x43:	// rw <76543210>
-			// RTC hw3: seconds since January 1st, 1997 00:00:00 (loading register)
-			//tihw.rtc_sec =  (tihw.io3[0x40] << 24) | (tihw.io3[0x41] << 16) | (tihw.io3[0x42] <<  8) | (tihw.io3[0x43]);
-			ref.tm_year  = 1997 - 1900;
-			ref.tm_mon   = 0;
-			ref.tm_yday  = 0;
-			ref.tm_mday  = 1;
-			ref.tm_wday  = 3;
-			ref.tm_hour  = 0;
-			ref.tm_min   = 0;
-			ref.tm_sec   = 0;
-			ref.tm_isdst = 1;	// DST or not ?!
-			r = mktime(&ref);
-			//printf("<<%s>>\n", asctime(&ref));
+			// RTC hw3: seconds since January 1st, 1997 00:00:00 (loading register)		
+			rtc_time = (tihw.io3[0x46] << 24) | (tihw.io3[0x47] << 16) | (tihw.io3[0x48] << 8) | tihw.io3[0x49];
+			break;
+			printf("rtc_time = %08x\n", rtc_time);
 			break;
 		case 0x44:	// rw <....3210>
 			// RTC hw3: 1/16th of seconds, upper digit is always 0 (loading register)
-			//tihw.rtc_16th = arg;
 			break;
 		case 0x45:	// ro <....3210>
 			// RTC hw3: 1/16th of seconds, upper digit is always 0 (counting register)
 			arg &= 0x0f;
-			break;
+			return;
 		case 0x46:
 		case 0x47:
 		case 0x48:
 		case 0x49:	// ro <76543210>
 			// RTC hw3: seconds since January 1st, 1997 00:00:00 (counting register)
-			break;		
+			return;
 		case 0x5f:	// ro/rw <......10>
 			// RTC hw3 control register
 			// bit 0 means clock enabled, 
 			// bit 1 changing from 0 to 1 means currently setting clock
 			arg &= 0x03;
+			arg |= 0x80;
+
 			if(!bit_tst(arg,0))
 			{
-				//tihw.rtc_sec = 0;
 				tihw.io3[0x40] = tihw.io3[0x41] = tihw.io3[0x42] = tihw.io3[0x43] = 0;				
 			}
 			else if(!bit_tst(arg,1))
 			{
+				printf("RTC reload !\n");
 				tihw.io3[0x46] = tihw.io3[0x40];
 				tihw.io3[0x47] = tihw.io3[0x41];
 				tihw.io3[0x48] = tihw.io3[0x42];
 				tihw.io3[0x49] = tihw.io3[0x43];
 				tihw.io3[0x45] = tihw.io3[0x44];
 
-				//tihw.rtc_sec =  (tihw.io3[0x40] << 24) | (tihw.io3[0x41] << 16) | (tihw.io3[0x42] <<  8) | (tihw.io3[0x43]);
-				//tihw.rtc_16th = tihw.io3[0x44];
+				// get begin time
+				time(&b);
 			}
 			break;
 	}
@@ -633,15 +648,35 @@ uint8_t io3_get_byte(uint32_t addr)
 			break;
 		case 0x45:	// ro <....3210>
 			// RTC hw3: 1/16th of seconds, upper digit is always 0 (counting register)
-			return (uint8_t)(GetTickCount() % 16);
-		case 0x46: time(&c); v = MSB(MSW((time_t)difftime(c, r))); break;
-		case 0x47: time(&c); v = LSB(MSW((time_t)difftime(c, r))); break;
-		case 0x48: time(&c); v = MSB(LSW((time_t)difftime(c, r))); break;
-		case 0x49: time(&c); v = LSB(LSW((time_t)difftime(c, r))); 
+			//return (uint8_t)(GetTickCount() % 16);
+			// beware: this function may be non portable but an equivalent exists for Linux
+			{
+				struct _timeb tb;
+				_ftime(&tb);
+				return (int)(tb.millitm / 0.0625);
+			}
+		case 0x46: 
+			time(&c);
+			rtc_time = (tihw.io3[0x46] << 24) | (tihw.io3[0x47] << 16) | (tihw.io3[0x48] << 8) | tihw.io3[0x49];
+			v = MSB(MSW((time_t)difftime(c, b) + rtc_time)); 
+			break;
+		case 0x47: 
+			time(&c);
+			rtc_time = (tihw.io3[0x46] << 24) | (tihw.io3[0x47] << 16) | (tihw.io3[0x48] << 8) | tihw.io3[0x49];
+			v = LSB(MSW((time_t)difftime(c, b) + rtc_time)); 
+			break;
+		case 0x48: 
+			time(&c);
+			rtc_time = (tihw.io3[0x46] << 24) | (tihw.io3[0x47] << 16) | (tihw.io3[0x48] << 8) | tihw.io3[0x49];
+			v = MSB(LSW((time_t)difftime(c, b) + rtc_time)); 
+			break;
+		case 0x49: 
+			time(&c);
+			rtc_time = (tihw.io3[0x46] << 24) | (tihw.io3[0x47] << 16) | (tihw.io3[0x48] << 8) | tihw.io3[0x49];
+			v = LSB(LSW((time_t)difftime(c, b) + rtc_time)); 
+			break;
 			// ro <76543210>
 			// RTC hw3: seconds since January 1st, 1997 00:00:00 (counting register)
-			memcpy(&cur, localtime(&c), sizeof(struct tm));
-			//printf("%i <%s>\n", (uint32_t)difftime(c, r), asctime(&cur));
 			break;
 		case 0x5f:	// rw <......10>
 			// RTC hw3 control register
