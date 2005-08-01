@@ -28,11 +28,19 @@
 #ifndef __TI68K_RTC3__
 #define __TI68K_RTC3__
 
+typedef struct
+{
+	time_t	s;
+	int		ms;
+} TTIME;
+
 int rtc3_init(void);
 int rtc3_reset(void);
 int rtc3_exit(void);
 
 int rtc3_state_save(void);
 int rtc3_state_load(void);
+
+void rtc3_get_time(TTIME* tt);
 
 #endif

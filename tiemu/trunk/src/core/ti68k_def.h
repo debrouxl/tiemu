@@ -36,6 +36,7 @@
 
 #include "tilibs.h"
 #include "mem_size.h"
+#include "rtc_hw3.h"
 
 /* Equivalences */
 
@@ -146,10 +147,9 @@ typedef struct
 	uint8_t		rtc_value;	// RTC value
 
 	// rtc (hw3)
-	time_t		rtc3_ref;	// time reference
-	time_t		rtc3_beg;	// time begin
-	time_t		rtc3_cur;	// time current
-	uint32_t	rtc3_load;	// value loaded
+	TTIME		rtc3_ref;	// time reference
+	TTIME		rtc3_beg;	// time value when
+	TTIME		rtc3_load;	// clock is load
 
 	// protection
 	int			protect;		// hw protection state

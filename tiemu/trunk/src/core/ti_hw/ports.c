@@ -545,7 +545,6 @@ void io3_put_byte(uint32_t addr, uint8_t arg)
 		case 0x42:
 		case 0x43:	// rw <76543210>
 			// RTC hw3: seconds since January 1st, 1997 00:00:00 (loading register)		
-			//tihw.rtc3_load = (tihw.io3[0x46] << 24) | (tihw.io3[0x47] << 16) | (tihw.io3[0x48] << 8) | tihw.io3[0x49];
 			break;
 		case 0x44:	// rw <....3210>
 			// RTC hw3: 1/16th of seconds, upper digit is always 0 (loading register)
@@ -571,22 +570,22 @@ void io3_put_byte(uint32_t addr, uint8_t arg)
 			if(!bit_tst(arg,0))
 			{
 				// RTC is disabled
-				//printf("RTC disabled !\n");
-				tihw.io3[0x40] = tihw.io3[0x41] = tihw.io3[0x42] = tihw.io3[0x43] = 0;				
-				tihw.rtc3_beg = tihw.rtc3_ref;
+				tihw.io3[0x40] = tihw.io3[0x41] = tihw.io3[0x42] = tihw.io3[0x43] = 0;
+				memcpy(&tihw.rtc3_beg, &tihw.rtc3_ref, sizeof(TTIME));
 			}
 			else if(!bit_tst(arg,1))
 			{
 				// RTC reload
-				//printf("RTC reload !\n");
 				tihw.io3[0x46] = tihw.io3[0x40];
 				tihw.io3[0x47] = tihw.io3[0x41];
 				tihw.io3[0x48] = tihw.io3[0x42];
 				tihw.io3[0x49] = tihw.io3[0x43];
 				tihw.io3[0x45] = tihw.io3[0x44];
 
-				tihw.rtc3_load = (tihw.io3[0x46] << 24) | (tihw.io3[0x47] << 16) | (tihw.io3[0x48] << 8) | tihw.io3[0x49];
-				time(&tihw.rtc3_beg);
+				tihw.rtc3_load.s = (tihw.io3[0x46] << 24) | (tihw.io3[0x47] << 16) | (tihw.io3[0x48] << 8) | tihw.io3[0x49];
+				tihw.rtc3_load.ms = (int)(62.5 * tihw.io3[0x45]);
+
+				rtc3_get_time(&tihw.rtc3_beg);
 			}
 			break;
 	}

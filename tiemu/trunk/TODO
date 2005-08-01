@@ -13,6 +13,9 @@ open next time the debugger is launched (as Insight does it). Showing all
 windows by default simply doesn't scale.
 >>
 
+- RTC HW2 to fix (clock wrap around)
+- bind TiEmu #2 VL automatically when second TiEmu is launched
+
 -------------
 + done
 - in progress

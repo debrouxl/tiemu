@@ -25,8 +25,7 @@
 
 /*
     TI's HW3 RTC helpers.
-*/
-
+ */
 
 #include <stdlib.h>
 #include <string.h>
@@ -39,6 +38,7 @@
 #include "ports.h"
 #include "images.h"
 #include "ti68k_def.h"
+#include "rtc_hw3.h"
 
 int rtc3_init(void)
 {
@@ -58,7 +58,8 @@ int rtc3_init(void)
 	ref.tm_hour  = 0;
 	ref.tm_min   = 0;
 	ref.tm_sec   = 0;
-	tihw.rtc3_beg = tihw.rtc3_ref = mktime(&ref);
+	tihw.rtc3_beg.s  = tihw.rtc3_ref.s  = mktime(&ref);
+	tihw.rtc3_beg.ms = tihw.rtc3_ref.ms = 0;
 	//printf("<<%s>>\n", asctime(&ref));
 
 	return 0;
@@ -74,51 +75,92 @@ int rtc3_exit(void)
 	return 0;
 }
 
-// call it before ti68k_state_save to update registers with current clock
-int rtc3_state_save(void)
+// return seconds and milli-seconds
+void rtc3_get_time(TTIME* tt)
 {
 	struct timeb tb;
 
-	// 1/16th of seconds
+	time(&(tt->s));
+
 	ftime(&tb);
-	tihw.io3[0x45] = (int)(tb.millitm / 0.0625);
-	tihw.io3[0x45] &= 0x0f;
+	tt->ms = tb.millitm;
+}
+
+// tt = t2 - t1 and take care of reporting milli-seconds
+void rtc3_diff_time(TTIME* t2, TTIME* t1, TTIME* tt)
+{
+	tt->s = (time_t)difftime(t2->s, t1->s);
+	tt->ms = t2->ms - t1->ms;
+
+	if(tt->ms < 0)
+	{
+		tt->ms += 1000;
+		tt->s--;
+	}
+}
+
+// tt = t2 + t1 and take care of reporting milli-seconds
+void rtc3_add_time(TTIME* t2, TTIME* t1, TTIME* tt)
+{
+	tt->ms = t1->ms + t2->ms;
+	tt->s = t1->s + t2->s;
+
+	if(tt->ms > 1000)
+	{
+		tt->ms -= 1000;
+		tt->s++;
+	}
+}
+
+// Call it before ti68k_state_save to update registers with current clock
+// so that clock is correcly saved
+int rtc3_state_save(void)
+{
+	TTIME rtc3_cur;
+	TTIME d, a;
+
+	// get time and computes time elapsed since reload (cur - beg + load)
+	rtc3_get_time(&rtc3_cur);
+	rtc3_diff_time(&rtc3_cur, &tihw.rtc3_beg, &d);
+	rtc3_add_time(&d, &tihw.rtc3_load, &a);
+
+	// 1/16th of seconds
+	tihw.io3[0x45] = (int)(a.ms / 62.5);
 
 	// seconds since January 1st, 1997 00:00:00
-	time(&tihw.rtc3_cur);
-	tihw.io3[0x46] = MSB(MSW((time_t)difftime(tihw.rtc3_cur, tihw.rtc3_beg) + tihw.rtc3_load)); 
-	tihw.io3[0x47] = LSB(MSW((time_t)difftime(tihw.rtc3_cur, tihw.rtc3_beg) + tihw.rtc3_load)); 
-	tihw.io3[0x48] = MSB(LSW((time_t)difftime(tihw.rtc3_cur, tihw.rtc3_beg) + tihw.rtc3_load)); 
-	tihw.io3[0x49] = LSB(LSW((time_t)difftime(tihw.rtc3_cur, tihw.rtc3_beg) + tihw.rtc3_load)); 
+	tihw.io3[0x46] = MSB(MSW(a.s)); 
+	tihw.io3[0x47] = LSB(MSW(a.s)); 
+	tihw.io3[0x48] = MSB(LSW(a.s)); 
+	tihw.io3[0x49] = LSB(LSW(a.s)); 
+
+	printf("%i.%i\n", tihw.io3[0x49], tihw.io3[0x45]);
+
+	/*
+	rtc3_diff_time(&rtc3_cur, &tihw.rtc3_beg, &r);
+	printf("%i.%i - %i.%i = %i.%i\n", 
+		rtc3_cur.s, rtc3_cur.ms, tihw.rtc3_beg.s, tihw.rtc3_beg.ms, r.s, r.ms);
+	*/
+	/*
+	rtc3_add_time(&rtc3_cur, &tihw.rtc3_beg, &r);
+	printf("%i.%i - %i.%i = %i.%i\n", 
+		rtc3_cur.s, rtc3_cur.ms, tihw.rtc3_beg.s, tihw.rtc3_beg.ms, r.s, r.ms);
+	*/
 
 	return 0;
 }
 
-// call it after ti68k_state_load to fix clock (fix the clock if calc has been exited)
-// we know calc shut down at 'tihw.rtc3_cur' and restart at 'now' => add elpased time
+// Call it after ti68k_state_load to update current clock so that the calc always
+// display the right time even if calc has been shudown.
 int rtc3_state_load(void)
 {
-	//time_t now;
-	//double elapsed;
+	TTIME rtc3_cur;
 
 	// clock disabled ?
 	if(!io3_bit_tst(0x5f,0))
 		return 0;
 
-	// computes time difference
-#if 0
-	time(&now);
-	printf("%s\n", ctime(&tihw.rtc3_beg));
-	printf("%s\n", ctime(&tihw.rtc3_cur));
-	printf("%s\n", ctime(&now));
-
-	//elapsed = difftime(now, tihw.rtc3_cur);	
-	//elapsed = difftime(tihw.rtc3_cur, tihw.rtc3_beg);	
-	//printf("elapsed = %u\n", (unsigned int)elapsed);
-	//tihw.rtc3_load += (unsigned long)elapsed;
-#else
-	time(&tihw.rtc3_cur);
-#endif
+	// update current time
+	rtc3_get_time(&rtc3_cur);
 
 	return 0;
 }
