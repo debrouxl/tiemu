@@ -31,10 +31,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#ifdef __WIN32__
 #include <sys/types.h>
 #include <sys/timeb.h>
-#endif
 
 #include "libuae.h"
 #include "mem.h"
@@ -79,10 +77,10 @@ int rtc3_exit(void)
 // call it before ti68k_state_save to update registers with current clock
 int rtc3_state_save(void)
 {
-	struct _timeb tb;
+	struct timeb tb;
 
 	// 1/16th of seconds
-	_ftime(&tb);
+	ftime(&tb);
 	tihw.io3[0x45] = (int)(tb.millitm / 0.0625);
 	tihw.io3[0x45] &= 0x0f;
 

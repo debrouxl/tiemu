@@ -41,7 +41,7 @@
 // I don't want to include windows.h here.
 //# include <windows.h>
 //typedef DWORD tiTIME;
-typedef unsigned long tiTIME;
+typedef unsigned long tmsTIME;
 
 #if defined(__WIN32__) && !defined(__MINGW32__)
 
