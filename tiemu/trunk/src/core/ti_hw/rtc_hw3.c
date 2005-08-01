@@ -133,7 +133,7 @@ int rtc3_state_save(void)
 	tihw.io3[0x48] = MSB(LSW(a.s)); 
 	tihw.io3[0x49] = LSB(LSW(a.s)); 
 
-	printf("%i.%i\n", tihw.io3[0x49], tihw.io3[0x45]);
+	//printf("%i.%i\n", tihw.io3[0x49], tihw.io3[0x45]);
 
 	/*
 	rtc3_diff_time(&rtc3_cur, &tihw.rtc3_beg, &r);

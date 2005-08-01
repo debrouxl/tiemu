@@ -60,6 +60,16 @@
 #include "dbg_all.h"
 #include "romversion.h"
 
+// Share a variable between the different instances of TiEmu (counter)
+// Used for virtual linking
+#ifdef __GNUC__
+static int tiemu_inst __attribute__ ((section(".shared"), shared)) = 0;
+#else
+#pragma comment(linker, "/SECTION:.shared,RWS")
+#pragma data_seg(".shared")			
+static int volatile	tiemu_inst = 0;
+#pragma data_seg()
+#endif
 
 ScrOptions options2;
 TieOptions options;		// general tiemu options
@@ -93,6 +103,18 @@ int main(int argc, char **argv)
 	rcfile_default();   // (step 2)
 	rcfile_read();
 	scan_cmdline(argc, argv);
+
+	/*
+		If a second instance of TiEmu is running with virtual link #1,
+		automatically set the second instance to link #2.
+	*/
+	if(link_cable.link_type == LINK_TIE)
+	{
+		if(tiemu_inst == 0)
+			link_cable.port = VIRTUAL_PORT_1;
+		else if(tiemu_inst == 1)
+			link_cable.port = VIRTUAL_PORT_2;
+	}
 
     /* 
 		Init GTK+ (popup menu, boxes, ...)
@@ -227,6 +249,8 @@ int main(int argc, char **argv)
 		handle_error();
 		if(err)	return -1;
 
+		tiemu_inst++;
+
 		/*
 			Load FLASH upgrade (if any)
 		*/
@@ -270,7 +294,7 @@ int main(int argc, char **argv)
 		*/		
 		splash_screen_stop();
 		engine_start();
-		gtk_main();
+		gtk_main();		
 
 		/* 
 			Close the emulator engine
@@ -286,6 +310,7 @@ int main(int argc, char **argv)
 		ti68k_unload_image_or_upgrade();
 	}
 
+	tiemu_inst--;
 	return 0;
 }
 
