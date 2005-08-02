@@ -13,7 +13,9 @@ SubVersion: $Id$
 	- [roms] $1598: added a new function in the ticables library API (ticable_link_reset)
 		for use by TiEmu. It allows to reset/flush the pipes of virtual linking when the
 		DBus is reset (usually due to transmission error). Link is now resumable.
-	//- [roms] $1601: reimplemented HW3 RTC from latest/new O. Armand's information.
+	- [roms] $1601: reimplemented HW3 RTC from latest/new O. Armand's information.
+	- [roms] $1608: automatically bind TiEmu #2 on the second instance of TiEmu
+	- [roms] $1609: fixed wraparound of clock() in RTC hw2 support (~74 minutes).
 
 - 25/06/2005, version 2.00-rc6:
 	- [roms] $1552: replaced my hand-made about box by the generic one provided with GTK 2.6

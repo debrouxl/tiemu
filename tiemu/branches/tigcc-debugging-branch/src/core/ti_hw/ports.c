@@ -42,15 +42,21 @@
 #include "ports.h"
 #include "m68k.h"
 #include "ti68k_def.h"
+#include "rtc_hw3.h"
 
 int hw_io_init(void)
 {
+	// clear hw registers
 	memset(tihw.io, 0x00, tihw.io_size);
 	memset(tihw.io2, 0x00, tihw.io2_size);
 	memset(tihw.io3, 0x00, tihw.io3_size);
 
+	// set LCD base address
 	if(tihw.hw_type > HW1)
 		tihw.lcd_adr = 0x4c00;
+
+	// computes reference
+	rtc3_init();
 
 	return 0;
 }
@@ -495,8 +501,8 @@ uint8_t io2_get_byte(uint32_t addr)
 		case 0x13:
 			break;
 		case 0x14:	// rw <7...3210>
-			// RTC, incremented every 2^13. The whole word must be read: 
-			// reading the port byte per byte can return wrong value
+			// RTC hw2 incremented every 2^13 seconds. The whole word must 
+			// be read: reading the port byte per byte can return wrong value.
 			return MSB(tihw.rtc_value);
 			break;
 		case 0x15:
@@ -534,31 +540,52 @@ void io3_put_byte(uint32_t addr, uint8_t arg)
 		case 0x00:	// rw <76543210>
 			break;
 
-		// RTC ports:
-		// write-only ports
 		case 0x40:
 		case 0x41:
 		case 0x42:
-		case 0x43:
-		case 0x44:
+		case 0x43:	// rw <76543210>
+			// RTC hw3: seconds since January 1st, 1997 00:00:00 (loading register)		
 			break;
-		// read-only ports - don't allow writing these
-		case 0x45:
+		case 0x44:	// rw <....3210>
+			// RTC hw3: 1/16th of seconds, upper digit is always 0 (loading register)
+			arg &= 0x0f;
+			break;
+		case 0x45:	// ro <....3210>
+			// RTC hw3: 1/16th of seconds, upper digit is always 0 (counting register)
+			arg &= 0x0f;
+			return;
 		case 0x46:
 		case 0x47:
 		case 0x48:
-		case 0x49:
+		case 0x49:	// ro <76543210>
+			// RTC hw3: seconds since January 1st, 1997 00:00:00 (counting register)
 			return;
-		// read-write port: bit 0 means clock enabled, bit 1 changing from 0 to
-		// 1 means currently setting clock
-		case 0x5f:	// rw <......10>
-			if ((tihw.io3[addr] & 3) == 1 && (arg & 3) == 3)
+		case 0x5f:	// ro & rw <......10>
+			// RTC hw3 control register
+			// bit 0 means clock enabled ($710040 is set to 0 when disabled), 
+			// bit 1 changing from 0 to 1 loads $710040:44 to $710045-49 and set the clock
+			arg &= 0x03;
+			arg |= 0x80;
+
+			if(!bit_tst(arg,0))
 			{
+				// RTC is disabled
+				tihw.io3[0x40] = tihw.io3[0x41] = tihw.io3[0x42] = tihw.io3[0x43] = 0;
+				memcpy(&tihw.rtc3_beg, &tihw.rtc3_ref, sizeof(TTIME));
+			}
+			else if(!bit_tst(arg,1))
+			{
+				// RTC reload
 				tihw.io3[0x46] = tihw.io3[0x40];
 				tihw.io3[0x47] = tihw.io3[0x41];
 				tihw.io3[0x48] = tihw.io3[0x42];
 				tihw.io3[0x49] = tihw.io3[0x43];
 				tihw.io3[0x45] = tihw.io3[0x44];
+
+				tihw.rtc3_load.s = (tihw.io3[0x46] << 24) | (tihw.io3[0x47] << 16) | (tihw.io3[0x48] << 8) | tihw.io3[0x49];
+				tihw.rtc3_load.ms = (125 * tihw.io3[0x45]) >> 1;
+
+				rtc3_get_time(&tihw.rtc3_beg);
 			}
 			break;
 	}
@@ -590,24 +617,28 @@ uint8_t io3_get_byte(uint32_t addr)
 		case 0x00:
 			break;
 
-		// RTC ports:
-		// write-only ports
-		case 0x40:
-		case 0x41:
-		case 0x42:
-		case 0x43:
-		case 0x44:
-			return 0x14;
-		// read-only ports - no special handling here
-		case 0x45:
-		case 0x46:
+		case 0x40: 
+		case 0x41: 
+		case 0x42: 
+		case 0x43: 	// rw <76543210>
+			// RTC hw3: seconds since January 1st, 1997 00:00:00 (loading register)
+			break;
+		case 0x44:	// rw <....3210>
+			// RTC hw3: 1/16th of seconds, upper digit is always 0 (loading register)
+			v &= 0x0f;
+			break;
+		case 0x45:	// ro <....3210>
+			// RTC hw3: 1/16th of seconds, upper digit is always 0 (counting register)
+			// beware: this function may be non portable but an equivalent exists for Linux
+		case 0x46:	// ro <76543210>
 		case 0x47:
 		case 0x48:
 		case 0x49:
-			break;
-		// read-write port: bit 0 means clock enabled, bit 1 changing from 0 to
-		// 1 means currently setting clock, no need to handle it specially here
+			// RTC hw3: seconds since January 1st, 1997 00:00:00 (counting register)
+			rtc3_state_save();
+			break;			
 		case 0x5f:	// rw <......10>
+			// RTC hw3 control register
 			break;
 	}
   

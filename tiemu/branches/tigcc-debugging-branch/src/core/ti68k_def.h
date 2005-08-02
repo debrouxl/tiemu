@@ -36,6 +36,7 @@
 
 #include "tilibs.h"
 #include "mem_size.h"
+#include "rtc_hw3.h"
 
 /* Equivalences */
 
@@ -131,17 +132,24 @@ typedef struct
     uint8_t*	rom;		// ROM
     uint8_t*	ram;		// RAM
     uint8_t*	io;			// HW1/2/3 i/o ports
-    uint8_t*	io2;		// HW2/3 i/o ports
-	uint8_t*	io3;		// HW3 i/o ports
+    uint8_t*	io2;		// HW2/3   i/o ports
+	uint8_t*	io3;		// HW3	   i/o ports
     uint8_t*	unused;		// unused
 
 	uint32_t	initial_ssp;// SSP at vector #0
     uint32_t	initial_pc;	// PC  at vector #1
 
-    // timer & rtc
+    // timer
     uint8_t     timer_value;// Current timer value
     uint8_t     timer_init;	// Value to reload
+
+	// rtc (hw2)
 	uint8_t		rtc_value;	// RTC value
+
+	// rtc (hw3)
+	TTIME		rtc3_ref;	// time reference
+	TTIME		rtc3_beg;	// time value when
+	TTIME		rtc3_load;	// clock is load
 
 	// protection
 	int			protect;		// hw protection state

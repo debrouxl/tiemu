@@ -81,7 +81,8 @@ core_tihw_OBJ = \
 	core/ti_hw/mem92.o	\
 	core/ti_hw/mem92p.o	\
 	core/ti_hw/memv2.o	\
-	core/ti_hw/ports.o
+	core/ti_hw/ports.o	\
+	core/ti_hw/rtc_hw3.o
 
 core_tisw_OBJ = \
 	core/ti_sw/er_codes.o \
