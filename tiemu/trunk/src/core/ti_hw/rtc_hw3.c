@@ -62,7 +62,7 @@ int rtc3_init(void)
 	tihw.rtc3_beg.ms = tihw.rtc3_ref.ms = 0;
 	//printf("<<%s>>\n", asctime(&ref));
 
-	tihw.io3[0x45] = 0x80;
+	tihw.io3[0x5f] = 0x80;
 
 	return 0;
 }
