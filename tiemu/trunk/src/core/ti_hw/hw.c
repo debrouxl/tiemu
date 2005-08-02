@@ -185,23 +185,6 @@ void hw_update(void)
 		}
 	}
 
-	// Increment HW3 RTC timer every second
-	/*
-	curr_clk = clock();
-	if ((tihw.hw_type >= HW3) && io3_bit_tst(0x5f, 0) && io3_bit_tst(0x5f, 1))
-	{
-		static time_t old_clk;
-		if(((curr_clock - old_clk) / CLOCKS_PER_SEC) > 0)
-		{
-			old_clk = curr_clock;
-			if (!++tihw.io3[0x49])
-				if (!++tihw.io3[0x48])
-					if (!++tihw.io3[0x47])
-						tihw.io3[0x46]++;
-		}
-	}
-	*/
-
 	// Toggles every FS (every time the LCD restarts at line 0) -> 90 Hz ~ timer/192
 	// Don't use the actual LCD count (and use 192 rather than 182) to keep exposure
 	// times consistent

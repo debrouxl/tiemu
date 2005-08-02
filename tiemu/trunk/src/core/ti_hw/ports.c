@@ -583,7 +583,7 @@ void io3_put_byte(uint32_t addr, uint8_t arg)
 				tihw.io3[0x45] = tihw.io3[0x44];
 
 				tihw.rtc3_load.s = (tihw.io3[0x46] << 24) | (tihw.io3[0x47] << 16) | (tihw.io3[0x48] << 8) | tihw.io3[0x49];
-				tihw.rtc3_load.ms = (int)(62.5 * tihw.io3[0x45]);
+				tihw.rtc3_load.ms = (125 * tihw.io3[0x45]) >> 1;
 
 				rtc3_get_time(&tihw.rtc3_beg);
 			}

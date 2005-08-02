@@ -62,6 +62,8 @@ int rtc3_init(void)
 	tihw.rtc3_beg.ms = tihw.rtc3_ref.ms = 0;
 	//printf("<<%s>>\n", asctime(&ref));
 
+	tihw.io3[0x45] = 0x80;
+
 	return 0;
 }
 
@@ -125,7 +127,7 @@ int rtc3_state_save(void)
 	rtc3_add_time(&d, &tihw.rtc3_load, &a);
 
 	// 1/16th of seconds
-	tihw.io3[0x45] = (int)(a.ms / 62.5);
+	tihw.io3[0x45] = (a.ms+a.ms) / 125;
 
 	// seconds since January 1st, 1997 00:00:00
 	tihw.io3[0x46] = MSB(MSW(a.s)); 
