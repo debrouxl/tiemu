@@ -1014,7 +1014,7 @@ void options3_set_default(void)
 	options3.bkpts.rect.y = 560;
 	options3.bkpts.rect.w = 320;
 	options3.bkpts.rect.h = 145;
-	options3.bkpts.closed = 0;
+	options3.bkpts.closed = !0;
 	options3.bkpts.minimized = 0;
 
 	options3.code.rect.x = 510;
@@ -1042,20 +1042,20 @@ void options3_set_default(void)
 	options3.pclog.rect.y = 20;
 	options3.pclog.rect.w = 160;
 	options3.pclog.rect.h = 240;
-	options3.pclog.closed = 0;
+	options3.pclog.closed = !0;
 	options3.pclog.minimized = 0;
 
     options3.stack.rect.x = 300;
     options3.stack.rect.y = 180;
     options3.stack.rect.w = 160;
     options3.stack.rect.h = 250;
-	options3.stack.closed = 0;
+	options3.stack.closed = !0;
 	options3.stack.minimized = 0;
 
 	options3.heap.rect.x = 530;
 	options3.heap.rect.y = 470;
 	options3.heap.rect.w = 160;
 	options3.heap.rect.h = 240;
-	options3.heap.closed = 0;
+	options3.heap.closed = !0;
 	options3.heap.minimized = 0;
 }
