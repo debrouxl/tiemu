@@ -46,7 +46,6 @@
 
 static GladeXML *xml = NULL;
 static GtkWidget *wnd = NULL;
-static gint already_open = 0;
 
 #define FORCE_REFRESH
 #define DUMP_SIZE       128
@@ -411,16 +410,11 @@ GtkWidget* dbgmem_create_window(void)
     
 	notebook_add_page(notebook, "0x000000");
 
-	already_open = !0;
-
 	return wnd = dbox;
 }
 
 GtkWidget* dbgmem_display_window(void)
-{
-	if(!already_open)
-		wnd = dbgmem_create_window();
-   
+{ 
 #ifdef WND_STATE
 	if(!options3.mem.minimized)
 	{

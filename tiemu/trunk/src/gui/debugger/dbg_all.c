@@ -50,10 +50,9 @@ int dbg_on = 0;
 
 /* Functions applicable to the whole debugger */
 
-// create windows but don't show them
+// create windows but don't show them yet
 void gtk_debugger_preload(void)
 {
-	// open debugger windows
 	dbgw.regs  = dbgregs_create_window();
 	dbgw.mem   = dbgmem_create_window();
 	dbgw.bkpts = dbgbkpts_create_window();

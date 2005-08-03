@@ -45,7 +45,6 @@
 
 static GladeXML *xml = NULL;
 static GtkWidget *wnd = NULL;
-static gint already_open = 0;
 
 enum { 
 	    COL_ICON, COL_ADDR, COL_OPCODE, COL_OPERAND,
@@ -385,16 +384,11 @@ GtkWidget* dbgcode_create_window(void)
 
 	dbgromcall_create_window(xml);
 
-	already_open = !0;
-
 	return wnd = dbox;
 }
 
 GtkWidget* dbgcode_display_window(void)
 {
-	if(!already_open)
-		wnd = dbgcode_create_window();
-    
 #ifdef WND_STATE
 	if(!options3.code.minimized)
 	{
