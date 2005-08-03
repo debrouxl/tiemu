@@ -171,14 +171,16 @@ GtkWidget* dbgheap_display_window(void)
 #endif
 
 	clist_refresh(store);
-	gtk_widget_show(wnd);
+
+	if(!GTK_WIDGET_VISIBLE(dbgw.heap) && !options3.heap.closed)
+		gtk_widget_show(wnd);
 
 	return wnd;
 }
 
 void dbgheap_refresh_window(void)
 {
-	if(options3.heap.visible)
+	if(!options3.heap.closed)
 	{
 		clist_refresh(store);
 	}

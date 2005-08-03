@@ -342,7 +342,9 @@ GtkWidget* dbgbkpts_display_window(void)
 
 	gtk_list_store_clear(store);
     clist_populate(store);
-	gtk_widget_show(wnd);
+
+	if(!GTK_WIDGET_VISIBLE(dbgw.bkpts) && !options3.bkpts.closed)
+		gtk_widget_show(wnd);
 
 	display_dbgcause_dbox2(glade_get("statusbar1"));
 
@@ -351,7 +353,7 @@ GtkWidget* dbgbkpts_display_window(void)
 
 void dbgbkpts_refresh_window(void)
 {
-	if(options3.bkpts.visible)
+	if(!options3.bkpts.closed)
 	{
 		gtk_list_store_clear(store);
 		clist_populate(store);

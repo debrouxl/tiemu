@@ -200,14 +200,16 @@ GtkWidget* dbgstack_display_window(void)
 
 	clist_refresh(store1, TARGET_SP);
 	clist_refresh(store2, TARGET_FP);
-	gtk_widget_show(wnd);
+
+	if(!GTK_WIDGET_VISIBLE(dbgw.stack) && !options3.stack.closed)
+		gtk_widget_show(wnd);
 
 	return wnd;
 }
 
 void dbgstack_refresh_window(void)
 {
-	if(options3.stack.visible)
+	if(!options3.stack.closed)
 	{
 		clist_refresh(store1, TARGET_SP);
 		clist_refresh(store2, TARGET_FP);

@@ -1,5 +1,8 @@
 SubVersion: $Id$
 
+- 03/08/2005, version 2.00-rc8:
+	- [roms] $1615: TiEmu retains the state of dbg windows (open/closed) now.
+
 - 16/07/2005, version 2.00-rc7:
 	- [roms] $1583: fixed PPhD's bug (no reload of ROM calls when upgrading)
 	- [roms] $1585: fixed comm box (removed calc & autodetect because un-needed)

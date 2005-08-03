@@ -426,14 +426,16 @@ GtkWidget* dbgmem_display_window(void)
 #endif
 
 	refresh_page(0, 0);
-	gtk_widget_show(wnd);
+
+	if(!GTK_WIDGET_VISIBLE(dbgw.mem) && !options3.mem.closed)
+		gtk_widget_show(wnd);
 
     return wnd;
 }
 
 void dbgmem_refresh_window(void)
 {
-	if(options3.mem.visible)
+	if(!options3.mem.closed)
 	{
         GtkNotebook *nb = GTK_NOTEBOOK(notebook);
 	    gint page = gtk_notebook_get_current_page(nb);

@@ -407,14 +407,14 @@ GtkWidget* dbgcode_display_window(void)
 	clist_refresh(store, TRUE);
 
 	dbgromcall_refresh_window();
-	gtk_widget_show(wnd);
+	gtk_widget_show(wnd);	// always shown
 
     return wnd;
 }
 
 void dbgcode_refresh_window(void)
 {
-	if(options3.code.visible)
+	if(!options3.code.closed)
 	{
 		gtk_list_store_clear(store);
 		clist_refresh(store, TRUE);

@@ -598,14 +598,16 @@ GtkWidget* dbgregs_display_window(void)
 #endif
     
 	ctree_refresh(store);
-	gtk_widget_show(wnd);
+
+	if(!GTK_WIDGET_VISIBLE(dbgw.regs) && !options3.regs.closed)
+		gtk_widget_show(wnd);
 
 	return wnd;
 }
 
 void dbgregs_refresh_window(void)
 {
-	if(options3.regs.visible)
+	if(!options3.regs.closed)
 	{
 		ctree_refresh(store);
 	}
