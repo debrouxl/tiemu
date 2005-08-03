@@ -1,7 +1,7 @@
 SubVersion: $Id$
 
-- 16/07/2005, version 2.00:
-	- [roms] $1583: fixed PPhD's bug (bno reload of ROM calls when upgrading)
+- 16/07/2005, version 2.00-rc7:
+	- [roms] $1583: fixed PPhD's bug (no reload of ROM calls when upgrading)
 	- [roms] $1585: fixed comm box (removed calc & autodetect because un-needed)
 	- [roms] $1586: fixed file patterns in file selector (case sensitivity)
 	- [roms] $1588: avoid linkport accesses when browsing memory from dbg window
@@ -15,7 +15,7 @@ SubVersion: $Id$
 		DBus is reset (usually due to transmission error). Link is now resumable.
 	- [roms] $1601: reimplemented HW3 RTC from latest/new O. Armand's information.
 	- [roms] $1608: automatically bind TiEmu #2 on the second instance of TiEmu
-	- [roms] $1609: fixed wraparound of clock() in RTC hw2 support (~74 minutes).
+	//- [roms] $1609: fixed wraparound of clock() in RTC hw2 support (~74 minutes).
 
 - 25/06/2005, version 2.00-rc6:
 	- [roms] $1552: replaced my hand-made about box by the generic one provided with GTK 2.6
