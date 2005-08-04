@@ -44,9 +44,6 @@
 #include "struct.h"
 #include "dbg_all.h"
 
-static GladeXML *xml = NULL;
-static GtkWidget *wnd = NULL;
-
 #define FORCE_REFRESH
 #define DUMP_SIZE       128
 
@@ -391,6 +388,7 @@ static GtkWidget *notebook;
 */
 GtkWidget* dbgmem_create_window(void)
 {
+	GladeXML *xml = NULL;
 	GtkWidget *dbox;
 	
 	xml = glade_xml_new
@@ -410,7 +408,7 @@ GtkWidget* dbgmem_create_window(void)
     
 	notebook_add_page(notebook, "0x000000");
 
-	return wnd = dbox;
+	return dbox;
 }
 
 GtkWidget* dbgmem_display_window(void)
@@ -418,19 +416,19 @@ GtkWidget* dbgmem_display_window(void)
 #ifdef WND_STATE
 	if(!options3.mem.minimized)
 	{
-		gtk_window_resize(GTK_WINDOW(wnd), options3.mem.rect.w, options3.mem.rect.h);
-		gtk_window_move(GTK_WINDOW(wnd), options3.mem.rect.x, options3.mem.rect.y);
+		gtk_window_resize(GTK_WINDOW(dbgw.mem), options3.mem.rect.w, options3.mem.rect.h);
+		gtk_window_move(GTK_WINDOW(dbgw.mem), options3.mem.rect.x, options3.mem.rect.y);
 	}
 	else
-		gtk_window_iconify(GTK_WINDOW(wnd));
+		gtk_window_iconify(GTK_WINDOW(dbgw.mem));
 #endif
 
 	refresh_page(0, 0);
 
 	if(!GTK_WIDGET_VISIBLE(dbgw.mem) && !options3.mem.closed)
-		gtk_widget_show(wnd);
+		gtk_widget_show(dbgw.mem);
 
-    return wnd;
+    return dbgw.mem;
 }
 
 void dbgmem_refresh_window(void)

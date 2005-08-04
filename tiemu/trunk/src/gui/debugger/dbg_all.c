@@ -636,15 +636,15 @@ on_dbgheap_window_state_event		   (GtkWidget       *widget,
 // callbacks from dbg_iop.c
 GLADE_CB gboolean
 on_dbgioports_window_delete_event       (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
+                                        GdkEvent         *event,
+                                        gpointer          user_data)
 {
     gtk_widget_hide(widget);    
     return TRUE;
 }
 
 GLADE_CB void
-on_dbgioports_window_state_event		   (GtkWidget       *widget,
+on_dbgioports_window_state_event	   (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {

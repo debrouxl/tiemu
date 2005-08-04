@@ -40,9 +40,6 @@
 #include "struct.h"
 #include "dbg_all.h"
 
-static GladeXML *xml = NULL;
-static GtkWidget *wnd = NULL;
-
 enum { 
 	    COL_ADDR, COL_DATA, COL_FONT
 };
@@ -153,6 +150,7 @@ static GtkListStore *store2 = NULL;
 */
 GtkWidget* dbgstack_create_window(void)
 {
+	GladeXML *xml = NULL;
 	GtkWidget *dbox;
     GtkWidget *data;
 	
@@ -183,7 +181,7 @@ GtkWidget* dbgstack_create_window(void)
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 
-	return wnd = dbox;
+	return dbox;
 }
 
 GtkWidget* dbgstack_display_window(void)
@@ -191,20 +189,20 @@ GtkWidget* dbgstack_display_window(void)
 #ifdef WND_STATE
 	if(!options3.stack.minimized)
 	{
-		gtk_window_resize(GTK_WINDOW(wnd), options3.stack.rect.w, options3.stack.rect.h);
-		gtk_window_move(GTK_WINDOW(wnd), options3.stack.rect.x, options3.stack.rect.y);
+		gtk_window_resize(GTK_WINDOW(dbgw.stack), options3.stack.rect.w, options3.stack.rect.h);
+		gtk_window_move(GTK_WINDOW(dbgw.stack), options3.stack.rect.x, options3.stack.rect.y);
 	}
 	else
-		gtk_window_iconify(GTK_WINDOW(wnd));
+		gtk_window_iconify(GTK_WINDOW(dbgw.stack));
 #endif
 
 	clist_refresh(store1, TARGET_SP);
 	clist_refresh(store2, TARGET_FP);
 
 	if(!GTK_WIDGET_VISIBLE(dbgw.stack) && !options3.stack.closed)
-		gtk_widget_show(wnd);
+		gtk_widget_show(dbgw.stack);
 
-	return wnd;
+	return dbgw.stack;
 }
 
 void dbgstack_refresh_window(void)

@@ -43,9 +43,6 @@
 
 //#define FIXED_SIZE
 
-static GladeXML *xml = NULL;
-static GtkWidget *wnd = NULL;
-
 enum { 
 	    COL_ICON, COL_ADDR, COL_OPCODE, COL_OPERAND,
         COL_HEXADDR, COL_FONT, COL_COLOR
@@ -60,6 +57,8 @@ enum {
 #else
 static gint NLINES = 10;	
 #endif
+
+GladeXML *xml = NULL;
 
 static GtkListStore* clist_create(GtkWidget *widget)
 {
@@ -384,7 +383,7 @@ GtkWidget* dbgcode_create_window(void)
 
 	dbgromcall_create_window(xml);
 
-	return wnd = dbox;
+	return dbox;
 }
 
 GtkWidget* dbgcode_display_window(void)
@@ -392,11 +391,11 @@ GtkWidget* dbgcode_display_window(void)
 #ifdef WND_STATE
 	if(!options3.code.minimized)
 	{
-		gtk_window_resize(GTK_WINDOW(wnd), options3.code.rect.w, options3.code.rect.h);
-		gtk_window_move(GTK_WINDOW(wnd), options3.code.rect.x, options3.code.rect.y);
+		gtk_window_resize(GTK_WINDOW(dbgw.code), options3.code.rect.w, options3.code.rect.h);
+		gtk_window_move(GTK_WINDOW(dbgw.code), options3.code.rect.x, options3.code.rect.y);
 	}
 	else
-		gtk_window_iconify(GTK_WINDOW(wnd));
+		gtk_window_iconify(GTK_WINDOW(dbgw.code));
 #endif
 
 	gtk_widget_set_sensitive(list, TRUE);	
@@ -407,9 +406,9 @@ GtkWidget* dbgcode_display_window(void)
 	clist_refresh(store, TRUE);
 
 	dbgromcall_refresh_window();
-	gtk_widget_show(wnd);	// always shown
+	gtk_widget_show(dbgw.code);	// always shown
 
-    return wnd;
+    return dbgw.code;
 }
 
 void dbgcode_refresh_window(void)

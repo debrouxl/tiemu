@@ -158,6 +158,7 @@ int ioports_load(const char* path)
 	}
 
 	tree = g_node_new(NULL);
+	printf("\ntop: %p\n", tree);
 
 	for(n = 0; !feof(f);)
 	{
@@ -170,10 +171,13 @@ int ioports_load(const char* path)
 		else if(line[0] == '[')
 		{
 			char *name = get_section(line);
-
 			if(name == NULL) return -1;
 
-			parent = g_node_new(name);
+			s = (IOPORT*)calloc(1, sizeof(IOPORT));
+			s->name = strdup(name);
+
+			parent = g_node_new(s);
+			printf(" parent: %p\n", parent);
 			g_node_append(tree, parent);
 
 			continue;
@@ -204,6 +208,7 @@ int ioports_load(const char* path)
 		}
 
 		node = g_node_new(s);
+		printf("  node: %p\n", node);
 		g_node_append(parent, node);
 
 		n++;
