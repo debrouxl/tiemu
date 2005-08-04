@@ -71,6 +71,15 @@ static int tiemu_inst __attribute__ ((section(".shared"), shared)) = 0;
 static int volatile	tiemu_inst = 0;
 #pragma data_seg()
 #endif
+#else
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#define SHM_SIZE 1
+#define SHM_KEY 0x71E11C07 /* TIEmu LInk COunTer */
+static int shmid;
+static unsigned char *shmaddr;
+#define tiemu_inst (*shmaddr)
 #endif
 
 ScrOptions options2;
@@ -110,7 +119,14 @@ int main(int argc, char **argv)
 		If a second instance of TiEmu is running with virtual link #1,
 		automatically set the second instance to link #2.
 	*/
-#ifdef __WIN32__
+#ifndef __WIN32__
+	/* Create or reuse shared memory. Shared memory is initialized to 0
+	   according to the online docs by the Open Group. */
+	if ((shmid = shmget(SHM_KEY, SHM_SIZE, IPC_CREAT | 0666)) < 0)
+		return -1;
+	if ((shmaddr = shmat(shmid, NULL, 0)) == (char *)-1)
+		return -1;
+#endif
 	if(link_cable.link_type == LINK_TIE)
 	{
 		if(tiemu_inst == 0)
@@ -118,7 +134,6 @@ int main(int argc, char **argv)
 		else if(tiemu_inst == 1)
 			link_cable.port = VIRTUAL_PORT_2;
 	}
-#endif
 
     /* 
 		Init GTK+ (popup menu, boxes, ...)
@@ -315,7 +330,17 @@ int main(int argc, char **argv)
 		ti68k_unload_image_or_upgrade();
 	}
 
-	
+#ifndef __WIN32__
+	/* Cleanup shared memory if we're the last instance running, else detach only. */
+	if (!tiemu_inst)
+	{
+		struct shmid_ds shmid_ds;
+		shmdt(shmaddr);
+		shmctl(shmid, IPC_RMID, &shmid_ds);
+	}
+	else
+		shmdt(shmaddr);
+#endif
 	return 0;
 }
 
