@@ -47,6 +47,7 @@
 #include "screenshot.h"
 #include "kbd_mapper.h"
 #include "printl.h"
+#include "gscales.h"
 
 GtkWidget *main_wnd = NULL;
 gboolean explicit_destroy = 0;
@@ -461,8 +462,6 @@ extern volatile int lcd_flag;
 extern volatile int debugger;
 static guint tid = -1;
 
-extern int lcd_hook_hw2(int);
-
 static gint hid_refresh (gpointer data)
 {
     if(lcd_flag || (tihw.hw_type >= HW2))
@@ -485,11 +484,6 @@ void compute_grayscale(void);
 
 int  hid_init(void)
 {
-	extern uint32_t lcd_planes[3];
-	extern int ngc;
-	extern uint8_t *lcd_planebufs[3];
-	extern int lcd_changed;
-
     // Found a PC keyboard keymap
     match_keymap(tihw.calc_type);
 

@@ -41,6 +41,7 @@
 #include "handles.h"
 #include "flash.h"
 #include "dbus.h"
+#include "gscales.h"
 
 int pending_ints;
 
@@ -117,8 +118,6 @@ void hw_m68k_irq(int n)
 				if (pending_ints & mask)	\
 					break;	\
 	}
-
-extern void lcd_hook_hw2(int);
 
 /* Replace UAE's M68000_run() */
 

@@ -43,6 +43,7 @@
 #include "images.h"
 #include "ti68k_def.h"
 #include "time_ms.h"
+#include "gscales.h"
 
 // This is the ratio OSC1/(OSC2/2^5). We express everything else in fractions of OSC2/2^5.
 // On HW1, AI3 is triggered every ~10/7 of a second.
@@ -145,8 +146,6 @@ int hw_exit(void)
 
 G_LOCK_DEFINE(lcd_flag);
 volatile int lcd_flag = !0;
-
-extern int lcd_hook_hw1(void);
 
 /*
     This function is called by do_cycles to regularly updates the hardware.
