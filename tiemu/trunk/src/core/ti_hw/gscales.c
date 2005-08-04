@@ -47,6 +47,8 @@
 #define UPDATE_PLANES	16	// must be a multiple of BUFSIZE
 
 uint32_t lcd_planes[5];
+uint8_t *lcd_planebufs[3];
+int lcd_changed = 0;
 int ngc = 1;
 
 /*
@@ -55,6 +57,7 @@ int ngc = 1;
 static void process_address(uint32_t plane_addr)
 {
 	static uint32_t lcd_addrs[BUFSIZE];
+	static uint8_t lcd_buffers[BUFSIZE*3][3840];
 	static int lcd_cumulative_tickcounts[BUFSIZE];
     static int lcd_last_plane_count;
 	static uint32_t lcd_last_planes[3];
@@ -74,6 +77,13 @@ static void process_address(uint32_t plane_addr)
 		{
 			case 2:
 				if (plane_addr == lcd_last_planes[1]) break;
+				// We have a third plane we haven't had before. Try resetting.
+				if (ngc <= 4)
+				{
+					cnt += BUFSIZE - (cnt % BUFSIZE);
+					already_reset = 1;
+					break;
+				}
 			case 1:
 				if (plane_addr == lcd_last_planes[0]) break;
 			case 0:
@@ -82,17 +92,33 @@ static void process_address(uint32_t plane_addr)
 			default:
 				if (plane_addr == lcd_last_planes[0] || plane_addr == lcd_last_planes[1] || plane_addr == lcd_last_planes[2]) break;
 				// We have a 4th plane, reset the buffer.
-				cnt -= cnt % BUFSIZE;
+				cnt += BUFSIZE - (cnt % BUFSIZE);
 				already_reset = 1;
 		}
 	}
 
 	lcd_addrs[cnt % BUFSIZE] = plane_addr;
+	memcpy(lcd_buffers[cnt % (BUFSIZE * 3)], &tihw.ram[plane_addr], 3840);
+	if (plane_addr == lcd_planes[0])
+	{
+		lcd_planebufs[0] = lcd_buffers[cnt % (BUFSIZE * 3)];
+		lcd_changed = 1;
+	}
+	else if (ngc > 1 && plane_addr == lcd_planes[1])
+	{
+		lcd_planebufs[1] = lcd_buffers[cnt % (BUFSIZE * 3)];
+		lcd_changed = 1;
+	}
+	else if (ngc > 4 && plane_addr == lcd_planes[2])
+	{
+		lcd_planebufs[2] = lcd_buffers[cnt % (BUFSIZE * 3)];
+		lcd_changed = 1;
+	}
 	lcd_cumulative_tickcounts[cnt++ % BUFSIZE] = tihw.lcd_tick;
 
 	if(!(cnt % UPDATE_PLANES))
 	{
-		int np, i, ngp=1;
+		int np, i, buffer_offset, ngp=1;
 		static int old_ngp=1;
 
 		already_reset = 0;
@@ -296,6 +322,52 @@ static void process_address(uint32_t plane_addr)
 				ngc = 7;
 		}
 
+		// set the pointers to the plane buffers
+		switch ((cnt / BUFSIZE) % 3)
+		{
+			case 1:
+				buffer_offset = 0;
+				break;
+			case 2:
+				buffer_offset = BUFSIZE;
+				break;
+			default:
+				buffer_offset = 2 * BUFSIZE;
+				break;
+		}
+		for (i = BUFSIZE - 1; i >= 0; i--)
+		{
+			if (lcd_addrs[i] == lcd_planes[0])
+			{
+				lcd_planebufs[0] = lcd_buffers[i + buffer_offset];
+				break;
+			}
+		}
+		if (ngp >= 2)
+		{
+			for (i = BUFSIZE - 1; i >= 0; i--)
+			{
+				if (lcd_addrs[i] == lcd_planes[1])
+				{
+					lcd_planebufs[1] = lcd_buffers[i + buffer_offset];
+					break;
+				}
+			}
+		}
+		if (ngp >= 3)
+		{
+			for (i = BUFSIZE - 1; i >= 0; i--)
+			{
+				if (lcd_addrs[i] == lcd_planes[2])
+				{
+					lcd_planebufs[2] = lcd_buffers[i + buffer_offset];
+					break;
+				}
+			}
+		}
+
+		lcd_changed = 1;
+
 #if 0
 		for (i=cycle_start; i<cycle_end; i++)
 				printf("%05x ", lcd_addrs[i]);
@@ -335,14 +407,16 @@ void lcd_hook_hw2(int refresh)
 #pragma warning( pop ) 
 #endif
 
-	// if refresh from GTK (calc.c), set 1 plane
+	// if refresh from GTK (calc.c), set 1 plane, read directly from LCD_MEM
 	if(refresh)
 	{
 		if(++dead_cnt < 5)
 			return;
 
 		lcd_planes[0] = tihw.lcd_adr;
+		lcd_planebufs[0] = &tihw.ram[tihw.lcd_adr];
 		ngc = 1;
+		lcd_changed = 1;
 	}	
 
 	// if refresh from CPU loop (m68k.c), search for opcode signature:
