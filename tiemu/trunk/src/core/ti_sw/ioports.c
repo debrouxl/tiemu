@@ -34,8 +34,7 @@
 #include "ti68k_def.h"
 #include "ioports.h"
 
-static IOPORT **table;
-static int		size;
+GNode*	tree = NULL;
 
 const char* ioports_get_filename()
 {
@@ -50,6 +49,26 @@ const char* ioports_get_filename()
 	}
 
 	return "";
+}
+
+// get section name [section]
+static char* get_section(char *s)
+{
+	char *b, *e;
+
+	b = strchr(s, '[');
+	e = strrchr(s, ']');
+
+	if(!b ||!e)
+	{
+		fprintf(stdout, "Missing '[' or ']' token in section name!\n");
+		return NULL;
+	}
+
+	b++;
+	*e = '\0';
+
+	return b;
 }
 
 // convert "ro", "wo", "rw" into value
@@ -121,10 +140,16 @@ int ioports_load(const char* path)
 {
 	FILE *f;
 	gchar *filename;
-	int i, n ,nlines;
+	int n;
 	char line[1024];
+
+	GNode* parent = NULL;
+	GNode* node;
 	
 	filename = g_strconcat(path, ioports_get_filename(), NULL);
+	fprintf(stdout, "Parsing I/O port definitions (%s)... ", filename);
+
+
 	f = fopen(filename, "rb");
 	if(f == NULL)
 	{
@@ -132,13 +157,9 @@ int ioports_load(const char* path)
 		return -1;
 	}
 
-	for(nlines = 0; !feof(f); nlines++)
-		fgets(line, sizeof(line), f);
-	rewind(f);
+	tree = g_node_new(NULL);
 
-	table = (IOPORT **)calloc(nlines + 1, sizeof(IOPORT *));
-
-	for(n = 0, i = 0; n < nlines; n++)
+	for(n = 0; !feof(f);)
 	{
 		gchar **split;
 		IOPORT *s;
@@ -146,17 +167,28 @@ int ioports_load(const char* path)
 		fgets(line, sizeof(line), f);
 		if(line[0] == ';')
 			continue;
-		if(line[0] != '$')
+		else if(line[0] == '[')
+		{
+			char *name = get_section(line);
+
+			if(name == NULL) return -1;
+
+			parent = g_node_new(name);
+			g_node_append(tree, parent);
+
+			continue;
+		}
+		else if(line[0] != '$')
 			continue;
 
 		split = g_strsplit(line, "|", 5);
 		if(!split[0] || !split[1] || !split[2] || !split[3] || !split[4] )
 		{
-			fprintf(stderr, "Error at line %i\n", n);
+			fprintf(stderr, "Error at line %i: malformed line !\n", n);
 			return -1;
 		}
 
-		s = table[i] = (IOPORT*)calloc(1, sizeof(IOPORT));
+		s = (IOPORT*)calloc(1, sizeof(IOPORT));
 
 		sscanf(split[0], "$%06x", &s->addr);
 		sscanf(split[1], "%i", &s->size);
@@ -165,36 +197,47 @@ int ioports_load(const char* path)
 			return -1;
 		s->name = strdup(split[4]);
 
-		i++;
-	}	
+		if(parent == NULL)
+		{
+			fprintf(stderr, "Error at line %i: no section defined !\n", n);
+			return -1;
+		}
+
+		node = g_node_new(s);
+		g_node_append(parent, node);
+
+		n++;
+	}
 
 	g_free(filename);
 	fclose(f);
 
+	fprintf(stdout, "%i entries\n", n);
+
     return 0;
+}
+
+static gboolean free_node(GNode *node, gpointer data)
+{
+	if (node)
+		if(node->data)
+			free(node->data);
+
+	return FALSE;
 }
 
 int ioports_unload(void)
 {
-	IOPORT** ptr;
-
-	for(ptr = table; *ptr != NULL; ptr++)
-	{
-		free((*ptr)->name);
-		free(*ptr);
-	}
-	free(table);
-
-	return 0;
+  if(tree != NULL) 
+  {
+		g_node_traverse(tree, G_IN_ORDER, G_TRAVERSE_ALL, -1, free_node, NULL);
+		g_node_destroy(tree);
+		tree = NULL;
+  }
+  return 0;
 }
 
-int ioports_get_size(void)
+GNode* ioports_tree(void)
 {
-	return size;
-}
-
-IOPORT* ioports_get_infos(int idx)
-{
-	assert(idx < 0 || idx >= size);
-	return table[idx];
+	return tree;
 }

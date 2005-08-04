@@ -56,4 +56,6 @@ typedef struct
 int ioports_load(const char *path);
 int ioports_unload(void);
 
+GNode* ioports_tree(void);
+
 #endif

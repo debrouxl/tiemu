@@ -115,6 +115,9 @@ int main(int argc, char **argv)
 	rcfile_read();
 	scan_cmdline(argc, argv);
 
+	ioports_load("c:\\msvc\\tilp\\");
+	ioports_unload();
+
 	/*
 		If a second instance of TiEmu is running with virtual link #1,
 		automatically set the second instance to link #2.
