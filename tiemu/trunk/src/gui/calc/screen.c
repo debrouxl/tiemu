@@ -41,6 +41,7 @@
 #include "struct.h"
 #include "tie_error.h"
 #include "calc.h"
+#include "gscales.h"
 
 /* Types */
 
@@ -226,11 +227,6 @@ int hid_update_lcd(void)
 	uint8_t *lcd_buf = (uint8_t *)lcd_bytmap;
 	GdkRect src;
 	guchar *p;
-
-	extern uint32_t lcd_planes[3];
-	extern int ngc;
-	extern uint8_t *lcd_planebufs[3];
-	extern int lcd_changed;
 
     if(!pixmap || !lcd || !tihw.lcd_ptr)
         return 0;
