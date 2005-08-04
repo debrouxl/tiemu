@@ -116,7 +116,7 @@ int gtk_debugger_enter(int context)
 
 			ti68k_bkpt_get_pgmentry(id, &handle);
 			ti68k_bkpt_del_pgmentry(handle);
-			if(options3.bkpts.visible)
+			if(GTK_WIDGET_VISIBLE(dbgw.bkpts))
 				dbgbkpts_refresh_window();
 
 			delete_command(NULL, 0);
