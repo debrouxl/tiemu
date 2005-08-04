@@ -81,6 +81,7 @@ void gdbtk_delete_interp(void);
 
 // Share a variable between the different instances of TiEmu (counter)
 // Used for virtual linking
+#ifdef __WIN32__
 #ifdef __GNUC__
 static int tiemu_inst __attribute__ ((section(".shared"), shared)) = 0;
 #else
@@ -88,6 +89,7 @@ static int tiemu_inst __attribute__ ((section(".shared"), shared)) = 0;
 #pragma data_seg(".shared")			
 static int volatile	tiemu_inst = 0;
 #pragma data_seg()
+#endif
 #endif
 
 ScrOptions options2;
@@ -132,6 +134,7 @@ int main(int argc, char **argv)
 		If a second instance of TiEmu is running with virtual link #1,
 		automatically set the second instance to link #2.
 	*/
+#ifdef __WIN32__
 	if(link_cable.link_type == LINK_TIE)
 	{
 		if(tiemu_inst == 0)
@@ -139,6 +142,7 @@ int main(int argc, char **argv)
 		else if(tiemu_inst == 1)
 			link_cable.port = VIRTUAL_PORT_2;
 	}
+#endif
 
     /* 
 		Init GTK+ (popup menu, boxes, ...)
@@ -340,6 +344,7 @@ int main(int argc, char **argv)
 			gdb_main (&args);
 		}
 		stop_insight_timer();
+		tiemu_inst--;
 
 		/*
 			Clean up in case we interrupted GDB during command-line
@@ -356,7 +361,7 @@ int main(int argc, char **argv)
 		ti68k_unload_image_or_upgrade();
 	}
 
-	tiemu_inst--;
+	
 
 	gdbtk_delete_interp();
 	return 0;

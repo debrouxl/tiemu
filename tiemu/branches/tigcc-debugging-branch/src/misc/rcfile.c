@@ -500,7 +500,7 @@ void rcfile_read(void)
 	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
 		  &(options3.calc.rect.x), &(options3.calc.rect.y), 
 		  &(options3.calc.rect.w), &(options3.calc.rect.h),
-		  &(options3.calc.minimized), &(options3.calc.visible)
+		  &(options3.calc.minimized), &(options3.calc.closed)
 		  );
 	  continue;
 	}
@@ -510,7 +510,7 @@ void rcfile_read(void)
 	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
 		  &(options3.bkpts.rect.x), &(options3.bkpts.rect.y), 
 		  &(options3.bkpts.rect.w), &(options3.bkpts.rect.h),
-		  &(options3.bkpts.minimized), &(options3.bkpts.visible)
+		  &(options3.bkpts.minimized), &(options3.bkpts.closed)
 		  );
 	  continue;
 	}
@@ -519,7 +519,7 @@ void rcfile_read(void)
 	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
 		  &(options3.code.rect.x), &(options3.code.rect.y), 
 		  &(options3.code.rect.w), &(options3.code.rect.h),
-		  &(options3.code.minimized), &(options3.code.visible));
+		  &(options3.code.minimized), &(options3.code.closed));
 	  continue;
 	}
 	if( (p=find_str(buffer, "mem_wnd=")) )
@@ -527,7 +527,7 @@ void rcfile_read(void)
 	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
 		  &(options3.mem.rect.x), &(options3.mem.rect.y), 
 		  &(options3.mem.rect.w), &(options3.mem.rect.h),
-		  &(options3.mem.minimized), &(options3.mem.visible));
+		  &(options3.mem.minimized), &(options3.mem.closed));
 	  continue;
 	}
 	if( (p=find_str(buffer, "regs_wnd=")) )
@@ -535,7 +535,7 @@ void rcfile_read(void)
 	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
 		  &(options3.regs.rect.x), &(options3.regs.rect.y), 
 		  &(options3.regs.rect.w), &(options3.regs.rect.h),
-		  &(options3.regs.minimized), &(options3.regs.visible));
+		  &(options3.regs.minimized), &(options3.regs.closed));
 	  continue;
 	}
 	if( (p=find_str(buffer, "pclog_wnd=")) )
@@ -543,7 +543,7 @@ void rcfile_read(void)
 	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
 		  &(options3.pclog.rect.x), &(options3.pclog.rect.y), 
 		  &(options3.pclog.rect.w), &(options3.pclog.rect.h),
-		  &(options3.pclog.minimized), &(options3.pclog.visible));
+		  &(options3.pclog.minimized), &(options3.pclog.closed));
 	  continue;
 	}
 	if( (p=find_str(buffer, "stack_wnd=")) )
@@ -551,7 +551,7 @@ void rcfile_read(void)
 	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
 		  &(options3.stack.rect.x), &(options3.stack.rect.y), 
 		  &(options3.stack.rect.w), &(options3.stack.rect.h),
-		  &(options3.stack.minimized), &(options3.stack.visible));
+		  &(options3.stack.minimized), &(options3.stack.closed));
 	  continue;
 	}
 	if( (p=find_str(buffer, "heap_wnd=")) )
@@ -559,7 +559,7 @@ void rcfile_read(void)
 	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
 		  &(options3.heap.rect.x), &(options3.heap.rect.y), 
 		  &(options3.heap.rect.w), &(options3.heap.rect.h),
-		  &(options3.heap.minimized), &(options3.heap.visible));
+		  &(options3.heap.minimized), &(options3.heap.closed));
 	  continue;
 	}	
     }
@@ -890,54 +890,54 @@ void rcfile_write(void)
   fprintf(txt, "#\n");
   fprintf(txt, "\n");
 
-	fprintf(txt, "# Geometry hints of debugger windows (x,y,w,h,m,v)\n");
+	fprintf(txt, "# Geometry hints of debugger windows (x,y,w,h,m,c)\n");
 
 	fprintf(txt, "calc_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.calc.rect.x, options3.calc.rect.y, 
 		options3.calc.rect.w, options3.calc.rect.h,
-		options3.bkpts.minimized, options3.calc.visible);
+		options3.calc.minimized, options3.calc.closed);
 	fprintf(txt, "\n");
 
 	fprintf(txt, "bkpts_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.bkpts.rect.x, options3.bkpts.rect.y, 
 		options3.bkpts.rect.w, options3.bkpts.rect.h,
-		options3.bkpts.minimized, options3.bkpts.visible);
+		options3.bkpts.minimized, options3.bkpts.closed);
 	fprintf(txt, "\n");
 
 	fprintf(txt, "code_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.code.rect.x, options3.code.rect.y, 
 		options3.code.rect.w, options3.code.rect.h,
-		options3.code.minimized, options3.code.visible);
+		options3.code.minimized, options3.code.closed);
 	fprintf(txt, "\n");
 
 	fprintf(txt, "mem_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.mem.rect.x, options3.mem.rect.y, 
 		options3.mem.rect.w, options3.mem.rect.h,
-		options3.mem.minimized, options3.mem.visible);
+		options3.mem.minimized, options3.mem.closed);
 	fprintf(txt, "\n");
 
 	fprintf(txt, "regs_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.regs.rect.x, options3.regs.rect.y, 
 		options3.regs.rect.w, options3.regs.rect.h,
-		options3.regs.minimized, options3.regs.visible);
+		options3.regs.minimized, options3.regs.closed);
 	fprintf(txt, "\n");
 
 	fprintf(txt, "pclog_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.pclog.rect.x, options3.pclog.rect.y, 
 		options3.pclog.rect.w, options3.pclog.rect.h,
-		options3.pclog.minimized, options3.pclog.visible);
+		options3.pclog.minimized, options3.pclog.closed);
 	fprintf(txt, "\n");
 
 	fprintf(txt, "stack_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.stack.rect.x, options3.stack.rect.y, 
 		options3.stack.rect.w, options3.stack.rect.h,
-		options3.stack.minimized, options3.stack.visible);
+		options3.stack.minimized, options3.stack.closed);
 	fprintf(txt, "\n");
 
 	fprintf(txt, "heap_wnd=(%i;%i;%i;%i;%i;%i)", 
 		options3.heap.rect.x, options3.heap.rect.y, 
 		options3.heap.rect.w, options3.heap.rect.h,
-		options3.heap.minimized, options3.heap.visible);
+		options3.heap.minimized, options3.heap.closed);
 	fprintf(txt, "\n");
 
 	fprintf(txt, "\n");
@@ -1007,55 +1007,55 @@ void options3_set_default(void)
 	options3.calc.rect.y = 0;
 	options3.calc.rect.w = -1;	// unused yet
 	options3.calc.rect.h = -1;	// unused yet
-	options3.calc.visible = !0;
+	options3.calc.closed = 0;
 	options3.calc.minimized = 0;
 
 	options3.bkpts.rect.x = 700;
 	options3.bkpts.rect.y = 560;
 	options3.bkpts.rect.w = 320;
 	options3.bkpts.rect.h = 145;
-	options3.bkpts.visible = !0;
+	options3.bkpts.closed = !0;
 	options3.bkpts.minimized = 0;
 
 	options3.code.rect.x = 510;
 	options3.code.rect.y = 10;
 	options3.code.rect.w = 320;
 	options3.code.rect.h = 290;
-	options3.code.visible = !0;
+	options3.code.closed = 0;
 	options3.code.minimized = 0;
 
 	options3.mem.rect.x = 0;
 	options3.mem.rect.y = 470;
 	options3.mem.rect.w = 520;
 	options3.mem.rect.h = 240;
-	options3.mem.visible = !0;
+	options3.mem.closed = 0;
 	options3.mem.minimized = 0;
 
 	options3.regs.rect.x = 840;
 	options3.regs.rect.y = 10;
 	options3.regs.rect.w = 180;
 	options3.regs.rect.h = 540;
-	options3.regs.visible = !0;
+	options3.regs.closed = 0;
 	options3.regs.minimized = 0;
 
 	options3.pclog.rect.x = 260;
 	options3.pclog.rect.y = 20;
 	options3.pclog.rect.w = 160;
 	options3.pclog.rect.h = 240;
-	options3.pclog.visible = !0;
+	options3.pclog.closed = !0;
 	options3.pclog.minimized = 0;
 
     options3.stack.rect.x = 300;
     options3.stack.rect.y = 180;
     options3.stack.rect.w = 160;
     options3.stack.rect.h = 250;
-	options3.stack.visible = !0;
+	options3.stack.closed = !0;
 	options3.stack.minimized = 0;
 
 	options3.heap.rect.x = 530;
 	options3.heap.rect.y = 470;
 	options3.heap.rect.w = 160;
 	options3.heap.rect.h = 240;
-	options3.heap.visible = !0;
+	options3.heap.closed = !0;
 	options3.heap.minimized = 0;
 }

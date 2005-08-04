@@ -147,7 +147,7 @@ gint display_send_files_dbox()
         ext = "*.92?";
 		break;
 	default:
-        ext = "*.89?;*.92?;*.9x?;*.9X?;*.v2?*.V2?";
+        ext = "*.89?;*.92?;*.9x?;*.9X?;*.v2?;*.V2?";
         break;
     }
 

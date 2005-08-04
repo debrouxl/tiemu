@@ -48,7 +48,6 @@ gint reset_disabled = FALSE;
 
 static GladeXML *xml = NULL;
 static GtkWidget *wnd = NULL;
-static gint already_open = 0;
 
 enum { 
 	    COL_ICON, COL_ADDR, COL_OPCODE, COL_OPERAND,
@@ -391,16 +390,11 @@ GtkWidget* dbgcode_create_window(void)
 
 	dbgromcall_create_window(xml);
 
-	already_open = !0;
-
 	return wnd = dbox;
 }
 
 GtkWidget* dbgcode_display_window(void)
 {
-	if(!already_open)
-		wnd = dbgcode_create_window();
-    
 #ifdef WND_STATE
 	if(!options3.code.minimized)
 	{
@@ -420,14 +414,14 @@ GtkWidget* dbgcode_display_window(void)
 	clist_refresh(store, TRUE);
 
 	dbgromcall_refresh_window();
-	gtk_widget_show(wnd);
+	gtk_widget_show(wnd);	// always shown
 
     return wnd;
 }
 
 void dbgcode_refresh_window(void)
 {
-	if(options3.code.visible)
+	if(!options3.code.closed)
 	{
 		gtk_list_store_clear(store);
 		clist_refresh(store, TRUE);

@@ -58,7 +58,8 @@ typedef struct
 } TieOptions;
 
 /* Screen capture options */
-typedef struct {
+typedef struct 
+{
 	int		format;
 	int		type;
 	int		size;
@@ -68,20 +69,23 @@ typedef struct {
 } ScrOptions;
 
 /* Debugger options for windows size and placement */
-typedef struct {
+typedef struct 
+{
 	int x;
 	int y;
 	int w;
 	int h;
 } GdkRect;
 
-typedef struct {
+typedef struct 
+{
 	GdkRect	rect;
-	gint	visible;
 	gint	minimized;
+	gint	closed;
 } WinState;
 
-typedef struct {
+typedef struct 
+{
 	WinState	bkpts;
 	WinState	code;
 	WinState	mem;

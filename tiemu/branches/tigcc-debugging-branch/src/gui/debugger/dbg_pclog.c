@@ -40,7 +40,6 @@
 
 static GladeXML *xml = NULL;
 static GtkWidget *wnd = NULL;
-static gint already_open = 0;
 
 enum { 
 	    COL_ADDR
@@ -149,16 +148,11 @@ GtkWidget* dbgpclog_create_window(void)
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 
-	already_open = !0;
-
 	return wnd = dbox;
 }
 
 GtkWidget* dbgpclog_display_window(void)
 {
-	if(!already_open)
-		wnd = dbgpclog_create_window();
-    
 #ifdef WND_STATE
 	if(!options3.pclog.minimized)
 	{
@@ -170,14 +164,16 @@ GtkWidget* dbgpclog_display_window(void)
 #endif
 
 	clist_refresh(store);
-	gtk_widget_show(wnd);
+
+	if(!GTK_WIDGET_VISIBLE(dbgw.pclog) && !options3.pclog.closed)
+		gtk_widget_show(wnd);
 
 	return wnd;
 }
 
 void dbgpclog_refresh_window(void)
 {
-	if(options3.pclog.visible)
+	if(!options3.pclog.closed)
 	{
 		clist_refresh(store);
 	}

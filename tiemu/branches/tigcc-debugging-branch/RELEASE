@@ -2,8 +2,8 @@
 
 
 
-Previous version: 2.00-rc3  (08/06/2006)
-Current version:  2.00-rc6  (16/07/2005)
+Previous version: 2.00-rc6  (16/07/2005)
+Current version:  2.00-rc7  (03/08/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,30 +20,29 @@ For the other link cables, no driver is needed.
 New capabilities:
 -----------------
 
-	- RTC HW3 support added
-	- handle program entry breakpoints on _main for kernel/Fargo programs
+	- added a new function in the ticables library API (ticable_link_reset)
+		for use by TiEmu. It allows to reset/flush the pipes of virtual linking when the
+		DBus is reset (usually due to transmission error). Link is now resumable.
+	- reimplemented HW3 RTC from latest/new O. Armand's information (full support of clock now)
 
 
 Improvements:
 -------------
 
-	- replaced current icon by Jaime Fernando's one
-	- enable BW screenshot in EPS and PDF; they're treated like color screenshots
-	- added hibou's logo
-	- cleanup and little fixes in interrupt support of m68k
-	- UAE engine upgraded to latest revision
-	- can choose HW1/HW2 when importing a tib/89u/9xu
-	- TiEMu can be exited from the cross (WM)
-	- replaced my hand-made about box by the generic one provided with GTK 2.6
+	- comm box (removed calc & autodetect because un-needed)
+	- file patterns in file selector (case sensitivity)
+	- avoid linkport accesses when browsing memory from dbg window
+	- set link timeout to 60s for non-NT platforms, 1.5s for others
+	- automatically bind virtual link 'TiEmu #2' on the second instance of TiEmu (Win32 only)
 		
 
 Bug fixes:
 ----------
 
-	- fixed behaviour of all keys and definitely fixed ON key
-	- 'Receive file' check item
-	- bug #1227179 (screenshot)
-	- bug #1227433 (backing pixmap problem)
+	- PPhD's bug (no reload of ROM calls when upgrading)
+	- severe bug in linkport (the status register was reset whenever read
+		like specified by TI but the int handler proves it's false).
+		TiEmu does not run an infinite loop when transfer is interrupted.
 	
 
 Planned:

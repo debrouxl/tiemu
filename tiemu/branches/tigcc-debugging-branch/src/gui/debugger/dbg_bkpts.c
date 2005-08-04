@@ -42,7 +42,6 @@
 
 static GladeXML *xml = NULL;
 static GtkWidget *wnd = NULL;
-static gint already_open = 0;
 
 enum { 
 	    COL_SYMBOL, COL_TYPE, COL_STATUS, COL_START, COL_END, COL_MODE,
@@ -326,16 +325,11 @@ GtkWidget* dbgbkpts_create_window(void)
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 
-	already_open = !0;
-
 	return wnd = dbox;
 }
 
 GtkWidget* dbgbkpts_display_window(void)
 {
-	if(!already_open)
-		wnd = dbgbkpts_create_window();
-    
 #ifdef WND_STATE
 	if(!options3.bkpts.minimized)
 	{
@@ -348,7 +342,9 @@ GtkWidget* dbgbkpts_display_window(void)
 
 	gtk_list_store_clear(store);
     clist_populate(store);
-	gtk_widget_show(wnd);
+
+	if(!GTK_WIDGET_VISIBLE(dbgw.bkpts) && !options3.bkpts.closed)
+		gtk_widget_show(wnd);
 
 	display_dbgcause_dbox2(glade_get("statusbar1"));
 
@@ -357,7 +353,7 @@ GtkWidget* dbgbkpts_display_window(void)
 
 void dbgbkpts_refresh_window(void)
 {
-	if(options3.bkpts.visible)
+	if(!options3.bkpts.closed)
 	{
 		gtk_list_store_clear(store);
 		clist_populate(store);
