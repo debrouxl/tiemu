@@ -31,7 +31,6 @@
 #include <string.h>
 #include <time.h>
 #include <sys/types.h>
-#include <sys/timeb.h>
 
 #include "libuae.h"
 #include "mem.h"
@@ -39,6 +38,12 @@
 #include "images.h"
 #include "ti68k_def.h"
 #include "rtc_hw3.h"
+
+#if defined(HAVE_FTIME) || defined(__WIN32__)
+# include <sys/timeb.h>
+#else
+# include <sys/time.h>
+#endif
 
 int rtc3_init(void)
 {
@@ -80,12 +85,19 @@ int rtc3_exit(void)
 // return seconds and milli-seconds
 void rtc3_get_time(TTIME* tt)
 {
+#if defined(HAVE_FTIME) || defined(__WIN32__)
 	struct timeb tb;
 
 	time(&(tt->s));
 
 	ftime(&tb);
 	tt->ms = tb.millitm;
+#else
+	struct timeval tp;
+	gettimeofday(&tp, NULL);
+	tt->s = tp.tv_sec;
+	tt->ms = tp.tv_usec/1000;
+#endif
 }
 
 // tt = t2 - t1 and take care of reporting milli-seconds
