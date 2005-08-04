@@ -485,6 +485,11 @@ void compute_grayscale(void);
 
 int  hid_init(void)
 {
+	extern uint32_t lcd_planes[3];
+	extern int ngc;
+	extern uint8_t *lcd_planebufs[3];
+	extern int lcd_changed;
+
     // Found a PC keyboard keymap
     match_keymap(tihw.calc_type);
 
@@ -592,6 +597,11 @@ int  hid_init(void)
 	if(options.view == VIEW_FULL)
 		gdk_window_fullscreen(main_wnd->window);
 	
+	lcd_planes[0] = tihw.lcd_adr;
+	lcd_planebufs[0] = &tihw.ram[tihw.lcd_adr];
+	ngc = 1;
+	lcd_changed = 1;
+
     return 0;
 }
 

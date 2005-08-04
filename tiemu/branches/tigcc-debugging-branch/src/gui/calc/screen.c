@@ -229,6 +229,8 @@ int hid_update_lcd(void)
 
 	extern uint32_t lcd_planes[3];
 	extern int ngc;
+	extern uint8_t *lcd_planebufs[3];
+	extern int lcd_changed;
 
     if(!pixmap || !lcd || !tihw.lcd_ptr)
         return 0;
@@ -237,6 +239,7 @@ int hid_update_lcd(void)
 	if(lcd_state != tihw.on_off)
 	{
 		lcd_state = tihw.on_off;
+		lcd_changed = 1;
 
 		if(!lcd_state)
 			redraw_lcd();	// to clear LCD
@@ -251,6 +254,8 @@ int hid_update_lcd(void)
   		old_contrast = c;
 
 		compute_grayscale();
+
+		lcd_changed = 1;
 	}
 
 	// Check for gray plane change (menu/hw)
@@ -260,9 +265,12 @@ int hid_update_lcd(void)
 		compute_grayscale();
     }
 
-	// LCD off: don't refresh !
-	if(!lcd_state)
+	// LCD off or unchanged: don't refresh !
+	if(!lcd_state || !lcd_changed)
 		return 0;
+
+	// Reset LCD changed flag.
+	lcd_changed = 0;
 
 	// Convert the bitmap screen to a bytemap screen and grayscalize
 	memset(lcd_bytmap, 0, LCDMEM_H*LCDMEM_W);	
@@ -271,7 +279,7 @@ int hid_update_lcd(void)
 		int pp = gp_seq[ngc][l];
 		if(pp == -1) break;
 
-		lcd_bitmap = &tihw.ram[lcd_planes[pp]];
+		lcd_bitmap = lcd_planebufs[pp];
 
 		for(j = 0, k = 0; k < LCDMEM_H; k++)
 		{
