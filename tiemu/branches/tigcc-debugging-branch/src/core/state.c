@@ -144,7 +144,7 @@ int ti68k_state_load(char *filename)
 	tihw.contrast = thw.contrast;
 	tihw.protect = thw.protect;
 	tihw.archive_limit = thw.archive_limit;
-	memcpy(tihw.ram_exec, thw.ram_exec, 32);
+	memcpy(tihw.ram_exec, thw.ram_exec, sizeof(tihw.ram_exec));
 
 	tihw.rtc3_beg = thw.rtc3_beg;
 	tihw.rtc3_load = thw.rtc3_load;
