@@ -47,7 +47,9 @@ typedef struct
 	uint32_t	addr;		// $600000
 	int			size;		// 1, 2, 4 bytes
 	int			type;		// ro, wo, rw
-	int			bits[32];	// <..5.....> or <all>
+	int			bits[32];	
+	char*		bit_str;	// <..5.....>
+	int			all_bits;	// or <all>
 	char*		name;		// "Constrast and battery status"
 } IOPORT;
 

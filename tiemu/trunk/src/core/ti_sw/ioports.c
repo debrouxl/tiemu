@@ -71,6 +71,12 @@ static char* get_section(char *s)
 	return b;
 }
 
+static char* get_name(char *s)
+{
+	while(*s == ' ') s++;
+	return s;
+}
+
 // convert "ro", "wo", "rw" into value
 static int get_type(const char* s)
 {
@@ -127,7 +133,7 @@ static int get_bits(const char *s, int size, int *bits)
 		}
 	}
 
-	return 0;
+	return all;
 }
 
 /*
@@ -158,7 +164,6 @@ int ioports_load(const char* path)
 	}
 
 	tree = g_node_new(NULL);
-	printf("\ntop: %p\n", tree);
 
 	for(n = 0; !feof(f);)
 	{
@@ -166,6 +171,8 @@ int ioports_load(const char* path)
 		IOPORT *s;
 
 		fgets(line, sizeof(line), f);
+		line[strlen(line) - 2] = '\0';
+
 		if(line[0] == ';')
 			continue;
 		else if(line[0] == '[')
@@ -177,7 +184,6 @@ int ioports_load(const char* path)
 			s->name = strdup(name);
 
 			parent = g_node_new(s);
-			printf(" parent: %p\n", parent);
 			g_node_append(tree, parent);
 
 			continue;
@@ -197,9 +203,10 @@ int ioports_load(const char* path)
 		sscanf(split[0], "$%06x", &s->addr);
 		sscanf(split[1], "%i", &s->size);
 		s->type = get_type(split[2]);
-		if(get_bits(split[3], s->size, s->bits) == -1)
+		s->bit_str = strdup(split[3]);
+		if((s->all_bits = get_bits(split[3], s->size, s->bits)) == -1)
 			return -1;
-		s->name = strdup(split[4]);
+		s->name = strdup(get_name(split[4]));
 
 		if(parent == NULL)
 		{
@@ -208,7 +215,6 @@ int ioports_load(const char* path)
 		}
 
 		node = g_node_new(s);
-		printf("  node: %p\n", node);
 		g_node_append(parent, node);
 
 		n++;

@@ -1,0 +1,37 @@
+; I/O register definitions for TI92 (c) 2005 Romain Liévin
+;
+; Beware: _don't_ touch this file unless you know what you are doing !
+; Any modification can result in unpredictable results (or crash even !).
+;
+
+[System]
+
+$600001	| 1	| rw	| <.....2.0>			| Stack over
+$600005	| 1	| wo	| <...43210>			| Idle/Wake-up
+
+[Link]
+
+$60000c	| 1	| rw	| <all>					| Control
+$60000d	| 1	| rw	| <76543...>			| Status
+$60000e	| 1	| rw	| <all>					| Direct
+$60000f	| 1	| rw	| <all>					| Rx/Tx buf
+
+[LCD]
+
+$600010 | 2	| wo	| <all>					| LCD address
+$600012	| 1	| wo	| <all>					| LCD width
+$600013	| 1	| wo	| <all>					| LCD height
+$60001C	| 1	| wo	| <all>					| LCD Row Sync
+
+$600000	| 1	| rw	| <..5.....>			| Contrast
+$60001D	| 1	| wo	| <....3210>			| Contrast
+
+[Timer]
+
+$600017	| 1	| rw	| <all>					| Timer
+
+[Keyboard]
+
+$600018	| 2	| rw	| <......1076543210>	| Row mask
+$60001a	| 1	| rw	| <......1.>			| ON key
+$60001b	| 1	| rw	| <all>					| Col state
