@@ -296,6 +296,10 @@ SOURCE=..\..\src\gui\debugger\dbg_heap.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gui\debugger\dbg_iop.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\debugger\dbg_mem.c
 # End Source File
 # Begin Source File

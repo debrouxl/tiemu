@@ -38,6 +38,7 @@
 #include "dbg_stack.h"
 #include "dbg_heap.h"
 #include "dbg_entry.h"
+#include "dbg_iop.h"
 
 // Save window state
 #define WND_STATE
@@ -56,6 +57,7 @@ typedef struct {
     GtkWidget *pclog;
     GtkWidget *stack;
 	GtkWidget *heap;
+	GtkWidget *iop;
 } DbgWidgets;
 extern DbgWidgets dbgw;
 

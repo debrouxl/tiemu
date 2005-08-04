@@ -93,6 +93,7 @@ typedef struct
     WinState	pclog;
     WinState	stack;
 	WinState	heap;
+	WinState	iop;
 
 	WinState	calc;
 } DbgOptions;

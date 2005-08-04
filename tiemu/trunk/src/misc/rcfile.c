@@ -562,6 +562,14 @@ void rcfile_read(void)
 		  &(options3.heap.minimized), &(options3.heap.closed));
 	  continue;
 	}	
+	if( (p=find_str(buffer, "iop_wnd=")) )
+	{
+	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
+		  &(options3.iop.rect.x), &(options3.iop.rect.y), 
+		  &(options3.iop.rect.w), &(options3.iop.rect.h),
+		  &(options3.iop.minimized), &(options3.iop.closed));
+	  continue;
+	}
     }
   fclose(txt);
 
@@ -940,6 +948,12 @@ void rcfile_write(void)
 		options3.heap.minimized, options3.heap.closed);
 	fprintf(txt, "\n");
 
+	fprintf(txt, "iop_wnd=(%i;%i;%i;%i;%i;%i)", 
+		options3.iop.rect.x, options3.iop.rect.y, 
+		options3.iop.rect.w, options3.iop.rect.h,
+		options3.iop.minimized, options3.iop.closed);
+	fprintf(txt, "\n");
+
 	fprintf(txt, "\n");
   fprintf(txt, "RC_END\n");
   fflush(txt);
@@ -1058,4 +1072,11 @@ void options3_set_default(void)
 	options3.heap.rect.h = 240;
 	options3.heap.closed = !0;
 	options3.heap.minimized = 0;
+
+	options3.iop.rect.x = 530;
+	options3.iop.rect.y = 470;
+	options3.iop.rect.w = 160;
+	options3.iop.rect.h = 240;
+	options3.iop.closed = !0;
+	options3.iop.minimized = 0;
 }
