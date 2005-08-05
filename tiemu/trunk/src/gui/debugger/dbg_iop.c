@@ -53,6 +53,7 @@ enum
 
 #define FONT_NAME	"courier"
 
+// convert GtkTreeViewColumn into column index
 static gint column2index(GtkWidget *list, GtkTreeViewColumn *column)
 {
 	gint i;
@@ -69,6 +70,7 @@ static gint column2index(GtkWidget *list, GtkTreeViewColumn *column)
 	return -1;
 }
 
+// check for valid hexadecimal value
 static int validate_value(const char *str, int ndigits)
 {
 	int i;
@@ -85,6 +87,7 @@ static int validate_value(const char *str, int ndigits)
 	return !0;
 }
 
+// called when cell has been edited
 static void renderer_edited(GtkCellRendererText *cell,
 			    const gchar *path_string,
 			    const gchar *new_text, gpointer user_data)
@@ -125,6 +128,7 @@ static void renderer_edited(GtkCellRendererText *cell,
 	gtk_tree_path_free(path);
 }
 
+// called when a check button has been toggled
 static void renderer_toggled(GtkCellRendererToggle *cell,
 			     gchar *path_string, gpointer user_data)
 {
@@ -134,23 +138,72 @@ static void renderer_toggled(GtkCellRendererToggle *cell,
 	GtkTreeStore *store = GTK_TREE_STORE(model);
 
 	GtkTreePath *path;
-	GtkTreeIter iter;
+	GtkTreeIter parent, iter;
 	IOPORT *s;
-	gboolean state;
+	gboolean state, result;
+	gchar* bit_str;
+	gint bit_num;
+	gchar* addr_str;
 
 	path = gtk_tree_path_new_from_string(path_string);
+
 	if (!gtk_tree_model_get_iter(model, &iter, path))
 		return;
-
 	if (!gtk_tree_model_get_iter(model, &iter, path))
 		return;
 		
-	gtk_tree_model_get(model, &iter, COL_BTNACT, &state, COL_S, &s, -1);
-	printf("state = %i\n", state);
+	gtk_tree_model_get(model, &iter, 
+		COL_BTNACT, &state, 
+		COL_S, &s, 
+		COL_ADDR, &bit_str, 
+		-1);
 
+	// change button state
 	state = !state;
+	sscanf(bit_str, "%i", &bit_num);
+
+	// change value in memory
+	switch(s->size)
+	{
+	case 1:
+		if(state)
+			mem_wr_byte(s->addr, (uint8_t)(mem_rd_byte(s->addr) | (1 << bit_num)));
+		else
+			mem_wr_byte(s->addr, (uint8_t)(mem_rd_byte(s->addr) & ~(1 << bit_num)));
+		break;
+	case 2:
+		if(state)
+			mem_wr_word(s->addr, (uint16_t)(mem_rd_word(s->addr) | (1 << bit_num)));
+		else
+			mem_wr_word(s->addr, (uint16_t)(mem_rd_word(s->addr) & ~(1 << bit_num)));
+		break;
+	case 4:
+		if(state)
+			mem_wr_long(s->addr, mem_rd_long(s->addr) | (1 << bit_num));
+		else
+			mem_wr_long(s->addr, mem_rd_long(s->addr) & ~(1 << bit_num));
+		break;
+	}
+
+	// and change displayed value
+	switch(s->size)
+	{
+	case 1: addr_str  = g_strdup_printf("%02x", mem_rd_byte(s->addr)); break;
+	case 2: addr_str  = g_strdup_printf("%04x", mem_rd_word(s->addr)); break;
+	case 3: addr_str  = g_strdup_printf("%08x", mem_rd_long(s->addr)); break;
+	default: addr_str = g_strdup("???"); break;
+	}
 
 	gtk_tree_store_set(store, &iter, COL_BTNACT, state, -1);
+	g_free(bit_str);
+
+	result = gtk_tree_model_iter_parent(model, &parent, &iter);
+	if(result)
+	{
+		gtk_tree_store_set(store, &parent, COL_VALUE, addr_str, -1);
+	}
+
+	g_free(addr_str);
 }
 
 static gboolean select_func(GtkTreeSelection *selection,
@@ -184,7 +237,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
     gtk_tree_view_set_headers_visible(view, TRUE);
 	gtk_tree_view_set_rules_hint(view, TRUE);
   
-	// col1
+	// col 1
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             "Name", renderer, 
@@ -192,7 +245,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 			"font", COL_FONT,
 			NULL);
 
-	// col2
+	// col 2
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_append_column(view, column);
 	gtk_tree_view_column_set_title(column, "Value");
@@ -216,7 +269,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 						NULL);	
 	g_signal_connect(G_OBJECT(renderer), "edited", G_CALLBACK(renderer_edited), widget);
 
-	// col3
+	// col 3
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             "Address", renderer, 
@@ -224,7 +277,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 			"font", COL_FONT,
 			NULL);
 
-	// col4
+	// col 4
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             "Mask", renderer, 
@@ -259,6 +312,7 @@ static void ctree_populate(GtkTreeStore *store)
 	if(node0 == NULL)
 		return;
 
+	// parse sections
 	for (i = 0; i < (int)g_node_n_children(node0); i++) 
 	{
 		GNode *node1 = g_node_nth_child(node0, i);
@@ -267,6 +321,7 @@ static void ctree_populate(GtkTreeStore *store)
 		gtk_tree_store_append(store, &iter0, NULL);
 		gtk_tree_store_set(store, &iter0, COL_NAME, s->name, -1);
 
+		// parse registers
 		for (j = 0; j < (int)g_node_n_children(node1); j++) 
 		{
 			GNode *node2 = g_node_nth_child(node1, j);
@@ -300,6 +355,7 @@ static void ctree_populate(GtkTreeStore *store)
 
 			g_strfreev(row_text);
 
+			// parse bits
 			for(k = t->nbits-1; k >= 0 ; k--)
 			{
 				row_text = g_malloc0((CTREE_NCOLS + 1) *sizeof(gchar *));
@@ -322,8 +378,7 @@ static void ctree_populate(GtkTreeStore *store)
 
 static void ctree_refresh(GtkTreeStore *store)
 {
-	GtkTreeModel *model = GTK_TREE_MODEL(store);
-    //int i;
+	// to do...
 }
 
 static GtkTreeStore *store;
