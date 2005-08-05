@@ -87,6 +87,7 @@ core_tihw_OBJ = \
 core_tisw_OBJ = \
 	core/ti_sw/er_codes.o \
 	core/ti_sw/handles.o	\
+	core/ti_sw/iodefs.o	\
 	core/ti_sw/registers.o	\
 	core/ti_sw/romcalls.o	\
 	core/ti_sw/timem.o	\
@@ -134,6 +135,7 @@ gui_debugger_OBJ = \
 	gui/debugger/dbg_data.o		\
 	gui/debugger/dbg_entry.o	\
 	gui/debugger/dbg_heap.o		\
+	gui/debugger/dbg_iop.o		\
 	gui/debugger/dbg_mem.o		\
 	gui/debugger/dbg_pclog.o	\
 	gui/debugger/dbg_regs.o		\

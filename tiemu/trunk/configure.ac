@@ -19,6 +19,7 @@ AC_CONFIG_FILES([
   glade/Makefile
   help/Makefile
   man/Makefile
+  misc/Makefile
   pedrom/Makefile
   pixmaps/Makefile
   skins/Makefile
