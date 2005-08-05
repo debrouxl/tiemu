@@ -41,7 +41,7 @@
 #include "ti68k_int.h"
 #include "struct.h"
 #include "dbg_all.h"
-#include "ioports.h"
+#include "iodefs.h"
 
 enum 
 {
@@ -308,7 +308,7 @@ static void ctree_populate(GtkTreeStore *store)
 	int result;
 
 	// (re)load I/O ports
-	result = ti68k_debug_load_iodefs(inst_paths.base_dir);
+	result = ti68k_debug_load_iodefs(inst_paths.misc_dir);
 	if(result == -1)
 	{
 		gtk_tree_store_clear(store);

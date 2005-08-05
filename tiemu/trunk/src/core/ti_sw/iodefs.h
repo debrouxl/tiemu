@@ -47,10 +47,14 @@ typedef struct
 	uint32_t	addr;		// $600000
 	int			size;		// 1, 2, 4 bytes
 	int			type;		// ro, wo, rw
+
 	char*		bit_str;	// <..5...1.>
 	int			bits[32];	// bit number like 1,5
+
 	int			nbits;		// number of bits usable
 	int			all_bits;	// set to 1 if all bits are used
+
+	char*		bit_name[32];// name of each bit (like SLE)
 	char*		name;		// "Constrast and battery status"
 } IO_DEF;
 

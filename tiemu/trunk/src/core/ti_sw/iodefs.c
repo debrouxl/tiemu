@@ -32,12 +32,12 @@
 #include <stdio.h>
 
 #include "ti68k_int.h"
-#include "ioports.h"
+#include "iodefs.h"
 
 GNode*	tree = NULL;
 extern int img_changed;
 
-static const char* iodefs_calc2str(itn calc_type)
+static const char* iodefs_calc2str(int calc_type)
 {
 	switch(calc_type)
 	{
@@ -211,7 +211,7 @@ int iodefs_load(const char* path)
 		iodefs_unload();
 	
 	filename = g_strconcat(path, iodefs_get_filename(), NULL);
-	fprintf(stdout, "Parsing I/O port definitions (%s)... ", filename);
+	fprintf(stdout, "parsing I/O port definitions (%s)... ", filename);
 
 	f = fopen(filename, "rb");
 	if(f == NULL)

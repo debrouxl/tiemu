@@ -51,7 +51,7 @@
 #include "ti68k_err.h"
 #include "mem_size.h"
 #include "romcalls.h"
-#include "ioports.h"
+#include "iodefs.h"
 
 /**********************/
 /* Internal variables */
