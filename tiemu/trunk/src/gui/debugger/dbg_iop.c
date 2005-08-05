@@ -3,25 +3,25 @@
 
 /*  TiEmu - an TI emulator
  *
- * Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
- * Copyright (c) 2001-2003, Romain Lievin
- * Copyright (c) 2003, Julien Blache
- * Copyright (c) 2004, Romain Liévin
- * Copyright (c) 2005, Romain Liévin
+ *Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
+ *Copyright (c) 2001-2003, Romain Lievin
+ *Copyright (c) 2003, Julien Blache
+ *Copyright (c) 2004, Romain Liévin
+ *Copyright (c) 2005, Romain Liévin
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ *This program is free software; you can redistribute it and/or modify
+ *it under the terms of the GNU General Public License as published by
+ *the Free Software Foundation; either version 2 of the License, or
+ *(at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -107,7 +107,7 @@ static void renderer_edited(GtkCellRendererText *cell,
 	gtk_tree_model_get(model, &iter, COL_VALUE, &str, COL_S, &s, -1);
 	sscanf(str, "%x", &value);
 
-	if(validate_value(new_text, 2 * s->size))
+	if(validate_value(new_text, 2 *s->size))
 	{
 		sscanf(new_text, "%x", &value);			
 		gtk_tree_store_set(store, &iter, COL_VALUE, new_text, -1);
@@ -125,29 +125,40 @@ static void renderer_edited(GtkCellRendererText *cell,
 	gtk_tree_path_free(path);
 }
 
+static void renderer_toggled(GtkCellRendererToggle *cell,
+			     gchar *path_string, gpointer user_data)
+{
+	GtkWidget *tree = user_data;
+	GtkTreeView *view = GTK_TREE_VIEW(tree);
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkTreeStore *store = GTK_TREE_STORE(model);
+
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	IOPORT *s;
+	gboolean state;
+
+	path = gtk_tree_path_new_from_string(path_string);
+	if (!gtk_tree_model_get_iter(model, &iter, path))
+		return;
+
+	if (!gtk_tree_model_get_iter(model, &iter, path))
+		return;
+		
+	gtk_tree_model_get(model, &iter, COL_BTNACT, &state, COL_S, &s, -1);
+	printf("state = %i\n", state);
+
+	state = !state;
+
+	gtk_tree_store_set(store, &iter, COL_BTNACT, state, -1);
+}
+
 static gboolean select_func(GtkTreeSelection *selection,
 			    GtkTreeModel *model,
 			    GtkTreePath *path,
 			    gboolean path_currently_selected,
 			    gpointer data)
 {
-	/*
-	GtkTreeIter iter;
-	gchar *str;
-
-	if (!gtk_tree_model_get_iter(model, &iter, path))
-		return FALSE;
-
-	gtk_tree_model_get(model, &iter, COL_VALUE, &str, -1);
-	
-	if(!strcmp(str, ""))
-	{
-		g_free(str);
-		return FALSE;
-	}
-	
-	g_free(str);	
-	*/
 	return TRUE;
 }
 
@@ -193,6 +204,8 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 					    "active", COL_BTNACT,
 					    "visible", COL_BTNVIS, 
 						NULL);
+	g_signal_connect(G_OBJECT(renderer), "toggled", G_CALLBACK(renderer_toggled), widget);
+
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_column_pack_start(GTK_TREE_VIEW_COLUMN(column), renderer, FALSE);	
 	gtk_tree_view_column_set_attributes(GTK_TREE_VIEW_COLUMN(column),
@@ -200,8 +213,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 					    "text", COL_VALUE,
 						"editable", COL_EDIT,
 						"font", COL_FONT, 
-						NULL);
-	
+						NULL);	
 	g_signal_connect(G_OBJECT(renderer), "edited", G_CALLBACK(renderer_edited), widget);
 
 	// col3
@@ -229,7 +241,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 	}
 	
 	selection = gtk_tree_view_get_selection(view);
-	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_NONE);
 	gtk_tree_selection_set_select_function(selection, select_func, NULL, NULL);
 
 	return store;
