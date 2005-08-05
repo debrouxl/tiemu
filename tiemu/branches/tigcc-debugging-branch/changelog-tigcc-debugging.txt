@@ -1,3 +1,48 @@
+20050806:
+* Changes from TiEmu trunk:
+	- [roms] $1543: fixed 'Receive file' check item.
+	- [roms] $1544: fixed bug #1227179 (screenshot).
+	- [roms] $1552: replaced my hand-made about box by the generic one provided with GTK 2.6
+	- [roms] $1560: TiEMu can be exited from the cross (WM)
+	- [roms] $1564: fixed 'backing pixmap problem' (bug #1227433): the scale factor
+		was not retrieved fine from .ini file when the ratio contains ',' instead of '.'
+	- [kevin] $1572/1573: handle program entry breakpoints on _main for kernel/Fargo programs
+	- [kevin] $1574/1575: implemented HW3 RTC
+	- [roms]  $1577: can choose HW1/HW2 when importing a tib file
+	- [kevin] $1580/1581: fixed about box license display on MinGW
+	- [roms] $1583: fixed PPhD's bug (no reload of ROM calls when upgrading)
+	- [roms] $1585: fixed comm box (removed calc & autodetect because un-needed)
+	- [roms] $1586: fixed file patterns in file selector (case sensitivity)
+	- [roms] $1588: avoid linkport accesses when browsing memory from dbg window
+	- [roms] $1590: fixed severe bug in linkport (the status register was reset whenever read
+		like specified by TI but the int handler proves it's false).
+		TiEmu does not run an infinite loop when transfer is interrupted.
+	- [roms] $1593: previous bug fixed again for _all_ calcs
+	- [roms] $1597: set link timeout to 60s for non-NT platforms, 1.5s for others
+	- [roms] $1598: added a new function in the ticables library API (ticable_link_reset)
+		for use by TiEmu. It allows to reset/flush the pipes of virtual linking when the
+		DBus is reset (usually due to transmission error). Link is now resumable.
+	- [roms] $1601: reimplemented HW3 RTC from latest/new O. Armand's information.
+	- [roms] $1608: automatically bind TiEmu #2 on the second instance of TiEmu
+	- [roms] $1615: TiEmu retains the state of dbg windows (open/closed) now.
+	- [kevin] $1623/1624: fixed: only first 32 bytes of ram_exec were restored from savestate
+	- [kevin] $1625/1626: buffering grayscale planes to avoid blinking in double-buffered games
+	- [roms]  $1627: put all gscales extern into gscales.h
+* Support for BSS section debugging (_nostub only at the moment). TIGCC 0.96 Beta 5 required.
+* Avoid link port access when browsing memory in the Insight memory window as well (see $1588 above).
+* Upgrade GTK+ for the Windows binaries to 2.6.8.
+* Rebuild FC4 RPMs with the latest FC4 update GCC.
+* FC4 RPMs no longer have a Conflicts: insight, because they don't conflict with Gérard Milmeister's Insight packages
+* FC4 RPMs now build itcl/itk/iwidgets shared and provide them rather than conflicting with them.
+* TiEmu, TiLP (roms): Added fvisibility support for GCC 3.4.2-rhl or 4.0 and higher
+* libti*, TiLP (roms): Fixed GCC 4 pointer signedness warnings.
+* libti* (PpHd): Fixed --enable-nls builds.
+* libticables (roms): "Low-level access cable functions may be set to NULL on some cables: set to nul_cable instead." Was not done for the Gray Link !
+* libticables (jb): Add a generic fallback case for all Linux hosts.
+* libticables (roms): Removed arm/ipaq check for libusb removal. Can be removed by configure option.
+* libticables (roms): Added ticable_link_reset function (needed by TiEmu for proper operation and present in ticables2).
+* libticalcs (roms): Fixed possible buffer overflow with recv_packet (usually occurs with virtual links because the received length is invalid).
+
 20050622:
 * Changes from TiEmu trunk:
 	- [roms] $1507: cleanup and little fixes in interrupt support of m68k
