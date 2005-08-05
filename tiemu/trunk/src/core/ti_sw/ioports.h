@@ -28,8 +28,8 @@
   Breakpoint definitions
 */
 
-#ifndef __IOPORTS_H__
-#define __IOPORTS_H__
+#ifndef __IODEFS_H__
+#define __IODEFS_H__
 
 #include <stdio.h>
 #include <stdint.h>
@@ -40,7 +40,7 @@
 typedef enum
 {
 	IO_RO = 1, IO_WO = 2, IO_RW = 3,
-} IOACCESS;
+} IO_ACC;
 
 typedef struct
 {
@@ -52,13 +52,13 @@ typedef struct
 	int			nbits;		// number of bits usable
 	int			all_bits;	// set to 1 if all bits are used
 	char*		name;		// "Constrast and battery status"
-} IOPORT;
+} IO_DEF;
 
 /* Functions */
 
-int ioports_load(const char *path);
-int ioports_unload(void);
+int iodefs_load(const char *path);
+int iodefs_unload(void);
 
-GNode* ioports_tree(void);
+GNode* iodefs_tree(void);
 
 #endif

@@ -229,7 +229,7 @@ static int merge_from_flash(void)
 	-3 if TI92
 	-4 if already loaded
 */
-int romcalls_preload(const char* filename)
+int romcalls_load(const char* filename)
 {
 	IMG_INFO *img = &img_infos;
 

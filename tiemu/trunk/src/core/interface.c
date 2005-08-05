@@ -50,7 +50,8 @@
 #include "ti68k_int.h"
 #include "ti68k_err.h"
 #include "mem_size.h"
-
+#include "romcalls.h"
+#include "ioports.h"
 
 /**********************/
 /* Internal variables */
@@ -273,4 +274,24 @@ int ti68k_get_io3_size(int calc_type)
     }
 
     return ti_io3_sizes[log_b2(calc_type)];
+}
+
+/********/
+/* Misc */
+/********/
+
+int ti68k_debug_load_symbols(const char *path)
+{
+	if(!strcmp(path, ""))
+		return 0;
+
+	return romcalls_load(path);
+}
+
+int ti68k_debug_load_iodefs(const char *path)
+{
+	if(!strcmp(path, ""))
+		return 0;
+
+	return iodefs_load(path);
 }

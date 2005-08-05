@@ -31,24 +31,34 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "ti68k_def.h"
+#include "ti68k_int.h"
 #include "ioports.h"
 
 GNode*	tree = NULL;
+extern int img_changed;
 
-const char* ioports_get_filename()
+static const char* iodefs_calc2str(itn calc_type)
 {
-	tihw.calc_type = TI92;
-	switch(tihw.calc_type)
+	switch(calc_type)
 	{
-	case TI89:  return "ioports_89.txt";
-	case TI89t: return "ioports_89t.txt";
-	case TI92:  return "ioports_92.txt";
-	case TI92p: return "ioports_92p.txt";
-	case V200:  return "ioports_v200.txt";
+		case TI89:  return "ti89";
+		case TI92:  return "ti92";
+		case TI92p: return "ti92p";
+		case V200:  return "v200";
+        case TI89t: return "ti89t";
+		default:    return "none";
 	}
-
 	return "";
+}
+
+static const char* iodefs_get_filename()
+{
+	static char s[256] = "";
+
+	sprintf(s, "iodefs_%s_hw%i.txt", 
+		iodefs_calc2str(tihw.calc_type), tihw.hw_type);
+
+	return s;
 }
 
 // get section name [section]
@@ -140,25 +150,68 @@ static int get_bits(const char *s, int size, int *bits)
 	return j;
 }
 
+
+/*
+	Unload information on I/O ports (free resources).
+*/
+static gboolean free_node(GNode *node, gpointer data)
+{
+	if (node)
+		if(node->data)
+			free(node->data);
+
+	return FALSE;
+}
+
+int iodefs_unload(void)
+{
+  if(tree != NULL) 
+  {
+		g_node_traverse(tree, G_IN_ORDER, G_TRAVERSE_ALL, -1, free_node, NULL);
+		g_node_destroy(tree);
+		tree = NULL;
+  }
+  return 0;
+}
+
 /*
 	Load information on I/O ports.
-	Return 0 if success, -1 otherwise.
+	Return value:
+	 0 if successful
+	-1 if error
+	-2 if no image
+	-4 if already loaded
 
-	File naming scheme : "ioports_model.txt" => ioports_89.txt
+	File naming scheme : "iodefs_model.txt" => iodefs_89.txt
 */
-int ioports_load(const char* path)
+int iodefs_load(const char* path)
 {
 	FILE *f;
 	gchar *filename;
 	int n;
 	char line[1024];
-
+	
 	GNode* parent = NULL;
 	GNode* node;
-	
-	filename = g_strconcat(path, ioports_get_filename(), NULL);
-	fprintf(stdout, "Parsing I/O port definitions (%s)... ", filename);
 
+	static int calc_type = 0;
+	static int hw_type = 0;
+
+	if(!img_loaded) 
+		return -2;
+	if(calc_type != tihw.calc_type || hw_type != tihw.hw_type)
+	{
+		calc_type = tihw.calc_type;
+		hw_type = tihw.hw_type;
+	}
+	else
+		return -4;
+
+	if(tree)
+		iodefs_unload();
+	
+	filename = g_strconcat(path, iodefs_get_filename(), NULL);
+	fprintf(stdout, "Parsing I/O port definitions (%s)... ", filename);
 
 	f = fopen(filename, "rb");
 	if(f == NULL)
@@ -172,7 +225,7 @@ int ioports_load(const char* path)
 	for(n = 0; !feof(f);)
 	{
 		gchar **split;
-		IOPORT *s;
+		IO_DEF *s;
 
 		fgets(line, sizeof(line), f);
 		line[strlen(line) - 2] = '\0';
@@ -184,7 +237,7 @@ int ioports_load(const char* path)
 			char *name = get_section(line);
 			if(name == NULL) return -1;
 
-			s = (IOPORT*)calloc(1, sizeof(IOPORT));
+			s = (IO_DEF*)calloc(1, sizeof(IO_DEF));
 			s->name = strdup(name);
 
 			parent = g_node_new(s);
@@ -202,7 +255,7 @@ int ioports_load(const char* path)
 			return -1;
 		}
 
-		s = (IOPORT*)calloc(1, sizeof(IOPORT));
+		s = (IO_DEF*)calloc(1, sizeof(IO_DEF));
 
 		sscanf(split[0], "$%06x", &s->addr);
 		sscanf(split[1], "%i", &s->size);
@@ -233,27 +286,7 @@ int ioports_load(const char* path)
     return 0;
 }
 
-static gboolean free_node(GNode *node, gpointer data)
-{
-	if (node)
-		if(node->data)
-			free(node->data);
-
-	return FALSE;
-}
-
-int ioports_unload(void)
-{
-  if(tree != NULL) 
-  {
-		g_node_traverse(tree, G_IN_ORDER, G_TRAVERSE_ALL, -1, free_node, NULL);
-		g_node_destroy(tree);
-		tree = NULL;
-  }
-  return 0;
-}
-
-GNode* ioports_tree(void)
+GNode* iodefs_tree(void)
 {
 	return tree;
 }

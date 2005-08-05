@@ -100,7 +100,7 @@ static void renderer_edited(GtkCellRendererText *cell,
 	GtkTreePath *path = gtk_tree_path_new_from_string(path_string);
 	GtkTreeIter iter;
 	
-	IOPORT *s;
+	IO_DEF *s;
 	gchar *str;
 	uint32_t value;
 
@@ -139,7 +139,7 @@ static void renderer_toggled(GtkCellRendererToggle *cell,
 
 	GtkTreePath *path;
 	GtkTreeIter parent, iter;
-	IOPORT *s;
+	IO_DEF *s;
 	gboolean state, result;
 	gchar* bit_str;
 	gint bit_num;
@@ -305,10 +305,17 @@ static void ctree_populate(GtkTreeStore *store)
 	GNode* node0;
 	GtkTreeIter iter0, iter1, iter2;
 	int i, j, k;
+	int result;
 
-	ioports_load("c:\\msvc\\tilp\\");
-	node0 = ioports_tree();
+	// (re)load I/O ports
+	result = ti68k_debug_load_iodefs(inst_paths.base_dir);
+	if(result == -1)
+	{
+		gtk_tree_store_clear(store);
+		return;				// already loaded
+	}
 
+	node0 = iodefs_tree();
 	if(node0 == NULL)
 		return;
 
@@ -316,7 +323,7 @@ static void ctree_populate(GtkTreeStore *store)
 	for (i = 0; i < (int)g_node_n_children(node0); i++) 
 	{
 		GNode *node1 = g_node_nth_child(node0, i);
-		IOPORT *s = (IOPORT *)(node1->data);
+		IO_DEF *s = (IO_DEF *)(node1->data);
 
 		gtk_tree_store_append(store, &iter0, NULL);
 		gtk_tree_store_set(store, &iter0, COL_NAME, s->name, -1);
@@ -325,7 +332,7 @@ static void ctree_populate(GtkTreeStore *store)
 		for (j = 0; j < (int)g_node_n_children(node1); j++) 
 		{
 			GNode *node2 = g_node_nth_child(node1, j);
-			IOPORT *t = (IOPORT *)(node2->data);
+			IO_DEF *t = (IO_DEF *)(node2->data);
 
 			gchar **row_text = g_malloc0((CTREE_NCOLS + 1) *sizeof(gchar *));
 
@@ -378,7 +385,8 @@ static void ctree_populate(GtkTreeStore *store)
 
 static void ctree_refresh(GtkTreeStore *store)
 {
-	// to do...
+	gtk_tree_store_clear(store);
+	ctree_populate(store);
 }
 
 static GtkTreeStore *store;

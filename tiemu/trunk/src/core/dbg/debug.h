@@ -36,7 +36,6 @@ int ti68k_debug_step_over(void);
 int ti68k_debug_step_out(void);
 int ti68k_debug_skip(uint32_t next_pc);
 int ti68k_debug_do_instructions(int n);
-int ti68k_debug_load_symbols(const char *filename);
 
 int ti68k_debug_is_supervisor(void);
 

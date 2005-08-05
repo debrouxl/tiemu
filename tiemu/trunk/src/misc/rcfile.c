@@ -1075,7 +1075,7 @@ void options3_set_default(void)
 
 	options3.iop.rect.x = 530;
 	options3.iop.rect.y = 470;
-	options3.iop.rect.w = 240;
+	options3.iop.rect.w = 360;
 	options3.iop.rect.h = 240;
 	options3.iop.closed = !0;
 	options3.iop.minimized = 0;
