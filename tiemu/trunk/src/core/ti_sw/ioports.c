@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: romcalls.c 1583 2005-07-18 14:38:36Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -92,11 +92,11 @@ static int get_type(const char* s)
 	return 0;
 }
 
-// parse <..5.....> entry
+// parse <..5.....> entry and returns number of available bits
 static int get_bits(const char *s, int size, int *bits)
 {
 	char *b, *e;
-	int i, nbits = 8 * size;
+	int i, j, nbits = 8 * size;
 	int all;
 
 	while(*s == ' ') s++;
@@ -120,12 +120,16 @@ static int get_bits(const char *s, int size, int *bits)
 		return -1;
 	}
 
-	for(i = 0; i < nbits; i++)
+	memset(bits, 0, nbits);
+	for(i = 0, j = 0; i < nbits; i++)
 	{
 		if(b[i] == '.')
-			bits[nbits - i] = 0;
+		{
+		}
 		else if(isdigit(b[i]) || all)
-			bits[nbits-1 - i] = 1;
+		{
+			bits[j++] = nbits - i - 1;
+		}
 		else
 		{
 			fprintf(stdout, "Wrong character in bit sequence (digit or '.') !\n");
@@ -133,7 +137,7 @@ static int get_bits(const char *s, int size, int *bits)
 		}
 	}
 
-	return all;
+	return j;
 }
 
 /*
@@ -204,8 +208,9 @@ int ioports_load(const char* path)
 		sscanf(split[1], "%i", &s->size);
 		s->type = get_type(split[2]);
 		s->bit_str = strdup(split[3]);
-		if((s->all_bits = get_bits(split[3], s->size, s->bits)) == -1)
+		if((s->nbits = get_bits(split[3], s->size, s->bits)) == -1)
 			return -1;
+		s->all_bits = (s->nbits == (8 * s->size));
 		s->name = strdup(get_name(split[4]));
 
 		if(parent == NULL)

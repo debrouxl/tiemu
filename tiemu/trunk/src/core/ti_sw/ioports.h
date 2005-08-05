@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: romcalls.h 1455 2005-05-31 18:38:03Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -47,9 +47,10 @@ typedef struct
 	uint32_t	addr;		// $600000
 	int			size;		// 1, 2, 4 bytes
 	int			type;		// ro, wo, rw
-	int			bits[32];	
-	char*		bit_str;	// <..5.....>
-	int			all_bits;	// or <all>
+	char*		bit_str;	// <..5...1.>
+	int			bits[32];	// bit number like 1,5
+	int			nbits;		// number of bits usable
+	int			all_bits;	// set to 1 if all bits are used
 	char*		name;		// "Constrast and battery status"
 } IOPORT;
 
