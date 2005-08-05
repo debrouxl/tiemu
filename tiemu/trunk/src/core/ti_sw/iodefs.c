@@ -103,10 +103,10 @@ static int get_type(const char* s)
 }
 
 // parse <..5.....> entry and returns number of available bits
-static int get_bits(const char *s, int size, int *bits)
+static int get_bits(const char *s, IO_DEF* t)
 {
 	char *b, *e;
-	int i, j, nbits = 8 * size;
+	int i, j, nbits = 8 * t->size;
 	int all;
 
 	while(*s == ' ') s++;
@@ -130,7 +130,7 @@ static int get_bits(const char *s, int size, int *bits)
 		return -1;
 	}
 
-	memset(bits, 0, nbits);
+	memset(t->bits, 0, nbits);
 	for(i = 0, j = 0; i < nbits; i++)
 	{
 		if(b[i] == '.')
@@ -138,7 +138,7 @@ static int get_bits(const char *s, int size, int *bits)
 		}
 		else if(isdigit(b[i]) || all)
 		{
-			bits[j++] = nbits - i - 1;
+			t->bits[j++] = nbits - i - 1;
 		}
 		else
 		{
@@ -147,9 +147,33 @@ static int get_bits(const char *s, int size, int *bits)
 		}
 	}
 
-	return j;
+	t->nbits = j;
+
+	return 0;
 }
 
+static int get_bit_names(char *s, IO_DEF *t)
+{
+	int i;
+	gchar **split;
+
+	if(s == NULL)
+		return 0;
+
+	while(*s == ' ') s++;
+
+	split = g_strsplit(s, ",", t->nbits);
+	if(split[0] == NULL)
+		return 0;
+
+	for(i = 0; i < t->nbits; i++)
+	{
+		if(split[i] != NULL)
+			t->bit_name[i] = strdup(split[i]);
+	}
+	
+	return 0;
+}
 
 /*
 	Unload information on I/O ports (free resources).
@@ -230,6 +254,9 @@ int iodefs_load(const char* path)
 		fgets(line, sizeof(line), f);
 		line[strlen(line) - 2] = '\0';
 
+		if(feof(f))
+			break;
+
 		if(line[0] == ';')
 			continue;
 		else if(line[0] == '[')
@@ -245,10 +272,14 @@ int iodefs_load(const char* path)
 
 			continue;
 		}
+		else if(line[0] == '#')
+		{
+		}
 		else if(line[0] != '$')
 			continue;
+		
 
-		split = g_strsplit(line, "|", 5);
+		split = g_strsplit(line, "|", 6);
 		if(!split[0] || !split[1] || !split[2] || !split[3] || !split[4] )
 		{
 			fprintf(stderr, "Error at line %i: malformed line !\n", n);
@@ -261,10 +292,13 @@ int iodefs_load(const char* path)
 		sscanf(split[1], "%i", &s->size);
 		s->type = get_type(split[2]);
 		s->bit_str = strdup(split[3]);
-		if((s->nbits = get_bits(split[3], s->size, s->bits)) == -1)
+		if(get_bits(split[3], s) == -1)
 			return -1;
 		s->all_bits = (s->nbits == (8 * s->size));
 		s->name = strdup(get_name(split[4]));
+
+		if(get_bit_names(split[5], s) == -1)
+			return -1;
 
 		if(parent == NULL)
 		{

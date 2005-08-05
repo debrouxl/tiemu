@@ -367,7 +367,7 @@ static void ctree_populate(GtkTreeStore *store)
 			{
 				row_text = g_malloc0((CTREE_NCOLS + 1) *sizeof(gchar *));
 
-				row_text[0] = g_strdup_printf("%i", t->bits[k]);
+				row_text[0] = g_strdup(t->bit_name[k]);
 				row_text[2] = g_strdup_printf("%i", t->bits[k]);
 				gtk_tree_store_append(store, &iter2, &iter1);
 				gtk_tree_store_set(store, &iter2, 
