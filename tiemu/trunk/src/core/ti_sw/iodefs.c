@@ -235,7 +235,7 @@ int iodefs_load(const char* path)
 		iodefs_unload();
 	
 	filename = g_strconcat(path, iodefs_get_filename(), NULL);
-	fprintf(stdout, "parsing I/O port definitions (%s)... ", filename);
+	fprintf(stdout, "parsing I/O port definitions (%s)... ", iodefs_get_filename());
 
 	f = fopen(filename, "rb");
 	if(f == NULL)
