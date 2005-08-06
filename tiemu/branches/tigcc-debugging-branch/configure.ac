@@ -162,10 +162,15 @@ esac
 
 # Check for the new -fvisibility=hidden flag introduced in gcc 4.0
 # Allow to reduce shared library size and avoid symbol clash
+# Unfortunately, this only works for fully static builds. If any parts of GDB are built shared (--enable-shared or --enable-shared-*), we currently have no way to disable it just for these parts. -- Kevin
 case $host_os in
 *mingw*)
   ;;
 *)
+    case "$ac_configure_args" in
+    *--enable-shared*)
+      ;;
+    *)
         if test x$GCC = xyes; then
            visibility_flag=''
            AC_MSG_CHECKING([whether gcc accepts -fvisibility])
@@ -186,6 +191,8 @@ case $host_os in
             fi
         fi
         ;;
+    esac
+  ;;
 esac
 
 case "$host" in

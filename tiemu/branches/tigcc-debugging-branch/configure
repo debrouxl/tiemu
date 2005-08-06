@@ -2002,7 +2002,7 @@ fi
 
           ac_config_headers="$ac_config_headers config.h"
 
-                                                                                                                        ac_config_files="$ac_config_files  Makefile build/Makefile glade/Makefile help/Makefile man/Makefile pedrom/Makefile pixmaps/Makefile skins/Makefile src/Makefile tiemu.lsm tiemu.spec"
+                                                                                                              ac_config_files="$ac_config_files Makefile build/Makefile glade/Makefile help/Makefile man/Makefile pedrom/Makefile pixmaps/Makefile skins/Makefile src/Makefile tiemu.lsm tiemu.spec"
 
 
 echo "$as_me:$LINENO: checking for something to drink while compiling" >&5
@@ -37560,10 +37560,15 @@ esac
 
 # Check for the new -fvisibility=hidden flag introduced in gcc 4.0
 # Allow to reduce shared library size and avoid symbol clash
+# Unfortunately, this only works for fully static builds. If any parts of GDB are built shared (--enable-shared or --enable-shared-*), we currently have no way to disable it just for these parts. -- Kevin
 case $host_os in
 *mingw*)
   ;;
 *)
+    case "$ac_configure_args" in
+    *--enable-shared*)
+      ;;
+    *)
         if test x$GCC = xyes; then
            visibility_flag=''
            echo "$as_me:$LINENO: checking whether gcc accepts -fvisibility" >&5
@@ -37591,6 +37596,8 @@ _ACEOF
             fi
         fi
         ;;
+    esac
+  ;;
 esac
 
 case "$host" in
@@ -38235,7 +38242,6 @@ for ac_config_target in $ac_config_targets
 do
   case "$ac_config_target" in
   # Handling of arguments.
-  "" ) CONFIG_FILES="$CONFIG_FILES " ;;
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "build/Makefile" ) CONFIG_FILES="$CONFIG_FILES build/Makefile" ;;
   "glade/Makefile" ) CONFIG_FILES="$CONFIG_FILES glade/Makefile" ;;
