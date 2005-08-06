@@ -519,6 +519,8 @@ GtkWidget* display_popup_menu(void)
 	// hide the custom view radio button
 	data = glade_xml_get_widget(xml, "custom_view1");
 	gtk_widget_hide(data);
+	data = glade_xml_get_widget(xml, "full_view1");
+	gtk_widget_set_sensitive(data, FALSE);
 
 	// init radio buttons
     switch(options.view)

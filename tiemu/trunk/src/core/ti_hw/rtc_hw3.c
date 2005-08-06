@@ -50,6 +50,9 @@ int rtc3_init(void)
 	struct tm ref;
 	time_t now;
 
+	if(tihw.hw_type < HW3)
+		return 0;
+
 	// Computes pseudo-constant (difference between PC ref and TI ref) because:
 	// - TI counts seconds since January 1st, 1997 00:00:00
 	// - PC counts seconds since January 1st, 1970 00:00:00
@@ -133,6 +136,9 @@ int rtc3_state_save(void)
 	TTIME rtc3_cur;
 	TTIME d, a;
 
+	if(tihw.hw_type < HW3)
+		return 0;
+
 	// get time and computes time elapsed since reload (cur - beg + load)
 	rtc3_get_time(&rtc3_cur);
 	rtc3_diff_time(&rtc3_cur, &tihw.rtc3_beg, &d);
@@ -168,6 +174,9 @@ int rtc3_state_save(void)
 int rtc3_state_load(void)
 {
 	TTIME rtc3_cur;
+
+	if(tihw.hw_type < HW3)
+		return 0;
 
 	// clock disabled ?
 	if(!io3_bit_tst(0x5f,0))

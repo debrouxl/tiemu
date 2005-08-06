@@ -6,6 +6,7 @@ SubVersion: $Id$
 	- [kevin] $1625/1626: buffering grayscale planes to avoid blinking in double-buffered games
 	- [roms]  $1627: put all gscales extern into gscales.h
 	- [roms]  $1629: added new I/O ports window which let view/modify HW registers
+	- [roms]  $1648: fixed buffer overflow in RTC HW3 and disabled full screen mode (too slow)
 
 - 16/07/2005, version 2.00-rc7:
 	- [roms] $1583: fixed PPhD's bug (no reload of ROM calls when upgrading)
