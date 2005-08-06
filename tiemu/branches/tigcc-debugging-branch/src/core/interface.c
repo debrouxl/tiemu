@@ -50,7 +50,8 @@
 #include "ti68k_int.h"
 #include "ti68k_err.h"
 #include "mem_size.h"
-
+#include "romcalls.h"
+#include "iodefs.h"
 
 /**********************/
 /* Internal variables */
@@ -275,10 +276,30 @@ int ti68k_get_io3_size(int calc_type)
     return ti_io3_sizes[log_b2(calc_type)];
 }
 
+/********/
+/* Misc */
+/********/
+
 void ti68k_unprotect_64KB_range(uint32_t addr)
 {
     unsigned blockid = addr >> 12, i;
 
     for (i = blockid; i <= blockid + 16 && i < 64; i++)
         tihw.ram_exec[i] = 0;
+}
+
+int ti68k_debug_load_symbols(const char *path)
+{
+	if(!strcmp(path, ""))
+		return 0;
+
+	return romcalls_load(path);
+}
+
+int ti68k_debug_load_iodefs(const char *path)
+{
+	if(!strcmp(path, ""))
+		return 0;
+
+	return iodefs_load(path);
 }

@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,19 +24,45 @@
  *  Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef __TI68K_DBG__
-#define __TI68K_DBG__
+/*
+  Breakpoint definitions
+*/
 
-int ti68k_debug_get_pc(void);
-uint32_t ti68k_debug_disassemble(uint32_t addr, char **line);
-int ti68k_debug_break(void);
-int ti68k_debug_trace(void);
-int ti68k_debug_step(void);
-int ti68k_debug_step_over(void);
-int ti68k_debug_step_out(void);
-int ti68k_debug_skip(uint32_t next_pc);
-int ti68k_debug_do_instructions(int n);
+#ifndef __IODEFS_H__
+#define __IODEFS_H__
 
-int ti68k_debug_is_supervisor(void);
+#include <stdio.h>
+#include <stdint.h>
+#include <glib.h>
+
+/* Types */
+
+typedef enum
+{
+	IO_RO = 1, IO_WO = 2, IO_RW = 3,
+} IO_ACC;
+
+typedef struct
+{
+	uint32_t	addr;		// $600000
+	int			size;		// 1, 2, 4 bytes
+	int			type;		// ro, wo, rw
+
+	char*		bit_str;	// <..5...1.>
+	int			bits[32];	// bit number like 1,5
+
+	int			nbits;		// number of bits usable
+	int			all_bits;	// set to 1 if all bits are used
+
+	char*		bit_name[32];// name of each bit (like SLE)
+	char*		name;		// "Constrast and battery status"
+} IO_DEF;
+
+/* Functions */
+
+int iodefs_load(const char *path);
+int iodefs_unload(void);
+
+GNode* iodefs_tree(void);
 
 #endif

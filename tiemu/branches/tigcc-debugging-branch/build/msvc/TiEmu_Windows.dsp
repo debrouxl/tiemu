@@ -304,6 +304,10 @@ SOURCE=..\..\src\core\hwpm.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\ti_sw\iodefs.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\ti_sw\registers.c
 # End Source File
 # Begin Source File
@@ -377,6 +381,10 @@ SOURCE=..\..\src\gui\debugger\dbg_entry.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\debugger\dbg_heap.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\debugger\dbg_iop.c
 # End Source File
 # Begin Source File
 

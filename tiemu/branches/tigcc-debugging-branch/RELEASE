@@ -2,8 +2,8 @@
 
 
 
-Previous version: 2.00-rc6  (16/07/2005)
-Current version:  2.00-rc7  (03/08/2005)
+Previous version: 2.00-rc7  (03/08/2005)
+Current version:  2.00-rc8  (06/08/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,29 +20,20 @@ For the other link cables, no driver is needed.
 New capabilities:
 -----------------
 
-	- added a new function in the ticables library API (ticable_link_reset)
-		for use by TiEmu. It allows to reset/flush the pipes of virtual linking when the
-		DBus is reset (usually due to transmission error). Link is now resumable.
-	- reimplemented HW3 RTC from latest/new O. Armand's information (full support of clock now)
+	- new I/O ports window which let view/modify HW registers
+	- TiEmu retains the state of dbg windows (open/closed)
 
 
 Improvements:
 -------------
 
-	- comm box (removed calc & autodetect because un-needed)
-	- file patterns in file selector (case sensitivity)
-	- avoid linkport accesses when browsing memory from dbg window
-	- set link timeout to 60s for non-NT platforms, 1.5s for others
-	- automatically bind virtual link 'TiEmu #2' on the second instance of TiEmu (Win32 only)
+	- buffering grayscale planes to avoid blinking in double-buffered games (like Anton's F-Zero)
+	
 		
-
 Bug fixes:
 ----------
 
-	- PPhD's bug (no reload of ROM calls when upgrading)
-	- severe bug in linkport (the status register was reset whenever read
-		like specified by TI but the int handler proves it's false).
-		TiEmu does not run an infinite loop when transfer is interrupted.
+	- only first 32 bytes of ram_exec were restored from savestate
 	
 
 Planned:
@@ -55,3 +46,4 @@ Notes:
 ------
 
 	- the SilverLink cable doesn't make TiEmu crash any longer but it's still unusable
+	- this is the last RC release !

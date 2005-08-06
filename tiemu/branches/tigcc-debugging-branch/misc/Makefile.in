@@ -264,28 +264,27 @@ qt_includes = @qt_includes@
 qt_libraries = @qt_libraries@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
-subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 x_includes = @x_includes@
 x_libraries = @x_libraries@
-pedromdir = $(pkgdatadir)/pedrom
-dist_pedrom_DATA = pedrom*.tib
-subdir = pedrom
+miscdir = $(pkgdatadir)/misc
+dist_misc_DATA = *.txt
+subdir = misc
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
-DATA = $(dist_pedrom_DATA)
+DATA = $(dist_misc_DATA)
 
-DIST_COMMON = $(dist_pedrom_DATA) $(srcdir)/Makefile.in Makefile.am
+DIST_COMMON = $(dist_misc_DATA) $(srcdir)/Makefile.in Makefile.am
 all: all-am
 
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  pedrom/Makefile
+	  $(AUTOMAKE) --gnu  misc/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 
@@ -298,23 +297,23 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
-dist_pedromDATA_INSTALL = $(INSTALL_DATA)
-install-dist_pedromDATA: $(dist_pedrom_DATA)
+dist_miscDATA_INSTALL = $(INSTALL_DATA)
+install-dist_miscDATA: $(dist_misc_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(pedromdir)
-	@list='$(dist_pedrom_DATA)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(miscdir)
+	@list='$(dist_misc_DATA)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(dist_pedromDATA_INSTALL) $$d$$p $(DESTDIR)$(pedromdir)/$$f"; \
-	  $(dist_pedromDATA_INSTALL) $$d$$p $(DESTDIR)$(pedromdir)/$$f; \
+	  echo " $(dist_miscDATA_INSTALL) $$d$$p $(DESTDIR)$(miscdir)/$$f"; \
+	  $(dist_miscDATA_INSTALL) $$d$$p $(DESTDIR)$(miscdir)/$$f; \
 	done
 
-uninstall-dist_pedromDATA:
+uninstall-dist_miscDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(dist_pedrom_DATA)'; for p in $$list; do \
+	@list='$(dist_misc_DATA)'; for p in $$list; do \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " rm -f $(DESTDIR)$(pedromdir)/$$f"; \
-	  rm -f $(DESTDIR)$(pedromdir)/$$f; \
+	  echo " rm -f $(DESTDIR)$(miscdir)/$$f"; \
+	  rm -f $(DESTDIR)$(miscdir)/$$f; \
 	done
 tags: TAGS
 TAGS:
@@ -359,7 +358,7 @@ check: check-am
 all-am: Makefile $(DATA)
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(pedromdir)
+	$(mkinstalldirs) $(DESTDIR)$(miscdir)
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
@@ -399,7 +398,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-dist_pedromDATA
+install-data-am: install-dist_miscDATA
 
 install-exec-am:
 
@@ -425,22 +424,22 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-dist_pedromDATA uninstall-info-am
+uninstall-am: uninstall-dist_miscDATA uninstall-info-am
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
 	dvi-am info info-am install install-am install-data \
-	install-data-am install-dist_pedromDATA install-exec \
+	install-data-am install-dist_miscDATA install-exec \
 	install-exec-am install-info install-info-am install-man \
 	install-strip installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	uninstall uninstall-am uninstall-dist_pedromDATA \
+	uninstall uninstall-am uninstall-dist_miscDATA \
 	uninstall-info-am
 
 
 uninstall:
-	rm -f $(pkgdatadir)/pedrom/*.tib
+	rm -f $(pkgdatadir)/misc/*.txt
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

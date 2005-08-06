@@ -38,9 +38,6 @@
 #include "struct.h"
 #include "dbg_all.h"
 
-static GladeXML *xml = NULL;
-static GtkWidget *wnd = NULL;
-
 enum { 
 	    COL_ADDR
 };
@@ -127,6 +124,7 @@ static GtkListStore *store = NULL;
 */
 GtkWidget* dbgpclog_create_window(void)
 {
+	GladeXML *xml = NULL;
 	GtkWidget *dbox;
     GtkWidget *data;
 	
@@ -148,7 +146,7 @@ GtkWidget* dbgpclog_create_window(void)
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 
-	return wnd = dbox;
+	return dbox;
 }
 
 GtkWidget* dbgpclog_display_window(void)
@@ -156,19 +154,19 @@ GtkWidget* dbgpclog_display_window(void)
 #ifdef WND_STATE
 	if(!options3.pclog.minimized)
 	{
-		gtk_window_resize(GTK_WINDOW(wnd), options3.pclog.rect.w, options3.pclog.rect.h);
-		gtk_window_move(GTK_WINDOW(wnd), options3.pclog.rect.x, options3.pclog.rect.y);
+		gtk_window_resize(GTK_WINDOW(dbgw.pclog), options3.pclog.rect.w, options3.pclog.rect.h);
+		gtk_window_move(GTK_WINDOW(dbgw.pclog), options3.pclog.rect.x, options3.pclog.rect.y);
 	}
 	else
-		gtk_window_iconify(GTK_WINDOW(wnd));
+		gtk_window_iconify(GTK_WINDOW(dbgw.pclog));
 #endif
 
 	clist_refresh(store);
 
 	if(!GTK_WIDGET_VISIBLE(dbgw.pclog) && !options3.pclog.closed)
-		gtk_widget_show(wnd);
+		gtk_widget_show(dbgw.pclog);
 
-	return wnd;
+	return dbgw.pclog;
 }
 
 void dbgpclog_refresh_window(void)

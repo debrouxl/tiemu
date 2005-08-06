@@ -7,7 +7,7 @@
 
 [Setup]
 AppName=TiEmu
-AppVerName=TiEmu 2.00-rc7
+AppVerName=TiEmu 2.00-rc8
 AppPublisher=The TiEmu Team
 AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
 AppSupportURL=http://lpg.ticalc.org/prj_tiemu/mailing_list.html
@@ -52,9 +52,10 @@ Source: "C:\sources\roms\tiemu\man\ManPage.txt"; DestDir: "{app}"; Flags: ignore
 Source: "C:\sources\roms\tiemu\README.win32"; DestDir: "{app}"; DestName: "ReadMe.txt"; Flags: ignoreversion isreadme
 Source: "C:\sources\roms\tiemu\RELEASE"; DestDir: "{app}"; DestName: "Release.txt"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu\TODO"; DestDir: "{app}"; DestName: "ToDo.txt"; Flags: ignoreversion
-;Source: "C:\sources\roms\tiemu\ROMs\romcalls.lst"; DestDir: "{app}"; Flags: ignoreversion
-; ROM files
-Source: "C:\sources\roms\tiemu\pedrom\romcalls.txt"; DestDir: "{app}"; Flags: ignoreversion
+; Resource files
+Source: "C:\sources\roms\tiemu\misc\romcalls.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu\misc\iodefs*.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
+; PedRom files
 Source: "C:\sources\roms\tiemu\pedrom\pedrom*.tib"; DestDir: "{app}\pedrom"; Flags: ignoreversion
 ; TiEmu/GTK
 Source: "C:\sources\roms\tifiles\tests\tifiles.dll"; DestDir: "{app}"; Flags: ignoreversion

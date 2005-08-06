@@ -236,11 +236,3 @@ uint8_t* ti68k_get_real_address(uint32_t addr)
 {
 	return hw_get_real_address(addr);
 }
-
-int ti68k_debug_load_symbols(const char *filename)
-{
-	if(!strcmp(filename, ""))
-		return 0;
-
-	return romcalls_preload(filename);
-}

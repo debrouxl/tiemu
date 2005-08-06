@@ -77,4 +77,8 @@ void ti68k_unprotect_64KB_range(uint32_t addr);
 // Errors
 int ti68k_error_get(int err_num, char *error_msg);
 
+// Misc
+int ti68k_debug_load_symbols(const char *path);
+int ti68k_debug_load_iodefs(const char *path);
+
 #endif

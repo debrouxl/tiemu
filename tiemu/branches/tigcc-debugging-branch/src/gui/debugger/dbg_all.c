@@ -68,6 +68,7 @@ void gtk_debugger_preload(void)
 	dbgw.pclog = dbgpclog_create_window();
     dbgw.stack = dbgstack_create_window();
 	dbgw.heap  = dbgheap_create_window();
+	dbgw.iop   = dbgiop_create_window();
 	dbgw.code  = dbgcode_create_window();
 }
 
@@ -97,6 +98,7 @@ int gtk_debugger_enter(int context)
     dbgpclog_display_window();
     dbgstack_display_window();
 	dbgheap_display_window();
+	dbgiop_display_window();
 	dbgcode_display_window();	// the last has focus
 
 	// enable the debugger if GDB disabled it
@@ -154,6 +156,8 @@ void gtk_debugger_refresh(void)
 		dbgstack_refresh_window();
 	if(GTK_WIDGET_VISIBLE(dbgw.heap))
 		dbgheap_refresh_window();
+	if(GTK_WIDGET_VISIBLE(dbgw.iop))
+		dbgiop_refresh_window();
 }
 
 // make windows (un-)modifiable
@@ -165,6 +169,8 @@ void set_other_windows_sensitivity(int state)
     gtk_widget_set_sensitive(dbgw.pclog, state);
     gtk_widget_set_sensitive(dbgw.stack, state);
     gtk_widget_set_sensitive(dbgw.heap, state);
+	if(GTK_WIDGET_VISIBLE(dbgw.iop))
+        gtk_widget_set_sensitive(dbgw.iop, state);
 }
 
 // minimize all windows
@@ -184,6 +190,8 @@ void gtk_debugger_minimize_all(int all)
         gtk_window_iconify(GTK_WINDOW(dbgw.stack));
 	if(GTK_WIDGET_VISIBLE(dbgw.heap))
         gtk_window_iconify(GTK_WINDOW(dbgw.heap));
+	if(GTK_WIDGET_VISIBLE(dbgw.iop))
+        gtk_window_iconify(GTK_WINDOW(dbgw.iop));
 }
 
 // unminimize all windows
@@ -203,6 +211,8 @@ void gtk_debugger_unminimize_all(int all)
         gtk_window_deiconify(GTK_WINDOW(dbgw.stack));
 	if(GTK_WIDGET_VISIBLE(dbgw.heap))
         gtk_window_deiconify(GTK_WINDOW(dbgw.heap));
+	if(GTK_WIDGET_VISIBLE(dbgw.iop))
+        gtk_window_deiconify(GTK_WINDOW(dbgw.iop));
 }
 
 // show all windows
@@ -224,6 +234,8 @@ void gtk_debugger_show_all(int all)
         gtk_widget_show(dbgw.stack);
 	if(!GTK_WIDGET_VISIBLE(dbgw.heap))
         gtk_widget_show(dbgw.heap);
+	if(!GTK_WIDGET_VISIBLE(dbgw.iop))
+        gtk_widget_show(dbgw.iop);
 }
 
 // or hide them
@@ -245,6 +257,8 @@ void gtk_debugger_hide_all(int all)
         gtk_widget_hide(dbgw.stack);
 	if(GTK_WIDGET_VISIBLE(dbgw.heap))
         gtk_widget_hide(dbgw.heap);
+	if(GTK_WIDGET_VISIBLE(dbgw.iop))
+        gtk_widget_hide(dbgw.iop);
 }
 
 /* Callbacks */
@@ -312,6 +326,16 @@ on_heap_frame1_activate                    (GtkMenuItem     *menuitem,
         gtk_widget_hide(dbgw.heap);
   	else
         gtk_widget_show(dbgw.heap);
+}
+
+GLADE_CB void
+on_ioports_frame1_activate                    (GtkMenuItem     *menuitem,
+                                             gpointer         user_data)
+{
+    if(GTK_CHECK_MENU_ITEM(menuitem)->active != TRUE) 
+        gtk_widget_hide(dbgw.iop);
+  	else
+        gtk_widget_show(dbgw.iop);
 }
 
 
@@ -418,6 +442,13 @@ void update_submenu(GtkWidget *widget, gpointer user_data)
     g_signal_handlers_block_by_func(GTK_OBJECT(item), on_heap_frame1_activate, NULL);
     gtk_check_menu_item_set_active(item, GTK_WIDGET_VISIBLE(dbgw.heap));
     g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_heap_frame1_activate, NULL);
+
+	// ioports
+	elt = g_list_nth(list, 6);
+    item = GTK_CHECK_MENU_ITEM(elt->data);
+    g_signal_handlers_block_by_func(GTK_OBJECT(item), on_ioports_frame1_activate, NULL);
+    gtk_check_menu_item_set_active(item, GTK_WIDGET_VISIBLE(dbgw.iop));
+    g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_ioports_frame1_activate, NULL);
 }
 
 // callbacks from dbg_regs.c
@@ -646,6 +677,34 @@ on_dbgheap_window_state_event		   (GtkWidget       *widget,
 
 	if(mask & GDK_WINDOW_STATE_ICONIFIED)
 		options3.heap.minimized = state & GDK_WINDOW_STATE_ICONIFIED;
+}
+
+// callbacks from dbg_iop.c
+GLADE_CB gboolean
+on_dbgioports_window_delete_event       (GtkWidget       *widget,
+                                        GdkEvent         *event,
+                                        gpointer          user_data)
+{
+    gtk_widget_hide(widget);    
+    return TRUE;
+}
+
+GLADE_CB void
+on_dbgioports_window_state_event	   (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+    GdkEventWindowState *wstate = (GdkEventWindowState *)event;
+    GdkWindowState state = wstate->new_window_state;
+    GdkWindowState mask = wstate->changed_mask;
+
+	if(mask & GDK_WINDOW_STATE_WITHDRAWN && dbg_on)
+		options3.iop.closed = (state & GDK_WINDOW_STATE_WITHDRAWN);
+
+	window_get_rect(widget, &options3.iop.rect);
+
+	if(mask & GDK_WINDOW_STATE_ICONIFIED)
+		options3.iop.minimized = state & GDK_WINDOW_STATE_ICONIFIED;
 }
 
 // misc

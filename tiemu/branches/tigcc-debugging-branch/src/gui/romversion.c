@@ -192,10 +192,8 @@ gint display_romversion_dbox(gboolean file_only)
 
     // display list box
 	dbox = glade_xml_get_widget(xml, "romversion_dbox");
-	printf("dbox = %p\n", dbox);
     
     data = glade_xml_get_widget(xml, "clist1");
-	printf("clist = %p\n", data);
     store = clist_create(data);
 	clist_populate(store);
     

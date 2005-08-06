@@ -52,7 +52,7 @@ typedef struct
 
 void romcalls_get_table_infos(uint32_t *base, uint32_t *size);
 void romcalls_get_symbol_address(int id, uint32_t *addr);
-int romcalls_preload(const char* filename);
+int romcalls_load(const char* filename);
 int romcalls_is_loaded(void);
 
 #ifndef FLOATFORMAT_H

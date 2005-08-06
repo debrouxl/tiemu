@@ -76,7 +76,7 @@ static void clist_populate(GtkListStore *store)
 	static int old_order = SORT_BY_NAME;
 
 	// (re)load symbols
-	path = g_strconcat(inst_paths.base_dir, "romcalls.txt", NULL);
+	path = g_strconcat(inst_paths.misc_dir, "romcalls.txt", NULL);
 	result = ti68k_debug_load_symbols(path);
 	g_free(path);
 

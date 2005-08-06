@@ -39,9 +39,6 @@
 #include "dbg_all.h"
 #include "handles.h"
 
-static GladeXML *xml = NULL;
-static GtkWidget *wnd = NULL;
-
 enum { 
 	    COL_ID, COL_ADDR, COL_SIZE
 };
@@ -134,6 +131,7 @@ static GtkListStore *store = NULL;
 */
 GtkWidget* dbgheap_create_window(void)
 {
+	GladeXML *xml = NULL;
 	GtkWidget *dbox;
     GtkWidget *data;
 	
@@ -155,7 +153,7 @@ GtkWidget* dbgheap_create_window(void)
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 
-	return wnd = dbox;
+	return dbox;
 }
 
 GtkWidget* dbgheap_display_window(void)
@@ -163,19 +161,19 @@ GtkWidget* dbgheap_display_window(void)
 #ifdef WND_STATE
 	if(!options3.heap.minimized)
 	{
-		gtk_window_resize(GTK_WINDOW(wnd), options3.heap.rect.w, options3.heap.rect.h);
-		gtk_window_move(GTK_WINDOW(wnd), options3.heap.rect.x, options3.heap.rect.y);
+		gtk_window_resize(GTK_WINDOW(dbgw.heap), options3.heap.rect.w, options3.heap.rect.h);
+		gtk_window_move(GTK_WINDOW(dbgw.heap), options3.heap.rect.x, options3.heap.rect.y);
 	}
 	else
-		gtk_window_iconify(GTK_WINDOW(wnd));
+		gtk_window_iconify(GTK_WINDOW(dbgw.heap));
 #endif
 
 	clist_refresh(store);
 
 	if(!GTK_WIDGET_VISIBLE(dbgw.heap) && !options3.heap.closed)
-		gtk_widget_show(wnd);
+		gtk_widget_show(dbgw.heap);
 
-	return wnd;
+	return dbgw.heap;
 }
 
 void dbgheap_refresh_window(void)

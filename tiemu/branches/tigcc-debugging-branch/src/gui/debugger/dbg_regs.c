@@ -42,10 +42,8 @@
 #include "struct.h"
 #include "dbg_all.h"
 
-static GladeXML *xml = NULL;
-static GtkWidget *wnd = NULL;
-
-enum { 
+enum 
+{
 	    COL_NAME, COL_VALUE, 
 		COL_EDITABLE, COL_COLOR, COL_FONT
 };
@@ -58,7 +56,8 @@ static gint column2index(GtkWidget *list, GtkTreeViewColumn * column)
 {
 	gint i;
 
-	for (i = 0; i < CLIST_NVCOLS; i++) {
+	for (i = 0; i < CLIST_NVCOLS; i++) 
+	{
 		GtkTreeViewColumn *col;
 
 		col = gtk_tree_view_get_column(GTK_TREE_VIEW(list), i);
@@ -241,7 +240,6 @@ static gboolean select_func(GtkTreeSelection * selection,
 	g_free(str);	
 	return TRUE;
 }
-
 
 static GtkTreeStore* ctree_create(GtkWidget *widget)
 {
@@ -561,6 +559,7 @@ static GtkTreeStore *store;
 */
 GtkWidget* dbgregs_create_window(void)
 {
+	GladeXML *xml = NULL;
 	GtkWidget *dbox;
     GtkWidget *data;	
 	
@@ -582,7 +581,7 @@ GtkWidget* dbgregs_create_window(void)
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
 
-	return wnd = dbox;
+	return dbox;
 }
 
 GtkWidget* dbgregs_display_window(void)
@@ -590,19 +589,19 @@ GtkWidget* dbgregs_display_window(void)
 #ifdef WND_STATE
 	if(!options3.regs.minimized)
 	{
-		gtk_window_resize(GTK_WINDOW(wnd), options3.regs.rect.w, options3.regs.rect.h);
-		gtk_window_move(GTK_WINDOW(wnd), options3.regs.rect.x, options3.regs.rect.y);
+		gtk_window_resize(GTK_WINDOW(dbgw.regs), options3.regs.rect.w, options3.regs.rect.h);
+		gtk_window_move(GTK_WINDOW(dbgw.regs), options3.regs.rect.x, options3.regs.rect.y);
 	}
 	else
-		gtk_window_iconify(GTK_WINDOW(wnd));
+		gtk_window_iconify(GTK_WINDOW(dbgw.regs));
 #endif
     
 	ctree_refresh(store);
 
 	if(!GTK_WIDGET_VISIBLE(dbgw.regs) && !options3.regs.closed)
-		gtk_widget_show(wnd);
+		gtk_widget_show(dbgw.regs);
 
-	return wnd;
+	return dbgw.regs;
 }
 
 void dbgregs_refresh_window(void)
