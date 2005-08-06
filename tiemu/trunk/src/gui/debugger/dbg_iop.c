@@ -60,7 +60,7 @@ static char* rd_mem_as_str(IO_DEF *t)
 	{
 		case 1: return g_strdup_printf("%02x", mem_rd_byte(t->addr)); break;
 		case 2: return g_strdup_printf("%04x", mem_rd_word(t->addr)); break;
-		case 3: return g_strdup_printf("%08x", mem_rd_long(t->addr)); break;
+		case 4: return g_strdup_printf("%08x", mem_rd_long(t->addr)); break;
 		default: return g_strdup("???"); break;
 	}
 	return g_strdup("");
@@ -149,7 +149,7 @@ static void renderer_edited(GtkCellRendererText *cell,
 		{
 		case 1: mem_wr_byte(s->addr, (uint8_t )value); break;
 		case 2: mem_wr_word(s->addr, (uint16_t)value); break;
-		case 3: mem_wr_long(s->addr, (uint32_t)value); break;
+		case 4: mem_wr_long(s->addr, (uint32_t)value); break;
 		default: break;
 		}
 	}

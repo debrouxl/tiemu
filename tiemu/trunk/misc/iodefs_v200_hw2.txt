@@ -3,6 +3,10 @@
 ; Beware: _don't_ touch this file unless you know what you are doing !
 ; Any modification can result in unpredictable results (or crash even !).
 ;
+; You should not write more than 16 chars for bit names
+;
+; Same file than iodefs_ti89_hw2.txt but this one is the copy.
+;
 
 [System]
 

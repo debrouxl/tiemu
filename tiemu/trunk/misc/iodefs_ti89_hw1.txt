@@ -3,35 +3,44 @@
 ; Beware: _don't_ touch this file unless you know what you are doing !
 ; Any modification can result in unpredictable results (or crash even !).
 ;
+; You should not write more than 16 chars for bit names
+;
+; Same file than iodefs_ti92p_hw1.txt but this one is the original.
+;
 
 [System]
 
-$600001	| 1	| rw	| <.....2.0>			| Stack over
-$600005	| 1	| wo	| <...43210>			| Idle/Wake-up
+$600001	| 1	| rw	| <.....2.0>			| Stack overflow	| AI7 enable,Interleave RAM
+$600003	| 1	| wo	| <.654.210>			| Wait-states		| non-RAM,non-RAM,non-RAM,RAM,RAM,RAM
+$600005	| 1	| wo	| <...43210>			| Idle/Wake-up		| Wake on AI5,Wake on AI4,Wake on AI3,Wake on AI2,Wake on AI1
 
 [Link]
 
-$60000c	| 1	| rw	| <all>					| Control
-$60000d	| 1	| rw	| <76543...>			| Status
-$60000e	| 1	| rw	| <all>					| Direct
+$60000c	| 1	| rw	| <765.3210>			| Control			| Autostart Enable,Link Disable,Link TimeOut,Link Error IE,AutoStart IE,TX buf empty IE,RX buf full IE
+$60000d	| 1	| rw	| <765432..>			| Status			| Link Error,TX buf empty, RX buf full,Link interrupt,AutoStart,External activity
+$60000e	| 1	| rw	| <....3210>			| Direct			| D1 in,D0 in,D1 out,D0 out
 $60000f	| 1	| rw	| <all>					| Rx/Tx buf
 
 [LCD]
 
 $600010 | 2	| wo	| <all>					| LCD address
-$600012	| 1	| wo	| <all>					| LCD width
-$600013	| 1	| wo	| <all>					| LCD height
-$60001C	| 1	| wo	| <all>					| LCD Row Sync
-
-$600000	| 1	| rw	| <..5.....>			| Contrast
-$60001D	| 1	| wo	| <....3210>			| Contrast
+$600012	| 1	| wo	| <..543210>			| LCD log. width
+$600013	| 1	| wo	| <all>					| LCD log. height
+$60001C	| 1	| wo	| <..5432..>			| LCD Row Sync
+$60001D	| 1	| wo	| <7..43210>			| Contrast			| Voltage mult.,Screen disable,Bit #3,Bit #2,Bit #1,Bit #0
 
 [Timer]
 
-$600017	| 1	| rw	| <all>					| Timer
+$600015	| 1 | rw	| <7.543210>			| Timer & OSC2/3	| AI1/3/5 disable,Increment rate,Increment rate,Timer enable,Triggers AI3,OSC2 enable,LCD DMA enable
+$600017	| 1	| rw	| <all>					| Prog. Timer
 
 [Keyboard]
 
-$600018	| 2	| rw	| <......1076543210>	| Row mask
-$60001a	| 1	| rw	| <......1.>			| ON key
+$600019	| 1	| rw	| <.6543210>			| Row mask
+$60001a	| 1	| rw	| <......1.>			| ON key			| ON key state
 $60001b	| 1	| rw	| <all>					| Col state
+
+[Battery]
+$600000	| 1	| rw	| <.....2..>			| Status			| Battery status 
+$600018	| 1	| rw	| <......10>			| Voltage			| Trigger level,Trigger level
+
