@@ -76,8 +76,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/lib/insight*
 /usr/lib/itcl*
 /usr/lib/itk*
-/usr/lib/libitcl*.a
-/usr/lib/libitk*.a
+/usr/lib/libitcl*.so
+/usr/lib/libitk*.so
 /usr/man/man1/tiemu.1
 /usr/man/mann/*.n
 /usr/share/insight*
@@ -90,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Sat Aug 6 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Fix file list for shared ITCL.
+
 * Sat Jun 25 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Drop "Conflicts: insight" because this package gets along just fine with
 Gérard Milmeister's Insight RPM.

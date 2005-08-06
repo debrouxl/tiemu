@@ -35,7 +35,7 @@
 * FC4 RPMs no longer have a Conflicts: insight, because they don't conflict with Gérard Milmeister's Insight packages
 * FC4 RPMs now build itcl/itk/iwidgets shared and provide them rather than conflicting with them.
 * TiEmu, TiLP (roms): Added fvisibility support for GCC 3.4.2-rhl or 4.0 and higher
-* Disabled fvisibility support if --enable-shared or --enable-shared-*.
+* Disabled fvisibility support if --enable-shared or --enable-shared-* because it is currently broken.
 * libti*, TiLP (roms): Fixed GCC 4 pointer signedness warnings.
 * libti* (PpHd): Fixed --enable-nls builds.
 * libticables (roms): "Low-level access cable functions may be set to NULL on some cables: set to nul_cable instead." Was not done for the Gray Link !
