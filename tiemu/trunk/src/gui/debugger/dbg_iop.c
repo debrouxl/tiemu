@@ -53,6 +53,34 @@ enum
 
 #define FONT_NAME	"courier"
 
+// return value as string
+static char* rd_mem_as_str(IO_DEF *t)
+{
+	switch(t->size)
+	{
+		case 1: return g_strdup_printf("%02x", mem_rd_byte(t->addr)); break;
+		case 2: return g_strdup_printf("%04x", mem_rd_word(t->addr)); break;
+		case 3: return g_strdup_printf("%08x", mem_rd_long(t->addr)); break;
+		default: return g_strdup("???"); break;
+	}
+	return g_strdup("");
+}
+
+static int rd_bit(IO_DEF *s, int bit_num)
+{
+	switch(s->size)
+	{
+	case 1: return mem_rd_byte(s->addr) & (1 << bit_num);
+	break;
+	case 2: return mem_rd_word(s->addr) & (1 << bit_num);
+	break;
+	case 4: return mem_rd_long(s->addr) & (1 << bit_num);
+	break;
+	}
+
+	return -1;
+}
+
 // convert GtkTreeViewColumn into column index
 static gint column2index(GtkWidget *list, GtkTreeViewColumn *column)
 {
@@ -98,22 +126,24 @@ static void renderer_edited(GtkCellRendererText *cell,
 	GtkTreeStore *store = GTK_TREE_STORE(model);
 
 	GtkTreePath *path = gtk_tree_path_new_from_string(path_string);
-	GtkTreeIter iter;
+	GtkTreeIter iter, child;
 	
 	IO_DEF *s;
 	gchar *str;
 	uint32_t value;
+	gboolean valid;
 
 	if (!gtk_tree_model_get_iter(model, &iter, path))
 		return;
 		
 	gtk_tree_model_get(model, &iter, COL_VALUE, &str, COL_S, &s, -1);
 	sscanf(str, "%x", &value);
+	g_free(str);
 
+	// change value in memory
 	if(validate_value(new_text, 2 *s->size))
 	{
 		sscanf(new_text, "%x", &value);			
-		gtk_tree_store_set(store, &iter, COL_VALUE, new_text, -1);
 
 		switch(s->size)
 		{
@@ -124,7 +154,24 @@ static void renderer_edited(GtkCellRendererText *cell,
 		}
 	}
 
+	// and change displayed value (don't rely on typed value !)
+	str = rd_mem_as_str(s);
+	gtk_tree_store_set(store, &iter, COL_VALUE, str, -1);
 	g_free(str);
+
+	// update bits (children nodes)
+	for(valid = gtk_tree_model_iter_children(model, &child, &iter);
+        valid; 
+        valid = gtk_tree_model_iter_next(model, &child))
+    {
+		gchar* bit_adr;
+		int	   bit_num;
+
+		gtk_tree_model_get(model, &child, COL_NAME, &str, COL_ADDR, &bit_adr, -1);
+		sscanf(bit_adr, "%i", &bit_num);
+		gtk_tree_store_set(store, &child, COL_BTNACT, rd_bit(s, bit_num), -1);
+	}
+	
 	gtk_tree_path_free(path);
 }
 
@@ -143,7 +190,7 @@ static void renderer_toggled(GtkCellRendererToggle *cell,
 	gboolean state, result;
 	gchar* bit_str;
 	gint bit_num;
-	gchar* addr_str;
+	gchar* str;
 
 	path = gtk_tree_path_new_from_string(path_string);
 
@@ -185,25 +232,17 @@ static void renderer_toggled(GtkCellRendererToggle *cell,
 		break;
 	}
 
-	// and change displayed value
-	switch(s->size)
-	{
-	case 1: addr_str  = g_strdup_printf("%02x", mem_rd_byte(s->addr)); break;
-	case 2: addr_str  = g_strdup_printf("%04x", mem_rd_word(s->addr)); break;
-	case 3: addr_str  = g_strdup_printf("%08x", mem_rd_long(s->addr)); break;
-	default: addr_str = g_strdup("???"); break;
-	}
-
+	// and change displayed value (parent node)
 	gtk_tree_store_set(store, &iter, COL_BTNACT, state, -1);
 	g_free(bit_str);
 
 	result = gtk_tree_model_iter_parent(model, &parent, &iter);
 	if(result)
 	{
-		gtk_tree_store_set(store, &parent, COL_VALUE, addr_str, -1);
+		str = rd_mem_as_str(s);
+		gtk_tree_store_set(store, &parent, COL_VALUE, str, -1);
+		g_free(str);
 	}
-
-	g_free(addr_str);
 }
 
 static gboolean select_func(GtkTreeSelection *selection,
@@ -294,7 +333,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 	}
 	
 	selection = gtk_tree_view_get_selection(view);
-	gtk_tree_selection_set_mode(selection, GTK_SELECTION_NONE);
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 	gtk_tree_selection_set_select_function(selection, select_func, NULL, NULL);
 
 	return store;
@@ -337,13 +376,7 @@ static void ctree_populate(GtkTreeStore *store)
 			gchar **row_text = g_malloc0((CTREE_NCOLS + 1) *sizeof(gchar *));
 
 			row_text[0] = g_strdup(t->name);
-			switch(t->size)
-			{
-			case 1: row_text[1] = g_strdup_printf("%02x", mem_rd_byte(t->addr)); break;
-			case 2: row_text[1] = g_strdup_printf("%04x", mem_rd_word(t->addr)); break;
-			case 3: row_text[1] = g_strdup_printf("%08x", mem_rd_long(t->addr)); break;
-			default: row_text[1] = g_strdup("???"); break;
-			}
+			row_text[1] = rd_mem_as_str(t);
 			row_text[2] = g_strdup_printf("$%06x", t->addr);
 			row_text[3] = g_strdup(t->all_bits ? "" : t->bit_str);
 
@@ -376,7 +409,7 @@ static void ctree_populate(GtkTreeStore *store)
 					COL_S, (gpointer)t, 
 					COL_EDIT, FALSE,
 					COL_BTNVIS, TRUE,
-					COL_BTNACT, k & 1,					
+					COL_BTNACT, rd_bit(t, t->bits[k]),					
 					-1);
 			}
 		}
