@@ -30,6 +30,8 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "ti68k_int.h"
 #include "iodefs.h"
