@@ -76,6 +76,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/lib/insight*
 /usr/lib/itcl*
 /usr/lib/itk*
+/usr/lib/libitclstub*.a
+/usr/lib/libitkstub*.a
 /usr/lib/libitcl*.so
 /usr/lib/libitk*.so
 /usr/man/man1/tiemu.1
