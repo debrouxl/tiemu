@@ -45,22 +45,26 @@
 
 enum 
 {
-	    COL_NAME, COL_VALUE, COL_ADDR, COL_MASK, 
-		COL_FONT, COL_EDIT, COL_S, COL_BTNVIS, COL_BTNACT,
+	    COL_NAME, COL_VALUE, COL_ADDR, COL_MASK, COL_RW,
+		COL_FONT, COL_EDIT, COL_S, 
+		COL_BTNVIS, COL_BTNACT, COL_BTNDIS,
 };
-#define CTREE_NVCOLS	(4)		// 2 visible columns
-#define CTREE_NCOLS		(9)		// 5 real columns
+#define CTREE_NVCOLS	(5)		// 2 visible columns
+#define CTREE_NCOLS		(11)	// 5 real columns
 
 #define FONT_NAME	"courier"
 
 // return value as string
-static char* rd_mem_as_str(IO_DEF *t)
+static char* rd_mem_as_str(IO_DEF *s)
 {
-	switch(t->size)
+	if(s->addr == 0x60000F)		// avoid linkport access
+		return g_strdup("XX");
+
+	switch(s->size)
 	{
-		case 1: return g_strdup_printf("%02x", mem_rd_byte(t->addr)); break;
-		case 2: return g_strdup_printf("%04x", mem_rd_word(t->addr)); break;
-		case 4: return g_strdup_printf("%08x", mem_rd_long(t->addr)); break;
+		case 1: return g_strdup_printf("%02x", mem_rd_byte(s->addr)); break;
+		case 2: return g_strdup_printf("%04x", mem_rd_word(s->addr)); break;
+		case 4: return g_strdup_printf("%08x", mem_rd_long(s->addr)); break;
 		default: return g_strdup("???"); break;
 	}
 	return g_strdup("");
@@ -68,6 +72,9 @@ static char* rd_mem_as_str(IO_DEF *t)
 
 static int rd_bit(IO_DEF *s, int bit_num)
 {
+	if(s->addr == 0x60000F)		// avoid linkport access
+		return -1;
+
 	switch(s->size)
 	{
 	case 1: return mem_rd_byte(s->addr) & (1 << bit_num);
@@ -266,8 +273,8 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 	
 	store = gtk_tree_store_new(CTREE_NCOLS,
 				G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-				G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_POINTER, 
-				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
+				G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_POINTER, 
+				G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN,
 				-1
             );
     model = GTK_TREE_MODEL(store);
@@ -295,6 +302,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 					    renderer,
 					    "active", COL_BTNACT,
 					    "visible", COL_BTNVIS, 
+						"activatable", COL_BTNDIS,
 						NULL);
 	g_signal_connect(G_OBJECT(renderer), "toggled", G_CALLBACK(renderer_toggled), widget);
 
@@ -321,6 +329,14 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             "Mask", renderer, 
             "text", COL_MASK,
+			"font", COL_FONT,
+			NULL);
+
+	// col 5
+	renderer = gtk_cell_renderer_text_new();
+	gtk_tree_view_insert_column_with_attributes(view, -1, 
+            "Access", renderer, 
+            "text", COL_RW,
 			"font", COL_FONT,
 			NULL);
     
@@ -379,18 +395,20 @@ static void ctree_populate(GtkTreeStore *store)
 			row_text[1] = rd_mem_as_str(t);
 			row_text[2] = g_strdup_printf("$%06x", t->addr);
 			row_text[3] = g_strdup(t->all_bits ? "" : t->bit_str);
+			row_text[4] = g_strdup(iodefs_acc2str(t->type));
 
 			gtk_tree_store_append(store, &iter1, &iter0);
 			gtk_tree_store_set(store, &iter1, 
-					   COL_NAME, row_text[0],
-					   COL_VALUE, row_text[1], 
-					   COL_ADDR,  row_text[2], 
-					   COL_MASK,  row_text[3],
-					   COL_S, (gpointer)t,
-					   COL_FONT, FONT_NAME,
-					   COL_EDIT, TRUE,
-					   COL_BTNVIS, FALSE,
-					   COL_BTNACT, FALSE,
+					   COL_NAME,	row_text[0],
+					   COL_VALUE,	row_text[1], 
+					   COL_ADDR,	row_text[2], 
+					   COL_MASK,	row_text[3],
+					   COL_RW,		row_text[4],
+					   COL_S,		(gpointer)t,
+					   COL_FONT,	FONT_NAME,
+					   COL_EDIT,	!(t->type == IO_RO) && !(t->addr == 0x60000F),
+					   COL_BTNVIS,	FALSE,
+					   COL_BTNACT,	FALSE,
 					   -1);
 
 			g_strfreev(row_text);
@@ -404,12 +422,13 @@ static void ctree_populate(GtkTreeStore *store)
 				row_text[2] = g_strdup_printf("%i", t->bits[k]);
 				gtk_tree_store_append(store, &iter2, &iter1);
 				gtk_tree_store_set(store, &iter2, 
-					COL_NAME, row_text[0],
-					COL_ADDR, row_text[2], 
-					COL_S, (gpointer)t, 
-					COL_EDIT, FALSE,
+					COL_NAME,	row_text[0],
+					COL_ADDR,	row_text[2], 
+					COL_S,		(gpointer)t, 
+					COL_EDIT,	FALSE,
 					COL_BTNVIS, TRUE,
-					COL_BTNACT, rd_bit(t, t->bits[k]),					
+					COL_BTNACT, rd_bit(t, t->bits[k]),	
+					COL_BTNDIS, !(t->type == IO_RO) && !(t->addr == 0x60000F),
 					-1);
 			}
 		}

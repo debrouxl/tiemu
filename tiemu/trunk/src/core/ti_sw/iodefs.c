@@ -326,3 +326,14 @@ GNode* iodefs_tree(void)
 {
 	return tree;
 }
+
+const char* iodefs_acc2str(int mask)
+{
+	switch(mask)
+	{
+	case IO_RO: return "ro";
+	case IO_WO: return "wo";
+	case IO_RW: return "rw";
+	}
+	return "";
+}

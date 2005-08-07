@@ -65,4 +65,6 @@ int iodefs_unload(void);
 
 GNode* iodefs_tree(void);
 
+const char* iodefs_acc2str(IO_ACC mask);
+
 #endif
