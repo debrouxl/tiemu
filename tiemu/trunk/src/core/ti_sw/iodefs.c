@@ -327,7 +327,7 @@ GNode* iodefs_tree(void)
 	return tree;
 }
 
-const char* iodefs_acc2str(int mask)
+const char* iodefs_acc2str(IO_ACC mask)
 {
 	switch(mask)
 	{

@@ -89,7 +89,7 @@ static int is_win_9x(void)
 	return (os.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS);
 #else
 	return 0;
-#endif;
+#endif
 }
 
 /*

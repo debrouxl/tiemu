@@ -198,7 +198,7 @@ static int merge_from_flash(void)
 		list = NULL;
 	}
 
-	romcalls_get_table_infos(&addr, &size);
+	romcalls_get_table_infos(&addr, (uint32_t *)&size);
 	if(size == 0)
 		return -1;
 
