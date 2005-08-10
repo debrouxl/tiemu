@@ -137,13 +137,16 @@ static void renderer_edited(GtkCellRendererText * cell,
         strncpy(digits, &new_text[2*i], 2); 
         digits[2] = '\0';
 
-        gtk_list_store_set(store, &iter, col+i, digits, -1);
-
         sscanf(str_addr, "%x", &addr);
         sscanf(digits, "%x", &data);
-        addr += (col - COL_0) + i;
-
 		mem_wr_byte(addr, (uint8_t)data);
+
+		// don't rely on typed value
+		data = mem_rd_byte(addr);
+		sprintf(digits, "%02x", data);
+
+		gtk_list_store_set(store, &iter, col+i, digits, -1);
+		addr += (col - COL_0) + i;
 
 		dbgstack_refresh_window();	// refresh stack, too
     }
