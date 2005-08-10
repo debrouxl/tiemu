@@ -79,28 +79,6 @@ extern int asm_setjmp(jmp_buf b);
 void gdbtk_hide_insight(void);
 void gdbtk_delete_interp(void);
 
-// Share a variable between the different instances of TiEmu (counter)
-// Used for virtual linking
-#ifdef __WIN32__
-#ifdef __GNUC__
-static int tiemu_inst __attribute__ ((section(".shared"), shared)) = 0;
-#else
-#pragma comment(linker, "/SECTION:.shared,RWS")
-#pragma data_seg(".shared")			
-static int volatile	tiemu_inst = 0;
-#pragma data_seg()
-#endif
-#else
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#define SHM_SIZE 1
-#define SHM_KEY 0x71E11C07 /* TIEmu LInk COunTer */
-static int shmid;
-static unsigned char *shmaddr;
-#define tiemu_inst (*shmaddr)
-#endif
-
 ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
@@ -138,26 +116,6 @@ int main(int argc, char **argv)
 	rcfile_default();   // (step 2)
 	rcfile_read();
 	scan_cmdline(argc, argv);
-
-	/*
-		If a second instance of TiEmu is running with virtual link #1,
-		automatically set the second instance to link #2.
-	*/
-#ifndef __WIN32__
-	/* Create or reuse shared memory. Shared memory is initialized to 0
-	   according to the online docs by the Open Group. */
-	if ((shmid = shmget(SHM_KEY, SHM_SIZE, IPC_CREAT | 0666)) < 0)
-		return -1;
-	if ((shmaddr = shmat(shmid, NULL, 0)) == (char *)-1)
-		return -1;
-#endif
-	if(link_cable.link_type == LINK_TIE)
-	{
-		if(tiemu_inst == 0)
-			link_cable.port = VIRTUAL_PORT_1;
-		else if(tiemu_inst == 1)
-			link_cable.port = VIRTUAL_PORT_2;
-	}
 
     /* 
 		Init GTK+ (popup menu, boxes, ...)
@@ -298,8 +256,6 @@ int main(int argc, char **argv)
 		handle_error();
 		if(err)	return -1;
 
-		tiemu_inst++;
-
 		/*
 			Load FLASH upgrade (if any)
 		*/
@@ -359,7 +315,6 @@ int main(int argc, char **argv)
 			gdb_main (&args);
 		}
 		stop_insight_timer();
-		tiemu_inst--;
 
 		/*
 			Clean up in case we interrupted GDB during command-line
@@ -376,17 +331,6 @@ int main(int argc, char **argv)
 		ti68k_unload_image_or_upgrade();
 	}
 
-#ifndef __WIN32__
-	/* Cleanup shared memory if we're the last instance running, else detach only. */
-	if (!tiemu_inst)
-	{
-		struct shmid_ds shmid_ds;
-		shmdt(shmaddr);
-		shmctl(shmid, IPC_RMID, &shmid_ds);
-	}
-	else
-		shmdt(shmaddr);
-#endif
 
 	gdbtk_delete_interp();
 	return 0;

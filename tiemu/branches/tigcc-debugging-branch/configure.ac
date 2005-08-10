@@ -211,7 +211,7 @@ AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
 AC_SUBST(CXXFLAGS)
 
-# Debugger support
+# Debugger support (can be disabled for embedded architectures)
 AC_ARG_ENABLE(debugger,
   AC_HELP_STRING([--disable-debugger], [disable the built-in debugger]),
   [tiemu_use_debugger=$enableval], [tiemu_use_debugger=yes])
@@ -232,15 +232,14 @@ AC_CONFIG_SUBDIRS(src/core/gdb)
 AC_OUTPUT
 
 echo
-echo "To run the TiEmu emulator, you will need a ROM dump. As those files are"
-echo "copyrighted by Texas Instruments, they will never be distributed with"
-echo "the emulator... In replacement, you can use PedRom which is provided"
-echo "with TiEmu."
+echo "To run the TiEmu emulator, you will need an image (ROM dump or FLASH upgrade). 
+echo "As those files are copyrighted by Texas Instruments, they will never be 
+echo "distributed with the emulator... In replacement, you can use PedRom which 
+echo "is provided with TiEmu."
 echo
-echo "It you have no ROM, you can get an ROM dump of your calculator"
+echo "It you need a ROM dump, you can get one from your calculator"
 echo "with the 'ROM dump' function of TiLP."
 echo "Otherwise, you can use a TI's FLASH OS upgrade (AMS) as image."
-echo
 echo "Note: TiLP is available at [http://lpg.ticalc.org/prj_tilp]."
 echo
 echo "Now, you can type 'make' and 'make install'"
