@@ -226,8 +226,6 @@ int main(int argc, char **argv)
 		handle_error();
 		if(err)	return -1;
 
-		tiemu_inst++;
-
 		/*
 			Load FLASH upgrade (if any)
 		*/
@@ -277,7 +275,6 @@ int main(int argc, char **argv)
 			Close the emulator engine
 		*/
 		engine_stop();
-		tiemu_inst--;
 
 		err = hid_exit();
 		handle_error();
@@ -287,6 +284,9 @@ int main(int argc, char **argv)
 
 		ti68k_unload_image_or_upgrade();
 	}
+
+	return 0;
+}
 
 /* 
    If GtkTiEmu is compiled in console mode (_CONSOLE), 

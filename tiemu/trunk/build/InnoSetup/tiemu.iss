@@ -162,7 +162,7 @@ begin
   // Retrieve GTK path
   Result := GetGtkInstalled ();
   if not Result then begin
-    MsgBox ('Please install the "GTK+ 2.6.x Runtime Environment" (2.6.7 mini). You can obtain GTK+ from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.7-rc1.exe?download>.', mbError, MB_OK);
+    MsgBox ('Please install the "GTK+ 2.6.x Runtime Environment" (2.6.8 mini). You can obtain GTK+ from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.8-rc1.exe?download>.', mbError, MB_OK);
   end;
 
   // Retrieve GTK version
@@ -170,8 +170,8 @@ begin
     Result := GetGtkVersionInstalled ();
 
     // and check
-    if CompareStr(GtkVersion, '2.6.7') < 0 then begin
-      MsgBox ('Wrong package version. You need at least version 2.6.7 from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.7-rc1.exe?download>.', mbError, MB_OK);
+    if CompareStr(GtkVersion, '2.6.8') < 0 then begin
+      MsgBox ('Wrong package version. You need at least version 2.6.8 from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.8-rc1.exe?download>.', mbError, MB_OK);
     end;
   end;
 
