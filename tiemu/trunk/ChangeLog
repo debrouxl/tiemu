@@ -1,5 +1,7 @@
 SubVersion: $Id$
 
+	- [kevin] $1662/1663: import V200 updates as HW2, not HW1 (and default TI-89/92+ updates to HW2)
+
 - 03/08/2005, version 2.00-rc8:
 	- [roms] $1615: TiEmu retains the state of dbg windows (open/closed) now.
 	- [kevin] $1623/1624: fixed: only first 32 bytes of ram_exec were restored from savestate
