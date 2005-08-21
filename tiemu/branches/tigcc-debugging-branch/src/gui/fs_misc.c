@@ -390,7 +390,7 @@ gint display_import_romversion_dbox(void)
 	{
 		IMG_INFO infos = { 0 };
 		int err = ti68k_get_tib_infos(filename, &infos, 0);
-		int hw_type = 1;
+		int hw_type = HW2;
 
 		if(infos.calc_type == TI92p || infos.calc_type == TI89)
 		{
