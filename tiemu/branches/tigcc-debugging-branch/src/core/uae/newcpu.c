@@ -28,7 +28,7 @@
 #include "bkpts.h"
 #define write_log printf
 static const struct uae_prefs currprefs = {0, 1, 1};
-#if defiend(CYGNUS_SIM) && !defined(NO_GDB)
+#if defined(CYGNUS_SIM) && !defined(NO_GDB)
 extern const char *symfile;
 #endif /* CYGNUS_SIM */
 // tiemu end
