@@ -85,7 +85,13 @@ static char* get_section(char *s)
 
 static char* get_name(char *s)
 {
+	char *t;
+
 	while(*s == ' ') s++;
+
+	t = strchr(s, '\t');
+	if(t) *t = '\0';
+
 	return s;
 }
 
@@ -175,6 +181,25 @@ static int get_bit_names(char *s, IO_DEF *t)
 	}
 	
 	return 0;
+}
+
+// get bit string <76543210>
+static char* get_bit_str(char *s)
+{
+	char *b, *e;
+
+	b = strchr(s, '<');
+	e = strrchr(s, '>');
+
+	if(!b ||!e)
+	{
+		fprintf(stdout, "Missing '<' or '>' token in bit mask !\n");
+		return NULL;
+	}
+
+	*++e = '\0';
+
+	return b;
 }
 
 /*
@@ -293,7 +318,7 @@ int iodefs_load(const char* path)
 		sscanf(split[0], "$%06x", &s->addr);
 		sscanf(split[1], "%i", &s->size);
 		s->type = get_type(split[2]);
-		s->bit_str = strdup(split[3]);
+		s->bit_str = strdup(get_bit_str(split[3]));
 		if(get_bits(split[3], s) == -1)
 			return -1;
 		s->all_bits = (s->nbits == (8 * s->size));
