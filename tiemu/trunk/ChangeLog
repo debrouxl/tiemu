@@ -6,6 +6,7 @@ SubVersion: $Id$
 	- [roms] $1667: fixed large column in the I/O port view
 	- [roms] $1668: new function in the mem window (read address and dis-assemble at)
 	- [roms] $1669: fixed 'Set PC to selection' command by adding a call to fill_prefetch_slow()
+	- [roms] $1670: update ASCII column (dbg wnd) after cell editing
 
 - 03/08/2005, version 2.00-rc8:
 	- [roms]  $1615: TiEmu retains the state of dbg windows (open/closed) now.
