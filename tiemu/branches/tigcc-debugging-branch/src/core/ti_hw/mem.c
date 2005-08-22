@@ -367,10 +367,7 @@ uint8_t hw_get_byte(uint32_t adr)
 
 uint8_t hw_get_byte_noexcept(uint32_t adr) 
 {
-    GList* l;
-  
     adr &= 0xFFFFFF;
-
 	return get_byte_ptr(adr);
 }
 
@@ -546,9 +543,6 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 
 void hw_put_byte_noexcept(uint32_t adr, uint8_t arg) 
 {
-    GList* l;
-
-    adr &= 0xFFFFFF;
-  
+    adr &= 0xFFFFFF;  
     put_byte_ptr(adr, arg);
 }

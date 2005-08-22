@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="GtkTiEmu" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="TiEmu3" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Generic Project" 0x010a
 
-CFG=GtkTiEmu - Win32 Debug
+CFG=TiEmu3 - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "GtkTiEmu.mak".
+!MESSAGE NMAKE /f "TiEmu3.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "GtkTiEmu.mak" CFG="GtkTiEmu - Win32 Debug"
+!MESSAGE NMAKE /f "TiEmu3.mak" CFG="TiEmu3 - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "GtkTiEmu - Win32 Release" (based on "Win32 (x86) Generic Project")
-!MESSAGE "GtkTiEmu - Win32 Debug" (based on "Win32 (x86) Generic Project")
+!MESSAGE "TiEmu3 - Win32 Release" (based on "Win32 (x86) Generic Project")
+!MESSAGE "TiEmu3 - Win32 Debug" (based on "Win32 (x86) Generic Project")
 !MESSAGE 
 
 # Begin Project
@@ -27,7 +27,7 @@ CFG=GtkTiEmu - Win32 Debug
 # PROP Scc_LocalPath ""
 MTL=midl.exe
 
-!IF  "$(CFG)" == "GtkTiEmu - Win32 Release"
+!IF  "$(CFG)" == "TiEmu3 - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -40,7 +40,7 @@ MTL=midl.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 
-!ELSEIF  "$(CFG)" == "GtkTiEmu - Win32 Debug"
+!ELSEIF  "$(CFG)" == "TiEmu3 - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1

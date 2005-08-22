@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="TiEmu_Console" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="TiEmu3_Console" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=TiEmu_Console - Win32 Debug
+CFG=TiEmu3_Console - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "TiEmu_Console.mak".
+!MESSAGE NMAKE /f "TiEmu3_Console.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "TiEmu_Console.mak" CFG="TiEmu_Console - Win32 Debug"
+!MESSAGE NMAKE /f "TiEmu3_Console.mak" CFG="TiEmu3_Console - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "TiEmu_Console - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "TiEmu_Console - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "TiEmu3_Console - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "TiEmu3_Console - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=TiEmu_Console - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+!IF  "$(CFG)" == "TiEmu3_Console - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -38,7 +38,7 @@ RSC=rc.exe
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir ""
-# PROP Intermediate_Dir "C:\msvc\Output\tiemu"
+# PROP Intermediate_Dir "C:\msvc\Output\tiemu-gdb"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
@@ -51,9 +51,9 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"tiemu.exe"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"tiemu-gdb.exe"
 
-!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+!ELSEIF  "$(CFG)" == "TiEmu3_Console - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -63,11 +63,11 @@ LINK32=link.exe
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "C:\msvc\tilp"
-# PROP Intermediate_Dir "C:\msvc\Output\tiemu"
+# PROP Intermediate_Dir "C:\msvc\output\tiemu-gdb"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "C:\sources\roms\tiemu\src\misc" /I "C:\sources\roms\tiemu\src\gui\calc" /I "C:\sources\roms\tiemu\src\core\dbg" /I "C:\sources\roms\tiemu\src\core\ti_sw" /I "C:\sources\roms\tiemu\src\gui\debugger" /I "." /I "../../../ticables/src" /I "../../../tifiles/src" /I "../../../ticalcs/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\sources\roms\tiemu\src\core\uae" /I "C:\sources\roms\tiemu\src\core" /I "C:\sources\roms\tiemu\src\core\ti_hw" /I "C:\sources\roms\tiemu\src\hid" /I "C:\sources\roms\tiemu\src\gui" /I ".\libjpeg" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "C:\sources\roms\tiemu\src\misc" /I "C:\sources\roms\tiemu\src\gui\calc" /I "C:\sources\roms\tiemu\src\core\dbg" /I "C:\sources\roms\tiemu\src\core\ti_sw" /I "C:\sources\roms\tiemu\src\gui\debugger" /I "." /I "../../../ticables/src" /I "../../../tifiles/src" /I "../../../ticalcs/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\sources\roms\tiemu\src\core\uae" /I "C:\sources\roms\tiemu\src\core" /I "C:\sources\roms\tiemu\src\core\ti_hw" /I "C:\sources\roms\tiemu\src\hid" /I "C:\sources\roms\tiemu\src\gui" /I ".\libjpeg" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /D "NO_GDB" /FD /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x40c /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
@@ -76,14 +76,14 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:console /debug /machine:I386 /out:"C:\msvc\tilp\TiEmu.exe" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib /nologo /subsystem:console /debug /machine:I386 /out:"C:\msvc\tilp\tiemu-gdb.exe" /pdbtype:sept
 
 !ENDIF 
 
 # Begin Target
 
-# Name "TiEmu_Console - Win32 Release"
-# Name "TiEmu_Console - Win32 Debug"
+# Name "TiEmu3_Console - Win32 Release"
+# Name "TiEmu3_Console - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -97,9 +97,9 @@ LINK32=link.exe
 
 SOURCE=..\..\src\core\uae\newcpu.c
 
-!IF  "$(CFG)" == "TiEmu_Console - Win32 Release"
+!IF  "$(CFG)" == "TiEmu3_Console - Win32 Release"
 
-!ELSEIF  "$(CFG)" == "TiEmu_Console - Win32 Debug"
+!ELSEIF  "$(CFG)" == "TiEmu3_Console - Win32 Debug"
 
 # ADD CPP /w /W0
 
@@ -193,10 +193,6 @@ SOURCE=..\..\src\core\dbg\disasm.c
 # Begin Source File
 
 SOURCE=..\..\src\core\dbg\fpudasm.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\dbg\m68kdasm.c
 # End Source File
 # End Group
 # Begin Group "ti_sw"
@@ -486,11 +482,11 @@ SOURCE=..\..\src\misc\version.h
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # Begin Source File
 
-SOURCE=.\TiEmu.ico
+SOURCE=.\TiEmu.rc
 # End Source File
 # Begin Source File
 
-SOURCE=.\TiEMu.rc
+SOURCE=.\TiEmu3.ico
 # End Source File
 # End Group
 # Begin Group "Library Files"

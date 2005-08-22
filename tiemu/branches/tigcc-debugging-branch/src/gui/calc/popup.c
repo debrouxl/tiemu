@@ -102,7 +102,9 @@ on_debug_file_with_tiemu1_activate     (GtkMenuItem     *menuitem,
 	if(engine_is_stopped()) return;
 
 	engine_stop();
+#ifndef NO_GDB
 	display_debug_dbox();
+#endif
 	engine_start();
 }
 
@@ -487,6 +489,7 @@ on_exit_without_saving_state1_activate (GtkMenuItem     *menuitem,
 }
 
 typedef void (*VCB) (void);
+extern int reset_disabled;
 
 /*
   Display the GTK popup menu and configure some items

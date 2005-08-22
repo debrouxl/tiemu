@@ -30,6 +30,7 @@
 
 #include "ti68k_int.h"
 
+#ifndef NO_GDB
 #include "../gdb/include/dis-asm.h"
 struct ui_file;
 struct disassemble_info gdb_disassemble_info (struct gdbarch *gdbarch, struct ui_file *file);
@@ -65,4 +66,12 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 
 	return offset;
 }
+
+#else
+uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
+{
+	*line = g_strdup_printf("No GDB !");
+	return 0;
+}
+#endif
 

@@ -79,23 +79,29 @@ static char old_uf[32];
 void ti68k_register_set_data(int n, uint32_t val)
 {
     if (n>=0 && n<8) m68k_dreg(regs,n) = val;
+#ifndef NO_GDB
     registers_changed ();
 	gdbtk_update();
+#endif
 }
 
 void ti68k_register_set_addr(int n, uint32_t val)
 {
     if (n>=0 && n<8) m68k_areg(regs,n) = val;
+#ifndef NO_GDB
     registers_changed ();
 	gdbtk_update();
+#endif
 }
 
 void ti68k_register_set_sp(uint32_t val)
 {
     m68k_areg(regs,7) = val;
+#ifndef NO_GDB
     registers_changed ();
     reinit_frame_cache ();
 	gdbtk_update();
+#endif
 }
 
 void ti68k_register_set_usp(uint32_t val)
@@ -104,9 +110,12 @@ void ti68k_register_set_usp(uint32_t val)
         m68k_areg(regs,7) = val;
     else
         regs.usp = val;
+
+#ifndef NO_GDB
     registers_changed ();
     reinit_frame_cache ();
 	gdbtk_update();
+#endif
 }
 
 void ti68k_register_set_ssp(uint32_t val)
@@ -115,34 +124,45 @@ void ti68k_register_set_ssp(uint32_t val)
         m68k_areg(regs,7) = val;
     else
         regs.isp = val;
+
+#ifndef NO_GDB
     registers_changed ();
     reinit_frame_cache ();
 	gdbtk_update();
+#endif
 }
 
 void ti68k_register_set_pc(uint32_t val)
 {
     m68k_setpc(val);
     fill_prefetch_0 (); /* Force reloading the prefetch. */
+
+#ifndef NO_GDB
     registers_changed ();
     reinit_frame_cache ();
 	gdbtk_update();
+#endif
 }
 
 void ti68k_register_set_sr(uint32_t val)
 {
     regs.sr = (int)val;
     MakeFromSR();
+
+#ifndef NO_GDB
     registers_changed ();
 	gdbtk_update();
+#endif
 }
 
 void ti68k_register_set_flag(uint8_t flag)
 {
   	//TODO
   	/* T  0  S  0  0  I2 I1 I0 0  0  0  X  N  Z  V  C */	  
+#ifndef NO_GDB
     registers_changed ();
 	gdbtk_update();
+#endif
 }
 
 int ti68k_register_set_flags(const char *sf, const char *uf)
@@ -184,8 +204,10 @@ int ti68k_register_set_flags(const char *sf, const char *uf)
 
     MakeFromSR();
 
+#ifndef NO_GDB
     registers_changed ();
 	gdbtk_update();
+#endif
 
 	return !0;
 }

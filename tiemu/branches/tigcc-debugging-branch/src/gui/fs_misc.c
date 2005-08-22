@@ -239,6 +239,7 @@ gint display_recv_files_dbox(const char *filename)
 	return 0;
 }
 
+#ifndef NO_GDB
 gint display_debug_dbox(void)
 {
 	const gchar *filename;
@@ -326,6 +327,7 @@ gint display_debug_dbox(void)
 
 	return 0;
 }
+#endif
 
 gint display_set_tib_dbox(void)
 {
@@ -411,3 +413,5 @@ gint display_import_romversion_dbox(void)
 
     return 0;
 }
+
+

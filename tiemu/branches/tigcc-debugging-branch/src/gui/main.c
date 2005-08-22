@@ -58,7 +58,6 @@ extern int asm_setjmp(jmp_buf b);
 #include "engine.h"
 #include "refresh.h"
 #include "calc.h"
-#include "gdbcall.h"
 
 #include "wizard.h"
 #include "popup.h"
@@ -68,7 +67,8 @@ extern int asm_setjmp(jmp_buf b);
 #include "dbg_all.h"
 #include "romversion.h"
 
-
+#ifndef NO_GDB
+#include "gdbcall.h"
 #include "../core/gdb/gdb/main.h"
 #include "../core/gdb/gdb/gdb_string.h"
 #ifndef PARAMS
@@ -79,14 +79,15 @@ extern int asm_setjmp(jmp_buf b);
 void gdbtk_hide_insight(void);
 void gdbtk_delete_interp(void);
 
+static void start_insight_timer(void);
+static void stop_insight_timer(void);
+static gint gdbtk_hide_insight_and_run_wrapper(gpointer data);
+#endif
+
 ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
 jmp_buf quit_gdb;               // longjmp target used when quitting GDB
-
-static void start_insight_timer(void);
-static void stop_insight_timer(void);
-static gint gdbtk_hide_insight_and_run_wrapper(gpointer data);
 
 /* Special */
 
@@ -298,6 +299,11 @@ int main(int argc, char **argv)
 			Start emulation engine and run main loop 
 		*/		
 		splash_screen_stop();
+#ifdef NO_GDB
+		engine_start();
+		gtk_main();
+		engine_stop();
+#else
 
 		/*
 			Run Insight GDB
@@ -321,6 +327,7 @@ int main(int argc, char **argv)
 			parsing
 		*/
 		rl_callback_handler_remove();
+#endif
 
 		err = hid_exit();
 		handle_error();
@@ -331,14 +338,17 @@ int main(int argc, char **argv)
 		ti68k_unload_image_or_upgrade();
 	}
 
-
+#ifndef NO_GDB
 	gdbtk_delete_interp();
+#endif
+
 	return 0;
 }
 
 /*
    These functions are used by Insight to enable/disable its UI hook.
 */
+#ifndef NO_GDB
 int x_event(int);
 static guint gdbtk_timer_id = 0;
 
@@ -369,6 +379,7 @@ static gint gdbtk_hide_insight_and_run_wrapper(gpointer data)
   gdbcall_run();
   return FALSE;
 }
+#endif
 
 /* 
    If GtkTiEmu is compiled in console mode (_CONSOLE), 

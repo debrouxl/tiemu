@@ -239,8 +239,10 @@ int hw_m68k_run(int n, unsigned maxcycles)
 		// HW2/3 grayscales management
 		lcd_hook_hw2(0);
 
+#ifndef NO_GDB
 		if (trace)
 			sim_trace_one(m68k_getpc());
+#endif
 
 		if (recfile_flag)
 			recfile();

@@ -43,6 +43,7 @@
 #include "dbg_all.h"
 #include "printl.h"
 #include "tsource.h"
+
 void sim_exception(int which);
 #ifndef SIGTRAP
 /* WARNING: This MUST match the definitions in GDB and sim. */
@@ -83,10 +84,12 @@ static gboolean engine_func(gint *data)
 	{
 		if (!dbg_on)
 			gtk_debugger_enter(GPOINTER_TO_INT(res));
+#ifndef NO_GDB
 		sim_exception(bkpts.type ?
 		              ((bkpts.type == BK_CAUSE_EXCEPTION || bkpts.type == BK_CAUSE_PROTECT) ? SIGSEGV
 		                                                                                    : SIGTRAP)
 		              : SIGINT);
+#endif
 	}
 
 	return TRUE;

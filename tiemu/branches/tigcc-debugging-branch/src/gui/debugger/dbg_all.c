@@ -42,7 +42,9 @@
 #include "support.h"
 #include "paths.h"
 #include "engine.h"
+#ifndef NO_GDB
 #include "gdbcall.h"
+
 void gdbtk_hide_insight(void);
 void gdbtk_show_insight(void);
 void delete_command(void *, int);
@@ -51,6 +53,7 @@ void gdbtk_clear_file(void);
 void exec_build_section_table(void);
 
 gchar *symfile;
+#endif
 
 DbgOptions options3;
 DbgWidgets dbgw = { 0 };
@@ -75,9 +78,11 @@ void gtk_debugger_preload(void)
 // show previously created window
 int gtk_debugger_enter(int context)
 {
+#ifndef NO_GDB
 	gint type, id, mode;
 
 	if (!dbg_on) gdbtk_show_insight();
+#endif
 
 	// debugger is open
 	dbg_on = !0;
@@ -106,6 +111,7 @@ int gtk_debugger_enter(int context)
 		set_other_windows_sensitivity(TRUE);
 
 	// handle automatic debugging requests
+#ifndef NO_GDB
 	if (symfile)
 	{
 		// get context
@@ -135,6 +141,7 @@ int gtk_debugger_enter(int context)
 			gdb_hbreak("__main");
 		}
 	}
+#endif
 
 	return 0;
 }
@@ -344,13 +351,17 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	// hide all windows
+#ifndef NO_GDB
 	gdbtk_hide_insight();
+#endif
 	dbg_on = 0;
 	gtk_debugger_hide_all(!0);
 
     // and restarts the emulator
 	ti68k_bkpt_set_cause(0, 0, 0);
+#ifndef NO_GDB
     if (engine_is_stopped()) gdbcall_continue();
+#endif
 }
 
 GLADE_CB void

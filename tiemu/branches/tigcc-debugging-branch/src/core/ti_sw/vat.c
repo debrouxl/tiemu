@@ -339,8 +339,8 @@ int vat_parse(GNode **tree)
 
 static int sym_find_handle_89(const char *dirname, const char *filename)
 {
-	uint32_t fa, va, pa;
-	uint16_t fs, vs, ps;
+	uint32_t fa, va;
+	uint16_t fs, vs;
 	int nfolders, nvars;
 	int i, j;
 	int handle = 0x08;
@@ -406,8 +406,8 @@ static int sym_find_handle_89(const char *dirname, const char *filename)
 
 static int sym_find_handle_92(const char *dirname, const char *filename)
 {
-	uint32_t fa, va, pa;
-	uint16_t fs, vs, ps;
+	uint32_t fa, va;
+	uint16_t fs, vs;
 	int nfolders, nvars;
 	int i, j;
 

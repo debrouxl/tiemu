@@ -158,9 +158,11 @@ int ti68k_step_over_noflush(void)
 int ti68k_debug_step_over(void)
 {
 	int result = ti68k_step_over_noflush();
+#ifndef NO_GDB
     registers_changed();
 	reinit_frame_cache();
 	gdbtk_update();
+#endif
     return result;
 }
 
@@ -185,9 +187,11 @@ int ti68k_debug_step_out(void)
 		if(is_ret_inst((uint16_t)curriword()))
 		{
 			hw_m68k_run(1, 0);
+#ifndef NO_GDB
 			registers_changed();
 			reinit_frame_cache();
 			gdbtk_update();
+#endif
 			return 0;
 		}	
 	}
@@ -225,9 +229,11 @@ int ti68k_debug_skip(uint32_t next_pc)
 int ti68k_debug_do_instructions(int n)
 {
 	int result = hw_m68k_run(n, 0);
+#ifndef NO_GDB
     registers_changed();
 	reinit_frame_cache();
 	gdbtk_update();
+#endif
     return result;
 }
 
