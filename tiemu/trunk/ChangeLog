@@ -3,8 +3,8 @@ SubVersion: $Id$
 - 19/08/2005, version 2.00-rc9:
 	- [kevin] $1662/1663: import V200 updates as HW2, not HW1 (and default TI-89/92+ updates to HW2)
 	- [roms] $1666: use Titanium and V200 skins when available (else fallbacks)
-	- [roms] $16xx: fixed large column in the I/O port view
-	- [roms] $16xx: new function
+	- [roms] $1667: fixed large column in the I/O port view
+	- [roms] $1668: new function in the mem window (read address and dis-assemble at)
 
 - 03/08/2005, version 2.00-rc8:
 	- [roms]  $1615: TiEmu retains the state of dbg windows (open/closed) now.

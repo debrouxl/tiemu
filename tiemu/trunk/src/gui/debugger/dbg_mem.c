@@ -717,12 +717,10 @@ on_go_to_address2_activate             (GtkMenuItem     *menuitem,
 	g_free(str);
 }
 
-
-GLADE_CB void
-on_dissassemble1_activate              (GtkMenuItem     *menuitem,
+static uint32_t on_disassemble_common  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+	GtkNotebook *nb = GTK_NOTEBOOK(notebook);
     gint page = gtk_notebook_get_current_page(nb);
 
 	GList *l, *elt;
@@ -749,19 +747,38 @@ on_dissassemble1_activate              (GtkMenuItem     *menuitem,
     // get column
     gtk_tree_view_get_cursor(view, &path, &column);
     if(!path || !column)
-        return;
+        return -1;
 
     // get iterator
 	if (!gtk_tree_model_get_iter(model, &iter, path))
-		return;
+		return -1;
 
-    // get old value
+    // get address
 	col = column2index(list, column);
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
     sscanf(str, "%06x", &addr);
+
+	return (addr + (col-1));
+}
+
+GLADE_CB void
+on_dissassemble1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    uint32_t addr = on_disassemble_common(menuitem, user_data);
     
-    // populate code
-    dbgcode_disasm_at(addr + (col-1));
+    // populate code at this address
+    dbgcode_disasm_at(addr);
+}
+
+GLADE_CB void
+on_disassemble_indirect1_activate              (GtkMenuItem     *menuitem,
+                                                gpointer         user_data)
+{
+	uint32_t addr = on_disassemble_common(menuitem, user_data);
+
+	// populate code at the address contained at this address
+	dbgcode_disasm_at(mem_rd_long(addr));
 }
 
 static void search_next(void);
