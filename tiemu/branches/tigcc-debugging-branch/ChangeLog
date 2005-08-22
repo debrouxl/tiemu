@@ -5,8 +5,9 @@ SubVersion: $Id$
 	- [roms] $1666: use Titanium and V200 skins when available (else fallbacks)
 	- [roms] $1667: fixed large column in the I/O port view
 	- [roms] $1668: new function in the mem window (read address and dis-assemble at)
-	- [roms] $1669: fixed 'Set PC to selection' command by adding a call to fill_prefetch_slow()
-	- [roms] $1670: update ASCII column (dbg wnd) after cell editing
+	- [roms] $1672: fixed 'Set PC to selection' command by adding a call to fill_prefetch_slow()
+	- [roms] $1673: update ASCII column (dbg wnd) after cell editing
+	- [roms] $1674: ask for 'Clear RAM' when reseting calc (O. Armand request)
 
 - 03/08/2005, version 2.00-rc8:
 	- [roms]  $1615: TiEmu retains the state of dbg windows (open/closed) now.

@@ -205,6 +205,11 @@ on_reset_calc1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	engine_stop();
+#if 1
+	if(msg_box2("Question", "Clear RAM ?") == BUTTON1)
+		memset(tihw.ram, 0, tihw.ram_size);
+#endif
+
 	ti68k_reset();
 	if (dbg_on)
 		on_quit1_activate(menuitem, user_data);
