@@ -269,12 +269,12 @@ int main(int argc, char **argv)
 		*/		
 		splash_screen_stop();
 		engine_start();
-		gtk_main();		
+		gtk_main();
+		engine_stop();
 
 		/* 
 			Close the emulator engine
 		*/
-		engine_stop();
 
 		err = hid_exit();
 		handle_error();
