@@ -102,6 +102,7 @@ void ti68k_register_set_ssp(uint32_t val)
 
 void ti68k_register_set_pc(uint32_t val)
 {
+	fill_prefetch_slow();
     m68k_setpc(val);
 }
 
