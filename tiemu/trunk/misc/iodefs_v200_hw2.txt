@@ -22,7 +22,6 @@ $60000f	| 1	| rw	| <all>					| Rx/Tx buf
 
 [LCD]
 
-$600010 | 2	| wo	| <all>					| LCD address
 $600012	| 1	| wo	| <all>					| LCD width
 $600013	| 1	| wo	| <all>					| LCD height
 $60001C	| 1	| wo	| <all>					| LCD Row Sync
