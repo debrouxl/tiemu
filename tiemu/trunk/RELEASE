@@ -34,6 +34,8 @@ Bug fixes:
 ----------
 
 	- large column in the I/O port view
+	- 'Set PC to selection' menu item
+	- update ASCII column (dbg wnd) after cell editing
 	
 
 Planned:
