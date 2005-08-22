@@ -101,6 +101,8 @@ static void renderer_edited(GtkCellRendererText * cell,
     gchar *str_addr;
     gchar *str_data = (char *)new_text;
     int addr, data, i;
+	gchar *ascii, *utf;
+	gsize bw;
 
     // get column
     gtk_tree_view_get_cursor(view, &path, &column);
@@ -113,7 +115,7 @@ static void renderer_edited(GtkCellRendererText * cell,
 
     // get address
 	col = column2index(list, column);
-    gtk_tree_model_get(model, &iter, COL_ADDR, &str_addr, -1);
+    gtk_tree_model_get(model, &iter, COL_ADDR, &str_addr, COL_ASCII, &ascii, -1);
 
     // check for new value
     if((strlen(str_data) % 2) != 0)
@@ -144,12 +146,17 @@ static void renderer_edited(GtkCellRendererText * cell,
 		// don't rely on typed value
 		data = mem_rd_byte(addr);
 		sprintf(digits, "%02x", data);
+		ascii[col - COL_0 + i] = (isprint(data) && !iscntrl(data) ? data : '.');
 
 		gtk_list_store_set(store, &iter, col+i, digits, -1);
 		addr += (col - COL_0) + i;
 
 		dbgstack_refresh_window();	// refresh stack, too
     }
+
+	// and ascii area, too
+	utf = g_locale_to_utf8(ascii, -1, NULL, &bw, NULL);
+	gtk_list_store_set(store, &iter, COL_ASCII, utf, -1);
 
     g_free(str_addr);
 	gtk_tree_path_free(path);
@@ -346,9 +353,7 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 	 
 		ascii[16] = '\0';
 		utf = g_locale_to_utf8(ascii, -1, NULL, &bw, NULL);
-		gtk_list_store_set(store, &iter, 
-			COL_ASCII, utf, 
-			-1);
+		gtk_list_store_set(store, &iter, COL_ASCII, utf, -1);
     }
 }
 
@@ -717,12 +722,10 @@ on_go_to_address2_activate             (GtkMenuItem     *menuitem,
 	g_free(str);
 }
 
-
-GLADE_CB void
-on_dissassemble1_activate              (GtkMenuItem     *menuitem,
+static uint32_t on_disassemble_common  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+	GtkNotebook *nb = GTK_NOTEBOOK(notebook);
     gint page = gtk_notebook_get_current_page(nb);
 
 	GList *l, *elt;
@@ -749,19 +752,38 @@ on_dissassemble1_activate              (GtkMenuItem     *menuitem,
     // get column
     gtk_tree_view_get_cursor(view, &path, &column);
     if(!path || !column)
-        return;
+        return -1;
 
     // get iterator
 	if (!gtk_tree_model_get_iter(model, &iter, path))
-		return;
+		return -1;
 
-    // get old value
+    // get address
 	col = column2index(list, column);
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
     sscanf(str, "%06x", &addr);
+
+	return (addr + (col-1));
+}
+
+GLADE_CB void
+on_dissassemble1_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    uint32_t addr = on_disassemble_common(menuitem, user_data);
     
-    // populate code
-    dbgcode_disasm_at(addr + (col-1));
+    // populate code at this address
+    dbgcode_disasm_at(addr);
+}
+
+GLADE_CB void
+on_disassemble_indirect1_activate              (GtkMenuItem     *menuitem,
+                                                gpointer         user_data)
+{
+	uint32_t addr = on_disassemble_common(menuitem, user_data);
+
+	// populate code at the address contained at this address
+	dbgcode_disasm_at(mem_rd_long(addr));
 }
 
 static void search_next(void);

@@ -1,9 +1,15 @@
 SubVersion: $Id$
 
+- 19/08/2005, version 2.00:
 	- [kevin] $1662/1663: import V200 updates as HW2, not HW1 (and default TI-89/92+ updates to HW2)
+	- [roms] $1666: use Titanium and V200 skins when available (else fallbacks)
+	- [roms] $1667: fixed large column in the I/O port view
+	- [roms] $1668: new function in the mem window (read address and dis-assemble at)
+	- [roms] $1669: fixed 'Set PC to selection' command by adding a call to fill_prefetch_slow()
+	- [roms] $1670: update ASCII column (dbg wnd) after cell editing
 
 - 03/08/2005, version 2.00-rc8:
-	- [roms] $1615: TiEmu retains the state of dbg windows (open/closed) now.
+	- [roms]  $1615: TiEmu retains the state of dbg windows (open/closed) now.
 	- [kevin] $1623/1624: fixed: only first 32 bytes of ram_exec were restored from savestate
 	- [kevin] $1625/1626: buffering grayscale planes to avoid blinking in double-buffered games
 	- [roms]  $1627: put all gscales extern into gscales.h
