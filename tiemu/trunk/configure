@@ -39155,9 +39155,9 @@ fi
 
 
 echo
-echo "To run the TiEmu emulator, you will need an image (ROM dump or FLASH upgrade).
-echo "As those files are copyrighted by Texas Instruments, they will never be
-echo "distributed with the emulator... In replacement, you can use PedRom which
+echo "To run the TiEmu emulator, you will need an image (ROM dump or FLASH upgrade)."
+echo "As those files are copyrighted by Texas Instruments, they will never be"
+echo "distributed with the emulator... In replacement, you can use PedRom which"
 echo "is provided with TiEmu."
 echo
 echo "It you need a ROM dump, you can get one from your calculator"
