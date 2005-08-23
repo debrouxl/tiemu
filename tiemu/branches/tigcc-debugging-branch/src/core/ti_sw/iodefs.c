@@ -279,6 +279,10 @@ int iodefs_load(const char* path)
 		IO_DEF *s;
 
 		fgets(line, sizeof(line), f);
+		/* An empty string means end of file. Don't clobber other stack
+		   variables with the underflow. */
+		if (!*line)
+			break;
 		line[strlen(line) - 2] = '\0';
 
 		if(feof(f))

@@ -7,7 +7,8 @@ SubVersion: $Id$
 	- [roms] $1668: new function in the mem window (read address and dis-assemble at)
 	- [roms] $1672: fixed 'Set PC to selection' command by adding a call to fill_prefetch_slow()
 	- [roms] $1673: update ASCII column (dbg wnd) after cell editing
-	- [roms] $1674: ask for 'Clear RAM' when reseting calc (O. Armand request)
+	- [roms] $1676: ask for 'Clear RAM' when reseting calc (O. Armand request)
+	- [kevin] $1680/1681: fix buffer underflow in iodefs.c
 
 - 03/08/2005, version 2.00-rc8:
 	- [roms]  $1615: TiEmu retains the state of dbg windows (open/closed) now.
