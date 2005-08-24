@@ -1,0 +1,31 @@
+/*
+ * Chaînes de caractères à traduire générées par
+ * Glade. Ajouter ce fichier au fichier POTFILE.in
+ * de votre projet. NE PAS compiler ce fichier
+ * avec le reste de votre application.
+ */
+
+gchar *s = N_("TiEmu wizard");
+gchar *s = N_("Welcome to TiEmu II, the Linux/Win32 TI emulator.");
+gchar *s = N_("I want to use PedRom (GPL'ed replacement OS) \n"
+              "shipped with TiEmu.");
+gchar *s = N_("You have downloaded a FLASH upgrade on the TI\n"
+              "website.");
+gchar *s = N_("You already have a ROM dump.");
+gchar *s = N_("You want to use TiLP or another dumping program \n"
+              "to get a ROM dump of your calculator ROM.");
+gchar *s = N_("Remind you that you should not distribute your ROM dump(s). They are copyrighted by Texas Instruments.");
+gchar *s = N_("TiEmu wizard");
+gchar *s = N_("TiEmu is now set  up and ready for use. Some tips on how to use the emulator:");
+gchar *s = N_("* You have access to a popup menu by right-clicking in the emulator's window.");
+gchar *s = N_("* To use keys, use mouse or keyboard");
+gchar *s = N_("* To change to a different calculator or ROM version, use an item of the ROM menu.");
+gchar *s = N_("* You can save the emulator state and config.");
+gchar *s = N_("* If your calculator screen is blank, use 'Ctrl' with '+/-' for adjusting contrast.");
+gchar *s = N_("Click the 'Finish' button to start GtkTiEmu.");
+gchar *s = N_("TiEmu wizard");
+gchar *s = N_("If you want to get a ROM dump with TiLP, you have to launch it, (eventually) configure it, and next, click the the 'Misc | Romdump' menu item. You can drag & drop the 'Operating System' icon from the left to the right window.\n"
+              "TiLP can be downloaded at: <http://tilp.info>");
+gchar *s = N_("TiEmu wizard");
+gchar *s = N_("The FLASH upgrade you have selected is being to be converted into a TiEmu image. Please wait...");
+gchar *s = N_("Note also that the converted image will not have a boot block.");
