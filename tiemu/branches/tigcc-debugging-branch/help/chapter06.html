@@ -56,6 +56,22 @@ The <span style="font-style: italic;">Send file to TiEmu</span> item
 will let you choose a file to load into the emulator. You can choose
 one or several files at a time.<br>
 <br>
+The <span style="font-style: italic;">Debug file with TiEmu</span> item
+will let you choose a file to debug using the emulator: First, the file
+(which should be an uncompressed TIGCC program compiled with debugging
+information) will be loaded into the emulator and a program entry
+breakpoint will be set on it. You then need to run the program, passing
+any arguments it requires. TiEmu will then intercept the launch, bypass
+any OS execution protections (so you need not worry about these), open
+the debugger and load the debugging information file (the .dbg file
+corresponding to your program, and looked up in the same folder as your
+program). It will also set a GDB breakpoint on the main function, so if
+you don't need to debug the TIGCC startup code, just click "Continue"
+in the Insight Source Window to get to the beginning of your main
+function. You can choose only one file at a time; any data files
+required by the program need to be sent separately using
+<span style="font-style: italic;">Send file to TiEmu</span>.<br>
+<br>
 The <span style="font-style: italic;">Link options</span> item opens a
 dialog box. This is discussed elsewhere.<br>
 <br>
