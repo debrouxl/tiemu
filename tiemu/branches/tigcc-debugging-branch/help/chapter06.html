@@ -56,19 +56,19 @@ The <span style="font-style: italic;">Send file to TiEmu</span> item
 will let you choose a file to load into the emulator. You can choose
 one or several files at a time.<br>
 <br>
-The <span style="font-style: italic;">Link options</span> item open a
+The <span style="font-style: italic;">Link options</span> item opens a
 dialog box. This is discussed elsewhere.<br>
 <br>
-The <span style="font-style: italic;">Receive file</span> item let you
-enabled (checked) or disable (unchecked) the receiving of variables
-from TiEmu. Use it if your program access the linkport for sound.<br>
+The <span style="font-style: italic;">Receive file</span> item lets you
+enable (checked) or disable (unchecked) the receiving of variables
+from TiEmu. Use it if your program accesses the linkport for sound.<br>
 <h2>6.2 Configuration and State</h2>
 You can save or load a particular configuration. A configuration
-contains the current parameter of the emulator (emulator image to use,
-size of window, link cable type, ...). It does not contain any
-informations on the calculator state. The configuration is saved in the
+contains the current parameters of the emulator (emulator image to use,
+size of the window, link cable type, ...). It does not contain any
+information on the calculator state. The configuration is saved in the
 <span style="font-style: italic;">tiemu.ini</span> file. This is a text
-file and its format is described in the command lin e section.<br>
+file and its format is described in the command line section.<br>
 <br>
 The calculator state can be saved, loaded or reverted. The state is
 saved in a file containing an image of the calculator content (LCD,
@@ -79,80 +79,81 @@ latest saved state.<br>
 This is a large topic which is covered elsewhere. See the corresponding
 section...<br>
 <br>
-<span style="font-style: italic;">Reset calc</span> : this completely
+<span style="font-style: italic;">Reset calc</span>: this completely
 resets the calculator (erase all). This is like you removed batteries
 for a while.<br>
 <br>
-<span style="font-style: italic;">Upgrade calc</span> : allow you to
+<span style="font-style: italic;">Upgrade calc</span>: allows you to
 load a TI's OS FLASH upgrade into the calculator without needing to
 send it. If you save the calculator state, TiEmu will remind the
 upgrade and load it after image at startup.<br>
 <h2>6.4 Options</h2>
-<span style="font-style: italic;">Set ROM version</span> : let you
+<span style="font-style: italic;">Set ROM version</span>: lets you
 choose an existing image from a list. If you want to add an image,
 click the <span style="font-style: italic;">Import</span> button to
 convert a ROM dump or a FLASH upgrade into an image. <br>
-Note : TiEmu scans the <span style="font-style: italic;">images</span>
+Note: TiEmu scans the <span style="font-style: italic;">images</span>
 folder whenever you run this box.<br>
 <br>
 <div style="text-align: center;"><img alt="" src="romversion.png"
  style="width: 328px; height: 274px;"><br>
 </div>
 <br>
-<span style="font-style: italic;">Misc options</span> : <br>
-- <span style="font-style: italic;">restrict to actual speed</span> :
-if checked, TiEmu will run hand-held at its nominal speed. Else, it
-will run it at the maximum the CPU is capable.<br>
-- <span style="font-style: italic;">HW protection</span> : if checked,
-the HW protection device is enabled and emulated. TiEmu need to be
-restarted (or an image to be load) for changes to take effect.<br>
+<span style="font-style: italic;">Misc options</span>: <br>
+- <span style="font-style: italic;">restrict to actual speed</span>:
+if checked, TiEmu will run the hand-held at its nominal speed. Else, it
+will run it at the maximum the CPU is capable of.<br>
+- <span style="font-style: italic;">HW protection</span>: if checked,
+the HW protection device is enabled and emulated. TiEmu needs to be
+restarted (or an image to be loaded) for changes to take effect.<br>
 <br>
-- <span style="font-style: italic;">normal view</span> : display skin
+- <span style="font-style: italic;">normal view</span>: display skin
 and/or lcd with a 1x ratio,<br>
-- [Win32] <span style="font-style: italic;">large view</span> : same
+- [Win32] <span style="font-style: italic;">large view</span>: same
 with 2x
 ratio (note: this mode will use more CPU),<br>
-- [Linux] <span style="font-style: italic;">large view</span> : same
+- [Linux] <span style="font-style: italic;">large view</span>: same
 with 2x
 ratio (note: the skin may not be resized to 2x with some WM, it will be
 resized to fit the screen),<br>
-- <span style="font-style: italic;">full screen</span> : display LCD
-only and make it fits the screen (note: until I fix this, it's limited
-to 3x ratio because excessively CPU intensive under Win32).,<br>
+- <span style="font-style: italic;">full screen</span>: display LCD
+only and make it fits the screen (currently disabled because it is
+excessively CPU intensive under Win32).<br>
 <br>
-<span style="font-style: italic;">Skin for current calc</span> : <span
+<span style="font-style: italic;">Skin for current calc</span>: <span
  style="font-style: italic;">none</span>, <span
  style="font-style: italic;">default</span>, <span
  style="font-style: italic;">other</span>. <br>
-The first option let you remove the skin to just display the LCD. In
-this mode, you keep access to the right menu but you have to use
-keyboard for TI keys :<br>
+The first option lets you remove the skin to just display the LCD. In
+this mode, you keep access to the right click menu but you have to use
+the keyboard for TI keys:<br>
 <br>
 <div style="text-align: center;"><img alt="" src="no_skin.png"
  style="width: 248px; height: 162px;"><br>
 </div>
 <br>
-The second option make TiEmu fall back on the built-in skin. <br>
-The third option let you choose a skin of your own. It must be a TiEmu
+The second option makes TiEmu fall back on the built-in skin. <br>
+The third option lets you choose a skin of your own. It must be a TiEmu
 compatible skin (see the Skin section) else it will be rejected.<br>
 <h2>6.5 Infos</h2>
-<span style="font-style: italic;">Misc</span> : give you access to this
+<span style="font-style: italic;">Misc</span>: gives you access to this
 help and ManPage, ChangeLog, About.<br>
 <br>
-<span style="font-style: italic;">Info</span> : enumerates current
-calculator informations like this :<br>
+<span style="font-style: italic;">Info</span>: enumerates current
+calculator information like this:<br>
 <br>
 <div style="text-align: center;"><img alt="" src="calc_infos.png"
  style="width: 265px; height: 236px;"><br>
 </div>
 <br>
 <h2>6.6 Exiting</h2>
-<span style="font-style: italic;">Exit and save state</span> : TiEmu
+<span style="font-style: italic;">Exit and save state</span>: TiEmu
 will save both <span style="font-weight: bold;">state</span> and <span
  style="font-weight: bold;">configuration</span> before exiting.<br>
 <br>
-<span style="font-style: italic;">Exit without saving state</span> : no
-comment !<br>
+<span style="font-style: italic;">Exit without saving state</span>:
+TiEmu will exit <span style="font-weight: bold;">without</span> saving
+state and configuration.<br>
 <br>
 <hr>
 </body>
