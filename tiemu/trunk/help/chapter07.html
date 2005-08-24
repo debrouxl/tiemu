@@ -40,13 +40,13 @@
 <h1>7. Debugger</h1>
 Debugging mode is entered when a breakpoint is encountered or when the
 user launches the debugger by the popup menu or by pressing the F11
-key. This will stop the emulation engine but the LCD is still refresh.<br>
+key. This will stop the emulation engine but the LCD is still refreshed.<br>
 <br>
-Note : debugger windows are pre-loaded at startup in order to display
+Note: Debugger windows are preloaded at startup in order to display
 them quicker. The source code window may take a while to be displayed
-at first run : this is due to ROM call parsing. <br>
+the first time: this is due to ROM call parsing.<br>
 <br>
-The debugger is made-up of several frames :<br>
+The debugger is made-up of several frames:<br>
 - source code<br>
 - registers<br>
 - memory<br>
@@ -55,58 +55,58 @@ The debugger is made-up of several frames :<br>
 - stack<br>
 - heap (handles)<br>
 <br>
-These frames can be moved and/or resized (TiEmu save/restore this with
-configuration).<br>
+These frames can be moved and/or resized (TiEmu saves/restores this with
+the configuration).<br>
 Frames are automatically refreshed when a change occurs from another
 frame.<br>
 <h2>7.1 Source code<br>
 </h2>
 <div style="text-align: center;">
-<div style="text-align: left;">This frame is the main one :<br>
+<div style="text-align: left;">This frame is the main one:<br>
 </div>
 <img alt="" src="dbg_source.png" style="width: 328px; height: 321px;"><br>
 </div>
 <br>
-You can browse the source code with arrow and PageUp/Down keys. The
-green bar show current PC location. The blue one is the selection. The
-red cross is the breakpoint.<br>
+You can browse the source code with the arrow and PageUp/Down keys. The
+green bar shows the current PC location. The blue one is the selection. The
+red cross is a breakpoint.<br>
 <br>
-By right-clicking, you get the popup menu :<br>
-- <span style="font-style: italic;">go to address</span> : enter the
+By right-clicking, you get the popup menu:<br>
+- <span style="font-style: italic;">go to address</span>: enter the
 address to go,<br>
-- <span style="font-style: italic;">go to PC</span> : jump to PC
+- <span style="font-style: italic;">go to PC</span>: jump to PC
 location,<br>
-- <span style="font-style: italic;">set breakpoint (F2)</span> : place
+- <span style="font-style: italic;">set breakpoint (F2)</span>: place
 a breakpoint at the selection. The bkpt frame is updated,<br>
-- <span style="font-style: italic;">set temporary breakpoint</span> :
+- <span style="font-style: italic;">set temporary breakpoint</span>:
 place a breakpoint at the selection. This bkpt will be automatically
 removed when encountered.<br>
-- <span style="font-style: italic;">set PC to selection</span> : load
+- <span style="font-style: italic;">set PC to selection</span>: load
 PC with the address at the selection,<br>
-- <span style="font-style: italic;">view memory</span> : open a tab in
+- <span style="font-style: italic;">view memory</span>: open a tab in
 the memory frame with the address at the selection.<br>
 <br>
 The combo box lets you choose a ROM call by using the arrow. You can
 type it, too. It has automatic completion. Once selected, the view is
-updated to begin on ROM call address.<br>
+updated to begin on the ROM call's address.<br>
 <br>
-Debugging facilities provided are : <br>
-- <span style="font-style: italic;">run/break</span> : start/stop
+Debugging facilities provided are: <br>
+- <span style="font-style: italic;">run/break</span>: start/stop
 emulation engine without closing frames, <br>
-- <span style="font-style: italic;">step in/out/over</span> : <br>
+- <span style="font-style: italic;">step in/out/over</span>: <br>
 &nbsp;&nbsp;&nbsp; step in equals to step by step<br>
 &nbsp;&nbsp;&nbsp; step out runs PC until a RTS/RTR/RTD/RTE/STOP
 instruction is reached (go out of the sub-routine)<br>
-&nbsp;&nbsp;&nbsp; step over runs PC until instruction after the
+&nbsp;&nbsp;&nbsp; step over runs PC until the instruction after the
 current one is reached (skips all code in a sub-routine for instance),
 except for branches. <br>
 &nbsp;&nbsp;&nbsp; This works for JSR/BSR/FLINE/DBCC/TRAP, <br>
-- <span style="font-style: italic;">run to cursor</span> : runs PC
-until cursor address is reached.<br>
+- <span style="font-style: italic;">run to cursor</span>: runs PC
+until the address under the cursor is reached.<br>
 <br>
-Miscelaneous shortcuts:<br>
-- F6 : (internal use) copy source code window content to C:\disasm.txt<br>
-- F1 : set selection and PC to next line<br>
+Miscellaneous shortcuts:<br>
+- F6: (internal use) copy source code window content to C:\disasm.txt<br>
+- F1: set selection and PC to next line<br>
 <h2>7.2 Registers</h2>
 <table style="width: 100%; text-align: left;" border="0" cellpadding="2"
  cellspacing="2">
@@ -117,13 +117,13 @@ Miscelaneous shortcuts:<br>
       </td>
       <td style="vertical-align: top;">This frame displays all of the
 registers of the MC68000 processor. Take a look at the m68k
-user'smanual if needed.<br>
+user's manual if needed.<br>
       <br>
-USP = User stack Pointer (A7 in user mode, S=0).<br>
+USP = User Stack Pointer (A7 in user mode, S=0).<br>
 SSP = System Stack Pointer (A7 is supervisor mode, S=1).<br>
 The active pointer is displayed in the stack frame.<br>
       <br>
-SR is displayed in 2 modes : hexadecimal and single flags.<br>
+SR is displayed in 2 modes: hexadecimal and single flags.<br>
       <br>
 Each field is in-place editable.<br>
       <br>
@@ -131,7 +131,7 @@ By right-clicking on the address/data registers content, you will open
 a tab in the memory view at the adress contained in the register.
 Useful for browsing pointers and/or arrays.<br>
       <br>
-If you double-click on sf/uf, you will be able to edit each flag :<br>
+If you double-click on sf/uf, you will be able to edit each flag:<br>
       <div style="text-align: center;"><img alt="" src="dbg_sr.png"
  style="width: 413px; height: 129px;"><br>
       </div>
@@ -149,32 +149,32 @@ If you double-click on sf/uf, you will be able to edit each flag :<br>
     <tr>
       <td style="vertical-align: top;"><img alt="" src="dbg_mem.png"
  style="width: 534px; height: 274px;"></td>
-      <td style="vertical-align: top;">You can add/remove how many tabs
-you want. Click on +/- to add_remove tabs.<br>
-Use arrow keys or Page Up/Down keys to browse memory.<br>
+      <td style="vertical-align: top;">You can add/remove as many tabs
+as you want. Click on +/- to add_remove tabs.<br>
+Use the arrow keys or Page Up/Down keys to browse memory.<br>
       <br>
-Each value can be in-placed edited. Click the cell and you will be able
+Each value can be edited in-place. Click the cell and you will be able
 to enter an hexadecimal string (like 12, 1234, 567890).<br>
       <br>
 By right-clicking, you will get the popup menu:<br>
-- <span style="font-style: italic;">find / find next</span> : open a
-search engine,<br>
-- <span style="font-style: italic;">go to address</span> : let you
-enter an hexadecimal address to go to,<br>
-- <span style="font-style: italic;">dis-assemble</span> : update the
+- <span style="font-style: italic;">find / find next</span>: opens a
+search dialog,<br>
+- <span style="font-style: italic;">go to address</span>: lets you
+enter a hexadecimal address to go to,<br>
+- <span style="font-style: italic;">dis-assemble</span>: updates the
 source frame at the selected address.<br>
       </td>
     </tr>
   </tbody>
 </table>
-Note : the memory window may show aliases (ghosts) which does not
-really exist on the real calculator. For instance, RAM exists at
-$00000-3ffff only but if you open a tab at $40000, you will see RAM
-content at $000000. So, be careful !<br>
+Note: The memory window may show aliases (ghosts) which does not
+really exist on the real calculator. For instance, RAM on the TI-89
+Titanium exists at 0x00000-0x3ffff only but if you open a tab at
+0x40000, you will see RAM content at 0x000000. So, be careful!<br>
 <br>
 </div>
 </div>
-About the search engine:<br>
+About the search dialog:<br>
 <br>
 <table style="width: 100%; text-align: left;" border="0" cellpadding="2"
  cellspacing="2">
@@ -186,10 +186,10 @@ About the search engine:<br>
       <td style="vertical-align: top;">You can search for hexadecimal
 values or strings with or without case sensitivity (strings only).<br>
       <br>
-Click the right button to start search.<br>
-Click the middle button to find next occurence.<br>
+Click the right button to start a search.<br>
+Click the middle button to find the next occurrence.<br>
       <br>
-The occurence is green highlighted in the memory frame.<br>
+The occurrence is highlighted in green in the memory frame.<br>
       </td>
     </tr>
   </tbody>
@@ -204,12 +204,12 @@ The occurence is green highlighted in the memory frame.<br>
       <td style="vertical-align: top;"><img alt="" src="dbg_bkpts.png"
  style="width: 351px; height: 210px;"><br>
       </td>
-      <td style="vertical-align: top;">This frame let you manage
-several kind of breakpoints :<br>
+      <td style="vertical-align: top;">This frame lets you manage
+several kinds of breakpoints:<br>
 - code (added from the source frame)<br>
 - exception (traps, auto-ints, ...)<br>
 - data (access or range)<br>
-- program entry (debugger is raised at the begininng of the program you
+- program entry (the debugger is raised at the beginning of the program you
 have just launched).<br>
       <br>
 Each breakpoint can be added or removed and enabled or disabled. You
@@ -219,8 +219,8 @@ can go to the breakpoint location, too (last toolbar button).<br>
   </tbody>
 </table>
 <h2>7.5 PC trace</h2>
-This frame show the 10 latest PC values. Double-click the row will
-update the source frame with the row address.<br>
+This frame shows the 10 latest PC values. Double-clicking the row will
+update the source frame with the address in the row.<br>
 <h2>7.6 Stack frame</h2>
 <br>
 <table style="width: 100%; text-align: left;" border="0" cellpadding="2"
@@ -234,7 +234,7 @@ update the source frame with the row address.<br>
 current active stack pointer (user/supervisor).<br>
       <br>
 The frame displays the stack pointer (A7) and the frame pointer (A6)
-used on TI for function call and data storage.<br>
+used on the TI for function call and data storage.<br>
       <br>
 Content is displayed as word values only. You can browse it by using
 the arrow or Page Up/Down keys.<br>
@@ -253,8 +253,8 @@ the arrow or Page Up/Down keys.<br>
  style="width: 168px; height: 274px;"><br>
       </td>
       <td style="vertical-align: top;">This frame displays all the
-handles the calculator have. It shows: <br>
-- handler number,<br>
+handles the calculator has. It shows: <br>
+- handle number,<br>
 - address in memory,<br>
 - and size.<br>
       <br>
