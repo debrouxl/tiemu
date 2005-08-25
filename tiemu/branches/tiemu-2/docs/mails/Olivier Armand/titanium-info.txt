@@ -1,0 +1,1029 @@
+=================================================
+== titanium-info.txt==
+
+Notes sur l'AMS 3.00 de la TI-89 Titanium
+- Olivier Armand - ola dot e-ml at wanadoo dot fr
+
+Création : 8 juin 2004
+Dernière maj : 30 juin 2004
+
+* Ne pas redistribuer * Do not redistribute *
+=================================================
+
+
+Toutes les adresses sont comptées avec ROM_BASE à $200000 au lieu de
+$800000 pour plus de facilité.
+
+========
+Adresses
+========
+
+ROM de 0 à 0x156eb2 inclu -> Comme si allait de 0x212000 à 0x368eB2
+inclus.
+Le boot de la Titanium est à 0x800000. Les certificats sont à
+0x810000, etc...
+
+=======================================================
+Patches effectués pour obtenir titanic_patched_orig.rom
+=======================================================
+
+titanic_patched_orig.rom pourra ensuite passer par le patcheur
+automatique patchanic.
+
+- La ROM fait 2Mo : une partie de la mémoire réservée aux Flash Apps /
+  archives est coupée dans l'image de Samuel (et on lui enlève un
+  octet)
+
+- VTI regarde à Boot+5 pour avoir le type de calc (89 ou 92+). Patcher
+en 0x20.b pour qu'il émule une 92+.
+
+- 0x210000 (0x10000) mis à 0xFFF8 pour éviter d'avoir un Corrupt
+  Certificate Memory au boot. 0x210002.w est mis à 0 pour passer à
+  l'AMS en cas de reset (voir la partie BOOT plus loin). Pour exécuter
+  le boot sans passer par l'AMS, mettre quelque chose différent de 0
+  (mais attention, les nouveaux ports i/o le feront boucler
+  indéfiniment dans l'appel à 20041A [qui lance le code principal du
+  boot. Semble ne pas y voir de problème si on boot avec vecteur
+  $200100 et d0.l != 0 ??? (param du boot)]
+  Maj : des fois se lance, des fois non... Ou simplement un ini de
+  ports pose problème avec l'écran ?).
+
+- Fonction renvoyant la taille de la RAM renvoie maintenant 256ko (cf
+  commentaire [1]). On patche cette fonction (move.w #$8AA,D0; trap #0)
+  en remplaçant les deux movea.l #$200000,a3 par #$40000,a3 (il
+  testera ainsi un ghost existant vraiment).
+
+[[[- Pour arriver aux routines cherchant les zones fin AMS/début
+Apps/début Archives/fin Flash (patch similaire à celui pour la V200) :
+ Au reset, dans la première série des bsr, on rentre dans le dernier à
+ 0x212488
+ On rentre dans le jsr après le trap #A.
+ On rentre dans la fonction 6 du trap #11, on arrive à 0x24D418, c'est
+ ici.]]]
+=> Pas besoin de patch pour Titanium (lecture d'une variable pour
+la fin de la flash sur Titanium, qui est correcte, cf [2])
+
+[[[- Routine à 0x24D6DC placée juste après cette fonction du trap #11 qui
+  a pour rôle d'obtenir le début de la zone Archive (équivalent au
+  filtre HW1 / V200) : il reste un filtre HW1 pour les 89 simples
+  sûrement (mais ROM_BASE + $190000, ici $990000 (non patché par
+  patchanic))
+=> Xpand n'est plus nécessaire ! Et il n'y rien à patcher.
+
+- Rom Call init_unit_system (303D3CC) : utilise une table d'adresses
+  qui ne fait que 2 adresses... (séparées par 4 octets). patchanic ne
+  peut pas fonctionner, on  patche à la main. L'adresse de la table
+  est placée sur a2 quatre  instructions plus loin (c'est 30D2C8). 
+
+- Suppression des Flash Apps de l'image de la ROM de Samuel qui
+  semblent faire écrire à $400000 (fonction 7 du trap #11 : nettoyage
+  des apps).
+
+- Une adresse absolue en mémoire au milieu de nul part :( à 2DB766.
+
+- Encore une table de 2 adresses, séparées par 4 octets : 34514C.
+
+[[[- Une table de 3 adresses non patchées. patchanic ne peut pas se
+  permettre de détecter des tables de si petites tables, sinon
+  n'importe quoi est patché. Corrigé à la main : 306C8E (les adresses
+  sont séparées chacunes par 4 octets).
+=> maj : patchanic est normalement maintenant capable de les detecter
+  (il y en a plusieurs de ce type).
+
+- Une table de 2 adresses séparées par 4 octets, décrivant les
+  méthodes d'une Flash App interne (Self Test) : 2245A8.
+  Les adresses des méthodes de toutes les Flash Apps internes sont ainsi
+  patchées à la main : on recherche "{S=" (magic number) et on patche
+  les adresses qui se trouvent pas très loin plus bas, juste avant le
+  nom de l'App (sachant que pour la plupart, patchanic fera le
+  travail).
+ TODO Automatiser ceci, c'est faisable.
+
+- Une adresse isolée pour l'apps de configuration de l'horloge : 3535B2
+
+[[- Des adresses isolées pour le Var-Link : 35693A, 356946, 356952, 356A1A
+  35696A, 3569B0
+=> maj : patchanic gère normalement ce patch automatiquement
+
+- Le pointeur de la table des RC qui est un peu isolé du reste :
+  212150
+
+- cmpi.w #$FFF8,ROM_BASE+$10000 du boot : la forme de l'instruction ne
+  peut pas être patchée par patchanic. Il semble n'y avoir cette
+  instruction qu'ici dans la ROM. 2008B0.
+
+- Quelques adresses-variables dans la table des RC qui ne peuvent pas
+  être patchées par patchanic (adresse trop élevée) (ce patch n'est
+  pas vraiment indispensable pour l'exécution de l'AMS) : RC 43D
+  (FlashMemoryEnd) et RC 43C (?HW1ArchiveMemoryBeginning) : 23D182 et
+  23D186.
+
+- Deux adresses isolées à DB778 séparées de 4 octets.
+
+- Deux adresses isolées dans le boot : $200100.
+
+Pour detecter des patchs manquants : brktpt avec VTI sur
+800000-A00000. Prendre la première ligne (même si la deuxième est
+sélectionnée).
+
+
+===================================
+Commentaires sur la ROM (numérotés)
+===================================
+
+*** !!!Ghost dangereux???!!! Eviter de l'utiliser.
+
+[1] 2123e8: Pour effacer la RAM, au lieu d'avoir une adresse en dure comme
+sur 89 ($3FFF4) pour la fin de la RAM, celle-ci est obtenue avec la
+fonction $22224C [pas une RC] (puis -$C pour avoir l'équivalent de
+$3FFF4).
+
+ALGO:
+Cette fonction prend une adresse sur la pile (ici NULL), la met dans
+a1 et fait :
+move.w #$8AA,D0; trap #0;
+Le trap #0 dispatch la fonction :
+regparm (a1) = res (pointeur)
+if (res)
+   *res = NULL;
+Si les 1024 premiers octets de la RAM sont égaux à 0x200000+x, 200000,
+sinon 600000 -> a3.
+*10000 = C5A3C5A3
+....
+-> teste si on peut relire ca après et boucle.
+La boucle fait:
+A0=10000
+A2=0
+D0=10000
+Bcl:
+Test (A0)
+Si pas ok
+   Si A2 = 0
+   A2 = A0
+Si ok
+   Si A2 != 0
+      Si res != NULL
+	*res = A1
+      Quitte
+   Sinon
+      D0+=10000
+A0+=10000
+Bcl tant que A0<A3
+
+BUGS:
+* Si traînée continue de blocs invalides jusqu'à la fin (A3),
+*res = NULL
+Pourquoi attendre un bloc valide pour écrire le résultat ?
+
+RESUME:
+long f(*long) : si param != NULL, y écrit l'adresse du plus grand bloc
+de 64ko de la RAM ne fonctionnant pas (ie adresse de fin de la RAM +
+1), ou NULL si toute la RAM disponible (jusqu'à 0x200000 ou 0x600000)
+fonctionne. Si param = NULL, n'écrit rien. Le premier bloc n'est pas testé.
+Retourne la quantité de RAM disponible, ou la quantité de RAM de
+l'adresse 0 au premier bloc de RAM ne fonctionnant pas (non inclus).
+La RAM va de 0 à 200000 (avec un reflet à 400000), ou de 0 à 6000000
+(vraiment ?) s'il n'y a pas de reflet.
+Bizarre, surtout le fait d'attendre un bloc valide (un reflet par
+exemple), cf BUGS...
+
+APPELS:
+au boot de l'AMS (2123e8) avec un paramètre NULL. Le résultat (d0) est
+stocké dans une variable interne à l'AMS (5B2C). Cette variable est
+utilisée plusieurs fois, entre autres :
+- pour calculer le checksum de la RAM par le trap #4
+- à 2DB46e, dans la fonction 2DB3C0, pour "Ram size" de la commande
+getconfg(). Une petite fonction l'appel avec un paramètre NULL (2124e2).
+Celle-ci est uniquement appelée à 251AD4, dans la fonction commençant
+à 25195e, dessinant la fenêtre Mem. Un appel à une fonction
+équivalente éxiste sur TI89, mais celle-ci retourne directement 0x40000.
+
+Le boot semble utiliser 256ko de RAM uniquement (cf 0x2004A8)
+
+VTI:
+Retourne 0x200000 à cause de l'émulation du ghost space (tous les
+blocs semblent valides), et tout sera effacé (et donc même la table
+des vecteurs !) -> patché.
+
+HACK:
+Faire retourner une valeur inférieure à la fonction semble être
+possible et ne pas gêner ensuite l'AMS. Ceci permettrait de se reserver
+de la RAM à la fin de celle-ci, qui ne sera jamais touchée par l'AMS.
+Il suffit de sauter de sauter après l'appel de la fonction, ou de
+hooker le trap #0 si ça aide.
+
+
+---------------------------
+
+*** !!!Attention à l'ancien FlashMemoryEnd qui ne sera plus valide.
+
+[2] 0x21246C : appel au reset de la fonction à 213028. La fonction
+n'est pas une RC.
+Elle appel la fonction $14 du trap #11 (nouvelle fonction).
+Copie une fonction en RAM. Les commandes pour la FlashROM semblent
+être les mêmes que celles pour la V200 (Sharp LH28F320BFHE-PBTLZ2), et
+sont aussi compatibles avec les 89/92+.
+Cf page 7 de la datasheet de la Flash de la V200.
+
+ALGO: (en ROM à 21303A)
+
+lea CertMem,a1 ; Any valid address within the device (= the Flash
+		 EEPROM chip)
+               ; Sur TI, semble devoir être CertMem absolument (?)
+		 [même chose sur V200]
+move.w #$9090,(a1) ; Read Identifier Codes
+move.w ROM_BASE,d1 ; Identifier code address + 0 -> Manufacturer Code
+move.w ROM_BASE+2,d2 ; Bottom parameter device code
+move.l #$400000,d0
+cmp.w #$89,d1      ; Manufacturer Code (celui de la V200 est $B0)
+beq Ret
+cmp.w #$B5,d2      ;  Bottom parameter device code
+beq Ret
+move.l #$800000,d0
+Ret:
+move.w #$5050,(a1) ; Clear Status Register
+move.w #$FFFF,(a1) ; Read Array
+move.l d0,d1
+addi.l #ROM_BASE,d1
+move.l d1,a0
+quit
+
+Bottom parameter device (cf p.16 de la datasheet et shéma p.6) : en
+configuration bottom parameter pour le partitionnement, le plane de
+paramètres est à l'adresse la plus basse de la puce.
+
+Code fait : si FlashROM pas reconnue (ni manufacturer code, ni device
+code), retourne ROM_BASE + ROM_BASE, sinon retourne ROM_BASE + 400000
+(ce doit être le cas sur les Titanium actuelles).
+
+RESUME:
+trap #11:$14 retourne dans a0 FlashMemoryEnd, et dans d0.l
+FlashMemorySize, calculés dynamiquement en fonction de la puce.
+Certains modèles pourraient donc avoir 8Mo de Flash au lieu de 4Mo ?
+Ou permet simplement d'être compatible avec la TI89 (mais le fait que
+ROM_BASE + ROM_BASE tombe bien comme il faut sur 92+ semble un peut
+bizarre...)
+Attention, la variable-ROM Call FlashMemoryEnd qui existait déjà est
+elle fixe : ROM_BASE + $400000.
+d0 est stocké au reset dans une variable interne ($5B1A). Il est aussi
+shifté à droite de 16 bits et stocké dans $5B1E. Cette dernière
+variable ne semble jamais utilisée par l'AMS. Elle n'est accessible
+via la table des RC.
+a0 est stocké la variable interne $5B28. Elle est retournée par la
+nouvelle ROM Call (607) (voir commentaire [9]). La variable est
+utilisée un peu partout, notamment lors des écritures en FlashROM.
+
+APPELS:
+appel au reset (c'est son seul appel, pour éviter trop de déprotection
+de flash inutile). La fonction n'est pas une RC.
+
+VTI:
+Renvoie une taille de $200000 et une FlashMemoryEnd à $400000, ce qui
+convient. Pas besoin de patcher.
+
+HACK:
+Pourrait être hacké de la même manière que le calcul dynamique de la
+taille de la RAM, par un saut après l'appel ou en hookant le trap #11.
+Un test rapide a été fait en faisant retourner a0 (FlashMemoryEnd) =
+$380000 et d0 (FlashMemorySize) = $1800000 : getconfg() retourne une
+taille de mémoire archive de 0, et le menu Mem un taille de 64ko (le
+bloc pour la garbage collection) , ce qui est correct.
+
+
+---------------------------
+
+[3] Les Flash Apps risquent de commencer à $360000 au lieu de $340000 sur
+TI89 AMS 3.00 si jamais il sort, étant donné sa taille (routine de
+calcul des différentes zones : 24D476).
+
+[4] Message affiché à la préparation des Flash Apps (Installation in
+progress... Do not interrupt!). (la barre charge à l'appel à $2DC434).
+
+[5] Un test au reset fait afficher : USB: device not responding
+Le Desktop est activé automatiquement comme sur V200.
+Icône Window Editor du Desktop un peu modifiée.
+Quelques chaînes ajoutées ou modifiées :
+-LINK TRANSMISSION ACTIVE: ON KEY ABORTS TRANSFER
++I/O ACTIVE: ON KEY ABORTS TRANSFER
+-RECEIVED: 
++I/O: RECEIVED 
+-SENDING: 
++I/O: SENDING 
+-TI-89
++TI-89 Titanium
++USB: SENDING 
++VAR[,PORT]
++USB ACTIVE: ON KEY ABORTS TRANSFER
++USB: RECEIVED 
++USB: Searching for device 
++USB: Device Not Supported
++USB: Device Not Responding
++ is archived!
++Are you sure?
+Réception de données : affiche "I/O: RECEIVED main\data" pour le port
+  non-USB (Avant, n'affichait rien).
+Suppression d'une variable archivée avec backspace depuis le Var-Link
+  maintenant possible : affiche une boîte de dialogue "main\data is
+  archived! Are you sure?"
+
+[6] "Installation in progress" et "Do not interrupt!" affichés à la
+préparation des FlashApps ne sont pas sous forme de chaînes dans l'AMS.
+Est une image ?!
+
+[7] Vti de JM ne permet plus de faire de Set program entry breakpoint. 
+
+[8] Xpand ne semble plus nécessaire, cf les patches appliqués.
+
+[9] Une partie des ROM Calls ajoutées avec l'AMS 2.07 n'existent plus
+: readHandshake, writeHandshake, startBPTimer, stopBPTimer (auraient
+pu être utilisées pour un protocole de communication). Un appel à
+elles lance un ER_ROM_ROUTINE_NOT_AVAILABLE avec un dc.w $A36B (elles
+pointent toutes vers ce dc.w).
+La même fonction que pour OSVRegisterTimer, OSVFreeTimer, qui
+n'existent plus depuis AMS 2.04, est utilisée (et ce sont peut-être
+les seules utilisations de la fonction et du message d'erreur).
+
+*** !!! Ne plus utiliser l'ancienne ROM Call FlashMemoryEnd qui
+    pourrait retourner un résultat faux ?
+[10] Apparition d'une seule nouvelle ROM Call : ROM_CALL_607.
+Elle retourne dans a0 FlashMemoryEnd calculé dynamiquement par le code
+du reset à l'aide de la fonction $14 du trap #11 (voir commentaire
+[2]).
+
+[11] Bhuvanesh : GetCalc/SendCalc have the port number as an optional
+argument. If not specified or if it is zero, GetCalc will listen to
+both ports, and SendCalc will use USB if there is a non-TI89 on USB,
+otherwise it will use DBus.
+AB_getGateArrayVersion() returns 3. I checked with Command Post Plus,
+and hardwareRevision=2 and gateArray=3.
+Et hardwareID = 9.
+
+[12] Le mauvais fixage du masque de protection d'exécution en RAM par
+le trap #4 existe toujours (mauvaise adresse sur usp). Correction
+nécessaire par hw3patch.
+La seule différence dans trap #11:$F (calcul du masque de protection
+d'exécution en RAM) est un déblocage de 16 blocs de 4ko au lieu de 6.
+
+
+---------------------------
+
+========
+trap #11
+========
+
+Déprotection :
+- ori.b #1,$5B35 après le deuxième d0,(a0)
+- Plus de bclr/bset à $600015. Ne sera pas compatible avec la HW1 ?
+(pourtant le filtre HW1 de la mémoire archive existe encore, cf patches
+appliqués). Le boot les a toujours par contre, lui. Le reset ne les a
+plus.
+
+A propos de $5B35
+-----------------
+
+Ceci est valable même pour les anciennes versions d'AMS (pas regardé
+lesquelles exactement).
+
+Au reset, après initialisation de quelques ports, à $212318 : test
+$5B04.l pour un mot de passe ($F0A5960F). Si c'est le bon *ET*
+(nouveau test spécifique à l'AMS 3.00) si $5B35 est nul (détéction
+du trap #11 qui était en cours d'exécution) , exécute un bout de code
+situé près de celui de l'AI6 ($22201C). Sinon test le mot de passe
+inversé (not) ($F5A69F0). Si c'est le bon, une routine du trap #4 qui
+est appelée ($221CCE), qui permet de réveiller la calc (le trap #4 est
+repris en route, détection d'un reboot pendant que la calc est éteinte
+par l'enlèvement d'une pile, le boot permet de faire ça, voir partie
+BOOT). La valeur de a7 est récupérée d'une variable ($5B00).
+
+L'AI6 teste aussi le mot de passe en regardant s'il correspond trap
+#4 précédemment ($F5A69F0). Sinon, il l'efface. Il lit un octet à
+$5B30 (valeur du contraste) et le stocke. Puis il teste les piles
+(3,4V). Si elles sont bonnes, il continue son exécution normale
+[222060] (teste la combinaison du reset et reset si besoin, et fixe la
+valeur du constraste à celle dans la variable $5B30, à l'aide de la
+sous-routine de OSContrastDn et Up [appel à 2220B0] ).
+Si les piles ne sont pas bonnes, efface le bit 2 de $600015, fixe la
+waitstate ($600003) à $CD. Si le mot de passe n'est _pas_ $F5A69F0
+(celui pour le trap #4), il met usp dans la pile et stocke a7 dans
+$5B00 (même variable que la lecture au reset), puis il écrit comme mot
+de passe $F0A5960F (permettra de revenir dans l'AI6 après
+reboot). Puis dans les 2 cas, il attend un peu. Si le mot de passe est
+$F5A69F0 (celui pour le trap #4), il finit l'AI6 en fixant le niveau du
+contraste (cf plus haut). Sinon il efface le mot de passe, arme
+$600015:2 (AI3), refixe la valeur de usp en la lisant de la pile (cf la
+sauvegarde plus haut quand le mdp n'était pas $F5A69F0), et fini l'AI6
+en testant la combo de touches pour le reset et en fixant le contraste.
+
+La routine de l'AI6 appelée par le boot lors d'une détection du mot de
+passe $F0A5960F appelle une série de fonction qui :
+- Initialise plusieurs ports et variables (même sous routine que le
+  reset dans sa série de bsr à $21249A, le 3ème ici)
+- OSLinkReset
+- bsr à une sous-routine intialisant beaucoup de nouveaux ports et des
+  variables sûrement liées à ces ports i/o. ($222026 -> 3479EA). Ce
+  bsr n'est présent que sur Titanium.
+- Iinitalise des variables, et fait un OSRegisterTimer pour le timer 7.
+- Initialise encore des variables avec la RC 473 (OSqclear, OSOnBreak,
+  ...)
+- OSRegisterTimer(APD)
+- trap #11:$10 (mise-à-jour de la protection d'execution en mémoire
+  archive)
+- Appel le trap #11:$F (Changement du masque de protection d'exécution
+en RAM) à l'aide de la fonction $212D28, en lui donnant en paramètre
+l'adresse permettant de définir la fenêtre d'exécution (lue à
+$5B0E). Il s'arrange avant l'appel pour mettre l'adresse à $14 + usp,
+mais ceci est inutile ? Par contre le fait de fixer ssp = usp + $14
+fait qu'après l'appel, usp + $10 pointe sur l'adresse de retour qui
+est bien dans l'AMS, donc  trap #11:$F fera bien son boulot.
+
+Puis il refixe la valeur de usp en la lisant de la pile (cf la
+sauvegarde plus haut quand le mdp n'était pas $F5A69F0), et fini l'AI6
+en testant la combo de touches pour le reset et en fixant le
+contraste. (même fin que plus haut).
+
+Le trap #4 met le mot de passe ($5B04) à $F5A69F0 avant d'avoir éteint
+la calc ($221C0E). Il le mettra à 0 avant de quitter.
+
+RESUME:
+AI6 :
+ Si mdp = $F5... (trap #4 en cours d'exécution), et si les piles sont
+ faibles, attend un peu, continue normalement. S'il y a des piles, ne
+ teste pas la combinaison de touches de reset.
+ Si mdp est autre chose, et si les piles sont faibles, stocke le
+ contexte en RAM (ssp+usp), fixe le mdp à $F0... ('AI6 en cours'), et
+ attend un peu. Puis efface le mdp, et continue normalement. 'AI6 en
+ cours' ne correspond donc qu'à cette boucle d'attente, et à des piles
+ faibles.
+trap #4 :
+ Fixe le mdp à $F5... (trap #4 en cours) et l'efface à la
+ fin.
+reset :
+ Si mdp est 'trap #4 en cours', saute à lui pour que la calc se
+ rallume et qu'il finisse normalement.
+ Si mdp est 'AI6 en cours', et sur AMS 3.00 si le trap #11 n'est pas
+ 'en cours' saute à lui pour qu'il réinitialise  plusieurs variables
+ et ports i/o et finisse son exécution  normalement.
+
+TODO
+A quoi sert l'AI6 ? trap #11 peut être en cours ?
+Contraste : remis si enlèvement de pile sans avoir été éteint
+seulement. AI6 exécuté dans ce cas ?
+Hook : si on appelle pas l'ancien AI6, la calc ne veut pas être
+allumée (Manque acknowledge ?). Puis si on enlève une pile, se rallume
+(et contraste pas bon).
+Enlever une pile sans éteindre sans l'AI6 d'origine provoque le reset
+(dû à h220xtsr apparamment).
+Toute infos sur tout ça est bienvenue.
+
+HACK (non testé):
+Réalisable pour beaucoup d'AMS sûrement, et pour tous les modèles.
+Le système de mot de passe permet d'exécuter du code très tôt au
+reset. Si on fait passer par l'AI6, la protection d'exécution en RAM
+est normalement réinitialisée comme il faut (ghost space par
+exemple). Le hook sera appelé au rte (on place son adresse sur la
+pile). Pour la Titanium, on peut avant de lancer le reset modifier la
+variable interne $5B0E pour que l'exécution du trap #11:$F par l'AI6
+débloque l'exécution en RAM dans le bloc ou se trouve le TSR. Ou alors
+on utilise un hw3patch.
+Le code est appelé seulement après une 20aine d'instruction du reset,
+qui initialisent des ports i/o (tests des mdp à $212318).
+Prendre garde à l'effacement complet de la RAM qui suit
+encore plus loin.
+Aucune idée si ça a un quelconque interêt.
+
+
+$5B35 (suite)
+-------------
+
+Il est initialisé à zéro au reset, et entre autres par
+EV_centralDispatcher et le réveil de la calc du trap #4.
+
+Son bit 0 est armé au début du trap #11 et désarmé à la fin. Il
+permet de détecter que le trap #11 est en cours et éviter une
+récupération du contexte par le code du reset.
+
+Le bit 1 de $5B35 semble être armé lorsque le port USB est actif (via
+la commande TI-Basic sendcalc ou par l'envoi via le var-link). Aucune
+idée pour la réception de données.
+Quel est l'interêt de ce bit, puisqu'il n'y a jamais de btst dessus ?
+
+Les autres bits ne semblent pas être utilisés.
+
+---------------------------
+
+trap #11 : $13
+==============
+
+Pas de fonction associée. Jamais utilisé.
+Ne fait qu'un rts !
+
+trap #11 : $14
+==============
+
+Cf commentaire [2].
+
+trap #11 : $15
+==============
+Fonction à 212C8E
+Param : d4.l, d5.w
+Appels : 34E698, 3510C2
+Code à 24C4A6
+
+(d3.l d6.w)
+Affiche USB Active etc.
+Lecture de certificats...
+...
+Semble utiliser toujours les mêmes routines.
+Msg Link transfer Complet ou link transmission error.
+
+Appel à 34E698 : gestion du link ? Un peu avant, une dialog demande si
+overwrite ou skip.
+Quelque chose à avoir avec les Flash Apps : entouré de Ev_currentApp,
+Ev_getAppID, OO_getAppAttr, OO_appMarkDelete (exécuté si oui à la
+dialog), ROM CALL 424 qui appelle OO_DeleteMarkedApps (34E682),
+FL_addCert, ...
+
+Presque pareil pour le deuxième appel (autour se ressemble beaucoup !)
+Pas le temps de regarder plus en détail.
+
+trap #11 : $16
+==============
+
+Fonction à 212DC2
+Param : void - Retourne : bool ?
+Appels : 34B330
+Code : 34B39E
+
+Lecture de certificats, peut-être de l'écriture...
+Pas le temps de regarder plus en détail.
+
+
+---------------------------
+
+====
+BOOT
+====
+
+Ce qui suit n'est pas spécifique à la Titanium.
+Après plusieurs tests (pile, déprotection) et initialisation de ports
+i/o, test à $200272 si (CertMem + 2).w est nul. Si oui, et si le
+premier mot de l'AMS (ROM_BASE + $12000).w est non nul, l'adresse du
+reset de l'AMS est cherchée et l'AMS est bootée. La RAM n'a pas été
+modifiée jusqu'à maintenant, et en cas de pile enlevée pendant un trap
+#4, ceci peut être récupéré (voir "A propos de $5B35" dans la partie
+sur le trap #11.
+Si un des deux tests échoue, le boot continue son initialisation pour
+arriver finalement à l'écran d'envoi d'AMS si tout s'est bien
+passé. [le test des combo Apps+On et peut-être '(-)' ')' + On doivent
+se trouver sûrement avant ces 2 tests].
+L'ancienne version de VTI remplace toujours CertMem par quelques
+dizaines d'octets de certificat codé en dur de VTI, avec CertMem.w =
+$FFF8 et CertMem+2.w nul -> le boot passe tout de suite la main à
+l'AMS.
+Dans la version de JM, les certificats sont ceux du .rom. Il est donc
+nécessaire de patcher CertMem + 2 en le mettant à nul pour qu'un
+'reset' de VTI lance tout de suite l'AMS.
+
+Ce qui suit est spécifique à la Titanium.
+Si on met quelque chose différent de nul, le boot bouclera un moment
+dans le vide, à cause des nouveaux ports i/o que VTI ne fait pas
+réagir correctement.
+
+Le boot comporte maintenant quelques 'rts', plutôt qu'un 4E75 créé
+dynamiquement avant d'être exécuté.
+
+Les écritures en RAM 'move.w a0,$4400' semées un peu partout dans le
+code ont maintenant disparu du boot.
+
+
+=========
+Ports I/O
+=========
+
+Nouveaux à $7100XX, qui n'est maintenant plus un reflet de $7000xx.
+
+ini par l'AI6
+ini boot / reset
+Routines à 2051F4 - 347160 - 347640
+sous-routines reset ?
+Beaucoup d'utilisations dans le boot code :
+Dans l'ordre d'apparition (adresses croissantes)
+$81, $80, $4C, $39, $54, $31, $8B, $2F, $8F, $4D, $87, $29,
+$5A, $5B, $4A, $4B, $55, $57, $56, $22, $24, $26, $8E, $89, $27,
+$91, $94, $34, $A0, $2E, $96, $93, $9A, $9B, $95, $90, $98, $99, $92,
+$97
+
+Dans l'ordre (40 ports, tous en .b) :
+$22, $24, $26, $27, $29, $2E, $2F, $31, $34, $39, $4A, $4B, $4C, $4D,
+$54, $55, $56, $57, $5A, $5B, $80, $81, $87, $89, $8B, $8E, $8F, $90,
+$91, $92, $93, $94, $95, $96, $97, $98, $99, $9A, $9B, $A0.
+
+Avec les ports de l'horloge (cf plus loin) (précédés par #) :
+$22, $24, $26, $27, $29, $2E, $2F, $31, $34, $39, #40.l, #44 #45,
+#46.l, $4A, $4B, $4C, $4D, $54, $55, $56, $57, $5A, $5B, #5F, $80,
+$81, $87, $89, $8B, $8E, $8F, $90, $91, $92, $93, $94, $95, $96, $97,
+$98, $99, $9A, $9B, $A0.
+
+Les ports qui suivent $A0 doivent aussi être utilisés, mais jusqu'où ?
+(cf 207136 ou $349212 (même bout de code en plus peut-être))
+
+Très proche des ports trouvés par Dan Englender pour la TI-84+ (cf
+http://www.detachedsolutions.com/forum/viewtopic.php?t=1759). Serait
+donc peut-être le même HW (voir commentaire plus loin).
+J'ai écrit à Dan, il n'a pas plus d'infos pour l'instant.
+
+Les ports de Dan Englender manquant dans cette liste :
+$49, $4F
+Les ports que Dan ne cite pas : particulièrement de $22 à $39.
+
+Les ports dans cette zone non cités ci-dessus ne semblent pas être
+utilisés (du moins pas par adressage directe, peut-être que des (a0)+
+sont utilisés, etc.).
+
+-----------------------------
+
+=======
+Horloge
+=======
+
+[[ maj - résumé : l'horloge est maintenant entièrement gérée de façon
+HW, afin de laisser l'auto-int3 libre pour l'USB.
+
+[[Desktop : commentaires pour la découverte des ports, maintenant
+inutile.
+---------
+
+AMS: un table à 345164?
+[[ maj : table contenant les adresses des nouveaux ports de l'horloge 
+
+La première adresse de la table ($71005F) est
+lue par le Desktop à l'arrive de EV_NULL ($341EFC, première
+sous-fonction). Le bit 0 est testé.[maj : IsClockOn!] S'il est non
+nul, le reste de la table est utilisé (345204, dans la sous-fonction
+3451D2)
+[maj] commentaire déplacé dans OneSecondTimerGet plus bas.
+A l'appel (341FC4) : _du32u32(d0.l=60, d1.l=f()) : -> f() / 60,
+résultat dans d1.l.
+Si *($8324 + $BE) = d1.l -> quitte.
+Sinon...
+Au final, affichage de l'heure !
+
+--- ---- --- --- -- --- --- ---- -- ---
+Utilisation de la même table pour toutes les fonctions de l'horloge.
+
+
+IsClockOn
+---------
+Retourne $71005F:0
+
+ClockOn
+-------
+bset $710005F:0
+Si on avait avant le bset !IsClockOn, appelle
+OneSecondTimerSet($5BB0 (ie OneSecondTimer), 0.w)
+Dans tous les cas, $5BBE = 1. (indique ClockOn)
+
+[Sur AMS 2.09 : Si pas HW1, bset 2,$600015; rts]
+
+Ports relatifs à l'horloge :
+$40.l (écrire), $44, $45, $46.l, $5F:0
+
+Toute cette gestion de l'horloge ne semble pas être faite par le boot.
+
+ClockOff
+--------
+
+Appel 3451D2 (getOneSecondTimer(pt_bidon))
+Stocke le retour (d0) dans $5BB0. Puis bclr $5F:0 et clr.w $5BBE
+(indique ClockOff).
+
+AI3
+---
+
+N'est plus utilisé pour l'horloge, mais pour le port USB (déclenché à
+son utilisation d'après le test que j'ai fait faire à Samuel). Utilise
+des ports i/o de l'USB, et fait des TimerRestart (pas trop le temps de
+regarder).
+-> maintenant utilisée comme interruption pour le traitement de
+l'USB.
+Le boot a maintenant tendance à avoir SR=$2200 plutôt que $2300 à
+cause de ça.
+
+Trap #4
+-------
+
+clr.w $600014 avant d'éteindre sur AMS 3, dans tous les cas (plus de
+traitement avec l'AI3 comme sur la famille AMS 2.07).
+Toute la gestion de l'AI3 qui réveille la calc a été supprimée, et le
+port $600014 est écrit directement avec les valeurs plutôt que d'avoir
+les valeurs calculées en fonction de l'état de l'horloge.
+
+Seules différences apparentes : 2 nouvelles sous-routines appelées
+tout à la fin (221D9E).
+1ère :
+Si 5BBE.w && !IsClockOn
+  $5BB0.l (OneSecondTimer ?) = 0
+  ClockOn
+
+2ème :
+Relatif au link USB sûrement.
+wait $1DE84 *n cycles
+Si $71004D:6 == 1
+  Si $8410.b == $B0
+    appel à une routine cmplexe utilisant $710039 (34781E)
+    quitte
+  sinon
+    quitte
+  Si $8410.b == $A0
+   $8411.b = 2
+quitte
+
+Reset
+-----
+
+Routine de réinitialisation de l'horloge (23A3F2) (première
+utilisation des nouveaux ports).
+
+Sur AMS 2.07 on avait :
+<<Au reset, l'AMS vérifie si une variable interne (un long mot) proche
+de la variable TimeFormat contient toujours un certain magic number
+(0x2AAAAAAA). Si c'est le cas, alors l'AMS considère que la variable
+DateFormat n'a pas été corrompue, et qu'il peut utiliser la valeur
+qu'elle contient sans avoir besoin de l'initialiser.
+Ceci permet à l'AMS de retrouver le format de date utilisé avant le
+reset, pour que l'utilisateur n'ait pas à re-régler ce format.
+Si le contenu de la variable de vérification ne correspond pas au
+magic number, DateFormat est initialisée à 1. Si le contenu de la
+variable de vérification ne correspond pas au magic number, TimeFormat
+est initialisée à 12.>>
+
+Sur HW3 (vu dans cette routine d'initialisation, avec la doc sur la
+V200 / AMS 2.08) :
+TimeFormat = 5BB6.b
+DateFormat = 5BB7.b
+TimeZone = 5BB4.w
+5BBE.w ?
+Magic pour la récupération : 5BB8.l
+OneSecondTimer = 5BB0.l (5C06 sur TI-89 AMS 2.09)
+
+Le reset fait:
+Si magic ok, appel 345340 et quitte
+345340 (nouvelle sur AMS3):
+ Si 5BBE.w != 0 && !IsClockOn
+  5BB0.l = 0
+  ClockOn
+
+Si magic pas ok:
+Clockoff(); ClockOn();
+Appel OneSecondTimerSet(NewValue.l = 0, 0.w)
+Fixe les formats + TimeZone
+fixe magic et quitte
+
+ClockOn est réalisé par cette fonction d'initialisation plutôt que
+séparemment (sur AMS 2.09, il était à la fin du 2ème bsr de la série
+des bsr du reset [appel à la sous-fonction qui est le corps de
+ClockOn]).
+
+Tous les accès à OneSecondTimer sont maintenant remplacés par (cf plus
+bas) :
+3451D2: long OneSecondTimerGet (char *res)
+345290 OneSecondTimerSet(NewValue.l, 0.w)
+
+
+
+
+void OneSecondTimerSet (newValue.l, mmm.w)
+---------------------
+
+à 345290
+OneSecondTimer($5BB0) = newValue
+Quitte si !IsClockOn
+$710040.l = newValue
+if (mmm.b < 16)
+ tmp = mmm.b
+else
+ tmp = 0
+$710044 = tmp
+bclr #1,$710005F puis bset
+
+long GetOneSecondTimer (char *res)
+-----------------
+
+à 3451D2
+
+if !IsClockOn
+ *res = 0
+ return OneSecondTimer ($5BB0)
+
+
+ $46 est lu, $47 (avec 1(a0), etc... !), $48 et $49 et placés
+côte à côte. Puis $45 est lu.
+ (en fait les ports ne sont lus qu'une fois à chaque boucle)
+  tmp = 0
+  tmp2 = 0
+  while ($46.l != tmp || $45.b != tmp2)
+     tmp = $46.l
+  *res = $45.b
+  return $46.l
+
+--------------------
+
+
+Initialisation de ports par le 2ème bsr de la série du reset
+============================================================
+Code à 222264.
+
+A propos de $600000 (toute version d'AMS) et de la valeur initiale du
+contraste (nouvelle valeur spéciale pour Titanium).
+
+($5B30 est l'équivalent du $5B98 sur V200 2.09, valeur du constraste)
+(d1.b : $5D18, d0.b 5B30)
+Si HW1
+ $10 -> d0 #E maintenant !
+ F -> d1
+Si HW2
+ 20 -> d0
+ 1F -> d1
+Si $5B19 != 0 ; toujours vrai sur HW1 ! cf 'reset' plus bas
+  avant ------
+   $A -> D0
+  nouveau -----
+  Si HARDWARE_PARM_BLOCK.hardwareID == 9 (Titanium)
+   $D -> D0
+  Sinon
+   D0 /= 2
+  Fin nouveau ------
+Sinon
+ #$80.b->$600000 (?)
+$5B30 = d0.b (valeur du contraste)
+OSContrastUp pour la fixer réellement.
+
+Et dans OSContrastUp ou Dn :
+Si $5B19 = 0
+  Si nouvelle valeur contraste % 2 ? bset : bclr  #5,$600000
+
+Et au tout début du reset :
+Si pas HW1
+  $5B19 = $FF
+Sinon
+  600018.w = $FFFF (~2.9V)
+  $600000.b = $80
+  wait
+  $5B18.b = $1F ; contraste max (cf $60001D)
+  btst #2,$600000
+   seq d0 (clr si batt level is above)
+  move.b #$FF,5B19
+ ; puis d0 pas utilisé !
+  beq ContinueReset ; jamais vrai ! (aurait du être avant l'instruction
+                    ; précédente ?)
+  bclr #7,$600000
+  bclr #4,$5B18 ;  contraste max - donc toujours fais sur HW1
+                ;  -> $5B18=$F
+
+TODO
+Pas très clair, toute info est la bienvenue.
+
+
+Autres ports
+============
+
+$71004D
+-------
+
+USB: Searching for device... pour envoi à partir du var-link à 34A1A8
+La plupart des ROM Calls semblent fonctionner avec les anciens ports
+i/o à $6000xx (LinkTxQueueActive, OSLinkReset, OSLinkClose, ...)
+Regarder toutes les RC de link.h. (utilisation en même temps que
+5B35:1). Par exemple 349E58, 34A284, 34B868, et encore quelques
+routines après ces adresses (search).
+  et trap #4 : 347664, 347160
+Envoi des données par bloc ? (il y a des memcpy dans trap #11 : $15)
+
+$71005A
+-------
+
+A EV_getc.
+
+
+==============================
+Infos sur USB de Dan Englender
+==============================
+
+Horloge
+-------
+
+"bit 6, iy+3Fh controls whether the clock is on or off (regarding the
+OS setting, not the hardware setting)."
+$5F:0 semble être l'équivalent ?
+
+"To set the clock, set the values you want into ports 41h through 44h,
+and then output 01h to port 40h, followed by 03h to port
+40h. Outputting values directly to ports 45h through 48h has no
+effect."
+41h->44h = $40.l?
+Mais ne ressemble pas trop (cf OneSecondTimerSet qui est plus
+compliqué).
+
+USB
+---
+
+<<The following ports seemed to be obviously related to the USB
+because their values changed when I plugged in the cable: 49h, 4Ah,
+4Ch, 4Dh, 4Fh, 54h, 57h, 5Bh, 80h, 81h, 87h, 89h, 8Bh, and A0h through
+AFh.
+Additionally, the following ports seemed related to USB because they
+were accessed in what I think is link code: 8Eh, 8Fh, 90h, 91h, 92h,
+93h, 94h, 98h, 9Ah.>>
+
+Même ports aux mêmes adresses ! (encore un peu plus même)
+Mais il y a des ports de $22 à $39 que Dan ne cite pas...
+
+
+------------------------
+
+---------------------------
+
+TESTS
+=====
+
+SIDE, ID et BomberMaze68k semblent fonctionner (sans compter la
+protection d'exécution).
+
+
+---------------------------
+
+BUGS
+====
+
+Ils sont dus à de mauvais patches par patchanic. Pas vraiment le temps
+de les corriger, et ils ne gênent pas trop pour l'instant.
+
+Menu F5 du var-link complètement buggé.
+Pareil pour Menu F6 ligne 1 de Home.
+Dans catalog, au milieu des C : all rights reserved, etc... (~8
+symboles pas bon). Et les commandes clrdraw, clrhome, etc. ont
+disparues et ne répondent pas dans l'home. (sûrement un patch de données
+des commandes... TODO : voir ou ca se trouve).
+Sendcalc variableexistantpas fait une link transmission error...
+Pas d'horloge ? (car le bit sur $6000xx ne tiens pas ?)
+Commande sur la clock dans home par reconnue : par exemple ClockOn
+
+---
+
+Boot : boucle bizarrement. + problème de check de battery d'après Samuel ?
+port lu à 2060E8 pose problème ?
+
+trap 11 : 7 et $D ne fonctionnement pas. Seulement $D toujours exécuté
+même sans Flash Apps.
+
+-------------------
+
+
+=====
+TODO
+=====
+
+Nouvelle combo != APPS+ON pour recevoir l'AMS via l'USB, comme sur
+  84P? (apparemment non)
+Changements au niveau de l'écran ? (la valeur initiale du contraste
+  n'est plus la même).
+Comment envoyer via le port USB (ROM CALL sendcalc() passe par
+l'ancien) ?
+Bug du reset ne protégeant pas correctement la mémoire archive en
+exécution corrigé ?
+Même stealth i/o ports ?
+Protection du boot comme sur V200 ?
+Chercher msg USB Device...
+  +USB: Searching for device 
+  +USB: Device Not Supported
+  +USB: Device Not Responding 
+  et quand 'not supported'. Regarde AI4.
+  Pourrait être interessant de détailler son protocole/fonctionnement
+  pour dialogue avec un périphérique externe ?
+Regarder ports io (boot + trap #11 + AMS)
+Samuel : changement dans le fonctionnement des piles ?
+Nouvelles Fonctions du trap #11, comprendre
+Tenter un programme de diff d'AMS ?
+Trouver une utilité pour les hooks des limites de RAM et ROM.
+222300 : mais #$80,$600000 dans un cas alors que j89hw dit toujours 0
+  (sur ancien AMS aussi). bug de Lionel ?
+Automatiser le patch des méthodes des Flash Apps (cf partie patches).
+Comprendre trap #11 : $15/$16
+voir utilisations mdp / $5B35 ailleurs encore.
+écriture de 4 octets dans port clock possible, ou octet par octet
+  nécessaire comme le fait l'AMS ?
+Comprendre "Initialisation de ports par le 2ème bsr"
+Ports de $22 à $39 que Dan ne cite pas, pas USB ?
+Chercher ports $7100XX dans AMS, pas déjà listés. 
+AI3 : code
+Routines autour de ClockOn, etc.
+Ports Nouveaux, différents à $7000xx ? Comparer toutes les ini des
+  anciens ports par le reset.
+
+Demander Samuel / Buvhanesh
+===========================
+
+Qui a-t-il à la place du ghost space de la RAM ?
+
+
+End Of File

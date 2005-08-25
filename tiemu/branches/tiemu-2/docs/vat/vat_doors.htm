@@ -1,0 +1,265 @@
+<html><head><title>Doors Homepage</title>
+   
+<link rev="made" href="mailto:xvassor@mail.dotcom.fr?&amp;cc=deucalion@mail.dotcom.fr"></head>
+<body bgproperties="FIXED" bgcolor="#008080">
+
+<h1>
+<font color="#ffffff">T</font><font color="#c0c0c0">i</font><font color="#818181">p</font><font color="#424242">s</font></h1>
+Here we will write all tips we know about Fargo programming.
+
+<p>We've just wrote a part of the description of the <a href="#VAT">VAT</a>
+! Go and see it !<br>
+<b>WARNING:</b> This is for TI92/92 II <b>only</b> . The VAT on TI89/92+ is slightly different. Mail me if you want infos about it.
+</p><p>When we have time, we will talk about:
+</p><menu>
+<li>
+<b>How to optimize in size a program</b></li>
+
+<li>
+<b>Many other things..</b></li>
+</menu>
+If you have a tip and you want it to be on that page, <a href="mailto:xvassor@mail.dotcom.fr?&amp;cc=deucalion@mail.dotcom.fr">mail
+us!</a>
+<br>
+<hr width="100%">
+
+<p>&nbsp;<a name="VAT"></a>The VAT(variable alocation table) is a table
+which lists the variables and folders of your calc.
+<br>We will describe it in four parts:
+
+</p><p><a href="#1%29">1) The folder table</a>
+<br><a href="#2%29">2) The variables tables</a>
+<br><a href="#3%29">3) Some variables caracteristics</a>
+<br><a href="#Formats">4) Some variable formats</a>
+
+</p><p><a name="1)"></a><b><font size="+2"><font color="#ffffff">1</font><font color="#f2f2f2">)</font>
+<font color="#d8d8d8">T</font><font color="#cbcbcb">h</font><font color="#bebebe">e</font>
+<font color="#a4a4a4">f</font><font color="#979797">o</font><font color="#8a8a8a">l</font><font color="#7d7d7d">d</font><font color="#707070">e</font><font color="#636363">r</font>
+<font color="#494949">t</font><font color="#3c3c3c">a</font><font color="#2f2f2f">b</font><font color="#222222">l</font><font color="#151515">e</font></font></b>
+
+</p><p>For all actual Roms, the folder table is associated with handle #$0B.
+<br>So when you do&nbsp; <font color="#000099">moveq.w #$B,d0</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color="#000099">tios::DEREF d0,a0</font>
+
+</p><p>You get in a0 the adress of the folder table:
+<br>It has the following format:
+
+</p><p><font color="#000099">0(a0).w = maximum number of folders before handle
+#$B needs to be resized</font>
+<br><font color="#000099">2(a0).w = actual number of folders</font>
+<br>We always have: 2(a0).w &lt;= 0(a0).w
+
+</p><p>After this small header, there is the list, composed of the names of
+the folders, their state, and their associated variables list.
+<br>With&nbsp;&nbsp;&nbsp;&nbsp; <font color="#000099">addq.l #4,a0</font>
+<br>You get in a0 the adress of the beginning of the list.
+<br>Here is the format:
+
+</p><p><font color="#000099">0(a0) to 7(a0): 8 char name of the folder</font>
+<br><font color="#000099">8(a0).b : a end of string null character</font>
+<br><font color="#000099">9(a0).b : the state byte</font>
+<br><font color="#000099">10(a0).w : the handle of the associated variables
+list</font>
+
+</p><p>Here is an example in hexa:
+
+</p><p><font color="#cc0000">00 0A 00 03</font><font color="#000099"> 64 6F
+63 73&nbsp; ....docs</font>&nbsp;&nbsp; -&gt; you see: maxfold = $A = 10,
+nbfold = 3
+<br><font color="#000099">00 00 00 00 00 80 </font><font color="#cc0000">00
+2E</font><font color="#000099">&nbsp;&nbsp; ........</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-&gt; handle to the 'docs' folder = $002E
+<br><font color="#000099">67 61 6D 65 73 00 00 00&nbsp; games...</font>
+<br><font color="#000099">00 80 00 2F 6D 61 69 6E&nbsp; ....main</font>
+<br><font color="#000099">00 00 00 00 00 80 00 0C&nbsp;&nbsp; ........</font>
+
+</p><p>The state byte has the following format:
+
+</p><p><font color="#000099">&lt;76543210&gt;:&nbsp; 7 is always set for a folder</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5 is set when the folder is checked in the Var-Link or in Doors</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3 is set when the folder is locked</font>
+
+</p><p>For example, you can have
+<br><font color="#000099">6D 61 69 6E 00 00 00 00&nbsp;&nbsp;&nbsp;&nbsp;
+00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 80&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+00 0C</font>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cc0000"><font size="-1">name=
+"main"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+null char&nbsp; state byte&nbsp;&nbsp;&nbsp;&nbsp; handle</font></font>
+
+</p><p>Then the name of the folder is <font color="#cc0000">main</font><font color="#000000">,</font>
+it is <font color="#cc0000">NOT locked and NOT checked</font>, and <font color="#cc0000">its
+handle is #$C </font>(in fact it is always #$C for the 'main' folder)
+
+</p><p><a name="2)"></a><b><font size="+2"><font color="#ffffff">2</font><font color="#f4f4f4">)</font>
+<font color="#dedede">T</font><font color="#d3d3d3">h</font><font color="#c8c8c8">e</font>
+<font color="#b2b2b2">v</font><font color="#a7a7a7">a</font><font color="#9c9c9c">r</font><font color="#919191">i</font><font color="#868686">a</font><font color="#7b7b7b">b</font><font color="#707070">l</font><font color="#656565">e</font><font color="#5a5a5a">s</font>
+<font color="#444444">t</font><font color="#393939">a</font><font color="#2e2e2e">b</font><font color="#232323">l</font><font color="#181818">e</font><font color="#0d0d0d">s</font></font></b>
+
+</p><p>They have nearly the same format than the folder one: they have the
+same header, and the same list format
+<br>The only thing that changes is the state byte format:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font color="#000099">7 is never set for a variable</font>
+
+</p><p>So, you can have, for example
+<br><font color="#000099">66 69 6C 65 6C 69 62 00&nbsp;&nbsp;&nbsp;&nbsp;
+00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+00 16</font>
+<br><font color="#cc0000"><font size="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+name="filelib"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+null char&nbsp; state byte&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; handle</font></font>
+
+</p><p>Then the name of the variable is <font color="#cc0000">filelib</font><font color="#000000">,</font>
+it is <font color="#cc0000">NOT locked and NOT checked</font>, and <font color="#cc0000">its
+handle is #$16</font>
+
+</p><p><a name="3)"></a><b><font size="+2"><font color="#ffffff">3</font><font color="#f8f8f8">)</font>
+<font color="#eaeaea">S</font><font color="#e3e3e3">o</font><font color="#dcdcdc">m</font><font color="#d5d5d5">e</font>
+<font color="#c7c7c7">v</font><font color="#c0c0c0">a</font><font color="#b9b9b9">r</font><font color="#b2b2b2">i</font><font color="#ababab">a</font><font color="#a4a4a4">b</font><font color="#9d9d9d">l</font><font color="#969696">e</font><font color="#8f8f8f">s</font>
+<font color="#818181">c</font><font color="#7a7a7a">a</font><font color="#737373">r</font><font color="#6c6c6c">a</font><font color="#656565">c</font><font color="#5e5e5e">t</font><font color="#575757">e</font><font color="#505050">r</font><font color="#494949">i</font><font color="#424242">s</font><font color="#3b3b3b">t</font><font color="#343434">i</font><font color="#2d2d2d">c</font><font color="#262626">s</font></font></b>
+
+</p><p>When you have the handle of a variable in d0,you can do:
+
+</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000099">
+tios::DEREF d0,a0</font>
+
+</p><p>You get the adress of the content of the variable in a0
+
+</p><p>After that ALL variables have the following format:
+
+</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#000099">0(a0).w
+= size of the variable&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font><b><font color="#000000">WARNING!</font></b>
+This is not the real size of the var: you must add #2 to get the real size
+
+</p><p>Then you can do:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; move.w (a0),d1 and you have
+
+</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000099">&nbsp;&nbsp; 1(a0,d1.w)
+= the type byte of the variable</font>
+
+</p><p>This type byte can be one of the followings:
+<br>$DC -&gt; <a href="#PRGM">PRGM or FUNC</a>
+<br>$D9 -&gt; <a href="#MAT">MAT or LIST</a>
+<br>$E0 -&gt; TEXT
+<br>$2D -&gt; STR
+<br>$DD -&gt; DATA
+<br>$E1 -&gt; FIG
+<br>$DF -&gt; PIC
+<br>$DE -&gt; GDB
+<br>$E2 -&gt; MACR
+<br>All other values are EXPR variables
+<br>
+</p><hr width="100%">
+<br><a name="PRGM"></a>
+<br>To distinguish the PRGM and FUNC type you have to do:
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#000099">cmp.b
+#$19,-5(a0,d1.w)</font>
+
+</p><p>If -5(a0,d1.w) is not #$19 then the variable has the FUNC type,else
+it has the PRGM type.
+
+</p><p>Now you will maybe know how to distinguish Fargo vars and normal PRGM
+vars.
+<br>Let's do the following:
+
+</p><p><font color="#000099">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmp.l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#$4150504C,8(a0)&nbsp;&nbsp;&nbsp; </font><font color="#000000">;comp with
+"APPL"</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; beq
+</font><font color="#cc0000">\Fargo II prog</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmp.l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#$00503130,2(a0)&nbsp;&nbsp;&nbsp;&nbsp; </font><font color="#000000">;comp
+with "P10"</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; beq
+</font><font color="#cc0000">\Fargo I prog</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmp.l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#$444C4C20,8(a0)&nbsp;&nbsp;&nbsp; </font><font color="#000000">;comp with
+"DLL "</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; beq
+</font><font color="#cc0000">\Fargo II library</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmp.l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#$004C3130,2(a0)&nbsp;&nbsp;&nbsp;</font><font color="#000000">&nbsp; ;comp
+with "L10"</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; beq
+</font><font color="#cc0000">\Fargo I library</font>
+
+</p><p>And that's all for the PRGM type !
+<br>
+</p><hr width="100%">
+<br><a name="MAT"></a>To distinguish the MAT and LIST type you have to
+do:
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#000099">cmp.b&nbsp;
+#$D9,0(a0,d1.w)</font>
+
+</p><p><font color="#000000">If 0(a0,d1.w) is #$D9, then the variable has the
+MAT type else it has the LIST type</font>
+
+</p><p><a name="Formats"></a><font size="+2">4) Some variables formats</font>
+
+</p><p>We only know the following variables formats:
+<br>&nbsp;&nbsp;&nbsp; <a href="#TEXT">TEXT variables</a>
+<br>&nbsp;&nbsp;&nbsp; <a href="#PIC">PIC variables</a>
+<br>&nbsp;&nbsp;&nbsp; <a href="#STR">STRING variables</a>
+
+</p><p><a name="TEXT"></a><font size="+1">TEXT variables</font>
+
+</p><p>Suppose you have a TEXT variable handle in d0.
+<br>&nbsp;&nbsp;&nbsp; With&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#000099">tios::DEREF&nbsp;&nbsp;&nbsp;
+d0,a0</font><font color="#000000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+you get in a0 the variable adress</font>
+
+</p><p><font color="#000000">From then you have the following format:</font>
+
+</p><p><font color="#000000">&nbsp;&nbsp;&nbsp; </font><font color="#000099">(a0).w&nbsp;
+= size of the variable - 2</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp; 2(a0).w&nbsp; = position of
+the cursor in the TIOS editor or in XeTal</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp; from 4(a0).w to the end =
+your text.</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp; Text has the following format:</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp; #13 = nextline</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp; #20 = beginning of a line.
+It is always after a #13 char or a the very beginning of the text</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp; #0 = end of the text</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp; At the end of a TEXT variable,
+you have a #$E0 char, it tells you that it is a TEXT variable</font>
+<br>
+</p><hr width="100%">
+<br><a name="PIC"></a><font size="+1">PIC variables</font>
+
+<p>If a0 is the variable adress, then you have:
+
+</p><p>&nbsp;&nbsp;&nbsp; <font color="#000099">(a0).w = size of the variable
+- 2</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp; 2(a0).w = height of the picture</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp; 4(a0).w = width of the picture</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp; from 4(a0).w to the end =
+your picture</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp; If a bit is set, then the
+pixel is on, else, it is off</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp; At the end of a PIC variable,
+you have a #$DF char, it tells you that it is a PIC variable</font>
+<br>
+</p><hr width="100%">
+<br><a name="STR"></a><font size="+1">STRING variables</font>
+
+<p>If a0 is the variable adress, then you have:
+
+</p><p>&nbsp;&nbsp;&nbsp; <font color="#000099">(a0).w = size of the variable
+- 2</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp; 2(a0).b = a null char (#0)</font>
+<br><font color="#000099">&nbsp;&nbsp;&nbsp; from 3(a0).b to the end =
+your string, it ends with a null char (#0)</font>
+<br><font color="#000099">At the end of a STRING variable, you have a #$2D
+char, it tells you that it is a STRING variable</font>
+
+</p><p>If you want to add something about these formats, or you know the formats
+of other variables types, you can <a href="mailto:doors@altern.org?&amp;cc=deucalio@club-internet.fr">mail
+us</a>
+</p></body></html>

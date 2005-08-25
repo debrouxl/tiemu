@@ -1,0 +1,227 @@
+## Process this file with autoconf to produce Makefile
+
+@SET_MAKE@
+CC        = @CC@
+CPP       = @CPP@
+CXX       = @CXX@
+CFLAGS    = @CFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@
+LDFLAGS   = @LDFLAGS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ @LIBZ@ $(extra_ldflags)
+CXXFLAGS  = @CXXFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@
+MOC       = @MOC@
+
+kde       = @kde@
+
+DESTDIR   =
+
+ifneq (,$(findstring __WIN32__,$(CFLAGS)))
+	RESFILE = tiemu-rc.o 
+	LDFLAGS += -lcomdlg32
+else
+	RESFILE = 
+endif
+
+ifneq (,$(findstring __LINUX__,$(CFLAGS)))
+	LDFLAGS += -Wl,--export-dynamic
+endif
+
+INSTALL         = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA    = @INSTALL_DATA@
+prefix          = @prefix@
+exec_prefix     = @exec_prefix@
+bindir          = @bindir@
+libdir          = @libdir@
+sysconfdir      = @sysconfdir@
+
+.SUFFIXES: .o .c .cpp .h .m .i .S .rc .res
+
+ifeq ($(kde), yes)
+kdeincludes = @all_includes@
+kdelibraries = @LIB_KDECORE@ @LIB_KDEUI@ @LIB_KIO@ @LIB_QT@ @KDE_LDFLAGS@ @QT_LDFLAGS@ @X_LDFLAGS@
+kde_OBJ = gui/kde.o gui/kde-private.o
+kdeprivsources = gui/kde-private.cpp
+gui/kde-private.cpp: gui/kde-private.h
+	$(MOC) gui/kde-private.h -o gui/kde-private.cpp
+endif
+
+DEFS=@DEFS@ \
+	-DSHARE_DIR=\"${prefix}/share/tiemu\" \
+	-DLOCALEDIR=\"${prefix}/share/locale\"
+#	-DSHARE_DIR=\"$(pkgdatadir)\" \
+#	-DLOCALEDIR=\"$(datadir)/locale\"
+
+INCLUDES = \
+	-I@top_srcdir@ -I$(includedir) \
+	-DPREFIX=\"${prefix}\" -I. \
+	-I./core -I./core/uae -I./core/ti_hw -I./core/ti_sw -I./core/dbg \
+	-I./misc \
+	-I./gui -I./gui/calc -I./gui/debugger
+
+# source files to build
+core_uae_OBJ = \
+	core/uae/cpuemu1.o core/uae/cpuemu2.o \
+	core/uae/cpuemu3.o core/uae/cpuemu4.o \
+	core/uae/cpuemu5.o core/uae/cpuemu6.o \
+	core/uae/cpuemu7.o core/uae/cpuemu8.o \
+	core/uae/cpudefs.o core/uae/cpustbl.o \
+	core/uae/readcpu.o core/uae/fpp.o \
+	core/uae/missing.o core/uae/xmalloc.o
+
+core_tihw_OBJ = \
+	core/ti_hw/dbus.o	\
+	core/ti_hw/flash.o	\
+	core/ti_hw/gscales.o	\
+	core/ti_hw/hw.o 	\
+	core/ti_hw/hwprot.o	\
+	core/ti_hw/kbd.o 	\
+	core/ti_hw/m68k.o	\
+	core/ti_hw/mem.o 	\
+	core/ti_hw/mem89.o	\
+	core/ti_hw/mem89tm.o	\
+	core/ti_hw/mem92.o	\
+	core/ti_hw/mem92p.o	\
+	core/ti_hw/memv2.o	\
+	core/ti_hw/ports.o	\
+	core/ti_hw/rtc_hw3.o
+
+core_tisw_OBJ = \
+	core/ti_sw/er_codes.o \
+	core/ti_sw/handles.o	\
+	core/ti_sw/iodefs.o	\
+	core/ti_sw/registers.o	\
+	core/ti_sw/romcalls.o	\
+	core/ti_sw/timem.o	\
+	core/ti_sw/vat.o
+
+core_OBJ = 			\
+	core/error.o 		\
+	core/images.o 		\
+	core/interface.o	\
+	core/state.o		\
+	core/type2str.o		\
+	core/hwpm.o
+
+core_dbg_OBJ = \
+	core/dbg/bkpts.o	\
+	core/dbg/debug.o	\
+	core/dbg/disasm.o	\
+	core/dbg/fpudasm.o	\
+	core/dbg/m68kdasm.o
+
+misc_OBJ = \
+	misc/cmdline.o 	\
+	misc/files.o 	\
+	misc/paths.o 	\
+	misc/printl.o	\
+	misc/rcfile.o 	\
+	misc/screenshot.o \
+	misc/tie_error.o 
+
+gui_calc_OBJ = \
+	gui/calc/calc.o		\
+	gui/calc/kbd_mapper.o	\
+	gui/calc/keyboard.o	\
+	gui/calc/keynames.o	\
+	gui/calc/popup.o	\
+	gui/calc/screen.o	\
+	gui/calc/skinkeys.o	\
+	gui/calc/skinops.o
+
+gui_debugger_OBJ = \
+	gui/debugger/dbg_all.o		\
+	gui/debugger/dbg_bkpts.o	\
+	gui/debugger/dbg_cause.o	\
+	gui/debugger/dbg_code.o		\
+	gui/debugger/dbg_data.o		\
+	gui/debugger/dbg_entry.o	\
+	gui/debugger/dbg_heap.o		\
+	gui/debugger/dbg_iop.o		\
+	gui/debugger/dbg_mem.o		\
+	gui/debugger/dbg_pclog.o	\
+	gui/debugger/dbg_regs.o		\
+	gui/debugger/dbg_romcall.o	\
+	gui/debugger/dbg_stack.o	\
+	gui/debugger/dbg_vectors.o
+
+gui_OBJ = \
+	gui/about.o							\
+	gui/comm.o							\
+	gui/dboxes.o							\
+	gui/engine.o							\
+	gui/filesel.o							\
+	gui/fs_misc.o							\
+	gui/infos.o							\
+	gui/main.o							\
+	gui/manpage.o							\
+	gui/pbars.o							\
+	gui/refresh.o							\
+	gui/release.o							\
+	gui/romversion.o						\
+	gui/scroptions.o						\
+	gui/splash.o							\
+	gui/support.o 							\
+	gui/tsource.o 							\
+	gui/wizard.o
+
+tiemu_OBJ = core/uae/newcpu.o \
+	$(core_uae_OBJ) $(core_OBJ) $(core_tihw_OBJ) $(core_tisw_OBJ) \
+	$(core_dbg_OBJ) \
+	$(misc_OBJ) \
+	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(kde_OBJ)
+
+#rules:
+all: uae tiemu
+
+uae:
+	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" gen
+	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" all
+
+ifneq (,$(findstring __WIN32__,$(CFLAGS)))
+tiemu: $(tiemu_OBJ) $(RESFILE)
+else
+tiemu: $(tiemu_OBJ)
+endif
+ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
+	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
+	$(LDFLAGS) $(CFLAGS) $(kdelibraries) \
+	-Wl,--rpath,"$(prefix)/lib"
+else
+	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(RESFILE) \
+	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
+endif
+
+.c.o:
+	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) $< -o $@
+	#../libtool --mode=compile $(CC) $(INCLUDES) $(DEFS) \
+	#-c $(CFLAGS) $< -o $@
+
+.cpp.o:
+	$(CXX) $(INCLUDES) $(DEFS) -c $(CXXFLAGS) $(kdeincludes) $< -o $@
+	#../libtool --mode=compile $(CC) $(INCLUDES) $(DEFS) \
+	#-c $(CFLAGS) $< -o $@
+
+tiemu-rc.o: ../build/mingw/tiemu.rc
+	cd ../build/mingw && windres tiemu.rc ../../src/tiemu-rc.o
+
+clean:
+	@cd core/uae && $(MAKE) clean
+	@rm -f $(tiemu_OBJ) tiemu tiemu.exe tiemu-rc.o $(kdeprivsources)
+
+distclean: clean
+	@cd core/uae && $(MAKE) distclean
+	@rm -Rf .libs
+
+dos2unix:
+	dos2unix
+	lowercase
+	uppercase
+
+distdir: clean
+	cp -rl * ../tiemu-@VERSION@/src
+
+install: tiemu
+	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
+	$(INSTALL) -m755 tiemu $(DESTDIR)${prefix}/bin/
+
+uninstall:
+	rm -f ${prefix}/bin/tiemu

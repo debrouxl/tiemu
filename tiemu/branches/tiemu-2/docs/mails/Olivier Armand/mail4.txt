@@ -1,0 +1,29 @@
+
+
+> j'aurais quelques questions:
+> - est-ce que l'implémentation de la protection dans TiEmu est inutile,
+> utile, un plus ou indispensable ?
+
+C'est utile pour déboguer des bogues qui y sont liés, mais pas
+indispensable.
+
+> - qu'est-ce que les ghost spaces ? Est-ce la RAM miroitée à partir de
+> 0x20000 ?
+
+Oui:
+0x20000 et multiples jusqu'à 0x1e0000 sur TI-92.
+0x40000 et multiples jusqu'à 0x1c0000 sur TI-92 II, TI-92+, TI-89, Voyage
+200.
+0x200000 et 0x400000 sur TI-89 Titanium. (Le reste, c'est-à-dire
+0x40000-0x1fffff, est apparemment inutilisé.)
+Sur la TI-89 Titanium (HW3), on ne peut rien exécuter à ces endroits. Sur
+HW2, on peut exécuter du code à ces endroits si et seulement si on peut
+l'exécuter aussi à 0x3f000-0x3ffff. Sur HW1, on peut exécuter ce qu'on veut
+à 0-0x1bffff, mais il y a des protections bizarres sur 0x1c0000-1x1fffff
+(cf. J89hw.txt pour les détails).
+
+L'utilisation de ces espaces fantôme permet aussi de passer outre les
+protections qui activent l'AI7.
+
+        Kevin Kofler
+

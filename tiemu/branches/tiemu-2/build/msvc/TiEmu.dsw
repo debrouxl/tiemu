@@ -1,0 +1,119 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "TiEmu_Console"=.\TiEmu_Console.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ticables
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ticalcs
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name tifiles
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name uae
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "TiEmu_Windows"=.\TiEmu_Windows.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ticables
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ticalcs
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name tifiles
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name uae
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ticables"=..\..\..\ticables\build\msvc\ticables.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ticalcs"=..\..\..\ticalcs\build\msvc\ticalcs.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ticables
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name tifiles
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "tifiles"=..\..\..\tifiles\build\msvc\tifiles.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "uae"=..\..\src\core\uae\uae.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

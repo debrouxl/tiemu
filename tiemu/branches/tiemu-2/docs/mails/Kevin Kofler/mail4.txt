@@ -1,0 +1,18 @@
+> > * virer la gestion de $600010 sur HW2/HW3, ce port est HW1-only et doit
+> > être
+> > ignoré sur HW2/HW3.
+>
+> j'ai quelque chose de pas normal:
+> - sur HW2, le port $600xxx est utilisé mais pas celui en $700xxx (comme
+> sur HW1)
+> - sur HW3, les 2 sont utilisés et il faut que j'utilise celui en $600xxx
+> pour avoir le bon LCD.
+
+Olivier m'a pourtant dit qu'il t'a déjà signalé l'origine du problème... AMS
+3.00 écrit dans la rangé 0x7100xx qui sur HW3 N'EST PAS un ghost de la
+rangée 0x7000xx, mais de nouveaux ports. Ton code capture des écritures en
+0x710017 comme des changements de port LCD, et c'est faux.
+
+Et AMS n'initialise pas 0x700017 parce que la valeur par défaut de ce port
+est 0, ce qui donne un plan à 0x4c00. Il faut que ton code d'initialisation
+mette LCD_MEM à 0x4c00 au départ sur HW2 et HW3.
