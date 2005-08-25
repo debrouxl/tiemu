@@ -333,16 +333,8 @@ static int match_skin(int calc_type)
 	skin_name = g_ascii_strdown(s, strlen(s));
 	g_free(s);
 
-	if(!strcmp(skin_name, "ti92+") || !strcmp(skin_name, "ti89t"))
-	{
-		gchar *path = g_strdup_printf("%s%s.skn", inst_paths.skin_dir, skin_name);
-
-		// fallbacks on standard skin if it can find an appropriate one
-		if(access(path, 0) == -1)
-			skin_name[4] = '\0';
-
-		g_free(path);
-	}
+	if(!strcmp(skin_name, "ti92+"))
+		skin_name[4] = '\0';
 
 #ifdef __IPAQ__
 	s = g_strconcat("ipaq_", skin_name, NULL);
@@ -378,8 +370,10 @@ static int match_skin(int calc_type)
             ok = !strcmp(sk->calc, SKIN_TI92) || !strcmp(sk->calc, SKIN_TI92P);
 		break;
 	    case TI89:
+			ok = !strcmp(sk->calc, SKIN_TI89);
+		break;
         case TI89t:
-            ok = !strcmp(sk->calc, SKIN_TI89) || !strcmp(sk->calc, SKIN_TI89T);
+            ok = !strcmp(sk->calc, SKIN_TI89T);
 		break;
 		case V200:
 			ok = !strcmp(sk->calc, SKIN_V200);

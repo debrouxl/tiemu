@@ -183,7 +183,7 @@ int skin_read_image(SKIN_INFOS *si, const char *filename)
 	struct stat st;
 
 	// set lcd size
-	if(!strcmp(si->calc, SKIN_TI89))
+	if(!strcmp(si->calc, SKIN_TI89) || !strcmp(si->calc, SKIN_TI89T))
 	{
 		lcd_w = 160;
 		lcd_h = 100;
