@@ -45,7 +45,9 @@
 
 // This make dbg wnd's as children of the main window.
 // Thus, the taskbar is not filled-up with a lot of windows.
-//#define	WND_TRANSIENT
+#ifdef __WIN32__
+#define	WND_TRANSIENT
+#endif
 
 /* Definitions */
 
