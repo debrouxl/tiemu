@@ -34,6 +34,7 @@
 #include "intl.h"
 #include "paths.h"
 #include "ti68k_int.h"
+#include "dbg_code.h"
 
 gint dbgcause1_display_dbox()
 {

@@ -1,0 +1,186 @@
+libgui - Handy GUI code
+
+This module has various pieces of code that are useful for a GUI.  For
+the most part, they are Tcl/Tk-related.
+
+Open issues:
+- bitmaps and canvas code are duplicated in S-N; should look into
+  sharing
+- tkTreeTable taken from S-N but modified; should use the same
+  version in both places.  Better yet, replace this widget with
+  one that works better
+
+Here's a brief runthrough:
+
+library/
+  Directory of Tcl code
+
+  balloon.tcl
+    Tcl code to implement balloon help (aka tooltips)
+
+    Primary interface is the "balloon" command.  See last function in
+    file for details on usage
+
+  bindings.tcl
+    Provides bind_widget_after_class proc; rearranges bindtags in
+    a frequently-useful way.
+
+  canvas.tcl
+    Tcl procs relating to canvas widgets
+
+    set_scroll_region canvas
+      Set the scroll region on CANVAS to include all items in the
+      canvas.  Most easily used when bound to <Configure> on the
+      canvas.
+
+  def.tcl
+      Defining words.
+
+      defarray name ?value?
+        Define a global array named NAME.  VALUE, if present, is the
+        initial value.  VALUE is in the format expected by "array
+        set".
+
+      defvar name ?value?
+        Define a new global variable named NAME.
+
+  gensym.tcl
+      Provides the proc "gensym", which generates new symbol names.
+
+  gettext.tcl
+      Defines the stub proc "gettext", used for looking up text in a
+      localization database.
+
+  hooks.tcl
+      Provides procs for handling hooks (lists of functions that
+      should be run when something happens).
+
+  lframe.tcl
+      Provides the Labelledframe widget -- a frame with a groove and
+      a label.
+
+  list.tcl
+      Defines useful list procs.  Some of these are Tcl versions of C
+      functions in TclX.
+
+      lvarpush listvar element ?index?
+        Insert ELEMENT into list stored in LISTVAR (a variable).
+        Element is inserted at INDEXth position.  INDEX defaults to
+        0.
+
+      lvarpop listvar ?index?
+        Remove INDEXth element from list stored in LISTVAR (a
+        variable).  Returns the removed element.  INDEX defaults to
+        0.
+
+      lassign list args
+        Assign successive elements from LIST to variables named in
+        ARGS.  If LIST is longer than ARGS, assign a list of remaining
+        elements to last variable.
+
+      lrmdups list args
+        Remove duplicates and sort list.  ARGS, if specified, are
+        arguments to lsort
+
+      lremove list element
+        Return list created by removing the first item `ELEMENT'
+
+  mono.tcl
+    Procs for handling monochrome displays or colorblind users
+
+  prefs.tcl
+    Application preference code.  This will probably vanish at some
+    point, once we figure out how we really want to do this.  I just
+    had this code lying around, and it was useful to me, so I included
+    it.
+
+    Defines a single interface, "preference", which has several
+    subcommands:
+
+	preference define name default docstring ?handler?
+	  Define a new preference.  HANDLER, if specified, is a proc
+	  to run whenever the preference's value changes.
+
+	preference get name
+	  Return value of preference.
+
+	preference documentation name
+	  Return doc string of preference
+
+	preference varname name
+	  Return name of variable representing named preference.  This
+	  can be used eg as the -variable of a radiobutton.
+
+	preference set name value
+	  Set preference.
+
+	preference get_commands
+	  Return text of commands which, when evalled, will restore
+	  the current state of all defined preferences.
+
+  sendpr.tcl
+    The sendpr widget; a GUI for send-pr.
+
+  topbind.tcl
+    Code for bindings on toplevels.
+
+    bind_for_toplevel_only toplevel sequence script
+      Put a binding on window TOPLEVEL for event SEQUENCE.  When the
+      event is seen, SCRIPT will run.  This proc adds a new bindtag
+      to the toplevel to avoid the problems associated with putting
+      bindings directly on toplevels.
+
+  ulset.tcl
+    Attempt to make setting the -underline option easier.  This is
+    particular good when using gettext.  Unfortunately the interface
+    is hard to use; it should be changed.
+
+    extract_label_info option label
+      Extract underline and label info from descriptor string LABEL.
+      Any underline in LABEL is extracted, and the next character's
+      index is used as the -underline value.  There must be only one
+      underline in LABEL.  This proc returns a list of the form:
+
+	 OPTION NEWLABEL -underline INDEX
+
+      Eg:  extract_label_info -text _File
+	-> {-text File -underline 0}
+
+src/
+  Directory of C code.  This is all put into libide.a.
+
+  paths.c
+    Useful startup code that all applications should run.
+
+    int ide_initialize (Tcl_Interp *interp, char *appname);
+
+    This function:
+    - Sets the global Tcl variable ide_application_name to APPNAME.
+    - Searches the filesystem for the libide Tcl code, and sets
+      up the auto_path appropriately.  The IDE_LIBRARY environment
+      variable can override the searching.
+    - Sets up the auto_path to include the application's Tcl library
+      as well (if possible).  Applications should install their Tcl
+      code in $(datadir)/APPNAME/
+    - Runs the application's startup file - $(datadir)/APPNAME/APPNAME.tcl
+    - Sets these entries in the global array Paths:
+        Paths(bitmapdir)  Location of libide bitmaps
+        Paths(appdir)     Location of application's scripts
+
+    This function returns TCL_OK on success, and something else on
+    error.
+
+  subcommand.c
+    Makes it easy to write commands which are split into a number of
+    subcommands (eg, like the Tcl "file" command).
+
+    int create_command_with_subcommands (Tcl_interp *interp, char *name,
+                                         struct subcommand_table *table)
+
+    Create a new Tcl command name NAME.  TABLE describes the
+    subcommands; see subcommand.h for details.  Returns TCL_OK on
+    success, TCL_ERROR on failure.
+
+  tkCanvEdge.c, tkCanvLayout.c, tkCanvLayout.h, tkCanvas.c, tkCanvas.h
+    Patched versions (ugh) of the corresponding Tk files, and some new
+    files.  These files implement graph layout for canvases.

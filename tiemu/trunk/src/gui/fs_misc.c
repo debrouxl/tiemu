@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *  Copyright (c) 2005, Christian Walther (patches for Mac OS-X port)
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -44,6 +44,7 @@
 #include "rcfile.h"
 #include "pbars.h"
 #include "tie_error.h"
+#include "dbg_all.h"
 
 gint display_skin_dbox()
 {
@@ -238,6 +239,96 @@ gint display_recv_files_dbox(const char *filename)
 	return 0;
 }
 
+#ifndef NO_GDB
+gint display_debug_dbox(void)
+{
+	const gchar *filename;
+    const gchar *ext;
+	int err;
+	static gchar *folder = NULL;
+	TiRegular metadata;
+
+    // set mask
+    switch(tihw.calc_type) 
+	{
+    case TI92:
+        ext = "*.92?";
+		break;
+	default:
+        ext = "*.89?;*.92?;*.9x?;*.v2?";
+        break;
+    }
+
+	// get filename
+	if(folder == NULL)
+		folder = g_strdup(inst_paths.base_dir);
+
+	filename = (char *)create_fsel(folder, NULL, (char *)ext, FALSE);
+	if (!filename)
+    {
+		return 0;
+    }
+
+	// keep folder
+	g_free(folder);
+	folder = g_path_get_dirname(filename);
+
+    // check extension
+    if(!tifiles_is_a_ti_file(filename) || 
+        !tifiles_is_ti9x(tifiles_which_calc_type(filename))) 
+	{
+        msg_box(_("Error"), _("This file is not a valid TI file."));
+        return -1;
+    }
+
+    // set pbar title
+    if(tifiles_is_a_tib_file(filename) || tifiles_is_a_flash_file(filename)) 
+	{
+        create_pbar_type5(_("Flash"), "");
+    } 
+	else if(tifiles_is_a_backup_file(filename)) 
+	{
+        create_pbar_type3(_("Backup"));
+    } 
+	else if(tifiles_is_a_group_file(filename)) 
+	{
+        create_pbar_type5(_("Sending group file"), "");
+    } 
+	else if(tifiles_is_a_single_file(filename)) 
+	{
+        create_pbar_type4(_("Sending variable"), "");
+    }
+
+    // note that core is currently not bkpt-interruptible when
+    // transferring file
+    GTK_REFRESH();
+    err = ti68k_linkport_send_file(filename);
+    handle_error();
+    destroy_pbar();	
+
+    ext = strrchr(filename, '.');
+    if (ext)
+    {
+        *(char *)ext = 0;
+        symfile = g_strconcat(filename, ".dbg", NULL);
+        *(char *)ext = '.';
+    }
+
+    if (!tifiles_read_regular_file(filename, &metadata))
+    {
+        if (metadata.num_entries > 0)
+        {
+            int handle = sym_find_handle (metadata.entries[0].folder, metadata.entries[0].name);
+            if (handle)
+                ti68k_bkpt_add_pgmentry (handle);
+        }
+        tifiles_free_regular_content(&metadata);
+    }
+
+	return 0;
+}
+#endif
+
 gint display_set_tib_dbox(void)
 {
     const gchar *filename;
@@ -322,3 +413,5 @@ gint display_import_romversion_dbox(void)
 
     return 0;
 }
+
+

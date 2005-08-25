@@ -33,7 +33,9 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#ifndef FLOATFORMAT_H /* Don't include glib.h when included from GDB. */
 #include <glib.h>
+#endif
 
 #define NMAX_ROMCALLS	0x800
 
@@ -53,10 +55,12 @@ void romcalls_get_symbol_address(int id, uint32_t *addr);
 int romcalls_load(const char* filename);
 int romcalls_is_loaded(void);
 
+#ifndef FLOATFORMAT_H
 GList* romcalls_sort_by_id(void);
 GList* romcalls_sort_by_addr(void);
 GList* romcalls_sort_by_name(void);
 GList* romcalls_sort_by_iname(void);
+#endif
 
 int romcalls_is_addr(uint32_t addr);
 int romcalls_is_name(const char *name);

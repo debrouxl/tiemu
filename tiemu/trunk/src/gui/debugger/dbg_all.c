@@ -42,6 +42,18 @@
 #include "support.h"
 #include "paths.h"
 #include "engine.h"
+#ifndef NO_GDB
+#include "gdbcall.h"
+
+void gdbtk_hide_insight(void);
+void gdbtk_show_insight(void);
+void delete_command(void *, int);
+void symbol_file_clear(int);
+void gdbtk_clear_file(void);
+void exec_build_section_table(void);
+
+gchar *symfile;
+#endif
 
 DbgOptions options3;
 DbgWidgets dbgw = { 0 };
@@ -66,6 +78,12 @@ void gtk_debugger_preload(void)
 // show previously created window
 int gtk_debugger_enter(int context)
 {
+#ifndef NO_GDB
+	gint type, id, mode;
+
+	if (!dbg_on) gdbtk_show_insight();
+#endif
+
 	// debugger is open
 	dbg_on = !0;
 
@@ -87,6 +105,43 @@ int gtk_debugger_enter(int context)
 	dbgheap_display_window();
 	dbgiop_display_window();
 	dbgcode_display_window();	// the last has focus
+
+	// enable the debugger if GDB disabled it
+	if (!GTK_WIDGET_SENSITIVE(dbgw.regs))
+		set_other_windows_sensitivity(TRUE);
+
+	// handle automatic debugging requests
+#ifndef NO_GDB
+	if (symfile)
+	{
+		// get context
+		ti68k_bkpt_get_cause(&type, &mode, &id);
+
+		if(type == BK_TYPE_PGMENTRY)
+		{
+			uint16_t handle;
+			uint32_t pc;
+
+			ti68k_bkpt_get_pgmentry(id, &handle);
+			ti68k_bkpt_del_pgmentry(handle);
+			if(GTK_WIDGET_VISIBLE(dbgw.bkpts))
+				dbgbkpts_refresh_window();
+
+			delete_command(NULL, 0);
+			symbol_file_clear(0);
+			gdbtk_clear_file ();
+			ti68k_register_get_pc(&pc);
+			gdb_add_symbol_file(symfile, pc);
+			g_free (symfile);
+			symfile = NULL;
+			exec_build_section_table();
+
+			ti68k_unprotect_64KB_range(pc);
+
+			gdb_hbreak("__main");
+		}
+	}
+#endif
 
 	return 0;
 }
@@ -115,18 +170,12 @@ void gtk_debugger_refresh(void)
 // make windows (un-)modifiable
 void set_other_windows_sensitivity(int state)
 {
-    if(GTK_WIDGET_VISIBLE(dbgw.regs))
-        gtk_widget_set_sensitive(dbgw.regs, state);
-    if(GTK_WIDGET_VISIBLE(dbgw.bkpts))
-        gtk_widget_set_sensitive(dbgw.bkpts, state);
-    if(GTK_WIDGET_VISIBLE(dbgw.mem))
-        gtk_widget_set_sensitive(dbgw.mem, state);
-    if(GTK_WIDGET_VISIBLE(dbgw.pclog))
-        gtk_widget_set_sensitive(dbgw.pclog, state);
-    if(GTK_WIDGET_VISIBLE(dbgw.stack))
-        gtk_widget_set_sensitive(dbgw.stack, state);
-	if(GTK_WIDGET_VISIBLE(dbgw.heap))
-        gtk_widget_set_sensitive(dbgw.heap, state);
+    gtk_widget_set_sensitive(dbgw.regs, state);
+    gtk_widget_set_sensitive(dbgw.bkpts, state);
+    gtk_widget_set_sensitive(dbgw.mem, state);
+    gtk_widget_set_sensitive(dbgw.pclog, state);
+    gtk_widget_set_sensitive(dbgw.stack, state);
+    gtk_widget_set_sensitive(dbgw.heap, state);
 	if(GTK_WIDGET_VISIBLE(dbgw.iop))
         gtk_widget_set_sensitive(dbgw.iop, state);
 }
@@ -302,12 +351,17 @@ on_quit1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	// hide all windows
+#ifndef NO_GDB
+	gdbtk_hide_insight();
+#endif
 	dbg_on = 0;
 	gtk_debugger_hide_all(!0);
 
     // and restarts the emulator
 	ti68k_bkpt_set_cause(0, 0, 0);
-    engine_start();
+#ifndef NO_GDB
+    if (engine_is_stopped()) gdbcall_continue();
+#endif
 }
 
 GLADE_CB void
@@ -525,8 +579,11 @@ on_dbgcode_window_delete_event       (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-    gtk_widget_hide(widget);
-    on_quit1_activate(NULL, NULL);    
+    if (dbgcode_quit_enabled())
+    {
+        gtk_widget_hide(widget);
+        on_quit1_activate(NULL, NULL);    
+    }
     return TRUE;
 }
 

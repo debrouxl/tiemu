@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -80,6 +80,7 @@ void gtk_window_minimize(GtkWindow *window, gboolean action);
 /* Variables */
 
 extern int dbg_on;
+extern gchar *symfile;
 
 // convenient place (calc.h)
 extern GtkWidget *main_wnd;

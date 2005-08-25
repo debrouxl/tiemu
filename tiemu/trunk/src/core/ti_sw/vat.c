@@ -149,8 +149,7 @@ static int get_folder_list_handle(void)
 	return -1;
 }
 
-// AMS 1 only
-int parse_vat_89(GNode *node_top)
+static int parse_vat_89(GNode *node_top)
 {
 	uint32_t fa, va, pa;
 	uint16_t fs, vs, ps;
@@ -243,7 +242,7 @@ typedef struct
 } TI92_SYM_ENTRY;
 
 // tested: OK.
-int parse_vat_92(GNode *node_top)
+static int parse_vat_92(GNode *node_top)
 {
 	uint32_t fa, va, pa;
 	uint16_t fs, vs, ps;
@@ -335,6 +334,143 @@ int vat_parse(GNode **tree)
 		parse_vat_89(*tree);
 
 	return 0;
+}
+
+
+static int sym_find_handle_89(const char *dirname, const char *filename)
+{
+	uint32_t fa, va;
+	uint16_t fs, vs;
+	int nfolders, nvars;
+	int i, j;
+	int handle = 0x08;
+
+	if(tihw.calc_type == TI92)
+		return -1;	
+
+	// handle: names and handles of all folders (including "main")
+	if(strcmp(img_infos.version, "2.00") >= 0)
+		handle = get_folder_list_handle();	// AMS2 (dynamic)
+	else
+		handle = 0x08;	// AMS1 (static)
+
+	if(handle == -1)
+		return 0;
+	else
+		heap_get_block_addr_and_size(handle, &fa, &fs);
+
+	// skip maximum number of folders before handle #$B needs to be resized
+	// and actual number of folders 
+	nfolders = mem_rd_word(fa+2);
+	fa += 4;
+	printg("# folder: %i\n", nfolders);
+
+	// now, we read a list of SYM_ENTRY structs (list of folders)
+	for(i=0; i<nfolders; i++)
+	{
+		TI89_SYM_ENTRY se;
+		
+		// read struct
+		memcpy(&se, ti68k_get_real_address(fa + i * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
+		se.handle = GUINT16_FROM_BE(se.handle);
+		printg("folder name: <%s>\n", se.name);
+
+		if (strncmp (se.name, dirname, 8)) continue;
+
+		// handle xxxx: names and handles of all variables
+		heap_get_block_addr_and_size(se.handle, &va, &vs);
+
+		// skip max num and actual num of vars
+		nvars = mem_rd_word(va+2);
+		va += 4;
+		printg("# vars: %i\n", nvars);
+
+		for(j=0; j<nvars; j++)
+		{
+			TI89_SYM_ENTRY se;
+
+			// read struct
+			memcpy(&se, ti68k_get_real_address(va + j * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
+			se.handle = GUINT16_FROM_BE(se.handle);
+			printg("var name: <%s>\n", se.name);
+
+			// add node
+			if (strncmp (se.name, filename, 8)) continue;
+
+			return se.handle;
+		}
+	}
+
+	return 0;
+}
+
+static int sym_find_handle_92(const char *dirname, const char *filename)
+{
+	uint32_t fa, va;
+	uint16_t fs, vs;
+	int nfolders, nvars;
+	int i, j;
+
+	if(tihw.calc_type != TI92)
+		return 0;
+
+	// handle 000B:	names and handles of all folders (including "main")
+	heap_get_block_addr_and_size(0xb, &fa, &fs);
+
+	// skip maximum number of folders before handle #$B needs to be resized
+	// and actual number of folders 
+	nfolders = mem_rd_word(fa+2);
+	fa += 4;
+	printg("# folder: %i\n", nfolders);
+
+	// now, we read a list of SYM_ENTRY structs (list of folders)
+	for(i=0; i<nfolders; i++)
+	{
+		TI92_SYM_ENTRY se;
+		
+		// read struct
+		memcpy(&se, ti68k_get_real_address(fa + i * sizeof(TI92_SYM_ENTRY)), sizeof(TI92_SYM_ENTRY));
+		se.handle = GUINT16_FROM_BE(se.handle);
+		printg("folder name: <%s>\n", se.name);
+
+		if (strncmp (se.name, dirname, 8)) continue;
+
+		// handle xxxx: names and handles of all variables
+		heap_get_block_addr_and_size(se.handle, &va, &vs);
+
+		// skip max num and actual num of vars
+		nvars = mem_rd_word(va+2);
+		va += 4;
+		printg("# vars: %i\n", nvars);	
+
+		for(j=0; j<nvars; j++)
+		{
+			TI92_SYM_ENTRY se;
+
+			// read struct
+			memcpy(&se, ti68k_get_real_address(va + j * sizeof(TI92_SYM_ENTRY)), sizeof(TI92_SYM_ENTRY));
+			se.handle = GUINT16_FROM_BE(se.handle);
+			printg("var name: <%s>\n", se.name);
+
+			// add node
+			if (strncmp (se.name, filename, 8)) continue;
+
+			return se.handle;
+		}
+	}
+
+	return 0;
+}
+
+/*
+	Allocate and create a tree
+*/
+int sym_find_handle(const char *dirname, const char *filename)
+{
+	if(tihw.calc_type == TI92)
+		return sym_find_handle_92(dirname, filename);
+	else
+		return sym_find_handle_89(dirname, filename);
 }
 
 static gboolean free_vse(GNode *node, gpointer data)

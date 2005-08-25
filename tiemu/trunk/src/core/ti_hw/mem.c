@@ -214,7 +214,7 @@ uint32_t hw_get_long(uint32_t adr)
   
     adr &= 0xFFFFFF;
 
-    if ((l = bkpts.mem_rl) != NULL && !(regs.spcflags & SPCFLAG_BRK))
+    if ((l = bkpts.mem_rl) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
     {
         bkpts.id = 0;
         while (l) 
@@ -232,7 +232,7 @@ uint32_t hw_get_long(uint32_t adr)
 	    }
     }
   
-    if ((l = bkpts.mem_rng_r) != NULL && !(regs.spcflags & SPCFLAG_BRK))
+    if ((l = bkpts.mem_rng_r) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
     {
         bkpts.id = 0;
         while (l) 
@@ -268,7 +268,7 @@ uint16_t hw_get_word(uint32_t adr)
 	
     adr &= 0xFFFFFF;
 
-    if ((l = bkpts.mem_rw) != NULL && !(regs.spcflags & SPCFLAG_BRK))
+    if ((l = bkpts.mem_rw) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
     {
         bkpts.id = 0;
         while (l) 
@@ -322,7 +322,7 @@ uint8_t hw_get_byte(uint32_t adr)
   
     adr &= 0xFFFFFF;
 
-    if ((l = bkpts.mem_rb) != NULL && !(regs.spcflags & SPCFLAG_BRK))
+    if ((l = bkpts.mem_rb) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
     {
         bkpts.id = 0;
         while (l) 
@@ -365,13 +365,19 @@ uint8_t hw_get_byte(uint32_t adr)
 	return get_byte_ptr(adr);
 }
 
+uint8_t hw_get_byte_noexcept(uint32_t adr) 
+{
+    adr &= 0xFFFFFF;
+	return get_byte_ptr(adr);
+}
+
 void hw_put_long(uint32_t adr, uint32_t arg) 
 {
     GList* l;
 
     adr &= 0xFFFFFF;
 
-    if ((l = bkpts.mem_wl) != NULL && !(regs.spcflags & SPCFLAG_BRK))
+    if ((l = bkpts.mem_wl) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
     {
         bkpts.id = 0;
         while (l) 
@@ -389,7 +395,7 @@ void hw_put_long(uint32_t adr, uint32_t arg)
 	    }
     }
   
-    if ((l = bkpts.mem_rng_w) != NULL && !(regs.spcflags & SPCFLAG_BRK))
+    if ((l = bkpts.mem_rng_w) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
     {
         bkpts.id = 0;
         while (l) 
@@ -430,7 +436,7 @@ void hw_put_word(uint32_t adr, uint16_t arg)
 	
     adr &= 0xFFFFFF;
 
-    if ((l = bkpts.mem_ww) != NULL && !(regs.spcflags & SPCFLAG_BRK))
+    if ((l = bkpts.mem_ww) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
     {
         bkpts.id = 0;
         while (l) 
@@ -489,7 +495,7 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 	
     adr &= 0xFFFFFF;
   
-    if ((l = bkpts.mem_wb) != NULL && !(regs.spcflags & SPCFLAG_BRK))
+    if ((l = bkpts.mem_wb) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
     {
         bkpts.id = 0;
         while (l) 
@@ -507,7 +513,7 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 	    }
     }
 
-    if ((l = bkpts.mem_rng_w) != NULL && !(regs.spcflags & SPCFLAG_BRK))
+    if ((l = bkpts.mem_rng_w) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
     {
         bkpts.id = 0;
         while (l) 
@@ -533,4 +539,10 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 		hw_m68k_irq(7);
 	else
 		put_byte_ptr(adr, arg);
+}
+
+void hw_put_byte_noexcept(uint32_t adr, uint8_t arg) 
+{
+    adr &= 0xFFFFFF;  
+    put_byte_ptr(adr, arg);
 }

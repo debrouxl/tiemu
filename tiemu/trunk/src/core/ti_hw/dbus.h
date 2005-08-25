@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: dbus.h 1530 2005-06-23 07:48:35Z roms $ */
 
 /*  TiEmu - an TI emulator
  *
@@ -39,6 +39,7 @@ uint8_t (*hw_dbus_getbyte)		(void);
 int     (*hw_dbus_checkread)	(void);
 
 int send_ti_file(const char *filename);
+
 int recfile(void);
 
 /* Variables */

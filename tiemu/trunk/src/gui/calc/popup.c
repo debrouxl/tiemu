@@ -96,6 +96,20 @@ on_recv_file_from_tiemu1_activate     (GtkMenuItem     *menuitem,
 
 
 GLADE_CB void
+on_debug_file_with_tiemu1_activate     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if(engine_is_stopped()) return;
+
+	engine_stop();
+#ifndef NO_GDB
+	display_debug_dbox();
+#endif
+	engine_start();
+}
+
+
+GLADE_CB void
 on_link_cable1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -480,6 +494,7 @@ on_exit_without_saving_state1_activate (GtkMenuItem     *menuitem,
 }
 
 typedef void (*VCB) (void);
+extern int reset_disabled;
 
 /*
   Display the GTK popup menu and configure some items
@@ -583,6 +598,12 @@ GtkWidget* display_popup_menu(void)
 
 		data = glade_xml_get_widget(xml, "set_rom1");
 		gtk_widget_set_sensitive(data, FALSE);
+
+		if (reset_disabled)
+		{
+			data = glade_xml_get_widget(xml, "reset_calc1");
+			gtk_widget_set_sensitive(data, FALSE);
+		}
 	}
 
 	return menu;

@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -239,8 +239,12 @@ int hw_m68k_run(int n, unsigned maxcycles)
 		// HW2/3 grayscales management
 		lcd_hook_hw2(0);
 
-		// receive data from TI to file
-		if(recfile_flag)
+#ifndef NO_GDB
+		if (trace)
+			sim_trace_one(m68k_getpc());
+#endif
+
+		if (recfile_flag)
 			recfile();
 
 		// process (pending) interrupts

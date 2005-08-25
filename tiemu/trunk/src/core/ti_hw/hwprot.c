@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: hwprot.c 1542 2005-06-25 14:27:52Z roms $ */
 
 /*  TiEmu - an TI emulator
  *

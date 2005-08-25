@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,14 +33,22 @@
 #endif
 
 #include <glib.h>
+#include <signal.h>
 
 #include "intl.h"
+#include "ti68k_def.h"
 #include "ti68k_int.h"
 #include "m68k.h"
 #include "engine.h"
 #include "dbg_all.h"
 #include "printl.h"
 #include "tsource.h"
+
+void sim_exception(int which);
+#ifndef SIGTRAP
+/* WARNING: This MUST match the definitions in GDB and sim. */
+#define SIGTRAP 5
+#endif
 
 /* 
    The TI92/89 should approximately execute NB_CYCLES_PER_LOOP_HW[12] in 
@@ -74,18 +82,17 @@ static gboolean engine_func(gint *data)
 	// a bkpt has been encountered ? If yes, stop engine
 	if(res)
 	{
-		gtk_debugger_enter(GPOINTER_TO_INT(res));
-		return FALSE;
+		if (!dbg_on)
+			gtk_debugger_enter(GPOINTER_TO_INT(res));
+#ifndef NO_GDB
+		sim_exception(bkpts.type ?
+		              ((bkpts.type == BK_CAUSE_EXCEPTION || bkpts.type == BK_CAUSE_PROTECT) ? SIGSEGV
+		                                                                                    : SIGTRAP)
+		              : SIGINT);
+#endif
 	}
 
 	return TRUE;
-}
-
-// function called when the function below is exited
-static void engine_notify(gint *data)
-{
-	// and reset source id
-	tid = 0;
 }
 
 // start emulation engine
@@ -93,19 +100,21 @@ void engine_start(void)
 {
 	if(params.restricted)
 		tid = g_timeout2_add_full(G_PRIORITY_DEFAULT_IDLE, TIME_LIMIT, 
-				(GSourceFunc)engine_func, NULL, 
-				(GDestroyNotify)engine_notify);
+				(GSourceFunc)engine_func, NULL, NULL);
 	else
 		tid = g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, 
-				(GSourceFunc)engine_func, NULL, 
-				(GDestroyNotify)engine_notify);
+				(GSourceFunc)engine_func, NULL, NULL);
 }
 
 // stop it
 void engine_stop(void) 
 {
 	if(tid)
+	{
 		g_source_remove(tid);
+		// and reset source id
+		tid = 0;
+	}
 }
 
 // state of engine

@@ -32,6 +32,13 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
+#include <setjmp.h>
+#include <locale.h>
+#ifdef __WIN32__
+#undef setjmp
+extern int asm_setjmp(jmp_buf b);
+#define setjmp asm_setjmp
+#endif
 
 #if WITH_KDE
 #include "kde.h"
@@ -60,9 +67,27 @@
 #include "dbg_all.h"
 #include "romversion.h"
 
+#ifndef NO_GDB
+#include "gdbcall.h"
+#include "../core/gdb/gdb/main.h"
+#include "../core/gdb/gdb/gdb_string.h"
+#ifndef PARAMS
+#define PARAMS(x) x
+#endif
+#define READLINE_LIBRARY
+#include "../core/gdb/readline/readline.h"
+void gdbtk_hide_insight(void);
+void gdbtk_delete_interp(void);
+
+static void start_insight_timer(void);
+static void stop_insight_timer(void);
+static gint gdbtk_hide_insight_and_run_wrapper(gpointer data);
+#endif
+
 ScrOptions options2;
 TieOptions options;		// general tiemu options
 TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
+jmp_buf quit_gdb;               // longjmp target used when quitting GDB
 
 /* Special */
 
@@ -87,7 +112,7 @@ int main(int argc, char **argv)
 	/*
 		Do primary initializations 
 	*/
-	version();
+	tiemu_version();
 	initialize_paths();
 	rcfile_default();   // (step 2)
 	rcfile_read();
@@ -183,6 +208,12 @@ int main(int argc, char **argv)
 	while(!exit_loop)
 	{
 
+		/* Windows follows the locale settings even for basic stdio I/O functions.
+		   This is an annoyance for floating-point numbers in GDB, so we override
+		   it here. Unfortunately, this disease seems to have spread to glibc as
+		   well recently. */
+		setlocale(LC_NUMERIC, "C");
+
 		err = ti68k_load_image(params.rom_file);
 		if(err) 
 		{
@@ -268,13 +299,35 @@ int main(int argc, char **argv)
 			Start emulation engine and run main loop 
 		*/		
 		splash_screen_stop();
+#ifdef NO_GDB
 		engine_start();
 		gtk_main();
 		engine_stop();
+#else
 
-		/* 
-			Close the emulator engine
+		/*
+			Run Insight GDB
 		*/
+		start_insight_timer();
+		if (setjmp(quit_gdb) == 0)
+		{
+			struct captured_main_args args;
+			memset (&args, 0, sizeof args);
+			args.argc = argc;
+			args.argv = argv;
+			args.use_windows = 1;
+			args.interpreter_p = "insight";
+			gtk_idle_add(gdbtk_hide_insight_and_run_wrapper, NULL);
+			gdb_main (&args);
+		}
+		stop_insight_timer();
+
+		/*
+			Clean up in case we interrupted GDB during command-line
+			parsing
+		*/
+		rl_callback_handler_remove();
+#endif
 
 		err = hid_exit();
 		handle_error();
@@ -285,8 +338,48 @@ int main(int argc, char **argv)
 		ti68k_unload_image_or_upgrade();
 	}
 
+#ifndef NO_GDB
+	gdbtk_delete_interp();
+#endif
+
 	return 0;
 }
+
+/*
+   These functions are used by Insight to enable/disable its UI hook.
+*/
+#ifndef NO_GDB
+int x_event(int);
+static guint gdbtk_timer_id = 0;
+
+static gint tiemu_x_event_wrapper(gpointer data)
+{
+  x_event(0);
+  return TRUE;
+}
+
+static void start_insight_timer(void)
+{
+  if (!gdbtk_timer_id)
+    gdbtk_timer_id = gtk_timeout_add(25, tiemu_x_event_wrapper, NULL); /* 25 ms */
+}
+
+static void stop_insight_timer(void)
+{
+  if (gdbtk_timer_id)
+    {
+      gtk_timeout_remove(gdbtk_timer_id);
+      gdbtk_timer_id = 0;
+    }
+}
+
+static gint gdbtk_hide_insight_and_run_wrapper(gpointer data)
+{
+  gdbtk_hide_insight();
+  gdbcall_run();
+  return FALSE;
+}
+#endif
 
 /* 
    If GtkTiEmu is compiled in console mode (_CONSOLE), 

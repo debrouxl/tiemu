@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: mem.h 1455 2005-05-31 18:38:03Z roms $ */
 
 /*  TiEmu - an TI emulator
  *
@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -58,10 +58,12 @@ int hw_mem_reset(void);
 int hw_mem_exit(void);
 
 // defs similar to UAE's memory.h (interface)
+extern uint8_t  hw_get_byte_noexcept(uint32_t addr);
 extern uint8_t  hw_get_byte(uint32_t addr);
 extern uint16_t hw_get_word(uint32_t addr);
 extern uint32_t hw_get_long(uint32_t addr);
 
+extern void hw_put_byte_noexcept(uint32_t addr, uint8_t  arg);
 extern void hw_put_byte(uint32_t addr, uint8_t  arg);
 extern void hw_put_word(uint32_t addr, uint16_t arg);
 extern void hw_put_long(uint32_t addr, uint32_t arg);

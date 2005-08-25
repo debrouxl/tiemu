@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: ti68k_int.h 1637 2005-08-05 17:34:58Z roms $ */
 
 /*  TiEmu - an TI emulator
  *
@@ -60,6 +60,9 @@ int ti68k_get_io2_size(int calc_type);
 int ti68k_get_io3_size(int calc_type);
 
 uint8_t* ti68k_get_real_address(uint32_t addr);
+
+// HW protection for the debugger
+void ti68k_unprotect_64KB_range(uint32_t addr);
 
 // Others
 #include "bkpts.h"

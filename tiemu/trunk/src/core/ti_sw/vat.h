@@ -44,6 +44,7 @@ typedef struct
 
 int vat_parse(GNode **tree);
 int vat_free(GNode **tree);
+int sym_find_handle(const char *dirname, const char *filename);
 
 
 #endif

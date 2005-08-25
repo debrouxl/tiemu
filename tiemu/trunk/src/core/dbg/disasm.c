@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,38 +24,37 @@
  *  Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/*
-    Disasm: wrapper for the UAE disassembler. Needed because UAE is somewhat lazzy for
-    some instructions and wrong for some others.
-*/
-
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
-#include <stdio.h>
-
-#include "libuae.h"
-#include "m68k.h"
-
 #include "ti68k_int.h"
-#include "ti68k_err.h"
 
-int Dasm68000 (unsigned char *pBase, char *buffer, int _pc);
+#ifndef NO_GDB
+#include "../gdb/include/dis-asm.h"
+struct ui_file;
+struct disassemble_info gdb_disassemble_info (struct gdbarch *gdbarch, struct ui_file *file);
+int print_insn_m68k (bfd_vma memaddr, disassemble_info *info);
 
+/* This is just a wrapper around the GDB disassembler, allowing to plug in the
+   VTI or UAE disassembler instead at any moment. */
 uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 {
-	uint8_t *mem;
-	char output[256];
+	static struct disassemble_info di;
+	static char *output = NULL;
 	uint32_t offset;
 	gchar **split;
 	gchar *p;
 
-	mem = (uint8_t *)ti68k_get_real_address(addr);
+	if (!output)
+	{
+		di = gdb_disassemble_info (NULL, NULL);
+		output = di.stream;
+	}
 
-	offset = Dasm68000(mem, output, addr);
+	*output = 0;
+	offset = print_insn_m68k(addr, &di);
 	split = g_strsplit(output, " ", 2);
-	//printf("<%06x: %s>\n", addr, output);
 
 	if(split[1])
 		for(p = split[1]; *p == ' '; p++);
@@ -67,4 +66,12 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 
 	return offset;
 }
+
+#else
+uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
+{
+	*line = g_strdup_printf("No GDB !");
+	return 0;
+}
+#endif
 

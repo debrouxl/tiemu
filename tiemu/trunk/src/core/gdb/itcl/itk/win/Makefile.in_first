@@ -1,0 +1,277 @@
+## This file is CYGNUS LOCAL.  It is a copy of makefile.vc modified for
+# GNU make.
+#  
+# Visual C++ 4.0 makefile
+#
+# Copyright (c) 1993-1996 Lucent Technologies
+# based on original from
+# Copyright (c) 1995-1996 by Sun Microsystems, Inc.	
+#
+# See the file "license.terms" for information on usage and redistribution
+# of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+VPATH = @srcdir@:@srcdir@/../generic:@srcdir@/../unix
+srcdir = @srcdir@
+
+CC = @CC@
+CFLAGS = @CFLAGS@
+NM = @NM@
+AS = @AS@
+LD = @LD@
+DLLTOOL = @DLLTOOL@
+WINDRES = @WINDRES@
+
+DLL_LDFLAGS = @DLL_LDFLAGS@
+DLL_LDLIBS  = @DLL_LDLIBS@
+
+
+INSTALL		=	@INSTALL@
+INSTALL_PROGRAM =	@INSTALL_PROGRAM@
+INSTALL_DATA	=	@INSTALL_DATA@
+
+ITCL_VERSION = @ITCL_VERSION@
+VERSION = $(ITCL_VERSION)
+
+ITKLIB		= libitk$(VERSION).a
+ITKDLL		= cygitk$(VERSION).dll
+ITKWISH		= cygitkwish$(VERSION).exe
+ITKTEST		= itktest.exe
+
+TCLLIBDIR	= @TCL_BIN_DIR@
+TCLLIB		= @TCL_LIB_FILE@
+TKLIBDIR	= @TK_BIN_DIR@
+TKLIB		= @TK_LIB_FILE@
+ITCLLIBDIR	= @ITCL_BIN_DIR@
+ITCLLIB		= @ITCL_LIB_FILE@
+
+# Project directories
+#
+# ROOT = top of source tree
+# TMPDIR = location where .obj files should be stored during build
+
+ROOT		= $(srcdir)/..
+TMPDIR		= .
+
+######################################################################
+# Link flags
+######################################################################
+
+conlflags = $(lflags) -Wl,--subsystem,console -mwindows
+guilflags = $(lflags) -mwindows
+dlllflags = $(lflags)
+
+baselibs   = -lkernel32 $(optlibs) -ladvapi32
+winlibs    = $(baselibs) -luser32 -lgdi32 -lcomdlg32 -lwinspool
+guilibs	   = $(libc) $(winlibs)
+
+guilibsdll = $(libcdll) $(winlibs)
+
+######################################################################
+# Compile flags
+######################################################################
+
+# Comment the following line to compile with symbols
+
+NODEBUG=1
+
+# uncomment the following two lines to compile with TCL_MEM_DEBUG
+#DEBUGDEFINES	=-DTCL_MEM_DEBUG
+
+
+WINDIR          = $(ROOT)/win
+GENERICDIR	= $(ROOT)/generic
+
+TCLSRCDIR     = @TCL_SRC_DIR@
+TKSRCDIR      = @TK_SRC_DIR@
+ITCLSRCDIR    = @ITCL_SRC_DIR@
+
+TCL_INCLUDES  = -I$(TCLSRCDIR)/generic -I$(TCLSRCDIR)/win
+TK_INCLUDES   = -I$(TKSRCDIR)/generic -I$(TKSRCDIR)/win -I$(TKSRCDIR)/xlib
+ITCL_INCLUDES = -I$(ITCLSRCDIR)/generic -I$(ITCLSRCDIR)/win
+ITK_INCLUDES	= -I$(GENERICDIR) -I$(WINDIR) $(ITCL_INCLUDES) \
+		$(TCL_INCLUDES) $(TK_INCLUDES) 
+
+ITK_DEFINES	= -D__WIN32__ $(DEBUGDEFINES) 
+ITK_CFLAGS		= $(ITK_INCLUDES) $(ITK_DEFINES) $(CFLAGS)
+
+ITKWISHOBJS = \
+	$(TKLIBDIR)/tkConsole.o \
+	$(TMPDIR)/winMain.o
+
+TKTESTOBJS = \
+	$(TMPDIR)/tkConsole.o \
+	$(TMPDIR)/tkTest.o \
+	$(TMPDIR)/tkSquare.o \
+	$(TMPDIR)/testMain.o
+
+ITKOBJS = \
+	$(TMPDIR)/itk_archetype.o \
+	$(TMPDIR)/itk_cmds.o \
+	$(TMPDIR)/itk_option.o \
+	$(TMPDIR)/itk_util.o \
+	$(TMPDIR)/dllEntryPoint.o
+
+ITKDLL	= itk$(VERSION).dll
+ITKLIB	= libitk$(VERSION).a
+ITKWISH = itkwish.exe
+ITKTEST = tktest.exe
+DUMPEXTS = # $(TCLLIBDIR)/dumpexts.exe
+
+CPU		   = i386
+
+#
+# Targets
+#
+
+all:    $(ITKDLL) $(ITKWISH)
+test:	$(ITKDLL) $(ITKTEST)
+
+install: install-binaries install-libraries
+ 
+install-binaries: $(ITKDLL) $(ITKLIB) $(ITKWISH)
+	@for i in $(LIB_INSTALL_DIR) $(BIN_INSTALL_DIR) ; \
+	    do \
+	    if [ ! -d $$i ] ; then \
+		echo "Making directory $$i"; \
+		mkdir $$i; \
+		chmod 755 $$i; \
+		else true; \
+		fi; \
+	    done;
+	@echo "Installing $(ITKLIB)"
+	@$(INSTALL_DATA) $(ITKLIB) $(LIB_INSTALL_DIR)/$(ITKLIB)
+	@chmod 555 $(LIB_INSTALL_DIR)/$(ITKLIB)
+	@echo "Installing wish"
+	@$(INSTALL_PROGRAM) $(ITKWISH) $(BIN_INSTALL_DIR)/$(ITKWISH)
+	@echo "Installing tkConfig.sh"
+	@$(INSTALL_DATA) ../unix/tkConfig.sh $(LIB_INSTALL_DIR)/tkConfig.sh
+
+install-libraries:
+	@echo "Installing DLL"
+	@$(INSTALL_DATA) $(ITKDLL) $(BIN_INSTALL_DIR)/$(ITKDLL)
+	@for i in $(INSTALL_ROOT)@datadir@ $(INCLUDE_INSTALL_DIR) \
+		$(SCRIPT_INSTALL_DIR) $(INSTALL_ROOT)@exec_prefix@ \
+		$(INSTALL_ROOT)@exec_prefix@/@host_alias@ \
+		$(INSTALL_ROOT)@exec_prefix@/@host_alias@/include \
+		$(X11_INCLUDE_INSTALL_DIR) ; \
+	    do \
+	    if [ ! -d $$i ] ; then \
+		echo "Making directory $$i"; \
+		mkdir $$i; \
+		chmod 755 $$i; \
+		else true; \
+		fi; \
+	    done;
+	@echo "Installing tk.h"
+	@$(INSTALL_DATA) $(GENERICDIR)/tk.h $(INCLUDE_INSTALL_DIR)/tk.h
+	for i in $(XLIBDIR)/X11/*.h; \
+	    do \
+	    echo "Installing $$i"; \
+	    $(INSTALL_DATA) $$i $(X11_INCLUDE_INSTALL_DIR); \
+	    done;
+	for i in $(ROOT)/library/*.tcl $(ROOT)/library/tclIndex $(ROOT)/library/prolog.ps $(ROOT)/unix/tkAppInit.c; \
+	    do \
+	    echo "Installing $$i"; \
+	    $(INSTALL_DATA) $$i $(SCRIPT_INSTALL_DIR); \
+	    done;
+
+install-minimal:
+	@echo "Installing DLL"
+	@$(INSTALL_DATA) $(ITKDLL) $(BIN_INSTALL_DIR)/$(ITKDLL)
+	@for i in $(INSTALL_ROOT)@datadir@ $(SCRIPT_INSTALL_DIR) ; \
+	    do \
+	    if [ ! -d $$i ] ; then \
+		echo "Making directory $$i"; \
+		mkdir $$i; \
+		chmod 755 $$i; \
+		else true; \
+		fi; \
+	    done;
+	for i in $(ROOT)/library/*.tcl $(ROOT)/library/tclIndex $(ROOT)/library/prolog.ps; \
+	    do \
+	    echo "Installing $$i"; \
+	    $(INSTALL_DATA) $$i $(SCRIPT_INSTALL_DIR); \
+	    done;
+
+$(TMPDIR)/itkcyg.def: $(DUMPEXTS) $(ITKOBJS)
+	echo 'EXPORTS' > tmp.def
+	-for o in $(ITKOBJS); do \
+	  $(NM) --extern-only --defined-only $$o | sed -e 's/[^ ]* [^ ]* //' -e 's/^_//' | fgrep -v DllEntryPoint | fgrep -v DllMain | fgrep -v impure_ptr >> tmp.def; \
+	done
+	mv tmp.def $(TMPDIR)/itkcyg.def
+
+$(ITKDLL): $(ITKOBJS) $(TMPDIR)/itkcyg.def
+	$(CC) -s $(DLL_LDFLAGS) -Wl,--base-file,itk.base  \
+		-o $(ITKDLL) $(ITKOBJS)  \
+		$(TKLIBDIR)/$(TKLIB) $(ITCLLIBDIR)/$(ITCLLIB) $(TCLLIBDIR)/$(TCLLIB) \
+		$(DLL_LDLIBS) -mwindows  -Wl,-e,_DllMain@12  \
+		-Wl,--image-base,0x66600000
+	$(DLLTOOL) --as=$(AS) --dllname $(ITKDLL) --def $(TMPDIR)/itkcyg.def \
+		--base-file itk.base --output-exp itk.exp
+	$(CC) -s $(DLL_LDFLAGS) -Wl,--base-file,itk.base -Wl,itk.exp \
+		-o $(ITKDLL) $(ITKOBJS)  \
+		$(TKLIBDIR)/$(TKLIB) $(ITCLLIBDIR)/$(ITCLLIB) $(TCLLIBDIR)/$(TCLLIB) \
+		$(DLL_LDLIBS) -mwindows -Wl,-e,_DllMain@12 \
+		-Wl,--image-base,0x66600000
+	$(DLLTOOL) --as=$(AS) --dllname $(ITKDLL) --def $(TMPDIR)/itkcyg.def \
+		--base-file itk.base --output-exp itk.exp
+	$(CC) $(DLL_LDFLAGS) -Wl,itk.exp -o $(ITKDLL) $(ITKOBJS) \
+		$(TKLIBDIR)/$(TKLIB) $(ITCLLIBDIR)/$(ITCLLIB) $(TCLLIBDIR)/$(TCLLIB) \
+		$(DLL_LDLIBS) -mwindows \
+		-Wl,-e,_DllMain@12 -Wl,--image-base,0x66600000
+
+$(ITKLIB): $(TMPDIR)/itkcyg.def
+	$(DLLTOOL) --as=$(AS) --dllname $(ITKDLL) --def $(TMPDIR)/itkcyg.def \
+		--output-lib $(ITKLIB)
+
+$(ITKWISH): $(ITKWISHOBJS) $(ITKLIB) $(TMPDIR)/itkwishres.o
+	$(CC) $(ldebug) $(guilflags) $(ITKWISHOBJS) $(ITK_CFLAGS) $(TMPDIR)/itkwishres.o \
+		$(ITKLIB) $(TKLIBDIR)/$(TKLIB) \
+		$(ITCLLIBDIR)/$(ITCLLIB) $(TCLLIBDIR)/$(TCLLIB) \
+		$(guilibsdll) \
+		-o $(ITKWISH)
+ 
+$(ITKTEST): $(ITKTESTOBJS) $(ITKLIB) $(TMPDIR)/itkwishres.o
+	$(CC) $(ldebug) $(guilflags) $(WISHOBJS) $(ITK_CFLAGS) $(TMPDIR)/itkwishres.o \
+		$(ITKLIB) $(TKLIBDIR)/$(TKLIB) \
+		$(ITCLLIBDIR)/$(ITCLLIB) $(TCLLIBDIR)/$(TCLLIB) \
+		$(guilibsdll) \
+		-o $(ITKTEST)
+ 
+#
+# Special case object file targets
+#
+
+$(TMPDIR)/testMain.o: $(ROOT)/win/winMain.c
+	$(CC) -c $(ITK_CFLAGS) -DTK_TEST -o $@ $?
+
+$(TMPDIR)/winMain.o: $(ROOT)/win/winMain.c
+	$(CC) -c $(ITK_CFLAGS) -DTK_TEST -o $@ $?
+
+#
+# Implicit rules
+#
+
+$(TMPDIR)/%.o: $(GENERICDIR)/%.c
+	$(CC) -c $(ITK_CFLAGS) -o $@ $<
+
+itkres.o: $(ROOT)/win/rc/itk.rc
+	$(WINDRES) --include $(ROOT)/win/rc --include $(ROOT)/generic \
+		--include $(ITCLSRCDIR)/generic \
+		--include $(TCLSRCDIR)/generic --include $(TKSRCDIR)/generic \
+		--define VS_VERSION_INFO=1 $(ROOT)/win/rc/itk.rc itkres.o
+
+itkwishres.o: $(ROOT)/win/rc/itkwish.rc
+	$(WINDRES) --include $(ROOT)/win/rc --include $(ITCLSRCDIR)/generic \
+		--include $(TCLSRCDIR)/generic --include $(TKSRCDIR)/generic\
+		--include $(ROOT)/generic --define VS_VERSION_INFO=1  \
+		$(ROOT)/win/rc/itkwish.rc itkwishres.o
+
+
+Makefile: $(WINDIR)/Makefile.in config.status
+	$(SHELL) config.status
+
+config.status: $(WINDIR)/configure
+	./config.status --recheck

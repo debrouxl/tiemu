@@ -355,14 +355,3 @@ GNode* iodefs_tree(void)
 {
 	return tree;
 }
-
-const char* iodefs_acc2str(IO_ACC mask)
-{
-	switch(mask)
-	{
-	case IO_RO: return "ro";
-	case IO_WO: return "wo";
-	case IO_RW: return "rw";
-	}
-	return "";
-}

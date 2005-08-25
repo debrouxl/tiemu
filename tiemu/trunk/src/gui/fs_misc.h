@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: fs_misc.h 1455 2005-05-31 18:38:03Z roms $ */
 
 /*  TiEmu - an TI emulator
  *
@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ gint display_load_state_dbox(void);
 gint display_save_state_dbox(void);
 gint display_recv_files_dbox();
 gint display_send_files_dbox();
+gint display_debug_dbox(void);
 gint display_set_rom_dbox(void);
 gint display_set_tib_dbox(void);
 gint display_import_romversion_dbox(void);

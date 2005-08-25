@@ -1,0 +1,24 @@
+This is the m68k simulator directory.
+
+It is still work-in-progress.  The code in this directory borrows
+heavily from the ../sim/sh directory and the Un*x Amiga Emulator, both
+GPL'ed pieces of software. The framework to interface the simulator
+comes from ../sim/sh and the core m68k emulator is from UAE.
+
+The UAE software can be obtained from:
+
+http://www.freiburg.linux.de/~uae/
+
+The integration has been done in such a manner to avoid making changes
+to the the machine-generated files and code that produces the
+machine-generated files. This allows future enhancements to the core
+m68k emulator to be easily shared between UAE and this simulator.
+
+The initial integration of the the m68k emulator was performed by
+William Cohen (wcohen@redhat.com) and DJ Delorie (dj@redhat.com).
+
+Will
+
+wcohen@redhat.com
+
+Tue Feb 27 11:56:35 EST 2001

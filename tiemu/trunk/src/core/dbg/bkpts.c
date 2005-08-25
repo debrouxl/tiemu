@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@
 #include "intl.h"
 #include "ti68k_int.h"
 #include "ti68k_err.h"
+#include "dbg_bkpts.h"
 #include "handles.h"
 
 /* Add */
@@ -590,4 +591,78 @@ void ti68k_bkpt_clear_all(void)
     ti68k_bkpt_clear_exception();
 
 	ti68k_bkpt_set_cause(0, 0, 0);	
+}
+
+ 
+enum target_hw_bp_type
+{
+  hw_write   = 0, /* Common (write) HW watchpoint */
+  hw_read    = 1, /* Read    HW watchpoint */
+  hw_access  = 2, /* Access (read or write) HW watchpoint */
+};
+
+/* Wrappers for GDB use */
+int ti68k_bkpt_add_watchpoint(uint32_t address, uint32_t len, int type)
+{
+  switch (type)
+  {
+    case hw_write:
+      ti68k_bkpt_add_range(address, address + len - 1, BK_WRITE);
+      dbgbkpts_refresh_window();
+      return 0;
+    case hw_read:
+      ti68k_bkpt_add_range(address, address + len - 1, BK_READ);
+      dbgbkpts_refresh_window();
+      return 0;
+    case hw_access:
+      ti68k_bkpt_add_range(address, address + len - 1, BK_READ | BK_WRITE);
+      dbgbkpts_refresh_window();
+      return 0;
+    default:
+      dbgbkpts_refresh_window();
+      return 1;
+  }
+}
+
+int ti68k_bkpt_del_watchpoint(uint32_t address, uint32_t len, int type)
+{
+  switch (type)
+  {
+    case hw_write:
+      ti68k_bkpt_del_range(address, address + len - 1, BK_WRITE);
+      dbgbkpts_refresh_window();
+      return 0;
+    case hw_read:
+      ti68k_bkpt_del_range(address, address + len - 1, BK_READ);
+      dbgbkpts_refresh_window();
+      return 0;
+    case hw_access:
+      ti68k_bkpt_del_range(address, address + len - 1, BK_READ | BK_WRITE);
+      dbgbkpts_refresh_window();
+      return 0;
+    default:
+      return 1;
+  }
+}
+
+int ti68k_bkpt_stopped_by_watchpoint(void)
+{
+  return (bkpts.type == BK_TYPE_ACCESS) || (bkpts.type == BK_TYPE_RANGE);
+}
+
+int ti68k_bkpt_stopped_data_address(uint32_t *address)
+{
+  uint32_t max;
+
+  switch(bkpts.type)
+  {
+    case BK_TYPE_ACCESS:
+      ti68k_bkpt_get_access(bkpts.id, address, bkpts.mode);
+      return 1;
+    case BK_TYPE_RANGE:
+      ti68k_bkpt_get_range(bkpts.id, address, &max, bkpts.mode);
+      return 1;
+    default:
+      return 0;
+  }
 }

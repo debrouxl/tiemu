@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: ti68k_def.h 1607 2005-08-01 14:23:52Z roms $ */
 
 /*  TiEmu - an TI emulator
  *

@@ -1,0 +1,242 @@
+2005-06-27  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * infrun.c (normal_stop): Relocate BSS section if it exists and we are at __main.
+
+2005-06-26  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * coffread.c (coff_symtab_read): Copy the section symbol name before assigning it to
+                                         the section name.
+        * exec.c (exec_objfile): New variable.
+          (exec_build_section_table): New function. Build section table from the most recently
+                                      loaded symbol file.
+          (set_section_command): Also relocate the symbol file (objfile).
+        * symfile.c (last_symfile_bfd, last_symfile_objfile): New variables.
+          (symbol_file_add_with_addrs_or_offsets): Set them.
+        * symfile.h (last_symfile_bfd, last_symfile_objfile): Declare them.
+
+2005-06-02  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * ../gettext.m4, configure, ../intl/aclocal.m4, ../intl/configure, ../bfd/configure,
+          ../opcodes/configure: Fix libintl detection.
+
+2005-06-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * symfile.c (add_symbol_file_command): Allow quoted filenames (allows spaces).
+
+2005-05-20  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * ../configure.in, ../configure: Don't disable Tk stuff for OS X.
+
+2005-05-20  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * doublest.c (isinfl, isnanl): Define to isinf, isnan under both MinGW and OS X.
+
+2005-05-15  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * main.c (captured_main): Reset quit_flag even if already initialized.
+            Don't leave some local variables unitialized for restarts.
+
+2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * main.c (captured_main): Skip more initializations if already initialized.
+        * ../readline/posixjmp.h: Use asm_setjmp and asm_longjmp on Win32.
+
+2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * top.c (quit_force): Call symbol_file_clear(0), delete_command(NULL,0) and
+                              gdbtk_clear_file().
+
+2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * configure.in, configure: Use host XM header even when not native, if the host
+                                   makefile fragment exists.
+
+2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * symtab.c (search_symbols): Add support for files built using #line directives.
+
+2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * symfile.c (symbol_file_add_with_addrs_or_offsets): Always call
+            deprecated_post_add_symbol_hook.
+
+2005-05-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * main.c (captured_main): Set gdbtk_started to 0 and gdbtk_disable_fputs to 1.
+
+2005-05-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * top.c (asm_setjmp, asm_longjmp): Make non-static.
+          (quit_force): Use asm_longjmp on Win32.
+
+2005-05-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * main.c (captured_main): Don't run "target sim" and "run" automatically.
+
+2005-05-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * top.c (asm_setjmp, asm_longjmp): New functions (Win32/x86 assembly) from MzScheme.
+          (SIGSETJMP, SIGLONGJMP): Define to asm_setjmp, asm_longjmp on Win32.
+
+2005-05-08  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * Makefile.in: Don't build standalone insight executable.
+        * configure.in, configure: Add wsock32 to WIN32LIBS based on host, not target.
+
+2005-05-08  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * configure.in, configure: Build "win" in libgui on MinGW, not "unix".
+            Add Win32 libs for gdbtk under MinGW as well.
+            Remove -fwritable-strings from CFLAGS.
+        * Makefile.in: Save LDFLAGS so TiEmu can use them.
+
+2005-04-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * printcmd.c: Include romcalls.h.
+          (print_address_1): Handle ROM_CALLs. Only print symbolic address if addr>=0x8000.
+
+2005-04-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * disasm.c (gdb_disassemble_info): Increase buffer size from 256 to 65536.
+
+2005-04-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * disasm.c (sprintf_disasm, strcat_disasm, dis_asm_sprint_address): New static functions.
+          (gdb_disassemble_info): Make non-static and allow file==NULL (to use a buffer instead) and gdbarch==NULL.
+        * printcmd.c (print_address_symbolic, print_address): Rename to print_address_symbolic_1 and print_address_1
+            respectively, add fputs_filtered and fprintf_filtered parameters and provide interface-compatible
+            wrappers with the original names.
+          (print_address_numeric_1): New static function.
+
+2005-04-24  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * ../bfd/linker.c (_bfd_generic_link_add_one_symbol): Allow multiple definitions.
+
+2005-04-20  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * symtab.c (find_pc_sect_line): If we didn't find a suitable symtab, search all symtabs.
+
+2005-04-17  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * signals/signals.c: Define SIMTRAP if not defined.
+
+2005-04-17  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * valprint.c (print_floating): Always print <=16 digits of the mantissa.
+
+2005-04-17  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * doublest.c (convert_smapbcd_to_doublest): Use arbitrary precision to do the conversion to 1 ulp.
+
+2005-04-15  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * m68k-tdep.c (m68k_local_breakpoint_from_pc): Return NULL.
+        * config/m68k/tm-monitor.h (target_remove_breakpoint): Define to target_remove_hw_breakpoint.
+          (target_insert_breakpoint): Define to target_insert_hw_breakpoint.
+        * target.h (target_insert_breakpoint, target_remove_breakpoint): Only define #ifndef target_insert_breakpoint.
+        * regcache.c (write_pc_pid): Update the prefetch (call fill_prefetch_0) after changing the PC.
+
+2005-04-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * ../readline/rldefs.h (WAIT_FOR_INPUT): Decrease from 200 to 30.
+        * ../readline/input.c (rl_getc (__MINGW32__)): Call gtk_main_iteration if gtk_events_pending.
+
+2005-04-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * doublest.c (isinfl): Define to isinf under MinGW if not defined.
+
+2005-04-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * remote-fileio.c: Include winsock.h under MinGW to get struct timeval declaration.
+        * mi/mi-main.c: Likewise.
+        * remote-sim.c: Define SIMTRAP if not defined.
+
+2005-04-09  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * m68k-tdep.c (m68k_return_value): Use m68k_svr_extract_return_value and m68k_svr_store_return_value.
+          (m68k_extract_return_value, m68k_store_return_value): Handle 10-byte values.
+          (m68k_svr_extract_return_value, m68k_svr_store_return_value): Don't special-case floats.
+          (m68k_push_dummy_call): Only align stack to 16 bits. Handle register parameters.
+        * gdbtypes.h (struct field): Add regnum member.
+          (FIELD_REGNUM, TYPE_FIELD_REGNUM): Add accessors.
+        * ../include/elf/dwarf2.h (enum dwarf_attribute): Add DW_AT_regparm_location.
+        * dwarf2read.c (dwarf_attr_name): Likewise.
+          (read_subroutine_type): Detect and remember register parameters.
+
+2005-04-05  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * coffread.c (coff_symtab_read): Fix handling of ".text". Don't import ld-tigcc section symbols and segment
+                                         delimiters.
+
+2005-04-03  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * coffread.c (coff_symtab_read): Fudge long section names the same way TIGCC does it.
+        * ../bfd/bfd.c (bfd_get_sign_extend_vma): Return 0 (as for m68k-elf) by default instead of erroring.
+
+2005-04-03  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        BCD floating point support:
+        * ../libiberty/floatformats.c (floatformat_smapbcd_big): New floatformat structure.
+          (floatformat_smapbcd_is_valid): New static function.
+          (floatformat_to_double, floatformat_from_double): Abort for floatformat_smapbcd_big.
+        * ../libiberty/floatformats.h (floatformat_smapbcd_big): Declare extern.
+        * config/m68k/tm-monitor.h (TARGET_FLOAT_FORMAT, TARGET_DOUBLE_FORMAT, TARGET_LONG_DOUBLE_FORMAT): Define.
+        * doublest.c (floatformat_is_nan): Special-case floatformat_smapbcd_big.
+          (floatformat_to_doublest): Use convert_smapbcd_to_doublest for floatformat_smapbcd_big.
+          (floatformat_from_doublest): Use convert_doublest_to_smapbcd for floatformat_smapbcd_big.
+          (convert_smapbcd_to_doublest, convert_doublest_to_smapbcd): New static functions.
+          (struct real_value, smap_bcd_float, POSITIVE_ZERO, POSITIVE_INF, TIGCC_NAN, REAL_VALUE_TYPE, bcdpadd1ulp,
+           real_value_negate, struct arbprec_decimal, arbprec_pack, arbprec_add, arbprec_to_bcd, real_value_htof):
+            Import from TIGCC and adapt.
+
+2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        Support for TiEmu breakpoints and watchpoints:
+        * config/m68k/tm-monitor.h (TARGET_HAS_HARDWARE_WATCHPOINTS, TARGET_CAN_USE_HARDWARE_WATCHPOINT,
+           TARGET_REGION_OK_FOR_HW_WATCHPOINT, TARGET_REGION_SIZE_OK_FOR_HW_WATCHPOINT,
+           target_remove_hw_breakpoint, target_insert_hw_breakpoint, target_remove_watchpoint,
+           target_insert_watchpoint, HAVE_CONTINUABLE_WATCHPOINT, STOPPED_BY_WATCHPOINT): New macros.
+          (target_stopped_data_address): New inline function.
+
+2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * infrun.c (handle_inferior_event): Skip out of supervisor mode.
+        * infcmd.c (step_1): Refresh GTK interface in the loop.
+
+2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * symtab.c (find_pc_sect_psymtab, find_pc_sect_symtab): Always assume the object file has been reordered.
+        * dbxread.c (find_relocation_offset): Default to text section offset rather than 0.
+          (read_dbx_symtab): Pass objfile parameter to find_relocation_offset.
+
+2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        Merge MinGW GDB 6.3-1 patches.
+
+2005-04-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * objfiles.c (SECT_OFF_DATA, SECT_OFF_RODATA): Don't error if the section is missing.
+        * dbxread.c (find_relocation_offset, find_relocation_offset_ex): New static functions.
+          (read_dbx_symtab, process_one_symbol): Use them, respectively.
+
+2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * event-loop.c (gdb_do_one_event): Call gtk_main_iteration if gtk_events_pending.
+          (poll_timers): Ignore timers, always use 30 ms timeout.
+        * top.c (execute_command): Call gdbcallback_refresh_debugger when done with the command.
+        * remote-sim.c (gdbsim_create_inferior): Ignore "No executable file specified." and "No program loaded."
+                                                 warnings.
+          (gdbsim_xfer_inferior_memory): Ignore "No program loaded." error.
+
+2005-03-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * main.c (captured_main): Run "target sim" and "run" automatically.
+                                  Only run initializations once, even if we are called multiple times.
+        * infrun.c (print_stop_reason): Run "quit" automatically when exiting inferior.
+        * cli-cmds.c (quit_command): Don't call quit_confirm.
+        * top.c (quit_force): Reset current interpreter and "more" filter and jump back to TiEmu instead of exiting.
+        * interps.c (current_interpreter): Don't declare static.
+
+2005-03-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * Makefile.in: Don't build standalone executable.

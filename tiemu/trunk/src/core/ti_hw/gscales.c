@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: gscales.c 1626 2005-08-04 10:16:28Z kevinkofler $ */
 
 /*  TiEmu - an TI emulator
  *

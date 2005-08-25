@@ -1,0 +1,81 @@
+2005-07-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk-cmds.c (gdb_update_mem): Avoid link port access when browsing memory.
+
+2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk.c (gdbtk_source_start_file): Call gdbtk_reinit instead of main.tcl when
+                                             restarting.
+
+2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk.c (gdbtk_cleanup): Don't call TCL_Finalize here.
+          (gdbtk_delete_interp): Call it here.
+
+2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk-hooks.c (gdbtk_clear_file): New function (TCL function wrapper).
+
+2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk-stack.c (gdb_stack): Don't backtrace beyond 100 levels.
+
+2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk-cmds.c (gdb_disassemble_driver): Use find_pc_line to find symtab for MIXED mode.
+
+2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk-cmds.c (gdb_listfuncs): Add support for files built using #line directives.
+
+2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk-cmds.c (tiemu_debug_break): New function (wrapper around ti68k_debug_break).
+          (Gdbtk_Init): Register tiemu_debug_break TCL command.
+        * gdbtk-hooks.c (gdbtk_update): New function (TCL function wrapper).
+
+2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk.c (cleanup_init): Don't delete gdbtk_interp. Code moved to...
+          (gdbtk_delete_interp): ... here. New function.
+
+2005-05-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk-interp.c (gdbtk_started): Move out of gdbtk_interpreter_resume, rename
+                                          from "started".
+          (gdbtk_interpreter_resume): Use gdbtk_started instead of started.
+
+2005-05-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk-cmds.c (Gdbtk_Init): Register tiemu_close_debugger TCL command for
+                                     gdbcallback_close_debugger.
+        * gdbtk-hooks.c (gdbtk_hide_insight, gdbtk_show_insight): New functions (TCL
+                                                                  function wrappers).
+
+2005-05-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk.c (gdbtk_start_timer, gdbtk_stop_timer): Enable as empty functions again.
+        * gdbtk-hooks.c (x_event): Refresh even if not running.
+
+2005-05-10  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk.c (gdbtk_init): Always assume Insight is installed.
+
+2005-05-09  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk.c (gdbtk_start_timer, gdbtk_stop_timer): Disable completely.
+        * gdbtk-interp.c (gdbtk_command_loop): Call gtk_main instead of Tk_MainLoop.
+
+2005-05-08  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk.c: Don't include sys/ioctl.h on Win32.
+          (nullsigmask, act1, act2, it_on, it_off, target_should_use_timer): Disable.
+          (gdbtk_start_timer, gdbtk_stop_timer): Disable contents. (Never use timer.)
+        * gdbtk-cmds.c, gdbtk-hooks.c: Don't include sys/ioctl.h on Win32.
+        * gdbtk-interp.c: Include windows.h on Win32.
+
+2005-05-08  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk.c (gdbtk_init): Create Win32 commands under non-Cygwin as well.
+            Call FreeConsole on non-Cygwin Win32 as well.
+          (_initialize_gdbtk): Call AllocConsole on non-Cygwin Win32 as well.

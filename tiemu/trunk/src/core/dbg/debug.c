@@ -43,6 +43,12 @@
 #include "ti68k_def.h"
 #include "ti68k_err.h"
 
+/* Flushes GDB's register cache */
+extern void registers_changed(void);
+/* Flushes GDB's frame cache */
+extern void reinit_frame_cache(void);
+/* Refreshes Insight */
+extern void gdbtk_update(void);
 
 int ti68k_debug_get_pc(void)
 {
@@ -104,7 +110,7 @@ static inline int is_bsr_inst(uint16_t ci)
 	return t1 || t2 || t3 || t4 || t5;
 }
 
-int ti68k_debug_step_over(void)
+int ti68k_step_over_noflush(void)
 {
     uint32_t curr_pc, next_pc;
 	gchar *output;
@@ -149,6 +155,17 @@ int ti68k_debug_step_over(void)
     return 0;
 }
 
+int ti68k_debug_step_over(void)
+{
+	int result = ti68k_step_over_noflush();
+#ifndef NO_GDB
+    registers_changed();
+	reinit_frame_cache();
+	gdbtk_update();
+#endif
+    return result;
+}
+
 int ti68k_debug_step_out(void)
 {
 	uint32_t curr_pc, next_pc;
@@ -170,6 +187,11 @@ int ti68k_debug_step_out(void)
 		if(is_ret_inst((uint16_t)curriword()))
 		{
 			hw_m68k_run(1, 0);
+#ifndef NO_GDB
+			registers_changed();
+			reinit_frame_cache();
+			gdbtk_update();
+#endif
 			return 0;
 		}	
 	}
@@ -206,7 +228,13 @@ int ti68k_debug_skip(uint32_t next_pc)
 
 int ti68k_debug_do_instructions(int n)
 {
-    return hw_m68k_run(n, 0);
+	int result = hw_m68k_run(n, 0);
+#ifndef NO_GDB
+    registers_changed();
+	reinit_frame_cache();
+	gdbtk_update();
+#endif
+    return result;
 }
 
 // Used to read/modify/write memory directly from debugger

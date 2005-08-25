@@ -41,7 +41,7 @@
 #include "printl.h"
 #include "rtc_hw3.h"
 
-#define SAV_REVISION	11
+#define SAV_REVISION	19
 
 static int load_bkpt(FILE *f, GList **l)
 {

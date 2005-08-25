@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: ports.h 1575 2005-07-14 00:58:22Z kevinkofler $ */
 
 /*  TiEmu - an TI emulator
  *

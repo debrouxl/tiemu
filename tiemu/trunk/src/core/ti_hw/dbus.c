@@ -265,7 +265,7 @@ int t2f_flag;   // data available
 int f2t_data;   // file => ti data
 int f2t_flag;   // data available
 
-int recfile_flag;	// receive file at end of instruction
+int recfile_flag; // receive file at end of instruction
 
 void df_reinit(void)
 {

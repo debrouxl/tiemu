@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: cpu_prefetch.h 1516 2005-06-20 21:17:19Z kevinkofler $ */
+/* $Id$ */
 
 STATIC_INLINE uae_u32 get_word_prefetch (int o)
 {

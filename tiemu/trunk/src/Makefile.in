@@ -14,10 +14,10 @@ kde       = @kde@
 DESTDIR   =
 
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
-	RESFILE = tiemu-rc.o 
+	RESFILE = tiemu-rc.o
 	LDFLAGS += -lcomdlg32
 else
-	RESFILE = 
+	RESFILE =
 endif
 
 ifneq (,$(findstring __LINUX__,$(CFLAGS)))
@@ -65,7 +65,7 @@ core_uae_OBJ = \
 	core/uae/cpuemu7.o core/uae/cpuemu8.o \
 	core/uae/cpudefs.o core/uae/cpustbl.o \
 	core/uae/readcpu.o core/uae/fpp.o \
-	core/uae/missing.o core/uae/xmalloc.o
+	core/uae/missing.o
 
 core_tihw_OBJ = \
 	core/ti_hw/dbus.o	\
@@ -106,7 +106,7 @@ core_dbg_OBJ = \
 	core/dbg/debug.o	\
 	core/dbg/disasm.o	\
 	core/dbg/fpudasm.o	\
-	core/dbg/m68kdasm.o
+	core/dbg/gdbcall.o
 
 misc_OBJ = \
 	misc/cmdline.o 	\
@@ -163,30 +163,49 @@ gui_OBJ = \
 	gui/tsource.o 							\
 	gui/wizard.o
 
+core_gdb_DEP = \
+	core/gdb/gdb/libgdb.ldflags \
+	core/gdb/sim/m68k/libsim.a \
+	core/gdb/bfd/libbfd.a \
+	core/gdb/readline/libreadline.a \
+	core/gdb/opcodes/libopcodes.a  \
+	core/gdb/libiberty/libiberty.a
+
 tiemu_OBJ = core/uae/newcpu.o \
 	$(core_uae_OBJ) $(core_OBJ) $(core_tihw_OBJ) $(core_tisw_OBJ) \
 	$(core_dbg_OBJ) \
 	$(misc_OBJ) \
-	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(kde_OBJ)
+	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(kde_OBJ) \
+	core/gdb/gdb/libgdb.a
 
 #rules:
-all: uae tiemu
+all: uae gdb tiemu
 
 uae:
 	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" gen
 	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" all
 
+gdb:
+	cd core/gdb && $(MAKE)
+
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
-tiemu: $(tiemu_OBJ) $(RESFILE)
+tiemu: $(tiemu_OBJ) $(core_gdb_DEP) $(RESFILE)
 else
-tiemu: $(tiemu_OBJ)
+tiemu: $(tiemu_OBJ) $(core_gdb_DEP)
+endif
+# Force static linking for TCL-related stuff on OS X.
+ifneq (,$(findstring __MACOSX__,$(CFLAGS)))
+	sed <core/gdb/gdb/libgdb.ldflags >core/gdb/gdb/libgdb.ldflags.tmp -e 's,-L\([^ ]*\) -l\(tcl[0-9.]*\),\1/lib\2.a,g' -e 's,-L\([^ ]*\) -l\(tk[0-9.]*\),\1/lib\2.a,g' -e 's,-L\([^ ]*\) -l\(itcl[0-9.]*\),\1/lib\2.a,g' -e 's,-L\([^ ]*\) -l\(itk[0-9.]*\),\1/lib\2.a,g'
+	mv -f core/gdb/gdb/libgdb.ldflags.tmp core/gdb/gdb/libgdb.ldflags
 endif
 ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
 	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
+    `sed <core/gdb/gdb/libgdb.ldflags 's,^\.\./,core/gdb/,;s, \.\./, core/gdb/,g;s, \./\.\./, core/gdb/,g'` \
 	$(LDFLAGS) $(CFLAGS) $(kdelibraries) \
 	-Wl,--rpath,"$(prefix)/lib"
 else
 	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(RESFILE) \
+    `sed <core/gdb/gdb/libgdb.ldflags 's,^\.\./,core/gdb/,;s, \.\./, core/gdb/,g;s, \./\.\./, core/gdb/,g'` \
 	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
 endif
 
@@ -205,10 +224,12 @@ tiemu-rc.o: ../build/mingw/tiemu.rc
 
 clean:
 	@cd core/uae && $(MAKE) clean
+	@cd core/gdb && $(MAKE) clean
 	@rm -f $(tiemu_OBJ) tiemu tiemu.exe tiemu-rc.o $(kdeprivsources)
 
 distclean: clean
 	@cd core/uae && $(MAKE) distclean
+	@cd core/gdb && $(MAKE) distclean
 	@rm -Rf .libs
 
 dos2unix:
@@ -222,6 +243,18 @@ distdir: clean
 install: tiemu
 	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
 	$(INSTALL) -m755 tiemu $(DESTDIR)${prefix}/bin/
+	cd core/gdb/tcl && $(MAKE) install INSTALL_ROOT="$(DESTDIR)"
+	cd core/gdb/tk && $(MAKE) install INSTALL_ROOT="$(DESTDIR)"
+	cd core/gdb/itcl && $(MAKE) install DESTDIR="$(DESTDIR)"
+	cd core/gdb/libgui && $(MAKE) install DESTDIR="$(DESTDIR)"
+	cd core/gdb/gdb && $(MAKE) install-gdbtk DESTDIR="$(DESTDIR)"
+
+install-without-tcl-tk: tiemu
+	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
+	$(INSTALL) -m755 tiemu $(DESTDIR)${prefix}/bin/
+	cd core/gdb/itcl && $(MAKE) install DESTDIR="$(DESTDIR)"
+	cd core/gdb/libgui && $(MAKE) install DESTDIR="$(DESTDIR)"
+	cd core/gdb/gdb && $(MAKE) install-gdbtk DESTDIR="$(DESTDIR)"
 
 uninstall:
 	rm -f ${prefix}/bin/tiemu

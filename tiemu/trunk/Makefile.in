@@ -265,6 +265,7 @@ qt_includes = @qt_includes@
 qt_libraries = @qt_libraries@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
+subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 x_includes = @x_includes@
@@ -724,6 +725,12 @@ uninstall-info: uninstall-info-recursive
 	uninstall uninstall-am uninstall-dist_pkgdataDATA \
 	uninstall-info-am uninstall-info-recursive uninstall-recursive
 
+
+# custom targets
+install-without-tcl-tk:
+@USE_GROFF_TRUE@	$(MAKE) install SUBDIRS="build glade help pedrom pixmaps skins man" DESTDIR="$(DESTDIR)"
+@USE_GROFF_FALSE@	$(MAKE) install SUBDIRS="build glade help pedrom pixmaps skins" DESTDIR="$(DESTDIR)"
+	cd src && $(MAKE) install-without-tcl-tk DESTDIR="$(DESTDIR)"
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

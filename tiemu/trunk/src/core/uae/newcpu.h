@@ -10,7 +10,7 @@
 #include "readcpu.h"
 #include "machdep/maccess.h"
 
-#define CYGNUS_SIM 0
+#define CYGNUS_SIM 1
 
 #define SPCFLAG_DBTRACE 1
 #define SPCFLAG_DBSKIP 2

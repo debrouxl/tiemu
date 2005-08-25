@@ -40,6 +40,9 @@
 #include "struct.h"
 #include "dbg_all.h"
 #include "dbg_romcall.h"
+#include "engine.h"
+
+gint reset_disabled = FALSE;
 
 //#define FIXED_SIZE
 
@@ -309,10 +312,11 @@ typedef struct {
     GtkWidget *m4;
     GtkWidget *m5;
 	GtkWidget *m6;
+	GtkWidget *m8;
 } MI;
 static MI mi;
 
-static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6, int s7)
+static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6, int s7, int s8)
 {
 	gtk_widget_set_sensitive(tb.b1, s1);
 	gtk_widget_set_sensitive(tb.b2, s2);
@@ -328,6 +332,7 @@ static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6, int s7
 	gtk_widget_set_sensitive(mi.m4, s4);
 	gtk_widget_set_sensitive(mi.m5, s5);
 	gtk_widget_set_sensitive(mi.m6, s6);
+	gtk_widget_set_sensitive(mi.m8, s8);
 }
 
 /*
@@ -369,7 +374,8 @@ GtkWidget* dbgcode_create_window(void)
     mi.m3 = glade_xml_get_widget(xml, "step_over1");
 	mi.m4 = glade_xml_get_widget(xml, "step_out1");
     mi.m5 = glade_xml_get_widget(xml, "run_to_cursor1");
-    mi.m6 = glade_xml_get_widget(xml, "break1");	
+    mi.m6 = glade_xml_get_widget(xml, "break1");
+    mi.m8 = glade_xml_get_widget(xml, "quit1");
 
 	list = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(list);
@@ -399,7 +405,8 @@ GtkWidget* dbgcode_display_window(void)
 #endif
 
 	gtk_widget_set_sensitive(list, TRUE);	
-	tb_set_states(1, 1, 1, 1, 1, 0, 1);
+	tb_set_states(1, 1, 1, 1, 1, 0, 1, 1);
+	reset_disabled = FALSE;
     set_other_windows_sensitivity(TRUE);
      
     gtk_list_store_clear(store);
@@ -446,7 +453,8 @@ on_run1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 #if 0
-	tb_set_states(0, 0, 0, 0, 0, 1, 0);
+	tb_set_states(0, 0, 0, 0, 0, 1, 0, 0);
+	reset_disabled = TRUE;
     gtk_widget_set_sensitive(list, FALSE);
     set_other_windows_sensitivity(FALSE);
 
@@ -481,9 +489,11 @@ GLADE_CB void
 on_step_over1_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	tb_set_states(0, 0, 0, 0, 0, 1, 0);
+	tb_set_states(0, 0, 0, 0, 0, 1, 0, 0);
+	reset_disabled = TRUE;
     ti68k_debug_step_over();
-	tb_set_states(1, 1, 1, 1, 1, 0, 1);
+	tb_set_states(1, 1, 1, 1, 1, 0, 1, 1);
+	reset_disabled = FALSE;
 
 	clist_refresh(store, TRUE);
     dbgregs_refresh_window();
@@ -534,13 +544,15 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
     sscanf(str, "%x", &addr);
 
-	tb_set_states(0, 0, 0, 0, 0, 1, 0);
+	tb_set_states(0, 0, 0, 0, 0, 1, 0, 0);
+	reset_disabled = TRUE;
     set_other_windows_sensitivity(FALSE);
 
     ti68k_debug_skip(addr);
     gtk_tree_selection_unselect_iter(selection, &iter);
 
-	tb_set_states(1, 1, 1, 1, 1, 0, 1);
+	tb_set_states(1, 1, 1, 1, 1, 0, 1, 1);
+	reset_disabled = FALSE;
     set_other_windows_sensitivity(TRUE);
     
 	clist_refresh(store, FALSE);
@@ -564,7 +576,8 @@ on_break1_activate                     (GtkMenuItem     *menuitem,
 
     ti68k_engine_stop();
     gtk_widget_set_sensitive(list, TRUE);
-	tb_set_states(1, 1, 1, 1, 1, 0, 1);
+	tb_set_states(1, 1, 1, 1, 1, 0, 1, 1);
+	reset_disabled = FALSE;
     set_other_windows_sensitivity(TRUE);
     clist_refresh(store);
 #else
@@ -1024,3 +1037,58 @@ on_treeview1_size_allocate             (GtkWidget       *widget,
 	old = NLINES;
 #endif
 }
+
+void gdbcallback_disable_debugger(void)
+{
+	if (dbg_on)
+	{
+		tb_set_states(0, 0, 0, 0, 0, 1, 0, 0);
+		gtk_widget_set_sensitive(list, FALSE);
+		set_other_windows_sensitivity(FALSE);
+		reset_disabled = TRUE;
+	}
+}
+
+void gdbcallback_enable_debugger(void)
+{
+	if (dbg_on)
+	{
+		gtk_widget_set_sensitive(list, TRUE);
+		tb_set_states(1, 1, 1, 1, 1, 0, 1, 1);
+		set_other_windows_sensitivity(TRUE);
+		reset_disabled = FALSE;
+	}
+}
+
+void gdbcallback_refresh_debugger(void)
+{
+	if (dbg_on)
+	{
+		dbgcode_refresh_window();
+		dbgregs_refresh_window();
+		dbgpclog_refresh_window();
+		dbgmem_refresh_window();
+		dbgstack_refresh_window();
+
+		// force refresh !
+		while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
+	}
+}
+
+int dbgcode_quit_enabled(void)
+{
+	return GTK_WIDGET_SENSITIVE(mi.m8);
+}
+
+static int on_quit1_activate_wrapper(gpointer data)
+{
+	on_quit1_activate(NULL, NULL);
+	return FALSE;
+}
+
+int gdbcallback_close_debugger(void *clientdata, void *interp, int argc, const char **argv)
+{
+	if (dbg_on && dbgcode_quit_enabled()) gtk_idle_add(on_quit1_activate_wrapper, NULL);
+	return 0;
+}
+
