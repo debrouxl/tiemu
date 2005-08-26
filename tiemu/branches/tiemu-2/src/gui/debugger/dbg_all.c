@@ -42,6 +42,7 @@
 #include "support.h"
 #include "paths.h"
 #include "engine.h"
+#include "dboxes.h"
 
 DbgOptions options3;
 DbgWidgets dbgw = { 0 };
@@ -296,6 +297,16 @@ on_ioports_frame1_activate                    (GtkMenuItem     *menuitem,
         gtk_widget_show(dbgw.iop);
 }
 
+GLADE_CB void
+on_transient1_activate                 (GtkMenuItem     *menu_item,
+                                        gpointer         user_data)
+{
+	// This make dbg wnd's as children of the main window.
+	// Thus, the taskbar is not filled-up with a lot of windows.
+	options3.transient = GTK_CHECK_MENU_ITEM(menu_item)->active;
+
+	msg_box("Warning", "You will have to save configuration and restart TiEmu for changes to take effect !");
+}
 
 GLADE_CB void
 on_quit1_activate                      (GtkMenuItem     *menuitem,
@@ -406,6 +417,13 @@ void update_submenu(GtkWidget *widget, gpointer user_data)
     g_signal_handlers_block_by_func(GTK_OBJECT(item), on_ioports_frame1_activate, NULL);
     gtk_check_menu_item_set_active(item, GTK_WIDGET_VISIBLE(dbgw.iop));
     g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_ioports_frame1_activate, NULL);
+
+	// transient mode
+	elt = g_list_nth(list, 8);
+    item = GTK_CHECK_MENU_ITEM(elt->data);
+    g_signal_handlers_block_by_func(GTK_OBJECT(item), on_transient1_activate, NULL);
+    gtk_check_menu_item_set_active(item, options3.transient);
+    g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_transient1_activate, NULL);
 }
 
 // callbacks from dbg_regs.c

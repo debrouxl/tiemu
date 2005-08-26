@@ -24,6 +24,7 @@ gchar *s = N_("PC log");
 gchar *s = N_("Stack frame");
 gchar *s = N_("Heap (handles)");
 gchar *s = N_("I/O ports");
+gchar *s = N_("_Group windows");
 gchar *s = N_("Show all");
 gchar *s = N_("Hide all");
 gchar *s = N_("Minimize all");

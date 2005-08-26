@@ -143,9 +143,8 @@ GtkWidget* dbgheap_create_window(void)
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgheap_window");
-#ifdef WND_TRANSIENT
-	gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
-#endif
+	if(options3.transient)
+		gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
 	data = glade_xml_get_widget(xml, "treeview1");
     store = clist_create(data);

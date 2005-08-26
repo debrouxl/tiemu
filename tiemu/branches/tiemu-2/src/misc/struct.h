@@ -96,6 +96,8 @@ typedef struct
 	WinState	iop;
 
 	WinState	calc;
+
+	gint		transient;
 } DbgOptions;
 
 extern TieOptions options;

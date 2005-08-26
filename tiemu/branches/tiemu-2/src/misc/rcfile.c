@@ -570,6 +570,14 @@ void rcfile_read(void)
 		  &(options3.iop.minimized), &(options3.iop.closed));
 	  continue;
 	}
+	if( (p=find_str(buffer, "wnd_transient=")) )
+	{
+	  if(!strcmp(p, "no")) options3.transient = 0;
+	  else if(!strcmp(p, "yes")) options3.transient = 1;
+	  else stop(l);
+	  continue;
+	}
+
     }
   fclose(txt);
 
@@ -954,6 +962,9 @@ void rcfile_write(void)
 		options3.iop.minimized, options3.iop.closed);
 	fprintf(txt, "\n");
 
+	fprintf(txt, "wnd_transient=%s\n", options3.transient ? "yes" : "no");
+	fprintf(txt, "\n");
+
 	fprintf(txt, "\n");
   fprintf(txt, "RC_END\n");
   fflush(txt);
@@ -1079,4 +1090,10 @@ void options3_set_default(void)
 	options3.iop.rect.h = 240;
 	options3.iop.closed = !0;
 	options3.iop.minimized = 0;
+
+#ifdef __WIN32__
+	options3.transient = !0;
+#else
+	options3.transient = 0;
+#endif
 }

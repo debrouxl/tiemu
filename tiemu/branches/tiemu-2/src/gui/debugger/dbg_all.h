@@ -43,12 +43,6 @@
 // Save window state
 #define WND_STATE
 
-// This make dbg wnd's as children of the main window.
-// Thus, the taskbar is not filled-up with a lot of windows.
-#ifdef __WIN32__
-#define	WND_TRANSIENT
-#endif
-
 /* Definitions */
 
 typedef struct {
