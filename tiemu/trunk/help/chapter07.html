@@ -46,7 +46,11 @@ Note: Debugger windows are preloaded at startup in order to display
 them quicker. The source code window may take a while to be displayed
 the first time: this is due to ROM call parsing.<br>
 <br>
-The debugger is made-up of several frames:<br>
+TiEmu shows two debuggers simultaneously: a built-in assembly-level
+debugger, and the GDB/Insight-derived source-level debugger. These two
+debuggers have been adapted to interoperate seamlessly.<br>
+<br>
+The assembly-level debugger is made-up of several frames:<br>
 - source code<br>
 - registers<br>
 - memory<br>
@@ -55,6 +59,18 @@ The debugger is made-up of several frames:<br>
 - stack<br>
 - heap (handles)<br>
 <br>
+The source-level debugger is also made-up of several frames:
+<UL>
+<LI><A HREF="../../insight1.0/help/breakpoint.html">Breakpoint Window</A></LI>
+<LI><A HREF="../../insight1.0/help/console.html">Console Window</A></LI>
+<LI><A HREF="../../insight1.0/help/browser.html">Function Browser</A></LI>
+<LI><A HREF="../../insight1.0/help/locals.html">Locals Window</A></LI>
+<LI><A HREF="../../insight1.0/help/memory.html">Memory Window</A></LI>
+<LI><A HREF="../../insight1.0/help/register.html">Register Window</A></LI>
+<LI><A HREF="../../insight1.0/help/source.html">Source Window</A></LI>
+<LI><A HREF="../../insight1.0/help/stack.html">Stack Window</A></LI>
+<LI><A HREF="../../insight1.0/help/watch.html">Watch Window</A></LI>
+</UL>
 These frames can be moved and/or resized (TiEmu saves/restores this with
 the configuration).<br>
 Frames are automatically refreshed when a change occurs from another
@@ -265,6 +281,7 @@ pointed by the handle.<br>
   </tbody>
 </table>
 <br>
+<h2>7.8 <A HREF="../../insight1.0/help/index.html">Source-Level Debugger</A></h2>
 <hr>
 </body>
 </html>

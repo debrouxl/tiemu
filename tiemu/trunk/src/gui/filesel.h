@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: filesel.h 1455 2005-05-31 18:38:03Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *

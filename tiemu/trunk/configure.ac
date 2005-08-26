@@ -163,10 +163,15 @@ esac
 
 # Check for the new -fvisibility=hidden flag introduced in gcc 4.0
 # Allow to reduce shared library size and avoid symbol clash
+# Unfortunately, this only works for fully static builds. If any parts of GDB are built shared (--enable-shared or --enable-shared-*), we currently have no way to disable it just for these parts. -- Kevin
 case $host_os in
 *mingw*)
   ;;
 *)
+    case "$ac_configure_args" in
+    *--enable-shared*)
+      ;;
+    *)
         if test x$GCC = xyes; then
            visibility_flag=''
            AC_MSG_CHECKING([whether gcc accepts -fvisibility])
@@ -187,6 +192,8 @@ case $host_os in
             fi
         fi
         ;;
+    esac
+  ;;
 esac
 
 case "$host" in
@@ -213,6 +220,13 @@ AC_CACHE_CHECK([whether to use the debugger],
 if test x$tiemu_use_debugger = xno; then
   AC_DEFINE(NO_DEBUGGER, 1, [Defined to disable the debugger])
 fi
+
+# Run GDB configury
+ac_configure_args="$ac_configure_args --target=m68k-coff --disable-tui"
+changequote(<<,>>)
+ac_configure_args=`echo "$ac_configure_args" | sed "s,'CFLAGS=[^']*',,g;s,'CXXFLAGS=[^']*',,g;s,'host_alias=[^']*',,g"`
+changequote([,])
+AC_CONFIG_SUBDIRS(src/core/gdb)
 
 # Output.
 AC_OUTPUT

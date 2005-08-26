@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: calc.h 1473 2005-06-04 21:32:11Z roms $ */
+/* $Id: hid.h 557 2004-07-14 08:17:39Z roms $ */
 
 /*  TiEmu - a TI emulator
  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin

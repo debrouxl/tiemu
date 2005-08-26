@@ -36,6 +36,15 @@
   </child>
 
   <child>
+    <widget class="GtkMenuItem" id="debug_file_with_tiemu1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">Debug file with TiEmu...</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_debug_file_with_tiemu1_activate" last_modification_time="Thu, 07 Apr 2005 15:54:54 GMT"/>
+    </widget>
+  </child>
+
+  <child>
     <widget class="GtkCheckMenuItem" id="recv_file_from_tiemu1">
       <property name="visible">True</property>
       <property name="tooltip" translatable="yes">Uncheck it if you are running program which use the linkport for sound.</property>

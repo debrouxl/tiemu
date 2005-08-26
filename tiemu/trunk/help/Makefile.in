@@ -264,6 +264,7 @@ qt_includes = @qt_includes@
 qt_libraries = @qt_libraries@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
+subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 x_includes = @x_includes@

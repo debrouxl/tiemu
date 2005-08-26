@@ -9,7 +9,7 @@
  *   Kevin Kofler <Kevin@tigcc.ticalc.org>
  *
  * Copyright (C) 2003-2005 Authors
- * $Id: kde-private.h 1380 2005-05-25 09:11:02Z roms $
+ * $Id$
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
  */

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: type2str.h 1455 2005-05-31 18:38:03Z roms $ */
+/* $Id: type2str.h 370 2004-03-22 18:47:32Z roms $ */
 
 /*  TiEmu - an TI emulator
  *

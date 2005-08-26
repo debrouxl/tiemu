@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: ti68k_err.h 1455 2005-05-31 18:38:03Z roms $ */
+/* $Id: cabl_err.h 651 2004-04-25 15:22:07Z roms $ */
 
 /*  TiEmu - an TI emulator
  *

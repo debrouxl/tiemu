@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "TiEmu_Windows"=.\TiEmu_Windows.dsp - Package Owner=<4>
+Project: "TiEmu3_Console"=.\TiEmu3_Console.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

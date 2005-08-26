@@ -20,7 +20,6 @@ SubVersion: $Id$
 	- [roms]  $1627: put all gscales extern into gscales.h
 	- [roms]  $1629: added new I/O ports window which let view/modify HW registers
 	- [roms]  $1648: fixed buffer overflow in RTC HW3 and disabled full screen mode (too slow)
-	- [roms]  $1651: avoid link port acces in I/O window and don't allow writing on RO registers
 
 - 16/07/2005, version 2.00-rc7:
 	- [roms] $1583: fixed PPhD's bug (no reload of ROM calls when upgrading)
@@ -51,7 +50,7 @@ SubVersion: $Id$
 
 - 23/06/2005, version 2.00-rc5:
 	- [roms] $1525: merged Kevin's change in rev $1524 (recfile).
-	- [roms] $1542: merged Kevin's UAE upgrade.
+	//- [roms] $1526: cancel button
 	- [roms] $1543: fixed 'Receive file' check item.
 	- [roms] $1544: fixed bug #1227179 (screenshot).
 
@@ -110,7 +109,6 @@ SubVersion: $Id$
 - 16/05/2005, version 2.00-rc1 (3.9.1, 0.6.4, 4.5.9):
 	- [kevin] $1337/1338: fix --with-kde for Debian and derivatives
 	- [kevin] $1340/1341: add -Wl,--export-dynamic for all Linux targets to fix Ubuntu problem
-	- [kevin] $1346: fixed DESTDIR support (useful for RPM packaging)
 	- [kevin] $1351/1352: implement undocumented flags for ABCD, SBCD, NBCD and CHK
 	                      (source: 68knotes.txt by Bart Trzynadlowski)
 	- [roms] $1358: first release candidate

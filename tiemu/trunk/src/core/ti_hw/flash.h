@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: flash.h 1455 2005-05-31 18:38:03Z roms $ */
+/* $Id: main.c 245 2004-05-23 20:45:43Z roms $ */
 
 /*  TiEmu - an TI emulator
  *

@@ -35,5 +35,5 @@ $600017	| 1	| rw	| <all>					| Prog. Timer
 [Keyboard]
 
 $600018	| 2	| rw	| <......1076543210>	| Row mask
-$60001a	| 1	| ro	| <......1.>			| ON key			| ON key state
+$60001a	| 1	| rw	| <......1.>			| ON key			| ON key state
 $60001b	| 1	| rw	| <all>					| Col state

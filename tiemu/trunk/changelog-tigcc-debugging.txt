@@ -1,0 +1,173 @@
+20050806:
+* Changes from TiEmu trunk:
+	- [roms] $1543: fixed 'Receive file' check item.
+	- [roms] $1544: fixed bug #1227179 (screenshot).
+	- [roms] $1552: replaced my hand-made about box by the generic one provided with GTK 2.6
+	- [roms] $1560: TiEMu can be exited from the cross (WM)
+	- [roms] $1564: fixed 'backing pixmap problem' (bug #1227433): the scale factor
+		was not retrieved fine from .ini file when the ratio contains ',' instead of '.'
+	- [kevin] $1572/1573: handle program entry breakpoints on _main for kernel/Fargo programs
+	- [kevin] $1574/1575: implemented HW3 RTC
+	- [roms]  $1577: can choose HW1/HW2 when importing a tib file
+	- [kevin] $1580/1581: fixed about box license display on MinGW
+	- [roms] $1583: fixed PPhD's bug (no reload of ROM calls when upgrading)
+	- [roms] $1585: fixed comm box (removed calc & autodetect because un-needed)
+	- [roms] $1586: fixed file patterns in file selector (case sensitivity)
+	- [roms] $1588: avoid linkport accesses when browsing memory from dbg window
+	- [roms] $1590: fixed severe bug in linkport (the status register was reset whenever read
+		like specified by TI but the int handler proves it's false).
+		TiEmu does not run an infinite loop when transfer is interrupted.
+	- [roms] $1593: previous bug fixed again for _all_ calcs
+	- [roms] $1597: set link timeout to 60s for non-NT platforms, 1.5s for others
+	- [roms] $1598: added a new function in the ticables library API (ticable_link_reset)
+		for use by TiEmu. It allows to reset/flush the pipes of virtual linking when the
+		DBus is reset (usually due to transmission error). Link is now resumable.
+	- [roms] $1601: reimplemented HW3 RTC from latest/new O. Armand's information.
+	- [roms] $1608: automatically bind TiEmu #2 on the second instance of TiEmu
+	- [roms] $1615: TiEmu retains the state of dbg windows (open/closed) now.
+	- [kevin] $1623/1624: fixed: only first 32 bytes of ram_exec were restored from savestate
+	- [kevin] $1625/1626: buffering grayscale planes to avoid blinking in double-buffered games
+	- [roms]  $1627: put all gscales extern into gscales.h
+* Support for BSS section debugging (_nostub only at the moment). TIGCC 0.96 Beta 5 required.
+* Avoid link port access when browsing memory in the Insight memory window as well (see $1588 above).
+* Upgrade GTK+ for the Windows binaries to 2.6.8.
+* Rebuild FC4 RPMs with the latest FC4 update GCC.
+* FC4 RPMs no longer have a Conflicts: insight, because they don't conflict with Gérard Milmeister's Insight packages
+* FC4 RPMs now build itcl/itk/iwidgets shared and provide them rather than conflicting with them.
+* TiEmu, TiLP (roms): Added fvisibility support for GCC 3.4.2-rhl or 4.0 and higher
+* Disabled fvisibility support if --enable-shared or --enable-shared-* because it is currently broken.
+* libti*, TiLP (roms): Fixed GCC 4 pointer signedness warnings.
+* libti* (PpHd): Fixed --enable-nls builds.
+* libticables (roms): "Low-level access cable functions may be set to NULL on some cables: set to nul_cable instead." Was not done for the Gray Link !
+* libticables (jb): Add a generic fallback case for all Linux hosts.
+* libticables (roms): Removed arm/ipaq check for libusb removal. Can be removed by configure option.
+* libticables (roms): Added ticable_link_reset function (needed by TiEmu for proper operation and present in ticables2).
+* libticalcs (roms): Fixed possible buffer overflow with recv_packet (usually occurs with virtual links because the received length is invalid).
+
+20050622:
+* Changes from TiEmu trunk:
+	- [roms] $1507: cleanup and little fixes in interrupt support of m68k
+	- [roms] $1509: fixed behaviour of all keys and definitely fixed ON key
+* Upgrade UAE core to UAE 0.8.23 and fix related latent bugs.
+* libticables RPM: SilverLink support (based on Julien Blache's Debian packages and Nalin Dahyabhai's usbcam script)
+* libticalcs: Fixed buffer overflow (fatal on FC4).
+* TiLP: Fixed missing -Wl,--export-dynamic (FC4 fix, was in the spec file for 20050619).
+
+20050619:
+* Changes from TiEmu trunk:
+	- [kevin] $1485/1486: replaced TiLP logo in the HTML manual with my temporary TiEmu logo
+	- [roms] $1487: fixed resized window with key positions (mouse) (bug #1217627)
+	- [roms] $1488: replaced current icon by Jaime's one
+	- [roms] $1489: removed logo from about box
+	- [jb]   $1493: src/gui/calc.c: screenshot of the whole calc in BW
+		is not supported, error out in this case. It'd be nice to pop an
+		error message to the user.
+	- [jb]   $1493: src/misc/screenshot.c: enable BW screenshot in EPS
+		and PDF; they're treated like color screenshots.
+	- [roms] $1497: added hibou's logo
+* Add XPM version (48x48) of Jaime Fernando Meza Meza's icon and use it for the Fedora .desktop file.
+* Fedora RPMs are now built on Fedora Core 4.
+
+20050609:
+* Changes from TiEmu trunk (synced with TiEmu 2.00 RC3):
+	- [roms]  $1434: fixed multiple check items in the popup menu (button group)
+	- [roms]  $1436: HW protection is enabled by default for now
+	- [roms]  $1440: tiemu.ini file loader/saver: slightly re-arranged sections and cleaned-up.
+	- [roms]  $1443: view mode is now saved in the config file.
+	- [roms]  $1444: view mode is restored at startup.
+	- [roms]  $1446: screenshot of TI89 is now clipped
+	- [roms]  $1447: B&W screenshot support added
+	- [roms]  $1448: fixed screenshot of full skin with LCD
+	- [roms]  $1449: timeout of direct file loading can be changed now
+	- [roms] $1462: fixed bug #1212619.
+	- [roms] $1467: fixed ON key
+	- [roms] $1470-76: 
+		don't restart the whole GUI when switching view mode.
+		The main wnd can be resized by dragging it and its content is automatically scaled.
+	- [roms] $1478: popup menu and tiemu.ini updated to support custom scaling factor.
+	- [roms] $1480: changed logo for Kevin's one.
+	- [roms] $1483: fixed full-screen mode
+* Replaced TiLP logo in the HTML manual with my temporary TiEmu logo
+* Fixed static linking for TCL-related stuff on OS X (by Christian Walther, previously released as tiemu-tigcc-debugging-20050529-osx-fix.diff)
+* Allow .dbg files with spaces in the pathname and/or filename.
+* Fixed libintl detection (fixes --enable-nls builds on OS X at least).
+* Don't allow resetting while the debugger is busy (fixes yet another setjmp out of Tcl_Eval bug).
+* TiLP (roms): Plugins directory no longer built
+
+20050529:
+* Changes from TiEmu trunk:
+	- [kevin] $1364/1365: link tiemu.rc in for MinGW
+	- [roms]  $1382: fixed HOME & CATALOG keys on Titanium (mouse only)
+	- [jb]    $1399: added EPS/PDF screenshot output
+	- [roms]  $1408: fixed check of Titanium skins (bug #1209813)
+	- [roms]  $1415: fixed debugger display under SawFish (patch #1209183)
+	- [kevin] $1417/1418: fixed 0x600017 and implemented detection of Patrick
+	                      Davidson's grayscale routine (bug #1207299)
+	- [kevin] $1420/1421: when minimizing the main window, don't hide the others
+	                      (patch #1209183)
+	- [kevin] $1424/1425: fixed checkboxes in the program entry breakpoint
+	                      dialog (a subtle 2-byte buffer overflow!)
+	- [kevin] $1427/1428: RTC port triggers every 8192 seconds (correct), not every 4 (dbg code)
+	- [kevin] $1430/1431: fixed resetting with the debugger open (closes the debugger
+	                      rather than starting the engine with the debugger still expecting
+	                      it to be stopped)
+	- [kevin] $1432/1433: reenabled memory window refresh
+* New Windows installer based on NSIS:
+  - 7-Zip no longer needed for unpacking (TiEmu is still LZMA-compressed, but the NSIS installer
+    can decompress it by itself)
+  - GTK+ is downloaded and installed automatically (after user confirmation) if needed.
+  - The installer creates the appropriate menu entries.
+* More changes for OS X support:
+  - Force static linking for TCL-related stuff on OS X.
+  - Don't chdir to $HOME (fixes Insight's path detection when running TiEmu using a relative path).
+    (This one affects all *nix platforms, but Christian Walther noticed it on his OS X machine.)
+* libticables (roms): AVR link support removed, baud_rate no longer exported
+* libtifiles (roms): The file signature is now case-insensitive.
+* TiLP (jb): Added EPS and PDF output for the screenshot.
+
+20050522:
+* changes from TiEmu trunk (synced with TiEmu 2.00 RC1):
+	- [kevin] $1337/1338: fix --with-kde for Debian and derivatives
+	- [kevin] $1340/1341: add -Wl,--export-dynamic for all Linux targets to fix Ubuntu problem
+	- [kevin] $1351/1352: implement undocumented flags for ABCD, SBCD, NBCD and CHK
+	                      (source: 68knotes.txt by Bart Trzynadlowski)
+* added support for disassembling ER_throw (rev 1357, trunk backport pending)
+* updated libticables and libtifiles version numbers (roms)
+* some more OS X fixes (but OS X support is still not tested yet)
+
+20050515:
+* Insight, a graphical frontend for GDB, is now part of TiEmu!
+* changes from TiEmu trunk:
+	- [roms]  $1248: changed rom_base from 0x20 to 0x200000 whenever applicable
+	- [roms]  $1249-1253: memory layout management rewritten
+	- [roms]  $1254: splitted I/O ports on HW3
+	- [roms]  $1255: finished to use new memory layout; the memory window shows 
+					 the exact memory mapping
+	- [roms]  $1263: hw_get_real_address is a function pointer which depends on the 
+					 calculator type for now (part of memory management rewrite attempt)
+	- [roms]  $1278: completely removed old memory banking system (mem_tab & mem_msk)
+	- [roms]  $1293: fixed engine loop (every 30ms)
+	- [roms]  $1294: can change LCD rate from popup menu
+* a few libticables and libtifiles fixes (roms)
+
+20050506:
+* fixes from TiEmu trunk:
+	- [jb]	  $1230: fixed va_list in printl
+	- [kevin] $1231: allow setting a range breakpoint on a single byte
+	- [kevin] $1232: fixed range breakpoint (overlap)
+	- [roms]  $1233: fixed SSP/USP registers in registers.c
+	- [roms]  $1234: 'exit & save state' moved in popup menu
+	- [roms]  $1235: added accelator key to select & set PC on next line
+	- [kevin] $1237/1238: don't clobber bkpts.id if we are already breaking
+	- [kevin] $1239/1240: no FlashROM ghost space at 0x400000 on the TI-89
+	- [kevin] $1239/1240: fixed hardwareRevision in the HW parameter block
+	- [kevin] $1241/1242: fixed reads from wrong offsets in the stack window
+In particular, these fix loading of AMS 2.09. Make sure you regenerate your images!
+* Fix include paths for systems without BFD and readline installed.
+* Reenable the debugger if it has previously been disabled (by GDB).
+* libtifiles fixed to allow loading AMS 2.05 as originally distributed by TI (not really a valid 89u file, but other programs accept it) (roms).
+* libtifiles and libticalcs compile fixes for OS X (Christian Walther).
+* The TiLP and TiEmu RPMs now include menu entries (TiEmu can be found under "Development", TiLP under "Utilities"). Moreover, the TiLP RPM registers its file types properly now.
+
+20050430:
+First snapshot from tigcc-debugging-branch. New compared to the trunk snapshots: the GDB source debugger (command-line interface) has been integrated.
