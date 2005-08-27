@@ -1,36 +1,33 @@
-Copyright informations on PedRom:
+Copyright information on PedroM:
 
-PedRom is free software and released under "GNU GENERAL PUBLIC LICENSE Version 2, June 1991".
-Source code of PedRom can be found at <http://www.ticalc.org/archives/files/fileinfo/319/31951.html>.
+PedroM is free software and released under "GNU GENERAL PUBLIC LICENSE Version 2, June 1991".
+The source code of PedroM can be found in pedrom-src.tar.bz2.
 
-;*
-;* PedroM - Operating System for Ti-89/Ti-92+/V200.
-;* Copyright (C) 2003 PpHd
-;*
-;* This program is free software ; you can redistribute it and/or modify it under the
-;* terms of the GNU General Public License as published by the Free Software Foundation;
-;* either version 2 of the License, or (at your option) any later version. 
-;* 
-;* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-;* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-;* See the GNU General Public License for more details. 
-;* 
-;* You should have received a copy of the GNU General Public License along with this program;
-;* if not, write to the 
-;* Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+  PedroM   - Copyright (C) 2003, 2004, 2005 Patrick Pelissier
+  PreOS	   - Copyright (C) 2002, 2003, 2004, 2005 Patrick Pelissier
+  Side     - Copyright (c) 2002, 2005 Clement Vasseur.
+  MD5      - Copyright (C) 1999, 2000, 2002 Aladdin Enterprises.
+  ExtGraph - Copyright (C) 2001-2002 Thomas Nussbaumer
+  TIB Install - Copyright (c) 2000-2004 Julien Muchembled.
+
+  This program is free software ; you can redistribute it and/or modify it under the
+  terms of the GNU General Public License as published by the Free Software Foundation;
+  either version 2 of the License, or (at your option) any later version. 
+  
+  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details. 
+  
+  You should have received a copy of the GNU General Public License along with this program;
+  if not, write to the 
+  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 
 The precompiled TIB is PedRom re-built by Kevin in order to remove non-free parts:
-<<
- I finally removed all GPL-incompatible code from PedroM:
-* TIB Receiver: deleted without replacement. We need receiving code:
-- licensed under a GPL-compatible license
-- compatible with the Voyage 200 and the TI-89 Titanium
-- without any AMS unprotection hacks, since PedroM can unprotect the FlashROM cleanly
-none of which is true for the TIB Receiver. ExtendeD, is there any chance you can provide a version of FreeFlash without the Flash unprotection under the GPL for PedroM? Or is that infeasible for some technical or other reason?
-* ttunpack: deleted without replacement. PPGs can be run the same way you'd run them on AMS: using the launcher included with the program.
-* bitmap routines from ExtGraph: rewritten (based in part on the sprite routine I wrote for Backgammon). Contrary to the previous hack, my implementation is clipped. I submitted the rewritten routines to PpHd. They could use more testing though, I warned him about that and I guess we'll see who gets around to testing them first.
-* deleted builtin stdlib archive pack. Just send the file, it ships with PreOs.
-* deleted WTI support (the interface code is under a very restrictive license, and WTI was never publicly released)
 
-Get it at: www.tigen.org/kevin.kofler/ti89prog/pedrom-ld-tigcc.zip. (This version is linked against flashosa-testing, see above.)
->>
+  This is a version of PedroM 0.81 RC8 modified for compatibility with ld-tigcc.
+  I also deleted the non-Free files (the builtin ttunpack, the builtin stdlib
+  archive pack and wti.h (not used by PedroM anymore anyway) have been removed),
+  as well as several other junk not needed to build PedroM and built PedroM
+  using the fully GPL option. See pedrom-081-rc8-ld-tigcc.diff for my changes.
+
+Get it at: www.tigen.org/kevin.kofler/ti89prog/pedrom-ld-tigcc.zip.
