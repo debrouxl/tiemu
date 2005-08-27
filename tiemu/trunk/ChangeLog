@@ -1,8 +1,8 @@
 SubVersion: $Id$
 
 - 25/08/2005, version 3.00-devel:
-	- [roms] $1689: fixed Titanium skin loading and fixed bug in skin loader
-	- [roms] $1692: re-enabled transient mode for windows
+  - [roms] $1689: fixed Titanium skin loading and fixed bug in skin loader
+  - [roms] $1692: re-enabled transient mode for windows
 	- [roms] $1693: set transient mode as option
 	- [kevin] $1695: merge changes from tigcc-debugging-branch:
 		* integrate the GDB source debugger (command-line interface)
@@ -31,6 +31,10 @@ SubVersion: $Id$
 	- [kevin] $1707: fix handling of handles (don't interpret NULL as end of heap table, don't
 	                 dereference H_NULL in loops)
 	- [kevin] $1708: disable window grouping (transient mode) by default
+	
+	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
+		into the trunk at rev. $1695.	
+	For changes made in the tiemu-debugging-branch, see the RELEASE file starting at '20050806'.
 
 - 19/08/2005, version 2.00:
 	- [kevin] $1662/1663: import V200 updates as HW2, not HW1 (and default TI-89/92+ updates to HW2)
