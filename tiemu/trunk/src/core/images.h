@@ -27,6 +27,7 @@
 #ifndef __TI68K_IMAGES__
 #define __TI68K_IMAGES__
 
+#include <stdint.h>
 
 /*
   Definitions
@@ -47,7 +48,7 @@ typedef struct
 	char	has_boot;		// FLASH upgrade does not have boot
 	long	size;			// size of pure data
 	char	hw_type;		// hw1 or hw2
-    char    rom_base;       // ROM base address (MSB)
+    uint8_t rom_base;       // ROM base address (MSB)
 
     char    fill[0x40-42];  // round up struct to 0x40 bytes
 	char*	data;			// pure data (temporary use, 8 bytes)

@@ -1,9 +1,9 @@
 SubVersion: $Id$
 
 - 25/08/2005, version 3.00-devel:
-  - [roms] $1689: fixed Titanium skin loading and fixed bug in skin loader
-  - [roms] $1692: re-enabled transient mode for windows
-	- [roms] $1693: set transient mode as option
+	- [roms] $1689: fixed Titanium skin loading and fixed bug in skin loader
+	- [roms] $1692: re-enabled transient mode for windows
+	- [roms] $1694: set transient mode as option
 	- [kevin] $1695: merge changes from tigcc-debugging-branch:
 		* integrate the GDB source debugger (command-line interface)
 		* fix include paths for systems without BFD and readline installed
@@ -31,6 +31,7 @@ SubVersion: $Id$
 	- [kevin] $1707: fix handling of handles (don't interpret NULL as end of heap table, don't
 	                 dereference H_NULL in loops)
 	- [kevin] $1708: disable window grouping (transient mode) by default
+	- [kevin] $1710: fix size of archived handles under PedroM
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

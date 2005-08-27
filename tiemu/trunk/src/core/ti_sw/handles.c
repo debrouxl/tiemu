@@ -131,12 +131,17 @@ uint16_t heap_size(int handle)
 	heap_get_addr(&base);
 
 	addr = mem_rd_long(base + 4*handle);
-	if(!pedrom || (addr > (uint32_t)tihw.rom_base))
+	if(!pedrom)
 	{
 		size = mem_rd_word(addr - 2);
 		size &= ~(1 << 16);	// remove lock
 		size <<= 1;			// size is twice
 		size -= 2;
+	}
+	else if(addr >= tihw.rom_base) // archived file on PedroM - use file size
+	{
+		size = mem_rd_word(addr);
+		size += 2;
 	}
 	else
 	{
