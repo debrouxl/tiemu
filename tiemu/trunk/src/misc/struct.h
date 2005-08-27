@@ -95,6 +95,8 @@ typedef struct
 	WinState	heap;
 	WinState	iop;
 
+	gint		transient;
+
 	WinState	calc;
 } DbgOptions;
 

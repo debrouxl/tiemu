@@ -354,9 +354,8 @@ GtkWidget* dbgcode_create_window(void)
 	glade_xml_signal_autoconnect(xml);
 
 	dbox = glade_xml_get_widget(xml, "dbgcode_window");
-#ifdef WND_TRANSIENT
-	gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
-#endif
+	if(options3.transient)
+		gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
     data = glade_xml_get_widget(xml, "windows1_menu");
     g_signal_connect(G_OBJECT(data), "map", G_CALLBACK(update_submenu), NULL);
