@@ -26,6 +26,43 @@ For documentation about the skin internals and key mapping,
 see the doc directory.
 
 
+REQUIREMENTS (Win32)
+--------------------
+
+ - a PC with a 450MHz Pentium-class processor and 32MB of RAM
+ - a Windows computer: Windows 95/98/Me or Windows NT4/2000/XP (better)
+ - the GTK+ 2.6 libraries
+    Location: <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.8-rc1.exe?download>
+	
+	Note: if you are using GiMP, you don't need to get this GTK+ package, they are compatible.
+
+
+INSTALLATION (Win32)
+--------------------
+
+Run the InnoSetup installer...
+
+1°) You need some extra libraries (GTK+ 2.6). 
+
+The GTK+ package includes the Wimp (Windows IMPersonator) theme engine which gives 
+Windows look & feel (includes XP theming). Is also included the GTK theme selector.
+You may need to use it on non-NT systems if you get a lot of warnings about a font. 
+Simply disable the WiMP theme for another one.
+
+2°) If anyone is getting one of these:
+- ** WARNING **: Couldn't load font "MS Sans Serif 8" falling back to "Sans 8"
+- ** ERROR **: file shape.c line 75: assertion failed: (glyphs->num_glyphs > 0)
+or any other warning or error message regarding fonts/glyphs, the fix is to
+open your C:\Program Files\Shared Files\Gtk\2.0\etc\gtk-2.0\gtkrc and to add this:
+	style "user-font"
+	{
+	font_name="Arial"
+	}
+	widget_class "*" style "user-font"
+This forces GTK+ to use a compatible font (Arial) and reportedly fixes both
+the aforementioned problems, and probably others too.
+
+
 AVAILABILITY
 ------------
 
