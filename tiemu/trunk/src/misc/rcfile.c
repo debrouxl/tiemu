@@ -1090,9 +1090,5 @@ void options3_set_default(void)
 	options3.iop.closed = !0;
 	options3.iop.minimized = 0;
 
-#ifdef __WIN32__
-	options3.transient = !0;
-#else
 	options3.transient = 0;
-#endif
 }
