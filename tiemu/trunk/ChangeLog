@@ -1,9 +1,32 @@
 SubVersion: $Id$
 
-- 25/08/2005, version 2.01:
+- 25/08/2005, version 3.00-devel:
 	- [roms] $1689: fixed Titanium skin loading and fixed bug in skin loader
 	- [roms] $1692: re-enabled transient mode for windows
 	- [roms] $1693: set transient mode as option
+	- [kevin] $1695: merge changes from tigcc-debugging-branch:
+		* integrate the GDB source debugger (command-line interface)
+		* fix include paths for systems without BFD and readline installed
+		* reenable the debugger if it has previously been disabled (by GDB)
+		* integrate Insight, a graphical frontend for GDB
+		* enable and fix Insight for MinGW (Win32) and Darwin (OS X)
+		* force static linking for TCL-related stuff on OS X
+		* don't chdir to $HOME (fixes Insight's path detection when running TiEmu using
+		  a relative path)
+		* allow .dbg files with spaces in the pathname and/or filename
+		* fix libintl detection (fixes --enable-nls builds on OS X at least)
+		* don't allow resetting while the debugger is busy
+		* new Windows installer based on NSIS: GTK+ is downloaded and installed
+		  automatically (after user confirmation) if needed
+		* new Fedora (Core 4) RPMs
+		* add XPM version (48x48) of Jaime Fernando Meza Meza's icon and use it for the
+		  Fedora .desktop file.
+		* support for BSS section debugging (_nostub only at the moment, TIGCC 0.96 Beta
+		  5 required)
+		* avoid link port access when browsing memory in the Insight memory window as well
+		  (see $1588 below)
+		* disable fvisibility support if --enable-shared or --enable-shared-* because it
+		  is currently broken
 
 - 19/08/2005, version 2.00:
 	- [kevin] $1662/1663: import V200 updates as HW2, not HW1 (and default TI-89/92+ updates to HW2)
