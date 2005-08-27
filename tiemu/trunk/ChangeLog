@@ -1,6 +1,6 @@
 SubVersion: $Id$
 
-- 25/08/2005, version 3.00-devel:
+- 25/08/2005, version 2.80:
 	- [roms] $1689: fixed Titanium skin loading and fixed bug in skin loader
 	- [roms] $1692: re-enabled transient mode for windows
 	- [roms] $1694: set transient mode as option
@@ -32,6 +32,8 @@ SubVersion: $Id$
 	                 dereference H_NULL in loops)
 	- [kevin] $1708: disable window grouping (transient mode) by default
 	- [kevin] $1710: fix size of archived handles under PedroM
+	- [kevin] $1711: bump version number (2.00->2.80) and GTK+ requirement in configure.ac
+	                 (2.4.0->2.6.0, GTK+ 2.4 won't work since the addition of the new about window)
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

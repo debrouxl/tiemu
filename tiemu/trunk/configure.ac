@@ -3,7 +3,7 @@ dnl $Id: configure.in 409 2004-06-07 21:10:20Z roms $
 
 dnl Init.
 AC_PREREQ(2.57)
-AC_INIT(TiEmu, 2.00, [tiemu-users@lists.sourceforge.net])
+AC_INIT(TiEmu, 2.80, [tiemu-users@lists.sourceforge.net])
 
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
@@ -61,11 +61,11 @@ PKG_CHECK_MODULES(TICALCS, ticalcs >= 4.5.9)
 AC_SUBST(TICALCS_CFLAGS)
 AC_SUBST(TICALCS_LIBS)
 
-PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.4.0)
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.6.0)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
-PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.4.0)
+PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.6.0)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 

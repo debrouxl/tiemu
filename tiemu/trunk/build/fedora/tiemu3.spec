@@ -2,7 +2,7 @@
 %define __spec_install_post :
 %define debug_package %{nil}
 
-%define name tiemu-tigcc-debugging
+%define name tiemu3
 %define version %(date +%%Y%%m%%d)
 %define release 1
 %define my_opt_flags -Os -s -fno-exceptions -fomit-frame-pointer
@@ -20,8 +20,8 @@ Requires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{vers
 Requires(post):	desktop-file-utils >= 0.10
 Requires(postun): desktop-file-utils >= 0.10
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
-Obsoletes:	tiemu < 2.00, itcl < 3.3, itk < 3.3, iwidgets < 4.0.2
-Conflicts:	tiemu >= 2.00
+Obsoletes:	tiemu < 3.00, tiemu-tigcc-debugging < 20050828, itcl < 3.3, itk < 3.3, iwidgets < 4.0.2
+Conflicts:	tiemu >= 3.00
 Provides:	tiemu = ${version}, itcl = 3.2, itk = 3.2, iwidgets = 4.0.1
 Summary: TiEmu is a TI89(Ti)/92(+)/V200 emulator.
 %description
@@ -92,6 +92,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Sun Aug 28 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Change name from tiemu-tigcc-debugging to tiemu3 and update Obsoletes/Conflicts.
+
 * Sat Aug 6 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Fix file list for shared ITCL.
 

@@ -13,7 +13,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "TiEmu"
-!define PRODUCT_VERSION "tigcc-debugging ${DATEYYYYMMDD}"
+!define PRODUCT_VERSION "2.80 ${DATEYYYYMMDD}"
 !define PRODUCT_PUBLISHER "The TiEmu Team"
 !define PRODUCT_WEB_SITE "http://lpg.ticalc.org/prj_tiemu/index.html"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"
