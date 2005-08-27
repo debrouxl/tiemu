@@ -27,6 +27,7 @@ SubVersion: $Id$
 		  (see $1588 below)
 		* disable fvisibility support if --enable-shared or --enable-shared-* because it
 		  is currently broken
+	- [kevin] $1705: import PedroM (ld-tigcc build) 0.81 RC8
 
 - 19/08/2005, version 2.00:
 	- [kevin] $1662/1663: import V200 updates as HW2, not HW1 (and default TI-89/92+ updates to HW2)
