@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -95,16 +95,18 @@ static void clist_populate(GtkListStore *store)
     int i;
 	uint16_t nhandles;
 
-	heap_get_size(&nhandles);
-    for(i = 0; i < nhandles; i++)
+    for(i = 1; i < HEAP_MAX_SIZE; i++)
     {
         GtkTreeIter iter;
         uint32_t addr;
 		uint16_t size;
-        gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
+        gchar** row_text;
 
 		heap_get_block_addr_and_size(i, &addr, &size);
+		if (!addr)
+			continue;
 
+        row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
 		row_text[0] = g_strdup_printf("%i:", i);
 		row_text[1] = g_strdup_printf("$%06x", addr);
 		row_text[2] = g_strdup_printf("%i", size);

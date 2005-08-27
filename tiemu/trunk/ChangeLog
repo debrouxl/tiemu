@@ -28,6 +28,8 @@ SubVersion: $Id$
 		* disable fvisibility support if --enable-shared or --enable-shared-* because it
 		  is currently broken
 	- [kevin] $1705: import PedroM (ld-tigcc build) 0.81 RC8
+	- [kevin] $1707: fix handling of handles (don't interpret NULL as end of heap table, don't
+	                 dereference H_NULL in loops)
 
 - 19/08/2005, version 2.00:
 	- [kevin] $1662/1663: import V200 updates as HW2, not HW1 (and default TI-89/92+ updates to HW2)

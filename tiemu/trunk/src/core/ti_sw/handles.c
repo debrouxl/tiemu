@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -103,27 +103,6 @@ void heap_get_addr(uint32_t *base)
 }
 
 /*
-	Retrieve how many handles are allocated at the time when this function is called.
-*/
-void heap_get_size(uint16_t *size)
-{
-	uint32_t base, addr;
-	int i;
-
-	*size = 0;
-	heap_get_addr(&base);
-
-	for(i = 0; ; i++)
-	{
-		addr = mem_rd_long(base + 4*i);
-		if(addr == 0)
-			break;
-	}
-
-	*size = i;
-}
-
-/*
 	Get address of an allocated block (like HeapDeref)
 */
 
@@ -188,18 +167,16 @@ void heap_get_block_addr_and_size(int handle, uint32_t *addr, uint16_t *size)
 void heap_search_for_address(uint32_t address, int *handle)
 {
 	uint32_t base;
-	uint16_t size;
 	int i;
 
 	heap_get_addr(&base);
-	heap_get_size(&size);
 
-	for(i = 0; i < size; i++)
+	for(i = 1; i < HEAP_MAX_SIZE; i++)
 	{
 		uint32_t addr = mem_rd_long(base + 4*i);
 		uint16_t size = mem_rd_word(addr - 2);
 		
-		if ((address >= addr) && (address < addr+size))
+		if (addr && (address >= addr) && (address < addr+size))
 			*handle = i;
 	}
 
