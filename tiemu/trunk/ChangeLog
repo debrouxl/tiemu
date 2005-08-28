@@ -34,6 +34,7 @@ SubVersion: $Id$
 	- [kevin] $1710: fix size of archived handles under PedroM
 	- [kevin] $1711: bump version number (2.00->2.80) and GTK+ requirement in configure.ac
 	                 (2.4.0->2.6.0, GTK+ 2.4 won't work since the addition of the new about window)
+	- [kevin] $1712: install prebuilt Manpage.txt if groff is not available
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

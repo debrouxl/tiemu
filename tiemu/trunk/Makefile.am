@@ -11,6 +11,13 @@ dist_pkgdata_DATA = COPYING RELEASE AUTHORS LICENSES
 
 EXTRA_DIST = README.* TODO docs
 
+# install hook to install prebuilt Manpage.txt if groff is not available
+if !USE_GROFF
+install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir) 
+	$(INSTALL_DATA) $(srcdir)/man/Manpage.txt $(DESTDIR)$(pkgdatadir)/Manpage.txt
+endif
+
 # custom targets
 install-without-tcl-tk:
 if USE_GROFF

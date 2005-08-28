@@ -674,7 +674,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-dist_pkgdataDATA
+install-data-am: install-data-local install-dist_pkgdataDATA
 
 install-exec-am:
 
@@ -713,18 +713,24 @@ uninstall-info: uninstall-info-recursive
 	distclean-recursive distclean-tags distcleancheck distdir \
 	distuninstallcheck dvi dvi-am dvi-recursive info info-am \
 	info-recursive install install-am install-data install-data-am \
-	install-data-recursive install-dist_pkgdataDATA install-exec \
-	install-exec-am install-exec-recursive install-info \
-	install-info-am install-info-recursive install-man \
-	install-recursive install-strip installcheck installcheck-am \
-	installdirs installdirs-am installdirs-recursive \
-	maintainer-clean maintainer-clean-generic \
-	maintainer-clean-recursive mostlyclean mostlyclean-generic \
-	mostlyclean-libtool mostlyclean-recursive pdf pdf-am \
-	pdf-recursive ps ps-am ps-recursive tags tags-recursive \
-	uninstall uninstall-am uninstall-dist_pkgdataDATA \
-	uninstall-info-am uninstall-info-recursive uninstall-recursive
+	install-data-local install-data-recursive \
+	install-dist_pkgdataDATA install-exec install-exec-am \
+	install-exec-recursive install-info install-info-am \
+	install-info-recursive install-man install-recursive \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am installdirs-recursive maintainer-clean \
+	maintainer-clean-generic maintainer-clean-recursive mostlyclean \
+	mostlyclean-generic mostlyclean-libtool mostlyclean-recursive \
+	pdf pdf-am pdf-recursive ps ps-am ps-recursive tags \
+	tags-recursive uninstall uninstall-am \
+	uninstall-dist_pkgdataDATA uninstall-info-am \
+	uninstall-info-recursive uninstall-recursive
 
+
+# install hook to install prebuilt Manpage.txt if groff is not available
+@USE_GROFF_FALSE@install-data-local:
+@USE_GROFF_FALSE@	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir) 
+@USE_GROFF_FALSE@	$(INSTALL_DATA) $(srcdir)/man/Manpage.txt $(DESTDIR)$(pkgdatadir)/Manpage.txt
 
 # custom targets
 install-without-tcl-tk:
