@@ -30,7 +30,6 @@
 #include <stdint.h>
 
 void heap_get_addr(uint32_t *base);
-void heap_get_size(uint16_t *size);
 
 void heap_get_block_addr(int handle, uint32_t *addr);
 void heap_get_block_size(int handle, uint16_t *size);
@@ -42,6 +41,6 @@ void heap_search_for_address(uint32_t address, int *handle);
 uint32_t heap_deref(int handle);
 uint16_t heap_size(int handle);
 
-
+#define HEAP_MAX_SIZE 2000
 
 #endif

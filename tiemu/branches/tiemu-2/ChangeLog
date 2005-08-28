@@ -4,6 +4,8 @@ SubVersion: $Id$
 	- [roms] $1689: fixed Titanium skin loading and fixed bug in skin loader
 	- [roms] $1692: re-enabled transient mode for windows
 	- [roms] $1693: set transient mode as option
+	- [kevin] $1707: fix handling of handles (don't interpret NULL as end of heap table, don't
+	                 dereference H_NULL in loops)
 
 - 19/08/2005, version 2.00:
 	- [kevin] $1662/1663: import V200 updates as HW2, not HW1 (and default TI-89/92+ updates to HW2)

@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -118,8 +118,7 @@ static int get_folder_list_handle(void)
 	int h, i;
 
 	// search for memory blocks which have a string at [5]
-	heap_get_size(&heap_size);
-	for(h = 0; h < heap_size; h++)
+	for(h = 1; h < HEAP_MAX_SIZE; h++)
 	{
 		uint32_t addr;
 		uint16_t size;
