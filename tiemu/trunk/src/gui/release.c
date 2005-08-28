@@ -59,7 +59,6 @@ gint display_release_dbox()
 	if (access(filename, F_OK) == 0) {
 		if (stat(filename, &stbuf) != -1) {
 			len = stbuf.st_size;
-			len -= 2;
 		}
 		if ((fd = fopen(filename, "r")) != NULL) {
 			memset(buffer, 0, sizeof(buffer));

@@ -1,8 +1,9 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  tilp - Ti Linking Program
- *  Copyright (C) 1999-2004  Romain Lievin
+/*  TiEmu - a TI emulator
+ *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 2005 Kevin Kofler
  *
  *  This program is free software you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -84,7 +85,6 @@ gint display_about_dbox(void)
 		if (stat(filename, &stbuf) != -1) 
 		{
 			len = stbuf.st_size;
-			len -= 2;
 		}
 		if ((fd = fopen(filename, "r")) != NULL) 
 		{

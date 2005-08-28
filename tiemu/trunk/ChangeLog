@@ -39,6 +39,7 @@ SubVersion: $Id$
 	                 automatically shown so don't say it is)
 	- [kevin] $1717: fix RELEASE file to display properly (use ASCII, not Latin1 which is not
 	                 valid UTF-8)
+	- [kevin] $1718: don't remove last 2 bytes of RELEASE and COPYING (only Manpage.txt needs that)
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
