@@ -5,7 +5,7 @@
 
 <widget class="GtkDialog" id="release_dbox">
   <property name="visible">True</property>
-  <property name="title" translatable="yes">Welcome to TiLP !</property>
+  <property name="title" translatable="yes">Welcome to TiEmu !</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
@@ -57,8 +57,7 @@
 	  <child>
 	    <widget class="GtkLabel" id="label2">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">This box appears only 1 time or whenever a new version is installed.
-You will find in the box below some news about TiLP (the RELEASE file):</property>
+	      <property name="label" translatable="yes">You will find in the box below some news about TiEmu (the RELEASE file):</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_FILL</property>
@@ -112,8 +111,8 @@ You will find in the box below some news about TiLP (the RELEASE file):</propert
 	  <child>
 	    <widget class="GtkLabel" id="label3">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Latest version of TiLP can  be found at: &lt;http://lpg.ticalc.org/prj_tilp&gt;
-Please report any bugs to the TiLP team: &lt;tilp-users@lists.sf.net&gt;.</property>
+	      <property name="label" translatable="yes">The latest version of TiEmu can be found at: &lt;http://lpg.ticalc.org/prj__tiemu&gt;
+Please report any bugs to the TiEmu team: &lt;gtktiemu-users@lists.sf.net&gt;.</property>
 	      <property name="use_underline">True</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_FILL</property>

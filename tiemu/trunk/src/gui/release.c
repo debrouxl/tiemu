@@ -1,8 +1,9 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  tilp - Ti Linking Program
- *  Copyright (C) 1999-2004  Romain Lievin
+/*  TiEmu - a TI emulator
+ *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 2005 Kevin Kofler
  *
  *  This program is free software you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -48,7 +49,7 @@ gint display_release_dbox()
 	struct stat stbuf;
 	gint result;
 
-#ifdef __WIN32__
+#ifdef _MSC_VER /* MSVC builds. MinGW builds use Linux file structures. */
 	filename = g_strconcat(inst_paths.base_dir, "Release.txt", NULL);
 
 #else				/*  */
