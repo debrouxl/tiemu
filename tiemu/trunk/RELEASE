@@ -32,7 +32,7 @@
 * Avoid link port access when browsing memory in the Insight memory window as well (see $1588 above).
 * Upgrade GTK+ for the Windows binaries to 2.6.8.
 * Rebuild FC4 RPMs with the latest FC4 update GCC.
-* FC4 RPMs no longer have a Conflicts: insight, because they don't conflict with Gérard Milmeister's Insight packages
+* FC4 RPMs no longer have a Conflicts: insight, because they don't conflict with Gerard Milmeister's Insight packages
 * FC4 RPMs now build itcl/itk/iwidgets shared and provide them rather than conflicting with them.
 * TiEmu, TiLP (roms): Added fvisibility support for GCC 3.4.2-rhl or 4.0 and higher
 * Disabled fvisibility support if --enable-shared or --enable-shared-* because it is currently broken.

@@ -36,7 +36,9 @@ SubVersion: $Id$
 	                 (2.4.0->2.6.0, GTK+ 2.4 won't work since the addition of the new about window)
 	- [kevin] $1712: install prebuilt Manpage.txt if groff is not available
 	- [kevin] $1713: fix RELEASE window (MinGW path, say "TiEmu" instead of "TiLP", not
-	                 automatically shown so don't say it is), still not working on MinGW
+	                 automatically shown so don't say it is)
+	- [kevin] $1717: fix RELEASE file to display properly (use ASCII, not Latin1 which is not
+	                 valid UTF-8)
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
