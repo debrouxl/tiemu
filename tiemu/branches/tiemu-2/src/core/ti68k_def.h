@@ -104,7 +104,7 @@ typedef struct
 	int			io2_size;	// HW2 io size
 	int			io3_size;	// HW3 io size
 
-	uint32_t	rom_base;	// ROM base address (MSB)
+	uint32_t	rom_base;	// ROM base address
     int			rom_flash;	// ROM type
     char		rom_version[5];	// ROM/AMS version 
 
