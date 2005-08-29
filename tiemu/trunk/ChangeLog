@@ -40,6 +40,8 @@ SubVersion: $Id$
 	- [kevin] $1717: fix RELEASE file to display properly (use ASCII, not Latin1 which is not
 	                 valid UTF-8)
 	- [kevin] $1718: don't remove last 2 bytes of RELEASE and COPYING (only Manpage.txt needs that)
+	- [kevin] $1719: fix patch to install prebuilt Manpage.txt without groff so it also works with
+	                 groff available (can't put conditional around install-data-local)
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

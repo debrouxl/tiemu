@@ -728,7 +728,7 @@ uninstall-info: uninstall-info-recursive
 
 
 # install hook to install prebuilt Manpage.txt if groff is not available
-@USE_GROFF_FALSE@install-data-local:
+install-data-local:
 @USE_GROFF_FALSE@	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir) 
 @USE_GROFF_FALSE@	$(INSTALL_DATA) $(srcdir)/man/Manpage.txt $(DESTDIR)$(pkgdatadir)/Manpage.txt
 
