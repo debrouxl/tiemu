@@ -84,8 +84,8 @@ int ti68k_is_a_rom_file(const char *filename)
 
 int ti68k_is_a_tib_file(const char *filename)
 {
-	int ret1 = tifiles_is_a_flash_file(filename);
-	int ret2 = tifiles_is_a_tib_file(filename);
+	int ret1 = tifiles_file_is_flash(filename);
+	int ret2 = tifiles_file_is_tib  (filename);
 
 	return ret1 || ret2;
 }
@@ -237,8 +237,8 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
 */
 int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 {
-	Ti9xFlash content;
-	Ti9xFlash *ptr;
+	FlashContent content;
+	FlashContent *ptr;
 	int nheaders = 0;
 	int i;
 
@@ -247,14 +247,14 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 	   return ERR_CANT_OPEN;
 
 	// Check valid file
-	if(!tifiles_is_a_ti_file(filename))
+	if(!tifiles_file_is_ti(filename))
 		return ERR_NOT_TI_FILE;
 		
-	if(!ti68k_is_a_tib_file(filename))
+	if(!tifiles_file_is_tib(filename))
 		return ERR_INVALID_UPGRADE;
 
 	// Load file
-	if(ti9x_read_flash_file(filename, &content) != 0)
+	if(tifiles_file_read_flash(filename, &content) != 0)
         return ERR_INVALID_UPGRADE;
 	
 	// count headers
@@ -308,7 +308,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 
   	get_rom_version(tib->data, tib->size, tib->version);
   	
-  	ti9x_free_flash_content(&content);
+  	tifiles_content_delete_flash(&content);
 	if(!preload)
 		free(tib->data);
 

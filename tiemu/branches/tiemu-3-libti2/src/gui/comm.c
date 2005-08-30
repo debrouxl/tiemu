@@ -39,6 +39,7 @@
 #include "ti68k_def.h"
 #include "ti68k_int.h"
 
+#if 0
 static TicableLinkParam tmp_lp;
 static GtkWidget *button = NULL;
 static gint init = !0;
@@ -353,3 +354,11 @@ comm_spinbutton_timeout_changed        (GtkEditable     *editable,
   	tmp_lp.timeout =
     		gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(user_data));
 }
+
+#else
+
+gint display_comm_dbox()
+{
+}
+
+#endif

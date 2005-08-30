@@ -125,8 +125,8 @@ void io_put_byte(uint32_t addr, uint8_t arg)
 			// set red/white wires (if direct access)			
 			if(io_bit_tst(0x0c,6))
 	        {
-	            lc.set_red_wire(!bit_get(arg,0));
-	            lc.set_white_wire(!bit_get(arg,1));
+	            //lc.set_red_wire(!bit_get(arg,0));
+	            //lc.set_white_wire(!bit_get(arg,1));
 	        }
         break;
         case 0x0f: 	// rw <76543210>
@@ -292,8 +292,8 @@ uint8_t io_get_byte(uint32_t addr)
 			// %[2-3]: read red/white wires if raw access
 			if(io_bit_tst(0x0c,6))
 			{
-				v |= lc.get_white_wire() << 3;
-				v |= lc.get_white_wire() << 2;
+				//v |= lc.get_white_wire() << 3;
+				//v |= lc.get_white_wire() << 2;
 			}
             break;
         case 0x0f: 	// rw <76543210>

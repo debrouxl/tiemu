@@ -192,9 +192,11 @@ typedef struct
     int         pclog_ptr;
 } Ti68kBreakpoints;
 
+typedef DeviceOptions	Ti68kLink;
+
 extern Ti68kParameters 	params;
 extern Ti68kHardware 	tihw;
-extern TicableLinkParam link_cable;
+extern Ti68kLink		link;
 extern Ti68kBreakpoints	bkpts;
 
 #endif

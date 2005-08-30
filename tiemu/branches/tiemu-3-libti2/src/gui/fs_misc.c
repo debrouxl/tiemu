@@ -134,11 +134,13 @@ gint display_send_files_dbox()
 	static gchar *folder = NULL;
 
 	// Check for null cable
+#if 0
 	if(link_cable.link_type != LINK_NUL)
 	{
 		tiemu_error(0, "You can't use direct file loading when a cable is set. Change cable to 'null' in the Link Options menu item.");
 		return -1;
 	}
+#endif
 
     // set mask
     switch(tihw.calc_type) 
@@ -166,7 +168,7 @@ gint display_send_files_dbox()
     // check extension
 	for(ptr = filenames; *ptr; ptr++)
 	{
-		if(!tifiles_is_a_ti_file(*ptr) || !tifiles_is_ti9x(tifiles_which_calc_type(*ptr))) 
+		if(!tifiles_file_is_ti(*ptr) || !tifiles_calc_is_ti9x(tifiles_file_get_model(*ptr))) 
 		{
 			msg_box(_("Error"), _("This file is not a valid TI file."));
 			g_strfreev(filenames);
@@ -175,19 +177,19 @@ gint display_send_files_dbox()
 
 		// set pbar title
 #if 1
-		if(tifiles_is_a_tib_file(*ptr) || tifiles_is_a_flash_file(*ptr)) 
+		if(tifiles_file_is_tib(*ptr) || tifiles_file_is_tib(*ptr)) 
 		{
 			create_pbar_type5(_("Flash"), "");
 		} 
-		else if(tifiles_is_a_backup_file(*ptr)) 
+		else if(tifiles_file_is_backup(*ptr)) 
 		{
 			create_pbar_type3(_("Backup"));
 		} 
-		else if(tifiles_is_a_group_file(*ptr)) 
+		else if(tifiles_file_is_group(*ptr)) 
 		{
 			create_pbar_type5(_("Sending group file"), "");
 		} 
-		else if(tifiles_is_a_single_file(*ptr)) 
+		else if(tifiles_file_is_single(*ptr)) 
 		{
 			create_pbar_type4(_("Sending variable"), "");
 		}

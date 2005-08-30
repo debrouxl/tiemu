@@ -28,6 +28,8 @@
 #ifndef __TI68K_RTC3__
 #define __TI68K_RTC3__
 
+#include <time.h>
+
 typedef struct
 {
 	time_t	s;

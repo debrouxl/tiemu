@@ -47,30 +47,37 @@
 int tiemu_error(int err_code, char *err_str)
 {
 	int err = err_code;
-	char s[512];
+	char *s = NULL;
 
 	if(!err_code && !err_str)
 		return 0;
 
-	if(err_code) {
+	if(err_code) 
+	{
 		/* Retrieve the error message */
-		err = ticable_get_error(err, s);
-		if (err) {
-			err = tifiles_get_error(err, s);
-			if (err) {
-				err = ticalc_get_error(err, s);
-				if (err) {
+		err = ticables_error_get(err, &s);
+		if (err) 
+		{
+			err = tifiles_error_get(err, &s);
+			if (err) 
+			{
+				err = ticalcs_error_get(err, &s);
+				if (err) 
+				{
 					// next level: error for TiEmu
 					err = ti68k_error_get(err, s);
 				}
 			}
 		}
-	} else if(err_str) {
-		strcpy(s, err_str);
+	} 
+	else if(err_str) 
+	{
+		s = strdup(err_str);
 	}
 	
 	printl(2, "%s", s);
 	msg_box(_("Error"), s);
 
+	free(s);
 	return err_code;
 }

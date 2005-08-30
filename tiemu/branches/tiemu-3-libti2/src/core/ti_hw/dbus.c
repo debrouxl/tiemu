@@ -92,6 +92,7 @@ static int exit_link_file(void);
 
 int hw_dbus_init(void)
 {
+#if 0
 	// init link_cable
 	init_link_cable();
 
@@ -102,7 +103,7 @@ int hw_dbus_init(void)
 		map_dbus_to_file();		// set mappers to link_cable
 	else
 		map_dbus_to_cable();	// set mappers to link_cable
-
+#endif
     return 0;
 }
 
@@ -128,11 +129,14 @@ int hw_dbus_exit(void)
 	Link cable access
 */
 
+#if 0
 TicableLinkCable lc;	// used in ports.c for direct access
 static int avail = 0;
+#endif
 
 static int init_link_cable(void)
 {
+#if 0
 	int err;
 
 	ticable_set_param(&link_cable);
@@ -154,12 +158,13 @@ static int init_link_cable(void)
 		tiemu_error(err, NULL);
 		return -1;
 	}
-
+#endif
 	return 0;
 }
 
 static int exit_link_cable(void)
 {
+#if 0
 	int err;
 
 	if((err = lc.close()))
@@ -173,21 +178,24 @@ static int exit_link_cable(void)
 		tiemu_error(err, NULL);
 		return -1;
 	}
-
+#endif
 	return 0;
 }
 
 static void lp_reinit(void)
 {
+#if 0
 	int err;
 
 	avail = 0;
 	if((err = lc.reset()))
 		tiemu_error(err, NULL);
+#endif
 }
 
 static void lp_putbyte(uint8_t arg)
 {
+#if 0
 	int err;
   
     err = lc.put(arg);
@@ -200,10 +208,12 @@ static void lp_putbyte(uint8_t arg)
 
 	io_bit_set(0x0d,6);		// tx reg empty
 	io_bit_set(0x0d,2);		// link activity
+#endif
 }
 
 static uint8_t lp_getbyte(void)
 {
+#if 0
 	int err;
 	uint8_t arg;
 
@@ -223,10 +233,12 @@ static uint8_t lp_getbyte(void)
 
 	avail = 0;
 	return arg;
+#endif
 }
 
 static int lp_checkread(void)
 {
+#if 0
 	int err = 0;
 	int status = 0;
 
@@ -249,6 +261,7 @@ static int lp_checkread(void)
     }
   
 	return avail;
+#endif
 }
 
 
@@ -320,6 +333,8 @@ int df_checkread(void)
 
 	Wonderful, isn't it ?! Take a look at the 'TiLP framework' power ;-)
 */
+
+#if 0
 
 static TicableLinkCable 	ilc = { 0 };
 static TicalcFncts			itc = { 0 };
@@ -406,9 +421,12 @@ static void ilp_refresh(void) { }
 static void ilp_pbar(void)    { }
 static void ilp_label(void)   { }
 
+#endif
+
 /* Initialize a pseudo link cable to be connected with HW */
 static int init_link_file(void)
 {
+#if 0
   	ilc.init  = ilp_init;
   	ilc.open  = ilp_open;
   	ilc.put   = ilp_put;
@@ -441,20 +459,22 @@ static int init_link_file(void)
 
     df_reinit();
 	ilc.init();
-
+#endif
   	return 0;
 }
 
 static int exit_link_file(void)
 {
+#if 0
 	ilc.exit();
 	df_reinit();
-
+#endif
     return 0;
 }
 
 int send_ti_file(const char *filename)
 {
+#if 0
     gint ok = 0;
 	int ret;
 	clock_t start, finish;
@@ -482,8 +502,7 @@ int send_ti_file(const char *filename)
 
     // FLASH APP file ?
     if(tifiles_is_a_flash_file(filename) && !strcasecmp(tifiles_flash_app_file_ext(), tifiles_get_extension(filename)))
-    {
-        
+    {   
         ret = itc.send_flash(filename, MODE_APPS);
     }
 
@@ -524,7 +543,7 @@ int send_ti_file(const char *filename)
 		io_bit_set(0x0d,7);	// SLE=1
 		df_reinit();
 	}
-
+#endif
   return 0;
 }
 
@@ -532,6 +551,7 @@ int display_recv_files_dbox(const char *path);
 
 int recfile(void)
 {
+#if 0
 	int ret;
 	char filename[1024];
 
@@ -582,6 +602,7 @@ int recfile(void)
 	// end
 recfile_end:
 	rip = 0;
+#endif
 	return 0;	
 }
 

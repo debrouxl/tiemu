@@ -59,9 +59,9 @@
 
 
 Ti68kParameters     params = { 0 };
-Ti68kHardware       tihw = { 0 };
-TicableLinkParam    link_cable = { 0 };
-Ti68kBreakpoints	bkpts = { 0 };
+Ti68kHardware       tihw   = { 0 };
+Ti68kLink		    link   = { 0 };
+Ti68kBreakpoints	bkpts  = { 0 };
 
 
 /***********************************/
@@ -107,9 +107,11 @@ int ti68k_config_load_default(void)
 
 	params.timeout = is_win_9x() ? 600 : 15;	// 1.5 or 60s
 
+#if 0
     ticable_get_default_param(&link_cable);
     link_cable.link_type = LINK_NUL;
     link_cable.port = NULL_PORT;
+#endif
 
     return 0;
 }
@@ -127,9 +129,9 @@ int ti68k_load_image(const char *filename);
 int ti68k_init(void)
 {
 	// init libs
-    ticable_init();
-	tifiles_init();
-	ticalc_init();
+    ticables_library_init();
+	tifiles_library_init();
+	ticalcs_library_init();
 
 	// check if image has been loaded
 	if(img_loaded == 0)
@@ -162,9 +164,9 @@ int ti68k_exit(void)
 {
     TRY(hw_exit());
 
-    ticable_exit();
-	tifiles_exit();
-	ticalc_exit();
+    ticables_library_exit();
+	tifiles_library_exit();
+	ticalcs_library_exit();
 
 	return 0;
 }

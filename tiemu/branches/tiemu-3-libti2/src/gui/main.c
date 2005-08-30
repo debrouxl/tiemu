@@ -86,8 +86,8 @@ static gint gdbtk_hide_insight_and_run_wrapper(gpointer data);
 
 ScrOptions options2;
 TieOptions options;		// general tiemu options
-TicalcInfoUpdate info_update;	// pbar, msg_box, refresh, ...
-jmp_buf quit_gdb;               // longjmp target used when quitting GDB
+CalcUpdate calc_update;	// pbar, msg_box, refresh, ...
+jmp_buf quit_gdb;       // longjmp target used when quitting GDB
 
 /* Special */
 
@@ -161,26 +161,26 @@ int main(int argc, char **argv)
 	 */
     splash_screen_set_label(_("Initializing TiLP framework..."));
 
-	if (strcmp(tifiles_get_version(), TIEMU_REQUIRES_LIBFILES_VERSION) < 0) 
+	if (strcmp(tifiles_version_get(), TIEMU_REQUIRES_LIBFILES_VERSION) < 0) 
 	{
 		printl(0, _("libtifiles library version <%s> mini required (<%s> found).\n"),
-			TIEMU_REQUIRES_LIBFILES_VERSION, tifiles_get_version());
+			TIEMU_REQUIRES_LIBFILES_VERSION, tifiles_version_get());
 		msg_box(_("Error"), _("Libtifiles: version mismatches."));
 		exit(-1);
 	}
 	
-	if (strcmp(ticable_get_version(), TIEMU_REQUIRES_LIBCABLES_VERSION) < 0) 
+	if (strcmp(ticables_version_get(), TIEMU_REQUIRES_LIBCABLES_VERSION) < 0) 
 	{
 		printl(0, _("libticables library version <%s> mini required (<%s> found).\n"),
-			TIEMU_REQUIRES_LIBCABLES_VERSION, ticable_get_version());
+			TIEMU_REQUIRES_LIBCABLES_VERSION, ticables_version_get());
 		msg_box(_("Error"), _("Libticables: version mismatches."));
 		exit(-1);
 	}
 	
-	if (strcmp(ticalc_get_version(), TIEMU_REQUIRES_LIBCALCS_VERSION) < 0) 
+	if (strcmp(ticalcs_version_get(), TIEMU_REQUIRES_LIBCALCS_VERSION) < 0) 
 	{
 		printl(0, _("libticalcs library version <%s> mini required (<%s> found).\n"),
-			TIEMU_REQUIRES_LIBCALCS_VERSION, ticalc_get_version());
+			TIEMU_REQUIRES_LIBCALCS_VERSION, ticalcs_version_get());
 		msg_box(_("Error"), _("Libticalcs: version mismatches."));
 		exit(-1);
 	}

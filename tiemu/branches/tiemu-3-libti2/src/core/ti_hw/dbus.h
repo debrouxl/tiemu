@@ -44,7 +44,7 @@ int recfile(void);
 
 /* Variables */
 
-extern TicableLinkCable lc;
+//extern TicableLinkCable lc;
 extern int recfile_flag;
 
 #endif

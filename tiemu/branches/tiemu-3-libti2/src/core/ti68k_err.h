@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: cabl_err.h 651 2004-04-25 15:22:07Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -39,7 +39,7 @@
 #define ERR_HID_FAILED			773
 #define ERR_INVALID_ROM_SIZE	774
 #define ERR_NOT_TI_FILE			775
-//#define ERR_MALLOC				776
+#define ERR_MALLOC				776
 #define ERR_CANT_OPEN_DIR		777
 #define ERR_CANT_UPGRADE		778
 #define	ERR_INVALID_ROM			779
