@@ -1,0 +1,293 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta name="ProgId" content="Word.Document">
+<meta name="Generator" content="Microsoft Word 9">
+<meta name="Originator" content="Microsoft Word 9">
+<link rel="File-List" href="http://www.users.globalnet.co.uk/%7Ehjames/ti/EEPROM%20Programming_files/filelist.xml"><title>EEPROM Programming</title><!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Gareth James</o:Author>
+  <o:Revision>1</o:Revision>
+  <o:TotalTime>0</o:TotalTime>
+  <o:Created>2000-04-12T14:13:00Z</o:Created>
+  <o:Pages>1</o:Pages>
+  <o:Words>415</o:Words>
+  <o:Characters>2367</o:Characters>
+  <o:Lines>19</o:Lines>
+  <o:Paragraphs>4</o:Paragraphs>
+  <o:CharactersWithSpaces>2906</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+ <o:OfficeDocumentSettings>
+  <o:DoNotRelyOnCSS/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:View>Normal</w:View>
+  <w:Zoom>0</w:Zoom>
+  <w:DoNotOptimizeForBrowser/>
+ </w:WordDocument>
+</xml><![endif]-->
+
+
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:"MS Mincho";
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-alt:"\FF2D\FF33 \660E\671D";
+	mso-font-charset:128;
+	mso-generic-font-family:roman;
+	mso-font-format:other;
+	mso-font-pitch:fixed;
+	mso-font-signature:1 134676480 16 0 131072 0;}
+@font-face
+	{font-family:"\@MS Mincho";
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:128;
+	mso-generic-font-family:roman;
+	mso-font-format:other;
+	mso-font-pitch:fixed;
+	mso-font-signature:1 134676480 16 0 131072 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h3
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:13.0pt;
+	font-family:Arial;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p.MsoPlainText, li.MsoPlainText, div.MsoPlainText
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:1.0cm 1.0cm 1.0cm 1.0cm;
+	mso-header-margin:35.45pt;
+	mso-footer-margin:35.45pt;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+@page Section2
+	{size:595.3pt 841.9pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;
+	mso-header-margin:35.4pt;
+	mso-footer-margin:35.4pt;
+	mso-paper-source:0;}
+div.Section2
+	{page:Section2;}
+-->
+</style></head>
+
+<body lang="EN-GB" link="blue" vlink="purple" style="">
+
+<div class="Section1">
+
+<h3><b><font size="4" face="Arial"><span style="font-size: 13pt;">EEPROM Programming<o:p></o:p></span></font></b></h3>
+
+<p class="MsoPlainText"><font size="2" face="Courier New"><span style="font-size: 10pt;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;">Writing to Flash EEPROMs is much
+slower than writing to RAM, and requires writing control codes to the address
+space of the chip to perform these operations. Apparently the Flash EEPROM used
+is the "SHARP LH28F160S3-L", which has many features (some may be
+disabled) including writing (multiple) words/bytes, erasing 64kb blocks, and
+locking of blocks.<o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;">For more information on this chip
+see Johan Borg's file at <a href="http://d188.ryd.student.liu.se/ftp/calculator/ti89/tech/flashrom.txt"><span style="">http://d188.ryd.student.liu.se/ftp/calculator/ti89/tech/flashrom.txt</span></a>,
+he also has put up the datasheet at <a href="ftp://d188.ryd.student.liu.se/calculator/ti89/tech/f160s3.pdf"><span style="">ftp://d188.ryd.student.liu.se/calculator/ti89/tech/f160s3.pdf</span></a>
+which is worth a look.<o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;">Fortunately only a subset of this
+chips features are used; writing words and erasing blocks. Write operations
+take 12.95 micro-seconds, read operations 100ns, so you can see why a special
+mode of operation is required.<o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;">To program the EEPROM we need to
+enter a special mode by writing certain control codes to the address range. Two
+operations can be performed, erase (64kb) sector, and write a word. In this
+write mode reading from the address range gives the status register of the EEPROM,
+generally the only value that is used is that bit 7 of the read word will be
+set when complete. After the operations are complete Read mode is then set by
+writing another control code.<o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;">The drawback of this method is that
+the ROM cannot be read whilst write operations are being performed. Therefore
+the writing code must execute from the RAM. Trap 11 handles all of this on the
+calculator, copying the relevant portions to a buffer then executing them.<o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;">The following subset of operations
+is used:<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText"><font size="2" face="Courier New"><span style="font-size: 10pt;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></font></p>
+
+<table border="1" cellspacing="0" cellpadding="0" width="100%" style="border: medium none ; width: 100%; border-collapse: collapse;">
+ <tbody><tr>
+  <td width="9%" valign="top" style="border: 0.5pt solid windowtext; padding: 0cm 5.4pt; width: 9.18%;">
+  <p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;">Code<o:p></o:p></span></font></p>
+  </td>
+  <td width="90%" valign="top" style="border-style: solid solid solid none; border-color: windowtext windowtext windowtext -moz-use-text-color; border-width: 0.5pt 0.5pt 0.5pt medium; padding: 0cm 5.4pt; width: 90.82%;">
+  <p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;">Function<o:p></o:p></span></font></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="9%" style="border-style: none solid solid; border-color: -moz-use-text-color windowtext windowtext; border-width: medium 0.5pt 0.5pt; padding: 0cm 5.4pt; width: 9.18%;">
+  <p class="MsoPlainText" align="right" style="text-align: right;"><font size="2" face="Courier New"><span style="font-size: 10pt;">0x5050<o:p></o:p></span></font></p>
+  </td>
+  <td width="90%" valign="top" style="border-style: none solid solid none; border-color: -moz-use-text-color windowtext windowtext -moz-use-text-color; border-width: medium 0.5pt 0.5pt medium; padding: 0cm 5.4pt; width: 90.82%;">
+  <p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;">Clear Status
+  Register<o:p></o:p></span></font></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="9%" style="border-style: none solid solid; border-color: -moz-use-text-color windowtext windowtext; border-width: medium 0.5pt 0.5pt; padding: 0cm 5.4pt; width: 9.18%;">
+  <p class="MsoPlainText" align="right" style="text-align: right;"><font size="2" face="Courier New"><span style="font-size: 10pt;">0x1010<o:p></o:p></span></font></p>
+  </td>
+  <td width="90%" valign="top" style="border-style: none solid solid none; border-color: -moz-use-text-color windowtext windowtext -moz-use-text-color; border-width: medium 0.5pt 0.5pt medium; padding: 0cm 5.4pt; width: 90.82%;">
+  <p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;">Write Setup
+  (next word will be written)<o:p></o:p></span></font></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="9%" style="border-style: none solid solid; border-color: -moz-use-text-color windowtext windowtext; border-width: medium 0.5pt 0.5pt; padding: 0cm 5.4pt; width: 9.18%;">
+  <p class="MsoPlainText" align="right" style="text-align: right;"><font size="2" face="Courier New"><span style="font-size: 10pt;">0x2020<o:p></o:p></span></font></p>
+  </td>
+  <td width="90%" valign="top" style="border-style: none solid solid none; border-color: -moz-use-text-color windowtext windowtext -moz-use-text-color; border-width: medium 0.5pt 0.5pt medium; padding: 0cm 5.4pt; width: 90.82%;">
+  <p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;">Erase Setup<o:p></o:p></span></font></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="9%" style="border-style: none solid solid; border-color: -moz-use-text-color windowtext windowtext; border-width: medium 0.5pt 0.5pt; padding: 0cm 5.4pt; width: 9.18%;">
+  <p class="MsoPlainText" align="right" style="text-align: right;"><font size="2" face="Courier New"><span style="font-size: 10pt;">0xD0D0<o:p></o:p></span></font></p>
+  </td>
+  <td width="90%" valign="top" style="border-style: none solid solid none; border-color: -moz-use-text-color windowtext windowtext -moz-use-text-color; border-width: medium 0.5pt 0.5pt medium; padding: 0cm 5.4pt; width: 90.82%;">
+  <p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;">Erase Conform
+  (address)<o:p></o:p></span></font></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="9%" style="border-style: none solid solid; border-color: -moz-use-text-color windowtext windowtext; border-width: medium 0.5pt 0.5pt; padding: 0cm 5.4pt; width: 9.18%;">
+  <p class="MsoPlainText" align="right" style="text-align: right;"><font size="2" face="Courier New"><span style="font-size: 10pt;">0xFFFF<o:p></o:p></span></font></p>
+  </td>
+  <td width="90%" valign="top" style="border-style: none solid solid none; border-color: -moz-use-text-color windowtext windowtext -moz-use-text-color; border-width: medium 0.5pt 0.5pt medium; padding: 0cm 5.4pt; width: 90.82%;">
+  <p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;">Read Memory<o:p></o:p></span></font></p>
+  </td>
+ </tr>
+</tbody></table>
+
+<p class="MsoPlainText"><font size="2" face="Courier New"><span style="font-size: 10pt;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;">Erasing and writing require to
+writes, e.g. 0x2020, 0xD0D0 to perform erase to prevent accidental operations.<o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><b><font size="3" face="Times New Roman"><span style="font-size: 12pt; font-weight: bold;">Note<o:p></o:p></span></font></b></p>
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;">The flash memory is, by default,
+write protected by the system. And can only be written to under special
+circumstances. See <span style="">Intelligent
+Memory<!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F005200650066003400370038003200320031003400370038000000</w:data>
+</xml><![endif]--></span>.<o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><b><font size="3" face="Times New Roman"><span style="font-size: 12pt; font-weight: bold;">Examples</span></font></b><span style=""><o:p></o:p></span></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;">;erase 64kb block
+in which ERASE_ADDR resides<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>lea<span style="">&nbsp;&nbsp; </span><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>(ERASE_ADDR),a2<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>move.w<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>#0x5050,(a2)<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;Clear Status
+Register<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>move.w<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>#0x2020,(a2)<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;Erase Setup<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>move.w<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>#0xD0D0,(a2)<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;Erase Confirm<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;">write_state_busy:<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>move.w<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>(a2),d0<span style="">&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;Read Status Register<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>btst<span style="">&nbsp; </span><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>#7,d0<span style=""> </span><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;1=Ready<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>beq<span style="">&nbsp;&nbsp; </span><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>write_state_busy<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>move.w<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>#0xFFFF,(a2)<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;Read<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText"><font size="2" face="Courier New"><span style="font-size: 10pt;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></font></p>
+
+<p class="MsoPlainText"><font size="2" face="Courier New"><span style="font-size: 10pt;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;">;write VALUE to
+WRITE_ADDR<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>lea<span style="">&nbsp;&nbsp; </span><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>(WRITE_ADDR),a2<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>move.w<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>#0x5050,(a2)<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;Clear Status
+Register<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>move.w<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>#0x1010,(a2)<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;Write Setup<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>move.w<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>#VALUE,(a2)<span style=""> </span><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;Erase
+Confirm<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;">write_state_busy:<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>move.w<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>(a2),d0<span style="">&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;Read Status Register<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>btst<span style="">&nbsp; </span><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>#7,d0<span style=""> </span><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;1=Ready<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>beq<span style="">&nbsp;&nbsp; </span><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>write_state_busy<o:p></o:p></span></font></p>
+
+<p class="MsoPlainText" style="background: rgb(204, 204, 204) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><font size="2" face="Courier New"><span style="font-size: 10pt;"><span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>move.w<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>#0xFFFF,(a2)<span style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;Read<o:p></o:p></span></font></p>
+
+</div>
+
+<font size="3" face="Times New Roman"><span style="font-size: 12pt; font-family: &quot;Times New Roman&quot;;"><br clear="all" style="page-break-before: always;">
+</span></font>
+
+<div class="Section2">
+
+<p class="MsoNormal"><font size="3" face="Times New Roman"><span style="font-size: 12pt;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></font></p>
+
+</div>
+
+</body></html>

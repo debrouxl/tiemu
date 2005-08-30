@@ -1,0 +1,33 @@
+Copyright information on PedroM:
+
+PedroM is free software and released under "GNU GENERAL PUBLIC LICENSE Version 2, June 1991".
+The source code of PedroM can be found in pedrom-src.tar.bz2.
+
+  PedroM   - Copyright (C) 2003, 2004, 2005 Patrick Pelissier
+  PreOS	   - Copyright (C) 2002, 2003, 2004, 2005 Patrick Pelissier
+  Side     - Copyright (c) 2002, 2005 Clement Vasseur.
+  MD5      - Copyright (C) 1999, 2000, 2002 Aladdin Enterprises.
+  ExtGraph - Copyright (C) 2001-2002 Thomas Nussbaumer
+  TIB Install - Copyright (c) 2000-2004 Julien Muchembled.
+
+  This program is free software ; you can redistribute it and/or modify it under the
+  terms of the GNU General Public License as published by the Free Software Foundation;
+  either version 2 of the License, or (at your option) any later version. 
+  
+  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details. 
+  
+  You should have received a copy of the GNU General Public License along with this program;
+  if not, write to the 
+  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+
+The precompiled TIB is PedRom re-built by Kevin in order to remove non-free parts:
+
+  This is a version of PedroM 0.81 RC8 modified for compatibility with ld-tigcc.
+  I also deleted the non-Free files (the builtin ttunpack, the builtin stdlib
+  archive pack and wti.h (not used by PedroM anymore anyway) have been removed),
+  as well as several other junk not needed to build PedroM and built PedroM
+  using the fully GPL option. See pedrom-081-rc8-ld-tigcc.diff for my changes.
+
+Get it at: www.tigen.org/kevin.kofler/ti89prog/pedrom-ld-tigcc.zip.

@@ -1,0 +1,235 @@
+-----------------------------------------------------------------------------
+RAM ADDRESSES (LOW MEMORY GLOBALS)
+-----------------------------------------------------------------------------
+
+Note: These addresses apply only for ROM versions 1.2 through 1.12.
+
+00000	: interrupt vector table to 000FF
+00100	:
+
+00120	: (4000) user stack
+04120	: (0320) supervisor stack
+04440	: (0F00) LCD memory
+05340.B	: contrast
+05341.B	:
+05342.B	: Break indicator (nonzero = [ON] has been pressed)
+05343.B	:
+
+05346.W	:
+05348	: (0008)[6] countdown timers, numbered from 0 to 5
+	+0000.L	: initial value of timer
+	+0004.L	: current value of timer; decremented every time
+			Auto-Int 5 is triggered. When it reaches zero, it
+			is reset to its initial value.
+	Notes:	Timer 1 is the countdown timer for APD (Auto Power Down).
+		This timer is initialized to 00001770 whenever data is
+		received into the software link or keyboard buffers. When
+		it reaches zero, if the TI-92 is idle it will turn itself
+		off.
+
+05380	: (0002)[6] words (corresponding to 6 timers at 05348)
+	+0000.W	: When a timer expires, this word is set to 0001.
+
+0538E	: (000C)[2] structures (corresponding to 6 timers at 05348)
+	+0000.L	: When a timer expires, this callback function is called
+	+0004.L	: When a timer expires, this longword is decremented
+	+0008.L	:
+
+053E8	: (0088) circular byte buffer (used for link transmit buffer)
+	+0000.W	: buffer tail (insert byte at [buffer+tail])
+	+0002.W	: buffer head (read byte from [buffer+head])
+	+0004.W	: size of buffer (default: 0080)
+	+0006.W	: number of bytes currently stored in buffer
+	+0008	: circular buffer
+05470	: (0088) circular byte buffer (used for link receive buffer)
+	+0000.W	: buffer tail (insert byte at [buffer+tail])
+	+0002.W	: buffer head (read byte from [buffer+head])
+	+0004.W	: size of buffer (default: 0080)
+	+0006.W	: number of bytes currently stored in buffer
+	+0008	: circular buffer
+054F8.B	: set to 00 when link buffers are flushed
+054F9.B	: set to FF upon entering link ISR, set to 00 upon exiting
+		and when link buffers are flushed
+054FA.B	: set to 00 when link buffers are flushed
+054FB.B	: set to FF when link buffers are flushed
+	  set to 00 when link buffers are flush2-ed
+054FC.B	: set to 00 when link buffers are flush2-ed
+054FD.B	:
+054FE.W	: saved interrupt mask (see calls 4029C6 and 4029D2)
+05500.W	:
+
+05508.L	: SSP (saved when calculator turns off)
+0550C.L	: set to ________ when calc turns off, set to 0 when calc turns on
+05510.L	: checksum from 078B4 to [05536] plus from 00120 to 00FFF (saved
+	  when calculator turns off)
+
+05518.B	: max contrast (default: 1F)
+05519.B	: ? something to do with contrast (and maybe LCD ON/OFF status)
+0551A.L	: pointer after memory heap
+05520.L	: pointer to saved state information ($38 byte structure)
+
+056A0.L	: {estack_max_index}
+056A4.L	: {top_estack}
+056A8.W	: handle of estack
+056AA.L	: pointer to bottom of estack
+
+056B0.W	: handle of currently running TI-BASIC program (zero if none)
+056B2.L : pointer to top TI-BASIC token
+056B6.L : pointer to current TI-BASIC token
+
+056C4.L	: pointer to string for get_lower_char functions
+056C8.B	: character result of get_lower_char functions
+
+05764.L	: menu pointer for 1:Home
+05768.L	: menu handle for  1:Home
+0576A.L	: menu pointer for 2:Y= Editor
+0576E.L	: menu handle for  2:Y= Editor
+05770.L	: menu pointer for 3:Window Editor
+05774.L	: menu handle for  3:Window Editor
+05776.L	: menu pointer for 4:Graph
+0577A.L	: menu handle for  4:Graph
+0577C.L	: menu pointer for 5:Table
+05780.L	: menu handle for  5:Table
+05782.L	: menu pointer for 6:Data/Matrix Editor
+05786.L	: menu handle for  6:Data/Matrix Editor
+05788.L	: menu pointer for 7:Program Editor
+0578C.L	: menu handle for  7:Program Editor
+0578E.L	: menu pointer for 8:Geometry
+05792.L	: menu handle for  8:Geometry
+05794.L	: menu pointer for 9:Text Editor
+05798.L	: menu handle for  9:Text Editor
+
+05820	: (002A) window structure
+0584A.W	: ?
+0584C	: (002A) window structure
+05876.W	: ?
+05878	: (002A) window structure for PrgmIO
+
+05904.W	: name length of variable in        7:Program Editor
+05906.L	: pointer after name of variable in 7:Program Editor
+0590A	: $00 + folder\name of variable in  7:Program Editor
+
+05946	: (002A) window structure for       7:Program Editor
+
+05A28.L	: pointer after name of variable in 9:Text Editor
+05A2C	: $00 + folder\name of variable in  9:Text Editor
+
+05A68	: (002A) window structure for       9:Text Editor
+
+05AD2	: (002A) window structure for 6:Data/Matrix Editor
+
+05BA0.W	: {colint}
+05BA2.W	: {rowint}
+
+05C10	: (0012) screen structure
+	+0000.L	: pointer to current video buffer
+	+0004.B	: width-1 (in pixels)
+	+0005.B	: height-1 (in pixels)
+	+0006.W	: current font
+	+0008.W	: line thickness
+	+000A.W	: x pos
+	+000C.W	: y pos
+	+000E.B	: left edge of clipping rect
+	+000F.B	: top edge of clipping rect
+	+0010.B	: right edge of clipping rect
+	+0011.B	: bottom edge of clipping rect
+05C22.W	: character height (current font)
+
+05C28.W	: character width (current font)
+05C2A.W	: text height (current font)
+
+05C30.W	: screen width (bytes)
+
+05C44	: (0008) rect: used to store tempory bounding box)
+05C4C	: (0008) rect: used to store tempory bounding box)
+
+05C54.L : pointer to current window
+05C58	: (002A) window structure used to store standard window
+
+05CA6	: (002A) window structure
+05CD0.W	: used to store a copy of 057B8
+05CD2	: (0012) used to store a copy of the screen structure at 05C10
+
+05D04.W	: handle of custom menu labels (what you see)
+05D06.W	: handle of custom menu actions (what you get)
+
+05D2C.W : max number of elements in heap table before it needs to be resized
+05D2E.L	: pointer to first byte of free memory in heap
+05D32.L	: gen mem scratch var? contents depend on what was last used..
+05D36.L	: pointer to top of memory heap
+
+05D3C.B	: ?
+
+05D3E.L	: ?
+
+05D42.L	: pointer to heap table
+
+05D8C.W	: handle of folder list
+05D8E.W : handle of main folder (?)
+
+05D72.W : handle of main folder (?)
+
+05DE4	: (002A) window structure for 4:Graph
+
+05E38	: (002A) window structure for 3:Window Editor
+
+05E8C	: (002A) window structure for 5:Table
+
+065CE	: (002A) window structure for 2:Y= Editor
+
+06B0E	: (002A) window structure for 8:Geometry
+
+07512.W	: 1=display graph number (i.e. if there are two graphs activated)
+
+0755E	: (002A) window structure
+
+07594.W	: current keypad scancode
+07596.W	: current status of modifiers
+
+075A0.W	: current keypad scancode (same as 07594?)
+075A2.W	: current status of modifiers (same as 07596?)
+
+075AA	: (000A) circular word buffer (used for key buffer)
+	+0000.W	: buffer tail (insert word at [buffer+tail])
+	+0002.W	: buffer head (read word from [buffer+head])
+	+0004.W	: size of buffer (default: 0002)
+	+0006.W	: number of bytes currently stored in buffer
+	+0008	: circular buffer
+
+075DA	: buffer for storing link packets
+
+075E4.W	: number of items in history
+075E6.W	: item in history currently pointed to
+
+0761C.W	: status line flags, part 1
+	<........|.......0> = 2nd has been pressed
+	<........|......1.> = diamond has been pressed
+	<........|.....2..> = shift has been pressed
+	<........|....3...> = hand has been pressed
+	<........|..5.....> = 2nd-hand has been pressed
+	<........|.6......> = angle mode
+			    : 0=RADIAN
+			    : 1=DEGREE
+	<.......0|7.......> = exact/approx
+			    : 0=AUTO
+			    : 1=EXACT
+			    : 2=APPROXIMATE
+			    : 3=AUTO (?)
+	<...432..|........> = graph mode
+			    : 1=FUNCTION
+			    : 2=PARAMETRIC
+			    : 3=POLAR
+			    : 4=SEQUENCE
+			    : 5=3D
+	<.65.....|........> = activity
+			    : 0=idle
+			    : 1=busy
+			    : 2=paused
+	<7.......|........> = a help message is being displayed
+0761C.W	: status line flags, part 2
+	<........|....32..> = battery level
+			    : 0=good
+			    : 1=replace soon
+			    : 2=replace NOW!
+
+078B4	: Start of dynamic heap

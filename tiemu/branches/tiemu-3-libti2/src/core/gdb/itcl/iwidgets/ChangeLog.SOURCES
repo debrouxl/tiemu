@@ -1,0 +1,4 @@
+2003-02-24  Keith Seitz  <keiths@redhat.com>
+
+	* Makefile.in (distclean): Remove pkgIndex.tcl and iwidgets.tcl, too.
+

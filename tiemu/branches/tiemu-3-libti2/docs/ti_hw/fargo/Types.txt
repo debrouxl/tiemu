@@ -1,0 +1,71 @@
+-----------------------------------------------------------------------------
+INTRODUCTION
+-----------------------------------------------------------------------------
+
+The simplest data type used by the TI-92 is the byte, followed by the word
+and the long integer. However, it is useful to define more complex data
+structures for more complex tasks. This text file describes some of the
+data structures used by the TI-92.
+
+This text file also describes some of the enumerated data types used by the
+TI-92. These are integers in which predefined values have specific meanings.
+
+-----------------------------------------------------------------------------
+ENUMERATED DATA TYPES
+-----------------------------------------------------------------------------
+
+color
+-----
+ 0 = white on black
+ 1 = black on black (!!!)
+ 2 = white on black (??)
+ 3 = gray on white
+ 4 = black on white
+
+font
+----
+ 0 =  5(d) point font
+ 1 =  8(d) point font
+ 2 = 10(d) point font
+
+-----------------------------------------------------------------------------
+DATA STRUCTURES
+-----------------------------------------------------------------------------
+
+point (4 bytes)
+---------------
+ 00.W	x coordinate
+ 02.W	y coordinate
+
+rect (8 bytes)
+--------------
+ 00.W	x1 = coordinate of left edge
+ 02.W	y1 = coordinate of top edge
+ 04.W	x2 = coordinate of right edge
+ 06.W	y2 = coordinate of bottom edge
+
+window (2A bytes)
+-----------------
+ 00.W	flags
+	03 = border width 0= 2 pts, 1 =1 pt
+	05 = 0  store background
+	     1  don't store background
+	06 = translate LF, FF, and CR
+	08 = draw border
+	10 = similar to 11
+	11 = check boundaries
+	12 = display title
+ 02.B	(font) text font
+ 03.B	(color) text color
+ 04.B	background color (0=white, 1=black)
+ 05.B	???
+ 06.W	??? (from 57A4)
+ 08.W	cursor x coordinate from window
+ 0A.W	cursor y coordinate from window
+
+ 10	(rect) border of window
+ 14	(rect) usable area of window
+ 18	(rect) border of window
+ 1C	(rect) inside of window (relative); top left = (0,0)
+ 20.W	handle of block where bitmap is stored
+ 26.L	pointer to window title
