@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: interface.h 224 2004-05-19 14:04:04Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -47,6 +47,7 @@ unsigned int ti68k_get_cycle_count(int reset, unsigned int *diff);
 
 // Link
 int ti68k_linkport_send_file(const char *filename);
+int ti68k_linkport_unconfigure(void);
 int ti68k_linkport_reconfigure(void);
 
 // Keyboard

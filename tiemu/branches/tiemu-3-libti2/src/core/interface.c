@@ -194,12 +194,14 @@ int ti68k_linkport_send_file(const char *filename)
     return send_ti_file(filename);
 }
 
-int ti68k_linkport_reconfigure(void)
+int ti68k_linkport_unconfigure(void)
 {
 	TRY(hw_dbus_exit());
-    TRY(hw_dbus_init());
+}
 
-    return 0;
+int ti68k_linkport_reconfigure(void)
+{
+	TRY(hw_dbus_init());
 }
 
 /******************/

@@ -46,6 +46,9 @@
 #include "ti68k_int.h"
 #include "tie_error.h"
 
+CableHandle* cable_handle = NULL;
+CalcHandle*  calc_handle  = NULL;
+
 /*
 	Linkport (lp) / directfile (df) mappers
 */

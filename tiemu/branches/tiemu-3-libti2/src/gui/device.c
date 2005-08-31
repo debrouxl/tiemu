@@ -37,9 +37,7 @@
 #include "tilibs.h"
 #include "dboxes.h"
 #include "tie_error.h"
-
-CableHandle* cable_handle = NULL;
-CalcHandle*  calc_handle  = NULL;
+#include "ti68k_int.h"
 
 extern DeviceOptions	link;
 static DeviceOptions	tmp;
@@ -191,65 +189,42 @@ gint display_device_dbox()
 
 	// Timeout
 	data = glade_xml_get_widget(xml, "spinbutton_comm_timeout");
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), link.cable_timeout);
+	if(link.cable_model != CABLE_NUL)	
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), link.cable_timeout);
+	else
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), params.timeout);
 	
 	// Delay
 	data = glade_xml_get_widget(xml, "spinbutton_comm_delay");
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), link.cable_delay);
 
-	// Avoid early callbacks
-	tmp.cable_delay = link.cable_delay;
-	tmp.cable_model = link.cable_model;
-	tmp.cable_port = link.cable_port;
-	tmp.cable_timeout = link.cable_timeout;
-	tmp.calc_model = link.calc_model;
-
-	// Close handles
-	// detach cable (made by handle_del, too)
-	err = ticalcs_cable_detach(calc_handle);
-	if(tiemu_error(err, NULL))
-		return -1;
-
-	// remove calc & cable
-	ticalcs_handle_del(calc_handle);
-	ticables_handle_del(cable_handle);
+	// Data exchange
+	memcpy(&tmp, &link, sizeof(DeviceOptions));
+	ti68k_linkport_unconfigure();
 	
 	// Loop
- loop:
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) 
 	{
 	case GTK_RESPONSE_OK:
 	case GTK_RESPONSE_CANCEL:
-		// copy options
-		cable_handle = ticables_handle_new(tmp.cable_model, tmp.cable_port);
-		if(cable_handle == NULL)
+
+		memcpy(&link, &tmp, sizeof(DeviceOptions));
+
+		switch(tihw.calc_type)
 		{
-			msg_box1("Error", "Can't set cable");
-			goto loop;
-		}
-		else
-		{
-			calc_handle = ticalcs_handle_new(tmp.calc_model);
-			if(calc_handle == NULL)
-			{
-				msg_box1("Error", "Can't set cable");
-				goto loop;
-			}
-			else
-			{
-				err = ticalcs_cable_attach(calc_handle, cable_handle);
-				tiemu_error(err, NULL);
-			}
-			ticables_options_set_timeout(cable_handle, tmp.cable_timeout);
-			ticables_options_set_delay(cable_handle, tmp.cable_delay);
+    	case TI89:  tmp.calc_model = CALC_TI89;  break;
+		case TI89t: tmp.calc_model = CALC_TI89T; break;
+		case TI92:  tmp.calc_model = CALC_TI92;  break;
+		case TI92p: tmp.calc_model = CALC_TI92P; break;
+		case V200:  tmp.calc_model = CALC_V200;  break;
 		}
 
-		link.cable_delay = tmp.cable_delay;
-		link.cable_model = tmp.cable_model;
-		link.cable_port = tmp.cable_port;
-		link.cable_timeout = tmp.cable_timeout;
-		link.calc_model = tmp.calc_model;
+		if(link.cable_model == CABLE_NUL)
+			params.timeout = tmp.cable_timeout;
+
+        err = ti68k_linkport_reconfigure();
+		handle_error();
 
 		break;
 	case GTK_RESPONSE_HELP:
