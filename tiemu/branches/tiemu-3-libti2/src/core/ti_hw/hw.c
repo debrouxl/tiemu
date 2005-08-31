@@ -217,14 +217,11 @@ void hw_update(void)
 	}
 
 	// DBus: External link activity ?
-#if 0
 	if(!ticables_cable_get_d0(cable_handle) || !ticables_cable_get_d0(cable_handle))
-	//if(!cable_handle->cable->get_d0(cable_handle) || !cable_handle->cable->get_d1(cable_handle))
 	{
-		io_bit_set(0x0d,3);
-		io_bit_set(0x0d,2);
+		io_bit_set(0x0d,3);	//SA
+		io_bit_set(0x0d,2);	//EA
 	}
-#endif
 
 	// DBUS enabled ?
 	if(!io_bit_tst(0x0c,6))

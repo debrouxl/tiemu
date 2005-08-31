@@ -156,7 +156,7 @@ int hw_dbus_exit(void)
 		return -1;
 	}
 
-	// remove calc & cable
+	// delete calc & cable handles
 	ticalcs_handle_del(calc_handle);
 	ticables_handle_del(cable_handle);
 
