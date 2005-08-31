@@ -35,6 +35,7 @@
 # include <libticables/ticables.h>
 #else
 # include "ticables.h"
+# include "timeout.h"
 #endif
 
 #if defined(__MACOSX__)

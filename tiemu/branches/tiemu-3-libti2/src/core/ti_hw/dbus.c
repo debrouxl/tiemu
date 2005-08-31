@@ -88,25 +88,52 @@ static void map_dbus_to_file(void)
     D-bus management (HW linkport)
 */
 
-static int init_link_cable(void);
-static int exit_link_cable(void);
-static int init_link_file(void);
-static int exit_link_file(void);
+int ilp_reset(CableHandle *h);
+int ilp_send(CableHandle *h, uint8_t *data, uint32_t len);
+int ilp_recv(CableHandle *h, uint8_t *data, uint32_t len);
 
 int hw_dbus_init(void)
 {
-#if 0
-	// init link_cable
-	init_link_cable();
+	int err;
 
-	// init directfile
-	init_link_file();
-
-	if(link_cable.link_type == LINK_NUL)
-		map_dbus_to_file();		// set mappers to link_cable
+	// set cable
+	cable_handle = ticables_handle_new(link.cable_model, link.cable_port);
+	if(cable_handle == NULL)
+	{
+		tiemu_error(0, "Can't set cable");
+		return -1;
+	}
 	else
-		map_dbus_to_cable();	// set mappers to link_cable
-#endif
+	{
+		calc_handle = ticalcs_handle_new(link.calc_model);
+		if(calc_handle == NULL)
+		{
+			tiemu_error(0, "Can't set cable");
+			return -1;
+		}
+		else
+		{
+			err = ticalcs_cable_attach(calc_handle, cable_handle);
+			tiemu_error(err, NULL);
+		}
+		ticables_options_set_timeout(cable_handle, link.cable_timeout);
+		ticables_options_set_delay(cable_handle, link.cable_delay);
+	}
+
+	// customize cable
+	if(link.cable_model == CABLE_ILP)
+	{
+		cable_handle->cable->reset = ilp_reset;
+		cable_handle->cable->send  = ilp_send;
+		cable_handle->cable->recv  = ilp_recv;
+	}
+
+	// and set pointers
+	if(link.cable_model == CABLE_ILP)
+		map_dbus_to_file();		// set mappers to internal file loader
+	else
+		map_dbus_to_cable();	// set mappers to external link cable
+
     return 0;
 }
 
@@ -119,89 +146,44 @@ int hw_dbus_reset(void)
 
 int hw_dbus_exit(void)
 {
-	// exit link_cable
-	exit_link_cable();
-
-	// exit link_file
-	exit_link_file();
-
-    return 0;
-}
-
-/*
-	Link cable access
-*/
-
-#if 0
-TicableLinkCable lc;	// used in ports.c for direct access
-static int avail = 0;
-#endif
-
-static int init_link_cable(void)
-{
-#if 0
 	int err;
 
-	ticable_set_param(&link_cable);
-	err = ticable_set_cable(link_cable.link_type, &lc);
+	// release cable
+	err = ticalcs_cable_detach(calc_handle);
 	if(err)
 	{
 		tiemu_error(err, NULL);
 		return -1;
 	}
 
-	if((err = lc.init()))
-	{
-		tiemu_error(err, NULL);
-		return -1;
-	}
+	// remove calc & cable
+	ticalcs_handle_del(calc_handle);
+	ticables_handle_del(cable_handle);
 
-	if((err = lc.open()))
-	{
-		tiemu_error(err, NULL);
-		return -1;
-	}
-#endif
 	return 0;
 }
 
-static int exit_link_cable(void)
-{
-#if 0
-	int err;
+/*
+	Link cable access
+*/
 
-	if((err = lc.close()))
-	{
-		tiemu_error(err, NULL);
-		return -1;
-	}
-
-	if((err = lc.exit()))
-	{ 
-		tiemu_error(err, NULL);
-		return -1;
-	}
-#endif
-	return 0;
-}
+static int avail = 0;
 
 static void lp_reinit(void)
 {
-#if 0
 	int err;
 
 	avail = 0;
-	if((err = lc.reset()))
+	err = ticables_cable_reset(cable_handle);
+	if(err)
 		tiemu_error(err, NULL);
-#endif
 }
 
 static void lp_putbyte(uint8_t arg)
 {
-#if 0
 	int err;
   
-    err = lc.put(arg);
+	err = ticables_cable_put(cable_handle, arg);
 	if(err)
 	{
 		io_bit_set(0x0d,7);	// error
@@ -211,12 +193,10 @@ static void lp_putbyte(uint8_t arg)
 
 	io_bit_set(0x0d,6);		// tx reg empty
 	io_bit_set(0x0d,2);		// link activity
-#endif
 }
 
 static uint8_t lp_getbyte(void)
 {
-#if 0
 	int err;
 	uint8_t arg;
 
@@ -226,7 +206,7 @@ static uint8_t lp_getbyte(void)
 		printf("lp_getbyte (byte lost) !\n");
 	}
 
-	err = lc.get(&arg);
+	err = ticables_cable_get(cable_handle, &arg);
 	if(err)
     {
 		io_bit_set(0x0d,7);	// error
@@ -236,19 +216,17 @@ static uint8_t lp_getbyte(void)
 
 	avail = 0;
 	return arg;
-#endif
 }
 
 static int lp_checkread(void)
 {
-#if 0
 	int err = 0;
 	int status = 0;
 
 	if(avail)
 	    return 0;
 
-	err = lc.check(&status);
+	err = ticables_cable_check(cable_handle, &status);
 	if(err)
 	{
 	    io_bit_set(0x0d,7);		// error
@@ -264,7 +242,6 @@ static int lp_checkread(void)
     }
   
 	return avail;
-#endif
 }
 
 
@@ -337,63 +314,45 @@ int df_checkread(void)
 	Wonderful, isn't it ?! Take a look at the 'TiLP framework' power ;-)
 */
 
-#if 0
-
-static TicableLinkCable 	ilc = { 0 };
-static TicalcFncts			itc = { 0 };
-static TicalcInfoUpdate 	iu = { 0 };
-static TicableDataRate*     tdr;
-
 /* libticables functions (link API) */
-static int ilp_init(void)     
-{ 
-	ticable_get_datarate(&tdr);
 
-	tdr->count = 0;
-  	toSTART(tdr->start);
-
-	return 0; 
-}
-
-static int ilp_open(void)     
+int ilp_reset(CableHandle *h)
 {
-	return 0; 
+	return t2f_flag = f2t_flag = 0;
 }
 
-static int ilp_put(uint8_t data)
-{ 
+int ilp_send(CableHandle *h, uint8_t *data, uint32_t len)
+{
 	tiTIME clk;
 
-	tdr->count++;
-
-  	f2t_data = data; 
+  	f2t_data = *data; 
   	f2t_flag = 1;
 
 	io_bit_set(0x0d,5);	// SRX=1 (rx reg is full)
 	io_bit_set(0x0d,2);	// link activity
 	hw_m68k_irq(4);		// this turbo-boost transfer !
 
-	toSTART(clk);
+	TO_START(clk);
   	while(f2t_flag/* && !iu.cancel*/) 
     { 
 		hw_m68k_run(1, 0);
-		if(toELAPSED(clk, params.timeout))
-			return ERR_WRITE_TIMEOUT;
+		if(TO_ELAPSED(clk, params.timeout))
+			return ERROR_WRITE_TIMEOUT;
     };
 
   	return 0;
 }
 
-static int ilp_get(uint8_t *data)
-{ 
+int ilp_recv(CableHandle *h, uint8_t *data, uint32_t len)
+{
 	tiTIME clk;
 
-	toSTART(clk);
+	TO_START(clk);
   	while(!t2f_flag/* && !iu.cancel*/) 
     { 
       	hw_m68k_run(1, 0);
-		if(toELAPSED(clk, params.timeout))
-			return ERR_WRITE_TIMEOUT;
+		if(TO_ELAPSED(clk, params.timeout))
+			return ERROR_WRITE_TIMEOUT;
     };
     
   	*data = t2f_data;
@@ -402,77 +361,7 @@ static int ilp_get(uint8_t *data)
 	io_bit_set(0x0d,6);	// STX=1 (tx reg is empty)
 	hw_m68k_irq(4);		// this turbo-boost transfer !
 
-	tdr->count++;
-
 	return 0;
-}
-
-static int ilp_reset(void)
-{
-	return t2f_flag = f2t_flag = 0;
-}
-
-static int ilp_probe(void)    	{ return 0; }
-static int ilp_close(void)    	{ return 0; }
-static int ilp_term(void)     	{ return 0; }
-static int ilp_check(int *st)	{ return 0; }
-
-/* libticalcs functions (GUI callbacks API) */
-static void ilp_start(void)   { }
-static void ilp_stop(void)    { }
-static void ilp_refresh(void) { }
-static void ilp_pbar(void)    { }
-static void ilp_label(void)   { }
-
-#endif
-
-/* Initialize a pseudo link cable to be connected with HW */
-static int init_link_file(void)
-{
-#if 0
-  	ilc.init  = ilp_init;
-  	ilc.open  = ilp_open;
-  	ilc.put   = ilp_put;
-  	ilc.get   = ilp_get;
-  	ilc.close = ilp_close;
-  	ilc.exit  = ilp_term;
-  	ilc.probe = ilp_probe;
-  	ilc.check = ilp_check;
-	ilc.reset = ilp_reset;
-
-  	ticalc_set_cable(&ilc);
-
-  	switch(tihw.calc_type)
-    {
-    	case TI92: ticalc_set_calc(CALC_TI92, &itc);
-      	break;
-    	case TI89: ticalc_set_calc(CALC_TI89, &itc);
-      	break;
-		case TI89t: ticalc_set_calc(CALC_TI89T, &itc);
-		break;
-    	case TI92p: ticalc_set_calc(CALC_TI92P, &itc);
-      	break;
-		case V200: ticalc_set_calc(CALC_V200, &itc);
-      	break;
-    	default: return ERR_NONE;
-      	break;
-    }
-
-  	//ticalc_set_update(&iu, ilp_start, ilp_stop, ilp_refresh, ilp_pbar, ilp_label);
-
-    df_reinit();
-	ilc.init();
-#endif
-  	return 0;
-}
-
-static int exit_link_file(void)
-{
-#if 0
-	ilc.exit();
-	df_reinit();
-#endif
-    return 0;
 }
 
 int send_ti_file(const char *filename)

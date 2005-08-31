@@ -534,12 +534,15 @@ void rcfile_write(void)
 
 	fprintf(txt, "# Calculator type\n");
 	fprintf(txt, "calc_model=%s\n", ticalcs_model_to_string(0));
+	fprintf(txt, "\n");
 
 	fprintf(txt, "# Link cable type\n");
 	fprintf(txt, "cable_model=%s\n", ticables_model_to_string(0));
+	fprintf(txt, "\n");
 
 	fprintf(txt, "# Port to use (serial, parallel, ...\n");
 	fprintf(txt, "port=%s\n", ticables_port_to_string(link.cable_port));
+	fprintf(txt, "\n");
 
 	fprintf(txt, "# Timeout value in 0.1 seconds\n");
 	fprintf(txt, "cable_timeout=%i\n", link.cable_timeout);

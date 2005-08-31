@@ -107,11 +107,18 @@ int ti68k_config_load_default(void)
 
 	params.timeout = is_win_9x() ? 600 : 15;	// 1.5 or 60s
 
-#if 0
-    ticable_get_default_param(&link_cable);
-    link_cable.link_type = LINK_NUL;
-    link_cable.port = NULL_PORT;
-#endif
+	link.cable_delay = DFLT_DELAY;
+	link.cable_timeout = DFLT_TIMEOUT;
+	link.cable_port = PORT_1;
+	link.cable_model = CABLE_ILP;
+	switch(tihw.calc_type)
+	{
+    case TI89:  link.calc_model = CALC_TI89;  break;
+	case TI89t: link.calc_model = CALC_TI89T; break;
+	case TI92:  link.calc_model = CALC_TI92;  break;
+	case TI92p: link.calc_model = CALC_TI92P; break;
+	case V200:  link.calc_model = CALC_V200;  break;
+	}
 
     return 0;
 }
@@ -196,12 +203,12 @@ int ti68k_linkport_send_file(const char *filename)
 
 int ti68k_linkport_unconfigure(void)
 {
-	TRY(hw_dbus_exit());
+	return hw_dbus_exit();
 }
 
 int ti68k_linkport_reconfigure(void)
 {
-	TRY(hw_dbus_init());
+	return hw_dbus_init();
 }
 
 /******************/

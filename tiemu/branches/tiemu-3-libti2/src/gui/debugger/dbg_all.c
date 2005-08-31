@@ -72,7 +72,7 @@ void gtk_debugger_preload(void)
 	dbgw.pclog = dbgpclog_create_window();
     dbgw.stack = dbgstack_create_window();
 	dbgw.heap  = dbgheap_create_window();
-	dbgw.iop   = dbgiop_create_window();
+	//dbgw.iop   = dbgiop_create_window();
 	dbgw.code  = dbgcode_create_window();
 }
 
