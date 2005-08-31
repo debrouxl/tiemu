@@ -42,7 +42,7 @@
 #include "paths.h"
 #include "../engine.h"
 #include "fs_misc.h"
-#include "comm.h"
+#include "device.h"
 #include "rcfile.h"
 #include "dboxes.h"
 #include "romversion.h"
@@ -116,7 +116,7 @@ on_link_cable1_activate                (GtkMenuItem     *menuitem,
 	if(engine_is_stopped()) return;
 
 	engine_stop();
-	display_comm_dbox();
+	display_device_dbox();
 	engine_start();
 }
 

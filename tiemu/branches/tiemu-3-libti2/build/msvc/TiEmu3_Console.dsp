@@ -364,11 +364,11 @@ SOURCE=..\..\src\gui\about.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\comm.c
+SOURCE=..\..\src\gui\dboxes.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\dboxes.c
+SOURCE=..\..\src\gui\device.c
 # End Source File
 # Begin Source File
 
