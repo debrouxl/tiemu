@@ -174,62 +174,15 @@ void rcfile_read(void)
 	if(buffer[0]=='#' || !strlen(buffer)) continue;
       
 	/* Common part with TiLP: hardware section */
-	if ((p = find_str(buffer, "calc_model="))) 
-	{
-		if (!strcmp(p, "v200"))
-			link.calc_model = CALC_V200;
-
-		else if (!strcmp(p, "ti92+"))
-			link.calc_model = CALC_TI92P;
-
-		else if (!strcmp(p, "ti92"))
-			link.calc_model = CALC_TI92;
-
-		else if (!strcmp(p, "ti89"))
-			link.calc_model = CALC_TI89;
-
-		else if (!strcmp(p, "ti89t"))
-			link.calc_model = CALC_TI89T;
-
-		else
-			stop(l);
-		continue;
-	}
-	
 	if ((p = find_str(buffer, "cable_model="))) 
 	{
-		if (!strcmp(p, "parallel"))
-			link.cable_model = CABLE_PAR;
-
-		else if (!strcmp(p, "serial"))
-			link.cable_model = CABLE_BLK;
-
-		else if (!strcmp(p, "TIGraphLink"))
-			link.cable_model = CABLE_GRY;
-
-		else if (!strcmp(p, "VTi"))
-			link.cable_model = CABLE_VTI;
-
-		else if (!strcmp(p, "TiEmulator"))
-			link.cable_model = CABLE_TIE;
-
-		else if (!strcmp(p, "virtual"))
-			link.cable_model = CABLE_VTL;
-
-		else if (!strcmp(p, "UsbGraphLink"))
-			link.cable_model = CABLE_SLV;
-
-		else if (!strcmp(p, "none"))
-			link.cable_model = CABLE_NUL;
-
-		else
-			stop(l);
+		link.cable_model = ticables_string_to_model(p);
 		continue;
 	}
 	
 	if ((p = find_str(buffer, "cable_port="))) 
 	{
-		sscanf(p, "%i", &(link.cable_port));
+		link.cable_port = ticables_string_to_port(p);
 		continue;
 	}
 	
@@ -532,12 +485,8 @@ void rcfile_write(void)
 	fprintf(txt, "#\n");
 	fprintf(txt, "\n");
 
-	fprintf(txt, "# Calculator type\n");
-	fprintf(txt, "calc_model=%s\n", ticalcs_model_to_string(0));
-	fprintf(txt, "\n");
-
 	fprintf(txt, "# Link cable type\n");
-	fprintf(txt, "cable_model=%s\n", ticables_model_to_string(0));
+	fprintf(txt, "cable_model=%s\n", ticables_model_to_string(link.cable_model));
 	fprintf(txt, "\n");
 
 	fprintf(txt, "# Port to use (serial, parallel, ...\n");

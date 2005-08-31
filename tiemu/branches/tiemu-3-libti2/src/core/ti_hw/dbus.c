@@ -324,48 +324,54 @@ int ilp_reset(CableHandle *h)
 // need to be rewritten for 'len' bytes
 int ilp_send(CableHandle *h, uint8_t *data, uint32_t len)
 {
-#if 0
+	unsigned int i;
 	tiTIME clk;
 
-  	f2t_data = data; 
-  	f2t_flag = 1;
+	for(i = 0; i < len; i++)
+	{
+		printf("<%02x> ", data[i]);
+  		f2t_data = data[i]; 
+  		f2t_flag = 1;
 
-	io_bit_set(0x0d,5);	// SRX=1 (rx reg is full)
-	io_bit_set(0x0d,2);	// link activity
-	hw_m68k_irq(4);		// this turbo-boost transfer !
+		io_bit_set(0x0d,5);	// SRX=1 (rx reg is full)
+		io_bit_set(0x0d,2);	// link activity
+		hw_m68k_irq(4);		// this turbo-boost transfer !
 
-	TO_START(clk);
-  	while(f2t_flag/* && !iu.cancel*/) 
-    { 
-		hw_m68k_run(1, 0);
-		if(TO_ELAPSED(clk, params.timeout))
-			return ERROR_WRITE_TIMEOUT;
-    };
-#endif
+		TO_START(clk);
+  		while(f2t_flag/* && !iu.cancel*/) 
+		{ 
+			hw_m68k_run(1, 0);
+			if(TO_ELAPSED(clk, params.timeout))
+				return ERROR_WRITE_TIMEOUT;
+		};
+	}
+
   	return 0;
 }
 
 // need to be rewritten for 'len' bytes
 int ilp_recv(CableHandle *h, uint8_t *data, uint32_t len)
 {
-#if 0
+	unsigned int i;
 	tiTIME clk;
 
-	TO_START(clk);
-  	while(!t2f_flag/* && !iu.cancel*/) 
-    { 
-      	hw_m68k_run(1, 0);
-		if(TO_ELAPSED(clk, params.timeout))
-			return ERROR_WRITE_TIMEOUT;
-    };
+	for(i = 0; i < len; i++)
+	{
+		TO_START(clk);
+  		while(!t2f_flag/* && !iu.cancel*/) 
+		{ 
+      		hw_m68k_run(1, 0);
+			if(TO_ELAPSED(clk, params.timeout))
+				return ERROR_WRITE_TIMEOUT;
+		};
     
-  	*data = t2f_data;
-  	t2f_flag = 0;
+  		data[i] = t2f_data;
+  		t2f_flag = 0;
 
-	io_bit_set(0x0d,6);	// STX=1 (tx reg is empty)
-	hw_m68k_irq(4);		// this turbo-boost transfer !
+		io_bit_set(0x0d,6);	// STX=1 (tx reg is empty)
+		hw_m68k_irq(4);		// this turbo-boost transfer !
+	}
 
-#endif
 	return 0;
 }
 
@@ -463,7 +469,7 @@ int recfile(void)
 	// the VAR-Link menu or just before sending variable. We skip it !
 	if(t2f_data == 0x89 && tihw.calc_type != TI92)
 	{
-		uint8_t arg;
+		uint8_t arg = 0;
 		int i;
 
 		for(i=0; i<4; i++)

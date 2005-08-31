@@ -43,9 +43,8 @@ extern DeviceOptions	link;
 static DeviceOptions	tmp;
 
 static GtkWidget* lbl;
-static GtkWidget* om_cable;
-static GtkWidget* om_calc;
-static GtkWidget* om_port;
+static GtkWidget* comm_cable;
+static GtkWidget* comm_port;
 
 gint display_device_dbox()
 {
@@ -65,7 +64,7 @@ gint display_device_dbox()
 	lbl = glade_xml_get_widget(xml, "label7");
 
 	// Cable  
-	data = om_cable = glade_xml_get_widget(xml, "optionmenu_comm_cable");
+	data = comm_cable = glade_xml_get_widget(xml, "optionmenu_comm_cable");
 	switch (link.cable_model) 
 	{
 	case CABLE_NUL:
@@ -114,7 +113,7 @@ gint display_device_dbox()
 	}
 
 	// Port
-	data = om_port = glade_xml_get_widget(xml, "optionmenu_comm_port");
+	data = comm_port = glade_xml_get_widget(xml, "optionmenu_comm_port");
 	switch (link.cable_port) 
 	{
 	case PORT_0:
@@ -132,63 +131,6 @@ gint display_device_dbox()
 	case PORT_4:
 		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 4);
 	break;
-	}
-
-	// Calc
-	data = om_calc = glade_xml_get_widget(xml, "optionmenu_comm_calc");
-	switch (link.calc_model) 
-	{
-	case CALC_NONE:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 0);
-	  break;
-
-	case CALC_TI73:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 1);
-	  break;
-	  
-	case CALC_TI82:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 2);
-	  break;
-
-	case CALC_TI83:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 3);
-	  break;
-	  
-	case CALC_TI83P:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 4);
-	  break;
-
-	case CALC_TI84P:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 5);
-	  break;
-	  
-	case CALC_TI85:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 6);
-	  break;
-	  
-	case CALC_TI86:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 7);
-	  break;
-	  
-	case CALC_TI89:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 8);
-	  break;
-
-	case CALC_TI89T:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 9);
-	  break;
-	  
-	case CALC_TI92:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 10);
-	  break;
-	  
-	case CALC_TI92P:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 11);
-	  break;
-	  
-	case CALC_V200:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 12);
-	  break;
 	}
 
 	// Timeout
