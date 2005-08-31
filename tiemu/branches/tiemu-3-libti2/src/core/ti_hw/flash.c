@@ -93,7 +93,7 @@ uint8_t FlashReadByte(uint32_t addr)
 		}
 	}
 	
-	return getb(tihw.rom, addr, tihw.rom_size - 1) | wsm.ret_or;
+	return get_b(tihw.rom, addr, tihw.rom_size - 1) | wsm.ret_or;
 }
 
 uint16_t FlashReadWord(uint32_t addr)
@@ -108,12 +108,12 @@ uint16_t FlashReadWord(uint32_t addr)
 		}
 	}
 
-	return getw(tihw.rom, addr, tihw.rom_size - 1) | wsm.ret_or;
+	return get_w(tihw.rom, addr, tihw.rom_size - 1) | wsm.ret_or;
 }
 
 uint32_t FlashReadLong(uint32_t addr)
 {
-	return getl(tihw.rom, addr, tihw.rom_size - 1) | wsm.ret_or;
+	return get_l(tihw.rom, addr, tihw.rom_size - 1) | wsm.ret_or;
 }
 
 /*

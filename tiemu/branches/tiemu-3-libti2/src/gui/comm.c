@@ -359,6 +359,7 @@ comm_spinbutton_timeout_changed        (GtkEditable     *editable,
 
 gint display_comm_dbox()
 {
+	return 0;
 }
 
 #endif

@@ -194,9 +194,15 @@ typedef struct
 
 typedef DeviceOptions	Ti68kLink;
 
+/* Externs */
+
 extern Ti68kParameters 	params;
 extern Ti68kHardware 	tihw;
 extern Ti68kLink		link;
 extern Ti68kBreakpoints	bkpts;
+
+/* Misc */
+
+#define TRY(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
 
 #endif

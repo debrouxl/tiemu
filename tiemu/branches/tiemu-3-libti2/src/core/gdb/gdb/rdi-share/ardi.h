@@ -76,7 +76,7 @@ int angel_RDI_SelectConfig(RDI_ConfigAspect aspect, char const *name,
 
 RDI_NameList const *angel_RDI_drivernames(void);
 
-int angel_RDI_LoadAgent(ARMword dest, unsigned long size, getbufferproc *getb,
+int angel_RDI_LoadAgent(ARMword dest, unsigned long size, getbufferproc *get_b,
                         void *getbarg);
 
 extern const struct Dbg_HostosInterface *angel_hostif;

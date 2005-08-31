@@ -124,7 +124,6 @@ CalcUpdate calc_update =
 	gt_label,
 };
 
-//void gt_init_refresh_functions(void)
 void tiemu_update_set_gtk(void)
 {
 	//ticalcs_update_set(calc_handle, &calc_update);

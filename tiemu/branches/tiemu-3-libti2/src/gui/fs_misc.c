@@ -177,7 +177,7 @@ gint display_send_files_dbox()
 
 		// set pbar title
 #if 1
-		if(tifiles_file_is_tib(*ptr) || tifiles_file_is_tib(*ptr)) 
+		if(tifiles_file_is_tib(*ptr) || tifiles_file_is_flash(*ptr)) 
 		{
 			create_pbar_type5(_("Flash"), "");
 		} 

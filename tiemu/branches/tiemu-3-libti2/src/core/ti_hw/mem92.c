@@ -71,19 +71,19 @@ uint8_t* ti92_get_real_addr(uint32_t adr)
 	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		return getp(tihw.ram, adr, tihw.ram_size - 1);
+		return get_p(tihw.ram, adr, tihw.ram_size - 1);
 	}
 
     // PROM access
 	else if(IN_RANGE(adr, tihw.rom_base, 2*MB))
 	{
-		return getp(tihw.rom, adr, tihw.rom_size - 1);
+		return get_p(tihw.rom, adr, tihw.rom_size - 1);
 	}
 
     // memory-mapped I/O
 	else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
-        return getp(tihw.io, adr, 32 - 1);
+        return get_p(tihw.io, adr, 32 - 1);
 	}
 
     return tihw.unused;
@@ -94,13 +94,13 @@ uint32_t ti92_get_long(uint32_t adr)
 	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		return getl(tihw.ram, adr, tihw.ram_size - 1);
+		return get_l(tihw.ram, adr, tihw.ram_size - 1);
 	}
 
     // PROM access
 	else if(IN_RANGE(adr, tihw.rom_base, 2*MB))
 	{
-		return getl(tihw.rom, adr, tihw.rom_size - 1);
+		return get_l(tihw.rom, adr, tihw.rom_size - 1);
 	}
 
     // memory-mapped I/O
@@ -117,13 +117,13 @@ uint16_t ti92_get_word(uint32_t adr)
 	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		return getw(tihw.ram, adr, tihw.ram_size - 1);
+		return get_w(tihw.ram, adr, tihw.ram_size - 1);
 	}
 
     // PROM access
 	else if(IN_RANGE(adr, tihw.rom_base, 2*MB))
 	{
-		return getw(tihw.rom, adr, tihw.rom_size - 1);
+		return get_w(tihw.rom, adr, tihw.rom_size - 1);
 	}
 
     // memory-mapped I/O
@@ -140,13 +140,13 @@ uint8_t ti92_get_byte(uint32_t adr)
 	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		return getb(tihw.ram, adr, tihw.ram_size - 1);
+		return get_b(tihw.ram, adr, tihw.ram_size - 1);
 	}
 
     // PROM access
 	else if(IN_RANGE(adr, tihw.rom_base, 2*MB))
 	{
-		return getb(tihw.rom, adr, tihw.rom_size - 1);
+		return get_b(tihw.rom, adr, tihw.rom_size - 1);
 	}
 
     // memory-mapped I/O
@@ -163,13 +163,13 @@ void ti92_put_long(uint32_t adr, uint32_t arg)
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		putl(tihw.ram, adr, tihw.ram_size - 1, arg);
+		put_l(tihw.ram, adr, tihw.ram_size - 1, arg);
 	}
 
     // PROM access
 	else if(IN_RANGE(adr, tihw.rom_base, 2*MB))
 	{
-		putl(tihw.rom, adr, tihw.rom_size - 1, arg);
+		put_l(tihw.rom, adr, tihw.rom_size - 1, arg);
 	}
 
     // memory-mapped I/O
@@ -184,13 +184,13 @@ void ti92_put_word(uint32_t adr, uint16_t arg)
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		putw(tihw.ram, adr, tihw.ram_size - 1, arg);
+		put_w(tihw.ram, adr, tihw.ram_size - 1, arg);
 	}
 
     // PROM access
 	else if(IN_RANGE(adr, tihw.rom_base, 2*MB))
 	{
-		putw(tihw.rom, adr, tihw.rom_size - 1, arg);
+		put_w(tihw.rom, adr, tihw.rom_size - 1, arg);
 	}
 
     // memory-mapped I/O
@@ -205,13 +205,13 @@ void ti92_put_byte(uint32_t adr, uint8_t arg)
 	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		putb(tihw.ram, adr, tihw.ram_size - 1, arg);
+		put_b(tihw.ram, adr, tihw.ram_size - 1, arg);
 	}
 
     // PROM access
 	else if(IN_RANGE(adr, tihw.rom_base, 2*MB))
 	{
-		putb(tihw.rom, adr, tihw.rom_size - 1, arg);
+		put_b(tihw.rom, adr, tihw.rom_size - 1, arg);
 	}
 
     // memory-mapped I/O

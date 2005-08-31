@@ -267,10 +267,10 @@ int main(int argc, char **argv)
 		}
 
 		/* 
-			Override refresh functions of the libticalcs library 
+			Override refresh functions of the ticalcs2 library 
 			(must be done after init of ti68k engine)
 		*/
-		gt_init_refresh_functions();
+		tiemu_update_set_gtk();
 
 		/* 
 			Reset emulation engine (step 5)
