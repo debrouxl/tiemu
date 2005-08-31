@@ -321,11 +321,13 @@ int ilp_reset(CableHandle *h)
 	return t2f_flag = f2t_flag = 0;
 }
 
+// need to be rewritten for 'len' bytes
 int ilp_send(CableHandle *h, uint8_t *data, uint32_t len)
 {
+#if 0
 	tiTIME clk;
 
-  	f2t_data = *data; 
+  	f2t_data = data; 
   	f2t_flag = 1;
 
 	io_bit_set(0x0d,5);	// SRX=1 (rx reg is full)
@@ -339,12 +341,14 @@ int ilp_send(CableHandle *h, uint8_t *data, uint32_t len)
 		if(TO_ELAPSED(clk, params.timeout))
 			return ERROR_WRITE_TIMEOUT;
     };
-
+#endif
   	return 0;
 }
 
+// need to be rewritten for 'len' bytes
 int ilp_recv(CableHandle *h, uint8_t *data, uint32_t len)
 {
+#if 0
 	tiTIME clk;
 
 	TO_START(clk);
@@ -361,26 +365,26 @@ int ilp_recv(CableHandle *h, uint8_t *data, uint32_t len)
 	io_bit_set(0x0d,6);	// STX=1 (tx reg is empty)
 	hw_m68k_irq(4);		// this turbo-boost transfer !
 
+#endif
 	return 0;
 }
 
 int send_ti_file(const char *filename)
 {
-#if 0
     gint ok = 0;
 	int ret;
 	clock_t start, finish;
 	double duration;
 
     // Check for TI file
-    if(!tifiles_is_a_ti_file(filename))
+    if(!tifiles_file_is_ti(filename))
         return ERR_NOT_TI_FILE;
 
-	if(((tifiles_which_calc_type(filename) == CALC_TI92) && (tihw.calc_type == TI92)) ||
-		(tifiles_which_calc_type(filename) == CALC_TI89)  ||
-		(tifiles_which_calc_type(filename) == CALC_TI89T) ||
-		(tifiles_which_calc_type(filename) == CALC_TI92P) ||
-		(tifiles_which_calc_type(filename) == CALC_V200)
+	if(((tifiles_file_get_model(filename) == CALC_TI92) && (tihw.calc_type == TI92)) ||
+		(tifiles_file_get_model(filename) == CALC_TI89)  ||
+		(tifiles_file_get_model(filename) == CALC_TI89T) ||
+		(tifiles_file_get_model(filename) == CALC_TI92P) ||
+		(tifiles_file_get_model(filename) == CALC_V200)
 	  )
     {
         ok = 1;
@@ -393,33 +397,33 @@ int send_ti_file(const char *filename)
 	sip = 1;
 
     // FLASH APP file ?
-    if(tifiles_is_a_flash_file(filename) && !strcasecmp(tifiles_flash_app_file_ext(), tifiles_get_extension(filename)))
+    if(tifiles_file_is_flash(filename) && !strcasecmp(tifiles_fext_of_flash_app(calc_handle->model), tifiles_fext_get(filename)))
     {   
-        ret = itc.send_flash(filename, MODE_APPS);
+		ret = ticalcs_calc_send_flash2(calc_handle, filename);
     }
 
     // FLASH OS file ?
-    if(tifiles_is_a_flash_file(filename) && !strcasecmp(tifiles_flash_os_file_ext(), tifiles_get_extension(filename)))
+    if(tifiles_file_is_flash(filename) && !strcasecmp(tifiles_fext_of_flash_os(calc_handle->model), tifiles_fext_get(filename)))
     {
-        ret = itc.send_flash(filename, MODE_AMS);
+		ret = ticalcs_calc_send_flash2(calc_handle, filename);
     }
   
     // Backup file ?
-    else if(tifiles_is_a_backup_file(filename))
+    else if(tifiles_file_is_backup(filename))
     {
-        ret = itc.send_backup(filename, MODE_NORMAL);
+		ret = ticalcs_calc_send_backup2(calc_handle, filename);
     }
 
     // Group file ?
-    else if(tifiles_is_a_group_file(filename))
+    else if(tifiles_file_is_group(filename))
     {
-        ret = itc.send_var(filename, MODE_NORMAL, NULL);
+		ret = ticalcs_calc_send_var2(calc_handle, MODE_NORMAL, filename);
     }
 
     // Single file
-    else if(tifiles_is_a_single_file(filename))
+    else if(tifiles_file_is_single(filename))
     {
-        ret = itc.send_var(filename, MODE_NORMAL, NULL);
+		ret = ticalcs_calc_send_var2(calc_handle, MODE_NORMAL, filename);
     }
 
 	// Restore link cable use
@@ -435,17 +439,17 @@ int send_ti_file(const char *filename)
 		io_bit_set(0x0d,7);	// SLE=1
 		df_reinit();
 	}
-#endif
-  return 0;
+
+	return 0;
 }
 
 int display_recv_files_dbox(const char *path);
 
 int recfile(void)
 {
-#if 0
 	int ret;
 	char filename[1024];
+	VarEntry *ve;
 
 	recfile_flag = 0;
 
@@ -464,7 +468,9 @@ int recfile(void)
 
 		for(i=0; i<4; i++)
 		{
+#if 0
 			ilp_get(&arg);
+#endif
 			printf("purging <%02x>\n", arg);
 		}
 
@@ -476,7 +482,7 @@ int recfile(void)
 	strcpy(filename, g_get_tmp_dir());
 	strcat(filename, G_DIR_SEPARATOR_S);
 
-	ret = itc.recv_var_2(filename, 0, NULL);
+	ret = ticalcs_calc_recv_var_ns2(calc_handle, MODE_NORMAL, filename, &ve);
 	printf("filename: <%s>\n", filename);
 
 	// Check for error
@@ -494,7 +500,6 @@ int recfile(void)
 	// end
 recfile_end:
 	rip = 0;
-#endif
+
 	return 0;	
 }
-
