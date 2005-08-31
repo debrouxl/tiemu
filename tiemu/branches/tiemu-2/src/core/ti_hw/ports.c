@@ -293,7 +293,7 @@ uint8_t io_get_byte(uint32_t addr)
 			if(io_bit_tst(0x0c,6))
 			{
 				v |= lc.get_white_wire() << 3;
-				v |= lc.get_white_wire() << 2;
+				v |= lc.get_red_wire() << 2;
 			}
             break;
         case 0x0f: 	// rw <76543210>
