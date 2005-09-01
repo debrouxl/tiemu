@@ -49,6 +49,7 @@ unsigned int ti68k_get_cycle_count(int reset, unsigned int *diff);
 int ti68k_linkport_send_file(const char *filename);
 int ti68k_linkport_unconfigure(void);
 int ti68k_linkport_reconfigure(void);
+int ti68k_calc_to_libti_calc(void);
 
 // Keyboard
 void ti68k_kbd_set_key(int key, int active);

@@ -126,7 +126,9 @@ CalcUpdate calc_update =
 
 void tiemu_update_set_gtk(void)
 {
-	//ticalcs_update_set(calc_handle, &calc_update);
+	extern CalcHandle *calc_handle;	// defined in dbus.c
+
+	ticalcs_update_set(calc_handle, &calc_update);
 }
 
 ///// misc

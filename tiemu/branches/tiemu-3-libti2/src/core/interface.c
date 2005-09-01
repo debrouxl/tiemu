@@ -111,14 +111,7 @@ int ti68k_config_load_default(void)
 	link.cable_timeout = DFLT_TIMEOUT;
 	link.cable_port = PORT_1;
 	link.cable_model = CABLE_ILP;
-	switch(tihw.calc_type)
-	{
-    case TI89:  link.calc_model = CALC_TI89;  break;
-	case TI89t: link.calc_model = CALC_TI89T; break;
-	case TI92:  link.calc_model = CALC_TI92;  break;
-	case TI92p: link.calc_model = CALC_TI92P; break;
-	case V200:  link.calc_model = CALC_V200;  break;
-	}
+	link.calc_model = ti68k_calc_to_libti_calc();
 
     return 0;
 }
@@ -209,6 +202,21 @@ int ti68k_linkport_unconfigure(void)
 int ti68k_linkport_reconfigure(void)
 {
 	return hw_dbus_init();
+}
+
+int ti68k_calc_to_libti_calc()
+{
+	switch(tihw.calc_type)
+	{
+    case TI89:  return CALC_TI89;  break;
+	case TI89t: return CALC_TI89T; break;
+	case TI92:  return CALC_TI92;  break;
+	case TI92p: return CALC_TI92P; break;
+	case V200:  return CALC_V200;  break;
+	default: return CALC_NONE; break;
+	}
+
+	return CALC_NONE;
 }
 
 /******************/

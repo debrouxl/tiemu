@@ -105,6 +105,7 @@ int hw_dbus_init(void)
 	}
 	else
 	{
+		link.calc_model = ti68k_calc_to_libti_calc();
 		calc_handle = ticalcs_handle_new(link.calc_model);
 		if(calc_handle == NULL)
 		{
@@ -328,7 +329,6 @@ int ilp_send(CableHandle *h, uint8_t *data, uint32_t len)
 
 	for(i = 0; i < len; i++)
 	{
-		printf("<%02x> ", data[i]);
   		f2t_data = data[i]; 
   		f2t_flag = 1;
 
@@ -337,7 +337,7 @@ int ilp_send(CableHandle *h, uint8_t *data, uint32_t len)
 		hw_m68k_irq(4);		// this turbo-boost transfer !
 
 		TO_START(clk);
-  		while(f2t_flag/* && !iu.cancel*/) 
+  		while(f2t_flag) 
 		{ 
 			hw_m68k_run(1, 0);
 			if(TO_ELAPSED(clk, params.timeout))
@@ -356,7 +356,7 @@ int ilp_recv(CableHandle *h, uint8_t *data, uint32_t len)
 	for(i = 0; i < len; i++)
 	{
 		TO_START(clk);
-  		while(!t2f_flag/* && !iu.cancel*/) 
+  		while(!t2f_flag) 
 		{ 
       		hw_m68k_run(1, 0);
 			if(TO_ELAPSED(clk, params.timeout))
@@ -467,16 +467,12 @@ int recfile(void)
 	// the VAR-Link menu or just before sending variable. We skip it !
 	if(t2f_data == 0x89 && tihw.calc_type != TI92)
 	{
-		uint8_t arg = 0;
+		uint8_t arg[4];
 		int i;
 
-		for(i=0; i<4; i++)
-		{
-#if 0
-			ilp_get(&arg);
-#endif
-			printf("purging <%02x>\n", arg);
-		}
+		ilp_recv(cable_handle, arg, 4);
+		for(i = 0; i < 4; i++)
+			printf("purging <%02x>\n", arg[i]);
 
 		if(tihw.calc_type != TI89t)
 			goto recfile_end;

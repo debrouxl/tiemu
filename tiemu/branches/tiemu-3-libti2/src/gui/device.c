@@ -156,15 +156,7 @@ gint display_device_dbox()
 	case GTK_RESPONSE_CANCEL:
 
 		memcpy(&link, &tmp, sizeof(DeviceOptions));
-
-		switch(tihw.calc_type)
-		{
-    	case TI89:  tmp.calc_model = CALC_TI89;  break;
-		case TI89t: tmp.calc_model = CALC_TI89T; break;
-		case TI92:  tmp.calc_model = CALC_TI92;  break;
-		case TI92p: tmp.calc_model = CALC_TI92P; break;
-		case V200:  tmp.calc_model = CALC_V200;  break;
-		}
+		tmp.calc_model = ti68k_calc_to_libti_calc();
 
 		if(link.cable_model == CABLE_NUL)
 			params.timeout = tmp.cable_timeout;
@@ -234,31 +226,6 @@ GLADE_CB void
 comm_port_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-}
-
-
-GLADE_CB void
-comm_calc_changed                      (GtkOptionMenu   *optionmenu,
-                                        gpointer         user_data)
-{
-	gint nitem = gtk_option_menu_get_history(optionmenu);
-
-	switch(nitem)
-	{
-	case 0: tmp.calc_model = CALC_NONE;	 break;
-	case 1: tmp.calc_model = CALC_TI73;	 break;
-	case 2:	tmp.calc_model = CALC_TI82;  break;
-	case 3: tmp.calc_model = CALC_TI83;  break;
-	case 4: tmp.calc_model = CALC_TI83P; break;
-	case 5: tmp.calc_model = CALC_TI84P; break;
-	case 6: tmp.calc_model = CALC_TI85;  break;
-	case 7: tmp.calc_model = CALC_TI86;  break;
-	case 8: tmp.calc_model = CALC_TI89;  break;
-	case 9:tmp.calc_model = CALC_TI89T; break;
-	case 10:tmp.calc_model = CALC_TI92;  break;
-	case 11:tmp.calc_model = CALC_TI92P; break;
-	case 12:tmp.calc_model = CALC_V200;  break;
-  	}	
 }
 
 GLADE_CB void
