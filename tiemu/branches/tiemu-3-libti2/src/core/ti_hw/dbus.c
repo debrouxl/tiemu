@@ -321,7 +321,6 @@ int ilp_reset(CableHandle *h)
 	return t2f_flag = f2t_flag = 0;
 }
 
-// need to be rewritten for 'len' bytes
 int ilp_send(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	unsigned int i;
@@ -349,7 +348,6 @@ int ilp_send(CableHandle *h, uint8_t *data, uint32_t len)
   	return 0;
 }
 
-// need to be rewritten for 'len' bytes
 int ilp_recv(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	unsigned int i;

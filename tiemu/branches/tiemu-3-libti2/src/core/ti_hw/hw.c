@@ -217,7 +217,7 @@ void hw_update(void)
 	}
 
 	// DBus: External link activity ?
-	if(!ticables_cable_get_d0(cable_handle) || !ticables_cable_get_d0(cable_handle))
+	if(!ticables_cable_get_d0(cable_handle) || !ticables_cable_get_d1(cable_handle))
 	{
 		io_bit_set(0x0d,3);	//SA
 		io_bit_set(0x0d,2);	//EA
