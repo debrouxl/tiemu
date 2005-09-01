@@ -2441,7 +2441,7 @@ int angel_RDI_SelectConfig(RDI_ConfigAspect aspect, char const *name,
 
 /* Load a new debug agent: use ADP_Ctrl_Download_Agent. */
 int angel_RDI_LoadAgent(ARMword dest, unsigned long size,
-                       getbufferproc *get_b, void *getbarg)
+                       getbufferproc *getb, void *getbarg)
 {
   Packet *packet = NULL;
   int  status, reason, subreason, debugID, OSinfo1, OSinfo2, err;
@@ -2474,7 +2474,7 @@ int angel_RDI_LoadAgent(ARMword dest, unsigned long size,
 #endif
   { unsigned long pos = 0, segsize;
     for (; pos < size; pos += segsize) {
-      char *b = get_b(getbarg, &segsize);
+      char *b = getb(getbarg, &segsize);
       if (b == NULL) return RDIError_NoError;
       err = angel_RDI_LoadConfigData( segsize, b );
       if (err != RDIError_NoError) return err;

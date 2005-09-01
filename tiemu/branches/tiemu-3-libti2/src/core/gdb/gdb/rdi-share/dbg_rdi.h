@@ -460,7 +460,7 @@ typedef int rdi_selectconfig_proc(RDI_ConfigAspect aspect, char const *name,
                                   unsigned *versionp);
 
 typedef char *getbufferproc(void *getbarg, unsigned32 *sizep);
-typedef int rdi_loadagentproc(ARMword dest, unsigned32 size, getbufferproc *get_b, void *getbarg);
+typedef int rdi_loadagentproc(ARMword dest, unsigned32 size, getbufferproc *getb, void *getbarg);
 typedef int rdi_targetisdead(void);
 
 typedef struct {
