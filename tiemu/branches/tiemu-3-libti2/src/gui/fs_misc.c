@@ -207,7 +207,7 @@ gint display_send_files_dbox()
 	return 0;
 }
 
-gint display_recv_files_dbox(const char *filename)
+int display_recv_files_dbox(const char *src, const char *dst)
 {
 	const gchar *fn;
 	gchar *src_folder;
@@ -216,9 +216,9 @@ gint display_recv_files_dbox(const char *filename)
 	gchar *ext;
 
 	// get file components
-	src_folder = g_path_get_dirname(filename);
+	src_folder = g_path_get_dirname(src);
 	dst_folder = inst_paths.home_dir;
-	basename = g_path_get_basename(filename);
+	basename = g_path_get_basename(dst);
 
 	 // set mask
     switch(tihw.calc_type) 
@@ -233,7 +233,7 @@ gint display_recv_files_dbox(const char *filename)
 
 	fn = create_fsel(dst_folder, basename, ext, TRUE);
 	if(fn)
-		rename(filename, fn);
+		rename(src, fn);
 
 	g_free(src_folder);
 	g_free(basename);

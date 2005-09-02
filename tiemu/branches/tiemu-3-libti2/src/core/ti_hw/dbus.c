@@ -121,7 +121,7 @@ int hw_dbus_init(void)
 		ticables_options_set_delay(cable_handle, link.cable_delay);
 	}
 
-	// customize cable
+	// customize cable by overriding some methods
 	if(link.cable_model == CABLE_ILP)
 	{
 		cable_handle->cable->reset = ilp_reset;
@@ -367,7 +367,7 @@ int ilp_recv(CableHandle *h, uint8_t *data, uint32_t len)
   		t2f_flag = 0;
 
 		io_bit_set(0x0d,6);	// STX=1 (tx reg is empty)
-		hw_m68k_irq(4);		// this turbo-boost transfer !
+		hw_m68k_irq(4);		// this turbo-boost transfer (30% faster)
 	}
 
 	return 0;
@@ -434,7 +434,7 @@ int send_ti_file(const char *filename)
 	sip = 0;
 	finish = clock();
 	duration = (double)(finish - start) / CLOCKS_PER_SEC;
-	//printf("Duration: %2.1f seconds.\n", duration);
+	printf("Duration: %2.1f seconds.\n", duration);
 
 	// Transfer aborted ? Set hw link error
 	if(ret)
@@ -447,12 +447,13 @@ int send_ti_file(const char *filename)
 	return 0;
 }
 
-int display_recv_files_dbox(const char *path);
+int display_recv_files_dbox(const char *src, const char *dst);
 
 int recfile(void)
 {
 	int ret;
-	char filename[1024];
+	char src_fn[1024];
+	char dst_fn[1024];
 	VarEntry *ve;
 
 	recfile_flag = 0;
@@ -479,11 +480,11 @@ int recfile(void)
 	}
 
 	// Receive variable in non-silent mode
-	strcpy(filename, g_get_tmp_dir());
-	strcat(filename, G_DIR_SEPARATOR_S);
+	strcpy(src_fn, g_get_tmp_dir());
+	strcat(src_fn, G_DIR_SEPARATOR_S);
+	strcat(src_fn, "file.rec");
 
-	ret = ticalcs_calc_recv_var_ns2(calc_handle, MODE_NORMAL, filename, &ve);
-	printf("filename: <%s>\n", filename);
+	ret = ticalcs_calc_recv_var_ns2(calc_handle, MODE_NORMAL, src_fn, &ve);
 
 	// Check for error
 	if(ret)
@@ -494,8 +495,28 @@ int recfile(void)
 		tiemu_error(ret, NULL);
 	}
 
+	// Construct filename
+	strcpy(dst_fn, g_get_tmp_dir());
+	strcat(dst_fn, G_DIR_SEPARATOR_S);
+
+	if(ve)
+	{
+		//single
+		strcat(dst_fn, ve->name);
+		strcat(dst_fn, ".");
+		strcat(dst_fn, tifiles_vartype2fext(calc_handle->model, ve->type));
+
+		tifiles_ve_delete(ve);
+	}
+	else
+	{
+		// group
+		strcat(dst_fn, "group.");
+		strcat(dst_fn, tifiles_fext_of_group(link.calc_model));
+	}
+
 	// Open a box
-	display_recv_files_dbox(filename);
+	display_recv_files_dbox(src_fn, dst_fn);
 
 	// end
 recfile_end:
