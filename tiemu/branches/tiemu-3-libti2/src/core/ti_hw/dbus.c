@@ -464,7 +464,7 @@ int recfile(void)
 	else
 		rip = 1;
 
-	// Some models and AMS versions sends an RDY packet when entering in
+	// Some models and AMS versions send an RDY packet when entering in
 	// the VAR-Link menu or just before sending variable. We skip it !
 	if(t2f_data == 0x89 && tihw.calc_type != TI92)
 	{

@@ -58,13 +58,16 @@ int tiemu_error(int err_code, char *err_str)
 		err = ticables_error_get(err, &s);
 		if (err) 
 		{
+			//free(s);
 			err = tifiles_error_get(err, &s);
 			if (err) 
 			{
+				//free(s);
 				err = ticalcs_error_get(err, &s);
 				if (err) 
 				{
 					// next level: error for TiEmu
+					//free(s);
 					err = ti68k_error_get(err, s);
 				}
 			}

@@ -69,13 +69,14 @@ static void refresh_pbar1(void)
 			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(p_win.pbar1), 
 				(float)calc_update.cnt1 / calc_update.max1);
 
+#if defined(_CONSOLE) && defined(_DEBUG)
 		rate = calc_update.rate;
 		filter_shift();
 		avg = filter_compute(rate);
 
 		g_snprintf(buffer, 32, "Rate: %1.1f Kbytes/s", avg);
 		gtk_label_set_text(GTK_LABEL(p_win.label_rate), buffer);
-
+#endif
 		GTK_REFRESH();
 	}
 }
