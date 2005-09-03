@@ -2,8 +2,8 @@
 
 
 
-Previous version: 2.00-rc8  (06/08/2005)
-Current version:  2.00		(22/08/2005)
+Previous version: 2.00		(22/08/2005)
+Current version:  2.01		(03/09/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -26,16 +26,17 @@ New capabilities:
 Improvements:
 -------------
 
-	- use Titanium & TI92+ skin when available
-	- import V200 updates as HW2, not HW1 (and default TI-89/92+ updates to HW2)
+	- re-enabled transient mode for windows
+	- set transient mode as option in the main dbg window
 	
 		
 Bug fixes:
 ----------
 
-	- large column in the I/O port view
-	- 'Set PC to selection' menu item
-	- update ASCII column (dbg wnd) after cell editing
+	- Titanium skin loading and fixed bug in skin loader
+	- handling of handles (don't interpret NULL as end of heap table, don't
+	                 dereference H_NULL in loops)
+	- size of archived handles under PedroM
 	
 
 Planned:
