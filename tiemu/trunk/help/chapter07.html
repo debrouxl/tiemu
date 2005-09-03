@@ -60,21 +60,29 @@ The assembly-level debugger is made-up of several frames:<br>
 - heap (handles)<br>
 <br>
 The source-level debugger is also made-up of several frames:
-<UL>
-<LI><A HREF="../../insight1.0/help/breakpoint.html">Breakpoint Window</A></LI>
-<LI><A HREF="../../insight1.0/help/console.html">Console Window</A></LI>
-<LI><A HREF="../../insight1.0/help/browser.html">Function Browser</A></LI>
-<LI><A HREF="../../insight1.0/help/locals.html">Locals Window</A></LI>
-<LI><A HREF="../../insight1.0/help/memory.html">Memory Window</A></LI>
-<LI><A HREF="../../insight1.0/help/register.html">Register Window</A></LI>
-<LI><A HREF="../../insight1.0/help/source.html">Source Window</A></LI>
-<LI><A HREF="../../insight1.0/help/stack.html">Stack Window</A></LI>
-<LI><A HREF="../../insight1.0/help/watch.html">Watch Window</A></LI>
-</UL>
-These frames can be moved and/or resized (TiEmu saves/restores this with
+<ul>
+  <li><a href="../../insight1.0/help/breakpoint.html">Breakpoint Window</a></li>
+  <li><a href="../../insight1.0/help/console.html">Console Window</a></li>
+  <li><a href="../../insight1.0/help/browser.html">Function Browser</a></li>
+  <li><a href="../../insight1.0/help/locals.html">Locals Window</a></li>
+  <li><a href="../../insight1.0/help/memory.html">Memory Window</a></li>
+  <li><a href="../../insight1.0/help/register.html">Register Window</a></li>
+  <li><a href="../../insight1.0/help/source.html">Source Window</a></li>
+  <li><a href="../../insight1.0/help/stack.html">Stack Window</a></li>
+  <li><a href="../../insight1.0/help/watch.html">Watch Window</a></li>
+</ul>
+These frames can be moved and/or resized (TiEmu saves/restores this
+with
 the configuration).<br>
 Frames are automatically refreshed when a change occurs from another
 frame.<br>
+<br>
+Moreover, these frames can be controlled (maximize/minimize &amp;
+show/hide) from the Windows menu of the source code window (considered
+as the main window).<br>
+You can also change the <span style="font-style: italic;">transient</span>
+mode. When enabled, all of the TiEmu windows are grouped together as
+there was a single window.<br>
 <h2>7.1 Source code<br>
 </h2>
 <div style="text-align: center;">
@@ -84,7 +92,8 @@ frame.<br>
 </div>
 <br>
 You can browse the source code with the arrow and PageUp/Down keys. The
-green bar shows the current PC location. The blue one is the selection. The
+green bar shows the current PC location. The blue one is the selection.
+The
 red cross is a breakpoint.<br>
 <br>
 By right-clicking, you get the popup menu:<br>
@@ -225,7 +234,8 @@ several kinds of breakpoints:<br>
 - code (added from the source frame)<br>
 - exception (traps, auto-ints, ...)<br>
 - data (access or range)<br>
-- program entry (the debugger is raised at the beginning of the program you
+- program entry (the debugger is raised at the beginning of the program
+you
 have just launched).<br>
       <br>
 Each breakpoint can be added or removed and enabled or disabled. You
@@ -281,7 +291,8 @@ pointed by the handle.<br>
   </tbody>
 </table>
 <br>
-<h2>7.8 <A HREF="../../insight1.0/help/index.html">Source-Level Debugger</A></h2>
+<h2>7.8 <a href="../../insight1.0/help/index.html">Source-Level
+Debugger</a></h2>
 <hr>
 </body>
 </html>
