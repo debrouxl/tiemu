@@ -1,0 +1,52 @@
+			[ Release notes ]
+
+
+
+Previous version: 2.00		(22/08/2005)
+Current version:  2.01		(03/09/2005)
+
+SubVersion (CVS) revision: $Id$
+
+TiEmu is available for 3 platforms:
+Linux (GTK), Windows (GTK), Mac OS-X (GTK)
+
+[ If you have a SilverLink cable (TI-GRAPH LINK USB), you will need to retrieve
+a Linux/Win32/Mac OS-X driver on the Linux Programmer Group at 
+<http://lpg.ticalc.org/prj_usb>. ]
+
+For the other link cables, no driver is needed.
+
+
+New capabilities:
+-----------------
+
+	- memory window: can dis-assemble at indirect address
+
+
+Improvements:
+-------------
+
+	- re-enabled transient mode for windows
+	- set transient mode as option in the main dbg window
+	
+		
+Bug fixes:
+----------
+
+	- Titanium skin loading and fixed bug in skin loader
+	- handling of handles (don't interpret NULL as end of heap table, don't
+	                 dereference H_NULL in loops)
+	- size of archived handles under PedroM
+	
+
+Planned:
+--------
+
+	- TiEmu v3.00 with GDB support
+
+	
+Notes:
+------
+
+	- the SilverLink cable doesn't make TiEmu crash any longer but it's still unusable
+	- this is the last RC release !

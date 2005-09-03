@@ -1,0 +1,45 @@
+Salut !
+
+> En parlant de boot, je me suis tjs demandé comment il fonctionnait. En
+> effet, la RAM est en 0 et le boot aussi en 0.
+> En tant qu'électronicien, je suppose que la calc boote par défaut sur le
+> premier secteur de la FLASH. Ensuite, je pense qu'elle copie la table de
+> vecteurs en RAM et ptet quelques routines (trampoline). Puis, par une
+> bascule, elle swappe la FLASH et la RAM pour que la RAM se retrouve en 0
+> et la FLASH en ROM_base.
+>
+> C'est une technique extrêment utilisée en électronique qd on souhaite
+> faire du développement. Par ex: on a un moniteur en EPROM qui vient
+> charger du code en RAM, on fait un RESET et la RAM est intervertit avec
+> l'EPROM. On exécute maintenant le code en RAM. Au RESET, suivant, la
+> situation s'inverse, on repart sur le moniteur.
+
+Au signal RESET du processeur, le décodeur d'adresse map la FlashROM à 0x0
+le temps que le processeur initialise SR et PC avec ce qu'il trouve dans 0x0
+et 0x4 (qui sont donc en fait ROM_base + 0 et ROM_base + 4). Puis le
+décodeur replace immédiatement la FlashROM à ROM_base, et la RAM à 0x0 (je
+ne sais pas comment il détermine ce moment, mais c'est en gros ce que mon
+prof de structure des ordinateurs m'avait expliqué quand je lui avait posé
+cette question).
+Ainsi la RAM et la FlashROM se trouvent bien à leurs adresses finales
+lorsque la première instruction du boot est exécutée. Le swap n'est pas fait
+par le boot lui-même, il n'en a même pas conscience. Et donc pas besoin de
+trampoline non plus.
+
+Puis très grossièrement :
+Après toutes les tests et initialisations de l'hardware et des vecteurs
+d'interruption, le boot regarde si (CertificateMemory + 2).w est nul. Si
+c'est le cas, alors un AMS devrait bien être installé, et le boot recherche
+le point d'entrée du code du reset et y saute.
+Si (CertificateMemory + 2).w est non nul (ce qui peut être le cas si un
+transfert d'AMS a été interrompu par exemple, puisque ce flag n'est remis à
+0 qu'une fois l'AMS bien installé), le boot continue son exécution (et
+affiche 'press I to install product code' pour permettre une réception
+d'AMS).
+En plus du test de CertificateMemory + 2, la combinaison Apps+ON est aussi
+vérifée, et lance la suite du boot de la même manière que si
+CertificateMemory + 2 était non nul.
+
+++
+
+ Olivier Armand
