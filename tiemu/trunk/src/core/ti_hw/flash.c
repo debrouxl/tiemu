@@ -113,7 +113,7 @@ uint16_t FlashReadWord(uint32_t addr)
 
 uint32_t FlashReadLong(uint32_t addr)
 {
-	return getl(tihw.rom, addr, tihw.rom_size - 1) | wsm.ret_or;
+	return (FlashReadLong(addr) << 16) | FlashReadLong(addr+2);
 }
 
 /*
@@ -202,16 +202,15 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
 
 void FlashWriteWord(uint32_t addr, uint16_t data)
 {
+	// roms: fix me...
 	FlashWriteByte(addr+0,MSB(data));
 	FlashWriteByte(addr+1,LSB(data));
 }
 
 void FlashWriteLong(uint32_t addr, uint32_t data)
 {
-	FlashWriteByte(addr+0,(uint8_t)((data>>24)&0xff));
-    FlashWriteByte(addr+1,(uint8_t)((data>>16)&0xff));
-    FlashWriteByte(addr+2,(uint8_t)((data>>8 )&0xff));
-    FlashWriteByte(addr+3,(uint8_t)((data>>0 )&0xff));
+	FlashWriteWord(addr+0,(uint16_t)(data>>16)&0xffff);
+	FlashWriteWord(addr+2,(uint16_t)(data>> 0)&0xffff);
 }
 
 /*
