@@ -42,6 +42,9 @@ SubVersion: $Id$
 	- [kevin] $1718: don't remove last 2 bytes of RELEASE and COPYING (only Manpage.txt needs that)
 	- [kevin] $1719: fix patch to install prebuilt Manpage.txt without groff so it also works with
 	                 groff available (can't put conditional around install-data-local)
+	- [roms] $1727: fix bug in direct link access
+	- [roms] $1739: update HTML manual
+	- [kevin] $1741: update version number in popup-2.glade
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
