@@ -15,9 +15,9 @@ AppUpdatesURL=http://lpg.ticalc.org/prj_tiemu/win32_download.html
 DefaultDirName={pf}\TiEmu
 DefaultGroupName=TiEmu
 AllowNoIcons=yes
-LicenseFile=C:\sources\roms\tiemu\COPYING
-InfoBeforeFile=C:\sources\roms\tiemu\README.win32
-InfoAfterFile=C:\sources\roms\tiemu\RELEASE
+LicenseFile=C:\sources\roms\tiemu2\COPYING
+InfoBeforeFile=C:\sources\roms\tiemu2\README.win32
+InfoAfterFile=C:\sources\roms\tiemu2\RELEASE
 
 [Tasks]
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
@@ -25,43 +25,43 @@ Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescri
 
 [Files]
 ; Glade files
-Source: "C:\sources\roms\tiemu\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu2\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
 ; Help files
-Source: "C:\sources\roms\tiemu\help\*.jpg"; DestDir: "{app}\help"; Flags: ignoreversion;
-Source: "C:\sources\roms\tiemu\help\*.png"; DestDir: "{app}\help"; Flags: ignoreversion;
-Source: "C:\sources\roms\tiemu\help\*.htm?"; DestDir: "{app}\help"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu2\help\*.jpg"; DestDir: "{app}\help"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu2\help\*.png"; DestDir: "{app}\help"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu2\help\*.htm?"; DestDir: "{app}\help"; Flags: ignoreversion;
 ; Pixmaps files
-Source: "C:\sources\roms\tiemu\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu2\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
 ; Skin files
-Source: "C:\sources\roms\tiemu\skins\*.skn"; DestDir: "{app}\skins"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu2\skins\*.skn"; DestDir: "{app}\skins"; Flags: ignoreversion;
 ; Keymap files
-Source: "C:\sources\roms\tiemu\skins\*.map"; DestDir: "{app}\skins"; Flags: ignoreversion;
-Source: "C:\sources\roms\tiemu\skins\ti92.map"; DestDir: "{app}\skins"; DestName: "v200plt.map"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu2\skins\*.map"; DestDir: "{app}\skins"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu2\skins\ti92.map"; DestDir: "{app}\skins"; DestName: "v200plt.map"; Flags: ignoreversion;
 ; i18n files
 ;Source: "C:\sources\roms\libs\files\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tifiles.mo"; Flags: ignoreversion;
 ;Source: "C:\sources\roms\libs\cables\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "ticables.mo"; Flags: ignoreversion;
 ;Source: "C:\sources\roms\libs\calcs\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "ticalcs.mo"; Flags: ignoreversion;
-;Source: "C:\sources\roms\tiemu\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tiemu.mo"; Flags: ignoreversion;
+;Source: "C:\sources\roms\tiemu2\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tiemu.mo"; Flags: ignoreversion;
 ; Misc files
-Source: "C:\sources\roms\tiemu\AUTHORS"; DestDir: "{app}"; DestName: "Authors.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\BUGS"; DestDir: "{app}"; DestName: "Bugs.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\CHANGELOG"; DestDir: "{app}"; DestName: "ChangeLog.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\COPYING"; DestDir: "{app}"; DestName: "License.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\LICENSES"; DestDir: "{app}"; DestName: "Licenses.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\man\ManPage.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\README.win32"; DestDir: "{app}"; DestName: "ReadMe.txt"; Flags: ignoreversion isreadme
-Source: "C:\sources\roms\tiemu\RELEASE"; DestDir: "{app}"; DestName: "Release.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\TODO"; DestDir: "{app}"; DestName: "ToDo.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu2\AUTHORS"; DestDir: "{app}"; DestName: "Authors.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu2\BUGS"; DestDir: "{app}"; DestName: "Bugs.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu2\CHANGELOG"; DestDir: "{app}"; DestName: "ChangeLog.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu2\COPYING"; DestDir: "{app}"; DestName: "License.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu2\LICENSES"; DestDir: "{app}"; DestName: "Licenses.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu2\man\ManPage.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu2\README.win32"; DestDir: "{app}"; DestName: "ReadMe.txt"; Flags: ignoreversion isreadme
+Source: "C:\sources\roms\tiemu2\RELEASE"; DestDir: "{app}"; DestName: "Release.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu2\TODO"; DestDir: "{app}"; DestName: "ToDo.txt"; Flags: ignoreversion
 ; Resource files
-Source: "C:\sources\roms\tiemu\misc\romcalls.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\misc\iodefs*.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu2\misc\romcalls.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu2\misc\iodefs*.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
 ; PedRom files
-Source: "C:\sources\roms\tiemu\pedrom\pedrom*.tib"; DestDir: "{app}\pedrom"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu2\pedrom\pedrom*.tib"; DestDir: "{app}\pedrom"; Flags: ignoreversion
 ; TiEmu/GTK
 Source: "C:\sources\roms\tifiles\tests\tifiles.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticables\tests\ticables.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticalcs\tests\ticalcs.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\build\msvc\tiemu.exe"; DestDir: "{app}"; DestName: "tiemu.exe"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu2\build\msvc\tiemu.exe"; DestDir: "{app}"; DestName: "tiemu.exe"; Flags: ignoreversion
 ;Source: "C:\Windows\system32\MSVCRTD.DLL"; DestDir: "{app}"; Flags: ignoreversion
 ; Copy PortTalk driver for Windows NT4/2000/XP
 Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{sys}\drivers"; Flags: ignoreversion

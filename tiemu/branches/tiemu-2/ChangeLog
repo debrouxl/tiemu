@@ -7,6 +7,7 @@ SubVersion: $Id$
 	- [kevin] $1714: fix handling of handles (don't interpret NULL as end of heap table, don't
 	                 dereference H_NULL in loops)
 	- [kevin] $1715: fix size of archived handles under PedroM
+	- [kevin] $1742: fix FlashROM writes: can't set bits from 0 to 1
 
 - 19/08/2005, version 2.00:
 	- [kevin] $1662/1663: import V200 updates as HW2, not HW1 (and default TI-89/92+ updates to HW2)
