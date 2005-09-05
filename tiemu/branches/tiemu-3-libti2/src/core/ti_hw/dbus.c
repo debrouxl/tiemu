@@ -103,23 +103,22 @@ int hw_dbus_init(void)
 		tiemu_error(0, "Can't set cable");
 		return -1;
 	}
-	else
+
+	// set calc
+	link.calc_model = ti68k_calc_to_libti_calc();
+	calc_handle = ticalcs_handle_new(link.calc_model);
+	if(calc_handle == NULL)
 	{
-		link.calc_model = ti68k_calc_to_libti_calc();
-		calc_handle = ticalcs_handle_new(link.calc_model);
-		if(calc_handle == NULL)
-		{
-			tiemu_error(0, "Can't set cable");
-			return -1;
-		}
-		else
-		{
-			err = ticalcs_cable_attach(calc_handle, cable_handle);
-			tiemu_error(err, NULL);
-		}
-		ticables_options_set_timeout(cable_handle, link.cable_timeout);
-		ticables_options_set_delay(cable_handle, link.cable_delay);
+		tiemu_error(0, "Can't set cable");
+		return -1;
 	}
+	
+	// attach cable to calc (open cable)
+	err = ticalcs_cable_attach(calc_handle, cable_handle);
+	tiemu_error(err, NULL);
+
+	ticables_options_set_timeout(cable_handle, link.cable_timeout);
+	ticables_options_set_delay(cable_handle, link.cable_delay);
 
 	// customize cable by overriding some methods
 	if(link.cable_model == CABLE_ILP)
@@ -149,7 +148,7 @@ int hw_dbus_exit(void)
 {
 	int err;
 
-	// release cable
+	// detach cable from calc (close cable)
 	err = ticalcs_cable_detach(calc_handle);
 	if(err)
 	{
@@ -228,6 +227,7 @@ static int lp_checkread(void)
 	    return 0;
 
 	err = ticables_cable_check(cable_handle, &status);
+	//printf("%i ", status);
 	if(err)
 	{
 	    io_bit_set(0x0d,7);		// error
