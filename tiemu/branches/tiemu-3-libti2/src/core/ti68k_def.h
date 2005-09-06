@@ -203,6 +203,8 @@ extern Ti68kBreakpoints	bkpts;
 
 /* Misc */
 
+#ifndef TRY
 #define TRY(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
+#endif
 
 #endif

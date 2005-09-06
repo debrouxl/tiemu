@@ -145,7 +145,7 @@ gui_debugger_OBJ = \
 
 gui_OBJ = \
 	gui/about.o							\
-	gui/comm.o							\
+	gui/device.o							\
 	gui/dboxes.o							\
 	gui/engine.o							\
 	gui/filesel.o							\
