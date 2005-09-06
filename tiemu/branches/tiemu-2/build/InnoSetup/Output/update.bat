@@ -1,3 +1,3 @@
 rm Release.txt
-copy C:\sources\roms\TiEmu\RELEASE Release.txt
+copy C:\sources\roms\TiEmu2\RELEASE Release.txt
 cls
