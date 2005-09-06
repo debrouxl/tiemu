@@ -3,7 +3,7 @@
 
 
 Previous version: 2.00		(22/08/2005)
-Current version:  2.01		(03/09/2005)
+Current version:  2.01		(06/09/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,7 +20,7 @@ For the other link cables, no driver is needed.
 New capabilities:
 -----------------
 
-	- memory window: can dis-assemble at indirect address
+	- none (TiEmu 2.xx is a stable branch).
 
 
 Improvements:
@@ -37,6 +37,8 @@ Bug fixes:
 	- handling of handles (don't interpret NULL as end of heap table, don't
 	                 dereference H_NULL in loops)
 	- size of archived handles under PedroM
+	- FlashROM writes: can't set bits from 0 to 1
+	- don't allow operations on state while the debugger is opened (bug item #1250175)
 	
 
 Planned:
