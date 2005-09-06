@@ -113,7 +113,7 @@ uint16_t FlashReadWord(uint32_t addr)
 
 uint32_t FlashReadLong(uint32_t addr)
 {
-	return (FlashReadLong(addr) << 16) | FlashReadLong(addr+2);
+	return (FlashReadWord(addr) << 16) | FlashReadWord(addr+2);
 }
 
 /*
