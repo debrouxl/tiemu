@@ -60,7 +60,7 @@
 
 Ti68kParameters     params = { 0 };
 Ti68kHardware       tihw   = { 0 };
-Ti68kLink		    link   = { 0 };
+Ti68kLinkPort	    linkp  = { 0 };
 Ti68kBreakpoints	bkpts  = { 0 };
 
 
@@ -107,11 +107,11 @@ int ti68k_config_load_default(void)
 
 	params.timeout = is_win_9x() ? 600 : 15;	// 1.5 or 60s
 
-	link.cable_delay = DFLT_DELAY;
-	link.cable_timeout = DFLT_TIMEOUT;
-	link.cable_port = PORT_1;
-	link.cable_model = CABLE_ILP;
-	link.calc_model = ti68k_calc_to_libti_calc();
+	linkp.cable_delay = DFLT_DELAY;
+	linkp.cable_timeout = DFLT_TIMEOUT;
+	linkp.cable_port = PORT_1;
+	linkp.cable_model = CABLE_ILP;
+	linkp.calc_model = ti68k_calc_to_libti_calc();
 
     return 0;
 }

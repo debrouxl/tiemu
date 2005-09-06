@@ -97,16 +97,19 @@ int hw_dbus_init(void)
 	int err;
 
 	// set cable
-	cable_handle = ticables_handle_new(link.cable_model, link.cable_port);
+	cable_handle = ticables_handle_new(linkp.cable_model, linkp.cable_port);
 	if(cable_handle == NULL)
 	{
 		tiemu_error(0, "Can't set cable");
 		return -1;
 	}
 
+	ticables_options_set_timeout(cable_handle, linkp.cable_timeout);
+	ticables_options_set_delay(cable_handle, linkp.cable_delay);
+
 	// set calc
-	link.calc_model = ti68k_calc_to_libti_calc();
-	calc_handle = ticalcs_handle_new(link.calc_model);
+	linkp.calc_model = ti68k_calc_to_libti_calc();
+	calc_handle = ticalcs_handle_new(linkp.calc_model);
 	if(calc_handle == NULL)
 	{
 		tiemu_error(0, "Can't set cable");
@@ -117,11 +120,8 @@ int hw_dbus_init(void)
 	err = ticalcs_cable_attach(calc_handle, cable_handle);
 	tiemu_error(err, NULL);
 
-	ticables_options_set_timeout(cable_handle, link.cable_timeout);
-	ticables_options_set_delay(cable_handle, link.cable_delay);
-
 	// customize cable by overriding some methods
-	if(link.cable_model == CABLE_ILP)
+	if(linkp.cable_model == CABLE_ILP)
 	{
 		cable_handle->cable->reset = ilp_reset;
 		cable_handle->cable->send  = ilp_send;
@@ -129,7 +129,7 @@ int hw_dbus_init(void)
 	}
 
 	// and set pointers
-	if(link.cable_model == CABLE_ILP)
+	if(linkp.cable_model == CABLE_ILP)
 		map_dbus_to_file();		// set mappers to internal file loader
 	else
 		map_dbus_to_cable();	// set mappers to external link cable
@@ -512,7 +512,7 @@ int recfile(void)
 	{
 		// group
 		strcat(dst_fn, "group.");
-		strcat(dst_fn, tifiles_fext_of_group(link.calc_model));
+		strcat(dst_fn, tifiles_fext_of_group(linkp.calc_model));
 	}
 
 	// Open a box

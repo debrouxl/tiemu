@@ -176,24 +176,24 @@ void rcfile_read(void)
 	/* Common part with TiLP: hardware section */
 	if ((p = find_str(buffer, "cable_model="))) 
 	{
-		link.cable_model = ticables_string_to_model(p);
+		linkp.cable_model = ticables_string_to_model(p);
 		continue;
 	}
 	
 	if ((p = find_str(buffer, "cable_port="))) 
 	{
-		link.cable_port = ticables_string_to_port(p);
+		linkp.cable_port = ticables_string_to_port(p);
 		continue;
 	}
 	
 	if ((p = find_str(buffer, "cable_timeout="))) 
 	{
-		sscanf(p, "%i", &(link.cable_timeout));
+		sscanf(p, "%i", &(linkp.cable_timeout));
 		continue;
 	}
 	
 	if ((p = find_str(buffer, "cable_delay="))) {
-		sscanf(p, "%i", &(link.cable_delay));
+		sscanf(p, "%i", &(linkp.cable_delay));
 		continue;
 	}
 
@@ -486,19 +486,19 @@ void rcfile_write(void)
 	fprintf(txt, "\n");
 
 	fprintf(txt, "# Link cable type\n");
-	fprintf(txt, "cable_model=%s\n", ticables_model_to_string(link.cable_model));
+	fprintf(txt, "cable_model=%s\n", ticables_model_to_string(linkp.cable_model));
 	fprintf(txt, "\n");
 
 	fprintf(txt, "# Port to use (serial, parallel, ...\n");
-	fprintf(txt, "port=%s\n", ticables_port_to_string(link.cable_port));
+	fprintf(txt, "port=%s\n", ticables_port_to_string(linkp.cable_port));
 	fprintf(txt, "\n");
 
 	fprintf(txt, "# Timeout value in 0.1 seconds\n");
-	fprintf(txt, "cable_timeout=%i\n", link.cable_timeout);
+	fprintf(txt, "cable_timeout=%i\n", linkp.cable_timeout);
 	fprintf(txt, "\n");
 
 	fprintf(txt, "# Delay value\n");
-	fprintf(txt, "cable_delay=%i\n", link.cable_delay);
+	fprintf(txt, "cable_delay=%i\n", linkp.cable_delay);
 	fprintf(txt, "\n");
 
   /* Specific part to TiEmu */

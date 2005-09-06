@@ -39,7 +39,7 @@
 #include "tie_error.h"
 #include "ti68k_int.h"
 
-extern DeviceOptions	link;
+extern DeviceOptions	linkp;
 static DeviceOptions	tmp;
 
 static GtkWidget* lbl;
@@ -65,7 +65,7 @@ gint display_device_dbox()
 
 	// Cable  
 	data = comm_cable = glade_xml_get_widget(xml, "optionmenu_comm_cable");
-	switch (link.cable_model) 
+	switch (linkp.cable_model) 
 	{
 	case CABLE_NUL:
 		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 0);
@@ -114,7 +114,7 @@ gint display_device_dbox()
 
 	// Port
 	data = comm_port = glade_xml_get_widget(xml, "optionmenu_comm_port");
-	switch (link.cable_port) 
+	switch (linkp.cable_port) 
 	{
 	case PORT_0:
 		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 0);
@@ -135,17 +135,17 @@ gint display_device_dbox()
 
 	// Timeout
 	data = glade_xml_get_widget(xml, "spinbutton_comm_timeout");
-	if(link.cable_model != CABLE_NUL)	
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), link.cable_timeout);
+	if(linkp.cable_model != CABLE_NUL)	
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), linkp.cable_timeout);
 	else
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), params.timeout);
 	
 	// Delay
 	data = glade_xml_get_widget(xml, "spinbutton_comm_delay");
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), link.cable_delay);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), linkp.cable_delay);
 
 	// Data exchange
-	memcpy(&tmp, &link, sizeof(DeviceOptions));
+	memcpy(&tmp, &linkp, sizeof(DeviceOptions));
 	ti68k_linkport_unconfigure();
 	
 	// Loop
@@ -155,10 +155,10 @@ gint display_device_dbox()
 	case GTK_RESPONSE_OK:
 	case GTK_RESPONSE_CANCEL:
 
-		memcpy(&link, &tmp, sizeof(DeviceOptions));
+		memcpy(&linkp, &tmp, sizeof(DeviceOptions));
 		tmp.calc_model = ti68k_calc_to_libti_calc();
 
-		if(link.cable_model == CABLE_NUL)
+		if(linkp.cable_model == CABLE_NUL)
 			params.timeout = tmp.cable_timeout;
 
         err = ti68k_linkport_reconfigure();
