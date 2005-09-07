@@ -45,7 +45,7 @@ gui/kde-private.cpp: gui/kde-private.h
 endif
 
 DEFS=@DEFS@ \
-	-DSHARE_DIR=\"${prefix}/share/tiemu\" \
+	-DSHARE_DIR=\"${prefix}/share/tiemu2\" \
 	-DLOCALEDIR=\"${prefix}/share/locale\"
 #	-DSHARE_DIR=\"$(pkgdatadir)\" \
 #	-DLOCALEDIR=\"$(datadir)/locale\"
@@ -170,24 +170,24 @@ tiemu_OBJ = core/uae/newcpu.o \
 	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(kde_OBJ)
 
 #rules:
-all: uae tiemu
+all: uae tiemu-2
 
 uae:
 	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" gen
 	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" all
 
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
-tiemu: $(tiemu_OBJ) $(RESFILE)
+tiemu-2: $(tiemu_OBJ) $(RESFILE)
 else
-tiemu: $(tiemu_OBJ)
+tiemu-2: $(tiemu_OBJ)
 endif
 ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
-	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
+	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu-2 \
 	$(LDFLAGS) $(CFLAGS) $(kdelibraries) \
 	-Wl,--rpath,"$(prefix)/lib"
 else
 	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(RESFILE) \
-	-o tiemu $(LDFLAGS) $(CFLAGS) $(kdelibraries)
+	-o tiemu-2 $(LDFLAGS) $(CFLAGS) $(kdelibraries)
 endif
 
 .c.o:
@@ -205,7 +205,7 @@ tiemu-rc.o: ../build/mingw/tiemu.rc
 
 clean:
 	@cd core/uae && $(MAKE) clean
-	@rm -f $(tiemu_OBJ) tiemu tiemu.exe tiemu-rc.o $(kdeprivsources)
+	@rm -f $(tiemu_OBJ) tiemu-2 tiemu-2.exe tiemu-rc.o $(kdeprivsources)
 
 distclean: clean
 	@cd core/uae && $(MAKE) distclean
@@ -217,11 +217,11 @@ dos2unix:
 	uppercase
 
 distdir: clean
-	cp -rl * ../tiemu-@VERSION@/src
+	cp -rl * ../tiemu2-@VERSION@/src
 
-install: tiemu
+install: tiemu-2
 	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
-	$(INSTALL) -m755 tiemu $(DESTDIR)${prefix}/bin/
+	$(INSTALL) -m755 tiemu-2 $(DESTDIR)${prefix}/bin/
 
 uninstall:
-	rm -f ${prefix}/bin/tiemu
+	rm -f ${prefix}/bin/tiemu-2

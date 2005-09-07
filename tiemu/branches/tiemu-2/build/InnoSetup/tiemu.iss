@@ -61,7 +61,7 @@ Source: "C:\sources\roms\tiemu2\pedrom\pedrom*.tib"; DestDir: "{app}\pedrom"; Fl
 Source: "C:\sources\roms\tifiles\tests\tifiles.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticables\tests\ticables.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticalcs\tests\ticalcs.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu2\build\msvc\tiemu.exe"; DestDir: "{app}"; DestName: "tiemu.exe"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu2\build\msvc\tiemu-2.exe"; DestDir: "{app}"; DestName: "tiemu-2.exe"; Flags: ignoreversion
 ;Source: "C:\Windows\system32\MSVCRTD.DLL"; DestDir: "{app}"; Flags: ignoreversion
 ; Copy PortTalk driver for Windows NT4/2000/XP
 Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{sys}\drivers"; Flags: ignoreversion
@@ -83,15 +83,15 @@ Source: "C:\Gtk2Dev\bin\libglade-2.0-0.dll"; DestDir: "{app}"; Flags: ignorevers
 Filename: "{app}\tiemu.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://lpg.ticalc.org/prj_tiemu"
 
 [Icons]
-Name: "{group}\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}\My TI files"
+Name: "{group}\TiEmu"; Filename: "{app}\tiemu-2.exe"; WorkingDir: "{app}\My TI files"
 Name: "{group}\TiEmu on the Web"; Filename: "{app}\tiemu.url"
 Name: "{group}\Uninstall TiEmu"; Filename: "{uninstallexe}"
 Name: "{group}\User's Manual"; Filename: "{app}\help\Manual_en.html"
 Name: "{group}\GTK theme selector"; Filename: "{app}\gtkthemeselector.exe";
 Name: "{group}\Bugs"; Filename: "{app}\Bugs.txt"
 
-Name: "{userdesktop}\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: desktopicon
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: quicklaunchicon
+Name: "{userdesktop}\TiEmu"; Filename: "{app}\tiemu-2.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: desktopicon
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: "{app}\tiemu-2.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: quicklaunchicon
 
 [Run]
 ; Remove any previously installed PortTalk driver (especially v1.x)
@@ -103,9 +103,9 @@ Filename: "{app}\Uninstall.exe"; Parameters: ""; MinVersion: 0,4;
 
 [Registry]
 ; This adds the GTK+ libraries to tiemu.exe's path
-;Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; Flags: uninsdeletekeyifempty
-;Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; ValueType: string; ValueData: "{app}\tiemu.exe"; Flags: uninsdeletevalue
-;Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; ValueType: string; ValueName: "Path"; ValueData: "{app};{code:GetGtkPath}\bin"; Flags: uninsdeletevalue
+;Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu-2.exe"; Flags: uninsdeletekeyifempty
+;Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu-2.exe"; ValueType: string; ValueData: "{app}\tiemu-2.exe"; Flags: uninsdeletevalue
+;Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu-2.exe"; ValueType: string; ValueName: "Path"; ValueData: "{app};{code:GetGtkPath}\bin"; Flags: uninsdeletevalue
 
 [UninstallDelete]
 Type: files; Name: "{app}\tiemu.url"
