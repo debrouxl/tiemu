@@ -183,6 +183,8 @@ static void lp_putbyte(uint8_t arg)
 {
 	int err;
   
+	//printf("S: %02x ", arg);
+
 	err = ticables_cable_put(cable_handle, arg);
 	if(err)
 	{
@@ -213,6 +215,8 @@ static uint8_t lp_getbyte(void)
 		printf("lp_getbyte error !\n");
 		return 0x00;
     }
+
+	//printf("R: %02x ", arg);
 
 	avail = 0;
 	return arg;

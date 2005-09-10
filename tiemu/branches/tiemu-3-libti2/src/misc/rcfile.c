@@ -490,7 +490,7 @@ void rcfile_write(void)
 	fprintf(txt, "\n");
 
 	fprintf(txt, "# Port to use (serial, parallel, ...\n");
-	fprintf(txt, "port=%s\n", ticables_port_to_string(linkp.cable_port));
+	fprintf(txt, "cable_port=%s\n", ticables_port_to_string(linkp.cable_port));
 	fprintf(txt, "\n");
 
 	fprintf(txt, "# Timeout value in 0.1 seconds\n");
