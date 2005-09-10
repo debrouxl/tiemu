@@ -11,8 +11,9 @@ REQUIREMENTS
  - A UNIX computer (Intel x86 or PPC) and C compiler (gcc)
  - X11 (X Window System)
  - GTK+ 2.4 or 2.6 from <http://www.gtk.org>
- - ticables, tifiles and ticalcs libraries from the TiLP project 
-		from <http://tilp.info>
+ - ticables2, tifiles2 and ticalcs2 libraries from the 
+	TiLP-II project <http://tilp.info>
+ - note: SilverLink cable is not useable under Linux :-(
 
 
 INSTALLATION
