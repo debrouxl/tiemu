@@ -51,10 +51,19 @@ SubVersion: $Id$
 	- [kevin] $1763: fix HeapTable detection on PedroM 0.81 RC9 (use ROM_CALL instead of hack for
 	                 PedroM >=0.81)
 	- [kevin] $1764: import PedroM (ld-tigcc build) 0.81 RC9
+	- [roms]  $1768: merge changes from tiemu-3-libti2 branch:
+		* switched to the TiLP-II framework
+		* updated the communication/device dialog box
+		* added a new pseudo-cable (internal linkport)
+		* modified tiemu.ini parser consequently
+		* changed getw/putw into get_w/put_w due to name conflict with stdio.h.		
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
 	For changes made in the tiemu-debugging-branch, see the RELEASE file starting at '20050806'.
+	
+	Note2: trunk forked into tiemu-3-libti2 branch at rev. $1920 and has been emrged back
+		into the trunk at rev. $1768.
 
 - 19/08/2005, version 2.00:
 	- [kevin] $1662/1663: import V200 updates as HW2, not HW1 (and default TI-89/92+ updates to HW2)
