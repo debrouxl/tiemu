@@ -48,6 +48,8 @@ SubVersion: $Id$
 	- [kevin] $1742: fix FlashROM writes: can't set bits from 0 to 1
 	- [roms]  $1744: fixed FlashReadLong & FlashWriteLong (long access is just 2 word accesses)
 	- [roms]  $1748: don't allow operations on state while the debugger is opened (bug item #1250175).
+	- [kevin] $1763: fix HeapTable detection on PedroM 0.81 RC9 (use ROM_CALL instead of hack for
+	                 PedroM >=0.81)
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
