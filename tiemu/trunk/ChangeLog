@@ -50,6 +50,7 @@ SubVersion: $Id$
 	- [roms]  $1748: don't allow operations on state while the debugger is opened (bug item #1250175).
 	- [kevin] $1763: fix HeapTable detection on PedroM 0.81 RC9 (use ROM_CALL instead of hack for
 	                 PedroM >=0.81)
+	- [kevin] $1764: import PedroM (ld-tigcc build) 0.81 RC9
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
