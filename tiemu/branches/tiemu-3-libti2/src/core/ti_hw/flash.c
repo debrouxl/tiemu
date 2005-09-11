@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -113,7 +113,7 @@ uint16_t FlashReadWord(uint32_t addr)
 
 uint32_t FlashReadLong(uint32_t addr)
 {
-	return get_l(tihw.rom, addr, tihw.rom_size - 1) | wsm.ret_or;
+	return (FlashReadWord(addr) << 16) | FlashReadWord(addr+2);
 }
 
 /*
@@ -138,7 +138,7 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
     {
 		if(rom[addr] != v)
 			wsm.changed[addr>>16] = !0;
-		rom[addr] = v;
+		rom[addr] &= v; /* can't set bits from 0 to 1 with a write! */
             
 		wsm.write_ready--;
         wsm.ret_or = 0xffffffff;
@@ -202,16 +202,15 @@ void FlashWriteByte(uint32_t addr, uint8_t v)
 
 void FlashWriteWord(uint32_t addr, uint16_t data)
 {
+	// roms: fix me...
 	FlashWriteByte(addr+0,MSB(data));
 	FlashWriteByte(addr+1,LSB(data));
 }
 
 void FlashWriteLong(uint32_t addr, uint32_t data)
 {
-	FlashWriteByte(addr+0,(uint8_t)((data>>24)&0xff));
-    FlashWriteByte(addr+1,(uint8_t)((data>>16)&0xff));
-    FlashWriteByte(addr+2,(uint8_t)((data>>8 )&0xff));
-    FlashWriteByte(addr+3,(uint8_t)((data>>0 )&0xff));
+	FlashWriteWord(addr+0,(uint16_t)(data>>16)&0xffff);
+	FlashWriteWord(addr+2,(uint16_t)(data>> 0)&0xffff);
 }
 
 /*

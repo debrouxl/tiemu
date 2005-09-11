@@ -24,10 +24,10 @@ The source code of PedroM can be found in pedrom-src.tar.bz2.
 
 The precompiled TIB is PedRom re-built by Kevin in order to remove non-free parts:
 
-  This is a version of PedroM 0.81 RC8 modified for compatibility with ld-tigcc.
+  This is a version of PedroM 0.81 RC9 modified for compatibility with ld-tigcc.
   I also deleted the non-Free files (the builtin ttunpack, the builtin stdlib
   archive pack and wti.h (not used by PedroM anymore anyway) have been removed),
   as well as several other junk not needed to build PedroM and built PedroM
-  using the fully GPL option. See pedrom-081-rc8-ld-tigcc.diff for my changes.
+  using the fully GPL option. See pedrom-081-rc9-ld-tigcc.diff for my changes.
 
 Get it at: www.tigen.org/kevin.kofler/ti89prog/pedrom-ld-tigcc.zip.

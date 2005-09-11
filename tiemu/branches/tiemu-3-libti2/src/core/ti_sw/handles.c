@@ -66,18 +66,17 @@ void heap_get_addr(uint32_t *base)
 {
 	pedrom = (mem_rd_word(0x32) == (('R'<<8)+'O'));
 
-	if(pedrom)
+	if(pedrom && mem_rd_word(0x30)<=0x0080) // PedroM <=0.80
 	{
-		// PedRom
 		uint32_t ptr = 0x5d58;				// fixed by PPhD for AMS1 compat
 		*base = mem_rd_long(ptr);
 	}
-	else if(tihw.ti92v2)
+	else if(tihw.ti92v2) // TI-92 II
 	{
 		uint32_t ptr = 0x4720 + 0x1902;		//tios::main_lcd equ tios::globals+$0000
 		*base = mem_rd_long(ptr);
 	}
-	else if(tihw.ti92v1)
+	else if(tihw.ti92v1) // TI-92 I
 	{
 		uint32_t ptr = 0x4440 + 0x1902;		//and tios::heap equ tios::globals+$1902
 		*base = mem_rd_long(ptr);
@@ -87,15 +86,13 @@ void heap_get_addr(uint32_t *base)
 		uint32_t b, size, addr, ptr;
 
 		romcalls_get_table_infos(&b, &size);
-		if(size < 0x441)
+		if(size < 0x441 && !pedrom) // AMS 1
 		{
-			// AMS1
 			romcalls_get_symbol_address(0x96, &addr);	// tios::HeapDeref (#0x096)
 			ptr = mem_rd_word(addr + 8);				// MOVEA.W $7592,A0
 			*base = mem_rd_long(ptr);
-		} else
+		} else // AMS 2, PedroM >=0.81
 		{
-			// AMS2
 			romcalls_get_symbol_address(0x441, &addr);	// tios::HeapTable	(#0x441)
 			*base  = addr;
 		}

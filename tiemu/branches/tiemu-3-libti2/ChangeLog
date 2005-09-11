@@ -42,6 +42,15 @@ SubVersion: $Id$
 	- [kevin] $1718: don't remove last 2 bytes of RELEASE and COPYING (only Manpage.txt needs that)
 	- [kevin] $1719: fix patch to install prebuilt Manpage.txt without groff so it also works with
 	                 groff available (can't put conditional around install-data-local)
+	- [roms] $1727: fix bug in direct link access
+	- [roms] $1739: update HTML manual
+	- [kevin] $1741: update version number in popup-2.glade
+	- [kevin] $1742: fix FlashROM writes: can't set bits from 0 to 1
+	- [roms]  $1744: fixed FlashReadLong & FlashWriteLong (long access is just 2 word accesses)
+	- [roms]  $1748: don't allow operations on state while the debugger is opened (bug item #1250175).
+	- [kevin] $1763: fix HeapTable detection on PedroM 0.81 RC9 (use ROM_CALL instead of hack for
+	                 PedroM >=0.81)
+	- [kevin] $1764: import PedroM (ld-tigcc build) 0.81 RC9
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

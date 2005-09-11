@@ -11,8 +11,8 @@
   <child>
     <widget class="GtkMenuItem" id="popup_menu_header">
       <property name="visible">True</property>
-      <property name="tooltip" translatable="yes">Welcome to TiEmu II</property>
-      <property name="label" translatable="yes">TiEmu II menu (v2.00)</property>
+      <property name="tooltip" translatable="yes">Welcome to TiEmu III</property>
+      <property name="label" translatable="yes">TiEmu III menu (v2.80)</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="on_popup_menu_header"/>
     </widget>

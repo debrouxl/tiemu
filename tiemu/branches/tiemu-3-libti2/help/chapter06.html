@@ -56,7 +56,8 @@ The <span style="font-style: italic;">Send file to TiEmu</span> item
 will let you choose a file to load into the emulator. You can choose
 one or several files at a time.<br>
 <br>
-The <span style="font-style: italic;">Debug file with TiEmu</span> item
+The <span style="font-style: italic;">Debug file with TiEmu</span>
+item
 will let you choose a file to debug using the emulator: First, the file
 (which should be an uncompressed TIGCC program compiled with debugging
 information) will be loaded into the emulator and a program entry
@@ -75,7 +76,8 @@ required by the program need to be sent separately using
 The <span style="font-style: italic;">Link options</span> item opens a
 dialog box. This is discussed elsewhere.<br>
 <br>
-The <span style="font-style: italic;">Receive file</span> item lets you
+The <span style="font-style: italic;">Receive file</span> item lets
+you
 enable (checked) or disable (unchecked) the receiving of variables
 from TiEmu. Use it if your program accesses the linkport for sound.<br>
 <h2>6.2 Configuration and State</h2>
@@ -86,17 +88,25 @@ information on the calculator state. The configuration is saved in the
 <span style="font-style: italic;">tiemu.ini</span> file. This is a text
 file and its format is described in the command line section.<br>
 <br>
-The calculator state can be saved, loaded or reverted. The state is
-saved in a file containing an image of the calculator content (LCD,
-registers, memory, ...).<br>
+The calculator state can be saved, loaded or reverted (automatically
+load the last previously saved state). <br>
 This can be done at any time. The revert option is useful to reload the
 latest saved state.<br>
+<br>
+The state is
+saved in a file containing an image of the calculator content (UAE
+structures of the m68k engine, I/O ports, RAM, RTC, FLASH, LCD address,
+contrast, HW protection state, archive limit, ...) and of some
+environmental variables (all breakpoints).<br>
 <h2>6.3 Debugger</h2>
 This is a large topic which is covered elsewhere. See the corresponding
 section...<br>
 <br>
 <span style="font-style: italic;">Reset calc</span>: this completely
-resets the calculator (erase all). This is like you removed batteries
+resets the calculator by loading the RESET/SSP vectors and issuing a
+reset of the processor. The linkport is reset, too. Other devices
+(ASIC, RAM, FLASH, ...) are left un-touched.<br>
+This is not like you removed batteries
 for a while.<br>
 <br>
 <span style="font-style: italic;">Upgrade calc</span>: allows you to

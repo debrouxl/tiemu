@@ -604,6 +604,9 @@ GtkWidget* display_popup_menu(void)
 			data = glade_xml_get_widget(xml, "reset_calc1");
 			gtk_widget_set_sensitive(data, FALSE);
 		}
+
+		data = glade_xml_get_widget(xml, "calculator_state1");
+		gtk_widget_set_sensitive(data, FALSE);
 	}
 
 	return menu;
