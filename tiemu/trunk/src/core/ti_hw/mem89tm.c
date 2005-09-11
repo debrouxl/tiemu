@@ -84,31 +84,31 @@ uint8_t* ti89t_get_real_addr(uint32_t adr)
 	   IN_BOUNDS(0x200000, adr, 0x23ffff) ||
 	   IN_BOUNDS(0x400000, adr, 0x43ffff))
 	{
-		return getp(tihw.ram, adr, 0x03ffff);
+		return get_p(tihw.ram, adr, 0x03ffff);
 	}
 
 	// FLASH access
     else if(IN_BOUNDS(0x800000, adr, 0xbfffff))			
 	{
-		return getp(tihw.rom, adr, ROM_SIZE_TI89T - 1);
+		return get_p(tihw.rom, adr, ROM_SIZE_TI89T - 1);
 	}
 
 	// memory-mapped I/O
     else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
-		return getp(tihw.io, adr, IO1_SIZE_TI89T - 1);
+		return get_p(tihw.io, adr, IO1_SIZE_TI89T - 1);
 	}
 
 	// memory-mapped I/O (hw2)
 	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89T))
 	{
-		return getp(tihw.io2, adr, IO2_SIZE_TI89T - 1);
+		return get_p(tihw.io2, adr, IO2_SIZE_TI89T - 1);
 	}
 
 	// memory-mapped I/O (hw3)
 	else if(IN_RANGE(adr, 0x710000, IO3_SIZE_TI89T))
 	{
-		return getp(tihw.io3, adr, IO3_SIZE_TI89T - 1);
+		return get_p(tihw.io3, adr, IO3_SIZE_TI89T - 1);
 	}
 
 	return tihw.unused;
@@ -121,7 +121,7 @@ uint32_t ti89t_get_long(uint32_t adr)
 	   IN_BOUNDS(0x200000, adr, 0x23ffff) ||
 	   IN_BOUNDS(0x400000, adr, 0x43ffff))
 	{
-		return getl(tihw.ram, adr, 0x03ffff);
+		return get_l(tihw.ram, adr, 0x03ffff);
 	}
 
 	// FLASH access
@@ -159,7 +159,7 @@ uint16_t ti89t_get_word(uint32_t adr)
 	   IN_BOUNDS(0x200000, adr, 0x23ffff) ||
 	   IN_BOUNDS(0x400000, adr, 0x43ffff))
 	{
-		return getw(tihw.ram, adr, 0x03ffff);
+		return get_w(tihw.ram, adr, 0x03ffff);
 	}
 
 	// FLASH access
@@ -196,7 +196,7 @@ uint8_t ti89t_get_byte(uint32_t adr)
 	   IN_BOUNDS(0x200000, adr, 0x23ffff) ||
 	   IN_BOUNDS(0x400000, adr, 0x43ffff))
 	{
-		return getb(tihw.ram, adr, 0x03ffff);
+		return get_b(tihw.ram, adr, 0x03ffff);
 	}
 
 	// FLASH access
@@ -233,7 +233,7 @@ void ti89t_put_long(uint32_t adr, uint32_t arg)
 	   IN_BOUNDS(0x200000, adr, 0x23ffff) ||
 	   IN_BOUNDS(0x400000, adr, 0x43ffff))
 	{
-		putl(tihw.ram, adr, 0x03ffff, arg);
+		put_l(tihw.ram, adr, 0x03ffff, arg);
 	}
 
 	// FLASH access
@@ -270,7 +270,7 @@ void ti89t_put_word(uint32_t adr, uint16_t arg)
 	   IN_BOUNDS(0x200000, adr, 0x23ffff) ||
 	   IN_BOUNDS(0x400000, adr, 0x43ffff))
 	{
-		putw(tihw.ram, adr, 0x03ffff, arg);
+		put_w(tihw.ram, adr, 0x03ffff, arg);
 	}
 
 	// FLASH access
@@ -307,7 +307,7 @@ void ti89t_put_byte(uint32_t adr, uint8_t arg)
 	   IN_BOUNDS(0x200000, adr, 0x23ffff) ||
 	   IN_BOUNDS(0x400000, adr, 0x43ffff))
 	{
-		putb(tihw.ram, adr, 0x03ffff, arg);
+		put_b(tihw.ram, adr, 0x03ffff, arg);
 	}
 
 	// FLASH access

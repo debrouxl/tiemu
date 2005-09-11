@@ -46,6 +46,9 @@
 #include "ti68k_int.h"
 #include "tie_error.h"
 
+CableHandle* cable_handle = NULL;
+CalcHandle*  calc_handle  = NULL;
+
 /*
 	Linkport (lp) / directfile (df) mappers
 */
@@ -85,23 +88,51 @@ static void map_dbus_to_file(void)
     D-bus management (HW linkport)
 */
 
-static int init_link_cable(void);
-static int exit_link_cable(void);
-static int init_link_file(void);
-static int exit_link_file(void);
+int ilp_reset(CableHandle *h);
+int ilp_send(CableHandle *h, uint8_t *data, uint32_t len);
+int ilp_recv(CableHandle *h, uint8_t *data, uint32_t len);
 
 int hw_dbus_init(void)
 {
-	// init link_cable
-	init_link_cable();
+	int err;
 
-	// init directfile
-	init_link_file();
+	// set cable
+	cable_handle = ticables_handle_new(linkp.cable_model, linkp.cable_port);
+	if(cable_handle == NULL)
+	{
+		tiemu_error(0, "Can't set cable");
+		return -1;
+	}
 
-	if(link_cable.link_type == LINK_NUL)
-		map_dbus_to_file();		// set mappers to link_cable
+	ticables_options_set_timeout(cable_handle, linkp.cable_timeout);
+	ticables_options_set_delay(cable_handle, linkp.cable_delay);
+
+	// set calc
+	linkp.calc_model = ti68k_calc_to_libti_calc();
+	calc_handle = ticalcs_handle_new(linkp.calc_model);
+	if(calc_handle == NULL)
+	{
+		tiemu_error(0, "Can't set cable");
+		return -1;
+	}
+	
+	// attach cable to calc (open cable)
+	err = ticalcs_cable_attach(calc_handle, cable_handle);
+	tiemu_error(err, NULL);
+
+	// customize cable by overriding some methods
+	if(linkp.cable_model == CABLE_ILP)
+	{
+		cable_handle->cable->reset = ilp_reset;
+		cable_handle->cable->send  = ilp_send;
+		cable_handle->cable->recv  = ilp_recv;
+	}
+
+	// and set pointers
+	if(linkp.cable_model == CABLE_ILP)
+		map_dbus_to_file();		// set mappers to internal file loader
 	else
-		map_dbus_to_cable();	// set mappers to link_cable
+		map_dbus_to_cable();	// set mappers to external link cable
 
     return 0;
 }
@@ -115,74 +146,36 @@ int hw_dbus_reset(void)
 
 int hw_dbus_exit(void)
 {
-	// exit link_cable
-	exit_link_cable();
-
-	// exit link_file
-	exit_link_file();
-
-    return 0;
-}
-
-/*
-	Link cable access
-*/
-
-TicableLinkCable lc;	// used in ports.c for direct access
-static int avail = 0;
-
-static int init_link_cable(void)
-{
 	int err;
 
-	ticable_set_param(&link_cable);
-	err = ticable_set_cable(link_cable.link_type, &lc);
+	// detach cable from calc (close cable)
+	err = ticalcs_cable_detach(calc_handle);
 	if(err)
 	{
 		tiemu_error(err, NULL);
 		return -1;
 	}
 
-	if((err = lc.init()))
-	{
-		tiemu_error(err, NULL);
-		return -1;
-	}
-
-	if((err = lc.open()))
-	{
-		tiemu_error(err, NULL);
-		return -1;
-	}
+	// delete calc & cable handles
+	ticalcs_handle_del(calc_handle);
+	ticables_handle_del(cable_handle);
 
 	return 0;
 }
 
-static int exit_link_cable(void)
-{
-	int err;
+/*
+	Link cable access
+*/
 
-	if((err = lc.close()))
-	{
-		tiemu_error(err, NULL);
-		return -1;
-	}
-
-	if((err = lc.exit()))
-	{ 
-		tiemu_error(err, NULL);
-		return -1;
-	}
-
-	return 0;
-}
+static int avail = 0;
 
 static void lp_reinit(void)
 {
 	int err;
 
 	avail = 0;
-	if((err = lc.reset()))
+	err = ticables_cable_reset(cable_handle);
+	if(err)
 		tiemu_error(err, NULL);
 }
 
@@ -190,7 +183,7 @@ static void lp_putbyte(uint8_t arg)
 {
 	int err;
   
-    err = lc.put(arg);
+	err = ticables_cable_put(cable_handle, arg);
 	if(err)
 	{
 		io_bit_set(0x0d,7);	// error
@@ -213,7 +206,7 @@ static uint8_t lp_getbyte(void)
 		printf("lp_getbyte (byte lost) !\n");
 	}
 
-	err = lc.get(&arg);
+	err = ticables_cable_get(cable_handle, &arg);
 	if(err)
     {
 		io_bit_set(0x0d,7);	// error
@@ -233,7 +226,7 @@ static int lp_checkread(void)
 	if(avail)
 	    return 0;
 
-	err = lc.check(&status);
+	err = ticables_cable_check(cable_handle, &status);
 	if(err)
 	{
 	    io_bit_set(0x0d,7);		// error
@@ -321,136 +314,62 @@ int df_checkread(void)
 	Wonderful, isn't it ?! Take a look at the 'TiLP framework' power ;-)
 */
 
-static TicableLinkCable 	ilc = { 0 };
-static TicalcFncts			itc = { 0 };
-static TicalcInfoUpdate 	iu = { 0 };
-static TicableDataRate*     tdr;
-
 /* libticables functions (link API) */
-static int ilp_init(void)     
-{ 
-	ticable_get_datarate(&tdr);
 
-	tdr->count = 0;
-  	toSTART(tdr->start);
-
-	return 0; 
-}
-
-static int ilp_open(void)     
-{
-	return 0; 
-}
-
-static int ilp_put(uint8_t data)
-{ 
-	tiTIME clk;
-
-	tdr->count++;
-
-  	f2t_data = data; 
-  	f2t_flag = 1;
-
-	io_bit_set(0x0d,5);	// SRX=1 (rx reg is full)
-	io_bit_set(0x0d,2);	// link activity
-	hw_m68k_irq(4);		// this turbo-boost transfer !
-
-	toSTART(clk);
-  	while(f2t_flag/* && !iu.cancel*/) 
-    { 
-		hw_m68k_run(1, 0);
-		if(toELAPSED(clk, params.timeout))
-			return ERR_WRITE_TIMEOUT;
-    };
-
-  	return 0;
-}
-
-static int ilp_get(uint8_t *data)
-{ 
-	tiTIME clk;
-
-	toSTART(clk);
-  	while(!t2f_flag/* && !iu.cancel*/) 
-    { 
-      	hw_m68k_run(1, 0);
-		if(toELAPSED(clk, params.timeout))
-			return ERR_WRITE_TIMEOUT;
-    };
-    
-  	*data = t2f_data;
-  	t2f_flag = 0;
-
-	io_bit_set(0x0d,6);	// STX=1 (tx reg is empty)
-	hw_m68k_irq(4);		// this turbo-boost transfer !
-
-	tdr->count++;
-
-	return 0;
-}
-
-static int ilp_reset(void)
+int ilp_reset(CableHandle *h)
 {
 	return t2f_flag = f2t_flag = 0;
 }
 
-static int ilp_probe(void)    	{ return 0; }
-static int ilp_close(void)    	{ return 0; }
-static int ilp_term(void)     	{ return 0; }
-static int ilp_check(int *st)	{ return 0; }
-
-/* libticalcs functions (GUI callbacks API) */
-static void ilp_start(void)   { }
-static void ilp_stop(void)    { }
-static void ilp_refresh(void) { }
-static void ilp_pbar(void)    { }
-static void ilp_label(void)   { }
-
-/* Initialize a pseudo link cable to be connected with HW */
-static int init_link_file(void)
+int ilp_send(CableHandle *h, uint8_t *data, uint32_t len)
 {
-  	ilc.init  = ilp_init;
-  	ilc.open  = ilp_open;
-  	ilc.put   = ilp_put;
-  	ilc.get   = ilp_get;
-  	ilc.close = ilp_close;
-  	ilc.exit  = ilp_term;
-  	ilc.probe = ilp_probe;
-  	ilc.check = ilp_check;
-	ilc.reset = ilp_reset;
+	unsigned int i;
+	tiTIME clk;
 
-  	ticalc_set_cable(&ilc);
+	for(i = 0; i < len; i++)
+	{
+  		f2t_data = data[i]; 
+  		f2t_flag = 1;
 
-  	switch(tihw.calc_type)
-    {
-    	case TI92: ticalc_set_calc(CALC_TI92, &itc);
-      	break;
-    	case TI89: ticalc_set_calc(CALC_TI89, &itc);
-      	break;
-		case TI89t: ticalc_set_calc(CALC_TI89T, &itc);
-		break;
-    	case TI92p: ticalc_set_calc(CALC_TI92P, &itc);
-      	break;
-		case V200: ticalc_set_calc(CALC_V200, &itc);
-      	break;
-    	default: return ERR_NONE;
-      	break;
-    }
+		io_bit_set(0x0d,5);	// SRX=1 (rx reg is full)
+		io_bit_set(0x0d,2);	// link activity
+		hw_m68k_irq(4);		// this turbo-boost transfer !
 
-  	//ticalc_set_update(&iu, ilp_start, ilp_stop, ilp_refresh, ilp_pbar, ilp_label);
-
-    df_reinit();
-	ilc.init();
+		TO_START(clk);
+  		while(f2t_flag) 
+		{ 
+			hw_m68k_run(1, 0);
+			if(TO_ELAPSED(clk, params.timeout))
+				return ERROR_WRITE_TIMEOUT;
+		};
+	}
 
   	return 0;
 }
 
-static int exit_link_file(void)
+int ilp_recv(CableHandle *h, uint8_t *data, uint32_t len)
 {
-	ilc.exit();
-	df_reinit();
+	unsigned int i;
+	tiTIME clk;
 
-    return 0;
+	for(i = 0; i < len; i++)
+	{
+		TO_START(clk);
+  		while(!t2f_flag) 
+		{ 
+      		hw_m68k_run(1, 0);
+			if(TO_ELAPSED(clk, params.timeout))
+				return ERROR_WRITE_TIMEOUT;
+		};
+    
+  		data[i] = t2f_data;
+  		t2f_flag = 0;
+
+		io_bit_set(0x0d,6);	// STX=1 (tx reg is empty)
+		hw_m68k_irq(4);		// this turbo-boost transfer (30% faster)
+	}
+
+	return 0;
 }
 
 int send_ti_file(const char *filename)
@@ -461,14 +380,14 @@ int send_ti_file(const char *filename)
 	double duration;
 
     // Check for TI file
-    if(!tifiles_is_a_ti_file(filename))
+    if(!tifiles_file_is_ti(filename))
         return ERR_NOT_TI_FILE;
 
-	if(((tifiles_which_calc_type(filename) == CALC_TI92) && (tihw.calc_type == TI92)) ||
-		(tifiles_which_calc_type(filename) == CALC_TI89)  ||
-		(tifiles_which_calc_type(filename) == CALC_TI89T) ||
-		(tifiles_which_calc_type(filename) == CALC_TI92P) ||
-		(tifiles_which_calc_type(filename) == CALC_V200)
+	if(((tifiles_file_get_model(filename) == CALC_TI92) && (tihw.calc_type == TI92)) ||
+		(tifiles_file_get_model(filename) == CALC_TI89)  ||
+		(tifiles_file_get_model(filename) == CALC_TI89T) ||
+		(tifiles_file_get_model(filename) == CALC_TI92P) ||
+		(tifiles_file_get_model(filename) == CALC_V200)
 	  )
     {
         ok = 1;
@@ -481,41 +400,40 @@ int send_ti_file(const char *filename)
 	sip = 1;
 
     // FLASH APP file ?
-    if(tifiles_is_a_flash_file(filename) && !strcasecmp(tifiles_flash_app_file_ext(), tifiles_get_extension(filename)))
-    {
-        
-        ret = itc.send_flash(filename, MODE_APPS);
+    if(tifiles_file_is_flash(filename) && !strcasecmp(tifiles_fext_of_flash_app(calc_handle->model), tifiles_fext_get(filename)))
+    {   
+		ret = ticalcs_calc_send_flash2(calc_handle, filename);
     }
 
     // FLASH OS file ?
-    if(tifiles_is_a_flash_file(filename) && !strcasecmp(tifiles_flash_os_file_ext(), tifiles_get_extension(filename)))
+    if(tifiles_file_is_flash(filename) && !strcasecmp(tifiles_fext_of_flash_os(calc_handle->model), tifiles_fext_get(filename)))
     {
-        ret = itc.send_flash(filename, MODE_AMS);
+		ret = ticalcs_calc_send_flash2(calc_handle, filename);
     }
   
     // Backup file ?
-    else if(tifiles_is_a_backup_file(filename))
+    else if(tifiles_file_is_backup(filename))
     {
-        ret = itc.send_backup(filename, MODE_NORMAL);
+		ret = ticalcs_calc_send_backup2(calc_handle, filename);
     }
 
     // Group file ?
-    else if(tifiles_is_a_group_file(filename))
+    else if(tifiles_file_is_group(filename))
     {
-        ret = itc.send_var(filename, MODE_NORMAL, NULL);
+		ret = ticalcs_calc_send_var2(calc_handle, MODE_NORMAL, filename);
     }
 
     // Single file
-    else if(tifiles_is_a_single_file(filename))
+    else if(tifiles_file_is_single(filename))
     {
-        ret = itc.send_var(filename, MODE_NORMAL, NULL);
+		ret = ticalcs_calc_send_var2(calc_handle, MODE_NORMAL, filename);
     }
 
 	// Restore link cable use
 	sip = 0;
 	finish = clock();
 	duration = (double)(finish - start) / CLOCKS_PER_SEC;
-	//printf("Duration: %2.1f seconds.\n", duration);
+	printf("Duration: %2.1f seconds.\n", duration);
 
 	// Transfer aborted ? Set hw link error
 	if(ret)
@@ -525,15 +443,17 @@ int send_ti_file(const char *filename)
 		df_reinit();
 	}
 
-  return 0;
+	return 0;
 }
 
-int display_recv_files_dbox(const char *path);
+int display_recv_files_dbox(const char *src, const char *dst);
 
 int recfile(void)
 {
 	int ret;
-	char filename[1024];
+	char src_fn[1024];
+	char dst_fn[1024];
+	VarEntry *ve;
 
 	recfile_flag = 0;
 
@@ -543,29 +463,27 @@ int recfile(void)
 	else
 		rip = 1;
 
-	// Some models and AMS versions sends an RDY packet when entering in
+	// Some models and AMS versions send an RDY packet when entering in
 	// the VAR-Link menu or just before sending variable. We skip it !
 	if(t2f_data == 0x89 && tihw.calc_type != TI92)
 	{
-		uint8_t arg;
+		uint8_t arg[4];
 		int i;
 
-		for(i=0; i<4; i++)
-		{
-			ilp_get(&arg);
-			printf("purging <%02x>\n", arg);
-		}
+		ilp_recv(cable_handle, arg, 4);
+		for(i = 0; i < 4; i++)
+			printf("purging <%02x>\n", arg[i]);
 
 		if(tihw.calc_type != TI89t)
 			goto recfile_end;
 	}
 
 	// Receive variable in non-silent mode
-	strcpy(filename, g_get_tmp_dir());
-	strcat(filename, G_DIR_SEPARATOR_S);
+	strcpy(src_fn, g_get_tmp_dir());
+	strcat(src_fn, G_DIR_SEPARATOR_S);
+	strcat(src_fn, "file.rec");
 
-	ret = itc.recv_var_2(filename, 0, NULL);
-	printf("filename: <%s>\n", filename);
+	ret = ticalcs_calc_recv_var_ns2(calc_handle, MODE_NORMAL, src_fn, &ve);
 
 	// Check for error
 	if(ret)
@@ -576,12 +494,32 @@ int recfile(void)
 		tiemu_error(ret, NULL);
 	}
 
+	// Construct filename
+	strcpy(dst_fn, g_get_tmp_dir());
+	strcat(dst_fn, G_DIR_SEPARATOR_S);
+
+	if(ve)
+	{
+		//single
+		strcat(dst_fn, ve->name);
+		strcat(dst_fn, ".");
+		strcat(dst_fn, tifiles_vartype2fext(calc_handle->model, ve->type));
+
+		tifiles_ve_delete(ve);
+	}
+	else
+	{
+		// group
+		strcat(dst_fn, "group.");
+		strcat(dst_fn, tifiles_fext_of_group(linkp.calc_model));
+	}
+
 	// Open a box
-	display_recv_files_dbox(filename);
+	display_recv_files_dbox(src_fn, dst_fn);
 
 	// end
 recfile_end:
 	rip = 0;
+
 	return 0;	
 }
-

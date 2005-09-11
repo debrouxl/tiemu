@@ -12,16 +12,16 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ticables
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ticalcs
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name tifiles
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name uae
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ticables2
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ticalcs2
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name tifiles2
     End Project Dependency
 }}}
 
@@ -36,22 +36,13 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ticables
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name ticalcs
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name tifiles
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name uae
     End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "ticables"=..\..\..\ticables\build\msvc\ticables.dsp - Package Owner=<4>
+Project: "ticables2"=..\..\..\ticables2\build\msvc\ticables2.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -63,7 +54,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "ticalcs"=..\..\..\ticalcs\build\msvc\ticalcs.dsp - Package Owner=<4>
+Project: "ticalcs2"=..\..\..\ticalcs2\build\msvc\ticalcs2.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -72,16 +63,16 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name ticables
+    Project_Dep_Name ticables2
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name tifiles
+    Project_Dep_Name tifiles2
     End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "tifiles"=..\..\..\tifiles\build\msvc\tifiles.dsp - Package Owner=<4>
+Project: "tifiles2"=..\..\..\tifiles2\build\msvc\tifiles2.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

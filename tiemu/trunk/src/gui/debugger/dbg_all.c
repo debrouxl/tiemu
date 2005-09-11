@@ -42,9 +42,9 @@
 #include "support.h"
 #include "paths.h"
 #include "engine.h"
+#include "dboxes.h"
 #ifndef NO_GDB
 #include "gdbcall.h"
-#include "dboxes.h"
 
 void gdbtk_hide_insight(void);
 void gdbtk_show_insight(void);

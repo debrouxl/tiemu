@@ -218,10 +218,10 @@ void hw_update(void)
 
 	// DBus: External link activity ?
 	/*
-	if(!lc.get_red_wire() || !lc.get_white_wire())
+	if(!ticables_cable_get_d0(cable_handle) || !ticables_cable_get_d1(cable_handle))
 	{
-		io_bit_set(0x0d,3);
-		io_bit_set(0x0d,2);
+		io_bit_set(0x0d,3);	//SA
+		io_bit_set(0x0d,2);	//EA
 	}
 	*/
 

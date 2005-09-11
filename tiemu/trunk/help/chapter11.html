@@ -48,7 +48,7 @@ item:<br>
 </div>
 <br>
 <h2>11.1 Direct File loading</h2>
-When cable is set to <span style="font-style: italic;">null,</span>
+When cable is set to <span style="font-style: italic;">linkport,</span>
 TiEmu uses its direct file loading/saving capability. That is to say,
 you can 'send' a file from disk to TiEmu and vice-versa (<span
  style="font-style: italic;">Send file to TiEmu</span> item of popup
@@ -66,7 +66,8 @@ There are 2 virtual cables: <span style="font-style: italic;">VTi</span>
 - run VTI; next, run TiEmu<br>
 - choose the <span style="font-style: italic;">VTi</span> cable, <span
  style="font-style: italic;">port #2</span><br>
-- open the VTI menu, go to <span style="font-style: italic;">Enable Cable
+- open the VTI menu, go to <span style="font-style: italic;">Enable
+Cable
 Link</span> and be sure that <span style="font-style: italic;">Virtual
 Link</span> is checked.<br>
 <br>
@@ -79,16 +80,17 @@ To connect TiLP and TiEmu:<br>
 <br>
 To connect TiEmu and TiEmu:<br>
 - run 2 instances of TiEmu<br>
-- choose the <span style="font-style: italic;">TiEmu</span> cable on both,
+- choose the <span style="font-style: italic;">TiEmu</span> cable on
+both,
 <span style="font-style: italic;">port #1</span> and <span
  style="font-style: italic;">port #2</span> respectively.<br>
 </div>
 <h2>11.3 Real cables</h2>
-At the time being, there are 3 link cables useable with TiEmu: <span
+At the time being, there are 4 link cables useable with TiEmu: <span
  style="font-style: italic;">GrayLink</span>, <span
- style="font-style: italic;">BlackLink </span>and <span
- style="font-style: italic;">ParallelLink</span>. SilverLink is
-supported but not useable yet.<br>
+ style="font-style: italic;">BlackLink</span>, <span
+ style="font-style: italic;">ParallelLink</span> and SilverLink (Win32
+only).<br>
 A cable is plugged into a port. There are 3/4 ports depending on the
 cable type:<br>
 <br>
@@ -104,6 +106,8 @@ cable type:<br>
       <td colspan="2" rowspan="1"
  style="vertical-align: top; text-align: center;">ParallelLink<br>
       </td>
+      <td style="vertical-align: top; text-align: center;">SilverLink<br>
+      </td>
     </tr>
     <tr>
       <td style="vertical-align: top;"><br>
@@ -116,6 +120,8 @@ cable type:<br>
       </td>
       <td style="vertical-align: top; text-align: center;">Linux<br>
       </td>
+      <td style="vertical-align: top; text-align: center;">Windows<br>
+      </td>
     </tr>
     <tr>
       <td style="vertical-align: top;">port #1</td>
@@ -127,6 +133,8 @@ cable type:<br>
       </td>
       <td style="vertical-align: top; text-align: center;">/dev/tipar0<br>
       </td>
+      <td style="vertical-align: top; text-align: center;">1st cable<br>
+      </td>
     </tr>
     <tr>
       <td style="vertical-align: top;">port #2</td>
@@ -136,6 +144,8 @@ cable type:<br>
       <td style="vertical-align: top; text-align: center;">LPT2<br>
       </td>
       <td style="vertical-align: top; text-align: center;">/dev/tipar1</td>
+      <td style="vertical-align: top; text-align: center;">2nd cable<br>
+      </td>
     </tr>
     <tr>
       <td style="vertical-align: top;">port #3</td>
@@ -145,6 +155,8 @@ cable type:<br>
       <td style="vertical-align: top; text-align: center;">LPT3<br>
       </td>
       <td style="vertical-align: top; text-align: center;">/dev/tipar2</td>
+      <td style="vertical-align: top; text-align: center;">3rd cable<br>
+      </td>
     </tr>
     <tr>
       <td style="vertical-align: top;">port #4</td>
@@ -155,14 +167,15 @@ cable type:<br>
       </td>
       <td style="vertical-align: top; text-align: center;">N/A<br>
       </td>
+      <td style="vertical-align: top; text-align: center;">4th cable<br>
+      </td>
     </tr>
   </tbody>
 </table>
 <br>
-Note: If you want to use the parallel cable under Linux as a regular
-(non-root) user, you must have the tipar kernel module (as module or
-built-in) present on your system. Likewise, the BlackLink cable
-requires the tiser module (or root privileges).<br>
+Note: the TiLP-II framework does not rely on Linux kernel modules any
+longer. But, you have to take care of permissions (user/group, rw) on
+the device node.<br>
 <br>
 <hr>
 </body>

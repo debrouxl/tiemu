@@ -81,25 +81,25 @@ uint8_t* ti89_get_real_addr(uint32_t adr)
 	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		return getp(tihw.ram, adr, RAM_SIZE_TI89 - 1);
+		return get_p(tihw.ram, adr, RAM_SIZE_TI89 - 1);
 	}
 
     // FLASH access
 	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
 	{
-		return getp(tihw.rom, adr, ROM_SIZE_TI89 - 1);
+		return get_p(tihw.rom, adr, ROM_SIZE_TI89 - 1);
 	}
 	
 	// memory-mapped I/O
     else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
-		return getp(tihw.io, adr, IO1_SIZE_TI89 - 1);
+		return get_p(tihw.io, adr, IO1_SIZE_TI89 - 1);
 	}
 
 	// memory-mapped I/O (hw2)
 	else if(IN_RANGE(adr, 0x700000, IO2_SIZE_TI89))
 	{
-		return getp(tihw.io2, adr, IO2_SIZE_TI89 - 1);
+		return get_p(tihw.io2, adr, IO2_SIZE_TI89 - 1);
 	}
 
 	return tihw.unused;
@@ -110,13 +110,13 @@ uint32_t ti89_get_long(uint32_t adr)
 	// RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		return getl(tihw.ram, adr, RAM_SIZE_TI89 - 1);
+		return get_l(tihw.ram, adr, RAM_SIZE_TI89 - 1);
 	}
 
     // FLASH access
 	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
 	{
-		return getl(tihw.rom, adr, ROM_SIZE_TI89 - 1) | wsm.ret_or;
+		return get_l(tihw.rom, adr, ROM_SIZE_TI89 - 1) | wsm.ret_or;
 	}
 	
 	// memory-mapped I/O
@@ -139,13 +139,13 @@ uint16_t ti89_get_word(uint32_t adr)
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		return getw(tihw.ram, adr, RAM_SIZE_TI89 - 1);
+		return get_w(tihw.ram, adr, RAM_SIZE_TI89 - 1);
 	}
 
     // FLASH access
 	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
 	{
-		return getw(tihw.rom, adr, ROM_SIZE_TI89 - 1) | wsm.ret_or;
+		return get_w(tihw.rom, adr, ROM_SIZE_TI89 - 1) | wsm.ret_or;
 	}
 	
 	// memory-mapped I/O
@@ -168,13 +168,13 @@ uint8_t ti89_get_byte(uint32_t adr)
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		return getb(tihw.ram, adr, RAM_SIZE_TI89 - 1);
+		return get_b(tihw.ram, adr, RAM_SIZE_TI89 - 1);
 	}
 
     // FLASH access
 	else if(IN_BOUNDS(0x200000, adr, 0x5fffff))
 	{
-		return getb(tihw.rom, adr, ROM_SIZE_TI89 - 1) | wsm.ret_or;
+		return get_b(tihw.rom, adr, ROM_SIZE_TI89 - 1) | wsm.ret_or;
 	}
 	
 	// memory-mapped I/O
@@ -197,7 +197,7 @@ void ti89_put_long(uint32_t adr, uint32_t arg)
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		putl(tihw.ram, adr, RAM_SIZE_TI89 - 1, arg);
+		put_l(tihw.ram, adr, RAM_SIZE_TI89 - 1, arg);
 	}
 
     // FLASH access
@@ -226,7 +226,7 @@ void ti89_put_word(uint32_t adr, uint16_t arg)
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		putw(tihw.ram, adr, RAM_SIZE_TI89 - 1, arg);
+		put_w(tihw.ram, adr, RAM_SIZE_TI89 - 1, arg);
 	}
 
     // FLASH access
@@ -255,7 +255,7 @@ void ti89_put_byte(uint32_t adr, uint8_t arg)
     // RAM access
 	if(IN_BOUNDS(0x000000, adr, 0x1fffff))
 	{
-		putb(tihw.ram, adr, RAM_SIZE_TI89 - 1, arg);
+		put_b(tihw.ram, adr, RAM_SIZE_TI89 - 1, arg);
 	}
 
     // FLASH access

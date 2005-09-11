@@ -27,7 +27,7 @@
 #ifndef GTK_REFRESH_H
 #define GTK_REFRESH_H
 
-void gt_init_refresh_functions(void);
+void tiemu_update_set_gtk(void);
 
 #define GTK_REFRESH() { while( gtk_events_pending() ) { gtk_main_iteration(); }}
 

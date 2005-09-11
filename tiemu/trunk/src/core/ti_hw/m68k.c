@@ -33,6 +33,7 @@
 
 #include "libuae.h"
 #include "ti68k_def.h"
+#include "ti68k_err.h"
 #include "mem.h"
 #include "hw.h"
 #include "hwprot.h"

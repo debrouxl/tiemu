@@ -61,8 +61,8 @@ static char *rc_file;
 int rcfile_get_path(char **path)
 {
 	*path = g_strconcat(inst_paths.home_dir, 
-			    DIR_SEPARATOR_S, CONF_DIR, 
-			    DIR_SEPARATOR, INI_FILE, NULL); 
+			    G_DIR_SEPARATOR_S, CONF_DIR, 
+			    G_DIR_SEPARATOR_S, INI_FILE, NULL); 
 	return 0;
 }
 
@@ -174,162 +174,26 @@ void rcfile_read(void)
 	if(buffer[0]=='#' || !strlen(buffer)) continue;
       
 	/* Common part with TiLP: hardware section */
-	if ((p = find_str(buffer, "calctype="))) {
-		if (!strcmp(p, "v200"))
-			link_cable.calc_type = CALC_V200;
-
-		else if (!strcmp(p, "ti92+"))
-			link_cable.calc_type = CALC_TI92P;
-
-		else if (!strcmp(p, "ti92"))
-			link_cable.calc_type = CALC_TI92;
-
-		else if (!strcmp(p, "ti89"))
-			link_cable.calc_type = CALC_TI89;
-
-		else if (!strcmp(p, "ti86"))
-			link_cable.calc_type = CALC_TI86;
-
-		else if (!strcmp(p, "ti85"))
-			link_cable.calc_type = CALC_TI85;
-
-		else if (!strcmp(p, "ti83+"))
-			link_cable.calc_type = CALC_TI83P;
-
-		else if (!strcmp(p, "ti83"))
-			link_cable.calc_type = CALC_TI83;
-
-		else if (!strcmp(p, "ti82"))
-			link_cable.calc_type = CALC_TI82;
-
-		else if (!strcmp(p, "ti73"))
-			link_cable.calc_type = CALC_TI73;
-
-		else
-			stop(l);
+	if ((p = find_str(buffer, "cable_model="))) 
+	{
+		linkp.cable_model = ticables_string_to_model(p);
 		continue;
 	}
 	
-	if ((p = find_str(buffer, "linktype="))) {
-		if (!strcmp(p, "parallel"))
-			link_cable.link_type = LINK_PAR;
-
-		else if (!strcmp(p, "serial"))
-			link_cable.link_type = LINK_SER;
-
-		else if (!strcmp(p, "TIGraphLink"))
-			link_cable.link_type = LINK_TGL;
-
-		else if (!strcmp(p, "VTi"))
-			link_cable.link_type = LINK_VTI;
-
-		else if (!strcmp(p, "TiEmulator"))
-			link_cable.link_type = LINK_TIE;
-
-		else if (!strcmp(p, "virtual"))
-			link_cable.link_type = LINK_VTL;
-
-		else if (!strcmp(p, "UsbGraphLink"))
-			link_cable.link_type = LINK_UGL;
-
-		else if (!strcmp(p, "none"))
-			link_cable.link_type = LINK_NUL;
-
-		else
-			stop(l);
+	if ((p = find_str(buffer, "cable_port="))) 
+	{
+		linkp.cable_port = ticables_string_to_port(p);
 		continue;
 	}
 	
-	if ((p = find_str(buffer, "adr_port="))) {
-		sscanf(p, "0x%03X", &(link_cable.io_addr));
-
-		//check_access();
+	if ((p = find_str(buffer, "cable_timeout="))) 
+	{
+		sscanf(p, "%i", &(linkp.cable_timeout));
 		continue;
 	}
 	
-	if ((p = find_str(buffer, "device="))) {
-		strcpy(link_cable.device, p);
-	}
-	
-	if ((p = find_str(buffer, "timeout="))) {
-		sscanf(p, "%i", &(link_cable.timeout));
-		continue;
-	}
-	
-	if ((p = find_str(buffer, "delay="))) {
-		sscanf(p, "%i", &(link_cable.delay));
-		continue;
-	}
-	
-	if ((p = find_str(buffer, "port="))) {
-		if (!strcmp(p, "user"))
-			link_cable.port = USER_PORT;
-
-		else if (!strcmp(p, "parallel port #1"))
-			link_cable.port = PARALLEL_PORT_1;
-
-		else if (!strcmp(p, "parallel port #2"))
-			link_cable.port = PARALLEL_PORT_2;
-
-		else if (!strcmp(p, "parallel port #3"))
-			link_cable.port = PARALLEL_PORT_3;
-
-		else if (!strcmp(p, "serial port #1"))
-			link_cable.port = SERIAL_PORT_1;
-
-		else if (!strcmp(p, "serial port #2"))
-			link_cable.port = SERIAL_PORT_2;
-
-		else if (!strcmp(p, "serial port #3"))
-			link_cable.port = SERIAL_PORT_3;
-
-		else if (!strcmp(p, "serial port #4"))
-			link_cable.port = SERIAL_PORT_4;
-
-		else if (!strcmp(p, "virtual port #1"))
-			link_cable.port = VIRTUAL_PORT_1;
-
-		else if (!strcmp(p, "virtual port #2"))
-			link_cable.port = VIRTUAL_PORT_2;
-
-		else if (!strcmp(p, "USB port #1"))
-			link_cable.port = USB_PORT_1;
-
-		else if (!strcmp(p, "USB port #2"))
-			link_cable.port = USB_PORT_2;
-
-		else if (!strcmp(p, "USB port #3"))
-			link_cable.port = USB_PORT_3;
-
-		else if (!strcmp(p, "USB port #4"))
-			link_cable.port = USB_PORT_4;
-
-		else if (!strcmp(p, "null"))
-			link_cable.port = NULL_PORT;
-
-		else
-			stop(l);
-		continue;
-	}
-	
-	if ((p = find_str(buffer, "method="))) {
-		if (!strcmp(p, "automatic"))
-			link_cable.method = IOM_AUTO;
-
-		else if (!strcmp(p, "asm"))
-			link_cable.method = IOM_ASM;
-
-		else if (!strcmp(p, "api"))
-			link_cable.method = IOM_API;
-
-		else if (!strcmp(p, "driver"))
-			link_cable.method = IOM_DRV;
-
-		else if (!strcmp(p, "null"))
-			link_cable.method = IOM_NULL;
-
-		else
-			stop(l);
+	if ((p = find_str(buffer, "cable_delay="))) {
+		sscanf(p, "%i", &(linkp.cable_delay));
 		continue;
 	}
 
@@ -621,156 +485,20 @@ void rcfile_write(void)
 	fprintf(txt, "#\n");
 	fprintf(txt, "\n");
 
-	fprintf(txt, "# Calculator type\n");
-	fprintf(txt, "calctype=");
-	switch (link_cable.calc_type) {
-	case CALC_V200:
-		fprintf(txt, "v200\n");
-		break;
-	case CALC_TI92P:
-		fprintf(txt, "ti92+\n");
-		break;
-	case CALC_TI92:
-		fprintf(txt, "ti92\n");
-		break;
-	case CALC_TI89:
-		fprintf(txt, "ti89\n");
-		break;
-	case CALC_TI86:
-		fprintf(txt, "ti86\n");
-		break;
-	case CALC_TI85:
-		fprintf(txt, "ti85\n");
-		break;
-	case CALC_TI83P:
-		fprintf(txt, "ti83+\n");
-		break;
-	case CALC_TI83:
-		fprintf(txt, "ti83\n");
-		break;
-	case CALC_TI82:
-		fprintf(txt, "ti82\n");
-		break;
-	case CALC_TI73:
-		fprintf(txt, "ti73\n");
-		break;
-	}
-	fprintf(txt, "\n");
-
 	fprintf(txt, "# Link cable type\n");
-	fprintf(txt, "linktype=");
-	switch (link_cable.link_type) {
-	case LINK_PAR:
-		fprintf(txt, "parallel\n");
-		break;
-	case LINK_SER:
-		fprintf(txt, "serial\n");
-		break;
-	case LINK_TGL:
-		fprintf(txt, "TIGraphLink\n");
-		break;
-	case LINK_VTL:
-		fprintf(txt, "virtual\n");
-		break;
-	case LINK_TIE:
-		fprintf(txt, "TiEmulator\n");
-		break;
-	case LINK_VTI:
-		fprintf(txt, "VTi\n");
-		break;
-	case LINK_UGL:
-		fprintf(txt, "UsbGraphLink\n");
-		break;
-	default:
-		fprintf(txt, "none\n");
-		break;
-	}
+	fprintf(txt, "cable_model=%s\n", ticables_model_to_string(linkp.cable_model));
 	fprintf(txt, "\n");
 
 	fprintf(txt, "# Port to use (serial, parallel, ...\n");
-	fprintf(txt, "port=");
-	switch (link_cable.port) {
-	case USER_PORT:
-		fprintf(txt, "user\n");
-		break;
-	case PARALLEL_PORT_1:
-		fprintf(txt, "parallel port #1\n");
-		break;
-	case PARALLEL_PORT_2:
-		fprintf(txt, "parallel port #2\n");
-		break;
-	case PARALLEL_PORT_3:
-		fprintf(txt, "parallel port #3\n");
-		break;
-	case SERIAL_PORT_1:
-		fprintf(txt, "serial port #1\n");
-		break;
-	case SERIAL_PORT_2:
-		fprintf(txt, "serial port #2\n");
-		break;
-	case SERIAL_PORT_3:
-		fprintf(txt, "serial port #3\n");
-		break;
-	case SERIAL_PORT_4:
-		fprintf(txt, "serial port #4\n");
-		break;
-	case VIRTUAL_PORT_1:
-		fprintf(txt, "virtual port #1\n");
-		break;
-	case VIRTUAL_PORT_2:
-		fprintf(txt, "virtual port #2\n");
-		break;
-	case USB_PORT_1:
-		fprintf(txt, "USB port #1\n");
-		break;
-	case USB_PORT_2:
-		fprintf(txt, "USB port #2\n");
-		break;
-	case USB_PORT_3:
-		fprintf(txt, "USB port #3\n");
-		break;
-	case USB_PORT_4:
-		fprintf(txt, "USB port #4\n");
-		break;
-	default:
-		fprintf(txt, "null\n");
-		break;
-	}
-	fprintf(txt, "\n");
-
-	fprintf(txt, "# Method to use for I/O accesses\n");
-	fprintf(txt, "method=");
-	if (link_cable.method & IOM_AUTO)
-		fprintf(txt, "automatic\n");
-
-	else if (link_cable.method & IOM_ASM)
-		fprintf(txt, "asm\n");
-
-	else if (link_cable.method & IOM_API)
-		fprintf(txt, "api\n");
-
-	else if (link_cable.method & IOM_DRV)
-		fprintf(txt, "driver\n");
-	else if (link_cable.method & IOM_NULL)
-		fprintf(txt, "null\n");
-	else
-		fprintf(txt, "automatic\n");
-	fprintf(txt, "\n");
-
-	fprintf(txt, "# Parallel/serial/virtual port address (0=automatic)\n");
-	fprintf(txt, "adr_port=0x%03X\n", link_cable.io_addr);
-	fprintf(txt, "\n");
-
-	fprintf(txt, "# Serial device or character device (empty=automatic)\n");
-	fprintf(txt, "serial_device=%s\n", link_cable.device);
+	fprintf(txt, "cable_port=%s\n", ticables_port_to_string(linkp.cable_port));
 	fprintf(txt, "\n");
 
 	fprintf(txt, "# Timeout value in 0.1 seconds\n");
-	fprintf(txt, "timeout=%i\n", link_cable.timeout);
+	fprintf(txt, "cable_timeout=%i\n", linkp.cable_timeout);
 	fprintf(txt, "\n");
 
 	fprintf(txt, "# Delay value\n");
-	fprintf(txt, "delay=%i\n", link_cable.delay);
+	fprintf(txt, "cable_delay=%i\n", linkp.cable_delay);
 	fprintf(txt, "\n");
 
   /* Specific part to TiEmu */

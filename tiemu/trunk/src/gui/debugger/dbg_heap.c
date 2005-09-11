@@ -93,7 +93,6 @@ static GtkListStore* clist_create(GtkWidget *widget)
 static void clist_populate(GtkListStore *store)
 {
     int i;
-	uint16_t nhandles;
 
     for(i = 1; i < HEAP_MAX_SIZE; i++)
     {

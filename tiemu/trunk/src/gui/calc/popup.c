@@ -42,7 +42,7 @@
 #include "paths.h"
 #include "../engine.h"
 #include "fs_misc.h"
-#include "comm.h"
+#include "device.h"
 #include "rcfile.h"
 #include "dboxes.h"
 #include "romversion.h"
@@ -64,8 +64,8 @@ on_popup_menu_header                   (GtkMenuItem     *menuitem,
 {
 #if 1
 	fprintf(stdout, _("* TiEmu version %s (cables=%s, files=%s, calcs=%s)\n"),
-	     TIEMU_VERSION, ticable_get_version(), tifiles_get_version(),
-	     ticalc_get_version());
+	     TIEMU_VERSION, ticables_version_get(), tifiles_version_get(),
+	     ticalcs_version_get());
 #else
 	gchar **list, **ptr;
 
@@ -116,7 +116,7 @@ on_link_cable1_activate                (GtkMenuItem     *menuitem,
 	if(engine_is_stopped()) return;
 
 	engine_stop();
-	display_comm_dbox();
+	display_device_dbox();
 	engine_start();
 }
 

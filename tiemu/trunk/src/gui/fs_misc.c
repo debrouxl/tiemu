@@ -134,7 +134,7 @@ gint display_send_files_dbox()
 	static gchar *folder = NULL;
 
 	// Check for null cable
-	if(link_cable.link_type != LINK_NUL)
+	if(linkp.cable_model != CABLE_ILP)
 	{
 		tiemu_error(0, "You can't use direct file loading when a cable is set. Change cable to 'null' in the Link Options menu item.");
 		return -1;
@@ -166,7 +166,7 @@ gint display_send_files_dbox()
     // check extension
 	for(ptr = filenames; *ptr; ptr++)
 	{
-		if(!tifiles_is_a_ti_file(*ptr) || !tifiles_is_ti9x(tifiles_which_calc_type(*ptr))) 
+		if(!tifiles_file_is_ti(*ptr) || !tifiles_calc_is_ti9x(tifiles_file_get_model(*ptr))) 
 		{
 			msg_box(_("Error"), _("This file is not a valid TI file."));
 			g_strfreev(filenames);
@@ -175,19 +175,19 @@ gint display_send_files_dbox()
 
 		// set pbar title
 #if 1
-		if(tifiles_is_a_tib_file(*ptr) || tifiles_is_a_flash_file(*ptr)) 
+		if(tifiles_file_is_tib(*ptr) || tifiles_file_is_flash(*ptr)) 
 		{
 			create_pbar_type5(_("Flash"), "");
 		} 
-		else if(tifiles_is_a_backup_file(*ptr)) 
+		else if(tifiles_file_is_backup(*ptr)) 
 		{
 			create_pbar_type3(_("Backup"));
 		} 
-		else if(tifiles_is_a_group_file(*ptr)) 
+		else if(tifiles_file_is_group(*ptr)) 
 		{
 			create_pbar_type5(_("Sending group file"), "");
 		} 
-		else if(tifiles_is_a_single_file(*ptr)) 
+		else if(tifiles_file_is_single(*ptr)) 
 		{
 			create_pbar_type4(_("Sending variable"), "");
 		}
@@ -205,7 +205,7 @@ gint display_send_files_dbox()
 	return 0;
 }
 
-gint display_recv_files_dbox(const char *filename)
+int display_recv_files_dbox(const char *src, const char *dst)
 {
 	const gchar *fn;
 	gchar *src_folder;
@@ -214,9 +214,9 @@ gint display_recv_files_dbox(const char *filename)
 	gchar *ext;
 
 	// get file components
-	src_folder = g_path_get_dirname(filename);
+	src_folder = g_path_get_dirname(src);
 	dst_folder = inst_paths.home_dir;
-	basename = g_path_get_basename(filename);
+	basename = g_path_get_basename(dst);
 
 	 // set mask
     switch(tihw.calc_type) 
@@ -231,7 +231,7 @@ gint display_recv_files_dbox(const char *filename)
 
 	fn = create_fsel(dst_folder, basename, ext, TRUE);
 	if(fn)
-		rename(filename, fn);
+		rename(src, fn);
 
 	g_free(src_folder);
 	g_free(basename);
@@ -246,7 +246,7 @@ gint display_debug_dbox(void)
     const gchar *ext;
 	int err;
 	static gchar *folder = NULL;
-	TiRegular metadata;
+	FileContent metadata;
 
     // set mask
     switch(tihw.calc_type) 
@@ -274,27 +274,27 @@ gint display_debug_dbox(void)
 	folder = g_path_get_dirname(filename);
 
     // check extension
-    if(!tifiles_is_a_ti_file(filename) || 
-        !tifiles_is_ti9x(tifiles_which_calc_type(filename))) 
+    if(!tifiles_file_is_ti(filename) || 
+        !tifiles_calc_is_ti9x(tifiles_file_get_model(filename))) 
 	{
         msg_box(_("Error"), _("This file is not a valid TI file."));
         return -1;
     }
 
     // set pbar title
-    if(tifiles_is_a_tib_file(filename) || tifiles_is_a_flash_file(filename)) 
+    if(tifiles_file_is_tib(filename) || tifiles_file_is_flash(filename)) 
 	{
         create_pbar_type5(_("Flash"), "");
     } 
-	else if(tifiles_is_a_backup_file(filename)) 
+	else if(tifiles_file_is_backup(filename)) 
 	{
         create_pbar_type3(_("Backup"));
     } 
-	else if(tifiles_is_a_group_file(filename)) 
+	else if(tifiles_file_is_group(filename)) 
 	{
         create_pbar_type5(_("Sending group file"), "");
     } 
-	else if(tifiles_is_a_single_file(filename)) 
+	else if(tifiles_file_is_single(filename)) 
 	{
         create_pbar_type4(_("Sending variable"), "");
     }
@@ -314,15 +314,15 @@ gint display_debug_dbox(void)
         *(char *)ext = '.';
     }
 
-    if (!tifiles_read_regular_file(filename, &metadata))
+    if (!tifiles_file_read_regular(filename, &metadata))
     {
         if (metadata.num_entries > 0)
         {
-            int handle = sym_find_handle (metadata.entries[0].folder, metadata.entries[0].name);
+            int handle = sym_find_handle (metadata.entries[0]->folder, metadata.entries[0]->name);
             if (handle)
                 ti68k_bkpt_add_pgmentry (handle);
         }
-        tifiles_free_regular_content(&metadata);
+        tifiles_content_delete_regular(&metadata);
     }
 
 	return 0;

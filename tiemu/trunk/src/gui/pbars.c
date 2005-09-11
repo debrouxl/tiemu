@@ -35,29 +35,19 @@
 #include "struct.h"
 #include "tilibs.h"
 
-/* 
-    For Win32 platforms, it is better to use discrete pbar 
-    because they are faster. 
-*/
-#ifdef __WIN32__
-#define PROGRESS_TYPE GTK_PROGRESS_CONTINUOUS
-#else				/*  */
-#define PROGRESS_TYPE GTK_PROGRESS_CONTINUOUS
-#endif				/*  */
-
 struct progress_window p_win = { 0 };
 static GtkWidget *pbar_window = NULL;
 
-extern TicalcInfoUpdate info_update;
+extern CalcUpdate calc_update;
 
 /* Create a window with one progress bar */
 void create_pbar_type1(const gchar * title)
 {
 	GladeXML *xml;
 
-	info_update.prev_percentage = 0.0;
-	info_update.percentage = 0.0;
-	info_update.cancel = 0;
+	calc_update.cnt1 = 0;
+	calc_update.max1 = 0;
+	calc_update.cancel = 0;
 
 	xml = glade_xml_new
 	    (tilp_paths_build_glade("pbars-2.glade"), "pbar1_dbox",
@@ -81,9 +71,9 @@ void create_pbar_type2(const gchar * title, gchar * text)
 {
 	GladeXML *xml;
 
-	info_update.prev_percentage = 0.0;
-	info_update.percentage = 0.0;
-	info_update.cancel = 0;
+	calc_update.cnt1 = 0;
+	calc_update.max1 = 0;
+	calc_update.cancel = 0;
 
 	xml = glade_xml_new
 	    (tilp_paths_build_glade("pbars-2.glade"), "pbar2_dbox",
@@ -107,11 +97,11 @@ void create_pbar_type3(const gchar * title)
 {
 	GladeXML *xml;
 
-	info_update.prev_main_percentage = 0.0;
-	info_update.main_percentage = 0.0;
-	info_update.prev_percentage = 0.0;
-	info_update.percentage = 0.0;
-	info_update.cancel = 0;
+	calc_update.cnt1 = 0;
+	calc_update.max1 = 0;
+	calc_update.cancel = 0;
+	calc_update.cnt2 = 0;
+	calc_update.max2 = 0;
 
 	xml = glade_xml_new
 	    (tilp_paths_build_glade("pbars-2.glade"), "pbar3_dbox",
@@ -136,8 +126,9 @@ void create_pbar_type4(const gchar * title, gchar * text)
 {
 	GladeXML *xml;
 
-	info_update.percentage = 0.0;
-	info_update.cancel = 0;
+	calc_update.cnt1 = 0;
+	calc_update.max1 = 0;
+	calc_update.cancel = 0;
 
 	xml = glade_xml_new
 	    (tilp_paths_build_glade("pbars-2.glade"), "pbar4_dbox",
@@ -163,11 +154,11 @@ void create_pbar_type5(const gchar * title, gchar * text)
 {
 	GladeXML *xml;
 
-	info_update.prev_main_percentage = 0.0;
-	info_update.main_percentage = 0.0;
-	info_update.prev_percentage = 0.0;
-	info_update.percentage = 0.0;
-	info_update.cancel = 0;
+	calc_update.cnt1 = 0;
+	calc_update.max1 = 0;
+	calc_update.cancel = 0;
+	calc_update.cnt2 = 0;
+	calc_update.max2 = 0;
 
 	xml = glade_xml_new
 	    (tilp_paths_build_glade("pbars-2.glade"), "pbar5_dbox",
@@ -206,5 +197,5 @@ void destroy_pbar(void)
 GLADE_CB void on_pbar_okbutton1_pressed(GtkButton * button,
 					gpointer user_data)
 {
-	info_update.cancel = 1;
+	calc_update.cancel = 1;
 }

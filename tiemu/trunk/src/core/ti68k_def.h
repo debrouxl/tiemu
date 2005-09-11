@@ -192,9 +192,19 @@ typedef struct
     int         pclog_ptr;
 } Ti68kBreakpoints;
 
+typedef DeviceOptions	Ti68kLinkPort;
+
+/* Externs */
+
 extern Ti68kParameters 	params;
 extern Ti68kHardware 	tihw;
-extern TicableLinkParam link_cable;
+extern Ti68kLinkPort	linkp;
 extern Ti68kBreakpoints	bkpts;
+
+/* Misc */
+
+#ifndef TRY
+#define TRY(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
+#endif
 
 #endif

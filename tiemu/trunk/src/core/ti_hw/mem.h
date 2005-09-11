@@ -75,14 +75,14 @@ extern uint8_t* hw_get_real_address(uint32_t addr);
 #define IN_BOUNDS(a,v,b)	(((v) >= (a)) && ((v) <= (b)))
 #define IN_RANGE(v,b,r)		(((v) >= (b)) && ((v) <= ((b) + ((r)-1))))
 
-#define putb(ptr,adr,mask,arg)	{ ptr[(adr) & (mask)] = (arg); }
-#define putw(ptr,adr,mask,arg)	{ putb(ptr,adr,mask,(uint8_t )((arg) >>  8)); putb(ptr,(adr)+1,mask,(uint8_t )((arg) & 0x00ff)); }
-#define putl(ptr,adr,mask,arg)	{ putw(ptr,adr,mask,(uint16_t)((arg) >> 16)); putw(ptr,(adr)+2,mask,(uint16_t)((arg) & 0xffff)); }
+#define put_b(ptr,adr,mask,arg)	{ ptr[(adr) & (mask)] = (arg); }
+#define put_w(ptr,adr,mask,arg)	{ put_b(ptr,adr,mask,(uint8_t )((arg) >>  8)); put_b(ptr,(adr)+1,mask,(uint8_t )((arg) & 0x00ff)); }
+#define put_l(ptr,adr,mask,arg)	{ put_w(ptr,adr,mask,(uint16_t)((arg) >> 16)); put_w(ptr,(adr)+2,mask,(uint16_t)((arg) & 0xffff)); }
 
-#define getb(ptr,adr,mask)	(ptr[(adr) & (mask)])
-#define getw(ptr,adr,mask)	((uint16_t) ((getb(ptr,adr,mask) <<  8) | getb(ptr,(adr)+1,mask)))
-#define getl(ptr,adr,mask)	((uint32_t)	((getw(ptr,adr,mask) << 16) | getw(ptr,(adr)+2,mask)))
+#define get_b(ptr,adr,mask)	(ptr[(adr) & (mask)])
+#define get_w(ptr,adr,mask)	((uint16_t) ((get_b(ptr,adr,mask) <<  8) | get_b(ptr,(adr)+1,mask)))
+#define get_l(ptr,adr,mask)	((uint32_t)	((get_w(ptr,adr,mask) << 16) | get_w(ptr,(adr)+2,mask)))
 
-#define getp(ptr,adr,mask)  ((ptr) + ((adr) & (mask)))
+#define get_p(ptr,adr,mask)  ((ptr) + ((adr) & (mask)))
 
 #endif
