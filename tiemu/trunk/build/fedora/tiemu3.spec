@@ -28,7 +28,7 @@ Summary: TiEmu is a TI89(Ti)/92(+)/V200 emulator.
 TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debugging using Insight GDB.
 
 %prep
-%setup -n %{name}
+%setup -n tiemu
 
 %build
 CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls --with-kde --enable-shared-tcl-tk --enable-shared-itcl
@@ -95,6 +95,7 @@ rm -rf $RPM_BUILD_ROOT
 * Wed Sep 14 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Update BuildRequires and Requires for new libti*2.
 Desktop file is now just lpg-tiemu.desktop, not lpg-tiemu3.desktop.
+Fix setup -n to use the correct directory name (tiemu, not tiemu3).
 
 * Sun Aug 28 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Change name from tiemu-tigcc-debugging to tiemu3 and update Obsoletes/Conflicts.
