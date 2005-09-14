@@ -2066,7 +2066,7 @@ Section Uninstall
   Delete "$INSTDIR\share\tiemu\glade\dbg_regs-2.glade"
   Delete "$INSTDIR\share\tiemu\glade\dbg_pclog-2.glade"
   Delete "$INSTDIR\share\tiemu\glade\dbg_mem-2.glade"
-  Delete "$INSTDIR\share\tiemu\glade\dbg_ioports-2.gladep"
+  Delete "$INSTDIR\share\tiemu\glade\dbg_ioports-2.glade"
   Delete "$INSTDIR\share\tiemu\glade\dbg_heap-2.glade"
   Delete "$INSTDIR\share\tiemu\glade\dbg_entry-2.glade"
   Delete "$INSTDIR\share\tiemu\glade\dbg_data-2.glade"
