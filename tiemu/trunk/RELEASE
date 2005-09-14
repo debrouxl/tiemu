@@ -1,3 +1,61 @@
+20050914:
+* Snapshots now come from the new TiEmu trunk (TiEmu 3), as the tigcc-debugging-branch has been merged
+  into the trunk and closed.
+* List of changes:
+	- [roms]  $1629: added new I/O ports window which let view/modify HW registers
+	- [roms]  $1648: fixed buffer overflow in RTC HW3 and disabled full screen mode (too slow)
+	- [kevin] $1662/1663: import V200 updates as HW2, not HW1 (and default TI-89/92+ updates to HW2)
+	- [roms] $1666: use Titanium and V200 skins when available (else fallbacks)
+	- [roms] $1667: fixed large column in the I/O port view
+	- [roms] $1668: new function in the mem window (read address and dis-assemble at)
+	- [roms] $1672: fixed 'Set PC to selection' command by adding a call to fill_prefetch_slow()
+	- [roms] $1673: update ASCII column (dbg wnd) after cell editing
+	- [roms] $1676: ask for 'Clear RAM' when reseting calc (O. Armand request)
+	- [kevin] $1680/1681: fix buffer underflow in iodefs.c
+	- [roms] $1689: fixed Titanium skin loading and fixed bug in skin loader
+	- [roms] $1692: re-enabled transient mode for windows
+	- [roms] $1694: set transient mode as option
+	- [kevin] $1695: merge changes from tigcc-debugging-branch into the trunk, snapshots now come
+	                 from the trunk
+	- [kevin] $1705: import PedroM (ld-tigcc build) 0.81 RC8
+	- [kevin] $1707: fix handling of handles (don't interpret NULL as end of heap table, don't
+	                 dereference H_NULL in loops)
+	- [kevin] $1708: disable window grouping (transient mode) by default
+	- [kevin] $1710: fix size of archived handles under PedroM
+	- [kevin] $1711: bump version number (2.00->2.80) and GTK+ requirement in configure.ac
+	                 (2.4.0->2.6.0, GTK+ 2.4 won't work since the addition of the new about window)
+	- [kevin] $1712: install prebuilt Manpage.txt if groff is not available
+	- [kevin] $1713: fix RELEASE window (MinGW path, say "TiEmu" instead of "TiLP", not
+	                 automatically shown so don't say it is)
+	- [kevin] $1717: fix RELEASE file to display properly (use ASCII, not Latin1 which is not
+	                 valid UTF-8)
+	- [kevin] $1718: don't remove last 2 bytes of RELEASE and COPYING (only Manpage.txt needs that)
+	- [kevin] $1719: fix patch to install prebuilt Manpage.txt without groff so it also works with
+	                 groff available (can't put conditional around install-data-local)
+	- [roms] $1727: fix bug in direct link access
+	- [roms] $1739: update HTML manual
+	- [kevin] $1741: update version number in popup-2.glade
+	- [kevin] $1742: fix FlashROM writes: can't set bits from 0 to 1
+	- [roms]  $1744: fixed FlashReadLong & FlashWriteLong (long access is just 2 word accesses)
+	- [roms]  $1748: don't allow operations on state while the debugger is opened (bug item #1250175).
+	- [roms]  $1757: fixed v200 skin (blank LCD)
+	- [kevin] $1763: fix HeapTable detection on PedroM 0.81 RC9 (use ROM_CALL instead of hack for
+	                 PedroM >=0.81)
+	- [kevin] $1764: import PedroM (ld-tigcc build) 0.81 RC9
+	- [roms]  $1768: merge changes from tiemu-3-libti2 branch:
+		* switched to the TiLP-II framework
+		* updated the communication/device dialog box
+		* added a new pseudo-cable (internal linkport)
+		* modified tiemu.ini parser consequently
+		* changed getw/putw into get_w/put_w due to name conflict with stdio.h.		
+		* SilverLink cable is now working for both Linux & Windows.
+	- [kevin] $1771: update NSIS installer, tarball script and Fedora RPM specs, require GTK+ 2.6.10
+	                 in the NSIS installer
+* The libticables, libtifiles and libticalcs packages and the TiLP Fedora RPM are now from libti*2 and
+  TiLP II development. This means there were major changes, mostly in the internals (parts of the libs and
+  most of TiLP have been rewritten). The main user-visible changes are that the SilverLink is now supported
+  by TiEmu, and that TiLP has a revamped interface.
+
 20050806:
 * Changes from TiEmu trunk:
 	- [roms] $1543: fixed 'Receive file' check item.
