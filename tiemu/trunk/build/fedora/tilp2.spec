@@ -56,7 +56,7 @@ MimeType=application/x-tilp
 EOF
 desktop-file-install --delete-original --vendor lpg     \
   --dir ${RPM_BUILD_ROOT}%{_datadir}/applications          \
-  ${RPM_BUILD_ROOT}/usr/share/applications/%{name}.desktop
+  ${RPM_BUILD_ROOT}/usr/share/applications/tilp.desktop
 mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/mime/packages
 cat >${RPM_BUILD_ROOT}%{_datadir}/mime/packages/tilp.xml <<EOF
 <?xml version="1.0" encoding="UTF-8"?>

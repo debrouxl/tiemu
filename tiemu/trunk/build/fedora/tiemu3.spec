@@ -54,7 +54,7 @@ Categories=Development;
 EOF
 desktop-file-install --delete-original --vendor lpg     \
   --dir ${RPM_BUILD_ROOT}%{_datadir}/applications          \
-  ${RPM_BUILD_ROOT}/usr/share/applications/%{name}.desktop
+  ${RPM_BUILD_ROOT}/usr/share/applications/tiemu.desktop
 
 %post
 update-desktop-database %{_datadir}/applications > /dev/null 2>&1 || :
