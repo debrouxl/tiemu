@@ -2,7 +2,7 @@
 %define __spec_install_post :
 %define debug_package %{nil}
 
-%define name	tilp
+%define name	tilp2
 %define version %(date +%%Y%%m%%d)
 %define release 1
 %define my_opt_flags -Os -s -fno-exceptions -fomit-frame-pointer
@@ -13,21 +13,20 @@ Release:	%{release}
 Vendor:		Romain Liévin 
 Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:		%{name}-%{version}.tar.bz2
-Patch0:		tilp-no-obsolete-desktop-and-mime-entries.diff
 Group:		Applications/Communications
 License:	GPL
-BuildRequires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.2.2, desktop-file-utils >= 0.10
-Requires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2
+BuildRequires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.2.2, desktop-file-utils >= 0.10
+Requires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2
 Requires(post):	shared-mime-info, desktop-file-utils >= 0.9
 Requires(postun): shared-mime-info, desktop-file-utils >= 0.9
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Summary:	TiLP is a TI<->PC linking program
+Obsoletes:  tilp < 20050828
 %description
 TiLP is a TI<->PC linking program
 
 %prep
 %setup -n %{name}
-patch desktop/Makefile.in <%{PATCH0}
 
 %build
 CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls --enable-exit-homedir
@@ -38,7 +37,7 @@ if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 mkdir -p ${RPM_BUILD_ROOT}/usr/share/applications
-cat >${RPM_BUILD_ROOT}/usr/share/applications/%{name}.desktop <<EOF
+cat >${RPM_BUILD_ROOT}/usr/share/applications/tilp.desktop <<EOF
 [Desktop Entry]
 Name=TiLP
 Name[fr_FR]=TiLP
@@ -50,7 +49,7 @@ Encoding=UTF-8
 Version=1.0
 Type=Application
 Exec=/usr/bin/tilp
-Icon=/usr/share/tilp/pixmaps/icon.xpm
+Icon=/usr/share/tilp2/pixmaps/icon.xpm
 Terminal=false
 Categories=Utility;
 MimeType=application/x-tilp
@@ -77,6 +76,8 @@ cat >${RPM_BUILD_ROOT}%{_datadir}/mime/packages/tilp.xml <<EOF
   </mime-type>
 </mime-info>
 EOF
+cd ${RPM_BUILD_ROOT}/usr/bin && ln -s tilp-2 tilp
+cd ${RPM_BUILD_ROOT}/usr/man/man1 && ln -s tilp-2.1 tilp.1
 
 %post
 update-mime-database %{_datadir}/mime > /dev/null 2>&1 || :
@@ -91,14 +92,21 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 /usr/bin/tilp
-/usr/include/tilp/tilp_plugin.h
+/usr/bin/tilp-2
 /usr/man/man1/tilp.1
-/usr/share/tilp
-%{_datadir}/applications/lpg-%{name}.desktop
+/usr/man/man1/tilp-2.1
+/usr/share/tilp2
+%{_datadir}/applications/lpg-tilp.desktop
 %{_datadir}/mime/packages/tilp.xml
 
 %defattr(-,root,root)
 %changelog
+* Wed Sep 14 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Update to TiLP 2: new package name, new dependencies, obsoletes the old package,
+some files moved, some compatibility symlinks added, .desktop file updated for
+new icon location, dropped obsolete
+tilp-no-obsolete-desktop-and-mime-entries.diff patch.
+
 * Mon Jun 20 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Revert -Wl,--export-dynamic addition (now upstream).
 

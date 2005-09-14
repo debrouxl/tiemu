@@ -15,8 +15,8 @@ Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		Applications/Emulators
 License:	GPL
-BuildRequires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.2.2, kdelibs-devel >= 3.4.0, xorg-x11-devel >= 6.8.2, ncurses-devel >= 5.4, desktop-file-utils >= 0.10
-Requires:	libticables = %{version}, libtifiles = %{version}, libticalcs = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2, kdelibs >= 3.4.0, xorg-x11 >= 6.8.2, ncurses >= 5.4, tcl >= 8.4, tk >= 8.4
+BuildRequires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.2.2, kdelibs-devel >= 3.4.0, xorg-x11-devel >= 6.8.2, ncurses-devel >= 5.4, desktop-file-utils >= 0.10
+Requires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2, kdelibs >= 3.4.0, xorg-x11 >= 6.8.2, ncurses >= 5.4, tcl >= 8.4, tk >= 8.4
 Requires(post):	desktop-file-utils >= 0.10
 Requires(postun): desktop-file-utils >= 0.10
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
@@ -39,7 +39,7 @@ if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install-without-tcl-tk DESTDIR=$RPM_BUILD_ROOT
 mkdir -p ${RPM_BUILD_ROOT}/usr/share/applications
-cat >${RPM_BUILD_ROOT}/usr/share/applications/%{name}.desktop <<EOF
+cat >${RPM_BUILD_ROOT}/usr/share/applications/tiemu.desktop <<EOF
 [Desktop Entry]
 Name=TiEmu
 Comment=TI89(Ti)/92(+)/V200 emulator
@@ -88,10 +88,14 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/iwidgets*
 /usr/share/redhat/gui
 /usr/share/tiemu
-%{_datadir}/applications/lpg-%{name}.desktop
+%{_datadir}/applications/lpg-tiemu.desktop
 
 %defattr(-,root,root)
 %changelog
+* Wed Sep 14 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Update BuildRequires and Requires for new libti*2.
+Desktop file is now just lpg-tiemu.desktop, not lpg-tiemu3.desktop.
+
 * Sun Aug 28 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Change name from tiemu-tigcc-debugging to tiemu3 and update Obsoletes/Conflicts.
 

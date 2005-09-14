@@ -58,6 +58,8 @@ SubVersion: $Id$
 		* modified tiemu.ini parser consequently
 		* changed getw/putw into get_w/put_w due to name conflict with stdio.h.		
 		* SilverLink cable is now working for both Linux & Windows.
+	- [kevin] $1771: update NSIS installer, tarball script and Fedora RPM specs, require GTK+ 2.6.10
+	                 in the NSIS installer
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

@@ -2,7 +2,7 @@
 %define __spec_install_post :
 %define debug_package %{nil}
 
-%define name	libticables
+%define name	libticables2
 %define version %(date +%%Y%%m%%d)
 %define release 1
 %define my_opt_flags -Os -s -fno-exceptions -fomit-frame-pointer
@@ -99,21 +99,21 @@ EOF2
 rm -rf $RPM_BUILD_ROOT
 
 %files
-/usr/include/tilp/cabl_def.h
-/usr/include/tilp/cabl_err.h
-/usr/include/tilp/cabl_int.h
-/usr/include/tilp/cabl_ver.h
-/usr/include/tilp/export.h
-/usr/include/tilp/ticables.h
-/usr/include/tilp/timeout.h
-/usr/lib/libticables.la
-/usr/lib/libticables.so*
-/usr/lib/pkgconfig/ticables.pc
+/usr/include/tilp2/stdints.h
+/usr/include/tilp2/export1.h
+/usr/include/tilp2/ticables.h
+/usr/include/tilp2/timeout.h
+/usr/lib/libticables2.la
+/usr/lib/libticables2.so*
+/usr/lib/pkgconfig/ticables2.pc
 /etc/hotplug/usb/libticables.usermap
 /etc/hotplug/usb/libticables
 
 %defattr(-,root,root)
 %changelog
+* Wed Sep 14 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Update to libticables-2: new package name, updated file list.
+
 * Wed Jun 22 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 SilverLink support (based on Julien Blache's Debian packages and Nalin
 Dahyabhai's usbcam script)

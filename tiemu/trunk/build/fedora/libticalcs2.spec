@@ -2,7 +2,7 @@
 %define __spec_install_post :
 %define debug_package %{nil}
 
-%define name libtifiles
+%define name	libticalcs2
 %define version %(date +%%Y%%m%%d)
 %define release 1
 %define my_opt_flags -Os -s -fno-exceptions -fomit-frame-pointer
@@ -15,12 +15,12 @@ Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		System Environment/Libraries
 License:	LGPL
-BuildRequires:	libticables = %{version}
-Requires:	libticables = %{version}
+BuildRequires:	libticables2 = %{version}, libtifiles2 = %{version}
+Requires:	libticables2 = %{version}, libtifiles2 = %{version}
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
-Summary: Ti File Format management
+Summary:	Library for handling TI calculators through a common API
 %description
-Ti File Format management
+Library for handling TI calculators through a common API
 
 %prep
 %setup -n %{name}
@@ -43,37 +43,24 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %files
-/usr/include/tilp/file_def.h
-/usr/include/tilp/file_err.h
-/usr/include/tilp/file_int.h
-/usr/include/tilp/file_ver.h
-/usr/include/tilp/files8x.h
-/usr/include/tilp/files9x.h
-/usr/include/tilp/filesxx.h
-/usr/include/tilp/grp_ops.h
-/usr/include/tilp/macros.h
-/usr/include/tilp/stdints.h
-/usr/include/tilp/tifiles.h
-/usr/include/tilp/types73.h
-/usr/include/tilp/types82.h
-/usr/include/tilp/types83.h
-/usr/include/tilp/types83p.h
-/usr/include/tilp/types85.h
-/usr/include/tilp/types86.h
-/usr/include/tilp/types89.h
-/usr/include/tilp/types92.h
-/usr/include/tilp/types92p.h
-/usr/include/tilp/typesv2.h
-/usr/include/tilp/typesxx.h
-/usr/lib/libtifiles.la
-/usr/lib/libtifiles.so*
-/usr/lib/pkgconfig/tifiles.pc
+/usr/include/tilp2/export3.h
+/usr/include/tilp2/keys73.h
+/usr/include/tilp2/keys83p.h
+/usr/include/tilp2/keys89.h
+/usr/include/tilp2/keys92p.h
+/usr/include/tilp2/ticalcs.h
+/usr/include/tilp2/tnode.h
+/usr/lib/libticalcs2.la
+/usr/lib/libticalcs2.so*
+/usr/lib/pkgconfig/ticalcs2.pc
 
 %defattr(-,root,root)
 %changelog
+* Wed Sep 14 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Update to libticalcs-2: new package name, updated file list and dependencies.
+
 * Sun Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Change Copyright to License.
-Don't list file_ver.h twice.
 
 * Mon May 2 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 First Fedora RPM.
