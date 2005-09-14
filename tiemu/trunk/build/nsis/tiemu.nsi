@@ -105,7 +105,7 @@ installgtk:
 ; Fetch installer (from a random mirror, dl.sourceforge.net is a round-robin DNS)
 ; Do the download quietly because the GUI isn't even loaded at that point, and because I can't get
 ; the progress meters to work with the "Modern UI" anyway.
-  NSISdl::download_quiet "http://dl.sourceforge.net/gladewin32/gtk-win32-${GTK_MIN_VER}${GTK_PKG_VER}.exe" "$TEMP\gtksetup.exe"
+  NSISdl::download_quiet "http://puzzle.dl.sourceforge.net/gladewin32/gtk-win32-${GTK_MIN_VER}${GTK_PKG_VER}.exe" "$TEMP\gtksetup.exe"
   Pop $0
   StrCmp $0 "cancel" abortinstall
   StrCmp $0 "success" 0 gtkinstallfailed
