@@ -70,8 +70,8 @@ the aforementioned problems, and probably others too.
 4. Usage
 
 The installer automatically creates program entries in the Windows Startup menu.
-In order to get detailed instructions on how to use the TiEmu, right-click on
-the emulated calculator screen and select "Misc" / "User's Manual".
+In order to get detailed instructions on how to use TiEmu, right-click on the
+emulated calculator screen and select "Misc" / "User's Manual".
 
 5. Contact Information
 
