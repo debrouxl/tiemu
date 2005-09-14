@@ -1,4 +1,4 @@
-TiEmu (tigcc-debugging)
+TiEmu 3 (development version 2.80)
  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
@@ -43,8 +43,13 @@ http://www.beyondlogic.org/porttalk/porttalk.htm
 
 2.2. SilverLink
 
-The SilverLink cables are currently NOT SUPPORTED by TiEmu. Future support will
-be based on the SilverLink driver at http://lpg.ticalc.org/prj_usb.
+In order to use TI's SilverLink USB cables (formerly known as TI-GraphLink
+USB), you'll need to install the LPG SilverLink driver for Windows at:
+http://lpg.ticalc.org/prj_usb
+This driver is NOT compatible with the driver used by TI Connect, installing it
+will replace TI's driver. In order to use TI Connect, you'll have to uninstall
+the LPG driver and reinstall TI's driver. As an alternative, we suggest using
+TiLP (TiLP I >= 6.72 or TiLP II) which uses our (LPG) driver.
 
 3. GTK+ Troubleshooting
 
@@ -65,16 +70,13 @@ the aforementioned problems, and probably others too.
 4. Usage
 
 The installer automatically creates program entries in the Windows Startup menu.
-In order to get detailed instructions on how to use the main TiEmu application,
-right-click on the emulated calculator screen and select "Misc" /
-"User's Manual". In order to get detailed instructions on how to use the builtin
-Insight debugger, open the debugger and select "Help" / "Help Topics" in the
-"Source Window".
+In order to get detailed instructions on how to use the TiEmu, right-click on
+the emulated calculator screen and select "Misc" / "User's Manual".
 
 5. Contact Information
 
 You can reach us through our project web page:
-http://lpg.ticalc.org/prj_tiemu/index.html
+http://lpg.ticalc.org/prj_tiemu/
 Links to bug/feature/patch/support trackers, forums and mailing lists can be
 found on the web page.
 
