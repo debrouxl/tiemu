@@ -9,7 +9,7 @@ Licensed under the GNU General Public License.
 1. Installed components
 
 The following components have been successfully installed:
-* TiEmu (tigcc-debugging)
+* TiEmu (with TIGCC debugging support)
 * libticables
 * libtifiles
 * libticalcs
