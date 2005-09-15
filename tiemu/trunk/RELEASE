@@ -1,7 +1,8 @@
 20050915:
 * TiEmu changes:
 	- [roms]  $1781: loading of ??u upgrades was broken: fixed.
-* libti*-2 (roms): fixed MinGW module filenames
+* libti*-2 (roms): fixed MinGW module filenames (fixes NLS and virtual link with VTI)
+* libti*-2 (roms): fixed MinGW locale path (fixes NLS)
 * libtifiles-2 (roms): fixed loading of TIB files
 
 20050914:
