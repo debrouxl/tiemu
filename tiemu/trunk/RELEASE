@@ -1,3 +1,9 @@
+20050915:
+* TiEmu changes:
+	- [roms]  $1781: loading of ??u upgrades was broken: fixed.
+* libti*-2 (roms): fixed MinGW module filenames
+* libtifiles-2 (roms): fixed loading of TIB files
+
 20050914:
 * Snapshots now come from the new TiEmu trunk (TiEmu 3), as the tigcc-debugging-branch has been merged
   into the trunk and closed.
