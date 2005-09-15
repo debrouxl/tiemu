@@ -250,7 +250,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 	if(!tifiles_file_is_ti(filename))
 		return ERR_NOT_TI_FILE;
 		
-	if(!tifiles_file_is_tib(filename))
+	if(!tifiles_file_is_tib(filename) && !tifiles_file_is_flash(filename))
 		return ERR_INVALID_UPGRADE;
 
 	// Load file
