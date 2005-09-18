@@ -62,6 +62,7 @@ SubVersion: $Id$
 	- [kevin] $1771: update NSIS installer, tarball script and Fedora RPM specs, require GTK+ 2.6.10
 	                 in the NSIS installer
 	- [roms]  $1781: loading of ??u upgrades was broken: fixed.
+	- [kevin] $1785: import PedroM (ld-tigcc build) 0.81 RC10
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
