@@ -45,6 +45,7 @@
 #include "pbars.h"
 #include "tie_error.h"
 #include "dbg_all.h"
+#include "files.h"
 
 gint display_skin_dbox()
 {
@@ -230,11 +231,7 @@ int display_recv_files_dbox(const char *src, const char *dst)
     }
 
 	fn = create_fsel(dst_folder, basename, ext, TRUE);
-	if(fn)
-	{
-		if(rename(src, fn))
-			msg_box("Error", "Can't write file because it already exists !");
-	}
+	tiemu_file_move_with_check(src, fn);
 
 	g_free(src_folder);
 	g_free(basename);

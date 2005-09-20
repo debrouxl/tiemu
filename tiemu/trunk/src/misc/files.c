@@ -1,13 +1,9 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  TiEmu - an TI emulator
- *
- *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2003, Romain Lievin
- *  Copyright (c) 2003, Julien Blache
- *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+/*  TiLP - Ti Linking Program
+ *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (c) 2005, Romain Liévin (tweaked for TiEmu)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,112 +17,283 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
 /*
-  This file contains utility functions about files, attributes,
-  sorting routines for selection, conversion routines between dirlist
-  and glists.
- */
+	This file contains utility functions about files management.
+*/
 
-#ifdef __WIN32__
-# include <windows.h>
-#endif
 #include <stdio.h>
-#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <time.h>
+#ifdef __WIN32__
+#include <windows.h>
+#endif
 
-#include "tilibs.h"
+#ifndef __MACOSX__
+# include <glib.h>
+# include <glib/gstdio.h>
+#else
+# include <glib/glib.h>
+#endif
 
-#include "struct.h"
-#include "support.h"
-#include "paths.h"
+#ifdef _MSC_VER
+# include "../../build/msvc/dirent.h"	// for S_ISDIR use
+#endif
 
-/*******************************/
-/* File manipulation functions */
-/*******************************/
+#include "dboxes.h"
+#define _(x)	(x)
 
-/*
-  Copy a file from src to dst 
+/* File operations */
+
+#ifndef __WIN32__
+int tiemu_file_copy(const char *src, const char *dst)
+{
+	FILE *in, *out;
+	int c;
+
+	if ((in = fopen(src, "rb")) == NULL) 
+	{
+		return -1;
+	}
+
+	if ((out = fopen(dst, "wb")) == NULL) 
+	{
+		return -2;
+	}
+
+	while (!feof(in)) 
+	{
+		c = fgetc(in);
+		if (feof(in))
+			break;
+		fputc(c, out);
+	}
+
+	fclose(in);
+	fclose(out);
+
+	return 0;
+}
+
+#else				
+
+int tiemu_file_copy(const char *src, const char *dst)
+{
+	if (!CopyFile(src, dst, FALSE))
+		return -1;
+
+	return 0;
+}
+#endif				
+
+int tiemu_file_delete(const char *f)
+{
+	if(g_unlink(f) < 0)
+	{
+		msg_box1(_("Information"), _("Unable to remove the file !"));
+		return -1;
+	}
+
+	return 0;
+}
+
+int tiemu_file_move(const char *src, const char *dst)
+{
+	if(tiemu_file_copy(src, dst) < 0)
+	//if(g_rename(src, dst) < 0)
+	{
+		msg_box1(_("Information"), _("Unable to move file.\n\n"));
+		return -1;
+	}
+	tiemu_file_delete(src);
+
+	return 0;
+}
+
+int tiemu_file_mkdir(const char *pathname)
+{
+#ifdef __WIN32__
+	if(g_mkdir(pathname, S_IRWXU) < 0)
+#else
+	if(g_mkdir(pathname, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) < 0)
+#endif
+	{
+		msg_box1(_("Information"), _("Unable to create the directory.\n\n"));
+		return -1;
+	}
+
+	return 0;
+}
+
+int tiemu_file_exist(const char* filename)
+{
+	return !access(filename, F_OK);
+}
+
+/* 
+   Check for file existence. If file already exists, ask for an
+   action (skip, overwrite or rename).
+   Return 0 if skipped. 
 */
-int copy_file(char *src, char *dst)
+int tiemu_file_check(const char *src, char **dst)
 {
-  gchar *cmd;
+	int ret;
+	char buffer[256];
+	char *dirname;
+	*dst = NULL;
 
-  cmd = g_strdup_printf("cp %s %s", src, dst);
+	if (1) 
+	{
+		if (access(src, F_OK) == 0) 
+		{
+			sprintf(buffer, _("The file %s already exists.\nOverwrite ?"), src);
+			ret =
+			    msg_box3(_("Warning"), buffer,
+					_("Overwrite "), _("Rename "), _("Skip "));
 
-  return system(cmd); //copy_file(src, dst);
-  /*
-  FILE *in, *out;
-  int c;
+			switch (ret) 
+			{
+			case BUTTON1:
+				*dst = g_strdup(src);
+				return !0;
+				break;
+			case BUTTON2:
+				dirname =
+				    msg_entry(_("Rename the file"),
+						   _("New name: "), src);
+					if (dirname == NULL)
+						return 0;
+					*dst = g_strdup(dirname);
+					g_free(dirname);
+				return !0;
+				break;
+			case BUTTON3:
+				return 0;
+				break;
+			default:
+				return 0;
+				break;
+			}
+		} 
+		else 
+		{
+			*dst = g_strdup(src);
+			return !0;
+		}
+	} 
+	else 
+	{
+		*dst = g_strdup(src);
+		return !0;
+	}
 
-   if((in=fopen(src, "rb")) == NULL)
-    {
-      return 1;
-    }
-   if((out=fopen(dst, "wb")) == NULL)
-     {
-      return 2;
-    }
-   while(!feof(in))
-     {
-	   c=fgetc(in);
-	   if(feof(in)) break;
-       fputc(c, out);
-     }
-   fclose(in);
-   fclose(out);
-  */
-  return 0;
+	return !0;
 }
+
 
 /*
-  Move the file
- */
-int move_file(char *src, char *dst)
+  Try and move a file. If file already exists, ask for an action
+  (skip, overwrite or rename)
+  Return 0 if skipped. 
+*/
+int tiemu_file_move_with_check(const char *src, const char *dst)
 {
-  gchar *cmd;
+	char *dst2;
 
-  cmd = g_strdup_printf("mv %s %s", src, dst);
+	if (tiemu_file_check(dst, &dst2)) 
+	{
+		if (tiemu_file_move(src, dst2)) 
+		{
+			msg_box1(_("Error"), _("Unable to move the temporary file.\n"));
+			g_free(dst2);
+			return 0;
+		}
+	} 
+	else 
+	{
+		g_free(dst2);
+		return 0;
+	}
+	g_free(dst2);
 
-  return system(cmd); //copy_file(src, dst);
-  /*
-  int ret;
-
-  ret=copy_file(src, dst);
-  if(ret) return ret;
-  unlink(src);
-  */
-  return 0;
+	return !0;
 }
 
-/* Remove '\r' characters for GtkText */
-void process_buffer(gchar *buf)
+
+/*
+  Change directory. This functions is a wrapper for chdir.
+  It manages privileges and ensure that the user can not exit from the
+  HOME directory
+*/
+#if defined(__LINUX__) || defined(__MACOSX__)
+int tiemu_file_chdir(const char *path)
 {
-  gint i;
-  
-  for(i = 0; i < (int)strlen(buf); i++)
-    if(buf[i] == '\r') 
-		buf[i]=' ';
+#ifndef ALLOW_EXIT_HOMEDIR
+	const gchar *home_dir;
+#endif /* !ALLOW_EXIT_HOMEDIR */
+	gchar *curr_dir;
+	uid_t effective;
+
+	effective = geteuid();
+	seteuid(getuid());
+
+	if (chdir(path)) 
+	{
+		tiemu_warning(_("Chdir error.\n"));
+		msg_box1(_("Error"), _("Unable to change directory."));
+		return -1;
+	}
+	seteuid(effective);
+	curr_dir = g_get_current_dir();
+
+#ifndef ALLOW_EXIT_HOMEDIR
+	home_dir = g_get_home_dir();
+
+	/* If curr_dir does not begin with "home_dir"
+	 * or strlen(curr_dir) < strlen(home_dir)
+	 * then the user is trying to escape its home directory.
+	 */
+	if ((strlen(curr_dir) < strlen(home_dir)) ||
+	    (strncmp(curr_dir, home_dir, strlen(home_dir)) != 0)) 
+	{
+		if (strcmp(curr_dir, g_get_tmp_dir())) 
+		{
+			chdir(home_dir);
+			g_free(curr_dir);
+
+			if (gif != NULL) 
+			{
+				msg_box1(_("Error"), _
+					     ("You can not go outside of your HOME directory."));
+			} 
+			else 
+			{
+				tiemu_warning(_("You can not go outside of your HOME directory."));
+			}
+
+			return -1;
+		}
+	}
+#endif /* !ALLOW_EXIT_HOMEDIR */
+	return 0;
 }
 
-/*************************************/
-/* Extracting informations functions */
-/*************************************/
+#else
 
-/* Return the filename or its extension if it has one */
-char *file_extension(char *filename)
+int tiemu_file_chdir(const char *path)
 {
-  int i;
-  char *p;
-  
-  for(i=strlen(filename); i > 0; i--)
-    {
-      if(filename[i] == '.') break;
-    }
-  p=filename+i+1;
-  
-  return p;
+	if (_chdir(path)) 
+	{
+		msg_box1(_("Error"), _("Unable to change directory."));
+		return -1;
+	}
+
+	return 0;
 }
+#endif /* __LINUX__ || __MACOSX__ */
