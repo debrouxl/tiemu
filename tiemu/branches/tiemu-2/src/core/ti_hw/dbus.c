@@ -565,7 +565,6 @@ int recfile(void)
 	strcat(filename, G_DIR_SEPARATOR_S);
 
 	ret = itc.recv_var_2(filename, 0, NULL);
-	printf("filename: <%s>\n", filename);
 
 	// Check for error
 	if(ret)

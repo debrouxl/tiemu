@@ -31,6 +31,7 @@
 #include <string.h>
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <errno.h>
 
 #include "intl.h"
 #include "filesel.h"
@@ -230,7 +231,10 @@ gint display_recv_files_dbox(const char *filename)
 
 	fn = create_fsel(dst_folder, basename, ext, TRUE);
 	if(fn)
-		rename(filename, fn);
+	{
+		if(rename(filename, fn))
+			msg_box("Error", "Can't write file because it already exists !");
+	}
 
 	g_free(src_folder);
 	g_free(basename);
