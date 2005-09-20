@@ -231,7 +231,10 @@ int display_recv_files_dbox(const char *src, const char *dst)
 
 	fn = create_fsel(dst_folder, basename, ext, TRUE);
 	if(fn)
-		rename(src, fn);
+	{
+		if(rename(src, fn))
+			msg_box("Error", "Can't write file because it already exists !");
+	}
 
 	g_free(src_folder);
 	g_free(basename);
