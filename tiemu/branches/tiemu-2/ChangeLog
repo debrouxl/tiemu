@@ -1,5 +1,10 @@
 SubVersion: $Id$
 
+- 20/09/2005, version 2.02:
+	- [roms] $1756: fixed V200 skin (LCD is now blanked).
+	- [roms] $1788: bug #1294628: don't overwrite file received from TiEmu.
+		Raises a overwrite/rename/skip box for now (imported TiLP-II file management unit).
+
 - 25/08/2005, version 2.01:
 	- [roms] $1689: fixed Titanium skin loading and fixed bug in skin loader
 	- [roms] $1692: re-enabled transient mode for windows
