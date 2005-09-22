@@ -63,7 +63,7 @@ SubVersion: $Id$
 	                 in the NSIS installer
 	- [roms]  $1781: loading of ??u upgrades was broken: fixed.
 	- [kevin] $1785: import PedroM (ld-tigcc build) 0.81 RC10
-	- [roms] $1788: bug #1294628: don't overwrite file received from TiEmu.
+	- [roms]  $1788: don't overwrite file received from TiEmu.
 		Raises a overwrite/rename/skip box for now (imported TiLP-II file management unit).
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
