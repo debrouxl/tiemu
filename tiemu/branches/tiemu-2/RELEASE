@@ -2,8 +2,8 @@
 
 
 
-Previous version: 2.00		(22/08/2005)
-Current version:  2.01		(06/09/2005)
+Previous version: 2.01		(06/09/2005)
+Current version:  2.02		(20/09/2005)
 
 SubVersion (CVS) revision: $Id$
 
@@ -26,19 +26,15 @@ New capabilities:
 Improvements:
 -------------
 
-	- re-enabled transient mode for windows
-	- set transient mode as option in the main dbg window
+	- none
 	
 		
 Bug fixes:
 ----------
 
-	- Titanium skin loading and fixed bug in skin loader
-	- handling of handles (don't interpret NULL as end of heap table, don't
-	                 dereference H_NULL in loops)
-	- size of archived handles under PedroM
-	- FlashROM writes: can't set bits from 0 to 1
-	- don't allow operations on state while the debugger is opened (bug item #1250175)
+	- bug #1294628: don't overwrite file received from TiEmu.
+		Raises a overwrite/rename/skip box for now (imported TiLP-II file management unit).
+	- fixed V200 skin (LCD is blank).
 	
 
 Planned:
