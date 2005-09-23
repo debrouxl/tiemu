@@ -821,9 +821,8 @@ itcl::body SrcWin::point_to_main {} {
 itcl::body SrcWin::_exit {} {
   debug
   if {[llength [ManagedWin::find SrcWin]] == 1} {
-    if {![gdbtk_quit_check]} {
-      return
-    }
+    after idle [tiemu_close_debugger]
+    return
   }
   after idle [delete object $this]
 }

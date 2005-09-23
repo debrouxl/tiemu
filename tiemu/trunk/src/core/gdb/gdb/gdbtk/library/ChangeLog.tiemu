@@ -1,3 +1,7 @@
+2005-09-23  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * srcwin.itb (SrcWin::_exit): Use tiemu_close_debugger.
+
 2005-05-15  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * interface.tcl (gdbtk_tcl_preloop): Don't automatically run "run" on startup here.

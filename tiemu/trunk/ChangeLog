@@ -65,6 +65,7 @@ SubVersion: $Id$
 	- [kevin] $1785: import PedroM (ld-tigcc build) 0.81 RC10
 	- [roms]  $1788: don't overwrite file received from TiEmu.
 		Raises a overwrite/rename/skip box for now (imported TiLP-II file management unit).
+	- [kevin] $1792: allow closing the debugger by closing the Insight window ("X" button)
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
