@@ -66,7 +66,9 @@ SubVersion: $Id$
 	- [roms]  $1788: don't overwrite file received from TiEmu.
 		Raises a overwrite/rename/skip box for now (imported TiLP-II file management unit).
 	- [kevin] $1792: allow closing the debugger by closing the Insight window ("X" button)
-	- [roms] $1795: fixed bad memory allocation in the GTK+ 2.6 multiple
+	- [roms]  $1793: fixed bug: timeout can be up to 600 on win32 but the glade file allows up to 60.
+					 fixed timeout issues with the device dbox: internal linkport timeout is now displayed/changed fine.
+	- [roms]  $1796: fixed bad memory allocation in the GTK+ 2.6 multiple
 	        file selector (bug #1294628). 
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
