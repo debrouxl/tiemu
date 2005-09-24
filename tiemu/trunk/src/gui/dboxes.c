@@ -34,7 +34,7 @@
 
 static gint ret_val = 0;
 
-int msg_box(const gchar * title, gchar * message)
+int msg_box1(const gchar * title, gchar * message)
 {
 	GtkWidget *dialog, *label;
 	gint result;

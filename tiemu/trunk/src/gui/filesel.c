@@ -349,22 +349,21 @@ static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext)
 	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
 
 	// get result
-	g_free(filename);
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
 	{
 		GSList *list, *p;
 		gchar **q;
-		
-		// convert list into string array
-		list = gtk_file_chooser_get_filenames (GTK_FILE_CHOOSER (dialog));
-		filenames = g_malloc0(g_slist_length(list)+1);
 
+		// convert list into string array
+		list=gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER (dialog));
+	      
+		filenames = (gchar **)g_malloc0((g_slist_length(list)+1) * 
+						sizeof(gchar *));
 		for(p = list, q = filenames; p; p = g_slist_next(p), q++)
-		{
-			*q = g_malloc0(strlen(p->data) + 1);
-			strcpy(*q, p->data);
-		}
+		    *q = p->data;
 		*q = NULL;
+		     
+		g_slist_free(list);
 	}
 	else
 		filenames = NULL;

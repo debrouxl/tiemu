@@ -245,7 +245,7 @@ gint display_wz_rom_dbox(void)
 
 	if(!ti68k_is_a_rom_file(filename))
     {
-        msg_box(_("Error"), _("Invalid ROM dump."));
+        msg_box1(_("Error"), _("Invalid ROM dump."));
         display_step1_dbox();     
         return -1;
     }
@@ -276,7 +276,7 @@ gint display_wz_tib_dbox(void)
 
     if(!ti68k_is_a_tib_file(filename))
     {
-        msg_box(_("Error"), _("Invalid FLASH upgrade."));
+        msg_box1(_("Error"), _("Invalid FLASH upgrade."));
         display_step1_dbox();
         return -1;
     }
