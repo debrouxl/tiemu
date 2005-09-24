@@ -1,0 +1,24 @@
+La procédure, c'est:
+* On récupère le FolderListHandle d'une manière ou d'une autre (le challenge
+étant de le faire d'une manière qui soit à la fois compatible avec tous les
+AMS et ne nécessite pas d'émuler tout un ROM_CALL pour faire un
+FolderListHandle = SymFindHome(SYMSTR("main")).folder; - faire ça
+impliquerait appeler toute la fonction SymFindHome émulée depuis le code PC,
+donc ce n'est pas du tout pratique).
+* On recherche le répertoire dans ce handle (structure SYM_ENTRY *), on
+prend le champ "handle" et on se retrouve avec un autre handle contenant la
+table des fichiers dans ce répertoire.
+* On recherche le fichier dans ce handle (encore une structure SYM_ENTRY *),
+on prend à nouveau le champ "handle" et on se retrouve avec le handle du
+contenu du fichier.
+* ATTENTION, il faut absolument résister à la tentation de déréférencer ce
+handle! Avant d'exécuter le programme, AMS le déplace avec un HeapMoveHigh.
+Et il peut aussi être déplacé à tout moment pour d'autres raisons. Il faut
+donc garder ce numéro de handle en mémoire et faire un breakpoint non sur
+l'adresse HeapDeref(handle)+2 calculée statiquement, mais sur la _condition_
+PC=HeapDeref(handle)+2 avec HeapDeref évalué à chaque fois. Si tu n'as pas
+encore de framework pour mettre un breakpoint sur des conditions complexes,
+c'est le moment d'en mettre un, on en aura de toute façon besoin pour le
+débogueur C tôt ou tard.
+
+        Kevin Kofler

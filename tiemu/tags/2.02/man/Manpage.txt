@@ -1,0 +1,191 @@
+(GTK)TIEMU(1)                                                    (GTK)TIEMU(1)
+
+
+
+NAME
+       tiemu - a TI emulator of TI89(Titanium)/92(+)/V200 hand-helds
+
+SYNOPSYS
+       tiemu [-h] [-v] [--help] [--version] [--import] [-rom=] [-tib=] [-sav=]
+       [image]
+
+DESCRIPTION
+       The TiEmu program allows you to emulate a Texas Instruments  calculator
+       such  as TI89, TI89 Titanium, TI92, TI92+ or V200PLT.  The emulator has
+       also a virtual link capability which allows to connect  it  to  another
+       program (such as TiLP for instance).
+
+OPTIONS
+       The command line options override the default options (startup options)
+       and the config file options even.  The TiEmu program accepts  the  fol-
+       lowing options:
+
+       -h, --help
+              Display a list of all command line options.
+
+       -v, --version
+              Output the version info.
+
+       --import=
+              Import ROM or TIB into repository and exit. Can be used for cre-
+              ating images (as an example).  This flag must be set before -rom
+              or -tib !
+
+       -rom=  Convert and use the specified dump as image. Note that the image
+              is added to the image repository.
+
+       -tib=  Convert and use the specified tib/upgrade as image. Idem.
+
+       -sav=  Load the specified state file. Must be a valid state  image  and
+              target for emulated calculator.
+
+
+SEE ALSO
+       tilp(1)  for the use of a linking program. TiEmu shares the same commu-
+       nication box for link settings.
+
+CONFIG FILE FORMAT
+       This section describes the format of the .tiemu config file which is in
+       the  home  directory of the user (Linux) or in the Program Files folder
+       (Win32). A line preceded by the '#' symbol is a comment.  Each line has
+       the  following  format:  key=value.   The  config  file  must  have the
+       'RC_END' string at end.  Every line can be put in any order.   Take  in
+       mind  that  any  comment  added in the config file will be overwritten.
+       Below is described each option and the possible values:
+
+       calctype= Defines the calculator type for link parameter. Valid  values
+       are:  ti89,  ti89t,  ti92, ti92+, v200.  Note: don't need to touch this
+       setting, it's overriden by TiEmu. Kept for compatibility.
+
+       linktype= Define the link cable  type.  Choose  one  of  the  following
+       value:  none,  parallel, serial, TIGraphLink, virtual, TiEmulator, VTi,
+       UsbGraphLink.
+
+       port= Define a link port to use. Can  be:  null,  user,  parallel  port
+       #1|2|3, serial port #1|2|3|4, virtual port #1|2, USB port #1.
+
+       thod= Define an I/O method to use. Possible values are: automatic, asm,
+       api, driver, null.
+
+       adr_port= places the I/O address of the I/O port  to  use.  It  can  be
+       0x3F8 for a serial port or 0x378 for a parallel port for instance.
+
+       serial_device=  places  the character device name of the serial port to
+       use with a Grey TIGL.
+
+       timeout= with the timeout value to use in  tenth  of  seconds.  Default
+       value: 20.
+
+       delay=  with  the  delay  value  to  use in micro-seconds for home-made
+       cables. Default value: 10
+
+       background= Define whether TiEmu display the whole frame (keyboard+LCD)
+       or  just  the  LCD  screen. Set to 0 if you do not want to use the key-
+       board.
+
+       skin_file= Define the custom skin file to use.  Must  be  a  full  path
+       name.
+
+       keys_file= Define the keymap to use. Must be a full path name.
+
+       img_file=  Define  the  TiEmu  image to load at startup. Must be a full
+       path name.
+
+       tib_file= Define the FLASH upgrade (tib or .9xu/.89u) to load after the
+       image. Must be a full path name.
+
+       sav_file= Define the calculator state image to load at startup.
+
+       cpu_rate=  Give  the  number of instructions executed by the M68000 per
+       30ms timeslice. Default value is -1 (50000 insts/30ms).
+
+       hw_rate= Give the OS2/OSC3 oscillator rate. Default value is -1 (427 on
+       hw1 and 732 on hw2; OSC2 is incremented every 6250 OSC1 cycles).
+
+       lcd_rate=  Define  the  frame  rate of LCD refresh. Default value is -1
+       (25ms => 40fps). Don't use a value smaller than 10ms.
+
+       img_format= Defines the image format of the screenshots.  Several  for-
+       mats are available: jpg, png and ico.
+
+       img_type= You can do B/W (bw) or colored (color) screenshots.
+
+       img_size=  The  size of the image that is to say you can shots only the
+       LCD (lcd) or the entire window (skin).
+
+       screen_file= Defines the base filename where  the  screenshot  will  be
+       stored.
+
+       screen_counter= This allows you to save the current screenshot counter.
+       In   fact,   the   resulting   filename   is   computed   as   'screen-
+       file[screen_counter].[img_format]. Example: 'screenshot001.png'.
+
+       console=  Available  under  Windows platform only. You can hide (no) or
+       show (yes) the DOS console at startup or even display  it  only  during
+       boot (boot).
+
+       kbd_dbg=  Display  key  bindings  in the console if set (yes). Else, do
+       nothing (no).
+
+       fs_type= GTK+ has 2 file selector. An old one (old) which is very  sim-
+       ple  and  a  more recent (new) which have advanced capabilities and can
+       show hidden files. Default value is 'old' under Windows and 'new' under
+       Linux.
+
+       bkpts_wnd= code_wnd= mem_wnd= regs_wnd= pclog_wnd= stack_wnd= heap_wnd=
+       Set geometry hints for the different windows of the debugger. The  for-
+       mat  is (x,y,w,h,m,v) where x&y are coordinates, w&h are the size, m is
+       set if window is minimized and v is set if the window is open.
+
+       Think to terminate your config script with the 'RC_END' word !!!
+
+
+COPYRIGHT
+       Copyright (C) 2000-2001, Romain Lievin and Thomas Corvazier.  Copyright
+       (C)  2001-2003,  Romain  Lievin Copyright (C) 2003, Julien Blache Copy-
+       right (C) 2004, Romain Lievin Copyright (C)  2005,  Romain  Lievin  and
+       Kevin Kofler
+
+       Permission  to  use, copy, modify, and distribute this software and its
+       documentation for any purpose and without fee is hereby  granted,  pro-
+       vided  that  the  above  copyright notice appear in all copies and that
+       both that copyright notice and this permission notice  appear  in  sup-
+       porting documentation.
+
+       This  program and its source code is distributed under the terms of the
+       terms of the GNU General Public License as published by the Free  Soft-
+       ware  Foundation;  either version 2 of the License, or (at your option)
+       any later version.
+
+       This program is distributed in the hope that it  will  be  useful,  but
+       WITHOUT  ANY  WARRANTY;  without  even  the  implied  warranty  of MER-
+       CHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU  General
+       Public License for more details.
+
+       You should have received a copy of the GNU General Public License along
+       with this program; if not, write to the Free Software Foundation, Inc.,
+       59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+
+SUGGESTIONS AND BUG REPORTS
+       The   canonical place to find TiEmu and some miscellenaous informations
+       is at <http://lpg.ticalc.org/prj_tiemu>.  You can also take a  look  at
+       <http://lpg.ticalc.org>   and  <http://www.ticalc.org>  for  others  TI
+       related programs for Linux.
+
+AUTHOR
+       Thomas Corvazier Julien Blache Romain Lievin (active).
+
+
+SPECIAL THANKS
+       - Jonas Minnberg (Sasq) for Tiger - UAE, the Universal Amiga Emulator
+
+       - Benjamin Gordon <ben@bxg.org> for creating rpm packages:  he  is  the
+       official maintainer of this package.
+
+       - Julien Blache <jb@jblache.org> for creating deb packages: he  is  the
+       official maintainer of this package.
+
+THANKS
+                                 June 28, 2005                   (GTK)TIEMU(1)
+ÿÿ
