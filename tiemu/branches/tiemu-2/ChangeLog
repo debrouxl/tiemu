@@ -4,6 +4,8 @@ SubVersion: $Id$
 	- [roms] $1756: fixed V200 skin (LCD is now blanked).
 	- [roms] $1788: don't overwrite file received from TiEmu.
 		Raises a overwrite/rename/skip box for now (imported TiLP-II file management unit).
+	- [roms] $1794: fixed bad memory allocation in the GTK+ 2.6 multiple
+	        file selector (bug #1294628). 
 
 - 25/08/2005, version 2.01:
 	- [roms] $1689: fixed Titanium skin loading and fixed bug in skin loader
