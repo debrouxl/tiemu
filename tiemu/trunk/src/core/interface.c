@@ -105,10 +105,8 @@ int ti68k_config_load_default(void)
 	params.hw_protect = !0;
 	params.recv_file = 1;
 
-	params.timeout = is_win_9x() ? 600 : 15;	// 1.5 or 60s
-
 	linkp.cable_delay = DFLT_DELAY;
-	linkp.cable_timeout = DFLT_TIMEOUT;
+	linkp.cable_timeout = is_win_9x() ? 600 : DFLT_TIMEOUT;
 	linkp.cable_port = PORT_1;
 	linkp.cable_model = CABLE_ILP;
 	linkp.calc_model = ti68k_calc_to_libti_calc();

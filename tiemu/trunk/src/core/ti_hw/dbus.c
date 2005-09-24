@@ -339,7 +339,7 @@ int ilp_send(CableHandle *h, uint8_t *data, uint32_t len)
   		while(f2t_flag) 
 		{ 
 			hw_m68k_run(1, 0);
-			if(TO_ELAPSED(clk, params.timeout))
+			if(TO_ELAPSED(clk, linkp.cable_timeout))
 				return ERROR_WRITE_TIMEOUT;
 		};
 	}
@@ -358,7 +358,7 @@ int ilp_recv(CableHandle *h, uint8_t *data, uint32_t len)
   		while(!t2f_flag) 
 		{ 
       		hw_m68k_run(1, 0);
-			if(TO_ELAPSED(clk, params.timeout))
+			if(TO_ELAPSED(clk, linkp.cable_timeout))
 				return ERROR_WRITE_TIMEOUT;
 		};
     

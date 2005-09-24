@@ -135,10 +135,7 @@ gint display_device_dbox()
 
 	// Timeout
 	data = glade_xml_get_widget(xml, "spinbutton_comm_timeout");
-	if(linkp.cable_model != CABLE_NUL)	
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), linkp.cable_timeout);
-	else
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), params.timeout);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), linkp.cable_timeout);
 	
 	// Delay
 	data = glade_xml_get_widget(xml, "spinbutton_comm_delay");
@@ -155,11 +152,14 @@ gint display_device_dbox()
 	case GTK_RESPONSE_OK:
 	case GTK_RESPONSE_CANCEL:
 
+		data = glade_xml_get_widget(xml, "spinbutton_comm_delay");
+		tmp.cable_delay = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(data));
+
+		data = glade_xml_get_widget(xml, "spinbutton_comm_timeout");
+		tmp.cable_timeout =	gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(data));
+
 		memcpy(&linkp, &tmp, sizeof(DeviceOptions));
 		tmp.calc_model = ti68k_calc_to_libti_calc();
-
-		if(linkp.cable_model == CABLE_NUL)
-			params.timeout = tmp.cable_timeout;
 
         err = ti68k_linkport_reconfigure();
 		handle_error();
