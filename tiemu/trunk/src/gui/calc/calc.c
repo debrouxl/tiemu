@@ -83,12 +83,10 @@ static void set_scale(int view_mode)
 	if(view_mode == VIEW_NORMAL)
 	{
 		options.scale = si.r = 1.0;
-		options.skin = 1;
 	}
 	else if(view_mode == VIEW_LARGE)
 	{
 		options.scale = si.r = 2.0;
-		options.skin = 1;
 	}
 	else if(view_mode == VIEW_FULL)
 	{
@@ -102,7 +100,6 @@ static void set_scale(int view_mode)
 		//printf("%i %i %f\n", sh, lr.h, si.r);
 
 		options.scale = si.r = (float)1.0;	// restricted to 3.0, too CPU intensive !
-		options.skin = 0;
 	}
 }
 

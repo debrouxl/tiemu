@@ -226,12 +226,6 @@ void rcfile_read(void)
 	  continue;
 	}
 
-	if( (p=find_str(buffer, "background=")) ) 
-	{
-		// for compat
-	  sscanf(p, "%i", &(options.skin));
-	  continue;
-	}
 	if( (p=find_str(buffer, "skin=")) ) 
 	{
 	  sscanf(p, "%i", &(options.skin));

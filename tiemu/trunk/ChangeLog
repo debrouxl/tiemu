@@ -70,6 +70,7 @@ SubVersion: $Id$
 					 fixed timeout issues with the device dbox: internal linkport timeout is now displayed/changed fine.
 	- [roms]  $1796: fixed bad memory allocation in the GTK+ 2.6 multiple
 	        file selector (bug #1294628). 
+	- [roms] $1801: fixed bug #1304338 (doesn't save skinless mode in .ini file)
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
