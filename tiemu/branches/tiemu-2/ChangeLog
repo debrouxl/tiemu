@@ -1,5 +1,8 @@
 SubVersion: $Id$
 
+- 26/09/2005, version 2.03:
+	- [roms] $1800: fixed #1304338 (doesn't save skinless mode in .ini file)
+
 - 20/09/2005, version 2.02:
 	- [roms] $1756: fixed V200 skin (LCD is now blanked).
 	- [roms] $1788: don't overwrite file received from TiEmu.
