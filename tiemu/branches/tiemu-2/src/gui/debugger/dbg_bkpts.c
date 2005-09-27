@@ -156,7 +156,7 @@ static void clist_populate(GtkListStore *store)
 		gtk_list_store_set(store, &iter, 
 		COL_SYMBOL, str1, 
 		COL_TYPE, ti68k_bkpt_type_to_string(BK_TYPE_EXCEPTION),
-		COL_STATUS, _("enabled"),
+		COL_STATUS, BKPT_IS_ENABLED(n) ? _("enabled") : _("disabled"),
 		COL_START, str2,
 		COL_END, "",		
 		COL_MODE, "",
