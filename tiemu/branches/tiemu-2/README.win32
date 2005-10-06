@@ -11,10 +11,13 @@ REQUIREMENTS
  - a PC with a 450MHz Pentium-class processor and 32MB of RAM
  - a Windows computer: Windows 95/98/Me or Windows NT4/2000/XP (better)
  - the GTK+ 2.6 libraries
-    Location: <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.8-rc1.exe?download>
+    Location: <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.10-rc1.exe?download>
  - note: SilverLink is not supported yet for both Linux & Windows
 	
-	Note: if you are using GiMP, you don't need to get this GTK+ package, they are compatible.
+	Note: if you are using 'The GiMP', you may encounter DLL's problems...
+		The GTK+ package (1) provided with the GiMP may not be fully compatible with one used by TiLP/TiEmu.
+		On the other hand, the package (2) requested by TiLP/TiEmu is compatible with the GiMP.
+		Thus, if you are using The GiMP, you are strongly encouraged to uninstall (1) and install (2).
 
 
 INSTALLATION

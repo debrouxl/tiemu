@@ -7,7 +7,7 @@
 
 [Setup]
 AppName=TiEmu
-AppVerName=TiEmu 2.02
+AppVerName=TiEmu 2.02-jlb
 AppPublisher=The TiEmu Team
 AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
 AppSupportURL=http://lpg.ticalc.org/prj_tiemu/mailing_list.html
@@ -62,7 +62,6 @@ Source: "C:\sources\roms\tifiles\tests\tifiles.dll"; DestDir: "{app}"; Flags: ig
 Source: "C:\sources\roms\ticables\tests\ticables.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticalcs\tests\ticalcs.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu2\build\msvc\tiemu-2.exe"; DestDir: "{app}"; DestName: "tiemu-2.exe"; Flags: ignoreversion
-;Source: "C:\Windows\system32\MSVCRTD.DLL"; DestDir: "{app}"; Flags: ignoreversion
 ; Copy PortTalk driver for Windows NT4/2000/XP
 Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{sys}\drivers"; Flags: ignoreversion
 Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{app}"; Flags: ignoreversion
@@ -74,10 +73,6 @@ Source: "C:\Gtk2Dev\bin\gtkthemeselector.exe"; DestDir: "{app}";
 ;libglade/libxml add-on (ignore since no version checking is possible)
 Source: "C:\Gtk2Dev\bin\libxml2.dll"; DestDir: "{app}"; Flags: ignoreversion;
 Source: "C:\Gtk2Dev\bin\libglade-2.0-0.dll"; DestDir: "{app}"; Flags: ignoreversion;
-
-[Dirs]
-;Name: "{app}\My TI images"; Flags: uninsneveruninstall;
-;Name: "{app}\plugins"; Flags: uninsneveruninstall;
 
 [INI]
 Filename: "{app}\tiemu.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://lpg.ticalc.org/prj_tiemu"
@@ -162,7 +157,7 @@ begin
   // Retrieve GTK path
   Result := GetGtkInstalled ();
   if not Result then begin
-    MsgBox ('Please install the "GTK+ 2.6.x Runtime Environment" (2.6.8 mini). You can obtain GTK+ from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.8-rc1.exe?download>.', mbError, MB_OK);
+    MsgBox ('Please install the "GTK+ 2.6.x Runtime Environment" (2.6.10 mini). You can obtain GTK+ from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.10-rc1.exe?download>.', mbError, MB_OK);
   end;
 
   // Retrieve GTK version
@@ -170,8 +165,8 @@ begin
     Result := GetGtkVersionInstalled ();
 
     // and check
-    if CompareStr(GtkVersion, '2.6.8') < 0 then begin
-      MsgBox ('Wrong package version. You need at least version 2.6.8 from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.8-rc1.exe?download>.', mbError, MB_OK);
+    if CompareStr(GtkVersion, '2.6.10') < 0 then begin
+      MsgBox ('Wrong package version. You need at least version 2.6.10 from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.10-rc1.exe?download>.', mbError, MB_OK);
     end;
   end;
 
