@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: hw.c 725 2004-11-24 15:59:33Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -401,8 +401,9 @@ void lcd_hook_hw2(int refresh)
 #pragma warning( push )
 #pragma warning( disable : 4305 )
 #endif
-	static const char moveml_a0p_d0d7a2a6_moveml_d0d7a2a6_a1[8] = {0x4c,0xd8,0x7c,0xff,0x48,0xd1,0x7c,0xff};
-	static const char moveml_a0p_d1d7a2a6_moveml_d1d7a2a6_a1[8] = {0x4c,0xd8,0x7c,0xfe,0x48,0xd1,0x7c,0xfe};
+	static const char d0d7a2a6_moveml_d0d7a2a6_a1[6] = {0x7c,0xff,0x48,0xd1,0x7c,0xff};
+	static const char d1d7a2a6_moveml_d1d7a2a6_a1[6] = {0x7c,0xfe,0x48,0xd1,0x7c,0xfe};
+	static const char d0d7a2a7_moveml_d0d7a2a7_a1[6] = {0xfc,0xff,0x48,0xd1,0xfc,0xff};
 #ifdef _MSC_VER
 #pragma warning( pop ) 
 #endif
@@ -422,31 +423,36 @@ void lcd_hook_hw2(int refresh)
 	// if refresh from CPU loop (m68k.c), search for opcode signature:
 	else
 	{
-		if(!memcmp(regs.pc_p, moveml_a0p_d0d7a2a6_moveml_d0d7a2a6_a1, 8))
+		unsigned char *pc_p = regs.pc_p;
+		if (*(pc_p++) == 0x4c && *(pc_p++) == 0xd8) // search for the movem (%a0)+,... instruction
 		{
-			uint32_t a0 = m68k_areg(regs,0)-0xa00;
-			uint32_t a1 = m68k_areg(regs,1)-0xa00;
+			if(!memcmp(pc_p, d0d7a2a6_moveml_d0d7a2a6_a1, 6)
+			   || !memcmp(pc_p, d0d7a2a7_moveml_d0d7a2a7_a1, 6))
+			{
+				uint32_t a0 = m68k_areg(regs,0)-0xa00;
+				uint32_t a1 = m68k_areg(regs,1)-0xa00;
 
-			if(a1 == 0x4c0c)
-				a0 -= 12;
-			else if(a1 != 0x4c00)
-				return;
+				if(a1 == 0x4c0c)
+					a0 -= 12;
+				else if(a1 != 0x4c00)
+					return;
 
-			process_address(a0);
-			
-			dead_cnt = 0;
-		}
-		else if (!memcmp(regs.pc_p, moveml_a0p_d1d7a2a6_moveml_d1d7a2a6_a1, 8))
-		{
-			uint32_t a0 = m68k_areg(regs,0);
-			uint32_t a1 = m68k_areg(regs,1);
+				process_address(a0);
 
-			if(a1 != 0x4c00)
-				return;
+				dead_cnt = 0;
+			}
+			else if (!memcmp(pc_p, d1d7a2a6_moveml_d1d7a2a6_a1, 6))
+			{
+				uint32_t a0 = m68k_areg(regs,0);
+				uint32_t a1 = m68k_areg(regs,1);
 
-			process_address(a0);
-			
-			dead_cnt = 0;
+				if(a1 != 0x4c00)
+					return;
+
+				process_address(a0);
+
+				dead_cnt = 0;
+			}
 		}
 	}
 }
@@ -458,3 +464,5 @@ void lcd_hook_hw2(int refresh)
 	//		movem.l  (%a0)+,%d0-%d7/%a2-%a6 ; (%a1)==0x4c00+0xa00+12 => plane:=-0xa00-12(%a0)
 	// Patrick Davidson's gray.asm:
 	//		movem.l  (%a0)+,%d1-%d7/%a2-%a6 ; (%a1)==0x4c00 => plane:=(%a0)
+	// Grib:
+	//		movem.l  (%a0)+,%d0-%d7/%a2-%a7 ; (%a1)==0x4c00+0xa00 => plane:=-0xa00(%a0)
