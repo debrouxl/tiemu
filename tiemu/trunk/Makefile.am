@@ -21,8 +21,8 @@ endif
 # custom targets
 install-without-tcl-tk:
 if USE_GROFF
-	$(MAKE) install SUBDIRS="build glade help pedrom pixmaps skins man" DESTDIR="$(DESTDIR)"
+	$(MAKE) install SUBDIRS="build glade help misc pedrom pixmaps skins man" DESTDIR="$(DESTDIR)"
 else
-	$(MAKE) install SUBDIRS="build glade help pedrom pixmaps skins" DESTDIR="$(DESTDIR)"
+	$(MAKE) install SUBDIRS="build glade help misc pedrom pixmaps skins" DESTDIR="$(DESTDIR)"
 endif
 	cd src && $(MAKE) install-without-tcl-tk DESTDIR="$(DESTDIR)"

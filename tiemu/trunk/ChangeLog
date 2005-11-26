@@ -75,6 +75,7 @@ SubVersion: $Id$
 	- [kevin] $1811: optimized grayscale movem detection and added support for dirty-coded HW2/3 grayscale interrupts
 	                 abusing the stack pointer to hold data (currently only the latest Grib is known to do that)
 	- [kevin] $1812: import PedroM (ld-tigcc build) 0.81 release
+	- [kevin] $1813: fix install-without-tcl-tk omitting the "misc" directory
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
