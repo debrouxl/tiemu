@@ -31,8 +31,6 @@ mv -f configure.ac.fixed configure.ac
 sed 's;0.0.3;0.0.1;g' <configure >configure.fixed
 mv -f configure.fixed configure
 chmod +x configure
-sed 's;\$(bindir)/;\$(bindir)/tilem;g' <src/tilem/Makefile.in >src/tilem/Makefile.in.fixed
-mv -f src/tilem/Makefile.in.fixed src/tilem/Makefile.in
 
 %build
 CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --with-ticables
@@ -78,6 +76,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Wed Jan 4 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Remove unneeded makefile patch.
+
 * Wed Jan 4 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Don't require libticables 0.0.3, even the current SVN claims to be only 0.0.2
 (bug reported to Romain, it should be 0.0.3).
