@@ -10,7 +10,7 @@
 Name:		%{name}
 Version:	%{version}
 Release:	%{release}
-Vendor:		Romain Liévin 
+Vendor:		LPG (http://lpg.ticalc.org)
 Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:		%{name}-%{version}.tar.bz2
 Group:		Applications/Communications
@@ -101,6 +101,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Wed Jan 4 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Change Vendor to LPG.
+
 * Wed Sep 14 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Update to TiLP 2: new package name, new dependencies, obsoletes the old package,
 some files moved, some compatibility symlinks added, .desktop file updated for
