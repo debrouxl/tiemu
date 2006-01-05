@@ -4,7 +4,7 @@
 
 %define name tilem
 %define version 0.973
-%define release 1
+%define release 2
 %define my_opt_flags -Os -s -fno-exceptions -fomit-frame-pointer
 
 Name:		%{name}
@@ -13,6 +13,7 @@ Release:	%{release}
 Vendor:		LPG (http://lpg.ticalc.org)
 Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}.tar.bz2
+Patch0:         tilem-ti85-keypad-fix.diff
 Group:		Applications/Emulators
 License:	LGPL, z80em License
 BuildRequires:	libticables2 >= 20050915, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, imlib-devel >= 1.9.13, desktop-file-utils >= 0.10
@@ -31,6 +32,7 @@ mv -f configure.ac.fixed configure.ac
 sed 's;0.0.3;0.0.1;g' <configure >configure.fixed
 mv -f configure.fixed configure
 chmod +x configure
+patch -l src/tilem/keypad.c <%{PATCH0}
 
 %build
 CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --with-ticables
@@ -76,7 +78,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
-* Wed Jan 4 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+* Wed Jan 5 2006 Kevin Kofler <Kevin@tigcc.ticalc.org> 0.973-2
+Apply TI-85 keymap fix by Benjamin Moody.
+
+* Wed Jan 4 2006 Kevin Kofler <Kevin@tigcc.ticalc.org> 0.973-1
 Remove unneeded makefile patch.
 
 * Wed Jan 4 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>

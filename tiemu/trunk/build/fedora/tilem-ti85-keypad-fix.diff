@@ -1,0 +1,10 @@
+--- keypad.c.~1.2.~     2005-02-25 16:51:00.000000000 -0500
++++ keypad.c    2006-01-04 23:09:07.000000000 -0500
+@@ -250,7 +250,7 @@
+        struct keymap *kmap;
+        extern struct hardware *hw;
+
+-       if (hw->model == '6') kmap = x6kmap;
++       if (hw->model == '6' || hw->model == '5') kmap = x6kmap;
+        else if (hw->model == '7') kmap = x7kmap;
+        else kmap = x3kmap;
