@@ -438,7 +438,7 @@ remote_fileio_to_fio_stat (struct stat *st, struct fio_stat *fst)
   remote_fileio_to_fio_ulong (blksize, fst->fst_blksize);
 #if HAVE_STRUCT_STAT_ST_BLOCKS
   remote_fileio_to_fio_ulong ((LONGEST) st->st_blocks, fst->fst_blocks);
-#else
+#elif __MSDOS__
   /* FIXME: This is correct for DJGPP, but other systems that don't
      have st_blocks, if any, might prefer 512 instead of st_blksize.
      (eliz, 30-12-2003)  */
