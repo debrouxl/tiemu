@@ -3409,6 +3409,9 @@ fi;
 # maintain.
 
 if test "${enable_sim}" != no; then
+
+   ac_configure_args=`echo "$ac_configure_args" | sed "s,'CFLAGS=[^']*',,g;s,'CXXFLAGS=[^']*',,g;s,'host_alias=[^']*',,g"`
+
    testsuite=no
    common=no
    igen=no
