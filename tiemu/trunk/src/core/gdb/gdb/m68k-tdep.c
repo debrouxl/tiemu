@@ -445,7 +445,7 @@ m68k_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 		      CORE_ADDR struct_addr)
 {
   struct gdbarch_tdep *tdep = gdbarch_tdep (gdbarch);
-  struct type *ftype = check_typedef (VALUE_TYPE (function));
+  struct type *ftype = check_typedef (value_type (function));
   gdb_byte buf[4];
   int i;
 
@@ -467,7 +467,7 @@ m68k_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
           if (len <= 4)
             {
               regcache_cooked_write_part (regcache, TYPE_FIELD_REGNUM (ftype, i),
-                                          4 - len, len, VALUE_CONTENTS_ALL (args[i]));
+                                          4 - len, len, value_contents_all (args[i]));
               continue;
             }
           else
