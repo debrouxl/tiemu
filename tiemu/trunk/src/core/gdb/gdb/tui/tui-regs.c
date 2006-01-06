@@ -582,8 +582,8 @@ static struct cmd_list_element *tuireglist;
 static void
 tui_reg_command (char *args, int from_tty)
 {
-  printf_unfiltered ("\"tui reg\" must be followed by the name of a "
-                     "tui reg command.\n");
+  printf_unfiltered (_("\"tui reg\" must be followed by the name of a "
+                     "tui reg command.\n"));
   help_list (tuireglist, "tui reg ", -1, gdb_stdout);
 }
 
@@ -595,35 +595,35 @@ _initialize_tui_regs (void)
   tuicmd = tui_get_cmd_list ();
 
   add_prefix_cmd ("reg", class_tui, tui_reg_command,
-                  "TUI commands to control the register window.",
+                  _("TUI commands to control the register window."),
                   &tuireglist, "tui reg ", 0,
                   tuicmd);
 
   add_cmd ("float", class_tui, tui_reg_float_command,
-           "Display only floating point registers\n",
+           _("Display only floating point registers."),
            &tuireglist);
   add_cmd ("general", class_tui, tui_reg_general_command,
-           "Display only general registers\n",
+           _("Display only general registers."),
            &tuireglist);
   add_cmd ("system", class_tui, tui_reg_system_command,
-           "Display only system registers\n",
+           _("Display only system registers."),
            &tuireglist);
   add_cmd ("next", class_tui, tui_reg_next_command,
-           "Display next register group\n",
+           _("Display next register group."),
            &tuireglist);
 
   if (xdb_commands)
     {
       add_com ("fr", class_tui, tui_reg_float_command,
-	       "Display only floating point registers\n");
+	       _("Display only floating point registers\n"));
       add_com ("gr", class_tui, tui_reg_general_command,
-	       "Display only general registers\n");
+	       _("Display only general registers\n"));
       add_com ("sr", class_tui, tui_reg_system_command,
-	       "Display only special registers\n");
+	       _("Display only special registers\n"));
       add_com ("+r", class_tui, tui_scroll_regs_forward_command,
-	       "Scroll the registers window forward\n");
+	       _("Scroll the registers window forward\n"));
       add_com ("-r", class_tui, tui_scroll_regs_backward_command,
-	       "Scroll the register window backward\n");
+	       _("Scroll the register window backward\n"));
     }
 }
 
@@ -669,7 +669,7 @@ tui_register_format (struct gdbarch *gdbarch, struct frame_info *frame,
   cleanups = make_cleanup (tui_restore_gdbout, (void*) old_stdout);
   if (TYPE_VECTOR (type) != 0 && 0)
     {
-      char buf[MAX_REGISTER_SIZE];
+      gdb_byte buf[MAX_REGISTER_SIZE];
       int len;
 
       len = register_size (current_gdbarch, regnum);
@@ -709,7 +709,7 @@ tui_get_register (struct gdbarch *gdbarch, struct frame_info *frame,
     *changedp = FALSE;
   if (target_has_registers)
     {
-      char buf[MAX_REGISTER_SIZE];
+      gdb_byte buf[MAX_REGISTER_SIZE];
 
       get_frame_register (frame, regnum, buf);
       /* NOTE: cagney/2003-03-13: This is bogus.  It is refering to

@@ -1,6 +1,6 @@
 /* YACC parser for Fortran expressions, for GDB.
-   Copyright 1986, 1989, 1990, 1991, 1993, 1994, 1995, 1996, 2000, 2001
-   Free Software Foundation, Inc.
+   Copyright 1986, 1989, 1990, 1991, 1993, 1994, 1995, 1996, 2000, 2001,
+   2002, 2003, 2004, 2005 Free Software Foundation, Inc.
 
    Contributed by Motorola.  Adapted from the C parser by Farooq Butt
    (fmbutt@engage.sps.mot.com).
@@ -177,9 +177,7 @@ static int parse_number (char *, int, int, YYSTYPE *);
 %token <lval> BOOLEAN_LITERAL
 %token <ssym> NAME 
 %token <tsym> TYPENAME
-%type <sval> name
 %type <ssym> name_not_typename
-%type <tsym> typename
 
 /* A NAME_OR_INT is a symbol which is not known in the symbol table,
    but which would parse as a valid number in the current input radix.
@@ -219,6 +217,7 @@ static int parse_number (char *, int, int, YYSTYPE *);
 %left '@'
 %left '+' '-'
 %left '*' '/' '%'
+%right STARSTAR
 %right UNARY 
 %right '('
 
@@ -284,18 +283,39 @@ arglist	:	exp
 			{ arglist_len = 1; }
 	;
 
-arglist :      substring
-                        { arglist_len = 2;}
+arglist :	subrange
+			{ arglist_len = 1; }
 	;
    
 arglist	:	arglist ',' exp   %prec ABOVE_COMMA
 			{ arglist_len++; }
 	;
 
-substring:	exp ':' exp   %prec ABOVE_COMMA
-			{ } 
+/* There are four sorts of subrange types in F90.  */
+
+subrange:	exp ':' exp	%prec ABOVE_COMMA
+			{ write_exp_elt_opcode (OP_F90_RANGE); 
+			  write_exp_elt_longcst (NONE_BOUND_DEFAULT);
+			  write_exp_elt_opcode (OP_F90_RANGE); }
 	;
 
+subrange:	exp ':'	%prec ABOVE_COMMA
+			{ write_exp_elt_opcode (OP_F90_RANGE);
+			  write_exp_elt_longcst (HIGH_BOUND_DEFAULT);
+			  write_exp_elt_opcode (OP_F90_RANGE); }
+	;
+
+subrange:	':' exp	%prec ABOVE_COMMA
+			{ write_exp_elt_opcode (OP_F90_RANGE);
+			  write_exp_elt_longcst (LOW_BOUND_DEFAULT);
+			  write_exp_elt_opcode (OP_F90_RANGE); }
+	;
+
+subrange:	':'	%prec ABOVE_COMMA
+			{ write_exp_elt_opcode (OP_F90_RANGE);
+			  write_exp_elt_longcst (BOTH_BOUND_DEFAULT);
+			  write_exp_elt_opcode (OP_F90_RANGE); }
+	;
 
 complexnum:     exp ',' exp 
                 	{ }                          
@@ -315,6 +335,10 @@ exp	:	'(' type ')' exp  %prec UNARY
 
 exp	:	exp '@' exp
 			{ write_exp_elt_opcode (BINOP_REPEAT); }
+	;
+
+exp	:	exp STARSTAR exp
+			{ write_exp_elt_opcode (BINOP_EXP); }
 	;
 
 exp	:	exp '*' exp
@@ -597,9 +621,6 @@ typebase  /* Implements (approximately): (type-qualifier)* type-specifier */
 			{ $$ = builtin_type_f_complex_s32;}
 	;
 
-typename:	TYPENAME
-	;
-
 nonempty_typelist
 	:	type
 		{ $$ = (struct type **) malloc (sizeof (struct type *) * 2);
@@ -611,14 +632,6 @@ nonempty_typelist
 		  $$ = (struct type **) realloc ((char *) $1, len);
 		  $$[$<ivec>$[0]] = $3;
 		}
-	;
-
-name	:	NAME
-			{ $$ = $1.stoken; }
-	|	TYPENAME
-			{ $$ = $1.stoken; }
-	|	NAME_OR_INT
-			{ $$ = $1.stoken; }
 	;
 
 name_not_typename :	NAME
@@ -954,7 +967,7 @@ yylex ()
 	}
     }
   
-  /* See if it is a special .foo. operator */
+  /* See if it is a special .foo. operator.  */
   
   for (i = 0; dot_ops[i].operator != NULL; i++)
     if (strncmp (tokstart, dot_ops[i].operator, strlen (dot_ops[i].operator)) == 0)
@@ -964,6 +977,15 @@ yylex ()
 	return dot_ops[i].token;
       }
   
+  /* See if it is an exponentiation operator.  */
+
+  if (strncmp (tokstart, "**", 2) == 0)
+    {
+      lexptr += 2;
+      yylval.opcode = BINOP_EXP;
+      return STARSTAR;
+    }
+
   switch (c = *tokstart)
     {
     case 0:

@@ -1,6 +1,7 @@
 /* Target-dependent code for GNU/Linux i386.
 
-   Copyright 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+   Copyright 2000, 2001, 2002, 2003, 2004, 2005
+   Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -27,7 +28,7 @@
 #include "inferior.h"
 #include "osabi.h"
 #include "reggroups.h"
-
+#include "dwarf2-frame.h"
 #include "gdb_string.h"
 
 #include "i386-tdep.h"
@@ -106,7 +107,7 @@ i386_linux_register_reggroup_p (struct gdbarch *gdbarch, int regnum,
 #define LINUX_SIGTRAMP_INSN2	0xcd	/* int */
 #define LINUX_SIGTRAMP_OFFSET2	6
 
-static const unsigned char linux_sigtramp_code[] =
+static const gdb_byte linux_sigtramp_code[] =
 {
   LINUX_SIGTRAMP_INSN0,					/* pop %eax */
   LINUX_SIGTRAMP_INSN1, 0x77, 0x00, 0x00, 0x00,		/* mov $0x77, %eax */
@@ -122,7 +123,7 @@ static CORE_ADDR
 i386_linux_sigtramp_start (struct frame_info *next_frame)
 {
   CORE_ADDR pc = frame_pc_unwind (next_frame);
-  unsigned char buf[LINUX_SIGTRAMP_LEN];
+  gdb_byte buf[LINUX_SIGTRAMP_LEN];
 
   /* We only recognize a signal trampoline if PC is at the start of
      one of the three instructions.  We optimize for finding the PC at
@@ -175,7 +176,7 @@ i386_linux_sigtramp_start (struct frame_info *next_frame)
 #define LINUX_RT_SIGTRAMP_INSN1		0xcd /* int */
 #define LINUX_RT_SIGTRAMP_OFFSET1	5
 
-static const unsigned char linux_rt_sigtramp_code[] =
+static const gdb_byte linux_rt_sigtramp_code[] =
 {
   LINUX_RT_SIGTRAMP_INSN0, 0xad, 0x00, 0x00, 0x00,	/* mov $0xad, %eax */
   LINUX_RT_SIGTRAMP_INSN1, 0x80				/* int $0x80 */
@@ -190,7 +191,7 @@ static CORE_ADDR
 i386_linux_rt_sigtramp_start (struct frame_info *next_frame)
 {
   CORE_ADDR pc = frame_pc_unwind (next_frame);
-  unsigned char buf[LINUX_RT_SIGTRAMP_LEN];
+  gdb_byte buf[LINUX_RT_SIGTRAMP_LEN];
 
   /* We only recognize a signal trampoline if PC is at the start of
      one of the two instructions.  We optimize for finding the PC at
@@ -244,6 +245,27 @@ i386_linux_sigtramp_p (struct frame_info *next_frame)
 	  || strcmp ("__restore_rt", name) == 0);
 }
 
+/* Return one if the unwound PC from NEXT_FRAME is in a signal trampoline
+   which may have DWARF-2 CFI.  */
+
+static int
+i386_linux_dwarf_signal_frame_p (struct gdbarch *gdbarch,
+				 struct frame_info *next_frame)
+{
+  CORE_ADDR pc = frame_pc_unwind (next_frame);
+  char *name;
+
+  find_pc_partial_function (pc, &name, NULL, NULL);
+
+  /* If a vsyscall DSO is in use, the signal trampolines may have these
+     names.  */
+  if (name && (strcmp (name, "__kernel_sigreturn") == 0
+	       || strcmp (name, "__kernel_rt_sigreturn") == 0))
+    return 1;
+
+  return 0;
+}
+
 /* Offset to struct sigcontext in ucontext, from <asm/ucontext.h>.  */
 #define I386_LINUX_UCONTEXT_SIGCONTEXT_OFFSET 20
 
@@ -255,7 +277,7 @@ i386_linux_sigcontext_addr (struct frame_info *next_frame)
 {
   CORE_ADDR pc;
   CORE_ADDR sp;
-  char buf[4];
+  gdb_byte buf[4];
 
   frame_unwind_register (next_frame, I386_ESP_REGNUM, buf);
   sp = extract_unsigned_integer (buf, 4);
@@ -287,7 +309,7 @@ i386_linux_sigcontext_addr (struct frame_info *next_frame)
       return ucontext_addr + I386_LINUX_UCONTEXT_SIGCONTEXT_OFFSET;
     }
 
-  error ("Couldn't recognize signal trampoline.");
+  error (_("Couldn't recognize signal trampoline."));
   return 0;
 }
 
@@ -414,6 +436,12 @@ i386_linux_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
 
   /* GNU/Linux uses the dynamic linker included in the GNU C Library.  */
   set_gdbarch_skip_solib_resolver (gdbarch, glibc_skip_solib_resolver);
+
+  dwarf2_frame_set_signal_frame_p (gdbarch, i386_linux_dwarf_signal_frame_p);
+
+  /* Enable TLS support.  */
+  set_gdbarch_fetch_tls_load_module_address (gdbarch,
+                                             svr4_fetch_objfile_link_map);
 }
 
 /* Provide a prototype to silence -Wmissing-prototypes.  */

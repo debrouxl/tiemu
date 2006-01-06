@@ -31,6 +31,7 @@
 #include "version.h"
 #include "top.h"
 #include "annotate.h"
+#include "exceptions.h"
 
 #if defined(_WIN32) || defined(__CYGWIN__)
 #define WIN32_LEAN_AND_MEAN
@@ -437,10 +438,6 @@ gdbtk_init (void)
                      [file join $srcDir itcl iwidgets generic]\n\
 	  }\n\
 \
-	  if {![info exists env(TIX_LIBRARY)]} {\n\
-	      set env(TIX_LIBRARY) [file join $srcDir tix library]\n\
-	  }\n\
-\
 	  if {![info exists env(GDBTK_LIBRARY)]} {\n\
 	      set env(GDBTK_LIBRARY) [file join $srcDir gdb gdbtk library]\n\
 	  }\n\
@@ -683,7 +680,13 @@ gdbtk_find_main";
 	 If GDB wasn't started from the DOS prompt, the user won't
 	 get to see the failure reason.  */
       MessageBox (NULL, msg, NULL, MB_OK | MB_ICONERROR | MB_TASKMODAL);
-      throw_exception (RETURN_ERROR);
+      {
+        struct gdb_exception e;
+        e.reason  = RETURN_ERROR;
+        e.error   = GENERIC_ERROR;
+        e.message = msg;
+        throw_exception (e);
+      }
 #else
       /* FIXME: cagney/2002-04-17: Wonder what the lifetime of
 	 ``msg'' is - does it need a cleanup?  */

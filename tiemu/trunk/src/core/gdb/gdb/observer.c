@@ -57,6 +57,12 @@
 #include "gdbcmd.h"
 
 static int observer_debug;
+static void
+show_observer_debug (struct ui_file *file, int from_tty,
+		     struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("Observer debugging is %s.\n"), value);
+}
 
 /* The internal generic observer.  */
 
@@ -146,7 +152,7 @@ generic_observer_detach (struct observer_list **subject,
 
   /* We should never reach this point.  However, this should not be
      a very serious error, so simply report a warning to the user.  */
-  warning ("Failed to detach observer");
+  warning (_("Failed to detach observer"));
 }
 
 /* Send a notification to all the observers of SUBJECT.  ARGS is passed to
@@ -199,12 +205,13 @@ extern initialize_file_ftype _initialize_observer; /* -Wmissing-prototypes */
 void
 _initialize_observer (void)
 {
-  add_setshow_zinteger_cmd ("observer", class_maintenance, &observer_debug, "\
-Set observer debugging.", "\
-Show observer debugging.", "\
-When non-zero, observer debugging is enabled.", "\
-Observer debugging is %s.",
-			    NULL, NULL,
+  add_setshow_zinteger_cmd ("observer", class_maintenance,
+			    &observer_debug, _("\
+Set observer debugging."), _("\
+Show observer debugging."), _("\
+When non-zero, observer debugging is enabled."),
+			    NULL,
+			    show_observer_debug,
 			    &setdebuglist, &showdebuglist);
 }
 

@@ -1,181 +1,122 @@
-2004-08-27  Martin Hunt  <hunt@redhat.com>
+2005-11-21  Keith Seitz  <keiths@redhat.com>
 
-	* library/ipc.tcl: New file.
-	* library/ipcpref.ith: New file.
-	* library/ipcpref.itb: New file.
+	From Spencer Oliver <spencer.oliver@anglia.com>:
+	* library/targetselection.itb (build_win): Only pack the xterm checkbutton
+	on unix platforms.
 
-	* library/srcwin.itb (SrcWin::inferior): Call ipc
-	send if enabled.
+2005-09-12  Keith Seitz  <keiths@redhat.com>
+
+	* generic/gdbtk.c (gdbtk_init): Remove all mention of Tix.
+	* README: Ditto.
+
+2005-08-31  Keith Seitz  <keiths@redhat.com>
+
+	* library/help/target.html: Update dialog options.
+	* library/targetselection.itb (help): Implement.
+	(build_win): Don't disable help button.
+	Only display "use tty" option on unix hosts.
+
+2005-08-31  Keith Seitz  <keiths@redhat.com>
+
+	* library/bpwin.itb (bp_store): gdb_get_breakpoint_info outputs
+	the breakpoint condition, too -- include it in the lassign.
+
+2005-08-31  Keith Seitz  <keiths@redhat.com>
+
+	From Dieter Ruppert <dieter_ruppert@siemens.com>:
+	* library/memwin.itb (update_address): Change parameter name
+	so that it does not shadow a member variable.
+	Save the updated address internally.
+
+2005-06-13  Keith Seitz  <keiths@redhat.com>
+
+	From Charles Brockman <mr hyphen chuck at att dot net>:
+	* library/interface.tcl (gdbtk_tcl_warning): Filter "RTTI symbol not found"
+	"warnings", too.
+
+2005-06-06  Keith Seitz  <keiths@redhat.com>
+
+	* library/interface.tcl (gdbtk_tcl_fputs_error): gdbtk_state is in the global
+	namespace. Fix references.
+	(gdbtk_tcl_fputs_log): Likewise.
 	
-	* library/prefs.tcl (pref_set_defaults): Enable color
-	schemes by default. Add IPC defaults.
-	
-	* library/srcbar.itcl (create_pref_menu): Create
-	"Advanced" cascade menu and put "Edit Color Schemes"
-	and "IPC Support" under it.
+	From Steven Johnson  <johnson@sakuraindustries.com>:
+	* library/interface.tcl (gdbtk_tcl_warning): Filter some basic warnings
+	from gdb - "incomplete CFI.." and "Internal error".
 
-	* library/managedwin.itb (ManagedWin::destructor): 
-	If IPC enabled then send "quit" on exit.
-	
-	* library/main.tcl: Start IPC if enabled.
+2005-06-06  Keith Seitz  <keiths@redhat.com>
 
-	* library/prefs.tcl (pref_set_defaults): Add IPC defaults.
+	From Steven Johnson  <sjohnson@sakraindustries.com>:
+	* generic/gcbtk-cmds.c (gdb_loc): Hand gdb_loc called before remote
+	target connected, where gdb_loc now returns the entry address as $pc.
 
-	* library/gdbmenubar.itcl (menubar_get_current_menu): 
-	New method.
+2005-06-01  Keith Seitz  <keiths@redhat.com>
 
-2004-08-09  Ben Elliston  <bje@au.ibm.com>
+	From James Lemke  <jim@wasabisystems.com>:
+	* generic/gdbtk-hooks.c (gdbtk_fileopenin, gdbtk_read): New functions
+	for target to read stdin from console window.
+	* generic/gdbtk-interp.c (_stdtargin): Added.
+	* generic/gdbtk.h (gdbtk_fileopenin): Add declaration.
 
-	* generic/gdbtk-register.c (get_register_size): Use
-	register_size() instead of DEPRECATED_REGISTER_RAW_SIZE.
-	(get_register): Likewise.
-	(register_changed_p): Likewise.
+2005-05-26  Keith Seitz  <keiths@redhat.com>
 
-2004-07-02  Martin Hunt  <hunt@redhat.com>
+	* generic/gdbtk-cmds.c (gdb_set_mem): target_write_memory now takes
+	gdb_byte* instead of char*.
+	* generic/gdbtk-register.c (get_register): frame_register and val_print
+	take gdb_byte* instead of char*.
+	* generic/gdbtk-wrapper.c: Ditto the val_print part.
 
-	* library/targetselection.itb: Use /dev/comX for
-	cygwin instead of just comX.
+	From Paul Schlie  <schlie@comcast.net>:
+	* generic/gdbtk-bp.c (gdb_set_bp): Use lbasename instead of basename.
+	* generic/gdbtk-cmds.c (gdb_listfiles): Likewise.
 
-	* library/interface.tcl (gdbtk_tcl_preloop): Set baud rate.
+2005-04-28  Ben Elliston  <bje@au.ibm.com>
 
-2004-07-02  Martin Hunt  <hunt@redhat.com>
-	
-	* generic/gdbtk-cmds.c (symtab_to_filename): New function. Like
-	symtab_to_fullname() but returns the filename if the fullname 
-	cannot be found.
-	
-	* generic/gdbtk-cmds.c (gdb_find_file_command): Revert
-	patch of 2004-06-11. Use symtab_to_filename() again.
-	(gdb_loc): Ditto.
-	(gdb_loadfile): Ditto.
-	* generic/gdbtk-bp.c (gdb_get_breakpoint_info): Ditto.
-	(gdb_get_tracepoint_info): Ditto.
+	* generic/gdbtk-interp.c (gdbtk_interpreter_exec): Return struct
+	gdb_exception due to the 2005-04-26 renaming of struct exception.
+	* generic/gdbtk.c (gdbtk_source_start_file): Likewise.
 
-	* generic/gdbtk-cmds.h: Declare symtab_to_filename().
+2005-02-25  Keith Seitz  <kseitz@sources.redhat.com>
 
-2004-06-26  Andrew Cagney  <cagney@gnu.org>
+	* generic/gdbtk.c (gdbtk_source_start_file): In the _WIN32 case,
+	use throw_exception (struct exception).
 
-	* generic/gdbtk-hooks.c (gdbtk_add_hooks): Call
-	deprecated_set_gdb_event_hooks.
+2005-02-16  Martin Hunt  <hunt@redhat.com>
 
-2004-06-25  Andrew Cagney  <cagney@gnu.org>
+	* generic/gdbtk-stack.c (get_frame_name): Replace
+	print_address_numeric with deprecated_print_address_numeric.
+	* generic/gdbtk-cmds.c (gdbtk_load_asm): Ditto.
 
-	* generic/gdbtk.h: "ui_loop_hook" was deprecated, update.
-	* generic/gdbtk-hooks.c (gdbtk_add_hooks, x_event): Ditto.
-	* generic/gdbtk-cmds.c: Ditto.
+2005-02-07  Keith Seitz  <kseitz@sources.redhat.com>
 
-2004-06-24  Andrew Cagney  <cagney@gnu.org>
+	* generic/gdbtk-cmds.c (gdb_eval): VALUE_EMBEDDED_OFFSET and
+	VALUE_CONTENTS are now functions.
 
-	* generic/gdbtk-hooks.c (gdbtk_add_hooks): Update references to
-	pre_add_symbol_hook and post_add_symbol_hook, both deprecated.
-	* library/interface.tcl (gdbtk_memory_changed): Update comments.
-	
-2004-06-24  Andrew Cagney  <cagney@gnu.org>
 
-	* generic/gdbtk-hooks.c (ui_loop_hook, pre_add_symbol_hook)
-	(post_add_symbol_hook, selected_frame_level_changed_hook): Delete
-	extern declarations.
+2005-01-19  Keith Seitz  <kseitz@sources.redhat.com>
 
-2004-06-15  Alan Modra  <amodra@bigpond.net.au>
+	* Makefile.in: Regenerate.
+	* aclocal.m4: Regenerate.
+	* plugins/Makefile.in; Regenerate.
+	* plugins/aclocal.m4: Regenerate.
 
-	* generic/gdbtk-cmds.c (gdb_load_info): Use bfd_get_section_size
-	instead of bfd_get_section_size_before_reloc.
+2005-01-17  Keith Seitz  <kseitz@sources.redhat.com>
 
-2004-06-11  Martin Hunt  <hunt@redhat.com>
+	* generic/gdbtk-varobj.c (variable_value): Remove all instances
+	of error_last_message. It's gone.
 
-	* generic/gdbtk-cmds.c (gdb_find_file_command): Use
-	symtab_to_fullname() instead of symtab_to_filename().
-	(gdb_loc): Ditto.
-	(gdb_loadfile): Ditto.
-	* generic/gdbtk-bp.c (gdb_get_breakpoint_info): Ditto.
-	(gdb_get_tracepoint_info): Ditto.	
+	* generic/gdbtk-wrapper.c: Include exceptions.h
+	* generic/gdbtk-cmds.c: Likewise.
+	* generic/gdbtk-interp.c: Likewise.
+	(gdbtk_interpreter_exec): Change return type to struct
+	exception. Return exception_none.	
 
-	* generic/gdbtk-register.c (get_register): Simplify and remove
-	references to DEPRECATED_REGISTER_CONVERT_TO_VIRTUAL.
+2005-01-13  Keith Seitz  <keiths@redhat.com>
 
-2004-05-27  Martin Hunt  <hunt@redhat.com>
+	* configure.in: Rename to ...
+	* configure.ac: ... this.
+	* configure: Regenerate with autoconf 2.59.
+	* plugins/configure.in: Rename to ...
+	* plugins/configure.ac: ... this.
+	* pluginx/configure: Regenerate with autoconf 2.59.
 
-	* library/tdump.tcl (build_win): Remove old nonworking
-	code to select scrolledtext mode.  Just use "dynamic".
-
-2004-04-22  Keith Seitz  <kseitz@sources.redhat.com>
-
-	* generic/gdbtk-hooks.c (gdbtk_add_hooks): "Update" deprecated hooks.
-	"Houston... We have a problem."
-	* generic/gdbtk-interp.c (gdbtk_interpreter_resume): Likewise.
- 	* generic/gdbtk.c (gdbtk_init_1): Likewise.
-	
-2004-04-19  Roland McGrath  <roland@redhat.com>
-
-	* generic/gdbtk-hooks.c: Update gdbtk_pre_add_symbol forward decl to
-	match defn type change.
-
-2004-04-15  Roland McGrath  <roland@redhat.com>
-
-	* generic/gdbtk-hooks.c (gdbtk_pre_add_symbol): Add const to arg type.
-	(pre_add_symbol): Likewise in extern decl.
-
-2004-04-05  Martin Hunt  <hunt@redhat.com>
-
-	* library/session.tcl: Make hostname and portname
-	session-dependent. Add gdb_bg_num (the color
-	scheme number) as a per-session variable.
-
-	* library/prefs.tcl (pref_read): If color schemes are in use,
-	set colors based on the current scheme.
-	(pref_save): Add "bg" section.
-	(pref_set_defaults): Define new variable gdb/use_color_schemes
-	and define 16 default background colors.
-
-	* library/managedwin.itb (ManagedWin::window_name): Append
-	window "instance" string to window name.
-	(ManagedWin::window_instance): Set window instance string.
-
-	* library/debugwin.itb: Add a reconfig method to restore
-	unique black textbackground, overriding color scheme.
-
-	* library/csprefs.itb:
-	* library/csprefs.ith: New files. Implement color scheme
-	preferences.
-
-	* library/util.tcl (set_bg_colors): New function.
-	(r_setcolors): New function.
-
-	* library/regwin.itb (_prefs_changed): Deleted.
-	(reconfig): New function.  Updates tkTable color tags
-	if color scheme changes.
-	* library/regwin.ith: Update to reflect above changes.
-
-	* library/srcbar.itcl (create_pref_menu): Add pulldown
-	menus for "Edit Color Schemes..." and "Use Color Schemes".
-	(reconfig): Fix up menu items for color schemes.
-
-	* library/globalpref.itb (_init_var): Add
-	gdb/use_color_schemes to variable list.
-	(_build_win): Add a checkbutton to enable/disable
-	color schemes.
-
-	* library/gdbmenubar.itcl (menubar_add_cascade): Add a class
-	argument so cascade menus can be managed by class too.
-
-	* library/interface.tcl (gdbtk_tcl_fputs): Check for
-	existence of gdbtk_state(console).  Stops annoying error
-	messages.
-	(gdbtk_tcl_fputs_error): Ditto.
-	(gdbtk_tcl_fputs_log): Ditto.
-
-2004-03-29  Martin Hunt  <hunt@redhat.com>
-
-	* generic/gdbtk-register.c (map_arg_registers): If a specific
-	register was requested, just return it without validating it
-	has a name.
-	(get_register): Check DEPRECATED_REGISTER_CONVERTIBLE_P ().
-
-2004-02-17  Martin Hunt  <hunt@redhat.com>
-
-	* generic/gdbtk-register.c (Gdbtk_Register_Init): Replace
-	calls to register_gdbarch_swap with deprecated_register_gdbarch_swap.
-
-	* library/srcwin.itb: Remove an apparently redundant call
-	to gdbtk_locate_main and location. This actually broke in
-	situations where no source files were found.

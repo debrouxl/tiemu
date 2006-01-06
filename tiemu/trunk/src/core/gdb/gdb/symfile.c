@@ -1,7 +1,7 @@
 /* Generic symbol file reading for the GNU debugger, GDB.
 
    Copyright 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998,
-   1999, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+   1999, 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
 
    Contributed by Cygnus Support, using pieces from other GDB modules.
 
@@ -48,6 +48,8 @@
 #include "readline/readline.h"
 #include "gdb_assert.h"
 #include "block.h"
+#include "observer.h"
+#include "exec.h"
 
 #include <sys/types.h>
 #include <fcntl.h>
@@ -55,6 +57,7 @@
 #include "gdb_stat.h"
 #include <ctype.h>
 #include <time.h>
+#include <sys/time.h>
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -138,8 +141,6 @@ static int simple_overlay_update_1 (struct obj_section *);
 
 static void add_filename_language (char *ext, enum language lang);
 
-static void set_ext_lang_command (char *args, int from_tty);
-
 static void info_ext_lang_command (char *args, int from_tty);
 
 static char *find_separate_debug_file (struct objfile *objfile);
@@ -162,6 +163,15 @@ int symbol_reloading = SYMBOL_RELOADING_DEFAULT;
 #else
 int symbol_reloading = 0;
 #endif
+static void
+show_symbol_reloading (struct ui_file *file, int from_tty,
+		       struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("\
+Dynamic symbol table reloading multiple times in one run is %s.\n"),
+		    value);
+}
+
 
 /* If non-zero, shared library symbols will be added automatically
    when the inferior is created, new libraries are loaded, or when
@@ -184,7 +194,7 @@ int auto_solib_add = 1;
    command. */
 
 int auto_solib_limit;
-
+
 /* (TiEmu 20050626 Kevin Kofler) BFD for last symbol file, to be used in
                                  exec_build_section_table. */
 bfd *last_symfile_bfd = NULL;
@@ -456,6 +466,84 @@ init_objfile_sect_indices (struct objfile *objfile)
     }
 }
 
+/* The arguments to place_section.  */
+
+struct place_section_arg
+{
+  struct section_offsets *offsets;
+  CORE_ADDR lowest;
+};
+
+/* Find a unique offset to use for loadable section SECT if
+   the user did not provide an offset.  */
+
+void
+place_section (bfd *abfd, asection *sect, void *obj)
+{
+  struct place_section_arg *arg = obj;
+  CORE_ADDR *offsets = arg->offsets->offsets, start_addr;
+  int done;
+
+  /* We are only interested in loadable sections.  */
+  if ((bfd_get_section_flags (abfd, sect) & SEC_LOAD) == 0)
+    return;
+
+  /* If the user specified an offset, honor it.  */
+  if (offsets[sect->index] != 0)
+    return;
+
+  /* Otherwise, let's try to find a place for the section.  */
+  do {
+    asection *cur_sec;
+    ULONGEST align = 1 << bfd_get_section_alignment (abfd, sect);
+
+    start_addr = (arg->lowest + align - 1) & -align;
+    done = 1;
+
+    for (cur_sec = abfd->sections; cur_sec != NULL; cur_sec = cur_sec->next)
+      {
+	int indx = cur_sec->index;
+	CORE_ADDR cur_offset;
+
+	/* We don't need to compare against ourself.  */
+	if (cur_sec == sect)
+	  continue;
+
+	/* We can only conflict with loadable sections.  */
+	if ((bfd_get_section_flags (abfd, cur_sec) & SEC_LOAD) == 0)
+	  continue;
+
+	/* We do not expect this to happen; just ignore sections in a
+	   relocatable file with an assigned VMA.  */
+	if (bfd_section_vma (abfd, cur_sec) != 0)
+	  continue;
+
+	/* If the section offset is 0, either the section has not been placed
+	   yet, or it was the lowest section placed (in which case LOWEST
+	   will be past its end).  */
+	if (offsets[indx] == 0)
+	  continue;
+
+	/* If this section would overlap us, then we must move up.  */
+	if (start_addr + bfd_get_section_size (sect) > offsets[indx]
+	    && start_addr < offsets[indx] + bfd_get_section_size (cur_sec))
+	  {
+	    start_addr = offsets[indx] + bfd_get_section_size (cur_sec);
+	    start_addr = (start_addr + align - 1) & -align;
+	    done = 0;
+	    continue;
+	  }
+
+	/* Otherwise, we appear to be OK.  So far.  */
+      }
+    }
+  while (!done);
+
+  offsets[sect->index] = start_addr;
+  arg->lowest = start_addr + bfd_get_section_size (sect);
+
+  exec_set_section_address (bfd_get_filename (abfd), sect->index, start_addr);
+}
 
 /* Parse the user's idea of an offset for dynamic linking, into our idea
    of how to represent it for fast symbol reading.  This is the default
@@ -490,6 +578,19 @@ default_symfile_offsets (struct objfile *objfile,
       /* The section_offsets in the objfile are here filled in using
          the BFD index. */
       (objfile->section_offsets)->offsets[osp->sectindex] = osp->addr;
+    }
+
+  /* For relocatable files, all loadable sections will start at zero.
+     The zero is meaningless, so try to pick arbitrary addresses such
+     that no loadable sections overlap.  This algorithm is quadratic,
+     but the number of sections in a single object file is generally
+     small.  */
+  if ((bfd_get_file_flags (objfile->obfd) & (EXEC_P | DYNAMIC)) == 0)
+    {
+      struct place_section_arg arg;
+      arg.offsets = objfile->section_offsets;
+      arg.lowest = 0;
+      bfd_map_over_sections (objfile->obfd, place_section, &arg);
     }
 
   /* Remember the bfd indexes for the .text, .data, .bss and
@@ -609,11 +710,11 @@ syms_from_objfile (struct objfile *objfile,
 	bfd_map_over_sections (objfile->obfd, find_lowest_section,
 			       &lower_sect);
       if (lower_sect == NULL)
-	warning ("no loadable sections found in added symbol-file %s",
+	warning (_("no loadable sections found in added symbol-file %s"),
 		 objfile->name);
       else
 	if ((bfd_get_section_flags (objfile->obfd, lower_sect) & SEC_CODE) == 0)
-	  warning ("Lowest section in %s is %s at %s",
+	  warning (_("Lowest section in %s is %s at %s"),
 		   objfile->name,
 		   bfd_section_name (objfile->obfd, lower_sect),
 		   paddr (bfd_section_vma (objfile->obfd, lower_sect)));
@@ -648,7 +749,7 @@ syms_from_objfile (struct objfile *objfile,
                   }
                 else
                   {
-                    warning ("section %s not found in %s",
+                    warning (_("section %s not found in %s"),
                              addrs->other[i].name,
                              objfile->name);
                     addrs->other[i].addr = 0;
@@ -819,7 +920,7 @@ symbol_file_add_with_addrs_or_offsets (bfd *abfd, int from_tty,
       && mainline
       && from_tty
       && !query ("Load new symbol table from \"%s\"? ", name))
-    error ("Not confirmed.");
+    error (_("Not confirmed."));
 
   objfile = allocate_objfile (abfd, flags);
   discard_cleanups (my_cleanups);
@@ -844,7 +945,7 @@ symbol_file_add_with_addrs_or_offsets (bfd *abfd, int from_tty,
 	deprecated_pre_add_symbol_hook (name);
       else
 	{
-	  printf_unfiltered ("Reading symbols from %s...", name);
+	  printf_unfiltered (_("Reading symbols from %s..."), name);
 	  wrap_here ("");
 	  gdb_flush (gdb_stdout);
 	}
@@ -861,7 +962,7 @@ symbol_file_add_with_addrs_or_offsets (bfd *abfd, int from_tty,
     {
       if (from_tty || info_verbose)
 	{
-	  printf_unfiltered ("expanding to full symbols...");
+	  printf_unfiltered (_("expanding to full symbols..."));
 	  wrap_here ("");
 	  gdb_flush (gdb_stdout);
 	}
@@ -900,7 +1001,7 @@ symbol_file_add_with_addrs_or_offsets (bfd *abfd, int from_tty,
   if (!have_partial_symbols () && !have_full_symbols ())
     {
       wrap_here ("");
-      printf_filtered ("(no debugging symbols found)");
+      printf_filtered (_("(no debugging symbols found)"));
       if (from_tty || info_verbose)
         printf_filtered ("...");
       else
@@ -917,7 +1018,7 @@ symbol_file_add_with_addrs_or_offsets (bfd *abfd, int from_tty,
 	deprecated_post_add_symbol_hook ();
       else
 	{
-	  printf_unfiltered ("done.\n");
+	  printf_unfiltered (_("done.\n"));
 	}
     }
 
@@ -1002,7 +1103,7 @@ symbol_file_clear (int from_tty)
       && from_tty
       && !query ("Discard symbol table from `%s'? ",
 		 symfile_objfile->name))
-    error ("Not confirmed.");
+    error (_("Not confirmed."));
     free_all_objfiles ();
 
     /* solib descriptors may have handles to objfiles.  Since their
@@ -1015,7 +1116,7 @@ symbol_file_clear (int from_tty)
 
     symfile_objfile = NULL;
     if (from_tty)
-      printf_unfiltered ("No symbol file now.\n");
+      printf_unfiltered (_("No symbol file now.\n"));
 }
 
 static char *
@@ -1070,6 +1171,14 @@ separate_debug_file_exists (const char *name, unsigned long crc)
 }
 
 static char *debug_file_directory = NULL;
+static void
+show_debug_file_directory (struct ui_file *file, int from_tty,
+			   struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("\
+The directory where separate debug symbols are searched for is \"%s\".\n"),
+		    value);
+}
 
 #if ! defined (DEBUG_SUBDIRECTORY)
 #define DEBUG_SUBDIRECTORY ".debug"
@@ -1158,26 +1267,21 @@ find_separate_debug_file (struct objfile *objfile)
 
 /* This is the symbol-file command.  Read the file, analyze its
    symbols, and add a struct symtab to a symtab list.  The syntax of
-   the command is rather bizarre--(1) buildargv implements various
-   quoting conventions which are undocumented and have little or
-   nothing in common with the way things are quoted (or not quoted)
-   elsewhere in GDB, (2) options are used, which are not generally
-   used in GDB (perhaps "set mapped on", "set readnow on" would be
-   better), (3) the order of options matters, which is contrary to GNU
+   the command is rather bizarre:
+
+   1. The function buildargv implements various quoting conventions
+   which are undocumented and have little or nothing in common with
+   the way things are quoted (or not quoted) elsewhere in GDB.
+
+   2. Options are used, which are not generally used in GDB (perhaps
+   "set mapped on", "set readnow on" would be better)
+
+   3. The order of options matters, which is contrary to GNU
    conventions (because it is confusing and inconvenient).  */
-/* Note: ezannoni 2000-04-17. This function used to have support for
-   rombug (see remote-os9k.c). It consisted of a call to target_link()
-   (target.c) to get the address of the text segment from the target,
-   and pass that to symbol_file_add(). This is no longer supported. */
 
 void
 symbol_file_command (char *args, int from_tty)
 {
-  char **argv;
-  char *name = NULL;
-  struct cleanup *cleanups;
-  int flags = OBJF_USERLOADED;
-
   dont_repeat ();
 
   if (args == NULL)
@@ -1186,43 +1290,47 @@ symbol_file_command (char *args, int from_tty)
     }
   else
     {
-      if ((argv = buildargv (args)) == NULL)
-	{
-	  nomem (0);
-	}
+      char **argv = buildargv (args);
+      int flags = OBJF_USERLOADED;
+      struct cleanup *cleanups;
+      char *name = NULL;
+
+      if (argv == NULL)
+	nomem (0);
+
       cleanups = make_cleanup_freeargv (argv);
       while (*argv != NULL)
 	{
 	  if (strcmp (*argv, "-readnow") == 0)
 	    flags |= OBJF_READNOW;
 	  else if (**argv == '-')
-	    error ("unknown option `%s'", *argv);
+	    error (_("unknown option `%s'"), *argv);
 	  else
 	    {
+	      symbol_file_add_main_1 (*argv, from_tty, flags);
 	      name = *argv;
-
-	      symbol_file_add_main_1 (name, from_tty, flags);
 	    }
+
 	  argv++;
 	}
 
       if (name == NULL)
-	{
-	  error ("no symbol file name was specified");
-	}
+	error (_("no symbol file name was specified"));
+
       do_cleanups (cleanups);
     }
 }
 
 /* Set the initial language.
 
-   A better solution would be to record the language in the psymtab when reading
-   partial symbols, and then use it (if known) to set the language.  This would
-   be a win for formats that encode the language in an easily discoverable place,
-   such as DWARF.  For stabs, we can jump through hoops looking for specially
-   named symbols or try to intuit the language from the specific type of stabs
-   we find, but we can't do that until later when we read in full symbols.
-   FIXME.  */
+   FIXME: A better solution would be to record the language in the
+   psymtab when reading partial symbols, and then use it (if known) to
+   set the language.  This would be a win for formats that encode the
+   language in an easily discoverable place, such as DWARF.  For
+   stabs, we can jump through hoops looking for specially named
+   symbols or try to intuit the language from the specific type of
+   stabs we find, but we can't do that until later when we read in
+   full symbols.  */
 
 static void
 set_initial_language (void)
@@ -1234,23 +1342,23 @@ set_initial_language (void)
   if (pst != NULL)
     {
       if (pst->filename != NULL)
-	{
-	  lang = deduce_language_from_filename (pst->filename);
-	}
+	lang = deduce_language_from_filename (pst->filename);
+
       if (lang == language_unknown)
 	{
 	  /* Make C the default language */
 	  lang = language_c;
 	}
+
       set_language (lang);
-      expected_language = current_language;	/* Don't warn the user */
+      expected_language = current_language; /* Don't warn the user.  */
     }
 }
 
-/* Open file specified by NAME and hand it off to BFD for preliminary
-   analysis.  Result is a newly initialized bfd *, which includes a newly
-   malloc'd` copy of NAME (tilde-expanded and made absolute).
-   In case of trouble, error() is called.  */
+/* Open the file specified by NAME and hand it off to BFD for
+   preliminary analysis.  Return a newly initialized bfd *, which
+   includes a newly malloc'd` copy of NAME (tilde-expanded and made
+   absolute).  In case of trouble, error() is called.  */
 
 bfd *
 symfile_bfd_open (char *name)
@@ -1259,13 +1367,11 @@ symfile_bfd_open (char *name)
   int desc;
   char *absolute_name;
 
-
-
-  name = tilde_expand (name);	/* Returns 1st new malloc'd copy */
+  name = tilde_expand (name);	/* Returns 1st new malloc'd copy.  */
 
   /* Look down path for it, allocate 2nd new malloc'd copy.  */
-  desc = openp (getenv ("PATH"), OPF_TRY_CWD_FIRST, name, O_RDONLY | O_BINARY,
-		0, &absolute_name);
+  desc = openp (getenv ("PATH"), OPF_TRY_CWD_FIRST, name,
+		O_RDONLY | O_BINARY, 0, &absolute_name);
 #if defined(__GO32__) || defined(_WIN32) || defined (__CYGWIN__)
   if (desc < 0)
     {
@@ -1280,49 +1386,54 @@ symfile_bfd_open (char *name)
       make_cleanup (xfree, name);
       perror_with_name (name);
     }
-  xfree (name);			/* Free 1st new malloc'd copy */
-  name = absolute_name;		/* Keep 2nd malloc'd copy in bfd */
-  /* It'll be freed in free_objfile(). */
 
-  sym_bfd = bfd_fdopenr (name, gnutarget, desc);
+  /* Free 1st new malloc'd copy, but keep the 2nd malloc'd copy in
+     bfd.  It'll be freed in free_objfile(). */
+  xfree (name);
+  name = absolute_name;
+
+  sym_bfd = bfd_fopen (name, gnutarget, FOPEN_RB, desc);
   if (!sym_bfd)
     {
       close (desc);
       make_cleanup (xfree, name);
-      error ("\"%s\": can't open to read symbols: %s.", name,
+      error (_("\"%s\": can't open to read symbols: %s."), name,
 	     bfd_errmsg (bfd_get_error ()));
     }
   bfd_set_cacheable (sym_bfd, 1);
 
   if (!bfd_check_format (sym_bfd, bfd_object))
     {
-      /* FIXME: should be checking for errors from bfd_close (for one thing,
-         on error it does not free all the storage associated with the
-         bfd).  */
-      bfd_close (sym_bfd);	/* This also closes desc */
+      /* FIXME: should be checking for errors from bfd_close (for one
+         thing, on error it does not free all the storage associated
+         with the bfd).  */
+      bfd_close (sym_bfd);	/* This also closes desc.  */
       make_cleanup (xfree, name);
-      error ("\"%s\": can't read symbols: %s.", name,
+      error (_("\"%s\": can't read symbols: %s."), name,
 	     bfd_errmsg (bfd_get_error ()));
     }
-  return (sym_bfd);
+
+  return sym_bfd;
 }
 
-/* Return the section index for the given section name. Return -1 if
-   the section was not found. */
+/* Return the section index for SECTION_NAME on OBJFILE.  Return -1 if
+   the section was not found.  */
+
 int
 get_section_index (struct objfile *objfile, char *section_name)
 {
   asection *sect = bfd_get_section_by_name (objfile->obfd, section_name);
+
   if (sect)
     return sect->index;
   else
     return -1;
 }
 
-/* Link a new symtab_fns into the global symtab_fns list.  Called on gdb
-   startup by the _initialize routine in each object file format reader,
-   to register information about each format the the reader is prepared
-   to handle. */
+/* Link SF into the global symtab_fns list.  Called on startup by the
+   _initialize routine in each object file format reader, to register
+   information about each format the the reader is prepared to
+   handle. */
 
 void
 add_symtab_fns (struct sym_fns *sf)
@@ -1331,11 +1442,10 @@ add_symtab_fns (struct sym_fns *sf)
   symtab_fns = sf;
 }
 
-
-/* Initialize to read symbols from the symbol file sym_bfd.  It either
-   returns or calls error().  The result is an initialized struct sym_fns
-   in the objfile structure, that contains cached information about the
-   symbol file.  */
+/* Initialize OBJFILE to read symbols from its associated BFD.  It
+   either returns or calls error().  The result is an initialized
+   struct sym_fns in the objfile structure, that contains cached
+   information about the symbol file.  */
 
 static void
 find_sym_fns (struct objfile *objfile)
@@ -1347,7 +1457,7 @@ find_sym_fns (struct objfile *objfile)
   if (our_flavour == bfd_target_srec_flavour
       || our_flavour == bfd_target_ihex_flavour
       || our_flavour == bfd_target_tekhex_flavour)
-    return;	/* No symbols. */
+    return;	/* No symbols.  */
 
   for (sf = symtab_fns; sf != NULL; sf = sf->next)
     {
@@ -1357,10 +1467,12 @@ find_sym_fns (struct objfile *objfile)
 	  return;
 	}
     }
-  error ("I'm sorry, Dave, I can't do that.  Symbol format `%s' unknown.",
+
+  error (_("I'm sorry, Dave, I can't do that.  Symbol format `%s' unknown."),
 	 bfd_get_target (objfile->obfd));
 }
 
+
 /* This function runs the load command of our current target.  */
 
 static void
@@ -1385,6 +1497,14 @@ load_command (char *arg, int from_tty)
    performance compares.  */
 
 static int download_write_size = 512;
+static void
+show_download_write_size (struct ui_file *file, int from_tty,
+			  struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("\
+The write size used when downloading a program is %s.\n"),
+		    value);
+}
 static int validate_download = 0;
 
 /* Callback service function for generic_load (bfd_map_over_sections).  */
@@ -1467,10 +1587,10 @@ load_section_callback (bfd *abfd, asection *asec, void *data)
 		    make_cleanup (xfree, check);
 
 		  if (target_read_memory (lma, check, len) != 0)
-		    error ("Download verify read failed at 0x%s",
+		    error (_("Download verify read failed at 0x%s"),
 			   paddr (lma));
 		  if (memcmp (buffer, check, len) != 0)
-		    error ("Download verify compare failed at 0x%s",
+		    error (_("Download verify compare failed at 0x%s"),
 			   paddr (lma));
 		  do_cleanups (verify_cleanups);
 		}
@@ -1482,7 +1602,7 @@ load_section_callback (bfd *abfd, asection *asec, void *data)
 	      if (quit_flag
 		  || (deprecated_ui_load_progress_hook != NULL
 		      && deprecated_ui_load_progress_hook (sect_name, sent)))
-		error ("Canceled the download");
+		error (_("Canceled the download"));
 
 	      if (deprecated_show_load_progress != NULL)
 		deprecated_show_load_progress (sect_name, sent, size,
@@ -1492,7 +1612,7 @@ load_section_callback (bfd *abfd, asection *asec, void *data)
 	  while (sent < size);
 
 	  if (err != 0)
-	    error ("Memory access error while loading section %s.", sect_name);
+	    error (_("Memory access error while loading section %s."), sect_name);
 
 	  do_cleanups (old_chain);
 	}
@@ -1504,7 +1624,7 @@ generic_load (char *args, int from_tty)
 {
   asection *s;
   bfd *loadfile_bfd;
-  time_t start_time, end_time;	/* Start and end times of download */
+  struct timeval start_time, end_time;
   char *filename;
   struct cleanup *old_cleanups;
   char *offptr;
@@ -1528,7 +1648,7 @@ generic_load (char *args, int from_tty)
 
       cbdata.load_offset = strtoul (offptr, &endptr, 0);
       if (offptr == endptr)
-	error ("Invalid download offset:%s\n", offptr);
+	error (_("Invalid download offset:%s."), offptr);
       *offptr = '\0';
     }
   else
@@ -1549,18 +1669,18 @@ generic_load (char *args, int from_tty)
 
   if (!bfd_check_format (loadfile_bfd, bfd_object))
     {
-      error ("\"%s\" is not an object file: %s", filename,
+      error (_("\"%s\" is not an object file: %s"), filename,
 	     bfd_errmsg (bfd_get_error ()));
     }
 
   bfd_map_over_sections (loadfile_bfd, add_section_size_callback,
 			 (void *) &cbdata.total_size);
 
-  start_time = time (NULL);
+  gettimeofday (&start_time, NULL);
 
   bfd_map_over_sections (loadfile_bfd, load_section_callback, &cbdata);
 
-  end_time = time (NULL);
+  gettimeofday (&end_time, NULL);
 
   entry = bfd_get_start_address (loadfile_bfd);
   ui_out_text (uiout, "Start address ");
@@ -1579,7 +1699,7 @@ generic_load (char *args, int from_tty)
      others don't (or didn't - perhaps they have all been deleted).  */
 
   print_transfer_performance (gdb_stdout, cbdata.data_count,
-			      cbdata.write_count, end_time - start_time);
+			      cbdata.write_count, &start_time, &end_time);
 
   do_cleanups (old_cleanups);
 }
@@ -1594,21 +1714,35 @@ void
 report_transfer_performance (unsigned long data_count, time_t start_time,
 			     time_t end_time)
 {
-  print_transfer_performance (gdb_stdout, data_count,
-			      end_time - start_time, 0);
+  struct timeval start, end;
+
+  start.tv_sec = start_time;
+  start.tv_usec = 0;
+  end.tv_sec = end_time;
+  end.tv_usec = 0;
+
+  print_transfer_performance (gdb_stdout, data_count, 0, &start, &end);
 }
 
 void
 print_transfer_performance (struct ui_file *stream,
 			    unsigned long data_count,
 			    unsigned long write_count,
-			    unsigned long time_count)
+			    const struct timeval *start_time,
+			    const struct timeval *end_time)
 {
+  unsigned long time_count;
+
+  /* Compute the elapsed time in milliseconds, as a tradeoff between
+     accuracy and overflow.  */
+  time_count = (end_time->tv_sec - start_time->tv_sec) * 1000;
+  time_count += (end_time->tv_usec - start_time->tv_usec) / 1000;
+
   ui_out_text (uiout, "Transfer rate: ");
   if (time_count > 0)
     {
       ui_out_field_fmt (uiout, "transfer-rate", "%lu",
-			(data_count * 8) / time_count);
+			1000 * (data_count * 8) / time_count);
       ui_out_text (uiout, " bits/sec");
     }
   else
@@ -1666,7 +1800,7 @@ add_symbol_file_command (char *args, int from_tty)
   dont_repeat ();
 
   if (args == NULL)
-    error ("add-symbol-file takes a file name and an address");
+    error (_("add-symbol-file takes a file name and an address"));
 
   /* Make a copy of the string that we can safely write into. */
   args = xstrdup (args);
@@ -1690,12 +1824,12 @@ add_symbol_file_command (char *args, int from_tty)
         }
       else
         {
-          /* Point arg to the beginning of the argument. */
-          arg = args;
+      /* Point arg to the beginning of the argument. */
+      arg = args;
 
-          /* Move args pointer over the argument. */
-          while ((*args != '\000') && !isspace (*args))
-            args++;
+      /* Move args pointer over the argument. */
+      while ((*args != '\000') && !isspace (*args))
+	args++;
         }
 
       /* If there are more arguments, terminate arg and
@@ -1763,7 +1897,7 @@ add_symbol_file_command (char *args, int from_tty)
 			}
 		    }
 		  else
-		    error ("USAGE: add-symbol-file <filename> <textaddress> [-mapped] [-readnow] [-s <secname> <addr>]*");
+		    error (_("USAGE: add-symbol-file <filename> <textaddress> [-mapped] [-readnow] [-s <secname> <addr>]*"));
 	      }
 	  }
       argcnt++;
@@ -1775,7 +1909,7 @@ add_symbol_file_command (char *args, int from_tty)
      statements because hex_string returns a local static
      string. */
 
-  printf_unfiltered ("add symbol table from file \"%s\" at\n", filename);
+  printf_unfiltered (_("add symbol table from file \"%s\" at\n"), filename);
   section_addrs = alloc_section_addr_info (section_index);
   make_cleanup (xfree, section_addrs);
   for (i = 0; i < section_index; i++)
@@ -1802,7 +1936,7 @@ add_symbol_file_command (char *args, int from_tty)
     }
 
   if (from_tty && (!query ("%s", "")))
-    error ("Not confirmed.");
+    error (_("Not confirmed."));
 
   symbol_file_add (filename, from_tty, section_addrs, 0, flags);
 
@@ -1818,7 +1952,7 @@ add_shared_symbol_files_command (char *args, int from_tty)
 #ifdef ADD_SHARED_SYMBOL_FILES
   ADD_SHARED_SYMBOL_FILES (args, from_tty);
 #else
-  error ("This command is not available in this configuration of GDB.");
+  error (_("This command is not available in this configuration of GDB."));
 #endif
 }
 
@@ -1854,7 +1988,7 @@ reread_symbols (void)
 	  if (res != 0)
 	    {
 	      /* FIXME, should use print_sys_errmsg but it's not filtered. */
-	      printf_unfiltered ("`%s' has disappeared; keeping its symbols.\n",
+	      printf_unfiltered (_("`%s' has disappeared; keeping its symbols.\n"),
 			       objfile->name);
 	      continue;
 	    }
@@ -1866,7 +2000,7 @@ reread_symbols (void)
 	      int num_offsets;
 	      char *obfd_filename;
 
-	      printf_unfiltered ("`%s' has changed; re-reading symbols.\n",
+	      printf_unfiltered (_("`%s' has changed; re-reading symbols.\n"),
 			       objfile->name);
 
 	      /* There are various functions like symbol_file_add,
@@ -1888,14 +2022,14 @@ reread_symbols (void)
 	         BFD without closing the descriptor.  */
 	      obfd_filename = bfd_get_filename (objfile->obfd);
 	      if (!bfd_close (objfile->obfd))
-		error ("Can't close BFD for %s: %s", objfile->name,
+		error (_("Can't close BFD for %s: %s"), objfile->name,
 		       bfd_errmsg (bfd_get_error ()));
 	      objfile->obfd = bfd_openr (obfd_filename, gnutarget);
 	      if (objfile->obfd == NULL)
-		error ("Can't open %s to read symbols.", objfile->name);
+		error (_("Can't open %s to read symbols."), objfile->name);
 	      /* bfd_openr sets cacheable to true, which is what we want.  */
 	      if (!bfd_check_format (objfile->obfd, bfd_object))
-		error ("Can't read symbols from %s: %s.", objfile->name,
+		error (_("Can't read symbols from %s: %s."), objfile->name,
 		       bfd_errmsg (bfd_get_error ()));
 
 	      /* Save the offsets, we will nuke them with the rest of the
@@ -1938,7 +2072,7 @@ reread_symbols (void)
 	      objfile->free_psymtabs = NULL;
 	      objfile->cp_namespace_symtab = NULL;
 	      objfile->msymbols = NULL;
-	      objfile->sym_private = NULL;
+	      objfile->deprecated_sym_private = NULL;
 	      objfile->minimal_symbol_count = 0;
 	      memset (&objfile->msymbol_hash, 0,
 		      sizeof (objfile->msymbol_hash));
@@ -1962,7 +2096,7 @@ reread_symbols (void)
 	      obstack_init (&objfile->objfile_obstack);
 	      if (build_objfile_section_table (objfile))
 		{
-		  error ("Can't find the file sections in `%s': %s",
+		  error (_("Can't find the file sections in `%s': %s"),
 			 objfile->name, bfd_errmsg (bfd_get_error ()));
 		}
               terminate_minimal_symbol_table (objfile);
@@ -1993,7 +2127,7 @@ reread_symbols (void)
 	      if (!have_partial_symbols () && !have_full_symbols ())
 		{
 		  wrap_here ("");
-		  printf_unfiltered ("(no debugging symbols found)\n");
+		  printf_unfiltered (_("(no debugging symbols found)\n"));
 		  wrap_here ("");
 		}
 	      objfile->flags |= OBJF_SYMS;
@@ -2020,7 +2154,13 @@ reread_symbols (void)
     }
 
   if (reread_one)
-    clear_symtab_users ();
+    {
+      clear_symtab_users ();
+      /* At least one objfile has changed, so we can consider that
+         the executable we're debugging has changed too.  */
+      observer_notify_executable_changed (NULL);
+    }
+      
 }
 
 
@@ -2118,9 +2258,17 @@ add_filename_language (char *ext, enum language lang)
 }
 
 static char *ext_args;
+static void
+show_ext_args (struct ui_file *file, int from_tty,
+	       struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("\
+Mapping between filename extension and source language is \"%s\".\n"),
+		    value);
+}
 
 static void
-set_ext_lang_command (char *args, int from_tty)
+set_ext_lang_command (char *args, int from_tty, struct cmd_list_element *e)
 {
   int i;
   char *cp = ext_args;
@@ -2128,14 +2276,14 @@ set_ext_lang_command (char *args, int from_tty)
 
   /* First arg is filename extension, starting with '.' */
   if (*cp != '.')
-    error ("'%s': Filename extension must begin with '.'", ext_args);
+    error (_("'%s': Filename extension must begin with '.'"), ext_args);
 
   /* Find end of first arg.  */
   while (*cp && !isspace (*cp))
     cp++;
 
   if (*cp == '\0')
-    error ("'%s': two arguments required -- filename extension and language",
+    error (_("'%s': two arguments required -- filename extension and language"),
 	   ext_args);
 
   /* Null-terminate first arg */
@@ -2146,7 +2294,7 @@ set_ext_lang_command (char *args, int from_tty)
     cp++;
 
   if (*cp == '\0')
-    error ("'%s': two arguments required -- filename extension and language",
+    error (_("'%s': two arguments required -- filename extension and language"),
 	   ext_args);
 
   /* Lookup the language from among those we know.  */
@@ -2181,7 +2329,7 @@ info_ext_lang_command (char *args, int from_tty)
 {
   int i;
 
-  printf_filtered ("Filename extensions and the languages they represent:");
+  printf_filtered (_("Filename extensions and the languages they represent:"));
   printf_filtered ("\n\n");
   for (i = 0; i < fl_table_next; i++)
     printf_filtered ("\t%s\t- %s\n",
@@ -2359,12 +2507,16 @@ clear_symtab_users (void)
 {
   /* Someday, we should do better than this, by only blowing away
      the things that really need to be blown.  */
+
+  /* Clear the "current" symtab first, because it is no longer valid.
+     breakpoint_re_set may try to access the current symtab.  */
+  clear_current_source_symtab_and_line ();
+
   clear_value_history ();
   clear_displays ();
   clear_internalvars ();
   breakpoint_re_set ();
   set_default_breakpoint (0, 0, 0, 0);
-  clear_current_source_symtab_and_line ();
   clear_pc_function_cache ();
   if (deprecated_target_new_objfile_hook)
     deprecated_target_new_objfile_hook (NULL);
@@ -2550,17 +2702,15 @@ again2:
 	  || BLOCK_NSYMS (BLOCKVECTOR_BLOCK (bv, GLOBAL_BLOCK))
 	  || BLOCK_NSYMS (BLOCKVECTOR_BLOCK (bv, STATIC_BLOCK)))
 	{
-	  complaint (&symfile_complaints, "Replacing old symbols for `%s'",
+	  complaint (&symfile_complaints, _("Replacing old symbols for `%s'"),
 		     name);
 	  clear_symtab_users_queued++;
 	  make_cleanup (clear_symtab_users_once, 0);
 	  blewit = 1;
 	}
       else
-	{
-	  complaint (&symfile_complaints, "Empty symbol table found for `%s'",
-		     name);
-	}
+	complaint (&symfile_complaints, _("Empty symbol table found for `%s'"),
+		   name);
 
       free_symtab (s);
     }
@@ -3112,19 +3262,19 @@ list_overlays_command (char *args, int from_tty)
 	name = bfd_section_name (objfile->obfd, osect->the_bfd_section);
 
 	printf_filtered ("Section %s, loaded at ", name);
-	print_address_numeric (lma, 1, gdb_stdout);
+	deprecated_print_address_numeric (lma, 1, gdb_stdout);
 	puts_filtered (" - ");
-	print_address_numeric (lma + size, 1, gdb_stdout);
+	deprecated_print_address_numeric (lma + size, 1, gdb_stdout);
 	printf_filtered (", mapped at ");
-	print_address_numeric (vma, 1, gdb_stdout);
+	deprecated_print_address_numeric (vma, 1, gdb_stdout);
 	puts_filtered (" - ");
-	print_address_numeric (vma + size, 1, gdb_stdout);
+	deprecated_print_address_numeric (vma + size, 1, gdb_stdout);
 	puts_filtered ("\n");
 
 	nmapped++;
       }
   if (nmapped == 0)
-    printf_filtered ("No sections are mapped.\n");
+    printf_filtered (_("No sections are mapped.\n"));
 }
 
 /* Function: map_overlay_command
@@ -3138,12 +3288,12 @@ map_overlay_command (char *args, int from_tty)
   asection *bfdsec;
 
   if (!overlay_debugging)
-    error ("\
+    error (_("\
 Overlay debugging not enabled.  Use either the 'overlay auto' or\n\
-the 'overlay manual' command.");
+the 'overlay manual' command."));
 
   if (args == 0 || *args == 0)
-    error ("Argument required: name of an overlay section");
+    error (_("Argument required: name of an overlay section"));
 
   /* First, find a section matching the user supplied argument */
   ALL_OBJSECTIONS (objfile, sec)
@@ -3167,14 +3317,14 @@ the 'overlay manual' command.");
                                  sec2->the_bfd_section))
 	{
 	  if (info_verbose)
-	    printf_unfiltered ("Note: section %s unmapped by overlap\n",
+	    printf_unfiltered (_("Note: section %s unmapped by overlap\n"),
 			     bfd_section_name (objfile->obfd,
 					       sec2->the_bfd_section));
 	  sec2->ovly_mapped = 0;	/* sec2 overlaps sec: unmap sec2 */
 	}
       return;
     }
-  error ("No overlay section called %s", args);
+  error (_("No overlay section called %s"), args);
 }
 
 /* Function: unmap_overlay_command
@@ -3188,23 +3338,23 @@ unmap_overlay_command (char *args, int from_tty)
   struct obj_section *sec;
 
   if (!overlay_debugging)
-    error ("\
+    error (_("\
 Overlay debugging not enabled.  Use either the 'overlay auto' or\n\
-the 'overlay manual' command.");
+the 'overlay manual' command."));
 
   if (args == 0 || *args == 0)
-    error ("Argument required: name of an overlay section");
+    error (_("Argument required: name of an overlay section"));
 
   /* First, find a section matching the user supplied argument */
   ALL_OBJSECTIONS (objfile, sec)
     if (!strcmp (bfd_section_name (objfile->obfd, sec->the_bfd_section), args))
     {
       if (!sec->ovly_mapped)
-	error ("Section %s is not mapped", args);
+	error (_("Section %s is not mapped"), args);
       sec->ovly_mapped = 0;
       return;
     }
-  error ("No overlay section called %s", args);
+  error (_("No overlay section called %s"), args);
 }
 
 /* Function: overlay_auto_command
@@ -3217,7 +3367,7 @@ overlay_auto_command (char *args, int from_tty)
   overlay_debugging = ovly_auto;
   enable_overlay_breakpoints ();
   if (info_verbose)
-    printf_unfiltered ("Automatic overlay debugging enabled.");
+    printf_unfiltered (_("Automatic overlay debugging enabled."));
 }
 
 /* Function: overlay_manual_command
@@ -3230,7 +3380,7 @@ overlay_manual_command (char *args, int from_tty)
   overlay_debugging = ovly_on;
   disable_overlay_breakpoints ();
   if (info_verbose)
-    printf_unfiltered ("Overlay debugging enabled.");
+    printf_unfiltered (_("Overlay debugging enabled."));
 }
 
 /* Function: overlay_off_command
@@ -3243,7 +3393,7 @@ overlay_off_command (char *args, int from_tty)
   overlay_debugging = ovly_off;
   disable_overlay_breakpoints ();
   if (info_verbose)
-    printf_unfiltered ("Overlay debugging disabled.");
+    printf_unfiltered (_("Overlay debugging disabled."));
 }
 
 static void
@@ -3252,7 +3402,7 @@ overlay_load_command (char *args, int from_tty)
   if (target_overlay_update)
     (*target_overlay_update) (NULL);
   else
-    error ("This target does not know how to read its overlay state.");
+    error (_("This target does not know how to read its overlay state."));
 }
 
 /* Function: overlay_command
@@ -3373,18 +3523,18 @@ simple_read_overlay_table (void)
   novlys_msym = lookup_minimal_symbol ("_novlys", NULL, NULL);
   if (! novlys_msym)
     {
-      error ("Error reading inferior's overlay table: "
+      error (_("Error reading inferior's overlay table: "
              "couldn't find `_novlys' variable\n"
-             "in inferior.  Use `overlay manual' mode.");
+             "in inferior.  Use `overlay manual' mode."));
       return 0;
     }
 
   ovly_table_msym = lookup_minimal_symbol ("_ovly_table", NULL, NULL);
   if (! ovly_table_msym)
     {
-      error ("Error reading inferior's overlay table: couldn't find "
+      error (_("Error reading inferior's overlay table: couldn't find "
              "`_ovly_table' array\n"
-             "in inferior.  Use `overlay manual' mode.");
+             "in inferior.  Use `overlay manual' mode."));
       return 0;
     }
 
@@ -3566,101 +3716,104 @@ _initialize_symfile (void)
 {
   struct cmd_list_element *c;
 
-  c = add_cmd ("symbol-file", class_files, symbol_file_command,
-	       "Load symbol table from executable file FILE.\n\
+  c = add_cmd ("symbol-file", class_files, symbol_file_command, _("\
+Load symbol table from executable file FILE.\n\
 The `file' command can also load symbol tables, as well as setting the file\n\
-to execute.", &cmdlist);
+to execute."), &cmdlist);
   set_cmd_completer (c, filename_completer);
 
-  c = add_cmd ("add-symbol-file", class_files, add_symbol_file_command,
-	       "Usage: add-symbol-file FILE ADDR [-s <SECT> <SECT_ADDR> -s <SECT> <SECT_ADDR> ...]\n\
+  c = add_cmd ("add-symbol-file", class_files, add_symbol_file_command, _("\
+Usage: add-symbol-file FILE ADDR [-s <SECT> <SECT_ADDR> -s <SECT> <SECT_ADDR> ...]\n\
 Load the symbols from FILE, assuming FILE has been dynamically loaded.\n\
 ADDR is the starting address of the file's text.\n\
 The optional arguments are section-name section-address pairs and\n\
 should be specified if the data and bss segments are not contiguous\n\
-with the text.  SECT is a section name to be loaded at SECT_ADDR.",
+with the text.  SECT is a section name to be loaded at SECT_ADDR."),
 	       &cmdlist);
   set_cmd_completer (c, filename_completer);
 
   c = add_cmd ("add-shared-symbol-files", class_files,
-	       add_shared_symbol_files_command,
-   "Load the symbols from shared objects in the dynamic linker's link map.",
+	       add_shared_symbol_files_command, _("\
+Load the symbols from shared objects in the dynamic linker's link map."),
 	       &cmdlist);
   c = add_alias_cmd ("assf", "add-shared-symbol-files", class_files, 1,
 		     &cmdlist);
 
-  c = add_cmd ("load", class_files, load_command,
-	       "Dynamically load FILE into the running program, and record its symbols\n\
-for access from GDB.", &cmdlist);
+  c = add_cmd ("load", class_files, load_command, _("\
+Dynamically load FILE into the running program, and record its symbols\n\
+for access from GDB."), &cmdlist);
   set_cmd_completer (c, filename_completer);
 
-  deprecated_add_show_from_set
-    (add_set_cmd ("symbol-reloading", class_support, var_boolean,
-		  (char *) &symbol_reloading,
-	    "Set dynamic symbol table reloading multiple times in one run.",
-		  &setlist),
-     &showlist);
+  add_setshow_boolean_cmd ("symbol-reloading", class_support,
+			   &symbol_reloading, _("\
+Set dynamic symbol table reloading multiple times in one run."), _("\
+Show dynamic symbol table reloading multiple times in one run."), NULL,
+			   NULL,
+			   show_symbol_reloading,
+			   &setlist, &showlist);
 
   add_prefix_cmd ("overlay", class_support, overlay_command,
-		  "Commands for debugging overlays.", &overlaylist,
+		  _("Commands for debugging overlays."), &overlaylist,
 		  "overlay ", 0, &cmdlist);
 
   add_com_alias ("ovly", "overlay", class_alias, 1);
   add_com_alias ("ov", "overlay", class_alias, 1);
 
   add_cmd ("map-overlay", class_support, map_overlay_command,
-	   "Assert that an overlay section is mapped.", &overlaylist);
+	   _("Assert that an overlay section is mapped."), &overlaylist);
 
   add_cmd ("unmap-overlay", class_support, unmap_overlay_command,
-	   "Assert that an overlay section is unmapped.", &overlaylist);
+	   _("Assert that an overlay section is unmapped."), &overlaylist);
 
   add_cmd ("list-overlays", class_support, list_overlays_command,
-	   "List mappings of overlay sections.", &overlaylist);
+	   _("List mappings of overlay sections."), &overlaylist);
 
   add_cmd ("manual", class_support, overlay_manual_command,
-	   "Enable overlay debugging.", &overlaylist);
+	   _("Enable overlay debugging."), &overlaylist);
   add_cmd ("off", class_support, overlay_off_command,
-	   "Disable overlay debugging.", &overlaylist);
+	   _("Disable overlay debugging."), &overlaylist);
   add_cmd ("auto", class_support, overlay_auto_command,
-	   "Enable automatic overlay debugging.", &overlaylist);
+	   _("Enable automatic overlay debugging."), &overlaylist);
   add_cmd ("load-target", class_support, overlay_load_command,
-	   "Read the overlay mapping state from the target.", &overlaylist);
+	   _("Read the overlay mapping state from the target."), &overlaylist);
 
   /* Filename extension to source language lookup table: */
   init_filename_language_table ();
-  c = add_set_cmd ("extension-language", class_files, var_string_noescape,
-		   (char *) &ext_args,
-		   "Set mapping between filename extension and source language.\n\
-Usage: set extension-language .foo bar",
-		   &setlist);
-  set_cmd_cfunc (c, set_ext_lang_command);
+  add_setshow_string_noescape_cmd ("extension-language", class_files,
+				   &ext_args, _("\
+Set mapping between filename extension and source language."), _("\
+Show mapping between filename extension and source language."), _("\
+Usage: set extension-language .foo bar"),
+				   set_ext_lang_command,
+				   show_ext_args,
+				   &setlist, &showlist);
 
   add_info ("extensions", info_ext_lang_command,
-	    "All filename extensions associated with a source language.");
+	    _("All filename extensions associated with a source language."));
 
-  deprecated_add_show_from_set
-    (add_set_cmd ("download-write-size", class_obscure,
-		  var_integer, (char *) &download_write_size,
-		  "Set the write size used when downloading a program.\n"
-		  "Only used when downloading a program onto a remote\n"
-		  "target. Specify zero, or a negative value, to disable\n"
-		  "blocked writes. The actual size of each transfer is also\n"
-		  "limited by the size of the target packet and the memory\n"
-		  "cache.\n",
-		  &setlist),
-     &showlist);
+  add_setshow_integer_cmd ("download-write-size", class_obscure,
+			   &download_write_size, _("\
+Set the write size used when downloading a program."), _("\
+Show the write size used when downloading a program."), _("\
+Only used when downloading a program onto a remote\n\
+target. Specify zero, or a negative value, to disable\n\
+blocked writes. The actual size of each transfer is also\n\
+limited by the size of the target packet and the memory\n\
+cache."),
+			   NULL,
+			   show_download_write_size,
+			   &setlist, &showlist);
 
   debug_file_directory = xstrdup (DEBUGDIR);
-  c = (add_set_cmd
-       ("debug-file-directory", class_support, var_string,
-        (char *) &debug_file_directory,
-        "Set the directory where separate debug symbols are searched for.\n"
-        "Separate debug symbols are first searched for in the same\n"
-        "directory as the binary, then in the `" DEBUG_SUBDIRECTORY
-        "' subdirectory,\n"
-        "and lastly at the path of the directory of the binary with\n"
-        "the global debug-file directory prepended\n",
-        &setlist));
-  deprecated_add_show_from_set (c, &showlist);
-  set_cmd_completer (c, filename_completer);
+  add_setshow_optional_filename_cmd ("debug-file-directory", class_support,
+				     &debug_file_directory, _("\
+Set the directory where separate debug symbols are searched for."), _("\
+Show the directory where separate debug symbols are searched for."), _("\
+Separate debug symbols are first searched for in the same\n\
+directory as the binary, then in the `" DEBUG_SUBDIRECTORY "' subdirectory,\n\
+and lastly at the path of the directory of the binary with\n\
+the global debug-file directory prepended."),
+				     NULL,
+				     show_debug_file_directory,
+				     &setlist, &showlist);
 }

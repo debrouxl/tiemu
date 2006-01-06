@@ -3,7 +3,7 @@
 #
 # Usage: /bin/sh cgen.sh {"arch"|"cpu"|"decode"|"defs"|"cpu-decode"} \
 #	srcdir cgen cgendir cgenflags \
-#	arch archflags cpu mach suffix archfile extrafiles
+#	arch archflags cpu mach suffix archfile extrafiles opcfile
 #
 # We store the generated files in the source directory until we decide to
 # ship a Scheme interpreter (or other implementation) with gdb/binutils.
@@ -14,7 +14,7 @@ set -e
 
 action=$1
 srcdir=$2
-cgen=$3
+cgen="$3"
 cgendir=$4
 cgenflags=$5
 arch=$6
@@ -26,8 +26,11 @@ shift ; mach=$9
 shift ; suffix=$9
 shift ; archfile=$9
 shift ; extrafiles=$9
+shift ; opcfile=$9
 
 rootdir=${srcdir}/../..
+
+test -z "${opcfile}" && opcfile=/dev/null
 
 if test -z "$isa" ; then
   isa=all
@@ -53,7 +56,7 @@ arch)
 	rm -f tmp-arch.c1 tmp-arch.c
 	rm -f tmp-all.h1 tmp-all.h
 
-	${cgen} -s ${cgendir}/cgen-sim.scm \
+	${cgen} ${cgendir}/cgen-sim.scm \
 		-s ${cgendir} \
 		${cgenflags} \
 		-f "${archflags}" \
@@ -107,7 +110,7 @@ cpu | decode | cpu-decode)
 		;;
 	esac
 
-	${cgen} -s ${cgendir}/cgen-sim.scm \
+	${cgen} ${cgendir}/cgen-sim.scm \
 		-s ${cgendir} \
 		${cgenflags} \
 		-f "${archflags}" \
@@ -176,7 +179,7 @@ cpu | decode | cpu-decode)
 defs)
 	rm -f tmp-defs.h1 tmp-defs.h
 	
-	${cgen} -s ${cgendir}/cgen-sim.scm \
+	${cgen} ${cgendir}/cgen-sim.scm \
 		-s ${cgendir} \
 		${cgenflags} \
 		-f "${archflags}" \
@@ -193,9 +196,10 @@ desc)
 	rm -f tmp-desc.c1 tmp-desc.c
 	rm -f tmp-opc.h1 tmp-opc.h
 
-	${cgen} -s ${cgendir}/cgen-opc.scm \
+	${cgen} ${cgendir}/cgen-opc.scm \
 		-s ${cgendir} \
 		${cgenflags} \
+		-OPC ${opcfile} \
 		-f "${archflags}" \
 		-m ${mach} \
 		-a ${archfile} \

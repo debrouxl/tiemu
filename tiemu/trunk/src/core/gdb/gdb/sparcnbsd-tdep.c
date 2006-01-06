@@ -224,7 +224,7 @@ sparc32nbsd_sigcontext_frame_prev_register (struct frame_info *next_frame,
 					    int regnum, int *optimizedp,
 					    enum lval_type *lvalp,
 					    CORE_ADDR *addrp,
-					    int *realnump, void *valuep)
+					    int *realnump, gdb_byte *valuep)
 {
   struct sparc_frame_cache *cache =
     sparc32nbsd_sigcontext_frame_cache (next_frame, this_cache);
@@ -257,14 +257,6 @@ sparc32nbsd_sigtramp_frame_sniffer (struct frame_info *next_frame)
 }
 
 
-/* Return non-zero if we are in a shared library trampoline code stub.  */
-
-static int
-sparcnbsd_aout_in_solib_call_trampoline (CORE_ADDR pc, char *name)
-{
-  return (name && !strcmp (name, "_DYNAMIC"));
-}
-
 static void
 sparc32nbsd_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
 {
@@ -287,12 +279,9 @@ static void
 sparc32nbsd_aout_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
 {
   sparc32nbsd_init_abi (info, gdbarch);
-
-  set_gdbarch_in_solib_call_trampoline
-    (gdbarch, sparcnbsd_aout_in_solib_call_trampoline);
 }
 
-static void
+void
 sparc32nbsd_elf_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
 {
   sparc32nbsd_init_abi (info, gdbarch);

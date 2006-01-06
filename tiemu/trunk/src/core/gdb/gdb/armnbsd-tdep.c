@@ -39,15 +39,6 @@ static const char arm_nbsd_arm_be_breakpoint[] = {0xe6, 0x00, 0x00, 0x11};
 static const char arm_nbsd_thumb_le_breakpoint[] = {0xfe, 0xde};
 static const char arm_nbsd_thumb_be_breakpoint[] = {0xde, 0xfe};
 
-static int
-arm_netbsd_aout_in_solib_call_trampoline (CORE_ADDR pc, char *name)
-{
-  if (strcmp (name, "_PROCEDURE_LINKAGE_TABLE_") == 0)
-    return 1;
-
-  return 0;
-}
-
 static void
 arm_netbsd_init_abi_common (struct gdbarch_info info,
 			    struct gdbarch *gdbarch)
@@ -73,7 +64,7 @@ arm_netbsd_init_abi_common (struct gdbarch_info info,
 
     default:
       internal_error (__FILE__, __LINE__,
-		      "arm_gdbarch_init: bad byte order for float format");
+		      _("arm_gdbarch_init: bad byte order for float format"));
     }
 
   tdep->jb_pc = ARM_NBSD_JB_PC;
@@ -87,10 +78,8 @@ arm_netbsd_aout_init_abi (struct gdbarch_info info,
   struct gdbarch_tdep *tdep = gdbarch_tdep (gdbarch);
 
   arm_netbsd_init_abi_common (info, gdbarch);
-
-  set_gdbarch_in_solib_call_trampoline
-    (gdbarch, arm_netbsd_aout_in_solib_call_trampoline);
-  tdep->fp_model = ARM_FLOAT_SOFT_FPA;
+  if (tdep->fp_model == ARM_FLOAT_AUTO)
+    tdep->fp_model = ARM_FLOAT_SOFT_FPA;
 }
 
 static void
@@ -104,7 +93,8 @@ arm_netbsd_elf_init_abi (struct gdbarch_info info,
   set_solib_svr4_fetch_link_map_offsets (gdbarch,
                                 nbsd_ilp32_solib_svr4_fetch_link_map_offsets);
 
-  tdep->fp_model = ARM_FLOAT_SOFT_VFP;
+  if (tdep->fp_model == ARM_FLOAT_AUTO)
+    tdep->fp_model = ARM_FLOAT_SOFT_VFP;
 }
 
 static enum gdb_osabi

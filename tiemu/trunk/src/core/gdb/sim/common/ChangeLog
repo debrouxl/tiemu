@@ -1,3 +1,186 @@
+2005-07-10  Hans-Peter Nilsson  <hp@bitrange.com>
+
+	* sim-load.c (xprintf, eprintf): Remove fallout from ANSI_PROTOTYPES
+	change.
+
+2005-07-08  Ian Lance Taylor  <ian@airs.com>
+
+	* sim-fpu.c (sim_fpu_abs): Always clear the sign bit.
+
+	* sim-fpu.c (pack_fpu): If SIM_QUIET_NAN_NEGATED is defined, use a
+	different fraction for a quiet NaN.
+	(unpack_fpu): Likewise.
+
+2005-07-08  Ben Elliston  <bje@au.ibm.com>
+
+	* callback.c: Remove ANSI_PROTOTYPES conditional code.
+	* sim-load.c: Likewise.
+	* syscall.c: Likewise.
+
+2005-05-24  Corinna Vinschen  <vinschen@redhat.com>
+
+	* Make-common.in (LIBDEPS): Correctly use INTLDEPS for dependency
+	check.
+
+2005-05-17  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Make-common.in (install-common, installdirs): Honor $DESTDIR.
+
+2005-04-20  Manoj Iyer  <manjo@austin.ibm.com>
+
+	* sim-types.h: Changed unsigned32 and unsigned64 to signed32
+	and signed64 for __ALPHA__.
+
+2005-03-23  Mark Kettenis  <kettenis@gnu.org>
+
+	* aclocal.m4 Include ../../gettext.m4.
+	(CY_WITH_NLS, CY_GNU_GETTEXT, AM_PATH_PROG_WITH_TEST)
+	(AM_LC_MESSAGES): Remove.
+	* configure: Regenerate.
+
+2005-02-28  Jim Blandy  <jimb@redhat.com>
+
+	* aclocal.m4 (SIM_AC_OPTION_WARNINGS): Don't include
+	-Wuninitialized in the default list of build warnings if CFLAGS is
+	set, and doesn't include -O.  (Using -Wuninitialized without
+	optimization produces a warning, which interferes with compilation
+	with -Werror.)
+	
+2005-02-21  Jim Blandy  <jimb@redhat.com>
+
+	* callback.c (os_fstat): Don't declare 't' unless it's used.
+
+2005-02-09  Jim Blandy  <jimb@redhat.com>
+
+	* Make-common.in (CGEN): Load guile.scm, and include a trailing
+	'-s' argument.
+	(CGEN_FLAGS_TO_PASS): Include single quotes around the reference
+	to $(CGEN), to ensure that the command substitution happens where
+	the variable is referenced in the submake, not when the submake's
+	arguments are expanded.
+	(cgen.sh): Be prepared for the 'cgen' argument to contain spaces.
+	(arch, cpu, decode, cpu-decode, defs, desc): Place the name of the
+	application Scheme script directly after ${cgen}; don't precede it
+	with a -s.
+
+2005-01-28  Hans-Peter Nilsson  <hp@axis.com>
+
+	* syscall.c (cb_syscall) <case CB_SYS_pipe>: New case.
+	* callback.c [HAVE_LIMITS_H]: Include limits.h.
+  	Include libiberty.h.
+	(os_close, os_read, os_write, os_fstat, os_ftruncate): Support fd
+	being either end of a pipe.
+	(os_pipe, os_pipe_empty, os_pipe_nonempty): New functions.
+	(os_shutdown): Clear pipe state.
+	(default_callback): Initialize new members.
+
+	* callback.c (default_callback): Initialize target_endian.
+	(cb_store_target_endian): Renamed from store, new first parameter
+	host_callback *cb, drop last parameter big_p.  Take endianness
+	from cb.
+	(cb_host_to_target_stat): Change to use cb_store_target_endian.
+	Remove variable big_p.
+	* nrun.c (main): Initialize default_callback.target_endian.
+
+2005-01-14  Andrew Cagney  <cagney@gnu.org>
+
+	* configure.ac: Replace SIM_AC_COMMON with sinclude of common.m4.
+	Add explicit call to AC_CONFIG_HEADER.
+	* common.m4: Delete call to AC_CONFIG_HEADER, update usage.
+	* configure: Re-generate.
+
+2005-01-12  Andrew Cagney  <cagney@gnu.org>
+
+	* common.m4: New file, based on of aclocal.m4.
+
+2005-01-11  Andrew Cagney  <cagney@localhost.localdomain>
+
+	* aclocal.m4 (SIM_AC_OUTPUT): Rewrite to use 2.59 macros.
+	* configure: Regenerated to track ../common/aclocal.m4 changes.
+
+2005-01-07  Andrew Cagney  <cagney@gnu.org>
+
+	* configure.ac: Rename configure.in, require autoconf 2.59.
+	* aclocal.m4 (SIM_AC_COMMON): Delete call to AC_CONFIG_AUX_DIR.
+	* configure: Re-generate.
+
+2004-12-15  Hans-Peter Nilsson  <hp@axis.com>
+
+	* syscall.c (cb_syscall) <case CB_SYS_truncate>
+	<case CB_SYS_ftruncate>: New cases.
+
+2004-12-13  Hans-Peter Nilsson  <hp@axis.com>
+
+	* syscall.c (cb_syscall) <case CB_SYS_lstat>: New case.
+	(cb_syscall) <case CB_SYS_rename>: New case.
+	* callback.c (os_lstat): New function.
+
+2004-12-08  Hans-Peter Nilsson  <hp@axis.com>
+
+	* run.1: Document --sysroot=filepath.
+	* sim-options.c (STANDARD_OPTIONS): New member OPTION_SYSROOT.
+	(standard_options): Support --sysroot=<path>.
+	(standard_option_handler): Handle OPTION_SYSROOT.
+	* syscall.c (simulator_sysroot): Define, initialized empty.
+	(get_path): Prepend simulator_sysroot to absolute file path.
+	[HAVE_STRING_H]: Include string.h.
+	[!HAVE_STRING_H && HAVE_STRINGS_H]: Include strings.h.
+	* nrun.c [HAVE_UNISTD_H]: Include unistd.h.
+	(main): If simulator_sysroot is not empty, chdir there.
+	* sim-config.h (simulator_sysroot): Declare.
+
+	* aclocal.m4 (SIM_AC_OUTPUT): Substitute @cgen_breaks@ for "break
+	cgen_rtx_error" in a CGEN-generated simulator.
+	* gdbinit.in: Break on sim_core_signal too.  Have autoconf
+	replacement for CGEN-related breakpoints.
+
+2004-12-07  Hans-Peter Nilsson  <hp@axis.com>
+
+	* Make-common.in (sim-basics_h): Add $(callback_h).
+
+2004-12-03  Hans-Peter Nilsson  <hp@axis.com>
+
+	* configure.in (SIM_CHECK_MEMBERS): Call for struct stat members
+	st_dev, st_ino, st_mode, st_nlink, st_uid, st_gid, st_rdev,
+	st_size, st_blksize, st_blocks, st_atime, st_mtime and st_ctime.
+	* aclocal.m4 (SIM_CHECK_MEMBER, SIM_CHECK_MEMBERS_1)
+	(SIM_CHECK_MEMBERS): New macros.
+	* callback.c (cb_host_to_target_stat): Use temporary macro ST_x
+	for struct stat member test and write.  Add ST_x calls for each
+	struct stat member tested in configure.in.  Wrap each ST_x call in
+	#ifdef of configure macro for that member.
+	* configure, config.in: Regenerate.
+
+2004-12-01  Hans-Peter Nilsson  <hp@axis.com>
+
+	* cgen.sh: New thirteenth parameter opcfile, defaulting to
+	/dev/null.
+	<case desc>: Pass -OPC opcfile.
+	* Make-common.in (cgen-desc): Pass $(opcfile) as thirteenth
+	parameter to cgen.sh.
+
+2004-11-30  Richard Earnshaw  <rearnsha@arm.com>
+
+	* Make-common.in (sim-basics_h): Correct dependencies on
+	cconfig.h and tconfig.h
+	(sim-load.o): Correct typo in sim-basics_h dependency.
+
+2004-11-18  Richard Earnshaw  <rearnsha@arm.com>
+
+	* Make-common.in (sim-*_h): Add macros for all sim headers listing
+	sub-dependencies for other sim files that they include.
+	(sim_main_headers): Use sim-*_h macros.
+	(sim-load.o): Depend on sim-basics_h, not sim_main_headers.
+
+2004-11-16  Hans-Peter Nilsson  <hp@axis.com>
+
+	* sim-config.c (sim_config): Recognize when a bfd has unspecified
+	endian information.
+
+	* Make-common.in (sim-load.o): Depend on $(sim_main_headers) and
+	$(remote_sim_h) too.
+	(sim_main_headers): Add sim-utils.h.
+
 2004-10-07  Kazuhiro Inaoka <inaoka.kazuhiro@renesas.com>
 
 	* cgen-defs.h (ENDSWITCH): Changed to compile with gcc-3.4.2.

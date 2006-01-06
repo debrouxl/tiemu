@@ -1,3 +1,21 @@
+2006-01-06  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * Merge with Insight 6.4.
+        * Drop no longer needed patches:
+          - ../bfd/opncls.c patch
+          - ../configure.in, ../configure patch for Insight under OS X
+          - environ.c, environ.h, infcmd.c, inferior.h environ->gdb_environ patches
+          - part of the remote-fileio.c MinGW patches
+          - ser-mingw.c, ser-mingw.h, ser-tcp.c, ser-unix.c MinGW patches
+            and corresponding Makefile.in and configure.ac changes
+          - utils.c CANT_FORK patch
+          - HAVE_STRUCT_STAT_ST_BLKSIZE addition to config.in
+          - -fwritable-strings removal from configure.ac
+        * Drop nonsense patch to ../readline/readline.c.
+        * Part of asm_setjmp/asm_longjmp patch moved from top.c to setjmp.h.
+        * win32-nat.c: Update MinGW patch.
+        * configure.ac: Fix changequote usage for current autoconf.
+
 2005-06-27  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * infrun.c (normal_stop): Relocate BSS section if it exists and we are at __main.

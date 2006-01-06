@@ -1,6 +1,6 @@
 /* Native-dependent code for GNU/Linux m32r.
 
-   Copyright 2004 Free Software Foundation, Inc.
+   Copyright 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -24,6 +24,7 @@
 #include "gdbcore.h"
 #include "regcache.h"
 #include "linux-nat.h"
+#include "target.h"
 
 #include "gdb_assert.h"
 #include "gdb_string.h"
@@ -108,7 +109,7 @@ fetch_regs (int tid)
   elf_gregset_t regs;
 
   if (ptrace (PTRACE_GETREGS, tid, 0, (int) &regs) < 0)
-    perror_with_name ("Couldn't get registers");
+    perror_with_name (_("Couldn't get registers"));
 
   supply_gregset (&regs);
 }
@@ -156,12 +157,12 @@ store_regs (int tid, int regno)
   elf_gregset_t regs;
 
   if (ptrace (PTRACE_GETREGS, tid, 0, (int) &regs) < 0)
-    perror_with_name ("Couldn't get registers");
+    perror_with_name (_("Couldn't get registers"));
 
   fill_gregset (&regs, regno);
 
   if (ptrace (PTRACE_SETREGS, tid, 0, (int) &regs) < 0)
-    perror_with_name ("Couldn't write registers");
+    perror_with_name (_("Couldn't write registers"));
 }
 
 
@@ -187,8 +188,8 @@ fill_fpregset (gdb_fpregset_t *fpregs, int regno)
    this for all registers (including the floating point and SSE
    registers).  */
 
-void
-fetch_inferior_registers (int regno)
+static void
+m32r_linux_fetch_inferior_registers (int regno)
 {
   int tid;
 
@@ -207,14 +208,14 @@ fetch_inferior_registers (int regno)
     }
 
   internal_error (__FILE__, __LINE__,
-		  "Got request for bad register number %d.", regno);
+		  _("Got request for bad register number %d."), regno);
 }
 
 /* Store register REGNO back into the child process.  If REGNO is -1,
    do this for all registers (including the floating point and SSE
    registers).  */
-void
-store_inferior_registers (int regno)
+static void
+m32r_linux_store_inferior_registers (int regno)
 {
   int tid;
 
@@ -231,5 +232,23 @@ store_inferior_registers (int regno)
     }
 
   internal_error (__FILE__, __LINE__,
-		  "Got request to store bad register number %d.", regno);
+		  _("Got request to store bad register number %d."), regno);
+}
+
+void _initialize_m32r_linux_nat (void);
+
+void
+_initialize_m32r_linux_nat (void)
+{
+  struct target_ops *t;
+
+  /* Fill in the generic GNU/Linux methods.  */
+  t = linux_target ();
+
+  /* Add our register access methods.  */
+  t->to_fetch_registers = m32r_linux_fetch_inferior_registers;
+  t->to_store_registers = m32r_linux_store_inferior_registers;
+
+  /* Register the target.  */
+  add_target (t);
 }

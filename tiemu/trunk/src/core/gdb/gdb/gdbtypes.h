@@ -1080,13 +1080,21 @@ extern struct type *builtin_type_v8hi;
 extern struct type *builtin_type_v4hi;
 extern struct type *builtin_type_v2si;
 
-/* Type for 64 bit vectors. */
+/* Types for 64 bit vectors. */
+extern struct type *builtin_type_v2_float;
+extern struct type *builtin_type_v2_int32;
+extern struct type *builtin_type_v4_int16;
+extern struct type *builtin_type_v8_int8;
 extern struct type *builtin_type_vec64;
-extern struct type *builtin_type_vec64i;
 
-/* Type for 128 bit vectors. */
+/* Types for 128 bit vectors. */
+extern struct type *builtin_type_v2_double;
+extern struct type *builtin_type_v4_float;
+extern struct type *builtin_type_v2_int64;
+extern struct type *builtin_type_v4_int32;
+extern struct type *builtin_type_v8_int16;
+extern struct type *builtin_type_v16_int8;
 extern struct type *builtin_type_vec128;
-extern struct type *builtin_type_vec128i;
 
 /* Explicit floating-point formats.  See "floatformat.h".  */
 extern struct type *builtin_type_ieee_single[BFD_ENDIAN_UNKNOWN];
@@ -1355,7 +1363,7 @@ extern void recursive_dump_type (struct type *, int);
 
 /* printcmd.c */
 
-extern void print_scalar_formatted (void *, struct type *, int, int,
+extern void print_scalar_formatted (const void *, struct type *, int, int,
 				    struct ui_file *);
 
 extern int can_dereference (struct type *);

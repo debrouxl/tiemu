@@ -43,9 +43,10 @@
 #endif /* HAVE_STDLIB_H */
 
 #include <sys/types.h>
-#ifndef __MINGW32__
+#ifdef HAVE_PWD_H
 #include <pwd.h>
-#else
+#endif /* HAVE_PWD_H */
+#ifdef __MINGW32__
 #include <windows.h>
 #endif
 
@@ -57,10 +58,10 @@ static void *xmalloc (), *xrealloc ();
 #  include "xmalloc.h"
 #endif /* TEST || STATIC_MALLOC */
 
-#if !defined (HAVE_GETPW_DECLS)
+#if defined (HAVE_GETPWNAM) && !defined (HAVE_GETPW_DECLS)
 extern struct passwd *getpwuid PARAMS((uid_t));
 extern struct passwd *getpwnam PARAMS((const char *));
-#endif /* !HAVE_GETPW_DECLS */
+#endif /* defined (HAVE_GETPWNAM) && !HAVE_GETPW_DECLS */
 
 #if !defined (savestring)
 #define savestring(x) strcpy ((char *)xmalloc (1 + strlen (x)), (x))
@@ -357,6 +358,7 @@ tilde_expand_word (filename)
      password database. */
   dirname = (char *)NULL;
 #if !defined (__MINGW32__)
+#ifdef HAVE_GETPWNAM
   user_entry = getpwnam (username);
   if (user_entry == 0)
     {
@@ -384,6 +386,7 @@ tilde_expand_word (filename)
     }
 
   endpwent ();
+#endif
 #else /* __MINGW32__ */
   if (GetUserName (UserName, &UserLen))
     {

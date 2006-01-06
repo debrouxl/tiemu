@@ -1,6 +1,6 @@
 /* Portable <sys/ptrace.h>
 
-   Copyright 2004 Free Software Foundation, Inc.
+   Copyright 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -40,6 +40,10 @@
 
 /* No need to include <unistd.h> since it's already included by
    "defs.h".  */
+
+#ifndef PT_TRACE_ME
+# define PT_TRACE_ME	0
+#endif
 
 #ifndef PT_READ_I
 # define PT_READ_I	1	/* Read word in child's I space.  */
@@ -92,8 +96,8 @@
 
 /* Not all systems support attaching and detaching.   */
 
-#ifndef PT_ATTCH
-# ifdef PTRACE_DETACH
+#ifndef PT_ATTACH
+# ifdef PTRACE_ATTACH
 #  define PT_ATTACH PTRACE_ATTACH
 # endif
 #endif
@@ -107,8 +111,18 @@
 /* Some systems, in particular DEC OSF/1, Digital Unix, Compaq Tru64
    or whatever it's called these days, don't provide a prototype for
    ptrace.  Provide one to silence compiler warnings.  */
+
 #ifndef HAVE_DECL_PTRACE
 extern PTRACE_TYPE_RET ptrace();
+#endif
+
+/* Some systems, at least AIX and HP-UX have a ptrace with five
+   arguments.  Since we never use the fifth argument, define a ptrace
+   macro that calls the real ptrace with the last argument set to
+   zero.  */
+
+#ifdef PTRACE_TYPE_ARG5
+# define ptrace(request, pid, addr, data) ptrace (request, pid, addr, data, 0)
 #endif
 
 #endif /* gdb_ptrace.h */

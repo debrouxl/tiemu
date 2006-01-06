@@ -1,5 +1,7 @@
-/* Dwarf2 Expression Evaluator
-   Copyright 2001, 2002, 2003 Free Software Foundation, Inc.
+/* DWARF 2 Expression Evaluator.
+
+   Copyright 2001, 2002, 2003, 2005 Free Software Foundation, Inc.
+
    Contributed by Daniel Berlin (dan@dberlin.org)
 
    This file is part of GDB.
@@ -30,7 +32,7 @@
 /* Local prototypes.  */
 
 static void execute_stack_op (struct dwarf_expr_context *,
-			      unsigned char *, unsigned char *);
+			      gdb_byte *, gdb_byte *);
 
 /* Create a new context for the expression evaluator.  */
 
@@ -87,7 +89,7 @@ void
 dwarf_expr_pop (struct dwarf_expr_context *ctx)
 {
   if (ctx->stack_len <= 0)
-    error ("dwarf expression stack underflow");
+    error (_("dwarf expression stack underflow"));
   ctx->stack_len--;
 }
 
@@ -96,8 +98,8 @@ dwarf_expr_pop (struct dwarf_expr_context *ctx)
 CORE_ADDR
 dwarf_expr_fetch (struct dwarf_expr_context *ctx, int n)
 {
-  if (ctx->stack_len < n)
-     error ("Asked for position %d of stack, stack only has %d elements on it\n",
+  if (ctx->stack_len <= n)
+     error (_("Asked for position %d of stack, stack only has %d elements on it."),
 	    n, ctx->stack_len);
   return ctx->stack[ctx->stack_len - (1 + n)];
 
@@ -130,8 +132,7 @@ add_piece (struct dwarf_expr_context *ctx,
    CTX.  */
 
 void
-dwarf_expr_eval (struct dwarf_expr_context *ctx, unsigned char *addr,
-		 size_t len)
+dwarf_expr_eval (struct dwarf_expr_context *ctx, gdb_byte *addr, size_t len)
 {
   execute_stack_op (ctx, addr, addr + len);
 }
@@ -140,17 +141,17 @@ dwarf_expr_eval (struct dwarf_expr_context *ctx, unsigned char *addr,
    by R, and return the new value of BUF.  Verify that it doesn't extend
    past BUF_END.  */
 
-unsigned char *
-read_uleb128 (unsigned char *buf, unsigned char *buf_end, ULONGEST * r)
+gdb_byte *
+read_uleb128 (gdb_byte *buf, gdb_byte *buf_end, ULONGEST * r)
 {
   unsigned shift = 0;
   ULONGEST result = 0;
-  unsigned char byte;
+  gdb_byte byte;
 
   while (1)
     {
       if (buf >= buf_end)
-	error ("read_uleb128: Corrupted DWARF expression.");
+	error (_("read_uleb128: Corrupted DWARF expression."));
 
       byte = *buf++;
       result |= (byte & 0x7f) << shift;
@@ -166,17 +167,17 @@ read_uleb128 (unsigned char *buf, unsigned char *buf_end, ULONGEST * r)
    by R, and return the new value of BUF.  Verify that it doesn't extend
    past BUF_END.  */
 
-unsigned char *
-read_sleb128 (unsigned char *buf, unsigned char *buf_end, LONGEST * r)
+gdb_byte *
+read_sleb128 (gdb_byte *buf, gdb_byte *buf_end, LONGEST * r)
 {
   unsigned shift = 0;
   LONGEST result = 0;
-  unsigned char byte;
+  gdb_byte byte;
 
   while (1)
     {
       if (buf >= buf_end)
-	error ("read_sleb128: Corrupted DWARF expression.");
+	error (_("read_sleb128: Corrupted DWARF expression."));
 
       byte = *buf++;
       result |= (byte & 0x7f) << shift;
@@ -196,12 +197,12 @@ read_sleb128 (unsigned char *buf, unsigned char *buf_end, LONGEST * r)
    number of bytes read from BUF.  */
 
 CORE_ADDR
-dwarf2_read_address (unsigned char *buf, unsigned char *buf_end, int *bytes_read)
+dwarf2_read_address (gdb_byte *buf, gdb_byte *buf_end, int *bytes_read)
 {
   CORE_ADDR result;
 
   if (buf_end - buf < TARGET_ADDR_BIT / TARGET_CHAR_BIT)
-    error ("dwarf2_read_address: Corrupted DWARF expression.");
+    error (_("dwarf2_read_address: Corrupted DWARF expression."));
 
   *bytes_read = TARGET_ADDR_BIT / TARGET_CHAR_BIT;
   /* NOTE: cagney/2003-05-22: This extract is assuming that a DWARF 2
@@ -225,7 +226,7 @@ unsigned_address_type (void)
       return builtin_type_uint64;
     default:
       internal_error (__FILE__, __LINE__,
-		      "Unsupported address size.\n");
+		      _("Unsupported address size.\n"));
     }
 }
 
@@ -244,7 +245,7 @@ signed_address_type (void)
       return builtin_type_int64;
     default:
       internal_error (__FILE__, __LINE__,
-		      "Unsupported address size.\n");
+		      _("Unsupported address size.\n"));
     }
 }
 
@@ -252,8 +253,8 @@ signed_address_type (void)
    evaluate the expression between OP_PTR and OP_END.  */
 
 static void
-execute_stack_op (struct dwarf_expr_context *ctx, unsigned char *op_ptr,
-		  unsigned char *op_end)
+execute_stack_op (struct dwarf_expr_context *ctx,
+		  gdb_byte *op_ptr, gdb_byte *op_end)
 {
   ctx->in_reg = 0;
 
@@ -383,8 +384,8 @@ execute_stack_op (struct dwarf_expr_context *ctx, unsigned char *op_ptr,
 	case DW_OP_reg30:
 	case DW_OP_reg31:
 	  if (op_ptr != op_end && *op_ptr != DW_OP_piece)
-	    error ("DWARF-2 expression error: DW_OP_reg operations must be "
-		   "used either alone or in conjuction with DW_OP_piece.");
+	    error (_("DWARF-2 expression error: DW_OP_reg operations must be "
+		   "used either alone or in conjuction with DW_OP_piece."));
 
 	  result = op - DW_OP_reg0;
 	  ctx->in_reg = 1;
@@ -394,8 +395,8 @@ execute_stack_op (struct dwarf_expr_context *ctx, unsigned char *op_ptr,
 	case DW_OP_regx:
 	  op_ptr = read_uleb128 (op_ptr, op_end, &reg);
 	  if (op_ptr != op_end && *op_ptr != DW_OP_piece)
-	    error ("DWARF-2 expression error: DW_OP_reg operations must be "
-		   "used either alone or in conjuction with DW_OP_piece.");
+	    error (_("DWARF-2 expression error: DW_OP_reg operations must be "
+		   "used either alone or in conjuction with DW_OP_piece."));
 
 	  result = reg;
 	  ctx->in_reg = 1;
@@ -449,7 +450,7 @@ execute_stack_op (struct dwarf_expr_context *ctx, unsigned char *op_ptr,
 	  break;
 	case DW_OP_fbreg:
 	  {
-	    unsigned char *datastart;
+	    gdb_byte *datastart;
 	    size_t datalen;
 	    unsigned int before_stack_len;
 
@@ -494,7 +495,7 @@ execute_stack_op (struct dwarf_expr_context *ctx, unsigned char *op_ptr,
 	    CORE_ADDR t1, t2, t3;
 
 	    if (ctx->stack_len < 3)
-	       error ("Not enough elements for DW_OP_rot. Need 3, have %d\n",
+	       error (_("Not enough elements for DW_OP_rot. Need 3, have %d."),
 		      ctx->stack_len);
 	    t1 = ctx->stack[ctx->stack_len - 1];
 	    t2 = ctx->stack[ctx->stack_len - 2];
@@ -519,7 +520,7 @@ execute_stack_op (struct dwarf_expr_context *ctx, unsigned char *op_ptr,
 	    {
 	    case DW_OP_deref:
 	      {
-		char *buf = alloca (TARGET_ADDR_BIT / TARGET_CHAR_BIT);
+		gdb_byte *buf = alloca (TARGET_ADDR_BIT / TARGET_CHAR_BIT);
 		int bytes_read;
 
 		(ctx->read_mem) (ctx->baton, buf, result,
@@ -533,7 +534,7 @@ execute_stack_op (struct dwarf_expr_context *ctx, unsigned char *op_ptr,
 
 	    case DW_OP_deref_size:
 	      {
-		char *buf = alloca (TARGET_ADDR_BIT / TARGET_CHAR_BIT);
+		gdb_byte *buf = alloca (TARGET_ADDR_BIT / TARGET_CHAR_BIT);
 		int bytes_read;
 
 		(ctx->read_mem) (ctx->baton, buf, result, *op_ptr++);
@@ -650,7 +651,7 @@ execute_stack_op (struct dwarf_expr_context *ctx, unsigned char *op_ptr,
 		break;
 	      default:
 		internal_error (__FILE__, __LINE__,
-				"Can't be reached.");
+				_("Can't be reached."));
 	      }
 	    result = value_as_long (value_binop (val1, val2, binop));
 	  }
@@ -704,7 +705,7 @@ execute_stack_op (struct dwarf_expr_context *ctx, unsigned char *op_ptr,
           goto no_push;
 
 	default:
-	  error ("Unhandled dwarf expression opcode 0x%x", op);
+	  error (_("Unhandled dwarf expression opcode 0x%x"), op);
 	}
 
       /* Most things push a result value.  */

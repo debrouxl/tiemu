@@ -2,7 +2,7 @@
    Unix.
 
    Copyright 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996,
-   1998, 1999, 2000, 2001, 2002, 2004 Free Software Foundation, Inc.
+   1998, 1999, 2000, 2001, 2002, 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -73,7 +73,7 @@ inf_child_prepare_to_store (void)
 static void
 inf_child_open (char *arg, int from_tty)
 {
-  error ("Use the \"run\" command to start a Unix child process.");
+  error (_("Use the \"run\" command to start a Unix child process."));
 }
 
 static void
@@ -90,12 +90,11 @@ inf_child_acknowledge_created_inferior (int pid)
      created inferior" operation by a debugger.  */
 }
 
-static int
+static void
 inf_child_insert_fork_catchpoint (int pid)
 {
   /* This version of Unix doesn't support notification of fork
      events.  */
-  return 0;
 }
 
 static int
@@ -106,12 +105,11 @@ inf_child_remove_fork_catchpoint (int pid)
   return 0;
 }
 
-static int
+static void
 inf_child_insert_vfork_catchpoint (int pid)
 {
   /* This version of Unix doesn't support notification of vfork
      events.  */
-  return 0;
 }
 
 static int
@@ -123,19 +121,18 @@ inf_child_remove_vfork_catchpoint (int pid)
 }
 
 static int
-inf_child_follow_fork (int follow_child)
+inf_child_follow_fork (struct target_ops *ops, int follow_child)
 {
   /* This version of Unix doesn't support following fork or vfork
      events.  */
   return 0;
 }
 
-static int
+static void
 inf_child_insert_exec_catchpoint (int pid)
 {
   /* This version of Unix doesn't support notification of exec
      events.  */
-  return 0;
 }
 
 static int

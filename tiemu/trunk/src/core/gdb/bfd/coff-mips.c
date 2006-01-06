@@ -19,7 +19,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #include "bfd.h"
 #include "sysdep.h"
@@ -1261,12 +1261,12 @@ mips_relocate_section (output_bfd, info, input_bfd, input_section,
 		const char *name;
 
 		if (int_rel.r_extern)
-		  name = h->root.root.string;
+		  name = NULL;
 		else
 		  name = bfd_section_name (input_bfd, s);
 		if (! ((*info->callbacks->reloc_overflow)
-		       (info, name, howto->name, (bfd_vma) 0,
-			input_bfd, input_section,
+		       (info, (h ? &h->root : NULL), name, howto->name,
+			(bfd_vma) 0, input_bfd, input_section,
 			int_rel.r_vaddr - input_section->vma)))
 		  return FALSE;
 	      }

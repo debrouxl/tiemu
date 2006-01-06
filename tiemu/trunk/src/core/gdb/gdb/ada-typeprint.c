@@ -124,6 +124,7 @@ void
 ada_typedef_print (struct type *type, struct symbol *new,
 		   struct ui_file *stream)
 {
+   /* XXX: type_sprint */
   fprintf_filtered (stream, "type %.*s is ",
 		    ada_name_prefix_len (SYMBOL_PRINT_NAME (new)),
 		    SYMBOL_PRINT_NAME (new));
@@ -632,12 +633,12 @@ print_record_type (struct type *type0, struct ui_file *stream, int show,
 
   parent_type = ada_parent_type (type);
   if (ada_type_name (parent_type) != NULL)
-    fprintf_filtered (stream, "new %s with ",
+    fprintf_filtered (stream, "new %s with record",
 		      decoded_type_name (parent_type));
   else if (parent_type == NULL && ada_is_tagged_type (type, 0))
-    fprintf_filtered (stream, "tagged ");
-
-  fprintf_filtered (stream, "record");
+    fprintf_filtered (stream, "tagged record");
+  else
+    fprintf_filtered (stream, "record");
 
   if (show < 0)
     fprintf_filtered (stream, " ... end record");
@@ -654,7 +655,7 @@ print_record_type (struct type *type0, struct ui_file *stream, int show,
       if (flds > 0)
 	fprintf_filtered (stream, "\n%*send record", level, "");
       else if (flds < 0)
-	fprintf_filtered (stream, " <incomplete type> end record");
+	fprintf_filtered (stream, _(" <incomplete type> end record"));
       else
 	fprintf_filtered (stream, " null; end record");
     }
@@ -668,17 +669,15 @@ static void
 print_unchecked_union_type (struct type *type, struct ui_file *stream,
 			    int show, int level)
 {
-  fprintf_filtered (stream, "record (?) is");
-
   if (show < 0)
-    fprintf_filtered (stream, " ... end record");
+    fprintf_filtered (stream, "record (?) is ... end record");
   else if (TYPE_NFIELDS (type) == 0)
-    fprintf_filtered (stream, " null; end record");
+    fprintf_filtered (stream, "record (?) is null; end record");
   else
     {
       int i;
 
-      fprintf_filtered (stream, "\n%*scase ? is", level + 4, "");
+      fprintf_filtered (stream, "record (?) is\n%*scase ? is", level + 4, "");
 
       for (i = 0; i < TYPE_NFIELDS (type); i += 1)
 	{

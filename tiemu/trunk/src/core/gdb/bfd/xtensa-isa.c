@@ -1,5 +1,5 @@
 /* Configurable Xtensa ISA support.
-   Copyright 2003, 2004 Free Software Foundation, Inc.
+   Copyright 2003, 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of BFD, the Binary File Descriptor library.
 
@@ -15,7 +15,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #include "bfd.h"
 #include "sysdep.h"
@@ -62,6 +62,7 @@ xtensa_isa_error_msg (xtensa_isa isa __attribute__ ((unused)))
 	return (ERRVAL); \
       } \
   } while (0)
+
 
 
 /* Instruction buffers.  */
@@ -120,7 +121,9 @@ byte_to_bit_index (int byte_index)
    both.  */
 
 int
-xtensa_insnbuf_to_chars (xtensa_isa isa, const xtensa_insnbuf insn, char *cp,
+xtensa_insnbuf_to_chars (xtensa_isa isa,
+			 const xtensa_insnbuf insn,
+			 unsigned char *cp,
 			 int num_chars)
 {
   xtensa_isa_internal *intisa = (xtensa_isa_internal *) isa;
@@ -178,7 +181,9 @@ xtensa_insnbuf_to_chars (xtensa_isa isa, const xtensa_insnbuf insn, char *cp,
    by endianness.  */
     
 void
-xtensa_insnbuf_from_chars (xtensa_isa isa, xtensa_insnbuf insn, const char *cp,
+xtensa_insnbuf_from_chars (xtensa_isa isa,
+			   xtensa_insnbuf insn,
+			   const unsigned char *cp,
 			   int num_chars)
 {
   xtensa_isa_internal *intisa = (xtensa_isa_internal *) isa;
@@ -392,7 +397,7 @@ xtensa_isa_maxlength (xtensa_isa isa)
 
 
 int
-xtensa_isa_length_from_chars (xtensa_isa isa, const char *cp)
+xtensa_isa_length_from_chars (xtensa_isa isa, const unsigned char *cp)
 {
   xtensa_isa_internal *intisa = (xtensa_isa_internal *) isa;
   return (intisa->length_decode_fn) (cp);
@@ -402,9 +407,9 @@ xtensa_isa_length_from_chars (xtensa_isa isa, const char *cp)
 int
 xtensa_isa_num_pipe_stages (xtensa_isa isa) 
 {
-  int num_opcodes, num_uses;
   xtensa_opcode opcode;
   xtensa_funcUnit_use *use;
+  int num_opcodes, num_uses;
   int i, stage, max_stage = XTENSA_UNDEFINED;
 
   num_opcodes = xtensa_isa_num_opcodes (isa);
@@ -649,7 +654,7 @@ xtensa_opcode
 xtensa_opcode_lookup (xtensa_isa isa, const char *opname)
 {
   xtensa_isa_internal *intisa = (xtensa_isa_internal *) isa;
-  xtensa_lookup_entry entry, *result;
+  xtensa_lookup_entry entry, *result = 0;
 
   if (!opname || !*opname)
     {
@@ -658,9 +663,13 @@ xtensa_opcode_lookup (xtensa_isa isa, const char *opname)
       return XTENSA_UNDEFINED;
     }
 
-  entry.key = opname;
-  result = bsearch (&entry, intisa->opname_lookup_table, intisa->num_opcodes,
-		    sizeof (xtensa_lookup_entry), xtensa_isa_name_compare);
+  if (intisa->num_opcodes != 0)
+    {
+      entry.key = opname;
+      result = bsearch (&entry, intisa->opname_lookup_table,
+			intisa->num_opcodes, sizeof (xtensa_lookup_entry),
+			xtensa_isa_name_compare);
+    }
 
   if (!result)
     {
@@ -687,12 +696,12 @@ xtensa_opcode_decode (xtensa_isa isa, xtensa_format fmt, int slot,
   slot_id = intisa->formats[fmt].slot_id[slot];
 
   opc = (intisa->slots[slot_id].opcode_decode_fn) (slotbuf);
-  if (opc == XTENSA_UNDEFINED)
-    {
-      xtisa_errno = xtensa_isa_bad_opcode;
-      strcpy (xtisa_error_msg, "cannot decode opcode");
-    }
-  return opc;
+  if (opc != XTENSA_UNDEFINED)
+    return opc;
+
+  xtisa_errno = xtensa_isa_bad_opcode;
+  strcpy (xtisa_error_msg, "cannot decode opcode");
+  return XTENSA_UNDEFINED;
 }
 
 
@@ -1284,6 +1293,7 @@ xtensa_stateOperand_inout (xtensa_isa isa, xtensa_opcode opc, int stOp)
   return iclass->stateOperands[stOp].inout;
 }
 
+
 
 /* Interface Operands.  */
 
@@ -1434,6 +1444,7 @@ xtensa_regfile_num_entries (xtensa_isa isa, xtensa_regfile rf)
   return intisa->regfiles[rf].num_entries;
 }
 
+
 
 /* Processor States.  */
 
@@ -1453,7 +1464,7 @@ xtensa_state
 xtensa_state_lookup (xtensa_isa isa, const char *name)
 {
   xtensa_isa_internal *intisa = (xtensa_isa_internal *) isa;
-  xtensa_lookup_entry entry, *result;
+  xtensa_lookup_entry entry, *result = 0;
 
   if (!name || !*name)
     {
@@ -1462,9 +1473,12 @@ xtensa_state_lookup (xtensa_isa isa, const char *name)
       return XTENSA_UNDEFINED;
     }
 
-  entry.key = name;
-  result = bsearch (&entry, intisa->state_lookup_table, intisa->num_states,
-		    sizeof (xtensa_lookup_entry), xtensa_isa_name_compare);
+  if (intisa->num_states != 0)
+    {
+      entry.key = name;
+      result = bsearch (&entry, intisa->state_lookup_table, intisa->num_states,
+			sizeof (xtensa_lookup_entry), xtensa_isa_name_compare);
+    }
 
   if (!result)
     {
@@ -1505,6 +1519,7 @@ xtensa_state_is_exported (xtensa_isa isa, xtensa_state st)
   return 0;
 }
 
+
 
 /* Sysregs.  */
 
@@ -1544,7 +1559,7 @@ xtensa_sysreg
 xtensa_sysreg_lookup_name (xtensa_isa isa, const char *name)
 {
   xtensa_isa_internal *intisa = (xtensa_isa_internal *) isa;
-  xtensa_lookup_entry entry, *result;
+  xtensa_lookup_entry entry, *result = 0;
 
   if (!name || !*name)
     {
@@ -1553,9 +1568,13 @@ xtensa_sysreg_lookup_name (xtensa_isa isa, const char *name)
       return XTENSA_UNDEFINED;
     }
 
-  entry.key = name;
-  result = bsearch (&entry, intisa->sysreg_lookup_table, intisa->num_sysregs,
-		    sizeof (xtensa_lookup_entry), xtensa_isa_name_compare);
+  if (intisa->num_sysregs != 0)
+    {
+      entry.key = name;
+      result = bsearch (&entry, intisa->sysreg_lookup_table,
+			intisa->num_sysregs, sizeof (xtensa_lookup_entry),
+			xtensa_isa_name_compare);
+    }
 
   if (!result)
     {
@@ -1596,6 +1615,7 @@ xtensa_sysreg_is_user (xtensa_isa isa, xtensa_sysreg sysreg)
   return 0;
 }
 
+
 
 /* Interfaces.  */
 
@@ -1615,7 +1635,7 @@ xtensa_interface
 xtensa_interface_lookup (xtensa_isa isa, const char *ifname)
 {
   xtensa_isa_internal *intisa = (xtensa_isa_internal *) isa;
-  xtensa_lookup_entry entry, *result;
+  xtensa_lookup_entry entry, *result = 0;
 
   if (!ifname || !*ifname)
     {
@@ -1624,10 +1644,13 @@ xtensa_interface_lookup (xtensa_isa isa, const char *ifname)
       return XTENSA_UNDEFINED;
     }
 
-  entry.key = ifname;
-  result = bsearch (&entry, intisa->interface_lookup_table,
-		    intisa->num_interfaces,
-		    sizeof (xtensa_lookup_entry), xtensa_isa_name_compare);
+  if (intisa->num_interfaces != 0)
+    {
+      entry.key = ifname;
+      result = bsearch (&entry, intisa->interface_lookup_table,
+			intisa->num_interfaces, sizeof (xtensa_lookup_entry),
+			xtensa_isa_name_compare);
+    }
 
   if (!result)
     {
@@ -1677,6 +1700,16 @@ xtensa_interface_has_side_effect (xtensa_isa isa, xtensa_interface intf)
   return 0;
 }
 
+
+int
+xtensa_interface_class_id (xtensa_isa isa, xtensa_interface intf)
+{
+  xtensa_isa_internal *intisa = (xtensa_isa_internal *) isa;
+  CHECK_INTERFACE (intisa, intf, XTENSA_UNDEFINED);
+  return intisa->interfaces[intf].class_id;
+}
+
+
 
 /* Functional Units.  */
 
@@ -1696,7 +1729,7 @@ xtensa_funcUnit
 xtensa_funcUnit_lookup (xtensa_isa isa, const char *fname)
 {
   xtensa_isa_internal *intisa = (xtensa_isa_internal *) isa;
-  xtensa_lookup_entry entry, *result;
+  xtensa_lookup_entry entry, *result = 0;
 
   if (!fname || !*fname)
     {
@@ -1705,10 +1738,13 @@ xtensa_funcUnit_lookup (xtensa_isa isa, const char *fname)
       return XTENSA_UNDEFINED;
     }
 
-  entry.key = fname;
-  result = bsearch (&entry, intisa->funcUnit_lookup_table,
-		    intisa->num_funcUnits,
-		    sizeof (xtensa_lookup_entry), xtensa_isa_name_compare);
+  if (intisa->num_funcUnits != 0)
+    {
+      entry.key = fname;
+      result = bsearch (&entry, intisa->funcUnit_lookup_table,
+			intisa->num_funcUnits, sizeof (xtensa_lookup_entry),
+			xtensa_isa_name_compare);
+    }
 
   if (!result)
     {

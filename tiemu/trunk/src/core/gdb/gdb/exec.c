@@ -32,6 +32,7 @@
 #include "completer.h"
 #include "value.h"
 #include "exec.h"
+#include "observer.h"
 
 #include <fcntl.h>
 #include "readline/readline.h"
@@ -61,7 +62,7 @@ static void set_section_command (char *, int);
 
 static void exec_files_info (struct target_ops *);
 
-static int ignore (CORE_ADDR, char *);
+static int ignore (CORE_ADDR, bfd_byte *);
 
 static void init_exec_ops (void);
 
@@ -82,6 +83,14 @@ struct objfile *exec_objfile = NULL;
 /* Whether to open exec and core files read-only or read-write.  */
 
 int write_files = 0;
+static void
+show_write_files (struct ui_file *file, int from_tty,
+		  struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("Writing into executable and core files is %s.\n"),
+		    value);
+}
+
 
 struct vmap *vmap;
 
@@ -131,7 +140,7 @@ exec_close (int quitting)
       else if (vp->bfd != exec_bfd)
 	/* FIXME-leak: We should be freeing vp->name too, I think.  */
 	if (!bfd_close (vp->bfd))
-	  warning ("cannot close \"%s\": %s",
+	  warning (_("cannot close \"%s\": %s"),
 		   vp->name, bfd_errmsg (bfd_get_error ()));
 
       /* FIXME: This routine is #if 0'd in symfile.c.  What should we
@@ -150,7 +159,7 @@ exec_close (int quitting)
       char *name = bfd_get_filename (exec_bfd);
 
       if (!bfd_close (exec_bfd))
-	warning ("cannot close \"%s\": %s",
+	warning (_("cannot close \"%s\": %s"),
 		 name, bfd_errmsg (bfd_get_error ()));
       xfree (name);
       exec_bfd = NULL;
@@ -171,7 +180,7 @@ exec_file_clear (int from_tty)
   unpush_target (&exec_ops);
 
   if (from_tty)
-    printf_unfiltered ("No executable file now.\n");
+    printf_unfiltered (_("No executable file now.\n"));
 }
 
 /*  Process the first arg in ARGS as the new exec file.
@@ -204,7 +213,7 @@ exec_file_attach (char *filename, int from_tty)
   if (!filename)
     {
       if (from_tty)
-        printf_unfiltered ("No executable file now.\n");
+        printf_unfiltered (_("No executable file now.\n"));
     }
   else
     {
@@ -226,10 +235,12 @@ exec_file_attach (char *filename, int from_tty)
 #endif
       if (scratch_chan < 0)
 	perror_with_name (filename);
-      exec_bfd = bfd_fdopenr (scratch_pathname, gnutarget, scratch_chan);
+      exec_bfd = bfd_fopen (scratch_pathname, gnutarget,
+			    write_files ? FOPEN_RUB : FOPEN_RB,
+			    scratch_chan);
 
       if (!exec_bfd)
-	error ("\"%s\": could not open as an executable file: %s",
+	error (_("\"%s\": could not open as an executable file: %s"),
 	       scratch_pathname, bfd_errmsg (bfd_get_error ()));
 
       /* At this point, scratch_pathname and exec_bfd->name both point to the
@@ -244,7 +255,7 @@ exec_file_attach (char *filename, int from_tty)
 	  /* Make sure to close exec_bfd, or else "run" might try to use
 	     it.  */
 	  exec_close (0);
-	  error ("\"%s\": not in executable format: %s",
+	  error (_("\"%s\": not in executable format: %s"),
 		 scratch_pathname, bfd_errmsg (bfd_get_error ()));
 	}
 
@@ -259,7 +270,7 @@ exec_file_attach (char *filename, int from_tty)
 	  /* Make sure to close exec_bfd, or else "run" might try to use
 	     it.  */
 	  exec_close (0);
-	  error ("\"%s\": can't find the file sections: %s",
+	  error (_("\"%s\": can't find the file sections: %s"),
 		 scratch_pathname, bfd_errmsg (bfd_get_error ()));
 	}
 #endif /* DEPRECATED_IBM6000_TARGET */
@@ -270,13 +281,9 @@ exec_file_attach (char *filename, int from_tty)
 	  /* Make sure to close exec_bfd, or else "run" might try to use
 	     it.  */
 	  exec_close (0);
-	  error ("\"%s\": can't find the file sections: %s",
+	  error (_("\"%s\": can't find the file sections: %s"),
 		 scratch_pathname, bfd_errmsg (bfd_get_error ()));
 	}
-
-#ifdef DEPRECATED_HPUX_TEXT_END
-      DEPRECATED_HPUX_TEXT_END (&exec_ops);
-#endif
 
       validate_files ();
 
@@ -289,6 +296,7 @@ exec_file_attach (char *filename, int from_tty)
 	(*deprecated_exec_file_display_hook) (filename);
     }
   bfd_cache_close_all ();
+  observer_notify_executable_changed (NULL);
 }
 
 /*  Process the first arg in ARGS as the new exec file.
@@ -322,7 +330,7 @@ exec_file_command (char *args, int from_tty)
         {;
         }
       if (*argv == NULL)
-        error ("No executable file name was specified");
+        error (_("No executable file name was specified"));
 
       filename = tilde_expand (*argv);
       make_cleanup (xfree, filename);
@@ -387,7 +395,7 @@ build_section_table (struct bfd *some_bfd, struct section_table **start,
   *end = *start;
   bfd_map_over_sections (some_bfd, add_to_section_table, (char *) end);
   if (*end > *start + count)
-    internal_error (__FILE__, __LINE__, "failed internal consistency check");
+    internal_error (__FILE__, __LINE__, _("failed internal consistency check"));
   /* We could realloc the table, but it probably loses for most files.  */
   return 0;
 }
@@ -403,14 +411,14 @@ bfdsec_to_vmap (struct bfd *abfd, struct bfd_section *sect, void *arg3)
   if ((bfd_get_section_flags (abfd, sect) & SEC_LOAD) == 0)
     return;
 
-  if (DEPRECATED_STREQ (bfd_section_name (abfd, sect), ".text"))
+  if (strcmp (bfd_section_name (abfd, sect), ".text") == 0)
     {
       vp->tstart = bfd_section_vma (abfd, sect);
       vp->tend = vp->tstart + bfd_section_size (abfd, sect);
       vp->tvma = bfd_section_vma (abfd, sect);
       vp->toffs = sect->filepos;
     }
-  else if (DEPRECATED_STREQ (bfd_section_name (abfd, sect), ".data"))
+  else if (strcmp (bfd_section_name (abfd, sect), ".data") == 0)
     {
       vp->dstart = bfd_section_vma (abfd, sect);
       vp->dend = vp->dstart + bfd_section_size (abfd, sect);
@@ -466,9 +474,8 @@ map_vmap (bfd *abfd, bfd *arch)
    we just tail-call it with more arguments to select between them.  */
 
 int
-xfer_memory (CORE_ADDR memaddr, char *myaddr, int len, int write,
-	     struct mem_attrib *attrib,
-	     struct target_ops *target)
+xfer_memory (CORE_ADDR memaddr, gdb_byte *myaddr, int len, int write,
+	     struct mem_attrib *attrib, struct target_ops *target)
 {
   int res;
   struct section_table *p;
@@ -476,7 +483,7 @@ xfer_memory (CORE_ADDR memaddr, char *myaddr, int len, int write,
   asection *section = NULL;
 
   if (len <= 0)
-    internal_error (__FILE__, __LINE__, "failed internal consistency check");
+    internal_error (__FILE__, __LINE__, _("failed internal consistency check"));
 
   if (overlay_debugging)
     {
@@ -548,11 +555,11 @@ print_section_info (struct target_ops *t, bfd *abfd)
 
   printf_filtered ("\t`%s', ", bfd_get_filename (abfd));
   wrap_here ("        ");
-  printf_filtered ("file type %s.\n", bfd_get_target (abfd));
+  printf_filtered (_("file type %s.\n"), bfd_get_target (abfd));
   if (abfd == exec_bfd)
     {
-      printf_filtered ("\tEntry point: ");
-      print_address_numeric (bfd_get_start_address (abfd), 1, gdb_stdout);
+      printf_filtered (_("\tEntry point: "));
+      deprecated_print_address_numeric (bfd_get_start_address (abfd), 1, gdb_stdout);
       printf_filtered ("\n");
     }
   for (p = t->to_sections; p < t->to_sections_end; p++)
@@ -565,14 +572,13 @@ print_section_info (struct target_ops *t, bfd *abfd)
 	 since most output will then be much wider than necessary.  It
 	 may make sense to test the size of the file and choose the
 	 format string accordingly.  */
+      /* FIXME: i18n: Need to rewrite this sentence.  */
       if (info_verbose)
 	printf_filtered (" @ %s",
 			 hex_string_custom (p->the_bfd_section->filepos, 8));
       printf_filtered (" is %s", bfd_section_name (p->bfd, p->the_bfd_section));
       if (p->bfd != abfd)
-	{
-	  printf_filtered (" in %s", bfd_get_filename (p->bfd));
-	}
+	printf_filtered (" in %s", bfd_get_filename (p->bfd));
       printf_filtered ("\n");
     }
 }
@@ -586,7 +592,7 @@ exec_files_info (struct target_ops *t)
     {
       struct vmap *vp;
 
-      printf_unfiltered ("\tMapping info for file `%s'.\n", vmap->name);
+      printf_unfiltered (_("\tMapping info for file `%s'.\n"), vmap->name);
       printf_unfiltered ("\t  %*s   %*s   %*s   %*s %8.8s %s\n",
 			 strlen_paddr (), "tstart",
 			 strlen_paddr (), "tend",
@@ -654,7 +660,7 @@ set_section_command (char *args, int from_tty)
   long offset;
 
   if (args == 0)
-    error ("Must specify section name and its virtual address");
+    error (_("Must specify section name and its virtual address"));
 
   /* Parse out section name */
   for (secname = args; !isspace (*args); args++);
@@ -692,7 +698,28 @@ set_section_command (char *args, int from_tty)
     seclen = sizeof (secprint) - 1;
   strncpy (secprint, secname, seclen);
   secprint[seclen] = '\0';
-  error ("Section %s not found", secprint);
+  error (_("Section %s not found"), secprint);
+}
+
+/* If we can find a section in FILENAME with BFD index INDEX, and the
+   user has not assigned an address to it yet (via "set section"), adjust it
+   to ADDRESS.  */
+
+void
+exec_set_section_address (const char *filename, int index, CORE_ADDR address)
+{
+  struct section_table *p;
+
+  for (p = exec_ops.to_sections; p < exec_ops.to_sections_end; p++)
+    {
+      if (strcmp (filename, p->bfd->filename) == 0
+	  && index == p->the_bfd_section->index
+	  && p->addr == 0)
+	{
+	  p->addr = address;
+	  p->endaddr += address;
+	}
+    }
 }
 
 /* If mourn is being called in all the right places, this could be say
@@ -700,7 +727,7 @@ set_section_command (char *args, int from_tty)
    breakpoint_init_inferior).  */
 
 static int
-ignore (CORE_ADDR addr, char *contents)
+ignore (CORE_ADDR addr, bfd_byte *contents)
 {
   return 0;
 }
@@ -752,35 +779,36 @@ _initialize_exec (void)
 
   if (!dbx_commands)
     {
-      c = add_cmd ("file", class_files, file_command,
-		   "Use FILE as program to be debugged.\n\
+      c = add_cmd ("file", class_files, file_command, _("\
+Use FILE as program to be debugged.\n\
 It is read for its symbols, for getting the contents of pure memory,\n\
 and it is the program executed when you use the `run' command.\n\
 If FILE cannot be found as specified, your execution directory path\n\
 ($PATH) is searched for a command of that name.\n\
-No arg means to have no executable file and no symbols.", &cmdlist);
+No arg means to have no executable file and no symbols."), &cmdlist);
       set_cmd_completer (c, filename_completer);
     }
 
-  c = add_cmd ("exec-file", class_files, exec_file_command,
-	       "Use FILE as program for getting contents of pure memory.\n\
+  c = add_cmd ("exec-file", class_files, exec_file_command, _("\
+Use FILE as program for getting contents of pure memory.\n\
 If FILE cannot be found as specified, your execution directory path\n\
 is searched for a command of that name.\n\
-No arg means have no executable file.", &cmdlist);
+No arg means have no executable file."), &cmdlist);
   set_cmd_completer (c, filename_completer);
 
-  add_com ("section", class_files, set_section_command,
-	   "Change the base address of section SECTION of the exec file to ADDR.\n\
+  add_com ("section", class_files, set_section_command, _("\
+Change the base address of section SECTION of the exec file to ADDR.\n\
 This can be used if the exec file does not contain section addresses,\n\
 (such as in the a.out format), or when the addresses specified in the\n\
 file itself are wrong.  Each section must be changed separately.  The\n\
-``info files'' command lists all the sections and their addresses.");
+``info files'' command lists all the sections and their addresses."));
 
-  deprecated_add_show_from_set
-    (add_set_cmd ("write", class_support, var_boolean, (char *) &write_files,
-		  "Set writing into executable and core files.",
-		  &setlist),
-     &showlist);
+  add_setshow_boolean_cmd ("write", class_support, &write_files, _("\
+Set writing into executable and core files."), _("\
+Show writing into executable and core files."), NULL,
+			   NULL,
+			   show_write_files,
+			   &setlist, &showlist);
 
   add_target (&exec_ops);
 }
@@ -788,5 +816,5 @@ file itself are wrong.  Each section must be changed separately.  The\n\
 static char *
 exec_make_note_section (bfd *obfd, int *note_size)
 {
-  error ("Can't create a corefile");
+  error (_("Can't create a corefile"));
 }

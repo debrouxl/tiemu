@@ -23,11 +23,9 @@ binary.c
 bout.c
 cache.c
 cf-i386lynx.c
-cf-m68klynx.c
 cf-sparclynx.c
 cisco-core.c
 coff64-rs6000.c
-coff-a29k.c
 coff-alpha.c
 coff-apollo.c
 coff-arm.c
@@ -43,6 +41,7 @@ coff-i960.c
 cofflink.c
 coff-m68k.c
 coff-m88k.c
+coff-maxq.c
 coff-mips.c
 coff-or32.c
 coff-rs6000.c
@@ -60,11 +59,11 @@ coff-w65.c
 coff-we32k.c
 coff-z8k.c
 corefile.c
-cpu-a29k.c
 cpu-alpha.c
 cpu-arc.c
 cpu-arm.c
 cpu-avr.c
+cpu-bfin.c
 cpu-cr16c.c
 cpu-cris.c
 cpu-crx.c
@@ -85,14 +84,17 @@ cpu-ip2k.c
 cpu-iq2000.c
 cpu-m10200.c
 cpu-m10300.c
+cpu-m32c.c
 cpu-m32r.c
 cpu-m68hc11.c
 cpu-m68hc12.c
 cpu-m68k.c
 cpu-m88k.c
+cpu-maxq.c
 cpu-mcore.c
 cpu-mips.c
 cpu-mmix.c
+cpu-ms1.c
 cpu-msp430.c
 cpu-ns32k.c
 cpu-openrisc.c
@@ -125,8 +127,9 @@ efi-app-ia32.c
 efi-app-ia64.c
 elf32-am33lin.c
 elf32-arc.c
-elf32-arm.h
+elf32-arm.c
 elf32-avr.c
+elf32-bfin.c
 elf32.c
 elf32-cr16c.c
 elf32-cris.c
@@ -146,6 +149,7 @@ elf32-i860.c
 elf32-i960.c
 elf32-ip2k.c
 elf32-iq2000.c
+elf32-m32c.c
 elf32-m32r.c
 elf32-m68hc11.c
 elf32-m68hc12.c
@@ -154,6 +158,7 @@ elf32-m68k.c
 elf32-m88k.c
 elf32-mcore.c
 elf32-mips.c
+elf32-ms1.c
 elf32-msp430.c
 elf32-openrisc.c
 elf32-or32.c
@@ -181,8 +186,6 @@ elf64-s390.c
 elf64-sh64.c
 elf64-sparc.c
 elf64-x86-64.c
-elfarm-nabi.c
-elfarm-oabi.c
 elf-bfd.h
 elf.c
 elfcode.h
@@ -194,7 +197,9 @@ elf-m10200.c
 elf-m10300.c
 elfn32-mips.c
 elf-strtab.c
+elf-vxworks.c
 elfxx-mips.c
+elfxx-sparc.c
 epoc-pe-arm.c
 epoc-pei-arm.c
 format.c
@@ -234,7 +239,6 @@ linker.c
 lynx-core.c
 m68k4knetbsd.c
 m68klinux.c
-m68klynx.c
 m68knetbsd.c
 m88kmach3.c
 m88kopenbsd.c

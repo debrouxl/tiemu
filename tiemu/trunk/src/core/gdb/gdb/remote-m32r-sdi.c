@@ -1,6 +1,6 @@
 /* Remote debugging interface for M32R/SDI.
 
-   Copyright 2003, 2004 Free Software Foundation, Inc.
+   Copyright 2003, 2004, 2005 Free Software Foundation, Inc.
 
    Contributed by Renesas Technology Co.
    Written by Kei Sakamoto <sakamoto.kei@renesas.com>.
@@ -312,10 +312,10 @@ m32r_create_inferior (char *execfile, char *args, char **env, int from_tty)
   CORE_ADDR entry_pt;
 
   if (args && *args)
-    error ("Cannot pass arguments to remote STDEBUG process");
+    error (_("Cannot pass arguments to remote STDEBUG process"));
 
   if (execfile == 0 || exec_bfd == 0)
-    error ("No executable file specified");
+    error (_("No executable file specified"));
 
   if (remote_debug)
     fprintf_unfiltered (gdb_stdlog, "m32r_create_inferior(%s,%s)\n", execfile,
@@ -374,13 +374,13 @@ m32r_open (char *args, int from_tty)
 
   sdi_desc = serial_open (hostname);
   if (!sdi_desc)
-    error ("Connection refused\n");
+    error (_("Connection refused."));
 
   if (get_ack () == -1)
-    error ("Cannot connect to SDI target\n");
+    error (_("Cannot connect to SDI target."));
 
   if (send_cmd (SDI_OPEN) == -1)
-    error ("Cannot connect to SDI target\n");
+    error (_("Cannot connect to SDI target."));
 
   /* Get maximum number of ib breakpoints */
   send_one_arg_cmd (SDI_GET_ATTR, SDI_ATTR_BRK);
@@ -534,7 +534,7 @@ m32r_resume (ptid_t ptid, int step, enum target_signal sig)
 
       /* Write DBT instruction. */
       buf[0] = SDI_WRITE_MEMORY;
-      store_long_parameter (buf + 1, bp_addr);
+      store_long_parameter (buf + 1, (bp_addr & 0xfffffffc));
       store_long_parameter (buf + 5, 4);
       if ((bp_addr & 2) == 0 && bp_addr != (pc_addr & 0xfffffffc))
 	{
@@ -703,13 +703,13 @@ m32r_wait (ptid_t ptid, struct target_waitstatus *status)
   /* Wait for ready */
   buf[0] = SDI_WAIT_FOR_READY;
   if (serial_write (sdi_desc, buf, 1) != 0)
-    error ("Remote connection closed");
+    error (_("Remote connection closed"));
 
   while (1)
     {
       c = serial_readchar (sdi_desc, SDI_TIMEOUT);
       if (c < 0)
-	error ("Remote connection closed");
+	error (_("Remote connection closed"));
 
       if (c == '-')		/* error */
 	{
@@ -725,7 +725,7 @@ m32r_wait (ptid_t ptid, struct target_waitstatus *status)
       else
 	ret = serial_write (sdi_desc, ".", 1);	/* packet to wait */
       if (ret != 0)
-	error ("Remote connection closed");
+	error (_("Remote connection closed"));
     }
 
   status->kind = TARGET_WAITKIND_STOPPED;
@@ -810,7 +810,7 @@ m32r_wait (ptid_t ptid, struct target_waitstatus *status)
 	{
 	  if (!mmu_on)
 	    bp_addr &= 0x7fffffff;
-	  buf[0] = SDI_READ_MEMORY;
+	  buf[0] = SDI_WRITE_MEMORY;
 	  store_long_parameter (buf + 1, bp_addr & 0xfffffffc);
 	  store_long_parameter (buf + 5, 4);
 	  buf[9] = bp_data[i][0];
@@ -1141,7 +1141,7 @@ m32r_mourn_inferior (void)
 }
 
 static int
-m32r_insert_breakpoint (CORE_ADDR addr, char *shadow)
+m32r_insert_breakpoint (CORE_ADDR addr, bfd_byte *shadow)
 {
   int ib_breakpoints;
   unsigned char buf[13];
@@ -1178,12 +1178,12 @@ m32r_insert_breakpoint (CORE_ADDR addr, char *shadow)
 	}
     }
 
-  error ("Too many breakpoints");
+  error (_("Too many breakpoints"));
   return 1;
 }
 
 static int
-m32r_remove_breakpoint (CORE_ADDR addr, char *shadow)
+m32r_remove_breakpoint (CORE_ADDR addr, bfd_byte *shadow)
 {
   int i;
 
@@ -1213,7 +1213,7 @@ m32r_load (char *args, int from_tty)
   char *filename;
   int quiet;
   int nostart;
-  time_t start_time, end_time;	/* Start and end times of download */
+  struct timeval start_time, end_time;
   unsigned long data_count;	/* Number of bytes transferred to memory */
   int ret;
   static RETSIGTYPE (*prev_sigint) ();
@@ -1245,7 +1245,7 @@ m32r_load (char *args, int from_tty)
       else if (strncmp (arg, "-nostart", strlen (arg)) == 0)
 	nostart = 1;
       else
-	error ("Unknown option `%s'", arg);
+	error (_("Unknown option `%s'"), arg);
     }
 
   if (!filename)
@@ -1260,10 +1260,10 @@ m32r_load (char *args, int from_tty)
   old_chain = make_cleanup_bfd_close (pbfd);
 
   if (!bfd_check_format (pbfd, bfd_object))
-    error ("\"%s\" is not an object file: %s", filename,
+    error (_("\"%s\" is not an object file: %s"), filename,
 	   bfd_errmsg (bfd_get_error ()));
 
-  start_time = time (NULL);
+  gettimeofday (&start_time, NULL);
   data_count = 0;
 
   interrupted = 0;
@@ -1310,7 +1310,7 @@ m32r_load (char *args, int from_tty)
 
 	      bfd_get_section_contents (pbfd, section, buf + 9, fptr, count);
 	      if (send_data (buf, count + 9) <= 0)
-		error ("Error while downloading %s section.",
+		error (_("Error while downloading %s section."),
 		       bfd_get_section_name (pbfd, section));
 
 	      if (!quiet)
@@ -1349,7 +1349,7 @@ m32r_load (char *args, int from_tty)
   interrupted = 0;
   signal (SIGINT, prev_sigint);
 
-  end_time = time (NULL);
+  gettimeofday (&end_time, NULL);
 
   /* Make the PC point at the start address */
   if (exec_bfd)
@@ -1373,8 +1373,8 @@ m32r_load (char *args, int from_tty)
 	printf_unfiltered ("[Starting %s at 0x%lx]\n", filename, entry);
     }
 
-  print_transfer_performance (gdb_stdout, data_count, 0,
-			      end_time - start_time);
+  print_transfer_performance (gdb_stdout, data_count, 0, &start_time,
+			      &end_time);
 
   do_cleanups (old_chain);
 }
@@ -1425,7 +1425,7 @@ m32r_insert_watchpoint (CORE_ADDR addr, int len, int type)
 	}
     }
 
-  error ("Too many watchpoints");
+  error (_("Too many watchpoints"));
   return 1;
 }
 
@@ -1619,21 +1619,21 @@ _initialize_remote_m32r (void)
   add_target (&m32r_ops);
 
   add_com ("sdireset", class_obscure, sdireset_command,
-	   "Reset SDI connection.");
+	   _("Reset SDI connection."));
 
   add_com ("sdistatus", class_obscure, sdistatus_command,
-	   "Show status of SDI connection.");
+	   _("Show status of SDI connection."));
 
   add_com ("debug_chaos", class_obscure, debug_chaos_command,
-	   "Debug M32R/Chaos.");
+	   _("Debug M32R/Chaos."));
 
   add_com ("use_debug_dma", class_obscure, use_debug_dma_command,
-	   "Use debug DMA mem access.");
+	   _("Use debug DMA mem access."));
   add_com ("use_mon_code", class_obscure, use_mon_code_command,
-	   "Use mon code mem access.");
+	   _("Use mon code mem access."));
 
   add_com ("use_ib_break", class_obscure, use_ib_breakpoints_command,
-	   "Set breakpoints by IB break.");
+	   _("Set breakpoints by IB break."));
   add_com ("use_dbt_break", class_obscure, use_dbt_breakpoints_command,
-	   "Set breakpoints by dbt.");
+	   _("Set breakpoints by dbt."));
 }

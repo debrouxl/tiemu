@@ -201,7 +201,11 @@ pack_fpu (const sim_fpu *src,
       /* force fraction to correct class */
       fraction = src->fraction;
       fraction >>= NR_GUARDS;
+#ifdef SIM_QUIET_NAN_NEGATED
+      fraction |= QUIET_NAN - 1;
+#else
       fraction |= QUIET_NAN;
+#endif
       break;
     case sim_fpu_class_snan:
       sign = src->sign;
@@ -362,10 +366,17 @@ unpack_fpu (sim_fpu *dst, unsigned64 packed, int is_double)
 	}
       else
 	{
+	  int qnan;
+
 	  /* Non zero fraction, means NaN */
 	  dst->sign = sign;
 	  dst->fraction = (fraction << NR_GUARDS);
-	  if (fraction >= QUIET_NAN)
+#ifdef SIM_QUIET_NAN_NEGATED
+	  qnan = (fraction & QUIET_NAN) == 0;
+#else
+	  qnan = fraction >= QUIET_NAN;
+#endif
+	  if (qnan)
 	    dst->class = sim_fpu_class_qnan;
 	  else
 	    dst->class = sim_fpu_class_snan;
@@ -1733,19 +1744,13 @@ INLINE_SIM_FPU (int)
 sim_fpu_abs (sim_fpu *f,
 	     const sim_fpu *r)
 {
+  *f = *r;
+  f->sign = 0;
   if (sim_fpu_is_snan (r))
     {
-      *f = *r;
       f->class = sim_fpu_class_qnan;
       return sim_fpu_status_invalid_snan;
     }
-  if (sim_fpu_is_qnan (r))
-    {
-      *f = *r;
-      return 0;
-    }
-  *f = *r;
-  f->sign = 0;
   return 0;
 }
 

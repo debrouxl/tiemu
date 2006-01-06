@@ -33,6 +33,7 @@
 #include "terminal.h"
 #include "gdbthread.h"
 #include "command.h" /* for dont_repeat () */
+#include "solib.h"
 
 #include <signal.h>
 
@@ -137,6 +138,7 @@ fork_inferior (char *exec_file_arg, char *allargs, char **env,
   char **save_our_env;
   int shell = 0;
   static char **argv;
+  const char *inferior_io_terminal = get_inferior_io_terminal ();
 
   /* If no exec file handed to us, get it from the exec-file command
      -- with a good, common error message if none is specified.  */
@@ -274,16 +276,24 @@ fork_inferior (char *exec_file_arg, char *allargs, char **env,
   if (pre_trace_fun != NULL)
     (*pre_trace_fun) ();
 
-  /* Create the child process.  Note that the apparent call to vfork()
-     below *might* actually be a call to fork() due to the fact that
-     autoconf will ``#define vfork fork'' on certain platforms.  */
-  if (debug_fork)
+  /* Create the child process.  Since the child process is going to
+     exec(3) shortlty afterwards, try to reduce the overhead by
+     calling vfork(2).  However, if PRE_TRACE_FUN is non-null, it's
+     likely that this optimization won't work since there's too much
+     work to do between the vfork(2) and the exec(3).  This is known
+     to be the case on ttrace(2)-based HP-UX, where some handshaking
+     between parent and child needs to happen between fork(2) and
+     exec(2).  However, since the parent is suspended in the vforked
+     state, this doesn't work.  Also note that the vfork(2) call might
+     actually be a call to fork(2) due to the fact that autoconf will
+     ``#define vfork fork'' on certain platforms.  */
+  if (pre_trace_fun || debug_fork)
     pid = fork ();
   else
     pid = vfork ();
 
   if (pid < 0)
-    perror_with_name ("vfork");
+    perror_with_name (("vfork"));
 
   if (pid == 0)
     {
@@ -396,6 +406,8 @@ fork_inferior (char *exec_file_arg, char *allargs, char **env,
 
 #ifdef SOLIB_CREATE_INFERIOR_HOOK
   SOLIB_CREATE_INFERIOR_HOOK (pid);
+#else
+  solib_create_inferior_hook ();
 #endif
 }
 

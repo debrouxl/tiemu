@@ -1,6 +1,6 @@
 /* BFD back-end for MS-DOS executables.
    Copyright 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1998, 1999, 2001, 2002,
-   2003, 2004 Free Software Foundation, Inc.
+   2003, 2004, 2005 Free Software Foundation, Inc.
    Written by Bryan Ford of the University of Utah.
 
    Contributed by the Center for Software Science at the
@@ -20,36 +20,13 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 
 #include "bfd.h"
 #include "sysdep.h"
 #include "libbfd.h"
 #include "libaout.h"
-
-#if 0
-struct exe_header
-{
-  unsigned short magic;
-  unsigned short bytes_in_last_page;
-  unsigned short npages;	/* number of 512-byte "pages" including this header */
-  unsigned short nrelocs;
-  unsigned short header_paras;	/* number of 16-byte paragraphs in header */
-  unsigned short reserved;
-  unsigned short load_switch;
-  unsigned short ss_ofs;
-  unsigned short sp;
-  unsigned short checksum;
-  unsigned short ip;
-  unsigned short cs_ofs;
-  unsigned short reloc_ofs;
-  unsigned short reserved2;
-  unsigned short something1;
-  unsigned short something2;
-  unsigned short something3;
-};
-#endif
 
 #define EXE_MAGIC	0x5a4d
 #define EXE_LOAD_HIGH	0x0000
@@ -192,6 +169,7 @@ msdos_set_section_contents (abfd, section, location, offset, count)
 #define msdos_print_symbol _bfd_nosymbols_print_symbol
 #define msdos_get_symbol_info _bfd_nosymbols_get_symbol_info
 #define msdos_find_nearest_line _bfd_nosymbols_find_nearest_line
+#define msdos_find_inliner_info _bfd_nosymbols_find_inliner_info
 #define msdos_get_lineno _bfd_nosymbols_get_lineno
 #define msdos_bfd_is_target_special_symbol ((bfd_boolean (*) (bfd *, asymbol *)) bfd_false)
 #define msdos_bfd_is_local_label_name _bfd_nosymbols_bfd_is_local_label_name

@@ -1,5 +1,7 @@
 /* GNU/Linux on ARM target support.
-   Copyright 1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
+
+   Copyright 1999, 2000, 2001, 2002, 2003, 2005 Free Software
+   Foundation, Inc.
 
    This file is part of GDB.
 
@@ -37,12 +39,28 @@
    is to execute a particular software interrupt, rather than use a
    particular undefined instruction to provoke a trap.  Upon exection
    of the software interrupt the kernel stops the inferior with a
-   SIGTRAP, and wakes the debugger.  Since ARM GNU/Linux doesn't support
-   Thumb at the moment we only override the ARM breakpoints.  */
+   SIGTRAP, and wakes the debugger.  */
 
 static const char arm_linux_arm_le_breakpoint[] = { 0x01, 0x00, 0x9f, 0xef };
 
 static const char arm_linux_arm_be_breakpoint[] = { 0xef, 0x9f, 0x00, 0x01 };
+
+/* However, the EABI syscall interface (new in Nov. 2005) does not look at
+   the operand of the swi if old-ABI compatibility is disabled.  Therefore,
+   use an undefined instruction instead.  This is supported as of kernel
+   version 2.5.70 (May 2003), so should be a safe assumption for EABI
+   binaries.  */
+
+static const char eabi_linux_arm_le_breakpoint[] = { 0xf0, 0x01, 0xf0, 0xe7 };
+
+static const char eabi_linux_arm_be_breakpoint[] = { 0xe7, 0xf0, 0x01, 0xf0 };
+
+/* All the kernels which support Thumb support using a specific undefined
+   instruction for the Thumb breakpoint.  */
+
+static const char arm_linux_thumb_be_breakpoint[] = {0xde, 0x01};
+
+static const char arm_linux_thumb_le_breakpoint[] = {0x01, 0xde};
 
 /* Description of the longjmp buffer.  */
 #define ARM_LINUX_JB_ELEMENT_SIZE	INT_REGISTER_SIZE
@@ -70,147 +88,7 @@ arm_linux_extract_return_value (struct type *type,
 		? ARM_F0_REGNUM : ARM_A1_REGNUM);
   memcpy (valbuf, &regbuf[DEPRECATED_REGISTER_BYTE (regnum)], TYPE_LENGTH (type));
 }
-
-/* Note: ScottB
-
-   This function does not support passing parameters using the FPA
-   variant of the APCS.  It passes any floating point arguments in the
-   general registers and/or on the stack.
-   
-   FIXME:  This and arm_push_arguments should be merged.  However this 
-   	   function breaks on a little endian host, big endian target
-   	   using the COFF file format.  ELF is ok.  
-   	   
-   	   ScottB.  */
-   	   
-/* Addresses for calling Thumb functions have the bit 0 set.
-   Here are some macros to test, set, or clear bit 0 of addresses.  */
-#define IS_THUMB_ADDR(addr)	((addr) & 1)
-#define MAKE_THUMB_ADDR(addr)	((addr) | 1)
-#define UNMAKE_THUMB_ADDR(addr) ((addr) & ~1)
    	  
-static CORE_ADDR
-arm_linux_push_arguments (int nargs, struct value **args, CORE_ADDR sp,
-		          int struct_return, CORE_ADDR struct_addr)
-{
-  char *fp;
-  int argnum, argreg, nstack_size;
-
-  /* Walk through the list of args and determine how large a temporary
-     stack is required.  Need to take care here as structs may be
-     passed on the stack, and we have to to push them.  */
-  nstack_size = -4 * DEPRECATED_REGISTER_SIZE;	/* Some arguments go into A1-A4.  */
-
-  if (struct_return)			/* The struct address goes in A1.  */
-    nstack_size += DEPRECATED_REGISTER_SIZE;
-
-  /* Walk through the arguments and add their size to nstack_size.  */
-  for (argnum = 0; argnum < nargs; argnum++)
-    {
-      int len;
-      struct type *arg_type;
-
-      arg_type = check_typedef (VALUE_TYPE (args[argnum]));
-      len = TYPE_LENGTH (arg_type);
-
-      /* ANSI C code passes float arguments as integers, K&R code
-         passes float arguments as doubles.  Correct for this here.  */
-      if (TYPE_CODE_FLT == TYPE_CODE (arg_type) && DEPRECATED_REGISTER_SIZE == len)
-	nstack_size += TARGET_DOUBLE_BIT / TARGET_CHAR_BIT;
-      else
-	nstack_size += len;
-    }
-
-  /* Allocate room on the stack, and initialize our stack frame
-     pointer.  */
-  fp = NULL;
-  if (nstack_size > 0)
-    {
-      sp -= nstack_size;
-      fp = (char *) sp;
-    }
-
-  /* Initialize the integer argument register pointer.  */
-  argreg = ARM_A1_REGNUM;
-
-  /* The struct_return pointer occupies the first parameter passing
-     register.  */
-  if (struct_return)
-    write_register (argreg++, struct_addr);
-
-  /* Process arguments from left to right.  Store as many as allowed
-     in the parameter passing registers (A1-A4), and save the rest on
-     the temporary stack.  */
-  for (argnum = 0; argnum < nargs; argnum++)
-    {
-      int len;
-      char *val;
-      CORE_ADDR regval;
-      enum type_code typecode;
-      struct type *arg_type, *target_type;
-
-      arg_type = check_typedef (VALUE_TYPE (args[argnum]));
-      target_type = TYPE_TARGET_TYPE (arg_type);
-      len = TYPE_LENGTH (arg_type);
-      typecode = TYPE_CODE (arg_type);
-      val = (char *) VALUE_CONTENTS (args[argnum]);
-
-      /* ANSI C code passes float arguments as integers, K&R code
-         passes float arguments as doubles.  The .stabs record for 
-         for ANSI prototype floating point arguments records the
-         type as FP_INTEGER, while a K&R style (no prototype)
-         .stabs records the type as FP_FLOAT.  In this latter case
-         the compiler converts the float arguments to double before
-         calling the function.  */
-      if (TYPE_CODE_FLT == typecode && DEPRECATED_REGISTER_SIZE == len)
-	{
-	  DOUBLEST dblval;
-	  dblval = deprecated_extract_floating (val, len);
-	  len = TARGET_DOUBLE_BIT / TARGET_CHAR_BIT;
-	  val = alloca (len);
-	  deprecated_store_floating (val, len, dblval);
-	}
-
-      /* If the argument is a pointer to a function, and it is a Thumb
-         function, set the low bit of the pointer.  */
-      if (TYPE_CODE_PTR == typecode
-	  && NULL != target_type
-	  && TYPE_CODE_FUNC == TYPE_CODE (target_type))
-	{
-	  CORE_ADDR regval = extract_unsigned_integer (val, len);
-	  if (arm_pc_is_thumb (regval))
-	    store_unsigned_integer (val, len, MAKE_THUMB_ADDR (regval));
-	}
-
-      /* Copy the argument to general registers or the stack in
-         register-sized pieces.  Large arguments are split between
-         registers and stack.  */
-      while (len > 0)
-	{
-	  int partial_len = len < DEPRECATED_REGISTER_SIZE ? len : DEPRECATED_REGISTER_SIZE;
-
-	  if (argreg <= ARM_LAST_ARG_REGNUM)
-	    {
-	      /* It's an argument being passed in a general register.  */
-	      regval = extract_unsigned_integer (val, partial_len);
-	      write_register (argreg++, regval);
-	    }
-	  else
-	    {
-	      /* Push the arguments onto the stack.  */
-	      write_memory ((CORE_ADDR) fp, val, DEPRECATED_REGISTER_SIZE);
-	      fp += DEPRECATED_REGISTER_SIZE;
-	    }
-
-	  len -= partial_len;
-	  val += partial_len;
-	}
-    }
-
-  /* Return adjusted stack pointer.  */
-  return sp;
-}
-
 /*
    Dynamic Linking on ARM GNU/Linux
    --------------------------------
@@ -463,12 +341,26 @@ arm_linux_init_abi (struct gdbarch_info info,
 
   tdep->lowest_pc = 0x8000;
   if (info.byte_order == BFD_ENDIAN_BIG)
-    tdep->arm_breakpoint = arm_linux_arm_be_breakpoint;
+    {
+      if (tdep->arm_abi == ARM_ABI_AAPCS)
+	tdep->arm_breakpoint = eabi_linux_arm_be_breakpoint;
+      else
+	tdep->arm_breakpoint = arm_linux_arm_be_breakpoint;
+      tdep->thumb_breakpoint = arm_linux_thumb_be_breakpoint;
+    }
   else
-    tdep->arm_breakpoint = arm_linux_arm_le_breakpoint;
+    {
+      if (tdep->arm_abi == ARM_ABI_AAPCS)
+	tdep->arm_breakpoint = eabi_linux_arm_le_breakpoint;
+      else
+	tdep->arm_breakpoint = arm_linux_arm_le_breakpoint;
+      tdep->thumb_breakpoint = arm_linux_thumb_le_breakpoint;
+    }
   tdep->arm_breakpoint_size = sizeof (arm_linux_arm_le_breakpoint);
+  tdep->thumb_breakpoint_size = sizeof (arm_linux_thumb_le_breakpoint);
 
-  tdep->fp_model = ARM_FLOAT_FPA;
+  if (tdep->fp_model == ARM_FLOAT_AUTO)
+    tdep->fp_model = ARM_FLOAT_FPA;
 
   tdep->jb_pc = ARM_LINUX_JB_PC;
   tdep->jb_elt_size = ARM_LINUX_JB_ELEMENT_SIZE;
@@ -476,14 +368,16 @@ arm_linux_init_abi (struct gdbarch_info info,
   set_solib_svr4_fetch_link_map_offsets
     (gdbarch, arm_linux_svr4_fetch_link_map_offsets);
 
-  /* The following two overrides shouldn't be needed.  */
+  /* The following override shouldn't be needed.  */
   set_gdbarch_deprecated_extract_return_value (gdbarch, arm_linux_extract_return_value);
-  set_gdbarch_deprecated_push_arguments (gdbarch, arm_linux_push_arguments);
 
   /* Shared library handling.  */
-  set_gdbarch_in_solib_call_trampoline (gdbarch, in_plt_section);
   set_gdbarch_skip_trampoline_code (gdbarch, find_solib_trampoline_target);
   set_gdbarch_skip_solib_resolver (gdbarch, glibc_skip_solib_resolver);
+
+  /* Enable TLS support.  */
+  set_gdbarch_fetch_tls_load_module_address (gdbarch,
+                                             svr4_fetch_objfile_link_map);
 }
 
 void

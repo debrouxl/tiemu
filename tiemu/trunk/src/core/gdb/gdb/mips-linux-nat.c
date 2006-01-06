@@ -1,6 +1,6 @@
 /* Native-dependent code for GNU/Linux on MIPS processors.
 
-   Copyright 2001, 2002, 2003 Free Software Foundation, Inc.
+   Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -21,16 +21,18 @@
 
 #include "defs.h"
 #include "mips-tdep.h"
+#include "target.h"
+#include "linux-nat.h"
 
 /* Pseudo registers can not be read.  ptrace does not provide a way to
-   read (or set) PS_REGNUM, and there's no point in reading or setting
-   ZERO_REGNUM.  We also can not set BADVADDR, CAUSE, or FCRIR via
-   ptrace().  */
+   read (or set) MIPS_PS_REGNUM, and there's no point in reading or
+   setting MIPS_ZERO_REGNUM.  We also can not set BADVADDR, CAUSE, or
+   FCRIR via ptrace().  */
 
 int
 mips_linux_cannot_fetch_register (int regno)
 {
-  if (regno > ZERO_REGNUM && regno < ZERO_REGNUM + 32)
+  if (regno > MIPS_ZERO_REGNUM && regno < MIPS_ZERO_REGNUM + 32)
     return 0;
   else if (regno >= mips_regnum (current_gdbarch)->fp0
 	   && regno <= mips_regnum (current_gdbarch)->fp0 + 32)
@@ -50,7 +52,7 @@ mips_linux_cannot_fetch_register (int regno)
 int
 mips_linux_cannot_store_register (int regno)
 {
-  if (regno > ZERO_REGNUM && regno < ZERO_REGNUM + 32)
+  if (regno > MIPS_ZERO_REGNUM && regno < MIPS_ZERO_REGNUM + 32)
     return 0;
   else if (regno >= FP0_REGNUM && regno <= FP0_REGNUM + 32)
     return 0;
@@ -61,4 +63,12 @@ mips_linux_cannot_store_register (int regno)
     return 0;
   else
     return 1;
+}
+
+void _initialize_mips_linux_nat (void);
+
+void
+_initialize_mips_linux_nat (void)
+{
+  add_target (linux_target ());
 }

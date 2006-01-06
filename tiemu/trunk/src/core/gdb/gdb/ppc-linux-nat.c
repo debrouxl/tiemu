@@ -1,7 +1,7 @@
 /* PPC GNU/Linux native support.
 
    Copyright 1988, 1989, 1991, 1992, 1994, 1996, 2000, 2001, 2002,
-   2003 Free Software Foundation, Inc.
+   2003, 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -27,6 +27,8 @@
 #include "gdbcore.h"
 #include "regcache.h"
 #include "gdb_assert.h"
+#include "target.h"
+#include "linux-nat.h"
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -212,8 +214,19 @@ ppc_register_u_addr (int regno)
     u_addr = PT_MSR * wordsize;
   if (tdep->ppc_fpscr_regnum >= 0
       && regno == tdep->ppc_fpscr_regnum)
-    u_addr = PT_FPSCR * wordsize;
-
+    {
+      /* NOTE: cagney/2005-02-08: On some 64-bit GNU/Linux systems the
+	 kernel headers incorrectly contained the 32-bit definition of
+	 PT_FPSCR.  For the 32-bit definition, floating-point
+	 registers occupy two 32-bit "slots", and the FPSCR lives in
+	 the secondhalf of such a slot-pair (hence +1).  For 64-bit,
+	 the FPSCR instead occupies the full 64-bit 2-word-slot and
+	 hence no adjustment is necessary.  Hack around this.  */
+      if (wordsize == 8 && PT_FPSCR == (48 + 32 + 1))
+	u_addr = (48 + 32) * wordsize;
+      else
+	u_addr = PT_FPSCR * wordsize;
+    }
   return u_addr;
 }
 
@@ -237,7 +250,7 @@ fetch_altivec_register (int tid, int regno)
           have_ptrace_getvrregs = 0;
           return;
         }
-      perror_with_name ("Unable to fetch AltiVec register");
+      perror_with_name (_("Unable to fetch AltiVec register"));
     }
  
   /* VSCR is fetched as a 16 bytes quantity, but it is really 4 bytes
@@ -274,7 +287,7 @@ get_spe_registers (int tid, struct gdb_evrregset_t *evrregset)
             have_ptrace_getsetevrregs = 0;
           else
             /* Anything else needs to be reported.  */
-            perror_with_name ("Unable to fetch SPE registers");
+            perror_with_name (_("Unable to fetch SPE registers"));
         }
     }
 
@@ -400,7 +413,7 @@ fetch_register (int tid, int regno)
     }
   else 
     internal_error (__FILE__, __LINE__,
-                    "fetch_register: unexpected byte order: %d",
+                    _("fetch_register: unexpected byte order: %d"),
                     gdbarch_byte_order (current_gdbarch));
 }
 
@@ -442,7 +455,7 @@ fetch_altivec_registers (int tid)
           have_ptrace_getvrregs = 0;
 	  return;
 	}
-      perror_with_name ("Unable to fetch AltiVec registers");
+      perror_with_name (_("Unable to fetch AltiVec registers"));
     }
   supply_vrregset (&regs);
 }
@@ -483,8 +496,8 @@ fetch_ppc_registers (int tid)
 /* Fetch registers from the child process.  Fetch all registers if
    regno == -1, otherwise fetch all general registers or all floating
    point registers depending upon the value of regno.  */
-void
-fetch_inferior_registers (int regno)
+static void
+ppc_linux_fetch_inferior_registers (int regno)
 {
   /* Overload thread id onto process id */
   int tid = TIDGET (inferior_ptid);
@@ -517,7 +530,7 @@ store_altivec_register (int tid, int regno)
           have_ptrace_getvrregs = 0;
           return;
         }
-      perror_with_name ("Unable to fetch AltiVec register");
+      perror_with_name (_("Unable to fetch AltiVec register"));
     }
 
   /* VSCR is fetched as a 16 bytes quantity, but it is really 4 bytes
@@ -530,7 +543,7 @@ store_altivec_register (int tid, int regno)
 
   ret = ptrace (PTRACE_SETVRREGS, tid, 0, &regs);
   if (ret < 0)
-    perror_with_name ("Unable to store AltiVec register");
+    perror_with_name (_("Unable to store AltiVec register"));
 }
 
 /* Assuming TID referrs to an SPE process, set the top halves of TID's
@@ -557,7 +570,7 @@ set_spe_registers (int tid, struct gdb_evrregset_t *evrregset)
             have_ptrace_getsetevrregs = 0;
           else
             /* Anything else needs to be reported.  */
-            perror_with_name ("Unable to set SPE registers");
+            perror_with_name (_("Unable to set SPE registers"));
         }
     }
 }
@@ -722,13 +735,13 @@ store_altivec_registers (int tid)
           have_ptrace_getvrregs = 0;
           return;
         }
-      perror_with_name ("Couldn't get AltiVec registers");
+      perror_with_name (_("Couldn't get AltiVec registers"));
     }
 
   fill_vrregset (&regs);
   
   if (ptrace (PTRACE_SETVRREGS, tid, 0, &regs) < 0)
-    perror_with_name ("Couldn't write AltiVec registers");
+    perror_with_name (_("Couldn't write AltiVec registers"));
 }
 
 static void
@@ -764,8 +777,8 @@ store_ppc_registers (int tid)
     store_spe_register (tid, -1);
 }
 
-void
-store_inferior_registers (int regno)
+static void
+ppc_linux_store_inferior_registers (int regno)
 {
   /* Overload thread id onto process id */
   int tid = TIDGET (inferior_ptid);
@@ -871,4 +884,22 @@ fill_fpregset (gdb_fpregset_t *fpregsetp, int regno)
       if (regno == -1 || regno == tdep->ppc_fpscr_regnum)
         right_fill_reg (tdep->ppc_fpscr_regnum, (fpp + 8 * 32));
     }
+}
+
+void _initialize_ppc_linux_nat (void);
+
+void
+_initialize_ppc_linux_nat (void)
+{
+  struct target_ops *t;
+
+  /* Fill in the generic GNU/Linux methods.  */
+  t = linux_target ();
+
+  /* Add our register access methods.  */
+  t->to_fetch_registers = ppc_linux_fetch_inferior_registers;
+  t->to_store_registers = ppc_linux_store_inferior_registers;
+
+  /* Register the target.  */
+  add_target (t);
 }

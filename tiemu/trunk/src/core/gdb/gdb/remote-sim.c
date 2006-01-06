@@ -1,7 +1,7 @@
 /* Generic remote debugging interface for simulators.
 
    Copyright 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
-   2002, 2004 Free Software Foundation, Inc.
+   2002, 2004, 2005 Free Software Foundation, Inc.
 
    Contributed by Cygnus Support.
    Steve Chamberlain (sac@cygnus.com).
@@ -96,11 +96,6 @@ static void gdbsim_resume (ptid_t ptid, int step, enum target_signal siggnal);
 static ptid_t gdbsim_wait (ptid_t ptid, struct target_waitstatus *status);
 
 static void gdbsim_prepare_to_store (void);
-
-static int gdbsim_xfer_inferior_memory (CORE_ADDR memaddr, char *myaddr, 
-					int len, int write,
-					struct mem_attrib *attrib,
-					struct target_ops *target);
 
 static void gdbsim_files_info (struct target_ops *target);
 
@@ -368,7 +363,7 @@ gdbsim_store_register (int regno)
 				     tmp, register_size (current_gdbarch, regno));
       if (nr_bytes > 0 && nr_bytes != register_size (current_gdbarch, regno))
 	internal_error (__FILE__, __LINE__,
-			"Register size different to expected");
+			_("Register size different to expected"));
       /* FIXME: cagney/2002-05-27: Should check `nr_bytes == 0'
 	 indicating that GDB and the SIM have different ideas about
 	 which registers are fetchable.  */
@@ -411,7 +406,7 @@ gdbsim_load (char *prog, int fromtty)
      Need error to either not print anything if passed NULL or need
      another routine that doesn't take any arguments.  */
   if (sim_load (gdbsim_desc, prog, NULL, fromtty) == SIM_RC_FAIL)
-    error ("unable to load program");
+    error (_("unable to load program"));
 
   /* FIXME: If a load command should reset the targets registers then
      a call to sim_create_inferior() should go here. */
@@ -436,9 +431,9 @@ gdbsim_create_inferior (char *exec_file, char *args, char **env, int from_tty)
 
 #if 0 /* (TiEmu 20050330 Kevin Kofler) */
   if (exec_file == 0 || exec_bfd == 0)
-    warning ("No executable file specified.");
+    warning (_("No executable file specified."));
   if (!program_loaded)
-    warning ("No program loaded.");
+    warning (_("No program loaded."));
 #endif
 
   if (sr_get_debug ())
@@ -533,14 +528,14 @@ gdbsim_open (char *args, int from_tty)
     }
   argv = buildargv (arg_buf);
   if (argv == NULL)
-    error ("Insufficient memory available to allocate simulator arg list.");
+    error (_("Insufficient memory available to allocate simulator arg list."));
   make_cleanup_freeargv (argv);
 
   init_callbacks ();
   gdbsim_desc = sim_open (SIM_OPEN_DEBUG, &gdb_callback, exec_bfd, argv);
 
   if (gdbsim_desc == 0)
-    error ("unable to create simulator instance");
+    error (_("unable to create simulator instance"));
 
   push_target (&gdbsim_ops);
   target_fetch_registers (-1);
@@ -605,7 +600,7 @@ static void
 gdbsim_resume (ptid_t ptid, int step, enum target_signal siggnal)
 {
   if (PIDGET (inferior_ptid) != 42)
-    error ("The program is not being run.");
+    error (_("The program is not being run."));
 
   if (sr_get_debug ())
     printf_filtered ("gdbsim_resume: step %d, signal %d\n", step, siggnal);
@@ -633,7 +628,7 @@ gdbsim_stop (void)
 }
 
 /* GDB version of os_poll_quit callback.
-   Taken from gdb/util.c - should be in a library */
+   Taken from gdb/util.c - should be in a library.  */
 
 static int
 gdb_os_poll_quit (host_callback *p)
@@ -748,13 +743,13 @@ gdbsim_prepare_to_store (void)
    Returns the number of bytes transferred. */
 
 static int
-gdbsim_xfer_inferior_memory (CORE_ADDR memaddr, char *myaddr, int len,
+gdbsim_xfer_inferior_memory (CORE_ADDR memaddr, gdb_byte *myaddr, int len,
 			     int write, struct mem_attrib *attrib,
 			     struct target_ops *target)
 {
 #if 0 /* (TiEmu 20050330 Kevin Kofler) */
   if (!program_loaded)
-    error ("No program loaded.");
+    error (_("No program loaded."));
 #endif
 
   if (sr_get_debug ())
@@ -813,13 +808,13 @@ gdbsim_mourn_inferior (void)
 }
 
 static int
-gdbsim_insert_breakpoint (CORE_ADDR addr, char *contents_cache)
+gdbsim_insert_breakpoint (CORE_ADDR addr, bfd_byte *contents_cache)
 {
   return memory_insert_breakpoint (addr, contents_cache);
 }
 
 static int
-gdbsim_remove_breakpoint (CORE_ADDR addr, char *contents_cache)
+gdbsim_remove_breakpoint (CORE_ADDR addr, bfd_byte *contents_cache)
 {
   return memory_remove_breakpoint (addr, contents_cache);
 }
@@ -843,7 +838,7 @@ simulator_command (char *args, int from_tty)
          commands, is restricted to the period when the channel to the
          simulator is open. */
 
-      error ("Not connected to the simulator target");
+      error (_("Not connected to the simulator target"));
     }
 
   sim_do_command (gdbsim_desc, args);
@@ -899,6 +894,6 @@ _initialize_remote_sim (void)
   init_gdbsim_ops ();
   add_target (&gdbsim_ops);
 
-  add_com ("sim <command>", class_obscure, simulator_command,
-	   "Send a command to the simulator.");
+  add_com ("sim", class_obscure, simulator_command,
+	   _("Send a command to the simulator."));
 }

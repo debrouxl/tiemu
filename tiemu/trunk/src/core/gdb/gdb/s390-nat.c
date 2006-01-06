@@ -1,5 +1,5 @@
 /* S390 native-dependent code for GDB, the GNU debugger.
-   Copyright 2001, 2003 Free Software Foundation, Inc
+   Copyright 2001, 2003, 2004, 2005 Free Software Foundation, Inc
 
    Contributed by D.J. Barrow (djbarrow@de.ibm.com,barrow_dj@yahoo.com)
    for IBM Deutschland Entwicklung GmbH, IBM Corporation.
@@ -25,6 +25,8 @@
 #include "tm.h"
 #include "regcache.h"
 #include "inferior.h"
+#include "target.h"
+#include "linux-nat.h"
 
 #include "s390-tdep.h"
 
@@ -32,7 +34,6 @@
 #include <sys/ptrace.h>
 #include <asm/types.h>
 #include <sys/procfs.h>
-#include <sys/user.h>
 #include <sys/ucontext.h>
 
 
@@ -136,7 +137,7 @@ fetch_regs (int tid)
   parea.process_addr = (addr_t) &regs;
   parea.kernel_addr = offsetof (struct user_regs_struct, psw);
   if (ptrace (PTRACE_PEEKUSR_AREA, tid, (long) &parea) < 0)
-    perror_with_name ("Couldn't get registers");
+    perror_with_name (_("Couldn't get registers"));
 
   supply_gregset (&regs);
 }
@@ -153,12 +154,12 @@ store_regs (int tid, int regnum)
   parea.process_addr = (addr_t) &regs;
   parea.kernel_addr = offsetof (struct user_regs_struct, psw);
   if (ptrace (PTRACE_PEEKUSR_AREA, tid, (long) &parea) < 0)
-    perror_with_name ("Couldn't get registers");
+    perror_with_name (_("Couldn't get registers"));
 
   fill_gregset (&regs, regnum);
 
   if (ptrace (PTRACE_POKEUSR_AREA, tid, (long) &parea) < 0)
-    perror_with_name ("Couldn't write registers");
+    perror_with_name (_("Couldn't write registers"));
 }
 
 /* Fetch all floating-point registers from process/thread TID and store
@@ -173,7 +174,7 @@ fetch_fpregs (int tid)
   parea.process_addr = (addr_t) &fpregs;
   parea.kernel_addr = offsetof (struct user_regs_struct, fp_regs);
   if (ptrace (PTRACE_PEEKUSR_AREA, tid, (long) &parea) < 0)
-    perror_with_name ("Couldn't get floating point status");
+    perror_with_name (_("Couldn't get floating point status"));
 
   supply_fpregset (&fpregs);
 }
@@ -190,18 +191,18 @@ store_fpregs (int tid, int regnum)
   parea.process_addr = (addr_t) &fpregs;
   parea.kernel_addr = offsetof (struct user_regs_struct, fp_regs);
   if (ptrace (PTRACE_PEEKUSR_AREA, tid, (long) &parea) < 0)
-    perror_with_name ("Couldn't get floating point status");
+    perror_with_name (_("Couldn't get floating point status"));
 
   fill_fpregset (&fpregs, regnum);
 
   if (ptrace (PTRACE_POKEUSR_AREA, tid, (long) &parea) < 0)
-    perror_with_name ("Couldn't write floating point status");
+    perror_with_name (_("Couldn't write floating point status"));
 }
 
 /* Fetch register REGNUM from the child process.  If REGNUM is -1, do
    this for all registers.  */
-void
-fetch_inferior_registers (int regnum)
+static void
+s390_linux_fetch_inferior_registers (int regnum)
 {
   int tid = s390_inferior_tid ();
 
@@ -216,8 +217,8 @@ fetch_inferior_registers (int regnum)
 
 /* Store register REGNUM back into the child process.  If REGNUM is
    -1, do this for all registers.  */
-void
-store_inferior_registers (int regnum)
+static void
+s390_linux_store_inferior_registers (int regnum)
 {
   int tid = s390_inferior_tid ();
 
@@ -248,7 +249,7 @@ struct watch_area
 
 static struct watch_area *watch_base = NULL;
 
-int
+static int
 s390_stopped_by_watchpoint (void)
 {
   per_lowcore_bits per_lowcore;
@@ -262,7 +263,7 @@ s390_stopped_by_watchpoint (void)
   parea.process_addr = (addr_t) & per_lowcore;
   parea.kernel_addr = offsetof (struct user_regs_struct, per_info.lowcore);
   if (ptrace (PTRACE_PEEKUSR_AREA, s390_inferior_tid (), &parea) < 0)
-    perror_with_name ("Couldn't retrieve watchpoint status");
+    perror_with_name (_("Couldn't retrieve watchpoint status"));
 
   return per_lowcore.perc_storage_alteration == 1
 	 && per_lowcore.perc_store_real_address == 0;
@@ -289,7 +290,7 @@ s390_fix_watch_points (void)
   parea.process_addr = (addr_t) & per_info;
   parea.kernel_addr = offsetof (struct user_regs_struct, per_info);
   if (ptrace (PTRACE_PEEKUSR_AREA, tid, &parea) < 0)
-    perror_with_name ("Couldn't retrieve watchpoint status");
+    perror_with_name (_("Couldn't retrieve watchpoint status"));
 
   if (watch_base)
     {
@@ -305,10 +306,10 @@ s390_fix_watch_points (void)
   per_info.ending_addr = watch_hi_addr;
 
   if (ptrace (PTRACE_POKEUSR_AREA, tid, &parea) < 0)
-    perror_with_name ("Couldn't modify watchpoint status");
+    perror_with_name (_("Couldn't modify watchpoint status"));
 }
 
-int
+static int
 s390_insert_watchpoint (CORE_ADDR addr, int len)
 {
   struct watch_area *area = xmalloc (sizeof (struct watch_area));
@@ -325,7 +326,7 @@ s390_insert_watchpoint (CORE_ADDR addr, int len)
   return 0;
 }
 
-int
+static int
 s390_remove_watchpoint (CORE_ADDR addr, int len)
 {
   struct watch_area *area, **parea;
@@ -350,10 +351,41 @@ s390_remove_watchpoint (CORE_ADDR addr, int len)
   return 0;
 }
 
-
-int
-kernel_u_size (void)
+static int
+s390_can_use_hw_breakpoint (int type, int cnt, int othertype)
 {
-  return sizeof (struct user);
+  return 1;
 }
 
+static int
+s390_region_size_ok_for_hw_watchpoint (int cnt)
+{
+  return 1;
+}
+
+
+void _initialize_s390_nat (void);
+
+void
+_initialize_s390_nat (void)
+{
+  struct target_ops *t;
+
+  /* Fill in the generic GNU/Linux methods.  */
+  t = linux_target ();
+
+  /* Add our register access methods.  */
+  t->to_fetch_registers = s390_linux_fetch_inferior_registers;
+  t->to_store_registers = s390_linux_store_inferior_registers;
+
+  /* Add our watchpoint methods.  */
+  t->to_can_use_hw_breakpoint = s390_can_use_hw_breakpoint;
+  t->to_region_size_ok_for_hw_watchpoint = s390_region_size_ok_for_hw_watchpoint;
+  t->to_have_continuable_watchpoint = 1;
+  t->to_stopped_by_watchpoint = s390_stopped_by_watchpoint;
+  t->to_insert_watchpoint = s390_insert_watchpoint;
+  t->to_remove_watchpoint = s390_remove_watchpoint;
+
+  /* Register the target.  */
+  add_target (t);
+}

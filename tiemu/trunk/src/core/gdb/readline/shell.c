@@ -50,9 +50,10 @@
 #endif
 
 #include <fcntl.h>
-#if !defined (__MINGW32__)
+#ifdef HAVE_PWD_H
 #include <pwd.h>
-#else /* __MINGW32__ */
+#endif
+#if defined (__MINGW32__)
 #include <windows.h>
 #endif /* __MINGW32__ */
 
@@ -161,9 +162,11 @@ sh_get_home_dir ()
   struct passwd *entry;
 
   home_dir = (char *)NULL;
+#ifdef HAVE_GETPWUID
   entry = getpwuid (getuid ());
   if (entry)
     home_dir = entry->pw_dir;
+#endif
 #else
   home_dir = sh_get_env_value ("HOME");
 #endif /* !__MINGW32__ */
@@ -181,6 +184,7 @@ int
 sh_unset_nodelay_mode (fd)
      int fd;
 {
+#ifdef HAVE_FNCTL
   int flags, bflags;
 
   if ((flags = fcntl (fd, F_GETFL, 0)) < 0)
@@ -201,6 +205,7 @@ sh_unset_nodelay_mode (fd)
       flags &= ~bflags;
       return (fcntl (fd, F_SETFL, flags));
     }
+#endif
 
   return 0;
 }

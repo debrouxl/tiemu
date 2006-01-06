@@ -1,6 +1,7 @@
 /* DWARF 2 debugging format support for GDB.
+
    Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003,
-   2004
+   2004, 2005
    Free Software Foundation, Inc.
 
    Adapted by Gary Funck (gary@intrepid.com), Intrepid Technology,
@@ -219,43 +220,40 @@ asection *dwarf_eh_frame_section;
 /* The data in a compilation unit header, after target2host
    translation, looks like this.  */
 struct comp_unit_head
-  {
-    unsigned long length;
-    short version;
-    unsigned int abbrev_offset;
-    unsigned char addr_size;
-    unsigned char signed_addr_p;
-    unsigned int offset_size;	/* size of file offsets; either 4 or 8 */
-    unsigned int initial_length_size; /* size of the length field; either
-                                         4 or 12 */
+{
+  unsigned long length;
+  short version;
+  unsigned int abbrev_offset;
+  unsigned char addr_size;
+  unsigned char signed_addr_p;
 
-    /* Offset to the first byte of this compilation unit header in the 
-     * .debug_info section, for resolving relative reference dies. */
+  /* Size of file offsets; either 4 or 8.  */
+  unsigned int offset_size;
 
-    unsigned int offset;
+  /* Size of the length field; either 4 or 12.  */
+  unsigned int initial_length_size;
 
-    /* Pointer to this compilation unit header in the .debug_info
-     * section */
+  /* Offset to the first byte of this compilation unit header in the
+     .debug_info section, for resolving relative reference dies.  */
+  unsigned int offset;
 
-    char *cu_head_ptr;
+  /* Pointer to this compilation unit header in the .debug_info
+     section.  */
+  char *cu_head_ptr;
 
-    /* Pointer to the first die of this compilatio unit.  This will
-     * be the first byte following the compilation unit header. */
+  /* Pointer to the first die of this compilation unit.  This will be
+     the first byte following the compilation unit header.  */
+  char *first_die_ptr;
 
-    char *first_die_ptr;
+  /* Pointer to the next compilation unit header in the program.  */
+  struct comp_unit_head *next;
 
-    /* Pointer to the next compilation unit header in the program. */
+  /* Base address of this compilation unit.  */
+  CORE_ADDR base_address;
 
-    struct comp_unit_head *next;
-
-    /* Base address of this compilation unit.  */
-
-    CORE_ADDR base_address;
-
-    /* Non-zero if base_address has been set.  */
-
-    int base_known;
-  };
+  /* Non-zero if base_address has been set.  */
+  int base_known;
+};
 
 /* Fixed size for the DIE hash table.  */
 #ifndef REF_HASH_SIZE
@@ -582,15 +580,6 @@ struct dwarf_block
 /* A zeroed version of a partial die for initialization purposes.  */
 static struct partial_die_info zeroed_partial_die;
 
-/* FIXME: decode_locdesc sets these variables to describe the location
-   to the caller.  These ought to be a structure or something.   If
-   none of the flags are set, the object lives at the address returned
-   by decode_locdesc.  */
-
-static int isreg;		/* Object lives in register.
-				   decode_locdesc's return value is
-				   the register number.  */
-
 /* FIXME: We might want to set this from BFD via bfd_arch_bits_per_byte,
    but this would require a corresponding change in unpack_field_as_long
    and friends.  */
@@ -661,6 +650,15 @@ static struct dwarf2_queue_item *dwarf2_queue, *dwarf2_queue_tail;
    sizes of up to at least twenty will improve startup time for
    typical inter-CU-reference binaries, at an obvious memory cost.  */
 static int dwarf2_max_cache_age = 5;
+static void
+show_dwarf2_max_cache_age (struct ui_file *file, int from_tty,
+			   struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("\
+The upper bound on the age of cached dwarf2 compilation units is %s.\n"),
+		    value);
+}
+
 
 /* Various complaints about symbol reading that don't abort the process */
 
@@ -668,13 +666,13 @@ static void
 dwarf2_statement_list_fits_in_line_number_section_complaint (void)
 {
   complaint (&symfile_complaints,
-	     "statement list doesn't fit in .debug_line section");
+	     _("statement list doesn't fit in .debug_line section"));
 }
 
 static void
 dwarf2_complex_location_expr_complaint (void)
 {
-  complaint (&symfile_complaints, "location expression too complex");
+  complaint (&symfile_complaints, _("location expression too complex"));
 }
 
 static void
@@ -682,7 +680,7 @@ dwarf2_const_value_length_mismatch_complaint (const char *arg1, int arg2,
 					      int arg3)
 {
   complaint (&symfile_complaints,
-	     "const value length mismatch for '%s', got %d, expected %d", arg1,
+	     _("const value length mismatch for '%s', got %d, expected %d"), arg1,
 	     arg2, arg3);
 }
 
@@ -690,14 +688,14 @@ static void
 dwarf2_macros_too_long_complaint (void)
 {
   complaint (&symfile_complaints,
-	     "macro info runs off end of `.debug_macinfo' section");
+	     _("macro info runs off end of `.debug_macinfo' section"));
 }
 
 static void
 dwarf2_macro_malformed_definition_complaint (const char *arg1)
 {
   complaint (&symfile_complaints,
-	     "macro debug info contains a malformed macro definition:\n`%s'",
+	     _("macro debug info contains a malformed macro definition:\n`%s'"),
 	     arg1);
 }
 
@@ -705,7 +703,7 @@ static void
 dwarf2_invalid_attrib_class_complaint (const char *arg1, const char *arg2)
 {
   complaint (&symfile_complaints,
-	     "invalid attribute class or form for '%s' in '%s'", arg1, arg2);
+	     _("invalid attribute class or form for '%s' in '%s'"), arg1, arg2);
 }
 
 /* local function prototypes */
@@ -1263,7 +1261,7 @@ dwarf2_build_psymtabs_easy (struct objfile *objfile, int mainline)
 #endif
 
 /* Read in the comp unit header information from the debug_info at
-   info_ptr. */
+   info_ptr.  */
 
 static char *
 read_comp_unit_head (struct comp_unit_head *cu_header,
@@ -1284,7 +1282,7 @@ read_comp_unit_head (struct comp_unit_head *cu_header,
   signed_addr = bfd_get_sign_extend_vma (abfd);
   if (signed_addr < 0)
     internal_error (__FILE__, __LINE__,
-		    "read_comp_unit_head: dwarf from non elf file");
+		    _("read_comp_unit_head: dwarf from non elf file"));
   cu_header->signed_addr_p = signed_addr;
   return info_ptr;
 }
@@ -1298,21 +1296,21 @@ partial_read_comp_unit_head (struct comp_unit_head *header, char *info_ptr,
   info_ptr = read_comp_unit_head (header, info_ptr, abfd);
 
   if (header->version != 2)
-    error ("Dwarf Error: wrong version in compilation unit header "
-	   "(is %d, should be %d) [in module %s]", header->version,
+    error (_("Dwarf Error: wrong version in compilation unit header "
+	   "(is %d, should be %d) [in module %s]"), header->version,
 	   2, bfd_get_filename (abfd));
 
   if (header->abbrev_offset >= dwarf2_per_objfile->abbrev_size)
-    error ("Dwarf Error: bad offset (0x%lx) in compilation unit header "
-	   "(offset 0x%lx + 6) [in module %s]",
+    error (_("Dwarf Error: bad offset (0x%lx) in compilation unit header "
+	   "(offset 0x%lx + 6) [in module %s]"),
 	   (long) header->abbrev_offset,
 	   (long) (beg_of_comp_unit - dwarf2_per_objfile->info_buffer),
 	   bfd_get_filename (abfd));
 
   if (beg_of_comp_unit + header->length + header->initial_length_size
       > dwarf2_per_objfile->info_buffer + dwarf2_per_objfile->info_size)
-    error ("Dwarf Error: bad length (0x%lx) in compilation unit header "
-	   "(offset 0x%lx + 0) [in module %s]",
+    error (_("Dwarf Error: bad length (0x%lx) in compilation unit header "
+	   "(offset 0x%lx + 0) [in module %s]"),
 	   (long) header->length,
 	   (long) (beg_of_comp_unit - dwarf2_per_objfile->info_buffer),
 	   bfd_get_filename (abfd));
@@ -1535,15 +1533,15 @@ dwarf2_build_psymtabs_hard (struct objfile *objfile, int mainline)
          also happen.) This happens in VxWorks.  */
       free_named_symtabs (pst->filename);
 
+      info_ptr = beg_of_comp_unit + cu.header.length
+                                  + cu.header.initial_length_size;
+
       if (comp_unit_die.has_stmt_list)
         {
           /* Get the list of files included in the current compilation unit,
              and build a psymtab for each of them.  */
           dwarf2_build_include_psymtabs (&cu, &comp_unit_die, pst);
         }
-
-      info_ptr = beg_of_comp_unit + cu.header.length
-                                  + cu.header.initial_length_size;
 
       do_cleanups (back_to_inner);
     }
@@ -1634,6 +1632,7 @@ create_all_comp_units (struct objfile *objfile)
 
       /* Read just enough information to find out where the next
 	 compilation unit is.  */
+      cu_header.initial_length_size = 0;
       cu_header.length = read_initial_length (objfile->obfd, info_ptr,
 					      &cu_header, &bytes_read);
 
@@ -1821,7 +1820,7 @@ partial_die_parent_scope (struct partial_die_info *pdi,
 	 function-local names?  For partial symbols, we should probably be
 	 ignoring them.  */
       complaint (&symfile_complaints,
-		 "unhandled containing DIE tag %d for DIE at %d",
+		 _("unhandled containing DIE tag %d for DIE at %d"),
 		 parent->tag, pdi->offset);
       parent->scope = grandparent_scope;
     }
@@ -2125,7 +2124,7 @@ add_partial_enumeration (struct partial_die_info *enum_pdi,
   while (pdi)
     {
       if (pdi->tag != DW_TAG_enumerator || pdi->name == NULL)
-	complaint (&symfile_complaints, "malformed enumerator DIE ignored");
+	complaint (&symfile_complaints, _("malformed enumerator DIE ignored"));
       else
 	add_partial_symbol (pdi, cu);
       pdi = pdi->die_sibling;
@@ -2152,7 +2151,7 @@ peek_die_abbrev (char *info_ptr, int *bytes_read, struct dwarf2_cu *cu)
   abbrev = dwarf2_lookup_abbrev (abbrev_number, cu);
   if (!abbrev)
     {
-      error ("Dwarf Error: Could not find abbrev number %d [in module %s]", abbrev_number,
+      error (_("Dwarf Error: Could not find abbrev number %d [in module %s]"), abbrev_number,
 		      bfd_get_filename (abfd));
     }
 
@@ -2202,7 +2201,7 @@ skip_one_die (char *info_ptr, struct abbrev_info *abbrev,
 	  read_attribute (&attr, &abbrev->attrs[i],
 			  abfd, info_ptr, cu);
 	  if (attr.form == DW_FORM_ref_addr)
-	    complaint (&symfile_complaints, "ignoring absolute DW_AT_sibling");
+	    complaint (&symfile_complaints, _("ignoring absolute DW_AT_sibling"));
 	  else
 	    return dwarf2_per_objfile->info_buffer
 	      + dwarf2_get_ref_die_offset (&attr, cu);
@@ -2267,7 +2266,7 @@ skip_one_die (char *info_ptr, struct abbrev_info *abbrev,
 	  goto skip_attribute;
 
 	default:
-	  error ("Dwarf Error: Cannot handle %s in DWARF reader [in module %s]",
+	  error (_("Dwarf Error: Cannot handle %s in DWARF reader [in module %s]"),
 		 dwarf_form_name (form),
 		 bfd_get_filename (abfd));
 	}
@@ -2311,13 +2310,13 @@ dwarf2_psymtab_to_symtab (struct partial_symtab *pst)
     {
       if (pst->readin)
 	{
-	  warning ("bug: psymtab for %s is already read in.", pst->filename);
+	  warning (_("bug: psymtab for %s is already read in."), pst->filename);
 	}
       else
 	{
 	  if (info_verbose)
 	    {
-	      printf_filtered ("Reading in symbols for %s...", pst->filename);
+	      printf_filtered (_("Reading in symbols for %s..."), pst->filename);
 	      gdb_flush (gdb_stdout);
 	    }
 
@@ -2329,7 +2328,7 @@ dwarf2_psymtab_to_symtab (struct partial_symtab *pst)
 
 	  /* Finish up the debug error message.  */
 	  if (info_verbose)
-	    printf_filtered ("done.\n");
+	    printf_filtered (_("done.\n"));
 	}
     }
 }
@@ -2440,6 +2439,7 @@ psymtab_to_symtab_1 (struct partial_symtab *pst)
         /* Inform about additional files that need to be read in.  */
         if (info_verbose)
           {
+	    /* FIXME: i18n: Need to make this a single string.  */
             fputs_filtered (" ", gdb_stdout);
             wrap_here ("");
             fputs_filtered ("and ", gdb_stdout);
@@ -3066,7 +3066,7 @@ dwarf2_get_pc_bounds (struct die_info *die, CORE_ADDR *lowpc,
 	  if (offset >= dwarf2_per_objfile->ranges_size)
 	    {
 	      complaint (&symfile_complaints,
-	                 "Offset %d out of bounds for DW_AT_ranges attribute",
+	                 _("Offset %d out of bounds for DW_AT_ranges attribute"),
 			 offset);
 	      return 0;
 	    }
@@ -3118,7 +3118,7 @@ dwarf2_get_pc_bounds (struct die_info *die, CORE_ADDR *lowpc,
 		  /* We have no valid base address for the ranges
 		     data.  */
 		  complaint (&symfile_complaints,
-			     "Invalid .debug_ranges data (no base address)");
+			     _("Invalid .debug_ranges data (no base address)"));
 		  return 0;
 		}
 
@@ -3474,7 +3474,7 @@ dwarf2_attach_fields_to_type (struct field_info *fip, struct type *type,
 	default:
 	  /* Unknown accessibility.  Complain and treat it as public.  */
 	  {
-	    complaint (&symfile_complaints, "unsupported accessibility %d",
+	    complaint (&symfile_complaints, _("unsupported accessibility %d"),
 		       fip->fields->accessibility);
 	  }
 	  break;
@@ -3583,7 +3583,7 @@ dwarf2_add_member_fn (struct field_info *fip, struct die_info *die,
 	fnp->voffset = VOFFSET_STATIC;
     }
   else
-    complaint (&symfile_complaints, "member function type missing for '%s'",
+    complaint (&symfile_complaints, _("member function type missing for '%s'"),
 	       physname);
 
   /* Get fcontext from DW_AT_containing_type if present.  */
@@ -3846,13 +3846,35 @@ read_structure_type (struct die_info *die, struct dwarf2_cu *cu)
 		  /* Complain if virtual function table field not found.  */
 		  if (i < TYPE_N_BASECLASSES (t))
 		    complaint (&symfile_complaints,
-			       "virtual function table pointer not found when defining class '%s'",
+			       _("virtual function table pointer not found when defining class '%s'"),
 			       TYPE_TAG_NAME (type) ? TYPE_TAG_NAME (type) :
 			       "");
 		}
 	      else
 		{
 		  TYPE_VPTR_FIELDNO (type) = TYPE_VPTR_FIELDNO (t);
+		}
+	    }
+	  else if (cu->producer
+		   && strncmp (cu->producer,
+			       "IBM(R) XL C/C++ Advanced Edition", 32) == 0)
+	    {
+	      /* The IBM XLC compiler does not provide direct indication
+	         of the containing type, but the vtable pointer is
+	         always named __vfp.  */
+
+	      int i;
+
+	      for (i = TYPE_NFIELDS (type) - 1;
+		   i >= TYPE_N_BASECLASSES (type);
+		   --i)
+		{
+		  if (strcmp (TYPE_FIELD_NAME (type, i), "__vfp") == 0)
+		    {
+		      TYPE_VPTR_FIELDNO (type) = i;
+		      TYPE_VPTR_BASETYPE (type) = type;
+		      break;
+		    }
 		}
 	    }
 	}
@@ -4400,7 +4422,7 @@ read_tag_pointer_type (struct die_info *die, struct dwarf2_cu *cu)
 	}
       else if (TYPE_LENGTH (type) != byte_size)
 	{
-	  complaint (&symfile_complaints, "invalid pointer size %d", byte_size);
+	  complaint (&symfile_complaints, _("invalid pointer size %d"), byte_size);
 	}
       else {
 	/* Should we also complain about unhandled address classes?  */
@@ -4717,7 +4739,7 @@ read_base_type (struct die_info *die, struct dwarf2_cu *cu)
 	  type_flags |= TYPE_FLAG_UNSIGNED;
 	  break;
 	default:
-	  complaint (&symfile_complaints, "unsupported DW_AT_encoding: '%s'",
+	  complaint (&symfile_complaints, _("unsupported DW_AT_encoding: '%s'"),
 		     dwarf_type_encoding_name (encoding));
 	  break;
 	}
@@ -4764,7 +4786,7 @@ read_subrange_type (struct die_info *die, struct dwarf2_cu *cu)
   if (base_type == NULL)
     {
       complaint (&symfile_complaints,
-                "DW_AT_type missing from DW_TAG_subrange_type");
+                _("DW_AT_type missing from DW_TAG_subrange_type"));
       return;
     }
 
@@ -4945,7 +4967,7 @@ dwarf2_read_section (struct objfile *objfile, asection *sectp)
 
   if (bfd_seek (abfd, sectp->filepos, SEEK_SET) != 0
       || bfd_bread (buf, size, abfd) != size)
-    error ("Dwarf Error: Can't read DWARF data from '%s'",
+    error (_("Dwarf Error: Can't read DWARF data from '%s'"),
 	   bfd_get_filename (abfd));
 
   return buf;
@@ -5232,7 +5254,7 @@ load_partial_dies (bfd *abfd, char *info_ptr, int building_psymtab,
 	  && parent_die->has_specification == 0)
 	{
 	  if (part_die->name == NULL)
-	    complaint (&symfile_complaints, "malformed enumerator DIE ignored");
+	    complaint (&symfile_complaints, _("malformed enumerator DIE ignored"));
 	  else if (building_psymtab)
 	    add_psymbol_to_list (part_die->name, strlen (part_die->name),
 				 VAR_DOMAIN, LOC_CONST,
@@ -5412,7 +5434,7 @@ read_partial_die (struct partial_die_info *part_die,
 	  /* Ignore absolute siblings, they might point outside of
 	     the current compile unit.  */
 	  if (attr.form == DW_FORM_ref_addr)
-	    complaint (&symfile_complaints, "ignoring absolute DW_AT_sibling");
+	    complaint (&symfile_complaints, _("ignoring absolute DW_AT_sibling"));
 	  else
 	    part_die->sibling = dwarf2_per_objfile->info_buffer
 	      + dwarf2_get_ref_die_offset (&attr, cu);
@@ -5455,7 +5477,7 @@ find_partial_die_in_comp_unit (unsigned long offset, struct dwarf2_cu *cu)
 
   if (lookup_die == NULL)
     internal_error (__FILE__, __LINE__,
-		    "could not find partial DIE in cache\n");
+		    _("could not find partial DIE in cache\n"));
 
   return lookup_die;
 }
@@ -5556,7 +5578,7 @@ read_full_die (struct die_info **diep, bfd *abfd, char *info_ptr,
   abbrev = dwarf2_lookup_abbrev (abbrev_number, cu);
   if (!abbrev)
     {
-      error ("Dwarf Error: could not find abbrev number %d [in module %s]",
+      error (_("Dwarf Error: could not find abbrev number %d [in module %s]"),
 	     abbrev_number,
 	     bfd_get_filename (abfd));
     }
@@ -5728,7 +5750,7 @@ read_attribute_value (struct attribute *attr, unsigned form,
       info_ptr = read_attribute_value (attr, form, abfd, info_ptr, cu);
       break;
     default:
-      error ("Dwarf Error: Cannot handle %s in DWARF reader [in module %s]",
+      error (_("Dwarf Error: Cannot handle %s in DWARF reader [in module %s]"),
 	     dwarf_form_name (form),
 	     bfd_get_filename (abfd));
     }
@@ -5810,7 +5832,7 @@ read_address (bfd *abfd, char *buf, struct dwarf2_cu *cu, int *bytes_read)
 	  break;
 	default:
 	  internal_error (__FILE__, __LINE__,
-			  "read_address: bad switch, signed [in module %s]",
+			  _("read_address: bad switch, signed [in module %s]"),
 			  bfd_get_filename (abfd));
 	}
     }
@@ -5829,7 +5851,7 @@ read_address (bfd *abfd, char *buf, struct dwarf2_cu *cu, int *bytes_read)
 	  break;
 	default:
 	  internal_error (__FILE__, __LINE__,
-			  "read_address: bad switch, unsigned [in module %s]",
+			  _("read_address: bad switch, unsigned [in module %s]"),
 			  bfd_get_filename (abfd));
 	}
     }
@@ -5852,18 +5874,18 @@ read_address (bfd *abfd, char *buf, struct dwarf2_cu *cu, int *bytes_read)
    sense for the 32-bit format, this initial zero can be considered to
    be an escape value which indicates the presence of the older 64-bit
    format.  As written, the code can't detect (old format) lengths
-   greater than 4GB.  If it becomes necessary to handle lengths somewhat
-   larger than 4GB, we could allow other small values (such as the
-   non-sensical values of 1, 2, and 3) to also be used as escape values
-   indicating the presence of the old format.
+   greater than 4GB.  If it becomes necessary to handle lengths
+   somewhat larger than 4GB, we could allow other small values (such
+   as the non-sensical values of 1, 2, and 3) to also be used as
+   escape values indicating the presence of the old format.
 
-   The value returned via bytes_read should be used to increment
-   the relevant pointer after calling read_initial_length().
+   The value returned via bytes_read should be used to increment the
+   relevant pointer after calling read_initial_length().
    
    As a side effect, this function sets the fields initial_length_size
    and offset_size in cu_header to the values appropriate for the
    length field.  (The format of the initial length field determines
-   the width of file offsets to be fetched later with fetch_offset().)
+   the width of file offsets to be fetched later with read_offset().)
    
    [ Note:  read_initial_length() and read_offset() are based on the
      document entitled "DWARF Debugging Information Format", revision
@@ -5875,8 +5897,8 @@ read_address (bfd *abfd, char *buf, struct dwarf2_cu *cu, int *bytes_read)
      This document is only a draft and is subject to change.  (So beware.)
 
      Details regarding the older, non-standard 64-bit format were
-     determined empirically by examining 64-bit ELF files produced
-     by the SGI toolchain on an IRIX 6.5 machine.
+     determined empirically by examining 64-bit ELF files produced by
+     the SGI toolchain on an IRIX 6.5 machine.
 
      - Kevin, July 16, 2002
    ] */
@@ -5885,47 +5907,45 @@ static LONGEST
 read_initial_length (bfd *abfd, char *buf, struct comp_unit_head *cu_header,
                      int *bytes_read)
 {
-  LONGEST retval = 0;
+  LONGEST length = bfd_get_32 (abfd, (bfd_byte *) buf);
 
-  retval = bfd_get_32 (abfd, (bfd_byte *) buf);
-
-  if (retval == 0xffffffff)
+  if (length == 0xffffffff)
     {
-      retval = bfd_get_64 (abfd, (bfd_byte *) buf + 4);
+      length = bfd_get_64 (abfd, (bfd_byte *) buf + 4);
       *bytes_read = 12;
-      if (cu_header != NULL)
-	{
-	  cu_header->initial_length_size = 12;
-	  cu_header->offset_size = 8;
-	}
     }
-  else if (retval == 0)
+  else if (length == 0)
     {
-      /* Handle (non-standard) 64-bit DWARF2 formats such as that used
-         by IRIX.  */
-      retval = bfd_get_64 (abfd, (bfd_byte *) buf);
+      /* Handle the (non-standard) 64-bit DWARF2 format used by IRIX.  */
+      length = bfd_get_64 (abfd, (bfd_byte *) buf);
       *bytes_read = 8;
-      if (cu_header != NULL)
-	{
-	  cu_header->initial_length_size = 8;
-	  cu_header->offset_size = 8;
-	}
     }
   else
     {
       *bytes_read = 4;
-      if (cu_header != NULL)
-	{
-	  cu_header->initial_length_size = 4;
-	  cu_header->offset_size = 4;
-	}
     }
 
- return retval;
+  if (cu_header)
+    {
+      gdb_assert (cu_header->initial_length_size == 0
+		  || cu_header->initial_length_size == 4
+		  || cu_header->initial_length_size == 8
+		  || cu_header->initial_length_size == 12);
+
+      if (cu_header->initial_length_size != 0
+	  && cu_header->initial_length_size != *bytes_read)
+	complaint (&symfile_complaints,
+		   _("intermixed 32-bit and 64-bit DWARF sections"));
+
+      cu_header->initial_length_size = *bytes_read;
+      cu_header->offset_size = (*bytes_read == 4) ? 4 : 8;
+    }
+
+  return length;
 }
 
 /* Read an offset from the data stream.  The size of the offset is
-   given by cu_header->offset_size. */
+   given by cu_header->offset_size.  */
 
 static LONGEST
 read_offset (bfd *abfd, char *buf, const struct comp_unit_head *cu_header,
@@ -5945,11 +5965,11 @@ read_offset (bfd *abfd, char *buf, const struct comp_unit_head *cu_header,
       break;
     default:
       internal_error (__FILE__, __LINE__,
-		      "read_offset: bad switch [in module %s]",
+		      _("read_offset: bad switch [in module %s]"),
 		      bfd_get_filename (abfd));
     }
 
- return retval;
+  return retval;
 }
 
 static char *
@@ -5988,13 +6008,13 @@ read_indirect_string (bfd *abfd, char *buf,
 
   if (dwarf2_per_objfile->str_buffer == NULL)
     {
-      error ("DW_FORM_strp used without .debug_str section [in module %s]",
+      error (_("DW_FORM_strp used without .debug_str section [in module %s]"),
 		      bfd_get_filename (abfd));
       return NULL;
     }
   if (str_offset >= dwarf2_per_objfile->str_size)
     {
-      error ("DW_FORM_strp pointing outside of .debug_str section [in module %s]",
+      error (_("DW_FORM_strp pointing outside of .debug_str section [in module %s]"),
 		      bfd_get_filename (abfd));
       return NULL;
     }
@@ -6036,12 +6056,11 @@ static long
 read_signed_leb128 (bfd *abfd, char *buf, unsigned int *bytes_read_ptr)
 {
   long result;
-  int i, shift, size, num_read;
+  int i, shift, num_read;
   unsigned char byte;
 
   result = 0;
   shift = 0;
-  size = 32;
   num_read = 0;
   i = 0;
   while (1)
@@ -6056,10 +6075,8 @@ read_signed_leb128 (bfd *abfd, char *buf, unsigned int *bytes_read_ptr)
 	  break;
 	}
     }
-  if ((shift < size) && (byte & 0x40))
-    {
-      result |= -(1 << shift);
-    }
+  if ((shift < 8 * sizeof (result)) && (byte & 0x40))
+    result |= -(((long)1) << shift);
   *bytes_read_ptr = num_read;
   return result;
 }
@@ -6279,12 +6296,12 @@ dwarf_decode_line_header (unsigned int offset, bfd *abfd,
 
   if (dwarf2_per_objfile->line_buffer == NULL)
     {
-      complaint (&symfile_complaints, "missing .debug_line section");
+      complaint (&symfile_complaints, _("missing .debug_line section"));
       return 0;
     }
 
-  /* Make sure that at least there's room for the total_length field.  That
-     could be 12 bytes long, but we're just going to fudge that.  */
+  /* Make sure that at least there's room for the total_length field.
+     That could be 12 bytes long, but we're just going to fudge that.  */
   if (offset + 4 >= dwarf2_per_objfile->line_size)
     {
       dwarf2_statement_list_fits_in_line_number_section_complaint ();
@@ -6298,8 +6315,9 @@ dwarf_decode_line_header (unsigned int offset, bfd *abfd,
 
   line_ptr = dwarf2_per_objfile->line_buffer + offset;
 
-  /* read in the header */
-  lh->total_length = read_initial_length (abfd, line_ptr, NULL, &bytes_read);
+  /* Read in the header.  */
+  lh->total_length = 
+    read_initial_length (abfd, line_ptr, &cu->header, &bytes_read);
   line_ptr += bytes_read;
   if (line_ptr + lh->total_length > (dwarf2_per_objfile->line_buffer
 				     + dwarf2_per_objfile->line_size))
@@ -6332,7 +6350,7 @@ dwarf_decode_line_header (unsigned int offset, bfd *abfd,
       line_ptr += 1;
     }
 
-  /* Read directory table  */
+  /* Read directory table.  */
   while ((cur_dir = read_string (abfd, line_ptr, &bytes_read)) != NULL)
     {
       line_ptr += bytes_read;
@@ -6340,7 +6358,7 @@ dwarf_decode_line_header (unsigned int offset, bfd *abfd,
     }
   line_ptr += bytes_read;
 
-  /* Read file name table */
+  /* Read file name table.  */
   while ((cur_file = read_string (abfd, line_ptr, &bytes_read)) != NULL)
     {
       unsigned int dir_index, mod_time, length;
@@ -6361,7 +6379,7 @@ dwarf_decode_line_header (unsigned int offset, bfd *abfd,
   if (line_ptr > (dwarf2_per_objfile->line_buffer
 		  + dwarf2_per_objfile->line_size))
     complaint (&symfile_complaints,
-	       "line number info header doesn't fit in `.debug_line' section");
+	       _("line number info header doesn't fit in `.debug_line' section"));
 
   discard_cleanups (back_to);
   return lh;
@@ -6407,7 +6425,7 @@ check_cu_functions (CORE_ADDR address, struct dwarf2_cu *cu)
     return address;
   if (address != fn->lowpc)
     complaint (&symfile_complaints,
-	       "misplaced first line number at 0x%lx for '%s'",
+	       _("misplaced first line number at 0x%lx for '%s'"),
 	       (unsigned long) address, fn->name);
   fn->seen_line = 1;
   return fn->lowpc;
@@ -6468,6 +6486,7 @@ dwarf_decode_lines (struct line_header *lh, char *comp_dir, bfd *abfd,
 	     are 1-based.  */
           struct file_entry *fe = &lh->file_names[file - 1];
           char *dir;
+
           if (fe->dir_index)
             dir = lh->include_dirs[fe->dir_index - 1];
           else
@@ -6475,14 +6494,15 @@ dwarf_decode_lines (struct line_header *lh, char *comp_dir, bfd *abfd,
 	  dwarf2_start_subfile (fe->name, dir);
 	}
 
-      /* Decode the table. */
+      /* Decode the table.  */
       while (!end_sequence)
 	{
 	  op_code = read_1_byte (abfd, line_ptr);
 	  line_ptr += 1;
 
 	  if (op_code >= lh->opcode_base)
-	    {		/* Special operand.  */
+	    {		
+	      /* Special operand.  */
 	      adj_opcode = op_code - lh->opcode_base;
 	      address += (adj_opcode / lh->line_range)
 		* lh->minimum_instruction_length;
@@ -6490,7 +6510,7 @@ dwarf_decode_lines (struct line_header *lh, char *comp_dir, bfd *abfd,
               lh->file_names[file - 1].included_p = 1;
               if (!decode_for_pst_p)
                 {
-	          /* append row to matrix using current values */
+	          /* Append row to matrix using current values.  */
 	          record_line (current_subfile, line, 
 	                       check_cu_functions (address, cu));
                 }
@@ -6537,7 +6557,7 @@ dwarf_decode_lines (struct line_header *lh, char *comp_dir, bfd *abfd,
 		  break;
 		default:
 		  complaint (&symfile_complaints,
-			     "mangled .debug_line section");
+			     _("mangled .debug_line section"));
 		  return;
 		}
 	      break;
@@ -6559,11 +6579,12 @@ dwarf_decode_lines (struct line_header *lh, char *comp_dir, bfd *abfd,
 	      break;
 	    case DW_LNS_set_file:
               {
-                /* lh->include_dirs and lh->file_names are 0-based,
-                   but the directory and file name numbers in the
-                   statement program are 1-based.  */
+                /* The arrays lh->include_dirs and lh->file_names are
+                   0-based, but the directory and file name numbers in
+                   the statement program are 1-based.  */
                 struct file_entry *fe;
                 char *dir;
+
                 file = read_unsigned_leb128 (abfd, line_ptr, &bytes_read);
                 line_ptr += bytes_read;
                 fe = &lh->file_names[file - 1];
@@ -6587,9 +6608,9 @@ dwarf_decode_lines (struct line_header *lh, char *comp_dir, bfd *abfd,
 	      break;
 	    /* Add to the address register of the state machine the
 	       address increment value corresponding to special opcode
-	       255.  Ie, this value is scaled by the minimum instruction
-	       length since special opcode 255 would have scaled the
-	       the increment.  */
+	       255.  I.e., this value is scaled by the minimum
+	       instruction length since special opcode 255 would have
+	       scaled the the increment.  */
 	    case DW_LNS_const_add_pc:
 	      address += (lh->minimum_instruction_length
 			  * ((255 - lh->opcode_base) / lh->line_range));
@@ -6599,8 +6620,10 @@ dwarf_decode_lines (struct line_header *lh, char *comp_dir, bfd *abfd,
 	      line_ptr += 2;
 	      break;
 	    default:
-	      {  /* Unknown standard opcode, ignore it.  */
+	      {
+		/* Unknown standard opcode, ignore it.  */
 		int i;
+
 		for (i = 0; i < lh->standard_opcode_lengths[op_code]; i++)
 		  {
 		    (void) read_unsigned_leb128 (abfd, line_ptr, &bytes_read);
@@ -6620,9 +6643,29 @@ dwarf_decode_lines (struct line_header *lh, char *comp_dir, bfd *abfd,
       for (file_index = 0; file_index < lh->num_file_names; file_index++)
         if (lh->file_names[file_index].included_p == 1)
           {
-            char *include_name = lh->file_names [file_index].name;
-    
-            if (strcmp (include_name, pst->filename) != 0)
+            const struct file_entry fe = lh->file_names [file_index];
+            char *include_name = fe.name;
+            char *dir_name = NULL;
+            char *pst_filename = pst->filename;
+
+            if (fe.dir_index)
+              dir_name = lh->include_dirs[fe.dir_index - 1];
+
+            if (!IS_ABSOLUTE_PATH (include_name) && dir_name != NULL)
+              {
+                include_name = concat (dir_name, SLASH_STRING,
+				       include_name, (char *)NULL);
+                make_cleanup (xfree, include_name);
+              }
+
+            if (!IS_ABSOLUTE_PATH (pst_filename) && pst->dirname != NULL)
+              {
+                pst_filename = concat (pst->dirname, SLASH_STRING,
+				       pst_filename, (char *)NULL);
+                make_cleanup (xfree, pst_filename);
+              }
+
+            if (strcmp (include_name, pst_filename) != 0)
               dwarf2_create_include_psymtab (include_name, pst, objfile);
           }
     }
@@ -6657,7 +6700,7 @@ dwarf2_start_subfile (char *filename, char *dirname)
   if (!IS_ABSOLUTE_PATH (filename) && dirname != NULL)
     {
       struct subfile *subfile;
-      char *fullname = concat (dirname, "/", filename, NULL);
+      char *fullname = concat (dirname, "/", filename, (char *)NULL);
 
       for (subfile = subfiles; subfile; subfile = subfile->next)
 	{
@@ -6931,7 +6974,7 @@ new_symbol (struct die_info *die, struct type *type, struct dwarf2_cu *cu)
 		   this objfile, so we don't need to duplicate it for
 		   the type.  */
 		if (TYPE_NAME (SYMBOL_TYPE (sym)) == 0)
-		  TYPE_NAME (SYMBOL_TYPE (sym)) = SYMBOL_NATURAL_NAME (sym);
+		  TYPE_NAME (SYMBOL_TYPE (sym)) = SYMBOL_SEARCH_NAME (sym);
 		add_symbol_to_list (typedef_sym, list_to_add);
 	      }
 	  }
@@ -6990,7 +7033,7 @@ new_symbol (struct die_info *die, struct type *type, struct dwarf2_cu *cu)
 	     trash data, but since we must specifically ignore things
 	     we don't recognize, there is nothing else we should do at
 	     this point. */
-	  complaint (&symfile_complaints, "unsupported tag: '%s'",
+	  complaint (&symfile_complaints, _("unsupported tag: '%s'"),
 		     dwarf_tag_name (die->tag));
 	  break;
 	}
@@ -7070,7 +7113,7 @@ dwarf2_const_value (struct attribute *attr, struct symbol *sym,
 
     default:
       complaint (&symfile_complaints,
-		 "unsupported const value attribute form: '%s'",
+		 _("unsupported const value attribute form: '%s'"),
 		 dwarf_form_name (attr->form));
       SYMBOL_VALUE (sym) = 0;
       SYMBOL_CLASS (sym) = LOC_CONST;
@@ -7123,7 +7166,7 @@ die_type (struct die_info *die, struct dwarf2_cu *cu)
   if (!type)
     {
       dump_die (type_die);
-      error ("Dwarf Error: Problem turning type die at offset into gdb type [in module %s]",
+      error (_("Dwarf Error: Problem turning type die at offset into gdb type [in module %s]"),
 		      cu->objfile->name);
     }
   return type;
@@ -7149,7 +7192,7 @@ die_containing_type (struct die_info *die, struct dwarf2_cu *cu)
     {
       if (type_die)
 	dump_die (type_die);
-      error ("Dwarf Error: Problem turning containing type into gdb type [in module %s]", 
+      error (_("Dwarf Error: Problem turning containing type into gdb type [in module %s]"), 
 		      cu->objfile->name);
     }
   return type;
@@ -7168,7 +7211,7 @@ tag_type_to_type (struct die_info *die, struct dwarf2_cu *cu)
       if (!die->type)
 	{
 	  dump_die (die);
-	  error ("Dwarf Error: Cannot find type of die [in module %s]", 
+	  error (_("Dwarf Error: Cannot find type of die [in module %s]"), 
 			  cu->objfile->name);
 	}
       return die->type;
@@ -7228,7 +7271,7 @@ read_type_die (struct die_info *die, struct dwarf2_cu *cu)
       read_base_type (die, cu);
       break;
     default:
-      complaint (&symfile_complaints, "unexepected tag in read_type_die: '%s'",
+      complaint (&symfile_complaints, _("unexepected tag in read_type_die: '%s'"),
 		 dwarf_tag_name (die->tag));
       break;
     }
@@ -8344,7 +8387,7 @@ dump_die (struct die_info *die)
 	case DW_FORM_ref_addr:
 	case DW_FORM_addr:
 	  fprintf_unfiltered (gdb_stderr, "address: ");
-	  print_address_numeric (DW_ADDR (&die->attrs[i]), 1, gdb_stderr);
+	  deprecated_print_address_numeric (DW_ADDR (&die->attrs[i]), 1, gdb_stderr);
 	  break;
 	case DW_FORM_block2:
 	case DW_FORM_block4:
@@ -8434,7 +8477,7 @@ dwarf2_get_ref_die_offset (struct attribute *attr, struct dwarf2_cu *cu)
       break;
     default:
       complaint (&symfile_complaints,
-		 "unsupported die ref attribute form: '%s'",
+		 _("unsupported die ref attribute form: '%s'"),
 		 dwarf_form_name (attr->form));
     }
   return result;
@@ -8456,7 +8499,7 @@ dwarf2_get_attr_constant_value (struct attribute *attr, int default_value)
     return DW_UNSND (attr);
   else
     {
-      complaint (&symfile_complaints, "Attribute value is not a constant (%s)",
+      complaint (&symfile_complaints, _("Attribute value is not a constant (%s)"),
                  dwarf_form_name (attr->form));
       return default_value;
     }
@@ -8494,8 +8537,8 @@ follow_die_ref (struct die_info *src_die, struct attribute *attr,
       die = die->next_ref;
     }
 
-  error ("Dwarf Error: Cannot find DIE at 0x%lx referenced from DIE "
-	 "at 0x%lx [in module %s]",
+  error (_("Dwarf Error: Cannot find DIE at 0x%lx referenced from DIE "
+	 "at 0x%lx [in module %s]"),
 	 (long) src_die->offset, (long) offset, cu->objfile->name);
 
   return NULL;
@@ -8507,7 +8550,7 @@ dwarf2_fundamental_type (struct objfile *objfile, int typeid,
 {
   if (typeid < 0 || typeid >= FT_NUM_MEMBERS)
     {
-      error ("Dwarf Error: internal error - invalid fundamental type id %d [in module %s]",
+      error (_("Dwarf Error: internal error - invalid fundamental type id %d [in module %s]"),
 	     typeid, objfile->name);
     }
 
@@ -8542,9 +8585,6 @@ dwarf2_fundamental_type (struct objfile *objfile, int typeid,
    callers will only want a very basic result and this can become a
    complaint.
 
-   When the result is a register number, the global isreg flag is set,
-   otherwise it is cleared.
-
    Note that stack[0] is unused except as a default error return.
    Note that stack overflow is not yet handled.  */
 
@@ -8564,7 +8604,6 @@ decode_locdesc (struct dwarf_block *blk, struct dwarf2_cu *cu)
   i = 0;
   stacki = 0;
   stack[stacki] = 0;
-  isreg = 0;
 
   while (i < size)
     {
@@ -8638,14 +8677,12 @@ decode_locdesc (struct dwarf_block *blk, struct dwarf2_cu *cu)
 	case DW_OP_reg29:
 	case DW_OP_reg30:
 	case DW_OP_reg31:
-	  isreg = 1;
 	  stack[++stacki] = op - DW_OP_reg0;
 	  if (i < size)
 	    dwarf2_complex_location_expr_complaint ();
 	  break;
 
 	case DW_OP_regx:
-	  isreg = 1;
 	  unsnd = read_unsigned_leb128 (NULL, (data + i), &bytes_read);
 	  i += bytes_read;
 	  stack[++stacki] = unsnd;
@@ -8741,7 +8778,7 @@ decode_locdesc (struct dwarf_block *blk, struct dwarf2_cu *cu)
           break;
 
 	default:
-	  complaint (&symfile_complaints, "unsupported stack op: '%s'",
+	  complaint (&symfile_complaints, _("unsupported stack op: '%s'"),
 		     dwarf_stack_op_name (op));
 	  return (stack[stacki]);
 	}
@@ -8793,32 +8830,51 @@ dwarf_alloc_die (void)
 static char *
 file_full_name (int file, struct line_header *lh, const char *comp_dir)
 {
-  struct file_entry *fe = &lh->file_names[file - 1];
+  /* Is the file number a valid index into the line header's file name
+     table?  Remember that file numbers start with one, not zero.  */
+  if (1 <= file && file <= lh->num_file_names)
+    {
+      struct file_entry *fe = &lh->file_names[file - 1];
   
-  if (IS_ABSOLUTE_PATH (fe->name))
-    return xstrdup (fe->name);
+      if (IS_ABSOLUTE_PATH (fe->name))
+        return xstrdup (fe->name);
+      else
+        {
+          const char *dir;
+          int dir_len;
+          char *full_name;
+
+          if (fe->dir_index)
+            dir = lh->include_dirs[fe->dir_index - 1];
+          else
+            dir = comp_dir;
+
+          if (dir)
+            {
+              dir_len = strlen (dir);
+              full_name = xmalloc (dir_len + 1 + strlen (fe->name) + 1);
+              strcpy (full_name, dir);
+              full_name[dir_len] = '/';
+              strcpy (full_name + dir_len + 1, fe->name);
+              return full_name;
+            }
+          else
+            return xstrdup (fe->name);
+        }
+    }
   else
     {
-      const char *dir;
-      int dir_len;
-      char *full_name;
+      /* The compiler produced a bogus file number.  We can at least
+         record the macro definitions made in the file, even if we
+         won't be able to find the file by name.  */
+      char fake_name[80];
+      sprintf (fake_name, "<bad macro file number %d>", file);
 
-      if (fe->dir_index)
-        dir = lh->include_dirs[fe->dir_index - 1];
-      else
-        dir = comp_dir;
+      complaint (&symfile_complaints, 
+                 _("bad file number in macro information (%d)"),
+                 file);
 
-      if (dir)
-        {
-          dir_len = strlen (dir);
-          full_name = xmalloc (dir_len + 1 + strlen (fe->name) + 1);
-          strcpy (full_name, dir);
-          full_name[dir_len] = '/';
-          strcpy (full_name + dir_len + 1, fe->name);
-          return full_name;
-        }
-      else
-        return xstrdup (fe->name);
+      return xstrdup (fake_name);
     }
 }
 
@@ -8870,7 +8926,7 @@ consume_improper_spaces (const char *p, const char *body)
   if (*p == ' ')
     {
       complaint (&symfile_complaints,
-		 "macro definition contains spaces in formal argument list:\n`%s'",
+		 _("macro definition contains spaces in formal argument list:\n`%s'"),
 		 body);
 
       while (*p == ' ')
@@ -9032,7 +9088,7 @@ dwarf_decode_macros (struct line_header *lh, unsigned int offset,
 
   if (dwarf2_per_objfile->macinfo_buffer == NULL)
     {
-      complaint (&symfile_complaints, "missing .debug_macinfo section");
+      complaint (&symfile_complaints, _("missing .debug_macinfo section"));
       return;
     }
 
@@ -9075,7 +9131,7 @@ dwarf_decode_macros (struct line_header *lh, unsigned int offset,
 
             if (! current_file)
 	      complaint (&symfile_complaints,
-			 "debug info gives macro %s outside of any file: %s",
+			 _("debug info gives macro %s outside of any file: %s"),
 			 macinfo_type ==
 			 DW_MACINFO_define ? "definition" : macinfo_type ==
 			 DW_MACINFO_undef ? "undefinition" :
@@ -9109,7 +9165,7 @@ dwarf_decode_macros (struct line_header *lh, unsigned int offset,
         case DW_MACINFO_end_file:
           if (! current_file)
 	    complaint (&symfile_complaints,
-		       "macro debug info has an unmatched `close_file' directive");
+		       _("macro debug info has an unmatched `close_file' directive"));
           else
             {
               current_file = current_file->included_by;
@@ -9134,7 +9190,7 @@ dwarf_decode_macros (struct line_header *lh, unsigned int offset,
                   next_type = read_1_byte (abfd, mac_ptr);
                   if (next_type != 0)
 		    complaint (&symfile_complaints,
-			       "no terminating 0-type entry for macros in `.debug_macinfo' section");
+			       _("no terminating 0-type entry for macros in `.debug_macinfo' section"));
 
                   return;
                 }
@@ -9190,7 +9246,7 @@ dwarf2_symbol_mark_computed (struct attribute *attr, struct symbol *sym,
       baton->base_address = cu->header.base_address;
       if (cu->header.base_known == 0)
 	complaint (&symfile_complaints,
-		   "Location list used without specifying the CU base address.");
+		   _("Location list used without specifying the CU base address."));
 
       SYMBOL_OPS (sym) = &dwarf2_loclist_funcs;
       SYMBOL_LOCATION_BATON (sym) = baton;
@@ -9250,8 +9306,8 @@ dwarf2_find_containing_comp_unit (unsigned long offset,
   if (dwarf2_per_objfile->all_comp_units[low]->offset > offset)
     {
       if (low == 0)
-	error ("Dwarf Error: could not find partial DIE containing "
-	       "offset 0x%lx [in module %s]",
+	error (_("Dwarf Error: could not find partial DIE containing "
+	       "offset 0x%lx [in module %s]"),
 	       (long) offset, bfd_get_filename (objfile->obfd));
 
       gdb_assert (dwarf2_per_objfile->all_comp_units[low-1]->offset <= offset);
@@ -9262,7 +9318,7 @@ dwarf2_find_containing_comp_unit (unsigned long offset,
       this_cu = dwarf2_per_objfile->all_comp_units[low];
       if (low == dwarf2_per_objfile->n_comp_units - 1
 	  && offset >= this_cu->offset + this_cu->length)
-	error ("invalid dwarf2 offset %ld", offset);
+	error (_("invalid dwarf2 offset %ld"), offset);
       gdb_assert (offset < this_cu->offset + this_cu->length);
       return this_cu;
     }
@@ -9277,7 +9333,7 @@ dwarf2_find_comp_unit (unsigned long offset, struct objfile *objfile)
   struct dwarf2_per_cu_data *this_cu;
   this_cu = dwarf2_find_containing_comp_unit (offset, objfile);
   if (this_cu->offset != offset)
-    error ("no compilation unit with offset %ld\n", offset);
+    error (_("no compilation unit with offset %ld."), offset);
   return this_cu;
 }
 
@@ -9639,31 +9695,27 @@ _initialize_dwarf2_read (void)
 {
   dwarf2_objfile_data_key = register_objfile_data ();
 
-  add_prefix_cmd ("dwarf2", class_maintenance, set_dwarf2_cmd,
-		  "Set DWARF 2 specific variables.\n"
-		  "Configure DWARF 2 variables such as the cache size",
+  add_prefix_cmd ("dwarf2", class_maintenance, set_dwarf2_cmd, _("\
+Set DWARF 2 specific variables.\n\
+Configure DWARF 2 variables such as the cache size"),
                   &set_dwarf2_cmdlist, "maintenance set dwarf2 ",
                   0/*allow-unknown*/, &maintenance_set_cmdlist);
 
-  add_prefix_cmd ("dwarf2", class_maintenance, show_dwarf2_cmd,
-		  "Show DWARF 2 specific variables\n"
-		  "Show DWARF 2 variables such as the cache size",
+  add_prefix_cmd ("dwarf2", class_maintenance, show_dwarf2_cmd, _("\
+Show DWARF 2 specific variables\n\
+Show DWARF 2 variables such as the cache size"),
                   &show_dwarf2_cmdlist, "maintenance show dwarf2 ",
                   0/*allow-unknown*/, &maintenance_show_cmdlist);
 
   add_setshow_zinteger_cmd ("max-cache-age", class_obscure,
-			    &dwarf2_max_cache_age,
-			    "Set the upper bound on the age of cached "
-			    "dwarf2 compilation units.",
-			    "Show the upper bound on the age of cached "
-			    "dwarf2 compilation units.",
-			    "A higher limit means that cached "
-			    "compilation units will be stored\n"
-			    "in memory longer, and more total memory will "
-			    "be used.  Zero disables\n"
-			    "caching, which can slow down startup.",
-			    "The upper bound on the age of cached "
-			    "dwarf2 compilation units is %d.",
-			    NULL, NULL, &set_dwarf2_cmdlist,
+			    &dwarf2_max_cache_age, _("\
+Set the upper bound on the age of cached dwarf2 compilation units."), _("\
+Show the upper bound on the age of cached dwarf2 compilation units."), _("\
+A higher limit means that cached compilation units will be stored\n\
+in memory longer, and more total memory will be used.  Zero disables\n\
+caching, which can slow down startup."),
+			    NULL,
+			    show_dwarf2_max_cache_age,
+			    &set_dwarf2_cmdlist,
 			    &show_dwarf2_cmdlist);
 }

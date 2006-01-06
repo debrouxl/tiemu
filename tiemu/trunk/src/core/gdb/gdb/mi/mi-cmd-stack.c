@@ -1,5 +1,5 @@
 /* MI Command Set - stack commands.
-   Copyright 2000, 2002, 2003, 2004 Free Software Foundation, Inc.
+   Copyright 2000, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
    Contributed by Cygnus Solutions (a Red Hat company).
 
    This file is part of GDB.
@@ -47,11 +47,8 @@ mi_cmd_stack_list_frames (char *command, char **argv, int argc)
   struct cleanup *cleanup_stack;
   struct frame_info *fi;
 
-  if (!target_has_stack)
-    error ("mi_cmd_stack_list_frames: No stack.");
-
   if (argc > 2 || argc == 1)
-    error ("mi_cmd_stack_list_frames: Usage: [FRAME_LOW FRAME_HIGH]");
+    error (_("mi_cmd_stack_list_frames: Usage: [FRAME_LOW FRAME_HIGH]"));
 
   if (argc == 2)
     {
@@ -74,7 +71,7 @@ mi_cmd_stack_list_frames (char *command, char **argv, int argc)
        i++, fi = get_prev_frame (fi));
 
   if (fi == NULL)
-    error ("mi_cmd_stack_list_frames: Not enough frames in stack.");
+    error (_("mi_cmd_stack_list_frames: Not enough frames in stack."));
 
   cleanup_stack = make_cleanup_ui_out_list_begin_end (uiout, "stack");
 
@@ -92,7 +89,7 @@ mi_cmd_stack_list_frames (char *command, char **argv, int argc)
 
   do_cleanups (cleanup_stack);
   if (i < frame_high)
-    error ("mi_cmd_stack_list_frames: Not enough frames in stack.");
+    error (_("mi_cmd_stack_list_frames: Not enough frames in stack."));
 
   return MI_CMD_DONE;
 }
@@ -104,11 +101,8 @@ mi_cmd_stack_info_depth (char *command, char **argv, int argc)
   int i;
   struct frame_info *fi;
 
-  if (!target_has_stack)
-    error ("mi_cmd_stack_info_depth: No stack.");
-
   if (argc > 1)
-    error ("mi_cmd_stack_info_depth: Usage: [MAX_DEPTH]");
+    error (_("mi_cmd_stack_info_depth: Usage: [MAX_DEPTH]"));
 
   if (argc == 1)
     frame_high = atoi (argv[0]);
@@ -137,21 +131,23 @@ mi_cmd_stack_list_locals (char *command, char **argv, int argc)
   enum print_values print_values;
 
   if (argc != 1)
-    error ("mi_cmd_stack_list_locals: Usage: PRINT_VALUES");
+    error (_("mi_cmd_stack_list_locals: Usage: PRINT_VALUES"));
 
-   frame = get_selected_frame ();
+   frame = get_selected_frame (NULL);
 
    if (strcmp (argv[0], "0") == 0
-       || strcmp (argv[0], "--no-values") == 0)
+       || strcmp (argv[0], mi_no_values) == 0)
      print_values = PRINT_NO_VALUES;
    else if (strcmp (argv[0], "1") == 0
-	    || strcmp (argv[0], "--all-values") == 0)
+	    || strcmp (argv[0], mi_all_values) == 0)
      print_values = PRINT_ALL_VALUES;
    else if (strcmp (argv[0], "2") == 0
-	    || strcmp (argv[0], "--simple-values") == 0)
+	    || strcmp (argv[0], mi_simple_values) == 0)
      print_values = PRINT_SIMPLE_VALUES;
    else
-     error ("Unknown value for PRINT_VALUES: must be: 0 or \"--no-values\", 1 or \"--all-values\", 2 or \"--simple-values\"");
+     error (_("Unknown value for PRINT_VALUES: must be: \
+0 or \"%s\", 1 or \"%s\", 2 or \"%s\""),
+	    mi_no_values, mi_all_values, mi_simple_values);
   list_args_or_locals (1, print_values, frame);
   return MI_CMD_DONE;
 }
@@ -169,7 +165,7 @@ mi_cmd_stack_list_args (char *command, char **argv, int argc)
   struct cleanup *cleanup_stack_args;
 
   if (argc < 1 || argc > 3 || argc == 2)
-    error ("mi_cmd_stack_list_args: Usage: PRINT_VALUES [FRAME_LOW FRAME_HIGH]");
+    error (_("mi_cmd_stack_list_args: Usage: PRINT_VALUES [FRAME_LOW FRAME_HIGH]"));
 
   if (argc == 3)
     {
@@ -192,7 +188,7 @@ mi_cmd_stack_list_args (char *command, char **argv, int argc)
        i++, fi = get_prev_frame (fi));
 
   if (fi == NULL)
-    error ("mi_cmd_stack_list_args: Not enough frames in stack.");
+    error (_("mi_cmd_stack_list_args: Not enough frames in stack."));
 
   cleanup_stack_args = make_cleanup_ui_out_list_begin_end (uiout, "stack-args");
 
@@ -212,7 +208,7 @@ mi_cmd_stack_list_args (char *command, char **argv, int argc)
 
   do_cleanups (cleanup_stack_args);
   if (i < frame_high)
-    error ("mi_cmd_stack_list_args: Not enough frames in stack.");
+    error (_("mi_cmd_stack_list_args: Not enough frames in stack."));
 
   return MI_CMD_DONE;
 }
@@ -329,16 +325,19 @@ list_args_or_locals (int locals, int values, struct frame_info *fi)
 enum mi_cmd_result
 mi_cmd_stack_select_frame (char *command, char **argv, int argc)
 {
-  if (!target_has_stack)
-    error ("mi_cmd_stack_select_frame: No stack.");
+  if (argc == 0 || argc > 1)
+    error (_("mi_cmd_stack_select_frame: Usage: FRAME_SPEC"));
 
-  if (argc > 1)
-    error ("mi_cmd_stack_select_frame: Usage: [FRAME_SPEC]");
+  select_frame_command (argv[0], 1 /* not used */ );
+  return MI_CMD_DONE;
+}
 
-  /* with no args, don't change frame */
-  if (argc == 0)
-    select_frame_command (0, 1 /* not used */ );
-  else
-    select_frame_command (argv[0], 1 /* not used */ );
+enum mi_cmd_result
+mi_cmd_stack_info_frame (char *command, char **argv, int argc)
+{
+  if (argc > 0)
+    error (_("mi_cmd_stack_info_frame: No arguments required"));
+  
+  print_frame_info (get_selected_frame (NULL), 1, LOC_AND_ADDRESS, 0);
   return MI_CMD_DONE;
 }

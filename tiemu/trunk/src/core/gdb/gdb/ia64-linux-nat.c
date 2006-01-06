@@ -1,7 +1,7 @@
 /* Functions specific to running gdb native on IA-64 running
    GNU/Linux.
 
-   Copyright 1999, 2000, 2001, 2002, 2003, 2004
+   Copyright 1999, 2000, 2001, 2002, 2003, 2004, 2005
    Free Software Foundation, Inc.
 
    This file is part of GDB.
@@ -27,6 +27,8 @@
 #include "target.h"
 #include "gdbcore.h"
 #include "regcache.h"
+#include "ia64-tdep.h"
+#include "linux-nat.h"
 
 #include <signal.h>
 #include <sys/ptrace.h>
@@ -307,7 +309,7 @@ register_addr (int regno, CORE_ADDR blockend)
   CORE_ADDR addr;
 
   if (regno < 0 || regno >= NUM_REGS)
-    error ("Invalid register number %d.", regno);
+    error (_("Invalid register number %d."), regno);
 
   if (u_offsets[regno] == -1)
     addr = 0;
@@ -665,12 +667,38 @@ ia64_linux_stopped_by_watchpoint (void)
   return ia64_linux_stopped_data_address (&addr);
 }
 
-LONGEST 
-ia64_linux_xfer_unwind_table (struct target_ops *ops,
-			      enum target_object object,
-			      const char *annex,
-			      void *readbuf, const void *writebuf,
-			      ULONGEST offset, LONGEST len)
+static LONGEST (*super_xfer_partial) (struct target_ops *, enum target_object,
+				      const char *, gdb_byte *, const gdb_byte *,
+				      ULONGEST, LONGEST);
+
+static LONGEST 
+ia64_linux_xfer_partial (struct target_ops *ops,
+			 enum target_object object,
+			 const char *annex,
+			 gdb_byte *readbuf, const gdb_byte *writebuf,
+			 ULONGEST offset, LONGEST len)
 {
-  return syscall (__NR_getunwind, readbuf, len);
+  if (object == TARGET_OBJECT_UNWIND_TABLE && writebuf == NULL && offset == 0)
+    return syscall (__NR_getunwind, readbuf, len);
+
+  return super_xfer_partial (ops, object, annex, readbuf, writebuf,
+			     offset, len);
+}
+
+void _initialize_ia64_linux_nat (void);
+
+void
+_initialize_ia64_linux_nat (void)
+{
+  struct target_ops *t = linux_target ();
+
+  /* Fill in the generic GNU/Linux methods.  */
+  t = linux_target ();
+
+  /* Override the default to_xfer_partial.  */
+  super_xfer_partial = t->to_xfer_partial;
+  t->to_xfer_partial = ia64_linux_xfer_partial;
+
+  /* Register the target.  */
+  add_target (t);
 }

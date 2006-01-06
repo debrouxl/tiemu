@@ -287,10 +287,12 @@ install-libraries: libraries
 install-doc: doc
 	$(mkinstalldirs) $(DESTDIR)$(mandir)/mann
 	@echo "Installing man pages in $(mandir)"
-	@for i in $(srcdir)/doc/*.n; \
+	@cd $(srcdir)/doc; for i in *.n; \
 	    do \
 	    echo "Installing $$i info $(mandir)/mann"; \
-	    $(INSTALL_DATA) $$i $(DESTDIR)$(mandir)/mann ; \
+	    sed -e '/man\.macros/r man.macros' -e '/man\.macros/d' \
+	        $$i > $(DESTDIR)$(mandir)/mann/$$i; \
+	    chmod 444 $(DESTDIR)$(mandir)/mann/$$i; \
 	    done
 
 test: $(TCLSH_PROG)

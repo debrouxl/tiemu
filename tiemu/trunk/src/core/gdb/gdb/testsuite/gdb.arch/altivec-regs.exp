@@ -1,4 +1,4 @@
-# Copyright (C) 2002, 2003 Free Software Foundation, Inc.
+# Copyright (C) 2002, 2003, 2005 Free Software Foundation, Inc.
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,8 +32,9 @@ if $tracelevel then {
 set prms_id 0
 set bug_id 0
 
-if ![istarget "powerpc-*altivec"] then {
+if {![istarget "powerpc*"] || [skip_altivec_tests]} then {
     verbose "Skipping altivec register tests."
+    verbose -log "Skipping altivec register tests."
     return
 }
 
@@ -41,7 +42,22 @@ set testfile "altivec-regs"
 set binfile ${objdir}/${subdir}/${testfile}
 set srcfile ${testfile}.c
 
-if  { [gdb_compile ${srcdir}/${subdir}/${srcfile} ${binfile} executable {debug additional_flags=-w}] != "" } {
+set compile_flags {debug additional_flags=-w}
+if [get_compiler_info $binfile] {
+    warning "get_compiler failed"
+    return -1
+}
+
+if [test_compiler_info gcc*] {
+    set compile_flags "$compile_flags additional_flags=-maltivec"
+} elseif [test_compiler_info xlc*] {
+    set compile_flags "$compile_flags additional_flags=-qaltivec"
+} else {
+    warning "unknown compiler"
+    return -1
+}
+
+if  { [gdb_compile ${srcdir}/${subdir}/${srcfile} ${binfile} executable $compile_flags] != "" } {
      gdb_suppress_entire_file "Testcase compile failed, so all tests in this file will automatically fail."
 }
 
@@ -97,8 +113,8 @@ for {set i 0} {$i < 32} {incr i 1} {
         gdb_test "info reg vr$i" "vr$i.*$vector_register" "info reg vr$i"
 }
 
-gdb_test "info reg vrsave" "vrsave.*0x1" "info reg vrsave"
-gdb_test "info reg vscr" "vscr.*0x1" "info reg vscr"
+gdb_test "info reg vrsave" "vrsave.*0x1\t1" "info reg vrsave"
+gdb_test "info reg vscr" "vscr.*0x1\t1" "info reg vscr"
 
 # Now redo the same tests, but using the print command.
 # Note: in LE case, the char array is printed WITHOUT the last character.
@@ -107,9 +123,9 @@ gdb_test "info reg vscr" "vscr.*0x1" "info reg vscr"
 # the way gdb works.
 
 if {$endianness == "big"} {
-     set decimal_vector ".uint128 = 0x00000001000000010000000100000001, v4_float = .1.*e-45, 1.*e-45, 1.*e-45, 1.*e-45., v4_int32 = .1, 1, 1, 1., v8_int16 = .0, 1, 0, 1, 0, 1, 0, 1., v16_int8 = ..0.0.0.001.0.0.0.001.0.0.0.001.0.0.0.001.."
+     set decimal_vector ".uint128 = 0x00000001000000010000000100000001, v4_float = .1.*e-45, 1.*e-45, 1.*e-45, 1.*e-45., v4_int32 = .1, 1, 1, 1., v8_int16 = .0, 1, 0, 1, 0, 1, 0, 1., v16_int8 = ..000.000.000.001.000.000.000.001.000.000.000.001.000.000.000.001.."
 } else {
-     set decimal_vector ".uint128 = 0x00000001000000010000000100000001, v4_float = .1.*e-45, 1.*e-45, 1.*e-45, 1.*e-45., v4_int32 = .1, 1, 1, 1., v8_int16 = .1, 0, 1, 0, 1, 0, 1, 0., v16_int8 = ..001.0.0.0.001.0.0.0.001.0.0.0.001.0.0.."
+     set decimal_vector ".uint128 = 0x00000001000000010000000100000001, v4_float = .1.*e-45, 1.*e-45, 1.*e-45, 1.*e-45., v4_int32 = .1, 1, 1, 1., v8_int16 = .1, 0, 1, 0, 1, 0, 1, 0., v16_int8 = ..001.000.000.000.001.000.000.000.001.000.000.000.001.000.000.."
 }
 
 for {set i 0} {$i < 32} {incr i 1} {
@@ -124,8 +140,8 @@ for {set i 0} {$i < 32} {incr i 1} {
          append pattern$i $vector_register
 }
 
-send_gdb "info powerpc altivec\n"
-gdb_expect_list "info powerpc altivec" ".*$gdb_prompt $" {
+send_gdb "info vector\n"
+gdb_expect_list "info vector" ".*$gdb_prompt $" {
 [$pattern0]
 [$pattern1]
 [$pattern2]

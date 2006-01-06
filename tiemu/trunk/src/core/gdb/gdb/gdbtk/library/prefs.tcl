@@ -35,7 +35,7 @@ proc pref_read {} {
   global tcl_platform
 
   if {[info exists env(HOME)]} {
-    if {$tcl_platform(platform) == "windows" && [llength [info commands ide_cygwin_path]]} {
+    if {$tcl_platform(platform) == "windows"} {
       set home [ide_cygwin_path to_win32 $env(HOME)]
     } else {
       set home $env(HOME)

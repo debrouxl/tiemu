@@ -38,7 +38,7 @@
 static CORE_ADDR
 i386bsd_sigcontext_addr (struct frame_info *next_frame)
 {
-  char buf[4];
+  gdb_byte buf[4];
   CORE_ADDR sp;
 
   frame_unwind_register (next_frame, I386_ESP_REGNUM, buf);
@@ -49,14 +49,6 @@ i386bsd_sigcontext_addr (struct frame_info *next_frame)
 
 
 /* Support for shared libraries.  */
-
-/* Return non-zero if we are in a shared library trampoline code stub.  */
-
-int
-i386bsd_aout_in_solib_call_trampoline (CORE_ADDR pc, char *name)
-{
-  return (name && !strcmp (name, "_DYNAMIC"));
-}
 
 /* Traditional BSD (4.3 BSD, still used for BSDI and 386BSD).  */
 
@@ -85,10 +77,6 @@ void
 i386bsd_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
 {
   struct gdbarch_tdep *tdep = gdbarch_tdep (gdbarch);
-
-  /* Assume SunOS-style shared libraries.  */
-  set_gdbarch_in_solib_call_trampoline (gdbarch,
-					i386bsd_aout_in_solib_call_trampoline);
 
   tdep->jb_pc_offset = 0;
 

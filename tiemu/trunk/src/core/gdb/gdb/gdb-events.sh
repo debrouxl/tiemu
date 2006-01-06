@@ -1,7 +1,9 @@
 #!/bin/sh
 
 # User Interface Events.
-# Copyright 1999, 2000, 2001, 2002, 2004 Free Software Foundation, Inc.
+#
+# Copyright 1999, 2000, 2001, 2002, 2004, 2005 Free Software
+# Foundation, Inc.
 #
 # Contributed by Cygnus Solutions.
 #
@@ -19,7 +21,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
+# USA.
 
 IFS=:
 
@@ -56,7 +59,8 @@ copyright ()
   cat <<EOF
 /* User Interface Events.
 
-   Copyright 1999, 2001, 2002, 2004 Free Software Foundation, Inc.
+   Copyright 1999, 2001, 2002, 2004, 2005 Free Software Foundation,
+   Inc.
 
    Contributed by Cygnus Solutions.
 
@@ -88,7 +92,7 @@ copyright ()
    If editing this file, please also run gdb-events.sh and merge any
    changes into that script. Conversely, when making sweeping changes
    to this file, modifying gdb-events.sh and using its output may
-   prove easier. */
+   prove easier.  */
 
 EOF
 }
@@ -126,9 +130,9 @@ done
 echo ""
 echo ""
 cat <<EOF
-/* Type definition of all hook functions.
-   Recommended pratice is to first declare each hook function using
-   the below ftype and then define it. */
+/* Type definition of all hook functions.  Recommended pratice is to
+   first declare each hook function using the below ftype and then
+   define it.  */
 EOF
 echo ""
 function_list | while eval read $read
@@ -157,7 +161,7 @@ echo ""
 cat <<EOF
 /* Interface into events functions.
    Where a *_p() predicate is present, it must be called before
-   calling the hook proper. */
+   calling the hook proper.  */
 EOF
 function_list | while eval read $read
 do
@@ -176,13 +180,13 @@ done
 # our set function
 cat <<EOF
 
-/* Install custom gdb-events hooks. */
+/* Install custom gdb-events hooks.  */
 extern struct gdb_events *deprecated_set_gdb_event_hooks (struct gdb_events *vector);
 
-/* Deliver any pending events. */
+/* Deliver any pending events.  */
 extern void gdb_events_deliver (struct gdb_events *vector);
 
-/* Clear event handlers */
+/* Clear event handlers.  */
 extern void clear_gdb_event_hooks (void);
 EOF
 
@@ -221,6 +225,13 @@ static struct gdb_events queue_event_hooks;
 static struct gdb_events *current_event_hooks = &null_event_hooks;
 
 int gdb_events_debug;
+static void
+show_gdb_events_debug (struct ui_file *file, int from_tty,
+                       struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("Event debugging is %s.\\n"), value);
+}
+
 EOF
 
 # function bodies
@@ -470,21 +481,14 @@ do
 done
 cat <<EOF
 
-  c = add_set_cmd ("eventdebug", class_maintenance, var_zinteger,
-		   (char *) (&gdb_events_debug), "Set event debugging.\n\\
-When non-zero, event/notify debugging is enabled.", &setlist);
-  deprecate_cmd (c, "set debug event");
-  deprecate_cmd (deprecated_add_show_from_set (c, &showlist),
-                 "show debug event");
-
-  deprecated_add_show_from_set
-    (add_set_cmd ("event",
-	          class_maintenance,
-		  var_zinteger,
-		  (char *) (&gdb_events_debug),
-		  "Set event debugging.\n\\
-When non-zero, event/notify debugging is enabled.", &setdebuglist),
-     &showdebuglist);
+  add_setshow_zinteger_cmd ("event", class_maintenance,
+                            &gdb_events_debug, _("\\
+Set event debugging."), _("\\
+Show event debugging."), _("\\
+When non-zero, event/notify debugging is enabled."),
+                            NULL,
+                            show_gdb_events_debug,
+                            &setdebuglist, &showdebuglist);
 }
 EOF
 

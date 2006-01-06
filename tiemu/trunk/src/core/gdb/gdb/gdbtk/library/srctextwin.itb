@@ -891,7 +891,7 @@ itcl::body SrcTextWin::_mtime_changed {filename} {
   } elseif {$f == ""} {
     set r 1
   } else {
-    if {[string compare $tcl_platform(platform) "windows"] == 0 && [llength [info commands ide_cygwin_path]]} {
+    if {[string compare $tcl_platform(platform) "windows"] == 0} {
       set f [ide_cygwin_path to_win32 $f]
     }
     if {[catch {file mtime $f} mtime]} {
@@ -2715,7 +2715,7 @@ itcl::body SrcTextWin::LoadFromCache {w name asm lib} {
     # out.
 
     if {$loadingSource} {
-      if {[string compare $tcl_platform(platform) "windows"] == 0 && [llength [info commands ide_cygwin_path]]} {
+      if {[string compare $tcl_platform(platform) "windows"] == 0} {
         set f [ide_cygwin_path to_win32 $name]
       } else {
         set f $name

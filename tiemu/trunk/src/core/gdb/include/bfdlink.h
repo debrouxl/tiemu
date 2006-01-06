@@ -1,6 +1,6 @@
 /* bfdlink.h -- header file for BFD link routines
-   Copyright 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2002, 2003,
-   2004 Free Software Foundation, Inc.
+   Copyright 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
+   2003, 2004, 2005 Free Software Foundation, Inc.
    Written by Steve Chamberlain and Ian Lance Taylor, Cygnus Support.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -17,7 +17,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #ifndef BFDLINK_H
 #define BFDLINK_H
@@ -113,6 +113,7 @@ struct bfd_link_hash_entry
 	     undefined symbol list.  */
 	  struct bfd_link_hash_entry *next;
 	  bfd *abfd;		/* BFD symbol was found in.  */
+	  bfd *weak;		/* BFD weak symbol was found in.  */
 	} undef;
       /* bfd_link_hash_defined, bfd_link_hash_defweak.  */
       struct
@@ -197,6 +198,10 @@ extern void bfd_link_hash_traverse
 extern void bfd_link_add_undef
   (struct bfd_link_hash_table *, struct bfd_link_hash_entry *);
 
+/* Remove symbols from the undefs list that don't belong there.  */
+extern void bfd_link_repair_undef_list
+  (struct bfd_link_hash_table *table);
+
 struct bfd_sym_chain
 {
   struct bfd_sym_chain *next;
@@ -262,6 +267,14 @@ struct bfd_link_info
   /* TRUE if ok to have version with no definition.  */
   unsigned int allow_undefined_version: 1;
 
+  /* TRUE if a default symbol version should be created and used for
+     exported symbols.  */
+  unsigned int create_default_symver: 1;
+
+  /* TRUE if a default symbol version should be created and used for
+     imported symbols.  */
+  unsigned int default_imported_symver: 1;
+
   /* TRUE if symbols should be retained in memory, FALSE if they
      should be freed and reread.  */
   unsigned int keep_memory: 1;
@@ -310,6 +323,9 @@ struct bfd_link_info
 
   /* TRUE if we should warn when adding a DT_TEXTREL to a shared object.  */
   unsigned int warn_shared_textrel: 1;
+
+  /* TRUE if unreferenced sections should be removed.  */
+  unsigned int gc_sections: 1;
 
   /* What to do with unresolved symbols in an object file.
      When producing executables the default is GENERATE_ERROR.
@@ -406,11 +422,11 @@ struct bfd_link_info
 };
 
 /* This structures holds a set of callback functions.  These are
-   called by the BFD linker routines.  The first argument to each
-   callback function is the bfd_link_info structure being used.  Each
-   function returns a boolean value.  If the function returns FALSE,
-   then the BFD function which called it will return with a failure
-   indication.  */
+   called by the BFD linker routines.  Except for einfo, the first
+   argument to each callback function is the bfd_link_info structure
+   being used and each function returns a boolean value.  If the
+   function returns FALSE, then the BFD function which called it should
+   return with a failure indication.  */
 
 struct bfd_link_callbacks
 {
@@ -481,19 +497,20 @@ struct bfd_link_callbacks
   bfd_boolean (*undefined_symbol)
     (struct bfd_link_info *, const char *name, bfd *abfd,
      asection *section, bfd_vma address, bfd_boolean fatal);
-  /* A function which is called when a reloc overflow occurs.  NAME is
-     the name of the symbol or section the reloc is against,
-     RELOC_NAME is the name of the relocation, and ADDEND is any
-     addend that is used.  ABFD, SECTION and ADDRESS identify the
+  /* A function which is called when a reloc overflow occurs. ENTRY is
+     the link hash table entry for the symbol the reloc is against.
+     NAME is the name of the local symbol or section the reloc is
+     against, RELOC_NAME is the name of the relocation, and ADDEND is
+     any addend that is used.  ABFD, SECTION and ADDRESS identify the
      location at which the overflow occurs; if this is the result of a
      bfd_section_reloc_link_order or bfd_symbol_reloc_link_order, then
      ABFD will be NULL.  */
   bfd_boolean (*reloc_overflow)
-    (struct bfd_link_info *, const char *name, const char *reloc_name,
-     bfd_vma addend, bfd *abfd, asection *section, bfd_vma address);
+    (struct bfd_link_info *, struct bfd_link_hash_entry *entry,
+     const char *name, const char *reloc_name, bfd_vma addend,
+     bfd *abfd, asection *section, bfd_vma address);
   /* A function which is called when a dangerous reloc is performed.
-     The canonical example is an a29k IHCONST reloc which does not
-     follow an IHIHALF reloc.  MESSAGE is an appropriate message.
+     MESSAGE is an appropriate message.
      ABFD, SECTION and ADDRESS identify the location at which the
      problem occurred; if this is the result of a
      bfd_section_reloc_link_order or bfd_symbol_reloc_link_order, then
@@ -517,6 +534,9 @@ struct bfd_link_callbacks
   bfd_boolean (*notice)
     (struct bfd_link_info *, const char *name,
      bfd *abfd, asection *section, bfd_vma address);
+  /* General link info message.  */
+  void (*einfo)
+    (const char *fmt, ...);
 };
 
 /* The linker builds link_order structures which tell the code how to

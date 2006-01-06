@@ -1,5 +1,6 @@
 /* GNU/Linux on ARM native support.
-   Copyright 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
+   Copyright 1999, 2000, 2001, 2002, 2004, 2005
+   Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -23,6 +24,8 @@
 #include "gdbcore.h"
 #include "gdb_string.h"
 #include "regcache.h"
+#include "target.h"
+#include "linux-nat.h"
 
 #include "arm-tdep.h"
 
@@ -236,7 +239,7 @@ fetch_fpregister (int regno)
   ret = ptrace (PT_GETFPREGS, tid, 0, &fp);
   if (ret < 0)
     {
-      warning ("Unable to fetch floating point register.");
+      warning (_("Unable to fetch floating point register."));
       return;
     }
 
@@ -285,7 +288,7 @@ fetch_fpregs (void)
   ret = ptrace (PT_GETFPREGS, tid, 0, &fp);
   if (ret < 0)
     {
-      warning ("Unable to fetch the floating point registers.");
+      warning (_("Unable to fetch the floating point registers."));
       return;
     }
 
@@ -333,7 +336,7 @@ store_fpregister (int regno)
   ret = ptrace (PT_GETFPREGS, tid, 0, &fp);
   if (ret < 0)
     {
-      warning ("Unable to fetch the floating point registers.");
+      warning (_("Unable to fetch the floating point registers."));
       return;
     }
 
@@ -350,7 +353,7 @@ store_fpregister (int regno)
   ret = ptrace (PTRACE_SETFPREGS, tid, 0, &fp);
   if (ret < 0)
     {
-      warning ("Unable to store floating point register.");
+      warning (_("Unable to store floating point register."));
       return;
     }
 }
@@ -371,7 +374,7 @@ store_fpregs (void)
   ret = ptrace (PT_GETFPREGS, tid, 0, &fp);
   if (ret < 0)
     {
-      warning ("Unable to fetch the floating point registers.");
+      warning (_("Unable to fetch the floating point registers."));
       return;
     }
 
@@ -388,7 +391,7 @@ store_fpregs (void)
   ret = ptrace (PTRACE_SETFPREGS, tid, 0, &fp);
   if (ret < 0)
     {
-      warning ("Unable to store floating point registers.");
+      warning (_("Unable to store floating point registers."));
       return;
     }
 }
@@ -408,7 +411,7 @@ fetch_register (int regno)
   ret = ptrace (PTRACE_GETREGS, tid, 0, &regs);
   if (ret < 0)
     {
-      warning ("Unable to fetch general register.");
+      warning (_("Unable to fetch general register."));
       return;
     }
 
@@ -448,7 +451,7 @@ fetch_regs (void)
   ret = ptrace (PTRACE_GETREGS, tid, 0, &regs);
   if (ret < 0)
     {
-      warning ("Unable to fetch general registers.");
+      warning (_("Unable to fetch general registers."));
       return;
     }
 
@@ -486,17 +489,23 @@ store_register (int regno)
   ret = ptrace (PTRACE_GETREGS, tid, 0, &regs);
   if (ret < 0)
     {
-      warning ("Unable to fetch general registers.");
+      warning (_("Unable to fetch general registers."));
       return;
     }
 
   if (regno >= ARM_A1_REGNUM && regno <= ARM_PC_REGNUM)
     regcache_raw_collect (current_regcache, regno, (char *) &regs[regno]);
+  else if (arm_apcs_32 && regno == ARM_PS_REGNUM)
+    regcache_raw_collect (current_regcache, regno,
+			 (char *) &regs[ARM_CPSR_REGNUM]);
+  else if (!arm_apcs_32 && regno == ARM_PS_REGNUM)
+    regcache_raw_collect (current_regcache, ARM_PC_REGNUM,
+			 (char *) &regs[ARM_PC_REGNUM]);
 
   ret = ptrace (PTRACE_SETREGS, tid, 0, &regs);
   if (ret < 0)
     {
-      warning ("Unable to store general register.");
+      warning (_("Unable to store general register."));
       return;
     }
 }
@@ -514,7 +523,7 @@ store_regs (void)
   ret = ptrace (PTRACE_GETREGS, tid, 0, &regs);
   if (ret < 0)
     {
-      warning ("Unable to fetch general registers.");
+      warning (_("Unable to fetch general registers."));
       return;
     }
 
@@ -524,11 +533,15 @@ store_regs (void)
 	regcache_raw_collect (current_regcache, regno, (char *) &regs[regno]);
     }
 
+  if (arm_apcs_32 && register_cached (ARM_PS_REGNUM))
+    regcache_raw_collect (current_regcache, ARM_PS_REGNUM,
+			 (char *) &regs[ARM_CPSR_REGNUM]);
+
   ret = ptrace (PTRACE_SETREGS, tid, 0, &regs);
 
   if (ret < 0)
     {
-      warning ("Unable to store general registers.");
+      warning (_("Unable to store general registers."));
       return;
     }
 }
@@ -537,8 +550,8 @@ store_regs (void)
    regno == -1, otherwise fetch all general registers or all floating
    point registers depending upon the value of regno.  */
 
-void
-fetch_inferior_registers (int regno)
+static void
+arm_linux_fetch_inferior_registers (int regno)
 {
   if (-1 == regno)
     {
@@ -559,8 +572,8 @@ fetch_inferior_registers (int regno)
    regno == -1, otherwise store all general registers or all floating
    point registers depending upon the value of regno.  */
 
-void
-store_inferior_registers (int regno)
+static void
+arm_linux_store_inferior_registers (int regno)
 {
   if (-1 == regno)
     {
@@ -691,7 +704,7 @@ get_linux_version (unsigned int *vmajor,
 
   if (-1 == uname (&info))
     {
-      warning ("Unable to determine GNU/Linux version.");
+      warning (_("Unable to determine GNU/Linux version."));
       return -1;
     }
 
@@ -706,8 +719,22 @@ get_linux_version (unsigned int *vmajor,
   return ((*vmajor << 16) | (*vminor << 8) | *vrelease);
 }
 
+void _initialize_arm_linux_nat (void);
+
 void
 _initialize_arm_linux_nat (void)
 {
+  struct target_ops *t;
+
   os_version = get_linux_version (&os_major, &os_minor, &os_release);
+
+  /* Fill in the generic GNU/Linux methods.  */
+  t = linux_target ();
+
+  /* Add our register access methods.  */
+  t->to_fetch_registers = arm_linux_fetch_inferior_registers;
+  t->to_store_registers = arm_linux_store_inferior_registers;
+
+  /* Register the target.  */
+  add_target (t);
 }

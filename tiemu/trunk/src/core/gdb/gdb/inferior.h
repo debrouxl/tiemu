@@ -2,7 +2,8 @@
    Where it is, why it stopped, and how to step it.
 
    Copyright 1986, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995,
-   1996, 1998, 1999, 2000, 2001, 2003 Free Software Foundation, Inc.
+   1996, 1998, 1999, 2000, 2001, 2003, 2004, 2005 
+   Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -102,9 +103,10 @@ extern void set_sigio_trap (void);
 
 extern void clear_sigio_trap (void);
 
-/* File name for default use for standard in/out in the inferior.  */
+/* Set/get file name for default use for standard in/out in the inferior.  */
 
-extern char *inferior_io_terminal;
+extern void set_inferior_io_terminal (const char *terminal_name);
+extern const char *get_inferior_io_terminal (void);
 
 /* Collected pid, tid, etc. of the debugged inferior.  When there's
    no inferior, PIDGET (inferior_ptid) will be 0. */
@@ -176,13 +178,13 @@ extern void generic_target_write_pc (CORE_ADDR, ptid_t);
 
 extern CORE_ADDR read_sp (void);
 
-extern CORE_ADDR unsigned_pointer_to_address (struct type *type, const void *buf);
-
-extern void unsigned_address_to_pointer (struct type *type, void *buf,
+extern CORE_ADDR unsigned_pointer_to_address (struct type *type,
+					      const gdb_byte *buf);
+extern void unsigned_address_to_pointer (struct type *type, gdb_byte *buf,
 					 CORE_ADDR addr);
 extern CORE_ADDR signed_pointer_to_address (struct type *type,
-					    const void *buf);
-extern void address_to_signed_pointer (struct type *type, void *buf,
+					    const gdb_byte *buf);
+extern void address_to_signed_pointer (struct type *type, gdb_byte *buf,
 				       CORE_ADDR addr);
 
 extern void wait_for_inferior (void);
@@ -263,7 +265,7 @@ extern char *construct_inferior_arguments (struct gdbarch *, int, char **);
 
 /* From inflow.c */
 
-extern void new_tty_prefork (char *);
+extern void new_tty_prefork (const char *);
 
 extern int gdb_has_a_terminal (void);
 

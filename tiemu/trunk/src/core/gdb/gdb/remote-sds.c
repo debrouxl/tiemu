@@ -30,6 +30,7 @@
 #include <fcntl.h>
 #include "frame.h"
 #include "inferior.h"
+#include "exceptions.h"
 #include "bfd.h"
 #include "symfile.h"
 #include "target.h"
@@ -385,7 +386,7 @@ interrupt_query (void)
 Give up (and stop debugging it)? "))
     {
       target_mourn_inferior ();
-      throw_exception (RETURN_QUIT);
+      deprecated_throw_reason (RETURN_QUIT);
     }
 
   target_terminal_inferior ();
@@ -727,7 +728,7 @@ putmessage (unsigned char *buf, int len)
      and giving it a checksum.  */
 
   if (len > 170)		/* Prosanity check */
-    internal_error (__FILE__, __LINE__, "failed internal consistency check");
+    internal_error (__FILE__, __LINE__, _("failed internal consistency check"));
 
   if (remote_debug)
     {
@@ -1115,12 +1116,13 @@ _initialize_remote_sds (void)
   init_sds_ops ();
   add_target (&sds_ops);
 
-  deprecated_add_show_from_set
-    (add_set_cmd ("sdstimeout", no_class,
-		  var_integer, (char *) &sds_timeout,
-		  "Set timeout value for sds read.\n", &setlist),
-     &showlist);
+  add_setshow_integer_cmd ("sdstimeout", no_class, &sds_timeout, _("\
+Set timeout value for sds read."), _("\
+Show timeout value for sds read."), NULL,
+			   NULL,
+			   NULL, /* FIXME: i18n: */
+			   &setlist, &showlist);
 
   add_com ("sds", class_obscure, sds_command,
-	   "Send a command to the SDS monitor.");
+	   _("Send a command to the SDS monitor."));
 }

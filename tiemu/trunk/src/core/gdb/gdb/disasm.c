@@ -1,6 +1,7 @@
 /* Disassemble support for GDB.
 
-   Copyright 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+   Copyright 2000, 2001, 2002, 2003, 2004, 2005
+   Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -46,10 +47,10 @@ struct dis_line_entry
 
 /* Like target_read_memory, but slightly different parameters.  */
 static int
-dis_asm_read_memory (bfd_vma memaddr, bfd_byte *myaddr, unsigned int len,
+dis_asm_read_memory (bfd_vma memaddr, gdb_byte *myaddr, unsigned int len,
 		     struct disassemble_info *info)
 {
-  return target_read_memory (memaddr, (char *) myaddr, len);
+  return target_read_memory (memaddr, myaddr, len);
 }
 
 /* Like memory_error with slightly different parameters.  */
@@ -313,7 +314,7 @@ do_assembly_only (struct ui_out *uiout, struct disassemble_info * di,
 /* Initialize the disassemble info struct ready for the specified
    stream.  */
 
-static int
+static int ATTR_FORMAT (printf, 2, 3)
 fprintf_disasm (void *stream, const char *format, ...)
 {
   va_list args;
@@ -358,7 +359,7 @@ gdb_disassemble_info (struct gdbarch *gdbarch, struct ui_file *file)
   struct disassemble_info di;
   if (file)
     {
-      init_disassemble_info (&di, file, fprintf_disasm);
+  init_disassemble_info (&di, file, fprintf_disasm);
       di.print_address_func = dis_asm_print_address;
     }
   else
@@ -380,10 +381,11 @@ gdb_disassemble_info (struct gdbarch *gdbarch, struct ui_file *file)
   di.read_memory_func = dis_asm_read_memory;
   if (gdbarch)
     {
-      di.arch = gdbarch_bfd_arch_info (gdbarch)->arch;
-      di.mach = gdbarch_bfd_arch_info (gdbarch)->mach;
-      di.endian = gdbarch_byte_order (gdbarch);
+  di.arch = gdbarch_bfd_arch_info (gdbarch)->arch;
+  di.mach = gdbarch_bfd_arch_info (gdbarch)->mach;
+  di.endian = gdbarch_byte_order (gdbarch);
     }
+  disassemble_init_for_target (&di);
   return di;
 }
 

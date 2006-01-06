@@ -1,5 +1,7 @@
 /* Java language support routines for GDB, the GNU debugger.
-   Copyright 1997, 1998, 1999, 2000, 2003, 2004 Free Software Foundation, Inc.
+
+   Copyright 1997, 1998, 1999, 2000, 2003, 2004, 2005 Free Software
+   Foundation, Inc.
 
    This file is part of GDB.
 
@@ -210,11 +212,11 @@ get_java_utf8_name (struct obstack *obstack, struct value *name)
   CORE_ADDR data_addr;
   temp = value_struct_elt (&temp, NULL, "length", NULL, "structure");
   name_length = (int) value_as_long (temp);
-  data_addr = VALUE_ADDRESS (temp) + VALUE_OFFSET (temp)
-    + TYPE_LENGTH (VALUE_TYPE (temp));
+  data_addr = VALUE_ADDRESS (temp) + value_offset (temp)
+    + TYPE_LENGTH (value_type (temp));
   chrs = obstack_alloc (obstack, name_length + 1);
   chrs[name_length] = '\0';
-  read_memory (data_addr, chrs, name_length);
+  read_memory (data_addr, (gdb_byte *) chrs, name_length);
   return chrs;
 }
 
@@ -225,10 +227,10 @@ java_class_from_object (struct value *obj_val)
      class are fixed.  FIXME */
   struct value *vtable_val;
 
-  if (TYPE_CODE (VALUE_TYPE (obj_val)) == TYPE_CODE_PTR
-      && TYPE_LENGTH (TYPE_TARGET_TYPE (VALUE_TYPE (obj_val))) == 0)
+  if (TYPE_CODE (value_type (obj_val)) == TYPE_CODE_PTR
+      && TYPE_LENGTH (TYPE_TARGET_TYPE (value_type (obj_val))) == 0)
     obj_val = value_at (get_java_object_type (),
-			value_as_address (obj_val), NULL);
+			value_as_address (obj_val));
 
   vtable_val = value_struct_elt (&obj_val, NULL, "vtable", NULL, "structure");
   return value_struct_elt (&vtable_val, NULL, "class", NULL, "structure");
@@ -259,14 +261,14 @@ type_from_class (struct value *clas)
   struct dict_iterator iter;
   int is_array = 0;
 
-  type = check_typedef (VALUE_TYPE (clas));
+  type = check_typedef (value_type (clas));
   if (TYPE_CODE (type) == TYPE_CODE_PTR)
     {
       if (value_logical_not (clas))
 	return NULL;
       clas = value_ind (clas);
     }
-  addr = VALUE_ADDRESS (clas) + VALUE_OFFSET (clas);
+  addr = VALUE_ADDRESS (clas) + value_offset (clas);
 
 #if 0
   get_java_class_symtab ();
@@ -318,7 +320,7 @@ type_from_class (struct value *clas)
       temp = clas;
       /* Set array element type. */
       temp = value_struct_elt (&temp, NULL, "methods", NULL, "structure");
-      VALUE_TYPE (temp) = lookup_pointer_type (VALUE_TYPE (clas));
+      deprecated_set_value_type (temp, lookup_pointer_type (value_type (clas)));
       TYPE_TARGET_TYPE (type) = type_from_class (temp);
     }
 
@@ -421,9 +423,9 @@ java_link_class_type (struct type *type, struct value *clas)
   fields = NULL;
   nfields--;			/* First set up dummy "class" field. */
   SET_FIELD_PHYSADDR (TYPE_FIELD (type, nfields),
-		      VALUE_ADDRESS (clas) + VALUE_OFFSET (clas));
+		      VALUE_ADDRESS (clas) + value_offset (clas));
   TYPE_FIELD_NAME (type, nfields) = "class";
-  TYPE_FIELD_TYPE (type, nfields) = VALUE_TYPE (clas);
+  TYPE_FIELD_TYPE (type, nfields) = value_type (clas);
   SET_TYPE_FIELD_PRIVATE (type, nfields);
 
   for (i = TYPE_N_BASECLASSES (type); i < nfields; i++)
@@ -438,8 +440,8 @@ java_link_class_type (struct type *type, struct value *clas)
 	}
       else
 	{			/* Re-use field value for next field. */
-	  VALUE_ADDRESS (field) += TYPE_LENGTH (VALUE_TYPE (field));
-	  VALUE_LAZY (field) = 1;
+	  VALUE_ADDRESS (field) += TYPE_LENGTH (value_type (field));
+	  set_value_lazy (field, 1);
 	}
       temp = field;
       temp = value_struct_elt (&temp, NULL, "name", NULL, "structure");
@@ -508,8 +510,8 @@ java_link_class_type (struct type *type, struct value *clas)
 	}
       else
 	{			/* Re-use method value for next method. */
-	  VALUE_ADDRESS (method) += TYPE_LENGTH (VALUE_TYPE (method));
-	  VALUE_LAZY (method) = 1;
+	  VALUE_ADDRESS (method) += TYPE_LENGTH (value_type (method));
+	  set_value_lazy (method, 1);
 	}
 
       /* Get method name. */
@@ -578,7 +580,7 @@ get_java_object_type (void)
       sym = lookup_symbol ("java.lang.Object", NULL, STRUCT_DOMAIN,
 			   (int *) 0, (struct symtab **) NULL);
       if (sym == NULL)
-	error ("cannot find java.lang.Object");
+	error (_("cannot find java.lang.Object"));
       java_object_type = SYMBOL_TYPE (sym);
     }
   return java_object_type;
@@ -644,7 +646,7 @@ java_primitive_type (int signature)
     case 'V':
       return java_void_type;
     }
-  error ("unknown signature '%c' for primitive type", (char) signature);
+  error (_("unknown signature '%c' for primitive type"), (char) signature);
 }
 
 /* If name[0 .. namelen-1] is the name of a primitive Java type,
@@ -788,7 +790,7 @@ java_array_type (struct type *type, int dims)
 static struct value *
 java_value_string (char *ptr, int len)
 {
-  error ("not implemented - java_value_string");	/* FIXME */
+  error (_("not implemented - java_value_string"));	/* FIXME */
 }
 
 /* Print the character C on STREAM as part of the contents of a literal
@@ -846,7 +848,7 @@ evaluate_subexp_java (struct type *expect_type, struct expression *exp,
 	goto standard;
       (*pos)++;
       arg1 = evaluate_subexp_java (NULL_TYPE, exp, pos, EVAL_NORMAL);
-      if (is_object_type (VALUE_TYPE (arg1)))
+      if (is_object_type (value_type (arg1)))
 	{
 	  struct type *type;
 
@@ -867,8 +869,8 @@ evaluate_subexp_java (struct type *expect_type, struct expression *exp,
          array or pointer type (like a plain int variable for example),
          then report this as an error. */
 
-      COERCE_REF (arg1);
-      type = check_typedef (VALUE_TYPE (arg1));
+      arg1 = coerce_ref (arg1);
+      type = check_typedef (value_type (arg1));
       if (TYPE_CODE (type) == TYPE_CODE_PTR)
 	type = check_typedef (TYPE_TARGET_TYPE (type));
       name = TYPE_NAME (type);
@@ -881,14 +883,14 @@ evaluate_subexp_java (struct type *expect_type, struct expression *exp,
 	  CORE_ADDR address;
 	  long length, index;
 	  struct type *el_type;
-	  char buf4[4];
+	  gdb_byte buf4[4];
 
 	  struct value *clas = java_class_from_object (arg1);
 	  struct value *temp = clas;
 	  /* Get CLASS_ELEMENT_TYPE of the array type. */
 	  temp = value_struct_elt (&temp, NULL, "methods",
 				   NULL, "structure");
-	  VALUE_TYPE (temp) = VALUE_TYPE (clas);
+	  deprecated_set_value_type (temp, value_type (clas));
 	  el_type = type_from_class (temp);
 	  if (TYPE_CODE (el_type) == TYPE_CODE_STRUCT)
 	    el_type = lookup_pointer_type (el_type);
@@ -901,10 +903,10 @@ evaluate_subexp_java (struct type *expect_type, struct expression *exp,
 	  length = (long) extract_signed_integer (buf4, 4);
 	  index = (long) value_as_long (arg2);
 	  if (index >= length || index < 0)
-	    error ("array index (%ld) out of bounds (length: %ld)",
+	    error (_("array index (%ld) out of bounds (length: %ld)"),
 		   index, length);
 	  address = (address + 4) + index * TYPE_LENGTH (el_type);
-	  return value_at (el_type, address, NULL);
+	  return value_at (el_type, address);
 	}
       else if (TYPE_CODE (type) == TYPE_CODE_ARRAY)
 	{
@@ -914,9 +916,9 @@ evaluate_subexp_java (struct type *expect_type, struct expression *exp,
 	    return value_subscript (arg1, arg2);
 	}
       if (name)
-	error ("cannot subscript something of type `%s'", name);
+	error (_("cannot subscript something of type `%s'"), name);
       else
-	error ("cannot subscript requested type");
+	error (_("cannot subscript requested type"));
 
     case OP_STRING:
       (*pos)++;
@@ -929,7 +931,7 @@ evaluate_subexp_java (struct type *expect_type, struct expression *exp,
     case STRUCTOP_STRUCT:
       arg1 = evaluate_subexp_standard (expect_type, exp, pos, noside);
       /* Convert object field (such as TYPE.class) to reference. */
-      if (TYPE_CODE (VALUE_TYPE (arg1)) == TYPE_CODE_STRUCT)
+      if (TYPE_CODE (value_type (arg1)) == TYPE_CODE_STRUCT)
 	arg1 = value_addr (arg1);
       return arg1;
     default:
@@ -1112,6 +1114,7 @@ const struct language_defn java_language_defn =
   NULL,
   default_word_break_characters,
   c_language_arch_info,
+  default_print_array_index,
   LANG_MAGIC
 };
 

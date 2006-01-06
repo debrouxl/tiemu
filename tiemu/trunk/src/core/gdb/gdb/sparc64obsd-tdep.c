@@ -1,6 +1,6 @@
 /* Target-dependent code for OpenBSD/sparc64.
 
-   Copyright 2004 Free Software Foundation, Inc.
+   Copyright 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -68,19 +68,27 @@ sparc64obsd_supply_gregset (const struct regset *regset,
 
 /* Signal trampolines.  */
 
-/* The OpenBSD kernel maps the signal trampoline at some random
-   location in user space, which means that the traditional BSD way of
-   detecting it won't work.
+/* Since OpenBSD 3.2, the sigtramp routine is mapped at a random page
+   in virtual memory.  The randomness makes it somewhat tricky to
+   detect it, but fortunately we can rely on the fact that the start
+   of the sigtramp routine is page-aligned.  We recognize the
+   trampoline by looking for the code that invokes the sigreturn
+   system call.  The offset where we can find that code varies from
+   release to release.
 
-   The signal trampoline will be mapped at an address that is page
-   aligned.  We recognize the signal trampoline by the looking for the
-   sigreturn system call.  The offset where we can find the code that
-   makes this system call varies from release to release.  For OpenBSD
-   3.6 and later releases we can find the code at offset 0xec.  For
-   OpenBSD 3.5 and earlier releases, we find it at offset 0xe8.  */
+   By the way, the mapping mentioned above is read-only, so you cannot
+   place a breakpoint in the signal trampoline.  */
 
+/* Default page size.  */
 static const int sparc64obsd_page_size = 8192;
-static const int sparc64obsd_sigreturn_offset[] = { 0xec, 0xe8, -1 };
+
+/* Offset for sigreturn(2).  */
+static const int sparc64obsd_sigreturn_offset[] = {
+  0xf0,				/* OpenBSD 3.8 */
+  0xec,				/* OpenBSD 3.6 */
+  0xe8,				/* OpenBSD 3.2 */
+  -1
+};
 
 static int
 sparc64obsd_pc_in_sigtramp (CORE_ADDR pc, char *name)
@@ -133,12 +141,14 @@ sparc64obsd_frame_cache (struct frame_info *next_frame, void **this_cache)
          initialized under the assumption that we're frameless.  */
       cache->frameless_p = 0;
       addr = frame_unwind_register_unsigned (next_frame, SPARC_FP_REGNUM);
+      if (addr & 1)
+	addr += BIAS;
       cache->base = addr;
     }
 
   /* We find the appropriate instance of `struct sigcontext' at a
      fixed offset in the signal frame.  */
-  addr = cache->base + BIAS + 128 + 16;
+  addr = cache->base + 128 + 16;
   cache->saved_regs = sparc64nbsd_sigcontext_saved_regs (addr, next_frame);
 
   return cache;
@@ -159,7 +169,7 @@ sparc64obsd_frame_prev_register (struct frame_info *next_frame,
 				 void **this_cache,
 				 int regnum, int *optimizedp,
 				 enum lval_type *lvalp, CORE_ADDR *addrp,
-				 int *realnump, void *valuep)
+				 int *realnump, gdb_byte *valuep)
 {
   struct sparc_frame_cache *cache =
     sparc64obsd_frame_cache (next_frame, this_cache);
@@ -201,14 +211,13 @@ sparc64obsd_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
 
   sparc64_init_abi (info, gdbarch);
 
-  /* OpenBSD/sparc64 has SVR4-style shared libraries...  */
-  set_gdbarch_in_solib_call_trampoline (gdbarch, in_plt_section);
+  /* OpenBSD/sparc64 has SVR4-style shared libraries.  */
   set_gdbarch_skip_trampoline_code (gdbarch, find_solib_trampoline_target);
   set_solib_svr4_fetch_link_map_offsets
     (gdbarch, svr4_lp64_fetch_link_map_offsets);
 }
-
 
+
 /* Provide a prototype to silence -Wmissing-prototypes.  */
 void _initialize_sparc64obsd_tdep (void);
 

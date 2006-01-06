@@ -1,7 +1,7 @@
 /* Interface between GDB and target environments, including files and processes
 
    Copyright 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998,
-   1999, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+   1999, 2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
 
    Contributed by Cygnus Support.  Written by John Gilmore.
 
@@ -236,23 +236,23 @@ enum target_object
 
 extern LONGEST target_read_partial (struct target_ops *ops,
 				    enum target_object object,
-				    const char *annex, void *buf,
+				    const char *annex, gdb_byte *buf,
 				    ULONGEST offset, LONGEST len);
 
 extern LONGEST target_write_partial (struct target_ops *ops,
 				     enum target_object object,
-				     const char *annex, const void *buf,
+				     const char *annex, const gdb_byte *buf,
 				     ULONGEST offset, LONGEST len);
 
 /* Wrappers to perform the full transfer.  */
 extern LONGEST target_read (struct target_ops *ops,
 			    enum target_object object,
-			    const char *annex, void *buf,
+			    const char *annex, gdb_byte *buf,
 			    ULONGEST offset, LONGEST len);
 
 extern LONGEST target_write (struct target_ops *ops,
 			     enum target_object object,
-			     const char *annex, const void *buf,
+			     const char *annex, const gdb_byte *buf,
 			     ULONGEST offset, LONGEST len);
 
 /* Wrappers to target read/write that perform memory transfers.  They
@@ -263,7 +263,7 @@ extern LONGEST target_write (struct target_ops *ops,
    which in turn lifted it from read_memory.  */
 
 extern void get_target_memory (struct target_ops *ops, CORE_ADDR addr,
-			       void *buf, LONGEST len);
+			       gdb_byte *buf, LONGEST len);
 extern ULONGEST get_target_memory_unsigned (struct target_ops *ops,
 					    CORE_ADDR addr, int len);
 
@@ -329,17 +329,17 @@ struct target_ops
        NOTE: cagney/2004-10-01: This has been entirely superseeded by
        to_xfer_partial and inferior inheritance.  */
 
-    int (*deprecated_xfer_memory) (CORE_ADDR memaddr, char *myaddr,
+    int (*deprecated_xfer_memory) (CORE_ADDR memaddr, gdb_byte *myaddr,
 				   int len, int write,
 				   struct mem_attrib *attrib,
 				   struct target_ops *target);
 
     void (*to_files_info) (struct target_ops *);
-    int (*to_insert_breakpoint) (CORE_ADDR, char *);
-    int (*to_remove_breakpoint) (CORE_ADDR, char *);
+    int (*to_insert_breakpoint) (CORE_ADDR, gdb_byte *);
+    int (*to_remove_breakpoint) (CORE_ADDR, gdb_byte *);
     int (*to_can_use_hw_breakpoint) (int, int, int);
-    int (*to_insert_hw_breakpoint) (CORE_ADDR, char *);
-    int (*to_remove_hw_breakpoint) (CORE_ADDR, char *);
+    int (*to_insert_hw_breakpoint) (CORE_ADDR, gdb_byte *);
+    int (*to_remove_hw_breakpoint) (CORE_ADDR, gdb_byte *);
     int (*to_remove_watchpoint) (CORE_ADDR, int, int);
     int (*to_insert_watchpoint) (CORE_ADDR, int, int);
     int (*to_stopped_by_watchpoint) (void);
@@ -358,12 +358,12 @@ struct target_ops
     void (*to_create_inferior) (char *, char *, char **, int);
     void (*to_post_startup_inferior) (ptid_t);
     void (*to_acknowledge_created_inferior) (int);
-    int (*to_insert_fork_catchpoint) (int);
+    void (*to_insert_fork_catchpoint) (int);
     int (*to_remove_fork_catchpoint) (int);
-    int (*to_insert_vfork_catchpoint) (int);
+    void (*to_insert_vfork_catchpoint) (int);
     int (*to_remove_vfork_catchpoint) (int);
-    int (*to_follow_fork) (int);
-    int (*to_insert_exec_catchpoint) (int);
+    int (*to_follow_fork) (struct target_ops *, int);
+    void (*to_insert_exec_catchpoint) (int);
     int (*to_remove_exec_catchpoint) (int);
     int (*to_reported_exec_events_per_exec_call) (void);
     int (*to_has_exited) (int, int, int *);
@@ -411,7 +411,7 @@ struct target_ops
        thread-local storage hasn't been allocated yet, this function
        may return an error.  */
     CORE_ADDR (*to_get_thread_local_address) (ptid_t ptid,
-					      struct objfile *objfile,
+					      CORE_ADDR load_module_addr,
 					      CORE_ADDR offset);
 
     /* Perform partial transfers on OBJECT.  See target_read_partial
@@ -419,7 +419,7 @@ struct target_ops
        only one, of readbuf or writebuf must be non-NULL.  */
     LONGEST (*to_xfer_partial) (struct target_ops *ops,
 				enum target_object object, const char *annex,
-				void *readbuf, const void *writebuf,
+				gdb_byte *readbuf, const gdb_byte *writebuf,
 				ULONGEST offset, LONGEST len);
 
     int to_magic;
@@ -532,19 +532,20 @@ extern void target_disconnect (char *, int);
 
 extern DCACHE *target_dcache;
 
-extern int do_xfer_memory (CORE_ADDR memaddr, char *myaddr, int len, int write,
-			   struct mem_attrib *attrib);
+extern int do_xfer_memory (CORE_ADDR memaddr, gdb_byte *myaddr, int len,
+			   int write, struct mem_attrib *attrib);
 
 extern int target_read_string (CORE_ADDR, char **, int, int *);
 
-extern int target_read_memory (CORE_ADDR memaddr, char *myaddr, int len);
+extern int target_read_memory (CORE_ADDR memaddr, gdb_byte *myaddr, int len);
 
-extern int target_write_memory (CORE_ADDR memaddr, char *myaddr, int len);
+extern int target_write_memory (CORE_ADDR memaddr, const gdb_byte *myaddr,
+				int len);
 
-extern int xfer_memory (CORE_ADDR, char *, int, int,
+extern int xfer_memory (CORE_ADDR, gdb_byte *, int, int,
 			struct mem_attrib *, struct target_ops *);
 
-extern int child_xfer_memory (CORE_ADDR, char *, int, int,
+extern int child_xfer_memory (CORE_ADDR, gdb_byte *, int, int,
 			      struct mem_attrib *, struct target_ops *);
 
 /* Make a single attempt at transfering LEN bytes.  On a successful
@@ -571,19 +572,19 @@ extern void child_post_startup_inferior (ptid_t);
 
 extern void child_acknowledge_created_inferior (int);
 
-extern int child_insert_fork_catchpoint (int);
+extern void child_insert_fork_catchpoint (int);
 
 extern int child_remove_fork_catchpoint (int);
 
-extern int child_insert_vfork_catchpoint (int);
+extern void child_insert_vfork_catchpoint (int);
 
 extern int child_remove_vfork_catchpoint (int);
 
 extern void child_acknowledge_created_inferior (int);
 
-extern int child_follow_fork (int);
+extern int child_follow_fork (struct target_ops *, int);
 
-extern int child_insert_exec_catchpoint (int);
+extern void child_insert_exec_catchpoint (int);
 
 extern int child_remove_exec_catchpoint (int);
 
@@ -748,8 +749,7 @@ extern void target_load (char *arg, int from_tty);
    This function returns 1 if the inferior should not be resumed
    (i.e. there is another event pending).  */
 
-#define target_follow_fork(follow_child) \
-     (*current_target.to_follow_fork) (follow_child)
+int target_follow_fork (int follow_child);
 
 /* On some targets, we can catch an inferior exec event when it
    occurs.  These functions insert/remove an already-created
@@ -905,8 +905,6 @@ extern void target_load (char *arg, int from_tty);
 
 extern int target_async_mask (int mask);
 
-extern void target_link (char *, CORE_ADDR *);
-
 /* Converts a process id to a string.  Usually, the string just contains
    `process xyz', but on some systems it may contain
    `process xyz thread abc'.  */
@@ -1017,18 +1015,6 @@ extern void (*deprecated_target_new_objfile_hook) (struct objfile *);
 #ifndef HAVE_CONTINUABLE_WATCHPOINT
 #define HAVE_CONTINUABLE_WATCHPOINT \
    (current_target.to_have_continuable_watchpoint)
-#endif
-
-/* HP-UX supplies these operations, which respectively disable and enable
-   the memory page-protections that are used to implement hardware watchpoints
-   on that platform.  See wait_for_inferior's use of these.  */
-
-#if !defined(TARGET_DISABLE_HW_WATCHPOINTS)
-#define TARGET_DISABLE_HW_WATCHPOINTS(pid)
-#endif
-
-#if !defined(TARGET_ENABLE_HW_WATCHPOINTS)
-#define TARGET_ENABLE_HW_WATCHPOINTS(pid)
 #endif
 
 /* Provide defaults for hardware watchpoint functions.  */
@@ -1150,13 +1136,13 @@ struct section_table *target_section_by_addr (struct target_ops *target,
 
 /* From mem-break.c */
 
-extern int memory_remove_breakpoint (CORE_ADDR, char *);
+extern int memory_remove_breakpoint (CORE_ADDR, gdb_byte *);
 
-extern int memory_insert_breakpoint (CORE_ADDR, char *);
+extern int memory_insert_breakpoint (CORE_ADDR, gdb_byte *);
 
-extern int default_memory_remove_breakpoint (CORE_ADDR, char *);
+extern int default_memory_remove_breakpoint (CORE_ADDR, gdb_byte *);
 
-extern int default_memory_insert_breakpoint (CORE_ADDR, char *);
+extern int default_memory_insert_breakpoint (CORE_ADDR, gdb_byte *);
 
 
 /* From target.c */

@@ -1,6 +1,6 @@
 /* Native-dependent code for the i386.
 
-   Copyright 2001, 2004 Free Software Foundation, Inc.
+   Copyright 2001, 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -231,8 +231,6 @@ i386_cleanup_dregs (void)
   dr_status_mirror  = 0;
 }
 
-#ifndef LINUX_CHILD_POST_STARTUP_INFERIOR
-
 /* Reset all debug registers at each new startup to avoid missing
    watchpoints after restart.  */
 
@@ -241,8 +239,6 @@ child_post_startup_inferior (ptid_t ptid)
 {
   i386_cleanup_dregs ();
 }
-
-#endif /* LINUX_CHILD_POST_STARTUP_INFERIOR */
 
 /* Print the values of the mirrored debug registers.  This is called
    when maint_show_dr is non-zero.  To set that up, type "maint
@@ -310,8 +306,8 @@ i386_length_and_rw_bits (int len, enum target_hw_bp_type type)
 	break;
 #endif
       default:
-	internal_error (__FILE__, __LINE__, "\
-Invalid hardware breakpoint type %d in i386_length_and_rw_bits.\n",
+	internal_error (__FILE__, __LINE__, _("\
+Invalid hardware breakpoint type %d in i386_length_and_rw_bits.\n"),
 			(int) type);
     }
 
@@ -327,8 +323,8 @@ Invalid hardware breakpoint type %d in i386_length_and_rw_bits.\n",
         if (TARGET_HAS_DR_LEN_8)
  	  return (DR_LEN_8 | rw);
       default:
-	internal_error (__FILE__, __LINE__, "\
-Invalid hardware breakpoint length %d in i386_length_and_rw_bits.\n", len);
+	internal_error (__FILE__, __LINE__, _("\
+Invalid hardware breakpoint length %d in i386_length_and_rw_bits.\n"), len);
     }
 }
 
@@ -478,8 +474,8 @@ i386_handle_nonaligned_watchpoint (i386_wp_op_t what, CORE_ADDR addr, int len,
 	  else if (what == WP_REMOVE)
 	    status = i386_remove_aligned_watchpoint (addr, len_rw);
 	  else
-	    internal_error (__FILE__, __LINE__, "\
-Invalid value %d of operation in i386_handle_nonaligned_watchpoint.\n",
+	    internal_error (__FILE__, __LINE__, _("\
+Invalid value %d of operation in i386_handle_nonaligned_watchpoint.\n"),
 			    (int)what);
 	  /* We keep the loop going even after a failure, because some
 	     of the other aligned watchpoints might still succeed
@@ -670,13 +666,13 @@ _initialize_i386_nat (void)
 #ifdef I386_USE_GENERIC_WATCHPOINTS
   /* A maintenance command to enable printing the internal DRi mirror
      variables.  */
-  add_set_cmd ("show-debug-regs", class_maintenance,
-	       var_boolean, (char *) &maint_show_dr,
-	       "\
+  deprecated_add_set_cmd ("show-debug-regs", class_maintenance,
+			  var_boolean, (char *) &maint_show_dr, _("\
 Set whether to show variables that mirror the x86 debug registers.\n\
 Use \"on\" to enable, \"off\" to disable.\n\
 If enabled, the debug registers values are shown when GDB inserts\n\
 or removes a hardware breakpoint or watchpoint, and when the inferior\n\
-triggers a breakpoint or watchpoint.", &maintenancelist);
+triggers a breakpoint or watchpoint."),
+			  &maintenancelist);
 #endif
 }

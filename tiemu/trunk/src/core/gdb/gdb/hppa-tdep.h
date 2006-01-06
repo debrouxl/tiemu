@@ -1,5 +1,6 @@
-/* Common target dependent code for GDB on HPPA systems.
-   Copyright 2003, 2004 Free Software Foundation, Inc.
+/* Target-dependent code for the HP PA-RISC architecture.
+
+   Copyright 2003, 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -22,6 +23,8 @@
 #define HPPA_TDEP_H
 
 struct trad_frame_saved_reg;
+struct objfile;
+struct so_list;
 
 /* Register numbers of various important registers.
    Note that some of these values are "real" register numbers,
@@ -38,6 +41,9 @@ enum hppa_regnum
   HPPA_FLAGS_REGNUM = 0,	/* Various status flags */
   HPPA_RP_REGNUM = 2,		/* return pointer */
   HPPA_FP_REGNUM = 3,		/* The ABI's frame pointer, when used */
+  HPPA_DP_REGNUM = 27,
+  HPPA_RET0_REGNUM = 28,
+  HPPA_RET1_REGNUM = 29,
   HPPA_SP_REGNUM = 30,		/* Stack pointer.  */
   HPPA_R31_REGNUM = 31,
   HPPA_SAR_REGNUM = 32,		/* Shift Amount Register */
@@ -61,12 +67,16 @@ enum hppa_regnum
   HPPA_CR27_REGNUM = 60,	/* Base register for thread-local storage, cr27 */
   HPPA_FP0_REGNUM = 64,		/* First floating-point.  */
   HPPA_FP4_REGNUM = 72,
+  HPPA64_FP4_REGNUM = 68,
 
   HPPA_ARG0_REGNUM = 26,	/* The first argument of a callee. */
   HPPA_ARG1_REGNUM = 25,	/* The second argument of a callee. */
   HPPA_ARG2_REGNUM = 24,	/* The third argument of a callee. */
   HPPA_ARG3_REGNUM = 23		/* The fourth argument of a callee. */
 };
+
+/* Instruction size.  */
+#define HPPA_INSN_SIZE 4
 
 /* Target-dependent structure in gdbarch.  */
 struct gdbarch_tdep
@@ -82,6 +92,27 @@ struct gdbarch_tdep
   /* Given a function address, try to find the global pointer for the 
      corresponding shared object.  */
   CORE_ADDR (*find_global_pointer) (struct value *);
+
+  /* For shared libraries, each call goes through a small piece of
+     trampoline code in the ".plt", or equivalent, section.
+     IN_SOLIB_CALL_TRAMPOLINE evaluates to nonzero if we are currently
+     stopped in one of these.  */
+  int (*in_solib_call_trampoline) (CORE_ADDR pc, char *name);
+
+  /* For targets that support multiple spaces, we may have additional stubs
+     in the return path.  These stubs are internal to the ABI, and users are
+     not interested in them.  If we detect that we are returning to a stub,
+     adjust the pc to the real caller.  This improves the behavior of commands
+     that traverse frames such as "up" and "finish".  */
+  void (*unwind_adjust_stub) (struct frame_info *next_frame, CORE_ADDR base,
+  			      struct trad_frame_saved_reg *saved_regs);
+
+  /* These are solib-dependent methods.  They are really HPUX only, but
+     we don't have a HPUX-specific tdep vector at the moment.  */
+  CORE_ADDR (*solib_thread_start_addr) (struct so_list *so);
+  CORE_ADDR (*solib_get_got_by_pc) (CORE_ADDR addr);
+  CORE_ADDR (*solib_get_solib_by_pc) (CORE_ADDR addr);
+  CORE_ADDR (*solib_get_text_base) (struct objfile *objfile);
 };
 
 /*
@@ -181,6 +212,9 @@ struct hppa_objfile_private
     struct hppa_unwind_info *unwind_info;	/* a pointer */
     struct so_list *so_info;	/* a pointer  */
     CORE_ADDR dp;
+
+    int dummy_call_sequence_reg;
+    CORE_ADDR dummy_call_sequence_addr;
   };
 
 extern const struct objfile_data *hppa_objfile_priv_data;
@@ -196,11 +230,23 @@ int hppa_low_sign_extend (unsigned int, unsigned int);
 int hppa_sign_extend (unsigned int, unsigned int);
 CORE_ADDR hppa_symbol_address(const char *sym);
 
-void
-hppa_frame_prev_register_helper (struct frame_info *next_frame,
-			         struct trad_frame_saved_reg *saved_regs,
-				 int regnum, int *optimizedp,
-				 enum lval_type *lvalp, CORE_ADDR *addrp,
-				 int *realnump, void *valuep);
+extern void
+  hppa_frame_prev_register_helper (struct frame_info *next_frame,
+				   struct trad_frame_saved_reg *saved_regs,
+				   int regnum, int *optimizedp,
+				   enum lval_type *lvalp, CORE_ADDR *addrp,
+				   int *realnump, gdb_byte *valuep);
+
+extern CORE_ADDR hppa_read_pc (ptid_t ptid);
+extern void hppa_write_pc (CORE_ADDR pc, ptid_t ptid);
+extern CORE_ADDR hppa_unwind_pc (struct gdbarch *gdbarch,
+				 struct frame_info *next_frame);
+
+extern struct minimal_symbol *
+  hppa_lookup_stub_minimal_symbol (const char *name,
+                                   enum unwind_stub_types stub_type);
+
+extern struct hppa_objfile_private *
+hppa_init_objfile_priv_data (struct objfile *objfile);
 
 #endif  /* HPPA_TDEP_H */

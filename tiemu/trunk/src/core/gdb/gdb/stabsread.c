@@ -1,8 +1,8 @@
 /* Support routines for decoding "stabs" debugging information format.
 
    Copyright 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994,
-   1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004 Free
-   Software Foundation, Inc.
+   1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005
+   Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -92,7 +92,7 @@ read_one_struct_field (struct field_info *, char **, char *,
 
 static struct type *dbx_alloc_type (int[2], struct objfile *);
 
-static long read_huge_number (char **, int, int *);
+static long read_huge_number (char **, int, int *, int);
 
 static struct type *error_type (char **, struct objfile *);
 
@@ -106,7 +106,7 @@ static int read_type_number (char **, int *);
 
 static struct type *read_type (char **, struct objfile *);
 
-static struct type *read_range_type (char **, int[2], struct objfile *);
+static struct type *read_range_type (char **, int[2], int, struct objfile *);
 
 static struct type *read_sun_builtin_type (char **, int[2], struct objfile *);
 
@@ -174,14 +174,14 @@ static const char vb_name[] = "_vb$";
 static void
 invalid_cpp_abbrev_complaint (const char *arg1)
 {
-  complaint (&symfile_complaints, "invalid C++ abbreviation `%s'", arg1);
+  complaint (&symfile_complaints, _("invalid C++ abbreviation `%s'"), arg1);
 }
 
 static void
 reg_value_complaint (int regnum, int num_regs, const char *sym)
 {
   complaint (&symfile_complaints,
-	     "register number %d too large (max %d) in symbol %s",
+	     _("register number %d too large (max %d) in symbol %s"),
              regnum, num_regs - 1, sym);
 }
 
@@ -229,7 +229,7 @@ dbx_lookup_type (int typenums[2])
   if (filenum < 0 || filenum >= n_this_object_header_files)
     {
       complaint (&symfile_complaints,
-		 "Invalid symbol data: type number (%d,%d) out of range at symtab pos %d.",
+		 _("Invalid symbol data: type number (%d,%d) out of range at symtab pos %d."),
 		 filenum, index, symnum);
       goto error_return;
     }
@@ -281,7 +281,7 @@ dbx_lookup_type (int typenums[2])
 	  struct type *temp_type;
 	  struct type **temp_type_p;
 
-	  warning ("GDB internal error: bad real_filenum");
+	  warning (_("GDB internal error: bad real_filenum"));
 
 	error_return:
 	  temp_type = init_type (TYPE_CODE_ERROR, 0, 0, NULL, NULL);
@@ -435,17 +435,17 @@ read_type_number (char **pp, int *typenums)
   if (**pp == '(')
     {
       (*pp)++;
-      typenums[0] = read_huge_number (pp, ',', &nbits);
+      typenums[0] = read_huge_number (pp, ',', &nbits, 0);
       if (nbits != 0)
 	return -1;
-      typenums[1] = read_huge_number (pp, ')', &nbits);
+      typenums[1] = read_huge_number (pp, ')', &nbits, 0);
       if (nbits != 0)
 	return -1;
     }
   else
     {
       typenums[0] = 0;
-      typenums[1] = read_huge_number (pp, 0, &nbits);
+      typenums[1] = read_huge_number (pp, 0, &nbits, 0);
       if (nbits != 0)
 	return -1;
     }
@@ -669,7 +669,7 @@ define_symbol (CORE_ADDR valu, char *string, int desc, int type,
 #endif
 
 	default:
-	  complaint (&symfile_complaints, "Unknown C++ symbol name `%s'",
+	  complaint (&symfile_complaints, _("Unknown C++ symbol name `%s'"),
 		     string);
 	  goto normal;		/* Do *something* with it */
 	}
@@ -1345,7 +1345,7 @@ define_symbol (CORE_ADDR valu, char *string, int desc, int type,
 static struct type *
 error_type (char **pp, struct objfile *objfile)
 {
-  complaint (&symfile_complaints, "couldn't parse type; debugger out of date?");
+  complaint (&symfile_complaints, _("couldn't parse type; debugger out of date?"));
   while (1)
     {
       /* Skip to end of symbol.  */
@@ -1466,7 +1466,7 @@ again:
 		/* Complain and keep going, so compilers can invent new
 		   cross-reference types.  */
 		complaint (&symfile_complaints,
-			   "Unrecognized cross-reference type `%c'", (*pp)[0]);
+			   _("Unrecognized cross-reference type `%c'"), (*pp)[0]);
 		code = TYPE_CODE_STRUCT;
 		break;
 	      }
@@ -1672,7 +1672,7 @@ again:
         else
           {
 	    complaint (&symfile_complaints,
-		       "Prototyped function type didn't end arguments with `#':\n%s",
+		       _("Prototyped function type didn't end arguments with `#':\n%s"),
 		       type_start);
           }
 
@@ -1783,7 +1783,7 @@ again:
 	  return_type = read_type (pp, objfile);
 	  if (*(*pp)++ != ';')
 	    complaint (&symfile_complaints,
-		       "invalid (minimal) member type data format at symtab pos %d.",
+		       _("invalid (minimal) member type data format at symtab pos %d."),
 		       symnum);
 	  type = allocate_stub_method (return_type);
 	  if (typenums[0] != -1)
@@ -1811,7 +1811,7 @@ again:
       break;
 
     case 'r':			/* Range type */
-      type = read_range_type (pp, typenums, objfile);
+      type = read_range_type (pp, typenums, type_size, objfile);
       if (typenums[0] != -1)
 	*dbx_lookup_type (typenums) = type;
       break;
@@ -1886,7 +1886,7 @@ again:
 
   if (type == 0)
     {
-      warning ("GDB internal error, type is NULL in stabsread.c\n");
+      warning (_("GDB internal error, type is NULL in stabsread.c."));
       return error_type (pp, objfile);
     }
 
@@ -1911,7 +1911,7 @@ rs6000_builtin_type (int typenum)
 
   if (typenum >= 0 || typenum < -NUMBER_RECOGNIZED)
     {
-      complaint (&symfile_complaints, "Unknown builtin type %d", typenum);
+      complaint (&symfile_complaints, _("Unknown builtin type %d"), typenum);
       return builtin_type_error;
     }
   if (negative_types[-typenum] != NULL)
@@ -2076,7 +2076,7 @@ update_method_name_from_physname (char **old_name, char *physname)
   if (method_name == NULL)
     {
       complaint (&symfile_complaints,
-		 "Method has bad physname %s\n", physname);
+		 _("Method has bad physname %s\n"), physname);
       return;
     }
 
@@ -2274,7 +2274,7 @@ read_member_functions (struct field_info *fip, char **pp, struct type *type,
 	      break;
 	    default:
 	      complaint (&symfile_complaints,
-			 "const/volatile indicator missing, got '%c'", **pp);
+			 _("const/volatile indicator missing, got '%c'"), **pp);
 	      break;
 	    }
 
@@ -2291,7 +2291,7 @@ read_member_functions (struct field_info *fip, char **pp, struct type *type,
 		   the sign bit out, and usable as a valid index into
 		   the array.  Remove the sign bit here.  */
 		new_sublist->fn_field.voffset =
-		  (0x7fffffff & read_huge_number (pp, ';', &nbits)) + 2;
+		  (0x7fffffff & read_huge_number (pp, ';', &nbits, 0)) + 2;
 		if (nbits != 0)
 		  return 0;
 
@@ -2357,7 +2357,7 @@ read_member_functions (struct field_info *fip, char **pp, struct type *type,
 	    default:
 	      /* error */
 	      complaint (&symfile_complaints,
-			 "member function type missing, got '%c'", (*pp)[-1]);
+			 _("member function type missing, got '%c'"), (*pp)[-1]);
 	      /* Fall through into normal member function.  */
 
 	    case '.':
@@ -2527,7 +2527,8 @@ read_member_functions (struct field_info *fip, char **pp, struct type *type,
 	    }
 	  else if (has_destructor && new_fnlist->fn_fieldlist.name[0] != '~')
 	    {
-	      new_fnlist->fn_fieldlist.name = concat ("~", main_fn_name, NULL);
+	      new_fnlist->fn_fieldlist.name =
+		concat ("~", main_fn_name, (char *)NULL);
 	      xfree (main_fn_name);
 	    }
 	  else if (!has_stub)
@@ -2623,7 +2624,7 @@ read_cpp_abbrev (struct field_info *fip, char **pp, struct type *type,
 	  if (name == NULL)
 	    {
 	      complaint (&symfile_complaints,
-			 "C++ abbreviated type name unknown at symtab pos %d",
+			 _("C++ abbreviated type name unknown at symtab pos %d"),
 			 symnum);
 	      name = "FOO";
 	    }
@@ -2656,7 +2657,8 @@ read_cpp_abbrev (struct field_info *fip, char **pp, struct type *type,
 
       {
 	int nbits;
-	FIELD_BITPOS (fip->list->field) = read_huge_number (pp, ';', &nbits);
+	FIELD_BITPOS (fip->list->field) = read_huge_number (pp, ';', &nbits,
+                                                            0);
 	if (nbits != 0)
 	  return 0;
       }
@@ -2729,13 +2731,13 @@ read_one_struct_field (struct field_info *fip, char **pp, char *p,
 
   {
     int nbits;
-    FIELD_BITPOS (fip->list->field) = read_huge_number (pp, ',', &nbits);
+    FIELD_BITPOS (fip->list->field) = read_huge_number (pp, ',', &nbits, 0);
     if (nbits != 0)
       {
 	stabs_general_complaint ("bad structure-type format");
 	return;
       }
-    FIELD_BITSIZE (fip->list->field) = read_huge_number (pp, ';', &nbits);
+    FIELD_BITSIZE (fip->list->field) = read_huge_number (pp, ';', &nbits, 0);
     if (nbits != 0)
       {
 	stabs_general_complaint ("bad structure-type format");
@@ -2750,7 +2752,7 @@ read_one_struct_field (struct field_info *fip, char **pp, char *p,
          it is a field which has been optimized out.  The correct stab for
          this case is to use VISIBILITY_IGNORE, but that is a recent
          invention.  (2) It is a 0-size array.  For example
-         union { int num; char str[0]; } foo.  Printing "<no value>" for
+         union { int num; char str[0]; } foo.  Printing _("<no value>" for
          str in "p foo" is OK, since foo.str (and thus foo.str[3])
          will continue to work, and a 0-size array as a whole doesn't
          have any contents to print.
@@ -2931,7 +2933,7 @@ read_baseclasses (struct field_info *fip, char **pp, struct type *type,
   ALLOCATE_CPLUS_STRUCT_TYPE (type);
   {
     int nbits;
-    TYPE_N_BASECLASSES (type) = read_huge_number (pp, ',', &nbits);
+    TYPE_N_BASECLASSES (type) = read_huge_number (pp, ',', &nbits, 0);
     if (nbits != 0)
       return 0;
   }
@@ -2975,7 +2977,7 @@ read_baseclasses (struct field_info *fip, char **pp, struct type *type,
 	  /* Unknown character.  Complain and treat it as non-virtual.  */
 	  {
 	    complaint (&symfile_complaints,
-		       "Unknown virtual character `%c' for baseclass", **pp);
+		       _("Unknown virtual character `%c' for baseclass"), **pp);
 	  }
 	}
       ++(*pp);
@@ -2992,7 +2994,7 @@ read_baseclasses (struct field_info *fip, char **pp, struct type *type,
 	     public.  */
 	  {
 	    complaint (&symfile_complaints,
-		       "Unknown visibility `%c' for baseclass",
+		       _("Unknown visibility `%c' for baseclass"),
 		       new->visibility);
 	    new->visibility = VISIBILITY_PUBLIC;
 	  }
@@ -3005,7 +3007,7 @@ read_baseclasses (struct field_info *fip, char **pp, struct type *type,
 	   corresponding to this baseclass.  Always zero in the absence of
 	   multiple inheritance.  */
 
-	FIELD_BITPOS (new->field) = read_huge_number (pp, ',', &nbits);
+	FIELD_BITPOS (new->field) = read_huge_number (pp, ',', &nbits, 0);
 	if (nbits != 0)
 	  return 0;
       }
@@ -3100,7 +3102,7 @@ read_tilde_fields (struct field_info *fip, char **pp, struct type *type,
 		}
 	      /* Virtual function table field not found.  */
 	      complaint (&symfile_complaints,
-			 "virtual function table pointer not found when defining class `%s'",
+			 _("virtual function table pointer not found when defining class `%s'"),
 			 TYPE_NAME (type));
 	      return 0;
 	    }
@@ -3210,7 +3212,7 @@ attach_fields_to_type (struct field_info *fip, struct type *type,
 	default:
 	  /* Unknown visibility.  Complain and treat it as public.  */
 	  {
-	    complaint (&symfile_complaints, "Unknown visibility `%c' for field",
+	    complaint (&symfile_complaints, _("Unknown visibility `%c' for field"),
 		       fip->list->visibility);
 	  }
 	  break;
@@ -3252,7 +3254,7 @@ complain_about_struct_wipeout (struct type *type)
     }
 
   complaint (&symfile_complaints,
-	     "struct/union type gets multiply defined: %s%s", kind, name);
+	     _("struct/union type gets multiply defined: %s%s"), kind, name);
 }
 
 
@@ -3310,7 +3312,7 @@ read_struct_type (char **pp, struct type *type, enum type_code type_code,
 
   {
     int nbits;
-    TYPE_LENGTH (type) = read_huge_number (pp, 0, &nbits);
+    TYPE_LENGTH (type) = read_huge_number (pp, 0, &nbits, 0);
     if (nbits != 0)
       return error_type (pp, objfile);
   }
@@ -3368,7 +3370,7 @@ read_array_type (char **pp, struct type *type,
       (*pp)++;
       adjustable = 1;
     }
-  lower = read_huge_number (pp, ';', &nbits);
+  lower = read_huge_number (pp, ';', &nbits, 0);
 
   if (nbits != 0)
     return error_type (pp, objfile);
@@ -3378,7 +3380,7 @@ read_array_type (char **pp, struct type *type,
       (*pp)++;
       adjustable = 1;
     }
-  upper = read_huge_number (pp, ';', &nbits);
+  upper = read_huge_number (pp, ';', &nbits, 0);
   if (nbits != 0)
     return error_type (pp, objfile);
 
@@ -3452,7 +3454,7 @@ read_enum_type (char **pp, struct type *type,
 	p++;
       name = obsavestring (*pp, p - *pp, &objfile->objfile_obstack);
       *pp = p + 1;
-      n = read_huge_number (pp, ',', &nbits);
+      n = read_huge_number (pp, ',', &nbits, 0);
       if (nbits != 0)
 	return error_type (pp, objfile);
 
@@ -3564,17 +3566,17 @@ read_sun_builtin_type (char **pp, int typenums[2], struct objfile *objfile)
      by this type, except that unsigned short is 4 instead of 2.
      Since this information is redundant with the third number,
      we will ignore it.  */
-  read_huge_number (pp, ';', &nbits);
+  read_huge_number (pp, ';', &nbits, 0);
   if (nbits != 0)
     return error_type (pp, objfile);
 
   /* The second number is always 0, so ignore it too. */
-  read_huge_number (pp, ';', &nbits);
+  read_huge_number (pp, ';', &nbits, 0);
   if (nbits != 0)
     return error_type (pp, objfile);
 
   /* The third number is the number of bits for this type. */
-  type_bits = read_huge_number (pp, 0, &nbits);
+  type_bits = read_huge_number (pp, 0, &nbits, 0);
   if (nbits != 0)
     return error_type (pp, objfile);
   /* The type *should* end with a semicolon.  If it are embedded
@@ -3607,12 +3609,12 @@ read_sun_floating_type (char **pp, int typenums[2], struct objfile *objfile)
 
   /* The first number has more details about the type, for example
      FN_COMPLEX.  */
-  details = read_huge_number (pp, ';', &nbits);
+  details = read_huge_number (pp, ';', &nbits, 0);
   if (nbits != 0)
     return error_type (pp, objfile);
 
   /* The second number is the number of bytes occupied by this type */
-  nbytes = read_huge_number (pp, ';', &nbits);
+  nbytes = read_huge_number (pp, ';', &nbits, 0);
   if (nbits != 0)
     return error_type (pp, objfile);
 
@@ -3635,22 +3637,30 @@ read_sun_floating_type (char **pp, int typenums[2], struct objfile *objfile)
    and that character is skipped if it does match.
    If END is zero, *PP is left pointing to that character.
 
+   If TWOS_COMPLEMENT_BITS is set to a strictly positive value and if
+   the number is represented in an octal representation, assume that
+   it is represented in a 2's complement representation with a size of
+   TWOS_COMPLEMENT_BITS.
+
    If the number fits in a long, set *BITS to 0 and return the value.
    If not, set *BITS to be the number of bits in the number and return 0.
 
    If encounter garbage, set *BITS to -1 and return 0.  */
 
 static long
-read_huge_number (char **pp, int end, int *bits)
+read_huge_number (char **pp, int end, int *bits, int twos_complement_bits)
 {
   char *p = *pp;
   int sign = 1;
+  int sign_bit;
   long n = 0;
+  long sn = 0;
   int radix = 10;
   char overflow = 0;
   int nbits = 0;
   int c;
   long upper_limit;
+  int twos_complement_representation = radix == 8 && twos_complement_bits > 0;
 
   if (*p == '-')
     {
@@ -3671,12 +3681,36 @@ read_huge_number (char **pp, int end, int *bits)
   while ((c = *p++) >= '0' && c < ('0' + radix))
     {
       if (n <= upper_limit)
-	{
-	  n *= radix;
-	  n += c - '0';		/* FIXME this overflows anyway */
-	}
+        {
+          if (twos_complement_representation)
+            {
+              /* Octal, signed, twos complement representation. In this case,
+                 sn is the signed value, n is the corresponding absolute
+                 value. signed_bit is the position of the sign bit in the
+                 first three bits.  */
+              if (sn == 0)
+                {
+                  sign_bit = (twos_complement_bits % 3 + 2) % 3;
+                  sn = c - '0' - ((2 * (c - '0')) | (2 << sign_bit));
+                }
+              else
+                {
+                  sn *= radix;
+                  sn += c - '0';
+                }
+
+              if (sn < 0)
+                n = -sn;
+            }
+          else
+            {
+              /* unsigned representation */
+              n *= radix;
+              n += c - '0';		/* FIXME this overflows anyway */
+            }
+        }
       else
-	overflow = 1;
+        overflow = 1;
 
       /* This depends on large values being output in octal, which is
          what GCC does. */
@@ -3733,14 +3767,18 @@ read_huge_number (char **pp, int end, int *bits)
     {
       if (bits)
 	*bits = 0;
-      return n * sign;
+      if (twos_complement_representation)
+        return sn;
+      else
+        return n * sign;
     }
   /* It's *BITS which has the interesting information.  */
   return 0;
 }
 
 static struct type *
-read_range_type (char **pp, int typenums[2], struct objfile *objfile)
+read_range_type (char **pp, int typenums[2], int type_size,
+                 struct objfile *objfile)
 {
   char *orig_pp = *pp;
   int rangenums[2];
@@ -3769,8 +3807,8 @@ read_range_type (char **pp, int typenums[2], struct objfile *objfile)
 
   /* The remaining two operands are usually lower and upper bounds
      of the range.  But in some special cases they mean something else.  */
-  n2 = read_huge_number (pp, ';', &n2bits);
-  n3 = read_huge_number (pp, ';', &n3bits);
+  n2 = read_huge_number (pp, ';', &n2bits, type_size);
+  n3 = read_huge_number (pp, ';', &n3bits, type_size);
 
   if (n2bits == -1 || n3bits == -1)
     return error_type (pp, objfile);
@@ -3786,8 +3824,19 @@ read_range_type (char **pp, int typenums[2], struct objfile *objfile)
       /* Number of bits in the type.  */
       int nbits = 0;
 
+      /* If a type size attribute has been specified, the bounds of
+         the range should fit in this size. If the lower bounds needs
+         more bits than the upper bound, then the type is signed.  */
+      if (n2bits <= type_size && n3bits <= type_size)
+        {
+          if (n2bits == type_size && n2bits > n3bits)
+            got_signed = 1;
+          else
+            got_unsigned = 1;
+          nbits = type_size;
+        }
       /* Range from 0 to <large number> is an unsigned large integral type.  */
-      if ((n2bits == 0 && n2 == 0) && n3bits != 0)
+      else if ((n2bits == 0 && n2 == 0) && n3bits != 0)
 	{
 	  got_unsigned = 1;
 	  nbits = n3bits;
@@ -3923,7 +3972,7 @@ handle_true_range:
       static struct type *range_type_index;
 
       complaint (&symfile_complaints,
-		 "base type %d of range type is not defined", rangenums[1]);
+		 _("base type %d of range type is not defined"), rangenums[1]);
       if (range_type_index == NULL)
 	range_type_index =
 	  init_type (TYPE_CODE_INT, TARGET_INT_BIT / TARGET_CHAR_BIT,
@@ -4000,7 +4049,7 @@ common_block_start (char *name, struct objfile *objfile)
   if (common_block_name != NULL)
     {
       complaint (&symfile_complaints,
-		 "Invalid symbol data: common block within common block");
+		 _("Invalid symbol data: common block within common block"));
     }
   common_block = local_symbols;
   common_block_i = local_symbols ? local_symbols->nsyms : 0;
@@ -4026,7 +4075,7 @@ common_block_end (struct objfile *objfile)
 
   if (common_block_name == NULL)
     {
-      complaint (&symfile_complaints, "ECOMM symbol unmatched by BCOMM");
+      complaint (&symfile_complaints, _("ECOMM symbol unmatched by BCOMM"));
       return;
     }
 
@@ -4139,7 +4188,7 @@ cleanup_undefined_types (void)
 
 		if (typename == NULL)
 		  {
-		    complaint (&symfile_complaints, "need a type name");
+		    complaint (&symfile_complaints, _("need a type name"));
 		    break;
 		  }
 		for (ppt = file_symbols; ppt; ppt = ppt->next)
@@ -4163,8 +4212,8 @@ cleanup_undefined_types (void)
 	default:
 	  {
 	    complaint (&symfile_complaints,
-		       "forward-referenced types left unresolved, "
-                       "type code %d.",
+		       _("forward-referenced types left unresolved, "
+                       "type code %d."),
 		       TYPE_CODE (*type));
 	  }
 	  break;
@@ -4306,7 +4355,7 @@ scan_file_globals (struct objfile *objfile)
 	    SYMBOL_CLASS (prev) = LOC_UNRESOLVED;
 	  else
 	    complaint (&symfile_complaints,
-		       "%s: common block `%s' from global_sym_chain unresolved",
+		       _("%s: common block `%s' from global_sym_chain unresolved"),
 		       objfile->name, DEPRECATED_SYMBOL_NAME (prev));
 	}
     }
@@ -4385,12 +4434,12 @@ find_name_end (char *name)
       /* Must be an ObjC method symbol.  */
       if (s[1] != '[')
 	{
-	  error ("invalid symbol name \"%s\"", name);
+	  error (_("invalid symbol name \"%s\""), name);
 	}
       s = strchr (s, ']');
       if (s == NULL)
 	{
-	  error ("invalid symbol name \"%s\"", name);
+	  error (_("invalid symbol name \"%s\""), name);
 	}
       return strchr (s, ':');
     }

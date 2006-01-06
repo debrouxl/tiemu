@@ -1,7 +1,7 @@
 /* Target-dependent code for GDB, the GNU debugger.
 
-   Copyright 2000, 2001, 2002, 2003, 2004 Free Software Foundation,
-   Inc.
+   Copyright 2000, 2001, 2002, 2003, 2004, 2005
+   Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -33,13 +33,13 @@ struct type;
 enum return_value_convention ppc_sysv_abi_return_value (struct gdbarch *gdbarch,
 							struct type *valtype,
 							struct regcache *regcache,
-							void *readbuf,
-							const void *writebuf);
+							gdb_byte *readbuf,
+							const gdb_byte *writebuf);
 enum return_value_convention ppc_sysv_abi_broken_return_value (struct gdbarch *gdbarch,
 							       struct type *valtype,
 							       struct regcache *regcache,
-							       void *readbuf,
-							       const void *writebuf);
+							       gdb_byte *readbuf,
+							       const gdb_byte *writebuf);
 CORE_ADDR ppc_sysv_abi_push_dummy_call (struct gdbarch *gdbarch,
 					struct value *function,
 					struct regcache *regcache,
@@ -56,7 +56,8 @@ CORE_ADDR ppc64_sysv_abi_push_dummy_call (struct gdbarch *gdbarch,
 					  CORE_ADDR struct_addr);
 CORE_ADDR ppc64_sysv_abi_adjust_breakpoint_address (struct gdbarch *gdbarch,
 						    CORE_ADDR bpaddr);
-int ppc_linux_memory_remove_breakpoint (CORE_ADDR addr, char *contents_cache);
+int ppc_linux_memory_remove_breakpoint (CORE_ADDR addr,
+					gdb_byte *contents_cache);
 struct link_map_offsets *ppc_linux_svr4_fetch_link_map_offsets (void);
 void ppc_linux_supply_gregset (struct regcache *regcache,
 			       int regnum, const void *gregs, size_t size,
@@ -68,8 +69,8 @@ void ppc_linux_supply_fpregset (const struct regset *regset,
 enum return_value_convention ppc64_sysv_abi_return_value (struct gdbarch *gdbarch,
 							  struct type *valtype,
 							  struct regcache *regcache,
-							  void *readbuf,
-							  const void *writebuf);
+							  gdb_byte *readbuf,
+							  const gdb_byte *writebuf);
 
 /* From rs6000-tdep.c... */
 int altivec_register_p (int regno);
@@ -151,26 +152,33 @@ struct gdbarch_tdep
     int ppc_ctr_regnum;		/* Count register */
     int ppc_xer_regnum;		/* Integer exception register */
 
-    /* On PPC and RS6000 variants that have no floating-point
-       registers, the next two members will be -1.  */
+    /* Not all PPC and RS6000 variants will have the registers
+       represented below.  A -1 is used to indicate that the register
+       is not present in this variant.  */
+
+    /* Floating-point registers.  */
     int ppc_fp0_regnum;         /* floating-point register 0 */
-    int ppc_fpscr_regnum;	/* Floating point status and condition
-    				   register */
+    int ppc_fpscr_regnum;	/* fp status and condition register */
 
-    int ppc_sr0_regnum;         /* segment register 0, or -1 on
-                                   variants that have no segment
-                                   registers.  */
+    /* Segment registers.  */
+    int ppc_sr0_regnum;         /* segment register 0 */
 
-    int ppc_mq_regnum;		/* Multiply/Divide extension register */
+    /* Multiplier-Quotient Register (older POWER architectures only).  */
+    int ppc_mq_regnum;
+
+    /* Altivec registers.  */
     int ppc_vr0_regnum;		/* First AltiVec register */
     int ppc_vrsave_regnum;	/* Last AltiVec register */
+
+    /* SPE registers.  */
     int ppc_ev0_upper_regnum;   /* First GPR upper half register */
     int ppc_ev0_regnum;         /* First ev register */
     int ppc_ev31_regnum;        /* Last ev register */
     int ppc_acc_regnum;         /* SPE 'acc' register */
     int ppc_spefscr_regnum;     /* SPE 'spefscr' register */
-    int lr_frame_offset;	/* Offset to ABI specific location where
-                                   link register is saved.  */
+
+    /* Offset to ABI specific location where link register is saved.  */
+    int lr_frame_offset;	
 
     /* An array of integers, such that sim_regno[I] is the simulator
        register number for GDB register number I, or -1 if the
@@ -373,4 +381,7 @@ enum
     ppc_spr_pbu2      = 1023
   };
 
-#endif
+/* Instruction size.  */
+#define PPC_INSN_SIZE 4
+
+#endif /* ppc-tdep.h */

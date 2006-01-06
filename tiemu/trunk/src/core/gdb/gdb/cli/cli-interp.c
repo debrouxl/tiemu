@@ -27,15 +27,15 @@
 #include "cli-out.h"
 #include "top.h"		/* for "execute_command" */
 #include "gdb_string.h"
+#include "exceptions.h"
 
 struct ui_out *cli_uiout;
 
-/* These are the ui_out and the interpreter for the console interpreter. */
+/* These are the ui_out and the interpreter for the console interpreter.  */
 
-/* Longjmp-safe wrapper for "execute_command" */
-static int do_captured_execute_command (struct ui_out *uiout, void *data);
-static enum gdb_rc safe_execute_command (struct ui_out *uiout, char *command,
-					 int from_tty);
+/* Longjmp-safe wrapper for "execute_command".  */
+static struct gdb_exception safe_execute_command (struct ui_out *uiout,
+						  char *command, int from_tty);
 struct captured_execute_command_args
 {
   char *command;
@@ -92,11 +92,11 @@ cli_interpreter_display_prompt_p (void *data)
     return 1;
 }
 
-static int
+static struct gdb_exception
 cli_interpreter_exec (void *data, const char *command_str)
 {
-  int result;
   struct ui_file *old_stream;
+  struct gdb_exception result;
 
   /* FIXME: cagney/2003-02-01: Need to const char *propogate
      safe_execute_command.  */
@@ -107,34 +107,38 @@ cli_interpreter_exec (void *data, const char *command_str)
      a new ui_file for gdb_stdout, use that one instead of the default.
 
      It is important that it gets reset everytime, since the user could
-     set gdb to use a different interpreter. */
+     set gdb to use a different interpreter.  */
   old_stream = cli_out_set_stream (cli_uiout, gdb_stdout);
   result = safe_execute_command (cli_uiout, str, 1);
   cli_out_set_stream (cli_uiout, old_stream);
   return result;
 }
 
-static int
+static void
 do_captured_execute_command (struct ui_out *uiout, void *data)
 {
   struct captured_execute_command_args *args =
     (struct captured_execute_command_args *) data;
   execute_command (args->command, args->from_tty);
-  return GDB_RC_OK;
 }
 
-static enum gdb_rc
+static struct gdb_exception
 safe_execute_command (struct ui_out *uiout, char *command, int from_tty)
 {
+  struct gdb_exception e;
   struct captured_execute_command_args args;
   args.command = command;
   args.from_tty = from_tty;
-  return catch_exceptions (uiout, do_captured_execute_command, &args,
-			   NULL, RETURN_MASK_ALL);
+  e = catch_exception (uiout, do_captured_execute_command, &args,
+		       RETURN_MASK_ALL);
+  /* FIXME: cagney/2005-01-13: This shouldn't be needed.  Instead the
+     caller should print the exception.  */
+  exception_print (gdb_stderr, e);
+  return e;
 }
 
 
-/* standard gdb initialization hook */
+/* Standard gdb initialization hook.  */
 extern initialize_file_ftype _initialize_cli_interp; /* -Wmissing-prototypes */
 
 void
@@ -149,7 +153,7 @@ _initialize_cli_interp (void)
   };
   struct interp *cli_interp;
 
-  /* Create a default uiout builder for the CLI. */
+  /* Create a default uiout builder for the CLI.  */
   cli_uiout = cli_out_new (gdb_stdout);
   cli_interp = interp_new (INTERP_CONSOLE, NULL, cli_uiout, &procs);
 

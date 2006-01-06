@@ -26,6 +26,7 @@
 #include "event-top.h"
 #include "inf-loop.h"
 #include "remote.h"
+#include "exceptions.h"
 
 static int fetch_inferior_event_wrapper (gdb_client_data client_data);
 static void complete_execution (void);
@@ -47,7 +48,7 @@ inferior_event_handler (enum inferior_event_type event_type,
   switch (event_type)
     {
     case INF_ERROR:
-      printf_unfiltered ("error detected from target.\n");
+      printf_unfiltered (_("error detected from target.\n"));
       target_async (NULL, 0);
       pop_target ();
       discard_all_continuations ();
@@ -93,7 +94,7 @@ inferior_event_handler (enum inferior_event_type event_type,
 
     case INF_TIMER:
     default:
-      printf_unfiltered ("Event type not recognized.\n");
+      printf_unfiltered (_("Event type not recognized.\n"));
       break;
     }
 }
@@ -127,6 +128,6 @@ complete_execution (void)
   else
     {
       if (exec_done_display_p)
-	printf_unfiltered ("completed.\n");
+	printf_unfiltered (_("completed.\n"));
     }
 }

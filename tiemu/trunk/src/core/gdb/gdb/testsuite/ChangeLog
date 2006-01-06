@@ -1,3 +1,700 @@
+2005-11-11  Stephane Carrez  <stcarrez@nerim.fr>
+
+	* gdb.asm/m68hc11.inc: Setup the data section.
+	* gdb.asm/asm-source.exp (m6811-*-*): Don't use the target board linker
+	script for this test.
+	(m6812-*-*): Likewise.
+
+2005-11-03  Jim Blandy  <jimb@redhat.com>
+
+        Checked in by Elena Zannoni  <ezannoni@redhat.com>
+ 
+ 	* gdb.dwarf2/mac-fileno.exp, gdb.dwarf2/mac-fileno.S: New tests.
+
+2005-11-02  Corinna Vinschen  <vinschen@redhat.com>
+
+	* gdb.arch/gdb1558.c: Include stdio.h.
+
+2005-10-31  Mark Kettenis  <kettenis@gnu.org>
+
+	* gdb.asm/asm-source.exp: Use -e instead of --entry.
+
+2005-10-31  Mark Kettenis  <kettenis@gnu.org>
+
+	* gdb.base/bfp-test.exp: Properly anchor gdb_multiple_test usage.
+
+2005-10-17  Paul Gilliam  <pgilliam@us.ibm.com>
+
+        * gdb.arch/altivec-regs.exp: Adjust "info reg vrsave" and "info reg
+        vscr" tests to better match output.
+
+2005-10-12  Jim Blandy  <jimb@redhat.com>
+
+	* gdb.base/structs.exp (any): New function.
+	(test_struct_returns): Don't make any assumptions at all about
+	what value the function returns when GDB can't set the return
+	value.
+
+2005-10-09  Joel Brobecker  <brobecker@adacore.com>
+
+	* gdb.ada/arrayidx/p.adb: New file.
+	* gdb.ada/arrayidx.exp: New testcase
+
+2005-10-09  Joel Brobecker  <brobecker@adacore.com>
+
+	* gdb.ada/array_return/pck.ads: New file.
+	* gdb.ada/array_return/pck.adb: New file.
+	* gdb.ada/array_return/p.adb: New file.
+	* gdb.ada/array_return.exp: New testcase.
+
+2005-10-03  Joel Brobecker  <brobecker@adacore.com>
+
+        * gdb.base/arrayidx.c: New file.
+        * gdb.base/arrayidx.exp: New testcase.
+
+2005-09-29  Nick Roberts  <nickrob@snap.net.nz>
+
+	* gdb.base/annota3.exp, gdb.cp/annota3.exp: The annotations
+	frames-invalid and breakpoints-invalid are no longer generated
+	with level 3 so don't expect them in the output.
+
+2005-09-27  Bob Rossi  <bob@brasko.net>
+
+	* gdb.mi/mi-disassemble.exp, gdb.mi/mi2-disassemble.exp: Remove .* 
+	from test.  Escape the | in mi_gdb_test call.
+	* gdb.mi/mi-basics.exp, gdb.mi/mi-cli.exp, gdb.mi/mi-disassemble.exp,
+	gdb.mi/mi-pthreads.exp, gdb.mi/mi-stack.exp, gdb.mi/mi2-basics.exp,
+	gdb.mi/mi2-cli.exp, gdb.mi/mi2-disassemble.exp,
+	gdb.mi/mi2-pthreads.exp, gdb.mi/mi2-stack.exp: Add extra details to
+	expected regex's in mi_gdb_test calls.
+	* lib/mi-support.exp: Remove arbitrary .* from tests.
+	(mi_gdb_test): Add string_regex variable. Add anchor to main -re.
+	Fully anchor GDB/MI expected results in mi_gdb_test.
+	* lib/gdb.exp (string_to_regexp): Escape the ] character.
+	* gdb.base/sizeof.exp: Remove escape character. Correct test.
+
+2005-09-26  Paul Brook  <paul@codesourcery.com>
+
+	* long_long.exp: Exclude eabi targets from arm FPA float format test.
+
+2005-09-20  Wu Zhou  <woodzltc@cn.ibm.com>
+
+	* bfp-test.c: New file.
+	* bfp-test.exp: New testcase.
+
+2005-09-20  Wu Zhou  <woodzltc@cn.ibm.com>
+
+	* gdb.fortran/subarray.exp: New testcase to test the evaluation
+	of subarray and substring variable.
+	* gdb.fortran/subarray.f: New source file for the test of subarray
+	and substring variable evaluation.
+	* gdb.fortran/exprs.exp: Add four tests for substring evaluation
+	of string constant.
+
+2005-09-19  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* gdb.arch/altivec-regs.exp, gdb.arch/altivec-abi.exp: Update
+	copyright dates.
+
+2005-09-19  Paul Gilliam  <pgilliam@us.ibm.com>
+
+	* gdb.arch/altivec-regs.exp (info powerpc altivec): Replace the 'info
+	powerpc altivec' test with an almost identical 'info vector' test.
+
+2005-09-13  Paul Gilliam  <pgilliam@us.ibm.com>
+
+        * gdb.arch/altivec-regs.exp: Adjust "info reg vrsave" and "info reg
+        vscr" tests to match output.
+
+2005-09-13  Paul Gilliam  <pgilliam@us.ibm.com>
+
+        * gdb.arch/altivec-regs.exp: Adjust "print $vx<i>" tests to match
+        output.
+
+2005-09-11  Bob Rossi  <bob@brasko.net>
+
+ 	* lib/mi-support.exp (mi_gdb_test): Change -re to not be anchored.
+ 	* gdb.mi/mi-syn-frame.exp: Call mi_gdb_test twice instead of once for 
+ 	commands that return an MI output command and an asyncronous MI output
+ 	command.
+	* gdb.mi/mi-console.exp: Ditto.
+
+2005-09-11  Bob Rossi  <bob@brasko.net>
+
+	* gdb.mi/mi-var-child.c: Include <string.h>.
+
+2005-09-10  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* killed.exp: Correct gdb_expect syntax.
+
+2005-08-09  Corinna Vinschen  <vinschen@redhat.com>
+
+	* lib/mi-support.exp (mi_gdb_load): Fix typo.
+
+2005-08-02  Bob Rossi  <bob@brasko.net>
+
+	* gdb.mi/mi-basics.exp: Tell mi_gdb_start to use a PTY for inferior.
+	(test_setshow_inferior_tty): Add global mi_inferior_tty_name to scope.
+	Change tests to inferior-tty-set/show.
+	* gdb.mi/mi-console.exp: Tell mi_gdb_start to use a PTY for inferior.
+	(47-exec-next): Use mi_gdb_test to get GDB and Inferior output.
+	* gdb.mi/mi-syn-frame.exp: Tell mi_gdb_start to use a PTY for
+	inferior.  Use mi_gdb_test to get GDB and Inferior output.
+	* lib/mi-support.exp (mi_inferior_spawn_id): Add inferior PTY
+	descriptor.
+	(mi_inferior_tty_name): Add inferior PTY file name.
+	(mi_gdb_start): Add INFERIOR_PTY parameter.
+	(mi_gdb_test): Add IPATTERN parameter.
+
+2005-08-02   Bob Rossi  <bob@brasko.net>
+  
+	* gdb.mi/mi-syn-frame.exp, gdb.mi/mi2-syn-frame.exp: Add MESSAGE
+	parameter to mi_gdb_test.
+	* lib/mi-support.exp (mi_gdb_test): Make MESSAGE parameter necessary.
+
+2005-07-31  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* gdb.mi/mi-var-child.c (do_children_tests): Initialize
+	struct_declarations.
+	* gdb.mi/mi-var-child.exp: Step over the initialization of
+	struct_declarations.
+
+2005-07-31  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* gdb.mi/basics.c, gdb.mi/var-cmd.c: Revert last change.
+	* gdb.mi/mi-stack.c: New file, based on gdb.mi/basics.c.
+	* gdb.mi/mi-var-child.c: New file, based on gdb.mi/var-cmd.c.
+	* gdb.mi/mi-stack.exp: Update to use mi-stack.c as a source file.
+	* gdb.mi/mi-var-child.exp: Update to use mi-var-child.c as a source
+	file.
+
+2005-07-27  Nick Roberts  <nickrob@snap.net.nz>
+
+	* gdb.mi/var-cmd.c: Give long_array in _struct_decl 12 elements.
+	(do_children_tests): Assign values to the extra elements.
+
+	* gdb.mi/mi-var-child.exp: Adapt tests for extra elements and use
+	them for tests for "-var-update --no-values" and
+	"-var-update --all-values".  
+	Add test for "-var-list-children --simple-values".
+
+	* gdb.mi/basics.c (callee4): Add integer array D[3]...
+
+	* gdb.mi/mi-stack.exp (test_stack_locals_listing): ...to test
+	"-stack-list-locals --simple-values"  Improve doc strings and
+	comments.
+
+2005-07-18  Mark Kettenis  <kettenis@gnu.org>
+
+	* gdb.base/sigaltstack.exp (finish_test): KFAIL gdb/1736 on
+	*-*-openbsd*.
+	* gdb.base/sigstep.exp (advancei): KFAIL gdb/1736 on *-*-openbsd*.
+
+	* gdb.base/sigaltstack.c (main): Use stack_t instead of `struct
+	sigaltsatck'.
+
+2005-07-14  Bob Rossi  <bob@brasko.net>
+  
+	* gdb.base/default.exp (tty): Changed output of command.
+	* gdb.base/help.exp (help tty): Ditto.
+
+2005-07-12  Mark Kettenis  <kettenis@gnu.org>
+
+	* gdb.arch/i386-sse.exp: Compile with -msse when using GCC.
+
+2005-07-10  Mark Kettenis  <kettenis@gnu.org>
+
+	* gdb.mi/mi2-stack.exp (test_stack_locals_listing): Remove test for
+	-stack-select-frame without arguments.
+	(test_stack_frame_listing): Add test for newly implemented command
+	-stack-info-frame.
+
+2005-07-06  Bob Rossi  <bob@brasko.net>
+
+	* gdb.mi/mi-basics.exp (test_setshow_inferior_tty): Test MI tty
+	command.
+	(Copyright): Update copyright.
+
+2005-07-06  Wu Zhou  <woodzltc@cn.ibm.com>
+
+	* gdb.fortran/exprs.exp (test_arithmetic_expressions): Add five
+	tests to evaluate exponentiation expression.
+
+2005-06-29  Andreas Schwab  <schwab@suse.de>
+
+	* gdb.base/sigrepeat.c: Include <stdlib.h> and add return type for
+	main to avoid warnings.
+
+	* gdb.base/sigrepeat.exp: Fix reference to undefined variable.
+
+2005-06-20  Nick Roberts  <nickrob@snap.net.nz>
+
+	* gdb.mi/mi-stack.exp (test_stack_locals_listing): Remove test for
+	-stack-select-frame without arguments.
+	(test_stack_frame_listing): Add test for newly implemented command
+	-stack-info-frame.
+	
+2005-06-17  Wu Zhou  <woodzltc@cn.ibm.com>
+
+	* gdb.fortran/array-element.f: New file.
+	* gdb.fortran/array-element.exp: New testcase.
+
+2005-06-13  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* gdb.base/bigcore.exp: Correct checks for systems which can
+	not dump a large core file.
+
+2005-06-13  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* gdb.base/relocate.c: Add a copyright notice.
+	(dummy): Remove.
+	* gdb.base/relocate.exp: Test printing the values of variables
+	from a relocatable file.
+
+2005-06-12  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* gdb.mi/mi-syn-frame.exp, gdb.mi/mi2-syn-frame.exp: Don't expect
+	excess MI output after an error.
+
+2005-05-29  Joel Brobecker  <brobecker@adacore.com>
+
+	* gdb.arch/alpha-step.c: New file.
+	* gdb.arch/alpha-step.exp: New testcase.
+
+2005-05-17  Daniel Jacobowitz  <dan@codesourcery.com>
+	    Dennis Brueni  <dennis@slickedit.com>
+
+	* gdb.mi/mi-cli.exp, gdb.mi/mi-return.exp, gdb.mi/mi-stack.exp,
+	gdb.mi/mi-stepi.exp, gdb.mi/mi-syn-frame.exp, gdb.mi/mi-until.exp,
+	gdb.mi/mi-var-display.exp, gdb.mi/mi-watch.exp, gdb.mi/mi2-cli.exp,
+	gdb.mi/mi2-return.exp, gdb.mi/mi2-stack.exp,
+	gdb.mi/mi2-syn-frame.exp, gdb.mi/mi2-until.exp,
+	gdb.mi/mi2-var-display.exp: Expect fullname field in stack frames.
+	* lib/mi-support.exp (mi_runto, mi_execute_to_helper): Likewise.
+
+2005-05-17  Paul Gilliam  <pgilliam@us.ibm.com>
+	    Wu Zhou  <woodzltc@cn.ibm.com>
+
+	* gdb.base/shreloc.exp: Use gdb_compile_shlib.  Add support for
+	IBM's xlc compiler.
+	* gdb.base/shreloc1.c (fn_1): Reference variable static_var_1.
+	* gdb.base/shreloc2.c (fn_2): Reference variable static_var_2.
+
+2005-05-13  Jim Blandy  <jimb@redhat.com>
+
+	* gdb.base/call-ar-st.exp: Call 'untested' and return -1 instead of
+	calling gdb_suppress_entire_file.
+	* gdb.base/charset.exp: Same.
+	* gdb.base/call-rt-st.exp: Same.
+
+2005-05-05  Bob Rossi  <bob_rossi@cox.net>
+
+	* lib/gdb.exp (fullname_syntax): Added global regex.
+	(fullname_syntax_POSIX): Ditto.
+	(fullname_syntax_UNC): Ditto.
+	(fullname_syntax_DOS_CASE): Ditto.
+	(fullname_syntax_DOS): Ditto.
+	* gdb.mi/mi-file.exp (test_file_list_exec_source_file): Added
+	fullname_syntax variable to scope and use it.
+	(test_file_list_exec_source_files): Ditto.
+	* gdb.mi/mi2-file.exp (test_file_list_exec_source_file): Ditto.
+
+2005-05-04  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* gdb.threads/linux-dp.exp: Check for *-*-linux-gnu*.
+
+2004-05-02  Paul Gilliam  <pgilliam@us.ibm.com>
+
+        * lib/gdb.exp (skip_altivec_tests): New function, based on
+        check_vmx_hw_available from the GCC testsuite.
+        * lib/gdb.arch/altivec-abi.exp: Use skip_altivec_tests.
+        * lib/gdb.arch/altivec-regs.exp: Likewise.
+
+2005-05-02  Jim Blandy  <jimb@redhat.com>
+
+	* gdb.base/auxv.exp: Call 'untested' and return -1 instead of
+	calling gdb_suppress_entire_file.
+
+2005-04-30  Randolph Chung  <tausq@debian.org>
+
+	* gdb.threads/staticthreads.exp: Override signal to check for hppa.
+	Slightly relax "sem_post" name checking.
+
+2005-04-29  Paul Gilliam  <pgilliam@us.ibm.com>
+
+	* gdb.base/unload.exp: Use new shared library infrastructure.
+
+2005-04-29  Paul Gilliam  <pgilliam@us.ibm.com>
+
+	* gdb.base/so-impl-ld.exp: Use new shared library
+        infrastructure.
+
+2005-04-29  Corinna Vinschen  <vinschen@redhat.com>
+
+	* gdb.asm/asm-source.exp: Add h8300 to supported targets.
+	* gdb.asm/h8300.inc: New file.
+
+2005-04-28  Paul Gilliam  <pgilliam@us.ibm.com>
+
+	* gdb.base/shlib-call.exp: Change to use new shared library
+	infrastructure.
+
+2005-04-28  Paul Gilliam  <pgilliam@us.ibm.com>
+
+        * gdb.base/pending.exp: Change to use new shared library
+        infrastructure.
+
+2005-04-28  Paul Gilliam  <pgilliam@us.ibm.com>
+
+        * gdb.base/nodebug.exp: Allow for compiling by IBM's xlc compiler,
+        use test_compiler_info instead of gcc_compiled, and update copyright.
+
+2005-04-27  Paul Gilliam  <pgilliam@us.ibm.com>
+
+        * gdb.base/annota1.exp : Deal with messages caused by breakpoints in
+        shared objects being adjusted and update copyright years.
+
+2005-04-27  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* ChangeLog: Correct some 2003-01-13 dates.
+	* gdb.base/sigbpt.exp, gdb.base/signull.exp, gdb.cp/bs15503.exp,
+	gdb.cp/exception.exp, gdb.cp/userdef.cc, gdb.cp/userdef.exp,
+	gdb.mi/mi-console.exp, gdb.mi/mi2-console.exp,
+	gdb.trace/collection.exp, gdb.trace/passc-dyn.exp,
+	gdb.trace/tfind.exp: Update copyright years.
+
+2005-04-14  Paul Gilliam  <pgilliam@us.ibm.com>
+	    Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* lib/gdb.exp (gdb_compile): Handle shlib=.
+	(gdb_compile_shlib): New function.
+
+2005-04-12  Paul Gilliam  <pgilliam@us.ibm.com>
+
+        * lib/gdb.exp (test_compiler_info): Give argument a default value.
+
+2005-04-08  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Makefile.in (ALL_SUBDIRS): Replace gdb.gdbserver with
+	gdb.server.
+	* configure.ac: Likewise.
+	* configure: Regenerated.
+	* gdb.gdbserver/Makefile.in: Moved to...
+	* gdb.server/Makefile.in: ... here.
+	* gdb.gdbserver/server.c: Moved to...
+	* gdb.server/server.c: ... here.
+	* gdb.gdbserver/server-run.exp: Moved to...
+	* gdb.server/server-run.exp: ... here.
+
+2005-04-08  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Makefile.in (ALL_SUBDIRS): Add gdb.gdbserver.
+	* configure.ac: Create gdb.gdbserver/Makefile.
+	* configure: Regenerated.
+	* lib/gdbserver-support.exp: New file, derived from
+	config/gdbserver.exp.
+	* config/gdbserver.exp: Use gdbserver-support.exp.
+	* gdb.gdbserver/Makefile.in: New file.
+	* gdb.gdbserver/server.c: New file.
+	* gdb.gdbserver/server-run.exp: New file.
+
+2005-04-06  Paul Gilliam  <pgilliam@us.ibm.com>
+
+        * lib/gdb.exp (test_compiler_info): Return compiler_info
+        if no arguments are given.
+
+2005-04-01  Paul Gilliam  <pgilliam@us.ibm.com>
+
+	* gdb.arch/altivec-abi.exp: Check for compiler and set
+	use altivec' flag accordingly.
+	* gdb.arch/altivec-regs.exp: Likewise.
+
+2005-03-29  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* gdb.base/ptr-typedef.exp, gdb.base/ptr-typedef.c: New files.
+
+2005-03-27  Andreas Schwab  <schwab@suse.de>
+
+	* gdb.base/bigcore.c (main): Add missing mode argument in open
+	call.
+
+2005-03-25  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* lib/mi-support.exp (mi_gdb_load): Use /tmp for gdbserver
+	downloads.
+	* config/gdbserver.exp (gdb_load): Likewise.
+
+2005-03-14  Paul Brook  <paul@codesourcery.com>
+
+	* lib/mi-support.exp: Use mi_gdb_target_cmd to connect to remote
+	targets.
+
+2005-03-09  Joel Brobecker  <brobecker@adacore.com>
+
+	* gdb.dwarf2/dup-psym.S: New file.
+	* gdb.dwarf2/dup-psym.exp: New testcase.
+
+2005-03-09  Joel Brobecker  <brobecker@adacore.com>
+
+	* gdb.ada/exec_changed/first.adb: New file.
+	* gdb.ada/exec_changed/second.adb: New file.
+	* gdb.ada/exec_changed.exp: New testcase.
+
+2005-03-08  Nathan Sidwell  <nathan@codesourcery.com>
+
+	* gdb.cp/userdef.cc (A1::operator+): New unary plus.
+	(A2): New class.
+	(main): Test operator+.
+	* gdb.cp/userdef.exp: Test unary plus.  Use A2::operator+ for
+	breakpoint test.
+
+	* gdb.base/sigbpt.exp: Disable if gdb,nosignals.
+	* gdb.base/signull.exp: Disable if gdb,nosignals.
+	* gdb.cp/bs15503.exp: Disable if skip_cplus_tests
+	* gdb.cp/exception.exp: Disable if skip_cplus_tests.
+	* gdb.mi/mi-console.exp: Disable hello test if gdb,noinferiorio.
+	* gdb.mi/mi2-console.exp: Likewise.
+	* gdb.trace/collection.exp (run_trace_experiment): Consume the
+	continue output at start.
+	(gdb_collect_locals_test): Robustify regexp.
+	* gdb.trace/passc-dyn.exp: Fix comment typo.
+	* gdb.trace/tfind.exp: Don't enable optimization. Remove stray ']'.
+
+2005-03-08  Corinna Vinschen  <vinschen@redhat.com>
+
+	* gdb.asm/asm-source.exp: Add iq2000 case.
+	* gdb.asm/iq2000.inc: New file.
+
+2005-03-07  Manoj Iyer <manjo@austin.ibm.com>
+	
+	* gdb.base/command.exp: Change hardcoded value to regular expression.
+	* gdb.base/float.exp: Add powerpc to the list of targets checked.
+
+2005-03-07  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* gdb.asm/alpha.inc, gdb.asm/frv.inc, gdb.asm/i386.inc,
+	gdb.asm/ia64.inc, gdb.asm/m68hc11.inc, gdb.asm/m68k.inc,
+	gdb.asm/mips.inc, gdb.asm/pa.inc, gdb.asm/powerpc.inc,
+	gdb.asm/s390.inc, gdb.asm/s390x.inc, gdb.asm/sh.inc,
+	gdb.asm/x86_64.inc: Use .purgem before redefining macros.
+
+2005-03-05  Mark Kettenis  <kettenis@gnu.org>
+
+	* gdb.cp/ovldbreak.exp: Adjust regular expression for recent
+	changes.
+
+2004-03-03  Paul Gilliam  <pgilliam@us.ibm.com>
+
+        * lib/compiler.c: Add test for IBM's xlc compiler.
+        * lib/compiler.cc: Likewise.
+
+2004-02-24  Joel Brobecker  <brobecker@adacore.com>
+
+	* gdb.ada/fixed_points.exp: Create compilation object directory
+	before running the test.
+	* gdb.ada/null_record.exp: Likewise.
+	* gdb.ada/packed_array.exp: Likewise.
+	* gdb.ada/start.exp: Likewise.
+
+2005-02-15  Joel Brobecker  <brobecker@adacore.com>
+
+	* gdb.ada/packed_array/pa.adb: New file.
+	* gdb.ada/packed_array.exp: New testcase.
+
+2005-02-10  Mark Kettenis  <kettenis@gnu.org>
+
+	* gdb.dwarf2/dw2-intermix.exp, gdb.dwarf2/dw2-intermix.S: New
+	files.
+
+	* gdb.dwarf2/dw2-basic.exp, gdb.dwarf2/dw2-intercu.exp: Run tests
+	on *-*-openbsd*.  Correctly match whitespace in regukar
+	expressions.
+
+2005-02-10  Daniel Jacobowitz  <dan@debian.org>
+
+	From Ramana Radhakrishnan <ramana.radhakrishnan@codito.com>:
+	PR exp/1821
+	* gdb.base/gdb1821.c: New test file.
+	* gdb.base/gdb1821.exp: New test file.
+
+2005-02-09  Joel Brobecker  <brobecker@adacore.com>
+
+	* gdb.base/start.c: New file.
+	* gdb.base/start.exp: New testcase.
+
+2005-02-09  Joel Brobecker  <brobecker@adacore.com>
+
+	* gdb.ada/start/dummy.adb: New file.
+	* gdb.ada/start.exp: New testcase.
+
+2005-02-09  Corinna Vinschen  <vinschen@redhat.com>
+
+	* maint.exp: Raise timeout to give Cygwin targeted GDBs more time
+	for printing symbols and statistics.
+	Add test for using relative pathnames in "maint print msymbols" test.
+	Mark "maint info sections DATA" XFAIL on Cygwin.
+	Remove Cygwin XFAIL mark on "help maint dump-me" and "maint dump-me"
+	tests.
+
+2005-02-09  Andreas Schwab  <schwab@suse.de>
+
+	Committed by Andrew Cagney  <cagney@gnu.org>
+	* gdb.base/remotetimeout.exp: New file.
+
+2005-02-07  Mark Kettenis  <kettenis@gnu.org>
+
+	* gdb.base/interp.exp: Remove trailing \n in gdb_test commands.
+
+2005-02-03  Joel Brobecker  <brobecker@adacore.com>
+
+	* gdb.ada/gnat_ada.gpr: New file.
+	* gdb.ada/gnat_ada.gin: Delete, no longer used.
+	* lib/ada.exp (gdb_compile_ada): Minor adaptation to new project file.
+	* configure.ac: No longer generate gnat_ada.gpr.
+	* configure: Regenerate.
+	* gdb.ada/Makefile.in: Minor adaptations due to new project file.
+	* gdb.ada/null_record/null_record.adb: Moved here from gdb.ada.
+	* gdb.ada/null_record/bar.ads: Likewise.
+	* gdb.ada/null_record/bar.adb: Likewise.
+	* gdb.ada/fixed_points/fixed_points.adb: Likewise.
+	* gdb.ada/null_record.exp (testdir): New variable.
+	(testfile): executable is now in testdir subdirectory.
+	(srcfile): Use full path to the main compilation unit.
+	* gdb.ada/fixed_points.exp: Same changes as above.
+
+2005-02-03  Nick Roberts  <nickrob@snap.net.nz>
+
+	* gdb.base/interp.exp: New test.
+
+2005-01-24  Andrew Cagney  <cagney@gnu.org>
+
+	* gdb.base/sigrepeat.exp, gdb.base/sigrepeat.c: New test.
+
+2005-01-19  Andrew Cagney  <cagney@gnu.org>
+
+	* gdb.stabs/Makefile.in (Makefile): Update dependencies -
+	configure.ac not configure.in.
+
+	* gdb.base/scope.exp (test_at_main): Delete any XFAIL and/or KFAIL
+	of powerpc*-*-*.
+	* gdb.hp/gdb.base-hp/callfwmall.exp (do_function_calls): Ditto.
+	* gdb.base/list.exp (test_list_function) 
+	(test_list_filename_and_function): Ditto.
+	* gdb.base/callfuncs.exp (do_function_calls): Ditto.
+
+2005-01-16  Andrew Cagney  <cagney@gnu.org>
+
+	* gdb.base/source.exp: Delete KFAIL gdb/1846, simplify.
+
+	* gdb.base/source-error.gdb, gdb.base/source.exp: New files.
+
+2005-01-14  Andrew Cagney  <cagney@gnu.org>
+
+	* gdb.mi/mi-var-cmd.exp: Adjust "create int" test to match output.
+	* gdb.mi/mi2-var-cmd.exp: Ditto.
+
+2005-01-10  Corinna Vinschen  <vinschen@redhat.com>
+
+	* gdb.base/fileio.c: Include unistd.h as required for lseek(2).
+
+2005-01-07  Andrew Cagney  <cagney@gnu.org>
+
+	* configure.ac: Rename configure.in, require autoconf 2.59.
+	* configure: Re-generate.
+	* gdb.stabs/configure.ac: Rename configure.in, require autoconf 2.59.
+	* gdb.stabs/configure: Re-generate.
+	* gdb.hp/configure.ac: Rename configure.in, require autoconf 2.59.
+	* gdb.hp/configure: Re-generate.
+	* gdb.hp/gdb.objdbg/configure.ac: Rename configure.in, require
+	autoconf 2.59.
+	* gdb.hp/gdb.objdbg/configure: Re-generate.
+	* gdb.hp/gdb.defects/configure.ac: Rename configure.in, require
+	autoconf 2.59.
+	* gdb.hp/gdb.defects/configure: Re-generate.
+	* gdb.hp/gdb.compat/configure.ac: Rename configure.in, require
+	autoconf 2.59.
+	* gdb.hp/gdb.compat/configure: Re-generate.
+	* gdb.hp/gdb.base-hp/configure.ac: Rename configure.in, require
+	autoconf 2.59.
+	* gdb.hp/gdb.base-hp/configure: Re-generate.
+	* gdb.hp/gdb.aCC/configure.ac: Rename configure.in, require
+	autoconf 2.59.
+	* gdb.hp/gdb.aCC/configure: Re-generate.
+
+2004-12-15  Jim Blandy  <jimb@redhat.com>
+
+	* gdb.threads/linux-dp.exp: Fix output regexp to handle output
+	under NPTL when there is debugging info available for libpthread.
+
+2004-12-13  Jerome Guitton  <guitton@gnat.com>
+
+	* gdb.ada/fixed_points.c: New file.
+	* gdb.ada/fixed_points.exp: New file.
+
+2004-12-03  Randolph Chung  <tausq@debian.org>
+
+	* gdb.arch/pa-nullify.exp: New file.
+	* gdb.arch/pa-nullify.s: New file.
+
+2004-11-30  Randolph Chung  <tausq@debian.org>
+
+	* gdb.threads/thread_check.exp: Use ${srcfile} for test program name
+	instead of "tbug".  Fix regexp to work properly with gdb_test.
+
+2004-11-29  Paul Hilfinger  <Hilfinger@gnat.com>
+
+	* gdb.base/bitfields2.exp: New test.
+	* gdb.base/bitfields2.c: New file.
+
+2004-11-28  Richard Earnshaw  <rearnsha@arm.com>
+
+	* config/sim.exp (gdb_load): Return 0 on success, -1 on failure.
+
+2004-11-16  Randolph Chung  <tausq@debian.org>
+
+	* gdb.base/unload.exp: Pass relative path to gdb_get_line_number.
+
+2004-11-14  Daniel Jacobowitz  <dan@debian.org>
+
+	* gdb.threads/threadapply.exp: Correct "macro details" test.
+
+2004-11-11  Jeff Johnston  <jjohnstn@redhat.com>
+
+	* gdb.threads/threadapply.exp: New test.
+	* gdb.threads/threadapply.c: New file.
+
+2004-11-07  Mark Kettenis  <kettenis@gnu.org>
+
+	* gdb.base/savedregs.exp: Correct pattern used for sigtramp
+	frames.
+
+2004-11-05  Felix Lee  <felix+log1@specifixinc.com>
+
+	* gdb.base/cursal.exp: New file.
+	* gdb.base/cursal.c: New file.
+
+2004-11-03  Andrew Cagney  <cagney@gnu.org>
+
+	* gdb.base/savedregs.exp, gdb.base/savedregs.c: New files.
+
+2004-10-30  Mark Kettenis  <kettenis@gnu.org>
+
+	* gdb.asm/asm-source.exp: Add mips*-*-netbsd* to the list of
+	NetBSD/ELF targets.
+
+2004-10-29  Joel Brobecker  <brobecker@gnat.com>
+
+	* gdb.threads/bp_in_thread.c: New file, copied from
+	pthread_cond_wait.c.
+	* gdb.threads/bp_in_thread.c: Use bp_in_thread.c as the source
+	file, rather than reusing the .c file from another testcase.
+
+2004-10-20  Joel Brobecker  <brobecker@gnat.com>
+
+	* gdb.ada/null_record.exp: Check where we stopped after
+	sending the start command, instead of where the associated
+	temporary breakpoint was inserted.
+
 2004-10-14  Andrew Cagney  <cagney@gnu.org>
 
 	* gdb.mi/gdb701.c (main): Return 0.
@@ -3322,12 +4019,12 @@
 	(ptype &*"foo").
 	* gdb.c++/local.exp: Enable setup_kfail for gdb/482.
 
-2002-01-13  Daniel Jacobowitz  <drow@mvista.com>
+2003-01-13  Daniel Jacobowitz  <drow@mvista.com>
 
 	* gdb.mi/mi-console.exp: Remove extra "(known bug)".
 	* gdb.mi/mi1-console.exp: Likewise.
 
-2002-01-13  Daniel Jacobowitz  <drow@mvista.com>
+2003-01-13  Daniel Jacobowitz  <drow@mvista.com>
 
 	* gdb.mi/mi-console.exp: Add KFAIL for "Hello message (known bug)".
 	* gdb.mi/mi1-console.exp: Likewise.
@@ -13003,6 +13700,6 @@ Sun Feb 21 10:55:55 1993  Mike Werner  (mtw@poseidon.cygnus.com)
 ;; End:
 
     Copyright 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
-    2003, 2004 Free Software Foundation, Inc.
+    2003, 2004, 2005 Free Software Foundation, Inc.
   Copying and distribution of this file, with or without modification,
   are permitted provided the copyright notice and this notice are preserved.

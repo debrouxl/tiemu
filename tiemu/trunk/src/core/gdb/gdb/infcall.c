@@ -1,7 +1,7 @@
 /* Perform an inferior function call, for GDB, the GNU debugger.
 
    Copyright 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994,
-   1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004
+   1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005
    Free Software Foundation, Inc.
 
    This file is part of GDB.
@@ -65,6 +65,14 @@
    with "set coerce-float-to-double 0".  */
 
 static int coerce_float_to_double_p = 1;
+static void
+show_coerce_float_to_double_p (struct ui_file *file, int from_tty,
+			       struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("\
+Coercion of floats to doubles when calling functions is %s.\n"),
+		    value);
+}
 
 /* This boolean tells what gdb should do if a signal is received while
    in a function called from gdb (call dummy).  If set, gdb unwinds
@@ -74,6 +82,15 @@ static int coerce_float_to_double_p = 1;
    The default is to stop in the frame where the signal was received. */
 
 int unwind_on_signal_p = 0;
+static void
+show_unwind_on_signal_p (struct ui_file *file, int from_tty,
+			 struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("\
+Unwinding of stack if a signal is received while in a call dummy is %s.\n"),
+		    value);
+}
+
 
 /* Perform the standard coercions that are specified
    for arguments to be passed to C functions.
@@ -85,7 +102,7 @@ static struct value *
 value_arg_coerce (struct value *arg, struct type *param_type,
 		  int is_prototyped)
 {
-  struct type *arg_type = check_typedef (VALUE_TYPE (arg));
+  struct type *arg_type = check_typedef (value_type (arg));
   struct type *type
     = param_type ? check_typedef (param_type) : arg_type;
 
@@ -96,7 +113,7 @@ value_arg_coerce (struct value *arg, struct type *param_type,
 	  && TYPE_CODE (arg_type) != TYPE_CODE_PTR)
 	{
 	  arg = value_addr (arg);
-	  VALUE_TYPE (arg) = param_type;
+	  deprecated_set_value_type (arg, param_type);
 	  return arg;
 	}
       break;
@@ -162,7 +179,7 @@ value_arg_coerce (struct value *arg, struct type *param_type,
 CORE_ADDR
 find_function_addr (struct value *function, struct type **retval_type)
 {
-  struct type *ftype = check_typedef (VALUE_TYPE (function));
+  struct type *ftype = check_typedef (value_type (function));
   enum type_code code = TYPE_CODE (ftype);
   struct type *value_type;
   CORE_ADDR funaddr;
@@ -204,7 +221,7 @@ find_function_addr (struct value *function, struct type **retval_type)
       value_type = builtin_type_int;
     }
   else
-    error ("Invalid data type for function to be called.");
+    error (_("Invalid data type for function to be called."));
 
   if (retval_type != NULL)
     *retval_type = value_type;
@@ -297,7 +314,7 @@ call_function_by_hand (struct value *function, int nargs, struct value **args)
 {
   CORE_ADDR sp;
   CORE_ADDR dummy_addr;
-  struct type *value_type;
+  struct type *values_type;
   unsigned char struct_return;
   CORE_ADDR struct_addr = 0;
   struct regcache *retbuf;
@@ -307,7 +324,7 @@ call_function_by_hand (struct value *function, int nargs, struct value **args)
   CORE_ADDR funaddr;
   int using_gcc;		/* Set to version of gcc in use, or zero if not gcc */
   CORE_ADDR real_pc;
-  struct type *ftype = check_typedef (VALUE_TYPE (function));
+  struct type *ftype = check_typedef (value_type (function));
   CORE_ADDR bp_addr;
   struct regcache *caller_regcache;
   struct cleanup *caller_regcache_cleanup;
@@ -315,6 +332,9 @@ call_function_by_hand (struct value *function, int nargs, struct value **args)
 
   if (!target_has_execution)
     noprocess ();
+
+  if (!gdbarch_push_dummy_call_p (current_gdbarch))
+    error (_("This target does not support function calls"));
 
   /* Create a cleanup chain that contains the retbuf (buffer
      containing the register values).  This chain is create BEFORE the
@@ -401,8 +421,8 @@ call_function_by_hand (struct value *function, int nargs, struct value **args)
       sp = old_sp;
   }
 
-  funaddr = find_function_addr (function, &value_type);
-  CHECK_TYPEDEF (value_type);
+  funaddr = find_function_addr (function, &values_type);
+  CHECK_TYPEDEF (values_type);
 
   {
     struct block *b = block_for_pc (funaddr);
@@ -413,7 +433,7 @@ call_function_by_hand (struct value *function, int nargs, struct value **args)
   /* Are we returning a value using a structure return or a normal
      value return? */
 
-  struct_return = using_struct_return (value_type, using_gcc);
+  struct_return = using_struct_return (values_type, using_gcc);
 
   /* Determine the location of the breakpoint (and possibly other
      stuff) that the called function will return to.  The SPARC, for a
@@ -432,7 +452,7 @@ call_function_by_hand (struct value *function, int nargs, struct value **args)
       if (INNER_THAN (1, 2))
 	{
 	  sp = push_dummy_code (current_gdbarch, sp, funaddr,
-				using_gcc, args, nargs, value_type,
+				using_gcc, args, nargs, values_type,
 				&real_pc, &bp_addr);
 	  dummy_addr = sp;
 	}
@@ -440,7 +460,7 @@ call_function_by_hand (struct value *function, int nargs, struct value **args)
 	{
 	  dummy_addr = sp;
 	  sp = push_dummy_code (current_gdbarch, sp, funaddr,
-				using_gcc, args, nargs, value_type,
+				using_gcc, args, nargs, values_type,
 				&real_pc, &bp_addr);
 	}
       break;
@@ -481,11 +501,11 @@ call_function_by_hand (struct value *function, int nargs, struct value **args)
 	break;
       }
     default:
-      internal_error (__FILE__, __LINE__, "bad switch");
+      internal_error (__FILE__, __LINE__, _("bad switch"));
     }
 
   if (nargs < TYPE_NFIELDS (ftype))
-    error ("too few arguments in function call");
+    error (_("too few arguments in function call"));
 
   {
     int i;
@@ -536,13 +556,14 @@ call_function_by_hand (struct value *function, int nargs, struct value **args)
 		       this point.  */
 		    /* Go see if the actual parameter is a variable of
 		       type pointer to function or just a function.  */
-		    if (args[i]->lval == not_lval)
+		    if (VALUE_LVAL (args[i]) == not_lval)
 		      {
 			char *arg_name;
-			if (find_pc_partial_function ((CORE_ADDR) args[i]->aligner.contents[0], &arg_name, NULL, NULL))
-			  error ("\
+			/* NOTE: cagney/2005-01-02: THIS IS BOGUS.  */
+			if (find_pc_partial_function ((CORE_ADDR) value_contents (args[i])[0], &arg_name, NULL, NULL))
+			  error (_("\
 You cannot use function <%s> as argument. \n\
-You must use a pointer to function type variable. Command ignored.", arg_name);
+You must use a pointer to function type variable. Command ignored."), arg_name);
 		      }
 	      }
 	  }
@@ -556,7 +577,7 @@ You must use a pointer to function type variable. Command ignored.", arg_name);
 	 pointer to the structure, not the structure itself.  */
       for (i = nargs - 1; i >= 0; i--)
 	{
-	  struct type *arg_type = check_typedef (VALUE_TYPE (args[i]));
+	  struct type *arg_type = check_typedef (value_type (args[i]));
 	  if ((TYPE_CODE (arg_type) == TYPE_CODE_STRUCT
 	       || TYPE_CODE (arg_type) == TYPE_CODE_UNION
 	       || TYPE_CODE (arg_type) == TYPE_CODE_ARRAY
@@ -571,7 +592,7 @@ You must use a pointer to function type variable. Command ignored.", arg_name);
 	      CORE_ADDR addr;
 	      int len;		/*  = TYPE_LENGTH (arg_type); */
 	      int aligned_len;
-	      arg_type = check_typedef (VALUE_ENCLOSING_TYPE (args[i]));
+	      arg_type = check_typedef (value_enclosing_type (args[i]));
 	      len = TYPE_LENGTH (arg_type);
 
 	      aligned_len = len;
@@ -591,10 +612,10 @@ You must use a pointer to function type variable. Command ignored.", arg_name);
 		  sp += aligned_len;
 		}
 	      /* Push the structure.  */
-	      write_memory (addr, VALUE_CONTENTS_ALL (args[i]), len);
+	      write_memory (addr, value_contents_all (args[i]), len);
 	      /* The value we're going to pass is the address of the
 		 thing we just pushed.  */
-	      /*args[i] = value_from_longest (lookup_pointer_type (value_type),
+	      /*args[i] = value_from_longest (lookup_pointer_type (values_type),
 		(LONGEST) addr); */
 	      args[i] = value_from_pointer (lookup_pointer_type (arg_type),
 					    addr);
@@ -609,7 +630,7 @@ You must use a pointer to function type variable. Command ignored.", arg_name);
 
   if (struct_return)
     {
-      int len = TYPE_LENGTH (value_type);
+      int len = TYPE_LENGTH (values_type);
       if (INNER_THAN (1, 2))
 	{
 	  /* Stack grows downward.  Align STRUCT_ADDR and SP after
@@ -635,19 +656,9 @@ You must use a pointer to function type variable. Command ignored.", arg_name);
   /* Create the dummy stack frame.  Pass in the call dummy address as,
      presumably, the ABI code knows where, in the call dummy, the
      return address should be pointed.  */
-  if (gdbarch_push_dummy_call_p (current_gdbarch))
-    /* When there is no push_dummy_call method, should this code
-       simply error out.  That would the implementation of this method
-       for all ABIs (which is probably a good thing).  */
-    sp = gdbarch_push_dummy_call (current_gdbarch, function, current_regcache,
-				  bp_addr, nargs, args, sp, struct_return,
-				  struct_addr);
-  else  if (DEPRECATED_PUSH_ARGUMENTS_P ())
-    /* Keep old targets working.  */
-    sp = DEPRECATED_PUSH_ARGUMENTS (nargs, args, sp, struct_return,
-				    struct_addr);
-  else
-    error ("This target does not support function calls");
+  sp = gdbarch_push_dummy_call (current_gdbarch, function, current_regcache,
+				bp_addr, nargs, args, sp, struct_return,
+				struct_addr);
 
   /* Set up a frame ID for the dummy frame so we can pass it to
      set_momentary_breakpoint.  We need to give the breakpoint a frame
@@ -769,11 +780,11 @@ You must use a pointer to function type variable. Command ignored.", arg_name);
 
 	      /* FIXME: Insert a bunch of wrap_here; name can be very
 		 long if it's a C++ name with arguments and stuff.  */
-	      error ("\
+	      error (_("\
 The program being debugged was signaled while in a function called from GDB.\n\
 GDB has restored the context to what it was before the call.\n\
 To change this behavior use \"set unwindonsignal off\"\n\
-Evaluation of the expression containing the function (%s) will be abandoned.",
+Evaluation of the expression containing the function (%s) will be abandoned."),
 		     name);
 	    }
 	  else
@@ -789,11 +800,11 @@ Evaluation of the expression containing the function (%s) will be abandoned.",
 	      discard_inferior_status (inf_status);
 	      /* FIXME: Insert a bunch of wrap_here; name can be very
 		 long if it's a C++ name with arguments and stuff.  */
-	      error ("\
+	      error (_("\
 The program being debugged was signaled while in a function called from GDB.\n\
 GDB remains in the frame where the signal was received.\n\
 To change this behavior use \"set unwindonsignal on\"\n\
-Evaluation of the expression containing the function (%s) will be abandoned.",
+Evaluation of the expression containing the function (%s) will be abandoned."),
 		     name);
 	    }
 	}
@@ -816,15 +827,15 @@ Evaluation of the expression containing the function (%s) will be abandoned.",
 	     someday this will be implemented (it would not be easy).  */
 	  /* FIXME: Insert a bunch of wrap_here; name can be very long if it's
 	     a C++ name with arguments and stuff.  */
-	  error ("\
+	  error (_("\
 The program being debugged stopped while in a function called from GDB.\n\
 When the function (%s) is done executing, GDB will silently\n\
 stop (instead of continuing to evaluate the expression containing\n\
-the function call).", name);
+the function call)."), name);
 	}
 
       /* The above code errors out, so ...  */
-      internal_error (__FILE__, __LINE__, "... should not be here");
+      internal_error (__FILE__, __LINE__, _("... should not be here"));
     }
 
   /* If we get here the called FUNCTION run to completion. */
@@ -836,66 +847,73 @@ the function call).", name);
      leave the RETBUF alone.  */
   do_cleanups (inf_status_cleanup);
 
-  /* Figure out the value returned by the function, return that.  */
+  /* Figure out the value returned by the function.  */
   {
-    struct value *retval;
-    if (TYPE_CODE (value_type) == TYPE_CODE_VOID)
-      /* If the function returns void, don't bother fetching the
-	 return value.  */
-      retval = allocate_value (value_type);
-    else if (struct_return)
-      /* NOTE: cagney/2003-09-27: This assumes that PUSH_DUMMY_CALL
-	 has correctly stored STRUCT_ADDR in the target.  In the past
-	 that hasn't been the case, the old MIPS PUSH_ARGUMENTS
-	 (PUSH_DUMMY_CALL precursor) would silently move the location
-	 of the struct return value making STRUCT_ADDR bogus.  If
-	 you're seeing problems with values being returned using the
-	 "struct return convention", check that PUSH_DUMMY_CALL isn't
-	 playing tricks.  */
-      retval = value_at (value_type, struct_addr, NULL);
+    struct value *retval = NULL;
+
+    if (TYPE_CODE (values_type) == TYPE_CODE_VOID)
+      {
+	/* If the function returns void, don't bother fetching the
+	   return value.  */
+	retval = allocate_value (values_type);
+      }
     else
       {
-	/* This code only handles "register convention".  */
-	retval = allocate_value (value_type);
-	gdb_assert (gdbarch_return_value (current_gdbarch, value_type,
-					  NULL, NULL, NULL)
-		    == RETURN_VALUE_REGISTER_CONVENTION);
-	gdbarch_return_value (current_gdbarch, value_type, retbuf,
-			      VALUE_CONTENTS_RAW (retval) /*read*/,
-			      NULL /*write*/);
+	struct gdbarch *arch = current_gdbarch;
+
+	switch (gdbarch_return_value (arch, values_type, NULL, NULL, NULL))
+	  {
+	  case RETURN_VALUE_REGISTER_CONVENTION:
+	  case RETURN_VALUE_ABI_RETURNS_ADDRESS:
+	  case RETURN_VALUE_ABI_PRESERVES_ADDRESS:
+	    retval = allocate_value (values_type);
+	    gdbarch_return_value (current_gdbarch, values_type, retbuf,
+				  value_contents_raw (retval), NULL);
+	    break;
+	  case RETURN_VALUE_STRUCT_CONVENTION:
+	    retval = value_at (values_type, struct_addr);
+	    break;
+	  }
       }
+
     do_cleanups (retbuf_cleanup);
+
+    gdb_assert(retval);
     return retval;
   }
 }
+
 
+/* Provide a prototype to silence -Wmissing-prototypes.  */
 void _initialize_infcall (void);
 
 void
 _initialize_infcall (void)
 {
   add_setshow_boolean_cmd ("coerce-float-to-double", class_obscure,
-			   &coerce_float_to_double_p, "\
-Set coercion of floats to doubles when calling functions.", "\
-Show coercion of floats to doubles when calling functions", "\
+			   &coerce_float_to_double_p, _("\
+Set coercion of floats to doubles when calling functions."), _("\
+Show coercion of floats to doubles when calling functions"), _("\
 Variables of type float should generally be converted to doubles before\n\
 calling an unprototyped function, and left alone when calling a prototyped\n\
 function.  However, some older debug info formats do not provide enough\n\
 information to determine that a function is prototyped.  If this flag is\n\
 set, GDB will perform the conversion for a function it considers\n\
 unprototyped.\n\
-The default is to perform the conversion.\n", "\
-Coercion of floats to doubles when calling functions is %s.",
-			   NULL, NULL, &setlist, &showlist);
+The default is to perform the conversion.\n"),
+			   NULL,
+			   show_coerce_float_to_double_p,
+			   &setlist, &showlist);
 
   add_setshow_boolean_cmd ("unwindonsignal", no_class,
-			   &unwind_on_signal_p, "\
-Set unwinding of stack if a signal is received while in a call dummy.", "\
-Show unwinding of stack if a signal is received while in a call dummy.", "\
+			   &unwind_on_signal_p, _("\
+Set unwinding of stack if a signal is received while in a call dummy."), _("\
+Show unwinding of stack if a signal is received while in a call dummy."), _("\
 The unwindonsignal lets the user determine what gdb should do if a signal\n\
 is received while in a function called from gdb (call dummy).  If set, gdb\n\
 unwinds the stack and restore the context to what as it was before the call.\n\
-The default is to stop in the frame where the signal was received.", "\
-Unwinding of stack if a signal is received while in a call dummy is %s.",
-			   NULL, NULL, &setlist, &showlist);
+The default is to stop in the frame where the signal was received."),
+			   NULL,
+			   show_unwind_on_signal_p,
+			   &setlist, &showlist);
 }

@@ -26,11 +26,7 @@
 #include "cconfig.h"
 #endif
 #include "ansidecl.h"
-#ifdef ANSI_PROTOTYPES
 #include <stdarg.h>
-#else
-#include <varargs.h>
-#endif
 #include <stdio.h>
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -42,6 +38,10 @@
 #include <strings.h>
 #endif
 #endif
+#ifdef HAVE_LIMITS_H
+/* For PIPE_BUF.  */
+#include <limits.h>
+#endif
 #include <errno.h>
 #include <fcntl.h>
 #include <time.h>
@@ -49,9 +49,15 @@
 #include <sys/stat.h>
 #include "gdb/callback.h"
 #include "targ-vals.h"
+/* For xmalloc.  */
+#include "libiberty.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+
+#ifndef PIPE_BUF
+#define PIPE_BUF 512
 #endif
 
 /* ??? sim_cb_printf should be cb_printf, but until the callback support is
@@ -144,7 +150,48 @@ os_close (p, fd)
   if (fd != i)
     p->fd_buddy[i] = p->fd_buddy[fd];
   else
-    result = wrap (p, close (fdmap (p, fd)));
+    {
+      if (p->ispipe[fd])
+	{
+	  int other = p->ispipe[fd];
+	  int reader, writer;
+
+	  if (other > 0)
+	    {
+	      /* Closing the read side.  */
+	      reader = fd;
+	      writer = other;
+	    }
+	  else
+	    {
+	      /* Closing the write side.  */
+	      writer = fd;
+	      reader = -other;
+	    }
+
+	  /* If there was data in the buffer, make a last "now empty"
+	     call, then deallocate data.  */
+	  if (p->pipe_buffer[writer].buffer != NULL)
+	    {
+	      (*p->pipe_empty) (p, reader, writer);
+	      free (p->pipe_buffer[writer].buffer);
+	      p->pipe_buffer[writer].buffer = NULL;
+	    }
+
+	  /* Clear pipe data for this side.  */
+	  p->pipe_buffer[fd].size = 0;
+	  p->ispipe[fd] = 0;
+
+	  /* If this was the first close, mark the other side as the
+	     only remaining side.  */
+	  if (fd != abs (other))
+	    p->ispipe[abs (other)] = -other;
+	  p->fd_buddy[fd] = -1;
+	  return 0;
+	}
+
+      result = wrap (p, close (fdmap (p, fd)));
+    }
   p->fd_buddy[fd] = -1;
 
   return result;
@@ -270,6 +317,47 @@ os_read (p, fd, buf, len)
   result = fdbad (p, fd);
   if (result)
     return result;
+  if (p->ispipe[fd])
+    {
+      int writer = p->ispipe[fd];
+
+      /* Can't read from the write-end.  */
+      if (writer < 0)
+	{
+	  p->last_errno = EBADF;
+	  return -1;
+	}
+
+      /* Nothing to read if nothing is written.  */
+      if (p->pipe_buffer[writer].size == 0)
+	return 0;
+
+      /* Truncate read request size to buffer size minus what's already
+         read.  */
+      if (len > p->pipe_buffer[writer].size - p->pipe_buffer[fd].size)
+	len = p->pipe_buffer[writer].size - p->pipe_buffer[fd].size;
+
+      memcpy (buf, p->pipe_buffer[writer].buffer + p->pipe_buffer[fd].size,
+	      len);
+
+      /* Account for what we just read.  */
+      p->pipe_buffer[fd].size += len;
+
+      /* If we've read everything, empty and deallocate the buffer and
+	 signal buffer-empty to client.  (This isn't expected to be a
+	 hot path in the simulator, so we don't hold on to the buffer.)  */
+      if (p->pipe_buffer[fd].size == p->pipe_buffer[writer].size)
+	{
+	  free (p->pipe_buffer[writer].buffer);
+	  p->pipe_buffer[writer].buffer = NULL;
+	  p->pipe_buffer[fd].size = 0;
+	  p->pipe_buffer[writer].size = 0;
+	  (*p->pipe_empty) (p, fd, writer);
+	}
+
+      return len;
+    }
+
   result = wrap (p, read (fdmap (p, fd), buf, len));
   return result;
 }
@@ -296,6 +384,49 @@ os_write (p, fd, buf, len)
   result = fdbad (p, fd);
   if (result)
     return result;
+
+  if (p->ispipe[fd])
+    {
+      int reader = -p->ispipe[fd];
+
+      /* Can't write to the read-end.  */
+      if (reader < 0)
+	{
+	  p->last_errno = EBADF;
+	  return -1;
+	}
+
+      /* Can't write to pipe with closed read end.
+	 FIXME: We should send a SIGPIPE.  */
+      if (reader == fd)
+	{
+	  p->last_errno = EPIPE;
+	  return -1;
+	}
+
+      /* As a sanity-check, we bail out it the buffered contents is much
+	 larger than the size of the buffer on the host.  We don't want
+	 to run out of memory in the simulator due to a target program
+	 bug if we can help it.  Unfortunately, regarding the value that
+	 reaches the simulated program, it's no use returning *less*
+	 than the requested amount, because cb_syscall loops calling
+	 this function until the whole amount is done.  */
+      if (p->pipe_buffer[fd].size + len > 10 * PIPE_BUF)
+	{
+	  p->last_errno = EFBIG;
+	  return -1;
+	}
+
+      p->pipe_buffer[fd].buffer
+	= xrealloc (p->pipe_buffer[fd].buffer, p->pipe_buffer[fd].size + len);
+      memcpy (p->pipe_buffer[fd].buffer + p->pipe_buffer[fd].size,
+	      buf, len);
+      p->pipe_buffer[fd].size += len;
+
+      (*p->pipe_nonempty) (p, reader, fd);
+      return len;
+    }
+
   real_fd = fdmap (p, fd);
   switch (real_fd)
     {
@@ -400,11 +531,57 @@ os_fstat (p, fd, buf)
 {
   if (fdbad (p, fd))
     return -1;
+
+  if (p->ispipe[fd])
+    {
+#if defined (HAVE_STRUCT_STAT_ST_ATIME) || defined (HAVE_STRUCT_STAT_ST_CTIME) || defined (HAVE_STRUCT_STAT_ST_MTIME)
+      time_t t = (*p->time) (p, NULL);
+#endif
+
+      /* We have to fake the struct stat contents, since the pipe is
+	 made up in the simulator.  */
+      memset (buf, 0, sizeof (*buf));
+
+#ifdef HAVE_STRUCT_STAT_ST_MODE
+      buf->st_mode = S_IFIFO;
+#endif
+
+      /* If more accurate tracking than current-time is needed (for
+	 example, on GNU/Linux we get accurate numbers), the p->time
+	 callback (which may be something other than os_time) should
+	 happen for each read and write, and we'd need to keep track of
+	 atime, ctime and mtime.  */
+#ifdef HAVE_STRUCT_STAT_ST_ATIME
+      buf->st_atime = t;
+#endif
+#ifdef HAVE_STRUCT_STAT_ST_CTIME
+      buf->st_ctime = t;
+#endif
+#ifdef HAVE_STRUCT_STAT_ST_MTIME
+      buf->st_mtime = t;
+#endif
+      return 0;
+    }
+
   /* ??? There is an issue of when to translate to the target layout.
      One could do that inside this function, or one could have the
      caller do it.  It's more flexible to let the caller do it, though
      I'm not sure the flexibility will ever be useful.  */
   return wrap (p, fstat (fdmap (p, fd), buf));
+}
+
+static int
+os_lstat (p, file, buf)
+     host_callback *p;
+     const char *file;
+     struct stat *buf;
+{
+  /* NOTE: hpn/2004-12-12: Same issue here as with os_fstat.  */
+#ifdef HAVE_LSTAT
+  return wrap (p, lstat (file, buf));
+#else
+  return wrap (p, stat (file, buf));
+#endif
 }
 
 static int 
@@ -413,16 +590,23 @@ os_ftruncate (p, fd, len)
      int fd;
      long len;
 {
-#if 0
   int result;
 
   result = fdbad (p, fd);
+  if (p->ispipe[fd])
+    {
+      p->last_errno = EINVAL;
+      return -1;
+    }
   if (result)
     return result;
+#ifdef HAVE_FTRUNCATE
   result = wrap (p, ftruncate (fdmap (p, fd), len));
-  return result;
+#else
+  p->last_errno = EINVAL;
+  result = -1;
 #endif
-  return 1;
+  return result;
 }
 
 static int
@@ -431,10 +615,73 @@ os_truncate (p, file, len)
      const char *file;
      long len;
 {
-#if 0
+#ifdef HAVE_TRUNCATE
   return wrap (p, truncate (file, len));
+#else
+  p->last_errno = EINVAL;
+  return -1;
 #endif
-  return 1;
+}
+
+static int
+os_pipe (p, filedes)
+     host_callback *p;
+     int *filedes;
+{
+  int i;
+
+  /* We deliberately don't use fd 0.  It's probably stdin anyway.  */
+  for (i = 1; i < MAX_CALLBACK_FDS; i++)
+    {
+      int j;
+
+      if (p->fd_buddy[i] < 0)
+	for (j = i + 1; j < MAX_CALLBACK_FDS; j++)
+	  if (p->fd_buddy[j] < 0)
+	    {
+	      /* Found two free fd:s.  Set stat to allocated and mark
+		 pipeness.  */
+	      p->fd_buddy[i] = i;
+	      p->fd_buddy[j] = j;
+	      p->ispipe[i] = j;
+	      p->ispipe[j] = -i;
+	      filedes[0] = i;
+	      filedes[1] = j;
+
+	      /* Poison the FD map to make bugs apparent.  */
+	      p->fdmap[i] = -1;
+	      p->fdmap[j] = -1;
+	      return 0;
+	    }
+    }
+
+  p->last_errno = EMFILE;
+  return -1;
+}
+
+/* Stub functions for pipe support.  They should always be overridden in
+   targets using the pipe support, but that's up to the target.  */
+
+/* Called when the simulator says that the pipe at (reader, writer) is
+   now empty (so the writer should leave its waiting state).  */
+
+static void
+os_pipe_empty (p, reader, writer)
+     host_callback *p;
+     int reader;
+     int writer;
+{
+}
+
+/* Called when the simulator says the pipe at (reader, writer) is now
+   non-empty (so the writer should wait).  */
+
+static void
+os_pipe_nonempty (p, reader, writer)
+     host_callback *p;
+     int reader;
+     int writer;
+{
 }
 
 static int
@@ -445,6 +692,13 @@ os_shutdown (p)
   for (i = 0; i < MAX_CALLBACK_FDS; i++)
     {
       int do_close = 1;
+
+      /* Zero out all pipe state.  Don't call callbacks for non-empty
+	 pipes; the target program has likely terminated at this point
+	 or we're called at initialization time.  */
+      p->ispipe[i] = 0;
+      p->pipe_buffer[i].size = 0;
+      p->pipe_buffer[i].buffer = NULL;
 
       next = p->fd_buddy[i];
       if (next < 0)
@@ -497,23 +751,10 @@ os_init (p)
 
 /* VARARGS */
 static void
-#ifdef ANSI_PROTOTYPES
 os_printf_filtered (host_callback *p ATTRIBUTE_UNUSED, const char *format, ...)
-#else
-os_printf_filtered (p, va_alist)
-     host_callback *p;
-     va_dcl
-#endif
 {
   va_list args;
-#ifdef ANSI_PROTOTYPES
   va_start (args, format);
-#else
-  char *format;
-
-  va_start (args);
-  format = va_arg (args, char *);
-#endif
 
   vfprintf (stdout, format, args);
   va_end (args);
@@ -521,51 +762,24 @@ os_printf_filtered (p, va_alist)
 
 /* VARARGS */
 static void
-#ifdef ANSI_PROTOTYPES
 os_vprintf_filtered (host_callback *p ATTRIBUTE_UNUSED, const char *format, va_list args)
-#else
-os_vprintf_filtered (p, format, args)
-     host_callback *p;
-     const char *format;
-     va_list args;
-#endif
 {
   vprintf (format, args);
 }
 
 /* VARARGS */
 static void
-#ifdef ANSI_PROTOTYPES
 os_evprintf_filtered (host_callback *p ATTRIBUTE_UNUSED, const char *format, va_list args)
-#else
-os_evprintf_filtered (p, format, args)
-     host_callback *p;
-     const char *format;
-     va_list args;
-#endif
 {
   vfprintf (stderr, format, args);
 }
 
 /* VARARGS */
 static void
-#ifdef ANSI_PROTOTYPES
 os_error (host_callback *p ATTRIBUTE_UNUSED, const char *format, ...)
-#else
-os_error (p, va_alist)
-     host_callback *p;
-     va_dcl
-#endif
 {
   va_list args;
-#ifdef ANSI_PROTOTYPES
   va_start (args, format);
-#else
-  char *format;
-
-  va_start (args);
-  format = va_arg (args, char *);
-#endif
 
   vfprintf (stderr, format, args);
   fprintf (stderr, "\n");
@@ -595,9 +809,14 @@ host_callback default_callback =
 
   os_stat,
   os_fstat,
+  os_lstat,
 
   os_ftruncate,
   os_truncate,
+
+  os_pipe,
+  os_pipe_empty,
+  os_pipe_nonempty,
 
   os_poll_quit,
 
@@ -614,6 +833,8 @@ host_callback default_callback =
 
   { 0, },	/* fdmap */
   { -1, },	/* fd_buddy */
+  { 0, },	/* ispipe */
+  { { 0, 0 }, }, /* pipe_buffer */
 
   0, /* syscall_map */
   0, /* errno_map */
@@ -621,6 +842,10 @@ host_callback default_callback =
   0, /* signal_map */
   0, /* stat_map */
 	
+  /* Defaults expected to be overridden at initialization, where needed.  */
+  BFD_ENDIAN_UNKNOWN, /* target_endian */
+  4, /* target_sizeof_int */
+
   HOST_CALLBACK_MAGIC,
 };
 
@@ -752,17 +977,17 @@ cb_target_to_host_open (cb, target_val)
   return host_val;
 }
 
-/* Utility for cb_host_to_target_stat to store values in the target's
+/* Utility for e.g. cb_host_to_target_stat to store values in the target's
    stat struct.  */
 
-static void
-store (p, size, val, big_p)
+void
+cb_store_target_endian (cb, p, size, val)
+     host_callback *cb;
      char *p;
      int size;
      long val; /* ??? must be as big as target word size */
-     int big_p;
 {
-  if (big_p)
+  if (cb->target_endian == BFD_ENDIAN_BIG)
     {
       p += size;
       while (size-- > 0)
@@ -796,7 +1021,6 @@ cb_host_to_target_stat (cb, hs, ts)
 {
   const char *m = cb->stat_map;
   char *p;
-  int big_p = 0;
 
   if (hs == NULL)
     ts = NULL;
@@ -822,13 +1046,58 @@ cb_host_to_target_stat (cb, hs, ts)
 
       if (hs != NULL)
 	{
-	  if (strncmp (m, "st_dev", q - m) == 0)
-	    store (p, size, hs->st_dev, big_p);
-	  else if (strncmp (m, "st_ino", q - m) == 0)
-	    store (p, size, hs->st_ino, big_p);
+	  if (0)
+	    ;
+	  /* Defined here to avoid emacs indigestion on a lone "else".  */
+#undef ST_x
+#define ST_x(FLD)					\
+	  else if (strncmp (m, #FLD, q - m) == 0)	\
+	    cb_store_target_endian (cb, p, size, hs->FLD)
+
+#ifdef HAVE_STRUCT_STAT_ST_DEV
+	  ST_x (st_dev);
+#endif
+#ifdef HAVE_STRUCT_STAT_ST_INO
+	  ST_x (st_ino);
+#endif
+#ifdef HAVE_STRUCT_STAT_ST_MODE
+	  ST_x (st_mode);
+#endif
+#ifdef HAVE_STRUCT_STAT_ST_NLINK
+	  ST_x (st_nlink);
+#endif
+#ifdef HAVE_STRUCT_STAT_ST_UID
+	  ST_x (st_uid);
+#endif
+#ifdef HAVE_STRUCT_STAT_ST_GID
+	  ST_x (st_gid);
+#endif
+#ifdef HAVE_STRUCT_STAT_ST_RDEV
+	  ST_x (st_rdev);
+#endif
+#ifdef HAVE_STRUCT_STAT_ST_SIZE
+	  ST_x (st_size);
+#endif
+#ifdef HAVE_STRUCT_STAT_ST_BLKSIZE
+	  ST_x (st_blksize);
+#endif
+#ifdef HAVE_STRUCT_STAT_ST_BLOCKS
+	  ST_x (st_blocks);
+#endif
+#ifdef HAVE_STRUCT_STAT_ST_ATIME
+	  ST_x (st_atime);
+#endif
+#ifdef HAVE_STRUCT_STAT_ST_MTIME
+	  ST_x (st_mtime);
+#endif
+#ifdef HAVE_STRUCT_STAT_ST_CTIME
+	  ST_x (st_ctime);
+#endif
+#undef ST_x
 	  /* FIXME:wip */
 	  else
-	    store (p, size, 0, big_p); /* unsupported field, store 0 */
+	    /* Unsupported field, store 0.  */
+	    cb_store_target_endian (cb, p, size, 0);
 	}
 
       p += size;

@@ -119,7 +119,7 @@ sparc64_sol2_sigtramp_frame_prev_register (struct frame_info *next_frame,
 					   int regnum, int *optimizedp,
 					   enum lval_type *lvalp,
 					   CORE_ADDR *addrp,
-					   int *realnump, void *valuep)
+					   int *realnump, gdb_byte *valuep)
 {
   struct sparc_frame_cache *cache =
     sparc64_sol2_sigtramp_frame_cache (next_frame, this_cache);
@@ -159,7 +159,6 @@ sparc64_sol2_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
   sparc64_init_abi (info, gdbarch);
 
   /* Solaris has SVR4-style shared libraries...  */
-  set_gdbarch_in_solib_call_trampoline (gdbarch, in_plt_section);
   set_gdbarch_skip_trampoline_code (gdbarch, find_solib_trampoline_target);
   set_solib_svr4_fetch_link_map_offsets
     (gdbarch, svr4_lp64_fetch_link_map_offsets);

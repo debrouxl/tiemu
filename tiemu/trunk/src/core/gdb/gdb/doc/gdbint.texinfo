@@ -8,7 +8,8 @@
 
 @ifinfo
 This file documents the internals of the GNU debugger @value{GDBN}.
-Copyright 1990,1991,1992,1993,1994,1996,1998,1999,2000,2001,2002,2003,2004
+Copyright 1990, 1991, 1992, 1993, 1994, 1996, 1998, 1999, 2000, 2001,
+   2002, 2003, 2004, 2005
    Free Software Foundation, Inc.
 Contributed by Cygnus Solutions.  Written by John Gilmore.
 Second Edition by Stan Shebs.
@@ -48,7 +49,7 @@ Free Documentation License''.
 
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1990,1991,1992,1993,1994,1996,1998,1999,2000,2001,
-   2002, 2003, 2004  Free Software Foundation, Inc.
+   2002, 2003, 2004, 2005  Free Software Foundation, Inc.
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.1 or
@@ -397,6 +398,18 @@ single-step the program being debugged and test the value of the
 watched expression(s) after each instruction.  The rest of this
 section is mostly irrelevant for software watchpoints.
 
+When the inferior stops, @value{GDBN} tries to establish, among other
+possible reasons, whether it stopped due to a watchpoint being hit.
+For a data-write watchpoint, it does so by evaluating, for each
+watchpoint, the expression whose value is being watched, and testing
+whether the watched value has changed.  For data-read and data-access
+watchpoints, @value{GDBN} needs the target to supply a primitive that
+returns the address of the data that was accessed or read (see the
+description of @code{target_stopped_data_address} below): if this
+primitive returns a valid address, @value{GDBN} infers that a
+watchpoint triggered if it watches an expression whose evaluation uses
+that address.
+
 @value{GDBN} uses several macros and primitives to support hardware
 watchpoints:
 
@@ -428,20 +441,7 @@ whose size is @var{size}.  @value{GDBN} only uses this macro as a
 fall-back, in case @code{TARGET_REGION_OK_FOR_HW_WATCHPOINT} is not
 defined.
 
-@findex TARGET_DISABLE_HW_WATCHPOINTS
-@item TARGET_DISABLE_HW_WATCHPOINTS (@var{pid})
-Disables watchpoints in the process identified by @var{pid}.  This is
-used, e.g., on HP-UX which provides operations to disable and enable
-the page-level memory protection that implements hardware watchpoints
-on that platform.
-
-@findex TARGET_ENABLE_HW_WATCHPOINTS
-@item TARGET_ENABLE_HW_WATCHPOINTS (@var{pid})
-Enables watchpoints in the process identified by @var{pid}.  This is
-used, e.g., on HP-UX which provides operations to disable and enable
-the page-level memory protection that implements hardware watchpoints
-on that platform.
-
+@cindex insert or remove hardware watchpoint
 @findex target_insert_watchpoint
 @findex target_remove_watchpoint
 @item target_insert_watchpoint (@var{addr}, @var{len}, @var{type})
@@ -480,7 +480,11 @@ two macros can use them for their internal purposes.
 @item target_stopped_data_address (@var{addr_p})
 If the inferior has some watchpoint that triggered, place the address
 associated with the watchpoint at the location pointed to by
-@var{addr_p} and return non-zero.  Otherwise, return zero.
+@var{addr_p} and return non-zero.  Otherwise, return zero.  Note that
+this primitive is used by @value{GDBN} only on targets that support
+data-read or data-access type watchpoints, so targets that have
+support only for data-write watchpoints need not implement these
+primitives.
 
 @findex HAVE_STEPPABLE_WATCHPOINT
 @item HAVE_STEPPABLE_WATCHPOINT
@@ -506,6 +510,16 @@ watchpoints before stepping the inferior.
 @item STOPPED_BY_WATCHPOINT (@var{wait_status})
 Return non-zero if stopped by a watchpoint.  @var{wait_status} is of
 the type @code{struct target_waitstatus}, defined by @file{target.h}.
+Normally, this macro is defined to invoke the function pointed to by
+the @code{to_stopped_by_watchpoint} member of the structure (of the
+type @code{target_ops}, defined on @file{target.h}) that describes the
+target-specific operations; @code{to_stopped_by_watchpoint} ignores
+the @var{wait_status} argument.
+
+@value{GDBN} does not require the non-zero value returned by
+@code{STOPPED_BY_WATCHPOINT} to be 100% correct, so if a target cannot
+determine for sure whether the inferior stopped due to a watchpoint,
+it could return non-zero ``just in case''.
 @end table
 
 @subsection x86 Watchpoints
@@ -5391,29 +5405,45 @@ configuration.
 @table @asis
 @item @var{major}.@var{minor}
 @itemx @var{major}.@var{minor}.@var{patchlevel}
-an official release (e.g., 6.0 or 6.0.1)
-@item @var{major}.@var{minor}.@var{patchlevel}_@var{YYYY}@var{MM}@var{DD}
-a snapshot (e.g., 6.0.50_20020630)
-@item @var{major}.@var{minor}.@var{patchlevel}_@var{YYYY}-@var{MM}-@var{DD}-cvs
-a @sc{cvs} check out (e.g., 6.0.90_2004-02-30-cvs)
-@item @var{major}.@var{minor}.@var{patchlevel}_@var{YYYY}@var{MM}@var{DD} (@var{vendor})
+an official release (e.g., 6.2 or 6.2.1)
+@item @var{major}.@var{minor}.@var{patchlevel}.@var{YYYY}@var{MM}@var{DD}
+a snapshot taken at @var{YYYY}-@var{MM}-@var{DD}-gmt (e.g.,
+6.1.50.20020302, 6.1.90.20020304, or 6.1.0.20020308)
+@item @var{major}.@var{minor}.@var{patchlevel}.@var{YYYY}@var{MM}@var{DD}-cvs
+a @sc{cvs} check out drawn on @var{YYYY}-@var{MM}-@var{DD} (e.g.,
+6.1.50.20020302-cvs, 6.1.90.20020304-cvs, or 6.1.0.20020308-cvs)
+@item @var{major}.@var{minor}.@var{patchlevel}.@var{YYYY}@var{MM}@var{DD} (@var{vendor})
 a vendor specific release of @value{GDBN}, that while based on@*
-@var{major}.@var{minor}.@var{patchlevel}_@var{YYYY}@var{MM}@var{DD},
-may contain additional changes
+@var{major}.@var{minor}.@var{patchlevel}.@var{YYYY}@var{MM}@var{DD},
+may include additional changes
 @end table
 
 @value{GDBN}'s mainline uses the @var{major} and @var{minor} version
 numbers from the most recent release branch, with a @var{patchlevel}
-of 50.  As each new release branch is created, the mainline
-@var{major} and @var{minor} version numbers are accordingly updated.
+of 50.  At the time each new release branch is created, the mainline's
+@var{major} and @var{minor} version numbers are updated.
 
-@value{GDBN}'s release branch uses a similar, but slightly more
-complicated scheme.  When the branch is first cut, the mainline's
-@var{patchlevel} is changed to .90.  As draft releases are drawn from
-the branch, the @var{patchlevel} is incremented.  Once the first
-release (@var{major}.@var{minor}) has been made, the version prefix is
-updated to @var{major}.@var{minor}.0.90.  Follow on releases have an
-incremented @var{patchlevel}.
+@value{GDBN}'s release branch is similar.  When the branch is cut, the
+@var{patchlevel} is changed from 50 to 90.  As draft releases are
+drawn from the branch, the @var{patchlevel} is incremented.  Once the
+first release (@var{major}.@var{minor}) has been made, the
+@var{patchlevel} is set to 0 and updates have an incremented
+@var{patchlevel}.
+
+For snapshots, and @sc{cvs} check outs, it is also possible to
+identify the @sc{cvs} origin:
+
+@table @asis
+@item @var{major}.@var{minor}.50.@var{YYYY}@var{MM}@var{DD}
+drawn from the @sc{head} of mainline @sc{cvs} (e.g., 6.1.50.20020302)
+@item @var{major}.@var{minor}.90.@var{YYYY}@var{MM}@var{DD}
+@itemx @var{major}.@var{minor}.91.@var{YYYY}@var{MM}@var{DD} @dots{}
+drawn from a release branch prior to the release (e.g.,
+6.1.90.20020304)
+@item @var{major}.@var{minor}.0.@var{YYYY}@var{MM}@var{DD}
+@itemx @var{major}.@var{minor}.1.@var{YYYY}@var{MM}@var{DD} @dots{}
+drawn from a release branch after the release (e.g., 6.2.0.20020308)
+@end table
 
 If the previous @value{GDBN} version is 6.1 and the current version is
 6.2, then, substituting 6 for @var{major} and 1 or 2 for @var{minor},
@@ -5422,34 +5452,34 @@ here's an illustration of a typical sequence:
 @smallexample
      <HEAD>
         |
-6.1.50_2002-03-02-cvs
+6.1.50.20020302-cvs
         |
-        +---------------------------.
+        +--------------------------.
         |                    <gdb_6_2-branch>
-        |                           |
-6.2.50_2002-03-03-cvs        6.1.90 (draft #1)
-        |                           |
-6.2.50_2002-03-04-cvs        6.1.90_2002-03-04-cvs
-        |                           |
-6.2.50_2002-03-05-cvs        6.1.91 (draft #2)
-        |                           |
-6.2.50_2002-03-06-cvs        6.1.91_2002-03-06-cvs
-        |                           |
-6.2.50_2002-03-07-cvs        6.2 (release)
         |                          |
-6.2.50_2002-03-08-cvs        6.2.0.90_2002-03-08-cvs
+6.2.50.20020303-cvs        6.1.90 (draft #1)
         |                          |
-6.2.50_2002-03-09-cvs        6.2.1 (update)
-        |                           |
-6.2.50_2002-03-10-cvs         <branch closed>
+6.2.50.20020304-cvs        6.1.90.20020304-cvs
+        |                          |
+6.2.50.20020305-cvs        6.1.91 (draft #2)
+        |                          |
+6.2.50.20020306-cvs        6.1.91.20020306-cvs
+        |                          |
+6.2.50.20020307-cvs        6.2 (release)
+        |                          |
+6.2.50.20020308-cvs        6.2.0.20020308-cvs
+        |                          |
+6.2.50.20020309-cvs        6.2.1 (update)
+        |                          |
+6.2.50.20020310-cvs         <branch closed>
         |
-6.2.50_2002-03-11-cvs
+6.2.50.20020311-cvs
         |
-        +---------------------------.
+        +--------------------------.
         |                     <gdb_6_3-branch>
-        |                           |
-6.3.50_2002-03-12-cvs        6.2.90 (draft #1)
-        |                           |
+        |                          |
+6.3.50.20020312-cvs        6.2.90 (draft #1)
+        |                          |
 @end smallexample
 
 @section Release Branches
@@ -5525,7 +5555,7 @@ branch (branches of individual files should be avoided).  @xref{Tags}.
 @item a branch shall be branded using @file{version.in}
 The file @file{gdb/version.in} shall be modified so that it identifies
 the branch @var{owner} and branch @var{name}, e.g.,
-@samp{6.2.50_20030303_owner_name} or @samp{6.2 (Owner Name)}.
+@samp{6.2.50.20030303_owner_name} or @samp{6.2 (Owner Name)}.
 
 @end table
 

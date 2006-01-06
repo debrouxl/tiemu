@@ -56,7 +56,7 @@ parse_auto_binary_operation (const char *arg)
 	       || (strncmp (arg, "-1", length) == 0 && length > 1))
 	return AUTO_BOOLEAN_AUTO;
     }
-  error ("\"on\", \"off\" or \"auto\" expected.");
+  error (_("\"on\", \"off\" or \"auto\" expected."));
   return AUTO_BOOLEAN_AUTO; /* pacify GCC */
 }
 
@@ -85,11 +85,37 @@ parse_binary_operation (char *arg)
     return 0;
   else
     {
-      error ("\"on\" or \"off\" expected.");
+      error (_("\"on\" or \"off\" expected."));
       return 0;
     }
 }
 
+void
+deprecated_show_value_hack (struct ui_file *ignore_file,
+			    int ignore_from_tty,
+			    struct cmd_list_element *c,
+			    const char *value)
+{
+  /* If there's no command or value, don't try to print it out.  */
+  if (c == NULL || value == NULL)
+    return;
+  /* Print doc minus "show" at start.  */
+  print_doc_line (gdb_stdout, c->doc + 5);
+  switch (c->var_type)
+    {
+    case var_string:
+    case var_string_noescape:
+    case var_optional_filename:
+    case var_filename:
+    case var_enum:
+      printf_filtered ((" is \"%s\".\n"), value);
+      break;
+    default:
+      printf_filtered ((" is %s.\n"), value);
+      break;
+    }
+}
+
 /* Do a "set" or "show" command.  ARG is NULL if no argument, or the text
    of the argument, and FROM_TTY is nonzero if this command is being entered
    directly by the user (i.e. these are just like any other
@@ -154,9 +180,16 @@ do_setshow_command (char *arg, int from_tty, struct cmd_list_element *c)
 	    xfree (*(char **) c->var);
 	  *(char **) c->var = savestring (arg, strlen (arg));
 	  break;
+	case var_optional_filename:
+	  if (arg == NULL)
+	    arg = "";
+	  if (*(char **) c->var != NULL)
+	    xfree (*(char **) c->var);
+	  *(char **) c->var = savestring (arg, strlen (arg));
+	  break;
 	case var_filename:
 	  if (arg == NULL)
-	    error_no_arg ("filename to set it to.");
+	    error_no_arg (_("filename to set it to."));
 	  if (*(char **) c->var != NULL)
 	    xfree (*(char **) c->var);
 	  *(char **) c->var = tilde_expand (arg);
@@ -169,7 +202,7 @@ do_setshow_command (char *arg, int from_tty, struct cmd_list_element *c)
 	  break;
 	case var_uinteger:
 	  if (arg == NULL)
-	    error_no_arg ("integer to set it to.");
+	    error_no_arg (_("integer to set it to."));
 	  *(unsigned int *) c->var = parse_and_eval_long (arg);
 	  if (*(unsigned int *) c->var == 0)
 	    *(unsigned int *) c->var = UINT_MAX;
@@ -178,19 +211,19 @@ do_setshow_command (char *arg, int from_tty, struct cmd_list_element *c)
 	  {
 	    unsigned int val;
 	    if (arg == NULL)
-	      error_no_arg ("integer to set it to.");
+	      error_no_arg (_("integer to set it to."));
 	    val = parse_and_eval_long (arg);
 	    if (val == 0)
 	      *(int *) c->var = INT_MAX;
 	    else if (val >= INT_MAX)
-	      error ("integer %u out of range", val);
+	      error (_("integer %u out of range"), val);
 	    else
 	      *(int *) c->var = val;
 	    break;
 	  }
 	case var_zinteger:
 	  if (arg == NULL)
-	    error_no_arg ("integer to set it to.");
+	    error_no_arg (_("integer to set it to."));
 	  *(int *) c->var = parse_and_eval_long (arg);
 	  break;
 	case var_enum:
@@ -213,7 +246,7 @@ do_setshow_command (char *arg, int from_tty, struct cmd_list_element *c)
 		    strcat (msg, c->enums[i]);
 		  }
 		strcat (msg, ".");
-		error ("%s", msg);
+		error (("%s"), msg);
 	      }
 
 	    p = strchr (arg, ' ');
@@ -241,23 +274,22 @@ do_setshow_command (char *arg, int from_tty, struct cmd_list_element *c)
 		}
 
 	    if (nmatches <= 0)
-	      error ("Undefined item: \"%s\".", arg);
+	      error (_("Undefined item: \"%s\"."), arg);
 
 	    if (nmatches > 1)
-	      error ("Ambiguous item \"%s\".", arg);
+	      error (_("Ambiguous item \"%s\"."), arg);
 
 	    *(const char **) c->var = match;
 	  }
 	  break;
 	default:
-	  error ("gdb internal error: bad var_type in do_setshow_command");
+	  error (_("gdb internal error: bad var_type in do_setshow_command"));
 	}
     }
   else if (c->type == show_cmd)
     {
       struct cleanup *old_chain;
       struct ui_stream *stb;
-      int quote;
 
       stb = ui_out_stream_new (uiout);
       old_chain = make_cleanup_ui_out_stream_delete (stb);
@@ -266,29 +298,18 @@ do_setshow_command (char *arg, int from_tty, struct cmd_list_element *c)
       if (c->pre_show_hook)
 	(c->pre_show_hook) (c);
 
-      /* Print doc minus "show" at start.  */
-      print_doc_line (gdb_stdout, c->doc + 5);
-
-      ui_out_text (uiout, " is ");
-      ui_out_wrap_hint (uiout, "    ");
-      quote = 0;
       switch (c->var_type)
 	{
 	case var_string:
-	  {
-	    unsigned char *p;
-
-	    if (*(unsigned char **) c->var)
-	      fputstr_filtered (*(unsigned char **) c->var, '"', stb->stream);
-	    quote = 1;
-	  }
+	  if (*(char **) c->var)
+	    fputstr_filtered (*(char **) c->var, '"', stb->stream);
 	  break;
 	case var_string_noescape:
+	case var_optional_filename:
 	case var_filename:
 	case var_enum:
 	  if (*(char **) c->var)
 	    fputs_filtered (*(char **) c->var, stb->stream);
-	  quote = 1;
 	  break;
 	case var_boolean:
 	  fputs_filtered (*(int *) c->var ? "on" : "off", stb->stream);
@@ -307,7 +328,7 @@ do_setshow_command (char *arg, int from_tty, struct cmd_list_element *c)
 	      break;
 	    default:
 	      internal_error (__FILE__, __LINE__,
-			      "do_setshow_command: invalid var_auto_boolean");
+			      _("do_setshow_command: invalid var_auto_boolean"));
 	      break;
 	    }
 	  break;
@@ -331,18 +352,31 @@ do_setshow_command (char *arg, int from_tty, struct cmd_list_element *c)
 	  break;
 
 	default:
-	  error ("gdb internal error: bad var_type in do_setshow_command");
+	  error (_("gdb internal error: bad var_type in do_setshow_command"));
 	}
-      if (quote)
-	ui_out_text (uiout, "\"");
-      ui_out_field_stream (uiout, "value", stb);
-      if (quote)
-	ui_out_text (uiout, "\"");
-      ui_out_text (uiout, ".\n");
+
+
+      /* FIXME: cagney/2005-02-10: Need to split this in half: code to
+	 convert the value into a string (esentially the above); and
+	 code to print the value out.  For the latter there should be
+	 MI and CLI specific versions.  */
+
+      if (ui_out_is_mi_like_p (uiout))
+	ui_out_field_stream (uiout, "value", stb);
+      else
+	{
+	  long length;
+	  char *value = ui_file_xstrdup (stb->stream, &length);
+	  make_cleanup (xfree, value);
+	  if (c->show_value_func != NULL)
+	    c->show_value_func (gdb_stdout, from_tty, c, value);
+	  else
+	    deprecated_show_value_hack (gdb_stdout, from_tty, c, value);
+	}
       do_cleanups (old_chain);
     }
   else
-    error ("gdb internal error: bad cmd_type in do_setshow_command");
+    error (_("gdb internal error: bad cmd_type in do_setshow_command"));
   c->func (c, NULL, from_tty);
   if (c->type == set_cmd && deprecated_set_hook)
     deprecated_set_hook (c);

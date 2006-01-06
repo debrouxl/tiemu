@@ -42,7 +42,7 @@
    is accomplished via BREAKPOINT_MAX).  */
 
 int
-default_memory_insert_breakpoint (CORE_ADDR addr, char *contents_cache)
+default_memory_insert_breakpoint (CORE_ADDR addr, bfd_byte *contents_cache)
 {
   int val;
   const unsigned char *bp;
@@ -51,42 +51,42 @@ default_memory_insert_breakpoint (CORE_ADDR addr, char *contents_cache)
   /* Determine appropriate breakpoint contents and size for this address.  */
   bp = BREAKPOINT_FROM_PC (&addr, &bplen);
   if (bp == NULL)
-    error ("Software breakpoints not implemented for this target.");
+    error (_("Software breakpoints not implemented for this target."));
 
   /* Save the memory contents.  */
   val = target_read_memory (addr, contents_cache, bplen);
 
   /* Write the breakpoint.  */
   if (val == 0)
-    val = target_write_memory (addr, (char *) bp, bplen);
+    val = target_write_memory (addr, bp, bplen);
 
   return val;
 }
 
 
 int
-default_memory_remove_breakpoint (CORE_ADDR addr, char *contents_cache)
+default_memory_remove_breakpoint (CORE_ADDR addr, bfd_byte *contents_cache)
 {
-  const unsigned char *bp;
+  const bfd_byte *bp;
   int bplen;
 
   /* Determine appropriate breakpoint contents and size for this address.  */
   bp = BREAKPOINT_FROM_PC (&addr, &bplen);
   if (bp == NULL)
-    error ("Software breakpoints not implemented for this target.");
+    error (_("Software breakpoints not implemented for this target."));
 
   return target_write_memory (addr, contents_cache, bplen);
 }
 
 
 int
-memory_insert_breakpoint (CORE_ADDR addr, char *contents_cache)
+memory_insert_breakpoint (CORE_ADDR addr, bfd_byte *contents_cache)
 {
   return MEMORY_INSERT_BREAKPOINT(addr, contents_cache);
 }
 
 int
-memory_remove_breakpoint (CORE_ADDR addr, char *contents_cache)
+memory_remove_breakpoint (CORE_ADDR addr, bfd_byte *contents_cache)
 {
   return MEMORY_REMOVE_BREAKPOINT(addr, contents_cache);
 }

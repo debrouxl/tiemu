@@ -1,6 +1,7 @@
 /* Native-dependent code for GNU/Linux i386.
 
-   Copyright 1999, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+   Copyright 1999, 2000, 2001, 2002, 2003, 2004, 2005
+   Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -23,6 +24,7 @@
 #include "inferior.h"
 #include "gdbcore.h"
 #include "regcache.h"
+#include "target.h"
 #include "linux-nat.h"
 
 #include "gdb_assert.h"
@@ -180,7 +182,7 @@ fetch_register (int regno)
   errno = 0;
   val = ptrace (PTRACE_PEEKUSER, tid, register_addr (regno, 0), 0);
   if (errno != 0)
-    error ("Couldn't read register %s (#%d): %s.", REGISTER_NAME (regno),
+    error (_("Couldn't read register %s (#%d): %s."), REGISTER_NAME (regno),
 	   regno, safe_strerror (errno));
 
   regcache_raw_supply (current_regcache, regno, &val);
@@ -207,7 +209,7 @@ store_register (int regno)
   regcache_raw_collect (current_regcache, regno, &val);
   ptrace (PTRACE_POKEUSER, tid, register_addr (regno, 0), val);
   if (errno != 0)
-    error ("Couldn't write register %s (#%d): %s.", REGISTER_NAME (regno),
+    error (_("Couldn't write register %s (#%d): %s."), REGISTER_NAME (regno),
 	   regno, safe_strerror (errno));
 }
 
@@ -272,7 +274,7 @@ fetch_regs (int tid)
 	  return;
 	}
 
-      perror_with_name ("Couldn't get registers");
+      perror_with_name (_("Couldn't get registers"));
     }
 
   supply_gregset (&regs);
@@ -287,12 +289,12 @@ store_regs (int tid, int regno)
   elf_gregset_t regs;
 
   if (ptrace (PTRACE_GETREGS, tid, 0, (int) &regs) < 0)
-    perror_with_name ("Couldn't get registers");
+    perror_with_name (_("Couldn't get registers"));
 
   fill_gregset (&regs, regno);
   
   if (ptrace (PTRACE_SETREGS, tid, 0, (int) &regs) < 0)
-    perror_with_name ("Couldn't write registers");
+    perror_with_name (_("Couldn't write registers"));
 }
 
 #else
@@ -335,7 +337,7 @@ fetch_fpregs (int tid)
   elf_fpregset_t fpregs;
 
   if (ptrace (PTRACE_GETFPREGS, tid, 0, (int) &fpregs) < 0)
-    perror_with_name ("Couldn't get floating point status");
+    perror_with_name (_("Couldn't get floating point status"));
 
   supply_fpregset (&fpregs);
 }
@@ -349,12 +351,12 @@ store_fpregs (int tid, int regno)
   elf_fpregset_t fpregs;
 
   if (ptrace (PTRACE_GETFPREGS, tid, 0, (int) &fpregs) < 0)
-    perror_with_name ("Couldn't get floating point status");
+    perror_with_name (_("Couldn't get floating point status"));
 
   fill_fpregset (&fpregs, regno);
 
   if (ptrace (PTRACE_SETFPREGS, tid, 0, (int) &fpregs) < 0)
-    perror_with_name ("Couldn't write floating point status");
+    perror_with_name (_("Couldn't write floating point status"));
 }
 
 #else
@@ -408,7 +410,7 @@ fetch_fpxregs (int tid)
 	  return 0;
 	}
 
-      perror_with_name ("Couldn't read floating-point and SSE registers");
+      perror_with_name (_("Couldn't read floating-point and SSE registers"));
     }
 
   supply_fpxregset (&fpxregs);
@@ -435,13 +437,13 @@ store_fpxregs (int tid, int regno)
 	  return 0;
 	}
 
-      perror_with_name ("Couldn't read floating-point and SSE registers");
+      perror_with_name (_("Couldn't read floating-point and SSE registers"));
     }
 
   fill_fpxregset (&fpxregs, regno);
 
   if (ptrace (PTRACE_SETFPXREGS, tid, 0, &fpxregs) == -1)
-    perror_with_name ("Couldn't write floating-point and SSE registers");
+    perror_with_name (_("Couldn't write floating-point and SSE registers"));
 
   return 1;
 }
@@ -479,8 +481,8 @@ cannot_store_register (int regno)
    this for all registers (including the floating point and SSE
    registers).  */
 
-void
-fetch_inferior_registers (int regno)
+static void
+i386_linux_fetch_inferior_registers (int regno)
 {
   int tid;
 
@@ -513,7 +515,7 @@ fetch_inferior_registers (int regno)
       /* The call above might reset `have_ptrace_getregs'.  */
       if (!have_ptrace_getregs)
 	{
-	  fetch_inferior_registers (regno);
+	  i386_linux_fetch_inferior_registers (regno);
 	  return;
 	}
 
@@ -545,14 +547,14 @@ fetch_inferior_registers (int regno)
     }
 
   internal_error (__FILE__, __LINE__,
-		  "Got request for bad register number %d.", regno);
+		  _("Got request for bad register number %d."), regno);
 }
 
 /* Store register REGNO back into the child process.  If REGNO is -1,
    do this for all registers (including the floating point and SSE
    registers).  */
-void
-store_inferior_registers (int regno)
+static void
+i386_linux_store_inferior_registers (int regno)
 {
   int tid;
 
@@ -605,7 +607,7 @@ store_inferior_registers (int regno)
     }
 
   internal_error (__FILE__, __LINE__,
-		  "Got request to store bad register number %d.", regno);
+		  _("Got request to store bad register number %d."), regno);
 }
 
 
@@ -632,7 +634,7 @@ i386_linux_dr_get (int regnum)
 		  offsetof (struct user, u_debugreg[regnum]), 0);
   if (errno != 0)
 #if 0
-    perror_with_name ("Couldn't read debug register");
+    perror_with_name (_("Couldn't read debug register"));
 #else
     return 0;
 #endif
@@ -654,7 +656,7 @@ i386_linux_dr_set (int regnum, unsigned long value)
   ptrace (PTRACE_POKEUSER, tid,
 	  offsetof (struct user, u_debugreg[regnum]), value);
   if (errno != 0)
-    perror_with_name ("Couldn't write debug register");
+    perror_with_name (_("Couldn't write debug register"));
 }
 
 void
@@ -754,8 +756,8 @@ static const unsigned char linux_syscall[] = { 0xcd, 0x80 };
    If STEP is nonzero, single-step it.
    If SIGNAL is nonzero, give it that signal.  */
 
-void
-child_resume (ptid_t ptid, int step, enum target_signal signal)
+static void
+i386_linux_resume (ptid_t ptid, int step, enum target_signal signal)
 {
   int pid = PIDGET (ptid);
 
@@ -770,7 +772,7 @@ child_resume (ptid_t ptid, int step, enum target_signal signal)
   if (step)
     {
       CORE_ADDR pc = read_pc_pid (pid_to_ptid (pid));
-      unsigned char buf[LINUX_SYSCALL_LEN];
+      gdb_byte buf[LINUX_SYSCALL_LEN];
 
       request = PTRACE_SINGLESTEP;
 
@@ -783,7 +785,7 @@ child_resume (ptid_t ptid, int step, enum target_signal signal)
          that's about to be restored, and set the trace flag there.  */
 
       /* First check if PC is at a system call.  */
-      if (deprecated_read_memory_nobpt (pc, (char *) buf, LINUX_SYSCALL_LEN) == 0
+      if (deprecated_read_memory_nobpt (pc, buf, LINUX_SYSCALL_LEN) == 0
 	  && memcmp (buf, linux_syscall, LINUX_SYSCALL_LEN) == 0)
 	{
 	  int syscall = read_register_pid (LINUX_SYSCALL_REGNUM,
@@ -802,20 +804,45 @@ child_resume (ptid_t ptid, int step, enum target_signal signal)
 	      /* Set the trace flag in the context that's about to be
                  restored.  */
 	      addr += LINUX_SIGCONTEXT_EFLAGS_OFFSET;
-	      read_memory (addr, (char *) &eflags, 4);
+	      read_memory (addr, (gdb_byte *) &eflags, 4);
 	      eflags |= 0x0100;
-	      write_memory (addr, (char *) &eflags, 4);
+	      write_memory (addr, (gdb_byte *) &eflags, 4);
 	    }
 	}
     }
 
   if (ptrace (request, pid, 0, target_signal_to_host (signal)) == -1)
-    perror_with_name ("ptrace");
+    perror_with_name (("ptrace"));
+}
+
+static void (*super_post_startup_inferior) (ptid_t ptid);
+
+static void
+i386_linux_child_post_startup_inferior (ptid_t ptid)
+{
+  i386_cleanup_dregs ();
+  super_post_startup_inferior (ptid);
 }
 
 void
-child_post_startup_inferior (ptid_t ptid)
+_initialize_i386_linux_nat (void)
 {
-  i386_cleanup_dregs ();
-  linux_child_post_startup_inferior (ptid);
+  struct target_ops *t;
+
+  /* Fill in the generic GNU/Linux methods.  */
+  t = linux_target ();
+
+  /* Override the default ptrace resume method.  */
+  t->to_resume = i386_linux_resume;
+
+  /* Override the GNU/Linux inferior startup hook.  */
+  super_post_startup_inferior = t->to_post_startup_inferior;
+  t->to_post_startup_inferior = i386_linux_child_post_startup_inferior;
+
+  /* Add our register access methods.  */
+  t->to_fetch_registers = i386_linux_fetch_inferior_registers;
+  t->to_store_registers = i386_linux_store_inferior_registers;
+
+  /* Register the target.  */
+  add_target (t);
 }

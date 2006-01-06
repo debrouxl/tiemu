@@ -76,8 +76,13 @@ AC_DEFUN([GCC_TOPLEV_SUBDIRS],
 AC_REQUIRE([_GCC_TOPLEV_NONCANONICAL_BUILD]) []dnl
 # Prefix 'build-' so this never conflicts with target_subdir.
 build_subdir="build-${build_noncanonical}"
-# Not really a subdirectory, but here for completeness.
-host_subdir=.
+# --srcdir=. covers the toplevel, while "test -d" covers the subdirectories
+if ( test $srcdir = . && test -d gcc ) \
+   || test -d $srcdir/../host-${host_noncanonical}; then
+  host_subdir="host-${host_noncanonical}"
+else
+  host_subdir=.
+fi
 # No prefix.
 target_subdir=${target_noncanonical}
 AC_SUBST([build_subdir]) []dnl
@@ -98,72 +103,58 @@ test -n "$target_alias" && ncn_target_tool_prefix=$target_alias-
 ]) []dnl # _NCN_TOOL_PREFIXES
 
 ####
-# NCN_CHECK_TARGET_TOOL(variable, prog-to-check-for,[value-if-not-found],[path])
-# Like AC_CHECK_TOOL, but tries a prefix of the target, not the host.
-# Code is pretty much lifted from autoconf2.53.
+# NCN_STRICT_CHECK_TOOLS(variable, progs-to-check-for,[value-if-not-found],[path])
+# Like plain AC_CHECK_TOOLS, but require prefix if build!=target.
 
-AC_DEFUN([NCN_CHECK_TARGET_TOOL],
+AC_DEFUN([NCN_STRICT_CHECK_TOOLS],
 [AC_REQUIRE([_NCN_TOOL_PREFIXES]) []dnl
-if test -n "$ncn_target_tool_prefix"; then
-  AC_CHECK_PROG([$1], [${ncn_target_tool_prefix}$2], 
-                [${ncn_target_tool_prefix}$2], , [$4])
-fi
+for ncn_progname in $2; do
+  if test -n "$ncn_tool_prefix"; then
+    AC_CHECK_PROG([$1], [${ncn_tool_prefix}${ncn_progname}], 
+                  [${ncn_tool_prefix}${ncn_progname}], , [$4])
+  fi
+  if test -z "$ac_cv_prog_$1" && test $build = $host ; then
+    AC_CHECK_PROG([$1], [${ncn_progname}], [${ncn_progname}], , [$4]) 
+  fi
+  test -n "$ac_cv_prog_$1" && break
+done
+
 if test -z "$ac_cv_prog_$1" ; then
-  ncn_cv_$1=$$1
-  AC_CHECK_PROG([ncn_cv_$1], [$2], [$2], [$3], [$4])
-  $1=$ncn_cv_$1
-else
-  $1="$ac_cv_prog_$1"
-fi
-]) []dnl # NCN_CHECK_TARGET_TOOL
-
-
-####
-# NCN_STRICT_CHECK_TOOL(variable, prog-to-check-for,[value-if-not-found],[path])
-# Like AC_CHECK_TOOL, but requires the prefix if build!=host.
-
-AC_DEFUN([NCN_STRICT_CHECK_TOOL],
-[AC_REQUIRE([_NCN_TOOL_PREFIXES]) []dnl
-if test -n "$ncn_tool_prefix"; then
-  AC_CHECK_PROG([$1], [${ncn_tool_prefix}$2], 
-                [${ncn_tool_prefix}$2], , [$4])
-fi
-if test -z "$ac_cv_prog_$1" ; then
+  ifelse([$3],[], [set dummy $2
   if test $build = $host ; then
-    ncn_cv_$1=$$1
-    AC_CHECK_PROG([ncn_cv_$1], [$2], [$2], [ifelse([$3],[],[$2],[$3])], [$4]) 
-    $1=$ncn_cv_$1
+    $1="[$]2"
   else
-    $1="ifelse([$3],[],[${ncn_tool_prefix}$2],[$3])"
-  fi
-else
-  $1="$ac_cv_prog_$1"
+    $1="${ncn_tool_prefix}[$]2"
+  fi], [$1="$3"])
 fi
-]) []dnl # NCN_STRICT_CHECK_TOOL
-
+]) []dnl # NCN_STRICT_CHECK_TOOLS
 
 ####
-# NCN_STRICT_CHECK_TARGET_TOOL(variable, prog-to-check-for,[value-if-not-found],[path])
-# Like NCN_CHECK_TARGET_TOOL, but requires the prefix if build!=target.
+# NCN_STRICT_CHECK_TARGET_TOOLS(variable, progs-to-check-for,[value-if-not-found],[path])
+# Like CVS Autoconf AC_CHECK_TARGET_TOOLS, but require prefix if build!=target.
 
-AC_DEFUN([NCN_STRICT_CHECK_TARGET_TOOL],
+AC_DEFUN([NCN_STRICT_CHECK_TARGET_TOOLS],
 [AC_REQUIRE([_NCN_TOOL_PREFIXES]) []dnl
-if test -n "$ncn_target_tool_prefix"; then
-  AC_CHECK_PROG([$1], [${ncn_target_tool_prefix}$2], 
-                [${ncn_target_tool_prefix}$2], , [$4])
-fi
-if test -z "$ac_cv_prog_$1" ; then
-  if test $build = $target ; then
-    ncn_cv_$1=$$1
-    AC_CHECK_PROG([ncn_cv_$1], [$2], [$2], [ifelse([$3],[],[$2],[$3])], [$4]) 
-    $1=$ncn_cv_$1
-  else
-    $1="ifelse([$3],[],[${ncn_target_tool_prefix}$2],[$3])"
+for ncn_progname in $2; do
+  if test -n "$ncn_target_tool_prefix"; then
+    AC_CHECK_PROG([$1], [${ncn_target_tool_prefix}${ncn_progname}], 
+                  [${ncn_target_tool_prefix}${ncn_progname}], , [$4])
   fi
-else
-  $1="$ac_cv_prog_$1"
+  if test -z "$ac_cv_prog_$1" && test $build = $target ; then
+    AC_CHECK_PROG([$1], [${ncn_progname}], [${ncn_progname}], , [$4]) 
+  fi
+  test -n "$ac_cv_prog_$1" && break
+done
+
+if test -z "$ac_cv_prog_$1" ; then
+  ifelse([$3],[], [set dummy $2
+  if test $build = $target ; then
+    $1="[$]2"
+  else
+    $1="${ncn_target_tool_prefix}[$]2"
+  fi], [$1="$3"])
 fi
-]) []dnl # NCN_STRICT_CHECK_TARGET_TOOL
+]) []dnl # NCN_STRICT_CHECK_TARGET_TOOLS
 
 ###
 # AC_PROG_CPP_WERROR
@@ -207,7 +198,6 @@ acx_cv_cc_gcc_supports_ada=no
 errors=`(${CC} -c conftest.adb) 2>&1 || echo failure`
 if test x"$errors" = x && test -f conftest.$ac_objext; then
   acx_cv_cc_gcc_supports_ada=yes
-  break
 fi
 rm -f conftest.*])
 

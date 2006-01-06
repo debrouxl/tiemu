@@ -1,6 +1,7 @@
 /* Ada language support definitions for GDB, the GNU debugger.
-   Copyright 1992, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004
-   Free Software Foundation, Inc.
+
+   Copyright 1992, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
+   2005 Free Software Foundation, Inc.
 
 This file is part of GDB.
 
@@ -32,7 +33,7 @@ struct frame_info;
    system and that might consider (confusing) debugging information.
    Each name (a basic regular expression string) is followed by a
    comma.  FIXME: Should be part of a configuration file. */
-#if defined(__alpha__) && defined(__osf__) && !defined(VXWORKS_TARGET)
+#if defined(__alpha__) && defined(__osf__)
 #define ADA_KNOWN_RUNTIME_FILE_NAME_PATTERNS \
    "^[agis]-.*\\.ad[bs]$", \
    "/usr/shlib/libpthread\\.so",
@@ -171,9 +172,9 @@ extern struct task_entry *task_list;
    least M objects, updating V and S as necessary. */
 
 #define GROW_VECT(v, s, m)                                              \
-   if ((s) < (m)) grow_vect ((void**) &(v), &(s), (m), sizeof(*(v)));
+   if ((s) < (m)) (v) = grow_vect (v, &(s), m, sizeof *(v));
 
-extern void grow_vect (void **, size_t *, size_t, int);
+extern void *grow_vect (void *, size_t *, size_t, int);
 
 extern int ada_get_field_index (const struct type *type,
                                 const char *field_name,
@@ -187,7 +188,7 @@ extern void ada_error (char *); /* Defined in ada-exp.y */
 extern void ada_print_type (struct type *, char *, struct ui_file *, int,
                             int);
 
-extern int ada_val_print (struct type *, char *, int, CORE_ADDR,
+extern int ada_val_print (struct type *, const gdb_byte *, int, CORE_ADDR,
                           struct ui_file *, int, int, int,
                           enum val_prettyprint);
 
@@ -196,14 +197,16 @@ extern int ada_value_print (struct value *, struct ui_file *, int,
 
                                 /* Defined in ada-lang.c */
 
-extern struct value *value_from_contents_and_address (struct type *, char *,
+extern struct value *value_from_contents_and_address (struct type *,
+						      const gdb_byte *,
                                                       CORE_ADDR);
 
 extern void ada_emit_char (int, struct ui_file *, int, int);
 
 extern void ada_printchar (int, struct ui_file *);
 
-extern void ada_printstr (struct ui_file *, char *, unsigned int, int, int);
+extern void ada_printstr (struct ui_file *, const gdb_byte *,
+			  unsigned int, int, int);
 
 extern void ada_convert_actuals (struct value *, int, struct value **,
                                  CORE_ADDR *);
@@ -275,7 +278,8 @@ extern int ada_is_ignored_field (struct type *, int);
 
 extern int ada_is_packed_array_type (struct type *);
 
-extern struct value *ada_value_primitive_packed_val (struct value *, char *,
+extern struct value *ada_value_primitive_packed_val (struct value *,
+						     const gdb_byte *,
                                                      long, int, int,
                                                      struct type *);
 
@@ -315,7 +319,8 @@ extern int ada_is_aligner_type (struct type *);
 
 extern struct type *ada_aligned_type (struct type *);
 
-extern char *ada_aligned_value_addr (struct type *, char *);
+extern const gdb_byte *ada_aligned_value_addr (struct type *,
+					       const gdb_byte *);
 
 extern const char *ada_attribute_name (enum exp_opcode);
 
@@ -337,15 +342,17 @@ extern struct value *ada_vax_float_print_function (struct type *);
 
 extern struct type *ada_system_address_type (void);
 
-extern int ada_which_variant_applies (struct type *, struct type *, char *);
+extern int ada_which_variant_applies (struct type *, struct type *,
+				      const gdb_byte *);
 
-extern struct type *ada_to_fixed_type (struct type *, char *, CORE_ADDR,
-                                       struct value *);
+extern struct type *ada_to_fixed_type (struct type *, const gdb_byte *,
+				       CORE_ADDR, struct value *);
 
-extern struct type *
-  ada_template_to_fixed_record_type_1 (struct type *type, char *valaddr,
-                                       CORE_ADDR address, struct value *dval0,
-                                       int keep_dynamic_fields);
+extern struct type *ada_template_to_fixed_record_type_1 (struct type *type,
+							 const gdb_byte *valaddr,
+							 CORE_ADDR address,
+							 struct value *dval0,
+							 int keep_dynamic_fields);
 
 extern int ada_name_prefix_len (const char *);
 

@@ -39,9 +39,9 @@ extern struct gdbarch *get_regcache_arch (const struct regcache *regcache);
 /* Transfer a raw register [0..NUM_REGS) between core-gdb and the
    regcache. */
 
-void regcache_raw_read (struct regcache *regcache, int rawnum, void *buf);
+void regcache_raw_read (struct regcache *regcache, int rawnum, gdb_byte *buf);
 void regcache_raw_write (struct regcache *regcache, int rawnum,
-			 const void *buf);
+			 const gdb_byte *buf);
 extern void regcache_raw_read_signed (struct regcache *regcache,
 				      int regnum, LONGEST *val);
 extern void regcache_raw_read_unsigned (struct regcache *regcache,
@@ -55,16 +55,17 @@ extern void regcache_raw_write_unsigned (struct regcache *regcache,
    write style operations.  */
 
 void regcache_raw_read_part (struct regcache *regcache, int regnum,
-			     int offset, int len, void *buf);
+			     int offset, int len, gdb_byte *buf);
 void regcache_raw_write_part (struct regcache *regcache, int regnum,
-			      int offset, int len, const void *buf);
+			      int offset, int len, const gdb_byte *buf);
 
 int regcache_valid_p (struct regcache *regcache, int regnum);
 
 /* Transfer a cooked register [0..NUM_REGS+NUM_PSEUDO_REGS).  */
-void regcache_cooked_read (struct regcache *regcache, int rawnum, void *buf);
+void regcache_cooked_read (struct regcache *regcache, int rawnum,
+			   gdb_byte *buf);
 void regcache_cooked_write (struct regcache *regcache, int rawnum,
-			    const void *buf);
+			    const gdb_byte *buf);
 
 /* NOTE: cagney/2002-08-13: At present GDB has no reliable mechanism
    for indicating when a ``cooked'' register was constructed from
@@ -88,9 +89,9 @@ extern void regcache_cooked_write_unsigned (struct regcache *regcache,
    write style operations.  */
 
 void regcache_cooked_read_part (struct regcache *regcache, int regnum,
-				int offset, int len, void *buf);
+				int offset, int len, gdb_byte *buf);
 void regcache_cooked_write_part (struct regcache *regcache, int regnum,
-				 int offset, int len, const void *buf);
+				 int offset, int len, const gdb_byte *buf);
 
 /* Transfer a raw register [0..NUM_REGS) between the regcache and the
    target.  These functions are called by the target in response to a
@@ -136,14 +137,15 @@ extern int register_size (struct gdbarch *gdbarch, int regnum);
    restore_reggroup respectively.  COOKED_READ returns zero iff the
    register's value can't be returned.  */
 
-typedef int (regcache_cooked_read_ftype) (void *src, int regnum, void *buf);
+typedef int (regcache_cooked_read_ftype) (void *src, int regnum,
+					  gdb_byte *buf);
 
 extern void regcache_save (struct regcache *dst,
 			   regcache_cooked_read_ftype *cooked_read,
-			   void *src);
+			   void *cooked_read_context);
 extern void regcache_restore (struct regcache *dst,
 			      regcache_cooked_read_ftype *cooked_read,
-			      void *src);
+			      void *cooked_read_context);
 
 /* Copy/duplicate the contents of a register cache.  By default, the
    operation is pass-through.  Writes to DST and reads from SRC will
@@ -173,36 +175,15 @@ extern void regcache_cpy_no_passthrough (struct regcache *dest, struct regcache 
    method, there should already be a non-deprecated variant that is
    parameterized with FRAME or REGCACHE.  */
 
-extern char *deprecated_grub_regcache_for_registers (struct regcache *);
-extern void deprecated_read_register_gen (int regnum, char *myaddr);
-extern void deprecated_write_register_gen (int regnum, char *myaddr);
-extern void deprecated_read_register_bytes (int regbyte, char *myaddr,
+extern gdb_byte *deprecated_grub_regcache_for_registers (struct regcache *);
+extern void deprecated_read_register_gen (int regnum, gdb_byte *myaddr);
+extern void deprecated_write_register_gen (int regnum, gdb_byte *myaddr);
+extern void deprecated_read_register_bytes (int regbyte, gdb_byte *myaddr,
 					    int len);
-extern void deprecated_write_register_bytes (int regbyte, char *myaddr,
+extern void deprecated_write_register_bytes (int regbyte, gdb_byte *myaddr,
 					     int len);
 
-/* Character array containing the current state of each register
-   (unavailable<0, invalid=0, valid>0) for the most recently
-   referenced thread.  This global is often found in close proximity
-   to code that is directly manipulating the deprecated_registers[]
-   array.  In such cases, it should be possible to replace the lot
-   with a call to regcache_raw_supply().  If you find yourself in dire
-   straits, still needing access to the cache status bit, the
-   regcache_valid_p() and set_register_cached() functions are
-   available.  */
-extern signed char *deprecated_register_valid;
-
-/* Character array containing an image of the inferior programs'
-   registers for the most recently referenced thread.
-
-   NOTE: cagney/2002-11-14: Target side code should be using
-   regcache_raw_supply() and/or regcache_collect() while architecture
-   side code should use the more generic regcache methods.  */
-
-extern char *deprecated_registers;
-
-/* NOTE: cagney/2002-11-05: This function, and its co-conspirator
-   deprecated_registers[], have been superseeded by
+/* NOTE: cagney/2002-11-05: This function has been superseeded by
    regcache_raw_supply().  */
 extern void deprecated_registers_fetched (void);
 

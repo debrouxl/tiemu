@@ -1,6 +1,7 @@
 /* Target-dependent code for Renesas Super-H, for GDB.
-   Copyright 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
-   2003, 2004 Free Software Foundation, Inc.
+
+   Copyright 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
+   2002, 2003, 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -876,12 +877,12 @@ sh_justify_value_in_reg (struct value *val, int len)
     {
       /* value gets right-justified in the register or stack word */
       if (TARGET_BYTE_ORDER == BFD_ENDIAN_BIG)
-	memcpy (valbuf + (4 - len), (char *) VALUE_CONTENTS (val), len);
+	memcpy (valbuf + (4 - len), (char *) value_contents (val), len);
       else
-	memcpy (valbuf, (char *) VALUE_CONTENTS (val), len);
+	memcpy (valbuf, (char *) value_contents (val), len);
       return valbuf;
     }
-  return (char *) VALUE_CONTENTS (val);
+  return (char *) value_contents (val);
 }
 
 /* Helper function to eval number of bytes to allocate on stack. */
@@ -890,7 +891,7 @@ sh_stack_allocsize (int nargs, struct value **args)
 {
   int stack_alloc = 0;
   while (nargs-- > 0)
-    stack_alloc += ((TYPE_LENGTH (VALUE_TYPE (args[nargs])) + 3) & ~3);
+    stack_alloc += ((TYPE_LENGTH (value_type (args[nargs])) + 3) & ~3);
   return stack_alloc;
 }
 
@@ -1045,7 +1046,7 @@ sh_push_dummy_call_fpu (struct gdbarch *gdbarch,
      in four registers available.  Loop thru args from first to last.  */
   for (argnum = 0; argnum < nargs; argnum++)
     {
-      type = VALUE_TYPE (args[argnum]);
+      type = value_type (args[argnum]);
       len = TYPE_LENGTH (type);
       val = sh_justify_value_in_reg (args[argnum], len);
 
@@ -1151,7 +1152,7 @@ sh_push_dummy_call_nofpu (struct gdbarch *gdbarch,
      in four registers available.  Loop thru args from first to last.  */
   for (argnum = 0; argnum < nargs; argnum++)
     {
-      type = VALUE_TYPE (args[argnum]);
+      type = value_type (args[argnum]);
       len = TYPE_LENGTH (type);
       val = sh_justify_value_in_reg (args[argnum], len);
 
@@ -1194,8 +1195,8 @@ sh_push_dummy_call_nofpu (struct gdbarch *gdbarch,
    containing the (raw) register state a function return value of type
    TYPE, and copy that, in virtual format, into VALBUF.  */
 static void
-sh_default_extract_return_value (struct type *type, struct regcache *regcache,
-				 void *valbuf)
+sh_extract_return_value_nofpu (struct type *type, struct regcache *regcache,
+			       void *valbuf)
 {
   int len = TYPE_LENGTH (type);
   int return_register = R0_REGNUM;
@@ -1215,12 +1216,12 @@ sh_default_extract_return_value (struct type *type, struct regcache *regcache,
 	regcache_raw_read (regcache, regnum++, (char *) valbuf + i);
     }
   else
-    error ("bad size for return value");
+    error (_("bad size for return value"));
 }
 
 static void
-sh3e_sh4_extract_return_value (struct type *type, struct regcache *regcache,
-			       void *valbuf)
+sh_extract_return_value_fpu (struct type *type, struct regcache *regcache,
+			     void *valbuf)
 {
   if (sh_treat_as_flt_p (type))
     {
@@ -1233,7 +1234,7 @@ sh3e_sh4_extract_return_value (struct type *type, struct regcache *regcache,
 	  regcache_raw_read (regcache, regnum++, (char *) valbuf + i);
     }
   else
-    sh_default_extract_return_value (type, regcache, valbuf);
+    sh_extract_return_value_nofpu (type, regcache, valbuf);
 }
 
 /* Write into appropriate registers a function return value
@@ -1243,8 +1244,8 @@ sh3e_sh4_extract_return_value (struct type *type, struct regcache *regcache,
    depending on the type of the return value. In all the other cases
    the result is stored in r0, left-justified. */
 static void
-sh_default_store_return_value (struct type *type, struct regcache *regcache,
-			       const void *valbuf)
+sh_store_return_value_nofpu (struct type *type, struct regcache *regcache,
+			     const void *valbuf)
 {
   ULONGEST val;
   int len = TYPE_LENGTH (type);
@@ -1263,8 +1264,8 @@ sh_default_store_return_value (struct type *type, struct regcache *regcache,
 }
 
 static void
-sh3e_sh4_store_return_value (struct type *type, struct regcache *regcache,
-			     const void *valbuf)
+sh_store_return_value_fpu (struct type *type, struct regcache *regcache,
+			   const void *valbuf)
 {
   if (sh_treat_as_flt_p (type))
     {
@@ -1278,7 +1279,7 @@ sh3e_sh4_store_return_value (struct type *type, struct regcache *regcache,
 	  regcache_raw_write (regcache, regnum++, (char *) valbuf + i);
     }
   else
-    sh_default_store_return_value (type, regcache, valbuf);
+    sh_store_return_value_nofpu (type, regcache, valbuf);
 }
 
 static enum return_value_convention
@@ -1289,9 +1290,9 @@ sh_return_value_nofpu (struct gdbarch *gdbarch, struct type *type,
   if (sh_use_struct_convention (0, type))
     return RETURN_VALUE_STRUCT_CONVENTION;
   if (writebuf)
-    sh_default_store_return_value (type, regcache, writebuf);
+    sh_store_return_value_nofpu (type, regcache, writebuf);
   else if (readbuf)
-    sh_default_extract_return_value (type, regcache, readbuf);
+    sh_extract_return_value_nofpu (type, regcache, readbuf);
   return RETURN_VALUE_REGISTER_CONVENTION;
 }
 
@@ -1303,9 +1304,9 @@ sh_return_value_fpu (struct gdbarch *gdbarch, struct type *type,
   if (sh_use_struct_convention (0, type))
     return RETURN_VALUE_STRUCT_CONVENTION;
   if (writebuf)
-    sh3e_sh4_store_return_value (type, regcache, writebuf);
+    sh_store_return_value_fpu (type, regcache, writebuf);
   else if (readbuf)
-    sh3e_sh4_extract_return_value (type, regcache, readbuf);
+    sh_extract_return_value_fpu (type, regcache, readbuf);
   return RETURN_VALUE_REGISTER_CONVENTION;
 }
 
@@ -1864,7 +1865,7 @@ sh_register_convert_to_raw (struct type *type, int regnum,
 				 &val, to);
     }
   else
-    error ("sh_register_convert_to_raw called with non DR register number");
+    error (_("sh_register_convert_to_raw called with non DR register number"));
 }
 
 /* For vectors of 4 floating point registers. */
@@ -2012,7 +2013,7 @@ sh_print_pseudo_register (struct gdbarch *gdbarch, struct ui_file *file,
 {
   if (regnum < NUM_REGS || regnum >= NUM_REGS + NUM_PSEUDO_REGS)
     internal_error (__FILE__, __LINE__,
-		    "Invalid pseudo register number %d\n", regnum);
+		    _("Invalid pseudo register number %d\n"), regnum);
   else if (regnum == PSEUDO_BANK_REGNUM)
     do_bank_register_info (gdbarch, file);
   else if (regnum >= DR0_REGNUM && regnum <= DR_LAST_REGNUM)
@@ -2033,8 +2034,8 @@ sh_do_fp_register (struct gdbarch *gdbarch, struct ui_file *file, int regnum)
   raw_buffer = (char *) alloca (register_size (gdbarch, FP0_REGNUM));
 
   /* Get the data in raw format.  */
-  if (!frame_register_read (get_selected_frame (), regnum, raw_buffer))
-    error ("can't read register %d (%s)", regnum, REGISTER_NAME (regnum));
+  if (!frame_register_read (get_selected_frame (NULL), regnum, raw_buffer))
+    error (_("can't read register %d (%s)"), regnum, REGISTER_NAME (regnum));
 
   /* Get the register as a number */
   flt = unpack_double (builtin_type_float, raw_buffer, &inv);
@@ -2071,7 +2072,7 @@ sh_do_register (struct gdbarch *gdbarch, struct ui_file *file, int regnum)
   print_spaces_filtered (15 - strlen (REGISTER_NAME (regnum)), file);
 
   /* Get the data in raw format.  */
-  if (!frame_register_read (get_selected_frame (), regnum, raw_buffer))
+  if (!frame_register_read (get_selected_frame (NULL), regnum, raw_buffer))
     fprintf_filtered (file, "*value not available*\n");
 
   val_print (gdbarch_register_type (gdbarch, regnum), raw_buffer, 0, 0,
@@ -2087,7 +2088,7 @@ sh_print_register (struct gdbarch *gdbarch, struct ui_file *file, int regnum)
 {
   if (regnum < 0 || regnum >= NUM_REGS + NUM_PSEUDO_REGS)
     internal_error (__FILE__, __LINE__,
-		    "Invalid register number %d\n", regnum);
+		    _("Invalid register number %d\n"), regnum);
 
   else if (regnum >= 0 && regnum < NUM_REGS)
     {
@@ -2111,7 +2112,7 @@ sh_print_registers_info (struct gdbarch *gdbarch, struct ui_file *file,
   if (regnum != -1)		/* do one specified register */
     {
       if (*(REGISTER_NAME (regnum)) == '\0')
-	error ("Not a valid register for the current processor type");
+	error (_("Not a valid register for the current processor type"));
 
       sh_print_register (gdbarch, file, regnum);
     }
@@ -2149,47 +2150,6 @@ sh_print_registers_info (struct gdbarch *gdbarch, struct ui_file *file,
 	    regnum++;
 	  }
     }
-}
-
-/* Fetch (and possibly build) an appropriate link_map_offsets structure
-   for native i386 linux targets using the struct offsets defined in
-   link.h (but without actual reference to that file).
-
-   This makes it possible to access i386-linux shared libraries from
-   a gdb that was not built on an i386-linux host (for cross debugging).
-   */
-
-struct link_map_offsets *
-sh_linux_svr4_fetch_link_map_offsets (void)
-{
-  static struct link_map_offsets lmo;
-  static struct link_map_offsets *lmp = 0;
-
-  if (lmp == 0)
-    {
-      lmp = &lmo;
-
-      lmo.r_debug_size = 8;	/* 20 not actual size but all we need */
-
-      lmo.r_map_offset = 4;
-      lmo.r_map_size = 4;
-
-      lmo.link_map_size = 20;	/* 552 not actual size but all we need */
-
-      lmo.l_addr_offset = 0;
-      lmo.l_addr_size = 4;
-
-      lmo.l_name_offset = 4;
-      lmo.l_name_size = 4;
-
-      lmo.l_next_offset = 12;
-      lmo.l_next_size = 4;
-
-      lmo.l_prev_offset = 16;
-      lmo.l_prev_size = 4;
-    }
-
-  return lmp;
 }
 
 static int
@@ -2363,8 +2323,12 @@ sh_frame_prev_register (struct frame_info *next_frame, void **this_cache,
       return;
     }
 
-  frame_register_unwind (next_frame, regnum,
-			 optimizedp, lvalp, addrp, realnump, valuep);
+  *optimizedp = 0;
+  *lvalp = lval_register;
+  *addrp = 0;
+  *realnump = regnum;
+  if (valuep)
+    frame_unwind_register (next_frame, (*realnump), valuep);
 }
 
 static void
@@ -2508,8 +2472,7 @@ sh_in_function_epilogue_p (struct gdbarch *gdbarch, CORE_ADDR pc)
     }
   return 0;
 }
-
-static gdbarch_init_ftype sh_gdbarch_init;
+
 
 static struct gdbarch *
 sh_gdbarch_init (struct gdbarch_info info, struct gdbarch_list *arches)
@@ -2555,12 +2518,10 @@ sh_gdbarch_init (struct gdbarch_info info, struct gdbarch_list *arches)
       sh_show_regs = sh4_nofpu_show_regs;
       break;
 
-#if 0
     case bfd_mach_sh5:
       sh_show_regs = sh64_show_regs;
       /* SH5 is handled entirely in sh64-tdep.c */
       return sh64_gdbarch_init (info, arches);
-#endif
     }
 
   /* If there is already a candidate, use it.  */
@@ -2730,5 +2691,5 @@ _initialize_sh_tdep (void)
 
   gdbarch_register (bfd_arch_sh, sh_gdbarch_init, NULL);
 
-  add_com ("regs", class_vars, sh_show_regs_command, "Print all registers");
+  add_com ("regs", class_vars, sh_show_regs_command, _("Print all registers"));
 }

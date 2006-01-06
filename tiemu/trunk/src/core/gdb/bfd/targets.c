@@ -1,6 +1,6 @@
 /* Generic target-file-type support for the BFD library.
    Copyright 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
-   2000, 2001, 2002, 2003, 2004
+   2000, 2001, 2002, 2003, 2004, 2005
    Free Software Foundation, Inc.
    Written by Cygnus Support.
 
@@ -18,12 +18,20 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #include "bfd.h"
 #include "sysdep.h"
 #include "libbfd.h"
 #include "fnmatch.h"
+
+/*
+   It's okay to see some:
+#if 0
+   directives in this source file, as targets.c uses them to exclude
+   certain BFD vectors.  This comment is specially formatted to catch
+   users who grep for ^#if 0, so please keep it this way!
+*/
 
 /*
 SECTION
@@ -201,7 +209,7 @@ DESCRIPTION
 .  unsigned short ar_max_namelen;
 .
 .  {* Entries for byte swapping for data. These are different from the
-.     other entry points, since they don't take a BFD asthe first argument.
+.     other entry points, since they don't take a BFD as the first argument.
 .     Certain other handlers could do the same.  *}
 .  bfd_uint64_t   (*bfd_getx64) (const void *);
 .  bfd_int64_t    (*bfd_getx_signed_64) (const void *);
@@ -263,6 +271,7 @@ BFD_JUMP_TABLE macros.
 .#define BFD_JUMP_TABLE_COPY(NAME) \
 .  NAME##_bfd_copy_private_bfd_data, \
 .  NAME##_bfd_merge_private_bfd_data, \
+.  _bfd_generic_init_private_section_data, \
 .  NAME##_bfd_copy_private_section_data, \
 .  NAME##_bfd_copy_private_symbol_data, \
 .  NAME##_bfd_copy_private_header_data, \
@@ -275,6 +284,12 @@ BFD_JUMP_TABLE macros.
 .  {* Called to merge BFD general private data from one object file
 .     to a common output file when linking.  *}
 .  bfd_boolean (*_bfd_merge_private_bfd_data) (bfd *, bfd *);
+.  {* Called to initialize BFD private section data from one object file
+.     to another.  *}
+.#define bfd_init_private_section_data(ibfd, isec, obfd, osec, link_info) \
+.  BFD_SEND (obfd, _bfd_init_private_section_data, (ibfd, isec, obfd, osec, link_info))
+.  bfd_boolean (*_bfd_init_private_section_data)
+.    (bfd *, sec_ptr, bfd *, sec_ptr, struct bfd_link_info *);
 .  {* Called to copy BFD private section data from one object file
 .     to another.  *}
 .  bfd_boolean (*_bfd_copy_private_section_data)
@@ -341,6 +356,8 @@ BFD_JUMP_TABLE macros.
 .  NAME##_bfd_is_target_special_symbol, \
 .  NAME##_get_lineno, \
 .  NAME##_find_nearest_line, \
+.  _bfd_generic_find_line, \
+.  NAME##_find_inliner_info, \
 .  NAME##_bfd_make_debug_symbol, \
 .  NAME##_read_minisymbols, \
 .  NAME##_minisymbol_to_symbol
@@ -362,6 +379,11 @@ BFD_JUMP_TABLE macros.
 .  bfd_boolean (*_bfd_find_nearest_line)
 .    (bfd *, struct bfd_section *, struct bfd_symbol **, bfd_vma,
 .     const char **, const char **, unsigned int *);
+.  bfd_boolean (*_bfd_find_line)
+.    (bfd *, struct bfd_symbol **, struct bfd_symbol *,
+.     const char **, unsigned int *);
+.  bfd_boolean (*_bfd_find_inliner_info)
+.    (bfd *, const char **, const char **, unsigned int *);
 . {* Back-door to allow format-aware applications to create debug symbols
 .    while using BFD for everything else.  Currently used by the assembler
 .    when creating COFF files.  *}
@@ -412,6 +434,7 @@ BFD_JUMP_TABLE macros.
 .  NAME##_bfd_link_split_section, \
 .  NAME##_bfd_gc_sections, \
 .  NAME##_bfd_merge_sections, \
+.  _bfd_generic_match_sections_by_type, \
 .  NAME##_bfd_is_group_section, \
 .  NAME##_bfd_discard_group, \
 .  NAME##_section_already_linked \
@@ -450,6 +473,12 @@ BFD_JUMP_TABLE macros.
 .
 .  {* Attempt to merge SEC_MERGE sections.  *}
 .  bfd_boolean (*_bfd_merge_sections) (bfd *, struct bfd_link_info *);
+.
+.#define bfd_match_sections_by_type(abfd, asec, bbfd, bsec) \
+.  BFD_SEND (abfd, _bfd_match_sections_by_type, (abfd, asec, bbfd, bsec))
+.  {* Return TRUE if 2 section types are compatible.  *}
+.  bfd_boolean (*_bfd_match_sections_by_type)
+.    (bfd *, const asection *, bfd *, const asection *);
 .
 .  {* Is this section a member of a group?  *}
 .  bfd_boolean (*_bfd_is_group_section) (bfd *, const struct bfd_section *);
@@ -507,7 +536,6 @@ to find an alternative output format that is suitable.
    Alphabetized for easy reference.
    They are listed a second time below, since
    we can't intermix extern's and initializers.  */
-extern const bfd_target a29kcoff_big_vec;
 extern const bfd_target a_out_adobe_vec;
 extern const bfd_target aix5coff64_vec;
 extern const bfd_target aout0_big_vec;
@@ -532,11 +560,12 @@ extern const bfd_target b_out_vec_little_host;
 extern const bfd_target bfd_efi_app_ia32_vec;
 extern const bfd_target bfd_efi_app_ia64_vec;
 extern const bfd_target bfd_elf32_avr_vec;
+extern const bfd_target bfd_elf32_bfin_vec;
 extern const bfd_target bfd_elf32_big_generic_vec;
 extern const bfd_target bfd_elf32_bigarc_vec;
-extern const bfd_target bfd_elf32_bigarm_oabi_vec;
 extern const bfd_target bfd_elf32_bigarm_vec;
 extern const bfd_target bfd_elf32_bigarm_symbian_vec;
+extern const bfd_target bfd_elf32_bigarm_vxworks_vec;
 extern const bfd_target bfd_elf32_bigmips_vec;
 extern const bfd_target bfd_elf32_cr16c_vec;
 extern const bfd_target bfd_elf32_cris_vec;
@@ -553,6 +582,7 @@ extern const bfd_target bfd_elf32_hppa_nbsd_vec;
 extern const bfd_target bfd_elf32_hppa_vec;
 extern const bfd_target bfd_elf32_i370_vec;
 extern const bfd_target bfd_elf32_i386_freebsd_vec;
+extern const bfd_target bfd_elf32_i386_vxworks_vec;
 extern const bfd_target bfd_elf32_i386_vec;
 extern const bfd_target bfd_elf32_i860_little_vec;
 extern const bfd_target bfd_elf32_i860_vec;
@@ -563,10 +593,11 @@ extern const bfd_target bfd_elf32_ip2k_vec;
 extern const bfd_target bfd_elf32_iq2000_vec;
 extern const bfd_target bfd_elf32_little_generic_vec;
 extern const bfd_target bfd_elf32_littlearc_vec;
-extern const bfd_target bfd_elf32_littlearm_oabi_vec;
 extern const bfd_target bfd_elf32_littlearm_vec;
 extern const bfd_target bfd_elf32_littlearm_symbian_vec;
+extern const bfd_target bfd_elf32_littlearm_vxworks_vec;
 extern const bfd_target bfd_elf32_littlemips_vec;
+extern const bfd_target bfd_elf32_m32c_vec;
 extern const bfd_target bfd_elf32_m32r_vec;
 extern const bfd_target bfd_elf32_m32rle_vec;
 extern const bfd_target bfd_elf32_m32rlin_vec;
@@ -579,6 +610,7 @@ extern const bfd_target bfd_elf32_mcore_big_vec;
 extern const bfd_target bfd_elf32_mcore_little_vec;
 extern const bfd_target bfd_elf32_mn10200_vec;
 extern const bfd_target bfd_elf32_mn10300_vec;
+extern const bfd_target bfd_elf32_ms1_vec;
 extern const bfd_target bfd_elf32_msp430_vec;
 extern const bfd_target bfd_elf32_nbigmips_vec;
 extern const bfd_target bfd_elf32_nlittlemips_vec;
@@ -590,6 +622,7 @@ extern const bfd_target bfd_elf32_pj_vec;
 extern const bfd_target bfd_elf32_pjl_vec;
 extern const bfd_target bfd_elf32_powerpc_vec;
 extern const bfd_target bfd_elf32_powerpcle_vec;
+extern const bfd_target bfd_elf32_powerpc_vxworks_vec;
 extern const bfd_target bfd_elf32_s390_vec;
 extern const bfd_target bfd_elf32_sh64_vec;
 extern const bfd_target bfd_elf32_sh64l_vec;
@@ -679,8 +712,6 @@ extern const bfd_target m68kaux_coff_vec;
 extern const bfd_target m68kcoff_vec;
 extern const bfd_target m68kcoffun_vec;
 extern const bfd_target m68klinux_vec;
-extern const bfd_target m68klynx_aout_vec;
-extern const bfd_target m68klynx_coff_vec;
 extern const bfd_target m68knetbsd_vec;
 extern const bfd_target m68ksysvcoff_vec;
 extern const bfd_target m88kbcs_vec;
@@ -689,6 +720,7 @@ extern const bfd_target m88kopenbsd_vec;
 extern const bfd_target mach_o_be_vec;
 extern const bfd_target mach_o_le_vec;
 extern const bfd_target mach_o_fat_vec;
+extern const bfd_target maxqcoff_vec;
 extern const bfd_target mcore_pe_big_vec;
 extern const bfd_target mcore_pe_little_vec;
 extern const bfd_target mcore_pei_big_vec;
@@ -750,6 +782,7 @@ extern const bfd_target vms_alpha_vec;
 extern const bfd_target vms_vax_vec;
 extern const bfd_target w65_vec;
 extern const bfd_target we32kcoff_vec;
+extern const bfd_target z80coff_vec;
 extern const bfd_target z8kcoff_vec;
 
 /* These are always included.  */
@@ -790,7 +823,6 @@ static const bfd_target * const _bfd_target_vector[] = {
 	   Vectors that don't compile on all systems, or aren't finished,
 	   should have an entry here with #if 0 around it, to show that
 	   it wasn't omitted by mistake.  */
-	&a29kcoff_big_vec,
 	&a_out_adobe_vec,
 #ifdef BFD64
 	&aix5coff64_vec,
@@ -825,6 +857,7 @@ static const bfd_target * const _bfd_target_vector[] = {
 	&bfd_efi_app_ia64_vec,
 #endif
 	&bfd_elf32_avr_vec,
+	&bfd_elf32_bfin_vec,
 
 	/* This, and other vectors, may not be used in any *.mt configuration.
 	   But that does not mean they are unnecessary.  If configured with
@@ -832,9 +865,9 @@ static const bfd_target * const _bfd_target_vector[] = {
 	   the file even if we don't recognize the machine type.  */
 	&bfd_elf32_big_generic_vec,
 	&bfd_elf32_bigarc_vec,
-	&bfd_elf32_bigarm_oabi_vec,
 	&bfd_elf32_bigarm_vec,
 	&bfd_elf32_bigarm_symbian_vec,
+	&bfd_elf32_bigarm_vxworks_vec,
 	&bfd_elf32_bigmips_vec,
 	&bfd_elf32_cr16c_vec,
 	&bfd_elf32_cris_vec,
@@ -851,6 +884,7 @@ static const bfd_target * const _bfd_target_vector[] = {
 	&bfd_elf32_hppa_vec,
 	&bfd_elf32_i370_vec,
 	&bfd_elf32_i386_freebsd_vec,
+	&bfd_elf32_i386_vxworks_vec,
 	&bfd_elf32_i386_vec,
 	&bfd_elf32_i860_little_vec,
 	&bfd_elf32_i860_vec,
@@ -858,15 +892,18 @@ static const bfd_target * const _bfd_target_vector[] = {
 #if 0
 	&bfd_elf32_ia64_big_vec,
 #endif
+#ifdef BFD64
 	&bfd_elf32_ia64_hpux_big_vec,
+#endif
 	&bfd_elf32_ip2k_vec,
 	&bfd_elf32_iq2000_vec,
 	&bfd_elf32_little_generic_vec,
 	&bfd_elf32_littlearc_vec,
-	&bfd_elf32_littlearm_oabi_vec,
 	&bfd_elf32_littlearm_vec,
 	&bfd_elf32_littlearm_symbian_vec,
+	&bfd_elf32_littlearm_vxworks_vec,
 	&bfd_elf32_littlemips_vec,
+	&bfd_elf32_m32c_vec,
 	&bfd_elf32_m32r_vec,
         &bfd_elf32_m32rle_vec,
         &bfd_elf32_m32rlin_vec,
@@ -879,6 +916,7 @@ static const bfd_target * const _bfd_target_vector[] = {
 	&bfd_elf32_mcore_little_vec,
 	&bfd_elf32_mn10200_vec,
 	&bfd_elf32_mn10300_vec,
+	&bfd_elf32_ms1_vec,
 	&bfd_elf32_msp430_vec,
 #ifdef BFD64
 	&bfd_elf32_nbigmips_vec,
@@ -891,6 +929,7 @@ static const bfd_target * const _bfd_target_vector[] = {
 	&bfd_elf32_pj_vec,
 	&bfd_elf32_pjl_vec,
 	&bfd_elf32_powerpc_vec,
+	&bfd_elf32_powerpc_vxworks_vec,
 	&bfd_elf32_powerpcle_vec,
 	&bfd_elf32_s390_vec,
         &bfd_elf32_sh_vec,
@@ -1009,8 +1048,6 @@ static const bfd_target * const _bfd_target_vector[] = {
 	   which kind of a.out file it is.  */
 	&m68klinux_vec,
 #endif
-	&m68klynx_aout_vec,
-	&m68klynx_coff_vec,
 	&m68knetbsd_vec,
 	&m68ksysvcoff_vec,
 	&m88kbcs_vec,
@@ -1019,6 +1056,7 @@ static const bfd_target * const _bfd_target_vector[] = {
 	&mach_o_be_vec,
 	&mach_o_le_vec,
 	&mach_o_fat_vec,
+	&maxqcoff_vec,
 	&mcore_pe_big_vec,
 	&mcore_pe_little_vec,
 	&mcore_pei_big_vec,
@@ -1097,6 +1135,7 @@ static const bfd_target * const _bfd_target_vector[] = {
 	&vms_vax_vec,
 	&w65_vec,
 	&we32kcoff_vec,
+	&z80coff_vec,
 	&z8kcoff_vec,
 	&bfd_elf32_am33lin_vec,
 #endif /* not SELECT_VECS */

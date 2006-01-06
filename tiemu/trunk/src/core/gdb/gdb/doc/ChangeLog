@@ -1,3 +1,464 @@
+2005-11-23  Wu Zhou  <woodzltc@cn.ibm.com>
+
+	* gdb.texinfo (Fortran): Add some words about Fortran debugging.
+
+2005-11-16  Andrew Stubbs  <andrew.stubbs@st.com>
+
+	* gdb.texinfo (User-defined commands): Add $argc. Add missing 'end'.
+	Change @var{$arg0 to @code{$arg0.
+
+2005-11-14  Andrew Stubbs  <andrew.stubbs@st.com>
+
+	* gdb.texinfo (Choosing files): Add --eval-command.
+
+2005-11-14  Andrew Stubbs  <andrew.stubbs@st.com>
+
+	* gdb.texinfo (Choosing modes): Add --return-child-result.
+
+2005-11-01  Andrew Stubbs  <andrew.stubbs@st.com>
+
+	* gdb.texinfo (Choosing modes): Add --batch-silent.
+
+2005-10-28  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (GDB/MI Variable Objects): Fix @pxref usage under
+	"The -var-update Command".
+
+2005-10-03  Joel Brobecker  <brobecker@adacore.com>
+
+	* gdb.texinfo (Print Settings): Add documentation for set/show
+	print array-indexes.
+
+2005-09-17  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* gdb.texinfo (Contributors): Thank Andrew Cagney for releases
+	6.2 and 6.3.
+
+2005-08-27  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (File Options): Don't document --mapped, it's gone
+	since 19-Jan-2004.
+	(Files): Likewise.
+	(Variables, Symbols): Document the "<incomplete type>" message and
+	its reasons.
+
+2005-08-01  Fred Fish  <fnf@specifix.com>
+
+	* gdb.texinfo (SETUP_ARBITRARY_FRAME): Remove obsolete reference.
+
+2005-07-15  Nick Roberts  <nickrob@snap.net.nz>
+
+	* gdb.texinfo (GDB/MI Variable Objects): Describe print-values
+	option for -var-list-children and -var-update.
+	(GDB/MI Stack Manipulation): Simplify description of
+	print-values option for -stack-list-locals.
+	(GDB/MI Command Description Format): Clarify.
+	(Mode Options): Spelling of superseded.
+
+2005-07-12  Bob Rossi  <bob@brasko.net>
+
+	* gdb.texinfo (GDB/MI Miscellaneous Commands): Fix -inferior-tty-show
+	corresponding GDB command comment.
+
+2005-07-06  Bob Rossi  <bob@brasko.net>
+
+	* gdb.texinfo (GDB/MI Miscellaneous Commands): Add -inferior-tty-set
+	and -inferior-tty-show.
+	(Input/Output): Document "set/show inferior-tty" and tty alias.
+
+2005-07-02  Nathan J. Williams  <nathanw@wasabisystems.com>
+
+	* gdb.texinfo (Packets): Change description of 'D' packet to note
+	that GDB does wait for a response.
+
+2005-06-22  Nick Roberts  <nickrob@snap.net.nz>
+
+	* gdb.texinfo (History) Rename "Command History".
+	(Command History): Move node "Server Prefix" from section on
+	Annotations here.
+
+2005-06-19  Nick Roberts  <nickrob@snap.net.nz>
+
+	* gdb.texinfo (GDB/MI Stack Manipulation):
+	Re-instate -stack-info-frame with example.  Say that it gets
+	info on selected frame, not current frame.
+
+2005-06-18  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (Server): Clarify that `file' should be used before
+	connecting to the server.
+	(Files): Add an xref to the above description.
+	(Output Formats): More detailed description of the `c' format.
+	(Memory): List explicitly all the formats supported by `x'.
+	(Threads): Add an @cindex entry for "thread apply".
+	(Files): Document the possibility of loading unlinked object
+	files.  Add more indexing for solib-absolute-prefix and
+	--with-sysroot.
+	(Machine Code): Document possible problems with locations in
+	shared libraries.
+	(Backtrace): Document that free-standing environments do not need
+	to have a `main' function.
+
+2005-06-18  Nick Roberts  <nickrob@snap.net.nz>
+
+	* gdb.texinfo (GDB/MI Stack Manipulation): Remove reference to
+	-stack-info-frame.
+
+2005-06-07  Andrew Cagney  <cagney@gnu.org>
+
+	* gdb.texinfo (Contributors): Note the original multi-arch
+	contributors.
+
+2005-06-03  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (Registers): Add index entries for the standard
+	registers.
+	(Frames): Add cross-reference from frame pointer description to
+	the Registers node.
+	(Annotations Overview): Fix the reference to GDB name.
+
+2005-06-01  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (Set Watchpoints): Remove @vindex entry for
+	can-use-hw-watchpoints.
+
+2005-05-28  Bob Rossi  <bob@brasko.net>
+
+	* gdb.texinfo (GDB/MI Out-of-band Records): Add bullet enumerating
+	the possible reasons why an exec async record would be returned to FE.
+
+2005-05-26  Andrew Cagney  <cagney@gnu.org>
+
+	* gdb.texinfo: Note that Elena Zannoni, Fernando Nasser, and
+	Andrew Cagney implemented the original GDB/MI.
+
+2005-05-23  Orjan Friberg  <orjanf@axis.com>
+
+	* gdb.texinfo (CRIS): Update the cris-version and cris-dwarf2-cfi
+	documentation.  Add documentation for cris-mode.
+
+2005-05-20  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (Numbers): Explain the example and make the wording
+	more acurate.
+
+2005-05-17  Daniel Jacobowitz  <dan@codesourcery.com>
+	    Dennis Brueni  <dennis@slickedit.com>
+
+	* gdb.texinfo (GDB/MI Breakpoint Table Commands)
+	(GDB/MI Data Manipulation, GDB/MI Program Control)
+	(GDB/MI Stack Manipulation): Update examples to include the fullname
+	attribute in stack frames.
+
+2005-05-12  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (Startup): Fix last change.  Treat gdb.ini like we
+	do with other non-standard names of init files.
+
+2005-05-11  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (Command Files): Move the description of the startup
+	from here...
+	(Startup): ...to this new subsection of the Invocation chapter.
+	Rearrange the description of init files more logically and add a
+	cross-reference to "Command Files".  Document the special gdbinit
+	name for CISCO 68k.  Expand the description of what GDB does
+	during startup.
+	(History): Add index entry for HISTSIZE.
+
+2005-05-02  Mark Kettenis  <kettenis@gnu.org>
+
+	* gdb.texinfo (Files): Remove documentation for auto-solib-limit.
+
+2005-05-02  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (SVR4 Process Information, The isatty call)
+	(The system call): Don't use foo(N) notation for man pages and
+	functions.
+	(Compilation, DJGPP Native): Improve wording.
+
+2005-04-27  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (Backtrace): Describe backtraces with arguments that
+	were optimized away.
+
+2005-04-22  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (Remote configuration): Document "set/show
+	get-thread-local-storage-address".  Add cross-reference to the
+	description of the qGetTLSAddr packet.
+	(General Query Packets): Mention "set remote
+	get-thread-local-storage-address" and add a reference to its
+	description.
+
+2005-04-19  Nick Roberts  <nickrob@snap.net.nz>
+
+	* gdb.texinfo (Backtrace): Describe 'bt full'.
+
+2005-04-17  Nick Roberts  <nickrob@snap.net.nz>
+
+	* gdb.texinfo (Mode Options): Fix typo.
+	(GDB/MI): Describe how to invoke GDB/MI.
+
+2005-04-16  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (OS Information): Renamed from Auxiliary Vector; all
+	references changed.  Add description of "info udot".
+	(Files): Document "set/show stop-on-solib-events".
+	(M32R/D): Document "set/show download-path", "set/show
+	board-address", "set/show server-address", "upload", "tload".
+	Document "sdireset", "sdistatus", "debug_chaos", "use_debug_dma",
+	"use_mon_code", "use_ib_break", "use_dbt_break".
+	(Maintenance Commands): Improve indexing.
+	(Target Commands): Document "set/show hash", "set/show debug
+	monitor".
+	(SVR4 Process Information): Document "info pidlist" and "info
+	meminfo".  Document "set/show procfs-tarce" and "set/show
+	procfs-file".  Document "proc-trace-*" and "proc-untrace-*".
+	(Symbols, The Print Command with Objective-C): Improve indexing.
+	(Objective-C): Add references to "info classes" and "info
+	selectors".
+	(Debugging Output): Improve wording.  Document "set/show debug
+	solib-frv".  Fix "set/show debugvarobj".
+	(Set Breaks): Add index entry for "hardware breakpoints".
+	(Renesas ICE): Document "e7000", "ftplogin", "ftpload", "drain",
+	and "set/show usehardbreakpoints".
+	(MIPS Embedded): Document "se/show syn-garbage-limit", "set/show
+	monitor-prompt", "set/show monitor-warnings", "pmon".
+	(ARM): Document "rdilogfile", "rdilogenable", "set/show
+	rdiromatzero", "set/show rdiheartbeat".
+	(PowerPC): Document SDS-specific commands "set/show sdstimeout",
+	"sds".
+	(Embedded Processors): Document the "sim" command.
+	(Remote): Document the "remote" command.
+	(DJGPP Native): Document the "info serial" command.
+	(Threads): Document "maint info sol-threads".
+	(Files): Document "nosharedlibrary", "add-symbol-file-from-memory".
+	(Set Breaks): Improve indexing.
+	(Command Syntax): Add a reference to dont-repeat.
+	(Define): Document "dont-repeat".
+	(TUI Commands): Document "tabset".
+	(WinCE): New subsection.  Document "set/show remotedirectory",
+	"set/show remoteupload", "set/show remoteaddhost".
+
+2005-04-15  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (Hurd Native): New subsection, documents
+	Hurd-specific commands.
+	(Maintenance Commands): Add cross-reference to "Debugging Output".
+	(Debugging Output): Document "set/show debug lin-lwp".
+	(MIPS): Improve documentation of heuristic-fence-post.  Document
+	"set/show mips abi", "set/show mips saved-gpreg-size", "set/show
+	mips stack-arg-size", "set/show mips mask-address", "set/show mips
+	remote-mips64-transfers-32bit-regs", "set/show debug mips".
+	(ARM): Document ARM-specific commands.
+	(AVR): New section.  Document "info io_registers".
+	(CRIS): New section.  Document "set/show cris-version" and
+	"set/show cris-dwarf2-cfi".
+	(HPPA): New section.  Document "set/show debug hppa" and "maint
+	print unwind".
+	(Neutrino): New subsection.  Document "set/show debug nto-debug".
+	(Super-H): New section.  Document the "regs" command.
+	(Debugging Output): Document "set/show debug aix-thread".
+
+2005-04-09  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (Print Settings): Document "set/show print
+	pascal_static-members", "set print repeats", "show print
+	null-stop".  Improve indexing.  Fix documentation of "set print
+	union".
+	(Pascal): New section.
+	(Supported languages): Rename from "Support"; all references
+	updated.  Add a menu item for Pascal.
+	(Numbers): Document "set radix.
+	(Screen Size): Document "set/show pagination".
+	(MIPS Embedded): Remove "set processor" documentation.
+	(Remote configuration): Document "set/show X/P/Z-packet",
+	"set/show read-aux-vector-packet", "set/show remote
+	symbol-lookup-packet", "set/show remote verbose-resume-packet",
+	"set/show remoteaddresssize", "set/show remotebaud", "set/show
+	remotedebug", "set/show remotebreak", "set/show remotedevice",
+	"set/show remotelogfile".
+	(Auxiliary Vector): Add reference to the description of the
+	read-aux-vector-packet setting.
+	(Set Watchpoints): Add a cross-reference to "set remote
+	hardware-breakpoint-limit".
+	(General Query Packets): Add indexing of requests and
+	cross-references to related commands in "Remote configuration".
+	(File-I/O Overview, The system call): Fix wording and typos.
+	(Thread Stops): Add index entries.
+	(Continuing and Stepping): Document "show step-mode".
+	(i386): New node.  Document "set/show struct-convention".
+	(Files): Document "show trust-readonly-sections".
+	(Calling): Document "set/show unwindonsignal".
+	(Messages/Warnings): Add index entries.
+	(Maintenance Commands): Document "set/show watchdog".
+	(Annotations Overview): Document "show annotate".
+	(Set Watchpoints): Add index entries.
+	(Symbols): Fix doc of case-sensitive.
+	(ABI): Document "show coerce-float-to-double".
+	(Convenience Vars, Help): Improve indexing.
+	(Machine Code): Document "show disassembly-flavor".
+	(Debugging C plus plus): Document "show overload-resolution".
+	(Value History, Signaling): Add index entries.
+
+2005-04-08  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (Show): Move @kindex entries to their proper places.
+	(Processes): Fix wording.
+	(History, List, Logging output, Define, Symbols, Print Settings):
+	Improve indexing.
+
+2005-04-03  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (Targets): Document "set/show architecture".  Remove
+	redundant index entry for "target" command.
+	(Backtrace): Add index entries.
+	(Symbols, Fortran): Document the "set case-sensitive" command.
+	(DJGPP Native): Document "set com1base", "set com1irq", etc.
+	(Print Settings): Add index entry for "set demangle-style".
+	(Target Commands): Document "set download-write-size".
+	(Debugging Output): Document "set exec-done-display".
+
+2005-04-02  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (Files): Fix the name and documentation of
+	add-shared-symbol-files.  Document its alias assf.  Update the
+	list of OSs where GDB supports shared libraries.  Fix markup.
+	(Continuing and Stepping): Add reference to @var{location} in the
+	text.
+	(Dump/Restore Files): Fix reference to @{filename}.
+	(Help): Fix wording.
+	(Attach): Ditto.
+	(Set Watchpoints): Ditto.
+	(Backtrace): Remove redundant index entries.  Improve index
+	entries.
+	(Delete Breaks): Fix wording.
+	(Memory): Document the compare-sections command.
+	(Memory Region Attributes): Improve wording.
+	(Disabling): Improve wording.
+	(Fortran): New subsection.  Document the "info common" command.
+	(Help): Document aliases "info copying" and "info warranty".
+	(Caching Remote Data): New section.  Document the "set/show
+	remotecache" and "info dcache" commands.
+	(Show): Fix wording of the documentation of the "set
+	extension-language" command.
+	(Signals): Add index entry for "info handle".
+	(Memory Region Attributes): Fix punctuation.
+	(Symbols): Change the arg name to "location" and refer to it in
+	the text.  Fix wording of "info types" doc.
+	(Threads): Fix usage of @enumerate @item's.
+	(Listing Tracepoints): Add index entry for "info tp".
+	(Set Watchpoints): Add xref to "info break" description.
+	(Macros): Add an index entry for "macro exp1".  Document the
+	"macro list" command.
+	(Maintenance Commands): Document "flushregs", "maint agent",
+	"maint check-symtabs", "maint cplus", "maint demangle", "maint
+	deprecate", "maint undeprecate", "maint dump-me", "maint packet",
+	"maint print architecture", "maint print objfiles", "maint print
+	statistics", "maint print type", "maint show-debug-regs", "maint
+	space", "maint time", and "maint translate-address".
+	(Connecting): Document the "monitor" command.
+	(Annotations Overview): Describe the "set annotate" command.
+
+2005-04-01  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (Set Watchpoints): Document can-use-hw-watchpoints.
+	Rearrange index entries and improve wording about support for
+	hardware watchpoints.
+
+2005-03-10  Bob Rossi  <bob@brasko.net>
+
+	* gdb.texinfo: Update copyright
+
+2005-02-09  Theodore A. Roth  <troth@openavr.org>
+
+	* gdb.texinfo (General Query Packets): Fix texinfo compile warning and
+	error.
+
+2005-02-03  Kevin Buettner  <kevinb@redhat.com>
+
+	* gdb.texinfo (General Query Packets): Document qGetTLSAddr packet.
+
+2005-01-17  Michael Snyder  <msnyder@redhat.com>
+
+	* gdb.texinfo: Fix spelling, infinte  ->  infinite.
+
+2005-01-08  Mark Kettenis  <kettenis@gnu.org>
+
+	* observer.texi (GDB Observers): Document "solib_loaded".
+
+2005-01-07  Andrew Cagney  <cagney@gnu.org>
+
+	* configure.ac: Rename configure.in, require autoconf 2.59.
+	* configure: Re-generate.
+
+	* configure.in: Replace configdirs with multiple references to
+	AC_CONFIG_SUBDIRS.
+	* configure: Re-generate.
+	
+2005-01-04  Andrew Cagney  <cagney@gnu.org>
+
+	* gdbint.texinfo (Versions and Branches): Make the date (YYYYMMDD)
+	part of the version number.
+
+2004-12-24  Mark Kettenis  <kettenis@gnu.org>
+
+	* gdbint.texinfo (Algorithms): Remove description of
+	TARGET_DISABLE_HW_WATCHPOINTS and TARGET_ENABLE_HW_WATCHPOINTS.
+
+2004-12-07  Jim Blandy  <jimb@redhat.com>
+
+	* gdb.texinfo (General Query Packets): Specify that thread ID's in
+	the 'qC' and 'qThreadInfo' packets are unsigned hexidecimal
+	numbers.
+
+2004-12-07  Andreas Schwab  <schwab@suse.de>
+
+	* gdb.texinfo (Mode Options): Document -l option.
+
+2004-12-04  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdbint.texinfo (Algorithms): More accurate description of
+	STOPPED_BY_WATCHPOINT.  Point out that target_stopped_data_address
+	is not needed unless data-read and data-access watchpoints are
+	supported.  Add a description of how GDB checks whether the
+	inferior stopped because a watchpoint was hit.
+
+2004-11-23  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (Files): Add cross-reference to description of
+	-readnow command-line switch.
+
+2004-11-10  Randolph Chung  <tausq@debian.org>
+
+	* gdb.texinfo: Document set/show backtrace past-entry commands.
+	Rearrange index entries for set/show backtrace past-main.
+
+2004-11-10  Jon Beniston <jon@beniston.com>
+
+	Committed by Andrew Cagney  <cagney@gnu.org>.
+        * gdb.texinfo (Remote Serial Protocol): Further describe 
+        binary transfer escaping mechanism .
+
+2004-11-08  Randolph Chung  <tausq@debian.org>
+
+	* gdb.texinfo (inferior_debugging info): Document "set debug infrun"
+	and "show debug infrun".  Add index entries.
+
+2004-10-23  Eli Zaretskii  <eliz@gnu.org>
+
+	* gdb.texinfo (SVR4 Process Information): Document subcommands of
+	"info proc" that are already implemented.  Add index entries.
+	(Working Directory): Add a cross-reference to "info proc" command.
+	(Files): Add a tip for decreasing memory used for symtabs from
+	shared libraries.
+	(Starting): Fix whitespace; make "elaboration" stand out where it
+	is first used, and add an index entry for the term.
+	(Calling): Expand and elaborate text.  Add "print".  Add the
+	description of problems with weak aliases.
+	(Core File Generation): New section.
+
 2004-10-12  Andrew Cagney  <cagney@gnu.org>
 
 	* gdbint.texinfo (Versions and Branches): New chapter.

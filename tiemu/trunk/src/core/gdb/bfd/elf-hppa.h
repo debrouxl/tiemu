@@ -1,5 +1,5 @@
 /* Common code for PA ELF implementations.
-   Copyright 1999, 2000, 2001, 2002, 2003, 2004
+   Copyright 1999, 2000, 2001, 2002, 2003, 2004, 2005
    Free Software Foundation, Inc.
 
 This file is part of BFD, the Binary File Descriptor library.
@@ -16,7 +16,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #define ELF_HOWTO_TABLE_SIZE       R_PARISC_UNIMPLEMENTED + 1
 
@@ -1057,6 +1057,18 @@ static bfd_boolean elf_hppa_sort_unwind (bfd *abfd)
   return TRUE;
 }
 
+/* What to do when ld finds relocations against symbols defined in
+   discarded sections.  */
+
+static unsigned int
+elf_hppa_action_discarded (asection *sec)
+{
+  if (strcmp (".PARISC.unwind", sec->name) == 0)
+    return 0;
+
+  return _bfd_elf_default_action_discarded (sec);
+}
+
 #if ARCH_SIZE == 64
 /* Hook called by the linker routine which adds symbols from an object
    file.  HP's libraries define symbols with HP specific section
@@ -1259,9 +1271,9 @@ elf_hppa_final_link (bfd *abfd, struct bfd_link_info *info)
 	      if (!sec || (sec->flags & SEC_EXCLUDE))
 		sec = bfd_get_section_by_name (abfd, ".data");
 	      if (!sec || (sec->flags & SEC_EXCLUDE))
-		return FALSE;
-
-	      gp_val = sec->output_offset + sec->output_section->vma;
+		gp_val = 0;
+	      else
+		gp_val = sec->output_offset + sec->output_section->vma;
 	    }
 	}
 
@@ -1338,7 +1350,6 @@ elf_hppa_relocate_section (bfd *output_bfd,
       asection *sym_sec;
       bfd_vma relocation;
       bfd_reloc_status_type r;
-      const char *sym_name;
       const char *dyn_name;
       char *dynh_buf = NULL;
       size_t dynh_buflen = 0;
@@ -1399,8 +1410,12 @@ elf_hppa_relocate_section (bfd *output_bfd,
 	      if (sym_sec->output_section == NULL && dyn_h == NULL)
 		{
 		  (*_bfd_error_handler)
-		    (_("%B(%A): warning: unresolvable relocation against symbol `%s'"),
-		     input_bfd, input_section, h->root.root.string);
+		    (_("%B(%A+0x%lx): unresolvable %s relocation against symbol `%s'"),
+		     input_bfd,
+		     input_section,
+		     (long) rel->r_offset,
+		     howto->name,
+		     h->root.root.string);
 		  relocation = 0;
 		}
 	      else if (sym_sec->output_section)
@@ -1463,19 +1478,6 @@ elf_hppa_relocate_section (bfd *output_bfd,
 	    }
 	}
 
-      if (h != NULL)
-	sym_name = h->root.root.string;
-      else
-	{
-	  sym_name = bfd_elf_string_from_elf_section (input_bfd,
-						      symtab_hdr->sh_link,
-						      sym->st_name);
-	  if (sym_name == NULL)
-	    return FALSE;
-	  if (*sym_name == '\0')
-	    sym_name = bfd_section_name (input_bfd, sym_sec);
-	}
-
       r = elf_hppa_final_link_relocate (rel, input_bfd, output_bfd,
 					input_section, contents,
 					relocation, info, sym_sec,
@@ -1489,9 +1491,25 @@ elf_hppa_relocate_section (bfd *output_bfd,
 	      abort ();
 	    case bfd_reloc_overflow:
 	      {
+		const char *sym_name;
+		
+		if (h != NULL)
+		  sym_name = NULL;
+		else
+		  {
+		    sym_name = bfd_elf_string_from_elf_section (input_bfd,
+								symtab_hdr->sh_link,
+								sym->st_name);
+		    if (sym_name == NULL)
+		      return FALSE;
+		    if (*sym_name == '\0')
+		      sym_name = bfd_section_name (input_bfd, sym_sec);
+		  }
+
 		if (!((*info->callbacks->reloc_overflow)
-		      (info, sym_name, howto->name, (bfd_vma) 0,
-			input_bfd, input_section, rel->r_offset)))
+		      (info, (h ? &h->root : NULL), sym_name,
+		       howto->name, (bfd_vma) 0, input_bfd,
+		       input_section, rel->r_offset)))
 		  return FALSE;
 	      }
 	      break;

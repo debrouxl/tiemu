@@ -1,6 +1,7 @@
 /* Parser for linespec for the GNU debugger, GDB.
-   Copyright 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995,
-   1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004
+
+   Copyright 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994,
+   1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005
    Free Software Foundation, Inc.
 
    This file is part of GDB.
@@ -35,6 +36,7 @@
 #include "block.h"
 #include "objc-lang.h"
 #include "linespec.h"
+#include "exceptions.h"
 
 /* We share this one with symtab.c, but it is not exported widely. */
 
@@ -498,7 +500,7 @@ decode_line_2 (struct symbol *sym_arr[], int nelts, int funfirstline,
     }
 
   i = 0;
-  printf_unfiltered ("[0] cancel\n[1] all\n");
+  printf_unfiltered (_("[0] cancel\n[1] all\n"));
   while (i < nelts)
     {
       init_sal (&return_values.sals[i]);	/* Initialize to zeroes.  */
@@ -513,14 +515,14 @@ decode_line_2 (struct symbol *sym_arr[], int nelts, int funfirstline,
 			       values.sals[i].symtab->filename,
 			       values.sals[i].line);
 	  else
-	    printf_unfiltered ("[%d] %s at ?FILE:%d [No symtab? Probably broken debug info...]\n",
+	    printf_unfiltered (_("[%d] %s at ?FILE:%d [No symtab? Probably broken debug info...]\n"),
 			       (i + 2),
 			       SYMBOL_PRINT_NAME (sym_arr[i]),
 			       values.sals[i].line);
 
 	}
       else
-	printf_unfiltered ("?HERE\n");
+	printf_unfiltered (_("?HERE\n"));
       i++;
     }
 
@@ -532,7 +534,7 @@ decode_line_2 (struct symbol *sym_arr[], int nelts, int funfirstline,
   args = command_line_input (prompt, 0, "overload-choice");
 
   if (args == 0 || *args == 0)
-    error_no_arg ("one or more choice numbers");
+    error_no_arg (_("one or more choice numbers"));
 
   i = 0;
   while (*args)
@@ -543,12 +545,12 @@ decode_line_2 (struct symbol *sym_arr[], int nelts, int funfirstline,
       while (*arg1 >= '0' && *arg1 <= '9')
 	arg1++;
       if (*arg1 && *arg1 != ' ' && *arg1 != '\t')
-	error ("Arguments must be choice numbers.");
+	error (_("Arguments must be choice numbers."));
 
       num = atoi (args);
 
       if (num == 0)
-	error ("canceled");
+	error (_("canceled"));
       else if (num == 1)
 	{
 	  if (canonical_arr)
@@ -571,7 +573,7 @@ decode_line_2 (struct symbol *sym_arr[], int nelts, int funfirstline,
 
       if (num >= nelts + 2)
 	{
-	  printf_unfiltered ("No choice number %d.\n", num);
+	  printf_unfiltered (_("No choice number %d.\n"), num);
 	}
       else
 	{
@@ -589,7 +591,7 @@ decode_line_2 (struct symbol *sym_arr[], int nelts, int funfirstline,
 	    }
 	  else
 	    {
-	      printf_unfiltered ("duplicate request for %d ignored.\n", num);
+	      printf_unfiltered (_("duplicate request for %d ignored.\n"), num);
 	    }
 	}
 
@@ -805,7 +807,7 @@ decode_line_1 (char **argptr, int funfirstline, struct symtab *default_symtab,
     {
       p = skip_quoted (*argptr);
       if (p[-1] != '\'')
-	error ("Unmatched single quote.");
+	error (_("Unmatched single quote."));
     }
   else if (is_objc_method)
     {
@@ -1010,7 +1012,7 @@ locate_first_half (char **argptr, int *is_quote_enclosed)
 	{
 	  char *temp_end = find_template_name_end (p);
 	  if (!temp_end)
-	    error ("malformed template specification in command");
+	    error (_("malformed template specification in command"));
 	  p = temp_end;
 	}
       /* Check for a colon and a plus or minus and a [ (which
@@ -1117,7 +1119,7 @@ decode_objc (char **argptr, int funfirstline, struct symtab *file_symtab,
 	  sym = find_pc_function (SYMBOL_VALUE_ADDRESS (sym_arr[0]));
 	  if ((sym != NULL) && strcmp (SYMBOL_LINKAGE_NAME (sym_arr[0]), SYMBOL_LINKAGE_NAME (sym)) != 0)
 	    {
-	      warning ("debugging symbol \"%s\" does not match selector; ignoring", SYMBOL_LINKAGE_NAME (sym));
+	      warning (_("debugging symbol \"%s\" does not match selector; ignoring"), SYMBOL_LINKAGE_NAME (sym));
 	      sym = NULL;
 	    }
 	}
@@ -1225,7 +1227,7 @@ decode_compound (char **argptr, int funfirstline, char ***canonical,
 	    {
 	      temp_end = find_template_name_end (p);
 	      if (!temp_end)
-		error ("malformed template specification in command");
+		error (_("malformed template specification in command"));
 	      p = temp_end;
 	    }
 	  /* Note that, since, at the start of this loop, p would be
@@ -1524,20 +1526,10 @@ symtab_from_filename (char **argptr, char *p, int is_quote_enclosed,
   if (file_symtab == 0)
     {
       if (!have_full_symbols () && !have_partial_symbols ())
-	error ("No symbol table is loaded.  Use the \"file\" command.");
+	error (_("No symbol table is loaded.  Use the \"file\" command."));
       if (not_found_ptr)
-	{
-	  *not_found_ptr = 1;
-	  /* The caller has indicated that it wishes quiet notification of any
-	     error where the function or file is not found.  A call to 
-	     error_silent causes an error to occur, but it does not issue 
-	     the supplied message.  The message can be manually output by
-	     the caller, if desired.  This is used, for example, when 
-	     attempting to set breakpoints for functions in shared libraries 
-	     that have not yet been loaded.  */
-	  error_silent ("No source file named %s.", copy);
-	}
-      error ("No source file named %s.", copy);
+	*not_found_ptr = 1;
+      throw_error (NOT_FOUND_ERROR, _("No source file named %s."), copy);
     }
 
   /* Discard the file name from the arg.  */
@@ -1663,8 +1655,8 @@ decode_dollar (char *copy, int funfirstline, struct symtab *default_symtab,
       /* We have a value history reference.  */
       sscanf ((copy[1] == '$') ? copy + 2 : copy + 1, "%d", &index);
       valx = access_value_history ((copy[1] == '$') ? -index : index);
-      if (TYPE_CODE (VALUE_TYPE (valx)) != TYPE_CODE_INT)
-	error ("History values used in line specs must have integer values.");
+      if (TYPE_CODE (value_type (valx)) != TYPE_CODE_INT)
+	error (_("History values used in line specs must have integer values."));
     }
   else
     {
@@ -1689,8 +1681,8 @@ decode_dollar (char *copy, int funfirstline, struct symtab *default_symtab,
       /* Not a user variable or function -- must be convenience variable.  */
       need_canonical = (file_symtab == 0) ? 1 : 0;
       valx = value_of_internalvar (lookup_internalvar (copy + 1));
-      if (TYPE_CODE (VALUE_TYPE (valx)) != TYPE_CODE_INT)
-	error ("Convenience variables used in line specs must have integer values.");
+      if (TYPE_CODE (value_type (valx)) != TYPE_CODE_INT)
+	error (_("Convenience variables used in line specs must have integer values."));
     }
 
   init_sal (&val);
@@ -1745,22 +1737,11 @@ decode_variable (char *copy, int funfirstline, char ***canonical,
 
   if (!have_full_symbols () &&
       !have_partial_symbols () && !have_minimal_symbols ())
-    error ("No symbol table is loaded.  Use the \"file\" command.");
+    error (_("No symbol table is loaded.  Use the \"file\" command."));
 
   if (not_found_ptr)
-    {
-      *not_found_ptr = 1;
-      /* The caller has indicated that it wishes quiet notification of any
-	 error where the function or file is not found.  A call to 
-	 error_silent causes an error to occur, but it does not issue 
-	 the supplied message.  The message can be manually output by
-	 the caller, if desired.  This is used, for example, when 
-	 attempting to set breakpoints for functions in shared libraries 
-	 that have not yet been loaded.  */
-      error_silent ("Function \"%s\" not defined.", copy);
-    }
-  
-  error ("Function \"%s\" not defined.", copy);
+    *not_found_ptr = 1;
+  throw_error (NOT_FOUND_ERROR, _("Function \"%s\" not defined."), copy);
 }
 
 
@@ -1805,7 +1786,7 @@ symbol_found (int funfirstline, char ***canonical, char *copy,
   else
     {
       if (funfirstline)
-	error ("\"%s\" is not a function", copy);
+	error (_("\"%s\" is not a function"), copy);
       else if (SYMBOL_LINE (sym) != 0)
 	{
 	  /* We know its line number.  */
@@ -1823,7 +1804,7 @@ symbol_found (int funfirstline, char ***canonical, char *copy,
 	/* FIXME: Shouldn't we just set .line and .symtab to zero
 	   and return?  For example, "info line foo" could print
 	   the address.  */
-	error ("Line number not known for symbol \"%s\"", copy);
+	error (_("Line number not known for symbol \"%s\""), copy);
     }
 }
 

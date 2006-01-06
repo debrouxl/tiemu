@@ -1,7 +1,8 @@
 /* Target-dependent code for PowerPC systems using the SVR4 ABI
    for GDB, the GNU debugger.
 
-   Copyright 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
+   Copyright 2000, 2001, 2002, 2003, 2005
+   Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -97,9 +98,9 @@ ppc_sysv_abi_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
       for (argno = 0; argno < nargs; argno++)
 	{
 	  struct value *arg = args[argno];
-	  struct type *type = check_typedef (VALUE_TYPE (arg));
+	  struct type *type = check_typedef (value_type (arg));
 	  int len = TYPE_LENGTH (type);
-	  char *val = VALUE_CONTENTS (arg);
+	  const bfd_byte *val = value_contents (arg);
 
 	  if (TYPE_CODE (type) == TYPE_CODE_FLT
 	      && ppc_floating_point_unit_p (current_gdbarch) && len <= 8)
@@ -113,7 +114,7 @@ ppc_sysv_abi_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 		    {
 		      /* Always store the floating point value using
 		         the register's floating-point format.  */
-		      char regval[MAX_REGISTER_SIZE];
+		      gdb_byte regval[MAX_REGISTER_SIZE];
 		      struct type *regtype
 			= register_type (gdbarch, tdep->ppc_fp0_regnum + freg);
 		      convert_typed_floating (val, type, regval, regtype);
@@ -141,7 +142,7 @@ ppc_sysv_abi_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 			  memtype = builtin_type_ieee_double_little;
 			  break;
 			default:
-			  internal_error (__FILE__, __LINE__, "bad switch");
+			  internal_error (__FILE__, __LINE__, _("bad switch"));
 			}
 		      convert_typed_floating (val, type, memval, memtype);
 		      write_memory (sp + argoffset, val, len);
@@ -241,7 +242,7 @@ ppc_sysv_abi_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 	    {
 	      /* Reduce the parameter down to something that fits in a
 	         "word".  */
-	      char word[MAX_REGISTER_SIZE];
+	      gdb_byte word[MAX_REGISTER_SIZE];
 	      memset (word, 0, MAX_REGISTER_SIZE);
 	      if (len > tdep->wordsize
 		  || TYPE_CODE (type) == TYPE_CODE_STRUCT
@@ -294,6 +295,24 @@ ppc_sysv_abi_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 	  /* Ensure that the stack is still 16 byte aligned.  */
 	  sp = align_down (sp, 16);
 	}
+
+      /* The psABI says that "A caller of a function that takes a
+	 variable argument list shall set condition register bit 6 to
+	 1 if it passes one or more arguments in the floating-point
+	 registers. It is strongly recommended that the caller set the
+	 bit to 0 otherwise..."  Doing this for normal functions too
+	 shouldn't hurt.  */
+      if (write_pass)
+	{
+	  ULONGEST cr;
+
+	  regcache_cooked_read_unsigned (regcache, tdep->ppc_cr_regnum, &cr);
+	  if (freg > 1)
+	    cr |= 0x02000000;
+	  else
+	    cr &= ~0x02000000;
+	  regcache_cooked_write_unsigned (regcache, tdep->ppc_cr_regnum, cr);
+	}
     }
 
   /* Update %sp.   */
@@ -339,7 +358,7 @@ do_ppc_sysv_return_value (struct gdbarch *gdbarch, struct type *type,
 	{
 	  /* Floats and doubles stored in "f1".  Convert the value to
 	     the required type.  */
-	  char regval[MAX_REGISTER_SIZE];
+	  gdb_byte regval[MAX_REGISTER_SIZE];
 	  struct type *regtype = register_type (gdbarch,
                                                 tdep->ppc_fp0_regnum + 1);
 	  regcache_cooked_read (regcache, tdep->ppc_fp0_regnum + 1, regval);
@@ -349,7 +368,7 @@ do_ppc_sysv_return_value (struct gdbarch *gdbarch, struct type *type,
 	{
 	  /* Floats and doubles stored in "f1".  Convert the value to
 	     the register's "double" type.  */
-	  char regval[MAX_REGISTER_SIZE];
+	  gdb_byte regval[MAX_REGISTER_SIZE];
 	  struct type *regtype = register_type (gdbarch, tdep->ppc_fp0_regnum);
 	  convert_typed_floating (writebuf, type, regval, regtype);
 	  regcache_cooked_write (regcache, tdep->ppc_fp0_regnum + 1, regval);
@@ -432,52 +451,33 @@ do_ppc_sysv_return_value (struct gdbarch *gdbarch, struct type *type,
     }
   if (broken_gcc && TYPE_LENGTH (type) <= 8)
     {
+      /* GCC screwed up for structures or unions whose size is less
+	 than or equal to 8 bytes..  Instead of left-aligning, it
+	 right-aligns the data into the buffer formed by r3, r4.  */
+      gdb_byte regvals[MAX_REGISTER_SIZE * 2];
+      int len = TYPE_LENGTH (type);
+      int offset = (2 * tdep->wordsize - len) % tdep->wordsize;
+
       if (readbuf)
 	{
-	  /* GCC screwed up.  The last register isn't "left" aligned.
-	     Need to extract the least significant part of each
-	     register and then store that.  */
-	  /* Transfer any full words.  */
-	  int word = 0;
-	  while (1)
-	    {
-	      ULONGEST reg;
-	      int len = TYPE_LENGTH (type) - word * tdep->wordsize;
-	      if (len <= 0)
-		break;
-	      if (len > tdep->wordsize)
-		len = tdep->wordsize;
-	      regcache_cooked_read_unsigned (regcache,
-					     tdep->ppc_gp0_regnum + 3 + word,
-					     &reg);
-	      store_unsigned_integer (((bfd_byte *) readbuf
-				       + word * tdep->wordsize), len, reg);
-	      word++;
-	    }
+	  regcache_cooked_read (regcache, tdep->ppc_gp0_regnum + 3,
+				regvals + 0 * tdep->wordsize);
+	  if (len > tdep->wordsize)
+	    regcache_cooked_read (regcache, tdep->ppc_gp0_regnum + 4,
+				  regvals + 1 * tdep->wordsize);
+	  memcpy (readbuf, regvals + offset, len);
 	}
       if (writebuf)
 	{
-	  /* GCC screwed up.  The last register isn't "left" aligned.
-	     Need to extract the least significant part of each
-	     register and then store that.  */
-	  /* Transfer any full words.  */
-	  int word = 0;
-	  while (1)
-	    {
-	      ULONGEST reg;
-	      int len = TYPE_LENGTH (type) - word * tdep->wordsize;
-	      if (len <= 0)
-		break;
-	      if (len > tdep->wordsize)
-		len = tdep->wordsize;
-	      reg = extract_unsigned_integer (((const bfd_byte *) writebuf
-					       + word * tdep->wordsize), len);
-	      regcache_cooked_write_unsigned (regcache,
-					      tdep->ppc_gp0_regnum + 3 + word,
-					      reg);
-	      word++;
-	    }
+	  memset (regvals, 0, sizeof regvals);
+	  memcpy (regvals + offset, writebuf, len);
+	  regcache_cooked_write (regcache, tdep->ppc_gp0_regnum + 3,
+				 regvals + 0 * tdep->wordsize);
+	  if (len > tdep->wordsize)
+	    regcache_cooked_write (regcache, tdep->ppc_gp0_regnum + 4,
+				   regvals + 1 * tdep->wordsize);
 	}
+
       return RETURN_VALUE_REGISTER_CONVENTION;
     }
   if (TYPE_LENGTH (type) <= 8)
@@ -487,7 +487,7 @@ do_ppc_sysv_return_value (struct gdbarch *gdbarch, struct type *type,
 	  /* This matches SVr4 PPC, it does not match GCC.  */
 	  /* The value is right-padded to 8 bytes and then loaded, as
 	     two "words", into r3/r4.  */
-	  char regvals[MAX_REGISTER_SIZE * 2];
+	  gdb_byte regvals[MAX_REGISTER_SIZE * 2];
 	  regcache_cooked_read (regcache, tdep->ppc_gp0_regnum + 3,
 				regvals + 0 * tdep->wordsize);
 	  if (TYPE_LENGTH (type) > tdep->wordsize)
@@ -500,7 +500,7 @@ do_ppc_sysv_return_value (struct gdbarch *gdbarch, struct type *type,
 	  /* This matches SVr4 PPC, it does not match GCC.  */
 	  /* The value is padded out to 8 bytes and then loaded, as
 	     two "words" into r3/r4.  */
-	  char regvals[MAX_REGISTER_SIZE * 2];
+	  gdb_byte regvals[MAX_REGISTER_SIZE * 2];
 	  memset (regvals, 0, sizeof regvals);
 	  memcpy (regvals, writebuf, TYPE_LENGTH (type));
 	  regcache_cooked_write (regcache, tdep->ppc_gp0_regnum + 3,
@@ -516,8 +516,8 @@ do_ppc_sysv_return_value (struct gdbarch *gdbarch, struct type *type,
 
 enum return_value_convention
 ppc_sysv_abi_return_value (struct gdbarch *gdbarch, struct type *valtype,
-			   struct regcache *regcache, void *readbuf,
-			   const void *writebuf)
+			   struct regcache *regcache, gdb_byte *readbuf,
+			   const gdb_byte *writebuf)
 {
   return do_ppc_sysv_return_value (gdbarch, valtype, regcache, readbuf,
 				   writebuf, 0);
@@ -527,10 +527,51 @@ enum return_value_convention
 ppc_sysv_abi_broken_return_value (struct gdbarch *gdbarch,
 				  struct type *valtype,
 				  struct regcache *regcache,
-				  void *readbuf, const void *writebuf)
+				  gdb_byte *readbuf, const gdb_byte *writebuf)
 {
   return do_ppc_sysv_return_value (gdbarch, valtype, regcache, readbuf,
 				   writebuf, 1);
+}
+
+/* The helper function for 64-bit SYSV push_dummy_call.  Converts the
+   function's code address back into the function's descriptor
+   address.
+
+   Find a value for the TOC register.  Every symbol should have both
+   ".FN" and "FN" in the minimal symbol table.  "FN" points at the
+   FN's descriptor, while ".FN" points at the entry point (which
+   matches FUNC_ADDR).  Need to reverse from FUNC_ADDR back to the
+   FN's descriptor address (while at the same time being careful to
+   find "FN" in the same object file as ".FN").  */
+
+static int
+convert_code_addr_to_desc_addr (CORE_ADDR code_addr, CORE_ADDR *desc_addr)
+{
+  struct obj_section *dot_fn_section;
+  struct minimal_symbol *dot_fn;
+  struct minimal_symbol *fn;
+  CORE_ADDR toc;
+  /* Find the minimal symbol that corresponds to CODE_ADDR (should
+     have a name of the form ".FN").  */
+  dot_fn = lookup_minimal_symbol_by_pc (code_addr);
+  if (dot_fn == NULL || SYMBOL_LINKAGE_NAME (dot_fn)[0] != '.')
+    return 0;
+  /* Get the section that contains CODE_ADDR.  Need this for the
+     "objfile" that it contains.  */
+  dot_fn_section = find_pc_section (code_addr);
+  if (dot_fn_section == NULL || dot_fn_section->objfile == NULL)
+    return 0;
+  /* Now find the corresponding "FN" (dropping ".") minimal symbol's
+     address.  Only look for the minimal symbol in ".FN"'s object file
+     - avoids problems when two object files (i.e., shared libraries)
+     contain a minimal symbol with the same name.  */
+  fn = lookup_minimal_symbol (SYMBOL_LINKAGE_NAME (dot_fn) + 1, NULL,
+			      dot_fn_section->objfile);
+  if (fn == NULL)
+    return 0;
+  /* Found a descriptor.  */
+  (*desc_addr) = SYMBOL_VALUE_ADDRESS (fn);
+  return 1;
 }
 
 /* Pass the arguments in either registers, or in the stack. Using the
@@ -634,8 +675,8 @@ ppc64_sysv_abi_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
       for (argno = 0; argno < nargs; argno++)
 	{
 	  struct value *arg = args[argno];
-	  struct type *type = check_typedef (VALUE_TYPE (arg));
-	  char *val = VALUE_CONTENTS (arg);
+	  struct type *type = check_typedef (value_type (arg));
+	  const bfd_byte *val = value_contents (arg);
 	  if (TYPE_CODE (type) == TYPE_CODE_FLT && TYPE_LENGTH (type) <= 8)
 	    {
 	      /* Floats and Doubles go in f1 .. f13.  They also
@@ -646,7 +687,7 @@ ppc64_sysv_abi_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 		  if (ppc_floating_point_unit_p (current_gdbarch)
 		      && freg <= 13)
 		    {
-		      char regval[MAX_REGISTER_SIZE];
+		      gdb_byte regval[MAX_REGISTER_SIZE];
 		      struct type *regtype
                         = register_type (gdbarch, tdep->ppc_fp0_regnum);
 		      convert_typed_floating (val, type, regval, regtype);
@@ -665,7 +706,7 @@ ppc64_sysv_abi_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 
 		         This code interprets that to mean: store it,
 		         left aligned, in the general register.  */
-		      char regval[MAX_REGISTER_SIZE];
+		      gdb_byte regval[MAX_REGISTER_SIZE];
 		      memset (regval, 0, sizeof regval);
 		      memcpy (regval, val, TYPE_LENGTH (type));
 		      regcache_cooked_write (regcache,
@@ -703,15 +744,25 @@ ppc64_sysv_abi_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 		}
 	    }
 	  else if ((TYPE_CODE (type) == TYPE_CODE_INT
-		    || TYPE_CODE (type) == TYPE_CODE_ENUM)
+		    || TYPE_CODE (type) == TYPE_CODE_ENUM
+		    || TYPE_CODE (type) == TYPE_CODE_PTR)
 		   && TYPE_LENGTH (type) <= 8)
 	    {
-	      /* Scalars get sign[un]extended and go in gpr3 .. gpr10.
-	         They can also end up in memory.  */
+	      /* Scalars and Pointers get sign[un]extended and go in
+	         gpr3 .. gpr10.  They can also end up in memory.  */
 	      if (write_pass)
 		{
 		  /* Sign extend the value, then store it unsigned.  */
 		  ULONGEST word = unpack_long (type, val);
+		  /* Convert any function code addresses into
+		     descriptors.  */
+		  if (TYPE_CODE (type) == TYPE_CODE_PTR
+		      && TYPE_CODE (TYPE_TARGET_TYPE (type)) == TYPE_CODE_FUNC)
+		    {
+		      CORE_ADDR desc = word;
+		      convert_code_addr_to_desc_addr (word, &desc);
+		      word = desc;
+		    }
 		  if (greg <= 10)
 		    regcache_cooked_write_unsigned (regcache,
 						    tdep->ppc_gp0_regnum +
@@ -730,7 +781,7 @@ ppc64_sysv_abi_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 		{
 		  if (write_pass && greg <= 10)
 		    {
-		      char regval[MAX_REGISTER_SIZE];
+		      gdb_byte regval[MAX_REGISTER_SIZE];
 		      int len = TYPE_LENGTH (type) - byte;
 		      if (len > tdep->wordsize)
 			len = tdep->wordsize;
@@ -764,6 +815,11 @@ ppc64_sysv_abi_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 		   value to memory.  Fortunately, doing this
 		   simplifies the code.  */
 		write_memory (gparam, val, TYPE_LENGTH (type));
+	      if (write_pass)
+		/* WARNING: cagney/2004-06-20: It appears that GCC
+		   likes to put structures containing a single
+		   floating-point member in an FP register instead of
+		   general general purpose.  */
 	      /* Always consume parameter stack space.  */
 	      gparam = align_up (gparam + TYPE_LENGTH (type), tdep->wordsize);
 	    }
@@ -792,43 +848,18 @@ ppc64_sysv_abi_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
      breakpoint.  */
   regcache_cooked_write_signed (regcache, tdep->ppc_lr_regnum, bp_addr);
 
-  /* Find a value for the TOC register.  Every symbol should have both
-     ".FN" and "FN" in the minimal symbol table.  "FN" points at the
-     FN's descriptor, while ".FN" points at the entry point (which
-     matches FUNC_ADDR).  Need to reverse from FUNC_ADDR back to the
-     FN's descriptor address (while at the same time being careful to
-     find "FN" in the same object file as ".FN").  */
+  /* Use the func_addr to find the descriptor, and use that to find
+     the TOC.  */
   {
-    /* Find the minimal symbol that corresponds to FUNC_ADDR (should
-       have the name ".FN").  */
-    struct minimal_symbol *dot_fn = lookup_minimal_symbol_by_pc (func_addr);
-    if (dot_fn != NULL && SYMBOL_LINKAGE_NAME (dot_fn)[0] == '.')
+    CORE_ADDR desc_addr;
+    if (convert_code_addr_to_desc_addr (func_addr, &desc_addr))
       {
-	/* Get the section that contains FUNC_ADR.  Need this for the
-           "objfile" that it contains.  */
-	struct obj_section *dot_fn_section = find_pc_section (func_addr);
-	if (dot_fn_section != NULL && dot_fn_section->objfile != NULL)
-	  {
-	    /* Now find the corresponding "FN" (dropping ".") minimal
-	       symbol's address.  Only look for the minimal symbol in
-	       ".FN"'s object file - avoids problems when two object
-	       files (i.e., shared libraries) contain a minimal symbol
-	       with the same name.  */
-	    struct minimal_symbol *fn =
-	      lookup_minimal_symbol (SYMBOL_LINKAGE_NAME (dot_fn) + 1, NULL,
-				     dot_fn_section->objfile);
-	    if (fn != NULL)
-	      {
-		/* Got the address of that descriptor.  The TOC is the
-		   second double word.  */
-		CORE_ADDR toc =
-		  read_memory_unsigned_integer (SYMBOL_VALUE_ADDRESS (fn)
-						+ tdep->wordsize,
-						tdep->wordsize);
-		regcache_cooked_write_unsigned (regcache,
-						tdep->ppc_gp0_regnum + 2, toc);
-	      }
-	  }
+	/* The TOC is the second double word in the descriptor.  */
+	CORE_ADDR toc =
+	  read_memory_unsigned_integer (desc_addr + tdep->wordsize,
+					tdep->wordsize);
+	regcache_cooked_write_unsigned (regcache,
+					tdep->ppc_gp0_regnum + 2, toc);
       }
   }
 
@@ -848,8 +879,8 @@ ppc64_sysv_abi_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
    corresponding register return-value location.  */
 enum return_value_convention
 ppc64_sysv_abi_return_value (struct gdbarch *gdbarch, struct type *valtype,
-			     struct regcache *regcache, void *readbuf,
-			     const void *writebuf)
+			     struct regcache *regcache, gdb_byte *readbuf,
+			     const gdb_byte *writebuf)
 {
   struct gdbarch_tdep *tdep = gdbarch_tdep (gdbarch);
 
@@ -861,7 +892,7 @@ ppc64_sysv_abi_return_value (struct gdbarch *gdbarch, struct type *valtype,
   /* Floats and doubles in F1.  */
   if (TYPE_CODE (valtype) == TYPE_CODE_FLT && TYPE_LENGTH (valtype) <= 8)
     {
-      char regval[MAX_REGISTER_SIZE];
+      gdb_byte regval[MAX_REGISTER_SIZE];
       struct type *regtype = register_type (gdbarch, tdep->ppc_fp0_regnum);
       if (writebuf != NULL)
 	{
@@ -875,9 +906,11 @@ ppc64_sysv_abi_return_value (struct gdbarch *gdbarch, struct type *valtype,
 	}
       return RETURN_VALUE_REGISTER_CONVENTION;
     }
-  if (TYPE_CODE (valtype) == TYPE_CODE_INT && TYPE_LENGTH (valtype) <= 8)
+  /* Integers in r3.  */
+  if ((TYPE_CODE (valtype) == TYPE_CODE_INT
+       || TYPE_CODE (valtype) == TYPE_CODE_ENUM)
+      && TYPE_LENGTH (valtype) <= 8)
     {
-      /* Integers in r3.  */
       if (writebuf != NULL)
 	{
 	  /* Be careful to sign extend the value.  */
@@ -905,24 +938,36 @@ ppc64_sysv_abi_return_value (struct gdbarch *gdbarch, struct type *valtype,
 	regcache_cooked_read (regcache, tdep->ppc_gp0_regnum + 3, readbuf);
       return RETURN_VALUE_REGISTER_CONVENTION;
     }
-  if (TYPE_CODE (valtype) == TYPE_CODE_ARRAY
-      && TYPE_LENGTH (valtype) <= 8
-      && TYPE_CODE (TYPE_TARGET_TYPE (valtype)) == TYPE_CODE_INT
-      && TYPE_LENGTH (TYPE_TARGET_TYPE (valtype)) == 1)
+  /* Array type has more than one use.  */
+  if (TYPE_CODE (valtype) == TYPE_CODE_ARRAY)
     {
       /* Small character arrays are returned, right justified, in r3.  */
-      int offset = (register_size (gdbarch, tdep->ppc_gp0_regnum + 3)
-		    - TYPE_LENGTH (valtype));
-      if (writebuf != NULL)
-	regcache_cooked_write_part (regcache, tdep->ppc_gp0_regnum + 3,
-				    offset, TYPE_LENGTH (valtype), writebuf);
-      if (readbuf != NULL)
-	regcache_cooked_read_part (regcache, tdep->ppc_gp0_regnum + 3,
-				   offset, TYPE_LENGTH (valtype), readbuf);
-      return RETURN_VALUE_REGISTER_CONVENTION;
+      if (TYPE_LENGTH (valtype) <= 8
+        && TYPE_CODE (TYPE_TARGET_TYPE (valtype)) == TYPE_CODE_INT
+        && TYPE_LENGTH (TYPE_TARGET_TYPE (valtype)) == 1)
+        {
+          int offset = (register_size (gdbarch, tdep->ppc_gp0_regnum + 3)
+		        - TYPE_LENGTH (valtype));
+          if (writebuf != NULL)
+	    regcache_cooked_write_part (regcache, tdep->ppc_gp0_regnum + 3,
+				       offset, TYPE_LENGTH (valtype), writebuf);
+          if (readbuf != NULL)
+	    regcache_cooked_read_part (regcache, tdep->ppc_gp0_regnum + 3,
+				       offset, TYPE_LENGTH (valtype), readbuf);
+          return RETURN_VALUE_REGISTER_CONVENTION;
+        }
+      /* A VMX vector is returned in v2.  */
+      if (TYPE_VECTOR (valtype) && tdep->ppc_vr0_regnum >= 0)
+	{
+	  if (readbuf)
+	    regcache_cooked_read (regcache, tdep->ppc_vr0_regnum + 2, readbuf);
+	  if (writebuf)
+	    regcache_cooked_write (regcache, tdep->ppc_vr0_regnum + 2, writebuf);
+	  return RETURN_VALUE_REGISTER_CONVENTION;
+	}
     }
   /* Big floating point values get stored in adjacent floating
-     point registers.  */
+     point registers, starting with F1.  */
   if (TYPE_CODE (valtype) == TYPE_CODE_FLT
       && (TYPE_LENGTH (valtype) == 16 || TYPE_LENGTH (valtype) == 32))
     {
@@ -950,7 +995,7 @@ ppc64_sysv_abi_return_value (struct gdbarch *gdbarch, struct type *valtype,
 	  int i;
 	  for (i = 0; i < 2; i++)
 	    {
-	      char regval[MAX_REGISTER_SIZE];
+	      gdb_byte regval[MAX_REGISTER_SIZE];
 	      struct type *regtype =
 		register_type (current_gdbarch, tdep->ppc_fp0_regnum);
 	      if (writebuf != NULL)

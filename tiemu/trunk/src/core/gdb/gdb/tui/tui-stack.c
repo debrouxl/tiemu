@@ -103,7 +103,7 @@ tui_make_status_line (struct tui_locator_element* loc)
 
   /* Translate PC address.  */
   pc_out = tui_sfileopen (128);
-  print_address_numeric (loc->addr, 1, pc_out);
+  deprecated_print_address_numeric (loc->addr, 1, pc_out);
   pc_buf = tui_file_get_strbuf (pc_out);
   pc_width = strlen (pc_buf);
   
@@ -357,21 +357,22 @@ tui_show_frame_info (struct frame_info *fi)
 	    {
 	      if (find_pc_partial_function (get_frame_pc (fi), (char **) NULL,
 					    &low, (CORE_ADDR) NULL) == 0)
-		error ("No function contains program counter for selected frame.\n");
+		error (_("No function contains program counter for selected frame."));
 	      else
 		low = tui_get_low_disassembly_address (low, get_frame_pc (fi));
 	    }
 
 	  if (win_info == TUI_SRC_WIN)
 	    {
-	      union tui_line_or_address l;
-	      l.line_no = start_line;
+	      struct tui_line_or_address l;
+	      l.loa = LOA_LINE;
+	      l.u.line_no = start_line;
 	      if (!(source_already_displayed
 		    && tui_line_is_displayed (item->locator.line_no, win_info, TRUE)))
 		tui_update_source_window (win_info, sal.symtab, l, TRUE);
 	      else
 		{
-		  l.line_no = item->locator.line_no;
+		  l.u.line_no = item->locator.line_no;
 		  tui_set_is_exec_point_at (l, win_info);
 		}
 	    }
@@ -379,13 +380,14 @@ tui_show_frame_info (struct frame_info *fi)
 	    {
 	      if (win_info == TUI_DISASM_WIN)
 		{
-		  union tui_line_or_address a;
-		  a.addr = low;
+		  struct tui_line_or_address a;
+		  a.loa = LOA_ADDRESS;
+		  a.u.addr = low;
 		  if (!tui_addr_is_displayed (item->locator.addr, win_info, TRUE))
 		    tui_update_source_window (win_info, sal.symtab, a, TRUE);
 		  else
 		    {
-		      a.addr = item->locator.addr;
+		      a.u.addr = item->locator.addr;
 		      tui_set_is_exec_point_at (a, win_info);
 		    }
 		}
@@ -411,9 +413,8 @@ tui_show_frame_info (struct frame_info *fi)
 void
 _initialize_tui_stack (void)
 {
-  add_com ("update", class_tui, tui_update_command,
-           "Update the source window and locator to display the current "
-           "execution point.\n");
+  add_com ("update", class_tui, tui_update_command, _("\
+Update the source window and locator to display the current execution point.\n"));
 }
 
 /* Command to update the display with the current execution point.  */

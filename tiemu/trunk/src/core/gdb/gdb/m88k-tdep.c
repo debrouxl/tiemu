@@ -1,6 +1,6 @@
 /* Target-dependent code for the Motorola 88000 series.
 
-   Copyright 2004 Free Software Foundation, Inc.
+   Copyright 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -102,11 +102,11 @@ m88k_addr_bits_remove (CORE_ADDR addr)
    *LEN and optionally adjust *PC to point to the correct memory
    location for inserting the breakpoint.  */
    
-static const unsigned char *
+static const gdb_byte *
 m88k_breakpoint_from_pc (CORE_ADDR *pc, int *len)
 {
   /* tb 0,r0,511 */
-  static unsigned char break_insn[] = { 0xf0, 0x00, 0xd1, 0xff };
+  static gdb_byte break_insn[] = { 0xf0, 0x00, 0xd1, 0xff };
 
   *len = sizeof (break_insn);
   return break_insn;
@@ -266,13 +266,13 @@ m88k_store_arguments (struct regcache *regcache, int nargs,
 
   for (i = 0; i < nargs; i++)
     {
-      struct type *type = VALUE_TYPE (args[i]);
+      struct type *type = value_type (args[i]);
       int len = TYPE_LENGTH (type);
 
       if (m88k_integral_or_pointer_p (type) && len < 4)
 	{
 	  args[i] = value_cast (builtin_type_int32, args[i]);
-	  type = VALUE_TYPE (args[i]);
+	  type = value_type (args[i]);
 	  len = TYPE_LENGTH (type);
 	}
 
@@ -306,8 +306,8 @@ m88k_store_arguments (struct regcache *regcache, int nargs,
 
   for (i = 0; i < nargs; i++)
     {
-      char *valbuf = VALUE_CONTENTS (args[i]);
-      struct type *type = VALUE_TYPE (args[i]);
+      const bfd_byte *valbuf = value_contents (args[i]);
+      struct type *type = value_type (args[i]);
       int len = TYPE_LENGTH (type);
       int stack_word = num_stack_words;
 
@@ -384,11 +384,11 @@ m88k_unwind_dummy_id (struct gdbarch *arch, struct frame_info *next_frame)
 
 static enum return_value_convention
 m88k_return_value (struct gdbarch *gdbarch, struct type *type,
-		   struct regcache *regcache, void *readbuf,
-		   const void *writebuf)
+		   struct regcache *regcache, gdb_byte *readbuf,
+		   const gdb_byte *writebuf)
 {
   int len = TYPE_LENGTH (type);
-  char buf[8];
+  gdb_byte buf[8];
 
   if (!m88k_integral_or_pointer_p (type) && !m88k_floating_p (type))
     return RETURN_VALUE_STRUCT_CONVENTION;
@@ -721,7 +721,7 @@ static void
 m88k_frame_prev_register (struct frame_info *next_frame, void **this_cache,
 			  int regnum, int *optimizedp,
 			  enum lval_type *lvalp, CORE_ADDR *addrp,
-			  int *realnump, void *valuep)
+			  int *realnump, gdb_byte *valuep)
 {
   struct m88k_frame_cache *cache = m88k_frame_cache (next_frame, this_cache);
 
@@ -798,7 +798,7 @@ m88k_supply_gregset (const struct regset *regset,
 		     struct regcache *regcache,
 		     int regnum, const void *gregs, size_t len)
 {
-  const char *regs = gregs;
+  const gdb_byte *regs = gregs;
   int i;
 
   for (i = 0; i < M88K_NUM_REGS; i++)

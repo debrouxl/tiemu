@@ -1,4 +1,4 @@
-# Copyright (C) 2002, 2003 Free Software Foundation, Inc.
+# Copyright (C) 2002, 2003, 2005 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,8 +32,9 @@ if $tracelevel then {
 set prms_id 0
 set bug_id 0
 
-if ![istarget "powerpc-*altivec"] then {
+if {![istarget "powerpc*"] || [skip_altivec_tests]} then {
     verbose "Skipping altivec abi tests."
+    verbose -log "Skipping altivec abi tests."
     return
 }
 
@@ -41,7 +42,22 @@ set testfile "altivec-abi"
 set binfile ${objdir}/${subdir}/${testfile}
 set srcfile ${testfile}.c
 
-if  { [gdb_compile ${srcdir}/${subdir}/${srcfile} ${binfile} executable {debug additional_flags=-w}] != "" } {
+set compile_flags {debug additional_flags=-w}
+if [get_compiler_info $binfile] {
+    warning "get_compiler failed"
+    return -1
+}
+
+if [test_compiler_info gcc*] {
+    set compile_flags "$compile_flags additional_flags=-maltivec"
+} elseif [test_compiler_info xlc*] {
+    set compile_flags "$compile_flags additional_flags=-qaltivec"
+} else {
+    warning "unknown compiler"
+    return -1
+}
+
+if  { [gdb_compile ${srcdir}/${subdir}/${srcfile} ${binfile} executable $compile_flags] != "" } {
      gdb_suppress_entire_file "Testcase compile failed, so all tests in this file will automatically fail."
 }
 
@@ -59,7 +75,7 @@ if ![runto_main] then {
 
 gdb_test "b marker" "Breakpoint 2 at.*file.*altivec-abi.c, line \[0-9\]+." "break marker"
 gdb_test "continue" "Breakpoint 2.*marker.*altivec-abi.c.*" "continue to marker"
-gdb_test "finish" "Run till exit from .0.*in marker.*at.*altivec-abi.c.*main \\(\\) at.*altivec-abi.c.*result = vec_func \\(vshort,.*goes in v2.*" "back to main (1)"
+gdb_test "finish" "Run till exit from .0.*marker.*at.*altivec-abi.c.*main \\(\\) at.*altivec-abi.c.*result = vec_func \\(vshort,.*goes in v2.*" "back to main (1)"
 
 # now all the arguments of vec_fun are initialized
 
@@ -84,7 +100,7 @@ gdb_test "step" \
   "step into vec_fun"
 
 set pattern2 $pattern
-append pattern2 " at.*altivec-abi.c.*in main.*result = vec_func .vshort,.*goes in v2.*Value returned is.*= .2, 2, 2, 2."
+append pattern2 " at.*altivec-abi.c.*main.*result = vec_func .vshort,.*goes in v2.*Value returned is.*= .2, 2, 2, 2."
 
 # Let's see if the result is returned correctly.
 gdb_test "finish" \

@@ -94,9 +94,7 @@ struct type *builtin_type_v8hi;
 struct type *builtin_type_v4hi;
 struct type *builtin_type_v2si;
 struct type *builtin_type_vec64;
-struct type *builtin_type_vec64i;
 struct type *builtin_type_vec128;
-struct type *builtin_type_vec128i;
 struct type *builtin_type_ieee_single[BFD_ENDIAN_UNKNOWN];
 struct type *builtin_type_ieee_single_big;
 struct type *builtin_type_ieee_single_little;
@@ -124,7 +122,22 @@ struct type *builtin_type_CORE_ADDR;
 struct type *builtin_type_bfd_vma;
 
 int opaque_type_resolution = 1;
+static void
+show_opaque_type_resolution (struct ui_file *file, int from_tty,
+			     struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("\
+Resolution of opaque struct/class/union types (if set before loading symbols) is %s.\n"),
+		    value);
+}
+
 int overload_debug = 0;
+static void
+show_overload_debug (struct ui_file *file, int from_tty,
+		     struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("Debugging of C++ overloading is %s.\n"), value);
+}
 
 struct extra
   {
@@ -411,7 +424,7 @@ address_space_name_to_int (char *space_identifier)
 							&type_flags))
     return type_flags;
   else
-    error ("Unknown address space specifier: \"%s\"", space_identifier);
+    error (_("Unknown address space specifier: \"%s\""), space_identifier);
 }
 
 /* Identify address space identifier by integer flag as defined in 
@@ -433,7 +446,9 @@ address_space_int_to_name (int space_flag)
 }
 
 /* Create a new type with instance flags NEW_FLAGS, based on TYPE.
-   If STORAGE is non-NULL, create the new type instance there.  */
+
+   If STORAGE is non-NULL, create the new type instance there.
+   STORAGE must be in the same obstack as TYPE.  */
 
 static struct type *
 make_qualified_type (struct type *type, int new_flags,
@@ -453,6 +468,12 @@ make_qualified_type (struct type *type, int new_flags,
     ntype = alloc_type_instance (type);
   else
     {
+      /* If STORAGE was provided, it had better be in the same objfile as
+	 TYPE.  Otherwise, we can't link it into TYPE's cv chain: if one
+	 objfile is freed and the other kept, we'd have dangling
+	 pointers.  */
+      gdb_assert (TYPE_OBJFILE (type) == TYPE_OBJFILE (storage));
+
       ntype = storage;
       TYPE_MAIN_TYPE (ntype) = TYPE_MAIN_TYPE (type);
       TYPE_CHAIN (ntype) = ntype;
@@ -501,11 +522,12 @@ make_type_with_address_space (struct type *type, int space_flag)
    CNST is a flag for setting the const attribute
    VOLTL is a flag for setting the volatile attribute
    TYPE is the base type whose variant we are creating.
-   TYPEPTR, if nonzero, points
-   to a pointer to memory where the reference type should be stored.
-   If *TYPEPTR is zero, update it to point to the reference type we return.
-   We allocate new memory if needed.  */
 
+   If TYPEPTR and *TYPEPTR are non-zero, then *TYPEPTR points to
+   storage to hold the new qualified type; *TYPEPTR and TYPE must be
+   in the same objfile.  Otherwise, allocate fresh memory for the new
+   type whereever TYPE lives.  If TYPEPTR is non-zero, set it to the
+   new type we construct.  */
 struct type *
 make_cv_type (int cnst, int voltl, struct type *type, struct type **typeptr)
 {
@@ -524,20 +546,19 @@ make_cv_type (int cnst, int voltl, struct type *type, struct type **typeptr)
 
   if (typeptr && *typeptr != NULL)
     {
-      /* Objfile is per-core-type.  This const-qualified type had best
-	 belong to the same objfile as the type it is qualifying, unless
-	 we are overwriting a stub type, in which case the safest thing
-	 to do is to copy the core type into the new objfile.  */
+      /* TYPE and *TYPEPTR must be in the same objfile.  We can't have
+	 a C-V variant chain that threads across objfiles: if one
+	 objfile gets freed, then the other has a broken C-V chain.
 
-      gdb_assert (TYPE_OBJFILE (*typeptr) == TYPE_OBJFILE (type)
-		  || TYPE_STUB (*typeptr));
-      if (TYPE_OBJFILE (*typeptr) != TYPE_OBJFILE (type))
-	{
-	  TYPE_MAIN_TYPE (*typeptr)
-	    = TYPE_ALLOC (*typeptr, sizeof (struct main_type));
-	  *TYPE_MAIN_TYPE (*typeptr)
-	    = *TYPE_MAIN_TYPE (type);
-	}
+	 This code used to try to copy over the main type from TYPE to
+	 *TYPEPTR if they were in different objfiles, but that's
+	 wrong, too: TYPE may have a field list or member function
+	 lists, which refer to types of their own, etc. etc.  The
+	 whole shebang would need to be copied over recursively; you
+	 can't have inter-objfile pointers.  The only thing to do is
+	 to leave stub types as stub types, and look them up afresh by
+	 name each time you encounter them.  */
+      gdb_assert (TYPE_OBJFILE (*typeptr) == TYPE_OBJFILE (type));
     }
   
   ntype = make_qualified_type (type, new_flags, typeptr ? *typeptr : NULL);
@@ -561,6 +582,12 @@ void
 replace_type (struct type *ntype, struct type *type)
 {
   struct type *chain;
+
+  /* These two types had better be in the same objfile.  Otherwise,
+     the assignment of one type's main type structure to the other
+     will produce a type with references to objects (names; field
+     lists; etc.) allocated on an objfile other than its own.  */
+  gdb_assert (TYPE_OBJFILE (ntype) == TYPE_OBJFILE (ntype));
 
   *TYPE_MAIN_TYPE (ntype) = *TYPE_MAIN_TYPE (type);
 
@@ -657,7 +684,7 @@ create_range_type (struct type *result_type, struct type *index_type,
 }
 
 /* Set *LOWP and *HIGHP to the lower and upper bounds of discrete type TYPE.
-   Return 1 of type is a range type, 0 if it is discrete (and bounds
+   Return 1 if type is a range type, 0 if it is discrete (and bounds
    will fit in LONGEST), or -1 otherwise. */
 
 int
@@ -889,34 +916,6 @@ build_builtin_type_vec64 (void)
 }
 
 static struct type *
-build_builtin_type_vec64i (void)
-{
-  /* Construct a type for the 64 bit registers.  The type we're
-     building is this: */
-#if 0
-  union __gdb_builtin_type_vec64i 
-  {
-    int64_t uint64;
-    int32_t v2_int32[2];
-    int16_t v4_int16[4];
-    int8_t v8_int8[8];
-  };
-#endif
-
-  struct type *t;
-
-  t = init_composite_type ("__gdb_builtin_type_vec64i", TYPE_CODE_UNION);
-  append_composite_type_field (t, "uint64", builtin_type_int64);
-  append_composite_type_field (t, "v2_int32", builtin_type_v2_int32);
-  append_composite_type_field (t, "v4_int16", builtin_type_v4_int16);
-  append_composite_type_field (t, "v8_int8", builtin_type_v8_int8);
-
-  TYPE_FLAGS (t) |= TYPE_FLAG_VECTOR;
-  TYPE_NAME (t) = "builtin_type_vec64i";
-  return t;
-}
-
-static struct type *
 build_builtin_type_vec128 (void)
 {
   /* Construct a type for the 128 bit registers.  The type we're
@@ -943,26 +942,6 @@ build_builtin_type_vec128 (void)
 
   TYPE_FLAGS (t) |= TYPE_FLAG_VECTOR;
   TYPE_NAME (t) = "builtin_type_vec128";
-  return t;
-}
-
-static struct type *
-build_builtin_type_vec128i (void)
-{
-  /* 128-bit Intel SIMD registers */
-  struct type *t;
-
-  t = init_composite_type ("__gdb_builtin_type_vec128i", TYPE_CODE_UNION);
-  append_composite_type_field (t, "v4_float", builtin_type_v4_float);
-  append_composite_type_field (t, "v2_double", builtin_type_v2_double);
-  append_composite_type_field (t, "v16_int8", builtin_type_v16_int8);
-  append_composite_type_field (t, "v8_int16", builtin_type_v8_int16);
-  append_composite_type_field (t, "v4_int32", builtin_type_v4_int32);
-  append_composite_type_field (t, "v2_int64", builtin_type_v2_int64);
-  append_composite_type_field (t, "uint128", builtin_type_int128);
-
-  TYPE_FLAGS (t) |= TYPE_FLAG_VECTOR;
-  TYPE_NAME (t) = "builtin_type_vec128i";
   return t;
 }
 
@@ -1061,7 +1040,7 @@ lookup_typename (char *name, struct block *block, int noerr)
 	}
       else
 	{
-	  error ("No type named %s.", name);
+	  error (_("No type named %s."), name);
 	}
     }
   return (SYMBOL_TYPE (sym));
@@ -1105,11 +1084,11 @@ lookup_struct (char *name, struct block *block)
 
   if (sym == NULL)
     {
-      error ("No struct type named %s.", name);
+      error (_("No struct type named %s."), name);
     }
   if (TYPE_CODE (SYMBOL_TYPE (sym)) != TYPE_CODE_STRUCT)
     {
-      error ("This context has class, union or enum %s, not a struct.", name);
+      error (_("This context has class, union or enum %s, not a struct."), name);
     }
   return (SYMBOL_TYPE (sym));
 }
@@ -1127,7 +1106,7 @@ lookup_union (char *name, struct block *block)
 		       (struct symtab **) NULL);
 
   if (sym == NULL)
-    error ("No union type named %s.", name);
+    error (_("No union type named %s."), name);
 
   t = SYMBOL_TYPE (sym);
 
@@ -1142,7 +1121,7 @@ lookup_union (char *name, struct block *block)
       return (t);
 
   /* If we get here, it's not a union */
-  error ("This context has class, struct or enum %s, not a union.", name);
+  error (_("This context has class, struct or enum %s, not a union."), name);
 }
 
 
@@ -1158,11 +1137,11 @@ lookup_enum (char *name, struct block *block)
 		       (struct symtab **) NULL);
   if (sym == NULL)
     {
-      error ("No enum type named %s.", name);
+      error (_("No enum type named %s."), name);
     }
   if (TYPE_CODE (SYMBOL_TYPE (sym)) != TYPE_CODE_ENUM)
     {
-      error ("This context has class, struct or union %s, not an enum.", name);
+      error (_("This context has class, struct or union %s, not an enum."), name);
     }
   return (SYMBOL_TYPE (sym));
 }
@@ -1184,11 +1163,11 @@ lookup_template_type (char *name, struct type *type, struct block *block)
 
   if (sym == NULL)
     {
-      error ("No template type named %s.", name);
+      error (_("No template type named %s."), name);
     }
   if (TYPE_CODE (SYMBOL_TYPE (sym)) != TYPE_CODE_STRUCT)
     {
-      error ("This context has class, union or enum %s, not a struct.", name);
+      error (_("This context has class, union or enum %s, not a struct."), name);
     }
   return (SYMBOL_TYPE (sym));
 }
@@ -1224,7 +1203,7 @@ lookup_struct_elt_type (struct type *type, char *name, int noerr)
       gdb_flush (gdb_stdout);
       fprintf_unfiltered (gdb_stderr, "Type ");
       type_print (type, "", gdb_stderr, -1);
-      error (" is not a structure or union type.");
+      error (_(" is not a structure or union type."));
     }
 
 #if 0
@@ -1274,7 +1253,7 @@ lookup_struct_elt_type (struct type *type, char *name, int noerr)
   type_print (type, "", gdb_stderr, -1);
   fprintf_unfiltered (gdb_stderr, " has no component named ");
   fputs_filtered (name, gdb_stderr);
-  error (".");
+  error (("."));
   return (struct type *) -1;	/* For lint */
 }
 
@@ -1339,7 +1318,7 @@ get_destructor_fn_field (struct type *t, int *method_indexp, int *field_indexp)
 static void
 stub_noname_complaint (void)
 {
-  complaint (&symfile_complaints, "stub type has NULL name");
+  complaint (&symfile_complaints, _("stub type has NULL name"));
 }
 
 /* Added by Bryan Boreham, Kewill, Sun Sep 17 18:07:17 1989.
@@ -1416,8 +1395,24 @@ check_typedef (struct type *type)
 	  return type;
 	}
       newtype = lookup_transparent_type (name);
+
       if (newtype)
-	make_cv_type (is_const, is_volatile, newtype, &type);
+	{
+	  /* If the resolved type and the stub are in the same objfile,
+	     then replace the stub type with the real deal.  But if
+	     they're in separate objfiles, leave the stub alone; we'll
+	     just look up the transparent type every time we call
+	     check_typedef.  We can't create pointers between types
+	     allocated to different objfiles, since they may have
+	     different lifetimes.  Trying to copy NEWTYPE over to TYPE's
+	     objfile is pointless, too, since you'll have to move over any
+	     other types NEWTYPE refers to, which could be an unbounded
+	     amount of stuff.  */
+	  if (TYPE_OBJFILE (newtype) == TYPE_OBJFILE (type))
+	    make_cv_type (is_const, is_volatile, newtype, &type);
+	  else
+	    type = newtype;
+	}
     }
   /* Otherwise, rely on the stub flag being set for opaque/stubbed types */
   else if (TYPE_STUB (type) && !currently_reading_symtab)
@@ -1524,7 +1519,7 @@ check_stub_method (struct type *type, int method_id, int signature_id)
     p = NULL;
 
   if (demangled_name == NULL || p == NULL)
-    error ("Internal: Cannot demangle mangled name `%s'.", mangled_name);
+    error (_("Internal: Cannot demangle mangled name `%s'."), mangled_name);
 
   /* Now, read in the parameters that define this type.  */
   p += 1;
@@ -1781,7 +1776,7 @@ lookup_fundamental_type (struct objfile *objfile, int typeid)
 
   if (typeid < 0 || typeid >= FT_NUM_MEMBERS)
     {
-      error ("internal error - invalid fundamental type id %d", typeid);
+      error (_("internal error - invalid fundamental type id %d"), typeid);
     }
 
   /* If this is the first time we need a fundamental type for this objfile
@@ -2664,13 +2659,9 @@ print_bit_vector (B_TYPE *bits, int nbits)
 	  puts_filtered (" ");
 	}
       if (B_TST (bits, bitno))
-	{
-	  printf_filtered ("1");
-	}
+	printf_filtered (("1"));
       else
-	{
-	  printf_filtered ("0");
-	}
+	printf_filtered (("0"));
     }
 }
 
@@ -2707,7 +2698,7 @@ dump_fn_fieldlists (struct type *type, int spaces)
 			TYPE_FN_FIELDLIST_NAME (type, method_idx));
       gdb_print_host_address (TYPE_FN_FIELDLIST_NAME (type, method_idx),
 			      gdb_stdout);
-      printf_filtered (") length %d\n",
+      printf_filtered (_(") length %d\n"),
 		       TYPE_FN_FIELDLIST_LENGTH (type, method_idx));
       for (overload_idx = 0;
 	   overload_idx < TYPE_FN_FIELDLIST_LENGTH (type, method_idx);
@@ -2827,7 +2818,7 @@ print_bound_type (int bt)
       printf_filtered ("(BOUND_SIMPLE)");
       break;
     default:
-      printf_filtered ("(unknown bound type)");
+      printf_filtered (_("(unknown bound type)"));
       break;
     }
 }
@@ -2857,7 +2848,7 @@ recursive_dump_type (struct type *type, int spaces)
 	    {
 	      printfi_filtered (spaces, "type node ");
 	      gdb_print_host_address (type, gdb_stdout);
-	      printf_filtered (" <same as already seen type>\n");
+	      printf_filtered (_(" <same as already seen type>\n"));
 	      return;
 	    }
 	}
@@ -3110,7 +3101,7 @@ recursive_dump_type (struct type *type, int spaces)
       gdb_print_host_address (TYPE_CPLUS_SPECIFIC (type), gdb_stdout);
       if (TYPE_CPLUS_SPECIFIC (type) != NULL)
 	{
-	  printf_filtered (" (unknown data form)");
+	  printf_filtered (_(" (unknown data form)"));
 	}
       printf_filtered ("\n");
       break;
@@ -3226,11 +3217,13 @@ build_gdbtypes (void)
 	       "bool", (struct objfile *) NULL);
 
   /* Add user knob for controlling resolution of opaque types */
-  deprecated_add_show_from_set
-    (add_set_cmd ("opaque-type-resolution", class_support, var_boolean, (char *) &opaque_type_resolution,
-		  "Set resolution of opaque struct/class/union types (if set before loading symbols).",
-		  &setlist),
-     &showlist);
+  add_setshow_boolean_cmd ("opaque-type-resolution", class_support,
+			   &opaque_type_resolution, _("\
+Set resolution of opaque struct/class/union types (if set before loading symbols)."), _("\
+Show resolution of opaque struct/class/union types (if set before loading symbols)."), NULL,
+			   NULL,
+			   show_opaque_type_resolution,
+			   &setlist, &showlist);
   opaque_type_resolution = 1;
 
   /* Build SIMD types.  */
@@ -3264,9 +3257,7 @@ build_gdbtypes (void)
 
   /* Vector types.  */
   builtin_type_vec64 = build_builtin_type_vec64 ();
-  builtin_type_vec64i = build_builtin_type_vec64i ();
   builtin_type_vec128 = build_builtin_type_vec128 ();
-  builtin_type_vec128i = build_builtin_type_vec128i ();
 
   /* Pointer/Address types. */
 
@@ -3565,7 +3556,6 @@ _initialize_gdbtypes (void)
   DEPRECATED_REGISTER_GDBARCH_SWAP (builtin_type_v8_int8);
   DEPRECATED_REGISTER_GDBARCH_SWAP (builtin_type_v4_int16);
   DEPRECATED_REGISTER_GDBARCH_SWAP (builtin_type_vec128);
-  DEPRECATED_REGISTER_GDBARCH_SWAP (builtin_type_vec128i);
   DEPRECATED_REGISTER_GDBARCH_SWAP (builtin_type_void_data_ptr);
   DEPRECATED_REGISTER_GDBARCH_SWAP (builtin_type_void_func_ptr);
   DEPRECATED_REGISTER_GDBARCH_SWAP (builtin_type_CORE_ADDR);
@@ -3679,9 +3669,11 @@ _initialize_gdbtypes (void)
 		 "builtin_type_ia64_quad_little",
 		 &floatformat_ia64_quad_little);
 
-  deprecated_add_show_from_set
-    (add_set_cmd ("overload", no_class, var_zinteger, (char *) &overload_debug,
-		  "Set debugging of C++ overloading.\n\
-When enabled, ranking of the functions is displayed.", &setdebuglist),
-     &showdebuglist);
+  add_setshow_zinteger_cmd ("overload", no_class, &overload_debug, _("\
+Set debugging of C++ overloading."), _("\
+Show debugging of C++ overloading."), _("\
+When enabled, ranking of the functions is displayed."),
+			    NULL,
+			    show_overload_debug,
+			    &setdebuglist, &showdebuglist);
 }

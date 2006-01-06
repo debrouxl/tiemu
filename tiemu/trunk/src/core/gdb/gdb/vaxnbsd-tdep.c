@@ -28,25 +28,11 @@
 
 #include "gdb_string.h"
 
-/* Support for shared libraries.  */
-
-/* Return non-zero if we are in a shared library trampoline code stub.  */
-
-int
-vaxnbsd_aout_in_solib_call_trampoline (CORE_ADDR pc, char *name)
-{
-  return (name && !strcmp (name, "_DYNAMIC"));
-}
-
-
 /* NetBSD a.out.  */
 
 static void
 vaxnbsd_aout_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
 {
-  /* Assume SunOS-style shared libraries.  */
-  set_gdbarch_in_solib_call_trampoline
-    (gdbarch, vaxnbsd_aout_in_solib_call_trampoline);
 }
 
 /* NetBSD ELF.  */
@@ -55,8 +41,6 @@ static void
 vaxnbsd_elf_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
 {
   /* NetBSD ELF uses SVR4-style shared libraries.  */
-  set_gdbarch_in_solib_call_trampoline
-    (gdbarch, generic_in_solib_call_trampoline);
   set_solib_svr4_fetch_link_map_offsets
     (gdbarch, svr4_ilp32_fetch_link_map_offsets);
 }

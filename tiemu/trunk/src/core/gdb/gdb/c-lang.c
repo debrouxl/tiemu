@@ -1,6 +1,7 @@
 /* C language support routines for GDB, the GNU debugger.
-   Copyright 1992, 1993, 1994, 1995, 1996, 1998, 1999, 2000, 2002, 2003, 2004
-   Free Software Foundation, Inc.
+
+   Copyright 1992, 1993, 1994, 1995, 1996, 1998, 1999, 2000, 2002,
+   2003, 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -85,8 +86,8 @@ c_printchar (int c, struct ui_file *stream)
    printing LENGTH characters, or if FORCE_ELLIPSES.  */
 
 void
-c_printstr (struct ui_file *stream, char *string, unsigned int length,
-	    int width, int force_ellipses)
+c_printstr (struct ui_file *stream, const gdb_byte *string,
+	    unsigned int length, int width, int force_ellipses)
 {
   unsigned int i;
   unsigned int things_printed = 0;
@@ -148,7 +149,7 @@ c_printstr (struct ui_file *stream, char *string, unsigned int length,
 	      in_quotes = 0;
 	    }
 	  LA_PRINT_CHAR (current_char, stream);
-	  fprintf_filtered (stream, " <repeats %u times>", reps);
+	  fprintf_filtered (stream, _(" <repeats %u times>"), reps);
 	  i = rep1 - 1;
 	  things_printed += repeat_count_threshold;
 	  need_comma = 1;
@@ -201,7 +202,7 @@ c_printstr (struct ui_file *stream, char *string, unsigned int length,
    gdb test suite since we don't have to account for the differences
    in output depending upon what the compiler and debugging format
    support.  We will probably have to re-examine the issue when gdb
-   starts taking it's fundamental type information directly from the
+   starts taking its fundamental type information directly from the
    debugging information supplied by the compiler.  fnf@cygnus.com */
 
 struct type *
@@ -219,7 +220,7 @@ c_create_fundamental_type (struct objfile *objfile, int typeid)
       type = init_type (TYPE_CODE_INT,
 			TARGET_INT_BIT / TARGET_CHAR_BIT,
 			0, "<?type?>", objfile);
-      warning ("internal error: no C/C++ fundamental type %d", typeid);
+      warning (_("internal error: no C/C++ fundamental type %d"), typeid);
       break;
     case FT_VOID:
       type = init_type (TYPE_CODE_VOID,
@@ -594,6 +595,7 @@ const struct language_defn c_language_defn =
   NULL,
   default_word_break_characters,
   c_language_arch_info,
+  default_print_array_index,
   LANG_MAGIC
 };
 
@@ -652,6 +654,7 @@ const struct language_defn cplus_language_defn =
   &builtin_type_char,		/* Type of string elements */
   default_word_break_characters,
   NULL, /* FIXME: la_language_arch_info.  */
+  default_print_array_index,
   LANG_MAGIC
 };
 
@@ -687,6 +690,7 @@ const struct language_defn asm_language_defn =
   NULL,
   default_word_break_characters,
   c_language_arch_info, /* FIXME: la_language_arch_info.  */
+  default_print_array_index,
   LANG_MAGIC
 };
 
@@ -727,6 +731,7 @@ const struct language_defn minimal_language_defn =
   NULL,
   default_word_break_characters,
   c_language_arch_info,
+  default_print_array_index,
   LANG_MAGIC
 };
 

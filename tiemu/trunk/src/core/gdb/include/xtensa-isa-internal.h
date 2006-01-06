@@ -1,5 +1,5 @@
 /* Internal definitions for configurable Xtensa ISA support.
-   Copyright 2003, 2004 Free Software Foundation, Inc.
+   Copyright 2003, 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of BFD, the Binary File Descriptor library.
 
@@ -15,7 +15,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #ifndef XTENSA_ISA_INTERNAL_H
 #define XTENSA_ISA_INTERNAL_H
@@ -49,7 +49,7 @@ typedef int (*xtensa_do_reloc_fn) (uint32 *, uint32);
 typedef int (*xtensa_undo_reloc_fn) (uint32 *, uint32);
 typedef void (*xtensa_opcode_encode_fn) (xtensa_insnbuf);
 typedef int (*xtensa_format_decode_fn) (const xtensa_insnbuf);
-typedef int (*xtensa_length_decode_fn) (const char *);
+typedef int (*xtensa_length_decode_fn) (const unsigned char *);
 
 typedef struct xtensa_format_internal_struct
 {
@@ -131,6 +131,7 @@ typedef struct xtensa_interface_internal_struct
   const char *name;			/* Interface name.  */
   int num_bits;				/* Width of the interface.  */
   uint32 flags;				/* See XTENSA_INTERFACE_* flags.  */
+  int class_id;				/* Class of related interfaces.  */
   char inout;				/* "i" or "o".  */
 } xtensa_interface_internal;
 

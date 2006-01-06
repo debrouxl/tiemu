@@ -1,5 +1,5 @@
 /* BFD back-end for Motorola MCore COFF/PE
-   Copyright 1999, 2000, 2001, 2002, 2003, 2004
+   Copyright 1999, 2000, 2001, 2002, 2003, 2004, 2005
    Free Software Foundation, Inc.
 
 This file is part of BFD, the Binary File Descriptor library.
@@ -16,8 +16,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, 59 Temple Place - Suite 330,
-Boston, MA 02111-1307, USA.  */
+Foundation, 51 Franklin Street - Fifth Floor,
+Boston, MA 02110-1301, USA.  */
 
 #include "bfd.h"
 #include "sysdep.h"
@@ -40,10 +40,6 @@ Boston, MA 02111-1307, USA.  */
    final_link routine once.  */
 extern bfd_boolean mcore_bfd_coff_final_link
   PARAMS ((bfd *, struct bfd_link_info *));
-#if 0
-static struct bfd_link_hash_table *coff_mcore_link_hash_table_create
-  PARAMS ((bfd *));
-#endif
 static bfd_reloc_status_type mcore_coff_unsupported_reloc
   PARAMS ((bfd *, arelent *, asymbol *, PTR, asection *, bfd *, char **));
 static bfd_boolean coff_mcore_relocate_section
@@ -222,35 +218,6 @@ mcore_hash_table;
 #define coff_mcore_hash_table(info) \
   ((mcore_hash_table *) ((info)->hash))
 
-#if 0
-/* Create an MCore coff linker hash table.  */
-
-static struct bfd_link_hash_table *
-coff_mcore_link_hash_table_create (abfd)
-     bfd * abfd;
-{
-  mcore_hash_table * ret;
-
-  ret = (mcore_hash_table *) bfd_malloc ((bfd_size_type) sizeof (* ret));
-  if (ret == (mcore_hash_table *) NULL)
-    return NULL;
-
-  if (! _bfd_coff_link_hash_table_init
-      (& ret->root, abfd, _bfd_coff_link_hash_newfunc))
-    {
-      free (ret);
-      return (struct bfd_link_hash_table *) NULL;
-    }
-
-  ret->bfd_of_toc_owner = NULL;
-  ret->global_toc_size  = 0;
-  ret->import_table_size = 0;
-  ret->first_thunk_address = 0;
-  ret->thunk_size = 0;
-
-  return & ret->root.root;
-}
-#endif
 
 /* Add an entry to the base file.  */
 
@@ -556,7 +523,7 @@ coff_mcore_relocate_section (output_bfd, info, input_bfd, input_section,
 
 	case bfd_reloc_overflow:
 	  if (! ((*info->callbacks->reloc_overflow)
-		 (info, my_name, howto->name,
+		 (info, (h ? &h->root : NULL), my_name, howto->name,
 		  (bfd_vma) 0, input_bfd,
 		  input_section, rel->r_vaddr - input_section->vma)))
 	    return FALSE;

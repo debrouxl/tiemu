@@ -39,7 +39,7 @@ enum
 static void
 breakpoint_notify (int b)
 {
-  gdb_breakpoint_query (uiout, b);
+  gdb_breakpoint_query (uiout, b, NULL);
 }
 
 
@@ -128,9 +128,9 @@ mi_cmd_break_insert (char *command, char **argv, int argc)
     }
 
   if (optind >= argc)
-    error ("mi_cmd_break_insert: Missing <location>");
+    error (_("mi_cmd_break_insert: Missing <location>"));
   if (optind < argc - 1)
-    error ("mi_cmd_break_insert: Garbage following <location>");
+    error (_("mi_cmd_break_insert: Garbage following <location>"));
   address = argv[optind];
 
   /* Now we have what we need, let's insert the breakpoint! */
@@ -140,17 +140,19 @@ mi_cmd_break_insert (char *command, char **argv, int argc)
     case REG_BP:
       rc = gdb_breakpoint (address, condition,
 			   0 /*hardwareflag */ , temp_p,
-			   thread, ignore_count);
+			   thread, ignore_count,
+			   &mi_error_message);
       break;
     case HW_BP:
       rc = gdb_breakpoint (address, condition,
 			   1 /*hardwareflag */ , temp_p,
-			   thread, ignore_count);
+			   thread, ignore_count,
+			   &mi_error_message);
       break;
 #if 0
     case REGEXP_BP:
       if (temp_p)
-	error ("mi_cmd_break_insert: Unsupported tempoary regexp breakpoint");
+	error (_("mi_cmd_break_insert: Unsupported tempoary regexp breakpoint"));
       else
 	rbreak_command_wrapper (address, FROM_TTY);
       return MI_CMD_DONE;
@@ -158,12 +160,12 @@ mi_cmd_break_insert (char *command, char **argv, int argc)
 #endif
     default:
       internal_error (__FILE__, __LINE__,
-		      "mi_cmd_break_insert: Bad switch.");
+		      _("mi_cmd_break_insert: Bad switch."));
     }
   deprecated_set_gdb_event_hooks (old_hooks);
 
   if (rc == GDB_RC_FAIL)
-    return MI_CMD_CAUGHT_ERROR;
+    return MI_CMD_ERROR;
   else
     return MI_CMD_DONE;
 }
@@ -216,9 +218,9 @@ mi_cmd_break_watch (char *command, char **argv, int argc)
 	}
     }
   if (optind >= argc)
-    error ("mi_cmd_break_watch: Missing <expression>");
+    error (_("mi_cmd_break_watch: Missing <expression>"));
   if (optind < argc - 1)
-    error ("mi_cmd_break_watch: Garbage following <expression>");
+    error (_("mi_cmd_break_watch: Garbage following <expression>"));
   expr = argv[optind];
 
   /* Now we have what we need, let's insert the watchpoint! */
@@ -234,7 +236,7 @@ mi_cmd_break_watch (char *command, char **argv, int argc)
       awatch_command_wrapper (expr, FROM_TTY);
       break;
     default:
-      error ("mi_cmd_break_watch: Unknown watchpoint type.");
+      error (_("mi_cmd_break_watch: Unknown watchpoint type."));
     }
   return MI_CMD_DONE;
 }

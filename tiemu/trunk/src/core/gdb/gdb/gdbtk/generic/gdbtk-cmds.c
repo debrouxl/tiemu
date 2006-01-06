@@ -38,6 +38,8 @@
 #include "dictionary.h"
 #include "filenames.h"
 #include "disasm.h"
+#include "value.h"
+#include "exceptions.h"
 
 /* tcl header files includes varargs.h unless HAS_STDARG is defined,
    but gdb uses stdarg.h, so make sure HAS_STDARG is defined.  */
@@ -181,8 +183,6 @@ static int gdb_stop (ClientData, Tcl_Interp *, int, Tcl_Obj * CONST[]);
 static int gdb_target_has_execution_command (ClientData,
 					     Tcl_Interp *, int,
 					     Tcl_Obj * CONST[]);
-static int gdbtk_dis_asm_read_memory (bfd_vma, bfd_byte *, unsigned int,
-				      disassemble_info *);
 static void gdbtk_load_source (ClientData clientData,
 			       struct symtab *symtab,
 			       int start_line, int end_line);
@@ -636,8 +636,8 @@ gdb_eval (ClientData clientData, Tcl_Interp *interp,
   /* "Print" the result of the expression evaluation. */
   stb = mem_fileopen ();
   make_cleanup_ui_file_delete (stb);
-  val_print (VALUE_TYPE (val), VALUE_CONTENTS (val),
-	     VALUE_EMBEDDED_OFFSET (val), VALUE_ADDRESS (val),
+  val_print (value_type (val), value_contents (val),
+	     value_embedded_offset (val), VALUE_ADDRESS (val),
 	     stb, format, 0, 0, 0);
   result = ui_file_xstrdup (stb, &dummy);
   Tcl_SetObjResult (interp, Tcl_NewStringObj (result, -1));
@@ -1134,12 +1134,13 @@ gdb_listfiles (ClientData clientData, Tcl_Interp *interp,
   struct objfile *objfile;
   struct partial_symtab *psymtab;
   struct symtab *symtab;
-  char *lastfile, *pathname = NULL, **files;
+  const char *lastfile, *pathname = NULL;
+  const char **files;
   int files_size;
   int i, numfiles = 0, len = 0;
 
   files_size = 1000;
-  files = (char **) xmalloc (sizeof (char *) * files_size);
+  files = (const char **) xmalloc (sizeof (char *) * files_size);
 
   if (objc > 2)
     {
@@ -1154,14 +1155,14 @@ gdb_listfiles (ClientData clientData, Tcl_Interp *interp,
       if (numfiles == files_size)
 	{
 	  files_size = files_size * 2;
-	  files = (char **) xrealloc (files, sizeof (char *) * files_size);
+	  files = (const char **) xrealloc (files, sizeof (char *) * files_size);
 	}
       if (psymtab->filename)
 	{
 	  if (!len || !strncmp (pathname, psymtab->filename, len)
-	      || !strcmp (psymtab->filename, basename (psymtab->filename)))
+	      || !strcmp (psymtab->filename, lbasename (psymtab->filename)))
 	    {
-	      files[numfiles++] = basename (psymtab->filename);
+	      files[numfiles++] = lbasename (psymtab->filename);
 	    }
 	}
     }
@@ -1171,14 +1172,14 @@ gdb_listfiles (ClientData clientData, Tcl_Interp *interp,
       if (numfiles == files_size)
 	{
 	  files_size = files_size * 2;
-	  files = (char **) xrealloc (files, sizeof (char *) * files_size);
+	  files = (const char **) xrealloc (files, sizeof (char *) * files_size);
 	}
       if (symtab->filename && symtab->linetable && symtab->linetable->nitems)
 	{
 	  if (!len || !strncmp (pathname, symtab->filename, len)
-	      || !strcmp (symtab->filename, basename (symtab->filename)))
+	      || !strcmp (symtab->filename, lbasename (symtab->filename)))
 	    {
-	      files[numfiles++] = basename (symtab->filename);
+	      files[numfiles++] = lbasename (symtab->filename);
 	    }
 	}
     }
@@ -1908,7 +1909,7 @@ gdbtk_load_asm (ClientData clientData, CORE_ADDR pc,
   for (i = 0; i < 3; i++)
     Tcl_SetObjLength (client_data->result_obj[i], 0);
 
-  print_address_numeric (pc, 1, gdb_stdout);
+  deprecated_print_address_numeric (pc, 1, gdb_stdout);
   gdb_flush (gdb_stdout);
 
   result_ptr->obj_ptr = client_data->result_obj[1];
@@ -2104,27 +2105,6 @@ gdb_disassemble_driver (CORE_ADDR low, CORE_ADDR high,
   return TCL_OK;
 }
 
-/* This is the memory_read_func for gdb_disassemble_driver when we are
-   disassembling from the exec file. */
-
-static int
-gdbtk_dis_asm_read_memory (bfd_vma memaddr, bfd_byte *myaddr,
-			   unsigned int len, disassemble_info *info)
-{
-  extern struct target_ops exec_ops;
-  int res;
-
-  errno = 0;
-  res = xfer_memory (memaddr, myaddr, len, 0, 0, &exec_ops);
-
-  if (res == len)
-    return 0;
-  else if (errno == 0)
-    return EIO;
-  else
-    return errno;
-}
-
 /* This will be passed to qsort to sort the results of the disassembly */
 
 static int
@@ -2163,8 +2143,18 @@ gdb_loc (ClientData clientData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST obj
 
   if (objc == 1)
     {
-      if (deprecated_selected_frame
-	  && (get_frame_pc (deprecated_selected_frame) != read_pc ()))
+      /* This function can be called, before the target is properly
+         set-up, the following prevents an error, by trying to
+         read_pc when there is no pc to read. It defaults pc, 
+         before the target is connected to the entry point of the
+         program */
+      if (!target_has_registers)
+        {
+          pc = entry_point_address ();
+          sal = find_pc_line (pc, 0);
+        }  
+      else if (deprecated_selected_frame
+	       && (get_frame_pc (deprecated_selected_frame) != read_pc ()))
         {
           /* Note - this next line is not correct on all architectures.
 	     For a graphical debugger we really want to highlight the 
@@ -2327,7 +2317,7 @@ gdb_set_mem (ClientData clientData, Tcl_Interp *interp,
 	     int objc, Tcl_Obj *CONST objv[])
 {
   CORE_ADDR addr;
-  char buf[128];
+  gdb_byte buf[128];
   char *hexstr;
   int len, size;
 
@@ -2352,7 +2342,7 @@ gdb_set_mem (ClientData clientData, Tcl_Interp *interp,
   /* Convert hexstr to binary and write */
   if (hexstr[0] == '0' && hexstr[1] == 'x')
     hexstr += 2;
-  size = hex2bin (hexstr, buf, strlen (hexstr));
+  size = hex2bin (hexstr, (char *) buf, strlen (hexstr));
   if (size < 0)
     {
       /* Error in input */

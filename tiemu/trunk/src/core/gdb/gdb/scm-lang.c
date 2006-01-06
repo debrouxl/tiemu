@@ -1,7 +1,7 @@
 /* Scheme/Guile language support routines for GDB, the GNU debugger.
 
-   Copyright 1995, 1996, 1998, 2000, 2001, 2002, 2003, 2004 Free Software
-   Foundation, Inc.
+   Copyright 1995, 1996, 1998, 2000, 2001, 2002, 2003, 2004, 2005 Free
+   Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -40,9 +40,6 @@ static struct value *evaluate_subexp_scm (struct type *, struct expression *,
 				      int *, enum noside);
 static struct value *scm_lookup_name (char *);
 static int in_eval_c (void);
-static void scm_printstr (struct ui_file * stream, char *string,
-			  unsigned int length, int width,
-			  int force_ellipses);
 
 struct type *builtin_type_scm;
 
@@ -53,8 +50,8 @@ scm_printchar (int c, struct ui_file *stream)
 }
 
 static void
-scm_printstr (struct ui_file *stream, char *string, unsigned int length,
-	      int width, int force_ellipses)
+scm_printstr (struct ui_file *stream, const gdb_byte *string,
+	      unsigned int length, int width, int force_ellipses)
 {
   fprintf_filtered (stream, "\"%s\"", string);
 }
@@ -76,7 +73,7 @@ is_scmvalue_type (struct type *type)
 LONGEST
 scm_get_field (LONGEST svalue, int index)
 {
-  char buffer[20];
+  gdb_byte buffer[20];
   read_memory (SCM2PTR (svalue) + index * TYPE_LENGTH (builtin_type_scm),
 	       buffer, TYPE_LENGTH (builtin_type_scm));
   return extract_signed_integer (buffer, TYPE_LENGTH (builtin_type_scm));
@@ -87,7 +84,7 @@ scm_get_field (LONGEST svalue, int index)
    or Boolean (CONTEXT == TYPE_CODE_BOOL).  */
 
 LONGEST
-scm_unpack (struct type *type, const char *valaddr, enum type_code context)
+scm_unpack (struct type *type, const gdb_byte *valaddr, enum type_code context)
 {
   if (is_scmvalue_type (type))
     {
@@ -120,7 +117,7 @@ scm_unpack (struct type *type, const char *valaddr, enum type_code context)
 		  return 1;
 		}
 	    }
-	  error ("Value can't be converted to integer.");
+	  error (_("Value can't be converted to integer."));
 	default:
 	  return svalue;
 	}
@@ -160,7 +157,7 @@ scm_lookup_name (char *str)
   struct symbol *sym;
   args[0] = value_allocate_space_in_inferior (len);
   args[1] = value_from_longest (builtin_type_int, len);
-  write_memory (value_as_long (args[0]), str, len);
+  write_memory (value_as_long (args[0]), (gdb_byte *) str, len);
 
   if (in_eval_c ()
       && (sym = lookup_symbol ("env",
@@ -183,7 +180,7 @@ scm_lookup_name (char *str)
 		       (struct symtab **) NULL);
   if (sym)
     return value_of_variable (sym, NULL);
-  error ("No symbol \"%s\" in current context.", str);
+  error (_("No symbol \"%s\" in current context."), str);
 }
 
 struct value *
@@ -192,9 +189,9 @@ scm_evaluate_string (char *str, int len)
   struct value *func;
   struct value *addr = value_allocate_space_in_inferior (len + 1);
   LONGEST iaddr = value_as_long (addr);
-  write_memory (iaddr, str, len);
+  write_memory (iaddr, (gdb_byte *) str, len);
   /* FIXME - should find and pass env */
-  write_memory (iaddr + len, "", 1);
+  write_memory (iaddr + len, (gdb_byte *) "", 1);
   func = find_function_in_inferior ("scm_evstr");
   return call_function_by_hand (func, 1, &addr);
 }
@@ -272,6 +269,7 @@ const struct language_defn scm_language_defn =
   NULL,
   default_word_break_characters,
   c_language_arch_info,
+  default_print_array_index,
   LANG_MAGIC
 };
 

@@ -1,5 +1,5 @@
 /* BFD back-end for IBM RS/6000 "XCOFF" files.
-   Copyright 1990-1999, 2000, 2001, 2002, 2003, 2004
+   Copyright 1990-1999, 2000, 2001, 2002, 2003, 2004, 2005
    Free Software Foundation, Inc.
    FIXME: Can someone provide a transliteration of this name into ASCII?
    Using the following chars caused a compiler warning on HIUX (so I replaced
@@ -24,7 +24,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #include "bfd.h"
 #include "sysdep.h"
@@ -1294,10 +1294,12 @@ _bfd_xcoff_archive_p (abfd)
   if (bfd_ardata (abfd) == (struct artdata *) NULL)
     goto error_ret_restore;
 
-  bfd_ardata (abfd)->cache = NULL;
-  bfd_ardata (abfd)->archive_head = NULL;
-  bfd_ardata (abfd)->symdefs = NULL;
-  bfd_ardata (abfd)->extended_names = NULL;
+  /* Cleared by bfd_zalloc above.
+     bfd_ardata (abfd)->cache = NULL;
+     bfd_ardata (abfd)->archive_head = NULL;
+     bfd_ardata (abfd)->symdefs = NULL;
+     bfd_ardata (abfd)->extended_names = NULL;
+     bfd_ardata (abfd)->extended_names_size = 0;  */
 
   /* Now handle the two formats.  */
   if (magic[1] != 'b')
@@ -1849,8 +1851,8 @@ xcoff_write_armap_big (abfd, elength, map, orl_count, stridx)
   if (sym_32)
     {
       struct xcoff_ar_hdr_big *hdr;
-      bfd_byte *symbol_table;
-      bfd_byte *st;
+      char *symbol_table;
+      char *st;
       file_ptr fileoff;
 
       bfd_vma symbol_table_size =
@@ -1860,8 +1862,7 @@ xcoff_write_armap_big (abfd, elength, map, orl_count, stridx)
 	+ 8 * sym_32
 	+ str_32 + (str_32 & 1);
 
-      symbol_table = NULL;
-      symbol_table = (bfd_byte *) bfd_zmalloc (symbol_table_size);
+      symbol_table = bfd_zmalloc (symbol_table_size);
       if (symbol_table == NULL)
 	return FALSE;
 
@@ -1941,7 +1942,6 @@ xcoff_write_armap_big (abfd, elength, map, orl_count, stridx)
       bfd_bwrite (symbol_table, symbol_table_size, abfd);
 
       free (symbol_table);
-      symbol_table = NULL;
 
       prevoff = nextoff;
       nextoff = nextoff + symbol_table_size;
@@ -1952,8 +1952,8 @@ xcoff_write_armap_big (abfd, elength, map, orl_count, stridx)
   if (sym_64)
     {
       struct xcoff_ar_hdr_big *hdr;
-      bfd_byte *symbol_table;
-      bfd_byte *st;
+      char *symbol_table;
+      char *st;
       file_ptr fileoff;
 
       bfd_vma symbol_table_size =
@@ -1963,8 +1963,7 @@ xcoff_write_armap_big (abfd, elength, map, orl_count, stridx)
 	+ 8 * sym_64
 	+ str_64 + (str_64 & 1);
 
-      symbol_table = NULL;
-      symbol_table = (bfd_byte *) bfd_zmalloc (symbol_table_size);
+      symbol_table = bfd_zmalloc (symbol_table_size);
       if (symbol_table == NULL)
 	return FALSE;
 
@@ -2039,7 +2038,6 @@ xcoff_write_armap_big (abfd, elength, map, orl_count, stridx)
       bfd_bwrite (symbol_table, symbol_table_size, abfd);
 
       free (symbol_table);
-      symbol_table = NULL;
 
       PRINT20 (fhdr->symoff64, nextoff);
     }
@@ -2311,7 +2309,7 @@ xcoff_write_archive_contents_big (abfd)
   size_t i;
   struct xcoff_ar_hdr_big *hdr, ahdr;
   bfd_size_type size;
-  bfd_byte *member_table, *mt;
+  char *member_table, *mt;
   bfd_vma member_table_size;
 
   memset (&fhdr, 0, SIZEOF_AR_FILE_HDR_BIG);
@@ -2476,8 +2474,7 @@ xcoff_write_archive_contents_big (abfd)
 		       + total_namlen);
 
   member_table_size += member_table_size & 1;
-  member_table = NULL;
-  member_table = (bfd_byte *) bfd_zmalloc (member_table_size);
+  member_table = bfd_zmalloc (member_table_size);
   if (member_table == NULL)
     return FALSE;
 
@@ -2530,7 +2527,6 @@ xcoff_write_archive_contents_big (abfd)
     return FALSE;
 
   free (member_table);
-  member_table = NULL;
 
   PRINT20 (fhdr.memoff, nextoff);
 
@@ -3481,7 +3477,7 @@ xcoff_ppc_relocate_section (output_bfd, info, input_bfd,
 	    }
 	  else if (h != NULL)
 	    {
-	      name = h->root.root.string;
+	      name = NULL;
 	    }
 	  else
 	    {
@@ -3492,8 +3488,9 @@ xcoff_ppc_relocate_section (output_bfd, info, input_bfd,
 	  sprintf (reloc_type_name, "0x%02x", rel->r_type);
 
 	  if (! ((*info->callbacks->reloc_overflow)
-		 (info, name, reloc_type_name, (bfd_vma) 0, input_bfd,
-		  input_section, rel->r_vaddr - input_section->vma)))
+		 (info, (h ? &h->root : NULL), name, reloc_type_name,
+		  (bfd_vma) 0, input_bfd, input_section,
+		  rel->r_vaddr - input_section->vma)))
 	    return FALSE;
 	}
 
@@ -3529,7 +3526,7 @@ _bfd_xcoff_put_ldsymbol_name (abfd, ldinfo, ldsym, name)
       if (ldinfo->string_size + len + 3 > ldinfo->string_alc)
 	{
 	  bfd_size_type newalc;
-	  bfd_byte *newstrings;
+	  char *newstrings;
 
 	  newalc = ldinfo->string_alc * 2;
 	  if (newalc == 0)
@@ -3537,8 +3534,7 @@ _bfd_xcoff_put_ldsymbol_name (abfd, ldinfo, ldsym, name)
 	  while (ldinfo->string_size + len + 3 > newalc)
 	    newalc *= 2;
 
-	  newstrings = ((bfd_byte *)
-			bfd_realloc ((PTR) ldinfo->strings, newalc));
+	  newstrings = bfd_realloc (ldinfo->strings, newalc);
 	  if (newstrings == NULL)
 	    {
 	      ldinfo->failed = TRUE;
@@ -4139,6 +4135,7 @@ const bfd_target rs6000coff_vec =
     /* Copy */
     _bfd_xcoff_copy_private_bfd_data,
     ((bfd_boolean (*) (bfd *, bfd *)) bfd_true),
+    _bfd_generic_init_private_section_data,
     ((bfd_boolean (*) (bfd *, asection *, bfd *, asection *)) bfd_true),
     ((bfd_boolean (*) (bfd *, asymbol *, bfd *, asymbol *)) bfd_true),
     ((bfd_boolean (*) (bfd *, bfd *)) bfd_true),
@@ -4172,6 +4169,8 @@ const bfd_target rs6000coff_vec =
     coff_bfd_is_target_special_symbol,
     coff_get_lineno,
     coff_find_nearest_line,
+    _bfd_generic_find_line,
+    coff_find_inliner_info,
     coff_bfd_make_debug_symbol,
     _bfd_generic_read_minisymbols,
     _bfd_generic_minisymbol_to_symbol,
@@ -4197,6 +4196,7 @@ const bfd_target rs6000coff_vec =
     _bfd_generic_link_split_section,
     bfd_generic_gc_sections,
     bfd_generic_merge_sections,
+    _bfd_generic_match_sections_by_type,
     bfd_generic_is_group_section,
     bfd_generic_discard_group,
     _bfd_generic_section_already_linked,
@@ -4386,6 +4386,7 @@ const bfd_target pmac_xcoff_vec =
     /* Copy */
     _bfd_xcoff_copy_private_bfd_data,
     ((bfd_boolean (*) (bfd *, bfd *)) bfd_true),
+    _bfd_generic_init_private_section_data,
     ((bfd_boolean (*) (bfd *, asection *, bfd *, asection *)) bfd_true),
     ((bfd_boolean (*) (bfd *, asymbol *, bfd *, asymbol *)) bfd_true),
     ((bfd_boolean (*) (bfd *, bfd *)) bfd_true),
@@ -4419,6 +4420,8 @@ const bfd_target pmac_xcoff_vec =
     coff_bfd_is_target_special_symbol,
     coff_get_lineno,
     coff_find_nearest_line,
+    _bfd_generic_find_line,
+    coff_find_inliner_info,
     coff_bfd_make_debug_symbol,
     _bfd_generic_read_minisymbols,
     _bfd_generic_minisymbol_to_symbol,
@@ -4444,6 +4447,7 @@ const bfd_target pmac_xcoff_vec =
     _bfd_generic_link_split_section,
     bfd_generic_gc_sections,
     bfd_generic_merge_sections,
+    _bfd_generic_match_sections_by_type,
     bfd_generic_is_group_section,
     bfd_generic_discard_group,
     _bfd_generic_section_already_linked,

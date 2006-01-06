@@ -1,5 +1,5 @@
 /* New version of run front end support for simulators.
-   Copyright (C) 1997 Free Software Foundation, Inc.
+   Copyright (C) 1997, 2004 Free Software Foundation, Inc.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,6 +22,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #ifdef HAVE_ENVIRON
 extern char **environ;
+#endif
+
+#ifdef HAVE_UNISTD_H
+/* For chdir.  */
+#include <unistd.h>
 #endif
 
 static void usage (void);
@@ -77,6 +82,12 @@ main (int argc, char **argv)
       abort ();
     }
 
+  /* We can't set the endianness in the callback structure until
+     sim_config is called, which happens in sim_open.  */
+  default_callback.target_endian
+    = (CURRENT_TARGET_BYTE_ORDER == BIG_ENDIAN
+       ? BFD_ENDIAN_BIG : BFD_ENDIAN_LITTLE);
+
   /* Was there a program to run?  */
   prog_argv = STATE_PROG_ARGV (sd);
   prog_bfd = STATE_PROG_BFD (sd);
@@ -116,6 +127,16 @@ main (int argc, char **argv)
 #else
   sim_create_inferior (sd, prog_bfd, prog_argv, NULL);
 #endif
+
+  /* To accommodate relative file paths, chdir to sysroot now.  We
+     mustn't do this until BFD has opened the program, else we wouldn't
+     find the executable if it has a relative file path.  */
+  if (simulator_sysroot[0] != '\0' && chdir (simulator_sysroot) < 0)
+    {
+      fprintf (stderr, "%s: can't change directory to \"%s\"\n",
+	       myname, simulator_sysroot);
+      exit (1);
+    }
 
   /* Run/Step the program.  */
   if (single_step)

@@ -26,8 +26,6 @@
 #ifndef _TM_QNXNTO_H
 #define _TM_QNXNTO_H
 
-#include "tm-sysv4.h"
-
 /* Setup the valid realtime signal range.  */
 #define REALTIME_LO 41
 #define REALTIME_HI 56

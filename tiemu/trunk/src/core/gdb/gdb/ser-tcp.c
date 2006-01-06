@@ -1,5 +1,6 @@
-/* Serial interface for raw TCP connections on Un*x like systems
-   Copyright 1992, 1993, 1994, 1995, 1996, 1998, 1999, 2001
+/* Serial interface for raw TCP connections on Un*x like systems.
+
+   Copyright 1992, 1993, 1994, 1995, 1996, 1998, 1999, 2001, 2005
    Free Software Foundation, Inc.
 
    This file is part of GDB.
@@ -21,6 +22,8 @@
 
 #include "defs.h"
 #include "serial.h"
+#include "ser-base.h"
+#include "ser-unix.h"
 
 #include <sys/types.h>
 
@@ -33,48 +36,25 @@
 
 #include <sys/time.h>
 
-#if !defined (__MINGW32__)
+#ifdef USE_WIN32API
+#include <winsock2.h>
+#define ETIMEDOUT WSAETIMEDOUT
+#define close(fd) closesocket (fd)
+#define ioctl ioctlsocket
+#else
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/tcp.h>
-#include <signal.h>
-#else /* !__MINGW32__ */
-#include <winsock2.h>
-#endif /* !__MINGW32__ */
+#endif
 
+#include <signal.h>
 #include "gdb_string.h"
 
-/*
- * Winsock needs to be started manually.
- */
-
-#if defined (__MINGW32__)
-#define ECONNREFUSED WSAECONNREFUSED
-#define EINPROGRESS  WSAEINPROGRESS
-#define ETIMEDOUT    WSAETIMEDOUT
-
-static int ws_started;
-static int
-net_open_winsock ()
-{
-  if (!ws_started) {
-    WORD    wVersionRequested;
-    WSADATA wsaData;
-    int     err;
-
-    wVersionRequested = MAKEWORD (2, 2);
-    err = WSAStartup (wVersionRequested, &wsaData);
-    if (err)
-      return 0;
-    ws_started = 1;
-  }
-  return 1;
-}
-#endif /* !__MINGW32__ */
-
-extern void ser_platform_tcp_init (struct serial_ops *ops);
+#ifndef HAVE_SOCKLEN_T
+typedef int socklen_t;
+#endif
 
 static int net_open (struct serial *scb, const char *name);
 static void net_close (struct serial *scb);
@@ -95,6 +75,11 @@ net_open (struct serial *scb, const char *name)
   int use_udp;
   struct hostent *hostent;
   struct sockaddr_in sockaddr;
+#ifdef USE_WIN32API
+  u_long ioarg;
+#else
+  int ioarg;
+#endif
 
   use_udp = 0;
   if (strncmp (name, "udp:", 4) == 0)
@@ -108,7 +93,7 @@ net_open (struct serial *scb, const char *name)
   port_str = strchr (name, ':');
 
   if (!port_str)
-    error ("net_open: No colon in host name!");	   /* Shouldn't ever happen */
+    error (_("net_open: No colon in host name!"));	   /* Shouldn't ever happen */
 
   tmp = min (port_str - name, (int) sizeof hostname - 1);
   strncpy (hostname, name, tmp);	/* Don't want colon */
@@ -119,15 +104,6 @@ net_open (struct serial *scb, const char *name)
   if (!hostname[0])
     strcpy (hostname, "localhost");
 
-#if defined (__MINGW32__)
-  if (!net_open_winsock ())
-    {
-      fprintf_unfiltered (gdb_stderr, "error WINSOCK startup\n");
-      errno = ENOENT;
-      return -1;
-    }    
-#endif /* __MINGW32__ */
-  
   hostent = gethostbyname (hostname);
   if (!hostent)
     {
@@ -149,17 +125,26 @@ net_open (struct serial *scb, const char *name)
   memcpy (&sockaddr.sin_addr.s_addr, hostent->h_addr,
 	  sizeof (struct in_addr));
 
-#if !defined (__MINGW32__)
   /* set socket nonblocking */
-  tmp = 1;
-  ioctl (scb->fd, FIONBIO, &tmp);
-#endif /* !__MINGW32__ */
+  ioarg = 1;
+  ioctl (scb->fd, FIONBIO, &ioarg);
 
   /* Use Non-blocking connect.  connect() will return 0 if connected already. */
   n = connect (scb->fd, (struct sockaddr *) &sockaddr, sizeof (sockaddr));
 
-  if (n < 0 && errno != EINPROGRESS)
+  if (n < 0
+#ifdef USE_WIN32API
+      /* Under Windows, calling "connect" with a non-blocking socket
+	 results in WSAEWOULDBLOCK, not WSAEINPROGRESS.  */
+      && WSAGetLastError() != WSAEWOULDBLOCK
+#else
+      && errno != EINPROGRESS
+#endif
+      )
     {
+#ifdef USE_WIN32API
+      errno = WSAGetLastError();
+#endif
       net_close (scb);
       return -1;
     }
@@ -174,9 +159,9 @@ net_open (struct serial *scb, const char *name)
 
       do 
 	{
-	  /* While we wait for the connect to complete 
+	  /* While we wait for the connect to complete, 
 	     poll the UI so it can update or the user can 
-	     interrupt. */
+	     interrupt.  */
 	  if (deprecated_ui_loop_hook)
 	    {
 	      if (deprecated_ui_loop_hook (0))
@@ -207,9 +192,14 @@ net_open (struct serial *scb, const char *name)
 
   /* Got something.  Is it an error? */
   {
-    int res, err, len;
+    int res, err;
+    socklen_t len;
     len = sizeof(err);
-    res = getsockopt (scb->fd, SOL_SOCKET, SO_ERROR, &err, &len);
+    /* On Windows, the fourth parameter to getsockopt is a "char *";
+       on UNIX systems it is generally "void *".  The cast to "void *"
+       is OK everywhere, since in C "void *" can be implicitly
+       converted to any pointer type.  */
+    res = getsockopt (scb->fd, SOL_SOCKET, SO_ERROR, (void *) &err, &len);
     if (res < 0 || err)
       {
 	if (err)
@@ -219,12 +209,10 @@ net_open (struct serial *scb, const char *name)
       }
   } 
 
-#if !defined (__MINGW32__)
   /* turn off nonblocking */
-  tmp = 0;
-  ioctl (scb->fd, FIONBIO, &tmp);
-#endif /* !__MINGW32__ */
-  
+  ioarg = 0;
+  ioctl (scb->fd, FIONBIO, &ioarg);
+
   if (use_udp == 0)
     {
       /* Disable Nagle algorithm. Needed in some cases. */
@@ -233,11 +221,11 @@ net_open (struct serial *scb, const char *name)
 		  (char *)&tmp, sizeof (tmp));
     }
 
+#ifdef SIGPIPE
   /* If we don't do this, then GDB simply exits
      when the remote side dies.  */
-#if !defined (__MINGW32__)
   signal (SIGPIPE, SIG_IGN);
-#endif /* !__MINGW32__ */
+#endif
 
   return 0;
 }
@@ -252,15 +240,49 @@ net_close (struct serial *scb)
   scb->fd = -1;
 }
 
+static int
+net_read_prim (struct serial *scb, size_t count)
+{
+  return recv (scb->fd, scb->buf, count, 0);
+}
+
+static int
+net_write_prim (struct serial *scb, const void *buf, size_t count)
+{
+  return send (scb->fd, buf, count, 0);
+}
+
 void
 _initialize_ser_tcp (void)
 {
-  struct serial_ops *ops = XMALLOC (struct serial_ops);
+  struct serial_ops *ops;
+#ifdef USE_WIN32API
+  WSADATA wsa_data;
+  if (WSAStartup (MAKEWORD (1, 0), &wsa_data) != 0)
+    /* WinSock is unavailable.  */
+    return;
+#endif
+  ops = XMALLOC (struct serial_ops);
   memset (ops, 0, sizeof (struct serial_ops));
   ops->name = "tcp";
   ops->next = 0;
   ops->open = net_open;
   ops->close = net_close;
-  ser_platform_tcp_init (ops);
+  ops->readchar = ser_base_readchar;
+  ops->write = ser_base_write;
+  ops->flush_output = ser_base_flush_output;
+  ops->flush_input = ser_base_flush_input;
+  ops->send_break = ser_base_send_break;
+  ops->go_raw = ser_base_raw;
+  ops->get_tty_state = ser_base_get_tty_state;
+  ops->set_tty_state = ser_base_set_tty_state;
+  ops->print_tty_state = ser_base_print_tty_state;
+  ops->noflush_set_tty_state = ser_base_noflush_set_tty_state;
+  ops->setbaudrate = ser_base_setbaudrate;
+  ops->setstopbits = ser_base_setstopbits;
+  ops->drain_output = ser_base_drain_output;
+  ops->async = ser_base_async;
+  ops->read_prim = net_read_prim;
+  ops->write_prim = net_write_prim;
   serial_add_interface (ops);
 }

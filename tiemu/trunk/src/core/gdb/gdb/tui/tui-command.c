@@ -1,6 +1,6 @@
 /* Specific command window processing.
 
-   Copyright 1998, 1999, 2000, 2001, 2002, 2003, 2004 Free Software
+   Copyright 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005 Free Software
    Foundation, Inc.
 
    Contributed by Hewlett-Packard Company.
@@ -48,13 +48,14 @@ unsigned int
 tui_dispatch_ctrl_char (unsigned int ch)
 {
   struct tui_win_info *win_info = tui_win_with_focus ();
-  WINDOW *w = TUI_CMD_WIN->generic.handle;
 
-  /*
-     ** If the command window has the logical focus, or no-one does
-     ** assume it is the command window; in this case, pass the
-     ** character on through and do nothing here.
-   */
+  /* Handle the CTRL-L refresh for each window.  */
+  if (ch == '\f')
+    tui_refresh_all_win ();
+
+  /* If the command window has the logical focus, or no-one does
+     assume it is the command window; in this case, pass the
+     character on through and do nothing here.  */
   if (win_info == NULL || win_info == TUI_CMD_WIN)
     return ch;
   else
@@ -68,33 +69,37 @@ tui_dispatch_ctrl_char (unsigned int ch)
          ** Seems like a bug in the curses library?
        */
       term = (char *) getenv ("TERM");
-      for (i = 0; (term && term[i]); i++)
-	term[i] = toupper (term[i]);
-      if ((strcmp (term, "XTERM") == 0) && key_is_start_sequence (ch))
+      if (term)
 	{
-	  unsigned int page_ch = 0;
-	  unsigned int tmp_char;
-
-	  tmp_char = 0;
-	  while (!key_is_end_sequence (tmp_char))
+	  for (i = 0; term[i]; i++)
+	    term[i] = toupper (term[i]);
+	  if ((strcmp (term, "XTERM") == 0) && key_is_start_sequence (ch))
 	    {
-	      tmp_char = (int) wgetch (w);
-	      if (tmp_char == ERR)
+	      unsigned int page_ch = 0;
+	      unsigned int tmp_char;
+              WINDOW *w = TUI_CMD_WIN->generic.handle;
+
+	      tmp_char = 0;
+	      while (!key_is_end_sequence (tmp_char))
 		{
-		  return ch;
+		  tmp_char = (int) wgetch (w);
+		  if (tmp_char == ERR)
+		    {
+		      return ch;
+		    }
+		  if (!tmp_char)
+		    break;
+		  if (tmp_char == 53)
+		    page_ch = KEY_PPAGE;
+		  else if (tmp_char == 54)
+		    page_ch = KEY_NPAGE;
+		  else
+		    {
+		      return 0;
+		    }
 		}
-	      if (!tmp_char)
-		break;
-	      if (tmp_char == 53)
-		page_ch = KEY_PPAGE;
-	      else if (tmp_char == 54)
-		page_ch = KEY_NPAGE;
-	      else
-		{
-		  return 0;
-		}
+	      ch_copy = page_ch;
 	    }
-	  ch_copy = page_ch;
 	}
 
       switch (ch_copy)
@@ -120,8 +125,7 @@ tui_dispatch_ctrl_char (unsigned int ch)
 	  tui_scroll_right (win_info, 1);
 	  break;
 	case '\f':
-	  tui_refresh_all_win ();
-	  break;
+          break;
 	default:
 	  c = ch_copy;
 	  break;

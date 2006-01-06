@@ -1,6 +1,6 @@
 /* BFD back-end for Intel i860 COFF files.
    Copyright 1990, 1991, 1992, 1993, 1994, 1995, 1999, 2000, 2001, 2002,
-   2003, 2004 Free Software Foundation, Inc.
+   2003, 2004, 2005 Free Software Foundation, Inc.
    Created mostly by substituting "860" for "386" in coff-i386.c
    Harry Dolan <dolan@ssd.intel.com>, October 1995
 
@@ -18,7 +18,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #include "bfd.h"
 #include "sysdep.h"
@@ -463,31 +463,7 @@ static reloc_howto_type howto_table[] =
    FIXME: This macro refers to symbols and asect; these are from the
    calling function, not the macro arguments.  */
 
-/* FIXME: This was copied from the i386 version originally but
-   appears to be wrong for i860.  For now we'll do nothing.  */
-#if 0
-#define CALC_ADDEND(abfd, ptr, reloc, cache_ptr)		\
-  {								\
-    coff_symbol_type *coffsym = (coff_symbol_type *) NULL;	\
-    if (ptr && bfd_asymbol_bfd (ptr) != abfd)			\
-      coffsym = (obj_symbols (abfd)				\
-	         + (cache_ptr->sym_ptr_ptr - symbols));		\
-    else if (ptr)						\
-      coffsym = coff_symbol_from (abfd, ptr);			\
-    if (coffsym != (coff_symbol_type *) NULL			\
-	&& coffsym->native->u.syment.n_scnum == 0)		\
-      cache_ptr->addend = - coffsym->native->u.syment.n_value;	\
-    else if (ptr && bfd_asymbol_bfd (ptr) == abfd		\
-	     && ptr->section != (asection *) NULL)		\
-      cache_ptr->addend = - (ptr->section->vma + ptr->value);	\
-    else							\
-      cache_ptr->addend = 0;					\
-    if (ptr && howto_table[reloc.r_type].pc_relative)		\
-      cache_ptr->addend += asect->vma;				\
-  }
-#else
 #define CALC_ADDEND(abfd, ptr, reloc, cache_ptr)
-#endif
 
 /* We use the special COFF backend linker.  */
 #define coff_relocate_section _bfd_coff_generic_relocate_section

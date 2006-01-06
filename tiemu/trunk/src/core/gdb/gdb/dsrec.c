@@ -64,13 +64,13 @@ load_srec (struct serial *desc, const char *file, bfd_vma load_offset,
   abfd = bfd_openr (file, 0);
   if (!abfd)
     {
-      printf_filtered ("Unable to open file %s\n", file);
+      printf_filtered (_("Unable to open file %s\n"), file);
       return;
     }
 
   if (bfd_check_format (abfd, bfd_object) == 0)
     {
-      printf_filtered ("File is not an object file\n");
+      printf_filtered (_("File is not an object file\n"));
       return;
     }
 
@@ -127,7 +127,7 @@ load_srec (struct serial *desc, const char *file, bfd_vma load_offset,
 		if (deprecated_ui_load_progress_hook)
 		  if (deprecated_ui_load_progress_hook (section_name,
 							(unsigned long) i))
-		    error ("Canceled the download");
+		    error (_("Canceled the download"));
 	      }
 	    while (waitack != NULL && !waitack ());
 
@@ -141,7 +141,7 @@ load_srec (struct serial *desc, const char *file, bfd_vma load_offset,
 	if (deprecated_ui_load_progress_hook)
 	  if (deprecated_ui_load_progress_hook (section_name,
 						(unsigned long) i))
-	    error ("Canceled the download");
+	    error (_("Canceled the download"));
 	putchar_unfiltered ('\n');
       }
 
@@ -254,7 +254,7 @@ make_srec (char *srec, CORE_ADDR targ_addr, bfd *abfd, asection *sect,
     addr_size = 4;
   else
     internal_error (__FILE__, __LINE__,
-		    "make_srec:  Bad address (0x%s), or bad flags (0x%x).",
+		    _("make_srec:  Bad address (0x%s), or bad flags (0x%x)."),
 		    paddr (targ_addr), flags);
 
   /* Now that we know the address size, we can figure out how much

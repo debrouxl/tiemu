@@ -54,86 +54,11 @@ static void udot_info (char *, int);
 void _initialize_infptrace (void);
 
 
-/* This function simply calls ptrace with the given arguments.  
-   It exists so that all calls to ptrace are isolated in this 
-   machine-dependent file. */
 int
 call_ptrace (int request, int pid, PTRACE_ARG3_TYPE addr, int data)
 {
-  int pt_status = 0;
-
-#if 0
-  int saved_errno;
-
-  printf ("call_ptrace(request=%d, pid=%d, addr=0x%x, data=0x%x)",
-	  request, pid, addr, data);
-#endif
-#if defined(PT_SETTRC)
-  /* If the parent can be told to attach to us, try to do it.  */
-  if (request == PT_SETTRC)
-    {
-      errno = 0;
-#ifndef PTRACE_TYPE_ARG5
-      pt_status = ptrace (PT_SETTRC, pid, addr, data);
-#else
-      /* Deal with HPUX 8.0 braindamage.  We never use the
-         calls which require the fifth argument.  */
-      pt_status = ptrace (PT_SETTRC, pid, addr, data, 0);
-#endif
-      if (errno)
-	perror_with_name ("ptrace");
-#if 0
-      printf (" = %d\n", pt_status);
-#endif
-      if (pt_status < 0)
-	return pt_status;
-      else
-	return parent_attach_all (pid, addr, data);
-    }
-#endif
-
-#if defined(PT_CONTIN1)
-  /* On HPUX, PT_CONTIN1 is a form of continue that preserves pending
-     signals.  If it's available, use it.  */
-  if (request == PT_CONTINUE)
-    request = PT_CONTIN1;
-#endif
-
-#if defined(PT_SINGLE1)
-  /* On HPUX, PT_SINGLE1 is a form of step that preserves pending
-     signals.  If it's available, use it.  */
-  if (request == PT_STEP)
-    request = PT_SINGLE1;
-#endif
-
-#if 0
-  saved_errno = errno;
-  errno = 0;
-#endif
-#ifndef PTRACE_TYPE_ARG5
-  pt_status = ptrace (request, pid, addr, data);
-#else
-  /* Deal with HPUX 8.0 braindamage.  We never use the
-     calls which require the fifth argument.  */
-  pt_status = ptrace (request, pid, addr, data, 0);
-#endif
-
-#if 0
-  if (errno)
-    printf (" [errno = %d]", errno);
-
-  errno = saved_errno;
-  printf (" = 0x%x\n", pt_status);
-#endif
-  return pt_status;
+  return ptrace (request, pid, addr, data);
 }
-
-
-#if defined (DEBUG_PTRACE) || defined (PTRACE_TYPE_ARG5)
-/* For the rest of the file, use an extra level of indirection */
-/* This lets us breakpoint usefully on call_ptrace. */
-#define ptrace call_ptrace
-#endif
 
 /* Wait for a process to finish, possibly running a target-specific
    hook before returning.  */
@@ -219,7 +144,7 @@ child_resume (ptid_t ptid, int step, enum target_signal signal)
   errno = 0;
   ptrace (request, pid, (PTRACE_TYPE_ARG3)1, target_signal_to_host (signal));
   if (errno != 0)
-    perror_with_name ("ptrace");
+    perror_with_name (("ptrace"));
 }
 #endif /* DEPRECATED_CHILD_RESUME */
 
@@ -233,11 +158,11 @@ attach (int pid)
   errno = 0;
   ptrace (PT_ATTACH, pid, (PTRACE_TYPE_ARG3) 0, 0);
   if (errno != 0)
-    perror_with_name ("ptrace");
+    perror_with_name (("ptrace"));
   attach_flag = 1;
   return pid;
 #else
-  error ("This system does not support attaching to a process");
+  error (_("This system does not support attaching to a process"));
 #endif
 }
 
@@ -253,10 +178,10 @@ detach (int signal)
   errno = 0;
   ptrace (PT_DETACH, pid, (PTRACE_TYPE_ARG3) 1, signal);
   if (errno != 0)
-    perror_with_name ("ptrace");
+    perror_with_name (("ptrace"));
   attach_flag = 0;
 #else
-  error ("This system does not support detaching from a process");
+  error (_("This system does not support detaching from a process"));
 #endif
 }
 
@@ -310,7 +235,7 @@ fetch_register (int regnum)
       errno = 0;
       buf[i] = ptrace (PT_READ_U, tid, (PTRACE_TYPE_ARG3) addr, 0);
       if (errno != 0)
-	error ("Couldn't read register %s (#%d): %s.", REGISTER_NAME (regnum),
+	error (_("Couldn't read register %s (#%d): %s."), REGISTER_NAME (regnum),
 	       regnum, safe_strerror (errno));
 
       addr += sizeof (PTRACE_TYPE_RET);
@@ -363,8 +288,8 @@ store_register (int regnum)
       errno = 0;
       ptrace (PT_WRITE_U, tid, (PTRACE_TYPE_ARG3) addr, buf[i]);
       if (errno != 0)
-	error ("Couldn't write register %s (#%d): %s.", REGISTER_NAME (regnum),
-	       regnum, safe_strerror (errno));
+	error (_("Couldn't write register %s (#%d): %s."),
+	       REGISTER_NAME (regnum), regnum, safe_strerror (errno));
 
       addr += sizeof (PTRACE_TYPE_RET);
     }
@@ -407,7 +332,7 @@ store_inferior_registers (int regnum)
    us in the target stack anyway.  */
 
 int
-child_xfer_memory (CORE_ADDR memaddr, char *myaddr, int len, int write,
+child_xfer_memory (CORE_ADDR memaddr, gdb_byte *myaddr, int len, int write,
 		   struct mem_attrib *attrib, struct target_ops *target)
 {
   int i;
@@ -539,7 +464,7 @@ udot_info (char *dummy1, int dummy2)
 
   if (!target_has_execution)
     {
-      error ("The program is not being run.");
+      error (_("The program is not being run."));
     }
 
 #if !defined (KERNEL_U_SIZE)
@@ -548,7 +473,7 @@ udot_info (char *dummy1, int dummy2)
      routine, called "kernel_u_size" that returns the size of the user
      struct, to the appropriate *-nat.c file and then add to the native
      config file "#define KERNEL_U_SIZE kernel_u_size()" */
-  error ("Don't know how large ``struct user'' is in this version of gdb.");
+  error (_("Don't know how large ``struct user'' is in this version of gdb."));
 
 #else
 
@@ -584,6 +509,6 @@ _initialize_infptrace (void)
 {
 #if !defined (CHILD_XFER_MEMORY)
   add_info ("udot", udot_info,
-	    "Print contents of kernel ``struct user'' for current child.");
+	    _("Print contents of kernel ``struct user'' for current child."));
 #endif
 }

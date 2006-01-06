@@ -1,8 +1,8 @@
 /* General utility routines for GDB, the GNU debugger.
 
    Copyright 1986, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995,
-   1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004 Free Software
-   Foundation, Inc.
+   1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005 Free
+   Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -26,6 +26,7 @@
 #include <ctype.h>
 #include "gdb_string.h"
 #include "event-top.h"
+#include "exceptions.h"
 
 #ifdef TUI
 #include "tui/tui.h"		/* For tui_get_command_dimension.   */
@@ -57,12 +58,7 @@
 
 #include <sys/param.h>		/* For MAXPATHLEN */
 
-#ifdef HAVE_CURSES_H
-#include <curses.h>
-#endif
-#ifdef HAVE_TERM_H
-#include <term.h>
-#endif
+#include "gdb_curses.h"
 
 #include "readline/readline.h"
 
@@ -70,19 +66,14 @@
 #include <windows.h>
 #endif
 
-#ifdef NEED_DECLARATION_MALLOC
+#if !HAVE_DECL_MALLOC
 extern PTR malloc ();		/* OK: PTR */
 #endif
-#ifdef NEED_DECLARATION_REALLOC
+#if !HAVE_DECL_REALLOC
 extern PTR realloc ();		/* OK: PTR */
 #endif
-#ifdef NEED_DECLARATION_FREE
+#if !HAVE_DECL_FREE
 extern void free ();
-#endif
-/* Actually, we'll never have the decl, since we don't define _GNU_SOURCE.  */
-#if defined(HAVE_CANONICALIZE_FILE_NAME) \
-    && defined(NEED_DECLARATION_CANONICALIZE_FILE_NAME)
-extern char *canonicalize_file_name (const char *);
 #endif
 
 /* readline defines this.  */
@@ -90,14 +81,10 @@ extern char *canonicalize_file_name (const char *);
 
 void (*deprecated_error_begin_hook) (void);
 
-/* Holds the last error message issued by gdb */
-
-static struct ui_file *gdb_lasterr;
-
 /* Prototypes for local functions */
 
 static void vfprintf_maybe_filtered (struct ui_file *, const char *,
-				     va_list, int);
+				     va_list, int) ATTR_FORMAT (printf, 2, 0);
 
 static void fputs_maybe_filtered (const char *, struct ui_file *, int);
 
@@ -150,18 +137,42 @@ int immediate_quit;
    C++/ObjC form rather than raw.  */
 
 int demangle = 1;
+static void
+show_demangle (struct ui_file *file, int from_tty,
+	       struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("\
+Demangling of encoded C++/ObjC names when displaying symbols is %s.\n"),
+		    value);
+}
 
 /* Nonzero means that encoded C++/ObjC names should be printed out in their
    C++/ObjC form even in assembler language displays.  If this is set, but
    DEMANGLE is zero, names are printed raw, i.e. DEMANGLE controls.  */
 
 int asm_demangle = 0;
+static void
+show_asm_demangle (struct ui_file *file, int from_tty,
+		   struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("\
+Demangling of C++/ObjC names in disassembly listings is %s.\n"),
+		    value);
+}
 
 /* Nonzero means that strings with character values >0x7F should be printed
    as octal escapes.  Zero means just print the value (e.g. it's an
    international character, and the terminal or window can cope.)  */
 
 int sevenbit_strings = 0;
+static void
+show_sevenbit_strings (struct ui_file *file, int from_tty,
+		       struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("\
+Printing of 8-bit characters in strings as \\nnn is %s.\n"),
+		    value);
+}
 
 /* String to be printed before error messages, if any.  */
 
@@ -176,6 +187,13 @@ char *quit_pre_print;
 char *warning_pre_print = "\nwarning: ";
 
 int pagination_enabled = 1;
+static void
+show_pagination_enabled (struct ui_file *file, int from_tty,
+			 struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("State of pagination is %s.\n"), value);
+}
+
 
 
 /* Add a new cleanup to the cleanup_chain,
@@ -428,7 +446,7 @@ free_current_contents (void *ptr)
   void **location = ptr;
   if (location == NULL)
     internal_error (__FILE__, __LINE__,
-		    "free_current_contents: NULL pointer");
+		    _("free_current_contents: NULL pointer"));
   if (*location != NULL)
     {
       xfree (*location);
@@ -471,7 +489,7 @@ add_continuation (void (*continuation_hook) (struct continuation_arg *),
    before we have a chance of exhausting those that were already
    there. We need to then save the beginning of the list in a pointer
    and do the continuations from there on, instead of using the
-   global beginning of list as our iteration pointer.*/
+   global beginning of list as our iteration pointer.  */
 void
 do_all_continuations (void)
 {
@@ -485,7 +503,7 @@ do_all_continuations (void)
   continuation_ptr = cmd_continuation;
   cmd_continuation = NULL;
 
-  /* Work now on the list we have set aside. */
+  /* Work now on the list we have set aside.  */
   while (continuation_ptr)
     {
       (continuation_ptr->continuation_hook) (continuation_ptr->arg_list);
@@ -511,7 +529,8 @@ discard_all_continuations (void)
 }
 
 /* Add a continuation to the continuation list, the global list
-   intermediate_continuation. The new continuation will be added at the front.*/
+   intermediate_continuation.  The new continuation will be added at
+   the front.  */
 void
 add_intermediate_continuation (void (*continuation_hook)
 			       (struct continuation_arg *),
@@ -548,7 +567,7 @@ do_all_intermediate_continuations (void)
   continuation_ptr = intermediate_continuation;
   intermediate_continuation = NULL;
 
-  /* Work now on the list we have set aside. */
+  /* Work now on the list we have set aside.  */
   while (continuation_ptr)
     {
       (continuation_ptr->continuation_hook) (continuation_ptr->arg_list);
@@ -621,10 +640,7 @@ warning (const char *string, ...)
 NORETURN void
 verror (const char *string, va_list args)
 {
-  struct ui_file *tmp_stream = mem_fileopen ();
-  make_cleanup_ui_file_delete (tmp_stream);
-  vfprintf_unfiltered (tmp_stream, string, args);
-  error_stream (tmp_stream);
+  throw_verror (GENERIC_ERROR, string, args);
 }
 
 NORETURN void
@@ -632,86 +648,36 @@ error (const char *string, ...)
 {
   va_list args;
   va_start (args, string);
-  verror (string, args);
+  throw_verror (GENERIC_ERROR, string, args);
   va_end (args);
 }
 
-static void
-do_write (void *data, const char *buffer, long length_buffer)
+/* Print an error message and quit.
+   The first argument STRING is the error message, used as a fprintf string,
+   and the remaining args are passed as arguments to it.  */
+
+NORETURN void
+vfatal (const char *string, va_list args)
 {
-  ui_file_write (data, buffer, length_buffer);
+  throw_vfatal (string, args);
 }
 
-/* Cause a silent error to occur.  Any error message is recorded
-   though it is not issued.  */
 NORETURN void
-error_silent (const char *string, ...)
+fatal (const char *string, ...)
 {
   va_list args;
-  struct ui_file *tmp_stream = mem_fileopen ();
   va_start (args, string);
-  make_cleanup_ui_file_delete (tmp_stream);
-  vfprintf_unfiltered (tmp_stream, string, args);
-  /* Copy the stream into the GDB_LASTERR buffer.  */
-  ui_file_rewind (gdb_lasterr);
-  ui_file_put (tmp_stream, do_write, gdb_lasterr);
+  throw_vfatal (string, args);
   va_end (args);
-
-  throw_exception (RETURN_ERROR);
-}
-
-/* Output an error message including any pre-print text to gdb_stderr.  */
-void
-error_output_message (char *pre_print, char *msg)
-{
-  target_terminal_ours ();
-  wrap_here ("");		/* Force out any buffered output */
-  gdb_flush (gdb_stdout);
-  annotate_error_begin ();
-  if (pre_print)
-    fputs_filtered (pre_print, gdb_stderr);
-  fputs_filtered (msg, gdb_stderr);
-  fprintf_filtered (gdb_stderr, "\n");
 }
 
 NORETURN void
 error_stream (struct ui_file *stream)
 {
-  if (deprecated_error_begin_hook)
-    deprecated_error_begin_hook ();
-
-  /* Copy the stream into the GDB_LASTERR buffer.  */
-  ui_file_rewind (gdb_lasterr);
-  ui_file_put (stream, do_write, gdb_lasterr);
-
-  /* Write the message plus any error_pre_print to gdb_stderr.  */
-  target_terminal_ours ();
-  wrap_here ("");		/* Force out any buffered output */
-  gdb_flush (gdb_stdout);
-  annotate_error_begin ();
-  if (error_pre_print)
-    fputs_filtered (error_pre_print, gdb_stderr);
-  ui_file_put (stream, do_write, gdb_stderr);
-  fprintf_filtered (gdb_stderr, "\n");
-
-  throw_exception (RETURN_ERROR);
-}
-
-/* Get the last error message issued by gdb */
-
-char *
-error_last_message (void)
-{
   long len;
-  return ui_file_xstrdup (gdb_lasterr, &len);
-}
-
-/* This is to be called by main() at the very beginning */
-
-void
-error_init (void)
-{
-  gdb_lasterr = mem_fileopen ();
+  char *message = ui_file_xstrdup (stream, &len);
+  make_cleanup (xfree, message);
+  error (("%s"), message);
 }
 
 /* Print a message reporting an internal error/warning. Ask the user
@@ -731,7 +697,7 @@ struct internal_problem
    has been reported, and assuming GDB didn't quit, the caller can
    either allow execution to resume or throw an error.  */
 
-static void
+static void ATTR_FORMAT (printf, 4, 0)
 internal_vproblem (struct internal_problem *problem,
 		   const char *file, int line, const char *fmt, va_list ap)
 {
@@ -785,7 +751,7 @@ further debugging may prove unreliable.", file, line, problem->name, msg);
       /* Default (yes/batch case) is to quit GDB.  When in batch mode
          this lessens the likelhood of GDB going into an infinate
          loop.  */
-      quit_p = query ("%s\nQuit this debugging session? ", reason);
+      quit_p = query (_("%s\nQuit this debugging session? "), reason);
       break;
     case AUTO_BOOLEAN_TRUE:
       quit_p = 1;
@@ -794,7 +760,7 @@ further debugging may prove unreliable.", file, line, problem->name, msg);
       quit_p = 0;
       break;
     default:
-      internal_error (__FILE__, __LINE__, "bad switch");
+      internal_error (__FILE__, __LINE__, _("bad switch"));
     }
 
   switch (problem->should_dump_core)
@@ -803,7 +769,7 @@ further debugging may prove unreliable.", file, line, problem->name, msg);
       /* Default (yes/batch case) is to dump core.  This leaves a GDB
          `dropping' so that it is easier to see that something went
          wrong in GDB.  */
-      dump_core_p = query ("%s\nCreate a core file of GDB? ", reason);
+      dump_core_p = query (_("%s\nCreate a core file of GDB? "), reason);
       break;
       break;
     case AUTO_BOOLEAN_TRUE:
@@ -813,7 +779,7 @@ further debugging may prove unreliable.", file, line, problem->name, msg);
       dump_core_p = 0;
       break;
     default:
-      internal_error (__FILE__, __LINE__, "bad switch");
+      internal_error (__FILE__, __LINE__, _("bad switch"));
     }
 
   if (quit_p)
@@ -827,7 +793,7 @@ further debugging may prove unreliable.", file, line, problem->name, msg);
     {
       if (dump_core_p)
 	{
-#ifndef CANT_FORK
+#ifdef HAVE_WORKING_FORK
 	  if (fork () == 0)
 	    abort ();		/* NOTE: GDB has only three calls to abort().  */
 #endif
@@ -845,7 +811,7 @@ NORETURN void
 internal_verror (const char *file, int line, const char *fmt, va_list ap)
 {
   internal_vproblem (&internal_error_problem, file, line, fmt, ap);
-  throw_exception (RETURN_ERROR);
+  deprecated_throw_reason (RETURN_ERROR);
 }
 
 NORETURN void
@@ -884,12 +850,12 @@ char *
 safe_strerror (int errnum)
 {
   char *msg;
-  static char buf[32];
 
   msg = strerror (errnum);
   if (msg == NULL)
     {
-      sprintf (buf, "(undocumented errno %d)", errnum);
+      static char buf[32];
+      xsnprintf (buf, sizeof buf, "(undocumented errno %d)", errnum);
       msg = buf;
     }
   return (msg);
@@ -917,7 +883,7 @@ perror_with_name (const char *string)
   bfd_set_error (bfd_error_no_error);
   errno = 0;
 
-  error ("%s.", combined);
+  error (_("%s."), combined);
 }
 
 /* Print the system error message for ERRCODE, and also mention STRING
@@ -946,47 +912,19 @@ print_sys_errmsg (const char *string, int errcode)
 void
 quit (void)
 {
-  struct serial *gdb_stdout_serial = serial_fdopen (1);
-
-  target_terminal_ours ();
-
-  /* We want all output to appear now, before we print "Quit".  We
-     have 3 levels of buffering we have to flush (it's possible that
-     some of these should be changed to flush the lower-level ones
-     too):  */
-
-  /* 1.  The _filtered buffer.  */
-  wrap_here ((char *) 0);
-
-  /* 2.  The stdio buffer.  */
-  gdb_flush (gdb_stdout);
-  gdb_flush (gdb_stderr);
-
-  /* 3.  The system-level buffer.  */
-  serial_drain_output (gdb_stdout_serial);
-  serial_un_fdopen (gdb_stdout_serial);
-
-  annotate_error_begin ();
-
-  /* Don't use *_filtered; we don't want to prompt the user to continue.  */
-  if (quit_pre_print)
-    fputs_unfiltered (quit_pre_print, gdb_stderr);
-
 #ifdef __MSDOS__
   /* No steenking SIGINT will ever be coming our way when the
      program is resumed.  Don't lie.  */
-  fprintf_unfiltered (gdb_stderr, "Quit\n");
+  fatal ("Quit");
 #else
   if (job_control
       /* If there is no terminal switching for this target, then we can't
          possibly get screwed by the lack of job control.  */
       || current_target.to_terminal_ours == NULL)
-    fprintf_unfiltered (gdb_stderr, "Quit\n");
+    fatal ("Quit");
   else
-    fprintf_unfiltered (gdb_stderr,
-			"Quit (expect signal SIGINT when the program is resumed)\n");
+    fatal ("Quit (expect signal SIGINT when the program is resumed)");
 #endif
-  throw_exception (RETURN_QUIT);
 }
 
 /* Control C comes here */
@@ -1011,12 +949,12 @@ nomem (long size)
   if (size > 0)
     {
       internal_error (__FILE__, __LINE__,
-		      "virtual memory exhausted: can't allocate %ld bytes.",
+		      _("virtual memory exhausted: can't allocate %ld bytes."),
 		      size);
     }
   else
     {
-      internal_error (__FILE__, __LINE__, "virtual memory exhausted.");
+      internal_error (__FILE__, __LINE__, _("virtual memory exhausted."));
     }
 }
 
@@ -1044,6 +982,12 @@ xmalloc (size_t size)
     nomem (size);
 
   return (val);
+}
+
+void *
+xzalloc (size_t size)
+{
+  return xcalloc (1, size);
 }
 
 PTR				/* OK: PTR */
@@ -1135,7 +1079,21 @@ xstrvprintf (const char *format, va_list ap)
      should never happen, but just to be sure.  */
   if (status < 0)
     internal_error (__FILE__, __LINE__,
-		    "vasprintf call failed (errno %d)", errno);
+		    _("vasprintf call failed (errno %d)"), errno);
+  return ret;
+}
+
+int
+xsnprintf (char *str, size_t size, const char *format, ...)
+{
+  va_list args;
+  int ret;
+
+  va_start (args, format);
+  ret = vsnprintf (str, size, format, args);
+  gdb_assert (ret < size);
+  va_end (args);
+
   return ret;
 }
 
@@ -1223,15 +1181,15 @@ query (const char *ctlstr, ...)
       gdb_flush (gdb_stdout);
 
       if (annotation_level > 1)
-	printf_filtered ("\n\032\032pre-query\n");
+	printf_filtered (("\n\032\032pre-query\n"));
 
       va_start (args, ctlstr);
       vfprintf_filtered (gdb_stdout, ctlstr, args);
       va_end (args);
-      printf_filtered ("(y or n) ");
+      printf_filtered (_("(y or n) "));
 
       if (annotation_level > 1)
-	printf_filtered ("\n\032\032query\n");
+	printf_filtered (("\n\032\032query\n"));
 
       wrap_here ("");
       gdb_flush (gdb_stdout);
@@ -1264,11 +1222,11 @@ query (const char *ctlstr, ...)
 	  retval = 0;
 	  break;
 	}
-      printf_filtered ("Please answer y or n.\n");
+      printf_filtered (_("Please answer y or n.\n"));
     }
 
   if (annotation_level > 1)
-    printf_filtered ("\n\032\032post-query\n");
+    printf_filtered (("\n\032\032post-query\n"));
   return retval;
 }
 
@@ -1282,7 +1240,7 @@ query (const char *ctlstr, ...)
    ARGS are the arguments passed along with the CTLSTR argument to
    printf.  */
 
-static int
+static int ATTR_FORMAT (printf, 1, 0)
 defaulted_query (const char *ctlstr, const char defchar, va_list args)
 {
   int answer;
@@ -1325,13 +1283,13 @@ defaulted_query (const char *ctlstr, const char defchar, va_list args)
       gdb_flush (gdb_stdout);
 
       if (annotation_level > 1)
-	printf_filtered ("\n\032\032pre-query\n");
+	printf_filtered (("\n\032\032pre-query\n"));
 
       vfprintf_filtered (gdb_stdout, ctlstr, args);
-      printf_filtered ("(%s or %s) ", y_string, n_string);
+      printf_filtered (_("(%s or %s) "), y_string, n_string);
 
       if (annotation_level > 1)
-	printf_filtered ("\n\032\032query\n");
+	printf_filtered (("\n\032\032query\n"));
 
       wrap_here ("");
       gdb_flush (gdb_stdout);
@@ -1370,12 +1328,12 @@ defaulted_query (const char *ctlstr, const char defchar, va_list args)
 	  break;
 	}
       /* Invalid entries are not defaulted and require another selection.  */
-      printf_filtered ("Please answer %s or %s.\n",
+      printf_filtered (_("Please answer %s or %s.\n"),
 		       y_string, n_string);
     }
 
   if (annotation_level > 1)
-    printf_filtered ("\n\032\032post-query\n");
+    printf_filtered (("\n\032\032post-query\n"));
   return retval;
 }
 
@@ -1425,7 +1383,7 @@ no_control_char_error (const char *start, const char *end)
   memcpy (copy, start, len);
   copy[len] = '\0';
 
-  error ("There is no control character `\\%s' in the `%s' character set.",
+  error (_("There is no control character `\\%s' in the `%s' character set."),
 	 copy, target_charset ());
 }
 
@@ -1473,8 +1431,8 @@ parse_escape (char **string_ptr)
 	      c = 0177;
 
 	      if (!host_char_to_target (c, &target_char))
-		error ("There is no character corresponding to `Delete' "
-		       "in the target character set `%s'.", host_charset ());
+		error (_("There is no character corresponding to `Delete' "
+		       "in the target character set `%s'."), host_charset ());
 
 	      return target_char;
 	    }
@@ -1541,8 +1499,8 @@ parse_escape (char **string_ptr)
 
 static void
 printchar (int c, void (*do_fputs) (const char *, struct ui_file *),
-	   void (*do_fprintf) (struct ui_file *, const char *, ...),
-	   struct ui_file *stream, int quoter)
+	   void (*do_fprintf) (struct ui_file *, const char *, ...)
+	   ATTRIBUTE_FPTR_PRINTF_2, struct ui_file *stream, int quoter)
 {
 
   c &= 0xFF;			/* Avoid sign bit follies */
@@ -1618,9 +1576,25 @@ fputstrn_unfiltered (const char *str, int n, int quoter,
 
 /* Number of lines per page or UINT_MAX if paging is disabled.  */
 static unsigned int lines_per_page;
+static void
+show_lines_per_page (struct ui_file *file, int from_tty,
+		     struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("\
+Number of lines gdb thinks are in a page is %s.\n"),
+		    value);
+}
 
 /* Number of chars per line or UINT_MAX if line folding is disabled.  */
 static unsigned int chars_per_line;
+static void
+show_chars_per_line (struct ui_file *file, int from_tty,
+		     struct cmd_list_element *c, const char *value)
+{
+  fprintf_filtered (file, _("\
+Number of characters gdb thinks are in a line is %s.\n"),
+		    value);
+}
 
 /* Current count of lines printed on this page, chars on this line.  */
 static unsigned int lines_printed, chars_printed;
@@ -1685,7 +1659,7 @@ init_page_info (void)
 	  lines_per_page = UINT_MAX;
 	}
 #endif
-      
+
       /* FIXME: Get rid of this junk.  */
 #if defined(SIGWINCH) && defined(SIGWINCH_HANDLER)
       SIGWINCH_HANDLER (SIGWINCH);
@@ -1761,7 +1735,7 @@ prompt_for_continue (void)
   char cont_prompt[120];
 
   if (annotation_level > 1)
-    printf_unfiltered ("\n\032\032pre-prompt-for-continue\n");
+    printf_unfiltered (("\n\032\032pre-prompt-for-continue\n"));
 
   strcpy (cont_prompt,
 	  "---Type <return> to continue, or q <return> to quit---");
@@ -1787,7 +1761,7 @@ prompt_for_continue (void)
   ignore = gdb_readline_wrapper (cont_prompt);
 
   if (annotation_level > 1)
-    printf_unfiltered ("\n\032\032post-prompt-for-continue\n");
+    printf_unfiltered (("\n\032\032post-prompt-for-continue\n"));
 
   if (ignore)
     {
@@ -1842,7 +1816,7 @@ wrap_here (char *indent)
 {
   /* This should have been allocated, but be paranoid anyway. */
   if (!wrap_buffer)
-    internal_error (__FILE__, __LINE__, "failed internal consistency check");
+    internal_error (__FILE__, __LINE__, _("failed internal consistency check"));
 
   if (wrap_buffer[0])
     {
@@ -2541,49 +2515,59 @@ initialize_utils (void)
 {
   struct cmd_list_element *c;
 
-  c = add_set_cmd ("width", class_support, var_uinteger, &chars_per_line,
-		   "Set number of characters gdb thinks are in a line.",
-		   &setlist);
-  deprecated_add_show_from_set (c, &showlist);
-  set_cmd_sfunc (c, set_width_command);
+  add_setshow_uinteger_cmd ("width", class_support, &chars_per_line, _("\
+Set number of characters gdb thinks are in a line."), _("\
+Show number of characters gdb thinks are in a line."), NULL,
+			    set_width_command,
+			    show_chars_per_line,
+			    &setlist, &showlist);
 
-  c = add_set_cmd ("height", class_support, var_uinteger, &lines_per_page,
-		   "Set number of lines gdb thinks are in a page.", &setlist);
-  deprecated_add_show_from_set (c, &showlist);
-  set_cmd_sfunc (c, set_height_command);
+  add_setshow_uinteger_cmd ("height", class_support, &lines_per_page, _("\
+Set number of lines gdb thinks are in a page."), _("\
+Show number of lines gdb thinks are in a page."), NULL,
+			    set_height_command,
+			    show_lines_per_page,
+			    &setlist, &showlist);
 
   init_page_info ();
 
-  deprecated_add_show_from_set
-    (add_set_cmd ("demangle", class_support, var_boolean,
-		  (char *) &demangle,
-		  "Set demangling of encoded C++/ObjC names when displaying symbols.",
-		  &setprintlist), &showprintlist);
+  add_setshow_boolean_cmd ("demangle", class_support, &demangle, _("\
+Set demangling of encoded C++/ObjC names when displaying symbols."), _("\
+Show demangling of encoded C++/ObjC names when displaying symbols."), NULL,
+			   NULL,
+			   show_demangle,
+			   &setprintlist, &showprintlist);
 
-  deprecated_add_show_from_set
-    (add_set_cmd ("pagination", class_support,
-		  var_boolean, (char *) &pagination_enabled,
-		  "Set state of pagination.", &setlist), &showlist);
+  add_setshow_boolean_cmd ("pagination", class_support,
+			   &pagination_enabled, _("\
+Set state of pagination."), _("\
+Show state of pagination."), NULL,
+			   NULL,
+			   show_pagination_enabled,
+			   &setlist, &showlist);
 
   if (xdb_commands)
     {
       add_com ("am", class_support, pagination_on_command,
-	       "Enable pagination");
+	       _("Enable pagination"));
       add_com ("sm", class_support, pagination_off_command,
-	       "Disable pagination");
+	       _("Disable pagination"));
     }
 
-  deprecated_add_show_from_set
-    (add_set_cmd ("sevenbit-strings", class_support, var_boolean,
-		  (char *) &sevenbit_strings,
-		  "Set printing of 8-bit characters in strings as \\nnn.",
-		  &setprintlist), &showprintlist);
+  add_setshow_boolean_cmd ("sevenbit-strings", class_support,
+			   &sevenbit_strings, _("\
+Set printing of 8-bit characters in strings as \\nnn."), _("\
+Show printing of 8-bit characters in strings as \\nnn."), NULL,
+			   NULL,
+			   show_sevenbit_strings,
+			   &setprintlist, &showprintlist);
 
-  deprecated_add_show_from_set
-    (add_set_cmd ("asm-demangle", class_support, var_boolean,
-		  (char *) &asm_demangle,
-		  "Set demangling of C++/ObjC names in disassembly listings.",
-		  &setprintlist), &showprintlist);
+  add_setshow_boolean_cmd ("asm-demangle", class_support, &asm_demangle, _("\
+Set demangling of C++/ObjC names in disassembly listings."), _("\
+Show demangling of C++/ObjC names in disassembly listings."), NULL,
+			   NULL,
+			   show_asm_demangle,
+			   &setprintlist, &showprintlist);
 }
 
 /* Machine specific function to handle SIGWINCH signal. */
@@ -2623,12 +2607,33 @@ paddr_nz (CORE_ADDR addr)
   return phex_nz (addr, TARGET_ADDR_BIT / 8);
 }
 
-static void
-decimal2str (char *paddr_str, char *sign, ULONGEST addr, int width)
+const char *
+paddress (CORE_ADDR addr)
 {
-  /* steal code from valprint.c:print_decimal().  Should this worry
+  /* Truncate address to the size of a target address, avoiding shifts
+     larger or equal than the width of a CORE_ADDR.  The local
+     variable ADDR_BIT stops the compiler reporting a shift overflow
+     when it won't occur. */
+  /* NOTE: This assumes that the significant address information is
+     kept in the least significant bits of ADDR - the upper bits were
+     either zero or sign extended.  Should ADDRESS_TO_POINTER() or
+     some ADDRESS_TO_PRINTABLE() be used to do the conversion?  */
+
+  int addr_bit = TARGET_ADDR_BIT;
+
+  if (addr_bit < (sizeof (CORE_ADDR) * HOST_CHAR_BIT))
+    addr &= ((CORE_ADDR) 1 << addr_bit) - 1;
+  return hex_string (addr);
+}
+
+static char *
+decimal2str (char *sign, ULONGEST addr, int width)
+{
+  /* Steal code from valprint.c:print_decimal().  Should this worry
      about the real size of addr as the above does? */
   unsigned long temp[3];
+  char *str = get_cell ();
+
   int i = 0;
   do
     {
@@ -2638,31 +2643,38 @@ decimal2str (char *paddr_str, char *sign, ULONGEST addr, int width)
       width -= 9;
     }
   while (addr != 0 && i < (sizeof (temp) / sizeof (temp[0])));
+
   width += 9;
   if (width < 0)
     width = 0;
+
   switch (i)
     {
     case 1:
-      sprintf (paddr_str, "%s%0*lu", sign, width, temp[0]);
+      xsnprintf (str, CELLSIZE, "%s%0*lu", sign, width, temp[0]);
       break;
     case 2:
-      sprintf (paddr_str, "%s%0*lu%09lu", sign, width, temp[1], temp[0]);
+      xsnprintf (str, CELLSIZE, "%s%0*lu%09lu", sign, width,
+		 temp[1], temp[0]);
       break;
     case 3:
-      sprintf (paddr_str, "%s%0*lu%09lu%09lu", sign, width,
-	       temp[2], temp[1], temp[0]);
+      xsnprintf (str, CELLSIZE, "%s%0*lu%09lu%09lu", sign, width,
+		 temp[2], temp[1], temp[0]);
       break;
     default:
       internal_error (__FILE__, __LINE__,
-		      "failed internal consistency check");
+		      _("failed internal consistency check"));
     }
+
+  return str;
 }
 
-static void
-octal2str (char *paddr_str, ULONGEST addr, int width)
+static char *
+octal2str (ULONGEST addr, int width)
 {
   unsigned long temp[3];
+  char *str = get_cell ();
+
   int i = 0;
   do
     {
@@ -2672,76 +2684,78 @@ octal2str (char *paddr_str, ULONGEST addr, int width)
       width -= 10;
     }
   while (addr != 0 && i < (sizeof (temp) / sizeof (temp[0])));
+
   width += 10;
   if (width < 0)
     width = 0;
+
   switch (i)
     {
     case 1:
       if (temp[0] == 0)
-	sprintf (paddr_str, "%*o", width, 0);
+	xsnprintf (str, CELLSIZE, "%*o", width, 0);
       else
-	sprintf (paddr_str, "0%0*lo", width, temp[0]);
+	xsnprintf (str, CELLSIZE, "0%0*lo", width, temp[0]);
       break;
     case 2:
-      sprintf (paddr_str, "0%0*lo%010lo", width, temp[1], temp[0]);
+      xsnprintf (str, CELLSIZE, "0%0*lo%010lo", width, temp[1], temp[0]);
       break;
     case 3:
-      sprintf (paddr_str, "0%0*lo%010lo%010lo", width,
-	       temp[2], temp[1], temp[0]);
+      xsnprintf (str, CELLSIZE, "0%0*lo%010lo%010lo", width,
+		 temp[2], temp[1], temp[0]);
       break;
     default:
       internal_error (__FILE__, __LINE__,
-		      "failed internal consistency check");
+		      _("failed internal consistency check"));
     }
+
+  return str;
 }
 
 char *
 paddr_u (CORE_ADDR addr)
 {
-  char *paddr_str = get_cell ();
-  decimal2str (paddr_str, "", addr, 0);
-  return paddr_str;
+  return decimal2str ("", addr, 0);
 }
 
 char *
 paddr_d (LONGEST addr)
 {
-  char *paddr_str = get_cell ();
   if (addr < 0)
-    decimal2str (paddr_str, "-", -addr, 0);
+    return decimal2str ("-", -addr, 0);
   else
-    decimal2str (paddr_str, "", addr, 0);
-  return paddr_str;
+    return decimal2str ("", addr, 0);
 }
 
-/* eliminate warning from compiler on 32-bit systems */
+/* Eliminate warning from compiler on 32-bit systems.  */
 static int thirty_two = 32;
 
 char *
 phex (ULONGEST l, int sizeof_l)
 {
   char *str;
+
   switch (sizeof_l)
     {
     case 8:
       str = get_cell ();
-      sprintf (str, "%08lx%08lx",
-	       (unsigned long) (l >> thirty_two),
-	       (unsigned long) (l & 0xffffffff));
+      xsnprintf (str, CELLSIZE, "%08lx%08lx",
+		 (unsigned long) (l >> thirty_two),
+		 (unsigned long) (l & 0xffffffff));
       break;
     case 4:
       str = get_cell ();
-      sprintf (str, "%08lx", (unsigned long) l);
+      xsnprintf (str, CELLSIZE, "%08lx", (unsigned long) l);
       break;
     case 2:
       str = get_cell ();
-      sprintf (str, "%04x", (unsigned short) (l & 0xffff));
+      xsnprintf (str, CELLSIZE, "%04x", (unsigned short) (l & 0xffff));
       break;
     default:
       str = phex (l, sizeof (l));
       break;
     }
+
   return str;
 }
 
@@ -2749,6 +2763,7 @@ char *
 phex_nz (ULONGEST l, int sizeof_l)
 {
   char *str;
+
   switch (sizeof_l)
     {
     case 8:
@@ -2756,23 +2771,26 @@ phex_nz (ULONGEST l, int sizeof_l)
 	unsigned long high = (unsigned long) (l >> thirty_two);
 	str = get_cell ();
 	if (high == 0)
-	  sprintf (str, "%lx", (unsigned long) (l & 0xffffffff));
+	  xsnprintf (str, CELLSIZE, "%lx",
+		     (unsigned long) (l & 0xffffffff));
 	else
-	  sprintf (str, "%lx%08lx", high, (unsigned long) (l & 0xffffffff));
+	  xsnprintf (str, CELLSIZE, "%lx%08lx", high,
+		     (unsigned long) (l & 0xffffffff));
 	break;
       }
     case 4:
       str = get_cell ();
-      sprintf (str, "%lx", (unsigned long) l);
+      xsnprintf (str, CELLSIZE, "%lx", (unsigned long) l);
       break;
     case 2:
       str = get_cell ();
-      sprintf (str, "%x", (unsigned short) (l & 0xffff));
+      xsnprintf (str, CELLSIZE, "%x", (unsigned short) (l & 0xffff));
       break;
     default:
       str = phex_nz (l, sizeof (l));
       break;
     }
+
   return str;
 }
 
@@ -2782,7 +2800,7 @@ char *
 hex_string (LONGEST num)
 {
   char *result = get_cell ();
-  snprintf (result, CELLSIZE, "0x%s", phex_nz (num, sizeof (num)));
+  xsnprintf (result, CELLSIZE, "0x%s", phex_nz (num, sizeof (num)));
   return result;
 }
 
@@ -2802,7 +2820,7 @@ hex_string_custom (LONGEST num, int width)
     width = hex_len;
   if (width + 2 >= CELLSIZE)
     internal_error (__FILE__, __LINE__,
-		    "hex_string_custom: insufficient space to store result");
+		    _("hex_string_custom: insufficient space to store result"));
 
   strcpy (result_end - width - 2, "0x");
   memset (result_end - width, '0', width);
@@ -2836,17 +2854,14 @@ int_string (LONGEST val, int radix, int is_signed, int width,
       }
     case 10:
       {
-	char *result = get_cell ();
 	if (is_signed && val < 0)
-	  decimal2str (result, "-", -val, width);
+	  return decimal2str ("-", -val, width);
 	else
-	  decimal2str (result, "", val, width);
-	return result;
+	  return decimal2str ("", val, width);
       }
     case 8:
       {
-	char *result = get_cell ();
-	octal2str (result, val, width);
+	char *result = octal2str (val, width);
 	if (use_c_format || val == 0)
 	  return result;
 	else
@@ -2854,7 +2869,7 @@ int_string (LONGEST val, int radix, int is_signed, int width,
       }
     default:
       internal_error (__FILE__, __LINE__,
-		      "failed internal consistency check");
+		      _("failed internal consistency check"));
     }
 }	
 
@@ -2893,7 +2908,7 @@ string_to_core_addr (const char *my_string)
 	  else if (isxdigit (my_string[i]))
 	    addr = (tolower (my_string[i]) - 'a' + 0xa) + (addr * 16);
 	  else
-	    internal_error (__FILE__, __LINE__, "invalid hex");
+	    internal_error (__FILE__, __LINE__, _("invalid hex"));
 	}
     }
   else
@@ -2905,7 +2920,7 @@ string_to_core_addr (const char *my_string)
 	  if (isdigit (my_string[i]))
 	    addr = (my_string[i] - '0') + (addr * 10);
 	  else
-	    internal_error (__FILE__, __LINE__, "invalid decimal");
+	    internal_error (__FILE__, __LINE__, _("invalid decimal"));
 	}
     }
   return addr;
@@ -3021,9 +3036,9 @@ xfullpath (const char *filename)
      directory separator, avoid doubling it.  */
   real_path = gdb_realpath (dir_name);
   if (IS_DIR_SEPARATOR (real_path[strlen (real_path) - 1]))
-    result = concat (real_path, base_name, NULL);
+    result = concat (real_path, base_name, (char *)NULL);
   else
-    result = concat (real_path, SLASH_STRING, base_name, NULL);
+    result = concat (real_path, SLASH_STRING, base_name, (char *)NULL);
 
   xfree (real_path);
   return result;

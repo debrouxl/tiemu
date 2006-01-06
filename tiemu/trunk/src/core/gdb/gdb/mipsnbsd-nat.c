@@ -22,22 +22,25 @@
 #include "defs.h"
 #include "inferior.h"
 #include "regcache.h"
-
-#include "mipsnbsd-tdep.h"
+#include "target.h"
 
 #include <sys/types.h>
 #include <sys/ptrace.h>
 #include <machine/reg.h>
 
+#include "mips-tdep.h"
+#include "mipsnbsd-tdep.h"
+#include "inf-ptrace.h"
+
 /* Determine if PT_GETREGS fetches this register.  */
 static int
 getregs_supplies (int regno)
 {
-  return ((regno) >= ZERO_REGNUM && (regno) <= PC_REGNUM);
+  return ((regno) >= MIPS_ZERO_REGNUM && (regno) <= PC_REGNUM);
 }
 
-void
-fetch_inferior_registers (int regno)
+static void
+mipsnbsd_fetch_inferior_registers (int regno)
 {
   if (regno == -1 || getregs_supplies (regno))
     {
@@ -45,7 +48,7 @@ fetch_inferior_registers (int regno)
 
       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
 		  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
-	perror_with_name ("Couldn't get registers");
+	perror_with_name (_("Couldn't get registers"));
       
       mipsnbsd_supply_reg ((char *) &regs, regno);
       if (regno != -1)
@@ -58,14 +61,14 @@ fetch_inferior_registers (int regno)
 
       if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
 		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
-	perror_with_name ("Couldn't get floating point status");
+	perror_with_name (_("Couldn't get floating point status"));
 
       mipsnbsd_supply_fpreg ((char *) &fpregs, regno);
     }
 }
 
-void
-store_inferior_registers (int regno)
+static void
+mipsnbsd_store_inferior_registers (int regno)
 {
   if (regno == -1 || getregs_supplies (regno))
     {
@@ -73,13 +76,13 @@ store_inferior_registers (int regno)
 
       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
 		  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
-	perror_with_name ("Couldn't get registers");
+	perror_with_name (_("Couldn't get registers"));
 
       mipsnbsd_fill_reg ((char *) &regs, regno);
 
       if (ptrace (PT_SETREGS, PIDGET (inferior_ptid), 
 		  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
-	perror_with_name ("Couldn't write registers");
+	perror_with_name (_("Couldn't write registers"));
 
       if (regno != -1)
 	return;
@@ -91,12 +94,27 @@ store_inferior_registers (int regno)
 
       if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
 		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
-	perror_with_name ("Couldn't get floating point status");
+	perror_with_name (_("Couldn't get floating point status"));
 
       mipsnbsd_fill_fpreg ((char *) &fpregs, regno);
 
       if (ptrace (PT_SETFPREGS, PIDGET (inferior_ptid),
 		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
-	perror_with_name ("Couldn't write floating point status");
+	perror_with_name (_("Couldn't write floating point status"));
     }
+}
+
+
+/* Provide a prototype to silence -Wmissing-prototypes.  */
+void _initialize_mipsnbsd_nat (void);
+
+void
+_initialize_mipsnbsd_nat (void)
+{
+  struct target_ops *t;
+
+  t = inf_ptrace_target ();
+  t->to_fetch_registers = mipsnbsd_fetch_inferior_registers;
+  t->to_store_registers = mipsnbsd_store_inferior_registers;
+  add_target (t);
 }

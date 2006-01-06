@@ -49,12 +49,10 @@ arm*-*-linux*)		gdb_host=linux ;;
 arm*-*-netbsdelf* | arm*-*-knetbsd*-gnu)
 			gdb_host=nbsdelf ;;
 arm*-*-netbsd*)		gdb_host=nbsdaout ;;
+arm*-*-openbsd*)	gdb_host=nbsdelf ;;
 
-hppa*-*-hiux*)		gdb_host=hppahpux ;;
-hppa*-*-hpux10.20)	gdb_host=hpux1020 ;;
-hppa*64*-*-hpux11*)	gdb_host=hpux11w ;;
-hppa*-*-hpux11*)	gdb_host=hpux11 ;;
-hppa*-*-hpux*)		gdb_host=hppahpux ;;
+hppa*-*-hpux* | hppa*-*-hiux*)
+			gdb_host=hpux ;;
 hppa*-*-linux*)		gdb_host=linux ;;
 hppa*-*-openbsd*)	gdb_host=obsd ;;
 
@@ -78,6 +76,7 @@ i[34567]86-*-openbsd*)	gdb_host=obsd ;;
 i[34567]86-*-sco3.2v5*)	gdb_host=i386sco5 ;;
 i[34567]86-*-sco3.2v4*)	gdb_host=i386sco4 ;;
 i[34567]86-*-sco*)	gdb_host=i386sco ;;
+i[34567]86-*-solaris2.1[0-9]*)	gdb_host=sol2-64 ;;
 i[34567]86-*-solaris*)	gdb_host=i386sol2 ;;
 i[34567]86-*-sysv4.2*)	gdb_host=i386v42mp ;;
 i[34567]86-*-sysv4*)	gdb_host=i386v4 ;;
@@ -88,7 +87,6 @@ i[34567]86-*-sysv*)	gdb_host=i386v ;;
 i[34567]86-*-isc*)	gdb_host=i386v ;;
 i[34567]86-*-cygwin*)	gdb_host=cygwin ;;
 
-ia64-*-aix*)		gdb_host=aix ;;
 ia64-*-linux*)		gdb_host=linux ;;
 
 m68*-*-linux*)		gdb_host=linux ;;
@@ -104,8 +102,7 @@ mips-sgi-irix6*)	gdb_host=irix6 ;;
 mips*-*-linux*)		gdb_host=linux ;;
 mips*-*-netbsd* | mips*-*-knetbsd*-gnu)
 			gdb_host=nbsd ;;
-
-ns32k-*-netbsd*)	gdb_host=nbsdaout ;;
+mips64*-*-openbsd*)	gdb_host=obsd64 ;;
 
 powerpc-*-aix*)		gdb_host=aix ;;
 powerpc-*-linux*)	gdb_host=linux ;;
@@ -173,6 +170,11 @@ hppa*-*-linux*)
 	gdb_host_float_format="&floatformat_ieee_single_big"
 	gdb_host_double_format="&floatformat_ieee_double_big"
 	gdb_host_long_double_format="&floatformat_ieee_double_big"
+	;;
+m68*-*-*)
+	gdb_host_float_format="&floatformat_ieee_single_big"
+	gdb_host_double_format="&floatformat_ieee_double_big"
+	gdb_host_long_double_format="&floatformat_m68881_ext"
 	;;
 *)
 	gdb_host_float_format=0

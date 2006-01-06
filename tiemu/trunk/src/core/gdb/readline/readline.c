@@ -829,10 +829,8 @@ readline_initialize_everything ()
      inputrc file. */
   rl_set_keymap_from_edit_mode ();
 
-#if defined (__MINGW32__)
   /* Try to bind a common arrow key prefix, if not already bound. */
   bind_arrow_keys ();
-#endif
 
   /* Enable the meta key, if this terminal has one. */
   if (_rl_enable_meta)
@@ -853,7 +851,6 @@ readline_default_bindings ()
   rl_tty_set_default_bindings (_rl_keymap);
 }
 
-#if defined (__MINGW32__)
 /* Bind some common arrow key sequences in MAP. */
 static void
 bind_arrow_keys_internal (map)
@@ -869,6 +866,22 @@ bind_arrow_keys_internal (map)
    _rl_bind_if_unbound ("\033[0B", rl_backward_char);
    _rl_bind_if_unbound ("\033[0C", rl_forward_char);
    _rl_bind_if_unbound ("\033[0D", rl_get_next_history);
+#endif
+
+#ifdef __MINGW32__
+   /* Under Windows, when an extend key (like an arrow key) is
+      pressed, getch() will return 340 (octal) followed by a code for
+      the extended key.  We use macros to transform those into the
+      normal ANSI terminal sequences for these keys.  */
+
+   /* Up arrow.  */
+   rl_macro_bind ("\340H", "\033[A", map);
+   /* Left arrow.  */
+   rl_macro_bind ("\340K", "\033[D", map);
+   /* Right arrow.  */
+   rl_macro_bind ("\340M", "\033[C", map);
+   /* Down arrow.  */
+   rl_macro_bind ("\340P", "\033[B", map);
 #endif
 
   _rl_bind_if_unbound ("\033[A", rl_get_previous_history);
@@ -901,7 +914,6 @@ bind_arrow_keys ()
   bind_arrow_keys_internal (vi_insertion_keymap);
 #endif
 }
-#endif /* !__MINGW32__ */
 
 /* **************************************************************** */
 /*								    */

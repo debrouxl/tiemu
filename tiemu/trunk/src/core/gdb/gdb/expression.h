@@ -1,6 +1,6 @@
 /* Definitions for expressions stored in reversed prefix form, for GDB.
 
-   Copyright 1986, 1989, 1992, 1994, 2000, 2003 Free Software
+   Copyright 1986, 1989, 1992, 1994, 2000, 2003, 2005 Free Software
    Foundation, Inc.
 
    This file is part of GDB.
@@ -192,7 +192,7 @@ enum exp_opcode
     /* This is EXACTLY like OP_FUNCALL but is semantically different.  
        In F77, array subscript expressions, substring expressions
        and function calls are  all exactly the same syntactically. They may 
-       only be dismabiguated at runtime.  Thus this operator, which 
+       only be disambiguated at runtime.  Thus this operator, which 
        indicates that we have found something of the form <name> ( <stuff> ) */
     OP_F77_UNDETERMINED_ARGLIST,
 
@@ -323,6 +323,9 @@ enum exp_opcode
 
     /* An Objective C Foundation Class NSString constant */
     OP_OBJC_NSSTRING,
+
+    /* A F90 array range operator (for "exp:exp", "exp:", ":exp" and ":").  */
+    OP_F90_RANGE,
 
      /* First extension operator.  Individual language modules define
         extra operators they need as constants with values 

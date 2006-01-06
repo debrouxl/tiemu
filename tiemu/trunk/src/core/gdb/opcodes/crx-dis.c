@@ -1,5 +1,5 @@
 /* Disassembler code for CRX.
-   Copyright 2004 Free Software Foundation, Inc.
+   Copyright 2004, 2005 Free Software Foundation, Inc.
    Contributed by Tomer Levi, NSC, Israel.
    Written by Tomer Levi.
 
@@ -17,7 +17,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #include "dis-asm.h"
 #include "sysdep.h"
@@ -65,18 +65,19 @@ const cinv_entry crx_cinvs[] =
   {"[b,d,u]", 13}, {"[b,d,i]", 14}, {"[b,d,i,u]", 15}
 };
 
-/* Enum to distinguish CO-Processor [special] registers arguments 
-   from general purpose regidters.  */
-typedef enum COP_ARG_TYPE
+/* Enum to distinguish different registers argument types.  */
+typedef enum REG_ARG_TYPE
   {
-    /* Not a CO-Processor argument (probably a general purpose reg.).  */
-    NO_COP_ARG = 0,
-    /* A CO-Processor argument (c<N>).  */
+    /* General purpose register (r<N>).  */
+    REG_ARG = 0,
+    /* User register (u<N>).  */
+    USER_REG_ARG,
+    /* CO-Processor register (c<N>).  */
     COP_ARG,
-    /* A CO-Processor special argument (cs<N>).  */
+    /* CO-Processor special register (cs<N>).  */
     COPS_ARG 
   }
-COP_ARG_TYPE;
+REG_ARG_TYPE;
 
 /* Number of valid 'cinv' instruction options.  */
 int NUMCINVS = ((sizeof crx_cinvs)/(sizeof crx_cinvs[0]));
@@ -104,15 +105,15 @@ static char *getcopregname    (copreg, reg_type);
 static char * getprocregname  (int);
 static char *gettrapstring    (unsigned);
 static char *getcinvstring    (unsigned);
-static void getregliststring  (int, char *, enum COP_ARG_TYPE);
+static void getregliststring  (int, char *, enum REG_ARG_TYPE);
 static wordU get_word_at_PC   (bfd_vma, struct disassemble_info *);
 static void get_words_at_PC   (bfd_vma, struct disassemble_info *);
 static unsigned long build_mask (void);
 static int powerof2	      (int);
 static int match_opcode	      (void);
 static void make_instruction  (void);
-static void print_arguments   (ins *, struct disassemble_info *);
-static void print_arg	      (argument *, struct disassemble_info *);
+static void print_arguments   (ins *, bfd_vma, struct disassemble_info *);
+static void print_arg	      (argument *, bfd_vma, struct disassemble_info *);
 
 /* Retrieve the number of operands for the current assembled instruction.  */
 
@@ -240,7 +241,7 @@ powerof2 (int x)
 /* Transform a register bit mask to a register list.  */
 
 void
-getregliststring (int trap, char *string, enum COP_ARG_TYPE core_cop)
+getregliststring (int mask, char *string, enum REG_ARG_TYPE core_cop)
 {
   char temp_string[5];
   int i;
@@ -248,29 +249,44 @@ getregliststring (int trap, char *string, enum COP_ARG_TYPE core_cop)
   string[0] = '{';
   string[1] = '\0';
 
-  for (i = 0; i < 16; i++)
+
+  /* A zero mask means HI/LO registers.  */
+  if (mask == 0)
     {
-      if (trap & 0x1)
+      if (core_cop == USER_REG_ARG)
+	strcat (string, "ulo,uhi");
+      else
+	strcat (string, "lo,hi");
+    }
+  else
+    {
+      for (i = 0; i < 16; i++)
 	{
-	  switch (core_cop)
+	  if (mask & 0x1)
 	    {
-	    case NO_COP_ARG:
-	      sprintf (temp_string, "r%d", i);
-	      break;
-	    case COP_ARG:
-	      sprintf (temp_string, "c%d", i);
-	      break;
-	    case COPS_ARG:
-	      sprintf (temp_string, "cs%d", i);
-	      break;
-	    default:
-	      break;
+	      switch (core_cop)
+	      {
+	      case REG_ARG:
+		sprintf (temp_string, "r%d", i);
+		break;
+	      case USER_REG_ARG:
+		sprintf (temp_string, "u%d", i);
+		break;
+	      case COP_ARG:
+		sprintf (temp_string, "c%d", i);
+		break;
+	      case COPS_ARG:
+		sprintf (temp_string, "cs%d", i);
+		break;
+	      default:
+		break;
+	      }
+	      strcat (string, temp_string);
+	      if (mask & 0xfffe)
+		strcat (string, ",");
 	    }
-          strcat (string, temp_string);
-          if (trap & 0xfffe)
-	    strcat (string, ",");
-        }
-      trap = trap >> 1;
+	  mask >>= 1;
+	}
     }
 
   strcat (string, "}");
@@ -415,7 +431,7 @@ make_argument (argument * a, int start_bits)
       a->constant = p.val;
       break;
 
-    case arg_icr:
+    case arg_idxr:
       a->scale = 0;
       total_size = a->size + 10;  /* sizeof(rbase + ridx + scl2) = 10.  */
       p = makelongparameter (allWords, inst_bit_size - total_size,
@@ -480,10 +496,12 @@ make_argument (argument * a, int start_bits)
 /*  Print a single argument.  */
 
 static void
-print_arg (argument *a, struct disassemble_info *info)
+print_arg (argument *a, bfd_vma memaddr, struct disassemble_info *info)
 {
   LONGLONG longdisp, mask;
-  char sign_flag;
+  int sign_flag = 0;
+  int relative = 0;
+  bfd_vma number;
   int op_index = 0;
   char string[200];
   PTR stream = info->stream;
@@ -515,33 +533,34 @@ print_arg (argument *a, struct disassemble_info *info)
 
       else if (INST_HAS_REG_LIST)
         {
-	  COP_ARG_TYPE cop_ins = IS_INSN_TYPE (COP_REG_INS) ? 
+	  REG_ARG_TYPE reg_arg_type = IS_INSN_TYPE (COP_REG_INS) ? 
 				 COP_ARG : IS_INSN_TYPE (COPS_REG_INS) ? 
-				 COPS_ARG : NO_COP_ARG;
+				 COPS_ARG : (instruction->flags & USER_REG) ?
+				 USER_REG_ARG : REG_ARG;
 
-          if (cop_ins != NO_COP_ARG)
+          if ((reg_arg_type == COP_ARG) || (reg_arg_type == COPS_ARG))
 	    {
-	      /*  Check for proper argument number.  */
-	      if (processing_argument_number == 2)
-		{
-		  getregliststring (a->constant, string, cop_ins);
-		  func (stream, "%s", string);
-		}
-	      else
-		func (stream, "$0x%x", a->constant);
+		/*  Check for proper argument number.  */
+		if (processing_argument_number == 2)
+		  {
+		    getregliststring (a->constant, string, reg_arg_type);
+		    func (stream, "%s", string);
+		  }
+		else
+		  func (stream, "$0x%lx", a->constant);
 	    }
 	  else
             {
-              getregliststring (a->constant, string, cop_ins);
+              getregliststring (a->constant, string, reg_arg_type);
               func (stream, "%s", string);
             }
         }
       else
-	func (stream, "$0x%x", a->constant);
+	func (stream, "$0x%lx", a->constant);
       break;
 
-    case arg_icr:
-      func (stream, "0x%x(%s,%s,%d)", a->constant, getregname (a->r),
+    case arg_idxr:
+      func (stream, "0x%lx(%s,%s,%d)", a->constant, getregname (a->r),
 	    getregname (a->i_r), powerof2 (a->scale));
       break;
 
@@ -550,7 +569,7 @@ print_arg (argument *a, struct disassemble_info *info)
       break;
 
     case arg_cr:
-      func (stream, "0x%x(%s)", a->constant, getregname (a->r));
+      func (stream, "0x%lx(%s)", a->constant, getregname (a->r));
 
       if (IS_INSN_TYPE (LD_STOR_INS_INC))
 	func (stream, "+");
@@ -564,10 +583,9 @@ print_arg (argument *a, struct disassemble_info *info)
 	  || IS_INSN_TYPE (CMPBR_INS) || IS_INSN_TYPE (DCR_BRANCH_INS)
 	  || IS_INSN_TYPE (COP_BRANCH_INS))
         {
-          func (stream, "%c", '*');
+	  relative = 1;
           longdisp = a->constant;
           longdisp <<= 1;
-          sign_flag = '+';
 
           switch (a->size)
             {
@@ -578,7 +596,7 @@ print_arg (argument *a, struct disassemble_info *info)
 	      mask = ((LONGLONG)1 << a->size) - 1;
               if (longdisp & ((LONGLONG)1 << a->size))
                 {
-                  sign_flag = '-';
+                  sign_flag = 1;
                   longdisp = ~(longdisp) + 1;
                 }
               a->constant = (unsigned long int) (longdisp & mask);
@@ -589,12 +607,11 @@ print_arg (argument *a, struct disassemble_info *info)
               break;
             }
 
-	  func (stream, "%c", sign_flag);
         }
       /* For branch Neq instruction it is 2*offset + 2.  */
-      if (IS_INSN_TYPE (BRANCH_NEQ_INS))
+      else if (IS_INSN_TYPE (BRANCH_NEQ_INS))
 	a->constant = 2 * a->constant + 2;
-      if (IS_INSN_TYPE (LD_STOR_INS_INC)
+      else if (IS_INSN_TYPE (LD_STOR_INS_INC)
 	  || IS_INSN_TYPE (LD_STOR_INS)
 	  || IS_INSN_TYPE (STOR_IMM_INS)
 	  || IS_INSN_TYPE (CSTBIT_INS))
@@ -603,7 +620,10 @@ print_arg (argument *a, struct disassemble_info *info)
           if (instruction->operands[op_index].op_type == abs16)
 	    a->constant |= 0xFFFF0000;
         }
-      func (stream, "0x%x", a->constant);
+      func (stream, "%s", "0x");
+      number = (relative ? memaddr : 0)
+	       + (sign_flag ? -a->constant : a->constant);
+      (*info->print_address_func) (number, info);
       break;
     default:
       break;
@@ -613,7 +633,7 @@ print_arg (argument *a, struct disassemble_info *info)
 /* Print all the arguments of CURRINSN instruction.  */
 
 static void
-print_arguments (ins *currInsn, struct disassemble_info *info)
+print_arguments (ins *currInsn, bfd_vma memaddr, struct disassemble_info *info)
 {
   int i;
 
@@ -621,7 +641,7 @@ print_arguments (ins *currInsn, struct disassemble_info *info)
     {
       processing_argument_number = i;
 
-      print_arg (&currInsn->arg[i], info);
+      print_arg (&currInsn->arg[i], memaddr, info);
 
       if (i != currInsn->nargs - 1)
 	info->fprintf_func (info->stream, ", ");
@@ -634,14 +654,16 @@ static void
 make_instruction (void)
 {
   int i;
-  unsigned int temp_value, shift;
-  argument a;
+  unsigned int shift;
 
   for (i = 0; i < currInsn.nargs; i++)
     {
+      argument a;
+
+      memset (&a, 0, sizeof (a));
       a.type = getargtype (instruction->operands[i].op_type);
       if (instruction->operands[i].op_type == cst4
-	  || instruction->operands[i].op_type == rbase_cst4)
+	  || instruction->operands[i].op_type == rbase_dispu4)
 	cst4flag = 1;
       a.size = getbits (instruction->operands[i].op_type);
       shift = instruction->operands[i].shift;
@@ -652,15 +674,8 @@ make_instruction (void)
 
   /* Calculate instruction size (in bytes).  */
   currInsn.size = instruction->size + (size_changed ? 1 : 0);
+  /* Now in bits.  */
   currInsn.size *= 2;
-
-  /* Swapping first and second arguments.  */
-  if (IS_INSN_TYPE (COP_BRANCH_INS))
-    {
-      temp_value = currInsn.arg[0].constant;
-      currInsn.arg[0].constant = currInsn.arg[1].constant;
-      currInsn.arg[1].constant = temp_value;
-    }
 }
 
 /* Retrieve a single word from a given memory address.  */
@@ -719,7 +734,7 @@ print_insn_crx (memaddr, info)
       if ((currInsn.nargs = get_number_of_operands ()) != 0)
 	info->fprintf_func (info->stream, "\t");
       make_instruction ();
-      print_arguments (&currInsn, info);
+      print_arguments (&currInsn, memaddr, info);
       return currInsn.size;
     }
 

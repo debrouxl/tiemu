@@ -1,6 +1,6 @@
 /* Routines to link ECOFF debugging information.
-   Copyright 1993, 1994, 1995, 1996, 1997, 2000, 2001, 2002, 2003, 2004
-   Free Software Foundation, Inc.
+   Copyright 1993, 1994, 1995, 1996, 1997, 1999, 2000, 2001, 2002, 2003,
+   2004, 2005 Free Software Foundation, Inc.
    Written by Ian Lance Taylor, Cygnus Support, <ian@cygnus.com>.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -17,7 +17,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #include "bfd.h"
 #include "sysdep.h"
@@ -1338,10 +1338,14 @@ bfd_ecoff_debug_one_external (abfd, debug, swap, name, esym)
 		- (char *) debug->external_ext)
       < (symhdr->iextMax + 1) * external_ext_size)
     {
-      if (! ecoff_add_bytes ((char **) &debug->external_ext,
-			     (char **) &debug->external_ext_end,
+      char *external_ext = debug->external_ext;
+      char *external_ext_end = debug->external_ext_end;
+      if (! ecoff_add_bytes ((char **) &external_ext,
+			     (char **) &external_ext_end,
 			     (symhdr->iextMax + 1) * (size_t) external_ext_size))
 	return FALSE;
+      debug->external_ext = external_ext;
+      debug->external_ext_end = external_ext_end;
     }
 
   esym->asym.iss = symhdr->issExtMax;
@@ -1839,24 +1843,9 @@ mk_fdrtab (abfd, debug_info, debug_swap, line_info)
 	     addresses do not equal the FDR vma, but they (the PDR address)
 	     are still vma's and not offsets.  Cf. comments in
 	     'lookup_line'.  */
-#if 0
-	    bfd_size_type external_pdr_size;
-	    char *pdr_ptr;
-	    PDR pdr;
-	    
-	    external_pdr_size = debug_swap->external_pdr_size;
-	    
-	    pdr_ptr = ((char *) debug_info->external_pdr
-	              + fdr_ptr->ipdFirst * external_pdr_size);
-	    (*debug_swap->swap_pdr_in) (abfd, (PTR) pdr_ptr, &pdr);
-	  /* The address of the first PDR is the offset of that
-	     procedure relative to the beginning of file FDR.  */
-	    tab->base_addr = fdr_ptr->adr - pdr.adr;
-#else
 	  /* The address of the first PDR is the offset of that
 	     procedure relative to the beginning of file FDR.  */
 	  tab->base_addr = fdr_ptr->adr; 
-#endif
 	}
       else
 	{
@@ -2115,11 +2104,6 @@ lookup_line (abfd, debug_info, debug_swap, line_info)
          considerably, which is undesirable.  */
       external_pdr_size = debug_swap->external_pdr_size;
 
-#if 0 /* eraxxon: PDR addresses (pdr.adr) are not relative to FDRs!
-	 Leave 'offset' alone.  */
-      /* Make offset relative to object file's start-address.  */
-      offset -= tab[i].base_addr;
-#endif
       /* eraxxon: The Horrible Hack: Because of the problems above, set 'i'
 	 to 0 so we look through all FDRs.
 

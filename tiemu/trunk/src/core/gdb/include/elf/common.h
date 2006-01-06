@@ -21,7 +21,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 
 /* This file is part of ELF support for BFD, and contains the portions
@@ -182,6 +182,7 @@
 #define EM_IP2K		101	/* Ubicom IP2022 micro controller */
 #define EM_CR		103	/* National Semiconductor CompactRISC */
 #define EM_MSP430	105	/* TI msp430 micro controller */
+#define EM_BLACKFIN	106	/* ADI Blackfin */
 #define EM_CRX		114	/* National Semiconductor CRX */
 
 /* If it is necessary to assign new unofficial EM_* values, please pick large
@@ -210,6 +211,9 @@
 
 /* (Deprecated) Temporary number for the OpenRISC processor.  */
 #define EM_OR32		0x8472
+
+/* Renesas M32C and M16C.  */
+#define EM_M32C			0xFEB0
 
 /* Cygnus M32R ELF backend.  Written in the absence of an ABI.  */
 #define EM_CYGNUS_M32R	0x9041
@@ -256,6 +260,8 @@
 
 /* Ubicom IP2xxx; no ABI */
 #define EM_IP2K_OLD		0x8217
+
+#define EM_MS1                  0x2530  /* Morpho MS1; no ABI */
 
 /* MSP430 magic number
       Written in the absense everything.  */

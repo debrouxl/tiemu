@@ -1,5 +1,5 @@
 /* simple.c -- BFD simple client routines
-   Copyright 2002, 2003, 2004
+   Copyright 2002, 2003, 2004, 2005
    Free Software Foundation, Inc.
    Contributed by MontaVista Software, Inc.
 
@@ -17,7 +17,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #include "bfd.h"
 #include "sysdep.h"
@@ -48,6 +48,7 @@ simple_dummy_undefined_symbol (struct bfd_link_info *link_info ATTRIBUTE_UNUSED,
 
 static bfd_boolean
 simple_dummy_reloc_overflow (struct bfd_link_info *link_info ATTRIBUTE_UNUSED,
+			     struct bfd_link_hash_entry *entry ATTRIBUTE_UNUSED,
 			     const char *name ATTRIBUTE_UNUSED,
 			     const char *reloc_name ATTRIBUTE_UNUSED,
 			     bfd_vma addend ATTRIBUTE_UNUSED,
@@ -76,6 +77,24 @@ simple_dummy_unattached_reloc (struct bfd_link_info *link_info ATTRIBUTE_UNUSED,
 			       bfd_vma address ATTRIBUTE_UNUSED)
 {
   return TRUE;
+}
+
+static bfd_boolean
+simple_dummy_multiple_definition (struct bfd_link_info *link_info ATTRIBUTE_UNUSED,
+				  const char *name ATTRIBUTE_UNUSED,
+				  bfd *obfd ATTRIBUTE_UNUSED,
+				  asection *osec ATTRIBUTE_UNUSED,
+				  bfd_vma oval ATTRIBUTE_UNUSED,
+				  bfd *nbfd ATTRIBUTE_UNUSED,
+				  asection *nsec ATTRIBUTE_UNUSED,
+				  bfd_vma nval ATTRIBUTE_UNUSED)
+{
+  return TRUE;
+}
+
+static void
+simple_dummy_einfo (const char *fmt ATTRIBUTE_UNUSED, ...)
+{
 }
 
 struct saved_output_info
@@ -172,6 +191,8 @@ bfd_simple_get_relocated_section_contents (bfd *abfd,
   callbacks.reloc_overflow = simple_dummy_reloc_overflow;
   callbacks.reloc_dangerous = simple_dummy_reloc_dangerous;
   callbacks.unattached_reloc = simple_dummy_unattached_reloc;
+  callbacks.multiple_definition = simple_dummy_multiple_definition;
+  callbacks.einfo = simple_dummy_einfo;
 
   memset (&link_order, 0, sizeof (link_order));
   link_order.next = NULL;
@@ -228,24 +249,9 @@ bfd_simple_get_relocated_section_contents (bfd *abfd,
   if (contents == NULL && data != NULL)
     free (data);
 
-#if 0
-  /* NOTE: cagney/2003-04-05: This free, which was introduced on
-     2003-03-31 to stop a memory leak, caused a memory corruption
-     between GDB and BFD.  The problem, which is stabs specific, can
-     be identified by a bunch of failures in relocate.exp vis:
-
-       gdb.base/relocate.exp: get address of static_bar
-
-     Details of the problem can be found on the binutils@ mailing
-     list, see the discussion thread: "gdb.mi/mi-cli.exp failures".  */
-  if (storage_needed != 0)
-    free (symbol_table);
-#endif
-
   bfd_map_over_sections (abfd, simple_restore_output_info, saved_offsets);
   free (saved_offsets);
 
   _bfd_generic_link_hash_table_free (link_info.hash);
-
   return contents;
 }

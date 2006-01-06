@@ -75,7 +75,7 @@ i386fbsd_resume (ptid_t ptid, int step, enum target_signal signal)
      written a new PC value to the child.)  */
   if (ptrace (request, pid, (caddr_t) 1,
 	      target_signal_to_host (signal)) == -1)
-    perror_with_name ("ptrace");
+    perror_with_name (("ptrace"));
 }
 
 
@@ -143,7 +143,7 @@ _initialize_i386fbsd_nat (void)
 #ifdef KERN_PS_STRINGS
   {
     int mib[2];
-    int ps_strings;
+    u_long ps_strings;
     size_t len;
 
     mib[0] = CTL_KERN;

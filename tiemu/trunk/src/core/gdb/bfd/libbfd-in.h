@@ -2,7 +2,8 @@
    (This include file is not for users of the library.)
 
    Copyright 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998,
-   1999, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+   1999, 2000, 2001, 2002, 2003, 2004, 2005
+   Free Software Foundation, Inc.
 
    Written by Cygnus Support.
 
@@ -20,7 +21,9 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
+
+#include "hashtab.h"
 
 /* Align an address upward to a boundary, expressed as a number of bytes.
    E.g. align to an 8-byte boundary with argument of 8.  Take care never
@@ -56,11 +59,12 @@ struct bfd_in_memory
 struct artdata {
   file_ptr first_file_filepos;
   /* Speed up searching the armap */
-  struct ar_cache *cache;
+  htab_t cache;
   bfd *archive_head;		/* Only interesting in output routines */
   carsym *symdefs;		/* the symdef entries */
   symindex symdef_count;	/* how many there are */
   char *extended_names;		/* clever intel extension */
+  bfd_size_type extended_names_size; /* Size of extended names */
   /* when more compilers are standard C, this can be a time_t */
   long  armap_timestamp;	/* Timestamp value written into armap.
 				   This is used for BSD archives to check
@@ -90,6 +94,12 @@ extern void *bfd_realloc
   (void *, bfd_size_type);
 extern void *bfd_zmalloc
   (bfd_size_type);
+extern void *bfd_malloc2
+  (bfd_size_type, bfd_size_type);
+extern void *bfd_realloc2
+  (void *, bfd_size_type, bfd_size_type);
+extern void *bfd_zmalloc2
+  (bfd_size_type, bfd_size_type);
 
 extern void _bfd_default_error_handler (const char *s, ...);
 extern bfd_error_handler_type _bfd_error_handler;
@@ -100,6 +110,10 @@ extern void *bfd_alloc
   (bfd *, bfd_size_type);
 extern void *bfd_zalloc
   (bfd *, bfd_size_type);
+extern void *bfd_alloc2
+  (bfd *, bfd_size_type, bfd_size_type);
+extern void *bfd_zalloc2
+  (bfd *, bfd_size_type, bfd_size_type);
 extern void bfd_release
   (bfd *, void *);
 
@@ -175,6 +189,8 @@ bfd_boolean coff_write_armap
 
 extern void *_bfd_generic_read_ar_hdr
   (bfd *);
+extern void _bfd_ar_spacepad
+  (char *, size_t, const char *, long);
 
 extern void *_bfd_generic_read_ar_hdr_mag
   (bfd *, const char *);
@@ -217,6 +233,9 @@ extern bfd_boolean _bfd_generic_get_section_contents_in_window
   ((bfd_boolean (*) (bfd *, bfd *)) bfd_true)
 #define _bfd_generic_bfd_print_private_bfd_data \
   ((bfd_boolean (*) (bfd *, void *)) bfd_true)
+
+extern bfd_boolean _bfd_generic_init_private_section_data
+  (bfd *, asection *, bfd *, asection *, struct bfd_link_info *);
 
 /* Routines to use for BFD_JUMP_TABLE_CORE when there is no core file
    support.  Use BFD_JUMP_TABLE_CORE (_bfd_nocore).  */
@@ -307,6 +326,9 @@ extern bfd_boolean _bfd_archive_coff_construct_extended_name_table
   ((bfd_boolean (*) (bfd *, asection *, asymbol **, bfd_vma, const char **, \
 		     const char **, unsigned int *)) \
    bfd_false)
+#define _bfd_nosymbols_find_inliner_info \
+  ((bfd_boolean (*) (bfd *, const char **, const char **, unsigned int *)) \
+   bfd_false)
 #define _bfd_nosymbols_bfd_make_debug_symbol \
   ((asymbol *(*) (bfd *, void *, unsigned long)) bfd_nullvoidptr)
 #define _bfd_nosymbols_read_minisymbols \
@@ -380,6 +402,8 @@ extern bfd_boolean _bfd_generic_set_section_contents
   ((bfd_boolean (*) (bfd *, struct bfd_section *)) bfd_false)
 #define _bfd_nolink_section_already_linked \
   ((void (*) (bfd *, struct bfd_section *)) bfd_void)
+extern bfd_boolean _bfd_generic_match_sections_by_type
+  (bfd *, const asection *, bfd *, const asection *);
 
 /* Routines to use for BFD_JUMP_TABLE_DYNAMIC for targets which do not
    have dynamic symbols or relocs.  Use BFD_JUMP_TABLE_DYNAMIC
@@ -410,7 +434,7 @@ extern bfd_boolean _bfd_stab_section_find_nearest_line
   (bfd *, asymbol **, asection *, bfd_vma, bfd_boolean *,
    const char **, const char **, unsigned int *, void **);
 
-/* Find the neaderst line using DWARF 1 debugging information.  */
+/* Find the nearest line using DWARF 1 debugging information.  */
 extern bfd_boolean _bfd_dwarf1_find_nearest_line
   (bfd *, asection *, asymbol **, bfd_vma, const char **,
    const char **, unsigned int *);
@@ -420,6 +444,18 @@ extern bfd_boolean _bfd_dwarf2_find_nearest_line
   (bfd *, asection *, asymbol **, bfd_vma, const char **, const char **,
    unsigned int *, unsigned int, void **);
 
+/* Find the line using DWARF 2 debugging information.  */
+extern bfd_boolean _bfd_dwarf2_find_line
+  (bfd *, asymbol **, asymbol *, const char **,
+   unsigned int *, unsigned int, void **);
+
+bfd_boolean _bfd_generic_find_line
+  (bfd *, asymbol **, asymbol *, const char **, unsigned int *);
+
+/* Find inliner info after calling bfd_find_nearest_line. */
+extern bfd_boolean _bfd_dwarf2_find_inliner_info
+  (bfd *, const char **, const char **, unsigned int *, void **);
+  
 /* Create a new section entry.  */
 extern struct bfd_hash_entry *bfd_section_hash_newfunc
   (struct bfd_hash_entry *, struct bfd_hash_table *, const char *);
@@ -615,11 +651,7 @@ extern void _bfd_abort
    the system "off_t" or "off64_t", as the offset.  */
 extern file_ptr real_ftell (FILE *file);
 extern int real_fseek (FILE *file, file_ptr offset, int whence);
-
-FILE *	bfd_cache_lookup_worker
-  (bfd *);
-
-extern bfd *bfd_last_cache;
+extern FILE *real_fopen (const char *filename, const char *modes);
 
 /* List of supported target vectors, and the default vector (if
    bfd_default_vector[0] is NULL, there is no default).  */
@@ -685,4 +717,7 @@ extern void bfd_section_already_linked_table_insert
 extern void bfd_section_already_linked_table_traverse
   (bfd_boolean (*) (struct bfd_section_already_linked_hash_entry *,
 		    void *), void *);
+
+extern bfd_vma read_unsigned_leb128 (bfd *, bfd_byte *, unsigned int *);
+extern bfd_signed_vma read_signed_leb128 (bfd *, bfd_byte *, unsigned int *);
 

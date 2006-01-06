@@ -38,8 +38,8 @@ extern int gdbarch_debug;
 enum return_value_convention legacy_return_value (struct gdbarch *gdbarch,
 						  struct type *valtype,
 						  struct regcache *regcache,
-						  void *readbuf,
-						  const void *writebuf);
+						  gdb_byte *readbuf,
+						  const gdb_byte *writebuf);
 
 /* Implementation of extract return value that grubs around in the
    register cache.  */
@@ -96,8 +96,6 @@ extern CORE_ADDR generic_skip_trampoline_code (CORE_ADDR pc);
 extern CORE_ADDR generic_skip_solib_resolver (struct gdbarch *gdbarch,
 					      CORE_ADDR pc);
 
-extern int generic_in_solib_call_trampoline (CORE_ADDR pc, char *name);
-
 extern int generic_in_solib_return_trampoline (CORE_ADDR pc, char *name);
 
 extern int generic_in_function_epilogue_p (struct gdbarch *gdbarch, CORE_ADDR pc);
@@ -118,6 +116,9 @@ extern int generic_convert_register_p (int regnum, struct type *type);
 
 extern int default_stabs_argument_has_addr (struct gdbarch *gdbarch,
 					    struct type *type);
+
+extern int generic_instruction_nullified (struct gdbarch *gdbarch,
+					  struct regcache *regcache);
 
 /* For compatibility with older architectures, returns
    (LEGACY_SIM_REGNO_IGNORE) when the register doesn't have a valid

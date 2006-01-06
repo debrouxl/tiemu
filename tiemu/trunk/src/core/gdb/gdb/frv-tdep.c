@@ -1,5 +1,6 @@
 /* Target-dependent code for the Fujitsu FR-V, for GDB, the GNU Debugger.
-   Copyright 2002, 2003, 2004 Free Software Foundation, Inc.
+
+   Copyright 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -420,7 +421,7 @@ frv_register_sim_regno (int reg)
 	return SIM_FRV_SPR0_REGNUM + spr_reg_offset;
     }
 
-  internal_error (__FILE__, __LINE__, "Bad register number %d", reg);
+  internal_error (__FILE__, __LINE__, _("Bad register number %d"), reg);
 }
 
 static const unsigned char *
@@ -1049,7 +1050,7 @@ frv_extract_return_value (struct type *type, struct regcache *regcache,
       store_unsigned_integer ((bfd_byte *) valbuf + 4, 4, regval);
     }
   else
-    internal_error (__FILE__, __LINE__, "Illegal return value length: %d", len);
+    internal_error (__FILE__, __LINE__, _("Illegal return value length: %d"), len);
 }
 
 static CORE_ADDR
@@ -1078,6 +1079,13 @@ find_func_descr (struct gdbarch *gdbarch, CORE_ADDR entry_point)
 {
   CORE_ADDR descr;
   char valbuf[4];
+  CORE_ADDR start_addr;
+
+  /* If we can't find the function in the symbol table, then we assume
+     that the function address is already in descriptor form.  */
+  if (!find_pc_partial_function (entry_point, NULL, &start_addr, NULL)
+      || entry_point != start_addr)
+    return entry_point;
 
   descr = frv_fdpic_find_canonical_descriptor (entry_point);
 
@@ -1139,7 +1147,7 @@ frv_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 
   stack_space = 0;
   for (argnum = 0; argnum < nargs; ++argnum)
-    stack_space += align_up (TYPE_LENGTH (VALUE_TYPE (args[argnum])), 4);
+    stack_space += align_up (TYPE_LENGTH (value_type (args[argnum])), 4);
 
   stack_space -= (6 * 4);
   if (stack_space > 0)
@@ -1159,7 +1167,7 @@ frv_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
   for (argnum = 0; argnum < nargs; ++argnum)
     {
       arg = args[argnum];
-      arg_type = check_typedef (VALUE_TYPE (arg));
+      arg_type = check_typedef (value_type (arg));
       len = TYPE_LENGTH (arg_type);
       typecode = TYPE_CODE (arg_type);
 
@@ -1180,7 +1188,7 @@ frv_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 	  store_unsigned_integer
 	    (valbuf, 4,
 	     find_func_descr (gdbarch,
-	                      extract_unsigned_integer (VALUE_CONTENTS (arg),
+	                      extract_unsigned_integer (value_contents (arg),
 			                                4)));
 	  typecode = TYPE_CODE_PTR;
 	  len = 4;
@@ -1188,7 +1196,7 @@ frv_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 	}
       else
 	{
-	  val = (char *) VALUE_CONTENTS (arg);
+	  val = (char *) value_contents (arg);
 	}
 
       while (len > 0)
@@ -1257,7 +1265,7 @@ frv_store_return_value (struct type *type, struct regcache *regcache,
     }
   else
     internal_error (__FILE__, __LINE__,
-                    "Don't know how to return a %d-byte value.", len);
+                    _("Don't know how to return a %d-byte value."), len);
 }
 
 
@@ -1562,6 +1570,10 @@ frv_gdbarch_init (struct gdbarch_info info, struct gdbarch_list *arches)
 
   /* Set the fallback (prologue based) frame sniffer.  */
   frame_unwind_append_sniffer (gdbarch, frv_frame_sniffer);
+
+  /* Enable TLS support.  */
+  set_gdbarch_fetch_tls_load_module_address (gdbarch,
+                                             frv_fetch_objfile_link_map);
 
   return gdbarch;
 }

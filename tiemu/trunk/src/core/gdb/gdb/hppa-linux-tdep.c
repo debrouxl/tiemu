@@ -47,7 +47,7 @@ hppa_dwarf_reg_to_regnum (int reg)
   if (reg >= 32 && reg <= 85)
     return HPPA_FP4_REGNUM + (reg - 32);
 
-  warning ("Unmapped DWARF Register #%d encountered\n", reg);
+  warning (_("Unmapped DWARF Register #%d encountered."), reg);
   return -1;
 }
 #endif
@@ -161,10 +161,39 @@ insns_match_pattern (CORE_ADDR pc,
   return 1;
 }
 
+/* The relaxed version of the insn matcher allows us to match from somewhere
+   inside the pattern, by looking backwards in the instruction scheme.  */
+static int
+insns_match_pattern_relaxed (CORE_ADDR pc,
+			     struct insn_pattern *pattern,
+			     unsigned int *insn)
+{
+  int pat_len = 0;
+  int offset;
+
+  while (pattern[pat_len].mask)
+    pat_len++;
+
+  for (offset = 0; offset < pat_len; offset++)
+    {
+      if (insns_match_pattern (pc - offset * 4,
+			       pattern, insn))
+	return 1;
+    }
+
+  return 0;
+}
+
 static int
 hppa_linux_in_dyncall (CORE_ADDR pc)
 {
-  return pc == hppa_symbol_address("$$dyncall");
+  struct unwind_table_entry *u;
+  u = find_unwind_entry (hppa_symbol_address ("$$dyncall"));
+
+  if (!u)
+    return 0;
+	
+  return pc >= u->region_start && pc <= u->region_end;
 }
 
 /* There are several kinds of "trampolines" that we need to deal with:
@@ -182,13 +211,20 @@ hppa_linux_in_solib_call_trampoline (CORE_ADDR pc, char *name)
 {
   unsigned int insn[HPPA_MAX_INSN_PATTERN_LEN];
   int r;
+  struct unwind_table_entry *u;
+
+  /* on hppa-linux, linker stubs have no unwind information.  Since the pattern
+     matching for linker stubs can be quite slow, we try to avoid it if
+     we can.  */
+  u = find_unwind_entry (pc);
 
   r = in_plt_section (pc, name)
       || hppa_linux_in_dyncall (pc)
-      || insns_match_pattern (pc, hppa_import_stub, insn)
-      || insns_match_pattern (pc, hppa_import_pic_stub, insn)
-      || insns_match_pattern (pc, hppa_long_branch_stub, insn)
-      || insns_match_pattern (pc, hppa_long_branch_pic_stub, insn);
+      || (u == NULL
+	  && (insns_match_pattern_relaxed (pc, hppa_import_stub, insn)
+	      || insns_match_pattern_relaxed (pc, hppa_import_pic_stub, insn)
+	      || insns_match_pattern_relaxed (pc, hppa_long_branch_stub, insn)
+	      || insns_match_pattern_relaxed (pc, hppa_long_branch_pic_stub, insn)));
 
   return r;
 }
@@ -242,7 +278,7 @@ hppa_linux_skip_trampoline_code (CORE_ADDR pc)
 	    }
 	  else
 	    {
-	      error ("Cannot resolve plt stub at 0x%s\n",
+	      error (_("Cannot resolve plt stub at 0x%s."),
 		     paddr_nz (pc));
 	      pc = 0;
 	    }
@@ -563,8 +599,7 @@ hppa_linux_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
   set_solib_svr4_fetch_link_map_offsets
     (gdbarch, svr4_ilp32_fetch_link_map_offsets);
 
-  set_gdbarch_in_solib_call_trampoline
-        (gdbarch, hppa_linux_in_solib_call_trampoline);
+  tdep->in_solib_call_trampoline = hppa_linux_in_solib_call_trampoline;
   set_gdbarch_skip_trampoline_code
 	(gdbarch, hppa_linux_skip_trampoline_code);
 
@@ -583,6 +618,10 @@ hppa_linux_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
   frame_unwind_append_sniffer (gdbarch, dwarf2_frame_sniffer);
   frame_base_append_sniffer (gdbarch, dwarf2_frame_base_sniffer);
 #endif
+
+  /* Enable TLS support.  */
+  set_gdbarch_fetch_tls_load_module_address (gdbarch,
+                                             svr4_fetch_objfile_link_map);
 }
 
 void

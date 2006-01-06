@@ -1,6 +1,6 @@
 /* Generic BFD library interface and support routines.
    Copyright 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
-   2000, 2001, 2002, 2003, 2004
+   2000, 2001, 2002, 2003, 2004, 2005
    Free Software Foundation, Inc.
    Written by Cygnus Support.
 
@@ -18,7 +18,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 /*
 SECTION
@@ -111,8 +111,8 @@ CODE_FRAGMENT
 .  {* Pointer to linked list of sections.  *}
 .  struct bfd_section *sections;
 .
-.  {* The place where we add to the section list.  *}
-.  struct bfd_section **section_tail;
+.  {* The last section on the section list.  *}
+.  struct bfd_section *section_last;
 .
 .  {* The number of sections.  *}
 .  unsigned int section_count;
@@ -626,7 +626,10 @@ bfd_get_error_handler (void)
 
 /*
 SECTION
-	Symbols
+	Miscellaneous
+
+SUBSECTION
+	Miscellaneous functions
 */
 
 /*
@@ -1163,6 +1166,14 @@ DESCRIPTION
 .       BFD_SEND (abfd, _bfd_find_nearest_line, \
 .                 (abfd, sec, syms, off, file, func, line))
 .
+.#define bfd_find_line(abfd, syms, sym, file, line) \
+.       BFD_SEND (abfd, _bfd_find_line, \
+.                 (abfd, syms, sym, file, line))
+.
+.#define bfd_find_inliner_info(abfd, file, func, line) \
+.       BFD_SEND (abfd, _bfd_find_inliner_info, \
+.                 (abfd, file, func, line))
+.
 .#define bfd_debug_info_start(abfd) \
 .       BFD_SEND (abfd, _bfd_debug_info_start, (abfd))
 .
@@ -1205,7 +1216,7 @@ DESCRIPTION
 .#define bfd_link_add_symbols(abfd, info) \
 .	BFD_SEND (abfd, _bfd_link_add_symbols, (abfd, info))
 .
-.#define bfd_link_just_syms(sec, info) \
+.#define bfd_link_just_syms(abfd, sec, info) \
 .	BFD_SEND (abfd, _bfd_link_just_syms, (sec, info))
 .
 .#define bfd_final_link(abfd, info) \
@@ -1392,7 +1403,7 @@ CODE_FRAGMENT
 .  flagword flags;
 .  const struct bfd_arch_info *arch_info;
 .  struct bfd_section *sections;
-.  struct bfd_section **section_tail;
+.  struct bfd_section *section_last;
 .  unsigned int section_count;
 .  struct bfd_hash_table section_htab;
 .};
@@ -1426,7 +1437,7 @@ bfd_preserve_save (bfd *abfd, struct bfd_preserve *preserve)
   preserve->arch_info = abfd->arch_info;
   preserve->flags = abfd->flags;
   preserve->sections = abfd->sections;
-  preserve->section_tail = abfd->section_tail;
+  preserve->section_last = abfd->section_last;
   preserve->section_count = abfd->section_count;
   preserve->section_htab = abfd->section_htab;
 
@@ -1437,7 +1448,7 @@ bfd_preserve_save (bfd *abfd, struct bfd_preserve *preserve)
   abfd->arch_info = &bfd_default_arch_struct;
   abfd->flags &= BFD_IN_MEMORY;
   abfd->sections = NULL;
-  abfd->section_tail = &abfd->sections;
+  abfd->section_last = NULL;
   abfd->section_count = 0;
 
   return TRUE;
@@ -1467,7 +1478,7 @@ bfd_preserve_restore (bfd *abfd, struct bfd_preserve *preserve)
   abfd->flags = preserve->flags;
   abfd->section_htab = preserve->section_htab;
   abfd->sections = preserve->sections;
-  abfd->section_tail = preserve->section_tail;
+  abfd->section_last = preserve->section_last;
   abfd->section_count = preserve->section_count;
 
   /* bfd_release frees all memory more recently bfd_alloc'd than
@@ -1501,4 +1512,30 @@ bfd_preserve_finish (bfd *abfd ATTRIBUTE_UNUSED, struct bfd_preserve *preserve)
      inside bfd_alloc'd memory.  The section hash is on a separate
      objalloc.  */
   bfd_hash_table_free (&preserve->section_htab);
+}
+
+/*
+FUNCTION
+	bfd_hide_symbol
+
+SYNOPSIS
+	void bfd_hide_symbol (bfd *,
+			      struct bfd_link_info *,
+			      struct bfd_link_hash_entry *,
+			      bfd_boolean);
+
+DESCRIPTION
+	This function hides a symbol so that it won't be exported. 
+
+*/
+
+void
+bfd_hide_symbol (bfd *abfd,
+		 struct bfd_link_info *link_info,
+		 struct bfd_link_hash_entry *h,
+		 bfd_boolean force_local)
+{
+  if (bfd_get_flavour (abfd) == bfd_target_elf_flavour)
+    (get_elf_backend_data (abfd)->elf_backend_hide_symbol)
+      (link_info, (struct elf_link_hash_entry *) h, force_local);
 }

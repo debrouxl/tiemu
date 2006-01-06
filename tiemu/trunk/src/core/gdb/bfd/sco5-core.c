@@ -1,5 +1,5 @@
 /* BFD back end for SCO5 core files (U-area and raw sections)
-   Copyright 1998, 1999, 2000, 2001, 2002, 2003, 2004
+   Copyright 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005
    Free Software Foundation, Inc.
    Written by Jouke Numan <jnuman@hiscom.nl>
 
@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #include "bfd.h"
 #include "sysdep.h"
@@ -31,8 +31,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <signal.h>
 
 #include <sys/user.h>		/* After a.out.h  */
+#ifdef SCO5_CORE
 #include <sys/paccess.h>
 #include <sys/region.h>
+#endif
 
 struct sco5_core_struct
 {
@@ -126,14 +128,11 @@ sco5_core_file_p (abfd)
   /* Read coreoffsets region at end of core (see core(FP)).  */
 
   {
-    FILE *stream = bfd_cache_lookup (abfd);
     struct stat statbuf;
 
-    if (fstat (fileno (stream), &statbuf) < 0)
-      {
-	bfd_set_error (bfd_error_system_call);
-	return NULL;
-      }
+    if (bfd_stat (abfd, &statbuf) < 0)
+      return NULL;
+
     coresize = statbuf.st_size;
   }
   /* Last long in core is sizeof struct coreoffsets, read it */

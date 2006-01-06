@@ -1,5 +1,5 @@
 /* ia64.h -- Header file for ia64 opcode table
-   Copyright (C) 1998, 1999, 2002 Free Software Foundation, Inc.
+   Copyright (C) 1998, 1999, 2000, 2002 Free Software Foundation, Inc.
 	Contributed by David Mosberger-Tang <davidm@hpl.hp.com> */
 
 #ifndef opcode_ia64_h
@@ -75,13 +75,15 @@ enum ia64_opnd
     IA64_OPND_R3,	/* third register # */
     IA64_OPND_R3_2,	/* third register # (limited to gr0-gr3) */
 
+    /* memory operands: */
+    IA64_OPND_MR3,	/* memory at addr of third register # */
+
     /* indirect operands: */
     IA64_OPND_CPUID_R3,	/* cpuid[reg] */
     IA64_OPND_DBR_R3,	/* dbr[reg] */
     IA64_OPND_DTR_R3,	/* dtr[reg] */
     IA64_OPND_ITR_R3,	/* itr[reg] */
     IA64_OPND_IBR_R3,	/* ibr[reg] */
-    IA64_OPND_MR3,	/* memory at addr of third register # */
     IA64_OPND_MSR_R3,	/* msr[reg] */
     IA64_OPND_PKR_R3,	/* pkr[reg] */
     IA64_OPND_PMC_R3,	/* pmc[reg] */

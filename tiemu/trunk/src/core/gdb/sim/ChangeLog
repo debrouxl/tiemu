@@ -1,3 +1,119 @@
+2005-05-28  Hans-Peter Nilsson  <hp@axis.com>
+
+	* cris/Makefile.in (stamp-v32fmloop): Depend on stamp-v10fmloop.
+
+2005-05-26  Chris Demetriou  <cgd@netbsd.org>
+
+	* MAINTAINERS: Update my mail address, move myself to the
+	"Past maintainers" section.
+
+2005-05-17  Corinna Vinschen  <vinschen@redhat.com>
+
+	* configure.ac: Add igen to v850 build.
+	* configure: Regenerate.
+
+2005-04-29  Paul Brook  <paul@codesourcery.com>
+
+	* common/callback.c (PIPE_BUF): Provide default definition.
+	(os_lstat): Use stat if lstat is not available on the host.
+	(os_ftruncate): Return EINVAL if not available on the host.
+	(os_truncate): Ditto.
+	* common/configure.ac: Check for lstat, truncate and ftruncate.
+	* common/configure: Regenerate.
+	* common/config.in: Regenerate.
+
+2005-04-27  Paul Brook  <paul@codesourcery.com>
+
+	* common/Make-common.in: Add $(EXEEXT) to "run".
+
+2005-04-18  Hans-Peter Nilsson  <hp@axis.com>
+
+	* cris/traps.c (cris_break_13_handler) <case TARGET_SYS_mmap2>:
+	For ((len & 8191) != 0 && fd == (USI) -1), don't say this isn't
+	implemented.  In call to create_map, pad length argument to 8k. 
+
+2005-04-15  Corinna Vinschen  <vinschen@redhat.com>
+
+	* configure.ac: Add explicit sh64 case.
+	* configure: Regenerate.
+
+2005-03-30  Paul Brook  <paul@codesourcery.com>
+
+	* arm/wrapper.c: Provide SIGTRAP and SIGBUS.
+
+2005-03-24  Hans-Peter Nilsson  <hp@axis.com>
+
+	* cris/Makefile.in (stamp-v10fcpu, stamp-v32fcpu): Add kludge to
+	include cgen-ops.h in decodev10.c and decodev32.c.
+	* cris/sim-main.h: Don't include cgen-ops.h here.
+	* cris/arch.c, cris/arch.h, cris/cpuall.h, cris/cpuv10.c,
+	cris/cpuv10.h, cris/cpuv32.c, cris/cpuv32.h, cris/cris-desc.c,
+	cris/cris-desc.h, cris/cris-opc.h, cris/decodev10.c,
+	cris/decodev10.h, cris/decodev32.c, cris/decodev32.h,
+	cris/modelv10.c, cris/modelv32.c, cris/semcrisv10f-switch.c,
+	cris/semcrisv32f-switch.c: Regenerate.
+
+	* cris/traps.c (cris_break_13_handler) <case
+	TARGET_SYS_rt_sigaction>: Rename sa_handler, sa_flags,
+	sa_restorer, sa_mask_low, sa_mask_high to target_sa_handler etc.
+
+2005-03-23  Mark Kettenis  <kettenis@gnu.org>
+
+	* cris/configure: Regenerate.
+
+2005-02-28  Jim Blandy  <jimb@redhat.com>
+
+	* d10v/configure.ac, igen/configure.ac, m68hc11/configure.ac,
+	mips/configure.ac, mn10300/configure.ac, v850/configure.ac:
+	Regenerated, after change to common/aclocal.m4.
+
+2005-02-18  Corinna Vinschen  <vinschen@redhat.com>
+
+	* iq2000: New target subdirectory.
+	* configure.ac: Add iq2000 target.
+	* configure: Regenerate.
+
+2005-01-29  Hans-Peter Nilsson  <hp@axis.com>
+
+	* Makefile.in (all, clean mostlyclean, distclean maintainer-clean)
+	(realclean, install): Fail if subdir make failed.
+
+2005-01-28  Hans-Peter Nilsson  <hp@axis.com>
+
+	* cris: New directory, simulator for Axis Communications CRIS
+	including CRIS v32, CGEN-based.
+	* configure.ac: Add corresponding configury.
+	* configure: Regenerate.
+
+2005-01-17  Andrew Cagney  <cagney@gnu.org>
+
+	* configure.ac: For mips*-*-* and mn10300*-*-* configure the
+	common directory.  Remove sparc*-*-* from list.
+	
+2005-01-11  Andrew Cagney  <cagney@gnu.org>
+
+	* Makefile.in (autoconf-common autoheader-common): Add --force to
+	autoconf and autoheader.
+	(autoconf-common autoheader-common)
+	(autoconf-install autoheader-install): Check for configure.ac, not
+	configure.in.
+	* configure.ac: Delete AC_CONFIG_AUX_DIR.
+	* configure: Re-generate.
+
+2005-01-07  Andrew Cagney  <cagney@gnu.org>
+
+	* configure.ac: Replace configure.in.  Requires autoconf 2.59 and
+	correctly calls AC_CONFIG_SUBDIRS.
+	* configure: Re-generate.
+
+2004-12-01  Andrew Cagney  <cagney@gnu.org>
+
+	* i960, h8500: Delete directory.
+
+2004-11-12  Andrew Cagney  <cagney@gnu.org>
+
+	* d30v, fr30, mn10200, z8k: Delete directory.
+
 2004-03-10  Ben Elliston  <bje@gnu.org>
 
 	* MAINTAINERS: Update my mail address.

@@ -16,7 +16,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 /* Logically, this code should be part of libopcode but since some of
    the operand insertion/extraction functions help bfd to implement
@@ -457,6 +457,10 @@ const struct ia64_operand elf64_ia64_operands[IA64_OPND_COUNT] =
     { REG, ins_reg,   ext_reg,	 "r", {{ 2, 20}}, 0,		/* R3_2 */
       "a general register r0-r3" },
 
+    /* memory operands: */
+    { IND, ins_reg,   ext_reg,	"",      {{7, 20}}, 0,		/* MR3 */
+      "a memory address" },
+
     /* indirect operands: */
     { IND, ins_reg,   ext_reg,	"cpuid", {{7, 20}}, 0,		/* CPUID_R3 */
       "a cpuid register" },
@@ -468,8 +472,6 @@ const struct ia64_operand elf64_ia64_operands[IA64_OPND_COUNT] =
       "an itr register" },
     { IND, ins_reg,   ext_reg,	"ibr",   {{7, 20}}, 0,		/* IBR_R3 */
       "an ibr register" },
-    { IND, ins_reg,   ext_reg,	"",      {{7, 20}}, 0,		/* MR3 */
-      "an indirect memory address" },
     { IND, ins_reg,   ext_reg,	"msr",   {{7, 20}}, 0,		/* MSR_R3 */
       "an msr register" },
     { IND, ins_reg,   ext_reg,	"pkr",   {{7, 20}}, 0,		/* PKR_R3 */

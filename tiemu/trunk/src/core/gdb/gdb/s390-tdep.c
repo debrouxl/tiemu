@@ -1,6 +1,7 @@
 /* Target-dependent code for GDB, the GNU debugger.
 
-   Copyright 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+   Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation,
+   Inc.
 
    Contributed by D.J. Barrow (djbarrow@de.ibm.com,barrow_dj@yahoo.com)
    for IBM Deutschland Entwicklung GmbH, IBM Corporation.
@@ -196,11 +197,11 @@ s390_dwarf_reg_to_regnum (int reg)
 {
   int regnum = -1;
 
-  if (reg >= 0 || reg < ARRAY_SIZE (s390_dwarf_regmap))
+  if (reg >= 0 && reg < ARRAY_SIZE (s390_dwarf_regmap))
     regnum = s390_dwarf_regmap[reg];
 
   if (regnum == -1)
-    warning ("Unmapped DWARF Register #%d encountered\n", reg);
+    warning (_("Unmapped DWARF Register #%d encountered."), reg);
 
   return regnum;
 }
@@ -209,7 +210,7 @@ s390_dwarf_reg_to_regnum (int reg)
 
 static void
 s390_pseudo_register_read (struct gdbarch *gdbarch, struct regcache *regcache,
-			   int regnum, void *buf)
+			   int regnum, gdb_byte *buf)
 {
   ULONGEST val;
 
@@ -226,13 +227,13 @@ s390_pseudo_register_read (struct gdbarch *gdbarch, struct regcache *regcache,
       break;
 
     default:
-      internal_error (__FILE__, __LINE__, "invalid regnum");
+      internal_error (__FILE__, __LINE__, _("invalid regnum"));
     }
 }
 
 static void
 s390_pseudo_register_write (struct gdbarch *gdbarch, struct regcache *regcache,
-			    int regnum, const void *buf)
+			    int regnum, const gdb_byte *buf)
 {
   ULONGEST val, psw;
 
@@ -253,13 +254,13 @@ s390_pseudo_register_write (struct gdbarch *gdbarch, struct regcache *regcache,
       break;
 
     default:
-      internal_error (__FILE__, __LINE__, "invalid regnum");
+      internal_error (__FILE__, __LINE__, _("invalid regnum"));
     }
 }
 
 static void
 s390x_pseudo_register_read (struct gdbarch *gdbarch, struct regcache *regcache,
-			    int regnum, void *buf)
+			    int regnum, gdb_byte *buf)
 {
   ULONGEST val;
 
@@ -275,13 +276,13 @@ s390x_pseudo_register_read (struct gdbarch *gdbarch, struct regcache *regcache,
       break;
 
     default:
-      internal_error (__FILE__, __LINE__, "invalid regnum");
+      internal_error (__FILE__, __LINE__, _("invalid regnum"));
     }
 }
 
 static void
 s390x_pseudo_register_write (struct gdbarch *gdbarch, struct regcache *regcache,
-			     int regnum, const void *buf)
+			     int regnum, const gdb_byte *buf)
 {
   ULONGEST val, psw;
 
@@ -299,7 +300,7 @@ s390x_pseudo_register_write (struct gdbarch *gdbarch, struct regcache *regcache,
       break;
 
     default:
-      internal_error (__FILE__, __LINE__, "invalid regnum");
+      internal_error (__FILE__, __LINE__, _("invalid regnum"));
     }
 }
 
@@ -315,9 +316,9 @@ s390_convert_register_p (int regno, struct type *type)
 
 static void
 s390_register_to_value (struct frame_info *frame, int regnum,
-                        struct type *valtype, void *out)
+                        struct type *valtype, gdb_byte *out)
 {
-  char in[8];
+  gdb_byte in[8];
   int len = TYPE_LENGTH (valtype);
   gdb_assert (len < 8);
 
@@ -327,9 +328,9 @@ s390_register_to_value (struct frame_info *frame, int regnum,
 
 static void
 s390_value_to_register (struct frame_info *frame, int regnum,
-                        struct type *valtype, const void *in)
+                        struct type *valtype, const gdb_byte *in)
 {
-  char out[8];
+  gdb_byte out[8];
   int len = TYPE_LENGTH (valtype);
   gdb_assert (len < 8);
 
@@ -810,6 +811,7 @@ enum
   {
     op1_lhi  = 0xa7,   op2_lhi  = 0x08,
     op1_lghi = 0xa7,   op2_lghi = 0x09,
+    op1_lgfi = 0xc0,   op2_lgfi = 0x01,
     op_lr    = 0x18,
     op_lgr   = 0xb904,
     op_l     = 0x58,
@@ -827,11 +829,17 @@ enum
     op1_stmg = 0xeb,   op2_stmg = 0x24,
     op1_aghi = 0xa7,   op2_aghi = 0x0b,
     op1_ahi  = 0xa7,   op2_ahi  = 0x0a,
+    op1_agfi = 0xc2,   op2_agfi = 0x08,
+    op1_afi  = 0xc2,   op2_afi  = 0x09,
+    op1_algfi= 0xc2,   op2_algfi= 0x0a,
+    op1_alfi = 0xc2,   op2_alfi = 0x0b,
     op_ar    = 0x1a,
     op_agr   = 0xb908,
     op_a     = 0x5a,
     op1_ay   = 0xe3,   op2_ay   = 0x5a,
     op1_ag   = 0xe3,   op2_ag   = 0x08,
+    op1_slgfi= 0xc2,   op2_slgfi= 0x04,
+    op1_slfi = 0xc2,   op2_slfi = 0x05,
     op_sr    = 0x1b,
     op_sgr   = 0xb909,
     op_s     = 0x5b,
@@ -1293,6 +1301,10 @@ s390_analyze_prologue (struct gdbarch *gdbarch,
 	       && is_ri (insn, op1_lghi, op2_lghi, &r1, &i2))
         pv_set_to_constant (&data->gpr[r1], i2);
 
+      /* LGFI r1, i2 --- load fullword immediate */
+      else if (is_ril (insn, op1_lgfi, op2_lgfi, &r1, &i2))
+        pv_set_to_constant (&data->gpr[r1], i2);
+
       /* LR r1, r2 --- load from register */
       else if (word_size == 4
 	       && is_rr (insn, op_lr, &r1, &r2))
@@ -1433,6 +1445,26 @@ s390_analyze_prologue (struct gdbarch *gdbarch,
                && is_ri (insn, op1_aghi, op2_aghi, &r1, &i2))
         pv_add_constant (&data->gpr[r1], i2);
 
+      /* AFI r1, i2 --- add fullword immediate */
+      else if (word_size == 4
+	       && is_ril (insn, op1_afi, op2_afi, &r1, &i2))
+        pv_add_constant (&data->gpr[r1], i2);
+
+      /* AGFI r1, i2 --- add fullword immediate (64-bit version) */
+      else if (word_size == 8
+               && is_ril (insn, op1_agfi, op2_agfi, &r1, &i2))
+        pv_add_constant (&data->gpr[r1], i2);
+
+      /* ALFI r1, i2 --- add logical immediate */
+      else if (word_size == 4
+	       && is_ril (insn, op1_alfi, op2_alfi, &r1, &i2))
+        pv_add_constant (&data->gpr[r1], (CORE_ADDR)i2 & 0xffffffff);
+
+      /* ALGFI r1, i2 --- add logical immediate (64-bit version) */
+      else if (word_size == 8
+               && is_ril (insn, op1_algfi, op2_algfi, &r1, &i2))
+        pv_add_constant (&data->gpr[r1], (CORE_ADDR)i2 & 0xffffffff);
+
       /* AR r1, r2 -- add register */
       else if (word_size == 4
 	       && is_rr (insn, op_ar, &r1, &r2))
@@ -1481,6 +1513,16 @@ s390_analyze_prologue (struct gdbarch *gdbarch,
 	
 	  pv_add (&data->gpr[r1], &data->gpr[r1], &value);
 	}
+
+      /* SLFI r1, i2 --- subtract logical immediate */
+      else if (word_size == 4
+	       && is_ril (insn, op1_slfi, op2_slfi, &r1, &i2))
+        pv_add_constant (&data->gpr[r1], -((CORE_ADDR)i2 & 0xffffffff));
+
+      /* SLGFI r1, i2 --- subtract logical immediate (64-bit version) */
+      else if (word_size == 8
+               && is_ril (insn, op1_slgfi, op2_slgfi, &r1, &i2))
+        pv_add_constant (&data->gpr[r1], -((CORE_ADDR)i2 & 0xffffffff));
 
       /* SR r1, r2 -- subtract register */
       else if (word_size == 4
@@ -1944,7 +1986,7 @@ s390_frame_prev_register (struct frame_info *next_frame,
 			  void **this_prologue_cache,
 			  int regnum, int *optimizedp,
 			  enum lval_type *lvalp, CORE_ADDR *addrp,
-			  int *realnump, void *bufferp)
+			  int *realnump, gdb_byte *bufferp)
 {
   struct s390_unwind_cache *info
     = s390_frame_unwind_cache (next_frame, this_prologue_cache);
@@ -2016,7 +2058,7 @@ s390_stub_frame_prev_register (struct frame_info *next_frame,
 			       void **this_prologue_cache,
 			       int regnum, int *optimizedp,
 			       enum lval_type *lvalp, CORE_ADDR *addrp,
-			       int *realnump, void *bufferp)
+			       int *realnump, gdb_byte *bufferp)
 {
   struct s390_stub_unwind_cache *info
     = s390_stub_frame_unwind_cache (next_frame, this_prologue_cache);
@@ -2159,7 +2201,7 @@ s390_sigtramp_frame_prev_register (struct frame_info *next_frame,
 				   void **this_prologue_cache,
 				   int regnum, int *optimizedp,
 				   enum lval_type *lvalp, CORE_ADDR *addrp,
-				   int *realnump, void *bufferp)
+				   int *realnump, gdb_byte *bufferp)
 {
   struct s390_sigtramp_unwind_cache *info
     = s390_sigtramp_frame_unwind_cache (next_frame, this_prologue_cache);
@@ -2428,16 +2470,16 @@ s390_function_arg_integer (struct type *type)
 static LONGEST
 extend_simple_arg (struct value *arg)
 {
-  struct type *type = VALUE_TYPE (arg);
+  struct type *type = value_type (arg);
 
   /* Even structs get passed in the least significant bits of the
      register / memory word.  It's not really right to extract them as
      an integer, but it does take care of the extension.  */
   if (TYPE_UNSIGNED (type))
-    return extract_unsigned_integer (VALUE_CONTENTS (arg),
+    return extract_unsigned_integer (value_contents (arg),
                                      TYPE_LENGTH (type));
   else
-    return extract_signed_integer (VALUE_CONTENTS (arg),
+    return extract_signed_integer (value_contents (arg),
                                    TYPE_LENGTH (type));
 }
 
@@ -2511,14 +2553,14 @@ s390_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
   for (i = 0; i < nargs; i++)
     {
       struct value *arg = args[i];
-      struct type *type = VALUE_TYPE (arg);
+      struct type *type = value_type (arg);
       unsigned length = TYPE_LENGTH (type);
 
       if (s390_function_arg_pass_by_reference (type))
         {
           sp -= length;
           sp = align_down (sp, alignment_of (type));
-          write_memory (sp, VALUE_CONTENTS (arg), length);
+          write_memory (sp, value_contents (arg), length);
           copy_addr[i] = sp;
         }
     }
@@ -2552,7 +2594,7 @@ s390_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
     for (i = 0; i < nargs; i++)
       {
         struct value *arg = args[i];
-        struct type *type = VALUE_TYPE (arg);
+        struct type *type = value_type (arg);
         unsigned length = TYPE_LENGTH (type);
 
 	if (s390_function_arg_pass_by_reference (type))
@@ -2578,7 +2620,7 @@ s390_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 		/* When we store a single-precision value in an FP register,
 		   it occupies the leftmost bits.  */
 		regcache_cooked_write_part (regcache, S390_F0_REGNUM + fr,
-					    0, length, VALUE_CONTENTS (arg));
+					    0, length, value_contents (arg));
 		fr += 2;
 	      }
 	    else
@@ -2586,7 +2628,7 @@ s390_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 		/* When we store a single-precision value in a stack slot,
 		   it occupies the rightmost bits.  */
 		starg = align_up (starg + length, word_size);
-                write_memory (starg - length, VALUE_CONTENTS (arg), length);
+                write_memory (starg - length, value_contents (arg), length);
 	      }
 	  }
 	else if (s390_function_arg_integer (type) && length <= word_size)
@@ -2611,9 +2653,9 @@ s390_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 	    if (gr <= 5)
 	      {
 		regcache_cooked_write (regcache, S390_R0_REGNUM + gr,
-				       VALUE_CONTENTS (arg));
+				       value_contents (arg));
 		regcache_cooked_write (regcache, S390_R0_REGNUM + gr + 1,
-				       VALUE_CONTENTS (arg) + word_size);
+				       value_contents (arg) + word_size);
 		gr += 2;
 	      }
 	    else
@@ -2622,12 +2664,12 @@ s390_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 		   in it, then don't go back and use it again later.  */
 		gr = 7;
 
-		write_memory (starg, VALUE_CONTENTS (arg), length);
+		write_memory (starg, value_contents (arg), length);
 		starg += length;
 	      }
 	  }
 	else
-	  internal_error (__FILE__, __LINE__, "unknown argument type");
+	  internal_error (__FILE__, __LINE__, _("unknown argument type"));
       }
   }
 
@@ -2693,7 +2735,8 @@ s390_return_value_convention (struct gdbarch *gdbarch, struct type *type)
 
 static enum return_value_convention
 s390_return_value (struct gdbarch *gdbarch, struct type *type, 
-		   struct regcache *regcache, void *out, const void *in)
+		   struct regcache *regcache, gdb_byte *out,
+		   const gdb_byte *in)
 {
   int word_size = gdbarch_ptr_bit (gdbarch) / 8;
   int length = TYPE_LENGTH (type);
@@ -2724,15 +2767,14 @@ s390_return_value (struct gdbarch *gdbarch, struct type *type,
 	  else if (length == 2*word_size)
 	    {
 	      regcache_cooked_write (regcache, S390_R2_REGNUM, in);
-	      regcache_cooked_write (regcache, S390_R3_REGNUM,
-				     (const char *)in + word_size);
+	      regcache_cooked_write (regcache, S390_R3_REGNUM, in + word_size);
 	    }
 	  else
-	    internal_error (__FILE__, __LINE__, "invalid return type");
+	    internal_error (__FILE__, __LINE__, _("invalid return type"));
 	  break;
 
 	case RETURN_VALUE_STRUCT_CONVENTION:
-	  error ("Cannot set function return value.");
+	  error (_("Cannot set function return value."));
 	  break;
 	}
     }
@@ -2757,15 +2799,14 @@ s390_return_value (struct gdbarch *gdbarch, struct type *type,
 	  else if (length == 2*word_size)
 	    {
 	      regcache_cooked_read (regcache, S390_R2_REGNUM, out);
-	      regcache_cooked_read (regcache, S390_R3_REGNUM,
-				    (char *)out + word_size);
+	      regcache_cooked_read (regcache, S390_R3_REGNUM, out + word_size);
 	    }
 	  else
-	    internal_error (__FILE__, __LINE__, "invalid return type");
+	    internal_error (__FILE__, __LINE__, _("invalid return type"));
 	  break;
 
 	case RETURN_VALUE_STRUCT_CONVENTION:
-	  error ("Function return value unknown.");
+	  error (_("Function return value unknown."));
 	  break;
 	}
     }
@@ -2776,10 +2817,10 @@ s390_return_value (struct gdbarch *gdbarch, struct type *type,
 
 /* Breakpoints.  */
 
-static const unsigned char *
+static const gdb_byte *
 s390_breakpoint_from_pc (CORE_ADDR *pcptr, int *lenptr)
 {
-  static unsigned char breakpoint[] = { 0x0, 0x1 };
+  static const gdb_byte breakpoint[] = { 0x0, 0x1 };
 
   *lenptr = sizeof (breakpoint);
   return breakpoint;
@@ -2953,7 +2994,6 @@ s390_gdbarch_init (struct gdbarch_info info, struct gdbarch_list *arches)
   set_gdbarch_return_value (gdbarch, s390_return_value);
 
   /* Frame handling.  */
-  set_gdbarch_in_solib_call_trampoline (gdbarch, in_plt_section);
   dwarf2_frame_set_init_reg (gdbarch, s390_dwarf2_frame_init_reg);
   frame_unwind_append_sniffer (gdbarch, dwarf2_frame_sniffer);
   frame_base_append_sniffer (gdbarch, dwarf2_frame_base_sniffer);
@@ -3006,6 +3046,10 @@ s390_gdbarch_init (struct gdbarch_info info, struct gdbarch_list *arches)
     }
 
   set_gdbarch_print_insn (gdbarch, print_insn_s390);
+
+  /* Enable TLS support.  */
+  set_gdbarch_fetch_tls_load_module_address (gdbarch,
+                                             svr4_fetch_objfile_link_map);
 
   return gdbarch;
 }

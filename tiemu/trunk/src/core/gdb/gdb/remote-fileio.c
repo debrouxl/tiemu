@@ -1,6 +1,6 @@
 /* Remote File-I/O communications
 
-   Copyright 2003 Free Software Foundation, Inc.
+   Copyright 2003, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -28,6 +28,7 @@
 #include "gdb/fileio.h"
 #include "gdb_wait.h"
 #include "gdb_stat.h"
+#include "exceptions.h"
 #include "remote-fileio.h"
 
 #include <fcntl.h>
@@ -164,18 +165,28 @@ remote_fileio_mode_to_host (long mode, int open_call)
     hmode |= S_IWUSR;
   if (mode & FILEIO_S_IXUSR)
     hmode |= S_IXUSR;
+#ifdef S_IRGRP
   if (mode & FILEIO_S_IRGRP)
     hmode |= S_IRGRP;
+#endif
+#ifdef S_IWGRP
   if (mode & FILEIO_S_IWGRP)
     hmode |= S_IWGRP;
+#endif
+#ifdef S_IXGRP
   if (mode & FILEIO_S_IXGRP)
     hmode |= S_IXGRP;
+#endif
   if (mode & FILEIO_S_IROTH)
     hmode |= S_IROTH;
+#ifdef S_IWOTH
   if (mode & FILEIO_S_IWOTH)
     hmode |= S_IWOTH;
+#endif
+#ifdef S_IXOTH
   if (mode & FILEIO_S_IXOTH)
     hmode |= S_IXOTH;
+#endif
   return hmode;
 }
 
@@ -196,18 +207,28 @@ remote_fileio_mode_to_target (mode_t mode)
     tmode |= FILEIO_S_IWUSR;
   if (mode & S_IXUSR)
     tmode |= FILEIO_S_IXUSR;
+#ifdef S_IRGRP
   if (mode & S_IRGRP)
     tmode |= FILEIO_S_IRGRP;
+#endif
+#ifdef S_IWRGRP
   if (mode & S_IWGRP)
     tmode |= FILEIO_S_IWGRP;
+#endif
+#ifdef S_IXGRP
   if (mode & S_IXGRP)
     tmode |= FILEIO_S_IXGRP;
+#endif
   if (mode & S_IROTH)
     tmode |= FILEIO_S_IROTH;
+#ifdef S_IWOTH
   if (mode & S_IWOTH)
     tmode |= FILEIO_S_IWOTH;
+#endif
+#ifdef S_IXOTH
   if (mode & S_IXOTH)
     tmode |= FILEIO_S_IXOTH;
+#endif
   return tmode;
 }
 
@@ -399,6 +420,8 @@ remote_fileio_to_fio_ulong (LONGEST num, fio_ulong_t fnum)
 static void
 remote_fileio_to_fio_stat (struct stat *st, struct fio_stat *fst)
 {
+  LONGEST blksize;
+
   /* `st_dev' is set in the calling function */
   remote_fileio_to_fio_uint ((long) st->st_ino, fst->fst_ino);
   remote_fileio_to_fio_mode (st->st_mode, fst->fst_mode);
@@ -407,18 +430,20 @@ remote_fileio_to_fio_stat (struct stat *st, struct fio_stat *fst)
   remote_fileio_to_fio_uint ((long) st->st_gid, fst->fst_gid);
   remote_fileio_to_fio_uint ((long) st->st_rdev, fst->fst_rdev);
   remote_fileio_to_fio_ulong ((LONGEST) st->st_size, fst->fst_size);
-#if HAVE_STRUCT_STAT_ST_BLKSIZE
-  remote_fileio_to_fio_ulong ((LONGEST) st->st_blksize, fst->fst_blksize);
+#ifdef HAVE_STRUCT_STAT_ST_BLKSIZE
+  blksize = st->st_blksize;
+#else
+  blksize = 512;
 #endif
+  remote_fileio_to_fio_ulong (blksize, fst->fst_blksize);
 #if HAVE_STRUCT_STAT_ST_BLOCKS
   remote_fileio_to_fio_ulong ((LONGEST) st->st_blocks, fst->fst_blocks);
-#elif __MSDOS__
+#else
   /* FIXME: This is correct for DJGPP, but other systems that don't
      have st_blocks, if any, might prefer 512 instead of st_blksize.
-     (eliz, 30-12-2003).
-  */
-  remote_fileio_to_fio_ulong (((LONGEST) st->st_size + st->st_blksize - 1)
-			      / (LONGEST) st->st_blksize,
+     (eliz, 30-12-2003)  */
+  remote_fileio_to_fio_ulong (((LONGEST) st->st_size + blksize - 1)
+			      / blksize,
 			      fst->fst_blocks);
 #else
   /* MinGW does not have st_blksize or st_blocks.
@@ -490,7 +515,7 @@ remote_fileio_ctrl_c_signal_handler (int signo)
   remote_fileio_sig_set (SIG_IGN);
   remote_fio_ctrl_c_flag = 1;
   if (!remote_fio_no_longjmp)
-    throw_exception (RETURN_QUIT);
+    deprecated_throw_reason (RETURN_QUIT);
   remote_fileio_sig_set (remote_fileio_ctrl_c_signal_handler);
 }
 
@@ -1140,16 +1165,19 @@ remote_fileio_func_fstat (char *buf)
       remote_fileio_to_fio_uint (1, fst.fst_dev);
       st.st_mode = S_IFCHR | (fd == FIO_FD_CONSOLE_IN ? S_IRUSR : S_IWUSR);
       st.st_nlink = 1;
-#if defined (__MINGW32__)
-      st.st_uid = 0;
-      st.st_gid = 0;
-#else /* !__MINGW32__ */
+#ifdef HAVE_GETUID
       st.st_uid = getuid ();
+#else
+      st.st_uid = 0;
+#endif
+#ifdef HAVE_GETGID
       st.st_gid = getgid ();
-#endif /* !__MINGW32__ */
+#else
+      st.st_gid = 0;
+#endif
       st.st_rdev = 0;
       st.st_size = 0;
-#if HAVE_STRUCT_STAT_ST_BLKSIZE
+#ifdef HAVE_STRUCT_STAT_ST_BLKSIZE
       st.st_blksize = 512;
 #endif
 #if HAVE_STRUCT_STAT_ST_BLOCKS
@@ -1346,7 +1374,7 @@ remote_fileio_request (char *buf)
   remote_fio_no_longjmp = 0;
 
   ex = catch_exceptions (uiout, do_remote_fileio_request, (void *)buf,
-			 NULL, RETURN_MASK_ALL);
+			 RETURN_MASK_ALL);
   switch (ex)
     {
       case RETURN_ERROR:
@@ -1375,14 +1403,14 @@ set_system_call_allowed (char *args, int from_tty)
 	  return;
 	}
     }
-  error ("Illegal argument for \"set remote system-call-allowed\" command");
+  error (_("Illegal argument for \"set remote system-call-allowed\" command"));
 }
 
 static void
 show_system_call_allowed (char *args, int from_tty)
 {
   if (args)
-    error ("Garbage after \"show remote system-call-allowed\" command: `%s'", args);
+    error (_("Garbage after \"show remote system-call-allowed\" command: `%s'"), args);
   printf_unfiltered ("Calling host system(3) call from target is %sallowed\n",
 		     remote_fio_system_call_allowed ? "" : "not ");
 }
@@ -1393,10 +1421,10 @@ initialize_remote_fileio (struct cmd_list_element *remote_set_cmdlist,
 {
   add_cmd ("system-call-allowed", no_class,
 	   set_system_call_allowed,
-	   "Set if the host system(3) call is allowed for the target.\n",
+	   _("Set if the host system(3) call is allowed for the target."),
 	   &remote_set_cmdlist);
   add_cmd ("system-call-allowed", no_class,
 	   show_system_call_allowed,
-	   "Show if the host system(3) call is allowed for the target.\n",
+	   _("Show if the host system(3) call is allowed for the target."),
 	   &remote_show_cmdlist);
 }

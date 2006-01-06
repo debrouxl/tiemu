@@ -18,7 +18,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #ifndef _CRX_H_
 #define _CRX_H_
@@ -41,20 +41,16 @@ typedef enum
     uhi, ulo,
     /* Processor Status Register.  */
     psr,
-    /* Configuration Register.  */
-    cfg,
-    /* Coprocessor Configuration Register.  */
-    cpcfg,
-    /* Cashe Configuration Register.  */
-    ccfg,
     /* Interrupt Base Register.  */
     intbase,
     /* Interrupt Stack Pointer Register.  */
     isp,
+    /* Configuration Register.  */
+    cfg,
+    /* Coprocessor Configuration Register.  */
+    cpcfg,
     /* Coprocessor Enable Register.  */
     cen,
-    /* Program Counter Register.  */
-    pc,
     /* Not a register.  */
     nullregister,
     MAX_REG
@@ -83,13 +79,11 @@ copreg;
 
 typedef enum
   {
-    CRX_PC_REGTYPE,   /*  pc type */
     CRX_R_REGTYPE,    /*  r<N>	  */
     CRX_U_REGTYPE,    /*  u<N>	  */
     CRX_C_REGTYPE,    /*  c<N>	  */
     CRX_CS_REGTYPE,   /*  cs<N>	  */
-    CRX_MTPR_REGTYPE, /*  mtpr	  */
-    CRX_CFG_REGTYPE   /*  *hi|lo, *cfg, psr */
+    CRX_CFG_REGTYPE   /*  configuration register   */
   }
 reg_type;
 
@@ -99,9 +93,8 @@ reg_type;
    Argument types :
    r - register
    c - constant
-   d - displacement
-   ic - immediate
-   icr - index register
+   i - immediate
+   idxr - index register
    rbase - register base
    s - star ('*')
    copr - coprocessor register
@@ -109,40 +102,46 @@ reg_type;
 
 typedef enum
   {
-    arg_r, arg_c, arg_cr, arg_dc, arg_dcr, arg_sc,
-    arg_ic, arg_icr, arg_rbase, arg_copr, arg_copsr,
+    arg_r, arg_c, arg_cr, arg_ic, arg_icr, arg_sc,
+    arg_idxr, arg_rbase, arg_copr, arg_copsr,
     /* Not an argument.  */
     nullargs
   }
 argtype;
 
 /* CRX operand types :
-   The operand types correspond to instructions operands
-
-   Operand Types :
-   cst4 - 4-bit encoded constant
-   iN - N-bit immediate field
-   d, dispsN - N-bit immediate signed displacement
-   dispuN - N-bit immediate unsigned displacement
-   absN - N-bit absolute address
-   rbase - 4-bit genaral-purpose register specifier
-   regr - 4-bit genaral-purpose register specifier
-   regr8 - 8-bit register address space
-   copregr - coprocessor register
-   copsregr - coprocessor special register
-   scl2 - 2-bit scaling factor for memory index
-   ridx - register index.  */
+   The operand types correspond to instructions operands.  */
 
 typedef enum
   {
-    dummy, cst4, disps9,
-    i3, i4, i5, i8, i12, i16, i32,
-    d5, d9, d17, d25, d33,
+    dummy,
+    /* 4-bit encoded constant.  */
+    cst4,
+    /* N-bit immediate.  */
+    i16, i32,
+    /* N-bit unsigned immediate.  */
+    ui3, ui4, ui5, ui16,
+    /* N-bit signed displacement.  */
+    disps9, disps17, disps25, disps32,
+    /* N-bit unsigned displacement.  */
+    dispu5, 
+    /* N-bit escaped displacement.  */
+    dispe9,
+    /* N-bit absolute address.  */
     abs16, abs32,
-    rbase, rbase_cst4,
-    rbase_dispu8, rbase_dispu12, rbase_dispu16, rbase_dispu28, rbase_dispu32,
-    rbase_ridx_scl2_dispu6, rbase_ridx_scl2_dispu22,
-    regr, regr8, copregr,copregr8,copsregr,
+    /* Register relative.  */
+    rbase, rbase_dispu4,
+    rbase_disps12, rbase_disps16, rbase_disps28, rbase_disps32,
+    /* Register index.  */
+    rindex_disps6, rindex_disps22,
+    /* 4-bit genaral-purpose register specifier.  */
+    regr, 
+    /* 8-bit register address space.  */
+    regr8,
+    /* coprocessor register.  */
+    copregr, 
+    /* coprocessor special register.  */
+    copsregr,
     /* Not an operand.  */
     nulloperand,
     /* Maximum supported operand.  */
@@ -152,6 +151,7 @@ operand_type;
 
 /* CRX instruction types.  */
 
+#define NO_TYPE_INS       0
 #define ARITH_INS         1
 #define LD_STOR_INS       2
 #define BRANCH_INS        3
@@ -162,19 +162,13 @@ operand_type;
 #define LD_STOR_INS_INC   8
 #define STOR_IMM_INS	  9
 #define CSTBIT_INS       10
-#define SYS_INS		 11
-#define JMP_INS		 12
-#define MUL_INS		 13
-#define DIV_INS		 14
-#define COP_BRANCH_INS   15
-#define COP_REG_INS      16
-#define COPS_REG_INS     17
-#define DCR_BRANCH_INS   18
-#define MMC_INS          19
-#define MMU_INS          20
+#define COP_BRANCH_INS   11
+#define COP_REG_INS      12
+#define COPS_REG_INS     13
+#define DCR_BRANCH_INS   14
 
 /* Maximum value supported for instruction types.  */
-#define CRX_INS_MAX	(1 << 5)
+#define CRX_INS_MAX	(1 << 4)
 /* Mask to record an instruction type.  */
 #define CRX_INS_MASK	(CRX_INS_MAX - 1)
 /* Return instruction type, given instruction's attributes.  */
@@ -184,32 +178,66 @@ operand_type;
 #define REG_LIST	CRX_INS_MAX
 /* The operands in binary and assembly are placed in reverse order.
    load - (REVERSE_MATCH)/store - (! REVERSE_MATCH).  */
-#define REVERSE_MATCH  (REG_LIST << 1)
+#define REVERSE_MATCH  (1 << 5)
 
 /* Kind of displacement map used DISPU[BWD]4.  */
-#define DISPUB4	       (REVERSE_MATCH << 1)
-#define DISPUW4	       (DISPUB4 << 1)
-#define DISPUD4	       (DISPUW4 << 1)
-#define CST4MAP	       (DISPUB4 | DISPUW4 | DISPUD4)
+#define DISPUB4	       (1 << 6)
+#define DISPUW4	       (1 << 7)
+#define DISPUD4	       (1 << 8)
+#define DISPU4MAP      (DISPUB4 | DISPUW4 | DISPUD4)
 
 /* Printing formats, where the instruction prefix isn't consecutive.  */
-#define FMT_1	       (DISPUD4 << 1) /* 0xF0F00000 */
-#define FMT_2	       (FMT_1 << 1)   /* 0xFFF0FF00 */
-#define FMT_3	       (FMT_2 << 1)   /* 0xFFF00F00 */
-#define FMT_4	       (FMT_3 << 1)   /* 0xFFF0F000 */
-#define FMT_5	       (FMT_4 << 1)   /* 0xFFF0FFF0 */
+#define FMT_1	       (1 << 9)   /* 0xF0F00000 */
+#define FMT_2	       (1 << 10)   /* 0xFFF0FF00 */
+#define FMT_3	       (1 << 11)   /* 0xFFF00F00 */
+#define FMT_4	       (1 << 12)   /* 0xFFF0F000 */
+#define FMT_5	       (1 << 13)   /* 0xFFF0FFF0 */
 #define FMT_CRX	       (FMT_1 | FMT_2 | FMT_3 | FMT_4 | FMT_5)
 
-#define RELAXABLE      (FMT_5 << 1)
+/* Indicates whether this instruction can be relaxed.  */
+#define RELAXABLE      (1 << 14)
+
+/* Indicates that instruction uses user registers (and not 
+   general-purpose registers) as operands.  */
+#define USER_REG       (1 << 15)
+
+/* Indicates that instruction can perfom a cst4 mapping.  */
+#define CST4MAP	       (1 << 16)
+
+/* Instruction shouldn't allow 'sp' usage.  */
+#define NO_SP	       (1 << 17)
+
+/* Instruction shouldn't allow to push a register which is used as a rptr.  */
+#define NO_RPTR	       (1 << 18)
 
 /* Maximum operands per instruction.  */
 #define MAX_OPERANDS	  5
-/* Maximum words per instruction.  */
-#define MAX_WORDS	  3
 /* Maximum register name length. */
 #define MAX_REGNAME_LEN	  10
 /* Maximum instruction length. */
 #define MAX_INST_LEN	  256
+
+
+/* Values defined for the flags field of a struct operand_entry.  */
+
+/* Operand must be an unsigned number.  */
+#define OP_UNSIGNED   (1 << 0)
+/* Operand must be a signed number.  */
+#define OP_SIGNED     (1 << 1)
+/* A special arithmetic 4-bit constant operand.  */
+#define OP_CST4	      (1 << 2)
+/* A special load/stor 4-bit unsigned displacement operand.  */
+#define OP_DISPU4     (1 << 3)
+/* Operand must be an even number.  */
+#define OP_EVEN	      (1 << 4)
+/* Operand is shifted right.  */
+#define OP_SHIFT      (1 << 5)
+/* Operand is shifted right and decremented.  */
+#define OP_SHIFT_DEC  (1 << 6)
+/* Operand has reserved escape sequences.  */
+#define OP_ESC	      (1 << 7)
+/* Operand is used only for the upper 64 KB (FFFF0000 to FFFFFFFF).  */
+#define OP_UPPER_64KB (1 << 8)
 
 /* Single operand description.  */
 
@@ -252,15 +280,15 @@ typedef struct
     /* Coprocessor register.  */
     copreg cr;
     /* Constant/immediate/absolute value.  */
-    unsigned long int constant;
+    long constant;
     /* Scaled index mode.  */
     unsigned int scale;
     /* Argument type.  */
     argtype type;
     /* Size of the argument (in bits) required to represent.  */
     int size;
-    /* Indicates whether a constant is positive or negative.  */
-    int signflag;
+  /* The type of the expression.  */
+    unsigned char X_op;
   }
 argument;
 
@@ -292,6 +320,8 @@ typedef struct
     unsigned int bit_size;
     /* Argument type.  */
     argtype arg_type;
+    /* One bit syntax flags.  */
+    int flags;
   }
 operand_entry;
 
@@ -329,15 +359,6 @@ reg_entry;
 
 /* Structure to hold a cst4 operand mapping.  */
 
-typedef struct
-  {
-    /* The binary value which is written to the object file.  */
-    int binary;
-    /* The value which is mapped.  */
-    int value;
-  }
-cst4_entry;
-
 /* CRX opcode table.  */
 extern const inst crx_instruction[];
 extern const int crx_num_opcodes;
@@ -362,8 +383,11 @@ extern const int crx_num_traps;
 #define NUMTRAPS crx_num_traps
 
 /* cst4 operand mapping.  */
-extern const cst4_entry cst4_map[];
+extern const long cst4_map[];
 extern const int cst4_maps;
+
+/* Table of instructions with no operands.  */
+extern const char* no_op_insn[];
 
 /* Current instruction we're assembling.  */
 extern const inst *instruction;
@@ -390,7 +414,5 @@ extern const inst *instruction;
 /* Replace all appearances of 'long long int' with LONGLONG.  */
 typedef long long int LONGLONG;
 typedef unsigned long long ULONGLONG;
-/* A mask for the upper 31 bits of a 64 bits type.  */
-#define UPPER31_MASK	0xFFFFFFFE00000000LL
 
 #endif /* _CRX_H_ */

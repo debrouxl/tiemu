@@ -1,6 +1,6 @@
 /* COFF specific linker code.
    Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003,
-   2004 Free Software Foundation, Inc.
+   2004, 2005 Free Software Foundation, Inc.
    Written by Ian Lance Taylor, Cygnus Support.
 
    This file is part of BFD, the Binary File Descriptor library.
@@ -17,7 +17,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 /* This file contains the COFF backend linker code.  */
 
@@ -693,7 +693,7 @@ _bfd_coff_final_link (bfd *abfd,
     {
       o->reloc_count = 0;
       o->lineno_count = 0;
-      for (p = o->link_order_head; p != NULL; p = p->next)
+      for (p = o->map_head.link_order; p != NULL; p = p->next)
 	{
 	  if (p->type == bfd_indirect_link_order)
 	    {
@@ -888,7 +888,7 @@ _bfd_coff_final_link (bfd *abfd,
 
   for (o = abfd->sections; o != NULL; o = o->next)
     {
-      for (p = o->link_order_head; p != NULL; p = p->next)
+      for (p = o->map_head.link_order; p != NULL; p = p->next)
 	{
 	  if (p->type == bfd_indirect_link_order
 	      && bfd_family_coff (p->u.indirect.section->owner))
@@ -1221,16 +1221,16 @@ process_embedded_commands (bfd *output_bfd,
 	free (copy);
       return 0;
     }
-  e = copy + sec->size;
+  e = (char *) copy + sec->size;
 
-  for (s = copy;  s < e ; )
+  for (s = (char *) copy; s < e ; )
     {
-      if (s[0]!= '-')
+      if (s[0] != '-')
 	{
 	  s++;
 	  continue;
 	}
-      if (strncmp (s,"-attr", 5) == 0)
+      if (strncmp (s, "-attr", 5) == 0)
 	{
 	  char *name;
 	  char *attribs;
@@ -1345,9 +1345,6 @@ _bfd_coff_link_input_bfd (struct coff_final_link_info *finfo, bfd *input_bfd)
 {
   unsigned int n_tmask = coff_data (input_bfd)->local_n_tmask;
   unsigned int n_btshft = coff_data (input_bfd)->local_n_btshft;
-#if 0
-  unsigned int n_btmask = coff_data (input_bfd)->local_n_btmask;
-#endif
   bfd_boolean (*adjust_symndx)
     (bfd *, struct bfd_link_info *, bfd *, asection *,
      struct internal_reloc *, bfd_boolean *);
@@ -1976,7 +1973,8 @@ _bfd_coff_link_input_bfd (struct coff_final_link_info *finfo, bfd *input_bfd)
 		      auxp->x_file.x_n.x_offset = STRING_SIZE_SIZE + indx;
 		    }
 		}
-	      else if (isymp->n_sclass != C_STAT || isymp->n_type != T_NULL)
+	      else if ((isymp->n_sclass != C_STAT || isymp->n_type != T_NULL)
+		       && isymp->n_sclass != C_NT_WEAK)
 		{
 		  unsigned long indx;
 
@@ -2735,7 +2733,7 @@ _bfd_coff_reloc_link_order (bfd *output_bfd,
 	  abort ();
 	case bfd_reloc_overflow:
 	  if (! ((*finfo->info->callbacks->reloc_overflow)
-		 (finfo->info,
+		 (finfo->info, NULL,
 		  (link_order->type == bfd_section_reloc_link_order
 		   ? bfd_section_name (output_bfd,
 				       link_order->u.reloc.p->u.section)
@@ -2935,25 +2933,34 @@ _bfd_coff_generic_relocate_section (bfd *output_bfd,
               if (h->class == C_NT_WEAK && h->numaux == 1)
 		{
 		  /* See _Microsoft Portable Executable and Common Object
-                   * File Format Specification_, section 5.5.3.
-		   * Note that weak symbols without aux records are a GNU
-		   * extension.
-		   * FIXME: All weak externals are treated as having
-		   * characteristics IMAGE_WEAK_EXTERN_SEARCH_LIBRARY (2).
-		   * There are no known uses of the other two types of
-		   * weak externals.
-		   */
+                     File Format Specification_, section 5.5.3.
+		     Note that weak symbols without aux records are a GNU
+		     extension.
+		     FIXME: All weak externals are treated as having
+		     characteristic IMAGE_WEAK_EXTERN_SEARCH_NOLIBRARY (1).
+		     These behave as per SVR4 ABI:  A library member
+		     will resolve a weak external only if a normal
+		     external causes the library member to be linked.
+		     See also linker.c: generic_link_check_archive_element. */
 		  asection *sec;
 		  struct coff_link_hash_entry *h2 =
 		    input_bfd->tdata.coff_obj_data->sym_hashes[
 		    h->aux->x_sym.x_tagndx.l];
 
-		  sec = h2->root.u.def.section;
-		  val = h2->root.u.def.value + sec->output_section->vma
-		    + sec->output_offset;
+		  if (!h2 || h2->root.type == bfd_link_hash_undefined)
+		    {
+		      sec = bfd_abs_section_ptr;
+		      val = 0;
+		    }
+		  else
+		    {
+		      sec = h2->root.u.def.section;
+		      val = h2->root.u.def.value
+			+ sec->output_section->vma + sec->output_offset;
+		    }
 		}
 	      else
-                /* This is a GNU extension. */
+                /* This is a GNU extension.  */
 		val = 0;
 	    }
 
@@ -3016,7 +3023,7 @@ _bfd_coff_generic_relocate_section (bfd *output_bfd,
 	    if (symndx == -1)
 	      name = "*ABS*";
 	    else if (h != NULL)
-	      name = h->root.root.string;
+	      name = NULL;
 	    else
 	      {
 		name = _bfd_coff_internal_syment_name (input_bfd, sym, buf);
@@ -3025,8 +3032,9 @@ _bfd_coff_generic_relocate_section (bfd *output_bfd,
 	      }
 
 	    if (! ((*info->callbacks->reloc_overflow)
-		   (info, name, howto->name, (bfd_vma) 0, input_bfd,
-		    input_section, rel->r_vaddr - input_section->vma)))
+		   (info, (h ? &h->root : NULL), name, howto->name,
+		    (bfd_vma) 0, input_bfd, input_section,
+		    rel->r_vaddr - input_section->vma)))
 	      return FALSE;
 	  }
 	}

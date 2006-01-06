@@ -1,7 +1,7 @@
 /* Intel 386 target-dependent stuff.
 
    Copyright 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996,
-   1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004 Free Software
+   1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005 Free Software
    Foundation, Inc.
 
    This file is part of GDB.
@@ -225,10 +225,23 @@ i386_svr4_reg_to_regnum (int reg)
       /* Floating-point registers.  */
       return reg - 11 + I387_ST0_REGNUM;
     }
-  else if (reg >= 21)
+  else if (reg >= 21 && reg <= 36)
     {
       /* The SSE and MMX registers have the same numbers as with dbx.  */
       return i386_dbx_reg_to_regnum (reg);
+    }
+
+  switch (reg)
+    {
+    case 37: return I387_FCTRL_REGNUM;
+    case 38: return I387_FSTAT_REGNUM;
+    case 39: return I387_MXCSR_REGNUM;
+    case 40: return I386_ES_REGNUM;
+    case 41: return I386_CS_REGNUM;
+    case 42: return I386_SS_REGNUM;
+    case 43: return I386_DS_REGNUM;
+    case 44: return I386_FS_REGNUM;
+    case 45: return I386_GS_REGNUM;
     }
 
   /* This will hopefully provoke a warning.  */
@@ -263,12 +276,12 @@ static const char *disassembly_flavor = att_flavor;
    and can be inserted anywhere.
 
    This function is 64-bit safe.  */
-   
-static const unsigned char *
+
+static const gdb_byte *
 i386_breakpoint_from_pc (CORE_ADDR *pc, int *len)
 {
-  static unsigned char break_insn[] = { 0xcc };	/* int 3 */
-  
+  static gdb_byte break_insn[] = { 0xcc }; /* int 3 */
+
   *len = sizeof (break_insn);
   return break_insn;
 }
@@ -289,7 +302,7 @@ struct i386_frame_cache
 {
   /* Base address.  */
   CORE_ADDR base;
-  CORE_ADDR sp_offset;
+  LONGEST sp_offset;
   CORE_ADDR pc;
 
   /* Saved registers.  */
@@ -335,7 +348,7 @@ i386_alloc_frame_cache (void)
 static CORE_ADDR
 i386_follow_jump (CORE_ADDR pc)
 {
-  unsigned char op;
+  gdb_byte op;
   long delta = 0;
   int data16 = 0;
 
@@ -397,10 +410,10 @@ i386_analyze_struct_return (CORE_ADDR pc, CORE_ADDR current_pc,
      and the assembler doesn't try to optimize it, so the 'sib' form
      gets generated).  This sequence is used to get the address of the
      return buffer for a function that returns a structure.  */
-  static unsigned char proto1[3] = { 0x87, 0x04, 0x24 };
-  static unsigned char proto2[4] = { 0x87, 0x44, 0x24, 0x00 };
-  unsigned char buf[4];
-  unsigned char op;
+  static gdb_byte proto1[3] = { 0x87, 0x04, 0x24 };
+  static gdb_byte proto2[4] = { 0x87, 0x44, 0x24, 0x00 };
+  gdb_byte buf[4];
+  gdb_byte op;
 
   if (current_pc <= pc)
     return pc;
@@ -446,8 +459,8 @@ i386_skip_probe (CORE_ADDR pc)
         pushl %ebp
 
      etc.  */
-  unsigned char buf[8];
-  unsigned char op;
+  gdb_byte buf[8];
+  gdb_byte op;
 
   op = read_memory_unsigned_integer (pc, 1);
 
@@ -479,8 +492,8 @@ i386_skip_probe (CORE_ADDR pc)
 struct i386_insn
 {
   size_t len;
-  unsigned char insn[I386_MAX_INSN_LEN];
-  unsigned char mask[I386_MAX_INSN_LEN];
+  gdb_byte insn[I386_MAX_INSN_LEN];
+  gdb_byte mask[I386_MAX_INSN_LEN];
 };
 
 /* Search for the instruction at PC in the list SKIP_INSNS.  Return
@@ -491,7 +504,7 @@ static struct i386_insn *
 i386_match_insn (CORE_ADDR pc, struct i386_insn *skip_insns)
 {
   struct i386_insn *insn;
-  unsigned char op;
+  gdb_byte op;
 
   op = read_memory_unsigned_integer (pc, 1);
 
@@ -499,7 +512,8 @@ i386_match_insn (CORE_ADDR pc, struct i386_insn *skip_insns)
     {
       if ((op & insn->mask[0]) == insn->insn[0])
 	{
-	  unsigned char buf[I386_MAX_INSN_LEN - 1];
+	  gdb_byte buf[I386_MAX_INSN_LEN - 1];
+	  int insn_matched = 1;
 	  size_t i;
 
 	  gdb_assert (insn->len > 1);
@@ -509,10 +523,11 @@ i386_match_insn (CORE_ADDR pc, struct i386_insn *skip_insns)
 	  for (i = 1; i < insn->len; i++)
 	    {
 	      if ((buf[i - 1] & insn->mask[i]) != insn->insn[i])
-		break;
-
-	      return insn;
+		insn_matched = 0;
 	    }
+
+	  if (insn_matched)
+	    return insn;
 	}
     }
 
@@ -584,7 +599,7 @@ i386_analyze_frame_setup (CORE_ADDR pc, CORE_ADDR limit,
 			  struct i386_frame_cache *cache)
 {
   struct i386_insn *insn;
-  unsigned char op;
+  gdb_byte op;
   int skip = 0;
 
   if (limit <= pc)
@@ -708,7 +723,7 @@ i386_analyze_register_saves (CORE_ADDR pc, CORE_ADDR current_pc,
 			     struct i386_frame_cache *cache)
 {
   CORE_ADDR offset = 0;
-  unsigned char op;
+  gdb_byte op;
   int i;
 
   if (cache->locals > 0)
@@ -771,14 +786,14 @@ i386_analyze_prologue (CORE_ADDR pc, CORE_ADDR current_pc,
 static CORE_ADDR
 i386_skip_prologue (CORE_ADDR start_pc)
 {
-  static unsigned char pic_pat[6] =
+  static gdb_byte pic_pat[6] =
   {
     0xe8, 0, 0, 0, 0,		/* call 0x0 */
     0x5b,			/* popl %ebx */
   };
   struct i386_frame_cache cache;
   CORE_ADDR pc;
-  unsigned char op;
+  gdb_byte op;
   int i;
 
   cache.locals = -1;
@@ -849,7 +864,7 @@ i386_skip_prologue (CORE_ADDR start_pc)
 static CORE_ADDR
 i386_unwind_pc (struct gdbarch *gdbarch, struct frame_info *next_frame)
 {
-  char buf[8];
+  gdb_byte buf[8];
 
   frame_unwind_register (next_frame, PC_REGNUM, buf);
   return extract_typed_address (buf, builtin_type_void_func_ptr);
@@ -862,7 +877,7 @@ static struct i386_frame_cache *
 i386_frame_cache (struct frame_info *next_frame, void **this_cache)
 {
   struct i386_frame_cache *cache;
-  char buf[4];
+  gdb_byte buf[4];
   int i;
 
   if (*this_cache)
@@ -937,7 +952,7 @@ static void
 i386_frame_prev_register (struct frame_info *next_frame, void **this_cache,
 			  int regnum, int *optimizedp,
 			  enum lval_type *lvalp, CORE_ADDR *addrp,
-			  int *realnump, void *valuep)
+			  int *realnump, gdb_byte *valuep)
 {
   struct i386_frame_cache *cache = i386_frame_cache (next_frame, this_cache);
 
@@ -984,8 +999,12 @@ i386_frame_prev_register (struct frame_info *next_frame, void **this_cache,
 
   if (regnum == I386_EIP_REGNUM && cache->pc_in_eax)
     {
-      frame_register_unwind (next_frame, I386_EAX_REGNUM,
-			     optimizedp, lvalp, addrp, realnump, valuep);
+      *optimizedp = 0;
+      *lvalp = lval_register;
+      *addrp = 0;
+      *realnump = I386_EAX_REGNUM;
+      if (valuep)
+	frame_unwind_register (next_frame, (*realnump), valuep);
       return;
     }
 
@@ -1018,8 +1037,12 @@ i386_frame_prev_register (struct frame_info *next_frame, void **this_cache,
       return;
     }
 
-  frame_register_unwind (next_frame, regnum,
-			 optimizedp, lvalp, addrp, realnump, valuep);
+  *optimizedp = 0;
+  *lvalp = lval_register;
+  *addrp = 0;
+  *realnump = regnum;
+  if (valuep)
+    frame_unwind_register (next_frame, (*realnump), valuep);
 }
 
 static const struct frame_unwind i386_frame_unwind =
@@ -1044,7 +1067,7 @@ i386_sigtramp_frame_cache (struct frame_info *next_frame, void **this_cache)
   struct i386_frame_cache *cache;
   struct gdbarch_tdep *tdep = gdbarch_tdep (current_gdbarch);
   CORE_ADDR addr;
-  char buf[4];
+  gdb_byte buf[4];
 
   if (*this_cache)
     return *this_cache;
@@ -1091,7 +1114,7 @@ i386_sigtramp_frame_prev_register (struct frame_info *next_frame,
 				   void **this_cache,
 				   int regnum, int *optimizedp,
 				   enum lval_type *lvalp, CORE_ADDR *addrp,
-				   int *realnump, void *valuep)
+				   int *realnump, gdb_byte *valuep)
 {
   /* Make sure we've initialized the cache.  */
   i386_sigtramp_frame_cache (next_frame, this_cache);
@@ -1155,7 +1178,7 @@ static const struct frame_base i386_frame_base =
 static struct frame_id
 i386_unwind_dummy_id (struct gdbarch *gdbarch, struct frame_info *next_frame)
 {
-  char buf[4];
+  gdb_byte buf[4];
   CORE_ADDR fp;
 
   frame_unwind_register (next_frame, I386_EBP_REGNUM, buf);
@@ -1177,7 +1200,7 @@ i386_unwind_dummy_id (struct gdbarch *gdbarch, struct frame_info *next_frame)
 static int
 i386_get_longjmp_target (CORE_ADDR *pc)
 {
-  char buf[8];
+  gdb_byte buf[8];
   CORE_ADDR sp, jb_addr;
   int jb_pc_offset = gdbarch_tdep (current_gdbarch)->jb_pc_offset;
   int len = TYPE_LENGTH (builtin_type_void_func_ptr);
@@ -1209,13 +1232,13 @@ i386_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 		      struct value **args, CORE_ADDR sp, int struct_return,
 		      CORE_ADDR struct_addr)
 {
-  char buf[4];
+  gdb_byte buf[4];
   int i;
 
   /* Push arguments in reverse order.  */
   for (i = nargs - 1; i >= 0; i--)
     {
-      int len = TYPE_LENGTH (VALUE_ENCLOSING_TYPE (args[i]));
+      int len = TYPE_LENGTH (value_enclosing_type (args[i]));
 
       /* The System V ABI says that:
 
@@ -1225,7 +1248,7 @@ i386_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 
 	 This makes sure the stack says word-aligned.  */
       sp -= (len + 3) & ~3;
-      write_memory (sp, VALUE_CONTENTS_ALL (args[i]), len);
+      write_memory (sp, value_contents_all (args[i]), len);
     }
 
   /* Push value address.  */
@@ -1271,17 +1294,17 @@ i386_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 
 static void
 i386_extract_return_value (struct gdbarch *gdbarch, struct type *type,
-			   struct regcache *regcache, void *valbuf)
+			   struct regcache *regcache, gdb_byte *valbuf)
 {
   struct gdbarch_tdep *tdep = gdbarch_tdep (gdbarch);
   int len = TYPE_LENGTH (type);
-  char buf[I386_MAX_REGISTER_SIZE];
+  gdb_byte buf[I386_MAX_REGISTER_SIZE];
 
   if (TYPE_CODE (type) == TYPE_CODE_FLT)
     {
       if (tdep->st0_regnum < 0)
 	{
-	  warning ("Cannot find floating-point return value.");
+	  warning (_("Cannot find floating-point return value."));
 	  memset (valbuf, 0, len);
 	  return;
 	}
@@ -1308,11 +1331,11 @@ i386_extract_return_value (struct gdbarch *gdbarch, struct type *type,
 	  regcache_raw_read (regcache, LOW_RETURN_REGNUM, buf);
 	  memcpy (valbuf, buf, low_size);
 	  regcache_raw_read (regcache, HIGH_RETURN_REGNUM, buf);
-	  memcpy ((char *) valbuf + low_size, buf, len - low_size);
+	  memcpy (valbuf + low_size, buf, len - low_size);
 	}
       else
 	internal_error (__FILE__, __LINE__,
-			"Cannot extract return value of %d bytes long.", len);
+			_("Cannot extract return value of %d bytes long."), len);
     }
 }
 
@@ -1321,7 +1344,7 @@ i386_extract_return_value (struct gdbarch *gdbarch, struct type *type,
 
 static void
 i386_store_return_value (struct gdbarch *gdbarch, struct type *type,
-			 struct regcache *regcache, const void *valbuf)
+			 struct regcache *regcache, const gdb_byte *valbuf)
 {
   struct gdbarch_tdep *tdep = gdbarch_tdep (gdbarch);
   int len = TYPE_LENGTH (type);
@@ -1333,11 +1356,11 @@ i386_store_return_value (struct gdbarch *gdbarch, struct type *type,
   if (TYPE_CODE (type) == TYPE_CODE_FLT)
     {
       ULONGEST fstat;
-      char buf[I386_MAX_REGISTER_SIZE];
+      gdb_byte buf[I386_MAX_REGISTER_SIZE];
 
       if (tdep->st0_regnum < 0)
 	{
-	  warning ("Cannot set floating-point return value.");
+	  warning (_("Cannot set floating-point return value."));
 	  return;
 	}
 
@@ -1376,11 +1399,11 @@ i386_store_return_value (struct gdbarch *gdbarch, struct type *type,
 	{
 	  regcache_raw_write (regcache, LOW_RETURN_REGNUM, valbuf);
 	  regcache_raw_write_part (regcache, HIGH_RETURN_REGNUM, 0,
-				   len - low_size, (char *) valbuf + low_size);
+				   len - low_size, valbuf + low_size);
 	}
       else
 	internal_error (__FILE__, __LINE__,
-			"Cannot store return value of %d bytes long.", len);
+			_("Cannot store return value of %d bytes long."), len);
     }
 
 #undef I387_ST0_REGNUM
@@ -1401,9 +1424,9 @@ static const char *valid_conventions[] =
 };
 static const char *struct_convention = default_struct_convention;
 
-/* Return non-zero if TYPE, which is assumed to be a structure or
-   union type, should be returned in registers for architecture
-   GDBARCH.  */
+/* Return non-zero if TYPE, which is assumed to be a structure,
+   a union type, or an array type, should be returned in registers
+   for architecture GDBARCH.  */
 
 static int
 i386_reg_struct_return_p (struct gdbarch *gdbarch, struct type *type)
@@ -1412,12 +1435,23 @@ i386_reg_struct_return_p (struct gdbarch *gdbarch, struct type *type)
   enum type_code code = TYPE_CODE (type);
   int len = TYPE_LENGTH (type);
 
-  gdb_assert (code == TYPE_CODE_STRUCT || code == TYPE_CODE_UNION);
+  gdb_assert (code == TYPE_CODE_STRUCT
+              || code == TYPE_CODE_UNION
+              || code == TYPE_CODE_ARRAY);
 
   if (struct_convention == pcc_struct_convention
       || (struct_convention == default_struct_convention
 	  && tdep->struct_return == pcc_struct_return))
     return 0;
+
+  /* Structures consisting of a single `float', `double' or 'long
+     double' member are returned in %st(0).  */
+  if (code == TYPE_CODE_STRUCT && TYPE_NFIELDS (type) == 1)
+    {
+      type = check_typedef (TYPE_FIELD_TYPE (type, 0));
+      if (TYPE_CODE (type) == TYPE_CODE_FLT)
+	return (len == 4 || len == 8 || len == 12);
+    }
 
   return (len == 1 || len == 2 || len == 4 || len == 8);
 }
@@ -1430,12 +1464,14 @@ i386_reg_struct_return_p (struct gdbarch *gdbarch, struct type *type)
 
 static enum return_value_convention
 i386_return_value (struct gdbarch *gdbarch, struct type *type,
-		   struct regcache *regcache, void *readbuf,
-		   const void *writebuf)
+		   struct regcache *regcache, gdb_byte *readbuf,
+		   const gdb_byte *writebuf)
 {
   enum type_code code = TYPE_CODE (type);
 
-  if ((code == TYPE_CODE_STRUCT || code == TYPE_CODE_UNION)
+  if ((code == TYPE_CODE_STRUCT
+       || code == TYPE_CODE_UNION
+       || code == TYPE_CODE_ARRAY)
       && !i386_reg_struct_return_p (gdbarch, type))
     {
       /* The System V ABI says that:
@@ -1449,6 +1485,12 @@ i386_return_value (struct gdbarch *gdbarch, struct type *type,
 	 So the ABI guarantees that we can always find the return
 	 value just after the function has returned.  */
 
+      /* Note that the ABI doesn't mention functions returning arrays,
+         which is something possible in certain languages such as Ada.
+         In this case, the value is returned as if it was wrapped in
+         a record, so the convention applied to records also applies
+         to arrays.  */
+
       if (readbuf)
 	{
 	  ULONGEST addr;
@@ -1461,11 +1503,12 @@ i386_return_value (struct gdbarch *gdbarch, struct type *type,
     }
 
   /* This special case is for structures consisting of a single
-     `float' or `double' member.  These structures are returned in
-     %st(0).  For these structures, we call ourselves recursively,
-     changing TYPE into the type of the first member of the structure.
-     Since that should work for all structures that have only one
-     member, we don't bother to check the member's type here.  */
+     `float', `double' or 'long double' member.  These structures are
+     returned in %st(0).  For these structures, we call ourselves
+     recursively, changing TYPE into the type of the first member of
+     the structure.  Since that should work for all structures that
+     have only one member, we don't bother to check the member's type
+     here.  */
   if (code == TYPE_CODE_STRUCT && TYPE_NFIELDS (type) == 1)
     {
       type = check_typedef (TYPE_FIELD_TYPE (type, 0));
@@ -1481,6 +1524,70 @@ i386_return_value (struct gdbarch *gdbarch, struct type *type,
 }
 
 
+/* Types for the MMX and SSE registers.  */
+static struct type *i386_mmx_type;
+static struct type *i386_sse_type;
+
+/* Construct the type for MMX registers.  */
+static struct type *
+i386_build_mmx_type (void)
+{
+  /* The type we're building is this: */
+#if 0
+  union __gdb_builtin_type_vec64i 
+  {
+    int64_t uint64;
+    int32_t v2_int32[2];
+    int16_t v4_int16[4];
+    int8_t v8_int8[8];
+  };
+#endif
+
+  if (! i386_mmx_type)
+    {
+      struct type *t;
+
+      t = init_composite_type ("__gdb_builtin_type_vec64i", TYPE_CODE_UNION);
+      append_composite_type_field (t, "uint64", builtin_type_int64);
+      append_composite_type_field (t, "v2_int32", builtin_type_v2_int32);
+      append_composite_type_field (t, "v4_int16", builtin_type_v4_int16);
+      append_composite_type_field (t, "v8_int8", builtin_type_v8_int8);
+
+      TYPE_FLAGS (t) |= TYPE_FLAG_VECTOR;
+      TYPE_NAME (t) = "builtin_type_vec64i";
+
+      i386_mmx_type = t;
+    }
+
+  return i386_mmx_type;
+}
+
+/* Construct the type for SSE registers.  */
+static struct type *
+i386_build_sse_type (void)
+{
+  if (! i386_sse_type)
+    {
+      struct type *t;
+
+      t = init_composite_type ("__gdb_builtin_type_vec128i", TYPE_CODE_UNION);
+      append_composite_type_field (t, "v4_float", builtin_type_v4_float);
+      append_composite_type_field (t, "v2_double", builtin_type_v2_double);
+      append_composite_type_field (t, "v16_int8", builtin_type_v16_int8);
+      append_composite_type_field (t, "v8_int16", builtin_type_v8_int16);
+      append_composite_type_field (t, "v4_int32", builtin_type_v4_int32);
+      append_composite_type_field (t, "v2_int64", builtin_type_v2_int64);
+      append_composite_type_field (t, "uint128", builtin_type_int128);
+
+      TYPE_FLAGS (t) |= TYPE_FLAG_VECTOR;
+      TYPE_NAME (t) = "builtin_type_vec128i";
+      
+      i386_sse_type = t;
+    }
+
+  return i386_sse_type;
+}
+
 /* Return the GDB type object for the "standard" data type of data in
    register REGNUM.  Perhaps %esi and %edi should go here, but
    potentially they could be used for things other than address.  */
@@ -1488,18 +1595,20 @@ i386_return_value (struct gdbarch *gdbarch, struct type *type,
 static struct type *
 i386_register_type (struct gdbarch *gdbarch, int regnum)
 {
-  if (regnum == I386_EIP_REGNUM
-      || regnum == I386_EBP_REGNUM || regnum == I386_ESP_REGNUM)
-    return lookup_pointer_type (builtin_type_void);
+  if (regnum == I386_EIP_REGNUM)
+    return builtin_type_void_func_ptr;
+
+  if (regnum == I386_EBP_REGNUM || regnum == I386_ESP_REGNUM)
+    return builtin_type_void_data_ptr;
 
   if (i386_fp_regnum_p (regnum))
     return builtin_type_i387_ext;
 
   if (i386_sse_regnum_p (gdbarch, regnum))
-    return builtin_type_vec128i;
+    return i386_build_sse_type ();
 
   if (i386_mmx_regnum_p (gdbarch, regnum))
-    return builtin_type_vec64i;
+    return i386_build_mmx_type ();
 
   return builtin_type_int;
 }
@@ -1531,11 +1640,11 @@ i386_mmx_regnum_to_fp_regnum (struct regcache *regcache, int regnum)
 
 static void
 i386_pseudo_register_read (struct gdbarch *gdbarch, struct regcache *regcache,
-			   int regnum, void *buf)
+			   int regnum, gdb_byte *buf)
 {
   if (i386_mmx_regnum_p (gdbarch, regnum))
     {
-      char mmx_buf[MAX_REGISTER_SIZE];
+      gdb_byte mmx_buf[MAX_REGISTER_SIZE];
       int fpnum = i386_mmx_regnum_to_fp_regnum (regcache, regnum);
 
       /* Extract (always little endian).  */
@@ -1548,11 +1657,11 @@ i386_pseudo_register_read (struct gdbarch *gdbarch, struct regcache *regcache,
 
 static void
 i386_pseudo_register_write (struct gdbarch *gdbarch, struct regcache *regcache,
-			    int regnum, const void *buf)
+			    int regnum, const gdb_byte *buf)
 {
   if (i386_mmx_regnum_p (gdbarch, regnum))
     {
-      char mmx_buf[MAX_REGISTER_SIZE];
+      gdb_byte mmx_buf[MAX_REGISTER_SIZE];
       int fpnum = i386_mmx_regnum_to_fp_regnum (regcache, regnum);
 
       /* Read ...  */
@@ -1631,10 +1740,9 @@ i386_convert_register_p (int regnum, struct type *type)
 
 static void
 i386_register_to_value (struct frame_info *frame, int regnum,
-			struct type *type, void *to)
+			struct type *type, gdb_byte *to)
 {
   int len = TYPE_LENGTH (type);
-  char *buf = to;
 
   /* FIXME: kettenis/20030609: What should we do if REGNUM isn't
      available in FRAME (i.e. if it wasn't saved)?  */
@@ -1654,10 +1762,10 @@ i386_register_to_value (struct frame_info *frame, int regnum,
       gdb_assert (regnum != -1);
       gdb_assert (register_size (current_gdbarch, regnum) == 4);
 
-      get_frame_register (frame, regnum, buf);
+      get_frame_register (frame, regnum, to);
       regnum = i386_next_regnum (regnum);
       len -= 4;
-      buf += 4;
+      to += 4;
     }
 }
 
@@ -1666,10 +1774,9 @@ i386_register_to_value (struct frame_info *frame, int regnum,
 
 static void
 i386_value_to_register (struct frame_info *frame, int regnum,
-			struct type *type, const void *from)
+			struct type *type, const gdb_byte *from)
 {
   int len = TYPE_LENGTH (type);
-  const char *buf = from;
 
   if (i386_fp_regnum_p (regnum))
     {
@@ -1686,10 +1793,10 @@ i386_value_to_register (struct frame_info *frame, int regnum,
       gdb_assert (regnum != -1);
       gdb_assert (register_size (current_gdbarch, regnum) == 4);
 
-      put_frame_register (frame, regnum, buf);
+      put_frame_register (frame, regnum, from);
       regnum = i386_next_regnum (regnum);
       len -= 4;
-      buf += 4;
+      from += 4;
     }
 }
 
@@ -1702,7 +1809,7 @@ i386_supply_gregset (const struct regset *regset, struct regcache *regcache,
 		     int regnum, const void *gregs, size_t len)
 {
   const struct gdbarch_tdep *tdep = gdbarch_tdep (regset->arch);
-  const char *regs = gregs;
+  const gdb_byte *regs = gregs;
   int i;
 
   gdb_assert (len == tdep->sizeof_gregset);
@@ -1726,7 +1833,7 @@ i386_collect_gregset (const struct regset *regset,
 		      int regnum, void *gregs, size_t len)
 {
   const struct gdbarch_tdep *tdep = gdbarch_tdep (regset->arch);
-  char *regs = gregs;
+  gdb_byte *regs = gregs;
   int i;
 
   gdb_assert (len == tdep->sizeof_gregset);
@@ -1924,7 +2031,7 @@ i386_svr4_sigtramp_p (struct frame_info *next_frame)
 static CORE_ADDR
 i386_svr4_sigcontext_addr (struct frame_info *next_frame)
 {
-  char buf[4];
+  gdb_byte buf[4];
   CORE_ADDR sp;
 
   frame_unwind_register (next_frame, I386_ESP_REGNUM, buf);
@@ -1954,7 +2061,6 @@ i386_svr4_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
   i386_elf_init_abi (info, gdbarch);
 
   /* System V Release 4 has shared libraries.  */
-  set_gdbarch_in_solib_call_trampoline (gdbarch, in_plt_section);
   set_gdbarch_skip_trampoline_code (gdbarch, find_solib_trampoline_target);
 
   tdep->sigtramp_p = i386_svr4_sigtramp_p;
@@ -2268,32 +2374,26 @@ _initialize_i386_tdep (void)
   register_gdbarch_init (bfd_arch_i386, i386_gdbarch_init);
 
   /* Add the variable that controls the disassembly flavor.  */
-  {
-    struct cmd_list_element *new_cmd;
-
-    new_cmd = add_set_enum_cmd ("disassembly-flavor", no_class,
-				valid_flavors,
-				&disassembly_flavor,
-				"\
-Set the disassembly flavor, the valid values are \"att\" and \"intel\", \
-and the default value is \"att\".",
-				&setlist);
-    deprecated_add_show_from_set (new_cmd, &showlist);
-  }
+  add_setshow_enum_cmd ("disassembly-flavor", no_class, valid_flavors,
+			&disassembly_flavor, _("\
+Set the disassembly flavor."), _("\
+Show the disassembly flavor."), _("\
+The valid values are \"att\" and \"intel\", and the default value is \"att\"."),
+			NULL,
+			NULL, /* FIXME: i18n: */
+			&setlist, &showlist);
 
   /* Add the variable that controls the convention for returning
      structs.  */
-  {
-    struct cmd_list_element *new_cmd;
-
-    new_cmd = add_set_enum_cmd ("struct-convention", no_class,
-				valid_conventions,
-				&struct_convention, "\
-Set the convention for returning small structs, valid values \
-are \"default\", \"pcc\" and \"reg\", and the default value is \"default\".",
-                                &setlist);
-    deprecated_add_show_from_set (new_cmd, &showlist);
-  }
+  add_setshow_enum_cmd ("struct-convention", no_class, valid_conventions,
+			&struct_convention, _("\
+Set the convention for returning small structs."), _("\
+Show the convention for returning small structs."), _("\
+Valid values are \"default\", \"pcc\" and \"reg\", and the default value\n\
+is \"default\"."),
+			NULL,
+			NULL, /* FIXME: i18n: */
+			&setlist, &showlist);
 
   gdbarch_register_osabi_sniffer (bfd_arch_i386, bfd_target_coff_flavour,
 				  i386_coff_osabi_sniffer);

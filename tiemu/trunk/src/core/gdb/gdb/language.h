@@ -193,7 +193,7 @@ struct language_defn
 
     void (*la_printchar) (int ch, struct ui_file * stream);
 
-    void (*la_printstr) (struct ui_file * stream, char *string,
+    void (*la_printstr) (struct ui_file * stream, const gdb_byte *string,
 			 unsigned int length, int width,
 			 int force_ellipses);
 
@@ -208,7 +208,7 @@ struct language_defn
 
     /* Print a value using syntax appropriate for this language. */
 
-    int (*la_val_print) (struct type *, char *, int, CORE_ADDR,
+    int (*la_val_print) (struct type *, const gdb_byte *, int, CORE_ADDR,
 			 struct ui_file *, int, int, int,
 			 enum val_prettyprint);
 
@@ -274,6 +274,12 @@ struct language_defn
     /* The per-architecture (OS/ABI) language information.  */
     void (*la_language_arch_info) (struct gdbarch *,
 				   struct language_arch_info *);
+
+    /* Print the index of an element of an array.  */
+    void (*la_print_array_index) (struct value *index_value,
+                                  struct ui_file *stream,
+                                  int format,
+                                  enum val_prettyprint pretty);
 
     /* Add fields above this point, so the magic number is always last. */
     /* Magic number for compat checking */
@@ -361,6 +367,9 @@ extern enum language set_language (enum language);
   (current_language->la_printstr(stream, string, length, width, force_ellipses))
 #define LA_EMIT_CHAR(ch, stream, quoter) \
   (current_language->la_emitchar(ch, stream, quoter))
+
+#define LA_PRINT_ARRAY_INDEX(index_value, stream, format, pretty) \
+  (current_language->la_print_array_index(index_value, stream, format, pretty))
 
 /* Test a character to decide whether it can be printed in literal form
    or needs to be printed in another representation.  For example,
@@ -456,5 +465,11 @@ extern char *language_class_name_from_physname (const struct language_defn *,
 
 /* Splitting strings into words.  */
 extern char *default_word_break_characters (void);
+
+/* Print the index of an array element using the C99 syntax.  */
+extern void default_print_array_index (struct value *index_value,
+                                       struct ui_file *stream,
+                                       int format,
+                                       enum val_prettyprint pretty);
 
 #endif /* defined (LANGUAGE_H) */

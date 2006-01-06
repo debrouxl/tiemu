@@ -1,7 +1,7 @@
 /* Target-vector operations for controlling Unix child processes, for GDB.
 
    Copyright 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1998, 1999,
-   2000, 2002, 2003, 2004 Free Software Foundation, Inc.
+   2000, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
 
    Contributed by Cygnus Support.
 
@@ -182,26 +182,26 @@ child_attach (char *args, int from_tty)
   char *dummy;
 
   if (!args)
-    error_no_arg ("process-id to attach");
+    error_no_arg (_("process-id to attach"));
 
   dummy = args;
   pid = strtol (args, &dummy, 0);
   /* Some targets don't set errno on errors, grrr! */
   if ((pid == 0) && (args == dummy))
-      error ("Illegal process-id: %s\n", args);
+      error (_("Illegal process-id: %s."), args);
   
   if (pid == getpid ())	/* Trying to masturbate? */
-    error ("I refuse to debug myself!");
+    error (_("I refuse to debug myself!"));
   
   if (from_tty)
     {
       exec_file = (char *) get_exec_file (0);
       
       if (exec_file)
-	printf_unfiltered ("Attaching to program: %s, %s\n", exec_file,
+	printf_unfiltered (_("Attaching to program: %s, %s\n"), exec_file,
 			   target_pid_to_str (pid_to_ptid (pid)));
       else
-	printf_unfiltered ("Attaching to %s\n",
+	printf_unfiltered (_("Attaching to %s\n"),
 			   target_pid_to_str (pid_to_ptid (pid)));
       
       gdb_flush (gdb_stdout);
@@ -211,6 +211,10 @@ child_attach (char *args, int from_tty)
   
   inferior_ptid = pid_to_ptid (pid);
   push_target (&deprecated_child_ops);
+
+  /* Do this first, before anything has had a chance to query the
+     inferior's symbol table or similar.  */
+  observer_notify_inferior_created (&current_target, from_tty);
 }
 
 #if !defined(CHILD_POST_ATTACH)
@@ -241,7 +245,7 @@ child_detach (char *args, int from_tty)
       char *exec_file = get_exec_file (0);
       if (exec_file == 0)
 	exec_file = "";
-      printf_unfiltered ("Detaching from program: %s, %s\n", exec_file,
+      printf_unfiltered (_("Detaching from program: %s, %s\n"), exec_file,
 			 target_pid_to_str (pid_to_ptid (pid)));
       gdb_flush (gdb_stdout);
     }
@@ -273,14 +277,14 @@ child_prepare_to_store (void)
 static void
 child_files_info (struct target_ops *ignore)
 {
-  printf_unfiltered ("\tUsing the running image of %s %s.\n",
+  printf_unfiltered (_("\tUsing the running image of %s %s.\n"),
       attach_flag ? "attached" : "child", target_pid_to_str (inferior_ptid));
 }
 
 static void
 child_open (char *arg, int from_tty)
 {
-  error ("Use the \"run\" command to start a Unix child process.");
+  error (_("Use the \"run\" command to start a Unix child process."));
 }
 
 /* Stub function which causes the inferior that runs it, to be ptrace-able
@@ -330,11 +334,8 @@ static void
 child_create_inferior (char *exec_file, char *allargs, char **env,
 		       int from_tty)
 {
-#ifdef HPUXHPPA
-  fork_inferior (exec_file, allargs, env, ptrace_me, ptrace_him, pre_fork_inferior, NULL);
-#else
   fork_inferior (exec_file, allargs, env, ptrace_me, ptrace_him, NULL, NULL);
-#endif
+
   /* We are at the first instruction we care about.  */
   observer_notify_inferior_created (&current_target, from_tty);
   /* Pedal to the metal... */
@@ -363,11 +364,11 @@ child_acknowledge_created_inferior (int pid)
 
 
 #if !defined(CHILD_INSERT_FORK_CATCHPOINT)
-int
+void
 child_insert_fork_catchpoint (int pid)
 {
-  /* This version of Unix doesn't support notification of fork events.  */
-  return 0;
+  /* This version of Unix doesn't support notification of fork
+     events.  */
 }
 #endif
 
@@ -381,11 +382,11 @@ child_remove_fork_catchpoint (int pid)
 #endif
 
 #if !defined(CHILD_INSERT_VFORK_CATCHPOINT)
-int
+void
 child_insert_vfork_catchpoint (int pid)
 {
-  /* This version of Unix doesn't support notification of vfork events.  */
-  return 0;
+  /* This version of Unix doesn't support notification of vfork
+     events.  */
 }
 #endif
 
@@ -400,7 +401,7 @@ child_remove_vfork_catchpoint (int pid)
 
 #if !defined(CHILD_FOLLOW_FORK)
 int
-child_follow_fork (int follow_child)
+child_follow_fork (struct target_ops *ops, int follow_child)
 {
   /* This version of Unix doesn't support following fork or vfork events.  */
   return 0;
@@ -408,11 +409,11 @@ child_follow_fork (int follow_child)
 #endif
 
 #if !defined(CHILD_INSERT_EXEC_CATCHPOINT)
-int
+void
 child_insert_exec_catchpoint (int pid)
 {
-  /* This version of Unix doesn't support notification of exec events.  */
-  return 0;
+  /* This version of Unix doesn't support notification of exec
+     events.  */
 }
 #endif
 
@@ -530,8 +531,8 @@ child_core_file_to_sym_file (char *core)
 
 static LONGEST
 child_xfer_partial (struct target_ops *ops, enum target_object object,
-		    const char *annex, void *readbuf,
-		    const void *writebuf, ULONGEST offset, LONGEST len)
+		    const char *annex, gdb_byte *readbuf,
+		    const gdb_byte *writebuf, ULONGEST offset, LONGEST len)
 {
   switch (object)
     {
@@ -557,13 +558,6 @@ child_xfer_partial (struct target_ops *ops, enum target_object object,
 #endif
       return NATIVE_XFER_AUXV (ops, object, annex, readbuf, writebuf,
 			       offset, len);
-
-    case TARGET_OBJECT_WCOOKIE:
-#ifndef NATIVE_XFER_WCOOKIE
-#define NATIVE_XFER_WCOOKIE(OPS,OBJECT,ANNEX,WRITEBUF,READBUF,OFFSET,LEN) (-1)
-#endif
-      return NATIVE_XFER_WCOOKIE (ops, object, annex, readbuf, writebuf,
-				  offset, len);
 
     default:
       return -1;

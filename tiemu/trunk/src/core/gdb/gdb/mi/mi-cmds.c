@@ -91,6 +91,8 @@ struct mi_cmd mi_cmds[] =
   { "gdb-show", { "show", 1 }, NULL, NULL },
   { "gdb-source", { NULL, 0 }, NULL, NULL },
   { "gdb-version", { "show version", 0 }, 0 },
+  { "inferior-tty-set", { NULL, 0 }, NULL, mi_cmd_inferior_tty_set},
+  { "inferior-tty-show", { NULL, 0 }, NULL, mi_cmd_inferior_tty_show},
   { "interpreter-exec", { NULL, 0 }, 0, mi_cmd_interpreter_exec},
   { "kod-info", { NULL, 0 }, NULL, NULL },
   { "kod-list", { NULL, 0 }, NULL, NULL },
@@ -107,7 +109,7 @@ struct mi_cmd mi_cmds[] =
   { "signal-list-handle-actions", { NULL, 0 }, NULL, NULL },
   { "signal-list-signal-types", { NULL, 0 }, NULL, NULL },
   { "stack-info-depth", { NULL, 0 }, 0, mi_cmd_stack_info_depth},
-  { "stack-info-frame", { NULL, 0 }, NULL, NULL },
+  { "stack-info-frame", { NULL, 0 }, 0, mi_cmd_stack_info_frame},
   { "stack-list-arguments", { NULL, 0 }, 0, mi_cmd_stack_list_args},
   { "stack-list-exception-handlers", { NULL, 0 }, NULL, NULL },
   { "stack-list-frames", { NULL, 0 }, 0, mi_cmd_stack_list_frames},
@@ -241,7 +243,7 @@ build_table (struct mi_cmd *commands)
       struct mi_cmd **entry = lookup_table (command->name);
       if (*entry)
 	internal_error (__FILE__, __LINE__,
-			"command `%s' appears to be duplicated",
+			_("command `%s' appears to be duplicated"),
 			command->name);
       *entry = command;
       if (0)

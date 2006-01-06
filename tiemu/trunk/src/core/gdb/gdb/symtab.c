@@ -55,6 +55,7 @@
 #include "gdb_stat.h"
 #include <ctype.h>
 #include "cp-abi.h"
+#include "observer.h"
 
 /* Prototypes for local functions */
 
@@ -221,7 +222,7 @@ got_symtab:
     return (NULL);
 
   if (ps->readin)
-    error ("Internal: readin %s pst for `%s' found when no symtab found.",
+    error (_("Internal: readin %s pst for `%s' found when no symtab found."),
 	   ps->filename, name);
 
   s = PSYMTAB_TO_SYMTAB (ps);
@@ -684,7 +685,9 @@ symbol_demangled_name (struct general_symbol_info *gsymbol)
    linkage name of the symbol, depending on how it will be searched for.
    If there is no distinct demangled name, then returns the same value 
    (same pointer) as SYMBOL_LINKAGE_NAME. */
-char *symbol_search_name (const struct general_symbol_info *gsymbol) {
+char *
+symbol_search_name (const struct general_symbol_info *gsymbol)
+{
   if (gsymbol->language == language_ada)
     return gsymbol->name;
   else
@@ -1297,7 +1300,7 @@ lookup_symbol_aux_psymtabs (int block_index, const char *name,
 				       STATIC_BLOCK : GLOBAL_BLOCK);
 	    sym = lookup_block_symbol (block, name, linkage_name, domain);
 	    if (!sym)
-	      error ("Internal: %s symbol `%s' found in %s psymtab but not in symtab.\n%s may be an inlined function, or may be a template function\n(if a template, try specifying an instantiation: %s<type>).",
+	      error (_("Internal: %s symbol `%s' found in %s psymtab but not in symtab.\n%s may be an inlined function, or may be a template function\n(if a template, try specifying an instantiation: %s<type>)."),
 		     block_index == GLOBAL_BLOCK ? "global" : "static",
 		     name, ps->filename, name, name);
 	  }
@@ -1564,7 +1567,7 @@ lookup_partial_symbol (struct partial_symtab *pst, const char *name,
 	{
 	  center = bottom + (top - bottom) / 2;
 	  if (!(center < top))
-	    internal_error (__FILE__, __LINE__, "failed internal consistency check");
+	    internal_error (__FILE__, __LINE__, _("failed internal consistency check"));
 	  if (!do_linear_search
 	      && (SYMBOL_LANGUAGE (*center) == language_java))
 	    {
@@ -1580,7 +1583,7 @@ lookup_partial_symbol (struct partial_symtab *pst, const char *name,
 	    }
 	}
       if (!(top == bottom))
-	internal_error (__FILE__, __LINE__, "failed internal consistency check");
+	internal_error (__FILE__, __LINE__, _("failed internal consistency check"));
 
       while (top <= real_top
 	     && (linkage_name != NULL
@@ -1678,9 +1681,9 @@ basic_lookup_transparent_type (const char *name)
 	    block = BLOCKVECTOR_BLOCK (bv, STATIC_BLOCK);
 	    sym = lookup_block_symbol (block, name, NULL, STRUCT_DOMAIN);
 	    if (!sym)
-	      error ("Internal: global symbol `%s' found in %s psymtab but not in symtab.\n\
+	      error (_("Internal: global symbol `%s' found in %s psymtab but not in symtab.\n\
 %s may be an inlined function, or may be a template function\n\
-(if a template, try specifying an instantiation: %s<type>).",
+(if a template, try specifying an instantiation: %s<type>)."),
 		     name, ps->filename, name, name);
 	  }
 	if (!TYPE_IS_OPAQUE (SYMBOL_TYPE (sym)))
@@ -1725,9 +1728,9 @@ basic_lookup_transparent_type (const char *name)
 	    block = BLOCKVECTOR_BLOCK (bv, GLOBAL_BLOCK);
 	    sym = lookup_block_symbol (block, name, NULL, STRUCT_DOMAIN);
 	    if (!sym)
-	      error ("Internal: static symbol `%s' found in %s psymtab but not in symtab.\n\
+	      error (_("Internal: static symbol `%s' found in %s psymtab but not in symtab.\n\
 %s may be an inlined function, or may be a template function\n\
-(if a template, try specifying an instantiation: %s<type>).",
+(if a template, try specifying an instantiation: %s<type>)."),
 		     name, ps->filename, name, name);
 	  }
 	if (!TYPE_IS_OPAQUE (SYMBOL_TYPE (sym)))
@@ -1927,8 +1930,8 @@ find_pc_sect_symtab (CORE_ADDR pc, asection *section)
 	/* Might want to error() here (in case symtab is corrupt and
 	   will cause a core dump), but maybe we can successfully
 	   continue, so let's not.  */
-	warning ("\
-(Internal error: pc 0x%s in read in psymtab, but not in symtab.)\n",
+	warning (_("\
+(Internal error: pc 0x%s in read in psymtab, but not in symtab.)\n"),
 		 paddr_nz (pc));
       s = PSYMTAB_TO_SYMTAB (ps);
     }
@@ -2609,14 +2612,14 @@ operator_chars (char *p, char **end)
 	else if (p[1] == '[')
 	  {
 	    if (p[2] == ']')
-	      error ("mismatched quoting on brackets, try 'operator\\[\\]'");
+	      error (_("mismatched quoting on brackets, try 'operator\\[\\]'"));
 	    else if (p[2] == '\\' && p[3] == ']')
 	      {
 		*end = p + 4;	/* 'operator\[\]' */
 		return p;
 	      }
 	    else
-	      error ("nothing is allowed between '[' and ']'");
+	      error (_("nothing is allowed between '[' and ']'"));
 	  }
 	else 
 	  {
@@ -2672,21 +2675,21 @@ operator_chars (char *p, char **end)
 	return p;
       case '(':
 	if (p[1] != ')')
-	  error ("`operator ()' must be specified without whitespace in `()'");
+	  error (_("`operator ()' must be specified without whitespace in `()'"));
 	*end = p + 2;
 	return p;
       case '?':
 	if (p[1] != ':')
-	  error ("`operator ?:' must be specified without whitespace in `?:'");
+	  error (_("`operator ?:' must be specified without whitespace in `?:'"));
 	*end = p + 2;
 	return p;
       case '[':
 	if (p[1] != ']')
-	  error ("`operator []' must be specified without whitespace in `[]'");
+	  error (_("`operator []' must be specified without whitespace in `[]'"));
 	*end = p + 2;
 	return p;
       default:
-	error ("`operator %s' not supported", p);
+	error (_("`operator %s' not supported"), p);
 	break;
       }
 
@@ -2784,7 +2787,7 @@ sources_info (char *ignore, int from_tty)
 
   if (!have_full_symbols () && !have_partial_symbols ())
     {
-      error ("No symbol table is loaded.  Use the \"file\" command.");
+      error (_("No symbol table is loaded.  Use the \"file\" command."));
     }
 
   printf_filtered ("Source files for which symbols have been read in:\n\n");
@@ -2957,7 +2960,7 @@ search_symbols (char *regexp, domain_enum kind, int nfiles, char *files[],
   struct cleanup *old_chain = NULL;
 
   if (kind < VARIABLES_DOMAIN)
-    error ("must search on specific domain");
+    error (_("must search on specific domain"));
 
   ourtype = types[(int) (kind - VARIABLES_DOMAIN)];
   ourtype2 = types2[(int) (kind - VARIABLES_DOMAIN)];
@@ -3000,7 +3003,7 @@ search_symbols (char *regexp, domain_enum kind, int nfiles, char *files[],
 	}
 
       if (0 != (val = re_comp (regexp)))
-	error ("Invalid regexp (%s): %s", val, regexp);
+	error (_("Invalid regexp (%s): %s"), val, regexp);
     }
 
   /* Search through the partial symtabs *first* for all symbols
@@ -4158,7 +4161,7 @@ decode_line_spec (char *string, int funfirstline)
   struct symtab_and_line cursal;
   
   if (string == 0)
-    error ("Empty line specification.");
+    error (_("Empty line specification."));
     
   /* We use whatever is set as the current source line. We do not try
      and get a default  or it will recursively call us! */  
@@ -4169,7 +4172,7 @@ decode_line_spec (char *string, int funfirstline)
 			(char ***) NULL, NULL);
 
   if (*string)
-    error ("Junk at end of line specification: %s", string);
+    error (_("Junk at end of line specification: %s"), string);
   return sals;
 }
 
@@ -4190,27 +4193,71 @@ set_main_name (const char *name)
     }
 }
 
+/* Deduce the name of the main procedure, and set NAME_OF_MAIN
+   accordingly.  */
+
+static void
+find_main_name (void)
+{
+  char *new_main_name;
+
+  /* Try to see if the main procedure is in Ada.  */
+  /* FIXME: brobecker/2005-03-07: Another way of doing this would
+     be to add a new method in the language vector, and call this
+     method for each language until one of them returns a non-empty
+     name.  This would allow us to remove this hard-coded call to
+     an Ada function.  It is not clear that this is a better approach
+     at this point, because all methods need to be written in a way
+     such that false positives never be returned. For instance, it is
+     important that a method does not return a wrong name for the main
+     procedure if the main procedure is actually written in a different
+     language.  It is easy to guaranty this with Ada, since we use a
+     special symbol generated only when the main in Ada to find the name
+     of the main procedure. It is difficult however to see how this can
+     be guarantied for languages such as C, for instance.  This suggests
+     that order of call for these methods becomes important, which means
+     a more complicated approach.  */
+  new_main_name = ada_main_name ();
+  if (new_main_name != NULL)
+    { 
+      set_main_name (new_main_name);
+      return;
+    }
+
+  /* The languages above didn't identify the name of the main procedure.
+     Fallback to "main".  */
+  set_main_name ("main");
+}
+
 char *
 main_name (void)
 {
-  if (name_of_main != NULL)
-    return name_of_main;
-  else
-    return "main";
+  if (name_of_main == NULL)
+    find_main_name ();
+
+  return name_of_main;
 }
 
+/* Handle ``executable_changed'' events for the symtab module.  */
+
+static void
+symtab_observer_executable_changed (void *unused)
+{
+  /* NAME_OF_MAIN may no longer be the same, so reset it for now.  */
+  set_main_name (NULL);
+}
 
 void
 _initialize_symtab (void)
 {
-  add_info ("variables", variables_info,
-	 "All global and static variable names, or those matching REGEXP.");
+  add_info ("variables", variables_info, _("\
+All global and static variable names, or those matching REGEXP."));
   if (dbx_commands)
-    add_com ("whereis", class_info, variables_info,
-	 "All global and static variable names, or those matching REGEXP.");
+    add_com ("whereis", class_info, variables_info, _("\
+All global and static variable names, or those matching REGEXP."));
 
   add_info ("functions", functions_info,
-	    "All function names, or those matching REGEXP.");
+	    _("All function names, or those matching REGEXP."));
 
   
   /* FIXME:  This command has at least the following problems:
@@ -4222,22 +4269,25 @@ _initialize_symtab (void)
      I also think "ptype" or "whatis" is more likely to be useful (but if
      there is much disagreement "info types" can be fixed).  */
   add_info ("types", types_info,
-	    "All type names, or those matching REGEXP.");
+	    _("All type names, or those matching REGEXP."));
 
   add_info ("sources", sources_info,
-	    "Source files in the program.");
+	    _("Source files in the program."));
 
   add_com ("rbreak", class_breakpoint, rbreak_command,
-	   "Set a breakpoint for all functions matching REGEXP.");
+	   _("Set a breakpoint for all functions matching REGEXP."));
 
   if (xdb_commands)
     {
-      add_com ("lf", class_info, sources_info, "Source files in the program");
-      add_com ("lg", class_info, variables_info,
-	 "All global and static variable names, or those matching REGEXP.");
+      add_com ("lf", class_info, sources_info,
+	       _("Source files in the program"));
+      add_com ("lg", class_info, variables_info, _("\
+All global and static variable names, or those matching REGEXP."));
     }
 
   /* Initialize the one built-in type that isn't language dependent... */
   builtin_type_error = init_type (TYPE_CODE_ERROR, 0, 0,
 				  "<unknown type>", (struct objfile *) NULL);
+
+  observer_attach_executable_changed (symtab_observer_executable_changed);
 }

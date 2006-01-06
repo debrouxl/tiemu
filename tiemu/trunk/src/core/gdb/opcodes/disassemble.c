@@ -1,35 +1,37 @@
 /* Select disassembly routine for specified architecture.
-   Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002
-   Free Software Foundation, Inc.
+   Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003,
+   2004, 2005 Free Software Foundation, Inc.
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
 
 #include "sysdep.h"
 #include "dis-asm.h"
 
 #ifdef ARCH_all
-#define ARCH_a29k
 #define ARCH_alpha
 #define ARCH_arc
 #define ARCH_arm
 #define ARCH_avr
+#define ARCH_bfin
 #define ARCH_cris
 #define ARCH_crx
 #define ARCH_d10v
 #define ARCH_d30v
 #define ARCH_dlx
+#define ARCH_fr30
+#define ARCH_frv
 #define ARCH_h8300
 #define ARCH_h8500
 #define ARCH_hppa
@@ -37,19 +39,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #define ARCH_i386
 #define ARCH_i860
 #define ARCH_i960
-#define ARCH_ip2k
 #define ARCH_ia64
-#define ARCH_fr30
+#define ARCH_ip2k
+#define ARCH_iq2000
+#define ARCH_m32c
 #define ARCH_m32r
-#define ARCH_m68k
 #define ARCH_m68hc11
 #define ARCH_m68hc12
+#define ARCH_m68k
 #define ARCH_m88k
+#define ARCH_maxq
 #define ARCH_mcore
 #define ARCH_mips
 #define ARCH_mmix
 #define ARCH_mn10200
 #define ARCH_mn10300
+#define ARCH_ms1
 #define ARCH_msp430
 #define ARCH_ns32k
 #define ARCH_openrisc
@@ -70,12 +75,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #define ARCH_w65
 #define ARCH_xstormy16
 #define ARCH_xtensa
+#define ARCH_z80
 #define ARCH_z8k
-#define ARCH_frv
-#define ARCH_iq2000
 #define INCLUDE_SHMEDIA
 #endif
 
+#ifdef ARCH_m32c
+#include "m32c-desc.h"
+#endif
 
 disassembler_ftype
 disassembler (abfd)
@@ -88,12 +95,6 @@ disassembler (abfd)
     {
       /* If you add a case to this table, also add it to the
 	 ARCH_all definition right above this function.  */
-#ifdef ARCH_a29k
-    case bfd_arch_a29k:
-      /* As far as I know we only handle big-endian 29k objects.  */
-      disassemble = print_insn_big_a29k;
-      break;
-#endif
 #ifdef ARCH_alpha
     case bfd_arch_alpha:
       disassemble = print_insn_alpha;
@@ -117,6 +118,11 @@ disassembler (abfd)
 #ifdef ARCH_avr
     case bfd_arch_avr:
       disassemble = print_insn_avr;
+      break;
+#endif
+#ifdef ARCH_bfin
+    case bfd_arch_bfin:
+      disassemble = print_insn_bfin;
       break;
 #endif
 #ifdef ARCH_cris
@@ -225,6 +231,16 @@ disassembler (abfd)
 #ifdef ARCH_m88k
     case bfd_arch_m88k:
       disassemble = print_insn_m88k;
+      break;
+#endif
+#ifdef ARCH_maxq
+    case bfd_arch_maxq:
+      disassemble = print_insn_maxq_little;
+      break;
+#endif
+#ifdef ARCH_ms1
+    case bfd_arch_ms1:
+      disassemble = print_insn_ms1;
       break;
 #endif
 #ifdef ARCH_msp430
@@ -359,6 +375,11 @@ disassembler (abfd)
       disassemble = print_insn_xtensa;
       break;
 #endif
+#ifdef ARCH_z80
+    case bfd_arch_z80:
+      disassemble = print_insn_z80;
+      break;
+#endif
 #ifdef ARCH_z8k
     case bfd_arch_z8k:
       if (bfd_get_mach(abfd) == bfd_mach_z8001)
@@ -380,6 +401,11 @@ disassembler (abfd)
 #ifdef ARCH_iq2000
     case bfd_arch_iq2000:
       disassemble = print_insn_iq2000;
+      break;
+#endif
+#ifdef ARCH_m32c
+    case bfd_arch_m32c:
+      disassemble = print_insn_m32c;
       break;
 #endif
     default:
@@ -416,6 +442,29 @@ disassemble_init_for_target (struct disassemble_info * info)
 #ifdef ARCH_arm
     case bfd_arch_arm:
       info->symbol_is_valid = arm_symbol_is_valid;
+      break;
+#endif
+#ifdef ARCH_ia64
+    case bfd_arch_ia64:
+      info->skip_zeroes = 16;
+      break;
+#endif
+#ifdef ARCH_tic4x
+    case bfd_arch_tic4x:
+      info->skip_zeroes = 32;
+      break;
+#endif
+#ifdef ARCH_m32c
+    case bfd_arch_m32c:
+      info->endian = BFD_ENDIAN_BIG;
+      if (! info->insn_sets)
+	{
+	  info->insn_sets = cgen_bitset_create (ISA_MAX);
+	  if (info->mach == bfd_mach_m16c)
+	    cgen_bitset_set (info->insn_sets, ISA_M16C);
+	  else
+	    cgen_bitset_set (info->insn_sets, ISA_M32C);
+	}
       break;
 #endif
     default:

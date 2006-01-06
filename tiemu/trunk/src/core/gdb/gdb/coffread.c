@@ -1,6 +1,6 @@
 /* Read coff symbol tables and convert to internal format, for GDB.
    Copyright 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996,
-   1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004
+   1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005
    Free Software Foundation, Inc.
    Contributed by David D. Johnson, Brown University (ddj@cs.brown.edu).
 
@@ -436,16 +436,16 @@ static void
 coff_symfile_init (struct objfile *objfile)
 {
   /* Allocate struct to keep track of stab reading. */
-  objfile->sym_stab_info = (struct dbx_symfile_info *)
+  objfile->deprecated_sym_stab_info = (struct dbx_symfile_info *)
     xmalloc (sizeof (struct dbx_symfile_info));
 
-  memset (objfile->sym_stab_info, 0,
+  memset (objfile->deprecated_sym_stab_info, 0,
 	  sizeof (struct dbx_symfile_info));
 
   /* Allocate struct to keep track of the symfile */
-  objfile->sym_private = xmalloc (sizeof (struct coff_symfile_info));
+  objfile->deprecated_sym_private = xmalloc (sizeof (struct coff_symfile_info));
 
-  memset (objfile->sym_private, 0, sizeof (struct coff_symfile_info));
+  memset (objfile->deprecated_sym_private, 0, sizeof (struct coff_symfile_info));
 
   /* COFF objects may be reordered, so set OBJF_REORDERED.  If we
      find this causes a significant slowdown in gdb then we could
@@ -512,8 +512,8 @@ coff_symfile_read (struct objfile *objfile, int mainline)
   int len;
   char * target;
   
-  info = (struct coff_symfile_info *) objfile->sym_private;
-  dbxinfo = objfile->sym_stab_info;
+  info = (struct coff_symfile_info *) objfile->deprecated_sym_private;
+  dbxinfo = objfile->deprecated_sym_stab_info;
   symfile_bfd = abfd;		/* Kludge for swap routines */
 
 /* WARNING WILL ROBINSON!  ACCESSING BFD-PRIVATE DATA HERE!  FIXME!  */
@@ -576,7 +576,7 @@ coff_symfile_read (struct objfile *objfile, int mainline)
       val = init_lineno (abfd, info->min_lineno_offset,
                          info->max_lineno_offset - info->min_lineno_offset);
       if (val < 0)
-        error ("\"%s\": error reading line numbers\n", name);
+        error (_("\"%s\": error reading line numbers."), name);
     }
 
   /* Now read the string table, all at once.  */
@@ -584,7 +584,7 @@ coff_symfile_read (struct objfile *objfile, int mainline)
   make_cleanup (free_stringtab_cleanup, 0 /*ignore*/);
   val = init_stringtab (abfd, stringtab_offset);
   if (val < 0)
-    error ("\"%s\": can't get string table", name);
+    error (_("\"%s\": can't get string table"), name);
 
   init_minimal_symbol_collection ();
   cleanup_minimal_symbols = make_cleanup_discard_minimal_symbols ();
@@ -617,9 +617,8 @@ coff_symfile_read (struct objfile *objfile, int mainline)
     {
       if (!info->stabstrsect)
 	{
-	  error (("The debugging information in `%s' is corrupted.\n"
-		  "The file has a `.stabs' section, but no `.stabstr' "
-		  "section."),
+	  error (_("The debugging information in `%s' is corrupted.\n"
+		   "The file has a `.stabs' section, but no `.stabstr' section."),
 		 name);
 	}
 
@@ -659,9 +658,9 @@ coff_new_init (struct objfile *ignore)
 static void
 coff_symfile_finish (struct objfile *objfile)
 {
-  if (objfile->sym_private != NULL)
+  if (objfile->deprecated_sym_private != NULL)
     {
-      xfree (objfile->sym_private);
+      xfree (objfile->deprecated_sym_private);
     }
 
   /* Let stabs reader clean up */
@@ -783,7 +782,7 @@ coff_symtab_read (long symtab_offset, unsigned int nsyms,
 	case C_LINE:
 	case C_ALIAS:
 	case C_HIDDEN:
-	  complaint (&symfile_complaints, "Bad n_sclass for symbol %s",
+	  complaint (&symfile_complaints, _("Bad n_sclass for symbol %s"),
 		     cs->c_name);
 	  break;
 
@@ -986,7 +985,7 @@ coff_symtab_read (long symtab_offset, unsigned int nsyms,
 	         contains line number of '{' } */
 	      if (cs->c_naux != 1)
 		complaint (&symfile_complaints,
-			   "`.bf' symbol %d has no aux entry", cs->c_symnum);
+			   _("`.bf' symbol %d has no aux entry"), cs->c_symnum);
 	      fcn_first_line = main_aux.x_sym.x_misc.x_lnsz.x_lnno;
 	      fcn_first_line_addr = cs->c_value;
 
@@ -1002,7 +1001,7 @@ coff_symtab_read (long symtab_offset, unsigned int nsyms,
 	  else if (DEPRECATED_STREQ (cs->c_name, ".ef"))
 	    {
 	      if (!within_function)
-		error ("Bad coff function information\n");
+		error (_("Bad coff function information."));
 	      /* the value of .ef is the address of epilogue code;
 	         not useful for gdb.  */
 	      /* { main_aux.x_sym.x_misc.x_lnsz.x_lnno
@@ -1011,7 +1010,7 @@ coff_symtab_read (long symtab_offset, unsigned int nsyms,
 	      if (context_stack_depth <= 0)
 		{		/* We attempted to pop an empty context stack */
 		  complaint (&symfile_complaints,
-			     "`.ef' symbol without matching `.bf' symbol ignored starting at symnum %d",
+			     _("`.ef' symbol without matching `.bf' symbol ignored starting at symnum %d"),
 			     cs->c_symnum);
 		  within_function = 0;
 		  break;
@@ -1022,7 +1021,7 @@ coff_symtab_read (long symtab_offset, unsigned int nsyms,
 	      if (context_stack_depth > 0 || new == NULL)
 		{
 		  complaint (&symfile_complaints,
-			     "Unmatched .ef symbol(s) ignored starting at symnum %d",
+			     _("Unmatched .ef symbol(s) ignored starting at symnum %d"),
 			     cs->c_symnum);
 		  within_function = 0;
 		  break;
@@ -1030,7 +1029,7 @@ coff_symtab_read (long symtab_offset, unsigned int nsyms,
 	      if (cs->c_naux != 1)
 		{
 		  complaint (&symfile_complaints,
-			     "`.ef' symbol %d has no aux entry", cs->c_symnum);
+			     _("`.ef' symbol %d has no aux entry"), cs->c_symnum);
 		  fcn_last_line = 0x7FFFFFFF;
 		}
 	      else
@@ -1086,7 +1085,7 @@ coff_symtab_read (long symtab_offset, unsigned int nsyms,
 	      if (context_stack_depth <= 0)
 		{		/* We attempted to pop an empty context stack */
 		  complaint (&symfile_complaints,
-			     "`.eb' symbol without matching `.bb' symbol ignored starting at symnum %d",
+			     _("`.eb' symbol without matching `.bb' symbol ignored starting at symnum %d"),
 			     cs->c_symnum);
 		  break;
 		}
@@ -1095,7 +1094,7 @@ coff_symtab_read (long symtab_offset, unsigned int nsyms,
 	      if (depth-- != new->depth)
 		{
 		  complaint (&symfile_complaints,
-			     "Mismatched .eb symbol ignored starting at symnum %d",
+			     _("Mismatched .eb symbol ignored starting at symnum %d"),
 			     symnum);
 		  break;
 		}
@@ -1173,7 +1172,7 @@ read_one_sym (struct coff_symbol *cs,
 
 #if 0
   if (cs->c_sclass & 128)
-    printf ("thumb symbol %s, class 0x%x\n", cs->c_name, cs->c_sclass);
+    printf (_("thumb symbol %s, class 0x%x\n"), cs->c_name, cs->c_sclass);
 #endif
 
   symnum += 1 + cs->c_naux;
@@ -1383,7 +1382,7 @@ enter_linenos (long file_offset, int first_line,
   if (file_offset < linetab_offset)
     {
       complaint (&symfile_complaints,
-		 "Line number pointer %ld lower than start of line numbers",
+		 _("Line number pointer %ld lower than start of line numbers"),
 		 file_offset);
       if (file_offset > linetab_size)	/* Too big to be an offset? */
 	return;
@@ -1432,7 +1431,7 @@ patch_type (struct type *type, struct type *real_type)
     {
       if (TYPE_NAME (target))
 	xfree (TYPE_NAME (target));
-      TYPE_NAME (target) = concat (TYPE_NAME (real_target), NULL);
+      TYPE_NAME (target) = concat (TYPE_NAME (real_target), (char *)NULL);
     }
 }
 
@@ -1669,7 +1668,7 @@ process_coff_symbol (struct coff_symbol *cs,
 		}
 	      else
 		TYPE_NAME (SYMBOL_TYPE (sym)) =
-		  concat (DEPRECATED_SYMBOL_NAME (sym), NULL);
+		  concat (DEPRECATED_SYMBOL_NAME (sym), (char *)NULL);
 	    }
 
 	  /* Keep track of any type which points to empty structured type,
@@ -1704,7 +1703,7 @@ process_coff_symbol (struct coff_symbol *cs,
 		&& *DEPRECATED_SYMBOL_NAME (sym) != '~'
 		&& *DEPRECATED_SYMBOL_NAME (sym) != '.')
 	      TYPE_TAG_NAME (SYMBOL_TYPE (sym)) =
-		concat (DEPRECATED_SYMBOL_NAME (sym), NULL);
+		concat (DEPRECATED_SYMBOL_NAME (sym), (char *)NULL);
 
 	  add_symbol_to_list (sym, &file_symbols);
 	  break;
@@ -1787,7 +1786,7 @@ decode_type (struct coff_symbol *cs, unsigned int c_type,
       else
 	{
 	  complaint (&symfile_complaints,
-		     "Symbol table entry for %s has bad tagndx value",
+		     _("Symbol table entry for %s has bad tagndx value"),
 		     cs->c_name);
 	  /* And fall through to decode_base_type... */
 	}
@@ -1945,7 +1944,7 @@ decode_base_type (struct coff_symbol *cs, unsigned int c_type,
       else
 	return lookup_fundamental_type (current_objfile, FT_UNSIGNED_LONG);
     }
-  complaint (&symfile_complaints, "Unexpected type for symbol %s", cs->c_name);
+  complaint (&symfile_complaints, _("Unexpected type for symbol %s"), cs->c_name);
   return lookup_fundamental_type (current_objfile, FT_VOID);
 }
 

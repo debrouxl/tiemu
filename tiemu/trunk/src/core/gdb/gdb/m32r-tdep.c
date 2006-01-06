@@ -1,7 +1,7 @@
 /* Target-dependent code for Renesas M32R, for GDB.
 
-   Copyright 1996, 1998, 1999, 2000, 2001, 2002, 2003, 2004 Free Software
-   Foundation, Inc.
+   Copyright 1996, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005 Free
+   Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -81,7 +81,7 @@ m32r_frame_align (struct gdbarch *gdbarch, CORE_ADDR sp)
    The following functions take care of this behavior. */
 
 static int
-m32r_memory_insert_breakpoint (CORE_ADDR addr, char *contents_cache)
+m32r_memory_insert_breakpoint (CORE_ADDR addr, bfd_byte *contents_cache)
 {
   int val;
   char buf[4];
@@ -134,7 +134,7 @@ m32r_memory_insert_breakpoint (CORE_ADDR addr, char *contents_cache)
 }
 
 static int
-m32r_memory_remove_breakpoint (CORE_ADDR addr, char *contents_cache)
+m32r_memory_remove_breakpoint (CORE_ADDR addr, bfd_byte *contents_cache)
 {
   int val;
   char buf[4];
@@ -702,12 +702,12 @@ m32r_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 
   /* Now make sure there's space on the stack */
   for (argnum = 0, stack_alloc = 0; argnum < nargs; argnum++)
-    stack_alloc += ((TYPE_LENGTH (VALUE_TYPE (args[argnum])) + 3) & ~3);
+    stack_alloc += ((TYPE_LENGTH (value_type (args[argnum])) + 3) & ~3);
   sp -= stack_alloc;		/* make room on stack for args */
 
   for (argnum = 0, stack_offset = 0; argnum < nargs; argnum++)
     {
-      type = VALUE_TYPE (args[argnum]);
+      type = value_type (args[argnum]);
       typecode = TYPE_CODE (type);
       len = TYPE_LENGTH (type);
 
@@ -726,11 +726,11 @@ m32r_push_dummy_call (struct gdbarch *gdbarch, struct value *function,
 	{
 	  /* value gets right-justified in the register or stack word */
 	  memcpy (valbuf + (register_size (gdbarch, argreg) - len),
-		  (char *) VALUE_CONTENTS (args[argnum]), len);
+		  (char *) value_contents (args[argnum]), len);
 	  val = valbuf;
 	}
       else
-	val = (char *) VALUE_CONTENTS (args[argnum]);
+	val = (char *) value_contents (args[argnum]);
 
       while (len > 0)
 	{

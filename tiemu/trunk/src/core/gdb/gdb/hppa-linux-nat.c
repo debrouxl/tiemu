@@ -1,6 +1,6 @@
 /* Functions specific to running GDB native on HPPA running GNU/Linux.
 
-   Copyright 2004 Free Software Foundation, Inc.
+   Copyright 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -24,6 +24,8 @@
 #include "regcache.h"
 #include "gdb_string.h"
 #include "inferior.h"
+#include "target.h"
+#include "linux-nat.h"
 
 #include <sys/procfs.h>
 #include <sys/ptrace.h>
@@ -157,7 +159,7 @@ register_addr (int regno, CORE_ADDR blockend)
   CORE_ADDR addr;
 
   if ((unsigned) regno >= NUM_REGS)
-    error ("Invalid register number %d.", regno);
+    error (_("Invalid register number %d."), regno);
 
   if (u_offsets[regno] == -1)
     addr = 0;
@@ -233,7 +235,7 @@ fetch_register (int regno)
   errno = 0;
   val = ptrace (PTRACE_PEEKUSER, tid, register_addr (regno, 0), 0);
   if (errno != 0)
-    error ("Couldn't read register %s (#%d): %s.", REGISTER_NAME (regno),
+    error (_("Couldn't read register %s (#%d): %s."), REGISTER_NAME (regno),
 	   regno, safe_strerror (errno));
 
   regcache_raw_supply (current_regcache, regno, &val);
@@ -259,7 +261,7 @@ store_register (int regno)
   regcache_raw_collect (current_regcache, regno, &val);
   ptrace (PTRACE_POKEUSER, tid, register_addr (regno, 0), val);
   if (errno != 0)
-    error ("Couldn't write register %s (#%d): %s.", REGISTER_NAME (regno),
+    error (_("Couldn't write register %s (#%d): %s."), REGISTER_NAME (regno),
 	   regno, safe_strerror (errno));
 }
 
@@ -267,8 +269,8 @@ store_register (int regno)
    regno == -1, otherwise fetch all general registers or all floating
    point registers depending upon the value of regno.  */
 
-void
-fetch_inferior_registers (int regno)
+static void
+hppa_linux_fetch_inferior_registers (int regno)
 {
   if (-1 == regno)
     {
@@ -285,8 +287,8 @@ fetch_inferior_registers (int regno)
    regno == -1, otherwise store all general registers or all floating
    point registers depending upon the value of regno.  */
 
-void
-store_inferior_registers (int regno)
+static void
+hppa_linux_store_inferior_registers (int regno)
 {
   if (-1 == regno)
     {
@@ -373,4 +375,22 @@ fill_fpregset (gdb_fpregset_t *fpregsetp, int regno)
 	to += 4;
       regcache_raw_collect (current_regcache, i, to);
    }
+}
+
+void _initialize_hppa_linux_nat (void);
+
+void
+_initialize_hppa_linux_nat (void)
+{
+  struct target_ops *t;
+
+  /* Fill in the generic GNU/Linux methods.  */
+  t = linux_target ();
+
+  /* Add our register access methods.  */
+  t->to_fetch_registers = hppa_linux_fetch_inferior_registers;
+  t->to_store_registers = hppa_linux_store_inferior_registers;
+
+  /* Register the target.  */
+  add_target (t);
 }

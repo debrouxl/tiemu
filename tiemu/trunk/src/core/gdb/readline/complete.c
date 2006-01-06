@@ -53,7 +53,7 @@
 extern int errno;
 #endif /* !errno */
 
-#ifndef __MINGW32__
+#ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif
 
@@ -86,9 +86,10 @@ typedef int QSFUNC ();
 
 /* Most systems don't declare getpwent in <pwd.h> if _POSIX_SOURCE is
    defined. */
-#if !defined (HAVE_GETPW_DECLS) || defined (_POSIX_SOURCE)
+#if defined(HAVE_GETPWENT) && \
+    (!defined (HAVE_GETPW_DECLS) || defined (_POSIX_SOURCE))
 extern struct passwd *getpwent PARAMS((void));
-#endif /* !HAVE_GETPW_DECLS || _POSIX_SOURCE */
+#endif /* defiend (HAVE_GETPWENT) && (!HAVE_GETPW_DECLS || _POSIX_SOURCE) */
 
 /* If non-zero, then this is the address of a function to call when
    completing a word would normally display the list of possible matches.
@@ -1677,16 +1678,20 @@ rl_username_completion_function (text, state)
     }
 
 #ifndef __MINGW32__
+#ifdef HAVE_GETPWENT
   while (entry = getpwent ())
     {
       /* Null usernames should result in all users as possible completions. */
       if (namelen == 0 || (STREQN (username, entry->pw_name, namelen)))
 	break;
     }
+#endif
 
   if (entry == 0)
     {
+#ifdef HAVE_GETPWENT
       endpwent ();
+#endif
       return ((char *)NULL);
     }
   else

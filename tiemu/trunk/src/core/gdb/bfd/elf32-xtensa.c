@@ -1,5 +1,5 @@
 /* Xtensa-specific support for 32-bit ELF.
-   Copyright 2003, 2004 Free Software Foundation, Inc.
+   Copyright 2003, 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of BFD, the Binary File Descriptor library.
 
@@ -15,17 +15,13 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-   02111-1307, USA.  */
+   Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA
+   02110-1301, USA.  */
 
 #include "bfd.h"
 #include "sysdep.h"
 
-#ifdef ANSI_PROTOTYPES
 #include <stdarg.h>
-#else
-#include <varargs.h>
-#endif
 #include <strings.h>
 
 #include "bfdlink.h"
@@ -40,7 +36,7 @@
 /* Local helper functions.  */
 
 static bfd_boolean add_extra_plt_sections (bfd *, int);
-static char *build_encoding_error_message (xtensa_opcode, bfd_vma);
+static char *vsprint_msg (const char *, const char *, int, ...) ATTRIBUTE_PRINTF(2,4);
 static bfd_reloc_status_type bfd_elf_xtensa_reloc
   (bfd *, arelent *, asymbol *, void *, asection *, bfd *, char **);
 static bfd_boolean do_fix_for_relocatable_link
@@ -523,12 +519,6 @@ property_table_compare (const void *ap, const void *bp)
 
   if (a->address == b->address)
     {
-      /* The only circumstance where two entries may legitimately have the
-	 same address is when one of them is a zero-size placeholder to
-	 mark a place where fill can be inserted.  The zero-size entry should
-	 come first.  */
-      BFD_ASSERT ((a->size == 0 || b->size == 0));
-
       if (a->size != b->size)
 	return (a->size - b->size);
 
@@ -585,7 +575,7 @@ xtensa_read_table_entries (bfd *abfd,
   bfd_size_type table_size = 0;
   bfd_byte *table_data;
   property_table_entry *blocks;
-  int block_count;
+  int blk, block_count;
   bfd_size_type num_records;
   Elf_Internal_Rela *internal_relocs;
   bfd_vma section_addr;
@@ -700,6 +690,25 @@ xtensa_read_table_entries (bfd *abfd,
       /* Now sort them into address order for easy reference.  */
       qsort (blocks, block_count, sizeof (property_table_entry),
 	     property_table_compare);
+
+      /* Check that the table contents are valid.  Problems may occur,
+         for example, if an unrelocated object file is stripped.  */
+      for (blk = 1; blk < block_count; blk++)
+	{
+	  /* The only circumstance where two entries may legitimately
+	     have the same address is when one of them is a zero-size
+	     placeholder to mark a place where fill can be inserted.
+	     The zero-size entry should come first.  */
+	  if (blocks[blk - 1].address == blocks[blk].address &&
+	      blocks[blk - 1].size != 0)
+	    {
+	      (*_bfd_error_handler) (_("%B(%A): invalid property table"),
+				     abfd, section);
+	      bfd_set_error (bfd_error_bad_value);
+	      free (blocks);
+	      return -1;
+	    }
+	}
     }
 
   *table_p = blocks;
@@ -1026,7 +1035,12 @@ elf_xtensa_gc_sweep_hook (bfd *abfd,
 
       r_symndx = ELF32_R_SYM (rel->r_info);
       if (r_symndx >= symtab_hdr->sh_info)
-	h = sym_hashes[r_symndx - symtab_hdr->sh_info];
+	{
+	  h = sym_hashes[r_symndx - symtab_hdr->sh_info];
+	  while (h->root.type == bfd_link_hash_indirect
+		 || h->root.type == bfd_link_hash_warning)
+	    h = (struct elf_link_hash_entry *) h->root.u.i.link;
+	}
 
       r_type = ELF32_R_TYPE (rel->r_info);
       switch (r_type)
@@ -1087,23 +1101,21 @@ elf_xtensa_create_dynamic_sections (bfd *dynobj, struct bfd_link_info *info)
     return FALSE;
 
   /* Create ".rela.got".  */
-  s = bfd_make_section (dynobj, ".rela.got");
+  s = bfd_make_section_with_flags (dynobj, ".rela.got", flags);
   if (s == NULL
-      || ! bfd_set_section_flags (dynobj, s, flags)
       || ! bfd_set_section_alignment (dynobj, s, 2))
     return FALSE;
 
   /* Create ".got.loc" (literal tables for use by dynamic linker).  */
-  s = bfd_make_section (dynobj, ".got.loc");
+  s = bfd_make_section_with_flags (dynobj, ".got.loc", flags);
   if (s == NULL
-      || ! bfd_set_section_flags (dynobj, s, flags)
       || ! bfd_set_section_alignment (dynobj, s, 2))
     return FALSE;
 
   /* Create ".xt.lit.plt" (literal table for ".got.plt*").  */
-  s = bfd_make_section (dynobj, ".xt.lit.plt");
+  s = bfd_make_section_with_flags (dynobj, ".xt.lit.plt",
+				   noalloc_flags);
   if (s == NULL
-      || ! bfd_set_section_flags (dynobj, s, noalloc_flags)
       || ! bfd_set_section_alignment (dynobj, s, 2))
     return FALSE;
 
@@ -1133,17 +1145,16 @@ add_extra_plt_sections (bfd *dynobj, int count)
 
       sname = (char *) bfd_malloc (10);
       sprintf (sname, ".plt.%u", chunk);
-      s = bfd_make_section (dynobj, sname);
+      s = bfd_make_section_with_flags (dynobj, sname,
+				       flags | SEC_CODE);
       if (s == NULL
-	  || ! bfd_set_section_flags (dynobj, s, flags | SEC_CODE)
 	  || ! bfd_set_section_alignment (dynobj, s, 2))
 	return FALSE;
 
       sname = (char *) bfd_malloc (14);
       sprintf (sname, ".got.plt.%u", chunk);
-      s = bfd_make_section (dynobj, sname);
+      s = bfd_make_section_with_flags (dynobj, sname, flags);
       if (s == NULL
-	  || ! bfd_set_section_flags (dynobj, s, flags)
 	  || ! bfd_set_section_alignment (dynobj, s, 2))
 	return FALSE;
     }
@@ -1394,7 +1405,6 @@ elf_xtensa_size_dynamic_sections (bfd *output_bfd ATTRIBUTE_UNUSED,
   for (s = dynobj->sections; s != NULL; s = s->next)
     {
       const char *name;
-      bfd_boolean strip;
 
       if ((s->flags & SEC_LINKER_CREATED) == 0)
 	continue;
@@ -1403,37 +1413,23 @@ elf_xtensa_size_dynamic_sections (bfd *output_bfd ATTRIBUTE_UNUSED,
 	 of the dynobj section names depend upon the input files.  */
       name = bfd_get_section_name (dynobj, s);
 
-      strip = FALSE;
-
       if (strncmp (name, ".rela", 5) == 0)
 	{
-	  if (strcmp (name, ".rela.plt") == 0)
-	    relplt = TRUE;
-	  else if (strcmp (name, ".rela.got") == 0)
-	    relgot = TRUE;
-
-	  /* We use the reloc_count field as a counter if we need
-	     to copy relocs into the output file.  */
-	  s->reloc_count = 0;
-	}
-      else if (strncmp (name, ".plt.", 5) == 0
-	       || strncmp (name, ".got.plt.", 9) == 0)
-	{
-	  if (s->size == 0)
+	  if (s->size != 0)
 	    {
-	      /* If we don't need this section, strip it from the output
-		 file.  We must create the ".plt*" and ".got.plt*"
-		 sections in create_dynamic_sections and/or check_relocs
-		 based on a conservative estimate of the PLT relocation
-		 count, because the sections must be created before the
-		 linker maps input sections to output sections.  The
-		 linker does that before size_dynamic_sections, where we
-		 compute the exact size of the PLT, so there may be more
-		 of these sections than are actually needed.  */
-	      strip = TRUE;
+	      if (strcmp (name, ".rela.plt") == 0)
+		relplt = TRUE;
+	      else if (strcmp (name, ".rela.got") == 0)
+		relgot = TRUE;
+
+	      /* We use the reloc_count field as a counter if we need
+		 to copy relocs into the output file.  */
+	      s->reloc_count = 0;
 	    }
 	}
-      else if (strcmp (name, ".got") != 0
+      else if (strncmp (name, ".plt.", 5) != 0
+	       && strncmp (name, ".got.plt.", 9) != 0
+	       && strcmp (name, ".got") != 0
 	       && strcmp (name, ".plt") != 0
 	       && strcmp (name, ".got.plt") != 0
 	       && strcmp (name, ".xt.lit.plt") != 0
@@ -1443,13 +1439,24 @@ elf_xtensa_size_dynamic_sections (bfd *output_bfd ATTRIBUTE_UNUSED,
 	  continue;
 	}
 
-      if (strip)
-	_bfd_strip_section_from_output (info, s);
-      else
+      if (s->size == 0)
+	{
+	  /* If we don't need this section, strip it from the output
+	     file.  We must create the ".plt*" and ".got.plt*"
+	     sections in create_dynamic_sections and/or check_relocs
+	     based on a conservative estimate of the PLT relocation
+	     count, because the sections must be created before the
+	     linker maps input sections to output sections.  The
+	     linker does that before size_dynamic_sections, where we
+	     compute the exact size of the PLT, so there may be more
+	     of these sections than are actually needed.  */
+	  s->flags |= SEC_EXCLUDE;
+	}
+      else if ((s->flags & SEC_HAS_CONTENTS) != 0)
 	{
 	  /* Allocate memory for the section contents.  */
 	  s->contents = (bfd_byte *) bfd_zalloc (dynobj, s->size);
-	  if (s->contents == NULL && s->size != 0)
+	  if (s->contents == NULL)
 	    return FALSE;
 	}
     }
@@ -1735,7 +1742,30 @@ elf_xtensa_do_reloc (reloc_howto_type *howto,
       || xtensa_operand_set_field (isa, opcode, opnd, fmt, slot,
 				   sbuff, newval))
     {
-      *error_message = build_encoding_error_message (opcode, relocation);
+      const char *opname = xtensa_opcode_name (isa, opcode);
+      const char *msg;
+
+      msg = "cannot encode";
+      if (is_direct_call_opcode (opcode))
+	{
+	  if ((relocation & 0x3) != 0)
+	    msg = "misaligned call target";
+	  else
+	    msg = "call target out of range";
+	}
+      else if (opcode == get_l32r_opcode ())
+	{
+	  if ((relocation & 0x3) != 0)
+	    msg = "misaligned literal target";
+	  else if (is_alt_relocation (howto->type))
+	    msg = "literal target out of range (too many literals)";
+	  else if (self_address > relocation)
+	    msg = "literal target out of range (try using text-section-literals)";
+	  else
+	    msg = "literal placed after use";
+	}
+
+      *error_message = vsprint_msg (opname, ": %s", strlen (msg) + 2, msg);
       return bfd_reloc_dangerous;
     }
 
@@ -1790,32 +1820,6 @@ vsprint_msg (const char *origmsg, const char *fmt, int arglen, ...)
 }
 
 
-static char *
-build_encoding_error_message (xtensa_opcode opcode, bfd_vma target_address)
-{
-  const char *opname = xtensa_opcode_name (xtensa_default_isa, opcode);
-  const char *msg;
-
-  msg = "cannot encode";
-  if (is_direct_call_opcode (opcode))
-    {
-      if ((target_address & 0x3) != 0)
-	msg = "misaligned call target";
-      else
-	msg = "call target out of range";
-    }
-  else if (opcode == get_l32r_opcode ())
-    {
-      if ((target_address & 0x3) != 0)
-	msg = "misaligned literal target";
-      else
-	msg = "literal target out of range";
-    }
-
-  return vsprint_msg (opname, ": %s", strlen (msg) + 2, msg);
-}
-
-
 /* This function is registered as the "special_function" in the
    Xtensa howto for handling simplify operations.
    bfd_perform_relocation / bfd_install_relocation use it to
@@ -1839,6 +1843,9 @@ bfd_elf_xtensa_reloc (bfd *abfd,
   reloc_howto_type *howto = reloc_entry->howto;
   asection *reloc_target_output_section;
   bfd_boolean is_weak_undef;
+
+  if (!xtensa_default_isa)
+    xtensa_default_isa = xtensa_isa_init (0, 0);
 
   /* ELF relocs are against symbols.  If we are producing relocatable
      output, and the reloc is against an external symbol, the resulting
@@ -1920,7 +1927,8 @@ bfd_elf_xtensa_reloc (bfd *abfd,
 	*error_message = "";
       *error_message = vsprint_msg (*error_message, ": (%s + 0x%lx)",
 				    strlen (symbol->name) + 17,
-				    symbol->name, reloc_entry->addend);
+				    symbol->name,
+				    (unsigned long) reloc_entry->addend);
     }
 
   return flag;
@@ -2300,10 +2308,11 @@ elf_xtensa_relocate_section (bfd *output_bfd,
 	  && !((input_section->flags & SEC_DEBUGGING) != 0
 	       && h->def_dynamic))
 	(*_bfd_error_handler)
-	  (_("%B(%A+0x%lx): unresolvable relocation against symbol `%s'"),
+	  (_("%B(%A+0x%lx): unresolvable %s relocation against symbol `%s'"),
 	   input_bfd,
 	   input_section,
 	   (long) rel->r_offset,
+	   howto->name,
 	   h->root.root.string);
 
       /* There's no point in calling bfd_perform_relocation here.
@@ -2337,7 +2346,7 @@ elf_xtensa_relocate_section (bfd *output_bfd,
 	      else
 		error_message = vsprint_msg (error_message, ": (%s+0x%x)",
 					     strlen (name) + 22,
-					     name, rel->r_addend);
+					     name, (int)rel->r_addend);
 	    }
 
 	  if (!((*info->callbacks->reloc_dangerous)
@@ -4453,7 +4462,7 @@ literal_value_hash (const literal_value *src)
 	sec_or_hash = r_reloc_get_section (&src->r_rel);
       else
 	sec_or_hash = r_reloc_get_hash_entry (&src->r_rel);
-      hash_val += hash_bfd_vma ((bfd_vma) (unsigned) sec_or_hash);
+      hash_val += hash_bfd_vma ((bfd_vma) (size_t) sec_or_hash);
     }
   return hash_val;
 }
@@ -5586,8 +5595,8 @@ insn_block_decodable_len (bfd_byte *contents,
 
 static void
 ebb_propose_action (ebb_constraint *c,
-		    bfd_vma alignment_pow,
 		    enum ebb_target_enum align_type,
+		    bfd_vma alignment_pow,
 		    text_action_t action,
 		    bfd_vma offset,
 		    int removed_bytes,
@@ -5598,9 +5607,10 @@ ebb_propose_action (ebb_constraint *c,
   if (c->action_allocated <= c->action_count)
     {
       unsigned new_allocated, i;
+      proposed_action *new_actions;
 
       new_allocated = (c->action_count + 2) * 2;
-      proposed_action *new_actions = (proposed_action *)
+      new_actions = (proposed_action *)
 	bfd_zmalloc (sizeof (proposed_action) * new_allocated);
 
       for (i = 0; i < c->action_count; i++)
@@ -7451,6 +7461,11 @@ relocations_reach (source_reloc *reloc,
       if (r_reloc_get_section (&reloc[i].r_rel)->output_section
 	  != sec->output_section)
 	return FALSE;
+
+      /* Absolute literals in the same output section can always be
+	 combined.  */
+      if (reloc[i].is_abs_literal)
+	continue;
 
       /* A literal with no PC-relative relocations can be moved anywhere.  */
       if (reloc[i].opnd != -1)
@@ -9322,9 +9337,9 @@ xtensa_get_property_section_name (asection *sec, const char *base_name)
       char *linkonce_kind = 0;
 
       if (strcmp (base_name, XTENSA_INSN_SEC_NAME) == 0) 
-	linkonce_kind = "x";
+	linkonce_kind = "x.";
       else if (strcmp (base_name, XTENSA_LIT_SEC_NAME) == 0) 
-	linkonce_kind = "p";
+	linkonce_kind = "p.";
       else if (strcmp (base_name, XTENSA_PROP_SEC_NAME) == 0)
 	linkonce_kind = "prop.";
       else
@@ -9463,14 +9478,13 @@ xtensa_callback_required_dependence (bfd *abfd,
 /* The default literal sections should always be marked as "code" (i.e.,
    SHF_EXECINSTR).  This is particularly important for the Linux kernel
    module loader so that the literals are not placed after the text.  */
-static struct bfd_elf_special_section const elf_xtensa_special_sections[]=
+static const struct bfd_elf_special_section elf_xtensa_special_sections[] =
 {
-  { ".literal",       8, 0, SHT_PROGBITS, SHF_ALLOC + SHF_EXECINSTR },
-  { ".init.literal", 13, 0, SHT_PROGBITS, SHF_ALLOC + SHF_EXECINSTR },
   { ".fini.literal", 13, 0, SHT_PROGBITS, SHF_ALLOC + SHF_EXECINSTR },
+  { ".init.literal", 13, 0, SHT_PROGBITS, SHF_ALLOC + SHF_EXECINSTR },
+  { ".literal",       8, 0, SHT_PROGBITS, SHF_ALLOC + SHF_EXECINSTR },
   { NULL,             0, 0, 0,            0 }
 };
-
 
 #ifndef ELF_ARCH
 #define TARGET_LITTLE_SYM		bfd_elf32_xtensa_le_vec
@@ -9479,14 +9493,8 @@ static struct bfd_elf_special_section const elf_xtensa_special_sections[]=
 #define TARGET_BIG_NAME			"elf32-xtensa-be"
 #define ELF_ARCH			bfd_arch_xtensa
 
-/* The new EM_XTENSA value will be recognized beginning in the Xtensa T1040
-   release. However, we still have to generate files with the EM_XTENSA_OLD
-   value so that pre-T1040 tools can read the files.  As soon as we stop
-   caring about pre-T1040 tools, the following two values should be
-   swapped. At the same time, any other code that uses EM_XTENSA_OLD
-   should be changed to use EM_XTENSA.  */
-#define ELF_MACHINE_CODE		EM_XTENSA_OLD
-#define ELF_MACHINE_ALT1		EM_XTENSA
+#define ELF_MACHINE_CODE		EM_XTENSA
+#define ELF_MACHINE_ALT1		EM_XTENSA_OLD
 
 #if XCHAL_HAVE_MMU
 #define ELF_MAXPAGESIZE			(1 << XCHAL_MMU_MIN_PTE_PAGE_SIZE)

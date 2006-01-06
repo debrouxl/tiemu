@@ -28,19 +28,3 @@
 
 extern int hppa_pc_requires_run_before_use (CORE_ADDR pc);
 #define DEPRECATED_PC_REQUIRES_RUN_BEFORE_USE(pc) hppa_pc_requires_run_before_use (pc)
-
-/* PA specific macro to see if the current instruction is nullified. */
-#ifndef INSTRUCTION_NULLIFIED
-extern int hppa_instruction_nullified (void);
-#define INSTRUCTION_NULLIFIED hppa_instruction_nullified ()
-#endif
-
-/* Here's how to step off a permanent breakpoint.  */
-#define SKIP_PERMANENT_BREAKPOINT (hppa_skip_permanent_breakpoint)
-extern void hppa_skip_permanent_breakpoint (void);
-
-/* On HP-UX, certain system routines (millicode) have names beginning
-   with $ or $$, e.g. $$dyncall, which handles inter-space procedure
-   calls on PA-RISC.  Tell the expression parser to check for those
-   when parsing tokens that begin with "$".  */
-#define SYMBOLS_CAN_START_WITH_DOLLAR (1)

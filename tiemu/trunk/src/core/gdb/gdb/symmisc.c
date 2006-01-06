@@ -30,10 +30,12 @@
 #include "breakpoint.h"
 #include "command.h"
 #include "gdb_obstack.h"
+#include "exceptions.h"
 #include "language.h"
 #include "bcache.h"
 #include "block.h"
 #include "gdb_regex.h"
+#include "gdb_stat.h"
 #include "dictionary.h"
 
 #include "gdb_string.h"
@@ -172,7 +174,7 @@ print_symbol_bcache_statistics (void)
   immediate_quit++;
   ALL_OBJFILES (objfile)
   {
-    printf_filtered ("Byte cache statistics for '%s':\n", objfile->name);
+    printf_filtered (_("Byte cache statistics for '%s':\n"), objfile->name);
     print_bcache_statistics (objfile->psymbol_cache, "partial symbol cache");
   }
   immediate_quit--;
@@ -189,21 +191,21 @@ print_objfile_statistics (void)
   immediate_quit++;
   ALL_OBJFILES (objfile)
   {
-    printf_filtered ("Statistics for '%s':\n", objfile->name);
+    printf_filtered (_("Statistics for '%s':\n"), objfile->name);
     if (OBJSTAT (objfile, n_stabs) > 0)
-      printf_filtered ("  Number of \"stab\" symbols read: %d\n",
+      printf_filtered (_("  Number of \"stab\" symbols read: %d\n"),
 		       OBJSTAT (objfile, n_stabs));
     if (OBJSTAT (objfile, n_minsyms) > 0)
-      printf_filtered ("  Number of \"minimal\" symbols read: %d\n",
+      printf_filtered (_("  Number of \"minimal\" symbols read: %d\n"),
 		       OBJSTAT (objfile, n_minsyms));
     if (OBJSTAT (objfile, n_psyms) > 0)
-      printf_filtered ("  Number of \"partial\" symbols read: %d\n",
+      printf_filtered (_("  Number of \"partial\" symbols read: %d\n"),
 		       OBJSTAT (objfile, n_psyms));
     if (OBJSTAT (objfile, n_syms) > 0)
-      printf_filtered ("  Number of \"full\" symbols read: %d\n",
+      printf_filtered (_("  Number of \"full\" symbols read: %d\n"),
 		       OBJSTAT (objfile, n_syms));
     if (OBJSTAT (objfile, n_types) > 0)
-      printf_filtered ("  Number of \"types\" defined: %d\n",
+      printf_filtered (_("  Number of \"types\" defined: %d\n"),
 		       OBJSTAT (objfile, n_types));
     i = 0;
     ALL_OBJFILE_PSYMTABS (objfile, ps)
@@ -211,7 +213,7 @@ print_objfile_statistics (void)
         if (ps->readin == 0)
           i++;
       }
-    printf_filtered ("  Number of psym tables (not yet expanded): %d\n", i);
+    printf_filtered (_("  Number of psym tables (not yet expanded): %d\n"), i);
     i = linetables = blockvectors = 0;
     ALL_OBJFILE_SYMTABS (objfile, s)
       {
@@ -221,20 +223,20 @@ print_objfile_statistics (void)
         if (s->primary == 1)
           blockvectors++;
       }
-    printf_filtered ("  Number of symbol tables: %d\n", i);
-    printf_filtered ("  Number of symbol tables with line tables: %d\n", 
+    printf_filtered (_("  Number of symbol tables: %d\n"), i);
+    printf_filtered (_("  Number of symbol tables with line tables: %d\n"), 
                      linetables);
-    printf_filtered ("  Number of symbol tables with blockvectors: %d\n", 
+    printf_filtered (_("  Number of symbol tables with blockvectors: %d\n"), 
                      blockvectors);
     
     if (OBJSTAT (objfile, sz_strtab) > 0)
-      printf_filtered ("  Space used by a.out string tables: %d\n",
+      printf_filtered (_("  Space used by a.out string tables: %d\n"),
 		       OBJSTAT (objfile, sz_strtab));
-    printf_filtered ("  Total memory used for objfile obstack: %d\n",
+    printf_filtered (_("  Total memory used for objfile obstack: %d\n"),
 		     obstack_memory_used (&objfile->objfile_obstack));
-    printf_filtered ("  Total memory used for psymbol cache: %d\n",
+    printf_filtered (_("  Total memory used for psymbol cache: %d\n"),
 		     bcache_memory_used (objfile->psymbol_cache));
-    printf_filtered ("  Total memory used for macro cache: %d\n",
+    printf_filtered (_("  Total memory used for macro cache: %d\n"),
 		     bcache_memory_used (objfile->macro_cache));
   }
   immediate_quit--;
@@ -346,7 +348,7 @@ dump_msymbols (struct objfile *objfile, struct ui_file *outfile)
 	  break;
 	}
       fprintf_filtered (outfile, "[%2d] %c ", index, ms_type);
-      print_address_numeric (SYMBOL_VALUE_ADDRESS (msymbol), 1, outfile);
+      deprecated_print_address_numeric (SYMBOL_VALUE_ADDRESS (msymbol), 1, outfile);
       fprintf_filtered (outfile, " %s", DEPRECATED_SYMBOL_NAME (msymbol));
       if (SYMBOL_BFD_SECTION (msymbol))
 	fprintf_filtered (outfile, " section %s",
@@ -364,7 +366,7 @@ dump_msymbols (struct objfile *objfile, struct ui_file *outfile)
     }
   if (objfile->minimal_symbol_count != index)
     {
-      warning ("internal error:  minimal symbol count %d != %d",
+      warning (_("internal error:  minimal symbol count %d != %d"),
 	       objfile->minimal_symbol_count, index);
     }
   fprintf_filtered (outfile, "\n");
@@ -402,16 +404,16 @@ dump_psymtab (struct objfile *objfile, struct partial_symtab *psymtab,
       if (i != 0)
 	fprintf_filtered (outfile, ", ");
       wrap_here ("    ");
-      print_address_numeric (ANOFFSET (psymtab->section_offsets, i),
+      deprecated_print_address_numeric (ANOFFSET (psymtab->section_offsets, i),
 			     1,
 			     outfile);
     }
   fprintf_filtered (outfile, "\n");
 
   fprintf_filtered (outfile, "  Symbols cover text addresses ");
-  print_address_numeric (psymtab->textlow, 1, outfile);
+  deprecated_print_address_numeric (psymtab->textlow, 1, outfile);
   fprintf_filtered (outfile, "-");
-  print_address_numeric (psymtab->texthigh, 1, outfile);
+  deprecated_print_address_numeric (psymtab->texthigh, 1, outfile);
   fprintf_filtered (outfile, "\n");
   fprintf_filtered (outfile, "  Depends on %d other partial symtabs.\n",
 		    psymtab->number_of_dependencies);
@@ -438,8 +440,8 @@ dump_psymtab (struct objfile *objfile, struct partial_symtab *psymtab,
 }
 
 static void
-dump_symtab (struct objfile *objfile, struct symtab *symtab,
-	     struct ui_file *outfile)
+dump_symtab_1 (struct objfile *objfile, struct symtab *symtab,
+	       struct ui_file *outfile)
 {
   int i;
   struct dict_iterator iter;
@@ -468,7 +470,7 @@ dump_symtab (struct objfile *objfile, struct symtab *symtab,
       for (i = 0; i < len; i++)
 	{
 	  fprintf_filtered (outfile, " line %d at ", l->item[i].line);
-	  print_address_numeric (l->item[i].pc, 1, outfile);
+	  deprecated_print_address_numeric (l->item[i].pc, 1, outfile);
 	  fprintf_filtered (outfile, "\n");
 	}
     }
@@ -496,9 +498,9 @@ dump_symtab (struct objfile *objfile, struct symtab *symtab,
 	     wants it.  */
 	  fprintf_filtered (outfile, ", %d syms/buckets in ",
 			    dict_size (BLOCK_DICT (b)));
-	  print_address_numeric (BLOCK_START (b), 1, outfile);
+	  deprecated_print_address_numeric (BLOCK_START (b), 1, outfile);
 	  fprintf_filtered (outfile, "..");
-	  print_address_numeric (BLOCK_END (b), 1, outfile);
+	  deprecated_print_address_numeric (BLOCK_END (b), 1, outfile);
 	  if (BLOCK_FUNCTION (b))
 	    {
 	      fprintf_filtered (outfile, ", function %s", DEPRECATED_SYMBOL_NAME (BLOCK_FUNCTION (b)));
@@ -531,6 +533,22 @@ dump_symtab (struct objfile *objfile, struct symtab *symtab,
     }
 }
 
+static void
+dump_symtab (struct objfile *objfile, struct symtab *symtab,
+	     struct ui_file *outfile)
+{
+  enum language saved_lang;
+
+  /* Set the current language to the language of the symtab we're dumping
+     because certain routines used during dump_symtab() use the current
+     language to print an image of the symbol.  We'll restore it later.  */
+  saved_lang = set_language (symtab->language);
+
+  dump_symtab_1 (objfile, symtab, outfile);
+
+  set_language (saved_lang);
+}
+
 void
 maintenance_print_symbols (char *args, int from_tty)
 {
@@ -546,8 +564,8 @@ maintenance_print_symbols (char *args, int from_tty)
 
   if (args == NULL)
     {
-      error ("\
-Arguments missing: an output file name and an optional symbol file name");
+      error (_("\
+Arguments missing: an output file name and an optional symbol file name"));
     }
   else if ((argv = buildargv (args)) == NULL)
     {
@@ -597,7 +615,7 @@ print_symbol (void *args)
   if (SYMBOL_DOMAIN (symbol) == LABEL_DOMAIN)
     {
       fprintf_filtered (outfile, "label %s at ", SYMBOL_PRINT_NAME (symbol));
-      print_address_numeric (SYMBOL_VALUE_ADDRESS (symbol), 1, outfile);
+      deprecated_print_address_numeric (SYMBOL_VALUE_ADDRESS (symbol), 1, outfile);
       if (SYMBOL_BFD_SECTION (symbol))
 	fprintf_filtered (outfile, " section %s\n",
 		       bfd_section_name (SYMBOL_BFD_SECTION (symbol)->owner,
@@ -662,7 +680,7 @@ print_symbol (void *args)
 
 	case LOC_STATIC:
 	  fprintf_filtered (outfile, "static at ");
-	  print_address_numeric (SYMBOL_VALUE_ADDRESS (symbol), 1, outfile);
+	  deprecated_print_address_numeric (SYMBOL_VALUE_ADDRESS (symbol), 1, outfile);
 	  if (SYMBOL_BFD_SECTION (symbol))
 	    fprintf_filtered (outfile, " section %s",
 			      bfd_section_name
@@ -672,7 +690,7 @@ print_symbol (void *args)
 
 	case LOC_INDIRECT:
 	  fprintf_filtered (outfile, "extern global at *(");
-	  print_address_numeric (SYMBOL_VALUE_ADDRESS (symbol), 1, outfile);
+	  deprecated_print_address_numeric (SYMBOL_VALUE_ADDRESS (symbol), 1, outfile);
 	  fprintf_filtered (outfile, "),");
 	  break;
 
@@ -722,7 +740,7 @@ print_symbol (void *args)
 
 	case LOC_LABEL:
 	  fprintf_filtered (outfile, "label at ");
-	  print_address_numeric (SYMBOL_VALUE_ADDRESS (symbol), 1, outfile);
+	  deprecated_print_address_numeric (SYMBOL_VALUE_ADDRESS (symbol), 1, outfile);
 	  if (SYMBOL_BFD_SECTION (symbol))
 	    fprintf_filtered (outfile, " section %s",
 			      bfd_section_name
@@ -734,11 +752,11 @@ print_symbol (void *args)
 	  fprintf_filtered (outfile, "block object ");
 	  gdb_print_host_address (SYMBOL_BLOCK_VALUE (symbol), outfile);
 	  fprintf_filtered (outfile, ", ");
-	  print_address_numeric (BLOCK_START (SYMBOL_BLOCK_VALUE (symbol)),
+	  deprecated_print_address_numeric (BLOCK_START (SYMBOL_BLOCK_VALUE (symbol)),
 				 1,
 				 outfile);
 	  fprintf_filtered (outfile, "..");
-	  print_address_numeric (BLOCK_END (SYMBOL_BLOCK_VALUE (symbol)),
+	  deprecated_print_address_numeric (BLOCK_END (SYMBOL_BLOCK_VALUE (symbol)),
 				 1,
 				 outfile);
 	  if (SYMBOL_BFD_SECTION (symbol))
@@ -786,7 +804,7 @@ maintenance_print_psymbols (char *args, int from_tty)
 
   if (args == NULL)
     {
-      error ("print-psymbols takes an output file name and optional symbol file name");
+      error (_("print-psymbols takes an output file name and optional symbol file name"));
     }
   else if ((argv = buildargv (args)) == NULL)
     {
@@ -913,7 +931,7 @@ print_partial_symbols (struct partial_symbol **p, int count, char *what,
 	  break;
 	}
       fputs_filtered (", ", outfile);
-      print_address_numeric (SYMBOL_VALUE_ADDRESS (*p), 1, outfile);
+      deprecated_print_address_numeric (SYMBOL_VALUE_ADDRESS (*p), 1, outfile);
       fprintf_filtered (outfile, "\n");
       p++;
     }
@@ -929,11 +947,13 @@ maintenance_print_msymbols (char *args, int from_tty)
   char *symname = NULL;
   struct objfile *objfile;
 
+  struct stat sym_st, obj_st;
+
   dont_repeat ();
 
   if (args == NULL)
     {
-      error ("print-msymbols takes an output file name and optional symbol file name");
+      error (_("print-msymbols takes an output file name and optional symbol file name"));
     }
   else if ((argv = buildargv (args)) == NULL)
     {
@@ -947,7 +967,10 @@ maintenance_print_msymbols (char *args, int from_tty)
       /* If a second arg is supplied, it is a source file name to match on */
       if (argv[1] != NULL)
 	{
-	  symname = argv[1];
+	  symname = xfullpath (argv[1]);
+	  make_cleanup (xfree, symname);
+	  if (symname && stat (symname, &sym_st))
+	    perror_with_name (symname);
 	}
     }
 
@@ -961,8 +984,9 @@ maintenance_print_msymbols (char *args, int from_tty)
 
   immediate_quit++;
   ALL_OBJFILES (objfile)
-    if (symname == NULL || strcmp (symname, objfile->name) == 0)
-    dump_msymbols (objfile, outfile);
+    if (symname == NULL
+	|| (!stat (objfile->name, &obj_st) && sym_st.st_ino == obj_st.st_ino))
+      dump_msymbols (objfile, outfile);
   immediate_quit--;
   fprintf_filtered (outfile, "\n\n");
   do_cleanups (cleanups);
@@ -1068,9 +1092,9 @@ maintenance_info_psymtabs (char *regexp, int from_tty)
             printf_filtered ("    fullname %s\n",
                              psymtab->fullname ? psymtab->fullname : "(null)");
             printf_filtered ("    text addresses ");
-            print_address_numeric (psymtab->textlow, 1, gdb_stdout);
+            deprecated_print_address_numeric (psymtab->textlow, 1, gdb_stdout);
             printf_filtered (" -- ");
-            print_address_numeric (psymtab->texthigh, 1, gdb_stdout);
+            deprecated_print_address_numeric (psymtab->texthigh, 1, gdb_stdout);
             printf_filtered ("\n");
             printf_filtered ("    globals ");
             if (psymtab->n_global_syms)
@@ -1179,9 +1203,9 @@ maintenance_check_symtabs (char *ignore, int from_tty)
 	printf_filtered ("Psymtab ");
 	puts_filtered (ps->filename);
 	printf_filtered (" covers bad range ");
-	print_address_numeric (ps->textlow, 1, gdb_stdout);
+	deprecated_print_address_numeric (ps->textlow, 1, gdb_stdout);
 	printf_filtered (" - ");
-	print_address_numeric (ps->texthigh, 1, gdb_stdout);
+	deprecated_print_address_numeric (ps->texthigh, 1, gdb_stdout);
 	printf_filtered ("\n");
 	continue;
       }
@@ -1192,13 +1216,13 @@ maintenance_check_symtabs (char *ignore, int from_tty)
 	printf_filtered ("Psymtab ");
 	puts_filtered (ps->filename);
 	printf_filtered (" covers ");
-	print_address_numeric (ps->textlow, 1, gdb_stdout);
+	deprecated_print_address_numeric (ps->textlow, 1, gdb_stdout);
 	printf_filtered (" - ");
-	print_address_numeric (ps->texthigh, 1, gdb_stdout);
+	deprecated_print_address_numeric (ps->texthigh, 1, gdb_stdout);
 	printf_filtered (" but symtab covers only ");
-	print_address_numeric (BLOCK_START (b), 1, gdb_stdout);
+	deprecated_print_address_numeric (BLOCK_START (b), 1, gdb_stdout);
 	printf_filtered (" - ");
-	print_address_numeric (BLOCK_END (b), 1, gdb_stdout);
+	deprecated_print_address_numeric (BLOCK_END (b), 1, gdb_stdout);
 	printf_filtered ("\n");
       }
   }

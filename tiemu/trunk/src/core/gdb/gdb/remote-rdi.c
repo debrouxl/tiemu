@@ -74,9 +74,9 @@ static void arm_rdi_kill (void);
 
 static void arm_rdi_detach (char *args, int from_tty);
 
-static int arm_rdi_insert_breakpoint (CORE_ADDR, char *);
+static int arm_rdi_insert_breakpoint (CORE_ADDR, bfd_byte *);
 
-static int arm_rdi_remove_breakpoint (CORE_ADDR, char *);
+static int arm_rdi_remove_breakpoint (CORE_ADDR, bfd_byte *);
 
 static char *rdi_error_message (int err);
 
@@ -193,8 +193,8 @@ arm_rdi_open (char *name, int from_tty)
   char *p;
 
   if (name == NULL)
-    error ("To open an RDI connection, you need to specify what serial\n\
-device is attached to the remote system (e.g. /dev/ttya).");
+    error (_("To open an RDI connection, you need to specify what serial\n\
+device is attached to the remote system (e.g. /dev/ttya)."));
 
   /* split name after whitespace, pass tail as arg to open command */
 
@@ -217,7 +217,7 @@ device is attached to the remote system (e.g. /dev/ttya).");
   rslt = Adp_OpenDevice (devName, openArgs, rdi_heartbeat);
 
   if (rslt != adp_ok)
-    error ("Could not open device \"%s\"", name);
+    error (_("Could not open device \"%s\""), name);
 
   gdb_config.bytesex = 2 | (TARGET_BYTE_ORDER == BFD_ENDIAN_BIG ? 1 : 0);
   gdb_config.fpe = 1;
@@ -242,7 +242,7 @@ device is attached to the remote system (e.g. /dev/ttya).");
     {
       printf_filtered ("RDI_open: %s\n", rdi_error_message (rslt));
       Adp_CloseDevice ();
-      error ("RDI_open failed\n");
+      error (_("RDI_open failed."));
     }
 
   rslt = angel_RDI_info (RDIInfo_Target, &arg1, &arg2);
@@ -336,7 +336,7 @@ arm_rdi_create_inferior (char *exec_file, char *args, char **env, int from_tty)
   CORE_ADDR entry_point;
 
   if (exec_file == 0 || exec_bfd == 0)
-    error ("No executable file specified.");
+    error (_("No executable file specified."));
 
   entry_point = (CORE_ADDR) bfd_get_start_address (exec_bfd);
 
@@ -668,14 +668,14 @@ arm_rdi_mourn_inferior (void)
    here.  */
 
 static int
-arm_rdi_insert_breakpoint (CORE_ADDR addr, char *contents_cache)
+arm_rdi_insert_breakpoint (CORE_ADDR addr, bfd_byte *contents_cache)
 {
   int rslt;
   PointHandle point;
   struct local_bp_list_entry *entry;
   int type = RDIPoint_EQ;
 
-  if (arm_pc_is_thumb (addr) || arm_pc_is_thumb_dummy (addr))
+  if (arm_pc_is_thumb (addr))
     type |= RDIPoint_16Bit;
   rslt = angel_RDI_setbreak (addr, type, 0, &point);
   if (rslt != RDIError_NoError)
@@ -692,7 +692,7 @@ arm_rdi_insert_breakpoint (CORE_ADDR addr, char *contents_cache)
 }
 
 static int
-arm_rdi_remove_breakpoint (CORE_ADDR addr, char *contents_cache)
+arm_rdi_remove_breakpoint (CORE_ADDR addr, bfd_byte *contents_cache)
 {
   int rslt;
   PointHandle point;
@@ -971,43 +971,41 @@ _initialize_remote_rdi (void)
   Adp_SetLogfile (log_filename);
   Adp_SetLogEnable (log_enable);
 
-  c = add_cmd ("rdilogfile", class_maintenance,
-	       rdilogfile_command,
-	       "Set filename for ADP packet log.\n"
-	       "This file is used to log Angel Debugger Protocol packets.\n"
-	       "With a single argument, sets the logfile name to that value.\n"
-	       "Without an argument, shows the current logfile name.\n"
-	       "See also: rdilogenable\n",
+  c = add_cmd ("rdilogfile", class_maintenance, rdilogfile_command, _("\
+Set filename for ADP packet log.\n\
+This file is used to log Angel Debugger Protocol packets.\n\
+With a single argument, sets the logfile name to that value.\n\
+Without an argument, shows the current logfile name.\n\
+See also: rdilogenable\n"),
 	       &maintenancelist);
   set_cmd_completer (c, filename_completer);
 
-  add_cmd ("rdilogenable", class_maintenance,
-	   rdilogenable_command,
-	   "Set enable logging of ADP packets.\n"
-	   "This will log ADP packets exchanged between gdb and the\n"
-	   "rdi target device.\n"
-	   "An argument of 1, t, true, y or yes will enable.\n"
-	   "An argument of 0, f, false, n or no will disabled.\n"
-	   "Withough an argument, it will display current state.\n",
+  add_cmd ("rdilogenable", class_maintenance, rdilogenable_command, _("\
+Set enable logging of ADP packets.\n\
+This will log ADP packets exchanged between gdb and the\n\
+rdi target device.\n\
+An argument of 1, t, true, y or yes will enable.\n\
+An argument of 0, f, false, n or no will disabled.\n\
+Withough an argument, it will display current state."),
 	   &maintenancelist);
 
-  add_setshow_boolean_cmd ("rdiromatzero", no_class, &rom_at_zero, "\
-Set target has ROM at addr 0.", "\
-Show if target has ROM at addr 0.", "\
+  add_setshow_boolean_cmd ("rdiromatzero", no_class, &rom_at_zero, _("\
+Set target has ROM at addr 0."), _("\
+Show if target has ROM at addr 0."), _("\
 A true value disables vector catching, false enables vector catching.\n\
-This is evaluated at the time the 'target rdi' command is executed.", "\
-Target has ROM at addr 0 is %s.",
-			   NULL, NULL,
+This is evaluated at the time the 'target rdi' command is executed."),
+			   NULL,
+			   NULL, /* FIXME: i18n: Target has ROM at addr 0 is %s.  */
 			   &setlist, &showlist);
 
-  add_setshow_boolean_cmd ("rdiheartbeat", no_class, &rdi_heartbeat, "\
-Set enable for ADP heartbeat packets.", "\
-Show enable for ADP heartbeat packets.", "\
+  add_setshow_boolean_cmd ("rdiheartbeat", no_class, &rdi_heartbeat, _("\
+Set enable for ADP heartbeat packets."), _("\
+Show enable for ADP heartbeat packets."), _("\
 I don't know why you would want this. If you enable them,\n\
 it will confuse ARM and EPI JTAG interface boxes as well\n\
-as the Angel Monitor.", "\
-Enable for ADP heartbeat packets is %s.",
-			   NULL, NULL,
+as the Angel Monitor."),
+			   NULL,
+			   NULL, /* FIXME: i18n: Enable for ADP heartbeat packets is %s.  */
 			   &setlist, &showlist);
 }
 

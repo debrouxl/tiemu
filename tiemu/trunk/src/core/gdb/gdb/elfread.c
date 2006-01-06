@@ -1,7 +1,7 @@
 /* Read ELF (Executable and Linking Format) object files for GDB.
 
    Copyright 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
-   2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+   2000, 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
 
    Written by Fred Fish at Cygnus Support.
 
@@ -124,13 +124,14 @@ record_minimal_symbol (char *name, CORE_ADDR address,
 
    SYNOPSIS
 
-   void elf_symtab_read (struct objfile *objfile, int dynamic)
+   void elf_symtab_read (struct objfile *objfile, int dynamic,
+			 long number_of_symbols, asymbol **symbol_table)
 
    DESCRIPTION
 
-   Given an objfile and a flag that specifies whether or not the objfile
-   is for an executable or not (may be shared library for example), add
-   all the global function and data symbols to the minimal symbol table.
+   Given an objfile, a symbol table, and a flag indicating whether the
+   symbol table contains dynamic symbols, add all the global function
+   and data symbols to the minimal symbol table.
 
    In stabs-in-ELF, as implemented by Sun, there are some local symbols
    defined in the ELF symbol table, which can be used to locate
@@ -141,14 +142,12 @@ record_minimal_symbol (char *name, CORE_ADDR address,
  */
 
 static void
-elf_symtab_read (struct objfile *objfile, int dynamic)
+elf_symtab_read (struct objfile *objfile, int dynamic,
+		 long number_of_symbols, asymbol **symbol_table)
 {
   long storage_needed;
   asymbol *sym;
-  asymbol **symbol_table;
-  long number_of_symbols;
   long i;
-  struct cleanup *back_to;
   CORE_ADDR symaddr;
   CORE_ADDR offset;
   enum minimal_symbol_type ms_type;
@@ -162,37 +161,11 @@ elf_symtab_read (struct objfile *objfile, int dynamic)
   /* Name of filesym, as saved on the objfile_obstack.  */
   char *filesymname = obsavestring ("", 0, &objfile->objfile_obstack);
 #endif
-  struct dbx_symfile_info *dbx = objfile->sym_stab_info;
+  struct dbx_symfile_info *dbx = objfile->deprecated_sym_stab_info;
   int stripped = (bfd_get_symcount (objfile->obfd) == 0);
 
-  if (dynamic)
+  if (1)
     {
-      storage_needed = bfd_get_dynamic_symtab_upper_bound (objfile->obfd);
-
-      /* Nothing to be done if there is no dynamic symtab.  */
-      if (storage_needed < 0)
-	return;
-    }
-  else
-    {
-      storage_needed = bfd_get_symtab_upper_bound (objfile->obfd);
-      if (storage_needed < 0)
-	error ("Can't read symbols from %s: %s", bfd_get_filename (objfile->obfd),
-	       bfd_errmsg (bfd_get_error ()));
-    }
-  if (storage_needed > 0)
-    {
-      symbol_table = (asymbol **) xmalloc (storage_needed);
-      back_to = make_cleanup (xfree, symbol_table);
-      if (dynamic)
-	number_of_symbols = bfd_canonicalize_dynamic_symtab (objfile->obfd,
-							     symbol_table);
-      else
-	number_of_symbols = bfd_canonicalize_symtab (objfile->obfd, symbol_table);
-      if (number_of_symbols < 0)
-	error ("Can't read symbols from %s: %s", bfd_get_filename (objfile->obfd),
-	       bfd_errmsg (bfd_get_error ()));
-
       for (i = 0; i < number_of_symbols; i++)
 	{
 	  sym = symbol_table[i];
@@ -254,6 +227,8 @@ elf_symtab_read (struct objfile *objfile, int dynamic)
 			      &objfile->objfile_obstack);
 #endif
 	    }
+	  else if (sym->flags & BSF_SECTION_SYM)
+	    continue;
 	  else if (sym->flags & (BSF_GLOBAL | BSF_LOCAL | BSF_WEAK))
 	    {
 	      struct minimal_symbol *msym;
@@ -383,7 +358,7 @@ elf_symtab_read (struct objfile *objfile, int dynamic)
 			      if (filesym == NULL)
 				{
 				  complaint (&symfile_complaints,
-					     "elf/stab section information %s without a preceding file symbol",
+					     _("elf/stab section information %s without a preceding file symbol"),
 					     sym->name);
 				}
 			      else
@@ -394,7 +369,7 @@ elf_symtab_read (struct objfile *objfile, int dynamic)
 			    }
 			  if (sectinfo->sections[special_local_sect] != 0)
 			    complaint (&symfile_complaints,
-				       "duplicated elf/stab section information for %s",
+				       _("duplicated elf/stab section information for %s"),
 				       sectinfo->filename);
 			  /* BFD symbols are section relative.  */
 			  symaddr = sym->value + sym->section->vma;
@@ -448,7 +423,6 @@ elf_symtab_read (struct objfile *objfile, int dynamic)
 	      ELF_MAKE_MSYMBOL_SPECIAL (sym, msym);
 	    }
 	}
-      do_cleanups (back_to);
     }
 }
 
@@ -491,6 +465,9 @@ elf_symfile_read (struct objfile *objfile, int mainline)
   struct elfinfo ei;
   struct cleanup *back_to;
   CORE_ADDR offset;
+  long symcount = 0, dynsymcount = 0, synthcount, storage_needed;
+  asymbol **symbol_table = NULL, **dyn_symbol_table = NULL;
+  asymbol *synthsyms;
 
   init_minimal_symbol_collection ();
   back_to = make_cleanup_discard_minimal_symbols ();
@@ -498,20 +475,74 @@ elf_symfile_read (struct objfile *objfile, int mainline)
   memset ((char *) &ei, 0, sizeof (ei));
 
   /* Allocate struct to keep track of the symfile */
-  objfile->sym_stab_info = (struct dbx_symfile_info *)
+  objfile->deprecated_sym_stab_info = (struct dbx_symfile_info *)
     xmalloc (sizeof (struct dbx_symfile_info));
-  memset ((char *) objfile->sym_stab_info, 0, sizeof (struct dbx_symfile_info));
+  memset ((char *) objfile->deprecated_sym_stab_info, 0, sizeof (struct dbx_symfile_info));
   make_cleanup (free_elfinfo, (void *) objfile);
 
   /* Process the normal ELF symbol table first.  This may write some 
-     chain of info into the dbx_symfile_info in objfile->sym_stab_info,
+     chain of info into the dbx_symfile_info in objfile->deprecated_sym_stab_info,
      which can later be used by elfstab_offset_sections.  */
 
-  elf_symtab_read (objfile, 0);
+  storage_needed = bfd_get_symtab_upper_bound (objfile->obfd);
+  if (storage_needed < 0)
+    error (_("Can't read symbols from %s: %s"), bfd_get_filename (objfile->obfd),
+	   bfd_errmsg (bfd_get_error ()));
+
+  if (storage_needed > 0)
+    {
+      symbol_table = (asymbol **) xmalloc (storage_needed);
+      make_cleanup (xfree, symbol_table);
+      symcount = bfd_canonicalize_symtab (objfile->obfd, symbol_table);
+
+      if (symcount < 0)
+	error (_("Can't read symbols from %s: %s"), bfd_get_filename (objfile->obfd),
+	       bfd_errmsg (bfd_get_error ()));
+
+      elf_symtab_read (objfile, 0, symcount, symbol_table);
+    }
 
   /* Add the dynamic symbols.  */
 
-  elf_symtab_read (objfile, 1);
+  storage_needed = bfd_get_dynamic_symtab_upper_bound (objfile->obfd);
+
+  if (storage_needed > 0)
+    {
+      dyn_symbol_table = (asymbol **) xmalloc (storage_needed);
+      make_cleanup (xfree, dyn_symbol_table);
+      dynsymcount = bfd_canonicalize_dynamic_symtab (objfile->obfd,
+						     dyn_symbol_table);
+
+      if (dynsymcount < 0)
+	error (_("Can't read symbols from %s: %s"), bfd_get_filename (objfile->obfd),
+	       bfd_errmsg (bfd_get_error ()));
+
+      elf_symtab_read (objfile, 1, dynsymcount, dyn_symbol_table);
+    }
+
+  /* Add synthetic symbols - for instance, names for any PLT entries.  */
+
+  synthcount = bfd_get_synthetic_symtab (abfd, symcount, symbol_table,
+					 dynsymcount, dyn_symbol_table,
+					 &synthsyms);
+  if (synthcount > 0)
+    {
+      asymbol **synth_symbol_table;
+      long i;
+
+      make_cleanup (xfree, synthsyms);
+      synth_symbol_table = xmalloc (sizeof (asymbol *) * synthcount);
+      for (i = 0; i < synthcount; i++)
+	{
+	  synth_symbol_table[i] = synthsyms + i;
+	  /* Synthetic symbols are not, strictly speaking, either local
+	     or global.  But we can treat them as global symbols, since
+	     they are effectively dynamic symbols.  */
+	  synth_symbol_table[i]->flags |= BSF_GLOBAL;
+	}
+      make_cleanup (xfree, synth_symbol_table);
+      elf_symtab_read (objfile, 0, synthcount, synth_symbol_table);
+    }
 
   /* Install any minimal symbols that have been collected as the current
      minimal symbols for this objfile.  The debug readers below this point
@@ -594,14 +625,15 @@ elf_symfile_read (struct objfile *objfile, int mainline)
   dwarf2_build_frame_info (objfile);
 }
 
-/* This cleans up the objfile's sym_stab_info pointer, and the chain of
-   stab_section_info's, that might be dangling from it.  */
+/* This cleans up the objfile's deprecated_sym_stab_info pointer, and
+   the chain of stab_section_info's, that might be dangling from
+   it.  */
 
 static void
 free_elfinfo (void *objp)
 {
   struct objfile *objfile = (struct objfile *) objp;
-  struct dbx_symfile_info *dbxinfo = objfile->sym_stab_info;
+  struct dbx_symfile_info *dbxinfo = objfile->deprecated_sym_stab_info;
   struct stab_section_info *ssi, *nssi;
 
   ssi = dbxinfo->stab_section_info;
@@ -637,9 +669,9 @@ elf_new_init (struct objfile *ignore)
 static void
 elf_symfile_finish (struct objfile *objfile)
 {
-  if (objfile->sym_stab_info != NULL)
+  if (objfile->deprecated_sym_stab_info != NULL)
     {
-      xfree (objfile->sym_stab_info);
+      xfree (objfile->deprecated_sym_stab_info);
     }
 }
 
@@ -673,7 +705,7 @@ void
 elfstab_offset_sections (struct objfile *objfile, struct partial_symtab *pst)
 {
   char *filename = pst->filename;
-  struct dbx_symfile_info *dbx = objfile->sym_stab_info;
+  struct dbx_symfile_info *dbx = objfile->deprecated_sym_stab_info;
   struct stab_section_info *maybe = dbx->stab_section_info;
   struct stab_section_info *questionable = 0;
   int i;
@@ -703,7 +735,7 @@ elfstab_offset_sections (struct objfile *objfile, struct partial_symtab *pst)
   if (maybe == 0 && questionable != 0)
     {
       complaint (&symfile_complaints,
-		 "elf/stab section information questionable for %s", filename);
+		 _("elf/stab section information questionable for %s"), filename);
       maybe = questionable;
     }
 
@@ -722,7 +754,7 @@ elfstab_offset_sections (struct objfile *objfile, struct partial_symtab *pst)
   /* We were unable to find any offsets for this file.  Complain.  */
   if (dbx->stab_section_info)	/* If there *is* any info, */
     complaint (&symfile_complaints,
-	       "elf/stab section information missing for %s", filename);
+	       _("elf/stab section information missing for %s"), filename);
 }
 
 /* Register that we are able to handle ELF object file formats.  */

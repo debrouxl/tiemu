@@ -1,6 +1,6 @@
 /* Target-dependent code for FreeBSD/sparc64.
 
-   Copyright 2003, 2004 Free Software Foundation, Inc.
+   Copyright 2003, 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -33,6 +33,7 @@
 #include "gdb_string.h"
 
 #include "sparc64-tdep.h"
+#include "solib-svr4.h"
 
 /* From <machine/reg.h>.  */
 const struct sparc_gregset sparc64fbsd_gregset =
@@ -58,11 +59,27 @@ sparc64fbsd_supply_gregset (const struct regset *regset,
 }
 
 static void
+sparc64fbsd_collect_gregset (const struct regset *regset,
+			     const struct regcache *regcache,
+			     int regnum, void *gregs, size_t len)
+{
+  sparc64_collect_gregset (&sparc64fbsd_gregset, regcache, regnum, gregs);
+}
+
+static void
 sparc64fbsd_supply_fpregset (const struct regset *regset,
 			     struct regcache *regcache,
 			     int regnum, const void *fpregs, size_t len)
 {
   sparc64_supply_fpregset (regcache, regnum, fpregs);
+}
+
+static void
+sparc64fbsd_collect_fpregset (const struct regset *regset,
+			      const struct regcache *regcache,
+			      int regnum, void *fpregs, size_t len)
+{
+  sparc64_collect_fpregset (regcache, regnum, fpregs);
 }
 
 
@@ -164,7 +181,7 @@ sparc64fbsd_sigtramp_frame_prev_register (struct frame_info *next_frame,
 					  int regnum, int *optimizedp,
 					  enum lval_type *lvalp,
 					  CORE_ADDR *addrp,
-					  int *realnump, void *valuep)
+					  int *realnump, gdb_byte *valuep)
 {
   struct sparc_frame_cache *cache =
     sparc64fbsd_sigtramp_frame_cache (next_frame, this_cache);
@@ -199,15 +216,22 @@ sparc64fbsd_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
 {
   struct gdbarch_tdep *tdep = gdbarch_tdep (gdbarch);
 
-  tdep->gregset = regset_alloc (gdbarch, sparc64fbsd_supply_gregset, NULL);
+  tdep->gregset = regset_alloc (gdbarch, sparc64fbsd_supply_gregset,
+				sparc64fbsd_collect_gregset);
   tdep->sizeof_gregset = 256;
 
-  tdep->fpregset = regset_alloc (gdbarch, sparc64fbsd_supply_fpregset, NULL);
+  tdep->fpregset = regset_alloc (gdbarch, sparc64fbsd_supply_fpregset,
+				 sparc64fbsd_collect_fpregset);
   tdep->sizeof_fpregset = 272;
 
   frame_unwind_append_sniffer (gdbarch, sparc64fbsd_sigtramp_frame_sniffer);
 
   sparc64_init_abi (info, gdbarch);
+
+  /* FreeBSD/sparc64 has SVR4-style shared libraries.  */
+  set_gdbarch_skip_trampoline_code (gdbarch, find_solib_trampoline_target);
+  set_solib_svr4_fetch_link_map_offsets
+    (gdbarch, svr4_lp64_fetch_link_map_offsets);
 }
 
 /* Provide a prototype to silence -Wmissing-prototypes.  */

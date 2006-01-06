@@ -1,3 +1,10 @@
+2005-08-31  Keith Seitz  <keiths@redhat.com>
+
+	From Jay St. Pierre <Jay.St.Pierre@colorado.edu>:
+	* itcl/Makefile.in (install-doc): Install man.macros properly into
+	man pages when installing.
+	* itk/Makefile.in (install-doc): Likewise.
+
 2001-09-06  David Gravereaux <davygrvy@pobox.com>
 
 	* itcl/generic/itcl_util.c: Threading patch from "Haneef Mohammed"

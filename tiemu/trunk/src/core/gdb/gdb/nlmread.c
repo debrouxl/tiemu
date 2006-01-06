@@ -103,7 +103,7 @@ nlm_symtab_read (bfd *abfd, CORE_ADDR addr, struct objfile *objfile)
 
   storage_needed = bfd_get_symtab_upper_bound (abfd);
   if (storage_needed < 0)
-    error ("Can't read symbols from %s: %s", bfd_get_filename (abfd),
+    error (_("Can't read symbols from %s: %s"), bfd_get_filename (abfd),
 	   bfd_errmsg (bfd_get_error ()));
   if (storage_needed > 0)
     {
@@ -111,7 +111,7 @@ nlm_symtab_read (bfd *abfd, CORE_ADDR addr, struct objfile *objfile)
       back_to = make_cleanup (xfree, symbol_table);
       number_of_symbols = bfd_canonicalize_symtab (abfd, symbol_table);
       if (number_of_symbols < 0)
-	error ("Can't read symbols from %s: %s", bfd_get_filename (abfd),
+	error (_("Can't read symbols from %s: %s"), bfd_get_filename (abfd),
 	       bfd_errmsg (bfd_get_error ()));
 
       for (i = 0; i < number_of_symbols; i++)
@@ -211,9 +211,9 @@ nlm_symfile_read (struct objfile *objfile, int mainline)
 static void
 nlm_symfile_finish (struct objfile *objfile)
 {
-  if (objfile->sym_private != NULL)
+  if (objfile->deprecated_sym_private != NULL)
     {
-      xfree (objfile->sym_private);
+      xfree (objfile->deprecated_sym_private);
     }
 }
 

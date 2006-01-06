@@ -1,7 +1,7 @@
 /* MI Command Set.
 
-   Copyright 2000, 2001, 2002, 2003, 2004 Free Software Foundation,
-   Inc.
+   Copyright 2000, 2001, 2002, 2003, 2004, 2005 Free Software
+   Foundation, Inc.
 
    Contributed by Cygnus Solutions (a Red Hat company).
 
@@ -28,6 +28,7 @@
 #include "target.h"
 #include "inferior.h"
 #include "gdb_string.h"
+#include "exceptions.h"
 #include "top.h"
 #include "gdbthread.h"
 #include "mi-cmds.h"
@@ -63,8 +64,7 @@ enum
 enum captured_mi_execute_command_actions
   {
     EXECUTE_COMMAND_DISPLAY_PROMPT,
-    EXECUTE_COMMAND_SUPRESS_PROMPT,
-    EXECUTE_COMMAND_DISPLAY_ERROR
+    EXECUTE_COMMAND_SUPRESS_PROMPT
   };
 
 /* This structure is used to pass information from captured_mi_execute_command
@@ -184,7 +184,7 @@ mi_cmd_exec_return (char *args, int from_tty)
 
   /* Because we have called return_command with from_tty = 0, we need
      to print the frame here. */
-  print_stack_frame (get_selected_frame (), 1, LOC_AND_ADDRESS);
+  print_stack_frame (get_selected_frame (NULL), 1, LOC_AND_ADDRESS);
 
   return MI_CMD_DONE;
 }
@@ -235,12 +235,12 @@ mi_cmd_thread_select (char *command, char **argv, int argc)
       return MI_CMD_ERROR;
     }
   else
-    rc = gdb_thread_select (uiout, argv[0]);
+    rc = gdb_thread_select (uiout, argv[0], &mi_error_message);
 
   /* RC is enum gdb_rc if it is successful (>=0)
      enum return_reason if not (<0). */
   if ((int) rc < 0 && (enum return_reason) rc == RETURN_ERROR)
-    return MI_CMD_CAUGHT_ERROR;
+    return MI_CMD_ERROR;
   else if ((int) rc >= 0 && rc == GDB_RC_FAIL)
     return MI_CMD_ERROR;
   else
@@ -258,10 +258,10 @@ mi_cmd_thread_list_ids (char *command, char **argv, int argc)
       return MI_CMD_ERROR;
     }
   else
-    rc = gdb_list_thread_ids (uiout);
+    rc = gdb_list_thread_ids (uiout, &mi_error_message);
 
   if (rc == GDB_RC_FAIL)
-    return MI_CMD_CAUGHT_ERROR;
+    return MI_CMD_ERROR;
   else
     return MI_CMD_DONE;
 }
@@ -389,9 +389,9 @@ mi_cmd_data_list_changed_registers (char *command, char **argv, int argc)
 static int
 register_changed_p (int regnum)
 {
-  char raw_buffer[MAX_REGISTER_SIZE];
+  gdb_byte raw_buffer[MAX_REGISTER_SIZE];
 
-  if (! frame_register_read (deprecated_selected_frame, regnum, raw_buffer))
+  if (! frame_register_read (get_selected_frame (NULL), regnum, raw_buffer))
     return -1;
 
   if (memcmp (&old_regs[DEPRECATED_REGISTER_BYTE (regnum)], raw_buffer,
@@ -435,12 +435,6 @@ mi_cmd_data_list_register_values (char *command, char **argv, int argc)
     }
 
   format = (int) argv[0][0];
-
-  if (!target_has_registers)
-    {
-      mi_error_message = xstrprintf ("mi_cmd_data_list_register_values: No registers.");
-      return MI_CMD_ERROR;
-    }
 
   list_cleanup = make_cleanup_ui_out_list_begin_end (uiout, "register-values");
 
@@ -500,7 +494,7 @@ mi_cmd_data_list_register_values (char *command, char **argv, int argc)
 static int
 get_register (int regnum, int format)
 {
-  char buffer[MAX_REGISTER_SIZE];
+  gdb_byte buffer[MAX_REGISTER_SIZE];
   int optim;
   int realnum;
   CORE_ADDR addr;
@@ -512,7 +506,7 @@ get_register (int regnum, int format)
   if (format == 'N')
     format = 0;
 
-  frame_register (deprecated_selected_frame, regnum, &optim, &lval, &addr,
+  frame_register (get_selected_frame (NULL), regnum, &optim, &lval, &addr,
 		  &realnum, buffer);
 
   if (optim)
@@ -682,8 +676,8 @@ mi_cmd_data_evaluate_expression (char *command, char **argv, int argc)
   val = evaluate_expression (expr);
 
   /* Print the result of the expression evaluation. */
-  val_print (VALUE_TYPE (val), VALUE_CONTENTS (val),
-	     VALUE_EMBEDDED_OFFSET (val), VALUE_ADDRESS (val),
+  val_print (value_type (val), value_contents (val),
+	     value_embedded_offset (val), VALUE_ADDRESS (val),
 	     stb->stream, 0, 0, 0, 0);
 
   ui_out_field_stream (uiout, "value", stb);
@@ -1042,7 +1036,7 @@ mi_cmd_data_write_memory (char *command, char **argv, int argc)
    to perfrom after the given command has executed (display/supress
    prompt, display error). */
 
-static int
+static void
 captured_mi_execute_command (struct ui_out *uiout, void *data)
 {
   struct captured_mi_execute_command_args *args =
@@ -1093,12 +1087,6 @@ captured_mi_execute_command (struct ui_out *uiout, void *data)
 		}
 	      mi_out_rewind (uiout);
 	    }
-	  else if (args->rc == MI_CMD_CAUGHT_ERROR)
-	    {
-	      mi_out_rewind (uiout);
-	      args->action = EXECUTE_COMMAND_DISPLAY_ERROR;
-	      return 1;
-	    }
 	  else
 	    mi_out_rewind (uiout);
 	}
@@ -1107,39 +1095,45 @@ captured_mi_execute_command (struct ui_out *uiout, void *data)
 	  /* Don't print the prompt. We are executing the target in
 	     synchronous mode. */
 	  args->action = EXECUTE_COMMAND_SUPRESS_PROMPT;
-	  return 1;
+	  return;
 	}
       break;
 
     case CLI_COMMAND:
-      /* A CLI command was read from the input stream */
-      /* This will be removed as soon as we have a complete set of
-         mi commands */
-      /* echo the command on the console. */
-      fprintf_unfiltered (gdb_stdlog, "%s\n", context->command);
-      mi_execute_cli_command (context->command, 0, NULL);
+      {
+	char *argv[2];
+	/* A CLI command was read from the input stream.  */
+	/* This "feature" will be removed as soon as we have a
+	   complete set of mi commands.  */
+	/* Echo the command on the console.  */
+	fprintf_unfiltered (gdb_stdlog, "%s\n", context->command);
+	/* Call the "console" interpreter.  */
+	argv[0] = "console";
+	argv[1] = context->command;
+	mi_cmd_interpreter_exec ("-interpreter-exec", argv, 2);
 
-      /* If we changed interpreters, DON'T print out anything. */
-      if (current_interp_named_p (INTERP_MI)
-	  || current_interp_named_p (INTERP_MI1)
-	  || current_interp_named_p (INTERP_MI2)
-	  || current_interp_named_p (INTERP_MI3))
-	{
-	  /* print the result */
-	  /* FIXME: Check for errors here. */
-	  fputs_unfiltered (context->token, raw_stdout);
-	  fputs_unfiltered ("^done", raw_stdout);
-	  mi_out_put (uiout, raw_stdout);
-	  mi_out_rewind (uiout);
-	  fputs_unfiltered ("\n", raw_stdout);
-	  args->action = EXECUTE_COMMAND_DISPLAY_PROMPT;
-	  args->rc = MI_CMD_DONE;
-	}
-      break;
+	/* If we changed interpreters, DON'T print out anything. */
+	if (current_interp_named_p (INTERP_MI)
+	    || current_interp_named_p (INTERP_MI1)
+	    || current_interp_named_p (INTERP_MI2)
+	    || current_interp_named_p (INTERP_MI3))
+	  {
+	    /* print the result */
+	    /* FIXME: Check for errors here. */
+	    fputs_unfiltered (context->token, raw_stdout);
+	    fputs_unfiltered ("^done", raw_stdout);
+	    mi_out_put (uiout, raw_stdout);
+	    mi_out_rewind (uiout);
+	    fputs_unfiltered ("\n", raw_stdout);
+	    args->action = EXECUTE_COMMAND_DISPLAY_PROMPT;
+	    args->rc = MI_CMD_DONE;
+	  }
+	break;
+      }
 
     }
 
-  return 1;
+  return;
 }
 
 
@@ -1149,7 +1143,6 @@ mi_execute_command (char *cmd, int from_tty)
   struct mi_parse *command;
   struct captured_mi_execute_command_args args;
   struct ui_out *saved_uiout = uiout;
-  int result;
 
   /* This is to handle EOF (^D). We just quit gdb. */
   /* FIXME: we should call some API function here. */
@@ -1160,11 +1153,13 @@ mi_execute_command (char *cmd, int from_tty)
 
   if (command != NULL)
     {
+      struct gdb_exception result;
       /* FIXME: cagney/1999-11-04: Can this use of catch_exceptions either
          be pushed even further down or even eliminated? */
       args.command = command;
-      result = catch_exceptions (uiout, captured_mi_execute_command, &args, "",
-				 RETURN_MASK_ALL);
+      result = catch_exception (uiout, captured_mi_execute_command, &args,
+				RETURN_MASK_ALL);
+      exception_print (gdb_stderr, result);
 
       if (args.action == EXECUTE_COMMAND_SUPRESS_PROMPT)
 	{
@@ -1173,16 +1168,15 @@ mi_execute_command (char *cmd, int from_tty)
 	  mi_parse_free (command);
 	  return;
 	}
-      if (args.action == EXECUTE_COMMAND_DISPLAY_ERROR || result < 0)
+      if (result.reason < 0)
 	{
-	  char *msg = error_last_message ();
-	  struct cleanup *cleanup = make_cleanup (xfree, msg);
 	  /* The command execution failed and error() was called
-	     somewhere */
+	     somewhere.  */
 	  fputs_unfiltered (command->token, raw_stdout);
 	  fputs_unfiltered ("^error,msg=\"", raw_stdout);
-	  fputstr_unfiltered (msg, '"', raw_stdout);
+	  fputstr_unfiltered (result.message, '"', raw_stdout);
 	  fputs_unfiltered ("\"\n", raw_stdout);
+	  mi_out_rewind (uiout);
 	}
       mi_parse_free (command);
     }
@@ -1374,9 +1368,18 @@ mi_load_progress (const char *section_name,
   static struct timeval last_update;
   static char *previous_sect_name = NULL;
   int new_section;
+  struct ui_out *saved_uiout;
 
-  if (!current_interp_named_p (INTERP_MI)
-      && !current_interp_named_p (INTERP_MI1))
+  /* This function is called through deprecated_show_load_progress
+     which means uiout may not be correct.  Fix it for the duration
+     of this function.  */
+  saved_uiout = uiout;
+
+  if (current_interp_named_p (INTERP_MI))
+    uiout = mi_out_new (2);
+  else if (current_interp_named_p (INTERP_MI1))
+    uiout = mi_out_new (1);
+  else
     return;
 
   update_threshold.tv_sec = 0;
@@ -1433,6 +1436,9 @@ mi_load_progress (const char *section_name,
       fputs_unfiltered ("\n", raw_stdout);
       gdb_flush (raw_stdout);
     }
+
+  xfree (uiout);
+  uiout = saved_uiout;
 }
 
 void

@@ -1,6 +1,6 @@
 /* environ.c -- library for manipulating environments for GNU.
 
-   Copyright 1986, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 2000,
+   Copyright 1986, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 2000, 2005
    2003 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
@@ -170,7 +170,7 @@ unset_in_environ (struct gdb_environ *e, char *var)
 
   for (; (s = *vector) != NULL; vector++)
     {
-      if (DEPRECATED_STREQN (s, var, len) && s[len] == '=')
+      if (strncmp (s, var, len) == 0 && s[len] == '=')
 	{
 	  xfree (s);
 	  /* Walk through the vector, shuffling args down by one, including

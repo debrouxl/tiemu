@@ -28,6 +28,7 @@
 #include "gdb_string.h"
 #include "cli/cli-cmds.h"
 #include "cli/cli-decode.h"
+#include "exceptions.h"
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -48,6 +49,7 @@ struct gdbtk_interp_data
   struct ui_file *_stderr;
   struct ui_file *_stdlog;
   struct ui_file *_stdtarg;
+  struct ui_file *_stdtargin;
 };
 
 static struct gdbtk_interp_data *gdbtk_data;
@@ -89,6 +91,7 @@ gdbtk_interpreter_resume (void *data)
   gdb_stderr = d->_stderr;
   gdb_stdlog = d->_stdlog;
   gdb_stdtarg = d->_stdtarg;
+  gdb_stdtargin = d->_stdtargin;
 
   deprecated_command_loop_hook = gdbtk_command_loop;
 
@@ -119,10 +122,10 @@ gdbtk_interpreter_display_prompt_p (void *data)
   return 1;
 }
 
-static int
+static struct gdb_exception
 gdbtk_interpreter_exec (void *data, const char *command_str)
 {
-  return 1;
+  return exception_none;
 }
 
 /* This function is called instead of gdb's internal command loop.  This is the
@@ -178,6 +181,7 @@ _initialize_gdbtk_interp (void)
   gdbtk_data->_stderr = gdbtk_fileopen ();
   gdbtk_data->_stdlog = gdbtk_fileopen ();
   gdbtk_data->_stdtarg = gdbtk_fileopen ();
+  gdbtk_data->_stdtargin = gdbtk_fileopenin ();
   gdbtk_interp = interp_new ("insight", gdbtk_data, cli_out_new (gdbtk_data->_stdout),
 			     &procs);
   interp_add (gdbtk_interp);

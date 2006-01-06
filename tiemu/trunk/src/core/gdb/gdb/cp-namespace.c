@@ -552,7 +552,7 @@ cp_lookup_nested_type (struct type *parent_type,
       }
     default:
       internal_error (__FILE__, __LINE__,
-		      "cp_lookup_nested_type called on a non-aggregate type.");
+		      _("cp_lookup_nested_type called on a non-aggregate type."));
     }
 }
 
@@ -849,7 +849,7 @@ static void
 maintenance_cplus_namespace (char *args, int from_tty)
 {
   struct objfile *objfile;
-  printf_unfiltered ("Possible namespaces:\n");
+  printf_unfiltered (_("Possible namespaces:\n"));
   ALL_OBJFILES (objfile)
     {
       struct dict_iterator iter;
@@ -866,6 +866,6 @@ void
 _initialize_cp_namespace (void)
 {
   add_cmd ("namespace", class_maintenance, maintenance_cplus_namespace,
-	   "Print the list of possible C++ namespaces.",
+	   _("Print the list of possible C++ namespaces."),
 	   &maint_cplus_cmd_list);
 }

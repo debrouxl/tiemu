@@ -1,6 +1,6 @@
 /* GDB hooks for TUI.
 
-   Copyright 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+   Copyright 2001, 2002, 2003, 2004, 2005 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -70,7 +70,7 @@ tui_new_objfile_hook (struct objfile* objfile)
     tui_target_new_objfile_chain (objfile);
 }
 
-static int
+static int ATTR_FORMAT (printf, 1, 0)
 tui_query_hook (const char * msg, va_list argp)
 {
   int retval;
@@ -88,7 +88,7 @@ tui_query_hook (const char * msg, va_list argp)
       gdb_flush (gdb_stdout);
 
       vfprintf_filtered (gdb_stdout, msg, argp);
-      printf_filtered ("(y or n) ");
+      printf_filtered (_("(y or n) "));
 
       wrap_here ("");
       gdb_flush (gdb_stdout);
@@ -121,7 +121,7 @@ tui_query_hook (const char * msg, va_list argp)
 	  retval = 0;
 	  break;
 	}
-      printf_filtered ("Please answer y or n.\n");
+      printf_filtered (_("Please answer y or n.\n"));
     }
   noecho ();
   return retval;
