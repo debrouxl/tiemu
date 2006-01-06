@@ -79,6 +79,7 @@ SubVersion: $Id$
 	- [kevin] $1819: import Insight 6.4 and merge TiEmu changes
 	- [kevin] $1826: improve configure argument filtering to make Fedora->MinGW cross builds work
 	- [kevin] $1827: override C_INCLUDE_PATH and LIBRARY_PATH for UAE host object compilation
+	- [kevin] $1828: set CFLAGS_FOR_BUILD to CFLAGS without the arch-specific defines
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

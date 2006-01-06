@@ -1,5 +1,11 @@
 2006-01-06  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * ../bfd/doc/Makefile.am, ../bfd/doc/Makefile.in: Override C_INCLUDE_PATH and LIBRARY_PATH for
+                                                          build host object compilation.
+        * ../bfd/chew.c: Add MinGW patch.
+
+2006-01-06  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * m68k-tdep.c (m68k_push_dummy_call): Change VALUE_TYPE to value_type, VALUE_CONTENTS_ALL to
                                               value_contents_all.
 

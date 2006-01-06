@@ -92,6 +92,12 @@ Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA. 
 #define DEF_SIZE 5000
 #define STACK 50
 
+#ifdef __MINGW32__
+/* Prevent \r\n\ line endings */
+#include <fcntl.h>
+unsigned int _CRT_fmode = _O_BINARY;
+#endif
+
 int internal_wanted;
 int internal_mode;
 
