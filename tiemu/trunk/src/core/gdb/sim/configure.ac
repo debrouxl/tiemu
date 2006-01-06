@@ -42,7 +42,7 @@ esac])
 
 if test "${enable_sim}" != no; then
    changequote(<<,>>)
-   ac_configure_args=`echo "$ac_configure_args" | sed "s,'CFLAGS=[^']*',,g;s,'CXXFLAGS=[^']*',,g;s,'host_alias=[^']*',,g"`
+   ac_configure_args=`echo "$ac_configure_args" | sed "s,'CC=[^']*',,g;s,'CFLAGS=[^']*',,g;s,'CXXFLAGS=[^']*',,g;s,'LDFLAGS=[^']*',,g;s,'build_alias=[^']*',,g;s,'host_alias=[^']*',,g;s,'target_alias=[^']*',,g"`
    changequote([,])
    testsuite=no
    common=no

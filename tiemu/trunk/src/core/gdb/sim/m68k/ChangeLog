@@ -1,6 +1,6 @@
 2006-01-06  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
-        * ../configure.ac, ../configure: Filter out CC=... and CFLAGS=... from subdir configury
+        * ../configure.ac, ../configure: Filter out CC=..., CFLAGS=... etc. from subdir configury
                                          arguments.
 
 2006-01-06  Kevin Kofler  <Kevin@tigcc.ticalc.org>
