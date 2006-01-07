@@ -82,6 +82,7 @@ SubVersion: $Id$
 	- [kevin] $1828: set CFLAGS_FOR_BUILD to CFLAGS without the arch-specific defines
 	- [kevin] $1832: allow setting $RC to something other than windres
 	- [kevin] $1833: override C_INCLUDE_PATH and LIBRARY_PATH for cleaner.c compilation
+	- [kevin] $1835: add .exe extension properly for MinGW (especially cross-MinGW) builds
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
