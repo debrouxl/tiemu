@@ -21,7 +21,7 @@
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define PRODUCT_STARTMENU_REGVAL "NSIS:StartMenuDir"
 
-SetCompressor lzma
+SetCompressor /SOLID lzma
 
 !packhdr tmpexe.tmp "${UPXDIR}\upx.exe --best -q tmpexe.tmp"
 
