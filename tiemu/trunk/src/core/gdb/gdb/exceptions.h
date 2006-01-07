@@ -93,9 +93,9 @@ extern const struct gdb_exception exception_none;
 #define EXCEPTIONS_SIGSETJMP(buf)	sigsetjmp((buf), 1)
 #define EXCEPTIONS_SIGLONGJMP(buf,val)	siglongjmp((buf), (val))
 #elif defined(_WIN32)
-#define SIGJMP_BUF		jmp_buf
-#define SIGSETJMP(buf)		asm_setjmp(buf)
-#define SIGLONGJMP(buf,val)	asm_longjmp((buf), (val))
+#define EXCEPTIONS_SIGJMP_BUF		jmp_buf
+#define EXCEPTIONS_SIGSETJMP(buf)		asm_setjmp(buf)
+#define EXCEPTIONS_SIGLONGJMP(buf,val)	asm_longjmp((buf), (val))
 #ifdef __GNUC__
 extern int asm_setjmp(jmp_buf b);
 extern void asm_longjmp(jmp_buf b, int v) __attribute__((noreturn));
