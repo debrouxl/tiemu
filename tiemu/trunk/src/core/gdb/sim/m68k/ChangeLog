@@ -1,3 +1,8 @@
+2006-01-07  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * ../common/Make-common.in: Override C_INCLUDE_PATH and LIBRARY_PATH for build host object
+                                    compilation.
+
 2006-01-06  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * ../configure.ac, ../configure: Filter out CC=..., CFLAGS=... etc. from subdir configury

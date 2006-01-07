@@ -281,7 +281,7 @@ syscall.o: $(srccom)/syscall.c config.h tconfig.h $(callback_h) targ-vals.h
 targ-map.o: targ-map.c targ-vals.h
 
 gentmap: Makefile $(srccom)/gentmap.c targ-vals.def
-	$(CC_FOR_BUILD) $(srccom)/gentmap.c -o gentmap $(BUILD_CFLAGS) $(NL_TARGET)
+	C_INCLUDE_PATH="" LIBRARY_PATH="" $(CC_FOR_BUILD) $(srccom)/gentmap.c -o gentmap $(BUILD_CFLAGS) $(NL_TARGET)
 
 targ-vals.h targ-map.c: stamp-tvals
 stamp-tvals: gentmap
