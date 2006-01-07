@@ -8,6 +8,7 @@ CFLAGS    = @CFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_C
 LDFLAGS   = @LDFLAGS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ @LIBZ@ $(extra_ldflags)
 CXXFLAGS  = @CXXFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@
 MOC       = @MOC@
+RC       ?= windres
 
 kde       = @kde@
 
@@ -220,7 +221,7 @@ endif
 	#-c $(CFLAGS) $< -o $@
 
 tiemu-rc.o: ../build/mingw/tiemu.rc
-	cd ../build/mingw && windres tiemu.rc ../../src/tiemu-rc.o
+	cd ../build/mingw && $(RC) tiemu.rc ../../src/tiemu-rc.o
 
 clean:
 	@cd core/uae && $(MAKE) clean
