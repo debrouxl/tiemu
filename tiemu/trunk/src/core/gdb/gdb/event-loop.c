@@ -35,6 +35,7 @@
 #include <io.h>
 #include <sys/time.h>
 #include <windows.h>
+#undef NO_ERROR
 #endif
 
 #include <sys/types.h>

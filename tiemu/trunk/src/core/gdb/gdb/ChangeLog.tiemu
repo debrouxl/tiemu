@@ -1,3 +1,7 @@
+2006-01-07  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * event-loop.c: #undef NO_ERROR after including <windows.h>.
+
 2006-01-06  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * ../bfd/doc/Makefile.am, ../bfd/doc/Makefile.in: Override C_INCLUDE_PATH and LIBRARY_PATH for
