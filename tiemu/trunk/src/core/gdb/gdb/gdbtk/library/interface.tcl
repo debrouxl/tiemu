@@ -365,6 +365,9 @@ proc gdbtk_tcl_warning {message} {
 
   switch -regexp $message {
         "Unable to find dynamic linker breakpoint function.*" {return}
+	"Internal error.*" { gdbtk_tcl_fputs_error $message }
+        "incomplete CFI.*" { gdbtk_tcl_fputs_error $message }
+	"RTTI symbol not found for class.*" { gdbtk_tcl_fputs_error $message }
         default {show_warning $message}
        }
 }
@@ -435,7 +438,7 @@ proc echo {args} {
 # PROC: gdbtk_tcl_fputs_error - write an error message
 # ------------------------------------------------------------------
 proc gdbtk_tcl_fputs_error {message} {
-  if {[info exists gdbtk_state(console)] && $::gdbtk_state(console) != ""} {
+  if {[info exists ::gdbtk_state(console)] && $::gdbtk_state(console) != ""} {
     $::gdbtk_state(console) insert $message err_tag
     update
   }
@@ -445,7 +448,7 @@ proc gdbtk_tcl_fputs_error {message} {
 # PROC: gdbtk_tcl_fputs_log - write a log message
 # ------------------------------------------------------------------
 proc gdbtk_tcl_fputs_log {message} {
-  if {[info exists gdbtk_state(console)] && $::gdbtk_state(console) != ""} {
+  if {[info exists ::gdbtk_state(console)] && $::gdbtk_state(console) != ""} {
     $::gdbtk_state(console) insert $message log_tag
     update
   }
