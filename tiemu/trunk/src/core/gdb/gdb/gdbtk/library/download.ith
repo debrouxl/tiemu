@@ -22,9 +22,6 @@ itcl::class Download {
     common num_sections
     common num_steps 100
 
-    # completed steps in feedback meter (iwidget::feedback is lame)
-    common completed_steps
-
     method _ignore_on_save {} { return 1 }
     proc dont_remember_size {} { return 1}
   }

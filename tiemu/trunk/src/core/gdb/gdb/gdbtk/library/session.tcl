@@ -21,7 +21,7 @@ namespace eval Session {
     global tcl_platform
 
     # Get real directory.
-    if {[string compare $tcl_platform(platform) "windows"] == 0} {
+    if {[string compare $tcl_platform(platform) "windows"] == 0 && [llength [info commands ide_cygwin_path]]} {
       set path [ide_cygwin_path to_win32 $path]
     }
     set save [pwd]
