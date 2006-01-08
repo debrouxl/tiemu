@@ -16,13 +16,13 @@ Source:         %{name}-%{version}.tar.bz2
 Group:		Applications/Emulators
 License:	GPL
 BuildRequires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.2.2, kdelibs-devel >= 3.5.0, xorg-x11-devel >= 6.8.2, ncurses-devel >= 5.4, desktop-file-utils >= 0.10
-Requires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2, kdelibs >= 3.5.0, xorg-x11 >= 6.8.2, ncurses >= 5.4, tcl >= 8.4, tk >= 8.4
+Requires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2, kdelibs >= 3.5.0, xorg-x11 >= 6.8.2, ncurses >= 5.4, tcl >= 8.4, tk >= 8.4, itcl >= 3.2, itk >= 3.2, iwidgets >= 4.0.1
 Requires(post):	desktop-file-utils >= 0.10
 Requires(postun): desktop-file-utils >= 0.10
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
-Obsoletes:	tiemu < 3.00, tiemu-tigcc-debugging < 20050828, itcl < 3.3, itk < 3.3, iwidgets < 4.0.2
+Obsoletes:	tiemu < 3.00, tiemu-tigcc-debugging < 20050828
 Conflicts:	tiemu >= 3.00
-Provides:	tiemu = ${version}, itcl = 3.2, itk = 3.2, iwidgets = 4.0.1
+Provides:	tiemu = ${version}
 Summary: TiEmu is a TI89(Ti)/92(+)/V200 emulator.
 %description
 TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debugging using Insight GDB.
@@ -37,7 +37,7 @@ make
 %install
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
-make install-without-tcl-tk DESTDIR=$RPM_BUILD_ROOT
+make install-without-tcl-tk-itcl DESTDIR=$RPM_BUILD_ROOT
 mkdir -p ${RPM_BUILD_ROOT}/usr/share/applications
 cat >${RPM_BUILD_ROOT}/usr/share/applications/tiemu.desktop <<EOF
 [Desktop Entry]
@@ -67,31 +67,18 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 /usr/bin/tiemu
-/usr/include/itclDecls.h
-/usr/include/itcl.h
-/usr/include/itclIntDecls.h
-/usr/include/itclInt.h
-/usr/include/itkDecls.h
-/usr/include/itk.h
 /usr/lib/insight*
-/usr/lib/itcl*
-/usr/lib/itk*
-/usr/lib/libitclstub*.a
-/usr/lib/libitkstub*.a
-/usr/lib/libitcl*.so
-/usr/lib/libitk*.so
 /usr/man/man1/tiemu.1
-/usr/man/mann/*.n
 /usr/share/insight*
-/usr/share/itcl*
-/usr/share/itk*
-/usr/share/iwidgets*
 /usr/share/redhat/gui
 /usr/share/tiemu
 %{_datadir}/applications/lpg-tiemu.desktop
 
 %defattr(-,root,root)
 %changelog
+* Sat Jan 8 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Use the itcl, itk and iwidgets RPMs being proposed for Extras.
+
 * Sat Jan 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Require kdelibs 3.5.0 from FC4 updates.
 
