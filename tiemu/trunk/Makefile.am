@@ -26,3 +26,11 @@ else
 	$(MAKE) install SUBDIRS="build glade help misc pedrom pixmaps skins" DESTDIR="$(DESTDIR)"
 endif
 	cd src && $(MAKE) install-without-tcl-tk DESTDIR="$(DESTDIR)"
+
+install-without-tcl-tk-itcl:
+if USE_GROFF
+	$(MAKE) install SUBDIRS="build glade help misc pedrom pixmaps skins man" DESTDIR="$(DESTDIR)"
+else
+	$(MAKE) install SUBDIRS="build glade help misc pedrom pixmaps skins" DESTDIR="$(DESTDIR)"
+endif
+	cd src && $(MAKE) install-without-tcl-tk-itcl DESTDIR="$(DESTDIR)"
