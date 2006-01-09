@@ -57,7 +57,6 @@ TiEmu now supports Linux->MinGW cross-compilation again. Here's how I did it:
    export CFLAGS="-Os -s -fno-exceptions"
    cd libticables2-mingw-build
    cd src/win32
-   ln -s porttalk_ioctl.h porttalk_IOCTL.h
    cd ../..
    LIBUSB_CONFIG=no ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
    make
@@ -74,9 +73,8 @@ TiEmu now supports Linux->MinGW cross-compilation again. Here's how I did it:
    ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
    make
    make install
-   #NOTE: The ln -s obviously works around a case-sensitivity bug, the
-   #LIBUSB_CONFIG=no is because configure picks up the libusb from the build
-   #host (which the linker then chokes on) if I don't do that.
+   #NOTE: The LIBUSB_CONFIG=no is because configure picks up the libusb from the
+   #      build host (which the linker then chokes on) if I don't do that.
 
 Unfortunately, it does NOT seem to work in WINE. Here's the instructions getting
 it up to the wizard, but showing way too large fonts and then crashing:
