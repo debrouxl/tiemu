@@ -31,6 +31,7 @@ TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debuggi
 %setup -n tiemu
 
 %build
+export extra_ldflags="-Wl,-rpath,/usr/lib/itcl3.2 -Wl,-rpath,/usr/lib/itk3.2"
 CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls --with-kde --enable-shared-tcl-tk --enable-shared-itcl
 make
 
@@ -76,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Sat Jan 9 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Add /usr/lib/itcl3.2 and /usr/lib/itk3.2 to the rpath.
+
 * Sat Jan 8 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Use the itcl, itk and iwidgets RPMs being proposed for Extras.
 
