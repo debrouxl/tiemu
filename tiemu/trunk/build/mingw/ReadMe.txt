@@ -1,8 +1,3 @@
-For a more recent method, see the TiLP/build/mingw folder.
-Original file: Build Environment 050215.txt
-
-==================[cut here]======================================
-
 This is a new method, greatly simplified by the latest GTK+ package.
 
 Win32
@@ -43,6 +38,12 @@ and install it. Don't forget to register Msys environnement when the installer a
 	./configure --prefix=/target --disable-nls
 
 Tested with TiLP & TiEmu, 15/02/05.
+
+---
+
+Romain Liévin (The TiLP Team leader).
+
+============================================================
 
 Linux (cross)
 -------------
@@ -108,4 +109,4 @@ Tested with TiEmu 2.80, 2006-01-07.
 
 ---
 
-Romain Liévin (The TiLP Team leader).
+Kevin Kofler (TiEmu co-developer).
