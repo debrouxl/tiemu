@@ -1,5 +1,5 @@
 For a more recent method, see the TiLP/build/mingw folder.
-Original file: Build Environment 050215.txt
+Original file: Build Environment 050215.txt / ReadMe.txt
 
 ==================[cut here]======================================
 
@@ -44,13 +44,10 @@ and install it. Don't forget to register Msys environnement when the installer a
 
 Tested with TiLP & TiEmu, 15/02/05.
 
-Linux (cross)
--------------
+Linux (cross-compilation)
+-------------------------
 
-To re-do ...
-
-
-Tested with xxxx, ??/??/05.
+Obsolete ! To rewrite...
 
 ---
 
