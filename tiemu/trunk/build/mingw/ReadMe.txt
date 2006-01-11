@@ -57,7 +57,7 @@ TiEmu now supports Linux->MinGW cross-compilation again. Here's how I did it:
    source cross-mingw32-aio.sh #(needs to be done for EACH build!)
    export CFLAGS="-Os -s -fno-exceptions"
    cd libticables2-mingw-build
-   LIBUSB_CONFIG=no ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
+   ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
    make
    make install
    cd ../libtifiles2-mingw-build
@@ -72,8 +72,6 @@ TiEmu now supports Linux->MinGW cross-compilation again. Here's how I did it:
    ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
    make
    make install
-   #NOTE: The LIBUSB_CONFIG=no is because configure picks up the libusb from the
-   #      build host (which the linker then chokes on) if I don't do that.
 
 Unfortunately, it does NOT seem to work in WINE. Here's the instructions getting
 it up to the wizard, but showing way too large fonts and then crashing:
@@ -103,7 +101,7 @@ To build the setup wizard, here's what I did:
    cd build/nsis
    makensis tiemu-cross.nsi
 
-Tested with TiEmu 2.80, 2006-01-07.
+Tested with TiEmu 2.80, 2006-01-07. Updated 2006-01-11.
 
 ---
 
