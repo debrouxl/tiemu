@@ -1,6 +1,6 @@
-.TH (GTK)TIEMU 1 "June 28, 2005"
+.TH TIEMU 1 "January 17, 2006"
 .SH NAME
-tiemu - a TI emulator of TI89(Titanium)/92(+)/V200 hand-helds
+tiemu - a TI's hand-helds emulator (m68k-based)
 .SH SYNOPSYS
 \fBtiemu\fP [-h] [-v] [--help] [--version] [--import] [-rom=] [-tib=] [-sav=] [image] 
 .SH DESCRIPTION
@@ -10,7 +10,7 @@ The emulator has also a virtual link capability which allows to connect it to an
 The command line options override the default options (startup options) and the config file options even.
 The \fBTiEmu\fP program accepts the following options:
 .TP
-\fB-h, --help\fP
+\fB-h, --help
 Display a list of all command line options.
 .TP
 \fB-v, --version\fP
@@ -29,8 +29,6 @@ Convert and use the specified tib/upgrade as image. Idem.
 \fB-sav=\fP
 Load the specified state file. Must be a valid state image and target for emulated calculator.
 
-.SH SEE ALSO
-tilp(1) for the use of a linking program. TiEmu shares the same communication box for link settings.
 .SH CONFIG FILE FORMAT
 This section describes the format of the .tiemu config file which is in the home directory of the 
 user (Linux) or in the Program Files folder (Win32). A line preceded by the '#' symbol is a comment. 
@@ -50,7 +48,7 @@ Define the link cable type. Choose one of the following value: none, parallel, s
 \fBport=\fP
 Define a link port to use. Can be: null, user, parallel port #1|2|3, serial port #1|2|3|4, virtual port #1|2, USB port #1.
 
-\method=\fP
+\fBmethod=\fP
 Define an I/O method to use. Possible values are: automatic, asm, api, driver, null.
 
 \fBadr_port=\fP
@@ -114,15 +112,29 @@ Available under Windows platform only. You can hide (no) or show (yes) the DOS c
 Display key bindings in the console if set (yes). Else, do nothing (no).
 
 \fBfs_type=\fP
-GTK+ has 2 file selector. An old one (old) which is very simple and a more recent (new) which have
-advanced capabilities and can show hidden files. Default value is 'old' under Windows and 'new' under Linux.
+TiEmu supports several file selectors for better integration.
+The following options are supported:
+.br
+- old: GTK 1.2 file selector (default for Linux), 
+.br
+- new: GTK 2.x file selector (advanced capabilities and can show hidden files), 
+.br
+- win32: native one (default for Windows), 
+.br
+- kde: KDE file selector (default if compiled with --with-kde).
 
 \fBbkpts_wnd=\fP
+.br
 \fBcode_wnd=\fP
+.br
 \fBmem_wnd=\fP
+.br
 \fBregs_wnd=\fP
+.br
 \fBpclog_wnd=\fP
+.br
 \fBstack_wnd=\fP
+.br
 \fBheap_wnd=\fP
 Set geometry hints for the different windows of the debugger. The format is (x,y,w,h,m,v) where 
 x&y are coordinates, w&h are the size, m is set if window is minimized and v is set if the window
@@ -135,7 +147,7 @@ Copyright (C) 2000-2001, Romain Lievin and Thomas Corvazier.
 Copyright (C) 2001-2003, Romain Lievin
 Copyright (C) 2003, Julien Blache
 Copyright (C) 2004, Romain Lievin
-Copyright (C) 2005, Romain Lievin and Kevin Kofler
+Copyright (C) 2005-2006, Romain Lievin and Kevin Kofler
 
 Permission to use, copy, modify, and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appear in all copies and that both that copyright notice and this permission notice appear in supporting documentation.
 
@@ -149,19 +161,19 @@ You should have received a copy of the GNU General Public License along with thi
 .SH SUGGESTIONS AND BUG REPORTS
 The  canonical place to find TiEmu and some miscellenaous informations is at <http://lpg.ticalc.org/prj_tiemu>.
 You can also take a look at <http://lpg.ticalc.org> and <http://www.ticalc.org> for others TI related programs for Linux.
-.SH AUTHOR
-Thomas Corvazier
-Julien Blache
-Romain Lievin (active).
+
+.SH SEE ALSO
+tilp(1) for the use of a linking program. TiEmu shares the same communication box for link settings.
 
 .SH SPECIAL THANKS
 - Jonas Minnberg (Sasq) for Tiger
+.br
 - UAE, the Universal Amiga Emulator
-.TP
-- Benjamin Gordon <ben@bxg.org> for creating rpm packages: he is the official maintainer of this package.
-.TP
-- Julien Blache <jb@jblache.org> for creating deb packages: he is the official maintainer of this package.
-.SH THANKS
+.br
+- Kevin Kofler <Kevin@tigcc.ticalc.org> for creating rpm packages (Fedora): he is the official maintainer of this package.
+.br
+- Julien Blache <jb@jblache.org> for creating deb packages (Debian): he is the official maintainer of this package.
 
-
-
+.SH AUTHOR
+Romain Liévin
+Kevin Kofler
