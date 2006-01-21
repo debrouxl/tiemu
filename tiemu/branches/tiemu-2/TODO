@@ -1,18 +1,11 @@
 Planned features:
 
-- add SilverLink support
+* avoir la possibilité de choisir l'emplacement où sont stockés les screenshots 
+* version française
 
-- register window
-- Kevin: <<> what do you think of a new window which will display the various register
-of the hardware ?
-
-Sounds good, but we really, really need to decide on what windows to show by
-default in the debugger, and have a way to remember the windows which were
-open next time the debugger is launched (as Insight does it). Showing all
-windows by default simply doesn't scale.
->>
-
-- RTC HW2 to fix (clock wrap around)
++ add SilverLink support (tiemu3)
++ register window
++ RTC HW2 to fix (clock wrap around)
 
 -------------
 + done
