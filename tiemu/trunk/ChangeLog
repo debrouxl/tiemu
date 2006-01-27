@@ -84,6 +84,9 @@ SubVersion: $Id$
 	- [kevin] $1833: override C_INCLUDE_PATH and LIBRARY_PATH for cleaner.c compilation
 	- [kevin] $1835: add .exe extension properly for MinGW (especially cross-MinGW) builds
 	- [kevin] $1843: add install-without-tcl-tk-itcl make target
+	- [roms] $1852: updated manpage
+	- [kevin] $1855: fixed unclosed tag and ISO 8859-1 (non-ASCII, non-UTF-8) character in manpage
+	                 changed manpage to Unix line endings so it displays properly in Konqueror
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
