@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -335,7 +335,7 @@ void rcfile_read(void)
 	{
 	  if(!strcmp(p, "old")) options.fs_type = 0;
 	  else if(!strcmp(p, "new")) options.fs_type = 1;
-	  else if(!strcmp(p, "win32")) options.fs_type = 2;
+	  else if(!strcmp(p, "native") || !strcmp(p, "win32")) options.fs_type = 2;
 	  else if(!strcmp(p, "kde")) options.fs_type = 3;
 	}
 	
@@ -616,7 +616,7 @@ void rcfile_write(void)
   {
   case 0: fprintf(txt, "old\n"); break;
   case 1: fprintf(txt, "new\n"); break;
-  case 2: fprintf(txt, "win32\n"); break;
+  case 2: fprintf(txt, "native\n"); break;
   case 3: fprintf(txt, "kde\n"); break;
   default: fprintf(txt, "old\n"); break;
   }
@@ -723,15 +723,7 @@ int rcfile_default()
 	options.view = VIEW_NORMAL;
 	options.scale = 1.0;
 	options.kbd_dbg = 0;
-#ifdef __WIN32__
 	options.fs_type = 2;
-#else
-#if WITH_KDE
-	options.fs_type = 3;
-#else
-	options.fs_type = 1;
-#endif
-#endif
 
 	// screenshot options
 	options2.file = g_strdup("screenshot");

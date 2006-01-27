@@ -115,13 +115,15 @@ Display key bindings in the console if set (yes). Else, do nothing (no).
 TiEmu supports several file selectors for better integration.
 The following options are supported:
 .br
-- old: GTK 1.2 file selector (default for Linux), 
+- native: native one (default): Win32 on Windows, KDE if built with KDE support and running under KDE, GTK+ 2.x else, 
+.br
+- old: GTK 1.2 file selector, 
 .br
 - new: GTK 2.x file selector (advanced capabilities and can show hidden files), 
 .br
-- win32: native one (default for Windows), 
+- win32: deprecated (same as native), 
 .br
-- kde: KDE file selector (default if compiled with --with-kde).
+- kde: KDE file selector (only available if TiEmu is built with KDE support).
 
 \fBbkpts_wnd=\fP
 .br

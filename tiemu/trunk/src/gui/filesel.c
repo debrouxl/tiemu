@@ -27,6 +27,7 @@
 #endif				/*  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <gtk/gtk.h>
 #include <string.h>
 
@@ -237,7 +238,15 @@ const gchar *create_fsel(gchar *dirname, gchar *filename, gchar *ext, gboolean s
 {
 #ifndef __WIN32__
 	if(options.fs_type == 2)
-		options.fs_type = 1;
+	{
+#if WITH_KDE
+		const char *p = getenv("KDE_FULL_SESSION");
+		if (p && *p) // KDE is running
+			options.fs_type = 3;
+		else
+#endif
+			options.fs_type = 1;
+	}
 #endif
 #if !WITH_KDE
 	if(options.fs_type == 3)
@@ -468,7 +477,15 @@ gchar** create_fsels(gchar *dirname, gchar *filename, gchar *ext)
 {
 #ifndef __WIN32__
 	if(options.fs_type == 2)
-		options.fs_type = 1;
+	{
+#if WITH_KDE
+		const char *p = getenv("KDE_FULL_SESSION");
+		if (p && *p) // KDE is running
+			options.fs_type = 3;
+		else
+#endif
+			options.fs_type = 1;
+	}
 #endif
 #if !WITH_KDE
 	if(options.fs_type == 3)
