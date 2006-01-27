@@ -32,7 +32,7 @@ TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debuggi
 
 %build
 export extra_ldflags="-Wl,-rpath,/usr/lib/itcl3.2 -Wl,-rpath,/usr/lib/itk3.2"
-CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls --with-kde --enable-shared-tcl-tk --enable-shared-itcl
+CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls --enable-shared-tcl-tk --enable-shared-itcl
 make
 
 %install
@@ -77,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Sat Jan 27 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+--with-kde not needed anymore (now default).
+
 * Sat Jan 9 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Add /usr/lib/itcl3.2 and /usr/lib/itk3.2 to the rpath.
 
