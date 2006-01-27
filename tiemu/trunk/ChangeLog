@@ -88,6 +88,7 @@ SubVersion: $Id$
 	- [kevin] $1855: fixed unclosed tag and ISO 8859-1 (non-ASCII, non-UTF-8) character in manpage
 	                 changed manpage to Unix line endings so it displays properly in Konqueror
 	- [kevin] $1856: by default, KDE-enabled builds now use the KDE file selector only when running KDE
+	- [kevin] $1857: enable KDE support by default (except on MinGW)
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

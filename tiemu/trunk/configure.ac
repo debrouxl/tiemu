@@ -119,7 +119,17 @@ esac
 CFLAGS="$CFLAGS $ARCH"
 
 # KDE dialogs support
-AC_ARG_WITH(kde, AC_HELP_STRING([--with-kde], [Compile with KDE support]), [kde=$withval], [kde=no])
+AC_ARG_WITH(kde, AC_HELP_STRING([--without-kde], [Compile without KDE support]), [kde=$withval], [kde=default])
+if test "x$kde" = "xdefault"; then
+  case $host_os in
+    *mingw*)
+      kde=no
+      ;;
+    *)
+      kde=yes
+      ;;
+  esac
+fi
 if test "x$kde" = "xyes"; then
         AC_PROG_CXX
         AC_PATH_KDE

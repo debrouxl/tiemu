@@ -1065,7 +1065,7 @@ Optional Packages:
   --with-included-gettext use the GNU gettext library included here
   --with-libintl-prefix[=DIR]  search for libintl in DIR/include and DIR/lib
   --without-libintl-prefix     don't search for libintl in includedir and libdir
-  --with-kde              Compile with KDE support
+  --without-kde           Compile without KDE support
   --with-xinerama         enable support for Xinerama
   --with-extra-includes=DIR
                           adds non standard include paths
@@ -29879,8 +29879,18 @@ if test "${with_kde+set}" = set; then
   withval="$with_kde"
   kde=$withval
 else
-  kde=no
+  kde=default
 fi;
+if test "x$kde" = "xdefault"; then
+  case $host_os in
+    *mingw*)
+      kde=no
+      ;;
+    *)
+      kde=yes
+      ;;
+  esac
+fi
 if test "x$kde" = "xyes"; then
         ac_ext=cc
 ac_cpp='$CXXCPP $CPPFLAGS'
@@ -35378,7 +35388,7 @@ for i in $jpeg_incdirs;
 do
   for j in jpeglib.h;
   do
-    echo "configure: 35381: $i/$j" >&5
+    echo "configure: 35391: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       jpeg_incdir=$i
@@ -35613,7 +35623,7 @@ for i in $qt_incdirs;
 do
   for j in $kde_qt_header;
   do
-    echo "configure: 35616: $i/$j" >&5
+    echo "configure: 35626: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       qt_incdir=$i
@@ -36409,7 +36419,7 @@ for i in $kde_incdirs;
 do
   for j in $kde_check_header;
   do
-    echo "configure: 36412: $i/$j" >&5
+    echo "configure: 36422: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       kde_incdir=$i
@@ -36439,7 +36449,7 @@ for i in $kde_libdirs;
 do
   for j in $kde_check_lib;
   do
-    echo "configure: 36442: $i/$j" >&5
+    echo "configure: 36452: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       kde_libdir=$i
@@ -37522,7 +37532,7 @@ for i in $kde_sharedirs;
 do
   for j in apps/ksgmltools2/customization/kde-chunk.xsl;
   do
-    echo "configure: 37525: $i/$j" >&5
+    echo "configure: 37535: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       KDE_XSL_STYLESHEET=$i
