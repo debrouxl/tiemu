@@ -46,6 +46,8 @@ itcl::class Widgetframe {
     catch {destroy $this}
   }
 
+  method delete {} {itcl::delete object $this}
+
   # Return name of internal frame.
   method get_frame {} {
     return [namespace tail $this].iframe.frame

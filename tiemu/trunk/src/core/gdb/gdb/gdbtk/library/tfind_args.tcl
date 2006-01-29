@@ -104,6 +104,7 @@ itcl::class TfindArgs {
       destroy $top
   }
  
+  method delete {} {itcl::delete object $this}
 
 
   # ------------------------------------------------------------------

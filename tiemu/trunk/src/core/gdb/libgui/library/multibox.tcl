@@ -53,6 +53,8 @@ itcl::class Multibox {
     destroy $this
   }
 
+  method delete {} {itcl::delete object $this}
+
   #
   # Our interface.
   #

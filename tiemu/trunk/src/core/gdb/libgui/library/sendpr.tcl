@@ -211,6 +211,8 @@ itcl::class Sendpr {
     catch {destroy $this}
   }
 
+  method delete {} {itcl::delete object $this}
+
   method configure {config} {}
 
   # Create an optionmenu and fill it.  Also, go through all the items

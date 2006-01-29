@@ -56,6 +56,8 @@ itcl::class Validated_entry {
     unset state
   }
 
+  method delete {} {itcl::delete object $this}
+
   method configure {config} {}
 
   # Return 1 if we're in the error state, 0 otherwise.
