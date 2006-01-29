@@ -201,7 +201,7 @@ static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, g
 			return filename = NULL;
 	}
 
-	return fname = g_strdup(lpstrFile);
+	return fname = g_locale_to_utf8(lpstrFile,-1,NULL,NULL,NULL);
 #endif
 
 	return NULL;
@@ -436,8 +436,11 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
 	{
 		if(i)	// skip directory
 		{
+			gchar *temp;
 			filenames = g_realloc(filenames, (i+1) * sizeof(gchar *));
-			filenames[i-1] = g_strconcat(lpstrFile, G_DIR_SEPARATOR_S, p, NULL);
+			temp = g_strconcat(lpstrFile, G_DIR_SEPARATOR_S, p, NULL);
+			filenames[i-1] = g_locale_to_utf8(temp,-1,NULL,NULL,NULL);
+			g_free(temp);
 		}
 	}
 
@@ -445,7 +448,7 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
 	if(i == 1)
 	{
 		filenames = g_malloc(2 * sizeof(gchar *));
-		filenames[0] = g_strdup(lpstrFile);
+		filenames[0] = g_locale_to_utf8(lpstrFile,-1,NULL,NULL,NULL);
 		filenames[1] = NULL;
 	}
 	else

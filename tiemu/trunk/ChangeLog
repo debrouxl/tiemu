@@ -89,6 +89,8 @@ SubVersion: $Id$
 	                 changed manpage to Unix line endings so it displays properly in Konqueror
 	- [kevin] $1857: by default, KDE-enabled builds now use the KDE file selector only when running KDE
 	- [kevin] $1858: enable KDE support by default (except on MinGW)
+	- [kevin] $1858: enable KDE support by default (except on MinGW)
+	- [kevin] $1870: fix libtifiles2 0.0.5 charset problem on Win32
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
