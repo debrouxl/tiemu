@@ -1,3 +1,72 @@
+20060129:
+* TiEmu 3 changes:
+	- [kevin] $1785: import PedroM (ld-tigcc build) 0.81 RC10
+	- [roms]  $1788: don't overwrite file received from TiEmu.
+		Raises a overwrite/rename/skip box for now (imported TiLP-II file management unit).
+	- [kevin] $1792: allow closing the debugger by closing the Insight window ("X" button)
+	- [roms]  $1793: fixed bug: timeout can be up to 600 on win32 but the glade file allows up to 60.
+					 fixed timeout issues with the device dbox: internal linkport timeout is now displayed/changed fine.
+	- [roms]  $1796: fixed bad memory allocation in the GTK+ 2.6 multiple
+	        file selector (bug #1294628). 
+	- [roms] $1801: fixed bug #1304338 (doesn't save skinless mode in .ini file)
+	- [roms] $1803: fixed #1305054 (doesn't refresh vector bkpt state)
+	- [kevin] $1811: optimized grayscale movem detection and added support for dirty-coded HW2/3 grayscale interrupts
+	                 abusing the stack pointer to hold data (currently only the latest Grib is known to do that)
+	- [kevin] $1812: import PedroM (ld-tigcc build) 0.81 release
+	- [kevin] $1813: fix install-without-tcl-tk omitting the "misc" directory
+	- [kevin] $1819: import Insight 6.4 and merge TiEmu changes
+	- [kevin] $1826: improve configure argument filtering to make Fedora->MinGW cross builds work
+	- [kevin] $1827: override C_INCLUDE_PATH and LIBRARY_PATH for UAE host object compilation
+	- [kevin] $1828: set CFLAGS_FOR_BUILD to CFLAGS without the arch-specific defines
+	- [kevin] $1832: allow setting $RC to something other than windres
+	- [kevin] $1833: override C_INCLUDE_PATH and LIBRARY_PATH for cleaner.c compilation
+	- [kevin] $1835: add .exe extension properly for MinGW (especially cross-MinGW) builds
+	- [kevin] $1843: add install-without-tcl-tk-itcl make target
+	- [roms] $1852: updated manpage
+	- [kevin] $1855: fixed unclosed tag and ISO 8859-1 (non-ASCII, non-UTF-8) character in manpage
+	                 changed manpage to Unix line endings so it displays properly in Konqueror
+	- [kevin] $1857: by default, KDE-enabled builds now use the KDE file selector only when running KDE
+	- [kevin] $1858: enable KDE support by default (except on MinGW)
+* libticables2 changes (roms):
+	- modified TiEmu virtual link for Windows: don't use .shared section 
+	any more. This breaks compat with older revision of the library but 
+	we are still in beta stage.
+	- "fixed" TiEmu virtual link for Linux: it seems it has never been
+	used/tested because it was un-finished ?!
+	- check for shm existence (tie_prepare)
+	- fixed bad error code in 'slv_prepare' for SilverLink
+	- added a COM wrapper with VBA sample program
+	- free'd pointers are systematically NULL'ified
+	- fixed mis-behaviour in ticables_cable_probe
+	- fixed severe bug in ticable_probe_finished (the allocated array was too small)
+	- check_for_tty & check_for_parport now tests for hardware presence
+	  => don't probe unavailable port any longer
+* libtifiles2 changes (roms):
+	- replaced assertion checks by warnings in the typesXX.c modules.
+	- support UTF-8 filenames
+	- added tifiles_file_is_tig function
+	- the content->comment field is now initialized in tifiles_content_create_xxx
+	- removed 'tifiles_create_table_of_entries' from export
+	- pass CalcModel to 'tifiles_content_create_xxxx' => increased so major number
+
+	- added functions for adding/removing entr(y)ies in regular file
+		=> the last two changes have been done to avoid/minimize manipulation of
+			internal fields in FileContent structure (make them opaque/private)
+	- added full TiGroup (*.tig) support: read, write, list
+	- removed a limitation in 'tifiles_group_contents': the src content is now
+		fully copied (not limited to first element like single file)
+* libticalcs2 changes (roms):
+	- fixed critical bug in dbus_send: use len instead of length which makes 64KB blocks copied as 0B blocks :-(
+	- modified to follow ticables2 API changes.
+	- fixed critical bug in ticalcs2.pc.in: the header location was include/tilp instead of include/tilp2
+* TiLP 2 (included in the Fedora RPMs only, see http://www.ticalc.org for source and Windows packages by roms) changes (roms):
+	- fixed a bug in the TiLP error management system
+	- cable probe: use first cable instead of the last one. Anywais, this box should display a list so that user can choose cable & calc.
+* The Fedora Core 4 RPM of TiEmu is now built against KDE 3.5.0 which can be found in FC4 updates.
+* The Fedora Core 4 RPM of TiEmu is now built against proposed itcl and itk 3.3 RC1 RPMs for Fedora
+  Extras. As these RPMs are not available yet, RPMs built from the proposed SRPMs are provided with
+  TiEmu.
+
 20050915:
 * TiEmu changes:
 	- [roms]  $1781: loading of ??u upgrades was broken: fixed.

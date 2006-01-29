@@ -16,7 +16,7 @@ Source:         %{name}-%{version}.tar.bz2
 Group:		Applications/Emulators
 License:	GPL
 BuildRequires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.2.2, kdelibs-devel >= 3.5.0, xorg-x11-devel >= 6.8.2, ncurses-devel >= 5.4, desktop-file-utils >= 0.10
-Requires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2, kdelibs >= 3.5.0, xorg-x11 >= 6.8.2, ncurses >= 5.4, tcl >= 8.4, tk >= 8.4, itcl >= 3.2, itk >= 3.2, iwidgets >= 4.0.1
+Requires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2, kdelibs >= 3.5.0, xorg-x11 >= 6.8.2, ncurses >= 5.4, tcl >= 8.4, tk >= 8.4, itcl >= 3.3, itk >= 3.3, iwidgets >= 4.0.1
 Requires(post):	desktop-file-utils >= 0.10
 Requires(postun): desktop-file-utils >= 0.10
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
@@ -31,7 +31,11 @@ TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debuggi
 %setup -n tiemu
 
 %build
-export extra_ldflags="-Wl,-rpath,/usr/lib/itcl3.2 -Wl,-rpath,/usr/lib/itk3.2"
+sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/core/gdb/itcl/itcl/configure.in
+sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/core/gdb/itcl/itcl/configure
+sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/core/gdb/itcl/itk/configure.in
+sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/core/gdb/itcl/itk/configure
+export extra_ldflags="-Wl,-rpath,/usr/lib/itcl3.3 -Wl,-rpath,/usr/lib/itk3.3"
 CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls --enable-shared-tcl-tk --enable-shared-itcl
 make
 
@@ -77,7 +81,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
-* Sat Jan 27 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+* Sun Jan 29 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Build against itcl/itk 3.3 (RC1).
+
+* Fri Jan 27 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 --with-kde not needed anymore (now default).
 
 * Sat Jan 9 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
