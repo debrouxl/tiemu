@@ -13,7 +13,7 @@
 # FIXME: shouldn't have global variable.
 defarray SENDPR_state
 
-itcl_class Sendpr {
+itcl::class Sendpr {
   inherit Ide_window
 
   # This array holds information about this site.  It is a private

@@ -6,20 +6,20 @@
 # * Should support sashes so user can repartition widget sizes.
 # * Should support itemcget, itemconfigure.
 
-itcl_class Multibox {
+itcl::class Multibox {
   # The selection mode.
-  public selectmode browse {
+  public variable selectmode browse {
     _apply_all configure [list -selectmode $selectmode]
   }
 
   # The height.
-  public height 10 {
+  public variable height 10 {
     _apply_all configure [list -height $height]
   }
 
   # This is a list of all the listbox widgets we've created.  Private
   # variable.
-  protected _listboxen {}
+  protected variable _listboxen {}
 
   # Tricky: take the class bindings for the Listbox widget and turn
   # them into Multibox bindings that directly run our bindings.  That

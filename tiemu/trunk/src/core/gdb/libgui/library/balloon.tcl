@@ -7,36 +7,36 @@
 #   presently they are hard-coded.
 # * Likewise, balloon positioning on Windows is a hack.
 
-itcl_class Balloon {
+itcl::class Balloon {
   # Name of associated global variable which should be set whenever
   # the help is shown.
-  public variable {}
+  public variable variable {}
 
   # Name of associated toplevel.  Private variable.
-  protected _top {}
+  protected variable _top {}
 
   # This is non-empty if there is an after script pending.  Private
   # method.
-  protected _after_id {}
+  protected variable _after_id {}
 
   # This is an array mapping window name to help text.
-  protected _help_text
+  protected variable _help_text
 
   # This is an array mapping window name to notification proc.
-  protected _notifiers
+  protected variable _notifiers
 
   # This is set to the name of the parent widget whenever the mouse is
   # in a widget with balloon help.
-  protected _active {}
+  protected variable _active {}
 
   # This is true when we're already calling a notification proc.
   # Private variable.
-  protected _in_notifier 0
+  protected variable _in_notifier 0
 
   # This holds the parent of the most recently entered widget.  It is
   # used to determine when the user is moving through a toolbar.
   # Private variable.
-  protected _recent_parent {}
+  protected variable _recent_parent {}
 
   constructor {top} {
     global tcl_platform
@@ -100,6 +100,8 @@ itcl_class Balloon {
     catch {after cancel [list $this _unshowballoon]}
     catch {destroy $this}
   }
+
+  method delete {} {itcl::delete object $this}
 
   method configure {config} {}
 

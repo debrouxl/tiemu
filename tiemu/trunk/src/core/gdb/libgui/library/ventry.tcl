@@ -2,11 +2,11 @@
 # Copyright (C) 1997 Cygnus Solutions.
 # Written by Tom Tromey <tromey@cygnus.com>.
 
-itcl_class Validated_entry {
+itcl::class Validated_entry {
   # The validation command.  It is passed the contents of the entry.
   # It should throw an error if there is a problem; the error text
   # will be displayed to the user.
-  public command {}
+  public variable command {}
 
   constructor {config} {
     upvar \#0 $this state

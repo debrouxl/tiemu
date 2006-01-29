@@ -2,10 +2,10 @@
 # Copyright (C) 1997 Cygnus Solutions.
 # Written by Tom Tromey <tromey@cygnus.com>.
 
-itcl_class Widgetframe {
+itcl::class Widgetframe {
   # Where to put the widget.  For now, we don't support many anchors.
   # Augment as you like.
-  public anchor nw {
+  public variable anchor nw {
     if {$anchor != "nw" && $anchor != "n"} then {
       error "anchors nw and n are the only ones supported"
     }
@@ -14,7 +14,7 @@ itcl_class Widgetframe {
 
   # The name of the widget to put on the frame.  This is set by some
   # subclass calling the _add method.  Private variable.
-  protected _widget {}
+  protected variable _widget {}
 
   constructor {config} {
     # The standard widget-making trick.

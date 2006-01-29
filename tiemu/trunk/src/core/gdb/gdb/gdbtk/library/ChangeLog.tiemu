@@ -1,3 +1,13 @@
+2006-01-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * ehandler.itb, managedwin.itb: Replace itcl_info with itcl::find.
+        * tfind_args.tcl, ../../../libgui/library/balloon.tcl, ../../../libgui/library/cframe.tcl,
+          ../../../libgui/library/lframe.tcl, ../../../libgui/library/multibox.tcl,
+          ../../../libgui/library/sendptr.tcl, ../../../libgui/library/ventry.tcl,
+          ../../../libgui/library/wframe.tcl: Replace itcl_class with itcl::class. Use new syntax for
+            "public", "protected", "private".
+        * ../../../libgui/library/balloon.tcl: Add delete method to emulate old itcl_class feature.
+
 2005-09-23  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * srcwin.itb (SrcWin::_exit): Use tiemu_close_debugger.

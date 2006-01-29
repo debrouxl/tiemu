@@ -2,41 +2,41 @@
 # Copyright (C) 1997 Cygnus Solutions.
 # Written by Tom Tromey <tromey@cygnus.com>.
 
-itcl_class Checkframe {
+itcl::class Checkframe {
   inherit Widgetframe
 
   # The checkbutton text.
-  public text {} {
+  public variable text {} {
     _set_option -text $text 0
   }
 
   # This holds the last value of -variable.  We use it to unset our
   # trace when the variable changes (or is deleted).  Private
   # variable.
-  protected _saved_variable {}
+  protected variable _saved_variable {}
 
   # The checkbutton variable.
-  public variable {} {
+  public variable variable {} {
     _var_changed
   }
 
   # The checkbutton -onvalue.
-  public onvalue 1 {
+  public variable onvalue 1 {
     _set_option -onvalue $onvalue
   }
 
   # The checkbutton -offvalue.
-  public offvalue 0 {
+  public variable offvalue 0 {
     _set_option -offvalue $offvalue
   }
 
   # The checkbutton -command.
-  public command {} {
+  public variable command {} {
     _set_option -command $command 0
   }
 
   # This holds balloon help for the checkbutton.
-  public help {} {
+  public variable help {} {
     if {[winfo exists [namespace tail $this].check]} then {
       balloon register [namespace tail $this].check $help
     }
@@ -44,7 +44,7 @@ itcl_class Checkframe {
 
   # This holds a list of all widgets which should be immune to
   # enabling/disabling.  Private variable.
-  protected _avoid {}
+  protected variable _avoid {}
 
   constructor {config} {
     checkbutton [namespace tail $this].check -text $text -variable $variable -padx 2 \

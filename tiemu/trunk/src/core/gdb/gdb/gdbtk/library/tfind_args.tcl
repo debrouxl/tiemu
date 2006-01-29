@@ -28,7 +28,7 @@
 #
 # ----------------------------------------------------------------------
  
-itcl_class TfindArgs {
+itcl::class TfindArgs {
   # ------------------------------------------------------------------
   #  CONSTRUCTOR - create new tfind arguments dialog
   # ------------------------------------------------------------------
@@ -131,9 +131,9 @@ itcl_class TfindArgs {
   }
 
 
-  public Type
+  public variable Type
   common last_type {}
-  private hull
+  private variable hull
 
 
 }
