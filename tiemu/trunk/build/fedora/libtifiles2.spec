@@ -15,8 +15,8 @@ Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		System Environment/Libraries
 License:	LGPL
-BuildRequires:	libticables2 = %{version}
-Requires:	libticables2 = %{version}
+BuildRequires:	libticables2 = %{version}, zlib-devel >= 1.2.2.2
+Requires:	libticables2 = %{version}, zlib >= 1.2.2.2
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Summary: Ti File Format management
 %description
@@ -57,6 +57,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Sun Jan 29 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+BuildRequire zlib-devel, Require zlib.
+
 * Wed Jan 4 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Change Vendor to LPG.
 
