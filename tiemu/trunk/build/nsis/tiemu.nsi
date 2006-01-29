@@ -197,6 +197,7 @@ Section "MainSection" SEC01
   Delete "$INSTDIR\lib\pkgconfig\ticables.pc"
   Delete "$INSTDIR\lib\libticables.la"
   Delete "$INSTDIR\lib\libticables.dll.a"
+  Delete "$INSTDIR\bin\libtifiles2-0.dll"
 
 ; Install files
   SetOutPath "$INSTDIR\lib"
@@ -237,7 +238,7 @@ Section "MainSection" SEC01
   File "..\..\..\..\TiEmu\lib\libitkstub32.a"
   SetOutPath "$INSTDIR\bin"
   File "..\..\..\..\TiEmu\bin\libticables2-0.dll"
-  File "..\..\..\..\TiEmu\bin\libtifiles2-0.dll"
+  File "..\..\..\..\TiEmu\bin\libtifiles2-1.dll"
   File "..\..\..\..\TiEmu\bin\libticalcs2-0.dll"
   File "..\..\..\..\TiEmu\bin\tiemu.exe"
   File "..\..\..\..\TiEmu\bin\tcl84.dll"
@@ -2135,7 +2136,7 @@ Section Uninstall
   Delete "$INSTDIR\bin\tcl84.dll"
   Delete "$INSTDIR\bin\tiemu.exe"
   Delete "$INSTDIR\bin\libticalcs2-0.dll"
-  Delete "$INSTDIR\bin\libtifiles2-0.dll"
+  Delete "$INSTDIR\bin\libtifiles2-1.dll"
   Delete "$INSTDIR\bin\libticables2-0.dll"
   Delete "$INSTDIR\lib\libitkstub32.a"
   Delete "$INSTDIR\lib\itk3.2\pkgIndex.tcl"
