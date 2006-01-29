@@ -33,6 +33,7 @@ make
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
+strip $RPM_BUILD_ROOT/usr/lib/libticalcs2.so.*.*.*
 
 %post
 /sbin/ldconfig
@@ -56,6 +57,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Sun Jan 29 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Strip library because -s gets ignored somehow.
+
 * Wed Jan 4 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Change Vendor to LPG.
 

@@ -33,6 +33,7 @@ make
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
+strip $RPM_BUILD_ROOT/usr/lib/libtifiles2.so.*.*.*
 # Kill duplicated header (installed by libticables-2 already)
 rm -f $RPM_BUILD_ROOT/usr/include/tilp2/stdints.h
 
@@ -59,6 +60,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sun Jan 29 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 BuildRequire zlib-devel, Require zlib.
+Strip library because -s gets ignored somehow.
 
 * Wed Jan 4 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Change Vendor to LPG.
