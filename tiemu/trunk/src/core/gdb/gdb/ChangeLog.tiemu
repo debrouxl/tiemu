@@ -1,3 +1,7 @@
+2006-01-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * infrun.c (handle_inferior_event): Don't set breakpoints on the callee, which may not exist.
+
 2006-01-07  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * event-loop.c: #undef NO_ERROR after including <windows.h>.

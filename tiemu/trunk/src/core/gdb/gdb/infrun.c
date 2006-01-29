@@ -2479,7 +2479,9 @@ process_event_stop_test:
 
       /* Set a breakpoint at callee's return address (the address at
          which the caller will resume).  */
+#if 0 /* (TiEmu 20060129 Kevin Kofler) */
       insert_step_resume_breakpoint_at_frame (get_prev_frame (get_current_frame ()));
+#endif /* 0 */
       keep_going (ecs);
       return;
     }
@@ -2548,7 +2550,9 @@ process_event_stop_test:
 	{
 	  /* Set a breakpoint at callee's return address (the address
 	     at which the caller will resume).  */
+#if 0 /* (TiEmu 20060129 Kevin Kofler) */
 	  insert_step_resume_breakpoint_at_frame (get_prev_frame (get_current_frame ()));
+#endif /* 0 */
 	  keep_going (ecs);
 	  return;
 	}
