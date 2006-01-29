@@ -1,0 +1,50 @@
+List of changes:
+
+- 23/06/2005, version 1.26b: roms
+	Fixed configure.ac (po was not distributed).
+	
+- 05/05/2005, version 1.26: roms
+	Rebuilt under Linux.
+	Compiled under MinGW.
+	Added TI84+ and TI89 Titanium support.
+	Switched to GTK+ 2.6.
+
+- 08/05/2004, version 1.25: roms
+	Fixed out of bounds coords when the scroll area is larger than
+	the drawing area.
+	
+- 03/05/2004, version 1.24: roms
+	Clean-up. Win32 installer.
+	Bug fixes.
+
+- 02/05/2004, version 1.23: roms
+	Removed SDL support for GtkDrawable. 
+	More portable and still fast.
+	
+- 28/04/2004, version 1.22: roms
+	Filled-up this changelog.
+	Populated README.
+	Added MSVC projects.
+	Replaced GDK_WINDOW_XWINDOW hack by GDK_WINDOW_XID for GTK+ 2.0.
+
+- 08/07/2003, version 1.21: jb
+	Ported to GTK+ 2.0.
+
+- 01/11/2002, version 1.20: roms
+	Released on ticalc.org.	
+
+- XX/XX/XXXX, version 1.20: jb
+
+- XX/XX/XXXX, version 1.10: jb
+
+- XX/XX/XXXX, version 1.05: jb
+
+- XX/XX/XXXX, version 1.00: jb
+
+- XX/XX/XXXX, version 0.95: jb
+
+- XX/XX/XXXX, version 0.93: jb
+
+- XX/XX/XXXX, version 0.92: jb
+
+- XX/XX/XXXX, version 0.8: jb
