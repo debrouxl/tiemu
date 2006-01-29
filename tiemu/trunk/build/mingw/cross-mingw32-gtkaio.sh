@@ -9,4 +9,4 @@ export ACLOCAL_FLAGS="-I $GTK_BASEPATH/share/aclocal $ACLOCAL_FLAGS"
 export C_INCLUDE_PATH=$GTK_BASEPATH/include:/usr/local/i386-mingw32/include
 export LIBRARY_PATH=$GTK_BASEPATH/lib:/usr/local/i386-mingw32/lib/w32api:/usr/local/i386-mingw32/lib
 export PKG_CONFIG_PATH=/usr/local/i386-mingw32/lib/pkgconfig:$GTK_BASEPATH/lib/pkgconfig:~/.wine/c/tiemu/lib/pkgconfig
-
+export LIBS=-L/target/lib
