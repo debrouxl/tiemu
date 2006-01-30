@@ -115,14 +115,14 @@ sp_kde_get_open_filename (unsigned char *dir, unsigned char *filter, unsigned ch
 	timer.changeInterval (1000 / SP_FOREIGN_FREQ);
 	SPKDEModal = TRUE;
 
-	fileName = KFileDialog::getOpenFileName ((const char *) dir,
-						 (const char *) filter,
+	fileName = KFileDialog::getOpenFileName (QString::fromLocal8Bit((const char *) dir),
+						 QString::fromLocal8Bit((const char *) filter),
 						 NULL,
-						 (const char *) title);
+						 QString::fromUtf8((const char *) title));
 
 	SPKDEModal = FALSE;
 
-        return g_strdup (fileName);
+        return g_strdup (fileName.local8Bit());
 }
 
 char **
@@ -136,10 +136,10 @@ sp_kde_get_open_filenames (unsigned char *dir, unsigned char *filter, unsigned c
 	timer.changeInterval (1000 / SP_FOREIGN_FREQ);
 	SPKDEModal = TRUE;
 
-	fileNames = KFileDialog::getOpenFileNames ((const char *) dir,
-						   (const char *) filter,
+	fileNames = KFileDialog::getOpenFileNames (QString::fromLocal8Bit((const char *) dir),
+						   QString::fromLocal8Bit((const char *) filter),
 						   NULL,
-						   (const char *) title);
+						   QString::fromUtf8((const char *) title));
 
 	SPKDEModal = FALSE;
 
@@ -148,7 +148,7 @@ sp_kde_get_open_filenames (unsigned char *dir, unsigned char *filter, unsigned c
 
 	p = result = (char **) g_malloc ((fileNames.count() + 1) * sizeof(char *));
 	for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it) {
-		*(p++) = g_strdup (*it);
+		*(p++) = g_strdup ((*it).local8Bit());
 	}
 	*p = NULL;
 
@@ -165,12 +165,12 @@ sp_kde_get_write_filename (unsigned char *dir, unsigned char *filter, unsigned c
 	timer.changeInterval (1000 / SP_FOREIGN_FREQ);
 	SPKDEModal = TRUE;
 
-	fileName = KFileDialog::getSaveFileName ((const char *) dir,
-						 (const char *) filter,
+	fileName = KFileDialog::getSaveFileName (QString::fromLocal8Bit((const char *) dir),
+						 QString::fromLocal8Bit((const char *) filter),
 						 NULL,
-						 (const char *) title);
+						 QString::fromUtf8((const char *) title));
 
 	SPKDEModal = FALSE;
 
-        return g_strdup (fileName);
+        return g_strdup (fileName.local8Bit());
 }

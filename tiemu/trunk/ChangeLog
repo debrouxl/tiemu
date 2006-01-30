@@ -92,6 +92,8 @@ SubVersion: $Id$
 	- [kevin] $1858: enable KDE support by default (except on MinGW)
 	- [kevin] $1870: fix libtifiles2 0.0.5 charset problem on Win32
 	- [kevin] $1871: fix GDB crash when single-stepping
+	- [kevin] $1872: adjust to libtifiles2 reversion to file names in locale charset
+	                 actually honor locale for file names throughout
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

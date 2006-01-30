@@ -309,15 +309,8 @@ gint display_debug_dbox(void)
     ext = strrchr(filename, '.');
     if (ext)
     {
-        gchar *temp;
         *(char *)ext = 0;
-        temp = g_strconcat(filename, ".dbg", NULL);
-#ifdef WIN32
-        symfile = g_locale_from_utf8(temp,-1,NULL,NULL,NULL);
-        g_free(temp);
-#else
-        symfile = temp;
-#endif
+        symfile = g_strconcat(filename, ".dbg", NULL);
         *(char *)ext = '.';
     }
 
