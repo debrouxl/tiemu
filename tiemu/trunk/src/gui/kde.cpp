@@ -7,7 +7,7 @@
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *   Kevin Kofler <Kevin@tigcc.ticalc.org>
  *
- * Copyright (C) 2003-2005 Authors
+ * Copyright (C) 2003-2006 Authors
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
