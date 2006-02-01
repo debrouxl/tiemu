@@ -79,7 +79,7 @@ static const gchar* create_fsel_1(gchar *dirname, gchar *filename, gchar *ext, g
 #endif
 	// gtk_file_selection_complete ALWAYS wants UTF-8.
 	sfilename = g_locale_to_utf8(filename,-1,NULL,NULL,NULL);
-	sext = g_locale_to_utf8(extname,-1,NULL,NULL,NULL);
+	sext = g_locale_to_utf8(ext,-1,NULL,NULL,NULL);
     
 	fs = gtk_file_selection_new("Select a file...");
 
@@ -136,7 +136,7 @@ static const gchar* create_fsel_2(gchar *dirname, gchar *filename, gchar *ext, g
 #endif
 	// gtk_file_chooser_set_current_name and gtk_file_filter_add_pattern ALWAYS want UTF-8.
 	sfilename = g_locale_to_utf8(filename,-1,NULL,NULL,NULL);
-	sext = g_locale_to_utf8(extname,-1,NULL,NULL,NULL);
+	sext = g_locale_to_utf8(ext,-1,NULL,NULL,NULL);
     
 	// create box
 	dialog = gtk_file_chooser_dialog_new (
@@ -342,7 +342,7 @@ static gchar** create_fsels_1(gchar *dirname, gchar *filename, gchar *ext)
 #endif
 	// gtk_file_selection_complete ALWAYS wants UTF-8.
 	sfilename = g_locale_to_utf8(filename,-1,NULL,NULL,NULL);
-	sext = g_locale_to_utf8(extname,-1,NULL,NULL,NULL);
+	sext = g_locale_to_utf8(ext,-1,NULL,NULL,NULL);
     
 	fs = gtk_file_selection_new("Select a file...");
 
@@ -398,7 +398,7 @@ static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext)
 #endif
 	// gtk_file_chooser_set_current_name and gtk_file_filter_add_pattern ALWAYS want UTF-8.
 	sfilename = g_locale_to_utf8(filename,-1,NULL,NULL,NULL);
-	sext = g_locale_to_utf8(extname,-1,NULL,NULL,NULL);
+	sext = g_locale_to_utf8(ext,-1,NULL,NULL,NULL);
     
 	// create box
 	dialog = gtk_file_chooser_dialog_new ("Open File",
