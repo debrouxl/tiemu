@@ -7,7 +7,7 @@
 
 [Setup]
 AppName=TiEmu
-AppVerName=TiEmu 2.02-jlb
+AppVerName=TiEmu 2.02b
 AppPublisher=The TiEmu Team
 AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
 AppSupportURL=http://lpg.ticalc.org/prj_tiemu/mailing_list.html
@@ -26,22 +26,28 @@ Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescri
 [Files]
 ; Glade files
 Source: "C:\sources\roms\tiemu2\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
+
 ; Help files
 Source: "C:\sources\roms\tiemu2\help\*.jpg"; DestDir: "{app}\help"; Flags: ignoreversion;
 Source: "C:\sources\roms\tiemu2\help\*.png"; DestDir: "{app}\help"; Flags: ignoreversion;
 Source: "C:\sources\roms\tiemu2\help\*.htm?"; DestDir: "{app}\help"; Flags: ignoreversion;
+
 ; Pixmaps files
 Source: "C:\sources\roms\tiemu2\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
+
 ; Skin files
 Source: "C:\sources\roms\tiemu2\skins\*.skn"; DestDir: "{app}\skins"; Flags: ignoreversion;
+
 ; Keymap files
 Source: "C:\sources\roms\tiemu2\skins\*.map"; DestDir: "{app}\skins"; Flags: ignoreversion;
 Source: "C:\sources\roms\tiemu2\skins\ti92.map"; DestDir: "{app}\skins"; DestName: "v200plt.map"; Flags: ignoreversion;
+
 ; i18n files
 ;Source: "C:\sources\roms\libs\files\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tifiles.mo"; Flags: ignoreversion;
 ;Source: "C:\sources\roms\libs\cables\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "ticables.mo"; Flags: ignoreversion;
 ;Source: "C:\sources\roms\libs\calcs\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "ticalcs.mo"; Flags: ignoreversion;
 ;Source: "C:\sources\roms\tiemu2\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tiemu.mo"; Flags: ignoreversion;
+
 ; Misc files
 Source: "C:\sources\roms\tiemu2\AUTHORS"; DestDir: "{app}"; DestName: "Authors.txt"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu2\BUGS"; DestDir: "{app}"; DestName: "Bugs.txt"; Flags: ignoreversion
@@ -52,16 +58,20 @@ Source: "C:\sources\roms\tiemu2\man\ManPage.txt"; DestDir: "{app}"; Flags: ignor
 Source: "C:\sources\roms\tiemu2\README.win32"; DestDir: "{app}"; DestName: "ReadMe.txt"; Flags: ignoreversion isreadme
 Source: "C:\sources\roms\tiemu2\RELEASE"; DestDir: "{app}"; DestName: "Release.txt"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu2\TODO"; DestDir: "{app}"; DestName: "ToDo.txt"; Flags: ignoreversion
+
 ; Resource files
 Source: "C:\sources\roms\tiemu2\misc\romcalls.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu2\misc\iodefs*.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
+
 ; PedRom files
 Source: "C:\sources\roms\tiemu2\pedrom\pedrom*.tib"; DestDir: "{app}\pedrom"; Flags: ignoreversion
+
 ; TiEmu/GTK
 Source: "C:\sources\roms\tifiles\tests\tifiles.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticables\tests\ticables.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticalcs\tests\ticalcs.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu2\build\msvc\tiemu-2.exe"; DestDir: "{app}"; DestName: "tiemu-2.exe"; Flags: ignoreversion
+
 ; Copy PortTalk driver for Windows NT4/2000/XP
 Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{sys}\drivers"; Flags: ignoreversion
 Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{app}"; Flags: ignoreversion
@@ -70,9 +80,16 @@ Source: "C:\sources\roms\misc\Porttalk22\Uninstall.exe"; DestDir: "{app}"; Flags
 
 ; GTK+ specific
 Source: "C:\Gtk2Dev\bin\gtkthemeselector.exe"; DestDir: "{app}";
+
 ;libglade/libxml add-on (ignore since no version checking is possible)
 Source: "C:\Gtk2Dev\bin\libxml2.dll"; DestDir: "{app}"; Flags: ignoreversion;
 Source: "C:\Gtk2Dev\bin\libglade-2.0-0.dll"; DestDir: "{app}"; Flags: ignoreversion;
+
+; Downloader
+Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\ssleay32.dll"; DestDir: "{app}\wget";
+Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\wget.exe"; DestDir: "{app}\wget";
+Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\gtk.loc"; DestDir: "{app}\wget";
+Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\d_and_i.bat"; DestDir: "{app}\wget";
 
 [INI]
 Filename: "{app}\tiemu.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://lpg.ticalc.org/prj_tiemu"
@@ -83,7 +100,7 @@ Name: "{group}\TiEmu on the Web"; Filename: "{app}\tiemu.url"
 Name: "{group}\Uninstall TiEmu"; Filename: "{uninstallexe}"
 Name: "{group}\User's Manual"; Filename: "{app}\help\Manual_en.html"
 Name: "{group}\GTK theme selector"; Filename: "{app}\gtkthemeselector.exe";
-Name: "{group}\Bugs"; Filename: "{app}\Bugs.txt"
+Name: "{group}\Install GTK+ from web"; Filename: "{app}\wget\d_and_i.bat";
 
 Name: "{userdesktop}\TiEmu"; Filename: "{app}\tiemu-2.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: desktopicon
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: "{app}\tiemu-2.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: quicklaunchicon
@@ -91,16 +108,19 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: 
 [Run]
 ; Remove any previously installed PortTalk driver (especially v1.x)
 Filename: "{app}\Uninstall.exe"; Parameters: ""; MinVersion: 0,4;
+Filename: "{app}\tiemu-2.exe"; Description: "Launch TiEmu"; StatusMsg: "Running TiEmu..."; Flags: postinstall nowait unchecked
+Filename: "{app}\wget\d_and_i.bat"; Description: "Download and install GTK+"; StatusMsg: "Running ..."; Flags: nowait postinstall unchecked hidewizard;
 
 [UninstallRun]
 ; Remove any previously installed PortTalk driver (especially v1.x)
 Filename: "{app}\Uninstall.exe"; Parameters: ""; MinVersion: 0,4;
 
 [Registry]
-; This adds the GTK+ libraries to tiemu.exe's path
-;Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu-2.exe"; Flags: uninsdeletekeyifempty
-;Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu-2.exe"; ValueType: string; ValueData: "{app}\tiemu-2.exe"; Flags: uninsdeletevalue
-;Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu-2.exe"; ValueType: string; ValueName: "Path"; ValueData: "{app};{code:GetGtkPath}\bin"; Flags: uninsdeletevalue
+; Install the NT PortTalk driver
+Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: dword; ValueName: "Type"; ValueData: "1";  MinVersion: 0,4;
+Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: dword; ValueName: "Start"; ValueData: "2"; MinVersion: 0,4;
+Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: dword; ValueName: "ErrorControl"; ValueData: "1"; MinVersion: 0,4;
+Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: string; ValueName: "DisplayName"; ValueData: "PortTalk"; MinVersion: 0,4;
 
 [UninstallDelete]
 Type: files; Name: "{app}\tiemu.url"
@@ -152,12 +172,25 @@ begin
   end;
 end;
 
+function DisplayWarning(I: Integer): Boolean;
+var
+  S: String;
+begin
+  if(I = 1) then begin
+    S := 'The GTK+ libraries are not installed: ';
+  end;
+  if(I = 2) then begin
+    S := 'The GTK+ libraries are installed but the version is old: ';
+  end;
+  MsgBox(S + 'you will need the GTK+ 2.6.x Runtime Environnement! But, the installer can download and install it for you; simply think to check the box at the last tab/page. Otherwise, you can still download it from the start menu (start menu > programs > tilp > install gtk+ from the web).', mbError, MB_OK);
+end;
+
 function InitializeSetup(): Boolean;
 begin
   // Retrieve GTK path
   Result := GetGtkInstalled ();
   if not Result then begin
-    MsgBox ('Please install the "GTK+ 2.6.x Runtime Environment" (2.6.10 mini). You can obtain GTK+ from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.10-rc1.exe?download>.', mbError, MB_OK);
+    DisplayWarning(1);
   end;
 
   // Retrieve GTK version
@@ -166,13 +199,13 @@ begin
 
     // and check
     if CompareStr(GtkVersion, '2.6.10') < 0 then begin
-      MsgBox ('Wrong package version. You need at least version 2.6.10 from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.10-rc1.exe?download>.', mbError, MB_OK);
+      DisplayWarning(2);
     end;
   end;
 
   // Check version of USB driver
   if IsTiglUsbVersion3Mini() then begin
-    MsgBox('SilverLink driver v2.x has been removed of your system. Now, TiEmu requires v3.x (check out the README for download location).', mbError, MB_OK);
+    MsgBox('SilverLink driver v2.x has been removed of your system. Now, TiLP/TiEmu requires v3.x (check out the README for download location).', mbError, MB_OK);
   end;
 
   // Check for non-NT and WiMP theme
