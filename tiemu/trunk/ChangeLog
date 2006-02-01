@@ -94,6 +94,7 @@ SubVersion: $Id$
 	- [kevin] $1871: fix GDB crash when single-stepping
 	- [kevin] $1872: adjust to libtifiles2 reversion to file names in locale charset
 	                 actually honor locale for file names throughout
+	- [kevin] $1874: plug Qt event loop into GTK+ main loop so we will actually be able to receive/process DCOP messages
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

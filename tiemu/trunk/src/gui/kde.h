@@ -8,7 +8,7 @@
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *   Kevin Kofler <Kevin@tigcc.ticalc.org>
  *
- * Copyright (C) 2003-2005 Authors
+ * Copyright (C) 2003-2006 Authors
  * $Id$
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
@@ -26,6 +26,8 @@ char **sp_kde_get_open_filenames (unsigned char *dir, unsigned char *filter, uns
 char *sp_kde_get_write_filename (unsigned char *dir, unsigned char *filter, unsigned char *title);
 
 char *sp_kde_get_save_filename (unsigned char *dir, unsigned int *spns);
+
+gint sp_kde_process_qt_events(gpointer data);
 
 G_END_DECLS
 

@@ -18,6 +18,7 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qcombobox.h>
+#include <qeventloop.h> 
 #include <kapp.h>
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
@@ -31,22 +32,29 @@
 #define SP_FOREIGN_FREQ 32
 #define SP_FOREIGN_MAX_ITER 4
 
+// Prevent infinite loop due to Qt->GTK->Qt calls
+static bool gtk_event_loop_called_from_qt = false;
+
 void
 SPKDEBridge::EventHook (void) {
 	int cdown = 0;
+	gtk_event_loop_called_from_qt = true;
 	while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
 		gtk_main_iteration_do (FALSE);
 	}
 	gtk_main_iteration_do (FALSE);
+	gtk_event_loop_called_from_qt = false;
 }
 
 void
 SPKDEBridge::TimerHook (void) {
 	int cdown = 10;
+	gtk_event_loop_called_from_qt = true;
 	while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
 		gtk_main_iteration_do (FALSE);
 	}
 	gtk_main_iteration_do (FALSE);
+	gtk_event_loop_called_from_qt = false;
 }
 
 static KApplication *KDESodipodi = NULL;
@@ -173,4 +181,12 @@ sp_kde_get_write_filename (unsigned char *dir, unsigned char *filter, unsigned c
 	SPKDEModal = FALSE;
 
         return g_strdup (fileName.local8Bit());
+}
+
+gint
+sp_kde_process_qt_events(gpointer data)
+{
+	if (!gtk_event_loop_called_from_qt)
+		QApplication::eventLoop()->processEvents(QEventLoop::AllEvents);
+	return TRUE;
 }
