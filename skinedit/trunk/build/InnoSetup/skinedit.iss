@@ -7,7 +7,7 @@
 
 [Setup]
 AppName=SkinEdit
-AppVerName=SkinEdit 1.26b
+AppVerName=SkinEdit 1.26c
 AppPublisher=The TiLP Team
 AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
 AppSupportURL=http://lpg.ticalc.org/prj_tiemu/index.html
@@ -26,23 +26,34 @@ Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescri
 [Files]
 ; Glade files
 Source: "C:\sources\roms\skinedit\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
+
 ; Pixmaps files
 Source: "C:\sources\roms\skinedit\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
+
 ; i18n files
 Source: "C:\sources\roms\skinedit\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "skinedit.mo"; Flags: ignoreversion;
+
 ; Misc files
 Source: "C:\sources\roms\skinedit\README"; DestDir: "{app}"; DestName: "Readme.txt"; Flags: ignoreversion
 Source: "C:\sources\roms\skinedit\AUTHORS"; DestDir: "{app}"; DestName: "Authors.txt"; Flags: ignoreversion
 Source: "C:\sources\roms\skinedit\CHANGELOG"; DestDir: "{app}"; DestName: "ChangeLog.txt"; Flags: ignoreversion
 Source: "C:\sources\roms\skinedit\COPYING"; DestDir: "{app}"; DestName: "License.txt"; Flags: ignoreversion
+
 ; Doc format files
 Source: "C:\sources\roms\skinedit\doc\TiEmu_skin_format.txt"; DestDir: "{app}\docs"; DestName: "TiEmu Skin Format.txt"; Flags: ignoreversion
 Source: "C:\sources\roms\skinedit\doc\VTi_skin_format.txt"; DestDir: "{app}\docs"; DestName: "VTi Skin Format.txt"; Flags: ignoreversion
+
 ; Executable files
 Source: "C:\sources\roms\skinedit\build\msvc\skinedit.exe"; DestDir: "{app}"; DestName: "skinedit.exe"; Flags: ignoreversion
 
 ; GTK+ specific
 Source: "C:\Gtk2Dev\bin\gtkthemeselector.exe"; DestDir: "{app}";
+
+; Downloader
+Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\ssleay32.dll"; DestDir: "{app}\wget";
+Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\wget.exe"; DestDir: "{app}\wget";
+Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\gtk.loc"; DestDir: "{app}\wget";
+Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\d_and_i.bat"; DestDir: "{app}\wget";
 
 [Dirs]
 Name: "{app}\My Skins"; Flags: uninsneveruninstall;
@@ -56,15 +67,14 @@ Name: "{group}\SkinEdit on the Web"; Filename: "{app}\skinedit.url"
 Name: "{group}\Uninstall SkinEdit"; Filename: "{uninstallexe}"
 ;Name: "{group}\User's Manual"; Filename: "{app}\help\Manual_en.html"
 Name: "{group}\GTK theme selector"; Filename: "{app}\gtkthemeselector.exe";
+Name: "{group}\Install GTK+ from web"; Filename: "{app}\wget\d_and_i.bat";
 
 Name: "{userdesktop}\SkinEdit"; Filename: "{app}\skinedit.exe"; WorkingDir: "{app}\My Skins"; MinVersion: 4,4; Tasks: desktopicon
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\SkinEdit"; Filename: "{app}\skinedit.exe"; WorkingDir: "{app}\My Skins"; MinVersion: 4,4; Tasks: quicklaunchicon
 
-[Registry]
-; This adds the GTK+ libraries to skinedit.exe's path
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\skinedit.exe"; Flags: uninsdeletekeyifempty
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\skinedit.exe"; ValueType: string; ValueData: "{app}\skinedit.exe"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\skinedit.exe"; ValueType: string; ValueName: "Path"; ValueData: "{app};{code:GetGtkPath}\lib"; Flags: uninsdeletevalue
+[Run]
+Filename: "{app}\skinedit.exe"; Description: "Launch SkinEdit"; StatusMsg: "Running SkinEdit..."; Flags: postinstall nowait unchecked
+Filename: "{app}\wget\d_and_i.bat"; Description: "Download and install GTK+"; StatusMsg: "Running ..."; Flags: nowait postinstall unchecked hidewizard;
 
 [Registry]
 ; Register skinedit in the shell
@@ -77,7 +87,7 @@ Root: HKCR; Subkey: "SkinEdit\shell\open\command"; ValueType: string; ValueName:
 [UninstallDelete]
 Type: files; Name: "{app}\skinedit.url"
 
-;; Taken from "http://www.dropline.net/gtk/support.php"
+;; Taken from "http://www.dropline.net/gtk/support.php" with some customizations
 
 [Code]
 var
@@ -124,12 +134,25 @@ begin
   end;
 end;
 
+function DisplayWarning(I: Integer): Boolean;
+var
+  S: String;
+begin
+  if(I = 1) then begin
+    S := 'The GTK+ libraries are not installed: ';
+  end;
+  if(I = 2) then begin
+    S := 'The GTK+ libraries are installed but the version is old: ';
+  end;
+  MsgBox(S + 'you will need the GTK+ 2.6.x Runtime Environnement! But, the installer can download and install it for you; simply think to check the box at the last tab/page. Otherwise, you can still download it from the start menu (start menu > programs > tilp > install gtk+ from the web).', mbError, MB_OK);
+end;
+
 function InitializeSetup(): Boolean;
 begin
   // Retrieve GTK path
   Result := GetGtkInstalled ();
   if not Result then begin
-    MsgBox ('Please install the "GTK+ 2.6.x Runtime Environment" (2.6.4 mini). You can obtain GTK+ from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.8-rc1.exe?download>.', mbError, MB_OK);
+    DisplayWarning(1);
   end;
 
   // Retrieve GTK version
@@ -137,9 +160,14 @@ begin
     Result := GetGtkVersionInstalled ();
 
     // and check
-    if CompareStr(GtkVersion, '2.6.4') < 0 then begin
-      MsgBox ('Wrong package version. You need at least version 2.6.4 from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.8-rc1.exe?download>.', mbError, MB_OK);
+    if CompareStr(GtkVersion, '2.6.10') < 0 then begin
+      DisplayWarning(2);
     end;
+  end;
+
+  // Check version of USB driver
+  if IsTiglUsbVersion3Mini() then begin
+    MsgBox('SilverLink driver v2.x has been removed of your system. Now, TiLP/TiEmu requires v3.x (check out the README for download location).', mbError, MB_OK);
   end;
 
   // Check for non-NT and WiMP theme
