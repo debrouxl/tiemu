@@ -28,6 +28,7 @@
 
 #include "kde.h"
 #include "kde-private.h"
+#include "dcop.h"
 
 #define SP_FOREIGN_FREQ 32
 #define SP_FOREIGN_MAX_ITER 4
@@ -60,6 +61,7 @@ SPKDEBridge::TimerHook (void) {
 static KApplication *KDESodipodi = NULL;
 static KAboutData *KDEAbout = NULL;
 static SPKDEBridge *Bridge = NULL;
+static TiEmuDCOP *DCOPInterface = NULL;
 static bool SPKDEModal = FALSE;
 
 static void
@@ -99,6 +101,7 @@ sp_kde_init (int argc, char **argv, const char *appName, const char *programName
 	KCmdLineArgs::init(argc, argv, KDEAbout);
 	KDESodipodi = new KApplication;
 	Bridge = new SPKDEBridge ("KDE Bridge");
+	DCOPInterface = new TiEmuDCOP ();
 
 	QObject::connect (KDESodipodi, SIGNAL (guiThreadAwake ()), Bridge, SLOT (EventHook ()));
 
@@ -108,6 +111,7 @@ sp_kde_init (int argc, char **argv, const char *appName, const char *programName
 void
 sp_kde_finish (void)
 {
+	delete DCOPInterface;
 	delete Bridge;
 	delete KDESodipodi;
 	delete KDEAbout;
