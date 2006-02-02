@@ -52,11 +52,7 @@ static gint action = 0;
 static void store_filename(GtkFileSelection * file_selector,
 			   gpointer user_data)
 {
-#ifdef WIN32 // glib file name encoding is UTF-8 on Win32
-	fname = g_locale_from_utf8((gchar *)gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data)),-1,NULL,NULL,NULL);
-#else
 	fname = g_strdup((gchar *)gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data)));
-#endif
 	action = 1;
 } 
 
@@ -70,20 +66,15 @@ static void cancel_filename(GtkButton * button, gpointer user_data)
 static const gchar* create_fsel_1(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
 	GtkWidget *fs;
-	gchar *sdirname, *sfilename, *sext;
+	gchar *sfilename, *sext;
 
-#ifdef WIN32
-	sdirname = g_locale_to_utf8(dirname,-1,NULL,NULL,NULL);
-#else
-	sdirname = dirname;
-#endif
 	// gtk_file_selection_complete ALWAYS wants UTF-8.
-	sfilename = g_locale_to_utf8(filename,-1,NULL,NULL,NULL);
-	sext = g_locale_to_utf8(ext,-1,NULL,NULL,NULL);
+	sfilename = g_filename_to_utf8(filename,-1,NULL,NULL,NULL);
+	sext = g_filename_to_utf8(ext,-1,NULL,NULL,NULL);
     
 	fs = gtk_file_selection_new("Select a file...");
 
-	gtk_file_selection_set_filename (GTK_FILE_SELECTION(fs), sdirname);
+	gtk_file_selection_set_filename (GTK_FILE_SELECTION(fs), dirname);
 	gtk_file_selection_complete(GTK_FILE_SELECTION(fs), sfilename ? sfilename : sext);
 
 	g_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->ok_button),
@@ -110,9 +101,6 @@ static const gchar* create_fsel_1(gchar *dirname, gchar *filename, gchar *ext, g
 	for(action = 0; !action; )
 		GTK_REFRESH();
 
-#ifdef WIN32
-	g_free(sdirname);
-#endif
 	g_free(sfilename);
 	g_free(sext);
 
@@ -127,16 +115,11 @@ static const gchar* create_fsel_2(gchar *dirname, gchar *filename, gchar *ext, g
 	gchar *path;
 	gchar **sarray;
 	gint i;
-	gchar *sdirname, *sfilename, *sext;
+	gchar *sfilename, *sext;
 
-#ifdef WIN32
-	sdirname = g_locale_to_utf8(dirname,-1,NULL,NULL,NULL);
-#else
-	sdirname = dirname;
-#endif
 	// gtk_file_chooser_set_current_name and gtk_file_filter_add_pattern ALWAYS want UTF-8.
-	sfilename = g_locale_to_utf8(filename,-1,NULL,NULL,NULL);
-	sext = g_locale_to_utf8(ext,-1,NULL,NULL,NULL);
+	sfilename = g_filename_to_utf8(filename,-1,NULL,NULL,NULL);
+	sext = g_filename_to_utf8(ext,-1,NULL,NULL,NULL);
     
 	// create box
 	dialog = gtk_file_chooser_dialog_new (
@@ -148,7 +131,7 @@ static const gchar* create_fsel_2(gchar *dirname, gchar *filename, gchar *ext, g
 				      NULL);
 
 	// set default folder
-	path = g_path_get_dirname(sdirname);
+	path = g_path_get_dirname(dirname);
 	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), path);
 	g_free(path);
 
@@ -167,23 +150,11 @@ static const gchar* create_fsel_2(gchar *dirname, gchar *filename, gchar *ext, g
 	// get result
 	g_free(fname);
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
-	{
-		gchar *temp;
-		temp = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-#ifdef WIN32
-		fname = g_locale_from_utf8(temp,-1,NULL,NULL,NULL);
-		g_free(temp);
-#else
-		fname = temp;
-#endif
-	}
+		fname = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 	else
 		fname = NULL;
 	gtk_widget_destroy (dialog);
 
-#ifdef WIN32
-	g_free(sdirname);
-#endif
 	g_free(sfilename);
 	g_free(sext);
 
@@ -246,7 +217,7 @@ static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, g
 			return filename = NULL;
 	}
 
-	return fname = g_strdup(lpstrFile);
+	return fname = g_locale_to_utf8(lpstrFile,-1,NULL,NULL,NULL);
 #endif
 
 	return NULL;
@@ -333,21 +304,16 @@ static void cancel_filenames(GtkButton * button, gpointer user_data)
 static gchar** create_fsels_1(gchar *dirname, gchar *filename, gchar *ext)
 {
 	GtkWidget *fs;
-	gchar *sdirname, *sfilename, *sext;
+	gchar *sfilename, *sext;
 
-#ifdef WIN32
-	sdirname = g_locale_to_utf8(dirname,-1,NULL,NULL,NULL);
-#else
-	sdirname = dirname;
-#endif
 	// gtk_file_selection_complete ALWAYS wants UTF-8.
-	sfilename = g_locale_to_utf8(filename,-1,NULL,NULL,NULL);
-	sext = g_locale_to_utf8(ext,-1,NULL,NULL,NULL);
+	sfilename = g_filename_to_utf8(filename,-1,NULL,NULL,NULL);
+	sext = g_filename_to_utf8(ext,-1,NULL,NULL,NULL);
     
 	fs = gtk_file_selection_new("Select a file...");
 
 	gtk_file_selection_set_select_multiple(GTK_FILE_SELECTION(fs), TRUE);
-	gtk_file_selection_set_filename (GTK_FILE_SELECTION(fs), sdirname);
+	gtk_file_selection_set_filename (GTK_FILE_SELECTION(fs), dirname);
 	gtk_file_selection_complete(GTK_FILE_SELECTION(fs), sfilename ? sfilename : sext);
 
 	g_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->ok_button),
@@ -372,9 +338,6 @@ static gchar** create_fsels_1(gchar *dirname, gchar *filename, gchar *ext)
 	for(actions = 0; !actions; )
 		GTK_REFRESH();
 
-#ifdef WIN32
-	g_free(sdirname);
-#endif
 	g_free(sfilename);
 	g_free(sext);
 
@@ -389,16 +352,11 @@ static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext)
 	gchar *path;
 	gchar **sarray;
 	gint i;
-	gchar *sdirname, *sfilename, *sext;
+	gchar *sfilename, *sext;
 
-#ifdef WIN32
-	sdirname = g_locale_to_utf8(dirname,-1,NULL,NULL,NULL);
-#else
-	sdirname = dirname;
-#endif
 	// gtk_file_chooser_set_current_name and gtk_file_filter_add_pattern ALWAYS want UTF-8.
-	sfilename = g_locale_to_utf8(filename,-1,NULL,NULL,NULL);
-	sext = g_locale_to_utf8(ext,-1,NULL,NULL,NULL);
+	sfilename = g_filename_to_utf8(filename,-1,NULL,NULL,NULL);
+	sext = g_filename_to_utf8(ext,-1,NULL,NULL,NULL);
     
 	// create box
 	dialog = gtk_file_chooser_dialog_new ("Open File",
@@ -409,7 +367,7 @@ static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext)
 				      NULL);
 
 	// set default folder
-	path = g_path_get_dirname(sdirname);
+	path = g_path_get_dirname(dirname);
 	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), path);
 	g_free(path);
 
@@ -440,16 +398,7 @@ static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext)
 		filenames = (gchar **)g_malloc0((g_slist_length(list)+1) * 
 						sizeof(gchar *));
 		for(p = list, q = filenames; p; p = g_slist_next(p), q++)
-		{
-			gchar *temp;
-			temp = p->data;
-#ifdef WIN32
-			*q = g_locale_from_utf8(temp,-1,NULL,NULL,NULL);
-			g_free(temp);
-#else
-			*q = temp;
-#endif
-		}
+			*q = p->data;
 		*q = NULL;
 		     
 		g_slist_free(list);
@@ -458,9 +407,6 @@ static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext)
 		filenames = NULL;
 	gtk_widget_destroy (dialog);
 
-#ifdef WIN32
-	g_free(sdirname);
-#endif
 	g_free(sfilename);
 	g_free(sext);
 
@@ -522,8 +468,11 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
 	{
 		if(i)	// skip directory
 		{
+			gchar *temp;
 			filenames = g_realloc(filenames, (i+1) * sizeof(gchar *));
-			filenames[i-1] = g_strconcat(lpstrFile, G_DIR_SEPARATOR_S, p, NULL);
+			temp = g_strconcat(lpstrFile, G_DIR_SEPARATOR_S, p, NULL);
+			filenames[i-1] = g_locale_to_utf8(temp,-1,NULL,NULL,NULL);
+			g_free(temp);
 		}
 	}
 
@@ -531,7 +480,7 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
 	if(i == 1)
 	{
 		filenames = g_malloc(2 * sizeof(gchar *));
-		filenames[0] = g_strdup(lpstrFile);
+		filenames[0] = g_locale_to_utf8(lpstrFile,-1,NULL,NULL,NULL);
 		filenames[1] = NULL;
 	}
 	else
