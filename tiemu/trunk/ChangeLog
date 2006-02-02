@@ -98,6 +98,7 @@ SubVersion: $Id$
 	- [kevin] $1876: created a DCOP interface (currently empty)
 	- [kevin] $1879: implemented image queries and file sending in the DCOP interface
 	- [kevin] $1880: handle engine state properly when sending files through DCOP
+	- [kevin] $1881: added ready_for_transfers() boolean query to the DCOP interface
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

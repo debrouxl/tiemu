@@ -69,6 +69,11 @@ QString TiEmuDCOP::emulated_os_version()
     return QString::null;
 }
 
+bool TiEmuDCOP::ready_for_transfers()
+{
+  return (img_loaded && !engine_is_stopped());
+}
+
 void TiEmuDCOP::send_file(QString filename)
 {
   if (img_loaded && !engine_is_stopped()) {
