@@ -26,6 +26,7 @@
 #include "dcop.h"
 #include "images.h"
 #include "fs_misc.h"
+#include "engine.h"
 
 TiEmuDCOP::TiEmuDCOP() : DCOPObject( "TiEmuDCOP" )
 {
@@ -70,19 +71,28 @@ QString TiEmuDCOP::emulated_os_version()
 
 void TiEmuDCOP::send_file(QString filename)
 {
-  if (img_loaded)
+  if (img_loaded && !engine_is_stopped()) {
+    engine_stop();
     ::send_file(filename.local8Bit());
+    engine_start();
+  }
 }
 
 void TiEmuDCOP::send_files(QStringList filenames)
 {
-  if (img_loaded)
+  if (img_loaded && !engine_is_stopped()) {
+    engine_stop();
     for (QStringList::Iterator it = filenames.begin(); it != filenames.end(); ++it)
       ::send_file((*it).local8Bit());
+    engine_start();
+  }
 }
 
 void TiEmuDCOP::debug_file(QString filename)
 {
-  if (img_loaded)
+  if (img_loaded && !engine_is_stopped()) {
+    engine_stop();
     send_file_and_debug_info(filename.local8Bit());
+    engine_start();
+  }
 }

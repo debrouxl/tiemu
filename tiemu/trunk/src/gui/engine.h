@@ -27,6 +27,9 @@
 #ifndef __ENGINE_H__
 #define __ENGINE_H__
 
+#include <glib.h>
+
+G_BEGIN_DECLS
 void engine_calibrate(void);
 
 void engine_start(void); 
@@ -34,5 +37,6 @@ void engine_stop(void);
 
 int engine_is_stopped(void);
 int engine_is_running(void);
+G_END_DECLS
 
 #endif
