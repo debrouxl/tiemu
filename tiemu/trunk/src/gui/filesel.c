@@ -33,6 +33,7 @@
 
 #ifdef __WIN32__
 #include <windows.h>
+#include <wchar.h>
 #endif
 
 #if WITH_KDE
@@ -166,18 +167,33 @@ static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, g
 {
 #ifdef WIN32
 	OPENFILENAME o;
-	char lpstrFile[1024] = "\0";
-	char lpstrFilter[256];
+	char lpstrFile[2048] = "\0";
+	char lpstrFilter[512];
 	char *p;
 	gchar **sarray;
 	int i, n;
+	int have_widechar = G_WIN32_HAVE_WIDECHAR_API();
+	void *sdirname;
 
 	// clear structure
 	memset (&o, 0, sizeof(OPENFILENAME));
 
 	// set default filename
 	if(filename)
-		strcpy(lpstrFile, filename);
+	{
+		void *temp;
+		if (have_widechar)
+		{
+			temp = g_utf8_to_utf16(filename,-1,NULL,NULL,NULL);
+			wcsncpy((wchar_t *)lpstrFile, temp, sizeof(lpstrFile)>>1);
+		}
+		else
+		{
+			temp = g_locale_from_utf8(filename,-1,NULL,NULL,NULL);
+			strncpy(lpstrFile, temp, sizeof(lpstrFile));
+		}
+		g_free(temp);
+	}
 
 	// format filter
 	sarray = g_strsplit(ext, "|", -1);
@@ -185,22 +201,50 @@ static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, g
 
 	for(i = 0, p = lpstrFilter; i < n; i++)
 	{
-		strcpy(p, sarray[i]);
-		p += strlen(sarray[i]);
-		*p++ = '\0';
-
-		strcpy(p, sarray[i]);
-		p += strlen(sarray[i]);
-		*p++ = '\0';
+		void *temp;
+		if (have_widechar)
+		{
+			temp = g_utf8_to_utf16(sarray[i],-1,NULL,NULL,NULL);
+			wcscpy((wchar_t *)p,temp);
+			p += (wcslen(temp)<<1);
+			*p++ = '\0';
+			*p++ = '\0';
+			wcscpy((wchar_t *)p,temp);
+			p += (wcslen(temp)<<1);
+			*p++ = '\0';
+			*p++ = '\0';
+		}
+		else
+		{
+			temp = g_locale_from_utf8(sarray[i],-1,NULL,NULL,NULL);
+			strcpy(p,temp);
+			p += strlen(temp);
+			*p++ = '\0';
+			strcpy(p,temp);
+			p += strlen(temp);
+			*p++ = '\0';
+		}
+		g_free(temp);
 	}
 	*p++ = '\0';
+	if (have_widechar)
+		*p++ = '\0';
 	g_strfreev(sarray);
 
 	// set structure
 	o.lStructSize = sizeof (o);	
 	o.lpstrFilter = lpstrFilter;	//"All\0*.*\0Text\0*.TXT\0";
 	o.lpstrFile = lpstrFile;
-	o.nMaxFile = sizeof(lpstrFile);
+	if (have_widechar)
+	{
+		o.nMaxFile = sizeof(lpstrFile) >> 1;
+		sdirname = g_utf8_to_utf16(dirname,-1,NULL,NULL,NULL);
+	}
+	else
+	{
+		o.nMaxFile = sizeof(lpstrFile);
+		sdirname = g_locale_from_utf8(dirname,-1,NULL,NULL,NULL);
+	}
 	o.lpstrInitialDir = dirname;
 	o.Flags = 0x02000000 | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY |
 				 OFN_NOCHANGEDIR | OFN_EXPLORER | OFN_LONGNAMES | OFN_NONETWORKBUTTON;
@@ -208,16 +252,28 @@ static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, g
 	// open/close
 	if(save)
 	{
-		if(!GetSaveFileName(&o))
+		if(!(have_widechar ? GetSaveFileNameW((OPENFILENAMEW *)&o) : GetSaveFileName(&o)))
+		{
+			g_free(sdirname);
 			return filename = NULL;
+		}
 	}
 	else
 	{
-		if(!GetOpenFileName(&o))
+		if(!(have_widechar ? GetOpenFileNameW((OPENFILENAMEW *)&o) : GetOpenFileName(&o)))
+		{
+			g_free(sdirname);
 			return filename = NULL;
+		}
 	}
 
-	return fname = g_locale_to_utf8(lpstrFile,-1,NULL,NULL,NULL);
+	g_free(sdirname);
+
+	if (have_widechar)
+		fname = g_utf16_to_utf8((wchar_t *)lpstrFile,-1,NULL,NULL,NULL);
+	else
+		fname = g_locale_to_utf8(lpstrFile,-1,NULL,NULL,NULL);
+	return fname;
 #endif
 
 	return NULL;
@@ -418,18 +474,34 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
 {
 #ifdef WIN32
 	OPENFILENAME o;
-	char lpstrFile[1024] = "\0";
-	char lpstrFilter[256];
+	char lpstrFile[2048] = "\0";
+	char lpstrFilter[512];
 	char *p;
 	gchar **sarray;
 	int i, n;
+	int have_widechar = G_WIN32_HAVE_WIDECHAR_API();
+	void *sdirname;
+	gchar *temp1;
 
 	// clear structure
 	memset (&o, 0, sizeof(OPENFILENAME));
 
 	// set default filename
 	if(filename)
-		strncpy(lpstrFile, filename, sizeof(lpstrFile));
+	{
+		void *temp;
+		if (have_widechar)
+		{
+			temp = g_utf8_to_utf16(filename,-1,NULL,NULL,NULL);
+			wcsncpy((wchar_t *)lpstrFile, temp, sizeof(lpstrFile)>>1);
+		}
+		else
+		{
+			temp = g_locale_from_utf8(filename,-1,NULL,NULL,NULL);
+			strncpy(lpstrFile, temp, sizeof(lpstrFile));
+		}
+		g_free(temp);
+	}
 
 	// format filter
 	sarray = g_strsplit(ext, "|", -1);
@@ -437,54 +509,99 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
 
 	for(i = 0, p = lpstrFilter; i < n; i++)
 	{
-		strcpy(p, sarray[i]);
-		p += strlen(sarray[i]);
-		*p++ = '\0';
-
-		strcpy(p, sarray[i]);
-		p += strlen(sarray[i]);
-		*p++ = '\0';
+		void *temp;
+		if (have_widechar)
+		{
+			temp = g_utf8_to_utf16(sarray[i],-1,NULL,NULL,NULL);
+			wcscpy((wchar_t *)p,temp);
+			p += (wcslen(temp)<<1);
+			*p++ = '\0';
+			*p++ = '\0';
+			wcscpy((wchar_t *)p,temp);
+			p += (wcslen(temp)<<1);
+			*p++ = '\0';
+			*p++ = '\0';
+		}
+		else
+		{
+			temp = g_locale_from_utf8(sarray[i],-1,NULL,NULL,NULL);
+			strcpy(p,temp);
+			p += strlen(temp);
+			*p++ = '\0';
+			strcpy(p,temp);
+			p += strlen(temp);
+			*p++ = '\0';
+		}
+		g_free(temp);
 	}
 	*p++ = '\0';
+	if (have_widechar)
+		*p++ = '\0';
 	g_strfreev(sarray);
 
 	// set structure
 	o.lStructSize = sizeof (o);	
 	o.lpstrFilter = lpstrFilter;	//"All\0*.*\0Text\0*.TXT\0";
 	o.lpstrFile = lpstrFile;		//"C:\msvc\tilp\0foo.txt\0bar.txt"
-	o.nMaxFile = sizeof(lpstrFile);
-	o.lpstrInitialDir = dirname;
+	if (have_widechar)
+	{
+		o.nMaxFile = sizeof(lpstrFile) >> 1;
+		sdirname = g_utf8_to_utf16(dirname,-1,NULL,NULL,NULL);
+	}
+	else
+	{
+		o.nMaxFile = sizeof(lpstrFile);
+		sdirname = g_locale_from_utf8(dirname,-1,NULL,NULL,NULL);
+	}
+	o.lpstrInitialDir = sdirname;
 	o.Flags = 0x02000000 | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY |
 				 OFN_NOCHANGEDIR | OFN_EXPLORER | OFN_LONGNAMES | OFN_NONETWORKBUTTON |
 				 OFN_ALLOWMULTISELECT;
 
 	// open selector
-	if(!GetOpenFileName(&o))
+	if(!(have_widechar ? GetOpenFileNameW((OPENFILENAMEW *)&o) : GetOpenFileName(&o)))
+	{
+		g_free(sdirname);
 		return NULL;
+	}
 	filenames = NULL;
 
 	// converts resulting string
-	for(p = lpstrFile, i=0; *p; p += strlen(p)+1, i++)
+	if (have_widechar)
+		temp1 = g_utf16_to_utf8((wchar_t *)lpstrFile,-1,NULL,NULL,NULL);
+	else
+		temp1 = g_locale_to_utf8(lpstrFile,-1,NULL,NULL,NULL);
+	for(p = lpstrFile, i=0; *p;
+	    p += have_widechar?((wcslen((wchar_t *)p)+1)<<1):(strlen(p)+1), i++)
 	{
 		if(i)	// skip directory
 		{
 			gchar *temp;
 			filenames = g_realloc(filenames, (i+1) * sizeof(gchar *));
-			temp = g_strconcat(lpstrFile, G_DIR_SEPARATOR_S, p, NULL);
-			filenames[i-1] = g_locale_to_utf8(temp,-1,NULL,NULL,NULL);
+			if (have_widechar)
+				temp = g_utf16_to_utf8((wchar_t *)p,-1,NULL,NULL,NULL);
+			else
+				temp = g_locale_to_utf8(p,-1,NULL,NULL,NULL);
+			filenames[i-1] = g_strconcat(temp1, G_DIR_SEPARATOR_S, temp, NULL);
 			g_free(temp);
 		}
 	}
+	g_free(temp1);
 
 	// one file selected ?
 	if(i == 1)
 	{
 		filenames = g_malloc(2 * sizeof(gchar *));
-		filenames[0] = g_locale_to_utf8(lpstrFile,-1,NULL,NULL,NULL);
+		if (have_widechar)
+			filenames[0] = g_utf16_to_utf8((wchar_t *)lpstrFile,-1,NULL,NULL,NULL);
+		else
+			filenames[0] = g_locale_to_utf8(lpstrFile,-1,NULL,NULL,NULL);
 		filenames[1] = NULL;
 	}
 	else
 		filenames[i-1] = NULL;
+
+	g_free(sdirname);
 
 	return filenames;
 #endif
