@@ -266,4 +266,5 @@ int ti68k_kbd_push_chars(const char *chars)
     key_buffer = chars_to_keys(chars,
                    tihw.calc_type==TI89 || tihw.calc_type==TI89t);
     key_buffer_ptr = key_buffer;
+    return TRUE;
 }
