@@ -127,11 +127,40 @@ gint display_save_state_dbox()
 	return 0;
 }
 
+void send_file(const gchar *filename)
+{
+	int err;
+
+	// set pbar title
+	if(tifiles_file_is_tib(filename) || tifiles_file_is_flash(filename)) 
+	{
+		create_pbar_type5(_("Flash"), "");
+	} 
+	else if(tifiles_file_is_backup(filename)) 
+	{
+		create_pbar_type3(_("Backup"));
+	} 
+	else if(tifiles_file_is_group(filename)) 
+	{
+		create_pbar_type5(_("Sending group file"), "");
+	} 
+	else if(tifiles_file_is_single(filename)) 
+	{
+		create_pbar_type4(_("Sending variable"), "");
+	}
+
+	// note that core is currently not bkpt-interruptible when
+	// transferring file
+	GTK_REFRESH();
+	err = ti68k_linkport_send_file(filename);
+	handle_error();
+	destroy_pbar();	
+}
+
 gint display_send_files_dbox()
 {
 	const gchar *ext;
 	gchar **filenames, **ptr;
-	int err;
 	static gchar *folder = NULL;
 
 	// Check for null cable
@@ -174,32 +203,7 @@ gint display_send_files_dbox()
 			return -1;
 		}
 
-		// set pbar title
-#if 1
-		if(tifiles_file_is_tib(*ptr) || tifiles_file_is_flash(*ptr)) 
-		{
-			create_pbar_type5(_("Flash"), "");
-		} 
-		else if(tifiles_file_is_backup(*ptr)) 
-		{
-			create_pbar_type3(_("Backup"));
-		} 
-		else if(tifiles_file_is_group(*ptr)) 
-		{
-			create_pbar_type5(_("Sending group file"), "");
-		} 
-		else if(tifiles_file_is_single(*ptr)) 
-		{
-			create_pbar_type4(_("Sending variable"), "");
-		}
-#endif
-
-		// note that core is currently not bkpt-interruptible when
-		// transferring file
-		GTK_REFRESH();
-		err = ti68k_linkport_send_file(*ptr);
-		handle_error();
-		destroy_pbar();	
+		send_file(*ptr);
 	}
 
 	g_strfreev(filenames);
@@ -240,13 +244,39 @@ int display_recv_files_dbox(const char *src, const char *dst)
 }
 
 #ifndef NO_GDB
+void send_file_and_debug_info(const gchar *filename)
+{
+    const gchar *ext;
+    FileContent metadata;
+
+    send_file(filename);
+
+    ext = strrchr(filename, '.');
+    if (ext)
+    {
+        *(char *)ext = 0;
+        symfile = g_strconcat(filename, ".dbg", NULL);
+        *(char *)ext = '.';
+    }
+
+    if (!tifiles_file_read_regular(filename, &metadata))
+    {
+        if (metadata.num_entries > 0)
+        {
+            int handle = sym_find_handle (metadata.entries[0]->folder, metadata.entries[0]->name);
+            if (handle)
+                ti68k_bkpt_add_pgmentry (handle);
+        }
+        tifiles_content_delete_regular(&metadata);
+    }
+}
+
 gint display_debug_dbox(void)
 {
 	const gchar *filename;
-    const gchar *ext;
+	const gchar *ext;
 	int err;
 	static gchar *folder = NULL;
-	FileContent metadata;
 
     // set mask
     switch(tihw.calc_type) 
@@ -281,49 +311,7 @@ gint display_debug_dbox(void)
         return -1;
     }
 
-    // set pbar title
-    if(tifiles_file_is_tib(filename) || tifiles_file_is_flash(filename)) 
-	{
-        create_pbar_type5(_("Flash"), "");
-    } 
-	else if(tifiles_file_is_backup(filename)) 
-	{
-        create_pbar_type3(_("Backup"));
-    } 
-	else if(tifiles_file_is_group(filename)) 
-	{
-        create_pbar_type5(_("Sending group file"), "");
-    } 
-	else if(tifiles_file_is_single(filename)) 
-	{
-        create_pbar_type4(_("Sending variable"), "");
-    }
-
-    // note that core is currently not bkpt-interruptible when
-    // transferring file
-    GTK_REFRESH();
-    err = ti68k_linkport_send_file(filename);
-    handle_error();
-    destroy_pbar();	
-
-    ext = strrchr(filename, '.');
-    if (ext)
-    {
-        *(char *)ext = 0;
-        symfile = g_strconcat(filename, ".dbg", NULL);
-        *(char *)ext = '.';
-    }
-
-    if (!tifiles_file_read_regular(filename, &metadata))
-    {
-        if (metadata.num_entries > 0)
-        {
-            int handle = sym_find_handle (metadata.entries[0]->folder, metadata.entries[0]->name);
-            if (handle)
-                ti68k_bkpt_add_pgmentry (handle);
-        }
-        tifiles_content_delete_regular(&metadata);
-    }
+    send_file_and_debug_info(filename);
 
 	return 0;
 }

@@ -24,15 +24,19 @@
  *  Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#include <glib.h>
 #include <gtk/gtk.h>
 
-
+G_BEGIN_DECLS
 gint display_skin_dbox(void);
 gint display_load_state_dbox(void);
 gint display_save_state_dbox(void);
 gint display_recv_files_dbox(const char *src, const char *dst);
+void send_file(const gchar *filename);
 gint display_send_files_dbox();
+void send_file_and_debug_info(const gchar *filename);
 gint display_debug_dbox(void);
 gint display_set_rom_dbox(void);
 gint display_set_tib_dbox(void);
 gint display_import_romversion_dbox(void);
+G_END_DECLS

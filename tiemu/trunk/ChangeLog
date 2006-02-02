@@ -96,6 +96,7 @@ SubVersion: $Id$
 	                 actually honor locale for file names throughout
 	- [kevin] $1875: plug Qt event loop into GTK+ main loop so we will actually be able to receive/process DCOP messages
 	- [kevin] $1876: created a DCOP interface (currently empty)
+	- [kevin] $1879: implemented image queries and file sending in the DCOP interface
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

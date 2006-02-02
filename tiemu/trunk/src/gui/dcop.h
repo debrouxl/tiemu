@@ -22,6 +22,7 @@
 
 #include <qobject.h>
 #include <dcopobject.h>
+#include <qstringlist.h>
 
 class TiEmuDCOP: public QObject, virtual public DCOPObject
 {
@@ -33,6 +34,13 @@ class TiEmuDCOP: public QObject, virtual public DCOPObject
     ~TiEmuDCOP();
 
   k_dcop:
+    bool image_loaded();
+    int emulated_calc_type();
+    int emulated_hw_version();
+    QString emulated_os_version();
+    void send_file(QString);
+    void send_files(QStringList);
+    void debug_file(QString);
 };
 
 #endif
