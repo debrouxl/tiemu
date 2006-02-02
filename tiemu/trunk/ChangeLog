@@ -102,6 +102,7 @@ SubVersion: $Id$
 	- [kevin] $1882: added reset_calc(bool clearmem) command to the DCOP interface
 	                 DCOP operations now return true if TiEmu was ready and false if it wasn't (and rejected the operation)
 	- [kevin] $1883: implemented execute_command in the DCOP interface
+	- [kevin] $1886: added turn_calculator_on command to the DCOP interface
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

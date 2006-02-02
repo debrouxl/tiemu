@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2006 Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,6 +28,9 @@
 #ifndef __TI68K_M68K__
 #define __TI68K_M68K__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 int hw_m68k_init(void);
 int hw_m68k_reset(void);
 int hw_m68k_exit(void);
@@ -35,5 +39,8 @@ int hw_m68k_run(int ninsts, unsigned int maxcycles);
 unsigned int hw_m68k_get_cycle_count(int);
 
 void hw_m68k_irq(int n);
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -25,12 +25,12 @@
 #include <kapp.h>
 
 #include "dcop.h"
-#include "images.h"
+#include "ti68k_int.h"
 #include "fs_misc.h"
 #include "engine.h"
-#include "ti68k_int.h"
 #include "dbg_all.h"
 #include "ticonv.h"
+#include "m68k.h"
 
 TiEmuDCOP::TiEmuDCOP() : DCOPObject( "TiEmuDCOP" )
 {
@@ -135,5 +135,17 @@ bool TiEmuDCOP::execute_command(QString command)
     char ti[command.length()+1];
     utf16_to_ti(command.ucs2(),ti);
     return ti68k_kbd_push_chars(ti);
+  } else return false;
+}
+
+bool TiEmuDCOP::turn_calc_on()
+{
+  if (img_loaded && !engine_is_stopped()) {
+    engine_stop();
+    hw_m68k_irq(6);
+    while (ti68k_debug_is_supervisor())
+      hw_m68k_run(1,0);
+    engine_start();
+    return true;
   } else return false;
 }

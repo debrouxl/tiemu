@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2006 Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,9 +28,9 @@
 #ifndef __ENGINE_H__
 #define __ENGINE_H__
 
-#include <glib.h>
-
-G_BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 void engine_calibrate(void);
 
 void engine_start(void); 
@@ -37,6 +38,8 @@ void engine_stop(void);
 
 int engine_is_stopped(void);
 int engine_is_running(void);
-G_END_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #endif
