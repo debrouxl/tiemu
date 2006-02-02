@@ -313,7 +313,7 @@ int *chars_to_keys(const char *chars, int ti89)
         case 59: // ;
           row=keys89_59;
           break;
-        case 92: // \
+        case 92: // backslash
           row=keys89_92;
           break;
         case 142: // SIGMA
