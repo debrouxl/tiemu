@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2006, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,11 +39,15 @@
 #include "m68k.h"
 #include "bits.h"
 #include "ports.h"
+#include "tichars.h"
 
 static TiKey key_states[NB_MAX_KEYS];
 static int  *key_row;
 static int   key_change;
 static int	 on_change;
+static int *key_buffer;
+static int *key_buffer_ptr;
+static int key_buffer_state;
 
 int keyRow92[10][8] =
 {
@@ -161,24 +166,63 @@ int ti68k_kbd_is_key_pressed(int key)
 
 int hw_kbd_update(void)		// ~600Hz
 {
+	// Push the keys we have been asked to push by ti68k_kbd_push_chars.
+	if (key_buffer)
+	{
+		int key = *key_buffer_ptr;
+		if (key == -1)
+		{
+			free(key_buffer);
+			key_buffer = NULL;
+			key_buffer_ptr = NULL;
+			key_buffer_state = 0;
+		}
+		else if (key == TIKEY_VOID) // give the calculator some time to react
+		{
+			if (++key_buffer_state == 30)
+			{
+				key_buffer_state = 0;
+				key_buffer_ptr++;
+			}
+		}
+		else
+		{
+			switch (key_buffer_state++)
+			{
+			  case 0:
+				ti68k_kbd_set_key(key,TRUE);
+				break;
+			  case 5:
+				ti68k_kbd_set_key(key,FALSE);
+				break;
+			  case 10:
+				key_buffer_state = 0;
+				key_buffer_ptr++;
+				break;
+			  default:
+				break;
+			}
+		}
+	}
+	
 	if(key_change)
-    {
-    	// Auto-Int 2 is triggered when the first unmasked key is pressed. Keeping the key
+	{
+		// Auto-Int 2 is triggered when the first unmasked key is pressed. Keeping the key
 		// pressed, or pressing another one without releasing the first key, will not generate
 		// additional interrupts.
 		if((tihw.hw_type == HW1) || !(io2_bit_tst(0x1f, 2) && !io2_bit_tst(0x1f, 1)))
 			hw_m68k_irq(2);
 		key_change = 0;
-    }
+	}
 	
 	if((on_change == 1) && tihw.on_key) 
-    {
-    	// Auto-Int 6 triggered when [ON] is pressed.
+	{
+		// Auto-Int 6 triggered when [ON] is pressed.
 		hw_m68k_irq(6);
 		on_change = 0;
-    }
-  
-    return 0;
+	}
+	
+	return 0;
 }
 
 static uint8_t get_rowmask(uint8_t r) 
@@ -209,4 +253,17 @@ uint8_t hw_kbd_read_cols(void)
     }
 
     return ~arg;
+}
+
+// "chars" is expected to be in the TI calculator charset.
+// Only works (and returns TRUE) if the internal keyboard buffer was empty,
+// otherwise returns FALSE.
+int ti68k_kbd_push_chars(const char *chars)
+{
+    if (key_buffer)
+        return FALSE;
+
+    key_buffer = chars_to_keys(chars,
+                   tihw.calc_type==TI89 || tihw.calc_type==TI89t);
+    key_buffer_ptr = key_buffer;
 }

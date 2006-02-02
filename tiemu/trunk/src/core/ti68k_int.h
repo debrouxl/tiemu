@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2006, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -55,6 +56,7 @@ int ti68k_calc_to_libti_calc(void);
 
 // Keyboard
 void ti68k_kbd_set_key(int key, int active);
+int ti68k_kbd_push_chars(const char *chars);
 
 // Misc
 int ti68k_get_rom_size(int calc_type);

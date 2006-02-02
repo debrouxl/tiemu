@@ -1,5 +1,6 @@
-/*  DCOP interface for TiEmu
+/*  TiEmu - a TI calculator emulator
  *
+ *  Character to key conversion routine
  *  Copyright (c) 2006 Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -17,33 +18,11 @@
  *  Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef TIEMU_DCOP_H
-#define TIEMU_DCOP_H
+#ifndef TICHARS_H
+#define TICHARS_H
+#include <glib.h>
 
-#include <qobject.h>
-#include <dcopobject.h>
-#include <qstringlist.h>
-
-class TiEmuDCOP: public QObject, virtual public DCOPObject
-{
-  Q_OBJECT
-  K_DCOP
-
-  public:
-    TiEmuDCOP();
-    ~TiEmuDCOP();
-
-  k_dcop:
-    bool image_loaded();
-    int emulated_calc_type();
-    int emulated_hw_version();
-    QString emulated_os_version();
-    bool ready_for_transfers();
-    bool send_file(QString);
-    bool send_files(QStringList);
-    bool debug_file(QString);
-    bool reset_calc(bool);
-    bool execute_command(QString command);
-};
-
+G_BEGIN_DECLS
+int *chars_to_keys(const char *chars, int ti89);
+G_END_DECLS
 #endif

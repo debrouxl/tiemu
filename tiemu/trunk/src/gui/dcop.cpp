@@ -30,6 +30,7 @@
 #include "engine.h"
 #include "ti68k_int.h"
 #include "dbg_all.h"
+#include "ticonv.h"
 
 TiEmuDCOP::TiEmuDCOP() : DCOPObject( "TiEmuDCOP" )
 {
@@ -123,5 +124,16 @@ bool TiEmuDCOP::reset_calc(bool clearram)
       engine_start();
 
     return true;
+  } else return false;
+}
+
+bool TiEmuDCOP::execute_command(QString command)
+{
+  if (img_loaded) {
+    command.prepend('\f');
+    command+='\r';
+    char ti[command.length()+1];
+    utf16_to_ti(command.ucs2(),ti);
+    return ti68k_kbd_push_chars(ti);
   } else return false;
 }

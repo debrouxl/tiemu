@@ -93,7 +93,8 @@ core_tihw_OBJ = \
 	core/ti_hw/mem92p.o	\
 	core/ti_hw/memv2.o	\
 	core/ti_hw/ports.o	\
-	core/ti_hw/rtc_hw3.o
+	core/ti_hw/rtc_hw3.o	\
+	core/ti_hw/tichars.o
 
 core_tisw_OBJ = \
 	core/ti_sw/er_codes.o \
@@ -171,6 +172,7 @@ gui_OBJ = \
 	gui/scroptions.o						\
 	gui/splash.o							\
 	gui/support.o 							\
+	gui/ticonv.o 							\
 	gui/tsource.o 							\
 	gui/wizard.o
 
