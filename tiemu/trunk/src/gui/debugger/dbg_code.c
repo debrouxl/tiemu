@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -444,10 +444,6 @@ void dbgcode_disasm_at(uint32_t addr)
 
 
 GLADE_CB void
-on_quit1_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-GLADE_CB void
 on_run1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -460,7 +456,7 @@ on_run1_activate                       (GtkMenuItem     *menuitem,
 	ti68k_debug_step();	// skip possible current bkpt
     ti68k_engine_start();
 #else
-	on_quit1_activate(menuitem, user_data);
+	close_debugger();
 #endif
 }
 
@@ -1079,15 +1075,15 @@ int dbgcode_quit_enabled(void)
 	return GTK_WIDGET_SENSITIVE(mi.m8);
 }
 
-static int on_quit1_activate_wrapper(gpointer data)
+static int close_debugger_wrapper(gpointer data)
 {
-	on_quit1_activate(NULL, NULL);
+	close_debugger();
 	return FALSE;
 }
 
 int gdbcallback_close_debugger(void *clientdata, void *interp, int argc, const char **argv)
 {
-	if (dbg_on && dbgcode_quit_enabled()) gtk_idle_add(on_quit1_activate_wrapper, NULL);
+	if (dbg_on && dbgcode_quit_enabled()) gtk_idle_add(close_debugger_wrapper, NULL);
 	return 0;
 }
 

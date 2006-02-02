@@ -28,6 +28,8 @@
 #define __TI68K_INTF__
 
 #include "ti68k_def.h"
+
+G_BEGIN_DECLS
 #include "tilibs.h"
  
 /*************/
@@ -82,5 +84,6 @@ int ti68k_error_get(int err_num, char *error_msg);
 // Misc
 int ti68k_debug_load_symbols(const char *path);
 int ti68k_debug_load_iodefs(const char *path);
+G_END_DECLS
 
 #endif

@@ -17,6 +17,7 @@
  *  Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#include <cstdlib>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <dcopobject.h>
@@ -27,6 +28,8 @@
 #include "images.h"
 #include "fs_misc.h"
 #include "engine.h"
+#include "ti68k_int.h"
+#include "dbg_all.h"
 
 TiEmuDCOP::TiEmuDCOP() : DCOPObject( "TiEmuDCOP" )
 {
@@ -74,30 +77,51 @@ bool TiEmuDCOP::ready_for_transfers()
   return (img_loaded && !engine_is_stopped());
 }
 
-void TiEmuDCOP::send_file(QString filename)
+bool TiEmuDCOP::send_file(QString filename)
 {
   if (img_loaded && !engine_is_stopped()) {
     engine_stop();
     ::send_file(filename.local8Bit());
     engine_start();
-  }
+    return true;
+  } else return false;
 }
 
-void TiEmuDCOP::send_files(QStringList filenames)
+bool TiEmuDCOP::send_files(QStringList filenames)
 {
   if (img_loaded && !engine_is_stopped()) {
     engine_stop();
     for (QStringList::Iterator it = filenames.begin(); it != filenames.end(); ++it)
       ::send_file((*it).local8Bit());
     engine_start();
-  }
+    return true;
+  } else return false;
 }
 
-void TiEmuDCOP::debug_file(QString filename)
+bool TiEmuDCOP::debug_file(QString filename)
 {
   if (img_loaded && !engine_is_stopped()) {
     engine_stop();
     send_file_and_debug_info(filename.local8Bit());
     engine_start();
-  }
+    return true;
+  } else return false;
+}
+
+bool TiEmuDCOP::reset_calc(bool clearram)
+{
+  if (img_loaded) {
+    engine_stop();
+
+    if(clearram)
+      std::memset(tihw.ram, 0, tihw.ram_size);
+
+    ti68k_reset();
+    if (dbg_on)
+      close_debugger();
+    else
+      engine_start();
+
+    return true;
+  } else return false;
 }

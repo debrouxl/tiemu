@@ -39,9 +39,10 @@ class TiEmuDCOP: public QObject, virtual public DCOPObject
     int emulated_hw_version();
     QString emulated_os_version();
     bool ready_for_transfers();
-    void send_file(QString);
-    void send_files(QStringList);
-    void debug_file(QString);
+    bool send_file(QString);
+    bool send_files(QStringList);
+    bool debug_file(QString);
+    bool reset_calc(bool);
 };
 
 #endif

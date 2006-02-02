@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,6 +27,10 @@
 #ifndef __DBG_ALL_H__
 #define __DBG_ALL_H__
 
+#include <glib.h>
+#include <gtk/gtk.h>
+
+G_BEGIN_DECLS
 #include "dbg_bkpts.h"
 #include "dbg_code.h"
 #include "dbg_cause.h"
@@ -73,6 +77,8 @@ void gtk_debugger_hide_all(int all);
 
 void gtk_window_minimize(GtkWindow *window, gboolean action);
 
+void close_debugger(void);
+
 /* Variables */
 
 extern int dbg_on;
@@ -84,5 +90,6 @@ extern GtkWidget *main_wnd;
 /* Macros */
 
 #define glade_get(s)		glade_xml_get_widget(xml, (s))
+G_END_DECLS
 
 #endif
