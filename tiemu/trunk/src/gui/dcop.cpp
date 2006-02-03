@@ -130,11 +130,20 @@ bool TiEmuDCOP::reset_calc(bool clearram)
 bool TiEmuDCOP::execute_command(QString command)
 {
   if (img_loaded) {
+    bool result;
     command.prepend('\f');
     command+='\r';
+#ifdef __GNUC__
     char ti[command.length()+1];
     utf16_to_ti(command.ucs2(),ti);
-    return ti68k_kbd_push_chars(ti);
+    result=ti68k_kbd_push_chars(ti);
+#else
+    char *ti=std::malloc(command.length()+1);
+    utf16_to_ti(command.ucs2(),ti);
+    result=ti68k_kbd_push_chars(ti);
+    std::free(ti);
+#endif
+    return result;
   } else return false;
 }
 

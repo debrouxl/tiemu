@@ -18,8 +18,9 @@ DESTDIR   =
 
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	RESFILE = tiemu-rc.o
-	LDFLAGS += -lcomdlg32
+	LDFLAGS += -lcomdlg32 -lole32 -loleaut32 -luuid -lstdc++
 	EXEEXT = .exe
+	win32_OBJ = gui/oleaut.o
 else
 	RESFILE =
 	EXEEXT =
@@ -188,7 +189,7 @@ tiemu_OBJ = core/uae/newcpu.o \
 	$(core_uae_OBJ) $(core_OBJ) $(core_tihw_OBJ) $(core_tisw_OBJ) \
 	$(core_dbg_OBJ) \
 	$(misc_OBJ) \
-	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(kde_OBJ) \
+	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(kde_OBJ) $(win32_OBJ) \
 	core/gdb/gdb/libgdb.a
 
 #rules:

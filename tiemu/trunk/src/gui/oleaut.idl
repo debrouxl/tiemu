@@ -1,0 +1,68 @@
+/*  OLE Automation interface for TiEmu
+ *
+ *  Copyright (c) 2006 Kevin Kofler
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+typedef enum
+{
+  TIEMU_CALC_TI92 = 1,
+  TIEMU_CALC_TI89 = 2,
+  TIEMU_CALC_TI92p = 4,
+  TIEMU_CALC_V200 = 8,
+  TIEMU_CALC_TI89t = 16,
+} TiEmuCalcModels;
+
+[
+object,
+uuid(e9373bd9-7363-427f-a2a6-1e8ba91ffb3e),
+dual,
+helpstring("TiEmu OLE Interface"),
+pointer_default(unique)
+]
+interface ITiEmuOLE : IDispatch
+{
+  HRESULT image_loaded([out, retval] VARIANT_BOOL *ret);
+  HRESULT emulated_calc_type([out, retval] int *ret);
+  HRESULT emulated_hw_version([out, retval] int *ret);
+  HRESULT emulated_os_version([out, retval] BSTR *ret);
+  HRESULT ready_for_transfers([out, retval] VARIANT_BOOL *ret);
+  HRESULT send_file([in] BSTR filename, [out, retval] VARIANT_BOOL *ret);
+  HRESULT debug_file([in] BSTR filename, [out, retval] VARIANT_BOOL *ret);
+  HRESULT reset_calc([in] VARIANT_BOOL clearmem, [out, retval] VARIANT_BOOL *ret);
+  HRESULT execute_command([in] BSTR command, [out, retval] VARIANT_BOOL *ret);
+  HRESULT turn_calc_on([out, retval] VARIANT_BOOL *ret);
+};
+
+[
+uuid(6140dc7c-3d74-41f9-a787-5946994aa8f2),
+version(1.0),
+helpstring("TiEmu Type Library")
+]
+library TiEmuOLELib
+{
+  [
+  uuid(b2a17b13-9d6f-4dd4-a2a9-6fe06adc1d33),
+  helpstring("TiEmu OLE Interface Class")
+  ]
+  coclass TiEmuOLE
+  {
+    [default] interface ITiEmuOLE;
+  };
+};

@@ -49,11 +49,13 @@ Linux (cross)
 -------------
 
 TiEmu now supports Linux->MinGW cross-compilation again. Here's how I did it:
-1. Installed the MinGW RPMs from: http://mirzam.it.vu.nl/mingw/
-2. Installed WINE from Fedora Extras.
-3. Installed the latest GTK+ development environment from http://gladewin32.sf.net in WINE.
-4. ln -s ~/.wine/c/GTK /target #(to make pkg-config happy)
-5. Used the following commands to build TiEmu:
+1. Installed the MinGW binutils, w32api and runtime RPMs from: http://mirzam.it.vu.nl/mingw/
+2. Installed the MinGW GCC RPM from: http://bitwalk.hp.infoseek.co.jp/download.html
+   (Make sure you get a package which includes g++. It is needed to build oleaut.cpp.)
+3. Installed WINE from Fedora Extras.
+4. Installed the latest GTK+ development environment from http://gladewin32.sf.net in WINE.
+5. ln -s ~/.wine/c/GTK /target #(to make pkg-config happy)
+6. Used the following commands to build TiEmu:
    source cross-mingw32-aio.sh #(needs to be done for EACH build!)
    export CFLAGS="-Os -s -fno-exceptions"
    cd libticables2-mingw-build
@@ -101,7 +103,7 @@ To build the setup wizard, here's what I did:
    cd build/nsis
    makensis tiemu-cross.nsi
 
-Tested with TiEmu 2.80, 2006-01-07. Updated 2006-01-11.
+Tested with TiEmu 2.80, 2006-01-07. Updated 2006-02-03.
 
 ---
 

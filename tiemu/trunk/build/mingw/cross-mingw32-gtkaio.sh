@@ -2,6 +2,7 @@
 # It assumes a GTK+ development environment installation from gladewin32.sf.net in WINE.
 # You'll also need a: ln -s ~/.wine/c/GTK /target
 export CC=i386-mingw32-gcc
+export CXX=i386-mingw32-g++
 export RC=i386-mingw32-windres
 export GTK_BASEPATH=~/.wine/c/GTK
 export PATH=$GTK_BASEPATH/bin:$PATH

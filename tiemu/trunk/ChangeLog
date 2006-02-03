@@ -105,6 +105,7 @@ SubVersion: $Id$
 	- [kevin] $1886: added turn_calculator_on command to the DCOP interface
 	- [kevin] $1889: adjust to libtifiles2 re-reversion to file names in glib filename charset
 	- [kevin] $1890: implemented widechar versions of Win32 file dialogs
+	- [kevin] $1891: partial implementation of OLE automation interface (no instances created yet)
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
