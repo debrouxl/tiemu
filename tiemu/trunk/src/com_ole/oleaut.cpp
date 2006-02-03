@@ -225,6 +225,12 @@ STDMETHODIMP TiEmuOLE::execute_command(BSTR command, VARIANT_BOOL *ret)
     utf16_to_ti((const unsigned short *)command,ti);
     temp=g_strconcat("\f",ti,"\r",NULL);
     result=ti68k_kbd_push_chars(temp);
+#elif defined(_MSC_VER)
+	char *ti=(char *)malloc(SysStringLen(command)+1);
+    utf16_to_ti((const unsigned short *)command,ti);
+    temp=g_strconcat("\f",ti,"\r",NULL);
+    result=ti68k_kbd_push_chars(temp);
+    free(ti);
 #else
     char *ti=std::malloc(SysStringLen(command)+1);
     utf16_to_ti((const unsigned short *)command,ti);

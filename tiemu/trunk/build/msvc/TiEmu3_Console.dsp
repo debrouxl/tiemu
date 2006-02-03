@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "C:\sources\roms\tiemu3\src\misc" /I "C:\sources\roms\tiemu3\src\gui\calc" /I "C:\sources\roms\tiemu3\src\core\dbg" /I "C:\sources\roms\tiemu3\src\core\ti_sw" /I "C:\sources\roms\tiemu3\src\gui\debugger" /I "." /I "../../../ticables2/src" /I "../../../tifiles2/src" /I "../../../ticalcs2/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\sources\roms\tiemu3\src\core\uae" /I "C:\sources\roms\tiemu3\src\core" /I "C:\sources\roms\tiemu3\src\core\ti_hw" /I "C:\sources\roms\tiemu3\src\hid" /I "C:\sources\roms\tiemu3\src\gui" /I ".\libjpeg" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /D "NO_GDB" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "C:\sources\roms\tiemu3\src\misc" /I "C:\sources\roms\tiemu3\src\gui\calc" /I "C:\sources\roms\tiemu3\src\core\dbg" /I "C:\sources\roms\tiemu3\src\core\ti_sw" /I "C:\sources\roms\tiemu3\src\gui\debugger" /I "." /I "../../../ticables2/src" /I "../../../tifiles2/src" /I "../../../ticalcs2/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\Gtk2Dev\include\cairo" /I "C:\sources\roms\tiemu3\src\core\uae" /I "C:\sources\roms\tiemu3\src\core" /I "C:\sources\roms\tiemu3\src\core\ti_hw" /I "C:\sources\roms\tiemu3\src\hid" /I "C:\sources\roms\tiemu3\src\gui" /I ".\libjpeg" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /D "NO_GDB" /FD /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x40c /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
@@ -173,6 +173,10 @@ SOURCE=..\..\src\core\ti_hw\ports.c
 # Begin Source File
 
 SOURCE=..\..\src\core\ti_hw\rtc_hw3.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\core\ti_hw\tichars.c
 # End Source File
 # End Group
 # Begin Group "dbg"
@@ -354,6 +358,10 @@ SOURCE=..\..\src\gui\calc\skinkeys.c
 
 SOURCE=..\..\src\gui\calc\skinops.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\ticonv.c
+# End Source File
 # End Group
 # Begin Group "dlgbox"
 
@@ -450,6 +458,26 @@ SOURCE=..\..\src\misc\screenshot.c
 # Begin Source File
 
 SOURCE=..\..\src\misc\tie_error.c
+# End Source File
+# End Group
+# Begin Group "com_ole"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\com_ole\dllmain.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\com_ole\oleaut.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\com_ole\registry.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\com_ole\tiemu.def
 # End Source File
 # End Group
 # Begin Source File

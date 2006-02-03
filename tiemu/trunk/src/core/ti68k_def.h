@@ -31,6 +31,11 @@
 # include <config.h>
 #endif
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <glib.h>
 #include <stdint.h>
 
@@ -205,6 +210,10 @@ extern Ti68kBreakpoints	bkpts;
 
 #ifndef TRY
 #define TRY(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif
