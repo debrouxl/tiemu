@@ -1,11 +1,7 @@
 Planned features:
 
-* avoir la possibilité de choisir l'emplacement où sont stockés les screenshots 
-* version française
-
-+ add SilverLink support (tiemu3)
-+ register window
-+ RTC HW2 to fix (clock wrap around)
+* select target folder for screenshots
+* i18n (internationalization support)
 
 -------------
 + done
