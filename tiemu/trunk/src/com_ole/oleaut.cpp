@@ -17,7 +17,6 @@
  *  Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#define INITGUID
 #include <cstdlib>
 #include <wchar.h>
 #include <glib.h>
@@ -25,7 +24,7 @@
 #include <windows.h>
 #include <oleauto.h>
 
-#include "oleaut.h"
+#include "tiemuole.h"
 #include "oleaut_c.h"
 #include "ti68k_int.h"
 #include "fs_misc.h"
@@ -33,34 +32,6 @@
 #include "dbg_all.h"
 #include "ticonv.h"
 #include "m68k.h"
-
-class TiEmuOLE : public ITiEmuOLE
-{
-  private:
-    ITypeLib *typelib;
-    unsigned refcount;
-
-  public:
-    TiEmuOLE();
-    ~TiEmuOLE();
-    STDMETHOD(QueryInterface)(REFIID,PVOID*);
-    STDMETHOD_(ULONG,AddRef)();
-    STDMETHOD_(ULONG,Release)();
-    STDMETHOD(GetTypeInfoCount)(THIS_ UINT*);
-    STDMETHOD(GetTypeInfo)(UINT,LCID,LPTYPEINFO*);
-    STDMETHOD(GetIDsOfNames)(REFIID,LPOLESTR*,UINT,LCID,DISPID*);
-    STDMETHOD(Invoke)(DISPID,REFIID,LCID,WORD,DISPPARAMS*,VARIANT*,EXCEPINFO*,UINT*);
-    STDMETHOD(image_loaded)(VARIANT_BOOL* ret);
-    STDMETHOD(emulated_calc_type)(int* ret);
-    STDMETHOD(emulated_hw_version)(int* ret);
-    STDMETHOD(emulated_os_version)(BSTR* ret);
-    STDMETHOD(ready_for_transfers)(VARIANT_BOOL* ret);
-    STDMETHOD(send_file)(BSTR filename,VARIANT_BOOL* ret);
-    STDMETHOD(debug_file)(BSTR filename,VARIANT_BOOL* ret);
-    STDMETHOD(reset_calc)(VARIANT_BOOL clearmem,VARIANT_BOOL* ret);
-    STDMETHOD(execute_command)(BSTR command,VARIANT_BOOL* ret);
-    STDMETHOD(turn_calc_on)(VARIANT_BOOL* ret);
-};
 
 TiEmuOLE::TiEmuOLE() : typelib(NULL), refcount(1)
 {
