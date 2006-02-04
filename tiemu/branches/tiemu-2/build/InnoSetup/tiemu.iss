@@ -7,7 +7,7 @@
 
 [Setup]
 AppName=TiEmu
-AppVerName=TiEmu 2.02b
+AppVerName=TiEmu 2.04
 AppPublisher=The TiEmu Team
 AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
 AppSupportURL=http://lpg.ticalc.org/prj_tiemu/mailing_list.html
@@ -182,7 +182,7 @@ begin
   if(I = 2) then begin
     S := 'The GTK+ libraries are installed but the version is old: ';
   end;
-  MsgBox(S + 'you will need the GTK+ 2.6.x Runtime Environnement! But, the installer can download and install it for you; simply think to check the box at the last tab/page. Otherwise, you can still download it from the start menu (start menu > programs > tilp > install gtk+ from the web).', mbError, MB_OK);
+  MsgBox(S + 'you will need the GTK+ 2.8.x Runtime Environnement! But, the installer can download and install it for you; simply think to check the box at the last tab/page. Otherwise, you can still download it from the start menu (start menu > programs > tilp > install gtk+ from the web).', mbError, MB_OK);
 end;
 
 function InitializeSetup(): Boolean;
@@ -198,7 +198,7 @@ begin
     Result := GetGtkVersionInstalled ();
 
     // and check
-    if CompareStr(GtkVersion, '2.6.10') < 0 then begin
+    if CompareStr(GtkVersion, '2.8.10') < 0 then begin
       DisplayWarning(2);
     end;
   end;

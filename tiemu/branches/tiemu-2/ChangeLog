@@ -1,5 +1,10 @@
 SubVersion: $Id$
 
+- 04/02/2006, version 2.04:
+	- [roms] $1897: backported rev. $1812
+	- [roms] $1898: backported rev. $1811
+	- [roms] $1899: backported rev. $1856
+
 - 26/09/2005, version 2.03:
 	- [roms] $1800: fixed #1304338 (doesn't save skinless mode in .ini file)
 	- [roms] $1802: fixed #1305054 (doesn't refresh vector bkpt state)

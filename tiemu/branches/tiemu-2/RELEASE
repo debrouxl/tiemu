@@ -2,8 +2,8 @@
 
 
 
-Previous version: 2.01		(06/09/2005)
-Current version:  2.02		(20/09/2005)
+Previous version: 2.02		(20/09/2005)
+Current version:  2.04		(04/01/2006)
 
 SubVersion (CVS) revision: $Id$
 
@@ -26,17 +26,17 @@ New capabilities:
 Improvements:
 -------------
 
-	- none
+	- pedrom v0.81
+	- optimized grayscale movem detection and added support for dirty-coded HW2/3 grayscale 
+		interrupts abusing the stack pointer to hold data (currently only the latest Grib is 
+		known to do that).
 	
 		
 Bug fixes:
 ----------
 
-	- bug #1294628: don't overwrite file received from TiEmu.
-		Raises a overwrite/rename/skip box for now (imported TiLP-II file management unit).
-	- fixed V200 skin (LCD is blank).
-	- bug #1294628: fixed bad memory allocation in the GTK+ 2.6 multiple file selector 
-		which makes TiEmu crash. 
+	- bug #1304338: doesn't save skinless mode in .ini file
+	- bug #1305054: doesn't refresh vector bkpt state
 	
 
 Planned:

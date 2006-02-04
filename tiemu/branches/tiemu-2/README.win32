@@ -10,8 +10,9 @@ REQUIREMENTS
 
  - a PC with a 450MHz Pentium-class processor and 32MB of RAM
  - a Windows computer: Windows 95/98/Me or Windows NT4/2000/XP (better)
- - the GTK+ 2.6 libraries
+ - the GTK+ 2.8 libraries
     Location: <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.10-rc1.exe?download>
+    => They can be automatically download & installed by the installer.
  - note: SilverLink is not supported yet for both Linux & Windows
 	
 	Note: if you are using 'The GiMP', you may encounter DLL's problems...
@@ -20,12 +21,10 @@ REQUIREMENTS
 		Thus, if you are using The GiMP, you are strongly encouraged to uninstall (1) and install (2).
 
 
-INSTALLATION
-------------
+NOTES
+-----
 
-Run the InnoSetup installer...
-
-1°) You need some extra libraries (GTK+ 2.6). 
+1°) This setup may download & install some extra libraries (GTK+ 2.6). 
 
 The GTK+ package includes the Wimp (Windows IMPersonator) theme engine which gives 
 Windows look & feel (includes XP theming). Is also included the GTK theme selector.
@@ -73,7 +72,7 @@ AVAILABILITY
 COPYRIGHT
 ---------
 
-TiEmu is Copyright (C) 2000-2005 by the TiEmu team <tiemu-users@lists.sf.net>
+TiEmu is Copyright (C) 2000-2006 by the TiEmu team <tiemu-users@lists.sf.net>
 
 Copying is allowed under the terms of GNU General Public License (LGPL).  
 See the file COPYING for more details.
