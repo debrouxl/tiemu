@@ -191,6 +191,6 @@ gint
 sp_kde_process_qt_events(gpointer data)
 {
 	if (!gtk_event_loop_called_from_qt)
-		QApplication::eventLoop()->processEvents(QEventLoop::AllEvents);
+		QApplication::eventLoop()->processEvents(QEventLoop::AllEvents, 1);
 	return TRUE;
 }
