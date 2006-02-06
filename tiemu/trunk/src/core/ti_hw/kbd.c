@@ -192,10 +192,10 @@ int hw_kbd_update(void)		// ~600Hz
 			  case 0:
 				ti68k_kbd_set_key(key,TRUE);
 				break;
-			  case 5:
+			  case 7:
 				ti68k_kbd_set_key(key,FALSE);
 				break;
-			  case 10:
+			  case 14:
 				key_buffer_state = 0;
 				key_buffer_ptr++;
 				break;

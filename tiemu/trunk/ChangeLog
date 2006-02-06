@@ -107,7 +107,8 @@ SubVersion: $Id$
 	- [kevin] $1890: implemented widechar versions of Win32 file dialogs
 	- [kevin] $1891: partial implementation of OLE automation interface (no instances created yet)
 	- [kevin] $1907: initialize and uninitialize OLE automation interface
-	- [kevin] $1913: add 1 ms timeout to Qt processEvents to ensure 4% max CPU consumption
+	- [kevin] $1913: added 1 ms timeout to Qt processEvents to ensure 4% max CPU consumption
+	- [kevin] $1914: slowed down typing (execute_command) a bit so the CHAR menu works properly
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
