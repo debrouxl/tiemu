@@ -465,19 +465,7 @@ SOURCE=..\..\src\misc\tie_error.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\com_ole\dllmain.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\com_ole\oleaut.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\com_ole\registry.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\com_ole\tiemu.def
 # End Source File
 # End Group
 # Begin Source File

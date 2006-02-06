@@ -38,6 +38,9 @@ class TiEmuOLE : public ITiEmuOLE
   private:
     ITypeLib *typelib;
     unsigned refcount;
+    bool initialized;
+    bool registered;
+    DWORD oleregister;
 
   public:
     TiEmuOLE();
@@ -63,14 +66,24 @@ class TiEmuOLE : public ITiEmuOLE
 
 TiEmuOLE::TiEmuOLE() : typelib(NULL), refcount(1)
 {
-  // Load type library
-  LoadRegTypeLib(LIBID_TiEmuOLELib, 1, 0, 0, &typelib);
-  // Register with OLE Automation
-  // FIXME: How?
+  // Initialize OLE
+  if (CoInitialize() == S_OK) {
+    // Load type library
+    LoadRegTypeLib(LIBID_TiEmuOLELib, 1, 0, 0, &typelib);
+    if (typelib) {
+      // Register with OLE Automation
+      registered = (CoRegisterClassObject(CLSID_TiEmuOLE, this, CLSCTX_LOCAL_SERVER, REGCLS_MULTIPLEUSE,  &oleregister) == S_OK);
+    }
+    initialized = true;
+  } else initialized = false;
 }
 
 TiEmuOLE::~TiEmuOLE()
 {
+  if (registered)
+    CoRevokeClassObject(oleregister);
+  if (initialized)
+    CoUninitialize();
   if (typelib)
     typelib->Release();
 }
