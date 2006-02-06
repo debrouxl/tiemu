@@ -67,7 +67,7 @@ class TiEmuOLE : public ITiEmuOLE
 TiEmuOLE::TiEmuOLE() : typelib(NULL), refcount(1)
 {
   // Initialize OLE
-  if (CoInitialize() == S_OK) {
+  if (CoInitialize(NULL) == S_OK) {
     // Load type library
     LoadRegTypeLib(LIBID_TiEmuOLELib, 1, 0, 0, &typelib);
     if (typelib) {
