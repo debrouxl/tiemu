@@ -44,16 +44,16 @@ sysconfdir      = @sysconfdir@
 ifeq ($(kde), yes)
 kdeincludes = @all_includes@
 kdelibraries = @LIB_KDECORE@ @LIB_KDEUI@ @LIB_KIO@ @LIB_QT@ @KDE_LDFLAGS@ @QT_LDFLAGS@ @X_LDFLAGS@
-kde_OBJ = gui/kde.o gui/kde-private.o gui/dcop.o gui/dcop-private.o gui/dcop_skel.o
-kdeprivsources = gui/kde-private.cpp gui/dcop-private.cpp gui/dcop.kidl gui/dcop_skel.cpp
-gui/kde-private.cpp: gui/kde-private.h
-	$(MOC) gui/kde-private.h -o gui/kde-private.cpp
-gui/dcop-private.cpp: gui/dcop.h
-	$(MOC) gui/dcop.h -o gui/dcop-private.cpp
-gui/dcop.kidl: gui/dcop.h
-	$(DCOPIDL) gui/dcop.h >gui/dcop.kidl
-gui/dcop_skel.cpp: gui/dcop.kidl
-	$(DCOPIDL2CPP) --no-stub gui/dcop.kidl
+kde_OBJ = kde/kde.o kde/kde-private.o kde/dcop.o kde/dcop-private.o kde/dcop_skel.o
+kdeprivsources = kde/kde-private.cpp kde/dcop-private.cpp kde/dcop.kidl kde/dcop_skel.cpp
+kde/kde-private.cpp: kde/kde-private.h
+	$(MOC) kde/kde-private.h -o kde/kde-private.cpp
+kde/dcop-private.cpp: kde/dcop.h
+	$(MOC) kde/dcop.h -o kde/dcop-private.cpp
+kde/dcop.kidl: kde/dcop.h
+	$(DCOPIDL) kde/dcop.h >kde/dcop.kidl
+kde/dcop_skel.cpp: kde/dcop.kidl
+	$(DCOPIDL2CPP) --no-stub kde/dcop.kidl
 endif
 
 DEFS=@DEFS@ \
@@ -67,7 +67,8 @@ INCLUDES = \
 	-DPREFIX=\"${prefix}\" -I. \
 	-I./core -I./core/uae -I./core/ti_hw -I./core/ti_sw -I./core/dbg \
 	-I./misc \
-	-I./gui -I./gui/calc -I./gui/debugger
+	-I./gui -I./gui/calc -I./gui/debugger \
+	-I./kde -I./com_ole
 
 # source files to build
 core_uae_OBJ = \
