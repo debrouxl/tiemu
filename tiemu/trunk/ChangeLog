@@ -109,7 +109,7 @@ SubVersion: $Id$
 	- [kevin] $1907: initialize and uninitialize OLE automation interface
 	- [kevin] $1913: added 1 ms timeout to Qt processEvents to ensure 4% max CPU consumption
 	- [kevin] $1914: slowed down typing (execute_command) a bit so the CHAR menu works properly
-	- [kevin] $1914: fixed keycode of SIGMA on TI-89
+	- [kevin] $1915: fixed keycode of SIGMA on TI-89
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
