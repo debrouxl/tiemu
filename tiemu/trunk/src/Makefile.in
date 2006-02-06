@@ -258,6 +258,9 @@ distdir: clean
 install: tiemu$(EXEEXT)
 	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
 	$(INSTALL) -m755 tiemu$(EXEEXT) $(DESTDIR)${prefix}/bin/
+ifneq (,$(findstring __WIN32__,$(CFLAGS)))
+	$(INSTALL) -m755 com_ole/tiemups.dll $(DESTDIR)${prefix}/bin/
+endif
 	cd core/gdb/tcl && $(MAKE) install INSTALL_ROOT="$(DESTDIR)"
 	cd core/gdb/tk && $(MAKE) install INSTALL_ROOT="$(DESTDIR)"
 	cd core/gdb/itcl && $(MAKE) install DESTDIR="$(DESTDIR)"
@@ -267,12 +270,18 @@ install: tiemu$(EXEEXT)
 install-without-tcl-tk: tiemu$(EXEEXT)
 	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
 	$(INSTALL) -m755 tiemu$(EXEEXT) $(DESTDIR)${prefix}/bin/
+ifneq (,$(findstring __WIN32__,$(CFLAGS)))
+	$(INSTALL) -m755 com_ole/tiemups.dll $(DESTDIR)${prefix}/bin/
+endif
 	cd core/gdb/itcl && $(MAKE) install DESTDIR="$(DESTDIR)"
 	cd core/gdb/libgui && $(MAKE) install DESTDIR="$(DESTDIR)"
 	cd core/gdb/gdb && $(MAKE) install-gdbtk DESTDIR="$(DESTDIR)"
 
 install-without-tcl-tk-itcl: tiemu$(EXEEXT)
 	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
+ifneq (,$(findstring __WIN32__,$(CFLAGS)))
+	$(INSTALL) -m755 com_ole/tiemups.dll $(DESTDIR)${prefix}/bin/
+endif
 	$(INSTALL) -m755 tiemu$(EXEEXT) $(DESTDIR)${prefix}/bin/
 	cd core/gdb/libgui && $(MAKE) install DESTDIR="$(DESTDIR)"
 	cd core/gdb/gdb && $(MAKE) install-gdbtk DESTDIR="$(DESTDIR)"
