@@ -80,10 +80,11 @@ TiEmuOLE::TiEmuOLE() : typelib(NULL), refcount(1)
 
 TiEmuOLE::~TiEmuOLE()
 {
-  if (registered)
-    CoRevokeClassObject(oleregister);
-  if (initialized)
+  if (initialized) {
+    if (registered)
+      CoRevokeClassObject(oleregister);
     CoUninitialize();
+  }
   if (typelib)
     typelib->Release();
 }
