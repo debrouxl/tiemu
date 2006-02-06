@@ -5,6 +5,7 @@ tiemups.dll: dlldata.obj oleaut_p.obj oleaut_i.obj
 
 .c.obj:
 	cl /c /Ox /DWIN32 /D_WIN32_WINNT=0x0400 /DREGISTER_PROXY_DLL \
+		-Dtiemu_ProxyFileInfo=oleaut_ProxyFileInfo \
 		$<
 
 clean:
