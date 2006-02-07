@@ -114,7 +114,6 @@ static int is_varname(uint8_t *mem)
 static int get_folder_list_handle(void)
 {
 	int handle = -1;
-	uint16_t heap_size;
 	int h, i;
 
 	// search for memory blocks which have a string at [5]
