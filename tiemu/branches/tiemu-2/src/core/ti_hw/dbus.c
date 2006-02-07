@@ -481,9 +481,8 @@ int send_ti_file(const char *filename)
 	sip = 1;
 
     // FLASH APP file ?
-    if(tifiles_is_a_flash_file(filename) && !strcasecmp(tifiles_flash_app_file_ext(), tifiles_get_extension(filename)))
-    {
-        
+    if(tifiles_is_a_flash_file(filename))
+    {        
         ret = itc.send_flash(filename, MODE_APPS);
     }
 

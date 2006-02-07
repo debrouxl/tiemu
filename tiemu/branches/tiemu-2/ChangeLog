@@ -1,5 +1,10 @@
 SubVersion: $Id$
 
+- 07/02/2006, version 2.05:
+	- [roms] $1904: fixed bug #1425569 ("Error code not found" when sending 
+		file to Voyage200). TiEmu didn't allow sending of a 92+ FLASH app on V200
+		due to a too restrictive check.
+
 - 04/02/2006, version 2.04:
 	- [roms] $1897: backported rev. $1812
 	- [roms] $1898: backported rev. $1811
