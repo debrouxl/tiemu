@@ -106,7 +106,7 @@ gint display_about_dbox(void)
 	gtk_about_dialog_set_name(dlg, "TiEmu - Ti Emulator - ");
 	gtk_about_dialog_set_version(dlg, TIEMU_VERSION);
 	gtk_about_dialog_set_comments(dlg, version);
-	gtk_about_dialog_set_copyright(dlg, "Copyright (c) 1999-2005 The TiEmu Team");
+	gtk_about_dialog_set_copyright(dlg, "Copyright (c) 1999-2006 The TiEmu Team");
 	gtk_about_dialog_set_license(dlg, buffer);
 	gtk_about_dialog_set_website(dlg, "http://lpg.ticalc.org/prj_tiemu");
 	gtk_about_dialog_set_authors(dlg, authors);
