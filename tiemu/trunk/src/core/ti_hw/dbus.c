@@ -400,7 +400,7 @@ int send_ti_file(const char *filename)
 	sip = 1;
 
     // FLASH APP file ?
-    if(tifiles_file_is_flash(filename) && !strcasecmp(tifiles_fext_of_flash_app(calc_handle->model), tifiles_fext_get(filename)))
+    if(tifiles_file_is_flash(filename))
     {   
 		ret = ticalcs_calc_send_flash2(calc_handle, filename);
     }
