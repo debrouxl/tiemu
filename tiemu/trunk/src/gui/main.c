@@ -193,6 +193,9 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 
+	// use UTF-8 for varnames
+	tifiles_transcoding_set(ENCODING_UNICODE);
+
     /*
         Search for dumps or upgrades to convert (in the image directory)
     */

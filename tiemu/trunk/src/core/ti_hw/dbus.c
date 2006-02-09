@@ -500,8 +500,14 @@ int recfile(void)
 
 	if(ve)
 	{
+		char utf8[17];
+		//char basename[64];
+
 		//single
-		strcat(dst_fn, ve->name);
+		tifiles_transcode_varname(calc_handle->model, utf8, ve->name, ve->type);
+		//tifiles_varname_to_filename(calc_handle->model, basename, utf8);
+		
+		strcat(dst_fn, utf8);
 		strcat(dst_fn, ".");
 		strcat(dst_fn, tifiles_vartype2fext(calc_handle->model, ve->type));
 
