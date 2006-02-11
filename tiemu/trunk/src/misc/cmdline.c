@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2006, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,6 +38,11 @@
 #include "ti68k_def.h"
 #include "ti68k_int.h"
 #include "tie_error.h"
+
+#ifdef __WIN32__
+#include "registry.h"
+#include "oleaut.h"
+#endif
 
 /*
   Display the program version
@@ -80,10 +86,7 @@ int help(void)
 	return 0;
 }
 
-static int strexact(char *p1, char *p2)
-{
-	return (strstr(p1,p2) && strstr(p2,p1));
-}
+#define strexact(p1,p2) (!strcmp((p1),(p2)))
 
 /*
   Scan the command line, extract arguments and init variables
@@ -101,7 +104,27 @@ int scan_cmdline(int argc, char **argv)
 	{
 		p = argv[cnt];
 
-		if(*p == '-' ) 
+#ifdef __WIN32__
+		if(strexact(p, "/RegServer") || strexact(p, "-RegServer")
+		   || strexact(p, "--RegServer")) {
+			if (RegisterServer("tiemu.exe", &CLSID_TiEmuOLE,
+			                   "TiEmu OLE Interface", "TiEmu.TiEmu",
+			                   "TiEmu.TiEmu.1", NULL))
+				exit(1);
+			else
+				exit(0);
+		}
+		if(strexact(p, "/UnregServer") || strexact(p, "-UnregServer")
+		   || strexact(p, "--UnregServer")) {
+			if (UnregisterServer(&CLSID_TiEmuOLE, "TiEmu.TiEmu",
+			                     "TiEmu.TiEmu.1"))
+				exit(1);
+			else
+				exit(0);
+		}
+#endif
+
+		if(*p == '-') 
 		{
 			// a long option (like --help)
 			p++;
@@ -116,8 +139,8 @@ int scan_cmdline(int argc, char **argv)
 
 		if(strexact(msg, "-import")) 
 			import = !0;
-      
-	    if(strstr(msg, "rom=") || strstr(msg, "tib="))
+
+		if(strstr(msg, "rom=") || strstr(msg, "tib="))
 		{	
 			q=msg+4;
 
@@ -169,7 +192,7 @@ int scan_cmdline(int argc, char **argv)
 		if(strexact(msg, "-help") || strexact(msg, "h")) 
 			help();
 
-	    if(strexact(msg, "-version") || strexact(msg, "v")) 
+		if(strexact(msg, "-version") || strexact(msg, "v")) 
 		{ 
 			//version(); 
 			exit(0); 

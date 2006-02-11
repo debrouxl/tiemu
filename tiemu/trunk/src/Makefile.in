@@ -20,7 +20,7 @@ ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	RESFILE = tiemu-rc.o
 	LDFLAGS += -lcomdlg32 -lole32 -loleaut32 -luuid -lstdc++
 	EXEEXT = .exe
-	win32_OBJ = com_ole/oleaut.o com_ole/oleaut_i.o
+	win32_OBJ = com_ole/oleaut.o com_ole/oleaut_i.o com_ole/registry.o
 else
 	RESFILE =
 	EXEEXT =

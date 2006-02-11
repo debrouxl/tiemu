@@ -471,6 +471,10 @@ SOURCE=..\..\src\com_ole\oleaut.cpp
 
 SOURCE=..\..\src\com_ole\oleaut_i.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\com_ole\registry.cpp
+# End Source File
 # End Group
 # Begin Source File
 
