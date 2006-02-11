@@ -40,6 +40,7 @@
 #include "tie_error.h"
 
 #ifdef __WIN32__
+#include <windows.h>
 #include "registry.h"
 #include "oleaut.h"
 #endif
