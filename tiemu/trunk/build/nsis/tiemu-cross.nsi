@@ -1186,6 +1186,10 @@ Section "MainSection" SEC01
   File "../../../../.wine/c/tiemu/man\mann\iwidgets_toolbar.n"
   File "../../../../.wine/c/tiemu/man\mann\iwidgets_watch.n"
 
+; OLE Registration
+  ExecWait '"$INSTDIR\bin\tiemu.exe" /RegServer'
+  RegDLL "$INSTDIR\bin\tiemups.dll"
+
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
@@ -1228,6 +1232,11 @@ FunctionEnd
 
 Section Uninstall
   !insertmacro MUI_STARTMENU_GETFOLDER "Application" $ICONS_GROUP
+
+; OLE Unregistration
+  UnregDLL "$INSTDIR\bin\tiemups.dll"
+  ExecWait '"$INSTDIR\bin\tiemu.exe" /UnregServer'
+
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\man\mann\iwidgets_watch.n"
