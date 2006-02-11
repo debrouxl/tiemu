@@ -18,7 +18,8 @@
  */
 
 #include "registry.h"
-#include <assert.h>
+#include <cstdlib>
+using namespace std;
 
 // Size of a CLSID as a string
 static const int CLSID_STRING_SIZE = 39;
@@ -26,11 +27,10 @@ static const int CLSID_STRING_SIZE = 39;
 // Convert a CLSID to a char string.
 static void CLSIDtochar(REFCLSID clsid, char* szCLSID, int length)
 {
-	assert(length >= CLSID_STRING_SIZE);
 	// Get CLSID
 	LPOLESTR wszCLSID = NULL;
 	HRESULT hr = StringFromCLSID(clsid, &wszCLSID);
-	assert(SUCCEEDED(hr));
+	if (!SUCCEEDED(hr)) exit(1);
 
 	// Covert from wide characters to non-wide.
 	wcstombs(szCLSID, wszCLSID, length);
@@ -135,7 +135,7 @@ HRESULT RegisterServer(const CLSID *clsid,           // Class ID
 	char szModule[512];
 	HMODULE hModule = GetModuleHandle(NULL);
 	DWORD dwResult = GetModuleFileName(hModule, szModule, sizeof(szModule)/sizeof(char));
-	assert(dwResult != 0);
+	if (dwResult != 0) exit(1);
 
 	// Convert the CLSID into a char.
 	char szCLSID[CLSID_STRING_SIZE];
@@ -186,15 +186,15 @@ LONG UnregisterServer(const CLSID *clsid,         // Class ID
 
 	// Delete the CLSID Key - CLSID\{...}
 	LONG lResult = recursiveDeleteKey(HKEY_CLASSES_ROOT, szKey);
-	assert((lResult == ERROR_SUCCESS) || (lResult == ERROR_FILE_NOT_FOUND)); // Subkey may not exist.
+	if((lResult != ERROR_SUCCESS) && (lResult != ERROR_FILE_NOT_FOUND)) exit(1); // Subkey may not exist.
 
 	// Delete the version-independent ProgID Key.
 	lResult = recursiveDeleteKey(HKEY_CLASSES_ROOT, szVerIndProgID);
-	assert((lResult == ERROR_SUCCESS) || (lResult == ERROR_FILE_NOT_FOUND)); // Subkey may not exist.
+	if((lResult != ERROR_SUCCESS) && (lResult != ERROR_FILE_NOT_FOUND)) exit(1); // Subkey may not exist.
 
 	// Delete the ProgID key.
 	lResult = recursiveDeleteKey(HKEY_CLASSES_ROOT, szProgID);
-	assert((lResult == ERROR_SUCCESS) || (lResult == ERROR_FILE_NOT_FOUND)); // Subkey may not exist.
+	if((lResult != ERROR_SUCCESS) && (lResult != ERROR_FILE_NOT_FOUND)) exit(1); // Subkey may not exist.
 
 	return S_OK;
 }

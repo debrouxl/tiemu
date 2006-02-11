@@ -116,6 +116,8 @@ SubVersion: $Id$
 	- [kevin] $1935: added OLE self registration support (/RegServer, /UnregServer)
 	- [kevin] $1936: also filter CXX in the configure argument filtering (fixes MinGW build again)
 	- [kevin] $1938: cleaned up OLE self registration support, fixing Win32 link failure
+	- [kevin] $1943: register the TLB file during OLE self registration
+	                 don't abuse assert for error checking in registry.cpp
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

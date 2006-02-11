@@ -107,10 +107,23 @@ int scan_cmdline(int argc, char **argv)
 #ifdef __WIN32__
 		if(strexact(p, "/RegServer") || strexact(p, "-RegServer")
 		   || strexact(p, "--RegServer")) {
+			ITypeLib *tlb;
+			char szModule[512];
+			wchar_t tlbname[512];
+			HMODULE hModule = GetModuleHandle(NULL);
+			DWORD dwResult = GetModuleFileName(hModule, szModule, sizeof(szModule));
+			if (!dwResult) exit(1);
+			char *p = szModule + strlen(szModule) - 4;
+			if (stricmp(p,".exe")) exit(1);
+			strcpy(++p,"tlb");
+			mbstowcs(tlbname, szModule, strlen (szModule)+1);
 			if (RegisterServer(&CLSID_TiEmuOLE,
 			                   "TiEmu OLE Interface",
 			                   "TiEmu.TiEmuOLE",
-			                   "TiEmu.TiEmuOLE.1", NULL))
+			                   "TiEmu.TiEmuOLE.1", NULL)
+			    || LoadTypeLib(tlbname, &tlb)
+			    || RegisterTypeLib(tlb, tlbname, NULL)
+			    || tlb->lpVtbl->Release(tlb))
 				exit(1);
 			else
 				exit(0);
@@ -118,7 +131,9 @@ int scan_cmdline(int argc, char **argv)
 		if(strexact(p, "/UnregServer") || strexact(p, "-UnregServer")
 		   || strexact(p, "--UnregServer")) {
 			if (UnregisterServer(&CLSID_TiEmuOLE, "TiEmu.TiEmuOLE",
-			                     "TiEmu.TiEmuOLE.1"))
+			                     "TiEmu.TiEmuOLE.1")
+			    || UnRegisterTypeLib(&LIBID_TiEmuOLELib, 1, 0, 0,
+			                         SYS_WIN32))
 				exit(1);
 			else
 				exit(0);
