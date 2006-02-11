@@ -1,36 +1,32 @@
-// Registry.h (code fourni avec Visual C++ de Microsoft)
+/*  TiEmu - OLE component registration
+ *
+ *  Copyright (c) 2006, Kevin Kofler
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
+ */
 
-// This function will register a component.
-HRESULT RegisterServer(const char* szModuleName, REFCLSID clsid, const char* szFriendlyName, const char* szVerIndProgID, const char* szProgID, const char* szThreadingModel);
+#include <objbase.h>
 
-HRESULT RegisterServerTreatAs(
-                       const char* szModuleName,      // DLL module handle
-                       REFCLSID clsid,                // Class ID
-                       const char* szFriendlyName,    // Friendly Name
-                       const char* szVerIndProgID,    // Programmatic
-                       const char* szProgID,          // IDs
-					   const char* szThreadingModel,  // ThreadingModel
-					   REFCLSID treatedAsClsId,       // Treat As Class ID
-                       const char* szTreatedAsFriendlyName, // Treated as Friendly Name
-					   const char* szTreatedAsProgId);// Treat As Prog ID
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-// This function will unregister a component.
-HRESULT UnregisterServer(REFCLSID clsid, const char* szVerIndProgID, const char* szProgID);
+HRESULT RegisterServer(const CLSID *clsid, const char* szFriendlyName, const char* szVerIndProgID, const char* szProgID, const char* szThreadingModel);
 
-LONG UnregisterServerTreatAs(REFCLSID clsid,                // Class ID
-                      const char* szVerIndProgID,    // Programmatic
-                      const char* szProgID,          // IDs
-					  REFCLSID treatedAsClsId,       // Treated As Class ID
-                      const char* szTreatedAsProgID);// IDs
+HRESULT UnregisterServer(const CLSID *clsid, const char* szVerIndProgID, const char* szProgID);
 
-// Set the given key and its value.
-BOOL setKeyAndValue(const char* pszPath, const char* szSubkey, const char* szValue);
-
-// Open a key and set a value.
-BOOL setValueInKey(const char* szKey, const char* szNamedValue, const char* szValue);
-
-// Convert a CLSID into a char string.
-void CLSIDtochar(REFCLSID clsid, char* szCLSID, int length);
-
-// Delete szKeyChild and all of its descendents.
-LONG recursiveDeleteKey(HKEY hKeyParent, const char* szKeyChild);
+#ifdef __cplusplus
+}
+#endif

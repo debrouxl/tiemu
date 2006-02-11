@@ -115,6 +115,7 @@ SubVersion: $Id$
 	- [roms] $1933: added conversion of varnames with greek chars into useable filenames for disks with locale encoding.
 	- [kevin] $1935: added OLE self registration support (/RegServer, /UnregServer)
 	- [kevin] $1936: also filter CXX in the configure argument filtering (fixes MinGW build again)
+	- [kevin] $1938: cleaned up OLE self registration support, fixing Win32 link failure
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

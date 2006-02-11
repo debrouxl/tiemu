@@ -1,98 +1,30 @@
-// Registry.cpp (code fourni avec Visual C++ de Microsoft)
-#include <objbase.h>
-#include <assert.h>
+/*  TiEmu - OLE component registration
+ *
+ *  Copyright (c) 2006, Kevin Kofler
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+
 #include "registry.h"
+#include <assert.h>
 
 // Size of a CLSID as a string
-const int CLSID_STRING_SIZE = 39;
-
-// Register the component in the registry.
-HRESULT RegisterServer(const char* szModuleName,     // DLL module handle
-                       REFCLSID clsid,               // Class ID
-                       const char* szFriendlyName,   // Friendly Name
-                       const char* szVerIndProgID,   // Programmatic
-                       const char* szProgID,         // IDs
-					   const char* szThreadingModel) // ThreadingModel
-{
-	// Get server location.
-	char szModule[512];
-	HMODULE hModule = GetModuleHandle(szModuleName);
-	DWORD dwResult = GetModuleFileName(hModule, szModule, sizeof(szModule)/sizeof(char));
-	assert(dwResult != 0);
-
-	// Convert the CLSID into a char.
-	char szCLSID[CLSID_STRING_SIZE];
-	CLSIDtochar(clsid, szCLSID, sizeof(szCLSID));
-
-	// Build the key CLSID\\{...}
-	char szKey[64];
-	strcpy(szKey, "CLSID\\");
-	strcat(szKey, szCLSID);
-  
-	// Add the CLSID to the registry.
-	setKeyAndValue(szKey, NULL, szFriendlyName);
-
-	// Add the server filename subkey under the CLSID key.
-	if(strstr(szModuleName, ".exe") == NULL)
-	{
-		setKeyAndValue(szKey, "InprocServer32", szModule);
-		char szInproc[64];
-		strcpy(szInproc, szKey);
-		strcat(szInproc, "\\InprocServer32");
-		setValueInKey(szInproc, "ThreadingModel", szThreadingModel);
-	}
-	else
-		setKeyAndValue(szKey, "LocalServer32", szModule);
-
-	// Add the ProgID subkey under the CLSID key.
-	setKeyAndValue(szKey, "ProgID", szProgID);
-
-	// Add the version-independent ProgID subkey under CLSID key.
-	setKeyAndValue(szKey, "VersionIndependentProgID", szVerIndProgID);
-
-	// Add the version-independent ProgID subkey under HKEY_CLASSES_ROOT.
-	setKeyAndValue(szVerIndProgID, NULL, szFriendlyName); 
-	setKeyAndValue(szVerIndProgID, "CLSID", szCLSID);
-	setKeyAndValue(szVerIndProgID, "CurVer", szProgID);
-
-	// Add the versioned ProgID subkey under HKEY_CLASSES_ROOT.
-	setKeyAndValue(szProgID, NULL, szFriendlyName); 
-	setKeyAndValue(szProgID, "CLSID", szCLSID);
-
-	return S_OK;
-}
-
-// Remove the component from the registry.
-LONG UnregisterServer(REFCLSID clsid,             // Class ID
-                      const char* szVerIndProgID, // Programmatic
-                      const char* szProgID)       // IDs
-{
-	// Convert the CLSID into a char.
-	char szCLSID[CLSID_STRING_SIZE];
-	CLSIDtochar(clsid, szCLSID, sizeof(szCLSID));
-
-	// Build the key CLSID\\{...}
-	char szKey[64];
-	strcpy(szKey, "CLSID\\");
-	strcat(szKey, szCLSID);
-
-	// Delete the CLSID Key - CLSID\{...}
-	LONG lResult = recursiveDeleteKey(HKEY_CLASSES_ROOT, szKey);
-	assert((lResult == ERROR_SUCCESS) || (lResult == ERROR_FILE_NOT_FOUND)); // Subkey may not exist.
-
-	// Delete the version-independent ProgID Key.
-	lResult = recursiveDeleteKey(HKEY_CLASSES_ROOT, szVerIndProgID);
-	assert((lResult == ERROR_SUCCESS) || (lResult == ERROR_FILE_NOT_FOUND)); // Subkey may not exist.
-
-	// Delete the ProgID key.
-	lResult = recursiveDeleteKey(HKEY_CLASSES_ROOT, szProgID);
-	assert((lResult == ERROR_SUCCESS) || (lResult == ERROR_FILE_NOT_FOUND)); // Subkey may not exist.
-
-	return S_OK;
-}
+static const int CLSID_STRING_SIZE = 39;
 
 // Convert a CLSID to a char string.
-void CLSIDtochar(REFCLSID clsid, char* szCLSID, int length)
+static void CLSIDtochar(REFCLSID clsid, char* szCLSID, int length)
 {
 	assert(length >= CLSID_STRING_SIZE);
 	// Get CLSID
@@ -108,8 +40,8 @@ void CLSIDtochar(REFCLSID clsid, char* szCLSID, int length)
 }
 
 // Delete a key and all of its descendents.
-LONG recursiveDeleteKey(HKEY hKeyParent,           // Parent of key to delete
-                        const char* lpszKeyChild)  // Key to delete
+static LONG recursiveDeleteKey(HKEY hKeyParent,           // Parent of key to delete
+                               const char* lpszKeyChild)  // Key to delete
 {
 	// Open the child.
 	HKEY hKeyChild;
@@ -142,7 +74,7 @@ LONG recursiveDeleteKey(HKEY hKeyParent,           // Parent of key to delete
 }
 
 // Create a key and set its value.
-BOOL setKeyAndValue(const char* szKey, const char* szSubkey, const char* szValue)
+static BOOL setKeyAndValue(const char* szKey, const char* szSubkey, const char* szValue)
 {
 	HKEY hKey;
 	char szKeyBuf[1024];
@@ -171,7 +103,7 @@ BOOL setKeyAndValue(const char* szKey, const char* szSubkey, const char* szValue
 }
 
 // Open a key and set a value.
-BOOL setValueInKey(const char* szKey, const char* szNamedValue, const char* szValue)
+static BOOL setValueInKey(const char* szKey, const char* szNamedValue, const char* szValue)
 {
 	HKEY hKey;
 	char szKeyBuf[1024];
@@ -193,26 +125,21 @@ BOOL setValueInKey(const char* szKey, const char* szNamedValue, const char* szVa
 }
 
 // Register the component in the registry.
-HRESULT RegisterServerTreatAs(
-                       const char* szModuleName,      // DLL module handle
-                       REFCLSID clsid,                // Class ID
-                       const char* szFriendlyName,    // Friendly Name
-                       const char* szVerIndProgID,    // Programmatic
-                       const char* szProgID,          // IDs
-					   const char* szThreadingModel,  // ThreadingModel
-					   REFCLSID treatedAsClsId,       // Treat As Class ID
-                       const char* szTreatedAsFriendlyName, // Treated as Friendly Name
-					   const char* szTreatedAsProgId) // Treat As Prog ID
-{	HRESULT hr;
+HRESULT RegisterServer(const CLSID *clsid,           // Class ID
+                       const char* szFriendlyName,   // Friendly Name
+                       const char* szVerIndProgID,   // Programmatic
+                       const char* szProgID,         // IDs
+                       const char* szThreadingModel) // ThreadingModel
+{
 	// Get server location.
 	char szModule[512];
-	HMODULE hModule = GetModuleHandle(szModuleName);
+	HMODULE hModule = GetModuleHandle(NULL);
 	DWORD dwResult = GetModuleFileName(hModule, szModule, sizeof(szModule)/sizeof(char));
 	assert(dwResult != 0);
 
 	// Convert the CLSID into a char.
 	char szCLSID[CLSID_STRING_SIZE];
-	CLSIDtochar(clsid, szCLSID, sizeof(szCLSID));
+	CLSIDtochar(*clsid, szCLSID, sizeof(szCLSID));
 
 	// Build the key CLSID\\{...}
 	char szKey[64];
@@ -223,16 +150,7 @@ HRESULT RegisterServerTreatAs(
 	setKeyAndValue(szKey, NULL, szFriendlyName);
 
 	// Add the server filename subkey under the CLSID key.
-	if(strstr(szModuleName, ".exe") == NULL)
-	{
-		setKeyAndValue(szKey, "InprocServer32", szModule);
-		char szInproc[64];
-		strcpy(szInproc, szKey);
-		strcat(szInproc, "\\InprocServer32");
-		setValueInKey(szInproc, "ThreadingModel", szThreadingModel);
-	}
-	else
-		setKeyAndValue(szKey, "LocalServer32", szModule);
+	setKeyAndValue(szKey, "LocalServer32", szModule);
 
 	// Add the ProgID subkey under the CLSID key.
 	setKeyAndValue(szKey, "ProgID", szProgID);
@@ -249,40 +167,17 @@ HRESULT RegisterServerTreatAs(
 	setKeyAndValue(szProgID, NULL, szFriendlyName); 
 	setKeyAndValue(szProgID, "CLSID", szCLSID);
 
-	// This class is treated as
-	hr = CoTreatAsClass(treatedAsClsId, clsid);
-
-	// Convert the Treated As CLSID into a char.
-	char szTreatedAsCLSID[CLSID_STRING_SIZE];
-	CLSIDtochar(treatedAsClsId, szTreatedAsCLSID, sizeof(szTreatedAsCLSID));
-
-	// Build the Treated As key CLSID\\{...}
-	char szTreatedAsKey[64];
-	strcpy(szTreatedAsKey, "CLSID\\");
-	strcat(szTreatedAsKey, szTreatedAsCLSID);
-
-	// Add a ProgID subkey under CLSID key
-	setKeyAndValue(szTreatedAsKey,NULL, szTreatedAsFriendlyName);
-	setKeyAndValue(szTreatedAsKey,"ProgID", szTreatedAsProgId);
-
-	// Add a ProgID subkey under HKEY_CLASSES_ROOT
-	setKeyAndValue(szTreatedAsProgId,NULL, szTreatedAsFriendlyName);
-	setKeyAndValue(szTreatedAsProgId,"CLSID", szTreatedAsCLSID);
-
 	return S_OK;
 }
 
 // Remove the component from the registry.
-LONG UnregisterServerTreatAs(
-                      REFCLSID clsid,                // Class ID
-                      const char* szVerIndProgID,    // Programmatic
-                      const char* szProgID,          // IDs
-                      REFCLSID treatedAsClsId,       // Treated As Class ID
-                      const char* szTreatedAsProgID) // IDs
+LONG UnregisterServer(const CLSID *clsid,         // Class ID
+                      const char* szVerIndProgID, // Programmatic
+                      const char* szProgID)       // IDs
 {
 	// Convert the CLSID into a char.
 	char szCLSID[CLSID_STRING_SIZE];
-	CLSIDtochar(clsid, szCLSID, sizeof(szCLSID));
+	CLSIDtochar(*clsid, szCLSID, sizeof(szCLSID));
 
 	// Build the key CLSID\\{...}
 	char szKey[64];
@@ -299,23 +194,6 @@ LONG UnregisterServerTreatAs(
 
 	// Delete the ProgID key.
 	lResult = recursiveDeleteKey(HKEY_CLASSES_ROOT, szProgID);
-	assert((lResult == ERROR_SUCCESS) || (lResult == ERROR_FILE_NOT_FOUND)); // Subkey may not exist.
-
-	// Convert the CLSID into a char.
-	char szTreatedAsCLSID[CLSID_STRING_SIZE];
-	CLSIDtochar(treatedAsClsId, szTreatedAsCLSID, sizeof(szTreatedAsCLSID));
-
-	// Build the key CLSID\\{...}
-	char szTreatedAsKey[64];
-	strcpy(szTreatedAsKey, "CLSID\\");
-	strcat(szTreatedAsKey, szCLSID);
-
-	// Delete the Treated as CLSID Key - CLSID\{...}
-	lResult = recursiveDeleteKey(HKEY_CLASSES_ROOT, szTreatedAsKey);
-	assert((lResult == ERROR_SUCCESS) || (lResult == ERROR_FILE_NOT_FOUND)); // Subkey may not exist.
-
-	// Delete the Treated As ProgID key.
-	lResult = recursiveDeleteKey(HKEY_CLASSES_ROOT, szTreatedAsProgID);
 	assert((lResult == ERROR_SUCCESS) || (lResult == ERROR_FILE_NOT_FOUND)); // Subkey may not exist.
 
 	return S_OK;

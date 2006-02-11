@@ -40,7 +40,6 @@
 #include "tie_error.h"
 
 #ifdef __WIN32__
-#include <windows.h>
 #include "registry.h"
 #include "oleaut.h"
 #endif
@@ -108,7 +107,7 @@ int scan_cmdline(int argc, char **argv)
 #ifdef __WIN32__
 		if(strexact(p, "/RegServer") || strexact(p, "-RegServer")
 		   || strexact(p, "--RegServer")) {
-			if (RegisterServer("tiemu.exe", &CLSID_TiEmuOLE,
+			if (RegisterServer(&CLSID_TiEmuOLE,
 			                   "TiEmu OLE Interface", "TiEmu.TiEmu",
 			                   "TiEmu.TiEmu.1", NULL))
 				exit(1);
