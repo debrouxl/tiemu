@@ -55,15 +55,20 @@ int main(int argc, char **argv)
     } while (appname.isNull());
   }
   tiemuDCOP = new TiEmuDCOP_stub(appname,"TiEmuDCOP");
-  while (!tiemuDCOP->ready_for_transfers());
-  sleep(4); // give the emulated calculator time to react
-  if (!tiemuDCOP->turn_calc_on())
-    {delete tiemuDCOP;dcopclient.detach();puts("DCOP error (#2).");return 2;}
-  sleep(1); // give the emulated calculator time to react
-  if (!tiemuDCOP->execute_command(QString("2+3")))
+  bool ready;
+  do {
+    ready=tiemuDCOP->ready_for_transfers();
+    if (!tiemuDCOP->ok())
+      {delete tiemuDCOP;dcopclient.detach();puts("DCOP error (#2).");return 2;}
+  } while (!ready);
+  sleep(10); // give the emulated calculator time to react
+  if (!tiemuDCOP->turn_calc_on() || !tiemuDCOP->ok())
     {delete tiemuDCOP;dcopclient.detach();puts("DCOP error (#3).");return 3;}
+  sleep(3); // give the emulated calculator time to react
+  if (!tiemuDCOP->execute_command(QString("2+3")) || !tiemuDCOP->ok())
+    {delete tiemuDCOP;dcopclient.detach();puts("DCOP error (#4).");return 4;}
   delete tiemuDCOP;
   if (!dcopclient.detach())
-    {puts("DCOP error (#4).");return 4;}
+    {puts("DCOP error (#5).");return 5;}
   return 0;
 }

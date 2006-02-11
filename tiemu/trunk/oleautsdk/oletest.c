@@ -40,10 +40,10 @@ int main(void)
     if (tiemuOLE->lpVtbl->ready_for_transfers(tiemuOLE,&ready)!=S_OK)
       {tiemuOLE->lpVtbl->Release(tiemuOLE);OleUninitialize();puts("OLE error (#5).");return 5;}
   } while (!ready);
-  Sleep(4000); // give the emulated calculator time to react
+  Sleep(10000); // give the emulated calculator time to react
   if (tiemuOLE->lpVtbl->turn_calc_on(tiemuOLE,&ready)!=S_OK || !ready)
     {tiemuOLE->lpVtbl->Release(tiemuOLE);OleUninitialize();puts("OLE error (#6).");return 6;}
-  Sleep(1000); // give the emulated calculator time to react
+  Sleep(3000); // give the emulated calculator time to react
   BSTR command;
   command=SysAllocString(L"2+3");
   if (!command)
