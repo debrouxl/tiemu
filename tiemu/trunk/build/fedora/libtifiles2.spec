@@ -23,7 +23,7 @@ Summary: Ti File Format management
 Ti File Format management
 
 %prep
-%setup -n %{name}
+%setup -n libtifiles
 
 %build
 CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls
@@ -58,6 +58,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Sat Feb 11 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Update setup -n to use the new directory name (libtifiles, not libtifiles2).
+
 * Sun Jan 29 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 BuildRequire zlib-devel, Require zlib.
 Strip library because -s gets ignored somehow.

@@ -23,7 +23,7 @@ Summary:	Library for handling TI calculators through a common API
 Library for handling TI calculators through a common API
 
 %prep
-%setup -n %{name}
+%setup -n libticalcs
 
 %build
 CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls
@@ -57,6 +57,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Sat Feb 11 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Update setup -n to use the new directory name (libticalcs, not libticalcs2).
+
 * Sun Jan 29 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Strip library because -s gets ignored somehow.
 

@@ -26,7 +26,7 @@ Obsoletes:  tilp < 20050828
 TiLP is a TI<->PC linking program
 
 %prep
-%setup -n %{name}
+%setup -n tilp
 
 %build
 CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls --enable-exit-homedir
@@ -101,6 +101,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Sat Feb 11 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Update setup -n to use the new directory name (tilp, not tilp2).
+
 * Wed Jan 4 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Change Vendor to LPG.
 
