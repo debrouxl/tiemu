@@ -114,6 +114,7 @@ SubVersion: $Id$
 	- [roms] $1932: enabled tifiles2 library as UTF-8 for varnames. This allow good handling of non-ASCII chars.
 	- [roms] $1933: added conversion of varnames with greek chars into useable filenames for disks with locale encoding.
 	- [kevin] $1935: added OLE self registration support (/RegServer, /UnregServer)
+	- [kevin] $1936: also filter CXX in the configure argument filtering (fixes MinGW build again)
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
