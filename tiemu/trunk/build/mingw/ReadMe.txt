@@ -55,7 +55,9 @@ TiEmu now supports Linux->MinGW cross-compilation again. Here's how I did it:
 3. Installed WINE from Fedora Extras.
 4. Installed the latest GTK+ development environment from http://gladewin32.sf.net in WINE.
 5. ln -s ~/.wine/c/GTK /target #(to make pkg-config happy)
-6. Used the following commands to build TiEmu:
+6. In order to avoid a needless mingwm10.dll dependency, edited
+   /usr/local/i386-mingw32/lib/libstdc++.la to remove -lmingwthrd.
+7. Used the following commands to build TiEmu:
    source cross-mingw32-aio.sh #(needs to be done for EACH build!)
    export CFLAGS="-Os -s -fno-exceptions"
    export CXXFLAGS="-Os -s -fno-exceptions"
