@@ -12,5 +12,5 @@ In order to use TiEmu through DCOP:
 * You can now call any function in the TiEmu DCOP interface through your
   TiEmuDCOP_stub object.
 
-IMPORTANT: This is for *nix only. For Win32, please look at the OLE interface,
-           as defined in oleaut.h in the src/com_ole directory.
+IMPORTANT: This is for *nix only. For Win32, please look at the OLE Automation
+           interface, as defined in the oleautsdk directory.
