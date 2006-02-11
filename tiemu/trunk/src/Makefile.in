@@ -289,5 +289,14 @@ endif
 	cd core/gdb/libgui && $(MAKE) install DESTDIR="$(DESTDIR)"
 	cd core/gdb/gdb && $(MAKE) install-gdbtk DESTDIR="$(DESTDIR)"
 
+regsvr:
+ifeq ($(OSTYPE),msys)
+	$(DESTDIR)${prefix}/bin/tiemu -RegServer
+	regsvr32 //s $(DESTDIR)${prefix}/bin/tiemups.dll
+else
+	echo "Error: This target is for native MSYS compilations only!"
+	exit 1
+endif
+
 uninstall:
 	rm -f ${prefix}/bin/tiemu$(EXEEXT)

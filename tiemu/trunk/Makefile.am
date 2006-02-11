@@ -34,3 +34,6 @@ else
 	$(MAKE) install SUBDIRS="build glade help misc pedrom pixmaps skins" DESTDIR="$(DESTDIR)"
 endif
 	cd src && $(MAKE) install-without-tcl-tk-itcl DESTDIR="$(DESTDIR)"
+
+regsvr:
+	cd src && $(MAKE) regsvr DESTDIR="$(DESTDIR)"

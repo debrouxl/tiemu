@@ -116,17 +116,22 @@ int scan_cmdline(int argc, char **argv)
 			char *p = szModule + strlen(szModule) - 4;
 			if (stricmp(p,".exe")) exit(1);
 			strcpy(++p,"tlb");
-			mbstowcs(tlbname, szModule, strlen (szModule)+1);
+			mbstowcs(tlbname, szModule, strlen(szModule)+1);
 			if (RegisterServer(&CLSID_TiEmuOLE,
 			                   "TiEmu OLE Interface",
 			                   "TiEmu.TiEmuOLE",
 			                   "TiEmu.TiEmuOLE.1", NULL)
-			    || LoadTypeLib(tlbname, &tlb)
-			    || RegisterTypeLib(tlb, tlbname, NULL)
-			    || tlb->lpVtbl->Release(tlb))
+			    || LoadTypeLib(tlbname, &tlb))
 				exit(1);
-			else
-				exit(0);
+			else {
+				if (RegisterTypeLib(tlb, tlbname, NULL)) {
+					tlb->lpVtbl->Release(tlb);
+					exit(1);
+				} else {
+					tlb->lpVtbl->Release(tlb);
+					exit(0);
+				}
+			}
 		}
 		if(strexact(p, "/UnregServer") || strexact(p, "-UnregServer")
 		   || strexact(p, "--UnregServer")) {
