@@ -58,6 +58,7 @@ TiEmu now supports Linux->MinGW cross-compilation again. Here's how I did it:
 6. Used the following commands to build TiEmu:
    source cross-mingw32-aio.sh #(needs to be done for EACH build!)
    export CFLAGS="-Os -s -fno-exceptions"
+   export CXXFLAGS="-Os -s -fno-exceptions"
    cd libticables-mingw-build
    ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
    make

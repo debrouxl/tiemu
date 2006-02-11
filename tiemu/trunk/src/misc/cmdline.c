@@ -108,16 +108,17 @@ int scan_cmdline(int argc, char **argv)
 		if(strexact(p, "/RegServer") || strexact(p, "-RegServer")
 		   || strexact(p, "--RegServer")) {
 			if (RegisterServer(&CLSID_TiEmuOLE,
-			                   "TiEmu OLE Interface", "TiEmu.TiEmu",
-			                   "TiEmu.TiEmu.1", NULL))
+			                   "TiEmu OLE Interface",
+			                   "TiEmu.TiEmuOLE",
+			                   "TiEmu.TiEmuOLE.1", NULL))
 				exit(1);
 			else
 				exit(0);
 		}
 		if(strexact(p, "/UnregServer") || strexact(p, "-UnregServer")
 		   || strexact(p, "--UnregServer")) {
-			if (UnregisterServer(&CLSID_TiEmuOLE, "TiEmu.TiEmu",
-			                     "TiEmu.TiEmu.1"))
+			if (UnregisterServer(&CLSID_TiEmuOLE, "TiEmu.TiEmuOLE",
+			                     "TiEmu.TiEmuOLE.1"))
 				exit(1);
 			else
 				exit(0);
