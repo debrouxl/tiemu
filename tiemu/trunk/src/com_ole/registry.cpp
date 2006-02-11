@@ -135,7 +135,7 @@ HRESULT RegisterServer(const CLSID *clsid,           // Class ID
 	char szModule[512];
 	HMODULE hModule = GetModuleHandle(NULL);
 	DWORD dwResult = GetModuleFileName(hModule, szModule, sizeof(szModule)/sizeof(char));
-	if (dwResult != 0) exit(1);
+	if (dwResult == 0) exit(1);
 
 	// Convert the CLSID into a char.
 	char szCLSID[CLSID_STRING_SIZE];
