@@ -40,33 +40,32 @@
 #define RpcTryExcept \
   { \
     asm volatile ("pushl %esp; pushl %ebp; pushl $100f\n" \
-                  "pushl %fs:0; movl %esp,%fs:0");
+                  "pushl %fs:0; movl %esp,%fs:0; subl $32,%esp");
 #define RpcExcept(guard) \
-    asm volatile ("movl %fs:0,%esp; addl $16,%esp"); \
+    asm volatile ("movl %fs:0,%esp; popl %fs:0; addl $12,%esp"); \
   } \
   asm volatile ("jmp 101f\n" \
-                "100: pushl %ebp; movl %fs:0,%ebp; movl 8(%ebp),%ebp"); \
+                "100: pushl %ebp; movl %fs:0,%eax; movl 8(%eax),%ebp; movl %esp,8(%eax)"); \
   if ((guard)) { \
     volatile int _exception_code; \
-    asm volatile ("movl 4(%%esp),%%eax; movl %%fs:0,%%esp; popl %%fs:0; addl $4,%%esp; popl %%ebp; popl %%esp; movl %%eax,%0":"=m"(_exception_code)::"eax");
+    asm volatile ("movl 8(%%esp),%%eax; movl %%fs:0,%%esp; popl %%fs:0; addl $8,%%esp; popl %%esp; movl %%eax,%0":"=m"(_exception_code)::"eax");
 #define RpcEndExcept \
   } else { \
-    asm volatile ("popl %ebp; movl $1,%eax; ret");\
+    asm volatile ("movl %fs:0,%eax; movl 8(%eax),%esp; movl %ebp,8(%eax); popl %ebp; movl $1,%eax; ret");\
   } \
   asm volatile ("101:");
 #define RpcTryFinally \
   { \
-    asm volatile ("pushl %esp; pushl %ebp; pushl $200f\n" \
-                  "pushl %fs:0; movl %esp,%fs:0");
+    asm volatile ("pushl $0; pushl %esp; pushl %ebp; pushl $200f\n" \
+                  "pushl %fs:0; movl %esp,%fs:0; subl $32,%esp");
 #define RpcFinally \
-    asm volatile ("movl %fs:0,%esp; addl $16,%esp"); \
   } \
-  asm volatile ("pushl $0; pushl %ebp; jmp 201f\n" \
-                "200: pushl $1; pushl %ebp; movl %fs:0,%ebp; movl 8(%ebp),%ebp\n" \
-                "201:");
+  asm volatile ("movl %fs:0,%eax; jmp 201f\n" \
+                "200: movl %fs:0,%eax; movl $1,16(%eax)\n" \
+                "201: pushl %ebp; movl 8(%eax),%ebp; movl %esp,8(%eax)");
 #define RpcEndFinally \
-  asm volatile ("popl %%ebp; popl %%eax; testl %%eax,%%eax; je 202f; ret\n" \
-                "202:":::"eax");
+  asm volatile ("movl %%fs:0,%%eax; movl 8(%%eax),%%esp; movl %%ebp,8(%%eax); popl %%ebp; movl 16(%%eax),%%eax; testl %%eax,%%eax; je 202f; ret\n" \
+                "202: movl %%fs:0,%%esp; popl %%fs:0; addl $16,%%esp":::"eax");
 #define RpcExceptionCode() (_exception_code)
 #ifndef CINTERFACE_PROXY_VTABLE
 #define CINTERFACE_PROXY_VTABLE(n) \

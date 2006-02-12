@@ -17,7 +17,7 @@ tiemups.dll: dlldata.o oleaut_p.o oleaut_i.o librpcrt4nt4.a
 lib%.a: %.def
 	$(DLLTOOL) $(DLLTOOL_FLAGS) --output-lib $@ --def $<
 
-oleaut_p.o:
+oleaut_p.o: oleaut_p.c
 	$(CC) -c $(CFLAGS) -O0 -fno-omit-frame-pointer \
 		-DWIN32 -D_WIN32_WINNT=0x0400 -DREGISTER_PROXY_DLL \
 		-Doleaut_ProxyFileInfo=tiemu_ProxyFileInfo \
