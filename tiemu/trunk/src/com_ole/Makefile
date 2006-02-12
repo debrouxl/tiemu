@@ -7,6 +7,7 @@ DLLTOOL ?= i386-mingw32-dlltool
 endif
 
 CFLAGS ?= -Os -s -fno-exceptions
+CFLAGS += -fno-strict-aliasing
 
 tiemups.dll: dlldata.o oleaut_p.o oleaut_i.o librpcrt4nt4.a
 	$(CC) -shared $(CFLAGS) -o tiemups.dll -Wl,--enable-stdcall-fixup \
