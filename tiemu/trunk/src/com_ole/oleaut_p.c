@@ -48,7 +48,7 @@
                 "100: pushl %ebp; movl %fs:0,%eax; movl 8(%eax),%ebp; movl %esp,8(%eax)"); \
   if ((guard)) { \
     volatile int _exception_code; \
-    asm volatile ("movl 8(%%esp),%%eax; movl %%fs:0,%%esp; popl %%fs:0; addl $8,%%esp; popl %%esp; movl %%eax,%0; subl $32,%%esp":"=m"(_exception_code)::"eax");
+    asm volatile ("movl 8(%%esp),%%eax; movl %%fs:0,%%esp; popl %%fs:0; addl $8,%%esp; popl %%esp; movl (%%eax),%0; subl $32,%%esp":"=m"(_exception_code)::"eax");
 #define RpcEndExcept \
   } else { \
     asm volatile ("movl %fs:0,%eax; movl 8(%eax),%esp; movl %ebp,8(%eax); popl %ebp; movl $1,%eax; ret");\
