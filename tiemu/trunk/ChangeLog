@@ -119,6 +119,7 @@ SubVersion: $Id$
 	- [kevin] $1943: register the TLB file during OLE self registration
 	                 don't abuse assert for error checking in registry.cpp
 	- [kevin] $1945: add regsvr makefile target for native MinGW compilations (using MSYS)
+	- [kevin] $1953: experimental support for building tiemups.dll with MinGW
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

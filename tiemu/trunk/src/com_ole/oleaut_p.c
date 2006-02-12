@@ -48,7 +48,7 @@
                 "100: pushl %ebp; movl %fs:0,%eax; movl 8(%eax),%ebp; movl %esp,8(%eax)"); \
   if ((guard)) { \
     volatile int _exception_code; \
-    asm volatile ("movl 8(%%esp),%%eax; movl %%fs:0,%%esp; popl %%fs:0; addl $8,%%esp; popl %%esp; movl %%eax,%0":"=m"(_exception_code)::"eax");
+    asm volatile ("movl 8(%%esp),%%eax; movl %%fs:0,%%esp; popl %%fs:0; addl $8,%%esp; popl %%esp; movl %%eax,%0; subl $32,%%esp":"=m"(_exception_code)::"eax");
 #define RpcEndExcept \
   } else { \
     asm volatile ("movl %fs:0,%eax; movl 8(%eax),%esp; movl %ebp,8(%eax); popl %ebp; movl $1,%eax; ret");\
@@ -62,7 +62,7 @@
   } \
   asm volatile ("movl %fs:0,%eax; jmp 201f\n" \
                 "200: movl %fs:0,%eax; movl $1,16(%eax)\n" \
-                "201: pushl %ebp; movl 8(%eax),%ebp; movl %esp,8(%eax)");
+                "201: pushl %ebp; movl 8(%eax),%ebp; movl %esp,8(%eax); subl $32,%esp");
 #define RpcEndFinally \
   asm volatile ("movl %%fs:0,%%eax; movl 8(%%eax),%%esp; movl %%ebp,8(%%eax); popl %%ebp; movl 16(%%eax),%%eax; testl %%eax,%%eax; je 202f; ret\n" \
                 "202: movl %%fs:0,%%esp; popl %%fs:0; addl $16,%%esp":::"eax");
