@@ -1,4 +1,23 @@
-/* this ALWAYS GENERATED file contains the proxy stub code */
+/* oleaut_p.c edited by Kevin Kofler to build with MinGW
+ *
+ *  OLE Automation interface for TiEmu
+ *
+ *  Copyright (c) 2006 Kevin Kofler
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
+ */
 
 
 /* File created by MIDL compiler version 5.01.0164 */
@@ -10,20 +29,55 @@
 */
 //@@MIDL_FILE_HEADING(  )
 
-
-/* verify that the <rpcproxy.h> version is high enough to compile this file*/
-#ifndef __REDQ_RPCPROXY_H_VERSION__
-#define __REQUIRED_RPCPROXY_H_VERSION__ 440
-#endif
-
-
 #include "rpcproxy.h"
-#ifndef __RPCPROXY_H_VERSION__
-#error this stub requires an updated version of <rpcproxy.h>
-#endif // __RPCPROXY_H_VERSION__
-
 
 #include "oleaut.h"
+
+#ifdef __MINGW32__
+#include <excpt.h>
+/* CAUTION: Ugly SEH hacks (technically invalid inline ASM) below!
+            Use -O0 -fno-omit-frame-pointer to minimize breakage! */
+#define RpcTryExcept \
+  { \
+    asm volatile ("pushl %esp; pushl %ebp; pushl $100f\n" \
+                  "pushl %fs:0; movl %esp,%fs:0");
+#define RpcExcept(guard) \
+    asm volatile ("movl %fs:0,%esp; addl $16,%esp"); \
+  } \
+  asm volatile ("jmp 101f\n" \
+                "100: pushl %ebp; movl %fs:0,%ebp; movl 8(%ebp),%ebp"); \
+  if ((guard)) { \
+    volatile int _exception_code; \
+    asm volatile ("movl 4(%%esp),%%eax; movl %%fs:0,%%esp; popl %%fs:0; addl $4,%%esp; popl %%ebp; popl %%esp; movl %%eax,%0":"=m"(_exception_code)::"eax");
+#define RpcEndExcept \
+  } else { \
+    asm volatile ("popl %ebp; movl $1,%eax; ret");\
+  } \
+  asm volatile ("101:");
+#define RpcTryFinally \
+  { \
+    asm volatile ("pushl %esp; pushl %ebp; pushl $200f\n" \
+                  "pushl %fs:0; movl %esp,%fs:0");
+#define RpcFinally \
+    asm volatile ("movl %fs:0,%esp; addl $16,%esp"); \
+  } \
+  asm volatile ("pushl $0; pushl %ebp; jmp 201f\n" \
+                "200: pushl $1; pushl %ebp; movl %fs:0,%ebp; movl 8(%ebp),%ebp\n" \
+                "201:");
+#define RpcEndFinally \
+  asm volatile ("popl %%ebp; popl %%eax; testl %%eax,%%eax; je 202f; ret\n" \
+                "202:":::"eax");
+#define RpcExceptionCode() (_exception_code)
+#ifndef CINTERFACE_PROXY_VTABLE
+#define CINTERFACE_PROXY_VTABLE(n) \
+  struct \
+  { \
+    CInterfaceProxyHeader header; \
+    void *Vtbl[n]; \
+  }
+#endif
+
+#endif
 
 #define TYPE_FORMAT_STRING_SIZE   63                                
 #define PROC_FORMAT_STRING_SIZE   37                                
@@ -1347,7 +1401,7 @@ static const USER_MARSHAL_ROUTINE_QUADRUPLE UserMarshalRoutines[1] =
 #error  Invalid build platform for this stub.
 #endif
 
-#if !(TARGET_IS_NT40_OR_LATER)
+#if !(TARGET_IS_NT40_OR_LATER) && !defined(__MINGW32__)
 #error You need a Windows NT 4.0 or later to run this stub because it uses these features:
 #error   [wire_marshal] or [user_marshal] attribute.
 #error However, your C/C++ compilation flags indicate you intend to run this app on earlier systems.

@@ -1,0 +1,6 @@
+LIBRARY RPCRT4.dll
+EXPORTS
+NdrUserMarshalBufferSize@12
+NdrUserMarshalMarshall@12
+NdrUserMarshalUnmarshall@16
+NdrUserMarshalFree@12
