@@ -7,7 +7,11 @@ src/com_ole/oleaut.idl using widl or midl.
 In order to use TiEmu through OLE Automation:
 * compile and link tiemuole.c with your project
 * include "tiemuole.h" into your C or C++ files which will be using TiEmu
-* obtain a "TiEmu.TiEmuOLE" COM object through the OLE Automation interfaces.
+* obtain a "TiEmu.TiEmuOLE" COM object through GetActiveObject. If this fails,
+  you have to run TiEmu manually (e.g. using ShellExecute).
+  WARNING: TiEmu currently does NOT provide a class factory. Therefore, you
+           can't create objects automatically. You have to run TiEmu if it isn't
+           running yet, and then use GetActiveObject.
   The interface pointer should be an ITiEmuOLE *.
 * You can now call any function in the TiEmu OLE Automation interface through
   your ITiEmuOLE * interface pointer.

@@ -72,7 +72,7 @@ TiEmuOLE::TiEmuOLE() : typelib(NULL), refcount(1)
     LoadRegTypeLib(LIBID_TiEmuOLELib, 1, 0, 0, &typelib);
     if (typelib) {
       // Register with OLE Automation
-      registered = (CoRegisterClassObject(CLSID_TiEmuOLE, this, CLSCTX_LOCAL_SERVER, REGCLS_MULTIPLEUSE,  &oleregister) == S_OK);
+      registered = (RegisterActiveObject(this, CLSID_TiEmuOLE, ACTIVEOBJECT_STRONG, &oleregister) == S_OK);
     }
     initialized = true;
   } else initialized = false;
@@ -81,8 +81,10 @@ TiEmuOLE::TiEmuOLE() : typelib(NULL), refcount(1)
 TiEmuOLE::~TiEmuOLE()
 {
   if (initialized) {
-    if (registered)
-      CoRevokeClassObject(oleregister);
+    if (registered) {
+      RevokeActiveObject(oleregister, NULL);
+      CoDisconnectObject(this, 0);
+    }
     CoUninitialize();
   }
   if (typelib)
@@ -108,8 +110,8 @@ ULONG TiEmuOLE::AddRef()
 
 ULONG TiEmuOLE::Release()
 {
-  if (!--refcount)
-    delete this;
+  if (refcount)
+    refcount--;
   return refcount;
 }
 

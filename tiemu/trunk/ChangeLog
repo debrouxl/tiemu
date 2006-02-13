@@ -121,6 +121,8 @@ SubVersion: $Id$
 	- [kevin] $1945: add regsvr makefile target for native MinGW compilations (using MSYS)
 	- [kevin] $1953: experimental support for building tiemups.dll with MinGW
 	- [roms]  $1955: the '/RegServer' and '/UnregServer' must be case-unsensitive. Fixed compilation under MSVC.
+	- [kevin] $1959: use RegisterActiveObject, not CoRegisterClassObject, for our singleton
+	                 don't delete the singleton if the refcount reaches 0, let the cleanup on exit do it
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
