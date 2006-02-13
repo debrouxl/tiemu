@@ -99,14 +99,17 @@ int scan_cmdline(int argc, char **argv)
 	char msg[80];
 	gchar *dstname;
 	int import = 0;
+
+	//for(cnt = 0; cnt < argc; cnt++)
+	//	fprintf(stdout, "%i: [%s]\n", cnt, argv[cnt]);
   
 	for(cnt=1; cnt<argc; cnt++) 
 	{
 		p = argv[cnt];
 
 #ifdef __WIN32__
-		if(stricmp(p, "/RegServer") || stricmp(p, "-RegServer")
-		   || stricmp(p, "--RegServer")) {
+		if(!stricmp(p, "/RegServer") || !stricmp(p, "-RegServer")
+		   || !stricmp(p, "--RegServer")) {
 			char *p;
 			ITypeLib *tlb;
 			char szModule[512];
@@ -134,8 +137,8 @@ int scan_cmdline(int argc, char **argv)
 				}
 			}
 		}
-		if(stricmp(p, "/UnregServer") || stricmp(p, "-UnregServer")
-		   || stricmp(p, "--UnregServer")) {
+		if(!stricmp(p, "/UnregServer") || !stricmp(p, "-UnregServer")
+		   || !stricmp(p, "--UnregServer")) {
 			if (UnregisterServer(&CLSID_TiEmuOLE, "TiEmu.TiEmuOLE",
 			                     "TiEmu.TiEmuOLE.1")
 			    || UnRegisterTypeLib(&LIBID_TiEmuOLELib, 1, 0, 0,
@@ -143,6 +146,11 @@ int scan_cmdline(int argc, char **argv)
 				exit(1);
 			else
 				exit(0);
+		}
+		if(stricmp(p, "/Embedding") || stricmp(p, "-Embedding")
+		   || stricmp(p, "--Embedding")) {
+			// VB runs it with this option.
+			continue;
 		}
 #endif
 
