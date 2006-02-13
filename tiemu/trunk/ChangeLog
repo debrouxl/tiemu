@@ -120,6 +120,7 @@ SubVersion: $Id$
 	                 don't abuse assert for error checking in registry.cpp
 	- [kevin] $1945: add regsvr makefile target for native MinGW compilations (using MSYS)
 	- [kevin] $1953: experimental support for building tiemups.dll with MinGW
+	- [roms]  $1955: the '/RegServer' and '/UnregServer' must be case-unsensitive. Fixed compilation under MSVC.
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
