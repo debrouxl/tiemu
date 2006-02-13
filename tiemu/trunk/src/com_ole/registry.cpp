@@ -1,6 +1,6 @@
 /*  TiEmu - OLE component registration
  *
- *  Copyright (c) 2006, Kevin Kofler
+ *  Copyright (c) 2006, Kevin Kofler and Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,10 @@
 
 #include "registry.h"
 #include <cstdlib>
+
+#ifndef _MSC_VER
 using namespace std;
+#endif
 
 // Size of a CLSID as a string
 static const int CLSID_STRING_SIZE = 39;

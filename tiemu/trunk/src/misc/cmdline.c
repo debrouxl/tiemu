@@ -8,7 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
- *  Copyright (c) 2006, Kevin Kofler
+ *  Copyright (c) 2006, Kevin Kofler and Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -105,15 +105,16 @@ int scan_cmdline(int argc, char **argv)
 		p = argv[cnt];
 
 #ifdef __WIN32__
-		if(strexact(p, "/RegServer") || strexact(p, "-RegServer")
-		   || strexact(p, "--RegServer")) {
+		if(stricmp(p, "/RegServer") || stricmp(p, "-RegServer")
+		   || stricmp(p, "--RegServer")) {
+			char *p;
 			ITypeLib *tlb;
 			char szModule[512];
 			wchar_t tlbname[512];
 			HMODULE hModule = GetModuleHandle(NULL);
 			DWORD dwResult = GetModuleFileName(hModule, szModule, sizeof(szModule));
 			if (!dwResult) exit(1);
-			char *p = szModule + strlen(szModule) - 4;
+			p = szModule + strlen(szModule) - 4;
 			if (stricmp(p,".exe")) exit(1);
 			strcpy(++p,"tlb");
 			mbstowcs(tlbname, szModule, strlen(szModule)+1);
@@ -133,8 +134,8 @@ int scan_cmdline(int argc, char **argv)
 				}
 			}
 		}
-		if(strexact(p, "/UnregServer") || strexact(p, "-UnregServer")
-		   || strexact(p, "--UnregServer")) {
+		if(stricmp(p, "/UnregServer") || stricmp(p, "-UnregServer")
+		   || stricmp(p, "--UnregServer")) {
 			if (UnregisterServer(&CLSID_TiEmuOLE, "TiEmu.TiEmuOLE",
 			                     "TiEmu.TiEmuOLE.1")
 			    || UnRegisterTypeLib(&LIBID_TiEmuOLELib, 1, 0, 0,
