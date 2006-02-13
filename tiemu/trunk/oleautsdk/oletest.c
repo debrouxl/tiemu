@@ -31,7 +31,7 @@ int main(void)
     if (RegOpenKeyEx(HKEY_CLASSES_ROOT,"CLSID\\{B2A17B13-9D6F-4DD4-A2A9-6FE06ADC1D33}\\LocalServer32",0, KEY_QUERY_VALUE,&hKey))
       {OleUninitialize();puts("OLE error (#2).");return 2;}
     if (RegQueryValueEx(hKey,NULL,NULL,&type,buffer,&size) || type!=REG_SZ)
-      {OleUninitialize();puts("OLE error (#3).");return 3;}
+      {RegCloseKey(hKey);OleUninitialize();puts("OLE error (#3).");return 3;}
     buffer[2048]=0;
     if (RegCloseKey(hKey))
       {OleUninitialize();puts("OLE error (#4).");return 4;}
