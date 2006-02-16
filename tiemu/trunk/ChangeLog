@@ -125,7 +125,9 @@ SubVersion: $Id$
 	- [kevin] $1959: use RegisterActiveObject, not CoRegisterClassObject, for our singleton
 	                 don't delete the singleton if the refcount reaches 0, let the cleanup on exit do it
 	- [kevin] $1961: pass --disable-werror to the GDB configury
-	- [roms]  $1962: added MSVC project to oleautsdk and modified oletest to compile with a C compiler.
+	- [roms]  $1962: added MSVC project to oleautsdk and modified oletest to compile with a C90 compiler.
+	- [kevin] $1964: moved initialization of buffer[2048] back down
+	                 restored 2 spaces/level indentation in oletest.c
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
