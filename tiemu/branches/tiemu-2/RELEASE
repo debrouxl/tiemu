@@ -4,6 +4,7 @@
 
 Previous version: 2.02		(20/09/2005)
 Current version:  2.04		(04/01/2006)
+Add-on:           2.04b   (17/02/2006) => reverted back to GTK+ 2.6
 
 SubVersion (CVS) revision: $Id$
 
@@ -37,6 +38,7 @@ Bug fixes:
 
 	- bug #1304338: doesn't save skinless mode in .ini file
 	- bug #1305054: doesn't refresh vector bkpt state
+	- reverted back to GTK+ 2.6
 	
 
 Planned:
