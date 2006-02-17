@@ -52,6 +52,10 @@ int ti68k_error_get(int err_num, char *error_msg)
 		strcpy(error_msg, _("Can not open file."));
 		break;
 
+	case ERR_CANT_OPEN_STATE:
+		strcpy(error_msg, _("Can not open state image. File is corrupted or missing."));
+		break;
+
 	case ERR_INVALID_STATE:
 		strcpy(error_msg, _("Invalid state image. File is corrupted or revision changed."));
 		break;

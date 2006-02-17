@@ -103,7 +103,7 @@ int ti68k_state_load(char *filename)
   	printl(0, "loading state image: %s\n", g_basename(filename));
   	f = fopen(filename, "rb");
   	if(f == NULL)
-  		return ERR_CANT_OPEN;
+  		return ERR_CANT_OPEN_STATE;
   	
   	// Compare image infos with current image
 	fread(&img, 1, sizeof(IMG_INFO), f);
@@ -233,13 +233,13 @@ int ti68k_state_save(char *filename)
 	int i;
   
   	if(!strlen(filename))
-  		return ERR_CANT_OPEN;
+  		return ERR_CANT_OPEN_STATE;
   
   	// Open file
   	printl(0, "Saving state image (TiEmu v2.00 format): %s\n", filename);
   	f = fopen(filename, "wb");
   	if(f == NULL)
-  		return ERR_CANT_OPEN;
+  		return ERR_CANT_OPEN_STATE;
   	
   	// Save current image infos
 	fwrite(img, 1, sizeof(IMG_INFO), f);
