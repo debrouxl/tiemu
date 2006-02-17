@@ -6,7 +6,7 @@
  *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
  *  Copyright (c) 2003-2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,5 +43,6 @@
 #define ERR_CANT_OPEN_DIR		777
 #define ERR_CANT_UPGRADE		778
 #define	ERR_INVALID_ROM			779
+#define ERR_CANT_OPEN_STATE		780
 
 #endif

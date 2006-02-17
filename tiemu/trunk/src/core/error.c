@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005-2006, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,6 +50,10 @@ int ti68k_error_get(int err_num, char *error_msg)
 
 	case ERR_CANT_OPEN:
 		strcpy(error_msg, _("Can not open file."));
+		break;
+
+	case ERR_CANT_OPEN_STATE:
+		strcpy(error_msg, _("Can not open state image. File is corrupted or missing."));
 		break;
 
 	case ERR_INVALID_STATE:
