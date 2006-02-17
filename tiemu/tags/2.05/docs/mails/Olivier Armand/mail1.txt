@@ -1,0 +1,65 @@
+Salut !
+
+Pour une ROM originale (en .v2u) de V200, le plus simple est de la prendre
+directement sur le site de TI (AMS 2.09 uniquement) :
+http://education.ti.com/us/product/apps/v200os.html
+
+Pour une ROM de V200 patchée afin de pouvoir tourner sur Virtual TI, elle
+peut être trouvée dans le package que j'avais fait lors de l'apparition de
+la V200 : http://membres.lycos.fr/extended/AMS_2.07_Dev_Kit.zip
+Un fichier décrit les patches effectués. Attention, les autres documents du
+package ne sont plus à jour, il vaut mieux utiliser celui-ci :
+http://www.ticalc.org/pub/text/calcinfo/ams_2.08_doc.zip
+J'ai aussi les AMS 2.08 et 2.09 patchés de la même manière que je peux
+envoyer si tu en as vraiment besoin.
+
+Pour une ROM originale de Titanium (AMS 3.00), je viens de l'uploader ici :
+http://membres.lycos.fr/extended/titanic.orig.zip (l'AMS n'est pas encore
+disponible sur le site de TI). C'est un ROM Dump fait par Samuel Stearley
+des 2 premiers Mo (il n'a pas pu aller plus loin avec l'outil de dump qu'il
+utilise) : une partie des Flash Apps qui étaient installées sont donc
+coupées, mais ce n'est pas gênant (elles peuvent être enlevées à la main
+avec un éditeur hexa, ou les demi apps seront normalement nettoyées au
+démarrage de l'AMS). Samuel m'a donnée l'autorisation d'en faire ce que je
+veux, mais je préfère qu'on ne parle pas trop de ce lien.
+
+J'ai aussi une version au format .89u (venant du CD donné avec la Titanium),
+mais elle est identique, avec le header et la taille correspondants.
+
+J'ai fait de la même manière une version patchée qui permet de le faire
+tourner cette ROM de Titanium sur VTI. Les patchs se comptent par milliers
+et sont en grande partie fait de façon automatique, donc l'AMS plante un peu
+parfois, mais ce n'est pas gênant. Le package contient un document (assez
+confus, il n'était pas fait pour être distribué si tôt) qui décrit les
+patches effectués, ainsi qu'un certains nombres d'informations intéressantes
+sur la Titanium et l'AMS 3.00. Je l'ai envoyé récemment à quelques
+développeurs qui avaient des besoins spécifiques de tests de programmes sur
+Titanium.
+La Titanium n'a pas trop de particularités, à part un ROM_BASE à 0x800000,
+les spécificités sur les ghost spaces de la RAM, et les protections
+d'exécution comme décrits plusieurs fois sur le forum de la TICT. Au niveau
+des ports i/o, de nouveaux sont apparus à 0x700010 concernant la gestion de
+l'horloge et de l'USB (cf le document du package). Et L'auto-int 3 est
+maintenant liée à l'USB.
+Les ports relatifs à l'horloge sont assez clairs, mais je n'ai pas encore
+beaucoup regardé ceux de l'USB. Ils semblent très similaires à ceux décrits
+par Dan Englander sur le forum de Detached Solutions. Dan m'a dit qu'il
+n'avait pas plus d'infos dessus. Il serait interessant de comprendre en
+détail le fonctionnement de ces ports, mais ça à l'air assez complexe.
+Le package est disponible ici :
+http://www.ifrance.com/ti68k/titanium-info.zip . Je préférerais que le lien
+/ le package ne soient pas redistribués.
+
+A propos d'émulation, il serait intéressant de gérer les ports décrits ici :
+http://www.ticalc.org/pub/text/calcinfo/7000xx_ports.zip , ainsi que tout ce
+qui concerne les protections d'exécution et leur faille correctement.
+
+Je suis très intéressé par TiEmu. Malheureusement le débogueur de la
+dernière version était inutilisable sous Windows XP, beaucoup trop lent...
+Je n'ai pas encore testé sous Linux.
+
+Je suis prêt à te donner tout autres renseignements dont tu aurais besoin.
+
+++
+
+ Olivier Armand

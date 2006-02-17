@@ -1,0 +1,50 @@
+List of known bugs to fix (may be in French, sorry):
+
+
+Kevin
+=====
+
+*  Il y a un bogue avec le débogueur et les touches: prends un AMS 2.0x ou 3.0x, mets 
+un breakpoint sur le trap #11, lance un programme ASM (même Exec "4e750000" suffit), 
+quitte le débogueur, appuie sur n'importe quelle touche, il réagit comme si c'était ENTER. 
+Seulement après avoir désactivé le BP sur le trap 11 et appuyé sur ENTER une autre fois, 
+TiEmu reprend son comportement normal.
+Ce problème est apparemment causée par le fait qu'une touche (ENTER) est appuyée au moment 
+où on entre dans le débogueur. (Le BP sur le trap 11 s'active au moment où ENTER est encore 
+appuyé.)
+
+* transfers lents
+
+
+Lionel
+======
+
+* Un bug bizarre, dont les instructions de
+reproduction semblent être:
+        * utiliser un AMS "récent" (2.07+), sur une 92+ ou
+V200 (peut-être 89 aussi ?).
+        * aller dans la fenêtre de debug, partie sélection
+des ROM_CALLs, sélectionner l'un d'entre eux
+(_bcd_math par exemple).
+        * passer à un AMS 2.05 (testé: ROM dump de 89 avec
+certificate).
+        * aller dans la fenêtre de debug: TIEmu est parti
+dans le décor, je ne sais pas s'il exécute ou pas
+
+
+PPhd
+====
+
+* Au fait, le boutton "Add rom" au demarrage continue de freezer...
+(File Selector 0 si ca peut t'aider).
+
+Le seul moyen c'est de faire CANCEL, puis selectionne d'une nouvelle TIB, puis 
+on demarre. Pas pratique, ni evident !
+
+
+roms
+====
+
+* MOVEA.W dis-assembled as MOVEA.L (HeapDeref)
+
+* why AC_CHECK_LIB(comdlg32, GetOpenFileName) does'nt work under MinGW ?
