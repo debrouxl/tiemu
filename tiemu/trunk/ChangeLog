@@ -129,6 +129,7 @@ SubVersion: $Id$
 	- [kevin] $1964: moved initialization of buffer[2048] back down
 	                 restored 2 spaces/level indentation in oletest.c
 	- [roms]  $1968: request #1430263: "better error handling"
+	- [roms]  $1972: bug #1388306 fixed: "can't send FLASH app"
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

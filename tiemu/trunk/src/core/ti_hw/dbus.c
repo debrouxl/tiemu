@@ -402,7 +402,10 @@ int send_ti_file(const char *filename)
     // FLASH APP file ?
     if(tifiles_file_is_flash(filename))
     {   
+		// increase timeout due to excessive time for last ACK
+		params.timeout *= 10;
 		ret = ticalcs_calc_send_flash2(calc_handle, filename);
+		params.timeout /= 10;
     }
 
     // FLASH OS file ?
