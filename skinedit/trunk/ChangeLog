@@ -1,5 +1,8 @@
 List of changes:
 
+- 15/02/2006, version 1.26e: roms
+	Reverted back to GTK+ 2.6 for Windows.
+
 - 02/02/2006, version 1.26d: roms
 	Switched to GTK+ 2.8 for Windows.
 

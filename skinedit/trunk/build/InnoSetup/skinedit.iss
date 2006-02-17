@@ -7,7 +7,7 @@
 
 [Setup]
 AppName=SkinEdit
-AppVerName=SkinEdit 1.26d
+AppVerName=SkinEdit 1.26e
 AppPublisher=The TiLP Team
 AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
 AppSupportURL=http://lpg.ticalc.org/prj_tiemu/index.html
@@ -50,9 +50,8 @@ Source: "C:\sources\roms\skinedit\build\msvc\skinedit.exe"; DestDir: "{app}"; De
 Source: "C:\Gtk2Dev\bin\gtkthemeselector.exe"; DestDir: "{app}";
 
 ; Downloader
-Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\ssleay32.dll"; DestDir: "{app}\wget";
+Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\*.dll"; DestDir: "{app}\wget";
 Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\wget.exe"; DestDir: "{app}\wget";
-Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\gtk.loc"; DestDir: "{app}\wget";
 Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\d_and_i.bat"; DestDir: "{app}\wget";
 
 [Dirs]
