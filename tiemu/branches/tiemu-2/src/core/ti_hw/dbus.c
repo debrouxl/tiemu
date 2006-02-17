@@ -482,8 +482,11 @@ int send_ti_file(const char *filename)
 
     // FLASH APP file ?
     if(tifiles_is_a_flash_file(filename))
-    {        
+    {
+		// increase timeout due to excessive time for last ACK
+		params.timeout *= 10;
         ret = itc.send_flash(filename, MODE_APPS);
+		params.timeout /= 10;
     }
 
     // FLASH OS file ?

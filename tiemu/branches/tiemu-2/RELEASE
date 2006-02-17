@@ -2,9 +2,8 @@
 
 
 
-Previous version: 2.02		(20/09/2005)
-Current version:  2.04		(04/01/2006)
-Add-on:           2.04b   (17/02/2006) => reverted back to GTK+ 2.6
+Previous version: 2.04		(04/01/2006)
+Current version:  2.05		(17/02/2006)
 
 SubVersion (CVS) revision: $Id$
 
@@ -21,24 +20,23 @@ For the other link cables, no driver is needed.
 New capabilities:
 -----------------
 
-	- none (TiEmu 2.xx is a stable branch).
+	- none
 
 
 Improvements:
 -------------
 
-	- pedrom v0.81
-	- optimized grayscale movem detection and added support for dirty-coded HW2/3 grayscale 
-		interrupts abusing the stack pointer to hold data (currently only the latest Grib is 
-		known to do that).
-	
+	- feature request #1430263: better error handling when state file is deleted
+		
 		
 Bug fixes:
 ----------
 
-	- bug #1304338: doesn't save skinless mode in .ini file
-	- bug #1305054: doesn't refresh vector bkpt state
 	- reverted back to GTK+ 2.6
+	- fixed bug #1425569 ("Error code not found" when sending 
+		file to Voyage200). TiEmu didn't allow sending of a 92+ FLASH app on V200
+		due to a too restrictive check.
+	- bug #1388306 fixed: "can't send FLASH app"
 	
 
 Planned:
