@@ -102,6 +102,9 @@ typedef struct
   unsigned int width;
   unsigned int height;
 
+  GdkPixbuf *raw;	// raw jpeg image
+  double	s;		// scaling factor
+
   unsigned char calc[9];
   uint32_t colortype;
 
