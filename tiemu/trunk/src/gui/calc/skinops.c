@@ -172,7 +172,6 @@ int skin_read_image(SKIN_INFOS *si, const char *filename)
 	float rw, rh, r;
 	double s;
 	int lcd_w, lcd_h;
-    GdkPixbuf *tmp;
 	char str[17];
 
 	GdkPixbufLoader *loader;
@@ -243,8 +242,8 @@ int skin_read_image(SKIN_INFOS *si, const char *filename)
 	}
 	
     // and get the pixbuf
-	si->image = gdk_pixbuf_loader_get_pixbuf(loader);
-	if(si->image == NULL)
+	si->raw = gdk_pixbuf_loader_get_pixbuf(loader);
+	if(si->raw == NULL)
 	{
 		fprintf(stderr, "Failed to load pixbuf file: %s\n", filename);
 		g_error_free(error);
@@ -252,9 +251,9 @@ int skin_read_image(SKIN_INFOS *si, const char *filename)
 		return -1;
     }
 
-	// Rescale image if needed (fixed LCD size)
-    sw = gdk_pixbuf_get_width(si->image);
-    sh = gdk_pixbuf_get_height(si->image);
+	// Rescale image to a fixed LCD size but keep original image (avoid resolution lost)
+    sw = gdk_pixbuf_get_width(si->raw);
+    sh = gdk_pixbuf_get_height(si->raw);
 
 	lw = si->lcd_pos.right - si->lcd_pos.left;
 	lh = si->lcd_pos.bottom - si->lcd_pos.top;
@@ -263,15 +262,14 @@ int skin_read_image(SKIN_INFOS *si, const char *filename)
 	rh = (float)lh / lcd_h;
 
 	r = (rw < rh) ? rw : rh;
-	s = ceil(10 * r) / 10.0;
+	si->s = s = ceil(10 * r) / 10.0;
 
-	//printf("image :<%i x %i>\n", sw, sh);
-	//printf("lcd : <%i x %i>\n", lw, lh);
-	//printf("ratios : <%2.2f x %2.2f> => %2.1f\n", rw, rh, s);
+	printf("image :<%i x %i>\n", sw, sh);
+	printf("lcd : <%i x %i>\n", lw, lh);
+	printf("ratios : <%2.2f x %2.2f> => %2.1f\n", rw, rh, s);
     
-    tmp = gdk_pixbuf_scale_simple(si->image, (int)(sw/s), (int)(sh/s), GDK_INTERP_NEAREST);
-    g_object_unref(si->image);
-    si->image = tmp;
+	g_object_unref(si->image);
+    si->image = gdk_pixbuf_scale_simple(si->raw, (int)(sw/s), (int)(sh/s), GDK_INTERP_NEAREST);
 
     // Get new skin size
     si->width = gdk_pixbuf_get_width(si->image);

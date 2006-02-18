@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: hid.h 557 2004-07-14 08:17:39Z roms $ */
+/* $Id: calc.h 1977 2006-02-18 13:13:31Z roms $ */
 
 /*  TiEmu - a TI emulator
  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
@@ -79,17 +79,6 @@ typedef struct
 	guchar*	pixels;
 	gulong*	pixels2;
 } LCD_INFOS;
-
-typedef struct
-{
-	float		r;
-
-	float		x;	// x ratio (unused)
-	float		y;	// y ratio (unused)
-
-	GdkPixbuf*	l;	// lcd pixbuf
-	GdkPixbuf*	p;	// scaled pixbuf
-} SCL_INFOS;
 
 typedef GdkRect LCD_RECT;
 typedef GdkRect SKN_RECT;
