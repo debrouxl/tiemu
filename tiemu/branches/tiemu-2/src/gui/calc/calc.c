@@ -60,7 +60,6 @@ SKIN_INFOS skin_infos = { 0 };
 
 extern GdkPixbuf*	lcd_mem;
 extern GdkPixbuf*	lcd;
-extern GdkPixbuf*	skn;
 extern GdkPixmap*	pixmap;
 
 extern Pc2TiKey*    kbd_keymap;
@@ -510,9 +509,6 @@ int  hid_init(void)
 	    g_free(s);
 	    return -1;
     }
-
-	// Allocate the skn pixbuf (if needed)
-	skn = skin_infos.image;
   
 	// Set skin keymap depending on calculator type
     switch(tihw.calc_type)
