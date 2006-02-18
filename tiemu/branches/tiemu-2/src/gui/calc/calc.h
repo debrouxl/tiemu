@@ -80,16 +80,6 @@ typedef struct
 	gulong*	pixels2;
 } LCD_INFOS;
 
-typedef struct
-{
-	float		r;
-
-	float		x;	// x ratio (unused)
-	float		y;	// y ratio (unused)
-
-	//GdkPixbuf*	p;	// scaled pixbuf
-} SCL_INFOS;
-
 typedef GdkRect LCD_RECT;
 typedef GdkRect SKN_RECT;
 typedef GdkRect WND_RECT;

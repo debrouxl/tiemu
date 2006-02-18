@@ -95,12 +95,12 @@ static int pos_to_key(int x, int y)
   	int i;
   	RECT *kp = skin_infos.keys_pos;
     int nkeys = sizeof(skin_infos.keys_pos) / sizeof(RECT);
-	extern SCL_INFOS si;
+	extern float sf;
   
   	for(i = 0; i < nkeys; i++)
     {
-      	if((x >= si.r*kp[i].left) && (x < si.r*kp[i].right) && 
-	 	   (y >= si.r*kp[i].top) && (y < si.r*kp[i].bottom)) 
+      	if((x >= sf*kp[i].left) && (x < sf*kp[i].right) && 
+	 	   (y >= sf*kp[i].top) && (y < sf*kp[i].bottom)) 
 		{
 			if(options.kbd_dbg)
 				printf("tikey = %02x (%s)\n", skn_keymap[i], keymap_value_to_string(tikeys, skn_keymap[i]));		

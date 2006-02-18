@@ -65,12 +65,12 @@ GdkPixmap *pixmap = NULL;
 uint32_t*	lcd_bytmap;				// LCD buffer (color-mapped as grayscale)
 
 LCD_INFOS	li;
-SCL_INFOS	si = { 1, 1, 1 };
+float		sf;	// scaling factor
 
-LCD_RECT	ls;		// LCD rectangle in skin
-LCD_RECT	lr;		// LCD rectangle in window
-SKN_RECT	sr;		// skin rectangle
-WND_RECT	wr;		// window rectangle
+LCD_RECT	ls;	// LCD rectangle in skin
+LCD_RECT	lr;	// LCD rectangle in window
+SKN_RECT	sr;	// skin rectangle
+WND_RECT	wr;	// window rectangle
 
 static uint32_t convtab[512];      	// planar to chunky conversion table
 static RGB      grayscales[16];		// gray scales rgb values (colormap)
@@ -306,10 +306,10 @@ int hid_update_lcd(void)
 		src.h = (tihw.log_h > tihw.lcd_h) ? tihw.lcd_h : tihw.log_h;
 
 		// Copy surface into window
-		if(si.r)
+		if(sf)
 		{
-			src.w = (int)(si.r * src.w);
-			src.h = (int)(si.r * src.h);
+			src.w = (int)(sf * src.w);
+			src.h = (int)(sf * src.h);
 
 			// scale image
 			g_object_unref(skin_infos.image);

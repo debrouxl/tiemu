@@ -70,7 +70,7 @@ extern const char	sknKey89[];
 extern uint32_t*	lcd_bytmap;
 
 extern LCD_INFOS	li;
-extern SCL_INFOS	si;
+extern float		sf;	// scaling factor
 
 extern LCD_RECT		ls;
 extern LCD_RECT		lr;
@@ -82,11 +82,11 @@ static void set_scale(int view_mode)
 {
 	if(view_mode == VIEW_NORMAL)
 	{
-		options.scale = si.r = 1.0;
+		options.scale = sf = 1.0;
 	}
 	else if(view_mode == VIEW_LARGE)
 	{
-		options.scale = si.r = 2.0;
+		options.scale = sf = 2.0;
 	}
 	else if(view_mode == VIEW_FULL)
 	{
@@ -94,12 +94,12 @@ static void set_scale(int view_mode)
 		gint sw = gdk_screen_get_width(screen);
 		gint sh = gdk_screen_get_height(screen);
 
-		si.r = (float)sw / lr.w;
-		si.r = (float)sh / lr.h;
-		//printf("%i %i %f\n", sw, lr.w, si.r);
-		//printf("%i %i %f\n", sh, lr.h, si.r);
+		sf = (float)sw / lr.w;
+		sf = (float)sh / lr.h;
+		//printf("%i %i %f\n", sw, lr.w, sf);
+		//printf("%i %i %f\n", sh, lr.h, sf);
 
-		options.scale = si.r = (float)1.0;	// restricted to 3.0, too CPU intensive !
+		options.scale = sf = (float)1.0;	// restricted to 3.0, too CPU intensive !
 	}
 }
 
@@ -107,10 +107,10 @@ static void set_scale(int view_mode)
 static void set_infos(void)	// set window & lcd sizes
 {
 	// LCD rectangle (source: skin)
-	ls.x = (int)(si.r * skin_infos.lcd_pos.left); 
-	ls.y = (int)(si.r * skin_infos.lcd_pos.top);
-	ls.w = (int)(si.r * tihw.lcd_w);
-	ls.h = (int)(si.r * tihw.lcd_h);
+	ls.x = (int)(sf * skin_infos.lcd_pos.left); 
+	ls.y = (int)(sf * skin_infos.lcd_pos.top);
+	ls.w = (int)(sf * tihw.lcd_w);
+	ls.h = (int)(sf * tihw.lcd_h);
 
 	// LCD rectangle (target: window)
 	if(options.skin) 
@@ -123,14 +123,14 @@ static void set_infos(void)	// set window & lcd sizes
 		lr.x = 0;
 		lr.y = 0;
 	}  
-	lr.w = (int)(si.r * tihw.lcd_w);
-	lr.h = (int)(si.r * tihw.lcd_h);
+	lr.w = (int)(sf * tihw.lcd_w);
+	lr.h = (int)(sf * tihw.lcd_h);
 
 
 	// SKN rectangle
 	sr.x = sr.y = 0;
-	sr.w = (int)(si.r * skin_infos.width);
-	sr.h = (int)(si.r * skin_infos.height);
+	sr.w = (int)(sf * skin_infos.width);
+	sr.h = (int)(sf * skin_infos.height);
 
 	// WND rectangle (= LCD or SKN depending on w/ or w/o skin)
 	wr.x = wr.y = 0;
@@ -291,7 +291,7 @@ on_drawingarea1_configure_event        (GtkWidget       *widget,
 		return FALSE;
 
 	// set scaling factor
-	options.scale = si.r = factor;
+	options.scale = sf = factor;
 	options.view = VIEW_CUSTOM;
 
 	// compute sizes
@@ -532,7 +532,7 @@ int  hid_init(void)
 	}
 
 	// Set window/LCD sizes
-	si.r = options.scale;
+	sf = options.scale;
 	set_scale(options.view);
 	set_infos();
 
