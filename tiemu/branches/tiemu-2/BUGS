@@ -1,5 +1,38 @@
 List of known bugs to fix (may be in French, sorry):
 
+<<
+You don't understand his problem. TiEmu doesn't read properly right resolution of actual skin. It always resize skin to aproximatelly 220x490. 
+ 
+Skin which in SkinEditor has size 1:1 - 440x984 (432960 pixels) in TiEmu for 1x - 220x491 has  
+108020 pixels (half - it's OK) but in 2x zoom 440x984 skin has 108020 pixels too. Change size by mouse? It's not solution, because TiEmu keeps constant number of pixels. It's look very bad and we can't read text on buttons. 
+ 
+ViViD 
+TiEmu under Windows XP 
+>>
+
+<<
+hi all, i cannot use an high resolution image (150 - 200 dpi) to create a skin
+(ti89 titanium), the emulator autoresizes the skin to fit the display original
+size of 160x100, making the skin unusable (lowers the image resolution to less
+than 90 dpi), doubling the view to 2x is useless because resolution becomes
+low and letters are unreadable.
+
+the only way is (in the skin editor) to select for the display a small area
+of 160x100 real pixel, then the skin is rendered properly at the right size
+with the right quality, but the display is too small (unreadable) ....
+
+could i suggest an adjustment of the skin and display management routines ?
+>>
+
+<<
+Hello, I've created skins of my own and used other people's for use on TIEMU.
+While the skin on SKINEDIT looks fine, it loses much resolution when it is used
+by TIEMU. As a check, I used the same skins and exported them to VTI2.5's format...
+They look just fine on VTI, the same they do as with SKINEDIT. Why is it that
+TIEMU cannot render the full resolution or is there something I'm doing wrong?
+Thanks
+>>
+
 
 Kevin
 =====

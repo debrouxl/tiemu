@@ -87,7 +87,6 @@ typedef struct
 	float		x;	// x ratio (unused)
 	float		y;	// y ratio (unused)
 
-	GdkPixbuf*	l;	// lcd pixbuf
 	GdkPixbuf*	p;	// scaled pixbuf
 } SCL_INFOS;
 

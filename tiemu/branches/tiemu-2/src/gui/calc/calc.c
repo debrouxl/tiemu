@@ -58,6 +58,7 @@ GtkWidget *area = NULL;
 
 SKIN_INFOS skin_infos = { 0 };
 
+extern GdkPixbuf*	lcd_mem;
 extern GdkPixbuf*	lcd;
 extern GdkPixbuf*	skn;
 extern GdkPixmap*	pixmap;
@@ -543,8 +544,8 @@ int  hid_init(void)
 	lcd_bytmap = (uint32_t *)malloc(LCDMEM_W * LCDMEM_H);
 
     // Allocate the lcd pixbuf
-    lcd = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, LCDMEM_W, LCDMEM_H);
-    if(lcd == NULL)
+    lcd_mem = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, LCDMEM_W, LCDMEM_H);
+    if(lcd_mem == NULL)
     {
         gchar *s = g_strdup_printf("unable to create LCD pixbuf.\n");
 	    tiemu_error(0, s);
@@ -553,14 +554,14 @@ int  hid_init(void)
     }
 
 	// Used by TI89 (the LCD view is clipped from memory view)
-	si.l = gdk_pixbuf_new_subpixbuf(lcd, 0, 0, tihw.lcd_w, tihw.lcd_h);
+	lcd = gdk_pixbuf_new_subpixbuf(lcd_mem, 0, 0, tihw.lcd_w, tihw.lcd_h);
     
 	// Constants for LCD update (speed-up)
-    li.n_channels = gdk_pixbuf_get_n_channels (lcd);
-	li.width = gdk_pixbuf_get_width (lcd);
-	li.height = gdk_pixbuf_get_height (lcd);
-	li.rowstride = gdk_pixbuf_get_rowstride (lcd);
-	li.pixels = gdk_pixbuf_get_pixels (lcd);
+    li.n_channels = gdk_pixbuf_get_n_channels (lcd_mem);
+	li.width = gdk_pixbuf_get_width (lcd_mem);
+	li.height = gdk_pixbuf_get_height (lcd_mem);
+	li.rowstride = gdk_pixbuf_get_rowstride (lcd_mem);
+	li.pixels = gdk_pixbuf_get_pixels (lcd_mem);
 
 	// Create main window
 	display_main_wnd();
@@ -608,12 +609,12 @@ int  hid_exit(void)
     g_source_remove(tid);
 
 	// Release resources
-    if(lcd != NULL)
+    if(lcd_mem != NULL)
     {
-        g_object_unref(lcd);
-        lcd = NULL;
-		g_object_unref(si.l);
-		si.l = NULL;
+        g_object_unref(lcd_mem);
+        lcd_mem = NULL;
+		g_object_unref(lcd);
+		lcd = NULL;
     }
 
     if(pixmap != NULL)
@@ -751,7 +752,7 @@ int  hid_screenshot(char *filename)
 	else if((options2.size == IMG_LCD) && (options2.type == IMG_COL)) 
 	{
         // get pixbuf from grayscale lcd
-		pixbuf = gdk_pixbuf_copy(si.l);
+		pixbuf = gdk_pixbuf_copy(lcd);
 	} 
 	else if((options2.size == IMG_SKIN) && (options2.type == IMG_COL))
 	{

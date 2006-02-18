@@ -58,6 +58,7 @@ extern GtkWidget *area;
 
 extern SKIN_INFOS skin_infos;
 
+GdkPixbuf *lcd_mem = NULL;
 GdkPixbuf *lcd = NULL;
 GdkPixbuf *skn = NULL;
 GdkPixmap *pixmap = NULL;
@@ -65,7 +66,7 @@ GdkPixmap *pixmap = NULL;
 uint32_t*	lcd_bytmap;				// LCD buffer (color-mapped as grayscale)
 
 LCD_INFOS	li;
-SCL_INFOS	si = { 1, 1, 1, NULL, NULL };
+SCL_INFOS	si = { 1, 1, 1, NULL };
 
 LCD_RECT	ls;		// LCD rectangle in skin
 LCD_RECT	lr;		// LCD rectangle in window
@@ -228,7 +229,7 @@ int hid_update_lcd(void)
 	GdkRect src;
 	guchar *p;
 
-    if(!pixmap || !lcd || !tihw.lcd_ptr)
+    if(!pixmap || !lcd_mem || !tihw.lcd_ptr)
         return 0;
 
 	// Check for LCD state change (from TI HW)
@@ -315,7 +316,7 @@ int hid_update_lcd(void)
 			src.h = (int)(si.r * src.h);
 
 			// scale image
-			si.p = gdk_pixbuf_scale_simple(si.l, lr.w, lr.h, GDK_INTERP_NEAREST);
+			si.p = gdk_pixbuf_scale_simple(lcd, lr.w, lr.h, GDK_INTERP_NEAREST);
 
 			// and draw image into pixmap (next, into window on expose event)
 			gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
@@ -330,7 +331,7 @@ int hid_update_lcd(void)
 		{
 			// and draw image into pixmap (next, into window on expose event)
 			gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
-			  lcd, src.x, src.y, lr.x, lr.y, src.w, src.h,
+			  lcd_mem, src.x, src.y, lr.x, lr.y, src.w, src.h,
 			  GDK_RGB_DITHER_NONE, 0, 0);
 			gtk_widget_queue_draw_area(area, lr.x, lr.y, src.w, src.h);
 		}
@@ -372,5 +373,5 @@ GdkPixbuf* hid_copy_lcd(void)
 		}
 	}
 
-	return gdk_pixbuf_new_subpixbuf(lcd, 0, 0, tihw.lcd_w, tihw.lcd_h);
+	return gdk_pixbuf_new_subpixbuf(lcd_mem, 0, 0, tihw.lcd_w, tihw.lcd_h);
 }
