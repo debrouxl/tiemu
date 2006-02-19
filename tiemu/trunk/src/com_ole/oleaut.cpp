@@ -62,6 +62,7 @@ class TiEmuOLE : public ITiEmuOLE
     STDMETHOD(reset_calc)(VARIANT_BOOL clearmem,VARIANT_BOOL* ret);
     STDMETHOD(execute_command)(BSTR command,VARIANT_BOOL* ret);
     STDMETHOD(turn_calc_on)(VARIANT_BOOL* ret);
+    STDMETHOD(enter_debugger)(VARIANT_BOOL* ret);
 };
 
 TiEmuOLE::TiEmuOLE() : typelib(NULL), refcount(1)
@@ -265,6 +266,16 @@ STDMETHODIMP TiEmuOLE::turn_calc_on(VARIANT_BOOL *ret)
     hw_m68k_irq(6);
     while (ti68k_debug_is_supervisor())
       hw_m68k_run(1,0);
+    engine_start();
+    RETURN(TRUE);
+  } else RETURN(FALSE);
+}
+
+STDMETHODIMP TiEmuOLE::enter_debugger(VARIANT_BOOL *ret)
+{
+  if (img_loaded && !engine_is_stopped()) {
+    engine_stop();
+    ti68k_debug_break();
     engine_start();
     RETURN(TRUE);
   } else RETURN(FALSE);

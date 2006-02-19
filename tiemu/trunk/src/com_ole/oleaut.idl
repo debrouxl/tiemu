@@ -48,6 +48,7 @@ interface ITiEmuOLE : IDispatch
   HRESULT reset_calc([in] VARIANT_BOOL clearmem, [out, retval] VARIANT_BOOL *ret);
   HRESULT execute_command([in] BSTR command, [out, retval] VARIANT_BOOL *ret);
   HRESULT turn_calc_on([out, retval] VARIANT_BOOL *ret);
+  HRESULT enter_debugger([out, retval] VARIANT_BOOL *ret);
 };
 
 [

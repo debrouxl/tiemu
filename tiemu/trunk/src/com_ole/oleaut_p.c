@@ -48,7 +48,7 @@
                 "100: pushl %ebp; movl %fs:0,%eax; movl 8(%eax),%ebp; movl %esp,8(%eax)"); \
   if ((guard)) { \
     volatile int _exception_code; \
-    asm volatile ("movl 8(%%esp),%%eax; movl %%fs:0,%%esp; popl %%fs:0; addl $8,%%esp; popl %%esp; movl (%%eax),%0; subl $32,%%esp":"=m"(_exception_code)::"eax");
+    asm volatile ("movl 8(%%esp),%%eax; movl %%fs:0,%%esp; popl %%fs:0; addl $8,%%esp; popl %%esp; movl (%%eax),%%eax; movl %%eax,%0; subl $32,%%esp":"=m"(_exception_code)::"eax");
 #define RpcEndExcept \
   } else { \
     asm volatile ("movl %fs:0,%eax; movl 8(%eax),%esp; movl %ebp,8(%eax); popl %ebp; movl $1,%eax; ret");\
@@ -1351,6 +1351,116 @@ NdrStubInitialize(
     
 }
 
+
+SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_enter_debugger_Proxy( 
+    ITiEmuOLE __RPC_FAR * This,
+    /* [retval][out] */ VARIANT_BOOL __RPC_FAR *ret)
+{
+
+    HRESULT _RetVal;
+    
+    RPC_MESSAGE _RpcMessage;
+    
+    MIDL_STUB_MESSAGE _StubMsg;
+    
+    RpcTryExcept
+        {
+        NdrProxyInitialize(
+                      ( void __RPC_FAR *  )This,
+                      ( PRPC_MESSAGE  )&_RpcMessage,
+                      ( PMIDL_STUB_MESSAGE  )&_StubMsg,
+                      ( PMIDL_STUB_DESC  )&Object_StubDesc,
+                      17);
+        
+        
+        
+        if(!ret)
+            {
+            RpcRaiseException(RPC_X_NULL_REF_POINTER);
+            }
+        RpcTryFinally
+            {
+            
+            _StubMsg.BufferLength = 0U;
+            NdrProxyGetBuffer(This, &_StubMsg);
+            NdrProxySendReceive(This, &_StubMsg);
+            
+            if ( (_RpcMessage.DataRepresentation & 0X0000FFFFUL) != NDR_LOCAL_DATA_REPRESENTATION )
+                NdrConvert( (PMIDL_STUB_MESSAGE) &_StubMsg, (PFORMAT_STRING) &__MIDL_ProcFormatString.Format[0] );
+            
+            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer);
+            _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+            
+            _StubMsg.Buffer += 2;
+            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer);
+            _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+            
+            }
+        RpcFinally
+            {
+            NdrProxyFreeBuffer(This, &_StubMsg);
+            
+            }
+        RpcEndFinally
+        
+        }
+    RpcExcept(_StubMsg.dwStubPhase != PROXY_SENDRECEIVE)
+        {
+        NdrClearOutParameters(
+                         ( PMIDL_STUB_MESSAGE  )&_StubMsg,
+                         ( PFORMAT_STRING  )&__MIDL_TypeFormatString.Format[2],
+                         ( void __RPC_FAR * )ret);
+        _RetVal = NdrProxyErrorHandler(RpcExceptionCode());
+        }
+    RpcEndExcept
+    return _RetVal;
+}
+
+SECTION_ORPC void __RPC_STUB ITiEmuOLE_enter_debugger_Stub(
+    IRpcStubBuffer *This,
+    IRpcChannelBuffer *_pRpcChannelBuffer,
+    PRPC_MESSAGE _pRpcMessage,
+    DWORD *_pdwStubPhase)
+{
+    VARIANT_BOOL _M9;
+    HRESULT _RetVal;
+    MIDL_STUB_MESSAGE _StubMsg;
+    VARIANT_BOOL __RPC_FAR *ret;
+    
+NdrStubInitialize(
+                     _pRpcMessage,
+                     &_StubMsg,
+                     &Object_StubDesc,
+                     _pRpcChannelBuffer);
+    ( VARIANT_BOOL __RPC_FAR * )ret = 0;
+    RpcTryFinally
+        {
+        ret = &_M9;
+        
+        *_pdwStubPhase = STUB_CALL_SERVER;
+        _RetVal = (((ITiEmuOLE*) ((CStdStubBuffer *)This)->pvServerObject)->lpVtbl) -> enter_debugger((ITiEmuOLE *) ((CStdStubBuffer *)This)->pvServerObject,ret);
+        
+        *_pdwStubPhase = STUB_MARSHAL;
+        
+        _StubMsg.BufferLength = 2U + 6U;
+        NdrStubGetBuffer(This, _pRpcChannelBuffer, &_StubMsg);
+        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer) = *ret;
+        _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+        
+        _StubMsg.Buffer += 2;
+        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer) = _RetVal;
+        _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+        
+        }
+    RpcFinally
+        {
+        }
+    RpcEndFinally
+    _pRpcMessage->BufferLength = 
+        (unsigned int)((long)_StubMsg.Buffer - (long)_pRpcMessage->Buffer);
+    
+}
+
 extern const USER_MARSHAL_ROUTINE_QUADRUPLE UserMarshalRoutines[1];
 
 static const MIDL_STUB_DESC Object_StubDesc = 
@@ -1377,7 +1487,7 @@ static const MIDL_STUB_DESC Object_StubDesc =
     0   /* Reserved5 */
     };
 
-CINTERFACE_PROXY_VTABLE(17) _ITiEmuOLEProxyVtbl = 
+CINTERFACE_PROXY_VTABLE(18) _ITiEmuOLEProxyVtbl = 
 {
     &IID_ITiEmuOLE,
     IUnknown_QueryInterface_Proxy,
@@ -1396,7 +1506,8 @@ CINTERFACE_PROXY_VTABLE(17) _ITiEmuOLEProxyVtbl =
     ITiEmuOLE_debug_file_Proxy ,
     ITiEmuOLE_reset_calc_Proxy ,
     ITiEmuOLE_execute_command_Proxy ,
-    ITiEmuOLE_turn_calc_on_Proxy
+    ITiEmuOLE_turn_calc_on_Proxy ,
+    ITiEmuOLE_enter_debugger_Proxy
 };
 
 
@@ -1415,14 +1526,15 @@ static const PRPC_STUB_FUNCTION ITiEmuOLE_table[] =
     ITiEmuOLE_debug_file_Stub,
     ITiEmuOLE_reset_calc_Stub,
     ITiEmuOLE_execute_command_Stub,
-    ITiEmuOLE_turn_calc_on_Stub
+    ITiEmuOLE_turn_calc_on_Stub,
+    ITiEmuOLE_enter_debugger_Stub
 };
 
 CInterfaceStubVtbl _ITiEmuOLEStubVtbl =
 {
     &IID_ITiEmuOLE,
     0,
-    17,
+    18,
     &ITiEmuOLE_table[-3],
     CStdStubBuffer_DELEGATING_METHODS
 };

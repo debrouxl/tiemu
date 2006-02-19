@@ -65,6 +65,9 @@ interface ITiEmuOLE : public IDispatch
     virtual HRESULT STDMETHODCALLTYPE turn_calc_on(
         VARIANT_BOOL* ret) = 0;
 
+    virtual HRESULT STDMETHODCALLTYPE enter_debugger(
+        VARIANT_BOOL* ret) = 0;
+
 };
 #else
 typedef struct ITiEmuOLEVtbl {
@@ -154,6 +157,10 @@ typedef struct ITiEmuOLEVtbl {
         VARIANT_BOOL* ret);
 
     HRESULT (STDMETHODCALLTYPE *turn_calc_on)(
+        ITiEmuOLE* This,
+        VARIANT_BOOL* ret);
+
+    HRESULT (STDMETHODCALLTYPE *enter_debugger)(
         ITiEmuOLE* This,
         VARIANT_BOOL* ret);
 
@@ -268,6 +275,14 @@ HRESULT CALLBACK ITiEmuOLE_turn_calc_on_Proxy(
     ITiEmuOLE* This,
     VARIANT_BOOL* ret);
 void __RPC_STUB ITiEmuOLE_turn_calc_on_Stub(
+    IRpcStubBuffer* This,
+    IRpcChannelBuffer* pRpcChannelBuffer,
+    PRPC_MESSAGE pRpcMessage,
+    DWORD* pdwStubPhase);
+HRESULT CALLBACK ITiEmuOLE_enter_debugger_Proxy(
+    ITiEmuOLE* This,
+    VARIANT_BOOL* ret);
+void __RPC_STUB ITiEmuOLE_enter_debugger_Stub(
     IRpcStubBuffer* This,
     IRpcChannelBuffer* pRpcChannelBuffer,
     PRPC_MESSAGE pRpcMessage,
