@@ -131,6 +131,7 @@ SubVersion: $Id$
 	- [roms]  $1968: request #1430263: "better error handling"
 	- [roms]  $1972: bug #1388306 fixed: "can't send FLASH app"
 	- [roms]  $1978: skin is now scaled directly from JPEG image => no resolution lost
+	- [kevin] $1980: added enter_debugger command to the DCOP interface
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

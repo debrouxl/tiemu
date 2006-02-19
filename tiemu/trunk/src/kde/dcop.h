@@ -45,6 +45,7 @@ class TiEmuDCOP: public QObject, virtual public DCOPObject
     bool reset_calc(bool);
     bool execute_command(QString command);
     bool turn_calc_on();
+    bool enter_debugger();
 };
 
 #endif

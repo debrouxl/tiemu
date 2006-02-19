@@ -158,3 +158,13 @@ bool TiEmuDCOP::turn_calc_on()
     return true;
   } else return false;
 }
+
+bool TiEmuDCOP::enter_debugger()
+{
+  if (img_loaded && !engine_is_stopped()) {
+    engine_stop();
+    ti68k_debug_break();
+    engine_start();
+    return true;
+  } else return false;
+}

@@ -290,4 +290,27 @@ bool TiEmuDCOP_stub::turn_calc_on()
     return result;
 }
 
+bool TiEmuDCOP_stub::enter_debugger()
+{
+    bool result = false;
+    if ( !dcopClient()  ) {
+	setStatus( CallFailed );
+	return result;
+    }
+    QByteArray data, replyData;
+    QCString replyType;
+    if ( dcopClient()->call( app(), obj(), "enter_debugger()", data, replyType, replyData ) ) {
+	if ( replyType == "bool" ) {
+	    QDataStream _reply_stream( replyData, IO_ReadOnly );
+	    _reply_stream >> result;
+	    setStatus( CallSucceeded );
+	} else {
+	    callFailed();
+	}
+    } else { 
+	callFailed();
+    }
+    return result;
+}
+
 

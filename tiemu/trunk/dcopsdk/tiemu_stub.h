@@ -32,6 +32,7 @@ public:
     virtual bool reset_calc( bool  );
     virtual bool execute_command( QString command );
     virtual bool turn_calc_on();
+    virtual bool enter_debugger();
 protected:
     TiEmuDCOP_stub() : DCOPStub( never_use ) {};
 };
