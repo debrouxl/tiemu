@@ -53,11 +53,15 @@ int ti68k_error_get(int err_num, char *error_msg)
 		break;
 
 	case ERR_CANT_OPEN_STATE:
-		strcpy(error_msg, _("Can not open state image. File is corrupted or missing."));
+		strcpy(error_msg, _("Can not open state image: file is corrupted or missing."));
 		break;
 
-	case ERR_INVALID_STATE:
-		strcpy(error_msg, _("Invalid state image. File is corrupted or revision changed."));
+	case ERR_REVISION_MATCH:
+		strcpy(error_msg, _("Can not open state image: revision changed. You have to recreate the state image."));
+		break;
+
+	case ERR_IMGSAV_MATCH:
+		strcpy(error_msg, _("State image header does not match ROM image header: you are attempting to use a state image not targetted for this hand-held model or OS."));
 		break;
 
 	case ERR_INVALID_IMAGE:
@@ -74,10 +78,6 @@ int ti68k_error_get(int err_num, char *error_msg)
 
 	case ERR_NO_IMAGE:
 		strcpy(error_msg, _("No image."));
-		break;
-
-	case ERR_HID_FAILED:
-		strcpy(error_msg, _("Failed to init HID subsystem."));
 		break;
 
 	case ERR_INVALID_ROM_SIZE:

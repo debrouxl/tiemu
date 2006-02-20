@@ -32,17 +32,18 @@
 // New codes
 #define ERR_NONE				0
 #define ERR_CANT_OPEN			768
-#define ERR_INVALID_STATE		769
 #define ERR_INVALID_IMAGE		770
 #define ERR_INVALID_UPGRADE		771
 #define ERR_NO_IMAGE			772
-#define ERR_HID_FAILED			773
 #define ERR_INVALID_ROM_SIZE	774
 #define ERR_NOT_TI_FILE			775
-//#define ERR_MALLOC				776
+//efine ERR_MALLOC				776
 #define ERR_CANT_OPEN_DIR		777
 #define ERR_CANT_UPGRADE		778
 #define	ERR_INVALID_ROM			779
+
 #define ERR_CANT_OPEN_STATE		780
+#define ERR_REVISION_MATCH		781
+#define ERR_IMGSAV_MATCH		782
 
 #endif

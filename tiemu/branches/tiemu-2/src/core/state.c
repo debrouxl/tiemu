@@ -108,7 +108,10 @@ int ti68k_state_load(char *filename)
   	// Compare image infos with current image
 	fread(&img, 1, sizeof(IMG_INFO), f);
 	if(memcmp(&img, &img_infos, sizeof(IMG_INFO) - sizeof(char *)))
-		return ERR_INVALID_STATE;
+	{
+
+		return ERR_IMGSAV_MATCH;
+	}
 
     // Determine state image revision for backwards compatibility
 	pos = ftell(f);
@@ -117,7 +120,7 @@ int ti68k_state_load(char *filename)
 	fseek(f, pos, SEEK_SET);
 
 	if(sav.revision != SAV_REVISION)
-		return ERR_INVALID_STATE;
+		return ERR_REVISION_MATCH;
 
 	// Load state image infos
     fread(&sav, 1, sizeof(SAV_INFO), f);
