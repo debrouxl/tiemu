@@ -33,12 +33,16 @@
   Definitions
 */
 
-#define IMG_REV 2           // increase this number when changing the structure below
+#define IMG_SIGN	"TiEmu img v2.00"
+#define IMG_REV		2	// increase this number when changing the structure below
+
+// Please update the docs/TiEmu_img_format.txt documentation when making changes
+// on the structure below
 
 // dc = don't care for rom/tib
 typedef struct
 {
-	char	signature[16];	// "TiEmu v2.00" (dc)
+	char	signature[16];	// "TiEmu img v2.00" (dc)
     long    revision;       // structure revision (compatibility)
 	long	header_size;	// size of this structure and offset to pure data (dc)
 

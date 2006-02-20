@@ -133,6 +133,7 @@ SubVersion: $Id$
 	- [roms]  $1978: skin is now scaled directly from JPEG image => no resolution lost
 	- [kevin] $1980: added enter_debugger command to the DCOP interface
 	- [kevin] $1981: added enter_debugger command to the OLE interface
+	- [roms]  $1987: fixing bug #1434625: display a better error message when attempting to load a state image targeted for another hand-held model (backported changes from TiEmu2 rev. 1986).
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

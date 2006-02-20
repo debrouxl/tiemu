@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2006, Romain Liévin
+ *  Copyright (c) 2005, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -53,11 +53,19 @@ int ti68k_error_get(int err_num, char *error_msg)
 		break;
 
 	case ERR_CANT_OPEN_STATE:
-		strcpy(error_msg, _("Can not open state image. File is corrupted or missing."));
+		strcpy(error_msg, _("Can not open state image: file is corrupted or missing."));
 		break;
 
-	case ERR_INVALID_STATE:
-		strcpy(error_msg, _("Invalid state image. File is corrupted or revision changed."));
+	case ERR_REVISION_MATCH:
+		strcpy(error_msg, _("Can not open state image: revision changed. You have to recreate the state image."));
+		break;
+
+	case ERR_HEADER_MATCH:
+		strcpy(error_msg, _("Can not open state image: state image header does not match ROM image header: have you changed/updated your ROM image ?"));
+		break;
+
+	case ERR_STATE_MATCH:
+		strcpy(error_msg, _("Can not open state image: this state image is not targetted for your current emulator image (calculator model and/or OS verison must match !). Choose another image before."));
 		break;
 
 	case ERR_INVALID_IMAGE:
@@ -74,10 +82,6 @@ int ti68k_error_get(int err_num, char *error_msg)
 
 	case ERR_NO_IMAGE:
 		strcpy(error_msg, _("No image."));
-		break;
-
-	case ERR_HID_FAILED:
-		strcpy(error_msg, _("Failed to init HID subsystem."));
 		break;
 
 	case ERR_INVALID_ROM_SIZE:

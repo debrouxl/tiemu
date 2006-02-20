@@ -349,7 +349,7 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
     
     // Read header
     fread(ri, sizeof(IMG_INFO), 1, f);
-    if(strcmp(ri->signature, "TiEmu img v2.00"))
+    if(strcmp(ri->signature, IMG_SIGN))
    	{
    		fprintf(stderr, "Bad image: <%s>\n", filename);
       	return ERR_INVALID_UPGRADE;
@@ -417,7 +417,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	}
 
 	// Fill header
-	strcpy(img.signature, "TiEmu img v2.00");
+	strcpy(img.signature, IMG_SIGN);
 	img.header_size = sizeof(IMG_INFO);
     img.revision = IMG_REV;
 
@@ -483,7 +483,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
     }
 
 	// Fill header
-	strcpy(img.signature, "TiEmu img v2.00");
+	strcpy(img.signature, IMG_SIGN);
 	img.header_size = sizeof(IMG_INFO);
 	img.revision = IMG_REV;
     real_size = img.size - SPP;
@@ -664,7 +664,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
     }
 
 	// Fill header
-	strcpy(img.signature, "TiEmu img v2.00");
+	strcpy(img.signature, IMG_SIGN);
 	img.header_size = sizeof(IMG_INFO);
 	img.revision = IMG_REV;
     img.has_boot = 1;
