@@ -3,7 +3,7 @@
 * Documentation by Romain Lievin <roms@tilp.info>				*
 *																*
 * Begin: 17/05/2005												*
-* Last update: 17/04/2005										*
+* Last update: 20/02/2006										*
 *****************************************************************
 
 
@@ -52,7 +52,7 @@ Calculator type (libtifiles defs):
 FLASH upgrade does not have boot block.
 
 
-The TiEmu v2.00 save format (revision 12)
+The TiEmu v2.00 save format (revision 19)
 -----------------------------------------
 
   The following is a table of the bytes that make up a such file.
@@ -64,7 +64,7 @@ The TiEmu v2.00 save format (revision 12)
   ---------------------------------------------------------------------------
 
 
-  0x40-0x43	0-3		4	structure revision (12)
+  0x40-0x43	0-3		4	structure revision (19)
   0x44-0x47	4-7		4	size of structure
   0x48-0x4b	8-11	4	offset to M68K area
   0x4c-0x4f	12-15	4	offset to IO area
