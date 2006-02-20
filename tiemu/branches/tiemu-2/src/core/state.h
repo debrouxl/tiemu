@@ -26,6 +26,9 @@
 #ifndef __TI68K_STATE__
 #define __TI68K_STATE__
 
+// Please update the docs/TiEmu_img_format.txt documentation when making changes
+// on the structure below
+
 // Used to locate sections
 typedef struct
 {

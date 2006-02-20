@@ -34,10 +34,10 @@ The TiEmu v2.00 image format (revision 2)
   0x20-0x23	32-35	4	pure data size
   0x24		36		1	hw type (1/2/3)
   0x25		37		1	ROM base address
-  0x26		38-44	n	filled with 0 (reserved for future use)
-  0x3b-0x3f	44-47	4	pointer on data (unused here)
+  0x26		38-59	n	filled with 0 (reserved for future use)
+  0x3c-0x3f	60-63	4	pointer on data (unused here)
   
-  0x40-..	48-..		pure data (ROM image)
+  0x40-..	64-..		pure data (ROM image)
  
  
  
@@ -50,3 +50,28 @@ Calculator type (libtifiles defs):
 #define TI89t		(1 << 4)
  
 FLASH upgrade does not have boot block.
+
+
+The TiEmu v2.00 save format (revision 12)
+-----------------------------------------
+
+  The following is a table of the bytes that make up a such file.
+
+  Before this header, there is a "TiEmu v2.00 image format" header.
+  And next, there is the following header:
+
+  Address		Size	What It Contains
+  ---------------------------------------------------------------------------
+
+
+  0x40-0x43	0-3		4	structure revision (12)
+  0x44-0x47	4-7		4	size of structure
+  0x48-0x4b	8-11	4	offset to M68K area
+  0x4c-0x4f	12-15	4	offset to IO area
+  0x50-0x53	16-19	4	offset to RAM area
+  0x54-0x57	20-23	4	offset to extra infos
+  0x58-0x5b	24-27	4	offset to bkpts area
+  0x5c-0x5f	28-31	4	offset to FLASH changes
+  0x60-0x63 32-35	4	size of string
+  0x64-....	....	n	string (image location)
+  
