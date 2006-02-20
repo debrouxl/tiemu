@@ -6,6 +6,7 @@ SubVersion: $Id$
 	- [roms] $1984 : error message about state images are a little better
 	- [roms] $1986: fixing bug #1434625: display a better error message when attempting to
 		load a state image targetted for another hand-held model
+	- [roms] $1987: fixed bug #1434625: allow direct loading of a state image and associated image.
 
 - 07/02/2006, version 2.05:
 	- [roms] $1904: fixed bug #1425569 ("Error code not found" when sending 

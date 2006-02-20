@@ -43,6 +43,60 @@
 
 #define SAV_REVISION	12
 
+int ti68k_state_parse(const char *filename, char **rom_file, char **tib_file)
+{
+	FILE *f;
+  	IMG_INFO img;
+  	SAV_INFO sav;
+	long pos, len;
+	int ret = 0;
+
+	// No filename, exits
+	if(!strcmp(filename, ""))
+		return 0;
+  
+  	// Open file
+  	f = fopen(filename, "rb");
+  	if(f == NULL)
+  		return ERR_CANT_OPEN_STATE;
+  	
+  	// Load ROM image header
+	fread(&img, 1, sizeof(IMG_INFO), f);
+
+    // Determine state image revision for backwards compatibility and load
+	pos = ftell(f);
+	fread(&sav.revision, sizeof(sav.revision), 1, f);
+	fread(&sav.size, sizeof(sav.revision), 1, f);
+	fseek(f, pos, SEEK_SET);
+	fread(&sav, 1, sav.size, f);
+
+	if(sav.revision < 12)
+	{
+		ret = 0;
+		goto ti68k_state_parse_exit;
+	}
+
+	ret = fseek(f, sav.str_offset, SEEK_SET);
+
+	fread(&len, 1, sizeof(long), f);
+	*rom_file = (char *)g_malloc(len);
+	fread(*rom_file, 1, len, f);
+
+	fread(&len, 1, sizeof(long), f);
+	*tib_file = (char *)g_malloc(len);
+	fread(*tib_file, 1, len, f);
+
+	if(strcmp(params.rom_file, *rom_file) || strcmp(params.tib_file, *tib_file))
+	{
+		ret = -2;
+		goto ti68k_state_parse_exit;
+	}
+
+ti68k_state_parse_exit:
+	fclose(f);
+	return ret;
+}
+
 static int load_bkpt(FILE *f, GList **l)
 {
     int ret;
@@ -85,7 +139,7 @@ static int load_bkpt2(FILE *f, GList **l)
 
   Return an error code if an error occured, 0 otherwise
 */
-int ti68k_state_load(char *filename)
+int ti68k_state_load(const char *filename)
 {
 	FILE *f;
   	IMG_INFO img;
@@ -94,6 +148,7 @@ int ti68k_state_load(char *filename)
     int ret;
 	long pos;
 	int i;
+	gchar *rf, *tf;
   
   	// No filename, exits
 	if(!strcmp(filename, ""))
@@ -108,51 +163,28 @@ int ti68k_state_load(char *filename)
   	// Load ROM image header
 	fread(&img, 1, sizeof(IMG_INFO), f);
 
-    // Determine state image revision for backwards compatibility and load
+    // Determine state image revision and load state image header
 	pos = ftell(f);
 	fread(&sav.revision, sizeof(sav.revision), 1, f);
 	fread(&sav.size, sizeof(sav.revision), 1, f);
 	fseek(f, pos, SEEK_SET);
+	fread(&sav, 1, sav.size, f);
 
 	if(sav.revision != SAV_REVISION && sav.revision != 11)
 	{
 		fclose(f);
 		return ERR_REVISION_MATCH;
 	}
-    fread(&sav, 1, sav.size, f);
 
-	// Determine whether state match the image
-	if(sav.revision > 11)
+	// Does not accept state image different of emulator image
+	if(ti68k_state_parse(filename, &rf, &tf) < 0)
 	{
-		long len;
-		char *str;
-
-		ret = fseek(f, sav.str_offset, SEEK_SET);
-
-		fread(&len, 1, sizeof(long), f);
-		str = (char *)malloc(len);
-		fread(str, 1, len, f);
-		printf("ROM location : <%s>\n", str);
-		if(strcmp(params.rom_file, str))
-		{
-			free(str);
-			fclose(f);
-			return ERR_STATE_MATCH;
-		}
-		free(str);
-
-		fread(&len, 1, sizeof(long), f);
-		str = (char *)malloc(len);
-		fread(str, 1, len, f);
-		printf("TIB location : <%s>\n", str);
-		if(strcmp(params.tib_file, str))
-		{
-			free(str);
-			fclose(f);
-			return ERR_STATE_MATCH;
-		}
-		free(str);
+		g_free(rf);
+		g_free(tf);
+		return ERR_STATE_MATCH;
 	}
+	g_free(rf);
+	g_free(tf);
 
 	// Compare image infos with current image
 	if(memcmp(&img, &img_infos, sizeof(IMG_INFO) - sizeof(char *)))
@@ -260,7 +292,7 @@ static void save_bkpt2(FILE *f, GList *l)
 
   	Return an error code if an error occured, 0 otherwise
 */
-int ti68k_state_save(char *filename)
+int ti68k_state_save(const char *filename)
 {
   	FILE *f;
   	IMG_INFO *img = &img_infos;

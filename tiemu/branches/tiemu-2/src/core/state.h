@@ -43,7 +43,9 @@ typedef struct
 	long	str_offset;		// offset to image location (string)
 } SAV_INFO;
 
-int ti68k_state_load(char *filename);
-int ti68k_state_save(char *filename);
+int ti68k_state_load(const char *filename);
+int ti68k_state_save(const char *filename);
+
+int ti68k_state_parse(const char *filename, char **rom_file, char **tib_file);
 
 #endif
