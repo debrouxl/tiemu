@@ -40,6 +40,7 @@ typedef struct
 	long	misc_offset;	// offset to extra informations
     long    bkpts_offset;   // offset to bkpts area
 	long	rom_offset;		// offset to FLASH changes
+	long	str_offset;		// offset to image location (string)
 } SAV_INFO;
 
 int ti68k_state_load(char *filename);

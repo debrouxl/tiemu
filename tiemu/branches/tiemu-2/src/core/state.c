@@ -41,7 +41,7 @@
 #include "printl.h"
 #include "rtc_hw3.h"
 
-#define SAV_REVISION	11
+#define SAV_REVISION	12
 
 static int load_bkpt(FILE *f, GList **l)
 {
@@ -105,13 +105,12 @@ int ti68k_state_load(char *filename)
   	if(f == NULL)
   		return ERR_CANT_OPEN_STATE;
   	
-  	// Compare image infos with current image
+  	// Load ROM image header
 	fread(&img, 1, sizeof(IMG_INFO), f);
-	if(memcmp(&img, &img_infos, sizeof(IMG_INFO) - sizeof(char *)))
-	{
 
+	// Compare image infos with current image
+	if(memcmp(&img, &img_infos, sizeof(IMG_INFO) - sizeof(char *)))
 		return ERR_IMGSAV_MATCH;
-	}
 
     // Determine state image revision for backwards compatibility
 	pos = ftell(f);
@@ -119,11 +118,11 @@ int ti68k_state_load(char *filename)
 	fread(&sav.size, sizeof(sav.revision), 1, f);
 	fseek(f, pos, SEEK_SET);
 
-	if(sav.revision != SAV_REVISION)
+	if(sav.revision != SAV_REVISION && sav.revision != 11)
 		return ERR_REVISION_MATCH;
 
-	// Load state image infos
-    fread(&sav, 1, sizeof(SAV_INFO), f);
+	// Load state image header
+    fread(&sav, 1, sav.size, f);
 	
 	// Load internal hardware (registers and special flags)
     ret = fseek(f, sav.regs_offset, SEEK_SET);
@@ -257,6 +256,7 @@ int ti68k_state_save(char *filename)
 	sav.misc_offset = sav.ram_offset + tihw.ram_size;
 	sav.rom_offset = sav.misc_offset + sizeof(Ti68kHardware);
     sav.bkpts_offset = sav.rom_offset + wsm.nblocks*sizeof(int) + hw_flash_nblocks()*65536;
+	sav.str_offset = sav.bkpts_offset + strlen(params.sav_file) + 1;
 
     fwrite(&sav, 1, sizeof(SAV_INFO), f);
 	
@@ -302,6 +302,9 @@ int ti68k_state_save(char *filename)
 
     save_bkpt2(f, bkpts.mem_rng_r);
 	save_bkpt2(f, bkpts.mem_rng_w);
+
+	// Save image location associated with this state image
+	fwrite(params.sav_file, strlen(params.sav_file) + 1,1,f);
     
     fclose(f);
 
