@@ -247,7 +247,7 @@ static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, g
 		o.nMaxFile = sizeof(lpstrFile);
 		sdirname = g_locale_from_utf8(dirname,-1,NULL,NULL,NULL);
 	}
-	o.lpstrInitialDir = dirname;
+	o.lpstrInitialDir = sdirname;
 	o.Flags = 0x02000000 | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY |
 				 OFN_NOCHANGEDIR | OFN_EXPLORER | OFN_LONGNAMES | OFN_NONETWORKBUTTON;
 
