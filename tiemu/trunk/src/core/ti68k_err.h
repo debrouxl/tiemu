@@ -37,7 +37,7 @@
 #define ERR_NO_IMAGE			772
 #define ERR_INVALID_ROM_SIZE	774
 #define ERR_NOT_TI_FILE			775
-//efine ERR_MALLOC				776
+#define ERR_MALLOC				776
 #define ERR_CANT_OPEN_DIR		777
 #define ERR_CANT_UPGRADE		778
 #define	ERR_INVALID_ROM			779

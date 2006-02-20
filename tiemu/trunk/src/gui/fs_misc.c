@@ -46,6 +46,7 @@
 #include "tie_error.h"
 #include "dbg_all.h"
 #include "files.h"
+#include "ti68k_err.h"
 
 gint display_skin_dbox()
 {
@@ -80,7 +81,32 @@ gint display_load_state_dbox()
     params.sav_file = g_strdup(filename);
     
     err = ti68k_state_load(params.sav_file);
-	handle_error();
+	if(err == ERR_STATE_MATCH)
+	{
+		gchar *rf, *tf;
+		int ret = msg_box2("Warning", "The state image you are attempting to load does not match the current running image. Press OK if you want TiEmu to automatically load the corresponding image or Cancel to abort.");
+		
+		if(ret == BUTTON2)	//cancel
+			return 0;
+
+		ti68k_state_parse(filename, &rf, &tf);
+		
+		if(!ti68k_is_a_img_file(rf))
+			return 0;
+
+        // Set tib file and image
+        g_free(params.tib_file);
+		params.tib_file = tf;
+
+		g_free(params.rom_file);
+		params.rom_file = rf;
+
+		// Restart engine by exiting the GTK loop
+		while(gtk_events_pending()) gtk_main_iteration();
+		gtk_main_quit();	
+	}
+	else
+		handle_error();
 
 	return 0;
 }
