@@ -60,8 +60,12 @@ int ti68k_error_get(int err_num, char *error_msg)
 		strcpy(error_msg, _("Can not open state image: revision changed. You have to recreate the state image."));
 		break;
 
-	case ERR_IMGSAV_MATCH:
-		strcpy(error_msg, _("State image header does not match ROM image header: you are attempting to use a state image not targetted for this hand-held model or OS."));
+	case ERR_HEADER_MATCH:
+		strcpy(error_msg, _("Can not open state image: state image header does not match ROM image header: have you changed/updated your ROM image ?"));
+		break;
+
+	case ERR_STATE_MATCH:
+		strcpy(error_msg, _("Can not open state image: this state image is not targetted for your current emulator image (calculator model and/or OS verison must match !). Choose another image before."));
 		break;
 
 	case ERR_INVALID_IMAGE:

@@ -44,6 +44,7 @@
 
 #define ERR_CANT_OPEN_STATE		780
 #define ERR_REVISION_MATCH		781
-#define ERR_IMGSAV_MATCH		782
+#define ERR_HEADER_MATCH		782
+#define ERR_STATE_MATCH			783
 
 #endif

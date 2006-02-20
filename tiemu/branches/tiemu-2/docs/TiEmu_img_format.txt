@@ -72,6 +72,8 @@ The TiEmu v2.00 save format (revision 12)
   0x54-0x57	20-23	4	offset to extra infos
   0x58-0x5b	24-27	4	offset to bkpts area
   0x5c-0x5f	28-31	4	offset to FLASH changes
-  0x60-0x63 32-35	4	size of string
-  0x64-....	....	n	string (image location)
+  0x60-0x63 32-35	4	offset to image location (size + string)
+  
+
+
   

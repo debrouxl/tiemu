@@ -4,7 +4,8 @@ SubVersion: $Id$
 	- [roms] $1974: lcd/lcd_mem code slightly reworked for clarity
 	- [roms] $1976: skin is now scaled directly from JPEG image => no resolution lost
 	- [roms] $1984 : error message about state images are a little better
-	//- [roms] $1980: fixing bug #1434625: "loading a state image of another calculator"
+	- [roms] $1986: fixing bug #1434625: display a better error message when attempting to
+		load a state image targetted for another hand-held model
 
 - 07/02/2006, version 2.05:
 	- [roms] $1904: fixed bug #1425569 ("Error code not found" when sending 

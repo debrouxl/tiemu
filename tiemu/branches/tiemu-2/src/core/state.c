@@ -108,21 +108,55 @@ int ti68k_state_load(char *filename)
   	// Load ROM image header
 	fread(&img, 1, sizeof(IMG_INFO), f);
 
-	// Compare image infos with current image
-	if(memcmp(&img, &img_infos, sizeof(IMG_INFO) - sizeof(char *)))
-		return ERR_IMGSAV_MATCH;
-
-    // Determine state image revision for backwards compatibility
+    // Determine state image revision for backwards compatibility and load
 	pos = ftell(f);
 	fread(&sav.revision, sizeof(sav.revision), 1, f);
 	fread(&sav.size, sizeof(sav.revision), 1, f);
 	fseek(f, pos, SEEK_SET);
 
 	if(sav.revision != SAV_REVISION && sav.revision != 11)
+	{
+		fclose(f);
 		return ERR_REVISION_MATCH;
-
-	// Load state image header
+	}
     fread(&sav, 1, sav.size, f);
+
+	// Determine whether state match the image
+	if(sav.revision > 11)
+	{
+		long len;
+		char *str;
+
+		ret = fseek(f, sav.str_offset, SEEK_SET);
+
+		fread(&len, 1, sizeof(long), f);
+		str = (char *)malloc(len);
+		fread(str, 1, len, f);
+		printf("ROM location : <%s>\n", str);
+		if(strcmp(params.rom_file, str))
+		{
+			free(str);
+			fclose(f);
+			return ERR_STATE_MATCH;
+		}
+		free(str);
+
+		fread(&len, 1, sizeof(long), f);
+		str = (char *)malloc(len);
+		fread(str, 1, len, f);
+		printf("TIB location : <%s>\n", str);
+		if(strcmp(params.tib_file, str))
+		{
+			free(str);
+			fclose(f);
+			return ERR_STATE_MATCH;
+		}
+		free(str);
+	}
+
+	// Compare image infos with current image
+	if(memcmp(&img, &img_infos, sizeof(IMG_INFO) - sizeof(char *)))
+		return ERR_HEADER_MATCH;
 	
 	// Load internal hardware (registers and special flags)
     ret = fseek(f, sav.regs_offset, SEEK_SET);
@@ -187,8 +221,7 @@ int ti68k_state_load(char *filename)
 	m68k_setpc(m68k_getpc());
     MakeFromSR();
 
-    fclose(f); 
-  
+    fclose(f);  
   	return 0;
 }
 
@@ -233,6 +266,8 @@ int ti68k_state_save(char *filename)
   	IMG_INFO *img = &img_infos;
     SAV_INFO sav;
 	int i;
+	long len;
+	long bkpts_size;
   
   	if(!strlen(filename))
   		return ERR_CANT_OPEN_STATE;
@@ -256,7 +291,21 @@ int ti68k_state_save(char *filename)
 	sav.misc_offset = sav.ram_offset + tihw.ram_size;
 	sav.rom_offset = sav.misc_offset + sizeof(Ti68kHardware);
     sav.bkpts_offset = sav.rom_offset + wsm.nblocks*sizeof(int) + hw_flash_nblocks()*65536;
-	sav.str_offset = sav.bkpts_offset + strlen(params.sav_file) + 1;
+
+	bkpts_size = 
+		g_list_length(bkpts.code) * sizeof(long) + sizeof(long) +
+		g_list_length(bkpts.exception) * sizeof(long) + sizeof(long) +
+		g_list_length(bkpts.pgmentry) * sizeof(long) + sizeof(long) +
+		g_list_length(bkpts.mem_rb) * sizeof(long) + sizeof(long) +
+		g_list_length(bkpts.mem_rw) * sizeof(long) + sizeof(long) +
+		g_list_length(bkpts.mem_rl) * sizeof(long) + sizeof(long) +
+		g_list_length(bkpts.mem_wb) * sizeof(long) + sizeof(long) +
+		g_list_length(bkpts.mem_ww) * sizeof(long) + sizeof(long) +
+		g_list_length(bkpts.mem_wl) * sizeof(long) + sizeof(long) +
+		g_list_length(bkpts.mem_rng_r) * sizeof(ADDR_RANGE) + sizeof(long) +
+		g_list_length(bkpts.mem_rng_w) * sizeof(ADDR_RANGE) + sizeof(long);
+
+	sav.str_offset = sav.bkpts_offset + bkpts_size;
 
     fwrite(&sav, 1, sizeof(SAV_INFO), f);
 	
@@ -270,8 +319,7 @@ int ti68k_state_save(char *filename)
     // Save I/O ports state
     fwrite(tihw.io , tihw.io_size, 1, f);
     fwrite(tihw.io2, tihw.io2_size, 1, f);
-	fwrite(tihw.io3, tihw.io3_size, 1, f);
-	
+	fwrite(tihw.io3, tihw.io3_size, 1, f);	
     
     // Save RAM content
     fwrite(tihw.ram, tihw.ram_size, 1, f);
@@ -304,7 +352,13 @@ int ti68k_state_save(char *filename)
 	save_bkpt2(f, bkpts.mem_rng_w);
 
 	// Save image location associated with this state image
-	fwrite(params.sav_file, strlen(params.sav_file) + 1,1,f);
+	len = strlen(params.rom_file) + 1;
+	fwrite(&len, 1, sizeof(len), f);
+	fwrite(params.rom_file, len, 1, f);
+	
+	len = strlen(params.tib_file) + 1;
+	fwrite(&len, 1, sizeof(len), f);
+	fwrite(params.tib_file, len, 1, f);
     
     fclose(f);
 
