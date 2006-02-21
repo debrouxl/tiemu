@@ -381,7 +381,8 @@
 #undef VERSION
 
 /* Use KDE support */
-#undef WITH_KDE
+//#undef WITH_KDE
+#define WITH_KDE 1
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const

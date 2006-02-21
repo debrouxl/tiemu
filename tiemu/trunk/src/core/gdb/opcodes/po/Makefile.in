@@ -13,9 +13,9 @@ VERSION = 2.16.91
 SHELL = /bin/sh
 
 
-srcdir = /root/insight-6.4-tiemu-1/opcodes/po
-top_srcdir = /root/insight-6.4-tiemu-1/opcodes
-VPATH = /root/insight-6.4-tiemu-1/opcodes/po
+srcdir = ../.././opcodes/po
+top_srcdir = ../.././opcodes
+VPATH = ../.././opcodes/po
 
 prefix = /usr/local
 exec_prefix = ${prefix}
@@ -28,7 +28,7 @@ subdir = po
 DESTDIR =
 
 INSTALL = /usr/bin/install -c
-INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_DATA = /usr/bin/install -c -m 644
 MKINSTALLDIRS = $(srcdir)/../../mkinstalldirs
 
 CC = gcc
@@ -39,7 +39,7 @@ XGETTEXT = PATH=../src:$$PATH /usr/bin/xgettext
 MSGMERGE = PATH=../src:$$PATH msgmerge
 
 DEFS = -DHAVE_CONFIG_H
-CFLAGS = -g -O2
+CFLAGS = -g -O2 
 CPPFLAGS = 
 
 INCLUDES = -I.. -I$(top_srcdir)/intl
