@@ -135,11 +135,11 @@ bool TiEmuDCOP::execute_command(QString command)
     command+='\r';
 #ifdef __GNUC__
     char ti[command.length()+1];
-    utf16_to_ti(command.ucs2(),ti);
+	ticonv_charset_utf16_to_ti_s(CALC_TI92, command.ucs2(), ti);
     result=ti68k_kbd_push_chars(ti);
 #else
     char *ti=std::malloc(command.length()+1);
-    utf16_to_ti(command.ucs2(),ti);
+    ticonv_charset_utf16_to_ti_s(CALC_TI92, command.ucs2(), ti);
     result=ti68k_kbd_push_chars(ti);
     std::free(ti);
 #endif

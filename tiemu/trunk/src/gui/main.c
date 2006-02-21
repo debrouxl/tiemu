@@ -169,6 +169,14 @@ int main(int argc, char **argv)
 	 */
     splash_screen_set_label(_("Initializing TiLP framework..."));
 
+	if (strcmp(ticonv_version_get(), TIEMU_REQUIRES_LIBCONV_VERSION) < 0) 
+	{
+		printl(0, _("libticonv library version <%s> mini required (<%s> found).\n"),
+			TIEMU_REQUIRES_LIBCONV_VERSION, ticonv_version_get());
+		msg_box(_("Error"), _("Libticonv: version mismatches."));
+		exit(-1);
+	}
+
 	if (strcmp(tifiles_version_get(), TIEMU_REQUIRES_LIBFILES_VERSION) < 0) 
 	{
 		printl(0, _("libtifiles library version <%s> mini required (<%s> found).\n"),

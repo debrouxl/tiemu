@@ -503,13 +503,10 @@ int recfile(void)
 
 	if(ve)
 	{
-		char *utf8;
 		char *basename;
 
 		//single
-		utf8 = tifiles_transcode_varname_static(calc_handle->model, ve->name, ve->type);
-		basename = tifiles_varname_to_filename_static(calc_handle->model, utf8);
-		
+		basename = ticonv_varname_to_filename(calc_handle->model, ve->name);
 		strcat(dst_fn, basename);
 		strcat(dst_fn, ".");
 		strcat(dst_fn, tifiles_vartype2fext(calc_handle->model, ve->type));

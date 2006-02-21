@@ -52,4 +52,10 @@
 # include "ticalcs.h"
 #endif
 
+#if defined(__MACOSX__)
+# include <libticonv/ticonv.h>
+#else
+# include "ticonv.h"
+#endif
+
 #endif
