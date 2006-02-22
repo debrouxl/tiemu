@@ -137,6 +137,7 @@ SubVersion: $Id$
 	- [roms]  $1989: fixed bug #1434625: allow direct loading of a state image and associated image.
 	- [roms]  $1993: fixed bug in the single Win32 file selector (default folder was not properly set)
 	- [roms]  $1994: switched to ticonv library
+	- [roms]  $1999: fixed #1436138: V200 screen bigger than the skin
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
