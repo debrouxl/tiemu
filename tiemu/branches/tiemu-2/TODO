@@ -1,12 +1,5 @@
 Planned features:
 
-Hello, I've created skins of my own and used other people's for use on TIEMU.
-While the skin on SKINEDIT looks fine, it loses much resolution when it is used
-by TIEMU. As a check, I used the same skins and exported them to VTI2.5's format...
-They look just fine on VTI, the same they do as with SKINEDIT. Why is it that
-TIEMU cannot render the full resolution or is there something I'm doing wrong?
-Thanks
-
 * select target folder for screenshots
 * i18n (internationalization support)
 
