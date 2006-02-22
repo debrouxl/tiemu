@@ -7,7 +7,7 @@
 
 [Setup]
 AppName=TiEmu
-AppVerName=TiEmu 2.05
+AppVerName=TiEmu 2.06
 AppPublisher=The TiEmu Team
 AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
 AppSupportURL=http://lpg.ticalc.org/prj_tiemu/mailing_list.html

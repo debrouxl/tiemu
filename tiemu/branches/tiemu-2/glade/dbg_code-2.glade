@@ -43,13 +43,14 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="run1">
 		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Run</property>
 		      <property name="label" translatable="yes">Run</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_run1_activate" last_modification_time="Sat, 12 Jun 2004 20:20:19 GMT"/>
 		      <accelerator key="F5" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image173">
+			<widget class="GtkImage" id="image185">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-yes</property>
 			  <property name="icon_size">1</property>
@@ -72,7 +73,7 @@
 		      <accelerator key="F7" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image174">
+			<widget class="GtkImage" id="image186">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-jump-to</property>
 			  <property name="icon_size">1</property>
@@ -95,7 +96,7 @@
 		      <accelerator key="F8" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image175">
+			<widget class="GtkImage" id="image187">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-redo</property>
 			  <property name="icon_size">1</property>
@@ -118,7 +119,7 @@
 		      <accelerator key="F9" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image176">
+			<widget class="GtkImage" id="image188">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-undo</property>
 			  <property name="icon_size">1</property>
@@ -134,13 +135,14 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="run_to_cursor1">
 		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Run up to cursor</property>
 		      <property name="label" translatable="yes">Run to cursor</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_run_to_cursor1_activate" last_modification_time="Sat, 12 Jun 2004 20:22:41 GMT"/>
 		      <accelerator key="F4" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image177">
+			<widget class="GtkImage" id="image189">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-goto-last</property>
 			  <property name="icon_size">1</property>
@@ -156,13 +158,14 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="break1">
 		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Stop execution</property>
 		      <property name="label" translatable="yes">Break</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_break1_activate" last_modification_time="Sat, 12 Jun 2004 20:22:41 GMT"/>
 		      <accelerator key="F11" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image178">
+			<widget class="GtkImage" id="image190">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-no</property>
 			  <property name="icon_size">1</property>
@@ -182,6 +185,7 @@
 	  <child>
 	    <widget class="GtkMenuItem" id="log1">
 	      <property name="visible">True</property>
+	      <property name="tooltip" translatable="yes">Unused</property>
 	      <property name="label" translatable="yes">Log</property>
 	      <property name="use_underline">True</property>
 	    </widget>
@@ -275,6 +279,7 @@
 		  <child>
 		    <widget class="GtkCheckMenuItem" id="transient1">
 		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">WHen checked: group windows in the taskbar (drawback: calculator window will be always in background).</property>
 		      <property name="label" translatable="yes">_Group windows</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
@@ -291,6 +296,7 @@
 		  <child>
 		    <widget class="GtkMenuItem" id="show_all1">
 		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Show all windows</property>
 		      <property name="label" translatable="yes">Show all</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_show_all1_activate" last_modification_time="Sun, 27 Feb 2005 07:58:36 GMT"/>
@@ -300,6 +306,7 @@
 		  <child>
 		    <widget class="GtkMenuItem" id="hide_all1">
 		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Hide all windows</property>
 		      <property name="label" translatable="yes">Hide all</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_hide_all1_activate" last_modification_time="Sun, 27 Feb 2005 07:58:36 GMT"/>
@@ -327,6 +334,7 @@
 		  <child>
 		    <widget class="GtkMenuItem" id="restore_all1">
 		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">Restore all windows to default size &amp; placement.</property>
 		      <property name="label" translatable="yes">Restore all</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_restore_all1_activate" last_modification_time="Sun, 27 Feb 2005 07:58:36 GMT"/>
@@ -348,7 +356,7 @@
 		      <accelerator key="Q" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image179">
+			<widget class="GtkImage" id="image191">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-quit</property>
 			  <property name="icon_size">1</property>
