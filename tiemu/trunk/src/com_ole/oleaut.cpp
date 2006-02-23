@@ -30,7 +30,6 @@
 #include "fs_misc.h"
 #include "engine.h"
 #include "dbg_all.h"
-#include "ticonv.h"
 #include "m68k.h"
 
 class TiEmuOLE : public ITiEmuOLE

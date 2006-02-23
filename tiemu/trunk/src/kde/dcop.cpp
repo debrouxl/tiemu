@@ -29,7 +29,6 @@
 #include "fs_misc.h"
 #include "engine.h"
 #include "dbg_all.h"
-#include "ticonv.h"
 #include "m68k.h"
 
 TiEmuDCOP::TiEmuDCOP() : DCOPObject( "TiEmuDCOP" )
