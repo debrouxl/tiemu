@@ -139,6 +139,7 @@ SubVersion: $Id$
 	- [roms]  $1994: switched to ticonv library
 	- [roms]  $1999: fixed #1436138: V200 screen bigger than the skin
 	- [roms]  $2004: replaced gtk_idle_add (deprecated) by g_idle_add
+	- [roms]  $2007: accept TI92 files on Titanium and others
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

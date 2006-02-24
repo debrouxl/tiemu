@@ -383,7 +383,7 @@ int send_ti_file(const char *filename)
     if(!tifiles_file_is_ti(filename))
         return ERR_NOT_TI_FILE;
 
-	if(((tifiles_file_get_model(filename) == CALC_TI92) && (tihw.calc_type == TI92)) ||
+	if(((tifiles_file_get_model(filename) == CALC_TI92)) ||
 		(tifiles_file_get_model(filename) == CALC_TI89)  ||
 		(tifiles_file_get_model(filename) == CALC_TI89T) ||
 		(tifiles_file_get_model(filename) == CALC_TI92P) ||
