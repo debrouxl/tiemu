@@ -1083,7 +1083,7 @@ static int close_debugger_wrapper(gpointer data)
 
 int gdbcallback_close_debugger(void *clientdata, void *interp, int argc, const char **argv)
 {
-	if (dbg_on && dbgcode_quit_enabled()) gtk_idle_add(close_debugger_wrapper, NULL);
+	if (dbg_on && dbgcode_quit_enabled()) g_idle_add(close_debugger_wrapper, NULL);
 	return 0;
 }
 
