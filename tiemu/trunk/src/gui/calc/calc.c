@@ -162,8 +162,10 @@ static void set_window(int full_redraw)
 	// resize window and drawing area
 	if(full_redraw)
 		gtk_window_resize(GTK_WINDOW(main_wnd), wr.w, wr.h);
+#if 0
 	else
 		gdk_window_resize(main_wnd->window, wr.w, wr.h);
+#endif /* 0 */
 
 	// reallocate backing pixmap
 	if(pixmap != NULL)
@@ -187,9 +189,9 @@ static void set_window(int full_redraw)
 static void set_constraints(int mode)
 {
 	// Allows resizing of window with a constant aspect ratio.
-	// Very annoying and not very useful under Windows but required under Linux.
+	// ??? Very annoying and not very useful under Windows but required under Linux. ???
 	// But, enabling it make not possible to switch to real large view (x2).
-#ifndef __WIN32__
+#if 1 /*ndef __WIN32__*/
 	if(1)
 	{
 		GdkGeometry geom = { 0 };
