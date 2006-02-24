@@ -27,6 +27,7 @@ Improvements:
 -------------
 
 	- skin is now scaled directly from JPEG image => no resolution lost (forum)
+	- improved bug #1434606: "Calculator panel on the background"
 		
 		
 Bug fixes:

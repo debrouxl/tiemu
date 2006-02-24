@@ -1026,8 +1026,7 @@ static int is_win_xp(void)
 	memset(&os, 0, sizeof(OSVERSIONINFO));
 	os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   	GetVersionEx(&os);
-	printf("OS: %i.%i %i %s\n", os.dwMajorVersion, os.dwMinorVersion, 
-		os.dwBuildNumber, os.szCSDVersion);
+	//printf("OS: %i.%i %i %s\n", os.dwMajorVersion, os.dwMinorVersion, os.dwBuildNumber, os.szCSDVersion);
 
 	return (os.dwPlatformId == VER_PLATFORM_WIN32_NT && os.dwMajorVersion >= 5);
 }
