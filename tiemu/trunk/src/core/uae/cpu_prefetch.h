@@ -1,3 +1,5 @@
+/* Hey EMACS -*- linux-c -*- */
+/* $Id$ */
 
 STATIC_INLINE uae_u32 get_word_prefetch (int o)
 {
