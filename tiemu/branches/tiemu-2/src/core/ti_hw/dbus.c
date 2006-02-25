@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2006, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -453,6 +454,19 @@ static int exit_link_file(void)
     return 0;
 }
 
+static int do_cpu(int duration)	// thenth of seconds
+{
+	tiTIME clk;
+	toSTART(clk);
+  	while(1) 
+	{ 
+      	hw_m68k_run(1, 0);
+		if(toELAPSED(clk, duration))
+			return !0;;
+	};
+	return 0;
+}
+
 int send_ti_file(const char *filename)
 {
     gint ok = 0;
@@ -479,6 +493,34 @@ int send_ti_file(const char *filename)
 	// Use direct file loading
 	start = clock();
 	sip = 1;
+
+	// Check whether calc is ready... Otherwise, goes to HOME.
+	ret = itc.isready();
+	if(ret == ERR_NOT_READY)
+	{
+		switch(tihw.calc_type)
+		{
+		case TI89:
+		case TI89t:
+			ret = itc.send_key(277);
+			break;
+		case TI92:
+		case TI92p:
+		case V200:
+			ret = itc.send_key(8273);
+			break;
+
+		default: break;
+		}
+
+		do_cpu(5);
+
+		if(ret)
+		{
+			sip = 0;
+			goto send_ti_file_exit;
+		}
+	}
 
     // FLASH APP file ?
     if(tifiles_is_a_flash_file(filename))
@@ -520,6 +562,7 @@ int send_ti_file(const char *filename)
 	//printf("Duration: %2.1f seconds.\n", duration);
 
 	// Transfer aborted ? Set hw link error
+send_ti_file_exit:
 	if(ret)
 	{
 		tiemu_error(ret, NULL);

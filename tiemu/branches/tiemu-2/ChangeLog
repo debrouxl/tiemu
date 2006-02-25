@@ -14,6 +14,7 @@ Bug:
 	- [roms] $1998: fixed #1436138: V200 screen bigger than the skin
 	- [roms] $2000: improved bug #1434606: "Calculator panel on the background"
 	- [roms] $2005: accept TI92 files on Titanium and others
+	- [roms] $2011: bug #1434600 => goes to HOME when calc is not ready
 
 - 07/02/2006, version 2.05:
 	- [roms] $1904: fixed bug #1425569 ("Error code not found" when sending 
