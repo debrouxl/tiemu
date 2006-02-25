@@ -142,6 +142,7 @@ SubVersion: $Id$
 	- [roms]  $2004: replaced gtk_idle_add (deprecated) by g_idle_add
 	- [roms]  $2007: accept TI92 files on Titanium and others
 	- [kevin] $2009: imported UAE 0.8.25
+	- [roms]  $2012: bug #1434600 => goes to HOME when calc is not ready
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

@@ -372,6 +372,19 @@ int ilp_recv(CableHandle *h, uint8_t *data, uint32_t len)
 	return 0;
 }
 
+static int do_cpu(int duration)	// thenth of seconds
+{
+	tiTIME clk;
+	TO_START(clk);
+  	while(1) 
+	{ 
+      	hw_m68k_run(1, 0);
+		if(TO_ELAPSED(clk, duration))
+			return !0;;
+	};
+	return 0;
+}
+
 int send_ti_file(const char *filename)
 {
     gint ok = 0;
@@ -398,6 +411,37 @@ int send_ti_file(const char *filename)
 	// Use direct file loading
 	start = clock();
 	sip = 1;
+
+	// Check whether calc is ready... Otherwise, goes to HOME.
+	ret = ticalcs_calc_isready(calc_handle);
+	printf("ret = %i\n", ret);
+
+	if(ret == 257 /*ERR_NOT_READY*/)
+	{
+		switch(tihw.calc_type)
+		{
+		case TI89:
+		case TI89t:
+			ret = ticalcs_calc_send_key(calc_handle, 277);
+			break;
+		case TI92:
+		case TI92p:
+		case V200:
+			ret = ticalcs_calc_send_key(calc_handle, 8273);
+			break;
+
+		default: break;
+		}
+		printf("ret = %i\n", ret);
+
+		do_cpu(5);
+
+		if(ret)
+		{
+			sip = 0;
+			goto send_ti_file_exit;
+		}
+	}
 
     // FLASH APP file ?
     if(tifiles_file_is_flash(filename))
@@ -439,6 +483,7 @@ int send_ti_file(const char *filename)
 	printf("Duration: %2.1f seconds.\n", duration);
 
 	// Transfer aborted ? Set hw link error
+send_ti_file_exit:
 	if(ret)
 	{
 		tiemu_error(ret, NULL);
