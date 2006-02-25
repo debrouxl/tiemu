@@ -28,6 +28,8 @@ Improvements:
 
 	- skin is now scaled directly from JPEG image => no resolution lost (forum)
 	- improved bug #1434606: "Calculator panel on the background"
+	- import UAE 0.8.25 (upgrade from 0.8.23)
+	- accept TI92 files on Titanium and others
 		
 		
 Bug fixes:
@@ -37,6 +39,7 @@ Bug fixes:
 		load a state image targetted for another hand-held model
 	- #1434625: allow direct loading of a state image and associated image.
 	- #1436138: V200 screen bigger than the skin
+	- #1434600 => goes to HOME when calc is not ready
 	
 
 Planned:

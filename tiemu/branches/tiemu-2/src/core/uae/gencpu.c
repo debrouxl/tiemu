@@ -2729,8 +2729,8 @@ static void generate_func (void)
 	        "#endif\n\n");
 	
 	rp = 0;
-	for(j=1;j<=8;++j) {
-		int k = (j*nr_cpuop_funcs)/8;
+	for(j = 1; j <= 8; ++j) {
+		int k = (j * nr_cpuop_funcs) / 8;
 		printf ("#ifdef PART_%d\n",j);
 		for (; rp < k; rp++)
 		   generate_one_opcode (rp);
@@ -2739,7 +2739,6 @@ static void generate_func (void)
 
 	fprintf (stblfile, "{ 0, 0, 0 }};\n");
     }
-
 }
 
 int main (int argc, char **argv)

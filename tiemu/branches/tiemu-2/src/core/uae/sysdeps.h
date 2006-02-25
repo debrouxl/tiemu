@@ -161,8 +161,10 @@ extern void *xcalloc(size_t, size_t);
 #ifndef STATIC_INLINE
 #if __GNUC__ - 1 > 1 && __GNUC_MINOR__ - 1 >= 0
 #define STATIC_INLINE static __inline__ __attribute__ ((always_inline))
+#define NOINLINE __attribute__ ((noinline))
 #else
 #define STATIC_INLINE static __inline__
+#define NOINLINE
 #endif
 #endif
 

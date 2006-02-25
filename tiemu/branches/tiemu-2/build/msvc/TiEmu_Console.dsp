@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /w /W0 /GX /O2 /I "C:\sources\roms\tiemu2\src\misc" /I "C:\sources\roms\tiemu2\src\gui\calc" /I "C:\sources\roms\tiemu2\src\core\dbg" /I "C:\sources\roms\tiemu2\src\core\ti_sw" /I "C:\sources\roms\tiemu2\src\gui\debugger" /I "." /I "../../../ticables/src" /I "../../../tifiles/src" /I "../../../ticalcs/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\GTK2DEV\include\cairo" /I "C:\sources\roms\tiemu2\src\core\uae" /I "C:\sources\roms\tiemu2\src\core" /I "C:\sources\roms\tiemu2\src\core\ti_hw" /I "C:\sources\roms\tiemu2\src\hid" /I "C:\sources\roms\tiemu2\src\gui" /I ".\libjpeg" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /FD /c
+# ADD CPP /nologo /MD /w /W0 /GX /O2 /I "C:\sources\roms\tiemu2\src\misc" /I "C:\sources\roms\tiemu2\src\gui\calc" /I "C:\sources\roms\tiemu2\src\core\dbg" /I "C:\sources\roms\tiemu2\src\core\ti_sw" /I "C:\sources\roms\tiemu2\src\gui\debugger" /I "." /I "../../../ticables/src" /I "../../../tifiles/src" /I "../../../ticalcs/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\GTK2DEV\include\cairo" /I "C:\sources\roms\tiemu2\src\core\uae" /I "C:\sources\roms\tiemu2\src\core" /I "C:\sources\roms\tiemu2\src\core\ti_hw" /I "C:\sources\roms\tiemu2\src\hid" /I "C:\sources\roms\tiemu2\src\gui" /I ".\libjpeg" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /D "NO_GDB" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "C:\sources\roms\tiemu2\src\misc" /I "C:\sources\roms\tiemu2\src\gui\calc" /I "C:\sources\roms\tiemu2\src\core\dbg" /I "C:\sources\roms\tiemu2\src\core\ti_sw" /I "C:\sources\roms\tiemu2\src\gui\debugger" /I "." /I "../../../ticables/src" /I "../../../tifiles/src" /I "../../../ticalcs/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\GTK2DEV\include\cairo" /I "C:\sources\roms\tiemu2\src\core\uae" /I "C:\sources\roms\tiemu2\src\core" /I "C:\sources\roms\tiemu2\src\core\ti_hw" /I "C:\sources\roms\tiemu2\src\hid" /I "C:\sources\roms\tiemu2\src\gui" /I ".\libjpeg" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "C:\sources\roms\tiemu2\src\misc" /I "C:\sources\roms\tiemu2\src\gui\calc" /I "C:\sources\roms\tiemu2\src\core\dbg" /I "C:\sources\roms\tiemu2\src\core\ti_sw" /I "C:\sources\roms\tiemu2\src\gui\debugger" /I "." /I "../../../ticables/src" /I "../../../tifiles/src" /I "../../../ticalcs/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\GTK2DEV\include\cairo" /I "C:\sources\roms\tiemu2\src\core\uae" /I "C:\sources\roms\tiemu2\src\core" /I "C:\sources\roms\tiemu2\src\core\ti_hw" /I "C:\sources\roms\tiemu2\src\hid" /I "C:\sources\roms\tiemu2\src\gui" /I ".\libjpeg" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /D "NO_GDB" /FD /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x40c /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
@@ -242,22 +242,27 @@ SOURCE=..\..\src\core\uae\libuae.lib
 # Begin Source File
 
 SOURCE=..\..\src\core\error.c
+# ADD CPP /D "NO_GDB"
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\images.c
+# ADD CPP /D "NO_GDB"
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\interface.c
+# ADD CPP /D "NO_GDB"
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\state.c
+# ADD CPP /D "NO_GDB"
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\type2str.c
+# ADD CPP /D "NO_GDB"
 # End Source File
 # End Group
 # Begin Group "gui"
