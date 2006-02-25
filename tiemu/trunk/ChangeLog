@@ -141,6 +141,7 @@ SubVersion: $Id$
 	- [kevin] $2003: fixed set_window->on_drawingarea1_configure_event->set_window feedback loop (see bugs #1227433, #1249087)
 	- [roms]  $2004: replaced gtk_idle_add (deprecated) by g_idle_add
 	- [roms]  $2007: accept TI92 files on Titanium and others
+	- [kevin] $2009: imported UAE 0.8.25
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

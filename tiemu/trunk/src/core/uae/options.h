@@ -12,7 +12,7 @@
 
 #define UAEMAJOR 0
 #define UAEMINOR 8
-#define UAESUBREV 23
+#define UAESUBREV 25
 
 #if 0
 typedef enum { KBD_LANG_US, KBD_LANG_DK, KBD_LANG_DE, KBD_LANG_SE, KBD_LANG_FR, KBD_LANG_IT, KBD_LANG_ES } KbdLang;
@@ -24,6 +24,24 @@ struct uaedev_mount_info;
 struct strlist {
     struct strlist *next;
     char *str;
+};
+
+/* maximum number native input devices supported (single type) */
+#define MAX_INPUT_DEVICES 6
+/* maximum number of native input device's buttons and axles supported */
+#define MAX_INPUT_DEVICE_EVENTS 256
+/* 4 different customization settings */
+#define MAX_INPUT_SETTINGS 4
+#define MAX_INPUT_SUB_EVENT 4
+#define MAX_INPUT_SIMULTANEOUS_KEYS 4
+
+struct uae_input_device {
+    char *name;
+    uae_s16 eventid[MAX_INPUT_DEVICE_EVENTS][MAX_INPUT_SUB_EVENT];
+    char *custom[MAX_INPUT_DEVICE_EVENTS][MAX_INPUT_SUB_EVENT];
+    uae_u16 flags[MAX_INPUT_DEVICE_EVENTS][MAX_INPUT_SUB_EVENT];
+    uae_s16 extra[MAX_INPUT_DEVICE_EVENTS][MAX_INPUT_SIMULTANEOUS_KEYS];
+    uae_u8 enabled;
 };
 #endif
 
@@ -45,8 +63,6 @@ struct uae_prefs {
     int start_debugger;
     int start_gui;
 
-    int jport0;
-    int jport1;
     KbdLang keyboard_lang;
     int allow_save;
     int emul_accuracy;
@@ -80,7 +96,7 @@ struct uae_prefs {
     unsigned int chipset_mask;
     int ntscmode;
     int collision_level;
-    int fast_copper;
+    int leds_on_screen;
 
     char df[4][256];
     char romfile[256];
@@ -112,6 +128,7 @@ struct uae_prefs {
     struct uaedev_mount_info *mountinfo;
 
     int nr_floppies;
+    int dfxtype[4];
 
     /* Target specific options */
     int x11_use_low_bandwidth;
@@ -126,6 +143,21 @@ struct uae_prefs {
     int curses_reverse_video;
     int win32_no_overlay; /* If this is set, we won't try and use any RGB overlays */
     int win32_automount_drives;
+
+    int curses_reverse_video;
+
+    int jport0;
+    int jport1;
+    int input_selected_setting;
+    int input_joymouse_multiplier;
+    int input_joymouse_deadzone;
+    int input_joystick_deadzone;
+    int input_joymouse_speed;
+    int input_autofire_framecnt;
+    int input_mouse_speed;
+    struct uae_input_device joystick_settings[MAX_INPUT_SETTINGS + 1][MAX_INPUT_DEVICES];
+    struct uae_input_device mouse_settings[MAX_INPUT_SETTINGS + 1][MAX_INPUT_DEVICES];
+    struct uae_input_device keyboard_settings[MAX_INPUT_SETTINGS + 1][MAX_INPUT_DEVICES];
 
 #endif
 };
@@ -162,16 +194,6 @@ extern void check_prefs_changed_custom (void);
 extern void check_prefs_changed_cpu (void);
 extern void check_prefs_changed_audio (void);
 extern int check_prefs_changed_gfx (void);
-
-#define JSEM_DECODEVAL(n,v) ((n) == 0 ? (v)->jport0 : (v)->jport1)
-/* Determine how port n is configured */
-#define JSEM_ISJOY0(n,v) (JSEM_DECODEVAL(n,v) == 0)
-#define JSEM_ISJOY1(n,v) (JSEM_DECODEVAL(n,v) == 1)
-#define JSEM_ISMOUSE(n,v) (JSEM_DECODEVAL(n,v) == 2)
-#define JSEM_ISNUMPAD(n,v) (JSEM_DECODEVAL(n,v) == 3)
-#define JSEM_ISCURSOR(n,v) (JSEM_DECODEVAL(n,v) == 4)
-#define JSEM_ISSOMEWHEREELSE(n,v) (JSEM_DECODEVAL(n,v) == 5)
-extern const char *gameport_state (int n);
 
 extern struct uae_prefs currprefs, changed_prefs;
 
