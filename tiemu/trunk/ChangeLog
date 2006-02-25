@@ -138,6 +138,7 @@ SubVersion: $Id$
 	- [roms]  $1993: fixed bug in the single Win32 file selector (default folder was not properly set)
 	- [roms]  $1994: switched to ticonv library
 	- [roms]  $1999: fixed #1436138: V200 screen bigger than the skin
+	- [kevin] $2003: fixed set_window->on_drawingarea1_configure_event->set_window feedback loop (see bugs #1227433, #1249087)
 	- [roms]  $2004: replaced gtk_idle_add (deprecated) by g_idle_add
 	- [roms]  $2007: accept TI92 files on Titanium and others
 	
