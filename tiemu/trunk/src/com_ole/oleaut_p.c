@@ -1,27 +1,8 @@
-/* oleaut_p.c edited by Kevin Kofler to build with MinGW
- *
- *  OLE Automation interface for TiEmu
- *
- *  Copyright (c) 2006 Kevin Kofler
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
- */
+/* this ALWAYS GENERATED file contains the proxy stub code */
 
 
 /* File created by MIDL compiler version 5.01.0164 */
-/* at Fri Feb 03 11:12:41 2006
+/* at Mon Feb 27 16:44:59 2006
  */
 /* Compiler settings for oleaut.idl:
     Os (OptLev=s), W1, Zp8, env=Win32, ms_ext, c_ext
@@ -29,58 +10,20 @@
 */
 //@@MIDL_FILE_HEADING(  )
 
+
+/* verify that the <rpcproxy.h> version is high enough to compile this file*/
+#ifndef __REDQ_RPCPROXY_H_VERSION__
+#define __REQUIRED_RPCPROXY_H_VERSION__ 440
+#endif
+
+
 #include "rpcproxy.h"
+#ifndef __RPCPROXY_H_VERSION__
+#error this stub requires an updated version of <rpcproxy.h>
+#endif // __RPCPROXY_H_VERSION__
+
 
 #include "oleaut.h"
-
-#ifdef __MINGW32__
-#include <excpt.h>
-/* CAUTION: Ugly SEH hacks (technically invalid inline ASM) below!
-            Use -O0 -fno-omit-frame-pointer to minimize breakage! */
-#define RpcTryExcept \
-  { \
-    asm volatile ("pushl %esp; pushl %ebp; pushl $100f\n" \
-                  "pushl %fs:0; movl %esp,%fs:0; subl $32,%esp");
-#define RpcExcept(guard) \
-    asm volatile ("movl %fs:0,%esp; popl %fs:0; addl $12,%esp"); \
-  } \
-  asm volatile ("jmp 101f\n" \
-                "100: pushl %ebp; movl %fs:0,%eax; movl 8(%eax),%ebp; movl %esp,8(%eax)"); \
-  if ((guard)) { \
-    volatile int _exception_code; \
-    asm volatile ("movl 8(%%esp),%%eax; movl %%fs:0,%%esp; popl %%fs:0; addl $8,%%esp; popl %%esp; movl (%%eax),%%eax; movl %%eax,%0; subl $32,%%esp":"=m"(_exception_code)::"eax");
-#define RpcEndExcept \
-  } else { \
-    asm volatile ("movl %fs:0,%eax; movl 8(%eax),%esp; movl %ebp,8(%eax); popl %ebp; movl $1,%eax; ret");\
-  } \
-  asm volatile ("101:");
-#define RpcTryFinally \
-  { \
-    asm volatile ("pushl $0; pushl %esp; pushl %ebp; pushl $200f\n" \
-                  "pushl %fs:0; movl %esp,%fs:0; subl $32,%esp");
-#define RpcFinally \
-  } \
-  asm volatile ("movl %fs:0,%eax; jmp 201f\n" \
-                "200: movl %fs:0,%eax; movl $1,16(%eax)\n" \
-                "201: pushl %ebp; movl 8(%eax),%ebp; movl %esp,8(%eax); subl $32,%esp");
-#define RpcEndFinally \
-  asm volatile ("movl %%fs:0,%%eax; movl 8(%%eax),%%esp; movl %%ebp,8(%%eax); popl %%ebp; movl 16(%%eax),%%eax; testl %%eax,%%eax; je 202f; ret\n" \
-                "202: movl %%fs:0,%%esp; popl %%fs:0; addl $16,%%esp":::"eax");
-#define RpcExceptionCode() (_exception_code)
-#ifndef CINTERFACE_PROXY_VTABLE
-#define CINTERFACE_PROXY_VTABLE(n) \
-  struct \
-  { \
-    CInterfaceProxyHeader header; \
-    void *Vtbl[n]; \
-  }
-#endif
-#define SECTION_ORPC __attribute__((section(".orpc")))
-#define SECTION_RDATA __attribute__((section(".rdata")))
-#else
-#define SECTION_ORPC /**/
-#define SECTION_RDATA /**/
-#endif
 
 #define TYPE_FORMAT_STRING_SIZE   63                                
 #define PROC_FORMAT_STRING_SIZE   37                                
@@ -121,11 +64,9 @@ extern const MIDL_PROC_FORMAT_STRING __MIDL_ProcFormatString;
 extern const MIDL_STUB_DESC Object_StubDesc;
 
 
-#ifndef __MINGW32__
 #pragma code_seg(".orpc")
-#endif
 
-SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_image_loaded_Proxy( 
+HRESULT STDMETHODCALLTYPE ITiEmuOLE_image_loaded_Proxy( 
     ITiEmuOLE __RPC_FAR * This,
     /* [retval][out] */ VARIANT_BOOL __RPC_FAR *ret)
 {
@@ -161,12 +102,10 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_image_loaded_Proxy(
             if ( (_RpcMessage.DataRepresentation & 0X0000FFFFUL) != NDR_LOCAL_DATA_REPRESENTATION )
                 NdrConvert( (PMIDL_STUB_MESSAGE) &_StubMsg, (PFORMAT_STRING) &__MIDL_ProcFormatString.Format[0] );
             
-            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++;
             
             _StubMsg.Buffer += 2;
-            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++;
             
             }
         RpcFinally
@@ -189,7 +128,7 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_image_loaded_Proxy(
     return _RetVal;
 }
 
-SECTION_ORPC void __RPC_STUB ITiEmuOLE_image_loaded_Stub(
+void __RPC_STUB ITiEmuOLE_image_loaded_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
@@ -217,12 +156,10 @@ NdrStubInitialize(
         
         _StubMsg.BufferLength = 2U + 6U;
         NdrStubGetBuffer(This, _pRpcChannelBuffer, &_StubMsg);
-        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer) = *ret;
-        _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++ = *ret;
         
         _StubMsg.Buffer += 2;
-        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer) = _RetVal;
-        _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++ = _RetVal;
         
         }
     RpcFinally
@@ -235,7 +172,7 @@ NdrStubInitialize(
 }
 
 
-SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_emulated_calc_type_Proxy( 
+HRESULT STDMETHODCALLTYPE ITiEmuOLE_emulated_calc_type_Proxy( 
     ITiEmuOLE __RPC_FAR * This,
     /* [retval][out] */ int __RPC_FAR *ret)
 {
@@ -271,11 +208,9 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_emulated_calc_type_Proxy(
             if ( (_RpcMessage.DataRepresentation & 0X0000FFFFUL) != NDR_LOCAL_DATA_REPRESENTATION )
                 NdrConvert( (PMIDL_STUB_MESSAGE) &_StubMsg, (PFORMAT_STRING) &__MIDL_ProcFormatString.Format[6] );
             
-            *ret = *(( int __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( int __RPC_FAR * );
+            *ret = *(( int __RPC_FAR * )_StubMsg.Buffer)++;
             
-            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++;
             
             }
         RpcFinally
@@ -298,7 +233,7 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_emulated_calc_type_Proxy(
     return _RetVal;
 }
 
-SECTION_ORPC void __RPC_STUB ITiEmuOLE_emulated_calc_type_Stub(
+void __RPC_STUB ITiEmuOLE_emulated_calc_type_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
@@ -326,11 +261,9 @@ NdrStubInitialize(
         
         _StubMsg.BufferLength = 4U + 4U;
         NdrStubGetBuffer(This, _pRpcChannelBuffer, &_StubMsg);
-        *(( int __RPC_FAR * )_StubMsg.Buffer) = *ret;
-        _StubMsg.Buffer += sizeof( int __RPC_FAR * );
+        *(( int __RPC_FAR * )_StubMsg.Buffer)++ = *ret;
         
-        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer) = _RetVal;
-        _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++ = _RetVal;
         
         }
     RpcFinally
@@ -343,7 +276,7 @@ NdrStubInitialize(
 }
 
 
-SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_emulated_hw_version_Proxy( 
+HRESULT STDMETHODCALLTYPE ITiEmuOLE_emulated_hw_version_Proxy( 
     ITiEmuOLE __RPC_FAR * This,
     /* [retval][out] */ int __RPC_FAR *ret)
 {
@@ -379,11 +312,9 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_emulated_hw_version_Proxy(
             if ( (_RpcMessage.DataRepresentation & 0X0000FFFFUL) != NDR_LOCAL_DATA_REPRESENTATION )
                 NdrConvert( (PMIDL_STUB_MESSAGE) &_StubMsg, (PFORMAT_STRING) &__MIDL_ProcFormatString.Format[6] );
             
-            *ret = *(( int __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( int __RPC_FAR * );
+            *ret = *(( int __RPC_FAR * )_StubMsg.Buffer)++;
             
-            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++;
             
             }
         RpcFinally
@@ -406,7 +337,7 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_emulated_hw_version_Proxy(
     return _RetVal;
 }
 
-SECTION_ORPC void __RPC_STUB ITiEmuOLE_emulated_hw_version_Stub(
+void __RPC_STUB ITiEmuOLE_emulated_hw_version_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
@@ -434,11 +365,9 @@ NdrStubInitialize(
         
         _StubMsg.BufferLength = 4U + 4U;
         NdrStubGetBuffer(This, _pRpcChannelBuffer, &_StubMsg);
-        *(( int __RPC_FAR * )_StubMsg.Buffer) = *ret;
-        _StubMsg.Buffer += sizeof( int __RPC_FAR * );
-            
-        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer) = _RetVal;
-        _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+        *(( int __RPC_FAR * )_StubMsg.Buffer)++ = *ret;
+        
+        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++ = _RetVal;
         
         }
     RpcFinally
@@ -451,7 +380,7 @@ NdrStubInitialize(
 }
 
 
-SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_emulated_os_version_Proxy( 
+HRESULT STDMETHODCALLTYPE ITiEmuOLE_emulated_os_version_Proxy( 
     ITiEmuOLE __RPC_FAR * This,
     /* [retval][out] */ BSTR __RPC_FAR *ret)
 {
@@ -500,8 +429,7 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_emulated_os_version_Proxy(
                                       (unsigned char)0 );
             
             _StubMsg.Buffer = (unsigned char __RPC_FAR *)(((long)_StubMsg.Buffer + 3) & ~ 0x3);
-            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++;
             
             }
         RpcFinally
@@ -524,7 +452,7 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_emulated_os_version_Proxy(
     return _RetVal;
 }
 
-SECTION_ORPC void __RPC_STUB ITiEmuOLE_emulated_os_version_Stub(
+void __RPC_STUB ITiEmuOLE_emulated_os_version_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
@@ -567,8 +495,7 @@ NdrStubInitialize(
                                 (PFORMAT_STRING) &__MIDL_TypeFormatString.Format[38] );
         
         _StubMsg.Buffer = (unsigned char __RPC_FAR *)(((long)_StubMsg.Buffer + 3) & ~ 0x3);
-        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer) = _RetVal;
-        _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++ = _RetVal;
         
         }
     RpcFinally
@@ -585,7 +512,7 @@ NdrStubInitialize(
 }
 
 
-SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_ready_for_transfers_Proxy( 
+HRESULT STDMETHODCALLTYPE ITiEmuOLE_ready_for_transfers_Proxy( 
     ITiEmuOLE __RPC_FAR * This,
     /* [retval][out] */ VARIANT_BOOL __RPC_FAR *ret)
 {
@@ -621,12 +548,10 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_ready_for_transfers_Proxy(
             if ( (_RpcMessage.DataRepresentation & 0X0000FFFFUL) != NDR_LOCAL_DATA_REPRESENTATION )
                 NdrConvert( (PMIDL_STUB_MESSAGE) &_StubMsg, (PFORMAT_STRING) &__MIDL_ProcFormatString.Format[0] );
             
-            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++;
             
             _StubMsg.Buffer += 2;
-            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++;
             
             }
         RpcFinally
@@ -649,7 +574,7 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_ready_for_transfers_Proxy(
     return _RetVal;
 }
 
-SECTION_ORPC void __RPC_STUB ITiEmuOLE_ready_for_transfers_Stub(
+void __RPC_STUB ITiEmuOLE_ready_for_transfers_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
@@ -677,12 +602,10 @@ NdrStubInitialize(
         
         _StubMsg.BufferLength = 2U + 6U;
         NdrStubGetBuffer(This, _pRpcChannelBuffer, &_StubMsg);
-        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer) = *ret;
-        _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++ = *ret;
         
         _StubMsg.Buffer += 2;
-        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer) = _RetVal;
-        _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++ = _RetVal;
         
         }
     RpcFinally
@@ -695,7 +618,7 @@ NdrStubInitialize(
 }
 
 
-SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_send_file_Proxy( 
+HRESULT STDMETHODCALLTYPE ITiEmuOLE_send_file_Proxy( 
     ITiEmuOLE __RPC_FAR * This,
     /* [in] */ BSTR filename,
     /* [retval][out] */ VARIANT_BOOL __RPC_FAR *ret)
@@ -740,12 +663,10 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_send_file_Proxy(
             if ( (_RpcMessage.DataRepresentation & 0X0000FFFFUL) != NDR_LOCAL_DATA_REPRESENTATION )
                 NdrConvert( (PMIDL_STUB_MESSAGE) &_StubMsg, (PFORMAT_STRING) &__MIDL_ProcFormatString.Format[18] );
             
-            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++;
             
             _StubMsg.Buffer += 2;
-            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++;
             
             }
         RpcFinally
@@ -768,7 +689,7 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_send_file_Proxy(
     return _RetVal;
 }
 
-SECTION_ORPC void __RPC_STUB ITiEmuOLE_send_file_Stub(
+void __RPC_STUB ITiEmuOLE_send_file_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
@@ -814,12 +735,10 @@ NdrStubInitialize(
         
         _StubMsg.BufferLength = 2U + 6U;
         NdrStubGetBuffer(This, _pRpcChannelBuffer, &_StubMsg);
-        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer) = *ret;
-        _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++ = *ret;
         
         _StubMsg.Buffer += 2;
-        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer) = _RetVal;
-        _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++ = _RetVal;
         
         }
     RpcFinally
@@ -836,7 +755,7 @@ NdrStubInitialize(
 }
 
 
-SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_debug_file_Proxy( 
+HRESULT STDMETHODCALLTYPE ITiEmuOLE_debug_file_Proxy( 
     ITiEmuOLE __RPC_FAR * This,
     /* [in] */ BSTR filename,
     /* [retval][out] */ VARIANT_BOOL __RPC_FAR *ret)
@@ -881,12 +800,10 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_debug_file_Proxy(
             if ( (_RpcMessage.DataRepresentation & 0X0000FFFFUL) != NDR_LOCAL_DATA_REPRESENTATION )
                 NdrConvert( (PMIDL_STUB_MESSAGE) &_StubMsg, (PFORMAT_STRING) &__MIDL_ProcFormatString.Format[18] );
             
-            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++;
             
             _StubMsg.Buffer += 2;
-            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++;
             
             }
         RpcFinally
@@ -909,7 +826,7 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_debug_file_Proxy(
     return _RetVal;
 }
 
-SECTION_ORPC void __RPC_STUB ITiEmuOLE_debug_file_Stub(
+void __RPC_STUB ITiEmuOLE_debug_file_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
@@ -955,12 +872,10 @@ NdrStubInitialize(
         
         _StubMsg.BufferLength = 2U + 6U;
         NdrStubGetBuffer(This, _pRpcChannelBuffer, &_StubMsg);
-        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer) = *ret;
-        _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++ = *ret;
         
         _StubMsg.Buffer += 2;
-        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer) = _RetVal;
-        _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++ = _RetVal;
         
         }
     RpcFinally
@@ -977,7 +892,7 @@ NdrStubInitialize(
 }
 
 
-SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_reset_calc_Proxy( 
+HRESULT STDMETHODCALLTYPE ITiEmuOLE_reset_calc_Proxy( 
     ITiEmuOLE __RPC_FAR * This,
     /* [in] */ VARIANT_BOOL clearmem,
     /* [retval][out] */ VARIANT_BOOL __RPC_FAR *ret)
@@ -1009,20 +924,17 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_reset_calc_Proxy(
             
             _StubMsg.BufferLength = 2U;
             NdrProxyGetBuffer(This, &_StubMsg);
-            *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer) = clearmem;
-            _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+            *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++ = clearmem;
             
             NdrProxySendReceive(This, &_StubMsg);
             
             if ( (_RpcMessage.DataRepresentation & 0X0000FFFFUL) != NDR_LOCAL_DATA_REPRESENTATION )
                 NdrConvert( (PMIDL_STUB_MESSAGE) &_StubMsg, (PFORMAT_STRING) &__MIDL_ProcFormatString.Format[28] );
             
-            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++;
             
             _StubMsg.Buffer += 2;
-            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++;
             
             }
         RpcFinally
@@ -1045,7 +957,7 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_reset_calc_Proxy(
     return _RetVal;
 }
 
-SECTION_ORPC void __RPC_STUB ITiEmuOLE_reset_calc_Stub(
+void __RPC_STUB ITiEmuOLE_reset_calc_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
@@ -1068,8 +980,7 @@ NdrStubInitialize(
         if ( (_pRpcMessage->DataRepresentation & 0X0000FFFFUL) != NDR_LOCAL_DATA_REPRESENTATION )
             NdrConvert( (PMIDL_STUB_MESSAGE) &_StubMsg, (PFORMAT_STRING) &__MIDL_ProcFormatString.Format[28] );
         
-        clearmem = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer);
-        _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+        clearmem = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++;
         
         ret = &_M7;
         
@@ -1083,12 +994,10 @@ NdrStubInitialize(
         
         _StubMsg.BufferLength = 2U + 6U;
         NdrStubGetBuffer(This, _pRpcChannelBuffer, &_StubMsg);
-        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer) = *ret;
-        _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++ = *ret;
         
         _StubMsg.Buffer += 2;
-        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer) = _RetVal;
-        _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++ = _RetVal;
         
         }
     RpcFinally
@@ -1101,7 +1010,7 @@ NdrStubInitialize(
 }
 
 
-SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_execute_command_Proxy( 
+HRESULT STDMETHODCALLTYPE ITiEmuOLE_execute_command_Proxy( 
     ITiEmuOLE __RPC_FAR * This,
     /* [in] */ BSTR command,
     /* [retval][out] */ VARIANT_BOOL __RPC_FAR *ret)
@@ -1146,12 +1055,10 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_execute_command_Proxy(
             if ( (_RpcMessage.DataRepresentation & 0X0000FFFFUL) != NDR_LOCAL_DATA_REPRESENTATION )
                 NdrConvert( (PMIDL_STUB_MESSAGE) &_StubMsg, (PFORMAT_STRING) &__MIDL_ProcFormatString.Format[18] );
             
-            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++;
             
             _StubMsg.Buffer += 2;
-            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++;
             
             }
         RpcFinally
@@ -1174,7 +1081,7 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_execute_command_Proxy(
     return _RetVal;
 }
 
-SECTION_ORPC void __RPC_STUB ITiEmuOLE_execute_command_Stub(
+void __RPC_STUB ITiEmuOLE_execute_command_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
@@ -1220,12 +1127,10 @@ NdrStubInitialize(
         
         _StubMsg.BufferLength = 2U + 6U;
         NdrStubGetBuffer(This, _pRpcChannelBuffer, &_StubMsg);
-        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer) = *ret;
-        _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++ = *ret;
         
         _StubMsg.Buffer += 2;
-        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer) = _RetVal;
-        _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++ = _RetVal;
         
         }
     RpcFinally
@@ -1242,7 +1147,7 @@ NdrStubInitialize(
 }
 
 
-SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_turn_calc_on_Proxy( 
+HRESULT STDMETHODCALLTYPE ITiEmuOLE_turn_calc_on_Proxy( 
     ITiEmuOLE __RPC_FAR * This,
     /* [retval][out] */ VARIANT_BOOL __RPC_FAR *ret)
 {
@@ -1278,12 +1183,10 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_turn_calc_on_Proxy(
             if ( (_RpcMessage.DataRepresentation & 0X0000FFFFUL) != NDR_LOCAL_DATA_REPRESENTATION )
                 NdrConvert( (PMIDL_STUB_MESSAGE) &_StubMsg, (PFORMAT_STRING) &__MIDL_ProcFormatString.Format[0] );
             
-            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++;
             
             _StubMsg.Buffer += 2;
-            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++;
             
             }
         RpcFinally
@@ -1306,7 +1209,7 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_turn_calc_on_Proxy(
     return _RetVal;
 }
 
-SECTION_ORPC void __RPC_STUB ITiEmuOLE_turn_calc_on_Stub(
+void __RPC_STUB ITiEmuOLE_turn_calc_on_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
@@ -1334,12 +1237,10 @@ NdrStubInitialize(
         
         _StubMsg.BufferLength = 2U + 6U;
         NdrStubGetBuffer(This, _pRpcChannelBuffer, &_StubMsg);
-        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer) = *ret;
-        _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++ = *ret;
         
         _StubMsg.Buffer += 2;
-        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer) = _RetVal;
-        _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++ = _RetVal;
         
         }
     RpcFinally
@@ -1352,7 +1253,7 @@ NdrStubInitialize(
 }
 
 
-SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_enter_debugger_Proxy( 
+HRESULT STDMETHODCALLTYPE ITiEmuOLE_enter_debugger_Proxy( 
     ITiEmuOLE __RPC_FAR * This,
     /* [retval][out] */ VARIANT_BOOL __RPC_FAR *ret)
 {
@@ -1388,12 +1289,10 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_enter_debugger_Proxy(
             if ( (_RpcMessage.DataRepresentation & 0X0000FFFFUL) != NDR_LOCAL_DATA_REPRESENTATION )
                 NdrConvert( (PMIDL_STUB_MESSAGE) &_StubMsg, (PFORMAT_STRING) &__MIDL_ProcFormatString.Format[0] );
             
-            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+            *ret = *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++;
             
             _StubMsg.Buffer += 2;
-            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer);
-            _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+            _RetVal = *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++;
             
             }
         RpcFinally
@@ -1416,13 +1315,13 @@ SECTION_ORPC HRESULT STDMETHODCALLTYPE ITiEmuOLE_enter_debugger_Proxy(
     return _RetVal;
 }
 
-SECTION_ORPC void __RPC_STUB ITiEmuOLE_enter_debugger_Stub(
+void __RPC_STUB ITiEmuOLE_enter_debugger_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
     DWORD *_pdwStubPhase)
 {
-    VARIANT_BOOL _M9;
+    VARIANT_BOOL _M10;
     HRESULT _RetVal;
     MIDL_STUB_MESSAGE _StubMsg;
     VARIANT_BOOL __RPC_FAR *ret;
@@ -1435,7 +1334,7 @@ NdrStubInitialize(
     ( VARIANT_BOOL __RPC_FAR * )ret = 0;
     RpcTryFinally
         {
-        ret = &_M9;
+        ret = &_M10;
         
         *_pdwStubPhase = STUB_CALL_SERVER;
         _RetVal = (((ITiEmuOLE*) ((CStdStubBuffer *)This)->pvServerObject)->lpVtbl) -> enter_debugger((ITiEmuOLE *) ((CStdStubBuffer *)This)->pvServerObject,ret);
@@ -1444,12 +1343,10 @@ NdrStubInitialize(
         
         _StubMsg.BufferLength = 2U + 6U;
         NdrStubGetBuffer(This, _pRpcChannelBuffer, &_StubMsg);
-        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer) = *ret;
-        _StubMsg.Buffer += sizeof( VARIANT_BOOL __RPC_FAR * );
+        *(( VARIANT_BOOL __RPC_FAR * )_StubMsg.Buffer)++ = *ret;
         
         _StubMsg.Buffer += 2;
-        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer) = _RetVal;
-        _StubMsg.Buffer += sizeof( HRESULT __RPC_FAR * );
+        *(( HRESULT __RPC_FAR * )_StubMsg.Buffer)++ = _RetVal;
         
         }
     RpcFinally
@@ -1539,18 +1436,16 @@ CInterfaceStubVtbl _ITiEmuOLEStubVtbl =
     CStdStubBuffer_DELEGATING_METHODS
 };
 
-#ifndef __MINGW32__
 #pragma data_seg(".rdata")
-#endif
 
-SECTION_RDATA static const USER_MARSHAL_ROUTINE_QUADRUPLE UserMarshalRoutines[1] = 
+static const USER_MARSHAL_ROUTINE_QUADRUPLE UserMarshalRoutines[1] = 
         {
             
             {
-            (USER_MARSHAL_SIZING_ROUTINE)BSTR_UserSize
-            ,(USER_MARSHAL_MARSHALLING_ROUTINE)BSTR_UserMarshal
-            ,(USER_MARSHAL_UNMARSHALLING_ROUTINE)BSTR_UserUnmarshal
-            ,(USER_MARSHAL_FREEING_ROUTINE)BSTR_UserFree
+            BSTR_UserSize
+            ,BSTR_UserMarshal
+            ,BSTR_UserUnmarshal
+            ,BSTR_UserFree
             }
 
         };
@@ -1560,7 +1455,7 @@ SECTION_RDATA static const USER_MARSHAL_ROUTINE_QUADRUPLE UserMarshalRoutines[1]
 #error  Invalid build platform for this stub.
 #endif
 
-#if !(TARGET_IS_NT40_OR_LATER) && !defined(__MINGW32__)
+#if !(TARGET_IS_NT40_OR_LATER)
 #error You need a Windows NT 4.0 or later to run this stub because it uses these features:
 #error   [wire_marshal] or [user_marshal] attribute.
 #error However, your C/C++ compilation flags indicate you intend to run this app on earlier systems.
@@ -1568,7 +1463,7 @@ SECTION_RDATA static const USER_MARSHAL_ROUTINE_QUADRUPLE UserMarshalRoutines[1]
 #endif
 
 
-SECTION_RDATA static const MIDL_PROC_FORMAT_STRING __MIDL_ProcFormatString =
+static const MIDL_PROC_FORMAT_STRING __MIDL_ProcFormatString =
     {
         0,
         {
@@ -1637,7 +1532,7 @@ SECTION_RDATA static const MIDL_PROC_FORMAT_STRING __MIDL_ProcFormatString =
         }
     };
 
-SECTION_RDATA static const MIDL_TYPE_FORMAT_STRING __MIDL_TypeFormatString =
+static const MIDL_TYPE_FORMAT_STRING __MIDL_TypeFormatString =
     {
         0,
         {
@@ -1721,7 +1616,7 @@ const IID *  _oleaut_BaseIIDList[] =
 
 #define _oleaut_CHECK_IID(n)	IID_GENERIC_CHECK_IID( _oleaut, pIID, n)
 
-SECTION_ORPC int __stdcall _oleaut_IID_Lookup( const IID * pIID, int * pIndex )
+int __stdcall _oleaut_IID_Lookup( const IID * pIID, int * pIndex )
 {
     
     if(!_oleaut_CHECK_IID(0))
@@ -1733,7 +1628,7 @@ SECTION_ORPC int __stdcall _oleaut_IID_Lookup( const IID * pIID, int * pIndex )
     return 0;
 }
 
-SECTION_RDATA const ExtendedProxyFileInfo oleaut_ProxyFileInfo = 
+const ExtendedProxyFileInfo oleaut_ProxyFileInfo = 
 {
     (PCInterfaceProxyVtblList *) & _oleaut_ProxyVtblList,
     (PCInterfaceStubVtblList *) & _oleaut_StubVtblList,
