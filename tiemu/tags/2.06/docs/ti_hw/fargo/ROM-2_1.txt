@@ -1,0 +1,1088 @@
+char = signed 8-bit integer
+short = signed 16-bit integer
+int = signed 16-bit integer
+long = signed 32-bit integer
+void * = absolute 32-bit pointer
+
+? = name and function unknown
+?something = guessed name, where actual name is unknown
+something? = guessed name, where actual name and function is uncertain
+{something} = description, where name is unknown
+{something?} = description, where name is unknown and function is uncertain
+
+-----------------------------------------------------------------------------
+
+typedef unsigned char  BYTE;
+typedef unsigned short WORD;
+typedef unsigned long  LONG;
+typedef signed char   SBYTE;
+typedef signed short  SWORD;
+typedef signed long   SLONG;
+typedef LONG size_t;
+
+typedef (void *) EStackIndex;
+typedef WORD EStackDisplacement;
+
+typedef union {
+        void *v;
+	BYTE *b;
+        WORD *w;
+        LONG *l;
+        SBYTE *sb;
+        SWORD *sw;
+        SLONG *sl;
+} PTR_ALL;
+
+typedef WORD HANDLE;
+
+typedef struct {
+	HANDLE h; // handle of folder
+	WORD ?disp; // displacement of symbol
+} HSYM;
+
+typedef struct {
+	BYTE left;
+	BYTE top;
+	BYTE right;
+	BYTE bottom;
+} RECT;
+
+typedef struct {
+	WORD Flags;		// 00
+	BYTE CurFont;		// 02
+	BYTE CurAttr;		// 03
+	BYTE Background;	// 04
+	/* blank */		// 05
+	WORD TaskID;		// 06
+	WORD CurX;		// 08
+	WORD CurY;		// 0A
+	WORD CursorX;		// 0C
+	WORD CursorY;		// 0E
+	RECT Client;		// 10
+	RECT Window;		// 14
+	RECT Clip;		// 18
+	RECT Port;		// 1C
+	WORD DupScr;		// 20
+	WINDOW *Next;		// 22
+	char *Title;		// 26
+} WINDOW;
+
+typedef struct {
+	WORD left;
+	WORD top;
+	WORD right;
+	WORD bottom;
+} WIN_RECT;
+
+typedef struct {
+	EStackIndex i;
+	EStackDisplacement o;
+} ESTACK_AND_OFFSET;
+
+typedef struct {
+	BYTE name[8];
+	WORD ?flags;
+	HANDLE hVal;
+} SYM_ENTRY;
+
+#define H_NULL (HANDLE)0
+#define SETUP_FAST_DEREF register scratchHeap = Heap;
+#define DEREF(h) Heap[h]
+#define FDEREF(h) scratchHeap[h]
+#define DEREF_SYM(hsym) DerefSym(hsym)
+#define FDEREF_SYM(hsym) (FDEREF[hsym.h] + hsym.?disp)
+
+#define STOF_ESI  0x4000
+#define STOF_HESI 0x4003
+
+#define TRY if(!(scratch = ER_catch(errorframe))) {
+#define ONERR ER_success(); } else {
+#define ENDTRY }
+#define PASS ER_throwVar(scratch)
+
+#define UNDEFINED_TAG 0x2A
+#define LIST_TAG      0xD9
+#define MATRIX_TAG    0xDB
+#define END_TAG       0xE5
+
+#define ER_STOP          2
+#define ER_DIMENSION   230
+#define ER_MEMORY      670
+#define ER_MEMORY_DML  810
+
+-----------------------------------------------------------------------------
+
+005620	BYTE ?
+005622	BYTE OSOnBreak
+005623	BYTE ?OSDisableBreak
+005624	WORD {saved SR}
+
+0057F9	BYTE ?
+0057FA	void *{end of usable RAM}
+
+005806	float ?scratch1
+005812	float ?scratch2
+
+005910	void *?
+005914	void *?
+005918	void *?
+00591C	void *?
+005920	void *?
+005924	void *?
+005928	void *?
+00592C	void *?
+005930	void *?
+005934	void *?
+005938	void *?
+00593C	void *?
+005940	void *?
+005944	void *?
+005948	void *?
+00594C	void *?
+
+005968	float ?
+005972	float ?
+00597C	EStackIndex ?bottom_expression
+005980	EStackIndex estack_max_index
+005984	EStackIndex top_estack
+005988	HANDLE ?estack_handle
+00598A	EStackIndex bottom_estack
+00598E	BYTE {indicates how a function returned}
+005990	HANDLE NG_code_handle
+005992	LONG ?
+005996	BYTE *{current TI-BASIC instruction}
+
+00599C	BYTE {error something}
+00599E	WORD ERR_code_handle
+0059A0	WORD {error something}
+0059A2	WORD {error something}
+0059A4	BYTE *?{text being interpreted}
+
+0059B4	float ?
+0059BE	float ?
+0059CA	BYTE ?tag0
+0059CB	BYTE ?tag1
+0059CC	BYTE ?tag2
+0059CE	WORD ?estack_size
+0059D0	LONG ?{flags}
+0059D4	WORD ?{flags}
+0059D6	WORD NG_control
+0059D8	LONG ?
+0059DC	LONG ?
+0059E0	LONG ?
+0059E4	LONG ?
+0059E8	WORD ?
+0059EA	WORD ?
+0059EC	WORD ?
+0059EE	WORD ?
+0059F0	LONG ?
+0059F4	EStackIndex ?reg0
+0059F8	EStackIndex ?reg1
+0059FC	EStackIndex ?reg2
+005A00	EStackIndex ?reg3
+005A04	EStackIndex ?reg4
+005A08	EStackIndex ?reg5
+
+005A36	BYTE *{TI-BASIC text being interpreted}
+005A3A	BYTE *{TI-BASIC text being interpreted}
+
+005A80	{pointer to event handler callback function}
+005A84	WORD EV_runningApp
+005A86	WORD EV_currentApp
+005A88	WORD EV_appA
+005A8A	WORD EV_appB
+
+005A8E	WORD EV_errorCode
+
+005B84	HANDLE ?
+
+005D80	WORD colint
+005D82	WORD rowint
+
+005DB2	WORD wData.Flags
+
+005E7A	HANDLE hdmfolder
+005E7C	BYTE dmTag
+
+005EDC	?DATA *dataptr
+
+005EF0	void *?scr_vidbuf
+005EF4	BYTE ?scr_max_x
+005EF5	BYTE ?scr_max_y
+005EF6	WORD ?scr_attr
+005EF8	WORD ?scr_line_thickness
+005EFA	WORD ?scr_x_pos
+005EFC	WORD ?scr_y_pos
+005EFE	RECT ?scr_clip_rect
+005F02	WORD {character height}
+005F04	RECT ScrRect
+005F08	WORD ?SysFontX
+005F0A	WORD SysFontY
+005F0C	BYTE GL_ShadeMods[2]
+005F0E	WORD GL_ShadeOffset
+005F10	WORD ?SysScrWidth
+
+005F30	WINDOW FirstWindow
+
+005FEC	BYTE GOK_Flag
+
+005F64	.bss from dialog.o (0x000C bytes)
+005F64	WORD ?
+005F66	WORD ?
+005F68	WORD ?
+005F6A	WORD ?
+005F6C	CurTE
+
+006000	.bss from ?heap.o (0x0022 bytes)
+
+00600C	WORD {number of elements in the heap table}
+00600E	void *?
+006012	void *?
+006016	void *?
+00601A	void *{first free byte in the heap}
+00601C	BYTE HeapAllocSysFlag
+00601E	void *?scratch
+006022	void **Heap
+
+006042	BYTE ?some_symbol_name[8]
+00604C	WORD ?num_symbols_in_last_used_folder
+00604E	WORD ?whatever_in_last_used_folder
+006050	SYM_ENTRY *?last_used_folder
+006054	SYM_ENTRY *?last_used_folder
+006058	SYM_ENTRY *?last_used_folder
+
+006060	WORD SymTempFolCount
+
+006066	BYTE *?some_folder_name
+00606A	HANDLE ?some_folder_handle
+00606C	HANDLE ?folderList
+
+006070	HANDLE DefTempHandle
+006072	WORD ?
+006074	WORD {error code}
+006076	WORD ?
+
+0060BA	WORD gr_flags
+0060BC	? *gr_active
+0060C0	? *gr_other
+
+00616C	WINDOW wTable1
+006196	WINDOW wTable2
+
+006BA8	zFit
+
+006BD0	WORD seqmode
+
+006CB0	.bss from aptabled.o (0x0090 bytes)
+
+006DB0	WORD SE_offset
+
+007950	WORD MO_splitScreen
+007952	WORD MO_graphCount
+
+007956	WORD MO_fix
+
+00795C	WORD MO_flags
+00795E	WORD ?
+
+00796E	option
+
+0079BE	?BUFFER ?key_buffer
+
+007A36	WINDOW {status line window}
+007A60	LONG ?ST_flags
+
+007A7C	void **?current_stdout_stream
+
+007D30	LONG {random number seed}
+
+40069E	_bcd_math()
+
+400EAC	void ER_throwVar(WORD errorNum)
+400ED6	WORD ER_catch(void *ErrorFrame)
+400EFC	void ER_success(void)
+
+401C20	{TRAP 0 origin}
+
+402102	void off(void)
+402106	void idle(void)
+40210E	OSClearBreak()
+402116	WORD OSCheckBreak(void)
+40211E	OSDisableBreak()
+402124	OSEnableBreak()
+
+402BFA	float FP360 = 360.0
+402C04	float FP180 = 180.0
+402C0E	float ?FPNINE = 9.0
+402C18	float ?FP45 = 45.0
+402C22	float RAD2DEG = 57.29577951308232
+402C2C	float DEG2RAD = 0.0174532925199433
+402C36	float FPZERO = 0.0
+402C40	float FPPTONE = 0.1
+402C4A	float ?FP24THPI = 0.13089969389957
+402C54	float FPPTFIVE = 0.5
+402C5E	float FPPTNINE = 0.9
+402C68	float FPONE = 1.0
+402C72	float ?FPSQRT2 = 1.4142135623731
+402C7C	float ?FPTWO = 2.0
+402C86	float ?FPTHREE = 3.0
+402C90	float ?FPTWOPI = 6.28318530718
+402C9A	float ?FPTEN = 10.0
+402CA4	float ?FPNTEN = -10.0
+402CAE	float ?FP12 = 12.0
+402CB8	float ?FP14 = 14.0
+402CC2	float ?FP20 = 20.0
+402CCC	float ?FP70 = 70.0
+402CD6	float FPBIGGEST
+402CE0	float FPNEGBIGGEST
+402CEA	float FP16000 = 16000.0
+402CF4	float FPN16000 = -16000.0
+402CFE	float ?FPMAXINT = 32767.0
+402D08	float ?FPNMAXINT = -32768.0
+402D12	float ?FPMAXWORD = 65535.0
+402D1C	float ?FP1E14 = 1.0E+14
+402D26	float FP_INVALID
+402CFE	float ?FPLOGE = 0.4342944819032518
+
+4035F4	void {clear key buffer}(?BUFFER *buffer)
+
+40D956	void {resets some tag pointers}(void)
+40D9D8	void ?push_01_01_1F(void)
+40DA08	void ?push_00_1F(void)
+40DA2E	void ?push_01_01_20(void)
+40DA5E	void ?push1(void)
+40DA7A	void push0(void)
+40DA96	void ?push_01_01_00_21(void)
+40DAD2	void ?push2(void)
+40DAEE	?()
+40DB30	?()
+40DB72	?()
+40DBB4	?()
+40DBF2	?()
+
+411302	?{calls a function}()
+
+4115AA	delete_list_element()
+
+417D5E	?(EStackIndex esi)
+41896C	display_statements()
+418B00	void Parse1DExpr(EStackIndex OldTop, Boolean torf, unsigned short width)
+
+421E62	void ?{interpret TI-BASIC text}(EStackIndex esi)
+423856	void ?(EStackIndex esi)
+423922	void push_simplify_statements(EStackIndex esi}
+423C84	{instruction -> routine table}
+
+42A91E	void {resets some stuff}(void)
+
+42FD64	void push_quantum(BYTE tag)
+42FD86	void push_quantum_pair(BYTE tag1, BYTE tag2)
+42FDB6	void push_between(EStackIndex bottom, EStackIndex top)
+42FE06	void delete_between(EStackIndex bottom, EStackIndex top)
+42FE34	WORD deleted_between(EStackIndex bottom, EStackIndex top)
+42FE58	void delete_expression(EStackIndex esi)
+42FE70	WORD deleted_expression(EStackIndex esi)
+42FE88	void move_between_to_top(EStackIndex bottom, EStackIndex top)
+42FEAE	WORD moved_between_top_top(EStackIndex bottom, EStackIndex top)
+42FED4	EStackIndex next_expression_index(EStackIndex esi)
+4300F2	void push_expression(EStackIndex esi)
+43010A	BYTE min_quantum(BYTE a, BYTE b)
+430122	void push_next_arb_int(void)
+43013A	void push_next_arb_real(void)
+430152	void push_expr_quantum(EStackIndex op1, BYTE tag)
+43016A	void push_expr2_quantum(EStackIndex op1, EStackIndex op2, BYTE tag)
+43018C	Boolean ?is_statement(EStackIndex esi, BYTE tag) // is_executable?? is_free_of_tag?
+430216	void {reset a whole lot of stuff}(void)
+4302B2	void ?create_estack(void)
+430324	void reset_estack_size(WORD newsize)
+430378	void check_estack_size(EStackDisplacement i)
+43041E	void reset_control_flags(void)
+4304A6	BYTE *find_error_message(WORD errorCode)
+430510	WORD {proper error code}(WORD errorCode)
+43053A	clear_error_context()
+430560	void {error dialog with error name and line number}(WORD errorNum, WORD *errorName, WORD lineNum, BYTE *buffer)
+4305A1	float ? = 0.0
+4305AB	float ? = 1.0
+4305B5	float ? = -1.0
+4305BF	float ? = 3.1415926535898
+4305C9	float ? = 0.5
+4305D3	float ? = 2.0
+4305DD	float ? = 0.001745329251994423
+4305E7	float ? = 57.29577951308223
+4305E8	void {resets some stuff}(void)
+43061A	?()
+430660	?()
+4306C0	?()
+4307E4	float estack_to_float(EStackIndex esi)
+430828	Boolean is_nan(float x)
+43083E	?()
+43085A	void push_pow(EStackIndex x, EStackIndex y)
+4308DE	void push_Float(float x)
+
+432BD2	?{compile TI-BASIC text}()
+
+4339F2	?{compile TI-BASIC text}()
+4348B2	?{compile TI-BASIC text}()
+4349B2	?{push compiled TI-BASIC onto estack}(BYTE *text)
+
+445206	{instruction -> name table}
+
+447A7A	?()
+
+448948	EV_captureEvents()
+448954	?()
+4489F4	?()
+448A08	EV_defaultHandler()
+448F7C	EV_eventLoop()
+4491F6	EV_getSplitRect()
+449210	?()
+449268	?()
+449300	EV_paintWindows()
+449312	EV_registerMenu()
+44932A	EV_restorePainting()
+449344	?()
+44935C	?()
+4493D0	?()
+4493FC	?()
+44942A	EV_setCmdState()
+449458	EV_setFKeyState()
+4494BA	void EV_startApp(WORD newApp, WORD ?)
+4495A4	?()
+44961A	?()
+44964A	EV_suspendPainting()
+44965A	?()
+4496AC	?()
+4496F6	?()
+44972A	?()
+44974E	?()
+44977C	?()
+449800	?()
+449850	?()
+4498AA	?()
+449900	?()
+449988	?()
+449A4A	?()
+449A68	?()
+449A82	?()
+449AA0	CU_restore()
+449ABC	?()
+449ADA	CU_stop()
+
+44C3CA	{something that draws clipped text with the medium font?}()
+
+44CB26	void {Pause instruction}(EStackIndex message)
+44CBC2	?()
+44CC3C	?()
+44CC60	?()
+44CC82	?()
+44CCDC	?()
+44CD0C	?()
+44CD58	?()
+44CD8E	?()
+44CDB4	?()
+44CDE0	?()
+44CE1A	?()
+44CE78	?()
+44CEB0	void *HToESI(HANDLE h)
+44CECC	?()
+44D15C	?()
+
+450622	TE_close()
+450652	?()
+4506D6	TE_focus()
+45071C	TE_handleEvent()
+450A9A	?()
+450AA8	TE_isBlank()
+450ADE	TE_open()
+450C0C	TE_openFixed()
+450CB2	?()
+450D20	?()
+450D4E	?()
+450D90	TE_reopen()
+450DCC	?()
+450DF8	TE_select()
+450E84	TE_shrinkWrap()
+450EC0	TE_unfocus()
+
+4549BC	partial_len(BYTE *?, BYTE *?)
+454A38	CharNumber()
+
+456BA0	DrawClipChar()
+456CD6	DrawClipLine()
+456D14	DrawClipPix()
+456D54	DrawClipEllipse()
+456F0E	DrawClipRect()
+4571FE	DrawMultiLines()
+45725C	DrawStrWidth()
+4572C8	BYTE FontSetSys(BYTE)
+45731A	BYTE FontGetSys(void)
+457320	WORD FontCharWidth(BYTE ch)
+45735C	GetPix()
+457394	LineTo()
+4573D2	MoveTo()
+4573E0	PortSet()
+457404	PortRestore()
+457420	RestoreScrState()
+457458	SaveScrState()
+457472	?()
+4574E8	ScrRectFill()
+45754E	BitmapGet()
+4575F2	BitmapInit()
+457620	ScrRectOverlap()
+4576AE	BitmapPut()
+457D14	ScrRectScroll()
+457F30	ScrRectShift()
+458108	BitmapSize()
+458134	QScrRectOverlap()
+458168	ScreenClear()
+458198	?()
+4581E4	SetCurAttr()
+4581F0	SetCurClip()
+4581FA	DrawChar()
+458226	DrawFkey()
+458290	DrawIcon()
+4582FE	DrawLine()
+4587F6	DrawPix()
+45885C	DrawStr()
+4588D6	FillTriangle()
+458DC4	FillLines2()
+45906E	BYTE *?FindPixel(WORD x, WORD y)
+459098	?()
+4591A8	?DrawCharMask()
+4593B8	?()
+4595DE	?()
+459674	DrawWinBorder()
+459870	RectWinToWin()
+459898	ScrToHome()
+4598C0	RectWinToScr()
+45997E	ScrToWin()
+4599AE	MakeWinRect()
+4599CC	ScrRectDivide()
+
+459B28	UpdateWindows()
+
+459D10	.text from win.o (0x1866 bytes)
+459D10	WINDOW DeskTop0
+459D3A	WinWidth()
+459D50	WinHeight()
+459D66	WinActivate()
+459D82	WinAttr()
+459D92	WinBackupToScr()
+459DD8	WinBackground()
+459DE4	WinBegin()
+459DF8	WinBitmapGet()
+459EA6	WinBitmapPut()
+459F64	WinBitmapSize()
+459F96	WinChar()
+45A05E	WinCharXY()
+45A102	WinClose()
+45A116	WinClr()
+45A17C	WinDeactivate()
+45A19E	WinDupStat()
+45A1CA	WinEllipse()
+45A276	WinFill()
+45A328	WinFillTriangle()
+45A40C	WinFont()
+45A426	WinHide()
+45A43A	WinHome()
+45A45C	WinInit()
+45A494	WinLine()
+45A554	WinLineNC()
+45A648	WinLineTo()
+45A71E	WinLineRel()
+45A744	WinMoveTo()
+45A756	WinGetCursor()
+45A770	WinFillLines2()
+45A852	WinMoveCursor()
+45A874	WinMoveRel()
+45A88E	WinOpen()
+45AAB2	WinReOpen()
+45ACF6	WinPixGet()
+45ADB0	WinPixSet()
+45AE76	WinRect()
+45AF12	WinScrollV()
+45AFDC	WinScrollH()
+45B0A6	WinStrXY()
+45B0D4	WinStr()
+45B15E	ActivateWindow()
+45B204	ClearPortRegion()
+45B242	WinCharClip()
+45B3E8	WinFind()
+45B41C	WinNewLine()
+45B430	WinRemove()
+45B500	SetShadeOffset()
+45B578	.text from ?font.o
+45B578	SF_font
+
+45CD78	.text from dialog.o (0x142E bytes)
+45CD78	char *SB_Names[6]
+45CDCC	Dialog()
+45D732	NoCallBack()
+45D736	DialogDo()
+45D784	DialogNew()
+45D7D4	DialogAdd()
+45DA0A	DrawStaticButton()
+45DA82	DlgText()
+45DAB8	PopupDraw()
+45DD0E	EditDraw()
+45E0D0	DialogEventHandler()
+45E1A6	.text from ?menu.o
+45E1D8	MenuInit()
+45E206	MenuUpdate()
+45E23C	MenuPopup()
+45E2DA	MenuSubStat()
+45E346	MenuTopStat()
+45E3A4	MenuCheck()
+45E424	MenuBegin()
+45E5E2	MenuOn()
+45E612	MenuTopSelect()
+45E650	MenuTopRedef()
+45E6AA	MenuGetTopRedef()
+45E6DC	MenuEnd()
+
+45FA42	GetPopupOffset()
+
+45FDBC	MenuItemName()
+45FDF8	?()
+45FE3C	?()
+45FEB0	?()
+45FEE2	?()
+45FF2A	MenuItemNSub()
+
+46108E	GKeyIn()
+4611D4
+4611E2	{keyboard data}
+461200	char *?[3]
+46122A	char *?[3]
+461242
+4613D0	QModeKey()
+
+461FB4	.text for ?heap.o (0xFF2 bytes)
+461FB4	void *HeapEnd(void)
+461FBA	HeapAllocPtr()
+461FFC	HeapFreePtr()
+46201A	HeapAvail()
+462026	HeapMax()
+462036	?()
+4620BC	LONG HeapSize(HANDLE h)
+4620E4	HeapFreeIndir(HANDLE h)
+4620FE	HeapFree(HANDLE h)
+46217C	HANDLE HeapAlloc(LONG size)
+46219A	?()
+4621EE	HeapAllocESTACK()
+46226C	HANDLE HeapAllocHigh(LONG size)
+4622A6	HANDLE HeapAllocThrow(LONG size)
+4622BE	HeapAllocHighThrow()
+4622D6	HANDLE HeapRealloc(HANDLE h, LONG newsize)
+4625DA	void *HLock(HANDLE h)
+4625F0	HANDLE HeapLock(HANDLE h)
+462616	WORD HeapGetLock(HANDLE h)
+46263A	HANDLE HeapUnlock(HANDLE h)
+462666	HeapMoveHigh()
+4626A8	void *HeapDeref(HANDLE h)
+4626B8	?()
+46275A	LONG {turn requested block size into actual allocated size}(LONG size)
+462782	void *{generic heap realloc high?}(LONG size, void *block, WORD ?flags)
+4629EA	?()
+462B30	HeapCompress()
+462CEE	HeapGetHandle()
+462E6C	?()
+462F0E	HANDLE {generic heap alloc high?}(LONG size, WORD ?flags)
+462F60	void NeedStack(WORD size)
+462F7A	FreeHandles()
+462FA6	.text for ?sym.o
+462FAC	char *MAIN_FOLDER = "main"
+462FB2	char *DATA_FOLDER = "9998"
+462FB8	char *?GEOM_FOLDER = "9999"
+462FBD	char *{backslash} = "\"
+462FC0	?()
+463114	{init symbol stuff}
+4631A4	?()
+4631E8	?()
+46322E	?FolderTempName(WORD tempNum)
+463256	FolderDelAllTemp()
+463284	HSYM AddSymToFolder(BYTE *sym_name, BYTE *folder_name)
+4632EE	HSYM FindSymInFolder(BYTE *sym_name, BYTE *folder_name)
+4633D0	SymAdd()
+4633F0	?()
+463410	HSYM SymFind(BYTE *sym_name)
+463430	HSYM SymFindMain(BYTE *sym_name)
+463450	?()
+463488	SymDel()
+4634F0	void HSymDel(HSYM hsym)
+4635B6	?()
+463624	WORD FolderFind(BYTE *folder_name)
+46367C	?()
+4636EE	?()
+463702	HANDLE FolderAdd(BYTE *folder_name)
+4637C2	FolderDel()
+463AF8	SYM_ENTRY *DerefSym(HSYM hsym)
+
+463E2C	int ?strcmp8(char *s1, char *s2)
+
+464046	?(void *?)
+464152	HSYM ?GetHSym(SYM_ENTRY *SymEntry, HANDLE SymList)
+46417E	?()
+46427E	?(void *?, WORD ?)
+46438E	?()
+4643E2	?()
+4644A0	?()
+4645BE	SYM_ENTRY *?FindSymEntry(HANDLE list, BYTE *name)
+464690	?(void *?, HANDLE ?)
+
+464CF0	void VarStore(BYTE *DestVar, WORD Flags, WORD SourceSize, ...)
+466020	?()
+4660C4	?()
+466146	VarGraphRefBitsClear()
+466156	?()
+46616E	?()
+4662AC	?()
+4662DA	?()
+46632A	?()
+4663DE	ResetSymFlags()
+
+468EE2	DlgMessage()
+46906C	?()
+46B8EA	FindGrFunc()
+46B974	FindFunc()
+46BA6C	grFuncName()
+46BB12	?()
+46BB42	execute_graph_func()
+46BBDA	?()
+46BC84	?()
+46BCC8	?()
+46BE12	?()
+46BEDA	?()
+46BF24	?()
+46BF4C	gr_del_locals()
+46C002	?()
+46C072	?()
+46C158	?()
+46C268	?()
+46C416	?()
+46C614	grKeyCheck()
+46C6CE	?()
+46C722	?()
+46C806	?()
+46C834	?()
+46C88A	?()
+46C91C	?()
+46C958	?()
+46C982	gr_xres_pixel()
+46CA78	?()
+46CAA8	?()
+46CB02	?()
+46D128	?()
+46D57E	time_loop()
+46D7F0	?()
+46D824	CountSeqFunc()
+46D884	InitTimeSeq()
+46DC44	FirstSeqPlot()
+46DD68	cleanup_seq_mem()
+
+47170C	.text from graph3d.o (0x320A bytes)
+47170C	GR3_paint3d()
+4717DC	GR3_xyToWindow()
+471BEC	addPointToPoly()
+471C28	addTripleToPoly()
+471C8E	apply()
+471DB6	bPointsValid()
+471F70	bZInBounds()
+471FBC	bZOutOfBounds()
+472004	calcExtremes()
+472102	calcScale()
+47249A	drawAxes()
+472788	drawBox()
+472C7E	drawHidden()
+473070	drawLabels()
+4732A8	drawWire()
+473438	drawWireLine()
+47361C	evalz()
+4738E0	orientIPoly()
+473970	outlineIPoly()
+473A12	paintIPoly()
+473B30	prep3d()
+473DC4	prepEye()
+474164	prepGrid()
+474366	transform()
+4744CC	transformPoly()
+474568	truncateLine()
+4745D6	truncatePoint()
+4746F6	truncatePoly()
+474826	worldToWindow()
+474918	.text from aptabled.o (0x5FF2 bytes)
+47491C	te_init
+474A5C	AP_table
+4764C2	tablepaint
+47690C	tableFormat
+47696A	TABLEMoveHighlight
+476A2C	TABLEUnhighlight
+476A54	tablecelldisp
+476A72	clrcolstr
+476AA6	getcolelem
+476B0E	getelement
+476B34	getxelement
+476B82	columnsym
+476C18	tesymtoesi
+476C5C	tetabletowin
+476CE4	resetclip
+476D26	tableEnableFKeys
+476E9A	authTEnableFKeys
+476F7E	Tablesetup
+47722E	TA_callBack
+477484	TblCptX
+477606	tblauthFillEdit
+477B70	getNameInfo
+477D58	tableShiftDown
+477E5A	tableShiftUp
+477F8A	calcdispX
+47819E	setuptblfunc
+4781FC	storetblfunc
+47824E	dispcurcoltbl
+4785B0	storetbinputstart
+478610	dispcolandprompt
+478662	cpt_tbl_fun
+478702	get_tbl_point
+47874A	calcnewcol
+47885E	setupcolexec
+4788BC	prepcoltostore
+4788F2	dispcolumnstbl
+478BE6	dispcolandprompt2
+478C34	getnextcol
+478C84	putnextcol
+478CD4	dispcolname
+478D92	drawlines
+478E92	TblStartValue
+4792F4	FindTblFunc
+479468	displayX
+4794C2	displayXASK
+47977A	independtitle
+479848	cpt_tbinput_ASK
+47991A	Tableinsert
+4799B0	Tabledelete
+479C68	authPutAwayFunc
+47A040	authPutAwayIndep
+47A168	TblClear
+47A1AE	empty_tblinput
+47A1D4	tbl_paint_seq
+47A3F6	tbl_cpt_seq_row
+47A866	tbl_cpt_seq_row_and_disp
+47A8B8	switchtoTauth
+47A8DA	incClipy
+
+47BED2	?{expr}()
+
+48147C	GraphOrTableCmd()
+
+482516	DecodeFloat()
+4825F8	NG_approxESI()
+48266A	?()
+4826DC	?()
+4827DA	NG_tokenize()
+482848	?()
+4828BE	NG_graphESI()
+4829F4	NG_setup_graph_fun()
+482B02	NG_cleanup_graph_fun()
+482B26	?()
+482C74	?()
+482C82	?()
+482C90	int callback_vprintf(void (*func)(char, void *), void *param, char *format, void *va_list)
+483644	?()
+4836F8	?strputchr(char ch, char **p) { *((*p)++) = ch; }
+483706	int sprintf(char *buffer, char *format, ...)
+483742	{variant of printf}(char *format, ...)
+483762	{variant of fprintf}(void **stream, char *format, ...)
+483784	?()
+483B14	{table of pointers to system variable names}
+483CF4	?()
+483D7E	?()
+483DCC	remaining_element_count()
+
+484D2C	push_reversed_tail()
+
+485494	fmod()
+485594	floor()
+4855C8	ceil()
+4855FC	fabs()
+485622	?()
+485686	acos()
+4856B6	?()
+4856E6	?()
+485716	?()
+485746	cos()
+48577E	sin()
+4857B6	?()
+4857EE	?()
+485822	?()
+485856	?()
+48588A	?()
+4858BC	?()
+4858EE	?()
+485920	?()
+485962	?()
+4859C0	?()
+4859F2	?()
+485A86	?()
+485D88	?()
+485DBA	?()
+485DEC	?()
+485E42	?()
+485E5A	?()
+485E96	?()
+485EB0	round12()
+485EE2	round14()
+
+4880A2	?()
+
+4C7FD8	{copyright screen event handler}()
+
+4C912A	void ERD_dialog(WORD errorNum)
+
+4C93EC	ERD_process()
+
+4C9B9A	MO_currentOptions()
+
+4C9D28	MO_digestOptions()
+
+4CE346	{variant of putchar, but does nothing}(char ch)
+
+4CFF00	pushkey()
+
+4CFF56	WORD ?getKey(void)
+
+4D00D0	void OSAlexOut(BYTE *message)
+
+4D0192	void ?(void)
+
+4D11C8	void ST_busy(WORD busy)
+4D1204	Boolean ST_eraseHelp()
+4D1246	?()
+4D12A8	?()
+4D12DC	void ?ST_showHelp(WORD ?flags, BYTE *message)
+4D12FA	?()
+4D137A	?()
+4D1400	?()
+4D1422	?()
+4D143C	void ST_refDsp(WORD ?)
+4D1466	?()
+4D1494	?()
+4D152A	void ?ST_redraw(void)
+4D15D0	?()
+4D1602	?()
+4D1642	?()
+4D16F0	?()
+4D1704	?()
+4D1764	?()
+4D17B0	?()
+4D17F4	void ?ST_clear(void)
+4D1828	void ?(void *?)
+4D1866	void ?ST_text(WORD x, BYTE *message)
+4D18C8	?()
+4D192C	?()
+4D1976	?()
+4D19DC	?()
+4D1A1C	?()
+4D1A6E	LONG ?OSTimerGet(WORD timerNum) /* timerNum is in 1..6 */
+4D1A7E	void ?OSTimerStart(WORD timerNum) /* timerNum is in 1..6 */
+4D1A98	void OSTimerRestart(WORD timerNum) /* timerNum is in 1..6 */
+4D1AD4	?()
+4D1B70	BYTE *os_version = "2.1"
+4D1B74	BYTE *os_date = "08/19/96"
+4D1B80	size_t strlen(char *s)
+4D1B98	int strncmp(char *s1, char *s2, size_t maxlen)
+4D1BEC	char *strncpy(char *dest, char *src, size_t maxlen)
+4D1C20	char *strcat(char *dest, char *src)
+4D1C44	char *strchr(char *s, int c)
+4D1C70	int strcmp(char *s1, char *s2)
+4D1C94	_du32u32()
+4D1CBE	_ds32s32()
+4D1D54	_du16u16()
+4D1D64	?_ds16u16()
+4D1D78	int rand(void)
+4D1DBA	void srand(unsigned int seed)
+4D1DD0	?_ru32u32()
+4D1DF0	?_rs32s32()
+4D1E44	?_ru16u16()
+4D1E52	?_rs16u16()
+4D1E6C	{variant of fputc}(char ch, void **stream)
+4D1EA8	long labs(long x)
+4D1EB4	void *memset(void *s, int c, size_t n)
+4D1F8C  int memcmp(void *s1, void *s2, size_t n)
+4D1FD4	void *memcpy(void *dest, void *src, size_t n)
+4D2108	void *memmove(void *dest, void *src, size_t n)
+4D2160	int abs(int x)
+4D216C	{variant of fputc}(char ch, void **stream)
+
+502B2E	DataClearDlg
+
+502C04	TableMenu
+
+502CA0	TableFormatDlg
+
+502D34	TableDialog
+
+502E0E	StartValueWarnDlg
+
+503EC4	XR_stringPtr
+
+5072F5	XRA_FloatFullPrec
+
+5072FC	XRA_XB_FloatFullPrec
+
+50A50C	{error strings}
+50E43E	{unknown error string} = "Unknown ERROR code"
+50F52C	{error pointer table}
+
+51330E	columnsym()
+
+513472	void *dmsymtoesi(HSYM hsym)
+
+516366	?()
+516388	?()
+516522	?()
+51652C	void initedit(void)
+516582	?()
+516608	?()
+5166EC	?()
+516720	?()
+516868	?()
+516A5E	?()
+516C5E	?()
+516D44	?()
+516E04	?()
+517056	?()
+517322	?()
+517574	?()
+5175DC	?()
+5176AA	?()
+5176FE	?()
+51772A	void resizelist(HSYM hsym, WORD IndexRow, EStackIndex OldTop)
+51787A	static void growmat(WORD oldrow, WORD oldcol, SWORD newrow, SWORD newcol, BYTE matdata)
+517BB4	static void dmtempfolder(void)
+517BD6	void storelist(void)
+517CCE	void storematrix(EStackIndex OldTop)
+518090	void openmatrix(EStackIndex esi)
+5182F6	static HSYM VarStoreData( BYTE *DestVar, WORD Flags, WORD SourceSize, long parm1, short parm2 )
+51838E	void restorelist(WORD Zerosize)
+5184C8	void disp1DExpr(EStackIndex esi, HANDLE *hText, Boolean torf, unsigned short width)
+51853E	void clearDMLedit(void)
+518588	void initcurdataptr(void)
+
+51C3B8	CptDeltax()
+
+51CCB8	HANDLE CreateEmptyList(void)
+51CCF0	?()
+51CD30	ck_valid_float()
+
+51D9AC	GT_Error()
+51D9CA	?()
+51DACC	?()
+51DB26	?()
+51DC22	?()
+51DDFC	?()
+51DE7E	GT_Open()
+51DF12	GT_SaveAs()
+
+5216CA	round12_err()
+
+529814	QSkipGraphErr()

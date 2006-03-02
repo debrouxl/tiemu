@@ -1,0 +1,456 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html lang="en-us"><head><title>Windows API Guide: Virtual-Key Codes</title>
+
+<meta content="rogue953@hotmail.com" name="author">
+<meta content="Information about the virtual-key codes in the Windows API, geared towards the Visual Basic user." name="description">
+<meta content="Kuliniewicz,Windows,Windows 95,Windows NT,Windows 98,Windows CE,Windows 2000,API,Application Programming Interface,Programming,Visual Basic,Basic,VB,virtual-key codes" name="keywords">
+<meta content="Omicron HTML Editor" name="generator">
+<meta content="Mon, 06 Sep 1999 17:18:00 GMT" http-equiv="Last-Modified">
+<link href="virtualkeycodes_fichiers/default.html" rel="stylesheet" type="text/css">
+<link href="http://math.msu.su/%7Evfnik/WinApi/index.html" rel="index">
+<link href="http://math.msu.su/%7Evfnik/WinApi/help/index.html" rel="help">
+<link href="http://math.msu.su/%7Evfnik/WinApi/help/glossary.html" rel="glossary">
+<link href="http://math.msu.su/%7Evfnik/WinApi/copyrite.html" rel="copyright"></head>
+
+<body><script language="Javascript">
+<!-- hide
+
+var areaname = 'skyscraper';
+var catshort = 'tech';
+var catagory = 'tech';
+
+var my_date = new Date();
+var my_ord  = my_date.getTime();
+
+
+document.write('<font size=-3><img src="http://www.fortunecity.com/banners/track1.gif?' + my_ord + '" height=1 width=1% border="0" name="FCimg11bnr" hspace=0 vspace=0>');
+document.write('<img src="http://www.fortunecity.com/banners/track2.gif?' + my_ord + '" height=1% width=1 border="0" name="FCimg12bnr" hspace=0 vspace=0><br clear=all></font>');
+if((self.parent==self||((self.length==0)&&(document.images.FCimg11bnr.width>4)&&document.images.FCimg12bnr.height>2)))
+{
+
+ if (parent.TlxPgNm != null || (top.frames[1] != null && top.frames[1].TlxPgNm != null)) 
+ {
+	document.write('<font size=-3><img src="http://www.fortunecity.com/banners/trackt.gif?' + my_ord + '" height=1 width=1% border="0" name="FCimg11bnr" hspace=0 vspace=0>');
+ }
+
+var my_chunk = '<center><table cellspacing="0" cellpadding="0" border="0" width="0" bgcolor="#666666"><tr><td colspan="2"><img src="http://www.fortunecity.com/banners/t.gif?' + my_ord + '" width="566" height="3"></td></tr><tr><td><table cellspacing="0" cellpadding="0" border="0"><tr><td rowspan="2"><img border="0" src="http://www.fortunecity.com/banners/l.gif" width="3" height="77"></td><td><iframe name=fcAdIFrame1 src="http://www.fortunecity.com/ad/adWrapFrame.html?"' + areaname + '+' + catshort + '+' + catagory +' width="468" height="60" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"><a target="_top" href="http://ad.doubleclick.net/jump/fc.us468/member/tech;abr=!ie;s1=m;s3=tech;pos=1;tag=i;sz=468x60;mtile=1;ord='+my_ord+'?"><img src="http://ad.doubleclick.net/ad/fc.us468/member/tech;abr=!ie;s1=m;s3=tech;pos=1;tag=i;sz=468x60;mtile=1;ord='+my_ord+'?" border=0 height="60" width="468"></a></iframe></td><td rowspan="2" valign="top"><img border="0" src="http://www.fortunecity.com/banners/m.gif" width="3" height="77"></td></tr><tr><td valign="top"><img border="0" src="http://www.fortunecity.com/banners/main.gif" width="468" height="17" usemap="#map"></td></tr></table></td><td><table cellspacing="0" cellpadding="0" border="0"><tr><td><!--Button1--><IFRAME SRC="http://ad.doubleclick.net/adi/fc.us88/member/tech;s1=m;s3=tech;pos=2;tag=i;sz=88x31;mtile=2;ord='+my_ord+'?" width=88 height=31 frameborder=no border=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=no><A HREF="http://ad.doubleclick.net/jump/fc.us88/member/tech;abr=!ie;s1=m;s3=tech;pos=2;tag=i;sz=88x31;mtile=2;ord='+my_ord+'?"><IMG SRC="http://ad.doubleclick.net/ad/fc.us88/member/tech;abr=!ie;s1=m;s3=tech;pos=2;tag=i;sz=88x31;mtile=2;ord='+my_ord+'?" height=31 width=88 border=0></A></iframe></td><td rowspan="4" valign="top"><img border="0" height="77" src="http://www.fortunecity.com/banners/r.gif" width="4" height="77"></td></tr><tr><td><img border="0" src="http://www.fortunecity.com/banners/between.gif" width="88" height="4"></td></tr><tr><td><!--Button2--><IFRAME SRC="http://ad.doubleclick.net/adi/fc.us88/member/tech;s1=m;s3=tech;pos=3;tag=i;sz=88x31;mtile=3;ord='+my_ord+'?" width=88 height=31 frameborder=no border=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=no><A HREF="http://ad.doubleclick.net/jump/fc.us88/member/tech;abr=!ie;s1=m;s3=tech;pos=2;tag=i;sz=88x31;mtile=3;ord='+my_ord+'?"><IMG SRC="http://ad.doubleclick.net/ad/fc.us88/member/tech;abr=!ie;s1=m;s3=tech;pos=3;tag=i;sz=88x31;mtile=3;ord='+my_ord+'?" height=31 width=88 border=0></A></IFRAME></td></tr><tr><td><img border="0" src="http://www.fortunecity.com/banners/below.gif" width="88" height="11"></td></tr></table></td></tr></table></center><map name="map"><area shape="rect" coords="409,0,467,16" href="http://www.fortunecity.com/goto/" target="_top"><area shape="rect" coords="366,0,409,16" href="http://www.fortunecity.com/shop/" target="_top"><area shape="rect" coords="282,0,366,16" href="http://www.fortunecity.com/shop/" target="_top"><area shape="rect" coords="182,0,281,16" href="http://www.fortunecity.com/join/index.html?referer=navbar" target="_top"><area shape="rect" coords="97,0,182,16" href="http://www.fortunecity.com/explore/area/skyscraper.html" target="_top"><area shape="rect" coords="-1,0,96,16" href="http://www.fortunecity.com" target="_top"></map>';
+
+
+document.write(my_chunk);
+ }
+
+
+
+// -->
+</script><font size="-3"><img src="virtualkeycodes_fichiers/track1.gif" height="1" width="1%" border="0" name="FCimg11bnr" hspace="0" vspace="0"><img src="virtualkeycodes_fichiers/track2.gif" height="1%" width="1" border="0" name="FCimg12bnr" hspace="0" vspace="0"><br clear="all"></font><center><table cellspacing="0" cellpadding="0" border="0" width="0" bgcolor="#666666"><tbody><tr><td colspan="2"><img src="virtualkeycodes_fichiers/t.gif" width="566" height="3"></td></tr><tr><td><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td rowspan="2"><img border="0" src="virtualkeycodes_fichiers/l.gif" width="3" height="77"></td><td><iframe name="fcAdIFrame1" src="virtualkeycodes_fichiers/adWrapFrame.html" skyscraper+tech+tech="" width="468" height="60" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no">&lt;a&gt;&lt;img&gt;&lt;/a&gt;</iframe></td><td rowspan="2" valign="top"><img border="0" src="virtualkeycodes_fichiers/m.gif" width="3" height="77"></td></tr><tr><td valign="top"><img border="0" src="virtualkeycodes_fichiers/main.gif" width="468" height="17" usemap="#map"></td></tr></tbody></table></td><td><table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td><!--Button1--><iframe src="virtualkeycodes_fichiers/tech.html" width="88" height="31" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no">&lt;a&gt;&lt;img&gt;&lt;/a&gt;</iframe></td><td rowspan="4" valign="top"><img border="0" src="virtualkeycodes_fichiers/r.gif" width="4" height="77"></td></tr><tr><td><img border="0" src="virtualkeycodes_fichiers/between.gif" width="88" height="4"></td></tr><tr><td><!--Button2--><iframe src="virtualkeycodes_fichiers/tech_002.html" width="88" height="31" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no">&lt;a&gt;&lt;img&gt;&lt;/a&gt;</iframe></td></tr><tr><td><img border="0" src="virtualkeycodes_fichiers/below.gif" width="88" height="11"></td></tr></tbody></table></td></tr></tbody></table></center><map name="map"><area shape="rect" coords="409,0,467,16" href="http://www.fortunecity.com/goto/" target="_top"><area shape="rect" coords="366,0,409,16" href="http://www.fortunecity.com/shop/" target="_top"><area shape="rect" coords="282,0,366,16" href="http://www.fortunecity.com/shop/" target="_top"><area shape="rect" coords="182,0,281,16" href="http://www.fortunecity.com/join/index.html?referer=navbar" target="_top"><area shape="rect" coords="97,0,182,16" href="http://www.fortunecity.com/explore/area/skyscraper.html" target="_top"><area shape="rect" coords="-1,0,96,16" href="http://www.fortunecity.com/" target="_top"></map>
+
+
+<noscript><center><table cellspacing="0" cellpadding="0" border="0"
+width="0" bgcolor="#666666"><tr><td colspan="2"><img
+src="http://www.fortunecity.com/banners/t.gif" width="566"
+height="3"></td></tr><tr><td><table cellspacing="0" cellpadding="0"
+border="0"><tr><td rowspan="2"><img border="0"
+src="http://www.fortunecity.com/banners/l.gif" width="3"
+height="77"></td><td><iframe
+src="http://ad.doubleclick.net/adi/fc.us468/member/tech;s1=m;s3=tech;pos=1;tag=i;sz=468x60;mtile=1;ord=2001?"
+width="468" height="60" frameborder="no" border="0" marginwidth="0"
+marginheight="0" scrolling="no"><a target="_top"
+href="http://ad.doubleclick.net/jump/fc.us468/member/tech;abr=!ie;s1=m;s3=tech;pos=1;tag=i;sz=468x60;mtile=1;ord=2001?"><img
+src="http://ad.doubleclick.net/ad/fc.us468/member/tech;abr=!ie;s1=m;s3=tech;pos=1;tag=i;sz=468x60;mtile=1;ord=2001?"
+border=0 height="60" width="468"></a></iframe></td><td rowspan="2"
+valign="top"><img border="0"
+src="http://www.fortunecity.com/banners/m.gif" width="3"
+height="77"></td></tr><tr><td valign="top"><img border="0"
+src="http://www.fortunecity.com/banners/main.gif" width="468"
+height="17" usemap="#map"></td></tr></table></td><td><table
+cellspacing="0" cellpadding="0"
+border="0"><tr><td><!--Button1--><IFRAME
+SRC="http://ad.doubleclick.net/adi/fc.us88/member/tech;s1=m;s3=tech;pos=2;tag=i;sz=88x31;mtile=2;
+ord=3100?" width=88 height=31 frameborder=no border=0 MARGINWIDTH=0
+MARGINHEIGHT=0 SCROLLING=no><A
+HREF="http://ad.doubleclick.net/jump/fc.us88/member/tech;abr=!ie;s1=m;s3=tech;pos=2;tag=i;sz=88x31;mtile=2;
+ord=3100?"><IMG
+SRC="http://ad.doubleclick.net/ad/fc.us88/member/tech;abr=!ie;s1=m;s3=tech;pos=2;tag=i;sz=88x31;mtile=2;
+ord=3100?" height=31 width=88 border=0></a></iframe></td><td
+rowspan="4" valign="top"><img border="0" height="77"
+src="http://www.fortunecity.com/banners/r.gif" width="4"
+height="77"></td></tr><tr><td><img border="0"
+src="http://www.fortunecity.com/banners/between.gif" width="88"
+height="4"></td></tr><tr><td><!--Button2--><IFRAME
+SRC="http://ad.doubleclick.net/adi/fc.us88/member/tech;s1=m;s3=tech;pos=3;tag=i;sz=88x31;mtile=3;
+ord=3101?" width=88 height=31 frameborder=no border=0 MARGINWIDTH=0
+MARGINHEIGHT=0 SCROLLING=no><A
+HREF="http://ad.doubleclick.net/jump/fc.us88/member/tech;abr=!ie;s1=m;s3=tech;pos=3;tag=i;sz=88x31;mtile=3;
+ord=3101?"><IMG
+SRC="http://ad.doubleclick.net/ad/fc.us88/member/tech;abr=!ie;s1=m;s3=tech;pos=3;tag=i;sz=88x31;mtile=3;
+ord=3101?" height=31 width=88
+border=0></a></iframe></td></tr><tr><td><img border="0"
+src="http://www.fortunecity.com/banners/below.gif" width="88"
+height="11"></td></tr></table></td></tr></table></center><map
+name="map"><area shape="rect" coords="409,0,467,16"
+href="http://www.fortunecity.com/goto/" target="_top"><area
+shape="rect" coords="366,0,409,16"
+href="http://www.fortunecity.com/shop/" target="_top"><area
+shape="rect" coords="282,0,366,16"
+href="http://www.fortunecity.com/shop/" target="_top"><area
+shape="rect" coords="182,0,281,16"
+href="http://www.fortunecity.com/join/index.html?referer=navbar"
+target="_top"><area shape="rect" coords="97,0,182,16"
+href="http://www.fortunecity.com/explore/area/skyscraper.html"
+target="_top"><area shape="rect" coords="-1,0,96,16"
+href="http://www.fortunecity.com" target="_top"></map><IFRAME
+SRC="http://ad.doubleclick.net/adi/fc.unicast/members/unicast/tech;s1=m;s2=unic;s3=tech;pos=6;tag=i;sz=1x1;mtile=6;
+ord=2001?" width=1 height=1 frameborder=no border=0 MARGINWIDTH=0
+MARGINHEIGHT=0 SCROLLING=no><A
+HREF="http://ad.doubleclick.net/jump/fc.unicast/members/unicast/tech;abr=!ie;s1=m;s2=unic;s3=tech;pos=6;tag=i;sz=1x1;mtile=6;
+ord=2001?"><IMG
+SRC="http://ad.doubleclick.net/ad/fc.unicast/members/unicast/tech;abr=!ie;s1=m;s2=unic;s3=tech;pos=6;tag=i;sz=1x1;mtile=6;
+ord=2001?" height=1 width=1 border=0></a></iframe>
+</noscript>
+
+
+
+<hr>
+
+<h1>Virtual-Key Codes</h1>
+
+<h2>Description &amp; Usage</h2>
+
+<p>The <b>virtual-key codes</b> identify various virtual keys. Virtual
+keys mainly consist of actual keyboard keys, but also include "virtual"
+elements such as the three mouse buttons. The virtual keys also include
+many "keys" which usually do not exist at all! A key's virtual-key code
+does not change when modifier keys (Ctrl, Alt, Shift, etc.) are held --
+e.g., the 1 key has the same virtual-key code whether 1 or ! is
+pressed. However, the numbers in the numeric keypad on the keyboard do
+have two different virtual-key codes: one for when Num Lock is on, and
+another for when Num Lock is off. Note that the virtual-key codes of
+0-9 and A-Z equal their ASCII codes.</p>
+
+<p><b>Note:</b> The actual meanings of some of the key codes may vary
+on keyboards designed for different languages. Most notably, the
+VK_OEM_* that denote punctuation keys may vary between languages,
+relating to a different punctuation key. The meanings listed below are
+for a U.S. English-language keyboard.
+</p><h2>Virtual Key Codes</h2>
+
+<p></p><dl><dt>VK_LBUTTON</dt><dd>The left mouse button
+</dd><dt>VK_RBUTTON</dt><dd>The right mouse button
+</dd><dt>VK_CANCEL</dt><dd>The Cancel virtual key, used for control-break processing
+</dd><dt>VK_MBUTTON</dt><dd>The middle mouse button
+</dd><dt>VK_BACK</dt><dd>Backspace
+</dd><dt>VK_TAB</dt><dd>Tab
+</dd><dt>VK_CLEAR</dt><dd>5 (keypad without Num Lock)
+</dd><dt>VK_RETURN</dt><dd>Enter
+</dd><dt>VK_SHIFT</dt><dd>Shift (either one)
+</dd><dt>VK_CONTROL</dt><dd>Ctrl (either one)
+</dd><dt>VK_MENU</dt><dd>Alt (either one)
+</dd><dt>VK_PAUSE</dt><dd>Pause
+</dd><dt>VK_CAPITAL</dt><dd>Caps Lock
+</dd><dt>VK_ESCAPE</dt><dd>Esc
+</dd><dt>VK_SPACE</dt><dd>Spacebar
+</dd><dt>VK_PRIOR</dt><dd>Page Up
+</dd><dt>VK_NEXT</dt><dd>Page Down
+</dd><dt>VK_END</dt><dd>End
+</dd><dt>VK_HOME</dt><dd>Home
+</dd><dt>VK_LEFT</dt><dd>Left Arrow
+</dd><dt>VK_UP</dt><dd>Up Arrow
+</dd><dt>VK_RIGHT</dt><dd>Right Arrow
+</dd><dt>VK_DOWN</dt><dd>Down Arrow
+</dd><dt>VK_SELECT</dt><dd>Select
+</dd><dt>VK_PRINT</dt><dd>Print (only used by Nokia keyboards)
+</dd><dt>VK_EXECUTE</dt><dd>Execute (not used)
+</dd><dt>VK_SNAPSHOT</dt><dd>Print Screen
+</dd><dt>VK_INSERT</dt><dd>Insert
+</dd><dt>VK_DELETE</dt><dd>Delete
+</dd><dt>VK_HELP</dt><dd>Help
+</dd><dt>VK_0</dt><dd>0
+</dd><dt>VK_1</dt><dd>1
+</dd><dt>VK_2</dt><dd>2
+</dd><dt>VK_3</dt><dd>3
+</dd><dt>VK_4</dt><dd>4
+</dd><dt>VK_5</dt><dd>5
+</dd><dt>VK_6</dt><dd>6
+</dd><dt>VK_7</dt><dd>7
+</dd><dt>VK_8</dt><dd>8
+</dd><dt>VK_9</dt><dd>9
+</dd><dt>VK_A</dt><dd>A
+</dd><dt>VK_B</dt><dd>B
+</dd><dt>VK_C</dt><dd>C
+</dd><dt>VK_D</dt><dd>D
+</dd><dt>VK_E</dt><dd>E
+</dd><dt>VK_F</dt><dd>F
+</dd><dt>VK_G</dt><dd>G
+</dd><dt>VK_H</dt><dd>H
+</dd><dt>VK_I</dt><dd>I
+</dd><dt>VK_J</dt><dd>J
+</dd><dt>VK_K</dt><dd>K
+</dd><dt>VK_L</dt><dd>L
+</dd><dt>VK_M</dt><dd>M
+</dd><dt>VK_N</dt><dd>N
+</dd><dt>VK_O</dt><dd>O
+</dd><dt>VK_P</dt><dd>P
+</dd><dt>VK_Q</dt><dd>Q
+</dd><dt>VK_R</dt><dd>R
+</dd><dt>VK_S</dt><dd>S
+</dd><dt>VK_T</dt><dd>T
+</dd><dt>VK_U</dt><dd>U
+</dd><dt>VK_V</dt><dd>V
+</dd><dt>VK_W</dt><dd>W
+</dd><dt>VK_X</dt><dd>X
+</dd><dt>VK_Y</dt><dd>Y
+</dd><dt>VK_Z</dt><dd>Z
+</dd><dt>VK_STARTKEY</dt><dd>Start Menu key
+</dd><dt>VK_CONTEXTKEY</dt><dd>Context Menu key
+</dd><dt>VK_NUMPAD0</dt><dd>0 (keypad with Num Lock)
+</dd><dt>VK_NUMPAD1</dt><dd>1 (keypad with Num Lock)
+</dd><dt>VK_NUMPAD2</dt><dd>2 (keypad with Num Lock)
+</dd><dt>VK_NUMPAD3</dt><dd>3 (keypad with Num Lock)
+</dd><dt>VK_NUMPAD4</dt><dd>4 (keypad with Num Lock)
+</dd><dt>VK_NUMPAD5</dt><dd>5 (keypad with Num Lock)
+</dd><dt>VK_NUMPAD6</dt><dd>6 (keypad with Num Lock)
+</dd><dt>VK_NUMPAD7</dt><dd>7 (keypad with Num Lock)
+</dd><dt>VK_NUMPAD8</dt><dd>8 (keypad with Num Lock)
+</dd><dt>VK_NUMPAD9</dt><dd>9 (keypad with Num Lock)
+</dd><dt>VK_MULTIPLY</dt><dd>* (keypad)
+</dd><dt>VK_ADD</dt><dd>+ (keypad)
+</dd><dt>VK_SEPARATER</dt><dd>Separator (never generated by the keyboard)
+</dd><dt>VK_DECIMAL</dt><dd>. (keypad with Num Lock)
+</dd><dt>VK_DIVIDE</dt><dd>/ (keypad)
+</dd><dt>VK_F1</dt><dd>F1
+</dd><dt>VK_F2</dt><dd>F2
+</dd><dt>VK_F3</dt><dd>F3
+</dd><dt>VK_F4</dt><dd>F4
+</dd><dt>VK_F5</dt><dd>F5
+</dd><dt>VK_F6</dt><dd>F6
+</dd><dt>VK_F7</dt><dd>F7
+</dd><dt>VK_F8</dt><dd>F8
+</dd><dt>VK_F9</dt><dd>F9
+</dd><dt>VK_F10</dt><dd>F10
+</dd><dt>VK_F11</dt><dd>F11
+</dd><dt>VK_F12</dt><dd>F12
+</dd><dt>VK_F13</dt><dd>F13
+</dd><dt>VK_F14</dt><dd>F14
+</dd><dt>VK_F15</dt><dd>F15
+</dd><dt>VK_F16</dt><dd>F16
+</dd><dt>VK_F17</dt><dd>F17
+</dd><dt>VK_F18</dt><dd>F18
+</dd><dt>VK_F19</dt><dd>F19
+</dd><dt>VK_F20</dt><dd>F20
+</dd><dt>VK_F21</dt><dd>F21
+</dd><dt>VK_F22</dt><dd>F22
+</dd><dt>VK_F23</dt><dd>F23
+</dd><dt>VK_F24</dt><dd>F24
+</dd><dt>VK_NUMLOCK</dt><dd>Num Lock
+</dd><dt>VK_OEM_SCROLL</dt><dd>Scroll Lock
+</dd><dt>VK_OEM_1</dt><dd>;
+</dd><dt>VK_OEM_PLUS</dt><dd>=
+</dd><dt>VK_OEM_COMMA</dt><dd>,
+</dd><dt>VK_OEM_MINUS</dt><dd>-
+</dd><dt>VK_OEM_PERIOD</dt><dd>.
+</dd><dt>VK_OEM_2</dt><dd>/
+</dd><dt>VK_OEM_3</dt><dd>`
+</dd><dt>VK_OEM_4</dt><dd>[
+</dd><dt>VK_OEM_5</dt><dd>\
+</dd><dt>VK_OEM_6</dt><dd>]
+</dd><dt>VK_OEM_7</dt><dd>'
+</dd><dt>VK_OEM_8</dt><dd>(unknown)
+</dd><dt>VK_ICO_F17</dt><dd>F17 on Olivetti extended keyboard (internal use only)
+</dd><dt>VK_ICO_F18</dt><dd>F18 on Olivetti extended keyboard (internal use only)
+</dd><dt>VK_OEM_102</dt><dd>&lt; or | on IBM-compatible 102 enhanced non-U.S. keyboard
+</dd><dt>VK_ICO_HELP</dt><dd>Help on Olivetti extended keyboard (internal use only)
+</dd><dt>VK_ICO_00</dt><dd>00 on Olivetti extended keyboard (internal use only)
+</dd><dt>VK_ICO_CLEAR</dt><dd>Clear on Olivette extended keyboard (internal use only)
+</dd><dt>VK_OEM_RESET</dt><dd>Reset (Nokia keyboards only)
+</dd><dt>VK_OEM_JUMP</dt><dd>Jump (Nokia keyboards only)
+</dd><dt>VK_OEM_PA1</dt><dd>PA1 (Nokia keyboards only)
+</dd><dt>VK_OEM_PA2</dt><dd>PA2 (Nokia keyboards only)
+</dd><dt>VK_OEM_PA3</dt><dd>PA3 (Nokia keyboards only)
+</dd><dt>VK_OEM_WSCTRL</dt><dd>WSCTRL (Nokia keyboards only)
+</dd><dt>VK_OEM_CUSEL</dt><dd>CUSEL (Nokia keyboards only)
+</dd><dt>VK_OEM_ATTN</dt><dd>ATTN (Nokia keyboards only)
+</dd><dt>VK_OEM_FINNISH</dt><dd>FINNISH (Nokia keyboards only)
+</dd><dt>VK_OEM_COPY</dt><dd>COPY (Nokia keyboards only)
+</dd><dt>VK_OEM_AUTO</dt><dd>AUTO (Nokia keyboards only)
+</dd><dt>VK_OEM_ENLW</dt><dd>ENLW (Nokia keyboards only)
+</dd><dt>VK_OEM_BACKTAB</dt><dd>BACKTAB (Nokia keyboards only)
+</dd><dt>VK_ATTN</dt><dd>ATTN
+</dd><dt>VK_CRSEL</dt><dd>CRSEL
+</dd><dt>VK_EXSEL</dt><dd>EXSEL
+</dd><dt>VK_EREOF</dt><dd>EREOF
+</dd><dt>VK_PLAY</dt><dd>PLAY
+</dd><dt>VK_ZOOM</dt><dd>ZOOM
+</dd><dt>VK_NONAME</dt><dd>NONAME
+</dd><dt>VK_PA1</dt><dd>PA1
+</dd><dt>VK_OEM_CLEAR</dt><dd>CLEAR
+</dd></dl>
+
+<h2>Constant Definitions</h2>
+
+<p></p><pre><code class="const">Const VK_LBUTTON = &amp;H1
+Const VK_RBUTTON = &amp;H2
+Const VK_CANCEL = &amp;H3
+Const VK_MBUTTON = &amp;H4
+Const VK_BACK = &amp;H8
+Const VK_TAB = &amp;H9
+Const VK_CLEAR = &amp;HC
+Const VK_RETURN = &amp;HD
+Const VK_SHIFT = &amp;H10
+Const VK_CONTROL = &amp;H11
+Const VK_MENU = &amp;H12
+Const VK_PAUSE = &amp;H13
+Const VK_CAPITAL = &amp;H14
+Const VK_ESCAPE = &amp;H1B
+Const VK_SPACE = &amp;H20
+Const VK_PRIOR = &amp;H21
+Const VK_NEXT = &amp;H22
+Const VK_END = &amp;H23
+Const VK_HOME = &amp;H24
+Const VK_LEFT = &amp;H25
+Const VK_UP = &amp;H26
+Const VK_RIGHT = &amp;H27
+Const VK_DOWN = &amp;H28
+Const VK_SELECT = &amp;H29
+Const VK_PRINT = &amp;H2A
+Const VK_EXECUTE = &amp;H2B
+Const VK_SNAPSHOT = &amp;H2C
+Const VK_INSERT = &amp;H2D
+Const VK_DELETE = &amp;H2E
+Const VK_HELP = &amp;H2F
+Const VK_0 = &amp;H30
+Const VK_1 = &amp;H31
+Const VK_2 = &amp;H32
+Const VK_3 = &amp;H33
+Const VK_4 = &amp;H34
+Const VK_5 = &amp;H35
+Const VK_6 = &amp;H36
+Const VK_7 = &amp;H37
+Const VK_8 = &amp;H38
+Const VK_9 = &amp;H39
+Const VK_A = &amp;H41
+Const VK_B = &amp;H42
+Const VK_C = &amp;H43
+Const VK_D = &amp;H44
+Const VK_E = &amp;H45
+Const VK_F = &amp;H46
+Const VK_G = &amp;H47
+Const VK_H = &amp;H48
+Const VK_I = &amp;H49
+Const VK_J = &amp;H4A
+Const VK_K = &amp;H4B
+Const VK_L = &amp;H4C
+Const VK_M = &amp;H4D
+Const VK_N = &amp;H4E
+Const VK_O = &amp;H4F
+Const VK_P = &amp;H50
+Const VK_Q = &amp;H51
+Const VK_R = &amp;H52
+Const VK_S = &amp;H53
+Const VK_T = &amp;H54
+Const VK_U = &amp;H55
+Const VK_V = &amp;H56
+Const VK_W = &amp;H57
+Const VK_X = &amp;H58
+Const VK_Y = &amp;H59
+Const VK_Z = &amp;H5A
+Const VK_STARTKEY = &amp;H5B
+Const VK_CONTEXTKEY = &amp;H5D
+Const VK_NUMPAD0 = &amp;H60
+Const VK_NUMPAD1 = &amp;H61
+Const VK_NUMPAD2 = &amp;H62
+Const VK_NUMPAD3 = &amp;H63
+Const VK_NUMPAD4 = &amp;H64
+Const VK_NUMPAD5 = &amp;H65
+Const VK_NUMPAD6 = &amp;H66
+Const VK_NUMPAD7 = &amp;H67
+Const VK_NUMPAD8 = &amp;H68
+Const VK_NUMPAD9 = &amp;H69
+Const VK_MULTIPLY = &amp;H6A
+Const VK_ADD = &amp;H6B
+Const VK_SEPARATOR = &amp;H6C
+Const VK_SUBTRACT = &amp;H6D
+Const VK_DECIMAL = &amp;H6E
+Const VK_DIVIDE = &amp;H6F
+Const VK_F1 = &amp;H70
+Const VK_F2 = &amp;H71
+Const VK_F3 = &amp;H72
+Const VK_F4 = &amp;H73
+Const VK_F5 = &amp;H74
+Const VK_F6 = &amp;H75
+Const VK_F7 = &amp;H76
+Const VK_F8 = &amp;H77
+Const VK_F9 = &amp;H78
+Const VK_F10 = &amp;H79
+Const VK_F11 = &amp;H7A
+Const VK_F12 = &amp;H7B
+Const VK_F13 = &amp;H7C
+Const VK_F14 = &amp;H7D
+Const VK_F15 = &amp;H7E
+Const VK_F16 = &amp;H7F
+Const VK_F17 = &amp;H80
+Const VK_F18 = &amp;H81
+Const VK_F19 = &amp;H82
+Const VK_F20 = &amp;H83
+Const VK_F21 = &amp;H84
+Const VK_F22 = &amp;H85
+Const VK_F23 = &amp;H86
+Const VK_F24 = &amp;H87
+Const VK_NUMLOCK = &amp;H90
+Const VK_OEM_SCROLL = &amp;H91
+Const VK_OEM_1 = &amp;HBA
+Const VK_OEM_PLUS = &amp;HBB
+Const VK_OEM_COMMA = &amp;HBC
+Const VK_OEM_MINUS = &amp;HBD
+Const VK_OEM_PERIOD = &amp;HBE
+Const VK_OEM_2 = &amp;HBF
+Const VK_OEM_3 = &amp;HC0
+Const VK_OEM_4 = &amp;HDB
+Const VK_OEM_5 = &amp;HDC
+Const VK_OEM_6 = &amp;HDD
+Const VK_OEM_7 = &amp;HDE
+Const VK_OEM_8 = &amp;HDF
+Const VK_ICO_F17 = &amp;HE0
+Const VK_ICO_F18 = &amp;HE1
+Const VK_OEM102 = &amp;HE2
+Const VK_ICO_HELP = &amp;HE3
+Const VK_ICO_00 = &amp;HE4
+Const VK_ICO_CLEAR = &amp;HE6
+Const VK_OEM_RESET = &amp;HE9
+Const VK_OEM_JUMP = &amp;HEA
+Const VK_OEM_PA1 = &amp;HEB
+Const VK_OEM_PA2 = &amp;HEC
+Const VK_OEM_PA3 = &amp;HED
+Const VK_OEM_WSCTRL = &amp;HEE
+Const VK_OEM_CUSEL = &amp;HEF
+Const VK_OEM_ATTN = &amp;HF0
+Const VK_OEM_FINNISH = &amp;HF1
+Const VK_OEM_COPY = &amp;HF2
+Const VK_OEM_AUTO = &amp;HF3
+Const VK_OEM_ENLW = &amp;HF4
+Const VK_OEM_BACKTAB = &amp;HF5
+Const VK_ATTN = &amp;HF6
+Const VK_CRSEL = &amp;HF7
+Const VK_EXSEL = &amp;HF8
+Const VK_EREOF = &amp;HF9
+Const VK_PLAY = &amp;HFA
+Const VK_ZOOM = &amp;HFB
+Const VK_NONAME = &amp;HFC
+Const VK_PA1 = &amp;HFD
+Const VK_OEM_CLEAR = &amp;HFE</code></pre>
+
+<h2>Used By</h2>
+<p><a href="http://math.msu.su/%7Evfnik/WinApi/g/getasynckeystate.html">GetAsyncKeyState</a>, <a href="http://math.msu.su/%7Evfnik/WinApi/g/getkeyboardstate.html">GetKeyboardState</a>, <a href="http://math.msu.su/%7Evfnik/WinApi/g/getkeystate.html">GetKeyState</a>, <a href="http://math.msu.su/%7Evfnik/WinApi/k/keybd_event.html">keybd_event</a>, <a href="http://math.msu.su/%7Evfnik/WinApi/k/keybdinput.html">KEYBDINPUT</a>, <a href="http://math.msu.su/%7Evfnik/WinApi/s/setkeyboardstate.html">SetKeyboardState</a></p>
+
+<p><a href="http://math.msu.su/%7Evfnik/WinApi/index.html" rel="index">Back to the index.</a></p>
+
+<hr>
+
+<p>
+<b>Last Modified:</b> September 6, 1999<br>
+This page is copyright © 1999 Paul Kuliniewicz.  <a href="http://math.msu.su/%7Evfnik/WinApi/copyrite.html" rel="copyright">Copyright Information</a><br>
+</p><address>
+<a href="http://math.msu.su/%7Evfnik/index.html">Go to Paul Kuliniewicz's Home Page.</a><br>
+E-mail: <a href="mailto:rogue953@hotmail.com">rogue953@hotmail.com</a><br>
+This page is at <a href="http://skyscraper.fortunecity.com/transmission/45/api/other/virtualkeycodes.html">http://skyscraper.fortunecity.com/transmission/45/api/other/virtualkeycodes.html</a>
+</address>
+</body></html>

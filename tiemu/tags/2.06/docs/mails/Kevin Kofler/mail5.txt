@@ -1,0 +1,30 @@
+
+
+> > Sinon, on peut peut-être "tricher" aussi: si quelque chose écrit vers
+> > LCD_MEM avec les bons types de movem, on relève la source de la copie et
+> > on
+> > l'enregistre comme "plan".
+>
+> dans ce cas, pourquoi ne pas écrire l'adresse et le numéro du plan à une
+> adresse inutilisée sur les TI mais connue de TiEmu ? Ce serait simple et
+> efficace à tous les niveaux. Inconvénient (comme tu me l'avais fait
+> remarquer): certains programmes pourraient ne pas marcher en ndg.
+
+Pourquoi pas reconnaître les séquences de movem dans TiEmu? Ça ne
+nécessiterait aucun changement au niveau des logiciels eux-mêmes.
+
+Pour commencer: Si code exécuté = "movem.l  (%a0)+,%d0-%d7/%a2-%a6; movem.l
+%d0-%d7/%a2-%a6,(%a1)" et (%a1)==0x4c00, alors plan:=(%a0). Ensuite, pour
+graphlib-titanik et graphlib-iceberg: Si code exécuté = "movem.l
+(%a0)+,%d0-%d7/%a2-%a6; movem.l  %d0-%d7/%a2-%a6,(%a1)" (le même qu'avant)
+et (%a1)==0x4c00+12, alors plan:=-12(%a0). Ensuite, faut voir quelles autres
+séquences de movem sont en circulation. Genlib est susceptible d'utiliser
+des trucs bizarres. Les autres, je suppose qu'ils utilisent du code
+"normal", c'est-à-dire la première séquence (TitaniK/Iceberg sont déjà
+exotiques, j'avoue, mais c'est parce que je ne copie que 3000 octets sur
+Titanium pour pouvoir exécuter du code dans les 840 octets restants, qui ne
+sont pas protégés contre l'exécution (vu qu'ils sont dans la plage
+0x5000-0x5fff)).
+
+        Kevin Kofler
+
