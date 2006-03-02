@@ -1019,6 +1019,7 @@ int rcfile_default()
 	return 0;
 }
 
+#ifdef __WIN32__
 static int is_win_xp(void)
 {
 	OSVERSIONINFO os;
@@ -1030,6 +1031,7 @@ static int is_win_xp(void)
 
 	return (os.dwPlatformId == VER_PLATFORM_WIN32_NT && os.dwMajorVersion >= 5);
 }
+#endif
 
 void options3_set_default(void)
 {
