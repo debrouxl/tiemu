@@ -3,7 +3,7 @@
 
 
 Previous version: 2.05		(17/02/2006)
-Current version:  2.06		(22/02/2006)
+Current version:  2.06		(02/03/2006)
 
 SubVersion (CVS) revision: $Id$
 
@@ -51,5 +51,5 @@ Planned:
 Notes:
 ------
 
-	- the SilverLink cable doesn't make TiEmu crash any longer but it's still unusable
-	- this is the last RC release !
+	- the SilverLink cable doesn't make TiEmu crash any longer but it's still unusable. But,
+		TiEmu-3 supports it.
