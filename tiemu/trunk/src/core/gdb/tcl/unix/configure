@@ -5505,7 +5505,7 @@ echo "configure:5496: checking system version (for dynamic loading)" >&5
 	    # results, and the version is kept in special file).
 	
 	    if test -r /etc/.relid -a "X`uname -n`" = "X`uname -s`" ; then
-		system=MP-RAS-`awk '{print }' /etc/.relid'`
+		system=MP-RAS-`awk '{print }' /etc/.relid`
 	    fi
 	    if test "`uname -s`" = "AIX" ; then
 		system=AIX-`uname -v`.`uname -r`
@@ -7045,7 +7045,7 @@ echo "configure:7037: checking FIONBIO vs. O_NONBLOCK for nonblocking I/O" >&5
 	    # results, and the version is kept in special file).
 	
 	    if test -r /etc/.relid -a "X`uname -n`" = "X`uname -s`" ; then
-		system=MP-RAS-`awk '{print }' /etc/.relid'`
+		system=MP-RAS-`awk '{print }' /etc/.relid`
 	    fi
 	    if test "`uname -s`" = "AIX" ; then
 		system=AIX-`uname -v`.`uname -r`
