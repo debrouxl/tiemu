@@ -117,7 +117,7 @@ Fix file list for shared ITCL.
 
 * Sat Jun 25 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Drop "Conflicts: insight" because this package gets along just fine with
-GÃ©rard Milmeister's Insight RPM.
+Gérard Milmeister's Insight RPM.
 Add --enable-shared-itcl to build itcl/itk/iwidgets shared and Provide them
 rather than conflicting with them.
 
