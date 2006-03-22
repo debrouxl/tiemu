@@ -15,8 +15,8 @@ Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		Applications/Emulators
 License:	GPL
-BuildRequires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.2.2, kdelibs-devel >= 6:3.5.0, xorg-x11-devel >= 6.8.2, ncurses-devel >= 5.4, desktop-file-utils >= 0.10, bison >= 2.0, flex >= 2.5.4a
-Requires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2, kdelibs >= 6:3.5.0, xorg-x11 >= 6.8.2, ncurses >= 5.4, tcl >= 8.4, tk >= 8.4, itcl >= 3.3, itk >= 3.3, iwidgets >= 4.0.1
+BuildRequires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2-devel >= 2.10.1, gtk2-devel >= 2.8.15, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.3, kdelibs-devel >= 6:3.5.1, libX11-devel >= 1.0.0, libXext-devel >= 1.0.0, ncurses-devel >= 5.5, desktop-file-utils >= 0.10, bison >= 2.0, flex >= 2.5.4a
+Requires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.10.1, gtk2 >= 2.8.15, libglade2 >= 2.5.1, zlib >= 1.2.3, kdelibs >= 6:3.5.1, libX11 >= 1.0.0, libXext >= 1.0.0, ncurses >= 5.5, tcl >= 8.4, tk >= 8.4, itcl >= 3.3, itk >= 3.3, iwidgets >= 4.0.1
 Requires(post):	desktop-file-utils >= 0.10
 Requires(postun): desktop-file-utils >= 0.10
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
@@ -81,6 +81,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Thu Mar 23 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Update dependencies for FC5.
+
 * Sun Jan 29 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build against itcl/itk 3.3 (RC1).
 Add Epoch to KDE requirements.
@@ -114,7 +117,7 @@ Fix file list for shared ITCL.
 
 * Sat Jun 25 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Drop "Conflicts: insight" because this package gets along just fine with
-Gérard Milmeister's Insight RPM.
+GÃ©rard Milmeister's Insight RPM.
 Add --enable-shared-itcl to build itcl/itk/iwidgets shared and Provide them
 rather than conflicting with them.
 
