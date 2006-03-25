@@ -242,27 +242,22 @@ SOURCE=..\..\src\core\uae\libuae.lib
 # Begin Source File
 
 SOURCE=..\..\src\core\error.c
-# ADD CPP /D "NO_GDB"
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\images.c
-# ADD CPP /D "NO_GDB"
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\interface.c
-# ADD CPP /D "NO_GDB"
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\state.c
-# ADD CPP /D "NO_GDB"
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\type2str.c
-# ADD CPP /D "NO_GDB"
 # End Source File
 # End Group
 # Begin Group "gui"
@@ -362,6 +357,14 @@ SOURCE=..\..\src\gui\calc\skinkeys.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\calc\skinops.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\docs\TiEmu_skin_format.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\docs\VTi_skin_format.txt
 # End Source File
 # End Group
 # Begin Group "dlgbox"
