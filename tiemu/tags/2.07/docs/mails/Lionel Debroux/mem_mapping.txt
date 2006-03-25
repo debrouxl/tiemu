@@ -1,0 +1,32 @@
+Il m'apparaît que pour la V200, TIEmu émule un ghost 
+de 0x200000-0x3FFFFF à 0x400000-0x5FFFFF, ce qu'il 
+ne faut pas faire (que le dump soit tronqué à 2 MB 
+ou non) !
+
+Récapitulons les emplacements des mémoires et des 
+ghosts:
+* TI-89:
+    * RAM à 0x000000-0x03FFFF;
+    * 7 ghosts de la RAM jusqu'à 0x200000;
+    * Flash à 0x200000-0x3FFFFF;
+    * pas de ghost de la Flash.
+* TI-89 Titanium:
+    * RAM à 0x000000-0x03FFFF;
+    * ghosts de la RAM à 0x200000 et 0x400000 (ne 
+les émule surtout pas, ça encouragerait leur 
+utilisation qui est peu sûre - incompatibilités en 
+perspective si TI les enlève dans la V200T ?);
+    * Flash à 0x800000-0xBFFFFF;
+    * à ma connaissance pas de ghost de la Flash.
+* TI-92+:
+    * RAM à 0x000000-0x03FFFF;
+    * 7 ghosts de la RAM jusqu'à 0x200000;
+    * Flash à 0x400000-0x5FFFFF;
+    * ghost de la Flash à 0x200000-0x3FFFFF SUR HW2 
+UNIQUEMENT (ne pas l'émuler empêche l'émulation de 
+ROMs de V200 patchées).
+* V200:
+    * RAM à 0x000000-0x03FFFF;
+    * 7 ghosts de la RAM jusqu'à 0x200000;
+    * Flash à 0x200000-0x5FFFFF;
+    * pas de ghost de la Flash.

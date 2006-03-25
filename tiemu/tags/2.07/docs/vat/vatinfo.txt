@@ -1,0 +1,200 @@
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/////////////////////////////////////
+--------------------------------------------------------------------
+     			VAT Description
+    			     v1.2
+
+
+     			BENOIT SCHERRER
+---------------------------------------------------------------------
+////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+(in first, I want to tell you that my english is very very bad. )
+(Indeed, I am a young french and speaking english is quite      )
+(difficult for me.                                              )
+
+
+After I wrote the first version of my VAT Description, someone
+send me an other file about the VAT. I didn't know that there
+was already such a file ! Moreover it was bigger, with more
+informations.
+But there was no precise example like in my VAT Description. That
+is why I release an another version, where I add some useful 
+information I saw in the other file.
+
+
+    -----
+
+This text file has 3 parts :
+	  I) FOLDER TABLE DESCRIPTION
+	 II) FILE TABLE DESCRIPTION
+	III) SOME VARIABLES INFORMATION
+
+Well. On the TI92, there are files & folders. But the file table
+and the folder table have pratically the same format.
+
+
+-------------------------------------------------------------------
+ I )  FOLDER TABLE DESCRIpTION : 
+
+
+You must first get the address of the folder table. It is the
+handle $0B. You can get it with :
+ moveq.w #$0B,d0  ;Handle $0B
+ handle_ptr d0,a0 ;
+or better :
+ move.l HANDLE_TABLE_PTR,a0	;address of handle table in a0
+ move.l 44(a0),a0  		;4*$0B
+
+So you have now the starting address of the folder table in a0.
+Here is a example of what it could be :
+
+D496 00 0A 00 03 67 61 6D 65  ....game
+D49E 73 00 00 00 00 88 00 24  s.......
+D4A6 6D 61 69 6E 00 00 00 00  main....
+D4AE 00 80 00 0C 75 74 69 6C  ....util
+D4B6 00 00 00 00 00 80 00 22  ........
+
+The first word is the maximum number of folder that the handle can
+have before the TI have to resize it. Indeed, the TI don't resize
+the folder table each time we create a new folder. When the TI
+resize the handle, it always increase this first word by $0A.
+
+The next word is the current number of folders.
+
+After, there is always 12 bytes for the folder description :
+ - 8 bytes + '0' for the folder name (so 9 bytes for the folder name)
+ - 1 byte for the folder state : if the folder is locked in the
+ Var-Link, this byte will be $88, or else it will be $80
+ - 1 word for the handle of the file list associated with this
+ folder.
+
+So with the previous example :
+
+00 0A : You can have $0A folders before resizing the table.
+00 03 : Current Number of folders
+
+'games' 00 00 00 00 : Folder name + '0' (9 bytes)
+$88 : the folder is locked in Var-Link
+00 24 : Handle of the file list associated to 'games'
+
+'main' 00 00 00 00 00 : Folder name + '0'
+$80 : Folder not locked.
+00 0C : Handle of file list in 'main' (it will be always 00 0C
+  for main)
+
+'util' 00 00 00 00 00 : Folder name + '0'
+$80 : Not locked
+00 22 : Handle of the file list in 'util'
+
+Well, it is not very difficult, because TI92 has only one level
+of folders.
+
+
+
+--------------------------------------------------------------------
+ II )  FILES TABLE DESCRIPTION
+
+The file table is pratically the same as the folder table : they
+have the same format.
+
+You must first have the starting address of a file table.
+For that, use the handle described in the folder description, the
+last word of each folder description.
+
+After, if this handle is in d0, you can do :
+ handle_ptr d0,a0
+And you have in a0 the address of the file list !
+
+As I have already tell you, it is pratically the same format as the
+folder table.
+Here is an example from my TI :
+
+D514 00 0A 00 08 64 62 39 32  ....db92
+D51C 00 00 00 00 00 00 00 1B  ........
+D524 66 6C 69 62 00 00 00 00  flib....
+D52C 00 08 00 15 67 72 61 79  ....gray
+D534 6C 69 62 00 00 00 00 16  lib.....
+  ...
+
+The first word is the same as in the folder description : It is the
+maximum of files entry that contain the file table before being 
+resized. And it is always increaseby $0A when the handle is resized.
+The second (00 08 here) is the number of files.
+After, there is always 12 bytes for the file description (like the
+folder description) :
+ - 8 bytes + '0' for the file name (so 9 bytes)
+ - 1 byte for the file state : if the folder is locked in the
+ Var-Link, this byte will be $08, or else it will be $00
+ - 1 word for the handle of the file
+
+So with the previous example :
+00 0A : You can have $0A files in the folder before resizing the table.
+00 08 : 8 files in this folder
+
+db92 00 00 00 00 00 : the file name
+00 : not locked
+00 1B : handle of the file
+
+flib 00 00 00 00 00 : the filename
+08 : the file is locked
+00 15 : the file handle
+
+graylib 00 00 : the filename
+00 : not locked
+00 14 : the file handle
+
+
+--------------------------------------------------------------------
+ III )  Some Variables information
+
+
+Here are some information about the files :    
+Now you have the file address in a0 for example.
+
+The first word of a variable is the size of datas. The real size 
+of the file (that you can see in Var Link) is the first word + 2.
+So if you want to put the size of the file in d0, you can write :
+ move.w (a0),d0
+ addq.w #2,d0
+
+You may also want to know what type of file it is. For that, you
+have just to go at the end of the file.
+If d0 is the file handle :
+ handle_ptr d0,a0		;address of the file
+ move.w (a0),d0			;size of the file in d0
+ move.b 1(a0,d0.w),d1		;
+
+d1.b has now the file type. Here are all the possibilities I found :
+
+$DC : Program or Function
+$D9 : Matrix or List
+$E0 : TEXT
+$2D : STR
+$DD : DATA
+$E1 : FIG
+$DF : PIC
+$DE : GDB
+$E2 : MACR
+
+$1F : EXPR
+$8F : EXPR (REAL)
+$8B : EXPR (RECTANGULAR)
+$23 : EXPR
+And other types should be EXPR
+
+
+//////////////////////////////////////////////////////////////////////
+************************ SPECIAL THANKS TO ***************************
+//////////////////////////////////////////////////////////////////////
+- The Fargo TEAM !!!
+- Tleilax, for his EXCELLENT DB92 debugger.
+- Gareth, for his text file about ti files
+
+///////////////////////////////////////////////////////////////////////
+************************** CONTACT ME ********************************
+///////////////////////////////////////////////////////////////////////
+If you want to contact me, DON'T HESITATE ! I will try to answer to
+ALL your mails.
+My e-mail address is : p.c.scherrer@wanadoo.fr
+

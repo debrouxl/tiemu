@@ -1,0 +1,62 @@
+Salut,
+
+> 1°) Sur les zones 'read protected', quelle valeur est lue ? 0x14141414
+
+Je ne sais pas si cette valeur est toujours la même.
+Les zones de la ROM protégées en lecture peuvent être lues uniquement si la
+"Protection" (celle qui protége les écritures en flashROM, les lectures /
+écritures de certains ports I/O, etc.) est désactivée.
+Pour TIEmu, tu peux faire retourner toujours la même chose quand la
+Protection est active, ça ne gêne pas.
+Par contre ce qui serait intéressant que l'hexeditor permette toujours de
+lire les zones protégées quelque que soit l'état de la protection, sinon
+déboguer des tests utilisant les certificats devient infaisable.
+
+>   * The memory at $218000-$219FFF is read protected.  (?)
+C'est ce que Johan dit, et je l'ai vérifé sur une vraie calc. Je ne comprend
+pas pourquoi TI à implémenter ça.
+L'OS alternatif PedroM de PpHd doit être coupé en 2 à cause de ça, et l'AMS
+contient des 0xFF sur toute la zone puisqu'elle est inutilisable.
+
+> 2°) Sinon, aurais-tu un éditeur hexa on calc à me conseiller pour viewer
+> la RAM/ROM d'une TI89 ?
+Ca dépend de ce que tu veux en faire, mais l'application flash Command Post
+Plus de Greg Dietsche est pas mal un contient plusieurs outils qui vont au
+delà de ça. tthdex de la TICT est un programme assembleur équivalent, mais
+il est moins pratique pour regarder n'importe quelle zone de la mémoire je
+crois.
+Personnellement j'utilise DB92 qui est un débogueur complet, avec éditeur
+hexa (d'ailleurs il y a plusieurs détails très simples de ce programme qui
+serait pas mal à implémenter dans TiEmu, je peux te faire une liste
+détaillée si tu veux). La toute dernière version de DB92 est disponible ici
+: http://membres.lycos.fr/hwti/DB92_NOSTUB_ALPHA_041test.rar
+
+> qu'en est-il des ghost spaces ? J'ai implémenté le support de la Titanium
+> et j'ai le meme pb qu'avec la V200: illegal instruction.
+
+Comme l'AMS n'utilise pas les ghost spaces, le problème ne doit pas venir de
+là de toute façon.
+Les 89/92+/V200 ont des images de la zone 0x0-0x3FFFF en 0x40000-0x7FFFF,
+0x80000-0xBFFFF, etc. jusqu'à 0x200000.
+La Titanium n'a aucun de ces ghost spaces. Les siens sont des images de
+0x0-0x1FFFFF en 0x200000 et 0x400000, sachant que la zone 0x40000-0x1FFFFF
+retourne des valeurs aléatoires en lecture je crois. Il est possible que ces
+ghost disparaissent dans des futures versions de la Titanium, et/ou que de
+la RAM soit ajoutée, d'après certaines routines de l'AMS.
+En ce qui concerne la protection d'exécution en RAM, la zone 0x0-0x3FFFF est
+contrôlée de la même manière que sur 89/92+/V200. Je crois que personne ne
+sait actuellement comment l'exécution dans les ghost spaces à 0x200000 et
+0x400000 est contrôlée sur Titanium (sur 89/92+/V200, l'exécution dans les
+ghost spaces à 0x40000, 0x80000, etc. peut être autorisée par le bit 7 du
+port 0x70006). Peut-être que l'exécution est totalement bannie dans ces
+ghost spaces de la Titanium.
+
+> J'ai pas mal arrangé les choses depuis la dernière fois. Un build est
+> dispo sur le site (la Linux est un peu - récente) si t'as envie
+> d'essayer...
+
+Ok je vais tester.
+
+++, bonne continuation,
+
+Olivier

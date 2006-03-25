@@ -1,0 +1,292 @@
+			I/O Ports Information
+			---------------------
+
+Note:This info was mostly taken from David Ellsworth's Fargo documentation
+
+
+-----------------------------------------------------------------------------
+INTRODUCTION
+-----------------------------------------------------------------------------
+
+If all a computer had was its RAM and ROM, it would just be an inert box
+doing invisible calculations. To connect to the outside world, computers
+need I/O ports. On the TI-89/92+, these ports are used to access the keyboard,
+link port, LCD, and some other hardware settings.
+
+This text file describes how the TI-89/92+ organizes its memory, and lists all
+of the known I/O ports.
+
+Since the 68000 processor has no dedicated instructions for reading and
+writing I/O ports, all I/O must be memory-mapped. This means that I/O ports
+are read and written by accessing specific addresses in memory. The
+addresses in the range 600000-60001F correspond to memory-mapped I/O.
+
+Directly accessing I/O ports has its advantages and disadvantages. It is
+very low-level, and gives you complete control. However, it can be a complex
+process, and why reinvent the wheel? For this reason, most I/O tasks (such
+as reading keys, sending and receiving through the link port, and changing
+the contrast) are already handled by the TI-89/92+'s ROM.
+
+There are some times when it is still best to directly access the I/O ports.
+The TI-89/92+ is capable of recognizing several keys held down at once, but the
+ROM has no built-in provision for this. When you want to read multiple keys
+at once in a program, you must use direct I/O.
+
+----------------------------------------------------------------------------
+THE MEMORY MAP
+----------------------------------------------------------------------------
+
+Memory addresses are 4 bytes long (32 bits). However, the 68000 processor
+has a 24 bit addressing bus. For this reason, addresses listed here in
+hexidecimal will be 6 digits long.
+
+On the TI-89, memory is mapped out as follows:
+
+000000-1FFFFF : RAM
+200000-3FFFFF : Module ROM
+400000-5FFFFF : Nothing
+600000-6FFFFF : Memory mapped I/O (lower 6 bits)
+700000-FFFFFF : Nothing (floating bus)
+
+On the TI-92+, memory is mapped out as follows:
+
+000000-1FFFFF : RAM
+200000-3FFFFF : Module ROM, or masked ROM if there's no module
+400000-5FFFFF : Plus Module ROM
+600000-6FFFFF : Memory mapped I/O (lower 6 bits)
+700000-FFFFFF : Nothing (floating bus)
+
+On the TI92 (2.1 and lower versions), memory is mapped out as follows:
+
+000000-1FFFFF : RAM
+              : (exact:    1FFFF [128kB memory]  3FFFF [256kB memory])
+200000-3FFFFF : Module ROM
+400000-5FFFFF : Expansion ROM (TI92 2.1)
+600000-6FFFFF : Memory mapped I/O (lower 6 bits)
+700000-FFFFFF : Nothing
+
+Note that, for example, the RAM range covers 2 Mb. This does not mean there
+is 2 Mb of RAM; it means that any RAM accesses beyond the maximum (usually
+128 kb) will wrap around to the beginning. The same goes for ROM, except
+that the maximum is usually 1 Mb.
+
+TI-89 ROMs use:
+
+000000-03FFFF to address RAM.
+200000-3FFFFF to address ROM (soldered onto the board).
+600000-60001F to address I/O.
+
+TI-92+/TI92 2.1 ROMs use:
+
+000000-03FFFF to address RAM.
+400000-4FFFFF to address ROM (Plus Module ROM).
+600000-60001F to address I/O.
+
+TI92 (1.x) ROM use:
+
+000000-01FFFF to address RAM.
+200000-3FFFFF to address ROM (Plus Module ROM).
+600000-60001F to address I/O.
+
+-----------------------------------------------------------------------------
+THE I/O PORTS
+-----------------------------------------------------------------------------
+
+:RO = read-only
+:WO = write-only (returns random values when read)
+:RW = read/write
+
+       MSB      LSB
+    <76543210|76543210>
+
+:RW [600000]
+    <.....2..|........> = something to do with keyboard
+    <..5.....|........> = bits <....0> of contrast
+    <........|.......0> = clear: interleave RAM (allows use of 256K of RAM)
+    <........|.....2..> = set: generate Auto-Int 7 when memory below [000120]
+			: is written
+
+:WO [600002]
+    <........|........> =
+
+:WO [600004]
+    <........|....3...> = set: 000000..1FFFFF mapped to 200000..3FFFFF
+
+:WO [600006]
+    <........|........> =
+
+:WO [600008]
+    <........|........> =
+
+:WO [60000A]
+    <........|........> =
+
+:RW [60000C]
+    <765.3210|........> = (write) link status
+    <........|7...321.> = (read) link status
+    <........|..5.....> = (read) set: one byte receive buffer has a byte
+    <........|.6......> = (read) set: one byte transmit buffer is empty
+
+:RW [60000E]
+    <.......0|........> = set red output, if direct port access enabled
+    <......1.|........> = set white output, if direct port access enabled
+    <.....2..|........> = read red output
+    <....3...|........> = read white output
+    <.6......|........> = enable direct port access
+    <........|76543210> = read a byte from the receive buffer (1 byte buffer)
+    <........|76543210> = write a byte to the transmit buffer (1 byte buffer)
+
+:WO [600010]
+    <76543210|76543210> = Address of LCD memory divided by 8
+
+:WO [600012]
+    <..543210|........> = LCD horizontal frequency (?maybe?)
+			: The TI ROM writes $31 to this port during
+			: initialization.
+
+    <........|76543210> = $100 - number of LCD scanlines
+			: If the number of scanlines is smaller than $80 (the
+			: actual height of the LCD) the display will be
+			: duplicated in the lower half. Decreasing the height
+			: darkens the LCD; increasing the height lightens the
+			: LCD. The TI ROM writes $80 to this port during
+			: initialization.
+
+:RW [600014]
+    <........|........> =
+
+:RW [600016]
+    <........|76543210> = Programmable rate generator. Set the timer's init-
+			: ial value by writing it to this port. The timer is
+			: incremented every 6250 clock cycles, unless it has
+			: a value of zero, in which case it is reset to its
+			: initial value. The LCD is refreshed every 16th time
+			: this timer is incremented.
+			:
+			: See also Auto-Ints 1 and 5 in Interrupts.txt.
+			:
+			: The incrementation rate would be exactly 1600 Hz if
+			: the processor's clock rate were exactly 10 MHz. In
+			: reality, it averages around 1400 Hz, and is depen-
+			: dent on battery power (among other things).
+			:
+			: The ROM sets the initial value of the timer to $B2,
+			: effectively giving it a period of 79 ticks. It uses
+			: the timer for Auto Power Down, which is set to
+			: occur after 6000 interrupts. If the clock rate were
+			: 9.875 MHz, the interrupt rate would be 20 Hz and
+			: countdown delay would be 5 minutes. I think it is
+			: safe to assume that the designers of the TI-89/92+
+			: intended the APD delay to be 5 minutes.
+			:
+			: For this reason, and becaues it is unlikely that
+			: the designers intended the clock rate to be any-
+			: thing other than 10 MHz, I am inclined to think
+			: that they chose the initial value to be $B2 instead
+			: of $B1 for a very particular reason: auto-int 5
+			: will coincide with auto-int 1 with a period of 4,
+			: the maximum period possible. This insures that the
+			: TI-89/92+ will run more smoothly than it would if the
+			: two interrupts coincided with a period of 2 or 1.
+			: If you don't understand this, don't worry -- it is
+			: only a matter of curiosity.
+
+:RW [600018]
+    <......10:76543210> = keyboard row mask; setting a bit masks the
+			: corresponding row of the keyboard from being
+			: read by [60001B].
+
+:RW [60001A]
+    <......1.|........> = ON key status (0=down, 1=up)
+    <........|76543210> = keyboard column mask; if a bit is clear, one or
+			: more keys in the corresponding column are being
+			: held down. Keys in rows masked by [600018] are
+			: ignored.
+
+:WO [60001C]
+    <...43210|........> = Something to do with LCD
+			: The TI89/TI92+ ROM writes $21 to this port during
+			: initialization, and $FF when the calculator is
+			: turned off.
+    <........|....3210> = bits <4321.> of contrast
+
+:WO [60001E]
+    <........|........> =
+
+-----------------------------------------------------------------------------
+THE KEYBOARD MATRIX
+-----------------------------------------------------------------------------
+
+As was hinted in the I/O ports section, the keyboard is accessed internally
+as a matrix. This matrix can be read by writing [600018], pausing to
+allow the I/O to recover, then reading [60001B].
+
+Keyboard Matrix on the TI 92:
+-----------------------------
+
+Row     +-------+-------+-------+-------+-------+-------+-------+-------+
+ V  Col>| Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 |
++-------+-------+-------+-------+-------+-------+-------+-------+-------+
+| Bit 0 |  down | right |   up  |  left |  hand | shift |diamond|  2nd  |
+| Bit 1 |   3   |   2   |   1   |   F8  |   W   |   S   |   Z   | unused|
+| Bit 2 |   6   |   5   |   4   |   F3  |   E   |   D   |   X   | unused|
+| Bit 3 |   9   |   8   |   7   |   F7  |   R   |   F   |   C   |  STO  |
+| Bit 4 |   ,   |   )   |   (   |   F2  |   T   |   G   |   V   | space |
+| Bit 5 |  TAN  |  COS  |  SIN  |   F6  |   Y   |   H   |   B   |   /   |
+| Bit 6 |   P   | ENTER2|   LN  |   F1  |   U   |   J   |   N   |   ^   |
+| Bit 7 |   *   |  APPS | CLEAR |   F5  |   I   |   K   |   M   |   =   |
+| Bit 8 | unused|  ESC  |  MODE |   +   |   O   |   L   | theta |backspc|
+| Bit 9 |  (-)  |   .   |   0   |   F4  |   Q   |   A   | ENTER1|   -   |
++-------+-------+-------+-------+-------+-------+-------+-------+-------+
+Note: ENTER1 is on the alphabetic _and_ numeric keypads.
+      ENTER2 is next to the cursor pad.
+
+Keyboard Matrix on the TI 89:
+-----------------------------
+
+Row     +-------+-------+-------+-------+-------+-------+-------+-------+
+ V  Col>| Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 |
++-------+-------+-------+-------+-------+-------+-------+-------+-------+
+| Bit 0 | Alpha | Diam. | Shift |  2nd  | Right | Down  | Left  |  Up   |
+| Bit 1 |   F5  | Clear |   ^   |   /   |   *   |   -   |   +   | Enter |
+| Bit 2 |   F4  |Backspc|   T   |   ,   |   9   |   6   |   3   |  (-)  |
+| Bit 3 |   F3  |Catalog|   Z   |   )   |   8   |   5   |   2   |   .   |
+| Bit 4 |   F2  |  Mode |   Y   |   (   |   7   |   4   |   1   |   0   |
+| Bit 5 |   F1  |  Home |   X   |   =   |   |   |   EE  |  STO  |  Apps |
+| Bit 6 |       |       |       |       |       |       |       |  Esc  |
++-------+-------+-------+-------+-------+-------+-------+-------+-------+
+
+
+Because of the way the TI89/TI92+ 's keyboard is wired, if you hold down three
+keys that form the corners of a rectangle, the TI89/TI92+ will think you are
+also holding down the key at the fourth corner.
+
+The [ON] key is special, and is not part of the matrix.
+
+-----------------------------------------------------------------------------
+INTERNAL ROUTINES
+-----------------------------------------------------------------------------
+
+This section contains some system routines that are used in the TI89/92+'s ROM
+to perform specific tasks.
+
+------------
+Reset_Link()
+------------
+Wait $4E20
+Mask Int 5
+Read [60000C].W
+[60000C].B = $E0
+Wait $0100
+Set bit 0 of [60000E].B
+Set bit 1 of [60000E].B
+Wait $0100
+Clear bit 0 of [60000E].B
+Clear bit 1 of [60000E].B
+Wait $0100
+Flush()
+
+-------
+Flush()
+-------
+[60000C].B = $8D

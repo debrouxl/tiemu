@@ -1,0 +1,108 @@
+TI-89 AMS 2.05 Line 1111 Emulator Technical Information by Greg Dietsche
+
+email: gforce@calc.org
+web: http://gforce.calc.org/
+
+This file is best viewed in Notepad with word wrap turned off.
+
+Examples of each F-Line Instruction can be found in a program
+called FLINE which is included with KerNO version 2.0 and above.
+
+Functions In the order they are handled:
+
+	6 byte bsr w/long word displacement
+		.word 0xFFF0
+		.long displacement
+
+	4 byte ROM CALL
+		.word 0xFFF2
+		.word rom call index * 4
+
+	2 byte ROM CALL
+		.word 0xF800 + Rom Call Index	(range $0 through $7EF inclusive)
+
+	6 byte bra w/long word displacement
+		.word 0xF800 + 0x7F1	(0xFFF1)
+		.long displacement
+
+__________________________________________________________________________________________
+;The TI-89 AMS 2.04 - 2.08 Line 1111 Emulator
+
+movem.l  %d0/%a0-%a2,-(%a7)   /* [0x2124DE Line 1111 emulator begin 0x10 bytes stacked
+movea.l  (0x12,%a7),%a0       /* [0x2124E2 get FXXX instruction pointer in a0
+clr.l    %d0                  /* [0x2124E6 
+move.w   (%a0),%d0            /* [0x2124E8 move FXXX instruction to d0
+movea.l  %a0,%a1              /* [0x2124EA a0 and a1 point to FXXX instruction
+move     %usp,%a2             /* [0x2124EC a2==user mode stack pointer (a7)
+
+;check for bsr with longword displacement
+cmpi.w   #0xFFF0,%d0          /* 
+bne.s    \notFFF0  	      /*+0x1A*/ /* [0x2124F2 not bsr, so check for rom call
+addq.l   #6,%a0               /* [0x2124F4 a0 = pc when returning back to caller
+move.l   %a0,-(%a2)           /* [0x2124F6 save pc to user stack for rts of called func
+move     %a2,%usp             /* [0x2124F8 update the user stack pointer
+addq.l   #2,%a1               /* [0x2124FA point a1 at 4 bytes data following $FFF0
+adda.l   (%a1),%a1            /* [0x2124FC add (X's) value at $fff0XXXXXXXX to a1 (calculate jump to addr)
+move.l   %a1,(0x12,%a7)       /* [0x2124FE save jump to addr on stack for rte instruction
+movem.l  (%a7)+,%d0/%a0-%a2   /* [0x212502 restore saved registers
+jmp      RTE_LABEL            /* [0x212506 rte will now return to called function, called func will return to stacked pc value
+
+__L21250C:
+\notFFF0:
+;at this point:
+;a0=a1=FXXX instruction
+;a2=user stack pointer
+;d0.l = FXXX instruction
+;0x10 bytes extra are stacked to save destroyed registers
+;FFF2 instruction is used for making rom calls. It supports rom call #$0 through #$FFFF
+;it will be used on ams versions with a rom call table containing more than 0x800 entries
+;for now, the two byte F800 instruction is used. FFF2 requires 4 bytes.
+cmpi.w   #0xFFF2,%d0          /* [0x21250C
+bne.s    \notFFF2  /*+0x22*/  /* [0x212510
+addq.l   #4,%a0               /* [0x212512  a0=pc after called func returns
+move.l   %a0,-(%a2)           /* [0x212514  stack new pc on usp
+move.w   (-0x2,%a0),%d0       /* [0x212516  d0.w == data portion of FFF2 instruction
+move     %a2,%usp             /* [0x21251A  update user stack pointer (yes, this is slightly out of logical order)
+movea.l  #0x23A1C6,%a0        /* [0x21251C   jump table address move.l $c8,a0
+move.l   (0x0,%a0,%d0.w),(0x12,%a7)/* [0x212522 save address of called func for rte
+movem.l  (%a7)+,%d0/%a0-%a2   /* [0x212528 restore saved registers (0x10 bytes)
+jmp      RTE_LABEL            /* [0x21252C return from interrupt
+__L212532:
+/notFFF2: 
+;at this point:
+;a0=a1=FXXX instruction
+;a2=user stack pointer
+;d0.l = FXXX instruction
+;0x10 bytes extra are stacked to save destroyed registers
+andi.w   #0xFFF,%d0           /* [0x212532 get rom call index + 0x800
+cmpi.w   #0x800,%d0           /* [0x212536 
+blt      __L212582	      /*+0x48*/ /* [0x21253A if index is less than 0x800 then crash
+
+cmpi.w   #0xFF0,%d0           /* [0x21253E 
+bge      /NotRomCall  	      /*+0x28*/ /* [0x212542 
+
+addq.l   #2,%a0               /* [0x212546 a0=ret addr for called func
+andi.w   #0x7FF,%d0           /* [0x212548 get rom call index
+move     %usp,%a1             /* [0x21254C a1=usp (why not use a2?)
+move.l   %a0,-(%a1)           /* [0x21254E stack ret addr for called func
+move     %a1,%usp             /* [0x212550 save new user stack pointer
+movea.l  #0x23A1C6,%a0        /* [0x212552 jump table address (move.l $c8,a0)
+rol.l    #2,%d0               /* [0x212558 multiply rom call index by 4
+adda.l   %d0,%a0              /* [0x21255A (rom call index *4)+rom call table=pointer to address of rom call
+move.l   (%a0),(0x12,%a7)     /* [0x21255C save rom call address for rte
+movem.l  (%a7)+,%d0/%a0-%a2   /* [0x212560 restore saved registers
+jmp      RTE_LABEL            /* [0x212564 return from exception
+__L21256A:
+/NotRomCall:
+;at this point:
+;d0=rom call index
+;d0 is greater than #$ff0
+a0=a1=FXXX instruction
+a2=user stack pointer
+cmpi.w   #0xFF1,%d0           /* [0x21256A long jump
+bne.s    __L212582  /*+0x14*/ /* [0x21256E if d0 != #$FF1 then crash
+addq.l   #2,%a0               /* [0x212570 a0 points to the coresponding .l data
+adda.l   (%a0),%a0            /* [0x212572 increment pc with offset
+move.l   %a0,(0x12,%a7)       /* [0x212574 store new pc
+movem.l  (%a7)+,%d0/%a0-%a2   /* [0x212578 restore registers
+jmp      RTE_LABEL            /* [0x21257C return from exception

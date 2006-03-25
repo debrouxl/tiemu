@@ -1,0 +1,48 @@
+			[ Release notes ]
+
+
+
+Previous version: 2.06		(02/03/2006)
+Current version:  2.07		(25/03/2006)
+
+SubVersion (CVS) revision: $Id$
+
+TiEmu is available for 3 platforms:
+Linux (GTK), Windows (GTK), Mac OS-X (GTK)
+
+[ If you have a SilverLink cable (TI-GRAPH LINK USB), you will need to retrieve
+a Linux/Win32/Mac OS-X driver on the Linux Programmer Group at 
+<http://lpg.ticalc.org/prj_usb>. ]
+
+For the other link cables, no driver is needed.
+
+
+New capabilities:
+-----------------
+
+	- ability to load VTi skins
+
+
+Improvements:
+-------------
+
+	- none
+		
+		
+Bug fixes:
+----------
+
+	- none
+	
+
+Planned:
+--------
+
+	- nothing: stable branch
+
+	
+Notes:
+------
+
+	- the SilverLink cable doesn't make TiEmu crash any longer but it's still unusable. But,
+		TiEmu-3 supports it.

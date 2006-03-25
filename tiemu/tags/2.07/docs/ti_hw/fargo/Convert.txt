@@ -1,0 +1,170 @@
+----------------------------------------------------------------------------
+CONVERTING FARGO 0.1.X PROGRAMS
+----------------------------------------------------------------------------
+
+This document describes some of the steps needed to convert Fargo 0.1.x
+programs to Fargo II.
+
+Libraries are now accessed simply by included their corresponding header
+files. And, the program entry point and comment are now specified by
+exporting them using XDEF, rather than using the @program macro.
+Example:
+
+----------- begin ------------
+	@program	prog_code,prog_name
+prog_code:
+	rts
+prog_name	dc.b	"This program does nothing.",0
+	reloc_start
+	add_library	flib
+	add_library	hexlib
+	reloc_end
+	end
+------------ end -------------
+
+would be changed to:
+
+----------- begin ------------
+	include	"flib.h"
+	include	"hexlib.h"
+	xdef	_main
+	xdef	_comment
+_main:
+	rts
+_comment	dc.b	"This program does nothing.",0
+	end
+------------ end -------------
+
+Libraries are also created differently. Example:
+
+-------- sillylib.asm --------
+	@library	sillylib
+	label	boring
+	rts
+	label	pointless
+	rts
+	reloc_start
+	reloc_end
+	end
+-------- sillylib.sym --------
+\1,boring
+\1,pointless
+-------- sillylib.fn ---------
+; boring() does nothing
+; pointless() does more of the same
+------------ end -------------
+
+would be changed to:
+
+-------- sillylib.asm --------
+	xdef	_library
+	xdef	sillylib@0000
+	xdef	sillylib@0001
+sillylib@0000:
+	rts
+sillylib@0001:
+	rts
+_library	dc.b	"sillylib",0
+	end
+--------- sillylib.h ---------
+; boring() does nothing
+sillylib::boring	equ	sillylib@0000
+; pointless() does more of the same
+sillylib::pointless	equ	sillylib@0001
+------------ end -------------
+
+Notice that library calls are now done as "libname::funcname" rather than
+"libname[funcname]". If you use Emacs, you may change your library calls
+using the following regexp replace:
+Replace "\([ 	,][a-z]+\)\[\(.+\)\]" with "\1::\2".
+             ^ Tab character (yielded by Ctrl-Q Ctrl-I)
+
+----------------------------------------------------------------------------
+
+The library "romlib" has been replaced by the pseudolibrary "tios". The
+following calls have undergone name changes:
+
+ romlib[destroy_handle]    ->  tios::HeapFree
+ romlib[create_handle]     ->  tios::HeapAlloc
+ romlib[resize_handle]     ->  tios::HeapRealloc
+ romlib[dispose_handle]    ->  tios::HeapFreeIndir
+ romlib[set_activity]      ->  tios::ST_busy
+ romlib[puttext]           ->  tios::DrawStrXY
+ romlib[putchar]           ->  tios::DrawCharXY
+ romlib[set_font]          ->  tios::FontSetSys
+ romlib[update_status]     ->  tios::ST_eraseHelp
+ romlib[gr_draw_to]        ->  tios::DrawTo
+ romlib[gr_move_to]        ->  tios::MoveTo
+ romlib[gr_set_buffer]     ->  tios::PortSet
+ romlib[gr_screen_buffer]  ->  tios::PortRestore
+ romlib[draw_window]       ->  tios::WinActivate
+ romlib[destroy_window]    ->  tios::WinClose
+ romlib[create_window]     ->  tios::WinOpen
+ romlib[puttext_window]    ->  tios::WinStrXY
+
+In addition, the following macro had its name changed:
+
+ handle_ptr -> tios::DEREF
+
+In most cases the name change was made because the new name is the genuine
+name used by TI in their ROM source code. In other cases, where it wasn't
+possible for me to find out the real name, I chose a name that seemed to
+be consistent with TI's naming style.
+
+----------------------------------------------------------------------------
+
+Since ROM 2.1 uses different RAM addresses than ROM 1.x, you will have to
+change all your direct references to RAM addresses with references to the
+"tios" pseudolibrary. I think the most common direct addresses used by
+Fargo 0.1.x programs were the keyboard variables, $75A0, $75B0, etc.; to
+change these, simply subtract $7594 and add tios::kb_vars. For example:
+
+ $75A0 -> tios::kb_vars+$C
+ $75B0 -> tios::kb_vars+$1C
+ $75B2 -> tios::kb_vars+$1E
+
+Also make sure you change all direct references to $4440 to LCD_MEM or
+tios::main_lcd, and $761C to STATUS_LINE or tios::status_flags.
+See tios.h for additional examples.
+
+Since Fargo II programs run in User mode rather than Supervisor mode, you
+won't be able to use privileged instructions outside of an exception
+handler. Usually the only two you will have used before are STOP and
+MOVE xx,SR. You will have to do without STOP, unless you access it via
+a trap handler. However, MOVE xx,SR can be substituted with something
+different. Here are a couple examples:
+
+	move.w	#$700,d0		;\ disable interrupts, and put
+	trap	#1			;/ the old int mask in D0
+	bclr.b	#2,$600001		; disable protection of memory
+	move.l	$64,old_int_1		; save pointer to old int 1 handler
+	move.l	new_int_1(pc),$64	; install custom int 1 handler
+	bset.b	#2,$600001		; re-enable protection of memory
+	trap	#1			; restore the old interrupt mask
+
+	move.w	#$700,d0		;\ disable interrupts, and put
+	trap	#1			;/ the old int mask in D0
+	move.w	d0,-(sp)		; push old int mask onto stack
+	...
+	...				; do something that requires 
+	...				; interrupts to be disabled
+	...
+	move.w	(sp)+,d0		;\ restore old
+	trap	#1			;/  int mask
+
+Note that $64 is used to access the auto-int 1 exception vector, rather
+than $20064. This provides compatibility with 256K calculators. Because
+$64 was used, the protection of memory in the range $000000..$00011F
+had to be temporarily disabled. See LowLevel.txt.
+
+----------------------------------------------------------------------------
+
+The kernel no longer exports a function called "find_var". Instead, use
+tios::FindSymEntry. Remember that since it is a ROM routine, it destroys
+registers d0-d2/a0-a1.
+
+The 4-shade grayscale library included with Fargo is different from the
+old graylib. It has been renamed to gray4lib. It now works similarly to
+graylib7. Also, graylib7 has been renamed to gray7lib.
+
+----------------------------------------------------------------------------
