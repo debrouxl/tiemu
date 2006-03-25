@@ -1,12 +1,12 @@
 *****************************************************************
-* File format of the VTi 2.5 skin files				*
-* Documentation by Romain Lievin <roms@lpg.ticalc.org>		*
-*								*
+* File format of the VTi 2.5 skin files							*
+* Documentation by Romain Lievin <roms@lpg.ticalc.org>			*
+*																*
 * These informations have been extracted from the Vti source	*
-* code (rom.cpp) which have been released by R. Wagner.		*
-*								*
-* Begin: 17/04/2002						*
-* Last update: 25/04/2002					*
+* code (rom.cpp) which have been released by R. Wagner.			*
+*																*
+* Begin: 17/04/2002												*
+* Last update: 25/03/2006										*
 *****************************************************************
 
 
@@ -23,16 +23,18 @@ The VTi v2.1 skin file format
 
   The following is a table of the bytes that make up a skin file.
 
-  Adress				What It Contains
+  Adress					Size	What It Contains
   ---------------------------------------------------------------------------
-  0x000-0x007	0-7		An header: "VTIv2.1 "
-   ???
-  0x050-0x053	80-83		The value of the 'White' LCD pixel (32 bits)
-  0x054-0x057	84-87		The value of the 'Black' LCD pixel (true color)
-  0x058-0x067	88-103		1x RECT structure (the display coords in skin)
-  0x068-0x567	104-1383	80x RECT structures (the keys coords in skin)
+  0x000-0x007	0-7			8		An header: "VTIv2.1 "
+  0x008-0x047   8-71		64		Skin's name (not NULL-terminated)
+  0x048-0x04B	72-75		4		Calculator type
+  0x04C-0x04F	76-79		4		Color type (0, 1, or 2)
+  0x050-0x053	80-83		4		The value of the 'White' LCD pixel (32 bits)
+  0x054-0x057	84-87		4		The value of the 'Black' LCD pixel (true color)
+  0x058-0x067	88-103		16x1	RECT structure (the display coords in skin)
+  0x068-0x567	104-1383	16x80	RECT structures (the keys coords in skin)
 
-  0x568-0x...	1384-...	A JPEG encoded image placed right after
+  0x568-0x...	1384-...			A JPEG encoded image placed right after
 
 
 The VTi v2.5 skin file format
@@ -40,20 +42,19 @@ The VTi v2.5 skin file format
 
   The following is a table of the bytes that make up a skin file.
 
-  Adress                                What It Contains
+  Address					Size	What It Contains
   ---------------------------------------------------------------------------
-  0x000-0x007   0-7             An header: "VTIv2.5 "
-  0x008-0x047   8-71		Skin's name (64 chars)
-  0x048-0x087	72-135		Skin's author (64 chars)
-  0x088-0x08F	136-143		Calculator type ?
-  0x090-0x093   144-147         The value of the 'White' LCD pixel (32 bits)
-  0x094-0x097   148-151         The value of the 'Black' LCD pixel (true color)
-  0x098-0x0A7   152-167         1x RECT structure (the display coords in skin)
-  0x0A8-0x5A7   168-1447        80x RECT structures (the keys coords in skin)
+  0x000-0x007   0-7			8		An header: "VTIv2.5 "
+  0x008-0x047   8-71		64		Skin's name (not NULL-terminated)
+  0x048-0x087	72-135		64		Skin's author (idem)
+  0x088-0x08B	136-139		4		Calculator type
+  0x08C-0x08F	140-143		4		Color type (0, 1 or 2)
+  0x090-0x093   144-147		4		The value of the 'White' LCD pixel (32 bits)
+  0x094-0x09B   148-151		4       The value of the 'Black' LCD pixel (true color)
+  0x09C-0x0A7   152-167		16x1    RECT structure (the display coords in skin)
+  0x0A8-0x5A7   168-1447	16x80	RECT structures (the keys coords in skin)
 
-  0x5A8-0x...   1448-...        A JPEG encoded image placed right after
-
-
+  0x5A8-0x...   1448-...			A JPEG encoded image placed right after
 
 
   RECT is a common Win32 structure which has the following format:
@@ -94,3 +95,8 @@ The VTi v2.5 skin file format
 	TIKEY_DOWN, TIKEY_RIGHT, TIKEY_UP, TIKEY_LEFT, TIKEY_HAND, TIKEY_SHIFT, 		...
 	MAX_KEY // important !
 	};
+
+  Color types:
+  - 0: low contrast
+  - 1: high contrast
+  - 2: custom contrast (use the B & W pixel values)
