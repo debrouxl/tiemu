@@ -41,11 +41,150 @@
 #include "printl.h"
 
 /*
-	Read skin informations (header)
+	Determine skin type
 */
-int skin_read_header(SKIN_INFOS *si, const char *filename)
+int skin_get_type(SKIN_INFOS *si, const char *filename)
 {
-	FILE *fp = NULL;
+	FILE *fp;
+	char str[17];
+
+	fp = fopen(filename, "rb");
+  	if (fp == NULL)
+    {
+      	fprintf(stderr, "Unable to open this file: <%s>\n", filename);
+      	return -1;
+    }
+
+	memset(str, 0, sizeof(str));
+	fread(str, 16, 1, fp);
+
+	if(!strncmp(str, "TiEmu v2.00", 16))
+		si->type = SKIN_TYPE_TIEMU;
+	else if(!strncmp(str, "VTIv2.1 ", 8))
+		si->type = SKIN_TYPE_OLD_VTI;
+	else if(!strncmp(str, "VTIv2.5 ", 8))
+		si->type = SKIN_TYPE_VTI;
+	else
+  	{
+  		fprintf(stderr, "Bad skin format\n");
+      	return -1;
+  	}
+
+	return 0;
+}
+
+/*
+	Read VTi skin informations (header)
+*/
+int skin_read_header_vti(SKIN_INFOS *si, const char *filename)
+{
+	FILE *fp;
+	char str[9];
+	uint32_t length;
+	int i;
+	uint32_t calc;
+
+	/* open file */
+	fp = fopen(filename, "rb");
+  	if (fp == NULL)
+    {
+      	fprintf(stderr, "Unable to open this file: <%s>\n", filename);
+      	return -1;
+    }
+ 
+	/* signature */
+	memset(str, 0, sizeof(str));
+	fread(str, 8, 1, fp);
+
+  	if(strncmp(str, "VTIv2.", 6))
+  	{
+  		fprintf(stderr, "Bad VTi skin format\n");
+      	return -1;
+  	}
+
+	/* Skin name and author */
+	length = 64;
+  	si->name = (char *)malloc(length + 1);
+	if (si->name == NULL)
+		return -1;
+
+	memset(si->name, 0, length + 1);
+	fread(si->name, length, 1, fp);
+
+	if(si->type == SKIN_TYPE_VTI)
+	{
+		si->author = (char *)malloc(length + 1);
+      	if (si->author == NULL)
+			return -1;
+
+      	memset(si->author, 0, length + 1);
+      	fread(si->author, length, 1, fp);
+	}
+
+	/* types & colors*/
+	fread(&calc, 1, sizeof(calc), fp);
+	switch(calc)
+	{
+	case 89: strcpy(si->calc, SKIN_TI89); break;
+	case 92: strcpy(si->calc, SKIN_TI92); break;
+	case 94: strcpy(si->calc, SKIN_TI92P); break;
+	default: return -1;
+	}
+
+	fread(&si->colortype, 4, 1, fp);
+  	fread(&si->lcd_white, 4, 1, fp);
+  	fread(&si->lcd_black, 4, 1, fp);
+
+	/* lcd position */
+  	fread(&si->lcd_pos.left, 4, 1, fp);
+  	fread(&si->lcd_pos.top, 4, 1, fp);
+  	fread(&si->lcd_pos.right, 4, 1, fp);
+  	fread(&si->lcd_pos.bottom, 4, 1, fp);
+
+	/* keys */
+	length = 80;
+	for (i = 0; i < (int)length; i++)
+    {
+      	fread(&si->keys_pos[i].left, 4, 1, fp);
+      	fread(&si->keys_pos[i].top, 4, 1, fp);
+      	fread(&si->keys_pos[i].right, 4, 1, fp);
+      	fread(&si->keys_pos[i].bottom, 4, 1, fp);
+    }
+
+	// VTi skins are always Little-Endian
+#if G_BYTE_ORDER == G_BIG_ENDIAN
+	{
+		si->colortype = GUINT32_SWAP_LE_BE(si->colortype);
+		si->lcd_white = GUINT32_SWAP_LE_BE(si->lcd_white);
+		si->lcd_black = GUINT32_SWAP_LE_BE(si->lcd_black);
+      
+		si->lcd_pos.top = GUINT32_SWAP_LE_BE(si->lcd_pos.top);
+		si->lcd_pos.left = GUINT32_SWAP_LE_BE(si->lcd_pos.left);
+		si->lcd_pos.bottom = GUINT32_SWAP_LE_BE(si->lcd_pos.bottom);
+		si->lcd_pos.right = GUINT32_SWAP_LE_BE(si->lcd_pos.right);
+
+		for (i = 0; i < (int)length; i++)
+		{
+			si->keys_pos[i].top = GUINT32_SWAP_LE_BE(si->keys_pos[i].top);
+			si->keys_pos[i].bottom = GUINT32_SWAP_LE_BE(si->keys_pos[i].bottom);
+			si->keys_pos[i].left = GUINT32_SWAP_LE_BE(si->keys_pos[i].left);
+			si->keys_pos[i].right = GUINT32_SWAP_LE_BE(si->keys_pos[i].right);
+		}
+	}
+#endif
+
+	si->jpeg_offset = ftell(fp);
+
+	fclose(fp);
+	return 0;
+}
+
+/*
+	Read TiEmu skin informations (header)
+*/
+int skin_read_header_tiemu(SKIN_INFOS *si, const char *filename)
+{
+	FILE *fp;
   	int i;
   	uint32_t endian;
   	uint32_t jpeg_offset;
@@ -59,11 +198,11 @@ int skin_read_header(SKIN_INFOS *si, const char *filename)
       	return -1;
     }
  
-	/* offsets */
+	/* signature & offsets */
 	fread(str, 16, 1, fp);
   	if (strncmp(str, "TiEmu v2.00", 16))
   	{
-  		fprintf(stderr, "Bad skin format\n");
+  		fprintf(stderr, "Bad TiEmu skin format\n");
       	return -1;
   	}
   	fread(&endian, 4, 1, fp);
@@ -151,12 +290,28 @@ int skin_read_header(SKIN_INFOS *si, const char *filename)
 			si->keys_pos[i].right = GUINT32_SWAP_LE_BE(si->keys_pos[i].right);
 		}
 	}
+
+	si->jpeg_offset = ftell(fp);
     	
     fclose(fp);
-
     return 0;
 }
 
+int skin_read_header(SKIN_INFOS *si, const char *filename)
+{
+	if(skin_get_type(si, filename) == -1)
+		return -1;
+
+	switch(si->type)
+	{
+	case SKIN_TYPE_TIEMU:   return skin_read_header_tiemu(si, filename);
+	case SKIN_TYPE_VTI:     return skin_read_header_vti(si, filename);
+	case SKIN_TYPE_OLD_VTI: return skin_read_header_vti(si, filename);
+	default: return -1;
+	}
+
+	return 0;
+}
 
 /*
 	Read skin image (pure jpeg data)
@@ -164,15 +319,12 @@ int skin_read_header(SKIN_INFOS *si, const char *filename)
 int skin_read_image(SKIN_INFOS *si, const char *filename)
 {
     FILE *fp = NULL;	
-    uint32_t jpeg_offset;
-  	uint32_t endian;
 	int i;
 	int sw, sh;
     int lw, lh;
 	float rw, rh, r;
 	double s;
 	int lcd_w, lcd_h;
-	char str[17];
 
 	GdkPixbufLoader *loader;
 	GError *error = NULL;
@@ -200,23 +352,10 @@ int skin_read_image(SKIN_INFOS *si, const char *filename)
     	return -1;
     }
     	
-    // Get jpeg offset and endianess
-  	fread(str, 16, 1, fp);
-  	if (strncmp(str, "TiEmu v2.00", 16))
-  	{
-  		fprintf(stderr, "Bad skin format\n");
-      	return -1;
-  	}
-  	fread(&endian, 4, 1, fp);
-  	fread(&jpeg_offset, 4, 1, fp);
-	if (endian != ENDIANNESS_FLAG)
-		jpeg_offset = GUINT32_SWAP_LE_BE(jpeg_offset);
-	
-
     // Extract image from skin
-	fseek(fp, jpeg_offset, SEEK_SET);
+	fseek(fp, si->jpeg_offset, SEEK_SET);
 	fstat(fileno(fp), &st);
-	count = st.st_size - jpeg_offset;
+	count = st.st_size - si->jpeg_offset;
 
 	buf = g_malloc(count * sizeof(guchar));
 	count = fread(buf, sizeof(guchar), count, fp);

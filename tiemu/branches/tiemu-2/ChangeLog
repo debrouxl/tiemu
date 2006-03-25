@@ -4,6 +4,9 @@ Bug:
 - full view mode is not accessible from menu but can be by-passed from the WM (-@x)
 - scaling factor seems to be not limited, too
 
+- 25/03/2006, version 2.07:
+	- [roms] $200^: added loading of VTi skins
+
 - 18/02/2006, version 2.06:
 	- [roms] $1974: lcd/lcd_mem code slightly reworked for clarity
 	- [roms] $1976: skin is now scaled directly from JPEG image => no resolution lost

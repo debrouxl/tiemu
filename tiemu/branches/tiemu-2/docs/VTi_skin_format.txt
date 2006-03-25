@@ -100,3 +100,14 @@ The VTi v2.5 skin file format
   - 0: low contrast
   - 1: high contrast
   - 2: custom contrast (use the B & W pixel values)
+
+  Calculator types:
+  - 73
+  - 82
+  - 83
+  - 84 -> 83+
+  - 85
+  - 86
+  - 89
+  - 92
+  - 94 -> 92+

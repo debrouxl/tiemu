@@ -374,6 +374,8 @@ static int match_skin(int calc_type)
 		break;
 		case V200:
 			ok = !strcmp(sk->calc, SKIN_V200);
+			if(sk->type != SKIN_TYPE_TIEMU)
+				ok = !strcmp(sk->calc, SKIN_TI92P);
 		break;
 	    default: 
             ok = 0;
