@@ -117,6 +117,8 @@ typedef struct
   RECT lcd_pos;
   RECT keys_pos[SKIN_KEYS];
 
+  long	jpeg_offset;
+
 } SKIN_INFOS;
 
 extern SKIN_INFOS skin_infos;

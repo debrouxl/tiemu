@@ -144,6 +144,7 @@ SubVersion: $Id$
 	- [kevin] $2009: imported UAE 0.8.25
 	- [roms]  $2012: bug #1434600 => goes to HOME when calc is not ready
 	- [kevin] $2021: fixed stray quotes breaking Insight build with latest bash (by Pavel Roskin, from http://sources.redhat.com/ml/insight/2006-q1/msg00043.html)
+	- [roms]  $2030: can load VTi skins
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	
