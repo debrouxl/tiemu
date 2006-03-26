@@ -241,8 +241,8 @@ Section "MainSection" SEC01
   File "..\..\..\..\TiEmu\bin\libtifiles2-1.dll"
   File "..\..\..\..\TiEmu\bin\libticalcs2-0.dll"
   File "..\..\..\..\TiEmu\bin\tiemu.exe"
-  File "..\..\..\..\TiEmu\bin\tiemu.tlb"
-  File "..\..\..\..\TiEmu\bin\tiemups.dll"
+;  File "..\..\..\..\TiEmu\bin\tiemu.tlb"
+;  File "..\..\..\..\TiEmu\bin\tiemups.dll"
   File "..\..\..\..\TiEmu\bin\tcl84.dll"
   File "..\..\..\..\TiEmu\bin\tclsh84.exe"
   File "..\..\..\..\TiEmu\bin\tclpip84.dll"
@@ -1188,8 +1188,8 @@ Section "MainSection" SEC01
   File "..\..\..\..\TiEmu\man\mann\iwidgets_watch.n"
 
 ; OLE Registration
-  ExecWait '"$INSTDIR\bin\tiemu.exe" /RegServer'
-  RegDLL "$INSTDIR\bin\tiemups.dll"
+;  ExecWait '"$INSTDIR\bin\tiemu.exe" /RegServer'
+;  RegDLL "$INSTDIR\bin\tiemups.dll"
 
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -1235,8 +1235,8 @@ Section Uninstall
   !insertmacro MUI_STARTMENU_GETFOLDER "Application" $ICONS_GROUP
 
 ; OLE Unregistration
-  UnregDLL "$INSTDIR\bin\tiemups.dll"
-  ExecWait '"$INSTDIR\bin\tiemu.exe" /UnregServer'
+;  UnregDLL "$INSTDIR\bin\tiemups.dll"
+;  ExecWait '"$INSTDIR\bin\tiemu.exe" /UnregServer'
 
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
@@ -2145,8 +2145,8 @@ Section Uninstall
   Delete "$INSTDIR\bin\tclpip84.dll"
   Delete "$INSTDIR\bin\tclsh84.exe"
   Delete "$INSTDIR\bin\tcl84.dll"
-  Delete "$INSTDIR\bin\tiemups.dll"
-  Delete "$INSTDIR\bin\tiemu.tlb"
+;  Delete "$INSTDIR\bin\tiemups.dll"
+;  Delete "$INSTDIR\bin\tiemu.tlb"
   Delete "$INSTDIR\bin\tiemu.exe"
   Delete "$INSTDIR\bin\libticalcs2-0.dll"
   Delete "$INSTDIR\bin\libtifiles2-1.dll"

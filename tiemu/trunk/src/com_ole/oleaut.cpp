@@ -284,11 +284,11 @@ static TiEmuOLE *ole_interface;
 
 void oleaut_init (void)
 {
-  ole_interface = new TiEmuOLE;
+//  ole_interface = new TiEmuOLE;
 }
 
 void oleaut_finish (void)
 {
-  delete ole_interface;
+//  delete ole_interface;
 }
 
