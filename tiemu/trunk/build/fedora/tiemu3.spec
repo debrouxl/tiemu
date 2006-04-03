@@ -15,7 +15,7 @@ Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		Applications/Emulators
 License:	GPL
-BuildRequires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2-devel >= 2.10.1, gtk2-devel >= 2.8.15, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.3, kdelibs-devel >= 6:3.5.1, libX11-devel >= 1.0.0, libXext-devel >= 1.0.0, ncurses-devel >= 5.5, desktop-file-utils >= 0.10, bison >= 2.0, flex >= 2.5.4a
+BuildRequires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2-devel >= 2.10.1, gtk2-devel >= 2.8.15, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.3, kdelibs-devel >= 6:3.5.1, libX11-devel >= 1.0.0, libXext-devel >= 1.0.0, ncurses-devel >= 5.5, desktop-file-utils >= 0.10, bison >= 2.0, flex >= 2.5.4a, texinfo >= 4.8
 Requires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.10.1, gtk2 >= 2.8.15, libglade2 >= 2.5.1, zlib >= 1.2.3, kdelibs >= 6:3.5.1, libX11 >= 1.0.0, libXext >= 1.0.0, ncurses >= 5.5, tcl >= 8.4, tk >= 8.4, itcl >= 3.3, itk >= 3.3, iwidgets >= 4.0.1
 Requires(post):	desktop-file-utils >= 0.10
 Requires(postun): desktop-file-utils >= 0.10
@@ -81,6 +81,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Mon Apr 3 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+BuildRequire texinfo (the build reportedly fails without it).
+
 * Thu Mar 23 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Update dependencies for FC5.
 
