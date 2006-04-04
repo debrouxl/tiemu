@@ -82,7 +82,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %changelog
 * Tue Apr 4 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
-BuildRequire exact version of flex because GDB really does want 2.0.4a.
+BuildRequire exact version of flex because GDB really does want 2.5.4a.
 
 * Mon Apr 3 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 BuildRequire texinfo (the build reportedly fails without it).
