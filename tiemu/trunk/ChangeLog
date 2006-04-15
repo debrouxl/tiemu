@@ -146,6 +146,7 @@ SubVersion: $Id$
 	- [kevin] $2021: fixed stray quotes breaking Insight build with latest bash (by Pavel Roskin, from http://sources.redhat.com/ml/insight/2006-q1/msg00043.html)
 	- [roms]  $2031: can load VTi skins
 	- [kevin] $2033: commented out OLE installation in tiemu*.nsi and OLE initialization/cleanup in oleaut.cpp - OLE support will be reenabled when it will actually work
+	- [roms]  $2037: fixed to follow ticalcs2 API changes
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

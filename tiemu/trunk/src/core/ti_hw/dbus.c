@@ -448,14 +448,14 @@ int send_ti_file(const char *filename)
     {   
 		// increase timeout due to excessive time for last ACK
 		params.timeout *= 10;
-		ret = ticalcs_calc_send_flash2(calc_handle, filename);
+		ret = ticalcs_calc_send_app2(calc_handle, filename);
 		params.timeout /= 10;
     }
 
     // FLASH OS file ?
     if(tifiles_file_is_flash(filename) && !strcasecmp(tifiles_fext_of_flash_os(calc_handle->model), tifiles_fext_get(filename)))
     {
-		ret = ticalcs_calc_send_flash2(calc_handle, filename);
+		ret = ticalcs_calc_send_app2(calc_handle, filename);
     }
   
     // Backup file ?

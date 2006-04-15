@@ -23,8 +23,8 @@
    Encapsulate the ISO-C99 'stdint.h' header for platforms which haven't it
 */
 
-#ifndef __TIFILES_STDINT__
-#define __TIFILES_STDINT__
+#ifndef __TIEMU_STDINT__
+#define __TIEMU_STDINT__
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -33,18 +33,27 @@
 #ifdef HAVE_STDINT_H
 # include <stdint.h>
 #else
-
 # if defined(__WIN32__)
 #  include <windows.h>
-typedef unsigned char	 uint8_t;	//typedef unsigned __int8 uint8_t;
-typedef unsigned short   uint16_t;	//typedef unsigned __int16 uint16_t;
-typedef unsigned long    uint32_t;	//typedef unsigned __int32 uint32_t;
-typedef unsigned __int64 uint64_t;
 
-typedef __int8 int8_t;
-typedef __int16 int16_t;
-typedef __int32 int32_t;
-typedef __int64	int64_t;
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4142 )
+#endif
+
+typedef unsigned __int8		uint8_t;
+typedef unsigned __int16	uint16_t;
+typedef unsigned __int32	uint32_t;
+typedef unsigned __int64	uint64_t;
+
+typedef __int8 		int8_t;
+typedef __int16 	int16_t;
+typedef __int32 	int32_t;
+typedef __int64		int64_t;
+
+#ifdef _MSC_VER
+#pragma warning( pop ) 
+#endif
 
 # elif defined(__BSD__)
 #  include <inttypes.h>
