@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR" content="Mozilla 1.1 under Linux">
+  <title>TiEmu User's Manual</title>
+  <meta name="author" content="The TiEmu team">
+  <meta name="description" content="User's Manual">
+</head>
+<body style="background-color: rgb(255, 255, 255);">
+<div align="center">
+<div style="text-align: left;">
+<div class="NAVFOOTER">
+<hr align="left" width="100%">
+<table summary="Footer navigation table" border="0" cellpadding="0"
+ cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td align="left" valign="top" width="33%"><a href="chapter10.html"
+ accesskey="P">Prev</a></td>
+      <td align="center" valign="top" width="34%"><a
+ href="Manual_en.html" accesskey="H">Home</a></td>
+      <td align="right" valign="top" width="33%"><a
+ href="chapter20.html" accesskey="N">Next</a></td>
+    </tr>
+    <tr>
+      <td align="left" valign="top" width="33%">Link port<br>
+      </td>
+      <td align="center" valign="top" width="34%">&nbsp;</td>
+      <td align="right" valign="top" width="33%">Bugs<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<hr align="left" width="100%">
+</div>
+</div>
+</div>
+<h1>11. Link port<br>
+</h1>
+The link port can be set-up with the <span style="font-style: italic;">Link
+options</span>
+item:<br>
+<br>
+<div style="text-align: center;"><img alt="" src="linkport.png"
+ style="width: 273px; height: 236px;"><br>
+</div>
+<br>
+<h2>11.1 Direct File loading</h2>
+When cable is set to <span style="font-style: italic;">null,</span>
+TiEmu uses its direct file loading/saving capability. That is to say,
+you can 'send' a file from disk to TiEmu and vice-versa (<span
+ style="font-style: italic;">Send file to TiEmu</span> item of popup
+menu).<br>
+The <span style="font-style: italic;">port</span> and <span
+ style="font-style: italic;">calc</span> settings are not used.<br>
+<br>
+The timeout value can be increased/decreased to adjust timeout of
+direct file loading.<br>
+<br>
+The direct file loading allows you to load files or FLASH applications.
+For FLASH OS, you are encouraged to use the ROM version dialog box
+instead.<br>
+<h2>11.2 Virtual cables</h2>
+<span style="font-style: italic;">Note : at the time being,
+ticables2 virtual link
+capability can <span style="text-decoration: underline;">not</span> be
+used with ticables1 library </span><span
+ style="text-decoration: underline; font-style: italic;">unless</span><span
+ style="font-style: italic;"> you are running ticables1 v3.9.7 mini.</span><br>
+<br>
+There are 2 virtual cables: <span style="font-style: italic;">VTi</span>
+&amp; <span style="font-style: italic;">TiEmu</span>.<br>
+<br>
+<div style="margin-left: 40px;">To connect VTI and TiEmu :<br>
+- run VTI; next, run TiEmu<br>
+- choose the <span style="font-style: italic;">VTi</span> cable, <span
+ style="font-style: italic;">port #2</span><br>
+- open the VTI menu, go to <span style="font-style: italic;">Enable
+Cable
+Link</span> and be sure that <span style="font-style: italic;">Virtual
+Link</span> is checked.<br>
+<br>
+To connect TiLP1 and TiEmu2 :<br>
+- run TiEmu; next, run TiLP<br>
+- choose the <span style="font-style: italic;">TiEmu</span> cable, <span
+ style="font-style: italic;">port #1</span> in TiEmu<br>
+- choose the <span style="font-style: italic;">TiEmu</span> cable, <span
+ style="font-style: italic;">port #2</span> in TiLP<br>
+<br>
+To connect TiEmu and TiEmu :<br>
+- run 2 instances of TiEmu<br>
+- choose the <span style="font-style: italic;">TiEmu</span> cable on
+both,
+<span style="font-style: italic;">port #1</span> and <span
+ style="font-style: italic;">port #2</span> respectively.<br>
+</div>
+<h2>11.3 Real cables</h2>
+At the time being, there are 3 link cables useable with TiEmu: <span
+ style="font-style: italic;">GrayLink</span>, <span
+ style="font-style: italic;">BlackLink </span>and <span
+ style="font-style: italic;">ParallelLink</span>. SilverLink is
+supported but not useable yet.<br>
+A cable is plugged into a port. There are 3/4 ports depending on the
+cable type:<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td colspan="2" rowspan="1"
+ style="vertical-align: top; text-align: center;">BlackLink or GrayLink<br>
+      </td>
+      <td colspan="2" rowspan="1"
+ style="vertical-align: top; text-align: center;">ParallelLink<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">Windows<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">Linux<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">Windows<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">Linux<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">port #1</td>
+      <td style="vertical-align: top; text-align: center;">COM1<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">/dev/ttyS0<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">LPT1<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">/dev/tipar0<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">port #2</td>
+      <td style="vertical-align: top; text-align: center;">COM2<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">/dev/ttyS1</td>
+      <td style="vertical-align: top; text-align: center;">LPT2<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">/dev/tipar1</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">port #3</td>
+      <td style="vertical-align: top; text-align: center;">COM3<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">/dev/ttyS2</td>
+      <td style="vertical-align: top; text-align: center;">LPT3<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">/dev/tipar2</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">port #4</td>
+      <td style="vertical-align: top; text-align: center;">COM4<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">/dev/ttyS3</td>
+      <td style="vertical-align: top; text-align: center;">N/A<br>
+      </td>
+      <td style="vertical-align: top; text-align: center;">N/A<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Note: If you want to use the parallel cable under Linux as a regular
+(non-root) user, you must have the tipar kernel module (as module or
+built-in) present on your system. Likewise, the BlackLink cable
+requires the tiser module (or root privileges).<br>
+<br>
+<hr>
+</body>
+</html>
