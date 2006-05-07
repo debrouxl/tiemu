@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2005-2006, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@
 */
 #define NB_CYCLES_PER_LOOP_HW1 300000	// 300000 cycles in 30ms
 #define NB_CYCLES_PER_LOOP_HW2 360000	// 360000 cycles in 30ms
+#define NB_CYCLES_PER_LOOP_HW4 480000	// 480000 cycles in 30ms
 #define TIME_LIMIT               30	    // 30 ms
 #define MIN_INSTRUCTIONS_PER_CYCLE 4 	// instructions take at least 4 cycles
 
@@ -65,8 +66,12 @@ static gboolean engine_func(gint *data)
 	// set instruction rate (default or custom value)
     if(params.cpu_rate != -1)
         cpu_cycles = params.cpu_rate;
+    else if (tihw.hw_type == HW1)
+        cpu_cycles = NB_CYCLES_PER_LOOP_HW1;
+    else if (tihw.hw_type <= HW3)
+        cpu_cycles = NB_CYCLES_PER_LOOP_HW2;
     else
-        cpu_cycles = (tihw.hw_type == HW1) ? NB_CYCLES_PER_LOOP_HW1 : NB_CYCLES_PER_LOOP_HW2;
+        cpu_cycles = NB_CYCLES_PER_LOOP_HW4;
 
 	// run emulation core
 	res = hw_m68k_run(cpu_cycles / MIN_INSTRUCTIONS_PER_CYCLE, cpu_cycles);
