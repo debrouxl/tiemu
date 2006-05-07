@@ -72,6 +72,7 @@ extern "C" {
 #define HW1			1
 #define HW2			2
 #define HW3         3
+#define HW4         4
 
 #define LCDMEM_W	240		// LCD _memory_ height
 #define LCDMEM_H	128		// LCD _memory_ height

@@ -148,6 +148,7 @@ SubVersion: $Id$
 	- [kevin] $2033: commented out OLE installation in tiemu*.nsi and OLE initialization/cleanup in oleaut.cpp - OLE support will be reenabled when it will actually work
 	- [roms]  $2037: fixed to follow ticalcs2 API changes
 	- [kevin] $2038: HW4 runs at 16 MHz
+	- [roms]  $2040: added HW4 support (user can choose imported FLASH upgrade as HW3 or HW4 for Titanium (like TI89/92+))
 	
 	Note: trunk forked into tiemu-debugging-branch at rev. $983 and has been merged back 
 		into the trunk at rev. $1695.	

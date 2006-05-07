@@ -429,6 +429,16 @@ gint display_import_romversion_dbox(void)
 			else if(ret == BUTTON2)
 				hw_type = HW2;
 		}
+		else if(infos.calc_type == TI89t)
+		{
+			int ret = msg_box3(_("HW type"), 
+				_("The FLASH upgrade can be imported as HW3 or HW4. Please choose..."), 
+				"HW3", "HW4", "Default");
+			if(ret == BUTTON1)
+				hw_type = HW3;
+			else if(ret == BUTTON2)
+				hw_type = HW4;
+		}
 
 		// fake rom
 		err = ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname, hw_type);
