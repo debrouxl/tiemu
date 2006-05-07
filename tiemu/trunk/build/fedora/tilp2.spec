@@ -15,8 +15,8 @@ Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:		%{name}-%{version}.tar.bz2
 Group:		Applications/Communications
 License:	GPL
-BuildRequires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.2.2, desktop-file-utils >= 0.10
-Requires:	libticables2 = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2
+BuildRequires:	libticables2 = %{version}, libticonv = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.2.2, desktop-file-utils >= 0.10
+Requires:	libticables2 = %{version}, libticonv = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2
 Requires(post):	shared-mime-info, desktop-file-utils >= 0.9
 Requires(postun): shared-mime-info, desktop-file-utils >= 0.9
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
@@ -101,6 +101,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Sun May 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Now requires libticonv.
+
 * Sat Feb 11 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Update setup -n to use the new directory name (tilp, not tilp2).
 
@@ -119,7 +122,7 @@ Revert -Wl,--export-dynamic addition (now upstream).
 * Sun Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Bump version requirements for FC4.
 Change Copyright to License.
-Add missing -Wl,--export-dynamic.
+Addmissing-Wl,--export-dynamic.
 
 * Fri May 27 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Add Requires on zlib and BuildRequires on zlib-devel.

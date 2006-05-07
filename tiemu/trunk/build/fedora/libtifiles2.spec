@@ -14,9 +14,9 @@ Vendor:		LPG (http://lpg.ticalc.org)
 Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		System Environment/Libraries
-License:	LGPL
-BuildRequires:	libticables2 = %{version}, zlib-devel >= 1.2.2.2
-Requires:	libticables2 = %{version}, zlib >= 1.2.2.2
+License:	GPL
+BuildRequires:	libticables2 = %{version}, libticonv = %{version}, zlib-devel >= 1.2.2.2, glib2-devel >= 2.10.1
+Requires:	libticables2 = %{version}, libticonv = %{version}, zlib >= 1.2.2.2, glib2 >= 2.10.1
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Summary: Ti File Format management
 %description
@@ -58,6 +58,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Sun May 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+License now GPL.
+Add missing glib2 BuildRequires/Requires.
+Now requires libticonv.
+
 * Sat Feb 11 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Update setup -n to use the new directory name (libtifiles, not libtifiles2).
 

@@ -14,9 +14,9 @@ Vendor:		LPG (http://lpg.ticalc.org)
 Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		System Environment/Libraries
-License:	LGPL
-BuildRequires:	libusb-devel >= 0.1.10a
-Requires:	libusb >= 0.1.10a
+License:	GPL
+BuildRequires:	libusb-devel >= 0.1.10a, glib2-devel >= 2.10.1
+Requires:	libusb >= 0.1.10a, glib2 >= 2.10.1
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Summary:	Library for handling TI link cables
 %description
@@ -112,6 +112,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Sun May 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+License now GPL (with exception for TilEm).
+Add missing glib2 BuildRequires/Requires.
+Now requires libticonv.
+
 * Sat Feb 11 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Update setup -n to use the new directory name (libticables, not libticables2).
 

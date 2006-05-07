@@ -14,9 +14,9 @@ Vendor:		LPG (http://lpg.ticalc.org)
 Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		System Environment/Libraries
-License:	LGPL
-BuildRequires:	libticables2 = %{version}, libtifiles2 = %{version}
-Requires:	libticables2 = %{version}, libtifiles2 = %{version}
+License:	GPL
+BuildRequires:	libticables2 = %{version}, libticonv = %{version}, libtifiles2 = %{version}, glib2-devel >= 2.10.1
+Requires:	libticables2 = %{version}, libticonv = %{version}, libtifiles2 = %{version}, glib2 >= 2.10.1
 BuildRoot:	/usr/src/redhat/BUILD/buildroot
 Summary:	Library for handling TI calculators through a common API
 %description
@@ -57,6 +57,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Sun May 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+License now GPL.
+Add missing glib2 BuildRequires/Requires.
+Now requires libticonv.
+
 * Sat Feb 11 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Update setup -n to use the new directory name (libticalcs, not libticalcs2).
 
