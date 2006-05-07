@@ -6,7 +6,7 @@
  *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
  *  Copyright (c) 2003-2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@
 // On HW1, AI3 is triggered every ~10/7 of a second.
 #define HW1_RATE    427    // 10MHz / (2^19*(10/7)/2^5)
 #define HW2_RATE    732    // 12MHz / (2^19/2^5)
+#define HW4_RATE    977    // 16MHz / (2^19/2^5)
 
 // Timer masks at 2^5, 2^9, 2^12, 2^18 (port $600015)
 const unsigned int timer_masks[4] = {0, 15, 127, 8191};
@@ -112,8 +113,10 @@ int hw_init(void)
         cycle_instr = params.hw_rate;
     else if(tihw.hw_type == HW1)
         cycle_instr = HW1_RATE;
-    else if(tihw.hw_type >= HW2)
+    else if(tihw.hw_type <= HW3)
         cycle_instr = HW2_RATE;
+    else
+        cycle_instr = HW4_RATE;
 
     return 0;
 }
