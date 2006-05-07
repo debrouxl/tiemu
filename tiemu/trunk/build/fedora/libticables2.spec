@@ -34,62 +34,62 @@ if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 strip $RPM_BUILD_ROOT/usr/lib/libticables2.so.*.*.*
-mkdir -p $RPM_BUILD_ROOT/etc/hotplug/usb
-cat >$RPM_BUILD_ROOT/etc/hotplug/usb/libticables.usermap <<EOF1
-# This file is installed by the libticables Fedora package.
-#
-# usb module         match_flags idVendor idProduct bcdDevice_lo bcdDevice_hi bDeviceClass bDeviceSubClass bDeviceProtocol bInterfaceClass bInterfaceSubClass bInterfaceProtocol driver_info
-#
-libticables             0x0003      0x0451   0xe001    0x0000       0x0000       0x00         0x00            0x00            0x00            0x00               0x00               0x00000000
+mkdir -p $RPM_BUILD_ROOT/etc/udev/rules.d
+cat >$RPM_BUILD_ROOT/etc/udev/rules.d/96-libticables.rules <<EOF1
+# This file was installed by the libticables2 Fedora package.
+
+# SilverLink
+ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e001", RUN+="/lib/udev/libticables-udev.sh \$env{DEVNAME}"
+# TI-89 Titanium DirectLink
+ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e004", RUN+="/lib/udev/libticables-udev.sh \$env{DEVNAME}"
+# TI-84+ DirectLink
+ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e008", RUN+="/lib/udev/libticables-udev.sh \$env{DEVNAME}"
 EOF1
-cat >$RPM_BUILD_ROOT/etc/hotplug/usb/libticables <<EOF2
+mkdir -p $RPM_BUILD_ROOT/lib/udev
+cat >$RPM_BUILD_ROOT/lib/udev/libticables-udev.sh <<EOF2
 #!/bin/sh
 
-# This file was installed by the libticables Fedora package.
+# This file was installed by the libticables2 Fedora package.
 #
 # Sets up newly plugged in USB SilverLink so that the user who owns
 # the console according to pam_console can access it from user space
 #
 # Note that for this script to work, you'll need all of the following:
-# a) libticables.usermap shipped with the libticables Fedora package.
+# a) 96-libticables.rules shipped with the libticables2 Fedora package.
 # b) a setup using pam_console creates the respective lock files
 #    containing the name of the respective user. You can check for that
 #    by executing "echo \`cat /var/{run,lock}/console.lock\`" and 
 #    verifying the appropriate user is mentioned somewhere there.
-# c) a Linux kernel supporting hotplug and usbdevfs
-# d) the hotplug package (http://linux-hotplug.sourceforge.net/)
+# c) a Linux kernel supporting udev
+# d) a recent version of the udev package
 #
 # Arguments :
 # -----------
-# ACTION=[add|remove]
-# DEVICE=/proc/bus/usb/BBB/DDD
-# TYPE=usb
+# \$1=DEVNAME
 
-if [ "\$ACTION" = "add" -a "\$TYPE" = "usb" -a -f "\${DEVICE}"]; then
+# New code, using lock files instead of copying /dev/console permissions
+# This also works with non-gdm logins (e.g. on a virtual terminal)
+# Idea and code from Nalin Dahyabhai <nalin@redhat.com>
+if [ -f /var/run/console/console.lock ]
 then
-    # New code, using lock files instead of copying /dev/console permissions
-    # This also works with non-gdm logins (e.g. on a virtual terminal)
-    # Idea and code from Nalin Dahyabhai <nalin@redhat.com>
-    if [ -f /var/run/console/console.lock ]
-    then
-        CONSOLEOWNER=\`cat /var/run/console/console.lock\`
-    elif [ -f /var/run/console.lock ]
-    then
-        CONSOLEOWNER=\`cat /var/run/console.lock\`
-    elif [ -f /var/lock/console.lock ]
-    then
-        CONSOLEOWNER=\`cat /var/lock/console.lock\`
-    else
-        CONSOLEOWNER=
-    fi
-    if [ -n "\$CONSOLEOWNER" ]
-    then
-        chmod 0000 "\${DEVICE}"
-        chown "\$CONSOLEOWNER" "\${DEVICE}"
-        chmod 0600 "\${DEVICE}"
-    fi
+    CONSOLEOWNER=\`cat /var/run/console/console.lock\`
+elif [ -f /var/run/console.lock ]
+then
+    CONSOLEOWNER=\`cat /var/run/console.lock\`
+elif [ -f /var/lock/console.lock ]
+then
+    CONSOLEOWNER=\`cat /var/lock/console.lock\`
+else
+    CONSOLEOWNER=
+fi
+if [ -n "\$CONSOLEOWNER" ]
+then
+    chmod 0000 "\$1"
+    chown "\$CONSOLEOWNER" "\$1"
+    chmod 0600 "\$1"
 fi
 EOF2
+chmod 755 $RPM_BUILD_ROOT/lib/udev/libticables-udev.sh
 
 %post
 /sbin/ldconfig
@@ -107,8 +107,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/lib/libticables2.la
 /usr/lib/libticables2.so*
 /usr/lib/pkgconfig/ticables2.pc
-/etc/hotplug/usb/libticables.usermap
-/etc/hotplug/usb/libticables
+/etc/udev/rules.d/96-libticables.rules
+/lib/udev/libticables-udev.sh
 
 %defattr(-,root,root)
 %changelog
@@ -116,6 +116,7 @@ rm -rf $RPM_BUILD_ROOT
 License now GPL (with exception for TilEm).
 Add missing glib2 BuildRequires/Requires.
 Now requires libticonv.
+Convert hotplug rules to udev rules and add DirectLink DeviceIDs.
 
 * Sat Feb 11 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Update setup -n to use the new directory name (libticables, not libticables2).

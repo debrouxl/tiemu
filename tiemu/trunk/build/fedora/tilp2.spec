@@ -122,7 +122,7 @@ Revert -Wl,--export-dynamic addition (now upstream).
 * Sun Jun 19 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Bump version requirements for FC4.
 Change Copyright to License.
-Addmissing-Wl,--export-dynamic.
+Add missing-Wl,--export-dynamic.
 
 * Fri May 27 2005 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Add Requires on zlib and BuildRequires on zlib-devel.
