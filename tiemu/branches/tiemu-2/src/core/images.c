@@ -488,12 +488,15 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	img.revision = IMG_REV;
     real_size = img.size - SPP;
     img.size = ti68k_get_rom_size(img.calc_type);
-    if(img.calc_type == TI89t)
-        img.hw_type = HW3;  //default
-    else if(hw_type == -1)
-        img.hw_type = HW2;  //default
-	else
-		img.hw_type = hw_type;
+	
+	img.hw_type = hw_type;
+	if(hw_type == -1)
+	{
+		if(img.calc_type == TI89t)
+			img.hw_type = HW3;  //default
+		else if(img.calc_type == TI89 || img.calc_type == TI92p)
+			img.hw_type = HW2;	// default
+	}
 	
 	// Write header
 	fwrite(&img, 1, sizeof(IMG_INFO), f);

@@ -2,8 +2,8 @@
 
 
 
-Previous version: 2.06		(02/03/2006)
-Current version:  2.07		(25/03/2006)
+Previous version: 2.07		(25/03/2006)
+Current version:  2.08		(06/05/2006)
 
 SubVersion (CVS) revision: $Id$
 
@@ -20,7 +20,7 @@ For the other link cables, no driver is needed.
 New capabilities:
 -----------------
 
-	- ability to load VTi skins
+	- user can choose imported FLASH upgrade as HW3 or HW4 for Titanium (like TI89/92+)
 
 
 Improvements:

@@ -92,6 +92,7 @@ const char *ti68k_hwtype_to_string(int type)
 		case HW1:   return "HW1";
 		case HW2:   return "HW2";
         case HW3:   return "HW3";
+		case HW4:   return "HW4";
 		default:    return "none";
 	}
 }
@@ -104,6 +105,8 @@ int ti68k_string_to_hwtype(const char *str)
 		return HW2;
     else if(!strcmp(str, "HW3"))
 		return HW3;
+	else if(!strcmp(str, "HW4"))
+		return HW4;
 
 	return 0;
 }
