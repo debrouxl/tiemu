@@ -23,7 +23,7 @@ BEGIN
             VALUE "FileDescription", "TiEmu\0"
             VALUE "FileVersion", __DATE__
             VALUE "InternalName", "TiEmu\0"
-            VALUE "LegalCopyright", "Copyright © 2000-2005, The TiEmu Team\0"
+            VALUE "LegalCopyright", "Copyright  2000-2006, The TiEmu Team\0"
             VALUE "LegalTrademarks", "The TiEmu Team\0"
             VALUE "OriginalFilename", "tiemu.exe\0"
 //            VALUE "PrivateBuild", "$Id$\0"
