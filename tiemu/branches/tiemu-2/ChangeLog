@@ -4,6 +4,9 @@ Bug:
 - full view mode is not accessible from menu but can be by-passed from the WM (-@x)
 - scaling factor seems to be not limited, too
 
+- 08/05/2006, version 2.09:
+	- [roms] $2043:	fixed edition of vlaues in the memory dbox
+
 - 07/05/2006, version 2.08:
 	- [roms] $2039: user can choose imported FLASH upgrade as HW3 or HW4 for Titanium (like TI89/92+)
 	- [roms] $2040: imported Kevin's Titanium HW4 timing.

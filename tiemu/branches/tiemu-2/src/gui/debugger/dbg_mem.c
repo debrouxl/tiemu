@@ -135,22 +135,21 @@ static void renderer_edited(GtkCellRendererText * cell,
     for(i = 0; (i < (int)strlen(str_data)/2) && ((col+i) <= COL_F); i++)
     {
         char digits[3];
+		int offset = col - COL_0 + i;
 
         strncpy(digits, &new_text[2*i], 2); 
         digits[2] = '\0';
 
         sscanf(str_addr, "%x", &addr);
         sscanf(digits, "%x", &data);
-		mem_wr_byte(addr, (uint8_t)data);
+		mem_wr_byte(addr + offset, (uint8_t)data);
 
 		// don't rely on typed value
-		data = mem_rd_byte(addr);
+		data = mem_rd_byte(addr + offset);
 		sprintf(digits, "%02x", data);
-		ascii[col - COL_0 + i] = (isprint(data) && !iscntrl(data) ? data : '.');
+		ascii[offset] = (isprint(data) && !iscntrl(data) ? data : '.');
 
 		gtk_list_store_set(store, &iter, col+i, digits, -1);
-		addr += (col - COL_0) + i;
-
 		dbgstack_refresh_window();	// refresh stack, too
     }
 

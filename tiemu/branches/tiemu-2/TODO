@@ -1,3 +1,20 @@
+Bugs:
+
+Déjà les bugs dont je me souviens  (j'utilise TiEmu 2.07, je viens de
+voir qu'il y a une 2.08, il faudrait tester qu'ils existent toujours)
+:
+
++ L'édition de la mémoire dans la fenêtre memory ne marche plus, on ne
+peut éditer que le premier octet de chaque ligne (graphiquement
+l'édition semble avoir été prise en compte, mais il suffit de scroller
+ou de rafraîchir pour que ca disparaisse).
+
+* Je n'arrivais plus à lancer un reset, la Titanium émulée se bloquait
+dans le code de l'initialisation d'AMS dans une boucle qui attend
+probablement qu'une écriture en flash ait bien été prise en compte.
+Malheureusement le problème a disparu, je ne peux pas te donner plus
+de détails. O. Armand
+
 Planned features:
 
 * use the contrast field of skin
