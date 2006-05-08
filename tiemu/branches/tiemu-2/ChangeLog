@@ -5,11 +5,11 @@ Bug:
 - scaling factor seems to be not limited, too
 
 - 08/05/2006, version 2.09:
-	- [roms] $2043:	fixed edition of vlaues in the memory dbox
+	- [roms] $2047:	fixed edition of vlaues in the memory dbox
 
 - 07/05/2006, version 2.08:
 	- [roms] $2039: user can choose imported FLASH upgrade as HW3 or HW4 for Titanium (like TI89/92+)
-	- [roms] $2040: imported Kevin's Titanium HW4 timing.
+	- [roms] $2041: imported Kevin's Titanium HW4 timing.
 
 - 25/03/2006, version 2.07:
 	- [roms] $2028: added loading of VTi skins
