@@ -34,7 +34,11 @@ gint display_save_state_dbox(void);
 gint display_recv_files_dbox(const char *src, const char *dst);
 void send_file(const gchar *filename);
 gint display_send_files_dbox();
+#ifdef NO_GDB
+#define send_file_and_debug_info send_file
+#else
 void send_file_and_debug_info(const gchar *filename);
+#endif
 gint display_debug_dbox(void);
 gint display_set_rom_dbox(void);
 gint display_set_tib_dbox(void);
