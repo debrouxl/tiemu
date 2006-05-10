@@ -284,6 +284,7 @@ int lastint_no;
 #define get_iword_1(o) get_word(regs.pc + (regs.pc_p - regs.pc_oldp) + (o))
 #define get_ilong_1(o) get_long(regs.pc + (regs.pc_p - regs.pc_oldp) + (o))
 
+#ifdef NO_GDB
 uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 {
     uae_u16 dp;
@@ -457,6 +458,7 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	strcat (buf, buffer);
     return offset;
 }
+#endif
 
 /* The plan is that this will take over the job of exception 3 handling -
  * the CPU emulation functions will just do a longjmp to m68k_go whenever
@@ -1631,7 +1633,7 @@ static void m68k_verify (uaecptr addr, uaecptr *nextpc)
 #define snprintf	_snprintf
 #endif
 
-//void m68k_disasm (FILE *f, uaecptr addr, uaecptr *nextpc, int cnt)
+#ifdef NO_GDB
 int m68k_disasm(char *output, uaecptr addr)
 {
 	int cnt = 1;
@@ -1642,7 +1644,6 @@ int m68k_disasm(char *output, uaecptr addr)
 	output[0] = '\0';
     while (cnt-- > 0) {
 	char instrname[20],*ccpt;
-	int opwords;
 	uae_u32 opcode;
 	struct mnemolookup *lookup;
 	struct instr *dp;
@@ -1653,8 +1654,7 @@ int m68k_disasm(char *output, uaecptr addr)
 	    opcode = 0x4AFC;
 	}
 	dp = table68k + opcode;
-	for (lookup = lookuptab;lookup->mnemo != dp->mnemo; lookup++)
-	    ;
+	for (lookup = lookuptab;lookup->mnemo != dp->mnemo; lookup++);
 
 	strcpy (instrname, lookup->name);
 	ccpt = strstr (instrname, "cc");
@@ -1695,6 +1695,7 @@ int m68k_disasm(char *output, uaecptr addr)
     
 	return m68kpc_offset;
 }
+#endif
 
 #if 0
 void m68k_dumpstate (FILE *f, uaecptr *nextpc)

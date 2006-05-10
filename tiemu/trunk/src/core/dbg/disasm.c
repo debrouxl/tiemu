@@ -86,7 +86,6 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 
 	offset = m68k_disasm(output, addr);
 	split = g_strsplit(output, " ", 2);
-	//printf("<%06x: %s>\n", addr, output);
 
 	if(split[1])
 		for(p = split[1]; *p == ' '; p++);
