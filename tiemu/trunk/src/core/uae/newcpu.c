@@ -296,6 +296,9 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
     uae_s32 offset = 0;
     char buffer[80];
 
+	if(buf)
+		buf[0] = '\0';
+
     switch (mode){
      case Dreg:
 	sprintf (buffer,"D%d", reg);
@@ -452,10 +455,8 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
      default:
 	break;
     }
-    if (buf == 0)
-	fprintf (f, "%s", buffer);
-    else
-	strcat (buf, buffer);
+    if (buf != 0)
+		strcat (buf, buffer);
     return offset;
 }
 #endif
