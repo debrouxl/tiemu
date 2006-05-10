@@ -296,9 +296,6 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
     uae_s32 offset = 0;
     char buffer[80];
 
-	if(buf)
-		buf[0] = '\0';
-
     switch (mode){
      case Dreg:
 	sprintf (buffer,"D%d", reg);
@@ -455,8 +452,10 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
      default:
 	break;
     }
-    if (buf != 0)
-		strcat (buf, buffer);
+    if (buf == 0)
+	fprintf (f, "%s", buffer);
+    else
+	strcat (buf, buffer);
     return offset;
 }
 #endif
@@ -1630,25 +1629,22 @@ static void m68k_verify (uaecptr addr, uaecptr *nextpc)
     }
 }
 
-#ifdef __WIN32__
-#define snprintf	_snprintf
-#endif
-
 #ifdef NO_GDB
-int m68k_disasm(char *output, uaecptr addr)
+int m68k_disasm (char *output, uaecptr addr)
 {
-	int cnt = 1;
-	char buf[256];
+    int cnt = 1;
+    char buf[21];
     uaecptr newpc = 0;
     m68kpc_offset = addr - m68k_getpc ();
+    output[0] = '\0';
 
-	output[0] = '\0';
     while (cnt-- > 0) {
 	char instrname[20],*ccpt;
 	uae_u32 opcode;
 	struct mnemolookup *lookup;
 	struct instr *dp;
-	snprintf(buf, sizeof(buf), "%06lx: ", m68k_getpc () + m68kpc_offset); strcat(output, buf);	
+	sprintf (buf, "%06lx: ", m68k_getpc () + m68kpc_offset);
+	strcat (output, buf);	
 	opcode = get_iword_1 (m68kpc_offset);
 	m68kpc_offset += 2;
 	if (cpufunctbl[opcode] == op_illg_1) {
@@ -1662,39 +1658,39 @@ int m68k_disasm(char *output, uaecptr addr)
 	if (ccpt != 0) {
 	    strncpy (ccpt, ccnames[dp->cc], 2);
 	}
-	snprintf(buf, sizeof(buf), "%s", instrname); strcat(output, buf);
+	strcat (output, instrname);
 	switch (dp->size){
-	 case sz_byte: snprintf(buf, sizeof(buf), ".B "); break;
-	 case sz_word: snprintf(buf, sizeof(buf), ".W "); break;
-	 case sz_long: snprintf(buf, sizeof(buf), ".L "); break;
-	 default: snprintf(buf, sizeof(buf), "   "); break;
+	 case sz_byte: strcat (output, ".B "); break;
+	 case sz_word: strcat (output, ".W "); break;
+	 case sz_long: strcat (output, ".L "); break;
+	 default: strcat (output, "   "); break;
 	}
-	 strcat(output, buf);
 
 	if (dp->suse) {
 	    newpc = m68k_getpc () + m68kpc_offset;
-	    newpc += ShowEA (stdout, dp->sreg, dp->smode, dp->size, buf); strcat(output, buf);
+	    newpc += ShowEA (0, dp->sreg, dp->smode, dp->size, output);
 	}
 	if (dp->suse && dp->duse)
-	{
-	    snprintf(buf, sizeof(buf), ",");
-		 strcat(output, buf);
-	}
+	    strcat(output, ",");
 	if (dp->duse) {
 	    newpc = m68k_getpc () + m68kpc_offset;
-	    newpc += ShowEA (stdout, dp->dreg, dp->dmode, dp->size, 0);
-		 strcat(output, buf);
+	    newpc += ShowEA (0, dp->dreg, dp->dmode, dp->size, output);
 	}
 	if (ccpt != 0) {
-	    if (cctrue(dp->cc))
-		{ snprintf(buf, sizeof(buf), " == %08lx (TRUE)", newpc); strcat(output, buf); }
-	    else
-		{snprintf(buf, sizeof(buf), " == %08lx (FALSE)", newpc); strcat(output, buf);}
-	} else if ((opcode & 0xff00) == 0x6100) /* BSR */
-	{ snprintf(buf, sizeof(buf), " == %08lx", newpc); strcat(output, buf); }
+	    if (cctrue(dp->cc)) {
+		sprintf (buf, " == %08lx (TRUE)", newpc);
+		strcat (output, buf);
+	    } else {
+		sprintf (buf, " == %08lx (FALSE)", newpc);
+		strcat (output, buf);
+	    }
+	} else if ((opcode & 0xff00) == 0x6100) {/* BSR */
+	    sprintf (buf, " == %08lx", newpc);
+	    strcat (output, buf);
+	}
     }
-    
-	return m68kpc_offset;
+
+    return m68kpc_offset;
 }
 #endif
 

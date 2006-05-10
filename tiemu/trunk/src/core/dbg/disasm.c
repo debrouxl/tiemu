@@ -30,14 +30,19 @@
 
 #include "ti68k_int.h"
 
+/* ti68k_debug_disassemble is a wrapper around the GDB or UAE disassembler, so
+   we can use the GDB disassembler in GDB-enabled builds and the UAE one in
+   non-GDB builds. The abstraction also allows plugging in any other
+   disassembler instead at any moment. */
+
 #ifndef NO_GDB
+
 #include "../gdb/include/dis-asm.h"
 struct ui_file;
 struct disassemble_info gdb_disassemble_info (struct gdbarch *gdbarch, struct ui_file *file);
 int print_insn_m68k (bfd_vma memaddr, disassemble_info *info);
 
-/* This is just a wrapper around the GDB disassembler, allowing to plug in the
-   VTI or UAE disassembler instead at any moment. */
+/* GDB enabled: use the GDB disassembler */
 uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 {
 	static struct disassemble_info di;
@@ -69,14 +74,9 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 
 #else
 
-#include "sysdeps.h"
-#include "options.h"
-#include "memory.h"
-#include "newcpu.h"
+#include "libuae.h"
 
-int m68k_disasm(char *output, uaecptr addr);
-
-
+/* GDB disabled: use the UAE disassembler */
 uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 {
 	char output[256];
