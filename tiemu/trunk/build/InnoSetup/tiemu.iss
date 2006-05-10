@@ -6,106 +6,145 @@
 ; $Id: tiemu.iss 639 2004-08-19 15:35:33Z roms $
 
 [Setup]
-AppName=TiEmu
-AppVerName=TiEmu 2.00
+AppName=TiEmu3
+AppVerName=TiEmu 3.00 No Gdb
 AppPublisher=The TiEmu Team
 AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
 AppSupportURL=http://lpg.ticalc.org/prj_tiemu/mailing_list.html
 AppUpdatesURL=http://lpg.ticalc.org/prj_tiemu/win32_download.html
-DefaultDirName={pf}\TiEmu
-DefaultGroupName=TiEmu
+DefaultDirName={pf}\TiEmu3
+DefaultGroupName=TiEmu3
 AllowNoIcons=yes
-LicenseFile=C:\sources\roms\tiemu\COPYING
-InfoBeforeFile=C:\sources\roms\tiemu\README.win32
-InfoAfterFile=C:\sources\roms\tiemu\RELEASE
+LicenseFile=C:\sources\roms\tiemu3\COPYING
+InfoBeforeFile=C:\sources\roms\tiemu3\README.win32
+InfoAfterFile=C:\sources\roms\tiemu3\RELEASE
 
 [Tasks]
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4; Flags: unchecked
 
+Name: "slv_drv"; Description: "Copy SilverLink drivers"; GroupDescription: "Drivers:"; MinVersion: 0,4
+Name: "tlk_drv"; Description: "Install BlackLink/Parallel cable"; GroupDescription: "Drivers:"; MinVersion: 0,4
+
 [Files]
 ; Glade files
-Source: "C:\sources\roms\tiemu\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu3\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
+
 ; Help files
-Source: "C:\sources\roms\tiemu\help\*.jpg"; DestDir: "{app}\help"; Flags: ignoreversion;
-Source: "C:\sources\roms\tiemu\help\*.png"; DestDir: "{app}\help"; Flags: ignoreversion;
-Source: "C:\sources\roms\tiemu\help\*.htm?"; DestDir: "{app}\help"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu3\help\*.jpg"; DestDir: "{app}\help"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu3\help\*.png"; DestDir: "{app}\help"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu3\help\*.htm?"; DestDir: "{app}\help"; Flags: ignoreversion;
+
 ; Pixmaps files
-Source: "C:\sources\roms\tiemu\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu3\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
+
 ; Skin files
-Source: "C:\sources\roms\tiemu\skins\*.skn"; DestDir: "{app}\skins"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu3\skins\*.skn"; DestDir: "{app}\skins"; Flags: ignoreversion;
+
 ; Keymap files
-Source: "C:\sources\roms\tiemu\skins\*.map"; DestDir: "{app}\skins"; Flags: ignoreversion;
-Source: "C:\sources\roms\tiemu\skins\ti92.map"; DestDir: "{app}\skins"; DestName: "v200plt.map"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu3\skins\*.map"; DestDir: "{app}\skins"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu3\skins\ti92.map"; DestDir: "{app}\skins"; DestName: "v200plt.map"; Flags: ignoreversion;
+
 ; i18n files
 ;Source: "C:\sources\roms\libs\files\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tifiles.mo"; Flags: ignoreversion;
 ;Source: "C:\sources\roms\libs\cables\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "ticables.mo"; Flags: ignoreversion;
 ;Source: "C:\sources\roms\libs\calcs\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "ticalcs.mo"; Flags: ignoreversion;
-;Source: "C:\sources\roms\tiemu\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tiemu.mo"; Flags: ignoreversion;
+;Source: "C:\sources\roms\tiemu3\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tiemu.mo"; Flags: ignoreversion;
+
 ; Misc files
-Source: "C:\sources\roms\tiemu\AUTHORS"; DestDir: "{app}"; DestName: "Authors.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\BUGS"; DestDir: "{app}"; DestName: "Bugs.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\CHANGELOG"; DestDir: "{app}"; DestName: "ChangeLog.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\COPYING"; DestDir: "{app}"; DestName: "License.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\LICENSES"; DestDir: "{app}"; DestName: "Licenses.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\man\ManPage.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\README.win32"; DestDir: "{app}"; DestName: "ReadMe.txt"; Flags: ignoreversion isreadme
-Source: "C:\sources\roms\tiemu\RELEASE"; DestDir: "{app}"; DestName: "Release.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\TODO"; DestDir: "{app}"; DestName: "ToDo.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu3\AUTHORS"; DestDir: "{app}"; DestName: "Authors.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu3\BUGS"; DestDir: "{app}"; DestName: "Bugs.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu3\CHANGELOG"; DestDir: "{app}"; DestName: "ChangeLog.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu3\COPYING"; DestDir: "{app}"; DestName: "License.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu3\LICENSES"; DestDir: "{app}"; DestName: "Licenses.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu3\man\ManPage.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu3\README.win32"; DestDir: "{app}"; DestName: "ReadMe.txt"; Flags: ignoreversion isreadme
+Source: "C:\sources\roms\tiemu3\RELEASE"; DestDir: "{app}"; DestName: "Release.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu3\TODO"; DestDir: "{app}"; DestName: "ToDo.txt"; Flags: ignoreversion
+
 ; Resource files
-Source: "C:\sources\roms\tiemu\misc\romcalls.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\misc\iodefs*.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu3\misc\romcalls.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu3\misc\iodefs*.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
+
 ; PedRom files
-Source: "C:\sources\roms\tiemu\pedrom\pedrom*.tib"; DestDir: "{app}\pedrom"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu3\pedrom\pedrom*.tib"; DestDir: "{app}\pedrom"; Flags: ignoreversion
+
 ; TiEmu/GTK
-Source: "C:\sources\roms\tifiles\tests\tifiles.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\sources\roms\ticables\tests\ticables.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\sources\roms\ticalcs\tests\ticalcs.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu\build\msvc\tiemu.exe"; DestDir: "{app}"; DestName: "tiemu.exe"; Flags: ignoreversion
-;Source: "C:\Windows\system32\MSVCRTD.DLL"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\sources\roms\tifiles2\tests\tifiles2.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\sources\roms\ticables2\tests\ticables2.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\sources\roms\ticalcs2\tests\ticalcs2.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu3\build\msvc\tiemu-3.exe"; DestDir: "{app}"; DestName: "tiemu-3.exe"; Flags: ignoreversion
+
 ; Copy PortTalk driver for Windows NT4/2000/XP
-Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{sys}\drivers"; Flags: ignoreversion
-Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\sources\roms\misc\Porttalk22\AllowIO.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\sources\roms\misc\Porttalk22\Uninstall.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{sys}\drivers"; Flags: ignoreversion; Tasks: tlk_drv;
+Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{app}\PortTalk"; Flags: ignoreversion; Tasks: tlk_drv;
+Source: "C:\sources\roms\misc\Porttalk22\AllowIO.exe"; DestDir: "{app}\PortTalk"; Flags: ignoreversion; Tasks: tlk_drv;
+Source: "C:\sources\roms\misc\Porttalk22\Uninstall.exe"; DestDir: "{app}\PortTalk"; Flags: ignoreversion; Tasks: tlk_drv;
+
+; Copy LPG's SilverLink driver
+Source: "C:\sources\roms\tiglusb\src\xp\driver\License.txt"; DestDir: "{app}\slvdrvXP"; Tasks: slv_drv;
+Source: "C:\sources\roms\tiglusb\src\xp\driver\TiglUsb.dll"; DestDir: "{sys}\drivers";  Tasks: slv_drv;
+Source: "C:\sources\roms\tiglusb\src\xp\driver\TiglUsb.inf"; DestDir: "{app}\slvdrvXP"; Tasks: slv_drv;
+Source: "C:\sources\roms\tiglusb\src\xp\driver\TiglUsb.sys"; DestDir: "{sys}\drivers";  Tasks: slv_drv; MinVersion: 0,4;
+Source: "C:\sources\roms\tiglusb\src\98\driver\License.txt"; DestDir: "{app}\slvdrv98"; Tasks: slv_drv;
+Source: "C:\sources\roms\tiglusb\src\98\driver\TiglUsb.dll"; DestDir: "{sys}\drivers";  Tasks: slv_drv;
+Source: "C:\sources\roms\tiglusb\src\98\driver\TiglUsb.inf"; DestDir: "{app}\slvdrv98"; Tasks: slv_drv;
+Source: "C:\sources\roms\tiglusb\src\98\driver\TiglUsb.sys"; DestDir: "{sys}\drivers";  Tasks: slv_drv; MinVersion: 4,0;
 
 ; GTK+ specific
 Source: "C:\Gtk2Dev\bin\gtkthemeselector.exe"; DestDir: "{app}";
 ;libglade/libxml add-on (ignore since no version checking is possible)
-Source: "C:\Gtk2Dev\bin\libxml2.dll"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "C:\Gtk2Dev\bin\libglade-2.0-0.dll"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "C:\Gtk2Dev\bin\libxml2.dll"; DestDir: "{app}"; Flags: onlyifdoesntexist;
+Source: "C:\Gtk2Dev\bin\libglade-2.0-0.dll"; DestDir: "{app}"; Flags: onlyifdoesntexist;
+
+; Downloader
+Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\*.dll"; DestDir: "{app}\wget";
+Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\wget.exe"; DestDir: "{app}\wget";
+Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\d_and_i.bat"; DestDir: "{app}\wget";
+
 
 [Dirs]
-;Name: "{app}\My TI images"; Flags: uninsneveruninstall;
-;Name: "{app}\plugins"; Flags: uninsneveruninstall;
+Name: "{app}\My TI files"; Flags: uninsneveruninstall;
 
 [INI]
 Filename: "{app}\tiemu.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://lpg.ticalc.org/prj_tiemu"
 
 [Icons]
-Name: "{group}\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}\My TI files"
-Name: "{group}\TiEmu on the Web"; Filename: "{app}\tiemu.url"
+Name: "{group}\TiEmu3"; Filename: "{app}\tiemu-3.exe"; WorkingDir: "{app}\My TI files"
+Name: "{group}\TiEmu3 on the Web"; Filename: "{app}\tiemu.url"
 Name: "{group}\Uninstall TiEmu"; Filename: "{uninstallexe}"
 Name: "{group}\User's Manual"; Filename: "{app}\help\Manual_en.html"
 Name: "{group}\GTK theme selector"; Filename: "{app}\gtkthemeselector.exe";
-Name: "{group}\Bugs"; Filename: "{app}\Bugs.txt"
+Name: "{group}\Install GTK+ from web"; Filename: "{app}\wget\d_and_i.bat";
+Name: "{group}\Bug Report"; Filename: "http://sourceforge.net/tracker/?func=add&group_id=23169&atid=377680";
 
-Name: "{userdesktop}\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: desktopicon
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: quicklaunchicon
+Name: "{userdesktop}\TiEmu3"; Filename: "{app}\tiemu-3.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: desktopicon
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: "{app}\tiemu-3.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: quicklaunchicon
 
 [Run]
 ; Remove any previously installed PortTalk driver (especially v1.x)
-Filename: "{app}\Uninstall.exe"; Parameters: ""; MinVersion: 0,4;
+Filename: "{app}\PortTalk\Uninstall.exe"; Parameters: ""; MinVersion: 0,4; Tasks: tlk_drv;
+Filename: "{app}\tilp2.exe"; Description: "Launch TiLP"; StatusMsg: "Running TiLP..."; Flags: postinstall nowait unchecked
+Filename: "{app}\wget\d_and_i.bat"; Description: "Download and install GTK+"; StatusMsg: "Running ..."; Flags: nowait postinstall unchecked hidewizard;
 
 [UninstallRun]
 ; Remove any previously installed PortTalk driver (especially v1.x)
-Filename: "{app}\Uninstall.exe"; Parameters: ""; MinVersion: 0,4;
+Filename: "{app}\PortTalk\Uninstall.exe"; Parameters: ""; MinVersion: 0,4; Tasks: tlk_drv;
 
 [Registry]
-; This adds the GTK+ libraries to tiemu.exe's path
-;Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; Flags: uninsdeletekeyifempty
-;Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; ValueType: string; ValueData: "{app}\tiemu.exe"; Flags: uninsdeletevalue
-;Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; ValueType: string; ValueName: "Path"; ValueData: "{app};{code:GetGtkPath}\bin"; Flags: uninsdeletevalue
+; Install the NT PortTalk driver
+Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: dword; ValueName: "Type"; ValueData: "1";  MinVersion: 0,4; Tasks: tlk_drv;
+Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: dword; ValueName: "Start"; ValueData: "2"; MinVersion: 0,4; Tasks: tlk_drv;
+Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: dword; ValueName: "ErrorControl"; ValueData: "1"; MinVersion: 0,4; Tasks: tlk_drv;
+Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: string; ValueName: "DisplayName"; ValueData: "PortTalk"; MinVersion: 0,4; Tasks: tlk_drv;
+; Install the LPG's SilverLink driver
+Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\TiglUsb"; ValueType: dword; ValueName: "Type"; ValueData: "1";  Tasks: slv_drv;
+Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\TiglUsb"; ValueType: dword; ValueName: "Start"; ValueData: "3"; Tasks: slv_drv;
+Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\TiglUsb"; ValueType: dword; ValueName: "ErrorControl"; ValueData: "1"; Tasks: slv_drv;
+Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\TiglUsb"; ValueType: string; ValueName: "DisplayName"; ValueData: "TiglUsb.sys TI-GRAPH / DIRECT LINK USB driver"; Tasks: slv_drv;
+Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\TiglUsb"; ValueType: string; ValueName: "ImagePath"; ValueData: "System32\Drivers\TiglUsb.sys"; Tasks: slv_drv;
+; Boost GTK2 (WinNT/2000/XP)
+Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: string; ValueName: "PANGO_WIN32_NO_UNISCRIBE"; ValueData: "anything"; MinVersion: 0,4;
 
 [UninstallDelete]
 Type: files; Name: "{app}\tiemu.url"
@@ -157,12 +196,25 @@ begin
   end;
 end;
 
+function DisplayWarning(I: Integer): Boolean;
+var
+  S: String;
+begin
+  if(I = 1) then begin
+    S := 'The GTK+ libraries are not installed: ';
+  end;
+  if(I = 2) then begin
+    S := 'The GTK+ libraries are installed but the version is old: ';
+  end;
+  MsgBox(S + 'you will need the GTK+ 2.6.x Runtime Environnement! But, the installer can download and install it for you; simply think to check the box at the last tab/page. Otherwise, you can still download it from the start menu (start menu > programs > tilp > install gtk+ from the web).', mbError, MB_OK);
+end;
+
 function InitializeSetup(): Boolean;
 begin
   // Retrieve GTK path
   Result := GetGtkInstalled ();
   if not Result then begin
-    MsgBox ('Please install the "GTK+ 2.6.x Runtime Environment" (2.6.8 mini). You can obtain GTK+ from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.8-rc1.exe?download>.', mbError, MB_OK);
+    DisplayWarning(1);
   end;
 
   // Retrieve GTK version
@@ -170,14 +222,14 @@ begin
     Result := GetGtkVersionInstalled ();
 
     // and check
-    if CompareStr(GtkVersion, '2.6.8') < 0 then begin
-      MsgBox ('Wrong package version. You need at least version 2.6.8 from <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-2.6.8-rc1.exe?download>.', mbError, MB_OK);
+    if CompareStr(GtkVersion, '2.6.10') < 0 then begin
+      DisplayWarning(2);
     end;
   end;
 
   // Check version of USB driver
   if IsTiglUsbVersion3Mini() then begin
-    MsgBox('SilverLink driver v2.x has been removed of your system. Now, TiEmu requires v3.x (check out the README for download location).', mbError, MB_OK);
+    MsgBox('SilverLink driver v2.x has been removed of your system. Now, TiLP/TiEmu requires v3.x (check out the README for download location).', mbError, MB_OK);
   end;
 
   // Check for non-NT and WiMP theme
@@ -185,4 +237,6 @@ begin
   if FileExists(WimpPath) and not UsingWinNT() then begin
         MsgBox('Tip: you are running a non-NT platform with the GTK+ WiMP theme engine installed. If you get a lot of warnings about fonts in console, run the Gtk+ Theme Selector as provided in the start menu group of TiLP/TiEmu', mbError, MB_OK);
   end;
+
+  Result := true;
 end;
