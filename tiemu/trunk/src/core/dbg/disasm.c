@@ -68,10 +68,35 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 }
 
 #else
+
+#include "sysdeps.h"
+#include "options.h"
+#include "memory.h"
+#include "newcpu.h"
+
+int m68k_disasm(char *output, uaecptr addr);
+
+
 uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 {
-	*line = g_strdup_printf("No GDB !");
-	return 0;
+	char output[256];
+	uint32_t offset;
+	gchar **split;
+	gchar *p;
+
+	offset = m68k_disasm(output, addr);
+	split = g_strsplit(output, " ", 2);
+	//printf("<%06x: %s>\n", addr, output);
+
+	if(split[1])
+		for(p = split[1]; *p == ' '; p++);
+	else
+		p = "";
+
+	*line = g_strdup_printf("%s %s", split[0] ? split[0] : "", p);
+	g_strfreev(split);
+
+	return offset;
 }
 #endif
 
