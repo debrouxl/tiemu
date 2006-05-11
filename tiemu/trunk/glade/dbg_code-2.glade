@@ -6,7 +6,7 @@
 <widget class="GtkWindow" id="dbgcode_window">
   <property name="can_focus">True</property>
   <property name="has_focus">True</property>
-  <property name="title" translatable="yes">Code / Source</property>
+  <property name="title" translatable="yes">Disassembly</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
