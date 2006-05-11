@@ -75,17 +75,20 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 #else
 
 int m68k_disasm (char *output, uint32_t addr);
+int m68k_dasm(char **line, uint32_t addr);
 
 /* GDB disabled: use the UAE disassembler */
 uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 {
-	char output[256];
 	uint32_t offset;
-	gchar **split;
-	gchar *p;
 
+#if 1
+	char output[256];
 	offset = m68k_disasm(output, addr);
 	*line = g_strdup(output);
+#else
+	offset = m68k_dasm(line, addr);
+#endif
 
 	return offset;
 }

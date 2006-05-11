@@ -241,6 +241,7 @@ int m68k_disasm (char *output, uaecptr addr)
 	uae_u32 opcode;
 	struct mnemolookup *lookup;
 	struct instr *dp;
+	uaecptr nextpc;
 
     m68kpc_offset = addr - m68k_getpc ();
     output[0] = '\0';
@@ -261,8 +262,6 @@ int m68k_disasm (char *output, uaecptr addr)
 	if (ccpt != 0)
 	    strncpy (ccpt, ccnames[dp->cc], 2);
 	strcat (output, instrname);
-
-	printf("instr = <%s>\n", instrname);
 
 	switch (dp->size)
 	{
@@ -305,16 +304,12 @@ int m68k_disasm (char *output, uaecptr addr)
 	    strcat (output, buf);
 	}
 
-    return m68kpc_offset;
+	nextpc = m68k_getpc () + m68kpc_offset;
+	
+	printf("<%s>\n", output);
+    return (nextpc - addr);
 }
 
-#endif
-
-
-
-/* old code from TiEmu2 */
-#if 0
-// some instructions use a weird naming scheme, remap !
 static const char* instr[] = { 
 	"ORSR.B", "ORSR.W",		/* ORI  #<data>,SR		*/
 	"ANDSR.B", "ANDSR.W",	/* ANDI #<data>,SR		*/
@@ -345,24 +340,22 @@ static int match_opcode(const char *opcode)
 	return -1;
 }
 
-uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
+// some instructions use a weird naming scheme, remap them!
+int m68k_dasm(char **line, uint32_t addr)
 {
-	uint32_t next;
+	char output[256];
+	int offset;
 	char *tok;
 	gchar** split;
 	int idx;
-	char output[128];
-	//uint16_t d;
 
-	MC68000_disasm(addr, &next, 1, output);
-	output[strlen(output)-1] = '\0'; // strip CR-LF
+	offset = m68k_disasm(output, addr);
 
-	// remove extra space as in 'BT .B' instead of BT.B
+	// remove extra space as in 'BT .B' instead of BT.B (needed ?)
 	tok = strstr(output, " .");
 	if(tok)
 		memcpy(tok, tok+1, strlen(tok));
-	//printf("<%s>\n", output);
-	
+
 	// split string into address, opcode and operand
 	split = g_strsplit(output, " ", 3);
 	printf("%s %s%*c %s\n", 
@@ -477,24 +470,23 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
         case 12:    /* MOVEM <ea>,<list>  */
         	g_free(split[1]);
 			split[1] = g_strdup("MOVEM.W");			
-			next += 2;
+			offset += 2;
 			break;
 		case 13:
 			g_free(split[1]);
 			split[1] = g_strdup("MOVEM.L");
-			next += 2;
+			offset += 2;
 			break;
         case 14:    /* MOVEM <list>,<ea>  */
         	g_free(split[1]);
 			split[1] = g_strdup("MOVEM.W");			
-			next += 2;
+			offset += 2;
             break;
         case 15:    /* MOVEM <list>,<ea>  */
             // UAE does not fully disasm this instruction	
             g_free(split[1]);
 			split[1] = g_strdup("MOVEM.L");
-			//d = *((uint16_t *)get_real_address(next));
-			next += 2;	
+			offset += 2;	
 			break;
 		case 16:	/* TRAP #<vector>	*/
 			tmp = split[1] + strlen("TRAP");
@@ -512,6 +504,7 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 			split[2] ? split[2] : "");
 	g_strfreev(split);
 
-	return (next - addr);
+	return offset;
 }
+
 #endif
