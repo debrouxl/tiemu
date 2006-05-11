@@ -235,65 +235,283 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 
 int m68k_disasm (char *output, uaecptr addr)
 {
-    int cnt = 1;
     char buf[21];
     uaecptr newpc = 0;
-    m68kpc_offset = addr - m68k_getpc ();
-    output[0] = '\0';
-
-    while (cnt-- > 0) {
 	char instrname[20],*ccpt;
 	uae_u32 opcode;
 	struct mnemolookup *lookup;
 	struct instr *dp;
+
+    m68kpc_offset = addr - m68k_getpc ();
+    output[0] = '\0';
+	
 	sprintf (buf, "%06lx: ", m68k_getpc () + m68kpc_offset);
-	strcat (output, buf);	
+	strcat (output, buf);
+
 	opcode = get_iword_1 (m68kpc_offset);
 	m68kpc_offset += 2;
-	if (cpufunctbl[opcode] == op_illg_1) {
+	if (cpufunctbl[opcode] == op_illg_1) 
 	    opcode = 0x4AFC;
-	}
+
 	dp = table68k + opcode;
 	for (lookup = lookuptab;lookup->mnemo != dp->mnemo; lookup++);
 
 	strcpy (instrname, lookup->name);
 	ccpt = strstr (instrname, "cc");
-	if (ccpt != 0) {
+	if (ccpt != 0)
 	    strncpy (ccpt, ccnames[dp->cc], 2);
-	}
 	strcat (output, instrname);
-	switch (dp->size){
+
+	printf("instr = <%s>\n", instrname);
+
+	switch (dp->size)
+	{
 	 case sz_byte: strcat (output, ".B "); break;
 	 case sz_word: strcat (output, ".W "); break;
 	 case sz_long: strcat (output, ".L "); break;
 	 default: strcat (output, "   "); break;
 	}
 
-	if (dp->suse) {
+	if (dp->suse) 
+	{
 	    newpc = m68k_getpc () + m68kpc_offset;
 	    newpc += ShowEA (0, dp->sreg, dp->smode, dp->size, output);
 	}
 	if (dp->suse && dp->duse)
+	{
 	    strcat(output, ",");
-	if (dp->duse) {
+	}
+	if (dp->duse) 
+	{
 	    newpc = m68k_getpc () + m68kpc_offset;
 	    newpc += ShowEA (0, dp->dreg, dp->dmode, dp->size, output);
 	}
-	if (ccpt != 0) {
-	    if (cctrue(dp->cc)) {
-		sprintf (buf, " == %08lx (TRUE)", newpc);
-		strcat (output, buf);
-	    } else {
-		sprintf (buf, " == %08lx (FALSE)", newpc);
-		strcat (output, buf);
+	if (ccpt != 0) 
+	{
+	    if (cctrue(dp->cc)) 
+		{
+			sprintf (buf, " == %08lx (TRUE)", newpc);
+			strcat (output, buf);
+	    } 
+		else 
+		{
+			sprintf (buf, " == %08lx (FALSE)", newpc);
+			strcat (output, buf);
 	    }
-	} else if ((opcode & 0xff00) == 0x6100) {/* BSR */
+	} 
+	else if ((opcode & 0xff00) == 0x6100) 
+	{/* BSR */
 	    sprintf (buf, " == %08lx", newpc);
 	    strcat (output, buf);
 	}
-    }
 
     return m68kpc_offset;
 }
 
+#endif
+
+
+
+/* old code from TiEmu2 */
+#if 0
+// some instructions use a weird naming scheme, remap !
+static const char* instr[] = { 
+	"ORSR.B", "ORSR.W",		/* ORI  #<data>,SR		*/
+	"ANDSR.B", "ANDSR.W",	/* ANDI #<data>,SR		*/
+	"EORSR.B", "EORSR.W",	/* EORI #<data>,SR		*/
+	"MVSR2.W", "MVSR2.B",	/* MOVE SR,<ea>			*/
+	"MV2SR.B", "MV2SR.W",	/* MOVE <ea>,SR			*/
+	"MVR2USP.L",			/* MOVE An,USP			*/
+	"MVUSP2R.L",			/* MOVE USP,An			*/
+    "MVMEL.W", "MVMEL.L",   /* MOVEM <ea>,<list>  	*/
+    "MVMLE.W", "MVMLE.L",   /* MOVEM <list>,<ea>	*/
+	"TRAP",					/* TRAP	#<vector>		*/
+	NULL
+};
+
+static int match_opcode(const char *opcode)
+{
+	int i;
+
+	if(opcode == NULL)
+		return -1;
+
+	for(i = 0; instr[i] != NULL; i++)
+	{
+		if(!strncmp(opcode, (char *)instr[i], strlen(instr[i])))
+			return i;
+	}
+
+	return -1;
+}
+
+uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
+{
+	uint32_t next;
+	char *tok;
+	gchar** split;
+	int idx;
+	char output[128];
+	//uint16_t d;
+
+	MC68000_disasm(addr, &next, 1, output);
+	output[strlen(output)-1] = '\0'; // strip CR-LF
+
+	// remove extra space as in 'BT .B' instead of BT.B
+	tok = strstr(output, " .");
+	if(tok)
+		memcpy(tok, tok+1, strlen(tok));
+	//printf("<%s>\n", output);
+	
+	// split string into address, opcode and operand
+	split = g_strsplit(output, " ", 3);
+	printf("%s %s%*c %s\n", 
+			split[0], 
+			split[1], 8 - strlen(split[1]), ' ', 
+			split[2]);
+
+	// search for opcode to rewrite
+	idx = match_opcode(split[1]);
+	if(idx != -1)
+	{
+		gchar *tmp;
+		
+		switch(idx)
+		{
+		case 0:		/* ORI to SR #<data>,SR		*/
+			g_free(split[1]);
+			split[1] = g_strdup("ORI.B");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 1:
+			g_free(split[1]);
+			split[1] = g_strdup("ORI.W");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 2:		/* ANDI to SR #<data>,SR	*/
+			g_free(split[1]);
+			split[1] = g_strdup("ANDI.B");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 3:
+			g_free(split[1]);
+			split[1] = g_strdup("ANDI.W");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 4:		/* EORI to SR #<data>,SR	*/
+			g_free(split[1]);
+			split[1] = g_strdup("EORI.B");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 5:
+			g_free(split[1]);
+			split[1] = g_strdup("EORI.W");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 6:		/* MOVE from SR SR,<ea>		*/
+			g_free(split[1]);
+			split[1] = g_strdup("MOVE.B");
+			
+			tmp = g_strconcat("SR,", split[2], NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 7:
+			g_free(split[1]);
+			split[1] = g_strdup("MOVE.W");
+			
+			tmp = g_strconcat("SR,", split[2], NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 8:		/* MOVE to SR <ea>,SR		*/
+			g_free(split[1]);
+			split[1] = g_strdup("MOVE.B");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 9:
+			g_free(split[1]);
+			split[1] = g_strdup("MOVE.W");
+			
+			tmp = g_strconcat(split[2], ",SR", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 10:	/* MOVE An,USP	*/
+			g_free(split[1]);
+			split[1] = g_strdup("MOVE");
+			
+			tmp = g_strconcat(split[2], ",USP", NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+		case 11:	/* MOVE USP,An	*/
+			g_free(split[1]);
+			split[1] = g_strdup("MOVE");
+			
+			tmp = g_strconcat("USP,", split[2], NULL);
+			g_free(split[2]);
+			split[2] = tmp;
+			break;
+        case 12:    /* MOVEM <ea>,<list>  */
+        	g_free(split[1]);
+			split[1] = g_strdup("MOVEM.W");			
+			next += 2;
+			break;
+		case 13:
+			g_free(split[1]);
+			split[1] = g_strdup("MOVEM.L");
+			next += 2;
+			break;
+        case 14:    /* MOVEM <list>,<ea>  */
+        	g_free(split[1]);
+			split[1] = g_strdup("MOVEM.W");			
+			next += 2;
+            break;
+        case 15:    /* MOVEM <list>,<ea>  */
+            // UAE does not fully disasm this instruction	
+            g_free(split[1]);
+			split[1] = g_strdup("MOVEM.L");
+			//d = *((uint16_t *)get_real_address(next));
+			next += 2;	
+			break;
+		case 16:	/* TRAP #<vector>	*/
+			tmp = split[1] + strlen("TRAP");
+			split[2] = g_strdup(tmp);
+			*tmp = '\0';
+			break;
+		default:
+			break;
+		}
+	}
+	
+	*line = g_strdup_printf("%s %s %s", 
+			split[0] ? split[0] : "", 
+			split[1] ? split[1] : "",
+			split[2] ? split[2] : "");
+	g_strfreev(split);
+
+	return (next - addr);
+}
 #endif

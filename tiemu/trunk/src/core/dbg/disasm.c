@@ -85,17 +85,8 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 	gchar *p;
 
 	offset = m68k_disasm(output, addr);
-	split = g_strsplit(output, " ", 2);
-
-	if(split[1])
-		for(p = split[1]; *p == ' '; p++);
-	else
-		p = "";
-
-	*line = g_strdup_printf("%s %s", split[0] ? split[0] : "", p);
-	g_strfreev(split);
+	*line = g_strdup(output);
 
 	return offset;
 }
 #endif
-
