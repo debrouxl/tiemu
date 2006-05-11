@@ -82,7 +82,7 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 {
 	uint32_t offset;
 
-#if 1
+#if 0
 	char output[256];
 	offset = m68k_disasm(output, addr);
 	*line = g_strdup(output);
