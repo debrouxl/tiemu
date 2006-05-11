@@ -284,7 +284,7 @@ int lastint_no;
 #define get_iword_1(o) get_word(regs.pc + (regs.pc_p - regs.pc_oldp) + (o))
 #define get_ilong_1(o) get_long(regs.pc + (regs.pc_p - regs.pc_oldp) + (o))
 
-#ifdef NO_GDB
+#if 0
 uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 {
     uae_u16 dp;
@@ -458,7 +458,7 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	strcat (buf, buffer);
     return offset;
 }
-#endif
+#endif /* 0 */
 
 /* The plan is that this will take over the job of exception 3 handling -
  * the CPU emulation functions will just do a longjmp to m68k_go whenever
@@ -1629,72 +1629,66 @@ static void m68k_verify (uaecptr addr, uaecptr *nextpc)
     }
 }
 
-#ifdef NO_GDB
-int m68k_disasm (char *output, uaecptr addr)
+#if 0
+void m68k_disasm (FILE *f, uaecptr addr, uaecptr *nextpc, int cnt)
 {
-    int cnt = 1;
-    char buf[21];
     uaecptr newpc = 0;
     m68kpc_offset = addr - m68k_getpc ();
-    output[0] = '\0';
-
     while (cnt-- > 0) {
 	char instrname[20],*ccpt;
+	int opwords;
 	uae_u32 opcode;
 	struct mnemolookup *lookup;
 	struct instr *dp;
-	sprintf (buf, "%06lx: ", m68k_getpc () + m68kpc_offset);
-	strcat (output, buf);	
+	fprintf (f, "%08lx: ", m68k_getpc () + m68kpc_offset);
+	for (opwords = 0; opwords < 5; opwords++){
+	    fprintf (f, "%04x ", get_iword_1 (m68kpc_offset + opwords*2));
+	}
 	opcode = get_iword_1 (m68kpc_offset);
 	m68kpc_offset += 2;
 	if (cpufunctbl[opcode] == op_illg_1) {
 	    opcode = 0x4AFC;
 	}
 	dp = table68k + opcode;
-	for (lookup = lookuptab;lookup->mnemo != dp->mnemo; lookup++);
+	for (lookup = lookuptab;lookup->mnemo != dp->mnemo; lookup++)
+	    ;
 
 	strcpy (instrname, lookup->name);
 	ccpt = strstr (instrname, "cc");
 	if (ccpt != 0) {
 	    strncpy (ccpt, ccnames[dp->cc], 2);
 	}
-	strcat (output, instrname);
+	fprintf (f, "%s", instrname);
 	switch (dp->size){
-	 case sz_byte: strcat (output, ".B "); break;
-	 case sz_word: strcat (output, ".W "); break;
-	 case sz_long: strcat (output, ".L "); break;
-	 default: strcat (output, "   "); break;
+	 case sz_byte: fprintf (f, ".B "); break;
+	 case sz_word: fprintf (f, ".W "); break;
+	 case sz_long: fprintf (f, ".L "); break;
+	 default: fprintf (f, "   "); break;
 	}
 
 	if (dp->suse) {
 	    newpc = m68k_getpc () + m68kpc_offset;
-	    newpc += ShowEA (0, dp->sreg, dp->smode, dp->size, output);
+	    newpc += ShowEA (f, dp->sreg, dp->smode, dp->size, 0);
 	}
 	if (dp->suse && dp->duse)
-	    strcat(output, ",");
+	    fprintf (f, ",");
 	if (dp->duse) {
 	    newpc = m68k_getpc () + m68kpc_offset;
-	    newpc += ShowEA (0, dp->dreg, dp->dmode, dp->size, output);
+	    newpc += ShowEA (f, dp->dreg, dp->dmode, dp->size, 0);
 	}
 	if (ccpt != 0) {
-	    if (cctrue(dp->cc)) {
-		sprintf (buf, " == %08lx (TRUE)", newpc);
-		strcat (output, buf);
-	    } else {
-		sprintf (buf, " == %08lx (FALSE)", newpc);
-		strcat (output, buf);
-	    }
-	} else if ((opcode & 0xff00) == 0x6100) {/* BSR */
-	    sprintf (buf, " == %08lx", newpc);
-	    strcat (output, buf);
-	}
+	    if (cctrue(dp->cc))
+		fprintf (f, " == %08lx (TRUE)", newpc);
+	    else
+		fprintf (f, " == %08lx (FALSE)", newpc);
+	} else if ((opcode & 0xff00) == 0x6100) /* BSR */
+	    fprintf (f, " == %08lx", newpc);
+	fprintf (f, "\n");
     }
-
-    return m68kpc_offset;
+    if (nextpc)
+	*nextpc = m68k_getpc () + m68kpc_offset;
 }
-#endif
 
-#if 0
 void m68k_dumpstate (FILE *f, uaecptr *nextpc)
 {
     int i;

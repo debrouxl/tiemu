@@ -74,7 +74,7 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 
 #else
 
-#include "libuae.h"
+int m68k_disasm (char *output, uint32_t addr);
 
 /* GDB disabled: use the UAE disassembler */
 uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
