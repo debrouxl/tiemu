@@ -580,8 +580,10 @@ GtkWidget* display_popup_menu(void)
 	// if debugger is open, blocks some items
 	if(dbg_on)
 	{
+#ifndef NO_GDB
 		data = glade_xml_get_widget(xml, "send_file_to_tiemu1");
 		gtk_widget_set_sensitive(data, FALSE);
+#endif
 
 		data = glade_xml_get_widget(xml, "recv_file_to_tiemu1");
 		gtk_widget_set_sensitive(data, FALSE);
