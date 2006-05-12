@@ -233,6 +233,8 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
     return offset;
 }
 
+int DasmFPU(uint16_t code, char *buf);
+
 int m68k_disasm (char *output, uaecptr addr)
 {
     char buf[21];
@@ -246,9 +248,11 @@ int m68k_disasm (char *output, uaecptr addr)
     m68kpc_offset = addr - m68k_getpc ();
     output[0] = '\0';
 	
+	// print address
 	sprintf (buf, "%06lx: ", m68k_getpc () + m68kpc_offset);
 	strcat (output, buf);
 
+	// get opcode
 	opcode = get_iword_1 (m68kpc_offset);
 	m68kpc_offset += 2;
 	if (cpufunctbl[opcode] == op_illg_1) 
@@ -256,16 +260,20 @@ int m68k_disasm (char *output, uaecptr addr)
 	    opcode = 0x4AFC;
 		printf("illegal !\n");
 	}
+	printf("opcode = <%04x>\n", opcode);
 
+	// and search for instruction
 	dp = table68k + opcode;
-	for (lookup = lookuptab;lookup->mnemo != dp->mnemo; lookup++);
+	for (lookup = lookuptab; lookup->mnemo != dp->mnemo; lookup++);
 
+	// search for branches
 	strcpy (instrname, lookup->name);
 	ccpt = strstr (instrname, "cc");
 	if (ccpt != 0)
 	    strncpy (ccpt, ccnames[dp->cc], 2);
 	strcat (output, instrname);
 
+	// set transfer size
 	switch (dp->size)
 	{
 	 case sz_byte: strcat (output, ".B "); break;
@@ -274,6 +282,7 @@ int m68k_disasm (char *output, uaecptr addr)
 	 default: strcat (output, "   "); break;
 	}
 
+	// set argument
 	if (dp->suse) 
 	{
 	    newpc = m68k_getpc () + m68kpc_offset;
@@ -305,6 +314,79 @@ int m68k_disasm (char *output, uaecptr addr)
 	{/* BSR */
 	    sprintf (buf, " == %08lx", newpc);
 	    strcat (output, buf);
+	}
+	else if((opcode >= 0xf800) && (opcode <= 0xfff2))
+	{
+		//uae_s16 disp16;
+		//uae_s32 disp32;
+		unsigned long pm;
+		char *buffer = output;
+		uint32_t pc = m68k_getpc();	// addr
+
+#define PARAM_LONG(v)	{ v = get_ilong_1 (m68kpc_offset); m68kpc_offset += 4; };
+#define PARAM_WORD(v)	{ v = get_iword_1 (m68kpc_offset); m68kpc_offset += 2; };
+
+		// F-Line ROM calls (see KerNO doc and thanks to Lionel Debroux)
+		switch(opcode)
+		{
+		case 0xfff0:	// 6 byte bsr w/long word displacement
+			PARAM_LONG(pm);
+			if (pm & 0x8000)
+				sprintf (buffer, "FLINE    bsr.l *-$%lX [%lX]", (-(signed long)(int32_t)pm) - 2, pc + (signed long)(int32_t)pm + 2);
+			else
+				sprintf (buffer, "FLINE    bsr.l *+$%lX [%lX]", pm + 2, pc + pm + 2);
+			return 6;
+		case 0xfff1:	// 6 byte bra w/long word displacement
+			PARAM_LONG(pm);
+            if (pm & 0x8000)
+				sprintf (buffer, "FLINE    bra.l *-$%lX [%lX]", (-(signed long)(int32_t)pm) - 2, pc + (signed long)(int32_t)pm + 2);
+			else
+				sprintf (buffer, "FLINE    bra.l *+$%lX [%lX]", pm + 2, pc + pm + 2);
+			return 6;
+		case 0xfff2:	// 4 byte ROM CALL
+			PARAM_WORD(pm);
+			sprintf (buffer, "FLINE    $%04x.l [%s]", pm/4, romcalls_get_name(pm / 4));
+			return 4;
+		case 0xffee:	// jmp __ld_entry_point_plus_0x8000+word (branchement avec offset signé de 2 octets rajouté à (début du programme)+0x8000)
+			PARAM_WORD(pm);
+			{
+				int handle;
+				uint32_t addr;
+				
+				heap_search_for_address(pc + (signed short)pm + 2 + 0x8000, &handle);
+				heap_get_block_addr(handle, &addr);				
+				sprintf (buffer, "FLINE    jmp.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + 2 + (signed long)(signed short)pm + 0x8000);
+			}
+			return 4;
+		case 0xffef:	// jsr __ld_entry_point_plus_0x8000+word (appel de fonction avec offset signé de 2 octets rajouté à (début du programme)+0x8000)
+			PARAM_WORD(pm);
+			{
+				int handle;
+				uint32_t addr;
+				
+				heap_search_for_address(pc + (signed short)pm + 2 + 0x8000, &handle);
+				heap_get_block_addr(handle, &addr);
+				sprintf (buffer, "FLINE    jsr.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + 2 + (signed long)(signed short)pm + 0x8000);
+			}
+			return 4;
+		case 0xf8b5:	// 2 byte ROM call followed by an FPU opcode (special case: _bcd_math)
+			{
+				char buf[64];
+				PARAM_WORD(pm);
+				DasmFPU(pm, buf);
+				sprintf (buffer, "JSR      _bcd_math (FPU: %s)", buf);
+				return 4;
+			}
+		default:		// 2 byte ROM CALL
+			sprintf (buffer, "FLINE    $%03x.w [%s]", opcode & 0x7ff, romcalls_get_name(opcode & 0x7ff));
+			return 2;
+		}
+	}
+	// ER_throw
+	else if ((opcode & 0xf000) == 0xa000)
+	{
+		sprintf (output, "ER_throw %d [%s]", opcode & 0xfff, ercodes_get_name(opcode & 0xfff));
+		return 2;
 	}
 
 	nextpc = m68k_getpc () + m68kpc_offset;
@@ -342,7 +424,8 @@ static int match_opcode(const char *opcode)
 	return -1;
 }
 
-// some instructions use a weird naming scheme, remap them!
+// do the same work as m68k_disasm but some UAE instructions 
+// use a weird naming scheme, remap them!
 int m68k_dasm(char **line, uint32_t addr)
 {
 	char output[256];
@@ -353,7 +436,7 @@ int m68k_dasm(char **line, uint32_t addr)
 
 	offset = m68k_disasm(output, addr);
 
-	// remove extra space as in 'BT .B' instead of BT.B (needed ?)
+	// remove extra space as in 'BT .B' instead of BT.B
 	tok = strstr(output, " .");
 	if(tok)
 		memcpy(tok, tok+1, strlen(tok));
