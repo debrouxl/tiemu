@@ -48,7 +48,7 @@
 #define get_ilong_1(o) get_long(regs.pc + (regs.pc_p - regs.pc_oldp) + (o))
 
 static char* ccnames[] =
-{ "T ","F ","HI","LS","CC","CS","NE","EQ",
+{ "T","F","HI","LS","CC","CS","NE","EQ",
   "VC","VS","PL","MI","GE","LT","GT","LE" };
 
 static long int m68kpc_offset;
@@ -237,7 +237,7 @@ int DasmFPU(uint16_t code, char *buf);
 
 int m68k_disasm (char *output, uaecptr addr)
 {
-    char buf[21];
+    char buf[64];
     uaecptr newpc = 0;
 	char instrname[20],*ccpt;
 	uae_u32 opcode;
@@ -256,11 +256,7 @@ int m68k_disasm (char *output, uaecptr addr)
 	opcode = get_iword_1 (m68kpc_offset);
 	m68kpc_offset += 2;
 	if (cpufunctbl[opcode] == op_illg_1) 
-	{
 	    opcode = 0x4AFC;
-		printf("illegal !\n");
-	}
-	printf("opcode = <%04x>\n", opcode);
 
 	// and search for instruction
 	dp = table68k + opcode;
@@ -272,6 +268,7 @@ int m68k_disasm (char *output, uaecptr addr)
 	if (ccpt != 0)
 	    strncpy (ccpt, ccnames[dp->cc], 2);
 	strcat (output, instrname);
+	//printf("<%04x><%s> %i\n", opcode, instrname, m68k_getpc () + m68kpc_offset - addr);
 
 	// set transfer size
 	switch (dp->size)
@@ -310,87 +307,85 @@ int m68k_disasm (char *output, uaecptr addr)
 			strcat (output, buf);
 	    }
 	} 
-	else if ((opcode & 0xff00) == 0x6100) 
-	{/* BSR */
+
+	if ((opcode & 0xff00) == 0x6100) 
+	{
+		/* BSR */
 	    sprintf (buf, " == %08lx", newpc);
 	    strcat (output, buf);
 	}
 	else if((opcode >= 0xf800) && (opcode <= 0xfff2))
 	{
-		//uae_s16 disp16;
-		//uae_s32 disp32;
+		char *buffer = &(output[8]);
 		unsigned long pm;
-		char *buffer = output;
 		uint32_t pc = m68k_getpc();	// addr
-
-#define PARAM_LONG(v)	{ v = get_ilong_1 (m68kpc_offset); m68kpc_offset += 4; };
-#define PARAM_WORD(v)	{ v = get_iword_1 (m68kpc_offset); m68kpc_offset += 2; };
 
 		// F-Line ROM calls (see KerNO doc and thanks to Lionel Debroux)
 		switch(opcode)
 		{
 		case 0xfff0:	// 6 byte bsr w/long word displacement
-			PARAM_LONG(pm);
+			pm = get_ilong_1 (m68kpc_offset); m68kpc_offset += 6 - 4;
 			if (pm & 0x8000)
-				sprintf (buffer, "FLINE    bsr.l *-$%lX [%lX]", (-(signed long)(int32_t)pm) - 2, pc + (signed long)(int32_t)pm + 2);
+				sprintf (buffer, "FLINE  bsr.l *-$%lX [%lX]", (-(signed long)(int32_t)pm) - 2, pc + (signed long)(int32_t)pm + 2);
 			else
-				sprintf (buffer, "FLINE    bsr.l *+$%lX [%lX]", pm + 2, pc + pm + 2);
-			return 6;
+				sprintf (buffer, "FLINE  bsr.l *+$%lX [%lX]", pm + 2, pc + pm + 2);
+			break;
 		case 0xfff1:	// 6 byte bra w/long word displacement
-			PARAM_LONG(pm);
+			pm = get_ilong_1 (m68kpc_offset); m68kpc_offset += 6 - 4;
             if (pm & 0x8000)
-				sprintf (buffer, "FLINE    bra.l *-$%lX [%lX]", (-(signed long)(int32_t)pm) - 2, pc + (signed long)(int32_t)pm + 2);
+				sprintf (buffer, "FLINE  bra.l *-$%lX [%lX]", (-(signed long)(int32_t)pm) - 2, pc + (signed long)(int32_t)pm + 2);
 			else
-				sprintf (buffer, "FLINE    bra.l *+$%lX [%lX]", pm + 2, pc + pm + 2);
-			return 6;
+				sprintf (buffer, "FLINE  bra.l *+$%lX [%lX]", pm + 2, pc + pm + 2);
+			break;
 		case 0xfff2:	// 4 byte ROM CALL
-			PARAM_WORD(pm);
-			sprintf (buffer, "FLINE    $%04x.l [%s]", pm/4, romcalls_get_name(pm / 4));
-			return 4;
+			pm = get_iword_1 (m68kpc_offset); m68kpc_offset += 4 - 4;
+			sprintf (buffer, "FLINE  $%04x.l [%s]", pm/4, romcalls_get_name(pm / 4));
+			break;
 		case 0xffee:	// jmp __ld_entry_point_plus_0x8000+word (branchement avec offset signé de 2 octets rajouté à (début du programme)+0x8000)
-			PARAM_WORD(pm);
+			pm = get_iword_1 (m68kpc_offset); m68kpc_offset += 4 - 4;
 			{
 				int handle;
 				uint32_t addr;
 				
 				heap_search_for_address(pc + (signed short)pm + 2 + 0x8000, &handle);
 				heap_get_block_addr(handle, &addr);				
-				sprintf (buffer, "FLINE    jmp.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + 2 + (signed long)(signed short)pm + 0x8000);
+				sprintf (buffer, "FLINE  jmp.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + 2 + (signed long)(signed short)pm + 0x8000);
 			}
-			return 4;
+			break;
 		case 0xffef:	// jsr __ld_entry_point_plus_0x8000+word (appel de fonction avec offset signé de 2 octets rajouté à (début du programme)+0x8000)
-			PARAM_WORD(pm);
+			pm = get_iword_1 (m68kpc_offset); m68kpc_offset += 4 - 4;
 			{
 				int handle;
 				uint32_t addr;
 				
 				heap_search_for_address(pc + (signed short)pm + 2 + 0x8000, &handle);
 				heap_get_block_addr(handle, &addr);
-				sprintf (buffer, "FLINE    jsr.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + 2 + (signed long)(signed short)pm + 0x8000);
+				sprintf (buffer, "FLINE  jsr.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + 2 + (signed long)(signed short)pm + 0x8000);
 			}
-			return 4;
+			break;
 		case 0xf8b5:	// 2 byte ROM call followed by an FPU opcode (special case: _bcd_math)
 			{
-				char buf[64];
-				PARAM_WORD(pm);
-				DasmFPU(pm, buf);
-				sprintf (buffer, "JSR      _bcd_math (FPU: %s)", buf);
-				return 4;
+				char tmp[64];
+				pm = get_iword_1 (m68kpc_offset); m68kpc_offset += 4 - 4;
+				DasmFPU(pm, tmp);
+				sprintf (buffer, "JSR  _bcd_math (FPU: %s)", tmp);
+				break;
 			}
 		default:		// 2 byte ROM CALL
-			sprintf (buffer, "FLINE    $%03x.w [%s]", opcode & 0x7ff, romcalls_get_name(opcode & 0x7ff));
-			return 2;
+			sprintf (buffer, "FLINE  $%03x.w [%s]", opcode & 0x7ff, romcalls_get_name(opcode & 0x7ff));
+			m68kpc_offset += 2 - 4;
+			break;
 		}
 	}
 	// ER_throw
 	else if ((opcode & 0xf000) == 0xa000)
 	{
-		sprintf (output, "ER_throw %d [%s]", opcode & 0xfff, ercodes_get_name(opcode & 0xfff));
-		return 2;
+		char *buffer = &(output[8]);
+		sprintf (buffer, "ER_throw %d [%s]", opcode & 0xfff, ercodes_get_name(opcode & 0xfff));
+		m68kpc_offset += 2 - 4;
 	}
 
-	nextpc = m68k_getpc () + m68kpc_offset;
-	
+	nextpc = m68k_getpc () + m68kpc_offset;	
     return (nextpc - addr);
 }
 
@@ -430,16 +425,10 @@ int m68k_dasm(char **line, uint32_t addr)
 {
 	char output[256];
 	int offset;
-	char *tok;
 	gchar** split;
 	int idx;
 
 	offset = m68k_disasm(output, addr);
-
-	// remove extra space as in 'BT .B' instead of BT.B
-	tok = strstr(output, " .");
-	if(tok)
-		memcpy(tok, tok+1, strlen(tok));
 
 	// split string into address, opcode and operand
 	split = g_strsplit(output, " ", 3);
