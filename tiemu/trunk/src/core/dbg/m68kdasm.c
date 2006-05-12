@@ -252,7 +252,10 @@ int m68k_disasm (char *output, uaecptr addr)
 	opcode = get_iword_1 (m68kpc_offset);
 	m68kpc_offset += 2;
 	if (cpufunctbl[opcode] == op_illg_1) 
+	{
 	    opcode = 0x4AFC;
+		printf("illegal !\n");
+	}
 
 	dp = table68k + opcode;
 	for (lookup = lookuptab;lookup->mnemo != dp->mnemo; lookup++);
@@ -306,7 +309,6 @@ int m68k_disasm (char *output, uaecptr addr)
 
 	nextpc = m68k_getpc () + m68kpc_offset;
 	
-	printf("<%s>\n", output);
     return (nextpc - addr);
 }
 
@@ -358,10 +360,10 @@ int m68k_dasm(char **line, uint32_t addr)
 
 	// split string into address, opcode and operand
 	split = g_strsplit(output, " ", 3);
-	printf("%s %s%*c %s\n", 
+	/*printf("%s %s%*c %s\n", 
 			split[0], 
 			split[1], 8 - strlen(split[1]), ' ', 
-			split[2]);
+			split[2]);*/
 
 	// search for opcode to rewrite
 	idx = match_opcode(split[1]);
