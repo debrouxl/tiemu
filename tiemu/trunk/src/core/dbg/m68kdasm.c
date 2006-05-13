@@ -179,11 +179,11 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	}
 	break;
      case absw:
-	sprintf (buffer,"$%08lX", (unsigned long)(uae_s32)(uae_s16)get_iword_1 (m68kpc_offset));
+	sprintf (buffer,"$%04lX", (unsigned long)(uae_s32)(uae_s16)get_iword_1 (m68kpc_offset));
 	m68kpc_offset += 2;
 	break;
      case absl:
-	sprintf (buffer,"$%08lX", (unsigned long)get_ilong_1 (m68kpc_offset));
+	sprintf (buffer,"$%06lX", (unsigned long)get_ilong_1 (m68kpc_offset));
 	m68kpc_offset += 4;
 	break;
      case imm:
@@ -239,7 +239,7 @@ int m68k_disasm (char *output, uaecptr addr)
 {
     char buf[64];
     uaecptr newpc = 0;
-	char instrname[20],
+	char instrname[20];
 	char *ccpt;
 	uae_u32 opcode;
 	struct mnemolookup *lookup;
