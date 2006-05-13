@@ -134,24 +134,24 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	    if (dp & 4) base += dispreg;
 
 	    addr = base + outer;
-	    sprintf (buffer,"(%s%c%d.%c*%d+%ld)+%ld [%s]", name,
+	    sprintf (buffer,"(%s%c%d.%c*%d+%ld)+%ld [$%06x]", name,
 		    dp & 0x8000 ? 'A' : 'D', (int)r, dp & 0x800 ? 'L' : 'W',
 		    1 << ((dp >> 9) & 3),
 		    disp,outer,
-		    sym_addr((unsigned long)addr));
+		    (unsigned long)addr);
 	} else {
 	  addr = m68k_areg(regs,reg) + (uae_s32)((uae_s8)disp8) + dispreg;
-	  sprintf (buffer,"(A%d, %c%d.%c*%d, $%02X) [%s]", reg,
+	  sprintf (buffer,"(A%d, %c%d.%c*%d, $%02X) [$%06x]", reg,
 	       dp & 0x8000 ? 'A' : 'D', (int)r, dp & 0x800 ? 'L' : 'W',
 	       1 << ((dp >> 9) & 3), disp8,
-	       sym_addr((unsigned long)addr));
+	       (unsigned long)addr);
 	}
 	break;
      case PC16:
 	addr = m68k_getpc () + m68kpc_offset;
 	disp16 = get_iword_1 (m68kpc_offset); m68kpc_offset += 2;
 	addr += (uae_s16)disp16;
-	sprintf (buffer,"(PC,$%04X) [%s]", disp16 & 0xffff,sym_addr((unsigned long)addr));
+	sprintf (buffer,"[%s]", sym_addr((unsigned long)addr));
 	break;
      case PC8r:
 	addr = m68k_getpc () + m68kpc_offset;
