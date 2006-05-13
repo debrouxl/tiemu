@@ -400,11 +400,10 @@ int m68k_disasm (char *output, uaecptr addr)
 		sprintf (buffer, "ER_throw %d [%s]", opcode & 0xfff, ercodes_get_name(opcode & 0xfff));
 		m68kpc_offset += 2 - 4;
 	}
-	else if(!strcmp(instrname, "ILLEGAL"))
+	else if(!strcmp(instrname, "ILLEGAL") && opcode != 0x4AFC)
 	{
 		m68kpc_offset -= 2;
 		sprintf (output, "%06lx: DC.W  $%04X", addr, opcode);
-		printf("<%s>\n", output);
 		
 	}
 
