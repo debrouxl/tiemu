@@ -89,7 +89,7 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
      case Ad16:
 	disp16 = get_iword_1 (m68kpc_offset); m68kpc_offset += 2;
 	addr = m68k_areg(regs,reg) + (uae_s16)disp16;
-	sprintf (buffer,"(A%d,$%04X) == $%06lX", reg, disp16 & 0xffff,
+	sprintf (buffer,"(A%d,$%04X) [$%06lX]", reg, disp16 & 0xffff,
 					(unsigned long)addr);
 	break;
      case Ad8r:
@@ -119,14 +119,14 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	    if (dp & 4) base += dispreg;
 
 	    addr = base + outer;
-	    sprintf (buffer,"(%s%c%d.%c*%d+%ld)+%ld == $%06lX", name,
+	    sprintf (buffer,"(%s%c%d.%c*%d+%ld)+%ld [$%06lX]", name,
 		    dp & 0x8000 ? 'A' : 'D', (int)r, dp & 0x800 ? 'L' : 'W',
 		    1 << ((dp >> 9) & 3),
 		    disp,outer,
 		    (unsigned long)addr);
 	} else {
 	  addr = m68k_areg(regs,reg) + (uae_s32)((uae_s8)disp8) + dispreg;
-	  sprintf (buffer,"(A%d, %c%d.%c*%d, $%02X) == $%06lX", reg,
+	  sprintf (buffer,"(A%d, %c%d.%c*%d, $%02X) [$%06lX]", reg,
 	       dp & 0x8000 ? 'A' : 'D', (int)r, dp & 0x800 ? 'L' : 'W',
 	       1 << ((dp >> 9) & 3), disp8,
 	       (unsigned long)addr);
@@ -136,7 +136,7 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	addr = m68k_getpc () + m68kpc_offset;
 	disp16 = get_iword_1 (m68kpc_offset); m68kpc_offset += 2;
 	addr += (uae_s16)disp16;
-	sprintf (buffer,"(PC,$%04X) == $%06lX", disp16 & 0xffff,(unsigned long)addr);
+	sprintf (buffer,"(PC,$%04X) [$%06lX]", disp16 & 0xffff,(unsigned long)addr);
 	break;
      case PC8r:
 	addr = m68k_getpc () + m68kpc_offset;
@@ -166,14 +166,14 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	    if (dp & 4) base += dispreg;
 
 	    addr = base + outer;
-	    sprintf (buffer,"(%s%c%d.%c*%d+%ld)+%ld == $%06lX", name,
+	    sprintf (buffer,"(%s%c%d.%c*%d+%ld)+%ld [$%06lX]", name,
 		    dp & 0x8000 ? 'A' : 'D', (int)r, dp & 0x800 ? 'L' : 'W',
 		    1 << ((dp >> 9) & 3),
 		    disp,outer,
 		    (unsigned long)addr);
 	} else {
 	  addr += (uae_s32)((uae_s8)disp8) + dispreg;
-	  sprintf (buffer,"(PC, %c%d.%c*%d, $%02X) == $%06lX", dp & 0x8000 ? 'A' : 'D',
+	  sprintf (buffer,"(PC, %c%d.%c*%d, $%02X) [$%06lX]", dp & 0x8000 ? 'A' : 'D',
 		(int)r, dp & 0x800 ? 'L' : 'W',  1 << ((dp >> 9) & 3),
 		disp8, (unsigned long)addr);
 	}
@@ -312,7 +312,7 @@ int m68k_disasm (char *output, uaecptr addr)
 	else if ((opcode & 0xff00) == 0x6100) 
 	{
 		/* BSR */
-	    sprintf (buf, " == %06lX", newpc);
+	    sprintf (buf, " [%06lX]", newpc);
 	    strcat (output, buf);
 	}
 	else if((opcode >= 0xf800) && (opcode <= 0xfff2))
