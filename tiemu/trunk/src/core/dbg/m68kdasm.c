@@ -256,8 +256,7 @@ int m68k_disasm (char *output, uaecptr addr)
 	// get opcode
 	opcode = get_iword_1 (m68kpc_offset);
 	m68kpc_offset += 2;
-	if (cpufunctbl[opcode] == op_illg_1) 
-	    opcode = 0x4AFC;
+	if (cpufunctbl[opcode] == op_illg_1) opcode = 0x4AFC;
 
 	// and search for instruction
 	dp = table68k + opcode;
@@ -269,7 +268,6 @@ int m68k_disasm (char *output, uaecptr addr)
 	if (ccpt != 0)
 	    strncpy (ccpt, ccnames[dp->cc], 2);
 	strcat (output, instrname);
-	//printf("<%04x><%s> %i\n", opcode, instrname, m68k_getpc () + m68kpc_offset - addr);
 
 	// set transfer size
 	switch (dp->size)
@@ -292,8 +290,8 @@ int m68k_disasm (char *output, uaecptr addr)
 	}
 	if (dp->duse) 
 	{
-	    newpc = m68k_getpc () + m68kpc_offset;
-	    newpc += ShowEA (0, dp->dreg, dp->dmode, dp->size, output);
+		newpc = m68k_getpc () + m68kpc_offset;
+		newpc += ShowEA (0, dp->dreg, dp->dmode, dp->size, output);
 	}
 
 	// manage some opcodes more specificaly
@@ -302,12 +300,12 @@ int m68k_disasm (char *output, uaecptr addr)
 		/* branches */
 	    if (cctrue(dp->cc)) 
 		{
-			sprintf (buf, " == %06lX (TRUE)", newpc);
+			sprintf (buf, " [%06lX] (TRUE)", newpc);
 			strcat (output, buf);
 	    } 
 		else 
 		{
-			sprintf (buf, " == %06lX (FALSE)", newpc);
+			sprintf (buf, " [%06lX] (FALSE)", newpc);
 			strcat (output, buf);
 	    }
 	} 
@@ -387,6 +385,13 @@ int m68k_disasm (char *output, uaecptr addr)
 		sprintf (buffer, "ER_throw %d [%s]", opcode & 0xfff, ercodes_get_name(opcode & 0xfff));
 		m68kpc_offset += 2 - 4;
 	}
+	else if(!strcmp(instrname, "ILLEGAL"))
+	{
+		m68kpc_offset -= 2;
+		sprintf (output, "%06lx: DC.W  $%04X", addr, opcode);
+		printf("<%s>\n", output);
+		
+	}
 
 	nextpc = m68k_getpc () + m68kpc_offset;	
     return (nextpc - addr);
@@ -403,6 +408,7 @@ static const char* instr[] = {
     "MVMEL.W", "MVMEL.L",   /* MOVEM <ea>,<list>  	*/
     "MVMLE.W", "MVMLE.L",   /* MOVEM <list>,<ea>	*/
 	"TRAP",					/* TRAP	#<vector>		*/
+	"ILLEGAL",				/* DC.W	#<data>			*/
 	NULL
 };
 
@@ -569,6 +575,14 @@ int m68k_dasm(char **line, uint32_t addr)
 			tmp = split[1] + strlen("TRAP");
 			split[2] = g_strdup(tmp);
 			*tmp = '\0';
+			break;
+		case 17:	/* DC.W #<data>		*/
+			g_free(split[1]);
+			split[1] = g_strdup("DC.W");
+
+			tmp = g_strdup(split[2]+3);
+			strcpy(split[2], tmp);
+			g_free(tmp);
 			break;
 		default:
 			break;
