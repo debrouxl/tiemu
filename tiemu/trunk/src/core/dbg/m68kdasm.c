@@ -41,7 +41,22 @@
 #ifdef __WIN32__
 #pragma warning( disable : 4244 )
 #pragma warning( disable : 4761 )
+#define snprintf	_snprintf
 #endif
+
+// addr -> symbol
+char* sym_addr(uint32_t addr)
+{
+	static char buf[32];
+	int rcid = romcalls_is_addr(addr);
+
+	if(rcid == -1)
+		snprintf(buf, sizeof(buf), "%06X", addr);
+	else
+		snprintf(buf, sizeof(buf), "tios::%s",romcalls_get_name(rcid)); 
+
+	return buf;
+}
 
 #define get_ibyte_1(o) get_byte(regs.pc + (regs.pc_p - regs.pc_oldp) + (o) + 1)
 #define get_iword_1(o) get_word(regs.pc + (regs.pc_p - regs.pc_oldp) + (o))
