@@ -7,7 +7,7 @@
 
 [Setup]
 AppName=TiEmu3
-AppVerName=TiEmu 3.00 No Gdb
+AppVerName=TiEmu 2.80 No Gdb
 AppPublisher=The TiEmu Team
 AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
 AppSupportURL=http://lpg.ticalc.org/prj_tiemu/mailing_list.html
