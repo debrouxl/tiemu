@@ -202,7 +202,6 @@ STDMETHODIMP TiEmuOLE::send_file(BSTR filename, VARIANT_BOOL *ret)
 
 STDMETHODIMP TiEmuOLE::debug_file(BSTR filename, VARIANT_BOOL *ret)
 {
-#ifndef NO_GDB
   if (img_loaded && !engine_is_stopped()) {
     engine_stop();
     gchar *utf8=g_utf16_to_utf8((const gunichar2 *)filename,-1,NULL,NULL,NULL);
@@ -211,9 +210,6 @@ STDMETHODIMP TiEmuOLE::debug_file(BSTR filename, VARIANT_BOOL *ret)
     engine_start();
     RETURN(TRUE);
   } else RETURN(FALSE);
-#else
-  RETURN(FALSE);
-#endif
 }
 
 STDMETHODIMP TiEmuOLE::reset_calc(VARIANT_BOOL clearram, VARIANT_BOOL *ret)

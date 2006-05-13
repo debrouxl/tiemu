@@ -348,6 +348,8 @@ gint display_debug_dbox(void)
 
 	return 0;
 }
+#else
+void send_file_and_debug_info(const gchar *filename) {}
 #endif
 
 gint display_set_tib_dbox(void)
