@@ -198,10 +198,6 @@ SOURCE=..\..\src\core\dbg\disasm.c
 
 SOURCE=..\..\src\core\dbg\fpudasm.c
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\src\core\dbg\m68kdasm.c
-# End Source File
 # End Group
 # Begin Group "ti_sw"
 

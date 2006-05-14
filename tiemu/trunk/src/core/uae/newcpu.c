@@ -31,6 +31,9 @@ static const struct uae_prefs currprefs = {0, 1, 1};
 #if defined(CYGNUS_SIM) && !defined(NO_GDB)
 extern const char *symfile;
 #endif /* CYGNUS_SIM */
+#define FLOATFORMAT_H /* don't include glib.h in romcalls.h */
+#include "../ti_sw/romcalls.h"
+#include "../ti_sw/handles.h"
 // tiemu end
 
 /* Opcode of faulting instruction */
@@ -284,7 +287,20 @@ int lastint_no;
 #define get_iword_1(o) get_word(regs.pc + (regs.pc_p - regs.pc_oldp) + (o))
 #define get_ilong_1(o) get_long(regs.pc + (regs.pc_p - regs.pc_oldp) + (o))
 
-#if 0
+#ifdef NO_GDB
+char *sym_addr(uae_u32 addr)
+{
+	static char buf[256];
+	int rcid = romcalls_is_addr(addr);
+
+	if(rcid == -1)
+		snprintf(buf, sizeof(buf), "$%06lX", (unsigned long)addr);
+	else
+		snprintf(buf, sizeof(buf), "$%06lX -> tios::%s", (unsigned long)addr, romcalls_get_name(rcid)); 
+
+	return buf;
+}
+
 uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 {
     uae_u16 dp;
@@ -294,7 +310,7 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
     uae_u32 dispreg;
     uaecptr addr;
     uae_s32 offset = 0;
-    char buffer[80];
+    char buffer[296];
 
     switch (mode){
      case Dreg:
@@ -315,8 +331,8 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
      case Ad16:
 	disp16 = get_iword_1 (m68kpc_offset); m68kpc_offset += 2;
 	addr = m68k_areg(regs,reg) + (uae_s16)disp16;
-	sprintf (buffer,"(A%d,$%04x) == $%08lx", reg, disp16 & 0xffff,
-					(unsigned long)addr);
+	sprintf (buffer,"(A%d,$%04X) [%s]", reg, disp16 & 0xffff,
+					sym_addr ((uae_u32)addr));
 	break;
      case Ad8r:
 	dp = get_iword_1 (m68kpc_offset); m68kpc_offset += 2;
@@ -345,14 +361,14 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	    if (dp & 4) base += dispreg;
 
 	    addr = base + outer;
-	    sprintf (buffer,"(%s%c%d.%c*%d+%ld)+%ld == $%08lx", name,
+	    sprintf (buffer,"(%s%c%d.%c*%d+%ld)+%ld == $%06lX", name,
 		    dp & 0x8000 ? 'A' : 'D', (int)r, dp & 0x800 ? 'L' : 'W',
 		    1 << ((dp >> 9) & 3),
 		    disp,outer,
 		    (unsigned long)addr);
 	} else {
 	  addr = m68k_areg(regs,reg) + (uae_s32)((uae_s8)disp8) + dispreg;
-	  sprintf (buffer,"(A%d, %c%d.%c*%d, $%02x) == $%08lx", reg,
+	  sprintf (buffer,"(A%d, %c%d.%c*%d, $%02X) == $%06lX", reg,
 	       dp & 0x8000 ? 'A' : 'D', (int)r, dp & 0x800 ? 'L' : 'W',
 	       1 << ((dp >> 9) & 3), disp8,
 	       (unsigned long)addr);
@@ -362,7 +378,7 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	addr = m68k_getpc () + m68kpc_offset;
 	disp16 = get_iword_1 (m68kpc_offset); m68kpc_offset += 2;
 	addr += (uae_s16)disp16;
-	sprintf (buffer,"(PC,$%04x) == $%08lx", disp16 & 0xffff,(unsigned long)addr);
+	sprintf (buffer,"(PC,$%04X) [%s]", disp16 & 0xffff, sym_addr ((uae_u32)addr));
 	break;
      case PC8r:
 	addr = m68k_getpc () + m68kpc_offset;
@@ -392,38 +408,38 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	    if (dp & 4) base += dispreg;
 
 	    addr = base + outer;
-	    sprintf (buffer,"(%s%c%d.%c*%d+%ld)+%ld == $%08lx", name,
+	    sprintf (buffer,"(%s%c%d.%c*%d+%ld)+%ld [%s]", name,
 		    dp & 0x8000 ? 'A' : 'D', (int)r, dp & 0x800 ? 'L' : 'W',
 		    1 << ((dp >> 9) & 3),
 		    disp,outer,
-		    (unsigned long)addr);
+		    sym_addr ((uae_u32)addr));
 	} else {
 	  addr += (uae_s32)((uae_s8)disp8) + dispreg;
-	  sprintf (buffer,"(PC, %c%d.%c*%d, $%02x) == $%08lx", dp & 0x8000 ? 'A' : 'D',
+	  sprintf (buffer,"(PC, %c%d.%c*%d, $%02X) [%s]", dp & 0x8000 ? 'A' : 'D',
 		(int)r, dp & 0x800 ? 'L' : 'W',  1 << ((dp >> 9) & 3),
-		disp8, (unsigned long)addr);
+		disp8, sym_addr ((uae_u32)addr));
 	}
 	break;
      case absw:
-	sprintf (buffer,"$%08lx", (unsigned long)(uae_s32)(uae_s16)get_iword_1 (m68kpc_offset));
+	sprintf (buffer,"$%04lX", (unsigned long)(uae_s32)(uae_s16)get_iword_1 (m68kpc_offset));
 	m68kpc_offset += 2;
 	break;
      case absl:
-	sprintf (buffer,"$%08lx", (unsigned long)get_ilong_1 (m68kpc_offset));
+	sprintf (buffer,"%s", sym_addr ((uae_u32)get_ilong_1 (m68kpc_offset)));
 	m68kpc_offset += 4;
 	break;
      case imm:
 	switch (size){
 	 case sz_byte:
-	    sprintf (buffer,"#$%02x", (unsigned int)(get_iword_1 (m68kpc_offset) & 0xff));
+	    sprintf (buffer,"#$%02X", (unsigned int)(get_iword_1 (m68kpc_offset) & 0xff));
 	    m68kpc_offset += 2;
 	    break;
 	 case sz_word:
-	    sprintf (buffer,"#$%04x", (unsigned int)(get_iword_1 (m68kpc_offset) & 0xffff));
+	    sprintf (buffer,"#$%04X", (unsigned int)(get_iword_1 (m68kpc_offset) & 0xffff));
 	    m68kpc_offset += 2;
 	    break;
 	 case sz_long:
-	    sprintf (buffer,"#$%08lx", (unsigned long)(get_ilong_1 (m68kpc_offset)));
+	    sprintf (buffer,"#$%08lX", (unsigned long)(get_ilong_1 (m68kpc_offset)));
 	    m68kpc_offset += 4;
 	    break;
 	 default:
@@ -433,21 +449,21 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
      case imm0:
 	offset = (uae_s32)(uae_s8)get_iword_1 (m68kpc_offset);
 	m68kpc_offset += 2;
-	sprintf (buffer,"#$%02x", (unsigned int)(offset & 0xff));
+	sprintf (buffer,"#$%02X", (unsigned int)(offset & 0xff));
 	break;
      case imm1:
 	offset = (uae_s32)(uae_s16)get_iword_1 (m68kpc_offset);
 	m68kpc_offset += 2;
-	sprintf (buffer,"#$%04x", (unsigned int)(offset & 0xffff));
+	sprintf (buffer,"#$%04X", (unsigned int)(offset & 0xffff));
 	break;
      case imm2:
 	offset = (uae_s32)get_ilong_1 (m68kpc_offset);
 	m68kpc_offset += 4;
-	sprintf (buffer,"#$%08lx", (unsigned long)offset);
+	sprintf (buffer,"#$%08lX", (unsigned long)offset);
 	break;
      case immi:
 	offset = (uae_s32)(uae_s8)(reg & 0xff);
-	sprintf (buffer,"#$%08lx", (unsigned long)offset);
+	sprintf (buffer,"#$%08lX", (unsigned long)offset);
 	break;
      default:
 	break;
@@ -458,7 +474,7 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	strcat (buf, buffer);
     return offset;
 }
-#endif /* 0 */
+#endif /* NO_GDB */
 
 /* The plan is that this will take over the job of exception 3 handling -
  * the CPU emulation functions will just do a longjmp to m68k_go whenever
@@ -1629,24 +1645,30 @@ static void m68k_verify (uaecptr addr, uaecptr *nextpc)
     }
 }
 
-#if 0
-void m68k_disasm (FILE *f, uaecptr addr, uaecptr *nextpc, int cnt)
+#ifdef NO_GDB
+int DasmFPU(uint16_t code, char *buf);
+
+int m68k_disasm (char *output, uaecptr addr)
 {
+    char buf[274];
     uaecptr newpc = 0;
-    m68kpc_offset = addr - m68k_getpc ();
-    while (cnt-- > 0) {
+
 	char instrname[20],*ccpt;
-	int opwords;
 	uae_u32 opcode;
 	struct mnemolookup *lookup;
 	struct instr *dp;
-	fprintf (f, "%08lx: ", m68k_getpc () + m68kpc_offset);
-	for (opwords = 0; opwords < 5; opwords++){
-	    fprintf (f, "%04x ", get_iword_1 (m68kpc_offset + opwords*2));
-	}
+	uae_u32 orig_opcode;
+	uaecptr nextpc;
+
+	m68kpc_offset = addr - m68k_getpc ();
+	output[0] = '\0';
+
+	sprintf (buf, "%06lx: ", m68k_getpc () + m68kpc_offset);
+	strcat (output, buf);
 	opcode = get_iword_1 (m68kpc_offset);
+	orig_opcode = opcode;
 	m68kpc_offset += 2;
-	if (cpufunctbl[opcode] == op_illg_1) {
+	if (cpufunctbl[opcode] == op_illg_1 || (orig_opcode & 0xf000) == 0xa000 || (orig_opcode & 0xf000) == 0xf000) {
 	    opcode = 0x4AFC;
 	}
 	dp = table68k + opcode;
@@ -1658,37 +1680,110 @@ void m68k_disasm (FILE *f, uaecptr addr, uaecptr *nextpc, int cnt)
 	if (ccpt != 0) {
 	    strncpy (ccpt, ccnames[dp->cc], 2);
 	}
-	fprintf (f, "%s", instrname);
-	switch (dp->size){
-	 case sz_byte: fprintf (f, ".B "); break;
-	 case sz_word: fprintf (f, ".W "); break;
-	 case sz_long: fprintf (f, ".L "); break;
-	 default: fprintf (f, "   "); break;
+	strcat (output, instrname);
+	switch (dp->size)
+	{
+	 case sz_byte: strcat (output, ".B "); break;
+	 case sz_word: strcat (output, ".W "); break;
+	 case sz_long: strcat (output, ".L "); break;
+	 default: strcat (output, "   "); break;
 	}
 
 	if (dp->suse) {
 	    newpc = m68k_getpc () + m68kpc_offset;
-	    newpc += ShowEA (f, dp->sreg, dp->smode, dp->size, 0);
+	    newpc += ShowEA (0, dp->sreg, dp->smode, dp->size, output);
 	}
 	if (dp->suse && dp->duse)
-	    fprintf (f, ",");
+	    strcat(output, ",");
 	if (dp->duse) {
 	    newpc = m68k_getpc () + m68kpc_offset;
-	    newpc += ShowEA (f, dp->dreg, dp->dmode, dp->size, 0);
+	    newpc += ShowEA (0, dp->dreg, dp->dmode, dp->size, output);
 	}
 	if (ccpt != 0) {
-	    if (cctrue(dp->cc))
-		fprintf (f, " == %08lx (TRUE)", newpc);
-	    else
-		fprintf (f, " == %08lx (FALSE)", newpc);
-	} else if ((opcode & 0xff00) == 0x6100) /* BSR */
-	    fprintf (f, " == %08lx", newpc);
-	fprintf (f, "\n");
-    }
-    if (nextpc)
-	*nextpc = m68k_getpc () + m68kpc_offset;
-}
+	    if (cctrue(dp->cc)) {
+		sprintf (buf, " [%06lX] (TRUE)", newpc);
+		strcat (output, buf);
+	    } else {
+		sprintf (buf, " [%06lX] (FALSE)", newpc);
+		strcat (output, buf);
+	    }
+	} else if ((opcode & 0xff00) == 0x6100) { /* BSR */
+	    sprintf (buf, " [%s]", sym_addr (newpc));
+	    strcat (output, buf);
+	} else if((orig_opcode >= 0xf800) && (orig_opcode <= 0xfff2)) {
+		char *buffer = &(output[8]);
+		unsigned long pm;
+		uint32_t pc = m68k_getpc();	/* addr */
 
+		/* F-Line ROM calls (see KerNO doc and thanks to Lionel Debroux) */
+		switch(orig_opcode)
+		{
+		case 0xfff0:	/* 6 byte bsr w/long word displacement */
+			pm = get_ilong_1 (m68kpc_offset); m68kpc_offset += 6 - 2;
+			if (pm & 0x8000)
+				sprintf (buffer, "FLINE  bsr.l *-$%lX [%lX]", (-(signed long)(int32_t)pm) - 2, pc + (signed long)(int32_t)pm + 2);
+			else
+				sprintf (buffer, "FLINE  bsr.l *+$%lX [%lX]", pm + 2, pc + pm + 2);
+			break;
+		case 0xfff1:	/* 6 byte bra w/long word displacement */
+			pm = get_ilong_1 (m68kpc_offset); m68kpc_offset += 6 - 2;
+			if (pm & 0x8000)
+				sprintf (buffer, "FLINE  bra.l *-$%lX [%lX]", (-(signed long)(int32_t)pm) - 2, pc + (signed long)(int32_t)pm + 2);
+			else
+				sprintf (buffer, "FLINE  bra.l *+$%lX [%lX]", pm + 2, pc + pm + 2);
+			break;
+		case 0xfff2:	/* 4 byte ROM CALL */
+			pm = get_iword_1 (m68kpc_offset); m68kpc_offset += 4 - 2;
+			sprintf (buffer, "FLINE  $%04x.l [%s]", pm/4, romcalls_get_name(pm / 4));
+			break;
+		case 0xffee:	/* jmp __ld_entry_point_plus_0x8000+word */
+			pm = get_iword_1 (m68kpc_offset); m68kpc_offset += 4 - 2;
+			{
+				int handle;
+				uint32_t addr;
+				
+				heap_search_for_address(pc + (signed short)pm + 2 + 0x8000, &handle);
+				heap_get_block_addr(handle, &addr);				
+				sprintf (buffer, "FLINE  jmp.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + 2 + (signed long)(signed short)pm + 0x8000);
+			}
+			break;
+		case 0xffef:	/* jsr __ld_entry_point_plus_0x8000+word */
+			pm = get_iword_1 (m68kpc_offset); m68kpc_offset += 4 - 2;
+			{
+				int handle;
+				uint32_t addr;
+				
+				heap_search_for_address(pc + (signed short)pm + 2 + 0x8000, &handle);
+				heap_get_block_addr(handle, &addr);
+				sprintf (buffer, "FLINE  jsr.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + 2 + (signed long)(signed short)pm + 0x8000);
+			}
+			break;
+		case 0xf8b5:	/* 2 byte ROM call followed by an FPU opcode (special case: _bcd_math) */
+			{
+				char tmp[64];
+				pm = get_iword_1 (m68kpc_offset); m68kpc_offset += 4 - 2;
+				DasmFPU(pm, tmp);
+				sprintf (buffer, "FLINE  _bcd_math (FPU: %s)", tmp);
+				break;
+			}
+		default:		/* 2 byte ROM CALL */
+			sprintf (buffer, "FLINE  $%03x.w [%s]", opcode & 0x7ff, romcalls_get_name(opcode & 0x7ff));
+			break;
+		}
+	} else if ((orig_opcode & 0xf000) == 0xa000) { /* ER_throw */
+		char *buffer = &(output[8]);
+		sprintf (buffer, "ER_throw %d [%s]", opcode & 0xfff, ercodes_get_name(opcode & 0xfff));
+	} else if (opcode == 0x4AFC && orig_opcode != 0x4AFC) { /* illegal instruction, but not ILLEGAL */
+		sprintf (output, "%06lx: DC.W  $%04X", addr, orig_opcode);
+		
+	}
+
+	nextpc = m68k_getpc () + m68kpc_offset;	
+	return (nextpc - addr);
+}
+#endif /* NO_GDB */
+
+#if 0
 void m68k_dumpstate (FILE *f, uaecptr *nextpc)
 {
     int i;
