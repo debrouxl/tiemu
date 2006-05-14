@@ -1488,7 +1488,7 @@ print_insn_m68k (bfd_vma memaddr, disassemble_info *info)
   major_opcode = (buffer[0] >> 4) & 15;
 
   /* F-Line ROM calls (see KerNO doc and thanks to Lionel Debroux)
-     Code written by Romain Liï¿½in for TiEmu */
+     Code written by Romain Liévin for TiEmu */
   if (major_opcode == 0xf)
     {
       int op = (buffer[0] << 8) + buffer[1];
@@ -1500,24 +1500,24 @@ print_insn_m68k (bfd_vma memaddr, disassemble_info *info)
               case 0xfff0:  /* 6 byte bsr w/long word displacement */
                 pm = NEXTLONG(buffer);
                 if (pm < 0)
-                  info->fprintf_func (info->stream, "FLINE    bsr.l .-0x%x [", (-pm) - 2);
+                  info->fprintf_func (info->stream, "FLINE bsr.l .-0x%x [", (-pm) - 2);
                 else
-                  info->fprintf_func (info->stream, "FLINE    bsr.l .+0x%x [", pm + 2);
+                  info->fprintf_func (info->stream, "FLINE bsr.l .+0x%x [", pm + 2);
                 info->print_address_func (memaddr + pm + 2, info);
                 info->fprintf_func (info->stream, "]");
                 return 6;
               case 0xfff1:  /* 6 byte bra w/long word displacement */
                 pm = NEXTLONG(buffer);
                 if (pm < 0)
-                  info->fprintf_func (info->stream, "FLINE    bra.l .-0x%x [", (-pm) - 2);
+                  info->fprintf_func (info->stream, "FLINE bra.l .-0x%x [", (-pm) - 2);
                 else
-                  info->fprintf_func (info->stream, "FLINE    bra.l .+0x%x [", pm + 2);
+                  info->fprintf_func (info->stream, "FLINE bra.l .+0x%x [", pm + 2);
                 info->print_address_func (memaddr + pm + 2, info);
                 info->fprintf_func (info->stream, "]");
                 return 6;
               case 0xfff2:  /* 4 byte ROM CALL */
                 pm = NEXTUWORD(buffer);
-                info->fprintf_func (info->stream, "FLINE    $%04x.l [%s]", pm/4, romcalls_get_name(pm / 4));
+                info->fprintf_func (info->stream, "FLINE 0x%04x.l [%s]", pm/4, romcalls_get_name(pm / 4));
                 return 4;
               case 0xffee:  /* jmp __ld_entry_point_plus_0x8000+word */
                 pm = NEXTWORD(buffer);
@@ -1527,7 +1527,7 @@ print_insn_m68k (bfd_vma memaddr, disassemble_info *info)
 
                   heap_search_for_address(memaddr + pm + 2 + 0x8000, &handle);
                   heap_get_block_addr(handle, &addr);				
-                  info->fprintf_func (info->stream, "FLINE    jmp.w .+0x%x [", pm + 0x8000);
+                  info->fprintf_func (info->stream, "FLINE jmp.w .+0x%x [", pm + 0x8000);
                   info->print_address_func (addr + 2 + pm + 0x8000, info);
                   info->fprintf_func (info->stream, "]");
                 }
@@ -1540,7 +1540,7 @@ print_insn_m68k (bfd_vma memaddr, disassemble_info *info)
 
                   heap_search_for_address(memaddr + pm + 2 + 0x8000, &handle);
                   heap_get_block_addr(handle, &addr);
-                  info->fprintf_func (info->stream, "FLINE    jsr.w .+0x%x [", pm + 0x8000);
+                  info->fprintf_func (info->stream, "FLINE jsr.w .+0x%x [", pm + 0x8000);
                   info->print_address_func (addr + 2 + pm + 0x8000, info);
                   info->fprintf_func (info->stream, "]");
                 }
@@ -1550,11 +1550,11 @@ print_insn_m68k (bfd_vma memaddr, disassemble_info *info)
                   char buf[64];
                   pm = NEXTUWORD(buffer);
                   DasmFPU(pm, buf);
-                  info->fprintf_func (info->stream, "FLINE      _bcd_math (FPU: %s)", buf);
+                  info->fprintf_func (info->stream, "FLINE _bcd_math (FPU: %s)", buf);
                   return 4;
                 }
               default:  /* 2 byte ROM CALL */
-                info->fprintf_func (info->stream, "FLINE    0x%03x.w [%s]", op & 0x7ff, romcalls_get_name(op & 0x7ff));
+                info->fprintf_func (info->stream, "FLINE 0x%03x.w [%s]", op & 0x7ff, romcalls_get_name(op & 0x7ff));
                 return 2;
             }
         }
