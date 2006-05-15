@@ -102,15 +102,10 @@ Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\*.dll"; DestDir: "{app}\wget
 Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\wget.exe"; DestDir: "{app}\wget";
 Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\d_and_i.bat"; DestDir: "{app}\wget";
 
-
-[Dirs]
-Name: "{app}\My TI files"; Flags: uninsneveruninstall;
-
 [INI]
 Filename: "{app}\tiemu.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://lpg.ticalc.org/prj_tiemu"
 
 [Icons]
-Name: "{group}\TiEmu3"; Filename: "{app}\tiemu-3.exe"; WorkingDir: "{app}\My TI files"
 Name: "{group}\TiEmu3 on the Web"; Filename: "{app}\tiemu.url"
 Name: "{group}\Uninstall TiEmu"; Filename: "{uninstallexe}"
 Name: "{group}\User's Manual"; Filename: "{app}\help\Manual_en.html"
@@ -118,8 +113,8 @@ Name: "{group}\GTK theme selector"; Filename: "{app}\gtkthemeselector.exe";
 Name: "{group}\Install GTK+ from web"; Filename: "{app}\wget\d_and_i.bat";
 Name: "{group}\Bug Report"; Filename: "http://sourceforge.net/tracker/?func=add&group_id=23169&atid=377680";
 
-Name: "{userdesktop}\TiEmu3"; Filename: "{app}\tiemu-3.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: desktopicon
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: "{app}\tiemu-3.exe"; WorkingDir: "{app}\My TI files"; MinVersion: 4,4; Tasks: quicklaunchicon
+Name: "{userdesktop}\TiEmu3"; Filename: "{app}\tiemu-3.exe"; WorkingDir: "{app}"; MinVersion: 4,4; Tasks: desktopicon
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: "{app}\tiemu-3.exe"; WorkingDir: "{app}"; MinVersion: 4,4; Tasks: quicklaunchicon
 
 [Run]
 ; Remove any previously installed PortTalk driver (especially v1.x)
