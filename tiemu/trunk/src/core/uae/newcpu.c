@@ -288,6 +288,11 @@ int lastint_no;
 #define get_ilong_1(o) get_long(regs.pc + (regs.pc_p - regs.pc_oldp) + (o))
 
 #ifdef NO_GDB
+
+#ifdef __WIN32__
+#define snprintf	_snprintf
+#endif
+
 char *sym_addr(uae_u32 addr)
 {
 	static char buf[256];
