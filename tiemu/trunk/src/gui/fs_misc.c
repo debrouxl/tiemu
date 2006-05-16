@@ -446,6 +446,11 @@ gint display_import_romversion_dbox(void)
 		handle_error();
 		g_free(dstname);
 	}
+	else
+	{
+		msg_box("Error", "This is not a valid file");
+		return -1;
+	}
 
     return 0;
 }
