@@ -276,7 +276,7 @@ extern void m68k_go (int);
 extern void m68k_dumpstate (FILE *, uaecptr *);
 #endif /* 0 */
 #ifdef NO_GDB
-extern int m68k_disasm (char *, uaecptr)
+extern int m68k_disasm (char *, uaecptr);
 #endif /* NO_GDB */
 extern void m68k_reset (void);
 extern int intlev(void);
