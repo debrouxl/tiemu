@@ -238,12 +238,29 @@ if test x$tiemu_use_debugger = xno; then
   AC_DEFINE(NO_DEBUGGER, 1, [Defined to disable the debugger])
 fi
 
-# Run GDB configury
-ac_configure_args="$ac_configure_args --target=m68k-coff --disable-tui --disable-werror"
-changequote(<<,>>)
-ac_configure_args=`echo "$ac_configure_args" | sed "s,'CC=[^']*',,g;s,'CFLAGS=[^']*',,g;s,'CXX=[^']*',,g;s,'CXXFLAGS=[^']*',,g;s,'LDFLAGS=[^']*',,g;s,'build_alias=[^']*',,g;s,'host_alias=[^']*',,g;s,'target_alias=[^']*',,g"`
-changequote([,])
-AC_CONFIG_SUBDIRS(src/core/gdb)
+# GDB support (can be disabled)
+AC_ARG_ENABLE(gdb,
+  AC_HELP_STRING([--disable-gdb], [disable the GDB-based source-level debugger]),
+  [tiemu_use_gdb=$enableval], [tiemu_use_gdb=$tiemu_use_debugger])
+AC_CACHE_CHECK([whether to use the GDB-based source-level debugger],
+  [tiemu_use_gdb], [tiemu_use_gdb=$tiemu_use_debugger])
+if test x$tiemu_use_gdb = xno; then
+  AC_DEFINE(NO_GDB, 1, [Defined to disable GDB])
+fi
+
+# It makes no sense to enable GDB without the debugger!
+if test x$tiemu_use_debugger = xno -a x$tiemu_use_gdb = xyes; then
+  AC_MSG_ERROR([cannot enable GDB without the debugger])
+fi
+
+# Run GDB configury (if enabled)
+if test x$tiemu_use_gdb = xyes; then
+  ac_configure_args="$ac_configure_args --target=m68k-coff --disable-tui --disable-werror"
+  changequote(<<,>>)
+  ac_configure_args=`echo "$ac_configure_args" | sed "s,'CC=[^']*',,g;s,'CFLAGS=[^']*',,g;s,'CXX=[^']*',,g;s,'CXXFLAGS=[^']*',,g;s,'LDFLAGS=[^']*',,g;s,'build_alias=[^']*',,g;s,'host_alias=[^']*',,g;s,'target_alias=[^']*',,g"`
+  changequote([,])
+  AC_CONFIG_SUBDIRS(src/core/gdb)
+fi
 
 # Output.
 AC_OUTPUT

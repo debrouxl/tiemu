@@ -24,6 +24,8 @@
     Gdbcall: GDB interfacing functions
 */
 
+#ifndef NO_GDB
+
 #include "gdbcall.h"
 
 #include <stdio.h>
@@ -69,3 +71,5 @@ void gdb_hbreak(const char *funcname)
   sprintf(command, "hbreak %s", funcname);
   gdbcall_exec_command(command);
 }
+
+#endif

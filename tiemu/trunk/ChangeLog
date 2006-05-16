@@ -7,6 +7,7 @@ SubVersion: $Id$
 	- [roms] $2060: modified UAE disassembler to follow Motorola syntax
 		Used to provide a replacement of the tiemu2 disassembler (license issues).
 	- [kevin] $2081: removed excess spaces in disassemblers
+	- [kevin] $2090: added --disable-gdb configure option
 
 - 25/08/2005, version 2.80:
 	- [roms] $1689: fixed Titanium skin loading and fixed bug in skin loader
