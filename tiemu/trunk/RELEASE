@@ -1,10 +1,11 @@
 20060513:
 * TiEmu 3 changes:
-	- [roms] $2059: renamed 'code/source' window into 'disassembly'
-	- [roms] $2052: build a tiemu2-like release when NO_GDB is enabled	
-	- [roms] $2053: enable and use UAE disassembler when NO_GDB is enabled
-	- [roms] $2060: modified UAE disassembler to follow Motorola syntax
+	- [roms]  $2059: renamed 'code/source' window into 'disassembly'
+	- [roms]  $2052: build a tiemu2-like release when NO_GDB is enabled	
+	- [roms]  $2053: enable and use UAE disassembler when NO_GDB is enabled
+	- [roms]  $2060: modified UAE disassembler to follow Motorola syntax
 		Used to provide a replacement of the tiemu2 disassembler (license issues).
+	- [kevin] $2081: removed excess spaces in disassemblers
 
 20060129:
 * TiEmu 3 changes:
