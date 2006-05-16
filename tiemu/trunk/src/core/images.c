@@ -237,7 +237,7 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
 */
 int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 {
-	FlashContent content;
+	FlashContent *content;
 	FlashContent *ptr;
 	int nheaders = 0;
 	int i;
@@ -254,15 +254,16 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 		return ERR_INVALID_UPGRADE;
 
 	// Load file
-	if(tifiles_file_read_flash(filename, &content) != 0)
+	content = tifiles_content_create_flash(CALC_TI89);
+	if(tifiles_file_read_flash(filename, content) != 0)
         return ERR_INVALID_UPGRADE;
 	
 	// count headers
-  	for (ptr = &content; ptr != NULL; ptr = ptr->next)
+  	for (ptr = content; ptr != NULL; ptr = ptr->next)
     	nheaders++;
   	
   	// keep the last one (data)
-  	for (i = 0, ptr = &content; i < nheaders - 1; i++)
+  	for (i = 0, ptr = content; i < nheaders - 1; i++)
     	ptr = ptr->next;
     	
   	// Load TIB into memory and relocate at SPP
@@ -308,7 +309,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 
   	get_rom_version(tib->data, tib->size, tib->version);
   	
-  	tifiles_content_delete_flash(&content);
+  	tifiles_content_delete_flash(content);
 	if(!preload)
 		free(tib->data);
 
