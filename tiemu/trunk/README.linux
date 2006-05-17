@@ -1,7 +1,7 @@
 				*****************
 				*     TiEmu     *
 				* Linux version *
-				****************	*
+				*****************
 
 
 
@@ -28,6 +28,9 @@ Go the tiemu directory and type './configure' in order to be sure
 that all it is OK. If you want to use KDE file dialogs, run 
 './configure --with-kde' instead. 
 Next, type 'make' to make a binary for your machine.
+
+If you want does not want to use GDB as debugger or use the odl one (tiemu2),
+run './configure --disable-gdb'.
 
 If the compile suceeds without any errors, you can type 'make install' to
 install the binary in /usr/local/bin. This will also copy some necessary
