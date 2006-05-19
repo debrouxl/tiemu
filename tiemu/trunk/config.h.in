@@ -332,9 +332,6 @@
 /* Defined to disable the debugger */
 #undef NO_DEBUGGER
 
-/* Defined to disable GDB */
-#undef NO_GDB
-
 /* Name of package */
 #undef PACKAGE
 

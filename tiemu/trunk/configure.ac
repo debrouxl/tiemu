@@ -245,7 +245,7 @@ AC_ARG_ENABLE(gdb,
 AC_CACHE_CHECK([whether to use the GDB-based source-level debugger],
   [tiemu_use_gdb], [tiemu_use_gdb=$tiemu_use_debugger])
 if test x$tiemu_use_gdb = xno; then
-  AC_DEFINE(NO_GDB, 1, [Defined to disable GDB])
+  CFLAGS="$CFLAGS -DNO_GDB"
 fi
 
 # It makes no sense to enable GDB without the debugger!

@@ -37924,11 +37924,7 @@ fi
 echo "$as_me:$LINENO: result: $tiemu_use_gdb" >&5
 echo "${ECHO_T}$tiemu_use_gdb" >&6
 if test x$tiemu_use_gdb = xno; then
-
-cat >>confdefs.h <<\_ACEOF
-#define NO_GDB 1
-_ACEOF
-
+  CFLAGS="$CFLAGS -DNO_GDB"
 fi
 
 # It makes no sense to enable GDB without the debugger!
