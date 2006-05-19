@@ -266,14 +266,14 @@ tiemu-rc.o: ../build/mingw/tiemu.rc
 clean:
 	@cd core/uae && $(MAKE) clean
 ifeq (,$(findstring NO_GDB,$(CFLAGS)))
-	@cd core/gdb && $(MAKE) clean
+	@cd core/gdb && $(MAKE) -k clean || :
 endif
 	@rm -f $(tiemu_OBJ) tiemu tiemu.exe tiemu-rc.o $(kdeprivsources)
 
 distclean: clean
 	@cd core/uae && $(MAKE) distclean
 ifeq (,$(findstring NO_GDB,$(CFLAGS)))
-	@cd core/gdb && $(MAKE) distclean
+	@cd core/gdb && $(MAKE) -k distclean || :
 endif
 	@rm -Rf .libs
 
