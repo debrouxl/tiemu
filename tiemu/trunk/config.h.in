@@ -9,7 +9,7 @@
 #undef C_ALLOCA
 
 /* Define to 1 if translation of program messages to the user's native
-   language is requested. */
+   language is requested. */
 #undef ENABLE_NLS
 
 /* Define to 1 if you have `alloca', as a function or macro. */
@@ -111,7 +111,7 @@
 /* Define if <inttypes.h> exists and doesn't clash with <sys/types.h>. */
 #undef HAVE_INTTYPES_H
 
-/* Define if <inttypes.h> exists, doesn't clash with <sys/types.h>, and
+/* Define if <inttypes.h> exists, doesn't clash with <sys/types.h>, and
    declares uintmax_t. */
 #undef HAVE_INTTYPES_H_WITH_UINTMAX
 
@@ -213,8 +213,8 @@
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
 
-/* Define if <stdint.h> exists, doesn't clash with <sys/types.h>, and declares
-   uintmax_t. */
+/* Define if <stdint.h> exists, doesn't clash with <sys/types.h>, and
+   declares uintmax_t. */
 #undef HAVE_STDINT_H_WITH_UINTMAX
 
 /* Define to 1 if you have the <stdlib.h> header file. */
@@ -265,6 +265,15 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
 
+/* Define to 1 if you have the <tilp2/ticables.h> header file. */
+#undef HAVE_TILP2_TICABLES_H
+
+/* Define to 1 if you have the <tilp2/ticalcs.h> header file. */
+#undef HAVE_TILP2_TICALCS_H
+
+/* Define to 1 if you have the <tilp2/tifiles.h> header file. */
+#undef HAVE_TILP2_TIFILES_H
+
 /* Define to 1 if you have the `tsearch' function. */
 #undef HAVE_TSEARCH
 
@@ -295,6 +304,9 @@
 /* Define to 1 if the system has the type `_Bool'. */
 #undef HAVE__BOOL
 
+/* Define to 1 if you have the `\' function. */
+#undef HAVE___
+
 /* Define to 1 if you have the `__argz_count' function. */
 #undef HAVE___ARGZ_COUNT
 
@@ -319,6 +331,9 @@
 
 /* Defined to disable the debugger */
 #undef NO_DEBUGGER
+
+/* Defined to disable GDB */
+#undef NO_GDB
 
 /* Name of package */
 #undef PACKAGE
@@ -381,8 +396,7 @@
 #undef VERSION
 
 /* Use KDE support */
-//#undef WITH_KDE
-#define WITH_KDE 1
+#undef WITH_KDE
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
@@ -412,7 +426,7 @@
 /* Define the real type of socklen_t */
 #undef socklen_t
 
-/* Define to unsigned long or unsigned long long if <stdint.h> and
+/* Define to unsigned long or unsigned long long if <stdint.h> and
    <inttypes.h> don't define. */
 #undef uintmax_t
 
