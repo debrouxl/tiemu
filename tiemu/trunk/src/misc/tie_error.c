@@ -68,7 +68,7 @@ int tiemu_error(int err_code, char *err_str)
 				{
 					// next level: error for TiEmu
 					//free(s);
-					err = ti68k_error_get(err, s);
+					err = ti68k_error_get(err, &s);
 				}
 			}
 		}

@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <glib.h>
 
 #include "intl.h"
 #include "ti68k_err.h"
@@ -40,68 +41,68 @@
    If the error code has been handled, the function returns 0 else it 
    propagates the error code by returning it.
 */
-int ti68k_error_get(int err_num, char *error_msg)
+int ti68k_error_get(int err_num, char **error_msg)
 {
 	switch(err_num)
     {
     case ERR_NONE:
-		strcpy(error_msg, _("No error."));
+		*error_msg = g_strdup(_("No error."));
 		break;
 
 	case ERR_CANT_OPEN:
-		strcpy(error_msg, _("Can not open file."));
+		*error_msg = g_strdup(_("Can not open file."));
 		break;
 
 	case ERR_CANT_OPEN_STATE:
-		strcpy(error_msg, _("Can not open state image: file is corrupted or missing."));
+		*error_msg = g_strdup(_("Can not open state image: file is corrupted or missing."));
 		break;
 
 	case ERR_REVISION_MATCH:
-		strcpy(error_msg, _("Can not open state image: revision changed. You have to recreate the state image."));
+		*error_msg = g_strdup(_("Can not open state image: revision changed. You have to recreate the state image."));
 		break;
 
 	case ERR_HEADER_MATCH:
-		strcpy(error_msg, _("Can not open state image: state image header does not match ROM image header: have you changed/updated your ROM image ?"));
+		*error_msg = g_strdup(_("Can not open state image: state image header does not match ROM image header: have you changed/updated your ROM image ?"));
 		break;
 
 	case ERR_STATE_MATCH:
-		strcpy(error_msg, _("Can not open state image: this state image is not targetted for your current emulator image (calculator model and/or OS verison must match !). Choose another image before."));
+		*error_msg = g_strdup(_("Can not open state image: this state image is not targetted for your current emulator image (calculator model and/or OS verison must match !). Choose another image before."));
 		break;
 
 	case ERR_INVALID_IMAGE:
-		strcpy(error_msg, _("Invalid emulator image. File is corrupted or revision changed."));
+		*error_msg = g_strdup(_("Invalid emulator image. File is corrupted or revision changed."));
 		break;
 
 	case ERR_INVALID_UPGRADE:
-		strcpy(error_msg, _("Invalid FLASH upgrade."));
+		*error_msg = g_strdup(_("Invalid FLASH upgrade."));
 		break;
 
 	case ERR_INVALID_ROM:
-		strcpy(error_msg, _("Invalid ROM dump."));
+		*error_msg = g_strdup(_("Invalid ROM dump."));
 		break;
 
 	case ERR_NO_IMAGE:
-		strcpy(error_msg, _("No image."));
+		*error_msg = g_strdup(_("No image."));
 		break;
 
 	case ERR_INVALID_ROM_SIZE:
-		strcpy(error_msg, _("ROM dump has a weird size."));
+		*error_msg = g_strdup(_("ROM dump has a weird size."));
 		break;
 
 	case ERR_NOT_TI_FILE:
-		strcpy(error_msg, _("This is not recognized as a TI file."));
+		*error_msg = g_strdup(_("This is not recognized as a TI file."));
 		break;
 
 	case ERR_CANT_OPEN_DIR:
-		strcpy(error_msg, _("Can parse folder."));
+		*error_msg = g_strdup(_("Can parse folder."));
 		break;
 
 	case ERR_CANT_UPGRADE:
-		strcpy(error_msg, _("Can't upgrade calculator."));
+		*error_msg = g_strdup(_("Can't upgrade calculator."));
 		break;		
 
     default:
-      strcpy(error_msg, _("Error code not found in the list.\nThis is a bug. Please report it.\n."));
+      *error_msg = g_strdup(_("Error code not found in the list.\nThis is a bug. Please report it.\n."));
       return err_num;
     }
   
