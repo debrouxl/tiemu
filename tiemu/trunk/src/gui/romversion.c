@@ -45,6 +45,7 @@
 #include "tie_error.h"
 #include "calc.h"
 
+GtkWidget *dbox;
 gchar *chosen_file = NULL;
 
 enum { 
@@ -69,6 +70,7 @@ static void clist_selection_changed(GtkTreeSelection * sel,
 		}
 
         gtk_tree_model_get (model, &iter, 0, &chosen_file, -1);
+		gtk_dialog_set_response_sensitive(GTK_DIALOG(dbox), GTK_RESPONSE_OK, TRUE);
     }
 }
 
@@ -178,7 +180,6 @@ static void clist_refresh(GtkListStore *store)
 gint display_romversion_dbox(gboolean file_only)
 {
     GladeXML *xml;
-	GtkWidget *dbox;
 	GtkWidget *data;
     gint result;
     GtkListStore *store;
@@ -198,6 +199,7 @@ gint display_romversion_dbox(gboolean file_only)
 	clist_populate(store);
     
 	// run main box
+	gtk_dialog_set_response_sensitive(GTK_DIALOG(dbox), GTK_RESPONSE_OK, FALSE);
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	gtk_widget_destroy(dbox);
 
