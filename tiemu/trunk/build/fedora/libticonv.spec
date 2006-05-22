@@ -1,11 +1,7 @@
-# Don't run strip, our binaries are already stripped
-%define __spec_install_post :
-%define debug_package %{nil}
-
 %define name	libticonv
 %define version %(date +%%Y%%m%%d)
 %define release 1
-%define my_opt_flags -Os -s -fno-exceptions -fomit-frame-pointer
+%define my_opt_flags -Os -g -fno-exceptions -fomit-frame-pointer
 
 Name:		%{name}
 Version:	%{version}
@@ -33,7 +29,6 @@ make
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-strip $RPM_BUILD_ROOT/usr/lib/libticonv.so.*.*.*
 # Kill duplicated header (installed by libticables-2 already)
 rm -f $RPM_BUILD_ROOT/usr/include/tilp2/stdints.h
 
@@ -55,5 +50,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Build debuginfo RPM.
+
 * Sun May 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 First Fedora RPM.

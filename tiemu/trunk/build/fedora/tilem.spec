@@ -1,11 +1,7 @@
-# Don't run strip, our binaries are already stripped
-%define __spec_install_post :
-%define debug_package %{nil}
-
 %define name tilem
 %define version 0.973
-%define release 2
-%define my_opt_flags -Os -s -fno-exceptions -fomit-frame-pointer
+%define release 3
+%define my_opt_flags -Os -g -fno-exceptions -fomit-frame-pointer
 
 Name:		%{name}
 Version:	%{version}
@@ -78,6 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org> 0.973-3
+Build debuginfo RPM.
+
 * Wed Jan 5 2006 Kevin Kofler <Kevin@tigcc.ticalc.org> 0.973-2
 Apply TI-85 keymap fix by Benjamin Moody.
 
