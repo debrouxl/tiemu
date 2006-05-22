@@ -14,11 +14,11 @@ BuildRequires:	libticables2 = %{version}, libticonv = %{version}, libtifiles2 = 
 Requires:	libticables2 = %{version}, libticonv = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.10.1, gtk2 >= 2.8.15, libglade2 >= 2.5.1, zlib >= 1.2.3, kdelibs >= 6:3.5.1, libX11 >= 1.0.0, libXext >= 1.0.0, ncurses >= 5.5, tcl >= 8.4, tk >= 8.4, itcl >= 3.3, itk >= 3.3, iwidgets >= 4.0.1
 Requires(post):	desktop-file-utils >= 0.10
 Requires(postun): desktop-file-utils >= 0.10
-BuildRoot:	/usr/src/redhat/BUILD/buildroot
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes:	tiemu < 3.00, tiemu-tigcc-debugging < 20050828
 Conflicts:	tiemu >= 3.00
 Provides:	tiemu = ${version}
-Summary: TiEmu is a TI89(Ti)/92(+)/V200 emulator.
+Summary: TiEmu is a TI89(Ti)/92(+)/V200 emulator
 %description
 TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debugging using Insight GDB.
 
@@ -79,6 +79,8 @@ rm -rf $RPM_BUILD_ROOT
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.
 Use the system-wide default RPM_OPT_FLAGS instead of my own.
+No period at end of summary.
+Use BuildRoot recommended by the Fedora packaging guidelines.
 
 * Sun May 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Now requires libticonv.

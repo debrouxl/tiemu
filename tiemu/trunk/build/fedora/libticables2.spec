@@ -12,7 +12,7 @@ Group:		System Environment/Libraries
 License:	GPL
 BuildRequires:	libusb-devel >= 0.1.10a, glib2-devel >= 2.10.1
 Requires:	libusb >= 0.1.10a, glib2 >= 2.10.1
-BuildRoot:	/usr/src/redhat/BUILD/buildroot
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Summary:	Library for handling TI link cables
 %description
 Library for handling TI link cables
@@ -109,6 +109,7 @@ rm -rf $RPM_BUILD_ROOT
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.
 Use the system-wide default RPM_OPT_FLAGS instead of my own.
+Use BuildRoot recommended by the Fedora packaging guidelines.
 
 * Sun May 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 License now GPL (with exception for TilEm).

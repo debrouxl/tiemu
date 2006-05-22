@@ -14,7 +14,7 @@ BuildRequires:	libticables2 = %{version}, libticonv = %{version}, libtifiles2 = 
 Requires:	libticables2 = %{version}, libticonv = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2
 Requires(post):	shared-mime-info, desktop-file-utils >= 0.9
 Requires(postun): shared-mime-info, desktop-file-utils >= 0.9
-BuildRoot:	/usr/src/redhat/BUILD/buildroot
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Summary:	TiLP is a TI<->PC linking program
 Obsoletes:  tilp < 20050828
 %description
@@ -99,6 +99,7 @@ rm -rf $RPM_BUILD_ROOT
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.
 Use the system-wide default RPM_OPT_FLAGS instead of my own.
+Use BuildRoot recommended by the Fedora packaging guidelines.
 
 * Sun May 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Now requires libticonv.

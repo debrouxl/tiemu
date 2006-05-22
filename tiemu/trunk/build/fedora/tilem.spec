@@ -15,8 +15,8 @@ BuildRequires:	libticables2 >= 20050915, glib2-devel >= 2.6.4, gtk2-devel >= 2.6
 Requires:	libticables2 >= 20050915, glib2 >= 2.6.4, gtk2 >= 2.6.7, imlib >= 1.9.13
 Requires(post):	desktop-file-utils >= 0.10
 Requires(postun): desktop-file-utils >= 0.10
-BuildRoot:	/usr/src/redhat/BUILD/buildroot
-Summary: TilEm is a TI-73/82/83/83+(SE)/84+(SE)/85/86 emulator.
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Summary: TilEm is a TI-73/82/83/83+(SE)/84+(SE)/85/86 emulator
 %description
 TilEm is a TI-73/82/83/83+(SE)/84+(SE)/85/86 emulator.
 
@@ -76,6 +76,8 @@ rm -rf $RPM_BUILD_ROOT
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org> 0.973-3
 Build debuginfo RPM.
 Use the system-wide default RPM_OPT_FLAGS instead of my own.
+No period at end of summary.
+Use BuildRoot recommended by the Fedora packaging guidelines.
 
 * Wed Jan 5 2006 Kevin Kofler <Kevin@tigcc.ticalc.org> 0.973-2
 Apply TI-85 keymap fix by Benjamin Moody.
