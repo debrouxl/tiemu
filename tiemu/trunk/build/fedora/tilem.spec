@@ -1,7 +1,6 @@
 %define name tilem
 %define version 0.973
 %define release 3
-%define my_opt_flags -Os -g -fno-exceptions -fomit-frame-pointer
 
 Name:		%{name}
 Version:	%{version}
@@ -31,7 +30,7 @@ chmod +x configure
 patch -l src/tilem/keypad.c <%{PATCH0}
 
 %build
-CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --with-ticables
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --with-ticables
 make
 
 %install
@@ -76,6 +75,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org> 0.973-3
 Build debuginfo RPM.
+Use the system-wide default RPM_OPT_FLAGS instead of my own.
 
 * Wed Jan 5 2006 Kevin Kofler <Kevin@tigcc.ticalc.org> 0.973-2
 Apply TI-85 keymap fix by Benjamin Moody.

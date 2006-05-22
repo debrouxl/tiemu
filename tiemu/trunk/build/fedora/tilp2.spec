@@ -1,7 +1,6 @@
 %define name	tilp2
 %define version %(date +%%Y%%m%%d)
 %define release 1
-%define my_opt_flags -Os -g -fno-exceptions -fomit-frame-pointer
 
 Name:		%{name}
 Version:	%{version}
@@ -25,7 +24,7 @@ TiLP is a TI<->PC linking program
 %setup -n tilp
 
 %build
-CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls --enable-exit-homedir
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --disable-nls --enable-exit-homedir
 make
 
 %install
@@ -99,6 +98,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.
+Use the system-wide default RPM_OPT_FLAGS instead of my own.
 
 * Sun May 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Now requires libticonv.

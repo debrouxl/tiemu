@@ -1,7 +1,6 @@
 %define name tiemu3
 %define version %(date +%%Y%%m%%d)
 %define release 1
-%define my_opt_flags -Os -g -fno-exceptions -fomit-frame-pointer
 
 Name:		%{name}
 Version:	%{version}
@@ -32,7 +31,7 @@ sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' s
 sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/core/gdb/itcl/itk/configure.in
 sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/core/gdb/itcl/itk/configure
 export extra_ldflags="-Wl,-rpath,/usr/lib/itcl3.3 -Wl,-rpath,/usr/lib/itk3.3"
-CFLAGS="%{my_opt_flags}" ./configure --prefix=%{_prefix} --disable-nls --enable-shared-tcl-tk --enable-shared-itcl
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --disable-nls --enable-shared-tcl-tk --enable-shared-itcl
 make
 
 %install
@@ -79,6 +78,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.
+Use the system-wide default RPM_OPT_FLAGS instead of my own.
 
 * Sun May 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Now requires libticonv.
