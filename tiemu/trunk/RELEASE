@@ -1,11 +1,197 @@
-20060513:
+20060524:
 * TiEmu 3 changes:
-	- [roms]  $2059: renamed 'code/source' window into 'disassembly'
-	- [roms]  $2052: build a tiemu2-like release when NO_GDB is enabled	
-	- [roms]  $2053: enable and use UAE disassembler when NO_GDB is enabled
-	- [roms]  $2060: modified UAE disassembler to follow Motorola syntax
+	- [kevin] $1872: adjust to libtifiles2 reversion to file names in locale charset
+	                 actually honor locale for file names throughout
+	- [kevin] $1875: plug Qt event loop into GTK+ main loop so we will actually be able to receive/process DCOP messages
+	- [kevin] $1876: created a DCOP interface (currently empty)
+	- [kevin] $1879: implemented image queries and file sending in the DCOP interface
+	- [kevin] $1880: handle engine state properly when sending files through DCOP
+	- [kevin] $1881: added ready_for_transfers() boolean query to the DCOP interface
+	- [kevin] $1882: added reset_calc(bool clearmem) command to the DCOP interface
+	                 DCOP operations now return true if TiEmu was ready and false if it wasn't (and rejected the operation)
+	- [kevin] $1883: implemented execute_command in the DCOP interface
+	- [kevin] $1886: added turn_calculator_on command to the DCOP interface
+	- [kevin] $1889: adjust to libtifiles2 re-reversion to file names in glib filename charset
+	- [kevin] $1890: implemented widechar versions of Win32 file dialogs
+	- [kevin] $1891: partial implementation of OLE automation interface (no instances created yet)
+	- [kevin] $1907: initialize and uninitialize OLE automation interface
+	- [kevin] $1913: added 1 ms timeout to Qt processEvents to ensure 4% max CPU consumption
+	- [kevin] $1914: slowed down typing (execute_command) a bit so the CHAR menu works properly
+	- [kevin] $1915: fixed keycode of SIGMA on TI-89
+	- [roms] $1931: fixed segfault in the Win32 file selector when varname contains non-ASCII chars.
+	- [roms] $1932: enabled tifiles2 library as UTF-8 for varnames. This allow good handling of non-ASCII chars.
+	- [roms] $1933: added conversion of varnames with greek chars into useable filenames for disks with locale encoding.
+	- [kevin] $1935: added OLE self registration support (/RegServer, /UnregServer)
+	- [kevin] $1936: also filter CXX in the configure argument filtering (fixes MinGW build again)
+	- [kevin] $1938: cleaned up OLE self registration support, fixing Win32 link failure
+	- [kevin] $1943: register the TLB file during OLE self registration
+	                 don't abuse assert for error checking in registry.cpp
+	- [kevin] $1945: add regsvr makefile target for native MinGW compilations (using MSYS)
+	- [kevin] $1953: experimental support for building tiemups.dll with MinGW
+	- [roms]  $1955: the '/RegServer' and '/UnregServer' must be case-unsensitive. Fixed compilation under MSVC.
+	- [roms]  $1957: added VB script for testing OLE/Automation.
+	- [kevin] $1959: use RegisterActiveObject, not CoRegisterClassObject, for our singleton
+	                 don't delete the singleton if the refcount reaches 0, let the cleanup on exit do it
+	- [kevin] $1961: pass --disable-werror to the GDB configury
+	- [roms]  $1962: added MSVC project to oleautsdk and modified oletest to compile with a C90 compiler.
+	- [kevin] $1964: moved initialization of buffer[2048] back down
+	                 restored 2 spaces/level indentation in oletest.c
+	- [roms]  $1968: request #1430263: "better error handling"
+	- [roms]  $1972: bug #1388306 fixed: "can't send FLASH app"
+	- [roms]  $1978: skin is now scaled directly from JPEG image => no resolution lost
+	- [kevin] $1980: added enter_debugger command to the DCOP interface
+	- [kevin] $1981: added enter_debugger command to the OLE interface
+	- [roms]  $1987: fixing bug #1434625: display a better error message when attempting to load a state image targeted for another hand-held model (backported changes from TiEmu2 rev. 1986).
+	- [roms]  $1989: fixed bug #1434625: allow direct loading of a state image and associated image.
+	- [roms]  $1993: fixed bug in the single Win32 file selector (default folder was not properly set)
+	- [roms]  $1994: switched to ticonv library
+	- [roms]  $1999: fixed #1436138: V200 screen bigger than the skin
+	- [kevin] $2003: fixed set_window->on_drawingarea1_configure_event->set_window feedback loop (see bugs #1227433, #1249087)
+	- [roms]  $2004: replaced gtk_idle_add (deprecated) by g_idle_add
+	- [roms]  $2007: accept TI92 files on Titanium and others
+	- [kevin] $2009: imported UAE 0.8.25
+	- [roms]  $2012: bug #1434600 => goes to HOME when calc is not ready
+	- [kevin] $2021: fixed stray quotes breaking Insight build with latest bash (by Pavel Roskin, from http://sources.redhat.com/ml/insight/2006-q1/msg00043.html)
+	- [roms]  $2031: can load VTi skins
+	- [kevin] $2033: commented out OLE installation in tiemu*.nsi and OLE initialization/cleanup in oleaut.cpp - OLE support will be reenabled when it will actually work
+	- [roms]  $2037: fixed to follow ticalcs2 API changes
+	- [kevin] $2038: HW4 runs at 16 MHz
+	- [roms]  $2040: added HW4 support (user can choose imported FLASH upgrade as HW3 or HW4 for Titanium (like TI89/92+))
+	- [roms]  $2048: fixed edition of values in the memory dbox
+	- [roms] $2059: renamed 'code/source' window into 'disassembly'
+	- [roms] $2052: build a tiemu2-like release when NO_GDB is enabled	
+	- [roms] $2053: enable and use UAE disassembler when NO_GDB is enabled
+	- [roms] $2060: modified UAE disassembler to follow Motorola syntax
 		Used to provide a replacement of the tiemu2 disassembler (license issues).
 	- [kevin] $2081: removed excess spaces in disassemblers
+	- [kevin] $2090: added --disable-gdb configure option
+	- [roms]  $2096: fixed bug #1490859 (enable OK button when selecting an image)
+	- [roms]  $2097: fixed bug #1471709 (crash on old state image)
+	- [kevin] $2102: increased buffer size for the RELEASE viewer
+* new library: libticonv by Kevin and Roms, handling character set conversions (replacing the transcode support in libtifiles2 and some code within TiEmu 3)
+* libticables2 changes (roms):
+	- changed information message in check_for_libusb according to bug #1372369.
+	- error message is a glib allocated string for now
+	- does not raise an error any longer if usb_set_configuration fails 
+	(seems to be needed with latest lib-usb release...)
+	- ParallelLink support was not compiled under Windows
+	- reset SilverLink cable when opened (like other cables)
+	- close/re-open cable in slv_reset. Reseting is not enough on both Linux & Windows.
+	- reverted back to previous behaviour (reset instead of close/open)
+	- rewritten data logging system
+	- embedded HEX to PKT D-BUS decompiler
+	- added ability to retrieve the USB hand-held connected from its PID
+	- improved ticables_probing_do which can probes all cables or USB cables only (faster).
+	- definitely fixed return value for probing functions
+	- fixed link_xxx which returns -1 instead of ERR_NOT_OPEN. Thanks to Tyler Cassidy !
+* libtifiles2 changes (roms):
+	- reverted back the changes made on 'fopen' and 'UTF-8'
+	- replaced fopen calls by g_fopen calls: the library uses GLib encoding on
+	filenames for now (UTF-8 on Windows, locale on Linux (usually UTF-8, too)).
+	- optimized tifiles_file_is_ti()
+	- fixed tifiles_file_get_type for TiGroup support
+	- added tifiles_varname_to_filename which converts varname with sepcial characters
+		(like alpha, beta, ...) into valid filename according to locale
+	- tifiles_file_write_regular can now auto-saves files with greek characters
+	- error message is a glib allocated string for now.
+	- moved transcode support as deprecated (superseded by ticonv libary)
+	- switched to ticonv
+	- removed deprecated functions
+	- free the block itself in tifiles_content_delete_xxxxx
+	- clean-up (removed dead code)
+	- increased buffer length of variable & folder names (9 -> 36) due to TI-UTF-8
+	- checked for usb calcs support
+	- fixed warnings
+	- thanks to O. Armand, fixed a bug in the file attribute (archived flag)
+	- ti8x_read_flash now returns in FlashContent.data_length the length of pure data
+		instead of file size (TI8x FLASH file format)
+	- fixed bug in tifiles_file_is_tib which didn't detect TIB files.
+* libticalcs2 changes (roms):
+	- error message is a glib allocated string for now.
+	- switched to ticonv library
+	- send HOME key before dumping
+	- don't list some system variables which appears in dirlist: regCoef and regEq.
+	- fixed is_ready which checked the LSB instead of the MSB status word
+	- added 2 functions for adding/removing an entry from a dirlist tree
+	- directory list is now free'd
+	- fixed TI73 sending & receiving of FLASH apps
+	- fixed OS version formatting
+	- set hw revision to -1 (n/a) for TI8x calcs
+	- don't use static Flash/FileContent structures: they are badly released because often not zero'ed.
+	- fixed bug in TI92 recv_backup
+	- added periodic refresh from callbacks
+	- bitmap for screenshot is now allocated at the end of transfer.
+	- work on DirectLink in progress.
+	- implemented USB hand-helds support
+	- split sending of FLASH app & os into 2 functions.
+	- renamed some function of the API (send/recv_flash into send/recv_app)
+	- make ticalcs_dirlist_mem_used useable with apps tree
+	- implemented get_memfree functions
+	- added a new probing method for USB hand-helds only (faster)
+	- added FTS_BACKUP flag for hand-helds with real backup capability
+	- added common function which emulates a backup by grouping
+	- definitely fixed return value for probing functions
+	- implemented a garbage collector for virtual packets, calc attributes anc calc parameters.
+		Needed because a DUSB function may returns an error without releasing allocated memory
+		(easier by this way).
+	- added ticalcs_dirlist_flash_used which count memory used by both archived variables and apps
+	- fixed pbar with TI73/84+ sending of FLASH app
+	- fixed ca_del_array & cp_del_array for garbage collector
+	- manage hand-held error codes
+	- manage delaying packets
+	- implemented send_os for Titanium/USB and fixed some commands
+	- implemented send_os for TI84+/USB
+	- added Titanium/USB ROM dumper
+	- increased ROM dumper block size from 1KB to 4KB (faster)
+	- fixed misfeature in Titanium get_dirlist
+	- fixed OS sending page address in TI84+/USB support
+* TiLP 2 (included in the Fedora RPMs only, see http://www.ticalc.org for source and Windows packages by roms) changes (roms):
+	- reverted tifiles to locale encoding
+	- checked/fixed tilp for use of the good filename encoding
+	- tifiles2 library has switched to 'glib filename encoding'
+	- fixed missing or bad utf8/glib conversions
+	- added TiGroup support (sending only =  read only)
+	- updated manpage according to bug #1397587
+	- varnames with greek characters are now saved fine (T. Evans)
+	- fixed bug #1430307: "full path on cmd line" (hiboo)
+	- removed 'exit home dir' limitation/security (kevin)
+	- ungroup TI82/85 files when option is set to 'single'
+	- rewrite target folder when sending to a specific folder (T. Evans)
+	- fixed bug in the Win32 file selector (default folder)
+	- switched to ticonv library
+	- fixed bug with the re-target folder feature.
+	- make hand-held goes to HOME when not ready (kevin)
+	- implemented feature request: "TiLP always gets a list of the files on the calc, even if I already " (T. Evans)
+	- when ticables/ticalcs error occurs: reset cable and wait for 0.5s (i/o link active -> disappear)
+	- don't use cable_handle & calc_handle fields: they are private
+	- fixed command line
+	- added skip/retry/cancel box when sending of multiple files
+	- same for receiving of several variables
+	- the right view did not filter file types correctly
+	- user's suggestion: automatically change for detected cable/calc.
+	- fixed displaying of greek chars in the action dbox.
+	- can't load pdf/eps files
+	- clamp gtk_update.cnt2 to avoid warnings
+	- fixed group filename (recently modified but not propagated).
+	- don't update dirlist with TI82/85
+	- don't display hw revision for TI8x calcs
+	- fixed the command line argument passing in the InnoSetup script (shell registering)
+	- added TI84+ USB hand-held support
+	- re-map 0x2080..9 chars into the ctree
+	- follows ticalcs2 changes in the API
+	- added Titanium USB hand-held support
+	- reworked displaying of Hand-Held Informations box
+	- added a new label which display RAM/FLASH free &used
+	- show more levels in the current path
+	- reworked/factorized opening/closing of device
+	- auto-detect USB devices at startup
+	- reworked full auto-detection
+	- fixed bug in the use of USB auto-detect
+	- rename 'Ready' button into 'Connect' when using DirectLink
+	- update remote frame in the action box
+	- update memory used when sending/deleting variables
+* The Fedora RPM of TiEmu is now built on and for Fedora Core 5.
+* The Windows build is linked against GTK+ 2.6 again to support Windows 9x, Me and NT 4. You can use any GTK+ runtime version >=2.6.10 to run it (including 2.8.x), but be aware that GTK+ 2.8 requires Windows 2000, XP or newer.
 
 20060129:
 * TiEmu 3 changes:

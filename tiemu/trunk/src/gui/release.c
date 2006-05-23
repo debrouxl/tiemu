@@ -44,7 +44,7 @@ gint display_release_dbox()
 	GtkWidget *text;
 	FILE *fd;
 	gchar *filename;
-	gchar buffer[32768];
+	gchar buffer[65536];
 	gint len = 0;
 	struct stat stbuf;
 	gint result;
