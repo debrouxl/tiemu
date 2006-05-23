@@ -53,7 +53,9 @@ TiEmu now supports Linux->MinGW cross-compilation again. Here's how I did it:
 2. Installed the MinGW GCC RPM from: http://bitwalk.hp.infoseek.co.jp/download.html
    (Make sure you get a package which includes g++. It is needed to build oleaut.cpp.)
 3. Installed WINE from Fedora Extras.
-4. Installed the latest GTK+ development environment from http://gladewin32.sf.net in WINE.
+4. Installed the last GTK+ 2.6 development environment (2.6.10-rc1) from http://gladewin32.sf.net in WINE.
+   WARNING: DON'T build against GTK+ 2.8! GTK+ 2.8 uses Cairo, which doesn't work at all on Win9x/Me.
+            Nobody seems interested in fixing that. We've learned this the hard way. You have been warned.
 5. ln -s ~/.wine/c/GTK /target #(to make pkg-config happy)
 6. In order to avoid a needless mingwm10.dll dependency, edited
    /usr/local/i386-mingw32/lib/libstdc++.la to remove -lmingwthrd.
@@ -79,8 +81,9 @@ TiEmu now supports Linux->MinGW cross-compilation again. Here's how I did it:
    make install
    NOTE: You'll have to substitute an absolute path for ~ to make configure happy.
 
-Unfortunately, it does NOT seem to work in WINE. Here's the instructions getting
-it up to the wizard, but showing way too large fonts and then crashing:
+Unfortunately, it does NOT seem to work in WINE (at least with GTK+ 2.8, I'll
+retry with 2.6 ASAP). Here's the instructions getting it up to the wizard, but
+showing way too large fonts and then crashing:
 1. Fired up WINE regedit and added ";c:\GTK\bin" to HKEY_CURRENT_USER\Environment\PATH.
 2. Copied /usr/share/fonts/bitstream-vera/*.ttf to ~/.wine/c/windows/Fonts so
    GTK+ in WINE has fonts to work with.
@@ -96,18 +99,19 @@ To build the setup wizard, here's what I did:
    scons PREFIX=~/nsis SKIPSTUBS=all SKIPPLUGINS=all SKIPUTILS=all SKIPMISC=all
    scons PREFIX=~/nsis SKIPSTUBS=all SKIPPLUGINS=all SKIPUTILS=all SKIPMISC=all install
 4. Fetched the corresponding NSIS ZIP file from: http://nsis.sf.net
-5. Extracted everything except the root directory (which contains only Windows
-   executables) and the files which were already there from the ZIP into ~/nsis.
+5. Extracted some of the contents of the ZIP file into ~/nsis:
+   Docs, Examples -> ~/nsis/share/doc/nsis
+   Bin, Contrib, Include, Menu, Plugins, Stubs -> ~/nsis/share/nsis
 6. Used this /usr/local/bin/makensis script (a symlink will NOT work, because
    makensis expects to be called with a full path!):
    #!/bin/sh
-   ~/nsis/makensis $*
+   ~/nsis/bin/makensis $*
 7. Installed UPX from Fedora Extras.
 8. Used the following commands to build the TiEmu setup wizard:
    cd build/nsis
    makensis tiemu-cross.nsi
 
-Tested with TiEmu 2.80, 2006-01-07. Updated 2006-02-11.
+Tested with TiEmu 2.80, 2006-01-07. Updated 2006-05-23.
 
 ---
 

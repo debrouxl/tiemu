@@ -6,8 +6,8 @@
 //
 
 1 VERSIONINFO
- FILEVERSION 2,80,0,0
- PRODUCTVERSION 2,80,0,0
+ FILEVERSION 2,81,0,0
+ PRODUCTVERSION 2,81,0,0
  FILEFLAGSMASK 0x3fL
  FILEFLAGS 0x28L
  FILEOS 0x40004L
@@ -28,7 +28,7 @@ BEGIN
             VALUE "OriginalFilename", "tiemu.exe\0"
 //            VALUE "PrivateBuild", "$Id$\0"
             VALUE "ProductName", "TiEmu II\0"
-            VALUE "ProductVersion", "2, 80, 0, 0\0"
+            VALUE "ProductVersion", "2, 81, 0, 0\0"
             VALUE "SpecialBuild", "MinGW Windows build\0"
         END
     END
