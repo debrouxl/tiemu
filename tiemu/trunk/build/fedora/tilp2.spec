@@ -24,7 +24,7 @@ TiLP is a TI<->PC linking program
 %setup -n tilp
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --disable-nls --enable-exit-homedir
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --disable-nls
 make
 
 %install
@@ -99,6 +99,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Make sure permissions are set correctly when building as non-root.
+--enable-exit-homedir not needed anymore (now default).
 
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.
