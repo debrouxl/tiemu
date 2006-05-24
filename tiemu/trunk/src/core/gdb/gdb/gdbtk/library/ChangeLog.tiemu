@@ -1,3 +1,10 @@
+2006-05-24  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * ../../../libgui/library/cframe.tcl, ../../../libgui/library/lframe.tcl,
+          ../../../libgui/library/multibox.tcl, ../../../libgui/library/ventry.tcl,
+          ../../../libgui/library/wframe.tcl (constructor): Change config argument to args argument
+                                                            and add eval configure $args.
+
 2006-01-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * ehandler.itb, managedwin.itb: Replace itcl_info with itcl::find.

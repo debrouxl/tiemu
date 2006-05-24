@@ -32,7 +32,8 @@ itcl::class Multibox {
     bind Multibox $seq $sub
   }
 
-  constructor {config} {
+  constructor {args} {
+    eval configure $args
     # The standard widget-making trick.
     set class [$this info class]
     set hull [namespace tail $this]

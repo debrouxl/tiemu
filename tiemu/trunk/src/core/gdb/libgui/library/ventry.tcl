@@ -8,7 +8,8 @@ itcl::class Validated_entry {
   # will be displayed to the user.
   public variable command {}
 
-  constructor {config} {
+  constructor {args} {
+    eval configure $args
     upvar \#0 $this state
 
     # The standard widget-making trick.

@@ -70,6 +70,7 @@
 	- [kevin] $2102: increased buffer size for the RELEASE viewer
 	- [kevin] $2115: fixed splash.c saying "TiLP" instead of "TiEmu", updated version in configure.ac
 	- [kevin] $2116: allocate metadata properly in send_file_and_debug_info
+	- [kevin] $2118: fixed Insight preferences dialogs
 * new library: libticonv by Kevin and Roms, handling character set conversions (replacing the transcode support in libtifiles2 and some code within TiEmu 3)
 * libticables2 changes (roms):
 	- changed information message in check_for_libusb according to bug #1372369.
