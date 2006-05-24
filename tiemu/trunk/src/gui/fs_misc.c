@@ -273,7 +273,7 @@ int display_recv_files_dbox(const char *src, const char *dst)
 void send_file_and_debug_info(const gchar *filename)
 {
     const gchar *ext;
-    FileContent metadata;
+    FileContent *metadata;
 
     send_file(filename);
 
@@ -292,16 +292,17 @@ void send_file_and_debug_info(const gchar *filename)
         *(char *)ext = '.';
     }
 
-    if (!tifiles_file_read_regular(filename, &metadata))
+    metadata = tifiles_content_create_regular(CALC_TI89);
+    if (!tifiles_file_read_regular(filename, metadata))
     {
-        if (metadata.num_entries > 0)
+        if (metadata->num_entries > 0)
         {
-            int handle = sym_find_handle (metadata.entries[0]->folder, metadata.entries[0]->name);
+            int handle = sym_find_handle (metadata->entries[0]->folder, metadata->entries[0]->name);
             if (handle)
                 ti68k_bkpt_add_pgmentry (handle);
         }
-        tifiles_content_delete_regular(&metadata);
     }
+    tifiles_content_delete_regular(metadata);
 }
 
 gint display_debug_dbox(void)
