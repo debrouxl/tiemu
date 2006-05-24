@@ -46,7 +46,7 @@ Type=Application
 Exec=/usr/bin/tilp
 Icon=/usr/share/tilp2/pixmaps/icon.xpm
 Terminal=false
-Categories=Utility;
+Categories=Utility;X-KDE-Utilities-Peripherals;
 MimeType=application/x-tilp
 EOF
 desktop-file-install --delete-original --vendor lpg     \
@@ -100,6 +100,7 @@ rm -rf $RPM_BUILD_ROOT
 Make sure permissions are set correctly when building as non-root.
 --enable-exit-homedir not needed anymore (now default).
 Allow manpages to be gzipped (done by rpm when using redhat-rpm-config).
+Add X-KDE-Utilities-Peripherals category to .desktop file.
 
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.
