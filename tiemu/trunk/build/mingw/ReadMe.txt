@@ -4,7 +4,7 @@ Win32
 -----
 
 1°) Below, you will find a methodology which is common to:
-- libtifiles, libticables, libticalcs
+- libtifiles, libticonv, libticables, libticalcs
 - tilp
 - tiemu
 
@@ -18,7 +18,7 @@ way until I discover Tor Lillqvist' method (GiMP for Win32) with a separate
 /target folder.
 I assume you installed MinGW as C:\MinGW and MSys as C:\MSys (without 1.0 path).
 
-- get <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-devel-2.4-rc26.exe> 
+- get <http://prdownloads.sourceforge.net/gladewin32/gtk-win32-devel-2.6.10-rc1.exe> 
 and install it. Don't forget to register Msys environnement when the installer ask you.
 
 - create a MSys\target folder. Compiled packages will be installed into.
@@ -28,7 +28,7 @@ and install it. Don't forget to register Msys environnement when the installer a
 
 3°) To compile TiLP framework, TiLP and/or TiEmu, do the following:
 	
-- ticables, tifiles, ticalcs:
+- ticables, ticonv, tifiles, ticalcs:
 	./configure --prefix=/target --disable-nls
 
 - tilp:
@@ -86,16 +86,16 @@ TiEmu now supports Linux->MinGW cross-compilation again. Here's how I did it:
    i386-mingw32-strip ~/.wine/c/tiemu/bin/*
    NOTE: You'll have to substitute an absolute path for ~ to make configure happy.
 
-Unfortunately, it does NOT seem to work in WINE (at least with GTK+ 2.8, I'll
-retry with 2.6 ASAP). Here's the instructions getting it up to the wizard, but
-showing way too large fonts and then crashing:
+If you followed the instructions and built against GTK+ 2.6, your executable
+will also run under WINE. (The Insight preferences dialogs appear not to work,
+everything else seems to be just fine.) Here's how to get it to work:
 1. Fired up WINE regedit and added ";c:\GTK\bin" to HKEY_CURRENT_USER\Environment\PATH.
 2. Copied /usr/share/fonts/bitstream-vera/*.ttf to ~/.wine/c/windows/Fonts so
    GTK+ in WINE has fonts to work with.
 3. Added "bitstream vera sans" to the aliases for "sans" and likewise for
-   "serif" and "monospace" in ~/.wine/c/GTK/etc/pango/pango.aliases.
+   "serif", "monospace" and "courier" in ~/.wine/c/GTK/etc/pango/pango.aliases.
 4. wine 'c:\tiemu\bin\tiemu.exe'
-So you can't count on WINE for testing.
+WARNING: DON'T use GTK+ 2.8 if you want to be able to test with WINE!
 
 To build the setup wizard, here's what I did:
 1. Fetched the latest NSIS source tarball from: http://nsis.sf.net
@@ -116,7 +116,7 @@ To build the setup wizard, here's what I did:
    cd build/nsis
    makensis tiemu-cross.nsi
 
-Tested with TiEmu 2.80, 2006-01-07. Updated 2006-05-24.
+Tested with TiEmu 2.81, 2006-05-24.
 
 ---
 
