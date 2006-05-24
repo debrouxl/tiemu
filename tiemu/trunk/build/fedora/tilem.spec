@@ -9,6 +9,7 @@ Vendor:		LPG (http://lpg.ticalc.org)
 Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}.tar.bz2
 Patch0:         tilem-ti85-keypad-fix.diff
+Patch1:         tilem-new-libticables2-fix.diff
 Group:		Applications/Emulators
 License:	LGPL, z80em License
 BuildRequires:	libticables2 >= 20050915, glib2-devel, gtk2-devel >= 2.4.0, imlib-devel, desktop-file-utils >= 0.10
@@ -27,6 +28,7 @@ sed 's;0.0.3;0.0.1;g' <configure >configure.fixed
 mv -f configure.fixed configure
 chmod +x configure
 patch -l src/tilem/keypad.c <%{PATCH0}
+patch -l src/tilem/core/dep/link.h <%{PATCH1}
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --with-ticables
@@ -76,6 +78,7 @@ rm -rf $RPM_BUILD_ROOT
 * Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org> 0.973-3
 Make sure permissions are set correctly when building as non-root.
 Don't hardcode Requires and versions of BuildRequires where not needed.
+Apply patch to fix build against latest libticables2.
 
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.

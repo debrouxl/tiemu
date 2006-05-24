@@ -1,0 +1,11 @@
+--- link.h.orig	2005-12-31 20:09:21.000000000 +0100
++++ link.h	2006-05-01 06:16:46.000000000 +0200
+@@ -2,7 +2,7 @@
+ 
+ #define _link
+ 
+-#ifdef extlink
++#if 0 /*def extlink*/
+ typedef struct {
+ 	int model;
+ 	int port;
