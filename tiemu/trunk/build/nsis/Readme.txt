@@ -1,9 +1,9 @@
-TiEmu 3 (development version 2.80)
+TiEmu 3 (development version 2.81)
  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
 Licensed under the GNU General Public License.
 
 1. Installed components
@@ -11,6 +11,7 @@ Licensed under the GNU General Public License.
 The following components have been successfully installed:
 * TiEmu (with TIGCC debugging support)
 * libticables
+* libticonv
 * libtifiles
 * libticalcs
 * GTK+ (if not already present)
@@ -66,6 +67,11 @@ this:
 	widget_class "*" style "user-font"
 This forces GTK+ to use a compatible font (Arial) and reportedly fixes both
 the aforementioned problems, and probably others too.
+
+Another source of errors like the aforementioned ones is attempting to use GTK+
+2.8 or higher with a Windows version not supported by that version of GTK+.
+GTK+ 2.8 or higher requires Windows 2000, XP or newer. If you're running Windows
+95, 98, Me or NT 4, use GTK+ 2.6 instead.
 
 4. Usage
 
