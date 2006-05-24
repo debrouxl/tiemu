@@ -190,7 +190,8 @@
 	- rename 'Ready' button into 'Connect' when using DirectLink
 	- update remote frame in the action box
 	- update memory used when sending/deleting variables
-* The Fedora RPM of TiEmu is now built on and for Fedora Core 5.
+* The Fedora RPMs are now built on and for Fedora Core 5.
+* The Fedora RPMs now come closer to meeting the Fedora packaging guidelines.
 * The Windows build is linked against GTK+ 2.6 again to support Windows 9x, Me and NT 4. You can use any GTK+ runtime version >=2.6.10 to run it (including 2.8.x), but be aware that GTK+ 2.8 requires Windows 2000, XP or newer.
 
 20060129:
