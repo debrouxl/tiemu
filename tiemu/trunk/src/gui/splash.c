@@ -69,7 +69,7 @@ GtkWidget *splash_screen_start(void)
 	gtk_container_add(GTK_CONTAINER(splashscreen.window), vbox);
 	gtk_widget_show(vbox);
 
-	splashscreen.label = gtk_label_new("starting TiLP...");
+	splashscreen.label = gtk_label_new("starting TiEmu...");
 	gtk_box_pack_end(GTK_BOX(vbox), splashscreen.label, FALSE, FALSE,
 			 0);
 	gtk_widget_show(splashscreen.label);

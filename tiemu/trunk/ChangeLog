@@ -11,6 +11,7 @@ SubVersion: $Id$
 	- [roms]  $2096: fixed bug #1490859 (enable OK button when selecting an image)
 	- [roms]  $2097: fixed bug #1471709 (crash on old state image)
 	- [kevin] $2102: increased buffer size for the RELEASE viewer
+	- [kevin] $2115: fixed splash.c saying "TiLP" instead of "TiEmu", updated version in configure.ac
 
 - 25/08/2005, version 2.80:
 	- [roms] $1689: fixed Titanium skin loading and fixed bug in skin loader
