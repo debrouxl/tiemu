@@ -1,0 +1,49 @@
+				[ Release notes for TiEmu3 without GDB ]
+
+
+
+Previous version: 2.80		(25/08/2005)
+Current version:  2.81		(10/05/2006)
+
+SubVersion (CVS) revision: $Id: RELEASE 2042 2006-05-07 07:46:23Z roms $
+
+TiEmu is available for 3 platforms:
+Linux (GTK), Windows (GTK), Mac OS-X (GTK)
+
+[ If you have a SilverLink cable (TI-GRAPH LINK USB), you will need to retrieve
+a Linux/Win32/Mac OS-X driver on the Linux Programmer Group at 
+<http://lpg.ticalc.org/prj_usb>. ]
+
+For the other link cables, no driver is needed.
+
+
+New capabilities:
+-----------------
+
+	- modified UAE disassembler to follow Motorola syntax
+
+
+Improvements:
+-------------
+
+	- renamed 'code/source' window into 'disassembly'
+	- build a tiemu2-like release when NO_GDB is enabled
+		
+		
+Bug fixes:
+----------
+
+	- bug #1490859 (enable OK button when selecting an image)
+	- bug #1471709 (crash on old state image)
+	
+
+Planned:
+--------
+
+	- nothing: stable branch
+
+	
+Notes:
+------
+
+	- none
