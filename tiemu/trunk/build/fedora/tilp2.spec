@@ -86,6 +86,7 @@ update-desktop-database %{_datadir}/applications > /dev/null 2>&1 || :
 rm -rf $RPM_BUILD_ROOT
 
 %files
+%defattr(-, root, root)
 /usr/bin/tilp
 /usr/bin/tilp-2
 /usr/man/man1/tilp.1
@@ -96,6 +97,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Make sure permissions are set correctly when building as non-root.
+
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.
 Use the system-wide default RPM_OPT_FLAGS instead of my own.

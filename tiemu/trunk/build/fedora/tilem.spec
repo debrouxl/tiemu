@@ -67,13 +67,17 @@ update-desktop-database %{_datadir}/applications > /dev/null 2>&1 || :
 rm -rf $RPM_BUILD_ROOT
 
 %files
+%defattr(-, root, root)
 /usr/bin/tilem
 /usr/share/tilem
 %{_datadir}/applications/lpg-tilem.desktop
 
 %defattr(-,root,root)
 %changelog
-* Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org> 0.973-3
+* Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org> 0.973-3
+Make sure permissions are set correctly when building as non-root.
+
+* Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.
 Use the system-wide default RPM_OPT_FLAGS instead of my own.
 No period at end of summary.

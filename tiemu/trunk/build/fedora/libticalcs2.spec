@@ -28,6 +28,7 @@ make
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
+rm -f $RPM_BUILD_ROOT/usr/lib/libticalcs2.la
 
 %post
 /sbin/ldconfig
@@ -38,6 +39,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %files
+%defattr(-, root, root)
 /usr/include/tilp2/export3.h
 /usr/include/tilp2/keys73.h
 /usr/include/tilp2/keys83p.h
@@ -45,12 +47,15 @@ rm -rf $RPM_BUILD_ROOT
 /usr/include/tilp2/keys92p.h
 /usr/include/tilp2/ticalcs.h
 /usr/include/tilp2/tnode.h
-/usr/lib/libticalcs2.la
 /usr/lib/libticalcs2.so*
 /usr/lib/pkgconfig/ticalcs2.pc
 
 %defattr(-,root,root)
 %changelog
+* Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Don't package .la file (not needed under Fedora).
+Make sure permissions are set correctly when building as non-root.
+
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.
 Use the system-wide default RPM_OPT_FLAGS instead of my own.

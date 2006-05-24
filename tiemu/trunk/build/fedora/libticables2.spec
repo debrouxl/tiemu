@@ -28,6 +28,7 @@ make
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
+rm -f $RPM_BUILD_ROOT/usr/lib/libticables2.la
 mkdir -p $RPM_BUILD_ROOT/etc/udev/rules.d
 cat >$RPM_BUILD_ROOT/etc/udev/rules.d/96-libticables.rules <<EOF1
 # This file was installed by the libticables2 Fedora package.
@@ -94,11 +95,11 @@ chmod 755 $RPM_BUILD_ROOT/lib/udev/libticables-udev.sh
 rm -rf $RPM_BUILD_ROOT
 
 %files
+%defattr(-, root, root)
 /usr/include/tilp2/stdints.h
 /usr/include/tilp2/export1.h
 /usr/include/tilp2/ticables.h
 /usr/include/tilp2/timeout.h
-/usr/lib/libticables2.la
 /usr/lib/libticables2.so*
 /usr/lib/pkgconfig/ticables2.pc
 /etc/udev/rules.d/96-libticables.rules
@@ -106,6 +107,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Don't package .la file (not needed under Fedora).
+Make sure permissions are set correctly when building as non-root.
+
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.
 Use the system-wide default RPM_OPT_FLAGS instead of my own.

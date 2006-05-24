@@ -28,6 +28,7 @@ make
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
+rm -f $RPM_BUILD_ROOT/usr/lib/libtifiles2.la
 # Kill duplicated header (installed by libticables-2 already)
 rm -f $RPM_BUILD_ROOT/usr/include/tilp2/stdints.h
 
@@ -40,18 +41,22 @@ rm -f $RPM_BUILD_ROOT/usr/include/tilp2/stdints.h
 rm -rf $RPM_BUILD_ROOT
 
 %files
+%defattr(-, root, root)
 /usr/include/tilp2/export2.h
 /usr/include/tilp2/files8x.h
 /usr/include/tilp2/files9x.h
 /usr/include/tilp2/macros.h
 /usr/include/tilp2/tifiles.h
 /usr/include/tilp2/types*.h
-/usr/lib/libtifiles2.la
 /usr/lib/libtifiles2.so*
 /usr/lib/pkgconfig/tifiles2.pc
 
 %defattr(-,root,root)
 %changelog
+* Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Don't package .la file (not needed under Fedora).
+Make sure permissions are set correctly when building as non-root.
+
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.
 Use the system-wide default RPM_OPT_FLAGS instead of my own.
