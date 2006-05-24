@@ -87,8 +87,7 @@ TiEmu now supports Linux->MinGW cross-compilation again. Here's how I did it:
    NOTE: You'll have to substitute an absolute path for ~ to make configure happy.
 
 If you followed the instructions and built against GTK+ 2.6, your executable
-will also run under WINE. (The Insight preferences dialogs appear not to work,
-everything else seems to be just fine.) Here's how to get it to work:
+will also run under WINE. Here's how to get it to work:
 1. Fired up WINE regedit and added ";c:\GTK\bin" to HKEY_CURRENT_USER\Environment\PATH.
 2. Copied /usr/share/fonts/bitstream-vera/*.ttf to ~/.wine/c/windows/Fonts so
    GTK+ in WINE has fonts to work with.
