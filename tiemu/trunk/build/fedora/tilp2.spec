@@ -89,8 +89,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 /usr/bin/tilp
 /usr/bin/tilp-2
-/usr/man/man1/tilp.1
-/usr/man/man1/tilp-2.1
+/usr/man/man1/tilp*
 /usr/share/tilp2
 %{_datadir}/applications/lpg-tilp.desktop
 %{_datadir}/mime/packages/tilp.xml
@@ -100,6 +99,7 @@ rm -rf $RPM_BUILD_ROOT
 * Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Make sure permissions are set correctly when building as non-root.
 --enable-exit-homedir not needed anymore (now default).
+Allow manpages to be gzipped (done by rpm when using redhat-rpm-config).
 
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.

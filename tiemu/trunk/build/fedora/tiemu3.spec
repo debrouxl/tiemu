@@ -69,7 +69,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 /usr/bin/tiemu
 /usr/lib/insight*
-/usr/man/man1/tiemu.1
+/usr/man/man1/tiemu*
 /usr/share/insight*
 /usr/share/redhat/gui
 /usr/share/tiemu
@@ -79,6 +79,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Make sure permissions are set correctly when building as non-root.
+Allow manpages to be gzipped (done by rpm when using redhat-rpm-config).
 
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.
