@@ -11,8 +11,7 @@ Source:         %{name}.tar.bz2
 Patch0:         tilem-ti85-keypad-fix.diff
 Group:		Applications/Emulators
 License:	LGPL, z80em License
-BuildRequires:	libticables2 >= 20050915, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, imlib-devel >= 1.9.13, desktop-file-utils >= 0.10
-Requires:	libticables2 >= 20050915, glib2 >= 2.6.4, gtk2 >= 2.6.7, imlib >= 1.9.13
+BuildRequires:	libticables2 >= 20050915, glib2-devel, gtk2-devel >= 2.4.0, imlib-devel, desktop-file-utils >= 0.10
 Requires(post):	desktop-file-utils >= 0.10
 Requires(postun): desktop-file-utils >= 0.10
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -76,6 +75,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org> 0.973-3
 Make sure permissions are set correctly when building as non-root.
+Don't hardcode Requires and versions of BuildRequires where not needed.
 
 * Mon May 22 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Build debuginfo RPM.
