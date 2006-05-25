@@ -95,6 +95,7 @@ static gboolean engine_func(gint *data)
 		                                                                                    : SIGTRAP)
 		              : SIGINT);
 #else
+		tid = 0;	// reset source id, we're stopping the engine
 		return FALSE;	// stop engine !
 #endif
 	}
