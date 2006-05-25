@@ -78,7 +78,7 @@ core_uae_OBJ = \
 	core/uae/cpuemu7.o core/uae/cpuemu8.o \
 	core/uae/cpudefs.o core/uae/cpustbl.o \
 	core/uae/readcpu.o core/uae/fpp.o \
-	core/uae/missing.o
+	core/uae/missing.o core/uae/xmalloc.o
 
 core_tihw_OBJ = \
 	core/ti_hw/dbus.o	\
