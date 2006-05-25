@@ -83,7 +83,13 @@ core_uae_OBJ = \
 	core/uae/cpuemu7.o core/uae/cpuemu8.o \
 	core/uae/cpudefs.o core/uae/cpustbl.o \
 	core/uae/readcpu.o core/uae/fpp.o \
-	core/uae/missing.o core/uae/xmalloc.o
+	core/uae/missing.o
+
+ifneq (,$(findstring NO_GDB,$(CFLAGS)))
+core_uae_xmalloc_OBJ = core/uae/xmalloc.o
+else
+core_uae_xmalloc_OBJ =
+endif
 
 core_tihw_OBJ = \
 	core/ti_hw/dbus.o	\
@@ -197,7 +203,8 @@ libgdb_A = core/gdb/gdb/libgdb.a
 endif
 
 tiemu_OBJ = core/uae/newcpu.o \
-	$(core_uae_OBJ) $(core_OBJ) $(core_tihw_OBJ) $(core_tisw_OBJ) \
+	$(core_uae_OBJ) $(core_uae_xmalloc_OBJ) \
+	$(core_OBJ) $(core_tihw_OBJ) $(core_tisw_OBJ) \
 	$(core_dbg_OBJ) \
 	$(misc_OBJ) \
 	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(kde_OBJ) $(win32_OBJ) \
