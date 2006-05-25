@@ -360,17 +360,23 @@ on_transient1_activate                 (GtkMenuItem     *menu_item,
 void
 close_debugger (void)
 {
-	// hide all windows
 #ifndef NO_GDB
+	// hide all windows
 	gdbtk_hide_insight();
-#endif
 	dbg_on = 0;
 	gtk_debugger_hide_all(!0);
 
     // and restarts the emulator
 	ti68k_bkpt_set_cause(0, 0, 0);
-#ifndef NO_GDB
     if (engine_is_stopped()) gdbcall_continue();
+#else
+	// hide all windows
+	dbg_on = 0;
+	gtk_debugger_hide_all(!0);
+
+    // and restarts the emulator
+	ti68k_bkpt_set_cause(0, 0, 0);
+    engine_start();
 #endif
 }
 

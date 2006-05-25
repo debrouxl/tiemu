@@ -94,6 +94,8 @@ static gboolean engine_func(gint *data)
 		              ((bkpts.type == BK_CAUSE_EXCEPTION || bkpts.type == BK_CAUSE_PROTECT) ? SIGSEGV
 		                                                                                    : SIGTRAP)
 		              : SIGINT);
+#else
+		return FALSE;	// stop engine !
 #endif
 	}
 

@@ -14,6 +14,7 @@ SubVersion: $Id$
 	- [kevin] $2115: fixed splash.c saying "TiLP" instead of "TiEmu", updated version in configure.ac
 	- [kevin] $2116: allocate metadata properly in send_file_and_debug_info
 	- [kevin] $2118: fixed Insight preferences dialogs
+	- [roms]  $2119: fixed return value in engine_func for NO_GDB mode (stop engine)
 
 - 25/08/2005, version 2.80:
 	- [roms] $1689: fixed Titanium skin loading and fixed bug in skin loader
