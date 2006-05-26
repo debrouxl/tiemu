@@ -3,7 +3,7 @@
 
 
 Previous version: 2.80		(25/08/2005)
-Current version:  2.81		(10/05/2006)
+Current version:  2.81		(26/05/2006)
 
 SubVersion (CVS) revision: $Id: RELEASE 2042 2006-05-07 07:46:23Z roms $
 
@@ -35,6 +35,8 @@ Bug fixes:
 
 	- bug #1490859 (enable OK button when selecting an image)
 	- bug #1471709 (crash on old state image)
+	- splash.c saying "TiLP" instead of "TiEmu"
+	- increased buffer size for the RELEASE viewer
 	
 
 Planned:

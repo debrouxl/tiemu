@@ -17,7 +17,7 @@ DefaultGroupName=TiEmu3
 AllowNoIcons=yes
 LicenseFile=C:\sources\roms\tiemu3\COPYING
 InfoBeforeFile=C:\sources\roms\tiemu3\README.win32
-InfoAfterFile=C:\sources\roms\tiemu3\RELEASE
+InfoAfterFile=C:\sources\roms\tiemu3\RELEASE.nogdb
 
 [Tasks]
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
