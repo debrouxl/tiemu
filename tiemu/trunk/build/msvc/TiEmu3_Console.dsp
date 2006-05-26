@@ -574,6 +574,10 @@ SOURCE=..\..\RELEASE
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\RELEASE.nogdb
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\TODO
 # End Source File
 # End Group
