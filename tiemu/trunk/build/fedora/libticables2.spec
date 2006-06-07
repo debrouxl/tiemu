@@ -30,61 +30,26 @@ mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT/usr/lib/libticables2.la
 mkdir -p $RPM_BUILD_ROOT/etc/udev/rules.d
-cat >$RPM_BUILD_ROOT/etc/udev/rules.d/96-libticables.rules <<EOF1
+cat >$RPM_BUILD_ROOT/etc/udev/rules.d/60-libticables.rules <<EOF1
 # This file was installed by the libticables2 Fedora package.
 
 # SilverLink
-ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e001", RUN+="/lib/udev/libticables-udev.sh \$env{DEVNAME}"
+ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e001", SYMLINK+="ticable-%%k"
 # TI-89 Titanium DirectLink
-ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e004", RUN+="/lib/udev/libticables-udev.sh \$env{DEVNAME}"
+ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e004", SYMLINK+="ticable-%%k"
 # TI-84+ DirectLink
-ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e008", RUN+="/lib/udev/libticables-udev.sh \$env{DEVNAME}"
+ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e008", SYMLINK+="ticable-%%k"
 EOF1
-mkdir -p $RPM_BUILD_ROOT/lib/udev
-cat >$RPM_BUILD_ROOT/lib/udev/libticables-udev.sh <<EOF2
-#!/bin/sh
-
+mkdir -p $RPM_BUILD_ROOT/etc/security/console.perms.d
+cat >$RPM_BUILD_ROOT/etc/security/console.perms.d/60-libticables.perms <<EOF2
 # This file was installed by the libticables2 Fedora package.
-#
-# Sets up newly plugged in USB SilverLink so that the user who owns
-# the console according to pam_console can access it from user space
-#
-# Note that for this script to work, you'll need all of the following:
-# a) 96-libticables.rules shipped with the libticables2 Fedora package.
-# b) a setup using pam_console creates the respective lock files
-#    containing the name of the respective user. You can check for that
-#    by executing "echo \`cat /var/{run,lock}/console.lock\`" and 
-#    verifying the appropriate user is mentioned somewhere there.
-# c) a Linux kernel supporting udev
-# d) a recent version of the udev package
-#
-# Arguments :
-# -----------
-# \$1=DEVNAME
 
-# New code, using lock files instead of copying /dev/console permissions
-# This also works with non-gdm logins (e.g. on a virtual terminal)
-# Idea and code from Nalin Dahyabhai <nalin@redhat.com>
-if [ -f /var/run/console/console.lock ]
-then
-    CONSOLEOWNER=\`cat /var/run/console/console.lock\`
-elif [ -f /var/run/console.lock ]
-then
-    CONSOLEOWNER=\`cat /var/run/console.lock\`
-elif [ -f /var/lock/console.lock ]
-then
-    CONSOLEOWNER=\`cat /var/lock/console.lock\`
-else
-    CONSOLEOWNER=
-fi
-if [ -n "\$CONSOLEOWNER" ]
-then
-    chmod 0000 "\$1"
-    chown "\$CONSOLEOWNER" "\$1"
-    chmod 0600 "\$1"
-fi
+# device classes -- these are shell-style globs
+\<ticable\>=/dev/ticable\* /dev/usb/ticable\*
+
+# permission definitions
+\<console\>  0600 \<ticable\>    0600 root
 EOF2
-chmod 755 $RPM_BUILD_ROOT/lib/udev/libticables-udev.sh
 
 %post
 /sbin/ldconfig
@@ -96,17 +61,22 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-/usr/include/tilp2/stdints.h
+/usr/include/tilp2/stdints1.h
 /usr/include/tilp2/export1.h
 /usr/include/tilp2/ticables.h
 /usr/include/tilp2/timeout.h
 /usr/lib/libticables2.so*
 /usr/lib/pkgconfig/ticables2.pc
-/etc/udev/rules.d/96-libticables.rules
-/lib/udev/libticables-udev.sh
+/etc/udev/rules.d/60-libticables.rules
+/etc/security/console.perms.d/60-libticables.perms
 
 %defattr(-,root,root)
 %changelog
+* Wed Jun 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Update file list (stdints.h now numbered to avoid conflicts).
+Use /etc/security/console.perms.d for the pam_console setup instead of
+hand-written script hack.
+
 * Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Don't package .la file (not needed under Fedora).
 Make sure permissions are set correctly when building as non-root.

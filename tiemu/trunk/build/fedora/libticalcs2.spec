@@ -40,6 +40,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
+/usr/include/tilp2/stdints3.h
 /usr/include/tilp2/export3.h
 /usr/include/tilp2/keys73.h
 /usr/include/tilp2/keys83p.h
@@ -52,6 +53,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Wed Jun 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Update file list (stdints.h now numbered to avoid conflicts).
+
 * Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Don't package .la file (not needed under Fedora).
 Make sure permissions are set correctly when building as non-root.

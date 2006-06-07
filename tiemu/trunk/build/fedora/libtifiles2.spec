@@ -10,8 +10,8 @@ Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		System Environment/Libraries
 License:	GPL
-BuildRequires:	libticables2 = %{version}, libticonv = %{version}, zlib-devel >= 1.2.2.2, glib2-devel >= 2.10.1
-Requires:	libticables2 = %{version}, libticonv = %{version}, zlib >= 1.2.2.2, glib2 >= 2.10.1
+BuildRequires:	libticonv = %{version}, zlib-devel >= 1.2.2.2, glib2-devel >= 2.10.1
+Requires:	libticonv = %{version}, zlib >= 1.2.2.2, glib2 >= 2.10.1
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Summary: Ti File Format management
 %description
@@ -29,8 +29,6 @@ if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT/usr/lib/libtifiles2.la
-# Kill duplicated header (installed by libticables-2 already)
-rm -f $RPM_BUILD_ROOT/usr/include/tilp2/stdints.h
 
 %post
 /sbin/ldconfig
@@ -42,6 +40,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
+/usr/include/tilp2/stdints2.h
 /usr/include/tilp2/export2.h
 /usr/include/tilp2/files8x.h
 /usr/include/tilp2/files9x.h
@@ -53,6 +52,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %defattr(-,root,root)
 %changelog
+* Wed Jun 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Update file list (stdints.h now numbered to avoid conflicts).
+Don't delete stdints.h anymore.
+Don't require libticables2 anymore.
+
 * Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Don't package .la file (not needed under Fedora).
 Make sure permissions are set correctly when building as non-root.
