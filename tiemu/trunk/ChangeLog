@@ -17,6 +17,7 @@ SubVersion: $Id$
 	- [roms]  $2119: fixed linking with NO_GDB (missing xmalloc)
 	- [roms]  $2121: fixed return value in engine_func for NO_GDB mode (stop engine)
 	- [kevin] $2123: reset source ID when stopping the engine from engine_func (NO_GDB)
+	- [kevin] $2128: HW4 has 8 MB of FlashROM
 
 - 25/08/2005, version 2.80:
 	- [roms] $1689: fixed Titanium skin loading and fixed bug in skin loader

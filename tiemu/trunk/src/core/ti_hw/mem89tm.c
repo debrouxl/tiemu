@@ -57,10 +57,12 @@
 // 900000-9fffff : idem
 // a00000-afffff : idem
 // b00000-bfffff : idem
-// c00000-cfffff : unused
-// d00000-dfffff :	 ...
-// e00000-efffff :   ...
-// d00000-ffffff : unused
+// c00000-cfffff : ROM (HW4 only, unused on HW3)
+// d00000-dfffff : idem
+// e00000-efffff : idem
+// d00000-ffffff : idem
+
+#define END_OF_FLASH_ROM (tihw.hw_type == HW4 ? 0xffffff : 0xbfffff)
 
 int ti89t_mem_init(void)
 {
@@ -88,7 +90,7 @@ uint8_t* ti89t_get_real_addr(uint32_t adr)
 	}
 
 	// FLASH access
-    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))			
+    else if(IN_BOUNDS(0x800000, adr, END_OF_FLASH_ROM))
 	{
 		return get_p(tihw.rom, adr, ROM_SIZE_TI89T - 1);
 	}
@@ -163,7 +165,7 @@ uint16_t ti89t_get_word(uint32_t adr)
 	}
 
 	// FLASH access
-    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))			
+    else if(IN_BOUNDS(0x800000, adr, END_OF_FLASH_ROM))
 	{
 		return FlashReadWord(adr);
 	}
@@ -200,7 +202,7 @@ uint8_t ti89t_get_byte(uint32_t adr)
 	}
 
 	// FLASH access
-    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))			
+    else if(IN_BOUNDS(0x800000, adr, END_OF_FLASH_ROM))
 	{
 		return FlashReadByte(adr);
 	}
@@ -237,13 +239,13 @@ void ti89t_put_long(uint32_t adr, uint32_t arg)
 	}
 
 	// FLASH access
-    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))
+    else if(IN_BOUNDS(0x800000, adr, END_OF_FLASH_ROM))
 	{
 		FlashWriteLong(adr, arg);
 	}
 
 	// memory-mapped I/O
-    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))			
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
 		io_put_long(adr, arg);
 	}
@@ -274,13 +276,13 @@ void ti89t_put_word(uint32_t adr, uint16_t arg)
 	}
 
 	// FLASH access
-    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))
+    else if(IN_BOUNDS(0x800000, adr, END_OF_FLASH_ROM))
 	{
 		FlashWriteWord(adr, arg);
 	}
 
 	// memory-mapped I/O
-    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))			
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
 		io_put_word(adr, arg);
 	}
@@ -311,13 +313,13 @@ void ti89t_put_byte(uint32_t adr, uint8_t arg)
 	}
 
 	// FLASH access
-    else if(IN_BOUNDS(0x800000, adr, 0xbfffff))
+    else if(IN_BOUNDS(0x800000, adr, END_OF_FLASH_ROM))
 	{
 		FlashWriteByte(adr, arg);
 	}
 
 	// memory-mapped I/O
-    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))			
+    else if(IN_BOUNDS(0x600000, adr, 0x6fffff))
 	{
 		io_put_byte(adr, arg);
 	}
