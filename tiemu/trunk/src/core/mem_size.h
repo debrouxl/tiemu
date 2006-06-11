@@ -44,7 +44,7 @@
 #define ROM_SIZE_TI89		(2*MB)
 #define ROM_SIZE_TI92P		(2*MB)
 #define ROM_SIZE_V200		(4*MB)
-#define ROM_SIZE_TI89T		(tihw.hw_type == HW4 ? 8*MB : 4*MB)
+#define ROM_SIZE_TI89T		(4*MB)
 
 #define ROM_BASE_TI92_I		(0)	// 0x200000 or 0x400000
 #define ROM_BASE_TI92_II	0x400000
