@@ -70,8 +70,10 @@ rm -rf $RPM_BUILD_ROOT
 /etc/udev/rules.d/60-libticables.rules
 /etc/security/console.perms.d/60-libticables.perms
 
-%defattr(-,root,root)
 %changelog
+* Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Remove redundant %%defattr at the end of %%files.
+
 * Wed Jun 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Update file list (stdints.h now numbered to avoid conflicts).
 Use /etc/security/console.perms.d for the pam_console setup instead of

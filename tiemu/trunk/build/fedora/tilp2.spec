@@ -94,8 +94,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/lpg-tilp.desktop
 %{_datadir}/mime/packages/tilp.xml
 
-%defattr(-,root,root)
 %changelog
+* Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Remove redundant %%defattr at the end of %%files.
+
 * Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Make sure permissions are set correctly when building as non-root.
 --enable-exit-homedir not needed anymore (now default).

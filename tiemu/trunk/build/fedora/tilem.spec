@@ -1,6 +1,6 @@
 %define name tilem
 %define version 0.973
-%define release 3
+%define release 4
 
 Name:		%{name}
 Version:	%{version}
@@ -73,8 +73,10 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/tilem
 %{_datadir}/applications/lpg-tilem.desktop
 
-%defattr(-,root,root)
 %changelog
+* Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Remove redundant %%defattr at the end of %%files.
+
 * Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org> 0.973-3
 Make sure permissions are set correctly when building as non-root.
 Don't hardcode Requires and versions of BuildRequires where not needed.

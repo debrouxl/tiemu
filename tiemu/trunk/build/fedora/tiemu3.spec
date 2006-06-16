@@ -75,8 +75,10 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/tiemu
 %{_datadir}/applications/lpg-tiemu.desktop
 
-%defattr(-,root,root)
 %changelog
+* Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Remove redundant %%defattr at the end of %%files.
+
 * Wed May 24 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Make sure permissions are set correctly when building as non-root.
 Allow manpages to be gzipped (done by rpm when using redhat-rpm-config).

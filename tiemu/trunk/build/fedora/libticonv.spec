@@ -47,8 +47,10 @@ rm -rf $RPM_BUILD_ROOT
 /usr/lib/libticonv.so*
 /usr/lib/pkgconfig/ticonv.pc
 
-%defattr(-,root,root)
 %changelog
+* Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Remove redundant %%defattr at the end of %%files.
+
 * Wed Jun 7 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Update file list (stdints.h now numbered to avoid conflicts).
 Don't delete stdints.h anymore.
