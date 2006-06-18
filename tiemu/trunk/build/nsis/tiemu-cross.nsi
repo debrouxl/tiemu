@@ -204,6 +204,7 @@ Section "MainSection" SEC01
   Delete "$INSTDIR\bin\libticonv-1.dll"
   Delete "$INSTDIR\bin\libtifiles2-0.dll"
   Delete "$INSTDIR\bin\libtifiles2-1.dll"
+  Delete "$INSTDIR\bin\libtifiles2-2.dll"
   Delete "$INSTDIR\include\tilp2\stdints.h"
 
 ; Install files
@@ -248,7 +249,7 @@ Section "MainSection" SEC01
   File "../../../../.wine/c/tiemu/lib\libitkstub32.a"
   SetOutPath "$INSTDIR\bin"
   File "../../../../.wine/c/tiemu/bin\libticables2-1.dll"
-  File "../../../../.wine/c/tiemu/bin\libtifiles2-2.dll"
+  File "../../../../.wine/c/tiemu/bin\libtifiles2-3.dll"
   File "../../../../.wine/c/tiemu/bin\libticalcs2-3.dll"
   File "../../../../.wine/c/tiemu/bin\libticonv-2.dll"
   File "../../../../.wine/c/tiemu/bin\tiemu.exe"
@@ -2175,7 +2176,7 @@ Section Uninstall
   Delete "$INSTDIR\bin\tiemu.exe"
   Delete "$INSTDIR\bin\libticonv-2.dll"
   Delete "$INSTDIR\bin\libticalcs2-3.dll"
-  Delete "$INSTDIR\bin\libtifiles2-2.dll"
+  Delete "$INSTDIR\bin\libtifiles2-3.dll"
   Delete "$INSTDIR\bin\libticables2-1.dll"
   Delete "$INSTDIR\lib\libitkstub32.a"
   Delete "$INSTDIR\lib\itk3.2\pkgIndex.tcl"
