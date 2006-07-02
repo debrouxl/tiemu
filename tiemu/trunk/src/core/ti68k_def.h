@@ -42,6 +42,7 @@ extern "C" {
 #include "tilibs.h"
 #include "mem_size.h"
 #include "rtc_hw3.h"
+#include "macros.h"
 
 /* Equivalences */
 

@@ -35,15 +35,12 @@
 # include <libticables/ticables.h>
 #else
 # include "ticables.h"
-# include "timeout.h"
 #endif
 
 #if defined(__MACOSX__)
 # include <libtifiles/tifiles.h>
-# include <libtifiles/macros.h>
 #else
 # include "tifiles.h"
-# include "macros.h"
 #endif
 
 #if defined(__MACOSX__)
