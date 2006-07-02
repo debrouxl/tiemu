@@ -44,13 +44,15 @@ rm -rf $RPM_BUILD_ROOT
 /usr/include/tilp2/export2.h
 /usr/include/tilp2/files8x.h
 /usr/include/tilp2/files9x.h
-/usr/include/tilp2/macros.h
 /usr/include/tilp2/tifiles.h
 /usr/include/tilp2/types*.h
 /usr/lib/libtifiles2.so*
 /usr/lib/pkgconfig/tifiles2.pc
 
 %changelog
+* Thu Jun 29 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+No more macros.h.
+
 * Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant %%defattr at the end of %%files.
 

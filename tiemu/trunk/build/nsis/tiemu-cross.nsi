@@ -206,6 +206,7 @@ Section "MainSection" SEC01
   Delete "$INSTDIR\bin\libtifiles2-1.dll"
   Delete "$INSTDIR\bin\libtifiles2-2.dll"
   Delete "$INSTDIR\include\tilp2\stdints.h"
+  Delete "$INSTDIR\include\tilp2\macros.h"
 
 ; Install files
   SetOutPath "$INSTDIR\lib"
@@ -271,7 +272,6 @@ Section "MainSection" SEC01
   File "../../../../.wine/c/tiemu/include\tilp2\timeout.h"
   File "../../../../.wine/c/tiemu/include\tilp2\files8x.h"
   File "../../../../.wine/c/tiemu/include\tilp2\files9x.h"
-  File "../../../../.wine/c/tiemu/include\tilp2\macros.h"
   File "../../../../.wine/c/tiemu/include\tilp2\stdints1.h"
   File "../../../../.wine/c/tiemu/include\tilp2\stdints2.h"
   File "../../../../.wine/c/tiemu/include\tilp2\stdints3.h"
@@ -2155,7 +2155,6 @@ Section Uninstall
   Delete "$INSTDIR\include\tilp2\stdints3.h"
   Delete "$INSTDIR\include\tilp2\stdints2.h"
   Delete "$INSTDIR\include\tilp2\stdints1.h"
-  Delete "$INSTDIR\include\tilp2\macros.h"
   Delete "$INSTDIR\include\tilp2\files9x.h"
   Delete "$INSTDIR\include\tilp2\files8x.h"
   Delete "$INSTDIR\include\tilp2\timeout.h"
