@@ -116,8 +116,9 @@ static void gt_refresh(void)
 
 CalcUpdate calc_update =
 {
-	"", 0,
-	0.0, 0, 0, 0, 0,
+	"", 0, 0.0, 
+	0, 0, 0, 0, 0, 0,
+	0, 0,
 	gt_start,
 	gt_stop,
 	gt_refresh,
