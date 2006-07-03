@@ -199,8 +199,9 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
     else
     {
         // Get hw param block to determine calc type & hw type
-        if(ti68k_get_hw_param_block(rom->data, rom->rom_base, &hwblock) == -1)
-			return ERR_INVALID_ROM;
+        if(ti68k_get_hw_param_block((uint8_t*)rom->data, rom->rom_base, 
+				    &hwblock) == -1)
+	    return ERR_INVALID_ROM;
         ti68k_display_hw_param_block(&hwblock);
 
         switch(hwblock.hardwareID)
@@ -540,7 +541,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	}
 	hwpb.bootMajor = hwpb.bootRevision = hwpb.bootBuild = 1;
 	hwpb.gateArray = img.hw_type;
-	ti68k_put_hw_param_block(img.data, img.rom_base, &hwpb);
+	ti68k_put_hw_param_block((uint8_t *)img.data, img.rom_base, &hwpb);
 
 	// write filler
 	fputc(0xfe, f); fputc(0xed, f); fputc(0xba, f); fputc(0xbe, f);
@@ -737,8 +738,9 @@ int ti68k_load_image(const char *filename)
 	{
 		HW_PARM_BLOCK hwblock;
 
-		ti68k_get_hw_param_block(img->data, img->rom_base, &hwblock);
-        ti68k_display_hw_param_block(&hwblock);
+		ti68k_get_hw_param_block((uint8_t *)img->data, img->rom_base, 
+					 &hwblock);
+		ti68k_display_hw_param_block(&hwblock);
 	}
 #endif
  

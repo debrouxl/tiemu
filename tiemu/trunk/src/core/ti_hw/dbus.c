@@ -226,7 +226,7 @@ static int lp_checkread(void)
 	if(avail)
 	    return 0;
 
-	err = ticables_cable_check(cable_handle, &status);
+	err = ticables_cable_check(cable_handle, (CableStatus*)&status);
 	if(err)
 	{
 	    io_bit_set(0x0d,7);		// error
