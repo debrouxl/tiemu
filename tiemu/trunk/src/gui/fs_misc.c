@@ -160,23 +160,23 @@ void send_file(const gchar *filename)
 	// set pbar title
 	if(tifiles_file_is_tib(filename) || tifiles_file_is_flash(filename)) 
 	{
-		create_pbar_type5(_("Flash"));
+		create_pbar(FNCT_SEND_APP, _("Sending app(s)"));
 	} 
 	else if(tifiles_file_is_backup(filename)) 
 	{
-		create_pbar_type3(_("Backup"));
+		create_pbar(FNCT_SEND_BACKUP, _("Restoring"));
 	} 
 	else if(tifiles_file_is_group(filename)) 
 	{
-		create_pbar_type5(_("Sending group file"));
+		create_pbar(FNCT_SEND_VAR, _("Sending var(s)"));
 	} 
 	else if(tifiles_file_is_single(filename)) 
 	{
-		create_pbar_type4(_("Sending variable"));
+		create_pbar(FNCT_SEND_VAR, _("Sending var(s)"));
 	}
 	else if(tifiles_file_is_tigroup(filename))
 	{
-		create_pbar_type5(_("Sending group file"));
+		create_pbar_type5(_("Restoring"));
 	}
 
 	// note that core is currently not bkpt-interruptible when
@@ -192,6 +192,7 @@ gint display_send_files_dbox()
 	const gchar *ext;
 	gchar **filenames, **ptr;
 	static gchar *folder = NULL;
+	int i, l;
 
 	// Check for null cable
 	if(linkp.cable_model != CABLE_ILP)
@@ -223,8 +224,9 @@ gint display_send_files_dbox()
 	g_free(folder);
 	folder = g_path_get_dirname(filenames[0]);
 
-    // check extension
-	for(ptr = filenames; *ptr; ptr++)
+    // check extension and send
+	for(ptr = filenames, l = 0; *ptr; ptr++, l++);
+	for(ptr = filenames, i = 0; *ptr; ptr++, i++)
 	{
 		if(!tifiles_file_is_ti(*ptr) || !tifiles_calc_is_ti9x(tifiles_file_get_model(*ptr)) &&
 			!tifiles_file_is_tigroup(*ptr)) 
