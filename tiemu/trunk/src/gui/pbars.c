@@ -37,17 +37,22 @@
 
 struct progress_window p_win = { 0 };
 static GtkWidget *pbar_window = NULL;
-
 extern CalcUpdate calc_update;
 
-/* Create a window with one progress bar */
-void create_pbar_type1(const gchar * title)
+static void reset_counters(void)
+{
+	calc_update.cnt1 = calc_update.max1 = 0;
+	calc_update.cnt2 = calc_update.max2 = 0;
+	calc_update.cnt3 = calc_update.max3 = 1;
+	calc_update.cancel = 0;
+}
+
+/* Create a window with 1 progress bar */
+void create_pbar_type1(const gchar *title)
 {
 	GladeXML *xml;
 
-	calc_update.cnt1 = 0;
-	calc_update.max1 = 0;
-	calc_update.cancel = 0;
+	reset_counters();
 
 	xml = glade_xml_new
 	    (tilp_paths_build_glade("pbars-2.glade"), "pbar1_dbox",
@@ -59,21 +64,19 @@ void create_pbar_type1(const gchar * title)
 	pbar_window = glade_xml_get_widget(xml, "pbar1_dbox");
 	gtk_window_set_title(GTK_WINDOW(pbar_window), title);
 
-	p_win.pbar1 = glade_xml_get_widget(xml, "progressbar1");
-	p_win.label_rate = glade_xml_get_widget(xml, "label20");
+	p_win.pbar1 = glade_xml_get_widget(xml, "progressbar10");
+	p_win.label_rate = glade_xml_get_widget(xml, "label11");
 
 	gtk_widget_show_all(pbar_window);
 }
 
 
-/* Create a window with one label */
-void create_pbar_type2(const gchar * title, gchar * text)
+/* Create a window with 1 label */
+void create_pbar_type2(const gchar *title)
 {
 	GladeXML *xml;
 
-	calc_update.cnt1 = 0;
-	calc_update.max1 = 0;
-	calc_update.cancel = 0;
+	reset_counters();
 
 	xml = glade_xml_new
 	    (tilp_paths_build_glade("pbars-2.glade"), "pbar2_dbox",
@@ -85,23 +88,18 @@ void create_pbar_type2(const gchar * title, gchar * text)
 	pbar_window = glade_xml_get_widget(xml, "pbar2_dbox");
 	gtk_window_set_title(GTK_WINDOW(pbar_window), title);
 
-	p_win.label = glade_xml_get_widget(xml, "label3");
-	gtk_label_set_text(GTK_LABEL(p_win.label), text);
+	p_win.label = glade_xml_get_widget(xml, "label20");
 
 	gtk_widget_show_all(pbar_window);
 }
 
 
-/* Create a window with two progress bars */
-void create_pbar_type3(const gchar * title)
+/* Create a window with 2 progress bars */
+void create_pbar_type3(const gchar *title)
 {
 	GladeXML *xml;
 
-	calc_update.cnt1 = 0;
-	calc_update.max1 = 0;
-	calc_update.cancel = 0;
-	calc_update.cnt2 = 0;
-	calc_update.max2 = 0;
+	reset_counters();
 
 	xml = glade_xml_new
 	    (tilp_paths_build_glade("pbars-2.glade"), "pbar3_dbox",
@@ -113,22 +111,20 @@ void create_pbar_type3(const gchar * title)
 	pbar_window = glade_xml_get_widget(xml, "pbar3_dbox");
 	gtk_window_set_title(GTK_WINDOW(pbar_window), title);
 
-	p_win.pbar1 = glade_xml_get_widget(xml, "progressbar3");
-	p_win.pbar2 = glade_xml_get_widget(xml, "progressbar2");
-	p_win.label_rate = glade_xml_get_widget(xml, "label21");
+	p_win.pbar2 = glade_xml_get_widget(xml, "progressbar30");
+	p_win.pbar1 = glade_xml_get_widget(xml, "progressbar31");
+	p_win.label_rate = glade_xml_get_widget(xml, "label32");
 
 	gtk_widget_show_all(pbar_window);
 }
 
 
-/* Create a window with a one progress bar and one label */
-void create_pbar_type4(const gchar * title, gchar * text)
+/* Create a window with a 1 progress bar and 1 label */
+void create_pbar_type4(const gchar *title)
 {
 	GladeXML *xml;
 
-	calc_update.cnt1 = 0;
-	calc_update.max1 = 0;
-	calc_update.cancel = 0;
+	reset_counters();
 
 	xml = glade_xml_new
 	    (tilp_paths_build_glade("pbars-2.glade"), "pbar4_dbox",
@@ -140,25 +136,21 @@ void create_pbar_type4(const gchar * title, gchar * text)
 	pbar_window = glade_xml_get_widget(xml, "pbar4_dbox");
 	gtk_window_set_title(GTK_WINDOW(pbar_window), title);
 
-	p_win.label = glade_xml_get_widget(xml, "label15");
-	gtk_label_set_text(GTK_LABEL(p_win.label), text);
-	p_win.pbar1 = glade_xml_get_widget(xml, "progressbar4");
-	p_win.label_rate = glade_xml_get_widget(xml, "label22");
+	p_win.label_part = glade_xml_get_widget(xml, "label41");
+	p_win.label = glade_xml_get_widget(xml, "label42");
+	p_win.pbar1 = glade_xml_get_widget(xml, "progressbar40");
+	p_win.label_rate = glade_xml_get_widget(xml, "label43");
 
 	gtk_widget_show_all(pbar_window);
 }
 
 
-/* Create a window with two progress bars and one label */
-void create_pbar_type5(const gchar * title, gchar * text)
+/* Create a window with 2 progress bars and 1 label */
+void create_pbar_type5(const gchar *title)
 {
 	GladeXML *xml;
 
-	calc_update.cnt1 = 0;
-	calc_update.max1 = 0;
-	calc_update.cancel = 0;
-	calc_update.cnt2 = 0;
-	calc_update.max2 = 0;
+	reset_counters();
 
 	xml = glade_xml_new
 	    (tilp_paths_build_glade("pbars-2.glade"), "pbar5_dbox",
@@ -170,15 +162,29 @@ void create_pbar_type5(const gchar * title, gchar * text)
 	pbar_window = glade_xml_get_widget(xml, "pbar5_dbox");
 	gtk_window_set_title(GTK_WINDOW(pbar_window), title);
 
-	p_win.label = glade_xml_get_widget(xml, "label19");
-	gtk_label_set_text(GTK_LABEL(p_win.label), text);
-	p_win.pbar1 = glade_xml_get_widget(xml, "progressbar6");
-	p_win.pbar2 = glade_xml_get_widget(xml, "progressbar5");
-	p_win.label_rate = glade_xml_get_widget(xml, "label23");
+	p_win.label_part = glade_xml_get_widget(xml, "label52");
+	p_win.label = glade_xml_get_widget(xml, "label53");
+	p_win.pbar2 = glade_xml_get_widget(xml, "progressbar50");
+	p_win.pbar1 = glade_xml_get_widget(xml, "progressbar51");	
+	p_win.label_rate = glade_xml_get_widget(xml, "label54");
 
 	gtk_widget_show_all(pbar_window);
 }
 
+/* Create a pbar window */
+void create_pbar(int type, const gchar *title)
+{
+	switch(type)
+	{
+	case 1: create_pbar_type1(title); break;
+	case 2: create_pbar_type2(title); break;
+	case 3: create_pbar_type3(title); break;
+	case 4: create_pbar_type4(title); break;
+	case 5: create_pbar_type5(title); break;
+	default: break;
+	}
+		
+}
 
 /* 
    Destroy a pbar window
@@ -188,6 +194,7 @@ void destroy_pbar(void)
 	p_win.pbar1 = NULL;
 	p_win.pbar2 = NULL;
 	p_win.label = NULL;
+
 	if (pbar_window)
 		gtk_widget_destroy(pbar_window);
 	pbar_window = NULL;

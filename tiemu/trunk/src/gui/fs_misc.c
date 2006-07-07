@@ -160,7 +160,7 @@ void send_file(const gchar *filename)
 	// set pbar title
 	if(tifiles_file_is_tib(filename) || tifiles_file_is_flash(filename)) 
 	{
-		create_pbar_type5(_("Flash"), "");
+		create_pbar_type5(_("Flash"));
 	} 
 	else if(tifiles_file_is_backup(filename)) 
 	{
@@ -168,15 +168,15 @@ void send_file(const gchar *filename)
 	} 
 	else if(tifiles_file_is_group(filename)) 
 	{
-		create_pbar_type5(_("Sending group file"), "");
+		create_pbar_type5(_("Sending group file"));
 	} 
 	else if(tifiles_file_is_single(filename)) 
 	{
-		create_pbar_type4(_("Sending variable"), "");
+		create_pbar_type4(_("Sending variable"));
 	}
 	else if(tifiles_file_is_tigroup(filename))
 	{
-		create_pbar_type5(_("Sending group file"), "");
+		create_pbar_type5(_("Sending group file"));
 	}
 
 	// note that core is currently not bkpt-interruptible when
