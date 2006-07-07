@@ -1,5 +1,12 @@
 SubVersion: $Id$
 
+- 07/07/2006, version 2.81b
+	- [kevin] $2128: HW4 has 8 MB of FlashROM
+	- [kevin] $2130: complete HW4 images to 8 MB
+	- [kevin] $2136: fixed NULL dereference in filesel.c
+	- [roms]  $2140: added TiGroup file support (in sending only)
+		=> Not released yet.
+
 - 10/05/2006, version 2.81:
 	- [roms] $2059: renamed 'code/source' window into 'disassembly'
 	- [roms] $2052: build a tiemu2-like release when NO_GDB is enabled	
@@ -17,9 +24,7 @@ SubVersion: $Id$
 	- [roms]  $2119: fixed linking with NO_GDB (missing xmalloc)
 	- [roms]  $2121: fixed return value in engine_func for NO_GDB mode (stop engine)
 	- [kevin] $2123: reset source ID when stopping the engine from engine_func (NO_GDB)
-	- [kevin] $2128: HW4 has 8 MB of FlashROM
-	- [kevin] $2130: complete HW4 images to 8 MB
-	- [kevin] $2136: fixed NULL dereference in filesel.c
+		=> Released on 28/05/2006.
 
 - 25/08/2005, version 2.80:
 	- [roms] $1689: fixed Titanium skin loading and fixed bug in skin loader

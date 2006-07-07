@@ -400,7 +400,8 @@ int send_ti_file(const char *filename)
 		(tifiles_file_get_model(filename) == CALC_TI89)  ||
 		(tifiles_file_get_model(filename) == CALC_TI89T) ||
 		(tifiles_file_get_model(filename) == CALC_TI92P) ||
-		(tifiles_file_get_model(filename) == CALC_V200)
+		(tifiles_file_get_model(filename) == CALC_V200)  ||
+		(tifiles_file_is_tigroup(filename))
 	  )
     {
         ok = 1;
@@ -475,6 +476,15 @@ int send_ti_file(const char *filename)
     {
 		ret = ticalcs_calc_send_var2(calc_handle, MODE_NORMAL, filename);
     }
+
+	// TiGroup file
+	else if(tifiles_file_is_tigroup(filename))
+	{
+		// increase timeout due to excessive time for last ACK (file may contains apps)
+		params.timeout *= 10;
+		ret = ticalcs_calc_send_tigroup2(calc_handle, filename, TIG_ALL);
+		params.timeout /= 10;
+	}
 
 	// Restore link cable use
 	sip = 0;

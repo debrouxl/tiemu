@@ -174,6 +174,10 @@ void send_file(const gchar *filename)
 	{
 		create_pbar_type4(_("Sending variable"), "");
 	}
+	else if(tifiles_file_is_tigroup(filename))
+	{
+		create_pbar_type5(_("Sending group file"), "");
+	}
 
 	// note that core is currently not bkpt-interruptible when
 	// transferring file
@@ -203,7 +207,7 @@ gint display_send_files_dbox()
         ext = "*.92?";
 		break;
 	default:
-        ext = "*.89?;*.92?;*.9x?;*.9X?;*.v2?;*.V2?";
+        ext = "*.89?;*.92?;*.9x?;*.9X?;*.v2?;*.V2?;*.tig";
         break;
     }
 
@@ -222,7 +226,8 @@ gint display_send_files_dbox()
     // check extension
 	for(ptr = filenames; *ptr; ptr++)
 	{
-		if(!tifiles_file_is_ti(*ptr) || !tifiles_calc_is_ti9x(tifiles_file_get_model(*ptr))) 
+		if(!tifiles_file_is_ti(*ptr) || !tifiles_calc_is_ti9x(tifiles_file_get_model(*ptr)) &&
+			!tifiles_file_is_tigroup(*ptr)) 
 		{
 			msg_box(_("Error"), _("This file is not a valid TI file."));
 			g_strfreev(filenames);
