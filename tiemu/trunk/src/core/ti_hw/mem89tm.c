@@ -62,7 +62,7 @@
 // e00000-efffff : idem
 // d00000-ffffff : idem
 
-#define END_OF_FLASH_ROM (tihw.hw_type == HW4 ? 0xffffff : 0xbfffff)
+#define END_OF_FLASH_ROM (tihw.hw_type == HW4 ? (uint32_t)0xffffff : (uint32_t)0xbfffff)
 #undef ROM_SIZE_TI89T
 #define ROM_SIZE_TI89T (tihw.hw_type == HW4 ? 8*MB : 4*MB)
 
