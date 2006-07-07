@@ -448,9 +448,9 @@ int send_ti_file(const char *filename)
     if(tifiles_file_is_flash(filename))
     {   
 		// increase timeout due to excessive time for last ACK
-		params.timeout *= 10;
+		linkp.cable_timeout *= 10;
 		ret = ticalcs_calc_send_app2(calc_handle, filename);
-		params.timeout /= 10;
+		linkp.cable_timeout /= 10;
     }
 
     // FLASH OS file ?
@@ -481,9 +481,9 @@ int send_ti_file(const char *filename)
 	else if(tifiles_file_is_tigroup(filename))
 	{
 		// increase timeout due to excessive time for last ACK (file may contains apps)
-		params.timeout *= 10;
+		linkp.cable_timeout *= 10;
 		ret = ticalcs_calc_send_tigroup2(calc_handle, filename, TIG_ALL);
-		params.timeout /= 10;
+		linkp.cable_timeout /= 10;
 	}
 
 	// Restore link cable use
