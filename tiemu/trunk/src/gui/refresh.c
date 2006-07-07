@@ -29,27 +29,22 @@
 #include "dboxes.h"
 #include "tilibs.h"
 #include "refresh.h"
+#include "pbars.h"
 
-extern struct progress_window
-{
-	GtkWidget *window;
-	GtkWidget *pbar1;
-	GtkWidget *pbar2;
-	GtkWidget *label;
-	GtkWidget *label_rate;
-} p_win;
 extern CalcUpdate calc_update;
 
 static void gt_start(void)
 {
 	calc_update.cnt1 = calc_update.max1 = 0;
 	calc_update.cnt2 = calc_update.max2 = 0;
+	calc_update.cnt3 = calc_update.max3 = 0;
 }
 
 static void gt_stop(void)
 {
 	calc_update.cnt1 = calc_update.max1 = 0;
 	calc_update.cnt2 = calc_update.max2 = 0;
+	calc_update.cnt3 = calc_update.max3 = 0;
 }
 
 static void filter_shift(void);
@@ -67,7 +62,7 @@ static void refresh_pbar1(void)
 
 		if(calc_update.max1 != 0)
 			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(p_win.pbar1), 
-				(float)calc_update.cnt1 / calc_update.max1);
+				(gdouble)calc_update.cnt1 / calc_update.max1);
 
 #if defined(_CONSOLE) && defined(_DEBUG)
 		rate = calc_update.rate;
@@ -85,18 +80,35 @@ static void refresh_pbar2(void)
 {
 	if (p_win.pbar2 != NULL) 
     {
+		if(calc_update.cnt2 > calc_update.max2)
+			calc_update.cnt2 = calc_update.max2;
+
 		if(calc_update.max2 != 0)
 			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(p_win.pbar2), 
-				(float)calc_update.cnt2 / calc_update.max2);
+				(gdouble)calc_update.cnt2 / calc_update.max2);
 
 		GTK_REFRESH();
     }
+}
+
+static void refresh_pbar3(void)
+{
+	if(p_win.label_part != NULL)
+	{
+		gchar *str;
+
+		str = g_strdup_printf("%i/%i: ", calc_update.cnt3, calc_update.max3);
+		gtk_label_set_text(GTK_LABEL(p_win.label_part), str);
+
+		GTK_REFRESH();
+	}
 }
 
 static void gt_pbar(void)
 {
   refresh_pbar1();
   refresh_pbar2();
+  refresh_pbar3();
 }
 
 static void gt_label(void)

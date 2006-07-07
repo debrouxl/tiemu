@@ -8,6 +8,8 @@ SubVersion: $Id$
 	- [roms]  $2142: fixed wrong timeout value (2 variables, 1 (mis-)used)
 		=> Not released yet.
 	- [roms]  $2143: clean-up and overhaul in the progress bars
+	- [roms]  $2144: updated to rely on ticalcs2 progress bars data-base
+	- [roms]  $2146: fixed updating of third pbar counter. Fixed use of ticalcs2 pbar database.
 
 - 10/05/2006, version 2.81:
 	- [roms] $2059: renamed 'code/source' window into 'disassembly'

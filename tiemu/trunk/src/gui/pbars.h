@@ -46,3 +46,6 @@ void create_pbar(int type, const gchar * title);
 void destroy_pbar(void);
 
 GLADE_CB void on_pbar_okbutton1_pressed(GtkButton* button, gpointer user_data);
+
+int tilp_pbar_type(int op);
+#define create_pbar_(t,s)	create_pbar(tilp_pbar_type(t),(s))
