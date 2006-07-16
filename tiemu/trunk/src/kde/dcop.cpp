@@ -118,7 +118,7 @@ bool TiEmuDCOP::reset_calc(bool clearram)
 
     ti68k_reset();
     if (dbg_on)
-      close_debugger();
+      close_debugger_async();
     else
       engine_start();
 

@@ -78,6 +78,7 @@ void gtk_debugger_hide_all(int all);
 void gtk_window_minimize(GtkWindow *window, gboolean action);
 
 void close_debugger(void);
+void close_debugger_async(void);
 
 /* Variables */
 

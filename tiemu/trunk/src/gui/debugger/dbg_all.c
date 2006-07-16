@@ -380,6 +380,18 @@ close_debugger (void)
 #endif
 }
 
+static gint close_debugger_wrapper(gpointer data)
+{
+	close_debugger();
+	return FALSE;
+}
+
+void
+close_debugger_async (void)
+{
+	gtk_idle_add(close_debugger_wrapper, NULL);
+}
+
 GLADE_CB void
 on_quit1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
