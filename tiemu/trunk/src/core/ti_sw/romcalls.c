@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2006, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -84,7 +85,8 @@ static void load_tigcc_file_type(FILE *f)    // os.h TIGCC file: ".set acos, 0xF
 
     while(!feof(f))
     {
-        fgets(buf, sizeof(buf), f);
+        if (!fgets(buf, sizeof(buf), f))
+            break;
 
         // no '.set' ?
         if(*buf != '.')
@@ -123,9 +125,8 @@ static void load_lionel_file_type(FILE *f)   // Lionel Debroux formatted file: 2
         gchar **array;
 
         // get line
-        fgets(str, sizeof(str), f);
-		if(feof(f))
-			break;
+        if (!fgets(str, sizeof(str), f) || feof(f))
+             break;
 		for (number = strlen(str) - 1; str[number] == '\n' || str[number] == '\r'; number--) str[number] = '\0';
 
         if(!strchr(str, ':'))
@@ -160,15 +161,15 @@ static int load_from_file(const char *filename)
     memset(table, 0, sizeof(table));
 
     f = fopen(filename, "rt");
-    if(f == NULL) 
+    if(f == NULL
+       || !fgets(tmp, sizeof(tmp), f)
+       || !fgets(tmp, sizeof(tmp), f))
 	{
 		printf("Failed to open <%s> with error %s (%d)\n", 
 			       filename, strerror(errno), errno);
         return -1;
 	}
 
-    fgets(tmp, sizeof(tmp), f);
-    fgets(tmp, sizeof(tmp), f);
 	rewind(f);
 
     if(!strncmp(tmp, ".set", strlen(".set")))

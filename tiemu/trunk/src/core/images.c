@@ -181,9 +181,18 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
   		rom->data = malloc(rom->size + 4);
 	if(rom->data == NULL)
 		return ERR_MALLOC;
-  	memset(rom->data, 0xff, rom->size);
-  	fread(rom->data, 1, rom->size, file);
-  	fclose(file);
+	memset(rom->data, 0xff, rom->size);
+	if (fread(rom->data, 1, rom->size, file) < rom->size)
+	{
+	  printl(0, _("Failed to read from file: <%s>\n"), filename);
+	  fclose(file);
+	  return ERR_CANT_OPEN;
+	}
+	if (fclose(file))
+	{
+	  printl(0, _("Failed to close file: <%s>\n"), filename);
+	  return ERR_CANT_OPEN;
+	}
 
     rom->has_boot = 1;
     rom->rom_base = rom->data[0x05] & 0xf0;
@@ -350,7 +359,13 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
     }
     
     // Read header
-    fread(ri, sizeof(IMG_INFO), 1, f);
+    if (fread(ri, sizeof(IMG_INFO), 1, f) < 1)
+    {
+      fprintf(stderr, "Failed to read from file: <%s>\n", filename);
+      fclose(f);
+      return ERR_CANT_OPEN;
+    }
+
     if(strcmp(ri->signature, IMG_SIGN))
    	{
    		fprintf(stderr, "Bad image: <%s>\n", filename);
@@ -358,7 +373,11 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
    	}
     
     // Close file
-    fclose(f);
+    if (fclose(f))
+    {
+      fprintf(stderr, "Failed to close file: <%s>\n", filename);
+      return ERR_CANT_OPEN;
+    }
     
     return 0;
 }
@@ -431,13 +450,22 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
     img.revision = IMG_REV;
 
 	// Write file
-	fwrite(&img, 1, sizeof(IMG_INFO), f);
-	fwrite(img.data, sizeof(char), img.size, f);
+	if (fwrite(&img, 1, sizeof(IMG_INFO), f) < sizeof(IMG_INFO)
+	    || fwrite(img.data, sizeof(char), img.size, f) < img.size)
+	{
+	  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+	  fclose(f);
+	  return ERR_CANT_OPEN;
+	}
 
 	// Close file
-	fclose(f);
+	if (fclose(f))
+	{
+	  fprintf(stderr, "Failed to close file: <%s>\n", *dstname);
+	  return ERR_CANT_OPEN;
+	}
 
-  	return 0;
+	return 0;
 }
 
 /*
@@ -510,11 +538,21 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	}
 	
 	// Write header
-	fwrite(&img, 1, sizeof(IMG_INFO), f);
-  
-  	// Write boot block
-    memcpy(img.data, &img.data[SPP + BO], 256);
-    fwrite(img.data, 1, 256, f);
+	if (fwrite(&img, 1, sizeof(IMG_INFO), f) < sizeof(IMG_INFO))
+	{
+	  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+	  fclose(f);
+	  return ERR_CANT_OPEN;
+	}
+ 
+	// Write boot block
+	memcpy(img.data, &img.data[SPP + BO], 256);
+	if (fwrite(img.data, 1, 256, f) < 256)
+	{
+	  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+	  fclose(f);
+	  return ERR_CANT_OPEN;
+	}
 
     // Write hardware param block
 
@@ -544,69 +582,98 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	ti68k_put_hw_param_block((uint8_t *)img.data, img.rom_base, &hwpb);
 
 	// write filler
-	fputc(0xfe, f); fputc(0xed, f); fputc(0xba, f); fputc(0xbe, f);
+	if (fputc(0xfe, f) < 0 || fputc(0xed, f) < 0 || fputc(0xba, f) < 0 || fputc(0xbe, f) < 0
 	//fwrite(&hwpb, 1hwpb.len+2, f);
 
 	// write address (pointer)
-    fputc(0x00, f);
-    fputc(img.rom_base, f);
-    fputc(0x01, f);
-    fputc(0x08, f);
+	|| fputc(0x00, f) < 0
+	|| fputc(img.rom_base, f) < 0
+	|| fputc(0x01, f) < 0
+	|| fputc(0x08, f) < 0
 
 	// write structure
-	fputc(MSB(hwpb.len), f);	
-	fputc(LSB(hwpb.len), f);
-	fputc(MSB(MSW(hwpb.hardwareID)), f);
-	fputc(LSB(MSW(hwpb.hardwareID)), f);
-	fputc(MSB(LSW(hwpb.hardwareID)), f);
-	fputc(LSB(LSW(hwpb.hardwareID)), f);
-	fputc(MSB(MSW(hwpb.hardwareRevision)), f);
-	fputc(LSB(MSW(hwpb.hardwareRevision)), f);
-	fputc(MSB(LSW(hwpb.hardwareRevision)), f);
-	fputc(LSB(LSW(hwpb.hardwareRevision)), f);
-	fputc(MSB(MSW(hwpb.bootMajor)), f);
-	fputc(LSB(MSW(hwpb.bootMajor)), f);
-	fputc(MSB(LSW(hwpb.bootMajor)), f);
-	fputc(LSB(LSW(hwpb.bootMajor)), f);
-	fputc(MSB(MSW(hwpb.hardwareRevision)), f);
-	fputc(LSB(MSW(hwpb.hardwareRevision)), f);
-	fputc(MSB(LSW(hwpb.hardwareRevision)), f);
-	fputc(LSB(LSW(hwpb.hardwareRevision)), f);
-	fputc(MSB(MSW(hwpb.bootBuild)), f);
-	fputc(LSB(MSW(hwpb.bootBuild)), f);
-	fputc(MSB(LSW(hwpb.bootBuild)), f);
-	fputc(LSB(LSW(hwpb.bootBuild)), f);
-	fputc(MSB(MSW(hwpb.gateArray)), f);
-	fputc(LSB(MSW(hwpb.gateArray)), f);
-	fputc(MSB(LSW(hwpb.gateArray)), f);
-	fputc(LSB(LSW(hwpb.gateArray)), f);
+	|| fputc(MSB(hwpb.len), f) < 0
+	|| fputc(LSB(hwpb.len), f) < 0
+	|| fputc(MSB(MSW(hwpb.hardwareID)), f) < 0
+	|| fputc(LSB(MSW(hwpb.hardwareID)), f) < 0
+	|| fputc(MSB(LSW(hwpb.hardwareID)), f) < 0
+	|| fputc(LSB(LSW(hwpb.hardwareID)), f) < 0
+	|| fputc(MSB(MSW(hwpb.hardwareRevision)), f) < 0
+	|| fputc(LSB(MSW(hwpb.hardwareRevision)), f) < 0
+	|| fputc(MSB(LSW(hwpb.hardwareRevision)), f) < 0
+	|| fputc(LSB(LSW(hwpb.hardwareRevision)), f) < 0
+	|| fputc(MSB(MSW(hwpb.bootMajor)), f) < 0
+	|| fputc(LSB(MSW(hwpb.bootMajor)), f) < 0
+	|| fputc(MSB(LSW(hwpb.bootMajor)), f) < 0
+	|| fputc(LSB(LSW(hwpb.bootMajor)), f) < 0
+	|| fputc(MSB(MSW(hwpb.hardwareRevision)), f) < 0
+	|| fputc(LSB(MSW(hwpb.hardwareRevision)), f) < 0
+	|| fputc(MSB(LSW(hwpb.hardwareRevision)), f) < 0
+	|| fputc(LSB(LSW(hwpb.hardwareRevision)), f) < 0
+	|| fputc(MSB(MSW(hwpb.bootBuild)), f) < 0
+	|| fputc(LSB(MSW(hwpb.bootBuild)), f) < 0
+	|| fputc(MSB(LSW(hwpb.bootBuild)), f) < 0
+	|| fputc(LSB(LSW(hwpb.bootBuild)), f) < 0
+	|| fputc(MSB(MSW(hwpb.gateArray)), f) < 0
+	|| fputc(LSB(MSW(hwpb.gateArray)), f) < 0
+	|| fputc(MSB(LSW(hwpb.gateArray)), f) < 0
+	|| fputc(LSB(LSW(hwpb.gateArray)), f) < 0)
+	{
+	  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+	  fclose(f);
+	  return ERR_CANT_OPEN;
+	}
 
 	// Fill with 0xff up-to System Part
-  	for(i = 0x108 + hwpb.len+2; i < SPP; i++)
-    	fputc(0xff, f);
-  
-  	// Copy FLASH upgrade at 0x12000 (SPP)
-  	num_blocks = real_size / 65536;
-  	for(i = 0; i < num_blocks; i++ )
-    {
-      	printl(0, ".");
-      	fflush(stdout);
+	for(i = 0x108 + hwpb.len+2; i < SPP; i++)
+		if (fputc(0xff, f) < 0)
+		{
+		  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+		  fclose(f);
+		  return ERR_CANT_OPEN;
+		}
+ 
+	// Copy FLASH upgrade at 0x12000 (SPP)
+	num_blocks = real_size / 65536;
+	for(i = 0; i < num_blocks; i++ )
+	{
+		printl(0, ".");
+		fflush(stdout);
 
-      	fwrite(&img.data[65536 * i + SPP], sizeof(char), 65536, f);
-    }
+		if (fwrite(&img.data[65536 * i + SPP], sizeof(char), 65536, f) < 65536)
+		{
+		  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+		  fclose(f);
+		  return ERR_CANT_OPEN;
+		}
+	}
 
-  	last_block = real_size % 65536;
-   	fwrite(&img.data[65536 * i + SPP], sizeof(char), last_block, f);
-  
-  	printl(0, "\n");
-  	printl(0, "Completing to %iMB size\n", img.size >> 20);
-  	for(j = SPP + real_size; j < img.size; j++)
-  		fputc(0xff, f);
-  
-  	// Close file
-  	fclose(f);
+	last_block = real_size % 65536;
+	if (fwrite(&img.data[65536 * i + SPP], sizeof(char), last_block, f) < last_block)
+	{
+	  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+	  fclose(f);
+	  return ERR_CANT_OPEN;
+	}
+ 
+	printl(0, "\n");
+	printl(0, "Completing to %iMB size\n", img.size >> 20);
+	for(j = SPP + real_size; j < img.size; j++)
+		if (fputc(0xff, f) < 0)
+		{
+		  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+		  fclose(f);
+		  return ERR_CANT_OPEN;
+		}
+ 
+	// Close file
+	if (fclose(f))
+	{
+	  fprintf(stderr, "Failed to close file: <%s>\n", *dstname);
+	  return ERR_CANT_OPEN;
+	}
 
-  	return 0;
+	return 0;
 }
 
 /*
@@ -670,27 +737,36 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
     img.size = real_size;
 
 	// Open dest file
-  	f = fopen(*dstname, "wb");
-  	if(f == NULL)
-    {
-      	fprintf(stderr, "Unable to open this file: <%s>\n", *dstname);
-      	return ERR_CANT_OPEN;
-    }
+	f = fopen(*dstname, "wb");
+	if(f == NULL)
+	{
+		fprintf(stderr, "Unable to open this file: <%s>\n", *dstname);
+		return ERR_CANT_OPEN;
+	}
 
 	// Fill header
 	strcpy(img.signature, IMG_SIGN);
 	img.header_size = sizeof(IMG_INFO);
 	img.revision = IMG_REV;
-    img.has_boot = 1;
+	img.has_boot = 1;
 
 	// Write file
-	fwrite(&img, 1, sizeof(IMG_INFO), f);
-	fwrite(img.data, sizeof(char), img.size, f);
+	if (fwrite(&img, 1, sizeof(IMG_INFO), f) < sizeof(IMG_INFO)
+	    || fwrite(img.data, sizeof(char), img.size, f) < img.size)
+	{
+	  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+	  fclose(f);
+	  return ERR_CANT_OPEN;
+	}
 
 	// Close file
-	fclose(f);
+	if (fclose(f))
+	{
+	  fprintf(stderr, "Failed to close file: <%s>\n", *dstname);
+	  return ERR_CANT_OPEN;
+	}
 
-  	return 0;
+	return 0;
 }
 
 
@@ -722,17 +798,28 @@ int ti68k_load_image(const char *filename)
 	// Open file
 	f = fopen(filename, "rb");
 	if(f == NULL)
-    {
-      	fprintf(stderr, "Unable to open this file: <%s>\n", filename);
-      	return ERR_CANT_OPEN;
-    }
+	{
+		fprintf(stderr, "Unable to open this file: <%s>\n", filename);
+		return ERR_CANT_OPEN;
+	}
 
 	// Read pure data
-    fseek(f, img->header_size, SEEK_SET);
+	if (fseek(f, img->header_size, SEEK_SET))
+	{
+		fprintf(stderr, "Failed to read from file: <%s>\n", filename);
+		fclose(f);
+		return ERR_CANT_OPEN;
+	}
+
 	img->data = malloc(img->size + 4);
 	if(img->data == NULL)
 		return ERR_MALLOC;
-    fread(img->data, 1, img->size, f);
+	if (fread(img->data, 1, img->size, f) < img->size)
+	{
+		fprintf(stderr, "Failed to read from file: <%s>\n", filename);
+		fclose(f);
+		return ERR_CANT_OPEN;
+	}
 
 #if 1
 	{
@@ -743,11 +830,17 @@ int ti68k_load_image(const char *filename)
 		ti68k_display_hw_param_block(&hwblock);
 	}
 #endif
- 
-  	img_loaded = 1;
+
+	if (fclose(f))
+	{
+		fprintf(stderr, "Failed to close file: <%s>\n", filename);
+		return ERR_CANT_OPEN;
+	}
+
+	img_loaded = 1;
 	img_changed = 1;
 
-  	return 0;
+	return 0;
 }
 
 /*

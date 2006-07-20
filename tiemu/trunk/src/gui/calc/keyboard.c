@@ -112,6 +112,7 @@ static int pos_to_key(int x, int y)
   	return -1;
 }
 
+#ifdef __IPAQ__
 /*
 	Check if the mouse cursor is within the LCD rectangle.
 */
@@ -125,6 +126,7 @@ static int pos_to_mnu(int x, int y)
 
 	return 0;
 }
+#endif /* __IPAQ__ */
 
 // raise the main popup menu
 static void

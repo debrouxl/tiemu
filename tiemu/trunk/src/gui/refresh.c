@@ -64,7 +64,7 @@ static void refresh_pbar1(void)
 			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(p_win.pbar1), 
 				(gdouble)calc_update.cnt1 / calc_update.max1);
 
-#if defined(_CONSOLE) && defined(_DEBUG)
+#if 1 /* defined(_CONSOLE) && defined(_DEBUG) */
 		rate = calc_update.rate;
 		filter_shift();
 		avg = filter_compute(rate);

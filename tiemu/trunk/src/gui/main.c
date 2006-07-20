@@ -155,7 +155,7 @@ int main(int argc, char **argv)
     splash_screen_set_label(_("Initializing KDE..."));
     sp_kde_init(argc, argv, "tiemu", _("TiEmu"), VERSION, _("TI calculator emulator"), "Copyright (c) 2000, Thomas Corvazier, Romain Lievin\nCopyright (c) 2001-2002, Romain Lievin, Julien Blache\nCopyright (c) 2003-2004, Romain Lievin\nCopyright (c) 2005-2006, Romain Lievin, Kevin Kofler", "http://lpg.ticalc.org/prj_tiemu/", "gtktiemu-users@lists.sf.net");
     atexit(sp_kde_finish);
-    gtk_timeout_add(26, sp_kde_process_qt_events, NULL);
+    g_timeout_add(26, sp_kde_process_qt_events, NULL);
 #endif
 
 #ifdef __WIN32__
@@ -323,7 +323,7 @@ int main(int argc, char **argv)
 			args.argv = argv;
 			args.use_windows = 1;
 			args.interpreter_p = "insight";
-			gtk_idle_add(gdbtk_hide_insight_and_run_wrapper, NULL);
+			g_idle_add(gdbtk_hide_insight_and_run_wrapper, NULL);
 			gdb_main (&args);
 		}
 		stop_insight_timer();
@@ -367,14 +367,14 @@ static gint tiemu_x_event_wrapper(gpointer data)
 static void start_insight_timer(void)
 {
   if (!gdbtk_timer_id)
-    gdbtk_timer_id = gtk_timeout_add(25, tiemu_x_event_wrapper, NULL); /* 25 ms */
+    gdbtk_timer_id = g_timeout_add(25, tiemu_x_event_wrapper, NULL); /* 25 ms */
 }
 
 static void stop_insight_timer(void)
 {
   if (gdbtk_timer_id)
     {
-      gtk_timeout_remove(gdbtk_timer_id);
+      g_source_remove(gdbtk_timer_id);
       gdbtk_timer_id = 0;
     }
 }

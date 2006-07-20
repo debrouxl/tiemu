@@ -9,6 +9,7 @@
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
  *  Copyright (c) 2005, Julien Blache
+ *  Copyright (c) 2006, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -197,7 +198,7 @@ static void set_constraints(int mode)
 		GdkGeometry geom = { 0 };
 		GdkWindowHints mask = GDK_HINT_MIN_SIZE | GDK_HINT_ASPECT;
 		double r = (float)sr.w / sr.h;
-		double o = r * 0.10;	// 10%
+		//double o = r * 0.10;	// 10%
 
 		geom.min_width = 100;
 		geom.min_height = 100;
@@ -253,7 +254,7 @@ gint display_main_wnd(void)
 	return 0;
 }
 
-extern on_exit_without_saving_state1_activate(GtkMenuItem* item, gpointer data);
+extern void on_exit_without_saving_state1_activate(GtkMenuItem* item, gpointer data);
 
 GLADE_CB void
 on_calc_wnd_destroy                    (GtkObject       *object,
@@ -365,20 +366,20 @@ static int match_skin(int calc_type)
 	switch(tihw.calc_type)
 	{
 	    case TI92:
-		case TI92p:
-            ok = !strcmp(sk->calc, SKIN_TI92) || !strcmp(sk->calc, SKIN_TI92P);
+	    case TI92p:
+            ok = !strcmp((const char *)sk->calc, SKIN_TI92) || !strcmp((const char *)sk->calc, SKIN_TI92P);
 		break;
 	    case TI89:
-			ok = !strcmp(sk->calc, SKIN_TI89);
+	    ok = !strcmp((const char *)sk->calc, SKIN_TI89);
 		break;
-        case TI89t:
-            ok = !strcmp(sk->calc, SKIN_TI89T);
+	    case TI89t:
+	    ok = !strcmp((const char *)sk->calc, SKIN_TI89T);
 		break;
-		case V200:
-			ok = !strcmp(sk->calc, SKIN_V200);
+	    case V200:
+	    ok = !strcmp((const char *)sk->calc, SKIN_V200);
 		break;
 	    default: 
-            ok = 0;
+	    ok = 0;
 		break;
 	}
 

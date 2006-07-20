@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2006, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -70,7 +71,10 @@ float		sf;	// scaling factor
 LCD_RECT	ls;	// LCD rectangle in skin
 LCD_RECT	lr;	// LCD rectangle in window
 SKN_RECT	sr;	// skin rectangle
-WND_RECT	wr;	// window rectangle
+union {
+  WND_RECT wr;
+  GdkRectangle gr;
+}	wr;	// window rectangle
 
 static uint32_t convtab[512];      	// planar to chunky conversion table
 static RGB      grayscales[16];		// gray scales rgb values (colormap)
@@ -81,7 +85,6 @@ static int old_contrast = 0;        // previous contrast level
 static int new_contrast = NGS;		// new contrast level
 
 static int max_plane = 0;         	// number of grayscales to emulate
-static int cur_plane = 0;           // current grayscale plane
 
 /* Compute conversion table */
 void compute_convtable(void) 
@@ -178,12 +181,12 @@ void redraw_skin(void)
 
 	// scale image
 	g_object_unref(skin_infos.image);
-	skin_infos.image = gdk_pixbuf_scale_simple(skin_infos.raw, wr.w, wr.h, GDK_INTERP_NEAREST);
+	skin_infos.image = gdk_pixbuf_scale_simple(skin_infos.raw, wr.wr.w, wr.wr.h, GDK_INTERP_NEAREST);
 
 	// and draw image into pixmap (next, into window on expose event)
     gdk_draw_pixbuf(pixmap, main_wnd->style->fg_gc[GTK_WIDGET_STATE(main_wnd)],
 		  skin_infos.image, 0, 0, 0, 0, -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
-  	gdk_window_invalidate_rect(main_wnd->window, (GdkRectangle *)&wr, FALSE);
+	gdk_window_invalidate_rect(main_wnd->window, &wr.gr, FALSE);
 }
 
 /* Redraw the lcd only */
@@ -220,7 +223,8 @@ const int gp_seq[9][8] = {
 int hid_update_lcd(void)
 {
 	int i, j, k, l;
-	uint8_t *lcd_bitmap = tihw.lcd_ptr = &tihw.ram[tihw.lcd_adr];	
+	uint8_t *lcd_bitmap = &tihw.ram[tihw.lcd_adr];	
+	tihw.lcd_ptr = (char *) &tihw.ram[tihw.lcd_adr];	
 	uint8_t *lcd_buf = (uint8_t *)lcd_bytmap;
 	GdkRect src;
 	guchar *p;
@@ -338,7 +342,8 @@ int hid_update_lcd(void)
 GdkPixbuf* hid_copy_lcd(void)
 {
 	int i, j, k;
-	uint8_t *lcd_bitmap = tihw.lcd_ptr = &tihw.ram[tihw.lcd_adr];
+	uint8_t *lcd_bitmap = &tihw.ram[tihw.lcd_adr];	
+	tihw.lcd_ptr = (char *) &tihw.ram[tihw.lcd_adr];	
 	uint8_t *lcd_buf = (uint8_t *)lcd_bytmap;
 	guchar *p;
 

@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2006, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,6 +33,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "ti68k_int.h"
 #include "iodefs.h"
@@ -278,7 +280,8 @@ int iodefs_load(const char* path)
 		gchar **split;
 		IO_DEF *s;
 
-		fgets(line, sizeof(line), f);
+		if (!fgets(line, sizeof(line), f))
+			break;
 		/* An empty string means end of file. Don't clobber other stack
 		   variables with the underflow. */
 		if (!*line)

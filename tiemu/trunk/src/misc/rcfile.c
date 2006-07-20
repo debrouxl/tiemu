@@ -123,11 +123,18 @@ int rcfile_get_version(char *version)
 		return -1;
 
 	for (i = 0; i < 5; i++)
-		fgets(buffer, 256, txt);
+		if (!fgets(buffer, 256, txt))
+		{
+			fclose(txt);
+			return -1;
+		}
 
 	p = strchr(buffer, '=');
 	if (p == NULL)
+	{
+		fclose(txt);
 		return -1;
+	}
 
 	strcpy(version, ++p);
 
@@ -138,6 +145,9 @@ int rcfile_get_version(char *version)
 	p = strchr(version, '\n');
 	if (p)
 		*p = '\0';
+
+	if (fclose(txt))
+		return -1;
 
 	return 0;
 }
@@ -162,7 +172,8 @@ void rcfile_read(void)
 	}
 
 	while(!feof(txt)) {
-		fgets(buffer, 256, txt);
+		if (!fgets(buffer, 256, txt))
+			break;
 		l++;
 		buffer[strlen(buffer)-1]='\0';
 

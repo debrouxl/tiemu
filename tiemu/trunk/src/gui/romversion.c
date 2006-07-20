@@ -147,8 +147,7 @@ static void clist_populate(GtkListStore *store)
 		gchar **row_text;
         char line[256];
 
-        fgets(line, sizeof(line), fp);
-        if(feof(fp))
+        if (!fgets(line, sizeof(line), fp) || feof(fp))
             break;
         line[strlen(line) - 1] = '\0';
 

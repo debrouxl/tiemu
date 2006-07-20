@@ -566,7 +566,7 @@ GtkWidget* display_popup_menu(void)
 		data = glade_xml_get_widget(xml, "high_lcd_update1");
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);
 	}
-	else if(params.lcd_rate >= 40 && params.lcd_rate < 70 || params.lcd_rate == -1)
+	else if((params.lcd_rate >= 40 && params.lcd_rate < 70) || params.lcd_rate == -1)
 	{
 		data = glade_xml_get_widget(xml, "med_lcd_update1");
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), TRUE);

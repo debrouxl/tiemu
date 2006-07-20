@@ -40,7 +40,7 @@
 #include "printl.h"
 
 
-Pc2TiKey keymap[KEYMAP_MAX] = { 0 };
+Pc2TiKey keymap[KEYMAP_MAX] = {};
 
 // search for key name and return key value (or -1 if not found)
 int keymap_string_to_value(const KeyTuple *array, const char *key_name)
@@ -76,12 +76,17 @@ int keymap_read_header(const char *filename)
     f = fopen(filename, "rt");
     if(f == NULL)
     {
-        fprintf(stderr, "unable to open keymap file.\n", filename);
+        fprintf(stderr, "unable to open keymap file <%s>.\n", filename);
         return -1;
     }
 
     // read first line
-    fgets(line, sizeof(line), f);
+    if (!fgets(line, sizeof(line), f))
+    {
+        fprintf(stderr, "No calc model found !\n");
+        fclose(f);
+        return -1;
+    }
     line[strlen(line) - 1] = '\0';
     if(strncmp(line, "Model", strlen("Model")))
     {
@@ -108,11 +113,16 @@ int keymap_load(const char *filename)
     f = fopen(filename, "rt");
     if(f == NULL)
     {
-        fprintf(stderr, "unable to open keymap file.\n", filename);
+        fprintf(stderr, "unable to open keymap file <%s>.\n", filename);
         return -1;
     }
 
-    fgets(line, sizeof(line), f);
+    if (!fgets(line, sizeof(line), f))
+    {
+        fprintf(stderr, "No calc model found !\n");
+        fclose(f);
+        return -1;
+    }
     line[strlen(line) - 1] = '\0';
     if(strncmp(line, "Model", strlen("Model")))
     {
@@ -129,7 +139,8 @@ int keymap_load(const char *filename)
 	char *p;
 
         // remove cr/lf
-        fgets(line, sizeof(line), f);
+        if (!fgets(line, sizeof(line), f))
+            break;
         //line[strlen(line) - 2] = '\0';
 	p = strrchr(line, '\r');
 	if(p != NULL) *p = '\0';
