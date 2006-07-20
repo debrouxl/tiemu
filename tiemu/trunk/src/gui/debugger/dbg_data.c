@@ -62,7 +62,7 @@ gint dbgdata_display_dbox(gint *mode, gint *type, uint32_t *start, uint32_t *sto
 	//gtk_signal_emit_by_name(GTK_OBJECT(data), "toggled");
 	g_signal_emit_by_name(G_OBJECT(data), "toggled");
 
-	printf("%i %i %x %x\n", mode, type, *start, *stop);
+	//printf("%i %i %x %x\n", *mode, *type, *start, *stop);
 
 	// set type
 	if(*type == -1)

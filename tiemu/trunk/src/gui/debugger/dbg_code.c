@@ -219,6 +219,8 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
     gint i;
 
     pc = ti68k_debug_get_pc();
+    addr3 = pc; // Make sure addr3 is always initialized. This should be
+                // overwritten below assuming we have at least 3 valid items.
 
 	gdk_color_parse("White", &color1);
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color1, 1, FALSE, FALSE, &success);
@@ -248,7 +250,7 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
     if(!found && reload)
     {
         gtk_list_store_clear(store);
-        clist_populate(store, ti68k_debug_get_pc());
+        clist_populate(store, pc);
     }
 
     // repopulate so that 3 instructions are still visible at the bottom of the list
@@ -292,7 +294,6 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
 
 static GtkWidget *list;
 static GtkListStore *store;
-static GtkWidget *combo;
 
 typedef struct {
 	GtkWidget *b1;
@@ -465,8 +466,6 @@ GLADE_CB void
 on_step1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    static int i =0;
-
 	ti68k_debug_step();
 
 	clist_refresh(store, TRUE);
@@ -716,7 +715,6 @@ static int export_disasm_to_file(GtkWidget *widget)
 {
 	GtkTreeView *view = GTK_TREE_VIEW(widget);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
-	GtkListStore *store = GTK_LIST_STORE(model);
     GtkTreeIter iter;
     gchar *str;
     uint32_t addr, start;
@@ -958,7 +956,6 @@ on_set_pc_to_selection1_activate       (GtkMenuItem     *menuitem,
     //GtkWidget *list = GTK_WIDGET(user_data);
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
-	GtkListStore *store = GTK_LIST_STORE(model);
     GtkTreeSelection *selection;
     GtkTreeIter iter;
     gboolean valid;
@@ -984,7 +981,6 @@ on_view_memory1_activate       (GtkMenuItem     *menuitem,
     //GtkWidget *list = GTK_WIDGET(user_data);
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
-	GtkListStore *store = GTK_LIST_STORE(model);
     GtkTreeSelection *selection;
     GtkTreeIter iter;
     gboolean valid;

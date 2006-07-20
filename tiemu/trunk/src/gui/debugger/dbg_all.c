@@ -28,6 +28,7 @@
 #  include <config.h>
 #endif
 
+#include <glib.h>
 #include <gtk/gtk.h>
 #ifdef __WIN32__
 #include <gdk/gdkwin32.h>
@@ -389,7 +390,7 @@ static gint close_debugger_wrapper(gpointer data)
 void
 close_debugger_async (void)
 {
-	gtk_idle_add(close_debugger_wrapper, NULL);
+	g_idle_add(close_debugger_wrapper, NULL);
 }
 
 GLADE_CB void

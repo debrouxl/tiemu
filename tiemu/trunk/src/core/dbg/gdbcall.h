@@ -3,7 +3,7 @@
 
 /*  TiEmu - a TI emulator
  *
- *  This file Copyright (c) 2005, Kevin Kofler
+ *  This file Copyright (c) 2005-2006, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
     Gdbcall: GDB interfacing functions
 */
 
-void gdb_run(void);
-void gdb_continue(void);
+void gdbcall_run(void);
+void gdbcall_continue(void);
 void gdb_add_symbol_file(const char *filename, unsigned address);
 void gdb_hbreak(const char *funcname);

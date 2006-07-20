@@ -237,7 +237,7 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 		pc = mem_rd_long(sp+2);
 
 		str = g_strdup_printf("type=<%s>, id=#%i, SR=%04x, PC=%06x\n", 
-			ti68k_exception_to_string(mode), id, str, pc);
+			ti68k_exception_to_string(mode), id, sr, pc);
 	}
 	else if(type == BK_TYPE_CODE)
 	{

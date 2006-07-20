@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2006, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -793,7 +794,6 @@ on_treeview_key_press_event            (GtkWidget       *widget,
 {
     GtkTreeView *view = GTK_TREE_VIEW(widget);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
-	GtkListStore *store = GTK_LIST_STORE(model);
     GtkTreeIter iter;
     GtkTreePath *path;
     GtkTreeViewColumn *column;
@@ -975,8 +975,8 @@ static gint search_engine(char *str, int ascii, int casse, uint32_t *address, in
     gint i;
     uint32_t addr;
 
-    data = g_strdup(str);
-    len = strlen(data);
+    data = (uint8_t *) g_strdup((gchar *) str);
+    len = strlen((char *) data);
 
     // ASCII mode ?
     if(!ascii)
@@ -1001,10 +1001,12 @@ static gint search_engine(char *str, int ascii, int casse, uint32_t *address, in
         for(i = 0; i < len; i++)
         {
             char digits[3];
+            unsigned int temp;
 
             strncpy(digits, &tmp[2*i], 2); 
             digits[2] = '\0';
-            sscanf(digits, "%02x", &data[i]);
+            sscanf(digits, "%02x", &temp);
+            data[i] = temp;
         }
 
         g_free(tmp);
@@ -1056,7 +1058,6 @@ static gint search_highlight(uint32_t blk_beg, uint32_t blk_end, int state)
 
     GdkColor white, green;
 	gboolean success;
-    GdkColor *color = &green;
 
 	gdk_color_parse("White", &white);
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &white, 1,

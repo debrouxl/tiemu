@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: dbg_code.c 731 2004-11-28 16:05:10Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2006, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -61,14 +62,8 @@ on_combo_entry1_match_selected             (GtkEntryCompletion *widget,
 
 static GtkProgressBar *pbar = NULL;
 
-static GtkListStore* clist_create(GtkWidget *widget)
-{
-	return NULL;
-}
-
 static void clist_populate(GtkListStore *store)
 {
-	GtkTreeModel *model = GTK_TREE_MODEL(store);
 	GList *lst, *ptr;
 	gchar *path;
 	gint result;

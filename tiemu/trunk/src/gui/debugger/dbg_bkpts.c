@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -252,7 +252,7 @@ static void clist_populate(GtkListStore *store)
 				{
 					if(!strcmp(row_text[COL_START], row_text2[COL_START]) && !strcmp(row_text[COL_END], row_text2[COL_END]))
 					{
-						if( (mode & BK_READ) && (mode2 & BK_WRITE) || (mode & BK_WRITE) && (mode2 & BK_READ) )
+						if( ((mode & BK_READ) && (mode2 & BK_WRITE)) || ((mode & BK_WRITE) && (mode2 & BK_READ)) )
 						{
 							const gchar *new_str;
 							
@@ -497,28 +497,44 @@ dbgbkpts_button3_clicked                     (GtkButton       *button,
         {
         case BK_TYPE_CODE:
             sscanf(row_text[COL_START], "%x", &min);
-            ti68k_bkpt_set_address(BKPT_ADDR(min), BKPT_DISABLE(min));
+            {
+              uint32_t addr = BKPT_ADDR(min);
+              ti68k_bkpt_set_address(addr, BKPT_DISABLE(min));
+            }
             break;
         case BK_TYPE_EXCEPTION:
             sscanf(row_text[COL_SYMBOL], "#%i", &n);
-            ti68k_bkpt_set_exception(BKPT_ADDR(n), BKPT_DISABLE(n));
+            {
+              uint32_t addr = BKPT_ADDR(n);
+              ti68k_bkpt_set_exception(addr, BKPT_DISABLE(n));
+            }
             break;
         case BK_TYPE_ACCESS:
             mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
             sscanf(row_text[COL_START], "%x", &min);
-            ti68k_bkpt_set_access(BKPT_ADDR(min), mode, BKPT_DISABLE(min));
+            {
+              uint32_t addr = BKPT_ADDR(min);
+              ti68k_bkpt_set_access(addr, mode, BKPT_DISABLE(min));
+            }
             break;
         case BK_TYPE_RANGE:
             mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
             sscanf(row_text[COL_START], "%x", &min);
             sscanf(row_text[COL_END], "%x", &max);
-            ti68k_bkpt_set_range(BKPT_ADDR(min), BKPT_ADDR(max), mode,
-								BKPT_DISABLE(min), BKPT_DISABLE(max));
+            {
+              uint32_t addr1 = BKPT_ADDR(min);
+              uint32_t addr2 = BKPT_ADDR(max);
+              ti68k_bkpt_set_range(addr1, addr2, mode,
+                                   BKPT_DISABLE(min), BKPT_DISABLE(max));
+            }
             break;
-		case BK_TYPE_PGMENTRY:
-			//sscanf(row_text[COL_SYMBOL], "#%04x", &n);
-			//ti68k_bkpt_set_pgmentry(BKPT_ADDR(n), BKPT_DISABLE(n));
-			break;
+        case BK_TYPE_PGMENTRY:
+            //sscanf(row_text[COL_SYMBOL], "#%04x", &n);
+            //{
+            //  uint32_t addr = BKPT_ADDR(n);
+            //  ti68k_bkpt_set_pgmentry(addr, BKPT_DISABLE(n));
+            //}
+            break;
         }
         g_strfreev(row_text);
     }
@@ -566,28 +582,44 @@ dbgbkpts_button4_clicked                     (GtkButton       *button,
         {
         case BK_TYPE_CODE:
             sscanf(row_text[COL_START], "%x", &min);
-            ti68k_bkpt_set_address(BKPT_ADDR(min), BKPT_ENABLE(min));
+            {
+              uint32_t addr = BKPT_ADDR(min);
+              ti68k_bkpt_set_address(addr, BKPT_ENABLE(min));
+            }
             break;
         case BK_TYPE_EXCEPTION:
             sscanf(row_text[COL_SYMBOL], "#%i", &n);
-            ti68k_bkpt_set_exception(BKPT_ADDR(n), BKPT_ENABLE(n));
+            {
+              uint32_t addr = BKPT_ADDR(n);
+              ti68k_bkpt_set_exception(addr, BKPT_ENABLE(n));
+            }
             break;
         case BK_TYPE_ACCESS:
             mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
             sscanf(row_text[COL_START], "%x", &min);
-            ti68k_bkpt_set_access(BKPT_ADDR(min), mode, BKPT_ENABLE(min));
+            {
+              uint32_t addr = BKPT_ADDR(min);
+              ti68k_bkpt_set_access(addr, mode, BKPT_ENABLE(min));
+            }
             break;
         case BK_TYPE_RANGE:
             mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
             sscanf(row_text[COL_START], "%x", &min);
             sscanf(row_text[COL_END], "%x", &max);
-            ti68k_bkpt_set_range(BKPT_ADDR(min), BKPT_ADDR(max), mode,
-								BKPT_ENABLE(min), BKPT_ENABLE(max));
+            {
+              uint32_t addr1 = BKPT_ADDR(min);
+              uint32_t addr2 = BKPT_ADDR(max);
+              ti68k_bkpt_set_range(addr1, addr2, mode,
+                                   BKPT_ENABLE(min), BKPT_ENABLE(max));
+            }
             break;
-		case BK_TYPE_PGMENTRY:
-			//sscanf(row_text[COL_SYMBOL], "#%04x", &n);
-			//ti68k_bkpt_set_pgmentry(BKPT_ADDR(n), BKPT_ENABLE(n));
-			break;
+        case BK_TYPE_PGMENTRY:
+            //sscanf(row_text[COL_SYMBOL], "#%04x", &n);
+            //{
+            //  uint32_t addr = BKPT_ADDR(n);
+            //  ti68k_bkpt_set_pgmentry(addr, BKPT_ENABLE(n));
+            //}
+            break;
         }
         g_strfreev(row_text);
     }
@@ -725,7 +757,7 @@ on_treeview2_button_press_event        (GtkWidget       *widget,
 				ti68k_bkpt_add_access(new_min, new_mode);
 				//ti68k_bkpt_set_access(old_min, mode, new_min);
 			}
-			else if(new_type = BK_TYPE_RANGE)
+			else if(new_type == BK_TYPE_RANGE)
 			{
 				ti68k_bkpt_del_range(old_min, old_max, old_mode);
 				ti68k_bkpt_add_range(new_min, new_max, new_mode);

@@ -81,23 +81,6 @@ static int rd_bit(IO_DEF *s, int bit_num)
 	return -1;
 }
 
-// convert GtkTreeViewColumn into column index
-static gint column2index(GtkWidget *list, GtkTreeViewColumn *column)
-{
-	gint i;
-
-	for (i = 0; i < CTREE_NVCOLS; i++) 
-	{
-		GtkTreeViewColumn *col;
-
-		col = gtk_tree_view_get_column(GTK_TREE_VIEW(list), i);
-		if (col == column)
-			return i;
-	}
-
-	return -1;
-}
-
 // check for valid hexadecimal value
 static int validate_value(const char *str, int ndigits)
 {
