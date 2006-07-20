@@ -1,0 +1,11 @@
+--- changehw.c.orig	2006-07-20 14:01:29.000000000 +0200
++++ changehw.c	2006-07-20 14:02:19.000000000 +0200
+@@ -222,7 +222,7 @@
+ {
+ 	extern struct hwmodel hwmodels[nummodels];
+ 
+-	byte i, fname[7];
++	byte i, fname[256];
+ 	GtkWidget *dlg;
+ 	char *filen;
+ 	GDir *gdir;

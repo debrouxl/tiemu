@@ -10,6 +10,7 @@ Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}.tar.bz2
 Patch0:         tilem-ti85-keypad-fix.diff
 Patch1:         tilem-new-libticables2-fix.diff
+Patch2:         tilem-changehw-buffer-overflow-fix.diff
 Group:		Applications/Emulators
 License:	LGPL, z80em License
 BuildRequires:	libticables2-devel >= 20050915, glib2-devel, gtk2-devel >= 2.4.0, imlib-devel, desktop-file-utils >= 0.10
@@ -29,6 +30,7 @@ mv -f configure.fixed configure
 chmod +x configure
 patch -l src/tilem/keypad.c <%{PATCH0}
 patch -l src/tilem/core/dep/link.h <%{PATCH1}
+patch -l src/tilem/gui/changehw.c <%{PATCH2}
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --with-ticables
@@ -77,6 +79,8 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org> 0.973-4
 Libdir fixes for lib64 platforms.
 Use libtifoo-devel instead of libtifoo in BuildRequires.
+Fix buffer overflow (probably not exploitable, needs writing a ROM in a specific
+directory to exploit).
 
 * Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant %%defattr at the end of %%files.
