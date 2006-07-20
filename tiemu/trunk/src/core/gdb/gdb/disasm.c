@@ -348,7 +348,8 @@ void print_address_1 (CORE_ADDR, void *, void (*) (void *, const char *, ...),
 static void
 dis_asm_sprint_address (bfd_vma addr, struct disassemble_info *info)
 {
-  print_address_1 (addr, info->stream, sprintf_disasm, strcat_disasm);
+  print_address_1 (addr, info->stream, (void (*) (void *, const char *, ...))
+                   sprintf_disasm, strcat_disasm);
 }
 
 /* (TiEmu 20050429 Kevin Kofler) If no file is given, use sprintf instead. Also

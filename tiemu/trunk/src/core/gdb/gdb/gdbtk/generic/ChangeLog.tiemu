@@ -1,3 +1,9 @@
+2006-07-20  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk-cmds.c (Gdbtk_Init): Declare gdbcallback_close_debugger as Tcl_ObjCmdProc
+                                     instead of Tcl_CmdProc.
+          (gdb_update_mem): Fix uninitialized use of "num".
+
 2006-01-07  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * gdbtk.c (gdbtk_source_start_file): Fix incorrect parameter for throw_exception.

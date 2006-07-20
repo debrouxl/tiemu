@@ -1,3 +1,15 @@
+2006-07-20  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * ../libiberty/floatformat.c: Include <stdlib.h> if available (needed for abort()).
+            (floatformat_smapbcd_is_valid): Use ISO C prototype and void * instead of char *.
+        * m68k_tdep.c (m68k_extract_return_value): Don't cast argument of regcache_raw_read to
+                                                   char *.
+            (m68k_store_return_value): Don't cast arguments of regcache_raw_write and
+                                       regcache_raw_write_part to char *.
+        * doublest.c (convert_smapbcd_to_doublest): Remove unused variable "mantissa".
+        * disasm.c (dis_asm_sprint_address): Cast function pointer to avoid "incompatible pointer
+                                             type" warning.
+
 2006-01-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * infrun.c (handle_inferior_event): Don't set breakpoints on the callee, which may not exist.
@@ -213,10 +225,10 @@
 2005-04-03  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         BCD floating point support:
-        * ../libiberty/floatformats.c (floatformat_smapbcd_big): New floatformat structure.
+        * ../libiberty/floatformat.c (floatformat_smapbcd_big): New floatformat structure.
           (floatformat_smapbcd_is_valid): New static function.
           (floatformat_to_double, floatformat_from_double): Abort for floatformat_smapbcd_big.
-        * ../libiberty/floatformats.h (floatformat_smapbcd_big): Declare extern.
+        * ../libiberty/floatformat.h (floatformat_smapbcd_big): Declare extern.
         * config/m68k/tm-monitor.h (TARGET_FLOAT_FORMAT, TARGET_DOUBLE_FORMAT, TARGET_LONG_DOUBLE_FORMAT): Define.
         * doublest.c (floatformat_is_nan): Special-case floatformat_smapbcd_big.
           (floatformat_to_doublest): Use convert_smapbcd_to_doublest for floatformat_smapbcd_big.

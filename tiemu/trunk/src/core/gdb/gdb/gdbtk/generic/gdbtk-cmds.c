@@ -279,7 +279,7 @@ Gdbtk_Init (Tcl_Interp *interp)
 			gdb_get_inferior_args, NULL);
   Tcl_CreateObjCommand (interp, "gdb_set_inferior_args", gdbtk_call_wrapper,
 			gdb_set_inferior_args, NULL);
-  extern Tcl_CmdProc gdbcallback_close_debugger;
+  extern Tcl_ObjCmdProc gdbcallback_close_debugger;
   Tcl_CreateObjCommand (interp, "tiemu_close_debugger",
                         gdbcallback_close_debugger, NULL, NULL);
   Tcl_CreateObjCommand (interp, "tiemu_debug_break",
@@ -2461,7 +2461,7 @@ gdb_update_mem (ClientData clientData, Tcl_Interp *interp,
       if (addr + rnum == 0x60000f)
         {
           mbuf[rnum] = 0xff;
-          rnum++;
+          num = 1;
         }
       else
         num = target_read_memory_partial (addr + rnum, mbuf + rnum,

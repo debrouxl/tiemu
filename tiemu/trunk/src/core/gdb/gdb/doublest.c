@@ -740,7 +740,6 @@ convert_smapbcd_to_doublest (const struct floatformat *fmt,
 			     DOUBLEST *to)
 {
   long exponent;
-  unsigned long mantissa;
   unsigned char *uval = (unsigned char *) from;
 
   gdb_assert (fmt != NULL);

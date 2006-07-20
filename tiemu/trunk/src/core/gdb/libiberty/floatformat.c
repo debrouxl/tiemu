@@ -31,6 +31,10 @@ Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA. 
 #include <string.h>
 #endif
 
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+
 #include "ansidecl.h"
 #include "libiberty.h"
 #include "floatformat.h"
@@ -240,12 +244,12 @@ const struct floatformat floatformat_ia64_quad_little =
   floatformat_always_valid
 };
 
-static int floatformat_smapbcd_is_valid PARAMS ((const struct floatformat *fmt, const char *from));
+static int floatformat_smapbcd_is_valid (const struct floatformat *fmt,
+                                         const void *from);
 
 static int
-floatformat_smapbcd_is_valid (fmt, from)
-     const struct floatformat *fmt;
-     const char *from;
+floatformat_smapbcd_is_valid (const struct floatformat *fmt,
+                              const void *from)
 {
   unsigned short exponent;
   unsigned int mantissah, mantissal;

@@ -11,6 +11,7 @@ SubVersion: $Id$
 	- [roms]  $2144: updated to rely on ticalcs2 progress bars data-base
 	- [roms]  $2146: fixed updating of third pbar counter. Fixed use of ticalcs2 pbar database.
 	- [kevin] $2147: don't crash DCOP client program when running reset_calc through DCOP with the debugger running
+	- [kevin] $2153: fixed warnings in TiEmu patches to GDB
 
 - 10/05/2006, version 2.81:
 	- [roms] $2059: renamed 'code/source' window into 'disassembly'

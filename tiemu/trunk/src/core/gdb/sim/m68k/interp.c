@@ -98,7 +98,6 @@ static jmp_buf interp_trap;
 #endif
 
 
-static int opt_cpu_level = 0; /* 68000 default */
 static int opt_mem_size = 20; /* 1M default */
 
 /* These variables are at file scope so that functions other than
@@ -106,7 +105,6 @@ static int opt_mem_size = 20; /* 1M default */
 
 static int target_little_endian;
 static int global_endianw, endianb;
-static int target_dsp;
 static int host_little_endian;
 
 static SIM_OPEN_KIND sim_kind;
@@ -181,8 +179,6 @@ sim_size (power)
 {
   opt_mem_size = power;
 }
-
-static int initted_memory = 0;
 
 SIM_DESC
 sim_open (kind, cb, abfd, argv)
@@ -355,6 +351,8 @@ enum step_over_calls_kind
 extern enum step_over_calls_kind step_over_calls;
 extern void ti68k_step_over_noflush(void);
 extern int hw_m68k_run(int n, unsigned maxcycles);
+void engine_start(void);
+void gtk_main(void);
 static void m68k_go_sim(int step)
 {
   if (step) {
@@ -372,16 +370,15 @@ static void m68k_go_sim(int step)
 
 extern void gdbcallback_disable_debugger(void);
 extern void gdbcallback_enable_debugger(void);
+void engine_stop(void);
 void
 sim_resume (sd, step, siggnal)
      SIM_DESC sd;
      int step, siggnal;
 {
-  void (*prev) ();
   void (*prev_fpe) ();
   /* NOTE need to actually run things */
 
-  /*  prev = signal (SIGINT, control_c);*/
   prev_fpe = signal (SIGFPE, SIG_IGN);
 
   init_pointers ();
@@ -397,7 +394,6 @@ sim_resume (sd, step, siggnal)
   gdbcallback_enable_debugger();
 
   signal (SIGFPE, prev_fpe);
-  /*  signal (SIGINT, prev);*/
 }
 
 
@@ -672,7 +668,7 @@ sim_trace_one(pc)
   static int symcount = 0;
   static int last_sym = -1;
   static struct disassemble_info info;
-  int storage, sym, bestsym, bestaddr;
+  int storage, sym, bestaddr;
   int min, max, i, pnl;
   static uae_u32 prevregs[16];
 
@@ -724,7 +720,7 @@ sim_trace_one(pc)
     }
   opbuf[0] = 0;
   max = print_insn_m68k(pc, &info);
-  printf("  %8x: ", pc, 0);
+  printf("  %8x: ", pc);
   for (i=0; i<max; i++)
     printf(" %02x", get_byte(pc+i));
   for (; i<7; i++)
@@ -738,7 +734,7 @@ sim_trace_one(pc)
       if (pnl == 0)
         printf("\t");
       prevregs[i] = regs.regs[i];
-      printf(" r%d=%08x", i, regs.regs[i]);
+      printf(" r%d=%08x", i, (unsigned int) regs.regs[i]);
       pnl = 1;
       }
 

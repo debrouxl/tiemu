@@ -1,3 +1,10 @@
+2006-07-20  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+       * interp.c (engine_start, gtk_main, engine_stop): Prototype.
+         (sim_resume): Remove unused variable "prev".
+         (opt_cpu_level, target_dsp, initted_memory): Remove (unused file-scope variables).
+         (sim_trace_one): Remove unused variable "bestsym". Fix printf format/argument mismatches.
+
 2006-02-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * ../configure.ac, ../configure: Also filter out CXX=... from subdir configury arguments.

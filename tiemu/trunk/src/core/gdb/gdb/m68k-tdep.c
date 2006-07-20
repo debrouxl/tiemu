@@ -243,8 +243,8 @@ m68k_extract_return_value (struct type *type, struct regcache *regcache,
   /* (TiEmu 20050408 Kevin Kofler) This is for BCD floats, returned in %d0-%d2. */
   else if (len == 10)
     {
-      regcache_raw_read (regcache, M68K_D0_REGNUM, (char *) valbuf);
-      regcache_raw_read (regcache, M68K_D1_REGNUM, (char *) valbuf + 4);
+      regcache_raw_read (regcache, M68K_D0_REGNUM, valbuf);
+      regcache_raw_read (regcache, M68K_D1_REGNUM, valbuf + 4);
       regcache_raw_read (regcache, M68K_D2_REGNUM, buf);
       memcpy ((char *) valbuf + 8, buf + 2, 2);
     }
@@ -290,12 +290,9 @@ m68k_store_return_value (struct type *type, struct regcache *regcache,
   /* (TiEmu 20050408 Kevin Kofler) This is for BCD floats, returned in %d0-%d2. */
   else if (len == 10)
     {
-      regcache_raw_write (regcache, M68K_D0_REGNUM,
-			  (char *) valbuf);
-      regcache_raw_write (regcache, M68K_D1_REGNUM,
-			  (char *) valbuf + 4);
-      regcache_raw_write_part (regcache, M68K_D2_REGNUM, 2, 2,
-			       (char *) valbuf + 8);
+      regcache_raw_write (regcache, M68K_D0_REGNUM, valbuf);
+      regcache_raw_write (regcache, M68K_D1_REGNUM, valbuf + 4);
+      regcache_raw_write_part (regcache, M68K_D2_REGNUM, 2, 2, valbuf + 8);
     }
   else
     internal_error (__FILE__, __LINE__,
