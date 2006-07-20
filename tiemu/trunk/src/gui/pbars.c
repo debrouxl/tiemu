@@ -210,7 +210,7 @@ GLADE_CB void on_pbar_okbutton1_pressed(GtkButton * button,
 /*
 	Get list of counters to refresh
  */
-int tilp_pbar_type(CalcFnctsIdx op)
+int tilp_pbar_type(int op)
 {
 	extern CalcHandle*  calc_handle;
 	const char **array = calc_handle->calc->counters;
