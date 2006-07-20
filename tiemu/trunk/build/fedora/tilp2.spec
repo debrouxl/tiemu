@@ -10,7 +10,7 @@ Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:		%{name}-%{version}.tar.bz2
 Group:		Applications/Communications
 License:	GPL
-BuildRequires:	libticables2 = %{version}, libticonv = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.2.2, desktop-file-utils >= 0.10
+BuildRequires:	libticables2-devel = %{version}, libticonv-devel = %{version}, libtifiles2-devel = %{version}, libticalcs2-devel = %{version}, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.2.2, desktop-file-utils >= 0.10
 Requires:	libticables2 = %{version}, libticonv = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2
 Requires(post):	shared-mime-info, desktop-file-utils >= 0.9
 Requires(postun): shared-mime-info, desktop-file-utils >= 0.9
@@ -97,6 +97,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Libdir fixes for lib64 platforms.
+Use libtifoo-devel instead of libtifoo in BuildRequires.
 
 * Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant %%defattr at the end of %%files.

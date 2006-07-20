@@ -10,8 +10,9 @@ Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source:         %{name}-%{version}.tar.bz2
 Group:		System Environment/Libraries
 License:	GPL
-BuildRequires:	libticonv = %{version}, zlib-devel >= 1.2.2.2, glib2-devel >= 2.10.1
+BuildRequires:	libticonv-devel = %{version}, zlib-devel >= 1.2.2.2, glib2-devel >= 2.10.1
 Requires:	libticonv = %{version}, zlib >= 1.2.2.2, glib2 >= 2.10.1
+Provides:	%{name}-devel = %{version}-%{release}
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Summary: Ti File Format management
 %description
@@ -52,6 +53,8 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Libdir fixes for lib64 platforms.
+Add Provides for future -devel subpackage.
+Use libtifoo-devel instead of libtifoo in BuildRequires.
 
 * Thu Jun 29 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 No more macros.h.

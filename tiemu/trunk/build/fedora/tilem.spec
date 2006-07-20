@@ -12,7 +12,7 @@ Patch0:         tilem-ti85-keypad-fix.diff
 Patch1:         tilem-new-libticables2-fix.diff
 Group:		Applications/Emulators
 License:	LGPL, z80em License
-BuildRequires:	libticables2 >= 20050915, glib2-devel, gtk2-devel >= 2.4.0, imlib-devel, desktop-file-utils >= 0.10
+BuildRequires:	libticables2-devel >= 20050915, glib2-devel, gtk2-devel >= 2.4.0, imlib-devel, desktop-file-utils >= 0.10
 Requires(post):	desktop-file-utils >= 0.10
 Requires(postun): desktop-file-utils >= 0.10
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -74,8 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/lpg-tilem.desktop
 
 %changelog
-* Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+* Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org> 0.973-4
 Libdir fixes for lib64 platforms.
+Use libtifoo-devel instead of libtifoo in BuildRequires.
 
 * Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant %%defattr at the end of %%files.
