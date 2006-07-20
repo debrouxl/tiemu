@@ -118,7 +118,7 @@ sp_kde_finish (void)
 }
 
 char *
-sp_kde_get_open_filename (unsigned char *dir, unsigned char *filter, unsigned char *title)
+sp_kde_get_open_filename (gchar *dir, gchar *filter, gchar *title)
 {
 	QString fileName;
 
@@ -138,7 +138,7 @@ sp_kde_get_open_filename (unsigned char *dir, unsigned char *filter, unsigned ch
 }
 
 char **
-sp_kde_get_open_filenames (unsigned char *dir, unsigned char *filter, unsigned char *title)
+sp_kde_get_open_filenames (gchar *dir, gchar *filter, gchar *title)
 {
 	QStringList fileNames;
 	char **result, **p;
@@ -168,7 +168,7 @@ sp_kde_get_open_filenames (unsigned char *dir, unsigned char *filter, unsigned c
 }
 
 char *
-sp_kde_get_write_filename (unsigned char *dir, unsigned char *filter, unsigned char *title)
+sp_kde_get_write_filename (gchar *dir, gchar *filter, gchar *title)
 {
 	QString fileName;
 

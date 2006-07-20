@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,12 +37,6 @@
 
 #include "handles.h"
 #include "vat.h"
-
-#if 0
-#define printg	printf
-#else
-#define printg
-#endif
 
 typedef struct 
 {
@@ -91,21 +85,20 @@ static int valid_chars[256] = {
 };
 
 #define is_allowed_char(x)	(valid_chars[(x) & 0xff])
-#define is_alnum(c)			isalnum((char)(c))
+//#define is_alnum(c)			isalnum((char)(c))
 
 // Return TRUE if there is a NULL terminated string starting at *mem.
 static int is_varname(uint8_t *mem)
 {
-	static char buf[10];
 	int i=0;
 
 	//printf("%i %i %i %02x\n", is_alnum(mem[i]) ? 1 : 0, is_allowed_char(mem[i]), mem[i], mem[i]);
 
-	if(!is_alnum(mem[0]))
+	if(!is_allowed_char(mem[0]) || (mem[0] >= '0' && mem[0] <= '9'))
 		return 0;
 
 	for(i=1; i<8; i++)
-		if(!is_alnum(mem[i]) && mem[i])
+		if(!is_allowed_char(mem[i]) && mem[i])
 			return 0;
 
 	return !0;
@@ -113,7 +106,6 @@ static int is_varname(uint8_t *mem)
 
 static int get_folder_list_handle(void)
 {
-	int handle = -1;
 	int h, i;
 
 	// search for memory blocks which have a string at [5]
@@ -175,7 +167,6 @@ static int parse_vat_89(GNode *node_top)
 	// and actual number of folders 
 	nfolders = mem_rd_word(fa+2);
 	fa += 4;
-	printg("# folder: %i\n", nfolders);
 
 	// now, we read a list of SYM_ENTRY structs (list of folders)
 	for(i=0; i<nfolders; i++)
@@ -185,7 +176,6 @@ static int parse_vat_89(GNode *node_top)
 		// read struct
 		memcpy(&se, ti68k_get_real_address(fa + i * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
 		se.handle = GUINT16_FROM_BE(se.handle);
-		printg("folder name: <%s>\n", se.name);
 
 		// add node
 		vse = g_malloc0(sizeof(VatSymEntry));
@@ -198,7 +188,6 @@ static int parse_vat_89(GNode *node_top)
 		// skip max num and actual num of vars
 		nvars = mem_rd_word(va+2);
 		va += 4;
-		printg("# vars: %i\n", nvars);
 
 		for(j=0; j<nvars; j++)
 		{
@@ -207,7 +196,6 @@ static int parse_vat_89(GNode *node_top)
 			// read struct
 			memcpy(&se, ti68k_get_real_address(va + j * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
 			se.handle = GUINT16_FROM_BE(se.handle);
-			printg("var name: <%s>\n", se.name);
 
 			// add node
 			vse = g_malloc0(sizeof(VatSymEntry));
@@ -216,12 +204,6 @@ static int parse_vat_89(GNode *node_top)
 
 			// handle: variable content
 			heap_get_block_addr_and_size(se.handle, &pa, &ps);
-			{
-				uint16_t varsize = mem_rd_word(pa);
-				uint8_t vartype = mem_rd_byte(pa + varsize + 1);
-
-				printg("var size = %i, var type = %02x\n", varsize, vartype);
-			}		
 		}
 	}
 
@@ -259,7 +241,6 @@ static int parse_vat_92(GNode *node_top)
 	// and actual number of folders 
 	nfolders = mem_rd_word(fa+2);
 	fa += 4;
-	printg("# folder: %i\n", nfolders);
 
 	// now, we read a list of SYM_ENTRY structs (list of folders)
 	for(i=0; i<nfolders; i++)
@@ -269,7 +250,6 @@ static int parse_vat_92(GNode *node_top)
 		// read struct
 		memcpy(&se, ti68k_get_real_address(fa + i * sizeof(TI92_SYM_ENTRY)), sizeof(TI92_SYM_ENTRY));
 		se.handle = GUINT16_FROM_BE(se.handle);
-		printg("folder name: <%s>\n", se.name);
 
 		// add node
 		vse = g_malloc0(sizeof(VatSymEntry));
@@ -282,7 +262,6 @@ static int parse_vat_92(GNode *node_top)
 		// skip max num and actual num of vars
 		nvars = mem_rd_word(va+2);
 		va += 4;
-		printg("# vars: %i\n", nvars);	
 
 		for(j=0; j<nvars; j++)
 		{
@@ -291,7 +270,6 @@ static int parse_vat_92(GNode *node_top)
 			// read struct
 			memcpy(&se, ti68k_get_real_address(va + j * sizeof(TI92_SYM_ENTRY)), sizeof(TI92_SYM_ENTRY));
 			se.handle = GUINT16_FROM_BE(se.handle);
-			printg("var name: <%s>\n", se.name);
 
 			// add node
 			vse = g_malloc0(sizeof(VatSymEntry));
@@ -300,12 +278,6 @@ static int parse_vat_92(GNode *node_top)
 
 			// handle: variable content
 			heap_get_block_addr_and_size(se.handle, &pa, &ps);
-			{
-				uint16_t varsize = mem_rd_word(pa);
-				uint8_t vartype = mem_rd_byte(pa + varsize + 1);
-
-				printg("var size = %i, var type = %02x\n", varsize, vartype);
-			}		
 		}
 	}
 
@@ -361,7 +333,6 @@ static int sym_find_handle_89(const char *dirname, const char *filename)
 	// and actual number of folders 
 	nfolders = mem_rd_word(fa+2);
 	fa += 4;
-	printg("# folder: %i\n", nfolders);
 
 	// now, we read a list of SYM_ENTRY structs (list of folders)
 	for(i=0; i<nfolders; i++)
@@ -371,7 +342,6 @@ static int sym_find_handle_89(const char *dirname, const char *filename)
 		// read struct
 		memcpy(&se, ti68k_get_real_address(fa + i * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
 		se.handle = GUINT16_FROM_BE(se.handle);
-		printg("folder name: <%s>\n", se.name);
 
 		if (strncmp (se.name, dirname, 8)) continue;
 
@@ -381,7 +351,6 @@ static int sym_find_handle_89(const char *dirname, const char *filename)
 		// skip max num and actual num of vars
 		nvars = mem_rd_word(va+2);
 		va += 4;
-		printg("# vars: %i\n", nvars);
 
 		for(j=0; j<nvars; j++)
 		{
@@ -390,7 +359,6 @@ static int sym_find_handle_89(const char *dirname, const char *filename)
 			// read struct
 			memcpy(&se, ti68k_get_real_address(va + j * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
 			se.handle = GUINT16_FROM_BE(se.handle);
-			printg("var name: <%s>\n", se.name);
 
 			// add node
 			if (strncmp (se.name, filename, 8)) continue;
@@ -419,7 +387,6 @@ static int sym_find_handle_92(const char *dirname, const char *filename)
 	// and actual number of folders 
 	nfolders = mem_rd_word(fa+2);
 	fa += 4;
-	printg("# folder: %i\n", nfolders);
 
 	// now, we read a list of SYM_ENTRY structs (list of folders)
 	for(i=0; i<nfolders; i++)
@@ -429,7 +396,6 @@ static int sym_find_handle_92(const char *dirname, const char *filename)
 		// read struct
 		memcpy(&se, ti68k_get_real_address(fa + i * sizeof(TI92_SYM_ENTRY)), sizeof(TI92_SYM_ENTRY));
 		se.handle = GUINT16_FROM_BE(se.handle);
-		printg("folder name: <%s>\n", se.name);
 
 		if (strncmp (se.name, dirname, 8)) continue;
 
@@ -439,7 +405,6 @@ static int sym_find_handle_92(const char *dirname, const char *filename)
 		// skip max num and actual num of vars
 		nvars = mem_rd_word(va+2);
 		va += 4;
-		printg("# vars: %i\n", nvars);	
 
 		for(j=0; j<nvars; j++)
 		{
@@ -448,7 +413,6 @@ static int sym_find_handle_92(const char *dirname, const char *filename)
 			// read struct
 			memcpy(&se, ti68k_get_real_address(va + j * sizeof(TI92_SYM_ENTRY)), sizeof(TI92_SYM_ENTRY));
 			se.handle = GUINT16_FROM_BE(se.handle);
-			printg("var name: <%s>\n", se.name);
 
 			// add node
 			if (strncmp (se.name, filename, 8)) continue;

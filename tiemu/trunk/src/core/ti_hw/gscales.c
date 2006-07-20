@@ -6,7 +6,7 @@
  *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
  *  Copyright (c) 2003-2004, Romain Liévin
- *  Copyright (c) 2005, Kevin Kofler
+ *  Copyright (c) 2005-2006, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -64,10 +64,9 @@ static void process_address(uint32_t plane_addr)
 	int lcd_exptime[3] = {0, 0, 0};
 	int lcd_apparitions[3] = {0, 0, 0};
 	int lcd_first_apparition[3] = {0, 0, 0};
-	int cycle_start, cycle_end; // cycle = [cycle_start, cycle_end[ (semi-open interval)
+	int cycle_start = 0, cycle_end; // cycle = [cycle_start, cycle_end[ (semi-open interval)
 	static int cnt;
 	static int already_reset;
-	static int t;
 	uint32_t tmp;
 
 	// Detect plane switches and sync on them
@@ -119,7 +118,9 @@ static void process_address(uint32_t plane_addr)
 	if(!(cnt % UPDATE_PLANES))
 	{
 		int np, i, buffer_offset, ngp=1;
+#if 0
 		static int old_ngp=1;
+#endif /* 0 */
 
 		already_reset = 0;
 		lcd_last_plane_count = 0;
@@ -305,7 +306,7 @@ static void process_address(uint32_t plane_addr)
 		if(old_ngp != ngp)
 			printf("Detected %i planes !\n", ngp);
 		old_ngp = ngp;
-#endif
+#endif /* 0 */
 
 		// now, determine number of grayscales (kevin)
 		if(ngp == 1)

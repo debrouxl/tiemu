@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -223,7 +223,7 @@ int hw_m68k_run(int n, unsigned maxcycles)
 		// hardware protection
 		if(params.hw_protect)
 		{
-			if(bkpts.id = hwp_fetch(m68k_getpc()))
+			if((bkpts.id = hwp_fetch(m68k_getpc())))
 			{
 				bkpts.type = BK_TYPE_PROTECT;
 				return DBG_HWPV;
@@ -241,6 +241,7 @@ int hw_m68k_run(int n, unsigned maxcycles)
 		lcd_hook_hw2(0);
 
 #ifndef NO_GDB
+		extern void sim_trace_one(int);
 		if (trace)
 			sim_trace_one(m68k_getpc());
 #endif

@@ -29,6 +29,7 @@
 // It is a good idea to double-check these definitions on every new system
 // you compile on.
 
+#define _GNU_SOURCE
 #include <limits.h>
 
 // Make sure that the character types take exactly 1 byte.

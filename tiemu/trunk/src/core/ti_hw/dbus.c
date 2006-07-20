@@ -221,12 +221,12 @@ static uint8_t lp_getbyte(void)
 static int lp_checkread(void)
 {
 	int err = 0;
-	int status = 0;
+	CableStatus status = 0;
 
 	if(avail)
 	    return 0;
 
-	err = ticables_cable_check(cable_handle, (CableStatus*)&status);
+	err = ticables_cable_check(cable_handle, &status);
 	if(err)
 	{
 	    io_bit_set(0x0d,7);		// error

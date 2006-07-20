@@ -278,9 +278,13 @@ void init_m68k (void)
 }
 
 struct regstruct regs, lastint_regs;
+#if 0
 static struct regstruct regs_backup[16];
 static int backup_pointer = 0;
+#endif /* 0 */
+#ifdef NO_GDB
 static long int m68kpc_offset;
+#endif /* NO_GDB */
 int lastint_no;
 
 #define get_ibyte_1(o) get_byte(regs.pc + (regs.pc_p - regs.pc_oldp) + (o) + 1)
@@ -481,6 +485,7 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 }
 #endif /* NO_GDB */
 
+#if 0
 /* The plan is that this will take over the job of exception 3 handling -
  * the CPU emulation functions will just do a longjmp to m68k_go whenever
  * they hit an odd address. */
@@ -492,7 +497,6 @@ static int verify_ea (int reg, amodes mode, wordsizes size, uae_u32 *val)
     int r;
     uae_u32 dispreg;
     uaecptr addr;
-    uae_s32 offset = 0;
 
     switch (mode){
      case Dreg:
@@ -606,6 +610,7 @@ static int verify_ea (int reg, amodes mode, wordsizes size, uae_u32 *val)
     last_instructionaccess_for_exception_3 = 0;
     return 0;
 }
+#endif /* 0 */
 
 uae_u32 get_disp_ea_020 (uae_u32 base, uae_u32 dp)
 {
@@ -1102,7 +1107,7 @@ void m68k_divl (uae_u32 opcode, uae_u32 src, uae_u16 extra, uaecptr oldpc)
 	uae_s32 lo = (uae_s32)m68k_dreg(regs, (extra >> 12) & 7);
 	uae_s32 hi = lo < 0 ? -1 : 0;
 	uae_s32 save_high;
-	uae_u32 quot, rem;
+	uae_u32 quot = 0, rem = 0;
 	uae_u32 sign;
 
 	if (extra & 0x400) {
@@ -1261,9 +1266,11 @@ void m68k_mull (uae_u32 opcode, uae_u32 src, uae_u16 extra)
     }
 #endif
 }
+#ifdef NO_GDB
 static char* ccnames[] =
 { "T ","F ","HI","LS","CC","CS","NE","EQ",
   "VC","VS","PL","MI","GE","LT","GT","LE" };
+#endif /* NO_GDB */
 
 void m68k_reset (void)
 {
@@ -1315,9 +1322,9 @@ void m68k_reset (void)
 
 unsigned long REGPARAM2 op_illg (uae_u32 opcode)
 {
+#if 0
     uaecptr pc = m68k_getpc ();
     
-#if 0
     if (cloanto_rom && (opcode & 0xF100) == 0x7100) {
 	m68k_dreg (regs, (opcode >> 9) & 7) = (uae_s8)(opcode & 0xFF);
 	m68k_incpc (2);
@@ -1398,6 +1405,7 @@ void mmu_op(uae_u32 opcode, uae_u16 extra)
 	op_illg (opcode);
 }
 
+#if 0
 static uaecptr last_trace_ad = 0;
 
 static void do_trace (void)
@@ -1435,7 +1443,6 @@ static void do_trace (void)
     }
 }
 
-#if 0
 static int do_specialties (int cycles)
 {
     if (regs.spcflags & SPCFLAG_COPPER)
@@ -1620,7 +1627,6 @@ void m68k_go (int may_quit)
     }
     in_m68k_go--;
 }
-#endif /* 0 */
 
 static void m68k_verify (uaecptr addr, uaecptr *nextpc)
 {
@@ -1649,6 +1655,7 @@ static void m68k_verify (uaecptr addr, uaecptr *nextpc)
 	}
     }
 }
+#endif /* 0 */
 
 #ifdef NO_GDB
 int DasmFPU(uint16_t code, char *buf);

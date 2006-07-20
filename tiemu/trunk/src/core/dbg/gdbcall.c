@@ -29,20 +29,23 @@
 #include "gdbcall.h"
 
 #include <stdio.h>
+#include <string.h>
 
-/* These come from GDB's defs.h, which I don't want to include, because it
-   pulls in many other headers from directories not even in our include
-   path. */
-#define RETURN_MASK_ALL -1
+/* These come from GDB's exceptions.h, which I don't want to include, because it
+   pulls in ui-out.h, which in turn won't compile without many other headers
+   from directories not even in our include path. */
+#define RETURN_MASK_ALL -2
 typedef int return_mask;
-typedef void (catch_command_errors_ftype) (const char *, int);
-extern int catch_command_errors (catch_command_errors_ftype *func, const char *command, int from_tty, return_mask);
+typedef void (catch_command_errors_ftype) (char *, int);
+extern int catch_command_errors (catch_command_errors_ftype *func, char *command, int from_tty, return_mask);
+struct ui_file;
+struct cmd_list_element;
 #include "../gdb/gdb/top.h"
 
 /* This is for Insight. */
 extern int No_Update;
 
-static void gdbcall_exec_command(const char *command_str)
+static void gdbcall_exec_command(char *command_str)
 {
   No_Update = 0; /* Tell Insight to refresh itself. */
   catch_command_errors (execute_command, command_str, 0, RETURN_MASK_ALL); 
@@ -50,12 +53,14 @@ static void gdbcall_exec_command(const char *command_str)
 
 void gdbcall_run(void)
 {
-  gdbcall_exec_command("run");
+  char command[4]="run";
+  gdbcall_exec_command(command);
 }
 
 void gdbcall_continue(void)
 {
-  gdbcall_exec_command("c");
+  char command[2]="c";
+  gdbcall_exec_command(command);
 }
 
 void gdb_add_symbol_file(const char *filename, unsigned address)

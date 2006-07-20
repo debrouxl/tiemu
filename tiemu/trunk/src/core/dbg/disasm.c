@@ -40,6 +40,7 @@
 /* GDB enabled: use the GDB disassembler */
 
 #include "../gdb/include/dis-asm.h"
+struct gdbarch;
 struct ui_file;
 struct disassemble_info gdb_disassemble_info (struct gdbarch *gdbarch, struct ui_file *file);
 int print_insn_m68k (bfd_vma memaddr, disassemble_info *info);
