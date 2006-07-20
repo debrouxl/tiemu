@@ -24,7 +24,7 @@ TiLP is a TI<->PC linking program
 %setup -n tilp
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --disable-nls
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --mandir=%{_mandir} --disable-nls
 make
 
 %install
@@ -72,7 +72,7 @@ cat >${RPM_BUILD_ROOT}%{_datadir}/mime/packages/tilp.xml <<EOF
 </mime-info>
 EOF
 cd ${RPM_BUILD_ROOT}/usr/bin && ln -s tilp-2 tilp
-cd ${RPM_BUILD_ROOT}/usr/man/man1 && ln -s tilp-2.1 tilp.1
+cd ${RPM_BUILD_ROOT}%{_mandir}/man1 && ln -s tilp-2.1 tilp.1
 
 %post
 update-mime-database %{_datadir}/mime > /dev/null 2>&1 || :
@@ -89,7 +89,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 /usr/bin/tilp
 /usr/bin/tilp-2
-/usr/man/man1/tilp*
+%{_mandir}/man1/tilp*
 /usr/share/tilp2
 %{_datadir}/applications/lpg-tilp.desktop
 %{_datadir}/mime/packages/tilp.xml
@@ -98,6 +98,8 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Libdir fixes for lib64 platforms.
 Use libtifoo-devel instead of libtifoo in BuildRequires.
+Pass mandir explicitly so the manfile directory doesn't depend on the autoconf
+version used to generate configure.
 
 * Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant %%defattr at the end of %%files.
