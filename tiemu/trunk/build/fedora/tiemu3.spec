@@ -30,8 +30,8 @@ sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' s
 sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/core/gdb/itcl/itcl/configure
 sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/core/gdb/itcl/itk/configure.in
 sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/core/gdb/itcl/itk/configure
-export extra_ldflags="-Wl,-rpath,/usr/lib/itcl3.3 -Wl,-rpath,/usr/lib/itk3.3"
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --disable-nls --enable-shared-tcl-tk --enable-shared-itcl
+export extra_ldflags="-Wl,-rpath,%{_libdir}/itcl3.3 -Wl,-rpath,%{_libdir}/itk3.3"
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --disable-nls --enable-shared-tcl-tk --enable-shared-itcl
 make
 
 %install
@@ -68,7 +68,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 /usr/bin/tiemu
-/usr/lib/insight*
+%{_libdir}/insight*
 /usr/man/man1/tiemu*
 /usr/share/insight*
 /usr/share/redhat/gui
@@ -76,6 +76,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/lpg-tiemu.desktop
 
 %changelog
+* Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Libdir fixes for lib64 platforms.
+
 * Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant %%defattr at the end of %%files.
 

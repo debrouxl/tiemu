@@ -31,7 +31,7 @@ patch -l src/tilem/keypad.c <%{PATCH0}
 patch -l src/tilem/core/dep/link.h <%{PATCH1}
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --with-ticables
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --with-ticables
 make
 
 %install
@@ -74,6 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/lpg-tilem.desktop
 
 %changelog
+* Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Libdir fixes for lib64 platforms.
+
 * Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant %%defattr at the end of %%files.
 

@@ -21,14 +21,14 @@ Library for handling TI link cables
 %setup -n libticables
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --disable-nls
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --disable-nls
 make
 
 %install
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-rm -f $RPM_BUILD_ROOT/usr/lib/libticables2.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/libticables2.la
 mkdir -p $RPM_BUILD_ROOT/etc/udev/rules.d
 cat >$RPM_BUILD_ROOT/etc/udev/rules.d/60-libticables.rules <<EOF1
 # This file was installed by the libticables2 Fedora package.
@@ -65,12 +65,15 @@ rm -rf $RPM_BUILD_ROOT
 /usr/include/tilp2/export1.h
 /usr/include/tilp2/ticables.h
 /usr/include/tilp2/timeout.h
-/usr/lib/libticables2.so*
-/usr/lib/pkgconfig/ticables2.pc
+%{_libdir}/libticables2.so*
+%{_libdir}/pkgconfig/ticables2.pc
 /etc/udev/rules.d/60-libticables.rules
 /etc/security/console.perms.d/60-libticables.perms
 
 %changelog
+* Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Libdir fixes for lib64 platforms.
+
 * Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant %%defattr at the end of %%files.
 

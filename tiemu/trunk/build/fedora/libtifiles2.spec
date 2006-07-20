@@ -21,14 +21,14 @@ Ti File Format management
 %setup -n libtifiles
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --disable-nls
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --disable-nls
 make
 
 %install
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-rm -f $RPM_BUILD_ROOT/usr/lib/libtifiles2.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/libtifiles2.la
 
 %post
 /sbin/ldconfig
@@ -46,10 +46,13 @@ rm -rf $RPM_BUILD_ROOT
 /usr/include/tilp2/files9x.h
 /usr/include/tilp2/tifiles.h
 /usr/include/tilp2/types*.h
-/usr/lib/libtifiles2.so*
-/usr/lib/pkgconfig/tifiles2.pc
+%{_libdir}/libtifiles2.so*
+%{_libdir}/pkgconfig/tifiles2.pc
 
 %changelog
+* Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Libdir fixes for lib64 platforms.
+
 * Thu Jun 29 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 No more macros.h.
 

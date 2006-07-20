@@ -24,7 +24,7 @@ TiLP is a TI<->PC linking program
 %setup -n tilp
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --disable-nls
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --disable-nls
 make
 
 %install
@@ -95,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/mime/packages/tilp.xml
 
 %changelog
+* Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Libdir fixes for lib64 platforms.
+
 * Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant %%defattr at the end of %%files.
 

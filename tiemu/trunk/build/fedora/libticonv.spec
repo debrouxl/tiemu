@@ -21,14 +21,14 @@ Library for handling TI link cables
 %setup -n libticonv
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --disable-nls
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --disable-nls
 make
 
 %install
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-rm -f $RPM_BUILD_ROOT/usr/lib/libticonv.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/libticonv.la
 
 %post
 /sbin/ldconfig
@@ -44,10 +44,13 @@ rm -rf $RPM_BUILD_ROOT
 /usr/include/tilp2/charset.h
 /usr/include/tilp2/export4.h
 /usr/include/tilp2/ticonv.h
-/usr/lib/libticonv.so*
-/usr/lib/pkgconfig/ticonv.pc
+%{_libdir}/libticonv.so*
+%{_libdir}/pkgconfig/ticonv.pc
 
 %changelog
+* Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Libdir fixes for lib64 platforms.
+
 * Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant %%defattr at the end of %%files.
 

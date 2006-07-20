@@ -21,14 +21,14 @@ Library for handling TI calculators through a common API
 %setup -n libticalcs
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --disable-nls
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --disable-nls
 make
 
 %install
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-rm -f $RPM_BUILD_ROOT/usr/lib/libticalcs2.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/libticalcs2.la
 
 %post
 /sbin/ldconfig
@@ -48,10 +48,13 @@ rm -rf $RPM_BUILD_ROOT
 /usr/include/tilp2/keys92p.h
 /usr/include/tilp2/ticalcs.h
 /usr/include/tilp2/tnode.h
-/usr/lib/libticalcs2.so*
-/usr/lib/pkgconfig/ticalcs2.pc
+%{_libdir}/libticalcs2.so*
+%{_libdir}/pkgconfig/ticalcs2.pc
 
 %changelog
+* Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Libdir fixes for lib64 platforms.
+
 * Fri Jun 16 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant %%defattr at the end of %%files.
 
