@@ -228,8 +228,8 @@ gint display_send_files_dbox()
 	for(ptr = filenames, l = 0; *ptr; ptr++, l++);
 	for(ptr = filenames, i = 0; *ptr; ptr++, i++)
 	{
-		if(!tifiles_file_is_ti(*ptr) || !tifiles_calc_is_ti9x(tifiles_file_get_model(*ptr)) &&
-			!tifiles_file_is_tigroup(*ptr)) 
+		if(!tifiles_file_is_ti(*ptr) || (!tifiles_calc_is_ti9x(tifiles_file_get_model(*ptr)) &&
+			!tifiles_file_is_tigroup(*ptr))) 
 		{
 			msg_box(_("Error"), _("This file is not a valid TI file."));
 			g_strfreev(filenames);
@@ -316,7 +316,6 @@ gint display_debug_dbox(void)
 {
 	const gchar *filename;
 	const gchar *ext;
-	int err;
 	static gchar *folder = NULL;
 
     // set mask
@@ -424,7 +423,7 @@ gint display_import_romversion_dbox(void)
 	}
 	else if(ti68k_is_a_tib_file(filename))
 	{
-		IMG_INFO infos = { 0 };
+		IMG_INFO infos = {};
 		int err = ti68k_get_tib_infos(filename, &infos, 0);
 		int hw_type = HW2;
 

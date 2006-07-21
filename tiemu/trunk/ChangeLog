@@ -14,7 +14,7 @@ SubVersion: $Id$
 	- [kevin] $2153: fixed warnings in TiEmu patches to GDB
 	- [kevin] $2154: fixed warnings, fixed UAE to detect 64-bit integer types under glibc, fixed is_varname
 	- [kevin] $2155: fixed warnings in the assembly-level debugger
-	- [kevin] $2155: fixed more warnings and a few file descriptor leaks
+	- [kevin] $2156: fixed more warnings and a few file descriptor leaks
 
 - 10/05/2006, version 2.81:
 	- [roms] $2059: renamed 'code/source' window into 'disassembly'
