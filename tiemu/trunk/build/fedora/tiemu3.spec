@@ -33,6 +33,8 @@ sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' s
 export extra_ldflags="-Wl,-rpath,%{_libdir}/itcl3.3 -Wl,-rpath,%{_libdir}/itk3.3"
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --mandir=%{_mandir} --disable-nls --enable-shared-tcl-tk --enable-shared-itcl
 make
+# don't package unneeded empty directory
+rmdir $RPM_BUILD_ROOT%{_libdir}/insight1.0
 
 %install
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
@@ -68,7 +70,6 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 /usr/bin/tiemu
-%{_libdir}/insight*
 %{_mandir}/man1/tiemu*
 /usr/share/insight*
 /usr/share/redhat/gui
@@ -76,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/lpg-tiemu.desktop
 
 %changelog
+* Fri Jul 21 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Don't package unneeded empty directory.
+
 * Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Libdir fixes for lib64 platforms.
 Use libtifoo-devel instead of libtifoo in BuildRequires.
