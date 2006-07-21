@@ -1,4 +1,4 @@
-<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+﻿<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
 
 <glade-interface>
@@ -269,7 +269,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Med LCD update</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">True</property>
+	      <property name="active">False</property>
 	      <property name="group">high_lcd_update1</property>
 	      <signal name="activate" handler="on_med_lcd_update1_activate" last_modification_time="Wed, 11 May 2005 14:21:37 GMT"/>
 	    </widget>
@@ -280,7 +280,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Low LCD update</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">True</property>
+	      <property name="active">False</property>
 	      <property name="group">high_lcd_update1</property>
 	      <signal name="activate" handler="on_low_lcd_update1_activate" last_modification_time="Wed, 11 May 2005 14:16:04 GMT"/>
 	    </widget>
@@ -307,7 +307,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Large view (x2)</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">True</property>
+	      <property name="active">False</property>
 	      <property name="group">normal_view1</property>
 	      <signal name="activate" handler="on_large_view1_activate" last_modification_time="Fri, 14 May 2004 15:28:18 GMT"/>
 	    </widget>
@@ -318,7 +318,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Full screen</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">True</property>
+	      <property name="active">False</property>
 	      <property name="group">normal_view1</property>
 	      <signal name="activate" handler="on_full_view1_activate"/>
 	    </widget>
@@ -329,7 +329,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Custom view</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">True</property>
+	      <property name="active">False</property>
 	      <property name="group">normal_view1</property>
 	      <signal name="activate" handler="on_custom_view1_activate" last_modification_time="Sun, 05 Jun 2005 08:47:19 GMT"/>
 	    </widget>
@@ -440,7 +440,7 @@
 	      <accelerator key="H" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image88">
+		<widget class="GtkImage" id="image86">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-help</property>
 		  <property name="icon_size">1</property>
@@ -463,7 +463,7 @@
 	      <accelerator key="M" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image89">
+		<widget class="GtkImage" id="image87">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-index</property>
 		  <property name="icon_size">1</property>
@@ -554,7 +554,7 @@
 	      <signal name="activate" handler="on_bugreport1_activate" last_modification_time="Sun, 20 Feb 2005 17:58:57 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image90">
+		<widget class="GtkImage" id="image88">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-execute</property>
 		  <property name="icon_size">1</property>
