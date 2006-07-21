@@ -16,11 +16,6 @@ kde       = @kde@
 
 DESTDIR   =
 
-ifneq (,$(findstring NO_GDB,$(CFLAGS)))
-	NAME = tiemu-3
-else
-	NAME = tiemu
-endif
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	RESFILE = tiemu-rc.o
 	LDFLAGS += -lcomdlg32 -lole32 -loleaut32 -luuid -lstdc++
@@ -299,7 +294,7 @@ distdir: clean
 
 install: tiemu$(EXEEXT)
 	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
-	$(INSTALL) -m755 tiemu$(EXEEXT) $(DESTDIR)${prefix}/bin/$(NAME)$(EXEEXT)
+	$(INSTALL) -m755 tiemu$(EXEEXT) $(DESTDIR)${prefix}/bin/
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	$(INSTALL) -m755 com_ole/tiemups.dll $(DESTDIR)${prefix}/bin/
 	$(INSTALL) -m755 com_ole/oleaut.tlb $(DESTDIR)${prefix}/bin/tiemu.tlb
