@@ -35,16 +35,19 @@
 
 // Prevent infinite loop due to Qt->GTK->Qt calls
 static bool gtk_event_loop_called_from_qt = false;
+static bool SPKDEModal = FALSE;
 
 void
 SPKDEBridge::EventHook (void) {
-	int cdown = 0;
-	gtk_event_loop_called_from_qt = true;
-	while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
+	if (SPKDEModal) {
+		int cdown = 0;
+		gtk_event_loop_called_from_qt = true;
+		while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
+			gtk_main_iteration_do (FALSE);
+		}
 		gtk_main_iteration_do (FALSE);
+		gtk_event_loop_called_from_qt = false;
 	}
-	gtk_main_iteration_do (FALSE);
-	gtk_event_loop_called_from_qt = false;
 }
 
 void
@@ -62,7 +65,6 @@ static KApplication *KDESodipodi = NULL;
 static KAboutData *KDEAbout = NULL;
 static SPKDEBridge *Bridge = NULL;
 static TiEmuDCOP *DCOPInterface = NULL;
-static bool SPKDEModal = FALSE;
 
 static void
 sp_kde_gdk_event_handler (GdkEvent *event)

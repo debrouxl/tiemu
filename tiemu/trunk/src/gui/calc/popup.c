@@ -583,6 +583,9 @@ GtkWidget* display_popup_menu(void)
 #ifndef NO_GDB
 		data = glade_xml_get_widget(xml, "send_file_to_tiemu1");
 		gtk_widget_set_sensitive(data, FALSE);
+
+		data = glade_xml_get_widget(xml, "debug_file_with_tiemu1");
+		gtk_widget_set_sensitive(data, FALSE);
 #endif
 
 		data = glade_xml_get_widget(xml, "recv_file_to_tiemu1");
@@ -632,8 +635,9 @@ static void go_to_bookmark(const char *link)
 	// * /usr/bin/sensible-browser (Debian's browser script)
 	// * /usr/bin/htmlview (old RHL/Fedora default browser script)
 	// * /usr/bin/firefox (Mozilla Firefox)
-	// * /usr/bin/mozilla (Mozilla Seamonkey)
+	// * /usr/bin/seamonkey (Seamonkey)
 	// * /usr/bin/konqueror (Konqueror)
+	// * /usr/bin/mozilla (old Mozilla Suite)
 	//
 	gboolean result;
 	char *apps[] = { 
@@ -641,8 +645,9 @@ static void go_to_bookmark(const char *link)
 			"/usr/bin/sensible-browser",
 			"/usr/bin/htmlview",
 			"/usr/bin/firefox",
-			"/usr/bin/mozilla",
+			"/usr/bin/seamonkey",
 			"/usr/bin/konqueror",
+			"/usr/bin/mozilla",
 	};
 	gint i, n;
 
@@ -664,7 +669,7 @@ static void go_to_bookmark(const char *link)
 
 	if (i == n) 
 	{
-		msg_box("Error", "Spawn error: do you have Mozilla installed ?");
+		msg_box("Error", "Spawn error: do you have Firefox installed ?");
 	} 
 #endif
 	else 
