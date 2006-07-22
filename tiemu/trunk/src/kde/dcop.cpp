@@ -130,8 +130,8 @@ bool TiEmuDCOP::execute_command(QString command)
 {
   if (img_loaded) {
     bool result;
-    command.prepend('\f');
-    command+='\r';
+    command.prepend("\f\r\r");
+    command+='\n';
 #ifdef __GNUC__
     char ti[command.length()+1];
 	ticonv_charset_utf16_to_ti_s(CALC_TI92, command.ucs2(), ti);
