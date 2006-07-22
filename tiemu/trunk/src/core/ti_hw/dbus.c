@@ -508,11 +508,11 @@ send_ti_file_exit:
 int ti68k_linkport_ready(void)
 {
 	int ret;
+	// Some OS versions lock up if they get a readiness probe too early in the boot cycle.
+	hw_m68k_run(1250000,5000000);
 	// Block both sending and receiving.
 	if (sip || rip)
 		return 0;
-	// Some OS versions lock up if they get a readiness probe too early in the boot cycle.
-	hw_m68k_run(1250000,5000000);
 	sip = rip = 1;
 	ret = ticalcs_calc_isready(calc_handle);
 
