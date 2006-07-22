@@ -185,7 +185,7 @@ STDMETHODIMP TiEmuOLE::emulated_os_version(BSTR *ret)
 
 STDMETHODIMP TiEmuOLE::ready_for_transfers(VARIANT_BOOL *ret)
 {
-  RETURN((img_loaded && !engine_is_stopped()));
+  RETURN((img_loaded && !engine_is_stopped() && ti68k_linkport_ready()));
 }
 
 STDMETHODIMP TiEmuOLE::send_file(BSTR filename, VARIANT_BOOL *ret)

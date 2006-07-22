@@ -74,7 +74,7 @@ QString TiEmuDCOP::emulated_os_version()
 
 bool TiEmuDCOP::ready_for_transfers()
 {
-  return (img_loaded && !engine_is_stopped());
+  return (img_loaded && !engine_is_stopped() && ti68k_linkport_ready());
 }
 
 bool TiEmuDCOP::send_file(QString filename)

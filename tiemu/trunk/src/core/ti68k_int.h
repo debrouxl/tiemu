@@ -49,6 +49,7 @@ int ti68k_exit(void);
 unsigned int ti68k_get_cycle_count(int reset, unsigned int *diff);
 
 // Link
+int ti68k_linkport_ready(void);
 int ti68k_linkport_send_file(const char *filename);
 int ti68k_linkport_unconfigure(void);
 int ti68k_linkport_reconfigure(void);

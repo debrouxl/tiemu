@@ -39,6 +39,7 @@
 #include "ports.h"
 #include "dbus.h"
 #include "m68k.h"
+#include "engine.h"
 
 #include "tilibs.h"
 #include "ti68k_err.h"
@@ -503,6 +504,41 @@ send_ti_file_exit:
 
 	return 0;
 }
+
+int ti68k_linkport_ready(void)
+{
+	int ret;
+	// Block both sending and receiving.
+	if (sip || rip)
+		return 0;
+	// Some OS versions lock up if they get a readiness probe too early in the boot cycle.
+	hw_m68k_run(1250000,5000000);
+	sip = rip = 1;
+	ret = ticalcs_calc_isready(calc_handle);
+
+	if(ret)
+	{
+		// Try getting the calculator ready.
+		// FIXME: This won't work immediately, it will at first return FALSE a few times and you'll have to retry.
+		// However, it should be enough for KTIGCC to work.
+		engine_stop();
+		hw_m68k_irq(6);
+		while (ti68k_debug_is_supervisor())
+			hw_m68k_run(1,0);
+		engine_start();
+
+		ti68k_kbd_push_chars("\f");
+
+		hw_m68k_run(1250000,5000000);
+
+		ret = ticalcs_calc_isready(calc_handle);
+		hw_m68k_run(1250000,5000000);
+	}
+
+	sip = rip = 0;
+	return !ret;
+}
+
 
 int display_recv_files_dbox(const char *src, const char *dst);
 

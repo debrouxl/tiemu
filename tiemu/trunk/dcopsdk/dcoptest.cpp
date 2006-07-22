@@ -61,10 +61,11 @@ int main(int argc, char **argv)
     if (!tiemuDCOP->ok())
       {delete tiemuDCOP;dcopclient.detach();puts("DCOP error (#2).");return 2;}
   } while (!ready);
-  sleep(10); // give the emulated calculator time to react
+#if 0 // This shouldn't be ready with the new ready_for_transfers().
   if (!tiemuDCOP->turn_calc_on() || !tiemuDCOP->ok())
     {delete tiemuDCOP;dcopclient.detach();puts("DCOP error (#3).");return 3;}
   sleep(3); // give the emulated calculator time to react
+#endif
   if (!tiemuDCOP->execute_command(QString("2+3")) || !tiemuDCOP->ok())
     {delete tiemuDCOP;dcopclient.detach();puts("DCOP error (#4).");return 4;}
   delete tiemuDCOP;
