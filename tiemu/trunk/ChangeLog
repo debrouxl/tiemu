@@ -22,6 +22,8 @@ SubVersion: $Id$
 	- [kevin] $2163: clear command line in execute_command
 	- [kevin] $2164: changed DCOP/OLE ready_for_transfers to really check if the emulated calculator is ready
 	- [kevin] $2166: fixed FlashROM identifiers so the HW4 8 MB FlashROM gets detected properly by AMS 3.10
+	- [kevin] $2168: fixed recfile crash when receiving something which is not a valid variable
+	- [kevin] $2168: fixed ti68k_linkport_ready to reset the link so TiEmu doesn't try to receive a "file" sometimes
 
 - 10/05/2006, version 2.81:
 	- [roms] $2059: renamed 'code/source' window into 'disassembly'

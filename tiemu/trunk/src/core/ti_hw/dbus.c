@@ -508,16 +508,24 @@ send_ti_file_exit:
 int ti68k_linkport_ready(void)
 {
 	int ret;
+	int pedrom;
 	// Some OS versions lock up if they get a readiness probe too early in the boot cycle.
 	hw_m68k_run(1250000,5000000);
-	// Block both sending and receiving.
+	// Hack: PedroM doesn't like resetting the link flag here, so handle it specially.
+	//       Test this now because this might not be set yet if the OS hasn't booted up yet.
+	pedrom = (mem_rd_word(0x32) == (('R'<<8)+'O'));
+	// Block sending and receiving.
 	if (sip || rip)
 		return 0;
-	sip = rip = 1;
+	sip = 1;
 	ret = ticalcs_calc_isready(calc_handle);
 
 	if(ret)
 	{
+		if (!pedrom)
+			io_bit_set(0x0d,7);	// SLE=1
+		df_reinit();
+
 		// Try getting the calculator ready.
 		// FIXME: This won't work immediately, it will at first return FALSE a few times and you'll have to retry.
 		// However, it should be enough for KTIGCC to work.
@@ -532,10 +540,16 @@ int ti68k_linkport_ready(void)
 		hw_m68k_run(1250000,5000000);
 
 		ret = ticalcs_calc_isready(calc_handle);
-		hw_m68k_run(1250000,5000000);
 	}
 
-	sip = rip = 0;
+	if(ret)
+	{
+		if (!pedrom)
+			io_bit_set(0x0d,7);	// SLE=1
+		df_reinit();
+	}
+
+	sip = 0;
 	return !ret;
 }
 
@@ -586,6 +600,7 @@ int recfile(void)
 		t2f_flag = f2t_flag = 0;
 
 		tiemu_error(ret, NULL);
+		goto recfile_end;
 	}
 
 	// Construct filename
