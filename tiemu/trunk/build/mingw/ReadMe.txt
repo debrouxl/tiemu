@@ -115,7 +115,7 @@ To build the setup wizard, here's what I did:
    cd build/nsis
    makensis tiemu-cross.nsi
 
-Tested with TiEmu 2.81, 2006-05-24.
+Tested with TiEmu 2.81, 2006-07-23.
 
 ---
 
