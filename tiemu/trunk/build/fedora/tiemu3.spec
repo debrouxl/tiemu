@@ -33,13 +33,13 @@ sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' s
 export extra_ldflags="-Wl,-rpath,%{_libdir}/itcl3.3 -Wl,-rpath,%{_libdir}/itk3.3"
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --mandir=%{_mandir} --disable-nls --enable-shared-tcl-tk --enable-shared-itcl
 make
-# don't package unneeded empty directory
-rmdir $RPM_BUILD_ROOT%{_libdir}/insight1.0
 
 %install
 if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
 mkdir -p $RPM_BUILD_ROOT
 make install-without-tcl-tk-itcl DESTDIR=$RPM_BUILD_ROOT
+# don't package unneeded empty directory
+rmdir $RPM_BUILD_ROOT%{_libdir}/insight1.0
 mkdir -p ${RPM_BUILD_ROOT}/usr/share/applications
 cat >${RPM_BUILD_ROOT}/usr/share/applications/tiemu.desktop <<EOF
 [Desktop Entry]
@@ -77,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/lpg-tiemu.desktop
 
 %changelog
+* Sun Jul 23 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Fix rmdir by moving it after make install.
+
 * Fri Jul 21 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Don't package unneeded empty directory.
 
