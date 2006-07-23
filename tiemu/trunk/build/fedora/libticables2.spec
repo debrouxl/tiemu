@@ -46,10 +46,10 @@ cat >$RPM_BUILD_ROOT/etc/security/console.perms.d/60-libticables.perms <<EOF2
 # This file was installed by the libticables2 Fedora package.
 
 # device classes -- these are shell-style globs
-\<ticable\>=/dev/ticable\* /dev/usb/ticable\*
+<ticable>=/dev/ticable* /dev/usb/ticable*
 
 # permission definitions
-\<console\>  0600 \<ticable\>    0600 root
+<console>  0600 <ticable>    0600 root
 EOF2
 
 %post
@@ -72,6 +72,9 @@ rm -rf $RPM_BUILD_ROOT
 /etc/security/console.perms.d/60-libticables.perms
 
 %changelog
+* Sun Jul 23 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Fix incorrect escaping in console.perms.d file.
+
 * Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Libdir fixes for lib64 platforms.
 Add Provides for future -devel subpackage.
