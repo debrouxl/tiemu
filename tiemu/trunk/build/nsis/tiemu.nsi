@@ -2247,6 +2247,7 @@ Section Uninstall
   RMDir "$INSTDIR\share\insight1.0\help\images"
   RMDir "$INSTDIR\share\insight1.0\help"
   RMDir "$INSTDIR\share\insight1.0"
+  RMDir "$INSTDIR\share"
   RMDir "$INSTDIR\man\mann"
   RMDir "$INSTDIR\man"
   RMDir "$INSTDIR\lib\tk8.4"
@@ -2260,6 +2261,7 @@ Section Uninstall
   RMDir "$INSTDIR\include\tilp2"
   RMDir "$INSTDIR\include"
   RMDir "$INSTDIR\bin"
+  RMDir "$INSTDIR"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
