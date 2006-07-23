@@ -1,3 +1,154 @@
+20060723:
+* TiEmu 3 changes:
+	- [roms]  $2119: fixed linking with NO_GDB (missing xmalloc)
+	- [roms]  $2121: fixed return value in engine_func for NO_GDB mode (stop engine)
+	- [kevin] $2123: reset source ID when stopping the engine from engine_func (NO_GDB)
+	- [kevin] $2128: HW4 has 8 MB of FlashROM
+	- [kevin] $2130: complete HW4 images to 8 MB
+	- [kevin] $2136: fixed NULL dereference in filesel.c
+	- [roms]  $2140: added TiGroup file support (in sending only)
+	- [roms]  $2142: fixed wrong timeout value (2 variables, 1 (mis-)used)
+	- [roms]  $2143: clean-up and overhaul in the progress bars
+	- [roms]  $2144: updated to rely on ticalcs2 progress bars data-base
+	- [roms]  $2146: fixed updating of third pbar counter. Fixed use of ticalcs2 pbar database.
+	- [kevin] $2147: don't crash DCOP client program when running reset_calc through DCOP with the debugger running
+	- [kevin] $2153: fixed warnings in TiEmu patches to GDB
+	- [kevin] $2154: fixed warnings, fixed UAE to detect 64-bit integer types under glibc, fixed is_varname
+	- [kevin] $2155: fixed warnings in the assembly-level debugger
+	- [kevin] $2156: fixed more warnings and a few file descriptor leaks
+	- [kevin] $2159: fixed "TIGCC" and "ticalc.org" bookmarks to use the respective official spelling
+	- [kevin] $2162: only run Qt event hook (processing GTK+ events) when currently displaying a modal dialog
+	                 (fixes DCOP hang after reset_calc with debugger running, due to the infinite loop protection)
+	- [kevin] $2162: disable "Debug file with TiEmu" when the debugger is running
+	- [kevin] $2162: added Seamonkey to the browser list, suggest Firefox instead of the obsolete Mozilla Suite
+	- [kevin] $2163: clear command line in execute_command
+	- [kevin] $2164: changed DCOP/OLE ready_for_transfers to really check if the emulated calculator is ready
+	- [kevin] $2166: fixed FlashROM identifiers so the HW4 8 MB FlashROM gets detected properly by AMS 3.10
+* libticonv changes (roms):
+	- renamed stdints.h into stdints4.h
+	- added 0x5d0x40 => IDList detokenization (TI84+)
+	- added ticonv_gfe_to_zfe for TiGroup support (ZIP archives don't like greek chars)
+	- fixed an error in the 68k charset tables, also one less difference from TI's (kevin)
+* libticables2 changes (roms):
+	- reworked USB/PID retrieval to make it independant of handle 
+	close/open/probe. Please note that API external behaviour 
+	didn't change !
+	- added USB PIDs values and support to the API
+	- fixed bug in SilverLink/Win32 support: the API was not reentrant 
+	=> violation in TiLP after probing
+	- improved/extended ticables_probing_do
+	- critical bug (>= 2.6.15): call usb_claim_interface before calling
+	usb_set_configuration => wrong !
+	- added '/dev/bus/usb' probing because '/proc/bus/usb' is being
+	deprecated.
+	- renamed stdints.h into stdints1.h
+	- fixed ERR_INVALID_ARG in SilverLink (linux) support
+	- clean-up & overhaul in the SilverLink (linux) support
+	- fixed DirectLink issue under Linux (TI84+ only)
+	- requires TiglUsb.dll version 3.6 due to Win98/Me/2k fix
+	- added function to detect whether USB support is available
+		(suggestion of FTP 83+ <webmaster@ftp83plus.net>).
+	- look for the correct module file name on MinGW in ticables_library_init (kevin)
+	- added support of PROBE_FIRST in ticables_probing_do
+	- fixed strict-aliasing, incompatible pointer type and _FORTIFY_SOURCE warnings (kevin)
+* libtifiles2 changes (roms):
+	- renamed stdints.h into stdints2.h
+	- full TiGroup support (both regular & flash with deflate compression)
+	- bug #1499672: every edit-locked BASIC and AMS program is marked ASM
+	and received as *.8xz, of course this has to be *.8xp for both locked 
+	BASIC and ASM.
+	- reverted back changes made on tifile encoding <-> raw varname encoding (v0.1.2)
+		because	this code had no effect. Moreover, it will imply to pass target hand-held
+		to convert varname in the right encoding. For now, this step is postponed on ticalcs2
+		library.
+	- reverted back again
+	- replaced fopen by gfopen in ZIP I/O callbacks (locale/utf8)
+	- variables like 'beta' can't be handled by TiGroup file nor ZIP archives.
+	Translate filenames again!
+	- for now, use this naming scheme for TI9x var filenames: folder.var.extension
+	- look for the correct module file name on MinGW in tifiles_library_init (kevin)
+	- fixed _FORTIFY_SOURCE and strict-aliasing (and a few harmless) warnings (kevin)
+* libticalcs2 changes (roms):
+	- definetely fixed warnings on TI keys structures (roms)
+	- fixed TI-83+/TI-84+ ROM Dumping Timeout Error Bug (tyler)
+	- don't export ticalcs_probe_calc_1/2 any longer because they can't 
+	be used easily outside of the library
+	- fixed critical bug in the DBUS (2-bytes buffer overflow) and possible
+	bug in the DUSB packet layer (null remainder).
+	- fixed bug in TI84+ recv_idlist (attempting to modify const string)
+	- added stdints3.h header
+	- increased verbosity of USB commands layer
+	- re-enabled TI84+ OS sending
+	- reworked dirlist API (API compat broken here)
+	- changed FLASH app dirlist format to be the same as var one
+	- don't count archived (=FLASH) variables in ticalcs_dirlist_ram_used
+	- updated 68k ROM dumpers to dump 8 MB on HW4 and rebuilt them with the latest CVS TIGCC (GCC 4.1.1, reduces size) (kevin)
+	- reworked/added field in CalcUpdate structure (API compat broken here, again) 
+	- added field in the CalcFncts structure which tells which counter may be used for refresh
+	- checked/fixed all pbar counters
+	- fixed typo (waiting -> waiting for)
+	- some calcs needs 2P1L refresh for ROM dumper
+	- some varname<->utf conversions were missing
+	- adapt refresh of cnt1 depending on the link cable transfer capability
+	- reset cnt2 value at transfer startup (needed and missing)
+	- added full backup capability thru TiGroup files
+	- refresh total counter (cnt3) when sending TiGroup file
+	- begins count at 1 instead of 0 (cnt3)
+	- fixed filename translation in TiGroup support
+	- for now, use this naming scheme for TI9x var filenames: folder.var.extension (as tifiles2).
+	- look for the correct module file name on MinGW in ticalcs_library_init (kevin)
+	- added ticalcs_probe for Kevin and I. This function is complete because it handles 
+		all of the probing (open/close handle, probe for all/FLASH only devices).
+	- fixed TI-73 ROM dumps (untested, but the previous code definitely didn't work) (kevin)
+	- fixed _FORTIFY_SOURCE and strict-aliasing warnings (kevin)
+	- fixed warnings and bugs in the test program (kevin)
+* TiLP 2 (included in the Fedora RPMs only, see http://www.ticalc.org for source and Windows packages by roms) changes (roms):
+	- removed certificate support (deprecated)
+	- raise the action box when sending files from command line in GUI mode
+	- fixed violation in tree_selection_changed (raised when selecting files for deletion)
+	- fixed progress bar update (tyler)
+	- allowed MinGW Compiler to run TiLP on a Linux File Hierarchy system (tyler)
+	- fixed USB device reconnection
+	- reworked device box: display detected USB device in a list as well as full probing list.
+	- tilp_device_probe_usb is now restricted to FLASH devices only (faster)
+	- "SilverLink is still NACK'ed after error. Does not appear with TiLP1 => open/close 
+		instead of reset. Why ?" => Silver/DirectLink cable are now reopened instead of being
+		reset when error occurs.
+	- allow receiving of several FLASH app at once
+	- fixed/improved tilp_file_check & tilp_file_move_with_check
+	- use reworked dirlist API
+	- updated TiLP to follow the slightly modified FLASH app dirlist format
+	- fixed 'bug' #1499672: sorting by name is case insensitive for now.
+	- fixed bug #1499672: sorting by type didn't work properly on the pc-panel
+	- implemented sending of several FLASH app at once
+	- allowed simultaneous sending of apps & vars
+	- removed text argument in pbars: not used because internally set-up by ticalc2
+	- reworked management of progress bars
+	- fixed mis-use of file selection (mix between local.selection & local.file_selection)
+		=> critical bug !
+	- B.Moody: "If TiLP detects a cable, but no calculator is connected, then the cable
+		will not be uninitialized properly before being reinitialized.  The result
+		is that TiLP attempts to open the cable twice." -> patch merged.
+	- updates dirlist & memory when sending apps
+	- changes in tifiles API (TiGroup)
+	- changes in ticalcs API (backup with TiGroup)
+	- fixed accelerator keys in popup menu (right frame)
+	- added accelarator keys in popup menu (left frame)
+	- fixed manpage about DirectLink
+	- implemented full TiGroup support (ram, archive and flash)
+	- re-enabled device open/close instead of reset.
+	- fixed NULL dereference in filesel.c (kevin)
+	- refresh right frame after var retrieval
+	- fixed bad displaying of lists on TI84+ due to bad translation of CalcModel value.
+	- for now, use this naming scheme for TI9x var filenames: folder.var.extension
+	- suggestion of FTP83+: don't allow use of USB options is USB support is not available.
+	- use ticalcs_probe instead of the previous code (easier & clearer)
+	- added Seamonkey to the browser list, suggest Firefox instead of the obsolete Mozilla Suite (kevin)
+* Fedora RPM changes:
+	- The library RPMs now Provide the corresponding "-devel" package. In the future, these may be split into separate (sub)packages, so if you package software using these libraries, please use "BuildRequires: libticonv-devel" (etc.) instead of libticonv etc.
+	- tiemu3 and tilp2 now BuildRequire the -devel packages (see above).
+	- The handling of libdir has been fixed so the packages should now build on lib64 platforms (e.g. x86_64).
+
 20060524:
 * TiEmu 3 changes:
 	- [kevin] $1872: adjust to libtifiles2 reversion to file names in locale charset
