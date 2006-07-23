@@ -436,7 +436,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 		printf("Completing image to 4MB !\n");
 		memset(img.data + 2*MB, 0xff, 2*MB);
 	}
-	if((img.size < 8*MB) && img.calc_type == TI89t && img.hw_type == HW4)
+	if((img.size < 8*MB) && img.calc_type == TI89t && img.hw_type >= HW4)
 	{
 		img.size = 8*MB;
 		img.data = realloc(img.data, 8*MB + 4);
@@ -526,7 +526,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	real_size = img.size - SPP;
 	img.size = ti68k_get_rom_size(img.calc_type);
 	// TI-89 Titanium HW4 has 8 MB of FlashROM.
-	if (hw_type == HW4) img.size <<= 1;
+	if (hw_type >= HW4) img.size <<= 1;
 
     img.hw_type = hw_type;
 	if(hw_type == -1)

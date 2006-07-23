@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: mem89.c 941 2005-03-12 09:37:10Z roms $ */
+/* $Id$ */
 
 /*  TiEmu - an TI emulator
  *
@@ -227,7 +227,7 @@ uint8_t hwp_get_byte(uint32_t adr)
 
 uint16_t hwp_get_word(uint32_t adr) 
 {
-// We can't implement this in terms of hwp_get_word, because the FlashROM
+// We can't implement this in terms of hwp_get_byte, because the FlashROM
 // hardware behaves differently for byte and word reads (see flash.c).
 #ifdef HWP
 	// stealth I/O

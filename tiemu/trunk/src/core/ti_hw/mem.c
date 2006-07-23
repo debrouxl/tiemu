@@ -102,7 +102,7 @@ int hw_mem_init(void)
 	{
 		tihw.rom_size = ti68k_get_rom_size(tihw.calc_type);
 		// TI-89 Titanium HW4 has 8 MB of FlashROM.
-		if (tihw.hw_type == HW4) tihw.rom_size <<= 1;
+		if (tihw.hw_type >= HW4) tihw.rom_size <<= 1;
 		tihw.ram_size = ti68k_get_ram_size(tihw.calc_type);
 		tihw.io_size  = ti68k_get_io_size(tihw.calc_type);
 		tihw.io2_size = ti68k_get_io2_size(tihw.calc_type);
