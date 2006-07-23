@@ -53,6 +53,7 @@
 	- look for the correct module file name on MinGW in ticables_library_init (kevin)
 	- added support of PROBE_FIRST in ticables_probing_do
 	- fixed strict-aliasing, incompatible pointer type and _FORTIFY_SOURCE warnings (kevin)
+	- fixed endianness dependency in Linux/BSD code and lvalue casts in Win32 code (kevin)
 * libtifiles2 changes (roms):
 	- renamed stdints.h into stdints2.h
 	- full TiGroup support (both regular & flash with deflate compression)
