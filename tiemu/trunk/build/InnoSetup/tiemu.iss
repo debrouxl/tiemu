@@ -7,7 +7,7 @@
 
 [Setup]
 AppName=TiEmu3
-AppVerName=TiEmu 2.81 No Gdb
+AppVerName=TiEmu 2.81b No Gdb
 AppPublisher=The TiEmu Team
 AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
 AppSupportURL=http://lpg.ticalc.org/prj_tiemu/mailing_list.html
@@ -25,6 +25,9 @@ Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescri
 
 Name: "slv_drv"; Description: "Copy SilverLink drivers"; GroupDescription: "Drivers:"; MinVersion: 0,4
 Name: "tlk_drv"; Description: "Install BlackLink/Parallel cable"; GroupDescription: "Drivers:"; MinVersion: 0,4
+
+[Dirs]
+Name: "{app}\screenshots"
 
 [Files]
 ; Glade files
