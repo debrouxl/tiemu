@@ -313,6 +313,13 @@ void rcfile_read(void)
 	  else stop(l);
 	  continue;
 	}
+
+	if( (p=find_str(buffer, "screen_folder=")) )
+	{
+	  g_free(options2.folder);
+	  options2.folder = g_strdup(p);
+	  continue;
+	}
       
 	if( (p=find_str(buffer, "screen_file=")) )
 	{
@@ -593,6 +600,10 @@ void rcfile_write(void)
   fprintf(txt, "img_size=%s\n", (options2.size == IMG_LCD) ? "lcd" : "skin");
   fprintf(txt, "\n");
 
+  fprintf(txt, "# Screenshot folder\n");
+  fprintf(txt, "screen_folder=%s\n", options2.folder);
+  fprintf(txt, "\n");
+
   fprintf(txt, "# Screenshot base file\n");
   fprintf(txt, "screen_file=%s\n", options2.file);
   fprintf(txt, "\n");
@@ -737,11 +748,12 @@ int rcfile_default()
 	options.fs_type = 2;
 
 	// screenshot options
+	options2.folder = g_strdup(inst_paths.screen_dir);
 	options2.file = g_strdup("screenshot");
 	options2.counter = 0;
-	options2.type = IMG_COL;	//IMG_BW;
+	options2.type = IMG_COL;
 	options2.format = IMG_PNG;
-	options2.size = IMG_SKIN;	//IMG_LCD;
+	options2.size = IMG_SKIN;
 
 	// debugger options
 	options3_set_default();	

@@ -62,6 +62,7 @@ gint display_scroptions_dbox()
 	dbox = glade_xml_get_widget(xml, "scroptions_dbox");
 	memcpy(&tmp_options, &options2, sizeof(ScrOptions));
     tmp_options.file = g_strdup(options2.file);
+	tmp_options.folder = g_strdup(options2.folder);
 	
 	switch (tmp_options.format)
 	{
@@ -116,14 +117,21 @@ gint display_scroptions_dbox()
 		
 	data = glade_xml_get_widget(xml, "entry10");
 	gtk_entry_set_text(GTK_ENTRY(data), tmp_options.file);
+
+	data = glade_xml_get_widget(xml, "filechooserbutton1");
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (data), tmp_options.folder);
 	
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) {
 	case GTK_RESPONSE_OK:
         g_free(options2.file);
 		memcpy(&options2, &tmp_options, sizeof(ScrOptions));
+
 		options2.file = g_strdup(tmp_options.file);
         g_free(tmp_options.file);
+
+		options2.folder = g_strdup(tmp_options.folder);
+		g_free(tmp_options.folder);
 		break;
 	default:
 		break;
@@ -256,5 +264,17 @@ on_entry1_changed                      (GtkEditable     *editable,
     g_free(str);
     refresh_label();
 }
+
+GLADE_CB void
+on_filechooserbutton1_current_folder_changed
+                                        (GtkFileChooser  *filechooser,
+                                        gpointer         user_data)
+{
+	gchar *fname = gtk_file_chooser_get_filename (filechooser);
+
+	g_free(tmp_options.folder);
+	tmp_options.folder = fname;
+}
+
 
 /* */

@@ -734,7 +734,8 @@ int  hid_screenshot(char *filename)
 			default: ext = "png"; type = "png";  break;
 		}
       
-		outfile = g_strdup_printf("%s%03i.%s", options2.file, options2.counter, ext);
+		outfile = g_strdup_printf("%s%s%s%03i.%s", options2.folder, G_DIR_SEPARATOR_S,
+			options2.file, options2.counter, ext);
 	} 
 	else 
 	{

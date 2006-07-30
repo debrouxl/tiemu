@@ -76,6 +76,8 @@ static void init_linux_paths(void)
 		g_strconcat(inst_paths.base_dir, "pedrom/", NULL);
 	inst_paths.misc_dir =
 		g_strconcat(inst_paths.base_dir, "misc/", NULL);
+	inst_paths.screen_dir =
+		g_strconcat(inst_paths.base_dir, "screenshots/", NULL);
 
 	// create image repository
 	tmp = g_strconcat(inst_paths.home_dir, CONF_DIR, NULL);
@@ -157,6 +159,8 @@ static void init_win32_paths(void)
 		g_strconcat(inst_paths.base_dir, "pedrom\\", NULL);
 	inst_paths.misc_dir =
 		g_strconcat(inst_paths.base_dir, "misc\\", NULL);
+	inst_paths.screen_dir =
+		g_strconcat(inst_paths.base_dir, "screenshots\\", NULL);
 
 #ifdef ENABLE_NLS
 	inst_paths.locale_dir =

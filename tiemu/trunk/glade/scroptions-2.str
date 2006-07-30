@@ -20,3 +20,4 @@ gchar *s = N_("screenshot");
 gchar *s = N_("Pattern:");
 gchar *s = N_("screenshot000.jpg");
 gchar *s = N_("Filename:");
+gchar *s = N_("Select folder");

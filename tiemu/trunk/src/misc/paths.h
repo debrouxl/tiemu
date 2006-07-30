@@ -67,6 +67,7 @@ typedef struct
   char *home_dir;		// $HOME
   char *rom_dir;		// PedRom tib location
   char *misc_dir;		// resource files
+  char *screen_dir;		// screenshots
 
   char current_dir[1024];	// current working directory
 } TiemuInstPaths;
