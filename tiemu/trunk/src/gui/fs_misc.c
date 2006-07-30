@@ -423,7 +423,11 @@ gint display_import_romversion_dbox(void)
 	}
 	else if(ti68k_is_a_tib_file(filename))
 	{
+		#ifdef _MSC_VER
+		IMG_INFO infos = {0};
+		#else
 		IMG_INFO infos = {};
+		#endif
 		int err = ti68k_get_tib_infos(filename, &infos, 0);
 		int hw_type = HW2;
 

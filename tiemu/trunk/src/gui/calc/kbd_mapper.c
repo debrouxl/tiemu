@@ -39,8 +39,11 @@
 #include "kbd_mapper.h"
 #include "printl.h"
 
-
+#ifdef _MSC_VER
+Pc2TiKey keymap[KEYMAP_MAX] = {0};
+#else
 Pc2TiKey keymap[KEYMAP_MAX] = {};
+#endif
 
 // search for key name and return key value (or -1 if not found)
 int keymap_string_to_value(const KeyTuple *array, const char *key_name)

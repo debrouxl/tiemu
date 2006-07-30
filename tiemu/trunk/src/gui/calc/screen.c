@@ -224,10 +224,11 @@ int hid_update_lcd(void)
 {
 	int i, j, k, l;
 	uint8_t *lcd_bitmap = &tihw.ram[tihw.lcd_adr];	
-	tihw.lcd_ptr = (char *) &tihw.ram[tihw.lcd_adr];	
-	uint8_t *lcd_buf = (uint8_t *)lcd_bytmap;
+	uint8_t *lcd_buf = (uint8_t *)lcd_bytmap;	
 	GdkRect src;
 	guchar *p;
+
+	tihw.lcd_ptr = (char *) &tihw.ram[tihw.lcd_adr];	
 
     if(!pixmap || !lcd_mem || !tihw.lcd_ptr)
         return 0;
@@ -343,9 +344,10 @@ GdkPixbuf* hid_copy_lcd(void)
 {
 	int i, j, k;
 	uint8_t *lcd_bitmap = &tihw.ram[tihw.lcd_adr];	
-	tihw.lcd_ptr = (char *) &tihw.ram[tihw.lcd_adr];	
 	uint8_t *lcd_buf = (uint8_t *)lcd_bytmap;
 	guchar *p;
+
+	tihw.lcd_ptr = (char *) &tihw.ram[tihw.lcd_adr];	
 
 	// convert the bitmap screen to a bytemap screen and grayscalize
 	memset(lcd_bytmap, 0, LCDMEM_H*LCDMEM_W);	
