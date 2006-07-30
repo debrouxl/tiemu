@@ -17,6 +17,7 @@ if !USE_GROFF
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir) 
 	$(INSTALL_DATA) $(srcdir)/man/Manpage.txt $(DESTDIR)$(pkgdatadir)/Manpage.txt
 endif
+	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/screenshots
 
 # custom targets
 install-without-tcl-tk:
