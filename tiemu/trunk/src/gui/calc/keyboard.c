@@ -219,7 +219,7 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 	//printf("<%04x %04x %04x>\n", event->state, event->keyval, event->hardware_keycode);
-#if 0
+#if 1
 	printf("KeyEvent:\n");
 	printf(" type:		%i\n", event->type);
 	printf(" window:	%p\n", event->window);
@@ -233,12 +233,12 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
 	printf(" group:		%u\n", event->group);
 #endif
 
-    if((event->keyval == 0xffffff) && (event->hardware_keycode == 0x13))	// Pause
+	if(event->keyval == GDK_Pause)
 	{
         on_now1_activate(NULL, NULL);
         return TRUE;
 	}
-	else if((event->keyval == 0x00ff67) && (event->hardware_keycode == 0x5d))
+        else if(event->keyval == GDK_Menu)
 	{
 		do_popup_menu(widget, NULL);
 		return TRUE;
