@@ -179,3 +179,7 @@ on_exit1_activate                      (GtkMenuItem     *menuitem,
 GLADE_CB void
 on_exit_without_saving_state1_activate (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+GLADE_CB void
+on_now1_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

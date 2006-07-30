@@ -67,7 +67,7 @@ static int hwkey_to_tikey(guint16 hardware_keycode, int action)
             ti_key = kbd_keymap[i].ti_key;
             modifier = kbd_keymap[i].modifier;
 
-#if 0
+#if 1
 				printf("pckey = %4x (%s), tikey = %2x (%s), modifier = %2x (%s)\n", 
                 hardware_keycode, keymap_value_to_string(pckeys, hardware_keycode),
                 ti_key, keymap_value_to_string(tikeys, ti_key),
@@ -219,7 +219,7 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 	//printf("<%04x %04x %04x>\n", event->state, event->keyval, event->hardware_keycode);
-	/*
+	
 	printf("KeyEvent:\n");
 	printf(" type:		%i\n", event->type);
 	printf(" window:	%p\n", event->window);
@@ -231,18 +231,19 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
 	printf(" string:	%s\n", event->string);
 	printf(" hw key:	%04x\n", event->hardware_keycode);
 	printf(" group:		%u\n", event->group);
-	*/
+	
 
-    if((event->keyval == 0xffff) && (event->hardware_keycode == 0x14))
+    if((event->keyval == 0xffffff) && (event->hardware_keycode == 0x13))	// Pause
 	{
-        event->keyval = GDK_Caps_Lock;
+        on_now1_activate(NULL, NULL);
+        return TRUE;
 	}
-	else if((event->keyval == 0xffff) && (event->hardware_keycode == 0x5d))
+	else if((event->keyval == 0x00ff67) && (event->hardware_keycode == 0x5d))
 	{
 		do_popup_menu(widget, NULL);
 		return TRUE;
 	}
-    else if(event->keyval == GDK_F10)
+	else  if(event->keyval == GDK_F10)
     {
         on_send_file_to_tiemu1_activate(NULL, NULL);
         return TRUE;
