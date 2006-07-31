@@ -1,15 +1,6 @@
 List of known bugs to fix (may be in French, sorry):
 
 
-ExtendeD
-========
-
-* A strange behaviour of the dropdown list for the ROM Calls: just after
-having started TiEmu, when I sort the symbols, I need to click 2 times
-on the arrow to see the list of symbols. This only happens just after
-a sort, and it disappears completely once characters are entered in
-the text field.
-
 Kevin
 =====
 

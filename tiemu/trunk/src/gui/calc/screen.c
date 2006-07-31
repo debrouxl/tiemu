@@ -230,7 +230,7 @@ int hid_update_lcd(void)
 
 	tihw.lcd_ptr = (char *) &tihw.ram[tihw.lcd_adr];	
 
-    if(!pixmap || !lcd_mem || !tihw.lcd_ptr)
+    if(!pixmap || !lcd_mem || !tihw.lcd_ptr || !main_wnd)
         return 0;
 
 	// Check for LCD state change (from TI HW)
