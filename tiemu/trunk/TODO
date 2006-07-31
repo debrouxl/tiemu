@@ -11,7 +11,6 @@ bug #1529250: oh, and a little *Wish List:
 F10 to transfer file from the pc to the emulator
 3. Allow Drag and Drop, like VTI
 
-bug #1435183  	  Error window when closing TI emu
 bug #1471709  	  crash on old .sav load
 bug #1529247  	  Link problem sending file from tiEmu to PC
 bug #1529328  	  Screenshot folder changes after a few uses

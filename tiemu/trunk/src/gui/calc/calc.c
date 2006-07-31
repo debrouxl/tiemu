@@ -78,6 +78,8 @@ extern LCD_RECT		lr;
 extern SKN_RECT		sr;
 extern WND_RECT		wr;
 
+static guint tid = -1;
+
 // part 1: set scale factor
 static void set_scale(int view_mode)
 {
@@ -260,6 +262,9 @@ GLADE_CB void
 on_calc_wnd_destroy                    (GtkObject       *object,
                                         gpointer         user_data)
 {
+	// Uninstall LCD refresh (to avoid earlier use of main_wnd by hid_lcd_update)
+    g_source_remove(tid);
+
 	// When GTK called this signal, the widget has already been destroy
 	// thus set the pointer to a valid value, ie NULL .
 	main_wnd = NULL;
@@ -465,7 +470,6 @@ static int match_keymap(int calc_type)
 G_LOCK_EXTERN(lcd_flag);
 extern volatile int lcd_flag;
 extern volatile int debugger;
-static guint tid = -1;
 
 static gint hid_refresh (gpointer data)
 {
