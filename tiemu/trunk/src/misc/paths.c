@@ -77,13 +77,18 @@ static void init_linux_paths(void)
 	inst_paths.misc_dir =
 		g_strconcat(inst_paths.base_dir, "misc/", NULL);
 	inst_paths.screen_dir =
-		g_strconcat(inst_paths.base_dir, "screenshots/", NULL);
+		g_strconcat(inst_paths.home_dir, CONF_DIR, "screenshots/", NULL);
 
-	// create image repository
+	// create conf folder (~/.tiemu/)
 	tmp = g_strconcat(inst_paths.home_dir, CONF_DIR, NULL);
 	mkdir(tmp, 0777);
 	g_free(tmp);
+
+	// create image repository
 	mkdir(inst_paths.img_dir, 0777);
+
+	// create screen repository
+	mkdir(inst_paths.screen_dir, 0777);
 
 	/* bintextdomain(PACKAGE, "/usr/share/locale"); ->
 	   '/usr/share/locale/  fr/LC_MESSAGES/tilp.mo' */
@@ -153,14 +158,16 @@ static void init_win32_paths(void)
 	inst_paths.home_dir = 
 	    g_strconcat(inst_paths.base_dir, "", NULL);
 	inst_paths.img_dir = 
-        g_strconcat(inst_paths.home_dir, CONF_DIR, "images\\", NULL);
-	_mkdir(inst_paths.img_dir);
+        g_strconcat(inst_paths.base_dir, "images\\", NULL);
 	inst_paths.rom_dir =
 		g_strconcat(inst_paths.base_dir, "pedrom\\", NULL);
 	inst_paths.misc_dir =
 		g_strconcat(inst_paths.base_dir, "misc\\", NULL);
 	inst_paths.screen_dir =
 		g_strconcat(inst_paths.base_dir, "screenshots\\", NULL);
+
+	// create image repository
+	_mkdir(inst_paths.img_dir);
 
 #ifdef ENABLE_NLS
 	inst_paths.locale_dir =
