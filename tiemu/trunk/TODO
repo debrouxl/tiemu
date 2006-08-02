@@ -14,4 +14,11 @@ F10 to transfer file from the pc to the emulator
 
 bug #1471709  	  crash on old .sav load
 bug #1529247  	  Link problem sending file from tiEmu to PC
-bug #1529328  	  Screenshot folder changes after a few uses
+
+req #1532860		Video ScreenCapture	
+<<
+Another cool feature would be the capabilitie to
+capture video from the screen, allowing to save in .gif
+or .avi
+>>
+
