@@ -63,7 +63,21 @@ gint display_scroptions_dbox()
 	memcpy(&tmp_options, &options2, sizeof(ScrOptions));
     tmp_options.file = g_strdup(options2.file);
 	tmp_options.folder = g_strdup(options2.folder);
-	
+#if 0
+	{
+		GSList *ptr, *list = gdk_pixbuf_get_formats();
+
+		for(ptr = list; ptr; ptr = ptr->next)
+		{
+			GdkPixbufFormat *pf = ptr->data;
+			gchar **ext = gdk_pixbuf_format_get_extensions (pf);
+
+			printf("name = <%s>\n", gdk_pixbuf_format_get_name(pf));
+			printf("saveable = %i\n", gdk_pixbuf_format_is_writable(pf));
+			printf("ext = <%s>\n", ext[0]);
+		}
+	}
+#endif
 	switch (tmp_options.format)
 	{
 	case IMG_JPG: 
@@ -84,6 +98,10 @@ gint display_scroptions_dbox()
 		break;
 	case IMG_PDF:
 		data = glade_xml_get_widget(xml, "radiobutton34");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
+		break;
+	case IMG_BMP:
+		data = glade_xml_get_widget(xml, "radiobutton35");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
 		break;
 	}
@@ -157,6 +175,7 @@ void refresh_label(void)
 	    case IMG_ICO: ext = "ico"; break;
 	    case IMG_EPS: ext = "eps"; break;
 	    case IMG_PDF: ext = "pdf"; break;
+		case IMG_BMP: ext = "bmp"; break;
 	    default: break;
 	}
 	
@@ -248,6 +267,15 @@ on_scopt_radiobutton34_toggled         (GtkToggleButton *togglebutton,
 {
     if(gtk_toggle_button_get_active(togglebutton))
         tmp_options.format = IMG_PDF;
+    refresh_label();
+}
+
+GLADE_CB void
+on_scopt_radiobutton35_toggled         (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+    if(gtk_toggle_button_get_active(togglebutton))
+        tmp_options.format = IMG_BMP;
     refresh_label();
 }
 

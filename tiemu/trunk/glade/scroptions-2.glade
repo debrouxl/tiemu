@@ -365,6 +365,30 @@
 		      <property name="y_options"></property>
 		    </packing>
 		  </child>
+
+		  <child>
+		    <widget class="GtkRadioButton" id="radiobutton35">
+		      <property name="visible">True</property>
+		      <property name="can_focus">True</property>
+		      <property name="label" translatable="yes">BMP</property>
+		      <property name="use_underline">True</property>
+		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="focus_on_click">True</property>
+		      <property name="active">False</property>
+		      <property name="inconsistent">False</property>
+		      <property name="draw_indicator">True</property>
+		      <property name="group">radiobutton30</property>
+		      <signal name="toggled" handler="on_scopt_radiobutton35_toggled" last_modification_time="Thu, 03 Aug 2006 15:24:01 GMT"/>
+		    </widget>
+		    <packing>
+		      <property name="left_attach">1</property>
+		      <property name="right_attach">2</property>
+		      <property name="top_attach">2</property>
+		      <property name="bottom_attach">3</property>
+		      <property name="x_options">fill</property>
+		      <property name="y_options"></property>
+		    </packing>
+		  </child>
 		</widget>
 	      </child>
 
@@ -456,6 +480,27 @@
 	  </child>
 
 	  <child>
+	    <widget class="GtkFileChooserButton" id="filechooserbutton1">
+	      <property name="visible">True</property>
+	      <property name="title" translatable="yes">Select folder</property>
+	      <property name="action">GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER</property>
+	      <property name="local_only">False</property>
+	      <property name="show_hidden">True</property>
+	      <property name="width_chars">-1</property>
+	      <signal name="current_folder_changed" handler="on_filechooserbutton1_current_folder_changed" last_modification_time="Sun, 30 Jul 2006 14:45:48 GMT"/>
+	    </widget>
+	    <packing>
+	      <property name="left_attach">0</property>
+	      <property name="right_attach">2</property>
+	      <property name="top_attach">2</property>
+	      <property name="bottom_attach">3</property>
+	      <property name="y_padding">2</property>
+	      <property name="x_options">expand|shrink|fill</property>
+	      <property name="y_options">expand|shrink|fill</property>
+	    </packing>
+	  </child>
+
+	  <child>
 	    <widget class="GtkFrame" id="frame5">
 	      <property name="visible">True</property>
 	      <property name="label_xalign">0</property>
@@ -510,29 +555,9 @@
 	      <property name="right_attach">2</property>
 	      <property name="top_attach">1</property>
 	      <property name="bottom_attach">2</property>
+	      <property name="x_padding">5</property>
 	      <property name="x_options">fill</property>
 	      <property name="y_options">fill</property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkFileChooserButton" id="filechooserbutton1">
-	      <property name="visible">True</property>
-	      <property name="title" translatable="yes">Select folder</property>
-	      <property name="action">GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER</property>
-	      <property name="local_only">False</property>
-	      <property name="show_hidden">True</property>
-	      <property name="width_chars">-1</property>
-	      <signal name="current_folder_changed" handler="on_filechooserbutton1_current_folder_changed" last_modification_time="Sun, 30 Jul 2006 14:45:48 GMT"/>
-	    </widget>
-	    <packing>
-	      <property name="left_attach">0</property>
-	      <property name="right_attach">2</property>
-	      <property name="top_attach">2</property>
-	      <property name="bottom_attach">3</property>
-	      <property name="y_padding">2</property>
-	      <property name="x_options">expand|shrink|fill</property>
-	      <property name="y_options">expand|shrink|fill</property>
 	    </packing>
 	  </child>
 	</widget>

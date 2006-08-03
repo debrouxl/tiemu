@@ -735,6 +735,7 @@ int  hid_screenshot(char *filename)
 			case IMG_ICO: ext = "ico"; type = "ico";  break;
  		    case IMG_EPS: ext = "eps"; type = "eps";  break;
  		    case IMG_PDF: ext = "pdf"; type = "pdf";  break;
+			case IMG_BMP: ext = "bmp"; type = "bmp";  break;
 			default: ext = "png"; type = "png";  break;
 		}
       

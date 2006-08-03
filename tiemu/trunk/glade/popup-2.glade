@@ -441,7 +441,7 @@
 	      <accelerator key="H" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image90">
+		<widget class="GtkImage" id="image94">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-help</property>
 		  <property name="icon_size">1</property>
@@ -464,7 +464,7 @@
 	      <accelerator key="M" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image91">
+		<widget class="GtkImage" id="image95">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-index</property>
 		  <property name="icon_size">1</property>
@@ -555,7 +555,7 @@
 	      <signal name="activate" handler="on_bugreport1_activate" last_modification_time="Sun, 20 Feb 2005 17:58:57 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image92">
+		<widget class="GtkImage" id="image96">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-execute</property>
 		  <property name="icon_size">1</property>
