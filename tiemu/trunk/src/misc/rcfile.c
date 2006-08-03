@@ -333,6 +333,18 @@ void rcfile_read(void)
 	  sscanf(p, "%i", &(options2.counter));
 	  continue;
 	}
+
+	if( (p=find_str(buffer, "screen_shots=")) )
+	{
+	  sscanf(p, "%i", &(options2.shots));
+	  continue;
+	}
+
+	if( (p=find_str(buffer, "screen_skips=")) )
+	{
+	  sscanf(p, "%i", &(options2.skips));
+	  continue;
+	}
 	
 	if( (p=find_str(buffer, "console=")) )
 	{
@@ -612,6 +624,14 @@ void rcfile_write(void)
   fprintf(txt, "screen_counter=%i\n", options2.counter);
   fprintf(txt, "\n");
 
+  fprintf(txt, "# Screenshot shots\n");
+  fprintf(txt, "screen_shops=%i\n", options2.shots);
+  fprintf(txt, "\n");
+
+  fprintf(txt, "# Screenshot skips\n");
+  fprintf(txt, "screen_skips=%i\n", options2.skips);
+  fprintf(txt, "\n");
+
   fprintf(txt, "#\n");
   fprintf(txt, "# MISC SECTION\n");
   fprintf(txt, "#\n");
@@ -754,6 +774,8 @@ int rcfile_default()
 	options2.type = IMG_COL;
 	options2.format = IMG_PNG;
 	options2.size = IMG_SKIN;
+	options2.shots = 1;
+	options2.skips = 4;
 
 	// debugger options
 	options3_set_default();	

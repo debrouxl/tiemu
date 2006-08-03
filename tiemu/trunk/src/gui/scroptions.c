@@ -116,6 +116,12 @@ gint display_scroptions_dbox()
 		break;
 	}
 
+	data = glade_xml_get_widget(xml, "spinbutton1");
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), tmp_options.shots);
+
+	data = glade_xml_get_widget(xml, "spinbutton2");
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), tmp_options.skips);
+
 	data = glade_xml_get_widget(xml, "frame5");
 	gtk_widget_set_sensitive(data, FALSE);
 
@@ -298,7 +304,7 @@ GLADE_CB void
 on_spinbutton1_changed                 (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-
+	tmp_options.shots = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(editable));
 }
 
 
@@ -306,7 +312,7 @@ GLADE_CB void
 on_spinbutton2_changed                 (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-
+	tmp_options.skips = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(editable));
 }
 
 /* */

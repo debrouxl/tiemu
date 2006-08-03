@@ -67,6 +67,9 @@ typedef struct
 	char*	file;
 	int		counter;
 	char*	folder;
+
+	int		shots;
+	int		skips;
 } ScrOptions;
 
 /* Debugger options for windows size and placement */
