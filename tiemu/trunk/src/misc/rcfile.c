@@ -294,6 +294,7 @@ void rcfile_read(void)
 	  else if(!strcmp(p, "ico")) options2.format=IMG_ICO;
 	  else if(!strcmp(p, "eps")) options2.format=IMG_EPS;
 	  else if(!strcmp(p, "pdf")) options2.format=IMG_PDF;
+	  else if(!strcmp(p, "bmp")) options2.format=IMG_BMP;
 	  else stop(l);
 	  continue;
 	}
@@ -592,7 +593,7 @@ void rcfile_write(void)
   fprintf(txt, "#\n");
   fprintf(txt, "\n");
 
-  fprintf(txt, "# Screenshot: image format (xpm, pcx, jpg, bmp)\n");
+  fprintf(txt, "# Screenshot: image format (jpg, bmp, ico, eps, pdf, bmp)\n");
   fprintf(txt, "img_format=");
   switch(options2.format)
     {
@@ -601,6 +602,7 @@ void rcfile_write(void)
     case IMG_ICO: fprintf(txt, "ico\n"); break;
     case IMG_EPS: fprintf(txt, "eps\n"); break;
     case IMG_PDF: fprintf(txt, "pdf\n"); break;
+	case IMG_BMP: fprintf(txt, "bmp\n"); break;
     }
   fprintf(txt, "\n");
 
