@@ -63,21 +63,7 @@ gint display_scroptions_dbox()
 	memcpy(&tmp_options, &options2, sizeof(ScrOptions));
     tmp_options.file = g_strdup(options2.file);
 	tmp_options.folder = g_strdup(options2.folder);
-#if 0
-	{
-		GSList *ptr, *list = gdk_pixbuf_get_formats();
 
-		for(ptr = list; ptr; ptr = ptr->next)
-		{
-			GdkPixbufFormat *pf = ptr->data;
-			gchar **ext = gdk_pixbuf_format_get_extensions (pf);
-
-			printf("name = <%s>\n", gdk_pixbuf_format_get_name(pf));
-			printf("saveable = %i\n", gdk_pixbuf_format_is_writable(pf));
-			printf("ext = <%s>\n", ext[0]);
-		}
-	}
-#endif
 	switch (tmp_options.format)
 	{
 	case IMG_JPG: 
@@ -130,6 +116,9 @@ gint display_scroptions_dbox()
 		break;
 	}
 
+	data = glade_xml_get_widget(xml, "frame5");
+	gtk_widget_set_sensitive(data, FALSE);
+
 	label = glade_xml_get_widget(xml, "label10");
 	refresh_label();
 		
@@ -179,7 +168,7 @@ void refresh_label(void)
 	    default: break;
 	}
 	
-    str = g_strdup_printf("%s%03i.%s", tmp_options.file, tmp_options.counter, ext);
+    str = g_strdup_printf("%03i.%s", tmp_options.counter, ext);
 	gtk_label_set_text(GTK_LABEL(label), str);
     g_free(str);
 }
@@ -304,5 +293,20 @@ on_filechooserbutton1_current_folder_changed
 	tmp_options.folder = fname;
 }
 
+
+GLADE_CB void
+on_spinbutton1_changed                 (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+
+}
+
+
+GLADE_CB void
+on_spinbutton2_changed                 (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+
+}
 
 /* */

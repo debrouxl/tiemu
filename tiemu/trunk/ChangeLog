@@ -29,7 +29,8 @@ SubVersion: $Id$
 					 added accelator key: Pause => Screenshot Now!
 	- [roms]  $2178: allow to select target folder for screenshots
 	- [roms]  $2179: fixed bug #1435183 (Error window when closing TI emu)
-	- [roms]  $2180: added BMP screenshot support and fixed frame spacing
+	- [roms]  $2190: added BMP screenshot support and fixed frame spacing
+	- [roms]  $2191: reworked screenshot option dbox and prepared next step
 
 - 10/05/2006, version 2.81:
 	- [roms] $2059: renamed 'code/source' window into 'disassembly'
