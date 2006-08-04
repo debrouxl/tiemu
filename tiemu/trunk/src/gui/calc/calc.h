@@ -55,7 +55,8 @@ int hid_switch_large_view(void);
 
 void hid_set_callbacks(void);
 
-int hid_screenshot(char *filename);
+int hid_screenshot_single(void);
+int hid_screenshot_burst(void);
 
 int hid_popup_menu(void);
 

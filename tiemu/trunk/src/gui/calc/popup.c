@@ -345,7 +345,10 @@ GLADE_CB void
 on_now1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	hid_screenshot(NULL);
+	if(options2.shots > 1)
+		hid_screenshot_burst();
+	else
+		hid_screenshot_single();
 }
 
 

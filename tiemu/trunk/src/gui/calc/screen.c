@@ -86,6 +86,9 @@ static int new_contrast = NGS;		// new contrast level
 
 static int max_plane = 0;         	// number of grayscales to emulate
 
+int shot_cnt = 0;					// number of captures
+int	skip_cnt = 0;					// number of frames to skip
+
 /* Compute conversion table */
 void compute_convtable(void) 
 {
@@ -335,6 +338,15 @@ int hid_update_lcd(void)
 			gtk_widget_queue_draw_area(area, lr.x, lr.y, src.w, src.h);
 		}
     }
+
+	// Screen shot
+	if(!--skip_cnt && shot_cnt > 0)
+	{
+		skip_cnt = options2.skips;
+
+		hid_screenshot_single();
+		shot_cnt--;
+	}
 
     return -1;
 }

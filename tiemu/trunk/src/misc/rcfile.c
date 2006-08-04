@@ -627,7 +627,7 @@ void rcfile_write(void)
   fprintf(txt, "\n");
 
   fprintf(txt, "# Screenshot shots\n");
-  fprintf(txt, "screen_shops=%i\n", options2.shots);
+  fprintf(txt, "screen_shots=%i\n", options2.shots);
   fprintf(txt, "\n");
 
   fprintf(txt, "# Screenshot skips\n");

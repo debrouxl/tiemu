@@ -330,7 +330,7 @@
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <property name="adjustment">1 1 100 1 10 10</property>
 			  <signal name="changed" handler="on_spinbutton1_changed" last_modification_time="Thu, 03 Aug 2006 15:50:14 GMT"/>
 			</widget>
 			<packing>
@@ -345,7 +345,7 @@
 		      <child>
 			<widget class="GtkSpinButton" id="spinbutton2">
 			  <property name="visible">True</property>
-			  <property name="tooltip" translatable="yes">Number of frames to skip between 2 captures.</property>
+			  <property name="tooltip" translatable="yes">Number of frames to skip between 2 captures. Beware: if you want to capture image every 4 frames, you need to set value to 3.</property>
 			  <property name="can_focus">True</property>
 			  <property name="climb_rate">1</property>
 			  <property name="digits">0</property>
@@ -353,7 +353,7 @@
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <property name="adjustment">1 0 127 1 10 10</property>
 			  <signal name="changed" handler="on_spinbutton2_changed" last_modification_time="Thu, 03 Aug 2006 15:50:17 GMT"/>
 			</widget>
 			<packing>

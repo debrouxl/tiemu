@@ -41,6 +41,7 @@
 
 static ScrOptions tmp_options;
 
+static GtkWidget *frame = NULL;
 static GtkWidget *label = NULL;
 void refresh_label(void);
 
@@ -122,8 +123,8 @@ gint display_scroptions_dbox()
 	data = glade_xml_get_widget(xml, "spinbutton2");
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), tmp_options.skips);
 
-	data = glade_xml_get_widget(xml, "frame5");
-	gtk_widget_set_sensitive(data, FALSE);
+	frame = glade_xml_get_widget(xml, "frame5");
+	gtk_widget_set_sensitive(frame, tmp_options.size == IMG_LCD);
 
 	label = glade_xml_get_widget(xml, "label10");
 	refresh_label();
@@ -204,6 +205,7 @@ on_scopt_radiobutton20_toggled         (GtkToggleButton *togglebutton,
 {
     if(gtk_toggle_button_get_active(togglebutton))
         tmp_options.size = IMG_LCD;
+	gtk_widget_set_sensitive(frame, tmp_options.size == IMG_LCD);
 }
 
 
@@ -213,6 +215,7 @@ on_scopt_radiobutton21_toggled         (GtkToggleButton *togglebutton,
 {
     if(gtk_toggle_button_get_active(togglebutton))
         tmp_options.size = IMG_SKIN;
+	gtk_widget_set_sensitive(frame, tmp_options.size == IMG_LCD);
 }
 
 

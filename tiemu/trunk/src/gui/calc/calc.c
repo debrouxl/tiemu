@@ -80,6 +80,9 @@ extern WND_RECT		wr;
 
 static guint tid = -1;
 
+extern int			shot_cnt;
+extern int			skip_cnt;
+
 // part 1: set scale factor
 static void set_scale(int view_mode)
 {
@@ -716,7 +719,15 @@ int hid_switch_large_view(void)
     return 0;
 }
 
-int  hid_screenshot(char *filename)
+int  hid_screenshot_burst(void)
+{
+	shot_cnt = options2.shots;
+	skip_cnt = options2.skips;
+
+	return 0;
+}
+
+int  hid_screenshot_single(void)
 {
 	gchar *outfile;
 	gchar *ext = "";
@@ -726,27 +737,19 @@ int  hid_screenshot(char *filename)
 	gboolean result = FALSE;
 	GError *error = NULL;
 
-	if(filename == NULL) 
+	switch(options2.format) 
 	{
-		switch(options2.format) 
-		{
-			case IMG_JPG: ext = "jpg"; type = "jpeg"; break;
-			case IMG_PNG: ext = "png"; type = "png";  break;
-			case IMG_ICO: ext = "ico"; type = "ico";  break;
- 		    case IMG_EPS: ext = "eps"; type = "eps";  break;
- 		    case IMG_PDF: ext = "pdf"; type = "pdf";  break;
-			case IMG_BMP: ext = "bmp"; type = "bmp";  break;
-			default: ext = "png"; type = "png";  break;
-		}
-      
-		outfile = g_strdup_printf("%s%s%s%03i.%s", options2.folder, G_DIR_SEPARATOR_S,
-			options2.file, options2.counter, ext);
-	} 
-	else 
-	{
-		outfile = g_strdup(filename);
+		case IMG_JPG: ext = "jpg"; type = "jpeg"; break;
+		case IMG_PNG: ext = "png"; type = "png";  break;
+		case IMG_ICO: ext = "ico"; type = "ico";  break;
+ 		case IMG_EPS: ext = "eps"; type = "eps";  break;
+ 		case IMG_PDF: ext = "pdf"; type = "pdf";  break;
+		case IMG_BMP: ext = "bmp"; type = "bmp";  break;
+		default: ext = "png"; type = "png";  break;
 	}
-
+  
+	outfile = g_strdup_printf("%s%s%s%03i.%s", options2.folder, G_DIR_SEPARATOR_S,
+		options2.file, options2.counter, ext);
 	printl(0, "Screenshot to %s... ", outfile);
 
 	if((options2.size == IMG_LCD) && (options2.type == IMG_BW)) 
@@ -767,9 +770,8 @@ int  hid_screenshot(char *filename)
 	else
 	{
 		printl(0, "Unsupported screenshot options combination, screenshot aborted.\n");
-		g_free(filename);
 		return 0;
-        }
+       }
 
 	switch (options2.format)
 	{
@@ -793,7 +795,6 @@ int  hid_screenshot(char *filename)
 
 	printl(0, "Done !\n");
 	options2.counter++;
-	g_free(filename);
 
 	return 0;
 }
@@ -803,18 +804,5 @@ on_calc_wnd_window_state_event         (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-/*
-    GdkEventWindowState *wstate = (GdkEventWindowState *)event;
-    GdkWindowState state = wstate->new_window_state;
-    GdkWindowState mask = wstate->changed_mask;
-
-    //printf("%04X %04X %i\n", wstate->new_window_state, wstate->changed_mask, GDK_WINDOW_STATE_ICONIFIED);
-
-    if((mask & GDK_WINDOW_STATE_ICONIFIED) && (state & GDK_WINDOW_STATE_ICONIFIED))
-        gtk_debugger_hide_all(!0);
-        
-    else if((mask & GDK_WINDOW_STATE_ICONIFIED) && !(state & GDK_WINDOW_STATE_ICONIFIED))
-        gtk_debugger_show_all(!0);
-*/
     return FALSE;
 }
