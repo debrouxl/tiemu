@@ -65,6 +65,9 @@ gint display_scroptions_dbox()
     tmp_options.file = g_strdup(options2.file);
 	tmp_options.folder = g_strdup(options2.folder);
 
+	frame = glade_xml_get_widget(xml, "frame5");
+	gtk_widget_set_sensitive(frame, tmp_options.size == IMG_LCD);
+
 	switch (tmp_options.format)
 	{
 	case IMG_JPG: 
@@ -123,9 +126,6 @@ gint display_scroptions_dbox()
 	data = glade_xml_get_widget(xml, "spinbutton2");
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), tmp_options.skips);
 
-	frame = glade_xml_get_widget(xml, "frame5");
-	gtk_widget_set_sensitive(frame, tmp_options.size == IMG_LCD);
-
 	label = glade_xml_get_widget(xml, "label10");
 	refresh_label();
 		
@@ -151,6 +151,7 @@ gint display_scroptions_dbox()
 		break;
 	}
 
+	frame = label = NULL;
 	gtk_widget_destroy(dbox);
 
 	return 0;
