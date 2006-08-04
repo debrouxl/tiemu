@@ -2,8 +2,8 @@
 
 
 
-Previous version: 2.80		(25/08/2005)
-Current version:  2.81		(26/05/2006)
+Previous version: 2.81		(26/05/2006)
+Current version:  2.81b		(05/08/2006)
 
 SubVersion (CVS) revision: $Id: RELEASE 2042 2006-05-07 07:46:23Z roms $
 
@@ -20,29 +20,30 @@ For the other link cables, no driver is needed.
 New capabilities:
 -----------------
 
-	- modified UAE disassembler to follow Motorola syntax
+	- HW4 support (8MB of FLashRom)
+	- added TiGroup file support (in sending only)
+	- BMP screenshot support
+	- added ability to take several screenshots (burst mode)
 
 
 Improvements:
 -------------
 
-	- renamed 'code/source' window into 'disassembly'
-	- build a tiemu2-like release when NO_GDB is enabled
+	- added Seamonkey to the browser list, suggest Firefox instead of the obsolete Mozilla Suite
+	- added accelator key: Pause => Screenshot Now!
+	- allow to select target folder for screenshots
 		
 		
 Bug fixes:
 ----------
 
-	- bug #1490859 (enable OK button when selecting an image)
-	- bug #1471709 (crash on old state image)
-	- splash.c saying "TiLP" instead of "TiEmu"
-	- increased buffer size for the RELEASE viewer
-	
-
-Planned:
---------
-
-	- nothing: stable branch
+	- NULL dereference in file selector
+	- wrong timeout value
+	- "TIGCC" and "ticalc.org" bookmarks
+	- recfile crash when receiving something which is not a valid variable
+	- invalid keyval mask in keyboard press event routine
+		removed Gdk_Caps_Lock capture (already capture by TI keyboard)
+	- bug #1435183: Error window when closing TI emu
 
 	
 Notes:
