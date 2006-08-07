@@ -44,6 +44,7 @@ Bug fixes:
 	- invalid keyval mask in keyboard press event routine
 		removed Gdk_Caps_Lock capture (already capture by TI keyboard)
 	- bug #1435183: Error window when closing TI emu
+	- bug #1529250 & #1529328: Screenshot folder changes after a few uses
 
 	
 Notes:

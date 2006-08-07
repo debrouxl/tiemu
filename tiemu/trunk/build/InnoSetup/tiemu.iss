@@ -26,6 +26,9 @@ Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescri
 Name: "slv_drv"; Description: "Copy SilverLink drivers"; GroupDescription: "Drivers:"; MinVersion: 0,4
 Name: "tlk_drv"; Description: "Install BlackLink/Parallel cable"; GroupDescription: "Drivers:"; MinVersion: 0,4
 
+[Dirs]
+Name: "{app}\screenshots"
+
 [Files]
 ; Glade files
 Source: "C:\sources\roms\tiemu3\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
