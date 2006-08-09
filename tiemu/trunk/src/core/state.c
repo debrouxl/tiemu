@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005-2006, Romain Liévin
+ *  Copyright (c) 2006, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -70,9 +71,9 @@ int ti68k_state_parse(const char *filename, char **rom_file, char **tib_file)
 	fseek(f, pos, SEEK_SET);
 	fread(&sav, 1, sav.size, f);
 
-	if(sav.revision < 20)
+	if(sav.revision < SAV_REVISION)
 	{
-		ret = 0;
+		ret = -2;
 		goto ti68k_state_parse_exit;
 	}
 
@@ -148,7 +149,7 @@ int ti68k_state_load(const char *filename)
     int ret;
 	long pos;
 	int i;
-	gchar *rf, *tf;
+	gchar *rf=NULL, *tf=NULL;
   
   	// No filename, exits
 	if(!strcmp(filename, ""))
@@ -170,7 +171,7 @@ int ti68k_state_load(const char *filename)
 	fseek(f, pos, SEEK_SET);
 	fread(&sav, 1, sav.size, f);
 
-	if(sav.revision != SAV_REVISION && sav.revision != 19)
+	if(sav.revision != SAV_REVISION)
 	{
 		fclose(f);
 		return ERR_REVISION_MATCH;
@@ -179,12 +180,12 @@ int ti68k_state_load(const char *filename)
 	// Does not accept state image different of emulator image
 	if(ti68k_state_parse(filename, &rf, &tf) < 0)
 	{
-		g_free(rf);
-		g_free(tf);
+		if (rf) g_free(rf);
+		if (tf) g_free(tf);
 		return ERR_STATE_MATCH;
 	}
-	g_free(rf);
-	g_free(tf);
+	if (rf) g_free(rf);
+	if (tf) g_free(tf);
 
 	// Compare image infos with current image
 	if(memcmp(&img, &img_infos, sizeof(IMG_INFO) - sizeof(char *)))

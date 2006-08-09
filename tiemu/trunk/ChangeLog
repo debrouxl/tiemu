@@ -1,7 +1,7 @@
 SubVersion: $Id$
 
 - 07/08/2006, version 2.81c
-	-
+	- [kevin] $2202: fixed g_free of invalid pointers in state.c (#1471709)
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM
