@@ -150,7 +150,7 @@ int hw_dbus_exit(void)
 	int err;
 
 	// detach cable from calc (close cable)
-	err = ticalcs_cable_detach(calc_handle);
+	err = (calc_handle ? ticalcs_cable_detach(calc_handle) : 0);
 	if(err)
 	{
 		tiemu_error(err, NULL);
@@ -158,8 +158,8 @@ int hw_dbus_exit(void)
 	}
 
 	// delete calc & cable handles
-	ticalcs_handle_del(calc_handle);
-	ticables_handle_del(cable_handle);
+	if (calc_handle) ticalcs_handle_del(calc_handle);
+	if (cable_handle) ticables_handle_del(cable_handle);
 
 	return 0;
 }
