@@ -1,3 +1,5 @@
+If you so wish, there is a new ReadMe in ReadMe-New.txt However the instructions have not been fully tested yet so it will not replace this file until it its known to fully work :)
+
 This is a new method, greatly simplified by the latest GTK+ package.
 
 Win32
