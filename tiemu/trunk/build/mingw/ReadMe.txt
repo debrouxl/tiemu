@@ -3,14 +3,14 @@ This is a new method, greatly simplified by the latest GTK+ package.
 Win32
 -----
 
-1°) Below, you will find a methodology which is common to:
+1) Below, you will find a methodology which is common to:
 - libtifiles, libticonv, libticables, libticalcs
 - tilp
 - tiemu
 
 You should strictly follow it else you will encounter some (very) weird stuffs !
 
-2°) Well, let get's us:
+2) Well, let get's us:
 
 - get MinGW & MSys from <http://www.mingw.org> and install them. You can merge both
 folders if you want but this is strongly discouraged by MinGW team. This was my 
@@ -26,7 +26,7 @@ and install it. Don't forget to register Msys environnement when the installer a
 - do an 'export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/target/lib/pkgconfig'
 	or make changes in your MSys\etc\profile for example.
 
-3°) To compile TiLP framework, TiLP and/or TiEmu, do the following:
+3) To compile TiLP framework, TiLP and/or TiEmu, do the following:
 	
 - ticables, ticonv, tifiles, ticalcs:
 	./configure --prefix=/target --disable-nls
@@ -41,7 +41,7 @@ Tested with TiLP & TiEmu, 15/02/05.
 
 ---
 
-Romain Liévin (The TiLP Team leader).
+Romain Liï¿½in (The TiLP Team leader).
 
 ============================================================
 
@@ -60,7 +60,7 @@ TiEmu now supports Linux->MinGW cross-compilation again. Here's how I did it:
 6. In order to avoid a needless mingwm10.dll dependency, edited
    /usr/local/i386-mingw32/lib/libstdc++.la to remove -lmingwthrd.
 7. Used the following commands to build TiEmu:
-   source cross-mingw32-aio.sh #(needs to be done for EACH build!)
+   source cross-mingw32-gtkaio.sh #(needs to be done for EACH build!)
    export CFLAGS="-Os -s -fno-exceptions"
    export CXXFLAGS="-Os -s -fno-exceptions"
    cd libticables-mingw-build
