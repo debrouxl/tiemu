@@ -65,8 +65,14 @@ void gdbcall_continue(void)
 
 void gdb_add_symbol_file(const char *filename, unsigned address)
 {
-  char command[strlen(filename) + 28];
-  sprintf(command, "add-symbol-file \"%s\" %u", filename, address);
+  char command[(strlen(filename) << 1) + 28], *p=command+17;
+  const char *q=filename;
+  strcpy(command, "add-symbol-file \"");
+  while (*q) {
+    if (*q == '\\' || *q == '\'' || *q == '\"') *(p++)='\\';
+    *(p++)=*(q++);
+  }
+  sprintf(p, "\" %u", address);
   gdbcall_exec_command(command);
 }
 

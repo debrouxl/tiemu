@@ -1,6 +1,6 @@
 /* signals.c -- signal handling support for readline. */
 
-/* Copyright (C) 1987, 1989, 1992 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2005 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library, a library for
    reading lines of text with interactive input and history editing.
@@ -73,10 +73,12 @@ typedef struct { SigHandler *sa_handler; int sa_mask, sa_flags; } sighandler_cxt
 #  define sigemptyset(m)
 #endif /* !HAVE_POSIX_SIGNALS */
 
-#if !defined (__MINGW32__)
+#ifndef SA_RESTART
+#  define SA_RESTART 0
+#endif
+
 static SigHandler *rl_set_sighandler PARAMS((int, SigHandler *, sighandler_cxt *));
 static void rl_maybe_set_sighandler PARAMS((int, SigHandler *, sighandler_cxt *));
-#endif
 
 /* Exported variables for use by applications. */
 
@@ -87,14 +89,13 @@ int rl_catch_signals = 1;
 /* If non-zero, readline will install a signal handler for SIGWINCH. */
 #ifdef SIGWINCH
 int rl_catch_sigwinch = 1;
+#else
+int rl_catch_sigwinch = 0;	/* for the readline state struct in readline.c */
 #endif
 
 static int signals_set_flag;
-#ifdef SIGWINCH
 static int sigwinch_set_flag;
-#endif
 
-#if !defined (__MINGW32__)
 /* **************************************************************** */
 /*					        		    */
 /*			   Signal Handling                          */
@@ -130,11 +131,11 @@ rl_signal_handler (sig)
 #if !defined (HAVE_BSD_SIGNALS) && !defined (HAVE_POSIX_SIGNALS)
   /* Since the signal will not be blocked while we are in the signal
      handler, ignore it until rl_clear_signals resets the catcher. */
-  if (sig == SIGINT 
-#ifdef SIGALRM
-      || sig == SIGALRM
-#endif
-                       )
+#  if defined (SIGALRM)
+  if (sig == SIGINT || sig == SIGALRM)
+#  else
+  if (sig == SIGINT)
+#  endif
     rl_set_sighandler (sig, SIG_IGN, &dummy_cxt);
 #endif /* !HAVE_BSD_SIGNALS && !HAVE_POSIX_SIGNALS */
 
@@ -144,16 +145,16 @@ rl_signal_handler (sig)
       rl_free_line_state ();
       /* FALLTHROUGH */
 
+    case SIGTERM:
 #if defined (SIGTSTP)
     case SIGTSTP:
     case SIGTTOU:
     case SIGTTIN:
 #endif /* SIGTSTP */
-#ifdef SIGALRM
+#if defined (SIGALRM)
     case SIGALRM:
 #endif
-    case SIGTERM:
-#ifdef SIGQUIT
+#if defined (SIGQUIT)
     case SIGQUIT:
 #endif
       rl_cleanup_after_signal ();
@@ -171,13 +172,10 @@ rl_signal_handler (sig)
       signal (sig, SIG_ACK);
 #endif
 
-      /* If we have the POSIX kill function, use it; otherwise, fall
-	 back to the ISO C raise function.  (Windows is an example of
-	 a platform that has raise, but not kill.)  */
-#ifdef HAVE_KILL
+#if defined (HAVE_KILL)
       kill (getpid (), sig);
 #else
-      raise (sig);
+      raise (sig);		/* assume we have raise */
 #endif
 
       /* Let the signal that we just sent through.  */
@@ -253,7 +251,7 @@ rl_set_sighandler (sig, handler, ohandler)
   struct sigaction act;
 
   act.sa_handler = handler;
-  act.sa_flags = 0;	/* XXX - should we set SA_RESTART for SIGWINCH? */
+  act.sa_flags = (sig == SIGWINCH) ? SA_RESTART : 0;
   sigemptyset (&act.sa_mask);
   sigemptyset (&ohandler->sa_mask);
   sigaction (sig, &act, &old_handler);
@@ -295,11 +293,11 @@ rl_set_signals ()
     {
       rl_maybe_set_sighandler (SIGINT, rl_signal_handler, &old_int);
       rl_maybe_set_sighandler (SIGTERM, rl_signal_handler, &old_term);
-#ifdef SIGQUIT
+#if defined (SIGQUIT)
       rl_maybe_set_sighandler (SIGQUIT, rl_signal_handler, &old_quit);
 #endif
 
-#ifdef SIGALRM
+#if defined (SIGALRM)
       oh = rl_set_sighandler (SIGALRM, rl_signal_handler, &old_alrm);
       if (oh == (SigHandler *)SIG_IGN)
 	rl_sigaction (SIGALRM, &old_alrm, &dummy);
@@ -350,10 +348,10 @@ rl_clear_signals ()
 
       rl_sigaction (SIGINT, &old_int, &dummy);
       rl_sigaction (SIGTERM, &old_term, &dummy);
-#ifdef SIGQUIT
+#if defined (SIGQUIT)
       rl_sigaction (SIGQUIT, &old_quit, &dummy);
 #endif
-#ifdef SIGALRM
+#if defined (SIGALRM)
       rl_sigaction (SIGALRM, &old_alrm, &dummy);
 #endif
 
@@ -383,7 +381,6 @@ rl_clear_signals ()
 
   return 0;
 }
-#endif /* !__MINGW32__ */
 
 /* Clean up the terminal and readline state after catching a signal, before
    resending it to the calling application. */
@@ -391,7 +388,8 @@ void
 rl_cleanup_after_signal ()
 {
   _rl_clean_up_for_exit ();
-  (*rl_deprep_term_function) ();
+  if (rl_deprep_term_function)
+    (*rl_deprep_term_function) ();
   rl_clear_signals ();
   rl_clear_pending_input ();
 }
@@ -400,7 +398,8 @@ rl_cleanup_after_signal ()
 void
 rl_reset_after_signal ()
 {
-  (*rl_prep_term_function) (_rl_meta_flag);
+  if (rl_prep_term_function)
+    (*rl_prep_term_function) (_rl_meta_flag);
   rl_set_signals ();
 }
 
@@ -421,53 +420,7 @@ rl_free_line_state ()
 
   _rl_kill_kbd_macro ();
   rl_clear_message ();
-  _rl_init_argument ();
+  _rl_reset_argument ();
 }
 
-#if defined (__MINGW32__)
-
-#include <windows.h>
-#include <signal.h>
-#include <stdio.h>
-
-/* Handling of CTRL_C_EVENT, CTRL_CLOSE_EVENT, CTRL_BREAK_EVENT, 
- * CTRL_LOGOFF_EVENT, CTRL_SHUTDOWN_EVENT,
- * WINDOW_BUFFER_SIZE_EVENTs are handled separately see input.c
- */
-
-BOOL CtrlEventHandler(DWORD dwEventType)
-{
-  if (dwEventType == CTRL_C_EVENT)
-    rl_free_line_state ();
-  rl_cleanup_after_signal ();
-  if (dwEventType == CTRL_C_EVENT)	/* special treatment */
-    {
-      if (rl_catch_signals == 1)	/* > 1: handled only locally */
-	{
-	  raise(SIGINT);		/* pass to program signal hadler */
-	  rl_reset_after_signal();	/* on return goon */
-	}
-      return TRUE;			/* don't pass to upstream handlers */
-    }
-  return FALSE; 			/* pass other events to handler chain */
-}
-
-int
-rl_set_signals ()
-{
-  if (rl_catch_signals && signals_set_flag == 0)
-    signals_set_flag = SetConsoleCtrlHandler( (PHANDLER_ROUTINE) CtrlEventHandler, TRUE);
-  return signals_set_flag;
-}
-
-int
-rl_clear_signals ()
-{
-  if ( signals_set_flag )
-    if ( SetConsoleCtrlHandler( (PHANDLER_ROUTINE) CtrlEventHandler, FALSE) )
-      signals_set_flag = 0;
-  return signals_set_flag;
-}
-
-#endif	/* __MINGW32__  */
 #endif  /* HANDLE_SIGNALS */

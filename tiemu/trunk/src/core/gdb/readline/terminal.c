@@ -1,6 +1,6 @@
 /* terminal.c -- controlling the terminal with termcap. */
 
-/* Copyright (C) 1996 Free Software Foundation, Inc.
+/* Copyright (C) 1996-2005 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library, a library for
    reading lines of text with interactive input and history editing.
@@ -51,17 +51,9 @@
 /* System-specific feature definitions and include files. */
 #include "rldefs.h"
 
-#if defined (__MINGW32__)
-# include <windows.h>
-extern int haveConsole;	/* imported from rltty.c  */
-extern HANDLE hStdout, hStdin;
-extern COORD	rlScreenEnd;
-extern int	rlScreenMax;
-#else /* !__MINGW32__ */
 #if defined (GWINSZ_IN_SYS_IOCTL) && !defined (TIOCGWINSZ)
 #  include <sys/ioctl.h>
 #endif /* GWINSZ_IN_SYS_IOCTL && !TIOCGWINSZ */
-#endif /* !__MINGW32__ */
 
 #ifdef __MSDOS__
 # include <pc.h>
@@ -78,8 +70,15 @@ extern int	rlScreenMax;
 #include "rlshell.h"
 #include "xmalloc.h"
 
+#if defined (__MINGW32__)
+# include <windows.h>
+# include <wincon.h>
+#endif
+
 #define CUSTOM_REDISPLAY_FUNC() (rl_redisplay_function != rl_redisplay)
 #define CUSTOM_INPUT_FUNC() (rl_getc_function != rl_getc)
+
+int rl_prefer_env_winsize;
 
 /* **************************************************************** */
 /*								    */
@@ -87,13 +86,10 @@ extern int	rlScreenMax;
 /*								    */
 /* **************************************************************** */
 
-#if !defined (__MSDOS__) && !defined (__MINGW32__)
+#ifndef __MSDOS__
 static char *term_buffer = (char *)NULL;
 static char *term_string_buffer = (char *)NULL;
-
-/* Non-zero means this terminal can't really do anything. */
-static int dumb_term;
-#endif /* !__MSDOS__ && !__MINGW32__ */
+#endif /* !__MSDOS__ */
 
 static int tcap_initialized;
 
@@ -137,7 +133,7 @@ char *_rl_term_up;
 static char *_rl_visible_bell;
 
 /* Non-zero means the terminal can auto-wrap lines. */
-int _rl_term_autowrap;
+int _rl_term_autowrap = -1;
 
 /* Non-zero means that this terminal has a meta key. */
 static int term_has_meta;
@@ -161,6 +157,9 @@ static char *_rl_term_ke;
 static char *_rl_term_kh;
 static char *_rl_term_kH;
 static char *_rl_term_at7;	/* @7 */
+
+/* Delete key */
+static char *_rl_term_kD;
 
 /* Insert key */
 static char *_rl_term_kI;
@@ -200,7 +199,6 @@ _emx_get_screensize (swp, shp)
    to the terminal.  If IGNORE_ENV is true, we do not pay attention to the
    values of $LINES and $COLUMNS.  The tests for TERM_STRING_BUFFER being
    non-null serve to check whether or not we have initialized termcap. */
-#if !defined (__MINGW32__)
 void
 _rl_get_screen_size (tty, ignore_env)
      int tty, ignore_env;
@@ -209,25 +207,53 @@ _rl_get_screen_size (tty, ignore_env)
 #if defined (TIOCGWINSZ)
   struct winsize window_size;
 #endif /* TIOCGWINSZ */
+  int wr, wc;
 
+  wr = wc = -1;
 #if defined (TIOCGWINSZ)
   if (ioctl (tty, TIOCGWINSZ, &window_size) == 0)
     {
-      _rl_screenwidth = (int) window_size.ws_col;
-      _rl_screenheight = (int) window_size.ws_row;
+      wc = (int) window_size.ws_col;
+      wr = (int) window_size.ws_row;
     }
 #endif /* TIOCGWINSZ */
+
+  /* For MinGW, we get the console size from the Windows API.  */
+#if defined (__MINGW32__)
+  HANDLE hConOut = GetStdHandle (STD_OUTPUT_HANDLE);
+  if (hConOut != INVALID_HANDLE_VALUE)
+    {
+      CONSOLE_SCREEN_BUFFER_INFO scr;
+      if (GetConsoleScreenBufferInfo (hConOut, &scr))
+	{
+	  _rl_screenwidth = scr.dwSize.X;
+	  _rl_screenheight = scr.srWindow.Bottom - scr.srWindow.Top + 1;
+	}
+    }
+#endif
 
 #if defined (__EMX__)
   _emx_get_screensize (&_rl_screenwidth, &_rl_screenheight);
 #endif
 
+  if (ignore_env || rl_prefer_env_winsize == 0)
+    {
+      _rl_screenwidth = wc;
+      _rl_screenheight = wr;
+    }
+  else
+    _rl_screenwidth = _rl_screenheight = -1;
+
   /* Environment variable COLUMNS overrides setting of "co" if IGNORE_ENV
-     is unset. */
+     is unset.  If we prefer the environment, check it first before
+     assigning the value returned by the kernel. */
   if (_rl_screenwidth <= 0)
     {
       if (ignore_env == 0 && (ss = sh_get_env_value ("COLUMNS")))
 	_rl_screenwidth = atoi (ss);
+
+      if (_rl_screenwidth <= 0)
+        _rl_screenwidth = wc;
 
 #if defined (__DJGPP__)
       if (_rl_screenwidth <= 0)
@@ -244,6 +270,9 @@ _rl_get_screen_size (tty, ignore_env)
     {
       if (ignore_env == 0 && (ss = sh_get_env_value ("LINES")))
 	_rl_screenheight = atoi (ss);
+
+      if (_rl_screenheight <= 0)
+        _rl_screenheight = wr;
 
 #if defined (__DJGPP__)
       if (_rl_screenheight <= 0)
@@ -272,43 +301,24 @@ _rl_get_screen_size (tty, ignore_env)
   _rl_screenchars = _rl_screenwidth * _rl_screenheight;
 }
 
-#else	/* __MINGW32__*/
-
-void
-_rl_get_screen_size (tty, ignore_env)
-     int tty, ignore_env;
-{
-  CONSOLE_SCREEN_BUFFER_INFO	csbi;
-  
-  if ( (haveConsole & FOR_OUTPUT) &&
-       GetConsoleScreenBufferInfo(hStdout, &csbi) )
-    {
-      _rl_screenwidth = csbi.dwSize.X;
-      _rl_screenheight = csbi.dwSize.Y;
-    }
-  else
-    {
-      _rl_screenwidth = 80;
-      _rl_screenheight = 24;
-    }
-  _rl_screenchars = _rl_screenwidth * _rl_screenheight;
-}
-#endif	/* __MINGW32__  */
-
 void
 _rl_set_screen_size (rows, cols)
      int rows, cols;
 {
-  if (rows == 0 || cols == 0)
-    return;
+  if (_rl_term_autowrap == -1)
+    _rl_init_terminal_io (rl_terminal_name);
 
-  _rl_screenheight = rows;
-  _rl_screenwidth = cols;
+  if (rows > 0)
+    _rl_screenheight = rows;
+  if (cols > 0)
+    {
+      _rl_screenwidth = cols;
+      if (_rl_term_autowrap == 0)
+	_rl_screenwidth--;
+    }
 
-  if (_rl_term_autowrap == 0)
-    _rl_screenwidth--;
-
-  _rl_screenchars = _rl_screenwidth * _rl_screenheight;
+  if (rows > 0 || cols > 0)
+    _rl_screenchars = _rl_screenwidth * _rl_screenheight;
 }
 
 void
@@ -327,6 +337,12 @@ rl_get_screen_size (rows, cols)
   if (cols)
     *cols = _rl_screenwidth;
 }
+
+void
+rl_reset_screen_size ()
+{
+  _rl_get_screen_size (fileno (rl_instream), 0);
+}
      
 void
 rl_resize_terminal ()
@@ -341,7 +357,6 @@ rl_resize_terminal ()
     }
 }
 
-#if !defined (__MINGW32__)
 struct _tc_string {
      const char *tc_var;
      char **tc_value;
@@ -361,6 +376,7 @@ static struct _tc_string tc_strings[] =
   { "ei", &_rl_term_ei },
   { "ic", &_rl_term_ic },
   { "im", &_rl_term_im },
+  { "kD", &_rl_term_kD },	/* delete */
   { "kH", &_rl_term_kH },	/* home down ?? */
   { "kI", &_rl_term_kI },	/* insert */
   { "kd", &_rl_term_kd },
@@ -395,45 +411,15 @@ get_term_capabilities (bp)
   register int i;
 
   for (i = 0; i < NUM_TC_STRINGS; i++)
-#  ifdef __LCC__
     *(tc_strings[i].tc_value) = tgetstr ((char *)tc_strings[i].tc_var, bp);
-#  else
-    *(tc_strings[i].tc_value) = tgetstr (tc_strings[i].tc_var, bp);
-#  endif
 #endif
   tcap_initialized = 1;
 }
-#endif /* !__MINGW32__ */
 
 int
 _rl_init_terminal_io (terminal_name)
      const char *terminal_name;
 {
-#if defined (__MINGW32__)
-  _rl_term_cr = "\r";						/* any value != 0  */
-  _rl_term_im = _rl_term_ei = _rl_term_ic = _rl_term_IC = (char *)NULL;	/* !! we emulate insertion  */
-  _rl_term_up = "y";						/* any value != 0  */
-  _rl_term_dc = _rl_term_DC =  (char *)NULL;			/* !! we emulate deletion  */
-  _rl_visible_bell = (char *)NULL;
- 
-  _rl_get_screen_size (0, 1);
-   
-  /* Let Windows handle meta keys!  */
-  term_has_meta = 0;
-  _rl_term_mm = _rl_term_mo = (char *)NULL;
- 
-  /* It probably has arrow keys, but I don't know what they are. */
-  _rl_term_ku = _rl_term_kd = _rl_term_kr = _rl_term_kl = (char *)NULL;
-  
-#if defined (HACK_TERMCAP_MOTION)
-  _rl_term_forward_char = (char *)NULL;
-#endif /* HACK_TERMCAP_MOTION */
- 
-  _rl_terminal_can_insert = 0;
-  _rl_term_autowrap = 1;
-
-#else /* !__MINGW32__ */
-
   const char *term;
   char *buffer;
   int tty, tgetent_ret;
@@ -441,7 +427,6 @@ _rl_init_terminal_io (terminal_name)
   term = terminal_name ? terminal_name : sh_get_env_value ("TERM");
   _rl_term_clrpag = _rl_term_cr = _rl_term_clreol = (char *)NULL;
   tty = rl_instream ? fileno (rl_instream) : 0;
-  _rl_screenwidth = _rl_screenheight = 0;
 
   if (term == 0)
     term = "dumb";
@@ -491,12 +476,17 @@ _rl_init_terminal_io (terminal_name)
 
       _rl_term_autowrap = 0;	/* used by _rl_get_screen_size */
 
+      /* Allow calling application to set default height and width, using
+	 rl_set_screen_size */
+      if (_rl_screenwidth <= 0 || _rl_screenheight <= 0)
+	{
 #if defined (__EMX__)
-      _emx_get_screensize (&_rl_screenwidth, &_rl_screenheight);
-      _rl_screenwidth--;
+	  _emx_get_screensize (&_rl_screenwidth, &_rl_screenheight);
+	  _rl_screenwidth--;
 #else /* !__EMX__ */
-      _rl_get_screen_size (tty, 0);
+	  _rl_get_screen_size (tty, 0);
 #endif /* !__EMX__ */
+	}
 
       /* Defaults. */
       if (_rl_screenwidth <= 0 || _rl_screenheight <= 0)
@@ -511,7 +501,7 @@ _rl_init_terminal_io (terminal_name)
       _rl_term_im = _rl_term_ei = _rl_term_ic = _rl_term_IC = (char *)NULL;
       _rl_term_up = _rl_term_dc = _rl_term_DC = _rl_visible_bell = (char *)NULL;
       _rl_term_ku = _rl_term_kd = _rl_term_kl = _rl_term_kr = (char *)NULL;
-      _rl_term_kh = _rl_term_kH = _rl_term_kI = (char *)NULL;
+      _rl_term_kh = _rl_term_kH = _rl_term_kI = _rl_term_kD = (char *)NULL;
       _rl_term_ks = _rl_term_ke = _rl_term_at7 = (char *)NULL;
       _rl_term_mm = _rl_term_mo = (char *)NULL;
       _rl_term_ve = _rl_term_vs = (char *)NULL;
@@ -543,7 +533,10 @@ _rl_init_terminal_io (terminal_name)
 
   _rl_term_autowrap = tgetflag ("am") && tgetflag ("xn");
 
-  _rl_get_screen_size (tty, 0);
+  /* Allow calling application to set default height and width, using
+     rl_set_screen_size */
+  if (_rl_screenwidth <= 0 || _rl_screenheight <= 0)
+    _rl_get_screen_size (tty, 0);
 
   /* "An application program can assume that the terminal can do
       character insertion if *any one of* the capabilities `IC',
@@ -569,12 +562,9 @@ _rl_init_terminal_io (terminal_name)
   bind_termcap_arrow_keys (vi_insertion_keymap);
 #endif /* VI_MODE */
 
-#endif /* !__MINGW32__ */
-  
   return 0;
 }
 
-#if !defined (__MINGW32__)
 /* Bind the arrow key sequences from the termcap description in MAP. */
 static void
 bind_termcap_arrow_keys (map)
@@ -585,13 +575,15 @@ bind_termcap_arrow_keys (map)
   xkeymap = _rl_keymap;
   _rl_keymap = map;
 
-  _rl_bind_if_unbound (_rl_term_ku, rl_get_previous_history);
-  _rl_bind_if_unbound (_rl_term_kd, rl_get_next_history);
-  _rl_bind_if_unbound (_rl_term_kr, rl_forward);
-  _rl_bind_if_unbound (_rl_term_kl, rl_backward);
+  rl_bind_keyseq_if_unbound (_rl_term_ku, rl_get_previous_history);
+  rl_bind_keyseq_if_unbound (_rl_term_kd, rl_get_next_history);
+  rl_bind_keyseq_if_unbound (_rl_term_kr, rl_forward_char);
+  rl_bind_keyseq_if_unbound (_rl_term_kl, rl_backward_char);
 
-  _rl_bind_if_unbound (_rl_term_kh, rl_beg_of_line);	/* Home */
-  _rl_bind_if_unbound (_rl_term_at7, rl_end_of_line);	/* End */
+  rl_bind_keyseq_if_unbound (_rl_term_kh, rl_beg_of_line);	/* Home */
+  rl_bind_keyseq_if_unbound (_rl_term_at7, rl_end_of_line);	/* End */
+
+  rl_bind_keyseq_if_unbound (_rl_term_kD, rl_delete);
 
   _rl_keymap = xkeymap;
 }
@@ -611,7 +603,6 @@ rl_get_termcap (cap)
     }
   return ((char *)NULL);
 }
-#endif /* !__MINGW32__ */
 
 /* Re-initialize the terminal considering that the TERM/TERMCAP variable
    has changed. */
@@ -619,11 +610,11 @@ int
 rl_reset_terminal (terminal_name)
      const char *terminal_name;
 {
+  _rl_screenwidth = _rl_screenheight = 0;
   _rl_init_terminal_io (terminal_name);
   return 0;
 }
 
-#if !defined (__MINGW32__)
 /* A function for the use of tputs () */
 #ifdef _MINIX
 void
@@ -701,8 +692,8 @@ rl_ding ()
 	      tputs (_rl_visible_bell, 1, _rl_output_character_function);
 	      break;
 	    }
-#endif
 	  /* FALLTHROUGH */
+#endif
 	case AUDIBLE_BELL:
 	  fprintf (stderr, "\007");
 	  fflush (stderr);
@@ -713,80 +704,6 @@ rl_ding ()
   return (-1);
 }
 
-#else	/* __MINGW32__ */
-
-/* Write COUNT characters from STRING to the output stream. */
-void
-_rl_output_some_chars (string, count)
-     const char *string;
-     int count;
-{
-  CONSOLE_SCREEN_BUFFER_INFO	csbi;
-  fwrite (string, 1, count, _rl_out_stream);
-  if ( (haveConsole & FOR_OUTPUT) && GetConsoleScreenBufferInfo(hStdout, &csbi) )
-    {
-      int linear_pos = (int)csbi.dwCursorPosition.Y * (int)csbi.dwSize.X
-			+ (int)csbi.dwCursorPosition.X;
-      if (linear_pos > rlScreenMax)
-        {
-          rlScreenEnd = csbi.dwCursorPosition;
-          rlScreenMax = linear_pos;
-        }
-    }
-}
-
-/* This is used to collect all putc output */
-int
-_rl_output_character_function (c)
-     int c;
-{
-  _rl_output_some_chars ((char *)&c, 1);
-  return 1;
-}
-
-/* Move the cursor back. */
-int
-_rl_backspace (count)
-     int count;
-{
-  CONSOLE_SCREEN_BUFFER_INFO	csbi;
-
-  if ( (haveConsole & FOR_OUTPUT) && GetConsoleScreenBufferInfo(hStdout, &csbi) )
-    {
-      while (count > csbi.dwCursorPosition.X)
-        {
-          --csbi.dwCursorPosition.Y;
-          count -= csbi.dwCursorPosition.X + 1;
-          csbi.dwCursorPosition.X = csbi.dwSize.X - 1;
-        }
-      csbi.dwCursorPosition.X -= count;
-      SetConsoleCursorPosition(hStdout, csbi.dwCursorPosition);
-    }
-  return 0;
-}
-
-/* Move to the start of the next line. */
-int
-rl_crlf ()
-{
-  _rl_output_some_chars ("\n", 1);
-  return 0;
-}
-
-/* Ring the terminal bell. */
-int
-rl_ding ()
-{
-  if (readline_echoing_p)
-    {
-      if (_rl_bell_preference != NO_BELL)
-	MessageBeep(MB_OK);
-      return (0);
-    }
-  return (-1);
-}
-#endif	/* __MINGW32__ */
-
 /* **************************************************************** */
 /*								    */
 /*	 	Controlling the Meta Key and Keypad		    */
@@ -796,7 +713,7 @@ rl_ding ()
 void
 _rl_enable_meta_key ()
 {
-#if !defined (__DJGPP__) && !defined (__MINGW32__)
+#if !defined (__DJGPP__)
   if (term_has_meta && _rl_term_mm)
     tputs (_rl_term_mm, 1, _rl_output_character_function);
 #endif
@@ -806,7 +723,7 @@ void
 _rl_control_keypad (on)
      int on;
 {
-#if !defined (__DJGPP__) && !defined (__MINGW32__)
+#if !defined (__DJGPP__)
   if (on && _rl_term_ks)
     tputs (_rl_term_ks, 1, _rl_output_character_function);
   else if (!on && _rl_term_ke)
@@ -828,7 +745,7 @@ void
 _rl_set_cursor (im, force)
      int im, force;
 {
-#if !defined (__MSDOS__) && !defined (__MINGW32__)
+#ifndef __MSDOS__
   if (_rl_term_ve && _rl_term_vs)
     {
       if (force || im != rl_insert_mode)

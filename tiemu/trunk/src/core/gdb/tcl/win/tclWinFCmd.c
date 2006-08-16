@@ -469,7 +469,7 @@ DoRenameFile(
 }
 #ifdef HAVE_NO_SEH
 static
-__attribute__ ((cdecl, used))
+__attribute__ ((cdecl,used))
 EXCEPTION_DISPOSITION
 _except_dorenamefile_handler(
     struct _EXCEPTION_RECORD *ExceptionRecord,
@@ -651,7 +651,7 @@ DoCopyFile(
 }
 #ifdef HAVE_NO_SEH
 static
-__attribute__ ((cdecl, used))
+__attribute__ ((cdecl,used))
 EXCEPTION_DISPOSITION
 _except_docopyfile_handler(
     struct _EXCEPTION_RECORD *ExceptionRecord,

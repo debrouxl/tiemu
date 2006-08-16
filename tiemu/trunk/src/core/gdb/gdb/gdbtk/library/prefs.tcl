@@ -1,5 +1,5 @@
 # Local preferences functions for Insight.
-# Copyright 1997, 1998, 1999, 2002, 2003, 2004 Red Hat
+# Copyright (C) 1997, 1998, 1999, 2002, 2003, 2004 Red Hat
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License (GPL) as published by
@@ -50,7 +50,8 @@ proc pref_read {} {
     set prefs_init_filename ".gdbtkinit"
   }
 
-  if {!$GDBStartup(inhibit_prefs)} {
+  if {!$GDBStartup(inhibit_prefs) \
+      || [info exists env(INSIGHT_FORCE_READ_PREFERENCES)]} {
     set file_opened 0
     if {[file exists $prefs_init_filename]} {
       if {[catch {open $prefs_init_filename r} fd]} {

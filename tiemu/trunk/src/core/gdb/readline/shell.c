@@ -27,7 +27,6 @@
 #endif
 
 #include <sys/types.h>
-#include <stdio.h>
 
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
@@ -49,13 +48,12 @@
 #  include <limits.h>
 #endif
 
+#if defined (HAVE_FCNTL_H)
 #include <fcntl.h>
-#ifdef HAVE_PWD_H
+#endif
+#if defined (HAVE_PWD_H)
 #include <pwd.h>
 #endif
-#if defined (__MINGW32__)
-#include <windows.h>
-#endif /* __MINGW32__ */
 
 #include <stdio.h>
 
@@ -63,9 +61,9 @@
 #include "rlshell.h"
 #include "xmalloc.h"
 
-#if !defined (HAVE_GETPW_DECLS)
+#if defined (HAVE_GETPWUID) && !defined (HAVE_GETPW_DECLS)
 extern struct passwd *getpwuid PARAMS((uid_t));
-#endif /* !HAVE_GETPW_DECLS */
+#endif /* HAVE_GETPWUID && !HAVE_GETPW_DECLS */
 
 #ifndef NULL
 #  define NULL 0
@@ -128,23 +126,27 @@ sh_set_lines_and_columns (lines, cols)
 {
   char *b;
 
-#if defined (HAVE_PUTENV)
-  b = (char *)xmalloc (INT_STRLEN_BOUND (int) + sizeof ("LINES=") + 1);
-  sprintf (b, "LINES=%d", lines);
-  putenv (b);
-  b = (char *)xmalloc (INT_STRLEN_BOUND (int) + sizeof ("COLUMNS=") + 1);
-  sprintf (b, "COLUMNS=%d", cols);
-  putenv (b);
-#else /* !HAVE_PUTENV */
-#  if defined (HAVE_SETENV)
+#if defined (HAVE_SETENV)
   b = (char *)xmalloc (INT_STRLEN_BOUND (int) + 1);
   sprintf (b, "%d", lines);
   setenv ("LINES", b, 1);
+  free (b);
+
   b = (char *)xmalloc (INT_STRLEN_BOUND (int) + 1);
   sprintf (b, "%d", cols);
   setenv ("COLUMNS", b, 1);
-#  endif /* HAVE_SETENV */
-#endif /* !HAVE_PUTENV */
+  free (b);
+#else /* !HAVE_SETENV */
+#  if defined (HAVE_PUTENV)
+  b = (char *)xmalloc (INT_STRLEN_BOUND (int) + sizeof ("LINES=") + 1);
+  sprintf (b, "LINES=%d", lines);
+  putenv (b);
+
+  b = (char *)xmalloc (INT_STRLEN_BOUND (int) + sizeof ("COLUMNS=") + 1);
+  sprintf (b, "COLUMNS=%d", cols);
+  putenv (b);
+#  endif /* HAVE_PUTENV */
+#endif /* !HAVE_SETENV */
 }
 
 char *
@@ -158,18 +160,14 @@ char *
 sh_get_home_dir ()
 {
   char *home_dir;
-#if !defined (__MINGW32__)
   struct passwd *entry;
 
   home_dir = (char *)NULL;
-#ifdef HAVE_GETPWUID
+#if defined (HAVE_GETPWUID)
   entry = getpwuid (getuid ());
   if (entry)
     home_dir = entry->pw_dir;
 #endif
-#else
-  home_dir = sh_get_env_value ("HOME");
-#endif /* !__MINGW32__ */
   return (home_dir);
 }
 
@@ -179,12 +177,11 @@ sh_get_home_dir ()
 #  endif
 #endif
 
-#if !defined (__MINGW32__)
 int
 sh_unset_nodelay_mode (fd)
      int fd;
 {
-#ifdef HAVE_FNCTL
+#if defined (HAVE_FCNTL)
   int flags, bflags;
 
   if ((flags = fcntl (fd, F_GETFL, 0)) < 0)
@@ -209,30 +206,3 @@ sh_unset_nodelay_mode (fd)
 
   return 0;
 }
-
-#else	/* !__MINGW32__  */
-
-char *
-_rl_get_user_registry_string (char *keyName, char* valName)
-{
-  char *result = NULL;
-  HKEY	subKey;
-  if ( keyName && (RegOpenKeyEx(HKEY_CURRENT_USER, keyName, 0, KEY_READ, &subKey)
-                   == ERROR_SUCCESS) )
-    {
-      DWORD type;
-      char *chtry = NULL;
-      DWORD bufSize = 0;
-      
-      if ( (RegQueryValueExA(subKey, valName, NULL, &type, chtry, &bufSize)
-	    == ERROR_SUCCESS) && (type == REG_SZ) )
-        {
-	  if ( (chtry = (char *)xmalloc(bufSize))
-	       && (RegQueryValueExA(subKey, valName, NULL, &type, chtry, &bufSize) 
-		   == ERROR_SUCCESS) )
-	    result = chtry;
-        }
-    }
-  return result;
-}
-#endif	/* !__MINGW32__  */

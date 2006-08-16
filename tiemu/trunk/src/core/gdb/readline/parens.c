@@ -21,6 +21,10 @@
    59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 #define READLINE_LIBRARY
 
+#if defined (__TANDEM)
+#  include <floss.h>
+#endif
+
 #include "rlconf.h"
 
 #if defined (HAVE_CONFIG_H)
@@ -36,10 +40,6 @@
 
 #if defined (FD_SET) && !defined (HAVE_SELECT)
 #  define HAVE_SELECT
-#endif
-
-#ifdef __MINGW32__
-# include <windows.h>
 #endif
 
 #if defined (HAVE_SELECT)
@@ -66,7 +66,7 @@ static int find_matching_open PARAMS((char *, int, int));
 
 /* Non-zero means try to blink the matching open parenthesis when the
    close parenthesis is inserted. */
-#if defined (HAVE_SELECT) || defined (__MINGW32__)
+#if defined (HAVE_SELECT)
 int rl_blink_matching_paren = 1;
 #else /* !HAVE_SELECT */
 int rl_blink_matching_paren = 0;
@@ -138,25 +138,8 @@ rl_insert_close (count, invoking_key)
       (*rl_redisplay_function) ();
       ready = select (1, &readfds, (fd_set *)NULL, (fd_set *)NULL, &timer);
       rl_point = orig_point;
-#elif defined (__MINGW32__)
-      int orig_point, match_point, ready;
-
-      rl_insert (1, invoking_key);
-      (*rl_redisplay_function) ();
-      match_point =
-	find_matching_open (rl_line_buffer, rl_point - 2, invoking_key);
-
-      /* Emacs might message or ring the bell here, but I don't. */
-      if (match_point < 0)
-	return -1;
-
-      orig_point = rl_point;
-      rl_point = match_point;
-      (*rl_redisplay_function) ();
-      ready = (WaitForSingleObject (GetStdHandle(STD_INPUT_HANDLE), 500) == WAIT_OBJECT_0);
-      rl_point = orig_point;
-#else /* !__MINGW32__ */
-      rl_insert (count, invoking_key);
+#else /* !HAVE_SELECT */
+      _rl_insert_char (count, invoking_key);
 #endif /* !HAVE_SELECT */
     }
   return 0;

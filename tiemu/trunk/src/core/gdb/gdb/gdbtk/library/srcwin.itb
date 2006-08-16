@@ -1,5 +1,6 @@
 # Source window for Insight.
-# Copyright 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004 Red Hat, Inc.
+# Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
+# 2006 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License (GPL) as published by
@@ -106,8 +107,14 @@ itcl::body SrcWin::_build_win {} {
   $_statbar.mode list insert end MIXED
   $_statbar.mode list insert end SRC+ASM
 
+  # Workaround: the three comboboxes above sometimes display with
+  # height of one pixel. Inserting an invisible frame with the required
+  # height "fixes" this...
+  frame $_statbar.strut -height 24 -width 10
+
   pack $_statbar.mode -side right -padx 10 -pady 4
-  pack $_statbar.name $_statbar.func -side left -pady 4 -padx 10
+  pack $_statbar.name $_statbar.func $_statbar.strut  \
+      -side left -pady 4 -padx 10
 
   # if user likes control on top...
   if {[pref get gdb/src/top_control]} {
@@ -170,11 +177,6 @@ itcl::body SrcWin::_build_win {} {
       _update $loc
     }
   }
-
-  # (TiEmu 20050514 Kevin Kofler) Work around a bug in the Tk geometry manager
-  # (can't see the dropdowns without this)
-  wm withdraw $_top
-  wm deiconify $_top
 }
 
 
@@ -822,8 +824,8 @@ itcl::body SrcWin::_exit {} {
   debug
   if {[llength [ManagedWin::find SrcWin]] == 1} {
     after idle [tiemu_close_debugger]
-    return
-  }
+      return
+    }
   after idle [delete object $this]
 }
 

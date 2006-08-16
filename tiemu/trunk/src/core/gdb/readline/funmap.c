@@ -111,7 +111,7 @@ static FUNMAP default_funmap[] = {
   { "non-incremental-forward-search-history-again", rl_noninc_forward_search_again },
   { "non-incremental-reverse-search-history-again", rl_noninc_reverse_search_again },
   { "overwrite-mode", rl_overwrite_mode },
-#if defined (__CYGWIN__) || defined (__MINGW32__)
+#ifdef __CYGWIN__
   { "paste-from-clipboard", rl_paste_from_clipboard },
 #endif
   { "possible-completions", rl_possible_completions },
@@ -131,6 +131,7 @@ static FUNMAP default_funmap[] = {
   { "tty-status", rl_tty_status },
   { "undo", rl_undo_command },
   { "universal-argument", rl_universal_argument },
+  { "unix-filename-rubout", rl_unix_filename_rubout },
   { "unix-line-discard", rl_unix_line_discard },
   { "unix-word-rubout", rl_unix_word_rubout },
   { "upcase-word", rl_upcase_word },
@@ -175,6 +176,7 @@ static FUNMAP default_funmap[] = {
   { "vi-put", rl_vi_put },
   { "vi-redo", rl_vi_redo },
   { "vi-replace", rl_vi_replace },
+  { "vi-rubout", rl_vi_rubout },
   { "vi-search", rl_vi_search },
   { "vi-search-again", rl_vi_search_again },
   { "vi-set-mark", rl_vi_set_mark },

@@ -1,3 +1,9 @@
+2006-06-18  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * Drop no longer needed patch:
+          2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+          * srcwin.itb (SrcWin::_build_win): Work around Tk geometry manager glitch.
+
 2006-05-24  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * ../../../libgui/library/cframe.tcl, ../../../libgui/library/lframe.tcl,

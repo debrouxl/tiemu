@@ -339,6 +339,47 @@ rl_unix_word_rubout (count, key)
       if (rl_editing_mode == emacs_mode)
 	rl_mark = rl_point;
     }
+
+  return 0;
+}
+
+/* This deletes one filename component in a Unix pathname.  That is, it
+   deletes backward to directory separator (`/') or whitespace.  */
+int
+rl_unix_filename_rubout (count, key)
+     int count, key;
+{
+  int orig_point, c;
+
+  if (rl_point == 0)
+    rl_ding ();
+  else
+    {
+      orig_point = rl_point;
+      if (count <= 0)
+	count = 1;
+
+      while (count--)
+	{
+	  c = rl_line_buffer[rl_point - 1];
+	  while (rl_point && (whitespace (c) || c == '/'))
+	    {
+	      rl_point--;
+	      c = rl_line_buffer[rl_point - 1];
+	    }
+
+	  while (rl_point && (whitespace (c) == 0) && c != '/')
+	    {
+	      rl_point--;
+	      c = rl_line_buffer[rl_point - 1];
+	    }
+	}
+
+      rl_kill_text (orig_point, rl_point);
+      if (rl_editing_mode == emacs_mode)
+	rl_mark = rl_point;
+    }
+
   return 0;
 }
 
@@ -615,7 +656,7 @@ rl_yank_last_arg (count, key)
 }
 
 /* A special paste command for users of Cygnus's cygwin32. */
-#if defined (__CYGWIN__) || defined (__MINGW32__)
+#if defined (__CYGWIN__)
 #include <windows.h>
 
 int

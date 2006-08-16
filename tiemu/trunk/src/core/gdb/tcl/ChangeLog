@@ -1,3 +1,20 @@
+2006-02-08  Alexandre Oliva  <aoliva@redhat.com>
+
+	* unix/tcl.m4 (SC_CONFIG_CFLAGS, SC_BLOCKING_STYLE): Remove
+	unmatched single quote inside backticks.
+	* unix/configure: Rebuild.
+
+2006-02-02  Christopher Faylor  <cgf@timesys.com>
+
+	* win/tclWin32Dll.c (_except_checkstackspace_handler): Define with
+	proper attribute to prevent this static function from being deleted due
+	to aggressive gcc optimization.
+	* win/tclWinChan.c (_except_makefilechannel_handler): Ditto.
+	* win/tclWinFCmd.c (_except_dorenamefile_handler): Ditto.
+
+	* configure.in: Make sure that TCL_LIB_SPEC is properly filled out.
+	* configure: Regenerate.
+
 2004-01-21  Keith Seitz  <kseitz@uglyboxes.com>
 
 	From tcl repository:

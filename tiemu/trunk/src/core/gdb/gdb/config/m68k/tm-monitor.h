@@ -47,8 +47,8 @@
 extern int ti68k_bkpt_add_address(uint32_t address);
 extern int ti68k_bkpt_del_address(uint32_t address);
 extern void dbgbkpts_refresh_window(void);
-#define target_remove_hw_breakpoint(addr, shadow) (ti68k_bkpt_del_address(addr),dbgbkpts_refresh_window(),0)
-#define target_insert_hw_breakpoint(addr, shadow) (ti68k_bkpt_add_address(addr),dbgbkpts_refresh_window(),0)
+#define target_remove_hw_breakpoint(bp_tgt) (ti68k_bkpt_del_address((bp_tgt)->placed_address),dbgbkpts_refresh_window(),0)
+#define target_insert_hw_breakpoint(bp_tgt) (ti68k_bkpt_add_address((bp_tgt)->placed_address),dbgbkpts_refresh_window(),0)
 extern int ti68k_bkpt_add_watchpoint(uint32_t address, uint32_t len, int type);
 extern int ti68k_bkpt_del_watchpoint(uint32_t address, uint32_t len, int type);
 extern int ti68k_bkpt_stopped_data_address(uint32_t *address);

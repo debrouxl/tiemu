@@ -1,122 +1,40 @@
-2005-11-21  Keith Seitz  <keiths@redhat.com>
+2006-06-26  Keith Seitz  <keiths@redhat.com>
 
-	From Spencer Oliver <spencer.oliver@anglia.com>:
-	* library/targetselection.itb (build_win): Only pack the xterm checkbutton
-	on unix platforms.
+	* library/srcwin.itb (_build_win): Add invisible frame to workaround
+	the missing frame problem.
 
-2005-09-12  Keith Seitz  <keiths@redhat.com>
+2006-03-29  Brian Dessent  <brian@dessent.net>
 
-	* generic/gdbtk.c (gdbtk_init): Remove all mention of Tix.
-	* README: Ditto.
+	* generic/gdbtk-cmds.c: Include sys/cygwin.h if __CYGWIN__ defined.
+	(gdb_path_conv): Call cygwin_conv_to_full_win32_path instead.
 
-2005-08-31  Keith Seitz  <keiths@redhat.com>
+2006-01-23  Keith Seitz  <keiths@redhat.com>
 
-	* library/help/target.html: Update dialog options.
-	* library/targetselection.itb (help): Implement.
-	(build_win): Don't disable help button.
-	Only display "use tty" option on unix hosts.
+	From Andrew Stubbs  <andrew.stubbs@st.com>:
+	* library/help/source.html: Add entries for the missing menu commands.
 
-2005-08-31  Keith Seitz  <keiths@redhat.com>
+2006-01-23  Keith Seitz  <keiths@redhat.com>
 
-	* library/bpwin.itb (bp_store): gdb_get_breakpoint_info outputs
-	the breakpoint condition, too -- include it in the lassign.
+	From Andrew Stubbs  <andrew.stubbs@st.com>:
+	* library/mempref.itb (MemPref::constructor): Allow the Byte Per Row
+	combo box to accept arbitrary values.
+	(MemPref::set_bytes_per_row): Validate the new value; reject invalid
+	entries and round up to a multiple of the word size.
+	(MemPref::apply): Read the value from the text box even if the user
+	has not pressed return.
+	(MemPref::enable_format): Ensure the bytes per row value is still valid.
+	(MemPref::disable_format): Likewise.
+	* library/mempref.ith (MemPref): Add $gbprlist.
+	* library/help/memory.html: Update.
 
-2005-08-31  Keith Seitz  <keiths@redhat.com>
+2006-01-23  Keith Seitz  <keiths@redhat.com>
 
-	From Dieter Ruppert <dieter_ruppert@siemens.com>:
-	* library/memwin.itb (update_address): Change parameter name
-	so that it does not shadow a member variable.
-	Save the updated address internally.
+	From Andrew Stubbs  <andrew.stubbs@st.com>:
+	* library/helpviewer.tcl (open_help): Add firefox and opera to the
+	browser list used to display help.
 
-2005-06-13  Keith Seitz  <keiths@redhat.com>
+2006-01-23  Keith Seitz  <keiths@redhat.comt>
 
-	From Charles Brockman <mr hyphen chuck at att dot net>:
-	* library/interface.tcl (gdbtk_tcl_warning): Filter "RTTI symbol not found"
-	"warnings", too.
-
-2005-06-06  Keith Seitz  <keiths@redhat.com>
-
-	* library/interface.tcl (gdbtk_tcl_fputs_error): gdbtk_state is in the global
-	namespace. Fix references.
-	(gdbtk_tcl_fputs_log): Likewise.
-	
-	From Steven Johnson  <johnson@sakuraindustries.com>:
-	* library/interface.tcl (gdbtk_tcl_warning): Filter some basic warnings
-	from gdb - "incomplete CFI.." and "Internal error".
-
-2005-06-06  Keith Seitz  <keiths@redhat.com>
-
-	From Steven Johnson  <sjohnson@sakraindustries.com>:
-	* generic/gcbtk-cmds.c (gdb_loc): Hand gdb_loc called before remote
-	target connected, where gdb_loc now returns the entry address as $pc.
-
-2005-06-01  Keith Seitz  <keiths@redhat.com>
-
-	From James Lemke  <jim@wasabisystems.com>:
-	* generic/gdbtk-hooks.c (gdbtk_fileopenin, gdbtk_read): New functions
-	for target to read stdin from console window.
-	* generic/gdbtk-interp.c (_stdtargin): Added.
-	* generic/gdbtk.h (gdbtk_fileopenin): Add declaration.
-
-2005-05-26  Keith Seitz  <keiths@redhat.com>
-
-	* generic/gdbtk-cmds.c (gdb_set_mem): target_write_memory now takes
-	gdb_byte* instead of char*.
-	* generic/gdbtk-register.c (get_register): frame_register and val_print
-	take gdb_byte* instead of char*.
-	* generic/gdbtk-wrapper.c: Ditto the val_print part.
-
-	From Paul Schlie  <schlie@comcast.net>:
-	* generic/gdbtk-bp.c (gdb_set_bp): Use lbasename instead of basename.
-	* generic/gdbtk-cmds.c (gdb_listfiles): Likewise.
-
-2005-04-28  Ben Elliston  <bje@au.ibm.com>
-
-	* generic/gdbtk-interp.c (gdbtk_interpreter_exec): Return struct
-	gdb_exception due to the 2005-04-26 renaming of struct exception.
-	* generic/gdbtk.c (gdbtk_source_start_file): Likewise.
-
-2005-02-25  Keith Seitz  <kseitz@sources.redhat.com>
-
-	* generic/gdbtk.c (gdbtk_source_start_file): In the _WIN32 case,
-	use throw_exception (struct exception).
-
-2005-02-16  Martin Hunt  <hunt@redhat.com>
-
-	* generic/gdbtk-stack.c (get_frame_name): Replace
-	print_address_numeric with deprecated_print_address_numeric.
-	* generic/gdbtk-cmds.c (gdbtk_load_asm): Ditto.
-
-2005-02-07  Keith Seitz  <kseitz@sources.redhat.com>
-
-	* generic/gdbtk-cmds.c (gdb_eval): VALUE_EMBEDDED_OFFSET and
-	VALUE_CONTENTS are now functions.
-
-
-2005-01-19  Keith Seitz  <kseitz@sources.redhat.com>
-
-	* Makefile.in: Regenerate.
-	* aclocal.m4: Regenerate.
-	* plugins/Makefile.in; Regenerate.
-	* plugins/aclocal.m4: Regenerate.
-
-2005-01-17  Keith Seitz  <kseitz@sources.redhat.com>
-
-	* generic/gdbtk-varobj.c (variable_value): Remove all instances
-	of error_last_message. It's gone.
-
-	* generic/gdbtk-wrapper.c: Include exceptions.h
-	* generic/gdbtk-cmds.c: Likewise.
-	* generic/gdbtk-interp.c: Likewise.
-	(gdbtk_interpreter_exec): Change return type to struct
-	exception. Return exception_none.	
-
-2005-01-13  Keith Seitz  <keiths@redhat.com>
-
-	* configure.in: Rename to ...
-	* configure.ac: ... this.
-	* configure: Regenerate with autoconf 2.59.
-	* plugins/configure.in: Rename to ...
-	* plugins/configure.ac: ... this.
-	* pluginx/configure: Regenerate with autoconf 2.59.
+	* ChangeLog: Cleared and saved to ...
+	* ChagneLog-2005: ... here.
 

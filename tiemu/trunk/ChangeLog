@@ -3,6 +3,8 @@ SubVersion: $Id$
 - 07/08/2006, version 2.81c
 	- [kevin] $2202: fixed g_free of invalid pointers in state.c (#1471709)
 	- [kevin] $2203: fixed ticalcs_cable_detach of NULL calc_handle when exiting TiEmu early (reported by hypersonic)
+	- [kevin] $2211: imported Insight 6.5 and intl directory from Binutils 2.17 and merged TiEmu changes
+	                 quote file name for add_symbol_file properly for the new add_symbol_file command parser in GDB 6.5
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM

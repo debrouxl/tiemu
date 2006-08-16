@@ -1,5 +1,5 @@
 # Open a viewer for HTML help info
-# Copyright 2002, Red Hat, Inc.
+# Copyright (C) 2002, Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License (GPL) as published by
@@ -36,13 +36,13 @@ proc open_help {hfile} {
   # set list of viewer apps to try
   switch [pref get gdb/compat] {
     "KDE" {
-      set apps {htmlview khelpcenter mozilla}
+      set apps {htmlview khelpcenter firefox opera mozilla}
     }
     "GNOME" {
-      set apps {htmlview mozilla gnome-help khelpcenter}
+      set apps {htmlview firefox opera mozilla gnome-help khelpcenter}
     }      
     default {
-      set apps {htmlview mozilla gnome-help khelpcenter netscape}
+      set apps {htmlview firefox opera mozilla gnome-help khelpcenter netscape}
     }
   }
 

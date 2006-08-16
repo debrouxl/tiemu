@@ -1,7 +1,7 @@
 /* rltty.c -- functions to prepare and restore the terminal for readline's
    use. */
 
-/* Copyright (C) 1992 Free Software Foundation, Inc.
+/* Copyright (C) 1992-2005 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library, a library for
    reading lines of text with interactive input and history editing.
@@ -26,9 +26,6 @@
 #  include <config.h>
 #endif
 
-/* for native Win32 environments this is hard stuff  */
-#if !defined (__MINGW32__)
-
 #include <sys/types.h>
 #include <signal.h>
 #include <errno.h>
@@ -45,12 +42,6 @@
 #endif /* GWINSZ_IN_SYS_IOCTL */
 
 #include "rltty.h"
-
-#else	/* __MINGW32__ */
-#include "rldefs.h"
-#include <stdio.h>
-#endif	/* __MINGW32__ */
-
 #include "readline.h"
 #include "rlprivate.h"
 
@@ -66,7 +57,6 @@ static void release_sigint PARAMS((void));
 
 static void set_winsize PARAMS((int));
 
-#if !defined (__MINGW32__)
 /* **************************************************************** */
 /*								    */
 /*			   Signal Management			    */
@@ -198,6 +188,8 @@ static int set_tty_settings PARAMS((int, TIOTYPE *));
 
 static void prepare_terminal_settings PARAMS((int, TIOTYPE, TIOTYPE *));
 
+static void set_special_char PARAMS((Keymap, TIOTYPE *, int, rl_command_func_t));
+
 static void
 save_tty_chars (tiop)
      TIOTYPE *tiop;
@@ -239,12 +231,11 @@ get_tty_settings (tty, tiop)
      int tty;
      TIOTYPE *tiop;
 {
-#if defined (TIOCGWINSZ)
   set_winsize (tty);
-#endif
 
   tiop->flags = tiop->lflag = 0;
 
+  errno = 0;
   if (ioctl (tty, TIOCGETP, &(tiop->sgttyb)) < 0)
     return -1;
   tiop->flags |= SGTTY_SET;
@@ -414,6 +405,9 @@ static int set_tty_settings PARAMS((int, TIOTYPE *));
 
 static void prepare_terminal_settings PARAMS((int, TIOTYPE, TIOTYPE *));
 
+static void set_special_char PARAMS((Keymap, TIOTYPE *, int, rl_command_func_t));
+static void _rl_bind_tty_special_chars PARAMS((Keymap, TIOTYPE));
+
 #if defined (FLUSHO)
 #  define OUTPUT_BEING_FLUSHED(tp)  (tp->c_lflag & FLUSHO)
 #else
@@ -525,10 +519,9 @@ get_tty_settings (tty, tiop)
      int tty;
      TIOTYPE *tiop;
 {
-#if defined (TIOCGWINSZ)
   set_winsize (tty);
-#endif
 
+  errno = 0;
   if (_get_tty_settings (tty, tiop) < 0)
     return -1;
 
@@ -642,10 +635,9 @@ prepare_terminal_settings (meta_flag, oldtio, tiop)
 
 #endif /* TERMIOS_TTY_DRIVER && _POSIX_VDISABLE */
 }
-#endif  /* NEW_TTY_DRIVER */
+#endif  /* !NEW_TTY_DRIVER */
 
-/* Put the terminal in CBREAK mode so that we can detect key
-   presses. */
+/* Put the terminal in CBREAK mode so that we can detect key presses. */
 #if defined (NO_TTY_DRIVER)
 void
 rl_prep_terminal (meta_flag)
@@ -660,7 +652,6 @@ rl_deprep_terminal ()
 }
 
 #else /* ! NO_TTY_DRIVER */
-/* Put the terminal in CBREAK mode so that we can detect key presses. */
 void
 rl_prep_terminal (meta_flag)
      int meta_flag;
@@ -678,13 +669,43 @@ rl_prep_terminal (meta_flag)
 
   if (get_tty_settings (tty, &tio) < 0)
     {
+#if defined (ENOTSUP)
+      /* MacOS X, at least, lies about the value of errno if tcgetattr fails. */
+      if (errno == ENOTTY || errno == ENOTSUP)
+#else
+      if (errno == ENOTTY)
+#endif
+	readline_echoing_p = 1;		/* XXX */
       release_sigint ();
       return;
     }
 
   otio = tio;
 
+  if (_rl_bind_stty_chars)
+    {
+#if defined (VI_MODE)
+      /* If editing in vi mode, make sure we restore the bindings in the
+	 insertion keymap no matter what keymap we ended up in. */
+      if (rl_editing_mode == vi_mode)
+	rl_tty_unset_default_bindings (vi_insertion_keymap);
+      else
+#endif
+	rl_tty_unset_default_bindings (_rl_keymap);
+    }
   save_tty_chars (&otio);
+  RL_SETSTATE(RL_STATE_TTYCSAVED);
+  if (_rl_bind_stty_chars)
+    {
+#if defined (VI_MODE)
+      /* If editing in vi mode, make sure we set the bindings in the
+	 insertion keymap no matter what keymap we ended up in. */
+      if (rl_editing_mode == vi_mode)
+	_rl_bind_tty_special_chars (vi_insertion_keymap, tio);	
+      else
+#endif
+	_rl_bind_tty_special_chars (_rl_keymap, tio);
+    }
 
   prepare_terminal_settings (meta_flag, otio, &tio);
 
@@ -819,6 +840,90 @@ rl_stop_output (count, key)
 /*								    */
 /* **************************************************************** */
 
+#if !defined (NO_TTY_DRIVER)
+#define SET_SPECIAL(sc, func)	set_special_char(kmap, &ttybuff, sc, func)
+#endif
+
+#if defined (NO_TTY_DRIVER)
+
+#define SET_SPECIAL(sc, func)
+#define RESET_SPECIAL(c)
+
+#elif defined (NEW_TTY_DRIVER)
+static void
+set_special_char (kmap, tiop, sc, func)
+     Keymap kmap;
+     TIOTYPE *tiop;
+     int sc;
+     rl_command_func_t *func;
+{
+  if (sc != -1 && kmap[(unsigned char)sc].type == ISFUNC)
+    kmap[(unsigned char)sc].function = func;
+}
+
+#define RESET_SPECIAL(c) \
+  if (c != -1 && kmap[(unsigned char)c].type == ISFUNC)
+    kmap[(unsigned char)c].function = rl_insert;
+
+static void
+_rl_bind_tty_special_chars (kmap, ttybuff)
+     Keymap kmap;
+     TIOTYPE ttybuff;
+{
+  if (ttybuff.flags & SGTTY_SET)
+    {
+      SET_SPECIAL (ttybuff.sgttyb.sg_erase, rl_rubout);
+      SET_SPECIAL (ttybuff.sgttyb.sg_kill, rl_unix_line_discard);
+    }
+
+#  if defined (TIOCGLTC)
+  if (ttybuff.flags & LTCHARS_SET)
+    {
+      SET_SPECIAL (ttybuff.ltchars.t_werasc, rl_unix_word_rubout);
+      SET_SPECIAL (ttybuff.ltchars.t_lnextc, rl_quoted_insert);
+    }
+#  endif /* TIOCGLTC */
+}
+
+#else /* !NEW_TTY_DRIVER */
+static void
+set_special_char (kmap, tiop, sc, func)
+     Keymap kmap;
+     TIOTYPE *tiop;
+     int sc;
+     rl_command_func_t *func;
+{
+  unsigned char uc;
+
+  uc = tiop->c_cc[sc];
+  if (uc != (unsigned char)_POSIX_VDISABLE && kmap[uc].type == ISFUNC)
+    kmap[uc].function = func;
+}
+
+/* used later */
+#define RESET_SPECIAL(uc) \
+  if (uc != (unsigned char)_POSIX_VDISABLE && kmap[uc].type == ISFUNC) \
+    kmap[uc].function = rl_insert;
+
+static void
+_rl_bind_tty_special_chars (kmap, ttybuff)
+     Keymap kmap;
+     TIOTYPE ttybuff;
+{
+  SET_SPECIAL (VERASE, rl_rubout);
+  SET_SPECIAL (VKILL, rl_unix_line_discard);
+
+#  if defined (VLNEXT) && defined (TERMIOS_TTY_DRIVER)
+  SET_SPECIAL (VLNEXT, rl_quoted_insert);
+#  endif /* VLNEXT && TERMIOS_TTY_DRIVER */
+
+#  if defined (VWERASE) && defined (TERMIOS_TTY_DRIVER)
+  SET_SPECIAL (VWERASE, rl_unix_word_rubout);
+#  endif /* VWERASE && TERMIOS_TTY_DRIVER */
+}
+
+#endif /* !NEW_TTY_DRIVER */
+
 /* Set the system's default editing characters to their readline equivalents
    in KMAP.  Should be static, now that we have rl_tty_set_default_bindings. */
 void
@@ -827,174 +932,15 @@ rltty_set_default_bindings (kmap)
 {
 #if !defined (NO_TTY_DRIVER)
   TIOTYPE ttybuff;
-  int tty = fileno (rl_instream);
+  int tty;
+  static int called = 0;
 
-#if defined (NEW_TTY_DRIVER)
-
-#define SET_SPECIAL(sc, func) \
-  do \
-    { \
-      int ic; \
-      ic = sc; \
-      if (ic != -1 && kmap[(unsigned char)ic].type == ISFUNC) \
-	kmap[(unsigned char)ic].function = func; \
-    } \
-  while (0)
+  tty = fileno (rl_instream);
 
   if (get_tty_settings (tty, &ttybuff) == 0)
-    {
-      if (ttybuff.flags & SGTTY_SET)
-	{
-	  SET_SPECIAL (ttybuff.sgttyb.sg_erase, rl_rubout);
-	  SET_SPECIAL (ttybuff.sgttyb.sg_kill, rl_unix_line_discard);
-	}
-
-#  if defined (TIOCGLTC)
-      if (ttybuff.flags & LTCHARS_SET)
-	{
-	  SET_SPECIAL (ttybuff.ltchars.t_werasc, rl_unix_word_rubout);
-	  SET_SPECIAL (ttybuff.ltchars.t_lnextc, rl_quoted_insert);
-	}
-#  endif /* TIOCGLTC */
-    }
-
-#else /* !NEW_TTY_DRIVER */
-
-#define SET_SPECIAL(sc, func) \
-  do \
-    { \
-      unsigned char uc; \
-      uc = ttybuff.c_cc[sc]; \
-      if (uc != (unsigned char)_POSIX_VDISABLE && kmap[uc].type == ISFUNC) \
-	kmap[uc].function = func; \
-    } \
-  while (0)
-
-  if (get_tty_settings (tty, &ttybuff) == 0)
-    {
-      SET_SPECIAL (VERASE, rl_rubout);
-      SET_SPECIAL (VKILL, rl_unix_line_discard);
-
-#  if defined (VLNEXT) && defined (TERMIOS_TTY_DRIVER)
-      SET_SPECIAL (VLNEXT, rl_quoted_insert);
-#  endif /* VLNEXT && TERMIOS_TTY_DRIVER */
-
-#  if defined (VWERASE) && defined (TERMIOS_TTY_DRIVER)
-      SET_SPECIAL (VWERASE, rl_unix_word_rubout);
-#  endif /* VWERASE && TERMIOS_TTY_DRIVER */
-    }
-#endif /* !NEW_TTY_DRIVER */
+    _rl_bind_tty_special_chars (kmap, ttybuff);
 #endif
 }
-
-#else /* __MING32__ */
-
-/* **************************************************************** */
-/*								    */
-/*		Default Key Bindings for Win32 Console              */
-/*								    */
-/* **************************************************************** */
-
-#include <windows.h>
-
-#define CONSOLE_MODE	ENABLE_PROCESSED_INPUT | ENABLE_MOUSE_INPUT
-
-/* global vars used by other modules */
-
-int	haveConsole	= 0;	/* remember init result of the console  */
-HANDLE	hStdout, hStdin;	/* these are different from stdin, stdout  */
-
-COORD	rlScreenOrigin;		/* readline origin in frame buffer coordinates */
-int	rlScreenStart = 0;	/* readline origin as frame screen buffer offset */
-COORD	rlScreenEnd;		/* end of line in frame buffer coordinates */
-int	rlScreenMax = 0;	/* end of line as linear frame buffer offset */
-
-static DWORD savedConsoleMode = 0;	/* to restore console on exit */
-
-void
-rltty_set_default_bindings (kmap)
-     Keymap kmap;
-{
-  /* I bet this is required on Win32 ;-) */
-  {
-    char buf[40]; strcpy(buf,"set bell-style none");
-    rl_parse_and_bind(buf);
-  }
-  rl_set_key ("\\M-\\ø&", rl_get_previous_history, kmap);
-  rl_set_key ("\\M-\\ø(", rl_get_next_history, kmap);
-  rl_set_key ("\\M-\\ø'", rl_forward, kmap);
-  rl_set_key ("\\M-\\ø%", rl_backward, kmap);
-  
-  rl_set_key ("\\M-\\ø$", rl_beg_of_line, kmap);
-  rl_set_key ("\\M-\\ø#", rl_end_of_line, kmap);
-  rl_set_key ("\\M-\\ú%", rl_backward_word, kmap);
-  rl_set_key ("\\M-\\ú'", rl_forward_word, kmap);
-  
-  rl_set_key ("\\M-\\ù-", rl_paste_from_clipboard, kmap);
-  rl_set_key ("\\M-\\ø.", rl_delete, kmap);
-  rl_set_key ("", rl_unix_word_rubout, kmap);
-}
-
-/* Query and set up a Window Console */
-
-void
-rl_prep_terminal (meta_flag)
-     int meta_flag;
-{
-  readline_echoing_p = 1;
-  
-  if ( !(haveConsole & INITIALIZED) )
-    {
-      if ( !(haveConsole & FOR_INPUT)
-	   && ((hStdin = GetStdHandle(STD_INPUT_HANDLE)) != INVALID_HANDLE_VALUE) )
-        {
-          DWORD dummy;
-          INPUT_RECORD irec;
-          if ( PeekConsoleInput(hStdin, &irec, 1, &dummy) )
-            {
-              haveConsole |= FOR_INPUT;
-              if ( GetConsoleMode(hStdin, &savedConsoleMode) )
-                SetConsoleMode(hStdin, CONSOLE_MODE);
-            }
-        }
-      if ( (hStdout = GetStdHandle(STD_OUTPUT_HANDLE)) != INVALID_HANDLE_VALUE)
-        {
-          CONSOLE_SCREEN_BUFFER_INFO csbi;
-          if ( GetConsoleScreenBufferInfo(hStdout, &csbi) 
-               && (csbi.dwSize.X > 0) && (csbi.dwSize.Y > 0) )
-            {
-              haveConsole |= FOR_OUTPUT;
-              rlScreenOrigin = csbi.dwCursorPosition;
-              rlScreenStart = (int)csbi.dwCursorPosition.Y * (int)csbi.dwSize.X
-		+ (int)csbi.dwCursorPosition.X;
-            }
-        }
-      haveConsole |= INITIALIZED;
-    }
-}
-
-/* Restore the consoles's normal settings and modes. */
-void
-rl_deprep_terminal ()
-{
-  SetConsoleMode(hStdin, savedConsoleMode);
-  haveConsole = 0;
-}
-
-int
-rl_restart_output (count, key)
-     int count, key;
-{
-  return 0;
-}
-
-int
-rl_stop_output (count, key)
-     int count, key;
-{
-  return 0;
-}
-#endif /* __MINGW32__ */
 
 /* New public way to set the system default editing chars to their readline
    equivalents. */
@@ -1003,6 +949,30 @@ rl_tty_set_default_bindings (kmap)
      Keymap kmap;
 {
   rltty_set_default_bindings (kmap);
+}
+
+/* Rebind all of the tty special chars that readline worries about back
+   to self-insert.  Call this before saving the current terminal special
+   chars with save_tty_chars().  This only works on POSIX termios or termio
+   systems. */
+void
+rl_tty_unset_default_bindings (kmap)
+     Keymap kmap;
+{
+  /* Don't bother before we've saved the tty special chars at least once. */
+  if (RL_ISSTATE(RL_STATE_TTYCSAVED) == 0)
+    return;
+
+  RESET_SPECIAL (_rl_tty_chars.t_erase);
+  RESET_SPECIAL (_rl_tty_chars.t_kill);
+
+#  if defined (VLNEXT) && defined (TERMIOS_TTY_DRIVER)
+  RESET_SPECIAL (_rl_tty_chars.t_lnext);
+#  endif /* VLNEXT && TERMIOS_TTY_DRIVER */
+
+#  if defined (VWERASE) && defined (TERMIOS_TTY_DRIVER)
+  RESET_SPECIAL (_rl_tty_chars.t_werase);
+#  endif /* VWERASE && TERMIOS_TTY_DRIVER */
 }
 
 #if defined (HANDLE_SIGNALS)

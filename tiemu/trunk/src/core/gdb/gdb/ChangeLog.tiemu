@@ -1,5 +1,37 @@
 2006-08-16  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * Merge with Insight 6.5.
+        * Drop no longer needed patches:
+          - Tcl/Tk/itcl Bash 3.1 patches (now upstream)
+          - Tcl MinGW/Cygwin __attribute__((used)) patches (now upstream)
+          - readline MinGW patches (obsolete)
+          - ../readline/rldefs.h (WAIT_FOR_INPUT): Decrease from 200 to 30. (obsolete)
+          - addition of ../config/mh-mingw32 (irrelevant for GDB)
+          - gdbtk/library/srcwin.itb geometry workaround (no longer needed, upstream has another
+              workaround, see gdbtk/library/ChangeLog.tiemu)
+          - addition of mingw32 host to configure.host
+          - remote.c MinGW patch to include <winsock2.h> (obsoleted by gdb_select in mingw-hdep.c)
+          - serial.c MinGW patches (obsolete)
+          - ../configure.ac and ../configure MinGW patches:
+            - not to require termcap (upstream uses a new win32_termcap.c instead)
+            - to link in wsock32 (upstream uses ws2_32 instead)
+          - utils.c MinGW patches (obsoleted by win32_termcap.c)
+          - 2005-06-01  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+            * symfile.c (add_symbol_file_command): Allow quoted filenames (allows spaces). (upstream
+                                                   now has a cleaner fix)
+        * Update patch:
+          - ../readline/input.c (rl_getc (__MINGW32__)): Call gtk_main_iteration if
+                                                         gtk_events_pending.
+        * configure.tgt: Use mingw instead of mingw32 for gdb_target.
+        * config/i386/*mingw32*: Rename to *mingw*.
+        * config/m68k/tm-monitor.h (target_remove_hw_breakpoint, target_insert_hw_breakpoint): Update
+            macros for new prototype.
+        * remote-fileio.c: Include winsock2.h instead of winsock.h.
+        * mi/mi-main.c: Likewise.
+        * Update intl directory from Binutils 2.17.
+
+2006-08-16  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * ../readline/chardefs.h: Remove redundant (duplicate) defines.
 
 2006-07-20  Kevin Kofler  <Kevin@tigcc.ticalc.org>

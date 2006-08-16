@@ -1,6 +1,6 @@
 /* input.c -- character input functions for readline. */
 
-/* Copyright (C) 1994 Free Software Foundation, Inc.
+/* Copyright (C) 1994-2005 Free Software Foundation, Inc.
 
    This file is part of the GNU Readline Library, a library for
    reading lines of text with interactive input and history editing.
@@ -20,6 +20,10 @@
    have a copy of the license, write to the Free Software Foundation,
    59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 #define READLINE_LIBRARY
+
+#if defined (__TANDEM)
+#  include <floss.h>
+#endif
 
 #if defined (HAVE_CONFIG_H)
 #  include <config.h>
@@ -154,7 +158,12 @@ _rl_unget_char (key)
   return (0);
 }
 
-#ifndef __MINGW32__
+int
+_rl_pushed_input_available ()
+{
+  return (push_index != pop_index);
+}
+
 /* If a character is available to be read, then read it and stuff it into
    IBUFFER.  Otherwise, just return.  Returns number of characters read
    (0 if none available) and -1 on error (EIO). */
@@ -163,7 +172,7 @@ rl_gather_tyi ()
 {
   int tty;
   register int tem, result;
-  int chars_avail;
+  int chars_avail, k;
   char input;
 #if defined(HAVE_SELECT)
   fd_set readfds, exceptfds;
@@ -203,8 +212,23 @@ rl_gather_tyi ()
       fcntl (tty, F_SETFL, tem);
       if (chars_avail == -1 && errno == EAGAIN)
 	return 0;
+      if (chars_avail == 0)	/* EOF */
+	{
+	  rl_stuff_char (EOF);
+	  return (0);
+	}
     }
 #endif /* O_NDELAY */
+
+#if defined (__MINGW32__)
+  /* We use getch to read console input, so use the same
+     mechanism to check for more.  Otherwise, we don't know.  */
+  if (isatty (fileno (rl_instream)))
+    chars_avail = _kbhit ();
+  else
+    chars_avail = 0;
+  result = 0;
+#endif
 
   /* If there's nothing available, don't waste time trying to read
      something. */
@@ -226,7 +250,12 @@ rl_gather_tyi ()
   if (result != -1)
     {
       while (chars_avail--)
-	rl_stuff_char ((*rl_getc_function) (rl_instream));
+	{
+	  k = (*rl_getc_function) (rl_instream);
+	  rl_stuff_char (k);
+	  if (k == NEWLINE || k == RETURN)
+	    break;
+	}
     }
   else
     {
@@ -236,7 +265,6 @@ rl_gather_tyi ()
 
   return 1;
 }
-#endif /* !__MINGW32__ */
 
 int
 rl_set_keyboard_input_timeout (u)
@@ -250,7 +278,6 @@ rl_set_keyboard_input_timeout (u)
   return (o);
 }
 
-#ifndef __MINGW32__
 /* Is there input available to be read on the readline input file
    descriptor?  Only works if the system has select(2) or FIONREAD.
    Uses the value of _keyboard_input_timeout as the timeout; if another
@@ -288,9 +315,15 @@ _rl_input_available ()
 
 #endif
 
+#if defined (__MINGW32__)
+  /* We use getch to read console input, so use the same
+     mechanism to check for more.  Otherwise, we don't know.  */
+  if (isatty (fileno (rl_instream)))
+    return _kbhit ();
+#endif
+
   return 0;
 }
-#endif /* !__MINGW32__ */
 
 int
 _rl_input_queued (t)
@@ -419,7 +452,6 @@ rl_read_key ()
   return (c);
 }
 
-#ifndef __MINGW32__
 int
 rl_getc (stream)
      FILE *stream;
@@ -429,12 +461,16 @@ rl_getc (stream)
 
   while (1)
     {
-#ifdef __MINGW32__
-      /* On Windows, use a special routine to read a single  character
-	 from the console.  (Otherwise, no characters are available
-	 until the user hits the return key.)  */
-      if (isatty (fileno (stream)))
-	return getch ();
+#if defined (__MINGW32__)
+      if (isatty (fileno (stream))) {
+	while (!_kbhit()) {
+	  /* (TiEmu 20060816 Kevin Kofler) */
+	  extern int gtk_events_pending(void);
+	  extern void gtk_main_iteration(void);
+	  while (gtk_events_pending()) gtk_main_iteration();
+	}
+	return (getch ());
+      }
 #endif
       result = read (fileno (stream), &c, sizeof (unsigned char));
 
@@ -481,227 +517,6 @@ rl_getc (stream)
     }
 }
 
-#else /* __MINGW32__ */
-
-#include <windows.h>
-#include <ctype.h>
-#include <conio.h>
-#include <io.h>
-
-#define EXT_PREFIX 0x1f8
-
-#define KEV	   irec.Event.KeyEvent			/* to make life easier  */
-#define KST	   irec.Event.KeyEvent.dwControlKeyState
-
-static int pending_key = 0;
-static int pending_count = 0;
-static int pending_prefix = 0;
-
-extern int _rl_last_c_pos;	/* imported from display.c  */
-extern int _rl_last_v_pos;
-extern int rl_dispatching;	/* imported from readline.c  */
-extern int rl_point;
-extern int rl_done;
-extern int rl_visible_prompt_length;
-extern int _rl_screenwidth;		/* imported from terminal.c  */
-
-extern int haveConsole;		/* imported from rltty.c  */
-extern HANDLE hStdout, hStdin;
-extern COORD rlScreenOrigin, rlScreenEnd;
-extern int rlScreenStart, rlScreenMax;
-static void MouseEventProc(MOUSE_EVENT_RECORD kev);
-
-int rl_getc (stream)
-     FILE *stream;
-{
-  if ( pending_count )
-    {
-      --pending_count;
-      if ( pending_prefix && (pending_count & 1) )
-        return pending_prefix;
-      else
-        return pending_key;
-    }
-
-  while ( 1 )
-    {
-      DWORD dummy;
-
-      /* (TiEmu 20050413 Kevin Kofler) */
-      extern int gtk_events_pending(void);
-      extern void gtk_main_iteration(void);
-      while (gtk_events_pending()) gtk_main_iteration();
-
-      if (WaitForSingleObject(hStdin, WAIT_FOR_INPUT) != WAIT_OBJECT_0)
-        {
-          if ( rl_done )
-            return( 0 );
-          else
-            continue;
-        }
-      if ( haveConsole & FOR_INPUT )
-        {
-          INPUT_RECORD irec;
-          ReadConsoleInput (hStdin, &irec, 1, &dummy);
-          switch(irec.EventType)
-            {
-            case KEY_EVENT:
-              if (KEV.bKeyDown &&
-                  ((KEV.wVirtualKeyCode < VK_SHIFT) ||
-                   (KEV.wVirtualKeyCode > VK_MENU)))
-                {
-                  pending_count = KEV.wRepeatCount;
-                  pending_prefix = 0;
-                  pending_key = KEV.uChar.AsciiChar & 0xff;
-
-                  if (KST & ENHANCED_KEY)
-                    {
-#define CTRL_TO_ASCII(c) ((c) - 'a' + 1)
-                      switch (KEV.wVirtualKeyCode)
-                        {
-                          case VK_HOME:
-                            pending_key = CTRL_TO_ASCII ('a');
-                            break;
-                          case VK_END:
-                            pending_key = CTRL_TO_ASCII ('e');
-                            break;
-                          case VK_LEFT:
-                            pending_key = CTRL_TO_ASCII ('b');
-                            break;
-                          case VK_RIGHT:
-                            pending_key = CTRL_TO_ASCII ('f');
-                            break;
-                          case VK_UP:
-                            pending_key = CTRL_TO_ASCII ('p');
-                            break;
-                          case VK_DOWN:
-                            pending_key = CTRL_TO_ASCII ('n');
-                            break;
-                          case VK_DELETE:
-                            pending_key = CTRL_TO_ASCII ('d');
-                            break;
-                        }
-                    }
-                  
-                  if (KST & (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED))
-                    pending_prefix = VK_ESCAPE;
-
-                  if (pending_prefix)
-                      pending_count = (pending_count << 1) - 1;
-               
-                  /* Ascii direct */
-                  if (pending_key)
-                      pending_count--;
-
-                  if (pending_prefix)
-                    return pending_prefix;
-                  return pending_key;
-                }
-              break;
-            case MOUSE_EVENT:
-              if ( (haveConsole & FOR_OUTPUT) && !rl_dispatching )
-                MouseEventProc(irec.Event.MouseEvent);
-            default:
-              break;
-            }
-        }
-      else
-        {
-          int key;
-          ReadFile(hStdin, &key, 1, &dummy, NULL);
-          return key;
-        }
-    }
-}
-
-void MouseEventProc(MOUSE_EVENT_RECORD mev)
-{
-  static DWORD lastButtonState, cstat_flags;
-  static COORD lastButtonPos, src_down_pos;
-
-#define RLPOS_CHANGED	1
-#define SELECT_START	2
-  
-  switch (mev.dwEventFlags )
-    {
-    case 0 :			/* change in button state  */
-
-      /* Cursor setting: 
-	 LEFT_BUTTON_PRESSED sets cursor anywhere on the screen,
-	 thereafter, any change in button state will clipp the cursor
-	 position to the readline range if there has been no cursor
-	 movement. Otherwhise the cursor is reset to its old position.
-      */
-      if (mev.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED)
-        {
-          if (lastButtonState == 0)
-            {
-              src_down_pos = mev.dwMousePosition;
-              cstat_flags |= RLPOS_CHANGED | SELECT_START;
-              SetConsoleCursorPosition(hStdout, mev.dwMousePosition);
-            }
-        }
-      else
-        {
-          if (cstat_flags & RLPOS_CHANGED)
-            {
-              if ( (mev.dwMousePosition.X == src_down_pos.X)
-		   && (mev.dwMousePosition.Y == src_down_pos.Y) )
-                {
-                  int linear_pos = (int)mev.dwMousePosition.Y * _rl_screenwidth
-		    + (int)mev.dwMousePosition.X;
-                  if (linear_pos < rlScreenStart + rl_visible_prompt_length)
-                    {
-                      linear_pos = rlScreenStart + rl_visible_prompt_length;
-                      mev.dwMousePosition.X = rlScreenOrigin.X + rl_visible_prompt_length;
-                      mev.dwMousePosition.Y = rlScreenOrigin.Y;
-                    }
-                  if (linear_pos > rlScreenMax)
-                    {
-                      linear_pos = rlScreenMax;
-                      mev.dwMousePosition = rlScreenEnd;
-                    }
-                  rl_point = linear_pos - rlScreenStart - rl_visible_prompt_length;
-                  _rl_last_c_pos = mev.dwMousePosition.X - rlScreenOrigin.X;
-                  _rl_last_v_pos = mev.dwMousePosition.Y - rlScreenOrigin.Y;
-                }
-              else
-                {
-                  mev.dwMousePosition.X = rlScreenOrigin.X + _rl_last_c_pos;
-                  mev.dwMousePosition.Y = rlScreenOrigin.Y + _rl_last_v_pos;
-                }
-              SetConsoleCursorPosition(hStdout, mev.dwMousePosition);
-              cstat_flags &= !RLPOS_CHANGED;
-            }
-        }
-      lastButtonState = mev.dwButtonState;
-      lastButtonPos = mev.dwMousePosition;
-      break;
-    case MOUSE_MOVED:		/* the most frequent event */
-    default:      
-      break;
-    }
-}
-
-int _rl_input_available ()
-{
-  if (isatty (fileno (rl_instream)))
-    return (kbhit());
-  return 0;
-}
-
-static int rl_gather_tyi ()
-{
-  int count = 0;
-  while (isatty (fileno (rl_instream)) && kbhit () && ibuffer_space ())
-    {
-      rl_stuff_char ((*rl_getc_function) (rl_instream));
-      count++;
-    }
-  return count;
-}
-#endif /* __MINGW32__ */
-
 #if defined (HANDLE_MULTIBYTE)
 /* read multibyte char */
 int
@@ -732,6 +547,12 @@ _rl_read_mbchar (mbchar, size)
 	  ps = ps_back;
 	  continue;
 	} 
+      else if (mbchar_bytes_length == 0)
+	{
+	  mbchar[0] = '\0';	/* null wide character */
+	  mb_len = 1;
+	  break;
+	}
       else if (mbchar_bytes_length > (size_t)(0))
 	break;
     }

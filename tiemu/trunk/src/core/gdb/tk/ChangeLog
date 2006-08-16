@@ -1,3 +1,9 @@
+2006-02-08  Alexandre Oliva  <aoliva@redhat.com>
+
+	* unix/tcl.m4 (SC_CONFIG_CFLAGS, SC_BLOCKING_STYLE): Remove
+	unmatched single quote inside backticks.
+	* unix/configure: Rebuild.
+
 2003-10-15  Ben Elliston  <bje@wasabisystems.com>
 
 	* win/tcl.m4 (SC_PROG_TCLSH): Replace with version from tcl/win.

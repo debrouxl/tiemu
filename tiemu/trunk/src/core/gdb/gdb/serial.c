@@ -1,7 +1,7 @@
 /* Generic serial interface routines
 
-   Copyright 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
-   2001, 2002 Free Software Foundation, Inc.
+   Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
+   2001, 2002, 2004, 2005, 2006 Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -17,8 +17,8 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330,
-   Boston, MA 02111-1307, USA.  */
+   Foundation, Inc., 51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301, USA.  */
 
 #include "defs.h"
 #include <ctype.h>
@@ -184,8 +184,6 @@ serial_open (const char *name)
 
   if (strcmp (name, "pc") == 0)
     ops = serial_interface_lookup ("pc");
-  else if (strchr (name, ':'))
-    ops = serial_interface_lookup ("tcp");
   else if (strncmp (name, "lpt", 3) == 0)
     ops = serial_interface_lookup ("parallel");
   else if (strncmp (name, "|", 1) == 0)
@@ -193,6 +191,11 @@ serial_open (const char *name)
       ops = serial_interface_lookup ("pipe");
       open_name = name + 1; /* discard ``|'' */
     }
+  /* Check for a colon, suggesting an IP address/port pair.
+     Do this *after* checking for all the interesting prefixes.  We
+     don't want to constrain the syntax of what can follow them.  */
+  else if (strchr (name, ':'))
+    ops = serial_interface_lookup ("tcp");
   else
     ops = serial_interface_lookup ("hardwire");
 
@@ -233,6 +236,22 @@ serial_open (const char *name)
   return scb;
 }
 
+/* Return the open serial device for FD, if found, or NULL if FD
+   is not already opened.  */
+
+struct serial *
+serial_for_fd (int fd)
+{
+  struct serial *scb;
+  struct serial_ops *ops;
+
+  for (scb = scb_base; scb; scb = scb->next)
+    if (scb->fd == fd)
+      return scb;
+
+  return NULL;
+}
+
 struct serial *
 serial_fdopen (const int fd)
 {
@@ -246,12 +265,14 @@ serial_fdopen (const int fd)
 	return scb;
       }
 
-  ops = serial_interface_lookup ("hardwire");
+  ops = serial_interface_lookup ("terminal");
+  if (!ops)
+    ops = serial_interface_lookup ("hardwire");
 
   if (!ops)
     return NULL;
 
-  scb = XMALLOC (struct serial);
+  scb = XCALLOC (1, struct serial);
 
   scb->ops = ops;
 
@@ -329,16 +350,12 @@ do_serial_close (struct serial *scb, int really_close)
 void
 serial_close (struct serial *scb)
 {
-  if (!scb)
-    return;
   do_serial_close (scb, 1);
 }
 
 void
 serial_un_fdopen (struct serial *scb)
 {
-  if (!scb)
-    return;
   do_serial_close (scb, 0);
 }
 
@@ -346,9 +363,6 @@ int
 serial_readchar (struct serial *scb, int timeout)
 {
   int ch;
-
-  if (!scb)
-    return 0;
 
   /* FIXME: cagney/1999-10-11: Don't enable this check until the ASYNC
      code is finished. */
@@ -391,9 +405,6 @@ serial_write (struct serial *scb, const char *str, int len)
       gdb_flush (serial_logfp);
     }
 
-  if (!scb)
-    return 0;
-
   return (scb->ops->write (scb, str, len));
 }
 
@@ -414,33 +425,24 @@ serial_printf (struct serial *desc, const char *format,...)
 int
 serial_drain_output (struct serial *scb)
 {
-  if (!scb)
-    return 0;
   return scb->ops->drain_output (scb);
 }
 
 int
 serial_flush_output (struct serial *scb)
 {
-  if (!scb)
-    return 0;
   return scb->ops->flush_output (scb);
 }
 
 int
 serial_flush_input (struct serial *scb)
 {
-  if (!scb)
-    return 0;
   return scb->ops->flush_input (scb);
 }
 
 int
 serial_send_break (struct serial *scb)
 {
-  if (!scb)
-    return 0;
-
   if (serial_logfp != NULL)
     serial_logchar (serial_logfp, 'w', SERIAL_BREAK, 0);
 
@@ -450,24 +452,18 @@ serial_send_break (struct serial *scb)
 void
 serial_raw (struct serial *scb)
 {
-  if (!scb)
-    return;
   scb->ops->go_raw (scb);
 }
 
 serial_ttystate
 serial_get_tty_state (struct serial *scb)
 {
-  if (!scb)
-    return 0;
   return scb->ops->get_tty_state (scb);
 }
 
 int
 serial_set_tty_state (struct serial *scb, serial_ttystate ttystate)
 {
-  if (!scb)
-    return 0;
   return scb->ops->set_tty_state (scb, ttystate);
 }
 
@@ -476,8 +472,6 @@ serial_print_tty_state (struct serial *scb,
 			serial_ttystate ttystate,
 			struct ui_file *stream)
 {
-  if (!scb)
-    return;
   scb->ops->print_tty_state (scb, ttystate, stream);
 }
 
@@ -486,40 +480,30 @@ serial_noflush_set_tty_state (struct serial *scb,
 			      serial_ttystate new_ttystate,
 			      serial_ttystate old_ttystate)
 {
-  if (!scb)
-    return 0;
   return scb->ops->noflush_set_tty_state (scb, new_ttystate, old_ttystate);
 }
 
 int
 serial_setbaudrate (struct serial *scb, int rate)
 {
-  if (!scb)
-    return 0;
   return scb->ops->setbaudrate (scb, rate);
 }
 
 int
 serial_setstopbits (struct serial *scb, int num)
 {
-  if (!scb)
-    return 0;
   return scb->ops->setstopbits (scb, num);
 }
 
 int
 serial_can_async_p (struct serial *scb)
 {
-  if (!scb)
-    return 0;
   return (scb->ops->async != NULL);
 }
 
 int
 serial_is_async_p (struct serial *scb)
 {
-  if (!scb)
-    return 0;
   return (scb->ops->async != NULL) && (scb->async_handler != NULL);
 }
 
@@ -528,9 +512,6 @@ serial_async (struct serial *scb,
 	      serial_event_ftype *handler,
 	      void *context)
 {
-  if (!scb)
-    return;
-
   /* Only change mode if there is a need. */
   if ((scb->async_handler == NULL)
       != (handler == NULL))
@@ -564,6 +545,26 @@ serial_debug_p (struct serial *scb)
   return scb->debug_p || global_serial_debug_p;
 }
 
+#ifdef USE_WIN32API
+void
+serial_wait_handle (struct serial *scb, HANDLE *read, HANDLE *except)
+{
+  if (scb->ops->wait_handle)
+    scb->ops->wait_handle (scb, read, except);
+  else
+    {
+      *read = (HANDLE) _get_osfhandle (scb->fd);
+      *except = NULL;
+    }
+}
+
+void
+serial_done_wait_handle (struct serial *scb)
+{
+  if (scb->ops->done_wait_handle)
+    scb->ops->done_wait_handle (scb);
+}
+#endif
 
 #if 0
 /* The connect command is #if 0 because I hadn't thought of an elegant
