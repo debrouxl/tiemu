@@ -1,3 +1,8 @@
+2006-08-19  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * config/i386/mingw32.mh, config/i386/mingw32.mt: Fix references to ?m-mingw32.h to
+                                                          point to ?m-mingw.h instead.
+
 2006-08-16  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * Merge with Insight 6.5.

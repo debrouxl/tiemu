@@ -1,5 +1,5 @@
 MH_CFLAGS=-D_POSIX_
-XM_FILE=xm-mingw32.h
+XM_FILE=xm-mingw.h
 NATDEPFILES= i386-nat.o win32-nat.o corelow.o
-NAT_FILE=nm-mingw32.h
+NAT_FILE=nm-mingw.h
 XM_CLIBS=
