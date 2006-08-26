@@ -173,7 +173,7 @@ int main(int argc, char **argv)
 	{
 		printl(0, _("libticonv library version <%s> mini required (<%s> found).\n"),
 			TIEMU_REQUIRES_LIBCONV_VERSION, ticonv_version_get());
-		msg_box(_("Error"), _("Libticonv: version mismatches."));
+		msg_box1(_("Error"), _("Libticonv: version mismatches."));
 		exit(-1);
 	}
 
@@ -181,7 +181,7 @@ int main(int argc, char **argv)
 	{
 		printl(0, _("libtifiles library version <%s> mini required (<%s> found).\n"),
 			TIEMU_REQUIRES_LIBFILES_VERSION, tifiles_version_get());
-		msg_box(_("Error"), _("Libtifiles: version mismatches."));
+		msg_box1(_("Error"), _("Libtifiles: version mismatches."));
 		exit(-1);
 	}
 	
@@ -189,7 +189,7 @@ int main(int argc, char **argv)
 	{
 		printl(0, _("libticables library version <%s> mini required (<%s> found).\n"),
 			TIEMU_REQUIRES_LIBCABLES_VERSION, ticables_version_get());
-		msg_box(_("Error"), _("Libticables: version mismatches."));
+		msg_box1(_("Error"), _("Libticables: version mismatches."));
 		exit(-1);
 	}
 	
@@ -197,7 +197,7 @@ int main(int argc, char **argv)
 	{
 		printl(0, _("libticalcs library version <%s> mini required (<%s> found).\n"),
 			TIEMU_REQUIRES_LIBCALCS_VERSION, ticalcs_version_get());
-		msg_box(_("Error"), _("Libticalcs: version mismatches."));
+		msg_box1(_("Error"), _("Libticalcs: version mismatches."));
 		exit(-1);
 	}
 

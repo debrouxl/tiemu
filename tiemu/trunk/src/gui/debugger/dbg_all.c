@@ -355,7 +355,7 @@ on_transient1_activate                 (GtkMenuItem     *menu_item,
 	// Thus, the taskbar is not filled-up with a lot of windows.
 	options3.transient = GTK_CHECK_MENU_ITEM(menu_item)->active;
  
-	msg_box("Warning", "You will have to save configuration and restart TiEmu for changes to take effect !");
+	msg_box1("Warning", "You will have to save configuration and restart TiEmu for changes to take effect !");
 }
 
 void

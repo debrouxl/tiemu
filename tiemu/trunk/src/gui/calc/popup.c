@@ -134,10 +134,10 @@ on_save_config1_activate               (GtkMenuItem     *menuitem,
 	rcfile_write();
 
 #ifdef __WIN32__
-  	msg_box(_("Information"), 
+  	msg_box1(_("Information"), 
 	  _("Configuration file saved (in tiemu.ini)."));
 #else
-	msg_box(_("Information"), 
+	msg_box1(_("Information"), 
 	  _("Configuration file saved (in ~/.tiemu)."));
 #endif
 }
@@ -149,7 +149,7 @@ on_load_config1_activate               (GtkMenuItem     *menuitem,
 {
 	rcfile_read();
 
-  	msg_box(_("Information"), _("Configuration file loaded."));
+  	msg_box1(_("Information"), _("Configuration file loaded."));
 }
 
 
@@ -628,7 +628,7 @@ static void go_to_bookmark(const char *link)
 	hInst = ShellExecute(NULL, "open", link, NULL, NULL, SW_SHOWNORMAL);
 	if((int)hInst <= 32)
 	{
-		msg_box("Error", "Unable to run ShellExecture extension.");
+		msg_box1("Error", "Unable to run ShellExecture extension.");
 	}
 #else
 	// Kevin's list:
@@ -672,7 +672,7 @@ static void go_to_bookmark(const char *link)
 
 	if (i == n) 
 	{
-		msg_box("Error", "Spawn error: do you have Firefox installed ?");
+		msg_box1("Error", "Spawn error: do you have Firefox installed ?");
 	} 
 #endif
 	else 

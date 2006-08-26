@@ -40,6 +40,4 @@ int msg_box3(const char *title, const char *message,
 int msg_box4(const char *title, const char *message);
 char *msg_entry(const char *title, const char *message, const char *content);
 
-#define msg_box	msg_box1
-
 #endif

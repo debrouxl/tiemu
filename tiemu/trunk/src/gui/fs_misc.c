@@ -142,10 +142,10 @@ gint display_save_state_dbox()
         rcfile_write();
    
 #ifdef __WIN32__
-        msg_box(_("Information"), 
+        msg_box1(_("Information"), 
 	      _("You do not seem to have saved your settings. Configuration file saved (in tiemu.ini)."));
 #else
-		msg_box(_("Information"), 
+		msg_box1(_("Information"), 
 	      _("You do not seem to have saved your settings. Configuration file saved (in ~/.tiemu)."));
 #endif
     }
@@ -231,7 +231,7 @@ gint display_send_files_dbox()
 		if(!tifiles_file_is_ti(*ptr) || (!tifiles_calc_is_ti9x(tifiles_file_get_model(*ptr)) &&
 			!tifiles_file_is_tigroup(*ptr))) 
 		{
-			msg_box(_("Error"), _("This file is not a valid TI file."));
+			msg_box1(_("Error"), _("This file is not a valid TI file."));
 			g_strfreev(filenames);
 			return -1;
 		}
@@ -347,7 +347,7 @@ gint display_debug_dbox(void)
     if(!tifiles_file_is_ti(filename) || 
         !tifiles_calc_is_ti9x(tifiles_file_get_model(filename))) 
 	{
-        msg_box(_("Error"), _("This file is not a valid TI file."));
+        msg_box1(_("Error"), _("This file is not a valid TI file."));
         return -1;
     }
 
@@ -375,7 +375,7 @@ gint display_set_tib_dbox(void)
 
 	if(!ti68k_is_a_tib_file(filename))
 	{
-		msg_box("Error", "Don't seem to be an upgrade.");
+		msg_box1("Error", "Don't seem to be an upgrade.");
 		return -1;
 	}
 
@@ -391,12 +391,9 @@ gint display_set_tib_dbox(void)
 	handle_error();
 	if(err)
 	{
-		msg_box("Error", "Can not load the upgrade.");
+		msg_box1("Error", "Can not load the upgrade.");
 		return -1;
 	}
-    
-    //msg_box(_("Information"), _("Your configuration has been saved."));
-    //rcfile_write();
 
     // simply reset, don't restart
     ti68k_reset();
@@ -459,7 +456,7 @@ gint display_import_romversion_dbox(void)
 	}
 	else
 	{
-		msg_box("Error", "This is not a valid file");
+		msg_box1("Error", "This is not a valid file");
 		return -1;
 	}
 

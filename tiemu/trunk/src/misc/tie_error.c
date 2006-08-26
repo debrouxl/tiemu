@@ -79,7 +79,7 @@ int tiemu_error(int err_code, char *err_str)
 	}
 	
 	printl(2, "%s", s);
-	msg_box(_("Error"), s);
+	msg_box1(_("Error"), s);
 
 	//free(s);
 	return err_code;
