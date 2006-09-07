@@ -237,17 +237,17 @@ STDMETHODIMP TiEmuOLE::execute_command(BSTR command, VARIANT_BOOL *ret)
     gchar *temp;
 #ifdef __GNUC__
     char ti[SysStringLen(command)+1];
-	ticonv_charset_utf16_to_ti_s(CALC_TI92, (const unsigned short *)command, ti);
+    ticonv_charset_utf16_to_ti_s(CALC_TI92, (const unsigned short *)command, ti);
     temp=g_strconcat("\f\r\r",ti,"\n",NULL);
     result=ti68k_kbd_push_chars(temp);
 #elif defined(_MSC_VER)
-	char *ti=(char *)malloc(SysStringLen(command)+1);
-	ticonv_charset_utf16_to_ti_s(CALC_TI92, (const unsigned short *)command, ti);
+    char *ti=(char *)malloc(SysStringLen(command)+1);
+    ticonv_charset_utf16_to_ti_s(CALC_TI92, (const unsigned short *)command, ti);
     temp=g_strconcat("\f\r\r",ti,"\n",NULL);
     result=ti68k_kbd_push_chars(temp);
     free(ti);
 #else
-    char *ti=std::malloc(SysStringLen(command)+1);
+    char *ti=(char *)std::malloc(SysStringLen(command)+1);
     ticonv_charset_utf16_to_ti_s(CALC_TI92, (const unsigned short *)command, ti);
     temp=g_strconcat("\f\r\r",ti,"\n",NULL);
     result=ti68k_kbd_push_chars(temp);
