@@ -58,7 +58,7 @@ helpstring("TiEmu Type Library")
 ]
 library TiEmuOLELib
 {
-	importlib("STDOLE2.TLB");
+	importlib("stdole2.tlb");
   [
   uuid(b2a17b13-9d6f-4dd4-a2a9-6fe06adc1d33),
   helpstring("TiEmu OLE Interface Class")
