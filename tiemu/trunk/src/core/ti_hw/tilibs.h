@@ -31,28 +31,9 @@
 # include <config.h>
 #endif
 
-#if defined(__MACOSX__)
-# include <libticables/ticables.h>
-#else
-# include "ticables.h"
-#endif
-
-#if defined(__MACOSX__)
-# include <libtifiles/tifiles.h>
-#else
-# include "tifiles.h"
-#endif
-
-#if defined(__MACOSX__)
-# include <libticalcs/ticalcs.h>
-#else
-# include "ticalcs.h"
-#endif
-
-#if defined(__MACOSX__)
-# include <libticonv/ticonv.h>
-#else
-# include "ticonv.h"
-#endif
+#include <ticables.h>
+#include <tifiles.h>
+#include <ticalcs.h>
+#include <ticonv.h>
 
 #endif
