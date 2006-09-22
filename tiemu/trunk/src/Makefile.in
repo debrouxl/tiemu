@@ -40,6 +40,7 @@ libdir          = @libdir@
 sysconfdir      = @sysconfdir@
 
 .SUFFIXES: .o .c .cpp .h .m .i .S .rc .res
+.NOTPARALLEL:
 
 ifeq ($(kde), yes)
 kdeincludes = @all_includes@

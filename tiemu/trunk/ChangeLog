@@ -6,6 +6,7 @@ SubVersion: $Id$
 	- [kevin] $2211: imported Insight 6.5 and intl directory from Binutils 2.17 and merged TiEmu changes
 	                 quote file name for add_symbol_file properly for the new add_symbol_file command parser in GDB 6.5
 	- [roms]  $2216: replaced some hand-made GTK+ user boxes by standard GTK+ ones (look better)6
+	- [kevin] $2223: force serial make in src/Makefile.in because the weirdness of the gdb subdir make breaks parallel make
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM
