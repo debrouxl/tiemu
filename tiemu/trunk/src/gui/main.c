@@ -87,7 +87,6 @@ static gint gdbtk_hide_insight_and_run_wrapper(gpointer data);
 
 ScrOptions options2;
 TieOptions options;		// general tiemu options
-CalcUpdate calc_update;	// pbar, msg_box, refresh, ...
 jmp_buf quit_gdb;       // longjmp target used when quitting GDB
 
 /* Special */
