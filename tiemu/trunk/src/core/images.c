@@ -182,7 +182,7 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
 	if(rom->data == NULL)
 		return ERR_MALLOC;
 	memset(rom->data, 0xff, rom->size);
-	if (fread(rom->data, 1, rom->size, file) < rom->size)
+	if (fread(rom->data, 1, rom->size, file) < (size_t)rom->size)
 	{
 	  printl(0, _("Failed to read from file: <%s>\n"), filename);
 	  fclose(file);
@@ -450,8 +450,8 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
     img.revision = IMG_REV;
 
 	// Write file
-	if (fwrite(&img, 1, sizeof(IMG_INFO), f) < sizeof(IMG_INFO)
-	    || fwrite(img.data, sizeof(char), img.size, f) < img.size)
+	if (fwrite(&img, 1, sizeof(IMG_INFO), f) < (size_t)sizeof(IMG_INFO)
+	    || fwrite(img.data, sizeof(char), img.size, f) < (size_t)img.size)
 	{
 	  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
 	  fclose(f);
@@ -649,7 +649,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	}
 
 	last_block = real_size % 65536;
-	if (fwrite(&img.data[65536 * i + SPP], sizeof(char), last_block, f) < last_block)
+	if (fwrite(&img.data[65536 * i + SPP], sizeof(char), last_block, f) < (size_t)last_block)
 	{
 	  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
 	  fclose(f);
@@ -752,7 +752,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 
 	// Write file
 	if (fwrite(&img, 1, sizeof(IMG_INFO), f) < sizeof(IMG_INFO)
-	    || fwrite(img.data, sizeof(char), img.size, f) < img.size)
+	    || fwrite(img.data, sizeof(char), img.size, f) < (size_t)img.size)
 	{
 	  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
 	  fclose(f);
@@ -814,7 +814,7 @@ int ti68k_load_image(const char *filename)
 	img->data = malloc(img->size + 4);
 	if(img->data == NULL)
 		return ERR_MALLOC;
-	if (fread(img->data, 1, img->size, f) < img->size)
+	if (fread(img->data, 1, img->size, f) < (size_t)img->size)
 	{
 		fprintf(stderr, "Failed to read from file: <%s>\n", filename);
 		fclose(f);

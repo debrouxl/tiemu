@@ -7,6 +7,8 @@ SubVersion: $Id$
 	                 quote file name for add_symbol_file properly for the new add_symbol_file command parser in GDB 6.5
 	- [roms]  $2216: replaced some hand-made GTK+ user boxes by standard GTK+ ones (look better)6
 	- [kevin] $2223: force serial make in src/Makefile.in because the weirdness of the gdb subdir make breaks parallel make
+	- [roms]  $2224: reverted backOLE changes in oleaut_i.c: break MSVC compilation
+	- [roms]  $2225: fixed signed/unsigned warnings with MSVC
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM
