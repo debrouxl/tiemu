@@ -33,10 +33,10 @@ int hw_dbus_init(void);
 int hw_dbus_reset(void);
 int hw_dbus_exit(void);
 
-void    (*hw_dbus_reinit)		(void);
-void    (*hw_dbus_putbyte)		(uint8_t arg);
-uint8_t (*hw_dbus_getbyte)		(void);
-int     (*hw_dbus_checkread)	(void);
+extern void    (*hw_dbus_reinit)	(void);
+extern void    (*hw_dbus_putbyte)	(uint8_t arg);
+extern uint8_t (*hw_dbus_getbyte)	(void);
+extern int     (*hw_dbus_checkread)	(void);
 
 int send_ti_file(const char *filename);
 
