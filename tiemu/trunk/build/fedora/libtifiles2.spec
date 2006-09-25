@@ -2,21 +2,30 @@
 %define version %(date +%%Y%%m%%d)
 %define release 1
 
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
-Vendor:		LPG (http://lpg.ticalc.org)
-Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
-Source:         %{name}-%{version}.tar.bz2
-Group:		System Environment/Libraries
-License:	GPL
-BuildRequires:	libticonv-devel = %{version}, zlib-devel >= 1.2.2.2, glib2-devel >= 2.10.1
-Requires:	libticonv = %{version}, zlib >= 1.2.2.2, glib2 >= 2.10.1
-Provides:	%{name}-devel = %{version}-%{release}
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Name: %{name}
+Version: %{version}
+Release: %{release}
+Vendor: LPG (http://lpg.ticalc.org)
+Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
+Source: %{name}-%{version}.tar.bz2
+Group: System Environment/Libraries
+License: GPL
+BuildRequires: libticonv-devel = %{version}, zlib-devel >= 1.2.2.2, glib2-devel >= 2.10.1
+Requires: libticonv = %{version}, zlib >= 1.2.2.2, glib2 >= 2.10.1
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Summary: Ti File Format management
 %description
 Ti File Format management
+
+%package devel
+Summary: Development files for %{name}
+Group: Development/Libraries
+Requires: %{name} = %{version}-%{release}
+Requires: pkgconfig
+Requires: libticonv-devel = %{version}, glib2-devel >= 2.10.1
+%description devel
+This package contains the files necessary to develop
+applications using the %{name} library.
 
 %prep
 %setup -n libtifiles
@@ -41,16 +50,19 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-/usr/include/tilp2/stdints2.h
-/usr/include/tilp2/export2.h
-/usr/include/tilp2/files8x.h
-/usr/include/tilp2/files9x.h
-/usr/include/tilp2/tifiles.h
-/usr/include/tilp2/types*.h
-%{_libdir}/libtifiles2.so*
+%{_libdir}/libtifiles2.so.*
+
+%files devel
+%defattr(-, root, root)
+/usr/include/tilp2
+%{_libdir}/libtifiles2.so
 %{_libdir}/pkgconfig/tifiles2.pc
 
 %changelog
+* Mon Sep 25 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Split out -devel into separate subpackage.
+Own /usr/include/tilp2 in -devel.
+
 * Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Libdir fixes for lib64 platforms.
 Add Provides for future -devel subpackage.

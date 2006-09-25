@@ -1,22 +1,31 @@
-%define name	libticables2
+%define name libticables2
 %define version %(date +%%Y%%m%%d)
 %define release 1
 
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
-Vendor:		LPG (http://lpg.ticalc.org)
-Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
-Source:         %{name}-%{version}.tar.bz2
-Group:		System Environment/Libraries
-License:	GPL
-BuildRequires:	libusb-devel >= 0.1.10a, glib2-devel >= 2.10.1
-Requires:	libusb >= 0.1.10a, glib2 >= 2.10.1
-Provides:	%{name}-devel = %{version}-%{release}
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Summary:	Library for handling TI link cables
+Name: %{name}
+Version: %{version}
+Release: %{release}
+Vendor: LPG (http://lpg.ticalc.org)
+Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
+Source: %{name}-%{version}.tar.bz2
+Group: System Environment/Libraries
+License: GPL
+BuildRequires: libusb-devel >= 0.1.10a, glib2-devel >= 2.10.1
+Requires: libusb >= 0.1.10a, glib2 >= 2.10.1
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Summary: Library for handling TI link cables
 %description
 Library for handling TI link cables
+
+%package devel
+Summary: Development files for %{name}
+Group: Development/Libraries
+Requires: %{name} = %{version}-%{release}
+Requires: pkgconfig
+Requires: glib2-devel >= 2.10.1
+%description devel
+This package contains the files necessary to develop
+applications using the %{name} library.
 
 %prep
 %setup -n libticables
@@ -62,16 +71,21 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-/usr/include/tilp2/stdints1.h
-/usr/include/tilp2/export1.h
-/usr/include/tilp2/ticables.h
-/usr/include/tilp2/timeout.h
-%{_libdir}/libticables2.so*
-%{_libdir}/pkgconfig/ticables2.pc
+%{_libdir}/libticables2.so.*
 /etc/udev/rules.d/60-libticables.rules
 /etc/security/console.perms.d/60-libticables.perms
 
+%files devel
+%defattr(-, root, root)
+/usr/include/tilp2
+%{_libdir}/libticables2.so
+%{_libdir}/pkgconfig/ticables2.pc
+
 %changelog
+* Mon Sep 25 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Split out -devel into separate subpackage.
+Own /usr/include/tilp2 in -devel.
+
 * Sun Jul 23 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Fix incorrect escaping in console.perms.d file.
 

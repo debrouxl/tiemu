@@ -1,22 +1,31 @@
-%define name	libticalcs2
+%define name libticalcs2
 %define version %(date +%%Y%%m%%d)
 %define release 1
 
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
-Vendor:		LPG (http://lpg.ticalc.org)
-Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
-Source:         %{name}-%{version}.tar.bz2
-Group:		System Environment/Libraries
-License:	GPL
-BuildRequires:	libticables2-devel = %{version}, libticonv-devel = %{version}, libtifiles2-devel = %{version}, glib2-devel >= 2.10.1
-Requires:	libticables2 = %{version}, libticonv = %{version}, libtifiles2 = %{version}, glib2 >= 2.10.1
-Provides:	%{name}-devel = %{version}-%{release}
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Summary:	Library for handling TI calculators through a common API
+Name: %{name}
+Version: %{version}
+Release: %{release}
+Vendor: LPG (http://lpg.ticalc.org)
+Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
+Source: %{name}-%{version}.tar.bz2
+Group: System Environment/Libraries
+License: GPL
+BuildRequires: libticables2-devel = %{version}, libticonv-devel = %{version}, libtifiles2-devel = %{version}, glib2-devel >= 2.10.1
+Requires: libticables2 = %{version}, libticonv = %{version}, libtifiles2 = %{version}, glib2 >= 2.10.1
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Summary: Library for handling TI calculators through a common API
 %description
 Library for handling TI calculators through a common API
+
+%package devel
+Summary: Development files for %{name}
+Group: Development/Libraries
+Requires: %{name} = %{version}-%{release}
+Requires: pkgconfig
+Requires: libticables2-devel = %{version}, libticonv-devel = %{version}, libtifiles2-devel = %{version}, glib2-devel >= 2.10.1
+%description devel
+This package contains the files necessary to develop
+applications using the %{name} library.
 
 %prep
 %setup -n libticalcs
@@ -41,18 +50,19 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-/usr/include/tilp2/stdints3.h
-/usr/include/tilp2/export3.h
-/usr/include/tilp2/keys73.h
-/usr/include/tilp2/keys83p.h
-/usr/include/tilp2/keys89.h
-/usr/include/tilp2/keys92p.h
-/usr/include/tilp2/ticalcs.h
-/usr/include/tilp2/tnode.h
-%{_libdir}/libticalcs2.so*
+%{_libdir}/libticalcs2.so.*
+
+%files devel
+%defattr(-, root, root)
+/usr/include/tilp2
+%{_libdir}/libticalcs2.so
 %{_libdir}/pkgconfig/ticalcs2.pc
 
 %changelog
+* Mon Sep 25 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Split out -devel into separate subpackage.
+Own /usr/include/tilp2 in -devel.
+
 * Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Libdir fixes for lib64 platforms.
 Add Provides for future -devel subpackage.

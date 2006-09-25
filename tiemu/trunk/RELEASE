@@ -136,6 +136,7 @@
 	- set all modal dialog boxes to GTK_WIN_POS_MOUSE instead of GTK_WIN_POS_NONE
 	- raise a information message when Linux user choose Titanium/USB.
 * Fedora RPM changes:
+	- The library RPMs are now split into runtime packages (e.g. libticonv) and -devel packages (e.g. libticonv-devel).
 
 20060723:
 * TiEmu 3 changes:
