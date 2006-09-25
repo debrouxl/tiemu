@@ -18,6 +18,7 @@
 	- [roms]  $2224: reverted back OLE changes in oleaut_i.c: break MSVC compilation
 	- [roms]  $2225: fixed signed/unsigned warnings with MSVC
 	- [kevin] $2231: fixed get_folder_list_handle failing
+	- [kevin] $2232: fixed canceling KDE file dialog causing an "invalid file" error
 * libticonv changes (roms):
 	- fixed buffer overflow in ticonv_charset_utf16_to_ti
 	- implemented ticonv_utf16_to_ti89tusb call

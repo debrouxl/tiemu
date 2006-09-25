@@ -136,7 +136,10 @@ sp_kde_get_open_filename (gchar *dir, gchar *filter, gchar *title)
 
 	SPKDEModal = FALSE;
 
-        return g_strdup (fileName.local8Bit());
+	if (fileName.isEmpty())
+		return NULL;
+
+	return g_strdup (fileName.local8Bit());
 }
 
 char **
@@ -157,7 +160,7 @@ sp_kde_get_open_filenames (gchar *dir, gchar *filter, gchar *title)
 
 	SPKDEModal = FALSE;
 
-	if (fileNames.empty())
+	if (fileNames.isEmpty())
 		return NULL;
 
 	p = result = (char **) g_malloc ((fileNames.count() + 1) * sizeof(char *));
@@ -186,7 +189,10 @@ sp_kde_get_write_filename (gchar *dir, gchar *filter, gchar *title)
 
 	SPKDEModal = FALSE;
 
-        return g_strdup (fileName.local8Bit());
+	if (fileName.isEmpty())
+		return NULL;
+
+	return g_strdup (fileName.local8Bit());
 }
 
 gint
