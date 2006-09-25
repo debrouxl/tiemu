@@ -10,6 +10,7 @@ SubVersion: $Id$
 	- [kevin] $2223: force serial make in src/Makefile.in because the weirdness of the gdb subdir make breaks parallel make
 	- [roms]  $2224: reverted back OLE changes in oleaut_i.c: break MSVC compilation
 	- [roms]  $2225: fixed signed/unsigned warnings with MSVC
+	- [kevin] $2231: fixed get_folder_list_handle failing
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM

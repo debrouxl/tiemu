@@ -94,7 +94,8 @@ static int is_varname(uint8_t *mem)
 
 	//printf("%i %i %i %02x\n", is_alnum(mem[i]) ? 1 : 0, is_allowed_char(mem[i]), mem[i], mem[i]);
 
-	if(!is_allowed_char(mem[0]) || (mem[0] >= '0' && mem[0] <= '9'))
+	// The VAT can contain names starting with a number, they are hidden in Var-Link.
+	if(!is_allowed_char(mem[0]))
 		return 0;
 
 	for(i=1; i<8; i++)
@@ -121,15 +122,17 @@ static int get_folder_list_handle(void)
 			// folders with the number of identified folders
 			int nfolders = mem_rd_word(addr+2);
 			
+			// The folder list always contains at least the main folder.
 			if(nfolders == 0)
-				break;
+				continue;
 
 			for(i = 0; i < nfolders; i++)
 				if(!is_varname(ti68k_get_real_address(addr + 4 + i*sizeof(TI89_SYM_ENTRY))))
 					break;
 
+			// not valid, so try the next handle
 			if(i < nfolders)
-				return -1;
+				continue;
 
 			printf("handle $%i, #folders = %i\n", h, nfolders);
 			return h;

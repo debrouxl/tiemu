@@ -17,6 +17,7 @@
 	- [kevin] $2223: force serial make in src/Makefile.in because the weirdness of the gdb subdir make breaks parallel make
 	- [roms]  $2224: reverted back OLE changes in oleaut_i.c: break MSVC compilation
 	- [roms]  $2225: fixed signed/unsigned warnings with MSVC
+	- [kevin] $2231: fixed get_folder_list_handle failing
 * libticonv changes (roms):
 	- fixed buffer overflow in ticonv_charset_utf16_to_ti
 	- implemented ticonv_utf16_to_ti89tusb call
