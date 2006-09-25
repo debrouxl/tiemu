@@ -61,10 +61,9 @@ cat >$RPM_BUILD_ROOT/etc/security/console.perms.d/60-libticables.perms <<EOF2
 <console>  0600 <ticable>    0600 root
 EOF2
 
-%post
-/sbin/ldconfig
-%postun
-/sbin/ldconfig
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -85,6 +84,7 @@ rm -rf $RPM_BUILD_ROOT
 * Mon Sep 25 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Split out -devel into separate subpackage.
 Own /usr/include/tilp2 in -devel.
+Use more efficient method to call ldconfig in post/postun.
 
 * Sun Jul 23 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Fix incorrect escaping in console.perms.d file.

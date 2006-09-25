@@ -40,10 +40,9 @@ mkdir -p $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT%{_libdir}/libticonv.la
 
-%post
-/sbin/ldconfig
-%postun
-/sbin/ldconfig
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -62,6 +61,7 @@ rm -rf $RPM_BUILD_ROOT
 * Mon Sep 25 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Split out -devel into separate subpackage.
 Own /usr/include/tilp2 in -devel.
+Use more efficient method to call ldconfig in post/postun.
 
 * Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Libdir fixes for lib64 platforms.
