@@ -41,6 +41,7 @@
 #include "dbg_all.h"
 #include "dbg_romcall.h"
 #include "engine.h"
+//#include "log_link.h"
 
 gint reset_disabled = FALSE;
 
@@ -1083,3 +1084,9 @@ int gdbcallback_close_debugger(void *clientdata, void *interp, int argc, const c
 	return 0;
 }
 
+GLADE_CB void
+on_linkport1_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	display_loglink_dbox();
+}

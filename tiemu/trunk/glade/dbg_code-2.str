@@ -4,7 +4,7 @@
  * DO NOT compile it as part of your application.
  */
 
-gchar *s = N_("Code / Source");
+gchar *s = N_("Disassembly");
 gchar *s = N_("Debug");
 gchar *s = N_("Run");
 gchar *s = N_("Step into (single step)");
@@ -16,6 +16,7 @@ gchar *s = N_("Step ou_t");
 gchar *s = N_("Run to cursor");
 gchar *s = N_("Break");
 gchar *s = N_("Log");
+gchar *s = N_("Linkport");
 gchar *s = N_("Windows");
 gchar *s = N_("Registers");
 gchar *s = N_("Breakpoints");
@@ -24,6 +25,7 @@ gchar *s = N_("PC log");
 gchar *s = N_("Stack frame");
 gchar *s = N_("Heap (handles)");
 gchar *s = N_("I/O ports");
+gchar *s = N_("_Group windows");
 gchar *s = N_("Show all");
 gchar *s = N_("Hide all");
 gchar *s = N_("Minimize all");

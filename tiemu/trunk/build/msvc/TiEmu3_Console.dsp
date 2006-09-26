@@ -423,6 +423,14 @@ SOURCE=..\..\src\gui\support.c
 SOURCE=..\..\src\gui\wizard.c
 # End Source File
 # End Group
+# Begin Group "logger"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\gui\logger\log_link.c
+# End Source File
+# End Group
 # End Group
 # Begin Group "misc"
 

@@ -62,7 +62,7 @@ Ti68kParameters     params = { 0 };
 Ti68kHardware       tihw   = { 0 };
 Ti68kLinkPort	    linkp  = { 0 };
 Ti68kBreakpoints	bkpts  = { 0 };
-
+Ti68kLogging		logger = { 0 };
 
 /***********************************/
 /* Entry points for initialization */

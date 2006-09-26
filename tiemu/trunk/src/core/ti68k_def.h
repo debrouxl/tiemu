@@ -200,12 +200,28 @@ typedef struct
 
 typedef DeviceOptions	Ti68kLinkPort;
 
+typedef struct
+{
+	// PC
+	int         pclog_size;
+    uint32_t*   pclog_buf;
+    int         pclog_ptr;
+
+	// Link
+	int			link_size;	// buffer size
+	uint16_t*	link_buf;	// buffer
+	int			link_ptr;	// buffer index
+	int			link_mask;	// actions (1: S, 2: R)
+
+} Ti68kLogging;
+
 /* Externs */
 
 extern Ti68kParameters 	params;
 extern Ti68kHardware 	tihw;
 extern Ti68kLinkPort	linkp;
 extern Ti68kBreakpoints	bkpts;
+extern Ti68kLogging		logger;
 
 /* Misc */
 
