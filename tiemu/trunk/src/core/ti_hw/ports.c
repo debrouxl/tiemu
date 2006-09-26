@@ -133,6 +133,9 @@ void io_put_byte(uint32_t addr, uint8_t arg)
 			// write a byte to the transmit buffer (1 byte buffer)
 			io_bit_clr(0x0d, 0);	// STX=0 (tx reg is full)
             hw_dbus_putbyte(arg);
+
+			if(logger.link_buf && logger.link_mask & 1)
+				logger.link_buf[logger.link_ptr++ % logger.link_size] = (uint16_t)(arg | (1 << 8));
             break;
         case 0x10: 	// -w <76543210> (hw1)
 			// address of LCD memory divided by 8 (msb)
@@ -300,6 +303,9 @@ uint8_t io_get_byte(uint32_t addr)
 			// read one byte from receive (incoming) buffer
             v = hw_dbus_getbyte();
 			io_bit_clr(0x0d, 5);	// SRX=0 (rx reg is empty)
+
+			if(logger.link_buf && logger.link_mask & 2)
+				logger.link_buf[logger.link_ptr++ % logger.link_size] = (uint16_t)(v | (2 << 8));
 		break;
         case 0x10: 	// -w <76543210> (hw1)
         return 0x14;

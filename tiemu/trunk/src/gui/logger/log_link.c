@@ -35,15 +35,24 @@
 #include "ti68k_def.h"
 #include "filesel.h"
 
+static GtkTextBuffer *txtbuf;
 static logger_enabled = 0;
+
+static void udpate_widgets(GtkWidget *button, GtkWidget *spin)
+{
+	gtk_button_set_use_stock(GTK_BUTTON(button), TRUE);
+	gtk_button_set_label(GTK_BUTTON(button), logger_enabled ? GTK_STOCK_STOP : GTK_STOCK_OK);	// GTK_STOCK_START
+
+	gtk_widget_set_sensitive(spin, !logger_enabled);
+}
 
 gint display_loglink_dbox()
 {
 	GladeXML *xml;
 	GtkWidget *dbox;
-	GtkTextBuffer *txtbuf;
 	GtkWidget *text;
-	gpointer data;
+	gpointer data, data2;
+	int i;
 
 	xml = glade_xml_new
 		(tilp_paths_build_glade("log_link-2.glade"), "linklog_dbox", PACKAGE);
@@ -52,6 +61,7 @@ gint display_loglink_dbox()
 	glade_xml_signal_autoconnect(xml);
 
 	text = glade_xml_get_widget(xml, "textview1");
+	txtbuf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 
 	data = glade_xml_get_widget(xml, "spinbutton1");
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data), logger.link_size >> 10);
@@ -62,12 +72,18 @@ gint display_loglink_dbox()
 	data = glade_xml_get_widget(xml, "checkbutton2");
 	gtk_toggle_button_set_active(data, logger.link_mask & 2);
 
-	{
-		char buffer[1024] = "Hello !";
+	data = glade_xml_get_widget(xml, "button10");
+	data2 = glade_xml_get_widget(xml, "spinbutton1");
+	udpate_widgets(data, data2);
 
-		txtbuf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
-		gtk_text_buffer_set_text(txtbuf, buffer, sizeof(buffer));
-		//gtk_widget_realize(dbox);
+	for(i = 0; i < logger.link_ptr; i++)
+	{
+		uint16_t word = (logger.link_buf)[i];
+		char *str;
+
+		str = g_strdup_printf("%c: %02x\n", (MSB(word) & 1) ? 'S' : 'R', LSB(word));
+		gtk_text_buffer_insert_at_cursor(txtbuf, str, strlen(str));
+		g_free(str);                                           
 	}
 
 	dbox = glade_xml_get_widget(xml, "linklog_dbox");
@@ -105,24 +121,21 @@ on_button9_clicked                     (GtkButton       *button,
 {
 	const gchar *filename;
 	FILE *f;
-	int i;
+	gchar *txt;
+	GtkTextIter start, end;
 
-	filename = create_fsel(inst_paths.home_dir, "log_link", "*.txt", TRUE);
+	filename = create_fsel(inst_paths.home_dir, "log_link.txt", "*.txt", TRUE);
 	if (!filename)
 		return;
-
-	printf("filename = <%s>\n", filename);
 
 	f = fopen(filename, "wt");
 	if(f == NULL)
 		return;
 
-	for(i = 0; i < logger.link_ptr; i++)
-	{
-		uint16_t data = (logger.link_buf)[i];
-
-		fprintf(f, "%c: %02x", (MSB(data) & 1) ? 'S' : 'R', LSB(data));
-	}
+	gtk_text_buffer_get_bounds(txtbuf, &start, &end);
+	txt = gtk_text_buffer_get_text(txtbuf, &start, &end, TRUE);
+	printf("<%s>\n", txt);
+	fwrite(txt, strlen(txt), 1, f);
 
 	fclose(f);
 }
@@ -132,18 +145,15 @@ GLADE_CB void
 on_button10_clicked                    (GtkButton       *butto,
                                         gpointer         user_dat)
 {
-	GtkButton *button =user_dat;
-	gpointer user_data = butto;
+	GtkWidget *button = user_dat;
+	GtkWidget *spinbutton = GTK_WIDGET(butto);
 
 	logger_enabled = !logger_enabled;
-	gtk_widget_set_sensitive(GTK_WIDGET(user_data), !logger_enabled);
 	if(logger.link_size == 0)
-		logger.link_size = 1024 * gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(user_data));
-	
-	gtk_button_set_use_stock(button, TRUE);
-	gtk_button_set_label(button, logger_enabled ? GTK_STOCK_STOP : GTK_STOCK_OK);	// GTK_STOCK_START
+		logger.link_size = 1024 * gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinbutton));
+	logger.link_ptr = 0;
 
-	if(!logger_enabled)
+	if(logger_enabled)
 	{
 		g_free(logger.link_buf);
 		logger.link_buf = (uint16_t *)g_malloc0(logger.link_size * sizeof(uint16_t));
@@ -153,6 +163,8 @@ on_button10_clicked                    (GtkButton       *butto,
 		g_free(logger.link_buf);
 		logger.link_buf = NULL;
 	}
+
+	udpate_widgets(button, spinbutton);
 }
 
 
