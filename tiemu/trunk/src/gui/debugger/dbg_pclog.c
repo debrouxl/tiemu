@@ -93,13 +93,13 @@ static void clist_populate(GtkListStore *store)
 {
     int i;
 
-    for(i = 0; i < bkpts.pclog_size; i++)
+    for(i = 0; i < logger.pclog_size; i++)
     {
         GtkTreeIter iter;
         uint32_t addr;
         gchar *str;
 
-        addr = bkpts.pclog_buf[(bkpts.pclog_ptr + i) % bkpts.pclog_size];
+        addr = logger.pclog_buf[(logger.pclog_ptr + i) % logger.pclog_size];
         str = g_strdup_printf("0x%06x", addr);
     
         gtk_list_store_append(store, &iter);

@@ -58,11 +58,11 @@ int hw_m68k_init(void)
     ti68k_bkpt_add_exception(4);
 
     // init instruction logging
-    bkpts.pclog_size = 10;
-    bkpts.pclog_buf = (uint32_t *)malloc(bkpts.pclog_size * sizeof(uint32_t));
-    if(bkpts.pclog_buf == NULL)
+    logger.pclog_size = 10;
+    logger.pclog_buf = (uint32_t *)malloc(logger.pclog_size * sizeof(uint32_t));
+    if(logger.pclog_buf == NULL)
         return ERR_MALLOC;
-    bkpts.pclog_ptr = 0;
+    logger.pclog_ptr = 0;
 
     init_m68k();
 
@@ -87,7 +87,7 @@ int hw_m68k_exit(void)
     ti68k_bkpt_clear_address();
 	ti68k_bkpt_clear_exception();
 
-    free(bkpts.pclog_buf);
+    free(logger.pclog_buf);
 
     return 0;
 }
@@ -215,9 +215,9 @@ int hw_m68k_run(int n, unsigned maxcycles)
 		}
 
         // store PC in the log buffer
-        if(bkpts.pclog_size > 1)
+        if(logger.pclog_size > 1)
         {
-            bkpts.pclog_buf[bkpts.pclog_ptr++ % bkpts.pclog_size] = m68k_getpc();
+            logger.pclog_buf[logger.pclog_ptr++ % logger.pclog_size] = m68k_getpc();
         }
 
 		// hardware protection

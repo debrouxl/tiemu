@@ -13,6 +13,8 @@ SubVersion: $Id$
 	- [kevin] $2231: fixed get_folder_list_handle failing
 	- [kevin] $2232: fixed canceling KDE file dialog causing an "invalid file" error
 	- [roms]  $2233: new feature: 'Link Log' dialog box (part 1/3)
+	- [roms]  $2234: factorized code: PC logging has been moved from Ti68kBreakpoints structure 
+		to Ti68kLogging one. Please note this doesn't affect the SAV_REVISION flag (part 2/3).
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM

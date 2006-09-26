@@ -164,6 +164,9 @@ gui_debugger_OBJ = \
 	gui/debugger/dbg_stack.o	\
 	gui/debugger/dbg_vectors.o
 
+gui_logger_OBJ = \
+	gui/logger/log_link.o
+
 gui_OBJ = \
 	gui/about.o							\
 	gui/device.o							\
@@ -203,7 +206,7 @@ tiemu_OBJ = core/uae/newcpu.o \
 	$(core_OBJ) $(core_tihw_OBJ) $(core_tisw_OBJ) \
 	$(core_dbg_OBJ) \
 	$(misc_OBJ) \
-	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(kde_OBJ) $(win32_OBJ) \
+	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(gui_logger_OBJ) $(kde_OBJ) $(win32_OBJ) \
 	$(libgdb_A)
 
 #rules:

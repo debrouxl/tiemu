@@ -191,11 +191,6 @@ typedef struct
 	int type;       // Ti68kBkptType
     int mode;       // Ti68kBkptMode
 	int id;
-
-    // Logging
-    int         pclog_size;
-    uint32_t*   pclog_buf;
-    int         pclog_ptr;
 } Ti68kBreakpoints;
 
 typedef DeviceOptions	Ti68kLinkPort;
