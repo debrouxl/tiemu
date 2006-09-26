@@ -52,7 +52,7 @@ gint display_loglink_dbox()
 	GtkWidget *dbox;
 	GtkWidget *text;
 	gpointer data, data2;
-	int i;
+	int i, j;
 
 	xml = glade_xml_new
 		(tilp_paths_build_glade("log_link-2.glade"), "linklog_dbox", PACKAGE);
@@ -76,14 +76,51 @@ gint display_loglink_dbox()
 	data2 = glade_xml_get_widget(xml, "spinbutton1");
 	udpate_widgets(data, data2);
 
-	for(i = 0; i < logger.link_ptr; i++)
+	if(logger.link_buf)
 	{
-		uint16_t word = (logger.link_buf)[i];
+		int old_flags = MSB((logger.link_buf)[0]);
 		char *str;
+		char *tmp;		
 
-		str = g_strdup_printf("%c: %02x\n", (MSB(word) & 1) ? 'S' : 'R', LSB(word));
+		if((logger.link_buf)[0] & (1 << 8))
+			str = g_strdup_printf("S: ");
+		else
+			str = g_strdup_printf("R: ");
+
+		for(i = j = 0; i < logger.link_ptr; i++)
+		{
+			uint16_t word = (logger.link_buf)[i];
+			uint8_t byte = LSB(word);
+			uint8_t flags = MSB(word);
+			int s = flags & 1;
+			int r = flags & 2;
+			
+			if(flags != old_flags)
+			{
+				old_flags = flags;
+
+				tmp = g_strdup_printf("(%i bytes)\n", j);
+				str = g_strconcat(str, tmp, NULL);
+				g_free(tmp);
+				gtk_text_buffer_insert_at_cursor(txtbuf, str, strlen(str));
+
+				j = 0;
+				g_free(str);			
+				str = g_strdup_printf("%c: ", s ? 'S' : 'R');
+				
+			}
+
+			tmp = g_strdup_printf("%02X ", byte);
+			str = g_strconcat(str, tmp, NULL);
+			g_free(tmp);
+			j++;
+		}
+
+		tmp = g_strdup_printf("(%i bytes)\n", j);
+		str = g_strconcat(str, tmp, NULL);
 		gtk_text_buffer_insert_at_cursor(txtbuf, str, strlen(str));
-		g_free(str);                                           
+
+		g_free(str);			
 	}
 
 	dbox = glade_xml_get_widget(xml, "linklog_dbox");

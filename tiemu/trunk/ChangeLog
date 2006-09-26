@@ -16,6 +16,7 @@ SubVersion: $Id$
 	- [roms]  $2234: factorized code: PC logging has been moved from Ti68kBreakpoints structure 
 		to Ti68kLogging one. Please note this doesn't affect the SAV_REVISION flag (part 2/3).
 	- [roms]  $2235: fill dialog box with log and save to file(part 3/3)
+	- [roms]  $2236: improved link logger (print data blocks rather than single bytes)
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM
