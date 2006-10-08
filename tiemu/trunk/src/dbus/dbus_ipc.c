@@ -72,13 +72,26 @@ static void tiemudbus_class_init(TiEmuDBusClass *this)
 static void tiemudbus_init(TiEmuDBus *this)
 {
   DBusGConnection *connection;
+  DBusGProxy *proxy;
   GError *error;
+  guint request_name_ret;
 
   // Connect to D-Bus
   error = NULL;
   connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
   if (!connection) {
     g_printerr("Failed to open connection to D-Bus session bus: %s\n",
+               error->message);
+    g_error_free(error);
+    return;
+  }
+
+  // Register service with D-Bus
+  proxy = dbus_g_proxy_new_for_name(connection, DBUS_SERVICE_DBUS,
+                                    DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
+  if (!org_freedesktop_DBus_request_name(proxy, "org.ticalc.lpg.tiemu.TiEmuDBus",
+                                         0, &request_name_ret, &error)) {
+    g_printerr("Failed to register service with D-Bus: %s\n",
                error->message);
     g_error_free(error);
     return;

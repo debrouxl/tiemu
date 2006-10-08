@@ -18,6 +18,7 @@ SubVersion: $Id$
 	- [roms]  $2235: fill dialog box with log and save to file(part 3/3)
 	- [roms]  $2236: improved link logger (print data blocks rather than single bytes)
 	- [kevin] $2243: created a D-Bus interface
+	- [kevin] $2245: register a service name for the D-Bus interface
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM
