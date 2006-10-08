@@ -45,6 +45,10 @@ extern int asm_setjmp(jmp_buf b);
 #include "kde.h"
 #endif
 
+#if WITH_DBUS
+#include "dbus_ipc.h"
+#endif
+
 #include "intl.h"
 #include "tilibs.h"
 #include "struct.h"
@@ -147,7 +151,7 @@ int main(int argc, char **argv)
     */
 #ifndef __IPAQ__
     splash_screen_start();
-    splash_screen_set_label(_("Initializing GTK+..."));    
+    splash_screen_set_label(_("Initializing GTK+..."));
 #endif
 
 #if WITH_KDE
@@ -155,6 +159,12 @@ int main(int argc, char **argv)
     sp_kde_init(argc, argv, "tiemu", _("TiEmu"), VERSION, _("TI calculator emulator"), "Copyright (c) 2000, Thomas Corvazier, Romain Lievin\nCopyright (c) 2001-2002, Romain Lievin, Julien Blache\nCopyright (c) 2003-2004, Romain Lievin\nCopyright (c) 2005-2006, Romain Lievin, Kevin Kofler", "http://lpg.ticalc.org/prj_tiemu/", "gtktiemu-users@lists.sf.net");
     atexit(sp_kde_finish);
     g_timeout_add(26, sp_kde_process_qt_events, NULL);
+#endif
+
+#if WITH_DBUS
+    splash_screen_set_label(_("Initializing D-Bus..."));
+    dbus_init();
+    atexit(dbus_finish);
 #endif
 
 #ifdef __WIN32__
