@@ -64,7 +64,7 @@ dbus_OBJ = dbus/dbus_ipc.o
 dbus/dbus_glue.h: dbus/dbus_ipc.xml
 	dbus-binding-tool --mode=glib-server --output=dbus/dbus_glue.h --prefix=tiemudbus dbus/dbus_ipc.xml
 dbus/dbus_ipc.o: dbus/dbus_ipc.c dbus/dbus_ipc.h dbus/dbus_glue.h
-	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) @DBUS_GLIB_CFLAGS@ $dbus/dbus_ipc.c -o $dbus/dbus_ipc.o
+	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) @DBUS_GLIB_CFLAGS@ dbus/dbus_ipc.c -o dbus/dbus_ipc.o
 endif
 
 DEFS=@DEFS@ \
