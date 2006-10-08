@@ -13,7 +13,7 @@ DCOPIDL2CPP = @DCOPIDL2CPP@
 RC       ?= windres
 
 kde       = @kde@
-dbus      = no
+dbus      = @dbus@
 
 DESTDIR   =
 

@@ -392,6 +392,9 @@
 /* Version number of package */
 #undef VERSION
 
+/* Use D-Bus support */
+#undef WITH_DBUS
+
 /* Use KDE support */
 #undef WITH_KDE
 

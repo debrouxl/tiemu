@@ -77,6 +77,19 @@ PKG_CHECK_MODULES(GLADE, libglade-2.0 >= 2.4.0)
 AC_SUBST(GLADE_CFLAGS)
 AC_SUBST(GLADE_LIBS)
 
+# D-Bus support
+AC_ARG_WITH(dbus, AC_HELP_STRING([--with-dbus], [Compile with D-Bus support]), [dbus=$withval], [dbus=no])
+if test "x$dbus" = "xyes"; then
+        PKG_CHECK_MODULES(DBUS_GLIB, dbus-glib-1 >= 0.60)
+        AC_DEFINE(WITH_DBUS, 1, [Use D-Bus support])
+else
+        DBUS_GLIB_CFLAGS=
+        DBUS_GLIB_LIBS=
+fi
+AC_SUBST(DBUS_GLIB_CFLAGS)
+AC_SUBST(DBUS_GLIB_LIBS)
+AC_SUBST(dbus)
+
 # Checks for header files.
 AC_HEADER_STDBOOL
 AC_CHECK_HEADERS([fcntl.h])
