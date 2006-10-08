@@ -18,6 +18,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <dbus/dbus-protocol.h>
@@ -140,7 +141,7 @@ static gboolean tiemudbus_send_files(TiEmuDBus *this UNUSED, const char **filena
   if (img_loaded && !engine_is_stopped()) {
     const char **it;
     engine_stop();
-    for (it = filenames.begin(); *it; ++it)
+    for (it = filenames; *it; ++it)
       send_file(*it);
     engine_start();
     return TRUE;
@@ -179,7 +180,8 @@ static gboolean tiemudbus_execute_command(TiEmuDBus *this UNUSED, const char *co
 {
   if (img_loaded) {
     gboolean result;
-    char *utf8, *utf16, *ti;
+    char *utf8, *ti;
+    unsigned short *utf16;
     utf8=g_strconcat("\f\r\r", command, "\n", NULL);
     utf16=ticonv_utf8_to_utf16(utf8);
     g_free(utf8);
