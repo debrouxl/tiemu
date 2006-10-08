@@ -13,6 +13,7 @@ DCOPIDL2CPP = @DCOPIDL2CPP@
 RC       ?= windres
 
 kde       = @kde@
+dbus      = no
 
 DESTDIR   =
 
@@ -55,6 +56,15 @@ kde/dcop.kidl: kde/dcop.h
 	$(DCOPIDL) kde/dcop.h >kde/dcop.kidl
 kde/dcop_skel.cpp: kde/dcop.kidl
 	$(DCOPIDL2CPP) --no-stub kde/dcop.kidl
+endif
+
+ifeq ($(dbus), yes)
+LDFLAGS += @DBUS_GLIB_LIBS@
+dbus_OBJ = dbus/dbus_ipc.o
+dbus/dbus_glue.h: dbus/dbus_ipc.xml
+	dbus-binding-tool --mode=glib-server --output=dbus/dbus_glue.h --prefix=tiemudbus dbus/dbus_ipc.xml
+dbus/dbus_ipc.o: dbus/dbus_ipc.c dbus/dbus_ipc.h dbus/dbus_glue.h
+	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) @DBUS_GLIB_CFLAGS@ $dbus/dbus_ipc.c -o $dbus/dbus_ipc.o
 endif
 
 DEFS=@DEFS@ \
@@ -206,7 +216,8 @@ tiemu_OBJ = core/uae/newcpu.o \
 	$(core_OBJ) $(core_tihw_OBJ) $(core_tisw_OBJ) \
 	$(core_dbg_OBJ) \
 	$(misc_OBJ) \
-	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(gui_logger_OBJ) $(kde_OBJ) $(win32_OBJ) \
+	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(gui_logger_OBJ) \
+	$(kde_OBJ) $(dbus_OBJ) $(win32_OBJ) \
 	$(libgdb_A)
 
 #rules:
