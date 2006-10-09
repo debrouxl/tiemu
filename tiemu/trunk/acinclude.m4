@@ -3,6 +3,7 @@
 dnl    This file is part of the KDE libraries/packages
 dnl    Copyright (C) 1997 Janos Farkas (chexum@shadow.banki.hu)
 dnl              (C) 1997,98,99 Stephan Kulow (coolo@kde.org)
+dnl    Patches for TiEmu Copyright (C) 2005-2006 Kevin Kofler
 
 dnl    This file is free software; you can redistribute it and/or
 dnl    modify it under the terms of the GNU Library General Public
@@ -526,31 +527,13 @@ AC_DEFUN([KDE_SUBST_PROGRAMS],
         kde_default_bindirs="$exec_prefix/bin $prefix/bin $kde_default_bindirs"
         KDE_FIND_PATH(dcopidl, DCOPIDL, [$kde_default_bindirs], [KDE_MISSING_PROG_ERROR(dcopidl)])
         KDE_FIND_PATH(dcopidl2cpp, DCOPIDL2CPP, [$kde_default_bindirs], [KDE_MISSING_PROG_ERROR(dcopidl2cpp)])
-        KDE_FIND_PATH(mcopidl, MCOPIDL, [$kde_default_bindirs], [KDE_MISSING_PROG_ERROR(mcopidl)])
-        KDE_FIND_PATH(artsc-config, ARTSCCONFIG, [$kde_default_bindirs], [KDE_MISSING_PROG_ERROR(artsc-config)])
         KDE_FIND_PATH(kde-config, KDECONFIG, [$kde_default_bindirs])
-        KDE_FIND_PATH(meinproc, MEINPROC, [$kde_default_bindirs])
-      
-        if test -n "$MEINPROC" && test ! "$MEINPROC" = "compiled"; then  
- 	    kde_sharedirs="/usr/share/kde /usr/local/share /usr/share /opt/kde3/share /opt/kde/share $prefix/share"
-            test -n "$KDEDIR" && kde_sharedirs="$KDEDIR/share $kde_sharedirs"
-            AC_FIND_FILE(apps/ksgmltools2/customization/kde-chunk.xsl, $kde_sharedirs, KDE_XSL_STYLESHEET)
-	    if test "$KDE_XSL_STYLESHEET" = "NO"; then
-		KDE_XSL_STYLESHEET=""
-	    else
-                KDE_XSL_STYLESHEET="$KDE_XSL_STYLESHEET/apps/ksgmltools2/customization/kde-chunk.xsl"
-	    fi
-        fi
 
         DCOP_DEPENDENCIES='$(DCOPIDL)'
         AC_SUBST(DCOPIDL)
         AC_SUBST(DCOPIDL2CPP)
         AC_SUBST(DCOP_DEPENDENCIES)
-        AC_SUBST(MCOPIDL)
-        AC_SUBST(ARTSCCONFIG)
         AC_SUBST(KDECONFIG)
-	AC_SUBST(MEINPROC)
- 	AC_SUBST(KDE_XSL_STYLESHEET)
 
         if test -x "$KDECONFIG"; then # it can be "compiled"
           kde_libs_prefix=`$KDECONFIG --prefix`
@@ -1060,7 +1043,7 @@ if test -z "$1"; then
   kde_qtsubver=1
 else
   kde_qtsubver=`echo "$1" | sed -e 's#[0-9][0-9]*\.\([0-9][0-9]*\).*#\1#'`
-  # following is the check if subversion isn´t found in passed argument
+  # following is the check if subversion isnt found in passed argument
   if test "$kde_qtsubver" = "$1"; then
     kde_qtsubver=1
   fi
