@@ -87,7 +87,7 @@ uint8_t FlashReadByte(uint32_t addr)
 		{
 		case 0:	return (tihw.calc_type == V200 || tihw.calc_type == TI89t) ? 0xb0 : 0x89; // manufacturer code
 		case 1:	return 0x00;
-		case 2: return (tihw.hw_type >= HW4) ? 0xb0 : 0xb5; // device code (HW4 code may be wrong)
+		case 2: return 0xb5;	// device code
 		case 3: return 0x00;
 		default: return 0xff;
 		}
@@ -103,7 +103,7 @@ uint16_t FlashReadWord(uint32_t addr)
 		switch(addr & 0xffff)
 		{
 		case 0:	return (tihw.calc_type == V200 || tihw.calc_type == TI89t) ? 0xb0 : 0x89; // manufacturer code
-		case 2: return (tihw.hw_type >= HW4) ? 0xb0 : 0xb5; // device code (HW4 code may be wrong)
+		case 2: return 0x00b5;	// device code
 		default: return 0xffff;
 		}
 	}

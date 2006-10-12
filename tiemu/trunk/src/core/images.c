@@ -174,7 +174,13 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
 
   	if(rom->size < 256) 
     	return ERR_INVALID_ROM_SIZE;
-  	if (rom->size > 8*MB)
+	if (rom->size == 8*MB)
+	{
+	  // TiEmu used to generate 8 MB images for HW4, try to load them anyway.
+	  printl(0, _("Warning: truncating 8 MB image to 4 MB: <%s>\n"), filename);
+	  rom->size = 4*MB;
+	}
+  	if (rom->size > 4*MB)
     	return ERR_INVALID_ROM_SIZE;
   
 	if(rom->data == NULL)
@@ -428,20 +434,13 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
       	return ERR_CANT_OPEN;
     }
 
-	// Some V200 and TI89 Titanium ROMs are half/quarter the size
+	// Some V200 and TI89 Titanium ROMs are half the size
 	if((img.size < 4*MB) && (img.calc_type == V200 || img.calc_type == TI89t))
 	{
 		img.size = 4*MB;
 		img.data = realloc(img.data, 4*MB + 4);
 		printf("Completing image to 4MB !\n");
 		memset(img.data + 2*MB, 0xff, 2*MB);
-	}
-	if((img.size < 8*MB) && img.calc_type == TI89t && img.hw_type >= HW4)
-	{
-		img.size = 8*MB;
-		img.data = realloc(img.data, 8*MB + 4);
-		printf("Completing image to 8MB !\n");
-		memset(img.data + 4*MB, 0xff, 4*MB);
 	}
 
 	// Fill header
@@ -523,10 +522,8 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	strcpy(img.signature, IMG_SIGN);
 	img.header_size = sizeof(IMG_INFO);
 	img.revision = IMG_REV;
-	real_size = img.size - SPP;
-	img.size = ti68k_get_rom_size(img.calc_type);
-	// TI-89 Titanium HW4 has 8 MB of FlashROM.
-	if (hw_type >= HW4) img.size <<= 1;
+    real_size = img.size - SPP;
+    img.size = ti68k_get_rom_size(img.calc_type);
 
     img.hw_type = hw_type;
 	if(hw_type == -1)
