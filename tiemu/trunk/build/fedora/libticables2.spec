@@ -45,9 +45,11 @@ cat >$RPM_BUILD_ROOT/etc/udev/rules.d/60-libticables.rules <<EOF1
 
 # SilverLink
 ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e001", SYMLINK+="ticable-%%k"
+# TI-84+ DirectLink
+ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e003", SYMLINK+="ticable-%%k"
 # TI-89 Titanium DirectLink
 ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e004", SYMLINK+="ticable-%%k"
-# TI-84+ DirectLink
+# TI-84+ SE DirectLink
 ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e008", SYMLINK+="ticable-%%k"
 EOF1
 mkdir -p $RPM_BUILD_ROOT/etc/security/console.perms.d
@@ -81,6 +83,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/ticables2.pc
 
 %changelog
+* Sun Oct 15 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Add non-SE TI-84+ to the pam_console configuration.
+
 * Mon Sep 25 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Split out -devel into separate subpackage.
 Own /usr/include/tilp2 in -devel.
