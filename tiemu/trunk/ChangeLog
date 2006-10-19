@@ -22,6 +22,7 @@ SubVersion: $Id$
 	- [kevin] $2246: don't check for unneeded aRts and KDE documentation generation executables (request from Gentoo #112985)
 	- [kevin] $2250: don't call CoInitialize and CoUninitialize in oleaut.cpp, GTK+ already does this (to use input methods)
 	- [kevin] $2251: reverted changes to support 8 MB FlashROM, as HW4 actually only has 4 MB
+	- [roms]  $2254: display handle id as hex and dec (O. Armand feature request)
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM
