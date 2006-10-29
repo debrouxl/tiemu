@@ -81,11 +81,11 @@ int main(void)
 
   if (tiemuOLE->lpVtbl->execute_command(tiemuOLE,command,&ready) != S_OK || !ready)
     {SysFreeString(command);tiemuOLE->lpVtbl->Release(tiemuOLE);
+     OleUninitialize();puts("OLE error (#10).");return 10;}
+  SysFreeString(command);
   fprintf(stdout, "Done !\n");
 
   fprintf(stdout, "Releasing...");
-  OleUninitialize();puts("OLE error (#10).");return 10;}
-  SysFreeString(command);
   tiemuOLE->lpVtbl->Release(tiemuOLE);
   OleUninitialize();
   fprintf(stdout, "Done !\n");
