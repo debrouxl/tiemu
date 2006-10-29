@@ -1,6 +1,3 @@
-WARNING: OLE Automation support in TiEmu is not working yet, and it is currently
-         not enabled.
-
 This directory contains the header file and CLSID declarations allowing you to
 easily make calls to TiEmu through the OLE Automation IPC interface. The files
 tiemuole.c and tiemuole.h are copies of src/com_ole/oleaut.h and
