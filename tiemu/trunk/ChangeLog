@@ -25,7 +25,7 @@ SubVersion: $Id$
 	- [roms]  $2254: display handle id as hex and dec (O. Armand feature request)
 	- [tyler] $2256: fixed title in the Image Creation Wizard (was titled TiEmu II, actually TiEmu 3)
 	- [kevin] $2257: reenabled OLE interface (tested by Tyler) (NOTE: does NOT work in WINE)
-	- [kevin] $2261: don't crash when attempting to load 8 MB images from old TiEmu
+	- [kevin] $2262: don't crash when attempting to load 8 MB images from old TiEmu
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM

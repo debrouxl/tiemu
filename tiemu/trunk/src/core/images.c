@@ -372,17 +372,10 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
       return ERR_CANT_OPEN;
     }
 
-    if(strcmp(ri->signature, IMG_SIGN))
-   	{
-   		fprintf(stderr, "Bad image: <%s>\n", filename);
-      	return ERR_INVALID_UPGRADE;
-   	}
-    
-    if (ri->size == 8*MB)
+    if(strcmp(ri->signature, IMG_SIGN) || ri->size > 4*MB)
     {
-      // TiEmu used to generate 8 MB images for HW4, try to load them anyway.
-      printl(0, _("Warning: truncating 8 MB image to 4 MB: <%s>\n"), filename);
-      ri->size = 4*MB;
+      fprintf(stderr, "Bad image: <%s>\n", filename);
+      return ERR_INVALID_UPGRADE;
     }
 
     // Close file
