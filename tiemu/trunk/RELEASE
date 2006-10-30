@@ -13,6 +13,7 @@
 	- [roms]  $2254: display handle id as hex and dec (O. Armand feature request)
 	- [tyler] $2256: fixed title in the Image Creation Wizard (was titled TiEmu II, actually TiEmu 3)
 	- [kevin] $2257: reenabled OLE interface (tested by Tyler) (NOTE: does NOT work in WINE)
+	- [kevin] $2261: don't crash when attempting to load 8 MB images from old TiEmu
 * libticonv changes (roms):
 	- don't include <iconv.h> if the iconv-compatible interface is disabled
 * libticables2 changes (roms):

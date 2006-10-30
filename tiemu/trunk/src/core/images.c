@@ -176,7 +176,7 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
     	return ERR_INVALID_ROM_SIZE;
 	if (rom->size == 8*MB)
 	{
-	  // TiEmu used to generate 8 MB images for HW4, try to load them anyway.
+	  // TiLP used to dump 8 MB images for HW4, try to load them anyway.
 	  printl(0, _("Warning: truncating 8 MB image to 4 MB: <%s>\n"), filename);
 	  rom->size = 4*MB;
 	}
@@ -378,6 +378,13 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
       	return ERR_INVALID_UPGRADE;
    	}
     
+    if (ri->size == 8*MB)
+    {
+      // TiEmu used to generate 8 MB images for HW4, try to load them anyway.
+      printl(0, _("Warning: truncating 8 MB image to 4 MB: <%s>\n"), filename);
+      ri->size = 4*MB;
+    }
+
     // Close file
     if (fclose(f))
     {
