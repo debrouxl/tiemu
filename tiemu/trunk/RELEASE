@@ -1,3 +1,50 @@
+20061030:
+* TiEmu 3 changes:
+	- [roms]  $2233: new feature: 'Link Log' dialog box (part 1/3)
+	- [roms]  $2234: factorized code: PC logging has been moved from Ti68kBreakpoints structure 
+		to Ti68kLogging one. Please note this doesn't affect the SAV_REVISION flag (part 2/3).
+	- [roms]  $2235: fill dialog box with log and save to file(part 3/3)
+	- [roms]  $2236: improved link logger (print data blocks rather than single bytes)
+	- [kevin] $2243: created a D-Bus interface
+	- [kevin] $2245: register a service name for the D-Bus interface
+	- [kevin] $2246: don't check for unneeded aRts and KDE documentation generation executables (request from Gentoo #112985)
+	- [kevin] $2250: don't call CoInitialize and CoUninitialize in oleaut.cpp, GTK+ already does this (to use input methods)
+	- [kevin] $2251: reverted changes to support 8 MB FlashROM, as HW4 actually only has 4 MB
+	- [roms]  $2254: display handle id as hex and dec (O. Armand feature request)
+	- [tyler] $2256: fixed title in the Image Creation Wizard (was titled TiEmu II, actually TiEmu 3)
+	- [kevin] $2257: reenabled OLE interface (tested by Tyler) (NOTE: does NOT work in WINE)
+* libticonv changes (roms):
+	- don't include <iconv.h> if the iconv-compatible interface is disabled
+* libticables2 changes (roms):
+	- fixed BSD TTY device names in Gray/BlackLink support (Sean McLaughlin)
+	- re-added USB kernel module support (testing purposes)
+	- synced BSD serial linking code with Linux code (tijl)
+	- BSD libusb fixes (tijl)
+	- changed PID_TI84P to 0xE003 and added PID_TI84P_SE as 0xE008
+	- added probing of TI84+ non-SE
+* libtifiles2 changes (roms):
+	- again, disabled file checksum verification
+* libticalcs2 changes (roms):
+	- B. Moody fix: replaced all snprintf by g_snprintf (truncate OS version under Linux)
+	- 68k ROM dumpers: only dump 4 MB on HW4 (same as HW3)
+	- check handle to avoid NULL dereference
+	- dusb_cmd.c: uses BB00 packet value as delay
+	- Titanium can't handle more that 16 parameters at a time => get_version split
+* TiLP 2 (included in the Fedora RPMs only, see http://www.ticalc.org for source
+  and Windows packages by roms) changes (roms):
+	- as stated by Benjamin, replaced snprintf by g_snprintf which is safer
+	- added CABLE_DEV support for testing purposes (visible under Linux only)
+	- GIF: don't ask when built in _CONSOLE mode
+	- doesn't reopen DirectLink when using UsbKernel access
+	- don't reopen cable in tilp_ticalcs_isready because the Titanium with USB
+	  doesn't like this under Linux.
+* Fedora RPM changes:
+	- The RPMs are now built on and for Fedora Core 6 (Zod).
+	- Fixed the libticables2 pam_console configuration for non-SE TI-84+.
+	- The TiEmu RPM is built with support for D-Bus inter-process
+	  communication (in addition to DCOP, which is currently used by
+	  KTIGCC).
+
 20060925:
 * TiEmu 3 changes:
 	- [roms]  $2177: fixed invalid keyval mask in keyboard press event routine
