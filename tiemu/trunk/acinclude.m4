@@ -515,7 +515,7 @@ Please check whether you installed KDE correctly.
 AC_DEFUN([KDE_SUBST_PROGRAMS],
 [
 
-        kde_default_bindirs="/usr/bin /usr/local/bin /opt/local/bin /usr/X11R6/bin /opt/kde/bin /opt/kde3/bin /usr/kde/bin /usr/local/kde/bin"
+        kde_default_bindirs="`kde-config --prefix`/bin /usr/bin /usr/local/bin /opt/local/bin /usr/X11R6/bin /opt/kde/bin /opt/kde3/bin /usr/kde/bin /usr/local/kde/bin"
         if test -n "$KDEDIRS"; then
            kde_save_IFS=$IFS
            IFS=:
@@ -1536,8 +1536,8 @@ fi
 
 if test -z "$1"; then
 
-kde_incdirs="/usr/lib/kde/include /usr/local/kde/include /usr/local/include /usr/kde/include /usr/include/kde /usr/include /opt/kde3/include /opt/kde/include $x_includes $qt_includes"
-test -n "$KDEDIR" && kde_incdirs="$KDEDIR/include $KDEDIR/include/kde $KDEDIR $kde_incdirs"
+test -n "$KDEDIR" || KDEDIR=`kde-config --prefix`
+kde_incdirs="$KDEDIR/include/kde3 $KDEDIR/include/kde $KDEDIR/include"
 kde_incdirs="$ac_kde_includes $kde_incdirs"
 AC_FIND_FILE($kde_check_header, $kde_incdirs, kde_incdir)
 ac_kde_includes="$kde_incdir"
@@ -1548,8 +1548,7 @@ in the prefix, you've chosen, are no KDE headers installed. This will fail.
 So, check this please and use another prefix!])
 fi
 
-kde_libdirs="/usr/lib/kde/lib /usr/local/kde/lib /usr/kde/lib /usr/lib/kde /usr/lib/kde3 /usr/lib /usr/X11R6/lib /usr/local/lib /opt/kde3/lib /opt/kde/lib /usr/X11R6/kde/lib"
-test -n "$KDEDIR" && kde_libdirs="$KDEDIR/lib $KDEDIR $kde_libdirs"
+kde_libdirs="$KDEDIR/lib`kde-config --libsuffix`"
 kde_libdirs="$ac_kde_libraries $kde_libdirs"
 AC_FIND_FILE($kde_check_lib, $kde_libdirs, kde_libdir)
 ac_kde_libraries="$kde_libdir"
