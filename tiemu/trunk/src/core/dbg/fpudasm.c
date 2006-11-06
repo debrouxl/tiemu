@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: error.c 680 2004-10-11 16:45:27Z roms $ */
+/* $Id$ */
 
-/*  TiEmu - an TI emulator
+/*  TiEmu - Tiemu Is an EMUlator
  *
  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2003, Romain Lievin
