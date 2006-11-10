@@ -35,12 +35,8 @@
 #include <windows.h>
 #endif
 
-#ifndef __MACOSX__
-# include <glib.h>
-# include <glib/gstdio.h>
-#else
-# include <glib/glib.h>
-#endif
+#include <glib.h>
+#include <glib/gstdio.h>
 
 #ifdef _MSC_VER
 # include "../../build/msvc/dirent.h"	// for S_ISDIR use

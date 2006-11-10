@@ -28,11 +28,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifndef __MACOSX__
 #include "tilibs.h"
-#else				/*  */
-#include <libticalcs/calc_int.h>
-#endif				/*  */
 
 #include "intl.h"
 #include "printl.h"
