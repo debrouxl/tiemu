@@ -90,17 +90,25 @@ static char *find_str(char *s, const char *t)
 /* Chech whether a RC file exists */
 int rcfile_exist(void)
 {
+	int result;
+
 	rcfile_get_path(&rc_file);
   
-	return !access(rc_file, F_OK);
+	result = !access(rc_file, F_OK);
+	g_free(rc_file);
+	return result;
 }
 
 /* Delete the RC file */
 int rcfile_delete(void)
 {
+	int result;
+
 	rcfile_get_path(&rc_file);
 
-	return unlink(rc_file);
+	result = unlink(rc_file);
+	g_free(rc_file);
+	return result;
 }
 
 /* Return TiLP version number */
@@ -119,6 +127,7 @@ int rcfile_get_version(char *version)
 	rcfile_get_path(&rc_file);
 
 	txt = fopen(rc_file, "rt");
+	g_free(rc_file);
 	if (txt == NULL)
 		return -1;
 
@@ -165,6 +174,7 @@ void rcfile_read(void)
 	rcfile_get_path(&rc_file);
 
 	txt=fopen(rc_file, "rt");
+	g_free(rc_file);
 	if(txt == NULL) {
 		printl(0, _("Configuration file not found, use default values. You can create one by the 'File|Save config' command menu.\n"));
 		return;
@@ -486,6 +496,7 @@ void rcfile_write(void)
 	_mkdir(CONF_DIR);
 #endif
 	txt=fopen(rc_file, "wt");
+	g_free(rc_file);
 
 	if(txt==NULL) {
 		//gif->msg_box(_("Error"), _("Unable to write the config file (~/.tilp or tilp.ini).\n"));

@@ -29,6 +29,7 @@ SubVersion: $Id$
 	- [kevin] $2264: use kde-config to locate KDE instead of hardcoded directories which were missing /usr/lib64
 	- [kevin] $2265: fix --enable-shared-itcl so the shared libitcl and libitk are built with -fPIC
 	- [kevin] $2269: remove special-casing of __MACOSX__ from some include paths which shouldn't be needed
+	- [kevin] $2270: fixed memory leaks in config file handling
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM
