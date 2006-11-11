@@ -30,6 +30,7 @@ SubVersion: $Id$
 	- [kevin] $2265: fix --enable-shared-itcl so the shared libitcl and libitk are built with -fPIC
 	- [kevin] $2269: remove special-casing of __MACOSX__ from some include paths which shouldn't be needed
 	- [kevin] $2270: fixed memory leaks in config file handling
+	- [kevin] $2271: fixed about dialog not closing when Close is clicked with GTK+ 2.10
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM
