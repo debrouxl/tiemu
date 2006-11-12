@@ -71,8 +71,6 @@ cat >${RPM_BUILD_ROOT}%{_datadir}/mime/packages/tilp.xml <<EOF
   </mime-type>
 </mime-info>
 EOF
-cd ${RPM_BUILD_ROOT}/usr/bin && ln -s tilp-2 tilp
-cd ${RPM_BUILD_ROOT}%{_mandir}/man1 && ln -s tilp-2.1 tilp.1
 
 %post
 update-mime-database %{_datadir}/mime > /dev/null 2>&1 || :
@@ -88,13 +86,15 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 /usr/bin/tilp
-/usr/bin/tilp-2
 %{_mandir}/man1/tilp*
 /usr/share/tilp2
 %{_datadir}/applications/lpg-tilp.desktop
 %{_datadir}/mime/packages/tilp.xml
 
 %changelog
+* Sun Nov 12 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Drop tilp-2 -> tilp symlinks, as the executable is now named just tilp again.
+
 * Thu Jul 20 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Libdir fixes for lib64 platforms.
 Use libtifoo-devel instead of libtifoo in BuildRequires.
