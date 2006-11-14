@@ -31,6 +31,7 @@ SubVersion: $Id$
 	- [kevin] $2269: remove special-casing of __MACOSX__ from some include paths which shouldn't be needed
 	- [kevin] $2270: fixed memory leaks in config file handling
 	- [kevin] $2271: fixed about dialog not closing when Close is clicked with GTK+ 2.10
+	- [kevin] $2274: don't proceed to ROM image wizard step 3 if importing the image failed
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM

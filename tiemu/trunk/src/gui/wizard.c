@@ -252,6 +252,11 @@ gint display_wz_rom_dbox(void)
   
 	err = ti68k_convert_rom_to_image(filename, inst_paths.img_dir, &dstname);
 	handle_error();
+	if (err)
+	{
+		display_step1_dbox();
+		return -1;
+	}
     wizard_rom = g_strdup(dstname);
 	g_free(dstname);
     
@@ -283,6 +288,11 @@ gint display_wz_tib_dbox(void)
 
     err = ti68k_convert_tib_to_image(filename, inst_paths.img_dir, &dstname, -1);
 	handle_error();
+	if (err)
+	{
+		display_step1_dbox();
+		return -1;
+	}
     wizard_rom = g_strdup(dstname);
 	g_free(dstname);
     
