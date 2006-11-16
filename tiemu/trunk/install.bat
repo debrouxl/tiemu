@@ -13,5 +13,3 @@ cd ..
 cd skins
 call copy.bat
 cd ..
-
-cls
