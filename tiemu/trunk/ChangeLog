@@ -32,6 +32,7 @@ SubVersion: $Id$
 	- [kevin] $2270: fixed memory leaks in config file handling
 	- [kevin] $2271: fixed about dialog not closing when Close is clicked with GTK+ 2.10
 	- [kevin] $2274: don't proceed to ROM image wizard step 3 if importing the image failed
+	- [roms]  $2275: GDK_WINDOW_TYPE_HINT_ was set to NORMAL instead of DIALOG. Very annoying because this makes the window appears in the top of all others.
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM
