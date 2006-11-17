@@ -8,7 +8,7 @@
   <property name="title" translatable="yes">TiEmu wizard</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
-  <property name="modal">False</property>
+  <property name="modal">True</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
   <property name="decorated">True</property>
@@ -257,7 +257,7 @@ to get a ROM dump of your calculator ROM.</property>
   <property name="title" translatable="yes">TiEmu wizard</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
-  <property name="modal">False</property>
+  <property name="modal">True</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
   <property name="decorated">True</property>
@@ -559,7 +559,7 @@ to get a ROM dump of your calculator ROM.</property>
   <property name="title" translatable="yes">TiEmu wizard</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
-  <property name="modal">False</property>
+  <property name="modal">True</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
   <property name="decorated">True</property>
@@ -636,7 +636,7 @@ TiLP can be downloaded at: &lt;http://tilp.info&gt;</property>
   <property name="title" translatable="yes">TiEmu wizard</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
-  <property name="modal">False</property>
+  <property name="modal">True</property>
   <property name="resizable">False</property>
   <property name="destroy_with_parent">False</property>
   <property name="decorated">True</property>
