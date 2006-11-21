@@ -53,6 +53,8 @@ roms
 
 * ON key doesn't turn calc off 
 
+* pressing Ctrl+Alt+Supp makes emu unresponsive. Press Ctrl again.
+
 -------------
 + done
 - in progress

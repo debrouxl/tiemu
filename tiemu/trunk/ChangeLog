@@ -33,6 +33,8 @@ SubVersion: $Id$
 	- [kevin] $2271: fixed about dialog not closing when Close is clicked with GTK+ 2.10
 	- [kevin] $2274: don't proceed to ROM image wizard step 3 if importing the image failed
 	- [roms]  $2276: GDK_WINDOW_TYPE_HINT_ was set to NORMAL instead of DIALOG. Very annoying because this makes the window appears in the top of all others.
+	- [roms]  $2277: fixed window resizing which was disabled (but note that Windows resizing is an ugly hack because
+			gtk_window_set_hints does not work properly under Windows).
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM

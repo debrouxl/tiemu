@@ -53,6 +53,8 @@
 #include "printl.h"
 #include "gscales.h"
 
+#define ALLOW_RESIZE_WIN32
+
 GtkWidget *main_wnd = NULL;
 gboolean explicit_destroy = 0;
 GtkWidget *area = NULL;
@@ -168,10 +170,11 @@ static void set_window(int full_redraw)
 	// resize window and drawing area
 	if(full_redraw)
 		gtk_window_resize(GTK_WINDOW(main_wnd), wr.w, wr.h);
-#if 0
-	else
+
+#if defined(__WIN32__) && defined(ALLOW_RESIZE_WIN32)
+	if(!full_redraw)
 		gdk_window_resize(main_wnd->window, wr.w, wr.h);
-#endif /* 0 */
+#endif
 
 	// reallocate backing pixmap
 	if(pixmap != NULL)
@@ -192,39 +195,27 @@ static void set_window(int full_redraw)
 	}
 }
 
-static void set_constraints(int mode)
+static void set_constraints(void)
 {
 	// Allows resizing of window with a constant aspect ratio.
-	// ??? Very annoying and not very useful under Windows but required under Linux. ???
-	// But, enabling it make not possible to switch to real large view (x2).
-#if 1 /*ndef __WIN32__*/
+	// This is the right way as used under Linux. 
+        // Does not work under Windows thus not enabled.
+
+#if !defined(__WIN32__) && !defined(ALLOW_RESIZE_WIN32)
 	if(1)
 	{
-		GdkGeometry geom = { 0 };
+		GdkGeometry geom = { -1 };
 		GdkWindowHints mask = GDK_HINT_MIN_SIZE | GDK_HINT_ASPECT;
 		double r = (float)sr.w / sr.h;
-		//double o = r * 0.10;	// 10%
 
 		geom.min_width = 100;
 		geom.min_height = 100;
-		//geom.max_width = 1024;
-		//geom.max_height = 768;
-		//geom.base_width = 0;
-		//geom.base_height = 0;
-		//geom.width_inc = 5;
-		//geom.height_inc = 5;
-		if(mode)
-		{
-		    geom.min_aspect = r; //r - o;
-		    geom.max_aspect = r; //r + o;
-		    gtk_window_set_geometry_hints(GTK_WINDOW(main_wnd), area, &geom, mask);
-		}
-		else
-		{
-		    gtk_window_set_geometry_hints(GTK_WINDOW(main_wnd), area, &geom, 
-						  GDK_HINT_MIN_SIZE); 
-		}
-		
+
+		geom.min_aspect = r;
+		geom.max_aspect = r;
+		gtk_window_set_geometry_hints(GTK_WINDOW(main_wnd), 
+					      area, &geom, mask);
+				
 		//printf("%i %i %1.2f", sr.w, sr.h, r);		
 	}
 #endif
@@ -247,7 +238,7 @@ gint display_main_wnd(void)
 	area = glade_xml_get_widget(xml, "drawingarea1");
 
 	gtk_window_move(GTK_WINDOW(main_wnd), options3.calc.rect.x, options3.calc.rect.y);
-	set_constraints(1);
+	set_constraints();
 	gtk_widget_realize(main_wnd);	// set drawing area valid
 
 	// set window title (useful for TIGCC-IDE for instance)
