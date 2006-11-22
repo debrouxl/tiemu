@@ -201,7 +201,7 @@ static void set_constraints(void)
 	// This is the right way as used under Linux. 
         // Does not work under Windows thus not enabled.
 
-#if !defined(__WIN32__) && !defined(ALLOW_RESIZE_WIN32)
+#if !defined(__WIN32__) || !defined(ALLOW_RESIZE_WIN32)
 	if(1)
 	{
 		GdkGeometry geom = { -1 };
