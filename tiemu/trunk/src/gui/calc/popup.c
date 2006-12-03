@@ -62,16 +62,9 @@ GLADE_CB void
 on_popup_menu_header                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-#if 1
 	fprintf(stdout, _("* TiEmu version %s (cables=%s, files=%s, calcs=%s)\n"),
 	     TIEMU_VERSION, ticables_version_get(), tifiles_version_get(),
 	     ticalcs_version_get());
-#else
-	gchar **list, **ptr;
-
-	list = create_fsels(inst_paths.base_dir, NULL, "*.txt");
-	for(ptr = list; *ptr; ptr++)	printf("<<%s>>\n", *ptr);
-#endif
 }
 
 
@@ -99,13 +92,14 @@ GLADE_CB void
 on_debug_file_with_tiemu1_activate     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
+#ifndef NO_GDB
 	if(engine_is_stopped()) return;
 
 	engine_stop();
-#ifndef NO_GDB
 	display_debug_dbox();
-#endif
 	engine_start();
+
+#endif
 }
 
 
@@ -540,6 +534,11 @@ GtkWidget* display_popup_menu(void)
 	gtk_widget_hide(data);
 	data = glade_xml_get_widget(xml, "full_view1");
 	gtk_widget_set_sensitive(data, FALSE);
+
+#ifdef NO_GDB
+	data = glade_xml_get_widget(xml, "debug_file_with_tiemu1");
+	gtk_widget_set_sensitive(data, FALSE);
+#endif
 
 	// init radio buttons
     switch(options.view)
