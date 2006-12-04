@@ -6,14 +6,14 @@
 ; $Id: tiemu.iss 639 2004-08-19 15:35:33Z roms $
 
 [Setup]
-AppName=TiEmu3
-AppVerName=TiEmu 2.81b No Gdb
+AppName=TiEmu3-gdb
+AppVerName=TiEmu 2.81c No Gdb
 AppPublisher=The TiEmu Team
 AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
 AppSupportURL=http://lpg.ticalc.org/prj_tiemu/mailing_list.html
 AppUpdatesURL=http://lpg.ticalc.org/prj_tiemu/win32_download.html
-DefaultDirName={pf}\TiEmu3
-DefaultGroupName=TiEmu3
+DefaultDirName={pf}\TiEmu3-gdb
+DefaultGroupName=TiEmu3-gdb
 AllowNoIcons=yes
 LicenseFile=C:\sources\roms\tiemu3\COPYING
 InfoBeforeFile=C:\sources\roms\tiemu3\README.win32

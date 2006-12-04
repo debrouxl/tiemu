@@ -396,6 +396,10 @@ SOURCE=..\..\src\gui\pbars.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gui\quicksend.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\refresh.c
 # End Source File
 # Begin Source File

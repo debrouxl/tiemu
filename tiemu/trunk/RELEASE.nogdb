@@ -2,8 +2,8 @@
 
 
 
-Previous version: 2.81		(26/05/2006)
-Current version:  2.81b		(05/08/2006)
+Previous version: 2.81b		(05/08/2006)
+Current version:  2.81c		(04/12/2006)
 
 SubVersion (CVS) revision: $Id: RELEASE 2042 2006-05-07 07:46:23Z roms $
 
@@ -20,34 +20,26 @@ For the other link cables, no driver is needed.
 New capabilities:
 -----------------
 
-	- HW4 support (8MB of FLashRom)
-	- added TiGroup file support (in sending only)
-	- BMP screenshot support
-	- added ability to take several screenshots (burst mode)
+	- link logging
 
 
 Improvements:
 -------------
 
-	- added Seamonkey to the browser list, suggest Firefox instead of the obsolete Mozilla Suite
-	- added accelator key: Pause => Screenshot Now!
-	- allow to select target folder for screenshots
+	- replaced some hand-made GTK+ boxes by standard ones
+	- installer creates group as 'TiEmu3-gdb' instead of 'TiEmu3' to avoid
+		possible conflict with TiEmu+gdb.
 		
 		
 Bug fixes:
 ----------
 
-	- NULL dereference in file selector
-	- wrong timeout value
-	- "TIGCC" and "ticalc.org" bookmarks
-	- recfile crash when receiving something which is not a valid variable
-	- invalid keyval mask in keyboard press event routine
-		removed Gdk_Caps_Lock capture (already capture by TI keyboard)
-	- bug #1435183: Error window when closing TI emu
-	- bug #1529250 & #1529328: Screenshot folder changes after a few uses
+	- cable detaching when exiting TiEmu (hypersonic)
+	- regression: failed to import some old .89u files
+	- various minor fixes (see ChangeLog for details)
 
 	
 Notes:
 ------
 
-	- none
+	- pressing Ctrl+Alt+Supp makes TiEmu unresponsive. Press Ctrl again...

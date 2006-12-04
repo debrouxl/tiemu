@@ -1,16 +1,22 @@
 Planned features:
+-----------------
 
 * store *.sav files in the images folder or a new folder like 'states' rather than in the {app} folder
 * use the contrast field of skin
 * i18n (internationalization support)
 * sound emulation
 
-bug #1529250: oh, and a little *Wish List:
+Bugs:
+-----
+
+- BUGS list
+
+- bug #1529250: oh, and a little *Wish List:
 1. Taking animated screenshots using TiEmu (integrated)
 2. Allowing the user to change the folder after you use
 F10 to transfer file from the pc to the emulator
 
-bug #1529247  	  Link problem sending file from tiEmu to PC
+- bug #1529247  	  Link problem sending file from tiEmu to PC
 
 req #1532860		Video ScreenCapture	
 <<
@@ -18,7 +24,3 @@ Another cool feature would be the capabilitie to
 capture video from the screen, allowing to save in .gif
 or .avi
 >>
-
-- click on LCD makes keyboard blocked
-- can't resize window
-- CPU consumption

@@ -49,11 +49,9 @@ roms
 
 * why AC_CHECK_LIB(comdlg32, GetOpenFileName) does'nt work ?
 
-* console mode (Win32) => TiLP framework v2 ??
-
-* ON key doesn't turn calc off 
-
 * pressing Ctrl+Alt+Supp makes emu unresponsive. Press Ctrl again.
+
+* CPU consumption may be high
 
 -------------
 + done

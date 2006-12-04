@@ -54,6 +54,7 @@
 #include "scroptions.h"
 #include "tie_error.h"
 #include "dbg_all.h"
+#include "quicksend.h"
 
 #include "ti68k_int.h"
 #include "ti68k_def.h"
@@ -75,7 +76,12 @@ on_send_file_to_tiemu1_activate     (GtkMenuItem     *menuitem,
 	if(engine_is_stopped()) return;
 
 	engine_stop();
-	display_send_files_dbox();
+
+	if(!qs_enabled)
+		display_send_files_dbox();
+	else if(qs_enabled && qs_filename)
+		send_file(qs_filename);
+
 	engine_start();
 }
 
@@ -92,14 +98,15 @@ GLADE_CB void
 on_debug_file_with_tiemu1_activate     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-#ifndef NO_GDB
 	if(engine_is_stopped()) return;
 
 	engine_stop();
+#ifndef NO_GDB
 	display_debug_dbox();
-	engine_start();
-
+#else
+	display_quicksend_dbox();
 #endif
+	engine_start();
 }
 
 
@@ -537,7 +544,8 @@ GtkWidget* display_popup_menu(void)
 
 #ifdef NO_GDB
 	data = glade_xml_get_widget(xml, "debug_file_with_tiemu1");
-	gtk_widget_set_sensitive(data, FALSE);
+	//gtk_widget_set_sensitive(data, FALSE);
+	gtk_label_set_text(GTK_LABEL(GTK_BIN(data)->child), _("Quick send..."));
 #endif
 
 	// init radio buttons
