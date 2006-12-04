@@ -42,12 +42,13 @@ Debugging mode is entered when a breakpoint is encountered or when the
 user launches the debugger by the popup menu or by pressing the F11
 key. This will stop the emulation engine but the LCD is still refreshed.<br>
 <br>
-Note: Debugger windows are preloaded at startup in order to display
+Note: debugger windows are preloaded at startup in order to display
 them quicker. The source code window may take a while to be displayed
 the first time: this is due to ROM call parsing.<br>
 <br>
 TiEmu shows two debuggers simultaneously: a built-in assembly-level
-debugger, and the GDB/Insight-derived source-level debugger. These two
+debugger, and the GDB/Insight-derived source-level debugger (+gdb
+release). These two
 debuggers have been adapted to interoperate seamlessly.<br>
 <br>
 The assembly-level debugger is made-up of several frames:<br>
@@ -130,7 +131,8 @@ except for branches. <br>
 until the address under the cursor is reached.<br>
 <br>
 Miscellaneous shortcuts:<br>
-- F6: (internal use) copy source code window content to C:\disasm.txt<br>
+- F6: copy source code window content to C:\disasm.txt (unofficial
+feature, for various purposes)<br>
 - F1: set selection and PC to next line<br>
 <h2>7.2 Registers</h2>
 <table style="width: 100%; text-align: left;" border="0" cellpadding="2"
@@ -221,7 +223,6 @@ The occurrence is highlighted in green in the memory frame.<br>
 </table>
 <br>
 <h2>7.4 Breakpoints</h2>
-<br>
 <table style="width: 100%; text-align: left;" border="0" cellpadding="2"
  cellspacing="2">
   <tbody>
@@ -249,7 +250,6 @@ can go to the breakpoint location, too (last toolbar button).<br>
 This frame shows the 10 latest PC values. Double-clicking the row will
 update the source frame with the address in the row.<br>
 <h2>7.6 Stack frame</h2>
-<br>
 <table style="width: 100%; text-align: left;" border="0" cellpadding="2"
  cellspacing="2">
   <tbody>
@@ -271,7 +271,6 @@ the arrow or Page Up/Down keys.<br>
 </table>
 <br>
 <h2>7.7 Heap</h2>
-<br>
 <table style="width: 100%; text-align: left;" border="0" cellpadding="2"
  cellspacing="2">
   <tbody>
@@ -292,7 +291,36 @@ pointed by the handle.<br>
   </tbody>
 </table>
 <br>
-<h2>7.8 <a href="../../insight1.0/help/index.html">Source-Level
+<h2>7.8 Logging</h2>
+At the time being, only link logging is implemented.<br>
+<h3>7.8.1 Link</h3>
+<table style="width: 100%; text-align: left;" border="0" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><img src="log_link.png" alt=""
+ style="width: 478px; height: 213px;" hspace="0"></td>
+      <td style="vertical-align: top;">You can:<br>
+-&nbsp; log data sent and/or received from/to link port,<br>
+- increase/decrease size of buffer.<br>
+      <br>
+To start logging, press <span style="font-style: italic;">Start</span>
+button and close (<span style="font-style: italic;">Close</span> button
+or cross).<br>
+To stop logging, press <span style="font-style: italic;">Stop</span>
+button and close (<span style="font-style: italic;">Close</span> button
+or cross).<br>
+      <br>
+The list contents is updated whenever you launch this box.<br>
+      <br>
+Contents can be saved at any time in text format by pressing the <span
+ style="font-style: italic;">Save</span> button.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2>7.9 <a href="../../insight1.0/help/index.html">Source-Level
 Debugger</a></h2>
 <hr>
 </body>
