@@ -188,6 +188,7 @@ gui_OBJ = \
 	gui/main.o							\
 	gui/manpage.o							\
 	gui/pbars.o							\
+	gui/quicksend.o					\
 	gui/refresh.o							\
 	gui/release.o							\
 	gui/romversion.o						\
