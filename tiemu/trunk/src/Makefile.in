@@ -21,7 +21,7 @@ ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	RESFILE = tiemu-rc.o
 	LDFLAGS += -lcomdlg32 -lole32 -loleaut32 -luuid -lstdc++
 	EXEEXT = .exe
-	win32_OBJ = com_ole/oleaut.o com_ole/oleaut_i.o com_ole/registry.o
+	win32_OBJ = ipc/com/oleaut.o ipc/com/oleaut_i.o ipc/com/registry.o
 else
 	RESFILE =
 	EXEEXT =
@@ -46,16 +46,16 @@ sysconfdir      = @sysconfdir@
 ifeq ($(kde), yes)
 kdeincludes = @all_includes@
 kdelibraries = @LIB_KDECORE@ @LIB_KDEUI@ @LIB_KIO@ @LIB_QT@ @KDE_LDFLAGS@ @QT_LDFLAGS@ @X_LDFLAGS@
-kde_OBJ = kde/kde.o kde/kde-private.o kde/dcop.o kde/dcop-private.o kde/dcop_skel.o
-kdeprivsources = kde/kde-private.cpp kde/dcop-private.cpp kde/dcop.kidl kde/dcop_skel.cpp
+kde_OBJ = kde/kde.o kde/kde-private.o   ipc/dcop/dcop.o ipc/dcop/dcop-private.o ipc/dcop/dcop_skel.o
+kdeprivsources = kde/kde-private.cpp ipc/dcop/dcop-private.cpp ipc/dcop/dcop.kidl ipc/dcop/dcop_skel.cpp
 kde/kde-private.cpp: kde/kde-private.h
 	$(MOC) kde/kde-private.h -o kde/kde-private.cpp
-kde/dcop-private.cpp: kde/dcop.h
-	$(MOC) kde/dcop.h -o kde/dcop-private.cpp
-kde/dcop.kidl: kde/dcop.h
-	$(DCOPIDL) kde/dcop.h >kde/dcop.kidl
-kde/dcop_skel.cpp: kde/dcop.kidl
-	$(DCOPIDL2CPP) --no-stub kde/dcop.kidl
+ipc/dcop/dcop-private.cpp: ipc/dcop/dcop.h
+	$(MOC) ipc/dcop/dcop.h -o ipc/dcop/dcop-private.cpp
+ipc/dcop/dcop.kidl: ipc/dcop/dcop.h
+	$(DCOPIDL) ipc/dcop/dcop.h > ipc/dcop/dcop.kidl
+ipc/dcop/dcop_skel.cpp: ipc/dcop/dcop.kidl
+	$(DCOPIDL2CPP) --no-stub ipc/dcop/dcop.kidl
 endif
 
 DEFS=@DEFS@ \
@@ -70,15 +70,15 @@ INCLUDES = \
 	-I./core -I./core/uae -I./core/ti_hw -I./core/ti_sw -I./core/dbg \
 	-I./misc \
 	-I./gui -I./gui/calc -I./gui/debugger \
-	-I./kde -I./dbus -I./com_ole
+	-I./kde -I./ipc/dcop -I./ipc/dbus -I./ipc/com
 
 ifeq ($(dbus), yes)
 LDFLAGS += @DBUS_GLIB_LIBS@
-dbus_OBJ = dbus/dbus_ipc.o
-dbus/dbus_glue.h: dbus/dbus_ipc.xml
-	dbus-binding-tool --mode=glib-server --output=dbus/dbus_glue.h --prefix=tiemudbus dbus/dbus_ipc.xml
-dbus/dbus_ipc.o: dbus/dbus_ipc.c dbus/dbus_ipc.h dbus/dbus_glue.h
-	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) @DBUS_GLIB_CFLAGS@ dbus/dbus_ipc.c -o dbus/dbus_ipc.o
+dbus_OBJ = ipc/dbus/dbus_ipc.o
+ipc/dbus/dbus_glue.h: ipc/dbus/dbus_ipc.xml
+	dbus-binding-tool --mode=glib-server --output=ipc/dbus/dbus_glue.h --prefix=tiemudbus ipc/dbus/dbus_ipc.xml
+ipc/dbus/dbus_ipc.o: ipc/dbus/dbus_ipc.c ipc/dbus/dbus_ipc.h ipc/dbus/dbus_glue.h
+	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) @DBUS_GLIB_CFLAGS@ ipc/dbus/dbus_ipc.c -o ipc/dbus/dbus_ipc.o
 endif
 
 # source files to build
@@ -311,8 +311,8 @@ install: tiemu$(EXEEXT)
 	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
 	$(INSTALL) -m755 tiemu$(EXEEXT) $(DESTDIR)${prefix}/bin/
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
-	$(INSTALL) -m755 com_ole/tiemups.dll $(DESTDIR)${prefix}/bin/
-	$(INSTALL) -m755 com_ole/oleaut.tlb $(DESTDIR)${prefix}/bin/tiemu.tlb
+	$(INSTALL) -m755 ipc/com/tiemups.dll $(DESTDIR)${prefix}/bin/
+	$(INSTALL) -m755 com_ipc/comole/oleaut.tlb $(DESTDIR)${prefix}/bin/tiemu.tlb
 endif
 ifeq (,$(findstring NO_GDB,$(CFLAGS)))
 	cd core/gdb/tcl && $(MAKE) install INSTALL_ROOT="$(DESTDIR)"
@@ -326,8 +326,8 @@ install-without-tcl-tk: tiemu$(EXEEXT)
 	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
 	$(INSTALL) -m755 tiemu$(EXEEXT) $(DESTDIR)${prefix}/bin/
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
-	$(INSTALL) -m755 com_ole/tiemups.dll $(DESTDIR)${prefix}/bin/
-	$(INSTALL) -m755 com_ole/oleaut.tlb $(DESTDIR)${prefix}/bin/tiemu.tlb
+	$(INSTALL) -m755 ipc/com/tiemups.dll $(DESTDIR)${prefix}/bin/
+	$(INSTALL) -m755 ipc/com/oleaut.tlb $(DESTDIR)${prefix}/bin/tiemu.tlb
 endif
 ifeq (,$(findstring NO_GDB,$(CFLAGS)))
 	cd core/gdb/itcl && $(MAKE) install DESTDIR="$(DESTDIR)"
@@ -339,8 +339,8 @@ install-without-tcl-tk-itcl: tiemu$(EXEEXT)
 	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
 	$(INSTALL) -m755 tiemu$(EXEEXT) $(DESTDIR)${prefix}/bin/
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
-	$(INSTALL) -m755 com_ole/tiemups.dll $(DESTDIR)${prefix}/bin/
-	$(INSTALL) -m755 com_ole/oleaut.tlb $(DESTDIR)${prefix}/bin/tiemu.tlb
+	$(INSTALL) -m755 ipc/com/tiemups.dll $(DESTDIR)${prefix}/bin/
+	$(INSTALL) -m755 ipc/com/oleaut.tlb $(DESTDIR)${prefix}/bin/tiemu.tlb
 endif
 ifeq (,$(findstring NO_GDB,$(CFLAGS)))
 	cd core/gdb/libgui && $(MAKE) install DESTDIR="$(DESTDIR)"
