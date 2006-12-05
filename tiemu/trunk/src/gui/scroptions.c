@@ -139,6 +139,8 @@ gint display_scroptions_dbox()
 	switch (result) {
 	case GTK_RESPONSE_OK:
         g_free(options2.file);
+		g_free(options2.folder);
+
 		memcpy(&options2, &tmp_options, sizeof(ScrOptions));
 
 		options2.file = g_strdup(tmp_options.file);
