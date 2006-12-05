@@ -77,10 +77,10 @@ on_send_file_to_tiemu1_activate     (GtkMenuItem     *menuitem,
 
 	engine_stop();
 
-	if(!qs_enabled)
+	if(!options.qs_enabled)
 		display_send_files_dbox();
-	else if(qs_enabled && qs_filename)
-		send_file(qs_filename);
+	else if(options.qs_enabled && options.qs_file && strlen(options.qs_file))
+		send_file(options.qs_file);
 
 	engine_start();
 }

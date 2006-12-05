@@ -37,6 +37,9 @@ SubVersion: $Id$
 			gtk_window_set_hints does not work properly under Windows).
 	- [roms]  $2280: set 'Debug file with TiEmu' unsensitive when build in no-gdb mode
 	- [roms]  $2282: added 'quick send' feature in -gdb version. This allows to by-pass the file selection box.
+	- [roms]  $2298: make 'quick send' options persistent
+	//- [roms]  $2299: make 'quick send' feature available in both versions. Popup menu reworked.
+
 		=> released on 05/12/2006
 
 - 07/07/2006, version 2.81b

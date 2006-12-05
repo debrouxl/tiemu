@@ -46,15 +46,19 @@
 /* General options */
 typedef struct
 {
-	gchar*  skin_file;	
-    gchar*  keys_file;
-	gint	console;
-	gint	kbd_dbg;
-	gint    fs_type;
+	gchar*  skin_file;
 	gint	skin;
 	gint    view;
 	gfloat	scale;
 
+    gchar*  keys_file;
+	gint	kbd_dbg;
+
+	gint	console;
+	gint    fs_type;
+	
+	gchar*	qs_file;
+	gint	qs_enabled;
 } TieOptions;
 
 /* Screen capture options */

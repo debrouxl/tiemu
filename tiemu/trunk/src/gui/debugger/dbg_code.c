@@ -41,7 +41,7 @@
 #include "dbg_all.h"
 #include "dbg_romcall.h"
 #include "engine.h"
-//#include "log_link.h"
+#include "logger/log_link.h"
 
 gint reset_disabled = FALSE;
 

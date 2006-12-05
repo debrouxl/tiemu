@@ -36,9 +36,10 @@
 #include "paths.h"
 #include "struct.h"
 #include "ti68k_int.h"
+#include "dboxes.h"
 
-char *qs_filename = NULL;
-int qs_enabled = 0;
+static char *tmp_file = NULL;
+static int tmp_enabled = 0;
 
 static GtkWidget *fcb = NULL;
 
@@ -59,20 +60,27 @@ gint display_quicksend_dbox()
 
 	dbox = glade_xml_get_widget(xml, "quicksend_dbox");
 
+	tmp_enabled = options.qs_enabled;
+	tmp_file = g_strdup(options.qs_file);
+
 	fcb = glade_xml_get_widget(xml, "filechooserbutton1");
-	gtk_widget_set_sensitive(fcb, qs_enabled && qs_filename);
-	if(qs_filename)
-		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(fcb), qs_filename);
+	gtk_widget_set_sensitive(fcb, tmp_enabled && tmp_file);
+	if(tmp_file && strlen(tmp_file))
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(fcb), tmp_file);
 	// filter wildcards to set
 	//"*.89?;*.92?;*.9x?;*.9X?;*.v2?;*.V2?;*.tig"
 
 	data = glade_xml_get_widget(xml, "checkbutton1");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), qs_enabled);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), tmp_enabled);
 	
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) 
 	{
 	case GTK_RESPONSE_OK:
+		options.qs_enabled = tmp_enabled;
+
+		g_free(options.qs_file);
+		options.qs_file = tmp_file;
 		break;
 	default:
 		break;
@@ -87,9 +95,9 @@ GLADE_CB void
 qs_checkbutton1_toggled                (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-	qs_enabled = gtk_toggle_button_get_active(togglebutton);
+	tmp_enabled = gtk_toggle_button_get_active(togglebutton);
 	if(fcb)
-		gtk_widget_set_sensitive(fcb, qs_enabled);
+		gtk_widget_set_sensitive(fcb, tmp_enabled);
 }
 
 GLADE_CB void
@@ -105,13 +113,13 @@ qs_filechooserbutton1_current_folder_changed
 	if(!tifiles_file_is_ti(fname) || !tifiles_calc_is_ti9x(tifiles_file_get_model(fname)) ||
 		!tifiles_file_is_group(fname) && !tifiles_file_is_single(fname))
 	{
-		g_free(qs_filename); qs_filename = NULL;
+		g_free(tmp_file); tmp_file = NULL;
 		msg_box1(_("Error"), _("This file is not a valid TI file."));
 		return;
 	}
 
-	g_free(qs_filename);
-	qs_filename = g_strdup(fname); // dup or copy???
+	g_free(tmp_file);
+	tmp_file = g_strdup(fname); // dup or copy???
 }
 
 /* */

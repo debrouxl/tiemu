@@ -217,6 +217,19 @@ void rcfile_read(void)
 		continue;
 	}
 
+	if( (p=find_str(buffer, "qs_file=")) ) 
+	{
+	  g_free(options.qs_file);
+	  options.qs_file = g_strdup(p);
+	  continue;
+	}
+
+	if( (p=find_str(buffer, "qs_enabled=")) ) 
+	{
+	  sscanf(p, "%i", &(options.qs_enabled));
+	  continue;
+	}
+
       /* GtkTiEmu specific part: emulator section */
 	if( (p=find_str(buffer, "rom_file=")) ) 
 	{
@@ -536,6 +549,11 @@ void rcfile_write(void)
 	fprintf(txt, "cable_delay=%i\n", linkp.cable_delay);
 	fprintf(txt, "\n");
 
+	fprintf(txt, "# Quick-send feature\n");
+	fprintf(txt, "qs_file=%s\n", options.qs_file);
+	fprintf(txt, "qs_enabled=%i\n", options.qs_enabled);
+	fprintf(txt, "\n");
+
   /* Specific part to TiEmu */
 	fprintf(txt, "#\n");
 	fprintf(txt, "# EMULATOR SECTION\n");
@@ -778,6 +796,9 @@ int rcfile_default()
 	options.scale = 1.0;
 	options.kbd_dbg = 0;
 	options.fs_type = 2;
+
+	options.qs_file = g_strdup("");
+	options.qs_enabled = 0;
 
 	// screenshot options
 	options2.folder = g_strdup(inst_paths.screen_dir);
