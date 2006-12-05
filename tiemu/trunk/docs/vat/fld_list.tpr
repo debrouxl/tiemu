@@ -52,4 +52,4 @@ Save Screen=1
 [File Editing]
 Open File=C:\sources\roms\tiemu\docs\vat\fld_list.c.c
 [Included Files]
-C File 1=fld_list.c.c
+C File 1=fld_list.c
