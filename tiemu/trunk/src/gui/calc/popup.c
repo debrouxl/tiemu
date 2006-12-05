@@ -103,8 +103,6 @@ on_debug_file_with_tiemu1_activate     (GtkMenuItem     *menuitem,
 	engine_stop();
 #ifndef NO_GDB
 	display_debug_dbox();
-#else
-	display_quicksend_dbox();
 #endif
 	engine_start();
 }
@@ -121,6 +119,16 @@ on_link_cable1_activate                (GtkMenuItem     *menuitem,
 	engine_start();
 }
 
+GLADE_CB void
+on_quick_send1_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if(engine_is_stopped()) return;
+
+	engine_stop();
+	display_quicksend_dbox();
+	engine_start();
+}
 
 void window_get_rect(GtkWidget *widget, GdkRect *rect);
 
@@ -544,8 +552,7 @@ GtkWidget* display_popup_menu(void)
 
 #ifdef NO_GDB
 	data = glade_xml_get_widget(xml, "debug_file_with_tiemu1");
-	//gtk_widget_set_sensitive(data, FALSE);
-	gtk_label_set_text(GTK_LABEL(GTK_BIN(data)->child), _("Quick send..."));
+	gtk_widget_set_sensitive(data, FALSE);
 #endif
 
 	// init radio buttons
