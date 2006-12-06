@@ -37,17 +37,17 @@ Entry points
 As of TiEmu 2.81c, TiEmu provides the following calls:
 
 - image_loaded			return TRUE if an image has been loaded
-- emulated_calc_type		return emulated calculator type (1)
-- emulated_hw_version		return hardware revision (2)
-- emulated_os_version		return OS version as a string like "2.08"
-- ready_for_transfers		TRUE if calculator is ready for transfers
-- send_file			send one filename
-- send_files			send several filenames at once (not provided in OLE)
-- debug_file			does the same work than the 'Debug file with TiEmu...' item of the popup menu
-- reset_calc			reset calculator and clear RAM depending on argument
-- execute_command		send ASCII keys to calculator (internally converted to TI scancodes)
-- turn_calc_on			like pressing the ON key
-- enter_debugger		raises a breakpoint and open the debugger
+- emulated_calc_type		return emulated calculator type (1) if image loaded
+- emulated_hw_version		return hardware revision (2) if image loaded
+- emulated_os_version		return OS version as a string like "2.08" if image loaded
+- ready_for_transfers		TRUE if calculator is ready for transfers and if image loaded and engine running
+- send_file			send one filename if image loaded and engine running
+- send_files			send several filenames at once  if image loaded and engine running (not provided in OLE)
+- debug_file			does the same work than the 'Debug file with TiEmu...' item of the popup menu  if image loaded and engine running
+- reset_calc			reset calculator and clear RAM depending on argument if image loaded; close debugger if open, too
+- execute_command		send ASCII keys to calculator (internally converted to TI scancodes) if image loaded
+- turn_calc_on			like pressing the ON key if image loaded and engine running
+- enter_debugger		raises a breakpoint and open the debugger if image loaded and engine running
 
 (1)
 #define TI92 		(1 << 0)
