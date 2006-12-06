@@ -40,6 +40,7 @@ SubVersion: $Id$
 	- [roms]  $2298: fixed memory leak in scroptions (folder name was not freed)
 	- [roms]  $2299: make 'quick send' options persistent
 	- [roms]  $2300: make 'quick send' feature available in both versions. Popup menu reworked.
+	- [roms]  $2303: output a message about OLE (un)registration
 
 		=> released on 05/12/2006
 

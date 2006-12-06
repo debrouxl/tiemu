@@ -26,6 +26,8 @@ Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescri
 Name: "slv_drv"; Description: "Copy SilverLink drivers"; GroupDescription: "Drivers:"; MinVersion: 0,4
 Name: "tlk_drv"; Description: "Install BlackLink/Parallel cable"; GroupDescription: "Drivers:"; MinVersion: 0,4
 
+Name: "com_ole"; Description: "Install TiEmuOle object for TIGCC and others"; GroupDescription: "Misc";
+
 [Dirs]
 Name: "{app}\screenshots"
 
@@ -77,7 +79,7 @@ Source: "C:\sources\roms\tifiles2\tests\tifiles2.dll"; DestDir: "{app}"; Flags: 
 Source: "C:\sources\roms\ticables2\tests\ticables2.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticalcs2\tests\ticalcs2.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticonv\tests\ticonv.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\sources\roms\tiemu3\build\msvc\tiemu-3.exe"; DestDir: "{app}"; DestName: "tiemu-3.exe"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu3\build\msvc\tiemu.exe"; DestDir: "{app}"; DestName: "tiemu.exe"; Flags: ignoreversion
 
 ; Copy PortTalk driver for Windows NT4/2000/XP
 Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{sys}\drivers"; Flags: ignoreversion; Tasks: tlk_drv;
@@ -106,29 +108,39 @@ Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\*.dll"; DestDir: "{app}\wget
 Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\wget.exe"; DestDir: "{app}\wget";
 Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\d_and_i.bat"; DestDir: "{app}\wget";
 
+; COM/OLE object registration
+Source: "C:\sources\roms\tiemu3\src\ipc\com\tiemups.dll"; DestDir: "{app}"; Flags: regserver;
+Source: "C:\sources\roms\tiemu3\src\ipc\com\oleaut.tlb"; DestDir: "{app}"; DestName: "tiemu.tlb";
+
 [INI]
 Filename: "{app}\tiemu.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://lpg.ticalc.org/prj_tiemu"
 
 [Icons]
-Name: "{group}\TiEmu3 on the Web"; Filename: "{app}\tiemu.url"
+Name: "{group}\TiEmu on the Web"; Filename: "{app}\tiemu.url"
 Name: "{group}\Uninstall TiEmu"; Filename: "{uninstallexe}"
 Name: "{group}\User's Manual"; Filename: "{app}\help\Manual_en.html"
 Name: "{group}\GTK theme selector"; Filename: "{app}\gtkthemeselector.exe";
 Name: "{group}\Install GTK+ from web"; Filename: "{app}\wget\d_and_i.bat";
 Name: "{group}\Bug Report"; Filename: "http://sourceforge.net/tracker/?func=add&group_id=23169&atid=377680";
 
-Name: "{userdesktop}\TiEmu3"; Filename: "{app}\tiemu-3.exe"; WorkingDir: "{app}"; MinVersion: 4,4; Tasks: desktopicon
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: "{app}\tiemu-3.exe"; WorkingDir: "{app}"; MinVersion: 4,4; Tasks: quicklaunchicon
+Name: "{userdesktop}\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}"; MinVersion: 4,4; Tasks: desktopicon
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}"; MinVersion: 4,4; Tasks: quicklaunchicon
 
 [Run]
 ; Remove any previously installed PortTalk driver (especially v1.x)
 Filename: "{app}\PortTalk\Uninstall.exe"; Parameters: ""; MinVersion: 0,4; Tasks: tlk_drv;
-Filename: "{app}\tiemu-3.exe"; Description: "Launch TiEmu"; StatusMsg: "Running TiEmu..."; Flags: postinstall nowait unchecked
+Filename: "{app}\tiemu.exe"; Description: "Launch TiEmu"; StatusMsg: "Running TiEmu..."; Flags: postinstall nowait unchecked
 Filename: "{app}\wget\d_and_i.bat"; Description: "Download and install GTK+"; StatusMsg: "Running ..."; Flags: nowait postinstall unchecked hidewizard;
+
+; COM/OLE  registration
+Filename: "{app}\tiemu.exe"; Parameters: "/RegServer"; Tasks: com_ole;
 
 [UninstallRun]
 ; Remove any previously installed PortTalk driver (especially v1.x)
 Filename: "{app}\PortTalk\Uninstall.exe"; Parameters: ""; MinVersion: 0,4; Tasks: tlk_drv;
+
+; COM/OLE  un-registration
+Filename: "{app}\tiemu.exe"; Parameters: "/UnregServer"; Tasks: com_ole;
 
 [Registry]
 ; Install the NT PortTalk driver
@@ -147,6 +159,13 @@ Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environmen
 
 [UninstallDelete]
 Type: files; Name: "{app}\tiemu.url"
+
+; OLE Registration
+;  ExecWait '"$INSTDIR\bin\tiemu.exe" /RegServer'
+;  RegDLL "$INSTDIR\bin\tiemups.dll"
+; OLE Unregistration
+;  UnregDLL "$INSTDIR\bin\tiemups.dll"
+;  ExecWait '"$INSTDIR\bin\tiemu.exe" /UnregServer'
 
 ;; Taken from "http://www.dropline.net/gtk/support.php" with some customizations
 
