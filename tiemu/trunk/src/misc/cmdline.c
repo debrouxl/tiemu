@@ -116,11 +116,14 @@ int scan_cmdline(int argc, char **argv)
 			wchar_t tlbname[512];
 			HMODULE hModule = GetModuleHandle(NULL);
 			DWORD dwResult = GetModuleFileName(hModule, szModule, sizeof(szModule));
+
 			if (!dwResult) exit(1);
 			p = szModule + strlen(szModule) - 4;
+
 			if (stricmp(p,".exe")) exit(1);
 			strcpy(++p,"tlb");
 			mbstowcs(tlbname, szModule, strlen(szModule)+1);
+
 			if (RegisterServer(&CLSID_TiEmuOLE,
 			                   "TiEmu OLE Interface",
 			                   "TiEmu.TiEmuOLE",
@@ -133,10 +136,12 @@ int scan_cmdline(int argc, char **argv)
 					exit(1);
 				} else {
 					tlb->lpVtbl->Release(tlb);
+					fprintf(stdout, "TiEmu OLE Interface successfully registered.");
 					exit(0);
 				}
 			}
 		}
+
 		if(!stricmp(p, "/UnregServer") || !stricmp(p, "-UnregServer")
 		   || !stricmp(p, "--UnregServer")) {
 			if (UnregisterServer(&CLSID_TiEmuOLE, "TiEmu.TiEmuOLE",
@@ -144,8 +149,10 @@ int scan_cmdline(int argc, char **argv)
 			    || UnRegisterTypeLib(&LIBID_TiEmuOLELib, 1, 0, 0,
 			                         SYS_WIN32))
 				exit(1);
-			else
+			else {
+				fprintf(stdout, "TiEmu OLE Interface successfully unregistered.");
 				exit(0);
+			}
 		}
 		if(stricmp(p, "/Embedding") || stricmp(p, "-Embedding")
 		   || stricmp(p, "--Embedding")) {
