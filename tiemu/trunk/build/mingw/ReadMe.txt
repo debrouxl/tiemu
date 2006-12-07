@@ -31,15 +31,20 @@ Follow the instructions very closely or you will soon see that monkeys will star
 
 3. Extract all the Bison and Flex archives into the C:\mingw directory
 
+4. Create a C:\msys\target folder. This is where the compiled stuff will be placed.
+	 This is alse the location where you will install GladeWin32 (see below).
+
 3. Download and Install the GladeWin32 Development Packages from
    http://prdownloads.sf.net/gladewin32/gtk-win32-devel-2.6.10-rc1.exe and make sure you check the
    "Install MSYS environment variables" checkbox when the installer asks you, if you don't, the
    monkeys WILL bite :)
+   
    WARNING: DON'T build against GTK+ 2.8 for Windows! GTK+ 2.8 uses Cairo, which doesn't work at all
             on Windows 95/98/Me. Nobody seems interested in fixing that. We've learned this the hard
             way. You have been warned.
-
-4. Create a C:\msys\target folder. This is where the compiled stuff will be placed.
+            
+   You have to change the target folder of the installer into C:\msys\target otherwise you will have to 
+   replace any 'prefix=/target' entry in any of INST_PATH\lib\pkgconfig\*.pc by 'prefix=INST_PATH'.
 
 5. Edit the C:\msys\etc\profile file and add the following on a new line at the bottom:
    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/target/lib/pkgconfig

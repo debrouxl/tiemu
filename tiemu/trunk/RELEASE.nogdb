@@ -3,7 +3,7 @@
 
 
 Previous version: 2.81b		(05/08/2006)
-Current version:  2.81c		(04/12/2006)
+Current version:  2.81c		(06/12/2006)
 
 SubVersion (CVS) revision: $Id: RELEASE 2042 2006-05-07 07:46:23Z roms $
 
@@ -21,7 +21,9 @@ New capabilities:
 -----------------
 
 	- link logging
-
+	- quick send feature (allow to specify a file to send by pressing F10)
+	- register TiEmuOle object for TIGCC & others
+	
 
 Improvements:
 -------------
@@ -29,6 +31,7 @@ Improvements:
 	- replaced some hand-made GTK+ boxes by standard ones
 	- installer creates group as 'TiEmu3-gdb' instead of 'TiEmu3' to avoid
 		possible conflict with TiEmu+gdb.
+	- output a message about OLE registration
 		
 		
 Bug fixes:
@@ -37,6 +40,7 @@ Bug fixes:
 	- cable detaching when exiting TiEmu (hypersonic)
 	- regression: failed to import some old .89u files
 	- various minor fixes (see ChangeLog for details)
+	- memory leak in screen options box
 
 	
 Notes:
