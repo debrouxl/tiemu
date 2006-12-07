@@ -485,6 +485,9 @@ static gint hid_refresh (gpointer data)
 void compute_convtable(void);
 void compute_grayscale(void);
 
+extern void dnd_init(void);
+extern void dnd_exit(void);
+
 int  hid_init(void)
 {
     // Found a PC keyboard keymap
@@ -595,6 +598,8 @@ int  hid_init(void)
 	lcd_planebufs[0] = &tihw.ram[tihw.lcd_adr];
 	ngc = 1;
 	lcd_changed = 1;
+
+	dnd_init();
 
     return 0;
 }

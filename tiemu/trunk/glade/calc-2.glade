@@ -18,12 +18,15 @@
   <property name="skip_pager_hint">False</property>
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <signal name="button_press_event" handler="on_calc_wnd_button_press_event" last_modification_time="Wed, 14 Jul 2004 17:20:38 GMT"/>
   <signal name="button_release_event" handler="on_calc_wnd_button_release_event" last_modification_time="Wed, 14 Jul 2004 17:20:43 GMT"/>
   <signal name="key_press_event" handler="on_calc_wnd_key_press_event" last_modification_time="Wed, 14 Jul 2004 17:20:51 GMT"/>
   <signal name="key_release_event" handler="on_calc_wnd_key_release_event" last_modification_time="Wed, 14 Jul 2004 17:21:00 GMT"/>
   <signal name="destroy" handler="on_calc_wnd_destroy" last_modification_time="Wed, 14 Jul 2004 20:10:55 GMT"/>
   <signal name="window_state_event" handler="on_calc_wnd_window_state_event" last_modification_time="Sat, 31 Jul 2004 16:45:27 GMT"/>
+  <signal name="drag_data_received" handler="on_calc_wnd_drag_data_received" last_modification_time="Thu, 07 Dec 2006 15:34:02 GMT"/>
+  <signal name="drag_drop" handler="on_calc_wnd_drag_drop" last_modification_time="Thu, 07 Dec 2006 15:34:07 GMT"/>
 
   <child>
     <widget class="GtkDrawingArea" id="drawingarea1">
