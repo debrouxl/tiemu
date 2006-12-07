@@ -48,7 +48,7 @@
 #include "files.h"
 #include "ti68k_err.h"
 
-gint display_skin_dbox()
+gint display_skin_dbox(void)
 {
 	const gchar *filename;
 
@@ -67,7 +67,7 @@ gint display_skin_dbox()
 	return 0;
 }
 
-gint display_load_state_dbox()
+gint display_load_state_dbox(void)
 {
 	const gchar *filename;
 	int err;
@@ -111,7 +111,7 @@ gint display_load_state_dbox()
 	return 0;
 }
 
-gint display_save_state_dbox()
+gint display_save_state_dbox(void)
 {
     const gchar *filename;
 	int err;
@@ -211,7 +211,7 @@ int send_files(gchar **filenames)
 	return 0;
 }
 
-gint display_send_files_dbox()
+gint display_send_files_dbox(void)
 {
 	const gchar *ext;
 	gchar **filenames;

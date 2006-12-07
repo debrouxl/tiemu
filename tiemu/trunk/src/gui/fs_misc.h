@@ -32,7 +32,7 @@ gint display_skin_dbox(void);
 gint display_load_state_dbox(void);
 gint display_save_state_dbox(void);
 gint display_recv_files_dbox(const char *src, const char *dst);
-gint display_send_files_dbox(gchar **filenames_);
+gint display_send_files_dbox(void);
 
 gint display_debug_dbox(void);
 gint display_set_rom_dbox(void);
