@@ -41,6 +41,7 @@ SubVersion: $Id$
 	- [roms]  $2299: make 'quick send' options persistent
 	- [roms]  $2300: make 'quick send' feature available in both versions. Popup menu reworked.
 	- [roms]  $2303: output a message about OLE (un)registration
+	- [roms]  $2308: added DnD support for changing skin and sending files
 
 		=> released on 05/12/2006
 

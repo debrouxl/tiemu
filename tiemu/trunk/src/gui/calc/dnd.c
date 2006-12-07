@@ -30,6 +30,12 @@
 #include <string.h>
 
 #include "support.h"
+#include "tilibs.h"
+#include "ti68k_int.h"
+#include "struct.h"
+#include "calc.h"
+#include "engine.h"
+#include "fs_misc.h"
 
 void dnd_init(void)
 {
@@ -70,7 +76,7 @@ on_calc_wnd_drag_data_received     (GtkWidget       *widget,
 	if ((data->length >= 0) && (data->format == 8))
     {
 		gchar *uri = data->data;
-		g_print ("Received \"%s\"\n", uri);
+		//g_print ("Received \"%s\"\n", uri);
 
 		// is this an URI?
 		if (!g_ascii_strncasecmp(uri, "file://", 7)) 
@@ -93,6 +99,29 @@ on_calc_wnd_drag_data_received     (GtkWidget       *widget,
 
 			// debug
 			printf("fn = <%s>\n", fn);
+
+			// check for file type
+			if(!strcmp(tifiles_fext_get(fn), "skn"))
+			{
+				// Load new skin (fs_misc.c)
+				g_free(options.skin_file);
+				options.skin_file = g_strdup(fn);
+    
+				hid_change_skin(options.skin_file);
+			}
+			else if(!strcmp(tifiles_fext_get(fn), "rom") || ti68k_is_a_rom_file(fn) || ti68k_is_a_tib_file(fn))
+			{
+				// Add rom to wizard
+				engine_stop();
+				engine_start();
+			}
+			else if(tifiles_file_is_ti(fn) && (tifiles_calc_is_ti9x(tifiles_file_get_model(fn)) ||
+			tifiles_file_is_tigroup(fn))) 
+			{
+				engine_stop();
+				send_file(fn);
+				engine_start();
+			}
 		}
 
       gtk_drag_finish (context, TRUE, FALSE, time);
