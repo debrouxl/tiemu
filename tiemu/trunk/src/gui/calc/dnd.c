@@ -75,58 +75,101 @@ on_calc_wnd_drag_data_received     (GtkWidget       *widget,
 {
 	if ((data->length >= 0) && (data->format == 8))
     {
-		gchar *uri = data->data;
-		//g_print ("Received \"%s\"\n", uri);
+		gchar *tok, *str = data->data;
+		gchar **uris, **p;
+		gchar **filenames, **q;
+		guint length;
+
+		g_print ("Received \"%s\"\n", str);
 
 		// is this an URI?
-		if (!g_ascii_strncasecmp(uri, "file://", 7)) 
+		if(g_ascii_strncasecmp(str, "file://", 7))
+			gtk_drag_finish (context, FALSE, FALSE, time);
+
+		// tails '\r\n' termination
+		if ((tok = strrchr(str, '\r')) || (tok = strrchr(str, '\n')))
+			*tok = '\0';
+
+		// split if several filenames
+		uris = g_strsplit(str, "\r\n", 0);
+		length =  g_strv_length(uris);
+		printf("uris size = %u\n", length);
+
+		// convert URIs to filenames
+		for(p = uris; *p; p++)
 		{
-			GError *error = NULL;
-			gchar *fn;
-			gchar *tok;
-
-			// convert URI to filename
-			fn = g_filename_from_uri(uri, NULL, &error);
-			if(fn == NULL)
+			// is this an URI?
+			if (!g_ascii_strncasecmp(*p, "file://", 7)) 
 			{
-				fprintf(stderr, "DnD error: %s\n", error ? error->message : "g_filename_from_uri error");
-				return;
+				GError *error = NULL;
+				gchar *fn;
+				gchar *tok;
+
+				// convert URI to filename
+				fn = g_filename_from_uri(*p, NULL, &error);
+				if(fn == NULL)
+				{
+					fprintf(stderr, "DnD error: %s\n", error ? error->message : "g_filename_from_uri error");
+					g_strfreev(uris);
+
+					goto ocwwdr_end;
+				}
+
+				// tails string
+				if ((tok = strchr(fn, '\r')) || (tok = strchr(fn, '\n')))
+					*tok = '\0';
+
+				// debug
+				printf("fn = <%s>\n", fn);
+				g_free(*p);
+				*p = fn;
 			}
+		}
 
-			// tails string
-			if ((tok = strchr(fn, '\r')) || (tok = strchr(fn, '\n')))
-				*tok = '\0';
+		filenames = uris;
 
-			// debug
-			printf("fn = <%s>\n", fn);
-
-			// check for file type
-			if(!strcmp(tifiles_fext_get(fn), "skn"))
-			{
+#if 1
+		if((length == 1) && !strcmp(tifiles_fext_get(*filenames), "skn"))
+		{
 				// Load new skin (fs_misc.c)
 				g_free(options.skin_file);
-				options.skin_file = g_strdup(fn);
+				options.skin_file = g_strdup(*filenames);
     
 				hid_change_skin(options.skin_file);
-			}
-			else if(!strcmp(tifiles_fext_get(fn), "rom") || ti68k_is_a_rom_file(fn) || ti68k_is_a_tib_file(fn))
+
+				gtk_drag_finish (context, TRUE, FALSE, time);
+				return;
+		}
+
+		for(q = filenames; *q; q++)
+		{
+			char *fn = *q;
+
+			if(!strcmp(tifiles_fext_get(fn), "rom") || ti68k_is_a_rom_file(fn) || ti68k_is_a_tib_file(fn))
 			{
 				// Add rom to wizard
 				engine_stop();
 				engine_start();
 			}
 			else if(tifiles_file_is_ti(fn) && (tifiles_calc_is_ti9x(tifiles_file_get_model(fn)) ||
-			tifiles_file_is_tigroup(fn))) 
+					tifiles_file_is_tigroup(fn))) 
 			{
+				// Send one file (fs_misc.c)
+				if(engine_is_stopped()) goto ocwwdr_end;
+
 				engine_stop();
 				send_file(fn);
 				engine_start();
 			}
+			else
+				goto ocwwdr_end;
 		}
 
       gtk_drag_finish (context, TRUE, FALSE, time);
       return;
+#endif
     }
   
+ocwwdr_end:
 	gtk_drag_finish (context, FALSE, FALSE, time);
 }
