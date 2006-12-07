@@ -27,6 +27,7 @@
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <string.h>
 
 #include "support.h"
 
@@ -68,7 +69,32 @@ on_calc_wnd_drag_data_received     (GtkWidget       *widget,
 {
 	if ((data->length >= 0) && (data->format == 8))
     {
-      g_print ("Received \"%s\"\n", (gchar *)data->data);
+		gchar *uri = data->data;
+		g_print ("Received \"%s\"\n", uri);
+
+		// is this an URI?
+		if (!g_ascii_strncasecmp(uri, "file://", 7)) 
+		{
+			GError *error = NULL;
+			gchar *fn;
+			gchar *tok;
+
+			// convert URI to filename
+			fn = g_filename_from_uri(uri, NULL, &error);
+			if(fn == NULL)
+			{
+				fprintf(stderr, "DnD error: %s\n", error ? error->message : "g_filename_from_uri error");
+				return;
+			}
+
+			// tails string
+			if ((tok = strchr(fn, '\r')) || (tok = strchr(fn, '\n')))
+				*tok = '\0';
+
+			// debug
+			printf("fn = <%s>\n", fn);
+		}
+
       gtk_drag_finish (context, TRUE, FALSE, time);
       return;
     }
