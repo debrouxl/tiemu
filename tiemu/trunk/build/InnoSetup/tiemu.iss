@@ -76,7 +76,7 @@ Source: "C:\sources\roms\tiemu3\pedrom\pedrom*.tib"; DestDir: "{app}\pedrom"; Fl
 
 ; TiEmu/GTK
 Source: "C:\sources\roms\tifiles2\tests\libtifiles2-3.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\sources\roms\ticables2\tests\libticables2-2.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\sources\roms\ticables2\tests\libticables2-1.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticalcs2\tests\libticalcs2-2.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\ticonv\tests\libticonv-2.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu3\build\msvc\tiemu.exe"; DestDir: "{app}"; DestName: "tiemu.exe"; Flags: ignoreversion
