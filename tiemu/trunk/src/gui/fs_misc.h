@@ -32,11 +32,15 @@ gint display_skin_dbox(void);
 gint display_load_state_dbox(void);
 gint display_save_state_dbox(void);
 gint display_recv_files_dbox(const char *src, const char *dst);
-void send_file(const gchar *filename);
-gint display_send_files_dbox();
-void send_file_and_debug_info(const gchar *filename);
+gint display_send_files_dbox(gchar **filenames_);
+
 gint display_debug_dbox(void);
 gint display_set_rom_dbox(void);
 gint display_set_tib_dbox(void);
 gint display_import_romversion_dbox(void);
+
+void send_file(const gchar *filename);
+int send_files(gchar **filenames);
+void send_file_and_debug_info(const gchar *filename);
+
 G_END_DECLS

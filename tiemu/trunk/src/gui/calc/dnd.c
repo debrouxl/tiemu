@@ -131,16 +131,28 @@ on_calc_wnd_drag_data_received     (GtkWidget       *widget,
 #if 1
 		if((length == 1) && !strcmp(tifiles_fext_get(*filenames), "skn"))
 		{
-				// Load new skin (fs_misc.c)
-				g_free(options.skin_file);
-				options.skin_file = g_strdup(*filenames);
-    
-				hid_change_skin(options.skin_file);
+			// Load new skin (fs_misc.c)
+			g_free(options.skin_file);
+			options.skin_file = g_strdup(*filenames);
 
-				gtk_drag_finish (context, TRUE, FALSE, time);
-				return;
+			hid_change_skin(options.skin_file);
+
+			gtk_drag_finish (context, TRUE, FALSE, time);
+			return;
+		}
+		else if(tifiles_file_is_ti(*filenames) && 
+				(tifiles_calc_is_ti9x(tifiles_file_get_model(*filenames)) ||
+					tifiles_file_is_tigroup(*filenames))) 
+		{
+			// Send one or more file (fs_misc.c)
+			if(engine_is_stopped()) goto ocwwdr_end;
+
+			engine_stop();
+			send_files(filenames);
+			engine_start();
 		}
 
+		/*
 		for(q = filenames; *q; q++)
 		{
 			char *fn = *q;
@@ -151,19 +163,10 @@ on_calc_wnd_drag_data_received     (GtkWidget       *widget,
 				engine_stop();
 				engine_start();
 			}
-			else if(tifiles_file_is_ti(fn) && (tifiles_calc_is_ti9x(tifiles_file_get_model(fn)) ||
-					tifiles_file_is_tigroup(fn))) 
-			{
-				// Send one file (fs_misc.c)
-				if(engine_is_stopped()) goto ocwwdr_end;
-
-				engine_stop();
-				send_file(fn);
-				engine_start();
-			}
 			else
 				goto ocwwdr_end;
 		}
+		*/
 
       gtk_drag_finish (context, TRUE, FALSE, time);
       return;

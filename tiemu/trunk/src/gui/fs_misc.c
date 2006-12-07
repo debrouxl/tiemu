@@ -187,13 +187,36 @@ void send_file(const gchar *filename)
 	destroy_pbar();	
 }
 
+int send_files(gchar **filenames)
+{
+	gchar **ptr;
+	int i, l;
+
+	// check extension and send
+	for(ptr = filenames, l = 0; *ptr; ptr++, l++);
+	for(ptr = filenames, i = 0; *ptr; ptr++, i++)
+	{
+		if(!tifiles_file_is_ti(*ptr) || (!tifiles_calc_is_ti9x(tifiles_file_get_model(*ptr)) &&
+			!tifiles_file_is_tigroup(*ptr))) 
+		{
+			msg_box1(_("Error"), _("This file is not a valid TI file."));
+			g_strfreev(filenames);
+			return -1;
+		}
+
+		send_file(*ptr);
+	}
+
+	g_strfreev(filenames);
+	return 0;
+}
+
 gint display_send_files_dbox()
 {
 	const gchar *ext;
-	gchar **filenames, **ptr;
+	gchar **filenames;
 	static gchar *folder = NULL;
-	int i, l;
-
+	
 	// Check for null cable
 	if(linkp.cable_model != CABLE_ILP)
 	{
@@ -224,23 +247,7 @@ gint display_send_files_dbox()
 	g_free(folder);
 	folder = g_path_get_dirname(filenames[0]);
 
-    // check extension and send
-	for(ptr = filenames, l = 0; *ptr; ptr++, l++);
-	for(ptr = filenames, i = 0; *ptr; ptr++, i++)
-	{
-		if(!tifiles_file_is_ti(*ptr) || (!tifiles_calc_is_ti9x(tifiles_file_get_model(*ptr)) &&
-			!tifiles_file_is_tigroup(*ptr))) 
-		{
-			msg_box1(_("Error"), _("This file is not a valid TI file."));
-			g_strfreev(filenames);
-			return -1;
-		}
-
-		send_file(*ptr);
-	}
-
-	g_strfreev(filenames);
-	return 0;
+	return send_files(filenames);
 }
 
 int display_recv_files_dbox(const char *src, const char *dst)
