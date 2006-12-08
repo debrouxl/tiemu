@@ -51,20 +51,19 @@ folder.<br>
   <tbody>
     <tr>
       <td style="vertical-align: top;"><font size="-1"><span
- style="font-family: courier;">(GTK)TIEMU(1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-(GTK)TIEMU(1)<br>
+ style="font-family: courier;">TIEMU(1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TIEMU(1)<br>
       <br>
       <br>
       <br>
 NAME<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tiemu - a TI emulator of
-TI89(Titanium)/92(+)/V200 hand-helds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tiemu - a TI's hand-helds emulator
+(m68k-based)<br>
       <br>
 SYNOPSYS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tiemu&nbsp;&nbsp; [-h]&nbsp;
-[-v]&nbsp; [--help]&nbsp; [--version]&nbsp; [--import]&nbsp;
-[-rom=]&nbsp; [-tib=]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [-sav=] [image]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tiemu [-h] [-v] [--help]
+[--version] [--import] [-rom=] [-tib=] [-sav=]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [image]<br>
       <br>
 DESCRIPTION<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The TiEmu program allows you to
@@ -113,51 +112,44 @@ state file. Must be a valid state&nbsp; image&nbsp; and<br>
 target for emulated calculator.<br>
       <br>
       <br>
-SEE ALSO<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tilp(1)&nbsp; for the use of a
-linking program. TiEmu shares the same commu-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nication box for link settings.<br>
-      <br>
 CONFIG FILE FORMAT<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This section describes the format
 of the .tiemu config file which is in<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; the&nbsp; home&nbsp; directory of
-the user (Linux) or in the Program Files folder<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; the home directory of the user
+(Linux) or in the Program&nbsp; Files&nbsp; folder<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Win32). A line preceded by the
 '#' symbol is a comment.&nbsp; Each line has<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; the&nbsp; following&nbsp;
-format:&nbsp; key=value.&nbsp;&nbsp; The&nbsp; config&nbsp; file&nbsp;
-must&nbsp; have the<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'RC_END' string at end.&nbsp;
-Every line can be put in any order.&nbsp;&nbsp; Take&nbsp; in<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mind&nbsp; that&nbsp; any&nbsp;
-comment&nbsp; added in the config file will be overwritten.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; the following&nbsp; format:&nbsp;
+key=value.&nbsp;&nbsp; The&nbsp; config&nbsp; file&nbsp; must&nbsp;
+have&nbsp; the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'RC_END'&nbsp; string&nbsp; at
+end.&nbsp; Every line can be put in any order.&nbsp; Take in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mind that any comment added in the
+config&nbsp; file&nbsp; will&nbsp; be&nbsp; overwritten.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Below is described each option and
 the possible values:<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; calctype= Defines the calculator
-type for link parameter. Valid&nbsp; values<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; are:&nbsp; ti89,&nbsp;
-ti89t,&nbsp; ti92, ti92+, v200.&nbsp; Note: don't need to touch this<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setting, it's overriden by TiEmu.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; calctype=&nbsp; Defines the
+calculator type for link parameter. Valid values<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; are: ti89, ti89t, ti92, ti92+,
+v200.&nbsp; Note: don't need&nbsp; to&nbsp; touch&nbsp; this<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setting, it's overridden by TiEmu.
 Kept for compatibility.<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; linktype= Define the link
-cable&nbsp; type.&nbsp; Choose&nbsp; one&nbsp; of&nbsp; the&nbsp;
-following<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value:&nbsp; none,&nbsp; parallel,
-serial, TIGraphLink, virtual, TiEmulator, VTi,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; linktype=&nbsp; Define&nbsp;
+the&nbsp; link&nbsp; cable&nbsp; type.&nbsp; Choose one of the following<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value: none, parallel, serial,
+TIGraphLink, virtual,&nbsp; TiEmulator,&nbsp; VTi,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UsbGraphLink.<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ort=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Define&nbsp; a&nbsp; link&nbsp;
-port to use. Can be: null, user, parallel port #1|2|3,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; serial port #1|2|3|4, virtual port
-#1|2, USB port #1.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; port=&nbsp; Define&nbsp; a&nbsp;
+link&nbsp; port&nbsp; to use. Can be: null, user, parallel port<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #1|2|3, serial port #1|2|3|4,
+virtual port #1|2, USB port #1.<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; thod= Define an I/O method to use.
-Possible values are: automatic, asm,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; api, driver, null.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; method= Define an I/O method to
+use. Possible&nbsp; values&nbsp; are:&nbsp; automatic,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; asm, api, driver, null.<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; adr_port=&nbsp; places&nbsp;
 the&nbsp; I/O&nbsp; address&nbsp; of the I/O port to use. It can be<br>
@@ -206,8 +198,8 @@ instructions executed by&nbsp; the&nbsp; M68000&nbsp; per<br>
 -1 (50000 insts/30ms).<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hw_rate= Give the OS2/OSC3
-oscillator rate. Default value is -1 (625 on<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hw1 and 1172 on hw2; OSC2 is
+oscillator rate. Default value is -1 (427 on<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hw1 and 732 on hw2; OSC2 is
 incremented every 6250 OSC1 cycles).<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lcd_rate= Define the frame rate of
@@ -250,22 +242,37 @@ DOS console at startup or even display it only during<br>
 the console if&nbsp; set&nbsp; (yes).&nbsp; Else,&nbsp; do<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nothing (no).<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fs_type=&nbsp; GTK+ has 2 file
-selector. An old one (old) which is very sim-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ple and a more recent (new) which
-have advanced&nbsp; capabilities&nbsp; and&nbsp; can<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; show hidden files. Default value
-is 'old' under Windows and 'new' under<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Linux.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fs_type=&nbsp; TiEmu supports
+several file selectors for better integration.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The following options are
+supported:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - native: native one (default):
+Win32 on Windows, KDE if built with KDE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; support and running under KDE,
+GTK+ 2.x else,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - old: GTK 1.2 file selector,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - new: GTK 2.x file selector
+(advanced capabilities and can show hidden<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; files),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - win32: deprecated (same as
+native),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - kde: KDE file selector (only
+available if TiEmu&nbsp; is&nbsp; built&nbsp; with&nbsp; KDE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; support).<br>
       <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bkpts_wnd= code_wnd= mem_wnd=
-regs_wnd= pclog_wnd= stack_wnd= heap_wnd=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set&nbsp; geometry hints for the
-different windows of the debugger. The for-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mat is (x,y,w,h,m,v) where x&amp;y
-are coordinates, w&amp;h are the size, m&nbsp; is<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set if window is minimized and v
-is set if the window is open.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bkpts_wnd=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; code_wnd=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mem_wnd=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; regs_wnd=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pclog_wnd=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stack_wnd=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; heap_wnd= Set geometry hints for
+the different windows of the debugger.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The format is (x,y,w,h,m,v) where
+x&amp;y&nbsp; are&nbsp; coordinates,&nbsp; w&amp;h&nbsp; are&nbsp; the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; size,&nbsp; m&nbsp; is&nbsp;
+set&nbsp; if window is minimized and v is set if the window is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; open.<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Think to terminate your config
 script with the 'RC_END' word !!!<br>
@@ -274,9 +281,11 @@ script with the 'RC_END' word !!!<br>
 COPYRIGHT<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Copyright (C) 2000-2001, Romain
 Lievin and Thomas Corvazier.&nbsp; Copyright<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (C) 2001-2003, Romain Lievin
-Copyright (C) 2003,&nbsp; Julien&nbsp; Blache&nbsp; Copy-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; right (C) 2004-2005, Romain Lievin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (C)&nbsp; 2001-2003,&nbsp;
+Romain&nbsp; Lievin Copyright (C) 2003, Julien Blache Copy-<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; right (C) 2004, Romain Lievin
+Copyright (C)&nbsp; 2005-2006,&nbsp; Romain&nbsp; Lievin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and Kevin Kofler<br>
       <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Permission&nbsp; to&nbsp; use,
 copy, modify, and distribute this software and its<br>
@@ -324,31 +333,36 @@ a&nbsp; look&nbsp; at<br>
 &lt;http://www.ticalc.org&gt;&nbsp; for&nbsp; others&nbsp; TI<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; related programs for Linux.<br>
       <br>
-AUTHOR<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thomas Corvazier Julien Blache
-Romain Lievin (active).<br>
+      <br>
+SEE ALSO<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tilp(1) for the use of a linking
+program. TiEmu shares the same&nbsp; commu-<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nication box for link settings.<br>
       <br>
       <br>
 SPECIAL THANKS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Jonas Minnberg (Sasq) for Tiger
-- UAE, the Universal Amiga Emulator<br>
-      <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Benjamin Gordon
-&lt;ben@bxg.org&gt; for creating rpm packages:&nbsp; he&nbsp; is&nbsp;
-the<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; official maintainer of this
-package.<br>
-      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Jonas Minnberg (Sasq) for Tiger<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - UAE, the Universal Amiga Emulator<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&nbsp; Kevin&nbsp; Kofler&nbsp;
+&lt;Kevin@tigcc.ticalc.org&gt;&nbsp; for&nbsp; creating&nbsp; rpm
+packages<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (Fedora): he is the official
+maintainer of this package.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Julien Blache
-&lt;jb@jblache.org&gt; for creating deb packages: he&nbsp; is&nbsp; the<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; official maintainer of this
+&lt;jb@jblache.org&gt; for creating deb packages (Debian): he<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; is the official maintainer of this
 package.<br>
       <br>
-THANKS<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-June 28,
-2005&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-(GTK)TIEMU(1)</span><span style="font-family: courier;"></span></font><br>
+      <br>
+AUTHOR<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Romain Lievin Kevin Kofler<br>
+      <br>
+      <br>
+      <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+January 27,
+2006&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TIEMU(1)</span><span style="font-family: courier;"></span></font><br>
       </td>
     </tr>
   </tbody>
