@@ -36,6 +36,7 @@
 #include "calc.h"
 #include "engine.h"
 #include "fs_misc.h"
+#include "romversion.h"
 
 void dnd_init(void)
 {
@@ -73,12 +74,14 @@ on_calc_wnd_drag_data_received     (GtkWidget       *widget,
                                         guint            time,
                                         gpointer         user_data)
 {
+	gchar **filenames = NULL;
+
 	if ((data->length >= 0) && (data->format == 8))
     {
 		gchar *tok, *str = data->data;
 		gchar **uris, **p;
-		gchar **filenames, **q;
 		guint length;
+		gchar *fn;
 
 		g_print ("Received \"%s\"\n", str);
 
@@ -126,23 +129,33 @@ on_calc_wnd_drag_data_received     (GtkWidget       *widget,
 			}
 		}
 
+		// we have got our filenames...
 		filenames = uris;
+		fn = filenames[0];
 
-#if 1
-		if((length == 1) && !strcmp(tifiles_fext_get(*filenames), "skn"))
+		// let's them process!
+		if((length == 1) && !strcmp(tifiles_fext_get(fn), "skn"))
 		{
 			// Load new skin (fs_misc.c)
 			g_free(options.skin_file);
-			options.skin_file = g_strdup(*filenames);
+			options.skin_file = g_strdup(fn);
 
 			hid_change_skin(options.skin_file);
-
-			gtk_drag_finish (context, TRUE, FALSE, time);
-			return;
 		}
-		else if(tifiles_file_is_ti(*filenames) && 
-				(tifiles_calc_is_ti9x(tifiles_file_get_model(*filenames)) ||
-					tifiles_file_is_tigroup(*filenames))) 
+		else if(length == 1 && (!strcmp(tifiles_fext_get(fn), "rom") || 
+				ti68k_is_a_rom_file(fn) || ti68k_is_a_tib_file(fn)))
+		{
+			{
+				// Add rom to wizard
+				if(!engine_is_stopped()) engine_stop();
+				import_romversion(fn);
+				display_romversion_dbox(FALSE);
+				engine_start();
+			}
+		}
+		else if(tifiles_file_is_ti(fn) && 
+				(tifiles_calc_is_ti9x(tifiles_file_get_model(fn)) ||
+					tifiles_file_is_tigroup(fn))) 
 		{
 			// Send one or more file (fs_misc.c)
 			if(engine_is_stopped()) goto ocwwdr_end;
@@ -152,27 +165,12 @@ on_calc_wnd_drag_data_received     (GtkWidget       *widget,
 			engine_start();
 		}
 
-		/*
-		for(q = filenames; *q; q++)
-		{
-			char *fn = *q;
-
-			if(!strcmp(tifiles_fext_get(fn), "rom") || ti68k_is_a_rom_file(fn) || ti68k_is_a_tib_file(fn))
-			{
-				// Add rom to wizard
-				engine_stop();
-				engine_start();
-			}
-			else
-				goto ocwwdr_end;
-		}
-		*/
-
       gtk_drag_finish (context, TRUE, FALSE, time);
+	  g_strfreev(filenames);
       return;
-#endif
     }
   
 ocwwdr_end:
+	g_strfreev(filenames);
 	gtk_drag_finish (context, FALSE, FALSE, time);
 }

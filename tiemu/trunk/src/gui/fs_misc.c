@@ -408,18 +408,12 @@ gint display_set_tib_dbox(void)
     return 0;
 }
 
-gint display_import_romversion_dbox(void)
+int import_romversion(const char *filename)
 {
-    const gchar *filename;
 	char *dstname;
 	int err;
-    
-    // get filename
-	filename = create_fsel(inst_paths.base_dir, NULL, "*.rom;*.89u;*.9xu;*.v2u;*.tib", FALSE);
-	if (!filename)
-		return 0;
 
-    if(ti68k_is_a_rom_file(filename))
+	if(ti68k_is_a_rom_file(filename))
 	{
 		err = ti68k_convert_rom_to_image(filename, inst_paths.img_dir, &dstname);
 		handle_error();
@@ -467,7 +461,19 @@ gint display_import_romversion_dbox(void)
 		return -1;
 	}
 
-    return 0;
+	return 0;
+}
+
+gint display_import_romversion_dbox(void)
+{
+    const gchar *filename;
+    
+    // get filename
+	filename = create_fsel(inst_paths.base_dir, NULL, "*.rom;*.89u;*.9xu;*.v2u;*.tib", FALSE);
+	if (!filename)
+		return 0;    
+
+    return import_romversion(filename);;
 }
 
 
