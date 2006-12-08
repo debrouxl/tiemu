@@ -42,8 +42,7 @@ SubVersion: $Id$
 	- [roms]  $2300: make 'quick send' feature available in both versions. Popup menu reworked.
 	- [roms]  $2303: output a message about OLE (un)registration
 	- [roms]  $2308: added DnD support for changing skin, sending files and importing images
-
-		=> released on 05/12/2006
+		=> Released on 08/12/2006
 
 - 07/07/2006, version 2.81b
 	- [kevin] $2128: HW4 has 8 MB of FlashROM
@@ -77,6 +76,7 @@ SubVersion: $Id$
 	- [roms]  $2190: added BMP screenshot support and fixed frame spacing
 	- [roms]  $2191: reworked screenshot option dbox and prepared next step
 	- [roms]  $2194: added ability to take several screenshots (burst mode)
+		=> Released on ???
 
 - 10/05/2006, version 2.81:
 	- [roms] $2059: renamed 'code/source' window into 'disassembly'

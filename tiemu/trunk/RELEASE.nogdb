@@ -23,6 +23,7 @@ New capabilities:
 	- link logging
 	- quick send feature (allow to specify a file to send by pressing F10)
 	- register TiEmuOle object for TIGCC & others
+	- drag & drop support for sending of files, setting of current skin, importing of ROM image/FLASH upgrade
 	
 
 Improvements:

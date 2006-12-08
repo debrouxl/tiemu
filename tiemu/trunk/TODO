@@ -5,7 +5,7 @@ Planned features:
 * use the contrast field of skin
 * i18n (internationalization support)
 * sound emulation
-* DnD for files
+* use latest functions from tifiles2 API v1.0.3 (like tifiles_file_test)
 
 Bugs:
 -----
@@ -25,7 +25,3 @@ Another cool feature would be the capabilitie to
 capture video from the screen, allowing to save in .gif
 or .avi
 >>
-
-- DnD
-* so-name MSVC
-- tifiles: is_os / is_app

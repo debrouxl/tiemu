@@ -424,6 +424,10 @@ SOURCE=..\..\src\gui\calc\calc.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gui\calc\dnd.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\calc\kbd_mapper.c
 # End Source File
 # Begin Source File
@@ -485,6 +489,10 @@ SOURCE=..\..\src\gui\manpage.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\pbars.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\quicksend.c
 # End Source File
 # Begin Source File
 
