@@ -45,16 +45,17 @@ On iPAQ, you have to touch-point on the LCD region.<br>
 The menu
 is organized as follow :<br>
 <div style="text-align: center;"><img alt="" src="popup_menu.png"
- style="width: 214px; height: 344px;"><br>
+ style="width: 191px; height: 323px;"><br>
 </div>
 <br>
 <h2>6.1 Link </h2>
 The <span style="font-style: italic;">Send file to TiEmu</span> item
 will let you choose a file to load into the emulator while being on the
 HOME screen. You can choose
-one or several files at a time.<br>
+one or several files at a time. You can drag and drop them from
+anywhere to the&nbsp; TiEmu main windows, too.<br>
 <br>
-[+gdb] The <span style="font-style: italic;">Debug file with TiEmu</span>
+The <span style="font-style: italic;">Debug file with TiEmu</span>
 item
 will let you choose a file to debug using the emulator: First, the file
 (which should be an uncompressed TIGCC program compiled with debugging
@@ -70,24 +71,25 @@ in the Insight Source Window to get to the beginning of your main
 function. You can choose only one file at a time; any data files
 required by the program need to be sent separately using
 <span style="font-style: italic;">Send file to TiEmu</span>.<br>
-OR<br>
-[-gdb] The <span style="font-style: italic;">Quick send...</span> item
+<br>
+The <span style="font-style: italic;">Settings</span> item opens a
+dialog box. This is a large topic which is covered elsewhere. See the
+corresponding
+section...<br>
+<br>
+The <span style="font-style: italic;">Quick send...</span> item
 is a convenient feature when testing program being under development.
 It allows to specify a file to send whenever you press F10 or click the
 <span style="font-style: italic;">Send file to TiEmu</span> item.<br>
 When enabled, the dialog box displayed by <span
  style="font-style: italic;">Send file</span> is completely by-passed.<br>
 <br>
-The <span style="font-style: italic;">Receive file</span> item lets
+The <span style="font-style: italic;">Listen for files</span> item
+lets
 you
 enable (checked) or disable (unchecked) the receiving of variables
 from TiEmu. You should uncheck it if your program accesses the linkport
 for sound.<br>
-<br>
-The <span style="font-style: italic;">Link options</span> item opens a
-dialog box. This is a large topic which is covered elsewhere. See the
-corresponding
-section...<br>
 <h2>6.2 Configuration and State</h2>
 You can save or load a particular configuration. A configuration
 contains the current parameters of the emulator (emulator image to use,
@@ -126,6 +128,9 @@ upgrade and load it after image at startup.<br>
 choose an existing image from a list. If you want to add an image,
 click the <span style="font-style: italic;">Import</span> button to
 convert a ROM dump or a FLASH upgrade into an image. <br>
+You can drag and drop a ROM dump or FLASH upgrade onto the TiEm main
+window. The file will be automatically imported and you will get the
+box below.<br>
 Note: TiEmu scans the <span style="font-style: italic;">images</span>
 folder whenever you run this box.<br>
 <br>
@@ -167,7 +172,9 @@ the keyboard for TI keys:<br>
 </div>
 <br>
 The second option makes TiEmu fall back on the built-in skin. <br>
-The third option lets you choose a skin of your own. It must be a TiEmu
+The third option lets you choose a skin of your own. You can drag and
+drop a skin file to the&nbsp; TiEmu main windows, too.<br>
+Note: the skin must be a TiEmu
 compatible skin (see the Skin section) else it will be rejected.<br>
 <h2>6.5 Infos</h2>
 <span style="font-style: italic;">Misc</span>: gives you access to this
