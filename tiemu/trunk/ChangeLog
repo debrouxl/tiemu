@@ -1,5 +1,8 @@
 SubVersion: $Id$
 
+- 11/12/2006, version 2.81d
+	- store *.sav files in the images folder rather than polluting the application top folder
+
 - 07/08/2006, version 2.81c
 	- [kevin] $2202: fixed g_free of invalid pointers in state.c (#1471709)
 	- [kevin] $2203: fixed ticalcs_cable_detach of NULL calc_handle when exiting TiEmu early (reported by hypersonic)

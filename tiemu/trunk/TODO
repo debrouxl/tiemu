@@ -1,7 +1,6 @@
 Planned features:
 -----------------
 
-* store *.sav files in the images folder or a new folder like 'states' rather than in the {app} folder
 * use the contrast field of skin
 * i18n (internationalization support)
 * sound emulation

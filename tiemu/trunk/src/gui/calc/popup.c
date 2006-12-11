@@ -455,7 +455,7 @@ on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem
 
 	// set path
 	g_free(params.sav_file);
-	params.sav_file = g_strconcat(inst_paths.home_dir, basename, ".sav", NULL);
+	params.sav_file = g_strconcat(inst_paths.img_dir, basename, ".sav", NULL);
 	g_free(basename);
 
 	// save state
