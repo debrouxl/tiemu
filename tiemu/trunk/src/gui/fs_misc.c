@@ -158,7 +158,7 @@ void send_file(const gchar *filename)
 	int err;
 
 	// set pbar title
-	if(tifiles_file_is_tib(filename) || tifiles_file_is_flash(filename)) 
+	if(tifiles_file_is_flash(filename)) 
 	{
 		create_pbar_(FNCT_SEND_APP, _("Sending app(s)"));
 	} 

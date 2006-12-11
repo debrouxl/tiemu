@@ -84,10 +84,7 @@ int ti68k_is_a_rom_file(const char *filename)
 
 int ti68k_is_a_tib_file(const char *filename)
 {
-	int ret1 = tifiles_file_is_flash(filename);
-	int ret2 = tifiles_file_is_tib  (filename);
-
-	return ret1 || ret2;
+	return tifiles_file_is_os(filename);
 }
 
 int ti68k_is_a_img_file(const char *filename)
@@ -266,7 +263,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 	if(!tifiles_file_is_ti(filename))
 		return ERR_NOT_TI_FILE;
 		
-	if(!tifiles_file_is_tib(filename) && !tifiles_file_is_flash(filename))
+	if(!tifiles_file_is_os(filename))
 		return ERR_INVALID_UPGRADE;
 
 	// Load file

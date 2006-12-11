@@ -445,7 +445,7 @@ int send_ti_file(const char *filename)
 	}
 
     // FLASH APP file ?
-    if(tifiles_file_is_flash(filename))
+    if(tifiles_file_is_app(filename))
     {   
 		// increase timeout due to excessive time for last ACK
 		linkp.cable_timeout *= 10;
@@ -454,7 +454,7 @@ int send_ti_file(const char *filename)
     }
 
     // FLASH OS file ?
-    if(tifiles_file_is_flash(filename) && !strcasecmp(tifiles_fext_of_flash_os(calc_handle->model), tifiles_fext_get(filename)))
+    if(tifiles_file_test(filename, TIFILE_OS, calc_handle->model))
     {
 		ret = ticalcs_calc_send_app2(calc_handle, filename);
     }

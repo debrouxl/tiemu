@@ -111,7 +111,7 @@ qs_filechooserbutton1_current_folder_changed
 		return;
 
 	if(!tifiles_file_is_ti(fname) || !tifiles_calc_is_ti9x(tifiles_file_get_model(fname)) ||
-		!tifiles_file_is_group(fname) && !tifiles_file_is_single(fname))
+		!tifiles_file_test(fname, TIFILE_REGULAR, CALC_NONE))
 	{
 		g_free(tmp_file); tmp_file = NULL;
 		msg_box1(_("Error"), _("This file is not a valid TI file."));

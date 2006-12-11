@@ -4,7 +4,6 @@ Planned features:
 * use the contrast field of skin
 * i18n (internationalization support)
 * sound emulation
-* use latest functions from tifiles2 API v1.0.3 (like tifiles_file_test)
 
 Bugs:
 -----
