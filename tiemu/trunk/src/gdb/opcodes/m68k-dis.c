@@ -26,8 +26,8 @@
 
 #include "opcode/m68k.h"
 
-#include "../../ti_sw/romcalls.h"
-#include "../../ti_sw/handles.h"
+#include "../../core/ti_sw/romcalls.h"
+#include "../../core/ti_sw/handles.h"
 int DasmFPU(uint16_t code, char *buf);
 
 /* Local function prototypes.  */

@@ -31,7 +31,7 @@
 #include "gdb_string.h"
 #include "gdbcmd.h"		/* For maintenanceprintlist.  */
 #include "observer.h"
-#include "../../uae/libuae.h"
+#include "../../core/uae/libuae.h"
 
 /*
  * DATA STRUCTURE

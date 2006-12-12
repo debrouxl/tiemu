@@ -39,7 +39,7 @@
 
 /* GDB enabled: use the GDB disassembler */
 
-#include "../gdb/include/dis-asm.h"
+#include "../../gdb/include/dis-asm.h"
 struct gdbarch;
 struct ui_file;
 struct disassemble_info gdb_disassemble_info (struct gdbarch *gdbarch, struct ui_file *file);

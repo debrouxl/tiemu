@@ -272,7 +272,7 @@ if test x$tiemu_use_gdb = xyes; then
   changequote(<<,>>)
   ac_configure_args=`echo "$ac_configure_args" | sed "s,'CC=[^']*',,g;s,'CFLAGS=[^']*',,g;s,'CXX=[^']*',,g;s,'CXXFLAGS=[^']*',,g;s,'LDFLAGS=[^']*',,g;s,'build_alias=[^']*',,g;s,'host_alias=[^']*',,g;s,'target_alias=[^']*',,g"`
   changequote([,])
-  AC_CONFIG_SUBDIRS(src/core/gdb)
+  AC_CONFIG_SUBDIRS(src/gdb)
 fi
 
 # Output.

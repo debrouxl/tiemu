@@ -116,6 +116,10 @@ CONFIG FILE FORMAT
        In   fact,   the   resulting   filename   is   computed   as   'screen-
        file[screen_counter].[img_format]. Example: 'screenshot001.png'.
 
+       screen_shots= Number of frames to capture.
+
+       screen_skips= Number of frame to skip between 2 captures.
+
        console= Available under Windows platform only. You can  hide  (no)  or
        show  (yes)  the  DOS console at startup or even display it only during
        boot (boot).

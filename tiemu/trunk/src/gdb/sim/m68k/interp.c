@@ -68,7 +68,7 @@ extern void asm_longjmp(jmp_buf b, int v)
 #include "gdb/remote-sim.h"
 
 #include "config.h"
-#include "../../../uae/libuae.h"
+#include "../../../core/uae/libuae.h"
 #include "dis-asm.h"
 
 int trace = 0;

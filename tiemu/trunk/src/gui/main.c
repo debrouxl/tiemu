@@ -74,13 +74,13 @@ extern int asm_setjmp(jmp_buf b);
 
 #ifndef NO_GDB
 #include "gdbcall.h"
-#include "../core/gdb/gdb/main.h"
-#include "../core/gdb/gdb/gdb_string.h"
+#include "../gdb/gdb/main.h"
+#include "../gdb/gdb/gdb_string.h"
 #ifndef PARAMS
 #define PARAMS(x) x
 #endif
 #define READLINE_LIBRARY
-#include "../core/gdb/readline/readline.h"
+#include "../gdb/readline/readline.h"
 void gdbtk_hide_insight(void);
 void gdbtk_delete_interp(void);
 

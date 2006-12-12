@@ -44,7 +44,7 @@
 #include "block.h"
 #include "disasm.h"
 
-#include "../../ti_sw/romcalls.h"
+#include "../../core/ti_sw/romcalls.h"
 
 #ifdef TUI
 #include "tui/tui.h"		/* For tui_active et.al.   */
