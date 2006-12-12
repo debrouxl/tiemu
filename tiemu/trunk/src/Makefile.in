@@ -68,7 +68,6 @@ INCLUDES = \
 	-I@top_srcdir@ -I$(includedir) \
 	-DPREFIX=\"${prefix}\" -I. \
 	-I./core -I./core/uae -I./core/ti_hw -I./core/ti_sw -I./core/dbg \
-	-I./gdb	\
 	-I./gui -I./gui/calc -I./gui/debugger \
 	-I./ipc/dcop -I./ipc/dbus -I./ipc/com \
 	-I./kde \
@@ -225,13 +224,13 @@ tiemu_OBJ = core/uae/newcpu.o \
 	$(libgdb_A)
 
 #rules:
-all: uae gdb tiemu$(EXEEXT)
+all: uae gdbtk tiemu$(EXEEXT)
 
 uae:
 	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" gen
 	cd core/uae && $(MAKE) CC="$(CC)" CFLAGS="$(CFLAGS)" all
 
-gdb:
+gdbtk:
 ifeq (,$(findstring NO_GDB,$(CFLAGS)))
 	cd gdb && $(MAKE)
 endif
