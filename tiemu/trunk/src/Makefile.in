@@ -126,6 +126,7 @@ core_tisw_OBJ = \
 
 core_OBJ = 			\
 	core/error.o 		\
+	core/engine.o		\
 	core/images.o 		\
 	core/interface.o	\
 	core/state.o		\
@@ -182,7 +183,6 @@ gui_OBJ = \
 	gui/about.o							\
 	gui/device.o							\
 	gui/dboxes.o							\
-	gui/engine.o							\
 	gui/filesel.o							\
 	gui/fs_misc.o							\
 	gui/infos.o							\

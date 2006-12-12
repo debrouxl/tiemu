@@ -241,6 +241,10 @@ SOURCE=..\..\src\core\uae\libuae.lib
 # End Group
 # Begin Source File
 
+SOURCE=..\..\src\core\engine.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\error.c
 # End Source File
 # Begin Source File
@@ -488,10 +492,6 @@ SOURCE=..\..\src\ipc\com\oleaut_i.c
 SOURCE=..\..\src\ipc\com\registry.cpp
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE=..\..\src\gui\engine.c
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\src\gui\main.c
