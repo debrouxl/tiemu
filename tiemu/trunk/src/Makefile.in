@@ -304,12 +304,9 @@ endif
 
 distdir: clean
 ifneq (,$(findstring NO_GDB,$(CFLAGS)))
-	cp -r misc kde ipc gui ../tiemu-2.81c/src
-	mkdir ../tiemu-2.81c/src/core
-	cp -r core/dbg core/ti_hw core/ti_sw core/uae core/*.c core/*.h \
-	../tiemu-2.81c/src/core
+	cp -rl core kde ipc gui misc Makefile ../tiemu-@VERSION@/src
 else
-	echo "Not supported yet.";
+	cp -rl core gdb kde ipc gui misc Makefile ../tiemu-@VERSION@/src
 endif
 
 dos2unix:
