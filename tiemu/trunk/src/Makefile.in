@@ -305,8 +305,11 @@ endif
 distdir: clean
 ifneq (,$(findstring NO_GDB,$(CFLAGS)))
 	cp -rl core kde ipc gui misc Makefile ../tiemu-@VERSION@/src
+	find ../tiemu-@VERSION@/src -name .svn -exec rm -rf "{}" \; 2>/dev/null
 else
-	cp -rl core gdb kde ipc gui misc Makefile ../tiemu-@VERSION@/src
+	cp -rl core kde ipc gui misc Makefile \
+	gdb cleangdbsources.sh	../tiemu-@VERSION@/src
+	find ../tiemu-@VERSION@/src -name .svn -exec rm -rf "{}" \; 2>/dev/null
 endif
 
 dos2unix:
