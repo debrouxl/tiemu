@@ -1,3 +1,7 @@
+2006-12-20  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * gdbtk.c (gdbtk_delete_interp): Call Tcl_DeleteInterp before Tcl_Finalize.
+
 2006-07-20  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * gdbtk-cmds.c (Gdbtk_Init): Declare gdbcallback_close_debugger as Tcl_ObjCmdProc

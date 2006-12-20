@@ -248,10 +248,10 @@ cleanup_init (void *ignore)
 void
 gdbtk_delete_interp (void)
 {
-  Tcl_Finalize ();
   if (gdbtk_interp != NULL)
     Tcl_DeleteInterp (gdbtk_interp);
   gdbtk_interp = NULL;
+  Tcl_Finalize ();
 }
 
 /* Come here during long calculations to check for GUI events.  Usually invoked
