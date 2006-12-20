@@ -8,6 +8,11 @@ proc bgerror err {
   set info $errorInfo
   set code $errorCode
 
+  # filter out problem caused by the TclPro debugger
+  if {$err == "\"namespace\" isn't a member function in class \"::iwidgets::Scrolledwidget\""} {
+    return
+  }
+
   # log the error to the debug window or file
   dbug E $info
   dbug E $code
