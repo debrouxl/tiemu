@@ -4,6 +4,7 @@ SubVersion: $Id$
 	- [roms]  $2321: store *.sav files in the images folder rather than polluting the application top folder
 	- [roms]  $2322: updated to use API changes of tifiles2 v1.0.3 
 	- [kevin] $2335: fixed the Tcl/Tk code in Insight so it can be debugged with the TclPro debugger
+	- [kevin] $2337: add xdg-open in front of the list of browsers
 
 
 - 07/08/2006, version 2.81c
