@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@ static void cancel_filename(GtkButton * button, gpointer user_data)
 static const gchar* create_fsel_1(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
 	GtkWidget *fs;
-	gchar *sfilename, *sext;
+	gchar *sfilename, *sext, *path;
 
 	// gtk_file_selection_complete ALWAYS wants UTF-8.
 	sfilename = filename ? g_filename_to_utf8(filename,-1,NULL,NULL,NULL) : NULL;
