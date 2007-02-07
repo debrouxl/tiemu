@@ -11,7 +11,7 @@ Source:		%{name}-%{version}.tar.bz2
 Group:		Applications/Communications
 License:	GPL
 BuildRequires:	libticables2-devel = %{version}, libticonv-devel = %{version}, libtifiles2-devel = %{version}, libticalcs2-devel = %{version}, glib2-devel >= 2.6.4, gtk2-devel >= 2.6.7, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.2.2, desktop-file-utils >= 0.10
-Requires:	libticables2 = %{version}, libticonv = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2
+Requires:	libticables2 = %{version}, libticonv = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.6.4, gtk2 >= 2.6.7, libglade2 >= 2.5.1, zlib >= 1.2.2.2, xdg-utils >= 1.0.0
 Requires(post):	shared-mime-info, desktop-file-utils >= 0.9
 Requires(postun): shared-mime-info, desktop-file-utils >= 0.9
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -92,6 +92,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/mime/packages/tilp.xml
 
 %changelog
+* Wed Feb 7 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Require xdg-utils.
+
 * Sun Nov 12 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Drop tilp-2 -> tilp symlinks, as the executable is now named just tilp again.
 
