@@ -27,10 +27,10 @@ TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debuggi
 
 %build
 source /etc/profile.d/qt.sh
-sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/core/gdb/itcl/itcl/configure.in
-sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/core/gdb/itcl/itcl/configure
-sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/core/gdb/itcl/itk/configure.in
-sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/core/gdb/itcl/itk/configure
+sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/gdb/itcl/itcl/configure.in
+sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/gdb/itcl/itcl/configure
+sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/gdb/itcl/itk/configure.in
+sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/gdb/itcl/itk/configure
 export extra_ldflags="-Wl,-rpath,%{_libdir}/itcl3.3 -Wl,-rpath,%{_libdir}/itk3.3"
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --mandir=%{_mandir} --disable-nls --enable-shared-tcl-tk --enable-shared-itcl --with-dbus
 make
@@ -80,6 +80,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Feb 7 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Require xdg-utils.
+Fix paths for itcl version hacks.
 
 * Fri Nov 3 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source /etc/profile.d/qt.sh so QTDIR is always set.
