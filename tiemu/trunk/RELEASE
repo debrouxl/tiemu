@@ -1,3 +1,67 @@
+20070207:
+* TiEmu 3 changes:
+	- [kevin] $2264: use kde-config to locate KDE instead of hardcoded directories which were missing /usr/lib64
+	- [kevin] $2265: fix --enable-shared-itcl so the shared libitcl and libitk are built with -fPIC
+	- [kevin] $2269: remove special-casing of __MACOSX__ from some include paths which shouldn't be needed
+	- [kevin] $2270: fixed memory leaks in config file handling
+	- [kevin] $2271: fixed about dialog not closing when Close is clicked with GTK+ 2.10
+	- [kevin] $2274: don't proceed to ROM image wizard step 3 if importing the image failed
+	- [roms]  $2276: GDK_WINDOW_TYPE_HINT_ was set to NORMAL instead of DIALOG. Very annoying because this makes the window appears in the top of all others.
+	- [roms]  $2278: fixed window resizing which was disabled (but note that Windows resizing is an ugly hack because
+			gtk_window_set_hints does not work properly under Windows).
+	- [roms]  $2280: set 'Debug file with TiEmu' unsensitive when build in no-gdb mode
+	- [roms]  $2282: added 'quick send' feature in -gdb version. This allows to by-pass the file selection box.
+	- [roms]  $2298: fixed memory leak in scroptions (folder name was not freed)
+	- [roms]  $2299: make 'quick send' options persistent
+	- [roms]  $2300: make 'quick send' feature available in both versions. Popup menu reworked.
+	- [roms]  $2303: output a message about OLE (un)registration
+	- [roms]  $2308: added DnD support for changing skin, sending files and importing images
+	- [roms]  $2321: store *.sav files in the images folder rather than polluting the application top folder
+	- [roms]  $2322: updated to use API changes of tifiles2 v1.0.3 
+	- [kevin] $2335: fixed the Tcl/Tk code in Insight so it can be debugged with the TclPro debugger
+	- [kevin] $2337: add xdg-open in front of the list of browsers
+* libticonv changes (roms): (none)
+* libticables2 changes (roms):
+	- probe_usb_devices: returns an empty array rather than garbage when function fails
+	- be a little more verbose about nodes permissions and compiled options
+	        (I received many mails which lacks those information)
+	- fixed build when linux/ticables.h is not available (kevin)
+	- 64-bit driver is v3.5, 32-bit one is v3.6: request v3.5
+	- fixed pause in Linux support: usleep uses us rather than ms.
+* libtifiles2 changes (roms):
+	- don't check device_type if data_type is TI89_LICENSE, old 89u files 
+	use DEVICE_TYPE_73 (kevin)
+	- added new values to FileClass (os, app and tib) enumeration and 
+	added the following convenient functions: tifiles_file_is_os and 
+	tifiles_file_is_app.
+	- added tifiles_file_test function which was planned for a (long) 
+	while.
+	- fixed tifiles_file_write_tigroup which deleted the output file!
+* libticalcs2 changes (roms):
+	- fixed memory overlap in send_flash_app (may be related to bug #1583155)
+	- Kevin discovered a new D-USB command (0x11) which is related to remote control!
+	- DirectLink remote control support implemented for Titanium
+	- rom dumping is now remote controlled
+	- 89/92/92+: set to HOME screen before sending dumping program
+* TiLP 2 (included in the Fedora RPMs only, see http://www.ticalc.org for source
+  and Windows packages by roms) changes (roms):
+	- removed non-working leftovers from old Cocoa port, made OS X work like Linux instead (kevin)
+	- fixed locale directory (kevin)
+	- fixed memory leaks in config file handling (kevin)
+	- fixed Manpage.txt file name for non-Win32 and MinGW (kevin)
+	- fixed COPYING and RELEASE file names for MinGW (kevin)
+	- fixed about dialog not closing when Close is clicked with GTK+ 2.10 (kevin)
+	- remap USB hand-helds from/to config file and from command line (bug)
+	- renamed executable tilp-2 into tilp
+	- renamed manpage accordingly (kevin)
+	- added xdg-open in front of the list of browsers (kevin)
+	- add trailing slash for directory (otherwise, dirname with spaces 
+	like 'My Files' are not opened properly)
+	- fixed sending of vars into archive thru the App node
+	- Titanium/USB dumper is now launched remotely
+* Fedora RPM changes:
+	- xdg-utils (1.0.0 or later) is now required.
+
 20061030:
 * TiEmu 3 changes:
 	- [roms]  $2233: new feature: 'Link Log' dialog box (part 1/3)
