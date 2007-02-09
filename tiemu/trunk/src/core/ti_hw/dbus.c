@@ -458,17 +458,17 @@ int send_ti_file(const char *filename)
     {
 		ret = ticalcs_calc_send_app2(calc_handle, filename);
     }
-  
-    // Backup file ?
-    else if(tifiles_file_is_backup(filename))
-    {
-		ret = ticalcs_calc_send_backup2(calc_handle, filename);
-    }
 
     // Group file ?
     else if(tifiles_file_is_group(filename))
     {
 		ret = ticalcs_calc_send_var2(calc_handle, MODE_NORMAL, filename);
+    }
+
+	// Backup file ?
+    else if(tifiles_file_is_backup(filename))
+    {
+		ret = ticalcs_calc_send_backup2(calc_handle, filename);
     }
 
     // Single file
