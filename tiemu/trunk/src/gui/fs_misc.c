@@ -162,13 +162,13 @@ void send_file(const gchar *filename)
 	{
 		create_pbar_(FNCT_SEND_APP, _("Sending app(s)"));
 	} 
-	else if(tifiles_file_is_backup(filename)) 
-	{
-		create_pbar_(FNCT_SEND_BACKUP, _("Restoring"));
-	} 
 	else if(tifiles_file_is_group(filename)) 
 	{
 		create_pbar_(FNCT_SEND_VAR, _("Sending var(s)"));
+	} 
+	else if(tifiles_file_is_backup(filename)) 
+	{
+		create_pbar_(FNCT_SEND_BACKUP, _("Restoring"));
 	} 
 	else if(tifiles_file_is_single(filename)) 
 	{
