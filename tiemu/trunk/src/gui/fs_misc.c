@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *  Copyright (c) 2005, Christian Walther (patches for Mac OS-X port)
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -275,7 +275,10 @@ int display_recv_files_dbox(const char *src, const char *dst)
     }
 
 	fn = create_fsel(dst_folder, basename, ext, TRUE);
-	tiemu_file_move_with_check(src, fn);
+	if (fn)
+		tiemu_file_move_with_check(src, fn);
+	else
+		tiemu_file_delete(src);
 
 	g_free(src_folder);
 	g_free(basename);

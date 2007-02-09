@@ -1,5 +1,8 @@
 SubVersion: $Id$
 
+- ??/??/2007, version 2.81e
+	- [kevin] $2348: delete the temporary file instead of erroring if the user cancels the receive file dialog
+
 - 11/12/2006, version 2.81d
 	- [roms]  $2321: store *.sav files in the images folder rather than polluting the application top folder
 	- [roms]  $2322: updated to use API changes of tifiles2 v1.0.3 
