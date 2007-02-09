@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2007, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -195,6 +196,8 @@ void destroy_pbar(void)
 	p_win.pbar1 = NULL;
 	p_win.pbar2 = NULL;
 	p_win.label = NULL;
+	p_win.label_part = NULL;
+	p_win.label_rate = NULL;
 
 	if (pbar_window)
 		gtk_widget_destroy(pbar_window);

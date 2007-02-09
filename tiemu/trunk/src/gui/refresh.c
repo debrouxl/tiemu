@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2007, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -56,7 +57,7 @@ static void refresh_pbar1(void)
 	gfloat rate, avg;
   
 	if (p_win.pbar1 != NULL) 
-    {
+	{
 		if(calc_update.cnt1 > calc_update.max1)
 			calc_update.cnt1 = calc_update.max1;
 
@@ -64,14 +65,15 @@ static void refresh_pbar1(void)
 			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(p_win.pbar1), 
 				(gdouble)calc_update.cnt1 / calc_update.max1);
 
-#if 1 /* defined(_CONSOLE) && defined(_DEBUG) */
-		rate = calc_update.rate;
-		filter_shift();
-		avg = filter_compute(rate);
+		if(p_win.label_rate != NULL)
+		{
+			rate = calc_update.rate;
+			filter_shift();
+			avg = filter_compute(rate);
 
-		g_snprintf(buffer, 32, "Rate: %1.1f Kbytes/s", avg);
-		gtk_label_set_text(GTK_LABEL(p_win.label_rate), buffer);
-#endif
+			g_snprintf(buffer, 32, "Rate: %1.1f Kbytes/s", avg);
+			gtk_label_set_text(GTK_LABEL(p_win.label_rate), buffer);
+		}
 		GTK_REFRESH();
 	}
 }
@@ -79,7 +81,7 @@ static void refresh_pbar1(void)
 static void refresh_pbar2(void)
 {
 	if (p_win.pbar2 != NULL) 
-    {
+	{
 		if(calc_update.cnt2 > calc_update.max2)
 			calc_update.cnt2 = calc_update.max2;
 
@@ -88,7 +90,7 @@ static void refresh_pbar2(void)
 				(gdouble)calc_update.cnt2 / calc_update.max2);
 
 		GTK_REFRESH();
-    }
+	}
 }
 
 static void refresh_pbar3(void)
