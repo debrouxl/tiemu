@@ -262,7 +262,7 @@ SubVersion: $Id$
 		into the trunk at rev. $1695.	
 	For changes made in the tiemu-debugging-branch, see the RELEASE file starting at '20050806'.
 	
-	Note2: trunk forked into tiemu-3-libti2 branch at rev. $1720 and has been emrged back
+	Note2: trunk forked into tiemu-3-libti2 branch at rev. $1720 and has been merged back
 		into the trunk at rev. $1768.
 
 - 19/08/2005, version 2.00:
