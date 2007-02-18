@@ -37,12 +37,6 @@ static struct bfd_link_hash_table *elf_m68k_link_hash_table_create
 static bfd_boolean elf_m68k_check_relocs
   PARAMS ((bfd *, struct bfd_link_info *, asection *,
 	   const Elf_Internal_Rela *));
-static asection *elf_m68k_gc_mark_hook
-  PARAMS ((asection *, struct bfd_link_info *, Elf_Internal_Rela *,
-	   struct elf_link_hash_entry *, Elf_Internal_Sym *));
-static bfd_boolean elf_m68k_gc_sweep_hook
-  PARAMS ((bfd *, struct bfd_link_info *, asection *,
-	   const Elf_Internal_Rela *));
 static bfd_boolean elf_m68k_adjust_dynamic_symbol
   PARAMS ((struct bfd_link_info *, struct elf_link_hash_entry *));
 static bfd_boolean elf_m68k_size_dynamic_sections
@@ -190,6 +184,40 @@ reloc_type_lookup (abfd, code)
 
 #define ELF_DYNAMIC_INTERPRETER "/usr/lib/libc.so.1"
 
+/* Describes one of the various PLT styles.  */
+
+struct elf_m68k_plt_info
+{
+  /* The size of each PLT entry.  */
+  bfd_vma size;
+
+  /* The template for the first PLT entry.  */
+  const bfd_byte *plt0_entry;
+
+  /* Offsets of fields in PLT0_ENTRY that require R_68K_PC32 relocations.
+     The comments by each member indicate the value that the relocation
+     is against.  */
+  struct {
+    unsigned int got4; /* .got + 4 */
+    unsigned int got8; /* .got + 8 */
+  } plt0_relocs;
+
+  /* The template for a symbol's PLT entry.  */
+  const bfd_byte *symbol_entry;
+
+  /* Offsets of fields in SYMBOL_ENTRY that require R_68K_PC32 relocations.
+     The comments by each member indicate the value that the relocation
+     is against.  */
+  struct {
+    unsigned int got; /* the symbol's .got.plt entry */
+    unsigned int plt; /* .plt */
+  } symbol_relocs;
+
+  /* The offset of the resolver stub from the start of SYMBOL_ENTRY.
+     The stub starts with "move.l #relocoffset,%d0".  */
+  bfd_vma symbol_resolve_entry;
+};
+
 /* The size in bytes of an entry in the procedure linkage table.  */
 
 #define PLT_ENTRY_SIZE 20
@@ -200,9 +228,9 @@ reloc_type_lookup (abfd, code)
 static const bfd_byte elf_m68k_plt0_entry[PLT_ENTRY_SIZE] =
 {
   0x2f, 0x3b, 0x01, 0x70, /* move.l (%pc,addr),-(%sp) */
-  0, 0, 0, 0,		  /* replaced with offset to .got + 4.  */
+  0, 0, 0, 2,		  /* + (.got + 4) - . */
   0x4e, 0xfb, 0x01, 0x71, /* jmp ([%pc,addr]) */
-  0, 0, 0, 0,		  /* replaced with offset to .got + 8.  */
+  0, 0, 0, 2,		  /* + (.got + 8) - . */
   0, 0, 0, 0		  /* pad out to 20 bytes.  */
 };
 
@@ -211,69 +239,82 @@ static const bfd_byte elf_m68k_plt0_entry[PLT_ENTRY_SIZE] =
 static const bfd_byte elf_m68k_plt_entry[PLT_ENTRY_SIZE] =
 {
   0x4e, 0xfb, 0x01, 0x71, /* jmp ([%pc,symbol@GOTPC]) */
-  0, 0, 0, 0,		  /* replaced with offset to symbol's .got entry.  */
+  0, 0, 0, 2,		  /* + (.got.plt entry) - . */
   0x2f, 0x3c,		  /* move.l #offset,-(%sp) */
-  0, 0, 0, 0,		  /* replaced with offset into relocation table.  */
+  0, 0, 0, 0,		  /* + reloc index */
   0x60, 0xff,		  /* bra.l .plt */
-  0, 0, 0, 0		  /* replaced with offset to start of .plt.  */
+  0, 0, 0, 0		  /* + .plt - . */
 };
 
+static const struct elf_m68k_plt_info elf_m68k_plt_info = {
+  PLT_ENTRY_SIZE,
+  elf_m68k_plt0_entry, { 4, 12 },
+  elf_m68k_plt_entry, { 4, 16 }, 8
+};
 
-#define CFV4E_PLT_ENTRY_SIZE 24 
+#define ISAB_PLT_ENTRY_SIZE 24 
 
-#define CFV4E_FLAG(abfd)  (elf_elfheader (abfd)->e_flags & EF_M68K_CFV4E)
-
-static const bfd_byte elf_cfv4e_plt0_entry[CFV4E_PLT_ENTRY_SIZE] =
+static const bfd_byte elf_isab_plt0_entry[ISAB_PLT_ENTRY_SIZE] =
 {
-  0x20, 0x3c,
-  0, 0, 0, 0,             /* Replaced with offset to .got + 4.  */
-  0x2f, 0x3b, 0x08, 0xfa, /* move.l (%pc,addr),-(%sp) */
-  0x20, 0x3c,
-  0, 0, 0, 0,             /* Replaced with offset to .got + 8.  */
-  0x20, 0x7b, 0x08, 0x00, /* move.l (%pc,%d0:l), %a0 */
+  0x20, 0x3c,             /* move.l #offset,%d0 */
+  0, 0, 0, 0,             /* + (.got + 4) - . */
+  0x2f, 0x3b, 0x08, 0xfa, /* move.l (-6,%pc,%d0:l),-(%sp) */
+  0x20, 0x3c,             /* move.l #offset,%d0 */
+  0, 0, 0, 0,             /* + (.got + 8) - . */
+  0x20, 0x7b, 0x08, 0xfa, /* move.l (-6,%pc,%d0:l), %a0 */
   0x4e, 0xd0,             /* jmp (%a0) */
   0x4e, 0x71		  /* nop */
 };
 
 /* Subsequent entries in a procedure linkage table look like this.  */
 
-static const bfd_byte elf_cfv4e_plt_entry[CFV4E_PLT_ENTRY_SIZE] =
+static const bfd_byte elf_isab_plt_entry[ISAB_PLT_ENTRY_SIZE] =
 {
-  0x20, 0x3c,
-  0, 0, 0, 0,             /* Replaced with offset to symbol's .got entry.  */
-  0x20, 0x7b, 0x08, 0x00, /* move.l (%pc,%d0:l), %a0 */
+  0x20, 0x3c,             /* move.l #offset,%d0 */
+  0, 0, 0, 0,             /* + (.got.plt entry) - . */
+  0x20, 0x7b, 0x08, 0xfa, /* move.l (-6,%pc,%d0:l), %a0 */
   0x4e, 0xd0,             /* jmp (%a0) */
   0x2f, 0x3c,             /* move.l #offset,-(%sp) */
-  0, 0, 0, 0,             /* Replaced with offset into relocation table.  */
+  0, 0, 0, 0,             /* + reloc index */
   0x60, 0xff,             /* bra.l .plt */
-  0, 0, 0, 0              /* Replaced with offset to start of .plt.  */
+  0, 0, 0, 0              /* + .plt - . */
 };
 
-#define CPU32_FLAG(abfd)  (elf_elfheader (abfd)->e_flags & EF_M68K_CPU32)
+static const struct elf_m68k_plt_info elf_isab_plt_info = {
+  ISAB_PLT_ENTRY_SIZE,
+  elf_isab_plt0_entry, { 2, 12 },
+  elf_isab_plt_entry, { 2, 20 }, 12
+};
 
-#define PLT_CPU32_ENTRY_SIZE 24
+#define CPU32_PLT_ENTRY_SIZE 24
 /* Procedure linkage table entries for the cpu32 */
-static const bfd_byte elf_cpu32_plt0_entry[PLT_CPU32_ENTRY_SIZE] =
+static const bfd_byte elf_cpu32_plt0_entry[CPU32_PLT_ENTRY_SIZE] =
 {
   0x2f, 0x3b, 0x01, 0x70, /* move.l (%pc,addr),-(%sp) */
-  0, 0, 0, 0,             /* replaced with offset to .got + 4.  */
+  0, 0, 0, 2,             /* + (.got + 4) - . */
   0x22, 0x7b, 0x01, 0x70, /* moveal %pc@(0xc), %a1 */
-  0, 0, 0, 0,             /* replace with offset to .got +8.  */
+  0, 0, 0, 2,             /* + (.got + 8) - . */
   0x4e, 0xd1,             /* jmp %a1@ */
   0, 0, 0, 0,             /* pad out to 24 bytes.  */
   0, 0
 };
 
-static const bfd_byte elf_cpu32_plt_entry[PLT_CPU32_ENTRY_SIZE] =
+static const bfd_byte elf_cpu32_plt_entry[CPU32_PLT_ENTRY_SIZE] =
 {
   0x22, 0x7b, 0x01, 0x70,  /* moveal %pc@(0xc), %a1 */
-  0, 0, 0, 0,              /* replaced with offset to symbol's .got entry.  */
+  0, 0, 0, 2,              /* + (.got.plt entry) - . */
   0x4e, 0xd1,              /* jmp %a1@ */
   0x2f, 0x3c,              /* move.l #offset,-(%sp) */
-  0, 0, 0, 0,              /* replaced with offset into relocation table.  */
+  0, 0, 0, 0,              /* + reloc index */
   0x60, 0xff,              /* bra.l .plt */
-  0, 0, 0, 0,              /* replaced with offset to start of .plt.  */
+  0, 0, 0, 0,              /* + .plt - . */
   0, 0
+};
+
+static const struct elf_m68k_plt_info elf_cpu32_plt_info = {
+  CPU32_PLT_ENTRY_SIZE,
+  elf_cpu32_plt0_entry, { 4, 12 },
+  elf_cpu32_plt_entry, { 4, 18 }, 10
 };
 
 /* The m68k linker needs to keep track of the number of relocs that it
@@ -315,6 +356,10 @@ struct elf_m68k_link_hash_table
 
   /* Small local sym to section mapping cache.  */
   struct sym_sec_cache sym_sec;
+
+  /* The PLT format used by this link, or NULL if the format has not
+     yet been chosen.  */
+  const struct elf_m68k_plt_info *plt_info;
 };
 
 /* Get the m68k ELF linker hash table from a link_info structure.  */
@@ -370,6 +415,7 @@ elf_m68k_link_hash_table_create (abfd)
     }
 
   ret->sym_sec.abfd = NULL;
+  ret->plt_info = NULL;
 
   return &ret->root.root;
 }
@@ -812,7 +858,7 @@ elf_m68k_check_relocs (abfd, info, sec, relocs)
 		  if (name == NULL)
 		    return FALSE;
 
-		  BFD_ASSERT (strncmp (name, ".rela", 5) == 0
+		  BFD_ASSERT (CONST_STRNEQ (name, ".rela")
 			      && strcmp (bfd_get_section_name (abfd, sec),
 					 name + 5) == 0);
 
@@ -928,50 +974,30 @@ elf_m68k_check_relocs (abfd, info, sec, relocs)
    relocation.  */
 
 static asection *
-elf_m68k_gc_mark_hook (sec, info, rel, h, sym)
-     asection *sec;
-     struct bfd_link_info *info ATTRIBUTE_UNUSED;
-     Elf_Internal_Rela *rel;
-     struct elf_link_hash_entry *h;
-     Elf_Internal_Sym *sym;
+elf_m68k_gc_mark_hook (asection *sec,
+		       struct bfd_link_info *info,
+		       Elf_Internal_Rela *rel,
+		       struct elf_link_hash_entry *h,
+		       Elf_Internal_Sym *sym)
 {
   if (h != NULL)
-    {
-      switch (ELF32_R_TYPE (rel->r_info))
-	{
-	case R_68K_GNU_VTINHERIT:
-	case R_68K_GNU_VTENTRY:
-	  break;
+    switch (ELF32_R_TYPE (rel->r_info))
+      {
+      case R_68K_GNU_VTINHERIT:
+      case R_68K_GNU_VTENTRY:
+	return NULL;
+      }
 
-	default:
-	  switch (h->root.type)
-	    {
-	    default:
-	      break;
-
-	    case bfd_link_hash_defined:
-	    case bfd_link_hash_defweak:
-	      return h->root.u.def.section;
-
-	    case bfd_link_hash_common:
-	      return h->root.u.c.p->section;
-	    }
-	}
-    }
-  else
-    return bfd_section_from_elf_index (sec->owner, sym->st_shndx);
-
-  return NULL;
+  return _bfd_elf_gc_mark_hook (sec, info, rel, h, sym);
 }
 
 /* Update the got entry reference counts for the section being removed.  */
 
 static bfd_boolean
-elf_m68k_gc_sweep_hook (abfd, info, sec, relocs)
-     bfd *abfd;
-     struct bfd_link_info *info;
-     asection *sec;
-     const Elf_Internal_Rela *relocs;
+elf_m68k_gc_sweep_hook (bfd *abfd,
+			struct bfd_link_info *info,
+			asection *sec,
+			const Elf_Internal_Rela *relocs)
 {
   Elf_Internal_Shdr *symtab_hdr;
   struct elf_link_hash_entry **sym_hashes;
@@ -1070,6 +1096,32 @@ elf_m68k_gc_sweep_hook (abfd, info, sec, relocs)
 
   return TRUE;
 }
+
+/* Return the type of PLT associated with OUTPUT_BFD.  */
+
+static const struct elf_m68k_plt_info *
+elf_m68k_get_plt_info (bfd *output_bfd)
+{
+  unsigned int features;
+
+  features = bfd_m68k_mach_to_features (bfd_get_mach (output_bfd));
+  if (features & cpu32)
+    return &elf_cpu32_plt_info;
+  if (features & mcfisa_b)
+    return &elf_isab_plt_info;
+  return &elf_m68k_plt_info;
+}
+
+/* This function is called after all the input files have been read,
+   and the input sections have been assigned to output sections.
+   It's a convenient place to determine the PLT style.  */
+
+static bfd_boolean
+elf_m68k_always_size_sections (bfd *output_bfd, struct bfd_link_info *info)
+{
+  elf_m68k_hash_table (info)->plt_info = elf_m68k_get_plt_info (output_bfd);
+  return TRUE;
+}
 
 /* Adjust a symbol defined by a dynamic object and referenced by a
    regular object.  The current definition is in some section of the
@@ -1082,10 +1134,12 @@ elf_m68k_adjust_dynamic_symbol (info, h)
      struct bfd_link_info *info;
      struct elf_link_hash_entry *h;
 {
+  struct elf_m68k_link_hash_table *htab;
   bfd *dynobj;
   asection *s;
   unsigned int power_of_two;
 
+  htab = elf_m68k_hash_table (info);
   dynobj = elf_hash_table (info)->dynobj;
 
   /* Make sure we know what is going on here.  */
@@ -1135,14 +1189,7 @@ elf_m68k_adjust_dynamic_symbol (info, h)
       /* If this is the first .plt entry, make room for the special
 	 first entry.  */
       if (s->size == 0)
-	{
-	  if (CPU32_FLAG (dynobj))
-	    s->size += PLT_CPU32_ENTRY_SIZE;
-	  else if (CFV4E_FLAG (dynobj))
-	    s->size += CFV4E_PLT_ENTRY_SIZE;
-	  else
-	    s->size += PLT_ENTRY_SIZE;
-	}
+	s->size = htab->plt_info->size;
 
       /* If this symbol is not defined in a regular file, and we are
 	 not generating a shared library, then set the symbol to this
@@ -1159,12 +1206,7 @@ elf_m68k_adjust_dynamic_symbol (info, h)
       h->plt.offset = s->size;
 
       /* Make room for this entry.  */
-      if (CPU32_FLAG (dynobj))
-        s->size += PLT_CPU32_ENTRY_SIZE;
-      else if (CFV4E_FLAG (dynobj))
-	s->size += CFV4E_PLT_ENTRY_SIZE;
-      else
-        s->size += PLT_ENTRY_SIZE;
+      s->size += htab->plt_info->size;
 
       /* We also need to make an entry in the .got.plt section, which
 	 will be placed in the .got section by the linker script.  */
@@ -1334,7 +1376,7 @@ elf_m68k_size_dynamic_sections (output_bfd, info)
 	  /* Remember whether there is a PLT.  */
 	  plt = s->size != 0;
 	}
-      else if (strncmp (name, ".rela", 5) == 0)
+      else if (CONST_STRNEQ (name, ".rela"))
 	{
 	  if (s->size != 0)
 	    {
@@ -1345,7 +1387,7 @@ elf_m68k_size_dynamic_sections (output_bfd, info)
 	      s->reloc_count = 0;
 	    }
 	}
-      else if (strncmp (name, ".got", 4) != 0
+      else if (! CONST_STRNEQ (name, ".got")
 	       && strcmp (name, ".dynbss") != 0)
 	{
 	  /* It's not one of our sections, so don't allocate space.  */
@@ -1791,11 +1833,12 @@ elf_m68k_relocate_section (output_bfd, info, input_bfd, input_section,
 	      else
 		{
 		  /* This symbol is local, or marked to become local.  */
+		  outrel.r_addend = relocation + rel->r_addend;
+
 		  if (r_type == R_68K_32)
 		    {
 		      relocate = TRUE;
 		      outrel.r_info = ELF32_R_INFO (0, R_68K_RELATIVE);
-		      outrel.r_addend = relocation + rel->r_addend;
 		    }
 		  else
 		    {
@@ -1812,13 +1855,24 @@ elf_m68k_relocate_section (output_bfd, info, input_bfd, input_section,
 			{
 			  asection *osec;
 
+			  /* We are turning this relocation into one
+			     against a section symbol.  It would be
+			     proper to subtract the symbol's value,
+			     osec->vma, from the emitted reloc addend,
+			     but ld.so expects buggy relocs.  */
 			  osec = sec->output_section;
 			  indx = elf_section_data (osec)->dynindx;
-			  BFD_ASSERT (indx > 0);
+			  if (indx == 0)
+			    {
+			      struct elf_link_hash_table *htab;
+			      htab = elf_hash_table (info);
+			      osec = htab->text_index_section;
+			      indx = elf_section_data (osec)->dynindx;
+			    }
+			  BFD_ASSERT (indx != 0);
 			}
 
 		      outrel.r_info = ELF32_R_INFO (indx, r_type);
-		      outrel.r_addend = relocation + rel->r_addend;
 		    }
 		}
 
@@ -1909,6 +1963,21 @@ elf_m68k_relocate_section (output_bfd, info, input_bfd, input_section,
   return TRUE;
 }
 
+/* Install an M_68K_PC32 relocation against VALUE at offset OFFSET
+   into section SEC.  */
+
+static void
+elf_m68k_install_pc32 (asection *sec, bfd_vma offset, bfd_vma value)
+{
+  /* Make VALUE PC-relative.  */
+  value -= sec->output_section->vma + offset;
+
+  /* Apply any in-place addend.  */
+  value += bfd_get_32 (sec->owner, sec->contents + offset);
+
+  bfd_put_32 (sec->owner, value, sec->contents + offset);
+}
+
 /* Finish up dynamic symbol handling.  We set the contents of various
    dynamic sections here.  */
 
@@ -1920,12 +1989,12 @@ elf_m68k_finish_dynamic_symbol (output_bfd, info, h, sym)
      Elf_Internal_Sym *sym;
 {
   bfd *dynobj;
-  int plt_off1, plt_off2, plt_off3;
 
   dynobj = elf_hash_table (info)->dynobj;
 
   if (h->plt.offset != (bfd_vma) -1)
     {
+      const struct elf_m68k_plt_info *plt_info;
       asection *splt;
       asection *sgot;
       asection *srela;
@@ -1939,6 +2008,7 @@ elf_m68k_finish_dynamic_symbol (output_bfd, info, h, sym)
 
       BFD_ASSERT (h->dynindx != -1);
 
+      plt_info = elf_m68k_hash_table (info)->plt_info;
       splt = bfd_get_section_by_name (dynobj, ".plt");
       sgot = bfd_get_section_by_name (dynobj, ".got.plt");
       srela = bfd_get_section_by_name (dynobj, ".rela.plt");
@@ -1948,66 +2018,36 @@ elf_m68k_finish_dynamic_symbol (output_bfd, info, h, sym)
 	 corresponds to this symbol.  This is the index of this symbol
 	 in all the symbols for which we are making plt entries.  The
 	 first entry in the procedure linkage table is reserved.  */
-      if (CPU32_FLAG (output_bfd))
-        plt_index = (h->plt.offset / PLT_CPU32_ENTRY_SIZE) - 1;
-      else if (CFV4E_FLAG (output_bfd))
-	plt_index = (h->plt.offset / CFV4E_PLT_ENTRY_SIZE) - 1;
-      else
-        plt_index = (h->plt.offset / PLT_ENTRY_SIZE) - 1;
+      plt_index = (h->plt.offset / plt_info->size) - 1;
 
       /* Get the offset into the .got table of the entry that
 	 corresponds to this function.  Each .got entry is 4 bytes.
 	 The first three are reserved.  */
       got_offset = (plt_index + 3) * 4;
 
-      if (CPU32_FLAG (output_bfd))
-        {
-          /* Fill in the entry in the procedure linkage table.  */
-          memcpy (splt->contents + h->plt.offset, elf_cpu32_plt_entry,
-	          PLT_CPU32_ENTRY_SIZE);
-          plt_off1 = 4;
-          plt_off2 = 12;
-          plt_off3 = 18;
-        }
-      else if (CFV4E_FLAG (output_bfd))
-        {
-          memcpy (splt->contents + h->plt.offset, elf_cfv4e_plt_entry,
-	          CFV4E_PLT_ENTRY_SIZE);
-          plt_off1 = 2;
-          plt_off2 = 14;
-          plt_off3 = 20;
-	}
-      else
-        {
-          /* Fill in the entry in the procedure linkage table.  */
-          memcpy (splt->contents + h->plt.offset, elf_m68k_plt_entry,
-	          PLT_ENTRY_SIZE);
-          plt_off1 = 4;
-          plt_off2 = 10;
-          plt_off3 = 16;
-        }
+      memcpy (splt->contents + h->plt.offset,
+	      plt_info->symbol_entry,
+	      plt_info->size);
 
-      /* The offset is relative to the first extension word.  */
-      bfd_put_32 (output_bfd,
-		  sgot->output_section->vma
-		  + sgot->output_offset
-		  + got_offset
-		  - (splt->output_section->vma
-		     + h->plt.offset
-		     + (CFV4E_FLAG (output_bfd) ? 8 : 2)),
-		  splt->contents + h->plt.offset + plt_off1);
+      elf_m68k_install_pc32 (splt, h->plt.offset + plt_info->symbol_relocs.got,
+			     (sgot->output_section->vma
+			      + sgot->output_offset
+			      + got_offset));
 
       bfd_put_32 (output_bfd, plt_index * sizeof (Elf32_External_Rela),
-		  splt->contents + h->plt.offset + plt_off2);
-      bfd_put_32 (output_bfd, - (h->plt.offset + plt_off3),
-		  splt->contents + h->plt.offset + plt_off3);
+		  splt->contents
+		  + h->plt.offset
+		  + plt_info->symbol_resolve_entry + 2);
+
+      elf_m68k_install_pc32 (splt, h->plt.offset + plt_info->symbol_relocs.plt,
+			     splt->output_section->vma);
 
       /* Fill in the entry in the global offset table.  */
       bfd_put_32 (output_bfd,
 		  (splt->output_section->vma
 		   + splt->output_offset
 		   + h->plt.offset
-		   + (CFV4E_FLAG (output_bfd) ? 12 : 8)),
+		   + plt_info->symbol_resolve_entry),
 		  sgot->contents + got_offset);
 
       /* Fill in the entry in the .rela.plt section.  */
@@ -2185,54 +2225,23 @@ elf_m68k_finish_dynamic_sections (output_bfd, info)
       /* Fill in the first entry in the procedure linkage table.  */
       if (splt->size > 0)
 	{
-	  if (CFV4E_FLAG (output_bfd))
-           {
-	     memcpy (splt->contents, elf_cfv4e_plt0_entry, CFV4E_PLT_ENTRY_SIZE);
-             bfd_put_32 (output_bfd,
-                         (sgot->output_section->vma
-                          + sgot->output_offset + 4
-                          - (splt->output_section->vma + 2)),
-                         splt->contents + 2);
-             bfd_put_32 (output_bfd,
-                         (sgot->output_section->vma
-                          + sgot->output_offset + 8
-                          - (splt->output_section->vma + 10) - 8),
-                         splt->contents + 12);
-             elf_section_data (splt->output_section)->this_hdr.sh_entsize
-	       = CFV4E_PLT_ENTRY_SIZE;
-           }
-	  else if (CPU32_FLAG (output_bfd))
-            {
-              memcpy (splt->contents, elf_cpu32_plt0_entry, PLT_CPU32_ENTRY_SIZE);
-	      bfd_put_32 (output_bfd,
-		          (sgot->output_section->vma
-		           + sgot->output_offset + 4
-		           - (splt->output_section->vma + 2)),
-		          splt->contents + 4);
-	      bfd_put_32 (output_bfd,
-		          (sgot->output_section->vma
-		           + sgot->output_offset + 8
-		           - (splt->output_section->vma + 10)),
-		          splt->contents + 12);
-              elf_section_data (splt->output_section)->this_hdr.sh_entsize
-               = PLT_CPU32_ENTRY_SIZE;
-            }
-          else
-            {
-	      memcpy (splt->contents, elf_m68k_plt0_entry, PLT_ENTRY_SIZE);
-	      bfd_put_32 (output_bfd,
-		          (sgot->output_section->vma
-		           + sgot->output_offset + 4
-		           - (splt->output_section->vma + 2)),
-		          splt->contents + 4);
-	      bfd_put_32 (output_bfd,
-		          (sgot->output_section->vma
-		           + sgot->output_offset + 8
-		           - (splt->output_section->vma + 10)),
-		          splt->contents + 12);
-              elf_section_data (splt->output_section)->this_hdr.sh_entsize
-               = PLT_ENTRY_SIZE;
-            }
+	  const struct elf_m68k_plt_info *plt_info;
+
+	  plt_info = elf_m68k_hash_table (info)->plt_info;
+	  memcpy (splt->contents, plt_info->plt0_entry, plt_info->size);
+
+	  elf_m68k_install_pc32 (splt, plt_info->plt0_relocs.got4,
+				 (sgot->output_section->vma
+				  + sgot->output_offset
+				  + 4));
+
+	  elf_m68k_install_pc32 (splt, plt_info->plt0_relocs.got8,
+				 (sgot->output_section->vma
+				  + sgot->output_offset
+				  + 8));
+
+	  elf_section_data (splt->output_section)->this_hdr.sh_entsize
+	    = plt_info->size;
 	}
     }
 
@@ -2401,9 +2410,7 @@ static bfd_vma
 elf_m68k_plt_sym_val (bfd_vma i, const asection *plt,
 		      const arelent *rel ATTRIBUTE_UNUSED)
 {
-  if (CPU32_FLAG (plt->owner))
-    return plt->vma + (i + 1) * PLT_CPU32_ENTRY_SIZE;
-  return plt->vma + (i + 1) * PLT_ENTRY_SIZE;
+  return plt->vma + (i + 1) * elf_m68k_get_plt_info (plt->owner)->size;
 }
 
 #define TARGET_BIG_SYM			bfd_elf32_m68k_vec
@@ -2417,10 +2424,13 @@ elf_m68k_plt_sym_val (bfd_vma i, const asection *plt,
 #define bfd_elf32_bfd_final_link	bfd_elf_gc_common_final_link
 
 #define elf_backend_check_relocs	elf_m68k_check_relocs
+#define elf_backend_always_size_sections \
+					elf_m68k_always_size_sections
 #define elf_backend_adjust_dynamic_symbol \
 					elf_m68k_adjust_dynamic_symbol
 #define elf_backend_size_dynamic_sections \
 					elf_m68k_size_dynamic_sections
+#define elf_backend_init_index_section	_bfd_elf_init_1_index_section
 #define elf_backend_relocate_section	elf_m68k_relocate_section
 #define elf_backend_finish_dynamic_symbol \
 					elf_m68k_finish_dynamic_symbol

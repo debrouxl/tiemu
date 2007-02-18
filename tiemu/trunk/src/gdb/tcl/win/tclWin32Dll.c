@@ -13,6 +13,9 @@
  */
 
 #include "tclWinInt.h"
+#ifdef __CYGWIN__
+#include <sys/cygwin.h>
+#endif
 
 /*
  * The following data structures are used when loading the thunking 
@@ -267,6 +270,14 @@ TclWinInit(hInst)
     if (platformId == VER_PLATFORM_WIN32s) {
 	panic("Win32s is not a supported platform");	
     }
+
+#ifdef __CYGWIN__
+    {
+      char cwd_posix[MAX_PATH], cwd_win32[MAX_PATH];
+      cygwin_conv_to_full_win32_path (getcwd (cwd_posix, MAX_PATH), cwd_win32);
+      SetCurrentDirectory (cwd_win32);
+    }
+#endif
 
     tclWinProcs = &asciiProcs;
 }

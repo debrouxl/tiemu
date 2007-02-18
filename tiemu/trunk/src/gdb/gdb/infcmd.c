@@ -468,6 +468,10 @@ run_command_1 (char *args, int from_tty, int tbreak_at_main)
   kill_if_already_running (from_tty);
   clear_breakpoint_hit_counts ();
 
+  /* Clean up any leftovers from other runs.  Some other things from
+     this function should probably be moved into target_pre_inferior.  */
+  target_pre_inferior (from_tty);
+
   /* Purge old solib objfiles. */
   objfile_purge_solibs ();
 
@@ -1852,10 +1856,14 @@ attach_command (char *args, int from_tty)
 	error (_("Not killed."));
     }
 
+  /* Clean up any leftovers from other runs.  Some other things from
+     this function should probably be moved into target_pre_inferior.  */
+  target_pre_inferior (from_tty);
+
   /* Clear out solib state. Otherwise the solib state of the previous
      inferior might have survived and is entirely wrong for the new
-     target.  This has been observed on Linux using glibc 2.3. How to
-     reproduce:
+     target.  This has been observed on GNU/Linux using glibc 2.3. How
+     to reproduce:
 
      bash$ ./foo&
      [1] 4711
@@ -2120,10 +2128,11 @@ directory, or (if not found there) using the source file search path\n\
 (see the \"directory\" command).  You can also use the \"file\" command\n\
 to specify the program, and to load its symbol table."));
 
-  add_com ("detach", class_run, detach_command, _("\
+  add_prefix_cmd ("detach", class_run, detach_command, _("\
 Detach a process or file previously attached.\n\
 If a process, it is no longer traced, and it continues its execution.  If\n\
-you were debugging a file, the file is closed and gdb no longer accesses it."));
+you were debugging a file, the file is closed and gdb no longer accesses it."),
+		  &detachlist, "detach ", 0, &cmdlist);
 
   add_com ("disconnect", class_run, disconnect_command, _("\
 Disconnect from a target.\n\

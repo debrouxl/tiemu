@@ -273,11 +273,14 @@ skip_cfa_op (bfd_byte **iter, bfd_byte *end, unsigned int encoded_ptr_width)
   if (!read_byte (iter, end, &op))
     return FALSE;
 
-  switch (op & 0x80 ? op & 0xc0 : op)
+  switch (op & 0xc0 ? op & 0xc0 : op)
     {
     case DW_CFA_nop:
     case DW_CFA_advance_loc:
     case DW_CFA_restore:
+    case DW_CFA_remember_state:
+    case DW_CFA_restore_state:
+    case DW_CFA_GNU_window_save:
       /* No arguments.  */
       return TRUE;
 
@@ -292,6 +295,8 @@ skip_cfa_op (bfd_byte **iter, bfd_byte *end, unsigned int encoded_ptr_width)
       /* One leb128 argument.  */
       return skip_leb128 (iter, end);
 
+    case DW_CFA_val_offset:
+    case DW_CFA_val_offset_sf:
     case DW_CFA_offset_extended:
     case DW_CFA_register:
     case DW_CFA_def_cfa:
@@ -308,6 +313,7 @@ skip_cfa_op (bfd_byte **iter, bfd_byte *end, unsigned int encoded_ptr_width)
 	      && skip_bytes (iter, end, length));
 
     case DW_CFA_expression:
+    case DW_CFA_val_expression:
       /* A leb128 followed by a variable-length argument.  */
       return (skip_leb128 (iter, end)
 	      && read_uleb128 (iter, end, &length)
@@ -339,7 +345,8 @@ skip_cfa_op (bfd_byte **iter, bfd_byte *end, unsigned int encoded_ptr_width)
    ENCODED_PTR_WIDTH is as for skip_cfa_op.  */
 
 static bfd_byte *
-skip_non_nops (bfd_byte *buf, bfd_byte *end, unsigned int encoded_ptr_width)
+skip_non_nops (bfd_byte *buf, bfd_byte *end, unsigned int encoded_ptr_width,
+	       unsigned int *set_loc_count)
 {
   bfd_byte *last;
 
@@ -349,6 +356,8 @@ skip_non_nops (bfd_byte *buf, bfd_byte *end, unsigned int encoded_ptr_width)
       buf++;
     else
       {
+	if (*buf == DW_CFA_set_loc)
+	  ++*set_loc_count;
 	if (!skip_cfa_op (&buf, end, encoded_ptr_width))
 	  return 0;
 	last = buf;
@@ -453,8 +462,9 @@ _bfd_elf_discard_section_eh_frame
   for (;;)
     {
       char *aug;
-      bfd_byte *start, *end, *insns;
+      bfd_byte *start, *end, *insns, *insns_end;
       bfd_size_type length;
+      unsigned int set_loc_count;
 
       if (sec_info->count == sec_info->alloced)
 	{
@@ -558,6 +568,7 @@ _bfd_elf_discard_section_eh_frame
 	  cie_usage_count = 0;
 	  memset (&cie, 0, sizeof (cie));
 	  cie.hdr = hdr;
+	  start = buf;
 	  REQUIRE (read_byte (&buf, end, &cie.version));
 
 	  /* Cannot handle unknown versions.  */
@@ -775,11 +786,38 @@ _bfd_elf_discard_section_eh_frame
 
       /* Try to interpret the CFA instructions and find the first
 	 padding nop.  Shrink this_inf's size so that it doesn't
-	 including the padding.  */
+	 include the padding.  */
       length = get_DW_EH_PE_width (cie.fde_encoding, ptr_size);
-      insns = skip_non_nops (insns, end, length);
-      if (insns != 0)
-	this_inf->size -= end - insns;
+      set_loc_count = 0;
+      insns_end = skip_non_nops (insns, end, length, &set_loc_count);
+      /* If we don't understand the CFA instructions, we can't know
+	 what needs to be adjusted there.  */
+      if (insns_end == NULL
+	  /* For the time being we don't support DW_CFA_set_loc in
+	     CIE instructions.  */
+	  || (set_loc_count && this_inf->cie))
+	goto free_no_table;
+      this_inf->size -= end - insns_end;
+      if (set_loc_count
+	  && ((cie.fde_encoding & 0xf0) == DW_EH_PE_pcrel
+	      || cie.make_relative))
+	{
+	  unsigned int cnt;
+	  bfd_byte *p;
+
+	  this_inf->set_loc = bfd_malloc ((set_loc_count + 1)
+					  * sizeof (unsigned int));
+	  REQUIRE (this_inf->set_loc);
+	  this_inf->set_loc[0] = set_loc_count;
+	  p = insns;
+	  cnt = 0;
+	  while (p < end)
+	    {
+	      if (*p == DW_CFA_set_loc)
+		this_inf->set_loc[++cnt] = p + 1 - start;
+	      REQUIRE (skip_cfa_op (&p, end, length));
+	    }
+	}
 
       this_inf->fde_encoding = cie.fde_encoding;
       this_inf->lsda_encoding = cie.lsda_encoding;
@@ -846,8 +884,6 @@ _bfd_elf_discard_section_eh_frame_hdr (bfd *abfd, struct bfd_link_info *info)
   if (hdr_info->table)
     sec->size += 4 + hdr_info->fde_count * 8;
 
-  /* Request program headers to be recalculated.  */
-  elf_tdata (abfd)->program_header_size = 0;
   elf_tdata (abfd)->eh_frame_hdr = sec;
   return TRUE;
 }
@@ -967,6 +1003,23 @@ _bfd_elf_eh_frame_section_offset (bfd *output_bfd ATTRIBUTE_UNUSED,
       return (bfd_vma) -2;
     }
 
+  /* If converting to DW_EH_PE_pcrel, there will be no need for run-time
+     relocation against DW_CFA_set_loc's arguments.  */
+  if (sec_info->entry[mid].set_loc
+      && (sec_info->entry[mid].cie
+	  ? sec_info->entry[mid].make_relative
+	  : sec_info->entry[mid].cie_inf->make_relative)
+      && (offset >= sec_info->entry[mid].offset + 8
+		    + sec_info->entry[mid].set_loc[1]))
+    {
+      unsigned int cnt;
+
+      for (cnt = 1; cnt <= sec_info->entry[mid].set_loc[0]; cnt++)
+	if (offset == sec_info->entry[mid].offset + 8
+		      + sec_info->entry[mid].set_loc[cnt])
+	  return (bfd_vma) -2;
+    }
+
   if (hdr_info->offsets_adjusted)
     offset -= sec->output_offset;
   /* Any new augmentation bytes go before the first relocation.  */
@@ -1075,12 +1128,12 @@ _bfd_elf_write_section_eh_frame (bfd *abfd,
       end = buf + ent->size;
       new_size = size_of_output_cie_fde (ent, ptr_size);
 
-      /* Install the new size, filling the extra bytes with DW_CFA_nops.  */
+      /* Update the size.  It may be shrinked.  */
+      bfd_put_32 (abfd, new_size - 4, buf);
+
+      /* Filling the extra bytes with DW_CFA_nops.  */
       if (new_size != ent->size)
-	{
-	  memset (end, 0, new_size - ent->size);
-	  bfd_put_32 (abfd, new_size - 4, buf);
-	}
+	memset (end, 0, new_size - ent->size);
 
       if (ent->cie)
 	{
@@ -1191,6 +1244,7 @@ _bfd_elf_write_section_eh_frame (bfd *abfd,
 	  /* FDE */
 	  bfd_vma value, address;
 	  unsigned int width;
+	  bfd_byte *start;
 
 	  /* Skip length.  */
 	  buf += 4;
@@ -1227,6 +1281,8 @@ _bfd_elf_write_section_eh_frame (bfd *abfd,
 	      write_value (abfd, buf, value, width);
 	    }
 
+	  start = buf;
+
 	  if (hdr_info)
 	    {
 	      hdr_info->array[hdr_info->array_count].initial_loc = address;
@@ -1259,43 +1315,46 @@ _bfd_elf_write_section_eh_frame (bfd *abfd,
 	      memmove (buf + 1, buf, end - buf);
 	      *buf = 0;
 	    }
+
+	  if (ent->set_loc)
+	    {
+	      /* Adjust DW_CFA_set_loc.  */
+	      unsigned int cnt, width;
+	      bfd_vma new_offset;
+
+	      width = get_DW_EH_PE_width (ent->fde_encoding, ptr_size);
+	      new_offset = ent->new_offset + 8
+			   + extra_augmentation_string_bytes (ent)
+			   + extra_augmentation_data_bytes (ent);
+
+	      for (cnt = 1; cnt <= ent->set_loc[0]; cnt++)
+		{
+		  bfd_vma value;
+		  buf = start + ent->set_loc[cnt];
+
+		  value = read_value (abfd, buf, width,
+				      get_DW_EH_PE_signed (ent->fde_encoding));
+		  if (!value)
+		    continue;
+
+		  if ((ent->fde_encoding & 0xf0) == DW_EH_PE_pcrel)
+		    value += ent->offset + 8 - new_offset;
+		  if (ent->cie_inf->make_relative)
+		    value -= sec->output_section->vma + new_offset
+			     + ent->set_loc[cnt];
+		  write_value (abfd, buf, value, width);
+		}
+	    }
 	}
     }
 
-    {
-      unsigned int alignment = 1 << sec->alignment_power;
-      unsigned int pad = sec->size % alignment;
-
-      /* Don't pad beyond the raw size of the output section. It
-	 can happen at the last input section.  */
-      if (pad
-	  && ((sec->output_offset + sec->size + pad)
-	      <= sec->output_section->size))
-	{
-	  bfd_byte *buf;
-	  unsigned int new_size;
-
-	  /* Find the last CIE/FDE.  */
-	  ent = sec_info->entry + sec_info->count;
-	  while (--ent != sec_info->entry)
-	    if (!ent->removed)
-	      break;
-
-	  /* The size of the last CIE/FDE must be at least 4.  */
-	  if (ent->removed || ent->size < 4)
-	    abort ();
-
-	  pad = alignment - pad;
-	  buf = contents + ent->new_offset - sec->output_offset;
-	  new_size = size_of_output_cie_fde (ent, ptr_size);
-
-	  /* Pad it with DW_CFA_nop  */
-	  memset (buf + new_size, 0, pad);
-	  bfd_put_32 (abfd, new_size + pad - 4, buf);
-
-	  sec->size += pad;
-	}
-    }
+  /* We don't align the section to its section alignment since the
+     runtime library only expects all CIE/FDE records aligned at
+     the pointer size. _bfd_elf_discard_section_eh_frame should 
+     have padded CIE/FDE records to multiple of pointer size with
+     size_of_output_cie_fde.  */
+  if ((sec->size % ptr_size) != 0)
+    abort ();
 
   return bfd_set_section_contents (abfd, sec->output_section,
 				   contents, (file_ptr) sec->output_offset,

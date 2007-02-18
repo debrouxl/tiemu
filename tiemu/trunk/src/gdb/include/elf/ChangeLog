@@ -1,3 +1,58 @@
+2006-10-28  Richard Sandiford  <richard@codesourcery.com>
+
+	* mips.h (R_MIPS_GLOB_DAT): Define
+	(R_MIPS_max): Bump by 1.
+
+2006-10-25  Trevor Smigiel  <Trevor_Smigiel@playstation.sony.com>
+	    Yukishige Shibata  <shibata@rd.scei.sony.co.jp>
+	    Nobuhisa Fujinami  <fnami@rd.scei.sony.co.jp>
+	    Takeaki Fukuoka  <fukuoka@rd.scei.sony.co.jp>
+	    Alan Modra  <amodra@bigpond.net.au>
+
+	* common.h (EM_SPU): Define.
+	* spu.h: New file.
+
+2006-10-19  Mei Ligang  <ligang@sunnorth.com.cn>
+
+	* score.h (EF_SCORE_PIC): Redefine EF_SCORE_PIC as 0x80000000.
+	(EF_SCORE_FIXDEP): Redefine EF_SCORE_FIXDEP as 0x40000000.
+	(EF_SCORE_HASENTRY): Delete.
+
+2006-09-17  Mei Ligang  <ligang@sunnorth.com.cn>
+
+	* score.h: New file.
+	* common.h: Add Score machine number.
+
+2006-07-10  Jakub Jelinek  <jakub@redhat.com>
+
+	* common.h (SHT_GNU_HASH, DT_GNU_HASH): Define.
+
+2006-05-31  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* internal.h (ELF_SECTION_SIZE): New.
+	(ELF_IS_SECTION_IN_SEGMENT): Likewise.
+	(ELF_IS_SECTION_IN_SEGMENT_FILE): Updated.
+	(ELF_IS_SECTION_IN_SEGMENT_MEMORY): Likewise.
+
+2006-05-27  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* internal.h (struct elf_segment_map): Add p_align and p_align_valid.
+
+2006-05-24  Carlos O'Donell  <carlos@systemhalted.org>
+	    Randolph Chung  <randolph@tausq.org>
+	* hppa.h (R_PARISC_TLS_GD21L, R_PARISC_TLS_GD14R, R_PARISC_TLS_GDCALL,
+	R_PARISC_TLS_LDM21L, R_PARISC_TLS_LDM14R, R_PARISC_TLS_LDMCALL,
+	R_PARISC_TLS_LDO21L, R_PARISC_TLS_LDO14R, R_PARISC_TLS_DTPMOD32, 
+	R_PARISC_TLS_DTPMOD64, R_PARISC_TLS_DTPOFF32, R_PARISC_TLS_DTPOFF64): 
+	New TLS relocs.
+	(R_PARISC_TLS_LE21L, R_PARISC_TLS_LE14R, R_PARISC_TLS_IE21L,
+	R_PARISC_TLS_IE14R, R_PARISC_TLS_TPREL32, R_PARISC_TLS_TPREL64):
+	Define TLS relocs using existing equivalents.
+
+2006-05-24  Bjoern Haase  <bjoern.m.haase@web.de> 
+	
+	* avr.h: Add E_AVR_MACH_AVR6, R_AVR_LO8_LDI_GS and R_AVR_HI8_LDI_GS.
+
 2006-03-22  Richard Sandiford  <richard@codesourcery.com>
 	    Daniel Jacobowitz  <dan@codesourcery.com>
 	    Phil Edwards  <phil@codesourcery.com>

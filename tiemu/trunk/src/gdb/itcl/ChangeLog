@@ -1,3 +1,14 @@
+2006-06-16  Steve Ellcey  <sje@cup.hp.com>
+
+	* configure.in: Fix for autoconf 2.5.
+	* aclocal.m4: Fix for autoconf 2.5.
+	* configure: Regenerate.
+	* itcl/configure: Regenerate.
+	* itcl/win/configure: Regenerate.
+	* itk/configure: Regenerate.
+	* itk/win/configure: Regenerate.
+	* iwidgets/configure: Regenerate.
+
 2005-08-31  Keith Seitz  <keiths@redhat.com>
 
 	From Jay St. Pierre <Jay.St.Pierre@colorado.edu>:

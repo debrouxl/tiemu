@@ -1,5 +1,5 @@
 /* BFD back-end for PPCbug boot records.
-   Copyright 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004
+   Copyright 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2006
    Free Software Foundation, Inc.
    Written by Michael Meissner, Cygnus Support, <meissner@cygnus.com>
 
@@ -99,7 +99,6 @@ static long ppcboot_canonicalize_symtab PARAMS ((bfd *, asymbol **));
 static void ppcboot_get_symbol_info PARAMS ((bfd *, asymbol *, symbol_info *));
 static bfd_boolean ppcboot_set_section_contents
   PARAMS ((bfd *, asection *, const PTR, file_ptr, bfd_size_type));
-static int ppcboot_sizeof_headers PARAMS ((bfd *, bfd_boolean));
 static bfd_boolean ppcboot_bfd_print_private_bfd_data PARAMS ((bfd *, PTR));
 
 #define ppcboot_set_tdata(abfd, ptr) ((abfd)->tdata.any = (PTR) (ptr))
@@ -151,6 +150,7 @@ ppcboot_object_p (abfd)
   ppcboot_hdr_t hdr;
   size_t i;
   ppcboot_data_t *tdata;
+  flagword flags;
 
   BFD_ASSERT (sizeof (ppcboot_hdr_t) == 1024);
 
@@ -205,10 +205,10 @@ ppcboot_object_p (abfd)
   abfd->symcount = PPCBOOT_SYMS;
 
   /* One data section.  */
-  sec = bfd_make_section (abfd, ".data");
+  flags = SEC_ALLOC | SEC_LOAD | SEC_DATA | SEC_CODE | SEC_HAS_CONTENTS;
+  sec = bfd_make_section_with_flags (abfd, ".data", flags);
   if (sec == NULL)
     return NULL;
-  sec->flags = SEC_ALLOC | SEC_LOAD | SEC_DATA | SEC_CODE | SEC_HAS_CONTENTS;
   sec->vma = 0;
   sec->size = statbuf.st_size - sizeof (ppcboot_hdr_t);
   sec->filepos = sizeof (ppcboot_hdr_t);
@@ -395,9 +395,8 @@ ppcboot_set_section_contents (abfd, sec, data, offset, size)
 
 
 static int
-ppcboot_sizeof_headers (abfd, exec)
-     bfd *abfd ATTRIBUTE_UNUSED;
-     bfd_boolean exec ATTRIBUTE_UNUSED;
+ppcboot_sizeof_headers (bfd *abfd ATTRIBUTE_UNUSED,
+			struct bfd_link_info *info ATTRIBUTE_UNUSED)
 {
   return sizeof (ppcboot_hdr_t);
 }

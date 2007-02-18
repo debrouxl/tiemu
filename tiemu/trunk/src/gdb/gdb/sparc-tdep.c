@@ -99,7 +99,7 @@ sparc_fetch_instruction (CORE_ADDR pc)
   int i;
 
   /* If we can't read the instruction at PC, return zero.  */
-  if (target_read_memory (pc, buf, sizeof (buf)))
+  if (read_memory_nobpt (pc, buf, sizeof (buf)))
     return 0;
 
   insn = 0;
@@ -158,7 +158,7 @@ sparc_fetch_wcookie (void)
   gdb_byte buf[8];
   int len;
 
-  len = target_read_partial (ops, TARGET_OBJECT_WCOOKIE, NULL, buf, 0, 8);
+  len = target_read (ops, TARGET_OBJECT_WCOOKIE, NULL, buf, 0, 8);
   if (len == -1)
     return 0;
 

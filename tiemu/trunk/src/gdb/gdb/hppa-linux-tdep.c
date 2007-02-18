@@ -102,7 +102,7 @@ insns_match_pattern (CORE_ADDR pc,
     {
       char buf[4];
 
-      deprecated_read_memory_nobpt (npc, buf, 4);
+      read_memory_nobpt (npc, buf, 4);
       insn[i] = extract_unsigned_integer (buf, 4);
       if ((insn[i] & pattern[i].mask) == pattern[i].data)
         npc += 4;
@@ -481,7 +481,7 @@ hppa_linux_supply_fpregset (const struct regset *regset,
     }
 }
 
-/* Linux register set.  */
+/* HPPA Linux kernel register set.  */
 static struct regset hppa_linux_regset =
 {
   NULL,

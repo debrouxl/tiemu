@@ -89,24 +89,7 @@ show_write_files (struct ui_file *file, int from_tty,
 
 struct vmap *vmap;
 
-/* (TiEmu 20050626 Kevin Kofler) Build section table from the most recently
-                                 loaded symbol file. */
-void
-exec_build_section_table (void)
-{
-  struct section_table *sectab;
-  exec_bfd = last_symfile_bfd;
-  exec_objfile = last_symfile_objfile;
-  build_section_table (exec_bfd, &exec_ops.to_sections,
-                       &exec_ops.to_sections_end);
-  for (sectab = exec_ops.to_sections; sectab < exec_ops.to_sections_end; sectab++)
-    {
-      sectab->addr += exec_objfile->section_offsets->offsets[sectab->the_bfd_section->index];
-      sectab->endaddr += exec_objfile->section_offsets->offsets[sectab->the_bfd_section->index];
-    }
-}
-
-void
+static void
 exec_open (char *args, int from_tty)
 {
   target_preopen (from_tty);
@@ -168,6 +151,23 @@ exec_close (int quitting)
     }
 }
 
+/* (TiEmu 20050626 Kevin Kofler) Build section table from the most recently
+                                 loaded symbol file. */
+void
+exec_build_section_table (void)
+{
+  struct section_table *sectab;
+  exec_bfd = last_symfile_bfd;
+  exec_objfile = last_symfile_objfile;
+  build_section_table (exec_bfd, &exec_ops.to_sections,
+                       &exec_ops.to_sections_end);
+  for (sectab = exec_ops.to_sections; sectab < exec_ops.to_sections_end; sectab++)
+    {
+      sectab->addr += exec_objfile->section_offsets->offsets[sectab->the_bfd_section->index];
+      sectab->endaddr += exec_objfile->section_offsets->offsets[sectab->the_bfd_section->index];
+    }
+}
+
 void
 exec_file_clear (int from_tty)
 {
@@ -209,6 +209,8 @@ exec_file_attach (char *filename, int from_tty)
     {
       if (from_tty)
         printf_unfiltered (_("No executable file now.\n"));
+
+      set_gdbarch_from_file (NULL);
     }
   else
     {
@@ -307,8 +309,11 @@ exec_file_command (char *args, int from_tty)
 {
   char **argv;
   char *filename;
-  
-  target_preopen (from_tty);
+
+  if (from_tty && target_has_execution
+      && !query (_("A program is being debugged already.\n"
+		   "Are you sure you want to change the file? ")))
+    error (_("File not changed."));
 
   if (args)
     {

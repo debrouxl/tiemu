@@ -2457,23 +2457,35 @@ gdb_update_mem (ClientData clientData, Tcl_Interp *interp,
   memset (mbuf, 0, nbytes + 32);
   mptr = cptr = mbuf;
 
-  rnum = 0;
-  while (rnum < nbytes)
-    {
-      /* (TiEmu 20050729 Kevin Kofler) Avoid link port access when browsing memory. */
-      int error, num;
-      if (addr + rnum == 0x60000f)
-        {
-          mbuf[rnum] = 0xff;
-          num = 1;
-        }
-      else
-        num = target_read_memory_partial (addr + rnum, mbuf + rnum,
-                                          (addr + rnum <= 0x60000f && addr + nbytes > 0x60000f) ?
-                                          (0x60000f - (addr + rnum)) : (nbytes - rnum), &error);
-      if (num <= 0)
-	break;
+  /* (TiEmu 20070218 Kevin Kofler) Avoid link port access when browsing memory. */
+  if (addr <= 0x60000f && addr + nbytes > 0x60000f) {
+    int num;
+    if (addr < 0x60000f) {
+      rnum = target_read (&current_target, TARGET_OBJECT_MEMORY, NULL,
+                          mbuf, addr, 0x60000f - addr);
+      if (rnum <= 0) {
+        gdbtk_set_result (interp, "Unable to read memory.");
+        return TCL_ERROR;
+      }
+    } else rnum = 0;
+    mbuf[0x60000f - addr] = 0xff;
+    rnum++;
+    if (addr + nbytes > 0x600010) {
+      num = target_read (&current_target, TARGET_OBJECT_MEMORY, NULL,
+                          mbuf + (0x600010 - addr), 0x600010, addr - 0x600010 + nbytes);
+      if (num <= 0) {
+        gdbtk_set_result (interp, "Unable to read memory.");
+        return TCL_ERROR;
+      }
       rnum += num;
+    }
+  } else
+  rnum = target_read (&current_target, TARGET_OBJECT_MEMORY, NULL,
+		      mbuf, addr, nbytes);
+  if (rnum <= 0)
+    {
+      gdbtk_set_result (interp, "Unable to read memory.");
+      return TCL_ERROR;
     }
 
   if (objc == 8)

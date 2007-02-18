@@ -276,6 +276,7 @@ linux_test_for_tracefork (int original_pid)
 	  ret = ptrace (PTRACE_KILL, second_pid, 0, 0);
 	  if (ret != 0)
 	    warning (_("linux_test_for_tracefork: failed to kill second child"));
+	  my_waitpid (second_pid, &status, 0);
 	}
     }
   else
@@ -985,10 +986,10 @@ lin_lwp_attach_lwp (ptid_t ptid, int verbose)
     {
       /* We assume that the LWP representing the original process is
          already stopped.  Mark it as stopped in the data structure
-         that the linux ptrace layer uses to keep track of threads.
-         Note that this won't have already been done since the main
-         thread will have, we assume, been stopped by an attach from a
-         different layer.  */
+         that the GNU/linux ptrace layer uses to keep track of
+         threads.  Note that this won't have already been done since
+         the main thread will have, we assume, been stopped by an
+         attach from a different layer.  */
       lp->stopped = 1;
     }
 }
@@ -2395,11 +2396,11 @@ linux_nat_thread_alive (ptid_t ptid)
 			target_pid_to_str (ptid),
 			errno ? safe_strerror (errno) : "OK");
 
-  /* Not every Linux target implements PTRACE_PEEKUSER.
-     But we can handle that case gracefully since ptrace
-     will first do a lookup for the process based upon the
-     passed-in pid.  If that fails we will get either -ESRCH
-     or -EPERM, otherwise the child exists and is alive.  */
+  /* Not every Linux kernel implements PTRACE_PEEKUSER.  But we can
+     handle that case gracefully since ptrace will first do a lookup
+     for the process based upon the passed-in pid.  If that fails we
+     will get either -ESRCH or -EPERM, otherwise the child exists and
+     is alive.  */
   if (errno == ESRCH || errno == EPERM)
     return 0;
 
@@ -2697,7 +2698,8 @@ linux_nat_make_corefile_notes (bfd *obfd, int *note_size)
       note_data = thread_args.note_data;
     }
 
-  auxv_len = target_auxv_read (&current_target, &auxv);
+  auxv_len = target_read_alloc (&current_target, TARGET_OBJECT_AUXV,
+				NULL, &auxv);
   if (auxv_len > 0)
     {
       note_data = elfcore_write_note (obfd, note_data, note_size,
@@ -3179,8 +3181,6 @@ linux_target (void)
 void
 linux_nat_add_target (struct target_ops *t)
 {
-  extern void thread_db_init (struct target_ops *);
-
   /* Save the provided single-threaded target.  We save this in a separate
      variable because another target we've inherited from (e.g. inf-ptrace)
      may have saved a pointer to T; we want to use it for the final

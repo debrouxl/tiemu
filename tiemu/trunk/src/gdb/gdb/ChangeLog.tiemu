@@ -1,3 +1,11 @@
+2007-02-18  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * Merge with Insight 6.6.
+        * Drop no longer needed patches:
+          - ../gettext.m4, configure, ../intl/aclocal.m4, ../intl/configure, ../bfd/configure,
+            ../opcodes/configure: Fix libintl detection.
+          - ../configure.in and ../configure MinGW patch to noconfigdirs
+
 2006-08-19  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * config/i386/mingw32.mh, config/i386/mingw32.mt: Fix references to ?m-mingw32.h to
@@ -17,7 +25,7 @@
           - addition of mingw32 host to configure.host
           - remote.c MinGW patch to include <winsock2.h> (obsoleted by gdb_select in mingw-hdep.c)
           - serial.c MinGW patches (obsolete)
-          - ../configure.ac and ../configure MinGW patches:
+          - ../configure.in and ../configure MinGW patches:
             - not to require termcap (upstream uses a new win32_termcap.c instead)
             - to link in wsock32 (upstream uses ws2_32 instead)
           - utils.c MinGW patches (obsoleted by win32_termcap.c)

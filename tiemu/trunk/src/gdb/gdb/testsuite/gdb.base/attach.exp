@@ -32,6 +32,11 @@ if { [istarget "hppa*-*-hpux*"] } {
     return 0
 }
 
+# On SPU, this test currently fails because "sleep" is not supported.
+if { [istarget "spu*-*-*"] } {
+	return 0
+}
+
 # are we on a target board
 if [is_remote target] then {
     return 0
@@ -53,13 +58,15 @@ remote_exec build "rm -f ${binfile} ${binfile2}"
 # build the first test case
 #
 if  { [gdb_compile "${srcdir}/${subdir}/${srcfile}" "${binfile}" executable {debug}] != "" } {
-    gdb_suppress_entire_file "Testcase compile failed, so all tests in this file will automatically fail."
+    untested attach.exp
+    return -1
 }
 
 # Build the in-system-call test
 
 if  { [gdb_compile "${srcdir}/${subdir}/${srcfile2}" "${binfile2}" executable {debug}] != "" } {
-    gdb_suppress_entire_file "Testcase compile failed, so all tests in this file will automatically fail."
+    untested attach.exp
+    return -1
 }
 
 if [get_compiler_info ${binfile}] {

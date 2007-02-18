@@ -51,6 +51,7 @@
 #include "block.h"
 #include "observer.h"
 #include "exec.h"
+#include "parser-defs.h"
 
 #include <sys/types.h>
 #include <fcntl.h>
@@ -1516,6 +1517,11 @@ load_command (char *arg, int from_tty)
 	}
     }
 
+  /* The user might be reloading because the binary has changed.  Take
+     this opportunity to check.  */
+  reopen_exec_file ();
+  reread_symbols ();
+
   target_load (arg, from_tty);
 
   /* After re-loading the executable, we don't really know which
@@ -1532,15 +1538,6 @@ load_command (char *arg, int from_tty)
    we don't want to run a subprocess.  On the other hand, I'm not sure how
    performance compares.  */
 
-static int download_write_size = 512;
-static void
-show_download_write_size (struct ui_file *file, int from_tty,
-			  struct cmd_list_element *c, const char *value)
-{
-  fprintf_filtered (file, _("\
-The write size used when downloading a program is %s.\n"),
-		    value);
-}
 static int validate_download = 0;
 
 /* Callback service function for generic_load (bfd_map_over_sections).  */
@@ -1556,121 +1553,169 @@ add_section_size_callback (bfd *abfd, asection *asec, void *data)
 /* Opaque data for load_section_callback.  */
 struct load_section_data {
   unsigned long load_offset;
+  struct load_progress_data *progress_data;
+  VEC(memory_write_request_s) *requests;
+};
+
+/* Opaque data for load_progress.  */
+struct load_progress_data {
+  /* Cumulative data.  */
   unsigned long write_count;
   unsigned long data_count;
   bfd_size_type total_size;
 };
+
+/* Opaque data for load_progress for a single section.  */
+struct load_progress_section_data {
+  struct load_progress_data *cumulative;
+
+  /* Per-section data.  */
+  const char *section_name;
+  ULONGEST section_sent;
+  ULONGEST section_size;
+  CORE_ADDR lma;
+  gdb_byte *buffer;
+};
+
+/* Target write callback routine for progress reporting.  */
+
+static void
+load_progress (ULONGEST bytes, void *untyped_arg)
+{
+  struct load_progress_section_data *args = untyped_arg;
+  struct load_progress_data *totals;
+
+  if (args == NULL)
+    /* Writing padding data.  No easy way to get at the cumulative
+       stats, so just ignore this.  */
+    return;
+
+  totals = args->cumulative;
+
+  if (bytes == 0 && args->section_sent == 0)
+    {
+      /* The write is just starting.  Let the user know we've started
+	 this section.  */
+      ui_out_message (uiout, 0, "Loading section %s, size 0x%s lma 0x%s\n",
+		      args->section_name, paddr_nz (args->section_size),
+		      paddr_nz (args->lma));
+      return;
+    }
+
+  if (validate_download)
+    {
+      /* Broken memories and broken monitors manifest themselves here
+	 when bring new computers to life.  This doubles already slow
+	 downloads.  */
+      /* NOTE: cagney/1999-10-18: A more efficient implementation
+	 might add a verify_memory() method to the target vector and
+	 then use that.  remote.c could implement that method using
+	 the ``qCRC'' packet.  */
+      gdb_byte *check = xmalloc (bytes);
+      struct cleanup *verify_cleanups = make_cleanup (xfree, check);
+
+      if (target_read_memory (args->lma, check, bytes) != 0)
+	error (_("Download verify read failed at 0x%s"),
+	       paddr (args->lma));
+      if (memcmp (args->buffer, check, bytes) != 0)
+	error (_("Download verify compare failed at 0x%s"),
+	       paddr (args->lma));
+      do_cleanups (verify_cleanups);
+    }
+  totals->data_count += bytes;
+  args->lma += bytes;
+  args->buffer += bytes;
+  totals->write_count += 1;
+  args->section_sent += bytes;
+  if (quit_flag
+      || (deprecated_ui_load_progress_hook != NULL
+	  && deprecated_ui_load_progress_hook (args->section_name,
+					       args->section_sent)))
+    error (_("Canceled the download"));
+
+  if (deprecated_show_load_progress != NULL)
+    deprecated_show_load_progress (args->section_name,
+				   args->section_sent,
+				   args->section_size,
+				   totals->data_count,
+				   totals->total_size);
+}
 
 /* Callback service function for generic_load (bfd_map_over_sections).  */
 
 static void
 load_section_callback (bfd *abfd, asection *asec, void *data)
 {
+  struct memory_write_request *new_request;
   struct load_section_data *args = data;
+  struct load_progress_section_data *section_data;
+  bfd_size_type size = bfd_get_section_size (asec);
+  gdb_byte *buffer;
+  const char *sect_name = bfd_get_section_name (abfd, asec);
 
-  if (bfd_get_section_flags (abfd, asec) & SEC_LOAD)
+  if ((bfd_get_section_flags (abfd, asec) & SEC_LOAD) == 0)
+    return;
+
+  if (size == 0)
+    return;
+
+  new_request = VEC_safe_push (memory_write_request_s,
+			       args->requests, NULL);
+  memset (new_request, 0, sizeof (struct memory_write_request));
+  section_data = xcalloc (1, sizeof (struct load_progress_section_data));
+  new_request->begin = bfd_section_lma (abfd, asec) + args->load_offset;
+  new_request->end = new_request->begin + size; /* FIXME Should size be in instead?  */
+  new_request->data = xmalloc (size);
+  new_request->baton = section_data;
+
+  buffer = new_request->data;
+
+  section_data->cumulative = args->progress_data;
+  section_data->section_name = sect_name;
+  section_data->section_size = size;
+  section_data->lma = new_request->begin;
+  section_data->buffer = buffer;
+
+  bfd_get_section_contents (abfd, asec, buffer, 0, size);
+}
+
+/* Clean up an entire memory request vector, including load
+   data and progress records.  */
+
+static void
+clear_memory_write_data (void *arg)
+{
+  VEC(memory_write_request_s) **vec_p = arg;
+  VEC(memory_write_request_s) *vec = *vec_p;
+  int i;
+  struct memory_write_request *mr;
+
+  for (i = 0; VEC_iterate (memory_write_request_s, vec, i, mr); ++i)
     {
-      bfd_size_type size = bfd_get_section_size (asec);
-      if (size > 0)
-	{
-	  gdb_byte *buffer;
-	  struct cleanup *old_chain;
-	  CORE_ADDR lma = bfd_section_lma (abfd, asec) + args->load_offset;
-	  bfd_size_type block_size;
-	  int err;
-	  const char *sect_name = bfd_get_section_name (abfd, asec);
-	  bfd_size_type sent;
-
-	  if (download_write_size > 0 && size > download_write_size)
-	    block_size = download_write_size;
-	  else
-	    block_size = size;
-
-	  buffer = xmalloc (size);
-	  old_chain = make_cleanup (xfree, buffer);
-
-	  /* Is this really necessary?  I guess it gives the user something
-	     to look at during a long download.  */
-	  ui_out_message (uiout, 0, "Loading section %s, size 0x%s lma 0x%s\n",
-			  sect_name, paddr_nz (size), paddr_nz (lma));
-
-	  bfd_get_section_contents (abfd, asec, buffer, 0, size);
-
-	  sent = 0;
-	  do
-	    {
-	      int len;
-	      bfd_size_type this_transfer = size - sent;
-
-	      if (this_transfer >= block_size)
-		this_transfer = block_size;
-	      len = target_write_memory_partial (lma, buffer,
-						 this_transfer, &err);
-	      if (err)
-		break;
-	      if (validate_download)
-		{
-		  /* Broken memories and broken monitors manifest
-		     themselves here when bring new computers to
-		     life.  This doubles already slow downloads.  */
-		  /* NOTE: cagney/1999-10-18: A more efficient
-		     implementation might add a verify_memory()
-		     method to the target vector and then use
-		     that.  remote.c could implement that method
-		     using the ``qCRC'' packet.  */
-		  gdb_byte *check = xmalloc (len);
-		  struct cleanup *verify_cleanups =
-		    make_cleanup (xfree, check);
-
-		  if (target_read_memory (lma, check, len) != 0)
-		    error (_("Download verify read failed at 0x%s"),
-			   paddr (lma));
-		  if (memcmp (buffer, check, len) != 0)
-		    error (_("Download verify compare failed at 0x%s"),
-			   paddr (lma));
-		  do_cleanups (verify_cleanups);
-		}
-	      args->data_count += len;
-	      lma += len;
-	      buffer += len;
-	      args->write_count += 1;
-	      sent += len;
-	      if (quit_flag
-		  || (deprecated_ui_load_progress_hook != NULL
-		      && deprecated_ui_load_progress_hook (sect_name, sent)))
-		error (_("Canceled the download"));
-
-	      if (deprecated_show_load_progress != NULL)
-		deprecated_show_load_progress (sect_name, sent, size,
-					       args->data_count,
-					       args->total_size);
-	    }
-	  while (sent < size);
-
-	  if (err != 0)
-	    error (_("Memory access error while loading section %s."), sect_name);
-
-	  do_cleanups (old_chain);
-	}
+      xfree (mr->data);
+      xfree (mr->baton);
     }
+  VEC_free (memory_write_request_s, vec);
 }
 
 void
 generic_load (char *args, int from_tty)
 {
-  asection *s;
   bfd *loadfile_bfd;
   struct timeval start_time, end_time;
   char *filename;
   struct cleanup *old_cleanups = make_cleanup (null_cleanup, 0);
   struct load_section_data cbdata;
+  struct load_progress_data total_progress;
+
   CORE_ADDR entry;
   char **argv;
 
-  cbdata.load_offset = 0;	/* Offset to add to vma for each section. */
-  cbdata.write_count = 0;	/* Number of writes needed. */
-  cbdata.data_count = 0;	/* Number of bytes written to target memory. */
-  cbdata.total_size = 0;	/* Total size of all bfd sectors. */
+  memset (&cbdata, 0, sizeof (cbdata));
+  memset (&total_progress, 0, sizeof (total_progress));
+  cbdata.progress_data = &total_progress;
+
+  make_cleanup (clear_memory_write_data, &cbdata.requests);
 
   argv = buildargv (args);
 
@@ -1717,11 +1762,15 @@ generic_load (char *args, int from_tty)
     }
 
   bfd_map_over_sections (loadfile_bfd, add_section_size_callback,
-			 (void *) &cbdata.total_size);
+			 (void *) &total_progress.total_size);
+
+  bfd_map_over_sections (loadfile_bfd, load_section_callback, &cbdata);
 
   gettimeofday (&start_time, NULL);
 
-  bfd_map_over_sections (loadfile_bfd, load_section_callback, &cbdata);
+  if (target_write_memory_blocks (cbdata.requests, flash_discard,
+				  load_progress) != 0)
+    error (_("Load failed"));
 
   gettimeofday (&end_time, NULL);
 
@@ -1729,7 +1778,7 @@ generic_load (char *args, int from_tty)
   ui_out_text (uiout, "Start address ");
   ui_out_field_fmt (uiout, "address", "0x%s", paddr_nz (entry));
   ui_out_text (uiout, ", load size ");
-  ui_out_field_fmt (uiout, "load-size", "%lu", cbdata.data_count);
+  ui_out_field_fmt (uiout, "load-size", "%lu", total_progress.data_count);
   ui_out_text (uiout, "\n");
   /* We were doing this in remote-mips.c, I suspect it is right
      for other targets too.  */
@@ -1741,8 +1790,9 @@ generic_load (char *args, int from_tty)
      file is loaded in.  Some targets do (e.g., remote-vx.c) but
      others don't (or didn't - perhaps they have all been deleted).  */
 
-  print_transfer_performance (gdb_stdout, cbdata.data_count,
-			      cbdata.write_count, &start_time, &end_time);
+  print_transfer_performance (gdb_stdout, total_progress.data_count,
+			      total_progress.write_count,
+			      &start_time, &end_time);
 
   do_cleanups (old_cleanups);
 }
@@ -1868,7 +1918,7 @@ add_symbol_file_command (char *args, int from_tty)
                to load the program. */
 	    sect_opts[section_index].name = ".text";
 	    sect_opts[section_index].value = arg;
-	    if (++section_index > num_sect_opts)
+	    if (++section_index >= num_sect_opts)
 	      {
 		num_sect_opts *= 2;
 		sect_opts = ((struct sect_opt *)
@@ -1904,7 +1954,7 @@ add_symbol_file_command (char *args, int from_tty)
 		    {
 		      sect_opts[section_index].value = arg;
 		      expecting_sec_addr = 0;
-		      if (++section_index > num_sect_opts)
+		      if (++section_index >= num_sect_opts)
 			{
 			  num_sect_opts *= 2;
 			  sect_opts = ((struct sect_opt *)
@@ -2545,6 +2595,12 @@ clear_symtab_users (void)
   clear_pc_function_cache ();
   if (deprecated_target_new_objfile_hook)
     deprecated_target_new_objfile_hook (NULL);
+
+  /* Clear globals which might have pointed into a removed objfile.
+     FIXME: It's not clear which of these are supposed to persist
+     between expressions and which ought to be reset each time.  */
+  expression_context_block = NULL;
+  innermost_block = NULL;
 }
 
 static void
@@ -3816,19 +3872,6 @@ Usage: set extension-language .foo bar"),
 
   add_info ("extensions", info_ext_lang_command,
 	    _("All filename extensions associated with a source language."));
-
-  add_setshow_integer_cmd ("download-write-size", class_obscure,
-			   &download_write_size, _("\
-Set the write size used when downloading a program."), _("\
-Show the write size used when downloading a program."), _("\
-Only used when downloading a program onto a remote\n\
-target. Specify zero, or a negative value, to disable\n\
-blocked writes. The actual size of each transfer is also\n\
-limited by the size of the target packet and the memory\n\
-cache."),
-			   NULL,
-			   show_download_write_size,
-			   &setlist, &showlist);
 
   debug_file_directory = xstrdup (DEBUGDIR);
   add_setshow_optional_filename_cmd ("debug-file-directory", class_support,

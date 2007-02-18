@@ -1,4 +1,4 @@
-# Copyright 1997, 1998, 1999, 2001, 2003, 2004
+# Copyright 1997, 1998, 1999, 2001, 2003, 2004, 2006
 # Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
@@ -228,16 +228,13 @@ proc print_weird_var { var } {
 
 	# Make sure that the variable gets printed out correctly, without
 	# any sort of warning message.
-	send_gdb "print $var\n"
-	gdb_expect {
+        gdb_test_multiple "print $var" "variable $var printed property" {  
 		-re "^print $var\r*\n.\[0-9\]* = 42.*$gdb_prompt $" {
 			pass "variable $var printed properly"
 		}
 		-re ".*$gdb_prompt $" {
 			fail "variable $var printed properly"
 		}
-		timeout { fail "variable $var printed properly (timeout)" }
-		eof { fail "variable $var printed properly (eof)" }
 	}
 
 	# Make sure that the stabs did get loaded in a sensible way.
@@ -290,7 +287,8 @@ if { [lindex $exec_output 0] != 0 } {
 }
 
 if  { [gdb_compile "${srcfile}" "${binfile}" object ""] != "" } {
-     gdb_suppress_entire_file "Testcase compile failed, so all tests in this file will automatically fail."
+     untested weird.exp
+     return -1
 }
 
 remote_file build delete ${srcfile}
@@ -313,7 +311,7 @@ gdb_expect 60 {
     -re "^file (\[^ \]| +\008)*\r*\n" {
 	exp_continue
     }
-    -re "A program is being debugged already.  Kill it\\? \\(y or n\\)" {
+    -re "A program is being debugged already.\[\r\n\]+Are you sure you want to change the file\\? \\(y or n\\)" {
 	send_gdb "y\n"
 	exp_continue
     }

@@ -1,3 +1,36 @@
+2006-12-01  Corinna Vinschen  <corinna@vinschen.de>
+
+	* win/tclWin32Dll.c (TclWinInit): Set native cwd to Cygwin's cwd.
+	* win/tclWinFile.c (TclpObjChdir): Keep native and Cygwin's cwd
+	synched.
+
+2006-11-30  Christopher Faylor  <cgf@timesys.com>
+
+	* cygwin/configure.in (LIB_AC_PROG_CC): Upgrade macro to accommodate
+	newer version of autoconf.
+	* cygwin/configure: Regenerate.
+	* win/tcl.m4: Upgrade to avoid use of obsolete ac_cv_cygwin variable.
+	* win/configure: Regenerate.
+
+2006-11-30  Christopher Faylor  <cgf@timesys.com>
+
+	* win/tclWinPipe.c (TclpCreateProcess): Call cygwin-specific routine to
+	set up windows environment.
+
+2006-07-13  Steve Ellcey  <sje@cup.hp.com>
+
+	* configure.in: Fix for autoconf 2.5.
+	* cygwin/configure.in: Fix for autoconf 2.5.
+	* win/configure.in: Fix for autoconf 2.5.
+	* unix/configure.in: Fix for autoconf 2.5.
+	* unix/tcl.m4: Fix for autoconf 2.5.
+	* configure: Regenerate.
+	* cygwin/configure: Regenerate.
+	* tools/configure: Regenerate.
+	* unix/configure: Regenerate.
+	* unix/dltest/configure: Regenerate.
+	* win/configure: Regenerate.
+
 2006-02-08  Alexandre Oliva  <aoliva@redhat.com>
 
 	* unix/tcl.m4 (SC_CONFIG_CFLAGS, SC_BLOCKING_STYLE): Remove

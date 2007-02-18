@@ -187,9 +187,6 @@ LM_ADDR_CHECK (struct so_list *so, bfd *abfd)
 
       if (dynaddr + l_addr != l_dynaddr)
 	{
-	  warning (_(".dynamic section for \"%s\" "
-		     "is not at the expected address"), so->so_name);
-
 	  if (bfd_get_flavour (abfd) == bfd_target_elf_flavour)
 	    {
 	      Elf_Internal_Ehdr *ehdr = elf_tdata (abfd)->elf_header;
@@ -218,9 +215,16 @@ LM_ADDR_CHECK (struct so_list *so, bfd *abfd)
 	  if ((l_addr & align) == 0 && ((dynaddr - l_dynaddr) & align) == 0)
 	    {
 	      l_addr = l_dynaddr - dynaddr;
+
+	      warning (_(".dynamic section for \"%s\" "
+		     "is not at the expected address"), so->so_name);
 	      warning (_("difference appears to be caused by prelink, "
 			 "adjusting expectations"));
 	    }
+	  else
+	    warning (_(".dynamic section for \"%s\" "
+		       "is not at the expected address "
+		       "(wrong library or version mismatch?)"), so->so_name);
 	}
 
     set_addr:
@@ -262,6 +266,15 @@ IGNORE_FIRST_LINK_MAP_ENTRY (struct so_list *so)
 
 static CORE_ADDR debug_base;	/* Base of dynamic linker structures */
 static CORE_ADDR breakpoint_addr;	/* Address where end bkpt is set */
+
+/* Validity flag for debug_loader_offset.  */
+static int debug_loader_offset_p;
+
+/* Load address for the dynamic linker, inferred.  */
+static CORE_ADDR debug_loader_offset;
+
+/* Name of the dynamic linker, valid if debug_loader_offset_p.  */
+static char *debug_loader_name;
 
 /* Local function prototypes */
 
@@ -653,6 +666,37 @@ open_symbol_file_object (void *from_ttyp)
   return 1;
 }
 
+/* If no shared library information is available from the dynamic
+   linker, build a fallback list from other sources.  */
+
+static struct so_list *
+svr4_default_sos (void)
+{
+  struct so_list *head = NULL;
+  struct so_list **link_ptr = &head;
+
+  if (debug_loader_offset_p)
+    {
+      struct so_list *new = XZALLOC (struct so_list);
+
+      new->lm_info = xmalloc (sizeof (struct lm_info));
+
+      /* Nothing will ever check the cached copy of the link
+	 map if we set l_addr.  */
+      new->lm_info->l_addr = debug_loader_offset;
+      new->lm_info->lm = NULL;
+
+      strncpy (new->so_name, debug_loader_name, SO_NAME_MAX_PATH_SIZE - 1);
+      new->so_name[SO_NAME_MAX_PATH_SIZE - 1] = '\0';
+      strcpy (new->so_original_name, new->so_name);
+
+      *link_ptr = new;
+      link_ptr = &new->next;
+    }
+
+  return head;
+}
+
 /* LOCAL FUNCTION
 
    current_sos -- build a list of currently loaded shared objects
@@ -689,12 +733,13 @@ svr4_current_sos (void)
       /* If we can't find the dynamic linker's base structure, this
 	 must not be a dynamically linked executable.  Hmm.  */
       if (! debug_base)
-	return 0;
+	return svr4_default_sos ();
     }
 
   /* Walk the inferior's link map list, and build our list of
      `struct so_list' nodes.  */
   lm = solib_svr4_r_map ();
+
   while (lm)
     {
       struct link_map_offsets *lmo = svr4_fetch_link_map_offsets ();
@@ -760,6 +805,9 @@ svr4_current_sos (void)
 
       discard_cleanups (old_chain);
     }
+
+  if (head == NULL)
+    return svr4_default_sos ();
 
   return head;
 }
@@ -979,7 +1027,12 @@ enable_break (void)
          be trivial on GNU/Linux).  Therefore, we have to try an alternate
          mechanism to find the dynamic linker's base address.  */
 
-      tmp_fd  = solib_open (buf, &tmp_pathname);
+      /* TODO drow/2006-09-12: This is somewhat fragile, because it
+	 relies on read_pc.  On both Solaris and GNU/Linux we can use
+	 the AT_BASE auxilliary entry, which GDB now knows how to
+	 access, to find the base address.  */
+
+      tmp_fd = solib_open (buf, &tmp_pathname);
       if (tmp_fd >= 0)
 	tmp_bfd = bfd_fopen (tmp_pathname, gnutarget, FOPEN_RB, tmp_fd);
 
@@ -1018,8 +1071,14 @@ enable_break (void)
 	 the current pc (which should point at the entry point for the
 	 dynamic linker) and subtracting the offset of the entry point.  */
       if (!load_addr_found)
-	load_addr = (read_pc ()
-		     - exec_entry_point (tmp_bfd, tmp_bfd_target));
+	{
+	  load_addr = (read_pc ()
+		       - exec_entry_point (tmp_bfd, tmp_bfd_target));
+	  debug_loader_name = xstrdup (buf);
+	  debug_loader_offset_p = 1;
+	  debug_loader_offset = load_addr;
+	  solib_add (NULL, 0, NULL, auto_solib_add);
+	}
 
       /* Record the relocated start and end address of the dynamic linker
          text and plt section for svr4_in_dynsym_resolve_code.  */
@@ -1070,7 +1129,9 @@ enable_break (void)
       /* For whatever reason we couldn't set a breakpoint in the dynamic
          linker.  Warn and drop into the old code.  */
     bkpt_at_symbol:
-      warning (_("Unable to find dynamic linker breakpoint function.\nGDB will be unable to debug shared library initializers\nand track explicitly loaded dynamic code."));
+      warning (_("Unable to find dynamic linker breakpoint function.\n"
+               "GDB will be unable to debug shared library initializers\n"
+               "and track explicitly loaded dynamic code."));
     }
 
   /* Scan through the list of symbols, trying to look up the symbol and
@@ -1329,6 +1390,10 @@ static void
 svr4_clear_solib (void)
 {
   debug_base = 0;
+  debug_loader_offset_p = 0;
+  debug_loader_offset = 0;
+  xfree (debug_loader_name);
+  debug_loader_name = NULL;
 }
 
 static void

@@ -4374,12 +4374,12 @@ som_slurp_symbol_table (bfd *abfd)
 	  && sym->symbol.name[strlen (sym->symbol.name) - 1] == '$'
 	  && !strcmp (sym->symbol.name, sym->symbol.section->name))
 	sym->symbol.flags |= BSF_SECTION_SYM;
-      else if (!strncmp (sym->symbol.name, "L$0\002", 4))
+      else if (CONST_STRNEQ (sym->symbol.name, "L$0\002"))
 	{
 	  sym->symbol.flags |= BSF_SECTION_SYM;
 	  sym->symbol.name = sym->symbol.section->name;
 	}
-      else if (!strncmp (sym->symbol.name, "L$0\001", 4))
+      else if (CONST_STRNEQ (sym->symbol.name, "L$0\001"))
 	sym->symbol.flags |= BSF_DEBUGGING;
 
       /* Note increment at bottom of loop, since we skip some symbols
@@ -5328,7 +5328,7 @@ som_find_nearest_line (bfd *abfd ATTRIBUTE_UNUSED,
 
 static int
 som_sizeof_headers (bfd *abfd ATTRIBUTE_UNUSED,
-		    bfd_boolean reloc ATTRIBUTE_UNUSED)
+		    struct bfd_link_info *info ATTRIBUTE_UNUSED)
 {
   (*_bfd_error_handler) (_("som_sizeof_headers unimplemented"));
   fflush (stderr);
@@ -5653,7 +5653,7 @@ som_slurp_armap (bfd *abfd)
     return FALSE;
 
   /* For archives without .o files there is no symbol table.  */
-  if (strncmp (nextname, "/               ", 16))
+  if (! CONST_STRNEQ (nextname, "/               "))
     {
       bfd_has_map (abfd) = FALSE;
       return TRUE;

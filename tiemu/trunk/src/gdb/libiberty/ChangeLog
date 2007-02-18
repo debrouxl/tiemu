@@ -1,3 +1,99 @@
+2006-11-08  Vladimir Prus  <vladimir@codesourcery.com>
+
+	* pex-win32.c (no_suffixes): Remove.
+	(std_suffixes): Add "" as first element.
+	(find_executable): Remove detection of already-present
+	extension. Try all suffixes in std_suffixes.
+				
+2006-11-07  Julian Brown  <julian@codesourcery.com>
+
+	* floatformat.c (get_field): Fix segfault with little-endian word
+	order on 64-bit hosts.
+	(put_field): Likewise.
+	(min): Move definition.
+
+2006-10-26  Danny Smith  <dannysmith@users.sourceforge.net>
+
+	pex-win32.c (argv_to_cmdline): Replace xmalloc with XNEWVEC.
+	(find_executable): Likewise.
+	(win32_spawn): Cast alloca return to (char**).
+	Replace malloc with XNEWVEC.
+	bcopy.c (bcopy): Add explict casts in assignments.
+
+2006-10-25  Ben Elliston  <bje@au.ibm.com>
+
+	* pexecute.txh: Wrap pexecute's "flag" argument with @var {..}.
+	
+2006-10-10  Brooks Moses  <bmoses@stanford.edu>
+
+	* Makefile.in: Added "pdf", "libiberty.pdf" target support.
+	* testsuite/Makefile.in: Added empty "pdf" target.
+
+2006-09-22  Ian Lance Taylor  <ian@airs.com>
+
+	PR other/29176
+	* cp-demangle.c (d_substitution): Check for overflow when
+	computing substitution index.
+
+2006-08-30  Corinna Vinschen  <corinna@vinschen.de>
+
+	* configure.ac: Add case for Mingw as host.
+	* configure: Regenerate.
+
+2006-08-27  Ian Lance Taylor  <ian@airs.com>
+
+	PR driver/27622
+	* pex-common.h (struct pex_funcs): Add toclose parameter to
+	exec_child field.
+	* pex-common.c (pex_run_in_environment): Pass toclose to
+	exec_child.
+	* pex-djgpp.c (pex_djgpp_exec_child): Add toclose parameter.
+	* pex-unix.c (pex_unix_exec_child): Likewise.
+	* pex-msdos.c (pex_msdos_exec_child): Likewise.
+	* pex-win32.c (pex_win32_exec_child): Likewise.
+
+	PR other/28797
+	* cp-demangle.c (d_pointer_to_member_type): Do add a substitution
+	for a qualified member which is not a function.
+	* testsuite/demangle-expected: Add test case.
+
+2006-07-27  Jan Hubicka  <jh@suse.cz>
+
+	PR rtl-optimization/28071
+	* hashtab.c (htab_empty): Clear out n_deleted/n_elements;
+	downsize the hashtable.
+
+2006-07-04  Peter O'Gorman  <peter@pogma.com>
+
+	* Makefile.in: chmod 644 before ranlib during install.
+
+2006-06-02  Mark Shinwell  <shinwell@codesourcery.com>
+
+	* pex-unix.c (pex_unix_exec_child): Insert cast when assigning
+	to environ.
+
+2006-06-01  Mark Shinwell  <shinwell@codesourcery.com>
+
+	* pex-common.c: New function pex_run_in_environment.
+	* pex-common.h: Add environment parameter to exec_child.
+	* pex-msdos.c: Add environment parameter to pex_msdos_exec_child.
+	* pex-djgpp.c: Add environment parameter to pex_djgpp_exec_child.
+	(pex_djgpp_exec_child): Pass environment to child process.
+	* pex-unix.c: Add environment parameter to pex_unix_exec_child.
+	(pex_unix_exec_child): Pass environment to child process.
+	* pex-win32.c: Add environment parameter to pex_win32_exec_child.
+	New function env_compare for comparing VAR=VALUE pairs.
+	(win32_spawn): Assemble environment block and pass to CreateProcess.
+	(spawn_script): Pass environment through to win32_spawn.
+	(pex_win32_exec_child): Pass environment through to spawn_script and
+	win32_spawn.
+	* functions.texi: Regenerate.
+	* pexecute.txh: Document pex_run_in_environment.
+
+2006-05-28  Mark Shinwell  <shinwell@codesourcery.com>
+
+	* mkstemps.c: Open temporary files in binary mode.
+
 2006-05-12  Anton Blanchard  <anton@samba.org>
 
 	* cplus-dem.c (demangle_fund_type): Ensure buf is large enough to
@@ -9,19 +105,19 @@
 
 2006-03-29  Jim Blandy  <jimb@codesourcery.com>
 
- 	* pex-common.c (pex_input_file, pex_input_pipe): New functions.
+	* pex-common.c (pex_input_file, pex_input_pipe): New functions.
 	(pex_init_common): Initialize obj->input_file.
 	(pex_run): Close any file opened by pex_input_file.
- 	* pexecute.txh (pex_input_file, pex_input_pipe): New docs.
- 	* pex-common.h (struct pex_obj): New field input_file.
+	* pexecute.txh (pex_input_file, pex_input_pipe): New docs.
+	* pex-common.h (struct pex_obj): New field input_file.
 	(struct pex_funcs): New function ptr fdopenw.
- 	* pex-unix.c (pex_unix_fdopenw): New function.
- 	(funcs): List it as our fdopenw function.
- 	* pex-win32.c (pex_win32_fdopenw): New function.
- 	(funcs): List it as our fdopenw function.
- 	* pex-djgpp.c (funcs): Leave fdopenw null.
- 	* pex-msdos (funcs): Same.
- 	* functions.texi: Regenerated.
+	* pex-unix.c (pex_unix_fdopenw): New function.
+	(funcs): List it as our fdopenw function.
+	* pex-win32.c (pex_win32_fdopenw): New function.
+	(funcs): List it as our fdopenw function.
+	* pex-djgpp.c (funcs): Leave fdopenw null.
+	* pex-msdos (funcs): Same.
+	* functions.texi: Regenerated.
 
 2006-04-10  Jim Blandy  <jimb@codesourcery.com>
 
@@ -6744,7 +6840,7 @@ Wed Aug 19 14:40:34 1992  Ian Lance Taylor  (ian@cygnus.com)
 
 Mon Aug 10 17:33:40 1992  david d `zoo' zuhn  (zoo at cirdan.cygnus.com)
 
-       * Makefile.in: clean up definition of CFILES, more comments
+	* Makefile.in: clean up definition of CFILES, more comments
 
 Sat Aug  8 23:10:59 1992  Fred Fish  (fnf@cygnus.com)
 

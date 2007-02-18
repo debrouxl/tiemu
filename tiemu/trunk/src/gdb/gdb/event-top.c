@@ -36,6 +36,7 @@
   #define SIGQUIT 3
 #endif
 #include "exceptions.h"
+#include "cli/cli-script.h"     /* for reset_command_nest_depth */
 
 /* For dont_repeat() */
 #include "gdbcmd.h"
@@ -263,6 +264,9 @@ display_gdb_prompt (char *new_prompt)
 {
   int prompt_length = 0;
   char *gdb_prompt = get_prompt ();
+
+  /* Reset the nesting depth used when trace-commands is set.  */
+  reset_command_nest_depth ();
 
   /* Each interpreter has its own rules on displaying the command
      prompt.  */
@@ -501,7 +505,10 @@ command_handler (char *command)
      but GDB is still alive. In such a case, we just quit gdb
      killing the inferior program too. */
   if (command == 0)
-    quit_command ((char *) 0, stdin == instream);
+    {
+      printf_unfiltered ("quit\n");
+      execute_command ("quit", stdin == instream);
+    }
 
   time_at_cmd_start = get_run_time ();
 

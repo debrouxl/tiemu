@@ -414,7 +414,7 @@ const struct mips_arch_choice mips_arch_choices[] =
     mips_hwr_names_numeric },
 
   { "mips64r2",	1, bfd_mach_mipsisa64r2, CPU_MIPS64R2,
-    (ISA_MIPS64R2 | INSN_MIPS16 | INSN_MIPS3D | INSN_DSP
+    (ISA_MIPS64R2 | INSN_MIPS16 | INSN_MIPS3D | INSN_DSP | INSN_DSP64
      | INSN_MT | INSN_MDMX),
     mips_cp0_names_mips3264r2,
     mips_cp0sel_names_mips3264r2, ARRAY_SIZE (mips_cp0sel_names_mips3264r2),
@@ -575,7 +575,7 @@ parse_mips_dis_option (const char *option, unsigned int len)
   const struct mips_arch_choice *chosen_arch;
 
   /* Try to match options that are simple flags */
-  if (strncmp (option, "no-aliases", 10) == 0)
+  if (CONST_STRNEQ (option, "no-aliases"))
     {
       no_aliases = 1;
       return;

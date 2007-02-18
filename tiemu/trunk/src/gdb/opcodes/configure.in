@@ -61,7 +61,8 @@ AC_EXEEXT
 AC_PROG_CC
 
 ALL_LINGUAS="fr sv tr es da de id pt_BR ro nl fi vi ga zh_CN"
-CY_GNU_GETTEXT
+ZW_GNU_GETTEXT_SISTER_DIR
+AM_PO_SUBDIRS
 
 . ${srcdir}/../bfd/configure.host
 
@@ -200,6 +201,7 @@ if test x${all_targets} = xfalse ; then
 	bfd_romp_arch)		;;
 	bfd_rs6000_arch)	ta="$ta ppc-dis.lo ppc-opc.lo" ;;
 	bfd_s390_arch)		ta="$ta s390-dis.lo s390-opc.lo" ;;
+	bfd_score_arch)         ta="$ta score-dis.lo" ;;
 	bfd_sh_arch)
 	  # We can't decide what we want just from the CPU family.
 	  # We want SH5 support unless a specific version of sh is
@@ -214,8 +216,9 @@ if test x${all_targets} = xfalse ; then
 				break;;
 	    esac;
 	  done
-				ta="$ta sh-dis.lo" ;;
+				ta="$ta sh-dis.lo cgen-bitset.lo" ;;
 	bfd_sparc_arch)		ta="$ta sparc-dis.lo sparc-opc.lo" ;;
+	bfd_spu_arch)		ta="$ta spu-dis.lo spu-opc.lo" ;;
 	bfd_tahoe_arch)		;;
 	bfd_tic30_arch)		ta="$ta tic30-dis.lo" ;;
         bfd_tic4x_arch)         ta="$ta tic4x-dis.lo" ;;
@@ -273,5 +276,4 @@ AC_SUBST(archdefs)
 AC_SUBST(BFD_MACHINES)
 
 AC_CONFIG_FILES([Makefile po/Makefile.in:po/Make-in])
-AC_CONFIG_COMMANDS([default],[[sed -e '/POTFILES =/r po/POTFILES' po/Makefile.in > po/Makefile]],[[]])
 AC_OUTPUT

@@ -1,15 +1,1516 @@
-2006-06-20  Joel Brobecker  <brobecker@adacore.com>
+2006-12-18  Joel Brobecker  <brobecker@adacore.com>
 
-	* version.in: Set version to 6.5.0.<date>-cvs now that release
-	has been made.
+	* version.in: Set version number to 6.6.0.date-cvs again.
 
-2006-06-20  Joel Brobecker  <brobecker@adacore.com>
+2006-12-18  Joel Brobecker  <brobecker@adacore.com>
 
-	* version.in: Set version to 6.5 for the release.
+	* version.in: Set version number to 6.6.
 
-2006-06-20  Joel Brobecker  <brobecker@adacore.com>
+2006-12-17  Joel Brobecker  <brobecker@adacore.com>
+
+	* configure.ac: Disable -Werror by default.
+	* configure: Regenerate.
+
+2006-12-08  Vladimir Prus  <vladimir@codesourcery.com>
+
+	* varobj.c (cplus_value_of_child): When accessing
+ 	base suboject, don't specially process references.
+ 	
+2006-12-06  Andrew Stubbs  <andrew.stubbs@st.com>
+
+	* event-top.c (command_handler): On EOF, print 'quit' and run quit
+	command via execute_command such that hooks and trace work.
+	* utils.c (defaulted_query): On EOF, print default answer and newline.
+
+2006-12-05  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* cp-valprint.c, p-valprint.c: Revert last change.
+
+2006-12-05  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* cp-valprint.c (cp_print_value_fields): Initialize tmp_obstack.
+	(cp_print_value): Likewise.
+	* p-valprint.c (pascal_object_print_value_fields): Likewise.
+	(pascal_object_print_value): Likewise.
+
+2006-12-02  Joel Brobecker  <brobecker@adacore.com>
+
+	* version.in: Bump version number to 6.5.91 after first pre-release.
+
+2006-12-02  Joel Brobecker  <brobecker@adacore.com>
+
+	From Daniel Jacobowitz  <dan@codesourcery.com>
+	* utils.c (string_to_core_addr): Use error instead of
+	internal_error.
+	* mi/mi-main.c (mi_execute_command): Check for a NULL message.
+
+2006-11-24  Ulrich Weigand  <uweigand@de.ibm.com>
+
+	* NEWS: New port to Cell Broadband Engine SPU.
+	* MAINTAINERS: Add myself as spu maintainer.
+
+2006-11-24  Ulrich Weigand  <uweigand@de.ibm.com>
+
+	* configure.tgt: Enable gdbserver for SPU target.
+	* configure.ac: Build gdbserver when gdb_native is yes.
+	* configure: Regenerate.
+	* regformats/reg-spu.dat: New file.
+
+2006-11-24  Ulrich Weigand  <uweigand@de.ibm.com>
+
+	* findvar.c (address_from_register): New function.
+	* value.h (address_from_register): Add prototype.
+	* dwarf2loc.c (dwarf_expr_read_reg): Use address_from_register.
+
+2006-11-24  Ulrich Weigand  <uweigand@de.ibm.com>
+
+	* config/powerpc/spu-linux.mh: New file.
+	* config/spu/spu.mt: New file.
+	* configure.ac: Provide gdb_native configuration variable.
+	* configure: Regenerate.
+	* configure.host: Support powerpc64 to spu 'pseudo-native' mode.
+	* configure.tgt: Add "spu" target_cpu and "spu*-*-*" target.
+	* Makefile.in (spu_tdep_h): New variable.
+	(ALLDEPFILES): Add spu-linux-nat.c and spu-tdep.c
+	(spu-linux-nat.o, spu-tdep.o): Add dependencies.
+	* spu-linux-nat.c: New file.
+	* spu-tdep.c: New file.
+	* spu-tdep.h: New file.
+
+2006-11-22  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* osabi.c (gdbarch_lookup_osabi): Do not return
+	GDB_OSABI_UNINITIALIZED.
+
+2006-11-21  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	Checked in by Joel Brobecker  <brobecker@adacore.com>
+	* parse.c (write_exp_msymbol): Check SYMBOL_BFD_SECTION before
+	dereferencing it.
+
+2006-11-20  Joel Brobecker  <brobecker@adacore.com>
+
+	* README: Remove obsolete information.
+
+2006-11-20  Andrew Cagney  <cagney@redhat.com>
+
+	* linux-nat.h: Refer to GNU/Linux or Linux kernel.
+	* linux-nat.c (lin_lwp_attach_lwp, linux_nat_thread_alive): Ditto.
+	* infcmd.c (attach_command): Ditto.
+	* hppa-linux-tdep.c (hppa_linux_regset): Ditto.
+	* mn10300-linux-tdep.c: Ditto.  Update copyright year.
+	* frv-linux-tdep.c: Ditto.  Update copyright year.
+
+2006-11-19  Joel Brobecker  <brobecker@adacore.com>
+
+	* README: Update GDB version number to 6.6.
+
+2006-11-19  Joel Brobecker  <brobecker@adacore.com>
+
+	* NEWS: Change "Changes since gdb-6.5" into "Changes in gdb-6.6".
+
+2006-11-19  Joel Brobecker  <brobecker@adacore.com>
+
+	GDB 6.6 branch created (branch timestamp: 2006-11-15 12:00)
+	* version.in: Bump version to 6.5.90.20061115-cvs
+
+2006-11-14  Maxim Grigoriev  <maxim@tensilica.com>
+
+	* NEWS: New port to Xtensa.
+	* Makefile.in: Add dependencies for Xtensa files.
+	* configure.tgt (xtensa*, xtensa*-*-elf*): New.
+	* configure.host (xtensa*-*-elf*): New.
+	* config/xtensa/xtensa.mt: New file.
+	* xtensa-config.c: New file.
+	* xtensa-tdep.h: New file.
+	* xtensa-tdep.c: New file.
+
+2006-11-14  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote.c (set_remote_cmd): Call help_list.
+	(show_remote_cmd): Skip legacy aliases.  Handle non-show_cmd
+	entries.  Add missed cleanup.
+	* cli/cli-setshow.c (cmd_show_list): Handle non-show_cmd entries.
+
+2006-11-13  Paul Gilliam  <pgilliam@us.ibm.com>
+
+	* ppc-linux-tdep.c (ppc_linux_sigtramp_cache): Don't futz with
+	the floating point registers if there aren't any.
+
+2006-11-12  Ben Harris  <bjh21@NetBSD.org>
+
+	* arm-tdep.c (arm_unwind_pc): Use arm_addr_bits_remove.
+
+2006-11-10  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* frame.c (frame_register_unwind_location): New function.
+	(get_prev_frame_1): Check for UNWIND_NO_SAVED_PC.
+	(frame_stop_reason_string): Handle UNWIND_NO_SAVED_PC.
+	* frame.h (enum unwind_stop_reason): Add UNWIND_NO_SAVED_PC.
+
+2006-11-10  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* arch-utils.c (target_byte_order_user): Renamed from
+	target_byte_order.
+	(target_byte_order_auto, selected_byte_order): Removed.
+	(show_endian): Check target_byte_order_user.
+	(set_endian): Always update the architecture.  Set
+	target_byte_order_user after success.
+	(target_architecture_auto): Removed.
+	(target_architecture_user): New.
+	(selected_architecture_name, show_architecture): Check it.
+	(set_architecture): Set target_architecture_user after success.
+	(gdbarch_from_bfd): Check the argument.
+	(default_byte_order): New.
+	(initialize_current_architecture): Set the global default
+	architecture and endianness.
+	(gdbarch_info_fill): Remove GDBARCH argument.  Do not check the
+	previous architecture.  Use exec_bfd, global selected architecture
+	and endianness, and global defaults.
+	* arch-utils.h (selected_byte_order): Remove prototype.
+	(gdbarch_info_fill): Update.
+	* exec.c (exec_file_attach): Update the architecture after removing
+	the current file.
+	* gdbarch.sh: Update comments.
+	(find_arch_by_info): Remove OLD_GDBARCH argument.  Update call to
+	gdbarch_info_fill.
+	(gdbarch_find_by_info): Update call to find_arch_by_info.
+	* gdbarch.h, gdbarch.c: Regenerated.
+	* remote-sim.c (gdbsim_open): Use TARGET_BYTE_ORDER.
+
+2006-11-09  Joel Brobecker  <brobecker@adacore.com>
+
+	* sparc-tdep.c (sparc_fetch_instruction): Read instruction
+	using read_memory_nobpt.
+
+2006-11-06  Jim Blandy  <jimb@codesourcery.com>
+
+	* dwarf2loc.c (dwarf_expr_read_reg): Use frame_register_read
+	instead of frame_register.  Doc fix.
+
+2006-11-04  Vladimir Prus  <vladimir@codesourcery.com>
+
+	* serial.c (serial_open): Strip leading spaces from program 
+	name when opening pipe.
+
+2006-11-03  Jim Blandy  <jimb@codesourcery.com>
+
+         * dwarf2loc.c (dwarf_expr_read_reg): Use frame_unwind_register
+         instead of frame_register.  Doc fix.
+
+2006-11-02  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* dwarf2read.c (struct dwarf2_per_cu_data): Update comment.
+	(load_full_comp_unit): Take OBJFILE argument and use it.
+	(dwarf2_build_psymtabs_hard): Skip partial units.
+	(process_queue): Pass OBJFILE to load_full_comp_unit.  Check
+	type_hash for read in CUs.  Test psymtab for NULL.
+
+2006-11-02  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* arm-tdep.c (arm_gdbarch_init): Handle EF_ARM_EABI_VER5.
+
+2006-10-31  Vladimir Prus  <vladimir@codesourcery.com>
+	
+	* commands.h (enum command_class): Use different
+	values for class_deprecated and class_run.
+	* cli/cli-decode.c: (print_help_for_command): New.
+	(apropos_cmd): Use the above.
+	(help_list): Mention 'help all'
+	and 'apropos' when printing top-level help.
+	(help_all): Print the class name before printing
+	commands in that class.  Don't print prefix commands
+	here, instead pass recurse flag to help_cmd_list.
+	Print list of unclassified commands at the end.
+	(help_cmd_list): When recursing, use all_commands class.
+	Recurse only if the class of the command matches.
+
+2006-10-27  Andreas Schwab  <schwab@suse.de>
+
+	* gdbcmd.h (detachlist): Declare.
+	* infcmd.c (_initialize_infcmd): Define "detach" as prefix
+	command.
+	* linux-fork.c (_initialize_linux_fork): Rename
+	"detach-checkpoint" to "detach checkpoint" and "detach-fork" to
+	"detach fork".
+	* cli/cli-cmds.c (detachlist): Define.
+	(init_cmd_lists): Initialize it.
+	* cli/cli-cmds.h (detachlist): Declare.
+
+2006-10-25  Jim Blandy  <jimb@codesourcery.com>
+
+	* p-valprint.c (pascal_object_print_value): Add 'static' keyword
+	to function definition, to match declaration earlier in file.
+
+2006-10-21  Paul Brook  <paul@codesourcery.com>
+
+	* remote.c (remote_fetch_registers): Fix error message.
+
+2006-10-20  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* gcore.c (MAX_COPY_BYTES): Define.
+	(gcore_copy_callback): Use it to limit allocation.
+
+2006-10-19  Ulrich Weigand  <uweigand@de.ibm.com>
+
+	* linux-thread-db.c (check_for_thread_db): Don't attempt to use
+	thread_db for remote targets.
+	* remote.c (remote_new_objfile): Always call predecessor on
+	new_objfile event chain.
+
+2006-10-19  Joel Brobecker  <brobecker@adacore.com>
+
+	* solib.c (libpthread_solib_p): New function.
+	(solib_add): Always read the symbols from the libpthread library.
+
+2006-10-19  Andrew Stubbs  <andrew.stubbs@st.com>
+
+	* breakpoint.c (describe_other_breakpoints): Add thread parameter.
+	Annotate display with thread number where appropriate.
+	(create_breakpoints): Add thread parameter to call to
+	describe_other_breakpoints.
+
+2006-10-18  Jim Blandy  <jimb@codesourcery.com>
+	    Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* utils.c (query): Use defaulted_query.
+	(defaulted_query): Handle having no default answer.  Print out
+	messages even if we have no terminal.  Prevent memory corruption.
+
+2006-10-18  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* frame.c (struct frame_info): Add stop_reason.
+	(get_prev_frame_1): Set stop_reason.  Don't call error for
+	stop reasons.
+	(get_frame_unwind_stop_reason, frame_stop_reason_string): New.
+	* frame.h (enum unwind_stop_reason): New.
+	(get_frame_unwind_stop_reason, frame_stop_reason_string): New
+	prototypes.
+	* stack.c (frame_info): Print the stop reason.
+	(backtrace_command_1): Print the stop reason for errors.
+
+2006-10-18  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* inferior.h (start_remote): Update prototype.
+	* infrun.c (start_remote): Take FROM_TTY.  Call
+	post_create_inferior.
+	* monitor.c (monitor_open): Update call to start_remote.
+	* remote-sds.c (sds_start_remote, sds_open): Likewise.
+	* remote.c (remote_start_remote): Likewise.
+	(remote_start_remote_dummy): Removed.
+	(remote_open): Update call to remote_start_remote.  Do not call
+	post_create_inferior here.
+
+2006-10-18  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* solib-svr4.c (debug_loader_offset_p, debug_loader_offset)
+	(debug_loader_name, svr4_default_sos): New.
+	(svr4_current_sos): Call svr4_default_sos.
+	(enable_break): Add a comment about AT_BASE.  Set the new
+	variables and retry solib_add.
+	(svr4_clear_solib): Clear the new variables.
+
+2006-10-18  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* NEWS: Mention support for TLS without debugging information.
+
+2006-10-17  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote-sim.c (gdbsim_kill): Call target_mourn_inferior.
+	(gdbsim_load): Don't bother to adjust inferior_ptid here.
+	(gdbsim_create_inferior): Mark the simulator as running.
+	(gdbsim_open): Don't bother fetching registers.  Mark
+	the target as not running.
+	(gdbsim_xfer): When the program is not running, pass memory
+	requests down.
+	(gdbsim_mourn_inferior): Mark the target as not running.
+	* target.c (target_mark_running, target_mark_exited): New.
+	* target.h (target_has_execution): Update the comment.
+	(target_mark_running, target_mark_exited): New prototypes.
+
+2006-10-17  Joel Brobecker  <brobecker@adacore.com>
+
+	* breakpoint.c (free_valchain): Minor reformatting.
+
+2006-10-17  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* solib-svr4.c (LM_ADDR_CHECK): Suggest shared library mismatch.
+
+2006-10-17  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Makefile.in (symtab.o): Update.
+	* symtab.h (matching_bfd_sections): New prototype.
+	* symtab.c (matching_bfd_sections): New.
+	(find_pc_sect_psymbol, find_pc_sect_symtab): Use it.
+	* minsyms.c (lookup_minimal_symbol_by_pc_section): Likewise.
+	* printcmd.c (sym_info): Ignore separate debug objfiles.
+
+2006-10-17  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote.c (remote_pid_to_str): Capitalize "Thread".
+
+2006-10-15  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	PR remote/2158
+	* remote.c (remote_write_bytes): Throttle packet alignment
+	for small packets.
+
+2006-10-16  Jeff Johnston  <jjohnstn@redhat.com>
+ 
+	* linux-thread-db.c (thread_db_wait): Don't bother continuing if
+	the wait result indicates the program terminated with a
+	signal (from gdb-6.3-ia64-sigill-20051115.patch, a patch for
+	Fedora Core 5).
+	
+2006-10-11  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* dwarf2read.c (dwarf_decode_lines): Call record_line upon
+	encountering a different subfile.
+
+2006-10-11  Denis Pilat  <denis.pilat@st.com>
+
+	* tui/tui-source.c (tui_set_source_content): handle source 
+	files that contain non unix end-of-line.
+	
+2006-10-10  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* ser-mingw.c (free_pipe_state, pipe_wait_handle): Update
+	for changes to pipe_select_thread.
+	(pipe_done_wait_handle): New.
+	(_initialize_ser_windows): Reference it.
+
+2006-10-09  Jan Kratochvil  <jan.kratochvil@redhat.com>
+	    Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Makefile.in (expprint.o, parse.o, target.o): Update.
+	* dwarf2loc.c (dwarf_expr_tls_address): Move body to
+	target_translate_tls_address.  Call it.
+	* eval.c (evaluate_subexp_standard): Handle UNOP_MEMVAL_TLS.
+	* expprint.c (print_subexp_standard): Likewise.
+	(op_name_standard, dump_subexp_body_standard): Likewise.
+	* expression.h (enum exp_opcode): Add UNOP_MEMVAL_TLS.
+	(union exp_element): Add objfile.
+	* parse.c (write_exp_elt_objfile): New function.
+	(msym_tls_symbol_type): New.
+	(write_exp_msymbol): Handle TLS.
+	(operator_length_standard): Handle UNOP_MEMVAL_TLS.
+	(build_parse): Initialize msym_tls_symbol_type.
+	* parser-defs.h (write_exp_elt_objfile): New prototype.
+	* target.c (target_translate_tls_address): New.
+	* target.h (target_translate_tls_address): Add prototype.
+
+2006-10-09  Jan Kratochvil  <jan.kratochvil@redhat.com>
+
+	* solib.c (solib_open): Handle an empty solib_absolute_prefix like a
+	missing one.
+
+2006-10-09  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* solib.c (solib_read_symbols): Stop if the file was not found.
+
+2006-10-09  Paul Pluzhnikov  <ppluzhnikov@charter.net>
+
+	PR c++/2116
+	* valops.c (find_overload_match): Check for a NULL name.
+
+2006-10-06 Joel Brobecker  <brobecker@adacore.com>
+
+	Fix PR symtab/2018
+	* dwarf2read.c (read_array_type): Set the type name if the name
+	attribute is present.
+
+2006-10-05  Joel Brobecker  <brobecker@adacore.com>
+
+        * blockframe.c (block_innermost_frame): Rewrite frame search logic.
+
+2006-10-05  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Makefile.in (gdb_expat_h): New.
+	(xml_support_h): Add gdb_expat.h dependency.
+	(memory-map.o, xml-support.o): Likewise.
+	* gdb_expat.h: New file.
+	* xml-support.h: Include it.
+	* memory-map.c, xml-support.c: Likewise.  Remove XML_STATUS_OK
+	definitions.
+
+2006-10-05  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote.c (get_remote_state_raw): Renamed from get_remote_state.
+	(get_remote_state): New function.
+	(init_remote_state, _initialize_remote): Use get_remote_state_raw.
+
+2006-10-04  Fred Fish  <fnf@specifix.com>
+
+	* vec.c: Include defs.h first.  This pulls in config.h which can
+	affect other includes.
+
+2006-10-04  Joel Brobecker  <brobecker@adacore.com>
+
+	* somread.c (som_symtab_read): Avoid using alloca for potentially
+	large buffers.
+
+2006-10-04  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* arch-utils.h (gdbarch_info_fill): Remove duplicate prototype.
+
+2006-10-03  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* memory-map.c (XML_STATUS_OK, XML_STATUS_ERROR): Provide default
+	definitions.
+	* xml-support.c (XML_STATUS_OK, XML_STATUS_ERROR): Likewise.
+
+2006-09-22  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote.c (remote_write_bytes_aux): Doc fix.
+
+2006-09-21  Vladimir Prus  <vladimir@codesourcery.com>
+	    Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Makefile.in (SFILES): Add target-memory.c.
+	(COMMON_OBS): Add target-memory.o.
+	* memattr.c (lookup_mem_region): Adjust handling for
+	the top of memory.  Improve comments.
+	* remote.c (packet_check_result): New function, split out
+	from packet_ok.  Recognize "E." as an error prefix.
+	(packet_ok): Use it.
+	(remote_write_bytes_aux): New function, renamed from
+	remote_write_bytes.  Take packet header, packet format,
+	and length flag as arguments.
+	(remote_write_bytes): Rewrite to use remote_write_bytes_aux.
+	(remote_send_printf, restore_remote_timeout)
+	(remote_flash_timeout, remote_flash_erase, remote_flash_write)
+	(remote_flash_done): New.
+	(remote_xfer_partial): Handle flash writes.
+	(init_remote_ops, init_remote_async_ops): Set to_flash_erase
+	and to_flash_done.
+	* symfile.c (struct load_section_data): Include a pointer to
+	the cumulative stats and a request queue.  Move most members
+	to other types.
+	(struct load_progress_data, struct load_progress_section_data): New
+	types.
+	(load_progress): Handle a NULL baton and zero bytes.  Update for
+	type changes.
+	(load_section_callback): Create memory write requests instead of
+	writing to memory.  Don't print the progress message here.
+	(clear_memory_write_data): New function.
+	(generic_load): Use target_write_memory_blocks.
+	* target-memory.c: New file.
+	* target.c (update_current_target): Mention new uninherited methods.
+	(memory_xfer_partial): Issue an error for flash writes.
+	(target_flash_erase, target_flash_done): New functions.
+	(target_write_with_progress): Call the progress callback at the
+	start also.
+	* target.h (enum target_object): Add TARGET_OBJECT_FLASH.
+	(target_write_with_progress): Update comment.
+	(struct target_ops): Add to_flash_erase and to_flash_done.
+	(target_flash_erase, target_flash_done, struct memory_write_request)
+	(memory_write_request_s, enum flash_preserve_mode)
+	(target_write_memory_blocks): New, including a vector type
+	for memory_write_request_s.
+
+2006-09-21  Vladimir Prus  <vladimir@codesourcery.com>
+	    Daniel Jacobowitz  <dan@codesourcery.com>
+	    Nathan Sidwell  <nathan@codesourcery.com>
+
+	* Makefile.in (SFILES): Add memory-map.c and xml-support.c.
+	(memory_map_h, xml_support_h): New.
+	(target_h): Add vec_h dependency.
+	(COMMON_OBS): Add memory-map.o and xml-support.o.
+	(memory-map.o, xml-support.o): New rules.
+	(remote.o): Update.
+	* exceptions.h (enum errors): Add XML_PARSE_ERROR.
+	* infcmd.c (run_command_1, attach_command): Call target_pre_inferior.
+	* memattr.c (default_mem_attrib): Initialize blocksize.
+	(target_mem_region_list, mem_use_target)
+	(target_mem_regions_valid, mem_region_cmp, mem_region_init)
+	(require_user_regions, require_target_regions)
+	(invalidate_target_mem_regions): New.
+	(create_mem_region): Use mem_region_init.
+	(mem_clear): Move higher.	
+	(lookup_mem_region): Use require_target_regions.
+	(mem_command): Implement "mem auto".
+	(mem_info_command): Handle target-supplied regions and flash
+	attributes.
+	(mem_enable_command, mem_disable_command, mem_delete_command): Use
+	require_user_regions.
+	(_initialize_mem): Mention "mem auto" in help.
+	* memattr.h (enum mem_access_mode): Add MEM_FLASH.
+	(struct mem_attrib): Add blocksize.
+	(invalidate_target_mem_regions, mem_region_init, mem_region_cmp): New
+	prototypes.
+	* remote.c: Include "memory-map.h".
+	(PACKET_qXfer_memory_map): New enum value.
+	(remote_protocol_features): Add qXfer:memory-map:read.
+	(remote_xfer_partial): Handle memory maps.
+	(remote_memory_map): New.
+	(init_remote_ops, init_remote_async_ops): Set to_memory_map.
+	(_initialize_remote): Register qXfer:memory-map:read.
+	* target.c (update_current_target): Mention to_memory_map.
+	(target_memory_map, target_pre_inferior): New.
+	(target_preopen): Call target_pre_inferior.
+	* target.h: Include "vec.h".
+	(enum target_object): Add TARGET_OBJECT_MEMORY_MAP.
+	(struct target_ops): Add to_memory_map.
+	(target_memory_map, target_pre_inferior): New prototypes.
+	* memory-map.c, memory-map.h, xml-support.c, xml-support.h: New files.
+
+2006-09-21  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* ada-lex.l (HIGH_BYTE_POSN, is_digit_in_base, digit_to_int)
+	(strtoulst): Moved to ...
+	* utils.c (HIGH_BYTE_POSN, is_digit_in_base, digit_to_int)
+	(strtoulst): ... here.  Enhanced to behave more similarly
+	to strtoul.
+	* defs.h (strtoulst): New prototype.
+
+2006-09-21  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Makefile.in (memattr_h, memattr.o): Update.
+	* memattr.h: Include "vec.h".
+	(struct mem_region): Remove linked list pointer.
+	(mem_region_s): New typedef and corresponding vector.
+	* memattr.c: Include "vec.h".
+	(mem_region_chain): Delete.
+	(mem_region_list): New vector pointer.
+	(mem_region_lessthan): New function.
+	(create_mem_region): Remove unused return value.  Use vector
+	operations.  Remove linear search.
+	(delete_mem_region): Delete.
+	(lookup_mem_region): Use vector operations.  Add a FIXME.
+	(mem_info_command): Update to work with vectors.
+	(mem_enable, mem_enable_command, mem_disable, mem_disable_command)
+	(mem_free, mem_delete): Likewise.
+
+2006-09-21  Nathan Sidwell  <nathan@codesourcery.com>
+
+	* vec.h: New file.
+	* vec.c: New file.
+	* Makefile.in (SFILES): Add vec.c.
+	(vec_h): New.
+	(COMMON_OBJS): Add vec.o.
+	(vec.o): New target.
+
+2006-09-20  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	PR remote/2154
+	* remote.c (remote_thread_alive): Remove local buf.
+	(remote_get_threadinfo): Remove local threadinfo_pkt.
+	(remote_get_threadlist): Remove unused threadlist_packet.
+	(remote_current_thread): Remove local buf.
+	(remote_threads_info): Set bufp after getpkt.
+	(remote_threads_extra_info): Remove local bufp.
+	(get_offsets): Set buf after getpkt.
+	(remote_check_symbols): Set reply after getpkt.
+	(remote_vcont_probe): Set buf after getpkt.
+	(remote_resume): Set buf after set_thread.
+	(remote_wait, remote_async_wait): Set buf after getpkt.
+	(fetch_register_using_p): Set buf after remote_send.
+	(remote_fetch_registers): Likewise.
+	(store_register_using_P): Don't use buf after remote_send.
+	(check_binary_download, remote_write_bytes)
+	(remote_read_bytes, remote_rcmd): Remove local buf.
+
+2006-09-17  Vladimir Prus  <vladimir@codesourcery.com>
+
+	* mi/mi-cmd-stack.c (mi_cmd_stack_list_args): Don't emit error
+	if high requested frame number is larger than number of available 
+	frames.
+	
+2006-09-16  Nick Roberts  <nickrob@snap.net.nz>
+
+	* linux-nat.c (linux_test_for_tracefork): Don't leave zombie
+	process.
+
+2006-09-16  Andrzej Zaborowski  <balrog@zabor.org>
+
+	* interps.c (interpreter_exec_cmd): Restore interpreter properties.
+
+2006-09-10  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	PR threads/2149
+	* infrun.c (handle_inferior_event): Context switch after fork
+	and exec events.
+
+2006-09-10  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* infcall.c (call_function_by_hand): Check for function pointer
+	types.
+
+2006-09-10  Andreas Schwab  <schwab@suse.de>
+
+	* m68k-tdep.c (m68k_analyze_register_saves): Fix decoding of
+	`move.l %R,-(%sp)'.
+
+2006-09-07  Vladimir Prus  <vladimir@codesourcery.com>
+
+	* mi/mi-cmd-stack.c (mi_cmd_stack_list_frames): Don't emit 
+	error if high requested frame number is larger then number 
+	of available frames.
+	
+2006-09-07  Joel Brobecker  <brobecker@adacore.com>
+
+	From Stephan Springl  <springl-gdb@bfw-online.de>
+	* fork-child.c (fork_inferior): Fix typo.
+
+2006-08-28  DJ Delorie  <dj@redhat.com>
+
+	* m32c-tdep.c (m32c_decode_srcdest4): Initialize fields in sd
+	that may not be initialized elsewhere.
+	(m32c_decode_sd23): Likewise.
+
+2006-08-25  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* buildsym.c (finish_block): Don't adjust the boundaries of
+	nested functions.
+
+2006-08-24  Andreas Schwab  <schwab@suse.de>
+
+	* symfile.c (add_symbol_file_command): Fix off-by-one when
+	extending sect_opts.
+
+2006-08-24  Nick Roberts  <nickrob@snap.net.nz>
+
+	* mi/gdb-mi.el: Refer to next release of Emacs as 22.1.
+
+2006-08-23  Nick Roberts  <nickrob@snap.net.nz>
+
+	* mi/gdb-mi.el (gdbmi): Remove gdb-force-update, initialize
+	other variables.
+	(gdbmi-send): Ensure any text properties can be removed.
+	(gdbmi-prompt1): Update to gdb-ui.el
+	(gud-gdbmi-marker-filter): Defer setting of gud-running.
+	Keep gdb-done-regexp for partial-output-buffer.
+	(gdb-stack-list-frames-handler): Add face to function names.
+
+2006-08-22  Mark Kettenis  <kettenis@gnu.org>
+
+	* valprint.c (val_print_type_code_flags): Fix GNU coding standards
+	violation.
+
+	* alpha-tdep.c (alpha_register_to_value, alpha_value_to_register)
+	(alpha_push_dummy_call, alpha_extract_return_value)
+	(alpha_breakpoint_from_pc, alpha_read_insn)
+	(alpha_get_longjmp_target, alpha_supply_int_regs)
+	(alpha_fill_int_regs, alpha_supply_fp_regs, alpha_fill_fp_regs)
+	(alpha_next_pc): Use gdb_byte instead of (unsigned) char where
+	appropriate.
+
+	* sparc64-tdep.c (sparc64_pstate_type, sparc64_fsr_type)
+	(sparc64_fprs_type): New variables.
+	(sparc64_init_types): New function.:
+	(sparc64_register_info): Use appropriate flag types for %fsr and
+	%fprs.
+	(sparc64_pseudo_register_info): Use appropriate type for %pstate.
+	(_initialize_sparc64_tdep): New function.
+
+	* valprint.c (val_print_type_code_flags): Fix for bitfields larger
+	than 32 bits.
+
+	* gdbtypes.c (init_flags_type): Set all fields to zero instead of
+	just the first one.
+
+2006-08-22  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Makefile.in (INTERNAL_CPPFLAGS): New.
+	(INTERNAL_CFLAGS_BASE): Use it.
+
+2006-08-22  Michael Snyder  <Michael.Snyder@PalmSource.com>
+
+	* MAINTAINERS: Update my email address.
+
+2006-08-19  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Makefile.in (amd64_linux_tdep_h): New.
+	(amd64-linux-nat.o, amd64-linux-tdep.o): Update.
+	* amd64-linux-nat.c (amd64_linux_gregset64_reg_offset): Add
+	ORIG_RAX.
+	(_initialize_amd64_linux_nat): Set amd64_native_gregset64_num_regs.
+	* amd64-linux-tdep.c (amd64_linux_register_name)
+	(amd64_linux_register_type, amd64_linux_register_reggroup_p)
+	(amd64_linux_write_pc): New.
+	(amd64_linux_init_abi): Use them, and update num_regs.
+	* amd64-linux-tdep.h: New file.
+	* amd64-tdep.c (amd64_register_name, amd64_register_type): Make
+	public.
+	* amd64-tdep.h (amd64_register_name, amd64_register_type): New
+	prototypes.
+
+	* regformats/reg-x86-64-linux.dat: New file.
+
+2006-08-18  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* infrun.c (handle_inferior_event): Check the current frame ID
+	before unwinding to the previous frame.
+
+2006-08-18  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* dwarf2read.c (quirk_gcc_member_function_pointer): Add GCC PR
+	number in a comment.
+
+2006-08-18  Mark Kettenis  <kettenis@gnu.org>
+
+	* sparc-nat.c (sparc_xfer_wcookie): Signal EOF.  Tweak comment.
+
+2006-08-18  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* dwarf2read.c (quirk_gcc_member_function_pointer): New.
+	(read_structure_type): Call it.
+
+2006-08-16  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* NEWS: Mention "set trust-readonly-sections" fix.
+
+2006-08-16  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote.c, target.c: Strip trailing whitespace.
+
+2006-08-15  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	PR remote/1966
+	* dcache.c (dcache_write_line): Use target_write.
+	(dcache_read_line): Use target_read.
+	* mi/mi-main.c (mi_cmd_data_read_memory): Use target_read.
+	* symfile.c (struct load_section_data): Add new per-section
+	members.
+	(load_progress): New function.
+	(load_section_callback): Pass load_progress to the new
+	target_write_with_progress.
+	* target.c (current_xfer_partial, memory_xfer_partial): New.
+	(target_xfer_partial): New prototype.
+	(target_xfer_memory, target_xfer_partial_p, xfer_using_stratum)
+	(do_xfer_memory, target_xfer_memory_partial)
+	(target_read_memory_partial, target_write_memory_partial): Delete.
+	(trust_readonly): Move higher in the file.
+	(update_current_target): Use current_xer_partial.
+	(target_xfer_partial): Use memory_xfer_partial.  Handle
+	TARGET_OBJECT_RAW_MEMORY specially.
+	(target_read_memory): Use target_read.
+	(target_write_memory): Use target_write.
+	(default_xfer_partial): Call to_xfer_partial directly.
+	(target_write_with_progress): New function, based on target_write.
+	(target_write): Call it.
+	* target.h (enum target_object): Add TARGET_OBJECT_RAW_MEMORY.
+	(target_write_with_progress): New prototype.
+	(do_xfer_memory, target_read_memory_partial)
+	(target_write_memory_partial): Delete prototypes.
+
+2006-08-15  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote.c (remote_write_bytes): Take a const buffer argument.
+	Do the checks from remote_xfer_memory.
+	(remote_read_bytes): Do the checks from remote_xfer_memory.
+	(remote_xfer_memory): Remove checks pushed into lower level
+	functions.
+	(remote_xfer_partial): Call remote_write_bytes and remote_read_bytes
+	directly.
+	* remote.h (remote_write_bytes): Update prototype.
+
+2006-08-11  Andrew Stubbs  <andrew.stubbs@st.com>
+
+	* NEWS: Add 'set trace-commands' command.
+
+2006-08-10  Andrew Stubbs  <andrew.stubbs@st.com>
+
+	* cli/cli-script.c (execute_user_command): Update command_next_depth
+	on user-command call.
+
+2006-08-09  Joel Brobecker  <brobecker@adacore.com>
+
+	* NEWS: Add entry for new substitute-path commands.
+
+2006-08-08  Joel Brobecker  <brobecker@adacore.com>
+
+	* source.c: #include gdb_assert.h.
+	(substitute_path_rule): New struct.
+	(substitute_path_rules): New static global variable.
+	(substitute_path_rule_matches): New function.
+	(get_substitute_path_rule): New function.
+	(rewrite_source_path): New function.
+	(find_and_open_source): Add source path rewriting support.
+	(strip_trailing_directory_separator): New function.
+	(find_substitute_path_rule): New function.
+	(add_substitute_path_rule): New function.
+	(delete_substitute_path_rule): New function.
+	(show_substitute_path_command): New function.
+	(unset_substitute_path_command): New function.
+	(set_substitute_path_command): New function.
+	(_initialize_source): Add new substitute-path commands.
+	* Makefile.in (source.o): Add dependency on gdb_assert.h.
+
+2006-08-08  Joel Brobecker  <brobecker@adacore.com>
+
+	* i386-tdep.c (i386_follow_jump): Use read_memory_nobpt to read
+	instructions.
+	(i386_analyze_struct_return): Likewise.
+	(i386_skip_probe): Likewise.
+	(i386_match_insn): Likewise.
+	(i386_analyze_frame_setup): Likewise.
+	(i386_analyze_register_saves): Likewise.
+	(i386_skip_prologue): Likewise.
+
+2006-08-08  Joel Brobecker  <brobecker@adacore.com>
+
+	* gdbcore.h (read_memory_nobpt): New function name instead of
+	deprecated_read_memory_nobpt.
+	* breakpoint.c (read_memory_nobpt): New function name instead
+	of deprecated_read_memory_nobpt.
+	Adjust calls to old deprecated_read_memory_nobpt accordingly.
+	* alpha-tdep.c: Adjust calls to deprecated_read_memory_nobpt
+	accordingly.
+	* alphanbsd-tdep.c: Likewise.
+	* frame.c: Likewise.
+	* frv-tdep.c: Likewise.
+	* hppa-linux-tdep.c: Likewise.
+	* hppa-tdep.c: Likewise.
+	* i386-linux-nat.c: Likewise.
+	* m68klinux-tdep.c: Likewise.
+	* mips-tdep.c: Likewise.
+	* s390-tdep.c: Likewise.
+
+2006-08-08  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* configure.ac: Check for expat.
+	* acinclude.m4: Include AC_LIB_HAVE_LINKFLAGS dependencies.
+	* Makefile.in (LIBEXPAT): New.
+	(CLIBS): Include $(LIBEXPAT).
+	* README: Mention expat.
+	* configure, config.in: Regenerated.
+
+2006-08-08  Joel Sherrill <joel.sherrill@oarcorp.com>
+
+	* config/sparc/embed.mt: New file.
+	* configure.tgt (sparc-*-rtems*): Use embed.mt.
+
+2006-08-08  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Makefile.in (objfiles.o, symfile.o): Update.
+	* objfiles.c: Include "expression.h" and "parser-defs.h".
+	(free_objfile): Clear global blocks.
+	* symfile.c: Include "parser-defs.h".
+	(clear_symtab_users): Clear global blocks.
+
+2006-08-08  Thiemo Seufer  <ths@mips.com>
+
+	* breakpoint.c (update_breakpoints_after_exec): Fix type mismatch.
+
+2006-08-08  Vladimir Prus  <vladimir@codesourcery.com>
+
+	* symfile.c (download_write_size): Remove.
+	(show_download_write_size): Remove.
+	(load_section_callback): Don't use download_write_size.
+	(_initialize_symfile): Don't register download_write_size.
+	* NEWS: Mention 'download-write-size' removal.
+
+2006-08-06  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* expprint.c (print_subexp_standard, dump_subexp_body_standard): Add
+	support for member pointers.
+
+2006-08-02  Mark Kettenis  <kettenis@gnu.org>
+
+	* arm-tdep.h: Add multiple inclusion protection.
+	(struct gdbarch): Add forward declaration.
+	(armobsd_regset_from_core_section): New prototype.
+	* armbsd-tdep.c: New file.
+	* armobsd-tdep.c: Include "gdb_string.h".
+	(armobsd_init_abi): Set regset_from_core_section.
+	(armobsd_core_osabi_sniffer): New function.
+	(_initialize_armobsd_tdep): Register armobsd_core_osabi_sniffer.
+	* Makefile.in (ALLDEPFILES): Add armbsd-tdep.c.
+	(armbsd-tdep.o): New dependency.
+	(armnbsd-tdep.o): Update dependencies.
+	* config/arm/obsd.mt (TDEPFILES): Add armbsd-tdep.o and corelow.o.
+
+2006-08-02  Thiemo Seufer  <ths@mips.com>
+
+	* linux-thread-db.c (thread_db_get_thread_local_address): Fix type
+	mismatch.
+	* tui/tui-stack.c (tui_show_frame_info): Likewise.
+
+2006-08-01  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* c-exp.y (type): Remove incorrect pointer to member case.
+	* objc-exp.y (type): Likewise.
+	* p-exp.y (type): Likewise.
+
+2006-08-01  Mark Kettenis  <kettenis@gnu.org>
+
+	* arm-tdep.h (enum struct_return): New.
+	(struct gdbarch_tdep): Add struct_return member.
+	* arm-tdep.c (arm_return_value): Return
+	RETURN_VALUE_STRUCT_CONVENTION for aggregates when the ABI uses
+	pcc_struct_return.
+	(arm_gdbarch_init): Default to reg_struct_return.
+	* armobsd-tdep.c (armobsd_init_abi): Set pcc_struct_return.
+
+2006-07-31  Mark Kettenis  <kettenis@gnu.org>
+
+	* alpha-tdep.h (ALPHA_S0_REGNUM): New define.
+	* alphabsd-nat.c: Include <sys/types.h>, <sys/signal.h>,
+	<machine/pcb.h> and "bsd-kvm.h".
+	(alphabsd_supply_pcb): New function.
+	(_initialize_alphabsd_nat): Enable libkvm interface.
+	* Makefile.in (alphabsd-nat.o): Update dependencies.
+	* config/alpha/fbsd.mh (NATDEPFILES): Add bsd-kvm.o.
+	(LOADLIBES): New variable.
+	* config/alpha/nbsd.mh (NATDEPFILES): Add bsd-kvm.o.
+	(LOADLIBES): New variable.
+
+2006-07-31  Fred Fish  <fnf@specifix.com>
+
+	* arm-tdep.c (arm_make_prologue_cache): Use FRAME_OBSTACK_ZALLOC
+	instead of calling frame_obstack_zalloc directly.
+	(arm_make_stub_cache): Ditto.
+	* frame-unwind.h: Ditto.
+	* frame.c (create_new_frame): Ditto.
+
+2006-07-27  Bob Wilson  <bob.wilson@acm.org>
+
+	* MAINTAINERS (Write After Approval): Add myself.
+
+2006-07-27  Bob Wilson  <bob.wilson@acm.org>
+
+	* main.c (captured_main): Print a newline after calling
+	print_gdb_version instead of waiting until after the symbol file
+	has been read.  Adjust error_pre_print, quit_pre_print, and
+	warning_pre_print values.
+
+2006-07-27  Roger Sayle  <roger@eyesopen.com>
+	    Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* irix5-nat.c (fetch_core_registers): Simplify and correct logic.
+
+2006-07-27  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* target.h (target_read_stralloc): New prototype.
+	* target.c (target_read_alloc_1): Renamed from target_read_alloc.
+	Take new PADDING argument.
+	(target_read_alloc): Use it.
+	(target_read_stralloc): New function.
+
+2006-07-26  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote.c (remote_protocol_features): Correct qPart to qXfer.
+
+2006-07-25  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* eval.c (evaluate_subexp_for_address): Don't incorrectly discard
+	calls to C++ operator*.
+
+2006-07-24  Roger Sayle  <roger@eyesopen.com>
+	    Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* solib-irix.c (gdb_int32_bytes): Use gdb_byte instead of char.
+	(gdb_int64_bytes): Likewise.
+	(fetch_lm_info): Use .b fields of gdb_int32_bytes and gdb_int64_bytes
+	as first argument to extract_unsigned_integer to silence compiler
+	warnings.
+
+2006-07-24  Frederic Riss  <frederic.riss@st.com>
+
+	* dwarf2read.c (struct dwarf2_per_objfile): Add has_section_at_zero 
+	field.
+	(dwarf2_locate_sections): Initialize 
+	dwarf2_per_objfile->has_section_at_zero.
+	(dwarf2_get_pc_bounds): Use dwarf2_per_objfile->has_section_at_zero 
+	instead of HAS_RELOC test.
+	(read_partial_die): Ditto.
+
+2006-07-24  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* corefile.c (reopen_exec_file): Only check for an open exec file.
+	Use exec_file_attach.
+	* exec.c (exec_open): Make static.
+	(exec_file_command): Don't use target_preopen.  Query directly about
+	changing the file.
+	* gdbcore.h (exec_open): Remove prototype.
+
+2006-07-24  Frederic Riss  <frederic.riss@st.com>
+
+	* regcache.c (struct regcache): Make register_valid_p a signed char 
+	array.
+
+2006-07-24  Jan Kratochvil  <jan.kratochvil@redhat.com>
+	    Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* linux-thread-db.c (thread_db_wait): Remove libthread_db
+	after exec events.
+
+2006-07-24  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* NEWS: Mention Windows cross debugging support.
+
+2006-07-23  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* linux-nat.c (linux_nat_add_target): Remove extern.
+	* linux-nat.h (thread_db_init): New prototype.
+
+2006-07-22  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* configure.tgt: Build gdbserver for Cygwin and mingw32.
+
+2006-07-22  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* config/i386/cygwin.mt (DEPRECATED_TM_FILE): Delete.
+	* config/i386/nm-cygwin.h: Add contents of tm-cygwin.h.
+	* config/i386/tm-cygwin.h: Delete file.
+
+2006-07-22  Jan Kratochvil  <jan.kratochvil@redhat.com>
+
+	* infrun.c (handle_inferior_event): Typo.
+
+2006-07-21  Andrew Stubbs  <andrew.stubbs@st.com>
+
+	* cli/cli-cmds.c (source_verbose, trace_commands): New variables.
+	(source_script): New function.
+	(source_verbose_cleanup): New function.
+	(source_command): Move old contents to source_script.
+	Make function static. Parse -v option and call source_script.
+	(init_cli_cmds): Update source command help.
+	Add 'set trace-commands' command.
+	* cli/cli-script.c (command_next_depth): New static variable.
+	(suppress_next_print_command_trace): New static variable.
+	(reset_command_nest_depth): New function.
+	(print_command_trace): New function.
+	(execute_control_command): Split the continue_control and break_control
+	cases, add calls to print_command_trace and count the nest depth.
+	(while_command): Set suppress_next_print_command_trace.
+	(if_command): Likewise.
+	* top.c (execute_command): Call print_command_trace.
+	* cli/cli-cmds.h (source_verbose, trace_commands): New extern variables.
+	(source_command): Change to source_script.
+	* main.c (captued_main): Use source_script instead of source_command.
+	* top.h (source_command): Change to source_script.
+	* event-top.c (display_gdb_prompt): Call reset_command_nest_depth.
+	* cli/cli-script.h (print_command_trace): Export.
+	(reset_command_nest_depth): Likewise.
+
+2006-07-20  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* eval.c (evaluate_struct_tuple): Skip static fields.
+
+2006-07-19  Mark Kettenis  <kettenis@gnu.org>
+
+	* alphaobsd-tdep.c: Include "obsd-tdep.h".
+	(alphaobsd_init_abi): Set skip_solib_resolver.
+	* Makefile.in (alphaobsd-tdep.o): Update dependencies.
+	* config/alpha/obsd.mt (TDEPFILES): Add obsd-tdep.o.
+
+	* arm-tdep.c (arm_gdbarch_init): Get default floating-point model
+	from ELF flags for binaries produced by the GNU toolchain.
+
+2006-07-18  Nathan Sidwell  <nathan@codesourcery.com>
+
+	* remote-fileio.c (remote_fileio_func_rename): Reorder to process
+	input buffer before reading memory.
+	(remote_fileio_func_stat): Likewise.
+
+2006-07-18  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* blockframe.c (find_pc_partial_function): Use the minimal symbol
+	size to control the cache entry, if available.
+	* minsyms.c (lookup_minimal_symbol_by_pc_section): Handle minimal
+	symbols with zero and non-zero sizes differently.
+
+2006-07-18  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* linux-thread-db.c (td_thr_getfpregs_p, td_thr_getgregs_p)
+	(td_thr_setfpregs_p, td_thr_setgregs_p, thread_db_get_info)
+	(thread_db_fetch_registers, thread_db_store_registers)
+	(thread_db_thread_alive, thread_db_state_str): Delete.
+	(thread_db_load): Don't look up regset functions.
+	(thread_db_pid_to_str): Simplify.
+	(thread_db_extra_thread_info): New.
+	(init_thread_db_ops): Do not set to_fetch_registers,
+	to_store_registers, or to_thread_alive.  Set to_extra_thread_info.
+	* Makefile.in: Remove linux-thread-db.o rule.
+
+2006-07-18  Mark Kettenis  <kettenis@gnu.org>
+
+	* armobsd-tdep.c: Include "trad-frame.h" and "tramp-frame.h".
+	(armobsd_sigframe_init): New function.
+	(armobsd_sigframe): New variable.
+	(armobsd_init_abi): Prepend armobsd_sigframe unwinder.
+	* Makefile.in (armobsd-tdep.o): Update dependencies.
+
+2006-07-18  Denis PILAT  <denis.pilat@st.com>
+
+	* monitor.c: Remove unused prototypes.
+
+2006-07-18  Vladimir Prus  <vladimir@codesourcery.com>
+
+	* target.c (tcomplain): Mark with ATTR_NORETURN.
+
+	* defs.h (print_transfer_performance): Improve comments.
+
+2006-07-17  Mark Kettenis  <kettenis@gnu.org>
+
+	* printcmd.c: Coding style fixes: add missing spaces in comments
+	and wrapping long lines.
+	(delete_display, enable_display_command, disable_display_command)
+	(printf_command, display_info, undisplay_command, free_display)
+	(display_command, x_command, address_info, set_command)
+	(inspect_command, call_command, print_command, print_command_1)
+	(validate_format, print_formatted, decode_format, sym_format):
+	Remove prototypes.
+	(x_command): Make static.
+	(printf_command): Convert error into internal consistency check.
+	(address_info): Avoid assignment within function call.
+	(printf_command): Avoid redundant cast.
+	* tracepoint.c (x_command): Remove extern prototype.
+
+	* armobsd-tdep.c (armobsd_init_abi): Set skip_solib_resolver.
+	* Makefile.in (armobsd-tdep.o): Update dependencies.
+	* config/arm/obsd.mt (TDEPFILES): Add obsd-tdep.o.
+
+2006-07-16  Mark Kettenis  <kettenis@gnu.org>
+
+	* armobsd-tdep.c: New file.
+	* Makefile.in (ALLDEPFILES): Add armobsd-tdep.c.
+	(armobsd-tdep.o): New dependency.
+	* config/arm/obsd.mt: New file.
+	* configure.tgt: (arm*-*-openbsd*): Set gdb_target to obsd.
+
+	* gdbarch.sh (deprecated_saved_pc_after_call): Delete.
+	* gdbarch.h, gdbarch.c: Re-generate.
+
+	* arm-tdep.c (arm_saved_pc_after_call): Delete.
+	(arm_gdbarch_init): Do not set deprecated_saved_pc_after_call.
+
+2006-07-16  Alfred M. Szmidt  <ams@gnu.org>
+	
+	* gnu-nat.c: Undefine _process_user_ before including
+	<hurd/process_request.h>.
+	(gnu_resume): Supply missing argument to error().
+	(gnu_read_inferior): Add extra parenthesis around arithmetic
+	expression to silence warnings from GCC.
+	(gnu_write_inferior): Likewise.
+	(gnu_xfer_memory): Changed type of MYADDR to `gdb_byte *'.
+
+2006-07-16  Mark Kettenis  <kettenis@gnu.org>
+
+	* armnbsd-tdep.c (arm_netbsd_elf_init_abi): Use
+	svr4_ilp_fetch_link_map_offsets.
+
+2006-07-15  Mark Kettenis  <kettenis@gnu.org>
+
+	* armnbsd-tdep.c: Don't include "nbsd-tdep.h".
+	* config/arm/nbsd.mt (TDEPFILES): Remove nbsd-tdep.o.
+	(DEPRECATED_TM_FILE): Remove.
+	* Makefile.in (armnbsd-tdep.o): Update dependencies.
+	
+2006-07-14  Joel Brobecker  <brobecker@adacore.com>
 
 	* PROBLEMS: Document threads/2137.
+
+2006-07-13  Mark Kettenis  <kettenis@gnu.org>
+
+	* config/alpha/tm-nbsd.h: Remove file.
+	* config/alpha/nbsd.mt (DEPRECATED_TM_FILE): Remove.
+
+2006-07-13  Corinna Vinschen  <vinschen@redhat.com>
+
+	* mips-tdep.c (mips_integer_to_address): Simplify be calling
+	extract_signed_integer directly.  Fix comment.
+
+2006-07-13  Corinna Vinschen  <vinschen@redhat.com>
+
+	* m32c-tdep.c (m32c_banked_register): New function.
+	(m32c_banked_read): Use m32c_banked_register function to evaluate
+	real register number.
+	(m32c_banked_write): Ditto.
+	(m32c_virtual_frame_pointer): New function.
+	(m32c_gdbarch_init): Add set_gdbarch_virtual_frame_pointer call.
+
+2006-07-13  Nathan Sidwell  <nathan@codesourcery.com>
+
+	* m68k-tdep.c (m68k_frame_align): New.
+	(m68k_gdbarch_init): Set frame_align here.
+
+2006-07-13  Denis PILAT  <denis.pilat@st.com>
+
+	* interps.c (interpreter_completer): Allocate one more item to the
+	'matches' list and set them all to 0 with a xcalloc.
+
+2006-07-13  Nick Roberts  <nickrob@snap.net.nz>
+
+	* annotate.c (annotate_frame_begin): Re-instate frame-begin
+	annotation for level 3 annotations.
+
+2006-07-13  Paul N. Hilfinger  <Hilfinger@adacore.com>
+	    Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* infcall.c (value_arg_coerce): Use value_cast_pointers for
+	references.  Avoid value_cast to a reference type.  Don't silently
+	convert pointers to references.
+	* valops.c (value_cast_pointers): New, based on value_cast.
+	(value_cast): Use it.  Reject reference types.
+	(value_ref): New.
+	(typecmp): Use it.
+	* value.h (value_cast_pointers, value_ref): New prototypes.
+
+2006-07-12  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote.c (unpack_varlen_hex): Correct type of retval.
+	Reported by Zhigang Gong <zhigang.gong@gmail.com>.
+
+2006-07-12  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* dwarf2read.c (dwarf2_symbol_mark_computed): Handle corrupted
+	or missing location list information.  Suggested by Jan
+	Kratochvil <lace@jankratochvil.net>.
+
+2006-07-12  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Makefile.in (arm_linux_tdep_h): New variable.
+	(arm-linux-nat.o, arm-linux-tdep.o): Update.
+	* arm-linux-nat.c: Include "arm-linux-tdep.h".
+	(typeNone, typeSingle, typeDouble, typeExtended)
+	(FPWORDS, ARM_CPSR_REGNUM, FPREG, FPA11)
+	(fetch_nwfpe_single, fetch_nwfpe_double, fetch_nwfpe_none)
+	(fetch_nwfpe_extended, fetch_nwfpe_register, store_nwfpe_single)
+	(store_nwfpe_double, store_nwfpe_extended, store_nwfpe_register):
+	Delete.
+	(fetch_fpregister, fetch_fpregs, store_fpregister, store_fpregs):
+	Use gdb_byte buffers, NWFPE_FPSR_OFFSET, supply_nwfpe_register,
+	and collect_nwfpe_register.
+	(fill_gregset, supply_gregset, fill_fpregset, supply_fpregset): Use
+	new regset functions.
+	* arm-linux-tdep.c: Include "regset.h" and "arm-linux-tdep.h".
+	(arm_apcs_32): New declaration.
+	(ARM_LINUX_SIZEOF_GREGSET, arm_linux_supply_gregset)
+	(arm_linux_collect_gregset, typeNone, typeSingle, typeDouble)
+	(typeExtended, supply_nwfpe_register, collect_nwfpe_register)
+	(arm_linux_supply_nwfpe, arm_linux_collect_nwfpe)
+	(arm_linux_regset_from_core_section): New.
+	(arm_linux_init_abi): Register arm_linux_regset_from_core_section.
+	* arm-linux-tdep.h: New file.
+	* arm-tdep.h (struct regset): Declare.
+	(struct gdbarch_tdep): Add gregset, fpregset members.
+	* config/arm/linux.mh (NATDEPFILES): Remove corelow.o and
+	core-regset.o.
+	* config/arm/linux.mt (TDEPFILES): Add corelow.o.
+
+2006-07-12  Jan Kratochvil  <lace@jankratochvil.net>
+
+	* infrun.c (handle_inferior_event): Fixed typos in printf.
+
+2006-07-12  Daniel Jacobowitz  <dan@codesourcery.com>
+	    Nathan Sidwell  <nathan@codesourcery.com>
+
+	* remote.c (REMOTE_ALIGN_WRITES): New.
+	(remote_write_bytes): Align large write packets.  Remove unused
+	payload_start variable.
+
+2006-07-12  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote.c (PACKET_qXfer_auxv): New, renamed from PACKET_qPart_auxv.
+	(remote_supported_packet): Remove #if 0.
+	(remote_protocol_features): Add qPart:auxv:read.
+	(remote_unescape_input): New function.
+	(readchar): Don't mask off the high bit.
+	(read_frame): Use fputstrn_filtered for packet data.
+	(getpkt_sane): Return the number of bytes read or -1.  Use
+	fputstrn_unfiltered.
+	(remote_read_qxfer): New.
+	(remote_xfer_partial): Use it for TARGET_OBJECT_AUXV.
+	(_initialize_remote): Update packet registration.
+	* defs.h (fputstrn_filtered): New prototype.
+	* utils.c (fputstrn_filtered): New.
+	* NEWS: Mention qXfer.
+
+2006-07-12  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* target.c (target_read): Stop if target_read_partial returns 0
+	when some bytes have already been read.
+	(target_write): Likewise for target_write_partial.
+	(target_read_partial, target_write_partial): Make static.
+	(target_read_alloc): New.
+	* target.h: Doc fixes.
+	(target_read_partial, target_write_partial): Delete prototypes.
+	(target_read_alloc): New prototype.
+
+	* auxv.c (target_auxv_read): Delete.
+	(target_auxv_search, fprint_target_auxv): Use target_read_alloc.
+	* auxv.h (target_auxv_read): Delete prototype.
+	* avr-tdep.c (avr_io_reg_read_command): Use target_read_alloc.
+	* ia64-tdep.c (getunwind_table, get_kernel_table): Likewise.
+	* linux-nat.c (linux_nat_make_corefile_notes): Likewise.
+	* procfs.c (procfs_make_note_section): Likewise.
+	* remote.c (remote_xfer_partial): Don't loop here.
+	* sparc-tdep.c (sparc_fetch_wcookie): Use target_read.
+
+2006-07-12  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* arm-linux-tdep.c: Doc fixes.
+	(ARM_SIGCONTEXT_R0, ARM_UCONTEXT_SIGCONTEXT)
+	(ARM_OLD_RT_SIGFRAME_SIGINFO, ARM_OLD_RT_SIGFRAME_UCONTEXT)
+	(ARM_NEW_RT_SIGFRAME_UCONTEXT, ARM_NEW_SIGFRAME_MAGIC): New
+	constants.
+	(arm_linux_sigreturn_init, arm_linux_rt_sigreturn_init): Support
+	the new signal frame layouts.
+
+2006-07-12  Mike Frysinger  <vapier@gentoo.org>:
+	    Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Makefile.in (init.c) [LANG, LC_ALL]: Set to `c'.
+	* gdb_indent.sh, gdb_mbuild.sh, observer.sh: Likewise.
+	* gdbarch.sh: Correct comment.
+
+2006-07-12  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* MAINTAINERS: Add Alfred Szmidt for the Hurd.
+
+2006-07-11  Mark Kettenis  <kettenis@gnu.org>
+
+	* alpha-tdep.h (ALPHA_INSN_SIZE): New define.
+
+2006-07-10  Mark Kettenis  <kettenis@gnu.org>
+
+	* alphaobsd-tdep.c: New file.
+	* alphanbsd-tdep.c (_initialize_alphanbsd_tdep): Do not register a
+	handler for GDB_OSABI_OPENBSD_ELF.
+	* Makefile.in (ALLDEPFILES): Add alphaobsd-tdep.c.
+	(alphaobsd-tdep.o): New target.
+	* config/alpha/obsd.mt: New file.
+	* configure.tgt (alpha*-*-openbsd*): Set gdb_target to obsd.
+
+2006-07-10  Richard Henderson  <rth@redhat.com>
+
+	* alpha-tdep.h (struct gdbarch_tdep): Add return_in_memory.
+	* alpha-tdep.c (alpha_register_byte): Remove.
+	(alpha_extract_struct_value_address): Remove.
+	(alpha_return_value): New.
+	(alpha_return_in_memory_always): New.
+	(alpha_gdbarch_init): Set tdep->return_in_memory.  Don't call
+	set_gdbarch_deprecated_register_byte.  Do call set_gdbarch_return_value
+	instead of set_gdbarch_deprecated_use_struct_convention,
+	set_gdbarch_extract_return_value, set_gdbarch_store_return_value,
+	or set_gdbarch_deprecated_extract_struct_value_address.
+	* alphafbsd-tdep.c (alphafbsd_return_in_memory): Rename from
+	alphafbsd_use_struct_convention, remove gcc_p argument.
+	(alphafbsd_init_abi): Set tdep->return_in_memory instead of
+	set_gdbarch_deprecated_use_struct_convention.
+
+2006-07-09  Mark Kettenis  <kettenis@gnu.org>
+
+	* alphabsd-tdep.h (alphanbsd_regset_from_core_section): New
+	prototype.
+	* alphanbsd-tdep.c (alphanbsd_regset_from_core_section): Handle
+	a.out-style core file format here.  Make global.
+	(alphanbsd_regset_from_core_section): Remove.
+	(alphanbsd_sigtramp_offset): Make static.
+	(alphanbsd_aout_init_abi): Remove.
+	(alphanbsd_core_osabi_sniffer): Return GDB_OSABI_NETBSD_ELF for
+	a.out style core files.
+	(_initialize_alphanbsd_tdep): Do not register a handler for
+	GDB_OSABI_NETBSD_AOUT.
+
+	* alphabsd-tdep.h: Tweak comments.
+	(SIZEOF_STRUCT_REG, SIZEOF_STRUCT_FPREG): Remove.
+	* alphanbsd-tdep.c: Reorder includes.  Include "regset.h".
+	(ALPHANBSD_SIZEOF_GREGS, ALPHANBSD_SIZEOF_FPREGS): New defines.
+	(alphanbsd_supply_fpregset, alphanbsd_supply_gregset)
+	(alphanbsd_aout_supply_gregset): New functions.
+	(alphanbsd_gregset, alphanbsd_fpregset, alphanbsd_aout_gregset):
+	New variables.
+	(alphanbsd_regset_from_core_section)
+	(alphanbsd_aout_regset_from_core_section): New functions.
+	(fetch_core_registers, fetch_elfcore_registers): Remove functions.
+	(alphanbsd_core_fns, alphanbsd_elf_fns): Remove variables.
+	(alphanbsd_init_abi): Set regset_from_core_section.
+	(alphanbsd_aout_init_abi, alphanbsd_core_osabi_sniffer): New
+	functions.
+	(_initialize_alphanbsd_tdep): Register NetBSD core file sniffer.
+	Use alphanbsd_aout_init_abi whre appropriate.  Don't call
+	deprecated_add_core_fns.
+	* Makefile.in (alphanbsd-tdep.o): Update dependencies.
+
+	* alphabsd-tdep.c (alphabsd_supply_reg, alphabsd_fill_reg)
+	(alphabsd_supply_fpreg, alphabsd_fill_fpreg): Add missing spaces.
+
+	* alphanbsd-tdep.c (alphanbsd_init_abi): Use
+	svr4_lp64_fetch_link_map_offsets instead of
+	nbsd_lp64_solib_svr4_fetch_link_map_offsets.
+
+2006-07-06  Andrew Stubbs  <andrew.stubbs@st.com>
+
+	* parse.c (write_exp_elt_opcode, write_exp_elt_sym, write_exp_elt_block
+	write_exp_elt_longcst, write_exp_elt_dblcst, write_exp_elt_type,
+	write_exp_elt_intern): Zero initialize tmp.
+
+2006-07-05  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote.c (remote_xfer_partial): Remove KOD support.
+	* target.h (enum target_object): Remove TARGET_OBJECT_KOD.
+	* MAINTAINERS: Move Kernel Object Display entry to past maintainers.
+	* Makefile.in (SFILES, kod_h, COMMON_OBS, kod.o, kod-cisco.o):
+	Remove KOD support.
+	* mi/mi-cmds.c (mi_cmds): Remove dummy KOD commands.
+	* NEWS: Mention KOD.
+	* kod.h, kod.c, kod-cisco.c: Delete files.
+
+2006-07-04  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote.c (init_remote_state): Use xrealloc instead of xmalloc.
+
+2006-07-03  Nathan J. Williams  <nathanw@wasabisystems.com>
+
+	* bsd-kvm.c (bsd_kvm_open): Open the KVM interface read-write if
+	write_files is set.
+
+2006-06-24  Eli Zaretskii  <eliz@gnu.org>
+
+	* defs.h (DIRNAME_SEPARATOR) [!__CYGWIN__ && _WIN32]: Define to `;'.
+
+2006-06-23  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* arm-tdep.c (arm_register_type): Use unsigned types for registers.
+	Add special types for sp and pc.
+	* Makefile.in (arm-tdep.o): Update.
+
+2006-06-22  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote.c (remote_escape_output): New function.
+	(remote_write_bytes): Use remote_escape_output.
+
+2006-06-21  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* NEWS: Mention qSupported.
+	* remote.c (struct remote_state): Add explicit_packet_size.
+	(get_remote_packet_size): Check explicit_packet_size.
+	(get_memory_packet_size): Likewise.
+	(PACKET_qSupported): New enum value.
+	(struct protocol_feature, remote_supported_packet)
+	(remote_packet_size, remote_protocol_features)
+	(remote_query_supported): New.
+	(remote_open_1): Reset explicit_packet_size.  Call
+	remote_query_supported.
+	(_initialize_remote): Register qSupported.
+
+2006-06-21  Andrew Stubbs  <andrew.stubbs@st.com>
+
+        * cli/cli-script.c (realloc_body_list): Zero new parts of body_list.
+
+2006-06-20  Joel Brobecker  <brobecker@adacore.com>
+
+	* GDB 6.5 released from GDB 6.5 branch.
+
+2006-06-19  Michael Snyder  <msnyder@redhat.com>
+
+	* mips-tdep.c (mips_eabi_push_dummy_call): For 32 bit ABI, to
+	decide how many registers it takes to pass a floating point
+	argument, what matters is the size of a floating point register
+	(not the size of a general purpose register).
+	(mips_o32_push_dummy_call): Ditto.
+
+2006-06-19  Kazuhiro Inaoka <inaoka.kazuhiro@renesas.com>
+
+	* configure.tgt: Add gdbserver support for m32r-linux.
+
+2006-06-18  Mark Kettenis  <kettenis@gnu.org>
+
+	* m68klinux-tdep.c (m68k_linux_init_abi): Fix typo in comment.
 
 2006-06-15  Daniel Jacobowitz  <dan@codesourcery.com>
 
@@ -19,27 +1520,167 @@
 	insert_step_resume_breakpoint_at_caller.
 	(insert_step_resume_breakpoint_at_frame): Revise comments.
 
+2006-06-14  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* dwarf2read.c (read_unspecified_type): New function.
+	(read_type_die): Handle DW_TAG_unspecified_type.
+	(Committed by Julian Brown.)
+
+2006-06-13  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* symfile.c (load_command): Check for a changed executable before
+	"load".
+
+2006-06-13  Fred Fish  <fnf@specifix.com>
+
+	* mips-tdep.c (mips_find_long_section): New function.
+	(mips_gdbarch_init): Use it to set long and pointer sizes.
+
+2006-06-13  Nathan Sidwell  <nathan@codesourcery.com>
+
+	* remote-file.io.c (remote_fileio_func_system): Treat zero length
+	string as NULL.  Adjust for NULL pointer argument.
+	* doc/gdb.texinfo (system): Document behaviour with zero length
+	string.
+
+2006-06-12  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote.c (set_remote_protocol_packet_cmd)
+	(show_remote_protocol_packet_cmd): New prototypes.
+	(remote_set_cmdlist, remote_show_cmdlist): Move higher.
+	(struct packet_config): Make name and title const.
+	(add_packet_config_cmd): Remove unnecessary arguments.
+	(_initialize_remote): Update calls.
+
 2006-06-10  Daniel Jacobowitz  <dan@codesourcery.com>
 
 	* mingw-hdep.c (gdb_select): Always check for NULL fd sets
 	before calling FD_ISSET.  Correct check for exceptfds which
 	previously tested writefds.
 
-2006-06-02  Joel Brobecker  <brobecker@adacore.com>
+2006-06-09  Daniel Jacobowitz  <dan@codesourcery.com>
+	    Julian Brown  <julian@codesourcery.com>
 
-	* version.in: Increase version number to 6.4.91 after the first
-	pre-release has been created.
+	* dwarf2read.c (partial_read_comp_unit_head): Accept version 3.
 
-2006-06-02  Joel Brobecker  <brobecker@adacore.com>
+2006-06-09  Julian Brown  <julian@codesourcery.com>
 
-	* configure.ac: -Werror is no longer enabled by default.
-	* configure: Regenerate.
+	* MAINTAINERS (Write After Approval): Add myself.
+
+2006-06-08  Michael Snyder  <msnyder@redhat.com>
+
+	* mips-tdep.c (fp_register_arg_p): Recognize floating point typedefs.
+
+2006-06-08  Nathan Sidwell  <nathan@codesourcery.com>
+
+	* m68k-tdep.c (m68k_dwarf_reg_to_regnum): New.
+	(m68k_gdbarch_init): Set it for dwarf & dwarf2 reg number
+	conversion. Use M68K_NUM_REGS for number of regs.
+
+	* remote-fileio.c (remote_fileio_reset): New.
+	* remote-fileio.h (remote_fileio_reset): Prototype.
+	* remote.c (extended_remote_restart, remote_open_1): Call it.
+
+	* remote.c (remote_open_1): Do preopen tasks before
+	irreversably destroying state.
+
+2006-06-08  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote.c (struct remote_state): New type, only containing
+	buf and buf_size.
+	(remote_state): New variable.
+	(get_remote_state): New function.
+	(struct remote_arch_state): Renamed from struct remote_state.
+	Removed buf and buf_size.
+	(get_remote_arch_state): Renamed from get_remote_state.  All
+	necessary callers updated to call this function.
+	(init_remote_state): Initialize the architecture-specific state.
+	Update the target-specific state if necessary.
+	(get_remote_packet_size): New function.  All previous references
+	changed to use this accessor function.
+	(packet_reg_from_regnum, packet_reg_from_pnum): Take a
+	remote_arch_state instead of a remote_state.  All callers changed.
+	(_initialize_remote): Initialize the packet buffer here.
+
+2006-06-06  Nathan Sidwell  <nathan@codesourcery.com>
+
+	* remote.c (remote_insert_watchpoint): Return -1, rather than
+	fatal error if packet is disabled.
+	(remote_remove_watchpoint, remote_insert_hw_breakpoint,
+	remote_remove_hw_breakpoint): Likewise.
+
+2006-06-02  Nick Roberts  <nickrob@snap.net.nz>
+
+	* breakpoint.c (print_it_typical): Use EXEC_ASYNC_LOCATION_REACHED.
+
+2006-05-31  Michael Snyder  <msnyder@redhat.com>
+
+	* mips-tdep.c: Comment tweaks.
+
+2006-05-31  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Makefile.in (top_builddir): Update comments.
+	(INTL_DIR, INTL_SRC): Delete.
+	(INTL, INTL_DEPS, INTL_CFLAGS): Update.
+	* acinclude.m4: Include new gettext macros.
+	* configure.ac: Use ZW_GNU_GETTEXT_SISTER_DIR.  Remove copied
+	CATALOGS code.
+	* aclocal.m4, configure: Regenerated.
+
+2006-05-30  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* Makefile.in (arm-linux-nat.o): Update dependencies.
+	* arm-linux-nat.c: Include "gdb_proc_service.h".
+	(PTRACE_GET_THREAD_AREA): Define.
+	(ps_get_thread_area): New function.
+
+2006-05-28  Alexandre Oliva  <aoliva@redhat.com>
+
+	* dwarf2-frame.h (enum dwarf2_frame_reg_rule): Add
+	DWARF2_FRAME_REG_SAVED_VAL_OFFSET and
+	DWARF2_FRAME_REG_SAVED_VAL_EXP.
+	* dwarf2-frame.c (execute_cfa_program): Handle val_offset,
+	val_offset_sf and val_expression.
+	(dwarf2_frame_prev_register): Handle the new reg rules.
+	(dwarf2_frame_this_id): Use pc instead of function entry point.
+
+2006-05-28  Alexandre Oliva  <aoliva@redhat.com>
+
+	* dwarf2-frame.c (struct dwarf2_cie): Add signal_frame field.
+	(dwarf2_frame_sniffer): Use it.
+	(decode_frame_entry_1): Set it according to augmentation "S".
 
 2006-05-27  Joel Brobecker  <brobecker@adacore.com>
 
 	From Peter Schauer <peterschauer@gmx.net>
 	* m2-typeprint.c (m2_record_fields): Move variable declarations
 	to the begining of the block.
+        
+2006-05-23  Mark Mitchell  <mark@codesourcery.com>
+
+	* mt-tdep.c (mt_register_name): Correct out-of-range logic to
+	include additional registers. 
+
+	* mt-tdep.c (mt_gdb_regnums): Add ZI2, ZQ2, Ichannel2,
+	Iscramb2, Qscramb2, Qchannel2.
+	(mt_register_name): Likewise.
+	(mt_copro_register_type): Describe ZI2 and ZQ2.
+
+	* mt-tdep.c (mt_gdb_regnums): Define
+	MT_COPRO_PSEUDOREG_MAC_REGNUM.
+	(mt_register_name): Use it.
+	(mt_copro_register_type): Likewise.
+	(mt_register_type): Likewise.
+	(mt_pseudo_register_read): Likewise.  Read the MAC register, not
+	the coprocessor register.
+	(mt_pseudo_register_write): Likewise.
+
+2006-05-21  Christopher Faylor  <cgf@timesys.com>
+
+	* win32-nat.c (cygwin_exceptions): New variable.
+	(handle_exception): Treat a cygwin exception like a normal exception if
+	cygwin_exceptions is true.
+	(_initialize_win32_nat): Add "set cygwin-exceptions" handler.
 
 2006-05-20  Gaius Mulley  <gaius@glam.ac.uk>
 
@@ -49,21 +1690,89 @@
 
 	* configure: Regenerate using proper version of autoconf.
 
+2006-05-19  Fred Fish  <fnf@specifix.com>
+
+	* Makefile.in: Fix spelling of 'explicitly' and 'explicit'.
+	* dwarfread.c: Fix spelling of 'unexpected'.
+	* mips-tdep.c: Fix spelling of 'possible' and 'Determine'.
+	* stack.c: Fix spelling of 'RETURN_VALUE'.
+	
+2006-05-18  Paul Gilliam  <pgilliam@us.ibm.com
+
+	* solib-svr4.c (enable_break): Breakup a long line into 3 shorter ones.
+
+2006-05-17  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* dwarf2-frame.c: Include "value.h".
+	(read_reg): Use unpack_long and register_type.
+	* Makefile.in (dwarf2-frame.o): Update.
+
+2006-05-17  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* remote-rdp.c: Deleted.
+	* NEWS: Mention removal of remote-rdp.c.
+
+	* Makefile.in (ALLDEPFILES): Remove remote-rdp.c.
+	(remote-rdp.o): Delete.
+	* README: Remove description of remote-rdp.c.
+	* arm-tdep.c (arm_breakpoint_from_pc): Remove obsolete comment.
+	* config/arm/embed.mt (TDEPFILES): Remove remote-rdp.o.
+
+2006-05-16  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* ser-e7kpc.c: Include <time.h> if it is available.
+
 2006-05-16  Joel Brobecker  <brobecker@adacore.com>
 
-	* README: Update date of last modification.
+	* version.in (version.in): Bump version number to 6.5.50 now
+	that the gdb-6.5 branch has been created.
+	* NEWS: Create a new section for changes that are included
+	since gdb-6.5. Name the "since gdb-6.4" section as the "in gdb-6.5"
+	section.
 
-2006-05-16  Joel Brobecker  <brobecker@adacore.com>
+2006-05-16  Jim Blandy  <jimb@codesourcery.com>
 
-	* README: Update GDB version number.
+	* MAINTAINERS (Authorized Committers): Gaius Mulley has accepted
+	the Global Maintainers' invitation to be an authorized committer
+	for the Modula-2 support.
 
-2006-05-16  Joel Brobecker  <brobecker@adacore.com>
+2006-05-15  Mark Kettenis  <kettenis@gnu.org>
 
-	* NEWS: Change "Changes since GDB 6.4" into "Changes in GDB 6.5".
+	* ppcobsd-nat.c: Include "gdb_assert.h".
+	[PT_GETFPREGS] (getfpregs_supplies): New function.
+	(ppcobsd_fetch_registers, ppcobsd_fetch_registers): Hanlde OS
+	versions that have PT_GETFPREGS.
+	(_initialize_ppcobsd_nat) [PT_GETFPREGS]: Initialize
+	ppcobsd_fpreg_offsets.
+	* ppcobsd-tdep.h (ppcobsd_fpreg_offsets, ppcobsd_fpregset):
+	Declare.
+	* ppcobsd-tdep.c (ppcobsd_fpreg_offsets, ppcobsd_fpregset): New
+	variables.
+	(_initialize_ppcobsd_tdep): Initialize ppcobsd_fpreg_offsets.
+	* Makefile.in (ppcobsd-nat.o): Update dependencies.
 
-2006-05-16  Joel Brobecker  <brobecker@adacore.com>
+2006-05-15  Daniel Jacobowitz  <dan@codesourcery.com>
 
-	* version.in: Update to 6.4.90.
+	* configure.ac: Use GCC_HEADER_STDINT.
+	* acinclude.m4: Include stdint.m4.
+	* Makefile.in (gdb_stdint_h): Define.
+	(distclean): Remove gdb_stdint.h.
+	(Makefile, stamp-h): Update rules to generate only the correct
+	files.
+	(gdb_stdint.h, stamp-int): New rules.
+	* config.in, configure: Regenerated.
+
+2006-05-15  Daniel Jacobowitz  <dan@codesourcery.com>
+
+	* valprint.c: Include "exceptions.h".
+	(val_print): If something goes wrong while printing, supply an
+	error message.
+
+2006-05-15  Peter O'Gorman  <gdb-patches@mlists.thewrittenword.com>
+
+	* source.c (get_current_source_symtab_and_line)
+	(set_current_source_symtab_and_line): Use { 0 }.
+	* cli/cli-cmds.c (list_command): Likewise.
 
 2006-05-14  Nick Roberts  <nickrob@snap.net.nz>
 
@@ -830,6 +2539,7 @@
 
 2006-03-27  Nick Roberts  <nickrob@snap.net.nz>
 
+	PR mi/1429
 	* varobj.c (c_name_of_child, c_value_of_child): Allow non-zero
 	offsets for languages like Fortran.
 

@@ -375,7 +375,8 @@ extern bfd_boolean _bfd_generic_set_section_contents
 /* Routines to use for BFD_JUMP_TABLE_LINK for targets which do not
    support linking.  Use BFD_JUMP_TABLE_LINK (_bfd_nolink).  */
 
-#define _bfd_nolink_sizeof_headers ((int (*) (bfd *, bfd_boolean)) bfd_0)
+#define _bfd_nolink_sizeof_headers \
+  ((int (*) (bfd *, struct bfd_link_info *)) bfd_0)
 #define _bfd_nolink_bfd_get_relocated_section_contents \
   ((bfd_byte *(*) (bfd *, struct bfd_link_info *, struct bfd_link_order *, \
 		   bfd_byte *, bfd_boolean, asymbol **)) \
@@ -409,7 +410,7 @@ extern bfd_boolean _bfd_generic_set_section_contents
 #define _bfd_nolink_bfd_link_split_section \
   ((bfd_boolean (*) (bfd *, struct bfd_section *)) bfd_false)
 #define _bfd_nolink_section_already_linked \
-  ((void (*) (bfd *, struct bfd_section *)) bfd_void)
+  ((void (*) (bfd *, struct bfd_section *, struct bfd_link_info *)) bfd_void)
 
 /* Routines to use for BFD_JUMP_TABLE_DYNAMIC for targets which do not
    have dynamic symbols or relocs.  Use BFD_JUMP_TABLE_DYNAMIC
@@ -523,7 +524,7 @@ extern bfd_boolean _bfd_generic_link_split_section
   (bfd *, struct bfd_section *);
 
 extern void _bfd_generic_section_already_linked
-  (bfd *, struct bfd_section *);
+  (bfd *, struct bfd_section *, struct bfd_link_info *);
 
 /* Generic reloc_link_order processing routine.  */
 extern bfd_boolean _bfd_generic_reloc_link_order
@@ -545,6 +546,10 @@ extern bfd_reloc_status_type _bfd_final_link_relocate
 /* Relocate a particular location by a howto and a value.  */
 extern bfd_reloc_status_type _bfd_relocate_contents
   (reloc_howto_type *, bfd *, bfd_vma, bfd_byte *);
+
+/* Clear a given location using a given howto.  */
+extern void _bfd_clear_contents (reloc_howto_type *howto, bfd *input_bfd,
+				 bfd_byte *location);
 
 /* Link stabs in sections in the first pass.  */
 

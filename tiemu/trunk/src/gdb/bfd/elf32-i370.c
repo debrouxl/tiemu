@@ -655,7 +655,7 @@ i370_elf_size_dynamic_sections (bfd *output_bfd,
 	  /* Remember whether there is a PLT.  */
 	  plt = s->size != 0;
 	}
-      else if (strncmp (name, ".rela", 5) == 0)
+      else if (CONST_STRNEQ (name, ".rela"))
 	{
 	  if (s->size != 0)
 	    {
@@ -867,7 +867,7 @@ i370_elf_check_relocs (bfd *abfd,
 	      if (name == NULL)
 		return FALSE;
 
-	      BFD_ASSERT (strncmp (name, ".rela", 5) == 0
+	      BFD_ASSERT (CONST_STRNEQ (name, ".rela")
 			  && strcmp (bfd_get_section_name (abfd, sec), name + 5) == 0);
 
 	      sreloc = bfd_get_section_by_name (dynobj, name);
@@ -1236,7 +1236,7 @@ i370_elf_relocate_section (bfd *output_bfd,
 		  if (name == NULL)
 		    return FALSE;
 
-		  BFD_ASSERT (strncmp (name, ".rela", 5) == 0
+		  BFD_ASSERT (CONST_STRNEQ (name, ".rela")
 			      && strcmp (bfd_get_section_name (input_bfd,
 							       input_section),
 					 name + 5) == 0);
@@ -1290,9 +1290,21 @@ i370_elf_relocate_section (bfd *output_bfd,
 			{
 			  asection *osec;
 
+			  /* We are turning this relocation into one
+			     against a section symbol.  It would be
+			     proper to subtract the symbol's value,
+			     osec->vma, from the emitted reloc addend,
+			     but ld.so expects buggy relocs.  */
 			  osec = sec->output_section;
 			  indx = elf_section_data (osec)->dynindx;
-			  BFD_ASSERT(indx > 0);
+			  if (indx == 0)
+			    {
+			      struct elf_link_hash_table *htab;
+			      htab = elf_hash_table (info);
+			      osec = htab->text_index_section;
+			      indx = elf_section_data (osec)->dynindx;
+			    }
+			  BFD_ASSERT (indx != 0);
 #ifdef DEBUG
 			  if (indx <= 0)
 			    {
@@ -1427,6 +1439,7 @@ i370_elf_post_process_headers (bfd * abfd,
    link glibc's ld.so without errors.  */
 #define elf_backend_create_dynamic_sections	i370_elf_create_dynamic_sections
 #define elf_backend_size_dynamic_sections	i370_elf_size_dynamic_sections
+#define elf_backend_init_index_section		_bfd_elf_init_1_index_section
 #define elf_backend_finish_dynamic_sections	i370_elf_finish_dynamic_sections
 #define elf_backend_fake_sections		i370_elf_fake_sections
 #define elf_backend_section_from_shdr		i370_elf_section_from_shdr
@@ -1440,19 +1453,9 @@ i370_noop (void)
   return 1;
 }
 
-/* We need to define these at least as no-ops to link glibc ld.so.  */
-
-#define elf_backend_add_symbol_hook \
-  (bfd_boolean (*) \
-     (bfd *, struct bfd_link_info *, Elf_Internal_Sym *, \
-      const char **, flagword *, asection **, bfd_vma *)) i370_noop
 #define elf_backend_finish_dynamic_symbol \
   (bfd_boolean (*) \
      (bfd *, struct bfd_link_info *, struct elf_link_hash_entry *, \
       Elf_Internal_Sym *)) i370_noop
-#define elf_backend_additional_program_headers \
-  (int (*) (bfd *)) i370_noop
-#define elf_backend_modify_segment_map \
-  (bfd_boolean (*) (bfd *, struct bfd_link_info *)) i370_noop
 
 #include "elf32-target.h"

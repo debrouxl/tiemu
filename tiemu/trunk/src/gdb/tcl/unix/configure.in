@@ -196,7 +196,8 @@ if test $tcl_ok = yes; then
     AC_MSG_RESULT(yes)
 else
     AC_MSG_RESULT([broken, using substitute])
-    LIBOBJS="$LIBOBJS strstr.o"
+    AC_LIBOBJ(strstr)
+    USE_COMPAT=1
 fi
 
 #--------------------------------------------------------------------
@@ -221,7 +222,8 @@ int main()
 }], , tcl_ok=0, tcl_ok=0)
 if test "$tcl_ok" = 0; then
     test -n "$verbose" && echo "	Adding strtoul.o."
-    LIBOBJS="$LIBOBJS strtoul.o"
+    AC_LIBOBJ(strtoul)
+    USE_COMPAT=1
 fi
 
 #--------------------------------------------------------------------
@@ -245,7 +247,8 @@ int main()
 }], , tcl_ok=0, tcl_ok=0)
 if test "$tcl_ok" = 0; then
     test -n "$verbose" && echo "	Adding strtod.o."
-    LIBOBJS="$LIBOBJS strtod.o"
+    AC_LIBOBJ(strtod)
+    USE_COMPAT=1
 fi
 
 #--------------------------------------------------------------------
@@ -327,7 +330,8 @@ if test "$tcl_ok" = 0; then
     AC_CHECK_LIB(inet, strncasecmp, tcl_ok=1, tcl_ok=0)
 fi
 if test "$tcl_ok" = 0; then
-    LIBOBJS="$LIBOBJS strncasecmp.o"
+    AC_LIBOBJ(strncasecmp)
+    USE_COMPAT=1
 fi
 
 #--------------------------------------------------------------------

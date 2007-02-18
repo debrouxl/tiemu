@@ -404,11 +404,7 @@ AC_DEFUN(SC_CONFIG_CFLAGS, [
 	cyg_conftest=
     fi
 
-    if test "$CYGPATH" = "echo" || test "$ac_cv_cygwin" = "yes"; then
-        DEPARG='"$<"'
-    else
-        DEPARG='"$(shell $(CYGPATH) $<)"'
-    fi
+    DEPARG='$<' # Legacy variable.  Really don't need this
 
     # set various compiler flags depending on whether we are using gcc or cl
 
@@ -432,30 +428,19 @@ AC_DEFUN(SC_CONFIG_CFLAGS, [
 	MAKE_EXE="\${CC} -o \[$]@"
 	LIBPREFIX="lib"
 
-	#if test "$ac_cv_cygwin" = "yes"; then
-	#    extra_cflags="-mno-cygwin"
-	#    extra_ldflags="-mno-cygwin"
-	#else
-	#    extra_cflags=""
-	#    extra_ldflags=""
-	#fi
-
-	if test "$ac_cv_cygwin" = "yes"; then
-	  touch ac$$.c
-	  if ${CC} -c -mwin32 ac$$.c >/dev/null 2>&1; then
-	    case "$extra_cflags" in
-	      *-mwin32*) ;;
-	      *) extra_cflags="-mwin32 $extra_cflags" ;;
-	    esac
-	    case "$extra_ldflags" in
-	      *-mwin32*) ;;
-	      *) extra_ldflags="-mwin32 $extra_ldflags" ;;
-	    esac
-	  fi
-	  rm -f ac$$.o ac$$.c
+	if ! ${CC} -mwin32 -c -xc /dev/null -o ac$$.c >/dev/null 2>&1; then
+	  : ${extra_cflags=''}
+	  : ${extra_ldflags=''}
 	else
-	  extra_cflags=''
-	  extra_ldflags=''
+	  rm -f ac$$.c
+	  case "$extra_cflags" in
+	    *-mwin32*) ;;
+	    *) extra_cflags="-mwin32 $extra_cflags" ;;
+	  esac
+	  case "$extra_ldflags" in
+	    *-mwin32*) ;;
+	    *) extra_ldflags="-mwin32 $extra_ldflags" ;;
+	  esac
 	fi
 
 	if test "${SHARED_BUILD}" = "0" ; then

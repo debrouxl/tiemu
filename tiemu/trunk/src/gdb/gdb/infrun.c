@@ -2,8 +2,9 @@
    process.
 
    Copyright (C) 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994,
-   1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004 Free
-   Software Foundation, Inc.
+   1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005,
+   2006
+   Free Software Foundation, Inc.
 
    This file is part of GDB.
 
@@ -834,7 +835,7 @@ proceed (CORE_ADDR addr, enum target_signal siggnal, int step)
 /* Start remote-debugging of a machine over a serial link.  */
 
 void
-start_remote (void)
+start_remote (int from_tty)
 {
   init_thread_list ();
   init_wait_for_inferior ();
@@ -856,6 +857,12 @@ start_remote (void)
      is currently running and GDB state should be set to the same as
      for an async run. */
   wait_for_inferior ();
+
+  /* Now that the inferior has stopped, do any bookkeeping like
+     loading shared libraries.  We want to do this before normal_stop,
+     so that the displayed frame is up to date.  */
+  post_create_inferior (&current_target, from_tty);
+
   normal_stop ();
 }
 
@@ -1413,6 +1420,12 @@ handle_inferior_event (struct execution_control_state *ecs)
       pending_follow.fork_event.parent_pid = PIDGET (ecs->ptid);
       pending_follow.fork_event.child_pid = ecs->ws.value.related_pid;
 
+      if (!ptid_equal (ecs->ptid, inferior_ptid))
+	{
+	  context_switch (ecs);
+	  flush_cached_frames ();
+	}
+
       stop_pc = read_pc ();
 
       stop_bpstat = bpstat_stop_status (stop_pc, ecs->ptid, 0);
@@ -1430,7 +1443,7 @@ handle_inferior_event (struct execution_control_state *ecs)
 
     case TARGET_WAITKIND_EXECD:
       if (debug_infrun)
-        fprintf_unfiltered (gdb_stdlog, "infrun: TARGET_WAITKIND_EXECED\n");
+        fprintf_unfiltered (gdb_stdlog, "infrun: TARGET_WAITKIND_EXECD\n");
       stop_signal = TARGET_SIGNAL_TRAP;
 
       /* NOTE drow/2002-12-05: This code should be pushed down into the
@@ -1470,6 +1483,12 @@ handle_inferior_event (struct execution_control_state *ecs)
 
       ecs->random_signal = !bpstat_explains_signal (stop_bpstat);
       inferior_ptid = ecs->saved_inferior_ptid;
+
+      if (!ptid_equal (ecs->ptid, inferior_ptid))
+	{
+	  context_switch (ecs);
+	  flush_cached_frames ();
+	}
 
       /* If no catchpoint triggered for this, then keep going.  */
       if (ecs->random_signal)
@@ -2028,7 +2047,7 @@ process_event_stop_test:
 	   duration of this command.  Then, install a temporary
 	   breakpoint at the target of the jmp_buf. */
         if (debug_infrun)
-	  fprintf_unfiltered (gdb_stdlog, "infrun: BPSTATE_WHAT_SET_LONGJMP_RESUME\n");
+	  fprintf_unfiltered (gdb_stdlog, "infrun: BPSTAT_WHAT_SET_LONGJMP_RESUME\n");
 	disable_longjmp_breakpoint ();
 	remove_breakpoints ();
 	breakpoints_inserted = 0;
@@ -2053,7 +2072,7 @@ process_event_stop_test:
       case BPSTAT_WHAT_CLEAR_LONGJMP_RESUME:
       case BPSTAT_WHAT_CLEAR_LONGJMP_RESUME_SINGLE:
         if (debug_infrun)
-	  fprintf_unfiltered (gdb_stdlog, "infrun: BPSTATE_WHAT_CLEAR_LONGJMP_RESUME\n");
+	  fprintf_unfiltered (gdb_stdlog, "infrun: BPSTAT_WHAT_CLEAR_LONGJMP_RESUME\n");
 	remove_breakpoints ();
 	breakpoints_inserted = 0;
 	disable_longjmp_breakpoint ();
@@ -2064,7 +2083,7 @@ process_event_stop_test:
 
       case BPSTAT_WHAT_SINGLE:
         if (debug_infrun)
-	  fprintf_unfiltered (gdb_stdlog, "infrun: BPSTATE_WHAT_SINGLE\n");
+	  fprintf_unfiltered (gdb_stdlog, "infrun: BPSTAT_WHAT_SINGLE\n");
 	if (breakpoints_inserted)
 	  {
 	    remove_breakpoints ();
@@ -2077,7 +2096,7 @@ process_event_stop_test:
 
       case BPSTAT_WHAT_STOP_NOISY:
         if (debug_infrun)
-	  fprintf_unfiltered (gdb_stdlog, "infrun: BPSTATE_WHAT_STOP_NOISY\n");
+	  fprintf_unfiltered (gdb_stdlog, "infrun: BPSTAT_WHAT_STOP_NOISY\n");
 	stop_print_frame = 1;
 
 	/* We are about to nuke the step_resume_breakpointt via the
@@ -2088,7 +2107,7 @@ process_event_stop_test:
 
       case BPSTAT_WHAT_STOP_SILENT:
         if (debug_infrun)
-	  fprintf_unfiltered (gdb_stdlog, "infrun: BPSTATE_WHAT_STOP_SILENT\n");
+	  fprintf_unfiltered (gdb_stdlog, "infrun: BPSTAT_WHAT_STOP_SILENT\n");
 	stop_print_frame = 0;
 
 	/* We are about to nuke the step_resume_breakpoin via the
@@ -2116,7 +2135,7 @@ process_event_stop_test:
 	   the one deleted is the one currently stopped at.  MVS  */
 
         if (debug_infrun)
-	  fprintf_unfiltered (gdb_stdlog, "infrun: BPSTATE_WHAT_STEP_RESUME\n");
+	  fprintf_unfiltered (gdb_stdlog, "infrun: BPSTAT_WHAT_STEP_RESUME\n");
 
 	if (step_resume_breakpoint == NULL)
 	  {
@@ -2140,7 +2159,7 @@ process_event_stop_test:
 
       case BPSTAT_WHAT_THROUGH_SIGTRAMP:
         if (debug_infrun)
-	  fprintf_unfiltered (gdb_stdlog, "infrun: BPSTATE_WHAT_THROUGH_SIGTRAMP\n");
+	  fprintf_unfiltered (gdb_stdlog, "infrun: BPSTAT_WHAT_THROUGH_SIGTRAMP\n");
 	/* If were waiting for a trap, hitting the step_resume_break
 	   doesn't count as getting it.  */
 	if (trap_expected)
@@ -2151,7 +2170,7 @@ process_event_stop_test:
       case BPSTAT_WHAT_CHECK_SHLIBS_RESUME_FROM_HOOK:
 	{
           if (debug_infrun)
-	    fprintf_unfiltered (gdb_stdlog, "infrun: BPSTATE_WHAT_CHECK_SHLIBS\n");
+	    fprintf_unfiltered (gdb_stdlog, "infrun: BPSTAT_WHAT_CHECK_SHLIBS\n");
 	  /* Remove breakpoints, we eventually want to step over the
 	     shlib event breakpoint, and SOLIB_ADD might adjust
 	     breakpoint addresses via breakpoint_re_set.  */
@@ -2398,12 +2417,16 @@ process_event_stop_test:
     }
 #endif
 
-  /* Check for subroutine calls.
+  /* Check for subroutine calls.  The check for the current frame
+     equalling the step ID is not necessary - the check of the
+     previous frame's ID is sufficient - but it is a common case and
+     cheaper than checking the previous frame's ID.
 
      NOTE: frame_id_eq will never report two invalid frame IDs as
      being equal, so to get into this block, both the current and
      previous frame must have valid frame IDs.  */
-  if (frame_id_eq (frame_unwind_id (get_current_frame ()), step_frame_id))
+  if (!frame_id_eq (get_frame_id (get_current_frame ()), step_frame_id)
+      && frame_id_eq (frame_unwind_id (get_current_frame ()), step_frame_id))
     {
       CORE_ADDR real_stop_pc;
 

@@ -387,7 +387,7 @@ static void mmo_print_symbol (bfd *, void *, asymbol *,
 			      bfd_print_symbol_type);
 static bfd_boolean mmo_set_section_contents (bfd *, sec_ptr, const void *,
 					     file_ptr, bfd_size_type);
-static int mmo_sizeof_headers (bfd *, bfd_boolean);
+static int mmo_sizeof_headers (bfd *, struct bfd_link_info *);
 static long mmo_get_reloc_upper_bound (bfd *, asection *);
 static bfd_boolean mmo_internal_write_header (bfd *);
 static bfd_boolean mmo_internal_write_post (bfd *, int, asection *);
@@ -2231,7 +2231,7 @@ mmo_print_symbol (bfd *abfd, void *afile, asymbol *symbol,
 
 static int
 mmo_sizeof_headers (bfd *abfd ATTRIBUTE_UNUSED,
-		    bfd_boolean exec ATTRIBUTE_UNUSED)
+		    struct bfd_link_info *info ATTRIBUTE_UNUSED)
 {
   return 0;
 }
@@ -2421,10 +2421,10 @@ mmo_internal_write_section (bfd *abfd, asection *sec)
       bfd_set_error (bfd_error_bad_value);
       return FALSE;
     }
-  else if (strncmp (sec->name, MMIX_OTHER_SPEC_SECTION_PREFIX,
-		    strlen (MMIX_OTHER_SPEC_SECTION_PREFIX)) == 0)
+  else if (CONST_STRNEQ (sec->name, MMIX_OTHER_SPEC_SECTION_PREFIX))
     {
       int n = atoi (sec->name + strlen (MMIX_OTHER_SPEC_SECTION_PREFIX));
+
       mmo_write_tetra_raw (abfd, (LOP << 24) | (LOP_SPEC << 16) | n);
       return (! abfd->tdata.mmo_data->have_error
 	      && mmo_write_chunk_list (abfd, mmo_section_data (sec)->head));

@@ -43,6 +43,30 @@ extern "C" {
 #endif
 #endif
 
+/* This is a utility macro to handle the situation where the code
+   wants to place a constant string into the code, followed by a
+   comma and then the length of the string.  Doing this by hand
+   is error prone, so using this macro is safer.  The macro will
+   also safely handle the case where a NULL is passed as the arg.  */
+#define STRING_COMMA_LEN(STR) (STR), ((STR) ? sizeof (STR) - 1 : 0)
+/* Unfortunately it is not possible to use the STRING_COMMA_LEN macro
+   to create the arguments to another macro, since the preprocessor
+   will mis-count the number of arguments to the outer macro (by not
+   evaluating STRING_COMMA_LEN and so missing the comma).  This is a
+   problem for example when trying to use STRING_COMMA_LEN to build
+   the arguments to the strncmp() macro.  Hence this alternative
+   definition of strncmp is provided here.
+   
+   Note - these macros do NOT work if STR2 is not a constant string.  */
+#define CONST_STRNEQ(STR1,STR2) (strncmp ((STR1), (STR2), sizeof (STR2) - 1) == 0)
+  /* strcpy() can have a similar problem, but since we know we are
+     copying a constant string, we can use memcpy which will be faster
+     since there is no need to check for a NUL byte inside STR.  We
+     can also save time if we do not need to copy the terminating NUL.  */
+#define LITMEMCPY(DEST,STR2) memcpy ((DEST), (STR2), sizeof (STR2) - 1)
+#define LITSTRCPY(DEST,STR2) memcpy ((DEST), (STR2), sizeof (STR2))
+
+
 /* The word size used by BFD on the host.  This may be 64 with a 32
    bit target if the host is 64 bit, or if other 64 bit targets have
    been selected with --enable-targets, or if --enable-64-bit-bfd.  */
@@ -638,6 +662,12 @@ enum dynamic_lib_link_class {
   DYN_NO_NEEDED = 8
 };
 
+enum notice_asneeded_action {
+  notice_as_needed,
+  notice_not_needed,
+  notice_needed
+};
+
 extern bfd_boolean bfd_elf_record_link_assignment
   (bfd *, struct bfd_link_info *, const char *, bfd_boolean,
    bfd_boolean);
@@ -656,7 +686,7 @@ extern void bfd_elf_set_dt_needed_name
 extern const char *bfd_elf_get_dt_soname
   (bfd *);
 extern void bfd_elf_set_dyn_lib_class
-  (bfd *, int);
+  (bfd *, enum dynamic_lib_link_class);
 extern int bfd_elf_get_dyn_lib_class
   (bfd *);
 extern struct bfd_link_needed_list *bfd_elf_get_runpath_list
@@ -838,7 +868,7 @@ extern bfd_boolean bfd_elf32_arm_allocate_interworking_sections
   (struct bfd_link_info *);
 
 extern bfd_boolean bfd_elf32_arm_process_before_allocation
-  (bfd *, struct bfd_link_info *, int);
+  (bfd *, struct bfd_link_info *);
 
 void bfd_elf32_arm_set_target_relocs
   (struct bfd_link_info *, int, char *, int, int);
@@ -850,8 +880,14 @@ extern bfd_boolean bfd_elf32_arm_add_glue_sections_to_bfd
   (bfd *, struct bfd_link_info *);
 
 /* ELF ARM mapping symbol support */
-extern bfd_boolean bfd_is_arm_mapping_symbol_name
-  (const char * name);
+#define BFD_ARM_SPECIAL_SYM_TYPE_MAP	(1 << 0)
+#define BFD_ARM_SPECIAL_SYM_TYPE_TAG	(1 << 1)
+#define BFD_ARM_SPECIAL_SYM_TYPE_OTHER  (1 << 2)
+#define BFD_ARM_SPECIAL_SYM_TYPE_ANY	(~0)
+extern bfd_boolean bfd_is_arm_special_symbol_name
+  (const char * name, int type);
+
+extern void bfd_elf32_arm_set_byteswap_code (struct bfd_link_info *, int);
 
 /* ARM Note section processing.  */
 extern bfd_boolean bfd_arm_merge_machines

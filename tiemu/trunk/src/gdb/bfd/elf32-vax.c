@@ -34,13 +34,6 @@ static struct bfd_hash_entry *elf_vax_link_hash_newfunc (struct bfd_hash_entry *
 static struct bfd_link_hash_table *elf_vax_link_hash_table_create (bfd *);
 static bfd_boolean elf_vax_check_relocs (bfd *, struct bfd_link_info *,
 					 asection *, const Elf_Internal_Rela *);
-static asection *elf_vax_gc_mark_hook (asection *, struct bfd_link_info *,
-				       Elf_Internal_Rela *,
-				       struct elf_link_hash_entry *,
-				       Elf_Internal_Sym *);
-static bfd_boolean elf_vax_gc_sweep_hook (bfd *, struct bfd_link_info *,
-					  asection *,
-					  const Elf_Internal_Rela *);
 static bfd_boolean elf_vax_adjust_dynamic_symbol (struct bfd_link_info *,
 						  struct elf_link_hash_entry *);
 static bfd_boolean elf_vax_size_dynamic_sections (bfd *, struct bfd_link_info *);
@@ -738,7 +731,7 @@ elf_vax_check_relocs (bfd *abfd, struct bfd_link_info *info, asection *sec,
 		  if (name == NULL)
 		    return FALSE;
 
-		  BFD_ASSERT (strncmp (name, ".rela", 5) == 0
+		  BFD_ASSERT (CONST_STRNEQ (name, ".rela")
 			      && strcmp (bfd_get_section_name (abfd, sec),
 					 name + 5) == 0);
 
@@ -829,38 +822,20 @@ elf_vax_check_relocs (bfd *abfd, struct bfd_link_info *info, asection *sec,
 
 static asection *
 elf_vax_gc_mark_hook (asection *sec,
-		      struct bfd_link_info *info ATTRIBUTE_UNUSED,
+		      struct bfd_link_info *info,
 		      Elf_Internal_Rela *rel,
 		      struct elf_link_hash_entry *h,
 		      Elf_Internal_Sym *sym)
 {
   if (h != NULL)
-    {
-      switch (ELF32_R_TYPE (rel->r_info))
-	{
-	case R_VAX_GNU_VTINHERIT:
-	case R_VAX_GNU_VTENTRY:
-	  break;
+    switch (ELF32_R_TYPE (rel->r_info))
+      {
+      case R_VAX_GNU_VTINHERIT:
+      case R_VAX_GNU_VTENTRY:
+	return NULL;
+      }
 
-	default:
-	  switch (h->root.type)
-	    {
-	    default:
-	      break;
-
-	    case bfd_link_hash_defined:
-	    case bfd_link_hash_defweak:
-	      return h->root.u.def.section;
-
-	    case bfd_link_hash_common:
-	      return h->root.u.c.p->section;
-	    }
-	}
-    }
-  else
-    return bfd_section_from_elf_index (sec->owner, sym->st_shndx);
-
-  return NULL;
+  return _bfd_elf_gc_mark_hook (sec, info, rel, h, sym);
 }
 
 /* Update the got entry reference counts for the section being removed.  */
@@ -1194,7 +1169,7 @@ elf_vax_size_dynamic_sections (bfd *output_bfd, struct bfd_link_info *info)
 	  /* Remember whether there is a PLT.  */
 	  plt = s->size != 0;
 	}
-      else if (strncmp (name, ".rela", 5) == 0)
+      else if (CONST_STRNEQ (name, ".rela"))
 	{
 	  if (s->size != 0)
 	    {
@@ -1226,7 +1201,7 @@ elf_vax_size_dynamic_sections (bfd *output_bfd, struct bfd_link_info *info)
 	      s->reloc_count = 0;
 	    }
 	}
-      else if (strncmp (name, ".got", 4) != 0
+      else if (! CONST_STRNEQ (name, ".got")
 	       && strcmp (name, ".dynbss") != 0)
 	{
 	  /* It's not one of our sections, so don't allocate space.  */
@@ -1646,7 +1621,7 @@ elf_vax_relocate_section (bfd *output_bfd,
 		  if (name == NULL)
 		    return FALSE;
 
-		  BFD_ASSERT (strncmp (name, ".rela", 5) == 0
+		  BFD_ASSERT (CONST_STRNEQ (name, ".rela")
 			      && strcmp (bfd_get_section_name (input_bfd,
 							       input_section),
 					 name + 5) == 0);
@@ -1705,9 +1680,21 @@ elf_vax_relocate_section (bfd *output_bfd,
 			{
 			  asection *osec;
 
+			  /* We are turning this relocation into one
+			     against a section symbol.  It would be
+			     proper to subtract the symbol's value,
+			     osec->vma, from the emitted reloc addend,
+			     but ld.so expects buggy relocs.  */
 			  osec = sec->output_section;
 			  indx = elf_section_data (osec)->dynindx;
-			  BFD_ASSERT (indx > 0);
+			  if (indx == 0)
+			    {
+			      struct elf_link_hash_table *htab;
+			      htab = elf_hash_table (info);
+			      osec = htab->text_index_section;
+			      indx = elf_section_data (osec)->dynindx;
+			    }
+			  BFD_ASSERT (indx != 0);
 			}
 
 		      outrel.r_info = ELF32_R_INFO (indx, r_type);
@@ -2087,6 +2074,7 @@ elf_vax_finish_dynamic_sections (bfd *output_bfd, struct bfd_link_info *info)
 					elf_vax_adjust_dynamic_symbol
 #define elf_backend_size_dynamic_sections \
 					elf_vax_size_dynamic_sections
+#define elf_backend_init_index_section	_bfd_elf_init_1_index_section
 #define elf_backend_relocate_section	elf_vax_relocate_section
 #define elf_backend_finish_dynamic_symbol \
 					elf_vax_finish_dynamic_symbol

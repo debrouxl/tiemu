@@ -603,6 +603,7 @@ extern int gdbtk_test (char *);
       if (symarg)
 	printf_filtered ("..");
       wrap_here ("");
+      printf_filtered ("\n");
       gdb_flush (gdb_stdout);	/* Force to screen during slow operations */
     }
 
@@ -637,13 +638,13 @@ extern int gdbtk_test (char *);
       if (symarg)
 	printf_filtered ("..");
       wrap_here ("");
+      printf_filtered ("\n");
       gdb_flush (gdb_stdout);	/* Force to screen during slow operations */
     }
 
-  error_pre_print = "\n\n";
+  /* Set off error and warning messages with a blank line.  */
+  error_pre_print = "\n";
   quit_pre_print = error_pre_print;
-
-  /* We may get more than one warning, don't double space all of them... */
   warning_pre_print = _("\nwarning: ");
 
   /* Read and execute $HOME/.gdbinit file, if it exists.  This is done
@@ -657,7 +658,7 @@ extern int gdbtk_test (char *);
 
       if (!inhibit_gdbinit)
 	{
-	  catch_command_errors (source_command, homeinit, 0, RETURN_MASK_ALL);
+	  catch_command_errors (source_script, homeinit, 0, RETURN_MASK_ALL);
 	}
 
       /* Do stats; no need to do them elsewhere since we'll only
@@ -702,15 +703,6 @@ extern int gdbtk_test (char *);
 	catch_command_errors (symbol_file_add_main, symarg, 0, RETURN_MASK_ALL);
     }
 
-  /* After the symbol file has been read, print a newline to get us
-     beyond the copyright line...  But errors should still set off
-     the error message with a (single) blank line.  */
-  if (!quiet)
-    printf_filtered ("\n");
-  error_pre_print = "\n";
-  quit_pre_print = error_pre_print;
-  warning_pre_print = _("\nwarning: ");
-
   if (corearg != NULL)
     {
       /* corearg may be either a corefile or a pid.
@@ -744,7 +736,7 @@ extern int gdbtk_test (char *);
       || memcmp ((char *) &homebuf, (char *) &cwdbuf, sizeof (struct stat)))
     if (!inhibit_gdbinit)
       {
-	catch_command_errors (source_command, gdbinit, 0, RETURN_MASK_ALL);
+	catch_command_errors (source_script, gdbinit, 0, RETURN_MASK_ALL);
       }
 
   for (i = 0; i < ncmd; i++)
@@ -762,12 +754,12 @@ extern int gdbtk_test (char *);
 	    read_command_file (stdin);
 	  else
 #endif
-	    source_command (cmdarg[i], !batch);
+	    source_script (cmdarg[i], !batch);
 	  do_cleanups (ALL_CLEANUPS);
 	}
 #endif
       if (cmdarg[i].type == CMDARG_FILE)
-        catch_command_errors (source_command, cmdarg[i].string,
+        catch_command_errors (source_script, cmdarg[i].string,
 			      !batch, RETURN_MASK_ALL);
       else  /* cmdarg[i].type == CMDARG_COMMAND */
         catch_command_errors (execute_command, cmdarg[i].string,

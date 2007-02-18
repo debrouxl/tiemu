@@ -24,6 +24,11 @@ if $tracelevel {
 
 if { [skip_cplus_tests] } { continue }
 
+# On SPU this test fails because the executable exceeds local storage size.
+if { [istarget "spu*-*-*"] } {
+        return 0
+}
+
 set testfile "bs15503"
 set srcfile ${testfile}.cc
 set binfile ${objdir}/${subdir}/${testfile}
@@ -83,11 +88,11 @@ gdb_test "print (const char *) s" \
 # gdb_test "print s > "AAA"			"\\$\[0-9\]+ = true"
 # gdb_test "print s < "ZZZ"			"\\$\[0-9\]+ = true"
 
-# TODO crash gdb!  This is going to be a great test!
-# -- chastain 2004-01-07
+# TODO: GDB doesn't know to convert the string to a const char *, and
+# instead tries to use the string as a structure initializer.
 # 
 # gdb_test "print s == \"I am a short stringand now a longer string\"" \
-#     "\\$\[0-9\]+ = "true"
+#     "\\$\[0-9\]+ = true"
 
 gdb_test "print (const char *) s.substr(0,4)"	"\\$\[0-9\]+ = $hex \"I am\""
 gdb_test "print (const char *) (s=s.substr(0,4))" \

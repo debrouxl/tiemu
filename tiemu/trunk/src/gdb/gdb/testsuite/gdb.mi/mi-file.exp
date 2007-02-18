@@ -37,7 +37,8 @@ set testfile "basics"
 set srcfile ${testfile}.c
 set binfile ${objdir}/${subdir}/${testfile}
 if  { [gdb_compile "${srcdir}/${subdir}/${srcfile}" "${binfile}" executable {debug additional_flags=-DFAKEARGV}] != "" } {
-     gdb_suppress_entire_file "Testcase compile failed, so all tests in this file will automatically fail."
+     untested mi-file.exp
+     return -1
 }
 
 mi_delete_breakpoints
@@ -74,7 +75,7 @@ proc test_file_list_exec_source_files {} {
 
     # get the path and absolute path to the current executable
     mi_gdb_test "222-file-list-exec-source-files" \
-	    "222\\\^done,files=\\\[\{file=\".*/${srcfile}\",fullname=\"$fullname_syntax${srcfile}\"\},\{file=\".*\"\},\{file=\".*\"\},\{file=\".*\"\},\{file=\".*\"\}\\\]" \
+	    "222\\\^done,files=\\\[\{file=\".*/${srcfile}\",fullname=\"$fullname_syntax${srcfile}\"\}.*]" \
               "Getting a list of source files."
 }
 

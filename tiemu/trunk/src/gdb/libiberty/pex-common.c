@@ -142,18 +142,22 @@ temp_file (struct pex_obj *obj, int flags, char *name)
   return name;
 }
 
-/* Run a program.  */
+
+/* As for pex_run (), but permits the environment for the child process
+   to be specified. */
 
 const char *
-pex_run (struct pex_obj *obj, int flags, const char *executable,
-	 char * const * argv, const char *orig_outname, const char *errname,
-	 int *err)
+pex_run_in_environment (struct pex_obj *obj, int flags, const char *executable,
+       	                char * const * argv, char * const * env,
+                        const char *orig_outname, const char *errname,
+                  	int *err)
 {
   const char *errmsg;
   int in, out, errdes;
   char *outname;
   int outname_allocated;
   int p[2];
+  int toclose;
   long pid;
 
   in = -1;
@@ -294,10 +298,18 @@ pex_run (struct pex_obj *obj, int flags, const char *executable,
 	}
     }
 
+  /* If we are using pipes, the child process has to close the next
+     input pipe.  */
+
+  if ((obj->flags & PEX_USE_PIPES) == 0)
+    toclose = -1;
+  else
+    toclose = obj->next_input;
+
   /* Run the program.  */
 
-  pid = obj->funcs->exec_child (obj, flags, executable, argv, in, out, errdes,
-				&errmsg, err);
+  pid = obj->funcs->exec_child (obj, flags, executable, argv, env,
+				in, out, errdes, toclose, &errmsg, err);
   if (pid < 0)
     goto error_exit;
 
@@ -317,6 +329,17 @@ pex_run (struct pex_obj *obj, int flags, const char *executable,
   if (outname_allocated)
     free (outname);
   return errmsg;
+}
+
+/* Run a program.  */
+
+const char *
+pex_run (struct pex_obj *obj, int flags, const char *executable,
+       	 char * const * argv, const char *orig_outname, const char *errname,
+         int *err)
+{
+  return pex_run_in_environment (obj, flags, executable, argv, NULL,
+				 orig_outname, errname, err);
 }
 
 /* Return a FILE pointer for a temporary file to fill with input for

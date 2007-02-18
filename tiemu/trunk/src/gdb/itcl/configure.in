@@ -27,15 +27,11 @@ AC_PREFIX_PROGRAM(itclsh)
 # Convert --enable-shared-itcl to --enable-shared for the subdirs
 ac_configure_args=`echo "$ac_configure_args" | sed "s,--enable-shared-itcl,--enable-shared,g"`
 
+AC_CONFIG_SUBDIRS(itcl itk)
 # Source-Navigator does not use the iwidgets packag
-subdirs=
-
-if test -d ${srcdir}/../snavigator && test ! -d ${srcdir}/../gdb/gdbtk ; then
-    subdirs="itcl itk"
-else
-    subdirs="itcl itk iwidgets"
+if test ! -d ${srcdir}/../snavigator || test -d ${srcdir}/../gdb/gdbtk ; then
+    AC_CONFIG_SUBDIRS(iwidgets)
 fi
-AC_CONFIG_SUBDIRS($subdirs)
 
 AC_OUTPUT(Makefile,
 	chmod +x ${srcdir}/config/install-sh ${srcdir}/config/mkinstalldirs)

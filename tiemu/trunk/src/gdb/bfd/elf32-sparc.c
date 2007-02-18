@@ -172,6 +172,7 @@ elf32_sparc_reloc_type_class (const Elf_Internal_Rela *rela)
 #define ELF_MACHINE_CODE EM_SPARC
 #define ELF_MACHINE_ALT1 EM_SPARC32PLUS
 #define ELF_MAXPAGESIZE 0x10000
+#define ELF_COMMONPAGESIZE 0x2000
 
 #define bfd_elf32_bfd_merge_private_bfd_data \
 					elf32_sparc_merge_private_bfd_data
@@ -206,6 +207,7 @@ elf32_sparc_reloc_type_class (const Elf_Internal_Rela *rela)
 #define elf_backend_gc_mark_hook	_bfd_sparc_elf_gc_mark_hook
 #define elf_backend_gc_sweep_hook       _bfd_sparc_elf_gc_sweep_hook
 #define elf_backend_plt_sym_val		_bfd_sparc_elf_plt_sym_val
+#define elf_backend_init_index_section	_bfd_elf_init_1_index_section
 
 #define elf_backend_can_gc_sections 1
 #define elf_backend_can_refcount 1

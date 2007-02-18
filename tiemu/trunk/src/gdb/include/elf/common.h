@@ -118,6 +118,7 @@
 #define EM_PPC		 20	/* PowerPC */
 #define EM_PPC64	 21	/* 64-bit PowerPC */
 #define EM_S390		 22	/* IBM S/390 */
+#define EM_SPU		 23	/* Sony/Toshiba/IBM SPU */
 
 #define EM_V800		 36	/* NEC V800 series */
 #define EM_FR20		 37	/* Fujitsu FR20 */
@@ -185,6 +186,7 @@
 #define EM_BLACKFIN	106	/* ADI Blackfin */
 #define EM_ALTERA_NIOS2	113	/* Altera Nios II soft-core processor */
 #define EM_CRX		114	/* National Semiconductor CRX */
+#define EM_SCORE        135     /* Sunplus Score */ 
 
 /* If it is necessary to assign new unofficial EM_* values, please pick large
    random numbers (0x8523, 0xa7f2, etc.) to minimize the chances of collision
@@ -338,6 +340,7 @@
 #define SHT_LOOS	0x60000000	/* First of OS specific semantics */
 #define SHT_HIOS	0x6fffffff	/* Last of OS specific semantics */
 
+#define SHT_GNU_HASH	0x6ffffff6	/* GNU style symbol hash table */
 #define SHT_GNU_LIBLIST	0x6ffffff7	/* List of prelink dependencies */
 
 /* The next three section types are defined by Solaris, and are named
@@ -577,6 +580,7 @@
 #define DT_VALRNGHI	0x6ffffdff
 
 #define DT_ADDRRNGLO	0x6ffffe00
+#define DT_GNU_HASH	0x6ffffef5
 #define DT_TLSDESC_PLT	0x6ffffef6
 #define DT_TLSDESC_GOT	0x6ffffef7
 #define DT_GNU_CONFLICT	0x6ffffef8

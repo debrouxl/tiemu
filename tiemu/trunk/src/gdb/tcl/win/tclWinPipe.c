@@ -17,6 +17,9 @@
 #include <fcntl.h>
 #include <io.h>
 #include <sys/stat.h>
+#ifdef __CYGWIN__
+#include <sys/cygwin.h>
+#endif
 
 /*
  * The following variable is used to tell whether this module has been
@@ -1224,6 +1227,10 @@ TclpCreateProcess(
      */
 
     BuildCommandLine(execPath, argc, argv, &cmdLine);
+
+#ifdef __CYGWIN__
+    cygwin_internal (CW_SYNC_WINENV);
+#endif
 
     if ((*tclWinProcs->createProcessProc)(NULL, 
 	    (TCHAR *) Tcl_DStringValue(&cmdLine), NULL, NULL, TRUE, 

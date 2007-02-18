@@ -350,7 +350,7 @@ static const bfd_byte elf64_x86_64_plt0_entry[PLT_ENTRY_SIZE] =
 {
   0xff, 0x35, 8, 0, 0, 0,	/* pushq GOT+8(%rip)  */
   0xff, 0x25, 16, 0, 0, 0,	/* jmpq *GOT+16(%rip) */
-  0x90, 0x90, 0x90, 0x90	/* pad out to 16 bytes with nops.  */
+  0x0f, 0x1f, 0x40, 0x00	/* nopl 0(%rax)       */
 };
 
 /* Subsequent entries in a procedure linkage table look like this.  */
@@ -676,11 +676,14 @@ elf64_x86_64_copy_indirect_symbol (struct bfd_link_info *info,
 static bfd_boolean
 elf64_x86_64_mkobject (bfd *abfd)
 {
-  bfd_size_type amt = sizeof (struct elf64_x86_64_obj_tdata);
-  abfd->tdata.any = bfd_zalloc (abfd, amt);
   if (abfd->tdata.any == NULL)
-    return FALSE;
-  return TRUE;
+    {
+      bfd_size_type amt = sizeof (struct elf64_x86_64_obj_tdata);
+      abfd->tdata.any = bfd_zalloc (abfd, amt);
+      if (abfd->tdata.any == NULL)
+	return FALSE;
+    }
+  return bfd_elf_mkobject (abfd);
 }
 
 static bfd_boolean
@@ -994,7 +997,7 @@ elf64_x86_64_check_relocs (bfd *abfd, struct bfd_link_info *info, asection *sec,
 		    && (r_type != R_X86_64_PC32)
 		    && (r_type != R_X86_64_PC64))
 		   || (h != NULL
-		       && (! info->symbolic
+		       && (! SYMBOLIC_BIND (info, h)
 			   || h->root.type == bfd_link_hash_defweak
 			   || !h->def_regular))))
 	      || (ELIMINATE_COPY_RELOCS
@@ -1022,7 +1025,7 @@ elf64_x86_64_check_relocs (bfd *abfd, struct bfd_link_info *info, asection *sec,
 		  if (name == NULL)
 		    return FALSE;
 
-		  if (strncmp (name, ".rela", 5) != 0
+		  if (! CONST_STRNEQ (name, ".rela")
 		      || strcmp (bfd_get_section_name (abfd, sec),
 				 name + 5) != 0)
 		    {
@@ -1131,38 +1134,20 @@ elf64_x86_64_check_relocs (bfd *abfd, struct bfd_link_info *info, asection *sec,
 
 static asection *
 elf64_x86_64_gc_mark_hook (asection *sec,
-			   struct bfd_link_info *info ATTRIBUTE_UNUSED,
+			   struct bfd_link_info *info,
 			   Elf_Internal_Rela *rel,
 			   struct elf_link_hash_entry *h,
 			   Elf_Internal_Sym *sym)
 {
   if (h != NULL)
-    {
-      switch (ELF64_R_TYPE (rel->r_info))
-	{
-	case R_X86_64_GNU_VTINHERIT:
-	case R_X86_64_GNU_VTENTRY:
-	  break;
+    switch (ELF64_R_TYPE (rel->r_info))
+      {
+      case R_X86_64_GNU_VTINHERIT:
+      case R_X86_64_GNU_VTENTRY:
+	return NULL;
+      }
 
-	default:
-	  switch (h->root.type)
-	    {
-	    case bfd_link_hash_defined:
-	    case bfd_link_hash_defweak:
-	      return h->root.u.def.section;
-
-	    case bfd_link_hash_common:
-	      return h->root.u.c.p->section;
-
-	    default:
-	      break;
-	    }
-	}
-    }
-  else
-    return bfd_section_from_elf_index (sec->owner, sym->st_shndx);
-
-  return NULL;
+  return _bfd_elf_gc_mark_hook (sec, info, rel, h, sym);
 }
 
 /* Update the got entry reference counts for the section being removed.	 */
@@ -1880,7 +1865,7 @@ elf64_x86_64_size_dynamic_sections (bfd *output_bfd ATTRIBUTE_UNUSED,
 	  /* Strip this section if we don't need it; see the
 	     comment below.  */
 	}
-      else if (strncmp (bfd_get_section_name (dynobj, s), ".rela", 5) == 0)
+      else if (CONST_STRNEQ (bfd_get_section_name (dynobj, s), ".rela"))
 	{
 	  if (s->size != 0 && s != htab->srelplt)
 	    relocs = TRUE;
@@ -2385,8 +2370,13 @@ elf64_x86_64_relocate_section (bfd *output_bfd, struct bfd_link_info *info,
 	  /* r_symndx will be zero only for relocs against symbols
 	     from removed linkonce sections, or sections discarded by
 	     a linker script.  */
-	  if (r_symndx == 0
-	      || (input_section->flags & SEC_ALLOC) == 0)
+	  if (r_symndx == 0)
+	    {
+	      _bfd_clear_contents (howto, input_bfd, contents + rel->r_offset);
+	      break;
+	    }
+
+	  if ((input_section->flags & SEC_ALLOC) == 0)
 	    break;
 
 	  if ((info->shared
@@ -2442,7 +2432,7 @@ elf64_x86_64_relocate_section (bfd *output_bfd, struct bfd_link_info *info,
 			   || r_type == R_X86_64_PC32
 			   || r_type == R_X86_64_PC64
 			   || !info->shared
-			   || !info->symbolic
+			   || !SYMBOLIC_BIND (info, h)
 			   || !h->def_regular))
 		{
 		  outrel.r_info = ELF64_R_INFO (h->dynindx, r_type);
@@ -2472,9 +2462,19 @@ elf64_x86_64_relocate_section (bfd *output_bfd, struct bfd_link_info *info,
 			{
 			  asection *osec;
 
+			  /* We are turning this relocation into one
+			     against a section symbol.  It would be
+			     proper to subtract the symbol's value,
+			     osec->vma, from the emitted reloc addend,
+			     but ld.so expects buggy relocs.  */
 			  osec = sec->output_section;
 			  sindx = elf_section_data (osec)->dynindx;
-			  BFD_ASSERT (sindx > 0);
+			  if (sindx == 0)
+			    {
+			      asection *oi = htab->elf.text_index_section;
+			      sindx = elf_section_data (oi)->dynindx;
+			    }
+			  BFD_ASSERT (sindx != 0);
 			}
 
 		      outrel.r_info = ELF64_R_INFO (sindx, r_type);
@@ -2614,8 +2614,9 @@ elf64_x86_64_relocate_section (bfd *output_bfd, struct bfd_link_info *info,
 		  val = bfd_get_8 (input_bfd, contents + roff + 1);
 		  BFD_ASSERT (val == 0x10);
 
-		  /* Now modify the instruction as appropriate.  */
-		  bfd_put_8 (output_bfd, 0x90, contents + roff);
+		  /* Now modify the instruction as appropriate.  Use
+		     xchg %ax,%ax instead of 2 nops.  */
+		  bfd_put_8 (output_bfd, 0x66, contents + roff);
 		  bfd_put_8 (output_bfd, 0x90, contents + roff + 1);
 		  continue;
 		}
@@ -2907,8 +2908,9 @@ elf64_x86_64_relocate_section (bfd *output_bfd, struct bfd_link_info *info,
 	      val = bfd_get_8 (input_bfd, contents + roff + 1);
 	      BFD_ASSERT (val == 0x10);
 
-	      /* Now modify the instruction as appropriate.  */
-	      bfd_put_8 (output_bfd, 0x90, contents + roff);
+	      /* Now modify the instruction as appropriate.  Use
+		 xchg %ax,%ax instead of 2 nops.  */
+	      bfd_put_8 (output_bfd, 0x66, contents + roff);
 	      bfd_put_8 (output_bfd, 0x90, contents + roff + 1);
 
 	      continue;
@@ -3030,12 +3032,6 @@ elf64_x86_64_relocate_section (bfd *output_bfd, struct bfd_link_info *info,
 
 	  if (r == bfd_reloc_overflow)
 	    {
-	      if (h != NULL
-		  && h->root.type == bfd_link_hash_undefweak
-		  && howto->pc_relative)
-		/* Ignore reloc overflow on branches to undefweak syms.  */
-		continue;
-
 	      if (! ((*info->callbacks->reloc_overflow)
 		     (info, (h ? &h->root : NULL), name, howto->name,
 		      (bfd_vma) 0, input_bfd, input_section,
@@ -3594,7 +3590,8 @@ elf64_x86_64_merge_symbol (struct bfd_link_info *info ATTRIBUTE_UNUSED,
 }
 
 static int
-elf64_x86_64_additional_program_headers (bfd *abfd)
+elf64_x86_64_additional_program_headers (bfd *abfd,
+					 struct bfd_link_info *info ATTRIBUTE_UNUSED)
 {
   asection *s;
   int count = 0; 
@@ -3614,23 +3611,38 @@ elf64_x86_64_additional_program_headers (bfd *abfd)
   return count;
 }
 
+/* Return TRUE if symbol should be hashed in the `.gnu.hash' section.  */
+
+static bfd_boolean
+elf64_x86_64_hash_symbol (struct elf_link_hash_entry *h)
+{
+  if (h->plt.offset != (bfd_vma) -1
+      && !h->def_regular
+      && !h->pointer_equality_needed)
+    return FALSE;
+
+  return _bfd_elf_hash_symbol (h);
+}
+
 static const struct bfd_elf_special_section 
   elf64_x86_64_special_sections[]=
 {
-  { ".gnu.linkonce.lb",	16, -2, SHT_NOBITS,   SHF_ALLOC + SHF_WRITE + SHF_X86_64_LARGE},
-  { ".gnu.linkonce.lr",	16, -2, SHT_PROGBITS, SHF_ALLOC + SHF_X86_64_LARGE},
-  { ".gnu.linkonce.lt",	16, -2, SHT_PROGBITS, SHF_ALLOC + SHF_EXECINSTR + SHF_X86_64_LARGE},
-  { ".lbss",	5, -2, SHT_NOBITS,   SHF_ALLOC + SHF_WRITE + SHF_X86_64_LARGE},
-  { ".ldata",	6, -2, SHT_PROGBITS, SHF_ALLOC + SHF_WRITE + SHF_X86_64_LARGE},
-  { ".lrodata",	8, -2, SHT_PROGBITS, SHF_ALLOC + SHF_X86_64_LARGE},
-  { NULL,	0,  0, 0,            0 }
+  { STRING_COMMA_LEN (".gnu.linkonce.lb"), -2, SHT_NOBITS,   SHF_ALLOC + SHF_WRITE + SHF_X86_64_LARGE},
+  { STRING_COMMA_LEN (".gnu.linkonce.lr"), -2, SHT_PROGBITS, SHF_ALLOC + SHF_X86_64_LARGE},
+  { STRING_COMMA_LEN (".gnu.linkonce.lt"), -2, SHT_PROGBITS, SHF_ALLOC + SHF_EXECINSTR + SHF_X86_64_LARGE},
+  { STRING_COMMA_LEN (".lbss"),	           -2, SHT_NOBITS,   SHF_ALLOC + SHF_WRITE + SHF_X86_64_LARGE},
+  { STRING_COMMA_LEN (".ldata"),	   -2, SHT_PROGBITS, SHF_ALLOC + SHF_WRITE + SHF_X86_64_LARGE},
+  { STRING_COMMA_LEN (".lrodata"),	   -2, SHT_PROGBITS, SHF_ALLOC + SHF_X86_64_LARGE},
+  { NULL,	                0,          0, 0,            0 }
 };
 
 #define TARGET_LITTLE_SYM		    bfd_elf64_x86_64_vec
 #define TARGET_LITTLE_NAME		    "elf64-x86-64"
 #define ELF_ARCH			    bfd_arch_i386
 #define ELF_MACHINE_CODE		    EM_X86_64
-#define ELF_MAXPAGESIZE			    0x100000
+#define ELF_MAXPAGESIZE			    0x200000
+#define ELF_MINPAGESIZE			    0x1000
+#define ELF_COMMONPAGESIZE		    0x1000
 
 #define elf_backend_can_gc_sections	    1
 #define elf_backend_can_refcount	    1
@@ -3660,6 +3672,7 @@ static const struct bfd_elf_special_section
 #define elf_backend_relocate_section	    elf64_x86_64_relocate_section
 #define elf_backend_size_dynamic_sections   elf64_x86_64_size_dynamic_sections
 #define elf_backend_always_size_sections    elf64_x86_64_always_size_sections
+#define elf_backend_init_index_section	    _bfd_elf_init_1_index_section
 #define elf_backend_plt_sym_val		    elf64_x86_64_plt_sym_val
 #define elf_backend_object_p		    elf64_x86_64_elf_object_p
 #define bfd_elf64_mkobject		    elf64_x86_64_mkobject
@@ -3685,5 +3698,38 @@ static const struct bfd_elf_special_section
   elf64_x86_64_special_sections
 #define elf_backend_additional_program_headers \
   elf64_x86_64_additional_program_headers
+#define elf_backend_hash_symbol \
+  elf64_x86_64_hash_symbol
+
+#include "elf64-target.h"
+
+/* FreeBSD support.  */
+
+#undef  TARGET_LITTLE_SYM
+#define TARGET_LITTLE_SYM		    bfd_elf64_x86_64_freebsd_vec
+#undef  TARGET_LITTLE_NAME
+#define TARGET_LITTLE_NAME		    "elf64-x86-64-freebsd"
+
+/* The kernel recognizes executables as valid only if they carry a
+   "FreeBSD" label in the ELF header.  So we put this label on all
+   executables and (for simplicity) also all other object files.  */
+
+static void
+elf64_x86_64_fbsd_post_process_headers (bfd * abfd,
+					struct bfd_link_info * link_info ATTRIBUTE_UNUSED)
+{
+  Elf_Internal_Ehdr * i_ehdrp;	/* ELF file header, internal form.  */
+
+  i_ehdrp = elf_elfheader (abfd);
+
+  /* Put an ABI label supported by FreeBSD >= 4.1.  */
+  i_ehdrp->e_ident[EI_OSABI] = ELFOSABI_FREEBSD;
+}
+
+#undef  elf_backend_post_process_headers
+#define elf_backend_post_process_headers  elf64_x86_64_fbsd_post_process_headers
+
+#undef  elf64_bed
+#define elf64_bed elf64_x86_64_fbsd_bed
 
 #include "elf64-target.h"

@@ -57,12 +57,6 @@ static bfd_boolean elf32_frv_add_symbol_hook
 static bfd_reloc_status_type frv_final_link_relocate
   PARAMS ((reloc_howto_type *, bfd *, asection *, bfd_byte *,
 	   Elf_Internal_Rela *, bfd_vma));
-static bfd_boolean elf32_frv_gc_sweep_hook
-  PARAMS ((bfd *, struct bfd_link_info *, asection *, const
-	   Elf_Internal_Rela *));
-static asection * elf32_frv_gc_mark_hook
-  PARAMS ((asection *, struct bfd_link_info *, Elf_Internal_Rela *,
-	   struct elf_link_hash_entry *, Elf_Internal_Sym *));
 static bfd_boolean elf32_frv_check_relocs
   PARAMS ((bfd *, struct bfd_link_info *, asection *,
 	   const Elf_Internal_Rela *));
@@ -4145,54 +4139,22 @@ elf32_frv_relocate_section (output_bfd, info, input_bfd, input_section,
    relocation.  */
 
 static asection *
-elf32_frv_gc_mark_hook (sec, info, rel, h, sym)
-     asection *sec;
-     struct bfd_link_info *info ATTRIBUTE_UNUSED;
-     Elf_Internal_Rela *rel;
-     struct elf_link_hash_entry *h;
-     Elf_Internal_Sym *sym;
+elf32_frv_gc_mark_hook (asection *sec,
+			struct bfd_link_info *info,
+			Elf_Internal_Rela *rel,
+			struct elf_link_hash_entry *h,
+			Elf_Internal_Sym *sym)
 {
   if (h != NULL)
-    {
-      switch (ELF32_R_TYPE (rel->r_info))
-	{
-	case R_FRV_GNU_VTINHERIT:
-	case R_FRV_GNU_VTENTRY:
-	  break;
+    switch (ELF32_R_TYPE (rel->r_info))
+      {
+      case R_FRV_GNU_VTINHERIT:
+      case R_FRV_GNU_VTENTRY:
+	return NULL;
+      }
 
-	default:
-	  switch (h->root.type)
-	    {
-	    default:
-	      break;
-
-	    case bfd_link_hash_defined:
-	    case bfd_link_hash_defweak:
-	      return h->root.u.def.section;
-
-	    case bfd_link_hash_common:
-	      return h->root.u.c.p->section;
-	    }
-	}
-    }
-  else
-    return bfd_section_from_elf_index (sec->owner, sym->st_shndx);
-
-  return NULL;
+  return _bfd_elf_gc_mark_hook (sec, info, rel, h, sym);
 }
-
-/* Update the got entry reference counts for the section being removed.  */
-
-static bfd_boolean
-elf32_frv_gc_sweep_hook (abfd, info, sec, relocs)
-     bfd *abfd ATTRIBUTE_UNUSED;
-     struct bfd_link_info *info ATTRIBUTE_UNUSED;
-     asection *sec ATTRIBUTE_UNUSED;
-     const Elf_Internal_Rela *relocs ATTRIBUTE_UNUSED;
-{
-  return TRUE;
-}
-
 
 /* Hook called by the linker routine which adds symbols from an object
    file.  We use it to put .comm items in .scomm, and not .comm.  */
@@ -5603,7 +5565,6 @@ elf32_frvfdpic_always_size_sections (bfd *output_bfd,
   if (!info->relocatable)
     {
       struct elf_link_hash_entry *h;
-      asection *sec;
 
       /* Force a PT_GNU_STACK segment to be created.  */
       if (! elf_tdata (output_bfd)->stack_flags)
@@ -5630,13 +5591,6 @@ elf32_frvfdpic_always_size_sections (bfd *output_bfd,
 	  h->type = STT_OBJECT;
 	  /* This one must NOT be hidden.  */
 	}
-
-      /* Create a stack section, and set its alignment.  */
-      sec = bfd_make_section (output_bfd, ".stack");
-
-      if (sec == NULL
-	  || ! bfd_set_section_alignment (output_bfd, sec, 3))
-	return FALSE;
     }
 
   return TRUE;
@@ -5718,48 +5672,45 @@ elf32_frvfdpic_relax_section (bfd *abfd ATTRIBUTE_UNUSED, asection *sec,
 }
 
 static bfd_boolean
-elf32_frvfdpic_modify_segment_map (bfd *output_bfd,
-				   struct bfd_link_info *info)
+elf32_frvfdpic_modify_program_headers (bfd *output_bfd,
+				       struct bfd_link_info *info)
 {
+  struct elf_obj_tdata *tdata = elf_tdata (output_bfd);
   struct elf_segment_map *m;
+  Elf_Internal_Phdr *p;
 
   /* objcopy and strip preserve what's already there using
      elf32_frvfdpic_copy_private_bfd_data ().  */
   if (! info)
     return TRUE;
 
-  for (m = elf_tdata (output_bfd)->segment_map; m != NULL; m = m->next)
+  for (p = tdata->phdr, m = tdata->segment_map; m != NULL; m = m->next, p++)
     if (m->p_type == PT_GNU_STACK)
       break;
 
   if (m)
     {
-      asection *sec = bfd_get_section_by_name (output_bfd, ".stack");
       struct elf_link_hash_entry *h;
 
-      if (sec)
+      /* Obtain the pointer to the __stacksize symbol.  */
+      h = elf_link_hash_lookup (elf_hash_table (info), "__stacksize",
+				FALSE, FALSE, FALSE);
+      if (h)
 	{
-	  /* Obtain the pointer to the __stacksize symbol.  */
-	  h = elf_link_hash_lookup (elf_hash_table (info), "__stacksize",
-				    FALSE, FALSE, FALSE);
 	  while (h->root.type == bfd_link_hash_indirect
 		 || h->root.type == bfd_link_hash_warning)
-	    h = (struct elf_link_hash_entry *)h->root.u.i.link;
+	    h = (struct elf_link_hash_entry *) h->root.u.i.link;
 	  BFD_ASSERT (h->root.type == bfd_link_hash_defined);
-
-	  /* Set the section size from the symbol value.  We
-	     intentionally ignore the symbol section.  */
-	  if (h->root.type == bfd_link_hash_defined)
-	    sec->size = h->root.u.def.value;
-	  else
-	    sec->size = DEFAULT_STACK_SIZE;
-
-	  /* Add the stack section to the PT_GNU_STACK segment,
-	     such that its size and alignment requirements make it
-	     to the segment.  */
-	  m->sections[m->count] = sec;
-	  m->count++;
 	}
+
+      /* Set the header p_memsz from the symbol value.  We
+	 intentionally ignore the symbol section.  */
+      if (h && h->root.type == bfd_link_hash_defined)
+	p->p_memsz = h->root.u.def.value;
+      else
+	p->p_memsz = DEFAULT_STACK_SIZE;
+
+      p->p_align = 8;
     }
 
   return TRUE;
@@ -6922,7 +6873,6 @@ elf32_frv_grok_psinfo (bfd *abfd, Elf_Internal_Note *note)
 #define elf_info_to_howto			frv_info_to_howto_rela
 #define elf_backend_relocate_section		elf32_frv_relocate_section
 #define elf_backend_gc_mark_hook		elf32_frv_gc_mark_hook
-#define elf_backend_gc_sweep_hook		elf32_frv_gc_sweep_hook
 #define elf_backend_check_relocs                elf32_frv_check_relocs
 #define elf_backend_object_p			elf32_frv_object_p
 #define elf_backend_add_symbol_hook             elf32_frv_add_symbol_hook
@@ -6970,9 +6920,9 @@ elf32_frv_grok_psinfo (bfd *abfd, Elf_Internal_Note *note)
 #undef elf_backend_always_size_sections
 #define elf_backend_always_size_sections \
 		elf32_frvfdpic_always_size_sections
-#undef elf_backend_modify_segment_map
-#define elf_backend_modify_segment_map \
-		elf32_frvfdpic_modify_segment_map
+#undef elf_backend_modify_program_headers
+#define elf_backend_modify_program_headers \
+		elf32_frvfdpic_modify_program_headers
 #undef bfd_elf32_bfd_copy_private_bfd_data
 #define bfd_elf32_bfd_copy_private_bfd_data \
 		elf32_frvfdpic_copy_private_bfd_data

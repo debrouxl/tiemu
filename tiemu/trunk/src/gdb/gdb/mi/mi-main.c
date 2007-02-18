@@ -856,16 +856,14 @@ mi_cmd_data_read_memory (char *command, char **argv, int argc)
   total_bytes = word_size * nr_rows * nr_cols;
   mbuf = xcalloc (total_bytes, 1);
   make_cleanup (xfree, mbuf);
-  nr_bytes = 0;
-  while (nr_bytes < total_bytes)
+
+  nr_bytes = target_read (&current_target, TARGET_OBJECT_MEMORY, NULL,
+			  mbuf, addr, total_bytes);
+  if (nr_bytes <= 0)
     {
-      int error;
-      long num = target_read_memory_partial (addr + nr_bytes, mbuf + nr_bytes,
-					     total_bytes - nr_bytes,
-					     &error);
-      if (num <= 0)
-	break;
-      nr_bytes += num;
+      do_cleanups (cleanups);
+      mi_error_message = xstrdup ("Unable to read memory.");
+      return MI_CMD_ERROR;
     }
 
   /* output the header information. */
@@ -1188,7 +1186,10 @@ mi_execute_command (char *cmd, int from_tty)
 	     somewhere.  */
 	  fputs_unfiltered (command->token, raw_stdout);
 	  fputs_unfiltered ("^error,msg=\"", raw_stdout);
-	  fputstr_unfiltered (result.message, '"', raw_stdout);
+	  if (result.message == NULL)
+	    fputs_unfiltered ("unknown error", raw_stdout);
+	  else
+	      fputstr_unfiltered (result.message, '"', raw_stdout);
 	  fputs_unfiltered ("\"\n", raw_stdout);
 	  mi_out_rewind (uiout);
 	}

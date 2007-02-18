@@ -1708,11 +1708,14 @@ struct ppc_elf_obj_tdata
 static bfd_boolean
 ppc_elf_mkobject (bfd *abfd)
 {
-  bfd_size_type amt = sizeof (struct ppc_elf_obj_tdata);
-  abfd->tdata.any = bfd_zalloc (abfd, amt);
   if (abfd->tdata.any == NULL)
-    return FALSE;
-  return TRUE;
+    {
+      bfd_size_type amt = sizeof (struct ppc_elf_obj_tdata);
+      abfd->tdata.any = bfd_zalloc (abfd, amt);
+      if (abfd->tdata.any == NULL)
+	return FALSE;
+    }
+  return bfd_elf_mkobject (abfd);
 }
 
 /* Fix bad default arch selected for a 32 bit input bfd when the
@@ -1869,7 +1872,8 @@ ppc_elf_fake_sections (bfd *abfd ATTRIBUTE_UNUSED,
    need to bump up the number of section headers.  */
 
 static int
-ppc_elf_additional_program_headers (bfd *abfd)
+ppc_elf_additional_program_headers (bfd *abfd,
+				    struct bfd_link_info *info ATTRIBUTE_UNUSED)
 {
   asection *s;
   int ret = 0;
@@ -1892,21 +1896,21 @@ ppc_elf_additional_program_headers (bfd *abfd)
 
 static const struct bfd_elf_special_section ppc_elf_special_sections[] =
 {
-  { ".plt",              4,  0, SHT_NOBITS,   SHF_ALLOC + SHF_EXECINSTR },
-  { ".sbss",             5, -2, SHT_NOBITS,   SHF_ALLOC + SHF_WRITE },
-  { ".sbss2",            6, -2, SHT_PROGBITS, SHF_ALLOC },
-  { ".sdata",            6, -2, SHT_PROGBITS, SHF_ALLOC + SHF_WRITE },
-  { ".sdata2",           7, -2, SHT_PROGBITS, SHF_ALLOC },
-  { ".tags",             5,  0, SHT_ORDERED,  SHF_ALLOC },
-  { ".PPC.EMB.apuinfo", 16,  0, SHT_NOTE,     0 },
-  { ".PPC.EMB.sbss0",   14,  0, SHT_PROGBITS, SHF_ALLOC },
-  { ".PPC.EMB.sdata0",  15,  0, SHT_PROGBITS, SHF_ALLOC },
-  { NULL,                0,  0, 0,            0 }
+  { STRING_COMMA_LEN (".plt"),             0, SHT_NOBITS,   SHF_ALLOC + SHF_EXECINSTR },
+  { STRING_COMMA_LEN (".sbss"),           -2, SHT_NOBITS,   SHF_ALLOC + SHF_WRITE },
+  { STRING_COMMA_LEN (".sbss2"),          -2, SHT_PROGBITS, SHF_ALLOC },
+  { STRING_COMMA_LEN (".sdata"),          -2, SHT_PROGBITS, SHF_ALLOC + SHF_WRITE },
+  { STRING_COMMA_LEN (".sdata2"),         -2, SHT_PROGBITS, SHF_ALLOC },
+  { STRING_COMMA_LEN (".tags"),            0, SHT_ORDERED,  SHF_ALLOC },
+  { STRING_COMMA_LEN (".PPC.EMB.apuinfo"), 0, SHT_NOTE,     0 },
+  { STRING_COMMA_LEN (".PPC.EMB.sbss0"),   0, SHT_PROGBITS, SHF_ALLOC },
+  { STRING_COMMA_LEN (".PPC.EMB.sdata0"),  0, SHT_PROGBITS, SHF_ALLOC },
+  { NULL,                              0,  0, 0,            0 }
 };
 
 /* This is what we want for new plt/got.  */
 static struct bfd_elf_special_section ppc_alt_plt =
-  { ".plt",              4,  0, SHT_PROGBITS, SHF_ALLOC };
+  { STRING_COMMA_LEN (".plt"),             0, SHT_PROGBITS, SHF_ALLOC };
 
 static const struct bfd_elf_special_section *
 ppc_elf_get_sec_type_attr (bfd *abfd ATTRIBUTE_UNUSED, asection *sec)
@@ -3432,7 +3436,7 @@ ppc_elf_check_relocs (bfd *abfd,
 		  if (name == NULL)
 		    return FALSE;
 
-		  BFD_ASSERT (strncmp (name, ".rela", 5) == 0
+		  BFD_ASSERT (CONST_STRNEQ (name, ".rela")
 			      && strcmp (bfd_get_section_name (abfd, sec),
 					 name + 5) == 0);
 
@@ -3649,38 +3653,20 @@ ppc_elf_select_plt_layout (bfd *output_bfd ATTRIBUTE_UNUSED,
 
 static asection *
 ppc_elf_gc_mark_hook (asection *sec,
-		      struct bfd_link_info *info ATTRIBUTE_UNUSED,
+		      struct bfd_link_info *info,
 		      Elf_Internal_Rela *rel,
 		      struct elf_link_hash_entry *h,
 		      Elf_Internal_Sym *sym)
 {
   if (h != NULL)
-    {
-      switch (ELF32_R_TYPE (rel->r_info))
-	{
-	case R_PPC_GNU_VTINHERIT:
-	case R_PPC_GNU_VTENTRY:
-	  break;
+    switch (ELF32_R_TYPE (rel->r_info))
+      {
+      case R_PPC_GNU_VTINHERIT:
+      case R_PPC_GNU_VTENTRY:
+	return NULL;
+      }
 
-	default:
-	  switch (h->root.type)
-	    {
-	    case bfd_link_hash_defined:
-	    case bfd_link_hash_defweak:
-	      return h->root.u.def.section;
-
-	    case bfd_link_hash_common:
-	      return h->root.u.c.p->section;
-
-	    default:
-	      break;
-	    }
-	}
-    }
-  else
-    return bfd_section_from_elf_index (sec->owner, sym->st_shndx);
-
-  return NULL;
+  return _bfd_elf_gc_mark_hook (sec, info, rel, h, sym);
 }
 
 /* Update the got, plt and dynamic reloc reference counts for the
@@ -4860,7 +4846,7 @@ ppc_elf_size_dynamic_sections (bfd *output_bfd ATTRIBUTE_UNUSED,
 	{
 	  /* Strip these too.  */
 	}
-      else if (strncmp (bfd_get_section_name (dynobj, s), ".rela", 5) == 0)
+      else if (CONST_STRNEQ (bfd_get_section_name (dynobj, s), ".rela"))
 	{
 	  if (s->size != 0)
 	    {
@@ -5180,6 +5166,10 @@ ppc_elf_relax_section (bfd *abfd,
       /* PLTREL24 addends are special.  */
       else if (r_type != R_PPC_PLTREL24)
 	toff += irel->r_addend;
+
+      /* Attempted -shared link of non-pic code loses.  */
+      if (tsec->output_section == NULL)
+	continue;
 
       symaddr = tsec->output_section->vma + tsec->output_offset + toff;
 
@@ -6190,7 +6180,10 @@ ppc_elf_relocate_section (bfd *output_bfd,
 	     a linker script.  */
 	dodyn:
 	  if (r_symndx == 0)
-	    break;
+	    {
+	      _bfd_clear_contents (howto, input_bfd, contents + rel->r_offset);
+	      break;
+	    }
 	  /* Fall thru.  */
 
 	  if ((input_section->flags & SEC_ALLOC) == 0)
@@ -6234,7 +6227,7 @@ ppc_elf_relocate_section (bfd *output_bfd,
 		  if (name == NULL)
 		    return FALSE;
 
-		  BFD_ASSERT (strncmp (name, ".rela", 5) == 0
+		  BFD_ASSERT (CONST_STRNEQ (name, ".rela")
 			      && strcmp (bfd_get_section_name (input_bfd,
 							       input_section),
 					 name + 5) == 0);
@@ -6290,9 +6283,14 @@ ppc_elf_relocate_section (bfd *output_bfd,
 			     but ld.so expects buggy relocs.  */
 			  osec = sec->output_section;
 			  indx = elf_section_data (osec)->dynindx;
-			  BFD_ASSERT (indx > 0);
+			  if (indx == 0)
+			    {
+			      osec = htab->elf.text_index_section;
+			      indx = elf_section_data (osec)->dynindx;
+			    }
+			  BFD_ASSERT (indx != 0);
 #ifdef DEBUG
-			  if (indx <= 0)
+			  if (indx == 0)
 			    printf ("indx=%ld section=%s flags=%08x name=%s\n",
 				    indx, osec->name, osec->flags,
 				    h->root.root.string);
@@ -6437,9 +6435,9 @@ ppc_elf_relocate_section (bfd *output_bfd,
 
 	    BFD_ASSERT (sec != NULL);
 	    name = bfd_get_section_name (abfd, sec->output_section);
-	    if (! ((strncmp (name, ".sdata", 6) == 0
+	    if (! ((CONST_STRNEQ (name, ".sdata")
 		    && (name[6] == 0 || name[6] == '.'))
-		   || (strncmp (name, ".sbss", 5) == 0
+		   || (CONST_STRNEQ (name, ".sbss")
 		       && (name[5] == 0 || name[5] == '.'))))
 	      {
 		(*_bfd_error_handler)
@@ -6465,8 +6463,8 @@ ppc_elf_relocate_section (bfd *output_bfd,
 
 	    BFD_ASSERT (sec != NULL);
 	    name = bfd_get_section_name (abfd, sec->output_section);
-	    if (! (strncmp (name, ".sdata2", 7) == 0
-		   || strncmp (name, ".sbss2", 6) == 0))
+	    if (! (CONST_STRNEQ (name, ".sdata2")
+		   || CONST_STRNEQ (name, ".sbss2")))
 	      {
 		(*_bfd_error_handler)
 		  (_("%B: the target (%s) of a %s relocation is "
@@ -6497,9 +6495,9 @@ ppc_elf_relocate_section (bfd *output_bfd,
 
 	    BFD_ASSERT (sec != NULL);
 	    name = bfd_get_section_name (abfd, sec->output_section);
-	    if (((strncmp (name, ".sdata", 6) == 0
+	    if (((CONST_STRNEQ (name, ".sdata")
 		  && (name[6] == 0 || name[6] == '.'))
-		 || (strncmp (name, ".sbss", 5) == 0
+		 || (CONST_STRNEQ (name, ".sbss")
 		     && (name[5] == 0 || name[5] == '.'))))
 	      {
 		reg = 13;
@@ -6509,8 +6507,8 @@ ppc_elf_relocate_section (bfd *output_bfd,
 			   + sh->root.u.def.section->output_section->vma);
 	      }
 
-	    else if (strncmp (name, ".sdata2", 7) == 0
-		     || strncmp (name, ".sbss2", 6) == 0)
+	    else if (CONST_STRNEQ (name, ".sdata2")
+		     || CONST_STRNEQ (name, ".sbss2"))
 	      {
 		reg = 2;
 		sh = htab->sdata[1].sym;
@@ -6601,25 +6599,28 @@ ppc_elf_relocate_section (bfd *output_bfd,
 
 	case R_PPC_ADDR16_HA:
 	case R_PPC_REL16_HA:
-	case R_PPC_GOT16_HA:
-	case R_PPC_PLT16_HA:
 	case R_PPC_SECTOFF_HA:
 	case R_PPC_TPREL16_HA:
 	case R_PPC_DTPREL16_HA:
-	case R_PPC_GOT_TLSGD16_HA:
-	case R_PPC_GOT_TLSLD16_HA:
-	case R_PPC_GOT_TPREL16_HA:
-	case R_PPC_GOT_DTPREL16_HA:
 	case R_PPC_EMB_NADDR16_HA:
 	case R_PPC_EMB_RELST_HA:
 	  /* It's just possible that this symbol is a weak symbol
 	     that's not actually defined anywhere.  In that case,
 	     'sec' would be NULL, and we should leave the symbol
 	     alone (it will be set to zero elsewhere in the link).  */
-	  if (sec != NULL)
-	    /* Add 0x10000 if sign bit in 0:15 is set.
-	       Bits 0:15 are not used.  */
-	    addend += 0x8000;
+	  if (sec == NULL)
+	    break;
+	  /* Fall thru */
+
+	case R_PPC_PLT16_HA:
+	case R_PPC_GOT16_HA:
+	case R_PPC_GOT_TLSGD16_HA:
+	case R_PPC_GOT_TLSLD16_HA:
+	case R_PPC_GOT_TPREL16_HA:
+	case R_PPC_GOT_DTPREL16_HA:
+	  /* Add 0x10000 if sign bit in 0:15 is set.
+	     Bits 0:15 are not used.  */
+	  addend += 0x8000;
 	  break;
 	}
 
@@ -7432,6 +7433,7 @@ ppc_elf_finish_dynamic_sections (bfd *output_bfd,
 #define ELF_MAXPAGESIZE		0x10000
 #endif
 #define ELF_MINPAGESIZE		0x1000
+#define ELF_COMMONPAGESIZE	0x1000
 #define elf_info_to_howto	ppc_elf_info_to_howto
 
 #ifdef  EM_CYGNUS_POWERPC
@@ -7478,6 +7480,7 @@ ppc_elf_finish_dynamic_sections (bfd *output_bfd,
 #define elf_backend_get_sec_type_attr		ppc_elf_get_sec_type_attr
 #define elf_backend_plt_sym_val			ppc_elf_plt_sym_val
 #define elf_backend_action_discarded		ppc_elf_action_discarded
+#define elf_backend_init_index_section		_bfd_elf_init_1_index_section
 
 #include "elf32-target.h"
 

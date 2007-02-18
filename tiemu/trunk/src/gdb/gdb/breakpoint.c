@@ -102,7 +102,7 @@ static void breakpoint_adjustment_warning (CORE_ADDR, CORE_ADDR, int, int);
 static CORE_ADDR adjust_breakpoint_address (CORE_ADDR bpaddr,
                                             enum bptype bptype);
 
-static void describe_other_breakpoints (CORE_ADDR, asection *);
+static void describe_other_breakpoints (CORE_ADDR, asection *, int);
 
 static void breakpoints_info (char *, int);
 
@@ -639,8 +639,7 @@ commands_command (char *arg, int from_tty)
    shadow contents, not the breakpoints themselves.  From breakpoint.c.  */
 
 int
-deprecated_read_memory_nobpt (CORE_ADDR memaddr, gdb_byte *myaddr,
-			      unsigned len)
+read_memory_nobpt (CORE_ADDR memaddr, gdb_byte *myaddr, unsigned len)
 {
   int status;
   struct bp_location *b;
@@ -702,7 +701,7 @@ deprecated_read_memory_nobpt (CORE_ADDR memaddr, gdb_byte *myaddr,
       if (bp_addr > memaddr)
 	{
 	  /* Copy the section of memory before the breakpoint.  */
-	  status = deprecated_read_memory_nobpt (memaddr, myaddr, bp_addr - memaddr);
+	  status = read_memory_nobpt (memaddr, myaddr, bp_addr - memaddr);
 	  if (status != 0)
 	    return status;
 	}
@@ -710,7 +709,7 @@ deprecated_read_memory_nobpt (CORE_ADDR memaddr, gdb_byte *myaddr,
       if (bp_addr + bp_size < memaddr + len)
 	{
 	  /* Copy the section of memory after the breakpoint.  */
-	  status = deprecated_read_memory_nobpt (bp_addr + bp_size,
+	  status = read_memory_nobpt (bp_addr + bp_size,
 				      myaddr + bp_addr + bp_size - memaddr,
 				      memaddr + len - (bp_addr + bp_size));
 	  if (status != 0)
@@ -750,7 +749,8 @@ insert_catchpoint (struct ui_out *uo, void *args)
 
 /* Helper routine: free the value chain for a breakpoint (watchpoint).  */
 
-static void free_valchain (struct bp_location *b)
+static void
+free_valchain (struct bp_location *b)
 {
   struct value *v;
   struct value *n;
@@ -1327,7 +1327,7 @@ update_breakpoints_after_exec (void)
 	(b->type == bp_catch_vfork) ||
 	(b->type == bp_catch_fork))
       {
-	b->loc->address = (CORE_ADDR) NULL;
+	b->loc->address = (CORE_ADDR) 0;
 	continue;
       }
 
@@ -1380,7 +1380,7 @@ update_breakpoints_after_exec (void)
        unnecessary.  A call to breakpoint_re_set_one always recomputes
        the breakpoint's address from scratch, or deletes it if it can't.
        So I think this assignment could be deleted without effect.  */
-    b->loc->address = (CORE_ADDR) NULL;
+    b->loc->address = (CORE_ADDR) 0;
   }
   /* FIXME what about longjmp breakpoints?  Re-create them here?  */
   create_overlay_event_breakpoint ("_ovly_debug_event");
@@ -2328,7 +2328,9 @@ print_it_typical (bpstat bs)
 
     case bp_until:
       if (ui_out_is_mi_like_p (uiout))
-	ui_out_field_string (uiout, "reason", "location-reached");
+	ui_out_field_string
+	  (uiout, "reason",
+	   async_reason_lookup (EXEC_ASYNC_LOCATION_REACHED));
       return PRINT_UNKNOWN;
       break;
 
@@ -3780,7 +3782,7 @@ maintenance_info_breakpoints (char *bnum_exp, int from_tty)
 /* Print a message describing any breakpoints set at PC.  */
 
 static void
-describe_other_breakpoints (CORE_ADDR pc, asection *section)
+describe_other_breakpoints (CORE_ADDR pc, asection *section, int thread)
 {
   int others = 0;
   struct breakpoint *b;
@@ -3800,12 +3802,16 @@ describe_other_breakpoints (CORE_ADDR pc, asection *section)
 	  if (!b->pending && (!overlay_debugging || b->loc->section == section))
 	    {
 	      others--;
-	      printf_filtered ("%d%s%s ",
-			       b->number,
+	      printf_filtered ("%d", b->number);
+	      if (b->thread == -1 && thread != -1)
+		printf_filtered (" (all threads)");
+	      else if (b->thread != -1)
+		printf_filtered (" (thread %d)", b->thread);
+	      printf_filtered ("%s%s ",
 			       ((b->enable_state == bp_disabled || 
 				 b->enable_state == bp_shlib_disabled || 
 				 b->enable_state == bp_call_disabled) 
-				? " (disabled)" 
+				? " (disabled)"
 				: b->enable_state == bp_permanent 
 				? " (permanent)"
 				: ""),
@@ -4958,7 +4964,7 @@ create_breakpoints (struct symtabs_and_lines sals, char **addr_string,
 	struct symtab_and_line sal = sals.sals[i];
 
 	if (from_tty)
-	  describe_other_breakpoints (sal.pc, sal.section);
+	  describe_other_breakpoints (sal.pc, sal.section, thread);
 	
 	b = set_raw_breakpoint (sal, type);
 	set_breakpoint_count (breakpoint_count + 1);

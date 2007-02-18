@@ -53,6 +53,7 @@
 #include "gdb_assert.h"
 #include "block.h"
 #include "source.h"
+#include "objfiles.h"
 
 /* Standard set of definitions for printing, dumping, prefixifying,
  * and evaluating expressions.  */
@@ -191,6 +192,7 @@ void
 write_exp_elt_opcode (enum exp_opcode expelt)
 {
   union exp_element tmp;
+  memset (&tmp, 0, sizeof (union exp_element));
 
   tmp.opcode = expelt;
 
@@ -201,6 +203,7 @@ void
 write_exp_elt_sym (struct symbol *expelt)
 {
   union exp_element tmp;
+  memset (&tmp, 0, sizeof (union exp_element));
 
   tmp.symbol = expelt;
 
@@ -211,7 +214,17 @@ void
 write_exp_elt_block (struct block *b)
 {
   union exp_element tmp;
+  memset (&tmp, 0, sizeof (union exp_element));
   tmp.block = b;
+  write_exp_elt (tmp);
+}
+
+void
+write_exp_elt_objfile (struct objfile *objfile)
+{
+  union exp_element tmp;
+  memset (&tmp, 0, sizeof (union exp_element));
+  tmp.objfile = objfile;
   write_exp_elt (tmp);
 }
 
@@ -219,6 +232,7 @@ void
 write_exp_elt_longcst (LONGEST expelt)
 {
   union exp_element tmp;
+  memset (&tmp, 0, sizeof (union exp_element));
 
   tmp.longconst = expelt;
 
@@ -229,6 +243,7 @@ void
 write_exp_elt_dblcst (DOUBLEST expelt)
 {
   union exp_element tmp;
+  memset (&tmp, 0, sizeof (union exp_element));
 
   tmp.doubleconst = expelt;
 
@@ -239,6 +254,7 @@ void
 write_exp_elt_type (struct type *expelt)
 {
   union exp_element tmp;
+  memset (&tmp, 0, sizeof (union exp_element));
 
   tmp.type = expelt;
 
@@ -249,6 +265,7 @@ void
 write_exp_elt_intern (struct internalvar *expelt)
 {
   union exp_element tmp;
+  memset (&tmp, 0, sizeof (union exp_element));
 
   tmp.internalvar = expelt;
 
@@ -371,6 +388,7 @@ write_exp_bitstring (struct stoken str)
 static struct type *msym_text_symbol_type;
 static struct type *msym_data_symbol_type;
 static struct type *msym_unknown_symbol_type;
+static struct type *msym_tls_symbol_type;
 
 void
 write_exp_msymbol (struct minimal_symbol *msymbol, 
@@ -389,6 +407,23 @@ write_exp_msymbol (struct minimal_symbol *msymbol,
   write_exp_elt_longcst ((LONGEST) addr);
 
   write_exp_elt_opcode (OP_LONG);
+
+  if (SYMBOL_BFD_SECTION (msymbol)
+      && SYMBOL_BFD_SECTION (msymbol)->flags & SEC_THREAD_LOCAL)
+    {
+      bfd *bfd = SYMBOL_BFD_SECTION (msymbol)->owner;
+      struct objfile *ofp;
+
+      ALL_OBJFILES (ofp)
+	if (ofp->obfd == bfd)
+	  break;
+
+      write_exp_elt_opcode (UNOP_MEMVAL_TLS);
+      write_exp_elt_objfile (ofp);
+      write_exp_elt_type (msym_tls_symbol_type);
+      write_exp_elt_opcode (UNOP_MEMVAL_TLS);
+      return;
+    }
 
   write_exp_elt_opcode (UNOP_MEMVAL);
   switch (msymbol->type)
@@ -897,6 +932,11 @@ operator_length_standard (struct expression *expr, int endpos,
       args = 1;
       break;
 
+    case UNOP_MEMVAL_TLS:
+      oplen = 4;
+      args = 1;
+      break;
+
     case UNOP_ABS:
     case UNOP_CAP:
     case UNOP_CHR:
@@ -1334,6 +1374,10 @@ build_parse (void)
     init_type (TYPE_CODE_INT, 1, 0,
 	       "<variable (not text or data), no debug info>",
 	       NULL);
+
+  msym_tls_symbol_type =
+    init_type (TYPE_CODE_INT, TARGET_INT_BIT / HOST_CHAR_BIT, 0,
+	       "<thread local variable, no debug info>", NULL);
 }
 
 /* This function avoids direct calls to fprintf 

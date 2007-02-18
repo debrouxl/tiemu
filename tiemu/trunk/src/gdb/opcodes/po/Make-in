@@ -16,6 +16,7 @@ SHELL = /bin/sh
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
+top_builddir = @top_builddir@
 
 prefix = @prefix@
 exec_prefix = @exec_prefix@
@@ -186,7 +187,7 @@ check: all
 
 cat-id-tbl.o: ../intl/libgettext.h
 
-html dvi info tags TAGS ID:
+html dvi pdf ps info tags TAGS ID:
 
 mostlyclean:
 	rm -f core core.* *.pox $(PACKAGE).po *.old.po cat-id-tbl.tmp

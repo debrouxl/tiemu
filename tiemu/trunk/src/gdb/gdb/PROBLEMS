@@ -102,4 +102,3 @@ library, and did not occur with GDB 6.1.
 threads/2137: Native Solaris Thread Debugging broken.
 
 Use GDB 6.4 if thread debugging is needed on Solaris.
-

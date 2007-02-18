@@ -1008,6 +1008,20 @@ proc gdb_file_cmd { arg } {
 	}
     }
 
+    # The file command used to kill the remote target.  For the benefit
+    # of the testsuite, preserve this behavior.
+    send_gdb "kill\n"
+    gdb_expect 120 {
+	-re "Kill the program being debugged. .y or n. $" {
+	    send_gdb "y\n"
+	    verbose "\t\tKilling previous program being debugged"
+	    exp_continue
+	}
+	-re "$gdb_prompt $" {
+	    # OK.
+	}
+    }
+
     send_gdb "file $arg\n"
     gdb_expect 120 {
 	-re "Reading symbols from.*no debugging symbols found.*done.*$gdb_prompt $" {
@@ -1019,11 +1033,6 @@ proc gdb_file_cmd { arg } {
             verbose "\t\tLoaded $arg into the $GDB"
 	    set gdb_file_cmd_debug_info "debug"
 	    return 0
-        }
-        -re "A program is being debugged already.*Kill it.*y or n. $" {
-            send_gdb "y\n"
-	    verbose "\t\tKilling previous program being debugged"
-            exp_continue
         }
         -re "Load new symbol table from \".*\".*y or n. $" {
             send_gdb "y\n"
@@ -1179,7 +1188,7 @@ proc skip_altivec_tests {} {
     # Some simulators are known to not support VMX instructions.
     if { [istarget powerpc-*-eabi] || [istarget powerpc*-*-eabispe] } {
         verbose "$me:  target known to not support VMX, returning 1" 2
-        return [set $skip_vmx_tests_saved 1]
+        return [set skip_vmx_tests_saved 1]
     }
 
     # Make sure we have a compiler that understands altivec.
@@ -1867,6 +1876,50 @@ proc gdb_exit { } {
 }
 
 #
+# gdb_load_cmd -- load a file into the debugger.
+#		  ARGS - additional args to load command.
+#                 return a -1 if anything goes wrong.
+#
+proc gdb_load_cmd { args } {
+    global gdb_prompt
+
+    if [target_info exists gdb_load_timeout] {
+	set loadtimeout [target_info gdb_load_timeout]
+    } else {
+	set loadtimeout 1600
+    }
+    send_gdb "load $args\n"
+    verbose "Timeout is now $timeout seconds" 2
+    gdb_expect $loadtimeout {
+	-re "Loading section\[^\r\]*\r\n" {
+	    exp_continue
+	}
+	-re "Start address\[\r\]*\r\n" {
+	    exp_continue
+	}
+	-re "Transfer rate\[\r\]*\r\n" {
+	    exp_continue
+	}
+	-re "Memory access error\[^\r\]*\r\n" {
+	    perror "Failed to load program"
+	    return -1
+	}
+	-re "$gdb_prompt $" {
+	    return 0
+	}
+	-re "(.*)\r\n$gdb_prompt " {
+	    perror "Unexpected reponse from 'load' -- $expect_out(1,string)"
+	    return -1
+	}
+	timeout {
+	    perror "Timed out trying to load $arg."
+	    return -1
+	}
+    }
+    return -1
+}
+
+#
 # gdb_load -- load a file into the debugger.
 # Many files in config/*.exp override this procedure.
 #
@@ -2223,7 +2276,7 @@ proc gdb_skip_bogus_test { msg } {
 # Note: the procedure gdb_gnu_strip_debug will produce an executable called
 # ${binfile}.dbglnk, which is just like the executable ($binfile) but without
 # the debuginfo. Instead $binfile has a .gnu_debuglink section which contains
-# the name of a idebuginfo only file. This file will be stored in the 
+# the name of a debuginfo only file. This file will be stored in the 
 # gdb.base/.debug subdirectory.
 
 # Functions for separate debug info testing
@@ -2254,8 +2307,45 @@ proc separate_debug_filename { exec } {
     return $debug_file
 }
 
+# Create stripped files for DEST, replacing it.  If ARGS is passed, it is a
+# list of optional flags.  The only currently supported flag is no-main,
+# which removes the symbol entry for main from the separate debug file.
 
-proc gdb_gnu_strip_debug { dest } {
+proc gdb_gnu_strip_debug { dest args } {
+
+    # First, make sure that we can do this.  This is nasty. We need to
+    # check for the stabs debug format.  To do this we must run gdb on
+    # the unstripped executable, list 'main' (as to have a default
+    # source file), use get_debug_format (which does 'info source')
+    # and then see if the debug info is stabs. If so, we bail out.  We
+    # cannot do this any other way because get_debug_format finds out
+    # the debug format using gdb itself, and in case of stabs we get
+    # an error loading the program if it is already stripped.  An
+    # alternative would be to find out the debug info from the flags
+    # passed to dejagnu when the test is run.
+
+    gdb_exit
+    gdb_start
+    gdb_load ${dest}
+    gdb_test "list main" "" ""
+    get_debug_format
+    if { [test_debug_format "stabs"] } then {
+	# The separate debug info feature doesn't work well in
+	# binutils with stabs.  It produces a corrupted debug info
+	# only file, and gdb chokes on it.  It is almost impossible to
+	# capture the failing message out of gdb, because it happens
+	# inside gdb_load. At that point any error message is
+	# intercepted by dejagnu itself, and, because of the error
+	# threshold, any faulty test result is changed into an
+	# UNRESOLVED.  (see dejagnu/lib/framework.exp)
+	unsupported "no separate debug info handling with stabs"
+	return -1
+    } elseif { [test_debug_format "unknown"] } then {
+	# gdb doesn't know what the debug format is. We are out of luck here. 
+	unsupported "unknown debugging format"
+	return -1
+    }
+    gdb_exit
 
     set debug_file [separate_debug_filename $dest]
     set strip_to_file_program strip
@@ -2289,6 +2379,22 @@ proc gdb_gnu_strip_debug { dest } {
       return 1
     }
 
+    # If no-main is passed, strip the symbol for main from the separate
+    # file.  This is to simulate the behavior of elfutils's eu-strip, which
+    # leaves the symtab in the original file only.  There's no way to get
+    # objcopy or strip to remove the symbol table without also removing the
+    # debugging sections, so this is as close as we can get.
+    if { [llength $args] == 1 && [lindex $args 0] == "no-main" } {
+	set result [catch "exec $objcopy_program -N main ${debug_file} ${debug_file}-tmp" output]
+	verbose "result is $result"
+	verbose "output is $output"
+	if {$result == 1} {
+	    return 1
+	}
+	file delete "${debug_file}"
+	file rename "${debug_file}-tmp" "${debug_file}"
+    }
+
     # Link the two previous output files together, adding the .gnu_debuglink
     # section to the stripped_file, containing a pointer to the debug_file,
     # save the new file in dest.
@@ -2303,3 +2409,61 @@ proc gdb_gnu_strip_debug { dest } {
    return 0
 }
 
+# Test the output of GDB_COMMAND matches the pattern obtained
+# by concatenating all elements of EXPECTED_LINES.  This makes
+# it possible to split otherwise very long string into pieces.
+# If third argument is not empty, it's used as the name of the
+# test to be printed on pass/fail.
+proc help_test_raw { gdb_command expected_lines args } {
+    set message $gdb_command
+    if [llength $args]>0 then {
+	set message [lindex $args 0]
+    } 
+    set expected_output [join $expected_lines ""]
+    gdb_test "${gdb_command}" "${expected_output}" $message
+}
+
+# Test the output of "help COMMNAD_CLASS". EXPECTED_INITIAL_LINES
+# are regular expressions that should match the beginning of output,
+# before the list of commands in that class.  The presence of 
+# command list and standard epilogue will be tested automatically.
+proc test_class_help { command_class expected_initial_lines args } {
+    set l_stock_body {
+        "List of commands\:.*\[\r\n\]+"
+        "Type \"help\" followed by command name for full documentation\.\[\r\n\]+"
+        "Type \"apropos word\" to search for commands related to \"word\"\.[\r\n\]+"
+        "Command name abbreviations are allowed if unambiguous\." 
+    }
+    set l_entire_body [concat $expected_initial_lines $l_stock_body]
+
+    eval [list help_test_raw "help ${command_class}" $l_entire_body] $args
+}
+
+# COMMAND_LIST should have either one element -- command to test, or
+# two elements -- abbreviated command to test, and full command the first
+# element is abbreviation of.
+# The command must be a prefix command.  EXPECTED_INITIAL_LINES
+# are regular expressions that should match the beginning of output,
+# before the list of subcommands.  The presence of 
+# subcommand list and standard epilogue will be tested automatically.
+proc test_prefix_command_help { command_list expected_initial_lines args } {
+    set command [lindex $command_list 0]   
+    if {[llength $command_list]>1} {        
+        set full_command [lindex $command_list 1]
+    } else {
+        set full_command $command
+    }
+    # Use 'list' and not just {} because we want variables to
+    # be expanded in this list.
+    set l_stock_body [list\
+         "List of $full_command subcommands\:.*\[\r\n\]+"\
+         "Type \"help $full_command\" followed by $full_command subcommand name for full documentation\.\[\r\n\]+"\
+         "Type \"apropos word\" to search for commands related to \"word\"\.\[\r\n\]+"\
+         "Command name abbreviations are allowed if unambiguous\."]
+    set l_entire_body [concat $expected_initial_lines $l_stock_body]
+    if {[llength $args]>0} {
+        help_test_raw "help ${command}" $l_entire_body [lindex $args 0]
+    } else {
+        help_test_raw "help ${command}" $l_entire_body
+    }
+}

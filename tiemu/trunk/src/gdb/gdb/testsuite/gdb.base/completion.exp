@@ -68,15 +68,18 @@ set srcfile1 ${testfile}1.c
 set binfile ${objdir}/${subdir}/${testfile}
 
 if  { [gdb_compile "${srcdir}/${subdir}/${srcfile}" "${binfile}0.o" object {debug nowarnings}] != "" } {
-     gdb_suppress_entire_file "Testcase compile failed, so all tests in this file will automatically fail."
+     untested completion.exp
+     return -1
 }
 
 if  { [gdb_compile "${srcdir}/${subdir}/${srcfile1}" "${binfile}1.o" object {debug nowarnings}] != "" } {
-     gdb_suppress_entire_file "Testcase compile failed, so all tests in this file will automatically fail."
+     untested completion.exp
+     return -1
 }
 
 if  { [gdb_compile "${binfile}0.o ${binfile}1.o" "${binfile}" executable {debug nowarnings}] != "" } {
-     gdb_suppress_entire_file "Testcase compile failed, so all tests in this file will automatically fail."
+     untested completion.exp
+     return -1
 }
 
 if [get_compiler_info ${binfile}] {
@@ -310,7 +313,7 @@ gdb_expect  {
         -re "^info $"\
             { send_gdb "\n"
               gdb_expect {
-                      -re "\"info\" must be followed by the name of an info command\\.\r\nList of info subcommands:\r\n\r\n.*info address.*info watchpoints.*\r\n\r\nType \"help info\" followed by info subcommand name for full documentation.\r\nCommand name abbreviations are allowed if unambiguous\\..*$gdb_prompt $"\
+                      -re "\"info\" must be followed by the name of an info command\\.\r\nList of info subcommands.*$gdb_prompt $"\
                                         { pass "complete 'info'"}
                       -re ".*$gdb_prompt $" { fail "complete 'info'"}
                       timeout           {fail "(timeout) complete 'info'"}
@@ -326,7 +329,7 @@ gdb_expect  {
         -re "^info \\\x07$"\
             { send_gdb "\n"
               gdb_expect {
-                      -re "\"info\" must be followed by the name of an info command\\.\r\nList of info subcommands:\r\n\r\n.*info address.*Type \"help info\" followed by info subcommand name for full documentation.\r\nCommand name abbreviations are allowed if unambiguous\\..*$gdb_prompt $"\
+                      -re "\"info\" must be followed by the name of an info command\\.\r\nList of info subcommands:\r\n\r\n.*$gdb_prompt $"\
                                         { pass "complete 'info '"}
                       -re ".*$gdb_prompt $" { fail "complete 'info '"}
                       timeout           {fail "(timeout) complete 'info '"}
@@ -671,19 +674,14 @@ sleep 1
 gdb_expect  {
         -re "^file ./gdb.base/completion\\.exp $"\
             { send_gdb "\n"
-              gdb_expect {
-                      -re "\r\nA program is being debugged already\\.  Kill it\\? \\(y or n\\) $"
-                      { send_gdb "n\n"
-                        gdb_expect {
-                                -re "\r\nProgram not killed\\.\r\n$gdb_prompt $"\
-                                        { pass "complete 'file ./gdb.base/complet'"}
-                                -re ".*$gdb_prompt $" { fail "complete 'file ./gdb.base/complet'"}
-                                timeout           {fail "(timeout) complete 'file ./gdb.base/complet'"}
-                               }
-                      }
-                      -re ".*$gdb_prompt $" { fail "complete 'file ./gdb.base/complet'"}
-                      timeout           {fail "(timeout) complete 'file ./gdb.base/complet'"}
-                     }
+	      # Ignore the exact error message.
+	      gdb_test_multiple "" "complete 'file ./gdb.base/complet'" {
+		  -re "\r\nA program is being debugged already\\.\[\r\n\]+Are you sure you want to change the file\\? \\(y or n\\) $" {
+		      send_gdb "n\n"
+		      exp_continue
+		  }
+		  -re ".*$gdb_prompt $" { pass "complete 'file ./gdb.base/complet'" }
+	      }
             }
         -re ".*$gdb_prompt $"       { fail "complete 'file ./gdb.base/complet'" }
         timeout         { fail "(timeout) complete 'file ./gdb.base/complet'" }

@@ -1,6 +1,71 @@
 		What has changed in GDB?
 	     (Organized release by release)
 
+*** Changes in GDB 6.6
+
+* New targets
+
+Xtensa				xtensa-elf
+Cell Broadband Engine SPU	spu-elf
+
+* GDB can now be configured as a cross-debugger targeting native Windows
+(mingw32) or Cygwin.  It can communicate with a remote debugging stub
+running on a Windows system over TCP/IP to debug Windows programs.
+
+* The GDB remote stub, gdbserver, has been updated to support Windows and
+Cygwin debugging.  Both single-threaded and multi-threaded programs are
+supported.
+
+* The "set trust-readonly-sections" command works again.  This command was
+broken in GDB 6.3, 6.4, and 6.5.
+
+* Support for GNU/Linux Thread Local Storage (TLS, per-thread variables) no
+longer requires symbolic debug information (e.g. DWARF-2).
+
+* New commands
+
+set substitute-path
+unset substitute-path
+show substitute-path
+  Manage a list of substitution rules that GDB uses to rewrite the name
+  of the directories where the sources are located. This can be useful
+  for instance when the sources were moved to a different location
+  between compilation and debugging.
+
+set trace-commands
+show trace-commands
+  Print each CLI command as it is executed.  Each command is prefixed with
+  a number of `+' symbols representing the nesting depth.
+  The source command now has a `-v' option to enable the same feature.
+
+* REMOVED features
+
+The ARM Demon monitor support (RDP protocol, "target rdp").
+
+Kernel Object Display, an embedded debugging feature which only worked with
+an obsolete version of Cisco IOS.
+
+The 'set download-write-size' and 'show download-write-size' commands.
+
+* New remote packets
+
+qSupported:
+  Tell a stub about GDB client features, and request remote target features.
+  The first feature implemented is PacketSize, which allows the target to
+  specify the size of packets it can handle - to minimize the number of
+  packets required and improve performance when connected to a remote
+  target.
+
+qXfer:auxv:read:
+  Fetch an OS auxilliary vector from the remote stub.  This packet is a
+  more efficient replacement for qPart:auxv:read.
+
+* Removed remote packets
+
+qPart:auxv:read:
+  This packet has been replaced by qXfer:auxv:read.  Only GDB 6.4 and 6.5
+  used it, and only gdbserver implemented it.
+
 *** Changes in GDB 6.5
 
 * New targets

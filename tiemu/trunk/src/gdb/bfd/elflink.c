@@ -240,12 +240,30 @@ _bfd_elf_link_create_dynamic_sections (bfd *abfd, struct bfd_link_info *info)
   if (!_bfd_elf_define_linkage_sym (abfd, info, s, "_DYNAMIC"))
     return FALSE;
 
-  s = bfd_make_section_with_flags (abfd, ".hash",
-				   flags | SEC_READONLY);
-  if (s == NULL
-      || ! bfd_set_section_alignment (abfd, s, bed->s->log_file_align))
-    return FALSE;
-  elf_section_data (s)->this_hdr.sh_entsize = bed->s->sizeof_hash_entry;
+  if (info->emit_hash)
+    {
+      s = bfd_make_section_with_flags (abfd, ".hash", flags | SEC_READONLY);
+      if (s == NULL
+	  || ! bfd_set_section_alignment (abfd, s, bed->s->log_file_align))
+	return FALSE;
+      elf_section_data (s)->this_hdr.sh_entsize = bed->s->sizeof_hash_entry;
+    }
+
+  if (info->emit_gnu_hash)
+    {
+      s = bfd_make_section_with_flags (abfd, ".gnu.hash",
+				       flags | SEC_READONLY);
+      if (s == NULL
+	  || ! bfd_set_section_alignment (abfd, s, bed->s->log_file_align))
+	return FALSE;
+      /* For 64-bit ELF, .gnu.hash is a non-uniform entity size section:
+	 4 32-bit words followed by variable count of 64-bit words, then
+	 variable count of 32-bit words.  */
+      if (bed->s->arch_size == 64)
+	elf_section_data (s)->this_hdr.sh_entsize = 0;
+      else
+	elf_section_data (s)->this_hdr.sh_entsize = 4;
+    }
 
   /* Let the backend create the rest of the sections.  This lets the
      backend set the right flags.  The backend will normally create
@@ -426,6 +444,21 @@ bfd_elf_link_record_dynamic_symbol (struct bfd_link_info *info,
   return TRUE;
 }
 
+/* Mark a symbol dynamic.  */
+
+void
+bfd_elf_link_mark_dynamic_symbol (struct bfd_link_info *info,
+				  struct elf_link_hash_entry *h)
+{
+  struct bfd_elf_dynamic_list *d = info->dynamic;
+
+  if (d == NULL || info->relocatable)
+    return;
+
+  if ((*d->match) (&d->head, NULL, h->root.root.string))
+    h->dynamic = 1;
+}
+
 /* Record an assignment to a symbol made by a linker script.  We need
    this in case some dynamic object refers to this symbol.  */
 
@@ -459,7 +492,10 @@ bfd_elf_record_link_assignment (bfd *output_bfd,
     }
 
   if (h->root.type == bfd_link_hash_new)
-    h->non_elf = 0;
+    {
+      bfd_elf_link_mark_dynamic_symbol (info, h);
+      h->non_elf = 0;
+    }
 
   /* If this symbol is being provided by the linker script, and it is
      currently defined by a dynamic object, but not by a regular
@@ -676,6 +712,8 @@ _bfd_elf_link_omit_section_dynsym (bfd *output_bfd ATTRIBUTE_UNUSED,
 				   struct bfd_link_info *info,
 				   asection *p)
 {
+  struct elf_link_hash_table *htab;
+
   switch (elf_section_data (p)->this_hdr.sh_type)
     {
     case SHT_PROGBITS:
@@ -683,15 +721,21 @@ _bfd_elf_link_omit_section_dynsym (bfd *output_bfd ATTRIBUTE_UNUSED,
       /* If sh_type is yet undecided, assume it could be
 	 SHT_PROGBITS/SHT_NOBITS.  */
     case SHT_NULL:
+      htab = elf_hash_table (info);
+      if (p == htab->tls_sec)
+	return FALSE;
+
+      if (htab->text_index_section != NULL)
+	return p != htab->text_index_section && p != htab->data_index_section;
+
       if (strcmp (p->name, ".got") == 0
 	  || strcmp (p->name, ".got.plt") == 0
 	  || strcmp (p->name, ".plt") == 0)
 	{
 	  asection *ip;
-	  bfd *dynobj = elf_hash_table (info)->dynobj;
 
-	  if (dynobj != NULL
-	      && (ip = bfd_get_section_by_name (dynobj, p->name)) != NULL
+	  if (htab->dynobj != NULL
+	      && (ip = bfd_get_section_by_name (htab->dynobj, p->name)) != NULL
 	      && (ip->flags & SEC_LINKER_CREATED)
 	      && ip->output_section == p)
 	    return TRUE;
@@ -727,6 +771,8 @@ _bfd_elf_link_renumber_dynsyms (bfd *output_bfd,
 	    && (p->flags & SEC_ALLOC) != 0
 	    && !(*bed->elf_backend_omit_section_dynsym) (output_bfd, info, p))
 	  elf_section_data (p)->dynindx = ++dynsymcount;
+	else
+	  elf_section_data (p)->dynindx = 0;
     }
   *section_sym_count = dynsymcount;
 
@@ -796,6 +842,15 @@ _bfd_elf_merge_symbol (bfd *abfd,
   sec = *psec;
   bind = ELF_ST_BIND (sym->st_info);
 
+  /* Silently discard TLS symbols from --just-syms.  There's no way to
+     combine a static TLS block with a new TLS block for this executable.  */
+  if (ELF_ST_TYPE (sym->st_info) == STT_TLS
+      && sec->sec_info_type == ELF_INFO_TYPE_JUST_SYMS)
+    {
+      *skip = TRUE;
+      return TRUE;
+    }
+
   if (! bfd_is_und_section (sec))
     h = elf_link_hash_lookup (elf_hash_table (info), name, TRUE, FALSE, FALSE);
   else
@@ -822,6 +877,7 @@ _bfd_elf_merge_symbol (bfd *abfd,
 
   if (h->root.type == bfd_link_hash_new)
     {
+      bfd_elf_link_mark_dynamic_symbol (info, h);
       h->non_elf = 0;
       return TRUE;
     }
@@ -1007,7 +1063,41 @@ _bfd_elf_merge_symbol (bfd *abfd,
 	 relocatable file and the old definition comes from a dynamic
 	 object, we remove the old definition.  */
       if ((*sym_hash)->root.type == bfd_link_hash_indirect)
-	h = *sym_hash;
+	{
+	  /* Handle the case where the old dynamic definition is
+	     default versioned.  We need to copy the symbol info from
+	     the symbol with default version to the normal one if it
+	     was referenced before.  */
+	  if (h->ref_regular)
+	    {
+	      const struct elf_backend_data *bed
+		= get_elf_backend_data (abfd);
+	      struct elf_link_hash_entry *vh = *sym_hash;
+	      vh->root.type = h->root.type;
+	      h->root.type = bfd_link_hash_indirect;
+	      (*bed->elf_backend_copy_indirect_symbol) (info, vh, h);
+	      /* Protected symbols will override the dynamic definition
+		 with default version.  */
+	      if (ELF_ST_VISIBILITY (sym->st_other) == STV_PROTECTED)
+		{
+		  h->root.u.i.link = (struct bfd_link_hash_entry *) vh;
+		  vh->dynamic_def = 1;
+		  vh->ref_dynamic = 1;
+		}
+	      else
+		{
+		  h->root.type = vh->root.type;
+		  vh->ref_dynamic = 0;
+		  /* We have to hide it here since it was made dynamic
+		     global with extra bits when the symbol info was
+		     copied from the old dynamic definition.  */
+		  (*bed->elf_backend_hide_symbol) (info, vh, TRUE);
+		}
+	      h = vh;
+	    }
+	  else
+	    h = *sym_hash;
+	}
 
       if ((h->root.u.undef.next || info->hash->undefs_tail == &h->root)
 	  && bfd_is_und_section (sec))
@@ -1573,6 +1663,10 @@ bfd_boolean
 _bfd_elf_export_symbol (struct elf_link_hash_entry *h, void *data)
 {
   struct elf_info_failed *eif = data;
+
+  /* Ignore this if we won't export it.  */
+  if (!eif->info->export_dynamic && !h->dynamic)
+    return TRUE;
 
   /* Ignore indirect symbols.  These are added by the versioning code.  */
   if (h->root.type == bfd_link_hash_indirect)
@@ -2327,7 +2421,7 @@ _bfd_elf_fix_symbol_flags (struct elf_link_hash_entry *h,
   if (h->needs_plt
       && eif->info->shared
       && is_elf_hash_table (eif->info->hash)
-      && (eif->info->symbolic
+      && (SYMBOLIC_BIND (eif->info, h)
 	  || ELF_ST_VISIBILITY (h->other) != STV_DEFAULT)
       && h->def_regular)
     {
@@ -2556,7 +2650,7 @@ _bfd_elf_dynamic_symbol_p (struct elf_link_hash_entry *h,
 
   /* Identify the cases where name binding rules say that a
      visible symbol resolves locally.  */
-  binding_stays_local_p = info->executable || info->symbolic;
+  binding_stays_local_p = info->executable || SYMBOLIC_BIND (info, h);
 
   switch (ELF_ST_VISIBILITY (h->other))
     {
@@ -2619,7 +2713,7 @@ _bfd_elf_symbol_refs_local_p (struct elf_link_hash_entry *h,
   /* At this point, we know the symbol is defined and dynamic.  In an
      executable it must resolve locally, likewise when building symbolic
      shared libraries.  */
-  if (info->executable || info->symbolic)
+  if (info->executable || SYMBOLIC_BIND (info, h))
     return TRUE;
 
   /* Now deal with defined dynamic symbols in shared libraries.  Ones
@@ -2809,10 +2903,6 @@ _bfd_elf_add_dynamic_entry (struct bfd_link_info *info,
   hash_table = elf_hash_table (info);
   if (! is_elf_hash_table (hash_table))
     return FALSE;
-
-  if (info->warn_shared_textrel && info->shared && tag == DT_TEXTREL)
-    _bfd_error_handler
-      (_("warning: creating a DT_TEXTREL in a shared object."));
 
   bed = get_elf_backend_data (hash_table->dynobj);
   s = bfd_get_section_by_name (hash_table->dynobj, ".dynamic");
@@ -3084,6 +3174,9 @@ elf_link_add_object_symbols (bfd *abfd, struct bfd_link_info *info)
   struct elf_link_hash_table *htab;
   bfd_size_type amt;
   void *alloc_mark = NULL;
+  struct bfd_hash_entry **old_table = NULL;
+  unsigned int old_size = 0;
+  unsigned int old_count = 0;
   void *old_tab = NULL;
   void *old_hash;
   void *old_ent;
@@ -3130,7 +3223,7 @@ elf_link_add_object_symbols (bfd *abfd, struct bfd_link_info *info)
 	  const char *name;
 
 	  name = bfd_get_section_name (abfd, s);
-	  if (strncmp (name, ".gnu.warning.", sizeof ".gnu.warning." - 1) == 0)
+	  if (CONST_STRNEQ (name, ".gnu.warning."))
 	    {
 	      char *msg;
 	      bfd_size_type sz;
@@ -3500,6 +3593,13 @@ elf_link_add_object_symbols (bfd *abfd, struct bfd_link_info *info)
       if (alloc_mark == NULL)
 	goto error_free_vers;
 
+      /* Make a special call to the linker "notice" function to
+	 tell it that we are about to handle an as-needed lib.  */
+      if (!(*info->callbacks->notice) (info, NULL, abfd, NULL,
+				       notice_as_needed))
+	return FALSE;
+
+
       /* Clone the symbol table and sym hashes.  Remember some
 	 pointers into the symbol table, and dynamic symbol count.  */
       old_hash = (char *) old_tab + tabsize;
@@ -3508,6 +3608,9 @@ elf_link_add_object_symbols (bfd *abfd, struct bfd_link_info *info)
       memcpy (old_hash, sym_hash, hashsize);
       old_undefs = htab->root.undefs;
       old_undefs_tail = htab->root.undefs_tail;
+      old_table = htab->root.table.table;
+      old_size = htab->root.table.size;
+      old_count = htab->root.table.count;
       old_dynsymcount = htab->dynsymcount;
 
       for (i = 0; i < htab->root.table.size; i++)
@@ -3619,7 +3722,8 @@ elf_link_add_object_symbols (bfd *abfd, struct bfd_link_info *info)
 	goto error_free_vers;
 
       if (isym->st_shndx == SHN_COMMON
-	  && ELF_ST_TYPE (isym->st_info) == STT_TLS)
+	  && ELF_ST_TYPE (isym->st_info) == STT_TLS
+	  && !info->relocatable)
 	{
 	  asection *tcomm = bfd_get_section_by_name (abfd, ".tcommon");
 
@@ -3926,11 +4030,21 @@ elf_link_add_object_symbols (bfd *abfd, struct bfd_link_info *info)
 		}
 
 	      if (normal_align < common_align)
-		(*_bfd_error_handler)
-		  (_("Warning: alignment %u of symbol `%s' in %B"
-		     " is smaller than %u in %B"),
-		   normal_bfd, common_bfd,
-		   1 << normal_align, name, 1 << common_align);
+		{
+		  /* PR binutils/2735 */
+		  if (normal_bfd == NULL)
+		    (*_bfd_error_handler)
+		      (_("Warning: alignment %u of common symbol `%s' in %B"
+			 " is greater than the alignment (%u) of its section %A"),
+		       common_bfd, h->root.u.def.section,
+		       1 << common_align, name, 1 << normal_align);
+		  else
+		    (*_bfd_error_handler)
+		      (_("Warning: alignment %u of symbol `%s' in %B"
+			 " is smaller than %u in %B"),
+		       normal_bfd, common_bfd,
+		       1 << normal_align, name, 1 << common_align);
+		}
 	    }
 
 	  /* Remember the symbol size and type.  */
@@ -3986,13 +4100,13 @@ elf_link_add_object_symbols (bfd *abfd, struct bfd_link_info *info)
 	    isym->st_other = (STV_HIDDEN
 			      | (isym->st_other & ~ELF_ST_VISIBILITY (-1)));
 
-	  if (isym->st_other != 0 && !dynamic)
+	  if (ELF_ST_VISIBILITY (isym->st_other) != 0 && !dynamic)
 	    {
 	      unsigned char hvis, symvis, other, nvis;
 
-	      /* Take the balance of OTHER from the definition.  */
-	      other = (definition ? isym->st_other : h->other);
-	      other &= ~ ELF_ST_VISIBILITY (-1);
+	      /* Only merge the visibility. Leave the remainder of the
+		 st_other field to elf_backend_merge_symbol_attribute.  */
+	      other = h->other & ~ELF_ST_VISIBILITY (-1);
 
 	      /* Combine visibilities, using the most constraining one.  */
 	      hvis   = ELF_ST_VISIBILITY (h->other);
@@ -4040,6 +4154,13 @@ elf_link_add_object_symbols (bfd *abfd, struct bfd_link_info *info)
 		      && ! new_weakdef
 		      && h->u.weakdef->dynindx != -1))
 		dynsym = TRUE;
+	    }
+
+	  if (definition && (sec->flags & SEC_DEBUGGING))
+	    {
+	      /* We don't want to make debug symbol dynamic.  */
+	      (*bed->elf_backend_hide_symbol) (info, h, TRUE);
+	      dynsym = FALSE;
 	    }
 
 	  /* Check to see if we need to add an indirect symbol for
@@ -4145,6 +4266,9 @@ elf_link_add_object_symbols (bfd *abfd, struct bfd_link_info *info)
       old_hash = (char *) old_tab + tabsize;
       old_ent = (char *) old_hash + hashsize;
       sym_hash = elf_sym_hashes (abfd);
+      htab->root.table.table = old_table;
+      htab->root.table.size = old_size;
+      htab->root.table.count = old_count;
       memcpy (htab->root.table.table, old_tab, tabsize);
       memcpy (sym_hash, old_hash, hashsize);
       htab->root.undefs = old_undefs;
@@ -4173,6 +4297,12 @@ elf_link_add_object_symbols (bfd *abfd, struct bfd_link_info *info)
 	    }
 	}
 
+      /* Make a special call to the linker "notice" function to
+	 tell it that symbols added for crefs may need to be removed.  */
+      if (!(*info->callbacks->notice) (info, NULL, abfd, NULL,
+				       notice_not_needed))
+	return FALSE;
+
       free (old_tab);
       objalloc_free_block ((struct objalloc *) htab->root.table.memory,
 			   alloc_mark);
@@ -4183,6 +4313,9 @@ elf_link_add_object_symbols (bfd *abfd, struct bfd_link_info *info)
 
   if (old_tab != NULL)
     {
+      if (!(*info->callbacks->notice) (info, NULL, abfd, NULL,
+				       notice_needed))
+	return FALSE;
       free (old_tab);
       old_tab = NULL;
     }
@@ -4445,7 +4578,7 @@ elf_link_add_object_symbols (bfd *abfd, struct bfd_link_info *info)
 	  asection *stab;
 
 	  for (stab = abfd->sections; stab; stab = stab->next)
-	    if (strncmp (".stab", stab->name, 5) == 0
+	    if (CONST_STRNEQ (stab->name, ".stab")
 		&& (!stab->name[5] ||
 		    (stab->name[5] == '.' && ISDIGIT (stab->name[6])))
 		&& (stab->flags & SEC_MERGE) == 0
@@ -4795,6 +4928,131 @@ elf_collect_hash_codes (struct elf_link_hash_entry *h, void *data)
   return TRUE;
 }
 
+struct collect_gnu_hash_codes
+{
+  bfd *output_bfd;
+  const struct elf_backend_data *bed;
+  unsigned long int nsyms;
+  unsigned long int maskbits;
+  unsigned long int *hashcodes;
+  unsigned long int *hashval;
+  unsigned long int *indx;
+  unsigned long int *counts;
+  bfd_vma *bitmask;
+  bfd_byte *contents;
+  long int min_dynindx;
+  unsigned long int bucketcount;
+  unsigned long int symindx;
+  long int local_indx;
+  long int shift1, shift2;
+  unsigned long int mask;
+};
+
+/* This function will be called though elf_link_hash_traverse to store
+   all hash value of the exported symbols in an array.  */
+
+static bfd_boolean
+elf_collect_gnu_hash_codes (struct elf_link_hash_entry *h, void *data)
+{
+  struct collect_gnu_hash_codes *s = data;
+  const char *name;
+  char *p;
+  unsigned long ha;
+  char *alc = NULL;
+
+  if (h->root.type == bfd_link_hash_warning)
+    h = (struct elf_link_hash_entry *) h->root.u.i.link;
+
+  /* Ignore indirect symbols.  These are added by the versioning code.  */
+  if (h->dynindx == -1)
+    return TRUE;
+
+  /* Ignore also local symbols and undefined symbols.  */
+  if (! (*s->bed->elf_hash_symbol) (h))
+    return TRUE;
+
+  name = h->root.root.string;
+  p = strchr (name, ELF_VER_CHR);
+  if (p != NULL)
+    {
+      alc = bfd_malloc (p - name + 1);
+      memcpy (alc, name, p - name);
+      alc[p - name] = '\0';
+      name = alc;
+    }
+
+  /* Compute the hash value.  */
+  ha = bfd_elf_gnu_hash (name);
+
+  /* Store the found hash value in the array for compute_bucket_count,
+     and also for .dynsym reordering purposes.  */
+  s->hashcodes[s->nsyms] = ha;
+  s->hashval[h->dynindx] = ha;
+  ++s->nsyms;
+  if (s->min_dynindx < 0 || s->min_dynindx > h->dynindx)
+    s->min_dynindx = h->dynindx;
+
+  if (alc != NULL)
+    free (alc);
+
+  return TRUE;
+}
+
+/* This function will be called though elf_link_hash_traverse to do
+   final dynaminc symbol renumbering.  */
+
+static bfd_boolean
+elf_renumber_gnu_hash_syms (struct elf_link_hash_entry *h, void *data)
+{
+  struct collect_gnu_hash_codes *s = data;
+  unsigned long int bucket;
+  unsigned long int val;
+
+  if (h->root.type == bfd_link_hash_warning)
+    h = (struct elf_link_hash_entry *) h->root.u.i.link;
+
+  /* Ignore indirect symbols.  */
+  if (h->dynindx == -1)
+    return TRUE;
+
+  /* Ignore also local symbols and undefined symbols.  */
+  if (! (*s->bed->elf_hash_symbol) (h))
+    {
+      if (h->dynindx >= s->min_dynindx)
+	h->dynindx = s->local_indx++;
+      return TRUE;
+    }
+
+  bucket = s->hashval[h->dynindx] % s->bucketcount;
+  val = (s->hashval[h->dynindx] >> s->shift1)
+	& ((s->maskbits >> s->shift1) - 1);
+  s->bitmask[val] |= ((bfd_vma) 1) << (s->hashval[h->dynindx] & s->mask);
+  s->bitmask[val]
+    |= ((bfd_vma) 1) << ((s->hashval[h->dynindx] >> s->shift2) & s->mask);
+  val = s->hashval[h->dynindx] & ~(unsigned long int) 1;
+  if (s->counts[bucket] == 1)
+    /* Last element terminates the chain.  */
+    val |= 1;
+  bfd_put_32 (s->output_bfd, val,
+	      s->contents + (s->indx[bucket] - s->symindx) * 4);
+  --s->counts[bucket];
+  h->dynindx = s->indx[bucket]++;
+  return TRUE;
+}
+
+/* Return TRUE if symbol should be hashed in the `.gnu.hash' section.  */
+
+bfd_boolean
+_bfd_elf_hash_symbol (struct elf_link_hash_entry *h)
+{
+  return !(h->forced_local
+	   || h->root.type == bfd_link_hash_undefined
+	   || h->root.type == bfd_link_hash_undefweak
+	   || ((h->root.type == bfd_link_hash_defined
+		|| h->root.type == bfd_link_hash_defweak)
+	       && h->root.u.def.section->output_section == NULL));
+}
+
 /* Array used to determine the number of hash table buckets to use
    based on the number of symbols there are.  If there are fewer than
    3 symbols we use 1 bucket, fewer than 17 symbols we use 3 buckets,
@@ -4816,28 +5074,13 @@ static const size_t elf_buckets[] =
    Therefore the result is always a good payoff between few collisions
    (= short chain lengths) and table size.  */
 static size_t
-compute_bucket_count (struct bfd_link_info *info)
+compute_bucket_count (struct bfd_link_info *info, unsigned long int *hashcodes,
+		      unsigned long int nsyms, int gnu_hash)
 {
   size_t dynsymcount = elf_hash_table (info)->dynsymcount;
   size_t best_size = 0;
-  unsigned long int *hashcodes;
-  unsigned long int *hashcodesp;
   unsigned long int i;
   bfd_size_type amt;
-
-  /* Compute the hash values for all exported symbols.  At the same
-     time store the values in an array so that we could use them for
-     optimizations.  */
-  amt = dynsymcount;
-  amt *= sizeof (unsigned long int);
-  hashcodes = bfd_malloc (amt);
-  if (hashcodes == NULL)
-    return 0;
-  hashcodesp = hashcodes;
-
-  /* Put all hash values in HASHCODES.  */
-  elf_link_hash_traverse (elf_hash_table (info),
-			  elf_collect_hash_codes, &hashcodesp);
 
   /* We have a problem here.  The following code to optimize the table
      size requires an integer type with more the 32 bits.  If
@@ -4845,13 +5088,12 @@ compute_bucket_count (struct bfd_link_info *info)
 #ifdef BFD_HOST_U_64_BIT
   if (info->optimize)
     {
-      unsigned long int nsyms = hashcodesp - hashcodes;
       size_t minsize;
       size_t maxsize;
       BFD_HOST_U_64_BIT best_chlen = ~((BFD_HOST_U_64_BIT) 0);
-      unsigned long int *counts ;
       bfd *dynobj = elf_hash_table (info)->dynobj;
       const struct elf_backend_data *bed = get_elf_backend_data (dynobj);
+      unsigned long int *counts;
 
       /* Possible optimization parameters: if we have NSYMS symbols we say
 	 that the hashing table must at least have NSYMS/4 and at most
@@ -4860,6 +5102,13 @@ compute_bucket_count (struct bfd_link_info *info)
       if (minsize == 0)
 	minsize = 1;
       best_size = maxsize = nsyms * 2;
+      if (gnu_hash)
+	{
+	  if (minsize < 2)
+	    minsize = 2;
+	  if ((best_size & 31) == 0)
+	    ++best_size;
+	}
 
       /* Create array where we count the collisions in.  We must use bfd_malloc
 	 since the size could be large.  */
@@ -4867,10 +5116,7 @@ compute_bucket_count (struct bfd_link_info *info)
       amt *= sizeof (unsigned long int);
       counts = bfd_malloc (amt);
       if (counts == NULL)
-	{
-	  free (hashcodes);
-	  return 0;
-	}
+	return 0;
 
       /* Compute the "optimal" size for the hash table.  The criteria is a
 	 minimal chain length.  The minor criteria is (of course) the size
@@ -4881,6 +5127,9 @@ compute_bucket_count (struct bfd_link_info *info)
 	  BFD_HOST_U_64_BIT max;
 	  unsigned long int j;
 	  unsigned long int fact;
+
+	  if (gnu_hash && (i & 31) == 0)
+	    continue;
 
 	  memset (counts, '\0', i * sizeof (unsigned long int));
 
@@ -4897,9 +5146,9 @@ compute_bucket_count (struct bfd_link_info *info)
 #  define BFD_TARGET_PAGESIZE	(4096)
 # endif
 
-	  /* We in any case need 2 + NSYMS entries for the size values and
-	     the chains.  */
-	  max = (2 + nsyms) * (bed->s->arch_size / 8);
+	  /* We in any case need 2 + DYNSYMCOUNT entries for the size values
+	     and the chains.  */
+	  max = (2 + dynsymcount) * bed->s->sizeof_hash_entry;
 
 # if 1
 	  /* Variant 1: optimize for short chains.  We add the squares
@@ -4909,7 +5158,7 @@ compute_bucket_count (struct bfd_link_info *info)
 	    max += counts[j] * counts[j];
 
 	  /* This adds penalties for the overall size of the table.  */
-	  fact = i / (BFD_TARGET_PAGESIZE / (bed->s->arch_size / 8)) + 1;
+	  fact = i / (BFD_TARGET_PAGESIZE / bed->s->sizeof_hash_entry) + 1;
 	  max *= fact * fact;
 # else
 	  /* Variant 2: Optimize a lot more for small table.  Here we
@@ -4920,7 +5169,7 @@ compute_bucket_count (struct bfd_link_info *info)
 
 	  /* The overall size of the table is considered, but not as
 	     strong as in variant 1, where it is squared.  */
-	  fact = i / (BFD_TARGET_PAGESIZE / (bed->s->arch_size / 8)) + 1;
+	  fact = i / (BFD_TARGET_PAGESIZE / bed->s->sizeof_hash_entry) + 1;
 	  max *= fact;
 # endif
 
@@ -4943,13 +5192,12 @@ compute_bucket_count (struct bfd_link_info *info)
       for (i = 0; elf_buckets[i] != 0; i++)
 	{
 	  best_size = elf_buckets[i];
-	  if (dynsymcount < elf_buckets[i + 1])
+	  if (nsyms < elf_buckets[i + 1])
 	    break;
 	}
+      if (gnu_hash && best_size < 2)
+	best_size = 2;
     }
-
-  /* Free the arrays we needed.  */
-  free (hashcodes);
 
   return best_size;
 }
@@ -5123,7 +5371,8 @@ bfd_elf_size_dynamic_sections (bfd *output_bfd,
 
       /* If we are supposed to export all symbols into the dynamic symbol
 	 table (this is not the normal case), then do so.  */
-      if (info->export_dynamic)
+      if (info->export_dynamic
+	  || (info->executable && info->dynamic))
 	{
 	  elf_link_hash_traverse (elf_hash_table (info),
 				  _bfd_elf_export_symbol,
@@ -5308,7 +5557,10 @@ bfd_elf_size_dynamic_sections (bfd *output_bfd,
 	  bfd_size_type strsize;
 
 	  strsize = _bfd_elf_strtab_size (elf_hash_table (info)->dynstr);
-	  if (!_bfd_elf_add_dynamic_entry (info, DT_HASH, 0)
+	  if ((info->emit_hash
+	       && !_bfd_elf_add_dynamic_entry (info, DT_HASH, 0))
+	      || (info->emit_gnu_hash
+		  && !_bfd_elf_add_dynamic_entry (info, DT_GNU_HASH, 0))
 	      || !_bfd_elf_add_dynamic_entry (info, DT_STRTAB, 0)
 	      || !_bfd_elf_add_dynamic_entry (info, DT_SYMTAB, 0)
 	      || !_bfd_elf_add_dynamic_entry (info, DT_STRSZ, strsize)
@@ -5697,21 +5949,68 @@ bfd_elf_size_dynamic_sections (bfd *output_bfd,
   return TRUE;
 }
 
+/* Find the first non-excluded output section.  We'll use its
+   section symbol for some emitted relocs.  */
+void
+_bfd_elf_init_1_index_section (bfd *output_bfd, struct bfd_link_info *info)
+{
+  asection *s;
+
+  for (s = output_bfd->sections; s != NULL; s = s->next)
+    if ((s->flags & (SEC_EXCLUDE | SEC_ALLOC)) == SEC_ALLOC
+	&& !_bfd_elf_link_omit_section_dynsym (output_bfd, info, s))
+      {
+	elf_hash_table (info)->text_index_section = s;
+	break;
+      }
+}
+
+/* Find two non-excluded output sections, one for code, one for data.
+   We'll use their section symbols for some emitted relocs.  */
+void
+_bfd_elf_init_2_index_sections (bfd *output_bfd, struct bfd_link_info *info)
+{
+  asection *s;
+
+  for (s = output_bfd->sections; s != NULL; s = s->next)
+    if (((s->flags & (SEC_EXCLUDE | SEC_ALLOC | SEC_READONLY))
+	 == (SEC_ALLOC | SEC_READONLY))
+	&& !_bfd_elf_link_omit_section_dynsym (output_bfd, info, s))
+      {
+	elf_hash_table (info)->text_index_section = s;
+	break;
+      }
+
+  for (s = output_bfd->sections; s != NULL; s = s->next)
+    if (((s->flags & (SEC_EXCLUDE | SEC_ALLOC | SEC_READONLY)) == SEC_ALLOC)
+	&& !_bfd_elf_link_omit_section_dynsym (output_bfd, info, s))
+      {
+	elf_hash_table (info)->data_index_section = s;
+	break;
+      }
+
+  if (elf_hash_table (info)->text_index_section == NULL)
+    elf_hash_table (info)->text_index_section
+      = elf_hash_table (info)->data_index_section;
+}
+
 bfd_boolean
 bfd_elf_size_dynsym_hash_dynstr (bfd *output_bfd, struct bfd_link_info *info)
 {
+  const struct elf_backend_data *bed;
+
   if (!is_elf_hash_table (info->hash))
     return TRUE;
+
+  bed = get_elf_backend_data (output_bfd);
+  (*bed->elf_backend_init_index_section) (output_bfd, info);
 
   if (elf_hash_table (info)->dynamic_sections_created)
     {
       bfd *dynobj;
-      const struct elf_backend_data *bed;
       asection *s;
       bfd_size_type dynsymcount;
       unsigned long section_sym_count;
-      size_t bucketcount = 0;
-      size_t hash_entry_size;
       unsigned int dtagcount;
 
       dynobj = elf_hash_table (info)->dynobj;
@@ -5747,7 +6046,6 @@ bfd_elf_size_dynsym_hash_dynstr (bfd *output_bfd, struct bfd_link_info *info)
 	 section as we went along in elf_link_add_object_symbols.  */
       s = bfd_get_section_by_name (dynobj, ".dynsym");
       BFD_ASSERT (s != NULL);
-      bed = get_elf_backend_data (output_bfd);
       s->size = dynsymcount * bed->s->sizeof_sym;
 
       if (dynsymcount != 0)
@@ -5762,23 +6060,215 @@ bfd_elf_size_dynsym_hash_dynstr (bfd *output_bfd, struct bfd_link_info *info)
 	  memset (s->contents, 0, section_sym_count * bed->s->sizeof_sym);
 	}
 
+      elf_hash_table (info)->bucketcount = 0;
+
       /* Compute the size of the hashing table.  As a side effect this
 	 computes the hash values for all the names we export.  */
-      bucketcount = compute_bucket_count (info);
+      if (info->emit_hash)
+	{
+	  unsigned long int *hashcodes;
+	  unsigned long int *hashcodesp;
+	  bfd_size_type amt;
+	  unsigned long int nsyms;
+	  size_t bucketcount;
+	  size_t hash_entry_size;
 
-      s = bfd_get_section_by_name (dynobj, ".hash");
-      BFD_ASSERT (s != NULL);
-      hash_entry_size = elf_section_data (s)->this_hdr.sh_entsize;
-      s->size = ((2 + bucketcount + dynsymcount) * hash_entry_size);
-      s->contents = bfd_zalloc (output_bfd, s->size);
-      if (s->contents == NULL)
-	return FALSE;
+	  /* Compute the hash values for all exported symbols.  At the same
+	     time store the values in an array so that we could use them for
+	     optimizations.  */
+	  amt = dynsymcount * sizeof (unsigned long int);
+	  hashcodes = bfd_malloc (amt);
+	  if (hashcodes == NULL)
+	    return FALSE;
+	  hashcodesp = hashcodes;
 
-      bfd_put (8 * hash_entry_size, output_bfd, bucketcount, s->contents);
-      bfd_put (8 * hash_entry_size, output_bfd, dynsymcount,
-	       s->contents + hash_entry_size);
+	  /* Put all hash values in HASHCODES.  */
+	  elf_link_hash_traverse (elf_hash_table (info),
+				  elf_collect_hash_codes, &hashcodesp);
 
-      elf_hash_table (info)->bucketcount = bucketcount;
+	  nsyms = hashcodesp - hashcodes;
+	  bucketcount
+	    = compute_bucket_count (info, hashcodes, nsyms, 0);
+	  free (hashcodes);
+
+	  if (bucketcount == 0)
+	    return FALSE;
+
+	  elf_hash_table (info)->bucketcount = bucketcount;
+
+	  s = bfd_get_section_by_name (dynobj, ".hash");
+	  BFD_ASSERT (s != NULL);
+	  hash_entry_size = elf_section_data (s)->this_hdr.sh_entsize;
+	  s->size = ((2 + bucketcount + dynsymcount) * hash_entry_size);
+	  s->contents = bfd_zalloc (output_bfd, s->size);
+	  if (s->contents == NULL)
+	    return FALSE;
+
+	  bfd_put (8 * hash_entry_size, output_bfd, bucketcount, s->contents);
+	  bfd_put (8 * hash_entry_size, output_bfd, dynsymcount,
+		   s->contents + hash_entry_size);
+	}
+
+      if (info->emit_gnu_hash)
+	{
+	  size_t i, cnt;
+	  unsigned char *contents;
+	  struct collect_gnu_hash_codes cinfo;
+	  bfd_size_type amt;
+	  size_t bucketcount;
+
+	  memset (&cinfo, 0, sizeof (cinfo));
+
+	  /* Compute the hash values for all exported symbols.  At the same
+	     time store the values in an array so that we could use them for
+	     optimizations.  */
+	  amt = dynsymcount * 2 * sizeof (unsigned long int);
+	  cinfo.hashcodes = bfd_malloc (amt);
+	  if (cinfo.hashcodes == NULL)
+	    return FALSE;
+
+	  cinfo.hashval = cinfo.hashcodes + dynsymcount;
+	  cinfo.min_dynindx = -1;
+	  cinfo.output_bfd = output_bfd;
+	  cinfo.bed = bed;
+
+	  /* Put all hash values in HASHCODES.  */
+	  elf_link_hash_traverse (elf_hash_table (info),
+				  elf_collect_gnu_hash_codes, &cinfo);
+
+	  bucketcount
+	    = compute_bucket_count (info, cinfo.hashcodes, cinfo.nsyms, 1);
+
+	  if (bucketcount == 0)
+	    {
+	      free (cinfo.hashcodes);
+	      return FALSE;
+	    }
+
+	  s = bfd_get_section_by_name (dynobj, ".gnu.hash");
+	  BFD_ASSERT (s != NULL);
+
+	  if (cinfo.nsyms == 0)
+	    {
+	      /* Empty .gnu.hash section is special.  */
+	      BFD_ASSERT (cinfo.min_dynindx == -1);
+	      free (cinfo.hashcodes);
+	      s->size = 5 * 4 + bed->s->arch_size / 8;
+	      contents = bfd_zalloc (output_bfd, s->size);
+	      if (contents == NULL)
+		return FALSE;
+	      s->contents = contents;
+	      /* 1 empty bucket.  */
+	      bfd_put_32 (output_bfd, 1, contents);
+	      /* SYMIDX above the special symbol 0.  */
+	      bfd_put_32 (output_bfd, 1, contents + 4);
+	      /* Just one word for bitmask.  */
+	      bfd_put_32 (output_bfd, 1, contents + 8);
+	      /* Only hash fn bloom filter.  */
+	      bfd_put_32 (output_bfd, 0, contents + 12);
+	      /* No hashes are valid - empty bitmask.  */
+	      bfd_put (bed->s->arch_size, output_bfd, 0, contents + 16);
+	      /* No hashes in the only bucket.  */
+	      bfd_put_32 (output_bfd, 0,
+			  contents + 16 + bed->s->arch_size / 8);
+	    }
+	  else
+	    {
+	      unsigned long int maskwords, maskbitslog2;
+	      BFD_ASSERT (cinfo.min_dynindx != -1);
+
+	      maskbitslog2 = bfd_log2 (cinfo.nsyms) + 1;
+	      if (maskbitslog2 < 3)
+		maskbitslog2 = 5;
+	      else if ((1 << (maskbitslog2 - 2)) & cinfo.nsyms)
+		maskbitslog2 = maskbitslog2 + 3;
+	      else
+		maskbitslog2 = maskbitslog2 + 2;
+	      if (bed->s->arch_size == 64)
+		{
+		  if (maskbitslog2 == 5)
+		    maskbitslog2 = 6;
+		  cinfo.shift1 = 6;
+		}
+	      else
+		cinfo.shift1 = 5;
+	      cinfo.mask = (1 << cinfo.shift1) - 1;
+	      cinfo.shift2 = maskbitslog2;
+	      cinfo.maskbits = 1 << maskbitslog2;
+	      maskwords = 1 << (maskbitslog2 - cinfo.shift1);
+	      amt = bucketcount * sizeof (unsigned long int) * 2;
+	      amt += maskwords * sizeof (bfd_vma);
+	      cinfo.bitmask = bfd_malloc (amt);
+	      if (cinfo.bitmask == NULL)
+		{
+		  free (cinfo.hashcodes);
+		  return FALSE;
+		}
+
+	      cinfo.counts = (void *) (cinfo.bitmask + maskwords);
+	      cinfo.indx = cinfo.counts + bucketcount;
+	      cinfo.symindx = dynsymcount - cinfo.nsyms;
+	      memset (cinfo.bitmask, 0, maskwords * sizeof (bfd_vma));
+
+	      /* Determine how often each hash bucket is used.  */
+	      memset (cinfo.counts, 0, bucketcount * sizeof (cinfo.counts[0]));
+	      for (i = 0; i < cinfo.nsyms; ++i)
+		++cinfo.counts[cinfo.hashcodes[i] % bucketcount];
+
+	      for (i = 0, cnt = cinfo.symindx; i < bucketcount; ++i)
+		if (cinfo.counts[i] != 0)
+		  {
+		    cinfo.indx[i] = cnt;
+		    cnt += cinfo.counts[i];
+		  }
+	      BFD_ASSERT (cnt == dynsymcount);
+	      cinfo.bucketcount = bucketcount;
+	      cinfo.local_indx = cinfo.min_dynindx;
+
+	      s->size = (4 + bucketcount + cinfo.nsyms) * 4;
+	      s->size += cinfo.maskbits / 8;
+	      contents = bfd_zalloc (output_bfd, s->size);
+	      if (contents == NULL)
+		{
+		  free (cinfo.bitmask);
+		  free (cinfo.hashcodes);
+		  return FALSE;
+		}
+
+	      s->contents = contents;
+	      bfd_put_32 (output_bfd, bucketcount, contents);
+	      bfd_put_32 (output_bfd, cinfo.symindx, contents + 4);
+	      bfd_put_32 (output_bfd, maskwords, contents + 8);
+	      bfd_put_32 (output_bfd, cinfo.shift2, contents + 12);
+	      contents += 16 + cinfo.maskbits / 8;
+
+	      for (i = 0; i < bucketcount; ++i)
+		{
+		  if (cinfo.counts[i] == 0)
+		    bfd_put_32 (output_bfd, 0, contents);
+		  else
+		    bfd_put_32 (output_bfd, cinfo.indx[i], contents);
+		  contents += 4;
+		}
+
+	      cinfo.contents = contents;
+
+	      /* Renumber dynamic symbols, populate .gnu.hash section.  */
+	      elf_link_hash_traverse (elf_hash_table (info),
+				      elf_renumber_gnu_hash_syms, &cinfo);
+
+	      contents = s->contents + 16;
+	      for (i = 0; i < maskwords; ++i)
+		{
+		  bfd_put (bed->s->arch_size, output_bfd, cinfo.bitmask[i],
+			   contents);
+		  contents += bed->s->arch_size / 8;
+		}
+
+	      free (cinfo.bitmask);
+	      free (cinfo.hashcodes);
+	    }
+	}
 
       s = bfd_get_section_by_name (dynobj, ".dynstr");
       BFD_ASSERT (s != NULL);
@@ -6645,11 +7135,6 @@ elf_link_output_extsym (struct elf_link_hash_entry *h, void *data)
   if (h->dynindx != -1
       && elf_hash_table (finfo->info)->dynamic_sections_created)
     {
-      size_t bucketcount;
-      size_t bucket;
-      size_t hash_entry_size;
-      bfd_byte *bucketpos;
-      bfd_vma chain;
       bfd_byte *esym;
 
       sym.st_name = h->dynstr_index;
@@ -6661,17 +7146,27 @@ elf_link_output_extsym (struct elf_link_hash_entry *h, void *data)
 	}
       bed->s->swap_symbol_out (finfo->output_bfd, &sym, esym, 0);
 
-      bucketcount = elf_hash_table (finfo->info)->bucketcount;
-      bucket = h->u.elf_hash_value % bucketcount;
-      hash_entry_size
-	= elf_section_data (finfo->hash_sec)->this_hdr.sh_entsize;
-      bucketpos = ((bfd_byte *) finfo->hash_sec->contents
-		   + (bucket + 2) * hash_entry_size);
-      chain = bfd_get (8 * hash_entry_size, finfo->output_bfd, bucketpos);
-      bfd_put (8 * hash_entry_size, finfo->output_bfd, h->dynindx, bucketpos);
-      bfd_put (8 * hash_entry_size, finfo->output_bfd, chain,
-	       ((bfd_byte *) finfo->hash_sec->contents
-		+ (bucketcount + 2 + h->dynindx) * hash_entry_size));
+      if (finfo->hash_sec != NULL)
+	{
+	  size_t hash_entry_size;
+	  bfd_byte *bucketpos;
+	  bfd_vma chain;
+	  size_t bucketcount;
+	  size_t bucket;
+
+	  bucketcount = elf_hash_table (finfo->info)->bucketcount;
+	  bucket = h->u.elf_hash_value % bucketcount;
+
+	  hash_entry_size
+	    = elf_section_data (finfo->hash_sec)->this_hdr.sh_entsize;
+	  bucketpos = ((bfd_byte *) finfo->hash_sec->contents
+		       + (bucket + 2) * hash_entry_size);
+	  chain = bfd_get (8 * hash_entry_size, finfo->output_bfd, bucketpos);
+	  bfd_put (8 * hash_entry_size, finfo->output_bfd, h->dynindx, bucketpos);
+	  bfd_put (8 * hash_entry_size, finfo->output_bfd, chain,
+		   ((bfd_byte *) finfo->hash_sec->contents
+		    + (bucketcount + 2 + h->dynindx) * hash_entry_size));
+	}
 
       if (finfo->symver_sec != NULL && finfo->symver_sec->contents != NULL)
 	{
@@ -6772,14 +7267,15 @@ _bfd_elf_default_action_discarded (asection *sec)
 /* Find a match between a section and a member of a section group.  */
 
 static asection *
-match_group_member (asection *sec, asection *group)
+match_group_member (asection *sec, asection *group,
+		    struct bfd_link_info *info)
 {
   asection *first = elf_next_in_group (group);
   asection *s = first;
 
   while (s != NULL)
     {
-      if (bfd_elf_match_symbols_in_sections (s, sec))
+      if (bfd_elf_match_symbols_in_sections (s, sec, info))
 	return s;
 
       s = elf_next_in_group (s);
@@ -6795,7 +7291,7 @@ match_group_member (asection *sec, asection *group)
    NULL. */
 
 asection *
-_bfd_elf_check_kept_section (asection *sec)
+_bfd_elf_check_kept_section (asection *sec, struct bfd_link_info *info)
 {
   asection *kept;
 
@@ -6803,7 +7299,7 @@ _bfd_elf_check_kept_section (asection *sec)
   if (kept != NULL)
     {
       if (elf_sec_group (sec) != NULL)
-	kept = match_group_member (sec, kept);
+	kept = match_group_member (sec, kept, info);
       if (kept != NULL && sec->size != kept->size)
 	kept = NULL;
     }
@@ -7156,7 +7652,8 @@ elf_link_input_bfd (struct elf_final_link_info *finfo, bfd *input_bfd)
 			{
 			  asection *kept;
 
-			  kept = _bfd_elf_check_kept_section (sec);
+			  kept = _bfd_elf_check_kept_section (sec,
+							      finfo->info);
 			  if (kept != NULL)
 			    {
 			      *ps = kept;
@@ -7339,6 +7836,24 @@ elf_link_input_bfd (struct elf_final_link_info *finfo, bfd *input_bfd)
 			  if (!bfd_is_abs_section (osec))
 			    {
 			      r_symndx = osec->target_index;
+			      if (r_symndx == 0)
+				{
+				  struct elf_link_hash_table *htab;
+				  asection *oi;
+
+				  htab = elf_hash_table (finfo->info);
+				  oi = htab->text_index_section;
+				  if ((osec->flags & SEC_READONLY) == 0
+				      && htab->data_index_section != NULL)
+				    oi = htab->data_index_section;
+
+				  if (oi != NULL)
+				    {
+				      irela->r_addend += osec->vma - oi->vma;
+				      r_symndx = oi->target_index;
+				    }
+				}
+
 			      BFD_ASSERT (r_symndx != 0);
 			    }
 			}
@@ -7845,7 +8360,7 @@ bfd_elf_final_link (bfd *abfd, struct bfd_link_info *info)
     {
       finfo.dynsym_sec = bfd_get_section_by_name (dynobj, ".dynsym");
       finfo.hash_sec = bfd_get_section_by_name (dynobj, ".hash");
-      BFD_ASSERT (finfo.dynsym_sec != NULL && finfo.hash_sec != NULL);
+      BFD_ASSERT (finfo.dynsym_sec != NULL);
       finfo.symver_sec = bfd_get_section_by_name (dynobj, ".gnu.version");
       /* Note that it is OK if symver_sec is NULL.  */
     }
@@ -8129,18 +8644,19 @@ bfd_elf_final_link (bfd *abfd, struct bfd_link_info *info)
       elfsym.st_size = 0;
       elfsym.st_info = ELF_ST_INFO (STB_LOCAL, STT_SECTION);
       elfsym.st_other = 0;
+      elfsym.st_value = 0;
       for (i = 1; i < elf_numsections (abfd); i++)
 	{
 	  o = bfd_section_from_elf_index (abfd, i);
 	  if (o != NULL)
-	    o->target_index = bfd_get_symcount (abfd);
-	  elfsym.st_shndx = i;
-	  if (info->relocatable || o == NULL)
-	    elfsym.st_value = 0;
-	  else
-	    elfsym.st_value = o->vma;
-	  if (! elf_link_output_sym (&finfo, NULL, &elfsym, o, NULL))
-	    goto error_return;
+	    {
+	      o->target_index = bfd_get_symcount (abfd);
+	      elfsym.st_shndx = i;
+	      if (!info->relocatable)
+		elfsym.st_value = o->vma;
+	      if (!elf_link_output_sym (&finfo, NULL, &elfsym, o, NULL))
+		goto error_return;
+	    }
 	  if (i == SHN_LORESERVE - 1)
 	    i += SHN_HIRESERVE + 1 - SHN_LORESERVE;
 	}
@@ -8286,6 +8802,17 @@ bfd_elf_final_link (bfd *abfd, struct bfd_link_info *info)
 	}
     }
 
+  /* Free symbol buffer if needed.  */
+  if (!info->reduce_memory_overheads)
+    {
+      for (sub = info->input_bfds; sub != NULL; sub = sub->link_next)
+	if (elf_tdata (sub)->symbuf)
+	  {
+	    free (elf_tdata (sub)->symbuf);
+	    elf_tdata (sub)->symbuf = NULL;
+	  }
+    }
+
   /* Output any global symbols that got converted to local in a
      version script or due to symbol visibility.  We do this in a
      separate step since ELF requires all local symbols to appear
@@ -8299,6 +8826,19 @@ bfd_elf_final_link (bfd *abfd, struct bfd_link_info *info)
 			  &eoinfo);
   if (eoinfo.failed)
     return FALSE;
+
+  /* If backend needs to output some local symbols not present in the hash
+     table, do it now.  */
+  if (bed->elf_backend_output_arch_local_syms)
+    {
+      typedef bfd_boolean (*out_sym_func)
+	(void *, const char *, Elf_Internal_Sym *, asection *,
+	 struct elf_link_hash_entry *);
+
+      if (! ((*bed->elf_backend_output_arch_local_syms)
+	     (abfd, info, &finfo, (out_sym_func) elf_link_output_sym)))
+	return FALSE;
+    }
 
   /* That wrote out all the local symbols.  Finish up the symbol table
      with the global symbols. Even if we want to strip everything we
@@ -8591,6 +9131,9 @@ bfd_elf_final_link (bfd *abfd, struct bfd_link_info *info)
 	    case DT_HASH:
 	      name = ".hash";
 	      goto get_vma;
+	    case DT_GNU_HASH:
+	      name = ".gnu.hash";
+	      goto get_vma;
 	    case DT_STRTAB:
 	      name = ".dynstr";
 	      goto get_vma;
@@ -8654,6 +9197,32 @@ bfd_elf_final_link (bfd *abfd, struct bfd_link_info *info)
     {
       if (! (*bed->elf_backend_finish_dynamic_sections) (abfd, info))
 	goto error_return;
+
+      /* Check for DT_TEXTREL (late, in case the backend removes it).  */
+      if (info->warn_shared_textrel && info->shared)
+	{
+	  bfd_byte *dyncon, *dynconend;
+
+	  /* Fix up .dynamic entries.  */
+	  o = bfd_get_section_by_name (dynobj, ".dynamic");
+	  BFD_ASSERT (o != NULL);
+
+	  dyncon = o->contents;
+	  dynconend = o->contents + o->size;
+	  for (; dyncon < dynconend; dyncon += bed->s->sizeof_dyn)
+	    {
+	      Elf_Internal_Dyn dyn;
+
+	      bed->s->swap_dyn_in (dynobj, dyncon, &dyn);
+
+	      if (dyn.d_tag == DT_TEXTREL)
+		{
+		  _bfd_error_handler
+		    (_("warning: creating a DT_TEXTREL in a shared object."));
+		  break;
+		}
+	    }
+	}
 
       for (o = dynobj->sections; o != NULL; o = o->next)
 	{
@@ -8784,13 +9353,43 @@ bfd_elf_final_link (bfd *abfd, struct bfd_link_info *info)
 
 /* Garbage collect unused sections.  */
 
-/* The mark phase of garbage collection.  For a given section, mark
-   it and any sections in this section's group, and all the sections
-   which define symbols to which it refers.  */
-
 typedef asection * (*gc_mark_hook_fn)
   (asection *, struct bfd_link_info *, Elf_Internal_Rela *,
    struct elf_link_hash_entry *, Elf_Internal_Sym *);
+
+/* Default gc_mark_hook.  */
+
+asection *
+_bfd_elf_gc_mark_hook (asection *sec,
+		       struct bfd_link_info *info ATTRIBUTE_UNUSED,
+		       Elf_Internal_Rela *rel ATTRIBUTE_UNUSED,
+		       struct elf_link_hash_entry *h,
+		       Elf_Internal_Sym *sym)
+{
+  if (h != NULL)
+    {
+      switch (h->root.type)
+	{
+	case bfd_link_hash_defined:
+	case bfd_link_hash_defweak:
+	  return h->root.u.def.section;
+
+	case bfd_link_hash_common:
+	  return h->root.u.c.p->section;
+
+	default:
+	  break;
+	}
+    }
+  else
+    return bfd_section_from_elf_index (sec->owner, sym->st_shndx);
+
+  return NULL;
+}
+
+/* The mark phase of garbage collection.  For a given section, mark
+   it and any sections in this section's group, and all the sections
+   which define symbols to which it refers.  */
 
 bfd_boolean
 _bfd_elf_gc_mark (struct bfd_link_info *info,
@@ -8916,7 +9515,8 @@ _bfd_elf_gc_mark (struct bfd_link_info *info,
 
 /* Sweep symbols in swept sections.  Called via elf_link_hash_traverse.  */
 
-struct elf_gc_sweep_symbol_info {
+struct elf_gc_sweep_symbol_info
+{
   struct bfd_link_info *info;
   void (*hide_symbol) (struct bfd_link_info *, struct elf_link_hash_entry *,
 		       bfd_boolean);
@@ -8965,7 +9565,7 @@ elf_gc_sweep (bfd *abfd, struct bfd_link_info *info)
 	{
 	  /* Keep debug and special sections.  */
 	  if ((o->flags & (SEC_DEBUGGING | SEC_LINKER_CREATED)) != 0
-	      || (o->flags & (SEC_ALLOC | SEC_LOAD)) == 0)
+	      || (o->flags & (SEC_ALLOC | SEC_LOAD | SEC_RELOC)) == 0)
 	    o->gc_mark = 1;
 
 	  if (o->gc_mark)
@@ -8978,6 +9578,9 @@ elf_gc_sweep (bfd *abfd, struct bfd_link_info *info)
 	  /* Since this is early in the link process, it is simple
 	     to remove a section from the output.  */
 	  o->flags |= SEC_EXCLUDE;
+
+	  if (info->print_gc_sections == TRUE)
+	    _bfd_error_handler (_("Removing unused section '%s' in file '%B'"), sub, o->name);
 
 	  /* But we also have to update some of the relocation
 	     info we collected before.  */
@@ -9204,7 +9807,7 @@ bfd_elf_gc_sections (bfd *abfd, struct bfd_link_info *info)
 	continue;
 
       for (o = sub->sections; o != NULL; o = o->next)
-	if ((o->flags & SEC_KEEP) != 0 && !o->gc_mark)
+	if ((o->flags & (SEC_EXCLUDE | SEC_KEEP)) == SEC_KEEP && !o->gc_mark)
 	  if (!_bfd_elf_gc_mark (info, o, gc_mark_hook))
 	    return FALSE;
     }
@@ -9223,21 +9826,24 @@ bfd_elf_gc_sections (bfd *abfd, struct bfd_link_info *info)
 	 easily due to needing special relocs to handle the
 	 difference of two symbols in separate sections.
 	 Don't keep code sections referenced by .eh_frame.  */
+#define TEXT_PREFIX			".text."
+#define GCC_EXCEPT_TABLE_PREFIX		".gcc_except_table."
       for (o = sub->sections; o != NULL; o = o->next)
 	if (!o->gc_mark && o->gc_mark_from_eh && (o->flags & SEC_CODE) == 0)
 	  {
-	    if (strncmp (o->name, ".gcc_except_table.", 18) == 0)
+	    if (CONST_STRNEQ (o->name, GCC_EXCEPT_TABLE_PREFIX))
 	      {
-		unsigned long len;
 		char *fn_name;
+		const char *sec_name;
 		asection *fn_text;
+		unsigned o_name_prefix_len  = strlen (GCC_EXCEPT_TABLE_PREFIX);
+		unsigned fn_name_prefix_len = strlen (TEXT_PREFIX);
 
-		len = strlen (o->name + 18) + 1;
-		fn_name = bfd_malloc (len + 6);
+		sec_name = o->name + o_name_prefix_len;
+		fn_name = bfd_malloc (strlen (sec_name) + fn_name_prefix_len + 1);
 		if (fn_name == NULL)
 		  return FALSE;
-		memcpy (fn_name, ".text.", 6);
-		memcpy (fn_name + 6, o->name + 18, len);
+		sprintf (fn_name, "%s%s", TEXT_PREFIX, sec_name);
 		fn_text = bfd_get_section_by_name (sub, fn_name);
 		free (fn_name);
 		if (fn_text == NULL || !fn_text->gc_mark)
@@ -9703,7 +10309,8 @@ bfd_elf_discard_info (bfd *output_bfd, struct bfd_link_info *info)
 }
 
 void
-_bfd_elf_section_already_linked (bfd *abfd, struct bfd_section * sec)
+_bfd_elf_section_already_linked (bfd *abfd, struct bfd_section *sec,
+				 struct bfd_link_info *info)
 {
   flagword flags;
   const char *name, *p;
@@ -9756,7 +10363,7 @@ _bfd_elf_section_already_linked (bfd *abfd, struct bfd_section * sec)
 
   name = bfd_get_section_name (abfd, sec);
 
-  if (strncmp (name, ".gnu.linkonce.", sizeof (".gnu.linkonce.") - 1) == 0
+  if (CONST_STRNEQ (name, ".gnu.linkonce.")
       && (p = strchr (name + sizeof (".gnu.linkonce.") - 1, '.')) != NULL)
     p++;
   else
@@ -9869,7 +10476,8 @@ _bfd_elf_section_already_linked (bfd *abfd, struct bfd_section * sec)
 	if ((l->sec->flags & SEC_GROUP) == 0
 	    && bfd_coff_get_comdat_section (l->sec->owner, l->sec) == NULL
 	    && bfd_elf_match_symbols_in_sections (l->sec,
-						  elf_next_in_group (sec)))
+						  elf_next_in_group (sec),
+						  info))
 	  {
 	    elf_next_in_group (sec)->output_section = bfd_abs_section_ptr;
 	    elf_next_in_group (sec)->kept_section = l->sec;
@@ -9890,7 +10498,7 @@ _bfd_elf_section_already_linked (bfd *abfd, struct bfd_section * sec)
 
 	  if (first != NULL
 	      && elf_next_in_group (first) == first
-	      && bfd_elf_match_symbols_in_sections (first, sec))
+	      && bfd_elf_match_symbols_in_sections (first, sec, info))
 	    {
 	      sec->output_section = bfd_abs_section_ptr;
 	      sec->kept_section = l->sec;

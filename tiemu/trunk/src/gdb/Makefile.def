@@ -37,8 +37,8 @@ host_modules= { module= ash; };
 host_modules= { module= autoconf; };
 host_modules= { module= automake; };
 host_modules= { module= bash; };
-host_modules= { module= bfd; lib_path=.; bootstrap=true; };
-host_modules= { module= opcodes; lib_path=.; bootstrap=true; };
+host_modules= { module= bfd; lib_path=.libs; bootstrap=true; };
+host_modules= { module= opcodes; lib_path=.libs; bootstrap=true; };
 host_modules= { module= binutils; bootstrap=true; };
 host_modules= { module= bison; no_check_cross= true; };
 host_modules= { module= byacc; no_check_cross= true; };
@@ -54,6 +54,7 @@ host_modules= { module= find; };
 host_modules= { module= fixincludes;
 		missing= info;
 		missing= dvi;
+		missing= pdf;
 		missing= TAGS;
 		missing= install-info;
 		missing= installcheck; };
@@ -117,7 +118,6 @@ host_modules= { module= gnattools; };
 target_modules = { module= libstdc++-v3; lib_path=.libs; raw_cxx=true; };
 target_modules = { module= libmudflap; lib_path=.libs; };
 target_modules = { module= libssp; lib_path=.libs; };
-target_modules = { module= libgcc-math; lib_path=.libs; };
 target_modules = { module= newlib; };
 target_modules = { module= libgfortran; };
 target_modules = { module= libobjc; };
@@ -147,6 +147,8 @@ target_modules = { module= libgomp; lib_path=.libs; };
 recursive_targets = { make_target= info; 
                       depend=configure; };
 recursive_targets = { make_target= dvi; 
+                      depend=configure; };
+recursive_targets = { make_target= pdf; 
                       depend=configure; };
 recursive_targets = { make_target= html; 
                       depend=configure; };
@@ -295,7 +297,9 @@ dependencies = { module=all-fixincludes; on=all-libiberty; };
 dependencies = { module=all-gnattools; on=all-target-libada; };
 
 // Host modules specific to gdb.
+dependencies = { module=configure-gdb; on=configure-intl; };
 dependencies = { module=configure-gdb; on=configure-sim; };
+dependencies = { module=all-gdb; on=all-intl; };
 dependencies = { module=all-gdb; on=all-libiberty; };
 dependencies = { module=all-gdb; on=all-opcodes; };
 dependencies = { module=all-gdb; on=all-bfd; };
@@ -312,9 +316,11 @@ dependencies = { module=all-libgui; on=all-itcl; };
 
 // Host modules specific to binutils.
 dependencies = { module=configure-bfd; on=configure-libiberty; hard=true; };
+dependencies = { module=configure-bfd; on=configure-intl; };
 dependencies = { module=all-bfd; on=all-libiberty; };
 dependencies = { module=all-bfd; on=all-intl; };
 
+dependencies = { module=configure-binutils; on=configure-intl; };
 dependencies = { module=all-binutils; on=all-libiberty; };
 dependencies = { module=all-binutils; on=all-opcodes; };
 dependencies = { module=all-binutils; on=all-bfd; };
@@ -331,14 +337,17 @@ dependencies = { module=install-binutils; on=install-opcodes; };
 // libopcodes depends on libbfd
 dependencies = { module=install-opcodes; on=install-bfd; };
 
+dependencies = { module=configure-gas; on=configure-intl; };
 dependencies = { module=all-gas; on=all-libiberty; };
 dependencies = { module=all-gas; on=all-opcodes; };
 dependencies = { module=all-gas; on=all-bfd; };
 dependencies = { module=all-gas; on=all-intl; };
+dependencies = { module=configure-gprof; on=configure-intl; };
 dependencies = { module=all-gprof; on=all-libiberty; };
 dependencies = { module=all-gprof; on=all-bfd; };
 dependencies = { module=all-gprof; on=all-opcodes; };
 dependencies = { module=all-gprof; on=all-intl; };
+dependencies = { module=configure-ld; on=configure-intl; };
 dependencies = { module=all-ld; on=all-libiberty; };
 dependencies = { module=all-ld; on=all-bfd; };
 dependencies = { module=all-ld; on=all-opcodes; };
@@ -347,8 +356,10 @@ dependencies = { module=all-ld; on=all-build-byacc; };
 dependencies = { module=all-ld; on=all-build-flex; };
 dependencies = { module=all-ld; on=all-intl; };
 
+dependencies = { module=configure-opcodes; on=configure-intl; };
 dependencies = { module=all-opcodes; on=all-bfd; };
 dependencies = { module=all-opcodes; on=all-libiberty; };
+dependencies = { module=all-opcodes; on=all-intl; };
 
 // Other host modules in the 'src' repository.
 dependencies = { module=all-dejagnu; on=all-tcl; };
@@ -378,6 +389,8 @@ dependencies = { module=all-sid; on=all-tk; };
 dependencies = { module=install-sid; on=install-tcl; };
 dependencies = { module=install-sid; on=install-tk; };
 
+dependencies = { module=configure-sim; on=configure-intl; };
+dependencies = { module=all-sim; on=all-intl; };
 dependencies = { module=all-sim; on=all-libiberty; };
 dependencies = { module=all-sim; on=all-bfd; };
 dependencies = { module=all-sim; on=all-opcodes; };
@@ -451,7 +464,9 @@ dependencies = { module=all-target-libjava; on=all-target-zlib; };
 dependencies = { module=all-target-libjava; on=all-target-boehm-gc; };
 dependencies = { module=all-target-libjava; on=all-target-qthreads; };
 dependencies = { module=all-target-libjava; on=all-target-libffi; };
+dependencies = { module=configure-target-libobjc; on=configure-target-boehm-gc; };
 dependencies = { module=all-target-libobjc; on=all-target-libiberty; };
+dependencies = { module=all-target-libobjc; on=all-target-boehm-gc; };
 dependencies = { module=all-target-libstdc++-v3; on=all-target-libiberty; };
 
 // Target modules in the 'src' repository.
