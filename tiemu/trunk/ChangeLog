@@ -5,6 +5,8 @@ SubVersion: $Id$
 	- [kevin] $2349: fixed progress bar refresh referencing freed memory (#1529247)
 	- [roms]  $2350: send a group file as group, not as backup (bug #1529247)
 	- [kevin] $2356: imported Insight 6.6 and merged TiEmu changes
+	- [kevin] $2360: regenerated oleaut_i.c with WIDL again, this time fixing the include directives so it actually
+	                 compiles
 
 - 11/12/2006, version 2.81d
 	- [roms]  $2321: store *.sav files in the images folder rather than polluting the application top folder
