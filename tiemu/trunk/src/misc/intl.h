@@ -70,9 +70,10 @@
 				}G_STMT_END
 */
 
-#ifdef __WIN32__
-#  define PACKAGE 				"tiemu"	// name of package
-#  define PACKAGE_LOCALE_DIR 	""		// place of the translated file
+#if defined(__WIN32__) && !defined(__MINGW32__)
+# undef PACKAGE
+# define PACKAGE   "tiemu3"     // name of package
+# define LOCALEDIR ""		// place of the translated file
 #endif
 
 #endif
