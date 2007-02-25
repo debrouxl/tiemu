@@ -1,10 +1,3 @@
-/*
- * Chaînes de caractères à traduire générées par
- * Glade. Ajouter ce fichier au fichier POTFILE.in
- * de votre projet. NE PAS compiler ce fichier
- * avec le reste de votre application.
- */
-
 gchar *s = N_("Stack/Frame pointers");
 gchar *s = N_("A7 (stack) is:");
 gchar *s = N_("USP");
