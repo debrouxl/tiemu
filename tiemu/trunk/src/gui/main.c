@@ -116,14 +116,30 @@ int main(int argc, char **argv)
 	/*
 		Do primary initializations 
 	*/
+
+	/* Display program version */
 	tiemu_version();
+
+	/* Initialize platform independant paths */
 	initialize_paths();
+
+	/* Init i18n support */
+#ifdef ENABLE_NLS
+	tilp_info("setlocale: <%s>", setlocale(LC_ALL, ""));
+  	tilp_info("bindtextdomain: <%s>", bindtextdomain(PACKAGE, inst_paths.locale_dir));
+  	bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
+  	tilp_info("textdomain: <%s>", textdomain(PACKAGE));
+#endif
+
+	/* Initialize/reload config */
 	rcfile_default();   // (step 2)
 	rcfile_read();
+
+	/* Scan and modify command line */
 	scan_cmdline(argc, argv);
 
     /* 
-		Init GTK+ (popup menu, boxes, ...)
+		Init GTK+ toolkit
 	*/
 	gtk_init(&argc, &argv);
     add_pixmap_directory(inst_paths.pixmap_dir);
