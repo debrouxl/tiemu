@@ -233,9 +233,9 @@ esac
 LDFLAGS="$LDFLAGS $EXFL"
 
 # some extra flags
-CFLAGS="$CFLAGS -DGTK_DISABLE_DEPRECATED -DDEBUGGER -fno-common"
-LDFLAGS="$LDFLAGS -fno-common"
-CXXFLAGS="$CFLAGS -fno-rtti -fno-exceptions -fno-common"
+CFLAGS="$CFLAGS -DGTK_DISABLE_DEPRECATED -DDEBUGGER"
+LDFLAGS="$LDFLAGS"
+CXXFLAGS="$CFLAGS -fno-rtti -fno-exceptions"
 
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
