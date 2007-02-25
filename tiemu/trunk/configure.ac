@@ -22,6 +22,7 @@ AC_CONFIG_FILES([
   misc/Makefile
   pedrom/Makefile
   pixmaps/Makefile
+  po/Makefile.in
   skins/Makefile
   src/Makefile
   tiemu.lsm
