@@ -1,6 +1,7 @@
 Planned features:
 -----------------
 
+* printl => tiemu_info/debug/....
 * use the contrast field of skin
 * i18n (internationalization support)
 * sound emulation
