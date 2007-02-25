@@ -153,7 +153,7 @@ misc_OBJ = \
 	misc/cmdline.o 	\
 	misc/files.o 	\
 	misc/paths.o 	\
-	misc/printl.o	\
+	misc/logging.o	\
 	misc/rcfile.o 	\
 	misc/screenshot.o \
 	misc/tie_error.o 
@@ -313,12 +313,11 @@ endif
 distdir: clean
 ifneq (,$(findstring NO_GDB,$(CFLAGS)))
 	cp -rl core kde ipc gui misc Makefile ../tiemu-@VERSION@/src
-	find ../tiemu-@VERSION@/src -name .svn -exec rm -rf "{}" \\; 2>/dev/null
 else
 	cp -rl core kde ipc gui misc Makefile \
 	gdb cleangdbsources.sh	../tiemu-@VERSION@/src
-	find ../tiemu-@VERSION@/src -name .svn -exec rm -rf "{}" \\; 2>/dev/null
 endif
+	find ../tiemu-@VERSION@/src -name .svn -exec rm -rf "{}" \\; 2>/dev/null
 
 dos2unix:
 	dos2unix
