@@ -260,6 +260,7 @@ AC_CACHE_CHECK([whether to use the GDB-based source-level debugger],
 if test x$tiemu_use_gdb = xno; then
   CFLAGS="$CFLAGS -DNO_GDB"
 fi
+AM_CONDITIONAL(NO_GDB, test x$tiemu_use_gdb = xno)
 
 # It makes no sense to enable GDB without the debugger!
 if test x$tiemu_use_debugger = xno -a x$tiemu_use_gdb = xyes; then

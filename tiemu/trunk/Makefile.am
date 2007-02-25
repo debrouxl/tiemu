@@ -1,7 +1,11 @@
 ## Process this file with automake to produce Makefile.in
 
 # subdirectories to scan
-SUBDIRS = build glade help intl misc pedrom pixmaps po skins src
+SUBDIRS = build glade help misc pedrom pixmaps po skins src
+
+if NO_GDB
+SUBDIRS += intl
+endif
 
 if USE_GROFF
 SUBDIRS += man
@@ -20,20 +24,28 @@ endif
 
 # custom targets
 install-without-tcl-tk:
+if NO_GDB
+	$(MAKE) install DESTDIR="$(DESTDIR)"
+else
 if USE_GROFF
 	$(MAKE) install SUBDIRS="build glade help misc pedrom pixmaps skins man" DESTDIR="$(DESTDIR)"
 else
 	$(MAKE) install SUBDIRS="build glade help misc pedrom pixmaps skins" DESTDIR="$(DESTDIR)"
 endif
 	cd src && $(MAKE) install-without-tcl-tk DESTDIR="$(DESTDIR)"
+endif
 
 install-without-tcl-tk-itcl:
+if NO_GDB
+	$(MAKE) install DESTDIR="$(DESTDIR)"
+else
 if USE_GROFF
 	$(MAKE) install SUBDIRS="build glade help misc pedrom pixmaps skins man" DESTDIR="$(DESTDIR)"
 else
 	$(MAKE) install SUBDIRS="build glade help misc pedrom pixmaps skins" DESTDIR="$(DESTDIR)"
 endif
 	cd src && $(MAKE) install-without-tcl-tk-itcl DESTDIR="$(DESTDIR)"
+endif
 
 regsvr:
 	cd src && $(MAKE) regsvr DESTDIR="$(DESTDIR)"
