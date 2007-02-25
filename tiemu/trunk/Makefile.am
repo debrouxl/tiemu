@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 # subdirectories to scan
-SUBDIRS = build glade help misc pedrom pixmaps skins src
+SUBDIRS = build glade help intl misc pedrom pixmaps po skins src
 
 if USE_GROFF
 SUBDIRS += man
