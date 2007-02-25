@@ -41,7 +41,7 @@
 #include "m68k.h"
 #include "engine.h"
 #include "dbg_all.h"
-#include "printl.h"
+#include "logging.h"
 #include "tsource.h"
 
 void sim_exception(int which);

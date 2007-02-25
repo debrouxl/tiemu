@@ -39,7 +39,7 @@
 #include "ti68k_int.h"
 #include "ti68k_err.h"
 #include "flash.h"
-#include "printl.h"
+#include "logging.h"
 #include "rtc_hw3.h"
 
 #define SAV_REVISION	20

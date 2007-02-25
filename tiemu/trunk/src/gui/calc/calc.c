@@ -50,7 +50,7 @@
 #include "dbg_all.h"
 #include "screenshot.h"
 #include "kbd_mapper.h"
-#include "printl.h"
+#include "logging.h"
 #include "gscales.h"
 
 #define ALLOW_RESIZE_WIN32

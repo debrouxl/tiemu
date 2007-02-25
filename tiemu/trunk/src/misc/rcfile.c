@@ -49,7 +49,7 @@
 #include "files.h"
 #include "ti68k_int.h"
 #include "screenshot.h"
-#include "printl.h"
+#include "logging.h"
 
 static char *rc_file; 
 

@@ -58,7 +58,7 @@ extern int asm_setjmp(jmp_buf b);
 #include "files.h"
 #include "rcfile.h"
 #include "ti68k_int.h"
-#include "printl.h"
+#include "logging.h"
 
 #include "engine.h"
 #include "refresh.h"

@@ -50,7 +50,7 @@
 #include "hwpm.h"
 #include "timem.h"
 #include "ti68k_def.h"
-#include "printl.h"
+#include "logging.h"
 
 /* -- */
 

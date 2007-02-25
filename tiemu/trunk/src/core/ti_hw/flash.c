@@ -38,7 +38,7 @@
 #include "mem.h"
 #include "ti68k_def.h"
 #include "flash.h"
-#include "printl.h"
+#include "logging.h"
 
 FLASH_WSM   wsm;
 

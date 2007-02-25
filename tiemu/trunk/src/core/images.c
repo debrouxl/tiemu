@@ -52,7 +52,7 @@
 #include "ti68k_def.h"
 #include "images.h"
 #include "hwpm.h"
-#include "printl.h"
+#include "logging.h"
 
 #define is_num(c)   isdigit(c)
 #define is_alnum(c) isalnum(c)

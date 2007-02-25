@@ -220,7 +220,7 @@ gint display_send_files_dbox(void)
 	// Check for null cable
 	if(linkp.cable_model != CABLE_ILP)
 	{
-		tiemu_error(0, "You can't use direct file loading when a cable is set. Change cable to 'null' in the Link Options menu item.");
+		tiemu_err(0, "You can't use direct file loading when a cable is set. Change cable to 'null' in the Link Options menu item.");
 		return -1;
 	}
 

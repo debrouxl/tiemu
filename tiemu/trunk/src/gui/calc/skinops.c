@@ -38,7 +38,7 @@
 #include <sys/stat.h>
 
 #include "skinops.h"
-#include "printl.h"
+#include "logging.h"
 
 /*
 	Determine skin type

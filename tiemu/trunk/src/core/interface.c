@@ -45,7 +45,7 @@
 #include "hw.h"
 #include "m68k.h"
 #include "dbus.h"
-#include "printl.h"
+#include "logging.h"
 
 #include "ti68k_int.h"
 #include "ti68k_err.h"

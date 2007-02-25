@@ -101,7 +101,7 @@ int hw_dbus_init(void)
 	cable_handle = ticables_handle_new(linkp.cable_model, linkp.cable_port);
 	if(cable_handle == NULL)
 	{
-		tiemu_error(0, "Can't set cable");
+		tiemu_err(0, "Can't set cable");
 		return -1;
 	}
 
@@ -113,13 +113,13 @@ int hw_dbus_init(void)
 	calc_handle = ticalcs_handle_new(linkp.calc_model);
 	if(calc_handle == NULL)
 	{
-		tiemu_error(0, "Can't set cable");
+		tiemu_err(0, "Can't set cable");
 		return -1;
 	}
 	
 	// attach cable to calc (open cable)
 	err = ticalcs_cable_attach(calc_handle, cable_handle);
-	tiemu_error(err, NULL);
+	tiemu_err(err, NULL);
 
 	// customize cable by overriding some methods
 	if(linkp.cable_model == CABLE_ILP)
@@ -153,7 +153,7 @@ int hw_dbus_exit(void)
 	err = (calc_handle ? ticalcs_cable_detach(calc_handle) : 0);
 	if(err)
 	{
-		tiemu_error(err, NULL);
+		tiemu_err(err, NULL);
 		return -1;
 	}
 
@@ -177,7 +177,7 @@ static void lp_reinit(void)
 	avail = 0;
 	err = ticables_cable_reset(cable_handle);
 	if(err)
-		tiemu_error(err, NULL);
+		tiemu_err(err, NULL);
 }
 
 static void lp_putbyte(uint8_t arg)
@@ -496,7 +496,7 @@ int send_ti_file(const char *filename)
 send_ti_file_exit:
 	if(ret)
 	{
-		tiemu_error(ret, NULL);
+		tiemu_err(ret, NULL);
 		io_bit_set(0x0d,7);	// SLE=1
 		df_reinit();
 	}
@@ -601,7 +601,7 @@ int recfile(void)
 		io_bit_set(0x0d,7);	// SLE=1
 		t2f_flag = f2t_flag = 0;
 
-		tiemu_error(ret, NULL);
+		tiemu_err(ret, NULL);
 		goto recfile_end;
 	}
 

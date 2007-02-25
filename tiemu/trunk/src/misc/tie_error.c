@@ -31,7 +31,7 @@
 #include "tilibs.h"
 
 #include "intl.h"
-#include "printl.h"
+#include "logging.h"
 #include "dboxes.h"
 #include "ti68k_int.h"
 
@@ -40,7 +40,7 @@
   - an error to translate or 0
   - a pure message or NULL
  */
-int tiemu_error(int err_code, char *err_str)
+int tiemu_err(int err_code, char *err_str)
 {
 	int err = err_code;
 	char *s = NULL;

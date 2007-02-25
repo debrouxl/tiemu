@@ -186,7 +186,7 @@ int scan_cmdline(int argc, char **argv)
 				int err = ti68k_convert_rom_to_image(q, inst_paths.img_dir, &dstname);
 				if(err) 
 				{
-					tiemu_error(err, NULL);
+					tiemu_err(err, NULL);
 					exit(-1);
 				}
 
@@ -203,7 +203,7 @@ int scan_cmdline(int argc, char **argv)
 				int err = ti68k_convert_tib_to_image(q, inst_paths.img_dir, &dstname, -1);
 				if(err) 
 				{
-					tiemu_error(err, NULL);
+					tiemu_err(err, NULL);
 					exit(-1);
 				}
 

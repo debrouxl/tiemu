@@ -37,7 +37,7 @@
 #include "pckeys.h"
 #include "ti68k_int.h"
 #include "kbd_mapper.h"
-#include "printl.h"
+#include "logging.h"
 
 #ifdef _MSC_VER
 Pc2TiKey keymap[KEYMAP_MAX] = {0};
