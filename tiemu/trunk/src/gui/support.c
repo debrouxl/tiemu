@@ -14,6 +14,7 @@
 
 #include <gtk/gtk.h>
 
+#include "intl.h"
 #include "support.h"
 
 GtkWidget*

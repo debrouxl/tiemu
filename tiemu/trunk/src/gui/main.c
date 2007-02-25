@@ -125,10 +125,10 @@ int main(int argc, char **argv)
 
 	/* Init i18n support */
 #ifdef ENABLE_NLS
-	tilp_info("setlocale: <%s>", setlocale(LC_ALL, ""));
-  	tilp_info("bindtextdomain: <%s>", bindtextdomain(PACKAGE, inst_paths.locale_dir));
+	printl(0, "setlocale: <%s>", setlocale(LC_ALL, ""));
+  	printl(0, "bindtextdomain: <%s>", bindtextdomain(PACKAGE, inst_paths.locale_dir));
   	bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	tilp_info("textdomain: <%s>", textdomain(PACKAGE));
+  	printl(0, "textdomain: <%s>", textdomain(PACKAGE));
 #endif
 
 	/* Initialize/reload config */

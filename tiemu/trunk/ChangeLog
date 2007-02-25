@@ -7,6 +7,7 @@ SubVersion: $Id$
 	- [kevin] $2356: imported Insight 6.6 and merged TiEmu changes
 	- [kevin] $2360: regenerated oleaut_i.c with WIDL again, this time fixing the include directives so it actually
 	                 compiles
+	- [roms]  $2363: added and enabled i18n support
 
 - 11/12/2006, version 2.81d
 	- [roms]  $2321: store *.sav files in the images folder rather than polluting the application top folder
