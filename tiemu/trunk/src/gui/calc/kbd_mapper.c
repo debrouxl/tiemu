@@ -204,7 +204,7 @@ int keymap_load(const char *filename)
     }
 
     // close file
-    printl(0 ,"loading keymap: %s (%i keys)\n", g_basename(filename), idx);
+    tiemu_info(_("loading keymap: %s (%i keys)"), g_basename(filename), idx);
     fclose(f);
 
     return 0;

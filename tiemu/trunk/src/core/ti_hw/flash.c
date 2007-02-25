@@ -258,7 +258,7 @@ void find_ssp_and_pc(uint32_t *ssp, uint32_t *pc)
 			(tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
     }
 
-	printl(0, "found SSP=$%06x and PC=$%06x at offset 0x%x\n", *ssp, *pc, vt - 0x12000);
+	tiemu_info(_("found SSP=$%06x and PC=$%06x at offset 0x%x"), *ssp, *pc, vt - 0x12000);
 }
 
 /*

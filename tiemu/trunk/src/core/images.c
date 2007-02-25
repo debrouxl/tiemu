@@ -105,35 +105,35 @@ int ti68k_is_a_img_file(const char *filename)
 */
 void ti68k_display_rom_infos(IMG_INFO *s)
 {
-	printl(0, _("Rom informations:\n"));
-  	printl(0, _("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
-  	printl(0, _("  Firmware    : v%s\n"), s->version);
-  	printl(0, _("  Memory type : %s\n"), ti68k_romtype_to_string(s->flash));
-  	printl(0, _("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
-    printl(0, _("  ROM base    : %02x\n"), s->rom_base & 0xff);
-	printl(0, _("  Hardware    : %i\n"), s->hw_type);
+	tiemu_info(_("Rom informations:"));
+  	tiemu_info(_("  Calculator  : %s"), ti68k_calctype_to_string(s->calc_type));
+  	tiemu_info(_("  Firmware    : v%s"), s->version);
+  	tiemu_info(_("  Memory type : %s"), ti68k_romtype_to_string(s->flash));
+  	tiemu_info(_("  Memory size : %iMB (%i bytes)"), s->size >> 20, s->size);
+    tiemu_info(_("  ROM base    : %02x"), s->rom_base & 0xff);
+	tiemu_info(_("  Hardware    : %i"), s->hw_type);
 }
 
 void ti68k_display_tib_infos(IMG_INFO *s)
 {
-	printl(0, _("Tib informations:\n"));
-  	printl(0, _("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
-  	printl(0, _("  Firmware    : v%s\n"), s->version);
-  	printl(0, _("  Memory type : %s\n"), ti68k_romtype_to_string(s->flash));
-  	printl(0, _("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
-    printl(0, _("  ROM base    : %02x\n"), s->rom_base & 0xff);
+	tiemu_info(_("Tib informations:"));
+  	tiemu_info(_("  Calculator  : %s"), ti68k_calctype_to_string(s->calc_type));
+  	tiemu_info(_("  Firmware    : v%s"), s->version);
+  	tiemu_info(_("  Memory type : %s"), ti68k_romtype_to_string(s->flash));
+  	tiemu_info(_("  Memory size : %iMB (%i bytes)"), s->size >> 20, s->size);
+    tiemu_info(_("  ROM base    : %02x"), s->rom_base & 0xff);
 }
 
 void ti68k_display_img_infos(IMG_INFO *s)
 {
-	printl(0, _("Image informations:\n"));
-  	printl(0, _("  Calculator  : %s\n"), ti68k_calctype_to_string(s->calc_type));
-  	printl(0, _("  Firmware    : v%s\n"), s->version);
-  	printl(0, _("  Memory type : %s\n"), ti68k_romtype_to_string(s->flash));
-  	printl(0, _("  Memory size : %iMB (%i bytes)\n"), s->size >> 20, s->size);
-    printl(0, _("  ROM base    : %02x\n"), s->rom_base & 0xff);
-    printl(0, _("  Hardware    : %i\n"), s->hw_type);
-	printl(0, _("  Has boot    : %s\n"), s->has_boot ? "yes" : "no");	
+	tiemu_info(_("Image informations:"));
+  	tiemu_info(_("  Calculator  : %s"), ti68k_calctype_to_string(s->calc_type));
+  	tiemu_info(_("  Firmware    : v%s"), s->version);
+  	tiemu_info(_("  Memory type : %s"), ti68k_romtype_to_string(s->flash));
+  	tiemu_info(_("  Memory size : %iMB (%i bytes)"), s->size >> 20, s->size);
+    tiemu_info(_("  ROM base    : %02x"), s->rom_base & 0xff);
+    tiemu_info(_("  Hardware    : %i"), s->hw_type);
+	tiemu_info(_("  Has boot    : %s"), s->has_boot ? "yes" : "no");	
 }
 
 /*
@@ -160,7 +160,7 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
   	file = fopen(filename, "rb");
   	if(file == NULL)
     {
-      printl(0, _("Unable to open this file: <%s>\n"), filename);
+      tiemu_info(_("Unable to open this file: <%s>"), filename);
       return ERR_CANT_OPEN;
     }
 
@@ -174,7 +174,7 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
 	if (rom->size == 8*MB)
 	{
 	  // TiLP used to dump 8 MB images for HW4, try to load them anyway.
-	  printl(0, _("Warning: truncating 8 MB image to 4 MB: <%s>\n"), filename);
+	  tiemu_info(_("Warning: truncating 8 MB image to 4 MB: <%s>"), filename);
 	  rom->size = 4*MB;
 	}
   	if (rom->size > 4*MB)
@@ -187,13 +187,13 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
 	memset(rom->data, 0xff, rom->size);
 	if (fread(rom->data, 1, rom->size, file) < (size_t)rom->size)
 	{
-	  printl(0, _("Failed to read from file: <%s>\n"), filename);
+	  tiemu_info(_("Failed to read from file: <%s>"), filename);
 	  fclose(file);
 	  return ERR_CANT_OPEN;
 	}
 	if (fclose(file))
 	{
-	  printl(0, _("Failed to close file: <%s>\n"), filename);
+	  tiemu_info(_("Failed to close file: <%s>"), filename);
 	  return ERR_CANT_OPEN;
 	}
 
@@ -311,7 +311,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
             }
 		break;
 		default:
-			printl(0, "TIB problem: %02x!\n", 0xff & ptr->device_type);
+			tiemu_info("TIB problem: %02x!\n", 0xff & ptr->device_type);
 			return ERR_INVALID_UPGRADE;
 		break;
 	}
@@ -348,7 +348,7 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
 	// Check file
 	if(!ti68k_is_a_img_file(filename))
 	{
-		fprintf(stderr, "Images must have '.img' extension (%s).\n",
+		tiemu_warning("Images must have '.img' extension (%s).\n",
 			filename);
 		return ERR_CANT_OPEN;
 	}
@@ -357,28 +357,28 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
   	f = fopen(filename, "rb");
   	if(f == NULL)
     {
-      	fprintf(stderr, "Unable to open this file: <%s>\n", filename);
+      	tiemu_warning("Unable to open this file: <%s>\n", filename);
       	return ERR_CANT_OPEN;
     }
     
     // Read header
     if (fread(ri, sizeof(IMG_INFO), 1, f) < 1)
     {
-      fprintf(stderr, "Failed to read from file: <%s>\n", filename);
+      tiemu_warning("Failed to read from file: <%s>\n", filename);
       fclose(f);
       return ERR_CANT_OPEN;
     }
 
     if(strcmp(ri->signature, IMG_SIGN) || ri->size > 4*MB)
     {
-      fprintf(stderr, "Bad image: <%s>\n", filename);
+      tiemu_warning("Bad image: <%s>\n", filename);
       return ERR_INVALID_UPGRADE;
     }
 
     // Close file
     if (fclose(f))
     {
-      fprintf(stderr, "Failed to close file: <%s>\n", filename);
+      tiemu_warning("Failed to close file: <%s>\n", filename);
       return ERR_CANT_OPEN;
     }
     
@@ -409,7 +409,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	if(err)
     {
 	    free(img.data);
-      	printl(0, _("Unable to get informations on ROM dump: %s\n"), srcname);
+      	tiemu_info(_("Unable to get informations on ROM dump: %s"), srcname);
       	return err;
     }
 	ti68k_display_rom_infos(&img);
@@ -427,7 +427,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
   	f = fopen(*dstname, "wb");
   	if(f == NULL)
     {
-      	fprintf(stderr, "Unable to open this file: <%s>\n", *dstname);
+      	tiemu_warning("Unable to open this file: <%s>\n", *dstname);
       	return ERR_CANT_OPEN;
     }
 
@@ -436,7 +436,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	{
 		img.size = 4*MB;
 		img.data = realloc(img.data, 4*MB + 4);
-		printf("Completing image to 4MB !\n");
+		tiemu_info(_("Completing image to 4MB !"));
 		memset(img.data + 2*MB, 0xff, 2*MB);
 	}
 
@@ -449,7 +449,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	if (fwrite(&img, 1, sizeof(IMG_INFO), f) < (size_t)sizeof(IMG_INFO)
 	    || fwrite(img.data, sizeof(char), img.size, f) < (size_t)img.size)
 	{
-	  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+	  tiemu_warning("Failed to write to file: <%s>\n", *dstname);
 	  fclose(f);
 	  return ERR_CANT_OPEN;
 	}
@@ -457,7 +457,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	// Close file
 	if (fclose(f))
 	{
-	  fprintf(stderr, "Failed to close file: <%s>\n", *dstname);
+	  tiemu_warning("Failed to close file: <%s>\n", *dstname);
 	  return ERR_CANT_OPEN;
 	}
 
@@ -493,7 +493,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	if(err)
     {
 	    free(img.data);
-      	printl(0, _("Unable to get informations on FLASH upgrade: %s\n"), srcname);
+      	tiemu_info(_("Unable to get informations on FLASH upgrade: %s"), srcname);
       	return err;
     }
 	ti68k_display_tib_infos(&img);
@@ -511,7 +511,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
   	f = fopen(*dstname, "wb");
   	if(f == NULL)
     {
-      	fprintf(stderr, "Unable to open this file: <%s>\n", *dstname);
+      	tiemu_warning("Unable to open this file: <%s>\n", *dstname);
       	return ERR_CANT_OPEN;
     }
 
@@ -534,7 +534,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	// Write header
 	if (fwrite(&img, 1, sizeof(IMG_INFO), f) < sizeof(IMG_INFO))
 	{
-	  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+	  tiemu_warning("Failed to write to file: <%s>\n", *dstname);
 	  fclose(f);
 	  return ERR_CANT_OPEN;
 	}
@@ -543,7 +543,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	memcpy(img.data, &img.data[SPP + BO], 256);
 	if (fwrite(img.data, 1, 256, f) < 256)
 	{
-	  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+	  tiemu_warning("Failed to write to file: <%s>\n", *dstname);
 	  fclose(f);
 	  return ERR_CANT_OPEN;
 	}
@@ -613,7 +613,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	|| fputc(MSB(LSW(hwpb.gateArray)), f) < 0
 	|| fputc(LSB(LSW(hwpb.gateArray)), f) < 0)
 	{
-	  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+	  tiemu_warning("Failed to write to file: <%s>\n", *dstname);
 	  fclose(f);
 	  return ERR_CANT_OPEN;
 	}
@@ -622,7 +622,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	for(i = 0x108 + hwpb.len+2; i < SPP; i++)
 		if (fputc(0xff, f) < 0)
 		{
-		  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+		  tiemu_warning("Failed to write to file: <%s>\n", *dstname);
 		  fclose(f);
 		  return ERR_CANT_OPEN;
 		}
@@ -631,12 +631,12 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	num_blocks = real_size / 65536;
 	for(i = 0; i < num_blocks; i++ )
 	{
-		printl(0, ".");
+		tiemu_info(".");
 		fflush(stdout);
 
 		if (fwrite(&img.data[65536 * i + SPP], sizeof(char), 65536, f) < 65536)
 		{
-		  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+		  tiemu_warning("Failed to write to file: <%s>\n", *dstname);
 		  fclose(f);
 		  return ERR_CANT_OPEN;
 		}
@@ -645,17 +645,17 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	last_block = real_size % 65536;
 	if (fwrite(&img.data[65536 * i + SPP], sizeof(char), last_block, f) < (size_t)last_block)
 	{
-	  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+	  tiemu_warning("Failed to write to file: <%s>\n", *dstname);
 	  fclose(f);
 	  return ERR_CANT_OPEN;
 	}
  
-	printl(0, "\n");
-	printl(0, "Completing to %iMB size\n", img.size >> 20);
+	tiemu_info("");
+	tiemu_info("Completing to %iMB size\n", img.size >> 20);
 	for(j = SPP + real_size; j < img.size; j++)
 		if (fputc(0xff, f) < 0)
 		{
-		  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+		  tiemu_warning("Failed to write to file: <%s>\n", *dstname);
 		  fclose(f);
 		  return ERR_CANT_OPEN;
 		}
@@ -663,7 +663,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	// Close file
 	if (fclose(f))
 	{
-	  fprintf(stderr, "Failed to close file: <%s>\n", *dstname);
+	  tiemu_warning("Failed to close file: <%s>\n", *dstname);
 	  return ERR_CANT_OPEN;
 	}
 
@@ -699,7 +699,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 	if(err)
     {
 	    free(img.data);
-      	printl(0, _("Unable to get informations on ROM dump: %s\n"), srcname1);
+      	tiemu_info(_("Unable to get informations on ROM dump: %s"), srcname1);
       	return err;
     }
 	ti68k_display_rom_infos(&img);
@@ -713,7 +713,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 	if(err)
     {
 	    free(img.data);
-      	printl(0, _("Unable to get informations on ROM dump: %s\n"), srcname2);
+      	tiemu_info(_("Unable to get informations on ROM dump: %s"), srcname2);
       	return err;
     }
 	ti68k_display_tib_infos(&img);
@@ -734,7 +734,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 	f = fopen(*dstname, "wb");
 	if(f == NULL)
 	{
-		fprintf(stderr, "Unable to open this file: <%s>\n", *dstname);
+		tiemu_warning("Unable to open this file: <%s>\n", *dstname);
 		return ERR_CANT_OPEN;
 	}
 
@@ -748,7 +748,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 	if (fwrite(&img, 1, sizeof(IMG_INFO), f) < sizeof(IMG_INFO)
 	    || fwrite(img.data, sizeof(char), img.size, f) < (size_t)img.size)
 	{
-	  fprintf(stderr, "Failed to write to file: <%s>\n", *dstname);
+	  tiemu_warning("Failed to write to file: <%s>\n", *dstname);
 	  fclose(f);
 	  return ERR_CANT_OPEN;
 	}
@@ -756,7 +756,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 	// Close file
 	if (fclose(f))
 	{
-	  fprintf(stderr, "Failed to close file: <%s>\n", *dstname);
+	  tiemu_warning("Failed to close file: <%s>\n", *dstname);
 	  return ERR_CANT_OPEN;
 	}
 
@@ -784,7 +784,7 @@ int ti68k_load_image(const char *filename)
 	err = ti68k_get_img_infos(filename, img);
   	if(err)
     {
-      	printl(0, _("Unable to get informations on image: %s\n"), filename);
+      	tiemu_info(_("Unable to get informations on image: %s"), filename);
       	return err;
     }
 	ti68k_display_img_infos(img);
@@ -793,14 +793,14 @@ int ti68k_load_image(const char *filename)
 	f = fopen(filename, "rb");
 	if(f == NULL)
 	{
-		fprintf(stderr, "Unable to open this file: <%s>\n", filename);
+		tiemu_warning("Unable to open this file: <%s>\n", filename);
 		return ERR_CANT_OPEN;
 	}
 
 	// Read pure data
 	if (fseek(f, img->header_size, SEEK_SET))
 	{
-		fprintf(stderr, "Failed to read from file: <%s>\n", filename);
+		tiemu_warning("Failed to read from file: <%s>\n", filename);
 		fclose(f);
 		return ERR_CANT_OPEN;
 	}
@@ -810,7 +810,7 @@ int ti68k_load_image(const char *filename)
 		return ERR_MALLOC;
 	if (fread(img->data, 1, img->size, f) < (size_t)img->size)
 	{
-		fprintf(stderr, "Failed to read from file: <%s>\n", filename);
+		tiemu_warning("Failed to read from file: <%s>\n", filename);
 		fclose(f);
 		return ERR_CANT_OPEN;
 	}
@@ -827,7 +827,7 @@ int ti68k_load_image(const char *filename)
 
 	if (fclose(f))
 	{
-		fprintf(stderr, "Failed to close file: <%s>\n", filename);
+		tiemu_warning("Failed to close file: <%s>\n", filename);
 		return ERR_CANT_OPEN;
 	}
 
@@ -860,7 +860,7 @@ int ti68k_load_upgrade(const char *filename)
 	if(err)
     {
 		free(img->data);
-      	printl(0, _("Unable to get informations on FLASH upgrade: %s\n"), filename);
+      	tiemu_info(_("Unable to get informations on FLASH upgrade: %s"), filename);
       	return err;
     }
 	ti68k_display_tib_infos(&tib);
@@ -919,7 +919,7 @@ int ti68k_scan_files(const char *src_dir, const char *dst_dir, int erase)
 	dir = g_dir_open(src_dir, 0, &error);
 	if (dir == NULL) 
 	{
-		fprintf(stderr, _("Opendir error\n"));
+		tiemu_warning(_("Opendir error"));
       	return ERR_CANT_OPEN_DIR;
 	}
 
@@ -985,13 +985,13 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 	struct stat f_info;
   	char *line[7];
 
-  	printl(0, _("Scanning images/upgrades... "));
+  	tiemu_info(_("Scanning images/upgrades... "));
 
 	// Create file (and overwrite)
 	file = fopen(filename, "wt");
     if(file == NULL)
 	{
-	  	fprintf(stderr, _("Unable to open this file: <%s>\n"), filename);
+	  	tiemu_warning(_("Unable to open this file: <%s>"), filename);
 	  	return ERR_CANT_OPEN;
 	} 	
 
@@ -999,7 +999,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 	dir = g_dir_open(dirname, 0, &error);
 	if (dir == NULL) 
 	{
-		fprintf(stderr, _("Opendir error\n"));
+		tiemu_warning(_("Opendir error"));
       	return ERR_CANT_OPEN_DIR;
 	}
   
@@ -1013,7 +1013,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 		ret = stat(path, &f_info);
 		if(ret == -1)
 		{
-			fprintf(stderr, _("Can not stat: <%s>\n"), dirent);
+			tiemu_warning(_("Can not stat: <%s>"), dirent);
 	      	perror("stat: ");
 		}
 		else
@@ -1024,7 +1024,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 				ret = ti68k_get_img_infos(path, &img);
 				if(ret)
 				{
-					fprintf(stderr, _("Can not get ROM/update info: <%s>\n"), path);
+					tiemu_warning(_("Can not get ROM/update info: <%s>"), path);
 					break;
 				}
 			}
@@ -1053,7 +1053,7 @@ int ti68k_scan_images(const char *dirname, const char *filename)
 	g_dir_close(dir);
   
   	fclose(file);
-  	printl(0, _("Done.\n"));
+  	tiemu_info(_("Done."));
   
   	return 0;
 }
@@ -1137,7 +1137,7 @@ int ti68k_find_image(const char *dirname, char **dst_name)
 	dir = g_dir_open(dirname, 0, &error);
 	if (dir == NULL) 
 	{
-		fprintf(stderr, _("Opendir error\n"));
+		tiemu_warning(_("Opendir error"));
       	return ERR_CANT_OPEN_DIR;
 	}
 

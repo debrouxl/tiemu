@@ -74,7 +74,7 @@ int tiemu_err(int err_code, char *err_str)
 		s = strdup(err_str);
 	}
 	
-	printl(2, "%s", s);
+	tiemu_warning("%s", s);
 	msg_box1(_("Error"), s);
 
 	//free(s);

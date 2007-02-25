@@ -746,7 +746,7 @@ int  hid_screenshot_single(void)
   
 	outfile = g_strdup_printf("%s%s%s%03i.%s", options2.folder, G_DIR_SEPARATOR_S,
 		options2.file, options2.counter, ext);
-	printl(0, "Screenshot to %s... ", outfile);
+	tiemu_info(_("screenshot to %s... "), outfile);
 
 	if((options2.size == IMG_LCD) && (options2.type == IMG_BW)) 
 	{
@@ -765,7 +765,7 @@ int  hid_screenshot_single(void)
 	}
 	else
 	{
-		printl(0, "Unsupported screenshot options combination, screenshot aborted.\n");
+		tiemu_warning(_("unsupported screenshot options combination, screenshot aborted."));
 		return 0;
        }
 
@@ -784,12 +784,12 @@ int  hid_screenshot_single(void)
 
 	if (result == FALSE) 
 	{
-		printl(0, "Failed to save pixbuf file: %s: %s\n", outfile, error->message);
+		tiemu_warning(_("failed to save pixbuf file: %s: %s"), outfile, error->message);
 		g_error_free(error);
 	}
 	g_object_unref(pixbuf);
 
-	printl(0, "Done !\n");
+	tiemu_info(_("done !"));
 	options2.counter++;
 
 	return 0;

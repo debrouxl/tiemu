@@ -156,7 +156,7 @@ int ti68k_state_load(const char *filename)
 		return 0;
   
   	// Open file
-  	printl(0, "loading state image: %s\n", g_basename(filename));
+  	tiemu_info(_("loading state image: %s"), g_basename(filename));
   	f = fopen(filename, "rb");
   	if(f == NULL)
   		return ERR_CANT_OPEN_STATE;
@@ -306,7 +306,7 @@ int ti68k_state_save(const char *filename)
   		return ERR_CANT_OPEN_STATE;
   
   	// Open file
-  	printl(0, "Saving state image (TiEmu v2.00 format): %s\n", filename);
+  	tiemu_info(_("saving state image (TiEmu v2.00 format): %s"), filename);
   	f = fopen(filename, "wb");
   	if(f == NULL)
   		return ERR_CANT_OPEN_STATE;

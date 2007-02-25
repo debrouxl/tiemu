@@ -37,6 +37,7 @@
 
 #include "ti68k_int.h"
 #include "iodefs.h"
+#include "logging.h"
 
 GNode*	tree = NULL;
 extern int img_changed;
@@ -264,8 +265,6 @@ int iodefs_load(const char* path)
 		iodefs_unload();
 	
 	filename = g_strconcat(path, iodefs_get_filename(), NULL);
-	fprintf(stdout, "parsing I/O port definitions (%s)... ", iodefs_get_filename());
-
 	f = fopen(filename, "rb");
 	if(f == NULL)
 	{
@@ -349,8 +348,7 @@ int iodefs_load(const char* path)
 	g_free(filename);
 	fclose(f);
 
-	fprintf(stdout, "%i entries\n", n);
-
+	tiemu_info(_("loading I/O defs: %s (%i entries)"), iodefs_get_filename(), n);
     return 0;
 }
 

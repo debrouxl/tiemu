@@ -71,7 +71,7 @@ int rcfile_get_path(char **path)
 */
 static void stop (int line)
 {
-	printl(2, _("Configuration file error at line %i.\n"), line);
+	tiemu_warning(_("Configuration file error at line %i."), line);
 }
 
 /*
@@ -176,7 +176,7 @@ void rcfile_read(void)
 	txt=fopen(rc_file, "rt");
 	g_free(rc_file);
 	if(txt == NULL) {
-		printl(0, _("Configuration file not found, use default values. You can create one by the 'File|Save config' command menu.\n"));
+		tiemu_info(_("Configuration file not found, use default values. You can create one by the 'File|Save config' command menu."));
 		return;
 	}
 

@@ -125,10 +125,10 @@ int main(int argc, char **argv)
 
 	/* Init i18n support */
 #ifdef ENABLE_NLS
-	printl(0, "setlocale: <%s>\n", setlocale(LC_ALL, ""));
-  	printl(0, "bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, inst_paths.locale_dir));
+	tiemu_info("setlocale: <%s>", setlocale(LC_ALL, ""));
+  	tiemu_info("bindtextdomain: <%s>", bindtextdomain(PACKAGE, inst_paths.locale_dir));
   	bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	printl(0, "textdomain: <%s>\n", textdomain(PACKAGE));
+  	tiemu_info("textdomain: <%s>", textdomain(PACKAGE));
 #endif
 
 	/* Initialize/reload config */
@@ -196,7 +196,7 @@ int main(int argc, char **argv)
 
 	if (strcmp(ticonv_version_get(), TIEMU_REQUIRES_LIBCONV_VERSION) < 0) 
 	{
-		printl(0, _("libticonv library version <%s> mini required (<%s> found).\n"),
+		tiemu_warning(_("libticonv library version <%s> mini required (<%s> found)."),
 			TIEMU_REQUIRES_LIBCONV_VERSION, ticonv_version_get());
 		msg_box1(_("Error"), _("Libticonv: version mismatches."));
 		exit(-1);
@@ -204,7 +204,7 @@ int main(int argc, char **argv)
 
 	if (strcmp(tifiles_version_get(), TIEMU_REQUIRES_LIBFILES_VERSION) < 0) 
 	{
-		printl(0, _("libtifiles library version <%s> mini required (<%s> found).\n"),
+		tiemu_warning(_("libtifiles library version <%s> mini required (<%s> found)."),
 			TIEMU_REQUIRES_LIBFILES_VERSION, tifiles_version_get());
 		msg_box1(_("Error"), _("Libtifiles: version mismatches."));
 		exit(-1);
@@ -212,7 +212,7 @@ int main(int argc, char **argv)
 	
 	if (strcmp(ticables_version_get(), TIEMU_REQUIRES_LIBCABLES_VERSION) < 0) 
 	{
-		printl(0, _("libticables library version <%s> mini required (<%s> found).\n"),
+		tiemu_warning(_("libticables library version <%s> mini required (<%s> found)."),
 			TIEMU_REQUIRES_LIBCABLES_VERSION, ticables_version_get());
 		msg_box1(_("Error"), _("Libticables: version mismatches."));
 		exit(-1);
@@ -220,7 +220,7 @@ int main(int argc, char **argv)
 	
 	if (strcmp(ticalcs_version_get(), TIEMU_REQUIRES_LIBCALCS_VERSION) < 0) 
 	{
-		printl(0, _("libticalcs library version <%s> mini required (<%s> found).\n"),
+		tiemu_warning(_("libticalcs library version <%s> mini required (<%s> found)."),
 			TIEMU_REQUIRES_LIBCALCS_VERSION, ticalcs_version_get());
 		msg_box1(_("Error"), _("Libticalcs: version mismatches."));
 		exit(-1);

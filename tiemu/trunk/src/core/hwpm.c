@@ -58,28 +58,28 @@ void ti68k_display_hw_param_block(HW_PARM_BLOCK *s)
 {
     int i = 0;
 
-    printl(0, _("Hardware Parameters Block:\n"));
-    printl(0, _("Length           : %i\n"), s->len);
+    tiemu_info(_("Hardware Parameters Block:"));
+    tiemu_info(_("Length           : %i"), s->len);
     if(s->len > 2+(4*i++))
-        printl(0, _("  hardwareID       : %i\n"), s->hardwareID);
+        tiemu_info(_("  hardwareID       : %i"), s->hardwareID);
     if(s->len > 2+(4*i++))
-        printl(0, _("  hardwareRevision : %i\n"), s->hardwareRevision);
+        tiemu_info(_("  hardwareRevision : %i"), s->hardwareRevision);
     if(s->len > 2+(4*i++))
-        printl(0, _("  bootMajor        : %i\n"), s->bootMajor);
+        tiemu_info(_("  bootMajor        : %i"), s->bootMajor);
     if(s->len > 2+(4*i++))
-        printl(0, _("  bootRevision     : %i\n"), s->bootRevision);
+        tiemu_info(_("  bootRevision     : %i"), s->bootRevision);
     if(s->len > 2+(4*i++))
-        printl(0, _("  bootBuild        : %i\n"), s->bootBuild);
+        tiemu_info(_("  bootBuild        : %i"), s->bootBuild);
     if(s->len > 2+(4*i++))
-        printl(0, _("  gateArray        : %i\n"), s->gateArray);
+        tiemu_info(_("  gateArray        : %i"), s->gateArray);
     if(s->len > 2+(4*i++))
-        printl(0, _("  physDisplayBitsWide : %i\n"), s->physDisplayBitsWide & 0xff);
+        tiemu_info(_("  physDisplayBitsWide : %i"), s->physDisplayBitsWide & 0xff);
     if(s->len > 2+(4*i++))
-        printl(0, _("  physDisplayBitsTall : %i\n"), s->physDisplayBitsTall & 0xff);
+        tiemu_info(_("  physDisplayBitsTall : %i"), s->physDisplayBitsTall & 0xff);
     if(s->len > 2+(4*i++))
-        printl(0, _("  LCDBitsWide         : %i\n"), s->LCDBitsWide & 0xff);
+        tiemu_info(_("  LCDBitsWide         : %i"), s->LCDBitsWide & 0xff);
     if(s->len > 2+(4*i++))
-        printl(0, _("  LCDBitsTall         : %i\n"), s->LCDBitsTall & 0xff);
+        tiemu_info(_("  LCDBitsTall         : %i"), s->LCDBitsTall & 0xff);
 }
 
 /*
@@ -118,13 +118,13 @@ int ti68k_get_hw_param_block(uint8_t *rom_data, uint8_t rom_base, HW_PARM_BLOCK 
 
     if((s->hardwareID == HWID_V200) && (rom_base == 0x40))
     {
-        fprintf(stdout, "Detected V200 patched ROM (ExtendeD): emulated as TI92+ by changing the hwID from 8 to 1.\n");
+        tiemu_info(_("Detected V200 patched ROM (ExtendeD): emulated as TI92+ by changing the hwID from 8 to 1."));
         s->hardwareID = HWID_TI92P;
     }
 
 	if((s->hardwareID == HWID_TI89T) && (rom_base == 0x20))
     {
-        fprintf(stdout, "Detected TI89 Titanium patched ROM (ExtendeD): emulated as TI89 by changing the hwID from 9 to 3.\n");
+        tiemu_info(_("Detected TI89 Titanium patched ROM (ExtendeD): emulated as TI89 by changing the hwID from 9 to 3."));
         s->hardwareID = HWID_TI89;
     }
 

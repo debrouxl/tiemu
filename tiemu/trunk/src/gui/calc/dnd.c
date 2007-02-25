@@ -64,6 +64,8 @@ on_calc_wnd_drag_drop              (GtkWidget       *widget,
 	return FALSE;
 }
 
+extern int import_romversion(const char *filename);
+
 GLADE_CB void
 on_calc_wnd_drag_data_received     (GtkWidget       *widget,
                                         GdkDragContext  *context,

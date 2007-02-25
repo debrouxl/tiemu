@@ -446,7 +446,7 @@ int skin_load(SKIN_INFOS *si, const char *filename)
 		return ret;
 
 	if(!ret)
-   		printl(0, "loading skin: %s (%d x %d)\n", g_basename(filename), si->width, si->height);
+   		tiemu_info(_("loading skin: %s (%d x %d)"), g_basename(filename), si->width, si->height);
   
   	return ret;
 }

@@ -75,28 +75,3 @@ void tiemu_error (const gchar *format, ...)
   g_logv (LOG_DOMAIN, G_LOG_LEVEL_ERROR, format, args);
   va_end (args);
 }
-
-/* for compat: will be removed ASAP */
-
-int printl(int level, const char *format, ...)
-{
-  char *tok, *fmt;
-  va_list args;
-  va_start (args, format);
-
-  fmt = strdup(format);
-  tok = strrchr(fmt, '\n');
-  if(tok) *tok = '\0';
-
-  switch(level)
-  {
-  case PRINT_STD: g_logv (LOG_DOMAIN, G_LOG_LEVEL_INFO, fmt, args); break;
-  case PRINT_WRN: g_logv (LOG_DOMAIN, G_LOG_LEVEL_WARNING, fmt, args); break;
-  case PRINT_ERR: g_logv (LOG_DOMAIN, G_LOG_LEVEL_ERROR, fmt, args); break;
-  }
-
-  free(fmt);
-  va_end (args);
-
-  return 0;
-}

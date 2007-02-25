@@ -9,9 +9,7 @@ SubVersion: $Id$
 	                 compiles
 	- [roms]  $2363: added and enabled i18n support
 	- [roms]  $2368: replaced unused/deprecated printl system by GLib logging functions (part 1/2)
-
-
-	- [roms]  $23xx: replaced any occurence of printl by a tiemu_warning() call (part 2/2)
+	- [roms]  $2372: replaced any occurence of printl by a tiemu_warning() call (part 2/2)
 
 - 11/12/2006, version 2.81d
 	- [roms]  $2321: store *.sav files in the images folder rather than polluting the application top folder

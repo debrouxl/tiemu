@@ -28,6 +28,8 @@
 
 #include <glib.h>
 
+#include "intl.h"
+
 #define LOG_DOMAIN	"tiemu"
 
 void tiemu_debug(const gchar *format, ...);
@@ -36,14 +38,5 @@ void tiemu_message(const gchar *format, ...);
 void tiemu_warning(const gchar *format, ...);
 void tiemu_critical(const gchar *format, ...);
 void tiemu_error(const gchar *format, ...);
-
-//#define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
-
-#define	PRINT_STD	0
-#define PRINT_WRN	1
-#define PRINT_ERR	2
-
-/* Definition */
-int printl(int level, const char *format, ...);
 
 #endif
