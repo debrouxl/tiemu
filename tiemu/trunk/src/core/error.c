@@ -62,11 +62,11 @@ int ti68k_error_get(int err_num, char **error_msg)
 		break;
 
 	case ERR_HEADER_MATCH:
-		*error_msg = g_strdup(_("Can not open state image: state image header does not match ROM image header: have you changed/updated your ROM image ?"));
+		*error_msg = g_strdup(_("Can not open state image: state image header does not match ROM image header: have you changed/updated your ROM image?"));
 		break;
 
 	case ERR_STATE_MATCH:
-		*error_msg = g_strdup(_("Can not open state image: this state image is not targetted for your current emulator image (calculator model and/or OS verison must match !). Choose another image before."));
+		*error_msg = g_strdup(_("Can not open state image: this state image is not targetted for your current emulator image (calculator model and/or OS version must match!). Choose another image before."));
 		break;
 
 	case ERR_INVALID_IMAGE:
@@ -94,7 +94,7 @@ int ti68k_error_get(int err_num, char **error_msg)
 		break;
 
 	case ERR_CANT_OPEN_DIR:
-		*error_msg = g_strdup(_("Can parse folder."));
+		*error_msg = g_strdup(_("Can't parse folder."));
 		break;
 
 	case ERR_CANT_UPGRADE:
@@ -102,7 +102,7 @@ int ti68k_error_get(int err_num, char **error_msg)
 		break;		
 
     default:
-      *error_msg = g_strdup(_("Error code not found in the list.\nThis is a bug. Please report it.\n."));
+      *error_msg = g_strdup(_("Error code not found in the list.\nThis is a bug. Please report it."));
       return err_num;
     }
   
