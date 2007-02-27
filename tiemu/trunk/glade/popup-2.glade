@@ -282,7 +282,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_High LCD update</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">False</property>
+	      <property name="active">True</property>
 	      <signal name="activate" handler="on_high_lcd_update1_activate" last_modification_time="Wed, 11 May 2005 14:16:04 GMT"/>
 	    </widget>
 	  </child>
@@ -320,7 +320,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Normal view (x1)</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">Fals</property>
+	      <property name="active">True</property>
 	      <signal name="activate" handler="on_normal_view1_activate" last_modification_time="Fri, 14 May 2004 15:28:18 GMT"/>
 	    </widget>
 	  </child>
