@@ -43,13 +43,13 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="run1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Run</property>
+		      <property name="label" translatable="yes">_Run</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_run1_activate" last_modification_time="Sat, 12 Jun 2004 20:20:19 GMT"/>
 		      <accelerator key="F5" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image214">
+			<widget class="GtkImage" id="image232">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-yes</property>
 			  <property name="icon_size">1</property>
@@ -66,13 +66,13 @@
 		    <widget class="GtkImageMenuItem" id="step1">
 		      <property name="visible">True</property>
 		      <property name="tooltip" translatable="yes">Step into (single step)</property>
-		      <property name="label" translatable="yes">Step</property>
+		      <property name="label" translatable="yes">Step _in</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_step1_activate" last_modification_time="Sat, 12 Jun 2004 20:22:41 GMT"/>
 		      <accelerator key="F7" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image215">
+			<widget class="GtkImage" id="image233">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-jump-to</property>
 			  <property name="icon_size">1</property>
@@ -95,7 +95,7 @@
 		      <accelerator key="F8" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image216">
+			<widget class="GtkImage" id="image234">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-redo</property>
 			  <property name="icon_size">1</property>
@@ -118,7 +118,7 @@
 		      <accelerator key="F9" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image217">
+			<widget class="GtkImage" id="image235">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-undo</property>
 			  <property name="icon_size">1</property>
@@ -134,13 +134,13 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="run_to_cursor1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Run to cursor</property>
+		      <property name="label" translatable="yes">Run to _cursor</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_run_to_cursor1_activate" last_modification_time="Sat, 12 Jun 2004 20:22:41 GMT"/>
 		      <accelerator key="F4" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image218">
+			<widget class="GtkImage" id="image236">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-goto-last</property>
 			  <property name="icon_size">1</property>
@@ -156,13 +156,13 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="break1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Break</property>
+		      <property name="label" translatable="yes">_Break</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_break1_activate" last_modification_time="Sat, 12 Jun 2004 20:22:41 GMT"/>
 		      <accelerator key="F11" modifiers="0" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image219">
+			<widget class="GtkImage" id="image237">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-no</property>
 			  <property name="icon_size">1</property>
@@ -191,7 +191,7 @@
 		  <child>
 		    <widget class="GtkMenuItem" id="linkport1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Linkport</property>
+		      <property name="label" translatable="yes">_Linkport</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_linkport1_activate" last_modification_time="Tue, 26 Sep 2006 06:19:32 GMT"/>
 		    </widget>
@@ -213,7 +213,7 @@
 		  <child>
 		    <widget class="GtkCheckMenuItem" id="registers1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Registers</property>
+		      <property name="label" translatable="yes">_Registers</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
 		      <signal name="activate" handler="on_registers1_activate" last_modification_time="Sat, 12 Jun 2004 20:22:41 GMT"/>
@@ -223,7 +223,7 @@
 		  <child>
 		    <widget class="GtkCheckMenuItem" id="breakpoints1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Breakpoints</property>
+		      <property name="label" translatable="yes">_Breakpoints</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
 		      <signal name="activate" handler="on_breakpoints1_activate" last_modification_time="Sat, 12 Jun 2004 20:22:41 GMT"/>
@@ -233,7 +233,7 @@
 		  <child>
 		    <widget class="GtkCheckMenuItem" id="memory1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Memory</property>
+		      <property name="label" translatable="yes">_Memory</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
 		      <signal name="activate" handler="on_memory1_activate" last_modification_time="Sat, 12 Jun 2004 20:22:41 GMT"/>
@@ -243,7 +243,7 @@
 		  <child>
 		    <widget class="GtkCheckMenuItem" id="pc_log1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">PC trace</property>
+		      <property name="label" translatable="yes">_PC trace</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
 		      <signal name="activate" handler="on_pc_log1_activate" last_modification_time="Sun, 13 Jun 2004 16:29:36 GMT"/>
@@ -253,7 +253,7 @@
 		  <child>
 		    <widget class="GtkCheckMenuItem" id="stack_frame1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Stack frame</property>
+		      <property name="label" translatable="yes">_Stack frame</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
 		      <signal name="activate" handler="on_stack_frame1_activate" last_modification_time="Tue, 03 Aug 2004 17:42:41 GMT"/>
@@ -263,7 +263,7 @@
 		  <child>
 		    <widget class="GtkCheckMenuItem" id="heap_frame1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Heap (handles)</property>
+		      <property name="label" translatable="yes">_Heap (handles)</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
 		      <signal name="activate" handler="on_heap_frame1_activate" last_modification_time="Tue, 03 Aug 2004 17:42:41 GMT"/>
@@ -273,7 +273,7 @@
 		  <child>
 		    <widget class="GtkCheckMenuItem" id="ioports1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">I/O ports</property>
+		      <property name="label" translatable="yes">_I/O ports</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
 		      <signal name="activate" handler="on_ioports_frame1_activate" last_modification_time="Thu, 04 Aug 2005 13:37:42 GMT"/>
@@ -305,7 +305,7 @@
 		  <child>
 		    <widget class="GtkMenuItem" id="show_all1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Show all</property>
+		      <property name="label" translatable="yes">_Show all</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_show_all1_activate" last_modification_time="Sun, 27 Feb 2005 07:58:36 GMT"/>
 		    </widget>
@@ -314,7 +314,7 @@
 		  <child>
 		    <widget class="GtkMenuItem" id="hide_all1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Hide all</property>
+		      <property name="label" translatable="yes">_Hide all</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_hide_all1_activate" last_modification_time="Sun, 27 Feb 2005 07:58:36 GMT"/>
 		    </widget>
@@ -323,7 +323,7 @@
 		  <child>
 		    <widget class="GtkMenuItem" id="minimize_all1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Minimize all</property>
+		      <property name="label" translatable="yes">M_inimize all</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_minimize_all1_activate" last_modification_time="Sat, 03 Jul 2004 20:34:56 GMT"/>
 		    </widget>
@@ -332,7 +332,7 @@
 		  <child>
 		    <widget class="GtkMenuItem" id="maximize_all1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Maximize all</property>
+		      <property name="label" translatable="yes">M_aximize all</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_maximize_all1_activate" last_modification_time="Sat, 03 Jul 2004 20:34:56 GMT"/>
 		    </widget>
@@ -341,7 +341,7 @@
 		  <child>
 		    <widget class="GtkMenuItem" id="restore_all1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Restore all</property>
+		      <property name="label" translatable="yes">_Restore all</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_restore_all1_activate" last_modification_time="Sun, 27 Feb 2005 07:58:36 GMT"/>
 		    </widget>
@@ -356,13 +356,13 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="quit1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Quit</property>
+		      <property name="label" translatable="yes">_Quit</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_quit1_activate" last_modification_time="Sat, 12 Jun 2004 20:24:01 GMT"/>
 		      <accelerator key="Q" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 		      <child internal-child="image">
-			<widget class="GtkImage" id="image220">
+			<widget class="GtkImage" id="image238">
 			  <property name="visible">True</property>
 			  <property name="stock">gtk-quit</property>
 			  <property name="icon_size">1</property>
@@ -834,7 +834,7 @@
   <child>
     <widget class="GtkMenuItem" id="set_tmp_bkpt1">
       <property name="visible">True</property>
-      <property name="label" translatable="yes">Set _tmp bkpt</property>
+      <property name="label" translatable="yes">Set _one shot bkpt</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="on_set_tmp_bkpt1_activate" last_modification_time="Sun, 13 Jun 2004 09:36:25 GMT"/>
       <accelerator key="F3" modifiers="0" signal="activate"/>

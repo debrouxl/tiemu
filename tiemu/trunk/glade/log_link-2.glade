@@ -359,7 +359,7 @@
 		<widget class="GtkCheckButton" id="checkbutton1">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
-		  <property name="label" translatable="yes">Send</property>
+		  <property name="label" translatable="yes">_Send</property>
 		  <property name="use_underline">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <property name="focus_on_click">True</property>
@@ -379,7 +379,7 @@
 		<widget class="GtkCheckButton" id="checkbutton2">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
-		  <property name="label" translatable="yes">Receive</property>
+		  <property name="label" translatable="yes">_Receive</property>
 		  <property name="use_underline">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <property name="focus_on_click">True</property>
