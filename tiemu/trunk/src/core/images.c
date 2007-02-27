@@ -101,11 +101,11 @@ int ti68k_is_a_img_file(const char *filename)
 }
 
 /*
-	Display informations
+	Display information
 */
 void ti68k_display_rom_infos(IMG_INFO *s)
 {
-	tiemu_info(_("Rom informations:"));
+	tiemu_info(_("Rom information:"));
   	tiemu_info(_("  Calculator  : %s"), ti68k_calctype_to_string(s->calc_type));
   	tiemu_info(_("  Firmware    : %s"), s->version);
   	tiemu_info(_("  Memory type : %s"), ti68k_romtype_to_string(s->flash));
@@ -116,7 +116,7 @@ void ti68k_display_rom_infos(IMG_INFO *s)
 
 void ti68k_display_tib_infos(IMG_INFO *s)
 {
-	tiemu_info(_("Tib informations:"));
+	tiemu_info(_("Tib information:"));
   	tiemu_info(_("  Calculator  : %s"), ti68k_calctype_to_string(s->calc_type));
   	tiemu_info(_("  Firmware    : %s"), s->version);
   	tiemu_info(_("  Memory type : %s"), ti68k_romtype_to_string(s->flash));
@@ -126,7 +126,7 @@ void ti68k_display_tib_infos(IMG_INFO *s)
 
 void ti68k_display_img_infos(IMG_INFO *s)
 {
-	tiemu_info(_("Image informations:"));
+	tiemu_info(_("Image information:"));
   	tiemu_info(_("  Calculator  : %s"), ti68k_calctype_to_string(s->calc_type));
   	tiemu_info(_("  Firmware    : %s"), s->version);
   	tiemu_info(_("  Memory type : %s"), ti68k_romtype_to_string(s->flash));
@@ -137,7 +137,7 @@ void ti68k_display_img_infos(IMG_INFO *s)
 }
 
 /*
-	Get some informations on the ROM dump:
+	Get some information on the ROM dump:
 	- size
 	- ROM base address
 	- FLASH/EPROM
@@ -242,7 +242,7 @@ int ti68k_get_rom_infos(const char *filename, IMG_INFO *rom, int preload)
 
 
 /*
-  Get some informations on the FLASH upgrade:
+  Get some information on the FLASH upgrade:
   - size
   - ROM base address
   - os version
@@ -330,7 +330,7 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 }
 
 /*
-	Try to get some informations on the ROM dump:
+	Try to get some information on the ROM dump:
 	- size
 	- ROM base address
 	- FLASH/EPROM
@@ -409,7 +409,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	if(err)
     {
 	    free(img.data);
-      	tiemu_info(_("Unable to get informations on ROM dump: %s"), srcname);
+      	tiemu_info(_("Unable to get information on ROM dump: %s"), srcname);
       	return err;
     }
 	ti68k_display_rom_infos(&img);
@@ -493,7 +493,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	if(err)
     {
 	    free(img.data);
-      	tiemu_info(_("Unable to get informations on FLASH upgrade: <%s>"), srcname);
+      	tiemu_info(_("Unable to get information on FLASH upgrade: <%s>"), srcname);
       	return err;
     }
 	ti68k_display_tib_infos(&img);
@@ -699,7 +699,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 	if(err)
     {
 	    free(img.data);
-      	tiemu_info(_("Unable to get informations on ROM dump: %s"), srcname1);
+      	tiemu_info(_("Unable to get information on ROM dump: %s"), srcname1);
       	return err;
     }
 	ti68k_display_rom_infos(&img);
@@ -713,7 +713,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 	if(err)
     {
 	    free(img.data);
-      	tiemu_info(_("Unable to get informations on ROM dump: %s"), srcname2);
+      	tiemu_info(_("Unable to get information on ROM dump: %s"), srcname2);
       	return err;
     }
 	ti68k_display_tib_infos(&img);
@@ -784,7 +784,7 @@ int ti68k_load_image(const char *filename)
 	err = ti68k_get_img_infos(filename, img);
   	if(err)
     {
-      	tiemu_info(_("Unable to get informations on image: %s"), filename);
+      	tiemu_info(_("Unable to get information on image: %s"), filename);
       	return err;
     }
 	ti68k_display_img_infos(img);
@@ -860,7 +860,7 @@ int ti68k_load_upgrade(const char *filename)
 	if(err)
     {
 		free(img->data);
-      	tiemu_info(_("Unable to get informations on FLASH upgrade: <%s>"), filename);
+      	tiemu_info(_("Unable to get information on FLASH upgrade: <%s>"), filename);
       	return err;
     }
 	ti68k_display_tib_infos(&tib);
