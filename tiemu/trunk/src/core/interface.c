@@ -242,7 +242,7 @@ int ti68k_get_rom_size(int calc_type)
 {
     if(calc_type > CALC_MAX)
     {
-        tiemu_error(_("Bad argument !"));
+        tiemu_error(_("Bad argument!"));
         exit(0);
     }
 
@@ -253,7 +253,7 @@ int ti68k_get_ram_size(int calc_type)
 {
     if(calc_type > CALC_MAX)
     {
-        tiemu_error(_("Bad argument !"));
+        tiemu_error(_("Bad argument!"));
         exit(0);
     }
 
@@ -264,7 +264,7 @@ int ti68k_get_io_size(int calc_type)
 {
 	if(calc_type > CALC_MAX)
     {
-        tiemu_error(_("Bad argument !"));
+        tiemu_error(_("Bad argument!"));
         exit(0);
     }
 
@@ -275,7 +275,7 @@ int ti68k_get_io2_size(int calc_type)
 {
 	if(calc_type > CALC_MAX)
     {
-        tiemu_error(_("Bad argument !"));
+        tiemu_error(_("Bad argument!"));
         exit(0);
     }
 
@@ -286,7 +286,7 @@ int ti68k_get_io3_size(int calc_type)
 {
 	if(calc_type > CALC_MAX)
     {
-        tiemu_error(_("Bad argument !"));
+        tiemu_error(_("Bad argument!"));
         exit(0);
     }
 

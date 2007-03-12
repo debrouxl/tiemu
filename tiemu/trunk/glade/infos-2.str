@@ -4,13 +4,22 @@
  * DO NOT compile it as part of your application.
  */
 
-gchar *s = N_("Breakpoint !");
-gchar *s = N_("Address:");
-gchar *s = N_("Type:");
-gchar *s = N_("Id:");
-gchar *s = N_("0x000000");
-gchar *s = N_("access");
-gchar *s = N_("byte read");
-gchar *s = N_("#1");
-gchar *s = N_("Mode:");
-gchar *s = N_("A breakpoint has been encounntered...");
+gchar *s = N_("Infos...");
+gchar *s = N_("Skin version:");
+gchar *s = N_("Skin name:");
+gchar *s = N_("Skin author:");
+gchar *s = N_("Version:");
+gchar *s = N_("RAM size:");
+gchar *s = N_("ROM size:");
+gchar *s = N_("ROM type:");
+gchar *s = N_("TiEmu v2.00");
+gchar *s = N_("Default TI-92");
+gchar *s = N_("Julien Blache");
+gchar *s = N_("TI92");
+gchar *s = N_("1.11");
+gchar *s = N_("128KB");
+gchar *s = N_("2MB");
+gchar *s = N_("external ROM");
+gchar *s = N_("Calc type:");
+gchar *s = N_("Hardware:");
+gchar *s = N_("HW1");

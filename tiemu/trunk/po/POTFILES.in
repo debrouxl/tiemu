@@ -103,6 +103,7 @@ glade/dbg_code-2.str
 glade/dbg_data-2.str
 glade/dbg_entry-2.str
 glade/dbg_heap-2.str
+glade/dbg_ioports-2.str
 glade/dbg_mem-2.str      
 glade/dbg_pclog-2.str
 glade/dbg_regs-2.str    
@@ -114,6 +115,7 @@ glade/infos-2.str
 glade/log_link-2.str
 glade/pbars-2.str        
 glade/popup-2.str
+glade/quicksend-2.str
 glade/romversion-2.str  
 glade/scroptions-2.str  
 glade/wizard-2.str

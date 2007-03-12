@@ -618,7 +618,7 @@ static GtkWidget* display_popup_menu(void)
 	    (tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_popup",
 	     PACKAGE);
 	if (!xml2)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml2);
 
 	menu = glade_xml_get_widget(xml2, "dbgmem_popup");
@@ -932,7 +932,7 @@ gint display_dbgmem_address(uint32_t *addr)
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_address", PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	
 	entry = glade_xml_get_widget(xml, "entry1");
@@ -1154,7 +1154,7 @@ gint display_dbgmem_search(uint32_t addr)
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_mem-2.glade"), "dbgmem_search", PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	
     if(old_str == NULL)

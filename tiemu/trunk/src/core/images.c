@@ -105,7 +105,7 @@ int ti68k_is_a_img_file(const char *filename)
 */
 void ti68k_display_rom_infos(IMG_INFO *s)
 {
-	tiemu_info(_("Rom information:"));
+	tiemu_info(_("ROM information:"));
   	tiemu_info(_("  Calculator  : %s"), ti68k_calctype_to_string(s->calc_type));
   	tiemu_info(_("  Firmware    : %s"), s->version);
   	tiemu_info(_("  Memory type : %s"), ti68k_romtype_to_string(s->flash));
@@ -116,7 +116,7 @@ void ti68k_display_rom_infos(IMG_INFO *s)
 
 void ti68k_display_tib_infos(IMG_INFO *s)
 {
-	tiemu_info(_("Tib information:"));
+	tiemu_info(_("TIB information:"));
   	tiemu_info(_("  Calculator  : %s"), ti68k_calctype_to_string(s->calc_type));
   	tiemu_info(_("  Firmware    : %s"), s->version);
   	tiemu_info(_("  Memory type : %s"), ti68k_romtype_to_string(s->flash));
@@ -133,7 +133,7 @@ void ti68k_display_img_infos(IMG_INFO *s)
   	tiemu_info(_("  Memory size : %iMB (%i bytes)"), s->size >> 20, s->size);
     tiemu_info(_("  ROM base    : %02x"), s->rom_base & 0xff);
     tiemu_info(_("  Hardware    : %i"), s->hw_type);
-	tiemu_info(_("  Has boot    : %s"), s->has_boot ? "yes" : "no");	
+	tiemu_info(_("  Has boot    : %s"), s->has_boot ? _("yes") : _("no"));	
 }
 
 /*

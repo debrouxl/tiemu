@@ -231,7 +231,7 @@ gint display_main_wnd(void)
 		(tilp_paths_build_glade("calc-2.glade"), "calc_wnd",
 		 PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	
 	main_wnd = glade_xml_get_widget(xml, "calc_wnd");
@@ -789,7 +789,7 @@ int  hid_screenshot_single(void)
 	}
 	g_object_unref(pixbuf);
 
-	tiemu_info(_("done !"));
+	tiemu_info(_("done!"));
 	options2.counter++;
 
 	return 0;

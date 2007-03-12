@@ -92,7 +92,7 @@ int tiemu_file_delete(const char *f)
 {
 	if(g_unlink(f) < 0)
 	{
-		msg_box1(_("Information"), _("Unable to remove the file !"));
+		msg_box1(_("Information"), _("Unable to remove the file!"));
 		return -1;
 	}
 
@@ -148,7 +148,7 @@ int tiemu_file_check(const char *src, char **dst)
 	{
 		if (access(src, F_OK) == 0) 
 		{
-			sprintf(buffer, _("The file %s already exists.\nOverwrite ?"), src);
+			sprintf(buffer, _("The file %s already exists.\nOverwrite?"), src);
 			ret =
 			    msg_box3(_("Warning"), buffer,
 					_("Overwrite "), _("Rename "), _("Skip "));

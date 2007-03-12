@@ -352,7 +352,7 @@ GtkWidget* dbgcode_create_window(void)
 		(tilp_paths_build_glade("dbg_code-2.glade"), "dbgcode_window",
 		 PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 
 	dbox = glade_xml_get_widget(xml, "dbgcode_window");
@@ -674,7 +674,7 @@ static GtkWidget* display_popup_menu(void)
 	    (tilp_paths_build_glade("dbg_code-2.glade"), "dbgcode_popup",
 	     PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 
 	menu = glade_xml_get_widget(xml, "dbgcode_popup");

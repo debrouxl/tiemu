@@ -312,7 +312,7 @@ static void ctree_populate(GtkTreeStore *store)
 	// set the 3 main nodes
 	gtk_tree_store_append(store, &node1, NULL);
 	gtk_tree_store_set(store, &node1, 
-		COL_NAME, "Data", 
+		COL_NAME, _("Data"), 
 		COL_VALUE, "",  
 		COL_EDITABLE, FALSE,
 		COL_FONT, FONT_NAME,
@@ -320,7 +320,7 @@ static void ctree_populate(GtkTreeStore *store)
 		
 	gtk_tree_store_append(store, &node2, NULL);
 	gtk_tree_store_set(store, &node2, 
-		COL_NAME, "Addr", 
+		COL_NAME, _("Addr"), 
 		COL_VALUE, "",  
 		COL_EDITABLE, FALSE,
 		COL_FONT, FONT_NAME,
@@ -328,7 +328,7 @@ static void ctree_populate(GtkTreeStore *store)
 		
 	gtk_tree_store_append(store, &node3, NULL);
 	gtk_tree_store_set(store, &node3, 
-		COL_NAME, "Other", 
+		COL_NAME, _("Other"), 
 		COL_VALUE, "",  
 		COL_EDITABLE, FALSE,
 		COL_FONT, FONT_NAME,
@@ -567,7 +567,7 @@ GtkWidget* dbgregs_create_window(void)
 		(tilp_paths_build_glade("dbg_regs-2.glade"), "dbgregs_window",
 		 PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgregs_window");
@@ -625,7 +625,7 @@ static GtkWidget* display_popup_menu(void)
 	    (tilp_paths_build_glade("dbg_regs-2.glade"), "dbgregs_popup",
 	     PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 
 	menu = glade_xml_get_widget(xml, "dbgregs_popup");
@@ -752,7 +752,7 @@ gint dbgsr_display_dbox(void)
 		(tilp_paths_build_glade("dbg_regs-2.glade"), "dbgsr_window",
 		 PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgsr_window");

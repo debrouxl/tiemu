@@ -262,7 +262,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 	// col 1
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
-            "Name", renderer, 
+            _("Name"), renderer, 
             "text", COL_NAME,
 			"font", COL_FONT,
 			NULL);
@@ -270,7 +270,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 	// col 2
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_append_column(view, column);
-	gtk_tree_view_column_set_title(column, "Value");
+	gtk_tree_view_column_set_title(column, _("Value"));
 
 	renderer = gtk_cell_renderer_toggle_new();
 	gtk_tree_view_column_pack_start(GTK_TREE_VIEW_COLUMN(column), renderer, FALSE);
@@ -294,7 +294,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 	// col 3
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
-            "Address", renderer, 
+            _("Address"), renderer, 
             "text", COL_ADDR,
 			"font", COL_FONT,
 			NULL);
@@ -302,7 +302,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 	// col 4
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
-            "Mask", renderer, 
+            _("Mask"), renderer, 
             "text", COL_MASK,
 			"font", COL_FONT,
 			NULL);
@@ -420,7 +420,7 @@ GtkWidget* dbgiop_create_window(void)
 		(tilp_paths_build_glade("dbg_ioports-2.glade"), "dbgioports_window",
 		 PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgioports_window");

@@ -61,25 +61,25 @@ void ti68k_display_hw_param_block(HW_PARM_BLOCK *s)
     tiemu_info(_("Hardware Parameters Block:"));
     tiemu_info(_("Length           : %i"), s->len);
     if(s->len > 2+(4*i++))
-        tiemu_info(_("  hardwareID       : %i"), s->hardwareID);
+        tiemu_info("  hardwareID       : %i", s->hardwareID);
     if(s->len > 2+(4*i++))
-        tiemu_info(_("  hardwareRevision : %i"), s->hardwareRevision);
+        tiemu_info("  hardwareRevision : %i", s->hardwareRevision);
     if(s->len > 2+(4*i++))
-        tiemu_info(_("  bootMajor        : %i"), s->bootMajor);
+        tiemu_info("  bootMajor        : %i", s->bootMajor);
     if(s->len > 2+(4*i++))
-        tiemu_info(_("  bootRevision     : %i"), s->bootRevision);
+        tiemu_info("  bootRevision     : %i", s->bootRevision);
     if(s->len > 2+(4*i++))
-        tiemu_info(_("  bootBuild        : %i"), s->bootBuild);
+        tiemu_info("  bootBuild        : %i", s->bootBuild);
     if(s->len > 2+(4*i++))
-        tiemu_info(_("  gateArray        : %i"), s->gateArray);
+        tiemu_info("  gateArray        : %i", s->gateArray);
     if(s->len > 2+(4*i++))
-        tiemu_info(_("  physDisplayBitsWide : %i"), s->physDisplayBitsWide & 0xff);
+        tiemu_info("  physDisplayBitsWide : %i", s->physDisplayBitsWide & 0xff);
     if(s->len > 2+(4*i++))
-        tiemu_info(_("  physDisplayBitsTall : %i"), s->physDisplayBitsTall & 0xff);
+        tiemu_info("  physDisplayBitsTall : %i", s->physDisplayBitsTall & 0xff);
     if(s->len > 2+(4*i++))
-        tiemu_info(_("  LCDBitsWide         : %i"), s->LCDBitsWide & 0xff);
+        tiemu_info("  LCDBitsWide         : %i", s->LCDBitsWide & 0xff);
     if(s->len > 2+(4*i++))
-        tiemu_info(_("  LCDBitsTall         : %i"), s->LCDBitsTall & 0xff);
+        tiemu_info("  LCDBitsTall         : %i", s->LCDBitsTall & 0xff);
 }
 
 /*

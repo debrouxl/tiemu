@@ -94,8 +94,8 @@ gint display_about_dbox(void)
 		}
 	}
 
-	version = g_strdup_printf(_("Framework version (cables=%s, files=%s, calcs=%s)"),
-	     ticables_version_get(), tifiles_version_get(), ticalcs_version_get());
+	version = g_strdup_printf(_("Framework version (cables=%s, files=%s, calcs=%s, conv=%s)"),
+	     ticables_version_get(), tifiles_version_get(), ticalcs_version_get(), ticonv_version_get());
 
 	//---
 

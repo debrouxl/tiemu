@@ -56,7 +56,7 @@ gint dbgcause1_display_dbox()
 		(tilp_paths_build_glade("dbg_cause-2.glade"), "dbgcause1_dbox",
 		 PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgcause1_dbox");
@@ -140,7 +140,7 @@ gint dbgcause2_display_dbox()
 		(tilp_paths_build_glade("dbg_cause-2.glade"), "dbgcause2_dbox",
 		 PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgcause2_dbox");

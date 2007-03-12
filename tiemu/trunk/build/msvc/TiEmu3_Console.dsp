@@ -518,6 +518,14 @@ SOURCE=..\..\src\misc\version.h
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # Begin Source File
 
+SOURCE=.\icon2.ico
+# End Source File
+# Begin Source File
+
+SOURCE=.\icon3.ico
+# End Source File
+# Begin Source File
+
 SOURCE=.\TiEmu.ico
 # End Source File
 # Begin Source File
@@ -587,6 +595,10 @@ SOURCE=..\..\BUGS
 # Begin Source File
 
 SOURCE=..\..\ChangeLog
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\po\fr.po
 # End Source File
 # Begin Source File
 

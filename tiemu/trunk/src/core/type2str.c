@@ -117,20 +117,20 @@ const char *ti68k_exception_to_string(int number)
 	{
 		case 0: return _("Initial SSP");
 		case 1: return _("Initial PC");
-		case 2: return _("Bus error vector");
-		case 3: return _("Address error vector");
-		case 4: return _("Illegal instruction vector");
-		case 5: return _("Zero divide vector");
-		case 6: return _("CHK instruction vector");
-		case 7: return _("TRAPV instruction vector");
-		case 8: return _("Privilege violation vector");
+		case 2: return _("Bus Error vector");
+		case 3: return _("Address Error vector");
+		case 4: return _("Illegal Instruction vector");
+		case 5: return _("Zero Divide vector");
+		case 6: return _("CHK Instruction vector");
+		case 7: return _("TRAPV Instruction vector");
+		case 8: return _("Privilege Violation vector");
 		case 9: return _("Trace vector");
-		case 10: return _("Line 1010 emulator vectors");
-		case 11: return _("Line 1111 emulator vectors");
+		case 10: return _("Line 1010 Emulator vectors");
+		case 11: return _("Line 1111 Emulator vectors");
 		case 12: return _("Unassigned, reserved");
 		case 13: return _("Unassigned, reserved");
 		case 14: return _("Unassigned, reserved");
-		case 15: return _("Uninitialised interrupt vector");
+		case 15: return _("Uninitialised Interrupt vector");
 		case 16: return _("Unassigned, reserved");
 		case 17: return _("Unassigned, reserved");
 		case 18: return _("Unassigned, reserved");
@@ -139,30 +139,30 @@ const char *ti68k_exception_to_string(int number)
 		case 21: return _("Unassigned, reserved");
 		case 22: return _("Unassigned, reserved");
 		case 23: return _("Unassigned, reserved");
-		case 24: return _("Spurious interrupt vector");
-		case 25: return _("Level 1 interrupt auto-vectors");
-		case 26: return _("Level 2 interrupt auto-vectors");
-		case 27: return _("Level 3 interrupt auto-vectors");
-		case 28: return _("Level 4 interrupt auto-vectors");
-		case 29: return _("Level 5 interrupt auto-vectors");
-		case 30: return _("Level 6 interrupt auto-vectors");
-		case 31: return _("Level 7 interrupt auto-vectors");
-		case 32: return _("TRAP #0 instruction vectors");
-		case 33: return _("TRAP #1 instruction vectors");
-		case 34: return _("TRAP #2 instruction vectors");
-		case 35: return _("TRAP #3 instruction vectors");
-		case 36: return _("TRAP #4 instruction vectors");
-		case 37: return _("TRAP #5 instruction vectors");
-		case 38: return _("TRAP #6 instruction vectors");
-		case 39: return _("TRAP #7 instruction vectors");
-		case 40: return _("TRAP #8 instruction vectors");
-		case 41: return _("TRAP #9 instruction vectors");
-		case 42: return _("TRAP #10 instruction vectors");
-		case 43: return _("TRAP #11 instruction vectors");
-		case 44: return _("TRAP #12 instruction vectors");
-		case 45: return _("TRAP #13 instruction vectors");
-		case 46: return _("TRAP #14 instruction vectors");
-		case 47: return _("TRAP #15 instruction vectors");	
+		case 24: return _("Spurious Interrupt vector");
+		case 25: return _("Level 1 Interrupt auto-vectors");
+		case 26: return _("Level 2 Interrupt auto-vectors");
+		case 27: return _("Level 3 Interrupt auto-vectors");
+		case 28: return _("Level 4 Interrupt auto-vectors");
+		case 29: return _("Level 5 Interrupt auto-vectors");
+		case 30: return _("Level 6 Interrupt auto-vectors");
+		case 31: return _("Level 7 Interrupt auto-vectors");
+		case 32: return _("TRAP #0 Instruction vectors");
+		case 33: return _("TRAP #1 Instruction vectors");
+		case 34: return _("TRAP #2 Instruction vectors");
+		case 35: return _("TRAP #3 Instruction vectors");
+		case 36: return _("TRAP #4 Instruction vectors");
+		case 37: return _("TRAP #5 Instruction vectors");
+		case 38: return _("TRAP #6 Instruction vectors");
+		case 39: return _("TRAP #7 Instruction vectors");
+		case 40: return _("TRAP #8 Instruction vectors");
+		case 41: return _("TRAP #9 Instruction vectors");
+		case 42: return _("TRAP #10 Instruction vectors");
+		case 43: return _("TRAP #11 Instruction vectors");
+		case 44: return _("TRAP #12 Instruction vectors");
+		case 45: return _("TRAP #13 Instruction vectors");
+		case 46: return _("TRAP #14 Instruction vectors");
+		case 47: return _("TRAP #15 Instruction vectors");	
 		case 48: 
 		case 49: 
 		case 50: 
@@ -179,9 +179,9 @@ const char *ti68k_exception_to_string(int number)
 		case 61: 
 		case 62: 
 		case 63: return _("Unassigned, reserved");
-		case 64: return _("User interrupt vectors");
+		case 64: return _("User Interrupt vectors");
 		
-		default: return _("User interrupt vectors");
+		default: return _("User Interrupt vectors");
 	}
 }
 

@@ -60,7 +60,7 @@ void create_pbar_type1(const gchar *title)
 	    (tilp_paths_build_glade("pbars-2.glade"), "pbar1_dbox",
 	     PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 
 	pbar_window = glade_xml_get_widget(xml, "pbar1_dbox");

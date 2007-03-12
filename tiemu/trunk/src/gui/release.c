@@ -70,7 +70,7 @@ gint display_release_dbox()
 	    (tilp_paths_build_glade("release-2.glade"), "release_dbox",
 	     PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	dbox = glade_xml_get_widget(xml, "release_dbox");
 	text = glade_xml_get_widget(xml, "textview1");

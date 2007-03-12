@@ -4,4 +4,6 @@
  * DO NOT compile it as part of your application.
  */
 
-gchar *s = N_("Add Vector Breakpoint");
+gchar *s = N_("Quick send");
+gchar *s = N_("_enable");
+gchar *s = N_("Open file");

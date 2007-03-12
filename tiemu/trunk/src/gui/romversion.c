@@ -84,7 +84,7 @@ static GtkListStore* clist_create(GtkWidget *clist)
 	gint i;
 	const gchar *text[CLIST_NCOLS] = { 
 		_("Filename"), _("Model"), _("Version"), 
-		_("Type"), _("Size"), _("Boot"), _("HW") };
+		_("Type"), _("Size"), _("Boot"), _("Hardware") };
 	
 	list = gtk_list_store_new(CLIST_NCOLS,
     			G_TYPE_STRING, G_TYPE_STRING,
@@ -187,7 +187,7 @@ gint display_romversion_dbox(gboolean file_only)
 		(tilp_paths_build_glade("romversion-2.glade"), "romversion_dbox",
 		 PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 
     // display list box

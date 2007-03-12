@@ -63,9 +63,9 @@ GLADE_CB void
 on_popup_menu_header                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	fprintf(stdout, _("* TiEmu version %s (cables=%s, files=%s, calcs=%s)\n"),
-	     TIEMU_VERSION, ticables_version_get(), tifiles_version_get(),
-	     ticalcs_version_get());
+	fprintf(stdout, _("* TiEmu version %s (cables=%s, files=%s, calcs=%s, conv=%s)"),
+	     TIEMU_VERSION, 
+		 ticables_version_get(), tifiles_version_get(), ticalcs_version_get(), ticonv_version_get());
 }
 
 
@@ -519,7 +519,7 @@ GtkWidget* display_popup_menu(void)
 	    (tilp_paths_build_glade("popup-2.glade"), "popup_menu",
 	     PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 
 	menu = glade_xml_get_widget(xml, "popup_menu");

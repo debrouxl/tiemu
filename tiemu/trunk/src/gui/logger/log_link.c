@@ -57,7 +57,7 @@ gint display_loglink_dbox()
 	xml = glade_xml_new
 		(tilp_paths_build_glade("log_link-2.glade"), "linklog_dbox", PACKAGE);
 	if (!xml)
-		g_error(_("%s: GUI loading failed !\n"), __FILE__);
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 
 	text = glade_xml_get_widget(xml, "textview1");
