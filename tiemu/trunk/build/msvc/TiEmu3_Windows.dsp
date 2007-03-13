@@ -156,6 +156,10 @@ SOURCE="..\..\..\..\..\Gtk2Dev\lib\atk-1.0.lib"
 
 SOURCE="..\..\..\..\..\GTK2DEV\lib\glade-2.0.lib"
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\GTK2DEV\lib\intl.lib
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
@@ -331,6 +335,10 @@ SOURCE=..\..\src\core\ti_sw\vat.c
 SOURCE=..\..\src\core\uae\libuae.lib
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\src\core\engine.c
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\src\core\error.c
@@ -545,11 +553,11 @@ SOURCE=..\..\src\misc\files.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\misc\paths.c
+SOURCE=..\..\src\misc\logging.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\misc\printl.c
+SOURCE=..\..\src\misc\paths.c
 # End Source File
 # Begin Source File
 
@@ -580,10 +588,6 @@ SOURCE=..\..\src\ipc\com\oleaut_i.c
 SOURCE=..\..\src\ipc\com\registry.cpp
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE=..\..\src\gui\engine.c
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\src\gui\main.c

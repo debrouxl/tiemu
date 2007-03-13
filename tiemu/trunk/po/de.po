@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tiemu\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-12 08:21+0100\n"
+"POT-Creation-Date: 2007-03-13 14:38+0100\n"
 "PO-Revision-Date: 2004-04-13 13:21+0000\n"
 "Last-Translator: Kevin Kofler <Kevin@tigcc.ticalc.org>\n"
 "Language-Team: Français <tiemu-devel@lists.sf.net>\n"
@@ -2364,92 +2364,90 @@ msgstr "Fichiers de la calculatrice"
 msgid "Image type:"
 msgstr "Type d'image:"
 
-#: glade/wizard-2.str:2 glade/wizard-2.str:12 glade/wizard-2.str:20
-#: glade/wizard-2.str:23
+#: glade/wizard-2.str:7 glade/wizard-2.str:17 glade/wizard-2.str:25
+#: glade/wizard-2.str:27
 msgid "TiEmu wizard"
 msgstr ""
 
-#: glade/wizard-2.str:3
-msgid "Welcome to TiEmu II, the Linux/Win32 TI emulator."
+#: glade/wizard-2.str:8
+msgid "Welcome to TiEmu 3, the Linux/Win32 TI emulator."
 msgstr ""
 
-#: glade/wizard-2.str:4
+#: glade/wizard-2.str:9
 msgid ""
 "I want to use PedRom (GPL'ed replacement OS) \n"
 "shipped with TiEmu."
 msgstr ""
 
-#: glade/wizard-2.str:6
+#: glade/wizard-2.str:11
 msgid ""
 "You have downloaded a FLASH upgrade on the TI\n"
 "website."
 msgstr ""
 
-#: glade/wizard-2.str:8
+#: glade/wizard-2.str:13
 msgid "You already have a ROM dump."
 msgstr ""
 
-#: glade/wizard-2.str:9
+#: glade/wizard-2.str:14
 msgid ""
 "You want to use TiLP or another dumping program \n"
 "to get a ROM dump of your calculator ROM."
 msgstr ""
 
-#: glade/wizard-2.str:11
+#: glade/wizard-2.str:16
 msgid ""
-"Remind you that you should not distribute your ROM dump(s). They are "
+"Remind you that you can not distribute your ROM dump(s). They are "
 "copyrighted by Texas Instruments."
 msgstr ""
 
-#: glade/wizard-2.str:13
+#: glade/wizard-2.str:18
 msgid ""
 "TiEmu is now set  up and ready for use. Some tips on how to use the emulator:"
 msgstr ""
 
-#: glade/wizard-2.str:14
+#: glade/wizard-2.str:19
 msgid ""
 "* You have access to a popup menu by right-clicking in the emulator's window."
 msgstr ""
 
-#: glade/wizard-2.str:15
+#: glade/wizard-2.str:20
 msgid "* To use keys, use mouse or keyboard"
 msgstr ""
 
-#: glade/wizard-2.str:16
+#: glade/wizard-2.str:21
 msgid ""
 "* To change to a different calculator or ROM version, use an item of the ROM "
 "menu."
 msgstr ""
 
-#: glade/wizard-2.str:17
+#: glade/wizard-2.str:22
 msgid "* You can save the emulator state and config."
 msgstr ""
 
-#: glade/wizard-2.str:18
+#: glade/wizard-2.str:23
 msgid ""
 "* If your calculator screen is blank, use 'Ctrl' with '+/-' for adjusting "
 "contrast."
 msgstr ""
 
-#: glade/wizard-2.str:19
-msgid "Click the 'Finish' button to start GtkTiEmu."
-msgstr ""
-
-#: glade/wizard-2.str:21
-msgid ""
-"If you want to get a ROM dump with TiLP, you have to launch it, (eventually) "
-"configure it, and next, click the the 'Misc | Romdump' menu item. You can "
-"drag & drop the 'Operating System' icon from the left to the right window.\n"
-"TiLP can be downloaded at: <http://tilp.info>"
-msgstr ""
-
 #: glade/wizard-2.str:24
+msgid "Click the 'Finish' button to start TiEmu."
+msgstr ""
+
+#: glade/wizard-2.str:26
+msgid ""
+"If you want to get a ROM dump with TiLP, you will have to download it from: "
+"<http://tilp.info>Be sure to read the user's manual!"
+msgstr ""
+
+#: glade/wizard-2.str:28
 msgid ""
 "The FLASH upgrade you have selected is being to be converted into a TiEmu "
 "image. Please wait..."
 msgstr ""
 
-#: glade/wizard-2.str:25
+#: glade/wizard-2.str:29
 msgid "Note also that the converted image will not have a boot block."
 msgstr ""
 

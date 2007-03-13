@@ -2,8 +2,8 @@
 
 
 
-Previous version: 2.81b		(05/08/2006)
-Current version:  2.81c		(06/12/2006)
+Previous version: 2.81c		(06/12/2006)
+Current version:  2.81e		(13/03/2007)
 
 SubVersion (CVS) revision: $Id: RELEASE 2042 2006-05-07 07:46:23Z roms $
 
@@ -20,28 +20,23 @@ For the other link cables, no driver is needed.
 New capabilities:
 -----------------
 
-	- link logging
-	- quick send feature (allow to specify a file to send by pressing F10)
-	- register TiEmuOle object for TIGCC & others
-	- drag & drop support for sending of files, setting of current skin, importing of ROM image/FLASH upgrade
+	- internationalization support: French locale is currently included
+		If you want to add a locale, drop a mail at <gtktiemu-devel@lists.sf.net>.
 	
 
 Improvements:
 -------------
 
-	- replaced some hand-made GTK+ boxes by standard ones
-	- installer creates group as 'TiEmu3-gdb' instead of 'TiEmu3' to avoid
-		possible conflict with TiEmu+gdb.
-	- output a message about OLE registration
+	- store *.sav files in the images folder rather than polluting the application top folder
+	- [linux] add xdg-open in front of the list of browsers
 		
 		
 Bug fixes:
 ----------
 
-	- cable detaching when exiting TiEmu (hypersonic)
-	- regression: failed to import some old .89u files
-	- various minor fixes (see ChangeLog for details)
-	- memory leak in screen options box
+	- delete the temporary file instead of erroring if the user cancels the receive file dialog
+	- fixed progress bar refresh referencing freed memory (#1529247)
+	- send a group file as group, not as backup (bug #1529247)
 
 	
 Notes:
