@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -527,7 +527,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	{
 		if(img.calc_type == TI89t)
 			img.hw_type = HW3;  //default
-		else if(img.calc_type == TI89 || img.calc_type == TI92p)
+		else if(img.calc_type == TI89 || img.calc_type == TI92p || img.calc_type == V200)
 			img.hw_type = HW2;	// default
 	}
 	
