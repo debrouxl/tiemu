@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2007, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -236,7 +237,7 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 		ti68k_register_get_sp(&sp);
 		pc = mem_rd_long(sp+2);
 
-		str = g_strdup_printf("type=<%s>, id=#%i, SR=%04x, PC=%06x\n", 
+		str = g_strdup_printf("type=<%s>, id=#%i, SR=%04x, PC=%06x", 
 			ti68k_exception_to_string(mode), id, sr, pc);
 	}
 	else if(type == BK_TYPE_CODE)
@@ -288,16 +289,16 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 		switch(bkpts.id)
 		{
 		case 1:
-			str = g_strdup_printf("hw protection violation: FLASH execution at $%06x.\nExecution allowed until $%06x.", value, 0x390000+tihw.archive_limit*0x10000);
+			str = g_strdup_printf("hw protection violation: FLASH execution at $%06x. Execution allowed until $%06x.", value, 0x390000+tihw.archive_limit*0x10000);
 			break;
 		case 2:
-			str = g_strdup_printf("hw protection violation: RAM execution at $%06x.\n", value);
+			str = g_strdup_printf("hw protection violation: RAM execution at $%06x.", value);
 			break;
 		case 3:
-			str = g_strdup_printf("hw protection violation: FLASH execution at $%06x.\nExecution allowed until $%06x.", value, tihw.rom_base + 0x10000 + tihw.io2[0x13]*0x10000);
+			str = g_strdup_printf("hw protection violation: FLASH execution at $%06x. Execution allowed until $%06x.", value, tihw.rom_base + 0x10000 + tihw.io2[0x13]*0x10000);
 			break;
 		default: 
-			str = g_strdup("bug !\n"); 
+			str = g_strdup("bug !"); 
 			break;
 		}
 	}
@@ -314,7 +315,7 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 	}
 	else
 	{
-		str = g_strdup("bug !\n");
+		str = g_strdup("bug !");
 	}
 
 	sb_id = gtk_statusbar_get_context_id(GTK_STATUSBAR(sb), str);

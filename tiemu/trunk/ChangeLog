@@ -1,5 +1,8 @@
 SubVersion: $Id$
 
+- ??/??/2007, version 2.81f
+	- [kevin] $2389: don't use \n in the breakpoint window status bar
+
 - ??/??/2007, version 2.81e
 	- [kevin] $2348: delete the temporary file instead of erroring if the user cancels the receive file dialog
 	- [kevin] $2349: fixed progress bar refresh referencing freed memory (#1529247)
