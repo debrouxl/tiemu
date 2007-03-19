@@ -4,3 +4,7 @@ src/main.c
 src/main_intf.c
 src/main_cb.c
 src/support.c
+
+glade/boxes.str
+glade/main.str
+glade/prop.str
