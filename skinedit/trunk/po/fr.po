@@ -387,6 +387,3 @@ msgstr "Ne peut charger le pixmap : %s"
 #, c-format
 msgid "Skin exported as %s (%s)"
 msgstr "Skin exporté au format %s (%s)"
-
-#~ msgid "Cannot determine calculator type ! (see Edit/Properties)"
-#~ msgstr "Type de calculatrice inconnu ! (voir Edition/Propriétés)"
