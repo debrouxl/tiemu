@@ -5,8 +5,10 @@
   <name>Skinedit</name>
   <program_name>skinedit</program_name>
   <directory>../</directory>
-  <source_directory>../src</source_directory>
-  <pixmaps_directory>../pixmaps</pixmaps_directory>
+  <source_directory>../\src</source_directory>
+  <msvc_directory>../\msvc</msvc_directory>
+  <devcpp_directory>../\devcpp</devcpp_directory>
+  <pixmaps_directory>../\pixmaps</pixmaps_directory>
   <gnome_support>FALSE</gnome_support>
   <output_main_file>FALSE</output_main_file>
   <output_support_files>FALSE</output_support_files>
@@ -15,5 +17,6 @@
   <main_header_file>boxes_intf.h</main_header_file>
   <handler_source_file>boxes_cb.c</handler_source_file>
   <handler_header_file>boxes_cb.h</handler_header_file>
-  <translatable_strings_file>../</translatable_strings_file>
+  <output_translatable_strings>TRUE</output_translatable_strings>
+  <translatable_strings_file>../\boxes.str</translatable_strings_file>
 </glade-project>

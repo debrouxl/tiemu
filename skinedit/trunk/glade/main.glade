@@ -13,6 +13,12 @@
   <property name="default_height">300</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <signal name="delete_event" handler="on_main_window_delete_destroy_event"/>
   <signal name="destroy_event" handler="on_main_window_delete_destroy_event"/>
 
@@ -221,42 +227,82 @@
 		  <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
 		  <property name="toolbar_style">GTK_TOOLBAR_BOTH</property>
 		  <property name="tooltips">True</property>
+		  <property name="show_arrow">True</property>
 
 		  <child>
-		    <widget class="button" id="tb_properties">
+		    <widget class="GtkToolButton" id="tb_properties">
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Properties</property>
 		      <property name="use_underline">True</property>
 		      <property name="icon">prop.xpm</property>
+		      <property name="visible_horizontal">True</property>
+		      <property name="visible_vertical">True</property>
+		      <property name="is_important">False</property>
 		      <signal name="clicked" handler="on_tb_properties_clicked"/>
 		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="button" id="tb_lcd_pos">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">LCD</property>
-		      <property name="use_underline">True</property>
-		      <property name="icon">screen.xpm</property>
-		      <property name="new_group">True</property>
-		      <signal name="clicked" handler="on_tb_lcd_pos_clicked"/>
-		    </widget>
 		    <packing>
-		      <property name="new_group">True</property>
+		      <property name="expand">False</property>
+		      <property name="homogeneous">True</property>
 		    </packing>
 		  </child>
 
 		  <child>
-		    <widget class="button" id="tb_key_pos">
+		    <widget class="GtkSeparatorToolItem" id="separatortoolitem1">
+		      <property name="visible">True</property>
+		      <property name="draw">True</property>
+		      <property name="visible_horizontal">True</property>
+		      <property name="visible_vertical">True</property>
+		    </widget>
+		    <packing>
+		      <property name="expand">False</property>
+		      <property name="homogeneous">False</property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkToolButton" id="tb_lcd_pos">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">LCD</property>
+		      <property name="use_underline">True</property>
+		      <property name="icon">screen.xpm</property>
+		      <property name="visible_horizontal">True</property>
+		      <property name="visible_vertical">True</property>
+		      <property name="is_important">False</property>
+		      <signal name="clicked" handler="on_tb_lcd_pos_clicked"/>
+		    </widget>
+		    <packing>
+		      <property name="expand">False</property>
+		      <property name="homogeneous">True</property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkSeparatorToolItem" id="separatortoolitem2">
+		      <property name="visible">True</property>
+		      <property name="draw">True</property>
+		      <property name="visible_horizontal">True</property>
+		      <property name="visible_vertical">True</property>
+		    </widget>
+		    <packing>
+		      <property name="expand">False</property>
+		      <property name="homogeneous">False</property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkToolButton" id="tb_key_pos">
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Keys</property>
 		      <property name="use_underline">True</property>
 		      <property name="icon">keyboard.xpm</property>
-		      <property name="new_group">True</property>
+		      <property name="visible_horizontal">True</property>
+		      <property name="visible_vertical">True</property>
+		      <property name="is_important">False</property>
 		      <signal name="clicked" handler="on_tb_key_pos_clicked"/>
 		    </widget>
 		    <packing>
-		      <property name="new_group">True</property>
+		      <property name="expand">False</property>
+		      <property name="homogeneous">True</property>
 		    </packing>
 		  </child>
 		</widget>
@@ -333,19 +379,15 @@
   <property name="modal">True</property>
   <property name="resizable">True</property>
   <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <property name="show_fileops">True</property>
   <signal name="delete_event" handler="on_filesel_delete_destroy_event"/>
   <signal name="destroy_event" handler="on_filesel_delete_destroy_event"/>
-
-  <child internal-child="cancel_button">
-    <widget class="GtkButton" id="filesel_cancel">
-      <property name="visible">True</property>
-      <property name="can_default">True</property>
-      <property name="can_focus">True</property>
-      <property name="relief">GTK_RELIEF_NORMAL</property>
-      <signal name="clicked" handler="on_filesel_cancel_clicked"/>
-    </widget>
-  </child>
 
   <child internal-child="ok_button">
     <widget class="GtkButton" id="filesel_ok">
@@ -353,6 +395,18 @@
       <property name="can_default">True</property>
       <property name="can_focus">True</property>
       <property name="relief">GTK_RELIEF_NORMAL</property>
+      <property name="focus_on_click">True</property>
+    </widget>
+  </child>
+
+  <child internal-child="cancel_button">
+    <widget class="GtkButton" id="filesel_cancel">
+      <property name="visible">True</property>
+      <property name="can_default">True</property>
+      <property name="can_focus">True</property>
+      <property name="relief">GTK_RELIEF_NORMAL</property>
+      <property name="focus_on_click">True</property>
+      <signal name="clicked" handler="on_filesel_cancel_clicked"/>
     </widget>
   </child>
 </widget>
