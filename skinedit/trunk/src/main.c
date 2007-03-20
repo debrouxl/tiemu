@@ -98,13 +98,14 @@ main (int argc, char *argv[])
 
 #ifdef ENABLE_NLS
 #ifndef __WIN32__
-  bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
-  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-  textdomain (GETTEXT_PACKAGE);
+  printf("locale=<%s>\n", PACKAGE_LOCALE_DIR);
+  bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
+  bind_textdomain_codeset (PACKAGE, "UTF-8");
+  textdomain (PACKAGE);
 #else
   bindtextdomain(PACKAGE, locale_dir);
-  bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-  textdomain (GETTEXT_PACKAGE);
+  bind_textdomain_codeset(PACKAGE, "UTF-8");
+  textdomain (PACKAGE);
 #endif
 #endif
 

@@ -1,5 +1,9 @@
 List of changes:
 
+- 19/03/2007, version 1.26f: roms
+	Fixed i18n support.
+	Added/fixed French locale.
+	
 - 15/02/2006, version 1.26e: roms
 	Reverted back to GTK+ 2.6 for Windows.
 
