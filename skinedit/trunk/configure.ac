@@ -3,7 +3,7 @@ dnl $Id$
 
 dnl Init.
 AC_PREREQ(2.57)
-AC_INIT(SkinEdit, 1.26f, [tiemu-users@lists.sourceforge.net])
+AC_INIT(SkinEdit, 1.27, [tiemu-users@lists.sourceforge.net])
 
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
@@ -94,3 +94,5 @@ esac
 
 # Output.
 AC_OUTPUT
+
+echo "Now, you can type 'make' and 'make install'."

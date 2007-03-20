@@ -133,7 +133,7 @@ main (int argc, char *argv[])
 
   gtk_widget_show (main_wnd = create_main_window());
 
-  sbar_print(_("Skinedit v%s -- Supported formats : TiEmu v2.00 (R/W), VTiv2.1 (R/W), VTiv2.5 (R/W)"), VERSION);
+  sbar_print(_("Skinedit v%s -- Supported formats : TiEmu v2.00, VTiv2.1, VTiv2.5"), VERSION);
 
     // scan command line
     for (cnt = 1; cnt < argc; cnt++) {

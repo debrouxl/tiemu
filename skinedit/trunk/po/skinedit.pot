@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-19 22:46+0100\n"
+"POT-Creation-Date: 2007-03-21 00:18+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,52 +46,52 @@ msgstr ""
 msgid "Caught SIGINT, exiting ...\n"
 msgstr ""
 
-#: src/main.c:122
+#: src/main.c:123
 #, c-format
 msgid "SkinEdit v%s, (C) 2002-2003 Julien BLACHE <jb@tilp.info>\n"
 msgstr ""
 
-#: src/main.c:123
+#: src/main.c:124
 #, c-format
 msgid "                  2004-2005 Romain Lievin <roms@tilp.info>\n"
 msgstr ""
 
-#: src/main.c:125
+#: src/main.c:126
 #, c-format
 msgid "This program is free software; you can redistribute it and/or modify\n"
 msgstr ""
 
-#: src/main.c:126
+#: src/main.c:127
 #, c-format
 msgid "it under the terms of the GNU General Public License as published by\n"
 msgstr ""
 
-#: src/main.c:127
+#: src/main.c:128
 #, c-format
 msgid "the Free Software Foundation; version 2 of the License\n"
 msgstr ""
 
-#: src/main.c:128
+#: src/main.c:129
 #, c-format
 msgid "This program is distributed in the hope that it will be useful,\n"
 msgstr ""
 
-#: src/main.c:129
+#: src/main.c:130
 #, c-format
 msgid "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
 msgstr ""
 
-#: src/main.c:130
+#: src/main.c:131
 #, c-format
 msgid "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
 msgstr ""
 
-#: src/main.c:131
+#: src/main.c:132
 #, c-format
 msgid "GNU General Public License for more details.\n"
 msgstr ""
 
-#: src/main.c:135
+#: src/main.c:136
 #, c-format
 msgid ""
 "Skinedit v%s -- Supported formats : TiEmu v2.00 (R/W), VTiv2.1 (R/W), "

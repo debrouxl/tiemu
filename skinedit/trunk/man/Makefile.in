@@ -421,8 +421,6 @@ uninstall-man: uninstall-man1
 	uninstall-man uninstall-man1 uninstall-pkgdataDATA
 
 
-all: dist_win
-
 view: $(man_MANS)
 	groff -Tascii -man $(man_MANS) | less
 

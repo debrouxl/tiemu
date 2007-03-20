@@ -1,5 +1,8 @@
 List of changes:
 
+- 20/03/2007, version 1.27: roms
+	Fixed gcc 4.x warnings.
+	
 - 19/03/2007, version 1.26f: roms
 	Fixed i18n support.
 	Added/fixed French locale.
