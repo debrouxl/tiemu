@@ -3,8 +3,6 @@ pkgdata_DATA = Manpage.txt
 
 EXTRA_DIST = $(man_MANS) cleaner.c Manpage.txt
 
-all: dist_win
-
 view: $(man_MANS)
 	groff -Tascii -man $(man_MANS) | less
 
