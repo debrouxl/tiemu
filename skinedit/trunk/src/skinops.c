@@ -730,8 +730,8 @@ write_header(FILE *fp)
 unsigned char *
 read_image(FILE *fp, unsigned int *length)
 {
-  unsigned char *buf = NULL;
-  unsigned char *data = NULL;
+  char *buf = NULL;
+  char *data = NULL;
   unsigned int l = 0;
 
   uint32_t endian;
@@ -789,5 +789,5 @@ read_image(FILE *fp, unsigned int *length)
       *length += l;
     }
 
-  return data;
+  return (unsigned char *)data;
 }

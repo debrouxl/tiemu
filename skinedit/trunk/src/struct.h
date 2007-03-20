@@ -48,13 +48,13 @@ struct skinInfos
 
   unsigned int width;
   unsigned int height;
-  unsigned char calc[9];
+  char calc[9];
   unsigned int keymap;
   uint32_t colortype;
   uint32_t lcd_black;
   uint32_t lcd_white;
-  unsigned char *name;
-  unsigned char *author;
+  char *name;
+  char *author;
   struct RECT lcd_pos;
   struct RECT keys_pos[SKIN_KEYS];
 };

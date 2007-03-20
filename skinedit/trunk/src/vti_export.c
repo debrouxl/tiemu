@@ -48,7 +48,7 @@ export_skin_vti(const char *path, unsigned int version)
   FILE *jpeg = NULL;
   unsigned char *jpeg_data = NULL;
   unsigned int jpeg_length;
-  unsigned char buf[64];
+  char buf[64];
 
   fp = fopen(path, "wb");
   

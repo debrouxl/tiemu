@@ -339,12 +339,12 @@ on_properties_activate                 (GtkMenuItem     *menuitem,
   
   if (skin_infos.name != NULL)
     {
-      gtk_entry_set_text(GTK_ENTRY(lookup_widget(properties, "prop_entry_title")), skin_infos.name);
+      gtk_entry_set_text(GTK_ENTRY(lookup_widget(properties, "prop_entry_title")), (char *)skin_infos.name);
     }
 
   if (skin_infos.author != NULL)
     {
-      gtk_entry_set_text(GTK_ENTRY(lookup_widget(properties, "prop_entry_author")), skin_infos.author);
+      gtk_entry_set_text(GTK_ENTRY(lookup_widget(properties, "prop_entry_author")), (char *)skin_infos.author);
     }
 
 
