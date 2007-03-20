@@ -11,11 +11,11 @@
 /*
  * Standard gettext macros.
  */
+/*
 #ifdef ENABLE_NLS
 #  include <libintl.h>
 #  undef _
 #  define _(String) dgettext (PACKAGE, String)
-#  define Q_(String) g_strip_context ((String), gettext (String))
 #  ifdef gettext_noop
 #    define N_(String) gettext_noop (String)
 #  else
@@ -28,9 +28,10 @@
 #  define dcgettext(Domain,Message,Type) (Message)
 #  define bindtextdomain(Domain,Directory) (Domain)
 #  define _(String) (String)
-#  define Q_(String) g_strip_context ((String), (String))
 #  define N_(String) (String)
 #endif
+*/
+#include "intl.h"
 
 
 /*
@@ -66,9 +67,4 @@ GdkPixbuf*  create_pixbuf              (const gchar     *filename);
 void        glade_set_atk_action_description (AtkAction       *action,
                                               const gchar     *action_name,
                                               const gchar     *description);
-
-/* These variables define various paths detected at runtime. */
-extern gchar *package_prefix;
-extern gchar *package_data_dir;
-extern gchar *package_locale_dir;
 
