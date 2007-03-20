@@ -1,7 +1,6 @@
 SubVersion revision: $Id$
 
 
-
 DESCRIPTION
 -----------
 
@@ -15,7 +14,7 @@ FEATURES
 - creating skins from scratch by loading an image (JPEG, PNG, ...)
 - modifying an existing skin
 - exporting the skin to various formats (VTi old & new format)
-- save it into the native format (TiEMu)
+- save it into the native format (TiEmu)
 
 - LCD area
 - keys area
@@ -75,7 +74,7 @@ COPYRIGHT
 ---------
 
 SkinEdit is Copyright (C) 2002-2003 by Julien Blache <jb@jblache.org>.
-Modifications (C) 2004-2006 by Romain Liévin <gtktiemu-users@lists.sf.net>.
+Modifications (C) 2004-2007 by Romain Liévin <gtktiemu-users@lists.sf.net>.
 
 
 Copying is allowed under the terms of GNU General Public License.  
