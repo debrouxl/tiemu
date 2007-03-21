@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+MimeType=application/x-tiemu-img
+Comment=TiEmu Image
+Comment[fr]=Fichier Image TiEmu
+Icon=/usr/local/share/tiemu/pixmaps/icon.xpm
+Type=MimeType
+Patterns=*.img;

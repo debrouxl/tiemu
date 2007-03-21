@@ -63,6 +63,8 @@ roms
 
 * CPU consumption may be high
 
+* verifier que l'on peut ouvrir TiEmu a partir de: *.rom;*.sav;*.img.
+
 -------------
 + done
 - in progress
