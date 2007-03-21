@@ -1,4 +1,4 @@
-This directory contains shortcuts for KDE integration.
+This directory contains shortcuts and mime types for KDE integration.
 You have to copy:
 - skinedit.desktop to 
 	$HOME/.local/share/applications or /usr/share/applications
