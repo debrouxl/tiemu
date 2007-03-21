@@ -98,7 +98,6 @@ main (int argc, char *argv[])
 
 #ifdef ENABLE_NLS
 #ifndef __WIN32__
-  printf("locale=<%s>\n", PACKAGE_LOCALE_DIR);
   bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
   bind_textdomain_codeset (PACKAGE, "UTF-8");
   textdomain (PACKAGE);
