@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+MimeType=application/x-skinedit
+Comment=TiEmu Skin File
+Comment[fr]=Fichier Skin TiEmu
+Icon=/usr/local/share/skinedit/pixmaps/screen.xpm
+Type=MimeType
+Patterns=*.skn;

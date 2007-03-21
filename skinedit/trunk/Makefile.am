@@ -8,5 +8,7 @@ SUBDIRS += man
 endif
 
 EXTRA_DIST = \
-	glade/main.glade \
-	glade/main.gladep
+	glade/*.glade	\
+	glade/*.gladep	\
+	glade/*.str	\
+	desktop

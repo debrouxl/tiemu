@@ -1,0 +1,15 @@
+[Desktop Entry]
+Comment=
+Exec='/usr/local/bin/skinedit'
+GenericName=TiEmu Skin Editor
+Icon=/usr/local/share/skinedit/pixmaps/screen.xpm
+InitialPreference=2
+MimeType=application/x-skinedit
+Name=SkinEdit
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

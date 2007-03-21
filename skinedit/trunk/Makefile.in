@@ -217,8 +217,10 @@ target_alias = @target_alias@
 # subdirectories to scan
 SUBDIRS = build man pixmaps src po intl $(am__append_1)
 EXTRA_DIST = \
-	glade/main.glade \
-	glade/main.gladep
+	glade/*.glade	\
+	glade/*.gladep	\
+	glade/*.str	\
+	desktop
 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-21 00:18+0100\n"
+"POT-Creation-Date: 2007-03-21 13:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,7 +53,7 @@ msgstr ""
 
 #: src/main.c:124
 #, c-format
-msgid "                  2004-2005 Romain Lievin <roms@tilp.info>\n"
+msgid "                  2004-2007 Romain Lievin <roms@tilp.info>\n"
 msgstr ""
 
 #: src/main.c:126
@@ -93,9 +93,7 @@ msgstr ""
 
 #: src/main.c:136
 #, c-format
-msgid ""
-"Skinedit v%s -- Supported formats : TiEmu v2.00 (R/W), VTiv2.1 (R/W), "
-"VTiv2.5 (R/W)"
+msgid "Skinedit v%s -- Supported formats : TiEmu v2.00, VTiv2.1, VTiv2.5"
 msgstr ""
 
 #: src/main_intf.c:73 glade/main.str:7
