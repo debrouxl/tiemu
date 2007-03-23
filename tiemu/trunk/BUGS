@@ -63,7 +63,8 @@ roms
 
 * CPU consumption may be high
 
-* verifier que l'on peut ouvrir TiEmu a partir de: *.rom;*.sav;*.img.
+* vérifier qu'on peut double-cliquer un *.rom;*.img;*.sav;*.skn
+et créer les associations de fichier correspondantes
 
 -------------
 + done

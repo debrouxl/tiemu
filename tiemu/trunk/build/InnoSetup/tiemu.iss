@@ -42,6 +42,8 @@ Source: "C:\sources\roms\tiemu3\help\*.htm?"; DestDir: "{app}\help"; Flags: igno
 
 ; Pixmaps files
 Source: "C:\sources\roms\tiemu3\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu3\build\msvc\tiemu.ico"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu3\build\msvc\small.ico"; DestDir: "{app}"; DestName: "romdump.ico"; Flags: ignoreversion;
 
 ; Skin files
 Source: "C:\sources\roms\tiemu3\skins\*.skn"; DestDir: "{app}\skins"; Flags: ignoreversion;
@@ -157,6 +159,24 @@ Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\TiglUsb"; ValueType: stri
 Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\TiglUsb"; ValueType: string; ValueName: "ImagePath"; ValueData: "System32\Drivers\TiglUsb.sys"; Tasks: slv_drv;
 ; Boost GTK2 (WinNT/2000/XP)
 Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: string; ValueName: "PANGO_WIN32_NO_UNISCRIBE"; ValueData: "anything"; MinVersion: 0,4;
+; File associations
+Root: HKCR; Subkey: ".img"; ValueType: string; ValueName: ""; ValueData: "TiEmu.Image";
+Root: HKCR; Subkey: "TiEmu.Image"; ValueType: string; ValueName: ""; ValueData: "TiEmu image";
+Root: HKCR; Subkey: "TiEmu.Image\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\romdump.ico"
+Root: HKCR; Subkey: "TiEmu.Image\shell\open";  ValueType: string; ValueData: "Open with &TiEmu";
+Root: HKCR; Subkey: "TiEmu.Image\shell\open\command"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.exe ""%1""";
+
+Root: HKCR; Subkey: ".sav"; ValueType: string; ValueName: ""; ValueData: "TiEmu.State";
+Root: HKCR; Subkey: "TiEmu.State"; ValueType: string; ValueName: ""; ValueData: "TiEmu state";
+Root: HKCR; Subkey: "TiEmu.State\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\romdump.ico"
+Root: HKCR; Subkey: "TiEmu.State\shell\open";  ValueType: string; ValueData: "Open with &TiEmu";
+Root: HKCR; Subkey: "TiEmu.State\shell\open\command"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.exe ""%1""";
+
+Root: HKCR; Subkey: ".rom"; ValueType: string; ValueName: ""; ValueData: "TiEmu.Romdump";
+Root: HKCR; Subkey: "TiEmu.Romdump"; ValueType: string; ValueName: ""; ValueData: "Rom Dump";
+Root: HKCR; Subkey: "TiEmu.Romdump\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\small.ico";
+Root: HKCR; Subkey: "TiEmu.Romdump\shell\open";  ValueType: string; ValueData: "Open with &TiEmu";
+Root: HKCR; Subkey: "TiEmu.Romdump\shell\open\command"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.exe ""%1""";
 
 [UninstallDelete]
 Type: files; Name: "{app}\tiemu.url"
