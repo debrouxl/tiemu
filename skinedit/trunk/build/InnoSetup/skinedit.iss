@@ -29,6 +29,7 @@ Source: "C:\sources\roms\skinedit\glade\*.glade"; DestDir: "{app}\glade"; Flags:
 
 ; Pixmaps files
 Source: "C:\sources\roms\skinedit\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
+Source: "C:\sources\roms\skinedit\build\msvc\skinedit.ico"; DestDir: "{app}"; Flags: ignoreversion;
 
 ; i18n files
 Source: "C:\sources\roms\skinedit\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "skinedit.mo"; Flags: ignoreversion;
