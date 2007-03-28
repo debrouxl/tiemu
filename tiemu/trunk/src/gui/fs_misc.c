@@ -47,6 +47,7 @@
 #include "dbg_all.h"
 #include "files.h"
 #include "ti68k_err.h"
+//"fs_misc.h"
 
 gint display_skin_dbox(void)
 {
@@ -67,17 +68,11 @@ gint display_skin_dbox(void)
 	return 0;
 }
 
-gint display_load_state_dbox(void)
+int fs_load_state(const char *filename)
 {
-	const gchar *filename;
 	int err;
 
-    // get filename
-	filename = create_fsel(inst_paths.img_dir, NULL, "*.sav", FALSE);
-	if (!filename)
-		return 0;
-
-    g_free(params.sav_file);
+	g_free(params.sav_file);
     params.sav_file = g_strdup(filename);
     
     err = ti68k_state_load(params.sav_file);
@@ -107,6 +102,20 @@ gint display_load_state_dbox(void)
 	}
 	else
 		handle_error();
+
+	return 0;
+}
+
+gint display_load_state_dbox(void)
+{
+	const gchar *filename;
+
+    // get filename
+	filename = create_fsel(inst_paths.img_dir, NULL, "*.sav", FALSE);
+	if (!filename)
+		return 0;
+
+    fs_load_state(filename);
 
 	return 0;
 }
@@ -153,7 +162,7 @@ gint display_save_state_dbox(void)
 	return 0;
 }
 
-void send_file(const gchar *filename)
+void fs_send_file(const gchar *filename)
 {
 	int err;
 
@@ -187,7 +196,7 @@ void send_file(const gchar *filename)
 	destroy_pbar();	
 }
 
-int send_files(gchar **filenames)
+int fs_send_files(gchar **filenames)
 {
 	gchar **ptr;
 	int i, l;
@@ -204,7 +213,7 @@ int send_files(gchar **filenames)
 			return -1;
 		}
 
-		send_file(*ptr);
+		fs_send_file(*ptr);
 	}
 
 	g_strfreev(filenames);
@@ -247,7 +256,7 @@ gint display_send_files_dbox(void)
 	g_free(folder);
 	folder = g_path_get_dirname(filenames[0]);
 
-	return send_files(filenames);
+	return fs_send_files(filenames);
 }
 
 int display_recv_files_dbox(const char *src, const char *dst)
@@ -287,12 +296,12 @@ int display_recv_files_dbox(const char *src, const char *dst)
 }
 
 #ifndef NO_GDB
-void send_file_and_debug_info(const gchar *filename)
+void fs_send_file_and_debug_info(const gchar *filename)
 {
     const gchar *ext;
     FileContent *metadata;
 
-    send_file(filename);
+    fs_send_file(filename);
 
     ext = strrchr(filename, '.');
     if (ext)
@@ -361,14 +370,14 @@ gint display_debug_dbox(void)
         return -1;
     }
 
-    send_file_and_debug_info(filename);
+    fs_send_file_and_debug_info(filename);
 
 	return 0;
 }
 #else
-void send_file_and_debug_info(const gchar *filename) 
+void fs_send_file_and_debug_info(const gchar *filename) 
 {
-    send_file(filename);
+    fs_send_file(filename);
 }
 #endif
 

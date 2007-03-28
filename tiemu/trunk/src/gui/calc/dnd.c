@@ -155,6 +155,13 @@ on_calc_wnd_drag_data_received     (GtkWidget       *widget,
 				engine_start();
 			}
 		}
+		else if((length == 1) && !strcmp(tifiles_fext_get(fn), "sav"))
+		{
+			// Load save state
+			engine_stop();
+			fs_load_state(fn);
+			engine_start();
+		}
 		else if(tifiles_file_is_ti(fn) && 
 				(tifiles_calc_is_ti9x(tifiles_file_get_model(fn)) ||
 					tifiles_file_is_tigroup(fn))) 
@@ -163,7 +170,7 @@ on_calc_wnd_drag_data_received     (GtkWidget       *widget,
 			if(engine_is_stopped()) goto ocwwdr_end;
 
 			engine_stop();
-			send_files(filenames);
+			fs_send_files(filenames);
 			engine_start();
 		}
 

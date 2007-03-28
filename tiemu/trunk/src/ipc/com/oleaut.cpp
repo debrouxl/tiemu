@@ -185,7 +185,7 @@ STDMETHODIMP TiEmuOLE::send_file(BSTR filename, VARIANT_BOOL *ret)
   if (img_loaded && !engine_is_stopped()) {
     engine_stop();
     gchar *utf8=g_utf16_to_utf8((const gunichar2 *)filename,-1,NULL,NULL,NULL);
-    ::send_file(utf8);
+    ::fs_send_file(utf8);
     g_free(utf8);
     engine_start();
     RETURN(TRUE);
@@ -197,7 +197,7 @@ STDMETHODIMP TiEmuOLE::debug_file(BSTR filename, VARIANT_BOOL *ret)
   if (img_loaded && !engine_is_stopped()) {
     engine_stop();
     gchar *utf8=g_utf16_to_utf8((const gunichar2 *)filename,-1,NULL,NULL,NULL);
-    send_file_and_debug_info(utf8);
+    fs_send_file_and_debug_info(utf8);
     g_free(utf8);
     engine_start();
     RETURN(TRUE);

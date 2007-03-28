@@ -39,8 +39,9 @@ gint display_set_rom_dbox(void);
 gint display_set_tib_dbox(void);
 gint display_import_romversion_dbox(void);
 
-void send_file(const gchar *filename);
-int send_files(gchar **filenames);
-void send_file_and_debug_info(const gchar *filename);
+void fs_send_file(const gchar *filename);
+int  fs_send_files(gchar **filenames);
+void fs_send_file_and_debug_info(const gchar *filename);
+int  fs_load_state(const char *filename);
 
 G_END_DECLS
