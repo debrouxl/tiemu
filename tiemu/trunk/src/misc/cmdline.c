@@ -155,8 +155,8 @@ int scan_cmdline(int argc, char **argv)
 				exit(0);
 			}
 		}
-		if(stricmp(p, "/Embedding") || stricmp(p, "-Embedding")
-		   || stricmp(p, "--Embedding")) {
+		if(!stricmp(p, "/Embedding") || !stricmp(p, "-Embedding")
+		   || !stricmp(p, "--Embedding")) {
 			// VB runs it with this option.
 			continue;
 		}
