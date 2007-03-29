@@ -1,6 +1,6 @@
 /*  D-Bus interface for TiEmu
  *
- *  Copyright (c) 2006 Kevin Kofler
+ *  Copyright (c) 2006-2007 Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -143,7 +143,7 @@ static gboolean tiemudbus_send_file(TiEmuDBus *this UNUSED, const char *filename
 {
   if (img_loaded && !engine_is_stopped()) {
     engine_stop();
-    send_file(filename);
+    fs_send_file(filename);
     engine_start();
     return TRUE;
   } else return FALSE;
@@ -155,7 +155,7 @@ static gboolean tiemudbus_send_files(TiEmuDBus *this UNUSED, const char **filena
     const char **it;
     engine_stop();
     for (it = filenames; *it; ++it)
-      send_file(*it);
+      fs_send_file(*it);
     engine_start();
     return TRUE;
   } else return FALSE;
@@ -165,7 +165,7 @@ static gboolean tiemudbus_debug_file(TiEmuDBus *this UNUSED, const char *filenam
 {
   if (img_loaded && !engine_is_stopped()) {
     engine_stop();
-    send_file_and_debug_info(filename);
+    fs_send_file_and_debug_info(filename);
     engine_start();
     return TRUE;
   } else return FALSE;

@@ -1,6 +1,6 @@
 /*  OLE Automation interface for TiEmu
  *
- *  Copyright (c) 2006 Kevin Kofler
+ *  Copyright (c) 2006-2007 Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -185,7 +185,7 @@ STDMETHODIMP TiEmuOLE::send_file(BSTR filename, VARIANT_BOOL *ret)
   if (img_loaded && !engine_is_stopped()) {
     engine_stop();
     gchar *utf8=g_utf16_to_utf8((const gunichar2 *)filename,-1,NULL,NULL,NULL);
-    ::fs_send_file(utf8);
+    fs_send_file(utf8);
     g_free(utf8);
     engine_start();
     RETURN(TRUE);

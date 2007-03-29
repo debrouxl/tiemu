@@ -1,6 +1,6 @@
 /*  DCOP interface for TiEmu
  *
- *  Copyright (c) 2006 Kevin Kofler
+ *  Copyright (c) 2006-2007 Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -81,7 +81,7 @@ bool TiEmuDCOP::send_file(QString filename)
 {
   if (img_loaded && !engine_is_stopped()) {
     engine_stop();
-    ::send_file(filename.local8Bit());
+    fs_send_file(filename.local8Bit());
     engine_start();
     return true;
   } else return false;
@@ -92,7 +92,7 @@ bool TiEmuDCOP::send_files(QStringList filenames)
   if (img_loaded && !engine_is_stopped()) {
     engine_stop();
     for (QStringList::Iterator it = filenames.begin(); it != filenames.end(); ++it)
-      ::send_file((*it).local8Bit());
+      fs_send_file((*it).local8Bit());
     engine_start();
     return true;
   } else return false;
@@ -102,7 +102,7 @@ bool TiEmuDCOP::debug_file(QString filename)
 {
   if (img_loaded && !engine_is_stopped()) {
     engine_stop();
-    send_file_and_debug_info(filename.local8Bit());
+    fs_send_file_and_debug_info(filename.local8Bit());
     engine_start();
     return true;
   } else return false;
