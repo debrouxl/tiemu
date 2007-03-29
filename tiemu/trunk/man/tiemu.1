@@ -1,8 +1,8 @@
-.TH TIEMU 1 "January 27, 2006"
+.TH TIEMU 1 "March 28, 2007"
 .SH NAME
 tiemu - a TI's hand-helds emulator (m68k-based)
 .SH SYNOPSYS
-\fBtiemu\fP [-h] [-v] [--help] [--version] [--import] [-rom=] [-tib=] [-sav=] [image] 
+\fBtiemu\fP [-h] [-v] [--help] [--version] [--import] [-rom=] [-tib=] [-sav=] [filename] 
 .SH DESCRIPTION
 The \fBTiEmu\fP program allows you to emulate a Texas Instruments calculator such as TI89, TI89 Titanium, TI92, TI92+ or V200PLT.
 The emulator has also a virtual link capability which allows to connect it to another program (such as TiLP for instance).
@@ -22,12 +22,19 @@ This flag must be set before -rom or -tib !
 .TP
 \fB-rom=\fP
 Convert and use the specified dump as image. Note that the image is added to the image repository.
+Provided for compatibility.
 .TP
 \fB-tib=\fP
 Convert and use the specified tib/upgrade as image. Idem.
+Provided for compatibility.
 .TP
 \fB-sav=\fP
 Load the specified state file. Must be a valid state image and target for emulated calculator.
+Provided for compatibility.
+.TP
+\fBfilename\fP
+Load a ROM/TIB/SAV file. ROM & TIB files are converted and added to images repository. Image corresponding
+to SAV file is automatically loaded and state is load.
 
 .SH CONFIG FILE FORMAT
 This section describes the format of the .tiemu config file which is in the home directory of the 
@@ -155,7 +162,7 @@ Copyright (C) 2000-2001, Romain Lievin and Thomas Corvazier.
 Copyright (C) 2001-2003, Romain Lievin
 Copyright (C) 2003, Julien Blache
 Copyright (C) 2004, Romain Lievin
-Copyright (C) 2005-2006, Romain Lievin and Kevin Kofler
+Copyright (C) 2005-2007, Romain Lievin and Kevin Kofler
 
 Permission to use, copy, modify, and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appear in all copies and that both that copyright notice and this permission notice appear in supporting documentation.
 

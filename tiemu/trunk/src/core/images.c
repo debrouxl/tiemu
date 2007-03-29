@@ -100,6 +100,19 @@ int ti68k_is_a_img_file(const char *filename)
 	return 0;
 }
 
+int ti68k_is_a_sav_file(const char *filename)
+{
+	char *ext;
+
+	ext = strrchr(filename, '.');
+	if(ext == NULL)
+		return 0;
+	else if(!strcasecmp(ext, ".sav"))
+		return !0;
+
+	return 0;
+}
+
 /*
 	Display information
 */

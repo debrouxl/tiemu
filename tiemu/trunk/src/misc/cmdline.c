@@ -76,11 +76,11 @@ int help(void)
 	fprintf(stdout, "-h, --help     display this information page and exit\n");
 	fprintf(stdout, "-v, --version  display the version information and exit\n");
 	fprintf(stdout, "--import       import ROM or TIB into repository without loading\n");
-	fprintf(stdout, "-rom=          ROM dump to convert and load\n");
-	fprintf(stdout, "-tib=          TIB or upgrade to convert and load\n");
-	fprintf(stdout, "-sav=          state image to load\n");
+	fprintf(stdout, "-rom=          ROM dump to convert and load (compat)\n");
+	fprintf(stdout, "-tib=          TIB or FLASH upgrade to convert and load (compat)\n");
+	fprintf(stdout, "-sav=          state image to load (compat)\n");
 	fprintf(stdout, "\n");
-	fprintf(stdout, "filename       a filename which contains a TiEmu image\n");
+	fprintf(stdout, "filename       can be ROM, TIB or SAV file to load\n");
 	fprintf(stdout, "\n");
 
 	exit(0);
@@ -96,14 +96,18 @@ int scan_cmdline(int argc, char **argv)
 {
 	int cnt;
 	char *p;
-	char *q;
 	char msg[80];
-	gchar *dstname;
+
 	int import = 0;
+	char *rom = NULL;
+	char *tib = NULL;
+	char *sav = NULL;
+	char *fn = NULL;
 
 	//for(cnt = 0; cnt < argc; cnt++)
 	//	fprintf(stdout, "%i: [%s]\n", cnt, argv[cnt]);
   
+	/* Parses list of arguments */
 	for(cnt=1; cnt<argc; cnt++) 
 	{
 		p = argv[cnt];
@@ -168,73 +172,104 @@ int scan_cmdline(int argc, char **argv)
 			p++;
 		} else 
 		{
-			// an image to load
-			g_free(params.rom_file);
-			params.rom_file = g_strdup(p);
+			fn = g_strdup(p);
+			// a filename
+			//g_free(params.rom_file);
+			//params.rom_file = g_strdup(p);
 		}
-
 		strcpy(msg, p);
 
 		if(strexact(msg, "-import")) 
 			import = !0;
 
-		if(strstr(msg, "rom=") || strstr(msg, "tib="))
-		{	
-			q=msg+4;
+		if(strstr(msg, "rom="))
+			rom = g_strdup(msg + 4);
 
-			if(ti68k_is_a_rom_file(q))
-			{
-				int err = ti68k_convert_rom_to_image(q, inst_paths.img_dir, &dstname);
-				if(err) 
-				{
-					tiemu_err(err, NULL);
-					exit(-1);
-				}
-
-				if(import)
-					exit(0);
-
-				g_free(params.rom_file);
-				params.rom_file = dstname;
-				g_free(params.sav_file);
-				params.sav_file = g_strdup("");
-			}
-			else if(ti68k_is_a_tib_file(q))
-			{
-				int err = ti68k_convert_tib_to_image(q, inst_paths.img_dir, &dstname, -1);
-				if(err) 
-				{
-					tiemu_err(err, NULL);
-					exit(-1);
-				}
-
-				if(import)
-					exit(0);
-
-				g_free(params.rom_file);
-				params.rom_file = dstname;
-				g_free(params.sav_file);
-				params.sav_file = g_strdup("");
-			}
-			else
-				exit(-1);
-		}
+		if(strstr(msg, "tib="))
+			tib = g_strdup(msg + 4);
 
 		if(strstr(msg, "sav=")) 
-		{
-			q=msg+4;
-			g_free(params.sav_file);
-			params.sav_file = g_strdup(p);
-		}
+			sav = g_strdup(msg + 4);
 	      
 		if(strexact(msg, "-help") || strexact(msg, "h")) 
 			help();
 
 		if(strexact(msg, "-version") || strexact(msg, "v")) 
-		{ 
-			//version(); 
-			exit(0); 
+			exit(0);
+	}
+
+	/* */
+	if(ti68k_is_a_rom_file(fn))
+		rom = fn;
+	else if(ti68k_is_a_tib_file(fn))
+		tib = fn;
+	else if(ti68k_is_a_sav_file(fn))
+		sav = fn;
+
+	/* And process them */
+	if(rom && ti68k_is_a_rom_file(rom))
+	{
+		gchar *dstname;
+
+		int err = ti68k_convert_rom_to_image(rom, inst_paths.img_dir, &dstname);
+		if(err) 
+		{
+			tiemu_err(err, NULL);
+			exit(-1);
 		}
+
+		if(import)
+			exit(0);
+
+		g_free(params.rom_file);
+		params.rom_file = dstname;
+		g_free(params.sav_file);
+		params.sav_file = g_strdup("");
+	}
+
+	if(tib && ti68k_is_a_tib_file(tib))
+	{
+		gchar *dstname;
+
+		int err = ti68k_convert_tib_to_image(tib, inst_paths.img_dir, &dstname, -1);
+		if(err) 
+		{
+			tiemu_err(err, NULL);
+			exit(-1);
+		}
+
+		if(import)
+			exit(0);
+
+		g_free(params.rom_file);
+		params.rom_file = dstname;
+		g_free(params.sav_file);
+		params.sav_file = g_strdup("");
+	 }
+
+	if(sav && !fn)						// for compatibility
+	{
+		g_free(params.sav_file);
+		params.sav_file = g_strdup(sav);
+	}
+
+	if(sav && ti68k_is_a_sav_file(sav) && fn)
+	{
+		gchar *rf, *tf;
+
+		ti68k_state_parse(sav, &rf, &tf);
+		
+		if(!ti68k_is_a_img_file(rf))
+			return 0;
+
+		g_free(params.rom_file);
+		params.rom_file = rf;
+
+        g_free(params.tib_file);
+		params.tib_file = tf;
+
+		g_free(params.sav_file);
+		params.sav_file = g_strdup(sav);
 	}
 
 	return 0;

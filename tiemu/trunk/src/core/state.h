@@ -48,4 +48,6 @@ int ti68k_state_save(const char *filename);
 
 int ti68k_state_parse(const char *filename, char **rom_file, char **tib_file);
 
+int ti68k_is_a_sav_file(const char *filename);
+
 #endif
