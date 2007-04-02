@@ -199,11 +199,11 @@ int scan_cmdline(int argc, char **argv)
 	}
 
 	/* */
-	if(ti68k_is_a_rom_file(fn))
+	if(fn && ti68k_is_a_rom_file(fn))
 		rom = fn;
-	else if(ti68k_is_a_tib_file(fn))
+	else if(fn && ti68k_is_a_tib_file(fn))
 		tib = fn;
-	else if(ti68k_is_a_sav_file(fn))
+	else if(fn && ti68k_is_a_sav_file(fn))
 		sav = fn;
 
 	/* And process them */
