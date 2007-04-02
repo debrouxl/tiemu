@@ -216,7 +216,6 @@ int fs_send_files(gchar **filenames)
 		fs_send_file(*ptr);
 	}
 
-	g_strfreev(filenames);
 	return 0;
 }
 
@@ -225,6 +224,7 @@ gint display_send_files_dbox(void)
 	const gchar *ext;
 	gchar **filenames;
 	static gchar *folder = NULL;
+	int ret = 0;
 	
 	// Check for null cable
 	if(linkp.cable_model != CABLE_ILP)
@@ -256,7 +256,10 @@ gint display_send_files_dbox(void)
 	g_free(folder);
 	folder = g_path_get_dirname(filenames[0]);
 
-	return fs_send_files(filenames);
+	ret = fs_send_files(filenames);
+	g_strfreev(filenames);
+
+	return ret;
 }
 
 int display_recv_files_dbox(const char *src, const char *dst)

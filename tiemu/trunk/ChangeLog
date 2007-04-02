@@ -6,6 +6,8 @@ SubVersion: $Id$
 	- [roms]  $2409: added KDE desktop files & associations
 	- [roms]  $2415: allow to load saved states by DnD
 	- [roms]  $2417: allow to directly load ROM/TIB/SAV files from command line; maintained compatibility with older switches
+	- [roms]  $2420: fixed bug introduced in $2417
+	- [roms]  $2421: fixed double-free when DnD files to send
 
 - ??/??/2007, version 2.81e
 	- [kevin] $2348: delete the temporary file instead of erroring if the user cancels the receive file dialog
