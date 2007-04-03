@@ -641,7 +641,7 @@ FF:exp
 27F:SymAddTwin
 280:SymDelTwin
 281:LoadSymFromFindHandle
-282:MakeHsym
+282:MakeHSym
 283:SymFindPtr
 284:*OSVRegisterTimer*
 285:*OSVFreeTimer*
@@ -752,11 +752,11 @@ FF:exp
 2ED:push_next_internal_var
 2EE:push_quantum
 2EF:push_quantum_pair
-2F0:Reductum_index
-2F1:Remaining_factors_index
-2F2:Re_index
-2F3:Reset_estack_size
-2F4:Reset_control_flags
+2F0:reductum_index
+2F1:remaining_factors_index
+2F2:re_index
+2F3:reset_estack_size
+2F4:reset_control_flags
 2F5:can_be_approxed
 2F6:compare_complex_magnitudes
 2F7:compare_Floats
@@ -1006,7 +1006,7 @@ FF:exp
 3EA:ROM_CALL_3EA
 3EB:KeyYesOrNo
 3EC:ROM_CALL_3EC
-3ED:ROM_CALL_3ED
+3ED:BitmapSizeExt
 3EE:DrawStrWidthP
 3EF:CalcBitmapSize
 3F0:DynMenuChange
@@ -1072,7 +1072,7 @@ FF:exp
 42C:ClientToScr
 42D:MakeScrRect
 42E:SetWinClip
-42F:ROM_CALL_42F
+42F:WinToScr
 430:pSymPG
 431:OSModKeyStatus
 432:bottom_estack
@@ -1413,7 +1413,7 @@ FF:exp
 580:lead_conjunct_factor_index
 581:remaining_conjuncts_index
 582:push_but_conjunct_factor
-583:push_nSolve
+583:push_nsolve
 584:push_solve
 585:push_csolve
 586:push_zeros
