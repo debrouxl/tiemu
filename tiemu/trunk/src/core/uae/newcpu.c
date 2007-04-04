@@ -1754,9 +1754,9 @@ int m68k_disasm (char *output, uaecptr addr)
 				int handle;
 				uint32_t addr;
 				
-				heap_search_for_address(pc + (signed short)pm + 2 + 0x8000, &handle);
-				heap_get_block_addr(handle, &addr);				
-				sprintf (buffer, "FLINE jmp.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + 2 + (signed long)(signed short)pm + 0x8000);
+				heap_search_for_address(pc + (signed short)pm + 2, &handle);
+				if (handle > 0) heap_get_block_addr(handle, &addr); else addr = 0;
+				sprintf (buffer, "FLINE jmp.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + (signed long)(signed short)pm + 0x8000);
 			}
 			break;
 		case 0xffef:	/* jsr __ld_entry_point_plus_0x8000+word */
@@ -1765,9 +1765,9 @@ int m68k_disasm (char *output, uaecptr addr)
 				int handle;
 				uint32_t addr;
 				
-				heap_search_for_address(pc + (signed short)pm + 2 + 0x8000, &handle);
-				heap_get_block_addr(handle, &addr);
-				sprintf (buffer, "FLINE jsr.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + 2 + (signed long)(signed short)pm + 0x8000);
+				heap_search_for_address(pc + (signed short)pm + 2, &handle);
+				if (handle > 0) heap_get_block_addr(handle, &addr); else addr = 0;
+				sprintf (buffer, "FLINE jsr.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + (signed long)(signed short)pm + 0x8000);
 			}
 			break;
 		case 0xf8b5:	/* 2 byte ROM call followed by an FPU opcode (special case: _bcd_math) */

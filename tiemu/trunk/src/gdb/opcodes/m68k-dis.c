@@ -1427,10 +1427,10 @@ m68k_scan_mask (bfd_vma memaddr, disassemble_info *info,
                   int handle;
                   uint32_t addr;
 
-                  heap_search_for_address(memaddr + pm + 2 + 0x8000, &handle);
-                  heap_get_block_addr(handle, &addr);				
+                  heap_search_for_address(memaddr + pm + 2, &handle);
+                  if (handle > 0) heap_get_block_addr(handle, &addr); else addr = 0;
                   info->fprintf_func (info->stream, "FLINE jmp.w .+0x%x [", pm + 0x8000);
-                  info->print_address_func (addr + 2 + pm + 0x8000, info);
+                  info->print_address_func (addr + pm + 0x8000, info);
                   info->fprintf_func (info->stream, "]");
                 }
                 return 4;
@@ -1440,10 +1440,10 @@ m68k_scan_mask (bfd_vma memaddr, disassemble_info *info,
                   int handle;
                   uint32_t addr;
 
-                  heap_search_for_address(memaddr + pm + 2 + 0x8000, &handle);
-                  heap_get_block_addr(handle, &addr);
+                  heap_search_for_address(memaddr + pm + 2, &handle);
+                  if (handle > 0) heap_get_block_addr(handle, &addr); else addr = 0;
                   info->fprintf_func (info->stream, "FLINE jsr.w .+0x%x [", pm + 0x8000);
-                  info->print_address_func (addr + 2 + pm + 0x8000, info);
+                  info->print_address_func (addr + pm + 0x8000, info);
                   info->fprintf_func (info->stream, "]");
                 }
                 return 4;

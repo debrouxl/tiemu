@@ -5,6 +5,7 @@
           (print_insn_arg): Only accept %usp and %ssp as special registers on the 68000.
                             Handle failure return from print_indexed.
           (print_indexed): Only allow valid indexed addressing on the 68000.
+          (m68k_scan_mask): Fix handling of 4-byte F-Line jumps.
 
 2006-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
