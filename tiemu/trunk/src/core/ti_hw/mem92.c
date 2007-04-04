@@ -46,8 +46,8 @@
 #include "ti68k_int.h"
 
 // 000000-1fffff : RAM (128 or 256 KB)
-// 200000-3fffff : internal ROM (TI92 1.x) or unused
-// 400000-5fffff : external ROM (TI92 2.x) or unused
+// 200000-3fffff : internal ROM or unused (1.x: 1 MB)
+// 400000-5fffff : external ROM or unused (1.x: 1 MB or 2.x: 2 MB)
 // 600000-6fffff : memory mapped I/O
 // 700000-ffffff : unused
 

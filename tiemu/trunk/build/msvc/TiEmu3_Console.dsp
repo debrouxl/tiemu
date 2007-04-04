@@ -613,5 +613,93 @@ SOURCE=..\..\RELEASE.nogdb
 SOURCE=..\..\TODO
 # End Source File
 # End Group
+# Begin Group "Misc Files"
+
+# PROP Default_Filter ""
+# Begin Group "IO defs"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\misc\iodefs_ti89_hw1.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\misc\iodefs_ti89_hw2.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\misc\iodefs_ti89t_hw3.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\misc\iodefs_ti89t_hw4.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\misc\iodefs_ti92_hw1.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\misc\iodefs_ti92p_hw1.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\misc\iodefs_ti92p_hw2.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\misc\iodefs_v200_hw2.txt
+# End Source File
+# End Group
+# Begin Group "ROM calls"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\misc\romcalls.lst
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\misc\romcalls.txt
+# End Source File
+# End Group
+# Begin Group "MEM maps"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\misc\memmap_ti89_hw1.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\misc\memmap_ti89_hw2.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\misc\memmap_ti89t_hw3.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\misc\memmap_ti89t_hw4.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\misc\memmap_ti92_hw1.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\misc\memmap_ti92p_hw1.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\misc\memmap_ti92p_hw2.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\misc\memmap_v200_hw2.txt
+# End Source File
+# End Group
+# End Group
 # End Target
 # End Project

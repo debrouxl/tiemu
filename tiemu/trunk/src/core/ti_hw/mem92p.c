@@ -46,11 +46,11 @@
 #include "flash.h"
 
 // 000000-0fffff : RAM (256 KB)
-// 100000-1fffff : ghost of RAM
-// 200000-2fffff : ghost of FLASH (HW2)
-// 300000-3fffff : unused
-// 400000-4fffff : external FLASH
-// 500000-5fffff : idem
+// 100000-1fffff :
+// 200000-2fffff : mirror of FLASH (HW2)
+// 300000-3fffff : 
+// 400000-4fffff : external FLASH (2 MB)
+// 500000-5fffff :
 // 600000-6fffff : memory mapped I/O (all HW)
 // 700000-7fffff : memory mapped I/O (HW2)
 // 800000-8fffff : unused

@@ -45,10 +45,10 @@
 #include "flash.h"
 
 // 000000-0fffff : RAM (256 KB)
-// 100000-1fffff : ghost of RAM
-// 200000-2fffff : internal FLASH (TI89/V200)
+// 100000-1fffff :
+// 200000-2fffff : internal FLASH (2 MB)
 // 300000-3fffff : 
-// 400000-4fffff : internal FLASH (V200) or nothing (TI89)
+// 400000-4fffff :
 // 500000-5fffff : 
 // 600000-6fffff : memory mapped I/O (all HW)
 // 700000-7fffff : memory mapped I/O (HW2, HW3)
