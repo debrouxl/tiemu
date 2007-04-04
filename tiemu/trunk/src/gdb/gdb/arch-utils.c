@@ -600,6 +600,10 @@ initialize_current_architecture (void)
 			_("initialize_current_architecture: Arch not found"));
     }
 
+  /* (TiEmu 20070404 Kevin Kofler) Default m68k to m68000. */
+  if (default_bfd_arch->arch == bfd_arch_m68k)
+    default_bfd_arch = bfd_lookup_arch (bfd_arch_m68k, bfd_mach_m68000);
+
   info.bfd_arch_info = default_bfd_arch;
 
   /* Take several guesses at a byte order.  */

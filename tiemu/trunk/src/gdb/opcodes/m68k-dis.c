@@ -86,28 +86,6 @@ static char *const reg_half_names[] =
   (p += 4, FETCH_DATA (info, p), \
    (unsigned int) ((((((p[-4] << 8) + p[-3]) << 8) + p[-2]) << 8) + p[-1]))
 
-/* Get a single precision float.  */
-#define NEXTSINGLE(val, p) \
-  (p += 4, FETCH_DATA (info, p), \
-   floatformat_to_double (&floatformat_ieee_single_big, (char *) p - 4, &val))
-
-/* Get a double precision float.  */
-#define NEXTDOUBLE(val, p) \
-  (p += 8, FETCH_DATA (info, p), \
-   floatformat_to_double (&floatformat_ieee_double_big, (char *) p - 8, &val))
-
-/* Get an extended precision float.  */
-#define NEXTEXTEND(val, p) \
-  (p += 12, FETCH_DATA (info, p), \
-   floatformat_to_double (&floatformat_m68881_ext, (char *) p - 12, &val))
-
-/* Need a function to convert from packed to double
-   precision.   Actually, it's easier to print a
-   packed number than a double anyway, so maybe
-   there should be a special case to handle this... */
-#define NEXTPACKED(p) \
-  (p += 12, FETCH_DATA (info, p), 0.0)
-
 /* Maximum length of an instruction.  */
 #define MAXLEN 22
 
@@ -502,6 +480,11 @@ print_indexed (int basereg,
 
   word = NEXTWORD (p);
 
+  /* (TiEmu 20070404 Kevin Kofler) Only allow valid indexed
+                                   addressing on the 68000. */
+  if (info->mach == bfd_mach_m68000 && ((word & (3 << 9)) || (word & 0x100)))
+    return 0;
+
   /* Generate the text for the index register.
      Where this will be output is not yet determined.  */
   sprintf (buf, "%s.%c%s",
@@ -609,8 +592,6 @@ print_insn_arg (const char *d,
   int regno;
   const char *regname;
   unsigned char *p1;
-  double flval;
-  int flt_p;
   bfd_signed_vma disp;
   unsigned int uval;
 
@@ -683,6 +664,9 @@ print_insn_arg (const char *d,
              {"%urp", 0x806}, {"%srp", 0x807}, {"%pcr", 0x808}};
 
 	val = fetch_arg (buffer, place, 12, info);
+	/* (TiEmu 20070404 Kevin Kofler) Extra 68000 validation. */
+	if (info->mach == bfd_mach_m68000 && val != 0x800 && val != 0x804)
+	  return -1;
 	for (regno = sizeof names / sizeof names[0] - 1; regno >= 0; regno--)
 	  if (names[regno].value == val)
 	    {
@@ -963,6 +947,7 @@ print_insn_arg (const char *d,
 
 	case 6:
 	  p = print_indexed (regno, p, addr, info);
+	  if (!p) return -1;
 	  break;
 
 	case 7:
@@ -987,50 +972,28 @@ print_insn_arg (const char *d,
 
 	    case 3:
 	      p = print_indexed (-1, p, addr, info);
+	      if (!p) return -1;
 	      break;
 
 	    case 4:
-	      flt_p = 1;	/* Assume it's a float... */
 	      switch (place)
 	      {
 		case 'b':
 		  val = NEXTBYTE (p);
-		  flt_p = 0;
 		  break;
 
 		case 'w':
 		  val = NEXTWORD (p);
-		  flt_p = 0;
 		  break;
 
 		case 'l':
 		  val = NEXTLONG (p);
-		  flt_p = 0;
-		  break;
-
-		case 'f':
-		  NEXTSINGLE (flval, p);
-		  break;
-
-		case 'F':
-		  NEXTDOUBLE (flval, p);
-		  break;
-
-		case 'x':
-		  NEXTEXTEND (flval, p);
-		  break;
-
-		case 'p':
-		  flval = NEXTPACKED (p);
 		  break;
 
 		default:
 		  return -1;
 	      }
-	      if (flt_p)	/* Print a float? */
-		(*info->fprintf_func) (info->stream, "#%g", flval);
-	      else
-		(*info->fprintf_func) (info->stream, "#%d", val);
+	      (*info->fprintf_func) (info->stream, "#%d", val);
 	      break;
 
 	    default:

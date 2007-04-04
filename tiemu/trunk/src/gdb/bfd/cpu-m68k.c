@@ -99,7 +99,7 @@ const bfd_arch_info_type bfd_m68k_arch =
 static const unsigned m68k_arch_features[] = 
 {
   0,
-  m68000|m68881|m68851,
+  m68000, /* (TiEmu 20070404 Kevin Kofler) */
   m68000|m68881|m68851,
   m68010|m68881|m68851,
   m68020|m68881|m68851,

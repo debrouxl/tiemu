@@ -1,3 +1,9 @@
+2007-04-04  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * disasm.c (gdb_disassemble_info): Set features properly if gdbarch not set.
+        * arch-utils.c (initialize_current_architecture): Default m68k to m68000.
+        * ../bfd/cpu-m68k.c (struct m68k_arch_features): Remove FPU from m68000.
+
 2007-02-18  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * Merge with Insight 6.6.

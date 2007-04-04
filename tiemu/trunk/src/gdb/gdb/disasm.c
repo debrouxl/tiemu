@@ -386,6 +386,13 @@ gdb_disassemble_info (struct gdbarch *gdbarch, struct ui_file *file)
   di.mach = gdbarch_bfd_arch_info (gdbarch)->mach;
   di.endian = gdbarch_byte_order (gdbarch);
     }
+  else
+    {
+      /* (TiEmu 20070404 Kevin Kofler) Set features properly if gdbarch not set. */
+      di.arch = bfd_arch_m68k;
+      di.mach = bfd_mach_m68000;
+      di.endian = BFD_ENDIAN_BIG;
+    }
   disassemble_init_for_target (&di);
   return di;
 }

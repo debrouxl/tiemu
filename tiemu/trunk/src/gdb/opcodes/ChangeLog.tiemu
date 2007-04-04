@@ -1,10 +1,18 @@
+2007-04-04  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * m68k-dis.c (print_insn_arg): Don't accept floating-point immediates.
+          (NEXTSINGLE, NEXTDOUBLE, NEXTEXTEND, NEXTPACKED): Remove.
+          (print_insn_arg): Only accept %usp and %ssp as special registers on the 68000.
+                            Handle failure return from print_indexed.
+          (print_indexed): Only allow valid indexed addressing on the 68000.
+
 2006-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
-        * m68k-dis.c (print_insn_m68k): Remove excess spaces. Fix a use of $ instead of 0x.
+        * m68k-dis.c (m68k_scan_mask): Remove excess spaces. Fix a use of $ instead of 0x.
 
 2005-05-22  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
-        * m68k-dis.c (print_insn_m68k): Handle A-Line (ER_throw) instructions.
+        * m68k-dis.c (m68k_scan_mask): Handle A-Line (ER_throw) instructions.
 
 2005-05-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
