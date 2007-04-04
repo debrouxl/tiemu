@@ -1754,7 +1754,7 @@ int m68k_disasm (char *output, uaecptr addr)
 				int handle;
 				uint32_t addr;
 				
-				heap_search_for_address(pc + (signed short)pm + 2, &handle);
+				heap_search_for_address(pc + 2, &handle);
 				if (handle > 0) heap_get_block_addr(handle, &addr); else addr = 0;
 				sprintf (buffer, "FLINE jmp.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + (signed long)(signed short)pm + 0x8000);
 			}
@@ -1765,7 +1765,7 @@ int m68k_disasm (char *output, uaecptr addr)
 				int handle;
 				uint32_t addr;
 				
-				heap_search_for_address(pc + (signed short)pm + 2, &handle);
+				heap_search_for_address(pc + 2, &handle);
 				if (handle > 0) heap_get_block_addr(handle, &addr); else addr = 0;
 				sprintf (buffer, "FLINE jsr.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + (signed long)(signed short)pm + 0x8000);
 			}
