@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -682,7 +682,7 @@ void rcfile_write(void)
   fprintf(txt, "kbd_dbg=%s\n", options.kbd_dbg ? "yes" : "no");
   fprintf(txt, "\n");
 
-  fprintf(txt, "# File selector to use (old (GTK1/2) or new (GTK 2.4+) or win32 (Windows) or kde (KDE))\n");
+  fprintf(txt, "# File selector to use (native or old (GTK1/2) or new (GTK 2.4+) or win32 (Windows) or kde (KDE))\n");
   fprintf(txt, "fs_type=");
   switch(options.fs_type)
   {
