@@ -72,6 +72,7 @@ Source: "C:\sources\roms\tiemu3\TODO"; DestDir: "{app}"; DestName: "ToDo.txt"; F
 ; Resource files
 Source: "C:\sources\roms\tiemu3\misc\romcalls.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
 Source: "C:\sources\roms\tiemu3\misc\iodefs*.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
+Source: "C:\sources\roms\tiemu3\misc\memmap*.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
 
 ; PedRom files
 Source: "C:\sources\roms\tiemu3\pedrom\pedrom*.tib"; DestDir: "{app}\pedrom"; Flags: ignoreversion

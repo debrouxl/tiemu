@@ -4,7 +4,7 @@
 ; Any modification can result in unpredictable results (or crash even !).
 ;
 
-000000-01ffff : RAM (128 KB)
-200000-3fffff : internal ROM (TI92 1.x) or unused
-400000-5fffff : external ROM (TI92 2.x) or unused
-600000-60001f : I/O ports
+000000-01ffff:RAM (128 KB)
+200000-3fffff:internal ROM (TI92 1.x) or unused
+400000-5fffff:external ROM (TI92 2.x) or unused
+600000-60001f:I/O ports

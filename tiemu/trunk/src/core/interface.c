@@ -52,6 +52,7 @@
 #include "mem_size.h"
 #include "romcalls.h"
 #include "iodefs.h"
+#include "mem_map.h"
 
 /**********************/
 /* Internal variables */
@@ -319,4 +320,12 @@ int ti68k_debug_load_iodefs(const char *path)
 		return 0;
 
 	return iodefs_load(path);
+}
+
+int ti68k_debug_load_memmap(const char *path)
+{
+	if(!strcmp(path, ""))
+		return 0;
+
+	return memmap_load(path);
 }

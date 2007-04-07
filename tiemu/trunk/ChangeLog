@@ -11,6 +11,7 @@ SubVersion: $Id$
 	- [kevin] $2422: fixed errors (wrong case) in ROM_CALL list and added 2 new entries from TIGCC
 	- [kevin] $2424: don't disassemble instructions invalid for the 68000
 	- [kevin] $2425: fixed handling of 4-byte F-Line jumps
+	- [roms]  $2431: added memory map menu to the memory window
 
 - ??/??/2007, version 2.81e
 	- [kevin] $2348: delete the temporary file instead of erroring if the user cancels the receive file dialog

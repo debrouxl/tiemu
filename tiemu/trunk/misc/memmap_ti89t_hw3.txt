@@ -6,10 +6,10 @@
 ; Same file than iodefs_ti89t_hw4.txt but this one is the original.
 ;
 
-000000-03ffff : RAM (256 KB)
-200000-2fffff : RAM (mirror)
-400000-4fffff : RAM (mirror)
-600000-60001f : I/O ports (32 bytes)
-700000-7000ff : I/O ports (256 bytes)
-700100-7001ff : I/O ports (256 bytes)
-800000-bfffff : FLASH (4 MB)
+000000-03ffff:RAM (256 KB)
+200000-2fffff:RAM (mirror)
+400000-4fffff:RAM (mirror)
+600000-60001f:I/O ports (32 bytes)
+700000-7000ff:I/O ports (256 bytes)
+700100-7001ff:I/O ports (256 bytes)
+800000-bfffff:FLASH (4 MB)

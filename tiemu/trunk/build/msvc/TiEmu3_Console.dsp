@@ -220,6 +220,10 @@ SOURCE=..\..\src\core\ti_sw\iodefs.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\core\ti_sw\mem_map.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\core\ti_sw\registers.c
 # End Source File
 # Begin Source File

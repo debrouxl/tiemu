@@ -4,6 +4,6 @@
 ; Any modification can result in unpredictable results (or crash even !).
 ;
 
-000000-03ffff : RAM (256 KB)
-400000-5fffff : FLASH (2 MB)
-600000-60001f : I/O ports
+000000-03ffff:RAM (256 KB)
+400000-5fffff:FLASH (2 MB)
+600000-60001f:I/O ports

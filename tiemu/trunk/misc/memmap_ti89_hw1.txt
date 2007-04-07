@@ -4,9 +4,9 @@
 ; Any modification can result in unpredictable results (or crash even !).
 ;
 
-000000-03ffff : RAM (256 KB)
-100000-13ffff : RAM (ghost)
-200000-5fffff : FLASH (2 MB)
-600000-60001f : I/O ports (32 bytes)
+000000-03ffff:RAM (256 KB)
+100000-13ffff:RAM (ghost)
+200000-5fffff:FLASH (2 MB)
+600000-60001f:I/O ports (32 bytes)
 
 

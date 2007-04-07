@@ -44,6 +44,7 @@
 #include "ti68k_int.h"
 #include "struct.h"
 #include "dbg_all.h"
+#include "mem_map.h"
 
 #define FORCE_REFRESH
 #define DUMP_SIZE       128
@@ -514,6 +515,80 @@ dbgmem_button5_clicked                     (GtkButton       *button,
 	refresh_page(page, 0);
 }
 
+/***** Mem Map popup menu *****/
+
+static void memmap_menu_activate(GtkMenuItem* menuitem, gpointer user_data)
+{
+	guint32 addr = GPOINTER_TO_INT(user_data);
+	gchar *str;
+	
+	str = g_strdup_printf("%06x", addr);
+	notebook_add_page(notebook, str);
+	g_free(str);
+}
+
+static GtkWidget* memmap_menu(void)
+{
+	GtkWidget *menu;
+	GtkWidget *item;
+	int result;
+	MEM_MAP **ptr, **array = NULL;
+
+
+	menu = gtk_menu_new();
+	g_object_set_data_full(G_OBJECT(menu), "memmap_menu",
+			       gtk_widget_ref(menu),
+			       (GDestroyNotify)gtk_widget_unref);
+
+	// (re)load mem map
+	result = ti68k_debug_load_memmap(inst_paths.misc_dir);
+	if(result == -1)
+	{
+		return menu;
+	}
+
+	array = memmap_array();
+	if(array == NULL)
+		return menu;
+	
+	for(ptr = array; *ptr; ptr++)
+	{
+		MEM_MAP *s = *ptr;
+		char *label;
+
+		label = g_strdup_printf("%06x-%06x : %s", s->addr, s->addr + s->size - 1, s->name);
+
+		item = gtk_menu_item_new_with_label(label);
+		g_object_set_data_full(G_OBJECT(menu), "c_drive",
+					   gtk_widget_ref(item),
+					   (GDestroyNotify)gtk_widget_unref);
+		gtk_widget_show(item);
+
+		gtk_container_add(GTK_CONTAINER(menu), item);
+		g_signal_connect((gpointer)item, "activate",
+					   G_CALLBACK(memmap_menu_activate),
+					   GINT_TO_POINTER(s->addr));
+
+		g_free(label);
+	}
+
+	return menu;
+}
+
+GLADE_CB void
+dbgmem_button6_clicked                     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *menu;
+	guint butt = 0;
+	guint32 time;
+
+	time = gtk_get_current_event_time();
+	menu = memmap_menu();
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, butt, time);
+	gtk_widget_show(menu);
+}
+
 GLADE_CB void
 on_notebook1_switch_page               (GtkNotebook     *notebook,
                                         GtkNotebookPage *page,
@@ -522,6 +597,8 @@ on_notebook1_switch_page               (GtkNotebook     *notebook,
 {
 	refresh_page(page_num, 0);
 }
+
+/***** Misc *****/
 
 static void refresh_page(int page, int offset)
 {
