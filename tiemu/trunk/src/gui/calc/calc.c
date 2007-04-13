@@ -49,7 +49,7 @@
 #include "calc.h"
 #include "dbg_all.h"
 #include "screenshot.h"
-#include "kbd_mapper.h"
+#include "keymap.h"
 #include "logging.h"
 #include "gscales.h"
 

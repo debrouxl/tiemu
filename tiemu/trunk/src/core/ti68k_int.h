@@ -57,6 +57,7 @@ int ti68k_calc_to_libti_calc(void);
 
 // Keyboard
 void ti68k_kbd_set_key(int key, int active);
+int ti68k_kbd_is_key_pressed(int key);
 int ti68k_kbd_push_chars(const char *chars);
 
 // Misc

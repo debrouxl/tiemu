@@ -36,7 +36,7 @@
 #include "keydefs.h"
 #include "pckeys.h"
 #include "ti68k_int.h"
-#include "kbd_mapper.h"
+#include "keymap.h"
 #include "logging.h"
 
 #ifdef _MSC_VER

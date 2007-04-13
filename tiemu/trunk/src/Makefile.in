@@ -161,7 +161,7 @@ misc_OBJ = \
 gui_calc_OBJ = \
 	gui/calc/calc.o		\
 	gui/calc/dnd.o		\
-	gui/calc/kbd_mapper.o	\
+	gui/calc/keymap.o	\
 	gui/calc/keyboard.o	\
 	gui/calc/keynames.o	\
 	gui/calc/popup.o	\
