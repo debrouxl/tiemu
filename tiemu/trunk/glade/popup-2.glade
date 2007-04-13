@@ -214,18 +214,18 @@
   </child>
 
   <child>
+    <widget class="GtkSeparatorMenuItem" id="separator12">
+      <property name="visible">True</property>
+    </widget>
+  </child>
+
+  <child>
     <widget class="GtkMenuItem" id="upgrade_calc1">
       <property name="visible">True</property>
       <property name="tooltip" translatable="yes">Load a FLASH upgrade into the FLASH memory of the calculator.</property>
       <property name="label" translatable="yes">_Upgrade calc</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="on_upgrade_calc1_activate"/>
-    </widget>
-  </child>
-
-  <child>
-    <widget class="GtkSeparatorMenuItem" id="separator12">
-      <property name="visible">True</property>
     </widget>
   </child>
 
@@ -237,6 +237,12 @@
       <property name="use_underline">True</property>
       <signal name="activate" handler="on_set_rom1_activate"/>
       <accelerator key="F12" modifiers="0" signal="activate"/>
+    </widget>
+  </child>
+
+  <child>
+    <widget class="GtkSeparatorMenuItem" id="separator12">
+      <property name="visible">True</property>
     </widget>
   </child>
 
