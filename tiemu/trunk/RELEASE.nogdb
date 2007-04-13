@@ -2,8 +2,8 @@
 
 
 
-Previous version: 2.81c		(06/12/2006)
-Current version:  2.81e		(13/03/2007)
+Previous version: 2.81e		(13/03/2007)
+Current version:  3.00		(../../2007)
 
 SubVersion (CVS) revision: $Id: RELEASE 2042 2006-05-07 07:46:23Z roms $
 
@@ -20,24 +20,27 @@ For the other link cables, no driver is needed.
 New capabilities:
 -----------------
 
-	- internationalization support: French locale is currently included
-		If you want to add a locale, drop a mail at <gtktiemu-devel@lists.sf.net>.
+	- memory map menu in the memory window
+	- key press recording/playing
 	
 
 Improvements:
 -------------
 
-	- store *.sav files in the images folder rather than polluting the application top folder
-	- [linux] add xdg-open in front of the list of browsers
+	- [linux] added KDE desktop file associations & shortcuts
+	- load saved state by drag&drop
+	- load ROM/TIB/SAV files from command line
+	- errors (wrong case) in ROM_CALL list and added 2 new entries from TIGCC
+	- don't disassemble instructions invalid for the 68000
 		
 		
 Bug fixes:
 ----------
 
-	- delete the temporary file instead of erroring if the user cancels the receive file dialog
-	- fixed progress bar refresh referencing freed memory (#1529247)
-	- send a group file as group, not as backup (bug #1529247)
-
+	- default hardware version for Voyage 200
+	- memory leak/corruption with drag&drop (send of file)
+	- handling of 4-byte F-Line jumps
+	
 	
 Notes:
 ------

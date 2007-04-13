@@ -326,7 +326,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Normal view (x1)</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">True</property>
+	      <property name="active">False</property>
 	      <signal name="activate" handler="on_normal_view1_activate" last_modification_time="Fri, 14 May 2004 15:28:18 GMT"/>
 	    </widget>
 	  </child>
@@ -358,7 +358,7 @@
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_Custom view</property>
 	      <property name="use_underline">True</property>
-	      <property name="active">False</property>
+	      <property name="active">True</property>
 	      <property name="group">normal_view1</property>
 	      <signal name="activate" handler="on_custom_view1_activate" last_modification_time="Sun, 05 Jun 2005 08:47:19 GMT"/>
 	    </widget>
@@ -446,6 +446,63 @@
   </child>
 
   <child>
+    <widget class="GtkMenuItem" id="key_press1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">Key Press</property>
+      <property name="use_underline">True</property>
+
+      <child>
+	<widget class="GtkMenu" id="key_press1_menu">
+
+	  <child>
+	    <widget class="GtkMenuItem" id="setup_recording1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Setup recording</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_setup_recording1_activate" last_modification_time="Fri, 13 Apr 2007 16:17:39 GMT"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkCheckMenuItem" id="start_recording1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Record</property>
+	      <property name="use_underline">True</property>
+	      <property name="active">False</property>
+	      <signal name="activate" handler="on_start_recording1_activate" last_modification_time="Fri, 13 Apr 2007 16:17:39 GMT"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkSeparatorMenuItem" id="separator23">
+	      <property name="visible">True</property>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="setup_playing1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Setup playing</property>
+	      <property name="use_underline">True</property>
+	      <signal name="activate" handler="on_setup_playing1_activate" last_modification_time="Fri, 13 Apr 2007 16:17:39 GMT"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkCheckMenuItem" id="start_playing1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Play</property>
+	      <property name="use_underline">True</property>
+	      <property name="active">False</property>
+	      <signal name="activate" handler="on_start_playing1_activate" last_modification_time="Fri, 13 Apr 2007 16:17:39 GMT"/>
+	    </widget>
+	  </child>
+	</widget>
+      </child>
+    </widget>
+  </child>
+
+  <child>
     <widget class="GtkSeparatorMenuItem" id="separator13">
       <property name="visible">True</property>
     </widget>
@@ -470,7 +527,7 @@
 	      <accelerator key="H" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image112">
+		<widget class="GtkImage" id="image116">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-help</property>
 		  <property name="icon_size">1</property>
@@ -493,7 +550,7 @@
 	      <accelerator key="M" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image113">
+		<widget class="GtkImage" id="image117">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-index</property>
 		  <property name="icon_size">1</property>
@@ -584,7 +641,7 @@
 	      <signal name="activate" handler="on_bugreport1_activate" last_modification_time="Sun, 20 Feb 2005 17:58:57 GMT"/>
 
 	      <child internal-child="image">
-		<widget class="GtkImage" id="image114">
+		<widget class="GtkImage" id="image118">
 		  <property name="visible">True</property>
 		  <property name="stock">gtk-execute</property>
 		  <property name="icon_size">1</property>

@@ -436,15 +436,19 @@ SOURCE=..\..\src\gui\calc\dnd.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\calc\kbd_mapper.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\gui\calc\keyboard.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gui\calc\keymap.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\calc\keynames.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\calc\keypress.c
 # End Source File
 # Begin Source File
 

@@ -45,6 +45,7 @@
 #include "calc.h"
 #include "keymap.h"
 #include "dbg_all.h"
+#include "keypress.h"
 
 Pc2TiKey*       kbd_keymap = keymap;
 const char*     skn_keymap;
@@ -75,8 +76,13 @@ static int hwkey_to_tikey(guint16 hardware_keycode, int action)
 #endif
 
 			if(modifier != -1)
+			{
                 ti68k_kbd_set_key(modifier, action);
+				kp_recording_key(modifier, action);
+			}
+
             ti68k_kbd_set_key(ti_key, action);
+			kp_recording_key(ti_key, action);
 
             return !0;
         }
@@ -173,6 +179,7 @@ on_calc_wnd_button_press_event     (GtkWidget       *widget,
         if(key >= 0)
 		{
 			ti68k_kbd_set_key(key, 1);
+			kp_recording_key(key, 1);
 			return TRUE;
 		}
     }
@@ -207,6 +214,7 @@ on_calc_wnd_button_release_event     (GtkWidget       *widget,
             return FALSE;
 	    
       	ti68k_kbd_set_key(key, 0);
+		kp_recording_key(key, 0);
         return TRUE;
     }
 

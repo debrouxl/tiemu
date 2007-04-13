@@ -1,6 +1,6 @@
 SubVersion: $Id$
 
-- ??/??/2007, version 2.81f
+- ??/??/2007, version 3.00
 	- [kevin] $2389: don't use \n in the breakpoint window status bar
 	- [kevin] $2390: fixed default hardware version for Voyage 200
 	- [roms]  $2409: added KDE desktop files & associations
@@ -12,6 +12,7 @@ SubVersion: $Id$
 	- [kevin] $2424: don't disassemble instructions invalid for the 68000
 	- [kevin] $2425: fixed handling of 4-byte F-Line jumps
 	- [roms]  $2431: added memory map menu to the memory window
+	- [roms]  $2434: added key press recording/playing
 
 - ??/??/2007, version 2.81e
 	- [kevin] $2348: delete the temporary file instead of erroring if the user cancels the receive file dialog
@@ -23,6 +24,7 @@ SubVersion: $Id$
 	- [roms]  $2363: added and enabled i18n support
 	- [roms]  $2368: replaced unused/deprecated printl system by GLib logging functions (part 1/2)
 	- [roms]  $2372: replaced any occurence of printl by a tiemu_warning() call (part 2/2)
+		=> released on 13/03/2007
 
 - 11/12/2006, version 2.81d
 	- [roms]  $2321: store *.sav files in the images folder rather than polluting the application top folder

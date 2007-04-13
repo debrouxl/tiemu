@@ -59,6 +59,11 @@ typedef struct
 	
 	gchar*	qs_file;
 	gint	qs_enabled;
+
+	gchar*	kp_rec_file;
+	gint	kp_rec_enabled;
+	gchar*	kp_ply_file;
+	gint	kp_ply_enabled;
 } TieOptions;
 
 /* Screen capture options */

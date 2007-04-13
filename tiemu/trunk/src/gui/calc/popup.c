@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2007, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -55,6 +56,8 @@
 #include "tie_error.h"
 #include "dbg_all.h"
 #include "quicksend.h"
+#include "filesel.h"
+#include "keypress.h"
 
 #include "ti68k_int.h"
 #include "ti68k_def.h"
@@ -68,6 +71,7 @@ on_popup_menu_header                   (GtkMenuItem     *menuitem,
 		 ticables_version_get(), tifiles_version_get(), ticalcs_version_get(), ticonv_version_get());
 }
 
+/* menu part 1 (link) */
 
 GLADE_CB void
 on_send_file_to_tiemu1_activate     (GtkMenuItem     *menuitem,
@@ -130,6 +134,8 @@ on_quick_send1_activate                (GtkMenuItem     *menuitem,
 	engine_start();
 }
 
+/* menu part 2 (config & state) */
+
 void window_get_rect(GtkWidget *widget, GdkRect *rect);
 
 GLADE_CB void
@@ -191,6 +197,7 @@ on_revert_to_saved_state1_activate     (GtkMenuItem     *menuitem,
   	engine_start();
 }
 
+/* menu part 3 (debug) */
 
 GLADE_CB void
 on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
@@ -222,6 +229,8 @@ on_reset_calc1_activate                (GtkMenuItem     *menuitem,
 	  	engine_start();
 }
 
+/* menu part 4 (images) */
+
 GLADE_CB void
 on_upgrade_calc1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
@@ -241,6 +250,7 @@ on_set_rom1_activate                   (GtkMenuItem     *menuitem,
 	engine_start();
 }
 
+/* menu part 5.1 (emulator options) */
 
 GLADE_CB void
 on_restrict_to_actual_speed1_activate  (GtkMenuItem     *menuitem,
@@ -321,6 +331,7 @@ on_custom_view1_activate               (GtkMenuItem     *menuitem,
 {
 }
 
+/* menu part 5.2 (skin options) */
 
 GLADE_CB void
 on_no_skin1_activate                      (GtkMenuItem     *menuitem,
@@ -349,6 +360,7 @@ on_set_skin1_activate                  (GtkMenuItem     *menuitem,
 	display_skin_dbox();
 }
 
+/* menu part 5.3 (screenshot options) */
 
 GLADE_CB void
 on_now1_activate                     (GtkMenuItem     *menuitem,
@@ -367,6 +379,73 @@ on_screen_options1_activate               (GtkMenuItem     *menuitem,
 {
 	display_scroptions_dbox();
 }
+
+/* menu part 5.4 (key press options) */
+
+GLADE_CB void
+on_setup_recording1_activate             (GtkMenuItem     *menuitem,
+                                          gpointer         user_data)
+{
+	const gchar *filename = create_fsel(inst_paths.base_dir, "keypress.txt", "*.txt", TRUE);
+	if (!filename)
+		return;
+
+	g_free(options.kp_rec_file);
+	options.kp_rec_file = g_strdup(filename);
+}
+
+GLADE_CB void
+on_start_recording1_activate             (GtkMenuItem     *menuitem,
+                                          gpointer         user_data)
+{
+	if(options.kp_ply_enabled || !options.kp_rec_file) return;
+
+	options.kp_rec_enabled = !options.kp_rec_enabled;
+
+	if(options.kp_rec_enabled)
+		kp_recording_start(options.kp_rec_file);
+	else
+		kp_recording_stop();
+}
+
+GLADE_CB void
+on_setup_playing1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	const gchar *filename = create_fsel(inst_paths.base_dir, NULL, "*.txt", FALSE);
+	if (!filename)
+		return;
+
+	g_free(options.kp_ply_file);
+	options.kp_ply_file = g_strdup(filename);
+}
+
+static gboolean kp_callback(gpointer data)
+{
+	int key, action, ret;
+
+	ret = kp_playing_key(&key, &action);
+	if(ret) 
+	{
+		kp_playing_stop();
+		return FALSE;
+	}
+
+	ti68k_kbd_set_key(key, action);
+	//printf("%i %i\n", key, action);
+
+	return TRUE;
+}
+
+GLADE_CB void
+on_start_playing1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	kp_playing_start(options.kp_ply_file);
+	g_timeout_add(250, kp_callback, NULL);
+}
+
+/* menu part 6 (misc) */
 
 static void go_to_bookmark(const char *link);
 
@@ -626,6 +705,16 @@ GtkWidget* display_popup_menu(void)
 		data = glade_xml_get_widget(xml, "calculator_state1");
 		gtk_widget_set_sensitive(data, FALSE);
 	}
+
+	data = glade_xml_get_widget(xml, "start_recording1");
+	g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_start_recording1_activate, NULL);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), options.kp_rec_enabled);
+	g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_start_recording1_activate, NULL);
+
+	data = glade_xml_get_widget(xml, "start_playing1");
+	g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_start_playing1_activate, NULL);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), options.kp_ply_enabled);
+	g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_start_playing1_activate, NULL);
 
 	return menu;
 }
