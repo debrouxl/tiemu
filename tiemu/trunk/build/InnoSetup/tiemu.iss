@@ -161,26 +161,17 @@ Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\TiglUsb"; ValueType: stri
 ; Boost GTK2 (WinNT/2000/XP)
 Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: string; ValueName: "PANGO_WIN32_NO_UNISCRIBE"; ValueData: "anything"; MinVersion: 0,4;
 ; File associations
-Root: HKCR; Subkey: ".sav"; ValueType: string; ValueName: ""; ValueData: "TiEmu.State";
-Root: HKCR; Subkey: "TiEmu.State"; ValueType: string; ValueName: ""; ValueData: "TiEmu state";
-Root: HKCR; Subkey: "TiEmu.State\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.ico"
-Root: HKCR; Subkey: "TiEmu.State\shell\open";  ValueType: string; ValueData: "Open with &TiEmu";
-Root: HKCR; Subkey: "TiEmu.State\shell\open\command"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.exe ""%1""";
+Root: HKCR; Subkey: ".sav"; ValueType: string; ValueName: ""; ValueData: "TiEmu.Sav";
+Root: HKCR; Subkey: "TiEmu.Sav"; ValueType: string; ValueName: ""; ValueData: "TiEmu state";
+Root: HKCR; Subkey: "TiEmu.Sav\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.ico"
+Root: HKCR; Subkey: "TiEmu.Sav\shell\open";  ValueType: string; ValueData: "Open with &TiEmu";
+Root: HKCR; Subkey: "TiEmu.Sav\shell\open\command"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.exe ""%1""";
 
-Root: HKCR; Subkey: ".rom"; ValueType: string; ValueName: ""; ValueData: "TiEmu.Romdump";
-Root: HKCR; Subkey: "TiEmu.Romdump"; ValueType: string; ValueName: ""; ValueData: "Rom Dump";
-Root: HKCR; Subkey: "TiEmu.Romdump\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\romdump.ico";
-Root: HKCR; Subkey: "TiEmu.Romdump\shell\open";  ValueType: string; ValueData: "Open with &TiEmu";
-Root: HKCR; Subkey: "TiEmu.Romdump\shell\open\command"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.exe ""%1""";
-
-Root: HKCR; Subkey: ".tib"; ValueType: string; ValueName: ""; ValueData: "TiEmu.Upgrade";
-Root: HKCR; Subkey: ".89u"; ValueType: string; ValueName: ""; ValueData: "TiEmu.Upgrade";
-Root: HKCR; Subkey: ".9Xu"; ValueType: string; ValueName: ""; ValueData: "TiEmu.Upgrade";
-Root: HKCR; Subkey: ".V2u"; ValueType: string; ValueName: ""; ValueData: "TiEmu.Upgrade";
-Root: HKCR; Subkey: "TiEmu.Upgrade"; ValueType: string; ValueName: ""; ValueData: "OS Upgrade";
-Root: HKCR; Subkey: "TiEmu.Upgrade\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.ico";
-Root: HKCR; Subkey: "TiEmu.Upgrade\shell\open";  ValueType: string; ValueData: "Open with &TiEmu";
-Root: HKCR; Subkey: "TiEmu.Upgrade\shell\open\command"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.exe ""%1""";
+Root: HKCR; Subkey: ".rom"; ValueType: string; ValueName: ""; ValueData: "TiEmu.Rom";
+Root: HKCR; Subkey: "TiEmu.Rom"; ValueType: string; ValueName: ""; ValueData: "Rom Dump";
+Root: HKCR; Subkey: "TiEmu.Rom\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\romdump.ico";
+Root: HKCR; Subkey: "TiEmu.Rom\shell\open";  ValueType: string; ValueData: "Open with &TiEmu";
+Root: HKCR; Subkey: "TiEmu.Rom\shell\open\command"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.exe ""%1""";
 
 [UninstallDelete]
 Type: files; Name: "{app}\tiemu.url"
