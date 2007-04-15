@@ -53,7 +53,13 @@ gint display_infos_dbox()
 	dbox = glade_xml_get_widget(xml, "infos_dbox");
 
 	label = glade_xml_get_widget(xml, "label20");
-	str = g_strdup_printf("%s", "TiEmu v3.00");
+	switch(skin_infos.type)
+	{
+	case SKIN_TYPE_TIEMU:	str = g_strdup_printf("%s", "TiEmu v2.00"); break;
+	case SKIN_TYPE_VTI:		str = g_strdup_printf("%s", "VTi 2.5"); break;
+	case SKIN_TYPE_OLD_VTI:	str = g_strdup_printf("%s", "VTi 2.1"); break;
+	default:				str = g_strdup_printf("%s", _("unknown")); break;
+	}	
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 	
