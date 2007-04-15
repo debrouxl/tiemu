@@ -42,7 +42,6 @@ Source: "C:\sources\roms\tiemu3\help\*.htm?"; DestDir: "{app}\help"; Flags: igno
 
 ; Pixmaps files
 Source: "C:\sources\roms\tiemu3\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
-Source: "C:\sources\roms\tiemu3\build\msvc\tiemu.ico"; DestDir: "{app}"; Flags: ignoreversion;
 Source: "C:\sources\roms\tiemu3\build\msvc\small.ico"; DestDir: "{app}"; DestName: "romdump.ico"; Flags: ignoreversion;
 
 ; Skin files
@@ -163,7 +162,7 @@ Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environmen
 ; File associations
 Root: HKCR; Subkey: ".sav"; ValueType: string; ValueName: ""; ValueData: "TiEmu.Sav";
 Root: HKCR; Subkey: "TiEmu.Sav"; ValueType: string; ValueName: ""; ValueData: "TiEmu state";
-Root: HKCR; Subkey: "TiEmu.Sav\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.ico"
+Root: HKCR; Subkey: "TiEmu.Sav\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.exe,0"
 Root: HKCR; Subkey: "TiEmu.Sav\shell\open";  ValueType: string; ValueData: "Open with &TiEmu";
 Root: HKCR; Subkey: "TiEmu.Sav\shell\open\command"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.exe ""%1""";
 

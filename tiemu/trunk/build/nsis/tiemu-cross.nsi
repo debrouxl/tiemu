@@ -430,6 +430,8 @@ Section "MainSection" SEC01
   File "../../../../.wine/c/tiemu/share\tiemu\pixmaps\bkpt_tmp.xpm"
   File "../../../../.wine/c/tiemu/share\tiemu\pixmaps\icon.xpm"
   File "../../../../.wine/c/tiemu/share\tiemu\pixmaps\logo.xpm"
+  File "../../../../.wine/c/tiemu/share\tiemu\pixmaps\romdump.ico"
+  File "../../../../.wine/c/tiemu/share\tiemu\pixmaps\romdump.xpm"
   File "../../../../.wine/c/tiemu/share\tiemu\pixmaps\run.xpm"
   File "../../../../.wine/c/tiemu/share\tiemu\pixmaps\void.xpm"
   SetOutPath "$INSTDIR\share\tiemu\skins"
@@ -1219,6 +1221,19 @@ Section "MainSection" SEC01
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\TiEmu.lnk" "$INSTDIR\bin\tiemu.exe"
   CreateShortCut "$DESKTOP\TiEmu.lnk" "$INSTDIR\bin\tiemu.exe"
   !insertmacro MUI_STARTMENU_WRITE_END
+
+; File associations
+  WriteRegStr HKCR ".sav" "" "TiEmu.Sav"
+  WriteRegStr HKCR "TiEmu.Sav" "" "TiEmu state"
+  WriteRegStr HKCR "TiEmu.Sav\DefaultIcon" "" "$INSTDIR\bin\tiemu.exe,0"
+  WriteRegStr HKCR "TiEmu.Sav\shell\open" "" "Open with &TiEmu"
+  WriteRegStr HKCR "TiEmu.Sav\shell\open\command" "" '"$INSTDIR\bin\tiemu.exe" "%1"'
+
+  WriteRegStr HKCR ".rom" "" "TiEmu.Rom"
+  WriteRegStr HKCR "TiEmu.Rom" "" "Rom Dump"
+  WriteRegStr HKCR "TiEmu.Rom\DefaultIcon" "" "$INSTDIR\share\tiemu\pixmaps\romdump.ico"
+  WriteRegStr HKCR "TiEmu.Rom\shell\open" "" "Open with &TiEmu"
+  WriteRegStr HKCR "TiEmu.Rom\shell\open\command" "" '"$INSTDIR\bin\tiemu.exe" "%1"'
 SectionEnd
 
 Section -AdditionalIcons
@@ -1255,6 +1270,12 @@ FunctionEnd
 
 Section Uninstall
   !insertmacro MUI_STARTMENU_GETFOLDER "Application" $ICONS_GROUP
+
+; File associations
+  DeleteRegKey HKCR "TiEmu.Rom"
+  DeleteRegKey HKCR ".rom"
+  DeleteRegKey HKCR "TiEmu.Sav"
+  DeleteRegKey HKCR ".sav"
 
 ; OLE Unregistration
   UnregDLL "$INSTDIR\bin\tiemups.dll"
@@ -2011,6 +2032,8 @@ Section Uninstall
   Delete "$INSTDIR\share\tiemu\skins\ipaq_89.skn"
   Delete "$INSTDIR\share\tiemu\pixmaps\void.xpm"
   Delete "$INSTDIR\share\tiemu\pixmaps\run.xpm"
+  Delete "$INSTDIR\share\tiemu\pixmaps\romdump.xpm"
+  Delete "$INSTDIR\share\tiemu\pixmaps\romdump.ico"
   Delete "$INSTDIR\share\tiemu\pixmaps\logo.xpm"
   Delete "$INSTDIR\share\tiemu\pixmaps\icon.xpm"
   Delete "$INSTDIR\share\tiemu\pixmaps\bkpt_tmp.xpm"

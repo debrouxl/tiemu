@@ -301,7 +301,7 @@ target_alias = @target_alias@
 x_includes = @x_includes@
 x_libraries = @x_libraries@
 pixmapsdir = $(pkgdatadir)/pixmaps
-dist_pixmaps_DATA = *.xpm
+dist_pixmaps_DATA = *.xpm *.ico
 all: all-am
 
 .SUFFIXES:
@@ -485,6 +485,7 @@ uninstall-am: uninstall-dist_pixmapsDATA uninstall-info-am
 
 uninstall:
 	rm -f $(pkgdatadir)/pixmaps/*.xpm
+	rm -f $(pkgdatadir)/pixmaps/*.ico
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
