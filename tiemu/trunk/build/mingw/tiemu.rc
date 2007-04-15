@@ -6,8 +6,8 @@
 //
 
 1 VERSIONINFO
- FILEVERSION 2,81,0,0
- PRODUCTVERSION 2,81,0,0
+ FILEVERSION 3,0,0,0
+ PRODUCTVERSION 3,0,0,0
  FILEFLAGSMASK 0x3fL
  FILEFLAGS 0x28L
  FILEOS 0x40004L
@@ -21,14 +21,15 @@ BEGIN
             VALUE "Comments", "This program is placed under GPL license. The license can be found on www.gnu.org\0"
             VALUE "CompanyName", "Linux Programmer Group\0"
             VALUE "FileDescription", "TiEmu\0"
-            VALUE "FileVersion", __DATE__
+            VALUE "FileVersion", "3.00\0"
+//            VALUE "FileVersion", __DATE__
             VALUE "InternalName", "TiEmu\0"
-            VALUE "LegalCopyright", "Copyright © 2000-2006, The TiEmu Team\0"
+            VALUE "LegalCopyright", "Copyright © 2000-2007, The TiEmu Team\0"
             VALUE "LegalTrademarks", "The TiEmu Team\0"
             VALUE "OriginalFilename", "tiemu.exe\0"
 //            VALUE "PrivateBuild", "$Id$\0"
-            VALUE "ProductName", "TiEmu II\0"
-            VALUE "ProductVersion", "2, 81, 0, 0\0"
+            VALUE "ProductName", "TiEmu 3\0"
+            VALUE "ProductVersion", "3, 0, 0, 0\0"
             VALUE "SpecialBuild", "MinGW Windows build\0"
         END
     END

@@ -53,7 +53,7 @@ gint display_infos_dbox()
 	dbox = glade_xml_get_widget(xml, "infos_dbox");
 
 	label = glade_xml_get_widget(xml, "label20");
-	str = g_strdup_printf("%s", "TiEmu v2.00");
+	str = g_strdup_printf("%s", "TiEmu v3.00");
 	gtk_label_set_text(GTK_LABEL(label), str);
 	g_free(str);
 	

@@ -50,7 +50,7 @@
 */
 int tiemu_version(void)
 {
-	fprintf(stdout, "TiEmu III - Version %s\n", TIEMU_VERSION);
+	fprintf(stdout, "TiEmu 3 - Version %s\n", TIEMU_VERSION);
 	fprintf(stdout, "  (C) Romain Lievin & Thomas Corvazier  2000-2001\n");
 	fprintf(stdout, "  (C) Romain Lievin 2001-2003\n");
 	fprintf(stdout, "  (C) Julien Blache 2003\n");

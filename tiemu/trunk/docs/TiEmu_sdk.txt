@@ -1,7 +1,7 @@
 *****************************************************************
 * Notes about TiEmu SDK						*
 *								*
-* Last update: 05/12/2006					*
+* Last update: 2007-04-15					*
 *****************************************************************
 
 
@@ -12,11 +12,12 @@ The TiEmu SDK provides way to use TiEmu from an external application.
 It has been primarily developed for use by KTIGCC & TIGCC-IDE.
 
 At the time being:
-- Win32 users can use an OLE Automation object,
-- Linux users can use a DCOP object.
+- Win32 users can use an OLE Automation object (since 2.81c/20061030),
+- Linux users can use a DCOP object (since 2.81/20060524).
 
-In order to improve portability and make our work easier, an D-BUS
-interface should be coming soon...
+A D-Bus interface for use with KTIGCC 2 is also available (since
+2.81c/20061030), but not compiled by default, you can enable it with the
+--enable-dbus configure option. (That option is enabled in the Fedora RPM.)
 
 
 How to use it?
@@ -34,7 +35,7 @@ sdk
 Entry points
 ------------
 
-As of TiEmu 2.81c, TiEmu provides the following calls:
+TiEmu currently provides the following calls:
 
 - image_loaded			return TRUE if an image has been loaded
 - emulated_calc_type		return emulated calculator type (1) if image loaded

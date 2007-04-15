@@ -4,5 +4,5 @@
  * DO NOT compile it as part of your application.
  */
 
-gchar *s = N_("TiEmu II");
+gchar *s = N_("TiEmu 3");
 gchar *s = N_("Use mouse or press a key.");

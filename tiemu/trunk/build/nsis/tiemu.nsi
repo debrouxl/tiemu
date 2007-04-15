@@ -2,18 +2,12 @@
 
 ; Other definitions
 !define UPXDIR "E:\UPX"
-!define MSYSDIR "e:\mingw32\msys\bin"
 !define GTK_MIN_VER "2.6.10"
 !define GTK_PKG_VER "-rc1"
-; This hack is there because ${__DATE__} uses a format dependent on the locale of the build
-; machine, which is a bad idea.
-!system '"${MSYSDIR}\sh" "--login" "-c" "echo !define DATEYYYYMMDD \$\'`date +%%Y%%m%%d`\$\'" > date.nsh"'
-!include date.nsh
-!system "del date.nsh"
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "TiEmu"
-!define PRODUCT_VERSION "2.81 ${DATEYYYYMMDD}"
+!define PRODUCT_VERSION "3.00"
 !define PRODUCT_PUBLISHER "The TiEmu Team"
 !define PRODUCT_WEB_SITE "http://lpg.ticalc.org/prj_tiemu/index.html"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"

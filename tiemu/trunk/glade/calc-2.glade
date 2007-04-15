@@ -5,7 +5,7 @@
 
 <widget class="GtkWindow" id="calc_wnd">
   <property name="events">GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_VISIBILITY_NOTIFY_MASK</property>
-  <property name="title" translatable="yes">TiEmu II</property>
+  <property name="title" translatable="yes">TiEmu 3</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>

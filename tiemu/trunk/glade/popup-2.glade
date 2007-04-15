@@ -11,8 +11,8 @@
   <child>
     <widget class="GtkCheckMenuItem" id="popup_menu_header">
       <property name="visible">True</property>
-      <property name="tooltip" translatable="yes">Welcome to TiEmu III</property>
-      <property name="label" translatable="yes">TiEmu III menu (v2.80)</property>
+      <property name="tooltip" translatable="yes">Welcome to TiEmu 3</property>
+      <property name="label" translatable="yes">TiEmu 3 menu (v3.00)</property>
       <property name="use_underline">True</property>
       <property name="active">False</property>
       <signal name="activate" handler="on_popup_menu_header"/>

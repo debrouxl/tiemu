@@ -516,11 +516,11 @@ void rcfile_write(void)
 		return;
 	}
 
-	fprintf(txt, "# Config file for TiEmu II\n");
-	fprintf(txt, "  (C) Romain Lievin & Thomas Corvazier  2000-2001\n");
-	fprintf(txt, "  (C) Romain Lievin 2001-2003\n");
-	fprintf(txt, "  (C) Julien Blache 2003\n");
-	fprintf(txt, "  (C) Romain Liévin 2004-2005\n");
+	fprintf(txt, "# Config file for TiEmu 3\n");
+	fprintf(txt, "# (C) Romain Lievin & Thomas Corvazier  2000-2001\n");
+	fprintf(txt, "# (C) Romain Lievin 2001-2003\n");
+	fprintf(txt, "# (C) Julien Blache 2003\n");
+	fprintf(txt, "# (C) Romain Liévin 2004-2005\n");
 	fprintf(txt, "# Warning: any comments that you add to this file WILL be overwritten\n");
 	fprintf(txt, "\n");
 

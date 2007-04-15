@@ -5,7 +5,7 @@
  */
 
 gchar *s = N_("About TiEmu...");
-gchar *s = N_("* TiEmu II, version 2.00");
+gchar *s = N_("* TiEmu 3, version 3.00");
 gchar *s = N_("* Started from XTiger (Jonas Minsberg) and based on UAE,  the Universal Amiga Emulator (Bern Schmidt)");
 gchar *s = N_("* Supported platforms are:\n"
               "  - Linux: RL <roms@tilp.info> && KK <Kevin@tigcc.ticalc.org>\n"

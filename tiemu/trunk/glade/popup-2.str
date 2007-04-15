@@ -4,8 +4,8 @@
  * DO NOT compile it as part of your application.
  */
 
-gchar *s = N_("Welcome to TiEmu III");
-gchar *s = N_("TiEmu III menu (v2.80)");
+gchar *s = N_("Welcome to TiEmu 3");
+gchar *s = N_("TiEmu 3 menu (v3.00)");
 gchar *s = N_("Send the selected file to the emulator. This file can be of any type (single, group, backup, FLASH app or FLASH OS).");
 gchar *s = N_("_Send file to TiEmu...");
 gchar *s = N_("_Debug file with TiEmu...");

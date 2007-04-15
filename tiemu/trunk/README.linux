@@ -12,7 +12,7 @@ REQUIREMENTS
  - X11 (X Window System)
  - GTK+ 2.6 from <http://www.gtk.org>
  - ticables2, tifiles2 and ticalcs2 libraries from the 
-	TiLP-II project <http://tilp.info>
+	TiLP 2 project <http://tilp.info>
 
 
 INSTALLATION

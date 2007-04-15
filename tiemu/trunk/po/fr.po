@@ -724,8 +724,8 @@ msgstr ""
 #~ msgid "About TiEmu..."
 #~ msgstr "A propos de TiEmu..."
 
-#~ msgid "* TiEmu II, version 2.00"
-#~ msgstr "* TiEmu II, version 2.00"
+#~ msgid "* TiEmu 3, version 3.00"
+#~ msgstr "* TiEmu 3, version 3.00"
 
 #~ msgid ""
 #~ "* Started from XTiger (Jonas Minsberg) and based on UAE,  the Universal "
@@ -776,8 +776,8 @@ msgstr ""
 #~ msgid "Li_cense"
 #~ msgstr "Li_cense"
 
-#~ msgid "TiEmu II"
-#~ msgstr "TiEmu III"
+#~ msgid "TiEmu 3"
+#~ msgstr "TiEmu 3"
 
 #~ msgid "Use mouse or press a key."
 #~ msgstr "Utiliser la souris ou presser une touche."
@@ -1324,8 +1324,8 @@ msgstr ""
 #~ msgid "ROM type:"
 #~ msgstr "Type ROM:"
 
-#~ msgid "TiEmu v2.00"
-#~ msgstr "TiEmu v2.00"
+#~ msgid "TiEmu v3.00"
+#~ msgstr "TiEmu v3.00"
 
 #~ msgid "Default TI-92"
 #~ msgstr "Par défaut"
@@ -1419,11 +1419,11 @@ msgstr ""
 #~ msgid "Title 5"
 #~ msgstr "Titre 5"
 
-#~ msgid "Welcome to TiEmu III"
+#~ msgid "Welcome to TiEmu 3"
 #~ msgstr "Bienvenue sur TiEmu"
 
-#~ msgid "TiEmu III menu (v2.80)"
-#~ msgstr "Menu TiEMu (v2.80)"
+#~ msgid "TiEmu 3 menu (v3.00)"
+#~ msgstr "Menu TiEMu (v3.00)"
 
 #~ msgid ""
 #~ "Send the selected file to the emulator. This file can be of any type "

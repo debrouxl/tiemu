@@ -1,9 +1,9 @@
-TiEmu 3 (development version 2.81)
+TiEmu 3 (version 3.00)
  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
 Licensed under the GNU General Public License.
 
 1. Installed components
@@ -50,7 +50,7 @@ http://lpg.ticalc.org/prj_usb
 This driver is NOT compatible with the driver used by TI Connect, installing it
 will replace TI's driver. In order to use TI Connect, you'll have to uninstall
 the LPG driver and reinstall TI's driver. As an alternative, we suggest using
-TiLP (TiLP I >= 6.72 or TiLP II) which uses our (LPG) driver.
+TiLP (TiLP 1 >= 6.72 or TiLP 2) which uses our (LPG) driver.
 
 3. GTK+ Troubleshooting
 
