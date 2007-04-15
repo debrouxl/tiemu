@@ -164,13 +164,13 @@ Root: HKCR; Subkey: ".sav"; ValueType: string; ValueName: ""; ValueData: "TiEmu.
 Root: HKCR; Subkey: "TiEmu.Sav"; ValueType: string; ValueName: ""; ValueData: "TiEmu state";
 Root: HKCR; Subkey: "TiEmu.Sav\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.exe,0"
 Root: HKCR; Subkey: "TiEmu.Sav\shell\open";  ValueType: string; ValueData: "Open with &TiEmu";
-Root: HKCR; Subkey: "TiEmu.Sav\shell\open\command"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.exe ""%1""";
+Root: HKCR; Subkey: "TiEmu.Sav\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\tiemu.exe"" ""%1""";
 
 Root: HKCR; Subkey: ".rom"; ValueType: string; ValueName: ""; ValueData: "TiEmu.Rom";
 Root: HKCR; Subkey: "TiEmu.Rom"; ValueType: string; ValueName: ""; ValueData: "Rom Dump";
 Root: HKCR; Subkey: "TiEmu.Rom\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\romdump.ico";
 Root: HKCR; Subkey: "TiEmu.Rom\shell\open";  ValueType: string; ValueData: "Open with &TiEmu";
-Root: HKCR; Subkey: "TiEmu.Rom\shell\open\command"; ValueType: string; ValueName: ""; ValueData: "{app}\tiemu.exe ""%1""";
+Root: HKCR; Subkey: "TiEmu.Rom\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\tiemu.exe"" ""%1""";
 
 [UninstallDelete]
 Type: files; Name: "{app}\tiemu.url"
