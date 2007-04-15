@@ -520,7 +520,7 @@
 	  <child>
 	    <widget class="GtkImageMenuItem" id="help1">
 	      <property name="visible">True</property>
-	      <property name="tooltip" translatable="yes">Open the TiEMu user's manual in a browser.</property>
+	      <property name="tooltip" translatable="yes">Open the TiEmu user's manual in a browser.</property>
 	      <property name="label" translatable="yes">_User's Manual</property>
 	      <property name="use_underline">True</property>
 	      <signal name="activate" handler="on_help1_activate" last_modification_time="Fri, 14 May 2004 15:30:18 GMT"/>

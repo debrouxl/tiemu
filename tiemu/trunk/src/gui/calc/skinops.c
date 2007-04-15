@@ -432,7 +432,7 @@ int skin_read_image(SKIN_INFOS *si, const char *filename)
    	return 0;
 }
 
-/* Load a skin (TiEMu v2.00 only) */
+/* Load a skin (TiEmu v2.00 only) */
 int skin_load(SKIN_INFOS *si, const char *filename)
 {
   	int ret = 0;

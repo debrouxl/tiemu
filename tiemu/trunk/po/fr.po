@@ -1423,7 +1423,7 @@ msgstr ""
 #~ msgstr "Bienvenue sur TiEmu"
 
 #~ msgid "TiEmu 3 menu (v3.00)"
-#~ msgstr "Menu TiEMu (v3.00)"
+#~ msgstr "Menu TiEmu (v3.00)"
 
 #~ msgid ""
 #~ "Send the selected file to the emulator. This file can be of any type "
@@ -1613,7 +1613,7 @@ msgstr ""
 #~ msgid "Misc"
 #~ msgstr "Divers"
 
-#~ msgid "Open the TiEMu user's manual in a browser."
+#~ msgid "Open the TiEmu user's manual in a browser."
 #~ msgstr "Ouvrir le manuel de l'utilisateur dans un navigateur."
 
 #~ msgid "_User's Manual"

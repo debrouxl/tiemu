@@ -482,7 +482,7 @@ on_bugreport1_activate				   (GtkMenuItem     *menuitem,
 {
 	GtkWidget *dialog;
 	const gchar *message =
-    "There are several ways to get in touch if you encounter a problem with TiEMu or if you have questions, suggestions, bug reports, etc:\n- if you have general questions or problems, please consider the users' mailing list first (http://tiemu-users@list.sf.net).\n- if you want to discuss about TiEmu, you can use the TiEmu forum (http://sourceforge.net/forum/?group_id=23169).\n- for bug reports, use the 'Bug Tracking System' (http://sourceforge.net/tracker/?group_id=23169).\n\nBefore e-mailing the TiEmu team, make sure you have read the manual and/or the FAQ....";
+    "There are several ways to get in touch if you encounter a problem with TiEmu or if you have questions, suggestions, bug reports, etc:\n- if you have general questions or problems, please consider the users' mailing list first (http://tiemu-users@list.sf.net).\n- if you want to discuss about TiEmu, you can use the TiEmu forum (http://sourceforge.net/forum/?group_id=23169).\n- for bug reports, use the 'Bug Tracking System' (http://sourceforge.net/tracker/?group_id=23169).\n\nBefore e-mailing the TiEmu team, make sure you have read the manual and/or the FAQ....";
   
 	dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
 				  GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
