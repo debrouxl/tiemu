@@ -334,7 +334,7 @@ x_libraries = @x_libraries@
 SUBDIRS = build glade help misc pedrom pixmaps po skins src \
 	$(am__append_1) $(am__append_2)
 dist_pkgdata_DATA = COPYING RELEASE AUTHORS LICENSES
-EXTRA_DIST = README.* TODO docs
+EXTRA_DIST = README.* TODO docs desktop
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -558,7 +558,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/. $(distdir)/src
+	$(mkdir_p) $(distdir)/. $(distdir)/po $(distdir)/src
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
