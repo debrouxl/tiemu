@@ -1,3 +1,64 @@
+3.00:
+* First "stable" release with TIGCC debugging support!
+* TiEmu 3.00 changes:
+	- [kevin] $2348: delete the temporary file instead of erroring if the user cancels the receive file dialog
+	- [kevin] $2349: fixed progress bar refresh referencing freed memory (#1529247)
+	- [roms]  $2350: send a group file as group, not as backup (bug #1529247)
+	- [kevin] $2356: imported Insight 6.6 and merged TiEmu changes
+	- [kevin] $2360: regenerated oleaut_i.c with WIDL again, this time fixing the include directives so it actually
+	                 compiles
+	- [roms]  $2363: added and enabled i18n support
+	- [roms]  $2368: replaced unused/deprecated printl system by GLib logging functions (part 1/2)
+	- [roms]  $2372: replaced any occurence of printl by a tiemu_warning() call (part 2/2)
+	- [kevin] $2389: don't use \n in the breakpoint window status bar
+	- [kevin] $2390: fixed default hardware version for Voyage 200
+	- [roms]  $2409: added KDE desktop files & associations
+	- [roms]  $2415: allow to load saved states by DnD
+	- [roms]  $2417: allow to directly load ROM/TIB/SAV files from command line; maintained compatibility with older switches
+	- [roms]  $2420: fixed bug introduced in $2417
+	- [roms]  $2421: fixed double-free when DnD files to send
+	- [kevin] $2422: fixed errors (wrong case) in ROM_CALL list and added 2 new entries from TIGCC
+	- [kevin] $2424: don't disassemble instructions invalid for the 68000
+	- [kevin] $2425: fixed handling of 4-byte F-Line jumps
+	- [roms]  $2431: added memory map menu to the memory window
+	- [roms]  $2434: added key press recording/playing
+	- [kevin] $2451: fixed aliasing violations in Win32 file dialog code
+* libticonv 1.0.2 changes (kevin):
+	- fixed sed invocation in makefile for NetBSD (patch by Jukka Salmi)
+* libticables2 1.0.5 changes (roms):
+	- enabled i18n
+	- support NetBSD serial port device names (Jukka Salmi)
+	- cosmetic change in the name of the TiEmu virtual link
+	- fixed bug #1676861: VTi link failed due to library name (major)
+* libtifiles2 1.0.5 changes (roms):
+	- fixed tifiles_file_test (some copy&paste errors)
+	- added missing type (TI83_ASM)
+	- implemented matching check for TiGroup in tifiles_file_test
+	- enabled i18n
+	- requires glib >= 2.6.0 rather than 2.4.0 because libticonv requires
+	  it anyway (kevin)
+* libticalcs2 1.0.6 changes (roms):
+	- fixed "Conditional jump or move depends on uninitialised value(s)" bug (kevin)
+	- fixed remote keys for TI84+/USB (little-endian)
+	- added a new CalcFncts function entry: can execute a program remotely
+	- added/fixed arrays for TI73,TI83+ and TI86 keys (needed by remote exec)
+	- fixed bug #1657175: small program (309 bytes) are rejected by D-USB because too
+		small. Ti-Connect re-negotiate packet size to a smaller value before sending
+		variable contents.
+	- enabled i18n
+	- fixed TiEmu bug #1675675 / TiLP bug #1676133
+	- wrong battery status (debug)
+	- no clock in TI83+ (SE); no clock in TI84+, too (not handled yet)
+* The TiLP 2 Fedora RPM is no longer distributed together with TiEmu, it can be
+  obtained from: http://repo.calcforge.org/
+  The TiEmu and tilibs RPMs are also available in that repository.
+* Fedora RPM changes:
+	- The RPMs now use the actual version numbers instead of dates. A
+	  so-called "Epoch" has been added so RPM knows these packages are newer
+	  than the ones with the date.
+	- The RPMs are now less picky about the versions of the dependencies.
+	- The RPMs and SRPMs are now signed with the RPM-GPG-KEY-calcforge key.
+
 20070207:
 * TiEmu 3 changes:
 	- [kevin] $2264: use kde-config to locate KDE instead of hardcoded directories which were missing /usr/lib64
