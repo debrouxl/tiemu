@@ -13,6 +13,7 @@ SubVersion: $Id$
 	- [kevin] $2425: fixed handling of 4-byte F-Line jumps
 	- [roms]  $2431: added memory map menu to the memory window
 	- [roms]  $2434: added key press recording/playing
+	- [kevin] $2451: fixed aliasing violations in Win32 file dialog code
 
 - ??/??/2007, version 2.81e
 	- [kevin] $2348: delete the temporary file instead of erroring if the user cancels the receive file dialog
