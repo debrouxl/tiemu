@@ -2,22 +2,20 @@
 %define version %(date +%%Y%%m%%d)
 %define release 1
 
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
-Vendor:		LPG (http://lpg.ticalc.org)
-Packager:	Kevin Kofler <Kevin@tigcc.ticalc.org>
-Source:         %{name}-%{version}.tar.bz2
-Group:		Applications/Emulators
-License:	GPL
-BuildRequires:	libticables2-devel = %{version}, libticonv-devel = %{version}, libtifiles2-devel = %{version}, libticalcs2-devel = %{version}, glib2-devel >= 2.10.1, gtk2-devel >= 2.8.15, libglade2-devel >= 2.5.1, zlib-devel >= 1.2.3, kdelibs-devel >= 6:3.5.1, libX11-devel >= 1.0.0, libXext-devel >= 1.0.0, ncurses-devel >= 5.5, desktop-file-utils >= 0.10, bison >= 2.0, flex = 2.5.4a, texinfo >= 4.8, dbus-devel >= 0.60, dbus-glib-devel >= 0.60
-Requires:	libticables2 = %{version}, libticonv = %{version}, libtifiles2 = %{version}, libticalcs2 = %{version}, glib2 >= 2.10.1, gtk2 >= 2.8.15, libglade2 >= 2.5.1, zlib >= 1.2.3, kdelibs >= 6:3.5.1, libX11 >= 1.0.0, libXext >= 1.0.0, ncurses >= 5.5, tcl >= 8.4, tk >= 8.4, itcl >= 3.3, itk >= 3.3, iwidgets >= 4.0.1, dbus-glib >= 0.60, xdg-utils >= 1.0.0
-Requires(post):	desktop-file-utils >= 0.10
-Requires(postun): desktop-file-utils >= 0.10
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Obsoletes:	tiemu < 3.00, tiemu-tigcc-debugging < 20050828
-Conflicts:	tiemu >= 3.00
-Provides:	tiemu = ${version}
+Name: %{name}
+Version: %{version}
+Release: %{release}
+Vendor: LPG (http://lpg.ticalc.org)
+Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
+Source: %{name}-%{version}.tar.bz2
+Group: Applications/Emulators
+License: GPL
+BuildRequires: libticables2-devel = %{version}, libticonv-devel = %{version}, libtifiles2-devel = %{version}, libticalcs2-devel = %{version}, glib2-devel >= 2.6.0, gtk2-devel >= 2.6.0, libglade2-devel >= 2.4.0, zlib-devel, kdelibs-devel, libX11-devel, libXext-devel, ncurses-devel, desktop-file-utils >= 0.10, bison >= 1.28, flex >= 2.5.4, texinfo >= 4.4, dbus-devel >= 0.60, dbus-glib-devel >= 0.60
+Requires: tcl >= 8.4, tk >= 8.4, itcl >= 3.3, itk >= 3.3, iwidgets >= 4.0.1, xdg-utils >= 1.0.0
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Obsoletes: tiemu < 3.00, tiemu-tigcc-debugging < 20050828
+Conflicts: tiemu >= 3.00
+Provides: tiemu = ${version}
 Summary: TiEmu is a TI89(Ti)/92(+)/V200 emulator
 %description
 TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debugging using Insight GDB.
@@ -78,6 +76,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/lpg-tiemu.desktop
 
 %changelog
+* Mon Apr 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Remove redundant explicit Requires.
+Don't BuildRequire newer versions than actually needed.
+Don't force flex = 2.5.4a, newer versions appear to be supposed to work.
+Don't require desktop-file-utils for post and postun (not needed in FC5+).
+
 * Wed Feb 7 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Require xdg-utils.
 Fix paths for itcl version hacks.

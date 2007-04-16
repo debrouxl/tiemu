@@ -10,8 +10,7 @@ Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
 Group: System Environment/Libraries
 License: GPL
-BuildRequires: libusb-devel >= 0.1.10a, glib2-devel >= 2.10.1
-Requires: libusb >= 0.1.10a, glib2 >= 2.10.1
+BuildRequires: libusb-devel, glib2-devel >= 2.4.0
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Summary: Library for handling TI link cables
 %description
@@ -22,7 +21,7 @@ Summary: Development files for %{name}
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
 Requires: pkgconfig
-Requires: glib2-devel >= 2.10.1
+Requires: glib2-devel >= 2.4.0
 %description devel
 This package contains the files necessary to develop
 applications using the %{name} library.
@@ -83,6 +82,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/ticables2.pc
 
 %changelog
+* Mon Apr 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Remove redundant explicit Requires.
+Don't BuildRequire newer versions than actually needed.
+
 * Sun Oct 15 2006 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Add non-SE TI-84+ to the pam_console configuration.
 
