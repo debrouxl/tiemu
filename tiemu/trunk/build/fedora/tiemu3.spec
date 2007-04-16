@@ -7,7 +7,7 @@ Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
 Group: Applications/Emulators
 License: GPL
-BuildRequires: libticables2-devel >= 1:1.0.0, libticonv-devel >= 1:1.0.0, libtifiles2-devel >= 1:1.0.3, libticalcs2-devel >= 1:1.0.0, glib2-devel >= 2.6.0, gtk2-devel >= 2.6.0, libglade2-devel >= 2.4.0, zlib-devel, kdelibs-devel, libX11-devel, libXext-devel, ncurses-devel, desktop-file-utils >= 0.10, bison >= 1.28, flex >= 2.5.4, texinfo >= 4.4, dbus-devel >= 0.60, dbus-glib-devel >= 0.60
+BuildRequires: libticables2-devel >= 1:1.0.0, libticonv-devel >= 1:1.0.0, libtifiles2-devel >= 1:1.0.3, libticalcs2-devel >= 1:1.0.0, glib2-devel >= 2.6.0, gtk2-devel >= 2.6.0, libglade2-devel >= 2.4.0, zlib-devel, kdelibs-devel >= 6:3.0, libX11-devel, libXext-devel, ncurses-devel, desktop-file-utils >= 0.10, bison >= 1.28, flex >= 2.5.4, texinfo >= 4.4, dbus-devel >= 0.60, dbus-glib-devel >= 0.60
 Requires: tcl >= 8.4, tk >= 8.4, itcl >= 3.3, itk >= 3.3, iwidgets >= 4.0.1, xdg-utils >= 1.0.0
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes: tiemu < %{version}, tiemu-tigcc-debugging < 20050828
