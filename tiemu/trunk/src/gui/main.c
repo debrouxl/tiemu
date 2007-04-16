@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -172,7 +172,7 @@ int main(int argc, char **argv)
 
 #if WITH_KDE
     splash_screen_set_label(_("Initializing KDE..."));
-    sp_kde_init(argc, argv, "tiemu", _("TiEmu"), VERSION, _("TI calculator emulator"), "Copyright (c) 2000, Thomas Corvazier, Romain Lievin\nCopyright (c) 2001-2002, Romain Lievin, Julien Blache\nCopyright (c) 2003-2004, Romain Lievin\nCopyright (c) 2005-2006, Romain Lievin, Kevin Kofler", "http://lpg.ticalc.org/prj_tiemu/", "gtktiemu-users@lists.sf.net");
+    sp_kde_init(argc, argv, "tiemu", _("TiEmu"), VERSION, _("TI calculator emulator"), "Copyright (c) 2000, Thomas Corvazier, Romain Lievin\nCopyright (c) 2001-2002, Romain Lievin, Julien Blache\nCopyright (c) 2003-2004, Romain Lievin\nCopyright (c) 2005-2007, Romain Lievin, Kevin Kofler", "http://lpg.ticalc.org/prj_tiemu/", "gtktiemu-users@lists.sf.net");
     atexit(sp_kde_finish);
     g_timeout_add(26, sp_kde_process_qt_events, NULL);
 #endif

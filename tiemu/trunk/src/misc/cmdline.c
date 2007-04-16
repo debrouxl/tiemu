@@ -8,7 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
- *  Copyright (c) 2006, Kevin Kofler and Romain Liévin
+ *  Copyright (c) 2006-2007, Kevin Kofler and Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ int tiemu_version(void)
 	fprintf(stdout, "  (C) Romain Lievin 2001-2003\n");
 	fprintf(stdout, "  (C) Julien Blache 2003\n");
 	fprintf(stdout, "  (C) Romain Lievin 2004-2005\n");
-	fprintf(stdout, "  (C) Romain Lievin & Kevin Kofler 2005-2006\n");
+	fprintf(stdout, "  (C) Romain Lievin & Kevin Kofler 2005-2007\n");
 	fprintf(stdout, _("THIS PROGRAM COMES WITH ABSOLUTELY NO WARRANTY\n"));
 	fprintf(stdout, _("PLEASE READ THE DOCUMENTATION FOR DETAILS\n"));
 
