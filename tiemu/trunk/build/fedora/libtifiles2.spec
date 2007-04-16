@@ -1,16 +1,13 @@
-%define name libtifiles2
-%define version %(date +%%Y%%m%%d)
-%define release 1
-
-Name: %{name}
-Version: %{version}
-Release: %{release}
+Name: libtifiles2
+Epoch: 1
+Version: 1.0.5
+Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
 Group: System Environment/Libraries
 License: GPL
-BuildRequires: libticonv-devel = %{version}, zlib-devel, glib2-devel >= 2.6.0
+BuildRequires: libticonv-devel >= 1:0.0.5, zlib-devel, glib2-devel >= 2.6.0
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Summary: Ti File Format management
 %description
@@ -19,9 +16,9 @@ Ti File Format management
 %package devel
 Summary: Development files for %{name}
 Group: Development/Libraries
-Requires: %{name} = %{version}-%{release}
+Requires: %{name} = %{epoch}:%{version}-%{release}
 Requires: pkgconfig
-Requires: libticonv-devel = %{version}, glib2-devel >= 2.6.0
+Requires: libticonv-devel >= 1:0.0.5, glib2-devel >= 2.6.0
 %description devel
 This package contains the files necessary to develop
 applications using the %{name} library.
@@ -57,6 +54,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/tifiles2.pc
 
 %changelog
+* Mon Apr 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.5-1
+Bump Epoch.
+Use real version number instead of date.
+Also use real version numbers and Epoch 1 for the dependencies.
+
 * Mon Apr 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant explicit Requires.
 Don't BuildRequire newer versions than actually needed.

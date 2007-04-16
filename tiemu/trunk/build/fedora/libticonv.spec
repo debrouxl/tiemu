@@ -1,10 +1,7 @@
-%define name libticonv
-%define version %(date +%%Y%%m%%d)
-%define release 1
-
-Name: %{name}
-Version: %{version}
-Release: %{release}
+Name: libticonv
+Epoch: 1
+Version: 1.0.2
+Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
@@ -19,7 +16,7 @@ Library for handling TI link cables
 %package devel
 Summary: Development files for %{name}
 Group: Development/Libraries
-Requires: %{name} = %{version}-%{release}
+Requires: %{name} = %{epoch}:%{version}-%{release}
 Requires: pkgconfig
 Requires: glib2-devel >= 2.6.0
 %description devel
@@ -57,6 +54,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/ticonv.pc
 
 %changelog
+* Mon Apr 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.2-1
+Bump Epoch.
+Use real version number instead of date.
+
 * Mon Apr 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant explicit Requires.
 Don't BuildRequire newer versions than actually needed.

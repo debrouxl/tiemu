@@ -1,21 +1,18 @@
-%define name tiemu3
-%define version %(date +%%Y%%m%%d)
-%define release 1
-
-Name: %{name}
-Version: %{version}
-Release: %{release}
+Name: tiemu3
+Epoch: 1
+Version: 3.00
+Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
 Group: Applications/Emulators
 License: GPL
-BuildRequires: libticables2-devel = %{version}, libticonv-devel = %{version}, libtifiles2-devel = %{version}, libticalcs2-devel = %{version}, glib2-devel >= 2.6.0, gtk2-devel >= 2.6.0, libglade2-devel >= 2.4.0, zlib-devel, kdelibs-devel, libX11-devel, libXext-devel, ncurses-devel, desktop-file-utils >= 0.10, bison >= 1.28, flex >= 2.5.4, texinfo >= 4.4, dbus-devel >= 0.60, dbus-glib-devel >= 0.60
+BuildRequires: libticables2-devel >= 1:1.0.0, libticonv-devel >= 1:1.0.0, libtifiles2-devel >= 1:1.0.3, libticalcs2-devel >= 1:1.0.0, glib2-devel >= 2.6.0, gtk2-devel >= 2.6.0, libglade2-devel >= 2.4.0, zlib-devel, kdelibs-devel, libX11-devel, libXext-devel, ncurses-devel, desktop-file-utils >= 0.10, bison >= 1.28, flex >= 2.5.4, texinfo >= 4.4, dbus-devel >= 0.60, dbus-glib-devel >= 0.60
 Requires: tcl >= 8.4, tk >= 8.4, itcl >= 3.3, itk >= 3.3, iwidgets >= 4.0.1, xdg-utils >= 1.0.0
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Obsoletes: tiemu < 3.00, tiemu-tigcc-debugging < 20050828
-Conflicts: tiemu >= 3.00
-Provides: tiemu = ${version}
+Obsoletes: tiemu < %{version}, tiemu-tigcc-debugging < 20050828
+Conflicts: tiemu > %{version}
+Provides: tiemu = %{version}
 Summary: TiEmu is a TI89(Ti)/92(+)/V200 emulator
 %description
 TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debugging using Insight GDB.
@@ -76,6 +73,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/lpg-tiemu.desktop
 
 %changelog
+* Mon Apr 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:3.00-1
+Bump Epoch.
+Use real version number instead of date.
+Update Obsoletes, Provides and Conflicts.
+Also use real version numbers and Epoch 1 for the dependencies.
+
 * Mon Apr 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant explicit Requires.
 Don't BuildRequire newer versions than actually needed.

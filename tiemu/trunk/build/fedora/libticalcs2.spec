@@ -1,16 +1,13 @@
-%define name libticalcs2
-%define version %(date +%%Y%%m%%d)
-%define release 1
-
-Name: %{name}
-Version: %{version}
-Release: %{release}
+Name: libticalcs2
+Epoch: 1
+Version: 1.0.6
+Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
 Group: System Environment/Libraries
 License: GPL
-BuildRequires: libticables2-devel = %{version}, libticonv-devel = %{version}, libtifiles2-devel = %{version}, glib2-devel >= 2.6.0
+BuildRequires: libticables2-devel >= 1:1.0.4, libticonv-devel >= 1:0.0.3, libtifiles2-devel >= 1:1.0.4, glib2-devel >= 2.6.0
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Summary: Library for handling TI calculators through a common API
 %description
@@ -19,9 +16,9 @@ Library for handling TI calculators through a common API
 %package devel
 Summary: Development files for %{name}
 Group: Development/Libraries
-Requires: %{name} = %{version}-%{release}
+Requires: %{name} = %{epoch}:%{version}-%{release}
 Requires: pkgconfig
-Requires: libticables2-devel = %{version}, libticonv-devel = %{version}, libtifiles2-devel = %{version}, glib2-devel >= 2.6.0
+Requires: libticables2-devel >= 1:1.0.4, libticonv-devel >= 1:0.0.3, libtifiles2-devel >= 1:1.0.4, glib2-devel >= 2.6.0
 %description devel
 This package contains the files necessary to develop
 applications using the %{name} library.
@@ -57,6 +54,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/ticalcs2.pc
 
 %changelog
+* Mon Apr 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.6-1
+Bump Epoch.
+Use real version number instead of date.
+Also use real version numbers and Epoch 1 for the dependencies.
+
 * Mon Apr 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant explicit Requires.
 Don't BuildRequire newer versions than actually needed.

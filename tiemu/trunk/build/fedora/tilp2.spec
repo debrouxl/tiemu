@@ -1,16 +1,13 @@
-%define name	tilp2
-%define version %(date +%%Y%%m%%d)
-%define release 1
-
-Name: %{name}
-Version: %{version}
-Release: %{release}
+Name: tilp2
+Epoch: 1
+Version: 1.04
+Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
 Group: Applications/Communications
 License: GPL
-BuildRequires: libticables2-devel = %{version}, libticonv-devel = %{version}, libtifiles2-devel = %{version}, libticalcs2-devel = %{version}, glib2-devel >= 2.6.0, gtk2-devel >= 2.6.0, libglade2-devel >= 2.4.0, zlib-devel, kdelibs-devel, desktop-file-utils >= 0.10
+BuildRequires: libticables2-devel >= 1:1.0.4, libticonv-devel >= 1:1.0.0, libtifiles2-devel >= 1:1.0.4, libticalcs2-devel >= 1:1.0.5, glib2-devel >= 2.6.0, gtk2-devel >= 2.6.0, libglade2-devel >= 2.4.0, zlib-devel, kdelibs-devel, desktop-file-utils >= 0.10
 Requires: xdg-utils >= 1.0.0
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Summary: TiLP is a TI<->PC linking program
@@ -90,6 +87,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/mime/packages/tilp.xml
 
 %changelog
+* Mon Apr 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.04-1
+Bump Epoch.
+Use real version number instead of date.
+Also use real version numbers and Epoch 1 for the dependencies.
+
 * Mon Apr 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Remove redundant explicit Requires.
 Don't BuildRequire newer versions than actually needed.
