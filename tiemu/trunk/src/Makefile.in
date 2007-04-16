@@ -128,6 +128,7 @@ core_tisw_OBJ = \
 	core/ti_sw/er_codes.o \
 	core/ti_sw/handles.o	\
 	core/ti_sw/iodefs.o	\
+	core/ti_sw/mem_map.o	\
 	core/ti_sw/registers.o	\
 	core/ti_sw/romcalls.o	\
 	core/ti_sw/timem.o	\
@@ -164,6 +165,7 @@ gui_calc_OBJ = \
 	gui/calc/keymap.o	\
 	gui/calc/keyboard.o	\
 	gui/calc/keynames.o	\
+	gui/calc/keypress.o	\
 	gui/calc/popup.o	\
 	gui/calc/screen.o	\
 	gui/calc/skinkeys.o	\
