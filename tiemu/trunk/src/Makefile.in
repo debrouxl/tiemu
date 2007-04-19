@@ -35,10 +35,6 @@ else
 	EXEEXT =
 endif
 
-ifneq (,$(findstring __LINUX__,$(CFLAGS)))
-	LDFLAGS += -Wl,--export-dynamic
-endif
-
 INSTALL         = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA    = @INSTALL_DATA@
