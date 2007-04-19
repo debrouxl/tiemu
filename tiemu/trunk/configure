@@ -29965,9 +29965,11 @@ case $host in
   *-*-mingw*)            ARCH="-D__WIN32__ -D__MINGW32__ -mwindows -D_WINDOWS" ;;
   *-*-*bsd*)             ARCH="-D__BSD__" ;;
   i[3456]86-*-linux-*) ARCH="-D__I386__ -D__LINUX__" ;;
+  i[3456]86-apple-darwin*) ARCH="-D__I386__ -D__MACOSX__" ;;
   arm*-*-linux-*)        ARCH="-D__IPAQ__ -D__LINUX__" ;;
   powerpc-*-linux-*)     ARCH="-D__PPC__  -D__LINUX__" ;;
   powerpc-apple-darwin*) ARCH="-D__PPC__  -D__MACOSX__" ;;
+  *-apple-darwin*)       ARCH="-D__MACOSX__" ;;
   *)                     ARCH="-D__LINUX__" ;;
 esac
 CFLAGS="$CFLAGS $ARCH"
@@ -35495,7 +35497,7 @@ for i in $jpeg_incdirs;
 do
   for j in jpeglib.h;
   do
-    echo "configure: 35498: $i/$j" >&5
+    echo "configure: 35500: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       jpeg_incdir=$i
@@ -35730,7 +35732,7 @@ for i in $qt_incdirs;
 do
   for j in $kde_qt_header;
   do
-    echo "configure: 35733: $i/$j" >&5
+    echo "configure: 35735: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       qt_incdir=$i
@@ -36526,7 +36528,7 @@ for i in $kde_incdirs;
 do
   for j in $kde_check_header;
   do
-    echo "configure: 36529: $i/$j" >&5
+    echo "configure: 36531: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       kde_incdir=$i
@@ -36555,7 +36557,7 @@ for i in $kde_libdirs;
 do
   for j in $kde_check_lib;
   do
-    echo "configure: 36558: $i/$j" >&5
+    echo "configure: 36560: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       kde_libdir=$i

@@ -130,9 +130,11 @@ case $host in
   *-*-mingw*)            ARCH="-D__WIN32__ -D__MINGW32__ -mwindows -D_WINDOWS" ;;
   *-*-*bsd*)             ARCH="-D__BSD__" ;;
   i[[3456]]86-*-linux-*) ARCH="-D__I386__ -D__LINUX__" ;; 
+  i[[3456]]86-apple-darwin*) ARCH="-D__I386__ -D__MACOSX__" ;;
   arm*-*-linux-*)        ARCH="-D__IPAQ__ -D__LINUX__" ;;
   powerpc-*-linux-*)     ARCH="-D__PPC__  -D__LINUX__" ;;
   powerpc-apple-darwin*) ARCH="-D__PPC__  -D__MACOSX__" ;;
+  *-apple-darwin*)       ARCH="-D__MACOSX__" ;;
   *)                     ARCH="-D__LINUX__" ;;
 esac
 CFLAGS="$CFLAGS $ARCH"
