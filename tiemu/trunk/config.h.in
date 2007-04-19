@@ -9,7 +9,7 @@
 #undef C_ALLOCA
 
 /* Define to 1 if translation of program messages to the user's native
-   language is requested. */
+   language is requested. */
 #undef ENABLE_NLS
 
 /* Define to 1 if you have `alloca', as a function or macro. */
@@ -27,6 +27,9 @@
 
 /* Define to 1 if you have the `bzero' function. */
 #undef HAVE_BZERO
+
+/* Define to 1 if you have the <Carbon/Carbon.h> header file. */
+#undef HAVE_CARBON_CARBON_H
 
 /* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
    CoreFoundation framework. */
@@ -111,7 +114,7 @@
 /* Define if <inttypes.h> exists and doesn't clash with <sys/types.h>. */
 #undef HAVE_INTTYPES_H
 
-/* Define if <inttypes.h> exists, doesn't clash with <sys/types.h>, and
+/* Define if <inttypes.h> exists, doesn't clash with <sys/types.h>, and
    declares uintmax_t. */
 #undef HAVE_INTTYPES_H_WITH_UINTMAX
 
@@ -213,8 +216,8 @@
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
 
-/* Define if <stdint.h> exists, doesn't clash with <sys/types.h>, and
-   declares uintmax_t. */
+/* Define if <stdint.h> exists, doesn't clash with <sys/types.h>, and declares
+   uintmax_t. */
 #undef HAVE_STDINT_H_WITH_UINTMAX
 
 /* Define to 1 if you have the <stdlib.h> header file. */
@@ -303,9 +306,6 @@
 
 /* Define to 1 if the system has the type `_Bool'. */
 #undef HAVE__BOOL
-
-/* Define to 1 if you have the `\' function. */
-#undef HAVE___
 
 /* Define to 1 if you have the `__argz_count' function. */
 #undef HAVE___ARGZ_COUNT
@@ -426,7 +426,7 @@
 /* Define the real type of socklen_t */
 #undef socklen_t
 
-/* Define to unsigned long or unsigned long long if <stdint.h> and
+/* Define to unsigned long or unsigned long long if <stdint.h> and
    <inttypes.h> don't define. */
 #undef uintmax_t
 

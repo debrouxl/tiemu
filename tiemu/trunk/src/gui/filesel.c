@@ -9,6 +9,9 @@
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
+ *  Carbon file dialog code lifted from Systool (LGPL):
+ *  Copyright (c) 2006 Asger Ottar Alstrup, Nicolas Cannasse, Edwin van Rijkom
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -51,6 +54,10 @@
 #endif
 #endif
 
+#ifdef HAVE_CARBON_CARBON_H
+#include <Carbon/Carbon.h>
+#endif
+
 #if WITH_KDE
 #include "kde.h"
 #endif
@@ -59,6 +66,83 @@
 #include "filesel.h"
 #include "refresh.h"
 #include "struct.h"
+
+#ifdef HAVE_CARBON_CARBON_H
+/* Helpers */
+#define PATH_SIZE 2048
+
+static OSStatus GetFSRefFromAEDesc( FSRef *fsRef, AEDesc* theItem ) {
+        OSStatus err = noErr;
+        AEDesc coerceDesc= { 0, NULL };
+        if ( theItem->descriptorType != typeFSRef )     {
+                err = AECoerceDesc( theItem, typeFSRef, &coerceDesc );
+                if ( err == noErr )
+                theItem = &coerceDesc;
+        }
+        if ( err == noErr )
+        err = AEGetDescData( theItem, fsRef, sizeof(*fsRef) );
+        AEDisposeDesc( &coerceDesc );
+
+        if ( err != noErr )     {
+                FSSpec fsSpec;
+                AEDesc coerceDesc2 = {0, NULL};
+                if ( theItem->descriptorType != typeFSS ) {
+                        err = AECoerceDesc( theItem, typeFSS, &coerceDesc2 );
+                        theItem = &coerceDesc2;
+                }
+                if ( err == noErr )
+                err = AEGetDescData( theItem, &fsSpec, sizeof(fsSpec) );
+                AEDisposeDesc( &coerceDesc2 );
+                if ( err == noErr )
+                err = FSpMakeFSRef( &fsSpec, fsRef );
+        }
+        return(err);
+}
+
+static Boolean filterProc(AEDesc * theItem, void * info, void * callBackUD, NavFilterModes filterMode) {
+        const gchar **filters = (const gchar **) callBackUD;
+        if (!filters)
+                return 1;
+
+        NavFileOrFolderInfo *i = (NavFileOrFolderInfo*) info;
+        if (i->isFolder)
+                return 1;
+
+        if (theItem->descriptorType==typeFSRef) {
+                FSRef f;
+                UInt8 path[PATH_SIZE];
+
+                GetFSRefFromAEDesc(&f,theItem);
+                if (FSRefMakePath (&f,path,PATH_SIZE)==noErr) {
+                        char *ext = NULL;
+                        char *next = (char*) path;
+                        while(next) {
+                                next = strchr(next,'.');
+                                if (next)
+                                        ext = ++next;
+                        }
+                        if(ext) {
+                                while(*filters) {
+                                        const gchar *filter=*(filters++);
+                                        if (*(filter++)=='*' && *filter=='.') {
+                                                next = ext;
+                                                while (*(++filter)) {
+                                                        if (!*next) break;
+                                                        if (*filter=='?') {
+                                                                next++;
+                                                        } else if (*filter!=*(next++)) break;
+                                                }
+                                                if (!*filter && !*next)
+                                                        return 1;
+                                        }
+                                }
+                        }
+                }
+                return 0;
+        }
+        return 1;
+}
+#endif
 
 /* Single file selectors */
 
@@ -188,7 +272,7 @@ static const gchar* create_fsel_2(gchar *dirname, gchar *filename, gchar *ext, g
 // WIN32
 static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
-#ifdef WIN32
+#if defined(__WIN32__)
 	OPENFILENAME_MAYALIAS o;
 	char lpstrFile[2048] = "\0";
 	char lpstrFilter[512];
@@ -280,7 +364,7 @@ static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, g
 		if(!(have_widechar ? GetSaveFileNameW((OPENFILENAMEW *)&o) : GetSaveFileName((OPENFILENAME *)&o)))
 		{
 			g_free(sdirname);
-			return filename = NULL;
+			return fname = NULL;
 		}
 	}
 	else
@@ -288,7 +372,7 @@ static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, g
 		if(!(have_widechar ? GetOpenFileNameW((OPENFILENAMEW *)&o) : GetOpenFileName((OPENFILENAME *)&o)))
 		{
 			g_free(sdirname);
-			return filename = NULL;
+			return fname = NULL;
 		}
 	}
 
@@ -299,6 +383,50 @@ static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, g
 	else
 		fname = g_locale_to_utf8(lpstrFile,-1,NULL,NULL,NULL);
 	return fname;
+#elif defined(HAVE_CARBON_CARBON_H)
+        NavDialogRef ref;
+        NavDialogCreationOptions opt;
+        OSStatus ret;
+        gchar **sarray=NULL;
+
+        fname = NULL;
+        NavGetDefaultDialogCreationOptions(&opt);
+        opt.clientName = CFStringCreateWithCString(NULL,"TiEmu",kCFStringEncodingUTF8);
+        opt.modality = kWindowModalityAppModal;
+        opt.optionFlags = kNavDefaultNavDlogOptions | kNavAllFilesInPopup;
+
+        if (save) {
+                ret = NavCreatePutFileDialog(&opt,0,kNavGenericSignature,NULL,NULL,&ref);
+        } else {
+                sarray = g_strsplit(sext, ";", -1);
+                ret = NavCreateChooseFileDialog(&opt,NULL,NULL,NULL,filterProc,sarray,&ref);
+        }
+        if (ret == noErr) {
+                if (NavDialogRun(ref) == noErr) {
+                        if (NavDialogGetUserAction(ref) == save?kNavUserActionSaveAs:kNavUserActionChoose) {
+                                NavReplyRecord reply;
+                                if (NavDialogGetReply(ref,&reply)  == kNavNormalState) {
+                                        FSRef fsref;
+                                        fname = g_malloc(PATH_SIZE);
+                                        memset(fname,0,PATH_SIZE);
+                                        GetFSRefFromAEDesc(&fsref,&reply.selection);
+                                        if (FSRefMakePath (&fsref,(UInt8*)fname,PATH_SIZE-1)==noErr) {
+                                                if (save) {
+                                                        strcat(fname,"/");
+                                                        CFStringGetCString(reply.saveFileName,fname+strlen(fname),PATH_SIZE-strlen(fname),kCFStringEncodingUTF8);
+                                                }
+                                        } else {
+                                                g_free(fname);
+                                                fname = NULL;
+                                        }
+                                        NavDisposeReply(&reply);
+                                }
+                        }
+                }
+                NavDialogDispose(ref);
+        }
+        if (!save) g_strfreev(sarray);
+        return fname;
 #endif
 
 	return NULL;
@@ -333,7 +461,7 @@ static const gchar* create_fsel_4(gchar *dirname, gchar *filename, gchar *ext, g
 // Front-end
 const gchar *create_fsel(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
-#ifndef __WIN32__
+#if !defined(__WIN32__) && !defined(HAVE_CARBON_CARBON_H)
 	if(options.fs_type == 2)
 	{
 #if WITH_KDE
@@ -502,7 +630,7 @@ static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext)
 // WIN32
 static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
 {
-#ifdef WIN32
+#if defined(__WIN32__)
 	OPENFILENAME_MAYALIAS o;
 	char lpstrFile[2048] = "\0";
 	char lpstrFilter[512];
@@ -636,6 +764,52 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
 	g_free(sdirname);
 
 	return filenames;
+#elif defined(HAVE_CARBON_CARBON_H)
+        NavDialogRef ref;
+        NavDialogCreationOptions opt;
+        gchar **sarray;
+
+        filenames = NULL;
+        NavGetDefaultDialogCreationOptions(&opt);
+        opt.clientName = CFStringCreateWithCString(NULL,"TiEmu",kCFStringEncodingUTF8);
+        opt.modality = kWindowModalityAppModal;
+        opt.optionFlags = kNavDefaultNavDlogOptions | kNavAllFilesInPopup;
+
+        sarray = g_strsplit(sext, ";", -1);
+        if (NavCreateGetFileDialog(&opt,NULL,NULL,NULL,filterProc,sarray,&ref) == noErr) {
+
+                if (NavDialogRun(ref) == noErr) {
+                        if (NavDialogGetUserAction(ref)==kNavUserActionOpen) {
+                                NavReplyRecord reply;
+                                if (NavDialogGetReply(ref,&reply) == kNavNormalState) {
+                                        long count;
+                                        AEKeyword keyword;
+                                        DescType type;
+                                        Size size;
+
+                                        AECountItems(&reply.selection, &count);
+                                        if (count) {
+                                                filenames = (gchar **) g_malloc0((count+1)*sizeof(gchar*));
+                                                while(count>0) {
+                                                        count--;
+                                                        AEGetNthPtr(&reply.selection,count+1,typeFileURL,&keyword,&type,0,0,&size);
+                                                        filenames[count] = (gchar *) g_malloc(size);
+                                                        AEGetNthPtr(&reply.selection,count+1,typeFileURL,&keyword,&type,filenames[count],size,&size);
+                                                        filenames[count][size]=0;
+                                                        if(strncmp(filenames[count], "file://localhost", 16) == 0) {
+                                                                memmove(filenames[count],filenames[count]+16,size-16);
+                                                                filenames[count][size-16]=0;
+                                                        }
+                                                }
+                                        }
+                                        NavDisposeReply(&reply);
+                                }
+                        }
+                }
+                NavDialogDispose(ref);
+        }
+        g_strfreev(sarray);
+        return filenames;
 #endif
 
 	return NULL;
@@ -659,7 +833,7 @@ static gchar** create_fsels_4(gchar *dirname, gchar *filename, gchar *ext)
 // Front-end
 gchar** create_fsels(gchar *dirname, gchar *filename, gchar *ext)
 {
-#ifndef __WIN32__
+#if !defined(__WIN32__) && !defined(HAVE_CARBON_CARBON_H)
 	if(options.fs_type == 2)
 	{
 #if WITH_KDE
