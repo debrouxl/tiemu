@@ -24,6 +24,7 @@
 	- [roms]  $2434: added key press recording/playing
 	- [kevin] $2451: fixed aliasing violations in Win32 file dialog code
 	- [kevin] $2456: detect *-apple-darwin* as OS X, not just powerpc-apple-darwin*
+	- [kevin] $2457: fixed --disable-gdb builds failing due to missing intl/Makefile
 * libticonv 1.0.2 changes (kevin):
 	- fixed sed invocation in makefile for NetBSD (patch by Jukka Salmi)
 * libticables2 1.0.5 changes (roms):

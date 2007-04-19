@@ -18,6 +18,7 @@ AC_CONFIG_FILES([
   build/Makefile
   glade/Makefile
   help/Makefile
+  intl/Makefile
   man/Makefile
   misc/Makefile
   pedrom/Makefile

@@ -15,6 +15,7 @@ SubVersion: $Id$
 	- [roms]  $2434: added key press recording/playing
 	- [kevin] $2451: fixed aliasing violations in Win32 file dialog code
 	- [kevin] $2456: detect *-apple-darwin* as OS X, not just powerpc-apple-darwin*
+	- [kevin] $2457: fixed --disable-gdb builds failing due to missing intl/Makefile
 
 - ??/??/2007, version 2.81e
 	- [kevin] $2348: delete the temporary file instead of erroring if the user cancels the receive file dialog
