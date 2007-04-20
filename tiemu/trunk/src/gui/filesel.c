@@ -398,7 +398,7 @@ static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, g
         if (save) {
                 ret = NavCreatePutFileDialog(&opt,0,kNavGenericSignature,NULL,NULL,&ref);
         } else {
-                sarray = g_strsplit(sext, ";", -1);
+                sarray = g_strsplit(ext, ";", -1);
                 ret = NavCreateChooseFileDialog(&opt,NULL,NULL,NULL,filterProc,sarray,&ref);
         }
         if (ret == noErr) {
@@ -775,7 +775,7 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
         opt.modality = kWindowModalityAppModal;
         opt.optionFlags = kNavDefaultNavDlogOptions | kNavAllFilesInPopup;
 
-        sarray = g_strsplit(sext, ";", -1);
+        sarray = g_strsplit(ext, ";", -1);
         if (NavCreateGetFileDialog(&opt,NULL,NULL,NULL,filterProc,sarray,&ref) == noErr) {
 
                 if (NavDialogRun(ref) == noErr) {
