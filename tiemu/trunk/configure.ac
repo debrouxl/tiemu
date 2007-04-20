@@ -100,12 +100,12 @@ AC_CHECK_HEADERS([libintl.h])
 AC_CHECK_HEADERS([sys/timeb.h])
 AC_CHECK_HEADERS(stdint.h)
 AC_CHECK_HEADERS([tilp2/ticables.h tilp2/ticalcs.h tilp2/tifiles.h])
-AC_CHECK_HEADERS([Carbon/Carbon.h])
+dnl AC_CHECK_HEADERS([Carbon/Carbon.h])
 
-# Add Carbon framework if detected
-if test x"$ac_cv_header_Carbon_Carbon_h" = xyes ; then
-  LDFLAGS="$LDFLAGS -framework Carbon"
-fi
+dnl # Add Carbon framework if detected
+dnl if test x"$ac_cv_header_Carbon_Carbon_h" = xyes ; then
+dnl   LDFLAGS="$LDFLAGS -framework Carbon"
+dnl #fi
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_FUNC_MEMCMP

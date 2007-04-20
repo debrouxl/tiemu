@@ -67,6 +67,9 @@
 #include "refresh.h"
 #include "struct.h"
 
+/* In case some header happens to define this... */
+#undef HAVE_CARBON_CARBON_H
+
 #ifdef HAVE_CARBON_CARBON_H
 /* Helpers */
 #define PATH_SIZE 2048

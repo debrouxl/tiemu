@@ -28,9 +28,6 @@
 /* Define to 1 if you have the `bzero' function. */
 #undef HAVE_BZERO
 
-/* Define to 1 if you have the <Carbon/Carbon.h> header file. */
-#undef HAVE_CARBON_CARBON_H
-
 /* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
    CoreFoundation framework. */
 #undef HAVE_CFLOCALECOPYCURRENT
