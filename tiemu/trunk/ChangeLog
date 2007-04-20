@@ -17,6 +17,7 @@ SubVersion: $Id$
 	- [kevin] $2456: detect *-apple-darwin* as OS X, not just powerpc-apple-darwin*
 	- [kevin] $2457: fixed --disable-gdb builds failing due to missing intl/Makefile
 	- [kevin] $2459: fixed Win32 file dialogs not setting fname to NULL when returning NULL
+	- [kevin] $2462: filter -s from CFLAGS/CXXFLAGS/LDFLAGS on Darwin
 
 - ??/??/2007, version 2.81e
 	- [kevin] $2348: delete the temporary file instead of erroring if the user cancels the receive file dialog
