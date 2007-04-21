@@ -1,6 +1,6 @@
 SubVersion: $Id$
 
-- ??/??/2007, version 3.00
+- 16/03/2007, version 3.00
 	- [kevin] $2389: don't use \n in the breakpoint window status bar
 	- [kevin] $2390: fixed default hardware version for Voyage 200
 	- [roms]  $2409: added KDE desktop files & associations
@@ -13,13 +13,15 @@ SubVersion: $Id$
 	- [kevin] $2425: fixed handling of 4-byte F-Line jumps
 	- [roms]  $2431: added memory map menu to the memory window
 	- [roms]  $2434: added key press recording/playing
+	- [roms]  $2440: fixed bug in the Infos box: display skin version according to SkinInfos structure
 	- [kevin] $2451: fixed aliasing violations in Win32 file dialog code
 	- [kevin] $2456: detect *-apple-darwin* as OS X, not just powerpc-apple-darwin*
 	- [kevin] $2457: fixed --disable-gdb builds failing due to missing intl/Makefile
 	- [kevin] $2459: fixed Win32 file dialogs not setting fname to NULL when returning NULL
 	- [kevin] $2462: filter -s from CFLAGS/CXXFLAGS/LDFLAGS on Darwin
+		=> released on ...
 
-- ??/??/2007, version 2.81e
+- 09/02/2007, version 2.81e
 	- [kevin] $2348: delete the temporary file instead of erroring if the user cancels the receive file dialog
 	- [kevin] $2349: fixed progress bar refresh referencing freed memory (#1529247)
 	- [roms]  $2350: send a group file as group, not as backup (bug #1529247)
