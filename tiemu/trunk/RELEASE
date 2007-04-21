@@ -53,6 +53,7 @@
 	- fixed TiEmu bug #1675675 / TiLP bug #1676133
 	- wrong battery status (debug)
 	- no clock in TI83+ (SE); no clock in TI84+, too (not handled yet)
+	- bug #1563667: impossible to flash TI-83+/SE
 * The TiLP 2 Fedora RPM is no longer distributed together with TiEmu, it can be
   obtained from: http://repo.calcforge.org/
   The TiEmu and tilibs RPMs are also available in that repository.
