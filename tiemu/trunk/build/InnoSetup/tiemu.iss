@@ -52,10 +52,10 @@ Source: "C:\sources\roms\tiemu3\skins\*.map"; DestDir: "{app}\skins"; Flags: ign
 Source: "C:\sources\roms\tiemu3\skins\ti92.map"; DestDir: "{app}\skins"; DestName: "v200plt.map"; Flags: ignoreversion;
 
 ; i18n files
-Source: "C:\sources\roms\tifiles2\po\fr.mo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "libtifiles2.mo"; Flags: ignoreversion;
-Source: "C:\sources\roms\ticables2\po\fr.mo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "libticables2.mo"; Flags: ignoreversion;
-Source: "C:\sources\roms\ticalcs2\po\fr.mo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "libticalcs2.mo"; Flags: ignoreversion;
-Source: "C:\sources\roms\tiemu3\po\fr.mo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tiemu3.mo"; Flags: ignoreversion;
+Source: "C:\sources\roms\tifiles2\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "libtifiles2.mo"; Flags: ignoreversion;
+Source: "C:\sources\roms\ticables2\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "libticables2.mo"; Flags: ignoreversion;
+Source: "C:\sources\roms\ticalcs2\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "libticalcs2.mo"; Flags: ignoreversion;
+Source: "C:\sources\roms\tiemu3\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tiemu3.mo"; Flags: ignoreversion;
 
 ; Misc files
 Source: "C:\sources\roms\tiemu3\AUTHORS"; DestDir: "{app}"; DestName: "Authors.txt"; Flags: ignoreversion

@@ -97,7 +97,6 @@ src/gui/tsource.c
 src/gui/wizard.c
 
 # TiEmu GUI
-glade/about-2.str
 glade/calc-2.str
 glade/dbg_bkpts-2.str
 glade/dbg_cause-2.str
