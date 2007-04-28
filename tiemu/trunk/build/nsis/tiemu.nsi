@@ -226,6 +226,7 @@ Section "MainSection" SEC01
   Delete "$INSTDIR\share\tiemu\glade\romversion-2.gladep"
   Delete "$INSTDIR\share\tiemu\glade\scroptions-2.gladep"
   Delete "$INSTDIR\share\tiemu\glade\wizard-2.gladep"
+  Delete "$INSTDIR\share\tiemu\glade\about-2.glade"
 
 ; Install files
   SetOutPath "$INSTDIR\lib"
@@ -342,7 +343,6 @@ Section "MainSection" SEC01
   File "..\..\..\..\TiEmu\include\itk.h"
   File "..\..\..\..\TiEmu\include\itkDecls.h"
   SetOutPath "$INSTDIR\share\tiemu\glade"
-  File "..\..\..\..\TiEmu\share\tiemu\glade\about-2.glade"
   File "..\..\..\..\TiEmu\share\tiemu\glade\calc-2.glade"
   File "..\..\..\..\TiEmu\share\tiemu\glade\device-2.glade"
   File "..\..\..\..\TiEmu\share\tiemu\glade\dbg_bkpts-2.glade"
@@ -2119,7 +2119,6 @@ Section Uninstall
   Delete "$INSTDIR\share\tiemu\glade\dbg_bkpts-2.glade"
   Delete "$INSTDIR\share\tiemu\glade\device-2.glade"
   Delete "$INSTDIR\share\tiemu\glade\calc-2.glade"
-  Delete "$INSTDIR\share\tiemu\glade\about-2.glade"
   Delete "$INSTDIR\include\itkDecls.h"
   Delete "$INSTDIR\include\itk.h"
   Delete "$INSTDIR\include\itclIntDecls.h"
