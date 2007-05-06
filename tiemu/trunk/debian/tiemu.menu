@@ -1,0 +1,3 @@
+?package(tiemu):needs="X11" section="Apps/Math"\
+  title="TiEmu3-Gdb" command="/usr/bin/tiemu"
+
