@@ -41,8 +41,8 @@ Source: "C:\sources\roms\skinedit\CHANGELOG"; DestDir: "{app}"; DestName: "Chang
 Source: "C:\sources\roms\skinedit\COPYING"; DestDir: "{app}"; DestName: "License.txt"; Flags: ignoreversion
 
 ; Doc format files
-Source: "C:\sources\roms\skinedit\doc\TiEmu_skin_format.txt"; DestDir: "{app}\docs"; DestName: "TiEmu Skin Format.txt"; Flags: ignoreversion
-Source: "C:\sources\roms\skinedit\doc\VTi_skin_format.txt"; DestDir: "{app}\docs"; DestName: "VTi Skin Format.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\skinedit\docs\TiEmu_skin_format.txt"; DestDir: "{app}\docs"; DestName: "TiEmu Skin Format.txt"; Flags: ignoreversion
+Source: "C:\sources\roms\skinedit\docs\VTi_skin_format.txt"; DestDir: "{app}\docs"; DestName: "VTi Skin Format.txt"; Flags: ignoreversion
 
 ; Executable files
 Source: "C:\sources\roms\skinedit\build\msvc\skinedit.exe"; DestDir: "{app}"; DestName: "skinedit.exe"; Flags: ignoreversion
