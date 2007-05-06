@@ -11,4 +11,5 @@ EXTRA_DIST = \
 	glade/*.glade	\
 	glade/*.gladep	\
 	glade/*.str	\
-	desktop
+	desktop		\
+	docs

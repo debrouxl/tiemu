@@ -1,0 +1,18 @@
+Source: skinedit
+Section: math
+Priority: optional
+Maintainer: Romain LIEVIN <roms@tilp.info>
+Build-Depends: debhelper (>= 5), libgtk2.0-dev, gettext, groff-base
+Standards-Version: 3.7.2
+
+Package: skinedit
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: skin editor for TiEmu
+ Skinedit is the skin editor that accompagnies TiEmu, the Texas Instruments
+ calculators emulator. By using a different skin, you change the appearance
+ of the emulator.
+ .
+ skinedit can handle VTi (another emulator, running on Windows) skins too,
+ allowing you to convert the skins between the VTi formats and the TiEmu
+ format.
