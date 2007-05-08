@@ -36,7 +36,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = skinedit$(EXEEXT)
+bin_PROGRAMS = tiemu-skinedit$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -49,15 +49,20 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_skinedit_OBJECTS = skinedit-main.$(OBJEXT) \
-	skinedit-support.$(OBJEXT) skinedit-main_intf.$(OBJEXT) \
-	skinedit-main_cb.$(OBJEXT) skinedit-boxes_intf.$(OBJEXT) \
-	skinedit-boxes_cb.$(OBJEXT) skinedit-prop_intf.$(OBJEXT) \
-	skinedit-prop_cb.$(OBJEXT) skinedit-rubberbox.$(OBJEXT) \
-	skinedit-skinops.$(OBJEXT) skinedit-utils.$(OBJEXT) \
-	skinedit-vti_export.$(OBJEXT)
-skinedit_OBJECTS = $(am_skinedit_OBJECTS)
-skinedit_DEPENDENCIES =
+am_tiemu_skinedit_OBJECTS = tiemu_skinedit-main.$(OBJEXT) \
+	tiemu_skinedit-support.$(OBJEXT) \
+	tiemu_skinedit-main_intf.$(OBJEXT) \
+	tiemu_skinedit-main_cb.$(OBJEXT) \
+	tiemu_skinedit-boxes_intf.$(OBJEXT) \
+	tiemu_skinedit-boxes_cb.$(OBJEXT) \
+	tiemu_skinedit-prop_intf.$(OBJEXT) \
+	tiemu_skinedit-prop_cb.$(OBJEXT) \
+	tiemu_skinedit-rubberbox.$(OBJEXT) \
+	tiemu_skinedit-skinops.$(OBJEXT) \
+	tiemu_skinedit-utils.$(OBJEXT) \
+	tiemu_skinedit-vti_export.$(OBJEXT)
+tiemu_skinedit_OBJECTS = $(am_tiemu_skinedit_OBJECTS)
+tiemu_skinedit_DEPENDENCIES =
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -69,8 +74,8 @@ LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(skinedit_SOURCES)
-DIST_SOURCES = $(skinedit_SOURCES)
+SOURCES = $(tiemu_skinedit_SOURCES)
+DIST_SOURCES = $(tiemu_skinedit_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -234,15 +239,15 @@ AM_CPPFLAGS = -I$(top_srcdir)/intl
 AM_CFLAGS = -Wall
 
 # build instructions
-skinedit_CPPFLAGS = \
+tiemu_skinedit_CPPFLAGS = \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	 @GLIB_CFLAGS@ @GTK_CFLAGS@
 
-skinedit_LDADD = \
+tiemu_skinedit_LDADD = \
         @GLIB_LIBS@ @GTK_LIBS@ @LTLIBINTL@
 
-skinedit_SOURCES = \
+tiemu_skinedit_SOURCES = \
 	main.c defs.h struct.h keymaps.h \
 	support.c support.h \
 	main_intf.c main_intf.h \
@@ -318,9 +323,9 @@ clean-binPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
-skinedit$(EXEEXT): $(skinedit_OBJECTS) $(skinedit_DEPENDENCIES) 
-	@rm -f skinedit$(EXEEXT)
-	$(LINK) $(skinedit_LDFLAGS) $(skinedit_OBJECTS) $(skinedit_LDADD) $(LIBS)
+tiemu-skinedit$(EXEEXT): $(tiemu_skinedit_OBJECTS) $(tiemu_skinedit_DEPENDENCIES) 
+	@rm -f tiemu-skinedit$(EXEEXT)
+	$(LINK) $(tiemu_skinedit_LDFLAGS) $(tiemu_skinedit_OBJECTS) $(tiemu_skinedit_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -328,18 +333,18 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/skinedit-boxes_cb.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/skinedit-boxes_intf.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/skinedit-main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/skinedit-main_cb.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/skinedit-main_intf.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/skinedit-prop_cb.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/skinedit-prop_intf.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/skinedit-rubberbox.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/skinedit-skinops.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/skinedit-support.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/skinedit-utils.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/skinedit-vti_export.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiemu_skinedit-boxes_cb.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiemu_skinedit-boxes_intf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiemu_skinedit-main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiemu_skinedit-main_cb.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiemu_skinedit-main_intf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiemu_skinedit-prop_cb.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiemu_skinedit-prop_intf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiemu_skinedit-rubberbox.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiemu_skinedit-skinops.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiemu_skinedit-support.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiemu_skinedit-utils.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiemu_skinedit-vti_export.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -362,173 +367,173 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-skinedit-main.o: main.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-main.o -MD -MP -MF "$(DEPDIR)/skinedit-main.Tpo" -c -o skinedit-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-main.Tpo" "$(DEPDIR)/skinedit-main.Po"; else rm -f "$(DEPDIR)/skinedit-main.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main.c' object='skinedit-main.o' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-main.o: main.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-main.o -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-main.Tpo" -c -o tiemu_skinedit-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-main.Tpo" "$(DEPDIR)/tiemu_skinedit-main.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-main.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main.c' object='tiemu_skinedit-main.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-main.o `test -f 'main.c' || echo '$(srcdir)/'`main.c
 
-skinedit-main.obj: main.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-main.obj -MD -MP -MF "$(DEPDIR)/skinedit-main.Tpo" -c -o skinedit-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-main.Tpo" "$(DEPDIR)/skinedit-main.Po"; else rm -f "$(DEPDIR)/skinedit-main.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main.c' object='skinedit-main.obj' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-main.obj: main.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-main.obj -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-main.Tpo" -c -o tiemu_skinedit-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-main.Tpo" "$(DEPDIR)/tiemu_skinedit-main.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-main.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main.c' object='tiemu_skinedit-main.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-main.obj `if test -f 'main.c'; then $(CYGPATH_W) 'main.c'; else $(CYGPATH_W) '$(srcdir)/main.c'; fi`
 
-skinedit-support.o: support.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-support.o -MD -MP -MF "$(DEPDIR)/skinedit-support.Tpo" -c -o skinedit-support.o `test -f 'support.c' || echo '$(srcdir)/'`support.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-support.Tpo" "$(DEPDIR)/skinedit-support.Po"; else rm -f "$(DEPDIR)/skinedit-support.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='support.c' object='skinedit-support.o' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-support.o: support.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-support.o -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-support.Tpo" -c -o tiemu_skinedit-support.o `test -f 'support.c' || echo '$(srcdir)/'`support.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-support.Tpo" "$(DEPDIR)/tiemu_skinedit-support.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-support.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='support.c' object='tiemu_skinedit-support.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-support.o `test -f 'support.c' || echo '$(srcdir)/'`support.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-support.o `test -f 'support.c' || echo '$(srcdir)/'`support.c
 
-skinedit-support.obj: support.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-support.obj -MD -MP -MF "$(DEPDIR)/skinedit-support.Tpo" -c -o skinedit-support.obj `if test -f 'support.c'; then $(CYGPATH_W) 'support.c'; else $(CYGPATH_W) '$(srcdir)/support.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-support.Tpo" "$(DEPDIR)/skinedit-support.Po"; else rm -f "$(DEPDIR)/skinedit-support.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='support.c' object='skinedit-support.obj' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-support.obj: support.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-support.obj -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-support.Tpo" -c -o tiemu_skinedit-support.obj `if test -f 'support.c'; then $(CYGPATH_W) 'support.c'; else $(CYGPATH_W) '$(srcdir)/support.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-support.Tpo" "$(DEPDIR)/tiemu_skinedit-support.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-support.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='support.c' object='tiemu_skinedit-support.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-support.obj `if test -f 'support.c'; then $(CYGPATH_W) 'support.c'; else $(CYGPATH_W) '$(srcdir)/support.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-support.obj `if test -f 'support.c'; then $(CYGPATH_W) 'support.c'; else $(CYGPATH_W) '$(srcdir)/support.c'; fi`
 
-skinedit-main_intf.o: main_intf.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-main_intf.o -MD -MP -MF "$(DEPDIR)/skinedit-main_intf.Tpo" -c -o skinedit-main_intf.o `test -f 'main_intf.c' || echo '$(srcdir)/'`main_intf.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-main_intf.Tpo" "$(DEPDIR)/skinedit-main_intf.Po"; else rm -f "$(DEPDIR)/skinedit-main_intf.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main_intf.c' object='skinedit-main_intf.o' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-main_intf.o: main_intf.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-main_intf.o -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-main_intf.Tpo" -c -o tiemu_skinedit-main_intf.o `test -f 'main_intf.c' || echo '$(srcdir)/'`main_intf.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-main_intf.Tpo" "$(DEPDIR)/tiemu_skinedit-main_intf.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-main_intf.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main_intf.c' object='tiemu_skinedit-main_intf.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-main_intf.o `test -f 'main_intf.c' || echo '$(srcdir)/'`main_intf.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-main_intf.o `test -f 'main_intf.c' || echo '$(srcdir)/'`main_intf.c
 
-skinedit-main_intf.obj: main_intf.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-main_intf.obj -MD -MP -MF "$(DEPDIR)/skinedit-main_intf.Tpo" -c -o skinedit-main_intf.obj `if test -f 'main_intf.c'; then $(CYGPATH_W) 'main_intf.c'; else $(CYGPATH_W) '$(srcdir)/main_intf.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-main_intf.Tpo" "$(DEPDIR)/skinedit-main_intf.Po"; else rm -f "$(DEPDIR)/skinedit-main_intf.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main_intf.c' object='skinedit-main_intf.obj' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-main_intf.obj: main_intf.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-main_intf.obj -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-main_intf.Tpo" -c -o tiemu_skinedit-main_intf.obj `if test -f 'main_intf.c'; then $(CYGPATH_W) 'main_intf.c'; else $(CYGPATH_W) '$(srcdir)/main_intf.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-main_intf.Tpo" "$(DEPDIR)/tiemu_skinedit-main_intf.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-main_intf.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main_intf.c' object='tiemu_skinedit-main_intf.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-main_intf.obj `if test -f 'main_intf.c'; then $(CYGPATH_W) 'main_intf.c'; else $(CYGPATH_W) '$(srcdir)/main_intf.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-main_intf.obj `if test -f 'main_intf.c'; then $(CYGPATH_W) 'main_intf.c'; else $(CYGPATH_W) '$(srcdir)/main_intf.c'; fi`
 
-skinedit-main_cb.o: main_cb.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-main_cb.o -MD -MP -MF "$(DEPDIR)/skinedit-main_cb.Tpo" -c -o skinedit-main_cb.o `test -f 'main_cb.c' || echo '$(srcdir)/'`main_cb.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-main_cb.Tpo" "$(DEPDIR)/skinedit-main_cb.Po"; else rm -f "$(DEPDIR)/skinedit-main_cb.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main_cb.c' object='skinedit-main_cb.o' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-main_cb.o: main_cb.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-main_cb.o -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-main_cb.Tpo" -c -o tiemu_skinedit-main_cb.o `test -f 'main_cb.c' || echo '$(srcdir)/'`main_cb.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-main_cb.Tpo" "$(DEPDIR)/tiemu_skinedit-main_cb.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-main_cb.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main_cb.c' object='tiemu_skinedit-main_cb.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-main_cb.o `test -f 'main_cb.c' || echo '$(srcdir)/'`main_cb.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-main_cb.o `test -f 'main_cb.c' || echo '$(srcdir)/'`main_cb.c
 
-skinedit-main_cb.obj: main_cb.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-main_cb.obj -MD -MP -MF "$(DEPDIR)/skinedit-main_cb.Tpo" -c -o skinedit-main_cb.obj `if test -f 'main_cb.c'; then $(CYGPATH_W) 'main_cb.c'; else $(CYGPATH_W) '$(srcdir)/main_cb.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-main_cb.Tpo" "$(DEPDIR)/skinedit-main_cb.Po"; else rm -f "$(DEPDIR)/skinedit-main_cb.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main_cb.c' object='skinedit-main_cb.obj' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-main_cb.obj: main_cb.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-main_cb.obj -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-main_cb.Tpo" -c -o tiemu_skinedit-main_cb.obj `if test -f 'main_cb.c'; then $(CYGPATH_W) 'main_cb.c'; else $(CYGPATH_W) '$(srcdir)/main_cb.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-main_cb.Tpo" "$(DEPDIR)/tiemu_skinedit-main_cb.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-main_cb.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='main_cb.c' object='tiemu_skinedit-main_cb.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-main_cb.obj `if test -f 'main_cb.c'; then $(CYGPATH_W) 'main_cb.c'; else $(CYGPATH_W) '$(srcdir)/main_cb.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-main_cb.obj `if test -f 'main_cb.c'; then $(CYGPATH_W) 'main_cb.c'; else $(CYGPATH_W) '$(srcdir)/main_cb.c'; fi`
 
-skinedit-boxes_intf.o: boxes_intf.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-boxes_intf.o -MD -MP -MF "$(DEPDIR)/skinedit-boxes_intf.Tpo" -c -o skinedit-boxes_intf.o `test -f 'boxes_intf.c' || echo '$(srcdir)/'`boxes_intf.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-boxes_intf.Tpo" "$(DEPDIR)/skinedit-boxes_intf.Po"; else rm -f "$(DEPDIR)/skinedit-boxes_intf.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='boxes_intf.c' object='skinedit-boxes_intf.o' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-boxes_intf.o: boxes_intf.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-boxes_intf.o -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-boxes_intf.Tpo" -c -o tiemu_skinedit-boxes_intf.o `test -f 'boxes_intf.c' || echo '$(srcdir)/'`boxes_intf.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-boxes_intf.Tpo" "$(DEPDIR)/tiemu_skinedit-boxes_intf.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-boxes_intf.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='boxes_intf.c' object='tiemu_skinedit-boxes_intf.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-boxes_intf.o `test -f 'boxes_intf.c' || echo '$(srcdir)/'`boxes_intf.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-boxes_intf.o `test -f 'boxes_intf.c' || echo '$(srcdir)/'`boxes_intf.c
 
-skinedit-boxes_intf.obj: boxes_intf.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-boxes_intf.obj -MD -MP -MF "$(DEPDIR)/skinedit-boxes_intf.Tpo" -c -o skinedit-boxes_intf.obj `if test -f 'boxes_intf.c'; then $(CYGPATH_W) 'boxes_intf.c'; else $(CYGPATH_W) '$(srcdir)/boxes_intf.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-boxes_intf.Tpo" "$(DEPDIR)/skinedit-boxes_intf.Po"; else rm -f "$(DEPDIR)/skinedit-boxes_intf.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='boxes_intf.c' object='skinedit-boxes_intf.obj' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-boxes_intf.obj: boxes_intf.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-boxes_intf.obj -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-boxes_intf.Tpo" -c -o tiemu_skinedit-boxes_intf.obj `if test -f 'boxes_intf.c'; then $(CYGPATH_W) 'boxes_intf.c'; else $(CYGPATH_W) '$(srcdir)/boxes_intf.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-boxes_intf.Tpo" "$(DEPDIR)/tiemu_skinedit-boxes_intf.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-boxes_intf.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='boxes_intf.c' object='tiemu_skinedit-boxes_intf.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-boxes_intf.obj `if test -f 'boxes_intf.c'; then $(CYGPATH_W) 'boxes_intf.c'; else $(CYGPATH_W) '$(srcdir)/boxes_intf.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-boxes_intf.obj `if test -f 'boxes_intf.c'; then $(CYGPATH_W) 'boxes_intf.c'; else $(CYGPATH_W) '$(srcdir)/boxes_intf.c'; fi`
 
-skinedit-boxes_cb.o: boxes_cb.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-boxes_cb.o -MD -MP -MF "$(DEPDIR)/skinedit-boxes_cb.Tpo" -c -o skinedit-boxes_cb.o `test -f 'boxes_cb.c' || echo '$(srcdir)/'`boxes_cb.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-boxes_cb.Tpo" "$(DEPDIR)/skinedit-boxes_cb.Po"; else rm -f "$(DEPDIR)/skinedit-boxes_cb.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='boxes_cb.c' object='skinedit-boxes_cb.o' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-boxes_cb.o: boxes_cb.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-boxes_cb.o -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-boxes_cb.Tpo" -c -o tiemu_skinedit-boxes_cb.o `test -f 'boxes_cb.c' || echo '$(srcdir)/'`boxes_cb.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-boxes_cb.Tpo" "$(DEPDIR)/tiemu_skinedit-boxes_cb.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-boxes_cb.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='boxes_cb.c' object='tiemu_skinedit-boxes_cb.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-boxes_cb.o `test -f 'boxes_cb.c' || echo '$(srcdir)/'`boxes_cb.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-boxes_cb.o `test -f 'boxes_cb.c' || echo '$(srcdir)/'`boxes_cb.c
 
-skinedit-boxes_cb.obj: boxes_cb.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-boxes_cb.obj -MD -MP -MF "$(DEPDIR)/skinedit-boxes_cb.Tpo" -c -o skinedit-boxes_cb.obj `if test -f 'boxes_cb.c'; then $(CYGPATH_W) 'boxes_cb.c'; else $(CYGPATH_W) '$(srcdir)/boxes_cb.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-boxes_cb.Tpo" "$(DEPDIR)/skinedit-boxes_cb.Po"; else rm -f "$(DEPDIR)/skinedit-boxes_cb.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='boxes_cb.c' object='skinedit-boxes_cb.obj' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-boxes_cb.obj: boxes_cb.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-boxes_cb.obj -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-boxes_cb.Tpo" -c -o tiemu_skinedit-boxes_cb.obj `if test -f 'boxes_cb.c'; then $(CYGPATH_W) 'boxes_cb.c'; else $(CYGPATH_W) '$(srcdir)/boxes_cb.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-boxes_cb.Tpo" "$(DEPDIR)/tiemu_skinedit-boxes_cb.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-boxes_cb.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='boxes_cb.c' object='tiemu_skinedit-boxes_cb.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-boxes_cb.obj `if test -f 'boxes_cb.c'; then $(CYGPATH_W) 'boxes_cb.c'; else $(CYGPATH_W) '$(srcdir)/boxes_cb.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-boxes_cb.obj `if test -f 'boxes_cb.c'; then $(CYGPATH_W) 'boxes_cb.c'; else $(CYGPATH_W) '$(srcdir)/boxes_cb.c'; fi`
 
-skinedit-prop_intf.o: prop_intf.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-prop_intf.o -MD -MP -MF "$(DEPDIR)/skinedit-prop_intf.Tpo" -c -o skinedit-prop_intf.o `test -f 'prop_intf.c' || echo '$(srcdir)/'`prop_intf.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-prop_intf.Tpo" "$(DEPDIR)/skinedit-prop_intf.Po"; else rm -f "$(DEPDIR)/skinedit-prop_intf.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='prop_intf.c' object='skinedit-prop_intf.o' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-prop_intf.o: prop_intf.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-prop_intf.o -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-prop_intf.Tpo" -c -o tiemu_skinedit-prop_intf.o `test -f 'prop_intf.c' || echo '$(srcdir)/'`prop_intf.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-prop_intf.Tpo" "$(DEPDIR)/tiemu_skinedit-prop_intf.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-prop_intf.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='prop_intf.c' object='tiemu_skinedit-prop_intf.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-prop_intf.o `test -f 'prop_intf.c' || echo '$(srcdir)/'`prop_intf.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-prop_intf.o `test -f 'prop_intf.c' || echo '$(srcdir)/'`prop_intf.c
 
-skinedit-prop_intf.obj: prop_intf.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-prop_intf.obj -MD -MP -MF "$(DEPDIR)/skinedit-prop_intf.Tpo" -c -o skinedit-prop_intf.obj `if test -f 'prop_intf.c'; then $(CYGPATH_W) 'prop_intf.c'; else $(CYGPATH_W) '$(srcdir)/prop_intf.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-prop_intf.Tpo" "$(DEPDIR)/skinedit-prop_intf.Po"; else rm -f "$(DEPDIR)/skinedit-prop_intf.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='prop_intf.c' object='skinedit-prop_intf.obj' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-prop_intf.obj: prop_intf.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-prop_intf.obj -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-prop_intf.Tpo" -c -o tiemu_skinedit-prop_intf.obj `if test -f 'prop_intf.c'; then $(CYGPATH_W) 'prop_intf.c'; else $(CYGPATH_W) '$(srcdir)/prop_intf.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-prop_intf.Tpo" "$(DEPDIR)/tiemu_skinedit-prop_intf.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-prop_intf.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='prop_intf.c' object='tiemu_skinedit-prop_intf.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-prop_intf.obj `if test -f 'prop_intf.c'; then $(CYGPATH_W) 'prop_intf.c'; else $(CYGPATH_W) '$(srcdir)/prop_intf.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-prop_intf.obj `if test -f 'prop_intf.c'; then $(CYGPATH_W) 'prop_intf.c'; else $(CYGPATH_W) '$(srcdir)/prop_intf.c'; fi`
 
-skinedit-prop_cb.o: prop_cb.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-prop_cb.o -MD -MP -MF "$(DEPDIR)/skinedit-prop_cb.Tpo" -c -o skinedit-prop_cb.o `test -f 'prop_cb.c' || echo '$(srcdir)/'`prop_cb.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-prop_cb.Tpo" "$(DEPDIR)/skinedit-prop_cb.Po"; else rm -f "$(DEPDIR)/skinedit-prop_cb.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='prop_cb.c' object='skinedit-prop_cb.o' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-prop_cb.o: prop_cb.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-prop_cb.o -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-prop_cb.Tpo" -c -o tiemu_skinedit-prop_cb.o `test -f 'prop_cb.c' || echo '$(srcdir)/'`prop_cb.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-prop_cb.Tpo" "$(DEPDIR)/tiemu_skinedit-prop_cb.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-prop_cb.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='prop_cb.c' object='tiemu_skinedit-prop_cb.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-prop_cb.o `test -f 'prop_cb.c' || echo '$(srcdir)/'`prop_cb.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-prop_cb.o `test -f 'prop_cb.c' || echo '$(srcdir)/'`prop_cb.c
 
-skinedit-prop_cb.obj: prop_cb.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-prop_cb.obj -MD -MP -MF "$(DEPDIR)/skinedit-prop_cb.Tpo" -c -o skinedit-prop_cb.obj `if test -f 'prop_cb.c'; then $(CYGPATH_W) 'prop_cb.c'; else $(CYGPATH_W) '$(srcdir)/prop_cb.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-prop_cb.Tpo" "$(DEPDIR)/skinedit-prop_cb.Po"; else rm -f "$(DEPDIR)/skinedit-prop_cb.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='prop_cb.c' object='skinedit-prop_cb.obj' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-prop_cb.obj: prop_cb.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-prop_cb.obj -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-prop_cb.Tpo" -c -o tiemu_skinedit-prop_cb.obj `if test -f 'prop_cb.c'; then $(CYGPATH_W) 'prop_cb.c'; else $(CYGPATH_W) '$(srcdir)/prop_cb.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-prop_cb.Tpo" "$(DEPDIR)/tiemu_skinedit-prop_cb.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-prop_cb.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='prop_cb.c' object='tiemu_skinedit-prop_cb.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-prop_cb.obj `if test -f 'prop_cb.c'; then $(CYGPATH_W) 'prop_cb.c'; else $(CYGPATH_W) '$(srcdir)/prop_cb.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-prop_cb.obj `if test -f 'prop_cb.c'; then $(CYGPATH_W) 'prop_cb.c'; else $(CYGPATH_W) '$(srcdir)/prop_cb.c'; fi`
 
-skinedit-rubberbox.o: rubberbox.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-rubberbox.o -MD -MP -MF "$(DEPDIR)/skinedit-rubberbox.Tpo" -c -o skinedit-rubberbox.o `test -f 'rubberbox.c' || echo '$(srcdir)/'`rubberbox.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-rubberbox.Tpo" "$(DEPDIR)/skinedit-rubberbox.Po"; else rm -f "$(DEPDIR)/skinedit-rubberbox.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rubberbox.c' object='skinedit-rubberbox.o' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-rubberbox.o: rubberbox.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-rubberbox.o -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-rubberbox.Tpo" -c -o tiemu_skinedit-rubberbox.o `test -f 'rubberbox.c' || echo '$(srcdir)/'`rubberbox.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-rubberbox.Tpo" "$(DEPDIR)/tiemu_skinedit-rubberbox.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-rubberbox.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rubberbox.c' object='tiemu_skinedit-rubberbox.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-rubberbox.o `test -f 'rubberbox.c' || echo '$(srcdir)/'`rubberbox.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-rubberbox.o `test -f 'rubberbox.c' || echo '$(srcdir)/'`rubberbox.c
 
-skinedit-rubberbox.obj: rubberbox.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-rubberbox.obj -MD -MP -MF "$(DEPDIR)/skinedit-rubberbox.Tpo" -c -o skinedit-rubberbox.obj `if test -f 'rubberbox.c'; then $(CYGPATH_W) 'rubberbox.c'; else $(CYGPATH_W) '$(srcdir)/rubberbox.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-rubberbox.Tpo" "$(DEPDIR)/skinedit-rubberbox.Po"; else rm -f "$(DEPDIR)/skinedit-rubberbox.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rubberbox.c' object='skinedit-rubberbox.obj' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-rubberbox.obj: rubberbox.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-rubberbox.obj -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-rubberbox.Tpo" -c -o tiemu_skinedit-rubberbox.obj `if test -f 'rubberbox.c'; then $(CYGPATH_W) 'rubberbox.c'; else $(CYGPATH_W) '$(srcdir)/rubberbox.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-rubberbox.Tpo" "$(DEPDIR)/tiemu_skinedit-rubberbox.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-rubberbox.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='rubberbox.c' object='tiemu_skinedit-rubberbox.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-rubberbox.obj `if test -f 'rubberbox.c'; then $(CYGPATH_W) 'rubberbox.c'; else $(CYGPATH_W) '$(srcdir)/rubberbox.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-rubberbox.obj `if test -f 'rubberbox.c'; then $(CYGPATH_W) 'rubberbox.c'; else $(CYGPATH_W) '$(srcdir)/rubberbox.c'; fi`
 
-skinedit-skinops.o: skinops.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-skinops.o -MD -MP -MF "$(DEPDIR)/skinedit-skinops.Tpo" -c -o skinedit-skinops.o `test -f 'skinops.c' || echo '$(srcdir)/'`skinops.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-skinops.Tpo" "$(DEPDIR)/skinedit-skinops.Po"; else rm -f "$(DEPDIR)/skinedit-skinops.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='skinops.c' object='skinedit-skinops.o' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-skinops.o: skinops.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-skinops.o -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-skinops.Tpo" -c -o tiemu_skinedit-skinops.o `test -f 'skinops.c' || echo '$(srcdir)/'`skinops.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-skinops.Tpo" "$(DEPDIR)/tiemu_skinedit-skinops.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-skinops.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='skinops.c' object='tiemu_skinedit-skinops.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-skinops.o `test -f 'skinops.c' || echo '$(srcdir)/'`skinops.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-skinops.o `test -f 'skinops.c' || echo '$(srcdir)/'`skinops.c
 
-skinedit-skinops.obj: skinops.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-skinops.obj -MD -MP -MF "$(DEPDIR)/skinedit-skinops.Tpo" -c -o skinedit-skinops.obj `if test -f 'skinops.c'; then $(CYGPATH_W) 'skinops.c'; else $(CYGPATH_W) '$(srcdir)/skinops.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-skinops.Tpo" "$(DEPDIR)/skinedit-skinops.Po"; else rm -f "$(DEPDIR)/skinedit-skinops.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='skinops.c' object='skinedit-skinops.obj' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-skinops.obj: skinops.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-skinops.obj -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-skinops.Tpo" -c -o tiemu_skinedit-skinops.obj `if test -f 'skinops.c'; then $(CYGPATH_W) 'skinops.c'; else $(CYGPATH_W) '$(srcdir)/skinops.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-skinops.Tpo" "$(DEPDIR)/tiemu_skinedit-skinops.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-skinops.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='skinops.c' object='tiemu_skinedit-skinops.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-skinops.obj `if test -f 'skinops.c'; then $(CYGPATH_W) 'skinops.c'; else $(CYGPATH_W) '$(srcdir)/skinops.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-skinops.obj `if test -f 'skinops.c'; then $(CYGPATH_W) 'skinops.c'; else $(CYGPATH_W) '$(srcdir)/skinops.c'; fi`
 
-skinedit-utils.o: utils.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-utils.o -MD -MP -MF "$(DEPDIR)/skinedit-utils.Tpo" -c -o skinedit-utils.o `test -f 'utils.c' || echo '$(srcdir)/'`utils.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-utils.Tpo" "$(DEPDIR)/skinedit-utils.Po"; else rm -f "$(DEPDIR)/skinedit-utils.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='utils.c' object='skinedit-utils.o' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-utils.o: utils.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-utils.o -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-utils.Tpo" -c -o tiemu_skinedit-utils.o `test -f 'utils.c' || echo '$(srcdir)/'`utils.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-utils.Tpo" "$(DEPDIR)/tiemu_skinedit-utils.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-utils.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='utils.c' object='tiemu_skinedit-utils.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-utils.o `test -f 'utils.c' || echo '$(srcdir)/'`utils.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-utils.o `test -f 'utils.c' || echo '$(srcdir)/'`utils.c
 
-skinedit-utils.obj: utils.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-utils.obj -MD -MP -MF "$(DEPDIR)/skinedit-utils.Tpo" -c -o skinedit-utils.obj `if test -f 'utils.c'; then $(CYGPATH_W) 'utils.c'; else $(CYGPATH_W) '$(srcdir)/utils.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-utils.Tpo" "$(DEPDIR)/skinedit-utils.Po"; else rm -f "$(DEPDIR)/skinedit-utils.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='utils.c' object='skinedit-utils.obj' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-utils.obj: utils.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-utils.obj -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-utils.Tpo" -c -o tiemu_skinedit-utils.obj `if test -f 'utils.c'; then $(CYGPATH_W) 'utils.c'; else $(CYGPATH_W) '$(srcdir)/utils.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-utils.Tpo" "$(DEPDIR)/tiemu_skinedit-utils.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-utils.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='utils.c' object='tiemu_skinedit-utils.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-utils.obj `if test -f 'utils.c'; then $(CYGPATH_W) 'utils.c'; else $(CYGPATH_W) '$(srcdir)/utils.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-utils.obj `if test -f 'utils.c'; then $(CYGPATH_W) 'utils.c'; else $(CYGPATH_W) '$(srcdir)/utils.c'; fi`
 
-skinedit-vti_export.o: vti_export.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-vti_export.o -MD -MP -MF "$(DEPDIR)/skinedit-vti_export.Tpo" -c -o skinedit-vti_export.o `test -f 'vti_export.c' || echo '$(srcdir)/'`vti_export.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-vti_export.Tpo" "$(DEPDIR)/skinedit-vti_export.Po"; else rm -f "$(DEPDIR)/skinedit-vti_export.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vti_export.c' object='skinedit-vti_export.o' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-vti_export.o: vti_export.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-vti_export.o -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-vti_export.Tpo" -c -o tiemu_skinedit-vti_export.o `test -f 'vti_export.c' || echo '$(srcdir)/'`vti_export.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-vti_export.Tpo" "$(DEPDIR)/tiemu_skinedit-vti_export.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-vti_export.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vti_export.c' object='tiemu_skinedit-vti_export.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-vti_export.o `test -f 'vti_export.c' || echo '$(srcdir)/'`vti_export.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-vti_export.o `test -f 'vti_export.c' || echo '$(srcdir)/'`vti_export.c
 
-skinedit-vti_export.obj: vti_export.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT skinedit-vti_export.obj -MD -MP -MF "$(DEPDIR)/skinedit-vti_export.Tpo" -c -o skinedit-vti_export.obj `if test -f 'vti_export.c'; then $(CYGPATH_W) 'vti_export.c'; else $(CYGPATH_W) '$(srcdir)/vti_export.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/skinedit-vti_export.Tpo" "$(DEPDIR)/skinedit-vti_export.Po"; else rm -f "$(DEPDIR)/skinedit-vti_export.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vti_export.c' object='skinedit-vti_export.obj' libtool=no @AMDEPBACKSLASH@
+tiemu_skinedit-vti_export.obj: vti_export.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tiemu_skinedit-vti_export.obj -MD -MP -MF "$(DEPDIR)/tiemu_skinedit-vti_export.Tpo" -c -o tiemu_skinedit-vti_export.obj `if test -f 'vti_export.c'; then $(CYGPATH_W) 'vti_export.c'; else $(CYGPATH_W) '$(srcdir)/vti_export.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/tiemu_skinedit-vti_export.Tpo" "$(DEPDIR)/tiemu_skinedit-vti_export.Po"; else rm -f "$(DEPDIR)/tiemu_skinedit-vti_export.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='vti_export.c' object='tiemu_skinedit-vti_export.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o skinedit-vti_export.obj `if test -f 'vti_export.c'; then $(CYGPATH_W) 'vti_export.c'; else $(CYGPATH_W) '$(srcdir)/vti_export.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tiemu_skinedit_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tiemu_skinedit-vti_export.obj `if test -f 'vti_export.c'; then $(CYGPATH_W) 'vti_export.c'; else $(CYGPATH_W) '$(srcdir)/vti_export.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

@@ -216,7 +216,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-man_MANS = skinedit.1
+man_MANS = tiemu-skinedit.1
 pkgdata_DATA = Manpage.txt
 EXTRA_DIST = $(man_MANS) cleaner.c Manpage.txt
 all: all-am
