@@ -232,7 +232,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
 # subdirectories to scan
-SUBDIRS = build man pixmaps src po intl $(am__append_1)
+SUBDIRS = build intl man pixmaps po src $(am__append_1)
 EXTRA_DIST = \
 	glade/*.glade	\
 	glade/*.gladep	\

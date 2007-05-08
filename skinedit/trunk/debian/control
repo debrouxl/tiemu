@@ -1,11 +1,11 @@
-Source: skinedit
+Source: tiemu-skinedit
 Section: math
 Priority: optional
 Maintainer: Romain LIEVIN <roms@tilp.info>
 Build-Depends: debhelper (>= 5), libgtk2.0-dev, gettext, groff-base
 Standards-Version: 3.7.2
 
-Package: skinedit
+Package: tiemu-skinedit
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: skin editor for TiEmu
