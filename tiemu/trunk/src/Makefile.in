@@ -15,7 +15,7 @@ RC       ?= windres
 kde       = @kde@
 dbus      = @dbus@
 
-DESTDIR   =
+#DESTDIR   =
 
 ifneq (,$(findstring NO_GDB,$(CFLAGS)))
 ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
@@ -323,7 +323,7 @@ dos2unix:
 	uppercase
 
 install: tiemu$(EXEEXT)
-	@$(INSTALL) -d $(DESTDIR)$(prefix)/bin
+	@$(INSTALL) -d $(DESTDIR)${prefix}/bin
 	$(INSTALL) -m755 tiemu$(EXEEXT) $(DESTDIR)${prefix}/bin/
 ifneq (,$(findstring __WIN32__,$(CFLAGS)))
 	$(INSTALL) -m755 ipc/com/tiemups.dll $(DESTDIR)${prefix}/bin/
