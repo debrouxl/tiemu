@@ -2,12 +2,13 @@ Source: tiemu3
 Section: math
 Priority: optional
 Maintainer: Romain LIEVIN <roms@tilp.info>
-Build-Depends: debhelper (>= 5), libticables2-1-dev (>= 1.0.5-1), libticalcs2-2-dev (>= 1.0.6-1), libtifiles2-3-dev (>= 1.0.5-1), libticonv2 (>= 1.0.2-1), libgtk2.0-dev, libglade2-dev, zlib1g-dev, gettext, groff-base
+Build-Depends: debhelper (>= 5), libticables2-1-dev (>= 1.0.5-1), libticalcs2-2-dev (>= 1.0.6-1), libtifiles2-3-dev (>= 1.0.5-1), libticonv2 (>= 1.0.2-1), libgtk2.0-dev, libglade2-dev, zlib1g-dev, gettext, groff-base, kdelibs-dev, libdbus-glib-1-dev
 Standards-Version: 3.7.2
 
-Package: tiemu3-nogdb
+Package: tiemu3
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Suggests: tiemu-skinedit
 Description: Texas Instruments calculators emulator
  TIemu emulates Texas Instruments calculators TI-89/92/92+/V200PLT.
  .
