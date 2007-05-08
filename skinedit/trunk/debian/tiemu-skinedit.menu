@@ -1,3 +1,0 @@
-?package(tiemu-skinedit):needs="X11" section="Apps/Math"\
-  title="TiEmu Skin Editor" command="/usr/bin/skinedit"
-
