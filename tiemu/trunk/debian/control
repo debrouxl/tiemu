@@ -5,10 +5,32 @@ Maintainer: Romain LIEVIN <roms@tilp.info>
 Build-Depends: debhelper (>= 5), libticables2-1-dev (>= 1.0.5-1), libticalcs2-2-dev (>= 1.0.6-1), libtifiles2-3-dev (>= 1.0.5-1), libticonv2 (>= 1.0.2-1), libgtk2.0-dev, libglade2-dev, zlib1g-dev, gettext, groff-base, kdelibs-dev, libdbus-glib-1-dev
 Standards-Version: 3.7.2
 
-Package: tiemu3
+Package: tiemu3-nogdb
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Suggests: tiemu-skinedit
+Conflicts: tiemu3-gdb
+Description: Texas Instruments calculators emulator
+ TIemu emulates Texas Instruments calculators TI-89/92/92+/V200PLT.
+ .
+ It is based on XTiger, the original TI emulator for Linux, which
+ uses the 68k emulation core from UAE (The Ultimate Amiga Emulator).
+ .
+ You need to either dump the ROM of your calculator (you can do so
+ with TiLP), or get a FLASH upgrade from Texas Instrument (see the software
+ section concerning your calculator, then download the archive and
+ extract the file) to use this emulator. There are *no* TI ROMs provided
+ in this package, as they are copyrighted by Texas Instruments, Inc.
+ .
+ However, a free (as in speech) ROM is now provided with TiEmu, namely
+ PedRom. Try it out!
+
+
+Package: tiemu3-gdb
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Suggests: tiemu-skinedit
+Conflicts: tiemu3-nogdb
 Description: Texas Instruments calculators emulator
  TIemu emulates Texas Instruments calculators TI-89/92/92+/V200PLT.
  .

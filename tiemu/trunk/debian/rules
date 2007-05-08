@@ -62,7 +62,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tiemu3.
-	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu3 install
+	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu3-nogdb install
 
 
 # Build architecture-independent files here.
