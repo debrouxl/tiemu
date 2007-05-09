@@ -91,8 +91,10 @@ STDMETHODIMP TiEmuOLE::QueryInterface(REFIID iid,PVOID *ret)
 {
   if (iid==IID_IUnknown || iid==IID_IDispatch || iid == IID_ITiEmuOLE)
     RETURN(this);
-  else
+  else {
+    *ret=NULL;
     return E_NOINTERFACE;
+  }
 }
 
 ULONG TiEmuOLE::AddRef()

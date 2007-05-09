@@ -19,6 +19,7 @@ SubVersion: $Id$
 	- [kevin] $2457: fixed --disable-gdb builds failing due to missing intl/Makefile
 	- [kevin] $2459: fixed Win32 file dialogs not setting fname to NULL when returning NULL
 	- [kevin] $2462: filter -s from CFLAGS/CXXFLAGS/LDFLAGS on Darwin
+	- [kevin] $2485: OLE Automation: set ret to NULL if IUnknown::QueryInterface fails
 		=> released on ...
 
 - 09/02/2007, version 2.81e
