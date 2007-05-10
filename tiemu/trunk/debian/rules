@@ -99,8 +99,9 @@ binary-indep: build install
 
 # Build architecture-dependent files here.
 binary-arch: 
-	$(MAKE) -f debian/rules binary-1 DH_OPTIONS=-ptiemu-nogdb
-	$(MAKE) -f debian/rules binary-2 DH_OPTIONS=-ptiemu-gdb
+	$(MAKE) -f debian/rules binary-1 DH_OPTIONS=-ptiemu3-nogdb
+	$(MAKE) -f debian/rules clean
+	$(MAKE) -f debian/rules binary-2 DH_OPTIONS=-ptiemu3-gdb
 
 binary-1: build-1 install-1 binary-common
 

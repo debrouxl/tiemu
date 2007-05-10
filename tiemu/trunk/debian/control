@@ -29,7 +29,7 @@ Description: Texas Instruments calculators emulator (without GDB)
 
 Package: tiemu3-gdb
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, flex
 Suggests: tiemu-skinedit
 Conflicts: tiemu3-nogdb
 Description: Texas Instruments calculators emulator (with GDB)
