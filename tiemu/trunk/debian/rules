@@ -31,13 +31,27 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
 
-config.status: configure
+config.status-1: configure
 	dh_testdir
 	# Add here commands to configure the package.
 	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs" --disable-gdb --enable-dbus
 
-build: build-stamp
-build-stamp:  config.status
+config.status-2: configure
+	dh_testdir
+	# Add here commands to configure the package.
+	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs" --enable-dbus
+
+build-1: build-stamp-1
+build-stamp-1:  config.status-1
+	dh_testdir
+
+	# Add here commands to compile the package.
+	$(MAKE)
+
+	touch $@
+
+build-2: build-stamp-2
+build-stamp-2:  config.status-2
 	dh_testdir
 
 	# Add here commands to compile the package.
@@ -48,28 +62,51 @@ build-stamp:  config.status
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp 
+	rm -f build-stamp-1 build-stamp-2
 
 	# Add here commands to clean up after the build process.
 	-$(MAKE) distclean
 
+ifneq "$(wildcard /usr/share/misc/config.sub)" ""
+	cp -f /usr/share/misc/config.sub config.sub
+endif
+ifneq "$(wildcard /usr/share/misc/config.guess)" ""
+	cp -f /usr/share/misc/config.guess config.guess
+endif
+
 	dh_clean 
 
-install: build
+install-1: build-1
 	dh_testdir
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs
 
-	# Add here commands to install the package into debian/tiemu3.
+	# Add here commands to install the package into debian/tiemu3-nogdb
 	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu3-nogdb install
 
+install-2: build-2
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	# Add here commands to install the package into debian/tiemu3-gdb
+	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu3-gdb install
 
 # Build architecture-independent files here.
 binary-indep: build install
 
 # Build architecture-dependent files here.
-binary-arch: build install
+binary-arch: 
+	$(MAKE) -f debian/rules binary-1 DH_OPTIONS=-ptiemu-nogdb
+	$(MAKE) -f debian/rules binary-2 DH_OPTIONS=-ptiemu-gdb
+
+binary-1: build-1 install-1 binary-common
+
+binary-2: build-2 install-2 binary-common
+
+binary-common:
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs ChangeLog
