@@ -34,11 +34,13 @@ endif
 config.status-1: configure
 	dh_testdir
 	# Add here commands to configure the package.
+	touch configure.ac && touch aclocal.m4 && touch configure
 	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs" --disable-gdb --enable-dbus
 
 config.status-2: configure
 	dh_testdir
 	# Add here commands to configure the package.
+	touch configure.ac && touch aclocal.m4 && touch configure
 	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs" --enable-dbus
 
 build-1: build-stamp-1
@@ -95,10 +97,11 @@ install-2: build-2
 	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu3-gdb install
 
 # Build architecture-independent files here.
-binary-indep: build install
+binary-indep:
 
 # Build architecture-dependent files here.
 binary-arch: 
+	$(MAKE) -f debian/rules clean
 	$(MAKE) -f debian/rules binary-1 DH_OPTIONS=-ptiemu3-nogdb
 	$(MAKE) -f debian/rules clean
 	$(MAKE) -f debian/rules binary-2 DH_OPTIONS=-ptiemu3-gdb
