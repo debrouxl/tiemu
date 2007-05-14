@@ -20,7 +20,7 @@ SubVersion: $Id$
 	- [kevin] $2459: fixed Win32 file dialogs not setting fname to NULL when returning NULL
 	- [kevin] $2462: filter -s from CFLAGS/CXXFLAGS/LDFLAGS on Darwin
 	- [kevin] $2485: OLE Automation: set ret to NULL if IUnknown::QueryInterface fails
-		=> released on ...
+		=> released on 14/05/2007
 
 - 09/02/2007, version 2.81e
 	- [kevin] $2348: delete the temporary file instead of erroring if the user cancels the receive file dialog
