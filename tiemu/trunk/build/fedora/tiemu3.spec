@@ -18,7 +18,7 @@ Summary: TiEmu is a TI89(Ti)/92(+)/V200 emulator
 TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debugging using Insight GDB.
 
 %prep
-%setup -n tiemu
+%setup
 
 %build
 source /etc/profile.d/qt.sh
@@ -73,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/lpg-tiemu.desktop
 
 %changelog
+* Wed May 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Drop -n tiemu, the tarball uses name-version format now.
+
 * Mon Apr 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:3.00-1
 Bump Epoch.
 Use real version number instead of date.
