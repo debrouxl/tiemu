@@ -394,7 +394,7 @@ static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, g
 
         fname = NULL;
         NavGetDefaultDialogCreationOptions(&opt);
-        opt.clientName = CFStringCreateWithCString(NULL,"TiEmu",kCFStringEncodingUTF8);
+        opt.clientName = CFSTR("TiEmu");
         opt.modality = kWindowModalityAppModal;
         opt.optionFlags = kNavDefaultNavDlogOptions | kNavAllFilesInPopup;
 
@@ -774,7 +774,7 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
 
         filenames = NULL;
         NavGetDefaultDialogCreationOptions(&opt);
-        opt.clientName = CFStringCreateWithCString(NULL,"TiEmu",kCFStringEncodingUTF8);
+        opt.clientName = CFSTR("TiEmu");
         opt.modality = kWindowModalityAppModal;
         opt.optionFlags = kNavDefaultNavDlogOptions | kNavAllFilesInPopup;
 
