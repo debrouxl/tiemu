@@ -66,6 +66,7 @@
 	- The RPMs are now less picky about the versions of the dependencies.
 	- The RPMs and SRPMs are now signed with the RPM-GPG-KEY-calcforge key.
 	- There is now a tfdocgen package and -apidocs subpackages with generated HTML API documentation.
+	- The libticables2 RPM now also automatically gives access to serial and parallel cables, not just USB.
 
 20070207:
 * TiEmu 3 changes:
