@@ -264,7 +264,8 @@ Those keymaps are text files with a straightforward syntax :<br>
 <pre style="margin-left: 40px;">PCKEY_A:TIKEY_EQUALS,TIKEY_ALPHA</pre>
 <pre style="margin-left: 40px;">PCKEY_OEM_SCROLL:TIKEY_ON</pre>
 Model can be 'ti89', 'ti92', 'ti92+', 'v200' or 'ti89t'.<br>
-<br>
+Comments can be placed in the file:; they have to start with a '//'
+character.<br>
 Next, there are some key pairs: "PCKEY_xxx:TIKEY_xxx,TIKEY_yyy".
 PCKEY_xxx is the input key, TIKEY_xxx, TIKEY_yyy are the output keys.<br>
 <br>
@@ -274,6 +275,442 @@ scancode to bind to. TiEmu can help you by displaying it if you set the
 file to 'yes'. Windows users will have to set the 'console' variable to
 'yes', too.<br>
 <br>
-<hr>
+List of TI keys:<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><span
+ style="font-family: courier new;">const KeyTuple tikeys[] = {</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_DOWN,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_DOWN" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_RIGHT,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_RIGHT" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_UP,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_UP" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_LEFT,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_LEFT" },&nbsp; </span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_HAND,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_HAND" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_SHIFT,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_SHIFT" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_DIAMOND,&nbsp;&nbsp;&nbsp; "TIKEY_DIAMOND" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_2ND,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_2ND" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_3,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_3" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_2,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_2" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_1,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_1" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_F8,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_F8" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_W,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_W" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_S,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_S" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_Z,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_Z" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_6,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_6" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_5,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_5" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_4,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_4" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_F3,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_F3" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_E,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_E" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_D,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_D" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_X,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_X" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_9,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_9" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_8,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_8" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_7,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_7" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_F7,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_F7" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_R,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_R" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_F,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_F" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_C,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_C" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_STORE,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_STORE" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_COMMA,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_COMMA" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_PARIGHT,&nbsp;&nbsp;&nbsp; "TIKEY_PARIGHT" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_PALEFT,&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_PALEFT" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_F2,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_F2" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_T,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_T" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_G,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_G"&nbsp; },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_V,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_V" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_SPACE,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_SPACE"},</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_TAN,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_TAN"},</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_COS,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_COS" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_SIN,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_SIN" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_F6,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_F6" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_Y,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_Y" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_H,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_H" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_B,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_B" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_DIVIDE,&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_DIVIDE"},</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_P,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_P"}, </span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_ENTER2,&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_ENTER2"}, </span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_LN,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_LN" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_F1,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_F1" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_U,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_U" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_J,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_J" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_N,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_N" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_POWER,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_POWER"},</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_MULTIPLY,&nbsp;&nbsp; "TIKEY_MULTIPLY" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_APPS,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_APPS" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_CLEAR,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_CLEAR" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_F5,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_F5"&nbsp; },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_I,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_I" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_K,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_K" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_M,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_M" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_EQUALS,&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_EQUALS"},</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_NU,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_NU"}, </span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_ESCAPE,&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_ESCAPE"}, </span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_MODE,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_MODE"}, </span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_PLUS,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_PLUS"}, </span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_O,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_O" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_L,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_L" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_THETA,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_THETA" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_BACKSPACE,&nbsp; "TIKEY_BACKSPACE" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_NEGATE,&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_NEGATE"}, </span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_PERIOD,&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_PERIOD" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_0" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_F4,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_F4" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_Q,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_Q" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_A,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_A" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_ENTER1,&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_ENTER1"}, </span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_MINUS,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_MINUS"},</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_ON,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_ON"},</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_ALPHA,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_ALPHA" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_EE,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"TIKEY_EE"&nbsp; },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_CATALOG,&nbsp;&nbsp;&nbsp; "TIKEY_CATALOG" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_HOME,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_HOME" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_PIPE,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_PIPE" },</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; {
+TIKEY_VOID,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "TIKEY_VOID"},</span><br
+ style="font-family: courier new;">
+      <span style="font-family: courier new;">&nbsp;&nbsp;&nbsp; { -1,
+"" },</span><br style="font-family: courier new;">
+      <span style="font-family: courier new;">};</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+List of PC keys:<br>
+<br>
+<table style="width: 100%; text-align: left; font-family: courier new;"
+ border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">const KeyTuple pckeys[] = {<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_LBUTTON, "PCKEY_LBUTTON" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_RBUTTON, "PCKEY_RBUTTON" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_CANCEL, "PCKEY_CANCEL" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_MBUTTON, "PCKEY_MBUTTON" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_BACK, "PCKEY_BACK" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_TAB, "PCKEY_TAB" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_CLEAR, "PCKEY_CLEAR" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_RETURN, "PCKEY_RETURN" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_SHIFT, "PCKEY_SHIFT" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_CONTROL, "PCKEY_CONTROL" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_MENU, "PCKEY_MENU" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_PAUSE, "PCKEY_PAUSE" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_CAPITAL, "PCKEY_CAPITAL" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_ESCAPE, "PCKEY_ESCAPE" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_SPACE, "PCKEY_SPACE" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_PRIOR, "PCKEY_PRIOR" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_NEXT, "PCKEY_NEXT" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_END, "PCKEY_END" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_HOME, "PCKEY_HOME" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_LEFT, "PCKEY_LEFT" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_UP, "PCKEY_UP" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_RIGHT, "PCKEY_RIGHT" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_DOWN, "PCKEY_DOWN" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_SELECT, "PCKEY_SELECT" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_PRINT, "PCKEY_PRINT" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_EXECUTE, "PCKEY_EXECUTE" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_SNAPSHOT, "PCKEY_SNAPSHOT" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_INSERT, "PCKEY_INSERT" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_DELETE, "PCKEY_DELETE" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_HELP, "PCKEY_HELP" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_0, "PCKEY_0" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_1, "PCKEY_1" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_2, "PCKEY_2" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_3, "PCKEY_3" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_4, "PCKEY_4" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_5, "PCKEY_5" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_6, "PCKEY_6" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_7, "PCKEY_7" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_8, "PCKEY_8" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_9, "PCKEY_9" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_A, "PCKEY_A" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_B, "PCKEY_B" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_C, "PCKEY_C" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_D, "PCKEY_D" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_E, "PCKEY_E" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F, "PCKEY_F" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_G, "PCKEY_G" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_H, "PCKEY_H" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_I, "PCKEY_I" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_J, "PCKEY_J" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_K, "PCKEY_K" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_L, "PCKEY_L" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_M, "PCKEY_M" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_N, "PCKEY_N" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_O, "PCKEY_O" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_P, "PCKEY_P" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_Q, "PCKEY_Q" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_R, "PCKEY_R" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_S, "PCKEY_S" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_T, "PCKEY_T" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_U, "PCKEY_U" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_V, "PCKEY_V" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_W, "PCKEY_W" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_X, "PCKEY_X" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_Y, "PCKEY_Y" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_Z, "PCKEY_Z" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_STARTKEY, "PCKEY_STARTKEY" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_CONTEXTKEY, "PCKEY_CONTEXTKEY" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_NUMPAD0, "PCKEY_NUMPAD0" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_NUMPAD1, "PCKEY_NUMPAD1" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_NUMPAD2, "PCKEY_NUMPAD2" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_NUMPAD3, "PCKEY_NUMPAD3" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_NUMPAD4, "PCKEY_NUMPAD4" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_NUMPAD5, "PCKEY_NUMPAD5" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_NUMPAD6, "PCKEY_NUMPAD6" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_NUMPAD7, "PCKEY_NUMPAD7" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_NUMPAD8, "PCKEY_NUMPAD8" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_NUMPAD9, "PCKEY_NUMPAD9" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_MULTIPLY, "PCKEY_MULTIPLY" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_ADD, "PCKEY_ADD" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_SEPARATOR, "PCKEY_SEPARATOR" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_SUBTRACT, "PCKEY_SUBTRACT" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_DECIMAL, "PCKEY_DECIMAL" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_DIVIDE, "PCKEY_DIVIDE" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F1, "PCKEY_F1" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F2, "PCKEY_F2" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F3, "PCKEY_F3" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F4, "PCKEY_F4" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F5, "PCKEY_F5" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F6, "PCKEY_F6" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F7, "PCKEY_F7" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F8, "PCKEY_F8" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F9, "PCKEY_F9" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F10, "PCKEY_F10" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F11, "PCKEY_F11" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F12, "PCKEY_F12" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F13, "PCKEY_F13" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F14, "PCKEY_F14" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F15, "PCKEY_F15" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F16, "PCKEY_F16" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F17, "PCKEY_F17" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F18, "PCKEY_F18" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F19, "PCKEY_F19" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F20, "PCKEY_F20" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F21, "PCKEY_F21" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F22, "PCKEY_F22" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F23, "PCKEY_F23" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_F24, "PCKEY_F24" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_NUMLOCK, "PCKEY_NUMLOCK" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_SCROLL, "PCKEY_OEM_SCROLL" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_1, "PCKEY_OEM_1" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_PLUS, "PCKEY_OEM_PLUS" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_COMMA, "PCKEY_OEM_COMMA" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_MINUS, "PCKEY_OEM_MINUS" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_PERIOD, "PCKEY_OEM_PERIOD" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_2, "PCKEY_OEM_2" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_3, "PCKEY_OEM_3" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_4, "PCKEY_OEM_4" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_5, "PCKEY_OEM_5" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_6, "PCKEY_OEM_6" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_7, "PCKEY_OEM_7" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_8, "PCKEY_OEM_8" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_ICO_F17, "PCKEY_ICO_F17" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_ICO_F18, "PCKEY_ICO_F18" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM102, "PCKEY_OEM102" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_ICO_HELP, "PCKEY_ICO_HELP" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_ICO_00, "PCKEY_ICO_00" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_ICO_CLEAR, "PCKEY_ICO_CLEAR" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_RESET, "PCKEY_OEM_RESET" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_JUMP, "PCKEY_OEM_JUMP" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_PA1, "PCKEY_OEM_PA1" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_PA2, "PCKEY_OEM_PA2" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_PA3, "PCKEY_OEM_PA3" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_WSCTRL, "PCKEY_OEM_WSCTRL" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_CUSEL, "PCKEY_OEM_CUSEL" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_ATTN, "PCKEY_OEM_ATTN" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_FINNISH, "PCKEY_OEM_FINNISH" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_COPY, "PCKEY_OEM_COPY" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_AUTO, "PCKEY_OEM_AUTO" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_ENLW, "PCKEY_OEM_ENLW" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_BACKTAB, "PCKEY_OEM_BACKTAB" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_ATTN, "PCKEY_ATTN" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_CRSEL, "PCKEY_CRSEL" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_EXSEL, "PCKEY_EXSEL" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_EREOF, "PCKEY_EREOF" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_PLAY, "PCKEY_PLAY" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_ZOOM, "PCKEY_ZOOM" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_NONAME, "PCKEY_NONAME" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_PA1, "PCKEY_PA1" },<br>
+&nbsp;&nbsp;&nbsp; { PCKEY_OEM_CLEAR, "PCKEY_OEM_CLEAR" },<br>
+&nbsp;&nbsp;&nbsp; { -1, "" },<br>
+};<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br style="font-family: courier new;">
+<hr style="font-family: courier new;">
 </body>
 </html>
