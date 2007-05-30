@@ -23,10 +23,9 @@ InfoAfterFile=C:\sources\roms\tiemu3\RELEASE.nogdb
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4; Flags: unchecked
 
-Name: "slv_drv"; Description: "Copy SilverLink drivers"; GroupDescription: "Drivers:"; MinVersion: 0,4
 Name: "tlk_drv"; Description: "Install BlackLink/Parallel cable"; GroupDescription: "Drivers:"; MinVersion: 0,4
 
-Name: "com_ole"; Description: "Install TiEmuOle object for TIGCC and others"; GroupDescription: "Misc";
+Name: "com_ole"; Description: "Install TiEmuOle object for TIGCC and others"; GroupDescription: "Misc:";
 
 [Dirs]
 Name: "{app}\screenshots"
@@ -89,21 +88,6 @@ Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{app}\PortTalk
 Source: "C:\sources\roms\misc\Porttalk22\AllowIO.exe"; DestDir: "{app}\PortTalk"; Flags: ignoreversion; Tasks: tlk_drv;
 Source: "C:\sources\roms\misc\Porttalk22\Uninstall.exe"; DestDir: "{app}\PortTalk"; Flags: ignoreversion; Tasks: tlk_drv;
 
-; Copy LPG's SilverLink driver
-Source: "C:\sources\roms\tiglusb\src\xp\driver\License.txt"; DestDir: "{app}\slvdrvXP"; Tasks: slv_drv;
-Source: "C:\sources\roms\tiglusb\src\xp\driver\TiglUsb.dll"; DestDir: "{app}\slvdrvXP"; Tasks: slv_drv;
-Source: "C:\sources\roms\tiglusb\src\xp\driver\TiglUsb.inf"; DestDir: "{app}\slvdrvXP"; Tasks: slv_drv;
-Source: "C:\sources\roms\tiglusb\src\xp\driver\TiglUsb.sys"; DestDir: "{app}\slvdrvXP"; Tasks: slv_drv;
-Source: "C:\sources\roms\tiglusb\src\xp\driver\TiglUsb.dll"; DestDir: "{sys}\drivers";  Tasks: slv_drv;
-Source: "C:\sources\roms\tiglusb\src\xp\driver\TiglUsb.sys"; DestDir: "{sys}\drivers";  Tasks: slv_drv; MinVersion: 0,4;
-
-Source: "C:\sources\roms\tiglusb\src\98\driver\License.txt"; DestDir: "{app}\slvdrv98"; Tasks: slv_drv;
-Source: "C:\sources\roms\tiglusb\src\98\driver\TiglUsb.dll"; DestDir: "{app}\slvdrv98";  Tasks: slv_drv;
-Source: "C:\sources\roms\tiglusb\src\98\driver\TiglUsb.inf"; DestDir: "{app}\slvdrv98"; Tasks: slv_drv;
-Source: "C:\sources\roms\tiglusb\src\98\driver\TiglUsb.sys"; DestDir: "{app}\slvdrv98";  Tasks: slv_drv;
-Source: "C:\sources\roms\tiglusb\src\98\driver\TiglUsb.dll"; DestDir: "{sys}\drivers";  Tasks: slv_drv;
-Source: "C:\sources\roms\tiglusb\src\98\driver\TiglUsb.sys"; DestDir: "{sys}\drivers";  Tasks: slv_drv; MinVersion: 4,0;
-
 ; GTK+ specific
 Source: "C:\Gtk2Dev\bin\gtkthemeselector.exe"; DestDir: "{app}";
 ;libglade/libxml add-on (ignore since no version checking is possible)
@@ -156,14 +140,10 @@ Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: dwo
 Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: dword; ValueName: "Start"; ValueData: "2"; MinVersion: 0,4; Tasks: tlk_drv;
 Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: dword; ValueName: "ErrorControl"; ValueData: "1"; MinVersion: 0,4; Tasks: tlk_drv;
 Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: string; ValueName: "DisplayName"; ValueData: "PortTalk"; MinVersion: 0,4; Tasks: tlk_drv;
-; Install the LPG's SilverLink driver
-Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\TiglUsb"; ValueType: dword; ValueName: "Type"; ValueData: "1";  Tasks: slv_drv;
-Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\TiglUsb"; ValueType: dword; ValueName: "Start"; ValueData: "3"; Tasks: slv_drv;
-Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\TiglUsb"; ValueType: dword; ValueName: "ErrorControl"; ValueData: "1"; Tasks: slv_drv;
-Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\TiglUsb"; ValueType: string; ValueName: "DisplayName"; ValueData: "TiglUsb.sys TI-GRAPH / DIRECT LINK USB driver"; Tasks: slv_drv;
-Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\TiglUsb"; ValueType: string; ValueName: "ImagePath"; ValueData: "System32\Drivers\TiglUsb.sys"; Tasks: slv_drv;
+
 ; Boost GTK2 (WinNT/2000/XP)
 Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: string; ValueName: "PANGO_WIN32_NO_UNISCRIBE"; ValueData: "anything"; MinVersion: 0,4;
+
 ; File associations
 Root: HKCR; Subkey: ".sav"; ValueType: string; ValueName: ""; ValueData: "TiEmu.Sav";
 Root: HKCR; Subkey: "TiEmu.Sav"; ValueType: string; ValueName: ""; ValueData: "TiEmu state";
