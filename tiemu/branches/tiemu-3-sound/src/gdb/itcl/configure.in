@@ -1,0 +1,37 @@
+dnl	This file is an input file used by the GNU "autoconf" program to
+dnl	generate the file "configure", which is run during [incr Tcl]
+dnl     installation to configure the system for the local environment.
+dnl     RCS: $Id: configure.in,v 1.12.150.3 2001/05/18 02:21:42 mdejong Exp $
+
+# CYGNUS LOCAL
+AC_PREREQ(2.5)
+
+AC_INIT(itcl/generic/itcl.h)
+AC_CANONICAL_HOST
+
+# Note, we don't use the files in the config subdirectory!
+AC_CONFIG_AUX_DIR(..)
+AC_PROG_MAKE_SET
+# END CYGNUS LOCAL
+
+# -----------------------------------------------------------------------
+#
+#   Set up a new default --prefix.  If a previous installation of
+#   [incr Tcl] can be found searching $PATH use that directory.
+#
+# -----------------------------------------------------------------------
+
+AC_PREFIX_DEFAULT(/usr/local)
+AC_PREFIX_PROGRAM(itclsh)
+
+# Convert --enable-shared-itcl to --enable-shared for the subdirs
+ac_configure_args=`echo "$ac_configure_args" | sed "s,--enable-shared-itcl,--enable-shared,g"`
+
+AC_CONFIG_SUBDIRS(itcl itk)
+# Source-Navigator does not use the iwidgets packag
+if test ! -d ${srcdir}/../snavigator || test -d ${srcdir}/../gdb/gdbtk ; then
+    AC_CONFIG_SUBDIRS(iwidgets)
+fi
+
+AC_OUTPUT(Makefile,
+	chmod +x ${srcdir}/config/install-sh ${srcdir}/config/mkinstalldirs)

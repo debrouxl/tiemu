@@ -1,0 +1,68 @@
+Salut,
+
+Je pense qu'il est temps de penser à nous mettre d'accord au sujet de la
+gestion des informations de débogage. Voilà ma vision des choses, je serais
+content d'avoir ton avis: suggestions, améliorations, suppression de
+features que tu retiens non implémentables, ...
+
+Pour commencer, je vais commencer par définir ce que j'entends par
+"informations de débogage". Je vois 3 grands types d'informations:
+1. informations symboliques niveau assembleur. Cela comprend les noms des
+labels (labels de code, variables). Ces informations sont probablement les
+plus simples à gérer, il suffit à mon avis en grande partie de réutiliser du
+code qui existe déjà pour les ROM_CALLs. Ce sont aussi les seules
+informations qu'on peut obtenir de l'assembleur A68k. (L'assembleur GNU gère
+aussi le 2.)
+2. lignes des sources. Ces informations mettent en relation les instructions
+du code machine avec les lignes des sources C ou assembleur (GNU). Cela
+implique rajouter un "source view" au débogueur et de permettre de faire du
+single-stepping et des breakpoints dans la fenêtre de source.
+3. position (pour les variables "automatiques") et type des variables C. Au
+niveau interface, ça se traduit en l'affichage des valeurs des variables,
+les watchpoints (version haut niveau des data breakpoints), ... C'est le
+plus dur à gérer, mais quand le 1. et le 2. seront règlés, je pense qu'il
+sera inévitable de nous plonger là-dessus pour que le débogueur soit
+complet.
+
+Je compte réaliser ça de la manière suivante: ld-tigcc émet, en plus des
+exécutables, un fichier nomprog.dbg qui contiendra les informations de
+débogage. Il serait bien que ce fichier soit chargeable comme un fichier TI
+dans TiEmu. Le chargement se passerait idéalement de la manière suivante:
+* L'utilisateur "envoie" nomprog.dbg.
+* TiEmu va chercher l'exécutable de même nom et pour la bonne calculatrice.
+(Cet exécutable pourra être supposé non compressé.)
+* TiEmu l'envoie (en RAM, pas en archive, pour pouvoir mettre un
+breakpoint).
+* TiEmu place un "program entry breakpoint" sur ce programme. (Oui, il
+faudra d'abord implémenter ça, cf. mes mails précédents.)
+* TiEmu l'exécute à travers la ligne de commande. Attention, ici, il faudra
+un hack: il faudra faire en sorte que l'appel en ligne 1010 correspondant à
+"ASAP or Exec string too long" soit traîté comme un nop jusqu'à ce que le
+breakpoint soit atteint. Cela ne devrait pas être trop dur à implémenter
+directement au niveau de l'émulation d'instructions à mon avis.
+* Dès que le breakpoint est atteint, TiEmu fait en sorte que la protection
+anti-exécution soit désactivée pour tous les 64 KO du programmes (pas
+seulement les premiers 8 ou 24 KO).
+* TiEmu charge les informations de débogage (en les relogeant à la bonne
+adresse) et affiche le débogueur.
+
+Mon idée du format de débogage est le suivant: Le fichier .dbg sera en fait
+un .a qui contiendra:
+* symbinfo.dat: informations symboliques
+* srclines.dat: lignes des sources
+* cvars.dat: position et type des variables
+* toutes les sources référencées dans srclines.dat, de façon à permettre la
+compilation dans un répertoire temporaire effectuée par l'IDE, ou de
+déboguer facilement sur une machine qui n'est pas la machine de
+développement. (Les librairies statiques compilées avec informations de
+débogage devront aussi contenir ces sources, pour les mêmes raisons.)
+(Ceci est sujet à des changements. Tes suggestions sont les bienvenues. Les
+détails des contenus des *.dat restent à définir.)
+
+Il faudra aussi qu'on se mette d'accord pour la répartition des tâches:
+j'aurai certainement besoin de ton aide pour ce qui est interface graphique
+(je n'ai encore rien programmé en GTK), et je vais certainement m'occuper
+entièrement du linker. Le reste est sujet de discussion.
+
+C'est tout pour l'instant, j'ai certainement d'autres choses encore à dire à
+ce sujet, mais je n'ai pas le temps maintenant...

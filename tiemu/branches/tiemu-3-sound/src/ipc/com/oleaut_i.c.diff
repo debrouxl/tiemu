@@ -1,0 +1,7 @@
+2a3
+> #define INITGUID
+6,7c7
+< #define INITGUID
+< #include <guiddef.h>
+---
+> #include <initguid.h>

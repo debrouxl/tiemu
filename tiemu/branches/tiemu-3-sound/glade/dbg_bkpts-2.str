@@ -1,0 +1,11 @@
+gchar *s = N_("Breakpoints");
+gchar *s = N_("Add breakpoint");
+gchar *s = N_("Remove breakpoint(s)");
+gchar *s = N_("Disable breakpoint");
+gchar *s = N_("Enable breakpoint");
+gchar *s = N_("Go to breakpoint location");
+gchar *s = N_("Double-click a row to edit breakpoint values.");
+gchar *s = N_("Breakpoint context:");
+gchar *s = N_("Data");
+gchar *s = N_("Vectors");
+gchar *s = N_("Prgm entry");

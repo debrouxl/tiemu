@@ -1,0 +1,64 @@
+*****************************************************************
+* Notes about TiEmu SDK						*
+*								*
+* Last update: 2007-04-15					*
+*****************************************************************
+
+
+Introduction
+------------
+
+The TiEmu SDK provides way to use TiEmu from an external application.
+It has been primarily developed for use by KTIGCC & TIGCC-IDE.
+
+At the time being:
+- Win32 users can use an OLE Automation object (since 2.81c/20061030),
+- Linux users can use a DCOP object (since 2.81/20060524).
+
+A D-Bus interface for use with KTIGCC 2 is also available (since
+2.81c/20061030), but not compiled by default, you can enable it with the
+--enable-dbus configure option. (That option is enabled in the Fedora RPM.)
+
+
+How to use it?
+--------------
+
+Actually, there is no instalable SDK yet. You have to download TiEmu
+source code and take a look at the 'sdk' folder:
+
+sdk
+|
++--- dcop:	readme.txt and dcoptest.cpp sample program
++--- oleaut:	readme.txt and oletest.cpp sample program
+
+
+Entry points
+------------
+
+TiEmu currently provides the following calls:
+
+- image_loaded			return TRUE if an image has been loaded
+- emulated_calc_type		return emulated calculator type (1) if image loaded
+- emulated_hw_version		return hardware revision (2) if image loaded
+- emulated_os_version		return OS version as a string like "2.08" if image loaded
+- ready_for_transfers		TRUE if calculator is ready for transfers and if image loaded and engine running
+- send_file			send one filename if image loaded and engine running
+- send_files			send several filenames at once  if image loaded and engine running (not provided in OLE)
+- debug_file			does the same work than the 'Debug file with TiEmu...' item of the popup menu  if image loaded and engine running
+- reset_calc			reset calculator and clear RAM depending on argument if image loaded; close debugger if open, too
+- execute_command		send ASCII keys to calculator (internally converted to TI scancodes) if image loaded
+- turn_calc_on			like pressing the ON key if image loaded and engine running
+- enter_debugger		raises a breakpoint and open the debugger if image loaded and engine running
+
+(1)
+#define TI92 		(1 << 0)
+#define TI89 		(1 << 1)
+#define TI92p	 	(1 << 2)
+#define V200		(1 << 3)
+#define TI89t		(1 << 4)
+
+(2)
+#define HW1	1
+#define HW2	2
+#define HW3     3
+#define HW4     4

@@ -1,0 +1,13 @@
+Planned features:
+-----------------
+
+* use the contrast field of skin
+* sound emulation
+* request #1532860:
+<<
+Another cool feature would be the capabilitie to
+capture video from the screen, allowing to save in .gif
+or .avi
+>>
+
+* tracing of mem access or others

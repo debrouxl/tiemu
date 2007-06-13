@@ -1,0 +1,11 @@
+; Memory map definitions for V200 HW2 (c) 2007 Romain Liévin
+;
+; Beware: _don't_ touch this file unless you know what you are doing !
+; Any modification can result in unpredictable results (or crash even !).
+;
+
+000000-03ffff : RAM (256 KB)
+100000-13ffff : RAM (ghost)
+200000-5fffff : FLASH (4 MB)
+600000-60001f : I/O ports (32 bytes)
+700000-70001f : I/O ports (32 bytes)

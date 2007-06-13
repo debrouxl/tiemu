@@ -1,0 +1,4 @@
+
+gchar *s = N_("PC log");
+gchar *s = N_("Trace (PC listing):");
+gchar *s = N_("Double-click the row to disassemble.");

@@ -1,0 +1,29 @@
+- should have an intelligent way of mapping color use to color name
+  likewise fonts
+
+- ulset.tcl is not very easy to use
+  should write class to manage menubar
+  this could integrate ulset functionality and also balloon help
+  should look at iwidgets 2.2 again to make sure we
+  aren't gratuitously incompatible
+
+- add more bitmaps/gifs from S-N
+
+- use a real gettext, not the dummy one we have now
+  see if it is possible to use some of the gnu code, for instance
+  xgettext.
+  the runtime code must be written by us; probably just use db
+
+- rewrite the canvas patches as a pure extension
+  the current situation is terrible
+  later, use a different layout algorithm.  ISI sucks.
+  See:
+	A Technique for Drawing Directed Graphs
+	Emden R Gansner, Eleftherios Koutsofios, Stephen C. North, and
+		Kiem-Phong Vo
+	IEEE Transactions on Software Engineering Vol 19, No 3
+
+- must have sensible way to track toplevel state and save in database
+
+- a way to make optionmenus which are statically sized to the
+  correct width

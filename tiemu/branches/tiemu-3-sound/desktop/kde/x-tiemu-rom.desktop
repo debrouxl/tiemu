@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+MimeType=application/x-tiemu-rom
+Comment=TiEmu Rom Dump
+Comment[fr]=Fichier ROM TiEmu
+Icon=/usr/local/share/tiemu/pixmaps/romdump.xpm
+Type=MimeType
+Patterns=*.rom;

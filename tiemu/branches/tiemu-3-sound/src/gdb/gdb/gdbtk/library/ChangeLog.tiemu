@@ -1,0 +1,86 @@
+2007-02-18  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * Drop "prefs.tcl (pref_set_defaults): Disable IPC by default." patch, changed upstream.
+
+2006-12-20  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * srctextwin.itb (_clear_cache): Fix syntax error caught by the TclPro debugger.
+        * ../../../libgui/library/bgerror.tcl: Filter out error caused by the TclPro debugger.
+
+2006-06-18  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * Drop no longer needed patch:
+          2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+          * srcwin.itb (SrcWin::_build_win): Work around Tk geometry manager glitch.
+
+2006-05-24  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * ../../../libgui/library/cframe.tcl, ../../../libgui/library/lframe.tcl,
+          ../../../libgui/library/multibox.tcl, ../../../libgui/library/ventry.tcl,
+          ../../../libgui/library/wframe.tcl (constructor): Change config argument to args argument
+                                                            and add eval configure $args.
+
+2006-01-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * ehandler.itb, managedwin.itb: Replace itcl_info with itcl::find.
+        * tfind_args.tcl, ../../../libgui/library/balloon.tcl, ../../../libgui/library/cframe.tcl,
+          ../../../libgui/library/lframe.tcl, ../../../libgui/library/multibox.tcl,
+          ../../../libgui/library/sendpr.tcl, ../../../libgui/library/ventry.tcl,
+          ../../../libgui/library/wframe.tcl: Replace itcl_class with itcl::class. Use new syntax for
+            "public", "protected", "private". Add delete method to emulate old itcl_class feature.
+
+2005-09-23  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * srcwin.itb (SrcWin::_exit): Use tiemu_close_debugger.
+
+2005-05-15  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * interface.tcl (gdbtk_tcl_preloop): Don't automatically run "run" on startup here.
+
+2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * interface.tcl (gdbtk_reinit): New functions.
+        * tclIndex: Update accordingly.
+
+2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * srcwin.itb (SrcWin::_build_win): Work around Tk geometry manager glitch.
+
+2005-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * srctextwin.itb (_clear_cache): Delete old panes.
+
+2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * srcwin.itb (SrcWin::fillFuncCB): Use lsort -unique to remove duplicates.
+        * browserwin.itb (BrowserWin::_fill_funcs_combo): Likewise.
+
+2005-05-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * interface.tcl (gdbtk_stop): Call tiemu_debug_break instead of the existing code.
+          (gdbtk_hide_insight): Use ManagedWin::shutdown.
+          (gdbtk_show_insight): Use ManagedWin::startup.
+        * managedwin.itb (ManagedWin::reveal): Reset geometry on all platforms.
+
+2005-05-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * interface.tcl (gdbtk_hide_insight, gdbtk_show_insight): New functions.
+        * tclIndex: Update accordingly.
+        * managedwin.itb (ManagedWin::destructor): Hide killed window. Check dont_quit_if_last flag.
+        * main.tcl: Initialize dont_quit_if_last flag to 0.
+
+2005-05-12  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * interface.tcl (gdbtk_tcl_preloop): Automatically run target sim and run on startup.
+          (gdbtk_quit): Call tiemu_close_debugger.
+
+2005-05-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * prefs.tcl (pref_set_defaults): Disable IPC by default.
+        * main.tcl: Comment out IPC support.
+
+2005-05-07  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * download.itb, interface.tcl, prefs.tcl, session.tcl, srctextwin.tcl:
+          Don't call ide_cygwin_path if it is not available. (Patch from
+          devkit.tk.)

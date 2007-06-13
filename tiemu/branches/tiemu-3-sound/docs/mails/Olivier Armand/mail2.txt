@@ -1,0 +1,104 @@
+> > J'ai aussi une version au format .89u (venant du CD donné avec la
+> > Titanium),
+> > mais elle est identique, avec le header et la taille correspondants.
+>
+> Je peux l'avoir pour tester ma libtifiles (import/export de tib et autres
+> .89u) ?
+
+Je viens de l'uploader ici :
+http://www.ifrance.com/ti68k/TI89Titanium_OS300.zip
+
+> je crois savoir qu'il faut un VTi modifié par Muchembled pour faire
+> tourner la V200. Si oui, est-ce que tu sais quelles modifs il a effectué
+> dessus ?
+
+JM a perdu les sources après un crash de disque je crois. En fait il y a au
+moins deux versions de VTI de JM (j'en ai une de février 2001, et une autre
+de mai 2001). Je ne sais pas si tu en as une des deux, mais celle de février
+(qui fait maintenant 1878 ko) ajoute par rapport à la dernière version de
+Rusty Wagner, dans le debugger :
+- un menu déroulant permettant d'atteindre n'importe quelle ROM Call, dont
+la liste de noms peut être mise à jour en éditant un fichier externe
+- un compteur de cycles
+- un menu "set program entry breakpoint" qui marche sur plus de versions
+d'AMS
+- des boutons pour modifier les flags (Z, N, C, V, etc.) et le masque
+d'interruption de SR plus facilement
+- une émulation du mode Trace du 68000
+- une émulation du ghost de la Flash sur 92+, qui apparait entre 0x200000 et
+0x400000 (image identique de 0x400000-0x600000)
+- peut être un tas d'autres trucs, mais qui n'apparaissent pas de façon
+évidente
+
+La version de mai 2001 ajoute un menu "Action on breakpoint : Break" ou
+"Save state image". Je ne vois pas trop son interêt, mais c'était peut être
+utile pour JM pour ses propres programmes. Et "set data breakpoint" plante
+dans cette version.
+
+> J'ai retesté mon support v200 et il plante toujours sur une ILLEGAL
+> instruction. Apparemment, après un RTS, il part n'importe où en RAM !
+> C'est pas forcément un bug puisque j'ai constaté que ce le faisait aussi
+> au boot (routine spéciale ?).
+> Dans ce cas, je pense qu'il dépile un niveau de trop mais je vois pas
+pkwoi.
+
+Bizarre comme problème... Je veux bien t'aider à débugger ça si tu veux.
+
+> Je misais éventuellement sur les modifs de JM pour savoir si j'étais passé
+à coté de qqchose.
+
+Non, je ne pense pas que ça ait quelque chose à voir. La ROM de V200 que
+j'ai patché à besoin de l'émulation du ghost de la Flash pour permettre
+l'exécution et la lecture dans la zone 0x200000 - 0x400000 comme le ferait
+une V200 réelle. VTI place la ROM à 0x400000, donc le ghost space est
+nécessaire.
+
+> <<Au reset, à 0x2121BA, l'AMS regarde si 0x400000 est un ghost space ou
+non.
+> Patcher en bra.l (->0x6000001A) pour que ce ne soit jamais un ghost.>>
+> Dois-je comprendre que si TiEmu n'implémente pas les ghost spaces, une ROM
+> de V200 ne marchera pas ?
+
+Ah oui, en effet, j'avais oublié ce problème. Cette protection de TI est
+peut-être pour éviter que quelqu'un essaie de faire tourner un AMS de V200
+sur 92+, où le ghost space existe effectivement. Si jamais ce bout de code
+détecte que 0x400000+n est identique à 0x200000+n, il lance le boot. Donc ce
+qui devrait se passer sur TiEmu est un simple lancement du boot, pas un
+ILLEGAL, c'est bizarre...
+Il faut de toute manière effectivement gérer le ghost space pour que ça
+marche sous TiEmu.
+
+> Question de terminologie: qu'entends-tu par ghost space ? Pour moi,
+> électronicien, il s'agit d'une zone mémoire qui n'existe pas physiquement
+> mais qui est un mirroir d'une zone réelle. C'est très souvent le cas
+> lorsqu'on fait un décodage d'addresse incomplet.
+
+Oui, c'est bien cela, et c'est bien aussi dû au décodage d'adresses (ROM et
+RAM) sur TI68k. Le "reflet" est identique à l'"original" en lecture, mais il
+a des comportements différents en ce qui concerne l'exécution, et peut-être
+l'écriture pour la FlashROM (je n'ai pas testé). Ceci est notamment dû aux
+ingénieurs de TI qui ne font pas attention à ces reflets en programmant leur
+puces de protection.
+On peut ainsi contourner sans problème la protection d'exécution en FlashROM
+sur 92+ (qui m'a permis de faire "Pedrhum", un projet de cohabitation de AMS
+et de PedroM, l'OS alternatif de PpHd - d'autres techniques sont utilisées
+pour les autres modèles de calc. Le shell CS de Flanker utilise lui cette
+faille que j'ai trouvée pour s'exécuter en Flash). Et ceci a permis à JM de
+découvrir la fameuse faille de la protection d'exécution du ghost space de
+la RAM (utilisée avec enter_ghost_space / EXECUTE_IN_GHOST_SPACE de TIGCC),
+et à Kevin Kofler d'écrire H220xTSR qui permet l'installation de TSR.
+Ces comportements particuliers ne sont pas nécessaires pour une émulation
+simple comme le fait VTI (tant que les protections ne sont pas elles aussi
+émulées), mais pourraient être interessants pour une émulation très
+réaliste.
+
+> Si l'envie t'en prends, maille-moi de façon à ce que je te fournisse la
+> dernière version. Je fais de temps en temps des alpha releases sur le site
+> mais elles sont pas forcément intéressantes.
+
+Oui, je serais interessé. Je suis prêt à faire des tests sous Windows XP
+et/ou Linux.
+
+++
+
+Olivier Armand

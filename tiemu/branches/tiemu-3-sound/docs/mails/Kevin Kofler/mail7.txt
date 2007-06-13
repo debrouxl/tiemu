@@ -1,0 +1,46 @@
+Maybe we can base our debugging support on this?
+http://sources.redhat.com/ml/gdb-patches/2001-02/msg00490.html
+This integrates UAE with GDB, at least so it claims. It is written for old
+versions (see the 2001 date), but maybe I can get it up to task. It will
+still be much less work than writing the glue code from scratch (something I
+also considered), and probably also less work than writing source-level
+debugging support from scratch.
+
+The way I see this would be that there would be 2 classes of debugging
+windows:
+* windows based on the GDB core: source/disassembly view (and yes, I would
+use the disassembler in GDB/Binutils, the one from VTI has licensing issues
+anyway - I'd of course port the code you added, such as F-Line stuff, to the
+new disassembler), maybe breakpoints, and of course new windows which don't
+exist yet, for example: watchpoints, local variables, global variables,
+expression evaluator, ... I wonder if there is a GTK-based GDB frontend
+somewhere, from which we could lift some of the windows. Unfortunately,
+Insight uses TK and DDD uses Motif, so these are not options.
+* windows using the UAE or TI core directly, with the current code: memory
+view, register view, PC log, handle view, ... Some of these could also be
+implemented through GDB, but using UAE directly is better for performance,
+so I don't see a good reason to change things to use a slower interface.
+
+If we go down this route, I'll also have to get GDB/BFD and ld-tigcc to
+agree about a debugging information format, but that's something to worry
+about once basic GDB support is working (in a branch, or in SVN HEAD if
+Romain wants to branch the release - there is no way we will break the 2.00
+release with this sort of experiments).
+
+The suggested roadmap would then be:
+1. branch TiEmu for debugging support (I'm waiting for a sufficiently stable
+version for that; we're close, but things are still too much of a moving
+target for me)
+2. integrate Will Cohen's GDB-UAE glue code into the branch
+3. change the disassembly view to use GDB facilities
+4.-6. (will have to mostly co-evolve, I guess) add debugging information
+output to ld-tigcc, support for the chosen debugging information format to
+BFD/GDB, implement additional GDB-based windows
+
+The end result would be solid debugging support, including things like
+variable location tracking which allow debugging optimized binaries (-O0 is
+not always an option with TIGCC due to size constraints). The downside would
+of course be that TiEmu would depend on GDB, and a patched in-tree version
+at that, so it would get a lot larger.
+
+        Kevin Kofler

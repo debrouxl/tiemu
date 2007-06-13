@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+MimeType=application/x-tiemu-sav
+Comment=TiEmu State Image
+Comment[fr]=Fichier Image d'Etat
+Icon=/usr/local/share/tiemu/pixmaps/icon.xpm
+Type=MimeType
+Patterns=*.sav;

@@ -1,0 +1,20 @@
+# Dejagnu test wrapper for [incr tcl] test suite
+# Copyright 1997 Cygnus Solutions
+
+# Extract and print version number.
+proc itcl_version {} {
+  # No way to extract this in version 1.5.
+  clone_output "itcl version 1.5\n"
+}
+
+proc itcl_exit {} {
+}
+
+proc itcl_start {} {
+  global spawn_id objdir
+
+  spawn $objdir/src/itcl_sh
+}
+
+proc itcl_load {} {
+}

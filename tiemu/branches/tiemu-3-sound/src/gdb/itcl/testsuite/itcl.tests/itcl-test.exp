@@ -1,0 +1,39 @@
+# Copyright 1997 Cygnus Solutions
+
+if {$tracelevel} then {
+  strace $tracelevel
+}
+
+if {[itcl_start] == -1} then {
+  perror "Couldn't start the itcl test shell" 0
+  return -1
+}
+
+if {! [file exists ${srcdir}/../tests/all]} then {
+  perror "File \"all\" is missing" 0
+  return -1
+}
+
+# This is safe because the itcl tests don't create any temporary
+# files.  If they did, we'd have to edit the test suite so that it
+# could be run from a non-srcdir, like we did for the Tcl test suite.
+expect "% "
+send "cd ${srcdir}/../tests; source all; exit\n"
+
+expect {
+  -re ">>>> PASSED TEST (\[^\r\n\]*)\[\r\n\]+" {
+    pass $expect_out(1,string)
+    exp_continue
+  }
+
+  -re ">>>> FAILED TEST (\[^\r\n\]*)\[\r\n\]+" {
+    fail $expect_out(1,string)
+    exp_continue
+  }
+
+  "== ALL TESTS SUCCESSFUL ==" {
+    # Done.
+  }
+}
+
+catch close

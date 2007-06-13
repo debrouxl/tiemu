@@ -1,0 +1,2 @@
+
+gchar *s = N_("Set program entry breakpoint");

@@ -1,0 +1,39 @@
+2007-04-04  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * m68k-dis.c (print_insn_arg): Don't accept floating-point immediates.
+          (NEXTSINGLE, NEXTDOUBLE, NEXTEXTEND, NEXTPACKED): Remove.
+          (print_insn_arg): Only accept %usp and %ssp as special registers on the 68000.
+                            Handle failure return from print_indexed.
+          (print_indexed): Only allow valid indexed addressing on the 68000.
+          (m68k_scan_mask): Fix handling of 4-byte F-Line jumps.
+
+2006-05-14  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * m68k-dis.c (m68k_scan_mask): Remove excess spaces. Fix a use of $ instead of 0x.
+
+2005-05-22  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * m68k-dis.c (m68k_scan_mask): Handle A-Line (ER_throw) instructions.
+
+2005-05-11  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * m68k-dis.c: Use asm_setjmp and asm_longjmp on Win32.
+
+2005-04-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * m68k-dis.c (print_insn_arg): Use Motorola syntax. Use %ssp, not %isp.
+          (print_indexed): Use Motorola syntax.
+        * m68k-opc.c (m68k_opcode_aliases): Disable.
+          (m68k_opcodes): Add the optional dots to increase readability.
+
+2005-04-29  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * Merge from TIGCC:
+          2002-01-10  Stephan Effelsberg  <b012414@dvz.fh-koeln.de>
+          * m68k-opc.c (m68k_opcodes): Fix cmpi operand constraints when aliased as cmp. 
+                                       (Don't allow PC-relative or indexed PC-relative
+                                        second operand.)
+        * m68k-dis.c: Include handles.h and romcalls.h.
+          (NEXTUWORD): New macro.
+          (print_insn_m68k): Handle F-Line instructions (ported from Romain Liévin's code in m68kdasm.c).
+          (print_insn_arg): Print both displacement and target for branches.

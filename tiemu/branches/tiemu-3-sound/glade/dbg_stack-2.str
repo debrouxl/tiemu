@@ -1,0 +1,5 @@
+gchar *s = N_("Stack/Frame pointers");
+gchar *s = N_("A7 (stack) is:");
+gchar *s = N_("USP");
+gchar *s = N_("A7 (stack)");
+gchar *s = N_("A6 (frame)");

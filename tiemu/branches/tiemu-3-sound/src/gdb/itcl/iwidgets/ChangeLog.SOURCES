@@ -1,0 +1,11 @@
+2006-03-21  Keith Seitz  <keiths@redhat.com>
+
+	From Pavel Roskin <proski@gnu.org>:
+	* tcl.m4 (SC_CONFIG_CFLAGS, SC_BLOCKING_STYLE) :  Remove
+	unmatched single quote inside backticks. Not used but better
+	safe than sorry.
+
+2003-02-24  Keith Seitz  <keiths@redhat.com>
+
+	* Makefile.in (distclean): Remove pkgIndex.tcl and iwidgets.tcl, too.
+

@@ -1,0 +1,43 @@
+How to debug TiEmu
+==================
+
+NOTE: This is ONLY about debugging TiEmu itself, NOT about using the TiEmu
+      debugger.
+
+I. Introduction
+
+When built with GDB support enabled, TiEmu is a mixed C and Tcl (with portions
+of C++ for KDE or OLE Automation support) program. Most of TiEmu is C code, this
+can be debugged using GDB or a GDB frontend of your choice. The C++ code can
+also be debugged this way. However, GDB doesn't support debugging interpreted
+languages such as Tcl. Luckily, there's a solution available: the TclPro
+debugger, which has been made Free Software in 2000.
+
+II. Debugging the Tcl code in TiEmu with TclPro
+
+Here's a step-by-step guide to using the TclPro debugger to debug the Tcl/Tk
+code in TiEmu's copy of Insight:
+1. If you haven't installed TclPro yet, do it now. Under Fedora, use:
+   yum install tclpro
+2. Start the TclPro debugger, either from the menu, or:
+   prodebug
+3. Set the TclPro debugger to remote debugging:
+   File / New Project... / Remote Debugging / OK
+4. Open a terminal emulator (command window).
+5. Tell Insight to load the TclPro debugging stub (in the terminal):
+   export DEBUG_STUB=/usr/bin/initdebug.tcl
+   The stub takes care of instrumenting the Tcl code for debugging and
+   connecting to the running TclPro debugger.
+6. Start TiEmu (in the same terminal):
+   tiemu
+
+As soon as TiEmu initializes GDB (i.e. after you select a ROM to emulate), the
+connection to the TclPro debugger will be established. You can now click "Run"
+in the TclPro debugger and/or use any of its debugging features.
+
+Note that it is possible to use the TclPro debugger together with GDB if you
+need to debug both the C and the Tcl code. GDB works at machine code level,
+the TclPro debugger works by instrumenting the Tcl code, so they don't interfere
+with each other.
+
+        Kevin Kofler
