@@ -410,10 +410,10 @@ static const gchar* create_fsel_3(gchar *dirname, gchar *filename, gchar *ext, g
                                 NavReplyRecord reply;
                                 if (NavDialogGetReply(ref,&reply)  == kNavNormalState) {
                                         FSRef fsref;
+                                        AEGetNthPtr(&reply.selection,1,typeFSRef,0,0,&fsref,sizeof(FSRef),0);
                                         fname = g_malloc(PATH_SIZE);
                                         memset(fname,0,PATH_SIZE);
-                                        GetFSRefFromAEDesc(&fsref,&reply.selection);
-                                        if (FSRefMakePath (&fsref,(UInt8*)fname,PATH_SIZE-1)==noErr) {
+                                        if (FSRefMakePath (&fsref,(UInt8*)fname,PATH_SIZE-(save?1:0))==noErr) {
                                                 if (save) {
                                                         strcat(fname,"/");
                                                         CFStringGetCString(reply.saveFileName,fname+strlen(fname),PATH_SIZE-strlen(fname),kCFStringEncodingUTF8);
@@ -786,22 +786,17 @@ static gchar** create_fsels_3(gchar *dirname, gchar *filename, gchar *ext)
                                 NavReplyRecord reply;
                                 if (NavDialogGetReply(ref,&reply) == kNavNormalState) {
                                         long count;
-                                        AEKeyword keyword;
-                                        DescType type;
-                                        Size size;
-
                                         AECountItems(&reply.selection, &count);
                                         if (count) {
                                                 filenames = (gchar **) g_malloc0((count+1)*sizeof(gchar*));
                                                 while(count>0) {
-                                                        count--;
-                                                        AEGetNthPtr(&reply.selection,count+1,typeFileURL,&keyword,&type,0,0,&size);
-                                                        filenames[count] = (gchar *) g_malloc(size);
-                                                        AEGetNthPtr(&reply.selection,count+1,typeFileURL,&keyword,&type,filenames[count],size,&size);
-                                                        filenames[count][size]=0;
-                                                        if(strncmp(filenames[count], "file://localhost", 16) == 0) {
-                                                                memmove(filenames[count],filenames[count]+16,size-16);
-                                                                filenames[count][size-16]=0;
+                                                        FSRef fsref;
+                                                        AEGetNthPtr(&reply.selection,count--,typeFSRef,0,0,&fsref,sizeof(FSRef),0);
+                                                        filenames[count] = g_malloc(PATH_SIZE);
+                                                        memset(filenames[count],0,PATH_SIZE);
+                                                        if (FSRefMakePath (&fsref,(UInt8*)filenames[count],PATH_SIZE)!=noErr) {
+                                                               g_strfreev(filenames);
+                                                               filenames = NULL;
                                                         }
                                                 }
                                         }
