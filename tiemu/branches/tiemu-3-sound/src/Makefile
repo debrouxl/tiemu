@@ -1,27 +1,27 @@
 ## Process this file with autoconf to produce Makefile
 
-@SET_MAKE@
-CC        = @CC@
-CPP       = @CPP@
-CXX       = @CXX@
-CFLAGS    = @CFLAGS@ @TICONV_CFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@ @INCINTL@
-LDFLAGS   = @LDFLAGS@ @TICONV_LIBS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ @LIBZ@ -lSDL $(extra_ldflags)
-CXXFLAGS  = @CXXFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@
-MOC       = @MOC@
-DCOPIDL   = @DCOPIDL@
-DCOPIDL2CPP = @DCOPIDL2CPP@
+
+CC        = gcc
+CPP       = gcc -E
+CXX       = g++
+CFLAGS    = -g -O2 -D__I386__ -D__LINUX__ -fvisibility=hidden -DGTK_DISABLE_DEPRECATED -DDEBUGGER -I/usr/include/tilp2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -I/usr/include/tilp2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -I/usr/include/tilp2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -I/usr/include/tilp2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -I/usr/include/libglade-2.0 -I/usr/include/gtk-2.0 -I/usr/include/libxml2 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   
+LDFLAGS   =  -Wl,--export-dynamic -lticonv -lglib-2.0   -lticables2 -lglib-2.0   -ltifiles2 -lticonv -lglib-2.0   -lticalcs2 -lticables2 -ltifiles2 -lticonv -lglib-2.0   -lglib-2.0   -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpng12 -lm -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0   -lglade-2.0 -lgtk-x11-2.0 -lxml2 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpng12 -lm -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0   -lz -lSDL $(extra_ldflags)
+CXXFLAGS  = -g -O2 -D__I386__ -D__LINUX__ -fvisibility=hidden -DGTK_DISABLE_DEPRECATED -DDEBUGGER -fno-rtti -fno-exceptions -I/usr/include/tilp2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -I/usr/include/tilp2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -I/usr/include/tilp2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -I/usr/include/libglade-2.0 -I/usr/include/gtk-2.0 -I/usr/include/libxml2 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  
+MOC       = /usr/lib/qt-3.3/bin/moc
+DCOPIDL   = /usr/bin/dcopidl
+DCOPIDL2CPP = /usr/bin/dcopidl2cpp
 RC       ?= windres
 
-kde       = @kde@
-dbus      = @dbus@
+kde       = yes
+dbus      = no
 
 #DESTDIR   =
 
 ifneq (,$(findstring NO_GDB,$(CFLAGS)))
 ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
-	LDFLAGS += @LIBINTL@
+	LDFLAGS += 
 else
-	LDFLAGS += @LTLIBINTL@
+	LDFLAGS += 
 endif
 endif
 
@@ -35,21 +35,21 @@ else
 	EXEEXT =
 endif
 
-INSTALL         = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA    = @INSTALL_DATA@
-prefix          = @prefix@
-exec_prefix     = @exec_prefix@
-bindir          = @bindir@
-libdir          = @libdir@
-sysconfdir      = @sysconfdir@
+INSTALL         = /usr/bin/install -c -p
+INSTALL_PROGRAM = ${INSTALL} $(INSTALL_STRIP_FLAG)
+INSTALL_DATA    = ${INSTALL} -m 644
+prefix          = /usr/local
+exec_prefix     = ${prefix}
+bindir          = ${exec_prefix}/bin
+libdir          = ${exec_prefix}/lib
+sysconfdir      = ${prefix}/etc
 
 .SUFFIXES: .o .c .cpp .h .m .i .S .rc .res
 .NOTPARALLEL:
 
 ifeq ($(kde), yes)
-kdeincludes = @all_includes@
-kdelibraries = @LIB_KDECORE@ @LIB_KDEUI@ @LIB_KIO@ @LIB_QT@ @KDE_LDFLAGS@ @QT_LDFLAGS@ @X_LDFLAGS@
+kdeincludes = -I/usr/include/kde -I/usr/lib/qt-3.3/include -I. 
+kdelibraries = -lkdecore -lkdeui -lkio -lqt-mt  $(LIBPNG) -lXext $(LIB_X11) $(LIBSM) -lpthread -L/usr/lib -L/usr/lib/qt-3.3/lib -L/usr/lib
 kde_OBJ = kde/kde.o kde/kde-private.o   ipc/dcop/dcop.o ipc/dcop/dcop-private.o ipc/dcop/dcop_skel.o
 kdeprivsources = kde/kde-private.cpp ipc/dcop/dcop-private.cpp ipc/dcop/dcop.kidl ipc/dcop/dcop_skel.cpp
 kde/kde-private.cpp: kde/kde-private.h
@@ -62,14 +62,14 @@ ipc/dcop/dcop_skel.cpp: ipc/dcop/dcop.kidl
 	$(DCOPIDL2CPP) --no-stub ipc/dcop/dcop.kidl
 endif
 
-DEFS=@DEFS@ \
+DEFS=-DHAVE_CONFIG_H \
 	-DSHARE_DIR=\"${prefix}/share/tiemu\" \
 	-DLOCALEDIR=\"${prefix}/share/locale\"
 #	-DSHARE_DIR=\"$(pkgdatadir)\" \
 #	-DLOCALEDIR=\"$(datadir)/locale\"
 
 INCLUDES = \
-	-I@top_srcdir@ -I$(includedir) \
+	-I.. -I$(includedir) \
 	-DPREFIX=\"${prefix}\" -I. \
 	-I./core -I./core/uae -I./core/ti_hw -I./core/ti_sw -I./core/dbg \
 	-I./gui -I./gui/calc -I./gui/debugger \
@@ -78,12 +78,12 @@ INCLUDES = \
 	-I./misc
 
 ifeq ($(dbus), yes)
-LDFLAGS += @DBUS_GLIB_LIBS@
+LDFLAGS += 
 dbus_OBJ = ipc/dbus/dbus_ipc.o
 ipc/dbus/dbus_glue.h: ipc/dbus/dbus_ipc.xml
 	dbus-binding-tool --mode=glib-server --output=ipc/dbus/dbus_glue.h --prefix=tiemudbus ipc/dbus/dbus_ipc.xml
 ipc/dbus/dbus_ipc.o: ipc/dbus/dbus_ipc.c ipc/dbus/dbus_ipc.h ipc/dbus/dbus_glue.h
-	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS) @DBUS_GLIB_CFLAGS@ ipc/dbus/dbus_ipc.c -o ipc/dbus/dbus_ipc.o
+	$(CC) $(INCLUDES) $(DEFS) -c $(CFLAGS)  ipc/dbus/dbus_ipc.c -o ipc/dbus/dbus_ipc.o
 endif
 
 # source files to build
@@ -315,12 +315,12 @@ endif
 
 distdir: clean
 ifneq (,$(findstring NO_GDB,$(CFLAGS)))
-	cp -rl core kde ipc gui misc Makefile ../tiemu-@VERSION@/src
+	cp -rl core kde ipc gui misc Makefile ../tiemu-3.00/src
 else
 	cp -rl core kde ipc gui misc Makefile \
-	gdb cleangdbsources.sh	../tiemu-@VERSION@/src
+	gdb cleangdbsources.sh	../tiemu-3.00/src
 endif
-	find ../tiemu-@VERSION@/src -name .svn -exec rm -rf "{}" \\; 2>/dev/null
+	find ../tiemu-3.00/src -name .svn -exec rm -rf "{}" \\; 2>/dev/null
 
 dos2unix:
 	dos2unix

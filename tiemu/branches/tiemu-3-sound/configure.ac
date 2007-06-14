@@ -102,6 +102,9 @@ AC_CHECK_HEADERS(stdint.h)
 AC_CHECK_HEADERS([tilp2/ticables.h tilp2/ticalcs.h tilp2/tifiles.h])
 dnl AC_CHECK_HEADERS([Carbon/Carbon.h])
 
+AC_CHECK_HEADERS(SDL/SDL.h)
+AC_CHECK_LIB(SDL, SDL_Init)
+
 dnl # Add Carbon framework if detected
 dnl if test x"$ac_cv_header_Carbon_Carbon_h" = xyes ; then
 dnl   LDFLAGS="$LDFLAGS -framework Carbon"
