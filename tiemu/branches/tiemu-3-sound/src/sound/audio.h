@@ -36,6 +36,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #define BUFFER_SIZE 8192
 
+extern int audio_isactive;
 extern int audioerr;
 
 extern int mix_volume;

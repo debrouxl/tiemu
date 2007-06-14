@@ -6,7 +6,7 @@
  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
- *  Copyright (c) 2004, Romain Liï¿½vin
+ *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005-2007, Romain Liï¿½vin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -114,7 +114,6 @@ static void my_log_handler                  (const gchar *log_domain,
 int main(int argc, char **argv) 
 {
 	int err;
-	
     
 
 	/*
@@ -142,13 +141,13 @@ int main(int argc, char **argv)
 	/* Scan and modify command line */
 	scan_cmdline(argc, argv);
 
-	audioerr=0;
 
 	//init audio lib
 	if(init_audio()) {
-		fprintf(stderr,"Unable to initalize audio, sound will not play\n");
+		tiemu_warning(_("Unable to initalize audio, sound will not play\n"));
 		audioerr=1;
 	}
+
 
 
     /* 
@@ -379,8 +378,6 @@ int main(int argc, char **argv)
 		err = ti68k_exit();
 		handle_error();
 
-		if(!audioerr)
-			disable_audio();
 
 		ti68k_unload_image_or_upgrade();
 	}
