@@ -33,6 +33,7 @@ void stream_audio(void *unused, Uint8 *stream, int len) {
 void push_amplitudes(char left, char right) {
 	static int warned=0;
 
+	SDL_LockAudio();
 	
 	if(bufpos<BUFFER_SIZE) {
 		*(buffer+bufpos)=left;
@@ -44,7 +45,7 @@ void push_amplitudes(char left, char right) {
 		warned=1;
 	}
 	
-	
+	SDL_UnlockAudio();
 
 }
 
