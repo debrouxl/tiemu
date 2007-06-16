@@ -73,7 +73,7 @@ extern int asm_setjmp(jmp_buf b);
 #include "romversion.h"
 
 #ifndef NO_SOUND
-#include "../sound/audio.h"
+#include "audio.h"
 #endif
 
 #ifndef NO_GDB

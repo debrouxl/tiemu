@@ -23,11 +23,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <glib.h>
 
-#include "SDL/SDL.h"
-#include "SDL/SDL_audio.h"
-#include "math.h"
+#include <SDL/SDL.h>
+#include <SDL/SDL_audio.h>
+#include <math.h>
 
-#include "../misc/logging.h"
+#include "logging.h"
 
 //define for console output verbosity
 //#define DEBUG_ALL
