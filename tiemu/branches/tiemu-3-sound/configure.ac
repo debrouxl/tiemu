@@ -3,7 +3,7 @@ dnl $Id: configure.in 409 2004-06-07 21:10:20Z roms $
 
 dnl Init.
 AC_PREREQ(2.57)
-AC_INIT(TiEmu, 3.00, [tiemu-users@lists.sourceforge.net])
+AC_INIT(TiEmu, 3.01, [tiemu-users@lists.sourceforge.net])
 
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
@@ -102,9 +102,6 @@ AC_CHECK_HEADERS(stdint.h)
 AC_CHECK_HEADERS([tilp2/ticables.h tilp2/ticalcs.h tilp2/tifiles.h])
 dnl AC_CHECK_HEADERS([Carbon/Carbon.h])
 
-AC_CHECK_HEADERS(SDL/SDL.h)
-AC_CHECK_LIB(SDL, SDL_Init)
-
 dnl # Add Carbon framework if detected
 dnl if test x"$ac_cv_header_Carbon_Carbon_h" = xyes ; then
 dnl   LDFLAGS="$LDFLAGS -framework Carbon"
@@ -148,6 +145,26 @@ case $host in
   *)                     ARCH="-D__LINUX__" ;;
 esac
 CFLAGS="$CFLAGS $ARCH"
+
+# Check for SDL if sound support is wanted
+AC_ARG_ENABLE(sound,
+  AC_HELP_STRING([--disable-sound], [disable sound emulation]),
+  [tiemu_use_sound=$enableval], [tiemu_use_sound=yes])
+AC_CACHE_CHECK([whether to enable sound emulation],
+  [tiemu_use_sound], [tiemu_use_sound=yes])
+if test "x$tiemu_use_sound" = "xyes"; then
+        SDL_VERSION=1.2.0
+        AM_PATH_SDL($SDL_VERSION,
+                    :,
+                    AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
+        )
+else
+        CFLAGS="$CFLAGS -DNO_SOUND"
+        SDL_CFLAGS=
+        SDL_LIBS=
+fi
+AC_SUBST(SDL_CFLAGS)
+AC_SUBST(SDL_LIBS)
 
 # KDE dialogs support
 AC_ARG_WITH(kde, AC_HELP_STRING([--without-kde], [Compile without KDE support]), [kde=$withval], [kde=default])
