@@ -21,13 +21,17 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 int bufpos;
 
 void stream_audio(void *unused, Uint8 *stream, int len) {
-	
+	int spill=bufpos-len;
+
+
 	//mix each playing voice into the audio stream len bytes at a time
 	memcpy(stream,buffer,len);
 
+	memmove(buffer,buffer+len,spill);
+	memset(buffer+spill,0,bufpos-spill);
+
 	//reset the buffer
-	bufpos=0;
-	memset(buffer,0,BUFFER_SIZE);
+	bufpos=spill;
 }  
 
 void push_amplitudes(char left, char right) {
