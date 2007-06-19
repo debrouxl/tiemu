@@ -21,6 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 int audio_isactive;
 int audioerr;
+int bufsize;
 
 int mix_volume;
 char *buffer;
@@ -51,13 +52,15 @@ int init_audio(void) {
 
 	audio_isactive=0;
 
+	bufsize=BUFFER_SIZE_REQUESTED;
+
 	return 0;
 
 }
 
 
 int enable_audio(void) {
-	buffer=malloc(BUFFER_SIZE);
+	buffer=malloc(BUFFER_SIZE_REQUESTED);
 	
 	if(!buffer) {
 		tiemu_error(_("Unable to enable sound: Memory\n"));

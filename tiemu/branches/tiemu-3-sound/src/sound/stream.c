@@ -21,28 +21,46 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 int bufpos;
 
 void stream_audio(void *unused, Uint8 *stream, int len) {
+	static int warned=1; //inverted logic
+	int spill=bufpos-len;
+
+	//allocate larger buffer.  if allocation fails, retry next time
+	if(len>bufsize || !warned) {
+		buffer=realloc(buffer,len);
+		if(!buffer) {
+			if(warned) {
+				tiemu_warning(_("could not allocate bigger stream buffer, sound may not play"));
+				warned=0;
+			}
+			return;
+		}
+		else warned=1;
+
+		bufsize=len;
+	}
 	
-	//mix each playing voice into the audio stream len bytes at a time
 	memcpy(stream,buffer,len);
 
 	//reset the buffer
-	bufpos=0;
-	memset(buffer,0,BUFFER_SIZE);
+	bufpos=spill;
+	memset(buffer,0,spill);
+	
+	memmove(buffer,buffer+len,spill);
 }  
 
 void push_amplitudes(char left, char right) {
-	static int warned=0;
+	static int warned=1; //inverted logic to save on one operation
 
 	SDL_LockAudio();
 	
-	if(bufpos<BUFFER_SIZE) {
+	if(bufpos<bufsize) {
 		*(buffer+bufpos)=left;
 		*(buffer+bufpos+1)=right;
 		bufpos+=2;
 	}
-	else if(!warned) {
+	else if(warned) {
 		tiemu_warning(_("sound buffer full, dropping sample(s)"));
-		warned=1;
+		warned=0;
 	}
 	
 	SDL_UnlockAudio();
