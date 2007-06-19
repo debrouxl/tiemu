@@ -29,13 +29,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "logging.h"
 
+//define for console output verbosity
+//#define DEBUG_ALL
+
 #define AMP_MAX 127
 
-#define BUFFER_SIZE_REQUESTED 8192
+#define BUFFER_SIZE 8192
 
 extern int audio_isactive;
 extern int audioerr;
-extern int bufsize;
 
 extern int mix_volume;
 extern char *buffer;
