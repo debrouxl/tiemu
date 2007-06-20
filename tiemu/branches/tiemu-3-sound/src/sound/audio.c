@@ -84,8 +84,8 @@ void disable_audio(void) {
 	if(audio_isactive) {
 		//stop streaming audio
 		SDL_CloseAudio();
-		free(buffer);
 		audio_isactive=0;
+		free(buffer);
 	}
 }
 

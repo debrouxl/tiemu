@@ -92,9 +92,6 @@ typedef struct
     int lcd_rate;       // synched OSC2 (hw1) or OSC3 (hw2)
     int hw_protect;     // HW protection
     int recv_file;      // receive file enabled/disabled
-#ifndef NO_SOUND
-    int emulate_sound;  // sound emulation enabled/disabled
-#endif
 } Ti68kParameters;
 
 /* 

@@ -7,8 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
- *  Copyright (c) 2007, Romain Liévin
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -101,7 +100,6 @@ on_recv_file_from_tiemu1_activate     (GtkMenuItem     *menuitem,
 	active = GTK_CHECK_MENU_ITEM(menuitem)->active;
 #ifndef NO_SOUND
 	if (active) {
-		params.emulate_sound = 0;
 		disable_audio();
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(
 			glade_xml_get_widget(xml, "emulate_sound1"), 0);
@@ -122,9 +120,7 @@ on_emulate_sound1_activate     (GtkMenuItem     *menuitem,
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(
 			glade_xml_get_widget(xml, "recv_file_from_tiemu1"), 0);
 		enable_audio();
-	}
-	params.emulate_sound = active;
-	if (!active)
+	} else
 		disable_audio();
 #endif
 }
@@ -648,7 +644,7 @@ GtkWidget* display_popup_menu(void)
 #ifdef NO_SOUND
 	gtk_widget_set_sensitive(data, FALSE);
 #else
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.emulate_sound);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), audio_isactive);
 #endif
 
 	data = glade_xml_get_widget(xml, "restrict1");

@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -109,7 +109,6 @@ int ti68k_config_load_default(void)
 	params.hw_protect = 1;
 	params.recv_file = 1;
 #ifndef NO_SOUND
-	params.emulate_sound = 0;
 	disable_audio();
 #endif
 
