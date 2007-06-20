@@ -30,7 +30,6 @@ SDL_AudioSpec format;
 
 //sets up everything for use
 int init_audio(void) {
-	
 	//initialize SDL for Audio
 	if(SDL_Init(SDL_INIT_AUDIO)<0) {
 		tiemu_error(_("Unable to initialize sound: SDL: %s\n"), SDL_GetError());
@@ -52,11 +51,13 @@ int init_audio(void) {
 	audio_isactive=0;
 
 	return 0;
-
 }
 
 
 int enable_audio(void) {
+	if (audio_isactive)
+		return;
+	
 	buffer=malloc(BUFFER_SIZE);
 	
 	if(!buffer) {
@@ -80,7 +81,6 @@ int enable_audio(void) {
 }
 
 void disable_audio(void) {
-	
 	if(audio_isactive) {
 		//stop streaming audio
 		SDL_CloseAudio();
