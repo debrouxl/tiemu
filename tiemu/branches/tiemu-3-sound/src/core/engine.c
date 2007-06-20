@@ -84,7 +84,7 @@ static gboolean engine_func(gint *data)
 	gint    res;
 	
 	// set instruction rate
-	cpu_cycles = num_cycles_per_loop();
+	cpu_cycles = engine_num_cycles_per_loop();
 
 	// run emulation core
 	res = hw_m68k_run(cpu_cycles / MIN_INSTRUCTIONS_PER_CYCLE, cpu_cycles);

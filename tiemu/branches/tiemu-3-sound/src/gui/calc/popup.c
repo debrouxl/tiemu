@@ -99,11 +99,8 @@ on_recv_file_from_tiemu1_activate     (GtkMenuItem     *menuitem,
 	if(engine_is_stopped()) return;
 	active = GTK_CHECK_MENU_ITEM(menuitem)->active;
 #ifndef NO_SOUND
-	if (active) {
+	if (active)
 		disable_audio();
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(
-			glade_xml_get_widget(xml, "emulate_sound1"), 0);
-	}
 #endif
 	params.recv_file = active;
 }
@@ -113,12 +110,11 @@ on_emulate_sound1_activate     (GtkMenuItem     *menuitem,
                                 gpointer         user_data)
 {
 #ifndef NO_SOUND
+	int active;
 	if(engine_is_stopped()) return;
 	active = GTK_CHECK_MENU_ITEM(menuitem)->active;
 	if (active) {
 		params.recv_file = 0;
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(
-			glade_xml_get_widget(xml, "recv_file_from_tiemu1"), 0);
 		enable_audio();
 	} else
 		disable_audio();
