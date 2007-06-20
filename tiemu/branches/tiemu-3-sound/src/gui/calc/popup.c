@@ -41,7 +41,7 @@
 #include "version.h"
 #include "popup.h"
 #include "paths.h"
-#include "../engine.h"
+#include "engine.h"
 #include "fs_misc.h"
 #include "device.h"
 #include "rcfile.h"
@@ -58,6 +58,9 @@
 #include "quicksend.h"
 #include "filesel.h"
 #include "keypress.h"
+#ifndef NO_SOUND
+#include "audio.h"
+#endif
 
 #include "ti68k_int.h"
 #include "ti68k_def.h"
@@ -96,14 +99,18 @@ on_recv_file_from_tiemu1_activate     (GtkMenuItem     *menuitem,
 	int active;
 	if(engine_is_stopped()) return;
 	active = GTK_CHECK_MENU_ITEM(menuitem)->active;
+#ifndef NO_SOUND
 	if (active) {
 		params.emulate_sound = 0;
+		disable_audio();
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(
 			glade_xml_get_widget(xml, "emulate_sound1"), 0);
 	}
+#endif
 	params.recv_file = active;
 }
 
+#ifndef NO_SOUND
 GLADE_CB void
 on_emulate_sound1_activate     (GtkMenuItem     *menuitem,
                                 gpointer         user_data)
@@ -114,9 +121,13 @@ on_emulate_sound1_activate     (GtkMenuItem     *menuitem,
 		params.recv_file = 0;
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(
 			glade_xml_get_widget(xml, "recv_file_from_tiemu1"), 0);
+		enable_audio();
 	}
 	params.emulate_sound = active;
+	if (!active)
+		disable_audio();
 }
+#endif
 
 
 GLADE_CB void
@@ -634,7 +645,11 @@ GtkWidget* display_popup_menu(void)
 	data = glade_xml_get_widget(xml, "recv_file_from_tiemu1");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.recv_file);
 	data = glade_xml_get_widget(xml, "emulate_sound1");
+#ifdef NO_SOUND
+	gtk_widget_set_sensitive(data, FALSE);
+#else
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), params.emulate_sound);
+#endif
 
 	data = glade_xml_get_widget(xml, "restrict1");
 	g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_restrict_to_actual_speed1_activate, NULL);

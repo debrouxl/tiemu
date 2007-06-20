@@ -46,6 +46,9 @@
 #include "m68k.h"
 #include "dbus.h"
 #include "logging.h"
+#ifndef NO_SOUND
+#include "audio.h"
+#endif
 
 #include "ti68k_int.h"
 #include "ti68k_err.h"
@@ -105,7 +108,10 @@ int ti68k_config_load_default(void)
 	params.lcd_rate = -1;
 	params.hw_protect = 1;
 	params.recv_file = 1;
+#ifndef NO_SOUND
 	params.emulate_sound = 0;
+	disable_audio();
+#endif
 
 	linkp.cable_delay = DFLT_DELAY;
 	linkp.cable_timeout = is_win_9x() ? 600 : DFLT_TIMEOUT;
