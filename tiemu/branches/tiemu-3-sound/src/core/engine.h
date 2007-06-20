@@ -28,13 +28,12 @@
 #ifndef __ENGINE_H__
 #define __ENGINE_H__
 
-#define ENGINE_TIME_LIMIT      30	// 30 ms
-#define MIN_INSTRUCTIONS_PER_CYCLE 4 	// instructions take at least 4 cycles
+#define ENGINE_TIME_LIMIT 30 // 30 ms
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-int num_cycles_per_loop(void);
+int engine_num_cycles_per_loop(void);
 
 void engine_calibrate(void);
 
