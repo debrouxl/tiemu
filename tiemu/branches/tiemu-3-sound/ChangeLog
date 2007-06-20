@@ -4,6 +4,8 @@ SubVersion: $Id$
 	- [hypersonic] $2509-2513: implemented low-level SDL code for sound emulation
 	- [kevin] $2515: added configure checks for SDL and --disable-sound configure option
 	- [kevin] $2520: added "Emulate sound" checkbox to the popup menu
+	- [kevin] $2527: cleaned up time handling (using gettimeofday everywhere, Win32 implementation taken from kdewin32,
+	                 not incorrectly attempting to measure wall clock time with clock() anymore)
 
 - 16/03/2007, version 3.00
 	- [kevin] $2389: don't use \n in the breakpoint window status bar

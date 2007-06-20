@@ -127,7 +127,7 @@ AC_SUBST(LIBZ)
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT 
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([bzero ftime memset mkdir select strchr strrchr strstr])
+AC_CHECK_FUNCS([bzero memset mkdir select strchr strrchr strstr])
 
 # Platform specific tests.
 CFLAGS_FOR_BUILD="$CFLAGS"

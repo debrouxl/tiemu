@@ -31793,8 +31793,7 @@ done
 
 
 
-
-for ac_func in bzero ftime memset mkdir select strchr strrchr strstr
+for ac_func in bzero memset mkdir select strchr strrchr strstr
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 { echo "$as_me:$LINENO: checking for $ac_func" >&5
@@ -37600,7 +37599,7 @@ for i in $jpeg_incdirs;
 do
   for j in jpeglib.h;
   do
-    echo "configure: 37603: $i/$j" >&5
+    echo "configure: 37602: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       jpeg_incdir=$i
@@ -37835,7 +37834,7 @@ for i in $qt_incdirs;
 do
   for j in $kde_qt_header;
   do
-    echo "configure: 37838: $i/$j" >&5
+    echo "configure: 37837: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       qt_incdir=$i
@@ -38625,7 +38624,7 @@ for i in $kde_incdirs;
 do
   for j in $kde_check_header;
   do
-    echo "configure: 38628: $i/$j" >&5
+    echo "configure: 38627: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       kde_incdir=$i
@@ -38654,7 +38653,7 @@ for i in $kde_libdirs;
 do
   for j in $kde_check_lib;
   do
-    echo "configure: 38657: $i/$j" >&5
+    echo "configure: 38656: $i/$j" >&5
     if test -r "$i/$j"; then
       echo "taking that" >&5
       kde_libdir=$i
