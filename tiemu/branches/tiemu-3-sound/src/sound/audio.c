@@ -18,6 +18,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "audio.h"
 #include "stream.h"
+#include "dboxes.h"
 
 int audio_isactive;
 int audioerr;
@@ -32,7 +33,7 @@ SDL_AudioSpec format;
 int init_audio(void) {
 	//initialize SDL for Audio
 	if(SDL_Init(SDL_INIT_AUDIO)<0) {
-		tiemu_error(_("Unable to initialize sound: SDL: %s\n"), SDL_GetError());
+		msg_box1(_("Unable to initialize sound"),_(SDL_GetError());
 		return -1;
 	}
 	
@@ -55,22 +56,23 @@ int init_audio(void) {
 
 
 int enable_audio(void) {
-	if (audio_isactive)
-		return;
+	if(audio_isactive)
+		return 0;
 	
 	buffer=malloc(BUFFER_SIZE);
 	
 	if(!buffer) {
-		tiemu_error(_("Unable to enable sound: Memory\n"));
+		msg_box1(_("Sound Error"),_("Not enough memory"));
 		return -1;
 	}
 	
 	memset(buffer,0,BUFFER_SIZE);
 	bufpos=0;
+
 	
 	//open the audio device
 	if(SDL_OpenAudio(&format,NULL)<0) {
-		tiemu_error(_("Unable to open audio device: SDL: %s\n"),SDL_GetError());
+		msg_box1(_("Unable to open audio device"),_(SDL_GetError());
 		return -1;
 	}
 	
@@ -78,6 +80,8 @@ int enable_audio(void) {
 	
 	//begin streaming audio
 	SDL_PauseAudio(0);
+
+	return 0;
 }
 
 void disable_audio(void) {
