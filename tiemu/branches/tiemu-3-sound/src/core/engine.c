@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,18 +49,6 @@ void sim_exception(int which);
 /* WARNING: This MUST match the definitions in GDB and sim. */
 #define SIGTRAP 5
 #endif
-
-/* 
-   The TI92/89 should approximately execute NB_CYCLES_PER_LOOP_HW[12] in 
-   TIME_LIMIT milliseconds (10.000.000 or 12.000.000 cycles/s).
-   If you think this values are a bit too big, you can slow down 
-   the emulator by changing them 
-*/
-#define NB_CYCLES_PER_LOOP_HW1 300000	// 300000 cycles in 30ms
-#define NB_CYCLES_PER_LOOP_HW2 360000	// 360000 cycles in 30ms
-#define NB_CYCLES_PER_LOOP_HW4 480000	// 480000 cycles in 30ms
-#define TIME_LIMIT               30	    // 30 ms
-#define MIN_INSTRUCTIONS_PER_CYCLE 4 	// instructions take at least 4 cycles
 
 static int cpu_cycles = NB_CYCLES_PER_LOOP_HW2;
 
@@ -107,7 +95,7 @@ static gboolean engine_func(gint *data)
 void engine_start(void) 
 {
 	if(params.restricted)
-		tid = g_timeout2_add_full(G_PRIORITY_DEFAULT_IDLE, TIME_LIMIT, 
+		tid = g_timeout2_add_full(G_PRIORITY_DEFAULT_IDLE, ENGINE_TIME_LIMIT, 
 				(GSourceFunc)engine_func, NULL, NULL);
 	else
 		tid = g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, 

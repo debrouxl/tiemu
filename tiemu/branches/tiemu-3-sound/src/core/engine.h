@@ -8,7 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
- *  Copyright (c) 2006 Kevin Kofler
+ *  Copyright (c) 2006-2007 Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,6 +27,18 @@
 
 #ifndef __ENGINE_H__
 #define __ENGINE_H__
+
+/* 
+   The TI92/89 should approximately execute NB_CYCLES_PER_LOOP_HW[12] in 
+   ENGINE_TIME_LIMIT milliseconds (10.000.000 or 12.000.000 cycles/s).
+   If you think this values are a bit too big, you can slow down 
+   the emulator by changing them 
+*/
+#define NB_CYCLES_PER_LOOP_HW1 300000	// 300000 cycles in 30ms
+#define NB_CYCLES_PER_LOOP_HW2 360000	// 360000 cycles in 30ms
+#define NB_CYCLES_PER_LOOP_HW4 480000	// 480000 cycles in 30ms
+#define ENGINE_TIME_LIMIT      30	// 30 ms
+#define MIN_INSTRUCTIONS_PER_CYCLE 4 	// instructions take at least 4 cycles
 
 #ifdef __cplusplus
 extern "C" {
