@@ -1,5 +1,10 @@
 SubVersion: $Id$
 
+- 20/06/2007, version 3.01
+	- [hypersonic] $2509-2513: implemented low-level SDL code for sound emulation
+	- [kevin] $2515: added configure checks for SDL and --disable-sound configure option
+	- [kevin] $2520: added "Emulate sound" checkbox to the popup menu
+
 - 16/03/2007, version 3.00
 	- [kevin] $2389: don't use \n in the breakpoint window status bar
 	- [kevin] $2390: fixed default hardware version for Voyage 200

@@ -99,12 +99,13 @@ static int is_win_9x(void)
  */
 int ti68k_config_load_default(void)
 {
-    params.restricted = 1;
-    params.cpu_rate = -1;
-    params.hw_rate = -1;
-    params.lcd_rate = -1;
-	params.hw_protect = !0;
+	params.restricted = 1;
+	params.cpu_rate = -1;
+	params.hw_rate = -1;
+	params.lcd_rate = -1;
+	params.hw_protect = 1;
 	params.recv_file = 1;
+	params.emulate_sound = 0;
 
 	linkp.cable_delay = DFLT_DELAY;
 	linkp.cable_timeout = is_win_9x() ? 600 : DFLT_TIMEOUT;
