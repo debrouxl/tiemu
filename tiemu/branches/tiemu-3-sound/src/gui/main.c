@@ -146,7 +146,7 @@ int main(int argc, char **argv)
 #ifndef NO_SOUND
 	//init audio lib
 	if(init_audio()) {
-		tiemu_warning(_("Unable to initalize audio, sound will not play\n"));
+		tiemu_warning(_("Unable to initialize audio, sound will not play\n"));
 		audioerr=1;
 	}
 #endif
