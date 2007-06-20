@@ -315,7 +315,7 @@ fi
 if test x$tiemu_use_gdb = xyes; then
   ac_configure_args="$ac_configure_args --target=m68k-coff --disable-tui --disable-werror"
   changequote(<<,>>)
-  ac_configure_args=`echo "$ac_configure_args" | sed "s,'CC=[^']*',,g;s,'CFLAGS=[^']*',,g;s,'CXX=[^']*',,g;s,'CXXFLAGS=[^']*',,g;s,'LDFLAGS=[^']*',,g;s,'build_alias=[^']*',,g;s,'host_alias=[^']*',,g;s,'target_alias=[^']*',,g"`
+  ac_configure_args=`echo "$ac_configure_args" | sed "s,'CC=[^']*',,g;s,'CFLAGS=[^']*',,g;s,'CXX=[^']*',,g;s,'CXXFLAGS=[^']*',,g;s,'LDFLAGS=[^']*',,g;s,'LIBS=[^']*',,g;s,'build_alias=[^']*',,g;s,'host_alias=[^']*',,g;s,'target_alias=[^']*',,g"`
   changequote([,])
   AC_CONFIG_SUBDIRS(src/gdb)
 fi
