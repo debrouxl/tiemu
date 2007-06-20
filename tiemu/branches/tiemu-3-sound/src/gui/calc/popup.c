@@ -110,11 +110,11 @@ on_recv_file_from_tiemu1_activate     (GtkMenuItem     *menuitem,
 	params.recv_file = active;
 }
 
-#ifndef NO_SOUND
 GLADE_CB void
 on_emulate_sound1_activate     (GtkMenuItem     *menuitem,
                                 gpointer         user_data)
 {
+#ifndef NO_SOUND
 	if(engine_is_stopped()) return;
 	active = GTK_CHECK_MENU_ITEM(menuitem)->active;
 	if (active) {
@@ -126,8 +126,8 @@ on_emulate_sound1_activate     (GtkMenuItem     *menuitem,
 	params.emulate_sound = active;
 	if (!active)
 		disable_audio();
-}
 #endif
+}
 
 
 GLADE_CB void
