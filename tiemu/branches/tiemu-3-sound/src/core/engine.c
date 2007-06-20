@@ -50,24 +50,40 @@ void sim_exception(int which);
 #define SIGTRAP 5
 #endif
 
+/* 
+   The TI92/89 should approximately execute NB_CYCLES_PER_LOOP_HW[12] in 
+   ENGINE_TIME_LIMIT milliseconds (10.000.000 or 12.000.000 cycles/s).
+   If you think this values are a bit too big, you can slow down 
+   the emulator by changing them 
+*/
+#define NB_CYCLES_PER_LOOP_HW1 300000	// 300000 cycles in 30ms
+#define NB_CYCLES_PER_LOOP_HW2 360000	// 360000 cycles in 30ms
+#define NB_CYCLES_PER_LOOP_HW4 480000	// 480000 cycles in 30ms
+
 static int cpu_cycles = NB_CYCLES_PER_LOOP_HW2;
 
 static guint tid = 0;
+
+// returns the instruction rate (default or custom value)
+int num_cycles_per_loop(void)
+{
+	if(params.cpu_rate != -1)
+		return params.cpu_rate;
+	else if (tihw.hw_type == HW1)
+		return NB_CYCLES_PER_LOOP_HW1;
+	else if (tihw.hw_type <= HW3)
+		return NB_CYCLES_PER_LOOP_HW2;
+	else
+		return NB_CYCLES_PER_LOOP_HW4;
+}
 
 // function called by g_timeout_add_full/g_idle_add_full
 static gboolean engine_func(gint *data)
 {
 	gint    res;
 	
-	// set instruction rate (default or custom value)
-    if(params.cpu_rate != -1)
-        cpu_cycles = params.cpu_rate;
-    else if (tihw.hw_type == HW1)
-        cpu_cycles = NB_CYCLES_PER_LOOP_HW1;
-    else if (tihw.hw_type <= HW3)
-        cpu_cycles = NB_CYCLES_PER_LOOP_HW2;
-    else
-        cpu_cycles = NB_CYCLES_PER_LOOP_HW4;
+	// set instruction rate
+	cpu_cycles = num_cycles_per_loop();
 
 	// run emulation core
 	res = hw_m68k_run(cpu_cycles / MIN_INSTRUCTIONS_PER_CYCLE, cpu_cycles);
