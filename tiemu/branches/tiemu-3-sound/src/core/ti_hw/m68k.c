@@ -162,6 +162,7 @@ int hw_m68k_run(int n, unsigned maxcycles)
 		unsigned int insn_cycles;
 #ifndef NO_SOUND
 		unsigned cutoff;
+		int low_power_mode = 0;
 #endif
 
 		// refresh hardware
@@ -188,7 +189,13 @@ int hw_m68k_run(int n, unsigned maxcycles)
 			cycle_count += 4; // cycle count for hw.c timers
 			tihw.lcd_tick += 4; // used by grayscale for time plane exposure
 
+#ifdef NO_SOUND
 			continue;
+#else
+			low_power_mode = 1;
+			insn_cycles = 4;
+			goto check_sound;
+#endif
 	    }		
 
 		// search for code breakpoint
@@ -256,6 +263,7 @@ int hw_m68k_run(int n, unsigned maxcycles)
 
 #ifndef NO_SOUND
 		// Sound emulation
+		check_sound:
 		if (audio_isactive)
 		{
 			cycles_sound_441 += insn_cycles * 441;
@@ -306,6 +314,8 @@ int hw_m68k_run(int n, unsigned maxcycles)
 			last_sound_event.tv_sec = last_sound_event.tv_usec = 0;
 			usecs_sound_441 = 0u;
 		}
+		if (low_power_mode)
+			continue;
 #endif
 
 #ifndef NO_GDB
