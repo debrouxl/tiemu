@@ -1,6 +1,6 @@
 /*Sound capability library for TI-Emu
-Copyright (C) 2007  Peter Fernandes
-supersonicandtails@gmail.com
+Copyright (C) 2007  Peter Fernandes  supersonicandtails@gmail.com
+Copyright (C) 2007  Kevin Kofler
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,7 +22,8 @@ int bufpos;
 
 void stream_audio(void *unused, Uint8 *stream, int len) {
 	int spill=bufpos-len;
-
+	if (spill < 0)
+		spill = 0;
 
 	//mix each playing voice into the audio stream len bytes at a time
 	memcpy(stream,buffer,len);
