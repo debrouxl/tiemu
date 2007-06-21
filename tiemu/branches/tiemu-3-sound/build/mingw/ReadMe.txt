@@ -167,8 +167,9 @@ Once you have successfully built TiLP2/TiEmu3, here's how to build an installer 
    /usr/local/i386-mingw32/lib/libstdc++.la
    and remove "-lmingwthrd".
 
-7. Download SDL (either source or prebuilt) from http://www.libsdl.org
-   If you go with the source, you can build a static library using the following options:
+7. Download the SDL source from http://www.libsdl.org (the binaries probably won't work due to iconv)
+   You can build a static library from the source using the following options:
+   source cross-mingw32-gtkaio.sh #(otherwise it won't find iconv and then get confused when it's there)
    ./configure --host=i386-mingw32 --prefix=... --disable-shared
    make
    make install
