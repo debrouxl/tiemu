@@ -178,7 +178,8 @@ int rtc3_state_load(void)
 }
 
 // When compiling without GDB, build the Win32 implementation of gettimeofday
-// here to avoid the makefile hackery.
+// here to avoid the makefile hackery. GDB-enabled builds build it as part of
+// libiberty.
 #if defined(_WIN32) && defined(NO_GDB)
-#include "../../gdb/libiberty/gettimeofday.c"
+#include "../../misc/gettimeofday_win32_impl.h"
 #endif
