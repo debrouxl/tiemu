@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,7 +44,8 @@
 #include "dbus.h"
 #include "gscales.h"
 #ifndef NO_SOUND
-#include "audio.h"
+#include "ports.h"
+#include "stream.h"
 #include "engine.h"
 #include "gettimeofday.h"
 #endif
@@ -285,7 +286,14 @@ int hw_m68k_run(int n, unsigned maxcycles)
 				usecs_sound_441 -= 10000u;
 			}
 			// push amplitudes now
-			// TODO: actually push them :-)
+			if(io_bit_tst(0x0c,6)) // direct_access
+				// bit 1 = left channel, bit 0 = right channel
+				// value 1 = low, value 0 = high
+				push_amplitudes(io_bit_tst(0x0e,1) ? 0 : 127,
+				                io_bit_tst(0x0e,0) ? 0 : 127);
+			else
+				// We don't even try to make sound out of byte-mode data...
+				push_amplitudes(0, 0);
 		}
 		skip_sound_processing: ;
 #endif
