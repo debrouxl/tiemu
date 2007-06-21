@@ -256,46 +256,56 @@ int hw_m68k_run(int n, unsigned maxcycles)
 
 #ifndef NO_SOUND
 		// Sound emulation
-		cycles_sound_441 += insn_cycles * 441;
-		cutoff = params.restricted
-		         // num_cycles_per_loop / (ENGINE_TIME_LIMIT * (44100/441) / 1000)
-		         ? (unsigned) engine_num_cycles_per_loop()
-		            / ((unsigned) ENGINE_TIME_LIMIT / 10u)
-		         // check every 100 cycles
-		         : 44100u;
-		if (cycles_sound_441 >= cutoff)
+		if (audio_isactive)
 		{
-			// keep excess cycles so we don't accumulate delays
-			cycles_sound_441 -= cutoff;
-			if (params.restricted)
+			cycles_sound_441 += insn_cycles * 441;
+			cutoff = params.restricted
+			         // num_cycles_per_loop / (ENGINE_TIME_LIMIT * (44100/441) / 1000)
+			         ? (unsigned) engine_num_cycles_per_loop()
+			            / ((unsigned) ENGINE_TIME_LIMIT / 10u)
+			         // check every 100 cycles
+			         : 44100u;
+			if (cycles_sound_441 >= cutoff)
 			{
-				// for seamless switching to !params.restricted
-				gettimeofday(&last_sound_event, NULL);
-				usecs_sound_441 = 0u;
+				// keep excess cycles so we don't accumulate delays
+				cycles_sound_441 -= cutoff;
+				if (params.restricted || !last_sound_event.tv_sec)
+				{
+					// for seamless switching to !params.restricted
+					// or when we don't have a last_sound_event yet
+					gettimeofday(&last_sound_event, NULL);
+					usecs_sound_441 = 0u;
+				}
+				else
+				{
+					static struct timeval this_sound_event = {0, 0};
+					gettimeofday(&this_sound_event, NULL);
+					usecs_sound_441 += (this_sound_event.tv_sec - last_sound_event.tv_sec) * 441000000u
+					                   + (this_sound_event.tv_usec - last_sound_event.tv_usec) * 441u;
+					last_sound_event = this_sound_event;
+					if (usecs_sound_441 < 10000u)
+						goto skip_sound_processing;
+					// keep excess usecs so we don't accumulate delays
+					usecs_sound_441 -= 10000u;
+				}
+				// push amplitudes now
+				if(io_bit_tst(0x0c,6)) // direct_access
+					// bit 1 = left channel, bit 0 = right channel
+					// value 1 = low, value 0 = high
+					push_amplitudes(io_bit_tst(0x0e,1) ? 0 : 127,
+					                io_bit_tst(0x0e,0) ? 0 : 127);
+				else
+					// We don't even try to make sound out of byte-mode data...
+					push_amplitudes(0, 0);
 			}
-			else
-			{
-				static struct timeval this_sound_event = {0, 0};
-				gettimeofday(&this_sound_event, NULL);
-				usecs_sound_441 += (this_sound_event.tv_sec - last_sound_event.tv_sec) * 441000000u
-				                   + (this_sound_event.tv_usec - last_sound_event.tv_usec) * 441u;
-				last_sound_event = this_sound_event;
-				if (usecs_sound_441 < 10000u)
-					goto skip_sound_processing;
-				// keep excess usecs so we don't accumulate delays
-				usecs_sound_441 -= 10000u;
-			}
-			// push amplitudes now
-			if(io_bit_tst(0x0c,6)) // direct_access
-				// bit 1 = left channel, bit 0 = right channel
-				// value 1 = low, value 0 = high
-				push_amplitudes(io_bit_tst(0x0e,1) ? 0 : 127,
-				                io_bit_tst(0x0e,0) ? 0 : 127);
-			else
-				// We don't even try to make sound out of byte-mode data...
-				push_amplitudes(0, 0);
+			skip_sound_processing: ;
 		}
-		skip_sound_processing: ;
+		else
+		{
+			cycles_sound_441 = 0u;
+			last_sound_event.tv_sec = last_sound_event.tv_usec = 0;
+			usecs_sound_441 = 0u;
+		}
 #endif
 
 #ifndef NO_GDB
