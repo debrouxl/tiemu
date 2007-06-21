@@ -43,6 +43,11 @@
 #include "flash.h"
 #include "dbus.h"
 #include "gscales.h"
+#ifndef NO_SOUND
+#include "audio.h"
+#include "engine.h"
+#include "gettimeofday.h"
+#endif
 
 int pending_ints;
 
@@ -144,11 +149,19 @@ int hw_m68k_run(int n, unsigned maxcycles)
     int i=n;
     GList *l = NULL;
     unsigned int cycles_at_start = cycles;
+#ifndef NO_SOUND
+    static unsigned int cycles_sound_441 = 0;
+    static struct timeval last_sound_event = {0, 0};
+    static unsigned int usecs_sound_441 = 0;
+#endif
 
 	for(i = 0; i < n && (!maxcycles || cycles - cycles_at_start < maxcycles); i++)
 	{
 		uae_u32 opcode;
 		unsigned int insn_cycles;
+#ifndef NO_SOUND
+		unsigned cutoff;
+#endif
 
 		// refresh hardware
 		do_cycles();
@@ -239,6 +252,42 @@ int hw_m68k_run(int n, unsigned maxcycles)
 
 		// HW2/3 grayscales management
 		lcd_hook_hw2(0);
+
+#ifndef NO_SOUND
+		// Sound emulation
+		cycles_sound_441 += insn_cycles * 441;
+		cutoff = params.restricted
+		         // num_cycles_per_loop / (ENGINE_TIME_LIMIT * (44100/441) / 1000)
+		         ? (unsigned) engine_num_cycles_per_loop()
+		            / ((unsigned) ENGINE_TIME_LIMIT / 10u)
+		         // check every 100 cycles
+		         : 44100u;
+		if (cycles_sound_441 >= cutoff)
+		{
+			// keep excess cycles so we don't accumulate delays
+			cycles_sound_441 -= cutoff;
+			if (params.restricted)
+			{
+				// for seamless switching to !params.restricted
+				gettimeofday(&last_sound_event, NULL);
+				usecs_sound_441 = 0u;
+			}
+			else
+			{
+				static struct timeval this_sound_event = {0, 0};
+				usecs_sound_441 += (this_sound_event.tv_secs - last_sound_event.tv_secs) * 441000000u
+				                   + (this_sound_event.tv_usecs - last_sound_event.tv_usecs) * 441u;
+				last_sound_event = this_sound_event;
+				if (usecs_sound_441 < 10000u)
+					goto skip_sound_processing;
+				// keep excess usecs so we don't accumulate delays
+				usecs_sound_441 -= 10000u;
+			}
+			// push amplitudes now
+			// TODO: actually push them :-)
+		}
+		skip_sound_processing: ;
+#endif
 
 #ifndef NO_GDB
 		extern void sim_trace_one(int);
