@@ -6,9 +6,9 @@
  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
- *  Copyright (c) 2004, Romain Liï¿½vin
- *  Copyright (c) 2005-2007, Romain Liï¿½vin, Kevin Kofler
- *  Copyright (c) 2007, Peter Ferbabdes
+ *  Copyright (c) 2004, Romain Liévin
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2007, Peter Fernandes
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
