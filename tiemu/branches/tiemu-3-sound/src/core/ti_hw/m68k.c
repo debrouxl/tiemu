@@ -297,14 +297,13 @@ int hw_m68k_run(int n, unsigned maxcycles)
 					usecs_sound_441 -= 10000u;
 				}
 				// push amplitudes now
-				if(io_bit_tst(0x0c,6)) // direct_access
-					// bit 1 = left channel, bit 0 = right channel
-					// value 1 = low, value 0 = high
-					push_amplitudes(io_bit_tst(0x0e,1) ? 0 : 127,
-					                io_bit_tst(0x0e,0) ? 0 : 127);
-				else
-					// We don't even try to make sound out of byte-mode data...
-					push_amplitudes(0, 0);
+				// We should do this only if(io_bit_tst(0x0c,6))
+				// (direct access), but unfortunately Nebulus
+				// doesn't bother setting that mode.
+				// bit 1 = left channel, bit 0 = right channel
+				// value 1 = low, value 0 = high
+				push_amplitudes(io_bit_tst(0x0e,1) ? 0 : 127,
+				                io_bit_tst(0x0e,0) ? 0 : 127);
 			}
 			skip_sound_processing: ;
 		}
