@@ -277,8 +277,8 @@ int hw_m68k_run(int n, unsigned maxcycles)
 			{
 				static struct timeval this_sound_event = {0, 0};
 				gettimeofday(&this_sound_event, NULL);
-				usecs_sound_441 += (this_sound_event.tv_secs - last_sound_event.tv_secs) * 441000000u
-				                   + (this_sound_event.tv_usecs - last_sound_event.tv_usecs) * 441u;
+				usecs_sound_441 += (this_sound_event.tv_sec - last_sound_event.tv_sec) * 441000000u
+				                   + (this_sound_event.tv_usec - last_sound_event.tv_usec) * 441u;
 				last_sound_event = this_sound_event;
 				if (usecs_sound_441 < 10000u)
 					goto skip_sound_processing;
