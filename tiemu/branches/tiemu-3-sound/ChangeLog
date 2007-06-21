@@ -9,6 +9,7 @@ SubVersion: $Id$
 	- [kevin] $2531: filter out yet another junk parameter (LIBS=...) passed to subdir configure from yet another autoconf
 	                 version upgrade (2.61) (fixes MinGW build with regenerated configure)
 	- [kevin] $2537: implemented sound emulation in the CPU emulation loop
+	- [kevin] $2538: only define _GNU_SOURCE in src/core/uae/sysdeps.h if not already defined
 
 - 16/03/2007, version 3.00
 	- [kevin] $2389: don't use \n in the breakpoint window status bar
