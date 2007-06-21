@@ -1,6 +1,6 @@
 /*Sound capability library for TI-Emu
-Copyright (C) 2007  Peter Fernandes
-supersonicandtails@gmail.com
+Copyright (C) 2007  Peter Fernandes  supersonicandtails@gmail.com
+Copyright (C) 2007  Kevin Kofler
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ SDL_AudioSpec format;
 int init_audio(void) {
 	//initialize SDL for Audio
 	if(SDL_Init(SDL_INIT_AUDIO)<0) {
-		msg_box1(_("Unable to initialize sound"),_(SDL_GetError());
+		msg_box1(_("Unable to initialize sound"),SDL_GetError());
 		return -1;
 	}
 	
@@ -72,7 +72,7 @@ int enable_audio(void) {
 	
 	//open the audio device
 	if(SDL_OpenAudio(&format,NULL)<0) {
-		msg_box1(_("Unable to open audio device"),_(SDL_GetError());
+		msg_box1(_("Unable to open audio device"),SDL_GetError());
 		return -1;
 	}
 	
@@ -92,5 +92,3 @@ void disable_audio(void) {
 		free(buffer);
 	}
 }
-
-
