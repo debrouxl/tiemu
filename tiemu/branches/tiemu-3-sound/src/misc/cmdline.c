@@ -56,6 +56,7 @@ int tiemu_version(void)
 	fprintf(stdout, "  (C) Julien Blache 2003\n");
 	fprintf(stdout, "  (C) Romain Lievin 2004-2005\n");
 	fprintf(stdout, "  (C) Romain Lievin & Kevin Kofler 2005-2007\n");
+	fprintf(stdout, "  (C) Peter Fernandes 2007\n");
 	fprintf(stdout, _("THIS PROGRAM COMES WITH ABSOLUTELY NO WARRANTY\n"));
 	fprintf(stdout, _("PLEASE READ THE DOCUMENTATION FOR DETAILS\n"));
 
