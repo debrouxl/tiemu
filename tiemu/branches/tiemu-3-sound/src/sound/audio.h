@@ -34,7 +34,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #define AMP_MAX 127
 
-#define BUFFER_SIZE 65536
+#define BUFFER_SIZE 8192
 
 extern int audio_isactive;
 extern int audioerr;
