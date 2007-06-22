@@ -18,6 +18,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "audio.h"
 
+#undef BUFFER_FULL_WARNING
+
 int bufpos;
 
 void stream_audio(void *unused, Uint8 *stream, int len) {
@@ -36,7 +38,9 @@ void stream_audio(void *unused, Uint8 *stream, int len) {
 }  
 
 void push_amplitudes(char left, char right) {
+#ifdef BUFFER_FULL_WARNING
 	static int warned=0;
+#endif
 
 	SDL_LockAudio();
 	
@@ -45,10 +49,12 @@ void push_amplitudes(char left, char right) {
 		*(buffer+bufpos+1)=right;
 		bufpos+=2;
 	}
+#ifdef BUFFER_FULL_WARNING
 	else if(!warned) {
 		tiemu_warning(_("sound buffer full, dropping sample(s)"));
 		warned=1;
 	}
+#endif
 	
 	SDL_UnlockAudio();
 
