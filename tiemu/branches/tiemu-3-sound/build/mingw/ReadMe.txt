@@ -169,7 +169,11 @@ Once you have successfully built TiLP2/TiEmu3, here's how to build an installer 
 
 7. Download the SDL source from http://www.libsdl.org (the binaries probably won't work due to iconv)
    You can build a static library from the source using the following options:
+   ln -s /usr/include/wine/windows/dsound.h /usr/local/i386-mingw32/include/ # (for Direct Sound support)
    source cross-mingw32-gtkaio.sh #(otherwise it won't find iconv and then get confused when it's there)
+   sed -i -e 's/test x\$have_directx = xyes/test x$have_dsound = xyes/g' configure # (don't require all of DirectX for dsound)
+   sed -i -e 's/#include <ddraw\.h>//g' src/audio/windx5/directx.h
+   sed -i -e 's/#include <dinput\.h>//g' src/audio/windx5/directx.h
    ./configure --host=i386-mingw32 --prefix=... --disable-shared
    make
    make install
