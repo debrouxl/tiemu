@@ -21,7 +21,9 @@
  */
 
 #ifdef _WIN32
+#ifndef _MSC_VER
 #include <winsock2.h> /* struct timeval */
+#endif
 int gettimeofday(struct timeval *__p, void *__t);
 #else
 #include <sys/time.h>

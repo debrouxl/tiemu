@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /w /W0 /GX /O2 /I "../../../ticonv/src" /I "c:\sources\roms\tiemu3\src\com_ole" /I "C:\sources\roms\tiemu3\src\misc" /I "C:\sources\roms\tiemu3\src\gui\calc" /I "C:\sources\roms\tiemu3\src\core\dbg" /I "C:\sources\roms\tiemu3\src\core\ti_sw" /I "C:\sources\roms\tiemu3\src\gui\debugger" /I "." /I "../../../ticables2/src" /I "../../../tifiles2/src" /I "../../../ticalcs2/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\sources\roms\tiemu3\src\core\uae" /I "C:\sources\roms\tiemu3\src\core" /I "C:\sources\roms\tiemu3\src\core\ti_hw" /I "C:\sources\roms\tiemu3\src\hid" /I "C:\sources\roms\tiemu3\src\gui" /I ".\libjpeg" /I "c:\sources\roms\tiemu3\src\ipc\com" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /D "NO_GDB" /D "NO_SOUND" /D "ENABLE_NLS" /FD /c
+# ADD CPP /nologo /MD /w /W0 /GX /O2 /I "c:\sources\roms\tiemu3\src\com_ole" /I "c:\sources\roms\tiemu3\src\ipc\com" /I "C:\sources\roms\tiemu3\src\misc" /I "C:\sources\roms\tiemu3\src\gui\calc" /I "C:\sources\roms\tiemu3\src\core\dbg" /I "C:\sources\roms\tiemu3\src\core\ti_sw" /I "C:\sources\roms\tiemu3\src\gui\debugger" /I "." /I "../../../ticables2/src" /I "../../../tifiles2/src" /I "../../../ticalcs2/src" /I "../../../ticonv/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\sources\roms\tiemu3\src\core\uae" /I "C:\sources\roms\tiemu3\src\core" /I "C:\sources\roms\tiemu3\src\core\ti_hw" /I "C:\sources\roms\tiemu3\src\hid" /I "C:\sources\roms\tiemu3\src\gui" /I ".\libjpeg" /I "C:\sources\roms\tiemu3\src\sound" /I "C:\SDL-1.2\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /D "NO_GDB" /D "NO_SOUND" /D "ENABLE_NLS" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MD /w /W0 /GX /ZI /Od /I "C:\Gtk2Dev\include\cairo" /I "C:\sources\roms\tiemu3\src\com_ole" /I "c:\sources\roms\tiemu3\src\ipc\com" /I "C:\sources\roms\tiemu3\src\misc" /I "C:\sources\roms\tiemu3\src\gui\calc" /I "C:\sources\roms\tiemu3\src\core\dbg" /I "C:\sources\roms\tiemu3\src\core\ti_sw" /I "C:\sources\roms\tiemu3\src\gui\debugger" /I "." /I "../../../ticables2/src" /I "../../../tifiles2/src" /I "../../../ticalcs2/src" /I "../../../ticonv/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\sources\roms\tiemu3\src\core\uae" /I "C:\sources\roms\tiemu3\src\core" /I "C:\sources\roms\tiemu3\src\core\ti_hw" /I "C:\sources\roms\tiemu3\src\hid" /I "C:\sources\roms\tiemu3\src\gui" /I ".\libjpeg" /D "_DEBUG" /D "ENABLE_NLS" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /D "NO_GDB" /FD /GZ /c
+# ADD CPP /nologo /MD /w /W0 /GX /ZI /Od /I "C:\Gtk2Dev\include\cairo" /I "C:\sources\roms\tiemu3\src\com_ole" /I "c:\sources\roms\tiemu3\src\ipc\com" /I "C:\sources\roms\tiemu3\src\misc" /I "C:\sources\roms\tiemu3\src\gui\calc" /I "C:\sources\roms\tiemu3\src\core\dbg" /I "C:\sources\roms\tiemu3\src\core\ti_sw" /I "C:\sources\roms\tiemu3\src\gui\debugger" /I "." /I "../../../ticables2/src" /I "../../../tifiles2/src" /I "../../../ticalcs2/src" /I "../../../ticonv/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\sources\roms\tiemu3\src\core\uae" /I "C:\sources\roms\tiemu3\src\core" /I "C:\sources\roms\tiemu3\src\core\ti_hw" /I "C:\sources\roms\tiemu3\src\hid" /I "C:\sources\roms\tiemu3\src\gui" /I ".\libjpeg" /I "C:\sources\roms\tiemu3\src\sound" /I "C:\SDL-1.2\include" /D "_DEBUG" /D "ENABLE_NLS" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /D "NO_GDB" /FD /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -594,6 +594,18 @@ SOURCE=..\..\src\ipc\com\oleaut_i.c
 # Begin Source File
 
 SOURCE=..\..\src\ipc\com\registry.cpp
+# End Source File
+# End Group
+# Begin Group "sound"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\sound\audio.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\sound\stream.c
 # End Source File
 # End Group
 # Begin Source File
