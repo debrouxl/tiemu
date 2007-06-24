@@ -1,7 +1,7 @@
 Name: tiemu3
 Epoch: 1
 Version: 3.01
-Release: 0.1.svn20070623
+Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
@@ -18,7 +18,7 @@ Summary: TiEmu is a TI89(Ti)/92(+)/V200 emulator
 TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debugging using Insight GDB.
 
 %prep
-%setup -n tiemu-3-sound
+%setup
 
 %build
 source /etc/profile.d/qt.sh
@@ -73,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/lpg-tiemu.desktop
 
 %changelog
+* Sun Jun 24 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:3.01-1
+Bump Release.
+
 * Sat Jun 23 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:3.01-0.1.svn20070623
 Add BR SDL-devel.
 
