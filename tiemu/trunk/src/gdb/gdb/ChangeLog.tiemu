@@ -1,3 +1,12 @@
+2007-06-21  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * ../libiberty/gettimeofday.c (gettimeofday): Move Win32 implementation to
+            ../../misc/gettimeofday_win32_impl.h.
+
+2007-06-20  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * ../libiberty/gettimeofday.c (gettimeofday): Copy Win32 implementation from kdewin32.
+
 2007-04-04  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * disasm.c (gdb_disassemble_info): Set features properly if gdbarch not set.

@@ -6,7 +6,7 @@
  *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
  *  Copyright (c) 2003-2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -86,13 +86,12 @@ typedef struct
     char *tib_file;
     char *sav_file;
 
-    int restricted;		// CPU rate of a real calc
+    int restricted;     // CPU rate of a real calc
     int cpu_rate;       // OSC1
     int hw_rate;        // OSC2
     int lcd_rate;       // synched OSC2 (hw1) or OSC3 (hw2)
-	int hw_protect;		// HW protection
-	int	recv_file;		// receive file enabled/disabled
-    
+    int hw_protect;     // HW protection
+    int recv_file;      // receive file enabled/disabled
 } Ti68kParameters;
 
 /* 

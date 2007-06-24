@@ -3,12 +3,7 @@
 
 /*  TiEmu - Tiemu Is an EMUlator
  *
- *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
- *  Copyright (c) 2001-2003, Romain Lievin
- *  Copyright (c) 2003, Julien Blache
- *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
- *  Copyright (c) 2006-2007 Kevin Kofler
+ *  Copyright (c) 2007 Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,25 +20,9 @@
  *  Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef __ENGINE_H__
-#define __ENGINE_H__
-
-#define ENGINE_TIME_LIMIT 30 // 30 ms
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-int engine_num_cycles_per_loop(void);
-
-void engine_calibrate(void);
-
-void engine_start(void); 
-void engine_stop(void);
-
-int engine_is_stopped(void);
-int engine_is_running(void);
-#ifdef __cplusplus
-}
-#endif
-
+#ifdef _WIN32
+#include <winsock2.h> /* struct timeval */
+int gettimeofday(struct timeval *__p, void *__t);
+#else
+#include <sys/time.h>
 #endif

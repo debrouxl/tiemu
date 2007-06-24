@@ -6,7 +6,7 @@
  *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
  *  Copyright (c) 2003-2004, Romain Liévin
- *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@
 #include "m68k.h"
 #include "images.h"
 #include "ti68k_def.h"
-#include "time_ms.h"
+#include "gettimeofday.h"
 #include "gscales.h"
 
 // This is the ratio OSC1/(OSC2/2^5). We express everything else in fractions of OSC2/2^5.
@@ -178,11 +178,15 @@ void hw_update(void)
 	// Increment HW2 RTC timer every 8192 seconds
 	if ((tihw.hw_type >= HW2) && io2_bit_tst(0x1f, 2) && io2_bit_tst(0x1f, 1))
 	{
-		static tiTIME ref = 0;
+		static struct timeval ref = {0, 0};
+		struct timeval tmp = {0, 0};
+		gettimeofday(&tmp, NULL);
 
-		if(TMS_ELAPSED(ref, 8191 * 1000))
+		// Check if 8192 seconds elapsed, avoiding 32-bit overflow
+		if((unsigned)(tmp.tv_sec-ref.tv_sec)*500000u
+		   + ((unsigned)(tmp.tv_usec-ref.tv_usec)>>1u) >= 4096000000u)
 		{
-			TMS_START(ref);
+			gettimeofday(&ref, NULL);
 			tihw.rtc_value++;
 		}
 	}

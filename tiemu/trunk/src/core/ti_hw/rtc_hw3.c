@@ -6,7 +6,7 @@
  *  Copyright (c) 2000, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2002, Romain Lievin, Julien Blache
  *  Copyright (c) 2003-2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,12 +38,7 @@
 #include "images.h"
 #include "ti68k_def.h"
 #include "rtc_hw3.h"
-
-#if defined(HAVE_FTIME) || defined(__WIN32__)
-# include <sys/timeb.h>
-#else
-# include <sys/time.h>
-#endif
+#include "gettimeofday.h"
 
 int rtc3_init(void)
 {
@@ -86,21 +81,15 @@ int rtc3_exit(void)
 }
 
 // return seconds and milli-seconds
+// FIXME: kill this stupid wrapper which loses precision and use gettimeofday
+//        and struct timeval directly instead
+// Problem: We'll have to bump the savefile revision if we do that. :-(
 void rtc3_get_time(TTIME* tt)
 {
-#if defined(HAVE_FTIME) || defined(__WIN32__)
-	struct timeb tb;
-
-	time(&(tt->s));
-
-	ftime(&tb);
-	tt->ms = tb.millitm;
-#else
 	struct timeval tp;
 	gettimeofday(&tp, NULL);
 	tt->s = tp.tv_sec;
 	tt->ms = tp.tv_usec/1000;
-#endif
 }
 
 // tt = t2 - t1 and take care of reporting milli-seconds
@@ -187,3 +176,10 @@ int rtc3_state_load(void)
 
 	return 0;
 }
+
+// When compiling without GDB, build the Win32 implementation of gettimeofday
+// here to avoid the makefile hackery. GDB-enabled builds build it as part of
+// libiberty.
+#if defined(_WIN32) && defined(NO_GDB)
+#include "../../misc/gettimeofday_win32_impl.h"
+#endif

@@ -3,7 +3,7 @@ dnl $Id: configure.in 409 2004-06-07 21:10:20Z roms $
 
 dnl Init.
 AC_PREREQ(2.57)
-AC_INIT(TiEmu, 3.00, [tiemu-users@lists.sourceforge.net])
+AC_INIT(TiEmu, 3.01, [tiemu-users@lists.sourceforge.net])
 
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
@@ -127,7 +127,7 @@ AC_SUBST(LIBZ)
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT 
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([bzero ftime memset mkdir select strchr strrchr strstr])
+AC_CHECK_FUNCS([bzero memset mkdir select strchr strrchr strstr])
 
 # Platform specific tests.
 CFLAGS_FOR_BUILD="$CFLAGS"
@@ -145,6 +145,26 @@ case $host in
   *)                     ARCH="-D__LINUX__" ;;
 esac
 CFLAGS="$CFLAGS $ARCH"
+
+# Check for SDL if sound support is wanted
+AC_ARG_ENABLE(sound,
+  AC_HELP_STRING([--disable-sound], [disable sound emulation]),
+  [tiemu_use_sound=$enableval], [tiemu_use_sound=yes])
+AC_CACHE_CHECK([whether to enable sound emulation],
+  [tiemu_use_sound], [tiemu_use_sound=yes])
+if test "x$tiemu_use_sound" = "xyes"; then
+        SDL_VERSION=1.2.0
+        AM_PATH_SDL($SDL_VERSION,
+                    :,
+                    AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
+        )
+else
+        CFLAGS="$CFLAGS -DNO_SOUND"
+        SDL_CFLAGS=
+        SDL_LIBS=
+fi
+AC_SUBST(SDL_CFLAGS)
+AC_SUBST(SDL_LIBS)
 
 # KDE dialogs support
 AC_ARG_WITH(kde, AC_HELP_STRING([--without-kde], [Compile without KDE support]), [kde=$withval], [kde=default])
@@ -295,7 +315,7 @@ fi
 if test x$tiemu_use_gdb = xyes; then
   ac_configure_args="$ac_configure_args --target=m68k-coff --disable-tui --disable-werror"
   changequote(<<,>>)
-  ac_configure_args=`echo "$ac_configure_args" | sed "s,'CC=[^']*',,g;s,'CFLAGS=[^']*',,g;s,'CXX=[^']*',,g;s,'CXXFLAGS=[^']*',,g;s,'LDFLAGS=[^']*',,g;s,'build_alias=[^']*',,g;s,'host_alias=[^']*',,g;s,'target_alias=[^']*',,g"`
+  ac_configure_args=`echo "$ac_configure_args" | sed "s,'CC=[^']*',,g;s,'CFLAGS=[^']*',,g;s,'CXX=[^']*',,g;s,'CXXFLAGS=[^']*',,g;s,'LDFLAGS=[^']*',,g;s,'LIBS=[^']*',,g;s,'build_alias=[^']*',,g;s,'host_alias=[^']*',,g;s,'target_alias=[^']*',,g"`
   changequote([,])
   AC_CONFIG_SUBDIRS(src/gdb)
 fi

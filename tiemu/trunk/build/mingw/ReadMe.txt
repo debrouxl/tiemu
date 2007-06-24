@@ -1,5 +1,5 @@
 Compiling LPG Software with MinGW
-Version 1.99 20070529
+Version 1.99 20070621
 Copyright (C) 2005-2007 Kevin Kofler
 Copyright (C) 2001-2006 Romain Lievin
 Copyright (C) 2006 Tyler Cassidy
@@ -98,7 +98,7 @@ Next, check-out the following URLs for each target folder:
    libticalcs2.
 
 10. Ok. Now all you have to do is repeat step 7 for TiLP, TiEmu, or GFM, or all of them if you so
-   wish!
+    wish! For TiEmu, you'll also need SDL unless you configure with --disable-sound.
 
 11. Your files are now all located in /target (C:\msys\target). If it does not work, an instruction
     may have been missed or performed wrong, or the source code is broken (which would be a bug,
@@ -167,11 +167,24 @@ Once you have successfully built TiLP2/TiEmu3, here's how to build an installer 
    /usr/local/i386-mingw32/lib/libstdc++.la
    and remove "-lmingwthrd".
 
-7. Edit cross-mingw32-gtkaio.sh to your system's needs.
+7. Download the SDL source from http://www.libsdl.org (the binaries probably won't work due to iconv)
+   You can build a static library from the source using the following options:
+   ln -s /usr/include/wine/windows/dsound.h /usr/local/i386-mingw32/include/ # (for Direct Sound support)
+   source cross-mingw32-gtkaio.sh #(otherwise it won't find iconv and then get confused when it's there)
+   sed -i -e 's/test x\$have_directx = xyes/test x$have_dsound = xyes/g' configure # (don't require all of DirectX for dsound)
+   sed -i -e 's/#include <ddraw\.h>//g' src/audio/windx5/directx.h
+   sed -i -e 's/#include <dinput\.h>//g' src/audio/windx5/directx.h
+   ./configure --host=i386-mingw32 --prefix=... --disable-shared
+   make
+   make install
+   For the prefix, I recommend creating a new directory.
 
-8. Use the following commands to build TiEmu (TiLP and GFM can be built the same way, if this is
+8. Edit cross-mingw32-gtkaio.sh to your system's needs.
+
+9. Use the following commands to build TiEmu (TiLP and GFM can be built the same way, if this is
    broken, please report it as a bug):
    source cross-mingw32-gtkaio.sh #(needs to be done for EACH build!)
+   export PATH=/path/to/sdl-mingw/bin:$PATH #(replace /path/to/sdl-mingw with the prefix from step 7)
    export CFLAGS="-Os -s -fno-exceptions"
    export CXXFLAGS="-Os -s -fno-exceptions"
    cd libticables-mingw-build

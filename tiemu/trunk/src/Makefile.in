@@ -4,8 +4,8 @@
 CC        = @CC@
 CPP       = @CPP@
 CXX       = @CXX@
-CFLAGS    = @CFLAGS@ @TICONV_CFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@ @INCINTL@
-LDFLAGS   = @LDFLAGS@ @TICONV_LIBS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ @LIBZ@ $(extra_ldflags)
+CFLAGS    = @CFLAGS@ @TICONV_CFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@ @SDL_CFLAGS@ @INCINTL@
+LDFLAGS   = @LDFLAGS@ @TICONV_LIBS@ @TICABLES_LIBS@ @TIFILES_LIBS@ @TICALCS_LIBS@ @GLIB_LIBS@ @GTK_LIBS@ @GLADE_LIBS@ @LIBZ@ @SDL_LIBS@ $(extra_ldflags)
 CXXFLAGS  = @CXXFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB_CFLAGS@ @GTK_CFLAGS@ @GLADE_CFLAGS@
 MOC       = @MOC@
 DCOPIDL   = @DCOPIDL@
@@ -72,7 +72,7 @@ INCLUDES = \
 	-I@top_srcdir@ -I$(includedir) \
 	-DPREFIX=\"${prefix}\" -I. \
 	-I./core -I./core/uae -I./core/ti_hw -I./core/ti_sw -I./core/dbg \
-	-I./gui -I./gui/calc -I./gui/debugger \
+	-I./sound -I./gui -I./gui/calc -I./gui/debugger \
 	-I./ipc/dcop -I./ipc/dbus -I./ipc/com \
 	-I./kde \
 	-I./misc
@@ -145,6 +145,14 @@ core_dbg_OBJ = \
 	core/dbg/disasm.o	\
 	core/dbg/fpudasm.o	\
 	core/dbg/gdbcall.o
+
+ifneq (,$(findstring NO_SOUND,$(CFLAGS)))
+sound_OBJ =
+else
+sound_OBJ = \
+	sound/audio.o \
+	sound/stream.o
+endif
 
 misc_OBJ = \
 	misc/cmdline.o 	\
@@ -224,6 +232,7 @@ tiemu_OBJ = core/uae/newcpu.o \
 	$(core_uae_OBJ) $(core_uae_xmalloc_OBJ) \
 	$(core_OBJ) $(core_tihw_OBJ) $(core_tisw_OBJ) \
 	$(core_dbg_OBJ) \
+	$(sound_OBJ) \
 	$(misc_OBJ) \
 	$(gui_OBJ) $(gui_calc_OBJ) $(gui_debugger_OBJ) $(gui_logger_OBJ) \
 	$(kde_OBJ) $(dbus_OBJ) $(win32_OBJ) \

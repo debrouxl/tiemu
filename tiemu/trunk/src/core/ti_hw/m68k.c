@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,6 +43,12 @@
 #include "flash.h"
 #include "dbus.h"
 #include "gscales.h"
+#ifndef NO_SOUND
+#include "ports.h"
+#include "stream.h"
+#include "engine.h"
+#include "gettimeofday.h"
+#endif
 
 int pending_ints;
 
@@ -144,11 +150,20 @@ int hw_m68k_run(int n, unsigned maxcycles)
     int i=n;
     GList *l = NULL;
     unsigned int cycles_at_start = cycles;
+#ifndef NO_SOUND
+    static unsigned int cycles_sound_441 = 0;
+    static struct timeval last_sound_event = {0, 0};
+    static unsigned int usecs_sound_441 = 0;
+#endif
 
 	for(i = 0; i < n && (!maxcycles || cycles - cycles_at_start < maxcycles); i++)
 	{
 		uae_u32 opcode;
 		unsigned int insn_cycles;
+#ifndef NO_SOUND
+		unsigned cutoff;
+		int low_power_mode = 0;
+#endif
 
 		// refresh hardware
 		do_cycles();
@@ -174,7 +189,13 @@ int hw_m68k_run(int n, unsigned maxcycles)
 			cycle_count += 4; // cycle count for hw.c timers
 			tihw.lcd_tick += 4; // used by grayscale for time plane exposure
 
+#ifdef NO_SOUND
 			continue;
+#else
+			low_power_mode = 1;
+			insn_cycles = 4;
+			goto check_sound;
+#endif
 	    }		
 
 		// search for code breakpoint
@@ -239,6 +260,62 @@ int hw_m68k_run(int n, unsigned maxcycles)
 
 		// HW2/3 grayscales management
 		lcd_hook_hw2(0);
+
+#ifndef NO_SOUND
+		// Sound emulation
+		check_sound:
+		if (audio_isactive)
+		{
+			cycles_sound_441 += insn_cycles * 441;
+			cutoff = params.restricted
+			         // num_cycles_per_loop / (ENGINE_TIME_LIMIT * (44100/441) / 1000)
+			         ? (unsigned) engine_num_cycles_per_loop()
+			            / ((unsigned) ENGINE_TIME_LIMIT / 10u)
+			         // check every 100 cycles
+			         : 44100u;
+			if (cycles_sound_441 >= cutoff)
+			{
+				// keep excess cycles so we don't accumulate delays
+				cycles_sound_441 -= cutoff;
+				if (params.restricted || !last_sound_event.tv_sec)
+				{
+					// for seamless switching to !params.restricted
+					// or when we don't have a last_sound_event yet
+					gettimeofday(&last_sound_event, NULL);
+					usecs_sound_441 = 0u;
+				}
+				else
+				{
+					static struct timeval this_sound_event = {0, 0};
+					gettimeofday(&this_sound_event, NULL);
+					usecs_sound_441 += (this_sound_event.tv_sec - last_sound_event.tv_sec) * 441000000u
+					                   + (this_sound_event.tv_usec - last_sound_event.tv_usec) * 441u;
+					last_sound_event = this_sound_event;
+					if (usecs_sound_441 < 10000u)
+						goto skip_sound_processing;
+					// keep excess usecs so we don't accumulate delays
+					usecs_sound_441 -= 10000u;
+				}
+				// push amplitudes now
+				// We should do this only if(io_bit_tst(0x0c,6))
+				// (direct access), but unfortunately Nebulus
+				// doesn't bother setting that mode.
+				// bit 1 = left channel, bit 0 = right channel
+				// value 1 = low, value 0 = high
+				push_amplitudes(io_bit_tst(0x0e,1) ? 0 : 127,
+				                io_bit_tst(0x0e,0) ? 0 : 127);
+			}
+			skip_sound_processing: ;
+		}
+		else
+		{
+			cycles_sound_441 = 0u;
+			last_sound_event.tv_sec = last_sound_event.tv_usec = 0;
+			usecs_sound_441 = 0u;
+		}
+		if (low_power_mode)
+			continue;
+#endif
 
 #ifndef NO_GDB
 		extern void sim_trace_one(int);

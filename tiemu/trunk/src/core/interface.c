@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,6 +46,9 @@
 #include "m68k.h"
 #include "dbus.h"
 #include "logging.h"
+#ifndef NO_SOUND
+#include "audio.h"
+#endif
 
 #include "ti68k_int.h"
 #include "ti68k_err.h"
@@ -99,12 +102,15 @@ static int is_win_9x(void)
  */
 int ti68k_config_load_default(void)
 {
-    params.restricted = 1;
-    params.cpu_rate = -1;
-    params.hw_rate = -1;
-    params.lcd_rate = -1;
-	params.hw_protect = !0;
+	params.restricted = 1;
+	params.cpu_rate = -1;
+	params.hw_rate = -1;
+	params.lcd_rate = -1;
+	params.hw_protect = 1;
 	params.recv_file = 1;
+#ifndef NO_SOUND
+	disable_audio();
+#endif
 
 	linkp.cable_delay = DFLT_DELAY;
 	linkp.cable_timeout = is_win_9x() ? 600 : DFLT_TIMEOUT;

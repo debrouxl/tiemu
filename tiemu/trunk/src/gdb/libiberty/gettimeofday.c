@@ -1,3 +1,9 @@
+#ifdef _WIN32
+
+#include "../../misc/gettimeofday_win32_impl.h"
+
+#else
+
 #include "config.h"
 #include "libiberty.h"
 #ifdef HAVE_TIME_H
@@ -28,3 +34,5 @@ gettimeofday (struct timeval *tp, void *tz)
     return -1;
   return 0;
 }
+
+#endif

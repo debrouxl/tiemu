@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <signal.h>
-#include <time.h>
 #include <string.h>
 
 #include "libuae.h"
@@ -40,6 +39,7 @@
 #include "dbus.h"
 #include "m68k.h"
 #include "engine.h"
+#include "gettimeofday.h"
 
 #include "tilibs.h"
 #include "ti68k_err.h"
@@ -390,7 +390,7 @@ int send_ti_file(const char *filename)
 {
     gint ok = 0;
 	int ret;
-	clock_t start, finish;
+	struct timeval start, finish;
 	double duration;
 
     // Check for TI file
@@ -411,7 +411,7 @@ int send_ti_file(const char *filename)
         return ERR_NOT_TI_FILE;
 
 	// Use direct file loading
-	start = clock();
+	gettimeofday(&start, NULL);
 	sip = 1;
 
 	// Check whether calc is ready... Otherwise, goes to HOME.
@@ -488,9 +488,10 @@ int send_ti_file(const char *filename)
 
 	// Restore link cable use
 	sip = 0;
-	finish = clock();
-	duration = (double)(finish - start) / CLOCKS_PER_SEC;
-	printf("Duration: %2.1f seconds.\n", duration);
+	gettimeofday(&finish, NULL);
+	duration = (double)(finish.tv_sec - start.tv_sec)
+	           + (double)(finish.tv_usec - start.tv_usec) / 1000000.;
+	printf("Duration: %2.1lf seconds.\n", duration);
 
 	// Transfer aborted ? Set hw link error
 send_ti_file_exit:

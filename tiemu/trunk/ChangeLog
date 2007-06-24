@@ -1,5 +1,18 @@
 SubVersion: $Id$
 
+- 20/06/2007, version 3.01
+	$2556: Merged changes from tiemu-3-sound branch:
+	- [hypersonic] $2509-2513: implemented low-level SDL code for sound emulation
+	- [kevin] $2515: added configure checks for SDL and --disable-sound configure option
+	- [kevin] $2520: added "Emulate sound" checkbox to the popup menu
+	- [kevin] $2527: cleaned up time handling (using gettimeofday everywhere, Win32 implementation taken from kdewin32,
+	                 not incorrectly attempting to measure wall clock time with clock() anymore)
+	- [kevin] $2531: filter out yet another junk parameter (LIBS=...) passed to subdir configure from yet another autoconf
+	                 version upgrade (2.61) (fixes MinGW build with regenerated configure)
+	- [kevin] $2537: implemented sound emulation in the CPU emulation loop
+	- [kevin] $2538: only define _GNU_SOURCE in src/core/uae/sysdeps.h if not already defined
+	Note: trunk forked into tiemu-3-sound branch at rev. $2507
+
 - 16/03/2007, version 3.00
 	- [kevin] $2389: don't use \n in the breakpoint window status bar
 	- [kevin] $2390: fixed default hardware version for Voyage 200

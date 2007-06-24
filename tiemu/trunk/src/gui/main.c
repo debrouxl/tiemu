@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2007, Peter Fernandes
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -72,6 +73,10 @@ extern int asm_setjmp(jmp_buf b);
 #include "dbg_all.h"
 #include "romversion.h"
 
+#ifndef NO_SOUND
+#include "audio.h"
+#endif
+
 #ifndef NO_GDB
 #include "gdbcall.h"
 #include "../gdb/gdb/main.h"
@@ -111,7 +116,8 @@ static void my_log_handler                  (const gchar *log_domain,
 
 int main(int argc, char **argv) 
 {
-    int err;	
+	int err;
+    
 
 	/*
 		Do primary initializations 
@@ -137,6 +143,15 @@ int main(int argc, char **argv)
 
 	/* Scan and modify command line */
 	scan_cmdline(argc, argv);
+
+#ifndef NO_SOUND
+	//init audio lib
+	if(init_audio()) {
+		tiemu_warning(_("Unable to initialize audio, sound will not play\n"));
+		audioerr=1;
+	}
+#endif
+
 
     /* 
 		Init GTK+ toolkit
@@ -172,7 +187,7 @@ int main(int argc, char **argv)
 
 #if WITH_KDE
     splash_screen_set_label(_("Initializing KDE..."));
-    sp_kde_init(argc, argv, "tiemu", _("TiEmu"), VERSION, _("TI calculator emulator"), "Copyright (c) 2000, Thomas Corvazier, Romain Lievin\nCopyright (c) 2001-2002, Romain Lievin, Julien Blache\nCopyright (c) 2003-2004, Romain Lievin\nCopyright (c) 2005-2007, Romain Lievin, Kevin Kofler", "http://lpg.ticalc.org/prj_tiemu/", "gtktiemu-users@lists.sf.net");
+    sp_kde_init(argc, argv, "tiemu", _("TiEmu"), VERSION, _("TI calculator emulator"), "Copyright (c) 2000, Thomas Corvazier, Romain Lievin\nCopyright (c) 2001-2002, Romain Lievin, Julien Blache\nCopyright (c) 2003-2004, Romain Lievin\nCopyright (c) 2005-2007, Romain Lievin, Kevin Kofler\nCopyright (c) 2007, Peter Fernandes", "http://lpg.ticalc.org/prj_tiemu/", "gtktiemu-users@lists.sf.net");
     atexit(sp_kde_finish);
     g_timeout_add(26, sp_kde_process_qt_events, NULL);
 #endif
@@ -365,6 +380,7 @@ int main(int argc, char **argv)
 
 		err = ti68k_exit();
 		handle_error();
+
 
 		ti68k_unload_image_or_upgrade();
 	}
