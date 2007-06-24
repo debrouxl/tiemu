@@ -1,3 +1,7 @@
+tiemu3 (3.01-1) unstable; urgency=low
+
+  * Sound emulation added.
+
 tiemu3 (3.00-1) unstable; urgency=low
 
   * Initial release.

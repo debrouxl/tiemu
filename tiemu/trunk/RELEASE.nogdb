@@ -2,8 +2,8 @@
 
 
 
-Previous version: 2.81e		(13/03/2007)
-Current version:  3.00		(14/05/2007)
+Previous version: 3.00		(14/05/2007)
+Current version:  3.01		(??/06/2007)
 
 SubVersion (CVS) revision: $Id: RELEASE 2042 2006-05-07 07:46:23Z roms $
 
@@ -20,27 +20,19 @@ For the other link cables, no driver is needed.
 New capabilities:
 -----------------
 
-	- memory map menu in the memory window
-	- key press recording/playing
+	- sound emulation
 	
 
 Improvements:
 -------------
 
-	- [linux] added KDE desktop file associations & shortcuts
-	- load saved state by drag&drop
-	- load ROM/TIB/SAV files from command line
-	- errors (wrong case) in ROM_CALL list and added 2 new entries from TIGCC
-	- don't disassemble instructions invalid for the 68000
+	- none
 		
 		
 Bug fixes:
 ----------
 
-	- default hardware version for Voyage 200
-	- memory leak/corruption with drag&drop (send of file)
-	- handling of 4-byte F-Line jumps
-	- Infos box: display skin version
+	- time handling
 	
 	
 Notes:
