@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /w /W0 /GX /O2 /I "c:\sources\roms\tiemu3\src\com_ole" /I "c:\sources\roms\tiemu3\src\ipc\com" /I "C:\sources\roms\tiemu3\src\misc" /I "C:\sources\roms\tiemu3\src\gui\calc" /I "C:\sources\roms\tiemu3\src\core\dbg" /I "C:\sources\roms\tiemu3\src\core\ti_sw" /I "C:\sources\roms\tiemu3\src\gui\debugger" /I "." /I "../../../ticables2/src" /I "../../../tifiles2/src" /I "../../../ticalcs2/src" /I "../../../ticonv/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\sources\roms\tiemu3\src\core\uae" /I "C:\sources\roms\tiemu3\src\core" /I "C:\sources\roms\tiemu3\src\core\ti_hw" /I "C:\sources\roms\tiemu3\src\hid" /I "C:\sources\roms\tiemu3\src\gui" /I ".\libjpeg" /I "C:\sources\roms\tiemu3\src\sound" /I "C:\SDL-1.2\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /D "NO_GDB" /D "NO_SOUND" /D "ENABLE_NLS" /FD /c
+# ADD CPP /nologo /MD /w /W0 /GX /O2 /I "c:\sources\roms\tiemu3\src\com_ole" /I "c:\sources\roms\tiemu3\src\ipc\com" /I "C:\sources\roms\tiemu3\src\misc" /I "C:\sources\roms\tiemu3\src\gui\calc" /I "C:\sources\roms\tiemu3\src\core\dbg" /I "C:\sources\roms\tiemu3\src\core\ti_sw" /I "C:\sources\roms\tiemu3\src\gui\debugger" /I "." /I "../../../ticables2/src" /I "../../../tifiles2/src" /I "../../../ticalcs2/src" /I "../../../ticonv/src" /I "../../src/win32" /I "C:\GTK2DEV\INCLUDE\GTK-2.0" /I "C:\GTK2DEV\LIB\GTK-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\GLIB-2.0" /I "C:\GTK2DEV\LIB\GLIB-2.0\INCLUDE" /I "C:\GTK2DEV\INCLUDE\PANGO-1.0" /I "C:\GTK2DEV\INCLUDE\ATK-1.0" /I "c:\gtk2dev\include" /I "C:\Gtk2Dev\include\libglade-2.0" /I "C:\sources\roms\tiemu3\src\core\uae" /I "C:\sources\roms\tiemu3\src\core" /I "C:\sources\roms\tiemu3\src\core\ti_hw" /I "C:\sources\roms\tiemu3\src\hid" /I "C:\sources\roms\tiemu3\src\gui" /I ".\libjpeg" /I "C:\sources\roms\tiemu3\src\sound" /I "C:\SDL-1.2\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "__WIN32__" /D "DEBUGGER" /D "GTK_DISABLE_DEPRECATED" /D "NO_GDB" /D "ENABLE_NLS" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -159,6 +159,14 @@ SOURCE="..\..\..\..\..\GTK2DEV\lib\glade-2.0.lib"
 # Begin Source File
 
 SOURCE=..\..\..\..\..\GTK2DEV\lib\intl.lib
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\SDL-1.2\lib\SDL.lib"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\SDL-1.2\lib\SDLmain.lib"
 # End Source File
 # End Group
 # Begin Group "Resource Files"
@@ -558,6 +566,10 @@ SOURCE=..\..\src\misc\cmdline.c
 # Begin Source File
 
 SOURCE=..\..\src\misc\files.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gdb\libiberty\gettimeofday.c
 # End Source File
 # Begin Source File
 
