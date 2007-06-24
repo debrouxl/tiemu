@@ -96,6 +96,9 @@ src/gui/support.c
 src/gui/tsource.c
 src/gui/wizard.c
 
+src/sound/audio.c
+src/sound/stream.c
+
 # TiEmu GUI
 glade/calc-2.str
 glade/dbg_bkpts-2.str
