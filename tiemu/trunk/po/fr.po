@@ -2153,7 +2153,7 @@ msgstr "Paramètres lecture"
 
 #: glade/popup-2.str:69
 msgid "Play"
-msgstr "Délai:"
+msgstr "Lecture"
 
 #: glade/popup-2.str:70
 msgid "Misc"
