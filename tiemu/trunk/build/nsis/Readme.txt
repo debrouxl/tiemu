@@ -1,4 +1,4 @@
-TiEmu 3 (version 3.00)
+TiEmu 3 (version 3.01)
  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
@@ -24,6 +24,7 @@ The following components have been successfully installed:
 * libgui (linked statically into TiEmu)
 * GDB (linked statically into TiEmu)
 * Insight (linked statically into TiEmu)
+* SDL (linked statically into TiEmu)
 
 Uninstalling TiEmu removes all these components except GTK+, which can be
 uninstalled separately.
