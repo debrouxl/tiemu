@@ -45,7 +45,7 @@ int init_audio(void) {
 	format.freq=44100;
 	format.format=AUDIO_S8;
 	format.channels=2;
-	format.samples=4096;
+	format.samples=2048;
 	format.callback=stream_audio;
 	format.userdata=NULL;
 
