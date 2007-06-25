@@ -46,12 +46,12 @@ extern SDL_AudioSpec format;
 
 
 //performs all the sound initialization
-extern int init_audio(void);
+extern int audio_init(void);
 
 //allcates buffer space and opens the audio device.  Must be called before push_amplitudes.
-extern int enable_audio(void);
+extern int audio_enable(void);
 
 //frees the audio device, stops stream.  MUST be called before exiting
-extern void disable_audio(void);
+extern void audio_disable(void);
 
 #endif

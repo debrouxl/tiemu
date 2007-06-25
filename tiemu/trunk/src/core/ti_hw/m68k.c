@@ -302,8 +302,8 @@ int hw_m68k_run(int n, unsigned maxcycles)
 				// doesn't bother setting that mode.
 				// bit 1 = left channel, bit 0 = right channel
 				// value 1 = low, value 0 = high
-				push_amplitudes(io_bit_tst(0x0e,1) ? 0 : 127,
-				                io_bit_tst(0x0e,0) ? 0 : 127);
+				stream_push_amplitudes((char)(io_bit_tst(0x0e,1) ? 0 : 127),
+				                (char)(io_bit_tst(0x0e,0) ? 0 : 127));
 			}
 			skip_sound_processing: ;
 		}

@@ -28,6 +28,6 @@ extern void stream_audio(void *volume, Uint8 *stream, int len);
 
 /*takes a pair of amplitudes (representing one stereo sample) and inserts them
 into the stream buffer*/
-extern void push_amplitudes(char left, char right);
+extern void stream_push_amplitudes(char left, char right);
 
 #endif

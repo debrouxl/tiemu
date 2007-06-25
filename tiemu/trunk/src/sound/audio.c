@@ -30,7 +30,7 @@ SDL_AudioSpec format;
 
 
 //sets up everything for use
-int init_audio(void) {
+int audio_init(void) {
 	//initialize SDL for Audio
 	if(SDL_Init(SDL_INIT_AUDIO)<0) {
 		msg_box1(_("Unable to initialize sound"),SDL_GetError());
@@ -39,7 +39,7 @@ int init_audio(void) {
 	
 	atexit(SDL_Quit);
 
-	atexit(disable_audio);
+	atexit(audio_disable);
 
 	//set up the audio format
 	format.freq=44100;
@@ -55,7 +55,7 @@ int init_audio(void) {
 }
 
 
-int enable_audio(void) {
+int audio_enable(void) {
 	if(audio_isactive)
 		return 0;
 	
@@ -84,7 +84,7 @@ int enable_audio(void) {
 	return 0;
 }
 
-void disable_audio(void) {
+void audio_disable(void) {
 	if(audio_isactive) {
 		//stop streaming audio
 		SDL_CloseAudio();

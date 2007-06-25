@@ -12,6 +12,7 @@ SubVersion: $Id$
 	- [kevin] $2537: implemented sound emulation in the CPU emulation loop
 	- [kevin] $2538: only define _GNU_SOURCE in src/core/uae/sysdeps.h if not already defined
 	Note: trunk forked into tiemu-3-sound branch at rev. $2507
+	- [roms]  $2571: changed some function names (sound emulation) to follow TiEmu function naming scheme
 
 - 16/03/2007, version 3.00
 	- [kevin] $2389: don't use \n in the breakpoint window status bar

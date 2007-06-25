@@ -109,7 +109,7 @@ int ti68k_config_load_default(void)
 	params.hw_protect = 1;
 	params.recv_file = 1;
 #ifndef NO_SOUND
-	disable_audio();
+	audio_disable();
 #endif
 
 	linkp.cable_delay = DFLT_DELAY;

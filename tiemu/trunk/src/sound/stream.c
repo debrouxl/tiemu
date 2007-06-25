@@ -37,7 +37,7 @@ void stream_audio(void *unused, Uint8 *stream, int len) {
 	bufpos=spill;
 }  
 
-void push_amplitudes(char left, char right) {
+void stream_push_amplitudes(char left, char right) {
 #ifdef BUFFER_FULL_WARNING
 	static int warned=0;
 #endif

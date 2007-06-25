@@ -100,7 +100,7 @@ on_recv_file_from_tiemu1_activate     (GtkMenuItem     *menuitem,
 	active = GTK_CHECK_MENU_ITEM(menuitem)->active;
 #ifndef NO_SOUND
 	if (active)
-		disable_audio();
+		audio_disable();
 #endif
 	params.recv_file = active;
 }
@@ -115,9 +115,9 @@ on_emulate_sound1_activate     (GtkMenuItem     *menuitem,
 	active = GTK_CHECK_MENU_ITEM(menuitem)->active;
 	if (active) {
 		params.recv_file = 0;
-		enable_audio();
+		audio_enable();
 	} else
-		disable_audio();
+		audio_disable();
 #endif
 }
 
