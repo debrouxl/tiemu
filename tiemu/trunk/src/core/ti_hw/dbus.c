@@ -615,7 +615,7 @@ int recfile(void)
 		char *basename;
 
 		//single
-		basename = ticonv_varname_to_filename(calc_handle->model, ve->name);
+		basename = ticonv_varname_to_filename(calc_handle->model, ve->name, ve->type);
 		strcat(dst_fn, basename);
 		strcat(dst_fn, ".");
 		strcat(dst_fn, tifiles_vartype2fext(calc_handle->model, ve->type));
