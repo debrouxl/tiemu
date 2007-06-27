@@ -56,15 +56,15 @@ PKG_CHECK_MODULES(TICABLES, ticables2 >= 1.0.0)
 AC_SUBST(TICABLES_CFLAGS)
 AC_SUBST(TICABLES_LIBS)
 
-PKG_CHECK_MODULES(TICALCS, ticalcs2 >= 1.0.0)
+PKG_CHECK_MODULES(TICALCS, ticalcs2 >= 1.0.7)
 AC_SUBST(TICALCS_CFLAGS)
 AC_SUBST(TICALCS_LIBS)
 
-PKG_CHECK_MODULES(TIFILES, tifiles2 >= 1.0.3)
+PKG_CHECK_MODULES(TIFILES, tifiles2 >= 1.0.7)
 AC_SUBST(TIFILES_CFLAGS)
 AC_SUBST(TIFILES_LIBS)
 
-PKG_CHECK_MODULES(TICONV, ticonv >= 1.0.0)
+PKG_CHECK_MODULES(TICONV, ticonv >= 1.0.4)
 AC_SUBST(TICONV_CFLAGS)
 AC_SUBST(TICONV_LIBS)
 
@@ -147,24 +147,7 @@ esac
 CFLAGS="$CFLAGS $ARCH"
 
 # Check for SDL if sound support is wanted
-AC_ARG_ENABLE(sound,
-  AC_HELP_STRING([--disable-sound], [disable sound emulation]),
-  [tiemu_use_sound=$enableval], [tiemu_use_sound=yes])
-AC_CACHE_CHECK([whether to enable sound emulation],
-  [tiemu_use_sound], [tiemu_use_sound=yes])
-if test "x$tiemu_use_sound" = "xyes"; then
-        SDL_VERSION=1.2.0
-        AM_PATH_SDL($SDL_VERSION,
-                    :,
-                    AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
-        )
-else
-        CFLAGS="$CFLAGS -DNO_SOUND"
-        SDL_CFLAGS=
-        SDL_LIBS=
-fi
-AC_SUBST(SDL_CFLAGS)
-AC_SUBST(SDL_LIBS)
+
 
 # KDE dialogs support
 AC_ARG_WITH(kde, AC_HELP_STRING([--without-kde], [Compile without KDE support]), [kde=$withval], [kde=default])

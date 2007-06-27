@@ -13,6 +13,7 @@ SubVersion: $Id$
 	- [kevin] $2538: only define _GNU_SOURCE in src/core/uae/sysdeps.h if not already defined
 	Note: trunk forked into tiemu-3-sound branch at rev. $2507
 	- [roms]  $2571: changed some function names (sound emulation) to follow TiEmu function naming scheme
+	- [roms]  $2572: changed one function in dbus.c to follow ticonv API changes. Major number requirements updated consequently.
 
 - 16/03/2007, version 3.00
 	- [kevin] $2389: don't use \n in the breakpoint window status bar
