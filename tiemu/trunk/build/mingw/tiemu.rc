@@ -22,15 +22,14 @@ BEGIN
             VALUE "CompanyName", "Linux Programmer Group\0"
             VALUE "FileDescription", "TiEmu\0"
             VALUE "FileVersion", "3.01\0"
-//            VALUE "FileVersion", __DATE__
             VALUE "InternalName", "TiEmu\0"
             VALUE "LegalCopyright", "Copyright © 2000-2007, The TiEmu Team\0"
             VALUE "LegalTrademarks", "The TiEmu Team\0"
             VALUE "OriginalFilename", "tiemu.exe\0"
-//            VALUE "PrivateBuild", "$Id$\0"
+            VALUE "PrivateBuild", "$Id$\0"
             VALUE "ProductName", "TiEmu 3\0"
             VALUE "ProductVersion", "3, 0, 1, 0\0"
-            VALUE "SpecialBuild", "MinGW Windows build\0"
+            VALUE "SpecialBuild", "MinGW/MSVC Windows build\0"
         END
     END
 END

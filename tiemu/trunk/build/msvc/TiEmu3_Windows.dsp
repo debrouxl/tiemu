@@ -174,11 +174,11 @@ SOURCE="..\..\..\..\..\SDL-1.2\lib\SDLmain.lib"
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\TiEmu.ico
+SOURCE=.\tiemu.ico
 # End Source File
 # Begin Source File
 
-SOURCE=.\TiEMu.rc
+SOURCE=..\mingw\tiemu.rc
 # End Source File
 # Begin Source File
 

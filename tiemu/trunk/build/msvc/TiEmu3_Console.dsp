@@ -550,11 +550,11 @@ SOURCE=.\icon3.ico
 # End Source File
 # Begin Source File
 
-SOURCE=.\TiEmu.ico
+SOURCE=.\tiemu.ico
 # End Source File
 # Begin Source File
 
-SOURCE=.\TiEmu.rc
+SOURCE=..\mingw\tiemu.rc
 # End Source File
 # Begin Source File
 
