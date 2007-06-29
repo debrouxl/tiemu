@@ -26,6 +26,7 @@ BEGIN
             VALUE "LegalCopyright", "Copyright © 2000-2007, The TiEmu Team\0"
             VALUE "LegalTrademarks", "The TiEmu Team\0"
             VALUE "OriginalFilename", "tiemu.exe\0"
+            VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "TiEmu 3\0"
             VALUE "ProductVersion", "3, 0, 1, 0\0"
             VALUE "SpecialBuild", "Windows build\0"
