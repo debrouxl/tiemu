@@ -17,7 +17,7 @@ DefaultGroupName=TiEmu3-gdb
 AllowNoIcons=yes
 LicenseFile=C:\sources\roms\tiemu3\COPYING
 InfoBeforeFile=C:\sources\roms\tiemu3\README.win32
-InfoAfterFile=C:\sources\roms\tiemu3\RELEASE.nogdb
+InfoAfterFile=C:\sources\roms\tiemu3\RELEASE
 
 ;--- Shared Stuffs ---
 [Files]
