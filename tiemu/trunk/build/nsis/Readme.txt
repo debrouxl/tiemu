@@ -4,7 +4,8 @@ TiEmu 3 (version 3.01)
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
-Licensed under the GNU General Public License.
+ *  Copyright (c) 2007, Peter Fernandes
+Licensed under the GNU General Public License version 2 or later.
 
 1. Installed components
 
@@ -73,6 +74,11 @@ Another source of errors like the aforementioned ones is attempting to use GTK+
 2.8 or higher with a Windows version not supported by that version of GTK+.
 GTK+ 2.8 or higher requires Windows 2000, XP or newer. If you're running Windows
 95, 98, Me or NT 4, use GTK+ 2.6 instead.
+
+If you are getting any errors with DLLs, such as "The procedure entry point
+atk_relation_set_add_relation_by_type could not be located in the dynamic link
+library libatk-1.0-0.dll", make sure you have one and only ONE version of the
+GTK+ DLLs. If unsure, remove all GTK+ packages and install it again.
 
 4. Usage
 
