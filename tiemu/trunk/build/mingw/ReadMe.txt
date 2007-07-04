@@ -1,5 +1,5 @@
 Compiling LPG Software with MinGW
-Version 1.99 20070621
+Version 1.99 20070704
 Copyright (C) 2005-2007 Kevin Kofler
 Copyright (C) 2001-2006 Romain Lievin
 Copyright (C) 2006 Tyler Cassidy
@@ -178,6 +178,9 @@ Once you have successfully built TiLP2/TiEmu3, here's how to build an installer 
    make
    make install
    For the prefix, I recommend creating a new directory.
+   You can also use the following configure options to get a sound-only build of SDL:
+   --disable-video --disable-events --disable-joystick --disable-cdrom --disable-timers --disable-loadso
+   (WARNING: Only use these for static builds, a DLL with all that stuff disabled WILL cause problems!)
 
 8. Edit cross-mingw32-gtkaio.sh to your system's needs.
 
