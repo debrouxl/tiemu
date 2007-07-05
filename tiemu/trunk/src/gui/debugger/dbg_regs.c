@@ -6,8 +6,8 @@
  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
- *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2004-2005, Romain Liévin
+ *  Copyright (c) 2007, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <ctype.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "intl.h"
 #include "paths.h"
@@ -42,31 +43,28 @@
 #include "struct.h"
 #include "dbg_all.h"
 
-enum 
+#define FLAG_T	15
+#define FLAG_S	13
+#define FLAG_X	4
+#define FLAG_N	3
+#define FLAG_Z	2
+#define FLAG_V	1
+#define FLAG_C	0
+
+typedef struct
 {
-	    COL_NAME, COL_VALUE, 
-		COL_EDITABLE, COL_COLOR, COL_FONT
-};
-#define CLIST_NVCOLS	(2)		// 2 visible columns
-#define CLIST_NCOLS		(5)		// 5 real columns
+	GtkWidget	*d[8];
+	GtkWidget	*a[8];
+	GtkWidget	*pc;
+	GtkWidget	*sr;
+	GtkWidget	*usp, *ssp;
 
-#define FONT_NAME	"courier"
+	GtkWidget	*t, *s, *i;
+	GtkWidget	*x, *n, *z, *v, *c;
+} WidgetRegs;
 
-static gint column2index(GtkWidget *list, GtkTreeViewColumn * column)
-{
-	gint i;
-
-	for (i = 0; i < CLIST_NVCOLS; i++) 
-	{
-		GtkTreeViewColumn *col;
-
-		col = gtk_tree_view_get_column(GTK_TREE_VIEW(list), i);
-		if (col == column)
-			return i;
-	}
-
-	return -1;
-}
+static WidgetRegs	wregs = { 0 };
+static GdkColor red, black;
 
 static int validate_value(const char *str, int ndigits)
 {
@@ -84,475 +82,95 @@ static int validate_value(const char *str, int ndigits)
 	return !0;
 }
 
-static void renderer_edited(GtkCellRendererText * cell,
-			    const gchar * path_string,
-			    const gchar * new_text, gpointer user_data)
+GLADE_CB void
+on_dbgregs_checkbutton_toggled         (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+static void labels_refresh(void)
 {
-    GtkWidget *tree = user_data;
-	GtkTreeView *view = GTK_TREE_VIEW(tree);
-	GtkTreeModel *model = gtk_tree_view_get_model(view);
-	GtkTreeStore *store = GTK_TREE_STORE(model);
-
-	GtkTreePath *path = gtk_tree_path_new_from_string(path_string);
-	GtkTreeIter iter;
-	
-	uint32_t value;
-	gint n;
-
-	if (!gtk_tree_model_get_iter(model, &iter, path))
-		return;
-		
-	if (strlen(path_string) < 3)
-		return;
-	
-	// set new value	
-	n = path_string[2] - '0';
-	switch(path_string[0] - '0')
-	{
-		case 1:	// Ax
-			if(validate_value(new_text, 8))
-			{
-				sscanf(new_text, "%x", &value);			
-				gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
-				ti68k_register_set_addr(n, value);
-				if((n == 6) || (n == 7))
-					dbgstack_refresh_window();
-			}
-		break;
-		case 0:	// Dx
-			if(validate_value(new_text, 8))
-			{
-				sscanf(new_text, "%x", &value);			
-				gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
-				ti68k_register_set_data(n, value);
-			}
-		break;
-		case 2:	// Others
-			switch(n)
-			{
-				case 0:	// pc
-					if(validate_value(new_text, 6))
-					{
-						sscanf(new_text, "%x", &value);			
-						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
-						ti68k_register_set_pc(value);
-					}
-				break;		
-				case 1:	// usp
-					if(validate_value(new_text, 6))
-					{
-						sscanf(new_text, "%x", &value);			
-						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
-						ti68k_register_set_usp(value);
-					}
-				break;
-                case 2:	// ssp
-					if(validate_value(new_text, 6))
-					{
-						sscanf(new_text, "%x", &value);			
-						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
-						ti68k_register_set_ssp(value);
-					}
-				break;
-				case 3: // sr
-					if(validate_value(new_text, 4))
-					{
-						sscanf(new_text, "%x", &value);			
-						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
-						ti68k_register_set_sr(value);
-
-                        // update usp <=> ssp
-                        dbgregs_refresh_window();
-                        dbgstack_refresh_window();
-					}
-				break;
-				case 4: // super-flags
-					if(ti68k_register_set_flags(new_text, NULL))
-                    {
-                        uint32_t data;
-                        gchar *sdata;
-
-						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
-                        
-                        // update sr, too
-                        gtk_tree_path_free(path);	
-                        path = gtk_tree_path_new_from_string("2:2");
-                        if (!gtk_tree_model_get_iter(model, &iter, path))
-		                    return;
-                        ti68k_register_get_sr(&data);
-                        sdata = g_strdup_printf("%04x", data);
-                        gtk_tree_store_set(store, &iter, COL_VALUE, sdata,	-1);
-                        g_free(sdata);
-                        
-                        // update usp <=> ssp
-                        dbgregs_refresh_window();
-                        dbgstack_refresh_window();
-                    }
-				case 5: // user-flags
-					if(ti68k_register_set_flags(NULL, new_text))
-                    {
-                        uint32_t data;
-                        gchar *sdata;
-
-						gtk_tree_store_set(store, &iter, COL_VALUE, new_text,	-1);
-
-                        // update sr, too
-                        gtk_tree_path_free(path);	
-                        path = gtk_tree_path_new_from_string("2:2");
-                        if (!gtk_tree_model_get_iter(model, &iter, path))
-		                    return;
-                        ti68k_register_get_sr(&data);
-                        sdata = g_strdup_printf("%04x", data);
-                        gtk_tree_store_set(store, &iter, COL_VALUE, sdata,	-1);
-                        g_free(sdata);
-                    }
-					break;
-				break;
-			}
-		break;
-		default:
-		break;
-	}
-
-	gtk_tree_path_free(path);
-}
-
-static gboolean select_func(GtkTreeSelection * selection,
-			    GtkTreeModel * model,
-			    GtkTreePath * path,
-			    gboolean path_currently_selected,
-			    gpointer data)
-{
-	GtkTreeIter iter;
+	int i;
+	int changed;
+	uint32_t data, addr;
 	gchar *str;
 
-	if (!gtk_tree_model_get_iter(model, &iter, path))
-		return FALSE;
-
-	gtk_tree_model_get(model, &iter, COL_VALUE, &str, -1);
-	
-	if(!strcmp(str, ""))
+	// refresh Ax
+	for(i = 0; i < 8; i++)
 	{
+		changed = ti68k_register_get_addr(i, &addr);
+		str = g_strdup_printf("%08x", addr);
+		gtk_entry_set_text(GTK_ENTRY(wregs.a[i]), str);
+		gtk_widget_modify_text(wregs.a[i], GTK_STATE_NORMAL, changed ? &red : &black);
 		g_free(str);
-		return FALSE;
 	}
-	
-	g_free(str);	
-	return TRUE;
-}
 
-static GtkTreeStore* ctree_create(GtkWidget *widget)
-{
-	GtkTreeView *view = GTK_TREE_VIEW(widget);
-	GtkTreeStore *store;
-	GtkTreeModel *model;
-	GtkCellRenderer *renderer;
-	GtkTreeSelection *selection;
-    gint i;
-	
-	store = gtk_tree_store_new(CLIST_NCOLS,
-				G_TYPE_STRING, G_TYPE_STRING, 
-				G_TYPE_BOOLEAN, GDK_TYPE_COLOR, G_TYPE_STRING,
-				-1
-            );
-    model = GTK_TREE_MODEL(store);
-	
-    gtk_tree_view_set_model(view, model); 
-    gtk_tree_view_set_headers_visible(view, FALSE);
-	gtk_tree_view_set_rules_hint(view, TRUE);
-  
-	renderer = gtk_cell_renderer_text_new();
-	gtk_tree_view_insert_column_with_attributes(view, -1, 
-            "", renderer, 
-            "text", COL_NAME,
-			"font", COL_FONT,
-			NULL);
-
-	renderer = gtk_cell_renderer_text_new();
-	gtk_tree_view_insert_column_with_attributes(view, -1, 
-            "", renderer, 
-            "text", COL_VALUE,
-			"editable", COL_EDITABLE,
-			"foreground-gdk", COL_COLOR,
-			"font", COL_FONT,
-			NULL);
-			
-	g_signal_connect(G_OBJECT(renderer), "edited",
-			G_CALLBACK(renderer_edited), widget);
-
-    
-    for (i = 0; i < CLIST_NVCOLS; i++) 
-    {
-		GtkTreeViewColumn *col;
-		
-		col = gtk_tree_view_get_column(view, i);
-		//gtk_tree_view_column_set_resizable(col, TRUE);
-	}
-	
-	selection = gtk_tree_view_get_selection(view);
-	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
-	gtk_tree_selection_set_select_function(selection, select_func, NULL, NULL);
-
-	return store;
-}
-
-static void ctree_populate(GtkTreeStore *store)
-{
-	GtkTreeIter node1, node2, node3;
-    GtkTreeIter iter;
-    int i;
-    const char *others[] = { "PC", "USP", "SSP", "SR" , "sf", "uf"};
-	GdkColor color;
-	gboolean success;
-
-	gdk_color_parse("Blue", &color);
-	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color, 1,
-				  FALSE, FALSE, &success);
-
-	// set the 3 main nodes
-	gtk_tree_store_append(store, &node1, NULL);
-	gtk_tree_store_set(store, &node1, 
-		COL_NAME, _("Data"), 
-		COL_VALUE, "",  
-		COL_EDITABLE, FALSE,
-		COL_FONT, FONT_NAME,
-		-1);
-		
-	gtk_tree_store_append(store, &node2, NULL);
-	gtk_tree_store_set(store, &node2, 
-		COL_NAME, _("Addr"), 
-		COL_VALUE, "",  
-		COL_EDITABLE, FALSE,
-		COL_FONT, FONT_NAME,
-		-1);
-		
-	gtk_tree_store_append(store, &node3, NULL);
-	gtk_tree_store_set(store, &node3, 
-		COL_NAME, _("Other"), 
-		COL_VALUE, "",  
-		COL_EDITABLE, FALSE,
-		COL_FONT, FONT_NAME,
-		-1);
-		
-	// populate Dx node
+	// refresh Dx
 	for(i = 0; i < 8; i++)
 	{
-		gchar *str = g_strdup_printf("D%i", i);
-		
-		gtk_tree_store_append(store, &iter, &node1);
-		gtk_tree_store_set(store, &iter,
-			COL_NAME, str,
-			COL_VALUE, "000000",
-			COL_EDITABLE, TRUE,
-			COL_FONT, FONT_NAME,
-			COL_COLOR, &color,
-	   		-1);
-	   		
-	   	g_free(str);
-	}
-	
-	// populate Ax node
-	for(i = 0; i < 8; i++)
-	{
-		gchar *str = g_strdup_printf("A%i", i);
-		
-		gtk_tree_store_append(store, &iter, &node2);
-		gtk_tree_store_set(store, &iter,
-			COL_NAME, str,
-			COL_VALUE, "000000",
-			COL_EDITABLE, TRUE,
-			COL_FONT, FONT_NAME,
-			COL_COLOR, &color,
-	   		-1);
-	   		
-	   	g_free(str);
-	}
-	
-	// populate Others node
-	for(i = 0; i < 6; i++)
-	{
-		gtk_tree_store_append(store, &iter, &node3);
-		gtk_tree_store_set(store, &iter,
-			COL_NAME, others[i],
-			COL_VALUE, "000000",
-			COL_EDITABLE, TRUE,
-			COL_FONT, FONT_NAME,
-	   		-1);
-	}
-}
-
-static void ctree_refresh(GtkTreeStore *store)
-{
-	GtkTreeModel *model = GTK_TREE_MODEL(store);
-    int i;
-
-	gchar *spath;
-	GtkTreePath *path;
-	GtkTreeIter iter;
-	uint32_t data;
-	gchar *sdata;
-	int changed;
-
-	GdkColor red, blue;
-	gboolean success;
-	GdkColor *color;
-
-	gdk_color_parse("Blue", &blue);
-	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &blue, 1,
-				  FALSE, FALSE, &success);
-	gdk_color_parse("Red", &red);
-	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &red, 1,
-				  FALSE, FALSE, &success);
-
-	// refresh Ax nodes
-	for(i = 0; i < 8; i++)
-	{
-		spath = g_strdup_printf("1:%i", i);
-		path = gtk_tree_path_new_from_string(spath);
-		if(!gtk_tree_model_get_iter(model, &iter, path))
-			continue;
-		
-		changed = ti68k_register_get_addr(i, &data);
-		sdata = g_strdup_printf("%08x", data);
-		color = changed ? &red : &blue;
-
-		gtk_tree_store_set(store, &iter, COL_VALUE, sdata,	-1);
-		gtk_tree_store_set(store, &iter, COL_COLOR, color,	-1);
-		g_free(sdata);
-	   		
-	   	g_free(spath);
-	   	gtk_tree_path_free(path);
-	}
-	
-	// refresh Dx nodes
-	for(i = 0; i < 8; i++)
-	{
-		spath = g_strdup_printf("0:%i", i);
-		path = gtk_tree_path_new_from_string(spath);
-		if(!gtk_tree_model_get_iter(model, &iter, path))
-			continue;
-		
 		changed = ti68k_register_get_data(i, &data);
-		sdata = g_strdup_printf("%08x", data);
-		color = changed ? &red : &blue;
-		
-		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
-		gtk_tree_store_set(store, &iter, COL_COLOR, color, -1);
-		g_free(sdata);
-	   		
-	   	g_free(spath);
-	   	gtk_tree_path_free(path);
-	}
-	
-	// refresh Others node (PC)
-	{
-		spath = g_strdup_printf("2:%i", 0);
-		path = gtk_tree_path_new_from_string(spath);
-		if(!gtk_tree_model_get_iter(model, &iter, path))
-			return;
-		
-		changed = ti68k_register_get_pc(&data);
-		sdata = g_strdup_printf("%06x", data);
-		color = changed ? &red : &blue;
-		
-		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
-		gtk_tree_store_set(store, &iter, COL_COLOR, color, -1);
-		g_free(sdata);
-	   		
-	   	g_free(spath);
-	   	gtk_tree_path_free(path);	
-	}
-	
-	// refresh Others node (USP)
-	{
-		spath = g_strdup_printf("2:%i", 1);
-		path = gtk_tree_path_new_from_string(spath);
-		if(!gtk_tree_model_get_iter(model, &iter, path))
-			return;
-		
-		changed = ti68k_register_get_usp(&data);
-		sdata = g_strdup_printf("%06x", data);
-		color = changed ? &red : &blue;
-		
-		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
-		gtk_tree_store_set(store, &iter, COL_COLOR, color, -1);
-		g_free(sdata);
-	   		
-	   	g_free(spath);
-	   	gtk_tree_path_free(path);	
+		str = g_strdup_printf("%08x", data);
+		gtk_entry_set_text(GTK_ENTRY(wregs.d[i]), str);
+		gtk_widget_modify_text(wregs.d[i], GTK_STATE_NORMAL, changed ? &red : &black);
+		g_free(str);
 	}
 
-    // refresh Others node (SSP)
-	{
-		spath = g_strdup_printf("2:%i", 2);
-		path = gtk_tree_path_new_from_string(spath);
-		if(!gtk_tree_model_get_iter(model, &iter, path))
-			return;
-		
-		changed = ti68k_register_get_ssp(&data);
-		sdata = g_strdup_printf("%06x", data);
-		color = changed ? &red : &blue;
-		
-		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
-		gtk_tree_store_set(store, &iter, COL_COLOR, color, -1);
-		g_free(sdata);
-	   		
-	   	g_free(spath);
-	   	gtk_tree_path_free(path);	
-	}
-	
-	// refresh Others node (SR)
-	{
-		spath = g_strdup_printf("2:%i", 3);
-		path = gtk_tree_path_new_from_string(spath);
-		if(!gtk_tree_model_get_iter(model, &iter, path))
-			return;
+	// refresh misc register
+	changed = ti68k_register_get_pc(&data);
+	str = g_strdup_printf("%06x", data);
+	gtk_entry_set_text(GTK_ENTRY(wregs.pc), str);
+	gtk_widget_modify_text(wregs.pc, GTK_STATE_NORMAL, changed ? &red : &black);
+	g_free(str);
 
-		changed = ti68k_register_get_sr(&data);
-		sdata = g_strdup_printf("%04x", data);
-		color = changed ? &red : &blue;
-		
-		gtk_tree_store_set(store, &iter, COL_VALUE, sdata, -1);
-		gtk_tree_store_set(store, &iter, COL_COLOR, color, -1);
-		g_free(sdata);
-	   		
-	   	g_free(spath);
-	   	gtk_tree_path_free(path);	
-	}
+	changed = ti68k_register_get_usp(&data);
+	str = g_strdup_printf("%06x", data);
+	gtk_entry_set_text(GTK_ENTRY(wregs.usp), str);
+	gtk_widget_modify_text(wregs.usp, GTK_STATE_NORMAL, changed ? &red : &black);
+	g_free(str);
 
-	// refresh Others node (S & U flags)
-	{
-		char s_flags[32], u_flags[32];
+	changed = ti68k_register_get_ssp(&data);
+	str = g_strdup_printf("%06x", data);
+	gtk_entry_set_text(GTK_ENTRY(wregs.ssp), str);
+	gtk_widget_modify_text(wregs.ssp, GTK_STATE_NORMAL, changed ? &red : &black);
+	g_free(str);
 
-		changed = ti68k_register_get_flags(s_flags, u_flags);		
-		color = changed ? &red : &blue;
+	changed = ti68k_register_get_sr(&data);
+	str = g_strdup_printf("%04x", data);
+	gtk_entry_set_text(GTK_ENTRY(wregs.sr), str);
+	gtk_widget_modify_text(wregs.sr, GTK_STATE_NORMAL, changed ? &red : &black);
+	g_free(str);
 
-		spath = g_strdup_printf("2:%i", 4);
-		path = gtk_tree_path_new_from_string(spath);
-		if(!gtk_tree_model_get_iter(model, &iter, path))
-			return;
-		
-		gtk_tree_store_set(store, &iter, COL_VALUE, s_flags, -1);
-		gtk_tree_store_set(store, &iter, COL_COLOR, color, -1);
-	   		
-	   	g_free(spath);
-	   	gtk_tree_path_free(path);
+	// refresh SR
+	ti68k_register_get_sr(&data);
 
-		spath = g_strdup_printf("2:%i", 5);
-		path = gtk_tree_path_new_from_string(spath);
-		if(!gtk_tree_model_get_iter(model, &iter, path))
-			return;
-		
-		gtk_tree_store_set(store, &iter, COL_VALUE, u_flags, -1);
-		gtk_tree_store_set(store, &iter, COL_COLOR, color, -1);
-	   		
-	   	g_free(spath);
-	   	gtk_tree_path_free(path);
-	}
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(wregs.i), (data >> 8) & 7);
 
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.t), on_dbgregs_checkbutton_toggled, NULL);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.t), data & (1 << FLAG_T));
+	g_signal_handlers_unblock_by_func(GTK_OBJECT(wregs.t), on_dbgregs_checkbutton_toggled, NULL);
+
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.s), on_dbgregs_checkbutton_toggled, NULL);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.s), data & (1 << FLAG_S));
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.s), on_dbgregs_checkbutton_toggled, NULL);
+
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.x), on_dbgregs_checkbutton_toggled, NULL);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.x), data & (1 << FLAG_X));
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.x), on_dbgregs_checkbutton_toggled, NULL);
+
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.n), on_dbgregs_checkbutton_toggled, NULL);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.n), data & (1 << FLAG_N));
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.n), on_dbgregs_checkbutton_toggled, NULL);
+
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.z), on_dbgregs_checkbutton_toggled, NULL);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.z), data & (1 << FLAG_Z));
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.z), on_dbgregs_checkbutton_toggled, NULL);
+
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.v), on_dbgregs_checkbutton_toggled, NULL);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.v), data & (1 << FLAG_V));
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.v), on_dbgregs_checkbutton_toggled, NULL);
+
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.c), on_dbgregs_checkbutton_toggled, NULL);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.c), data & (1 << FLAG_C));
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.c), on_dbgregs_checkbutton_toggled, NULL);
 }
-
-static GtkTreeStore *store;
 
 /*
 	Display registers window
@@ -561,24 +179,88 @@ GtkWidget* dbgregs_create_window(void)
 {
 	GladeXML *xml = NULL;
 	GtkWidget *dbox;
-    GtkWidget *data;	
 	
 	xml = glade_xml_new
-		(tilp_paths_build_glade("dbg_regs-2.glade"), "dbgregs_window",
+		(tilp_paths_build_glade("dbg_regs-2.glade"), "dbgregs2_window",
 		 PACKAGE);
 	if (!xml)
 		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
 	
-	dbox = glade_xml_get_widget(xml, "dbgregs_window");
+	dbox = glade_xml_get_widget(xml, "dbgregs2_window");
 	if(options3.transient)
 		gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
 
-	data = glade_xml_get_widget(xml, "treeview1");
-    store = ctree_create(data);
-	ctree_populate(store);
+	wregs.d[0] = glade_xml_get_widget(xml, "entry10");
+	wregs.d[1] = glade_xml_get_widget(xml, "entry11");
+	wregs.d[2] = glade_xml_get_widget(xml, "entry12");
+	wregs.d[3] = glade_xml_get_widget(xml, "entry13");
+	wregs.d[4] = glade_xml_get_widget(xml, "entry14");
+	wregs.d[5] = glade_xml_get_widget(xml, "entry15");
+	wregs.d[6] = glade_xml_get_widget(xml, "entry16");
+	wregs.d[7] = glade_xml_get_widget(xml, "entry17");
 
-	gtk_tree_view_expand_all(GTK_TREE_VIEW(data));
+	wregs.a[0] = glade_xml_get_widget(xml, "entry20");
+	wregs.a[1] = glade_xml_get_widget(xml, "entry21");
+	wregs.a[2] = glade_xml_get_widget(xml, "entry22");
+	wregs.a[3] = glade_xml_get_widget(xml, "entry23");
+	wregs.a[4] = glade_xml_get_widget(xml, "entry24");
+	wregs.a[5] = glade_xml_get_widget(xml, "entry25");
+	wregs.a[6] = glade_xml_get_widget(xml, "entry26");
+	wregs.a[7] = glade_xml_get_widget(xml, "entry27");
+
+	wregs.usp = glade_xml_get_widget(xml, "entry31");
+	wregs.ssp = glade_xml_get_widget(xml, "entry32");
+	wregs.pc = glade_xml_get_widget(xml, "entry33");
+	wregs.sr = glade_xml_get_widget(xml, "entry34");
+
+	wregs.t = glade_xml_get_widget(xml, "checkbutton41");
+	wregs.s = glade_xml_get_widget(xml, "checkbutton42");
+	wregs.i = glade_xml_get_widget(xml, "spinbutton44");
+	wregs.x = glade_xml_get_widget(xml, "checkbutton51");
+	wregs.n = glade_xml_get_widget(xml, "checkbutton52");
+	wregs.z = glade_xml_get_widget(xml, "checkbutton53");
+	wregs.v = glade_xml_get_widget(xml, "checkbutton54");
+	wregs.c = glade_xml_get_widget(xml, "checkbutton55");
+
+	// Change for a fixed size font
+	{
+		PangoContext *context;
+		PangoFontDescription *desc;
+		const gchar *family;
+		int size;
+		int i;
+		
+		context = gtk_widget_get_pango_context(wregs.pc);
+		desc = pango_context_get_font_description(context);
+		family = pango_font_description_get_family(desc);
+		size = pango_font_description_get_size(desc);
+
+		pango_font_description_set_family(desc, "Courier");
+		pango_font_description_set_size(desc, (int)(size*0.8));
+
+		gtk_widget_modify_font(wregs.pc, desc);
+		gtk_widget_modify_font(wregs.sr, desc);
+		gtk_widget_modify_font(wregs.usp, desc);
+		gtk_widget_modify_font(wregs.ssp, desc);
+		for(i = 0; i < 8; i++)
+		{
+			gtk_widget_modify_font(wregs.d[i], desc);
+			gtk_widget_modify_font(wregs.a[i], desc);
+		}
+	}
+
+	// Allocate colors
+	{
+		gboolean success;
+
+		gdk_color_parse("Black", &black);
+		gdk_colormap_alloc_colors(gdk_colormap_get_system(), &black, 1,
+				  FALSE, FALSE, &success);
+		gdk_color_parse("Red", &red);
+		gdk_colormap_alloc_colors(gdk_colormap_get_system(), &red, 1,
+				  FALSE, FALSE, &success);
+	}
 
 	return dbox;
 }
@@ -595,7 +277,7 @@ GtkWidget* dbgregs_display_window(void)
 		gtk_window_iconify(GTK_WINDOW(dbgw.regs));
 #endif
     
-	ctree_refresh(store);
+	labels_refresh();
 
 	if(!GTK_WIDGET_VISIBLE(dbgw.regs) && !options3.regs.closed)
 		gtk_widget_show(dbgw.regs);
@@ -607,8 +289,204 @@ void dbgregs_refresh_window(void)
 {
 	if(!options3.regs.closed)
 	{
-		ctree_refresh(store);
+		labels_refresh();
 	}
+}
+
+GLADE_CB gboolean
+on_dbgregs_key_press_event             (GtkWidget       *widget,
+                                        GdkEventKey     *event,
+                                        gpointer         user_data)
+{
+	const gchar *label = gtk_label_get_text(GTK_LABEL(widget));
+	const gchar *text = gtk_entry_get_text(GTK_ENTRY(user_data));
+	uint32_t value;
+	int n = label[1] - '0';
+
+	if(event->keyval != GDK_Return && event->keyval != GDK_KP_Enter)
+		return FALSE;
+
+	if(label[0] == 'A')
+	{
+		if(validate_value(text, 8))
+		{
+			sscanf(text, "%x", &value);			
+			ti68k_register_set_addr(n, value);
+		}
+
+		if((n == 6) || (n == 7))
+			dbgstack_refresh_window();
+	} 
+	else if(label[0] == 'D')
+	{
+		if(validate_value(text, 8))
+		{
+			sscanf(text, "%x", &value);			
+			ti68k_register_set_data(n, value);
+		}
+	}
+	else if(!strcmp(label, "PC="))
+	{
+		if(validate_value(text, 6))
+		{
+			sscanf(text, "%x", &value);			
+			ti68k_register_set_pc(value);
+		}
+	}
+	else if(!strcmp(label, "USP="))
+	{
+		if(validate_value(text, 6))
+		{
+			sscanf(text, "%x", &value);			
+			ti68k_register_set_usp(value);
+		}
+	}
+	else if(!strcmp(label, "SSP="))
+	{
+		if(validate_value(text, 6))
+		{
+			sscanf(text, "%x", &value);			
+			ti68k_register_set_ssp(value);
+		}
+	}
+	else if(!strcmp(label, "SR="))
+	{
+		if(validate_value(text, 4))
+		{
+			sscanf(text, "%x", &value);			
+			ti68k_register_set_sr(value);
+
+			dbgregs_refresh_window();
+            dbgstack_refresh_window();
+		}
+	}
+
+	labels_refresh();
+	return TRUE;
+}
+
+GLADE_CB void
+on_dbgregs_checkbutton_toggled         (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+	const gchar *label;
+	gboolean state;
+	uint32_t data;
+	gchar *str;
+
+	label = gtk_button_get_label(GTK_BUTTON(togglebutton));
+	state = gtk_toggle_button_get_active(togglebutton);
+
+	ti68k_register_get_sr(&data);
+
+	switch(label[0])
+	{
+	case 'T':
+		data &= ~(1 << FLAG_T);
+		data |= (state << FLAG_T);
+	break;
+	case 'S':
+		data &= ~(1 << FLAG_S);
+		data |= (state << FLAG_S);
+	break;
+	case 'X':
+		data &= ~(1 << FLAG_X);
+		data |= (state << FLAG_X);
+	break;
+	case 'N':
+		data &= ~(1 << FLAG_N);
+		data |= (state << FLAG_N);
+	break;
+	case 'Z':
+		data &= ~(1 << FLAG_Z);
+		data |= (state << FLAG_Z);
+	break;
+	case 'V':
+		data &= ~(1 << FLAG_V);
+		data |= (state << FLAG_V);
+	break;
+	case 'C':
+		data &= ~(1 << FLAG_C);
+		data |= (state << FLAG_C);
+	break;
+	default:
+	return;
+	}
+
+	ti68k_register_set_sr(data);
+
+	str = g_strdup_printf("%04x", data);
+	gtk_entry_set_text(GTK_ENTRY(wregs.sr), str);
+	g_free(str);
+
+	// update usp <=> ssp
+    dbgregs_refresh_window();
+    dbgstack_refresh_window();
+}
+
+
+GLADE_CB void
+on_dbgregs_spinbutton_changed          (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+	int i;
+	uint32_t data;
+	gchar *str;
+
+	i = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(editable));
+
+	ti68k_register_get_sr(&data);
+	data &= ~0x700;
+	data |= (i << 8);
+	ti68k_register_set_sr(data);
+
+	str = g_strdup_printf("%04x", data);
+	gtk_entry_set_text(GTK_ENTRY(wregs.sr), str);
+	g_free(str);
+}
+
+static GtkWidget* display_popup_menu(void);
+static uint32_t value = -1;
+
+GLADE_CB gboolean
+on_dbgregs_button_press_event          (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data)
+{
+	if (event->button == 3)
+    {
+        GdkEventButton *bevent;
+        GtkWidget *menu;  
+		const gchar *label = gtk_label_get_text(GTK_LABEL(widget));
+		const gchar *text;
+		int n = label[1] - '0';
+
+		if(label[0] == 'A')
+			text = gtk_entry_get_text(GTK_ENTRY(wregs.a[n]));
+		else if(label[0] == 'D')
+			text = gtk_entry_get_text(GTK_ENTRY(wregs.d[n]));
+		else if(!strcmp(label, "PC="))
+			text = gtk_entry_get_text(GTK_ENTRY(wregs.pc));
+		else if(!strcmp(label, "USP="))
+			text = gtk_entry_get_text(GTK_ENTRY(wregs.usp));
+		else if(!strcmp(label, "SSP="))
+			text = gtk_entry_get_text(GTK_ENTRY(wregs.ssp));
+
+        sscanf(text, "%x", &value);
+
+        // popup menu
+       	bevent = (GdkEventButton *) (event);
+        menu = display_popup_menu();
+
+		gtk_menu_popup(GTK_MENU(menu),
+				   NULL, NULL, NULL, NULL,
+				   bevent->button, bevent->time);
+	    gtk_widget_show(menu);
+
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 /***** Popup menu *****/
@@ -632,96 +510,6 @@ static GtkWidget* display_popup_menu(void)
 	return menu;
 }
 
-static uint32_t value = -1; //I'm lazy today !
-
-GLADE_CB gboolean
-on_treeview3_button_press_event        (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
-{
-    GtkTreeView *view = GTK_TREE_VIEW(widget);
-    GtkTreeModel *model = gtk_tree_view_get_model(view);
-	GtkTreePath *path;
-	GtkTreeViewColumn *column;
-    GtkTreeIter iter;
-    gboolean ret;
-    gchar *spath;
-    gint i, j;
-    gint col;
-
-    if(event->type != GDK_BUTTON_PRESS)
-        return FALSE;
-
-    {
-        // cell selection
-        gint tx = (gint) event->x;
-	    gint ty = (gint) event->y;
-	    gint cx, cy;
-
-        ret = gtk_tree_view_get_path_at_pos(view, tx, ty, &path, &column, &cx, &cy);
-        if(ret == FALSE)
-            return FALSE;
-
-        col = column2index((GtkWidget *)view, column);
-        spath = gtk_tree_path_to_string(path);
-        sscanf(spath, "%i:%i", &i, &j);
-        
-        //gtk_tree_path_free(path);
-        g_free(spath);
-    }
-
-    if(event->button == 1)  // first button clicked
-    {
-        if(!((col == 0) && (i == 2) && ((j == 4) ||(j ==5))))
-            return FALSE;
-
-        if(dbgsr_display_dbox() == -1)
-            return TRUE;
-
-        dbgregs_refresh_window();
-        dbgstack_refresh_window();
-
-        return TRUE;
-    }
-
-	if (event->button == 3)     // third button clicked
-    {
-        GdkEventButton *bevent;
-        GtkWidget *menu;        
-
-        // check for click on regs
-        if(! 
-            (
-                (col == 1) && 
-                (i>= 0) && (i <= 1) && 
-                (j >= 0) && (j <= 7)
-            ) 
-          )
-            return FALSE;
-
-        // get iterator
-	    if (!gtk_tree_model_get_iter(model, &iter, path))
-		    return FALSE;
-        gtk_tree_path_free(path);
-        gtk_tree_model_get(model, &iter, COL_VALUE, &spath, -1);
-        sscanf(spath, "%x", &value);
-        printf("value = %x\n", value);
-
-        // popup menu
-       	bevent = (GdkEventButton *) (event);
-        menu = display_popup_menu();
-
-		gtk_menu_popup(GTK_MENU(menu),
-				   NULL, NULL, NULL, NULL,
-				   bevent->button, bevent->time);
-	    gtk_widget_show(menu);
-
-		return TRUE;
-	}
-
-    return FALSE;
-}
-
 GLADE_CB void
 on_go_to_address4_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
@@ -732,71 +520,4 @@ on_go_to_address4_activate             (GtkMenuItem     *menuitem,
     dbgmem_add_tab(value);
 
     value = -1;
-}
-
-/***** Status Register window *****/
-
-static GtkWidget *btns[16];
-static uint32_t tmp_sr;
-
-gint dbgsr_display_dbox(void)
-{
-	GladeXML *xml;
-	GtkWidget *dbox;
-	gint result;
-    gint i;
-    gint ret = -1;
-
-    // load GUI
-	xml = glade_xml_new
-		(tilp_paths_build_glade("dbg_regs-2.glade"), "dbgsr_window",
-		 PACKAGE);
-	if (!xml)
-		g_error(_("%s: GUI loading failed!\n"), __FILE__);
-	glade_xml_signal_autoconnect(xml);
-	
-	dbox = glade_xml_get_widget(xml, "dbgsr_window");
-
-    // set initial states
-    ti68k_register_get_sr(&tmp_sr);
-    for(i = 0; i < 16; i++)
-    {
-        gchar *str = g_strdup_printf("checkbutton%i", i+1);
-        btns[i] = glade_xml_get_widget(xml, str);
-        g_free(str);
-
-        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(btns[i]), 
-                tmp_sr & (1 << i) ? TRUE : FALSE);
-    }
-
-	// run dialog
-	result = gtk_dialog_run(GTK_DIALOG(dbox));
-	switch (result) {
-	case GTK_RESPONSE_OK:
-        ti68k_register_set_sr(tmp_sr);
-        ret = 0;
-		break;
-	default:
-		break;
-	}
-
-	gtk_widget_destroy(dbox);
-
-	return ret;
-}
-
-GLADE_CB void
-on_checkbutton1_toggled                (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-    gint i;
-    
-    for(i = 0; i< 16; i++)
-        if(togglebutton == (GtkToggleButton *)btns[i])
-            break;
-    
-    if(GTK_TOGGLE_BUTTON(btns[i])->active == TRUE)
-        tmp_sr |=  (1 << i);
-    else
-        tmp_sr &= ~(1 << i);
 }
