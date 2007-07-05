@@ -389,6 +389,7 @@ GtkWidget* dbgcode_create_window(void)
 	gtk_widget_hide(data);
 
 	dbgromcall_create_window(xml);
+	dbgromcall_refresh_window();	// speed-up displaying of code window
 
 	return dbox;
 }

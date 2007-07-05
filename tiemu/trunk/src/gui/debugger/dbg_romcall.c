@@ -179,7 +179,6 @@ void dbgromcall_create_window(GladeXML *xml)
 
 void dbgromcall_refresh_window(void)
 {
-	//gtk_list_store_clear(store);
 	clist_populate(store);
 }
 

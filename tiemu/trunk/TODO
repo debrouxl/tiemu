@@ -1,13 +1,8 @@
 Planned features:
 -----------------
 
-* use the contrast field of skin
-* sound emulation
-* request #1532860:
-<<
-Another cool feature would be the capabilitie to
-capture video from the screen, allowing to save in .gif
-or .avi
->>
+* reduce loading time of source window (parse ROM calls?)
+* set data breakpoint on bit
 
-* tracing of mem access or others
+* use the contrast field of skin
+* tracing/logging of mem access or others
