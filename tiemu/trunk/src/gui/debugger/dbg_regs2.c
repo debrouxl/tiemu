@@ -82,6 +82,10 @@ static int validate_value(const char *str, int ndigits)
 	return !0;
 }
 
+GLADE_CB void
+on_dbgregs_checkbutton_toggled         (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
 static void labels_refresh(void)
 {
 	int i;
@@ -135,15 +139,37 @@ static void labels_refresh(void)
 	g_free(str);
 
 	// refresh SR
-	changed = ti68k_register_get_sr(&data);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.t), data & (1 << FLAG_T));
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.s), data & (1 << FLAG_S));
+	ti68k_register_get_sr(&data);
+
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(wregs.i), (data >> 8) & 7);
+
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.t), on_dbgregs_checkbutton_toggled, NULL);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.t), data & (1 << FLAG_T));
+	g_signal_handlers_unblock_by_func(GTK_OBJECT(wregs.t), on_dbgregs_checkbutton_toggled, NULL);
+
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.s), on_dbgregs_checkbutton_toggled, NULL);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.s), data & (1 << FLAG_S));
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.s), on_dbgregs_checkbutton_toggled, NULL);
+
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.x), on_dbgregs_checkbutton_toggled, NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.x), data & (1 << FLAG_X));
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.x), on_dbgregs_checkbutton_toggled, NULL);
+
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.n), on_dbgregs_checkbutton_toggled, NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.n), data & (1 << FLAG_N));
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.n), on_dbgregs_checkbutton_toggled, NULL);
+
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.z), on_dbgregs_checkbutton_toggled, NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.z), data & (1 << FLAG_Z));
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.z), on_dbgregs_checkbutton_toggled, NULL);
+
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.v), on_dbgregs_checkbutton_toggled, NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.v), data & (1 << FLAG_V));
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.v), on_dbgregs_checkbutton_toggled, NULL);
+
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.c), on_dbgregs_checkbutton_toggled, NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.c), data & (1 << FLAG_C));
+	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.c), on_dbgregs_checkbutton_toggled, NULL);
 }
 
 /*
@@ -279,8 +305,6 @@ on_dbgregs_key_press_event             (GtkWidget       *widget,
 
 	if(event->keyval != GDK_Return && event->keyval != GDK_KP_Enter)
 		return FALSE;
-
-	printf("%s: %s\n", label, text);
 
 	if(label[0] == 'A')
 	{
