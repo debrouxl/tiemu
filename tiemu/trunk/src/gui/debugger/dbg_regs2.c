@@ -64,6 +64,7 @@ typedef struct
 } WidgetRegs;
 
 static WidgetRegs	wregs = { 0 };
+static GdkColor red, black;
 
 static int validate_value(const char *str, int ndigits)
 {
@@ -88,21 +89,23 @@ static void labels_refresh(void)
 	uint32_t data, addr;
 	gchar *str;
 
-	// refresh Dx
+	// refresh Ax
 	for(i = 0; i < 8; i++)
 	{
 		changed = ti68k_register_get_addr(i, &addr);
 		str = g_strdup_printf("%08x", addr);
 		gtk_entry_set_text(GTK_ENTRY(wregs.a[i]), str);
+		gtk_widget_modify_text(wregs.a[i], GTK_STATE_NORMAL, changed ? &red : &black);
 		g_free(str);
 	}
 
-	// refresh Ax
+	// refresh Dx
 	for(i = 0; i < 8; i++)
 	{
 		changed = ti68k_register_get_data(i, &data);
 		str = g_strdup_printf("%08x", data);
 		gtk_entry_set_text(GTK_ENTRY(wregs.d[i]), str);
+		gtk_widget_modify_text(wregs.d[i], GTK_STATE_NORMAL, changed ? &red : &black);
 		g_free(str);
 	}
 
@@ -110,21 +113,25 @@ static void labels_refresh(void)
 	changed = ti68k_register_get_pc(&data);
 	str = g_strdup_printf("%06x", data);
 	gtk_entry_set_text(GTK_ENTRY(wregs.pc), str);
+	gtk_widget_modify_text(wregs.pc, GTK_STATE_NORMAL, changed ? &red : &black);
 	g_free(str);
 
 	changed = ti68k_register_get_usp(&data);
 	str = g_strdup_printf("%06x", data);
 	gtk_entry_set_text(GTK_ENTRY(wregs.usp), str);
+	gtk_widget_modify_text(wregs.usp, GTK_STATE_NORMAL, changed ? &red : &black);
 	g_free(str);
 
 	changed = ti68k_register_get_ssp(&data);
 	str = g_strdup_printf("%06x", data);
 	gtk_entry_set_text(GTK_ENTRY(wregs.ssp), str);
+	gtk_widget_modify_text(wregs.ssp, GTK_STATE_NORMAL, changed ? &red : &black);
 	g_free(str);
 
 	changed = ti68k_register_get_sr(&data);
 	str = g_strdup_printf("%04x", data);
 	gtk_entry_set_text(GTK_ENTRY(wregs.sr), str);
+	gtk_widget_modify_text(wregs.sr, GTK_STATE_NORMAL, changed ? &red : &black);
 	g_free(str);
 
 	// refresh SR
@@ -189,6 +196,45 @@ GtkWidget* dbgregs_create_window(void)
 	wregs.z = glade_xml_get_widget(xml, "checkbutton53");
 	wregs.v = glade_xml_get_widget(xml, "checkbutton54");
 	wregs.c = glade_xml_get_widget(xml, "checkbutton55");
+
+	// Change for a fixed size font
+	{
+		PangoContext *context;
+		PangoFontDescription *desc;
+		const gchar *family;
+		int size;
+		int i;
+		
+		context = gtk_widget_get_pango_context(wregs.pc);
+		desc = pango_context_get_font_description(context);
+		family = pango_font_description_get_family(desc);
+		size = pango_font_description_get_size(desc);
+
+		pango_font_description_set_family(desc, "Courier");
+		pango_font_description_set_size(desc, (int)(size*0.8));
+
+		gtk_widget_modify_font(wregs.pc, desc);
+		gtk_widget_modify_font(wregs.sr, desc);
+		gtk_widget_modify_font(wregs.usp, desc);
+		gtk_widget_modify_font(wregs.ssp, desc);
+		for(i = 0; i < 8; i++)
+		{
+			gtk_widget_modify_font(wregs.d[i], desc);
+			gtk_widget_modify_font(wregs.a[i], desc);
+		}
+	}
+
+	// Allocate colors
+	{
+		gboolean success;
+
+		gdk_color_parse("Black", &black);
+		gdk_colormap_alloc_colors(gdk_colormap_get_system(), &black, 1,
+				  FALSE, FALSE, &success);
+		gdk_color_parse("Red", &red);
+		gdk_colormap_alloc_colors(gdk_colormap_get_system(), &red, 1,
+				  FALSE, FALSE, &success);
+	}
 
 	return dbox;
 }
