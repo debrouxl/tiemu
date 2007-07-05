@@ -42,6 +42,7 @@ Bug fixes:
 ----------
 
 	- time handling (really use wall time, not CPU time, for RTC on *nix)
+	- fixed coordinate saving for Win32 multi-monitor case
 	
 	
 Notes:

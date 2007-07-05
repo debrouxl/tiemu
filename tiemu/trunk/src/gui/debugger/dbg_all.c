@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #ifdef __WIN32__
+#include <gdk/gdk.h>
 #include <gdk/gdkwin32.h>
 #endif
 #ifdef __MINGW32__
@@ -515,19 +516,27 @@ void update_submenu(GtkWidget *widget, gpointer user_data)
 void window_get_rect(GtkWidget *widget, GdkRect *rect)
 {
 	gtk_window_get_size(GTK_WINDOW(widget), &rect->w, &rect->h);
-	gdk_window_get_position(widget->window, &rect->x, &rect->y);
 
 #ifdef __WIN32__
 	{
 		BOOL bResult;
 		HWND hWnd = GDK_WINDOW_HWND(widget->window);
 		RECT lpRect;
+		GdkRectangle gdkRect;
 
 		bResult = GetWindowRect(hWnd, &lpRect);
 
 		rect->x = lpRect.left;
 		rect->y = lpRect.top;
+
+		// Now obtain and add the offset between GDK and Win32 coordinates
+		// (in the multi-screen case).
+		gdk_screen_get_monitor_geometry(gdk_screen_get_default(), 0, &gdkRect);
+		rect->x += gdkRect.x;
+		rect->y += gdkRect.y;
 	}
+#else
+	gdk_window_get_position(widget->window, &rect->x, &rect->y);
 #endif
 }
 
