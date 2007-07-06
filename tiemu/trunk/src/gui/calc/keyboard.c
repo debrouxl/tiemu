@@ -46,6 +46,7 @@
 #include "keymap.h"
 #include "dbg_all.h"
 #include "keypress.h"
+#include "dboxes.h"
 
 Pc2TiKey*       kbd_keymap = keymap;
 const char*     skn_keymap;
@@ -54,10 +55,7 @@ extern SKIN_INFOS skin_infos;
 
 static int hwkey_to_tikey(guint16 hardware_keycode, int action)
 {
-    int i;
-
-	if(options.kbd_dbg)
-		printf("pckey = %02x (%s)\n", hardware_keycode, keymap_value_to_string(pckeys, hardware_keycode));
+    int i;		
 
     for(i = 0; i < KEYMAP_MAX; i++)
     {
@@ -68,12 +66,17 @@ static int hwkey_to_tikey(guint16 hardware_keycode, int action)
             ti_key = kbd_keymap[i].ti_key;
             modifier = kbd_keymap[i].modifier;
 
-#if 0
-				printf("pckey = %4x (%s), tikey = %2x (%s), modifier = %2x (%s)\n", 
-                hardware_keycode, keymap_value_to_string(pckeys, hardware_keycode),
-                ti_key, keymap_value_to_string(tikeys, ti_key),
-                modifier, keymap_value_to_string(tikeys, modifier));
-#endif
+			if(options.kbd_dbg)
+			{
+				gchar *str;
+
+				str = g_strdup_printf("%s:%s,%s\n",
+						keymap_value_to_string(pckeys, hardware_keycode),
+						keymap_value_to_string(tikeys, ti_key),
+						keymap_value_to_string(tikeys, modifier));
+				msg_box1(_("Information"), str);
+				g_free(str);
+			}
 
 			if(modifier != -1)
 			{
@@ -226,7 +229,11 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
                                         GdkEventKey     *event,
                                         gpointer         user_data)
 {
-	//printf("<%04x %04x %04x>\n", event->state, event->keyval, event->hardware_keycode);
+#if 0
+	printf("<hwkey=%04x (%c), key=%04x (%c), state=%04x>\n", 
+		event->hardware_keycode, event->hardware_keycode, 
+		event->keyval, event->keyval, event->state );
+#endif
 #if 0
 	printf("KeyEvent:\n");
 	printf(" type:		%i\n", event->type);

@@ -1,8 +1,6 @@
 Planned features:
 -----------------
 
-* reduce loading time of source window (parse ROM calls?)
 * set data breakpoint on bit
-
 * use the contrast field of skin
 * tracing/logging of mem access or others
