@@ -214,10 +214,9 @@ uint32_t hw_get_long(uint32_t adr)
   
     adr &= 0xFFFFFF;
 
-    if ((l = bkpts.mem_rl) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
+    if (bkpts.mem_rl && !(regs.spcflags & SPCFLAG_BRK)) 
     {
-        bkpts.id = 0;
-        while (l) 
+		for(l = bkpts.mem_rl, bkpts.id = 0; l; l = l->next, bkpts.id++)
 	    {
 	        if ((uint32_t)GPOINTER_TO_INT(l->data) == adr) 
 	        {
@@ -226,17 +225,13 @@ uint32_t hw_get_long(uint32_t adr)
 	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
-	        
-            bkpts.id++;
-	        l = l->next;
 	    }
     }
   
-    if ((l = bkpts.mem_rng_r) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
+    if (bkpts.mem_rng_r && !(regs.spcflags & SPCFLAG_BRK)) 
     {
-        bkpts.id = 0;
-        while (l) 
-	    {
+		for(l = bkpts.mem_rng_r, bkpts.id = 0; l; l = l->next, bkpts.id++)
+		{
             ADDR_RANGE *r = l->data;
 
 			if (((adr+3) >= r->val1) && (adr <= r->val2))
@@ -246,9 +241,6 @@ uint32_t hw_get_long(uint32_t adr)
 	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
-	  
-            bkpts.id++;
-	        l = l->next;
 	    }
     }
   
@@ -268,10 +260,9 @@ uint16_t hw_get_word(uint32_t adr)
 	
     adr &= 0xFFFFFF;
 
-    if ((l = bkpts.mem_rw) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
+    if (bkpts.mem_rw && !(regs.spcflags & SPCFLAG_BRK)) 
     {
-        bkpts.id = 0;
-        while (l) 
+		for(l = bkpts.mem_rw, bkpts.id = 0; l; l = l->next, bkpts.id++)
 	    {
 	        if ((uint32_t)GPOINTER_TO_INT(l->data) == adr) 
 	        {
@@ -280,16 +271,12 @@ uint16_t hw_get_word(uint32_t adr)
 	            regs.spcflags |= SPCFLAG_BRK;
 	            break;
 	        }
-	    
-            bkpts.id++;
-	        l = l->next;
 	    }
     }
   
-    if ((l = bkpts.mem_rng_r) != NULL && !(regs.spcflags & SPCFLAG_BRK))
+    if (bkpts.mem_rng_r && !(regs.spcflags & SPCFLAG_BRK))
     {
-        bkpts.id = 0;
-        while (l) 
+		for(l = bkpts.mem_rng_r, bkpts.id = 0; l; l = l->next, bkpts.id++)
 	    {
             ADDR_RANGE *r = l->data;
 
@@ -300,9 +287,6 @@ uint16_t hw_get_word(uint32_t adr)
 	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
-	  
-            bkpts.id++;
-	        l = l->next;
 	    }
     }
   
@@ -322,10 +306,9 @@ uint8_t hw_get_byte(uint32_t adr)
   
     adr &= 0xFFFFFF;
 
-    if ((l = bkpts.mem_rb) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
+    if (bkpts.mem_rb && !(regs.spcflags & SPCFLAG_BRK)) 
     {
-        bkpts.id = 0;
-        while (l) 
+		for(l = bkpts.mem_rb, bkpts.id = 0; l; l = l->next, bkpts.id++)
 		{
 	        if ((uint32_t)GPOINTER_TO_INT(l->data) == adr) 
 	        {
@@ -334,18 +317,13 @@ uint8_t hw_get_byte(uint32_t adr)
 	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
-	    
-            bkpts.id++;
-	        l = l->next;
-        }
+		}
     }
 
-    if ((l = bkpts.mem_rng_r) != NULL && !(regs.spcflags & SPCFLAG_BRK))
+    if (bkpts.mem_rng_r && !(regs.spcflags & SPCFLAG_BRK))
     {
-        bkpts.id = 0;
-        while (l) 
+		for(l = bkpts.mem_rng_r, bkpts.id = 0; l; l = l->next, bkpts.id++)
 	    {
-        
             ADDR_RANGE *r = l->data;
 
 			if ((adr >= r->val1) && (adr <= r->val2))
@@ -354,12 +332,8 @@ uint8_t hw_get_byte(uint32_t adr)
 	            bkpts.mode = BK_READ_BYTE; 
 	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
-	        }
-	  
-            bkpts.id++;
-	  
-            l = l->next;
-	    }
+	        }	  
+ 	    }
     }
   
 	return get_byte_ptr(adr);
@@ -377,10 +351,9 @@ void hw_put_long(uint32_t adr, uint32_t arg)
 
     adr &= 0xFFFFFF;
 
-    if ((l = bkpts.mem_wl) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
+    if (bkpts.mem_wl && !(regs.spcflags & SPCFLAG_BRK)) 
     {
-        bkpts.id = 0;
-        while (l) 
+		for(l = bkpts.mem_wl, bkpts.id = 0; l; l = l->next, bkpts.id++)
 	    {
 	        if ((uint32_t)GPOINTER_TO_INT(l->data) == adr) 
 	        {
@@ -389,16 +362,12 @@ void hw_put_long(uint32_t adr, uint32_t arg)
 	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
-	  
-            bkpts.id++;
-	        l = l->next;
 	    }
     }
   
-    if ((l = bkpts.mem_rng_w) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
+    if (bkpts.mem_rng_w && !(regs.spcflags & SPCFLAG_BRK)) 
     {
-        bkpts.id = 0;
-        while (l) 
+		for(l = bkpts.mem_rng_w, bkpts.id = 0; l; l = l->next, bkpts.id++)
 	    {
 	        ADDR_RANGE *r = l->data;
 
@@ -409,9 +378,6 @@ void hw_put_long(uint32_t adr, uint32_t arg)
 	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
-	  
-            bkpts.id++;
-	        l = l->next;
 	    }
     }
 
@@ -436,10 +402,9 @@ void hw_put_word(uint32_t adr, uint16_t arg)
 	
     adr &= 0xFFFFFF;
 
-    if ((l = bkpts.mem_ww) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
+    if (bkpts.mem_ww && !(regs.spcflags & SPCFLAG_BRK)) 
     {
-        bkpts.id = 0;
-        while (l) 
+		for(l = bkpts.mem_ww, bkpts.id = 0; l; l = l->next, bkpts.id++)
 	    {
 	        if ((uint32_t)GPOINTER_TO_INT(l->data) == adr) 
 	        {
@@ -448,16 +413,12 @@ void hw_put_word(uint32_t adr, uint16_t arg)
 	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
-	  
-            bkpts.id++;
-            l = l->next;
 	    }
     }
   
-    if ((l = bkpts.mem_rng_w) != NULL && !(regs.spcflags & SPCFLAG_BRK))
+    if (bkpts.mem_rng_w && !(regs.spcflags & SPCFLAG_BRK))
     {
-        bkpts.id = 0;
-        while (l) 
+		for(l = bkpts.mem_rng_w, bkpts.id = 0; l; l = l->next, bkpts.id++)
 	    {
             ADDR_RANGE *r = l->data;
 
@@ -468,9 +429,6 @@ void hw_put_word(uint32_t adr, uint16_t arg)
 	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
-	  
-            bkpts.id++;
-	        l = l->next;
 	    }
     }
   
@@ -495,10 +453,9 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 	
     adr &= 0xFFFFFF;
   
-    if ((l = bkpts.mem_wb) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
+    if (bkpts.mem_wb && !(regs.spcflags & SPCFLAG_BRK)) 
     {
-        bkpts.id = 0;
-        while (l) 
+		for(l = bkpts.mem_wb, bkpts.id = 0; l; l = l->next, bkpts.id++)
 	    {
 	        if ((uint32_t)GPOINTER_TO_INT(l->data) == adr) 
 	        {
@@ -507,16 +464,12 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
-	  
-            bkpts.id++;
-	        l = l->next;
 	    }
     }
 
-    if ((l = bkpts.mem_rng_w) != NULL && !(regs.spcflags & SPCFLAG_BRK)) 
+    if (bkpts.mem_rng_w && !(regs.spcflags & SPCFLAG_BRK)) 
     {
-        bkpts.id = 0;
-        while (l) 
+		for(l = bkpts.mem_rng_w, bkpts.id = 0; l; l = l->next, bkpts.id++)
 	    {
             ADDR_RANGE *r = l->data;
 
@@ -527,10 +480,7 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 	            regs.spcflags |= SPCFLAG_BRK;	            
 	            break;
 	        }
-	  
-            bkpts.id++;
-	        l = l->next;
-	    }
+		}
     }
 
     // Protected memory violation. Triggered when memory below [$000120] is
