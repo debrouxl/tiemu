@@ -16,6 +16,7 @@ SubVersion: $Id$
 	- [roms]  $2572: changed one function in dbus.c to follow ticonv API changes. Major number requirements updated consequently.
 	- [roms]  $2591: speed-up displaying of code window by populating ROM calls early
 	- [kevin] $2596: fixed coordinate saving for Win32 multi-monitor case
+	- [kevin] $2598: fixed KDE path detection for multilib systems with both 32-bit and 64-bit libraries installed
 
 - 16/03/2007, version 3.00
 	- [kevin] $2389: don't use \n in the breakpoint window status bar

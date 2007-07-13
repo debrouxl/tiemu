@@ -43,6 +43,8 @@ Bug fixes:
 
 	- time handling (really use wall time, not CPU time, for RTC on *nix)
 	- fixed coordinate saving for Win32 multi-monitor case
+	- *nix compile fix: fixed KDE path detection for multilib systems with
+	                    both 32-bit and 64-bit libraries installed
 	
 	
 Notes:
