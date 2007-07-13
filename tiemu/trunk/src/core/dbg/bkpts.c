@@ -589,6 +589,7 @@ void ti68k_bkpt_clear_all(void)
 	ti68k_bkpt_clear_access();
 	ti68k_bkpt_clear_range();
     ti68k_bkpt_clear_exception();
+	ti68k_bkpt_clear_pgmentry();
 
 	ti68k_bkpt_set_cause(0, 0, 0);	
 }
