@@ -94,10 +94,8 @@ typedef struct
     int recv_file;      // receive file enabled/disabled
 } Ti68kParameters;
 
-/* 
-	Beware: if you want to modify this structure,
-	you have to increment SAV_REVISION in state.c.
-*/
+// If this structure is modified, the SAV_REVISION number (state.c)
+// has to be incremented.
 typedef struct
 {
     // misc (non hardware pseudo-constants)
@@ -185,6 +183,9 @@ typedef struct
 
 	// Program entry
 	GList *pgmentry;
+
+	// Bits
+	GList *bits;
 
 	// Breakpoint cause
 	int type;       // Ti68kBkptType

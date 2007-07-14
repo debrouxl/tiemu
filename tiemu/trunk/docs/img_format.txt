@@ -51,7 +51,7 @@ Calculator type (libtifiles defs):
 Note: FLASH upgrade does not have boot block.
 
 
-The TiEmu v2.00 save format (revision 19) => SAV_INFO in src/core/state.h
+The TiEmu v2.00 save format (revision 21) => SAV_INFO in src/core/state.h
 -----------------------------------------
 
   The following is a table of the bytes that make up a such file.
@@ -61,9 +61,7 @@ The TiEmu v2.00 save format (revision 19) => SAV_INFO in src/core/state.h
 
   Address		Size	What It Contains
   ---------------------------------------------------------------------------
-
-
-  0x40-0x43	0-3		4	structure revision (19)
+  0x40-0x43	0-3		4	structure revision (21)
   0x44-0x47	4-7		4	size of structure
   0x48-0x4b	8-11	4	offset to M68K area
   0x4c-0x4f	12-15	4	offset to IO area
@@ -165,7 +163,7 @@ The TiEmu v2.00 save format (revision 19) => SAV_INFO in src/core/state.h
 			If modified:
 				64KB: FLASH page contents eg. @HW.rom[p<<16]
 
-@bkpts: => Ti68kBreakpoints in src/core/ti68k_def.h & ADDR_RANGE in src/core/dbg/bkpts.h
+@bkpts: => Ti68kBreakpoints in src/core/ti68k_def.h & ADDR_RANGE/ADDR_BITS in src/core/dbg/bkpts.h
 	code:
 		4 bytes: number of bkpts
 			4 bytes: address
@@ -205,6 +203,12 @@ The TiEmu v2.00 save format (revision 19) => SAV_INFO in src/core/state.h
 	mem_rng_w:
 		same as above
 
+	bits: (added in rev. 21)
+		4 bytes: number of breakpoints
+			4 bytes: address
+			2 bytes: checks & states
+			2 bytes: padding (00)
+
 @image location: 
 	4 bytes : string length + 1
 	m bytes: ROM image filename (NULL-terminated)
@@ -214,6 +218,8 @@ The TiEmu v2.00 save format (revision 19) => SAV_INFO in src/core/state.h
 
 Note:
 	sizeof(char) = 1
-	sizeof(int) = 4
+	sizeof(int)  = 4
 	sizeof(long) = 4
 	sizeof(*ptr) = 8
+
+Note2: if structure is stored in file, padding may appear to round-up size to 4 bytes.

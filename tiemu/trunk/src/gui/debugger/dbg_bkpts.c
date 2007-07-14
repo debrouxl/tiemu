@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2007, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -45,9 +46,10 @@ static GtkWidget *wnd = NULL;
 
 enum { 
 	    COL_SYMBOL, COL_TYPE, COL_STATUS, COL_START, COL_END, COL_MODE,
+		COL_DATA
 };
 #define CLIST_NVCOLS	(6)		// 7 visible columns
-#define CLIST_NCOLS		(6)		// 7 real columns
+#define CLIST_NCOLS		(7)		// 7 real columns
 
 static GtkListStore* clist_create(GtkWidget *widget)
 {
@@ -63,7 +65,7 @@ static GtkListStore* clist_create(GtkWidget *widget)
 	
 	store = gtk_list_store_new(CLIST_NCOLS,
 				G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-				G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+				G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER,
 				-1
             );
     model = GTK_TREE_MODEL(store);
@@ -137,6 +139,7 @@ static void clist_populate(GtkListStore *store)
 		COL_START, str,
 		COL_END, "",		
         COL_MODE, BKPT_IS_TMP(addr) ? _("one-shot") : "",
+		COL_DATA, l->data,
 		-1);
 		
 		g_free(str);
@@ -160,6 +163,7 @@ static void clist_populate(GtkListStore *store)
 		COL_START, str2,
 		COL_END, "",		
 		COL_MODE, "",
+		COL_DATA, l->data,
 		-1);
 		
 		g_free(str1);
@@ -184,6 +188,7 @@ static void clist_populate(GtkListStore *store)
 			COL_START, str,
 			COL_END, "",
             COL_MODE, ti68k_bkpt_mode_to_string(BK_TYPE_ACCESS, bkpts_memacc_rw[i]),
+			COL_DATA, l->data,
 			-1);
 			
 			g_free(str);
@@ -209,11 +214,34 @@ static void clist_populate(GtkListStore *store)
 			COL_START, str1,
 			COL_END, str2,
             COL_MODE, ti68k_bkpt_mode_to_string(BK_TYPE_RANGE, bkpts_memrng_rw[i]),
+			COL_DATA, l->data,
 			-1);
 			
 			g_free(str1);
 			g_free(str2);
 		}
+	}
+	
+	// Bit change breakpoints
+	for(l = bkpts.bits; l != NULL; l = g_list_next(l))
+	{
+		ADDR_BIT *s = l->data;
+		gchar *str;
+
+		str = g_strdup_printf("0x%06x", BKPT_ADDR(s->addr));
+
+		gtk_list_store_append(store, &iter);
+			gtk_list_store_set(store, &iter, 
+			COL_SYMBOL, str, 
+			COL_TYPE, ti68k_bkpt_type_to_string(BK_TYPE_BIT),
+			COL_STATUS, BKPT_IS_ENABLED(s->addr) ? _("enabled") : _("disabled"),
+			COL_START, str,
+			COL_END, "",
+            COL_MODE, "",
+			COL_DATA, l->data,
+			-1);
+
+		g_free(str);
 	}
 
 	// parse list to merge informations: ugly/heavy code !
@@ -291,6 +319,7 @@ static void clist_populate(GtkListStore *store)
 		COL_START, str,
 		COL_END, "",		
         COL_MODE, BKPT_IS_TMP(addr) ? _("one-shot") : "",
+		COL_DATA, l->data,
 		-1);
 		
 		g_free(str);
@@ -449,6 +478,10 @@ dbgbkpts_button2_clicked                     (GtkButton       *button,
 			sscanf(row_text[COL_SYMBOL], "#%04x", &n);
 			ti68k_bkpt_del_pgmentry((uint16_t)n);
 			break;
+		case BK_TYPE_BIT:
+			mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
+            sscanf(row_text[COL_START], "%x", &min);
+            ti68k_bkpt_del_bits(min);
         }
         g_strfreev(row_text);
     }
@@ -535,6 +568,15 @@ dbgbkpts_button3_clicked                     (GtkButton       *button,
             //  ti68k_bkpt_set_pgmentry(addr, BKPT_DISABLE(n));
             //}
             break;
+		case BK_TYPE_BIT:
+			mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
+            sscanf(row_text[COL_START], "%x", &min);
+            {
+              uint32_t addr = BKPT_ADDR(min);
+              ti68k_bkpt_set_bits(addr, BKPT_DISABLE(addr));
+            }
+			break;
+
         }
         g_strfreev(row_text);
     }
@@ -620,6 +662,14 @@ dbgbkpts_button4_clicked                     (GtkButton       *button,
             //  ti68k_bkpt_set_pgmentry(addr, BKPT_ENABLE(n));
             //}
             break;
+		case BK_TYPE_BIT:
+			mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
+            sscanf(row_text[COL_START], "%x", &min);
+            {
+              uint32_t addr = BKPT_ADDR(min);
+              ti68k_bkpt_set_bits(addr, BKPT_ENABLE(addr));
+            }
+			break;
         }
         g_strfreev(row_text);
     }
@@ -701,6 +751,7 @@ on_treeview2_button_press_event        (GtkWidget       *widget,
 	    gint cx, cy;
 		gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
 		uint32_t type;
+		gpointer data;
 		
         ret = gtk_tree_view_get_path_at_pos(view, tx, ty, &path, &column, &cx, &cy);
         if(ret == FALSE)
@@ -716,6 +767,7 @@ on_treeview2_button_press_event        (GtkWidget       *widget,
             COL_START, &row_text[COL_START], 
             COL_END, &row_text[COL_END],
             COL_MODE, &row_text[COL_MODE],
+			COL_DATA, &data,
             -1);
 		
         type = ti68k_string_to_bkpt_type(row_text[COL_TYPE]);
@@ -765,6 +817,18 @@ on_treeview2_button_press_event        (GtkWidget       *widget,
 			}
 			dbgbkpts_refresh_window();
 		}
+		if(type == BK_TYPE_BIT)
+		{
+			uint32_t old_addr, new_addr;
+			ADDR_BIT *s = (ADDR_BIT *)data;
+
+			sscanf(row_text[COL_START], "%x", &old_addr);
+
+			if(dbgbits_display_dbox(&s->addr, &s->checks, &s->states) == -1)
+				return TRUE;
+
+			dbgbkpts_refresh_window();
+		}
 
 		g_strfreev(row_text);
                 
@@ -774,6 +838,20 @@ on_treeview2_button_press_event        (GtkWidget       *widget,
     return FALSE;
 }
 
+GLADE_CB void
+dbgbkpts_bit_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	uint32_t addr = 0;
+	uint8_t checks = 0, states = 0xff;
+
+	if(dbgbits_display_dbox(&addr, &checks, &states) != 0)
+		return;
+
+	ti68k_bkpt_add_bits(addr, checks, states);
+
+	dbgbkpts_refresh_window();
+}
 
 GLADE_CB void
 dbgbkpts_data_activate                    (GtkMenuItem     *menuitem,

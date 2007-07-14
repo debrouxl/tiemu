@@ -39,7 +39,8 @@
 // Please update the docs/TiEmu_img_format.txt documentation when making changes
 // on the structure below
 
-// dc = don't care for rom/tib
+// If this structure is modified, the SAV_REVISION number (state.c)
+// has to be incremented.
 typedef struct
 {
 	char	signature[16];	// "TiEmu img v2.00" (dc)
@@ -57,6 +58,7 @@ typedef struct
     char    fill[0x40-42];  // round up struct to 0x40 bytes
 	char*	data;			// pure data (temporary use, 8 bytes)
 } IMG_INFO;
+// dc = don't care for rom/tib
 
 extern int		img_loaded;
 extern IMG_INFO img_infos;

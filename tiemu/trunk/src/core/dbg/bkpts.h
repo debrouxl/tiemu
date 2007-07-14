@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2007, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -65,6 +66,13 @@ typedef struct
   uint32_t 	 val2;
 } ADDR_RANGE;
 
+typedef struct
+{
+	uint32_t	addr;
+	uint8_t		checks;
+	uint8_t		states;
+} ADDR_BIT;
+
 /* Constants */
 
 // Breakpoints mode (ti68k_bkpt_set_[access|access_range])
@@ -91,13 +99,15 @@ typedef struct
 typedef enum {
     BK_TYPE_ACCESS=1, BK_TYPE_RANGE, 
     BK_TYPE_CODE, BK_TYPE_EXCEPTION,
-    BK_TYPE_PGMENTRY, BK_TYPE_PROTECT
+    BK_TYPE_PGMENTRY, BK_TYPE_PROTECT,
+	BK_TYPE_BIT,
 } Ti68kBkptType;
 
 // Breakpoints cause (ti68k_bkpt_get_cause())
 typedef enum {
     BK_CAUSE_ACCESS=1, BK_CAUSE_RANGE, BK_CAUSE_ADDRESS,
-    BK_CAUSE_EXCEPTION, BK_CAUSE_PGMENTRY, BK_CAUSE_PROTECT
+    BK_CAUSE_EXCEPTION, BK_CAUSE_PGMENTRY, BK_CAUSE_PROTECT,
+	BK_CAUSE_BIT,
 } Ti68kBkptCause;
 
 #define DBG_BREAK   1	// user breakpoint
@@ -111,30 +121,36 @@ int ti68k_bkpt_add_access(uint32_t address, int mode);
 int ti68k_bkpt_add_range(uint32_t min, uint32_t max, int mode);
 int ti68k_bkpt_add_exception(uint32_t n);
 int ti68k_bkpt_add_pgmentry(uint16_t handle);
+int ti68k_bkpt_add_bits(uint32_t address, uint8_t checks, uint8_t states);
 
 int ti68k_bkpt_del_address(uint32_t address);
 int ti68k_bkpt_del_access(uint32_t address, int mode);
 int ti68k_bkpt_del_range(uint32_t min, uint32_t max, int mode);
 int ti68k_bkpt_del_exception(uint32_t n);
 int ti68k_bkpt_del_pgmentry(uint16_t handle);
+int ti68k_bkpt_del_bits(uint32_t address);
 
 int ti68k_bkpt_set_address(uint32_t address, uint32_t new_address);
 int ti68k_bkpt_set_access(uint32_t address, int mode, uint32_t new_address);
 int ti68k_bkpt_set_range(uint32_t min, uint32_t max, int mode, uint32_t new_min, uint32_t new_max);
 int ti68k_bkpt_set_exception(uint32_t n, uint32_t new_n);
 int ti68k_bkpt_set_pgmentry(uint16_t handle, uint16_t new_handle);
+int ti68k_bkpt_set_bits(uint32_t old_address, uint32_t address);
+int ti68k_bkpt_set_bits_ex(uint32_t old_address, uint32_t address, uint8_t checks, uint8_t states);
 
-int ti68k_bkpt_get_address(int idx, uint32_t *address);
-int ti68k_bkpt_get_access(int idx, uint32_t *address, int mode);
-int ti68k_bkpt_get_range(int idx, uint32_t *min, uint32_t *max, int mode);
-int ti68k_bkpt_get_exception(int idx, uint32_t *n);
-int ti68k_bkpt_get_pgmentry(int idx, uint16_t *handle);
+int ti68k_bkpt_get_address(unsigned int idx, uint32_t *address);
+int ti68k_bkpt_get_access(unsigned int idx, uint32_t *address, int mode);
+int ti68k_bkpt_get_range(unsigned int idx, uint32_t *min, uint32_t *max, int mode);
+int ti68k_bkpt_get_exception(unsigned int idx, uint32_t *n);
+int ti68k_bkpt_get_pgmentry(unsigned int idx, uint16_t *handle);
+int ti68k_bkpt_get_bits(unsigned int idx, uint32_t *address, uint8_t *checks, uint8_t *states);
 
 void ti68k_bkpt_clear_address(void);
 void ti68k_bkpt_clear_access(void);
 void ti68k_bkpt_clear_range(void);
 void ti68k_bkpt_clear_exception(void);
 void ti68k_bkpt_clear_pgmentry(void);
+void ti68k_bkpt_clear_bits(void);
 
 void ti68k_bkpt_set_cause(int type, int mode, int id);
 void ti68k_bkpt_get_cause(int *type, int *id, int *mode);

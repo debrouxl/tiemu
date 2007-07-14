@@ -1,4 +1,4 @@
-List of known bugs to fix (may be in French, sorry):
+List of known bugs to fix:
 
 
 SF.net's bug list
@@ -57,13 +57,9 @@ roms
 
 * MOVEA.W dis-assembled as MOVEA.L (HeapDeref)
 
-* why AC_CHECK_LIB(comdlg32, GetOpenFileName) does'nt work ?
-
 * pressing Ctrl+Alt+Supp makes emu unresponsive. Press Ctrl again.
 
 * CPU consumption may be high
-
-* vérifier qu'on peut double-cliquer un *.rom;*.img;*.sav;*.skn
 
 -------------
 + done

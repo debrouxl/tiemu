@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2006, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -219,9 +219,22 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
     uint32_t addr3;
     gint i;
 
-    pc = ti68k_debug_get_pc();
-    addr3 = pc; // Make sure addr3 is always initialized. This should be
-                // overwritten below assuming we have at least 3 valid items.
+	// Data bkpt encounter after instruction execution so take care of this
+#if 0
+	{
+		int type, mode, id;
+
+		ti68k_bkpt_get_cause(&type, &mode, &id);
+		if(!type && !mode)
+			pc = ti68k_debug_get_pc();
+		else
+			pc = logger.pclog_buf[(logger.pclog_ptr + logger.pclog_size-1) % logger.pclog_size];
+
+		addr3 = pc;
+	}
+#else
+	addr3 = pc = ti68k_debug_get_pc();
+#endif
 
 	gdk_color_parse("White", &color1);
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color1, 1, FALSE, FALSE, &success);

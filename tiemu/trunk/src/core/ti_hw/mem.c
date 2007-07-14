@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2007, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -482,6 +483,22 @@ void hw_put_byte(uint32_t adr, uint8_t arg)
 	        }
 		}
     }
+
+	if (bkpts.bits && !(regs.spcflags & SPCFLAG_BRK))
+	{
+		for(l = bkpts.bits, bkpts.id = 0; l != NULL; l = l->next, bkpts.id++)
+		{
+			ADDR_BIT *s = l->data;
+
+			if((adr == s->addr) & ((arg & s->checks) == (s->states & s->checks)))
+	        {
+				bkpts.type = BK_TYPE_BIT;
+	            bkpts.mode = BK_WRITE_BYTE; 
+	            regs.spcflags |= SPCFLAG_BRK;	            
+	            break;
+	        }
+		}
+	}
 
     // Protected memory violation. Triggered when memory below [$000120] is
 	// written while bit 2 of [$600001] is set

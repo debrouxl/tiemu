@@ -32,6 +32,7 @@
 
 G_BEGIN_DECLS
 #include "dbg_bkpts.h"
+#include "dbg_bits.h"
 #include "dbg_code.h"
 #include "dbg_cause.h"
 #include "dbg_data.h"

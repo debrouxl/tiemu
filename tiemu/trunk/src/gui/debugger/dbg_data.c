@@ -56,13 +56,9 @@ gint dbgdata_display_dbox(gint *mode, gint *type, uint32_t *start, uint32_t *sto
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgdata_dbox");
-	gtk_window_resize(GTK_WINDOW(dbox), 320, 240);
 
 	data = glade_xml_get_widget(xml, "radiobutton20");
-	//gtk_signal_emit_by_name(GTK_OBJECT(data), "toggled");
 	g_signal_emit_by_name(G_OBJECT(data), "toggled");
-
-	//printf("%i %i %x %x\n", *mode, *type, *start, *stop);
 
 	// set type
 	if(*type == -1)

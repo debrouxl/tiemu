@@ -42,7 +42,8 @@
 #include "logging.h"
 #include "rtc_hw3.h"
 
-#define SAV_REVISION	20
+#define SAV_REVISION	21	// Current revision
+#define SAV_MINI		20	// Minimum supported revision
 
 int ti68k_state_parse(const char *filename, char **rom_file, char **tib_file)
 {
@@ -71,7 +72,7 @@ int ti68k_state_parse(const char *filename, char **rom_file, char **tib_file)
 	fseek(f, pos, SEEK_SET);
 	fread(&sav, 1, sav.size, f);
 
-	if(sav.revision < SAV_REVISION)
+	if(sav.revision < SAV_MINI)
 	{
 		ret = -2;
 		goto ti68k_state_parse_exit;
@@ -132,6 +133,24 @@ static int load_bkpt2(FILE *f, GList **l)
     return ret;
 }
 
+static int load_bkpt3(FILE *f, GList **l)
+{
+    int ret;
+    int i;
+    long n;
+
+    ret = fread(&n, sizeof(n), 1, f);
+    for(i = 0; i < n; i++)
+    {
+        ADDR_BIT *s = g_malloc(sizeof(ADDR_BIT));
+
+        ret = fread(s, sizeof(ADDR_BIT), 1, f);
+        *l = g_list_append(*l, s);
+    }
+
+    return ret;
+}
+
 /*
   Must be done between init_hardware and M68000_run.
   Typically called after initLib68k.
@@ -171,7 +190,7 @@ int ti68k_state_load(const char *filename)
 	fseek(f, pos, SEEK_SET);
 	fread(&sav, 1, sav.size, f);
 
-	if(sav.revision != SAV_REVISION)
+	if(sav.revision < SAV_MINI)
 	{
 		fclose(f);
 		return ERR_REVISION_MATCH;
@@ -249,12 +268,22 @@ int ti68k_state_load(const char *filename)
 
     load_bkpt2(f, &bkpts.mem_rng_r);
 	load_bkpt2(f, &bkpts.mem_rng_w);
+
+	if(sav.revision >= 21)
+		load_bkpt3(f, &bkpts.bits);
     
 	// Update UAE structures
 	m68k_setpc(m68k_getpc());
     MakeFromSR();
 
-    fclose(f);  
+	fclose(f);
+
+	// Update SAV file to latest revision
+	if(sav.revision < SAV_REVISION)
+	{
+		ti68k_state_save(filename);
+	}
+
   	return 0;
 }
 
@@ -284,6 +313,21 @@ static void save_bkpt2(FILE *f, GList *l)
         ADDR_RANGE *s = g_list_nth(l, i)->data;
 
         fwrite(s, sizeof(ADDR_RANGE), 1, f);
+    }
+}
+
+static void save_bkpt3(FILE *f, GList *l)
+{
+	int i;
+    long n;
+
+    n = g_list_length(l);
+    fwrite(&n, sizeof(n), 1, f);
+    for(i = 0; i < n; i++)
+    {
+        ADDR_BIT *s = g_list_nth(l, i)->data;
+
+        fwrite(s, sizeof(ADDR_BIT), 1, f);
     }
 }
 
@@ -336,7 +380,9 @@ int ti68k_state_save(const char *filename)
 		g_list_length(bkpts.mem_ww) * sizeof(long) + sizeof(long) +
 		g_list_length(bkpts.mem_wl) * sizeof(long) + sizeof(long) +
 		g_list_length(bkpts.mem_rng_r) * sizeof(ADDR_RANGE) + sizeof(long) +
-		g_list_length(bkpts.mem_rng_w) * sizeof(ADDR_RANGE) + sizeof(long);
+		g_list_length(bkpts.mem_rng_w) * sizeof(ADDR_RANGE) + sizeof(long) +
+		g_list_length(bkpts.bits) * sizeof(ADDR_BIT) + sizeof(long)
+		;
 
 	sav.str_offset = sav.bkpts_offset + bkpts_size;
 
@@ -369,7 +415,7 @@ int ti68k_state_save(const char *filename)
 			fwrite(&tihw.rom[i<<16], 1, 65536, f);
     }
 
-    // Save breakpoints (address, access, range, exception)
+    // Save breakpoints
     save_bkpt(f, bkpts.code);
     save_bkpt(f, bkpts.exception);
 	save_bkpt(f, bkpts.pgmentry);
@@ -383,6 +429,8 @@ int ti68k_state_save(const char *filename)
 
     save_bkpt2(f, bkpts.mem_rng_r);
 	save_bkpt2(f, bkpts.mem_rng_w);
+
+	save_bkpt3(f, bkpts.bits);
 
 	// Save image location associated with this state image
 	len = strlen(params.rom_file) + 1;

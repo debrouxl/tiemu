@@ -17,6 +17,10 @@ SubVersion: $Id$
 	- [roms]  $2591: speed-up displaying of code window by populating ROM calls early
 	- [kevin] $2596: fixed coordinate saving for Win32 multi-monitor case
 	- [kevin] $2598: fixed KDE path detection for multilib systems with both 32-bit and 64-bit libraries installed
+	- [roms]  $2600: clear _all_ bkpts in ti68k_bkpt_clear_all
+	- [roms]  $2601: added support for breakpoints on bit changes
+	- [roms]  $26xx: to do: data/bit change breakpoint is raised after instruction execution so PC shown in 
+		breakpoint window and disassembly window is not really correct. Is being fixed...
 
 - 16/03/2007, version 3.00
 	- [kevin] $2389: don't use \n in the breakpoint window status bar

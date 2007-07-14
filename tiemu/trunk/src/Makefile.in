@@ -178,6 +178,7 @@ gui_calc_OBJ = \
 gui_debugger_OBJ = \
 	gui/debugger/dbg_all.o		\
 	gui/debugger/dbg_bkpts.o	\
+	gui/debugger/dbg_bits.o		\
 	gui/debugger/dbg_cause.o	\
 	gui/debugger/dbg_code.o		\
 	gui/debugger/dbg_data.o		\

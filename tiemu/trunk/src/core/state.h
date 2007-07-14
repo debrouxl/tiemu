@@ -29,7 +29,8 @@
 // Please update the docs/TiEmu_img_format.txt documentation when making changes
 // on the structure below
 
-// Used to locate sections
+// If this structure is modified, the SAV_REVISION number (state.c)
+// has to be incremented.
 typedef struct
 {
 	long	revision;		// structure revision

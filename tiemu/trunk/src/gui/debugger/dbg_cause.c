@@ -8,7 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
- *  Copyright (c) 2007, Kevin Kofler
+ *  Copyright (c) 2007, Kevin Kofler, Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -220,7 +220,7 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 		uint32_t value;
 
 		ti68k_register_get_pc(&value);
-		str = g_strdup_printf("User break (pc=$0x%06x)", value);
+		str = g_strdup_printf("User break (PC=$%06x)", value);
 	}
 
 	// exception or code/mem ?
@@ -246,7 +246,7 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 		uint32_t value;
 
 		ti68k_register_get_pc(&value);
-		str = g_strdup_printf("type=<%s>, id=#%i, PC=$0x%06x", 
+		str = g_strdup_printf("type=<%s>, id=#%i, PC=$%06x", 
 			ti68k_bkpt_type_to_string(type), id, value);
 	}
 	else if((type == BK_TYPE_ACCESS) || (type ==BK_TYPE_RANGE))
@@ -256,7 +256,7 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 		gchar *str1, *str2;
 
 		ti68k_register_get_pc(&value);
-		str1 = g_strdup_printf("type=<%s>, id=#%i, mode=<%s>, PC=$0x%06x", 
+		str1 = g_strdup_printf("type=<%s>, id=#%i, mode=<%s>, PC=$%06x", 
 			ti68k_bkpt_type_to_string(type), id, 
 			ti68k_bkpt_mode_to_string(type, mode), value);
 	
@@ -265,11 +265,11 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 
 		case BK_TYPE_ACCESS:
 			ti68k_bkpt_get_access(id, &min, mode);
-			str2 = g_strdup_printf("mem=$0x%06x", min);
+			str2 = g_strdup_printf("mem=$%06x", min);
 			break;
 		case BK_TYPE_RANGE:
 			ti68k_bkpt_get_range(id, &min, &max, mode);
-			str2 = g_strdup_printf("mem=$0x%06x-$0x%06x", min, max);
+			str2 = g_strdup_printf("mem=$%06x-$%06x", min, max);
 			break;
 		default:
 			str2 = g_strdup("n/a");
@@ -310,8 +310,18 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 		ti68k_register_get_pc(&pc);		
 		ti68k_bkpt_get_pgmentry(id, &handle);
 
-		str = g_strdup_printf("type=<%s>, id=#%i, handle=$%04x, PC=$0x%06x", 
+		str = g_strdup_printf("type=<%s>, id=#%i, handle=$%04x, PC=$%06x", 
 			ti68k_bkpt_type_to_string(type), id, handle, pc);
+	}
+	else if(type == BK_TYPE_BIT)
+	{
+		uint32_t value, addr;
+		uint8_t checks, states;
+
+		ti68k_register_get_pc(&value);
+		ti68k_bkpt_get_bits(id, &addr, &checks, &states);
+		str = g_strdup_printf("type=<%s>, id=#%i, PC=$%06x, ($%06x)=#$%02x", 
+			ti68k_bkpt_type_to_string(type), id, value, addr, mem_rd_byte(addr));
 	}
 	else
 	{

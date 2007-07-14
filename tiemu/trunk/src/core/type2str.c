@@ -195,6 +195,7 @@ const char *ti68k_bkpt_cause_to_string(int type)
     case BK_CAUSE_EXCEPTION:return _("exception");
 	case BK_CAUSE_PGMENTRY: return _("prgm entry");
 	case BK_CAUSE_PROTECT:  return _("hw protection");
+	case BK_CAUSE_BIT:		return _("bit change");
 	default:				return _("unknown");
 	}
 }
@@ -210,6 +211,7 @@ const char *ti68k_bkpt_type_to_string(int type)
     case BK_TYPE_EXCEPTION: return _("exception");
 	case BK_TYPE_PGMENTRY:	return _("prgm entry");
 	case BK_TYPE_PROTECT:   return _("hw protection");
+	case BK_TYPE_BIT:		return _("bit change");
 	default:                return _("unknown");
 	}
 }
@@ -228,6 +230,8 @@ int ti68k_string_to_bkpt_type(const char *str)
 		return BK_TYPE_PGMENTRY;
 	else if(!strcmp(str, _("hw protection")))
 		return BK_TYPE_PROTECT;
+	else if(!strcmp(str, _("bit change")))
+		return BK_TYPE_BIT;
 
 	return 0;
 }
