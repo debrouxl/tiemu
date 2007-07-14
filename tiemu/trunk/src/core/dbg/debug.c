@@ -55,6 +55,11 @@ int ti68k_debug_get_pc(void)
 	return m68k_getpc();
 }
 
+int ti68k_debug_get_old_pc(void)
+{
+	return logger.pclog_buf[(logger.pclog_ptr + logger.pclog_size-1) % logger.pclog_size];
+}
+
 int ti68k_debug_break(void)
 {
     regs.spcflags |= SPCFLAG_BRK;
@@ -241,4 +246,9 @@ int ti68k_debug_do_instructions(int n)
 uint8_t* ti68k_get_real_address(uint32_t addr)
 {
 	return hw_get_real_address(addr);
+}
+
+int ti68k_debug_is_supervisor(void)
+{
+    return regs.s;
 }

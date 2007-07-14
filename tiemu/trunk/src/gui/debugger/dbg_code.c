@@ -209,7 +209,7 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
     GtkTreeIter iter;
 
     uint32_t addr;
-    uint32_t pc;
+    uint32_t pc, old_pc;
     int found = 0;
 
 	GdkColor *color, color1, color2;
@@ -219,22 +219,9 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
     uint32_t addr3;
     gint i;
 
-	// Data bkpt encounter after instruction execution so take care of this
-#if 0
-	{
-		int type, mode, id;
-
-		ti68k_bkpt_get_cause(&type, &mode, &id);
-		if(!type && !mode)
-			pc = ti68k_debug_get_pc();
-		else
-			pc = logger.pclog_buf[(logger.pclog_ptr + logger.pclog_size-1) % logger.pclog_size];
-
-		addr3 = pc;
-	}
-#else
+	// Data/Bit bkpt encounter after instruction execution so take care of this
 	addr3 = pc = ti68k_debug_get_pc();
-#endif
+	old_pc = ti68k_debug_get_old_pc();
 
 	gdk_color_parse("White", &color1);
 	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color1, 1, FALSE, FALSE, &success);
@@ -264,7 +251,8 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
     if(!found && reload)
     {
         gtk_list_store_clear(store);
-        clist_populate(store, pc);
+		//printf("%06x %06x %i\n", old_pc, pc, abs(old_pc - pc));
+        clist_populate(store, abs((old_pc - pc)) > 8 ? pc : old_pc);
     }
 
     // repopulate so that 3 instructions are still visible at the bottom of the list
@@ -535,7 +523,6 @@ GLADE_CB void
 on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    //GtkWidget *list = (GtkWidget *)(menuitem);   // arg are swapped, why ?
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
 	GtkListStore *store = GTK_LIST_STORE(model);
@@ -578,7 +565,6 @@ on_break1_activate                     (GtkMenuItem     *menuitem,
 {
     // Mode 1 is fastest
 #if 0
-    //GtkWidget *list = (GtkWidget *)(menuitem);   // arg are swapped, why ?
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
 	GtkListStore *store = GTK_LIST_STORE(model);
@@ -600,7 +586,6 @@ GLADE_CB void
 dbgcode_button6_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-    //GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
 	GtkListStore *store = GTK_LIST_STORE(model);
@@ -635,7 +620,6 @@ GLADE_CB void
 dbgcode_button7_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-    //GtkWidget *list = GTK_WIDGET(button);   // arg are swapped, why ?
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
 	GtkListStore *store = GTK_LIST_STORE(model);
@@ -1011,8 +995,25 @@ on_view_memory1_activate       (GtkMenuItem     *menuitem,
     printf("addr = %x\n", addr);
     dbgmem_add_tab(addr);
 }
+/*
+GLADE_CB gboolean
+on_treeview1_configure_event           (GtkWidget       *widget,
+                                        GdkEventConfigure *event,
+                                        gpointer         user_data)
+{
+	printf("configure: %i %i\n", event->width, event->height);
 
+  return FALSE;
+}
 
+GLADE_CB void
+on_treeview1_size_request              (GtkWidget       *widget,
+                                        GtkRequisition  *requisition,
+                                        gpointer         user_data)
+{
+	printf("requisition: %i %i\n", requisition->width, requisition->height);
+}
+*/
 GLADE_CB void
 on_treeview1_size_allocate             (GtkWidget       *widget,
                                         GdkRectangle    *allocation,
@@ -1024,6 +1025,8 @@ on_treeview1_size_allocate             (GtkWidget       *widget,
 	GdkRectangle rect;
 	static int old = 0;
 
+	printf("allocation: %i %i \n", allocation->width, allocation->height);
+
 	path = gtk_tree_path_new_from_string("0");
 	gtk_tree_view_get_background_area(view, path, NULL, &rect);
 	g_free(path);
@@ -1032,7 +1035,7 @@ on_treeview1_size_allocate             (GtkWidget       *widget,
 		return;
 
 	NLINES = allocation->height / rect.height - 1;
-	//printf("#lines: %i (%i %i)\n", NLINES, allocation->height, rect.height);
+	printf("#lines: %i (%i %i)\n", NLINES, allocation->height, rect.height);
 
 	if(old != NLINES)
 	{	

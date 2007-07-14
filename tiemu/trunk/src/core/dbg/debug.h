@@ -28,7 +28,10 @@
 #define __TI68K_DBG__
 
 int ti68k_debug_get_pc(void);
+int ti68k_debug_get_old_pc(void);
+
 uint32_t ti68k_debug_disassemble(uint32_t addr, char **line);
+
 int ti68k_debug_break(void);
 int ti68k_debug_trace(void);
 int ti68k_debug_step(void);

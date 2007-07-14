@@ -255,7 +255,7 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 		uint32_t value, min, max;
 		gchar *str1, *str2;
 
-		ti68k_register_get_pc(&value);
+		value = ti68k_debug_get_old_pc();
 		str1 = g_strdup_printf("type=<%s>, id=#%i, mode=<%s>, PC=$%06x", 
 			ti68k_bkpt_type_to_string(type), id, 
 			ti68k_bkpt_mode_to_string(type, mode), value);
@@ -318,7 +318,7 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
 		uint32_t value, addr;
 		uint8_t checks, states;
 
-		ti68k_register_get_pc(&value);
+		value = ti68k_debug_get_old_pc();
 		ti68k_bkpt_get_bits(id, &addr, &checks, &states);
 		str = g_strdup_printf("type=<%s>, id=#%i, PC=$%06x, ($%06x)=#$%02x", 
 			ti68k_bkpt_type_to_string(type), id, value, addr, mem_rd_byte(addr));

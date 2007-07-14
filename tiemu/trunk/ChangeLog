@@ -19,8 +19,9 @@ SubVersion: $Id$
 	- [kevin] $2598: fixed KDE path detection for multilib systems with both 32-bit and 64-bit libraries installed
 	- [roms]  $2600: clear _all_ bkpts in ti68k_bkpt_clear_all
 	- [roms]  $2601: added support for breakpoints on bit changes
-	- [roms]  $26xx: to do: data/bit change breakpoint is raised after instruction execution so PC shown in 
-		breakpoint window and disassembly window is not really correct. Is being fixed...
+	- [roms]  $2602: data/bit change breakpoint is raised after instruction execution so fixed disassembly window 
+		to show one line before current PC.
+	- [roms]  $2603: fixed wrong disassembly offset of MOVEM.W instruction
 
 - 16/03/2007, version 3.00
 	- [kevin] $2389: don't use \n in the breakpoint window status bar

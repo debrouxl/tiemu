@@ -819,7 +819,7 @@ on_treeview2_button_press_event        (GtkWidget       *widget,
 		}
 		if(type == BK_TYPE_BIT)
 		{
-			uint32_t old_addr, new_addr;
+			uint32_t old_addr;
 			ADDR_BIT *s = (ADDR_BIT *)data;
 
 			sscanf(row_text[COL_START], "%x", &old_addr);

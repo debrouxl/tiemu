@@ -348,7 +348,3 @@ int ti68k_register_get_flags(char *sf, char *uf)
 	return c;
 }
 
-int ti68k_debug_is_supervisor(void)
-{
-    return regs.s;
-}

@@ -233,10 +233,10 @@ The occurrence is highlighted in green in the memory frame.<br>
       </td>
       <td style="vertical-align: top;">This frame lets you manage
 several kinds of breakpoints:<br>
-- bit change<br>
+- bit change (*)<br>
 - code (added from the source frame)<br>
 - exception (traps, auto-ints, ...)<br>
-- data (access or range)<br>
+- data access or range (*)<br>
 - program entry (the debugger is raised at the beginning of the program
 you
 have just launched).<br>
@@ -244,6 +244,9 @@ have just launched).<br>
 Each breakpoint can be added or removed and enabled or disabled (except
 for prgm entry bkpts). You
 can go to the breakpoint location, too (last toolbar button).<br>
+      <br>
+(*) Warning: those breakpoints occur after instruction execution so the
+PC is pointing the instruction right after.<br>
       </td>
     </tr>
   </tbody>
