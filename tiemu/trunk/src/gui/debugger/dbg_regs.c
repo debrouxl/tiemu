@@ -86,6 +86,13 @@ GLADE_CB void
 on_dbgregs_checkbutton_toggled         (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
+static void change_widget_color(GtkWidget *widget, int changed)
+{
+#if 0
+	gtk_widget_modify_text(widget, GTK_STATE_NORMAL, changed ? &red : &black);
+#endif
+}
+
 static void labels_refresh(void)
 {
 	int i;
@@ -99,7 +106,7 @@ static void labels_refresh(void)
 		changed = ti68k_register_get_addr(i, &addr);
 		str = g_strdup_printf("%08x", addr);
 		gtk_entry_set_text(GTK_ENTRY(wregs.a[i]), str);
-		gtk_widget_modify_text(wregs.a[i], GTK_STATE_NORMAL, changed ? &red : &black);
+		change_widget_color(wregs.a[i], changed);
 		g_free(str);
 	}
 
@@ -109,7 +116,7 @@ static void labels_refresh(void)
 		changed = ti68k_register_get_data(i, &data);
 		str = g_strdup_printf("%08x", data);
 		gtk_entry_set_text(GTK_ENTRY(wregs.d[i]), str);
-		gtk_widget_modify_text(wregs.d[i], GTK_STATE_NORMAL, changed ? &red : &black);
+		change_widget_color(wregs.d[i], changed);
 		g_free(str);
 	}
 
@@ -117,25 +124,25 @@ static void labels_refresh(void)
 	changed = ti68k_register_get_pc(&data);
 	str = g_strdup_printf("%06x", data);
 	gtk_entry_set_text(GTK_ENTRY(wregs.pc), str);
-	gtk_widget_modify_text(wregs.pc, GTK_STATE_NORMAL, changed ? &red : &black);
+	change_widget_color(wregs.pc, changed);
 	g_free(str);
 
 	changed = ti68k_register_get_usp(&data);
 	str = g_strdup_printf("%06x", data);
 	gtk_entry_set_text(GTK_ENTRY(wregs.usp), str);
-	gtk_widget_modify_text(wregs.usp, GTK_STATE_NORMAL, changed ? &red : &black);
+	change_widget_color(wregs.usp, changed);
 	g_free(str);
 
 	changed = ti68k_register_get_ssp(&data);
 	str = g_strdup_printf("%06x", data);
 	gtk_entry_set_text(GTK_ENTRY(wregs.ssp), str);
-	gtk_widget_modify_text(wregs.ssp, GTK_STATE_NORMAL, changed ? &red : &black);
+	change_widget_color(wregs.ssp, changed);
 	g_free(str);
 
 	changed = ti68k_register_get_sr(&data);
 	str = g_strdup_printf("%04x", data);
 	gtk_entry_set_text(GTK_ENTRY(wregs.sr), str);
-	gtk_widget_modify_text(wregs.sr, GTK_STATE_NORMAL, changed ? &red : &black);
+	change_widget_color(wregs.sr, changed);
 	g_free(str);
 
 	// refresh SR

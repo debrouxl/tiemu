@@ -22,6 +22,7 @@ SubVersion: $Id$
 	- [roms]  $2602: data/bit change breakpoint is raised after instruction execution so fixed disassembly window 
 		to show one line before current PC.
 	- [roms]  $2603: fixed wrong disassembly offset of MOVEM.W instruction
+	- [roms]  $2604: optimized some refreshing parts of debugging windows; added refresh of heap window
 
 - 16/03/2007, version 3.00
 	- [kevin] $2389: don't use \n in the breakpoint window status bar

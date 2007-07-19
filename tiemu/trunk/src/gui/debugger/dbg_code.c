@@ -46,6 +46,7 @@
 gint reset_disabled = FALSE;
 
 //#define FIXED_SIZE
+//#define RUN_DBG_OPEN
 
 enum { 
 	    COL_ICON, COL_ADDR, COL_OPCODE, COL_OPERAND,
@@ -451,14 +452,14 @@ GLADE_CB void
 on_run1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-#if 0
+#ifdef RUN_DBG_OPEN
 	tb_set_states(0, 0, 0, 0, 0, 1, 0, 0);
 	reset_disabled = TRUE;
     gtk_widget_set_sensitive(list, FALSE);
     set_other_windows_sensitivity(FALSE);
 
 	ti68k_debug_step();	// skip possible current bkpt
-    ti68k_engine_start();
+    engine_start();
 #else
 	close_debugger();
 #endif
@@ -476,9 +477,7 @@ on_step1_activate                      (GtkMenuItem     *menuitem,
 	dbgpclog_refresh_window();
     dbgmem_refresh_window();
 	dbgstack_refresh_window();
-
-    // force refresh !
-    while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
+	dbgheap_refresh_window();
 }
 
 
@@ -497,9 +496,7 @@ on_step_over1_activate                 (GtkMenuItem     *menuitem,
 	dbgpclog_refresh_window();
     dbgmem_refresh_window();
 	dbgstack_refresh_window();
-
-	// force refresh !
-    while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
+	dbgheap_refresh_window();
 }
 
 GLADE_CB void
@@ -513,9 +510,7 @@ on_step_out1_activate                 (GtkMenuItem     *menuitem,
 	dbgpclog_refresh_window();
     dbgmem_refresh_window();
 	dbgstack_refresh_window();
-
-	// force refresh !
-    while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
+	dbgheap_refresh_window();
 }
 
 
@@ -556,6 +551,7 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
 	dbgpclog_refresh_window();
     dbgmem_refresh_window();
 	dbgstack_refresh_window();
+	dbgheap_refresh_window();
 }
 
 
@@ -564,17 +560,17 @@ on_break1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     // Mode 1 is fastest
-#if 0
+#ifdef RUN_DBG_OPEN
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
 	GtkListStore *store = GTK_LIST_STORE(model);
 
-    ti68k_engine_stop();
+    engine_stop();
     gtk_widget_set_sensitive(list, TRUE);
 	tb_set_states(1, 1, 1, 1, 1, 0, 1, 1);
 	reset_disabled = FALSE;
     set_other_windows_sensitivity(TRUE);
-    clist_refresh(store);
+    clist_refresh(store, TRUE);
 #else
     ti68k_debug_break();
 #endif
@@ -608,11 +604,7 @@ dbgcode_button6_clicked                     (GtkButton       *button,
         ti68k_bkpt_del_address(addr);
 
     clist_refresh(store, FALSE);
-    dbgregs_refresh_window();
-	dbgpclog_refresh_window();
-    dbgmem_refresh_window();
     dbgbkpts_refresh_window();
-	dbgstack_refresh_window();
 }
 
 // Toggle tmp breakpoint
@@ -642,11 +634,7 @@ dbgcode_button7_clicked                     (GtkButton       *button,
         ti68k_bkpt_del_address(addr | BKPT_TMP_MASK);
 
     clist_refresh(store, FALSE);
-    dbgregs_refresh_window();
-	dbgpclog_refresh_window();
-    dbgmem_refresh_window();
     dbgbkpts_refresh_window();
-	dbgstack_refresh_window();
 }
 
 // Reset cycle counter
@@ -970,7 +958,6 @@ on_set_pc_to_selection1_activate       (GtkMenuItem     *menuitem,
     ti68k_register_set_pc(addr);
     dbgcode_refresh_window();
     dbgregs_refresh_window();
-    dbgmem_refresh_window();
 }
 
 GLADE_CB void
@@ -991,8 +978,6 @@ on_view_memory1_activate       (GtkMenuItem     *menuitem,
 	if(!valid) return;
     gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
     sscanf(str, "%x", &addr);
-    
-    printf("addr = %x\n", addr);
     dbgmem_add_tab(addr);
 }
 /*
@@ -1025,7 +1010,7 @@ on_treeview1_size_allocate             (GtkWidget       *widget,
 	GdkRectangle rect;
 	static int old = 0;
 
-	printf("allocation: %i %i \n", allocation->width, allocation->height);
+	//printf("allocation: %i %i \n", allocation->width, allocation->height);
 
 	path = gtk_tree_path_new_from_string("0");
 	gtk_tree_view_get_background_area(view, path, NULL, &rect);
@@ -1035,7 +1020,7 @@ on_treeview1_size_allocate             (GtkWidget       *widget,
 		return;
 
 	NLINES = allocation->height / rect.height - 1;
-	printf("#lines: %i (%i %i)\n", NLINES, allocation->height, rect.height);
+	//printf("#lines: %i (%i %i)\n", NLINES, allocation->height, rect.height);
 
 	if(old != NLINES)
 	{	
@@ -1078,6 +1063,7 @@ void gdbcallback_refresh_debugger(void)
 		dbgpclog_refresh_window();
 		dbgmem_refresh_window();
 		dbgstack_refresh_window();
+		dbgheap_refresh_window();
 
 		// force refresh !
 		while(gtk_events_pending()) gtk_main_iteration_do(FALSE);
