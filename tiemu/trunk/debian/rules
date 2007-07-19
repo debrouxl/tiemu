@@ -102,6 +102,10 @@ install-2: build-2
 	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/include
 	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/lib
 	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/man	
+	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/i*
+	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/redhat
+	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/tcl*
+	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/tk*
 
 # Build architecture-independent files here.
 binary-indep:
