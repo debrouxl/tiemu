@@ -44,36 +44,36 @@
 #include "fs_misc.h"
 #include "calc.h"
 #include "keymap.h"
-#include "keynames.h"
 #include "dbg_all.h"
 #include "keypress.h"
 #include "dboxes.h"
 
+Pc2TiKey*       kbd_keymap = keymap;
 const char*     skn_keymap;
 
 extern SKIN_INFOS skin_infos;
 
-static int pckey_to_tikey(guint pc_key, int action)
+static int hwkey_to_tikey(guint16 hardware_keycode, int action)
 {
-    int i;
+    int i;		
 
-    for(i = 0; i < keymap_num_keys(); i++)
+    for(i = 0; i < KEYMAP_MAX; i++)
     {
         int ti_key, modifier;
 
-        if(keymap[i]->pc_key == (int)pc_key)
+        if(kbd_keymap[i].pc_key == hardware_keycode)
         {
-            ti_key = keymap[i]->ti_key;
-            modifier = keymap[i]->modifier;
+            ti_key = kbd_keymap[i].ti_key;
+            modifier = kbd_keymap[i].modifier;
 
 			if(options.kbd_dbg)
 			{
 				gchar *str;
 
 				str = g_strdup_printf("%s:%s,%s\n",
-						pckey_value_to_string(pc_key),
-						tikey_value_to_string(ti_key),
-						tikey_value_to_string(modifier));
+						keymap_value_to_string(pckeys, hardware_keycode),
+						keymap_value_to_string(tikeys, ti_key),
+						keymap_value_to_string(tikeys, modifier));
 				msg_box1(_("Information"), str);
 				g_free(str);
 			}
@@ -90,15 +90,6 @@ static int pckey_to_tikey(guint pc_key, int action)
             return !0;
         }
     }
-
-	if(options.kbd_dbg)
-	{
-		gchar *str;
-
-		str = g_strdup_printf("%s\n", pckey_value_to_string(pc_key));
-		msg_box1(_("Information"), str);
-		g_free(str);
-	}
 
     return 0;
 }
@@ -121,7 +112,7 @@ static int pos_to_key(int x, int y)
 	 	   (y >= sf*kp[i].top) && (y < sf*kp[i].bottom)) 
 		{
 			if(options.kbd_dbg)
-				printf("tikey = %02x (%s)\n", skn_keymap[i], tikey_value_to_string(skn_keymap[i]));		
+				printf("tikey = %02x (%s)\n", skn_keymap[i], keymap_value_to_string(tikeys, skn_keymap[i]));		
 
 			return skn_keymap[i];
 		}
@@ -233,45 +224,16 @@ on_calc_wnd_button_release_event     (GtkWidget       *widget,
     return FALSE;
 }
 
-/*
-	This function translates an hardware key code into a modified keyval value.
-	We need this function because:
-	- the hardware_keycode value is platform dependant so unusable for TiEmu which needs a common key value,
-	- the keyval value is not useable as is because dependant of the CapsLock key state.
-
-	So, we do the same translation as GDK does but we just keep the lowerscript key value in order to get a
-	kind of common & unique key value which is not dependant of platform and keyboard layout.
-*/
-static guint hwkeycode_to_keyval(GdkEventKey *event)
-{
-	GdkKeymapKey *keys;
-	gint i, nkeys;
-	guint *keyvals;
-	guint keyval;
-
-	// turns an hardware_keycode into the 4 possible keyval values (normal/shift/alt-gr like "/3/#)
-	gdk_keymap_get_entries_for_keycode(gdk_keymap_get_default(), event->hardware_keycode, &keys, &keyvals, &nkeys);
-
-#if 1
-	printf("<hwkey=%04x (%c), key=%08x (%c), state=%04x>  %s\n", 
-		event->hardware_keycode, event->hardware_keycode, 
-		event->keyval, event->keyval, event->state, pckey_value_to_string(event->keyval));
-
-	for(i = 0; i < nkeys; i++) printf("%04X ", keyvals[i]);	printf("\n");
-#endif
-
-	// always keep lowercase keyval value except for digits, we return digits
-	keyval = (keyvals[1] >= '0' && keyvals[1] <= '9') ? keyvals[1] : keyvals[0];
-	printf("%04x\n", keyval);
-
-	return keyval;
-}
-
 GLADE_CB gboolean
 on_calc_wnd_key_press_event        (GtkWidget       *widget,
                                         GdkEventKey     *event,
                                         gpointer         user_data)
 {
+#if 0
+	printf("<hwkey=%04x (%c), key=%04x (%c), state=%04x>\n", 
+		event->hardware_keycode, event->hardware_keycode, 
+		event->keyval, event->keyval, event->state );
+#endif
 #if 0
 	printf("KeyEvent:\n");
 	printf(" type:		%i\n", event->type);
@@ -311,14 +273,8 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
         on_set_rom1_activate(NULL, NULL);
         return TRUE;
     }
-	else if((event->keyval == 0xffffff) && (event->hardware_keycode == 0x14))
-	{
-		return pckey_to_tikey(GDK_Caps_Lock, !0) ? TRUE : FALSE;
-	}
     else
-	{
-		return pckey_to_tikey(hwkeycode_to_keyval(event), !0) ? TRUE : FALSE;
-	}
+        return hwkey_to_tikey(event->hardware_keycode, !0) ? TRUE : FALSE;
 
     return FALSE;
 }
@@ -329,13 +285,6 @@ on_calc_wnd_key_release_event      (GtkWidget       *widget,
                                         GdkEventKey     *event,
                                         gpointer         user_data)
 {
-	if((event->keyval == 0xffffff) && (event->hardware_keycode == 0x14))
-	{
-		return pckey_to_tikey(GDK_Caps_Lock, 0) ? TRUE : FALSE;
-	}
-    else
-	{
-		return pckey_to_tikey(hwkeycode_to_keyval(event), 0) ? TRUE : FALSE;
-	}
+    return hwkey_to_tikey(event->hardware_keycode, 0) ? TRUE : FALSE;
 }
 
