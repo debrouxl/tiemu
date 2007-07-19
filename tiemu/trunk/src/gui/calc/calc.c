@@ -630,7 +630,9 @@ int  hid_exit(void)
 	{
 		explicit_destroy = !0;
 		gtk_widget_destroy(main_wnd);
-	}		
+	}
+
+	keymap_unload();
 
     return 0;
 }

@@ -23,17 +23,10 @@
  *  Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef __KBDMAPPER_H__
-#define __KBDMAPPER_H__
-
-#define KEYMAP_MAX  128
+#ifndef __KEYMAPS_H__
+#define __KEYMAPS_H__
 
 // types
-
-typedef struct {
-    int         value;
-    const char  *name;
-} KeyTuple;
 
 typedef struct {
     int pc_key;     // PC key
@@ -41,17 +34,13 @@ typedef struct {
     int modifier;   // TI key such as TIKEY_ALPHA
 } Pc2TiKey;
 
-extern Pc2TiKey keymap[KEYMAP_MAX];
-
-extern const KeyTuple tikeys[];
-extern const KeyTuple pckeys[];
+extern Pc2TiKey **keymap;
 
 // functions
 
-int keymap_string_to_value(const KeyTuple *array, const char *key_name);
-const char* keymap_value_to_string(const KeyTuple *array, int key_value);
-
 int keymap_read_header(const char *filename);
 int keymap_load(const char *filename);
+int keymap_unload(void);
+int keymap_num_keys(void);
 
 #endif

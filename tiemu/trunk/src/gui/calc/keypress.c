@@ -94,7 +94,7 @@ int kp_recording_key(int key, int action)
 	{
 		fprintf(f_rec, "%f:%s=%i\n", 
 			g_timer_elapsed(timer, NULL), 
-			keymap_value_to_string(tikeys, key), 
+			tikey_value_to_string(key), 
 			action);
 	}
 
@@ -117,7 +117,7 @@ int kp_playing_key(int *key, int *action)
 		return -1;
 
 	sscanf(split[0], "%f", &time);
-	*key = keymap_string_to_value(tikeys, split[1]);
+	*key = tikey_string_to_value(split[1]);
 	*action = (split[2][0] == '1') ? 1 : 0;	
 
 	return 0;
