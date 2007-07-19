@@ -18,7 +18,6 @@ AC_CONFIG_FILES([
   build/Makefile
   glade/Makefile
   help/Makefile
-  intl/Makefile
   man/Makefile
   misc/Makefile
   pedrom/Makefile
@@ -49,7 +48,7 @@ AM_CONDITIONAL(USE_GROFF, test "$GROFF" != "no")
 
 # Checks for libraries.
 AM_GNU_GETTEXT
-AM_GNU_GETTEXT_VERSION(0.14.5)
+AM_GNU_GETTEXT_VERSION([0.16.1])
 AC_SUBST(INCINTL)
 
 PKG_CHECK_MODULES(TICABLES, ticables2 >= 1.0.0)

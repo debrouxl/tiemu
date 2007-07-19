@@ -7,7 +7,7 @@ NAME
 
 SYNOPSYS
        tiemu [-h] [-v] [--help] [--version] [--import] [-rom=] [-tib=] [-sav=]
-       [image]
+       [filename]
 
 DESCRIPTION
        The TiEmu program allows you to emulate a Texas Instruments  calculator
@@ -32,59 +32,65 @@ OPTIONS
               or -tib !
 
        -rom=  Convert and use the specified dump as image. Note that the image
-              is added to the image repository.
+              is added to the image repository.  Provided for compatibility.
 
-       -tib=  Convert and use the specified tib/upgrade as image. Idem.
+       -tib=  Convert and use the specified tib/upgrade as image. Idem.   Pro-
+              vided for compatibility.
 
-       -sav=  Load the specified state file. Must be a valid state  image  and
-              target for emulated calculator.
+       -sav=  Load  the  specified state file. Must be a valid state image and
+              target for emulated calculator.  Provided for compatibility.
+
+       filename
+              Load a ROM/TIB/SAV file. ROM & TIB files are converted and added
+              to  images  repository. Image corresponding to SAV file is auto-
+              matically loaded and state is load.
 
 
 CONFIG FILE FORMAT
        This section describes the format of the .tiemu config file which is in
-       the home directory of the user (Linux) or in the Program  Files  folder
+       the  home  directory of the user (Linux) or in the Program Files folder
        (Win32). A line preceded by the '#' symbol is a comment.  Each line has
-       the following  format:  key=value.   The  config  file  must  have  the
-       'RC_END'  string  at end.  Every line can be put in any order.  Take in
-       mind that any comment added in the config  file  will  be  overwritten.
+       the  following  format:  key=value.   The  config  file  must  have the
+       'RC_END' string at end.  Every line can be put in any order.   Take  in
+       mind  that  any  comment  added in the config file will be overwritten.
        Below is described each option and the possible values:
 
-       calctype=  Defines the calculator type for link parameter. Valid values
-       are: ti89, ti89t, ti92, ti92+, v200.  Note: don't need  to  touch  this
+       calctype= Defines the calculator type for link parameter. Valid  values
+       are:  ti89,  ti89t,  ti92, ti92+, v200.  Note: don't need to touch this
        setting, it's overridden by TiEmu. Kept for compatibility.
 
-       linktype=  Define  the  link  cable  type.  Choose one of the following
-       value: none, parallel, serial, TIGraphLink, virtual,  TiEmulator,  VTi,
+       linktype= Define the link cable  type.  Choose  one  of  the  following
+       value:  none,  parallel, serial, TIGraphLink, virtual, TiEmulator, VTi,
        UsbGraphLink.
 
-       port=  Define  a  link  port  to use. Can be: null, user, parallel port
+       port= Define a link port to use. Can  be:  null,  user,  parallel  port
        #1|2|3, serial port #1|2|3|4, virtual port #1|2, USB port #1.
 
-       method= Define an I/O method to use. Possible  values  are:  automatic,
+       method=  Define  an  I/O method to use. Possible values are: automatic,
        asm, api, driver, null.
 
-       adr_port=  places  the  I/O  address  of the I/O port to use. It can be
+       adr_port= places the I/O address of the I/O port  to  use.  It  can  be
        0x3F8 for a serial port or 0x378 for a parallel port for instance.
 
-       serial_device= places the character device name of the serial  port  to
+       serial_device=  places  the character device name of the serial port to
        use with a Grey TIGL.
 
-       timeout=  with  the  timeout  value to use in tenth of seconds. Default
+       timeout= with the timeout value to use in  tenth  of  seconds.  Default
        value: 20.
 
-       delay= with the delay value  to  use  in  micro-seconds  for  home-made
+       delay=  with  the  delay  value  to  use in micro-seconds for home-made
        cables. Default value: 10
 
        background= Define whether TiEmu display the whole frame (keyboard+LCD)
-       or just the LCD screen. Set to 0 if you do not want  to  use  the  key-
+       or  just  the  LCD  screen. Set to 0 if you do not want to use the key-
        board.
 
-       skin_file=  Define  the  custom  skin  file to use. Must be a full path
+       skin_file= Define the custom skin file to use.  Must  be  a  full  path
        name.
 
        keys_file= Define the keymap to use. Must be a full path name.
 
-       img_file= Define the TiEmu image to load at startup.  Must  be  a  full
+       img_file=  Define  the  TiEmu  image to load at startup. Must be a full
        path name.
 
        tib_file= Define the FLASH upgrade (tib or .9xu/.89u) to load after the
@@ -92,24 +98,24 @@ CONFIG FILE FORMAT
 
        sav_file= Define the calculator state image to load at startup.
 
-       cpu_rate= Give the number of instructions executed by  the  M68000  per
+       cpu_rate=  Give  the  number of instructions executed by the M68000 per
        30ms timeslice. Default value is -1 (50000 insts/30ms).
 
        hw_rate= Give the OS2/OSC3 oscillator rate. Default value is -1 (427 on
        hw1 and 732 on hw2; OSC2 is incremented every 6250 OSC1 cycles).
 
-       lcd_rate= Define the frame rate of LCD refresh.  Default  value  is  -1
+       lcd_rate=  Define  the  frame  rate of LCD refresh. Default value is -1
        (25ms => 40fps). Don't use a value smaller than 10ms.
 
-       img_format=  Defines  the image format of the screenshots. Several for-
+       img_format= Defines the image format of the screenshots.  Several  for-
        mats are available: jpg, png and ico.
 
        img_type= You can do B/W (bw) or colored (color) screenshots.
 
-       img_size= The size of the image that is to say you can shots  only  the
+       img_size=  The  size of the image that is to say you can shots only the
        LCD (lcd) or the entire window (skin).
 
-       screen_file=  Defines  the  base  filename where the screenshot will be
+       screen_file= Defines the base filename where  the  screenshot  will  be
        stored.
 
        screen_counter= This allows you to save the current screenshot counter.
@@ -120,14 +126,14 @@ CONFIG FILE FORMAT
 
        screen_skips= Number of frame to skip between 2 captures.
 
-       console= Available under Windows platform only. You can  hide  (no)  or
-       show  (yes)  the  DOS console at startup or even display it only during
+       console=  Available  under  Windows platform only. You can hide (no) or
+       show (yes) the DOS console at startup or even display  it  only  during
        boot (boot).
 
-       kbd_dbg= Display key bindings in the console if  set  (yes).  Else,  do
+       kbd_dbg=  Display  key  bindings  in the console if set (yes). Else, do
        nothing (no).
 
-       fs_type=  TiEmu supports several file selectors for better integration.
+       fs_type= TiEmu supports several file selectors for better  integration.
        The following options are supported:
        - native: native one (default): Win32 on Windows, KDE if built with KDE
        support and running under KDE, GTK+ 2.x else,
@@ -135,7 +141,7 @@ CONFIG FILE FORMAT
        - new: GTK 2.x file selector (advanced capabilities and can show hidden
        files),
        - win32: deprecated (same as native),
-       - kde: KDE file selector (only available if TiEmu  is  built  with  KDE
+       -  kde:  KDE  file  selector (only available if TiEmu is built with KDE
        support).
 
        bkpts_wnd=
@@ -145,8 +151,8 @@ CONFIG FILE FORMAT
        pclog_wnd=
        stack_wnd=
        heap_wnd= Set geometry hints for the different windows of the debugger.
-       The format is (x,y,w,h,m,v) where x&y  are  coordinates,  w&h  are  the
-       size,  m  is  set  if window is minimized and v is set if the window is
+       The  format  is  (x,y,w,h,m,v)  where  x&y are coordinates, w&h are the
+       size, m is set if window is minimized and v is set  if  the  window  is
        open.
 
        Think to terminate your config script with the 'RC_END' word !!!
@@ -154,24 +160,24 @@ CONFIG FILE FORMAT
 
 COPYRIGHT
        Copyright (C) 2000-2001, Romain Lievin and Thomas Corvazier.  Copyright
-       (C)  2001-2003,  Romain  Lievin Copyright (C) 2003, Julien Blache Copy-
-       right (C) 2004, Romain Lievin Copyright (C)  2005-2006,  Romain  Lievin
+       (C) 2001-2003, Romain Lievin Copyright (C) 2003,  Julien  Blache  Copy-
+       right  (C)  2004,  Romain Lievin Copyright (C) 2005-2007, Romain Lievin
        and Kevin Kofler
 
-       Permission  to  use, copy, modify, and distribute this software and its
-       documentation for any purpose and without fee is hereby  granted,  pro-
-       vided  that  the  above  copyright notice appear in all copies and that
-       both that copyright notice and this permission notice  appear  in  sup-
+       Permission to use, copy, modify, and distribute this software  and  its
+       documentation  for  any purpose and without fee is hereby granted, pro-
+       vided that the above copyright notice appear in  all  copies  and  that
+       both  that  copyright  notice and this permission notice appear in sup-
        porting documentation.
 
-       This  program and its source code is distributed under the terms of the
-       terms of the GNU General Public License as published by the Free  Soft-
-       ware  Foundation;  either version 2 of the License, or (at your option)
+       This program and its source code is distributed under the terms of  the
+       terms  of the GNU General Public License as published by the Free Soft-
+       ware Foundation; either version 2 of the License, or (at  your  option)
        any later version.
 
-       This program is distributed in the hope that it  will  be  useful,  but
-       WITHOUT  ANY  WARRANTY;  without  even  the  implied  warranty  of MER-
-       CHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU  General
+       This  program  is  distributed  in the hope that it will be useful, but
+       WITHOUT ANY  WARRANTY;  without  even  the  implied  warranty  of  MER-
+       CHANTABILITY  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
        Public License for more details.
 
        You should have received a copy of the GNU General Public License along
@@ -180,21 +186,21 @@ COPYRIGHT
 
 
 SUGGESTIONS AND BUG REPORTS
-       The   canonical place to find TiEmu and some miscellenaous informations
-       is at <http://lpg.ticalc.org/prj_tiemu>.  You can also take a  look  at
-       <http://lpg.ticalc.org>   and  <http://www.ticalc.org>  for  others  TI
+       The  canonical place to find TiEmu and some miscellenaous  informations
+       is  at  <http://lpg.ticalc.org/prj_tiemu>.  You can also take a look at
+       <http://lpg.ticalc.org>  and  <http://www.ticalc.org>  for  others   TI
        related programs for Linux.
 
 
 SEE ALSO
-       tilp(1) for the use of a linking program. TiEmu shares the same  commu-
+       tilp(1)  for the use of a linking program. TiEmu shares the same commu-
        nication box for link settings.
 
 
 SPECIAL THANKS
        - Jonas Minnberg (Sasq) for Tiger
        - UAE, the Universal Amiga Emulator
-       -  Kevin  Kofler  <Kevin@tigcc.ticalc.org>  for  creating  rpm packages
+       - Kevin  Kofler  <Kevin@tigcc.ticalc.org>  for  creating  rpm  packages
        (Fedora): he is the official maintainer of this package.
        - Julien Blache <jb@jblache.org> for creating deb packages (Debian): he
        is the official maintainer of this package.
@@ -205,5 +211,5 @@ AUTHOR
 
 
 
-                               January 27, 2006                       TIEMU(1)
+                                March 28, 2007                        TIEMU(1)
 ÿÿ

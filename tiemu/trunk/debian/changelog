@@ -2,6 +2,8 @@ tiemu3 (3.01-1) unstable; urgency=low
 
   * Sound emulation added.
 
+ -- Romain LIEVIN <roms@tilp.info>  Wed, 27 Jun 2007 23:04:35 +0200
+	
 tiemu3 (3.00-1) unstable; urgency=low
 
   * Initial release.

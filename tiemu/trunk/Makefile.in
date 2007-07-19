@@ -32,17 +32,15 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@NO_GDB_TRUE@am__append_1 = intl
-@USE_GROFF_TRUE@am__append_2 = man
+@USE_GROFF_TRUE@am__append_1 = man
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(dist_pkgdata_DATA) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/config.h.in $(srcdir)/tiemu.lsm.in \
 	$(srcdir)/tiemu.spec.in $(top_srcdir)/configure \
-	$(top_srcdir)/intl/Makefile.in $(top_srcdir)/src/Makefile.in \
-	ABOUT-NLS AUTHORS COPYING ChangeLog INSTALL NEWS TODO compile \
-	config.guess config.rpath config.sub depcomp install-sh \
-	ltmain.sh missing mkinstalldirs
+	$(top_srcdir)/src/Makefile.in ABOUT-NLS AUTHORS COPYING \
+	ChangeLog INSTALL NEWS TODO compile config.guess config.rpath \
+	config.sub depcomp install-sh ltmain.sh missing mkinstalldirs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac
@@ -52,7 +50,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = intl/Makefile src/Makefile tiemu.lsm tiemu.spec
+CONFIG_CLEAN_FILES = src/Makefile tiemu.lsm tiemu.spec
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -75,8 +73,7 @@ RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = build glade help misc pedrom pixmaps po skins src intl \
-	man
+DIST_SUBDIRS = build glade help misc pedrom pixmaps po skins src man
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -236,7 +233,6 @@ RANLIB = @RANLIB@
 SDL_CFLAGS = @SDL_CFLAGS@
 SDL_CONFIG = @SDL_CONFIG@
 SDL_LIBS = @SDL_LIBS@
-SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -348,9 +344,10 @@ x_libraries = @x_libraries@
 
 # subdirectories to scan
 SUBDIRS = build glade help misc pedrom pixmaps po skins src \
-	$(am__append_1) $(am__append_2)
+	$(am__append_1)
 dist_pkgdata_DATA = COPYING RELEASE AUTHORS LICENSES
 EXTRA_DIST = README.* TODO docs desktop
+ACLOCAL_AMFLAGS = -I m4
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -405,8 +402,6 @@ $(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
-intl/Makefile: $(top_builddir)/config.status $(top_srcdir)/intl/Makefile.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 src/Makefile: $(top_builddir)/config.status $(top_srcdir)/src/Makefile.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 tiemu.lsm: $(top_builddir)/config.status $(srcdir)/tiemu.lsm.in

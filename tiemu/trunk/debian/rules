@@ -90,11 +90,18 @@ install-1: build-1
 install-2: build-2
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+#	dh_clean -k
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tiemu3-gdb
 	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu3-gdb install
+
+	# Remove tcl/tk files
+	rm -f $(CURDIR)/debian/tiemu3-gdb/usr/bin/tcl*
+	rm -f $(CURDIR)/debian/tiemu3-gdb/usr/bin/wish*
+	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/include
+	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/lib
+	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/man	
 
 # Build architecture-independent files here.
 binary-indep:

@@ -3,10 +3,6 @@
 # subdirectories to scan
 SUBDIRS = build glade help misc pedrom pixmaps po skins src
 
-if NO_GDB
-SUBDIRS += intl
-endif
-
 if USE_GROFF
 SUBDIRS += man
 endif
@@ -49,3 +45,5 @@ endif
 
 regsvr:
 	cd src && $(MAKE) regsvr DESTDIR="$(DESTDIR)"
+
+ACLOCAL_AMFLAGS = -I m4
