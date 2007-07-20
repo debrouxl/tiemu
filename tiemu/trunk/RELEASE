@@ -30,12 +30,16 @@ New capabilities:
 -----------------
 
 	- sound emulation
+	- breakpoints on bit change
+
 	
 
 Improvements:
 -------------
 
-	- none
+	- data/bit change breakpoint is raised after instruction execution so fixed disassembly window 
+		to show one line before current PC
+	- optimized displaying/refreshing of debugger windows (~50%)
 		
 		
 Bug fixes:
@@ -45,6 +49,7 @@ Bug fixes:
 	- fixed coordinate saving for Win32 multi-monitor case
 	- *nix compile fix: fixed KDE path detection for multilib systems with
 	                    both 32-bit and 64-bit libraries installed
+	- fixed wrong disassembly offset of MOVEM.W instruction
 	
 	
 Notes:
