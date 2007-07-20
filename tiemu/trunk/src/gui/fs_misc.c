@@ -417,6 +417,9 @@ gint display_set_tib_dbox(void)
 		return -1;
 	}
 
+	// update ROM calls list
+	dbgromcall_refresh_window();
+
     // simply reset, don't restart
     ti68k_reset();
 

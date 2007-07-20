@@ -391,7 +391,7 @@ GtkWidget* dbgcode_create_window(void)
 	gtk_widget_hide(data);
 
 	dbgromcall_create_window(xml);
-	dbgromcall_refresh_window();	// speed-up displaying of code window
+	dbgromcall_refresh_window();
 
 	return dbox;
 }
@@ -416,8 +416,7 @@ GtkWidget* dbgcode_display_window(void)
     gtk_list_store_clear(store);
 	clist_refresh(store, TRUE);
 
-	dbgromcall_refresh_window();
-	gtk_widget_show(dbgw.code);	// always shown
+	gtk_widget_show(dbgw.code);
 
     return dbgw.code;
 }

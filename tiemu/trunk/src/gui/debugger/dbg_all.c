@@ -63,6 +63,19 @@ DbgWidgets dbgw = { 0 };
 
 int dbg_on = 0;
 
+/*
+tiTIME profile;
+void profile_start(void)
+{
+	TO_START(profile);
+}
+void profile_stop(const char *str)
+{
+	printf("Duration (%s): %i ms\n", str, TO_CURRENT(profile));
+}
+*/
+
+
 /* Functions applicable to the whole debugger */
 
 // create windows but don't show them yet
