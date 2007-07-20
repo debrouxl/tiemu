@@ -41,7 +41,7 @@ config.status-2: configure
 	dh_testdir
 	# Add here commands to configure the package.
 	touch configure.ac && touch aclocal.m4 && touch configure
-	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs" --enable-dbus
+	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs" --enable-dbus --enable-shared-tcl-tk --enable-shared-itcl
 
 build-1: build-stamp-1
 build-stamp-1:  config.status-1
@@ -94,18 +94,13 @@ install-2: build-2
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tiemu3-gdb
-	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu3-gdb install
+	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu3-gdb install-without-tcl-tk-itcl
 
 	# Remove tcl/tk files
-	rm -f $(CURDIR)/debian/tiemu3-gdb/usr/bin/tcl*
-	rm -f $(CURDIR)/debian/tiemu3-gdb/usr/bin/wish*
 	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/include
 	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/lib
-	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/man	
-	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/i*
-	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/redhat
-	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/tcl*
-	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/tk*
+	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/insight*
+	#rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/redhat
 
 # Build architecture-independent files here.
 binary-indep:
