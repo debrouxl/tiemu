@@ -97,10 +97,17 @@ install-2: build-2
 	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu3-gdb install-without-tcl-tk-itcl
 
 	# Remove tcl/tk files
+#	rm -f $(CURDIR)/debian/tiemu3-gdb/usr/bin/tcl*
+#	rm -f $(CURDIR)/debian/tiemu3-gdb/usr/bin/wish*
 	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/include
 	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/lib
-	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/insight*
-	#rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/redhat
+	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/man	
+#	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/it*
+#	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/iw*
+#	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/insight*
+#	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/redhat
+#	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/tcl*
+#	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/tk*
 
 # Build architecture-independent files here.
 binary-indep:
