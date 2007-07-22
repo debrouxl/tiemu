@@ -1,0 +1,96 @@
+> Tu peux me renvoyer tes instructions?
+
+Hmmm, je ne les retrouve pas dans mes mails, c'était peut-être par ICQ. Je 
+n'ai pas envie de perdre encore plus de temps à les rechercher, alors on 
+recommence. (De toute façon, je ne suis pas sûr d'avoir déjà donné toutes les 
+explications détaillées et pas seulement "regarde mon specfile".)
+
+L'idée est de regarder mon specfile:
+http://svn.tilp.info/cgi-bin/viewcvs.cgi/tiemu/trunk/build/fedora/tiemu3.spec?rev=2575&root=tiemu&view=markup
+Ce qui suit sont des extraits commentés de mon specfile.
+Attention, lis bien attentivement mes commentaires, parce qu'il y a des points 
+subtils, donc si tu survoles, tu risques d'oublier un morceau essentiel du 
+puzzle.
+
+> BuildRequires: libticables2-devel >= 1:1.0.0, libticonv-devel >= 1:1.0.4,
+> libtifiles2-devel >= 1:1.0.7, libticalcs2-devel >= 1:1.0.7, glib2-devel >=
+> 2.6.0, gtk2-devel >= 2.6.0, libglade2-devel >= 2.4.0, zlib-devel,
+> kdelibs-devel >= 6:3.0, libX11-devel, libXext-devel, ncurses-devel,
+> desktop-file-utils >= 0.10, bison >= 1.28, flex >= 2.5.4, texinfo >= 4.4,
+> dbus-devel >= 0.60, dbus-glib-devel >= 0.60, SDL-devel >= 1.2.0     
+
+Ici, Tcl/Tk/itcl/itk/iwidgets ne sont pas dans les BuildRequires parce que 
+Insight compile sa propre version de toute façon (qu'on va jeter à la 
+poubelle plus tard), à la place, il y a les libs nécessitées par Tcl/Tk 
+(libX11-devel et libXext-devel).
+
+> Requires: tcl >= 8.4, tk >= 8.4, itcl >= 3.3, itk >= 3.3, iwidgets >= 4.0.1,
+> xdg-utils >= 1.0.0 
+
+En revanche, Tcl/Tk/itcl/itk/iwidgets sont nécessaires en temps d'exécution. 
+Pour les versions itcl/itk, normalement c'est la 3.2 qui est demandée, je 
+vais y venir tout de suite.
+
+>sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g'
+> src/gdb/itcl/itcl/configure.in 
+>sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g'
+> src/gdb/itcl/itcl/configure 
+>sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g'
+> src/gdb/itcl/itk/configure.in 
+>sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g'
+> src/gdb/itcl/itk/configure 
+
+Voilà le fameux itcl/itk version hack. Là, il faut que j'explique bien le 
+pourquoi du comment:
+* TiEmu/Insight inclut itcl et itk version 3.2.1.
+* Fedora inclut itcl et itk version 3.3RC1.
+* Ce que je fais par la suite (plus bas dans le specfile), c'est compiler 
+TiEmu avec les itcl/itk internes (en lib partagée), les jeter, et espérer que 
+ça marche avec celles de Fedora.
+* Or, le soname de itcl/itk contient la version (3.2 ou 3.3, le .1 ou RC1 n'a 
+pas d'importance), donc problème.
+* Donc je hacke les versions des itcl/itk internes pour qu'ils croient être 
+une version 3.3 => les sonames correspondent => on peut les remplacer par les 
+versions système de manière transparente.
+Il faut bien faire attention à ne jamais faire ça si on installe les .so, 
+parce que ça fait des versions de itcl/itk qui prétendent être des 3.3 alors 
+qu'elles sont des 3.2.
+
+Mais ce hack n'est de toute façon pas nécessaire sous Debian parce que Debian 
+distribue la 3.2.1 partout (même dans unstable).
+
+>export extra_ldflags="-Wl,-rpath,%{_libdir}/itcl3.3 -Wl,-rpath
+>,%{_libdir}/itk3.3" 
+
+Encore un petit hack... ;-)
+itcl/itk ne sont (du moins sous Fedora) pas dans le search path de ld.so parce 
+qu'elles ne sont pas censées être linkées directement (mais chargées avec 
+dlopen par Tcl/Tk). Manque de bol, Insight les linke directement. Donc besoin 
+d'un rpath pour que les versions système soient trouvées.
+
+
+Et maintenant qu'on a tout mis en place, on peut en venir à la vraie astuce:
+
+> CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir}
+> --mandir=%{_mandir} --disable-nls --enable-shared-tcl-tk --enable-shared-itcl
+> --with-dbus 
+
+Voilà ma ligne configure. Les 2 options essentielles ici 
+sont --enable-shared-tcl-tk et --enable-shared-itcl. Ces options compilent 
+Tcl/Tk et itcl/itk/iwidgets (respectivement) en partagé, pour qu'on puisse 
+les remplacer par la version système.
+
+> make install-without-tcl-tk-itcl DESTDIR=$RPM_BUILD_ROOT
+
+Et ce target spécial est une variante de make install que j'ai codée exprès 
+pour le packaging et qui n'installe pas Tcl/Tk/itcl/itk/iwidgets.
+
+Voilà, j'espère que ça a éclairci mes astuces.
+
+Attention, il y a un conflit qui est toujours là après ça, c'est le conflit 
+avec le paquetage insight (Insight natif) de Debian. Pour ça, il faudra que 
+je remplace /usr/share/redhat/gui et /usr/share/insight1.0 par autre chose 
+(directement dans la source, pas besoin d'en faire un hack packaging-only), 
+je n'ai pas encore eu le temps de me plonger là-dessus.
+
+        Kevin Kofler
