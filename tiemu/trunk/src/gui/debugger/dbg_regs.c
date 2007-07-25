@@ -88,7 +88,7 @@ on_dbgregs_checkbutton_toggled         (GtkToggleButton *togglebutton,
 
 static void change_widget_color(GtkWidget *widget, int changed)
 {
-#if 0
+#if 1
 	gtk_widget_modify_text(widget, GTK_STATE_NORMAL, changed ? &red : &black);
 #endif
 }
