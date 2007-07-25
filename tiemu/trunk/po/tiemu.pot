@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Romain Lievin
+# Copyright (C) YEAR Free Software Foundation, Inc.
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-06-24 20:04+0200\n"
+"Report-Msgid-Bugs-To: tiemu-users@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-07-25 10:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -221,12 +221,12 @@ msgstr ""
 msgid "Bad argument!"
 msgstr ""
 
-#: src/core/state.c:159
+#: src/core/state.c:178
 #, c-format
 msgid "loading state image: %s"
 msgstr ""
 
-#: src/core/state.c:309
+#: src/core/state.c:353
 #, c-format
 msgid "saving state image (TiEmu v2.00 format): %s"
 msgstr ""
@@ -390,8 +390,8 @@ msgstr ""
 msgid "User Interrupt vectors"
 msgstr ""
 
-#: src/core/type2str.c:192 src/core/type2str.c:207 src/core/type2str.c:219
-#: src/gui/debugger/dbg_bkpts.c:251 glade/dbg_cause-2.str:11
+#: src/core/type2str.c:192 src/core/type2str.c:208 src/core/type2str.c:221
+#: src/gui/debugger/dbg_bkpts.c:279 glade/dbg_cause-2.str:11
 msgid "access"
 msgstr ""
 
@@ -403,28 +403,32 @@ msgstr ""
 msgid "address"
 msgstr ""
 
-#: src/core/type2str.c:195 src/core/type2str.c:210 src/core/type2str.c:225
+#: src/core/type2str.c:195 src/core/type2str.c:211 src/core/type2str.c:227
 msgid "exception"
 msgstr ""
 
-#: src/core/type2str.c:196 src/core/type2str.c:211 src/core/type2str.c:227
+#: src/core/type2str.c:196 src/core/type2str.c:212 src/core/type2str.c:229
 msgid "prgm entry"
 msgstr ""
 
-#: src/core/type2str.c:197 src/core/type2str.c:212 src/core/type2str.c:229
+#: src/core/type2str.c:197 src/core/type2str.c:213 src/core/type2str.c:231
 msgid "hw protection"
 msgstr ""
 
-#: src/core/type2str.c:198 src/core/type2str.c:213 src/gui/infos.c:61
+#: src/core/type2str.c:198 src/core/type2str.c:214 src/core/type2str.c:233
+msgid "bit change"
+msgstr ""
+
+#: src/core/type2str.c:199 src/core/type2str.c:215 src/gui/infos.c:61
 msgid "unknown"
 msgstr ""
 
-#: src/core/type2str.c:208 src/core/type2str.c:221
-#: src/gui/debugger/dbg_bkpts.c:251
+#: src/core/type2str.c:209 src/core/type2str.c:223
+#: src/gui/debugger/dbg_bkpts.c:279
 msgid "range"
 msgstr ""
 
-#: src/core/type2str.c:209 src/core/type2str.c:223
+#: src/core/type2str.c:210 src/core/type2str.c:225
 msgid "code"
 msgstr ""
 
@@ -460,8 +464,9 @@ msgid "PLEASE READ THE DOCUMENTATION FOR DETAILS\n"
 msgstr ""
 
 #: src/misc/files.c:95 src/misc/files.c:107 src/misc/files.c:123
-#: src/gui/calc/popup.c:176 src/gui/calc/popup.c:179 src/gui/calc/popup.c:191
-#: src/gui/dboxes.c:41 src/gui/fs_misc.c:154 src/gui/fs_misc.c:157
+#: src/gui/calc/keyboard.c:77 src/gui/calc/popup.c:176
+#: src/gui/calc/popup.c:179 src/gui/calc/popup.c:191 src/gui/dboxes.c:41
+#: src/gui/fs_misc.c:154 src/gui/fs_misc.c:157
 msgid "Information"
 msgstr ""
 
@@ -551,14 +556,14 @@ msgid "Couldn't open destination file for writing!"
 msgstr ""
 
 #: src/gui/calc/calc.c:234 src/gui/calc/popup.c:625
-#: src/gui/debugger/dbg_bkpts.c:314 src/gui/debugger/dbg_cause.c:60
-#: src/gui/debugger/dbg_cause.c:144 src/gui/debugger/dbg_code.c:355
-#: src/gui/debugger/dbg_code.c:677 src/gui/debugger/dbg_data.c:55
-#: src/gui/debugger/dbg_entry.c:206 src/gui/debugger/dbg_heap.c:143
-#: src/gui/debugger/dbg_iop.c:423 src/gui/debugger/dbg_mem.c:698
-#: src/gui/debugger/dbg_mem.c:1012 src/gui/debugger/dbg_mem.c:1234
-#: src/gui/debugger/dbg_pclog.c:135 src/gui/debugger/dbg_regs.c:570
-#: src/gui/debugger/dbg_regs.c:628 src/gui/debugger/dbg_regs.c:755
+#: src/gui/debugger/dbg_bkpts.c:343 src/gui/debugger/dbg_bits.c:50
+#: src/gui/debugger/dbg_cause.c:60 src/gui/debugger/dbg_cause.c:144
+#: src/gui/debugger/dbg_code.c:357 src/gui/debugger/dbg_code.c:662
+#: src/gui/debugger/dbg_data.c:55 src/gui/debugger/dbg_entry.c:206
+#: src/gui/debugger/dbg_heap.c:143 src/gui/debugger/dbg_iop.c:423
+#: src/gui/debugger/dbg_mem.c:698 src/gui/debugger/dbg_mem.c:1012
+#: src/gui/debugger/dbg_mem.c:1234 src/gui/debugger/dbg_pclog.c:135
+#: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:513
 #: src/gui/debugger/dbg_stack.c:161 src/gui/debugger/dbg_vectors.c:144
 #: src/gui/logger/log_link.c:60 src/gui/infos.c:50 src/gui/manpage.c:74
 #: src/gui/pbars.c:63 src/gui/quicksend.c:58 src/gui/release.c:73
@@ -620,62 +625,62 @@ msgstr ""
 msgid "loading skin: %s (%d x %d)"
 msgstr ""
 
-#: src/gui/debugger/dbg_bkpts.c:60
+#: src/gui/debugger/dbg_bkpts.c:62
 msgid "Symbol"
 msgstr ""
 
-#: src/gui/debugger/dbg_bkpts.c:60 src/gui/romversion.c:87
+#: src/gui/debugger/dbg_bkpts.c:62 src/gui/romversion.c:87
 #: glade/dbg_data-2.str:22
 msgid "Type"
 msgstr ""
 
-#: src/gui/debugger/dbg_bkpts.c:60
+#: src/gui/debugger/dbg_bkpts.c:62
 msgid "Status"
 msgstr ""
 
-#: src/gui/debugger/dbg_bkpts.c:60 glade/log_link-2.str:9
+#: src/gui/debugger/dbg_bkpts.c:62 glade/log_link-2.str:9
 msgid "Start"
 msgstr ""
 
-#: src/gui/debugger/dbg_bkpts.c:60
+#: src/gui/debugger/dbg_bkpts.c:62
 msgid "End"
 msgstr ""
 
-#: src/gui/debugger/dbg_bkpts.c:60 glade/dbg_data-2.str:11
+#: src/gui/debugger/dbg_bkpts.c:62 glade/dbg_data-2.str:11
 msgid "Mode"
 msgstr ""
 
-#: src/gui/debugger/dbg_bkpts.c:136 src/gui/debugger/dbg_bkpts.c:159
-#: src/gui/debugger/dbg_bkpts.c:183 src/gui/debugger/dbg_bkpts.c:208
-#: src/gui/debugger/dbg_bkpts.c:290
+#: src/gui/debugger/dbg_bkpts.c:138 src/gui/debugger/dbg_bkpts.c:162
+#: src/gui/debugger/dbg_bkpts.c:187 src/gui/debugger/dbg_bkpts.c:213
+#: src/gui/debugger/dbg_bkpts.c:237 src/gui/debugger/dbg_bkpts.c:318
 msgid "enabled"
 msgstr ""
 
-#: src/gui/debugger/dbg_bkpts.c:136 src/gui/debugger/dbg_bkpts.c:159
-#: src/gui/debugger/dbg_bkpts.c:183 src/gui/debugger/dbg_bkpts.c:208
-#: src/gui/debugger/dbg_bkpts.c:290
+#: src/gui/debugger/dbg_bkpts.c:138 src/gui/debugger/dbg_bkpts.c:162
+#: src/gui/debugger/dbg_bkpts.c:187 src/gui/debugger/dbg_bkpts.c:213
+#: src/gui/debugger/dbg_bkpts.c:237 src/gui/debugger/dbg_bkpts.c:318
 msgid "disabled"
 msgstr ""
 
-#: src/gui/debugger/dbg_bkpts.c:139 src/gui/debugger/dbg_bkpts.c:293
+#: src/gui/debugger/dbg_bkpts.c:141 src/gui/debugger/dbg_bkpts.c:321
 msgid "one-shot"
 msgstr ""
 
-#: src/gui/debugger/dbg_bkpts.c:372
+#: src/gui/debugger/dbg_bkpts.c:401
 msgid "dbg_bkpts-2.glade: GUI loading failed !\n"
 msgstr ""
 
-#: src/gui/debugger/dbg_code.c:74 src/gui/debugger/dbg_heap.c:57
+#: src/gui/debugger/dbg_code.c:75 src/gui/debugger/dbg_heap.c:57
 #: src/gui/debugger/dbg_iop.c:297 src/gui/debugger/dbg_mem.c:187
 #: src/gui/debugger/dbg_pclog.c:56 src/gui/debugger/dbg_stack.c:59
 msgid "Address"
 msgstr ""
 
-#: src/gui/debugger/dbg_code.c:74
+#: src/gui/debugger/dbg_code.c:75
 msgid "Opcode"
 msgstr ""
 
-#: src/gui/debugger/dbg_code.c:74
+#: src/gui/debugger/dbg_code.c:75
 msgid "Operand"
 msgstr ""
 
@@ -698,18 +703,6 @@ msgstr ""
 
 #: src/gui/debugger/dbg_iop.c:305
 msgid "Mask"
-msgstr ""
-
-#: src/gui/debugger/dbg_regs.c:315 glade/dbg_bkpts-2.str:9
-msgid "Data"
-msgstr ""
-
-#: src/gui/debugger/dbg_regs.c:323
-msgid "Addr"
-msgstr ""
-
-#: src/gui/debugger/dbg_regs.c:331
-msgid "Other"
 msgstr ""
 
 #: src/gui/debugger/dbg_vectors.c:52
@@ -766,15 +759,15 @@ msgstr ""
 msgid "This file is not a valid TI file."
 msgstr ""
 
-#: src/gui/fs_misc.c:449 src/gui/fs_misc.c:459
+#: src/gui/fs_misc.c:452 src/gui/fs_misc.c:462
 msgid "HW type"
 msgstr ""
 
-#: src/gui/fs_misc.c:450
+#: src/gui/fs_misc.c:453
 msgid "The FLASH upgrade can be imported as HW1 or HW2. Please choose..."
 msgstr ""
 
-#: src/gui/fs_misc.c:460
+#: src/gui/fs_misc.c:463
 msgid "The FLASH upgrade can be imported as HW3 or HW4. Please choose..."
 msgstr ""
 
@@ -935,61 +928,116 @@ msgstr ""
 msgid "Use mouse or press a key."
 msgstr ""
 
-#: glade/dbg_bkpts-2.str:1
+#: glade/dbg_bkpts-2.str:7
 msgid "Breakpoints"
 msgstr ""
 
-#: glade/dbg_bkpts-2.str:2
+#: glade/dbg_bkpts-2.str:8
 msgid "Add breakpoint"
 msgstr ""
 
-#: glade/dbg_bkpts-2.str:3
+#: glade/dbg_bkpts-2.str:9
 msgid "Remove breakpoint(s)"
 msgstr ""
 
-#: glade/dbg_bkpts-2.str:4
+#: glade/dbg_bkpts-2.str:10
 msgid "Disable breakpoint"
 msgstr ""
 
-#: glade/dbg_bkpts-2.str:5
+#: glade/dbg_bkpts-2.str:11
 msgid "Enable breakpoint"
 msgstr ""
 
-#: glade/dbg_bkpts-2.str:6
+#: glade/dbg_bkpts-2.str:12
 msgid "Go to breakpoint location"
 msgstr ""
 
-#: glade/dbg_bkpts-2.str:7
+#: glade/dbg_bkpts-2.str:13
 msgid "Double-click a row to edit breakpoint values."
 msgstr ""
 
-#: glade/dbg_bkpts-2.str:8
+#: glade/dbg_bkpts-2.str:14
 msgid "Breakpoint context:"
 msgstr ""
 
-#: glade/dbg_bkpts-2.str:10
+#: glade/dbg_bkpts-2.str:15
+msgid "Bits"
+msgstr ""
+
+#: glade/dbg_bkpts-2.str:16
+msgid "Data"
+msgstr ""
+
+#: glade/dbg_bkpts-2.str:17
 msgid "Vectors"
 msgstr ""
 
-#: glade/dbg_bkpts-2.str:11
+#: glade/dbg_bkpts-2.str:18
 msgid "Prgm entry"
+msgstr ""
+
+#: glade/dbg_bits-2.str:7
+msgid "Add Bit Breakpoint"
+msgstr ""
+
+#: glade/dbg_bits-2.str:8 glade/dbg_cause-2.str:8
+msgid "Address:"
+msgstr ""
+
+#: glade/dbg_bits-2.str:9 glade/dbg_cause-2.str:10 glade/dbg_data-2.str:16
+#: glade/dbg_data-2.str:17 glade/dbg_data-2.str:18
+msgid "0x000000"
+msgstr ""
+
+#: glade/dbg_bits-2.str:10
+msgid "Checks:"
+msgstr ""
+
+#: glade/dbg_bits-2.str:11 glade/dbg_bits-2.str:20
+msgid "7"
+msgstr ""
+
+#: glade/dbg_bits-2.str:12 glade/dbg_bits-2.str:21
+msgid "6"
+msgstr ""
+
+#: glade/dbg_bits-2.str:13 glade/dbg_bits-2.str:22
+msgid "5"
+msgstr ""
+
+#: glade/dbg_bits-2.str:14 glade/dbg_bits-2.str:23
+msgid "4"
+msgstr ""
+
+#: glade/dbg_bits-2.str:15 glade/dbg_bits-2.str:24
+msgid "3"
+msgstr ""
+
+#: glade/dbg_bits-2.str:16 glade/dbg_bits-2.str:25
+msgid "2"
+msgstr ""
+
+#: glade/dbg_bits-2.str:17 glade/dbg_bits-2.str:26
+msgid "1"
+msgstr ""
+
+#: glade/dbg_bits-2.str:18 glade/dbg_bits-2.str:27 glade/dbg_code-2.str:43
+#: glade/dbg_code-2.str:44 glade/dbg_regs-2.str:13 glade/dbg_regs-2.str:15
+#: glade/dbg_regs-2.str:16 glade/dbg_regs-2.str:19 glade/dbg_regs-2.str:20
+#: glade/dbg_regs-2.str:21
+msgid "0"
+msgstr ""
+
+#: glade/dbg_bits-2.str:19
+msgid "States:"
 msgstr ""
 
 #: glade/dbg_cause-2.str:7
 msgid "Breakpoint!"
 msgstr ""
 
-#: glade/dbg_cause-2.str:8
-msgid "Address:"
-msgstr ""
-
 #: glade/dbg_cause-2.str:9 glade/dbg_cause-2.str:20
 msgid "Type:"
-msgstr ""
-
-#: glade/dbg_cause-2.str:10 glade/dbg_data-2.str:16 glade/dbg_data-2.str:17
-#: glade/dbg_data-2.str:18
-msgid "0x000000"
 msgstr ""
 
 #: glade/dbg_cause-2.str:12
@@ -1192,12 +1240,6 @@ msgstr ""
 msgid "Cycle count:"
 msgstr ""
 
-#: glade/dbg_code-2.str:43 glade/dbg_code-2.str:44 glade/dbg_regs-2.str:9
-#: glade/dbg_regs-2.str:11 glade/dbg_regs-2.str:12 glade/dbg_regs-2.str:15
-#: glade/dbg_regs-2.str:16 glade/dbg_regs-2.str:17
-msgid "0"
-msgstr ""
-
 #: glade/dbg_code-2.str:45
 msgid "Reset"
 msgstr ""
@@ -1299,7 +1341,7 @@ msgid ""
 "Double click rowl to open tab in the memory window at the handle address."
 msgstr ""
 
-#: glade/dbg_ioports-2.str:7 glade/dbg_regs-2.str:3
+#: glade/dbg_ioports-2.str:7 glade/dbg_regs-2.str:7 glade/dbg_regs-2.str:28
 msgid "Show registers"
 msgstr ""
 
@@ -1307,7 +1349,7 @@ msgstr ""
 msgid "I/O ports"
 msgstr ""
 
-#: glade/dbg_ioports-2.str:9 glade/dbg_regs-2.str:5
+#: glade/dbg_ioports-2.str:9 glade/dbg_regs-2.str:9
 msgid "Double-click value or item to edit."
 msgstr ""
 
@@ -1409,56 +1451,157 @@ msgstr ""
 msgid "Double-click the row to disassemble."
 msgstr ""
 
-#: glade/dbg_regs-2.str:4
+#: glade/dbg_regs-2.str:8 glade/dbg_regs-2.str:29
 msgid "Registers"
 msgstr ""
 
-#: glade/dbg_regs-2.str:6
+#: glade/dbg_regs-2.str:10
 msgid "_Go to address"
 msgstr ""
 
-#: glade/dbg_regs-2.str:7
+#: glade/dbg_regs-2.str:11
 msgid "Status Register"
 msgstr ""
 
-#: glade/dbg_regs-2.str:8
+#: glade/dbg_regs-2.str:12 glade/dbg_regs-2.str:73
 msgid "T"
 msgstr ""
 
-#: glade/dbg_regs-2.str:10
+#: glade/dbg_regs-2.str:14 glade/dbg_regs-2.str:74
 msgid "S"
 msgstr ""
 
-#: glade/dbg_regs-2.str:13
+#: glade/dbg_regs-2.str:17
 msgid "I2"
 msgstr ""
 
-#: glade/dbg_regs-2.str:14
+#: glade/dbg_regs-2.str:18
 msgid "I1"
 msgstr ""
 
-#: glade/dbg_regs-2.str:18
+#: glade/dbg_regs-2.str:22 glade/dbg_regs-2.str:75
 msgid "X"
 msgstr ""
 
-#: glade/dbg_regs-2.str:19
+#: glade/dbg_regs-2.str:23 glade/dbg_regs-2.str:69
 msgid "N"
 msgstr ""
 
-#: glade/dbg_regs-2.str:20
+#: glade/dbg_regs-2.str:24 glade/dbg_regs-2.str:70
 msgid "Z"
 msgstr ""
 
-#: glade/dbg_regs-2.str:21
+#: glade/dbg_regs-2.str:25 glade/dbg_regs-2.str:71
 msgid "V"
 msgstr ""
 
-#: glade/dbg_regs-2.str:22
+#: glade/dbg_regs-2.str:26 glade/dbg_regs-2.str:72
 msgid "C"
 msgstr ""
 
-#: glade/dbg_regs-2.str:23
+#: glade/dbg_regs-2.str:27
 msgid "I0"
+msgstr ""
+
+#: glade/dbg_regs-2.str:30
+msgid "D0="
+msgstr ""
+
+#: glade/dbg_regs-2.str:31
+msgid "D1="
+msgstr ""
+
+#: glade/dbg_regs-2.str:32
+msgid "D2="
+msgstr ""
+
+#: glade/dbg_regs-2.str:33
+msgid "D3="
+msgstr ""
+
+#: glade/dbg_regs-2.str:34
+msgid "D4="
+msgstr ""
+
+#: glade/dbg_regs-2.str:35
+msgid "D5="
+msgstr ""
+
+#: glade/dbg_regs-2.str:36
+msgid "D6="
+msgstr ""
+
+#: glade/dbg_regs-2.str:37
+msgid "D7="
+msgstr ""
+
+#: glade/dbg_regs-2.str:38
+msgid "A0="
+msgstr ""
+
+#: glade/dbg_regs-2.str:39
+msgid "A1="
+msgstr ""
+
+#: glade/dbg_regs-2.str:40
+msgid "A2="
+msgstr ""
+
+#: glade/dbg_regs-2.str:41
+msgid "A3="
+msgstr ""
+
+#: glade/dbg_regs-2.str:42
+msgid "A4="
+msgstr ""
+
+#: glade/dbg_regs-2.str:43
+msgid "A5="
+msgstr ""
+
+#: glade/dbg_regs-2.str:44
+msgid "A6="
+msgstr ""
+
+#: glade/dbg_regs-2.str:45
+msgid "A7="
+msgstr ""
+
+#: glade/dbg_regs-2.str:46 glade/dbg_regs-2.str:47 glade/dbg_regs-2.str:48
+#: glade/dbg_regs-2.str:49 glade/dbg_regs-2.str:50 glade/dbg_regs-2.str:51
+#: glade/dbg_regs-2.str:52 glade/dbg_regs-2.str:53 glade/dbg_regs-2.str:54
+#: glade/dbg_regs-2.str:55 glade/dbg_regs-2.str:56 glade/dbg_regs-2.str:57
+#: glade/dbg_regs-2.str:58 glade/dbg_regs-2.str:59 glade/dbg_regs-2.str:60
+#: glade/dbg_regs-2.str:77
+msgid "12345678"
+msgstr ""
+
+#: glade/dbg_regs-2.str:61
+msgid "USP="
+msgstr ""
+
+#: glade/dbg_regs-2.str:62
+msgid "SSP="
+msgstr ""
+
+#: glade/dbg_regs-2.str:63
+msgid "PC="
+msgstr ""
+
+#: glade/dbg_regs-2.str:64
+msgid "SR="
+msgstr ""
+
+#: glade/dbg_regs-2.str:65 glade/dbg_regs-2.str:66 glade/dbg_regs-2.str:67
+msgid "123456"
+msgstr ""
+
+#: glade/dbg_regs-2.str:68
+msgid "1234"
+msgstr ""
+
+#: glade/dbg_regs-2.str:76
+msgid "I="
 msgstr ""
 
 #: glade/dbg_stack-2.str:1

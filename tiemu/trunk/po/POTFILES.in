@@ -62,6 +62,7 @@ src/gui/calc/skinops.c
 
 src/gui/debugger/dbg_all.c
 src/gui/debugger/dbg_bkpts.c
+src/gui/debugger/dbg_bits.c
 src/gui/debugger/dbg_cause.c
 src/gui/debugger/dbg_code.c
 src/gui/debugger/dbg_data.c
@@ -102,6 +103,7 @@ src/sound/stream.c
 # TiEmu GUI
 glade/calc-2.str
 glade/dbg_bkpts-2.str
+glade/dbg_bits-2.str
 glade/dbg_cause-2.str
 glade/dbg_code-2.str
 glade/dbg_data-2.str
