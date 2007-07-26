@@ -1124,7 +1124,7 @@ msgstr "0"
 
 #: glade/dbg_bits-2.str:19
 msgid "States:"
-msgstr "Etats:"
+msgstr "États:"
 
 #: glade/dbg_cause-2.str:7
 msgid "Breakpoint!"
@@ -2104,7 +2104,7 @@ msgstr "Charger la config..."
 
 #: glade/popup-2.str:24
 msgid "Calculator state"
-msgstr "Etat de la calculatrice"
+msgstr "État de la calculatrice"
 
 #: glade/popup-2.str:25
 msgid "Reload the previously saved state."
