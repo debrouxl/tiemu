@@ -158,6 +158,10 @@ SOURCE=..\..\..\..\..\GTK2DEV\lib\intl.lib
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\..\GTK2DEV\lib\z.lib
+# End Source File
+# Begin Source File
+
 SOURCE="..\..\..\..\..\SDL-1.2\lib\SDL.lib"
 # End Source File
 # Begin Source File
