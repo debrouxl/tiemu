@@ -27,9 +27,7 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#ifdef HAVE_LIBZ
-# include <zlib.h>
-#endif
+#include <zlib.h>
 
 #include "screenshot.h"
 #include "version.h"
@@ -47,12 +45,10 @@ static gboolean write_compressed_a85_screen(FILE *fp, GdkPixbuf *pixbuf, GError 
 	int r, i, j;
 	int h, w;
 	int rlen;
-#ifdef HAVE_LIBZ
 	int ret;
 	z_stream s;
 	int flush;
 	int outlen;
-#endif
 	int a85count;
 	unsigned long a85tuple;
 	guchar a85block[6];
@@ -66,7 +62,6 @@ static gboolean write_compressed_a85_screen(FILE *fp, GdkPixbuf *pixbuf, GError 
 	a85tuple = 0;
 	a85block[5] = '\0';
 
-#ifdef HAVE_LIBZ
 	/* buffer length = length + 0.1 * length + 12 (mandatory) */
 	cbuflen = outlen = rlen + rlen / 10 + 12;
 	cbuf = g_malloc(cbuflen);
@@ -87,9 +82,7 @@ static gboolean write_compressed_a85_screen(FILE *fp, GdkPixbuf *pixbuf, GError 
 		g_free(cbuf);
 		return FALSE;
 	}
-#endif
 	for (r = 0; r < h; r++) {
-#ifdef HAVE_LIBZ
 		s.avail_in = w * 3;
 		s.next_in = ubuf;
 		do {
@@ -107,10 +100,6 @@ static gboolean write_compressed_a85_screen(FILE *fp, GdkPixbuf *pixbuf, GError 
 			}
 
 			cbuflen = outlen - s.avail_out;
-#else
-			cbuf = ubuf;
-			cbuflen = w * 3;
-#endif /* HAVE_LIBZ */
 			/* ASCII85 (base 85) encoding */
 			for (i = 0; i < cbuflen; i++) {
 				switch (a85count) {
@@ -155,9 +144,7 @@ static gboolean write_compressed_a85_screen(FILE *fp, GdkPixbuf *pixbuf, GError 
 					fprintf(fp, "\n");
 				}
 			}
-#ifdef HAVE_LIBZ
 		} while (s.avail_out == 0);
-#endif
 		ubuf += rlen;
 	}
 
@@ -176,11 +163,9 @@ static gboolean write_compressed_a85_screen(FILE *fp, GdkPixbuf *pixbuf, GError 
         /* ASCII85 EOD marker + newline*/
 	fprintf(fp, "~>\n");
 
-#ifdef HAVE_LIBZ
 	deflateEnd(&s);
 
 	g_free(cbuf);
-#endif
 
 	return TRUE;
 }
@@ -218,11 +203,7 @@ gboolean tiemu_screen_write_eps(const gchar *filename, GdkPixbuf *pixbuf, GError
 	fprintf(fp, "\n");
 	fprintf(fp, "%d %d scale\n", w, h);
 
-#ifdef HAVE_LIBZ
 	fprintf(fp, "%d %d 8 [%d 0 0 -%d 0 %d] currentfile /ASCII85Decode filter /FlateDecode filter false 3 colorimage\n", w, h, w, h, h);
-#else
-	fprintf(fp, "%d %d 8 [%d 0 0 -%d 0 %d] currentfile /ASCII85Decode filter false 3 colorimage\n", w, h, w, h, h);
-#endif
 	ret = write_compressed_a85_screen(fp, pixbuf, &err);
 
 	if (!ret) {
@@ -318,11 +299,7 @@ gboolean tiemu_screen_write_pdf(const gchar *filename, GdkPixbuf *pixbuf, GError
 	/* RGB, 8 bits per component, ASCIIHex encoding */
 	fprintf(fp, "  /CS /RGB\n");
 	fprintf(fp, "  /BPC 8\n");
-#ifdef HAVE_LIBZ
 	fprintf(fp, "  /F [/A85 /FlateDecode]\n");
-#else
-	fprintf(fp, "  /F /A85\n");
-#endif
 	fprintf(fp, "ID\n");
 
 	ret = write_compressed_a85_screen(fp, pixbuf, &err);

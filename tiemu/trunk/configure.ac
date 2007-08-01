@@ -116,7 +116,8 @@ AC_CHECK_LIB(pthread, pthread_create) dnl needed by GThread
 #AC_CHECK_LIB(comdlg32, GetOpenFileName)
 
 # Check for zlib
-AC_CHECK_HEADER(zlib.h,[AC_CHECK_LIB(z, compress,,)],)
+AC_CHECK_HEADER(zlib.h)
+AC_CHECK_LIB(z, compress)
 LIBZ="$LIBS"
 LIBS=""
 AC_SUBST(LIBZ)

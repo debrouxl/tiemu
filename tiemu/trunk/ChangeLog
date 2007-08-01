@@ -24,6 +24,7 @@ SubVersion: $Id$
 	- [roms]  $2603: fixed wrong disassembly offset of MOVEM.W instruction
 	- [roms]  $2604: optimized some refreshing parts of debugging windows; added refresh of heap window
 	- [roms]  $2611: optimized displaying of code window by refreshing ROM calls just once
+	- [kevin] $2620: made zlib non-optional now that libtifiles2 requires it anyway
 
 - 16/03/2007, version 3.00
 	- [kevin] $2389: don't use \n in the breakpoint window status bar
