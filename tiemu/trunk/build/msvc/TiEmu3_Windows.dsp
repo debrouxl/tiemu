@@ -384,6 +384,10 @@ SOURCE=..\..\src\gui\debugger\dbg_all.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gui\debugger\dbg_bits.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\debugger\dbg_bkpts.c
 # End Source File
 # Begin Source File
