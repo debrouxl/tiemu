@@ -1,5 +1,5 @@
 Compiling LPG Software with MinGW
-Version 1.99 20070704
+Version 1.99 20070802
 Copyright (C) 2005-2007 Kevin Kofler
 Copyright (C) 2001-2006 Romain Lievin
 Copyright (C) 2006 Tyler Cassidy
@@ -116,11 +116,14 @@ Once you have successfully built TiEmu 3, here's how to build an installer on Wi
 
 1. Fetch the latest NSIS installer from http://nsis.sf.net and install it.
 
-2. Fetch UPX from http://upx.sf.net and unzip it.
+2. Fetch the NsisUnz plugin from http://saivert.com/nsis/nsisunz.7z and decompress nsisunz.dll to
+   your NSIS\Plugins directory.
 
-3. Adjust the paths in build\nsis\tiemu.nsi (in the TiEmu 3 source directory) for your installation.
+3. Fetch UPX from http://upx.sf.net and unzip it.
 
-4. Right-click on build\nsis\tiemu.nsi and select "Build".
+4. Adjust the paths in build\nsis\tiemu.nsi (in the TiEmu 3 source directory) for your installation.
+
+5. Right-click on build\nsis\tiemu.nsi and select "Build".
 
 NOTE: TiLP and GFM don't have NSIS installer scripts yet.
 
@@ -150,7 +153,7 @@ Once you have successfully built TiLP2/TiEmu3, here's how to build an installer 
 2. Download and Install the MinGW GCC RPM from http://bitwalk.hp.infoseek.co.jp/download.html
    (Make sure you get a package which includes g++. It is needed to build oleaut.cpp.)
 
-3. Install WINE from Fedora Extras. (Can be retrieved with yum: "yum install wine".)
+3. Install WINE from Fedora. (Can be retrieved with yum: "yum install wine".)
 
 4. Install the last GTK+ 2.6 development package (version 2.6.10-rc1) from http://gladewin32.sf.net
    in WINE.
@@ -244,9 +247,12 @@ Once you have successfully cross-built TiEmu 3, here's how to build a Windows in
 
 1. Install NSIS from: http://repo.calcforge.org/fedora/
 
-2. Install UPX from Fedora Extras. (Can be retrieved with yum: "yum install upx".)
+2. Fetch the NsisUnz plugin from http://saivert.com/nsis/nsisunz.7z and decompress nsisunz.dll to
+   your /usr/share/nsis/Plugins directory.
 
-3. Use the following commands to build the TiEmu setup wizard:
+3. Install UPX from Fedora. (Can be retrieved with yum: "yum install upx".)
+
+4. Use the following commands to build the TiEmu setup wizard:
    cd build/nsis
    makensis tiemu-cross.nsi
 

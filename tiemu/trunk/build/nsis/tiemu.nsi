@@ -83,7 +83,7 @@ gtkfound:
   StrCmp $0 "" gtkvernotok
 gtkverfound:
   Push "${GTK_MIN_VER}"
-  Push  $0
+  Push $0
   Call CompareVersions
   Pop $0
   IntCmp $0 1 gtkverok
@@ -96,10 +96,10 @@ installgtk:
   IfErrors gtkinstallfailed
   Pop $0
   StrCmp $0 "online" 0 gtkinstallfailed
-; Fetch installer (from a random mirror, dl.sourceforge.net is a round-robin DNS)
+; Fetch installer
 ; Do the download quietly because the GUI isn't even loaded at that point, and because I can't get
 ; the progress meters to work with the "Modern UI" anyway.
-  NSISdl::download_quiet "http://puzzle.dl.sourceforge.net/gladewin32/gtk-win32-${GTK_MIN_VER}${GTK_PKG_VER}.exe" "$TEMP\gtksetup.exe"
+  NSISdl::download_quiet "http://kent.dl.sourceforge.net/gladewin32/gtk-win32-${GTK_MIN_VER}${GTK_PKG_VER}.exe" "$TEMP\gtksetup.exe"
   Pop $0
   StrCmp $0 "cancel" abortinstall
   StrCmp $0 "success" 0 gtkinstallfailed
@@ -119,6 +119,70 @@ gtkinstallfailed:
 abortinstall:
   Abort
 gtkverok:
+; Check if libxml is present
+  ReadRegStr $0 HKLM "Software\GTK\2.0" "DllPath"
+  StrCmp $0 "" 0 gtkdllpathok
+  ReadRegStr $0 HKCU "Software\GTK\2.0" "DllPath"
+  StrCmp $0 "" 0 gtkdllpathok
+  MessageBox MB_OK|MB_ICONSTOP "Invalid GTK+ installation (cannot locate GTK+ DLL path)."
+  Abort
+gtkdllpathok:
+  IfFileExists "$0\libxml2.dll" libxmlfound 0
+  MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION 'Incomplete GTK+ installation: libxml2.dll not found. If you proceed, libxml2-2.6.27.zip will be downloaded and unpacked automatically.' IDOK 0 IDCANCEL abortinstall
+; Connect to the Internet
+  ClearErrors
+  Dialer::AttemptConnect
+  IfErrors gtkinstallfailed
+  Pop $1
+  StrCmp $1 "online" 0 gtkinstallfailed
+; Fetch and extract ZIP
+  NSISdl::download_quiet "http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libxml2-2.6.27.zip" "$TEMP\libxml2-2.6.27.zip"
+  Pop $1
+  StrCmp $1 "cancel" abortinstall
+  StrCmp $1 "success" 0 gtkinstallfailed
+  nsisunz::UnzipToStack /noextractpath /file "bin/libxml2.dll" "$TEMP\libxml2-2.6.27.zip" $0
+  Pop $1
+  Delete "$TEMP\libxml2-2.6.27.zip"
+  StrCmp $1 "success" 0 gtkinstallfailed
+libxmlfound:
+; Check if libglade is present
+  IfFileExists "$0\libglade-2.0-0.dll" libgladefound 0
+; Check GTK+ version to get a matching libglade
+  ReadRegStr $1 HKLM "Software\GTK\2.0" "Version"
+  StrCmp $1 "" 0 gtkverfound2
+  ReadRegStr $1 HKCU "Software\GTK\2.0" "Version"
+  StrCmp $1 "" 0 gtkverfound2
+  MessageBox MB_OK|MB_ICONSTOP "Invalid GTK+ installation (cannot check version)."
+  Abort
+gtkverfound2:
+  Push "2.8.0"
+  Push $1
+  Call CompareVersions
+  Pop $1
+  IntCmp $1 1 gtkis28
+  MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION 'Incomplete GTK+ installation: libglade-2.0-0.dll not found. If you proceed, libglade-2.4.0-bin.zip will be downloaded and unpacked automatically.' IDOK 0 IDCANCEL abortinstall
+  StrCpy $2 "http://kent.dl.sourceforge.net/gladewin32/libglade-2.4.0-bin.zip"
+  Goto gtkis26
+gtkis28:
+  MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION 'Incomplete GTK+ installation: libglade-2.0-0.dll not found. If you proceed, libglade-2.6.0.zip will be downloaded and unpacked automatically.' IDOK 0 IDCANCEL abortinstall
+  StrCpy $2 "http://ftp.gnome.org/pub/gnome/binaries/win32/libglade/2.6/libglade-2.6.0.zip"
+gtkis26:
+; Connect to the Internet
+  ClearErrors
+  Dialer::AttemptConnect
+  IfErrors gtkinstallfailed
+  Pop $1
+  StrCmp $1 "online" 0 gtkinstallfailed
+; Fetch and extract ZIP
+  NSISdl::download_quiet $2 "$TEMP\libglade-bin.zip"
+  Pop $1
+  StrCmp $1 "cancel" abortinstall
+  StrCmp $1 "success" 0 gtkinstallfailed
+  nsisunz::UnzipToStack /noextractpath /file "bin/libglade-2.0-0.dll" "$TEMP\libglade-bin.zip" $0
+  Pop $1
+  Delete "$TEMP\libglade-bin.zip"
+  StrCmp $1 "success" 0 gtkinstallfailed
+libgladefound:
 ; If $INSTDIR points to a Bin\ directory, fix it to point to the root of the tree.
   StrLen $0 $INSTDIR
   IntCmp $0 4 notbin notbin
