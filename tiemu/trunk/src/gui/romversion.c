@@ -283,15 +283,13 @@ on_romversion_button_press_event       (GtkWidget       *widget,
                                         GdkEventButton  *event,
                                         gpointer         user_data)
 {
-#if 0
-	GtkTreeView *view = GTK_TREE_VIEW(user_data);	//args are swapped, why ?
+#if 1
+	GtkTreeView *view = GTK_TREE_VIEW(user_data);
     GtkTreeModel *model = gtk_tree_view_get_model(view);
 	GtkTreeViewColumn *column;
 	GtkTreePath *path;
     GtkTreeIter iter;
     gboolean ret;
-
-	printf("<%p %p>\n", widget, user_data);
 
     if (event->type != GDK_2BUTTON_PRESS)	// double-click ?
 		return FALSE;
@@ -312,9 +310,8 @@ on_romversion_button_press_event       (GtkWidget       *widget,
 
 		g_free(chosen_file);
         gtk_tree_model_get(model, &iter, COL_FILENAME, &chosen_file, -1);		
-		printf("<%s>\n", chosen_file);
-		gtk_widget_destroy(widget);
-                
+	
+		gtk_dialog_response(widget, GTK_RESPONSE_OK);                
 		return TRUE;
     }
 #endif

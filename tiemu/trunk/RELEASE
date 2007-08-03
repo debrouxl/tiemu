@@ -40,6 +40,7 @@ Improvements:
 	- data/bit change breakpoint is raised after instruction execution so fixed disassembly window 
 		to show one line before current PC
 	- optimized displaying/refreshing of debugger windows (~50%)
+	- allow double-clicking of a ROM instead of selecting + pressing OK button
 		
 		
 Bug fixes:

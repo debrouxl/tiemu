@@ -1,6 +1,6 @@
 Planned features:
 -----------------
 
-* set data breakpoint on bit
+* double-click of ROM in window should be equivalent to select ROM and click OK (L. Debroux)
 * use the contrast field of skin
 * tracing/logging of mem access or others
