@@ -21,17 +21,23 @@ InfoAfterFile=C:\sources\roms\tiemu3\RELEASE
 
 ;--- Shared Stuffs ---
 [Files]
-Source: "C:\sources\roms\tifiles2\tests\libtifiles2-4.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile;
-Source: "C:\sources\roms\ticables2\tests\libticables2-1.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile;
-Source: "C:\sources\roms\ticalcs2\tests\libticalcs2-6.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile;
-Source: "C:\sources\roms\ticonv\tests\libticonv-3.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile;
+Source: "C:\sources\roms\tifiles2\tests\libtifiles2-4.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libtifiles2-3.dll');
+Source: "C:\sources\roms\ticables2\tests\libticables2-1.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libticables2-1.dll');
+Source: "C:\sources\roms\ticalcs2\tests\libticalcs2-6.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libticalcs2-2.dll');
+Source: "C:\sources\roms\ticonv\tests\libticonv-3.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libticonv-2.dll');
 
 Source: "C:\sources\roms\tifiles2\po\fr.gmo"; DestDir: "{cf}\LPG Shared\locale\fr\LC_MESSAGES"; DestName: "libtifiles2.mo"; Flags: ignoreversion sharedfile;
 Source: "C:\sources\roms\ticables2\po\fr.gmo"; DestDir: "{cf}\LPG Shared\locale\fr\LC_MESSAGES"; DestName: "libticables2.mo"; Flags: ignoreversion sharedfile;
 Source: "C:\sources\roms\ticalcs2\po\fr.gmo"; DestDir: "{cf}\LPG Shared\locale\fr\LC_MESSAGES"; DestName: "libticalcs2.mo"; Flags: ignoreversion sharedfile;
 
-Source: "C:\Gtk2Dev\bin\libxml2.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: onlyifdoesntexist sharedfile;
-Source: "C:\Gtk2Dev\bin\libglade-2.0-0.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: onlyifdoesntexist sharedfile;
+Source: "C:\Gtk2Dev\bin\libxml2.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: onlyifdoesntexist sharedfile; BeforeInstall: DeleteDll('libxml2.dll');
+Source: "C:\Gtk2Dev\bin\libglade-2.0-0.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: onlyifdoesntexist sharedfile; BeforeInstall: DeleteDll('libglade-2.0-0.dll');
+
+Source: "C:\Gtk2Dev\bin\gtkthemeselector.exe"; DestDir: "{cf}\LPG Shared\bin"; Flags: ignoreversion sharedfile; BeforeInstall: DeleteExe('gtkthemeselector.exe');
+
+Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\*.dll"; DestDir: "{cf}\LPG Shared\wget"; Flags: ignoreversion
+Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\wget.exe"; DestDir: "{cf}\LPG Shared\wget"; Flags: ignoreversion
+Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\d_and_i.bat"; DestDir: "{cf}\LPG Shared\wget"; Flags: ignoreversion
 
 [Registry]
 Root: HKLM; Subkey: "Software\LPG Shared"; ValueType: string; ValueName: "Path"; ValueData: "{cf}\LPG Shared"
@@ -105,14 +111,6 @@ Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{app}\PortTalk
 Source: "C:\sources\roms\misc\Porttalk22\AllowIO.exe"; DestDir: "{app}\PortTalk"; Flags: ignoreversion; Tasks: tlk_drv;
 Source: "C:\sources\roms\misc\Porttalk22\Uninstall.exe"; DestDir: "{app}\PortTalk"; Flags: ignoreversion; Tasks: tlk_drv;
 
-; GTK+ specific
-Source: "C:\Gtk2Dev\bin\gtkthemeselector.exe"; DestDir: "{app}";
-
-; Downloader
-Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\*.dll"; DestDir: "{app}\wget";
-Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\wget.exe"; DestDir: "{app}\wget";
-Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\d_and_i.bat"; DestDir: "{app}\wget";
-
 ; COM/OLE object registration
 Source: "C:\sources\roms\tiemu3\src\ipc\com\tiemups.dll"; DestDir: "{app}"; Flags: regserver;
 Source: "C:\sources\roms\tiemu3\src\ipc\com\oleaut.tlb"; DestDir: "{app}"; DestName: "tiemu.tlb";
@@ -125,7 +123,7 @@ Name: "{group}\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}"
 Name: "{group}\TiEmu on the Web"; Filename: "{app}\tiemu.url"
 Name: "{group}\Uninstall TiEmu"; Filename: "{uninstallexe}"
 Name: "{group}\User's Manual"; Filename: "{app}\help\Manual_en.html"
-Name: "{group}\GTK theme selector"; Filename: "{app}\gtkthemeselector.exe";
+Name: "{group}\GTK theme selector"; Filename: "{cf}\LPG Shared\bin\gtkthemeselector.exe";
 Name: "{group}\Install GTK+ from web"; Filename: "{app}\wget\d_and_i.bat";
 Name: "{group}\Bug Report"; Filename: "http://sourceforge.net/tracker/?func=add&group_id=23169&atid=377680";
 
@@ -136,7 +134,7 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: 
 ; Remove any previously installed PortTalk driver (especially v1.x)
 Filename: "{app}\PortTalk\Uninstall.exe"; Parameters: ""; MinVersion: 0,4; Tasks: tlk_drv;
 Filename: "{app}\tiemu.exe"; Description: "Launch TiEmu"; StatusMsg: "Running TiEmu..."; Flags: postinstall nowait unchecked
-Filename: "{app}\wget\d_and_i.bat"; Description: "Download and install GTK+"; StatusMsg: "Running ..."; Flags: nowait postinstall unchecked hidewizard;
+Filename: "{cf}\LPG Shared\wget\d_and_i.bat"; Description: "Download and install GTK+"; StatusMsg: "Running ..."; Flags: nowait postinstall unchecked hidewizard;
 
 ; COM/OLE  registration
 Filename: "{app}\tiemu.exe"; Parameters: "/RegServer"; Tasks: com_ole;
@@ -276,4 +274,17 @@ begin
   end;
 
   Result := true;
+end;
+
+procedure DeleteDll(const FileName: string);
+var
+  pf: string;
+begin
+  pf := ExpandConstant('{app}');
+  DeleteFile(pf + '\' + Filename);
+end;
+
+procedure DeleteExe(const FileName: string);
+begin
+  DeleteDll(FileName);
 end;
