@@ -35,14 +35,13 @@ uninstalled separately.
 If you want to link TiEmu to a real calculator through a link cable, you may
 need to install additional drivers which are not installed with TiEmu:
 
-2.1. PortTalk
+2.1. DhaHelper
 
 In order to use TI's BlackLink serial cables or home-made serial or parallel
 cables on any NT-based version of Windows (Windows NT 4, Windows 2000, Windows
 XP, Windows 2003 or any newer version of Windows), you'll need to install the
-PortTalk driver. This driver is not included with this package of TiEmu for
-licensing reasons. It can be obtained at:
-http://www.beyondlogic.org/porttalk/porttalk.htm
+DhaHelper driver. This driver is currently not installed by this package of
+TiEmu.
 
 2.2. SilverLink
 
