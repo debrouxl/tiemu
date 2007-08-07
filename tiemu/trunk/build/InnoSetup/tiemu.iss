@@ -21,25 +21,35 @@ InfoAfterFile=C:\sources\roms\tiemu3\RELEASE
 
 ;--- Shared Stuffs ---
 [Files]
+; TI libraries
 Source: "C:\sources\roms\tifiles2\tests\libtifiles2-4.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libtifiles2-3.dll');
 Source: "C:\sources\roms\ticables2\tests\libticables2-1.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libticables2-1.dll');
 Source: "C:\sources\roms\ticalcs2\tests\libticalcs2-6.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libticalcs2-2.dll');
 Source: "C:\sources\roms\ticonv\tests\libticonv-3.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libticonv-2.dll');
 
+; I18n files
 Source: "C:\sources\roms\tifiles2\po\fr.gmo"; DestDir: "{cf}\LPG Shared\locale\fr\LC_MESSAGES"; DestName: "libtifiles2.mo"; Flags: ignoreversion sharedfile;
 Source: "C:\sources\roms\ticables2\po\fr.gmo"; DestDir: "{cf}\LPG Shared\locale\fr\LC_MESSAGES"; DestName: "libticables2.mo"; Flags: ignoreversion sharedfile;
 Source: "C:\sources\roms\ticalcs2\po\fr.gmo"; DestDir: "{cf}\LPG Shared\locale\fr\LC_MESSAGES"; DestName: "libticalcs2.mo"; Flags: ignoreversion sharedfile;
 
+; Misc
 Source: "C:\Gtk2Dev\bin\libxml2.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: onlyifdoesntexist sharedfile; BeforeInstall: DeleteDll('libxml2.dll');
 Source: "C:\Gtk2Dev\bin\libglade-2.0-0.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: onlyifdoesntexist sharedfile; BeforeInstall: DeleteDll('libglade-2.0-0.dll');
 
 Source: "C:\Gtk2Dev\bin\gtkthemeselector.exe"; DestDir: "{cf}\LPG Shared\bin"; Flags: ignoreversion sharedfile; BeforeInstall: DeleteExe('gtkthemeselector.exe');
 
+; Downloader
 Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\*.dll"; DestDir: "{cf}\LPG Shared\wget"; Flags: ignoreversion
 Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\wget.exe"; DestDir: "{cf}\LPG Shared\wget"; Flags: ignoreversion
 Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\d_and_i.bat"; DestDir: "{cf}\LPG Shared\wget"; Flags: ignoreversion
 
+; DhaHelper driver
+Source: "C:\sources\roms\ticables2\src\win32\dha\dhahelper.sys"; DestDir: "{cf}\LPG Shared\drivers\dha"; Flags: sharedfile;
+Source: "C:\sources\roms\ticables2\src\win32\dha\dhasetup.exe";  DestDir: "{cf}\LPG Shared\drivers\dha"; Flags: sharedfile;
+Source: "C:\sources\roms\ticables2\src\win32\dha\dhahelper.sys"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile;
+
 [Registry]
+; Create entries for shared libs (needed by other programs)
 Root: HKLM; Subkey: "Software\LPG Shared"; ValueType: string; ValueName: "Path"; ValueData: "{cf}\LPG Shared"
 Root: HKLM; Subkey: "Software\LPG Shared"; ValueType: string; ValueName: "DllPath"; ValueData: "{cf}\LPG Shared\libs"
 ;--- End of Shared Stuffs ---
@@ -47,10 +57,8 @@ Root: HKLM; Subkey: "Software\LPG Shared"; ValueType: string; ValueName: "DllPat
 [Tasks]
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4; Flags: unchecked
-
-Name: "tlk_drv"; Description: "Install BlackLink/Parallel cable"; GroupDescription: "Drivers:"; MinVersion: 0,4
-
 Name: "com_ole"; Description: "Install TiEmuOle object for TIGCC and others"; GroupDescription: "Misc:";
+Name: "dha_drv"; Description: "Install BlackLink/Parallel cable for NT/2k/XP"; GroupDescription: "Drivers:"; MinVersion: 0,4
 
 [Dirs]
 Name: "{app}\screenshots"
@@ -105,12 +113,6 @@ Source: "C:\sources\roms\ticonv\tests\libticonv-3.dll"; DestDir: "{app}"; Flags:
 Source: "C:\sources\roms\tiemu3\build\msvc\tiemu.exe"; DestDir: "{app}"; DestName: "tiemu.exe"; Flags: ignoreversion
 Source: "C:\SDL-1.2\lib\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
 
-; Copy PortTalk driver for Windows NT4/2000/XP
-Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{sys}\drivers"; Flags: ignoreversion; Tasks: tlk_drv;
-Source: "C:\sources\roms\misc\Porttalk22\PortTalk.sys"; DestDir: "{app}\PortTalk"; Flags: ignoreversion; Tasks: tlk_drv;
-Source: "C:\sources\roms\misc\Porttalk22\AllowIO.exe"; DestDir: "{app}\PortTalk"; Flags: ignoreversion; Tasks: tlk_drv;
-Source: "C:\sources\roms\misc\Porttalk22\Uninstall.exe"; DestDir: "{app}\PortTalk"; Flags: ignoreversion; Tasks: tlk_drv;
-
 ; COM/OLE object registration
 Source: "C:\sources\roms\tiemu3\src\ipc\com\tiemups.dll"; DestDir: "{app}"; Flags: regserver;
 Source: "C:\sources\roms\tiemu3\src\ipc\com\oleaut.tlb"; DestDir: "{app}"; DestName: "tiemu.tlb";
@@ -131,28 +133,20 @@ Name: "{userdesktop}\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}"; M
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}"; MinVersion: 4,4; Tasks: quicklaunchicon
 
 [Run]
-; Remove any previously installed PortTalk driver (especially v1.x)
-Filename: "{app}\PortTalk\Uninstall.exe"; Parameters: ""; MinVersion: 0,4; Tasks: tlk_drv;
 Filename: "{app}\tiemu.exe"; Description: "Launch TiEmu"; StatusMsg: "Running TiEmu..."; Flags: postinstall nowait unchecked
 Filename: "{cf}\LPG Shared\wget\d_and_i.bat"; Description: "Download and install GTK+"; StatusMsg: "Running ..."; Flags: nowait postinstall unchecked hidewizard;
-
+; Dha installation
+Filename: "C:\sources\roms\ticables2\src\win32\dha\dhasetup.exe"; Parameters: "install"; MinVersion: 0,4; Tasks: dha_drv;
 ; COM/OLE  registration
 Filename: "{app}\tiemu.exe"; Parameters: "/RegServer"; Tasks: com_ole;
 
 [UninstallRun]
-; Remove any previously installed PortTalk driver (especially v1.x)
-Filename: "{app}\PortTalk\Uninstall.exe"; Parameters: ""; MinVersion: 0,4; Tasks: tlk_drv;
-
+; Dha uninstallation
+;Filename: "C:\sources\roms\ticables2\src\win32\dha\dhasetup.exe"; Parameters: "remove"; MinVersion: 0,4; Tasks: dha_drv;
 ; COM/OLE  un-registration
 Filename: "{app}\tiemu.exe"; Parameters: "/UnregServer"; Tasks: com_ole;
 
 [Registry]
-; Install the NT PortTalk driver
-Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: dword; ValueName: "Type"; ValueData: "1";  MinVersion: 0,4; Tasks: tlk_drv;
-Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: dword; ValueName: "Start"; ValueData: "2"; MinVersion: 0,4; Tasks: tlk_drv;
-Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: dword; ValueName: "ErrorControl"; ValueData: "1"; MinVersion: 0,4; Tasks: tlk_drv;
-Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Services\PortTalk"; ValueType: string; ValueName: "DisplayName"; ValueData: "PortTalk"; MinVersion: 0,4; Tasks: tlk_drv;
-
 ; Boost GTK2 (WinNT/2000/XP)
 Root: HKLM; SubKey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: string; ValueName: "PANGO_WIN32_NO_UNISCRIBE"; ValueData: "anything"; MinVersion: 0,4;
 
