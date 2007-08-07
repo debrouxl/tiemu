@@ -41,7 +41,8 @@ In order to use TI's BlackLink serial cables or home-made serial or parallel
 cables on any NT-based version of Windows (Windows NT 4, Windows 2000, Windows
 XP, Windows 2003 or any newer version of Windows), you'll need to install the
 DhaHelper driver. This driver is currently not installed by this package of
-TiEmu.
+TiEmu. It can be installed by installing TiLP 2 for Windows, version 1.06 or
+newer.
 
 2.2. SilverLink
 
