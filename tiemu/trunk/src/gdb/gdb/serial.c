@@ -212,7 +212,8 @@ serial_open (const char *name)
   scb->bufcnt = 0;
   scb->bufp = scb->buf;
 
-  if (scb->ops->open (scb, open_name))
+  /* `...->open (...)' would get expanded by an the open(2) syscall macro.  */
+  if ((*scb->ops->open) (scb, open_name))
     {
       xfree (scb);
       return NULL;

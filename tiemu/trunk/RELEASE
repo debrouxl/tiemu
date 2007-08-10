@@ -50,6 +50,7 @@ Bug fixes:
 	- *nix compile fix: fixed KDE path detection for multilib systems with
 	                    both 32-bit and 64-bit libraries installed
 	- fixed wrong disassembly offset of MOVEM.W instruction
+	- fixed GDB build with the upcoming glibc 2.7
 	
 	
 Notes:

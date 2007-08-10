@@ -1,3 +1,11 @@
+2007-08-10  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * Merge gdb-6.6-glibc-open-fcntl2-compat.patch (glibc 2.7 build fix) from Fedora:
+          2007-08-08  Jan Kratochvil  <jan.kratochvil@redhat.com>
+            * ../bfd/opncls.c (bfd_openr_iovec): Fix OPEN parameter macro expansion.
+          2007-08-08  Jan Kratochvil  <jan.kratochvil@redhat.com>
+            * serial.c (serial_open): Fix OPEN parameter macro expansion.
+
 2007-06-21  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * ../libiberty/gettimeofday.c (gettimeofday): Move Win32 implementation to
