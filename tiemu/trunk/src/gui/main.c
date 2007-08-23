@@ -72,6 +72,7 @@ extern int asm_setjmp(jmp_buf b);
 #include "dboxes.h"
 #include "dbg_all.h"
 #include "romversion.h"
+#include "fs_misc.h"
 
 #ifndef NO_SOUND
 #include "audio.h"
@@ -114,6 +115,8 @@ static void my_log_handler                  (const gchar *log_domain,
 
 /* Main function */
 
+extern char *file_to_send;
+
 int main(int argc, char **argv) 
 {
 	int err;
@@ -151,7 +154,6 @@ int main(int argc, char **argv)
 		audioerr=1;
 	}
 #endif
-
 
     /* 
 		Init GTK+ toolkit
@@ -340,6 +342,18 @@ int main(int argc, char **argv)
 		splash_screen_set_label(_("Pre-loading debugger..."));
 		gtk_debugger_preload();
 #endif  
+
+		/*
+			Check for a file to send
+		*/
+		if(file_to_send)
+		{
+			if(!img_loaded || !ti68k_linkport_ready())
+				break;
+
+			fs_send_file(file_to_send);
+			g_free(file_to_send);
+		}
 
 		/* 
 			Start emulation engine and run main loop 

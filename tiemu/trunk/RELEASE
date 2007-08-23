@@ -30,7 +30,7 @@ New capabilities:
 
 	- sound emulation
 	- breakpoints on bit change
-
+	- can send file(s) from command line
 	
 
 Improvements:

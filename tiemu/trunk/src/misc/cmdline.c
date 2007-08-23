@@ -45,6 +45,8 @@
 #include "oleaut.h"
 #endif
 
+char* file_to_send = NULL;
+
 /*
   Display the program version
 */
@@ -80,6 +82,7 @@ int help(void)
 	fprintf(stdout, "-rom=          ROM dump to convert and load (compat)\n");
 	fprintf(stdout, "-tib=          TIB or FLASH upgrade to convert and load (compat)\n");
 	fprintf(stdout, "-sav=          state image to load (compat)\n");
+	fprintf(stdout, "-send=			send specified file to TiEmu\n");
 	fprintf(stdout, "\n");
 	fprintf(stdout, "filename       can be ROM, TIB or SAV file to load\n");
 	fprintf(stdout, "\n");
@@ -191,6 +194,9 @@ int scan_cmdline(int argc, char **argv)
 
 		if(strstr(msg, "sav=")) 
 			sav = g_strdup(msg + 4);
+
+		if(strstr(msg, "send="))
+			file_to_send = g_strdup(msg + 5);
 	      
 		if(strexact(msg, "-help") || strexact(msg, "h")) 
 			help();
