@@ -384,6 +384,8 @@ void fs_send_file_and_debug_info(const gchar *filename)
 }
 #endif
 
+extern int dbgromcall_refresh_window(void);
+
 gint display_set_tib_dbox(void)
 {
     const gchar *filename;

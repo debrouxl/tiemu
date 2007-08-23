@@ -311,7 +311,7 @@ on_romversion_button_press_event       (GtkWidget       *widget,
 		g_free(chosen_file);
         gtk_tree_model_get(model, &iter, COL_FILENAME, &chosen_file, -1);		
 	
-		gtk_dialog_response(widget, GTK_RESPONSE_OK);                
+		gtk_dialog_response(GTK_DIALOG(widget), GTK_RESPONSE_OK);
 		return TRUE;
     }
 #endif
