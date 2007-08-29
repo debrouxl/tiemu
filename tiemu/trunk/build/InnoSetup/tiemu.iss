@@ -19,6 +19,8 @@ LicenseFile=C:\sources\roms\tiemu3\COPYING
 InfoBeforeFile=C:\sources\roms\tiemu3\README.win32
 InfoAfterFile=C:\sources\roms\tiemu3\RELEASE
 
+PrivilegesRequired = admin
+
 ;--- Shared Stuffs ---
 [Files]
 ; TI libraries
@@ -171,13 +173,6 @@ Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.e
 [UninstallDelete]
 Type: files; Name: "{app}\tiemu.url"
 
-; OLE Registration
-;  ExecWait '"$INSTDIR\bin\tiemu.exe" /RegServer'
-;  RegDLL "$INSTDIR\bin\tiemups.dll"
-; OLE Unregistration
-;  UnregDLL "$INSTDIR\bin\tiemups.dll"
-;  ExecWait '"$INSTDIR\bin\tiemu.exe" /UnregServer'
-
 ;; Taken from "http://www.dropline.net/gtk/support.php" with some customizations
 
 [Code]
@@ -238,6 +233,54 @@ begin
   MsgBox(S + 'you will need the GTK+ 2.6.x Runtime Environnement! But, the installer can download and install it for you; simply think to check the box at the last tab/page. Otherwise, you can still download it from the start menu (start menu > programs > tiemu > install gtk+ from the web).', mbError, MB_OK);
 end;
 
+// Check for previous program presence and uninstall if needed
+function CheckUninstall(S: String): Boolean;
+var
+  uninsexe: String;
+  ResultCode: Integer;
+  I: Integer;
+  L: Integer;
+begin
+  Exists := RegKeyExists(HKLM, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\' + S + '_is1');
+  Result := false;
+
+  if Exists then begin
+    if MsgBox('The program need to be uninstalled. Click YES to uninstall it or NO to force installation.', mbConfirmation, MB_YESNO) = IDNO
+    then begin
+      Result := true
+    end
+    else begin
+      if RegQueryStringValue(HKLM, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\' + S + '_is1', 'UninstallString', uninsexe) then
+      begin
+
+        L := Length(uninsexe);
+        for I:=1 to L-1
+        do begin
+          uninsexe[i] := uninsexe[i+1];
+        end;
+        SetLength(uninsexe, L-2);
+
+        if not Exec(uninsexe, '', '', SW_SHOW, ewWaitUntilTerminated, ResultCode)
+        then begin
+            Result := false;
+        end
+        else begin
+          if ResultCode <> 0
+          then begin
+            Result := false;
+          end
+          else begin
+            Result := true;
+          end;
+        end;
+      end;
+    end;
+  end
+  else begin
+    Result := true;
+  end;
+end;
+
 function InitializeSetup(): Boolean;
 begin
   // Retrieve GTK path
@@ -266,8 +309,12 @@ begin
   if FileExists(WimpPath) and not UsingWinNT() then begin
         MsgBox('Tip: you are running a non-NT platform with the GTK+ WiMP theme engine installed. If you get a lot of warnings about fonts in console, run the Gtk+ Theme Selector as provided in the start menu group of TiLP/TiEmu', mbError, MB_OK);
   end;
-
-  Result := true;
+  
+  // Uninstall before installing new release
+  if not CheckUninstall('TiEmu3-gdb') then
+    Result := false
+  else
+    Result := true;
 end;
 
 procedure DeleteDll(const FileName: string);

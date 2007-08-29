@@ -1,5 +1,8 @@
 SubVersion: $Id$
 
+- 29/06/2007, version 3.02
+	- ...
+
 - 20/06/2007, version 3.01
 	$2556: Merged changes from tiemu-3-sound branch:
 	- [hypersonic] $2509-2513: implemented low-level SDL code for sound emulation
@@ -28,6 +31,7 @@ SubVersion: $Id$
 	- [roms]  $2624: allow double-clicking of a ROM instead of selecting + pressing OK button
 	- [kevin] $2629: fixed GDB build with the upcoming glibc 2.7 (patch from Fedora GDB by Jan Kratochvil)
 	- [roms]  $2630: added ability to send file from command line
+		=> released on 29/08/2007
 
 - 16/03/2007, version 3.00
 	- [kevin] $2389: don't use \n in the breakpoint window status bar
