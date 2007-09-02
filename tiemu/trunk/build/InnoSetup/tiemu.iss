@@ -48,7 +48,6 @@ Source: "C:\sources\roms\tilp2\build\InnoSetup\wget\d_and_i.bat"; DestDir: "{cf}
 ; DhaHelper driver
 Source: "C:\sources\roms\ticables2\src\win32\dha\dhahelper.sys"; DestDir: "{cf}\LPG Shared\drivers\dha"; Flags: sharedfile;
 Source: "C:\sources\roms\ticables2\src\win32\dha\dhasetup.exe";  DestDir: "{cf}\LPG Shared\drivers\dha"; Flags: sharedfile;
-Source: "C:\sources\roms\ticables2\src\win32\dha\dhahelper.sys"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile;
 
 [Registry]
 ; Create entries for shared libs (needed by other programs)
@@ -138,7 +137,7 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: 
 Filename: "{app}\tiemu.exe"; Description: "Launch TiEmu"; StatusMsg: "Running TiEmu..."; Flags: postinstall nowait unchecked
 Filename: "{cf}\LPG Shared\wget\d_and_i.bat"; Description: "Download and install GTK+"; StatusMsg: "Running ..."; Flags: nowait postinstall unchecked hidewizard;
 ; Dha installation
-Filename: "C:\sources\roms\ticables2\src\win32\dha\dhasetup.exe"; Parameters: "install"; MinVersion: 0,4; Tasks: dha_drv;
+Filename: "{cf}\LPG Shared\drivers\dha\dhasetup.exe"; Parameters: "install"; MinVersion: 0,4; Tasks: dha_drv; StatusMsg: "Installing DHA driver (this may take few seconds) ..."
 ; COM/OLE  registration
 Filename: "{app}\tiemu.exe"; Parameters: "/RegServer"; Tasks: com_ole;
 
