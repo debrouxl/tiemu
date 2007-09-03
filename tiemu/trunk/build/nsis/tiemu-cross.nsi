@@ -6,7 +6,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "TiEmu"
-!define PRODUCT_VERSION "3.01"
+!define PRODUCT_VERSION "3.01a"
 !define PRODUCT_PUBLISHER "The TiEmu Team"
 !define PRODUCT_WEB_SITE "http://lpg.ticalc.org/prj_tiemu/index.html"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"
@@ -342,6 +342,7 @@ Section "MainSection" SEC01
   File "../../../../.wine/c/tiemu/bin\libtifiles2-4.dll"
   File "../../../../.wine/c/tiemu/bin\libticalcs2-6.dll"
   File "../../../../.wine/c/tiemu/bin\libticonv-3.dll"
+  File "../../../../.wine/c/tiemu/bin\libusb0.dll"
   File "../../../../.wine/c/tiemu/bin\tiemu.exe"
   File "../../../../.wine/c/tiemu/bin\tiemu.tlb"
   File "../../../../.wine/c/tiemu/bin\tiemups.dll"
@@ -2258,6 +2259,7 @@ Section Uninstall
   Delete "$INSTDIR\bin\tiemups.dll"
   Delete "$INSTDIR\bin\tiemu.tlb"
   Delete "$INSTDIR\bin\tiemu.exe"
+  Delete "$INSTDIR\bin\libusb0.dll"
   Delete "$INSTDIR\bin\libticonv-3.dll"
   Delete "$INSTDIR\bin\libticalcs2-6.dll"
   Delete "$INSTDIR\bin\libtifiles2-4.dll"

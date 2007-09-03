@@ -1,4 +1,4 @@
-TiEmu 3 (version 3.01)
+TiEmu 3 (version 3.01a)
  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
@@ -15,6 +15,7 @@ The following components have been successfully installed:
 * libticonv
 * libtifiles
 * libticalcs
+* libusb (DLL only, see section 2.2)
 * GTK+ (if not already present)
 * Tcl
 * Tk
@@ -35,24 +36,31 @@ uninstalled separately.
 If you want to link TiEmu to a real calculator through a link cable, you may
 need to install additional drivers which are not installed with TiEmu:
 
-2.1. DhaHelper
+2.1. DhaHelper/RWPorts
 
 In order to use TI's BlackLink serial cables or home-made serial or parallel
 cables on any NT-based version of Windows (Windows NT 4, Windows 2000, Windows
 XP, Windows 2003 or any newer version of Windows), you'll need to install the
-DhaHelper driver. This driver is currently not installed by this package of
-TiEmu. It can be installed by installing TiLP 2 for Windows, version 1.06 or
-newer.
+DhaHelper (32-bit) or RWPorts (64-bit) driver. These drivers are currently not
+installed by this package of TiEmu. DhaHelper can be installed by installing
+TiLP 2 for Windows, version 1.07a or newer.
 
-2.2. SilverLink
+2.2. Libusb (SilverLink)
 
 In order to use TI's SilverLink USB cables (formerly known as TI-GraphLink
-USB), you'll need to install the LPG SilverLink driver for Windows at:
-http://lpg.ticalc.org/prj_usb
-This driver is NOT compatible with the driver used by TI Connect, installing it
-will replace TI's driver. In order to use TI Connect, you'll have to uninstall
-the LPG driver and reinstall TI's driver. As an alternative, we suggest using
-TiLP (TiLP 1 >= 6.72 or TiLP 2) which uses our (LPG) driver.
+USB), you'll need to install the libusb driver for Windows at:
+http://sourceforge.net/projects/libusb-win32
+You also need the silverlk.inf file included with libticables2. The easiest
+way to install this driver with the correct .inf files is to install TiLP 2
+for Windows, version 1.07 or newer. This package currently only installs the
+DLL, NOT the driver.
+
+IMPORTANT: This driver is NOT compatible with the driver used by TI Connect,
+installing it will replace TI's driver or the opposite. In order to use TI
+Connect, you'll have to uninstall the libusb driver and reinstall TI's driver.
+Likewise, to use the SilverLink in TiEmu again, you'll have to uninstall TI's
+driver and reinstall the libusb one. As an alternative, we suggest using TiLP
+(TiLP 2 >= 1.07a) which uses the libusb driver.
 
 3. GTK+ Troubleshooting
 
