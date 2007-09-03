@@ -1,9 +1,14 @@
 SubVersion: $Id$
 
-- 29/06/2007, version 3.02
+- ??/09/2007, version 3.02:
 	- ...
 
-- 20/06/2007, version 3.01
+- 03/09/2007, version 3.01a:
+        - re-released due to missing file in Windows Installer (dhahelper.sys)
+        - includes latest ticables2 library with USB polling support
+	        => released on 
+	
+- 20/06/2007, version 3.01:
 	$2556: Merged changes from tiemu-3-sound branch:
 	- [hypersonic] $2509-2513: implemented low-level SDL code for sound emulation
 	- [kevin] $2515: added configure checks for SDL and --disable-sound configure option
