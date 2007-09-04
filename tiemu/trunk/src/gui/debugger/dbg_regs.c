@@ -156,27 +156,27 @@ static void labels_refresh(void)
 
 	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.s), on_dbgregs_checkbutton_toggled, NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.s), data & (1 << FLAG_S));
-	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.s), on_dbgregs_checkbutton_toggled, NULL);
+	g_signal_handlers_unblock_by_func(GTK_OBJECT(wregs.s), on_dbgregs_checkbutton_toggled, NULL);
 
 	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.x), on_dbgregs_checkbutton_toggled, NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.x), data & (1 << FLAG_X));
-	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.x), on_dbgregs_checkbutton_toggled, NULL);
+	g_signal_handlers_unblock_by_func(GTK_OBJECT(wregs.x), on_dbgregs_checkbutton_toggled, NULL);
 
 	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.n), on_dbgregs_checkbutton_toggled, NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.n), data & (1 << FLAG_N));
-	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.n), on_dbgregs_checkbutton_toggled, NULL);
+	g_signal_handlers_unblock_by_func(GTK_OBJECT(wregs.n), on_dbgregs_checkbutton_toggled, NULL);
 
 	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.z), on_dbgregs_checkbutton_toggled, NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.z), data & (1 << FLAG_Z));
-	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.z), on_dbgregs_checkbutton_toggled, NULL);
+	g_signal_handlers_unblock_by_func(GTK_OBJECT(wregs.z), on_dbgregs_checkbutton_toggled, NULL);
 
 	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.v), on_dbgregs_checkbutton_toggled, NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.v), data & (1 << FLAG_V));
-	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.v), on_dbgregs_checkbutton_toggled, NULL);
+	g_signal_handlers_unblock_by_func(GTK_OBJECT(wregs.v), on_dbgregs_checkbutton_toggled, NULL);
 
 	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.c), on_dbgregs_checkbutton_toggled, NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wregs.c), data & (1 << FLAG_C));
-	g_signal_handlers_block_by_func(GTK_OBJECT(wregs.c), on_dbgregs_checkbutton_toggled, NULL);
+	g_signal_handlers_unblock_by_func(GTK_OBJECT(wregs.c), on_dbgregs_checkbutton_toggled, NULL);
 }
 
 /*

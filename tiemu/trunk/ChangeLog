@@ -1,12 +1,10 @@
 SubVersion: $Id$
 
-- ??/09/2007, version 3.02:
-	- ...
-
 - 03/09/2007, version 3.01a:
-        - re-released due to missing file in Windows Installer (dhahelper.sys)
-        - includes latest ticables2 library with USB polling support
-	        => released on 
+	- re-released due to missing file in Windows Installer (dhahelper.sys)
+	- includes latest ticables2 library with USB polling support
+	- [kevin] $2642: fixed bit toggling in register window
+	        => released on 04/09/2007
 	
 - 20/06/2007, version 3.01:
 	$2556: Merged changes from tiemu-3-sound branch:
