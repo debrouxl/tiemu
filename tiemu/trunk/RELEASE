@@ -3,17 +3,13 @@
 
 
 Previous version: 3.00		(14/05/2007)
-Current version:  3.01		(29/06/2007)
+Current version:  3.01		(01/09/2007)
+Update:           3.01a     (04/09/2007)
 
 SubVersion (CVS) revision: $Id: RELEASE 2042 2006-05-07 07:46:23Z roms $
 
 TiEmu is available for 3 platforms:
 Linux (GTK), Windows (GTK), Mac OS X (GTK)
-
-[ If you have a SilverLink cable (TI-GraphLink USB) and you are running Windows,
-you will need to retrieve a Win32/Win64 driver from the Linux Programmer Group 
-website at <http://lpg.ticalc.org/prj_usb>. Linux and Mac OS X no longer need a
-driver, instead the userspace libusb library is used. ]
 
 [ In order to use TI's BlackLink serial cables or home-made serial or parallel
 cables on any NT-based version of Windows (Windows NT 4, Windows 2000, Windows
@@ -31,6 +27,7 @@ New capabilities:
 	- sound emulation
 	- breakpoints on bit change
 	- can send file(s) from command line
+	- USB support removed in release 3.01 has been enabled again
 	
 
 Improvements:
