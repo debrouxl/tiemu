@@ -2071,12 +2071,12 @@ msgid ""
 "Listen for files sent from TiEmu. Uncheck it if you are running program "
 "which use the linkport for sound."
 msgstr ""
-"Ecoute le(s) fichier(s) envoyé(s) par TiEmu. Décochez si vous faites tourner "
+"Écoute le(s) fichier(s) envoyé(s) par TiEmu. Décochez si vous faites tourner "
 "un programme qui utilise le port de communication pour le son."
 
 #: glade/popup-2.str:17
 msgid "_Listen for files"
-msgstr "Ecoute les fichiers"
+msgstr "Écoute les fichiers"
 
 #: glade/popup-2.str:18
 msgid "_Emulate sound"
