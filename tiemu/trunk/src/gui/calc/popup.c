@@ -404,6 +404,13 @@ on_screen_options1_activate               (GtkMenuItem     *menuitem,
 	display_scroptions_dbox();
 }
 
+GLADE_CB void
+on_copy_to_clipboard1_activate        (GtkMenuItem     *menuitem,
+                                       gpointer         user_data)
+{
+	options2.clipboard = GTK_CHECK_MENU_ITEM(menuitem)->active ? 1 : 0;
+}
+
 /* menu part 5.4 (key press options) */
 
 GLADE_CB void
@@ -745,6 +752,9 @@ GtkWidget* display_popup_menu(void)
 	g_signal_handlers_block_by_func(GTK_OBJECT(data), (VCB)on_start_playing1_activate, NULL);
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), options.kp_ply_enabled);
 	g_signal_handlers_unblock_by_func(GTK_OBJECT(data), (VCB)on_start_playing1_activate, NULL);
+
+	data = glade_xml_get_widget(xml, "copy_to_clipboard1");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data), options2.clipboard);
 
 	return menu;
 }

@@ -62,6 +62,7 @@ gchar *s = N_("Do a screenshot now!");
 gchar *s = N_("_Now!");
 gchar *s = N_("Set options for screenshot (image, type).");
 gchar *s = N_("_Options");
+gchar *s = N_("_Copy to clipboard");
 gchar *s = N_("Key Press");
 gchar *s = N_("Setup recording");
 gchar *s = N_("Record");

@@ -782,6 +782,14 @@ int  hid_screenshot_single(void)
 		break;
 	}
 
+	if(options2.clipboard)
+	{
+		GtkClipboard *clipboard;
+
+		clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+		gtk_clipboard_set_image(clipboard, pixbuf);
+	}
+
 	if (result == FALSE) 
 	{
 		tiemu_warning(_("failed to save pixbuf file: %s: %s"), outfile, error->message);

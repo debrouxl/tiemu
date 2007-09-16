@@ -368,6 +368,14 @@ void rcfile_read(void)
 	  sscanf(p, "%i", &(options2.skips));
 	  continue;
 	}
+
+	if( (p=find_str(buffer, "clipboard=")) )
+	{
+	  if(!strcmp(p, "no")) options2.clipboard = 0;
+	  else if(!strcmp(p, "yes")) options2.clipboard = 1;
+
+	  continue;
+	}
 	
 	if( (p=find_str(buffer, "console=")) )
 	{
@@ -662,6 +670,16 @@ void rcfile_write(void)
   fprintf(txt, "screen_skips=%i\n", options2.skips);
   fprintf(txt, "\n");
 
+  fprintf(txt, "# Screenshot copied to clipboard (no, yes)\n");
+  fprintf(txt, "clipboard=");
+  switch(options2.clipboard)
+  {
+  case 0: fprintf(txt, "no\n"); break;
+  case 1: fprintf(txt, "yes\n"); break;
+  default: fprintf(txt, "no\n"); break;
+  }
+  fprintf(txt, "\n");
+
   fprintf(txt, "#\n");
   fprintf(txt, "# MISC SECTION\n");
   fprintf(txt, "#\n");
@@ -809,6 +827,7 @@ int rcfile_default()
 	options2.size = IMG_SKIN;
 	options2.shots = 1;
 	options2.skips = 4;
+	options2.clipboard = 0;
 
 	// debugger options
 	options3_set_default();	

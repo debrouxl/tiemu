@@ -79,6 +79,8 @@ typedef struct
 
 	int		shots;
 	int		skips;
+
+	int		clipboard;
 } ScrOptions;
 
 /* Debugger options for windows size and placement */
