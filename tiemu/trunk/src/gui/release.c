@@ -48,43 +48,56 @@ gint display_release_dbox()
 	gint len = 0;
 	struct stat stbuf;
 	gint result;
+	PangoFontDescription *font_desc;
 
 #ifdef _MSC_VER /* MSVC builds. MinGW builds use Linux file structures. */
 	filename = g_strconcat(inst_paths.base_dir, "Release.txt", NULL);
 
 #else				/*  */
 	filename = g_strconcat(inst_paths.base_dir, "RELEASE", NULL);
-
 #endif				/*  */
-	if (access(filename, F_OK) == 0) {
-		if (stat(filename, &stbuf) != -1) {
+
+	if (access(filename, F_OK) == 0) 
+	{
+		if (stat(filename, &stbuf) != -1) 
+		{
 			len = stbuf.st_size;
 		}
-		if ((fd = fopen(filename, "r")) != NULL) {
+		if ((fd = fopen(filename, "r")) != NULL) 
+		{
 			memset(buffer, 0, sizeof(buffer));
 			len = fread(buffer, 1, len, fd);
 			fclose(fd);
 		}
 	}
-	xml = glade_xml_new
-	    (tilp_paths_build_glade("release-2.glade"), "release_dbox",
+
+	xml = glade_xml_new(tilp_paths_build_glade("release-2.glade"), "release_dbox",
 	     PACKAGE);
 	if (!xml)
 		g_error(_("%s: GUI loading failed!\n"), __FILE__);
 	glade_xml_signal_autoconnect(xml);
+
 	dbox = glade_xml_get_widget(xml, "release_dbox");
 	text = glade_xml_get_widget(xml, "textview1");
+
+	// Change font
+	font_desc = pango_font_description_from_string ("Courier");
+	gtk_widget_modify_font (text, font_desc);
+	pango_font_description_free (font_desc);
+
+	// Set text
 	txtbuf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	gtk_text_buffer_set_text(txtbuf, buffer, len);
-	while (gtk_events_pending())
-		gtk_main_iteration();
+
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
-	switch (result) {
+	switch (result) 
+	{
 	case GTK_RESPONSE_OK:
 		break;
 	default:
 		break;
 	}
+
 	gtk_widget_destroy(dbox);
 	return 0;
 }
