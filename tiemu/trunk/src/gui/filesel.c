@@ -152,69 +152,6 @@ static Boolean filterProc(AEDesc * theItem, void * info, void * callBackUD, NavF
 static gchar *fname = NULL;
 static gint action = 0;
 
-static void store_filename(GtkFileSelection * file_selector,
-			   gpointer user_data)
-{
-	fname = g_strdup((gchar *)gtk_file_selection_get_filename(GTK_FILE_SELECTION(user_data)));
-	action = 1;
-} 
-
-static void cancel_filename(GtkButton * button, gpointer user_data)
-{
-	fname = NULL;
-	action = 2;
-} 
-
-// GTK 1.x/2.x (x < 4)
-static const gchar* create_fsel_1(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
-{
-	GtkWidget *fs;
-	gchar *sfilename, *sext, *path;
-
-	// gtk_file_selection_complete ALWAYS wants UTF-8.
-	sfilename = filename ? g_filename_to_utf8(filename,-1,NULL,NULL,NULL) : NULL;
-	sext = ext ? g_filename_to_utf8(ext,-1,NULL,NULL,NULL) : NULL;
-    
-	fs = gtk_file_selection_new("Select a file...");
-
-	// set default folder
-        path = g_strconcat(dirname, G_DIR_SEPARATOR_S, NULL);
-        gtk_file_selection_set_filename (GTK_FILE_SELECTION(fs), path);
-        g_free(path);
-
-        // set default name
-	gtk_file_selection_complete(GTK_FILE_SELECTION(fs), sfilename ? sfilename : sext);
-
-	g_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->ok_button),
-			 "clicked", G_CALLBACK(store_filename), fs);
-
-	g_signal_connect(GTK_OBJECT
-			 (GTK_FILE_SELECTION(fs)->cancel_button),
-			 "clicked", G_CALLBACK(cancel_filename), fs);
-
-	g_signal_connect_swapped(GTK_OBJECT
-				 (GTK_FILE_SELECTION(fs)->ok_button),
-				 "clicked",
-				 G_CALLBACK(gtk_widget_destroy),
-				 (gpointer) fs);
-
-	g_signal_connect_swapped(GTK_OBJECT
-				 (GTK_FILE_SELECTION(fs)->cancel_button),
-				 "clicked", G_CALLBACK(gtk_widget_destroy),
-				 (gpointer) fs);
-
-	gtk_widget_show(fs);
-
-	g_free(fname);
-	for(action = 0; !action; )
-		GTK_REFRESH();
-
-	g_free(sfilename);
-	g_free(sext);
-
-	return fname;
-}
-
 // GTK >= 2.4
 static const gchar* create_fsel_2(gchar *dirname, gchar *filename, gchar *ext, gboolean save)
 {
@@ -484,7 +421,7 @@ const gchar *create_fsel(gchar *dirname, gchar *filename, gchar *ext, gboolean s
 
 	switch(options.fs_type)
 	{
-	case 0:	return create_fsel_1(dirname, filename, ext, save);
+	case 0:
 	case 1:	return create_fsel_2(dirname, filename, ext, save);
 	case 2: return create_fsel_3(dirname, filename, ext, save);
 	case 3: return create_fsel_4(dirname, filename, ext, save);
@@ -498,68 +435,6 @@ const gchar *create_fsel(gchar *dirname, gchar *filename, gchar *ext, gboolean s
 
 static gchar** filenames = NULL;
 static gint actions = 0;
-
-static void store_filenames(GtkFileSelection * file_selector,
-			   gpointer user_data)
-{
-	filenames = gtk_file_selection_get_selections(GTK_FILE_SELECTION(user_data));
-	actions = 1;
-} 
-
-static void cancel_filenames(GtkButton * button, gpointer user_data)
-{
-	filenames = NULL;
-	actions = 2;
-} 
-
-// GTK 1.x/2.x (x < 4)
-static gchar** create_fsels_1(gchar *dirname, gchar *filename, gchar *ext)
-{
-	GtkWidget *fs;
-	gchar *sfilename, *sext, *path;
-
-	// gtk_file_selection_complete ALWAYS wants UTF-8.
-	sfilename = filename ? g_filename_to_utf8(filename,-1,NULL,NULL,NULL) : NULL;
-	sext = ext ? g_filename_to_utf8(ext,-1,NULL,NULL,NULL) : NULL;
-    
-	fs = gtk_file_selection_new("Select a file...");
-	gtk_file_selection_set_select_multiple(GTK_FILE_SELECTION(fs), TRUE);
-
-	// set default folder
-        path = g_strconcat(dirname, G_DIR_SEPARATOR_S, NULL);
-        gtk_file_selection_set_filename (GTK_FILE_SELECTION(fs), path);
-        g_free(path);
-
-        // set default name
-	gtk_file_selection_complete(GTK_FILE_SELECTION(fs), sfilename ? sfilename : sext);
-
-	g_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->ok_button),
-			 "clicked", G_CALLBACK(store_filenames), fs);
-
-	g_signal_connect(GTK_OBJECT
-			 (GTK_FILE_SELECTION(fs)->cancel_button),
-			 "clicked", G_CALLBACK(cancel_filenames), fs);
-
-	g_signal_connect_swapped(GTK_OBJECT
-				 (GTK_FILE_SELECTION(fs)->ok_button),
-				 "clicked",
-				 G_CALLBACK(gtk_widget_destroy),
-				 (gpointer) fs);
-
-	g_signal_connect_swapped(GTK_OBJECT
-				 (GTK_FILE_SELECTION(fs)->cancel_button),
-				 "clicked", G_CALLBACK(gtk_widget_destroy),
-				 (gpointer) fs);
-
-	gtk_widget_show(fs);
-	for(actions = 0; !actions; )
-		GTK_REFRESH();
-
-	g_free(sfilename);
-	g_free(sext);
-
-	return filenames;
-}
 
 // GTK >= 2.4
 static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext)
@@ -851,7 +726,7 @@ gchar** create_fsels(gchar *dirname, gchar *filename, gchar *ext)
 
 	switch(options.fs_type)
 	{
-	case 0:	return create_fsels_1(dirname, filename, ext);
+	case 0:
 	case 1:	return create_fsels_2(dirname, filename, ext);
 	case 2: return create_fsels_3(dirname, filename, ext);
 	case 3: return create_fsels_4(dirname, filename, ext);
