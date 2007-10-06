@@ -4,7 +4,8 @@ SubVersion: $Id$
 	- [roms] $2646: screenshots can be copied into the clipboard
 	- [roms] $2649: use fixed fonts for release and manpage dboxes
 	- [roms] $2652: removed old GTK file selector because being deprecated with GTK+ 2.12
-	- [roms] $2653: added accelerator key: F6 = Set PC to Selection
+	- [roms] $2653: added accelerator key: F6 in code window
+	- [roms] $2654: added accelerator key: +/- in memory window
 
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)

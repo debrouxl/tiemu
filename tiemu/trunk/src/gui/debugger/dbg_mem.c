@@ -987,6 +987,14 @@ on_treeview_key_press_event            (GtkWidget       *widget,
             return TRUE;
         }
 
+	case GDK_plus:
+		dbgmem_button1_clicked(NULL, NULL);
+		return FALSE;
+
+	case GDK_minus:
+		dbgmem_button2_clicked(NULL, NULL);
+		return FALSE;
+
 	default:
 		return FALSE;
 	}
