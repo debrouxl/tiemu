@@ -805,15 +805,6 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
     // bind our key
 	switch(event->keyval) 
 	{
-	case GDK_F2:
-		on_set_breakpoint1_activate(NULL, NULL);
-		return FALSE;
-	case GDK_F3:
-		on_set_tmp_bkpt1_activate(NULL, NULL);
-		return FALSE;
-	case GDK_F6:
-		export_disasm_to_file(widget);
-		return FALSE;
 	case GDK_F1:
 		str = g_strdup_printf("%i", row_idx+1);
         path = gtk_tree_path_new_from_string(str);	// restore selection
@@ -821,6 +812,23 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         gtk_tree_selection_select_path(selection, path);
 		on_set_pc_to_selection1_activate(NULL, user_data);
 		return FALSE;
+
+	case GDK_F2:
+		on_set_breakpoint1_activate(NULL, NULL);
+		return FALSE;
+
+	case GDK_F3:
+		on_set_tmp_bkpt1_activate(NULL, NULL);
+		return FALSE;
+
+	case GDK_F6:
+		on_set_pc_to_selection1_activate(NULL, user_data);
+		return FALSE;
+
+	case GDK_d:
+		export_disasm_to_file(widget);
+		return FALSE;
+
 	case GDK_G:
 	case GDK_g:
 		on_go_to_address1_activate(NULL, user_data);
