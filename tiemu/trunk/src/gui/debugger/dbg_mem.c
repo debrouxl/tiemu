@@ -8,7 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
- *  Copyright (c) 2006, Kevin Kofler
+ *  Copyright (c) 2006-2007, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -538,7 +538,7 @@ static GtkWidget* memmap_menu(void)
 	menu = gtk_menu_new();
 	g_object_set_data_full(G_OBJECT(menu), "memmap_menu",
 			       gtk_widget_ref(menu),
-			       (GDestroyNotify)gtk_widget_unref);
+			       (GDestroyNotify)g_object_unref);
 
 	// (re)load mem map
 	result = ti68k_debug_load_memmap(inst_paths.misc_dir);
@@ -561,7 +561,7 @@ static GtkWidget* memmap_menu(void)
 		item = gtk_menu_item_new_with_label(label);
 		g_object_set_data_full(G_OBJECT(menu), "c_drive",
 					   gtk_widget_ref(item),
-					   (GDestroyNotify)gtk_widget_unref);
+					   (GDestroyNotify)g_object_unref);
 		gtk_widget_show(item);
 
 		gtk_container_add(GTK_CONTAINER(menu), item);

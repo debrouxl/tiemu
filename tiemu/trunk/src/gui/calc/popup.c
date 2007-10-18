@@ -26,6 +26,11 @@
 #  include <config.h>
 #endif
 
+/* GTK+ 2.12 changed the tooltip API, see:
+   http://library.gnome.org/devel/gtk/2.12/gtk-migrating-tooltips.html
+   This means GtkTooltipsData is now deprecated. */
+#undef GTK_DISABLE_DEPRECATED
+
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <stdlib.h>
@@ -502,7 +507,7 @@ GLADE_CB void
 on_bookmarks1_activate				   (GtkMenuItem		*menuitem,
 										gpointer		user_data)
 {
-	GtkTooltipsData* data = gtk_tooltips_data_get(GTK_WIDGET(menuitem));
+	GtkTooltipsData* data = gtk_tooltips_data_get(GTK_WIDGET(menuitem)); /* FIXME: deprecated in GTK+ 2.12 */
 	go_to_bookmark(data->tip_text);
 }
 
