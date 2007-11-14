@@ -37,8 +37,8 @@
 #define PCKEY_TAB 0x9
 #define PCKEY_CLEAR 0xC
 #define PCKEY_RETURN 0xD
-#define PCKEY_SHIFT 0x10
-#define PCKEY_CONTROL 0x11
+#define PCKEY_SHIFT_L 0x10
+#define PCKEY_CONTROL_L 0x11
 #define PCKEY_MENU 0x12
 #define PCKEY_PAUSE 0x13
 #define PCKEY_CAPITAL 0x14
@@ -139,6 +139,8 @@
 #define PCKEY_F24 0x87
 #define PCKEY_NUMLOCK 0x90
 #define PCKEY_OEM_SCROLL 0x91
+#define PCKEY_SHIFT_R 0xa1
+#define PCKEY_CONTROL_R 0xa3
 #define PCKEY_OEM_1 0xBA
 #define PCKEY_OEM_PLUS 0xBB
 #define PCKEY_OEM_COMMA 0xBC
@@ -191,8 +193,8 @@
 #define PCKEY_TAB 0x17
 #define PCKEY_CLEAR 0xff
 #define PCKEY_RETURN 0x24
-#define PCKEY_SHIFT 0x32
-#define PCKEY_CONTROL 0x25
+#define PCKEY_SHIFT_L 0x32
+#define PCKEY_CONTROL_L 0x25
 #define PCKEY_MENU 0x40
 #define PCKEY_PAUSE 0x6E
 #define PCKEY_CAPITAL 0x42
@@ -345,8 +347,8 @@
 #define PCKEY_TAB 56
 #define PCKEY_CLEAR 0xff
 #define PCKEY_RETURN 44
-#define PCKEY_SHIFT 64
-#define PCKEY_CONTROL 0x43
+#define PCKEY_SHIFT_L 64
+#define PCKEY_CONTROL_L 0x43
 #define PCKEY_MENU 0x42 //option
 #define PCKEY_PAUSE 121
 #define PCKEY_CAPITAL 65

@@ -22,6 +22,7 @@ post 297 (Pollux):
 - débuggeur 
  * F5 sur un breakpoint ne fait que relancer le debugger sans rien exécuter 
  * F8 foire qd la fonction skippée contient un breakpoint (freeze jusqu'à ce qu'on fasse F11) 
+
 - fenêtre code 
  * désassembleur : 
   - je trouve pas les 0 inutiles très lisible : rol.l #$00000007,d0 :/ (VTI, lui, supprime toujours les 0 de tête) 
@@ -37,18 +38,22 @@ post 297 (Pollux):
    * VTI utilise lea (-$c,a3),a3 au lieu de lea ($fff4,a3),a3, c'est plus lisible 
   - il y a "trap .l" au lieu de "trap #$C" 
   - rts.l  #trifus#  
-  - il y a "bt<tab>.b" au lieu de "bt.b<tab>" (et sinon bra serait plus joli que bt  :) ) 
- * impossible de savoir si l'instruction sélectionnée est l'instruction courante  :(  
+  - il y a "bt<tab>.b" au lieu de "bt.b<tab>" (et sinon bra serait plus joli que bt)
+ * impossible de savoir si l'instruction sélectionnée est l'instruction courante
  * les "= bidule" pourraient peut-être être colorés, je ne sais pas si c'est possible (d'ailleurs les conventions 
    ne sont pas très cohérentes, un coup c'est [42a1], un coup c'est [$42a1], un coup c'est = $42a1) 
+
 - fenêtre registres 
  * les "D3=" sont sélectionnables
  x le double clic ne sélectionne qu'un groupe de chiffres ou un groupe de lettres mais pas la valeur hexa entière 
+
 - fenêtre stack 
  * +4 / +2 / 0 / +2 / +4 / ... au lieu de -4 / -2 / 0 / +2 / +4 / ... 
+
 - fenêtre memory 
  * scroll un peu lent 
  * pas de raccourcis clavier
+
 - idée d'amélioration : ajouter via le clic droit "ouvrir cette adresse dans la fenêtre memory" 
   (sur toutes les adresses, aussi bien dans code/disassembly/memory/stack [bon ok pour les 2 derniers c'est un peu plus 
   compliqué puisque ça marche par octet ou par mot, mais au moins pour les deux premiers ce serait cool])
