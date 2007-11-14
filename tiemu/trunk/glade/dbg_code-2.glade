@@ -822,6 +822,12 @@
   </child>
 
   <child>
+    <widget class="GtkSeparatorMenuItem" id="separator5">
+      <property name="visible">True</property>
+    </widget>
+  </child>
+
+  <child>
     <widget class="GtkMenuItem" id="set_breakpoint1">
       <property name="visible">True</property>
       <property name="label" translatable="yes">Set _breakpoint</property>
@@ -852,11 +858,18 @@
   </child>
 
   <child>
+    <widget class="GtkSeparatorMenuItem" id="separator6">
+      <property name="visible">True</property>
+    </widget>
+  </child>
+
+  <child>
     <widget class="GtkMenuItem" id="view_memory1">
       <property name="visible">True</property>
       <property name="label" translatable="yes">View _memory</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="on_view_memory1_activate" last_modification_time="Mon, 02 Aug 2004 14:31:35 GMT"/>
+      <accelerator key="M" modifiers="GDK_CONTROL_MASK" signal="activate"/>
     </widget>
   </child>
 </widget>

@@ -798,7 +798,7 @@ on_go_to_address2_activate             (GtkMenuItem     *menuitem,
 	g_free(str);
 }
 
-static uint32_t on_disassemble_common  (GtkMenuItem     *menuitem,
+static uint32_t column2address         (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	GtkNotebook *nb = GTK_NOTEBOOK(notebook);
@@ -846,7 +846,7 @@ GLADE_CB void
 on_dissassemble1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    uint32_t addr = on_disassemble_common(menuitem, user_data);
+    uint32_t addr = column2address(menuitem, user_data);
     
     // populate code at this address
     dbgcode_disasm_at(addr);
@@ -856,10 +856,23 @@ GLADE_CB void
 on_disassemble_indirect1_activate              (GtkMenuItem     *menuitem,
                                                 gpointer         user_data)
 {
-	uint32_t addr = on_disassemble_common(menuitem, user_data);
+	uint32_t addr = column2address(menuitem, user_data);
 
 	// populate code at the address contained at this address
 	dbgcode_disasm_at(mem_rd_long(addr));
+}
+
+GLADE_CB void
+on_dbgmem_view_memory1_activate                (GtkMenuItem     *menuitem,
+                                                gpointer         user_data)
+{
+	uint32_t addr = column2address(menuitem, user_data);
+	gchar *str;
+
+	// open a new tab at the address contained at this address	
+	str = g_strdup_printf("%06x", mem_rd_long(addr));
+	notebook_add_page(notebook, str);
+	g_free(str);
 }
 
 static void search_next(void);

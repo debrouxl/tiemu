@@ -16,6 +16,7 @@
   <property name="skip_pager_hint">False</property>
   <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <signal name="delete_event" handler="on_dbgheap_window_delete_event" last_modification_time="Wed, 30 Jun 2004 12:57:10 GMT"/>
   <signal name="window_state_event" handler="on_dbgheap_window_state_event" last_modification_time="Sun, 27 Feb 2005 08:35:05 GMT"/>
 
@@ -37,9 +38,25 @@
 	  <property name="rules_hint">False</property>
 	  <property name="reorderable">False</property>
 	  <property name="enable_search">True</property>
+	  <property name="fixed_height_mode">False</property>
+	  <property name="hover_selection">False</property>
+	  <property name="hover_expand">False</property>
 	  <signal name="button_press_event" handler="on_heap_button_press_event" last_modification_time="Mon, 20 Sep 2004 17:41:32 GMT"/>
 	</widget>
       </child>
+    </widget>
+  </child>
+</widget>
+
+<widget class="GtkMenu" id="dbgheap_popup">
+
+  <child>
+    <widget class="GtkMenuItem" id="view_memory1">
+      <property name="visible">True</property>
+      <property name="label" translatable="yes">View _memory</property>
+      <property name="use_underline">True</property>
+      <signal name="activate" handler="on_dbgheap_view_memory1_activate" last_modification_time="Wed, 14 Nov 2007 20:33:18 GMT"/>
+      <accelerator key="G" modifiers="GDK_CONTROL_MASK" signal="activate"/>
     </widget>
   </child>
 </widget>

@@ -19,6 +19,7 @@ gchar *s = N_("Find _next");
 gchar *s = N_("Go to _address");
 gchar *s = N_("_Dis-assemble");
 gchar *s = N_("Dis-assemble (indirect)");
+gchar *s = N_("View _memory");
 gchar *s = N_("Search");
 gchar *s = N_("Find _Next");
 gchar *s = N_("Find:");

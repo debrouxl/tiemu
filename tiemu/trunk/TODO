@@ -15,7 +15,7 @@ x = done
 * utiliser la même police que la fenêtre register dans les autres fenêtres
 * Si on appuie sur F11 lors du chargement (preloading débugger), au tout début ça fait crasher TiEmu, et vers la fin ça affiche les fenêtres du débogueur, mais elles sont toutes grisées et la calc semble fonctionner normalement (mais dur à reproduire ça, ça doit être à un moment très précis).
 * Si on appuie sur F12 lors du chargement (preloading debugger), le menu des ROMs se présente, mais on peut choisir ce qu'on veut, ça ne change strictement rien, et le modèle de calc par défaut se charge. Le clignotement du curseur dans HOME est alors anormal (trop rapide), mais régulier.
-* ça serait possible que les deux touches Ctrl soient reconnues comme <> svp?
+x ça serait possible que les deux touches Ctrl soient reconnues comme <> svp?
 
 post 297 (Pollux):
 <<
@@ -54,7 +54,7 @@ post 297 (Pollux):
  * scroll un peu lent 
  * pas de raccourcis clavier
 
-- idée d'amélioration : ajouter via le clic droit "ouvrir cette adresse dans la fenêtre memory" 
+x idée d'amélioration : ajouter via le clic droit "ouvrir cette adresse dans la fenêtre memory" 
   (sur toutes les adresses, aussi bien dans code/disassembly/memory/stack [bon ok pour les 2 derniers c'est un peu plus 
   compliqué puisque ça marche par octet ou par mot, mais au moins pour les deux premiers ce serait cool])
   >>

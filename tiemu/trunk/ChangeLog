@@ -11,6 +11,7 @@ SubVersion: $Id$
 	- [roms]  $2658: dual-click in register window select the whole register value now;
 		re-enabled popup menu (go to address).
 	- [roms]  $2659: mapped both CTRL keys to Diamond & both SHIFT keys to 2nd
+	- [roms]  $2660: added a popup menu with "View _memory" on any debugger window
 
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)

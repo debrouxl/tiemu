@@ -325,3 +325,102 @@ on_dbgstack_key_press_event           (GtkWidget       *widget,
 
 	return FALSE;
 }
+
+static GtkWidget* display_popup_menu(void);
+static uint32_t value = 0;
+
+GLADE_CB gboolean
+on_dbgstack_button_press_event     (GtkWidget       *widget,
+                                    GdkEventButton  *event,
+                                    gpointer         user_data)
+{
+	GtkWidget *list = GTK_WIDGET(widget);
+	GtkTreeView *view = GTK_TREE_VIEW(list);
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GList *l;
+
+	// get selection
+	selection = gtk_tree_view_get_selection(view);
+	l = gtk_tree_selection_get_selected_rows(selection, &model);
+	if(l != NULL)
+	{
+		GtkTreeIter iter;
+		GtkTreePath *path = l->data;
+		gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
+		uint16_t hi, lo;
+		
+		// get address
+		gtk_tree_model_get_iter(model, &iter, path);
+		gtk_tree_model_get(model, &iter, COL_DATA, &row_text[COL_DATA], -1);
+		sscanf(row_text[COL_DATA], "%x", &hi);
+
+		if(gtk_tree_model_iter_next(model, &iter) == FALSE)
+			return FALSE;
+		gtk_tree_model_get(model, &iter, COL_DATA, &row_text[COL_DATA], -1);
+		sscanf(row_text[COL_DATA], "%x", &lo);
+
+		value = (hi << 16) | lo;
+
+		g_strfreev(row_text);
+	}
+
+	if (l && event->type == GDK_2BUTTON_PRESS)
+	{	
+		dbgmem_add_tab(value);
+
+		g_list_foreach (l, (GFunc)gtk_tree_path_free, NULL);
+		g_list_free (l);
+
+		return TRUE;
+	}
+	else if(l && event->button == 3)
+	{
+		GdkEventButton *bevent;
+        GtkWidget *menu;  
+
+        // popup menu
+       	bevent = (GdkEventButton *) (event);
+        menu = display_popup_menu();
+
+		gtk_menu_popup(GTK_MENU(menu),
+				   NULL, NULL, NULL, NULL,
+				   bevent->button, bevent->time);
+	    gtk_widget_show(menu);
+
+		g_list_foreach (l, (GFunc)gtk_tree_path_free, NULL);
+		g_list_free (l);
+
+		return TRUE;
+	}
+
+    return FALSE;
+}
+
+/***** Popup menu *****/
+
+/*
+	Display popup menu (right click)
+*/
+static GtkWidget* display_popup_menu(void)
+{
+	GladeXML *xml;
+	GtkWidget *menu;
+
+	xml = glade_xml_new
+	    (tilp_paths_build_glade("dbg_stack-2.glade"), "dbgstack_popup",
+	     PACKAGE);
+	if (!xml)
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
+	glade_xml_signal_autoconnect(xml);
+
+	menu = glade_xml_get_widget(xml, "dbgstack_popup");
+	return menu;
+}
+
+GLADE_CB void
+on_dbgstack_view_memory1_activate      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	dbgmem_add_tab(value);
+}

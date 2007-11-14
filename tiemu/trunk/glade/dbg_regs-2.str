@@ -7,7 +7,7 @@
 gchar *s = N_("Show registers");
 gchar *s = N_("Registers");
 gchar *s = N_("Double-click value or item to edit.");
-gchar *s = N_("_Go to address");
+gchar *s = N_("View _memory");
 gchar *s = N_("Status Register");
 gchar *s = N_("T");
 gchar *s = N_("0");

@@ -184,6 +184,9 @@ void dbgheap_refresh_window(void)
 	}
 }
 
+static GtkWidget* display_popup_menu(void);
+static uint32_t value = 0;
+
 GLADE_CB gboolean
 on_heap_button_press_event        (GtkWidget       *widget,
                                     GdkEventButton  *event,
@@ -195,10 +198,6 @@ on_heap_button_press_event        (GtkWidget       *widget,
 	GtkTreeModel *model;
 	GList *l;
 
-	// is double click ?
-	if(event->type != GDK_2BUTTON_PRESS)
-		return FALSE;
-	
 	// get selection
 	selection = gtk_tree_view_get_selection(view);
 	l = gtk_tree_selection_get_selected_rows(selection, &model);
@@ -206,23 +205,74 @@ on_heap_button_press_event        (GtkWidget       *widget,
 	{
 		GtkTreeIter iter;
 		GtkTreePath *path = l->data;
-        gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
-        uint32_t addr;
+		gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
 		
 		// get address
 		gtk_tree_model_get_iter(model, &iter, path);
 		gtk_tree_model_get(model, &iter, COL_ADDR, &row_text[COL_ADDR], -1);
 
 		// show tab
-		sscanf(row_text[COL_ADDR], "$%x", &addr);
-		dbgmem_add_tab(addr);
+		sscanf(row_text[COL_ADDR], "$%x", &value);
 
-        g_strfreev(row_text);
-    }
+		g_strfreev(row_text);
+	}
 
-	// free selection
-	g_list_foreach (l, (GFunc)gtk_tree_path_free, NULL);
-	g_list_free (l);
+	if (l && event->type == GDK_2BUTTON_PRESS)
+	{	
+		dbgmem_add_tab(value);
+
+		g_list_foreach (l, (GFunc)gtk_tree_path_free, NULL);
+		g_list_free (l);
+
+		return TRUE;
+	}
+	else if(l && event->button == 3)
+	{
+		GdkEventButton *bevent;
+        GtkWidget *menu;  
+
+        // popup menu
+       	bevent = (GdkEventButton *) (event);
+        menu = display_popup_menu();
+
+		gtk_menu_popup(GTK_MENU(menu),
+				   NULL, NULL, NULL, NULL,
+				   bevent->button, bevent->time);
+	    gtk_widget_show(menu);
+
+		g_list_foreach (l, (GFunc)gtk_tree_path_free, NULL);
+		g_list_free (l);
+
+		return TRUE;
+	}
 
     return FALSE;
+}
+
+/***** Popup menu *****/
+
+/*
+	Display popup menu (right click)
+*/
+static GtkWidget* display_popup_menu(void)
+{
+	GladeXML *xml;
+	GtkWidget *menu;
+
+	xml = glade_xml_new
+	    (tilp_paths_build_glade("dbg_heap-2.glade"), "dbgheap_popup",
+	     PACKAGE);
+	if (!xml)
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
+	glade_xml_signal_autoconnect(xml);
+
+	menu = glade_xml_get_widget(xml, "dbgheap_popup");
+	return menu;
+}
+
+GLADE_CB void
+on_dbgheap_view_memory1_activate       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	dbgmem_add_tab(value);
 }

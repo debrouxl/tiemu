@@ -453,7 +453,7 @@ on_dbgregs_spinbutton_changed          (GtkEditable     *editable,
 }
 
 static GtkWidget* display_popup_menu(void);
-static uint32_t value = -1;
+static uint32_t value = 0;
 
 GLADE_CB gboolean
 on_dbgregs_button_press_event          (GtkWidget       *widget,
