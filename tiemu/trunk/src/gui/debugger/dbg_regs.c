@@ -460,7 +460,13 @@ on_dbgregs_button_press_event          (GtkWidget       *widget,
                                         GdkEventButton  *event,
                                         gpointer         user_data)
 {
-	if (event->button == 3)
+	if (event->type == GDK_2BUTTON_PRESS)
+	{
+		// select all text
+		gtk_editable_select_region(GTK_EDITABLE(user_data), 0, -1);
+		return TRUE;
+	}
+	else if (event->button == 3)
     {
         GdkEventButton *bevent;
         GtkWidget *menu;  

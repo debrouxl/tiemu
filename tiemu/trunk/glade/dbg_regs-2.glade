@@ -1523,6 +1523,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label10" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label10" last_modification_time="Wed, 14 Nov 2007 16:38:36 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">1</property>
@@ -1546,7 +1547,8 @@
 	  <property name="invisible_char">*</property>
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
-	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label11" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label10" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label11" last_modification_time="Wed, 14 Nov 2007 16:38:36 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">1</property>
@@ -1571,6 +1573,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label12" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label12" last_modification_time="Wed, 14 Nov 2007 16:40:15 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">1</property>
@@ -1595,6 +1598,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label13" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label13" last_modification_time="Wed, 14 Nov 2007 16:40:27 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">1</property>
@@ -1619,6 +1623,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label15" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label15" last_modification_time="Wed, 14 Nov 2007 16:40:55 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">1</property>
@@ -1643,6 +1648,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label16" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label16" last_modification_time="Wed, 14 Nov 2007 16:41:05 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">1</property>
@@ -1667,6 +1673,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label17" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label17" last_modification_time="Wed, 14 Nov 2007 16:41:14 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">1</property>
@@ -1691,6 +1698,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label20" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label20" last_modification_time="Wed, 14 Nov 2007 16:41:49 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">4</property>
@@ -1715,6 +1723,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label21" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label21" last_modification_time="Wed, 14 Nov 2007 16:40:55 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">4</property>
@@ -1739,6 +1748,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label22" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label22" last_modification_time="Wed, 14 Nov 2007 16:40:55 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">4</property>
@@ -1763,6 +1773,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label23" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label23" last_modification_time="Wed, 14 Nov 2007 16:40:55 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">4</property>
@@ -1787,6 +1798,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label24" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label24" last_modification_time="Wed, 14 Nov 2007 16:40:55 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">4</property>
@@ -1811,6 +1823,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label25" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label25" last_modification_time="Wed, 14 Nov 2007 16:40:55 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">4</property>
@@ -1835,6 +1848,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label26" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label26" last_modification_time="Wed, 14 Nov 2007 16:40:55 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">4</property>
@@ -1859,6 +1873,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label27" last_modification_time="Thu, 05 Jul 2007 08:10:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label27" last_modification_time="Wed, 14 Nov 2007 16:40:55 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">4</property>
@@ -1889,6 +1904,7 @@
 	  <property name="single_line_mode">False</property>
 	  <property name="angle">0</property>
 	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" last_modification_time="Thu, 05 Jul 2007 09:10:43 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" last_modification_time="Wed, 14 Nov 2007 16:40:55 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">0</property>
@@ -1919,6 +1935,7 @@
 	  <property name="single_line_mode">False</property>
 	  <property name="angle">0</property>
 	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" last_modification_time="Thu, 05 Jul 2007 09:10:59 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" last_modification_time="Wed, 14 Nov 2007 16:40:55 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">3</property>
@@ -2029,6 +2046,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">6</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label32" last_modification_time="Thu, 05 Jul 2007 08:38:50 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label32" last_modification_time="Wed, 14 Nov 2007 16:43:27 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">4</property>
@@ -2052,6 +2070,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">6</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label31" last_modification_time="Thu, 05 Jul 2007 08:38:28 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label31" last_modification_time="Wed, 14 Nov 2007 16:41:28 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">1</property>
@@ -2076,6 +2095,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">6</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label33" last_modification_time="Thu, 05 Jul 2007 08:39:03 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label33" last_modification_time="Wed, 14 Nov 2007 16:41:38 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">1</property>
@@ -2099,6 +2119,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">4</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label34" last_modification_time="Thu, 05 Jul 2007 08:39:18 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label34" last_modification_time="Wed, 14 Nov 2007 16:43:38 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">4</property>
@@ -2365,6 +2386,7 @@
 	  <property name="activates_default">False</property>
 	  <property name="width_chars">8</property>
 	  <signal name="key_press_event" handler="on_dbgregs_key_press_event" object="label14" last_modification_time="Thu, 05 Jul 2007 08:35:54 GMT"/>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" object="label14" last_modification_time="Wed, 14 Nov 2007 16:40:42 GMT"/>
 	</widget>
 	<packing>
 	  <property name="left_attach">1</property>

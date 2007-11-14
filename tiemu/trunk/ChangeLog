@@ -8,6 +8,8 @@ SubVersion: $Id$
 	- [roms]  $2654: added accelerator key: +/- in memory window
 	- [kevin] $2656: fixed dirname+filename concatenation for KDE file selector
 	- [kevin] $2657: fixed build with GTK+ 2.12
+	- [roms]  $2658: dual-click in register window select the whole register value now;
+		re-enabled popup menu (go to address).
 
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)
