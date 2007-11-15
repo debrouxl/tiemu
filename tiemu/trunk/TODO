@@ -28,7 +28,7 @@ post 297 (Pollux):
  * désassembleur : 
   x je trouve pas les 0 inutiles très lisible : rol.l #$00000007,d0 :/ (VTI, lui, supprime toujours les 0 de tête) 
   x c'est un peu dommage de pas pouvoir distinguer move.l de moveq, 
-  - c'est un peu dommage de pas pouvoir distinguer addq/subq
+  - c'est un peu dommage de pas pouvoir distinguer addq/subq => a priori non distinguable...
   - movem.l #$masque_incompréhensible, il vaudrait mieux les registres comme dans VTI 
   x movem.l prend 2 octets de trop donc il "mange" l'instruction suivante 
   - pour les adressages indexés : 
