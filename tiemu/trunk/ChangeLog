@@ -14,6 +14,7 @@ SubVersion: $Id$
 	- [roms]  $2660: added a popup menu with "View _memory" on any debugger window
 	- [roms]  $2661: unified displaying of hexadecimal values (removed '$' and ''0x' heading chars)
 	- [roms]  $2662: suppress leading zeros like VTi does
+	- [roms]  $2663: some instructions (trap, rts, reset...) was suffixed with .L which is not needed
 
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)

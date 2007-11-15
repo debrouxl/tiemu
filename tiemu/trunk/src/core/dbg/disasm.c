@@ -85,7 +85,7 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 #include "libuae.h"
 
 static const char* instr[] = { 
-	"ORSR.B", "ORSR.W",		/* ORI  #<data>,SR		*/
+	"ORSR.B",  "ORSR.W",	/* ORI  #<data>,SR		*/
 	"ANDSR.B", "ANDSR.W",	/* ANDI #<data>,SR		*/
 	"EORSR.B", "EORSR.W",	/* EORI #<data>,SR		*/
 	"MVSR2.W", "MVSR2.B",	/* MOVE SR,<ea>			*/
@@ -94,7 +94,12 @@ static const char* instr[] = {
 	"MVUSP2R.L",			/* MOVE USP,An			*/
 	"MVMEL.W", "MVMEL.L",   /* MOVEM <ea>,<list>  	*/
 	"MVMLE.W", "MVMLE.L",   /* MOVEM <list>,<ea>	*/
-	"TRAP",					/* TRAP	#<vector>		*/
+	"TRAP.L",				/* TRAP	#<vector>		*/
+	"RESET.L",
+	"NOP.L",
+	"STOP.L",
+	"RTE.L",
+	"RTS.L",
 	NULL
 };
 
@@ -133,8 +138,10 @@ static int suppress_zeros(char *str)
 	return (q - p);
 }
 
-// do the same work as m68k_disasm but some UAE instructions 
-// use a weird naming scheme, remap them!
+// do the same work as m68k_disasm but some instructions dis-assembled by the
+// UAE engine use a weird/wrong naming scheme wo we remap them here rather than
+// touching the newcpu.c file because this file may be updated when upgrading
+// the UAE engine.
 int m68k_dasm(char **line, uint32_t addr)
 {
 	char output[1024];
@@ -278,9 +285,15 @@ int m68k_dasm(char **line, uint32_t addr)
 			offset += 2;	
 			break;
 		case 16:	/* TRAP #<vector>	*/
-			tmp = split[1] + strlen("TRAP");
-			split[2] = g_strdup(tmp);
-			*tmp = '\0';
+		case 17:
+		case 18:
+		case 19:
+		case 20:
+		case 21:
+			{
+				char *p = strchr(split[1], '.');
+				if(p) *p = '\0';
+			}
 			break;
 		default:
 			break;

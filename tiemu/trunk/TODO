@@ -37,8 +37,8 @@ post 297 (Pollux):
      voir du premier coup d'oeil que a3 et a3 c'est bien le même registre 
    * (a3,d0.l*1) : le *1 ne sert à rien, surtout sur 68000 
    * VTI utilise lea (-$c,a3),a3 au lieu de lea ($fff4,a3),a3, c'est plus lisible 
-  - il y a "trap .l" au lieu de "trap #$C" 
-  - rts.l  #trifus#  
+  x il y a "trap .l" au lieu de "trap #$C" 
+  x rts.l  (heu!??)
   - il y a "bt<tab>.b" au lieu de "bt.b<tab>" (et sinon bra serait plus joli que bt)
  * impossible de savoir si l'instruction sélectionnée est l'instruction courante
  * les "= bidule" pourraient peut-être être colorés, je ne sais pas si c'est possible
