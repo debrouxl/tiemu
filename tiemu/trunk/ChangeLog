@@ -17,6 +17,7 @@ SubVersion: $Id$
 	- [roms]  $2663: some instructions (trap, rts, reset...) was suffixed with .L which is not needed
 	- [roms]  $2664: fixed wrong disassembly offset of MOVEM.L instruction
 	- [roms]  $2665: fixed disassembly of MOVEP instruction
+	- [roms]  $2666: fixed disassembly of MOVEQ instruction
 
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)

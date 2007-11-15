@@ -102,6 +102,7 @@ static const char* instr[] = {
 	"STOP.L",
 	"RTE.L",
 	"RTS.L",
+	"MOVE.L",				/* MOVEQ #i,Dr			*/
 	NULL
 };
 
@@ -308,6 +309,13 @@ int m68k_dasm(char **line, uint32_t addr)
 			{
 				char *p = strchr(split[1], '.');
 				if(p) *p = '\0';
+			}
+			break;
+		case 26:
+			if(split[2][0] == '#')
+			{
+				g_free(split[1]);
+				split[1] = g_strdup("MOVEQ");
 			}
 			break;
 		default:
