@@ -94,6 +94,8 @@ static const char* instr[] = {
 	"MVUSP2R.L",			/* MOVE USP,An			*/
 	"MVMEL.W", "MVMEL.L",   /* MOVEM <ea>,<list>  	*/
 	"MVMLE.W", "MVMLE.L",   /* MOVEM <list>,<ea>	*/
+	"MVPMR.W", "MVPMR.L",   /* MOVEP <Dx>,<(d16,Ay)>*/
+	"MVPRM.W", "MVPRM.L",   /* MOVEP <d16,Ay>,<Dx>	*/
 	"TRAP.L",				/* TRAP	#<vector>		*/
 	"RESET.L",
 	"NOP.L",
@@ -267,7 +269,7 @@ int m68k_dasm(char **line, uint32_t addr)
 			break;
 		case 12:    /* MOVEM <ea>,<list>  */
 			g_free(split[1]);
-			split[1] = g_strdup("MOVEM.W");			
+			split[1] = g_strdup("MOVEM.W");
 			break;
 		case 13:
 			g_free(split[1]);
@@ -275,19 +277,34 @@ int m68k_dasm(char **line, uint32_t addr)
 			break;
 		case 14:    /* MOVEM <list>,<ea>  */
 			g_free(split[1]);
-			split[1] = g_strdup("MOVEM.W");			
+			split[1] = g_strdup("MOVEM.W");
 			break;
 		case 15:    /* MOVEM <list>,<ea>  */
-			// UAE does not fully disasm this instruction	
 			g_free(split[1]);
 			split[1] = g_strdup("MOVEM.L");
 			break;
-		case 16:	/* TRAP #<vector>	*/
-		case 17:
-		case 18:
-		case 19:
-		case 20:
+		case 16:    /* MOVEP <Dx>,<(d16,Ay)> */
+			g_free(split[1]);
+			split[1] = g_strdup("MOVEP.W");
+			break;
+		case 17:	/* MOVEP <Dx>,<(d16,Ay)> */
+			g_free(split[1]);
+			split[1] = g_strdup("MOVEP.L");
+			break;
+		case 18:    /* MOVEP MOVEP <d16,Ay>,<Dx> */
+			g_free(split[1]);
+			split[1] = g_strdup("MOVEP.W");
+			break;
+		case 19:    /* MOVEP <d16,Ay>,<Dx> */
+			g_free(split[1]);
+			split[1] = g_strdup("MOVEP.L");
+			break;
+		case 20:	/* TRAP #<vector>	*/
 		case 21:
+		case 22:
+		case 23:
+		case 24:
+		case 25:
 			{
 				char *p = strchr(split[1], '.');
 				if(p) *p = '\0';
