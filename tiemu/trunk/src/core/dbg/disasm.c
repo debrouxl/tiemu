@@ -272,7 +272,6 @@ int m68k_dasm(char **line, uint32_t addr)
 		case 13:
 			g_free(split[1]);
 			split[1] = g_strdup("MOVEM.L");
-			offset += 2;
 			break;
 		case 14:    /* MOVEM <list>,<ea>  */
 			g_free(split[1]);
@@ -282,7 +281,6 @@ int m68k_dasm(char **line, uint32_t addr)
 			// UAE does not fully disasm this instruction	
 			g_free(split[1]);
 			split[1] = g_strdup("MOVEM.L");
-			offset += 2;	
 			break;
 		case 16:	/* TRAP #<vector>	*/
 		case 17:
