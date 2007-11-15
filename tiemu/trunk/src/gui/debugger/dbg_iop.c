@@ -360,7 +360,7 @@ static void ctree_populate(GtkTreeStore *store)
 
 			row_text[0] = g_strdup(t->name);
 			row_text[1] = rd_mem_as_str(t);
-			row_text[2] = g_strdup_printf("$%06x", t->addr);
+			row_text[2] = g_strdup_printf("%06x", t->addr);
 			row_text[3] = g_strdup(t->all_bits ? "" : t->bit_str);
 
 			gtk_tree_store_append(store, &iter1, &iter0);

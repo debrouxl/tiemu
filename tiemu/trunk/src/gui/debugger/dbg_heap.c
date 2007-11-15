@@ -107,7 +107,7 @@ static void clist_populate(GtkListStore *store)
 
         row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
 		row_text[0] = g_strdup_printf("%02x (%i):", i, i);
-		row_text[1] = g_strdup_printf("$%06x", addr);
+		row_text[1] = g_strdup_printf("%06x", addr);
 		row_text[2] = g_strdup_printf("%i", size);
     
         gtk_list_store_append(store, &iter);
@@ -212,7 +212,7 @@ on_heap_button_press_event        (GtkWidget       *widget,
 		gtk_tree_model_get(model, &iter, COL_ADDR, &row_text[COL_ADDR], -1);
 
 		// show tab
-		sscanf(row_text[COL_ADDR], "$%x", &value);
+		sscanf(row_text[COL_ADDR], "%x", &value);
 
 		g_strfreev(row_text);
 	}

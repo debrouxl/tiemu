@@ -100,7 +100,7 @@ static void clist_populate(GtkListStore *store)
         gchar *str;
 
         addr = logger.pclog_buf[(logger.pclog_ptr + i) % logger.pclog_size];
-        str = g_strdup_printf("0x%06x", addr);
+        str = g_strdup_printf("%06x", addr);
     
         gtk_list_store_append(store, &iter);
 		gtk_list_store_set(store, &iter, 
