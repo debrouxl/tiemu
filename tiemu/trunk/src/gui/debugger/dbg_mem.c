@@ -877,6 +877,46 @@ on_dbgmem_view_memory1_activate                (GtkMenuItem     *menuitem,
 
 static void search_next(void);
 
+GLADE_CB gboolean
+on_dbgmem_key_press_event              (GtkWidget       *widget,
+                                        GdkEventKey     *event,
+                                        gpointer         user_data)
+{
+	GtkNotebook *nb = GTK_NOTEBOOK(notebook);
+
+    switch(event->keyval) 
+	{
+	case GDK_F1:
+		dbgmem_button1_clicked(NULL, NULL);
+		return TRUE;
+	case GDK_F2:
+		dbgmem_button2_clicked(NULL, NULL);
+		return TRUE;
+	case GDK_F3:
+		dbgmem_button3_clicked(NULL, NULL);
+		return TRUE;
+	case GDK_F4:
+		dbgmem_button4_clicked(NULL, NULL);
+		return TRUE;
+	case GDK_F5:
+		dbgmem_button5_clicked(NULL, NULL);
+		return TRUE;
+	case GDK_F6:
+		dbgmem_button6_clicked(NULL, NULL);
+		return TRUE;
+	case GDK_F7:
+		gtk_notebook_next_page(nb);
+		return TRUE;
+	case GDK_F8:
+		gtk_notebook_prev_page(nb);
+		return TRUE;
+	default:
+		return FALSE;
+	}
+
+    return FALSE;
+}
+
 static gboolean
 on_treeview_key_press_event            (GtkWidget       *widget,
                                         GdkEventKey     *event,
@@ -980,7 +1020,7 @@ on_treeview_key_press_event            (GtkWidget       *widget,
 
         return FALSE;
 
-    case GDK_F3:
+    case GDK_n:
 		search_next();
 		return TRUE;
 

@@ -5,12 +5,12 @@
  */
 
 gchar *s = N_("Memory");
-gchar *s = N_("Add tab");
-gchar *s = N_("Remove tab");
-gchar *s = N_("Up");
-gchar *s = N_("Down");
-gchar *s = N_("Refresh tab");
-gchar *s = N_("View memory map");
+gchar *s = N_("Add tab (F1)");
+gchar *s = N_("Remove tab (F2)");
+gchar *s = N_("Up (F3)");
+gchar *s = N_("Down (F4)");
+gchar *s = N_("Refresh tab (F5)");
+gchar *s = N_("View memory map (F6)");
 gchar *s = N_("Enter Address");
 gchar *s = N_("000000");
 gchar *s = N_("HEX address");

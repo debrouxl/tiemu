@@ -19,6 +19,7 @@
   <property name="focus_on_map">True</property>
   <signal name="delete_event" handler="on_dbgmem_window_delete_event" last_modification_time="Mon, 07 Jun 2004 08:10:33 GMT"/>
   <signal name="window_state_event" handler="on_dbgmem_window_state_event" last_modification_time="Sun, 27 Feb 2005 08:31:10 GMT"/>
+  <signal name="key_press_event" handler="on_dbgmem_key_press_event" last_modification_time="Thu, 15 Nov 2007 14:58:46 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox1">
@@ -37,7 +38,7 @@
 	  <child>
 	    <widget class="GtkToolButton" id="button1">
 	      <property name="visible">True</property>
-	      <property name="tooltip" translatable="yes">Add tab</property>
+	      <property name="tooltip" translatable="yes">Add tab (F1)</property>
 	      <property name="stock_id">gtk-add</property>
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
@@ -53,7 +54,7 @@
 	  <child>
 	    <widget class="GtkToolButton" id="button2">
 	      <property name="visible">True</property>
-	      <property name="tooltip" translatable="yes">Remove tab</property>
+	      <property name="tooltip" translatable="yes">Remove tab (F2)</property>
 	      <property name="stock_id">gtk-remove</property>
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
@@ -88,7 +89,7 @@
 	  <child>
 	    <widget class="GtkToolButton" id="button3">
 	      <property name="visible">True</property>
-	      <property name="tooltip" translatable="yes">Up</property>
+	      <property name="tooltip" translatable="yes">Up (F3)</property>
 	      <property name="stock_id">gtk-go-up</property>
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
@@ -104,7 +105,7 @@
 	  <child>
 	    <widget class="GtkToolButton" id="button4">
 	      <property name="visible">True</property>
-	      <property name="tooltip" translatable="yes">Down</property>
+	      <property name="tooltip" translatable="yes">Down (F4)</property>
 	      <property name="stock_id">gtk-go-down</property>
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
@@ -120,7 +121,7 @@
 	  <child>
 	    <widget class="GtkToolButton" id="button5">
 	      <property name="visible">True</property>
-	      <property name="tooltip" translatable="yes">Refresh tab</property>
+	      <property name="tooltip" translatable="yes">Refresh tab (F5)</property>
 	      <property name="stock_id">gtk-refresh</property>
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
@@ -155,7 +156,7 @@
 	  <child>
 	    <widget class="GtkToolButton" id="button6">
 	      <property name="visible">True</property>
-	      <property name="tooltip" translatable="yes">View memory map</property>
+	      <property name="tooltip" translatable="yes">View memory map (F6)</property>
 	      <property name="stock_id">gtk-justify-fill</property>
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
@@ -185,6 +186,7 @@
 	  <property name="scrollable">False</property>
 	  <property name="enable_popup">False</property>
 	  <signal name="switch_page" handler="on_notebook1_switch_page" last_modification_time="Thu, 10 Jun 2004 14:16:46 GMT"/>
+	  <signal name="key_press_event" handler="on_dbgmem_key_press_event" last_modification_time="Thu, 15 Nov 2007 14:55:46 GMT"/>
 	</widget>
 	<packing>
 	  <property name="padding">0</property>
@@ -334,7 +336,7 @@
       <property name="label" translatable="yes">Find _next</property>
       <property name="use_underline">True</property>
       <signal name="activate" handler="on_find_next1_activate" last_modification_time="Mon, 02 Aug 2004 14:40:43 GMT"/>
-      <accelerator key="F3" modifiers="0" signal="activate"/>
+      <accelerator key="N" modifiers="GDK_CONTROL_MASK" signal="activate"/>
     </widget>
   </child>
 

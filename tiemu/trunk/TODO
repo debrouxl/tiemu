@@ -52,7 +52,7 @@ post 297 (Pollux):
 
 - fenêtre memory 
  * scroll un peu lent 
- * pas de raccourcis clavier: Ajouter/Suprimer des onglets, et se déplacer d'onglet en onglet. Pour pouvoir naviguer sans toucher à la souris quoi.
+ x pas de raccourcis clavier: Ajouter/Suprimer des onglets, et se déplacer d'onglet en onglet. Pour pouvoir naviguer sans toucher à la souris quoi.
 
 x idée d'amélioration : ajouter via le clic droit "ouvrir cette adresse dans la fenêtre memory" 
   (sur toutes les adresses, aussi bien dans code/disassembly/memory/stack [bon ok pour les 2 derniers c'est un peu plus 
