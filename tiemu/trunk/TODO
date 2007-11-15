@@ -16,6 +16,7 @@ x = done
 * Si on appuie sur F11 lors du chargement (preloading débugger), au tout début ça fait crasher TiEmu, et vers la fin ça affiche les fenêtres du débogueur, mais elles sont toutes grisées et la calc semble fonctionner normalement (mais dur à reproduire ça, ça doit être à un moment très précis).
 * Si on appuie sur F12 lors du chargement (preloading debugger), le menu des ROMs se présente, mais on peut choisir ce qu'on veut, ça ne change strictement rien, et le modèle de calc par défaut se charge. Le clignotement du curseur dans HOME est alors anormal (trop rapide), mais régulier.
 x ça serait possible que les deux touches Ctrl soient reconnues comme <> svp?
+* çà serait possible que la touche ENTER du pavé numérique soit reconnue comme ENTER?
 
 post 297 (Pollux):
 <<
@@ -25,7 +26,7 @@ post 297 (Pollux):
 
 - fenêtre code 
  * désassembleur : 
-  - je trouve pas les 0 inutiles très lisible : rol.l #$00000007,d0 :/ (VTI, lui, supprime toujours les 0 de tête) 
+  x je trouve pas les 0 inutiles très lisible : rol.l #$00000007,d0 :/ (VTI, lui, supprime toujours les 0 de tête) 
   - c'est un peu dommage de pas pouvoir distinguer move.l de moveq, idem pour addq/subq (perso j'arrive 
     pas à compter les cycles ou la taille du premier coup d'oeil si il faut regarder les opérandes en détail 
     pour savoir si c'est un moveq ou un move.l) 
@@ -40,11 +41,11 @@ post 297 (Pollux):
   - rts.l  #trifus#  
   - il y a "bt<tab>.b" au lieu de "bt.b<tab>" (et sinon bra serait plus joli que bt)
  * impossible de savoir si l'instruction sélectionnée est l'instruction courante
- * les "= bidule" pourraient peut-être être colorés, je ne sais pas si c'est possible (d'ailleurs les conventions 
-   ne sont pas très cohérentes, un coup c'est [42a1], un coup c'est [$42a1], un coup c'est = $42a1) 
+ * les "= bidule" pourraient peut-être être colorés, je ne sais pas si c'est possible
+ x les conventions ne sont pas très cohérentes, un coup c'est [42a1], un coup c'est [$42a1], un coup c'est = $42a1) 
 
 - fenêtre registres 
- * les "D3=" sont sélectionnables
+ x les "D3=" sont sélectionnables mais
  x le double clic ne sélectionne qu'un groupe de chiffres ou un groupe de lettres mais pas la valeur hexa entière 
 
 - fenêtre stack 

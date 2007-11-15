@@ -114,6 +114,25 @@ static int match_opcode(const char *opcode)
 	return -1;
 }
 
+static int suppress_zeros(char *str)
+{
+	char *p = NULL;
+	char *q;
+	
+	
+	p = strchr(str, '$');
+	if(p == NULL)
+		return -1;
+
+	for(q = ++p; *q == '0'; q++);
+	if(!isxdigit(*q))
+		q--;
+
+	strcpy(p, q);
+
+	return (q - p);
+}
+
 // do the same work as m68k_disasm but some UAE instructions 
 // use a weird naming scheme, remap them!
 int m68k_dasm(char **line, uint32_t addr)
@@ -124,6 +143,9 @@ int m68k_dasm(char **line, uint32_t addr)
 	int idx;
 
 	offset = m68k_disasm(output, addr);
+
+	// suppress leading zeros
+	suppress_zeros(output);
 
 	// split string into address, opcode and operand
 	split = g_strsplit(output, " ", 3);
