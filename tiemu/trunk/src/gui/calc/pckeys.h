@@ -195,6 +195,8 @@
 #define PCKEY_RETURN 0x24
 #define PCKEY_SHIFT_L 0x32
 #define PCKEY_CONTROL_L 0x25
+#define PCKEY_SHIFT_R 0x3e
+#define PCKEY_CONTROL_R 0x6d
 #define PCKEY_MENU 0x40
 #define PCKEY_PAUSE 0x6E
 #define PCKEY_CAPITAL 0x42
