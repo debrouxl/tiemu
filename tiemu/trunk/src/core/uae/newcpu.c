@@ -1268,7 +1268,7 @@ void m68k_mull (uae_u32 opcode, uae_u32 src, uae_u16 extra)
 }
 #ifdef NO_GDB
 static char* ccnames[] =
-{ "T ","F ","HI","LS","CC","CS","NE","EQ",
+{ "RA","F","HI","LS","CC","CS","NE","EQ",
   "VC","VS","PL","MI","GE","LT","GT","LE" };
 #endif /* NO_GDB */
 

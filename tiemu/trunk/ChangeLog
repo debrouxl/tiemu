@@ -19,6 +19,7 @@ SubVersion: $Id$
 	- [roms]  $2665: fixed disassembly of MOVEP instruction
 	- [roms]  $2666: fixed disassembly of MOVEQ instruction
 	- [roms]  $2667: fixed disassembly of ori/andi/eori, addi/subi/cmpi, lea/rts instructions
+	- [roms]  $2668: fixed disassembly of BT<tab>.W and changed BT into BRA
 
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)

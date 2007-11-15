@@ -38,7 +38,7 @@ post 297 (Pollux):
    * VTI utilise lea (-$c,a3),a3 au lieu de lea ($fff4,a3),a3, c'est plus lisible 
   x il y a "trap .l" au lieu de "trap #$C" 
   x rts.l  (heu!??)
-  - il y a "bt<tab>.b" au lieu de "bt.b<tab>" (et sinon bra serait plus joli que bt)
+  x il y a "bt<tab>.b" au lieu de "bt.b<tab>" (et sinon bra serait plus joli que bt)
  * impossible de savoir si l'instruction sélectionnée est l'instruction courante
  * les "= bidule" pourraient peut-être être colorés, je ne sais pas si c'est possible
  x les conventions ne sont pas très cohérentes, un coup c'est [42a1], un coup c'est [$42a1], un coup c'est = $42a1) 
