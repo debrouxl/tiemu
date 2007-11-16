@@ -141,8 +141,12 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
      case Ad16:
 	disp16 = get_iword_1 (m68kpc_offset); m68kpc_offset += 2;
 	addr = m68k_areg(regs,reg) + (uae_s16)disp16;
-	sprintf (buffer,"(A%d,$%04X) [%s]", reg, disp16 & 0xffff,
-					sym_addr ((uae_u32)addr));
+	
+	if (disp16 & 0x8000)
+		sprintf (buffer,"(A%d,-$%X) [%s]", reg, (-(uae_s16)(disp16)) & 0xffff, sym_addr ((uae_u32)addr));
+	else
+		sprintf (buffer,"(A%d,$%X) [%s]", reg, disp16 & 0xffff, sym_addr ((uae_u32)addr));
+	
 	break;
      case Ad8r:
 	dp = get_iword_1 (m68kpc_offset); m68kpc_offset += 2;
@@ -171,16 +175,15 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	    if (dp & 4) base += dispreg;
 
 	    addr = base + outer;
-	    sprintf (buffer,"(%s%c%d.%c*%d+%ld)+%ld == $%06lX", name,
+	    sprintf (buffer,"(%s%c%d.%c+%ld)+%ld [$%06lX]", name,
 		    dp & 0x8000 ? 'A' : 'D', (int)r, dp & 0x800 ? 'L' : 'W',
-		    1 << ((dp >> 9) & 3),
 		    disp,outer,
 		    (unsigned long)addr);
 	} else {
 	  addr = m68k_areg(regs,reg) + (uae_s32)((uae_s8)disp8) + dispreg;
-	  sprintf (buffer,"(A%d, %c%d.%c*%d, $%02X) == $%06lX", reg,
+	  sprintf (buffer,"(A%d, %c%d.%c, $%02X) [$%06lX]", reg,
 	       dp & 0x8000 ? 'A' : 'D', (int)r, dp & 0x800 ? 'L' : 'W',
-	       1 << ((dp >> 9) & 3), disp8,
+	       disp8,
 	       (unsigned long)addr);
 	}
 	break;
@@ -188,7 +191,10 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	addr = m68k_getpc () + m68kpc_offset;
 	disp16 = get_iword_1 (m68kpc_offset); m68kpc_offset += 2;
 	addr += (uae_s16)disp16;
-	sprintf (buffer,"(PC,$%04X) [%s]", disp16 & 0xffff, sym_addr ((uae_u32)addr));
+	if (disp16 & 0x8000)
+		sprintf (buffer,"(PC,-$%X) [%s]", (-(uae_s16)(disp16)) & 0xffff, sym_addr ((uae_u32)addr));
+	else
+		sprintf (buffer,"(PC,$%X) [%s]", disp16 & 0xffff, sym_addr ((uae_u32)addr));
 	break;
      case PC8r:
 	addr = m68k_getpc () + m68kpc_offset;
@@ -218,20 +224,19 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	    if (dp & 4) base += dispreg;
 
 	    addr = base + outer;
-	    sprintf (buffer,"(%s%c%d.%c*%d+%ld)+%ld [%s]", name,
+	    sprintf (buffer,"(%s%c%d.%c+%ld)+%ld [%s]", name,
 		    dp & 0x8000 ? 'A' : 'D', (int)r, dp & 0x800 ? 'L' : 'W',
-		    1 << ((dp >> 9) & 3),
 		    disp,outer,
 		    sym_addr ((uae_u32)addr));
 	} else {
 	  addr += (uae_s32)((uae_s8)disp8) + dispreg;
-	  sprintf (buffer,"(PC, %c%d.%c*%d, $%02X) [%s]", dp & 0x8000 ? 'A' : 'D',
-		(int)r, dp & 0x800 ? 'L' : 'W',  1 << ((dp >> 9) & 3),
+	  sprintf (buffer,"(PC, %c%d.%c, $%02X) [%s]", dp & 0x8000 ? 'A' : 'D',
+		(int)r, dp & 0x800 ? 'L' : 'W',
 		disp8, sym_addr ((uae_u32)addr));
 	}
 	break;
      case absw:
-	sprintf (buffer,"$%04lX", (unsigned long)(uae_s32)(uae_s16)get_iword_1 (m68kpc_offset));
+	sprintf (buffer,"$%lX", (unsigned long)(uae_s32)(uae_s16)get_iword_1 (m68kpc_offset));
 	m68kpc_offset += 2;
 	break;
      case absl:
@@ -241,15 +246,15 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
      case imm:
 	switch (size){
 	 case sz_byte:
-	    sprintf (buffer,"#$%02X", (unsigned int)(get_iword_1 (m68kpc_offset) & 0xff));
+	    sprintf (buffer,"#$%X", (unsigned int)(get_iword_1 (m68kpc_offset) & 0xff));
 	    m68kpc_offset += 2;
 	    break;
 	 case sz_word:
-	    sprintf (buffer,"#$%04X", (unsigned int)(get_iword_1 (m68kpc_offset) & 0xffff));
+	    sprintf (buffer,"#$%X", (unsigned int)(get_iword_1 (m68kpc_offset) & 0xffff));
 	    m68kpc_offset += 2;
 	    break;
 	 case sz_long:
-	    sprintf (buffer,"#$%08lX", (unsigned long)(get_ilong_1 (m68kpc_offset)));
+	    sprintf (buffer,"#$%lX", (unsigned long)(get_ilong_1 (m68kpc_offset)));
 	    m68kpc_offset += 4;
 	    break;
 	 default:
@@ -259,21 +264,21 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
      case imm0:
 	offset = (uae_s32)(uae_s8)get_iword_1 (m68kpc_offset);
 	m68kpc_offset += 2;
-	sprintf (buffer,"#$%02X", (unsigned int)(offset & 0xff));
+	sprintf (buffer,"#$%X", (unsigned int)(offset & 0xff));
 	break;
      case imm1:
 	offset = (uae_s32)(uae_s16)get_iword_1 (m68kpc_offset);
 	m68kpc_offset += 2;
-	sprintf (buffer,"#$%04X", (unsigned int)(offset & 0xffff));
+	sprintf (buffer,"#$%X", (unsigned int)(offset & 0xffff));
 	break;
      case imm2:
 	offset = (uae_s32)get_ilong_1 (m68kpc_offset);
 	m68kpc_offset += 4;
-	sprintf (buffer,"#$%08lX", (unsigned long)offset);
+	sprintf (buffer,"#$%lX", (unsigned long)offset);
 	break;
      case immi:
 	offset = (uae_s32)(uae_s8)(reg & 0xff);
-	sprintf (buffer,"#$%08lX", (unsigned long)offset);
+	sprintf (buffer,"#$%lX", (unsigned long)offset);
 	break;
      default:
 	break;

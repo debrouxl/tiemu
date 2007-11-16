@@ -12,7 +12,7 @@ SubVersion: $Id$
 		re-enabled popup menu (go to address).
 	- [roms]  $2659: mapped both CTRL keys to Diamond & both SHIFT keys to 2nd
 	- [roms]  $2660: added a popup menu with "View _memory" on any debugger window
-	- [roms]  $2661: unified displaying of hexadecimal values (removed '$' and ''0x' heading chars)
+	- [roms]  $2661: unified displaying of hexadecimal values (removed '$' and ''0x' heading chars) in boxes
 	- [roms]  $2662: suppress leading zeros like VTi does
 	- [roms]  $2663: some instructions (trap, rts, reset...) was suffixed with .L which is not needed
 	- [roms]  $2664: fixed wrong disassembly offset of MOVEM.L instruction
@@ -22,6 +22,8 @@ SubVersion: $Id$
 	- [roms]  $2668: fixed disassembly of BT<tab>.W and changed BT into BRA
 	- [roms]  $2669: added accelerator keys (F1..F8) in memory window
 	- [roms]  $2670: map numerical ENTER key to TIKEY_ENTER on ti89, too
+	- [roms]  $2672: unified displaying of hexadecimal values in the disassembler('$', '[' and '==' heading chars);
+		displayed offset as signed values
 	
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)

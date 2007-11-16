@@ -16,7 +16,7 @@ x = done
 * Si on appuie sur F11 lors du chargement (preloading débugger), au tout début ça fait crasher TiEmu, et vers la fin ça affiche les fenêtres du débogueur, mais elles sont toutes grisées et la calc semble fonctionner normalement (mais dur à reproduire ça, ça doit être à un moment très précis).
 * Si on appuie sur F12 lors du chargement (preloading debugger), le menu des ROMs se présente, mais on peut choisir ce qu'on veut, ça ne change strictement rien, et le modèle de calc par défaut se charge. Le clignotement du curseur dans HOME est alors anormal (trop rapide), mais régulier.
 x ça serait possible que les deux touches Ctrl soient reconnues comme <> svp?
-* çà serait possible que la touche ENTER du pavé numérique soit reconnue comme ENTER?
+x çà serait possible que la touche ENTER du pavé numérique soit reconnue comme ENTER sur ti89?
 
 post 297 (Pollux):
 <<
@@ -34,8 +34,8 @@ post 297 (Pollux):
   - pour les adressages indexés : 
    * il vaudrait mieux mettre la constante avant le registre, c'est mieux d'avoir lea ($42,a3),a3 pour 
      voir du premier coup d'oeil que a3 et a3 c'est bien le même registre 
-   * (a3,d0.l*1) : le *1 ne sert à rien, surtout sur 68000 
-   * VTI utilise lea (-$c,a3),a3 au lieu de lea ($fff4,a3),a3, c'est plus lisible 
+   x (a3,d0.l*1) : le *1 ne sert à rien, surtout sur 68000 
+   x VTI utilise lea (-$c,a3),a3 au lieu de lea ($fff4,a3),a3, c'est plus lisible 
   x il y a "trap .l" au lieu de "trap #$C" 
   x rts.l  (heu!??)
   x il y a "bt<tab>.b" au lieu de "bt.b<tab>" (et sinon bra serait plus joli que bt)
@@ -51,7 +51,7 @@ post 297 (Pollux):
  * +4 / +2 / 0 / +2 / +4 / ... au lieu de -4 / -2 / 0 / +2 / +4 / ... 
 
 - fenêtre memory 
- * scroll un peu lent 
+ x scroll un peu lent 
  x pas de raccourcis clavier: Ajouter/Suprimer des onglets, et se déplacer d'onglet en onglet. Pour pouvoir naviguer sans toucher à la souris quoi.
 
 x idée d'amélioration : ajouter via le clic droit "ouvrir cette adresse dans la fenêtre memory" 
