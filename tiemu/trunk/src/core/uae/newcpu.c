@@ -23,8 +23,6 @@
 // tiemu begin
 #include "tilibs.h"
 #include "ti68k_def.h"
-#include "memory.h"
-#include "../ti_hw/dbus.h"
 #include "bkpts.h"
 #define write_log printf
 static const struct uae_prefs currprefs = {0, 1, 1};
@@ -32,8 +30,6 @@ static const struct uae_prefs currprefs = {0, 1, 1};
 extern const char *symfile;
 #endif /* CYGNUS_SIM */
 #define FLOATFORMAT_H /* don't include glib.h in romcalls.h */
-#include "../ti_sw/romcalls.h"
-#include "../ti_sw/handles.h"
 // tiemu end
 
 /* Opcode of faulting instruction */
@@ -283,7 +279,7 @@ static struct regstruct regs_backup[16];
 static int backup_pointer = 0;
 #endif /* 0 */
 #ifdef NO_GDB
-static long int m68kpc_offset;
+long int m68kpc_offset;
 #endif /* NO_GDB */
 int lastint_no;
 
@@ -291,7 +287,7 @@ int lastint_no;
 #define get_iword_1(o) get_word(regs.pc + (regs.pc_p - regs.pc_oldp) + (o))
 #define get_ilong_1(o) get_long(regs.pc + (regs.pc_p - regs.pc_oldp) + (o))
 
-#ifdef NO_GDB
+#if 0
 
 #ifdef __WIN32__
 #define snprintf	_snprintf
@@ -1657,7 +1653,7 @@ static void m68k_verify (uaecptr addr, uaecptr *nextpc)
 }
 #endif /* 0 */
 
-#ifdef NO_GDB
+#if 0
 int DasmFPU(uint16_t code, char *buf);
 
 int m68k_disasm (char *output, uaecptr addr)
