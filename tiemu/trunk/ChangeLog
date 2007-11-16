@@ -22,8 +22,10 @@ SubVersion: $Id$
 	- [roms]  $2668: fixed disassembly of BT<tab>.W and changed BT into BRA
 	- [roms]  $2669: added accelerator keys (F1..F8) in memory window
 	- [roms]  $2670: map numerical ENTER key to TIKEY_ENTER on ti89, too
-	- [roms]  $2672: unified displaying of hexadecimal values in the disassembler('$', '[' and '==' heading chars);
+	- [roms]  $2672: moved UAE disassembler into disasm.c file
+	- [roms]  $2673: unified displaying of hexadecimal values in the disassembler('$', '[' and '==' heading chars);
 		displayed offset as signed values
+	- [roms]  $2674: display "($42,a3),a3" instead of "(a3,$42),a3)" in disassembler
 	
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)

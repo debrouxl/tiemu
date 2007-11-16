@@ -28,11 +28,11 @@ post 297 (Pollux):
  * désassembleur : 
   x je trouve pas les 0 inutiles très lisible : rol.l #$00000007,d0 :/ (VTI, lui, supprime toujours les 0 de tête) 
   x c'est un peu dommage de pas pouvoir distinguer move.l de moveq, 
-  - c'est un peu dommage de pas pouvoir distinguer addq/subq => a priori non distinguable...
+  - c'est un peu dommage de pas pouvoir distinguer addq/subq
   - movem.l #$masque_incompréhensible, il vaudrait mieux les registres comme dans VTI 
   x movem.l prend 2 octets de trop donc il "mange" l'instruction suivante 
   - pour les adressages indexés : 
-   * il vaudrait mieux mettre la constante avant le registre, c'est mieux d'avoir lea ($42,a3),a3 pour 
+   x il vaudrait mieux mettre la constante avant le registre, c'est mieux d'avoir lea ($42,a3),a3 pour 
      voir du premier coup d'oeil que a3 et a3 c'est bien le même registre 
    x (a3,d0.l*1) : le *1 ne sert à rien, surtout sur 68000 
    x VTI utilise lea (-$c,a3),a3 au lieu de lea ($fff4,a3),a3, c'est plus lisible 
@@ -40,7 +40,7 @@ post 297 (Pollux):
   x rts.l  (heu!??)
   x il y a "bt<tab>.b" au lieu de "bt.b<tab>" (et sinon bra serait plus joli que bt)
  * impossible de savoir si l'instruction sélectionnée est l'instruction courante
- * les "= bidule" pourraient peut-être être colorés, je ne sais pas si c'est possible
+ ? les "= bidule" pourraient peut-être être colorés, je ne sais pas si c'est possible
  x les conventions ne sont pas très cohérentes, un coup c'est [42a1], un coup c'est [$42a1], un coup c'est = $42a1) 
 
 - fenêtre registres 
