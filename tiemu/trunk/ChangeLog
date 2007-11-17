@@ -27,11 +27,14 @@ SubVersion: $Id$
 		displayed offset as signed values
 	- [roms]  $2674: display "($42,a3),a3" instead of "(a3,$42),a3)" in disassembler
 	- [roms]  $2675: reject computed value [%lX] at end of line rather than in the middle of the instruction
+
 	- [roms]  $2676: in the bkpts window, the fifth toolbar button (go to address) is not restricted to code
 		breakpoint any longer; it works on any breakpoint type.
 			Kevin: j'ai remarqué que pour les breakpoints du type 'pgm entry', l'addresse du handle obtenue par ce bouton
 			n'est pas la même que celle affichée par la fenêtre 'heap'. Néanmoins, celle de la fenêtre heap semble incorrecte
 			puisqu'elle me fait atterir sur une instruction ILLEGAL... Peux-tu jeter un coup d'oeil ?
+
+	- [roms]  $2678: replaced currently selected instruction in code windows by an icon (arrow)
 	
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)

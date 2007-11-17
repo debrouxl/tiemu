@@ -50,10 +50,10 @@ gint reset_disabled = FALSE;
 
 enum { 
 	    COL_ICON, COL_ADDR, COL_OPCODE, COL_OPERAND,
-        COL_HEXADDR, COL_FONT, COL_COLOR
+        COL_HEXADDR, COL_FONT,
 };
 #define CLIST_NVCOLS	(4)		// 4 visible columns
-#define CLIST_NCOLS		(7)		// 7 real columns
+#define CLIST_NCOLS		(6)		// 7 real columns
 
 #define FONT_NAME	"courier"
 
@@ -78,7 +78,7 @@ static GtkListStore* clist_create(GtkWidget *widget)
 	store = gtk_list_store_new(CLIST_NCOLS,
 				GDK_TYPE_PIXBUF, 
                 G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-                G_TYPE_INT, G_TYPE_STRING, GDK_TYPE_COLOR,
+                G_TYPE_INT, G_TYPE_STRING,
 				-1
             );
     model = GTK_TREE_MODEL(store);
@@ -99,7 +99,6 @@ static GtkListStore* clist_create(GtkWidget *widget)
 		gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i,
-			"background-gdk", COL_COLOR,
 			NULL);
 	}
     
@@ -122,19 +121,12 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
     GtkTreeIter iter;
     GdkPixbuf *pix;
     gint i;
-    GdkColor *color, color1, color2;
-	gboolean success;
     uint32_t pc = ti68k_debug_get_pc();
 
 	/* We can't start disassembling stuff before GDB is even loaded, and in the
 	   cases where we have GDB running, but not the debugger, it's just a waste
 	   of time. */
 	if (!dbg_on) return;
-
-	gdk_color_parse("White", &color1);
-	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color1, 1, FALSE, FALSE, &success);
-	gdk_color_parse("Green", &color2);
-	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color2, 1, FALSE, FALSE, &success);
 
     for(i = 0; i < NLINES; i++)
     {
@@ -162,12 +154,14 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
 		else
 			row_text[2] = g_strdup(split[2]);
 
-		if(g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL)
-                pix = create_pixbuf("bkpt.xpm");
+		if((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr != pc))
+            pix = create_pixbuf("bkpt.xpm");
+		else if((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr == pc))
+			pix = create_pixbuf("run_2.xpm");
+		else if(addr == pc)
+			pix = create_pixbuf("run_1.xpm");
         else
-                pix = create_pixbuf("void.xpm");
-
-        color = (addr == pc) ? &color2 : &color1;
+            pix = create_pixbuf("void.xpm");
 
         gtk_list_store_append(store, &iter);
 	    gtk_list_store_set(store, &iter, 
@@ -177,7 +171,6 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
         COL_OPERAND, row_text[2],
         COL_HEXADDR, value,
 		COL_FONT, FONT_NAME,
-		COL_COLOR, color,
 		-1);
 
         addr += offset;
@@ -213,9 +206,6 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
     uint32_t pc, old_pc;
     int found = 0;
 
-	GdkColor *color, color1, color2;
-	gboolean success;
-
     const int offset = 3;   // 3 instructions are still visible
     uint32_t addr3;
     gint i;
@@ -223,11 +213,6 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
 	// Data/Bit bkpt encounter after instruction execution so take care of this
 	addr3 = pc = ti68k_debug_get_pc();
 	old_pc = ti68k_debug_get_old_pc();
-
-	gdk_color_parse("White", &color1);
-	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color1, 1, FALSE, FALSE, &success);
-	gdk_color_parse("Green", &color2);
-	gdk_colormap_alloc_colors(gdk_colormap_get_system(), &color2, 1, FALSE, FALSE, &success);
 
     // check for refresh (search for pc)
     for(valid = gtk_tree_model_get_iter_first(model, &iter), i = 0;
@@ -277,16 +262,16 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
         gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
         sscanf(str, "%x", &addr);
 
-		color = (addr == pc) ? &color2 : &color1;
-
-        if(g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL)
+        if((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr != pc))
             pix = create_pixbuf("bkpt.xpm");
-		else if(g_list_find(bkpts.code, GINT_TO_POINTER(addr|BKPT_TMP_MASK)) != NULL)
-            pix = create_pixbuf("bkpt_tmp.xpm");
+		else if((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr == pc))
+            pix = create_pixbuf("run_2.xpm");
+		else if(addr == pc)
+			pix = create_pixbuf("run_1.xpm");
         else
             pix = create_pixbuf("void.xpm");
 
-        gtk_list_store_set(store, &iter, COL_ICON, pix, COL_COLOR, color, -1);
+        gtk_list_store_set(store, &iter, COL_ICON, pix, -1);
         g_free(str);
 		g_object_unref(pix);
     }
