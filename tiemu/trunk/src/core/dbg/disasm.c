@@ -482,9 +482,9 @@ static int match_opcode(const char *opcode)
 }
 
 // do the same work as m68k_disasm but some instructions dis-assembled by the
-// UAE engine use a weird/wrong naming scheme wo we remap them here rather than
-// touching the newcpu.c file because this file may be updated when upgrading
-// the UAE engine.
+// UAE engine use a weird/wrong naming scheme so we remap them here rather than
+// touching the newcpu.c & table68k files because this file may be updated when 
+// upgrading the UAE engine.
 int m68k_dasm(char **line, uint32_t addr)
 {
 	char output[1024];
@@ -676,6 +676,21 @@ int m68k_dasm(char **line, uint32_t addr)
 		default:
 			break;
 		}
+	}
+
+	// search for [value]
+	if(strchr(split[2], '['))
+	{
+		char *p = strchr(split[2], '[');
+		char *q = strrchr(split[2], ']');
+		char tmp[256];
+
+		p--;
+		q++;
+		strncpy(tmp, p, q - p);
+		tmp[q-p] = '\0';
+		strcpy(p, q);
+		strcat(split[2], tmp);
 	}
 	
 	*line = g_strdup_printf("%s %s %s", 

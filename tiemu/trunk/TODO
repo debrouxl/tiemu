@@ -21,11 +21,10 @@ x çà serait possible que la touche ENTER du pavé numérique soit reconnue comme E
 post 297 (Pollux):
 <<
 - débuggeur 
- * F5 sur un breakpoint ne fait que relancer le debugger sans rien exécuter 
+ ? F5 sur un breakpoint ne fait que relancer le debugger sans rien exécuter 
  * F8 foire qd la fonction skippée contient un breakpoint (freeze jusqu'à ce qu'on fasse F11) 
 
 - fenêtre code 
- * désassembleur : 
   x je trouve pas les 0 inutiles très lisible : rol.l #$00000007,d0 :/ (VTI, lui, supprime toujours les 0 de tête) 
   x c'est un peu dommage de pas pouvoir distinguer move.l de moveq, 
   - c'est un peu dommage de pas pouvoir distinguer addq/subq
@@ -48,7 +47,7 @@ post 297 (Pollux):
  x le double clic ne sélectionne qu'un groupe de chiffres ou un groupe de lettres mais pas la valeur hexa entière 
 
 - fenêtre stack 
- * +4 / +2 / 0 / +2 / +4 / ... au lieu de -4 / -2 / 0 / +2 / +4 / ... 
+ ? +4 / +2 / 0 / +2 / +4 / ... au lieu de -4 / -2 / 0 / +2 / +4 / ... 
 
 - fenêtre memory 
  x scroll un peu lent 

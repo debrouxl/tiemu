@@ -26,6 +26,7 @@ SubVersion: $Id$
 	- [roms]  $2673: unified displaying of hexadecimal values in the disassembler('$', '[' and '==' heading chars);
 		displayed offset as signed values
 	- [roms]  $2674: display "($42,a3),a3" instead of "(a3,$42),a3)" in disassembler
+	- [roms]  $2675: reject computed value [%lX] at end of line rather than in the middle of the instruction
 	
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)
