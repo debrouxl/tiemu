@@ -72,7 +72,7 @@ static GtkListStore* clist_create(GtkWidget *widget)
 	GtkTreeModel *model;
 	GtkCellRenderer *renderer;
 	GtkTreeSelection *selection;
-    const gchar *text[CLIST_NVCOLS] = { "", _("Address"), _("Opcode"), _("Operand") };
+    const gchar *text[CLIST_NVCOLS] = { "  ", _("Address"), _("Opcode"), _("Operand") };
     gint i;
 	
 	store = gtk_list_store_new(CLIST_NCOLS,
