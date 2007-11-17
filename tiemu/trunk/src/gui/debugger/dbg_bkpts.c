@@ -40,6 +40,7 @@
 #include "struct.h"
 #include "dbg_all.h"
 #include "bkpts.h"
+#include "handles.h"
 
 static GladeXML *xml = NULL;
 static GtkWidget *wnd = NULL;
@@ -701,7 +702,7 @@ dbgbkpts_button5_clicked                     (GtkButton       *button,
 		GtkTreeIter iter;
 		GtkTreePath *path = l->data;
         gchar** row_text = g_malloc0((CLIST_NVCOLS + 1) * sizeof(gchar *));
-        uint32_t type, addr;
+        uint32_t type, min, n, addr;
 			
 		gtk_tree_model_get_iter(model, &iter, path);
 		gtk_tree_model_get(model, &iter, 
@@ -713,13 +714,38 @@ dbgbkpts_button5_clicked                     (GtkButton       *button,
             -1);
 		
 		type = ti68k_string_to_bkpt_type(row_text[COL_TYPE]);
-		if(type == BK_TYPE_CODE)
-		{
-			// get address
-            sscanf(row_text[COL_START], "%x", &addr);
+		switch(type)
+        {
+        case BK_TYPE_CODE:
+            sscanf(row_text[COL_START], "%x", &min);
+			addr = BKPT_ADDR(min);
+          	dbgcode_disasm_at(addr);
+            break;
+        case BK_TYPE_EXCEPTION:
+            sscanf(row_text[COL_SYMBOL], "#%i", &n);
+			dbgcode_disasm_at(mem_rd_long(4*n));
+            break;
+        case BK_TYPE_ACCESS:
+		case BK_TYPE_RANGE:
+		case BK_TYPE_BIT:
+            sscanf(row_text[COL_START], "%x", &min);
+            addr = BKPT_ADDR(min);
+            dbgmem_add_tab(addr);
+            break;
+        case BK_TYPE_PGMENTRY:
+			{
+				gpointer data;
+				uint16_t handle, offset;
 
-			// populate code
-			dbgcode_disasm_at(addr);
+				gtk_tree_model_get(model, &iter, COL_DATA, &data, -1);
+
+				handle = GPOINTER_TO_INT(data) >> 16;
+				offset = GPOINTER_TO_INT(data) & 0xffff;
+				addr = heap_deref(handle) + offset;
+
+				dbgcode_disasm_at(addr);
+			}
+            break;
         }
         g_strfreev(row_text);
     }
