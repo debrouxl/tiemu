@@ -39,7 +39,7 @@ post 297 (Pollux):
   x rts.l  (heu!??)
   x il y a "bt<tab>.b" au lieu de "bt.b<tab>" (et sinon bra serait plus joli que bt)
  x impossible de savoir si l'instruction sélectionnée est l'instruction courante
- ? les "= bidule" pourraient peut-être être colorés, je ne sais pas si c'est possible
+ x les "= bidule" pourraient peut-être être colorés, je ne sais pas si c'est possible
  x les conventions ne sont pas très cohérentes, un coup c'est [42a1], un coup c'est [$42a1], un coup c'est = $42a1) 
 
 - fenêtre registres 
