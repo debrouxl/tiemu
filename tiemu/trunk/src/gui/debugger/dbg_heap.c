@@ -40,12 +40,10 @@
 #include "handles.h"
 
 enum { 
-	    COL_ID, COL_ADDR, COL_SIZE
+	    COL_ID, COL_ADDR, COL_SIZE, COL_FONT,
 };
 #define CLIST_NVCOLS	(3)		// visible columns
-#define CLIST_NCOLS		(3)		// real columns
-
-#define FONT_NAME	"courier"
+#define CLIST_NCOLS		(4)		// real columns
 
 static GtkListStore* clist_create(GtkWidget *widget)
 {
@@ -58,7 +56,7 @@ static GtkListStore* clist_create(GtkWidget *widget)
     gint i;
 	
 	store = gtk_list_store_new(CLIST_NCOLS,
-				G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+				G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
 				-1
             );
     model = GTK_TREE_MODEL(store);
@@ -73,6 +71,7 @@ static GtkListStore* clist_create(GtkWidget *widget)
 		gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i,
+			"font", COL_FONT,
 			NULL);
 	}
     
@@ -114,6 +113,9 @@ static void clist_populate(GtkListStore *store)
 		gtk_list_store_set(store, &iter, 
 		COL_ID, row_text[0], COL_ADDR, row_text[1], COL_SIZE, row_text[2],
 		-1);
+
+		if(options3.dbg_font_type)
+			gtk_list_store_set(store, &iter, COL_FONT, options3.dbg_font_name, -1);
 		
 		g_strfreev(row_text);
     }

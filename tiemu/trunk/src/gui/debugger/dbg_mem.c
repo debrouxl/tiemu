@@ -70,8 +70,6 @@ enum {
 #define CLIST_NVCOLS	(18)
 #define CLIST_NCOLS		(18 + 20)
 
-#define FONT_NAME	"courier"
-
 static gint column2index(GtkWidget *list, GtkTreeViewColumn * column)
 {
 	gint i;
@@ -315,9 +313,11 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 		gtk_list_store_set(store, &iter, 
 			COL_ADDR, str, 
 			COL_GRAY, &gray,
-			COL_FONT, FONT_NAME,            
 			-1);
 		g_free(str);
+
+		if(options3.dbg_font_type)
+			gtk_list_store_set(store, &iter, COL_FONT, options3.dbg_font_name, -1);
 
 		for(i = COL_0; i <= COL_F; i++)
 		{

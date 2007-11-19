@@ -39,12 +39,10 @@
 #include "dbg_all.h"
 
 enum { 
-	    COL_ADDR
+	    COL_ADDR, COL_FONT
 };
 #define CLIST_NVCOLS	(1)		// 1 visible columns
-#define CLIST_NCOLS		(1)		// 1 real columns
-
-#define FONT_NAME	"courier"
+#define CLIST_NCOLS		(2)		// 1 real columns
 
 static GtkListStore* clist_create(GtkWidget *widget)
 {
@@ -57,7 +55,7 @@ static GtkListStore* clist_create(GtkWidget *widget)
     gint i;
 	
 	store = gtk_list_store_new(CLIST_NCOLS,
-				G_TYPE_STRING,
+				G_TYPE_STRING, G_TYPE_STRING,
 				-1
             );
     model = GTK_TREE_MODEL(store);
@@ -71,6 +69,7 @@ static GtkListStore* clist_create(GtkWidget *widget)
 		renderer = gtk_cell_renderer_text_new();
 		gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
+			"font", COL_FONT,
             "text", i,
 			NULL);
 	}
@@ -106,6 +105,9 @@ static void clist_populate(GtkListStore *store)
 		gtk_list_store_set(store, &iter, 
 		COL_ADDR, str, 
 		-1);
+
+		if(options3.dbg_font_type)
+			gtk_list_store_set(store, &iter, COL_FONT, options3.dbg_font_name, -1);
 		
 		g_free(str);
     }

@@ -36,6 +36,7 @@ SubVersion: $Id$
 
 	- [roms]  $2678: replaced currently selected instruction in code windows by an icon (arrow)
 	- [roms]  $2679: reverted back rev. $2672 (disasm => UAE) and rev. $2668 (BRA => BT)
+	- [roms]  $2680: allow to change the font used in every debugger windows
 	
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)

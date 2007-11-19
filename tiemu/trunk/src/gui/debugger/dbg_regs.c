@@ -231,6 +231,7 @@ GtkWidget* dbgregs_create_window(void)
 	wregs.c = glade_xml_get_widget(xml, "checkbutton55");
 
 	// Change for a fixed size font
+#if 0
 	{
 		PangoContext *context;
 		PangoFontDescription *desc;
@@ -256,6 +257,25 @@ GtkWidget* dbgregs_create_window(void)
 			gtk_widget_modify_font(wregs.a[i], desc);
 		}
 	}
+#else
+	if(options3.dbg_font_type && options3.dbg_font_name)
+	{
+		PangoFontDescription *desc;
+		int i;
+
+		desc = pango_font_description_from_string(options3.dbg_font_name);
+
+		gtk_widget_modify_font(wregs.pc, desc);
+		gtk_widget_modify_font(wregs.sr, desc);
+		gtk_widget_modify_font(wregs.usp, desc);
+		gtk_widget_modify_font(wregs.ssp, desc);
+		for(i = 0; i < 8; i++)
+		{
+			gtk_widget_modify_font(wregs.d[i], desc);
+			gtk_widget_modify_font(wregs.a[i], desc);
+		}
+	}
+#endif
 
 	// Allocate colors
 	{

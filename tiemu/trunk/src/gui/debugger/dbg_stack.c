@@ -46,7 +46,6 @@ enum {
 #define CLIST_NVCOLS	(2)		// 1 visible columns
 #define CLIST_NCOLS		(3)		// 1 real columns
 
-#define FONT_NAME		"courier"
 #define DUMP_SIZE       10
 
 static GtkListStore* clist_create(GtkWidget *widget)
@@ -123,8 +122,10 @@ static void clist_populate(GtkListStore *store, gint target, gint offset)
 		str = g_strdup_printf("%04x", data);
         gtk_list_store_set(store, &iter, COL_DATA, str, -1);
         g_free(str);
-		
-        gtk_list_store_set(store, &iter, COL_FONT, FONT_NAME, -1);
+
+		if(options3.dbg_font_type)
+			gtk_list_store_set(store, &iter, COL_FONT, options3.dbg_font_name, -1);
+
     }
 }
 

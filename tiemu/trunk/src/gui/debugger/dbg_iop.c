@@ -51,8 +51,6 @@ enum
 #define CTREE_NVCOLS	(4)		// 2 visible columns
 #define CTREE_NCOLS		(9)		// 5 real columns
 
-#define FONT_NAME	"courier"
-
 // return value as string
 static char* rd_mem_as_str(IO_DEF *t)
 {
@@ -349,6 +347,8 @@ static void ctree_populate(GtkTreeStore *store)
 
 		gtk_tree_store_append(store, &iter0, NULL);
 		gtk_tree_store_set(store, &iter0, COL_NAME, s->name, -1);
+		if(options3.dbg_font_type)
+			gtk_tree_store_set(store, &iter0, COL_FONT, options3.dbg_font_name, -1);
 
 		// parse registers
 		for (j = 0; j < (int)g_node_n_children(node1); j++) 
@@ -370,11 +370,13 @@ static void ctree_populate(GtkTreeStore *store)
 					   COL_ADDR,  row_text[2], 
 					   COL_MASK,  row_text[3],
 					   COL_S, (gpointer)t,
-					   COL_FONT, FONT_NAME,
 					   COL_EDIT, TRUE,
 					   COL_BTNVIS, FALSE,
 					   COL_BTNACT, FALSE,
 					   -1);
+
+			if(options3.dbg_font_type)
+				gtk_tree_store_set(store, &iter1, COL_FONT, options3.dbg_font_name, -1);
 
 			g_strfreev(row_text);
 

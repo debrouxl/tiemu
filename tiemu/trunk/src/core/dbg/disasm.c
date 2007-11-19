@@ -76,6 +76,8 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 
 #else
 
+extern int m68k_disasm (char *output, uint32_t addr);
+
 static const char* instr[] = { 
 	"ORSR.B",  "ORSR.W",	/* ORI  #<data>,SR		*/
 	"ANDSR.B", "ANDSR.W",	/* ANDI #<data>,SR		*/

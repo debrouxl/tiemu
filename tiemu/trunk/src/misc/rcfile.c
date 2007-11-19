@@ -55,6 +55,8 @@ static char *rc_file;
 
 #define MAXCHARS 256
 
+#define DEFAULT_FONT_NAME	"Courier"
+
 /*
   Return the path where the config file is stored
 */
@@ -496,6 +498,20 @@ void rcfile_read(void)
 	  else stop(l);
 	  continue;
 	}
+
+	if( (p=find_str(buffer, "dbg_font_type=")) )
+	{
+	  if(!strcmp(p, "default")) options3.dbg_font_type = 0;
+	  else if(!strcmp(p, "custom")) options3.dbg_font_type = 1;
+	  else stop(l);
+	  continue;
+	}
+	if( (p=find_str(buffer, "dbg_font_name=")) )
+	{
+		g_free(options3.dbg_font_name);
+		options3.dbg_font_name = g_strdup(p);
+		continue;
+	}
     }
   fclose(txt);
 
@@ -776,6 +792,19 @@ void rcfile_write(void)
 	fprintf(txt, "wnd_transient=%s\n", options3.transient ? "yes" : "no");
  	fprintf(txt, "\n");
 
+	fprintf(txt, "dbg_font_type=");
+	switch(options3.dbg_font_type)
+	{
+	case 0: fprintf(txt, "default\n"); break;
+	case 1: fprintf(txt, "custom\n"); break;
+	default: fprintf(txt, "default\n"); break;
+	}
+	if(options3.dbg_font_name)
+	{
+		fprintf(txt, "dbg_font_name=%s\n", options3.dbg_font_name);
+ 		fprintf(txt, "\n");
+	}
+
 	fprintf(txt, "\n");
   fprintf(txt, "RC_END\n");
   fflush(txt);
@@ -902,4 +931,7 @@ void options3_set_default(void)
 	options3.iop.minimized = 0;
 
 	options3.transient = 0;
+	
+	options3.dbg_font_type = 0;
+	options3.dbg_font_name = g_strdup(DEFAULT_FONT_NAME);
 }

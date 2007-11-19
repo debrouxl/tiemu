@@ -55,8 +55,6 @@ enum {
 #define CLIST_NVCOLS	(4)		// 4 visible columns
 #define CLIST_NCOLS		(6)		// 7 real columns
 
-#define FONT_NAME	"courier"
-
 #ifdef FIXED_SIZE
 #define NLINES      10
 #else
@@ -99,6 +97,7 @@ static GtkListStore* clist_create(GtkWidget *widget)
 		gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i,
+			"font", COL_FONT,
 			NULL);
 	}
     
@@ -170,8 +169,10 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
 		COL_OPCODE, row_text[1],
         COL_OPERAND, row_text[2],
         COL_HEXADDR, value,
-		COL_FONT, FONT_NAME,
 		-1);
+
+		if(options3.dbg_font_type)
+			gtk_list_store_set(store, &iter, COL_FONT, options3.dbg_font_name, -1);
 
         addr += offset;
         g_strfreev(split);
@@ -1084,4 +1085,122 @@ on_linkport1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	display_loglink_dbox();
+}
+
+// Font change
+
+static GtkWidget *font;
+static gint tmp_type;
+static gchar *tmp_name;
+
+GLADE_CB void
+on_font_activate                       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	GladeXML *xml;
+	GtkWidget *dbox;
+	gpointer data;
+	gint result;
+	
+	xml = glade_xml_new
+		(tilp_paths_build_glade("dbg_code-2.glade"), "dbgcode_font", PACKAGE);
+	if (!xml)
+		g_error(_("%s: GUI loading failed!\n"), __FILE__);
+	glade_xml_signal_autoconnect(xml);
+	
+	dbox = glade_xml_get_widget(xml, "dbgcode_font");
+	font = glade_xml_get_widget(xml, "label5");
+
+	tmp_type = options3.dbg_font_type;
+	tmp_name = g_strdup(options3.dbg_font_name);
+
+	if(!tmp_type)
+	{
+		data = glade_xml_get_widget(xml, "radiobutton4");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
+		data = glade_xml_get_widget(xml, "button9");
+		gtk_widget_set_sensitive(GTK_WIDGET(data), FALSE);
+	}
+	else
+	{
+		data = glade_xml_get_widget(xml, "radiobutton6");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
+		if(options3.dbg_font_name)
+			gtk_label_set_text(GTK_LABEL(font), tmp_name);
+		data = glade_xml_get_widget(xml, "button9");
+		gtk_widget_set_sensitive(GTK_WIDGET(data), TRUE);
+	}
+
+	result = gtk_dialog_run(GTK_DIALOG(dbox));
+	switch (result) 
+	{
+	case GTK_RESPONSE_OK:
+		options3.dbg_font_type = tmp_type;
+		if(tmp_name)
+		{
+			g_free(options3.dbg_font_name);
+			options3.dbg_font_name = g_strdup(tmp_name);
+		}
+		break;
+	default:
+		break;
+	}
+
+	gtk_widget_destroy(dbox);
+	return;
+}
+
+GLADE_CB void
+on_radiobutton4_clicked                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	PangoContext *context;
+	PangoFontDescription *desc;
+
+	context = gtk_widget_get_pango_context(GTK_WIDGET(button));
+	desc = pango_context_get_font_description(context);
+	gtk_label_set_text(GTK_LABEL(font), pango_font_description_to_string(desc));
+
+	gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+	tmp_type = 0;
+}
+
+GLADE_CB void
+on_radiobutton6_clicked                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	if(tmp_name)
+		gtk_label_set_text(GTK_LABEL(font), tmp_name);
+
+	gtk_widget_set_sensitive(GTK_WIDGET(button), TRUE);
+	tmp_type = 1;
+}
+
+GLADE_CB void
+on_dbgcode_button9_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	gint result;
+	GtkWidget *dlg;
+	gchar *str;
+	
+	dlg = gtk_font_selection_dialog_new(_("Choose font..."));
+	if(tmp_name)
+		gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(dlg), tmp_name);
+	result = gtk_dialog_run(GTK_DIALOG(dlg));	
+
+	switch (result) 
+	{ 
+	case GTK_RESPONSE_OK:
+		str = gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dlg));
+		g_free(tmp_name);
+		tmp_name = g_strdup(str);
+		gtk_label_set_text(GTK_LABEL(font), str);
+		g_free(str);
+		break;
+	default:
+		break;
+	}
+
+	gtk_widget_destroy(dlg);
 }

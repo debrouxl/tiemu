@@ -113,6 +113,9 @@ typedef struct
 	gint		transient;
 
 	WinState	calc;
+
+	gint		dbg_font_type;
+	gchar*		dbg_font_name;
 } DbgOptions;
 
 extern TieOptions options;

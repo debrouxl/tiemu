@@ -47,10 +47,10 @@ static GtkWidget *wnd = NULL;
 
 enum { 
 	    COL_SYMBOL, COL_TYPE, COL_STATUS, COL_START, COL_END, COL_MODE,
-		COL_DATA
+		COL_DATA, COL_FONT
 };
 #define CLIST_NVCOLS	(6)		// 7 visible columns
-#define CLIST_NCOLS		(7)		// 7 real columns
+#define CLIST_NCOLS		(8)		// 7 real columns
 
 static GtkListStore* clist_create(GtkWidget *widget)
 {
@@ -66,7 +66,7 @@ static GtkListStore* clist_create(GtkWidget *widget)
 	
 	store = gtk_list_store_new(CLIST_NCOLS,
 				G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-				G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER,
+				G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_STRING,
 				-1
             );
     model = GTK_TREE_MODEL(store);
@@ -81,6 +81,7 @@ static GtkListStore* clist_create(GtkWidget *widget)
 		gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i,
+			"font", COL_FONT,
 			NULL);
 	}
     
@@ -142,7 +143,10 @@ static void clist_populate(GtkListStore *store)
         COL_MODE, BKPT_IS_TMP(addr) ? _("one-shot") : "",
 		COL_DATA, l->data,
 		-1);
-		
+/*
+		if(options3.dbg_font_type)
+			gtk_list_store_set(store, &iter, COL_FONT, options3.dbg_font_name, -1);
+*/		
 		g_free(str);
 	}
 
@@ -166,7 +170,10 @@ static void clist_populate(GtkListStore *store)
 		COL_MODE, "",
 		COL_DATA, l->data,
 		-1);
-		
+/*
+		if(options3.dbg_font_type)
+			gtk_list_store_set(store, &iter, COL_FONT, options3.dbg_font_name, -1);
+*/		
 		g_free(str1);
 		g_free(str2);
 	}
@@ -191,7 +198,10 @@ static void clist_populate(GtkListStore *store)
             COL_MODE, ti68k_bkpt_mode_to_string(BK_TYPE_ACCESS, bkpts_memacc_rw[i]),
 			COL_DATA, l->data,
 			-1);
-			
+/*
+			if(options3.dbg_font_type)
+				gtk_list_store_set(store, &iter, COL_FONT, options3.dbg_font_name, -1);
+*/			
 			g_free(str);
 		}
 	}
@@ -217,7 +227,10 @@ static void clist_populate(GtkListStore *store)
             COL_MODE, ti68k_bkpt_mode_to_string(BK_TYPE_RANGE, bkpts_memrng_rw[i]),
 			COL_DATA, l->data,
 			-1);
-			
+/*
+			if(options3.dbg_font_type)
+				gtk_list_store_set(store, &iter, COL_FONT, options3.dbg_font_name, -1);
+*/			
 			g_free(str1);
 			g_free(str2);
 		}
@@ -241,7 +254,10 @@ static void clist_populate(GtkListStore *store)
             COL_MODE, "",
 			COL_DATA, l->data,
 			-1);
-
+/*
+			if(options3.dbg_font_type)
+				gtk_list_store_set(store, &iter, COL_FONT, options3.dbg_font_name, -1);
+*/
 		g_free(str);
 	}
 
@@ -322,7 +338,10 @@ static void clist_populate(GtkListStore *store)
         COL_MODE, BKPT_IS_TMP(addr) ? _("one-shot") : "",
 		COL_DATA, l->data,
 		-1);
-		
+/*
+		if(options3.dbg_font_type)
+			gtk_list_store_set(store, &iter, COL_FONT, options3.dbg_font_name, -1);
+*/		
 		g_free(str);
 	}
 }

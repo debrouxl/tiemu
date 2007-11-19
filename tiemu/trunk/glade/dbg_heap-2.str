@@ -4,6 +4,6 @@
  * DO NOT compile it as part of your application.
  */
 
-gchar *s = N_("Heap (handles)");
+gchar *s = N_("Heap");
 gchar *s = N_("Double click rowl to open tab in the memory window at the handle address.");
 gchar *s = N_("View _memory");
