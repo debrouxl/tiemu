@@ -59,12 +59,12 @@
 0000 0000 0011 1100:00:XNZVC:XNZVC:10: ORSR.B  #1
 0000 0000 0111 1100:02:?????:?????:10: ORSR.W  #1
 0000 0zz0 11ss sSSS:20:?????:?????:11: CHK2.z  #1,s[!Dreg,Areg,Aipi,Apdi,Immd]
-0000 0000 zzdd dDDD:00:-NZ00:-----:13: OR.z    #z,d[!Areg]
+0000 0000 zzdd dDDD:00:-NZ00:-----:13: ORI.z   #z,d[!Areg]
 0000 0010 0011 1100:00:XNZVC:XNZVC:10: ANDSR.B #1
 0000 0010 0111 1100:02:?????:?????:10: ANDSR.W #1
-0000 0010 zzdd dDDD:00:-NZ00:-----:13: AND.z   #z,d[!Areg]
-0000 0100 zzdd dDDD:00:XNZVC:-----:13: SUB.z   #z,d[!Areg]
-0000 0110 zzdd dDDD:00:XNZVC:-----:13: ADD.z   #z,d[!Areg]
+0000 0010 zzdd dDDD:00:-NZ00:-----:13: ANDI.z  #z,d[!Areg]
+0000 0100 zzdd dDDD:00:XNZVC:-----:13: SUBI.z  #z,d[!Areg]
+0000 0110 zzdd dDDD:00:XNZVC:-----:13: ADDI.z  #z,d[!Areg]
 0000 0110 11ss sSSS:20:?????:?????:10: CALLM   s[!Dreg,Areg,Aipi,Apdi,Immd]
 0000 0110 11ss sSSS:20:?????:?????:10: RTM     s[Dreg,Areg]
 0000 1000 00ss sSSS:00:--Z--:-----:11: BTST    #1,s[!Areg]
@@ -73,8 +73,8 @@
 0000 1000 11ss sSSS:00:--Z--:-----:13: BSET    #1,s[!Areg,Immd]
 0000 1010 0011 1100:00:XNZVC:XNZVC:10: EORSR.B #1
 0000 1010 0111 1100:02:?????:?????:10: EORSR.W #1
-0000 1010 zzdd dDDD:00:-NZ00:-----:13: EOR.z   #z,d[!Areg]
-0000 1100 zzss sSSS:00:-NZVC:-----:11: CMP.z   #z,s[!Areg,Immd]
+0000 1010 zzdd dDDD:00:-NZ00:-----:13: EORI.z  #z,d[!Areg]
+0000 1100 zzss sSSS:00:-NZVC:-----:11: CMPI.z  #z,s[!Areg,Immd]
 
 0000 1010 11ss sSSS:20:?????:?????:13: CAS.B   #1,s[!Dreg,Areg,Immd,PC8r,PC16]
 0000 1100 11ss sSSS:20:?????:?????:13: CAS.W   #1,s[!Dreg,Areg,Immd,PC8r,PC16]
@@ -146,10 +146,10 @@
 
 0101 jjj0 01dd dDDD:00:-----:-----:13: ADDA.W  #j,d[Areg]
 0101 jjj0 10dd dDDD:00:-----:-----:13: ADDA.L  #j,d[Areg]
-0101 jjj0 zzdd dDDD:00:XNZVC:-----:13: ADD.z   #j,d[!Areg]
+0101 jjj0 zzdd dDDD:00:XNZVC:-----:13: ADDQ.z  #j,d[!Areg]
 0101 jjj1 01dd dDDD:00:-----:-----:13: SUBA.W  #j,d[Areg]
 0101 jjj1 10dd dDDD:00:-----:-----:13: SUBA.L  #j,d[Areg]
-0101 jjj1 zzdd dDDD:00:XNZVC:-----:13: SUB.z   #j,d[!Areg]
+0101 jjj1 zzdd dDDD:00:XNZVC:-----:13: SUBQ.z  #j,d[!Areg]
 0101 cccc 1100 1rrr:00:-----:-++++:31: DBcc.W  Dr,#1
 0101 cccc 11dd dDDD:00:-----:-++++:20: Scc.B   d[!Areg]
 0101 cccc 1111 1010:20:?????:?????:10: TRAPcc  #1
@@ -166,7 +166,7 @@
 0110 CCCC IIII IIII:00:-----:-++++:40: Bcc.B   #i
 0110 CCCC 1111 1111:00:-----:-++++:40: Bcc.L   #2
 
-0111 rrr0 iiii iiii:00:-NZ00:-----:12: MOVE.L  #i,Dr
+0111 rrr0 iiii iiii:00:-NZ00:-----:12: MOVEQ   #i,Dr
 
 1000 rrr0 zzss sSSS:00:-NZ00:-----:13: OR.z    s[!Areg],Dr
 1000 rrr0 11ss sSSS:00:?????:?????:13: DIVU.W  s[!Areg],Dr

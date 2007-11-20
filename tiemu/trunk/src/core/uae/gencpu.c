@@ -1016,12 +1016,15 @@ static void gen_opcode (unsigned long int opcode)
     case i_OR:
     case i_AND:
     case i_EOR:
+	case i_ORI:
+	case i_ANDI:
+	case i_EORI:
 	genamode (curi->smode, "srcreg", curi->size, "src", 1, 0, 0);
 	genamode (curi->dmode, "dstreg", curi->size, "dst", 1, 0, 0);
-	printf ("\tsrc %c= dst;\n", curi->mnemo == i_OR ? '|' : curi->mnemo == i_AND ? '&' : '^');
+	printf ("\tsrc %c= dst;\n", (curi->mnemo == i_OR || curi->mnemo == i_ORI) ? '|' : (curi->mnemo == i_AND || curi->mnemo == i_ANDI) ? '&' : '^');
 	genflags (flag_logical, curi->size, "src", "", "");
 	if (curi->size == sz_long && isreg (curi->dmode))
-	    tmpc += curi->mnemo == i_AND ? 2 : 4;
+	    tmpc += curi->mnemo == (i_AND || i_ANDI) ? 2 : 4;
 	fill_prefetch_next_delay (tmpc);
 	genastore ("src", curi->dmode, "dstreg", curi->size, "dst");
 	break;
@@ -1047,6 +1050,8 @@ static void gen_opcode (unsigned long int opcode)
 	printf ("\tMakeFromSR();\n");
 	break;
     case i_SUB:
+	case i_SUBQ:
+	case i_SUBI:
 	genamode (curi->smode, "srcreg", curi->size, "src", 1, 0, 0);
 	genamode (curi->dmode, "dstreg", curi->size, "dst", 1, 0, 0);
 	if (isreg (curi->dmode)) {
@@ -1102,6 +1107,8 @@ static void gen_opcode (unsigned long int opcode)
 	genastore ("newv", curi->dmode, "dstreg", curi->size, "dst");
 	break;
     case i_ADD:
+	case i_ADDQ:
+	case i_ADDI:
 	genamode (curi->smode, "srcreg", curi->size, "src", 1, 0, 0);
 	genamode (curi->dmode, "dstreg", curi->size, "dst", 1, 0, 0);
 	if (isreg (curi->dmode)) {
@@ -1272,6 +1279,7 @@ static void gen_opcode (unsigned long int opcode)
 	genflags (flag_cmp, curi->size, "newv", "src", "dst");
 	break;
     case i_CMP:
+	case i_CMPI:
 	genamode (curi->smode, "srcreg", curi->size, "src", 1, 0, 0);
 	genamode (curi->dmode, "dstreg", curi->size, "dst", 1, 0, 0);
 	if (isreg (curi->dmode)) {
@@ -1319,6 +1327,7 @@ static void gen_opcode (unsigned long int opcode)
 	genastore ("val", curi->dmode, "dstreg", curi->size, "dst");
 	break;
     case i_MOVE:
+	case i_MOVEQ:
 	genamode (curi->smode, "srcreg", curi->size, "src", 1, 0, 0);
 	genamode (curi->dmode, "dstreg", curi->size, "dst", 2, 0, GF_APDI);
 	genastore ("src", curi->dmode, "dstreg", curi->size, "dst");

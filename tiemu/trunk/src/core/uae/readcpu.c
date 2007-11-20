@@ -20,6 +20,16 @@
 int nr_cpuop_funcs;
 
 struct mnemolookup lookuptab[] = {
+	{ i_MOVEQ,"MOVEQ" },
+	{ i_ADDQ, "ADDQ" },
+	{ i_SUBQ, "SUBQ" },	
+	{ i_CMPI, "CMPI" },
+	{ i_ADDI, "ADDI" },
+	{ i_SUBI, "SUBI" },	
+	{ i_ORI,  "ORI"  },
+	{ i_ANDI, "ANDI" },
+	{ i_EORI, "EORI" },
+
     { i_ILLG, "ILLEGAL" },
     { i_OR, "OR" },
     { i_CHK, "CHK" },

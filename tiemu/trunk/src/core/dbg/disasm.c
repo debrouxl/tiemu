@@ -98,9 +98,7 @@ static const char* instr[] = {
 	"RTS.L",
 	"JMP.L",
 	"LEA.L",
-	"MOVE.L",				/* MOVEQ #i,Dr			*/
-	"OR.", "AND.", "EOR.",	/* ORI/ANDI/EORI		*/
-	"ADD.", "SUB.", "CMP.",	/* ADDI/SUBI/CMPI		*/
+	"BT",
 
 	NULL
 };
@@ -274,44 +272,22 @@ int m68k_dasm(char **line, uint32_t addr)
 			split[1] = g_strdup("MOVEP.L");
 			break;
 		case 20:	/* TRAP #<vector>	*/
-		case 21:
-		case 22:
-		case 23:
-		case 24:
-		case 25:
-		case 26:
-		case 27:
+		case 21:	/* RESET.L			*/
+		case 22:	/* NOP.L			*/
+		case 23:	/* STOP.L			*/
+		case 24:	/* RTE.L			*/
+		case 25:	/* RTS.L			*/
+		case 26:	/* JMP.L			*/
+		case 27:	/* LEA.L			*/
 			{
 				char *p = strchr(split[1], '.');
 				if(p) *p = '\0';
 			}
 			break;
-		case 28:	/* MOVEQ */
-			if(split[2][0] == '#')
-			{
-				g_free(split[1]);
-				split[1] = g_strdup("MOVEQ");
-			}
-			break;
-
-		case 29:	/* ORI/ANDI/EORI */
-		case 30:
-		case 31:
-		case 32:	/* ADDI/SUBI/CMPI */
-		case 33:
-		case 34:
-			if(split[2][0] == '#')
-			{
-				char *p = strchr(split[1], '.');
-				char q = p[1];
-				
-				split[1] = g_realloc(split[1], strlen(split[1]) + 2);
-
-				*p++ = 'I';
-				*p++ = '.';
-				*p++ = q;
-				*p++ = '\0';
-			}
+		case 28:	/* BRA				*/
+			g_free(split[1]);
+			split[1] = g_strdup("BRA");
+		break;
 
 		default:
 			break;

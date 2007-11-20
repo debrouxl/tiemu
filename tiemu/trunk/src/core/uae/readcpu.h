@@ -7,8 +7,11 @@ ENUMDECL {
 } ENUMNAME (amodes);
 
 ENUMDECL {
-    i_ILLG,
+	i_MOVEQ, i_ADDQ, i_SUBQ,
+	i_CMPI, i_ADDI, i_SUBI,
+	i_ORI, i_ANDI, i_EORI,
 
+    i_ILLG,
     i_OR, i_AND, i_EOR, i_ORSR, i_ANDSR, i_EORSR,
     i_SUB, i_SUBA, i_SUBX, i_SBCD,
     i_ADD, i_ADDA, i_ADDX, i_ABCD,

@@ -265,8 +265,7 @@ on_calc_wnd_key_press_event        (GtkWidget       *widget,
     }
     else if(event->keyval == GDK_F11)
     {
-		on_font_activate(NULL, NULL);
-        //on_enter_debugger1_activate(NULL, NULL);
+        on_enter_debugger1_activate(NULL, NULL);
         return TRUE;
     }
     else if(event->keyval == GDK_F12)
