@@ -79,18 +79,18 @@ uint32_t ti68k_debug_disassemble(uint32_t addr, char **line)
 extern int m68k_disasm (char *output, uint32_t addr);
 
 static const char* instr[] = { 
-	"ORSR.B",  "ORSR.W",	/* ORI  #<data>,SR		*/
-	"ANDSR.B", "ANDSR.W",	/* ANDI #<data>,SR		*/
-	"EORSR.B", "EORSR.W",	/* EORI #<data>,SR		*/
-	"MVSR2.W", "MVSR2.B",	/* MOVE SR,<ea>			*/
-	"MV2SR.B", "MV2SR.W",	/* MOVE <ea>,SR			*/
-	"MVR2USP.L",			/* MOVE An,USP			*/
-	"MVUSP2R.L",			/* MOVE USP,An			*/
-	"MVMEL.W", "MVMEL.L",   /* MOVEM <ea>,<list>  	*/
-	"MVMLE.W", "MVMLE.L",   /* MOVEM <list>,<ea>	*/
-	"MVPMR.W", "MVPMR.L",   /* MOVEP <Dx>,<(d16,Ay)>*/
-	"MVPRM.W", "MVPRM.L",   /* MOVEP <d16,Ay>,<Dx>	*/
-	"TRAP.L",				/* TRAP	#<vector>		*/
+	"ORSR",			/* ORI  #<data>,SR		*/
+	"ANDSR",		/* ANDI #<data>,SR		*/
+	"EORSR",		/* EORI #<data>,SR		*/
+	"MVSR2",		/* MOVE SR,<ea>			*/
+	"MV2SR",		/* MOVE <ea>,SR			*/
+	"MVR2USP.L",	/* MOVE An,USP			*/
+	"MVUSP2R.L",	/* MOVE USP,An			*/
+	"MVMEL",		/* MOVEM <ea>,<list>  	*/
+	"MVMLE",		/* MOVEM <list>,<ea>	*/
+	"MVPMR",		/* MOVEP <Dx>,<(d16,Ay)>*/
+	"MVPRM",		/* MOVEP <d16,Ay>,<Dx>	*/
+	"TRAP.L",		/* TRAP	#<vector>		*/
 	"RESET.L",
 	"NOP.L",
 	"STOP.L",
@@ -98,7 +98,7 @@ static const char* instr[] = {
 	"RTS.L",
 	"JMP.L",
 	"LEA.L",
-	"BT",
+	"BT",			/* BRA					*/
 
 	NULL
 };
@@ -144,86 +144,66 @@ int m68k_dasm(char **line, uint32_t addr)
 		switch(idx)
 		{
 		case 0:		/* ORI to SR #<data>,SR		*/
-			g_free(split[1]);
-			split[1] = g_strdup("ORI.B");
+			{
+				char c = split[1][5];
+
+				g_free(split[1]);
+				split[1] = g_strdup_printf("ORI.%c", c);
 			
-			tmp = g_strconcat(split[2], ",SR", NULL);
-			g_free(split[2]);
-			split[2] = tmp;
+				tmp = g_strconcat(split[2], ",SR", NULL);
+				g_free(split[2]);
+				split[2] = tmp;
+			}
 			break;
-		case 1:
-			g_free(split[1]);
-			split[1] = g_strdup("ORI.W");
+		case 1:		/* ANDI to SR #<data>,SR	*/
+			{
+				char c = split[1][6];
 			
-			tmp = g_strconcat(split[2], ",SR", NULL);
-			g_free(split[2]);
-			split[2] = tmp;
-			break;
-		case 2:		/* ANDI to SR #<data>,SR	*/
-			g_free(split[1]);
-			split[1] = g_strdup("ANDI.B");
+				g_free(split[1]);
+				split[1] = g_strdup_printf("ANDI.%c", c);
 			
-			tmp = g_strconcat(split[2], ",SR", NULL);
-			g_free(split[2]);
-			split[2] = tmp;
+				tmp = g_strconcat(split[2], ",SR", NULL);
+				g_free(split[2]);
+				split[2] = tmp;
+			}
 			break;
-		case 3:
-			g_free(split[1]);
-			split[1] = g_strdup("ANDI.W");
+		case 2:		/* EORI to SR #<data>,SR	*/
+			{
+				char c = split[1][6]; 
 			
-			tmp = g_strconcat(split[2], ",SR", NULL);
-			g_free(split[2]);
-			split[2] = tmp;
-			break;
-		case 4:		/* EORI to SR #<data>,SR	*/
-			g_free(split[1]);
-			split[1] = g_strdup("EORI.B");
+				g_free(split[1]);
+				split[1] = g_strdup_printf("EORI.%c", c);
 			
-			tmp = g_strconcat(split[2], ",SR", NULL);
-			g_free(split[2]);
-			split[2] = tmp;
+				tmp = g_strconcat(split[2], ",SR", NULL);
+				g_free(split[2]);
+				split[2] = tmp;
+			}
 			break;
-		case 5:
-			g_free(split[1]);
-			split[1] = g_strdup("EORI.W");
+		case 3:		/* MOVE from SR: SR,<ea>		*/
+			{
+				char c = split[1][6];
+
+				g_free(split[1]);
+				split[1] = g_strdup_printf("MOVE.%c", c);
 			
-			tmp = g_strconcat(split[2], ",SR", NULL);
-			g_free(split[2]);
-			split[2] = tmp;
+				tmp = g_strconcat("SR,", split[2], NULL);
+				g_free(split[2]);
+				split[2] = tmp;
+			}
 			break;
-		case 6:		/* MOVE from SR SR,<ea>		*/
-			g_free(split[1]);
-			split[1] = g_strdup("MOVE.B");
+		case 4:		/* MOVE to SR: <ea>,SR		*/
+			{
+				char c = split[1][6];
 			
-			tmp = g_strconcat("SR,", split[2], NULL);
-			g_free(split[2]);
-			split[2] = tmp;
-			break;
-		case 7:
-			g_free(split[1]);
-			split[1] = g_strdup("MOVE.W");
+				g_free(split[1]);
+				split[1] = g_strdup_printf("MOVE.%c", c);
 			
-			tmp = g_strconcat("SR,", split[2], NULL);
-			g_free(split[2]);
-			split[2] = tmp;
+				tmp = g_strconcat(split[2], ",SR", NULL);
+				g_free(split[2]);
+				split[2] = tmp;
+			}
 			break;
-		case 8:		/* MOVE to SR <ea>,SR		*/
-			g_free(split[1]);
-			split[1] = g_strdup("MOVE.B");
-			
-			tmp = g_strconcat(split[2], ",SR", NULL);
-			g_free(split[2]);
-			split[2] = tmp;
-			break;
-		case 9:
-			g_free(split[1]);
-			split[1] = g_strdup("MOVE.W");
-			
-			tmp = g_strconcat(split[2], ",SR", NULL);
-			g_free(split[2]);
-			split[2] = tmp;
-			break;
-		case 10:	/* MOVE An,USP	*/
+		case 5:	/* MOVE An,USP	*/
 			g_free(split[1]);
 			split[1] = g_strdup("MOVE");
 			
@@ -231,7 +211,7 @@ int m68k_dasm(char **line, uint32_t addr)
 			g_free(split[2]);
 			split[2] = tmp;
 			break;
-		case 11:	/* MOVE USP,An	*/
+		case 6:	/* MOVE USP,An	*/
 			g_free(split[1]);
 			split[1] = g_strdup("MOVE");
 			
@@ -239,52 +219,38 @@ int m68k_dasm(char **line, uint32_t addr)
 			g_free(split[2]);
 			split[2] = tmp;
 			break;
-		case 12:    /* MOVEM <ea>,<list>  */
-			g_free(split[1]);
-			split[1] = g_strdup("MOVEM.W");
+		case 7:		/* MOVEM <ea>,<list>	*/
+		case 8:		/* MOVEM <list, <ea>	*/
+			{
+				char c = split[1][6];
+
+				g_free(split[1]);
+				split[1] = g_strdup_printf("MOVEM.%c", c);
+			}
 			break;
-		case 13:
-			g_free(split[1]);
-			split[1] = g_strdup("MOVEM.L");
+		case 9:		/* MOVEP <Dx>,<(d16,Ay)> */
+		case 10:	/* MOVEP <(d16,Ay)>,<Dx> */
+			{
+				char c = split[1][6];
+
+				g_free(split[1]);
+				split[1] = g_strdup_printf("MOVEP.%c", c);
+			}
 			break;
-		case 14:    /* MOVEM <list>,<ea>  */
-			g_free(split[1]);
-			split[1] = g_strdup("MOVEM.W");
-			break;
-		case 15:    /* MOVEM <list>,<ea>  */
-			g_free(split[1]);
-			split[1] = g_strdup("MOVEM.L");
-			break;
-		case 16:    /* MOVEP <Dx>,<(d16,Ay)> */
-			g_free(split[1]);
-			split[1] = g_strdup("MOVEP.W");
-			break;
-		case 17:	/* MOVEP <Dx>,<(d16,Ay)> */
-			g_free(split[1]);
-			split[1] = g_strdup("MOVEP.L");
-			break;
-		case 18:    /* MOVEP MOVEP <d16,Ay>,<Dx> */
-			g_free(split[1]);
-			split[1] = g_strdup("MOVEP.W");
-			break;
-		case 19:    /* MOVEP <d16,Ay>,<Dx> */
-			g_free(split[1]);
-			split[1] = g_strdup("MOVEP.L");
-			break;
-		case 20:	/* TRAP #<vector>	*/
-		case 21:	/* RESET.L			*/
-		case 22:	/* NOP.L			*/
-		case 23:	/* STOP.L			*/
-		case 24:	/* RTE.L			*/
-		case 25:	/* RTS.L			*/
-		case 26:	/* JMP.L			*/
-		case 27:	/* LEA.L			*/
+		case 11:	/* TRAP #<vector>	*/
+		case 12:	/* RESET.L			*/
+		case 13:	/* NOP.L			*/
+		case 14:	/* STOP.L			*/
+		case 15:	/* RTE.L			*/
+		case 16:	/* RTS.L			*/
+		case 17:	/* JMP.L			*/
+		case 18:	/* LEA.L			*/
 			{
 				char *p = strchr(split[1], '.');
 				if(p) *p = '\0';
 			}
 			break;
-		case 28:	/* BRA				*/
+		case 19:	/* BRA				*/
 			g_free(split[1]);
 			split[1] = g_strdup("BRA");
 		break;
