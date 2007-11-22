@@ -30,7 +30,7 @@ post 297 (Pollux):
   x je trouve pas les 0 inutiles très lisible : rol.l #$00000007,d0 :/ (VTI, lui, supprime toujours les 0 de tête) 
   x c'est un peu dommage de pas pouvoir distinguer move.l de moveq, 
   x c'est un peu dommage de pas pouvoir distinguer addq/subq
-  - movem.l #$masque_incompréhensible, il vaudrait mieux les registres comme dans VTI 
+  x movem.l #$masque_incompréhensible, il vaudrait mieux les registres comme dans VTI 
   x movem.l prend 2 octets de trop donc il "mange" l'instruction suivante 
   - pour les adressages indexés : 
    x il vaudrait mieux mettre la constante avant le registre, c'est mieux d'avoir lea ($42,a3),a3 pour 

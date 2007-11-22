@@ -28,6 +28,7 @@
 # include <config.h>
 #endif
 
+#include <stdio.h>
 #include "ti68k_int.h"
 
 /* ti68k_debug_disassemble is a wrapper around the GDB or UAE disassembler, so
@@ -86,8 +87,8 @@ static const char* instr[] = {
 	"MV2SR",		/* MOVE <ea>,SR			*/
 	"MVR2USP.L",	/* MOVE An,USP			*/
 	"MVUSP2R.L",	/* MOVE USP,An			*/
-	"MVMEL",		/* MOVEM <ea>,<list>  	*/
-	"MVMLE",		/* MOVEM <list>,<ea>	*/
+	"MVMLE",		/* MOVEM <ea>,<list>  	*/
+	"MVMEL",		/* MOVEM <list>,<ea>	*/
 	"MVPMR",		/* MOVEP <Dx>,<(d16,Ay)>*/
 	"MVPRM",		/* MOVEP <d16,Ay>,<Dx>	*/
 	"TRAP.L",		/* TRAP	#<vector>		*/
@@ -119,6 +120,109 @@ static int match_opcode(const char *opcode)
 	return -1;
 }
 
+// testing patterns: 0x55, 0xAA, 0x02, 0xF5, 0x5F, 0xFA, 0xAF
+static char* create_reg_list(uint8_t value, char name)
+{
+	gchar *str = g_strdup("");
+	int i;
+	int pre_bit = 0;
+	int cur_bit;
+	int start = -1;
+	int end = -1;
+
+	for(i = 0; i < 8; i++, value >>= 1)
+	{
+		cur_bit = value & 1;
+
+		if(pre_bit == 0 && cur_bit == 1) start = i;
+		if(pre_bit == 1 && cur_bit == 0) end = i-1;
+
+		if(start == end && start != -1)
+		{
+			str = g_strdup_printf("%s%c%i/", str, name, i-1);
+			end = start = -1;
+		}
+		else if(end > start)
+		{
+			str = g_strdup_printf("%s%c%i-%c%i/", str, name, start, name, end);
+			end = start = -1;
+		}
+
+		pre_bit = cur_bit;
+	}
+
+	if((end=i-1) > (start+1) && start != -1)
+		str = g_strdup_printf("%s%c%i-%i", str, name, start, end);
+	else if(start > 0 && end > 0)
+		str = g_strdup_printf("%s%c%i", str, name, start);
+	else
+		str[strlen(str) - 1] = '\0';
+
+	return str;
+}
+
+static char* create_rev_reg_list(uint8_t value, char name)
+{
+	gchar *str = g_strdup("");
+	int i;
+	int pre_bit = 0;
+	int cur_bit;
+	int start = -1;
+	int end = -1;
+
+	for(i = 0; i < 8; i++, value <<= 1)
+	{
+		cur_bit = (value & (1 << 7)) >> 7;
+
+		if(pre_bit == 0 && cur_bit == 1) start = i;
+		if(pre_bit == 1 && cur_bit == 0) end = i-1;
+
+		if(start == end && start != -1)
+		{
+			str = g_strdup_printf("%s%c%i/", str, name, i-1);
+			end = start = -1;
+		}
+		else if(end > start)
+		{
+			str = g_strdup_printf("%s%c%i-%c%i/", str, name, start, name, end);
+			end = start = -1;
+		}
+
+		pre_bit = cur_bit;
+	}
+
+	if((end=i-1) > (start+1) && start != -1)
+		str = g_strdup_printf("%s%c%i-%i", str, name, start, end);
+	else if(start > 0 && end > 0)
+		str = g_strdup_printf("%s%c%i", str, name, start);
+	else
+		str[strlen(str) - 1] = '\0';
+
+	return str;
+}
+
+static char* create_reg_lists(uint16_t value)
+{
+	char *a, *d;
+	char *str;
+
+	a = create_reg_list(MSB(value), 'A');
+	d = create_reg_list(LSB(value), 'D');
+
+	return str = g_strconcat(a, "/", d, NULL);
+}
+
+static char* create_rev_reg_lists(uint16_t value)
+{
+	char *a, *d;
+	char *str;
+
+	d = create_rev_reg_list(MSB(value), 'D');
+	a = create_rev_reg_list(LSB(value), 'A');
+
+	return str = g_strconcat(d, "/", a, NULL);
+}
+
 // do the same work as m68k_disasm but some instructions dis-assembled by the
 // UAE engine use a weird/wrong naming scheme so we remap them here rather than
 // touching the newcpu.c & table68k files because this file may be updated when 
@@ -130,6 +234,7 @@ int m68k_dasm(char **line, uint32_t addr)
 	gchar** split;
 	int idx;
 
+	// get UAE disassembly
 	offset = m68k_disasm(output, addr);
 
 	// split string into address, opcode and operand
@@ -220,12 +325,53 @@ int m68k_dasm(char **line, uint32_t addr)
 			split[2] = tmp;
 			break;
 		case 7:		/* MOVEM <ea>,<list>	*/
-		case 8:		/* MOVEM <list, <ea>	*/
 			{
 				char c = split[1][6];
+				char *p, *q;
+				char *tmp;
+				uint16_t mask;
 
 				g_free(split[1]);
 				split[1] = g_strdup_printf("MOVEM.%c", c);
+
+				p = split[2];
+				q = strchr(split[2], ',');
+				*q = '\0';
+				q++;
+
+				sscanf(p, "#$%x", &mask);
+				if(q[0] != '-')
+					tmp = g_strdup_printf("%s,%s", q, create_reg_lists(mask));
+				else
+					tmp = g_strdup_printf("%s,%s", q, create_rev_reg_lists(mask));
+
+				g_free(split[2]);
+				split[2] = tmp;
+			}
+			break;
+		case 8:		/* MOVEM <list>, <ea>	*/
+			{
+				char c = split[1][6];
+				char *p, *q;
+				char *tmp;
+				uint16_t mask;
+
+				g_free(split[1]);
+				split[1] = g_strdup_printf("MOVEM.%c", c);
+
+				p = split[2];
+				q = strchr(split[2], ',');
+				*q = '\0';
+				q++;
+
+				sscanf(p, "#$%x", &mask);
+				if(q[0] != '-')
+					tmp = g_strdup_printf("%s,%s", create_reg_lists(mask), q);
+				else
+					tmp = g_strdup_printf("%s,%s", q, create_rev_reg_lists(mask));
+
+				g_free(split[2]);
+				split[2] = tmp;
 			}
 			break;
 		case 9:		/* MOVEP <Dx>,<(d16,Ay)> */
@@ -260,7 +406,7 @@ int m68k_dasm(char **line, uint32_t addr)
 		}
 	}
 
-	// search for [value]
+	// search for [value] and reject it at end of line
 	if(strchr(split[2], '['))
 	{
 		char *p = strchr(split[2], '[');
