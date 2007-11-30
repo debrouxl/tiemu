@@ -559,6 +559,19 @@ int ti68k_bkpt_get_pgmentry(unsigned int id, uint16_t *handle)
 	return 0;
 }
 
+int ti68k_bkpt_get_pgmentry_offset(unsigned int id, uint16_t *handle, uint16_t *offset)
+{
+	uint32_t data;
+	
+	if((id+1) > g_list_length(bkpts.pgmentry))
+		return -1;
+	
+	data = GPOINTER_TO_INT(g_list_nth(bkpts.pgmentry, id)->data);
+	*handle = data >> 16;
+	*offset = data & 0xffff;
+	return 0;
+}
+
 int ti68k_bkpt_get_bits(unsigned int id, uint32_t *address, uint8_t *checks, uint8_t *states)
 {
 	ADDR_BIT *s;

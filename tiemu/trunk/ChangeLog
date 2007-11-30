@@ -42,6 +42,7 @@ SubVersion: $Id$
 	- [roms]  $2683: fixed "movem.l #$unreadable_mask"
 	- [kevin] $2685: fixed makeinfo version check in GDB
 	- [kevin] $2686: fixed longjmp out of gtk_main in the engine in the GDB-enabled version which triggered an assert with GLib 2.14
+	- [kevin] $2689: fixed relocation of debugging information for kernel-based programs
 	
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)

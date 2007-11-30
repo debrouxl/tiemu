@@ -135,10 +135,10 @@ int gtk_debugger_enter(int context)
 
 		if(type == BK_TYPE_PGMENTRY)
 		{
-			uint16_t handle;
+			uint16_t handle, offset;
 			uint32_t pc;
 
-			ti68k_bkpt_get_pgmentry(id, &handle);
+			ti68k_bkpt_get_pgmentry_offset(id, &handle, &offset);
 			ti68k_bkpt_del_pgmentry(handle);
 			if(GTK_WIDGET_VISIBLE(dbgw.bkpts))
 				dbgbkpts_refresh_window();
@@ -147,6 +147,7 @@ int gtk_debugger_enter(int context)
 			symbol_file_clear(0);
 			gdbtk_clear_file ();
 			ti68k_register_get_pc(&pc);
+			pc -= offset-2;
 			gdb_add_symbol_file(symfile, pc);
 			g_free (symfile);
 			symfile = NULL;

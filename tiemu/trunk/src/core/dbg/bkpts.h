@@ -143,6 +143,7 @@ int ti68k_bkpt_get_access(unsigned int idx, uint32_t *address, int mode);
 int ti68k_bkpt_get_range(unsigned int idx, uint32_t *min, uint32_t *max, int mode);
 int ti68k_bkpt_get_exception(unsigned int idx, uint32_t *n);
 int ti68k_bkpt_get_pgmentry(unsigned int idx, uint16_t *handle);
+int ti68k_bkpt_get_pgmentry_offset(unsigned int idx, uint16_t *handle, uint16_t *offset);
 int ti68k_bkpt_get_bits(unsigned int idx, uint32_t *address, uint8_t *checks, uint8_t *states);
 
 void ti68k_bkpt_clear_address(void);
