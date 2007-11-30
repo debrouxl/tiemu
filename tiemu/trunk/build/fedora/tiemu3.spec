@@ -1,12 +1,21 @@
 Name: tiemu3
 Epoch: 1
-Version: 3.01
+Version: 3.01a
 Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
-Source: %{name}-%{version}.tar.bz2
+Source: %{name}-3.01.tar.bz2
+Patch0: %{name}-%{version}.diff.bz2
+#LANG=C svn diff -r 2651:2652 >../tiemu3-3.01a-drop-old-filesel.diff
+Patch1: tiemu3-3.01a-drop-old-filesel.diff
+#LANG=C svn diff -r 2655:2656 src/gui/filesel.c >../tiemu3-3.01a-fix-kde-filesel.diff
+Patch2: tiemu3-3.01a-fix-kde-filesel.diff
+#LANG=C svn diff -r 2656:2657 src/gui >../tiemu3-3.01a-gtk212-build-fix.diff
+Patch3: tiemu3-3.01a-gtk212-build-fix.diff
+#LANG=C svn diff -r 2684:2687 src >../tiemu3-3.01a-gdb-fixes.diff
+Patch4: tiemu3-3.01a-gdb-fixes.diff
 Group: Applications/Emulators
-License: GPL
+License: GPLv2+
 BuildRequires: libticables2-devel >= 1:1.0.0, libticonv-devel >= 1:1.0.4, libtifiles2-devel >= 1:1.0.7, libticalcs2-devel >= 1:1.0.7, glib2-devel >= 2.6.0, gtk2-devel >= 2.6.0, libglade2-devel >= 2.4.0, zlib-devel, kdelibs-devel >= 6:3.0, libX11-devel, libXext-devel, ncurses-devel, desktop-file-utils >= 0.10, bison >= 1.28, flex >= 2.5.4, texinfo >= 4.4, dbus-devel >= 0.60, dbus-glib-devel >= 0.60, SDL-devel >= 1.2.0
 Requires: tcl >= 8.4, tk >= 8.4, itcl >= 3.3, itk >= 3.3, iwidgets >= 4.0.1, xdg-utils >= 1.0.0
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -18,7 +27,12 @@ Summary: TiEmu is a TI89(Ti)/92(+)/V200 emulator
 TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debugging using Insight GDB.
 
 %prep
-%setup
+%setup -n %{name}-3.01
+%patch0 -p0
+%patch1 -p0
+%patch2 -p0
+%patch3 -p0
+%patch4 -p0
 
 %build
 source /etc/profile.d/qt.sh
@@ -73,6 +87,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/lpg-tiemu.desktop
 
 %changelog
+* Fri Nov 30 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:3.01a-1
+Specify GPL version in License tag.
+Apply 3.01a patch.
+Backport SVN patch to drop old GTK+ file selector to fix build with GTK+ 2.12.
+Backport fix for the KDE file dialog (dirname+filename concatenation) from SVN.
+Backport cumulative fix for 2 more GTK+ 2.12 build issues from SVN.
+Backport cumulative fix for GDB issues (makeinfo version check, improper use of
+longjmp to exit gtk_main triggering an assert with GLib 2.14) from SVN.
+
 * Wed Jun 27 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Update tilibs BuildRequires.
 
