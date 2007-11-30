@@ -43,19 +43,6 @@
 #include "config.h"
 
 #include <sys/types.h>
-#include <setjmp.h>
-#ifdef _WIN32
-#undef setjmp
-#undef longjmp
-extern int asm_setjmp(jmp_buf b);
-extern void asm_longjmp(jmp_buf b, int v)
-#ifdef __GNUC__
-            __attribute__((noreturn))
-#endif
-            ;
-#define setjmp asm_setjmp
-#define longjmp asm_longjmp
-#endif
 
 #include <signal.h>
 #ifdef HAVE_UNISTD_H
@@ -75,8 +62,6 @@ int trace = 0;
 int cloanto_rom = 0;
 
 static bfd *current_bfd = 0;
-
-static jmp_buf interp_trap;
 
 #include <math.h>
 
@@ -353,18 +338,20 @@ extern void ti68k_step_over_noflush(void);
 extern int hw_m68k_run(int n, unsigned maxcycles);
 void engine_start(void);
 void gtk_main(void);
+void gtk_main_quit(void);
 static void m68k_go_sim(int step)
 {
   if (step) {
+    regs.exception = SIGTRAP;
     if (step_over_calls == STEP_OVER_ALL)
       ti68k_step_over_noflush ();
     else
       hw_m68k_run(1, 0);
   } else {
     engine_start();
-    gtk_main();
-    /* If we get here, we were interrupted by the normal course of action. */
     regs.exception = SIGQUIT;
+    gtk_main();
+    engine_stop();
   }
 }
 
@@ -382,15 +369,9 @@ sim_resume (sd, step, siggnal)
   prev_fpe = signal (SIGFPE, SIG_IGN);
 
   init_pointers ();
-  regs.exception = 0;
-  if (step)
-    regs.exception = SIGTRAP;
 
   gdbcallback_disable_debugger();
-  if (setjmp(interp_trap) == 0)
-    m68k_go_sim (step);
-  if (!step)
-    engine_stop();
+  m68k_go_sim (step);
   gdbcallback_enable_debugger();
 
   signal (SIGFPE, prev_fpe);
@@ -586,7 +567,7 @@ void
 sim_exception (int which)
 {
   regs.exception = which;
-  longjmp(interp_trap, 1);
+  gtk_main_quit();
 }
 
 static int

@@ -99,10 +99,9 @@ static gboolean engine_func(gint *data)
 		              ((bkpts.type == BK_CAUSE_EXCEPTION || bkpts.type == BK_CAUSE_PROTECT) ? SIGSEGV
 		                                                                                    : SIGTRAP)
 		              : SIGINT);
-#else
+#endif
 		tid = 0;	// reset source id, we're stopping the engine
 		return FALSE;	// stop engine !
-#endif
 	}
 
 	return TRUE;
