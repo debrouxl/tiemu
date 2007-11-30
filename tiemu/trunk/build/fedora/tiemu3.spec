@@ -1,7 +1,7 @@
 Name: tiemu3
 Epoch: 1
 Version: 3.01a
-Release: 1
+Release: 2
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-3.01.tar.bz2
@@ -14,6 +14,8 @@ Patch2: tiemu3-3.01a-fix-kde-filesel.diff
 Patch3: tiemu3-3.01a-gtk212-build-fix.diff
 #LANG=C svn diff -r 2684:2687 src >../tiemu3-3.01a-gdb-fixes.diff
 Patch4: tiemu3-3.01a-gdb-fixes.diff
+#LANG=C svn diff -r 2688:2689 src >../tiemu3-3.01a-kernel-debuginfo.diff
+Patch5: tiemu3-3.01a-kernel-debuginfo.diff
 Group: Applications/Emulators
 License: GPLv2+
 BuildRequires: libticables2-devel >= 1:1.0.0, libticonv-devel >= 1:1.0.4, libtifiles2-devel >= 1:1.0.7, libticalcs2-devel >= 1:1.0.7, glib2-devel >= 2.6.0, gtk2-devel >= 2.6.0, libglade2-devel >= 2.4.0, zlib-devel, kdelibs-devel >= 6:3.0, libX11-devel, libXext-devel, ncurses-devel, desktop-file-utils >= 0.10, bison >= 1.28, flex >= 2.5.4, texinfo >= 4.4, dbus-devel >= 0.60, dbus-glib-devel >= 0.60, SDL-devel >= 1.2.0
@@ -33,6 +35,7 @@ TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debuggi
 %patch2 -p0
 %patch3 -p0
 %patch4 -p0
+%patch5 -p0
 
 %build
 source /etc/profile.d/qt.sh
@@ -87,6 +90,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/lpg-tiemu.desktop
 
 %changelog
+* Fri Nov 30 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:3.01a-2
+Backport fix for debugging information relocation for kernel programs from SVN.
+
 * Fri Nov 30 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:3.01a-1
 Specify GPL version in License tag.
 Apply 3.01a patch.
