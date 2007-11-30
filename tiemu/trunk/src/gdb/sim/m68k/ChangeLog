@@ -1,5 +1,9 @@
 2007-11-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
+        * (sim_exception): Only call gtk_main_quit if we're actually running a nested main loop.
+
+2007-11-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
         * interp.c (gtk_main_quit): Prototype.
           (m68k_go_sim, sim_resume, sim_exception): Use it instead of setjmp/longjmp.
           (interp_trap): Remove variable.

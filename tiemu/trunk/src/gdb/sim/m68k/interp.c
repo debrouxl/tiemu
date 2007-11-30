@@ -337,6 +337,7 @@ extern enum step_over_calls_kind step_over_calls;
 extern void ti68k_step_over_noflush(void);
 extern int hw_m68k_run(int n, unsigned maxcycles);
 void engine_start(void);
+void engine_stop(void);
 void gtk_main(void);
 void gtk_main_quit(void);
 static void m68k_go_sim(int step)
@@ -357,7 +358,6 @@ static void m68k_go_sim(int step)
 
 extern void gdbcallback_disable_debugger(void);
 extern void gdbcallback_enable_debugger(void);
-void engine_stop(void);
 void
 sim_resume (sd, step, siggnal)
      SIM_DESC sd;
@@ -566,8 +566,9 @@ sim_do_command (sd, cmd)
 void
 sim_exception (int which)
 {
+  if (regs.exception == SIGQUIT)
+    gtk_main_quit();
   regs.exception = which;
-  gtk_main_quit();
 }
 
 static int
