@@ -1,5 +1,8 @@
 List of changes:
 
+- 07/12/2007, version 1.27: roms
+	Changed package name from skinedit to tiemu-skinedit.
+	
 - 20/03/2007, version 1.27: roms
 	Fixed gcc 4.x warnings.
 	
