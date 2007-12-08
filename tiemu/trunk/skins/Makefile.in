@@ -314,6 +314,7 @@ x_includes = @x_includes@
 x_libraries = @x_libraries@
 skinsdir = $(pkgdatadir)/skins
 dist_skins_DATA = *.skn *.map
+EXTRA_DIST = copy.bat
 all: all-am
 
 .SUFFIXES:

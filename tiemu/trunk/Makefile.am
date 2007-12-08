@@ -9,7 +9,7 @@ endif
 
 dist_pkgdata_DATA = COPYING RELEASE AUTHORS LICENSES
 
-EXTRA_DIST = README.* TODO docs desktop sdk po/copy.bat po/TRANSLATORS
+EXTRA_DIST = BUGS README.* TODO docs desktop sdk po/copy.bat po/TRANSLATORS install.bat
 
 # install hook to install prebuilt Manpage.txt if groff is not available
 install-data-local:

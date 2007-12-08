@@ -313,7 +313,7 @@ top_srcdir = @top_srcdir@
 x_includes = @x_includes@
 x_libraries = @x_libraries@
 pedromdir = $(pkgdatadir)/pedrom
-dist_pedrom_DATA = pedrom*.tib
+dist_pedrom_DATA = pedrom*.tib pedrom.txt
 EXTRA_DIST = pedrom-src.tar.bz2
 all: all-am
 
