@@ -84,8 +84,8 @@ install-1: build-1
 	dh_clean -k 
 	dh_installdirs
 
-	# Add here commands to install the package into debian/tiemu3-nogdb
-	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu3-nogdb install
+	# Add here commands to install the package into debian/tiemu-nogdb
+	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu-nogdb install
 
 install-2: build-2
 	dh_testdir
@@ -93,21 +93,21 @@ install-2: build-2
 #	dh_clean -k
 	dh_installdirs
 
-	# Add here commands to install the package into debian/tiemu3-gdb
-	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu3-gdb install-without-tcl-tk-itcl
+	# Add here commands to install the package into debian/tiemu-gdb
+	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu-gdb install-without-tcl-tk-itcl
 
 	# Remove tcl/tk files
-#	rm -f $(CURDIR)/debian/tiemu3-gdb/usr/bin/tcl*
-#	rm -f $(CURDIR)/debian/tiemu3-gdb/usr/bin/wish*
-	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/include
-	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/lib
-	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/man	
-#	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/it*
-#	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/iw*
-#	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/insight*
-#	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/redhat
-#	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/tcl*
-#	rm -fR $(CURDIR)/debian/tiemu3-gdb/usr/share/tk*
+#	rm -f $(CURDIR)/debian/tiemu-gdb/usr/bin/tcl*
+#	rm -f $(CURDIR)/debian/tiemu-gdb/usr/bin/wish*
+	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/include
+	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/lib
+	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/man	
+#	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/share/it*
+#	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/share/iw*
+#	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/share/insight*
+#	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/share/redhat
+#	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/share/tcl*
+#	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/share/tk*
 
 # Build architecture-independent files here.
 binary-indep:
@@ -115,9 +115,9 @@ binary-indep:
 # Build architecture-dependent files here.
 binary-arch: 
 	$(MAKE) -f debian/rules clean
-	$(MAKE) -f debian/rules binary-1 DH_OPTIONS=-ptiemu3-nogdb
+	$(MAKE) -f debian/rules binary-1 DH_OPTIONS=-ptiemu-nogdb
 	$(MAKE) -f debian/rules clean
-	$(MAKE) -f debian/rules binary-2 DH_OPTIONS=-ptiemu3-gdb
+	$(MAKE) -f debian/rules binary-2 DH_OPTIONS=-ptiemu-gdb
 
 binary-1: build-1 install-1 binary-common
 

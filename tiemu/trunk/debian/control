@@ -1,11 +1,11 @@
-Source: tiemu3
+Source: tiemu
 Section: math
 Priority: optional
 Maintainer: Romain LIEVIN <roms@tilp.info>
 Build-Depends: debhelper (>= 5), libticables2-1-dev (>= 1.0.6-1), libticalcs2-6-dev (>= 1.0.7-1), libtifiles2-4-dev (>= 1.0.7-1), libticonv3 (>= 1.0.4-1), libgtk2.0-dev, libglade2-dev, zlib1g-dev, gettext, groff-base, kdelibs-dev, libdbus-glib-1-dev, libsdl1.2-dev (>= 1.2.0-1), libncurses5-dev, bison, texinfo, flex, autoconf, automake1.10
 Standards-Version: 3.7.2
 
-Package: tiemu3-nogdb
+Package: tiemu-nogdb
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Suggests: tiemu-skinedit
@@ -27,11 +27,11 @@ Description: Texas Instruments calculators emulator (without GDB)
  .
  This version includes a VTI-style assembly debugger.
 
-Package: tiemu3-gdb
+Package: tiemu-gdb
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, flex, tcl8.4 (>= 8.4.0-2), tk8.4 (>= 8.4.0-1), itcl3 (>= 3.2.1-1), itk3 (>= 3.2.1-1), iwidgets4 (>= 4.0.1-1), xdg-utils (>= 1.0-1)
 Suggests: tiemu-skinedit
-Conflicts: tiemu3-nogdb
+Conflicts: tiemu-nogdb
 Description: Texas Instruments calculators emulator (with GDB)
  TiEmu emulates Texas Instruments calculators TI-89/92/92+/V200PLT.
  .

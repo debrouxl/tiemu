@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tiemu\n"
 "Report-Msgid-Bugs-To: tiemu-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-07-25 10:55+0200\n"
+"POT-Creation-Date: 2007-12-07 23:20+0100\n"
 "PO-Revision-Date: 2004-04-13 13:21+0000\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tiemu-devel@lists.sf.net>\n"
@@ -441,7 +441,7 @@ msgid "User Interrupt vectors"
 msgstr "Vecteur User Interrupt"
 
 #: src/core/type2str.c:192 src/core/type2str.c:208 src/core/type2str.c:221
-#: src/gui/debugger/dbg_bkpts.c:279 glade/dbg_cause-2.str:11
+#: src/gui/debugger/dbg_bkpts.c:296 glade/dbg_cause-2.str:11
 msgid "access"
 msgstr "accès"
 
@@ -474,7 +474,7 @@ msgid "unknown"
 msgstr "inconnu"
 
 #: src/core/type2str.c:209 src/core/type2str.c:223
-#: src/gui/debugger/dbg_bkpts.c:279
+#: src/gui/debugger/dbg_bkpts.c:296
 msgid "range"
 msgstr "intervalle"
 
@@ -510,20 +510,20 @@ msgstr ""
 "changement du hwID de 9 à 3."
 
 # #, c-format
-#: src/misc/cmdline.c:60
+#: src/misc/cmdline.c:62
 #, c-format
 msgid "THIS PROGRAM COMES WITH ABSOLUTELY NO WARRANTY\n"
 msgstr "CE PROGRAMME N'EST FOURNI AVEC AUCUNE GARANTIE\n"
 
 # #, c-format
-#: src/misc/cmdline.c:61
+#: src/misc/cmdline.c:63
 #, c-format
 msgid "PLEASE READ THE DOCUMENTATION FOR DETAILS\n"
 msgstr "VEUILLEZ LIRE LA DOCUMENTATION POUR PLUS DE DETAILS\n"
 
 #: src/misc/files.c:95 src/misc/files.c:107 src/misc/files.c:123
-#: src/gui/calc/keyboard.c:77 src/gui/calc/popup.c:176
-#: src/gui/calc/popup.c:179 src/gui/calc/popup.c:191 src/gui/dboxes.c:41
+#: src/gui/calc/keyboard.c:77 src/gui/calc/popup.c:181
+#: src/gui/calc/popup.c:184 src/gui/calc/popup.c:196 src/gui/dboxes.c:41
 #: src/gui/fs_misc.c:154 src/gui/fs_misc.c:157
 msgid "Information"
 msgstr "Information"
@@ -581,8 +581,8 @@ msgid "New name: "
 msgstr "Nouveau nom: "
 
 #: src/misc/files.c:209 src/misc/tie_error.c:78 src/gui/dboxes.c:47
-#: src/gui/fs_misc.c:211 src/gui/fs_misc.c:372 src/gui/main.c:216
-#: src/gui/main.c:224 src/gui/main.c:232 src/gui/main.c:240
+#: src/gui/fs_misc.c:211 src/gui/fs_misc.c:372 src/gui/main.c:218
+#: src/gui/main.c:226 src/gui/main.c:234 src/gui/main.c:242
 #: src/gui/quicksend.c:117 src/gui/wizard.c:248 src/gui/wizard.c:284
 msgid "Error"
 msgstr "Erreur"
@@ -592,12 +592,12 @@ msgid "Unable to move the temporary file.\n"
 msgstr "Impossible de déplacer le fichier temporaire.\n"
 
 # #, c-format
-#: src/misc/rcfile.c:74
+#: src/misc/rcfile.c:76
 #, c-format
 msgid "Configuration file error at line %i."
 msgstr "Erreur dans le fichier de configuration à la line %i."
 
-#: src/misc/rcfile.c:179
+#: src/misc/rcfile.c:181
 msgid ""
 "Configuration file not found, use default values. You can create one by the "
 "'File|Save config' command menu."
@@ -605,36 +605,38 @@ msgstr ""
 "Fichier de configuration introuvable; utilisation des valeurs par défait. "
 "Vous pouvez en créer un par le menu File > Save config."
 
-#: src/misc/screenshot.c:75
+#: src/misc/screenshot.c:70
 msgid "Couldn't allocate memory!"
 msgstr "Ne peut pas allouer la mémoire demandée !"
 
-#: src/misc/screenshot.c:86
+#: src/misc/screenshot.c:81
 msgid "zlib init error"
 msgstr "erreur d'initialisation zlib"
 
-#: src/misc/screenshot.c:104
+#: src/misc/screenshot.c:97
 msgid "zlib deflate error"
 msgstr "erreur de décompression zlib"
 
-#: src/misc/screenshot.c:202 src/misc/screenshot.c:256
+#: src/misc/screenshot.c:187 src/misc/screenshot.c:237
 msgid "Couldn't open destination file for writing!"
 msgstr "Ne peut pas ouvrir le fichier de destination en écriture!"
 
 # #, c-format
-#: src/gui/calc/calc.c:234 src/gui/calc/popup.c:625
-#: src/gui/debugger/dbg_bkpts.c:343 src/gui/debugger/dbg_bits.c:50
+#: src/gui/calc/calc.c:234 src/gui/calc/popup.c:637
+#: src/gui/debugger/dbg_bkpts.c:363 src/gui/debugger/dbg_bits.c:50
 #: src/gui/debugger/dbg_cause.c:60 src/gui/debugger/dbg_cause.c:144
-#: src/gui/debugger/dbg_code.c:357 src/gui/debugger/dbg_code.c:662
-#: src/gui/debugger/dbg_data.c:55 src/gui/debugger/dbg_entry.c:206
-#: src/gui/debugger/dbg_heap.c:143 src/gui/debugger/dbg_iop.c:423
-#: src/gui/debugger/dbg_mem.c:698 src/gui/debugger/dbg_mem.c:1012
-#: src/gui/debugger/dbg_mem.c:1234 src/gui/debugger/dbg_pclog.c:135
-#: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:513
-#: src/gui/debugger/dbg_stack.c:161 src/gui/debugger/dbg_vectors.c:144
-#: src/gui/logger/log_link.c:60 src/gui/infos.c:50 src/gui/manpage.c:74
-#: src/gui/pbars.c:63 src/gui/quicksend.c:58 src/gui/release.c:73
-#: src/gui/romversion.c:190 src/gui/scroptions.c:60 src/gui/wizard.c:70
+#: src/gui/debugger/dbg_code.c:343 src/gui/debugger/dbg_code.c:648
+#: src/gui/debugger/dbg_code.c:1108 src/gui/debugger/dbg_data.c:55
+#: src/gui/debugger/dbg_entry.c:206 src/gui/debugger/dbg_heap.c:145
+#: src/gui/debugger/dbg_heap.c:268 src/gui/debugger/dbg_iop.c:425
+#: src/gui/debugger/dbg_mem.c:698 src/gui/debugger/dbg_mem.c:1073
+#: src/gui/debugger/dbg_mem.c:1295 src/gui/debugger/dbg_pclog.c:137
+#: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:539
+#: src/gui/debugger/dbg_stack.c:162 src/gui/debugger/dbg_stack.c:415
+#: src/gui/debugger/dbg_vectors.c:144 src/gui/logger/log_link.c:60
+#: src/gui/infos.c:50 src/gui/manpage.c:72 src/gui/pbars.c:63
+#: src/gui/quicksend.c:58 src/gui/release.c:77 src/gui/romversion.c:190
+#: src/gui/scroptions.c:60 src/gui/wizard.c:70
 #, c-format
 msgid "%s: GUI loading failed!\n"
 msgstr "%s: échec de chargement de l'interface graphique !\n"
@@ -653,12 +655,12 @@ msgstr ""
 
 # ##, c-format
 # #, c-format
-#: src/gui/calc/calc.c:787
+#: src/gui/calc/calc.c:795
 #, c-format
 msgid "failed to save pixbuf file: %s: %s"
 msgstr "n'a pû sauvegarder le fichier pixbuf: %s: %s"
 
-#: src/gui/calc/calc.c:792
+#: src/gui/calc/calc.c:800
 msgid "done!"
 msgstr "fait !"
 
@@ -673,24 +675,24 @@ msgstr "chargement du clavier: %s (%i touches)"
 msgid "Can't open file."
 msgstr "Impossible d'ouvrir le fichier."
 
-#: src/gui/calc/popup.c:71
+#: src/gui/calc/popup.c:76
 #, c-format
 msgid "* TiEmu version %s (cables=%s, files=%s, calcs=%s, conv=%s)"
 msgstr "* TiEmu version %s (cables=%s, files=%s, calcs=%s, conv=%s)"
 
-#: src/gui/calc/popup.c:177
+#: src/gui/calc/popup.c:182
 msgid "Configuration file saved (in tiemu.ini)."
 msgstr "Fichier de configuration enregistré (dans tiemu.ini)."
 
-#: src/gui/calc/popup.c:180
+#: src/gui/calc/popup.c:185
 msgid "Configuration file saved (in ~/.tiemu)."
 msgstr "Fichier de configuration enregistré (dans ~/.tiemu)."
 
-#: src/gui/calc/popup.c:191
+#: src/gui/calc/popup.c:196
 msgid "Configuration file loaded."
 msgstr "Fichier de configuration chargé."
 
-#: src/gui/calc/popup.c:480
+#: src/gui/calc/popup.c:492
 msgid "Manual_en.html"
 msgstr "Manual_en.html"
 
@@ -701,83 +703,87 @@ msgstr "Manual_en.html"
 msgid "loading skin: %s (%d x %d)"
 msgstr "chargement du skin: %s(%d x %d)"
 
-#: src/gui/debugger/dbg_bkpts.c:62
+#: src/gui/debugger/dbg_bkpts.c:63
 msgid "Symbol"
 msgstr "Symbole"
 
-#: src/gui/debugger/dbg_bkpts.c:62 src/gui/romversion.c:87
+#: src/gui/debugger/dbg_bkpts.c:63 src/gui/romversion.c:87
 #: glade/dbg_data-2.str:22
 msgid "Type"
 msgstr "Type"
 
-#: src/gui/debugger/dbg_bkpts.c:62
+#: src/gui/debugger/dbg_bkpts.c:63
 msgid "Status"
 msgstr "Statut"
 
-#: src/gui/debugger/dbg_bkpts.c:62 glade/log_link-2.str:9
+#: src/gui/debugger/dbg_bkpts.c:63 glade/log_link-2.str:9
 msgid "Start"
 msgstr "Début"
 
-#: src/gui/debugger/dbg_bkpts.c:62
+#: src/gui/debugger/dbg_bkpts.c:63
 msgid "End"
 msgstr "Fin"
 
-#: src/gui/debugger/dbg_bkpts.c:62 glade/dbg_data-2.str:11
+#: src/gui/debugger/dbg_bkpts.c:63 glade/dbg_data-2.str:11
 msgid "Mode"
 msgstr "Mode"
 
-#: src/gui/debugger/dbg_bkpts.c:138 src/gui/debugger/dbg_bkpts.c:162
-#: src/gui/debugger/dbg_bkpts.c:187 src/gui/debugger/dbg_bkpts.c:213
-#: src/gui/debugger/dbg_bkpts.c:237 src/gui/debugger/dbg_bkpts.c:318
+#: src/gui/debugger/dbg_bkpts.c:140 src/gui/debugger/dbg_bkpts.c:167
+#: src/gui/debugger/dbg_bkpts.c:195 src/gui/debugger/dbg_bkpts.c:224
+#: src/gui/debugger/dbg_bkpts.c:251 src/gui/debugger/dbg_bkpts.c:335
 msgid "enabled"
 msgstr "activé"
 
-#: src/gui/debugger/dbg_bkpts.c:138 src/gui/debugger/dbg_bkpts.c:162
-#: src/gui/debugger/dbg_bkpts.c:187 src/gui/debugger/dbg_bkpts.c:213
-#: src/gui/debugger/dbg_bkpts.c:237 src/gui/debugger/dbg_bkpts.c:318
+#: src/gui/debugger/dbg_bkpts.c:140 src/gui/debugger/dbg_bkpts.c:167
+#: src/gui/debugger/dbg_bkpts.c:195 src/gui/debugger/dbg_bkpts.c:224
+#: src/gui/debugger/dbg_bkpts.c:251 src/gui/debugger/dbg_bkpts.c:335
 msgid "disabled"
 msgstr "désactivé"
 
-#: src/gui/debugger/dbg_bkpts.c:141 src/gui/debugger/dbg_bkpts.c:321
+#: src/gui/debugger/dbg_bkpts.c:143 src/gui/debugger/dbg_bkpts.c:338
 msgid "one-shot"
 msgstr "un coup"
 
-#: src/gui/debugger/dbg_bkpts.c:401
+#: src/gui/debugger/dbg_bkpts.c:421
 msgid "dbg_bkpts-2.glade: GUI loading failed !\n"
 msgstr "dbg_bkpts-2.glade: échec du chargement de l'interface graphique !\n"
 
-#: src/gui/debugger/dbg_code.c:75 src/gui/debugger/dbg_heap.c:57
-#: src/gui/debugger/dbg_iop.c:297 src/gui/debugger/dbg_mem.c:187
-#: src/gui/debugger/dbg_pclog.c:56 src/gui/debugger/dbg_stack.c:59
+#: src/gui/debugger/dbg_code.c:73 src/gui/debugger/dbg_heap.c:55
+#: src/gui/debugger/dbg_iop.c:295 src/gui/debugger/dbg_mem.c:185
+#: src/gui/debugger/dbg_pclog.c:54 src/gui/debugger/dbg_stack.c:58
 msgid "Address"
 msgstr "Adresse"
 
-#: src/gui/debugger/dbg_code.c:75
+#: src/gui/debugger/dbg_code.c:73
 msgid "Opcode"
 msgstr "Code opératoire"
 
-#: src/gui/debugger/dbg_code.c:75
+#: src/gui/debugger/dbg_code.c:73
 msgid "Operand"
 msgstr "Opérande"
 
-#: src/gui/debugger/dbg_entry.c:90 src/gui/debugger/dbg_iop.c:265
+#: src/gui/debugger/dbg_code.c:1187
+msgid "Choose font..."
+msgstr ""
+
+#: src/gui/debugger/dbg_entry.c:90 src/gui/debugger/dbg_iop.c:263
 #: src/gui/debugger/dbg_vectors.c:52
 msgid "Name"
 msgstr "Nom"
 
-#: src/gui/debugger/dbg_heap.c:57
+#: src/gui/debugger/dbg_heap.c:55
 msgid "Id"
 msgstr "Id"
 
-#: src/gui/debugger/dbg_heap.c:57 src/gui/romversion.c:87
+#: src/gui/debugger/dbg_heap.c:55 src/gui/romversion.c:87
 msgid "Size"
 msgstr "Taille"
 
-#: src/gui/debugger/dbg_iop.c:273 src/gui/debugger/dbg_stack.c:59
+#: src/gui/debugger/dbg_iop.c:271 src/gui/debugger/dbg_stack.c:58
 msgid "Value"
 msgstr "Valeur"
 
-#: src/gui/debugger/dbg_iop.c:305
+#: src/gui/debugger/dbg_iop.c:303
 msgid "Mask"
 msgstr "Masque"
 
@@ -800,11 +806,11 @@ msgstr "comm.c : échec du chargement de l'interface graphique !\n"
 msgid "Question"
 msgstr "Question"
 
-#: src/gui/filesel.c:452
+#: src/gui/filesel.c:389
 msgid "Save file"
 msgstr "Sauver un fichier"
 
-#: src/gui/filesel.c:455 src/gui/filesel.c:823 glade/quicksend-2.str:9
+#: src/gui/filesel.c:392 src/gui/filesel.c:698 glade/quicksend-2.str:9
 msgid "Open file"
 msgstr "Ouvrir un fichier"
 
@@ -840,112 +846,112 @@ msgstr "Restaurer"
 msgid "This file is not a valid TI file."
 msgstr "Ce fichier n'est pas un fichier TI valide."
 
-#: src/gui/fs_misc.c:452 src/gui/fs_misc.c:462
+#: src/gui/fs_misc.c:454 src/gui/fs_misc.c:464
 msgid "HW type"
 msgstr "HW type"
 
-#: src/gui/fs_misc.c:453
+#: src/gui/fs_misc.c:455
 msgid "The FLASH upgrade can be imported as HW1 or HW2. Please choose..."
 msgstr "La MAJ peut être importé comme HW1 ou HW2. Veuillez choisir..."
 
-#: src/gui/fs_misc.c:463
+#: src/gui/fs_misc.c:465
 msgid "The FLASH upgrade can be imported as HW3 or HW4. Please choose..."
 msgstr "La MAJ peut être importé comme HW3 ou HW4. Veuillez choisir..."
 
-#: src/gui/main.c:150
+#: src/gui/main.c:153
 msgid "Unable to initialize audio, sound will not play\n"
 msgstr ""
 "Impossible d'initialiser le périphérique audio, aucun son ne sera joué.\n"
 
-#: src/gui/main.c:185
+#: src/gui/main.c:187
 msgid "Initializing GTK+..."
 msgstr "Initialisation de GTK+..."
 
-#: src/gui/main.c:189
+#: src/gui/main.c:191
 msgid "Initializing KDE..."
 msgstr "Initialisation de KDE..."
 
-#: src/gui/main.c:190 glade/device-2.str:15 glade/popup-2.str:77
+#: src/gui/main.c:192 glade/device-2.str:15 glade/popup-2.str:78
 msgid "TiEmu"
 msgstr "TiEmu"
 
-#: src/gui/main.c:190
+#: src/gui/main.c:192
 msgid "TI calculator emulator"
 msgstr "Emulateur de calculatrice TI"
 
-#: src/gui/main.c:196
+#: src/gui/main.c:198
 msgid "Initializing D-Bus..."
 msgstr "Initialisation de D-Bus..."
 
-#: src/gui/main.c:202
+#: src/gui/main.c:204
 msgid "Initializing OLE..."
 msgstr "Initialisation de l'OLE..."
 
-#: src/gui/main.c:210
+#: src/gui/main.c:212
 msgid "Initializing TiLP framework..."
 msgstr "Initialisation du sous-système TiLP..."
 
 # #, c-format
-#: src/gui/main.c:214
+#: src/gui/main.c:216
 #, c-format
 msgid "libticonv library version <%s> mini required (<%s> found)."
 msgstr ""
 "La version %s au minimum de libticonv est nécessaire (trouvé version %s)."
 
-#: src/gui/main.c:216
+#: src/gui/main.c:218
 msgid "libticonv: version mismatches."
 msgstr "libticalcss: la version ne correspond pas."
 
 # #, c-format
-#: src/gui/main.c:222
+#: src/gui/main.c:224
 #, c-format
 msgid "libtifiles library version <%s> mini required (<%s> found)."
 msgstr ""
 "La version %s au minimum de libtifiles est nécessaire (trouvé version %s)."
 
-#: src/gui/main.c:224
+#: src/gui/main.c:226
 msgid "libtifiles: version mismatches."
 msgstr "libtifiles: la version ne correspond pas."
 
 # #, c-format
-#: src/gui/main.c:230
+#: src/gui/main.c:232
 #, c-format
 msgid "libticables library version <%s> mini required (<%s> found)."
 msgstr ""
 "La version %s au minimum de libticables est nécessaire (trouvé version %s)."
 
-#: src/gui/main.c:232
+#: src/gui/main.c:234
 msgid "libticables: version mismatches."
 msgstr "libticables: la version ne correspond pas."
 
 # #, c-format
-#: src/gui/main.c:238
+#: src/gui/main.c:240
 #, c-format
 msgid "libticalcs library version <%s> mini required (<%s> found)."
 msgstr ""
 "La version %s au minimum de libticalcs est nécessaire (trouvé version %s)."
 
-#: src/gui/main.c:240
+#: src/gui/main.c:242
 msgid "libticalcs: version mismatches."
 msgstr "libticalcss: la version ne correspond pas."
 
-#: src/gui/main.c:247
+#: src/gui/main.c:249
 msgid "Searching for ROM dumps..."
 msgstr "Recherche de ROM..."
 
-#: src/gui/main.c:289
+#: src/gui/main.c:291
 msgid "Loading image..."
 msgstr "Chargement d'une image..."
 
-#: src/gui/main.c:297
+#: src/gui/main.c:299
 msgid "Initializing m68k emulation engine..."
 msgstr "Initialisation du moteur d'émulation m68k..."
 
-#: src/gui/main.c:329
+#: src/gui/main.c:331
 msgid "Loading previously saved state..."
 msgstr "Chargment d'un état précédemment sauvegardé..."
 
-#: src/gui/main.c:340
+#: src/gui/main.c:342
 msgid "Pre-loading debugger..."
 msgstr "Préchargement du debugger..."
 
@@ -1115,8 +1121,8 @@ msgstr "2"
 msgid "1"
 msgstr "1"
 
-#: glade/dbg_bits-2.str:18 glade/dbg_bits-2.str:27 glade/dbg_code-2.str:43
-#: glade/dbg_code-2.str:44 glade/dbg_regs-2.str:13 glade/dbg_regs-2.str:15
+#: glade/dbg_bits-2.str:18 glade/dbg_bits-2.str:27 glade/dbg_code-2.str:44
+#: glade/dbg_code-2.str:45 glade/dbg_regs-2.str:13 glade/dbg_regs-2.str:15
 #: glade/dbg_regs-2.str:16 glade/dbg_regs-2.str:19 glade/dbg_regs-2.str:20
 #: glade/dbg_regs-2.str:21
 msgid "0"
@@ -1303,80 +1309,104 @@ msgid "_Quit"
 msgstr "Quitter"
 
 #: glade/dbg_code-2.str:35
+msgid "Font"
+msgstr ""
+
+#: glade/dbg_code-2.str:36
 msgid "Run (F5)"
 msgstr "Démarrer (F5)"
 
-#: glade/dbg_code-2.str:36
+#: glade/dbg_code-2.str:37
 msgid "Single step / Step into (F7)"
 msgstr "Un seul pas / dedans (F7)"
 
-#: glade/dbg_code-2.str:37
+#: glade/dbg_code-2.str:38
 msgid "Step over (F8)"
 msgstr "Un pas dessus (F8)"
 
-#: glade/dbg_code-2.str:38
+#: glade/dbg_code-2.str:39
 msgid "Step out (F9)"
 msgstr "Un pas dehors (F9)"
 
-#: glade/dbg_code-2.str:39
+#: glade/dbg_code-2.str:40
 msgid "Run to cursor (F4)"
 msgstr "Exécute jusqu'au curseur (F4)"
 
-#: glade/dbg_code-2.str:40
+#: glade/dbg_code-2.str:41
 msgid "Break (F11)"
 msgstr "Stop (F11)"
 
-#: glade/dbg_code-2.str:41
+#: glade/dbg_code-2.str:42
 msgid "Toggle breakpoint (F2)"
 msgstr "Bascule le point d'arrêt (F2)"
 
-#: glade/dbg_code-2.str:42
+#: glade/dbg_code-2.str:43
 msgid "Cycle count:"
 msgstr "Compteur de cycles:"
 
-#: glade/dbg_code-2.str:45
+#: glade/dbg_code-2.str:46
 msgid "Reset"
 msgstr "Réinitialiser"
 
-#: glade/dbg_code-2.str:46
+#: glade/dbg_code-2.str:47
 msgid "Symbol:"
 msgstr "Symbole:"
 
-#: glade/dbg_code-2.str:47
+#: glade/dbg_code-2.str:48
 msgid "by name"
 msgstr "par nom"
 
-#: glade/dbg_code-2.str:48
+#: glade/dbg_code-2.str:49
 msgid "by addr"
 msgstr "par adresse"
 
-#: glade/dbg_code-2.str:49
+#: glade/dbg_code-2.str:50
 msgid "by id"
 msgstr "par valeur"
 
-#: glade/dbg_code-2.str:50 glade/dbg_mem-2.str:19
+#: glade/dbg_code-2.str:51 glade/dbg_mem-2.str:19
 msgid "Go to _address"
 msgstr "Aller à l'_adresse"
 
-#: glade/dbg_code-2.str:51
+#: glade/dbg_code-2.str:52
 msgid "Go to _PC"
 msgstr "Aller au _PC"
 
-#: glade/dbg_code-2.str:52
+#: glade/dbg_code-2.str:53
 msgid "Set _breakpoint"
 msgstr "Mettre un point d'arrêt"
 
-#: glade/dbg_code-2.str:53
+#: glade/dbg_code-2.str:54
 msgid "Set _one shot bkpt"
 msgstr "Mettre un point d'arrêt temporaire"
 
-#: glade/dbg_code-2.str:54
+#: glade/dbg_code-2.str:55
 msgid "Set PC to _selection"
 msgstr "Initialiser le PC sur la sélection"
 
-#: glade/dbg_code-2.str:55
+#: glade/dbg_code-2.str:56 glade/dbg_heap-2.str:9 glade/dbg_mem-2.str:22
+#: glade/dbg_regs-2.str:10 glade/dbg_stack-2.str:12
 msgid "View _memory"
 msgstr "Visualiser la _mémoire"
+
+#: glade/dbg_code-2.str:57
+#, fuzzy
+msgid "Change font"
+msgstr "_Changements"
+
+#: glade/dbg_code-2.str:58 glade/device-2.str:18
+msgid "custom"
+msgstr "personnalisé"
+
+#: glade/dbg_code-2.str:59
+#, fuzzy
+msgid "default"
+msgstr "_Défaut"
+
+#: glade/dbg_code-2.str:60
+#, fuzzy
+msgid "Font:"
+msgstr "Recherche:"
 
 #: glade/dbg_data-2.str:7
 msgid "Add Data Breakpoint"
@@ -1426,11 +1456,11 @@ msgstr "Long"
 msgid "Set program entry breakpoint"
 msgstr "Mettre un point d'arrêt sur programme"
 
-#: glade/dbg_heap-2.str:2
-msgid "Heap (handles)"
-msgstr "Tas"
+#: glade/dbg_heap-2.str:7
+msgid "Heap"
+msgstr ""
 
-#: glade/dbg_heap-2.str:3
+#: glade/dbg_heap-2.str:8
 msgid ""
 "Double click rowl to open tab in the memory window at the handle address."
 msgstr ""
@@ -1462,27 +1492,32 @@ msgid "Memory"
 msgstr "Mémoire"
 
 #: glade/dbg_mem-2.str:8
-msgid "Add tab"
+#, fuzzy
+msgid "Add tab (F1)"
 msgstr "Ajouter un onglet"
 
 #: glade/dbg_mem-2.str:9
-msgid "Remove tab"
+#, fuzzy
+msgid "Remove tab (F2)"
 msgstr "Supprimer un onglet"
 
 #: glade/dbg_mem-2.str:10
-msgid "Up"
-msgstr "Haut"
+msgid "Up (F3)"
+msgstr ""
 
 #: glade/dbg_mem-2.str:11
-msgid "Down"
+#, fuzzy
+msgid "Down (F4)"
 msgstr "Bas"
 
 #: glade/dbg_mem-2.str:12
-msgid "Refresh tab"
+#, fuzzy
+msgid "Refresh tab (F5)"
 msgstr "Rafraîchir"
 
 #: glade/dbg_mem-2.str:13
-msgid "View memory map"
+#, fuzzy
+msgid "View memory map (F6)"
 msgstr "Visualiser carte mémoire"
 
 #: glade/dbg_mem-2.str:14
@@ -1509,51 +1544,44 @@ msgstr "Désassembler"
 msgid "Dis-assemble (indirect)"
 msgstr "Désassembler (indirect)"
 
-#: glade/dbg_mem-2.str:22
+#: glade/dbg_mem-2.str:23
 msgid "Search"
 msgstr "Chercher"
 
-#: glade/dbg_mem-2.str:23
+#: glade/dbg_mem-2.str:24
 msgid "Find _Next"
 msgstr "Chercher le _suivant"
 
-#: glade/dbg_mem-2.str:24
+#: glade/dbg_mem-2.str:25
 msgid "Find:"
 msgstr "Recherche:"
 
-#: glade/dbg_mem-2.str:25
+#: glade/dbg_mem-2.str:26
 msgid ""
 "Hexadecimal strings must have 2 chars per byte and can be with or without "
 "space: FE ED or FEED."
 msgstr "FE EF or FEED"
 
-#: glade/dbg_mem-2.str:26
+#: glade/dbg_mem-2.str:27
 msgid "_ASCII"
 msgstr "_ASCII"
 
-#: glade/dbg_mem-2.str:27
+#: glade/dbg_mem-2.str:28
 msgid "_Case sensitive"
 msgstr "Respect majuscules"
 
-#: glade/dbg_pclog-2.str:2
-msgid "PC log"
-msgstr "Journal du PC"
+#: glade/dbg_pclog-2.str:7
+#, fuzzy
+msgid "PC trace"
+msgstr "Trace PC"
 
-#: glade/dbg_pclog-2.str:3
-msgid "Trace (PC listing):"
-msgstr "Trace du PC:"
-
-#: glade/dbg_pclog-2.str:4
+#: glade/dbg_pclog-2.str:8
 msgid "Double-click the row to disassemble."
 msgstr "Double-cliquer une ligne pour mettre à jour la configuration."
 
 #: glade/dbg_regs-2.str:8 glade/dbg_regs-2.str:29
 msgid "Registers"
 msgstr "Registres"
-
-#: glade/dbg_regs-2.str:10
-msgid "_Go to address"
-msgstr "_Aller au dossier parent"
 
 #: glade/dbg_regs-2.str:11
 msgid "Status Register"
@@ -1700,23 +1728,24 @@ msgstr "1234"
 msgid "I="
 msgstr "I="
 
-#: glade/dbg_stack-2.str:1
-msgid "Stack/Frame pointers"
-msgstr "Pointeurs de Pile/Tas"
+#: glade/dbg_stack-2.str:7
+#, fuzzy
+msgid "Stack"
+msgstr "Début"
 
-#: glade/dbg_stack-2.str:2
+#: glade/dbg_stack-2.str:8
 msgid "A7 (stack) is:"
 msgstr "A7 (pile) est:"
 
-#: glade/dbg_stack-2.str:3
+#: glade/dbg_stack-2.str:9
 msgid "USP"
 msgstr "USP"
 
-#: glade/dbg_stack-2.str:4
+#: glade/dbg_stack-2.str:10
 msgid "A7 (stack)"
 msgstr "A7 (pile)"
 
-#: glade/dbg_stack-2.str:5
+#: glade/dbg_stack-2.str:11
 msgid "A6 (frame)"
 msgstr "A6 (tas)"
 
@@ -1791,10 +1820,6 @@ msgstr "virtuel"
 #: glade/device-2.str:17 glade/device-2.str:23
 msgid "null"
 msgstr "aucun"
-
-#: glade/device-2.str:18
-msgid "custom"
-msgstr "personnalisé"
 
 #: glade/device-2.str:19
 msgid "#1"
@@ -2279,118 +2304,122 @@ msgid "_Options"
 msgstr "_Options"
 
 #: glade/popup-2.str:65
+msgid "_Copy to clipboard"
+msgstr ""
+
+#: glade/popup-2.str:66
 msgid "Key Press"
 msgstr "Appui touche"
 
-#: glade/popup-2.str:66
+#: glade/popup-2.str:67
 msgid "Setup recording"
 msgstr "Paramètres enregistrement"
 
-#: glade/popup-2.str:67
+#: glade/popup-2.str:68
 msgid "Record"
 msgstr "Enregistrement"
 
-#: glade/popup-2.str:68
+#: glade/popup-2.str:69
 msgid "Setup playing"
 msgstr "Paramètres lecture"
 
-#: glade/popup-2.str:69
+#: glade/popup-2.str:70
 msgid "Play"
 msgstr "Lecture"
 
-#: glade/popup-2.str:70
+#: glade/popup-2.str:71
 msgid "Misc"
 msgstr "Divers"
 
-#: glade/popup-2.str:71
+#: glade/popup-2.str:72
 msgid "Open the TiEmu user's manual in a browser."
 msgstr "Ouvrir le manuel de l'utilisateur dans un navigateur."
 
-#: glade/popup-2.str:72
+#: glade/popup-2.str:73
 msgid "_User's Manual"
 msgstr "Manuel de l'_utilisateur"
 
-#: glade/popup-2.str:73
+#: glade/popup-2.str:74
 msgid "Open the Linux manpage (applicable to Windows, too)."
 msgstr "Ouvrir la page de manuel (Linux & Windows)."
 
-#: glade/popup-2.str:74
+#: glade/popup-2.str:75
 msgid "_Manpage"
 msgstr "_Page de manuel"
 
-#: glade/popup-2.str:75
+#: glade/popup-2.str:76
 msgid "_Bookmarks"
 msgstr "_Favoris"
 
-#: glade/popup-2.str:76
+#: glade/popup-2.str:77
 msgid "http://lpg.ticalc.org/prj_tiemu"
 msgstr "http://lpg.ticalc.org, le groupe de programmeurs Linux."
 
-#: glade/popup-2.str:78
+#: glade/popup-2.str:79
 msgid "http://tigcc.ticalc.org"
 msgstr "ticalc.org"
 
-#: glade/popup-2.str:79
+#: glade/popup-2.str:80
 msgid "TIGCC"
 msgstr "TIGCC"
 
-#: glade/popup-2.str:80
+#: glade/popup-2.str:81
 msgid "http://www.tilp.info"
 msgstr "http://www.tilp.info"
 
-#: glade/popup-2.str:81
+#: glade/popup-2.str:82
 msgid "TiLP"
 msgstr "TiLP"
 
-#: glade/popup-2.str:82
+#: glade/popup-2.str:83
 msgid "http://education.ti.com"
 msgstr "http://education.ti.com"
 
-#: glade/popup-2.str:83
+#: glade/popup-2.str:84
 msgid "TI Education"
 msgstr "TI Education"
 
-#: glade/popup-2.str:84
+#: glade/popup-2.str:85
 msgid "http://www.ticalc.org"
 msgstr "http://www.ticalc.org"
 
-#: glade/popup-2.str:85
+#: glade/popup-2.str:86
 msgid "ticalc.org"
 msgstr "ticalc.org"
 
-#: glade/popup-2.str:86
+#: glade/popup-2.str:87
 msgid "How to report a bug or a problem."
 msgstr "Comment envoyer un rapport de bogue ou un problème."
 
-#: glade/popup-2.str:87
+#: glade/popup-2.str:88
 msgid "Bu_g report"
 msgstr "Rapport de _bogue"
 
-#: glade/popup-2.str:88
+#: glade/popup-2.str:89
 msgid "Display the log of all changes."
 msgstr "Afficher la liste des changements."
 
-#: glade/popup-2.str:89
+#: glade/popup-2.str:90
 msgid "_ChangeLog"
 msgstr "_Changements"
 
-#: glade/popup-2.str:90
+#: glade/popup-2.str:91
 msgid "About TiEmu..."
 msgstr "A propos de TiEmu..."
 
-#: glade/popup-2.str:91
+#: glade/popup-2.str:92
 msgid "_About..."
 msgstr "A propos..."
 
-#: glade/popup-2.str:92
+#: glade/popup-2.str:93
 msgid "_Infos..."
 msgstr "_Informations..."
 
-#: glade/popup-2.str:93
+#: glade/popup-2.str:94
 msgid "Just exits."
 msgstr "Quitter tout simplement."
 
-#: glade/popup-2.str:94
+#: glade/popup-2.str:95
 msgid "E_xit without saving state"
 msgstr "Quitter sans sauver"
 
@@ -2602,3 +2631,21 @@ msgstr ""
 #: glade/wizard-2.str:29
 msgid "Note also that the converted image will not have a boot block."
 msgstr "Notez aussi que l'image obtenue n'a pas de bloc de démarrage."
+
+#~ msgid "Heap (handles)"
+#~ msgstr "Tas"
+
+#~ msgid "Up"
+#~ msgstr "Haut"
+
+#~ msgid "PC log"
+#~ msgstr "Journal du PC"
+
+#~ msgid "Trace (PC listing):"
+#~ msgstr "Trace du PC:"
+
+#~ msgid "_Go to address"
+#~ msgstr "_Aller au dossier parent"
+
+#~ msgid "Stack/Frame pointers"
+#~ msgstr "Pointeurs de Pile/Tas"

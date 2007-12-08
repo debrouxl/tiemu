@@ -320,7 +320,7 @@ endif
 
 distdir: clean
 ifneq (,$(findstring NO_GDB,$(CFLAGS)))
-	cp -rl core kde ipc gui misc Makefile ../tiemu-@VERSION@/src
+	cp -rl core kde ipc gui misc Makefile ../@PACKAGE@-@VERSION@/src
 else
 	cp -rl core kde ipc gui misc Makefile \
 	gdb cleangdbsources.sh	../tiemu-@VERSION@/src

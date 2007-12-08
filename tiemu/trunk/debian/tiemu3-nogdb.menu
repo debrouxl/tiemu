@@ -1,3 +1,0 @@
-?package(tiemu3-nogdb):needs="X11" section="Apps/Math"\
-  title="TiEmu3" command="/usr/bin/tiemu"
-

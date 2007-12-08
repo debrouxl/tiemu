@@ -154,30 +154,44 @@ CONFIG FILE FORMAT
        The  format  is  (x,y,w,h,m,v)  where  x&y are coordinates, w&h are the
        size, m is set if window is minimized and v is set  if  the  window  is
        open.
+       dbg_font_type=  Enable custom font if set to "custom"; use default font
+       if set to "default".
+       dbg_font_name= Name of font to use. It must be a valid  Pango  descrip-
+       tion  font  name:  a  string  representation in the form "[FAMILY-LIST]
+       [STYLE-OPTIONS] [SIZE]", where FAMILY-LIST is a comma separated list of
+       families  optionally  terminated by a comma, STYLE_OPTIONS is a whites-
+       pace separated list of words where each WORD describes  one  of  style,
+       variant,  weight,  or  stretch,  and SIZE is an decimal number (size in
+       points). Any one of the  options  may  be  absent.  If  FAMILY-LIST  is
+       absent,  then  the  family_name field of the resulting font description
+       will be initialized to NULL. If  STYLE-OPTIONS  is  missing,  then  all
+       style  options  will  be set to the default values. If SIZE is missing,
+       the size in the resulting font description will be set to 0.
+
 
        Think to terminate your config script with the 'RC_END' word !!!
 
 
 COPYRIGHT
        Copyright (C) 2000-2001, Romain Lievin and Thomas Corvazier.  Copyright
-       (C) 2001-2003, Romain Lievin Copyright (C) 2003,  Julien  Blache  Copy-
-       right  (C)  2004,  Romain Lievin Copyright (C) 2005-2007, Romain Lievin
+       (C)  2001-2003,  Romain  Lievin Copyright (C) 2003, Julien Blache Copy-
+       right (C) 2004, Romain Lievin Copyright (C)  2005-2007,  Romain  Lievin
        and Kevin Kofler
 
-       Permission to use, copy, modify, and distribute this software  and  its
-       documentation  for  any purpose and without fee is hereby granted, pro-
-       vided that the above copyright notice appear in  all  copies  and  that
-       both  that  copyright  notice and this permission notice appear in sup-
+       Permission  to  use, copy, modify, and distribute this software and its
+       documentation for any purpose and without fee is hereby  granted,  pro-
+       vided  that  the  above  copyright notice appear in all copies and that
+       both that copyright notice and this permission notice  appear  in  sup-
        porting documentation.
 
-       This program and its source code is distributed under the terms of  the
-       terms  of the GNU General Public License as published by the Free Soft-
-       ware Foundation; either version 2 of the License, or (at  your  option)
+       This  program and its source code is distributed under the terms of the
+       terms of the GNU General Public License as published by the Free  Soft-
+       ware  Foundation;  either version 2 of the License, or (at your option)
        any later version.
 
-       This  program  is  distributed  in the hope that it will be useful, but
-       WITHOUT ANY  WARRANTY;  without  even  the  implied  warranty  of  MER-
-       CHANTABILITY  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
+       This program is distributed in the hope that it  will  be  useful,  but
+       WITHOUT  ANY  WARRANTY;  without  even  the  implied  warranty  of MER-
+       CHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU  General
        Public License for more details.
 
        You should have received a copy of the GNU General Public License along
@@ -186,21 +200,21 @@ COPYRIGHT
 
 
 SUGGESTIONS AND BUG REPORTS
-       The  canonical place to find TiEmu and some miscellenaous  informations
-       is  at  <http://lpg.ticalc.org/prj_tiemu>.  You can also take a look at
-       <http://lpg.ticalc.org>  and  <http://www.ticalc.org>  for  others   TI
+       The   canonical place to find TiEmu and some miscellenaous informations
+       is at <http://lpg.ticalc.org/prj_tiemu>.  You can also take a  look  at
+       <http://lpg.ticalc.org>   and  <http://www.ticalc.org>  for  others  TI
        related programs for Linux.
 
 
 SEE ALSO
-       tilp(1)  for the use of a linking program. TiEmu shares the same commu-
+       tilp(1) for the use of a linking program. TiEmu shares the same  commu-
        nication box for link settings.
 
 
 SPECIAL THANKS
        - Jonas Minnberg (Sasq) for Tiger
        - UAE, the Universal Amiga Emulator
-       - Kevin  Kofler  <Kevin@tigcc.ticalc.org>  for  creating  rpm  packages
+       -  Kevin  Kofler  <Kevin@tigcc.ticalc.org>  for  creating  rpm packages
        (Fedora): he is the official maintainer of this package.
        - Julien Blache <jb@jblache.org> for creating deb packages (Debian): he
        is the official maintainer of this package.
