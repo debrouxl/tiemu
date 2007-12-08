@@ -301,7 +301,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 x_includes = @x_includes@
 x_libraries = @x_libraries@
-EXTRA_DIST = mingw msvc
+EXTRA_DIST = fedora InnoSetup ipaq mingw msvc nsis
 all: all-am
 
 .SUFFIXES:

@@ -313,7 +313,8 @@ top_srcdir = @top_srcdir@
 x_includes = @x_includes@
 x_libraries = @x_libraries@
 miscdir = $(pkgdatadir)/misc
-dist_misc_DATA = *.txt
+dist_misc_DATA = *.txt *.lst
+EXTRA_DIST = copy.bat
 all: all-am
 
 .SUFFIXES:
