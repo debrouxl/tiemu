@@ -347,7 +347,7 @@ x_libraries = @x_libraries@
 SUBDIRS = build glade help misc pedrom pixmaps po skins src \
 	$(am__append_1)
 dist_pkgdata_DATA = COPYING RELEASE AUTHORS LICENSES
-EXTRA_DIST = README.* TODO docs desktop
+EXTRA_DIST = README.* TODO docs desktop sdk
 ACLOCAL_AMFLAGS = -I m4
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
