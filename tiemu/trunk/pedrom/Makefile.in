@@ -314,6 +314,7 @@ x_includes = @x_includes@
 x_libraries = @x_libraries@
 pedromdir = $(pkgdatadir)/pedrom
 dist_pedrom_DATA = pedrom*.tib
+EXTRA_DIST = pedrom-src.tar.bz2
 all: all-am
 
 .SUFFIXES:
