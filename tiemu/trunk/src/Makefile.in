@@ -320,9 +320,9 @@ endif
 
 distdir: clean
 ifneq (,$(findstring NO_GDB,$(CFLAGS)))
-	cp -rl core kde ipc gui misc Makefile ../@PACKAGE@-@VERSION@/src
+	cp -rl core kde ipc gui misc sound ../@PACKAGE@-@VERSION@/src
 else
-	cp -rl core kde ipc gui misc Makefile \
+	cp -rl core kde ipc gui misc sound \
 	gdb cleangdbsources.sh	../tiemu-@VERSION@/src
 endif
 	find ../tiemu-@VERSION@/src -name .svn -exec rm -rf "{}" \\; 2>/dev/null
