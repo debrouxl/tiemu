@@ -3,7 +3,7 @@
 
 
 Previous version: 3.01		(01/09/2007)
-Current version:  3.02		(XX/XX/2007)
+Current version:  3.02		(10/12/2007)
 
 SubVersion (CVS) revision: $Id: RELEASE 2042 2006-05-07 07:46:23Z roms $
 
@@ -24,18 +24,45 @@ New capabilities:
 -----------------
 
 	- screenshot can be copied into clipboard
+	- includes latest TiLP2 framework
 	
 
 Improvements:
 -------------
 
-	- none
+	- added accelerator keys: F6 (code) and +/- (memory)
+	- dual-click in register window select the whole register value now
+	- mapped both CTRL keys to Diamond & both SHIFT keys to 2nd
+	- added a popup menu with "View _memory" on any debugger window
+	- unified displaying of hexadecimal values (removed '$' and ''0x' heading chars) in boxes
+	- [no-gdb] suppress leading zeros in disasm like VTi does
+	- [no-gdb] some instructions (trap, rts, reset...) was suffixed with .L which is not needed
+	- [no-gdb] fixed wrong disassembly offset of MOVEM.L instruction
+	- [no-gdb] fixed disassembly of MOVEP instruction
+	- [no-gdb] fixed disassembly of MOVEQ instruction
+	- [no-gdb] fixed disassembly of ori/andi/eori, addi/subi/cmpi, lea/rts instructions
+	- [no-gdb] fixed disassembly of BT<tab>.W and changed BT into BRA
+	- added accelerator keys (F1..F8) in memory window
+	- map numerical ENTER key to TIKEY_ENTER on ti89
+	- [no-gdb] unified displaying of hexadecimal values in the disassembler('$', '[' and '==' heading chars);
+		displayed offset as signed values
+	- [no-gdb] display "($42,a3),a3" instead of "(a3,$42),a3)" in disassembler
+	- [no-gdb] reject computed value [%lX] at end of line rather than in the middle of the instruction
+	- in the bkpts window, the fifth toolbar button (go to address) is not restricted to code
+		breakpoint any longer; it works on any breakpoint type.
+	- replaced currently selected instruction in code windows by an icon (arrow)
+	- allow to change the font used in every debugger windows
+	- [no-gdb] fixed disassembly of ori/andi/eori, addi/subi/cmpi, moveq/addq/subq instructions
+	- [no-gdb] optimized m68k-disasm front-end
+	- [no-gdb] fixed "movem.l #$unreadable_mask"
 		
 		
 Bug fixes:
 ----------
 
-	- none
+	- [gdb] makeinfo version check
+	- [gdb] longjmp out of gtk_main in the engine in the GDB-enabled version which triggered an assert with GLib 2.14
+	- [gdb] relocation of debugging information for kernel-based programs
 	
 	
 Notes:
