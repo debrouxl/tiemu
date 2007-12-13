@@ -116,6 +116,8 @@ typedef struct
 
 	gint		dbg_font_type;
 	gchar*		dbg_font_name;
+
+	gint		dbg_dock;
 } DbgOptions;
 
 extern TieOptions options;

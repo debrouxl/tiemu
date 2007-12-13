@@ -64,7 +64,7 @@ int hw_m68k_init(void)
     ti68k_bkpt_add_exception(4);
 
     // init instruction logging
-    logger.pclog_size = 10;
+    logger.pclog_size = 11;
     logger.pclog_buf = (uint32_t *)malloc(logger.pclog_size * sizeof(uint32_t));
     if(logger.pclog_buf == NULL)
         return ERR_MALLOC;

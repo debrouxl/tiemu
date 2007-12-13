@@ -512,6 +512,15 @@ void rcfile_read(void)
 		options3.dbg_font_name = g_strdup(p);
 		continue;
 	}
+
+	if( (p=find_str(buffer, "dbg_dock=")) )
+	{
+	  if(!strcmp(p, "no")) options3.dbg_dock = 0;
+	  else if(!strcmp(p, "yes")) options3.dbg_dock = 1;
+	  else stop(l);
+	  continue;
+	}
+
     }
   fclose(txt);
 
@@ -792,6 +801,7 @@ void rcfile_write(void)
 	fprintf(txt, "wnd_transient=%s\n", options3.transient ? "yes" : "no");
  	fprintf(txt, "\n");
 
+	fprintf(txt, "# Font type\n");
 	fprintf(txt, "dbg_font_type=");
 	switch(options3.dbg_font_type)
 	{
@@ -804,6 +814,16 @@ void rcfile_write(void)
 		fprintf(txt, "dbg_font_name=%s\n", options3.dbg_font_name);
  		fprintf(txt, "\n");
 	}
+
+	fprintf(txt, "# Use dock (yes) or multi-window (no)\n");
+	fprintf(txt, "dbg_dock=");
+	switch(options3.dbg_dock)
+	{
+	case 0: fprintf(txt, "no\n"); break;
+	case 1: fprintf(txt, "yes\n"); break;
+	default: fprintf(txt, "no\n"); break;
+	}
+	fprintf(txt, "\n");
 
 	fprintf(txt, "\n");
   fprintf(txt, "RC_END\n");
@@ -934,4 +954,6 @@ void options3_set_default(void)
 	
 	options3.dbg_font_type = 0;
 	options3.dbg_font_name = g_strdup(DEFAULT_FONT_NAME);
+
+	options3.dbg_dock = 1;
 }
