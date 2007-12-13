@@ -42,6 +42,7 @@
 #include "struct.h"
 #include "dbg_all.h"
 #include "dbg_wnds.h"
+#include "dbg_dock.h"
 #include "support.h"
 #include "paths.h"
 #include "engine.h"
@@ -74,11 +75,15 @@ void gtk_debugger_preload(void)
 	dbgw.heap  = dbgheap_create_window();
 	dbgw.iop   = dbgiop_create_window();
 	dbgw.code  = dbgcode_create_window();
-	//dbgw.dock  = dbgdock_create_window();	//must be launched as last
+	if(options3.dbg_dock)	//must be launched as last
+		dbgw.dock  = dbgdock_create_window();
 }
 
 void gtk_debugger_refresh(void)
 {	
+	if(options3.dbg_dock)
+		return;
+
 	if(GTK_WIDGET_VISIBLE(dbgw.regs))
 		dbgregs_refresh_window();
 	if(GTK_WIDGET_VISIBLE(dbgw.mem))
@@ -100,15 +105,23 @@ void gtk_debugger_refresh(void)
 void gtk_debugger_display(void)
 {
 	// display debugger windows (if not)
-	dbgcode_display_window();
-	dbgregs_display_window();
-	dbgmem_display_window();
-	dbgbkpts_display_window();
-    dbgpclog_display_window();
-    dbgstack_display_window();
-	dbgheap_display_window();
-	dbgiop_display_window();
-	//dbgcode_display_window();	// the last has focus
+	if(options3.dbg_dock)
+	{
+		dbgdock_display_window();
+		dbgiop_display_window();
+		dbgpclog_display_window();
+	}
+	else
+	{
+		dbgregs_display_window();
+		dbgmem_display_window();
+		dbgbkpts_display_window();
+		dbgpclog_display_window();
+		dbgstack_display_window();
+		dbgheap_display_window();
+		dbgiop_display_window();
+		dbgcode_display_window();	// the last has focus	
+	}
 }
 
 // show previously created window
@@ -138,7 +151,7 @@ int gtk_debugger_enter(int context)
 
 	// enable the debugger if GDB disabled it
 	if (!GTK_WIDGET_SENSITIVE(dbgw.regs))
-		dbgwnds_set_sensitivity(TRUE);
+		gtk_debugger_enable();
 
 	// handle automatic debugging requests
 #ifndef NO_GDB
@@ -183,7 +196,10 @@ void gtk_debugger_close (void)
 	// hide all windows
 	gdbtk_hide_insight();
 	dbg_on = 0;
-	gtk_debugger_hide_all(!0);
+	if(options3.dbg_dock)
+		dbgdock_hide_all(!0);
+	else
+		dbgwnds_hide_all(!0);
 
     // and restarts the emulator
 	ti68k_bkpt_set_cause(0, 0, 0);
@@ -191,7 +207,10 @@ void gtk_debugger_close (void)
 #else
 	// hide all windows
 	dbg_on = 0;
-	dbgwnds_hide_all(!0);
+	if(options3.dbg_dock)
+		dbgdock_hide_all(!0);
+	else
+		dbgwnds_hide_all(!0);
 
     // and restarts the emulator
 	ti68k_bkpt_set_cause(0, 0, 0);
@@ -208,4 +227,20 @@ static gint close_debugger_wrapper(gpointer data)
 void gtk_debugger_close_async (void)
 {
 	g_idle_add(close_debugger_wrapper, NULL);
+}
+
+void gtk_debugger_disable(void)
+{
+	if(options3.dbg_dock)
+		dbgdock_set_sensitivity(FALSE);
+	else
+		dbgwnds_set_sensitivity(FALSE);
+}
+
+void gtk_debugger_enable(void)
+{
+	if(options3.dbg_dock)
+		dbgdock_set_sensitivity(TRUE);
+	else
+		dbgwnds_set_sensitivity(TRUE);
 }

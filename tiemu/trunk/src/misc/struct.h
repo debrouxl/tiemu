@@ -109,6 +109,7 @@ typedef struct
     WinState	stack;
 	WinState	heap;
 	WinState	iop;
+	WinState	dock;
 
 	gint		transient;
 

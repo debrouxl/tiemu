@@ -491,6 +491,14 @@ void rcfile_read(void)
 		  &(options3.iop.minimized), &(options3.iop.closed));
 	  continue;
 	}
+	if( (p=find_str(buffer, "dock_wnd=")) )
+	{
+	  sscanf(p, "(%i;%i;%i;%i;%i;%i)", 
+		  &(options3.dock.rect.x), &(options3.dock.rect.y), 
+		  &(options3.dock.rect.w), &(options3.dock.rect.h),
+		  &(options3.dock.minimized), &(options3.dock.closed));
+	  continue;
+	}
 	if( (p=find_str(buffer, "wnd_transient=")) )
 	{
 	  if(!strcmp(p, "no")) options3.transient = 0;
@@ -798,6 +806,12 @@ void rcfile_write(void)
 		options3.iop.minimized, options3.iop.closed);
 	fprintf(txt, "\n");
 
+	fprintf(txt, "dock_wnd=(%i;%i;%i;%i;%i;%i)", 
+		options3.dock.rect.x, options3.dock.rect.y, 
+		options3.dock.rect.w, options3.dock.rect.h,
+		options3.dock.minimized, options3.dock.closed);
+	fprintf(txt, "\n");
+
 	fprintf(txt, "wnd_transient=%s\n", options3.transient ? "yes" : "no");
  	fprintf(txt, "\n");
 
@@ -949,6 +963,13 @@ void options3_set_default(void)
 	options3.iop.rect.h = 240;
 	options3.iop.closed = !0;
 	options3.iop.minimized = 0;
+
+	options3.dock.rect.x = 0;
+	options3.dock.rect.y = 0;
+	options3.dock.rect.w = -1;	// unused yet
+	options3.dock.rect.h = -1;	// unused yet
+	options3.dock.closed = 0;
+	options3.dock.minimized = 0;
 
 	options3.transient = 0;
 	

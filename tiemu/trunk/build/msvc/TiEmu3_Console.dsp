@@ -308,6 +308,10 @@ SOURCE=..\..\src\gui\debugger\dbg_dock.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gui\debugger\dbg_dock.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\debugger\dbg_entry.c
 # End Source File
 # Begin Source File

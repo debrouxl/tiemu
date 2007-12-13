@@ -43,6 +43,9 @@ void gtk_debugger_preload(void);
 void gtk_debugger_display(void);
 void gtk_debugger_refresh(void);
 
+void gtk_debugger_disable(void);
+void gtk_debugger_enable(void);
+
 int  gtk_debugger_enter(int context);
 void gtk_debugger_close(void);
 void gtk_debugger_close_async(void);
