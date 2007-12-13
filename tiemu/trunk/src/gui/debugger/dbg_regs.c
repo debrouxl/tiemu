@@ -303,8 +303,6 @@ GtkWidget* dbgregs_display_window(void)
 	else
 		gtk_window_iconify(GTK_WINDOW(dbgw.regs));
 #endif
-    
-	labels_refresh();
 
 	if(!GTK_WIDGET_VISIBLE(dbgw.regs) && !options3.regs.closed)
 		gtk_widget_show(dbgw.regs);

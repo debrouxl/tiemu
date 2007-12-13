@@ -170,8 +170,6 @@ GtkWidget* dbgheap_display_window(void)
 		gtk_window_iconify(GTK_WINDOW(dbgw.heap));
 #endif
 
-	clist_refresh(store);
-
 	if(!GTK_WIDGET_VISIBLE(dbgw.heap) && !options3.heap.closed)
 		gtk_widget_show(dbgw.heap);
 

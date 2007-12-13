@@ -398,9 +398,6 @@ GtkWidget* dbgcode_display_window(void)
 	tb_set_states(1, 1, 1, 1, 1, 0, 1, 1);
 	reset_disabled = FALSE;
     set_other_windows_sensitivity(TRUE);
-     
-    gtk_list_store_clear(store);
-	clist_refresh(store, TRUE);
 
 	gtk_widget_show(dbgw.code);
 

@@ -450,8 +450,6 @@ GtkWidget* dbgiop_display_window(void)
 		gtk_window_iconify(GTK_WINDOW(dbgw.iop));
 #endif
     
-	ctree_refresh(store);
-
 	if(!GTK_WIDGET_VISIBLE(dbgw.iop) && !options3.iop.closed)
 		gtk_widget_show(dbgw.iop);
 

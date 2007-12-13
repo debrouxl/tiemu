@@ -89,6 +89,7 @@ void gtk_debugger_preload(void)
 	dbgw.heap  = dbgheap_create_window();
 	dbgw.iop   = dbgiop_create_window();
 	dbgw.code  = dbgcode_create_window();
+	//dbgw.dock  = dbgdock_create_window();	//must be launched as last
 }
 
 // show previously created window
@@ -113,6 +114,7 @@ int gtk_debugger_enter(int context)
     }
 
     // display debugger windows (if not)
+	dbgcode_display_window();
 	dbgregs_display_window();
 	dbgmem_display_window();
 	dbgbkpts_display_window();
@@ -120,7 +122,9 @@ int gtk_debugger_enter(int context)
     dbgstack_display_window();
 	dbgheap_display_window();
 	dbgiop_display_window();
-	dbgcode_display_window();	// the last has focus
+	//dbgcode_display_window();	// the last has focus
+
+	gtk_debugger_refresh();
 
 	// enable the debugger if GDB disabled it
 	if (!GTK_WIDGET_SENSITIVE(dbgw.regs))

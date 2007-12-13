@@ -388,9 +388,6 @@ GtkWidget* dbgbkpts_display_window(void)
 		gtk_window_iconify(GTK_WINDOW(wnd));
 #endif
 
-	gtk_list_store_clear(store);
-    clist_populate(store);
-
 	if(!GTK_WIDGET_VISIBLE(dbgw.bkpts) && !options3.bkpts.closed)
 		gtk_widget_show(wnd);
 

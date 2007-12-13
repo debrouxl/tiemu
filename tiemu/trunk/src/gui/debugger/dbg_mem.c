@@ -431,8 +431,6 @@ GtkWidget* dbgmem_display_window(void)
 		gtk_window_iconify(GTK_WINDOW(dbgw.mem));
 #endif
 
-	refresh_page(0, 0);
-
 	if(!GTK_WIDGET_VISIBLE(dbgw.mem) && !options3.mem.closed)
 		gtk_widget_show(dbgw.mem);
 

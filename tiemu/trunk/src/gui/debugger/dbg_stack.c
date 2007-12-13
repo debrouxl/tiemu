@@ -196,9 +196,6 @@ GtkWidget* dbgstack_display_window(void)
 		gtk_window_iconify(GTK_WINDOW(dbgw.stack));
 #endif
 
-	clist_refresh(store1, TARGET_SP);
-	clist_refresh(store2, TARGET_FP);
-
 	if(!GTK_WIDGET_VISIBLE(dbgw.stack) && !options3.stack.closed)
 		gtk_widget_show(dbgw.stack);
 
