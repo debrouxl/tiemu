@@ -43,7 +43,7 @@
 #include "support.h"
 #include "ti68k_int.h"
 #include "struct.h"
-#include "dbg_all.h"
+#include "dbg_wnds.h"
 #include "mem_map.h"
 
 #define FORCE_REFRESH

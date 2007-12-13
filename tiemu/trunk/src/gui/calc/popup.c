@@ -253,7 +253,7 @@ on_reset_calc1_activate                (GtkMenuItem     *menuitem,
 
 	ti68k_reset();
 	if (dbg_on)
-		close_debugger();
+		gtk_debugger_close();
 	else
 	  	engine_start();
 }

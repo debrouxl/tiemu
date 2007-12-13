@@ -41,7 +41,7 @@
 #include "support.h"
 #include "ti68k_int.h"
 #include "struct.h"
-#include "dbg_all.h"
+#include "dbg_wnds.h"
 
 #define FLAG_T	15
 #define FLAG_S	13

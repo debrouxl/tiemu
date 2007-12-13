@@ -36,7 +36,7 @@
 #include "support.h"
 #include "ti68k_int.h"
 #include "struct.h"
-#include "dbg_all.h"
+#include "dbg_wnds.h"
 
 enum { 
 	    COL_ADDR, COL_FONT

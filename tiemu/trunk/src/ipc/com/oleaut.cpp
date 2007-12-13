@@ -216,7 +216,7 @@ STDMETHODIMP TiEmuOLE::reset_calc(VARIANT_BOOL clearram, VARIANT_BOOL *ret)
 
     ti68k_reset();
     if (dbg_on)
-      close_debugger_async();
+      gtk_debugger_close_async();
     else
       engine_start();
 
