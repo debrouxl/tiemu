@@ -76,7 +76,6 @@ GtkWidget* dbgdock_create_window(void)
 {
 	GladeXML  *xml;
 	GtkWidget *dbox;
-    //GtkWidget *data;
 	
 	xml = glade_xml_new
 		(tilp_paths_build_glade("dbg_dock-2.glade"), "dbgdock_window",
@@ -112,7 +111,7 @@ GtkWidget* dbgdock_create_window(void)
 	options3.mem.closed = 0;
 	options3.heap.closed = 0;
 
-#if 0
+#if 0	// has to be fixed
 	gtk_widget_destroy(dbgw.stack);
 	dbgw.stack = NULL;
 	gtk_widget_destroy(dbgw.regs);
@@ -132,24 +131,13 @@ GtkWidget* dbgdock_create_window(void)
 
 GtkWidget* dbgdock_display_window(void)
 {
-	/*
-#ifdef WND_STATE
-	if(!options3.dock.minimized)
-	{
-		gtk_window_resize(GTK_WINDOW(dbgw.dock), options3.dock.rect.w, options3.dock.rect.h);
-		gtk_window_move(GTK_WINDOW(dbgw.dock), options3.dock.rect.x, options3.dock.rect.y);
-	}
-	else
-		gtk_window_iconify(GTK_WINDOW(dbgw.dock));
-#endif
-	*/
-
 	gtk_widget_show(dbgw.dock);
     return dbgw.dock;
 }
 
 void dbgdock_refresh_window(void)
 {
+	return;
 }
 
 void dbgdock_set_sensitivity(int state)

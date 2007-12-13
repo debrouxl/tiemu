@@ -38,6 +38,7 @@
 #include <windows.h>
 #endif
 
+#include "intl.h"
 #include "ti68k_int.h"
 #include "struct.h"
 #include "dbg_wnds.h"
@@ -47,6 +48,7 @@
 #include "paths.h"
 #include "engine.h"
 #include "dboxes.h"
+#include "rcfile.h"
 
 DbgOptions options3;
 DbgWidgets dbgw = { 0 };
@@ -247,7 +249,23 @@ on_transient1_activate                 (GtkMenuItem     *menu_item,
 	// Thus, the taskbar is not filled-up with a lot of windows.
 	options3.transient = GTK_CHECK_MENU_ITEM(menu_item)->active;
  
-	msg_box1("Warning", "You will have to save configuration and restart TiEmu for changes to take effect !");
+	msg_box1("Warning", _("You will have to save configuration and restart TiEmu for changes to take effect!"));
+}
+
+GLADE_CB void
+on_dockmode1_activate                  (GtkMenuItem     *menu_item,
+                                        gpointer         user_data)
+{
+	msg_box1("Information", "Configuration is about to be saved and TiEmu will restart...");
+
+	gtk_debugger_close();
+	if(options3.dbg_dock)
+		gtk_widget_destroy(dbgw.dock);
+
+	options3.dbg_dock = GTK_CHECK_MENU_ITEM(menu_item)->active;	
+
+	rcfile_write();
+	gtk_main_quit();
 }
 
 GLADE_CB void
@@ -359,8 +377,15 @@ void update_submenu(GtkWidget *widget, gpointer user_data)
     gtk_check_menu_item_set_active(item, GTK_WIDGET_VISIBLE(dbgw.iop));
     g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_ioports_frame1_activate, NULL);
 
-	// transient mode
+	// dock/multi mode
 	elt = g_list_nth(list, 8);
+	item = GTK_CHECK_MENU_ITEM(elt->data);
+    g_signal_handlers_block_by_func(GTK_OBJECT(item), on_dockmode1_activate, NULL);
+    gtk_check_menu_item_set_active(item, options3.dbg_dock);
+    g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_dockmode1_activate, NULL);
+
+	// transient mode
+	elt = g_list_nth(list, 9);
     item = GTK_CHECK_MENU_ITEM(elt->data);
     g_signal_handlers_block_by_func(GTK_OBJECT(item), on_transient1_activate, NULL);
     gtk_check_menu_item_set_active(item, options3.transient);
@@ -370,7 +395,7 @@ void update_submenu(GtkWidget *widget, gpointer user_data)
 	{
 		int i;
 
-		for(i = 10; i <= 14; i++)
+		for(i = 11; i <= 15; i++)
 		{
 			elt = g_list_nth(list, i);
 			gtk_widget_set_sensitive(GTK_WIDGET(elt->data), FALSE);

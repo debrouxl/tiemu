@@ -81,24 +81,21 @@ void gtk_debugger_preload(void)
 
 void gtk_debugger_refresh(void)
 {	
-	if(options3.dbg_dock)
-		return;
-
-	if(GTK_WIDGET_VISIBLE(dbgw.regs))
+	if(options3.dbg_dock || GTK_WIDGET_VISIBLE(dbgw.regs))
 		dbgregs_refresh_window();
-	if(GTK_WIDGET_VISIBLE(dbgw.mem))
+	if(options3.dbg_dock || GTK_WIDGET_VISIBLE(dbgw.mem))
 		dbgmem_refresh_window();
-	if(GTK_WIDGET_VISIBLE(dbgw.bkpts))
+	if(options3.dbg_dock || GTK_WIDGET_VISIBLE(dbgw.bkpts))
 		dbgbkpts_refresh_window();
-	if(GTK_WIDGET_VISIBLE(dbgw.pclog))
+	if(options3.dbg_dock || GTK_WIDGET_VISIBLE(dbgw.pclog))
 		dbgpclog_refresh_window();
-	if(GTK_WIDGET_VISIBLE(dbgw.code))
+	if(options3.dbg_dock || GTK_WIDGET_VISIBLE(dbgw.code))
 		dbgcode_refresh_window();
-    if(GTK_WIDGET_VISIBLE(dbgw.stack))
+    if(options3.dbg_dock || GTK_WIDGET_VISIBLE(dbgw.stack))
 		dbgstack_refresh_window();
-	if(GTK_WIDGET_VISIBLE(dbgw.heap))
+	if(options3.dbg_dock || GTK_WIDGET_VISIBLE(dbgw.heap))
 		dbgheap_refresh_window();
-	if(GTK_WIDGET_VISIBLE(dbgw.iop))
+	if(options3.dbg_dock || GTK_WIDGET_VISIBLE(dbgw.iop))
 		dbgiop_refresh_window();
 }
 
@@ -150,7 +147,7 @@ int gtk_debugger_enter(int context)
 	gtk_debugger_refresh();
 
 	// enable the debugger if GDB disabled it
-	if (!GTK_WIDGET_SENSITIVE(dbgw.regs))
+	if (!options3.dbg_dock && !GTK_WIDGET_SENSITIVE(dbgw.regs))
 		gtk_debugger_enable();
 
 	// handle automatic debugging requests

@@ -25,6 +25,7 @@ gchar *s = N_("_PC trace");
 gchar *s = N_("_Stack frame");
 gchar *s = N_("_Heap (handles)");
 gchar *s = N_("_I/O ports");
+gchar *s = N_("Dock Mode");
 gchar *s = N_("_Group windows");
 gchar *s = N_("_Show all");
 gchar *s = N_("_Hide all");

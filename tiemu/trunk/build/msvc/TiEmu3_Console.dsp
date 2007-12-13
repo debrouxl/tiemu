@@ -280,10 +280,6 @@ SOURCE=..\..\src\gui\debugger\dbg_all.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gui\debugger\dbg_all.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\gui\debugger\dbg_bits.c
 # End Source File
 # Begin Source File
@@ -305,10 +301,6 @@ SOURCE=..\..\src\gui\debugger\dbg_data.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\debugger\dbg_dock.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\debugger\dbg_dock.h
 # End Source File
 # Begin Source File
 
@@ -349,10 +341,6 @@ SOURCE=..\..\src\gui\debugger\dbg_vectors.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\debugger\dbg_wnds.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gui\debugger\dbg_wnds.h
 # End Source File
 # End Group
 # Begin Group "calc"
