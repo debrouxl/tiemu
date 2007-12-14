@@ -341,7 +341,7 @@ static void tb_set_states(int s1, int s2, int s3, int s4, int s5, int s6, int s7
 	Display source code window
 */
 
-extern int update_submenu(GtkWidget*, gpointer);
+extern int update_submenu(GtkWidget*, gpointer);	//dbg_wnds.c
 
 GtkWidget* dbgcode_create_window(void)
 {

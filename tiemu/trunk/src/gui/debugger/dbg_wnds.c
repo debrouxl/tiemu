@@ -326,26 +326,38 @@ void update_submenu(GtkWidget *widget, gpointer user_data)
     // regs
     elt = g_list_nth(list, 0);
     item = GTK_CHECK_MENU_ITEM(elt->data);
-    g_signal_handlers_block_by_func(GTK_OBJECT(item), on_registers1_activate, NULL);
-    gtk_check_menu_item_set_active(item, GTK_WIDGET_VISIBLE(dbgw.regs));
-    g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_registers1_activate, NULL);
-	if(options3.dbg_dock) gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
+	if(!options3.dbg_dock)
+	{
+		g_signal_handlers_block_by_func(GTK_OBJECT(item), on_registers1_activate, NULL);
+		gtk_check_menu_item_set_active(item, GTK_WIDGET_VISIBLE(dbgw.regs));
+		g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_registers1_activate, NULL);
+	}
+	else
+		gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
 
     // bkpts
     elt = g_list_nth(list, 1);
     item = GTK_CHECK_MENU_ITEM(elt->data);
-    g_signal_handlers_block_by_func(GTK_OBJECT(item), on_breakpoints1_activate, NULL);
-    gtk_check_menu_item_set_active(item, GTK_WIDGET_VISIBLE(dbgw.bkpts));
-    g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_breakpoints1_activate, NULL);
-	if(options3.dbg_dock) gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
+	if(!options3.dbg_dock)
+	{
+		g_signal_handlers_block_by_func(GTK_OBJECT(item), on_breakpoints1_activate, NULL);
+		gtk_check_menu_item_set_active(item, GTK_WIDGET_VISIBLE(dbgw.bkpts));
+		g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_breakpoints1_activate, NULL);
+	}
+	else
+		gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
 
     // mem
     elt = g_list_nth(list, 2);
     item = GTK_CHECK_MENU_ITEM(elt->data);
-    g_signal_handlers_block_by_func(GTK_OBJECT(item), on_memory1_activate, NULL);
-    gtk_check_menu_item_set_active(item, GTK_WIDGET_VISIBLE(dbgw.mem));
-    g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_memory1_activate, NULL);
-	if(options3.dbg_dock) gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
+	if(!options3.dbg_dock)
+	{
+		g_signal_handlers_block_by_func(GTK_OBJECT(item), on_memory1_activate, NULL);
+		gtk_check_menu_item_set_active(item, GTK_WIDGET_VISIBLE(dbgw.mem));
+		g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_memory1_activate, NULL);
+	}
+	else
+		gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
 
     // pclog
     elt = g_list_nth(list, 3);
@@ -357,18 +369,26 @@ void update_submenu(GtkWidget *widget, gpointer user_data)
     // stack
     elt = g_list_nth(list, 4);
     item = GTK_CHECK_MENU_ITEM(elt->data);
-    g_signal_handlers_block_by_func(GTK_OBJECT(item), on_stack_frame1_activate, NULL);
-    gtk_check_menu_item_set_active(item, GTK_WIDGET_VISIBLE(dbgw.stack));
-    g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_stack_frame1_activate, NULL);
-	if(options3.dbg_dock) gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
+	if(!options3.dbg_dock)
+	{
+		g_signal_handlers_block_by_func(GTK_OBJECT(item), on_stack_frame1_activate, NULL);
+		gtk_check_menu_item_set_active(item, GTK_WIDGET_VISIBLE(dbgw.stack));
+		g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_stack_frame1_activate, NULL);
+	}
+	else
+		gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
 	
 	// heap
     elt = g_list_nth(list, 5);
     item = GTK_CHECK_MENU_ITEM(elt->data);
-    g_signal_handlers_block_by_func(GTK_OBJECT(item), on_heap_frame1_activate, NULL);
-    gtk_check_menu_item_set_active(item, GTK_WIDGET_VISIBLE(dbgw.heap));
-    g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_heap_frame1_activate, NULL);
-	if(options3.dbg_dock) gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
+	if(!options3.dbg_dock)
+	{
+		g_signal_handlers_block_by_func(GTK_OBJECT(item), on_heap_frame1_activate, NULL);
+		gtk_check_menu_item_set_active(item, GTK_WIDGET_VISIBLE(dbgw.heap));
+		g_signal_handlers_unblock_by_func(GTK_OBJECT(item), on_heap_frame1_activate, NULL);
+	}
+	else
+		gtk_widget_set_sensitive(GTK_WIDGET(item), FALSE);
 
 	// ioports
 	elt = g_list_nth(list, 6);

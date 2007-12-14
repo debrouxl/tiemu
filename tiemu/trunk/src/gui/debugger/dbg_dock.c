@@ -111,19 +111,19 @@ GtkWidget* dbgdock_create_window(void)
 	options3.mem.closed = 0;
 	options3.heap.closed = 0;
 
-#if 0	// has to be fixed
 	gtk_widget_destroy(dbgw.stack);
 	dbgw.stack = NULL;
 	gtk_widget_destroy(dbgw.regs);
 	dbgw.regs = NULL;
 	gtk_widget_destroy(dbgw.bkpts);
 	dbgw.bkpts = NULL;
-	gtk_widget_destroy(dbgw.code);
-	dbgw.code = NULL;
 	gtk_widget_destroy(dbgw.mem);
 	dbgw.mem = NULL;
 	gtk_widget_destroy(dbgw.heap);
 	dbgw.heap = NULL;
+#if 0	// has to be fixed...
+	gtk_widget_destroy(dbgw.code);
+	dbgw.code = NULL;
 #endif
 
 	return dbox;
