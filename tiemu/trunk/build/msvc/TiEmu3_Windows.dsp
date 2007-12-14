@@ -404,6 +404,10 @@ SOURCE=..\..\src\gui\debugger\dbg_data.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gui\debugger\dbg_dock.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\gui\debugger\dbg_entry.c
 # End Source File
 # Begin Source File
@@ -437,6 +441,10 @@ SOURCE=..\..\src\gui\debugger\dbg_stack.c
 # Begin Source File
 
 SOURCE=..\..\src\gui\debugger\dbg_vectors.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gui\debugger\dbg_wnds.c
 # End Source File
 # End Group
 # Begin Group "calc"
