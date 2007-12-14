@@ -200,6 +200,8 @@ void gtk_debugger_close (void)
 
     // and restarts the emulator
 	ti68k_bkpt_set_cause(0, 0, 0);
+	dbgbkpts_erase_context();
+
     if (engine_is_stopped()) gdbcall_continue();
 #else
 	// hide all windows
@@ -211,6 +213,8 @@ void gtk_debugger_close (void)
 
     // and restarts the emulator
 	ti68k_bkpt_set_cause(0, 0, 0);
+	dbgbkpts_erase_context();
+
     engine_start();
 #endif
 }

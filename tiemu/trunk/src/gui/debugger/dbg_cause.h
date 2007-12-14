@@ -28,4 +28,4 @@
 
 gint display_dbgcause_dbox(void);
 gint display_dbgcause_dbox2(GtkWidget *sb);
-
+gint erase_dbgcause_dbox2(GtkWidget *sb);

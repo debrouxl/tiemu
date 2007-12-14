@@ -1,5 +1,10 @@
 SubVersion: $Id$
 
+- 12/12/2007, version 3.03:
+	- [roms]  $2704-2710: added debugging dock and option to choose between multi-window and dock
+	- [roms]  $2712: fixed one-shot breakpoints which was not displayed any longer
+	- [roms]  $2713: fixed old bug: the bkpt context displayed in the status bar is not erased when the debugger exits
+
 - 16/09/2007, version 3.02:
 	- [roms]  $2646: screenshots can be copied into the clipboard
 	- [roms]  $2649: use fixed fonts for release and manpage dboxes

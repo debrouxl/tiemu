@@ -391,8 +391,6 @@ GtkWidget* dbgbkpts_display_window(void)
 	if(!GTK_WIDGET_VISIBLE(dbgw.bkpts) && !options3.bkpts.closed)
 		gtk_widget_show(wnd);
 
-	display_dbgcause_dbox2(glade_get("statusbar1"));
-
 	return wnd;
 }
 
@@ -402,9 +400,15 @@ void dbgbkpts_refresh_window(void)
 	{
 		gtk_list_store_clear(store);
 		clist_populate(store);
+
+		display_dbgcause_dbox2(glade_get("statusbar1"));
 	}
 }
 
+void dbgbkpts_erase_context(void)
+{
+	display_dbgcause_dbox2(glade_get("statusbar1"));
+}
 
 static GtkWidget* display_popup_menu(void)
 {

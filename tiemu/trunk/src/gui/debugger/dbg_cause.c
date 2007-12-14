@@ -212,7 +212,14 @@ gint display_dbgcause_dbox2(GtkWidget *sb)
     // get context
 	ti68k_bkpt_get_cause(&type, &mode, &id);
     if(!type && !mode && !id)
+	{
+		str = g_strdup("");
+		sb_id = gtk_statusbar_get_context_id(GTK_STATUSBAR(sb), str);
+		gtk_statusbar_push(GTK_STATUSBAR(sb), sb_id, str);
+		g_free(str);
+
         return 0;
+	}
 
 	// user break
 	if(!type && !mode)
