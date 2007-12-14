@@ -181,7 +181,7 @@ static gboolean tiemudbus_reset_calc(TiEmuDBus *this UNUSED, gboolean clearram)
 
     ti68k_reset();
     if (dbg_on)
-      close_debugger_async();
+      gtk_debugger_close_async();
     else
       engine_start();
 
