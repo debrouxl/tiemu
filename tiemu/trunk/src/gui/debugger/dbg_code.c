@@ -95,6 +95,9 @@ static GtkListStore* clist_create(GtkWidget *widget)
 	for(i = COL_ADDR; i <= COL_OPERAND; i++)
 	{
 		renderer = gtk_cell_renderer_text_new();
+
+		//gtk_cell_renderer_text_set_fixed_height_from_font(GTK_CELL_RENDERER_TEXT(renderer), 10);
+
 		gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i,
@@ -108,6 +111,12 @@ static GtkListStore* clist_create(GtkWidget *widget)
 		
 		col = gtk_tree_view_get_column(view, i);
 		gtk_tree_view_column_set_resizable(col, TRUE);
+#if 0
+		gtk_tree_view_column_set_resizable(col, FALSE);
+		gtk_tree_view_column_set_sizing (col, GTK_TREE_VIEW_COLUMN_FIXED);
+		gtk_tree_view_column_set_fixed_width(col, 100);
+		gtk_tree_view_set_fixed_height_mode(view, TRUE);		
+#endif
 	}
 	
 	selection = gtk_tree_view_get_selection(view);
@@ -264,9 +273,11 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
         gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
         sscanf(str, "%x", &addr);
 
-        if((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr != pc))
+        if(((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr != pc) ||
+			(g_list_find(bkpts.code, GINT_TO_POINTER(addr | BKPT_TMP_MASK)) != NULL) && (addr != pc)))
             pix = create_pixbuf("bkpt.xpm");
-		else if((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr == pc))
+		else if(((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr == pc) ||
+			(g_list_find(bkpts.code, GINT_TO_POINTER(addr | BKPT_TMP_MASK)) != NULL) && (addr == pc)))
             pix = create_pixbuf("run_2.xpm");
 		else if(addr == pc)
 			pix = create_pixbuf("run_1.xpm");
@@ -804,9 +815,29 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
 	case GDK_F3:
 		on_set_tmp_bkpt1_activate(NULL, NULL);
 		return FALSE;
+	
+	case GDK_F4:
+		on_run_to_cursor1_activate(NULL, NULL);
+		return FALSE;
+
+	case GDK_F5:
+		on_run1_activate(NULL, NULL);
+		return FALSE;
 
 	case GDK_F6:
 		on_set_pc_to_selection1_activate(NULL, user_data);
+		return FALSE;
+
+	case GDK_F7:
+		on_step1_activate(NULL, NULL);
+		return FALSE;
+
+	case GDK_F8:
+		on_step_over1_activate(NULL, NULL);
+		return FALSE;
+
+	case GDK_F9:
+		on_step_out1_activate(NULL, NULL);
 		return FALSE;
 
 	case GDK_d:
