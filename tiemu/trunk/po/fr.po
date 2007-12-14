@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tiemu\n"
 "Report-Msgid-Bugs-To: tiemu-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-07 23:20+0100\n"
+"POT-Creation-Date: 2007-12-14 22:25+0100\n"
 "PO-Revision-Date: 2004-04-13 13:21+0000\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tiemu-devel@lists.sf.net>\n"
@@ -625,14 +625,14 @@ msgstr "Ne peut pas ouvrir le fichier de destination en écriture!"
 #: src/gui/calc/calc.c:234 src/gui/calc/popup.c:637
 #: src/gui/debugger/dbg_bkpts.c:363 src/gui/debugger/dbg_bits.c:50
 #: src/gui/debugger/dbg_cause.c:60 src/gui/debugger/dbg_cause.c:144
-#: src/gui/debugger/dbg_code.c:343 src/gui/debugger/dbg_code.c:648
-#: src/gui/debugger/dbg_code.c:1108 src/gui/debugger/dbg_data.c:55
+#: src/gui/debugger/dbg_code.c:355 src/gui/debugger/dbg_code.c:657
+#: src/gui/debugger/dbg_code.c:1137 src/gui/debugger/dbg_data.c:55
 #: src/gui/debugger/dbg_entry.c:206 src/gui/debugger/dbg_heap.c:145
-#: src/gui/debugger/dbg_heap.c:268 src/gui/debugger/dbg_iop.c:425
-#: src/gui/debugger/dbg_mem.c:698 src/gui/debugger/dbg_mem.c:1073
-#: src/gui/debugger/dbg_mem.c:1295 src/gui/debugger/dbg_pclog.c:137
-#: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:539
-#: src/gui/debugger/dbg_stack.c:162 src/gui/debugger/dbg_stack.c:415
+#: src/gui/debugger/dbg_heap.c:266 src/gui/debugger/dbg_iop.c:425
+#: src/gui/debugger/dbg_mem.c:696 src/gui/debugger/dbg_mem.c:1071
+#: src/gui/debugger/dbg_mem.c:1293 src/gui/debugger/dbg_pclog.c:137
+#: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:537
+#: src/gui/debugger/dbg_stack.c:162 src/gui/debugger/dbg_stack.c:412
 #: src/gui/debugger/dbg_vectors.c:144 src/gui/logger/log_link.c:60
 #: src/gui/infos.c:50 src/gui/manpage.c:72 src/gui/pbars.c:63
 #: src/gui/quicksend.c:58 src/gui/release.c:77 src/gui/romversion.c:190
@@ -744,27 +744,27 @@ msgstr "désactivé"
 msgid "one-shot"
 msgstr "un coup"
 
-#: src/gui/debugger/dbg_bkpts.c:421
+#: src/gui/debugger/dbg_bkpts.c:422
 msgid "dbg_bkpts-2.glade: GUI loading failed !\n"
 msgstr "dbg_bkpts-2.glade: échec du chargement de l'interface graphique !\n"
 
-#: src/gui/debugger/dbg_code.c:73 src/gui/debugger/dbg_heap.c:55
+#: src/gui/debugger/dbg_code.c:74 src/gui/debugger/dbg_heap.c:55
 #: src/gui/debugger/dbg_iop.c:295 src/gui/debugger/dbg_mem.c:185
 #: src/gui/debugger/dbg_pclog.c:54 src/gui/debugger/dbg_stack.c:58
 msgid "Address"
 msgstr "Adresse"
 
-#: src/gui/debugger/dbg_code.c:73
+#: src/gui/debugger/dbg_code.c:74
 msgid "Opcode"
 msgstr "Code opératoire"
 
-#: src/gui/debugger/dbg_code.c:73
+#: src/gui/debugger/dbg_code.c:74
 msgid "Operand"
 msgstr "Opérande"
 
-#: src/gui/debugger/dbg_code.c:1187
+#: src/gui/debugger/dbg_code.c:1216
 msgid "Choose font..."
-msgstr ""
+msgstr "Choisir police..."
 
 #: src/gui/debugger/dbg_entry.c:90 src/gui/debugger/dbg_iop.c:263
 #: src/gui/debugger/dbg_vectors.c:52
@@ -1121,8 +1121,8 @@ msgstr "2"
 msgid "1"
 msgstr "1"
 
-#: glade/dbg_bits-2.str:18 glade/dbg_bits-2.str:27 glade/dbg_code-2.str:44
-#: glade/dbg_code-2.str:45 glade/dbg_regs-2.str:13 glade/dbg_regs-2.str:15
+#: glade/dbg_bits-2.str:18 glade/dbg_bits-2.str:27 glade/dbg_code-2.str:45
+#: glade/dbg_code-2.str:46 glade/dbg_regs-2.str:13 glade/dbg_regs-2.str:15
 #: glade/dbg_regs-2.str:16 glade/dbg_regs-2.str:19 glade/dbg_regs-2.str:20
 #: glade/dbg_regs-2.str:21
 msgid "0"
@@ -1281,132 +1281,133 @@ msgid "_I/O ports"
 msgstr "Ports d'E/S"
 
 #: glade/dbg_code-2.str:28
+msgid "Dock Mode"
+msgstr "Mode dock"
+
+#: glade/dbg_code-2.str:29
 msgid "_Group windows"
 msgstr "_Groupe les fenêtres"
 
-#: glade/dbg_code-2.str:29
+#: glade/dbg_code-2.str:30
 msgid "_Show all"
 msgstr "Tout _montrer"
 
-#: glade/dbg_code-2.str:30
+#: glade/dbg_code-2.str:31
 msgid "_Hide all"
 msgstr "Tout _cacher"
 
-#: glade/dbg_code-2.str:31
+#: glade/dbg_code-2.str:32
 msgid "M_inimize all"
 msgstr "Tout minimiser"
 
-#: glade/dbg_code-2.str:32
+#: glade/dbg_code-2.str:33
 msgid "M_aximize all"
 msgstr "Tout maximiser"
 
-#: glade/dbg_code-2.str:33
+#: glade/dbg_code-2.str:34
 msgid "_Restore all"
 msgstr "Tout restaurer"
 
-#: glade/dbg_code-2.str:34
+#: glade/dbg_code-2.str:35
 msgid "_Quit"
 msgstr "Quitter"
 
-#: glade/dbg_code-2.str:35
-msgid "Font"
-msgstr ""
-
 #: glade/dbg_code-2.str:36
+msgid "Font"
+msgstr "Police"
+
+#: glade/dbg_code-2.str:37
 msgid "Run (F5)"
 msgstr "Démarrer (F5)"
 
-#: glade/dbg_code-2.str:37
+#: glade/dbg_code-2.str:38
 msgid "Single step / Step into (F7)"
 msgstr "Un seul pas / dedans (F7)"
 
-#: glade/dbg_code-2.str:38
+#: glade/dbg_code-2.str:39
 msgid "Step over (F8)"
 msgstr "Un pas dessus (F8)"
 
-#: glade/dbg_code-2.str:39
+#: glade/dbg_code-2.str:40
 msgid "Step out (F9)"
 msgstr "Un pas dehors (F9)"
 
-#: glade/dbg_code-2.str:40
+#: glade/dbg_code-2.str:41
 msgid "Run to cursor (F4)"
 msgstr "Exécute jusqu'au curseur (F4)"
 
-#: glade/dbg_code-2.str:41
+#: glade/dbg_code-2.str:42
 msgid "Break (F11)"
 msgstr "Stop (F11)"
 
-#: glade/dbg_code-2.str:42
+#: glade/dbg_code-2.str:43
 msgid "Toggle breakpoint (F2)"
 msgstr "Bascule le point d'arrêt (F2)"
 
-#: glade/dbg_code-2.str:43
+#: glade/dbg_code-2.str:44
 msgid "Cycle count:"
 msgstr "Compteur de cycles:"
 
-#: glade/dbg_code-2.str:46
+#: glade/dbg_code-2.str:47
 msgid "Reset"
 msgstr "Réinitialiser"
 
-#: glade/dbg_code-2.str:47
+#: glade/dbg_code-2.str:48
 msgid "Symbol:"
 msgstr "Symbole:"
 
-#: glade/dbg_code-2.str:48
+#: glade/dbg_code-2.str:49
 msgid "by name"
 msgstr "par nom"
 
-#: glade/dbg_code-2.str:49
+#: glade/dbg_code-2.str:50
 msgid "by addr"
 msgstr "par adresse"
 
-#: glade/dbg_code-2.str:50
+#: glade/dbg_code-2.str:51
 msgid "by id"
 msgstr "par valeur"
 
-#: glade/dbg_code-2.str:51 glade/dbg_mem-2.str:19
+#: glade/dbg_code-2.str:52 glade/dbg_mem-2.str:19
 msgid "Go to _address"
 msgstr "Aller à l'_adresse"
 
-#: glade/dbg_code-2.str:52
+#: glade/dbg_code-2.str:53
 msgid "Go to _PC"
 msgstr "Aller au _PC"
 
-#: glade/dbg_code-2.str:53
+#: glade/dbg_code-2.str:54
 msgid "Set _breakpoint"
 msgstr "Mettre un point d'arrêt"
 
-#: glade/dbg_code-2.str:54
+#: glade/dbg_code-2.str:55
 msgid "Set _one shot bkpt"
 msgstr "Mettre un point d'arrêt temporaire"
 
-#: glade/dbg_code-2.str:55
+#: glade/dbg_code-2.str:56
 msgid "Set PC to _selection"
 msgstr "Initialiser le PC sur la sélection"
 
-#: glade/dbg_code-2.str:56 glade/dbg_heap-2.str:9 glade/dbg_mem-2.str:22
+#: glade/dbg_code-2.str:57 glade/dbg_heap-2.str:9 glade/dbg_mem-2.str:22
 #: glade/dbg_regs-2.str:10 glade/dbg_stack-2.str:12
 msgid "View _memory"
 msgstr "Visualiser la _mémoire"
 
-#: glade/dbg_code-2.str:57
-#, fuzzy
+#: glade/dbg_code-2.str:58
 msgid "Change font"
-msgstr "_Changements"
+msgstr "Changer police"
 
-#: glade/dbg_code-2.str:58 glade/device-2.str:18
+#: glade/dbg_code-2.str:59 glade/device-2.str:18
 msgid "custom"
 msgstr "personnalisé"
 
-#: glade/dbg_code-2.str:59
-#, fuzzy
-msgid "default"
-msgstr "_Défaut"
-
 #: glade/dbg_code-2.str:60
-#, fuzzy
+msgid "default"
+msgstr "défaut"
+
+#: glade/dbg_code-2.str:61
 msgid "Font:"
-msgstr "Recherche:"
+msgstr "Police:"
 
 #: glade/dbg_data-2.str:7
 msgid "Add Data Breakpoint"
@@ -1458,7 +1459,7 @@ msgstr "Mettre un point d'arrêt sur programme"
 
 #: glade/dbg_heap-2.str:7
 msgid "Heap"
-msgstr ""
+msgstr "Tas"
 
 #: glade/dbg_heap-2.str:8
 msgid ""
@@ -1492,33 +1493,28 @@ msgid "Memory"
 msgstr "Mémoire"
 
 #: glade/dbg_mem-2.str:8
-#, fuzzy
 msgid "Add tab (F1)"
-msgstr "Ajouter un onglet"
+msgstr "Ajouter un onglet (F1)"
 
 #: glade/dbg_mem-2.str:9
-#, fuzzy
 msgid "Remove tab (F2)"
-msgstr "Supprimer un onglet"
+msgstr "Supprimer un onglet (F2)"
 
 #: glade/dbg_mem-2.str:10
 msgid "Up (F3)"
-msgstr ""
+msgstr "Haut (F3)"
 
 #: glade/dbg_mem-2.str:11
-#, fuzzy
 msgid "Down (F4)"
-msgstr "Bas"
+msgstr "Bas (F4)"
 
 #: glade/dbg_mem-2.str:12
-#, fuzzy
 msgid "Refresh tab (F5)"
-msgstr "Rafraîchir"
+msgstr "Rafraîchir (F5)"
 
 #: glade/dbg_mem-2.str:13
-#, fuzzy
 msgid "View memory map (F6)"
-msgstr "Visualiser carte mémoire"
+msgstr "Visualiser cartographie mémoire (F6)"
 
 #: glade/dbg_mem-2.str:14
 msgid "Enter Address"
@@ -1571,7 +1567,6 @@ msgid "_Case sensitive"
 msgstr "Respect majuscules"
 
 #: glade/dbg_pclog-2.str:7
-#, fuzzy
 msgid "PC trace"
 msgstr "Trace PC"
 
@@ -1729,9 +1724,8 @@ msgid "I="
 msgstr "I="
 
 #: glade/dbg_stack-2.str:7
-#, fuzzy
 msgid "Stack"
-msgstr "Début"
+msgstr "Pile"
 
 #: glade/dbg_stack-2.str:8
 msgid "A7 (stack) is:"
@@ -2305,7 +2299,7 @@ msgstr "_Options"
 
 #: glade/popup-2.str:65
 msgid "_Copy to clipboard"
-msgstr ""
+msgstr "_Copier dans le presse-papier"
 
 #: glade/popup-2.str:66
 msgid "Key Press"

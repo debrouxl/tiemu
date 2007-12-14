@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tiemu-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-07 23:02+0100\n"
+"POT-Creation-Date: 2007-12-14 22:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -558,14 +558,14 @@ msgstr ""
 #: src/gui/calc/calc.c:234 src/gui/calc/popup.c:637
 #: src/gui/debugger/dbg_bkpts.c:363 src/gui/debugger/dbg_bits.c:50
 #: src/gui/debugger/dbg_cause.c:60 src/gui/debugger/dbg_cause.c:144
-#: src/gui/debugger/dbg_code.c:343 src/gui/debugger/dbg_code.c:648
-#: src/gui/debugger/dbg_code.c:1108 src/gui/debugger/dbg_data.c:55
+#: src/gui/debugger/dbg_code.c:355 src/gui/debugger/dbg_code.c:657
+#: src/gui/debugger/dbg_code.c:1137 src/gui/debugger/dbg_data.c:55
 #: src/gui/debugger/dbg_entry.c:206 src/gui/debugger/dbg_heap.c:145
-#: src/gui/debugger/dbg_heap.c:268 src/gui/debugger/dbg_iop.c:425
-#: src/gui/debugger/dbg_mem.c:698 src/gui/debugger/dbg_mem.c:1073
-#: src/gui/debugger/dbg_mem.c:1295 src/gui/debugger/dbg_pclog.c:137
-#: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:539
-#: src/gui/debugger/dbg_stack.c:162 src/gui/debugger/dbg_stack.c:415
+#: src/gui/debugger/dbg_heap.c:266 src/gui/debugger/dbg_iop.c:425
+#: src/gui/debugger/dbg_mem.c:696 src/gui/debugger/dbg_mem.c:1071
+#: src/gui/debugger/dbg_mem.c:1293 src/gui/debugger/dbg_pclog.c:137
+#: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:537
+#: src/gui/debugger/dbg_stack.c:162 src/gui/debugger/dbg_stack.c:412
 #: src/gui/debugger/dbg_vectors.c:144 src/gui/logger/log_link.c:60
 #: src/gui/infos.c:50 src/gui/manpage.c:72 src/gui/pbars.c:63
 #: src/gui/quicksend.c:58 src/gui/release.c:77 src/gui/romversion.c:190
@@ -668,25 +668,25 @@ msgstr ""
 msgid "one-shot"
 msgstr ""
 
-#: src/gui/debugger/dbg_bkpts.c:421
+#: src/gui/debugger/dbg_bkpts.c:422
 msgid "dbg_bkpts-2.glade: GUI loading failed !\n"
 msgstr ""
 
-#: src/gui/debugger/dbg_code.c:73 src/gui/debugger/dbg_heap.c:55
+#: src/gui/debugger/dbg_code.c:74 src/gui/debugger/dbg_heap.c:55
 #: src/gui/debugger/dbg_iop.c:295 src/gui/debugger/dbg_mem.c:185
 #: src/gui/debugger/dbg_pclog.c:54 src/gui/debugger/dbg_stack.c:58
 msgid "Address"
 msgstr ""
 
-#: src/gui/debugger/dbg_code.c:73
+#: src/gui/debugger/dbg_code.c:74
 msgid "Opcode"
 msgstr ""
 
-#: src/gui/debugger/dbg_code.c:73
+#: src/gui/debugger/dbg_code.c:74
 msgid "Operand"
 msgstr ""
 
-#: src/gui/debugger/dbg_code.c:1187
+#: src/gui/debugger/dbg_code.c:1216
 msgid "Choose font..."
 msgstr ""
 
@@ -1027,8 +1027,8 @@ msgstr ""
 msgid "1"
 msgstr ""
 
-#: glade/dbg_bits-2.str:18 glade/dbg_bits-2.str:27 glade/dbg_code-2.str:44
-#: glade/dbg_code-2.str:45 glade/dbg_regs-2.str:13 glade/dbg_regs-2.str:15
+#: glade/dbg_bits-2.str:18 glade/dbg_bits-2.str:27 glade/dbg_code-2.str:45
+#: glade/dbg_code-2.str:46 glade/dbg_regs-2.str:13 glade/dbg_regs-2.str:15
 #: glade/dbg_regs-2.str:16 glade/dbg_regs-2.str:19 glade/dbg_regs-2.str:20
 #: glade/dbg_regs-2.str:21
 msgid "0"
@@ -1187,127 +1187,131 @@ msgid "_I/O ports"
 msgstr ""
 
 #: glade/dbg_code-2.str:28
-msgid "_Group windows"
+msgid "Dock Mode"
 msgstr ""
 
 #: glade/dbg_code-2.str:29
-msgid "_Show all"
+msgid "_Group windows"
 msgstr ""
 
 #: glade/dbg_code-2.str:30
-msgid "_Hide all"
+msgid "_Show all"
 msgstr ""
 
 #: glade/dbg_code-2.str:31
-msgid "M_inimize all"
+msgid "_Hide all"
 msgstr ""
 
 #: glade/dbg_code-2.str:32
-msgid "M_aximize all"
+msgid "M_inimize all"
 msgstr ""
 
 #: glade/dbg_code-2.str:33
-msgid "_Restore all"
+msgid "M_aximize all"
 msgstr ""
 
 #: glade/dbg_code-2.str:34
-msgid "_Quit"
+msgid "_Restore all"
 msgstr ""
 
 #: glade/dbg_code-2.str:35
-msgid "Font"
+msgid "_Quit"
 msgstr ""
 
 #: glade/dbg_code-2.str:36
-msgid "Run (F5)"
+msgid "Font"
 msgstr ""
 
 #: glade/dbg_code-2.str:37
-msgid "Single step / Step into (F7)"
+msgid "Run (F5)"
 msgstr ""
 
 #: glade/dbg_code-2.str:38
-msgid "Step over (F8)"
+msgid "Single step / Step into (F7)"
 msgstr ""
 
 #: glade/dbg_code-2.str:39
-msgid "Step out (F9)"
+msgid "Step over (F8)"
 msgstr ""
 
 #: glade/dbg_code-2.str:40
-msgid "Run to cursor (F4)"
+msgid "Step out (F9)"
 msgstr ""
 
 #: glade/dbg_code-2.str:41
-msgid "Break (F11)"
+msgid "Run to cursor (F4)"
 msgstr ""
 
 #: glade/dbg_code-2.str:42
-msgid "Toggle breakpoint (F2)"
+msgid "Break (F11)"
 msgstr ""
 
 #: glade/dbg_code-2.str:43
+msgid "Toggle breakpoint (F2)"
+msgstr ""
+
+#: glade/dbg_code-2.str:44
 msgid "Cycle count:"
 msgstr ""
 
-#: glade/dbg_code-2.str:46
+#: glade/dbg_code-2.str:47
 msgid "Reset"
 msgstr ""
 
-#: glade/dbg_code-2.str:47
+#: glade/dbg_code-2.str:48
 msgid "Symbol:"
 msgstr ""
 
-#: glade/dbg_code-2.str:48
+#: glade/dbg_code-2.str:49
 msgid "by name"
 msgstr ""
 
-#: glade/dbg_code-2.str:49
+#: glade/dbg_code-2.str:50
 msgid "by addr"
 msgstr ""
 
-#: glade/dbg_code-2.str:50
+#: glade/dbg_code-2.str:51
 msgid "by id"
 msgstr ""
 
-#: glade/dbg_code-2.str:51 glade/dbg_mem-2.str:19
+#: glade/dbg_code-2.str:52 glade/dbg_mem-2.str:19
 msgid "Go to _address"
 msgstr ""
 
-#: glade/dbg_code-2.str:52
+#: glade/dbg_code-2.str:53
 msgid "Go to _PC"
 msgstr ""
 
-#: glade/dbg_code-2.str:53
+#: glade/dbg_code-2.str:54
 msgid "Set _breakpoint"
 msgstr ""
 
-#: glade/dbg_code-2.str:54
+#: glade/dbg_code-2.str:55
 msgid "Set _one shot bkpt"
 msgstr ""
 
-#: glade/dbg_code-2.str:55
+#: glade/dbg_code-2.str:56
 msgid "Set PC to _selection"
 msgstr ""
 
-#: glade/dbg_code-2.str:56 glade/dbg_heap-2.str:9 glade/dbg_mem-2.str:22
+#: glade/dbg_code-2.str:57 glade/dbg_heap-2.str:9 glade/dbg_mem-2.str:22
 #: glade/dbg_regs-2.str:10 glade/dbg_stack-2.str:12
 msgid "View _memory"
 msgstr ""
 
-#: glade/dbg_code-2.str:57
+#: glade/dbg_code-2.str:58
 msgid "Change font"
 msgstr ""
 
-#: glade/dbg_code-2.str:58 glade/device-2.str:18
+#: glade/dbg_code-2.str:59 glade/device-2.str:18
 msgid "custom"
 msgstr ""
 
-#: glade/dbg_code-2.str:59
+#: glade/dbg_code-2.str:60
 msgid "default"
 msgstr ""
 
-#: glade/dbg_code-2.str:60
+#: glade/dbg_code-2.str:61
 msgid "Font:"
 msgstr ""
 
