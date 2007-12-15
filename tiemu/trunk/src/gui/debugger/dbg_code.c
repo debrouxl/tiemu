@@ -87,6 +87,7 @@ static GtkListStore* clist_create(GtkWidget *widget)
 	gtk_tree_view_set_rules_hint(view, FALSE);
   
   	renderer = gtk_cell_renderer_pixbuf_new();
+	set_renderer_pad(renderer);
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[COL_ICON], renderer, 
             "pixbuf", COL_ICON,
@@ -95,9 +96,7 @@ static GtkListStore* clist_create(GtkWidget *widget)
 	for(i = COL_ADDR; i <= COL_OPERAND; i++)
 	{
 		renderer = gtk_cell_renderer_text_new();
-
-		//gtk_cell_renderer_text_set_fixed_height_from_font(GTK_CELL_RENDERER_TEXT(renderer), 10);
-
+		set_renderer_pad(renderer);
 		gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i,

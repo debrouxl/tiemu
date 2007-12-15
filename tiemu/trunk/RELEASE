@@ -25,6 +25,8 @@ New capabilities:
 
 	- screenshot can be copied into clipboard
 	- includes latest TiLP2 framework
+	- single debugging window (VTi-style)
+	- option to choose between multi-window (TiEmu < 3.02) and single-window (TiEmu >= 3.02)
 	- added debugging dock and option to choose between multi-window and dock
 	
 
@@ -65,10 +67,10 @@ Bug fixes:
 	- [gdb] makeinfo version check
 	- [gdb] longjmp out of gtk_main in the engine in the GDB-enabled version which triggered an assert with GLib 2.14
 	- [gdb] relocation of debugging information for kernel-based programs
-	- fixed one-shot breakpoints which was not displayed any longer
-	- fixed old bug: the bkpt context displayed in the status bar is not erased when the debugger exits
-	- fixed bug: one-shot breakpoint was never raised
-	- fixed bug: gtk warning when opening popup menu while being in debugger
+	- one-shot breakpoints which was not displayed any longer
+	- one-shot breakpoint was never raised
+	- the bkpt context displayed in the status bar is not erased when the debugger exits
+	- gtk warning when opening popup menu while being in debugger
 	
 	
 Notes:

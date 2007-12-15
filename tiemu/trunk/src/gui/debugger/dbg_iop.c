@@ -259,6 +259,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
   
 	// col 1
 	renderer = gtk_cell_renderer_text_new();
+	set_renderer_pad(renderer);
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             _("Name"), renderer, 
             "text", COL_NAME,
@@ -271,6 +272,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 	gtk_tree_view_column_set_title(column, _("Value"));
 
 	renderer = gtk_cell_renderer_toggle_new();
+	set_renderer_pad(renderer);
 	gtk_tree_view_column_pack_start(GTK_TREE_VIEW_COLUMN(column), renderer, FALSE);
 	gtk_tree_view_column_set_attributes(GTK_TREE_VIEW_COLUMN(column),
 					    renderer,
@@ -280,6 +282,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 	g_signal_connect(G_OBJECT(renderer), "toggled", G_CALLBACK(renderer_toggled), widget);
 
 	renderer = gtk_cell_renderer_text_new();
+	set_renderer_pad(renderer);
 	gtk_tree_view_column_pack_start(GTK_TREE_VIEW_COLUMN(column), renderer, FALSE);	
 	gtk_tree_view_column_set_attributes(GTK_TREE_VIEW_COLUMN(column),
 					    renderer,
@@ -291,6 +294,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 
 	// col 3
 	renderer = gtk_cell_renderer_text_new();
+	set_renderer_pad(renderer);
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             _("Address"), renderer, 
             "text", COL_ADDR,
@@ -299,6 +303,7 @@ static GtkTreeStore* ctree_create(GtkWidget *widget)
 
 	// col 4
 	renderer = gtk_cell_renderer_text_new();
+	set_renderer_pad(renderer);
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             _("Mask"), renderer, 
             "text", COL_MASK,

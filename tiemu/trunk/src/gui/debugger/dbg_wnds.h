@@ -50,6 +50,7 @@ extern GtkWidget *main_wnd;
 
 // Save window state
 #define WND_STATE
+#define LINE_PAD	0
 
 /* Definitions */
 
@@ -77,6 +78,15 @@ void dbgwnds_show_all(int all);
 void dbgwnds_hide_all(int all);
 
 #define glade_get(s)		glade_xml_get_widget(xml, (s))
+
+/* Macros */
+
+#define set_renderer_pad(renderer)	\
+{ \
+	g_object_set(G_OBJECT(renderer), "xpad", LINE_PAD, NULL); \
+	g_object_set(G_OBJECT(renderer), "ypad", LINE_PAD, NULL); \
+}
+
 G_END_DECLS
 
 #endif

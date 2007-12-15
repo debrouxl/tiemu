@@ -215,6 +215,7 @@ static GtkWidget* clist_create(GtkListStore **st)
   
 	i = COL_ADDR;
 	renderer = gtk_cell_renderer_text_new();
+	set_renderer_pad(renderer);
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i,
@@ -225,7 +226,7 @@ static GtkWidget* clist_create(GtkListStore **st)
     for (i = COL_0; i <= COL_F; i++)
     {
     	renderer = gtk_cell_renderer_text_new();
-
+		set_renderer_pad(renderer);
         gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i, 
@@ -241,6 +242,7 @@ static GtkWidget* clist_create(GtkListStore **st)
 
 	i = COL_ASCII;
 	renderer = gtk_cell_renderer_text_new();
+	set_renderer_pad(renderer);
 	gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i,

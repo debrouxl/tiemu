@@ -68,6 +68,7 @@ static GtkListStore* clist_create(GtkWidget *widget)
 	for(i = COL_ID; i <= COL_SIZE; i++)
 	{
 		renderer = gtk_cell_renderer_text_new();
+		set_renderer_pad(renderer);
 		gtk_tree_view_insert_column_with_attributes(view, -1, 
             text[i], renderer, 
             "text", i,
