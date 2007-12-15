@@ -258,6 +258,12 @@ on_dockmode1_activate                  (GtkMenuItem     *menu_item,
 {
 	msg_box1("Warning", "TiEmu is about to restart...");
 
+#ifndef NO_GDB
+	// In GDB mode, we have to restart the engine here, otherwise
+	// gtk_debugger_close will call gdbcall_continue to do so and never
+	// return.
+	engine_start();
+#endif
 	gtk_debugger_close();
 	if(options3.dbg_dock)
 		gtk_widget_destroy(dbgw.dock);
