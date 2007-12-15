@@ -3,7 +3,7 @@
 
 
 Previous version: 3.01		(01/09/2007)
-Current version:  3.02		(10/12/2007)
+Current version:  3.02		(15/12/2007)
 
 SubVersion (CVS) revision: $Id: RELEASE 2042 2006-05-07 07:46:23Z roms $
 
@@ -25,6 +25,7 @@ New capabilities:
 
 	- screenshot can be copied into clipboard
 	- includes latest TiLP2 framework
+	- added debugging dock and option to choose between multi-window and dock
 	
 
 Improvements:
@@ -55,6 +56,7 @@ Improvements:
 	- [no-gdb] fixed disassembly of ori/andi/eori, addi/subi/cmpi, moveq/addq/subq instructions
 	- [no-gdb] optimized m68k-disasm front-end
 	- [no-gdb] fixed "movem.l #$unreadable_mask"
+	- [gdb] Insight's GDB console is not shown by default anymore (less window clutter)
 		
 		
 Bug fixes:
@@ -63,6 +65,10 @@ Bug fixes:
 	- [gdb] makeinfo version check
 	- [gdb] longjmp out of gtk_main in the engine in the GDB-enabled version which triggered an assert with GLib 2.14
 	- [gdb] relocation of debugging information for kernel-based programs
+	- fixed one-shot breakpoints which was not displayed any longer
+	- fixed old bug: the bkpt context displayed in the status bar is not erased when the debugger exits
+	- fixed bug: one-shot breakpoint was never raised
+	- fixed bug: gtk warning when opening popup menu while being in debugger
 	
 	
 Notes:

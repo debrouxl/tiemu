@@ -1841,8 +1841,7 @@ proc gdbtk_hide_insight {} {
 
 proc gdbtk_show_insight {} {
   ManagedWin::startup
-  #Show at the very least Console and SrcWin
-  ManagedWin::open Console
+  #Show at the very least SrcWin
   ManagedWin::open SrcWin
 }
 

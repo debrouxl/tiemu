@@ -1,3 +1,7 @@
+2007-12-15  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * interface.tcl (gdbtk_show_insight): Don't show the Console window.
+
 2007-02-18  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * Drop "prefs.tcl (pref_set_defaults): Disable IPC by default." patch, changed upstream.
