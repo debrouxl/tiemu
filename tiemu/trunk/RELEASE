@@ -27,7 +27,6 @@ New capabilities:
 	- includes latest TiLP2 framework
 	- single debugging window (VTi-style)
 	- option to choose between multi-window (TiEmu < 3.02) and single-window (TiEmu >= 3.02)
-	- added debugging dock and option to choose between multi-window and dock
 	
 
 Improvements:
