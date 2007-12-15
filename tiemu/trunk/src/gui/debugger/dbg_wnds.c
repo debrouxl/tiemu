@@ -256,7 +256,7 @@ GLADE_CB void
 on_dockmode1_activate                  (GtkMenuItem     *menu_item,
                                         gpointer         user_data)
 {
-	msg_box1("Information", "Configuration is about to be saved and TiEmu will restart...");
+	msg_box1("Warning", "TiEmu is about to restart...");
 
 	gtk_debugger_close();
 	if(options3.dbg_dock)
@@ -264,7 +264,6 @@ on_dockmode1_activate                  (GtkMenuItem     *menu_item,
 
 	options3.dbg_dock = GTK_CHECK_MENU_ITEM(menu_item)->active;	
 
-	rcfile_write();
 	gtk_main_quit();
 }
 
