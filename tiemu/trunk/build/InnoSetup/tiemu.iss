@@ -7,7 +7,7 @@
 
 [Setup]
 AppName=TiEmu3-gdb
-AppVerName=TiEmu 3.03 No Gdb
+AppVerName=TiEmu 3.02 No Gdb
 AppPublisher=The TiEmu Team
 AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
 AppSupportURL=http://lpg.ticalc.org/prj_tiemu/mailing_list.html
@@ -71,7 +71,7 @@ Root: HKLM; Subkey: "Software\LPG Shared"; ValueType: string; ValueName: "DllPat
 [Tasks]
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4; Flags: unchecked
-Name: "com_ole"; Description: "Install TiEmuOle object for TIGCC and others"; GroupDescription: "Misc:";
+Name: "com_ole"; Description: "Install TiEmuOle object for TIGCC and others"; GroupDescription: "Misc:"; Flags: unchecked
 Name: "slv_drv"; Description: "Install USB drivers"; GroupDescription: "Drivers:";
 Name: "dha_drv"; Description: "Install BlackLink/Parallel cable for NT/2k/XP"; GroupDescription: "Drivers:"; MinVersion: 0,4
 

@@ -1,10 +1,5 @@
 SubVersion: $Id$
 
-- 12/12/2007, version 3.03:
-	- [roms]  $2704-2710: added debugging dock and option to choose between multi-window and dock
-	- [roms]  $2712: fixed one-shot breakpoints which was not displayed any longer
-	- [roms]  $2713: fixed old bug: the bkpt context displayed in the status bar is not erased when the debugger exits
-
 - 16/09/2007, version 3.02:
 	- [roms]  $2646: screenshots can be copied into the clipboard
 	- [roms]  $2649: use fixed fonts for release and manpage dboxes
@@ -48,6 +43,11 @@ SubVersion: $Id$
 	- [kevin] $2685: fixed makeinfo version check in GDB
 	- [kevin] $2686: fixed longjmp out of gtk_main in the engine in the GDB-enabled version which triggered an assert with GLib 2.14
 	- [kevin] $2689: fixed relocation of debugging information for kernel-based programs
+	- [roms]  $2704-2710: added debugging dock and option to choose between multi-window and dock
+	- [roms]  $2712: fixed one-shot breakpoints which was not displayed any longer
+	- [roms]  $2713: fixed old bug: the bkpt context displayed in the status bar is not erased when the debugger exits
+	- [roms]  $2718: fixed bug: one-shot breakpoint was never raised
+
 	
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)
