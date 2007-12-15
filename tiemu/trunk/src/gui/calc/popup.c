@@ -726,7 +726,7 @@ GtkWidget* display_popup_menu(void)
 		gtk_widget_set_sensitive(data, FALSE);
 #endif
 
-		data = glade_xml_get_widget(xml, "recv_file_to_tiemu1");
+		data = glade_xml_get_widget(xml, "recv_file_from_tiemu1");
 		gtk_widget_set_sensitive(data, FALSE);
 
 		data = glade_xml_get_widget(xml, "link_cable1");

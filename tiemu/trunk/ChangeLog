@@ -47,6 +47,7 @@ SubVersion: $Id$
 	- [roms]  $2712: fixed one-shot breakpoints which was not displayed any longer
 	- [roms]  $2713: fixed old bug: the bkpt context displayed in the status bar is not erased when the debugger exits
 	- [roms]  $2718: fixed bug: one-shot breakpoint was never raised
+	- [roms]  $2719: fixed bug: gtk warning when opening popup menu while being in debugger
 
 	
 - 07/09/2007, version 3.01b:

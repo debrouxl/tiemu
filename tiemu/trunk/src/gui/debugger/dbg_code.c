@@ -163,9 +163,11 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
 		else
 			row_text[2] = g_strdup(split[2]);
 
-		if((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr != pc))
+		if((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr != pc) ||
+			(g_list_find(bkpts.code, GINT_TO_POINTER(addr | BKPT_TMP_MASK)) != NULL) && (addr != pc))
             pix = create_pixbuf("bkpt.xpm");
-		else if((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr == pc))
+		else if((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr == pc) ||
+			(g_list_find(bkpts.code, GINT_TO_POINTER(addr | BKPT_TMP_MASK)) != NULL) && (addr == pc))
 			pix = create_pixbuf("run_2.xpm");
 		else if(addr == pc)
 			pix = create_pixbuf("run_1.xpm");
