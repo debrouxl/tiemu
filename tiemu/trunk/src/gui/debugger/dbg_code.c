@@ -59,7 +59,7 @@ enum {
 #ifdef FIXED_SIZE
 #define NLINES      10
 #else
-static gint NLINES = 10;	
+static gint NLINES = 10;
 #endif
 
 GladeXML *xml = NULL;
@@ -359,6 +359,25 @@ GtkWidget* dbgcode_create_window(void)
 	dbox = glade_xml_get_widget(xml, "dbgcode_window");
 	if(options3.transient)
 		gtk_window_set_transient_for(GTK_WINDOW(dbox), GTK_WINDOW(main_wnd));
+
+	g_object_set(G_OBJECT(dbox), "allow-shrink", TRUE, NULL);
+
+	/*
+	{
+		GtkStyle *copy;
+
+		GtkStyle *style = gtk_rc_get_style(dbox);
+		printf("=>> %i\n", style->ythickness);
+
+		copy =  gtk_style_copy(style);
+		gtk_style_detach(style);
+
+		style->ythickness = 0;
+
+		gtk_widget_realize(dbox);
+		gtk_style_attach(copy, dbox);		
+	}
+	*/
 
     data = glade_xml_get_widget(xml, "windows1_menu");
     g_signal_connect(G_OBJECT(data), "map", G_CALLBACK(update_submenu), NULL);
@@ -1003,25 +1022,7 @@ on_view_memory1_activate       (GtkMenuItem     *menuitem,
     sscanf(str, "%x", &addr);
     dbgmem_add_tab(addr);
 }
-/*
-GLADE_CB gboolean
-on_treeview1_configure_event           (GtkWidget       *widget,
-                                        GdkEventConfigure *event,
-                                        gpointer         user_data)
-{
-	printf("configure: %i %i\n", event->width, event->height);
 
-  return FALSE;
-}
-
-GLADE_CB void
-on_treeview1_size_request              (GtkWidget       *widget,
-                                        GtkRequisition  *requisition,
-                                        gpointer         user_data)
-{
-	printf("requisition: %i %i\n", requisition->width, requisition->height);
-}
-*/
 GLADE_CB void
 on_treeview1_size_allocate             (GtkWidget       *widget,
                                         GdkRectangle    *allocation,
@@ -1033,16 +1034,16 @@ on_treeview1_size_allocate             (GtkWidget       *widget,
 	GdkRectangle rect;
 	static int old = 0;
 
-	//printf("allocation: %i %i \n", allocation->width, allocation->height);
-
 	path = gtk_tree_path_new_from_string("0");
 	gtk_tree_view_get_background_area(view, path, NULL, &rect);
 	g_free(path);
 
-	if(rect.height == 0)
-		return;
+	//printf("allocation: %i %i / rect: %i %i\n", allocation->width, allocation->height, rect.width, rect.height);
 
-	NLINES = allocation->height / rect.height - 1;
+	if(rect.height == 0)
+		NLINES = 1;	// at least 1 line in the window
+	else
+		NLINES = allocation->height / rect.height - 1;
 	//printf("#lines: %i (%i %i)\n", NLINES, allocation->height, rect.height);
 
 	if(old != NLINES)
