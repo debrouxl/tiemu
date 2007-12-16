@@ -170,7 +170,7 @@ static void set_window(int full_redraw)
 	// resize window and drawing area
 	if(full_redraw)
 		gtk_window_resize(GTK_WINDOW(main_wnd), wr.w, wr.h);
-
+	
 #if defined(__WIN32__) && defined(ALLOW_RESIZE_WIN32)
 	if(!full_redraw)
 		gdk_window_resize(main_wnd->window, wr.w, wr.h);
@@ -206,7 +206,7 @@ static void set_constraints(void)
 	{
 		GdkGeometry geom = { -1 };
 		GdkWindowHints mask = GDK_HINT_MIN_SIZE | GDK_HINT_ASPECT;
-		double r = (float)sr.w / sr.h;
+		double r = (float)wr.w / wr.h;
 
 		geom.min_width = 100;
 		geom.min_height = 100;
@@ -216,7 +216,7 @@ static void set_constraints(void)
 		gtk_window_set_geometry_hints(GTK_WINDOW(main_wnd), 
 					      area, &geom, mask);
 				
-		//printf("%i %i %1.2f", sr.w, sr.h, r);		
+		//printf("set_constraints: %i %i %1.2f\n", wr.w, wr.h, r);		
 	}
 #endif
 }
@@ -283,9 +283,9 @@ on_drawingarea1_configure_event        (GtkWidget       *widget,
 		factor = (float)event->width / (float)tihw.lcd_w;
 
 #if 0
-	printf("on_drawingarea1_configure_event: %i %i %i %i\n", 
+	printf("on_drawingarea1_configure_event:  x y w h = %i %i %i %i\n", 
 		event->x, event->y, event->width, event->height);
-	printf("factor: %1.2f\n", factor);
+	printf("on_drawingarea1_configure_event: f = %1.2f\n", factor);
 #endif
 
 	// if normal or large view then exits
@@ -647,6 +647,7 @@ int hid_switch_with_skin(void)
 {
     options.skin = 1;
 	set_infos();
+	set_constraints();
 	set_window(1);
 	redraw_skin();
 
@@ -657,6 +658,7 @@ int hid_switch_without_skin(void)
 {
     options.skin = 0;
 	set_infos();
+	set_constraints();
 	set_window(1);
 	redraw_skin();
 

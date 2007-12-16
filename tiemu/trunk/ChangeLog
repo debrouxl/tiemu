@@ -47,6 +47,7 @@ SubVersion: $Id$
 	- [roms]  $2722: decreased vertical space between cells to make window more compact
 	- [roms]  $2724: fixed keeping of previous folder with the multiple file selector (e.g. Send File)
 	- [roms]  $2728: removed ugly hack(s) in the code window (no V scrollbar any longer but shrinking allowed now)
+	- [roms]  $2729: fixed calculator window aspect ratio when used with no skin
 	
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tiemu-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-14 22:25+0100\n"
+"POT-Creation-Date: 2007-12-16 08:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -558,14 +558,14 @@ msgstr ""
 #: src/gui/calc/calc.c:234 src/gui/calc/popup.c:637
 #: src/gui/debugger/dbg_bkpts.c:363 src/gui/debugger/dbg_bits.c:50
 #: src/gui/debugger/dbg_cause.c:60 src/gui/debugger/dbg_cause.c:144
-#: src/gui/debugger/dbg_code.c:355 src/gui/debugger/dbg_code.c:657
-#: src/gui/debugger/dbg_code.c:1137 src/gui/debugger/dbg_data.c:55
-#: src/gui/debugger/dbg_entry.c:206 src/gui/debugger/dbg_heap.c:145
-#: src/gui/debugger/dbg_heap.c:266 src/gui/debugger/dbg_iop.c:425
-#: src/gui/debugger/dbg_mem.c:696 src/gui/debugger/dbg_mem.c:1071
-#: src/gui/debugger/dbg_mem.c:1293 src/gui/debugger/dbg_pclog.c:137
+#: src/gui/debugger/dbg_code.c:356 src/gui/debugger/dbg_code.c:658
+#: src/gui/debugger/dbg_code.c:1138 src/gui/debugger/dbg_data.c:55
+#: src/gui/debugger/dbg_entry.c:206 src/gui/debugger/dbg_heap.c:146
+#: src/gui/debugger/dbg_heap.c:267 src/gui/debugger/dbg_iop.c:430
+#: src/gui/debugger/dbg_mem.c:698 src/gui/debugger/dbg_mem.c:1073
+#: src/gui/debugger/dbg_mem.c:1295 src/gui/debugger/dbg_pclog.c:138
 #: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:537
-#: src/gui/debugger/dbg_stack.c:162 src/gui/debugger/dbg_stack.c:412
+#: src/gui/debugger/dbg_stack.c:163 src/gui/debugger/dbg_stack.c:413
 #: src/gui/debugger/dbg_vectors.c:144 src/gui/logger/log_link.c:60
 #: src/gui/infos.c:50 src/gui/manpage.c:72 src/gui/pbars.c:63
 #: src/gui/quicksend.c:58 src/gui/release.c:77 src/gui/romversion.c:190
@@ -673,7 +673,7 @@ msgid "dbg_bkpts-2.glade: GUI loading failed !\n"
 msgstr ""
 
 #: src/gui/debugger/dbg_code.c:74 src/gui/debugger/dbg_heap.c:55
-#: src/gui/debugger/dbg_iop.c:295 src/gui/debugger/dbg_mem.c:185
+#: src/gui/debugger/dbg_iop.c:299 src/gui/debugger/dbg_mem.c:185
 #: src/gui/debugger/dbg_pclog.c:54 src/gui/debugger/dbg_stack.c:58
 msgid "Address"
 msgstr ""
@@ -686,11 +686,11 @@ msgstr ""
 msgid "Operand"
 msgstr ""
 
-#: src/gui/debugger/dbg_code.c:1216
+#: src/gui/debugger/dbg_code.c:1217
 msgid "Choose font..."
 msgstr ""
 
-#: src/gui/debugger/dbg_entry.c:90 src/gui/debugger/dbg_iop.c:263
+#: src/gui/debugger/dbg_entry.c:90 src/gui/debugger/dbg_iop.c:264
 #: src/gui/debugger/dbg_vectors.c:52
 msgid "Name"
 msgstr ""
@@ -703,11 +703,11 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
-#: src/gui/debugger/dbg_iop.c:271 src/gui/debugger/dbg_stack.c:58
+#: src/gui/debugger/dbg_iop.c:272 src/gui/debugger/dbg_stack.c:58
 msgid "Value"
 msgstr ""
 
-#: src/gui/debugger/dbg_iop.c:303
+#: src/gui/debugger/dbg_iop.c:308
 msgid "Mask"
 msgstr ""
 
@@ -733,7 +733,7 @@ msgstr ""
 msgid "Save file"
 msgstr ""
 
-#: src/gui/filesel.c:392 src/gui/filesel.c:698 glade/quicksend-2.str:9
+#: src/gui/filesel.c:392 src/gui/filesel.c:701 glade/quicksend-2.str:9
 msgid "Open file"
 msgstr ""
 
