@@ -277,8 +277,8 @@ void rcfile_read(void)
 		  char *q;
 		  options.view = VIEW_CUSTOM;
 		  p=find_str(buffer, "view_mode=custom");
-		  q = strchr(p, ',');
-		  if(q) *q = '.';
+		  /*q = strchr(p, ',');
+		  if(q) *q = '.';*/
 		  sscanf(p, " (%f)", &(options.scale));
 		  if(options.scale < 0.01)
 			  options.scale = 1.0;

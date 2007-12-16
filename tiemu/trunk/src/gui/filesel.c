@@ -176,7 +176,7 @@ static const gchar* create_fsel_2(gchar *dirname, gchar *filename, gchar *ext, g
 				      NULL);
 
 	// set default folder
-	tmp = g_strconcat(dirname, G_DIR_SEPARATOR_S, NULL);	// add leading '/' otherwise get_dirname is confused
+	tmp = g_strconcat(dirname, G_DIR_SEPARATOR_S, NULL);	// add trailing '/' otherwise get_dirname is confused
 	path = g_path_get_dirname(tmp);
 	g_free(tmp);
 
@@ -459,7 +459,7 @@ static gchar** create_fsels_2(gchar *dirname, gchar *filename, gchar *ext)
 				      NULL);
 
 	// set default folder
-	tmp = g_strconcat(dirname, G_DIR_SEPARATOR_S, NULL);	// add leading '/' otherwise get_dirname is confused
+	tmp = g_strconcat(dirname, G_DIR_SEPARATOR_S, NULL);	// add trailing '/' otherwise get_dirname is confused
 	path = g_path_get_dirname(tmp);
 	g_free(tmp);
 
