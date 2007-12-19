@@ -9,7 +9,8 @@ Package: tiemu-nogdb
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Suggests: tiemu-skinedit
-Conflicts: tiemu3-gdb
+Conflicts: tiemu-gdb
+Replaces: tiemu
 Description: Texas Instruments calculators emulator (without GDB)
  TiEmu emulates Texas Instruments calculators TI-89/92/92+/V200PLT.
  .
@@ -32,6 +33,7 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, flex, tcl8.4 (>= 8.4.0-2), tk8.4 (>= 8.4.0-1), itcl3 (>= 3.2.1-1), itk3 (>= 3.2.1-1), iwidgets4 (>= 4.0.1-1), xdg-utils (>= 1.0-1)
 Suggests: tiemu-skinedit
 Conflicts: tiemu-nogdb
+Replaces: tiemu
 Description: Texas Instruments calculators emulator (with GDB)
  TiEmu emulates Texas Instruments calculators TI-89/92/92+/V200PLT.
  .
