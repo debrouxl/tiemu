@@ -3,7 +3,7 @@
 
 
 Previous version: 3.01		(01/09/2007)
-Current version:  3.02		(15/12/2007)
+Current version:  3.02		(21/12/2007)
 
 SubVersion (CVS) revision: $Id: RELEASE 2042 2006-05-07 07:46:23Z roms $
 
@@ -70,6 +70,7 @@ Bug fixes:
 	- one-shot breakpoint was never raised
 	- the bkpt context displayed in the status bar is not erased when the debugger exits
 	- gtk warning when opening popup menu while being in debugger
+	- buffer underflow in PC trace handling during long TiEmu sessions
 	
 	
 Notes:

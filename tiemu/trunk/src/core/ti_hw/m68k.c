@@ -238,7 +238,8 @@ int hw_m68k_run(int n, unsigned maxcycles)
         // store PC in the log buffer
         if(logger.pclog_size > 1)
         {
-            logger.pclog_buf[logger.pclog_ptr++ % logger.pclog_size] = m68k_getpc();
+            logger.pclog_buf[logger.pclog_ptr++] = m68k_getpc();
+            if (logger.pclog_ptr >= logger.pclog_size) logger.pclog_ptr = 0;
         }
 
 		// hardware protection

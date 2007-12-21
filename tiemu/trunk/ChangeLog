@@ -49,6 +49,7 @@ SubVersion: $Id$
 	- [roms]  $2728: removed ugly hack(s) in the code window (no V scrollbar any longer but shrinking allowed now)
 	- [roms]  $2729: fixed calculator window aspect ratio when used with no skin
 	- [roms]  $2730: fixed reloading of aspect ratio from tiemu.ini file
+	- [kevin] $2733: fixed pclog_ptr handling not to overflow (fixes buffer underflow crashing TiEmu during long sessions)
 	
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)
