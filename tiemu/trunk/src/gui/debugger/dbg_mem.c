@@ -320,6 +320,8 @@ static void clist_populate(GtkListStore *store, uint32_t start, int length)
 
 		if(options3.dbg_font_type)
 			gtk_list_store_set(store, &iter, COL_FONT, options3.dbg_font_name, -1);
+		else
+			gtk_list_store_set(store, &iter, COL_FONT, "courier", -1);
 
 		for(i = COL_0; i <= COL_F; i++)
 		{
