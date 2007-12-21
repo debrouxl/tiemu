@@ -107,10 +107,11 @@ a breakpoint at the selection. The bkpt frame is updated,<br>
 - <span style="font-style: italic;">set temporary breakpoint (F3)</span>:
 place a breakpoint at the selection. This bkpt will be automatically
 removed when encountered.<br>
-- <span style="font-style: italic;">set PC to selection (F4)</span>:
+- <span style="font-style: italic;">set PC to selection (F6)</span>:
 load
 PC with the address at the selection,<br>
-- <span style="font-style: italic;">view memory</span>: open a tab in
+- <span style="font-style: italic;">view memory (Ctrl+M)</span>: open
+a tab in
 the memory frame with the address at the selection.<br>
 <br>
 The combo box lets you choose a ROM call by using the arrow. You can
@@ -118,9 +119,10 @@ type it, too. It has automatic completion. Once selected, the view is
 updated to begin on the ROM call's address.<br>
 <br>
 Debugging facilities provided are: <br>
-- <span style="font-style: italic;">run/break</span>: start/stop
+- <span style="font-style: italic;">run (F5) / break (F11)</span>:
+start/stop
 emulation engine without closing frames, <br>
-- <span style="font-style: italic;">step in/out/over</span>: <br>
+- <span style="font-style: italic;">step in/out/over (F7/F8/F9):</span><br>
 &nbsp;&nbsp;&nbsp; step in equals to step by step<br>
 &nbsp;&nbsp;&nbsp; step out runs PC until a RTS/RTR/RTD/RTE/STOP
 instruction is reached (go out of the sub-routine)<br>
@@ -128,14 +130,16 @@ instruction is reached (go out of the sub-routine)<br>
 current one is reached (skips all code in a sub-routine for instance),
 except for branches. <br>
 &nbsp;&nbsp;&nbsp; This works for JSR/BSR/FLINE/DBCC/TRAP, <br>
-- <span style="font-style: italic;">run to cursor</span>: runs PC
+- <span style="font-style: italic;">run to cursor (F4)</span>: runs PC
 until the address under the cursor is reached.<br>
 <br>
 Miscellaneous shortcuts:<br>
-- F1: set selection and PC to next line<br>
-- the 'd' key: copy source code window content to C:\disasm.txt
+- F1: set selection and PC to <span style="font-style: italic;">next</span>
+line<br>
+- 'd': copy source code window content to C:\disasm.txt
 (unofficial
 feature, for various purposes)<br>
+- 'g': go to address (box)<br>
 <h2>7.2 Registers</h2>
 <table style="width: 100%; text-align: left;" border="0" cellpadding="2"
  cellspacing="2">
