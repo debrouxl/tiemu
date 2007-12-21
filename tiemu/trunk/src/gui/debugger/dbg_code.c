@@ -1172,6 +1172,9 @@ on_font_activate                       (GtkMenuItem     *menuitem,
 			g_free(options3.dbg_font_name);
 			options3.dbg_font_name = g_strdup(tmp_name);
 		}
+
+		gtk_debugger_refresh();
+
 		break;
 	default:
 		break;
