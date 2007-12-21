@@ -1031,36 +1031,6 @@
       </child>
 
       <child>
-	<widget class="GtkLabel" id="label10">
-	  <property name="visible">True</property>
-	  <property name="can_focus">True</property>
-	  <property name="label" translatable="yes">D0=</property>
-	  <property name="use_underline">False</property>
-	  <property name="use_markup">False</property>
-	  <property name="justify">GTK_JUSTIFY_LEFT</property>
-	  <property name="wrap">False</property>
-	  <property name="selectable">True</property>
-	  <property name="xalign">1</property>
-	  <property name="yalign">0.5</property>
-	  <property name="xpad">0</property>
-	  <property name="ypad">0</property>
-	  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-	  <property name="width_chars">-1</property>
-	  <property name="single_line_mode">False</property>
-	  <property name="angle">0</property>
-	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" last_modification_time="Thu, 05 Jul 2007 08:45:38 GMT"/>
-	</widget>
-	<packing>
-	  <property name="left_attach">0</property>
-	  <property name="right_attach">1</property>
-	  <property name="top_attach">0</property>
-	  <property name="bottom_attach">1</property>
-	  <property name="x_options">fill</property>
-	  <property name="y_options"></property>
-	</packing>
-      </child>
-
-      <child>
 	<widget class="GtkLabel" id="label11">
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
@@ -2164,6 +2134,7 @@
 	      <property name="inconsistent">False</property>
 	      <property name="draw_indicator">True</property>
 	      <signal name="toggled" handler="on_dbgregs_checkbutton_toggled" last_modification_time="Thu, 05 Jul 2007 07:55:04 GMT"/>
+	      <accelerator key="N" modifiers="GDK_MOD1_MASK" signal="clicked"/>
 	    </widget>
 	    <packing>
 	      <property name="left_attach">1</property>
@@ -2187,6 +2158,7 @@
 	      <property name="inconsistent">False</property>
 	      <property name="draw_indicator">True</property>
 	      <signal name="toggled" handler="on_dbgregs_checkbutton_toggled" last_modification_time="Thu, 05 Jul 2007 07:55:16 GMT"/>
+	      <accelerator key="Z" modifiers="GDK_MOD1_MASK" signal="clicked"/>
 	    </widget>
 	    <packing>
 	      <property name="left_attach">2</property>
@@ -2210,6 +2182,7 @@
 	      <property name="inconsistent">False</property>
 	      <property name="draw_indicator">True</property>
 	      <signal name="toggled" handler="on_dbgregs_checkbutton_toggled" last_modification_time="Thu, 05 Jul 2007 07:55:27 GMT"/>
+	      <accelerator key="V" modifiers="GDK_MOD1_MASK" signal="clicked"/>
 	    </widget>
 	    <packing>
 	      <property name="left_attach">3</property>
@@ -2233,6 +2206,7 @@
 	      <property name="inconsistent">False</property>
 	      <property name="draw_indicator">True</property>
 	      <signal name="toggled" handler="on_dbgregs_checkbutton_toggled" last_modification_time="Thu, 05 Jul 2007 07:55:39 GMT"/>
+	      <accelerator key="C" modifiers="GDK_MOD1_MASK" signal="clicked"/>
 	    </widget>
 	    <packing>
 	      <property name="left_attach">4</property>
@@ -2256,6 +2230,7 @@
 	      <property name="inconsistent">False</property>
 	      <property name="draw_indicator">True</property>
 	      <signal name="toggled" handler="on_dbgregs_checkbutton_toggled" last_modification_time="Wed, 04 Jul 2007 21:14:37 GMT"/>
+	      <accelerator key="T" modifiers="GDK_MOD1_MASK" signal="clicked"/>
 	    </widget>
 	    <packing>
 	      <property name="left_attach">0</property>
@@ -2279,6 +2254,7 @@
 	      <property name="inconsistent">False</property>
 	      <property name="draw_indicator">True</property>
 	      <signal name="toggled" handler="on_dbgregs_checkbutton_toggled" last_modification_time="Wed, 04 Jul 2007 21:14:37 GMT"/>
+	      <accelerator key="S" modifiers="GDK_MOD1_MASK" signal="clicked"/>
 	    </widget>
 	    <packing>
 	      <property name="left_attach">1</property>
@@ -2302,6 +2278,7 @@
 	      <property name="inconsistent">False</property>
 	      <property name="draw_indicator">True</property>
 	      <signal name="toggled" handler="on_dbgregs_checkbutton_toggled" last_modification_time="Wed, 04 Jul 2007 21:14:37 GMT"/>
+	      <accelerator key="X" modifiers="GDK_MOD1_MASK" signal="clicked"/>
 	    </widget>
 	    <packing>
 	      <property name="left_attach">0</property>
@@ -2351,7 +2328,7 @@
 	      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 	      <property name="snap_to_ticks">False</property>
 	      <property name="wrap">False</property>
-	      <property name="adjustment">0 0 7 1 0 0</property>
+	      <property name="adjustment">1 0 7 1 0 0</property>
 	      <signal name="changed" handler="on_dbgregs_spinbutton_changed" last_modification_time="Wed, 04 Jul 2007 21:14:53 GMT"/>
 	    </widget>
 	    <packing>
@@ -2393,6 +2370,36 @@
 	  <property name="right_attach">2</property>
 	  <property name="top_attach">4</property>
 	  <property name="bottom_attach">5</property>
+	  <property name="x_options">fill</property>
+	  <property name="y_options"></property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkLabel" id="label10">
+	  <property name="visible">True</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">D0=</property>
+	  <property name="use_underline">False</property>
+	  <property name="use_markup">False</property>
+	  <property name="justify">GTK_JUSTIFY_LEFT</property>
+	  <property name="wrap">False</property>
+	  <property name="selectable">True</property>
+	  <property name="xalign">1</property>
+	  <property name="yalign">0.5</property>
+	  <property name="xpad">0</property>
+	  <property name="ypad">0</property>
+	  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	  <property name="width_chars">-1</property>
+	  <property name="single_line_mode">False</property>
+	  <property name="angle">0</property>
+	  <signal name="button_press_event" handler="on_dbgregs_button_press_event" last_modification_time="Thu, 05 Jul 2007 08:45:38 GMT"/>
+	</widget>
+	<packing>
+	  <property name="left_attach">0</property>
+	  <property name="right_attach">1</property>
+	  <property name="top_attach">0</property>
+	  <property name="bottom_attach">1</property>
 	  <property name="x_options">fill</property>
 	  <property name="y_options"></property>
 	</packing>
