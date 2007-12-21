@@ -53,6 +53,8 @@ SubVersion: $Id$
 	- [kevin] $2733: fixed pclog_ptr handling not to overflow (fixes buffer underflow crashing TiEmu during long sessions)
 	- [roms]  $2734: memory window uses courier font when no font is selected (restored previous behaviour)
 	- [roms]  $2735: commit font change to all of the debugger windows
+	- [roms]  $2737: added accelerator keys to toggle sr flags in the regs window
+	- [roms]  $2738: register window uses courier font when no font is selected (restored previous behaviour)
 	
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)
