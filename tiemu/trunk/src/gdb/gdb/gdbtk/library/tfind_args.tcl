@@ -32,7 +32,8 @@ itcl::class TfindArgs {
   # ------------------------------------------------------------------
   #  CONSTRUCTOR - create new tfind arguments dialog
   # ------------------------------------------------------------------
-  constructor {config} {
+  constructor {args} {
+    eval configure $args
     #
     #  Create a window with the same name as this object
     #
