@@ -7,7 +7,7 @@
 # This special exception was added by Craig Small in version 0.37 of dh-make.
 
 # Uncomment this to turn on verbose mode.
-export DH_VERBOSE=1
+#export DH_VERBOSE=1
 
 
 # These are used for cross-compiling and for saving the configure script
@@ -31,17 +31,29 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
 
-config.status-1: configure
-	dh_testdir
-	# Add here commands to configure the package.
-	touch configure.ac && touch aclocal.m4 && touch configure
-	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs" --disable-gdb --enable-dbus
+autotools: autotools-stamp
+autotools-stamp:
+  -rm -f config.sub config.guess
+  ln -s /usr/share/misc/config.sub config.sub
+  ln -s /usr/share/misc/config.guess config.guess
+  touch autotools-stamp
 
-config.status-2: configure
+config.status-1: autotools-stampconfigure
 	dh_testdir
 	# Add here commands to configure the package.
 	touch configure.ac && touch aclocal.m4 && touch configure
-	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs" --enable-dbus --enable-shared-tcl-tk --enable-shared-itcl
+	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
+		--prefix=/usr --mandir=\$${prefix}/share/man CFLAGS="$(CFLAGS)" \
+		LDFLAGS="-Wl,-z,defs" --disable-gdb --enable-dbus
+
+config.status-2: autotools-stamp configure
+	dh_testdir
+	# Add here commands to configure the package.
+	touch configure.ac && touch aclocal.m4 && touch configure
+	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
+		--prefix=/usr --mandir=\$${prefix}/share/man CFLAGS="$(CFLAGS)" \
+		LDFLAGS="-Wl,-z,defs" --enable-dbus \
+		--enable-shared-tcl-tk --enable-shared-itcl
 
 build-1: build-stamp-1
 build-stamp-1:  config.status-1
@@ -64,17 +76,11 @@ build-stamp-2:  config.status-2
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp-1 build-stamp-2
+	rm -f autotools-stamp build-stamp-1 build-stamp-2
 
 	# Add here commands to clean up after the build process.
-	-$(MAKE) distclean
-
-#ifneq "$(wildcard /usr/share/misc/config.sub)" ""
-#	cp -f /usr/share/misc/config.sub config.sub
-#endif
-ifneq "$(wildcard /usr/share/misc/config.guess)" ""
-	cp -f /usr/share/misc/config.guess config.guess
-endif
+	[ ! -f Makefile ] || $(MAKE) distclean
+  rm -f config.sub config.guess
 
 	dh_clean 
 

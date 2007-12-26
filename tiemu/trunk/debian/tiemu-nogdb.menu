@@ -1,3 +1,9 @@
-?package(tiemu-nogdb):needs="X11" section="Apps/Math"\
-  title="TiEmu" command="/usr/bin/tiemu"
+!C menu-2
+?package(tiemu-nogdb):
+  section="Applications/Science/Mathematics"
+  needs="X11"
+  title="TiEmu without GDB"
+  command="tiemu"
+;
+
 
