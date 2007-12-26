@@ -2,8 +2,8 @@ Source: tiemu-skinedit
 Section: math
 Priority: optional
 Maintainer: Romain LIEVIN <roms@tilp.info>
-Build-Depends: debhelper (>= 5), libgtk2.0-dev, gettext, groff-base, autoconf, automake1.10
-Standards-Version: 3.7.2
+Build-Depends: debhelper (>= 5), libgtk2.0-dev, gettext, groff-base, autotools-dev
+Standards-Version: 3.7.3
 
 Package: tiemu-skinedit
 Architecture: any
