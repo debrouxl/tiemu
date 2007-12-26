@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tiemu\n"
 "Report-Msgid-Bugs-To: tiemu-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-16 08:49+0100\n"
+"POT-Creation-Date: 2007-12-26 12:20+0100\n"
 "PO-Revision-Date: 2004-04-13 13:21+0000\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tiemu-devel@lists.sf.net>\n"
@@ -625,13 +625,13 @@ msgstr "Ne peut pas ouvrir le fichier de destination en écriture!"
 #: src/gui/calc/calc.c:234 src/gui/calc/popup.c:637
 #: src/gui/debugger/dbg_bkpts.c:363 src/gui/debugger/dbg_bits.c:50
 #: src/gui/debugger/dbg_cause.c:60 src/gui/debugger/dbg_cause.c:144
-#: src/gui/debugger/dbg_code.c:356 src/gui/debugger/dbg_code.c:658
-#: src/gui/debugger/dbg_code.c:1138 src/gui/debugger/dbg_data.c:55
+#: src/gui/debugger/dbg_code.c:356 src/gui/debugger/dbg_code.c:677
+#: src/gui/debugger/dbg_code.c:1139 src/gui/debugger/dbg_data.c:55
 #: src/gui/debugger/dbg_entry.c:206 src/gui/debugger/dbg_heap.c:146
 #: src/gui/debugger/dbg_heap.c:267 src/gui/debugger/dbg_iop.c:430
-#: src/gui/debugger/dbg_mem.c:698 src/gui/debugger/dbg_mem.c:1073
-#: src/gui/debugger/dbg_mem.c:1295 src/gui/debugger/dbg_pclog.c:138
-#: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:537
+#: src/gui/debugger/dbg_mem.c:700 src/gui/debugger/dbg_mem.c:1075
+#: src/gui/debugger/dbg_mem.c:1297 src/gui/debugger/dbg_pclog.c:138
+#: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:535
 #: src/gui/debugger/dbg_stack.c:163 src/gui/debugger/dbg_stack.c:413
 #: src/gui/debugger/dbg_vectors.c:144 src/gui/logger/log_link.c:60
 #: src/gui/infos.c:50 src/gui/manpage.c:72 src/gui/pbars.c:63
@@ -643,24 +643,24 @@ msgstr "%s: échec de chargement de l'interface graphique !\n"
 
 # ##, c-format
 # #, c-format
-#: src/gui/calc/calc.c:749
+#: src/gui/calc/calc.c:751
 #, c-format
 msgid "screenshot to %s... "
 msgstr "capture écran dans %s..."
 
-#: src/gui/calc/calc.c:768
+#: src/gui/calc/calc.c:770
 msgid "unsupported screenshot options combination, screenshot aborted."
 msgstr ""
 "combinaison d'options de capture écran incompatibles; capture écran avortée."
 
 # ##, c-format
 # #, c-format
-#: src/gui/calc/calc.c:795
+#: src/gui/calc/calc.c:797
 #, c-format
 msgid "failed to save pixbuf file: %s: %s"
 msgstr "n'a pû sauvegarder le fichier pixbuf: %s: %s"
 
-#: src/gui/calc/calc.c:800
+#: src/gui/calc/calc.c:802
 msgid "done!"
 msgstr "fait !"
 
@@ -762,7 +762,7 @@ msgstr "Code opératoire"
 msgid "Operand"
 msgstr "Opérande"
 
-#: src/gui/debugger/dbg_code.c:1217
+#: src/gui/debugger/dbg_code.c:1221
 msgid "Choose font..."
 msgstr "Choisir police..."
 
@@ -1582,11 +1582,11 @@ msgstr "Registres"
 msgid "Status Register"
 msgstr "Registre d'état"
 
-#: glade/dbg_regs-2.str:12 glade/dbg_regs-2.str:73
+#: glade/dbg_regs-2.str:12 glade/dbg_regs-2.str:72
 msgid "T"
 msgstr "T"
 
-#: glade/dbg_regs-2.str:14 glade/dbg_regs-2.str:74
+#: glade/dbg_regs-2.str:14 glade/dbg_regs-2.str:73
 msgid "S"
 msgstr "S"
 
@@ -1598,23 +1598,23 @@ msgstr "I2"
 msgid "I1"
 msgstr "I1"
 
-#: glade/dbg_regs-2.str:22 glade/dbg_regs-2.str:75
+#: glade/dbg_regs-2.str:22 glade/dbg_regs-2.str:74
 msgid "X"
 msgstr "X"
 
-#: glade/dbg_regs-2.str:23 glade/dbg_regs-2.str:69
+#: glade/dbg_regs-2.str:23 glade/dbg_regs-2.str:68
 msgid "N"
 msgstr "N"
 
-#: glade/dbg_regs-2.str:24 glade/dbg_regs-2.str:70
+#: glade/dbg_regs-2.str:24 glade/dbg_regs-2.str:69
 msgid "Z"
 msgstr "Z"
 
-#: glade/dbg_regs-2.str:25 glade/dbg_regs-2.str:71
+#: glade/dbg_regs-2.str:25 glade/dbg_regs-2.str:70
 msgid "V"
 msgstr "V"
 
-#: glade/dbg_regs-2.str:26 glade/dbg_regs-2.str:72
+#: glade/dbg_regs-2.str:26 glade/dbg_regs-2.str:71
 msgid "C"
 msgstr "C"
 
@@ -1623,105 +1623,105 @@ msgid "I0"
 msgstr "I0"
 
 #: glade/dbg_regs-2.str:30
-msgid "D0="
-msgstr "D0="
-
-#: glade/dbg_regs-2.str:31
 msgid "D1="
 msgstr "D1="
 
-#: glade/dbg_regs-2.str:32
+#: glade/dbg_regs-2.str:31
 msgid "D2="
 msgstr "D2="
 
-#: glade/dbg_regs-2.str:33
+#: glade/dbg_regs-2.str:32
 msgid "D3="
 msgstr "D3="
 
-#: glade/dbg_regs-2.str:34
+#: glade/dbg_regs-2.str:33
 msgid "D4="
 msgstr "D4="
 
-#: glade/dbg_regs-2.str:35
+#: glade/dbg_regs-2.str:34
 msgid "D5="
 msgstr "D5="
 
-#: glade/dbg_regs-2.str:36
+#: glade/dbg_regs-2.str:35
 msgid "D6="
 msgstr "D6="
 
-#: glade/dbg_regs-2.str:37
+#: glade/dbg_regs-2.str:36
 msgid "D7="
 msgstr "D7="
 
-#: glade/dbg_regs-2.str:38
+#: glade/dbg_regs-2.str:37
 msgid "A0="
 msgstr "A0="
 
-#: glade/dbg_regs-2.str:39
+#: glade/dbg_regs-2.str:38
 msgid "A1="
 msgstr "A1="
 
-#: glade/dbg_regs-2.str:40
+#: glade/dbg_regs-2.str:39
 msgid "A2="
 msgstr "A2="
 
-#: glade/dbg_regs-2.str:41
+#: glade/dbg_regs-2.str:40
 msgid "A3="
 msgstr "A3="
 
-#: glade/dbg_regs-2.str:42
+#: glade/dbg_regs-2.str:41
 msgid "A4="
 msgstr "A4="
 
-#: glade/dbg_regs-2.str:43
+#: glade/dbg_regs-2.str:42
 msgid "A5="
 msgstr "A5="
 
-#: glade/dbg_regs-2.str:44
+#: glade/dbg_regs-2.str:43
 msgid "A6="
 msgstr "A6="
 
-#: glade/dbg_regs-2.str:45
+#: glade/dbg_regs-2.str:44
 msgid "A7="
 msgstr "A7="
 
-#: glade/dbg_regs-2.str:46 glade/dbg_regs-2.str:47 glade/dbg_regs-2.str:48
-#: glade/dbg_regs-2.str:49 glade/dbg_regs-2.str:50 glade/dbg_regs-2.str:51
-#: glade/dbg_regs-2.str:52 glade/dbg_regs-2.str:53 glade/dbg_regs-2.str:54
-#: glade/dbg_regs-2.str:55 glade/dbg_regs-2.str:56 glade/dbg_regs-2.str:57
-#: glade/dbg_regs-2.str:58 glade/dbg_regs-2.str:59 glade/dbg_regs-2.str:60
-#: glade/dbg_regs-2.str:77
+#: glade/dbg_regs-2.str:45 glade/dbg_regs-2.str:46 glade/dbg_regs-2.str:47
+#: glade/dbg_regs-2.str:48 glade/dbg_regs-2.str:49 glade/dbg_regs-2.str:50
+#: glade/dbg_regs-2.str:51 glade/dbg_regs-2.str:52 glade/dbg_regs-2.str:53
+#: glade/dbg_regs-2.str:54 glade/dbg_regs-2.str:55 glade/dbg_regs-2.str:56
+#: glade/dbg_regs-2.str:57 glade/dbg_regs-2.str:58 glade/dbg_regs-2.str:59
+#: glade/dbg_regs-2.str:76
 msgid "12345678"
 msgstr "12345678"
 
-#: glade/dbg_regs-2.str:61
+#: glade/dbg_regs-2.str:60
 msgid "USP="
 msgstr "USP="
 
-#: glade/dbg_regs-2.str:62
+#: glade/dbg_regs-2.str:61
 msgid "SSP="
 msgstr "SSP="
 
-#: glade/dbg_regs-2.str:63
+#: glade/dbg_regs-2.str:62
 msgid "PC="
 msgstr "PC="
 
-#: glade/dbg_regs-2.str:64
+#: glade/dbg_regs-2.str:63
 msgid "SR="
 msgstr "SR="
 
-#: glade/dbg_regs-2.str:65 glade/dbg_regs-2.str:66 glade/dbg_regs-2.str:67
+#: glade/dbg_regs-2.str:64 glade/dbg_regs-2.str:65 glade/dbg_regs-2.str:66
 msgid "123456"
 msgstr "123456"
 
-#: glade/dbg_regs-2.str:68
+#: glade/dbg_regs-2.str:67
 msgid "1234"
 msgstr "1234"
 
-#: glade/dbg_regs-2.str:76
+#: glade/dbg_regs-2.str:75
 msgid "I="
 msgstr "I="
+
+#: glade/dbg_regs-2.str:77
+msgid "D0="
+msgstr "D0="
 
 #: glade/dbg_stack-2.str:7
 msgid "Stack"
