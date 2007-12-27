@@ -212,7 +212,10 @@ void hw_update(void)
 
 		// Auto-int 2: keyboard scan
 		// see keyboard.c
+	}
 
+	if(osc2_enabled || tihw.hw_type == HW2)
+	{
 		// Auto-int 3: disabled by default by AMS
 		// When enabled, it is triggered at a fixed rate: OSC2/2^19 = 1/16384 of timer rate = 1Hz
 		if(!(timer & 16383))

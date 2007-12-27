@@ -55,6 +55,7 @@ SubVersion: $Id$
 	- [roms]  $2735: commit font change to all of the debugger windows
 	- [roms]  $2737: added accelerator keys to toggle sr flags in the regs window
 	- [roms]  $2738: register window uses courier font when no font is selected (restored previous behaviour)
+	- [roms]  $2744: (try and) fix bug about management of AI3 on HW2 under TiEmu
 	
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)
