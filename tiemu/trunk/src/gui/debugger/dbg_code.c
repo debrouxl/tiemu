@@ -1043,7 +1043,7 @@ on_treeview1_size_allocate             (GtkWidget       *widget,
 	if(rect.height == 0)
 		NLINES = 1;	// at least 1 line in the window
 	else
-		NLINES = allocation->height / rect.height - 1;
+		NLINES = allocation->height / rect.height - 2;
 	//printf("#lines: %i (%i %i)\n", NLINES, allocation->height, rect.height);
 
 	if(old != NLINES)
