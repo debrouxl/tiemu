@@ -1,4 +1,4 @@
-This package was debianized by Julien BLACHE <jblache@debian.org> on
+﻿This package was debianized by Julien BLACHE <jblache@debian.org> on
 Mon, 14 Feb 2000 14:55:57 +0100.
 
 It was downloaded from: http://tilp.info/
@@ -34,3 +34,19 @@ Homepage: http://www.timetoteam.fr.st
 License: GPL
 
 Fully-GPL version by Kevin Kofler: <www.tigen.org/kevin.kofler/ti89prog/pedrom-ld-tigcc.zip>
+
+--------------- GDB / Insight ------------------*
+
+Copyright holder: Free Software Foundation
+Homepage for GDB: http://sourceware.org/gdb/
+Homepage for Insight: http://sourceware.org/insight/
+License: GPL (version 2 or later)
+
+-------------- Tcl / Tk / itcl -----------------*
+
+Copyright holders: Regents of the University of
+  California, Sun Microsystems, Inc.,
+  Scriptics Corporation, ActiveState Corporation,
+  Cadence Design Systems, Inc. and other parties
+Homepage: http://tcl.tk
+License: Tcl/Tk License (GPL-compatible)
