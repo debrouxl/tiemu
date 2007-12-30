@@ -59,7 +59,7 @@ void ti68k_display_hw_param_block(HW_PARM_BLOCK *s)
     int i = 0;
 
     tiemu_info(_("Hardware Parameters Block:"));
-    tiemu_info(_("Length           : %i"), s->len);
+    tiemu_info(_("  length           : %i"), s->len);
     if(s->len > 2+(4*i++))
         tiemu_info("  hardwareID       : %i", s->hardwareID);
     if(s->len > 2+(4*i++))
