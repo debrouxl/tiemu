@@ -1083,6 +1083,8 @@ gint display_dbgmem_address(uint32_t *addr)
 	gtk_editable_select_region(GTK_EDITABLE(entry), 0, -1);
 	
 	dbox = glade_xml_get_widget(xml, "dbgmem_address");	
+	gtk_dialog_set_alternative_button_order(GTK_DIALOG(dbox), GTK_RESPONSE_OK,
+	                                        GTK_RESPONSE_CANCEL,-1);
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	
 	switch (result) 
@@ -1307,7 +1309,10 @@ gint display_dbgmem_search(uint32_t addr)
     check2 = glade_xml_get_widget(xml, "checkbutton2");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check2), TRUE);
 
-	dbox = glade_xml_get_widget(xml, "dbgmem_search");	
+	dbox = glade_xml_get_widget(xml, "dbgmem_search");
+	/* Find, Find Next, Cancel */
+	gtk_dialog_set_alternative_button_order(GTK_DIALOG(dbox), GTK_RESPONSE_OK,
+	                                        GTK_RESPONSE_APPLY, GTK_RESPONSE_CANCEL,-1);
 	
     
     for(result = 0;;)

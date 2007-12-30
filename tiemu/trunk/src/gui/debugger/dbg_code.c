@@ -1140,6 +1140,8 @@ on_font_activate                       (GtkMenuItem     *menuitem,
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgcode_font");
+	gtk_dialog_set_alternative_button_order(GTK_DIALOG(dbox), GTK_RESPONSE_OK,
+	                                        GTK_RESPONSE_CANCEL,-1);
 	font = glade_xml_get_widget(xml, "label5");
 
 	tmp_type = options3.dbg_font_type;

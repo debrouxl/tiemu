@@ -8,6 +8,7 @@
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
  *  Copyright (c) 2005, Romain Liévin
+ *  Copyright (c) 2007, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -95,6 +96,8 @@ static gint display_step1_dbox(void)
 	glade_xml_signal_autoconnect(xml);
 
 	dbox = glade_xml_get_widget(xml, "step1_dbox");
+	gtk_dialog_set_alternative_button_order(GTK_DIALOG(dbox), GTK_RESPONSE_OK,
+	                                        GTK_RESPONSE_APPLY, GTK_RESPONSE_CANCEL,-1);
 
     data = glade_xml_get_widget(xml, "applybutton1");
     gtk_widget_hide(data);
@@ -178,6 +181,8 @@ static gint display_step3_dbox(void)
 	glade_xml_signal_autoconnect(xml);
 
 	dbox = glade_xml_get_widget(xml, "step3_dbox");
+	gtk_dialog_set_alternative_button_order(GTK_DIALOG(dbox), GTK_RESPONSE_OK,
+	                                        GTK_RESPONSE_APPLY, GTK_RESPONSE_CANCEL,-1);
 
     //data = glade_xml_get_widget(xml, "cancelbutton2");
     //gtk_button_set_label(data, "<= Back");

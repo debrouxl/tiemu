@@ -3,7 +3,7 @@
 
 /*  TiEmu - Tiemu Is an EMUlator
  *
- *  Copyright (c) 2007, Romain Liévin
+ *  Copyright (c) 2007, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -51,6 +51,8 @@ gint dbgbits_display_dbox(uint32_t *address, uint8_t *checks, uint8_t *states)
 	glade_xml_signal_autoconnect(xml);
 	
 	dbox = glade_xml_get_widget(xml, "dbgbits_dbox");
+	gtk_dialog_set_alternative_button_order(GTK_DIALOG(dbox), GTK_RESPONSE_OK,
+	                                        GTK_RESPONSE_CANCEL,-1);
 
 	data = glade_xml_get_widget(xml, "entry4");
 	str = g_strdup_printf("0x%06x", *address);

@@ -57,6 +57,7 @@ SubVersion: $Id$
 	- [roms]  $2738: register window uses courier font when no font is selected (restored previous behaviour)
 	- [roms]  $2744: (try and) fix bug about management of AI3 on HW2 under TiEmu
 	- [kevin] $2750: made the "Clear RAM?" dialog box for "Reset calc" more intuitive
+	- [kevin] $2751: added support for the alternate (KDE/M$) button order
 	
 - 07/09/2007, version 3.01b:
   - re-released due to missing USB drivers (libusb0.dll)
