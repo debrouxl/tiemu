@@ -246,16 +246,18 @@ on_reset_calc1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	engine_stop();
-#if 1
-	if(msg_box2("Question", "Clear RAM ?") == BUTTON1)
-		memset(tihw.ram, 0, tihw.ram_size);
-#endif
-
-	ti68k_reset();
-	if (dbg_on)
-		gtk_debugger_close();
-	else
-	  	engine_start();
+	switch (msg_box3(_("Question"), _("Clear RAM?"), GTK_STOCK_YES, GTK_STOCK_NO, GTK_STOCK_CANCEL)) {
+	  case BUTTON1:
+	    memset(tihw.ram, 0, tihw.ram_size);
+	  case BUTTON2:
+	    ti68k_reset();
+	    if (dbg_on)
+	      gtk_debugger_close();
+	    else {
+	      default:
+	        engine_start();
+	    }
+	}
 }
 
 /* menu part 4 (images) */

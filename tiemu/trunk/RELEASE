@@ -58,6 +58,7 @@ Improvements:
 	- [no-gdb] optimized m68k-disasm front-end
 	- [no-gdb] fixed "movem.l #$unreadable_mask"
 	- [gdb] Insight's GDB console is not shown by default anymore (less window clutter)
+	- made the "Clear RAM?" dialog box for "Reset calc" more intuitive
 		
 		
 Bug fixes:
