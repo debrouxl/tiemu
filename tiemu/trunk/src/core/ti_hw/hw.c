@@ -294,7 +294,7 @@ void hw_update(void)
     (HW1 only) the LCD controller.
     These 2 oscillators are independants.
 
-    See hardware.h for inline definition.
+    See hw.h for inline definition.
 */
 /*
 static void INLINE do_cycles(void);
