@@ -416,8 +416,7 @@ int send_ti_file(const char *filename)
 
 	// Check whether calc is ready... Otherwise, goes to HOME.
 	ret = ticalcs_calc_isready(calc_handle);
-	printf("ret = %i\n", ret);
-
+s
 	if(ret == 257)	/* ERR_NOT_READY = 257 */
 	{
 		switch(tihw.calc_type)
