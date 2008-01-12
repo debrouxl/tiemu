@@ -2,6 +2,6 @@ TiEmu3 for Debian :
 ------(------------
 
 Please read /usr/share/doc/libticables2-1/CONFIG; this file contains
-important information about the setup of TiEmu/libticables2-1.
+important information about the setup of TiEmu and/or libticables2-1.
 
 -- Romain LIEVIN <roms@tilp.info>, Tue, 01 May 2007 18:02:46 +0200

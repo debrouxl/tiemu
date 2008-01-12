@@ -92,8 +92,8 @@ install-nogdb: build-nogdb
 	dh_clean -k 
 	dh_installdirs
 
-	# Add here commands to install the package into debian/tiemu-nogdb
-	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu-nogdb install
+	# Add here commands to install the package into debian/tiemu
+	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu install
 
 install-gdb: build-gdb
 	dh_testdir
@@ -123,7 +123,7 @@ binary-indep:
 # Build architecture-dependent files here.
 binary-arch: 
 #	$(MAKE) -f debian/rules clean
-	$(MAKE) -f debian/rules binary-nogdb DH_OPTIONS=-ptiemu-nogdb
+	$(MAKE) -f debian/rules binary-nogdb
 #	$(MAKE) -f debian/rules clean
 	$(MAKE) -f debian/rules binary-gdb DH_OPTIONS=-ptiemu-gdb
 

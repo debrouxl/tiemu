@@ -1,5 +1,5 @@
 !C menu-2
-?package(tiemu-nogdb):
+?package(tiemu):
   section="Applications/Science/Mathematics"
   needs="X11"
   title="TiEmu without GDB"
