@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tiemu-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-26 12:20+0100\n"
+"POT-Creation-Date: 2008-01-12 07:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -66,11 +66,11 @@ msgstr ""
 msgid "Invalid emulator image. File is corrupted or revision changed."
 msgstr ""
 
-#: src/core/error.c:77 src/gui/wizard.c:284
+#: src/core/error.c:77 src/gui/wizard.c:289
 msgid "Invalid FLASH upgrade."
 msgstr ""
 
-#: src/core/error.c:81 src/gui/wizard.c:248
+#: src/core/error.c:81 src/gui/wizard.c:253
 msgid "Invalid ROM dump."
 msgstr ""
 
@@ -438,7 +438,7 @@ msgstr ""
 
 #: src/core/hwpm.c:62
 #, c-format
-msgid "Length           : %i"
+msgid "  length           : %i"
 msgstr ""
 
 #: src/core/hwpm.c:121
@@ -465,7 +465,7 @@ msgstr ""
 
 #: src/misc/files.c:95 src/misc/files.c:107 src/misc/files.c:123
 #: src/gui/calc/keyboard.c:77 src/gui/calc/popup.c:181
-#: src/gui/calc/popup.c:184 src/gui/calc/popup.c:196 src/gui/dboxes.c:41
+#: src/gui/calc/popup.c:184 src/gui/calc/popup.c:196 src/gui/dboxes.c:42
 #: src/gui/fs_misc.c:154 src/gui/fs_misc.c:157
 msgid "Information"
 msgstr ""
@@ -493,7 +493,7 @@ msgid ""
 "Overwrite?"
 msgstr ""
 
-#: src/misc/files.c:153 src/gui/dboxes.c:43
+#: src/misc/files.c:153 src/gui/dboxes.c:44
 msgid "Warning"
 msgstr ""
 
@@ -517,10 +517,10 @@ msgstr ""
 msgid "New name: "
 msgstr ""
 
-#: src/misc/files.c:209 src/misc/tie_error.c:78 src/gui/dboxes.c:47
+#: src/misc/files.c:209 src/misc/tie_error.c:78 src/gui/dboxes.c:48
 #: src/gui/fs_misc.c:211 src/gui/fs_misc.c:372 src/gui/main.c:218
 #: src/gui/main.c:226 src/gui/main.c:234 src/gui/main.c:242
-#: src/gui/quicksend.c:117 src/gui/wizard.c:248 src/gui/wizard.c:284
+#: src/gui/quicksend.c:120 src/gui/wizard.c:253 src/gui/wizard.c:289
 msgid "Error"
 msgstr ""
 
@@ -555,21 +555,21 @@ msgstr ""
 msgid "Couldn't open destination file for writing!"
 msgstr ""
 
-#: src/gui/calc/calc.c:234 src/gui/calc/popup.c:637
+#: src/gui/calc/calc.c:234 src/gui/calc/popup.c:639
 #: src/gui/debugger/dbg_bkpts.c:363 src/gui/debugger/dbg_bits.c:50
 #: src/gui/debugger/dbg_cause.c:60 src/gui/debugger/dbg_cause.c:144
 #: src/gui/debugger/dbg_code.c:356 src/gui/debugger/dbg_code.c:677
-#: src/gui/debugger/dbg_code.c:1139 src/gui/debugger/dbg_data.c:55
-#: src/gui/debugger/dbg_entry.c:206 src/gui/debugger/dbg_heap.c:146
+#: src/gui/debugger/dbg_code.c:1139 src/gui/debugger/dbg_data.c:56
+#: src/gui/debugger/dbg_entry.c:207 src/gui/debugger/dbg_heap.c:146
 #: src/gui/debugger/dbg_heap.c:267 src/gui/debugger/dbg_iop.c:430
 #: src/gui/debugger/dbg_mem.c:700 src/gui/debugger/dbg_mem.c:1075
-#: src/gui/debugger/dbg_mem.c:1297 src/gui/debugger/dbg_pclog.c:138
+#: src/gui/debugger/dbg_mem.c:1299 src/gui/debugger/dbg_pclog.c:138
 #: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:535
 #: src/gui/debugger/dbg_stack.c:163 src/gui/debugger/dbg_stack.c:413
-#: src/gui/debugger/dbg_vectors.c:144 src/gui/logger/log_link.c:60
+#: src/gui/debugger/dbg_vectors.c:145 src/gui/logger/log_link.c:60
 #: src/gui/infos.c:50 src/gui/manpage.c:72 src/gui/pbars.c:63
-#: src/gui/quicksend.c:58 src/gui/release.c:77 src/gui/romversion.c:190
-#: src/gui/scroptions.c:60 src/gui/wizard.c:70
+#: src/gui/quicksend.c:59 src/gui/release.c:77 src/gui/romversion.c:191
+#: src/gui/scroptions.c:61 src/gui/wizard.c:71
 #, c-format
 msgid "%s: GUI loading failed!\n"
 msgstr ""
@@ -618,7 +618,15 @@ msgstr ""
 msgid "Configuration file loaded."
 msgstr ""
 
-#: src/gui/calc/popup.c:492
+#: src/gui/calc/popup.c:249 src/gui/dboxes.c:46
+msgid "Question"
+msgstr ""
+
+#: src/gui/calc/popup.c:249
+msgid "Clear RAM?"
+msgstr ""
+
+#: src/gui/calc/popup.c:494
 msgid "Manual_en.html"
 msgstr ""
 
@@ -631,7 +639,7 @@ msgstr ""
 msgid "Symbol"
 msgstr ""
 
-#: src/gui/debugger/dbg_bkpts.c:63 src/gui/romversion.c:87
+#: src/gui/debugger/dbg_bkpts.c:63 src/gui/romversion.c:88
 #: glade/dbg_data-2.str:22
 msgid "Type"
 msgstr ""
@@ -686,12 +694,12 @@ msgstr ""
 msgid "Operand"
 msgstr ""
 
-#: src/gui/debugger/dbg_code.c:1221
+#: src/gui/debugger/dbg_code.c:1223
 msgid "Choose font..."
 msgstr ""
 
-#: src/gui/debugger/dbg_entry.c:90 src/gui/debugger/dbg_iop.c:264
-#: src/gui/debugger/dbg_vectors.c:52
+#: src/gui/debugger/dbg_entry.c:91 src/gui/debugger/dbg_iop.c:264
+#: src/gui/debugger/dbg_vectors.c:53
 msgid "Name"
 msgstr ""
 
@@ -699,7 +707,7 @@ msgstr ""
 msgid "Id"
 msgstr ""
 
-#: src/gui/debugger/dbg_heap.c:55 src/gui/romversion.c:87
+#: src/gui/debugger/dbg_heap.c:55 src/gui/romversion.c:88
 msgid "Size"
 msgstr ""
 
@@ -711,7 +719,7 @@ msgstr ""
 msgid "Mask"
 msgstr ""
 
-#: src/gui/debugger/dbg_vectors.c:52
+#: src/gui/debugger/dbg_vectors.c:53
 msgid "Number"
 msgstr ""
 
@@ -720,13 +728,9 @@ msgstr ""
 msgid "Framework version (cables=%s, files=%s, calcs=%s, conv=%s)"
 msgstr ""
 
-#: src/gui/device.c:59 src/gui/wizard.c:94 src/gui/wizard.c:177
-#: src/gui/wizard.c:214
+#: src/gui/device.c:60 src/gui/wizard.c:95 src/gui/wizard.c:180
+#: src/gui/wizard.c:219
 msgid "comm.c: GUI loading failed !\n"
-msgstr ""
-
-#: src/gui/dboxes.c:45
-msgid "Question"
 msgstr ""
 
 #: src/gui/filesel.c:389
@@ -761,7 +765,7 @@ msgstr ""
 msgid "Restoring"
 msgstr ""
 
-#: src/gui/fs_misc.c:211 src/gui/fs_misc.c:372 src/gui/quicksend.c:117
+#: src/gui/fs_misc.c:211 src/gui/fs_misc.c:372 src/gui/quicksend.c:120
 msgid "This file is not a valid TI file."
 msgstr ""
 
@@ -865,23 +869,23 @@ msgstr ""
 msgid "Pre-loading debugger..."
 msgstr ""
 
-#: src/gui/romversion.c:86
+#: src/gui/romversion.c:87
 msgid "Filename"
 msgstr ""
 
-#: src/gui/romversion.c:86
+#: src/gui/romversion.c:87
 msgid "Model"
 msgstr ""
 
-#: src/gui/romversion.c:86
+#: src/gui/romversion.c:87
 msgid "Version"
 msgstr ""
 
-#: src/gui/romversion.c:87
+#: src/gui/romversion.c:88
 msgid "Boot"
 msgstr ""
 
-#: src/gui/romversion.c:87
+#: src/gui/romversion.c:88
 msgid "Hardware"
 msgstr ""
 
@@ -890,19 +894,19 @@ msgstr ""
 msgid "Couldn't find pixmap file: %s"
 msgstr ""
 
-#: src/gui/wizard.c:107
+#: src/gui/wizard.c:110
 msgid "Use PedRom"
 msgstr ""
 
-#: src/gui/wizard.c:109
+#: src/gui/wizard.c:112
 msgid "Use FLASH OS"
 msgstr ""
 
-#: src/gui/wizard.c:111
+#: src/gui/wizard.c:114
 msgid "Use ROM dump"
 msgstr ""
 
-#: src/gui/wizard.c:128
+#: src/gui/wizard.c:131
 msgid "Importing TIBs. Please wait..."
 msgstr ""
 
