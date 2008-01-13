@@ -1,20 +1,20 @@
-TiEmu 3 (version 3.01a)
+TiEmu 3 (version 3.02)
  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2008, Romain Liévin, Kevin Kofler
  *  Copyright (c) 2007, Peter Fernandes
 Licensed under the GNU General Public License version 2 or later.
 
 1. Installed components
 
 The following components have been successfully installed:
-* TiEmu (with TIGCC debugging support)
-* libticables
+* TiEmu 3 (with TIGCC debugging support)
+* libticables2
 * libticonv
-* libtifiles
-* libticalcs
+* libtifiles2
+* libticalcs2
 * libusb (DLL only, see section 2.2)
 * GTK+ (if not already present)
 * Tcl
