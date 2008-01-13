@@ -1,25 +1,14 @@
 Name: tiemu3
 Epoch: 1
-Version: 3.01a
-Release: 2
+Version: 3.02
+Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
-Source: %{name}-3.01.tar.bz2
-Patch0: %{name}-%{version}.diff.bz2
-#LANG=C svn diff -r 2651:2652 >../tiemu3-3.01a-drop-old-filesel.diff
-Patch1: tiemu3-3.01a-drop-old-filesel.diff
-#LANG=C svn diff -r 2655:2656 src/gui/filesel.c >../tiemu3-3.01a-fix-kde-filesel.diff
-Patch2: tiemu3-3.01a-fix-kde-filesel.diff
-#LANG=C svn diff -r 2656:2657 src/gui >../tiemu3-3.01a-gtk212-build-fix.diff
-Patch3: tiemu3-3.01a-gtk212-build-fix.diff
-#LANG=C svn diff -r 2684:2687 src >../tiemu3-3.01a-gdb-fixes.diff
-Patch4: tiemu3-3.01a-gdb-fixes.diff
-#LANG=C svn diff -r 2688:2689 src >../tiemu3-3.01a-kernel-debuginfo.diff
-Patch5: tiemu3-3.01a-kernel-debuginfo.diff
+Source: tiemu-%{version}.tar.bz2
 Group: Applications/Emulators
 License: GPLv2+
-BuildRequires: libticables2-devel >= 1:1.0.0, libticonv-devel >= 1:1.0.4, libtifiles2-devel >= 1:1.0.7, libticalcs2-devel >= 1:1.0.7, glib2-devel >= 2.6.0, gtk2-devel >= 2.6.0, libglade2-devel >= 2.4.0, zlib-devel, kdelibs-devel >= 6:3.0, libX11-devel, libXext-devel, ncurses-devel, desktop-file-utils >= 0.10, bison >= 1.28, flex >= 2.5.4, texinfo >= 4.4, dbus-devel >= 0.60, dbus-glib-devel >= 0.60, SDL-devel >= 1.2.0
-Requires: tcl >= 8.4, tk >= 8.4, itcl >= 3.3, itk >= 3.3, iwidgets >= 4.0.1, xdg-utils >= 1.0.0
+BuildRequires: libticables2-devel >= 1:1.0.0, libticonv-devel >= 1:1.0.4, libtifiles2-devel >= 1:1.0.7, libticalcs2-devel >= 1:1.0.7, glib2-devel >= 2.6.0, gtk2-devel >= 2.6.0, libglade2-devel >= 2.4.0, zlib-devel, kdelibs3-devel, libX11-devel, libXext-devel, ncurses-devel, desktop-file-utils >= 0.10, bison >= 1.28, flex >= 2.5.4, texinfo >= 4.4, dbus-devel >= 0.60, dbus-glib-devel >= 0.60, SDL-devel >= 1.2.0
+Requires: tcl >= 8.4, tk >= 8.4, itcl >= 3.3-0.11.RC1, itk >= 3.3-0.8.RC1, iwidgets >= 4.0.1, xdg-utils >= 1.0.0
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes: tiemu < %{version}, tiemu-tigcc-debugging < 20050828
 Conflicts: tiemu > %{version}
@@ -29,13 +18,7 @@ Summary: TiEmu is a TI89(Ti)/92(+)/V200 emulator
 TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debugging using Insight GDB.
 
 %prep
-%setup -n %{name}-3.01
-%patch0 -p0
-%patch1 -p0
-%patch2 -p0
-%patch3 -p0
-%patch4 -p0
-%patch5 -p0
+%setup -n tiemu-%{version}
 
 %build
 source /etc/profile.d/qt.sh
@@ -43,7 +26,6 @@ sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' s
 sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/gdb/itcl/itcl/configure
 sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/gdb/itcl/itk/configure.in
 sed -i 's/MINOR_VERSION=2/MINOR_VERSION=3/g;s/PATCHLEVEL=\.1/PATCHLEVEL=\.0/g' src/gdb/itcl/itk/configure
-export extra_ldflags="-Wl,-rpath,%{_libdir}/itcl3.3 -Wl,-rpath,%{_libdir}/itk3.3"
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --mandir=%{_mandir} --disable-nls --enable-shared-tcl-tk --enable-shared-itcl --with-dbus
 make
 
@@ -90,6 +72,22 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/lpg-tiemu.desktop
 
 %changelog
+* Sun Jan 13 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:3.02-1
+Update to 3.02 (release).
+BuildRequire kdelibs3-devel instead of kdelibs-devel.
+Drop itcl/itk rpath hack, require fixed versions of itcl and itk.
+
+* Sat Dec 15 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:3.02-0.3.20071215test3
+Update from SVN again, some bugfixes.
+
+* Fri Dec 14 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:3.02-0.2.20071214test2
+New test version from SVN, with dock support added by Romain.
+
+* Tue Dec 11 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:3.02-0.1.20071211test1
+Update to test version from Romain.
+Drop patches (all obsolete).
+Tarball is now named tiemu rather than tiemu3.
+
 * Fri Nov 30 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:3.01a-2
 Backport fix for debugging information relocation for kernel programs from SVN.
 
