@@ -41,9 +41,23 @@ static HINSTANCE hInstance;	/* HINSTANCE of this DLL. */
 static int platformId;		/* Running under NT, or 95/98? */
 
 #ifdef HAVE_NO_SEH
-static void *__attribute__((used)) ESP;
-static void *__attribute__((used)) EBP;
-static void* __attribute__((used)) HANDLER[2];
+
+/*
+ * Unlike Borland and Microsoft, we don't register exception handlers
+ * by pushing registration records onto the runtime stack.  Instead, we
+ * register them by creating an EXCEPTION_REGISTRATION within the activation
+ * record.
+ */
+
+typedef struct EXCEPTION_REGISTRATION {
+    struct EXCEPTION_REGISTRATION* link;
+    EXCEPTION_DISPOSITION (*handler)( struct _EXCEPTION_RECORD*, void*,
+				      struct _CONTEXT*, void* );
+    void* ebp;
+    void* esp;
+    int status;
+} EXCEPTION_REGISTRATION;
+
 #endif /* HAVE_NO_SEH */
 
 /*
@@ -359,7 +373,11 @@ TclWinNoBackslash(
 int
 TclpCheckStackSpace()
 {
-    volatile int retval = 0;
+
+#ifdef HAVE_NO_SEH
+    EXCEPTION_REGISTRATION registration;
+#endif
+    int retval = 0;
 
     /*
      * We can recurse only if there is at least TCL_WIN_STACK_THRESHOLD
@@ -370,56 +388,83 @@ TclpCheckStackSpace()
 
 #ifdef HAVE_NO_SEH
     __asm__ __volatile__ (
-            "movl  %esp, _ESP" "\n\t"
-            "movl  %ebp, _EBP");
 
-    __asm__ __volatile__ (
-            "movl  %fs:0, %eax" "\n\t"
-            "movl  %eax, _HANDLER" "\n\t"
-            "movl  $__except_checkstackspace_handler, %eax" "\n\t"
-            "movl  %eax, _HANDLER+4" "\n\t"
-            "movl  $_HANDLER, %eax" "\n\t"
-            "movl  %eax, %fs:0");
-#else
+        /*
+         * Construct an EXCEPTION_REGISTRATION to protect the
+         * call to __alloca
+         */
+        "leal   %[registration], %%edx"         "\n\t"
+        "movl   %%fs:0,         %%eax"          "\n\t"
+        "movl   %%eax,          0x0(%%edx)"     "\n\t" /* link */
+        "leal   1f,             %%eax"          "\n\t"
+        "movl   %%eax,          0x4(%%edx)"     "\n\t" /* handler */
+        "movl   %%ebp,          0x8(%%edx)"     "\n\t" /* ebp */
+        "movl   %%esp,          0xc(%%edx)"     "\n\t" /* esp */
+        "movl   %[error],       0x10(%%edx)"    "\n\t" /* status */
+        
+        /*
+         * Link the EXCEPTION_REGISTRATION on the chain
+         */
+        "movl   %%edx,          %%fs:0"         "\n\t"
+
+        /*
+         * Attempt a call to __alloca, to determine whether there's
+         * sufficient memory to be had.
+         */
+
+        "movl   %[size],        %%eax"          "\n\t"
+        "pushl  %%eax"                          "\n\t"
+        "call   __alloca"                       "\n\t"
+
+        /*
+         * Come here on a normal exit. Recover the EXCEPTION_REGISTRATION
+         * and store a TCL_OK status
+         */
+        "movl   %%fs:0,         %%edx"          "\n\t"
+        "movl   %[ok],          %%eax"          "\n\t"
+        "movl   %%eax,          0x10(%%edx)"    "\n\t"
+        "jmp    2f"                             "\n"
+
+        /*
+         * Come here on an exception. Get the EXCEPTION_REGISTRATION
+         * that we previously put on the chain.
+         */
+        "1:"                                    "\t"
+        "movl   %%fs:0,         %%edx"          "\n\t"
+        "movl   0x8(%%edx),     %%edx"          "\n\t"
+        
+        /* 
+         * Come here however we exited.  Restore context from the
+         * EXCEPTION_REGISTRATION in case the stack is unbalanced.
+         */
+        
+        "2:"                                    "\t"
+        "movl   0xc(%%edx),     %%esp"          "\n\t"
+        "movl   0x8(%%edx),     %%ebp"          "\n\t"
+        "movl   0x0(%%edx),     %%eax"          "\n\t"
+        "movl   %%eax,          %%fs:0"         "\n\t"
+        
+        :
+        /* No outputs */
+        :
+        [registration]  "m"     (registration),
+        [ok]            "i"     (TCL_OK),
+        [error]         "i"     (TCL_ERROR),
+        [size]          "i"     (TCL_WIN_STACK_THRESHOLD)
+        :
+        "%eax", "%ebx", "%ecx", "%edx", "%esi", "%edi", "memory"
+        );
+    retval = (registration.status == TCL_OK);
+
+#else /* !HAVE_NO_SEH */
     __try {
-#endif /* HAVE_NO_SEH */
-	alloca(TCL_WIN_STACK_THRESHOLD);
-	retval = 1;
-#ifdef HAVE_NO_SEH
-    __asm__ __volatile__ (
-            "jmp   checkstackspace_pop" "\n"
-            "checkstackspace_reentry:" "\n\t"
-            "movl  _ESP, %esp" "\n\t"
-            "movl  _EBP, %ebp");
-
-    __asm__ __volatile__ (
-            "checkstackspace_pop:" "\n\t"
-            "mov   _HANDLER, %eax"  "\n\t"
-            "mov   %eax, %fs:0");
-#else
+        alloca(TCL_WIN_STACK_THRESHOLD);
+        retval = 1;
     } __except (EXCEPTION_EXECUTE_HANDLER) {}
 #endif /* HAVE_NO_SEH */
 
-    /*
-     * Avoid using control flow statements in the SEH guarded block!
-     */
     return retval;
 }
-#ifdef HAVE_NO_SEH
-static
-__attribute__ ((cdecl,used))
-EXCEPTION_DISPOSITION
-_except_checkstackspace_handler(
-    struct _EXCEPTION_RECORD *ExceptionRecord,
-    void *EstablisherFrame,
-    struct _CONTEXT *ContextRecord,
-    void *DispatcherContext)
-{
-    __asm__ __volatile__ (
-            "jmp checkstackspace_reentry");
-    return 0; /* Function does not return */
-}
-#endif /* HAVE_NO_SEH */
 
 /*
  *----------------------------------------------------------------------
