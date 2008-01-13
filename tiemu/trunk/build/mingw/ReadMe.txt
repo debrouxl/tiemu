@@ -1,6 +1,6 @@
 Compiling LPG Software with MinGW
-Version 1.99 20070903
-Copyright (C) 2005-2007 Kevin Kofler
+Version 1.99 20080113
+Copyright (C) 2005-2008 Kevin Kofler
 Copyright (C) 2001-2006 Romain Lievin
 Copyright (C) 2006 Tyler Cassidy
 
@@ -151,45 +151,50 @@ Once you have successfully built TiLP2/TiEmu3, here's how to build an installer 
 | Cross Compiling on Linux (Fedora)   |
 ---------------------------------------
 
-1. Download and Install the following RPMs from http://mirzam.it.vu.nl/mingw/ :
+1. Download and Install the following RPMs from
+   http://sourceforge.net/project/showfiles.php?group_id=204414 :
    - mingw-binutils
+   - mingw-gcc-core
+   - mingw-gcc-g++
    - mingw-w32api
    - mingw-runtime
 
-2. Download and Install the MinGW GCC RPM from http://bitwalk.hp.infoseek.co.jp/download.html
-   (Make sure you get a package which includes g++. It is needed to build oleaut.cpp.)
+2. Install WINE from Fedora. (Can be retrieved with yum: "yum install wine".)
 
-3. Install WINE from Fedora. (Can be retrieved with yum: "yum install wine".)
-
-4. Install the last GTK+ 2.6 development package (version 2.6.10-rc1) from http://gladewin32.sf.net
+3. Install the last GTK+ 2.6 development package (version 2.6.10-rc1) from http://gladewin32.sf.net
    in WINE.
    WARNING: DON'T build against GTK+ 2.8 for Windows! GTK+ 2.8 uses Cairo, which doesn't work at all
             on Windows 95/98/Me. Nobody seems interested in fixing that. We've learned this the hard
             way. You have been warned.
 
-5. Run the following command:
+4. Run the following command:
    ln -s ~/.wine/c/GTK /target
    (This makes pkg-config happy, you can replace .../c/... with whatever directory/drive you wish to
    use.)
 
-6. In order to avoid a needless dependency on mingwm10.dll, edit the following file:
-   /usr/local/i386-mingw32/lib/libstdc++.la
-   and remove "-lmingwthrd".
+5. In order to avoid a needless dependency on mingwm10.dll and/or libgcc_sjlj_1.dll, edit the
+   following files:
+   /usr/local/lib/gcc/i386-mingw32/4.2.1-sjlj/libstdc++.la
+   /usr/local/lib/gcc/i386-mingw32/4.2.1-sjlj/libsupc++.la
+   /usr/local/lib/gcc/i386-mingw32/4.2.1-sjlj/debug/libstdc++.la
+   and remove "-lmingwthrd" and "-lgcc_s".
 
-7. Download and untar libusb-win32-device-bin from
+6. Download and untar libusb-win32-device-bin from
    http://sourceforge.net/project/showfiles.php?group_id=78138
    Install it using the script provided in the build/mingw directory of libticables2:
    cd libusb-win32-device-bin-*/libusb-win32
    PREFIX=~/.wine/c/tiemu ./install.sh
 
-8. Download the SDL source from http://www.libsdl.org (the binaries probably won't work due to iconv)
+7. Download the SDL source from http://www.libsdl.org (the binaries probably won't work due to iconv)
    You can build a static library from the source using the following options:
    ln -s /usr/include/wine/windows/dsound.h /usr/local/i386-mingw32/include/ # (for Direct Sound support)
    source cross-mingw32-gtkaio.sh #(otherwise it won't find iconv and then get confused when it's there)
+   export CFLAGS="-Os -s -fno-exceptions"
+   export CXXFLAGS="-Os -s -fno-exceptions"
    sed -i -e 's/test x\$have_directx = xyes/test x$have_dsound = xyes/g' configure # (don't require all of DirectX for dsound)
    sed -i -e 's/#include <ddraw\.h>//g' src/audio/windx5/directx.h
    sed -i -e 's/#include <dinput\.h>//g' src/audio/windx5/directx.h
-   ./configure --host=i386-mingw32 --prefix=... --disable-shared
+   ./configure --host=i386-mingw32 --build=i686-redhat-linux-gnu --prefix=... --disable-shared
    make
    make install
    For the prefix, I recommend creating a new directory.
@@ -197,36 +202,36 @@ Once you have successfully built TiLP2/TiEmu3, here's how to build an installer 
    --disable-video --disable-events --disable-joystick --disable-cdrom --disable-timers --disable-loadso
    (WARNING: Only use these for static builds, a DLL with all that stuff disabled WILL cause problems!)
 
-9. Edit cross-mingw32-gtkaio.sh to your system's needs.
+8. Edit cross-mingw32-gtkaio.sh to your system's needs.
 
-10. Use the following commands to build TiEmu (TiLP and GFM can be built the same way, if this is
-    broken, please report it as a bug):
-    source cross-mingw32-gtkaio.sh #(needs to be done for EACH build!)
-    export PATH=/path/to/sdl-mingw/bin:$PATH #(replace /path/to/sdl-mingw with the prefix from step 7)
-    export CFLAGS="-Os -s -fno-exceptions"
-    export CXXFLAGS="-Os -s -fno-exceptions"
-    cd libticables-mingw-build
-    ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
-    make
-    make install
-    cd ../libticonv-mingw-build
-    ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
-    make
-    make install
-    cd ../libtifiles-mingw-build
-    ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
-    make
-    make install
-    cd ../libticalcs-mingw-build
-    ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
-    make
-    make install
-    cd ../tiemu-mingw-build
-    ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
-    make
-    make install
-    i386-mingw32-strip ~/.wine/c/tiemu/bin/*
-    NOTE: You'll have to substitute an absolute path for ~ to make configure happy.
+9. Use the following commands to build TiEmu (TiLP and GFM can be built the same way, if this is
+   broken, please report it as a bug):
+   source cross-mingw32-gtkaio.sh #(needs to be done for EACH build!)
+   export PATH=/path/to/sdl-mingw/bin:$PATH #(replace /path/to/sdl-mingw with the prefix from step 7)
+   export CFLAGS="-Os -s -fno-exceptions"
+   export CXXFLAGS="-Os -s -fno-exceptions"
+   cd libticables-mingw-build
+   ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
+   make
+   make install
+   cd ../libticonv-mingw-build
+   ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
+   make
+   make install
+   cd ../libtifiles-mingw-build
+   ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
+   make
+   make install
+   cd ../libticalcs-mingw-build
+   ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
+   make
+   make install
+   cd ../tiemu-mingw-build
+   ./configure --prefix=~/.wine/c/tiemu --disable-nls --host=i386-mingw32 --build=i686-redhat-linux-gnu
+   make
+   make install
+   i386-mingw32-strip ~/.wine/c/tiemu/bin/*
+   NOTE: You'll have to substitute an absolute path for ~ to make configure happy.
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
