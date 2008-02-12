@@ -313,7 +313,9 @@ begin
 
     // and check
     if CompareStr(GtkVersion, '2.6.10') < 0 then begin
-      DisplayWarning(2);
+      if GtkVersion[4] = '.' then begin
+        DisplayWarning(2);
+      end;
     end;
   end;
 
