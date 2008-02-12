@@ -265,10 +265,10 @@ on_dockmode1_activate                  (GtkMenuItem     *menu_item,
 	engine_start();
 #endif
 	gtk_debugger_close();
-#ifndef NO_GDB
-	// And now we have to stop it again.
+	// Stop the engine before calling gtk_main_quit.
+	// Otherwise, it will keep running even when it is supposed to have
+	// been stopped by the debugger.
 	engine_stop();
-#endif
 	if(options3.dbg_dock)
 		gtk_widget_destroy(dbgw.dock);
 
