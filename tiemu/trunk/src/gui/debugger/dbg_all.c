@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2008, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -164,7 +164,7 @@ int gtk_debugger_enter(int context)
 
 			ti68k_bkpt_get_pgmentry_offset(id, &handle, &offset);
 			ti68k_bkpt_del_pgmentry(handle);
-			if(GTK_WIDGET_VISIBLE(dbgw.bkpts))
+			if(options3.dbg_dock || GTK_WIDGET_VISIBLE(dbgw.bkpts))
 				dbgbkpts_refresh_window();
 
 			delete_command(NULL, 0);
