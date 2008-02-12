@@ -54,8 +54,8 @@ Source: "C:\sources\roms\ticables2\src\win64\rwp\rwports.sys"; DestDir: "{cf}\LP
 Source: "C:\sources\roms\ticables2\src\win64\rwp\rwpsetup.exe";  DestDir: "{cf}\LPG Shared\drivers\rwp"; Flags: sharedfile; Check: Is64BitInstallMode
 
 ; USB driver
-Source: "C:\sources\roms\libusb-win32\bin_modified\libusb0.sys"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
-;Source: "C:\sources\roms\libusb-win32\bin\*.sys"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
+;Source: "C:\sources\roms\libusb-win32\bin_modified\libusb0.sys"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
+Source: "C:\sources\roms\libusb-win32\bin\*.sys"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
 Source: "C:\sources\roms\libusb-win32\bin\*.dll"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
 Source: "C:\sources\roms\ticables2\src\win32\usb\*.cat"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
 Source: "C:\sources\roms\ticables2\src\win32\usb\*.inf"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
@@ -195,13 +195,81 @@ Type: files; Name: "{app}\tiemu.url"
 
 [Code]
 var
-  Exists: Boolean;
-  GtkPath: String;
   WimpPath: String;
-  GtkVersion: String;
-  LpgPath: String;
 
-function GetGtkInstalled (): Boolean;
+// BEGIN: Version comparison code (http://www.vincenzo.net/isxkb/index.php?title=MDAC_-_How_to_detect_version_of_MDAC_installed)
+procedure DecodeVersion (verstr: String; var verint: array of Integer);
+var
+  i,p: Integer; s: string;
+begin
+  // initialize array
+  verint := [0,0,0,0];
+  i := 0;
+  while ((Length(verstr) > 0) and (i < 4)) do
+  begin
+  	p := pos ('.', verstr);
+  	if p > 0 then
+  	begin
+      if p = 1 then s:= '0' else s:= Copy (verstr, 1, p - 1);
+  	  verint[i] := StrToInt(s);
+  	  i := i + 1;
+  	  verstr := Copy (verstr, p+1, Length(verstr));
+  	end
+  	else
+  	begin
+  	  verint[i] := StrToInt (verstr);
+  	  verstr := '';
+  	end;
+  end;
+
+end;
+
+function GetMDACVersion (): String;
+var
+  sVersion:  String;
+begin
+  sVersion := '';
+  GetVersionNumbersString (ExpandConstant('{cf}\System\Ado\msado15.dll') , sVersion );
+  Result := sVersion;
+end;
+
+// This function compares version strings
+// return -1 if ver1 < ver2
+// return  0 if ver1 = ver2
+// return  1 if ver1 > ver2
+function CompareVersion (ver1, ver2: String) : Integer;
+var
+  verint1, verint2: array of Integer;
+  i: integer;
+begin
+
+  SetArrayLength (verint1, 4);
+  DecodeVersion (ver1, verint1);
+
+  SetArrayLength (verint2, 4);
+  DecodeVersion (ver2, verint2);
+
+  Result := 0; i := 0;
+  while ((Result = 0) and ( i < 4 )) do
+  begin
+  	if verint1[i] > verint2[i] then
+  	  Result := 1
+  	else
+      if verint1[i] < verint2[i] then
+  	    Result := -1
+  	  else
+  	    Result := 0;
+  	i := i + 1;
+  end;
+
+end;
+// END: Version comparison code
+
+// Check GTK installation
+function IsGtkInstalled(): Boolean;
+var
+  Exists: boolean;
+  GtkPath: string;
 begin
   Exists := RegQueryStringValue (HKLM, 'Software\GTK\2.0', 'Path', GtkPath);
   if not Exists then begin
@@ -210,16 +278,43 @@ begin
    Result := Exists
 end;
 
-function GetGtkVersionInstalled (): Boolean;
+// Get GTK installation path
+function GetGtkPath(): String;
+var
+  Exists: boolean;
+  GtkPath: string;
 begin
+  GtkPath := '';
+
+  Exists := RegQueryStringValue (HKLM, 'Software\GTK\2.0', 'Path', GtkPath);
+  if not Exists then begin
+    Exists := RegQueryStringValue (HKCU, 'Software\GTK\2.0', 'Path', GtkPath);
+  end;
+
+  Result := GtkPath
+end;
+
+// Get GTK version
+function GetGtkVersion(): string;
+var
+  Exists: boolean;
+  GtkVersion: string;
+begin
+  GtkVersion := '';
+
   Exists := RegQueryStringValue (HKLM, 'Software\GTK\2.0', 'Version', GtkVersion);
   if not Exists then begin
     Exists := RegQueryStringValue (HKCU, 'Software\GTK\2.0', 'Version', GtkVersion);
   end;
-   Result := Exists
+  
+  Result := GtkVersion
 end;
 
+// Get shared components path
 function GetLpgDllPath (S: String): String;
+var
+  Exists: boolean;
+  LpgPath: string;
 begin
   Exists := RegQueryStringValue (HKLM, 'Software\LPG Shared', 'DllPath', LpgPath);
   if not Exists then begin
@@ -228,6 +323,17 @@ begin
   Result := LpgPath;
 end;
 
+function GetLpgDllCount (S: String): Integer;
+var
+  Exists: boolean;
+  Path: string;
+  Count: Cardinal;
+begin
+  path := ExpandConstant('{cf}\LPG Shared\' + S);
+  Exists := RegQueryDWordValue (HKLM, 'Software\Microsoft\Windows\CurrentVersion\SharedDLLs\', Path, Count);
+end;
+
+// Check for minimum USB driver version
 function IsTiglUsbVersion3Mini (): Boolean;
 var
   Version: String;
@@ -238,6 +344,7 @@ begin
   end;
 end;
 
+// Display warning about GTK version
 function DisplayWarning(I: Integer): Boolean;
 var
   S: String;
@@ -254,7 +361,8 @@ end;
 // Check for previous program presence and uninstall if needed
 function CheckUninstall(S: String): Boolean;
 var
-  uninsexe: String;
+  Exists: boolean;
+  UnInsExe: String;
   ResultCode: Integer;
   I: Integer;
   L: Integer;
@@ -299,23 +407,18 @@ begin
   end;
 end;
 
+// Does various checks before doing anything
 function InitializeSetup(): Boolean;
 begin
   // Retrieve GTK path
-  Result := GetGtkInstalled ();
-  if not Result then begin
+  if not IsGtkInstalled() then begin
     DisplayWarning(1);
   end;
 
   // Retrieve GTK version
-  if Result then begin
-    Result := GetGtkVersionInstalled ();
-
-    // and check
-    if CompareStr(GtkVersion, '2.6.10') < 0 then begin
-      if GtkVersion[4] = '.' then begin
+  if IsGtkInstalled() then begin
+    if CompareVersion(GetGtkVersion(), '2.6.10') < 0 then begin
         DisplayWarning(2);
-      end;
     end;
   end;
 
@@ -324,8 +427,13 @@ begin
     MsgBox('SilverLink driver v2.x has been removed of your system. Now, TiLP/TiEmu requires v3.x (check out the README for download location).', mbError, MB_OK);
   end;
 
+  // Check version of USB driver
+  if IsTiglUsbVersion3Mini() then begin
+    MsgBox('SilverLink driver v2.x has been removed of your system. Now, TiLP/TiEmu requires v3.x (check out the README for download location).', mbError, MB_OK);
+  end;
+
   // Check for non-NT and WiMP theme
-  WimpPath := GtkPath + '\lib\gtk-2.0\2.4.0\engines\libwimp.dll';
+  WimpPath := GetGtkPath() + '\lib\gtk-2.0\2.4.0\engines\libwimp.dll';
   if FileExists(WimpPath) and not UsingWinNT() then begin
         MsgBox('Tip: you are running a non-NT platform with the GTK+ WiMP theme engine installed. If you get a lot of warnings about fonts in console, run the Gtk+ Theme Selector as provided in the start menu group of TiLP/TiEmu', mbError, MB_OK);
   end;
@@ -337,6 +445,7 @@ begin
     Result := true;
 end;
 
+// Delete shared DLL
 procedure DeleteDll(const FileName: string);
 var
   pf: string;
@@ -345,6 +454,7 @@ begin
   DeleteFile(pf + '\' + Filename);
 end;
 
+// Delete shared EXE
 procedure DeleteExe(const FileName: string);
 begin
   DeleteDll(FileName);
