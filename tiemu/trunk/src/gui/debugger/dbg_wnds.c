@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2008, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -265,6 +265,10 @@ on_dockmode1_activate                  (GtkMenuItem     *menu_item,
 	engine_start();
 #endif
 	gtk_debugger_close();
+#ifndef NO_GDB
+	// And now we have to stop it again.
+	engine_stop();
+#endif
 	if(options3.dbg_dock)
 		gtk_widget_destroy(dbgw.dock);
 

@@ -2,6 +2,7 @@ SubVersion: $Id$
 
 - 12/02/2008, version 3.03:
 	- [kevin] $2765: fixed crash when debugging TIGCC program with GDB with low-level debugger in dock mode
+	- [kevin] $2766: fixed dock window enabling/disabling not to keep the engine running across the restart
 
 - 16/09/2007, version 3.02:
 	- [roms]  $2646: screenshots can be copied into the clipboard
