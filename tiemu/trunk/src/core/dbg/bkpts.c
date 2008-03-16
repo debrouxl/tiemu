@@ -567,8 +567,8 @@ int ti68k_bkpt_get_pgmentry_offset(unsigned int id, uint16_t *handle, uint16_t *
 		return -1;
 	
 	data = GPOINTER_TO_INT(g_list_nth(bkpts.pgmentry, id)->data);
-	*handle = data >> 16;
-	*offset = data & 0xffff;
+	*handle = (uint16_t)(data >> 16);
+	*offset = (uint16_t)(data & 0xffff);
 	return 0;
 }
 
