@@ -466,6 +466,7 @@ GLADE_CB void
 dbgmem_button1_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
+	GtkNotebook *nb = GTK_NOTEBOOK(notebook);
 	uint32_t addr = 0;
 	gchar *str;
 	
@@ -475,6 +476,9 @@ dbgmem_button1_clicked                     (GtkButton       *button,
 	str = g_strdup_printf("%06x", addr);
 	notebook_add_page(notebook, str);
 	g_free(str);
+
+	gtk_widget_set_sensitive(GTK_WIDGET(button), 
+		gtk_notebook_get_n_pages(nb) > 1 ? TRUE : FALSE);
 }
 
 GLADE_CB void
@@ -484,7 +488,11 @@ dbgmem_button2_clicked                     (GtkButton       *button,
 	GtkNotebook *nb = GTK_NOTEBOOK(notebook);
 	gint page = gtk_notebook_get_current_page(nb);
 	
-	gtk_notebook_remove_page(nb, page);
+	if(gtk_notebook_get_n_pages(nb) > 1)
+		gtk_notebook_remove_page(nb, page);
+
+	gtk_widget_set_sensitive(GTK_WIDGET(button), 
+		gtk_notebook_get_n_pages(nb) > 1 ? TRUE : FALSE);
 }
 
 GLADE_CB void

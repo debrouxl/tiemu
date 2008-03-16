@@ -43,7 +43,7 @@
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
 	      <property name="is_important">False</property>
-	      <signal name="clicked" handler="dbgmem_button1_clicked" last_modification_time="Thu, 10 Jun 2004 10:32:18 GMT"/>
+	      <signal name="clicked" handler="dbgmem_button1_clicked" object="button2" last_modification_time="Thu, 10 Jun 2004 10:32:18 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="expand">False</property>
@@ -59,7 +59,7 @@
 	      <property name="visible_horizontal">True</property>
 	      <property name="visible_vertical">True</property>
 	      <property name="is_important">False</property>
-	      <signal name="clicked" handler="dbgmem_button2_clicked" last_modification_time="Thu, 10 Jun 2004 10:32:25 GMT"/>
+	      <signal name="clicked" handler="dbgmem_button2_clicked" object="button2" last_modification_time="Thu, 10 Jun 2004 10:32:25 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="expand">False</property>
