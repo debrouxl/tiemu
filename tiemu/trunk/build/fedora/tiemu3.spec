@@ -1,10 +1,12 @@
 Name: tiemu3
 Epoch: 1
 Version: 3.02
-Release: 1
+Release: 2
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: tiemu-%{version}.tar.bz2
+#LANG=C svn diff -r 2764:2767 >../tiemu3-3.02-dock-fixes.diff
+Patch0: tiemu3-3.02-dock-fixes.diff
 Group: Applications/Emulators
 License: GPLv2+
 BuildRequires: libticables2-devel >= 1:1.0.0, libticonv-devel >= 1:1.0.4, libtifiles2-devel >= 1:1.0.7, libticalcs2-devel >= 1:1.0.7, glib2-devel >= 2.6.0, gtk2-devel >= 2.6.0, libglade2-devel >= 2.4.0, zlib-devel, kdelibs3-devel, libX11-devel, libXext-devel, ncurses-devel, desktop-file-utils >= 0.10, bison >= 1.28, flex >= 2.5.4, texinfo >= 4.4, dbus-devel >= 0.60, dbus-glib-devel >= 0.60, SDL-devel >= 1.2.0
@@ -19,6 +21,7 @@ TiEmu is a TI89(Ti)/92(+)/V200 emulator. This version supports graphical debuggi
 
 %prep
 %setup -n tiemu-%{version}
+%patch0 -p0
 
 %build
 source /etc/profile.d/qt.sh
@@ -72,6 +75,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/lpg-tiemu.desktop
 
 %changelog
+* Wed Feb 13 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:3.02-2
+Use respun tarball.
+Backport cumulative fix for dock-related debugger bugs from SVN.
+
 * Sun Jan 13 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:3.02-1
 Update to 3.02 (release).
 BuildRequire kdelibs3-devel instead of kdelibs-devel.
