@@ -1,6 +1,6 @@
 /*  DCOP interface for TiEmu
  *
- *  Copyright (c) 2006-2007 Kevin Kofler
+ *  Copyright (c) 2006-2008 Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
  */
 
 #include <cstdlib>
+#include <cstring>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <dcopobject.h>
