@@ -2,8 +2,8 @@
 
 
 
-Previous version: 3.01		(01/09/2007)
-Current version:  3.02		(21/12/2007)
+Previous version: 3.02		(21/12/2007)
+Current version:  3.03		(21/05/2008)
 
 SubVersion (CVS) revision: $Id: RELEASE 2042 2006-05-07 07:46:23Z roms $
 
@@ -23,62 +23,23 @@ For the other link cables / operating systems, no driver is needed.
 New capabilities:
 -----------------
 
-	- screenshot can be copied into clipboard
-	- includes latest TiLP2 framework
-	- single debugging window (VTi-style)
-	- option to choose between multi-window (TiEmu < 3.02) and single-window (TiEmu >= 3.02)
+	- none
 	
 
 Improvements:
 -------------
 
-	- added accelerator keys: F6 (code) and +/- (memory)
-	- dual-click in register window select the whole register value now
-	- mapped both CTRL keys to Diamond & both SHIFT keys to 2nd
-	- added a popup menu with "View _memory" on any debugger window
-	- unified displaying of hexadecimal values (removed '$' and ''0x' heading chars) in boxes
-	- [no-gdb] suppress leading zeros in disasm like VTi does
-	- [no-gdb] some instructions (trap, rts, reset...) was suffixed with .L which is not needed
-	- [no-gdb] fixed wrong disassembly offset of MOVEM.L instruction
-	- [no-gdb] fixed disassembly of MOVEP instruction
-	- [no-gdb] fixed disassembly of MOVEQ instruction
-	- [no-gdb] fixed disassembly of ori/andi/eori, addi/subi/cmpi, lea/rts instructions
-	- [no-gdb] fixed disassembly of BT<tab>.W and changed BT into BRA
-	- added accelerator keys (F1..F8) in memory window
-	- map numerical ENTER key to TIKEY_ENTER on ti89
-	- [no-gdb] unified displaying of hexadecimal values in the disassembler('$', '[' and '==' heading chars);
-		displayed offset as signed values
-	- [no-gdb] display "($42,a3),a3" instead of "(a3,$42),a3)" in disassembler
-	- [no-gdb] reject computed value [%lX] at end of line rather than in the middle of the instruction
-	- in the bkpts window, the fifth toolbar button (go to address) is not restricted to code
-		breakpoint any longer; it works on any breakpoint type.
-	- replaced currently selected instruction in code windows by an icon (arrow)
-	- allow to change the font used in every debugger windows
-	- [no-gdb] fixed disassembly of ori/andi/eori, addi/subi/cmpi, moveq/addq/subq instructions
-	- [no-gdb] optimized m68k-disasm front-end
-	- [no-gdb] fixed "movem.l #$unreadable_mask"
-	- [gdb] Insight's GDB console is not shown by default anymore (less window clutter)
-	- removed annoying tooltip in the calculator window
-	- added accelerator keys to toggle sr flags in the regs window
-	- made the "Clear RAM?" dialog box for "Reset calc" more intuitive
-	- added support for the alternate (KDE/M$) button order
+	- none
 		
 		
 Bug fixes:
 ----------
 
-	- [gdb] makeinfo version check
-	- [gdb] longjmp out of gtk_main in the engine in the GDB-enabled version which triggered an assert with GLib 2.14
-	- [gdb] relocation of debugging information for kernel-based programs
-	- one-shot breakpoints which was not displayed any longer
-	- one-shot breakpoint was never raised
-	- the bkpt context displayed in the status bar is not erased when the debugger exits
-	- gtk warning when opening popup menu while being in debugger
-	- keeping of previous folder with the multiple file selector (e.g. Send File)
-	- calculator window aspect ratio when used with no skin
-	- reloading of aspect ratio from tiemu.ini file
-	- buffer underflow in PC trace handling during long TiEmu sessions
-	- management of AI3 on HW2
+	- fixed crash when debugging TIGCC program with GDB with low-level debugger in dock mode
+	- fixed dock window enabling/disabling not to keep the engine running across the restart
+	- fixed InnoSetup installer for use with GTK>=2.10.x
+	- don't allow deleting of last RAM tab to avoid resizing of code/dock window
+	- fixed build with GCC 4.3
 	
 	
 Notes:

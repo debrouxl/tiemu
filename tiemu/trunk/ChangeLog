@@ -6,6 +6,7 @@ SubVersion: $Id$
 	- [roms]  $2767: fixed InnoSetup installer for use with GTK>=2.10.x
 	- [roms]  $2767: don't allow deleting of last RAM tab to avoid resizing of code/dock window
 	- [kevin] $2773: fixed build with GCC 4.3
+	  => released on 22/05/2008
 
 - 16/09/2007, version 3.02:
 	- [roms]  $2646: screenshots can be copied into the clipboard
