@@ -1680,7 +1680,8 @@ int m68k_disasm (char *output, uaecptr addr)
 	orig_opcode = opcode;
 	m68kpc_offset += 2;
 	if (cpufunctbl[opcode] == op_illg_1 || (orig_opcode & 0xf000) == 0xa000 || (orig_opcode & 0xf000) == 0xf000) {
-	    opcode = 0x4AFC;
+		if(!((orig_opcode >= 0xf800) && (orig_opcode <= 0xfff2)))
+			opcode = 0x4AFC;
 	}
 	dp = table68k + opcode;
 	for (lookup = lookuptab;lookup->mnemo != dp->mnemo; lookup++)
