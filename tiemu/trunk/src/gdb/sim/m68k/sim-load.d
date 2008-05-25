@@ -1,6 +1,6 @@
 sim-load.o: ../.././sim/m68k/../common/sim-load.c \
   ../.././sim/m68k/../common/cconfig.h ../../include/ansidecl.h \
-  ../.././sim/m68k/../common/sim-basics.h ./tconfig.h \
+  ../.././sim/m68k/../common/sim-basics.h tconfig.h \
   ../../include/gdb/callback.h ../../bfd/bfd.h \
   ../../bfd/../include/ansidecl.h ../../bfd/../include/symcat.h \
   ../../include/gdb/remote-sim.h ../.././sim/m68k/../common/sim-config.h \
