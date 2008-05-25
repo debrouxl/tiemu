@@ -199,7 +199,7 @@ static void cyccnt_refresh(GtkWidget *l1, GtkWidget *l2)
 
 	count = ti68k_get_cycle_count(0, &diff);
 	str1 = g_strdup_printf("%u", count);
-	str2 = g_strdup_printf("%u", diff);
+	str2 = g_strdup_printf("%2u", diff);
 
 	gtk_label_set_text(GTK_LABEL(l1), str1);
 	gtk_label_set_text(GTK_LABEL(l2), str2);
