@@ -54,6 +54,10 @@ int hw_io_init(void)
 	if(tihw.hw_type > HW1)
 		tihw.lcd_adr = 0x4c00;
 
+	// set LCD on
+	if(tihw.hw_type > HW1)
+	  tihw.io2[0x1d] = 2;
+
 	// computes reference
 	rtc3_init();
 
