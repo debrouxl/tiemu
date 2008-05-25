@@ -1,4 +1,4 @@
-Source: tiemu
+Source: tiemu-gdb
 Section: math
 Priority: optional
 Maintainer: Romain LIEVIN <roms@tilp.info>
