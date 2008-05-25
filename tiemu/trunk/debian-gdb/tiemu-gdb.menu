@@ -1,0 +1,7 @@
+!C menu-2
+?package(tiemu-gdb):
+  section="Applications/Science/Mathematics"
+  needs="X11"
+  title="TiEmu with GDB"
+  command="tiemu"
+;

@@ -1,0 +1,157 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+
+ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -g
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+
+autotools: autotools-stamp
+autotools-stamp:
+	-rm -f config.sub config.guess
+	ln -s /usr/share/misc/config.sub config.sub
+	ln -s /usr/share/misc/config.guess config.guess
+	touch autotools-stamp
+
+config.status-nogdb: autotools-stamp configure
+	dh_testdir
+	# Add here commands to configure the package.
+	touch configure.ac && touch aclocal.m4 && touch configure
+	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
+		--prefix=/usr --mandir=\$${prefix}/share/man CFLAGS="$(CFLAGS)" \
+		LDFLAGS="-Wl,-z,defs" --disable-gdb --enable-dbus
+
+config.status-gdb: autotools-stamp configure
+	dh_testdir
+	# Add here commands to configure the package.
+	touch configure.ac && touch aclocal.m4 && touch configure
+	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
+		--prefix=/usr --mandir=\$${prefix}/share/man CFLAGS="$(CFLAGS)" \
+		LDFLAGS="-Wl,-z,defs" --enable-dbus \
+		--enable-shared-tcl-tk --enable-shared-itcl
+
+build-nogdb: build-stamp-nogdb
+build-stamp-nogdb:  config.status-nogdb
+	dh_testdir
+
+	# Add here commands to compile the package.
+	$(MAKE)
+	chrpath -d ./src/tiemu
+
+	touch $@
+
+build-gdb: build-stamp-gdb
+build-stamp-gdb:  config.status-gdb
+	dh_testdir
+
+	# Add here commands to compile the package.
+	$(MAKE)
+	chrpath -d ./src/tiemu
+
+	touch $@
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f autotools-stamp build-stamp-nogdb build-stamp-gdb
+
+	# Add here commands to clean up after the build process.
+	[ ! -f Makefile ] || $(MAKE) distclean
+	rm -f config.sub config.guess
+
+	dh_clean 
+
+install-nogdb: build-nogdb
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs
+
+	# Add here commands to install the package into debian/tiemu
+	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu install
+
+install-gdb: build-gdb
+	dh_testdir
+	dh_testroot
+#	dh_clean -k
+	dh_installdirs
+
+	# Add here commands to install the package into debian/tiemu-gdb
+	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu-gdb install-without-tcl-tk-itcl
+
+	# Remove tcl/tk files
+#	rm -f $(CURDIR)/debian/tiemu-gdb/usr/bin/tcl*
+#	rm -f $(CURDIR)/debian/tiemu-gdb/usr/bin/wish*
+	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/include
+	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/lib
+	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/man	
+#	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/share/it*
+#	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/share/iw*
+#	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/share/insight*
+#	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/share/redhat
+#	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/share/tcl*
+#	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/share/tk*
+
+# Build architecture-independent files here.
+binary-indep:
+
+# Build architecture-dependent files here.
+binary-arch: 
+#	$(MAKE) -f debian/rules clean
+	$(MAKE) -f debian/rules binary-nogdb
+#	$(MAKE) -f debian/rules clean
+	$(MAKE) -f debian/rules binary-gdb DH_OPTIONS=-ptiemu-gdb
+
+binary-nogdb: build-nogdb install-nogdb binary-common
+
+binary-gdb: build-gdb install-gdb binary-common
+
+binary-common:
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs ChangeLog
+	dh_installdocs
+	dh_installexamples
+	dh_install
+	dh_installman
+	dh_installmenu
+#	dh_installpam
+#	dh_installmime
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install 
