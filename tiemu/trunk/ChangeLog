@@ -9,6 +9,7 @@ SubVersion: $Id$
 	- [roms]  $2781: don't shutdown screen when reading battery status (lionel)
 	- [roms]  $2782: don't resize code windows whenever cycle counter change
 	- [roms]  $2783: fixed disassembling of some FLINE instructions like 0xf800 (lionel)
+	- [roms]  $2784: fixed disassembling of BTST instruction (replaced by BRA)
 	  => released on 22/05/2008 (reported due to current bugs)
 
 - 16/09/2007, version 3.02:

@@ -101,6 +101,7 @@ static const char* instr[] = {
 	"RTS.L",
 	"JMP.L",
 	"LEA.L",
+	"BTST",			/* do nothing			*/
 	"BT",			/* BRA					*/
 
 	NULL
@@ -115,7 +116,7 @@ static int match_opcode(const char *opcode)
 
 	for(i = 0; instr[i] != NULL; i++)
 	{
-		if(!strncmp(opcode, (char *)instr[i], strlen(instr[i])))
+		 if(!strncmp(opcode, (char *)instr[i], strlen(instr[i])))
 			return i;
 	}
 
@@ -398,11 +399,12 @@ int m68k_dasm(char **line, uint32_t addr)
 				if(p) *p = '\0';
 			}
 			break;
-		case 19:	/* BRA				*/
+		case 20:	/* BRA				*/
 			g_free(split[1]);
 			split[1] = g_strdup("BRA");
 		break;
 
+		case 19:	/* BTST				*/
 		default:
 			break;
 		}
