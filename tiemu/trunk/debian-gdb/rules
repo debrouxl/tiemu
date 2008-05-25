@@ -38,35 +38,17 @@ autotools-stamp:
 	ln -s /usr/share/misc/config.guess config.guess
 	touch autotools-stamp
 
-config.status-nogdb: autotools-stamp configure
+config.status: autotools-stamp configure
 	dh_testdir
 	# Add here commands to configure the package.
 	touch configure.ac && touch aclocal.m4 && touch configure
 	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
-		--prefix=/usr --mandir=\$${prefix}/share/man CFLAGS="$(CFLAGS)" \
-		LDFLAGS="-Wl,-z,defs" --disable-gdb --enable-dbus
-
-config.status-gdb: autotools-stamp configure
-	dh_testdir
-	# Add here commands to configure the package.
-	touch configure.ac && touch aclocal.m4 && touch configure
-	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
-		--prefix=/usr --mandir=\$${prefix}/share/man CFLAGS="$(CFLAGS)" \
+	--prefix=/usr --mandir=\$${prefix}/share/man CFLAGS="$(CFLAGS)" \
 		LDFLAGS="-Wl,-z,defs" --enable-dbus \
-		--enable-shared-tcl-tk --enable-shared-itcl
+	--enable-shared-tcl-tk --enable-shared-itcl
 
-build-nogdb: build-stamp-nogdb
-build-stamp-nogdb:  config.status-nogdb
-	dh_testdir
-
-	# Add here commands to compile the package.
-	$(MAKE)
-	chrpath -d ./src/tiemu
-
-	touch $@
-
-build-gdb: build-stamp-gdb
-build-stamp-gdb:  config.status-gdb
+build: build-stamp
+build-stamp:  config.status
 	dh_testdir
 
 	# Add here commands to compile the package.
@@ -78,7 +60,7 @@ build-stamp-gdb:  config.status-gdb
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f autotools-stamp build-stamp-nogdb build-stamp-gdb
+	rm -f autotools-stamp build-stamp
 
 	# Add here commands to clean up after the build process.
 	[ ! -f Makefile ] || $(MAKE) distclean
@@ -86,16 +68,7 @@ clean:
 
 	dh_clean 
 
-install-nogdb: build-nogdb
-	dh_testdir
-	dh_testroot
-	dh_clean -k 
-	dh_installdirs
-
-	# Add here commands to install the package into debian/tiemu
-	$(MAKE) DESTDIR=$(CURDIR)/debian/tiemu install
-
-install-gdb: build-gdb
+install: build
 	dh_testdir
 	dh_testroot
 #	dh_clean -k
@@ -118,20 +91,10 @@ install-gdb: build-gdb
 #	rm -fR $(CURDIR)/debian/tiemu-gdb/usr/share/tk*
 
 # Build architecture-independent files here.
-binary-indep:
+binary-indep: build install
 
 # Build architecture-dependent files here.
 binary-arch: 
-#	$(MAKE) -f debian/rules clean
-	$(MAKE) -f debian/rules binary-nogdb
-#	$(MAKE) -f debian/rules clean
-	$(MAKE) -f debian/rules binary-gdb DH_OPTIONS=-ptiemu-gdb
-
-binary-nogdb: build-nogdb install-nogdb binary-common
-
-binary-gdb: build-gdb install-gdb binary-common
-
-binary-common:
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs ChangeLog
