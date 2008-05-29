@@ -135,9 +135,12 @@ const KeyTuple pckeys[] = {
 	{ PCKEY_CLEAR, "PCKEY_CLEAR" },
 	{ PCKEY_RETURN, "PCKEY_RETURN" },
 	{ PCKEY_SHIFT_L, "PCKEY_SHIFT_L" },
-	{ PCKEY_SHIFT_R, "PCKEY_SHIFT_R" },
 	{ PCKEY_CONTROL_L, "PCKEY_CONTROL_L" },
+#ifndef __MACOSX__
+/* FIXME: We need the key codes for these on OS X. */
+	{ PCKEY_SHIFT_R, "PCKEY_SHIFT_R" },
 	{ PCKEY_CONTROL_R, "PCKEY_CONTROL_R" },
+#endif
 	{ PCKEY_MENU, "PCKEY_MENU" },
 	{ PCKEY_PAUSE, "PCKEY_PAUSE" },
 	{ PCKEY_CAPITAL, "PCKEY_CAPITAL" },
