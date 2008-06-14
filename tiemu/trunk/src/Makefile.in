@@ -60,6 +60,9 @@ ipc/dcop/dcop.kidl: ipc/dcop/dcop.h
 	$(DCOPIDL) ipc/dcop/dcop.h > ipc/dcop/dcop.kidl
 ipc/dcop/dcop_skel.cpp: ipc/dcop/dcop.kidl
 	$(DCOPIDL2CPP) --no-stub ipc/dcop/dcop.kidl
+FINALLINKCC = $(CXX)
+else
+FINALLINKCC = $(CC)
 endif
 
 DEFS=@DEFS@ \
@@ -268,11 +271,11 @@ endif
 endif
 ifneq (,$(findstring NO_GDB,$(CFLAGS)))
 ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
-	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
+	$(FINALLINKCC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
 	$(LDFLAGS) $(CFLAGS) $(kdelibraries) \
 	-Wl,--rpath,"$(prefix)/lib"
 else
-	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(RESFILE) \
+	../libtool --mode=link $(FINALLINKCC) $(uae_OBJ) $(tiemu_OBJ) $(RESFILE) \
 	-o tiemu$(EXEEXT) $(LDFLAGS) $(CFLAGS) $(kdelibraries)
 endif
 else
@@ -282,12 +285,12 @@ ifneq (,$(findstring __MACOSX__,$(CFLAGS)))
 	mv -f gdb/gdb/libgdb.ldflags.tmp gdb/gdb/libgdb.ldflags
 endif
 ifneq (,$(findstring __IPAQ__,$(CFLAGS)))
-	$(CC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
+	$(FINALLINKCC) $(uae_OBJ) $(tiemu_OBJ) -o tiemu \
     `sed <gdb/gdb/libgdb.ldflags 's,^\.\./,gdb/,;s, \.\./, gdb/,g;s, \./\.\./, gdb/,g'` \
 	$(LDFLAGS) $(CFLAGS) $(kdelibraries) \
 	-Wl,--rpath,"$(prefix)/lib"
 else
-	../libtool --mode=link $(CC) $(uae_OBJ) $(tiemu_OBJ) $(RESFILE) \
+	../libtool --mode=link $(FINALLINKCC) $(uae_OBJ) $(tiemu_OBJ) $(RESFILE) \
     `sed <gdb/gdb/libgdb.ldflags 's,^\.\./,gdb/,;s, \.\./, gdb/,g;s, \./\.\./, gdb/,g'` \
 	-o tiemu$(EXEEXT) $(LDFLAGS) $(CFLAGS) $(kdelibraries)
 endif

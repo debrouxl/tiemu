@@ -11,6 +11,7 @@ SubVersion: $Id$
 	- [roms]  $2783: fixed disassembling of some FLINE instructions like 0xf800 (lionel)
 	- [roms]  $2784: fixed disassembling of BTST instruction (replaced by BRA)
 	- [kevin] $2793: fixed keynames.c build on OS X
+	- [kevin] $2794: link with g++ if --with-kde (fixes --with-kde build on OS X)
 	  => released on 22/05/2008 (reported due to current bugs)
 
 - 16/09/2007, version 3.02:
