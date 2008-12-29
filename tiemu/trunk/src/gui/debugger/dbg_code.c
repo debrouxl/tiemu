@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2008, Romain Liévin, Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1036,7 +1036,7 @@ on_treeview1_size_allocate             (GtkWidget       *widget,
 
 	path = gtk_tree_path_new_from_string("0");
 	gtk_tree_view_get_background_area(view, path, NULL, &rect);
-	g_free(path);
+	gtk_tree_path_free(path);
 
 	//printf("allocation: %i %i / rect: %i %i\n", allocation->width, allocation->height, rect.width, rect.height);
 
