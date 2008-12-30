@@ -13,6 +13,7 @@ SubVersion: $Id$
 	- [kevin] $2793: fixed keynames.c build on OS X
 	- [kevin] $2794: link with g++ if --with-kde (fixes --with-kde build on OS X)
 	- [kevin] $2797: fixed use of wrong free function (g_free where gtk_tree_path_free is required) causing crash with GTK+ 2.14
+	- [kevin] $2798: fixed builtin Tk not working when built against the latest X.Org X11 (Tk bug 2010422)
 
 - 16/09/2007, version 3.02:
 	- [roms]  $2646: screenshots can be copied into the clipboard

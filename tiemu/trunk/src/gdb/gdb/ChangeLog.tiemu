@@ -1,3 +1,10 @@
+2008-12-30  Kevin Kofler  <Kevin@tigcc.ticalc.org>
+
+        * Backport from upstream Tk 8.4 branch:
+          2008-08-06  Joe English  <jenglish@users.sourceforge.net>
+            * ../tk/generic/tk.h: Fix for [Bug 2010422]: account for X11 changing
+                                                         constant LASTEvent.
+
 2008-01-13  Kevin Kofler  <Kevin@tigcc.ticalc.org>
 
         * Backport upstream Tcl fixes by Kevin B. Kenny <kennykb@acm.org> to support MinGW GCC 4.2:
