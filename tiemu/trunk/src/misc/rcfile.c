@@ -274,7 +274,7 @@ void rcfile_read(void)
 	  else if(!strcmp(p, "full")) options.view = VIEW_FULL;
 	  else if(!strncmp(p, "custom", strlen("custom"))) 
 	  {
-		  char *q;
+		  //char *q;
 		  options.view = VIEW_CUSTOM;
 		  p=find_str(buffer, "view_mode=custom");
 		  /*q = strchr(p, ',');
