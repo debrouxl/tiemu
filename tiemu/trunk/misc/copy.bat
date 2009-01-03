@@ -1,3 +1,3 @@
-mkdir c:\msvc\tilp2\misc
-copy *.txt c:\msvc\tilp2\misc\
+mkdir c:\lpg\msvc\misc
+copy *.txt c:\lpg\msvc\misc\
 del *.bak

@@ -1,5 +1,5 @@
-mkdir c:\msvc\tilp2\skins
-copy *.skn c:\msvc\tilp2\skins\
-copy *.map c:\msvc\tilp2\skins\
+mkdir c:\lpg\msvc\skins
+copy *.skn c:\lpg\msvc\skins\
+copy *.map c:\lpg\msvc\skins\
 
 del *.bak
