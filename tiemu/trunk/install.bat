@@ -15,3 +15,7 @@ cd ..
 cd skins
 call copy.bat
 cd ..
+
+cd pedrom
+call copy.bat
+cd ..
