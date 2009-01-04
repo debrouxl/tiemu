@@ -59,3 +59,28 @@ x idée d'amélioration : ajouter via le clic droit "ouvrir cette adresse dans la 
   (sur toutes les adresses, aussi bien dans code/disassembly/memory/stack [bon ok pour les 2 derniers c'est un peu plus 
   compliqué puisque ça marche par octet ou par mot, mais au moins pour les deux premiers ce serait cool])
   >>
+
+post 215 (Pollux) sur <http://yaronet.com/posts.php?sl=&h=214&s=104752&p=8#215>:
+  <<
+  et hop, un nouveau paquet de suggestions :
+- ce serait bien que comme sous VTI les breakpoints ne soient pas perdus quand on restaure le Calculator State, typiquement si on a un plantage on veut examiner la mémoire, ajouter quelques breakpoints et recharger l'état précédent : c'est impossible de faire ça si les breakpoints sont restaurés  :( 
+- je sais pas si c'est compliqué à rajouter, mais si on pouvait sauvegarder/restaurer l'état quand on est dans le debugger ce serait cool
+
+panneau Breakpoints :
+- Add breakpoint : appuyer sur entrée =/> OK
+panneau Memory :
+- quand on fait Ctrl-A l'onglet courant se déplace d'un cran vers la gauche
+- il faut faire deux fois Ctrl-N pour passer au résultat suivant (la première sélectionne la ligne courante, et la deuxième passe effectivement à l'occurrence suivante)
+- ce serait sympa d'avoir Add data breakpoint dans le clic droit (avec si possible Word comme taille par défaut, comme ça dans 90% des cas il suffit de faire OK pour créer le breakpoint)
+- petit détail : si le clic du milieu pouvait fermer l'onglet ce serait pratique (actuellement pour fermer 3 tabs d'un coup il faut les activer puis les fermer chacun à leur tour)
+panneau Heap :
+- ce serait super, super, pratique de pouvoir cliquer sur la colonne Address pour trier par adresse croissante
+- ce serait pas mal aussi d'avoir un "View end of handle" pour voir où finit le handle
+
+(j'espère que je t'embête pas trop roms %) ) 
+  >>
+
+post 216 (Folco) sur <http://yaronet.com/posts.php?sl=&h=214&s=104752&p=8#216>:
+<<
+Il y aurait les raccourcis claviers à rendre "globaux" surla fenêtre, parce que actuellement, il faut quand même prendre la souris pour sélectionner la partie avec laquelle on veut interragir, on perd donc 90% de l'intérêt des raccourcis
+>>
