@@ -61,6 +61,8 @@ roms
 
 * CPU consumption may be high
 
+* The link low window is cleared by buffer but the buffer is not.
+
 folco
 =====
 

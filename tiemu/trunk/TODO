@@ -84,3 +84,5 @@ post 216 (Folco) sur <http://yaronet.com/posts.php?sl=&h=214&s=104752&p=8#216>:
 <<
 Il y aurait les raccourcis claviers à rendre "globaux" surla fenêtre, parce que actuellement, il faut quand même prendre la souris pour sélectionner la partie avec laquelle on veut interragir, on perd donc 90% de l'intérêt des raccourcis
 >>
+
+roms: il semblerait que le debugger s'ouvre plus vite avec un GTK récent qu'avec le 2.6. A vérifier...
