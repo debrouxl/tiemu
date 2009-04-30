@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 # subdirectories to scan
-SUBDIRS = build intl man pixmaps po src
+SUBDIRS = build man pixmaps po src
 
 if USE_GROFF
 SUBDIRS += man

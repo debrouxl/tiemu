@@ -19,7 +19,6 @@ AC_CONFIG_FILES([
   man/Makefile
   pixmaps/Makefile
   src/Makefile
-  intl/Makefile
   po/Makefile.in
 ])
 
@@ -38,8 +37,7 @@ AC_CHECK_PROG(GROFF, groff, yes, no)
 AM_CONDITIONAL(USE_GROFF, test "$GROFF" != "no")
 
 # Checks for libraries.
-AM_GNU_GETTEXT
-AM_GNU_GETTEXT_VERSION(0.14.5)
+AM_GNU_GETTEXT(external)
 
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.4.0)
 AC_SUBST(GLIB_CFLAGS)
