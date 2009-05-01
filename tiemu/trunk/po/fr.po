@@ -1,12 +1,12 @@
 # French locale for TiEmu
 # Copyright (C) 2007 Romain Liévin
 # This file is distributed under the same license as the libtifiles package.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: tiemu\n"
 "Report-Msgid-Bugs-To: tiemu-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-12 07:02+0100\n"
+"POT-Creation-Date: 2009-05-01 23:35+0200\n"
 "PO-Revision-Date: 2004-04-13 13:21+0000\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tiemu-devel@lists.sf.net>\n"
@@ -489,9 +489,8 @@ msgstr "Bloc de paramètres matériels:"
 # ##, c-format
 # #, c-format
 #: src/core/hwpm.c:62
-#, fuzzy, c-format
 msgid "  length           : %i"
-msgstr "Longueur         : %i"
+msgstr "  longueur         : %i"
 
 #: src/core/hwpm.c:121
 msgid ""
@@ -629,8 +628,8 @@ msgstr "Ne peut pas ouvrir le fichier de destination en écriture!"
 #: src/gui/debugger/dbg_code.c:1139 src/gui/debugger/dbg_data.c:56
 #: src/gui/debugger/dbg_entry.c:207 src/gui/debugger/dbg_heap.c:146
 #: src/gui/debugger/dbg_heap.c:267 src/gui/debugger/dbg_iop.c:430
-#: src/gui/debugger/dbg_mem.c:700 src/gui/debugger/dbg_mem.c:1075
-#: src/gui/debugger/dbg_mem.c:1299 src/gui/debugger/dbg_pclog.c:138
+#: src/gui/debugger/dbg_mem.c:708 src/gui/debugger/dbg_mem.c:1083
+#: src/gui/debugger/dbg_mem.c:1307 src/gui/debugger/dbg_pclog.c:138
 #: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:535
 #: src/gui/debugger/dbg_stack.c:163 src/gui/debugger/dbg_stack.c:413
 #: src/gui/debugger/dbg_vectors.c:145 src/gui/logger/log_link.c:60
@@ -697,9 +696,8 @@ msgid "Question"
 msgstr "Question"
 
 #: src/gui/calc/popup.c:249
-#, fuzzy
 msgid "Clear RAM?"
-msgstr "Effacer"
+msgstr "Effacer la RAM ?"
 
 #: src/gui/calc/popup.c:494
 msgid "Manual_en.html"
@@ -1127,9 +1125,8 @@ msgid "1"
 msgstr "1"
 
 #: glade/dbg_bits-2.str:18 glade/dbg_bits-2.str:27 glade/dbg_code-2.str:45
-#: glade/dbg_code-2.str:46 glade/dbg_regs-2.str:13 glade/dbg_regs-2.str:15
-#: glade/dbg_regs-2.str:16 glade/dbg_regs-2.str:19 glade/dbg_regs-2.str:20
-#: glade/dbg_regs-2.str:21
+#: glade/dbg_regs-2.str:13 glade/dbg_regs-2.str:15 glade/dbg_regs-2.str:16
+#: glade/dbg_regs-2.str:19 glade/dbg_regs-2.str:20 glade/dbg_regs-2.str:21
 msgid "0"
 msgstr "0"
 
@@ -1352,6 +1349,10 @@ msgstr "Bascule le point d'arrêt (F2)"
 #: glade/dbg_code-2.str:44
 msgid "Cycle count:"
 msgstr "Compteur de cycles:"
+
+#: glade/dbg_code-2.str:46
+msgid "00"
+msgstr "00"
 
 #: glade/dbg_code-2.str:47
 msgid "Reset"

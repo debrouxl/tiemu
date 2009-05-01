@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tiemu-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-12 07:02+0100\n"
+"POT-Creation-Date: 2009-05-01 23:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -562,8 +562,8 @@ msgstr ""
 #: src/gui/debugger/dbg_code.c:1139 src/gui/debugger/dbg_data.c:56
 #: src/gui/debugger/dbg_entry.c:207 src/gui/debugger/dbg_heap.c:146
 #: src/gui/debugger/dbg_heap.c:267 src/gui/debugger/dbg_iop.c:430
-#: src/gui/debugger/dbg_mem.c:700 src/gui/debugger/dbg_mem.c:1075
-#: src/gui/debugger/dbg_mem.c:1299 src/gui/debugger/dbg_pclog.c:138
+#: src/gui/debugger/dbg_mem.c:708 src/gui/debugger/dbg_mem.c:1083
+#: src/gui/debugger/dbg_mem.c:1307 src/gui/debugger/dbg_pclog.c:138
 #: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:535
 #: src/gui/debugger/dbg_stack.c:163 src/gui/debugger/dbg_stack.c:413
 #: src/gui/debugger/dbg_vectors.c:145 src/gui/logger/log_link.c:60
@@ -1032,9 +1032,8 @@ msgid "1"
 msgstr ""
 
 #: glade/dbg_bits-2.str:18 glade/dbg_bits-2.str:27 glade/dbg_code-2.str:45
-#: glade/dbg_code-2.str:46 glade/dbg_regs-2.str:13 glade/dbg_regs-2.str:15
-#: glade/dbg_regs-2.str:16 glade/dbg_regs-2.str:19 glade/dbg_regs-2.str:20
-#: glade/dbg_regs-2.str:21
+#: glade/dbg_regs-2.str:13 glade/dbg_regs-2.str:15 glade/dbg_regs-2.str:16
+#: glade/dbg_regs-2.str:19 glade/dbg_regs-2.str:20 glade/dbg_regs-2.str:21
 msgid "0"
 msgstr ""
 
@@ -1256,6 +1255,10 @@ msgstr ""
 
 #: glade/dbg_code-2.str:44
 msgid "Cycle count:"
+msgstr ""
+
+#: glade/dbg_code-2.str:46
+msgid "00"
 msgstr ""
 
 #: glade/dbg_code-2.str:47
