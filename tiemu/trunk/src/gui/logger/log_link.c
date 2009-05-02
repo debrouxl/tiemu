@@ -243,10 +243,16 @@ on_button11_clicked                    (GtkButton       *button,
 	GtkWidget *text = GTK_WIDGET(button);
 	GtkTextBuffer *txtbuf;
 
+	// clear text
 	txtbuf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	gtk_text_buffer_get_bounds(txtbuf, &start, &end);
 	gtk_text_buffer_delete(txtbuf, &start, &end);
 	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(text), 15);
+
+	// clear buffer
+	g_free(logger.link_buf);
+	logger.link_buf = (uint16_t *)g_malloc0(logger.link_size * sizeof(uint16_t));
+	logger.link_ptr = 0;
 }
 
 
