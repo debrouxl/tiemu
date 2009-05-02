@@ -110,7 +110,7 @@ void gtk_debugger_refresh(void)
 
 void gtk_debugger_display(void)
 {
-	GTimer *tmr = g_timer_new();
+	WND_TMR_START();
 
 	// display debugger windows (if not)
 	if(options3.dbg_dock)
@@ -131,9 +131,7 @@ void gtk_debugger_display(void)
 		dbgcode_display_window();	// the last has focus	
 	}
 
-	g_timer_stop(tmr);
-	printf("Display Time: %f\n", g_timer_elapsed(tmr, NULL));
-	g_timer_destroy(tmr);
+	WND_TMR_STOP("Display Time");
 }
 
 // show previously created window

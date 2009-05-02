@@ -75,7 +75,7 @@ extern "C" {
 #define HW3         3
 #define HW4         4
 
-#define LCDMEM_W	240		// LCD _memory_ height
+#define LCDMEM_W	240		// LCD _memory_ width
 #define LCDMEM_H	128		// LCD _memory_ height
 
 /* Structures */
@@ -204,7 +204,7 @@ typedef struct
 
 	// Link
 	int			link_size;	// buffer size
-	uint16_t*	link_buf;	// buffer
+	uint16_t*	link_buf;	// buffer (LSB is data, MSB is S/R action)
 	int			link_ptr;	// buffer index
 	int			link_mask;	// actions (1: S, 2: R)
 
