@@ -78,23 +78,43 @@ gint display_loglink_dbox()
 
 	if(logger.link_buf)
 	{
-		int old_flags = MSB((logger.link_buf)[0]);
+		int old_flags;
 		char *str;
-		char *tmp;		
+		char *tmp;
+		int meaningful_length;
+		int offset;
 
-		if((logger.link_buf)[0] & (1 << 8))
-			str = g_strdup_printf("S: ");
-		else
-			str = g_strdup_printf("R: ");
-
-		for(i = j = 0; i < logger.link_ptr; i++)
+		if (logger.link_ptr <= logger.link_size)
 		{
-			uint16_t word = (logger.link_buf)[i];
+			// No data of the circular buffer was overwritten.
+			meaningful_length = logger.link_ptr;
+			offset = 0;
+		}
+		else
+		{
+			// Some data of the circular buffer was overwritten:
+			// * show only the meaningful part of it;
+			// * prevent reading past the bounds of logger.link_buf.
+			meaningful_length = logger.link_size;
+			offset = logger.link_ptr % logger.link_size;
+		}
+
+		old_flags = MSB((logger.link_buf)[offset]);
+
+		if((logger.link_buf)[offset] & (1 << 8))
+			str = g_strdup("S: ");
+		else
+			str = g_strdup("R: ");
+
+
+		for(i = j = 0; i < meaningful_length; i++)
+		{
+			uint16_t word = (logger.link_buf)[(i + offset) % logger.link_size];
 			uint8_t byte = LSB(word);
 			uint8_t flags = MSB(word);
 			int s = flags & 1;
 			int r = flags & 2;
-			
+
 			if(flags != old_flags)
 			{
 				old_flags = flags;
@@ -105,9 +125,19 @@ gint display_loglink_dbox()
 				gtk_text_buffer_insert_at_cursor(txtbuf, str, strlen(str));
 
 				j = 0;
-				g_free(str);			
+				g_free(str);
 				str = g_strdup_printf("%c: ", s ? 'S' : 'R');
 				
+			}
+
+			// Wrap every 16 characters.
+			if((i != 0) && !(i & 15))
+			{
+				tmp = g_strdup("\n");
+				str = g_strconcat(str, tmp, NULL);
+				gtk_text_buffer_insert_at_cursor(txtbuf, str, strlen(str));
+				g_free(str);
+				str = g_strdup("   ");
 			}
 
 			tmp = g_strdup_printf("%02X ", byte);
@@ -120,7 +150,7 @@ gint display_loglink_dbox()
 		str = g_strconcat(str, tmp, NULL);
 		gtk_text_buffer_insert_at_cursor(txtbuf, str, strlen(str));
 
-		g_free(str);			
+		g_free(str);
 	}
 
 	dbox = glade_xml_get_widget(xml, "linklog_dbox");
