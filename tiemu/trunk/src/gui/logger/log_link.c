@@ -38,6 +38,8 @@
 static GtkTextBuffer *txtbuf;
 static logger_enabled = 0;
 
+
+
 static void udpate_widgets(GtkWidget *button, GtkWidget *spin)
 {
 	gtk_button_set_use_stock(GTK_BUTTON(button), TRUE);

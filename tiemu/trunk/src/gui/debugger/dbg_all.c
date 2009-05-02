@@ -67,6 +67,8 @@ int dbg_on = 0;
 // create windows but don't show them yet
 void gtk_debugger_preload(void)
 {
+	WND_TMR_START();
+
 	dbgw.regs  = dbgregs_create_window();
 	dbgw.mem   = dbgmem_create_window();
 	dbgw.bkpts = dbgbkpts_create_window();
@@ -77,10 +79,14 @@ void gtk_debugger_preload(void)
 	dbgw.code  = dbgcode_create_window();
 	if(options3.dbg_dock)	//must be launched as last
 		dbgw.dock  = dbgdock_create_window();
+
+	WND_TMR_STOP("Debugger Preload Time");
 }
 
 void gtk_debugger_refresh(void)
 {	
+	WND_TMR_START();
+
 	if(options3.dbg_dock || GTK_WIDGET_VISIBLE(dbgw.regs))
 		dbgregs_refresh_window();
 	if(options3.dbg_dock || GTK_WIDGET_VISIBLE(dbgw.mem))
@@ -97,10 +103,15 @@ void gtk_debugger_refresh(void)
 		dbgheap_refresh_window();
 	if(options3.dbg_dock || GTK_WIDGET_VISIBLE(dbgw.iop))
 		dbgiop_refresh_window();
+
+	WND_TMR_STOP("Debugger Refresh Time");
+	printf("\n");
 }
 
 void gtk_debugger_display(void)
 {
+	GTimer *tmr = g_timer_new();
+
 	// display debugger windows (if not)
 	if(options3.dbg_dock)
 	{
@@ -119,6 +130,10 @@ void gtk_debugger_display(void)
 		dbgiop_display_window();
 		dbgcode_display_window();	// the last has focus	
 	}
+
+	g_timer_stop(tmr);
+	printf("Display Time: %f\n", g_timer_elapsed(tmr, NULL));
+	g_timer_destroy(tmr);
 }
 
 // show previously created window

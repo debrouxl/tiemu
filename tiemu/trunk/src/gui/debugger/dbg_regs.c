@@ -310,10 +310,16 @@ GtkWidget* dbgregs_display_window(void)
 
 void dbgregs_refresh_window(void)
 {
+	GTimer *tmr = g_timer_new();
+
 	if(!options3.regs.closed)
 	{
 		labels_refresh();
 	}
+
+	g_timer_stop(tmr);
+	printf("Registers Refresh Time: %f\n", g_timer_elapsed(tmr, NULL));
+	g_timer_destroy(tmr);
 }
 
 GLADE_CB gboolean

@@ -171,10 +171,14 @@ GtkWidget* dbgpclog_display_window(void)
 
 void dbgpclog_refresh_window(void)
 {
+	WND_TMR_START();
+
 	if(!options3.pclog.closed)
 	{
 		clist_refresh(store);
 	}
+
+	WND_TMR_STOP("Pclog Refresh Time");
 }
 
 GLADE_CB gboolean

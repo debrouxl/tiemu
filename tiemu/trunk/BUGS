@@ -4,6 +4,8 @@ List of known bugs to fix:
 SF.net's bug list
 =================
 
+2489443 	Screen Elements Ignored by TiEmu
+1891657 	TiEmu can't find glib-2.0-0.dll from Glib 2.14.3
 1649068  	Keyboard layout under Linux
 1569553  	pc-TiEmu link
 1555602 	Missed key presses w/ TabletPC Stylus
@@ -23,7 +25,7 @@ Ce problème est apparemment causée par le fait qu'une touche (ENTER) est appuyée
 où on entre dans le débogueur. (Le BP sur le trap 11 s'active au moment où ENTER est encore 
 appuyé.)
 
-* transfers lents
+* transferts lents
 
 
 Lionel
@@ -42,16 +44,6 @@ certificate).
 dans le décor, je ne sais pas s'il exécute ou pas
 
 
-PPhd
-====
-
-* Au fait, le boutton "Add rom" au demarrage continue de freezer...
-(File Selector 0 si ca peut t'aider).
-
-Le seul moyen c'est de faire CANCEL, puis selectionne d'une nouvelle TIB, puis 
-on demarre. Pas pratique, ni evident !
-
-
 roms
 ====
 
@@ -61,12 +53,11 @@ roms
 
 * CPU consumption may be high
 
-* The link low window is cleared by buffer but the buffer is not.
-
 folco
 =====
 
-* http://yaronet.com/posts.php?s=115405
+* debugger crash when double-clicking stack value (http://yaronet.com/posts.php?s=115405)
+
 
 -------------
 + done

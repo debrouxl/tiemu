@@ -87,6 +87,20 @@ void dbgwnds_hide_all(int all);
 	g_object_set(G_OBJECT(renderer), "ypad", LINE_PAD, NULL); \
 }
 
+//#define MEASURE_WND_TIME
+
+#ifdef MEASURE_WND_TIME
+ #define WND_TMR_START()		GTimer *tmr = g_timer_new();
+ #define WND_TMR_STOP(s)	{	\
+	g_timer_stop(tmr);	\
+	printf("%s: %f\n", s, g_timer_elapsed(tmr, NULL));	\
+	g_timer_destroy(tmr);	\
+}
+#else
+ #define WND_TMR_START()
+ #define WND_TMR_STOP(s)
+#endif
+
 G_END_DECLS
 
 #endif

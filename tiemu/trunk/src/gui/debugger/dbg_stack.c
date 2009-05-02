@@ -205,11 +205,15 @@ GtkWidget* dbgstack_display_window(void)
 
 void dbgstack_refresh_window(void)
 {
+	WND_TMR_START();
+
 	if(!options3.stack.closed)
 	{
 		clist_refresh(store1, TARGET_SP);
 		clist_refresh(store2, TARGET_FP);
 	}
+
+	WND_TMR_STOP("Heap Refresh Time");
 }
 
 GLADE_CB gboolean

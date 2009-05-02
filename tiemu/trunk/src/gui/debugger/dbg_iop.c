@@ -463,8 +463,12 @@ GtkWidget* dbgiop_display_window(void)
 
 void dbgiop_refresh_window(void)
 {
+	WND_TMR_START();
+
 	if(!options3.iop.closed)
 	{
 		ctree_refresh(store);
 	}
+
+	WND_TMR_STOP("Iop Refresh Time");
 }

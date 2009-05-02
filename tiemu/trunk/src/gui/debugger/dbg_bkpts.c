@@ -396,6 +396,8 @@ GtkWidget* dbgbkpts_display_window(void)
 
 void dbgbkpts_refresh_window(void)
 {
+	WND_TMR_START();
+
 	if(!options3.bkpts.closed)
 	{
 		gtk_list_store_clear(store);
@@ -403,6 +405,8 @@ void dbgbkpts_refresh_window(void)
 
 		display_dbgcause_dbox2(glade_get("statusbar1"));
 	}
+
+	WND_TMR_STOP("Breakpoints Refresh Time");
 }
 
 void dbgbkpts_erase_context(void)

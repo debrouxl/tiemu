@@ -1,5 +1,10 @@
 SubVersion: $Id$
 
+- 02/05/2009, version 3.04:
+	- [roms]  $2815: merged Lionel's patch about link logging: adding CR/LF every 16 chars; take into account buffer overflow
+	- [roms]  $2816: really clears link logging buffer when clicking the 'Clear' button
+	- 
+
 - 12/02/2008, version 3.03:
 	- [kevin] $2765: fixed crash when debugging TIGCC program with GDB with low-level debugger in dock mode
 	- [kevin] $2766: fixed dock window enabling/disabling not to keep the engine running across the restart

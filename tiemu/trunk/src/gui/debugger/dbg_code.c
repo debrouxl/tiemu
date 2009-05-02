@@ -438,11 +438,15 @@ GtkWidget* dbgcode_display_window(void)
 
 void dbgcode_refresh_window(void)
 {
+	WND_TMR_START();
+
 	if(!options3.code.closed)
 	{
 		gtk_list_store_clear(store);
 		clist_refresh(store, TRUE);
 	}
+
+	WND_TMR_STOP("Code Refresh Time");
 }
 
 void dbgcode_disasm_at(uint32_t addr)

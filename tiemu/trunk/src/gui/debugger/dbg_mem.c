@@ -443,6 +443,8 @@ GtkWidget* dbgmem_display_window(void)
 
 void dbgmem_refresh_window(void)
 {
+	GTimer *tmr = g_timer_new();
+
 	if(!options3.mem.closed)
 	{
         GtkNotebook *nb = GTK_NOTEBOOK(notebook);
@@ -450,6 +452,10 @@ void dbgmem_refresh_window(void)
 
         refresh_page(page, 0);
 	}
+
+	g_timer_stop(tmr);
+	printf("Memory Refresh Time: %f\n", g_timer_elapsed(tmr, NULL));
+	g_timer_destroy(tmr);
 }
 
 void dbgmem_add_tab(uint32_t addr)
