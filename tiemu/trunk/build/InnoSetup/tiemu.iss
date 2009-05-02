@@ -121,12 +121,8 @@ Source: "C:\lpg\tiemu3\misc\memmap*.txt"; DestDir: "{app}\misc"; Flags: ignoreve
 Source: "C:\lpg\tiemu3\pedrom\pedrom*.tib"; DestDir: "{app}\pedrom"; Flags: ignoreversion
 
 ; Binaries
-Source: "C:\lpg\tifiles2\tests\libtifiles2-4.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\lpg\ticables2\tests\libticables2-1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\lpg\ticalcs2\tests\libticalcs2-6.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\lpg\ticonv\tests\libticonv-3.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\lpg\tiemu3\build\msvc\tiemu.exe"; DestDir: "{app}"; DestName: "tiemu.exe"; Flags: ignoreversion
-Source: "C:\SDL-1.2\lib\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\lpg\SDL\lib\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 ; COM/OLE object registration
 Source: "C:\lpg\tiemu3\src\ipc\com\tiemups.dll"; DestDir: "{app}"; Flags: regserver;
@@ -186,7 +182,7 @@ Root: HKCR; Subkey: "TiEmu.Rom\shell\open\command"; ValueType: string; ValueName
 ; Add LPG libraries to the tiemu's path
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; Flags: uninsdeletekeyifempty
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; ValueType: string; ValueData: "{app}\tiemu.exe"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; ValueType: string; ValueName: "Path"; ValueData: "{app};{code:GetLpgDllPath}"; Flags: uninsdeletevalue;
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\tiemu.exe"; ValueType: string; ValueName: "Path"; ValueData: "{app};{code:GetLpgDllPath};{code:GetGtkDllPath}"; Flags: uninsdeletevalue;
 
 [UninstallDelete]
 Type: files; Name: "{app}\tiemu.url"
@@ -222,15 +218,6 @@ begin
   	end;
   end;
 
-end;
-
-function GetMDACVersion (): String;
-var
-  sVersion:  String;
-begin
-  sVersion := '';
-  GetVersionNumbersString (ExpandConstant('{cf}\System\Ado\msado15.dll') , sVersion );
-  Result := sVersion;
 end;
 
 // This function compares version strings
@@ -279,7 +266,7 @@ begin
 end;
 
 // Get GTK installation path
-function GetGtkPath(): String;
+function GetGtkPath(S: String): String;
 var
   Exists: boolean;
   GtkPath: string;
@@ -308,6 +295,33 @@ begin
   end;
   
   Result := GtkVersion
+end;
+
+// Get GTK DLL path
+function GetGtkDllPath(S: String): String;
+var
+  Exists: boolean;
+  GtkDllPath: string;
+begin
+  GtkDllPath := '';
+
+  Result := GetGtkPath('') + '\bin';
+end;
+
+// Get LPG installation path
+function GetLpgPath(S: String): String;
+var
+  Exists: boolean;
+  LpgPath: string;
+begin
+  LpgPath := '';
+
+ Exists := RegQueryStringValue (HKLM, 'Software\LPG Shared', 'Path', LpgPath);
+  if not Exists then begin
+    Exists := RegQueryStringValue (HKCU, 'Software\LPG Shared', 'Path', LpgPath);
+  end;
+
+  Result := LpgPath
 end;
 
 // Get shared components path
@@ -433,7 +447,7 @@ begin
   end;
 
   // Check for non-NT and WiMP theme
-  WimpPath := GetGtkPath() + '\lib\gtk-2.0\2.4.0\engines\libwimp.dll';
+  WimpPath := GetGtkPath('') + '\lib\gtk-2.0\2.4.0\engines\libwimp.dll';
   if FileExists(WimpPath) and not UsingWinNT() then begin
         MsgBox('Tip: you are running a non-NT platform with the GTK+ WiMP theme engine installed. If you get a lot of warnings about fonts in console, run the Gtk+ Theme Selector as provided in the start menu group of TiLP/TiEmu', mbError, MB_OK);
   end;
