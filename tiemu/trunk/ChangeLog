@@ -1,15 +1,10 @@
 SubVersion: $Id$
 
-- 02/05/2009, version 3.04:
-	- [roms]  $2815: merged Lionel's patch about link logging: adding CR/LF every 16 chars; take into account buffer overflow
-	- [roms]  $2816: really clears link logging buffer when clicking the 'Clear' button
-	- 
-
 - 12/02/2008, version 3.03:
 	- [kevin] $2765: fixed crash when debugging TIGCC program with GDB with low-level debugger in dock mode
 	- [kevin] $2766: fixed dock window enabling/disabling not to keep the engine running across the restart
-	- [roms]  $2767: fixed InnoSetup installer for use with GTK>=2.10.x
-	- [roms]  $2767: don't allow deleting of last RAM tab to avoid resizing of code/dock window
+	- [roms]  $2768: fixed InnoSetup installer for use with GTK>=2.10.x
+	- [roms]  $2771: don't allow deleting of last RAM tab to avoid resizing of code/dock window
 	- [kevin] $2773: fixed build with GCC 4.3
 	- [roms]  $2781: don't shutdown screen when reading battery status (lionel)
 	- [roms]  $2782: don't resize code windows whenever cycle counter change
@@ -19,6 +14,9 @@ SubVersion: $Id$
 	- [kevin] $2794: link with g++ if --with-kde (fixes --with-kde build on OS X)
 	- [kevin] $2797: fixed use of wrong free function (g_free where gtk_tree_path_free is required) causing crash with GTK+ 2.14
 	- [kevin] $2798: fixed builtin Tk not working when built against the latest X.Org X11 (Tk bug 2010422)
+	- [roms]  $2815: merged Lionel's patch about link logging: adding CR/LF every 16 chars; take into account buffer overflow
+	- [roms]  $2816: really clears link logging buffer when clicking the 'Clear' button
+	- [roms]  $2820: removed obsolete virtual link cable
 
 - 16/09/2007, version 3.02:
 	- [roms]  $2646: screenshots can be copied into the clipboard

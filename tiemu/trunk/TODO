@@ -16,8 +16,12 @@ x = done
 * go to vector...
 * multi-fenêtre polluant => debugger style VTi (ou utiliser des fenetres dockables)
 * le toolkit GTK et ses dépendances
-* Si on appuie sur F11 lors du chargement (preloading débugger), au tout début ça fait crasher TiEmu, et vers la fin ça affiche les fenêtres du débogueur, mais elles sont toutes grisées et la calc semble fonctionner normalement (mais dur à reproduire ça, ça doit être à un moment très précis).
-* Si on appuie sur F12 lors du chargement (preloading debugger), le menu des ROMs se présente, mais on peut choisir ce qu'on veut, ça ne change strictement rien, et le modèle de calc par défaut se charge. Le clignotement du curseur dans HOME est alors anormal (trop rapide), mais régulier.
+* Si on appuie sur F11 lors du chargement (preloading débugger), au tout début ça fait crasher TiEmu, et vers la fin ça affiche 
+les fenêtres du débogueur, mais elles sont toutes grisées et la calc semble fonctionner normalement (mais dur à reproduire ça, 
+ça doit être à un moment très précis).
+* Si on appuie sur F12 lors du chargement (preloading debugger), le menu des ROMs se présente, mais on peut choisir ce qu'on veut, 
+ça ne change strictement rien, et le modèle de calc par défaut se charge. Le clignotement du curseur dans HOME est alors anormal (trop rapide), 
+mais régulier.
 
 %%%%%%% post 297 (Pollux):
 <<
@@ -49,16 +53,21 @@ Le début des deux traces dans la console est identiques, mais les deux traces ne
 %%%%%%% post 215 (Pollux):
   <<
   et hop, un nouveau paquet de suggestions :
-- ce serait bien que comme sous VTI les breakpoints ne soient pas perdus quand on restaure le Calculator State, typiquement si on a un plantage on veut examiner la mémoire, ajouter quelques breakpoints et recharger l'état précédent : c'est impossible de faire ça si les breakpoints sont restaurés  :( 
+- ce serait bien que comme sous VTI les breakpoints ne soient pas perdus quand on restaure le Calculator State, typiquement si on a un 
+plantage on veut examiner la mémoire, ajouter quelques breakpoints et recharger l'état précédent : c'est impossible de faire ça si les 
+breakpoints sont restaurés  :( 
 - je sais pas si c'est compliqué à rajouter, mais si on pouvait sauvegarder/restaurer l'état quand on est dans le debugger ce serait cool
 
 panneau Breakpoints :
 - Add breakpoint : appuyer sur entrée =/> OK
 panneau Memory :
 - quand on fait Ctrl-A l'onglet courant se déplace d'un cran vers la gauche
-- il faut faire deux fois Ctrl-N pour passer au résultat suivant (la première sélectionne la ligne courante, et la deuxième passe effectivement à l'occurrence suivante)
-- ce serait sympa d'avoir Add data breakpoint dans le clic droit (avec si possible Word comme taille par défaut, comme ça dans 90% des cas il suffit de faire OK pour créer le breakpoint)
-- petit détail : si le clic du milieu pouvait fermer l'onglet ce serait pratique (actuellement pour fermer 3 tabs d'un coup il faut les activer puis les fermer chacun à leur tour)
+- il faut faire deux fois Ctrl-N pour passer au résultat suivant (la première sélectionne la ligne courante, et la deuxième passe 
+effectivement à l'occurrence suivante)
+- ce serait sympa d'avoir Add data breakpoint dans le clic droit (avec si possible Word comme taille par défaut, comme ça dans 90% des cas 
+il suffit de faire OK pour créer le breakpoint)
+- petit détail : si le clic du milieu pouvait fermer l'onglet ce serait pratique (actuellement pour fermer 3 tabs d'un coup il faut les 
+activer puis les fermer chacun à leur tour)
 panneau Heap :
 - ce serait super, super, pratique de pouvoir cliquer sur la colonne Address pour trier par adresse croissante
 - ce serait pas mal aussi d'avoir un "View end of handle" pour voir où finit le handle
@@ -68,35 +77,25 @@ panneau Heap :
 
 %%%%%%% post 216 (Folco):
 <<
-Il y aurait les raccourcis claviers à rendre "globaux" surla fenêtre, parce que actuellement, il faut quand même prendre la souris pour sélectionner la partie avec laquelle on veut interragir, on perd donc 90% de l'intérêt des raccourcis
->>
-
-%%%%%%% post 220 (Lionel):
-<<
- Je reposte ici quelque chose que j'ai posté à http://www.yaronet.com/posts.php?sl=&h=15&s=118509#15 :
-
-    Does TIEmu have an easy way to get the data output through the link port (like, say, VTI Logger) ? That could enable automated tests of launchers (and other programs), through the use of ROM_CALL_479 "link_printf"... 
-
-
-
-Puisque TIEmu est beaucoup plus scriptable que ne l'est VTI, on pourrait en tirer parti.
-(comme ça, ça ferait moins de raisons valides d'utiliser VTI, et Kevin serait ravi  :D )
-
-Sous Windows natif ou virtualisé, TIEmu -> VTI Logger devrait fonctionner. Ou alors, c'est un bug d'au moins un des deux.
-Sous Windows réimplémenté (Wine en particulier), peut-être que TIEmu -> VTI Logger fonctionne aussi. Mais pour ça, il faut d'abord contourner les bugs qui empêchent d'installer (#13394) puis de lancer out of the box (pas encore posté) une application GTK+ comme TIEmu, donc je n'ai pas essayé.
-Sous *nix natif ou virtualisé, est-il possible de récupérer (dans un fichier, probablement, ou peut-être à travers une liaison D-Bus) ce qui est envoyé à travers le link port ?
+Il y aurait les raccourcis claviers à rendre "globaux" surla fenêtre, parce que actuellement, il faut quand même prendre la souris pour 
+sélectionner la partie avec laquelle on veut interragir, on perd donc 90% de l'intérêt des raccourcis
 >>
 
 %%%%%%% post 239 (Lionel):
 <<
-     Quand tu utilises le link virtuel de TiLP, tu le configures comment? Il faut que tu mettes TiLP sur câble TiEmu, port 2 et TiEmu sur câble TiEmu, port 1, ou l'inverse. 
+Quand tu utilises le link virtuel de TiLP, tu le configures comment? 
+Il faut que tu mettes TiLP sur câble TiEmu, port 2 et TiEmu sur câble TiEmu, port 1, ou l'inverse. 
 
 
 Non, le même port pour les deux. Si on utilise #1 et #2 (ce qui ne me paraît pas intuitif), ça fonctionne effectivement... Merci  :)
-OK, je dois RTFM (c'est effectivement décrit dans le manuel de TIEmu...)... mais quand même, je pense qu'il serait souhaitable, si c'est techniquement faisable, d'ajouter un "anti-con" aux tilibs pour qu'elles préviennent l'utilisateur, quand ce genre de situations se produit ?
+OK, je dois RTFM (c'est effectivement décrit dans le manuel de TIEmu...)... mais quand même, je pense qu'il serait souhaitable, 
+si c'est techniquement faisable, d'ajouter un "anti-con" aux tilibs pour qu'elles préviennent l'utilisateur, quand ce genre de 
+situations se produit ?
 
 
-Bug: aussi bien TILP que TIEmu crashent quand on essaie d'activer le câble virtual, sur n'importe quel port. Après avoir validé, un premier dialog d'erreur indique "Can't set cable", suivi d'un deuxième qui indique "Code d'erreur introuvable dans la liste. Ceci est un bogue. Veuillez le reporter", puis le KDE Crash Handler m'informe que "The application TIEmu (tiemu) crashed and caused the signal 11 (SIGSEGV)".
+Bug: aussi bien TILP que TIEmu crashent quand on essaie d'activer le câble virtual, sur n'importe quel port. Après avoir validé, un 
+premier dialog d'erreur indique "Can't set cable", suivi d'un deuxième qui indique "Code d'erreur introuvable dans la liste. Ceci est un 
+bogue. Veuillez le reporter", puis le KDE Crash Handler m'informe que "The application TIEmu (tiemu) crashed and caused the signal 11 (SIGSEGV)".
 Vilains logiciels  :D  
 >>
 
