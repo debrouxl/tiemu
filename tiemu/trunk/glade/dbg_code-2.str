@@ -5,7 +5,7 @@
  */
 
 gchar *s = N_("Disassembly");
-gchar *s = N_("Debug");
+gchar *s = N_("_Debug");
 gchar *s = N_("_Run");
 gchar *s = N_("Step into (single step)");
 gchar *s = N_("Step _in");
@@ -15,7 +15,7 @@ gchar *s = N_("Step out (return to caller)");
 gchar *s = N_("Step ou_t");
 gchar *s = N_("Run to _cursor");
 gchar *s = N_("_Break");
-gchar *s = N_("Log");
+gchar *s = N_("_Log");
 gchar *s = N_("_Linkport");
 gchar *s = N_("Windows");
 gchar *s = N_("_Registers");
@@ -33,7 +33,10 @@ gchar *s = N_("M_inimize all");
 gchar *s = N_("M_aximize all");
 gchar *s = N_("_Restore all");
 gchar *s = N_("_Quit");
-gchar *s = N_("Font");
+gchar *s = N_("_Font");
+gchar *s = N_("_State");
+gchar *s = N_("S_ave");
+gchar *s = N_("_Revert");
 gchar *s = N_("Run (F5)");
 gchar *s = N_("Single step / Step into (F7)");
 gchar *s = N_("Step over (F8)");

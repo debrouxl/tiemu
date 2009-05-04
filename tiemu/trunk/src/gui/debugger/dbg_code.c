@@ -43,6 +43,7 @@
 #include "dbg_romcall.h"
 #include "engine.h"
 #include "logger/log_link.h"
+#include "popup.h"
 
 gint reset_disabled = FALSE;
 
@@ -662,6 +663,22 @@ dbgcode_button8_clicked                     (GtkButton       *button,
 {
 	ti68k_get_cycle_count(!0, NULL);
 	gtk_label_set_text(GTK_LABEL(glade_get("label3")), "0");
+}
+
+GLADE_CB void
+on_save1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	on_quick_save_state_image1_activate(NULL, NULL);
+}
+
+
+GLADE_CB void
+on_revert1_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ti68k_state_load(params.sav_file);
+	gtk_debugger_refresh();
 }
 
 /***** Popup menu *****/

@@ -81,6 +81,10 @@ on_revert_to_saved_state1_activate     (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 GLADE_CB void
+on_quick_save_state_image1_activate    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+GLADE_CB void
 on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 

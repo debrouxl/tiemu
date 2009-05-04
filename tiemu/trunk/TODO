@@ -14,8 +14,6 @@ x = done
 ---------------------------------------------------------------
 
 * go to vector...
-* multi-fenêtre polluant => debugger style VTi (ou utiliser des fenetres dockables)
-* le toolkit GTK et ses dépendances
 * Si on appuie sur F11 lors du chargement (preloading débugger), au tout début ça fait crasher TiEmu, et vers la fin ça affiche 
 les fenêtres du débogueur, mais elles sont toutes grisées et la calc semble fonctionner normalement (mais dur à reproduire ça, 
 ça doit être à un moment très précis).
@@ -47,7 +45,7 @@ Résultat:
 
 
 Le début des deux traces dans la console est identiques, mais les deux traces ne s'arrêtent pas au même endroit:
-(chargement de GTC vers la 89T) 
+(chargement de GTC vers la 89T). Voir <http://www.yaronet.com/posts.php?sl=&s=104752&p=8&h=214#214>.
   >>
 
 %%%%%%% post 215 (Pollux):
@@ -56,7 +54,6 @@ Le début des deux traces dans la console est identiques, mais les deux traces ne
 - ce serait bien que comme sous VTI les breakpoints ne soient pas perdus quand on restaure le Calculator State, typiquement si on a un 
 plantage on veut examiner la mémoire, ajouter quelques breakpoints et recharger l'état précédent : c'est impossible de faire ça si les 
 breakpoints sont restaurés  :( 
-- je sais pas si c'est compliqué à rajouter, mais si on pouvait sauvegarder/restaurer l'état quand on est dans le debugger ce serait cool
 
 panneau Breakpoints :
 - Add breakpoint : appuyer sur entrée =/> OK

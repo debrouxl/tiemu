@@ -226,6 +226,28 @@ on_revert_to_saved_state1_activate     (GtkMenuItem     *menuitem,
   	engine_start();
 }
 
+void
+on_quick_save_state_image1_activate    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	gchar *basename;
+	gchar *dot;
+
+	// build name
+	basename = g_path_get_basename(params.rom_file);
+	dot = strrchr(basename, '.');
+	if(dot != NULL)
+		*dot = '\0';
+
+	// set path
+	g_free(params.sav_file);
+	params.sav_file = g_strconcat(inst_paths.img_dir, basename, ".sav", NULL);
+	g_free(basename);
+
+	// save state
+	ti68k_state_save(params.sav_file);
+}
+
 /* menu part 3 (debug) */
 
 GLADE_CB void
@@ -555,28 +577,14 @@ on_infos1_activate                     (GtkMenuItem     *menuitem,
 void exit_main_loop(void);
 
 GLADE_CB void
-on_exit_and_save_state1_activate                      (GtkMenuItem     *menuitem,
+on_exit_and_save_state1_activate       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	gchar *basename;
-	gchar *dot;
-
 	// stop emulation engine
 	engine_stop();
 
-	// build name
-	basename = g_path_get_basename(params.rom_file);
-	dot = strrchr(basename, '.');
-	if(dot != NULL)
-		*dot = '\0';
-
-	// set path
-	g_free(params.sav_file);
-	params.sav_file = g_strconcat(inst_paths.img_dir, basename, ".sav", NULL);
-	g_free(basename);
-
 	// save state
-	ti68k_state_save(params.sav_file);
+	on_quick_save_state_image1_activate(NULL, NULL);
 
 	// and config
 	window_get_rect(main_wnd, &options3.calc.rect);
