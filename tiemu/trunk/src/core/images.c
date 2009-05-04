@@ -353,6 +353,8 @@ int ti68k_get_tib_infos(const char *filename, IMG_INFO *tib, int preload)
 int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
 {
 	FILE *f;
+	IMG_INFO32 ri32;
+	IMG_INFO64 ri64;
 
 	// No filename, exits
 	if(!strcmp(g_basename(filename), ""))
@@ -375,17 +377,53 @@ int ti68k_get_img_infos(const char *filename, IMG_INFO *ri)
     }
     
     // Read header
-    if (fread(ri, sizeof(IMG_INFO), 1, f) < 1)
+    if (fread(&ri32, sizeof(IMG_INFO32), 1, f) < 1)
     {
       tiemu_warning("Failed to read from file: <%s>\n", filename);
       fclose(f);
       return ERR_CANT_OPEN;
     }
+    *ri = ri32;
 
-    if(strcmp(ri->signature, IMG_SIGN) || ri->size > 4*MB)
+	// below is patch from Lionel
+    if(strcmp(ri->signature, IMG_SIGN) || ri->size > 4*MB || ri->calc_type > CALC_MAX
+       || ri->header_size == 0 || ri->hw_type > 4 || ri->rom_base == 0)
     {
-      tiemu_warning("Bad image: <%s>\n", filename);
-      return ERR_INVALID_UPGRADE;
+      // In addition to plain invalid files, this may happen if the image was
+      // created on a 64-bit platform with TIEmu <= 3.03.
+      // Try to read an IMG_INFO structure as it used to be written by those
+      // 64-bit platforms.
+      fseek(f, 0, SEEK_SET);
+      if (fread(&ri64, sizeof(IMG_INFO64), 1, f) < 1)
+      {
+        tiemu_warning("Failed to read from file: <%s>\n", filename);
+        fclose(f);
+        return ERR_CANT_OPEN;
+      }
+      else {
+        memcpy(ri->signature, &(ri64.signature), sizeof(ri64.signature));
+        ri->revision = (int32_t)(ri64.revision);
+        ri->header_size = (int32_t)(ri64.header_size);
+
+        ri->calc_type = ri64.calc_type;
+        memcpy(ri->version, &(ri64.version), sizeof(ri64.version));
+        ri->flash = ri64.flash;
+        ri->has_boot = ri64.has_boot;
+        ri->size = (int32_t)(ri64.size);
+        ri->hw_type = ri64.hw_type;
+        ri->rom_base = ri64.rom_base;
+          
+        if(strcmp(ri->signature, IMG_SIGN) || ri->size > 4*MB || ri->calc_type > CALC_MAX
+           || ri->header_size == 0 || ri->hw_type > 4 || ri->rom_base == 0)
+        {
+          // Nope, it still doesn't seem to be a TIEmu image.
+          tiemu_warning("Bad image: <%s>\n", filename);
+          return ERR_INVALID_UPGRADE;
+        }
+        else {
+          tiemu_info("Found a reasonably valid 64-bit IMG_INFO in <%s>\n", filename);
+        }
+      }
     }
 
     // Close file

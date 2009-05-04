@@ -17,6 +17,8 @@ SubVersion: $Id$
 	- [roms]  $2815: merged Lionel's patch about link logging: adding CR/LF every 16 chars; take into account buffer overflow
 	- [roms]  $2816: really clears link logging buffer when clicking the 'Clear' button
 	- [roms]  $2820: removed obsolete virtual link cable
+	- [roms]  $2821: merged Lionel's patch: allow mix-up of images created by TiEmu 32-bits and TiEmu 64-bits 
+		due to a bug in IMG_INFO structure
 
 - 16/09/2007, version 3.02:
 	- [roms]  $2646: screenshots can be copied into the clipboard

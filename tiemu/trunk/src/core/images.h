@@ -41,24 +41,46 @@
 
 // If this structure is modified, the SAV_REVISION number (state.c)
 // has to be incremented.
+
 typedef struct
 {
 	char	signature[16];	// "TiEmu img v2.00" (dc)
-    long    revision;       // structure revision (compatibility)
-	long	header_size;	// size of this structure and offset to pure data (dc)
+	int32_t	revision;       // structure revision (compatibility)
+	int32_t	header_size;	// size of this structure and offset to pure data (dc)
 
 	char	calc_type;		// calculator type
 	char	version[5];		// firmware revision
 	char	flash;			// EPROM or FLASH
 	char	has_boot;		// FLASH upgrade does not have boot
-	long	size;			// size of pure data
+	int32_t	size;			// size of pure data
 	char	hw_type;		// hw1 or hw2
-    uint8_t rom_base;       // ROM base address (MSB)
+	uint8_t	rom_base;       // ROM base address (MSB)
 
-    char    fill[0x40-42];  // round up struct to 0x40 bytes
+	char	fill[0x40-42];  // round up struct to 0x40 bytes
 	char*	data;			// pure data (temporary use, 8 bytes)
-} IMG_INFO;
+} IMG_INFO32;
 // dc = don't care for rom/tib
+
+typedef struct
+{
+	char	signature[16];	// "TiEmu img v2.00" (dc)
+	int64_t	revision;       // structure revision (compatibility)
+	int64_t	header_size;	// size of this structure and offset to pure data (dc)
+
+	char	calc_type;		// calculator type
+	char	version[5];		// firmware revision
+	char	flash;			// EPROM or FLASH
+	char	has_boot;		// FLASH upgrade does not have boot
+	int64_t	size;			// size of pure data
+	char	hw_type;		// hw1 or hw2
+	uint8_t	rom_base;       // ROM base address (MSB)
+
+	char	fill[0x40-42];  // round up struct to 0x40 bytes
+	char*	data;			// pure data (temporary use, 8 bytes)
+} IMG_INFO64;
+// dc = don't care for rom/tib
+
+#define IMG_INFO IMG_INFO32
 
 extern int		img_loaded;
 extern IMG_INFO img_infos;
