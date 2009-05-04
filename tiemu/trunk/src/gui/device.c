@@ -103,7 +103,7 @@ gint display_device_dbox()
 	break;
 	
 	case CABLE_ILP:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 9);
+		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 8);
 	break;
 
 	default:
