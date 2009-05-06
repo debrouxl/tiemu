@@ -414,7 +414,7 @@ void dbgbkpts_erase_context(void)
 	display_dbgcause_dbox2(glade_get("statusbar1"));
 }
 
-static GtkWidget* display_popup_menu(void)
+static GtkWidget* display_dbgbkpts_popup_menu(void)
 {
 	GladeXML *xml;
 	GtkWidget *data;
@@ -441,7 +441,7 @@ dbgbkpts_button1_clicked                     (GtkButton       *button,
 	guint32 time;
 
 	time = gtk_get_current_event_time();
-	menu = display_popup_menu();
+	menu = display_dbgbkpts_popup_menu();
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, butt, time);
 	gtk_widget_show(menu);
 }

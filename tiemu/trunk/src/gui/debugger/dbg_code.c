@@ -686,7 +686,7 @@ on_revert1_activate                    (GtkMenuItem     *menuitem,
 /*
 	Display popup menu (right click)
 */
-static GtkWidget* display_popup_menu(void)
+static GtkWidget* display_dbgcode_popup_menu(void)
 {
 	GladeXML *xml;
 	GtkWidget *menu;
@@ -716,7 +716,7 @@ on_treeview1_button_press_event        (GtkWidget       *widget,
             GtkWidget *menu;
 
 		    bevent = (GdkEventButton *) (event);
-            menu = display_popup_menu();
+            menu = display_dbgcode_popup_menu();
 
 		    gtk_menu_popup(GTK_MENU(menu),
 				       NULL, NULL, NULL, NULL,

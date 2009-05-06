@@ -472,7 +472,7 @@ on_dbgregs_spinbutton_changed          (GtkEditable     *editable,
 	g_free(str);
 }
 
-static GtkWidget* display_popup_menu(void);
+static GtkWidget* display_dbgregs_popup_menu(void);
 static uint32_t value = 0;
 
 GLADE_CB gboolean
@@ -509,7 +509,7 @@ on_dbgregs_button_press_event          (GtkWidget       *widget,
 
         // popup menu
        	bevent = (GdkEventButton *) (event);
-        menu = display_popup_menu();
+        menu = display_dbgregs_popup_menu();
 
 		gtk_menu_popup(GTK_MENU(menu),
 				   NULL, NULL, NULL, NULL,
@@ -527,7 +527,7 @@ on_dbgregs_button_press_event          (GtkWidget       *widget,
 /*
 	Display popup menu (right click)
 */
-static GtkWidget* display_popup_menu(void)
+static GtkWidget* display_dbgregs_popup_menu(void)
 {
 	GladeXML *xml;
 	GtkWidget *menu;

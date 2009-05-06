@@ -329,7 +329,7 @@ on_dbgstack_key_press_event           (GtkWidget       *widget,
 	return FALSE;
 }
 
-static GtkWidget* display_popup_menu(void);
+static GtkWidget* display_dbgstack_popup_menu(void);
 static uint32_t value = 0;
 
 GLADE_CB gboolean
@@ -384,7 +384,7 @@ on_dbgstack_button_press_event     (GtkWidget       *widget,
 
         // popup menu
        	bevent = (GdkEventButton *) (event);
-        menu = display_popup_menu();
+        menu = display_dbgstack_popup_menu();
 
 		gtk_menu_popup(GTK_MENU(menu),
 				   NULL, NULL, NULL, NULL,
@@ -405,7 +405,7 @@ on_dbgstack_button_press_event     (GtkWidget       *widget,
 /*
 	Display popup menu (right click)
 */
-static GtkWidget* display_popup_menu(void)
+static GtkWidget* display_dbgstack_popup_menu(void)
 {
 	GladeXML *xml;
 	GtkWidget *menu;
