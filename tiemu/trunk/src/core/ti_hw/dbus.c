@@ -193,7 +193,6 @@ static void lp_putbyte(uint8_t arg)
 	}
 
 	io_bit_set(0x0d,6);		// tx reg empty
-	io_bit_set(0x0d,2);		// link activity
 }
 
 static uint8_t lp_getbyte(void)
@@ -238,7 +237,6 @@ static int lp_checkread(void)
 	if(status & STATUS_RX)
 	{
 		io_bit_set(0x0d,5);		// rx reg full
-		io_bit_set(0x0d,2);		// link activity
 		avail = !0;
     }
   
@@ -291,7 +289,6 @@ int df_checkread(void)
 	if(f2t_flag)
 	{
 		io_bit_set(0x0d,5);		// rx reg full
-		io_bit_set(0x0d,2);		// link activity
 	}
 
     return f2t_flag;
@@ -333,7 +330,6 @@ int ilp_send(CableHandle *h, uint8_t *data, uint32_t len)
   		f2t_flag = 1;
 
 		io_bit_set(0x0d,5);	// SRX=1 (rx reg is full)
-		io_bit_set(0x0d,2);	// link activity
 		hw_m68k_irq(4);		// this turbo-boost transfer !
 
 		TO_START(clk);

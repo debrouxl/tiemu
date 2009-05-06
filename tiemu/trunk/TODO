@@ -13,7 +13,8 @@ x = done
 1) Topic <http://www.yaronet.com/posts.php?sl=59&s=92954&p=10>:
 ---------------------------------------------------------------
 
-* go to vector...
+%%%%%%% post 001 (All):
+<<
 * Si on appuie sur F11 lors du chargement (preloading débugger), au tout début ça fait crasher TiEmu, et vers la fin ça affiche 
 les fenêtres du débogueur, mais elles sont toutes grisées et la calc semble fonctionner normalement (mais dur à reproduire ça, 
 ça doit être à un moment très précis).
@@ -22,19 +23,20 @@ les fenêtres du débogueur, mais elles sont toutes grisées et la calc semble fonc
 mais régulier.
 
 %%%%%%% post 297 (Pollux):
-<<
 - débuggeur 
  ? F5 sur un breakpoint ne fait que relancer le debugger sans rien exécuter 
  * F8 foire qd la fonction skippée contient un breakpoint (freeze jusqu'à ce qu'on fasse F11) 
 
 - fenêtre stack 
  ? +4 / +2 / 0 / +2 / +4 / ... au lieu de -4 / -2 / 0 / +2 / +4 / ... 
+>>
 
 2) Topic <http://yaronet.com/posts.php?s=104752>:
 -------------------------------------------------
 
 %%%%%%% post 214 (Lionel):
-  <<J'ai essayé d'envoyer la FlashApp GTC, telle qu'on peut la trouver dans le topic qui va bien de la section Prog C, entre deux TIEmu:
+<<
+J'ai essayé d'envoyer la FlashApp GTC, telle qu'on peut la trouver dans le topic qui va bien de la section Prog C, entre deux TIEmu:
 * depuis une 89T tournant AMS 3.10, HW3Patch et Flashappy exécutés;
 * vers une 92+ tournant AMS 2.05, HW3Patch et Flashappy exécutés.
 Le récepteur fait Receive dans le VAR-Link, l'émetteur fait Send quand GTC est sélectionné.
@@ -46,11 +48,10 @@ Résultat:
 
 Le début des deux traces dans la console est identiques, mais les deux traces ne s'arrêtent pas au même endroit:
 (chargement de GTC vers la 89T). Voir <http://www.yaronet.com/posts.php?sl=&s=104752&p=8&h=214#214>.
-  >>
+>>
 
 %%%%%%% post 215 (Pollux):
-  <<
-  et hop, un nouveau paquet de suggestions :
+<<
 - ce serait bien que comme sous VTI les breakpoints ne soient pas perdus quand on restaure le Calculator State, typiquement si on a un 
 plantage on veut examiner la mémoire, ajouter quelques breakpoints et recharger l'état précédent : c'est impossible de faire ça si les 
 breakpoints sont restaurés  :( 
@@ -70,7 +71,7 @@ panneau Heap :
 - ce serait pas mal aussi d'avoir un "View end of handle" pour voir où finit le handle
 
 (j'espère que je t'embête pas trop roms %) ) 
-  >>
+>>
 
 %%%%%%% post 216 (Folco):
 <<
@@ -98,6 +99,26 @@ Vilains logiciels  :D
 
 
 3) 
------
+--
 
-roms: il semblerait que le debugger s'ouvre plus vite avec un GTK récent qu'avec le 2.6. A vérifier...
+roms: il semblerait que le debugger s'ouvre plus vite avec un GTK récent qu'avec le 2.6, du moins sous Vista. Semble être le contraire sous XP.
+
+4)
+--
+
+Lionel:
+<<
+Ca me fait penser à une feature request:
+Si le câble actuellement activé ne permet pas de transférer des
+fichiers depuis l'ordinateur hôte, mais qu'on essaie de transférer
+un fichier (F10 / les clics dans les menus), activer temporairement
+le câble "internal".
+Quitte à afficher un dialog de confirmation Valider / Annuler, avec
+un message du genre
+"The current link cable XXX port x does not allow direct file
+transfer. Do you want to temporarily activate the appropriate cable
+and temporarily disable logging, so as to proceed to the file
+transfer ?"
+(hmm, c'est peut-être un peu long comme message, mais tu vois
+l'idée)
+>>

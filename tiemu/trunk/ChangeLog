@@ -19,6 +19,8 @@ SubVersion: $Id$
 	- [roms]  $2820: removed obsolete virtual link cable
 	- [roms]  $2821: merged Lionel's patch: allow mix-up of images created by TiEmu 32-bits and TiEmu 64-bits 
 		due to a bug in IMG_INFO structure
+	- [roms]  $2824: fixed Lionel's logging problem (missing values on linkport output due to a bad use of External Activity flag
+		in linkport support)
 
 - 16/09/2007, version 3.02:
 	- [roms]  $2646: screenshots can be copied into the clipboard
