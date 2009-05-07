@@ -51,7 +51,7 @@ CableHandle* cable_handle = NULL;
 CalcHandle*  calc_handle  = NULL;
 
 /*
-	Linkport (lp) / directfile (df) mappers
+	Linkport (lp) / directfile (df) / void (vd) mappers
 */
 
 void	(*hw_dbus_reinit)		(void);
@@ -69,6 +69,11 @@ static void		df_putbyte	(uint8_t arg);
 static uint8_t	df_getbyte	(void);
 static int		df_checkread(void);
 
+static void		vd_reinit	(void);
+static void		vd_putbyte	(uint8_t arg);
+static uint8_t	vd_getbyte	(void);
+static int		vd_checkread(void);
+
 static void map_dbus_to_cable(void)
 {
 	hw_dbus_reinit = lp_reinit;
@@ -85,6 +90,14 @@ static void map_dbus_to_file(void)
     hw_dbus_checkread = df_checkread;
 }
 
+static void map_dbus_to_void(void)
+{
+	hw_dbus_reinit = vd_reinit;
+    hw_dbus_putbyte = vd_putbyte;
+    hw_dbus_getbyte = vd_getbyte;
+    hw_dbus_checkread = vd_checkread;
+}
+
 /*
     D-bus management (HW linkport)
 */
@@ -96,6 +109,9 @@ int ilp_recv(CableHandle *h, uint8_t *data, uint32_t len);
 int hw_dbus_init(void)
 {
 	int err;
+
+	// don't let linkport function pointers uninitialized
+	map_dbus_to_void();
 
 	// set cable
 	cable_handle = ticables_handle_new(linkp.cable_model, linkp.cable_port);
@@ -149,6 +165,9 @@ int hw_dbus_exit(void)
 {
 	int err;
 
+	// don't let linkport function pointers uninitialized
+	map_dbus_to_void();
+
 	// detach cable from calc (close cable)
 	err = (calc_handle ? ticalcs_cable_detach(calc_handle) : 0);
 	if(err)
@@ -163,6 +182,15 @@ int hw_dbus_exit(void)
 
 	return 0;
 }
+
+/*
+	Void cable access
+*/
+
+static void		vd_reinit	(void) {};
+static void		vd_putbyte	(uint8_t arg) {};
+static uint8_t	vd_getbyte	(void) { return 0; };
+static int		vd_checkread(void) { return 0; };
 
 /*
 	Link cable access
