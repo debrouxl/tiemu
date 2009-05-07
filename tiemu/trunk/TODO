@@ -102,28 +102,3 @@ Vilains logiciels  :D
 --
 
 roms: il semblerait que le debugger s'ouvre plus vite avec un GTK récent qu'avec le 2.6, du moins sous Vista. Semble être le contraire sous XP.
-
-4)
---
-
-Lionel:
-<<
-Ca me fait penser à une feature request:
-Si le câble actuellement activé ne permet pas de transférer des
-fichiers depuis l'ordinateur hôte, mais qu'on essaie de transférer
-un fichier (F10 / les clics dans les menus), activer temporairement
-le câble "internal".
-Quitte à afficher un dialog de confirmation Valider / Annuler, avec
-un message du genre
-"The current link cable XXX port x does not allow direct file
-transfer. Do you want to temporarily activate the appropriate cable
-and temporarily disable logging, so as to proceed to the file
-transfer ?"
-(hmm, c'est peut-être un peu long comme message, mais tu vois
-l'idée)
-
-> Je peux proposer de basculer sur le câble interne de manière définitive. 
-
-OK
->>
-

@@ -79,7 +79,8 @@ int fs_load_state(const char *filename)
 	if(err == ERR_STATE_MATCH)
 	{
 		gchar *rf, *tf;
-		int ret = msg_box2("Warning", "The state image you are attempting to load does not match the current running image. Press OK if you want TiEmu to automatically load the corresponding image or Cancel to abort.");
+		int ret = msg_box2(_("Warning"), 
+			_("The state image you are attempting to load does not match the current running image. Press OK if you want TiEmu to automatically load the corresponding image or Cancel to abort."));
 		
 		if(ret == BUTTON2)	//cancel
 			return 0;
@@ -229,8 +230,26 @@ gint display_send_files_dbox(void)
 	// Check for null cable
 	if(linkp.cable_model != CABLE_ILP)
 	{
-		tiemu_err(0, "You can't use direct file loading when a cable is set. Change cable to 'null' in the Link Options menu item.");
-		return -1;
+		int ret, err;
+		gchar *str;
+
+		str = g_strdup_printf(_("The current link cable <%s> port <%s> does not allow direct file loading. Do you let me change link port settings to allow direct file loading?"),
+			ticables_model_to_string(linkp.cable_model), ticables_port_to_string(linkp.cable_port));
+		
+		ret= msg_box2(_("Warning"), str);
+		g_free(str);
+		
+		if(ret == BUTTON2)
+			return -1;
+
+		// reconfigure link port
+		ti68k_linkport_unconfigure();
+
+		linkp.cable_model = CABLE_ILP;
+		linkp.cable_port = PORT_0;
+
+        err = ti68k_linkport_reconfigure();
+		handle_error();
 	}
 
     // set mask
@@ -399,7 +418,7 @@ gint display_set_tib_dbox(void)
 
 	if(!ti68k_is_a_tib_file(filename))
 	{
-		msg_box1("Error", "Don't seem to be an upgrade.");
+		msg_box1(_("Error"), _("Don't seem to be an upgrade."));
 		return -1;
 	}
 
@@ -415,7 +434,7 @@ gint display_set_tib_dbox(void)
 	handle_error();
 	if(err)
 	{
-		msg_box1("Error", "Can not load the upgrade.");
+		msg_box1(_("Error"), _("Can not load the upgrade."));
 		return -1;
 	}
 
@@ -477,7 +496,7 @@ int import_romversion(const char *filename)
 	}
 	else
 	{
-		msg_box1("Error", "This is not a valid file");
+		msg_box1(_("Error"), _("This is not a valid file"));
 		return -1;
 	}
 
