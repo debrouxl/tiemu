@@ -21,6 +21,7 @@ SubVersion: $Id$
 		due to a bug in IMG_INFO structure
 	- [roms]  $2824: fixed Lionel's logging problem (missing values on linkport output due to a bad use of External Activity flag
 		in linkport support)
+	- [roms]  $2825: added i18n support to some strings
 
 - 16/09/2007, version 3.02:
 	- [roms]  $2646: screenshots can be copied into the clipboard

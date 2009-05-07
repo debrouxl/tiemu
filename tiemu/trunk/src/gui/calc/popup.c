@@ -786,7 +786,7 @@ static void go_to_bookmark(const char *link)
 	hInst = ShellExecute(NULL, "open", link, NULL, NULL, SW_SHOWNORMAL);
 	if((int)hInst <= 32)
 	{
-		msg_box1("Error", "Unable to run ShellExecture extension.");
+		msg_box1(_("Error"), _("Unable to run ShellExecture extension."));
 	}
 #else
 	// Kevin's list:
@@ -836,7 +836,7 @@ static void go_to_bookmark(const char *link)
 
 	if (i == n) 
 	{
-		msg_box1("Error", "Spawn error: do you have Firefox installed ?");
+		msg_box1(_("Error"), _("Spawn error: do you have Firefox installed ?"));
 	} 
 #endif
 	else 

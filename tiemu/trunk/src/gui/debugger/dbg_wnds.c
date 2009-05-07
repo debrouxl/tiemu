@@ -249,14 +249,14 @@ on_transient1_activate                 (GtkMenuItem     *menu_item,
 	// Thus, the taskbar is not filled-up with a lot of windows.
 	options3.transient = GTK_CHECK_MENU_ITEM(menu_item)->active;
  
-	msg_box1("Warning", _("You will have to save configuration and restart TiEmu for changes to take effect!"));
+	msg_box1(_("Warning"), _("You will have to save configuration and restart TiEmu for changes to take effect!"));
 }
 
 GLADE_CB void
 on_dockmode1_activate                  (GtkMenuItem     *menu_item,
                                         gpointer         user_data)
 {
-	msg_box1("Warning", "TiEmu is about to restart...");
+	msg_box1(_("Warning"), _("TiEmu is about to restart..."));
 
 #ifndef NO_GDB
 	// In GDB mode, we have to restart the engine here, otherwise
