@@ -7,7 +7,7 @@
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
  *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2007, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2005-2009, Romain Liévin, Kevin Kofler
  *  Copyright (c) 2005, Christian Walther (patches for Mac OS-X port)
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -480,6 +480,7 @@ int import_romversion(const char *filename)
 		}
 		else if(infos.calc_type == TI89t)
 		{
+			hw_type = HW3; // default is HW3 for the Titanium, there's no Titanium HW2
 			int ret = msg_box3(_("HW type"), 
 				_("The FLASH upgrade can be imported as HW3 or HW4. Please choose..."), 
 				"HW3", "HW4", "Default");
