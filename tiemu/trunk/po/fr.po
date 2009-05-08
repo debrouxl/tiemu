@@ -708,11 +708,11 @@ msgid "Manual_en.html"
 msgstr "Manual_en.html"
 
 #: src/gui/calc/popup.c:789
-msgid "Unable to run ShellExecture extension."
+msgid "Unable to run ShellExecute extension."
 msgstr "Impossible d'exécuter l'extension ShellExecute."
 
 #: src/gui/calc/popup.c:839
-msgid "Spawn error: do you have Firefox installed ?"
+msgid "Spawn error: do you have Firefox installed?"
 msgstr "Erreur de lancement: un navigateur est-il installé ?"
 
 # ##, c-format
@@ -881,11 +881,11 @@ msgstr ""
 "fichier. Voulez-vous laisser TiEmu le changer pour vous ?"
 
 #: src/gui/fs_misc.c:421
-msgid "Don't seem to be an upgrade."
+msgid "Does not seem to be an upgrade."
 msgstr "Le fichier ne semble pas etre une mise à jour."
 
 #: src/gui/fs_misc.c:437
-msgid "Can not load the upgrade."
+msgid "Cannot load the upgrade."
 msgstr "Impossible de charger la mise à jour."
 
 #: src/gui/fs_misc.c:473 src/gui/fs_misc.c:483

@@ -418,7 +418,7 @@ gint display_set_tib_dbox(void)
 
 	if(!ti68k_is_a_tib_file(filename))
 	{
-		msg_box1(_("Error"), _("Don't seem to be an upgrade."));
+		msg_box1(_("Error"), _("Does not seem to be an upgrade."));
 		return -1;
 	}
 
@@ -434,7 +434,7 @@ gint display_set_tib_dbox(void)
 	handle_error();
 	if(err)
 	{
-		msg_box1(_("Error"), _("Can not load the upgrade."));
+		msg_box1(_("Error"), _("Cannot load the upgrade."));
 		return -1;
 	}
 

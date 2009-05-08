@@ -634,11 +634,11 @@ msgid "Manual_en.html"
 msgstr ""
 
 #: src/gui/calc/popup.c:789
-msgid "Unable to run ShellExecture extension."
+msgid "Unable to run ShellExecute extension."
 msgstr ""
 
 #: src/gui/calc/popup.c:839
-msgid "Spawn error: do you have Firefox installed ?"
+msgid "Spawn error: do you have Firefox installed?"
 msgstr ""
 
 #: src/gui/calc/skinops.c:449
@@ -795,11 +795,11 @@ msgid ""
 msgstr ""
 
 #: src/gui/fs_misc.c:421
-msgid "Don't seem to be an upgrade."
+msgid "Does not seem to be an upgrade."
 msgstr ""
 
 #: src/gui/fs_misc.c:437
-msgid "Can not load the upgrade."
+msgid "Cannot load the upgrade."
 msgstr ""
 
 #: src/gui/fs_misc.c:473 src/gui/fs_misc.c:483
