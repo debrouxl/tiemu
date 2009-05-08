@@ -245,6 +245,7 @@ static void lp_putbyte(uint8_t arg)
 	}
 
 	io_bit_set(0x0d,6);		// tx reg empty
+	io_bit_set(0x0d,2);		// link activity
 }
 
 static uint8_t lp_getbyte(void)
@@ -289,6 +290,7 @@ static int lp_checkread(void)
 	if(status & STATUS_RX)
 	{
 		io_bit_set(0x0d,5);		// rx reg full
+		io_bit_set(0x0d,2);		// link activity
 		avail = !0;
     }
   
