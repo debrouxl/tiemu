@@ -61,6 +61,7 @@ gchar *symfile;
 #endif
 
 int dbg_on = 0;
+int dbg_load = 0;
 
 /* Functions applicable to the whole debugger */
 
@@ -79,6 +80,8 @@ void gtk_debugger_preload(void)
 	dbgw.code  = dbgcode_create_window();
 	if(options3.dbg_dock)	//must be launched as last
 		dbgw.dock  = dbgdock_create_window();
+
+	dbg_load = !0;
 
 	WND_TMR_STOP("Debugger Preload Time");
 }

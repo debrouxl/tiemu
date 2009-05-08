@@ -256,6 +256,7 @@ on_enter_debugger1_activate            (GtkMenuItem     *menuitem,
 {
 #ifndef __IPAQ__
     if(dbg_on) return;
+	if(!dbg_load) return;
 
 	engine_stop();
     ti68k_debug_break();
@@ -726,7 +727,7 @@ GtkWidget* display_popup_menu(void)
 	}
 
 	// if debugger is open, blocks some items
-	if(dbg_on)
+	if(dbg_on || !dbg_load)
 	{
 #ifndef NO_GDB
 		data = glade_xml_get_widget(xml, "send_file_to_tiemu1");

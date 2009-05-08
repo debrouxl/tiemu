@@ -35,6 +35,7 @@ G_BEGIN_DECLS
 /* Variables */
 
 extern int dbg_on;
+extern int dbg_load;
 extern gchar *symfile;
 
 /* Functions */
