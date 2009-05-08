@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tiemu-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-01 23:35+0200\n"
+"POT-Creation-Date: 2009-05-08 10:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -147,15 +147,15 @@ msgstr ""
 msgid "  Has boot    : %s"
 msgstr ""
 
-#: src/core/images.c:149 src/core/images.c:1054
+#: src/core/images.c:149 src/core/images.c:1092
 msgid "yes"
 msgstr ""
 
-#: src/core/images.c:149 src/core/images.c:1054
+#: src/core/images.c:149 src/core/images.c:1092
 msgid "no"
 msgstr ""
 
-#: src/core/images.c:176 src/core/images.c:1007
+#: src/core/images.c:176 src/core/images.c:1045
 #, c-format
 msgid "Unable to open this file: <%s>"
 msgstr ""
@@ -175,44 +175,44 @@ msgstr ""
 msgid "Failed to close file: <%s>"
 msgstr ""
 
-#: src/core/images.c:425 src/core/images.c:715 src/core/images.c:729
+#: src/core/images.c:463 src/core/images.c:753 src/core/images.c:767
 #, c-format
 msgid "Unable to get information on ROM dump: %s"
 msgstr ""
 
-#: src/core/images.c:452
+#: src/core/images.c:490
 msgid "Completing image to 4 MB!"
 msgstr ""
 
-#: src/core/images.c:509 src/core/images.c:876
+#: src/core/images.c:547 src/core/images.c:914
 #, c-format
 msgid "Unable to get information on FLASH upgrade: <%s>"
 msgstr ""
 
-#: src/core/images.c:800
+#: src/core/images.c:838
 #, c-format
 msgid "Unable to get information on image: %s"
 msgstr ""
 
-#: src/core/images.c:935 src/core/images.c:1015 src/core/images.c:1153
+#: src/core/images.c:973 src/core/images.c:1053 src/core/images.c:1191
 msgid "Opendir error"
 msgstr ""
 
-#: src/core/images.c:1001
+#: src/core/images.c:1039
 msgid "Scanning images/upgrades... "
 msgstr ""
 
-#: src/core/images.c:1029
+#: src/core/images.c:1067
 #, c-format
 msgid "Can not stat: <%s>"
 msgstr ""
 
-#: src/core/images.c:1040
+#: src/core/images.c:1078
 #, c-format
 msgid "Can not get ROM/update info: <%s>"
 msgstr ""
 
-#: src/core/images.c:1069
+#: src/core/images.c:1107
 msgid "Done."
 msgstr ""
 
@@ -466,7 +466,7 @@ msgstr ""
 #: src/misc/files.c:95 src/misc/files.c:107 src/misc/files.c:123
 #: src/gui/calc/keyboard.c:77 src/gui/calc/popup.c:181
 #: src/gui/calc/popup.c:184 src/gui/calc/popup.c:196 src/gui/dboxes.c:42
-#: src/gui/fs_misc.c:154 src/gui/fs_misc.c:157
+#: src/gui/fs_misc.c:155 src/gui/fs_misc.c:158
 msgid "Information"
 msgstr ""
 
@@ -493,7 +493,8 @@ msgid ""
 "Overwrite?"
 msgstr ""
 
-#: src/misc/files.c:153 src/gui/dboxes.c:44
+#: src/misc/files.c:153 src/gui/dboxes.c:44 src/gui/fs_misc.c:82
+#: src/gui/fs_misc.c:239
 msgid "Warning"
 msgstr ""
 
@@ -517,10 +518,12 @@ msgstr ""
 msgid "New name: "
 msgstr ""
 
-#: src/misc/files.c:209 src/misc/tie_error.c:78 src/gui/dboxes.c:48
-#: src/gui/fs_misc.c:211 src/gui/fs_misc.c:372 src/gui/main.c:218
-#: src/gui/main.c:226 src/gui/main.c:234 src/gui/main.c:242
-#: src/gui/quicksend.c:120 src/gui/wizard.c:253 src/gui/wizard.c:289
+#: src/misc/files.c:209 src/misc/tie_error.c:78 src/gui/calc/popup.c:789
+#: src/gui/calc/popup.c:839 src/gui/dboxes.c:48 src/gui/fs_misc.c:212
+#: src/gui/fs_misc.c:391 src/gui/fs_misc.c:421 src/gui/fs_misc.c:437
+#: src/gui/fs_misc.c:499 src/gui/main.c:218 src/gui/main.c:226
+#: src/gui/main.c:234 src/gui/main.c:242 src/gui/quicksend.c:120
+#: src/gui/wizard.c:253 src/gui/wizard.c:289
 msgid "Error"
 msgstr ""
 
@@ -555,18 +558,18 @@ msgstr ""
 msgid "Couldn't open destination file for writing!"
 msgstr ""
 
-#: src/gui/calc/calc.c:234 src/gui/calc/popup.c:639
+#: src/gui/calc/calc.c:234 src/gui/calc/popup.c:647
 #: src/gui/debugger/dbg_bkpts.c:363 src/gui/debugger/dbg_bits.c:50
 #: src/gui/debugger/dbg_cause.c:60 src/gui/debugger/dbg_cause.c:144
-#: src/gui/debugger/dbg_code.c:356 src/gui/debugger/dbg_code.c:677
-#: src/gui/debugger/dbg_code.c:1139 src/gui/debugger/dbg_data.c:56
+#: src/gui/debugger/dbg_code.c:357 src/gui/debugger/dbg_code.c:698
+#: src/gui/debugger/dbg_code.c:1160 src/gui/debugger/dbg_data.c:56
 #: src/gui/debugger/dbg_entry.c:207 src/gui/debugger/dbg_heap.c:146
 #: src/gui/debugger/dbg_heap.c:267 src/gui/debugger/dbg_iop.c:430
-#: src/gui/debugger/dbg_mem.c:708 src/gui/debugger/dbg_mem.c:1083
-#: src/gui/debugger/dbg_mem.c:1307 src/gui/debugger/dbg_pclog.c:138
-#: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:535
-#: src/gui/debugger/dbg_stack.c:163 src/gui/debugger/dbg_stack.c:413
-#: src/gui/debugger/dbg_vectors.c:145 src/gui/logger/log_link.c:60
+#: src/gui/debugger/dbg_mem.c:712 src/gui/debugger/dbg_mem.c:1087
+#: src/gui/debugger/dbg_mem.c:1311 src/gui/debugger/dbg_pclog.c:138
+#: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:539
+#: src/gui/debugger/dbg_stack.c:163 src/gui/debugger/dbg_stack.c:417
+#: src/gui/debugger/dbg_vectors.c:145 src/gui/logger/log_link.c:62
 #: src/gui/infos.c:50 src/gui/manpage.c:72 src/gui/pbars.c:63
 #: src/gui/quicksend.c:59 src/gui/release.c:77 src/gui/romversion.c:191
 #: src/gui/scroptions.c:61 src/gui/wizard.c:71
@@ -618,16 +621,24 @@ msgstr ""
 msgid "Configuration file loaded."
 msgstr ""
 
-#: src/gui/calc/popup.c:249 src/gui/dboxes.c:46
+#: src/gui/calc/popup.c:271 src/gui/dboxes.c:46
 msgid "Question"
 msgstr ""
 
-#: src/gui/calc/popup.c:249
+#: src/gui/calc/popup.c:271
 msgid "Clear RAM?"
 msgstr ""
 
-#: src/gui/calc/popup.c:494
+#: src/gui/calc/popup.c:516
 msgid "Manual_en.html"
+msgstr ""
+
+#: src/gui/calc/popup.c:789
+msgid "Unable to run ShellExecture extension."
+msgstr ""
+
+#: src/gui/calc/popup.c:839
+msgid "Spawn error: do you have Firefox installed ?"
 msgstr ""
 
 #: src/gui/calc/skinops.c:449
@@ -676,25 +687,25 @@ msgstr ""
 msgid "one-shot"
 msgstr ""
 
-#: src/gui/debugger/dbg_bkpts.c:422
+#: src/gui/debugger/dbg_bkpts.c:426
 msgid "dbg_bkpts-2.glade: GUI loading failed !\n"
 msgstr ""
 
-#: src/gui/debugger/dbg_code.c:74 src/gui/debugger/dbg_heap.c:55
+#: src/gui/debugger/dbg_code.c:75 src/gui/debugger/dbg_heap.c:55
 #: src/gui/debugger/dbg_iop.c:299 src/gui/debugger/dbg_mem.c:185
 #: src/gui/debugger/dbg_pclog.c:54 src/gui/debugger/dbg_stack.c:58
 msgid "Address"
 msgstr ""
 
-#: src/gui/debugger/dbg_code.c:74
+#: src/gui/debugger/dbg_code.c:75
 msgid "Opcode"
 msgstr ""
 
-#: src/gui/debugger/dbg_code.c:74
+#: src/gui/debugger/dbg_code.c:75
 msgid "Operand"
 msgstr ""
 
-#: src/gui/debugger/dbg_code.c:1223
+#: src/gui/debugger/dbg_code.c:1244
 msgid "Choose font..."
 msgstr ""
 
@@ -741,44 +752,70 @@ msgstr ""
 msgid "Open file"
 msgstr ""
 
-#: src/gui/fs_misc.c:155
+#: src/gui/fs_misc.c:83
+msgid ""
+"The state image you are attempting to load does not match the current "
+"running image. Press OK if you want TiEmu to automatically load the "
+"corresponding image or Cancel to abort."
+msgstr ""
+
+#: src/gui/fs_misc.c:156
 msgid ""
 "You do not seem to have saved your settings. Configuration file saved (in "
 "tiemu.ini)."
 msgstr ""
 
-#: src/gui/fs_misc.c:158
+#: src/gui/fs_misc.c:159
 msgid ""
 "You do not seem to have saved your settings. Configuration file saved (in ~/."
 "tiemu)."
 msgstr ""
 
-#: src/gui/fs_misc.c:172
+#: src/gui/fs_misc.c:173
 msgid "Sending app(s)"
 msgstr ""
 
-#: src/gui/fs_misc.c:176 src/gui/fs_misc.c:184
+#: src/gui/fs_misc.c:177 src/gui/fs_misc.c:185
 msgid "Sending var(s)"
 msgstr ""
 
-#: src/gui/fs_misc.c:180 src/gui/fs_misc.c:188
+#: src/gui/fs_misc.c:181 src/gui/fs_misc.c:189
 msgid "Restoring"
 msgstr ""
 
-#: src/gui/fs_misc.c:211 src/gui/fs_misc.c:372 src/gui/quicksend.c:120
+#: src/gui/fs_misc.c:212 src/gui/fs_misc.c:391 src/gui/quicksend.c:120
 msgid "This file is not a valid TI file."
 msgstr ""
 
-#: src/gui/fs_misc.c:454 src/gui/fs_misc.c:464
+#: src/gui/fs_misc.c:236
+#, c-format
+msgid ""
+"The current link cable <%s> port <%s> does not allow direct file loading. Do "
+"you let me change link port settings to allow direct file loading?"
+msgstr ""
+
+#: src/gui/fs_misc.c:421
+msgid "Don't seem to be an upgrade."
+msgstr ""
+
+#: src/gui/fs_misc.c:437
+msgid "Can not load the upgrade."
+msgstr ""
+
+#: src/gui/fs_misc.c:473 src/gui/fs_misc.c:483
 msgid "HW type"
 msgstr ""
 
-#: src/gui/fs_misc.c:455
+#: src/gui/fs_misc.c:474
 msgid "The FLASH upgrade can be imported as HW1 or HW2. Please choose..."
 msgstr ""
 
-#: src/gui/fs_misc.c:465
+#: src/gui/fs_misc.c:484
 msgid "The FLASH upgrade can be imported as HW3 or HW4. Please choose..."
+msgstr ""
+
+#: src/gui/fs_misc.c:499
+msgid "This is not a valid file"
 msgstr ""
 
 #: src/gui/main.c:153
@@ -1031,7 +1068,7 @@ msgstr ""
 msgid "1"
 msgstr ""
 
-#: glade/dbg_bits-2.str:18 glade/dbg_bits-2.str:27 glade/dbg_code-2.str:45
+#: glade/dbg_bits-2.str:18 glade/dbg_bits-2.str:27 glade/dbg_code-2.str:48
 #: glade/dbg_regs-2.str:13 glade/dbg_regs-2.str:15 glade/dbg_regs-2.str:16
 #: glade/dbg_regs-2.str:19 glade/dbg_regs-2.str:20 glade/dbg_regs-2.str:21
 msgid "0"
@@ -1110,7 +1147,7 @@ msgid "Disassembly"
 msgstr ""
 
 #: glade/dbg_code-2.str:8
-msgid "Debug"
+msgid "_Debug"
 msgstr ""
 
 #: glade/dbg_code-2.str:9
@@ -1150,7 +1187,7 @@ msgid "_Break"
 msgstr ""
 
 #: glade/dbg_code-2.str:18
-msgid "Log"
+msgid "_Log"
 msgstr ""
 
 #: glade/dbg_code-2.str:19
@@ -1222,103 +1259,115 @@ msgid "_Quit"
 msgstr ""
 
 #: glade/dbg_code-2.str:36
-msgid "Font"
+msgid "_Font"
 msgstr ""
 
 #: glade/dbg_code-2.str:37
-msgid "Run (F5)"
+msgid "_State"
 msgstr ""
 
 #: glade/dbg_code-2.str:38
-msgid "Single step / Step into (F7)"
+msgid "S_ave"
 msgstr ""
 
 #: glade/dbg_code-2.str:39
-msgid "Step over (F8)"
+msgid "_Revert"
 msgstr ""
 
 #: glade/dbg_code-2.str:40
-msgid "Step out (F9)"
+msgid "Run (F5)"
 msgstr ""
 
 #: glade/dbg_code-2.str:41
-msgid "Run to cursor (F4)"
+msgid "Single step / Step into (F7)"
 msgstr ""
 
 #: glade/dbg_code-2.str:42
-msgid "Break (F11)"
+msgid "Step over (F8)"
 msgstr ""
 
 #: glade/dbg_code-2.str:43
-msgid "Toggle breakpoint (F2)"
+msgid "Step out (F9)"
 msgstr ""
 
 #: glade/dbg_code-2.str:44
-msgid "Cycle count:"
+msgid "Run to cursor (F4)"
+msgstr ""
+
+#: glade/dbg_code-2.str:45
+msgid "Break (F11)"
 msgstr ""
 
 #: glade/dbg_code-2.str:46
-msgid "00"
+msgid "Toggle breakpoint (F2)"
 msgstr ""
 
 #: glade/dbg_code-2.str:47
-msgid "Reset"
-msgstr ""
-
-#: glade/dbg_code-2.str:48
-msgid "Symbol:"
+msgid "Cycle count:"
 msgstr ""
 
 #: glade/dbg_code-2.str:49
-msgid "by name"
+msgid "00"
 msgstr ""
 
 #: glade/dbg_code-2.str:50
-msgid "by addr"
+msgid "Reset"
 msgstr ""
 
 #: glade/dbg_code-2.str:51
-msgid "by id"
+msgid "Symbol:"
 msgstr ""
 
-#: glade/dbg_code-2.str:52 glade/dbg_mem-2.str:19
-msgid "Go to _address"
+#: glade/dbg_code-2.str:52
+msgid "by name"
 msgstr ""
 
 #: glade/dbg_code-2.str:53
-msgid "Go to _PC"
+msgid "by addr"
 msgstr ""
 
 #: glade/dbg_code-2.str:54
-msgid "Set _breakpoint"
+msgid "by id"
 msgstr ""
 
-#: glade/dbg_code-2.str:55
-msgid "Set _one shot bkpt"
+#: glade/dbg_code-2.str:55 glade/dbg_mem-2.str:19
+msgid "Go to _address"
 msgstr ""
 
 #: glade/dbg_code-2.str:56
+msgid "Go to _PC"
+msgstr ""
+
+#: glade/dbg_code-2.str:57
+msgid "Set _breakpoint"
+msgstr ""
+
+#: glade/dbg_code-2.str:58
+msgid "Set _one shot bkpt"
+msgstr ""
+
+#: glade/dbg_code-2.str:59
 msgid "Set PC to _selection"
 msgstr ""
 
-#: glade/dbg_code-2.str:57 glade/dbg_heap-2.str:9 glade/dbg_mem-2.str:22
+#: glade/dbg_code-2.str:60 glade/dbg_heap-2.str:9 glade/dbg_mem-2.str:22
 #: glade/dbg_regs-2.str:10 glade/dbg_stack-2.str:12
 msgid "View _memory"
 msgstr ""
 
-#: glade/dbg_code-2.str:58
+#: glade/dbg_code-2.str:61
 msgid "Change font"
 msgstr ""
 
-#: glade/dbg_code-2.str:59 glade/device-2.str:18
+#: glade/dbg_code-2.str:62 glade/device-2.str:18
 msgid "custom"
 msgstr ""
 
-#: glade/dbg_code-2.str:60
+#: glade/dbg_code-2.str:63
 msgid "default"
 msgstr ""
 
-#: glade/dbg_code-2.str:61
+#: glade/dbg_code-2.str:64
 msgid "Font:"
 msgstr ""
 
