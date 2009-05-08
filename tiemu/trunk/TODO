@@ -14,7 +14,6 @@ x = done
 ---------------------------------------------------------------
 
 %%%%%%% post 001 (All):
-<<
 * Si on appuie sur F12 lors du chargement (preloading debugger), le menu des ROMs se présente, mais on peut choisir ce qu'on veut, 
 ça ne change strictement rien, et le modèle de calc par défaut se charge. Le clignotement du curseur dans HOME est alors anormal (trop rapide), 
 mais régulier.
@@ -23,10 +22,6 @@ mais régulier.
 - débuggeur 
  ? F5 sur un breakpoint ne fait que relancer le debugger sans rien exécuter 
  * F8 foire qd la fonction skippée contient un breakpoint (freeze jusqu'à ce qu'on fasse F11) 
-
-- fenêtre stack 
- ? +4 / +2 / 0 / +2 / +4 / ... au lieu de -4 / -2 / 0 / +2 / +4 / ... 
->>
 
 2) Topic <http://yaronet.com/posts.php?s=104752>:
 -------------------------------------------------
