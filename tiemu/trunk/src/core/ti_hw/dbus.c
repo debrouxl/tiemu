@@ -102,6 +102,8 @@ static void map_dbus_to_void(void)
     D-bus management (HW linkport)
 */
 
+static int dbus_set = 0;
+
 int ilp_reset(CableHandle *h);
 int ilp_send(CableHandle *h, uint8_t *data, uint32_t len);
 int ilp_recv(CableHandle *h, uint8_t *data, uint32_t len);
@@ -109,6 +111,10 @@ int ilp_recv(CableHandle *h, uint8_t *data, uint32_t len);
 int hw_dbus_init(void)
 {
 	int err;
+
+	// exit has to be called before init
+	if(dbus_set)
+		return 0;
 
 	// don't let linkport function pointers uninitialized
 	map_dbus_to_void();
@@ -135,7 +141,13 @@ int hw_dbus_init(void)
 	
 	// attach cable to calc (open cable)
 	err = ticalcs_cable_attach(calc_handle, cable_handle);
-	tiemu_err(err, NULL);
+	if(err)
+	{
+		ticalcs_handle_del(calc_handle);
+		ticables_handle_del(cable_handle);
+		tiemu_err(err, NULL);
+		return -1;
+	}
 
 	// customize cable by overriding some methods
 	if(linkp.cable_model == CABLE_ILP)
@@ -151,11 +163,17 @@ int hw_dbus_init(void)
 	else
 		map_dbus_to_cable();	// set mappers to external link cable
 
+	dbus_set = !0;
+
     return 0;
 }
 
 int hw_dbus_reset(void)
 {
+	// has to be init'ed first
+	if(!dbus_set)
+		return 0;
+
 	hw_dbus_reinit();
 
 	return 0;
@@ -164,6 +182,10 @@ int hw_dbus_reset(void)
 int hw_dbus_exit(void)
 {
 	int err;
+
+	// init has to be called before exit
+	if(!dbus_set)
+		return 0;
 
 	// don't let linkport function pointers uninitialized
 	map_dbus_to_void();
@@ -179,6 +201,8 @@ int hw_dbus_exit(void)
 	// delete calc & cable handles
 	if (calc_handle) ticalcs_handle_del(calc_handle);
 	if (cable_handle) ticables_handle_del(cable_handle);
+
+	dbus_set = 0;
 
 	return 0;
 }

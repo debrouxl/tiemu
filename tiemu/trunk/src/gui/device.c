@@ -40,6 +40,7 @@
 
 extern DeviceOptions	linkp;
 static DeviceOptions	tmp;
+static DeviceOptions	old;
 
 static GtkWidget* lbl;
 static GtkWidget* comm_cable;
@@ -140,14 +141,16 @@ gint display_device_dbox()
 
 	// Data exchange
 	memcpy(&tmp, &linkp, sizeof(DeviceOptions));
-	ti68k_linkport_unconfigure();
+	memcpy(&old, &linkp, sizeof(DeviceOptions));
 	
 	// Loop
 	result = gtk_dialog_run(GTK_DIALOG(dbox));
 	switch (result) 
 	{
-	case GTK_RESPONSE_OK:
 	case GTK_RESPONSE_CANCEL:
+		break;
+	case GTK_RESPONSE_OK:
+		ti68k_linkport_unconfigure();
 
 		data = glade_xml_get_widget(xml, "spinbutton_comm_delay");
 		tmp.cable_delay = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(data));
@@ -159,8 +162,16 @@ gint display_device_dbox()
 		tmp.calc_model = ti68k_calc_to_libti_calc();
 
         err = ti68k_linkport_reconfigure();
-		handle_error();
+		if(err)
+		{
+			// if reconfiguring fails, fallback to null cable & port
+			ti68k_linkport_unconfigure();
 
+			memcpy(&linkp, &old, sizeof(DeviceOptions));
+			tmp.calc_model = ti68k_calc_to_libti_calc();
+
+			ti68k_linkport_reconfigure();
+		}
 		break;
 	case GTK_RESPONSE_HELP:
 		break;
@@ -188,7 +199,7 @@ on_device_combobox1_changed            (GtkComboBox     *combobox,
 	case 5: tmp.cable_model = CABLE_USB; break;	
 	case 6: tmp.cable_model = CABLE_VTI; break;
 	case 7: tmp.cable_model = CABLE_TIE; break;
-	case 8: tmp.cable_model = CABLE_DEV; break;
+	case 8: tmp.cable_model = CABLE_ILP; break;
 	}
 }
 
