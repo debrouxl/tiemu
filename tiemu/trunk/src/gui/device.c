@@ -24,9 +24,7 @@
 #  include <config.h>
 #endif
 
-#undef GTK_DISABLE_DEPRECATED
 #include <gtk/gtk.h>
-#define GTK_DISABLE_DEPRECATED
 #include <glade/glade.h>
 #include <string.h>
 
@@ -67,68 +65,68 @@ gint display_device_dbox()
 	lbl = glade_xml_get_widget(xml, "label7");
 
 	// Cable  
-	data = comm_cable = glade_xml_get_widget(xml, "optionmenu_comm_cable");
+	data = comm_cable = glade_xml_get_widget(xml, "combobox1");
 	switch (linkp.cable_model) 
 	{
 	case CABLE_NUL:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data), 0);
 	break;
 
 	case CABLE_GRY:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data), 1);
 	break;
 		
 	case CABLE_BLK:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 2);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data), 2);
 	break;
 
 	case CABLE_PAR:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 3);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data), 3);
 	break;
 
 	case CABLE_SLV:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 4);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data), 4);
 	break;	
 
 	case CABLE_USB:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 5);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data), 5);
 	break;	
 
 	case CABLE_VTI:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 6);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data), 6);
 	break;
 
     case CABLE_TIE:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 7);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data), 7);
 	break;
 	
 	case CABLE_ILP:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 8);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data), 8);
 	break;
 
 	default:
-	  gtk_option_menu_set_history(GTK_OPTION_MENU(data), 9);
-	  break;
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data), 0);
+	break;
 	}
 
 	// Port
-	data = comm_port = glade_xml_get_widget(xml, "optionmenu_comm_port");
+	data = comm_port = glade_xml_get_widget(xml, "combobox2");
 	switch (linkp.cable_port) 
 	{
 	case PORT_0:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data), 0);
 	break;
 	case PORT_1:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data), 1);
 	break;
 	case PORT_2:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 2);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data), 2);
 	break;
 	case PORT_3:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 3);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data), 3);
 	break;
 	case PORT_4:
-		gtk_option_menu_set_history(GTK_OPTION_MENU(data), 4);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data), 4);
 	break;
 	}
 
@@ -175,11 +173,11 @@ gint display_device_dbox()
 
 
 GLADE_CB void
-comm_cable_changed                     (GtkOptionMenu   *optionmenu,
+on_device_combobox1_changed            (GtkComboBox     *combobox,
                                         gpointer         user_data)
 {
-	gint nitem = gtk_option_menu_get_history(optionmenu);
-
+	gint nitem = gtk_combo_box_get_active(combobox);
+	
 	switch(nitem)
 	{
 	case 0: tmp.cable_model = CABLE_NUL; break;
@@ -190,41 +188,27 @@ comm_cable_changed                     (GtkOptionMenu   *optionmenu,
 	case 5: tmp.cable_model = CABLE_USB; break;	
 	case 6: tmp.cable_model = CABLE_VTI; break;
 	case 7: tmp.cable_model = CABLE_TIE; break;
-	case 8: tmp.cable_model = CABLE_ILP; break;
+	case 8: tmp.cable_model = CABLE_DEV; break;
 	}
 }
 
-GLADE_CB void
-comm_cable_activate                    (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-}
-
 
 GLADE_CB void
-comm_port_changed                      (GtkOptionMenu   *optionmenu,
+on_device_combobox2_changed            (GtkComboBox     *combobox,
                                         gpointer         user_data)
 {
-	GtkWidget *menu_item = optionmenu->menu_item;
-	gchar *ed = menu_item->name;
-
-	if(!strcmp(ed, "number0"))
-		tmp.cable_port = PORT_0;
-	else if(!strcmp(ed, "number1"))
-		tmp.cable_port = PORT_1;
-	else if(!strcmp(ed, "number2"))
-		tmp.cable_port = PORT_2;
-	else if(!strcmp(ed, "number3"))
-		tmp.cable_port = PORT_3;
-	else if(!strcmp(ed, "number4"))
-		tmp.cable_port = PORT_4;
+	gint nitem = gtk_combo_box_get_active(combobox);
+	
+	switch(nitem)
+	{
+	case 0: tmp.cable_port = PORT_0; break;
+	case 1: tmp.cable_port = PORT_1; break;
+	case 2: tmp.cable_port = PORT_2; break;
+	case 3: tmp.cable_port = PORT_3; break;
+	case 4: tmp.cable_port = PORT_4; break;
+	}
 }
 
-GLADE_CB void
-comm_port_activate                     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-}
 
 GLADE_CB void
 comm_spinbutton_delay_changed          (GtkEditable     *editable,

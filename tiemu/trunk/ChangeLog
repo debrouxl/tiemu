@@ -27,6 +27,7 @@ SubVersion: $Id$
 	- [roms]  $2829: allow automatic changing of link cable setting when requesting a direct file transfer
 	- [roms]  $2832: don't allow launching of debugger if preloading has not finished yet
 	- [kevin] $2833: fix the "Default" button when importing a Titanium 89u (default to HW3 until we sort out HW4's actual speed, not HW2)
+	- [roms]  $2836: upgraded deprecated GTK+ code
 
 - 16/09/2007, version 3.02:
 	- [roms]  $2646: screenshots can be copied into the clipboard

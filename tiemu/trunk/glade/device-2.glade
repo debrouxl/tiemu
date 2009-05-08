@@ -242,158 +242,48 @@
 	      </child>
 
 	      <child>
-		<widget class="GtkOptionMenu" id="optionmenu_comm_port">
+		<widget class="GtkComboBox" id="combobox2">
 		  <property name="visible">True</property>
-		  <property name="can_focus">True</property>
-		  <property name="history">0</property>
-		  <signal name="changed" handler="comm_port_changed" last_modification_time="Mon, 05 Apr 2004 20:49:32 GMT"/>
-
-		  <child>
-		    <widget class="GtkMenu" id="menu3">
-
-		      <child>
-			<widget class="GtkMenuItem" id="number0">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">None</property>
-			  <property name="use_underline">True</property>
-			</widget>
-		      </child>
-
-		      <child>
-			<widget class="GtkMenuItem" id="number1">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">#1</property>
-			  <property name="use_underline">True</property>
-			</widget>
-		      </child>
-
-		      <child>
-			<widget class="GtkMenuItem" id="number2">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">#2</property>
-			  <property name="use_underline">True</property>
-			</widget>
-		      </child>
-
-		      <child>
-			<widget class="GtkMenuItem" id="number3">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">#3</property>
-			  <property name="use_underline">True</property>
-			</widget>
-		      </child>
-
-		      <child>
-			<widget class="GtkMenuItem" id="number4">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">#4</property>
-			  <property name="use_underline">True</property>
-			</widget>
-		      </child>
-		    </widget>
-		  </child>
+		  <property name="items" translatable="yes">None
+#1
+#2
+#3
+#4</property>
+		  <property name="add_tearoffs">True</property>
+		  <property name="focus_on_click">True</property>
+		  <signal name="changed" handler="on_device_combobox2_changed" last_modification_time="Fri, 08 May 2009 17:08:34 GMT"/>
 		</widget>
 		<packing>
 		  <property name="left_attach">1</property>
 		  <property name="right_attach">2</property>
 		  <property name="top_attach">1</property>
 		  <property name="bottom_attach">2</property>
-		  <property name="x_options">fill</property>
-		  <property name="y_options"></property>
+		  <property name="y_options">fill</property>
 		</packing>
 	      </child>
 
 	      <child>
-		<widget class="GtkOptionMenu" id="optionmenu_comm_cable">
+		<widget class="GtkComboBox" id="combobox1">
 		  <property name="visible">True</property>
-		  <property name="can_focus">True</property>
-		  <property name="history">0</property>
-		  <signal name="changed" handler="comm_cable_changed" last_modification_time="Mon, 05 Apr 2004 20:49:18 GMT"/>
-
-		  <child>
-		    <widget class="GtkMenu" id="menu1">
-
-		      <child>
-			<widget class="GtkMenuItem" id="nul1">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">None</property>
-			  <property name="use_underline">True</property>
-			</widget>
-		      </child>
-
-		      <child>
-			<widget class="GtkMenuItem" id="tgl1">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">GrayLink</property>
-			  <property name="use_underline">True</property>
-			</widget>
-		      </child>
-
-		      <child>
-			<widget class="GtkMenuItem" id="ser1">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">BlackLink</property>
-			  <property name="use_underline">True</property>
-			</widget>
-		      </child>
-
-		      <child>
-			<widget class="GtkMenuItem" id="par1">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">ParallelLink</property>
-			  <property name="use_underline">True</property>
-			</widget>
-		      </child>
-
-		      <child>
-			<widget class="GtkMenuItem" id="slv1">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">SilverLink</property>
-			  <property name="use_underline">True</property>
-			</widget>
-		      </child>
-
-		      <child>
-			<widget class="GtkMenuItem" id="usb1">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Direct USB</property>
-			  <property name="use_underline">True</property>
-			</widget>
-		      </child>
-
-		      <child>
-			<widget class="GtkMenuItem" id="vti1">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">VTi</property>
-			  <property name="use_underline">True</property>
-			</widget>
-		      </child>
-
-		      <child>
-			<widget class="GtkMenuItem" id="tie1">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">TiEmu</property>
-			  <property name="use_underline">True</property>
-			</widget>
-		      </child>
-
-		      <child>
-			<widget class="GtkMenuItem" id="ilp1">
-			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">internal</property>
-			  <property name="use_underline">True</property>
-			</widget>
-		      </child>
-		    </widget>
-		  </child>
+		  <property name="items" translatable="yes">None
+GrayLink
+BlackLink
+Parallel
+SilverLink
+DirectLink
+VTi
+TiEmu
+internal</property>
+		  <property name="add_tearoffs">False</property>
+		  <property name="focus_on_click">True</property>
+		  <signal name="changed" handler="on_device_combobox1_changed" last_modification_time="Fri, 08 May 2009 17:08:43 GMT"/>
 		</widget>
 		<packing>
 		  <property name="left_attach">1</property>
 		  <property name="right_attach">2</property>
 		  <property name="top_attach">0</property>
 		  <property name="bottom_attach">1</property>
-		  <property name="x_options">fill</property>
-		  <property name="y_options"></property>
+		  <property name="y_options">fill</property>
 		</packing>
 	      </child>
 	    </widget>
