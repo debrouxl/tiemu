@@ -3,7 +3,7 @@
 
 
 Previous version: 3.02		(21/12/2007)
-Current version:  3.03		(21/05/2008)
+Current version:  3.03		(08/05/2009)
 
 SubVersion (CVS) revision: $Id: RELEASE 2042 2006-05-07 07:46:23Z roms $
 
@@ -29,8 +29,11 @@ New capabilities:
 Improvements:
 -------------
 
-	- none
-		
+	- removed obsolete "virtual" link cable
+	- allow automatic changing of link cable setting when requesting a direct file transfer
+	- adding CR/LF every 16 chars in the link logging window
+	- added i18n support to some strings
+
 		
 Bug fixes:
 ----------
@@ -40,6 +43,22 @@ Bug fixes:
 	- fixed InnoSetup installer for use with GTK>=2.10.x
 	- don't allow deleting of last RAM tab to avoid resizing of code/dock window
 	- fixed build with GCC 4.3
+	- don't shutdown screen when reading battery status
+	don't resize code windows whenever cycle counter change
+	- fixed disassembling of some FLINE instructions like 0xf800 (lionel)
+	- fixed disassembling of BTST instruction (replaced by BRA)
+	- fixed keynames.c build on OS X
+	- link with g++ if --with-kde (fixes --with-kde build on OS X)
+	- fixed use of wrong free function (g_free where gtk_tree_path_free is required) causing crash with GTK+ 2.14
+	- fixed builtin Tk not working when built against the latest X.Org X11 (Tk bug 2010422)
+	- merged Lionel's patch about link logging: ; take into account buffer overflow
+	- really clears link logging buffer when clicking the 'Clear' button
+	- merged Lionel's patch: allow mix-up of images created by TiEmu 32-bits and TiEmu 64-bits 
+		due to a bug in IMG_INFO structure
+	- fixed Lionel's logging problem (missing values on linkport output
+	- fixed "libticables2 access violation" which appears when changing the link cable under some circumstances
+	- don't allow launching of debugger if preloading has not finished yet => crash
+	fix the "Default" button when importing a Titanium 89u (default to HW3 until we sort out HW4's actual speed, not HW2)
 	
 	
 Notes:

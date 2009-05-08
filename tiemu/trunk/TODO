@@ -15,9 +15,6 @@ x = done
 
 %%%%%%% post 001 (All):
 <<
-* Si on appuie sur F11 lors du chargement (preloading débugger), au tout début ça fait crasher TiEmu, et vers la fin ça affiche 
-les fenêtres du débogueur, mais elles sont toutes grisées et la calc semble fonctionner normalement (mais dur à reproduire ça, 
-ça doit être à un moment très précis).
 * Si on appuie sur F12 lors du chargement (preloading debugger), le menu des ROMs se présente, mais on peut choisir ce qu'on veut, 
 ça ne change strictement rien, et le modèle de calc par défaut se charge. Le clignotement du curseur dans HOME est alors anormal (trop rapide), 
 mais régulier.
