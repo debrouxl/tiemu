@@ -26,22 +26,6 @@ mais régulier.
 2) Topic <http://yaronet.com/posts.php?s=104752>:
 -------------------------------------------------
 
-%%%%%%% post 214 (Lionel):
-<<
-J'ai essayé d'envoyer la FlashApp GTC, telle qu'on peut la trouver dans le topic qui va bien de la section Prog C, entre deux TIEmu:
-* depuis une 89T tournant AMS 3.10, HW3Patch et Flashappy exécutés;
-* vers une 92+ tournant AMS 2.05, HW3Patch et Flashappy exécutés.
-Le récepteur fait Receive dans le VAR-Link, l'émetteur fait Send quand GTC est sélectionné.
-
-Résultat:
-* le TIEmu émetteur (89T) se plante (SIGSEGV);
-* le TIEmu récepteur (92+) semble se bloquer (elle affiche qu'elle est en attente de réception, mais ON n'interrompt pas le transfert).
-
-
-Le début des deux traces dans la console est identiques, mais les deux traces ne s'arrêtent pas au même endroit:
-(chargement de GTC vers la 89T). Voir <http://www.yaronet.com/posts.php?sl=&s=104752&p=8&h=214#214>.
->>
-
 %%%%%%% post 215 (Pollux):
 <<
 - ce serait bien que comme sous VTI les breakpoints ne soient pas perdus quand on restaure le Calculator State, typiquement si on a un 
@@ -69,24 +53,6 @@ panneau Heap :
 <<
 Il y aurait les raccourcis claviers à rendre "globaux" surla fenêtre, parce que actuellement, il faut quand même prendre la souris pour 
 sélectionner la partie avec laquelle on veut interragir, on perd donc 90% de l'intérêt des raccourcis
->>
-
-%%%%%%% post 239 (Lionel):
-<<
-Quand tu utilises le link virtuel de TiLP, tu le configures comment? 
-Il faut que tu mettes TiLP sur câble TiEmu, port 2 et TiEmu sur câble TiEmu, port 1, ou l'inverse. 
-
-
-Non, le même port pour les deux. Si on utilise #1 et #2 (ce qui ne me paraît pas intuitif), ça fonctionne effectivement... Merci  :)
-OK, je dois RTFM (c'est effectivement décrit dans le manuel de TIEmu...)... mais quand même, je pense qu'il serait souhaitable, 
-si c'est techniquement faisable, d'ajouter un "anti-con" aux tilibs pour qu'elles préviennent l'utilisateur, quand ce genre de 
-situations se produit ?
-
-
-Bug: aussi bien TILP que TIEmu crashent quand on essaie d'activer le câble virtual, sur n'importe quel port. Après avoir validé, un 
-premier dialog d'erreur indique "Can't set cable", suivi d'un deuxième qui indique "Code d'erreur introuvable dans la liste. Ceci est un 
-bogue. Veuillez le reporter", puis le KDE Crash Handler m'informe que "The application TIEmu (tiemu) crashed and caused the signal 11 (SIGSEGV)".
-Vilains logiciels  :D  
 >>
 
 

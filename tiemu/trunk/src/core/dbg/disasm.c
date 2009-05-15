@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <inttypes.h>
 
 #include "ti68k_int.h"
 
@@ -124,9 +125,10 @@ static int match_opcode(const char *opcode)
 }
 
 // testing patterns: 0x55, 0xAA, 0x02, 0xF5, 0x5F, 0xFA, 0xAF
-static char* create_reg_list(uint8_t value, char name)
+static gchar* create_reg_list(uint8_t value, char name)
 {
 	gchar *str = g_strdup("");
+	gchar *str2;
 	int i;
 	int pre_bit = 0;
 	int cur_bit;
@@ -142,12 +144,16 @@ static char* create_reg_list(uint8_t value, char name)
 
 		if(start == end && start != -1)
 		{
-			str = g_strdup_printf("%s%c%i/", str, name, i-1);
+			str2 = g_strdup_printf("%s%c%i/", str, name, i-1);
+			g_free(str);
+			str = str2;
 			end = start = -1;
 		}
 		else if(end > start)
 		{
-			str = g_strdup_printf("%s%c%i-%c%i/", str, name, start, name, end);
+			str2 = g_strdup_printf("%s%c%i-%c%i/", str, name, start, name, end);
+			g_free(str);
+			str = str2;
 			end = start = -1;
 		}
 
@@ -155,18 +161,27 @@ static char* create_reg_list(uint8_t value, char name)
 	}
 
 	if((end=i-1) > (start+1) && start != -1)
-		str = g_strdup_printf("%s%c%i-%i", str, name, start, end);
+	{
+		str2 = g_strdup_printf("%s%c%i-%i", str, name, start, end);
+		g_free(str);
+		str = str2;
+	}
 	else if(start > 0 && end > 0)
-		str = g_strdup_printf("%s%c%i", str, name, start);
+	{
+		str2 = g_strdup_printf("%s%c%i", str, name, start);
+		g_free(str);
+		str = str2;
+	}
 	else
 		str[strlen(str) - 1] = '\0';
 
 	return str;
 }
 
-static char* create_rev_reg_list(uint8_t value, char name)
+static gchar* create_rev_reg_list(uint8_t value, char name)
 {
 	gchar *str = g_strdup("");
+	gchar *str2;
 	int i;
 	int pre_bit = 0;
 	int cur_bit;
@@ -182,12 +197,16 @@ static char* create_rev_reg_list(uint8_t value, char name)
 
 		if(start == end && start != -1)
 		{
-			str = g_strdup_printf("%s%c%i/", str, name, i-1);
+			str2 = g_strdup_printf("%s%c%i/", str, name, i-1);
+			g_free(str);
+			str = str2;
 			end = start = -1;
 		}
 		else if(end > start)
 		{
-			str = g_strdup_printf("%s%c%i-%c%i/", str, name, start, name, end);
+			str2 = g_strdup_printf("%s%c%i-%c%i/", str, name, start, name, end);
+			g_free(str);
+			str = str2;
 			end = start = -1;
 		}
 
@@ -195,19 +214,27 @@ static char* create_rev_reg_list(uint8_t value, char name)
 	}
 
 	if((end=i-1) > (start+1) && start != -1)
-		str = g_strdup_printf("%s%c%i-%i", str, name, start, end);
+	{
+		str2 = g_strdup_printf("%s%c%i-%i", str, name, start, end);
+		g_free(str);
+		str = str2;
+	}
 	else if(start > 0 && end > 0)
-		str = g_strdup_printf("%s%c%i", str, name, start);
+	{
+		str2 = g_strdup_printf("%s%c%i", str, name, start);
+		g_free(str);
+		str = str2;
+	}
 	else
 		str[strlen(str) - 1] = '\0';
 
 	return str;
 }
 
-static char* create_reg_lists(uint16_t value)
+static gchar* create_reg_lists(uint16_t value)
 {
-	char *a, *d;
-	char *str;
+	gchar *a, *d;
+	gchar *str;
 
 	a = create_reg_list(MSB(value), 'A');
 	d = create_reg_list(LSB(value), 'D');
@@ -217,8 +244,8 @@ static char* create_reg_lists(uint16_t value)
 
 static char* create_rev_reg_lists(uint16_t value)
 {
-	char *a, *d;
-	char *str;
+	gchar *a, *d;
+	gchar *str;
 
 	d = create_rev_reg_list(MSB(value), 'D');
 	a = create_rev_reg_list(LSB(value), 'A');
@@ -331,7 +358,7 @@ int m68k_dasm(char **line, uint32_t addr)
 			{
 				char c = split[1][6];
 				char *p, *q;
-				char *tmp;
+				gchar *tmp;
 				uint16_t mask;
 
 				g_free(split[1]);
@@ -339,10 +366,9 @@ int m68k_dasm(char **line, uint32_t addr)
 
 				p = split[2];
 				q = strchr(split[2], ',');
-				*q = '\0';
 				q++;
 
-				sscanf(p, "#$%x", &mask);
+				sscanf(p, "#$%" SCNx16, &mask);
 				if(q[0] != '-')
 					tmp = g_strdup_printf("%s,%s", q, create_reg_lists(mask));
 				else
@@ -356,7 +382,7 @@ int m68k_dasm(char **line, uint32_t addr)
 			{
 				char c = split[1][6];
 				char *p, *q;
-				char *tmp;
+				gchar *tmp;
 				uint16_t mask;
 
 				g_free(split[1]);
@@ -364,10 +390,9 @@ int m68k_dasm(char **line, uint32_t addr)
 
 				p = split[2];
 				q = strchr(split[2], ',');
-				*q = '\0';
 				q++;
 
-				sscanf(p, "#$%x", &mask);
+				sscanf(p, "#$%" SCNx16, &mask);
 				if(q[0] != '-')
 					tmp = g_strdup_printf("%s,%s", create_reg_lists(mask), q);
 				else
