@@ -58,7 +58,9 @@ Bug fixes:
 	- fixed Lionel's logging problem (missing values on linkport output
 	- fixed "libticables2 access violation" which appears when changing the link cable under some circumstances
 	- don't allow launching of debugger if preloading has not finished yet => crash
-	fix the "Default" button when importing a Titanium 89u (default to HW3 until we sort out HW4's actual speed, not HW2)
+	- fix the "Default" button when importing a Titanium 89u (default to HW3 until we sort out HW4's actual speed, not HW2)
+	- if link cable reconfiguring fails, fallback to null cable & port
+	- merged Lionel's patch: fix buffer overflow in the disasm routine
 	
 	
 Notes:
