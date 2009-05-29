@@ -51,6 +51,8 @@ typedef __int16 	int16_t;
 typedef __int32 	int32_t;
 typedef __int64		int64_t;
 
+typedef int64_t   intmax_t;
+
 #ifdef _MSC_VER
 #pragma warning( pop ) 
 #endif

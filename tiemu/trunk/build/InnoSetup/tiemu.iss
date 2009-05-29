@@ -144,7 +144,7 @@ Name: "{userdesktop}\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}"; M
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\TiEmu"; Filename: "{app}\tiemu.exe"; WorkingDir: "{app}"; MinVersion: 4,4; Tasks: quicklaunchicon
 
 [Run]
-Filename: "{app}\tiemu.exe"; Description: "Launch TiEmu"; StatusMsg: "Running TiEmu..."; Flags: postinstall nowait unchecked
+;Filename: "{app}\tiemu.exe"; Description: "Launch TiEmu"; StatusMsg: "Running TiEmu..."; Flags: postinstall nowait unchecked
 Filename: "{cf}\LPG Shared\wget\d_and_i.bat"; Description: "Download and install GTK+"; StatusMsg: "Running ..."; Flags: nowait postinstall unchecked hidewizard;
 ; COM/OLE  registration
 Filename: "{app}\tiemu.exe"; Parameters: "/RegServer"; Tasks: com_ole;
