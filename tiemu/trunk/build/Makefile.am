@@ -1,4 +1,4 @@
-EXTRA_DIST = fedora InnoSetup ipaq mingw msvc nsis
+EXTRA_DIST = InnoSetup ipaq mingw msvc nsis
 
 distclean: clean
 
