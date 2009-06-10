@@ -42,7 +42,7 @@ Johan Eilert <johei804@student.liu.se>
 --
 Updated by Romain Lievin <roms@tilp.info> from Olivier Armand's informations 
 (7000xx_ports.zip). Needed by the TiEmu project.
-CVS: $Id$ <http://svn.technologeek.org/cgi-bin/viewcvs.cgi/tiemu/trunk/docs/ti_hw/misc/J89hw.txt?rev=774&root=tiemu&view=auto>
+SVN: $Id$ <http://svn.tilp.info/cgi-bin/viewcvs.cgi/tiemu/trunk/docs/ti_hw/misc/J89hw.txt?rev=2847&root=tiemu&view=auto>
 
 
 ===========================================================================
