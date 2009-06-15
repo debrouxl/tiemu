@@ -619,6 +619,16 @@
 		  </child>
 
 		  <child>
+		    <widget class="GtkMenuItem" id="gcc4ti1">
+		      <property name="visible">True</property>
+		      <property name="tooltip" translatable="yes">http://trac.godzil.net/gcc4ti</property>
+		      <property name="label" translatable="yes">GCC4TI</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_bookmarks1_activate" last_modification_time="Sun, 20 Feb 2005 18:05:19 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
 		    <widget class="GtkMenuItem" id="tilp1">
 		      <property name="visible">True</property>
 		      <property name="tooltip" translatable="yes">http://www.tilp.info</property>

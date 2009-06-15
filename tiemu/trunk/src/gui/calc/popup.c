@@ -528,17 +528,10 @@ on_bookmarks1_activate				   (GtkMenuItem		*menuitem,
 										gpointer		user_data)
 {
 #if GTK_CHECK_VERSION(2,12,0)
-	GtkWidget *dialog;
-	const gchar *message =
-    _("You're using GTK+ >= 2.12 so bookmark support is currently unavailable.");
-  
-	dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
-				  GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
-				  message);
-	gtk_dialog_run(GTK_DIALOG(dialog));
-	gtk_widget_destroy(dialog);
+	gchar * url = gtk_widget_get_tooltip_text(GTK_WIDGET(menuitem));
+	go_to_bookmark(url);
 #else
-	GtkTooltipsData* data = gtk_tooltips_data_get(GTK_WIDGET(menuitem)); /* FIXME: deprecated in GTK+ 2.12 */
+	GtkTooltipsData* data = gtk_tooltips_data_get(GTK_WIDGET(menuitem));
 	go_to_bookmark(data->tip_text);
 #endif
 }
@@ -550,7 +543,7 @@ on_bugreport1_activate				   (GtkMenuItem     *menuitem,
 {
 	GtkWidget *dialog;
 	const gchar *message =
-    _("There are several ways to get in touch if you encounter a problem with TiEmu or if you have questions, suggestions, bug reports, etc:\n- if you have general questions or problems, please consider the users' mailing list first (http://tiemu-users@list.sf.net).\n- if you want to discuss about TiEmu, you can use the TiEmu forum (http://sourceforge.net/forum/?group_id=23169).\n- for bug reports, use the 'Bug Tracking System' (http://sourceforge.net/tracker/?group_id=23169).\n\nBefore e-mailing the TiEmu team, make sure you have read the manual and/or the FAQ....");
+    _("There are several ways to get in touch if you encounter a problem with TiEmu or if you have questions, suggestions, bug reports, etc:\n- if you have general questions or problems, please consider the users' mailing list first (http://tiemu-users@list.sf.net).\n- if you want to discuss about TiEmu, you can use the TiEmu forum (http://sourceforge.net/forum/?group_id=23169).\n- for bug reports, use the 'Bug Tracking System' (http://sourceforge.net/tracker/?group_id=23169).\n\nBefore e-mailing the TiEmu team, make sure you have read the manual and/or the FAQ...");
   
 	dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
 				  GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
@@ -851,7 +844,7 @@ static void go_to_bookmark(const char *link)
 	{
 		GtkWidget *dialog;
 		GTimer *timer;
-		const gchar *message = "A web browser has been launched: this may take a while before it appears. If it is already launched, the page will be opened in the existing frame.";
+		const gchar *message = _("A web browser has been launched: this may take a while before it appears. If it is already launched, the page may be opened in the existing window or tab, depending on the browser's settings.");
 
 		dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
 					   GTK_MESSAGE_INFO,

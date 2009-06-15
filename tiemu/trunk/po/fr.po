@@ -2,13 +2,14 @@
 # Copyright (C) 2007 Romain Liévin
 # This file is distributed under the same license as the libtifiles package.
 #
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: tiemu\n"
 "Report-Msgid-Bugs-To: tiemu-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-30 00:05+0200\n"
-"PO-Revision-Date: 2004-04-13 13:21+0000\n"
-"Last-Translator: Romain Liévin <roms@tilp.info>\n"
+"POT-Creation-Date: 2009-06-15 12:09+0200\n"
+"PO-Revision-Date: 2009-06-15 12:09+0200\n"
+"Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tiemu-devel@lists.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -192,6 +193,7 @@ msgstr "Impossible d'ouvrir ce fichier: <%s>"
 
 # ##, c-format
 # #, c-format
+#. TiLP used to dump 8 MB images for HW4, try to load them anyway.
 #: src/core/images.c:190
 #, c-format
 msgid "Warning: truncating 8 MB image to 4 MB: <%s>"
@@ -269,6 +271,7 @@ msgstr "Mauvais argument!"
 
 # ##, c-format
 # #, c-format
+#. Open file
 #: src/core/state.c:178
 #, c-format
 msgid "loading state image: %s"
@@ -276,6 +279,7 @@ msgstr "chargement de l'image d'état: %s"
 
 # ##, c-format
 # #, c-format
+#. Open file
 #: src/core/state.c:353
 #, c-format
 msgid "saving state image (TiEmu v2.00 format): %s"
@@ -581,8 +585,8 @@ msgstr "Renommer le fichier"
 msgid "New name: "
 msgstr "Nouveau nom: "
 
-#: src/misc/files.c:209 src/misc/tie_error.c:78 src/gui/calc/popup.c:797
-#: src/gui/calc/popup.c:847 src/gui/dboxes.c:48 src/gui/fs_misc.c:212
+#: src/misc/files.c:209 src/misc/tie_error.c:78 src/gui/calc/popup.c:790
+#: src/gui/calc/popup.c:840 src/gui/dboxes.c:48 src/gui/fs_misc.c:212
 #: src/gui/fs_misc.c:391 src/gui/fs_misc.c:421 src/gui/fs_misc.c:437
 #: src/gui/fs_misc.c:502 src/gui/main.c:218 src/gui/main.c:226
 #: src/gui/main.c:234 src/gui/main.c:242 src/gui/quicksend.c:120
@@ -625,7 +629,7 @@ msgid "Couldn't open destination file for writing!"
 msgstr "Ne peut pas ouvrir le fichier de destination en écriture!"
 
 # #, c-format
-#: src/gui/calc/calc.c:234 src/gui/calc/popup.c:655
+#: src/gui/calc/calc.c:234 src/gui/calc/popup.c:648
 #: src/gui/debugger/dbg_bkpts.c:363 src/gui/debugger/dbg_bits.c:50
 #: src/gui/debugger/dbg_cause.c:60 src/gui/debugger/dbg_cause.c:144
 #: src/gui/debugger/dbg_code.c:357 src/gui/debugger/dbg_code.c:698
@@ -669,6 +673,7 @@ msgstr "fait !"
 
 # ##, c-format
 # #, c-format
+#. close file
 #: src/gui/calc/keymap.c:207
 #, c-format
 msgid "loading keymap: %s (%i keys)"
@@ -707,13 +712,7 @@ msgstr "Effacer la RAM ?"
 msgid "Manual_en.html"
 msgstr "Manual_en.html"
 
-#: src/gui/calc/popup.c:533
-msgid "You're using GTK+ >= 2.12 so bookmark support is currently unavailable."
-msgstr ""
-"Vous utilisez GTK+ >= 2.12: les marques-pages ne sont pas (encore) "
-"disponibles."
-
-#: src/gui/calc/popup.c:553
+#: src/gui/calc/popup.c:546
 msgid ""
 "There are several ways to get in touch if you encounter a problem with TiEmu "
 "or if you have questions, suggestions, bug reports, etc:\n"
@@ -725,16 +724,38 @@ msgid ""
 "tracker/?group_id=23169).\n"
 "\n"
 "Before e-mailing the TiEmu team, make sure you have read the manual and/or "
-"the FAQ...."
+"the FAQ..."
 msgstr ""
+"Il y a plusieurs façons de prendre contact si vous rencontrez un problème "
+"avec TIEmu ou si vous avez des questions, des suggestions, des bugs à "
+"signaler, etc:\n"
+"- si vous avez des questions ou des problèmes généraux, utilisez d'abord la "
+"liste de diffusion des utilisateurs (http://tiemu-users@list.sf.net).\n"
+"- si vous voulez discuter à propos de TiEmu, vous pouvez utiliser le forum "
+"de TiEmu (http://sourceforge.net/forum/?group_id=23169).\n"
+"- pour les signalements de bugs, utilisez le 'Bug Tracking System' (http://"
+"sourceforge.net/tracker/?group_id=23169).\n"
+"\n"
+"Avant d'envoyer un e-mail à l'équipe TIEmu, lisez s'il vous plaît le manuel "
+"et/ou la FAQ..."
 
-#: src/gui/calc/popup.c:797
+#: src/gui/calc/popup.c:790
 msgid "Unable to run ShellExecute extension."
 msgstr "Impossible d'exécuter l'extension ShellExecute."
 
-#: src/gui/calc/popup.c:847
+#: src/gui/calc/popup.c:840
 msgid "Spawn error: do you have Firefox installed?"
 msgstr "Erreur de lancement: un navigateur est-il installé ?"
+
+#: src/gui/calc/popup.c:850
+msgid ""
+"A web browser has been launched: this may take a while before it appears. If "
+"it is already launched, the page may be opened in the existing window or "
+"tab, depending on the browser's settings."
+msgstr ""
+"Un navigateur internet a été lancé: son apparition peut prendre plusieurs "
+"secondes. S'il est déjà lancé, la page sera peut-être ouverte dans la "
+"fenêtre ou l'onglet existant, selon les réglages du navigateur."
 
 # ##, c-format
 # #, c-format
@@ -954,6 +975,9 @@ msgstr "Initialisation de D-Bus..."
 msgid "Initializing OLE..."
 msgstr "Initialisation de l'OLE..."
 
+#.
+#. Check the version of libraries
+#.
 #: src/gui/main.c:212
 msgid "Initializing TiLP framework..."
 msgstr "Initialisation du sous-système TiLP..."
@@ -1002,6 +1026,9 @@ msgstr ""
 msgid "libticalcs: version mismatches."
 msgstr "libticalcss: la version ne correspond pas."
 
+#.
+#. Search for dumps or upgrades to convert (in the image directory)
+#.
 #: src/gui/main.c:249
 msgid "Searching for ROM dumps..."
 msgstr "Recherche de ROM..."
@@ -1010,10 +1037,16 @@ msgstr "Recherche de ROM..."
 msgid "Loading image..."
 msgstr "Chargement d'une image..."
 
+#.
+#. Initialize emulation engine (step 4)
+#.
 #: src/gui/main.c:299
 msgid "Initializing m68k emulation engine..."
 msgstr "Initialisation du moteur d'émulation m68k..."
 
+#.
+#. Load calculator state image
+#.
 #: src/gui/main.c:331
 msgid "Loading previously saved state..."
 msgstr "Chargment d'un état précédemment sauvegardé..."
@@ -1087,6 +1120,11 @@ msgstr "Impossible d'ouvrir le périphérique audio"
 msgid "sound buffer full, dropping sample(s)"
 msgstr "tampon plein, purge d'échantillon(s)"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/calc-2.str:7
 msgid "TiEmu 3"
 msgstr "TiEmu 3"
@@ -1095,6 +1133,11 @@ msgstr "TiEmu 3"
 msgid "Use mouse or press a key."
 msgstr "Utiliser la souris ou presser une touche."
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/dbg_bkpts-2.str:7
 msgid "Breakpoints"
 msgstr "Points d'arrêt"
@@ -1143,6 +1186,11 @@ msgstr "Vecteurs"
 msgid "Prgm entry"
 msgstr "Entrée programme"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/dbg_bits-2.str:7
 msgid "Add Bit Breakpoint"
 msgstr "Ajouter un point d'arrêt sur bit"
@@ -1198,6 +1246,11 @@ msgstr "0"
 msgid "States:"
 msgstr "États:"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/dbg_cause-2.str:7
 msgid "Breakpoint!"
 msgstr "Point d'arrêt!"
@@ -1262,6 +1315,11 @@ msgstr "SR (mis en pile)"
 msgid "An exception has been encountered..."
 msgstr "Une exception a été rencontrée..."
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/dbg_code-2.str:7
 msgid "Disassembly"
 msgstr "Désassemblage"
@@ -1491,6 +1549,11 @@ msgstr "défaut"
 msgid "Font:"
 msgstr "Police:"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/dbg_data-2.str:7
 msgid "Add Data Breakpoint"
 msgstr "Ajouter un point d'arrêt de donnée"
@@ -1539,6 +1602,11 @@ msgstr "Long"
 msgid "Set program entry breakpoint"
 msgstr "Mettre un point d'arrêt sur programme"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/dbg_heap-2.str:7
 msgid "Heap"
 msgstr "Tas"
@@ -1550,6 +1618,11 @@ msgstr ""
 "Double-cliquer une linge pour ouvrir un onglet à l'adresse pointée par le "
 "descripteur dans la fenêtre de visualisation de la mémoire."
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/dbg_ioports-2.str:7 glade/dbg_regs-2.str:7 glade/dbg_regs-2.str:28
 msgid "Show registers"
 msgstr "Affiche les registres"
@@ -1570,6 +1643,11 @@ msgstr "_Hex"
 msgid "_Dec"
 msgstr "_Déc"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/dbg_mem-2.str:7
 msgid "Memory"
 msgstr "Mémoire"
@@ -1648,6 +1726,11 @@ msgstr "_ASCII"
 msgid "_Case sensitive"
 msgstr "Respect majuscules"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/dbg_pclog-2.str:7
 msgid "PC trace"
 msgstr "Trace PC"
@@ -1805,6 +1888,11 @@ msgstr "I="
 msgid "D0="
 msgstr "D0="
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/dbg_stack-2.str:7
 msgid "Stack"
 msgstr "Pile"
@@ -1825,10 +1913,20 @@ msgstr "A7 (pile)"
 msgid "A6 (frame)"
 msgstr "A6 (tas)"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/dbg_vectors-2.str:7
 msgid "Add Vector Breakpoint"
 msgstr "Ajouter un point d'arrêt"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/dboxes-2.str:7
 msgid "Title"
 msgstr "Titre"
@@ -1969,6 +2067,11 @@ msgstr "Configuration"
 msgid "Have a problem ? Check out the log:"
 msgstr "Un problème est apparu ? Vérifiez le fichier journal: "
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/infos-2.str:7
 msgid "Infos..."
 msgstr "_Informations..."
@@ -2043,6 +2146,11 @@ msgstr "Matériel:"
 msgid "HW1"
 msgstr "HW1"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/log_link-2.str:7
 msgid "Link Log"
 msgstr "Journal du Link"
@@ -2075,6 +2183,11 @@ msgstr "Taille du tampon:"
 msgid "KB"
 msgstr "Ko"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/pbars-2.str:7
 msgid "Title 1"
 msgstr "Titre 1"
@@ -2127,6 +2240,11 @@ msgstr "Texte"
 msgid "Title 5"
 msgstr "Titre 5"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/popup-2.str:7
 msgid "Welcome to TiEmu 3"
 msgstr "Bienvenue sur TiEmu"
@@ -2429,76 +2547,89 @@ msgstr "_Favoris"
 
 #: glade/popup-2.str:77
 msgid "http://lpg.ticalc.org/prj_tiemu"
-msgstr "http://lpg.ticalc.org, le groupe de programmeurs Linux."
+msgstr "http://lpg.ticalc.org/prj_tiemu"
 
 #: glade/popup-2.str:79
 msgid "http://tigcc.ticalc.org"
-msgstr "ticalc.org"
+msgstr "http://tigcc.ticalc.org"
 
 #: glade/popup-2.str:80
 msgid "TIGCC"
 msgstr "TIGCC"
 
 #: glade/popup-2.str:81
+msgid "http://trac.godzil.net/gcc4ti"
+msgstr "http://trac.godzil.net/gcc4ti"
+
+#: glade/popup-2.str:82
+msgid "GCC4TI"
+msgstr "GCC4TI"
+
+#: glade/popup-2.str:83
 msgid "http://www.tilp.info"
 msgstr "http://www.tilp.info"
 
-#: glade/popup-2.str:82
+#: glade/popup-2.str:84
 msgid "TiLP"
 msgstr "TiLP"
 
-#: glade/popup-2.str:83
+#: glade/popup-2.str:85
 msgid "http://education.ti.com"
 msgstr "http://education.ti.com"
 
-#: glade/popup-2.str:84
+#: glade/popup-2.str:86
 msgid "TI Education"
 msgstr "TI Education"
 
-#: glade/popup-2.str:85
+#: glade/popup-2.str:87
 msgid "http://www.ticalc.org"
 msgstr "http://www.ticalc.org"
 
-#: glade/popup-2.str:86
+#: glade/popup-2.str:88
 msgid "ticalc.org"
 msgstr "ticalc.org"
 
-#: glade/popup-2.str:87
+#: glade/popup-2.str:89
 msgid "How to report a bug or a problem."
 msgstr "Comment envoyer un rapport de bogue ou un problème."
 
-#: glade/popup-2.str:88
+#: glade/popup-2.str:90
 msgid "Bu_g report"
 msgstr "Rapport de _bogue"
 
-#: glade/popup-2.str:89
+#: glade/popup-2.str:91
 msgid "Display the log of all changes."
 msgstr "Afficher la liste des changements."
 
-#: glade/popup-2.str:90
+#: glade/popup-2.str:92
 msgid "_ChangeLog"
 msgstr "_Changements"
 
-#: glade/popup-2.str:91
+#: glade/popup-2.str:93
 msgid "About TiEmu..."
 msgstr "A propos de TiEmu..."
 
-#: glade/popup-2.str:92
+#: glade/popup-2.str:94
 msgid "_About..."
 msgstr "A propos..."
 
-#: glade/popup-2.str:93
+#: glade/popup-2.str:95
 msgid "_Infos..."
 msgstr "_Informations..."
 
-#: glade/popup-2.str:94
+#: glade/popup-2.str:96
 msgid "Just exits."
 msgstr "Quitter tout simplement."
 
-#: glade/popup-2.str:95
+#: glade/popup-2.str:97
 msgid "E_xit without saving state"
 msgstr "Quitter sans sauver"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/quicksend-2.str:7
 msgid "Quick send"
 msgstr "Envoi rapide"
@@ -2507,10 +2638,20 @@ msgstr "Envoi rapide"
 msgid "_enable"
 msgstr "_activé"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/romversion-2.str:7
 msgid "Set ROM version"
 msgstr "Choisir une ROM"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/scroptions-2.str:7
 msgid "Screen Options"
 msgstr "Options de capture d'écran"
@@ -2603,6 +2744,11 @@ msgstr "_Calculatrice"
 msgid "Image type:"
 msgstr "Type d'image:"
 
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
 #: glade/wizard-2.str:7 glade/wizard-2.str:17 glade/wizard-2.str:25
 #: glade/wizard-2.str:27
 msgid "TiEmu wizard"
