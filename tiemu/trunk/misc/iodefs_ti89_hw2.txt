@@ -28,7 +28,7 @@ $600013	| 1	| wo	| <all>					| LCD log. height
 $60001C	| 1	| wo	| <..5432..>			| LCD Row Sync
 $60001D	| 1	| wo	| <...4....>			| Contrast			| Bit #4
 $700017 | 1 | rw	| <......10>			| Address range		| $4C00-6BFF,$6C00-8BFF
-$700018 | 1 | rw	| <7...3.10>			| Control/Status	| FS toggle,Bat chk #B,Scren enable,Bat chk #A
+$70001D | 1 | rw	| <7...3.10>			| Control/Status	| FS toggle,Bat chk #B,Screen enable,Bat chk #A
 
 [Timer]
 
