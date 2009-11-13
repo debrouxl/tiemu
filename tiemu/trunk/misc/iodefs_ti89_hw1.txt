@@ -1,4 +1,7 @@
-; I/O register definitions for TI89 HW1 (c) 2005 Romain Liévin
+; I/O register definitions for TI89 HW1
+; (c) 2005 Romain Liévin
+; (c) 2009 Lionel Debroux
+; (c) 2009 Kevin Kofler
 ;
 ; Beware: _don't_ touch this file unless you know what you are doing !
 ; Any modification can result in unpredictable results (or crash even !).

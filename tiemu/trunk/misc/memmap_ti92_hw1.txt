@@ -1,4 +1,6 @@
-; Memory map definitions for TI92 (c) 2007 Romain Liévin
+; Memory map definitions for TI92
+; (c) 2007 Romain Liévin
+; (c) 2009 Lionel Debroux
 ;
 ; Beware: _don't_ touch this file unless you know what you are doing !
 ; Any modification can result in unpredictable results (or crash even !).
@@ -7,4 +9,4 @@
 000000-01ffff:RAM (128 KB)
 200000-3fffff:internal ROM (TI92 1.x) or unused
 400000-5fffff:external ROM (TI92 2.x) or unused
-600000-60001f:I/O ports
+600000-60001f:I/O ports (32 bytes)

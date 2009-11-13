@@ -1,4 +1,6 @@
-; Memory map definitions for Titanium HW4 (c) 2007 Romain Liévin
+; Memory map definitions for Titanium HW4
+; (c) 2007 Romain Liévin
+; (c) 2009 Lionel Debroux
 ;
 ; Beware: _don't_ touch this file unless you know what you are doing !
 ; Any modification can result in unpredictable results (or crash even !).
@@ -7,8 +9,8 @@
 ;
 
 000000-03ffff:RAM (256 KB)
-200000-2fffff:RAM (mirror)
-400000-4fffff:RAM (mirror)
+200000-23ffff:RAM (mirror)
+400000-43ffff:RAM (mirror)
 600000-60001f:I/O ports (32 bytes)
 700000-7000ff:I/O ports (256 bytes)
 700100-7001ff:I/O ports (256 bytes)
