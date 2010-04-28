@@ -3,7 +3,7 @@
 
 /*  TiEmu - a TI emulator
  *  Copyright (C) 1999-2005  Romain Lievin
- *  Copyright (C) 2005 Kevin Kofler
+ *  Copyright (C) 2005, 2009 Kevin Kofler
  *
  *  This program is free software you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -76,9 +76,9 @@ gint display_about_dbox(void)
 
 #ifdef _MSC_VER /* MSVC builds. MinGW builds use Linux file structures. */
 	filename = g_strconcat(inst_paths.base_dir, "License.txt", NULL);
-#else				/*  */
+#else /*  */
 	filename = g_strconcat(inst_paths.base_dir, "COPYING", NULL);
-#endif				/*  */
+#endif /*  */
 
 	if (access(filename, F_OK) == 0) 
 	{
@@ -97,13 +97,11 @@ gint display_about_dbox(void)
 	version = g_strdup_printf(_("Framework version (cables=%s, files=%s, calcs=%s, conv=%s)"),
 	     ticables_version_get(), tifiles_version_get(), ticalcs_version_get(), ticonv_version_get());
 
-	//---
-
 	widget = gtk_about_dialog_new();
 	dlg = GTK_ABOUT_DIALOG(widget);
 	pix = create_pixbuf("logo.xpm");
 
-	gtk_about_dialog_set_name(dlg, "TiEmu - Ti Emulator - ");
+	gtk_about_dialog_set_program_name(dlg, "TiEmu - Ti Emulator - ");
 	gtk_about_dialog_set_version(dlg, TIEMU_VERSION);
 	gtk_about_dialog_set_comments(dlg, version);
 	gtk_about_dialog_set_copyright(dlg, "Copyright (c) 1999-2007 The TiEmu Team");
@@ -114,10 +112,8 @@ gint display_about_dbox(void)
 	gtk_about_dialog_set_artists(dlg, artists);
 	gtk_about_dialog_set_logo(dlg, pix);
 
-	g_signal_connect_swapped(dlg, "response",
-		G_CALLBACK(gtk_widget_destroy), dlg);
+	g_signal_connect_swapped(dlg, "response",G_CALLBACK(gtk_widget_destroy), dlg);
 
-	//gtk_show_about_dialog(NULL, "");
 	gtk_widget_show_all(widget);
 
 	return 0;

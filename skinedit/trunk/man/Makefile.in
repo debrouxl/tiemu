@@ -126,6 +126,7 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
@@ -189,6 +190,7 @@ sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
+top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 man_MANS = tiemu-skinedit.1
@@ -430,12 +432,14 @@ uninstall-man: uninstall-man1
 	uninstall-pkgdataDATA
 
 
+all: dist_win
+
 view: $(man_MANS)
 	groff -Tascii -man $(man_MANS) | less
 
 dist_win: $(man_MANS)
 	groff -Tascii -man $(man_MANS) > Manpage
-	gcc cleaner.c -o cleaner
+	C_INCLUDE_PATH="" LIBRARY_PATH="" gcc cleaner.c -o cleaner
 	./cleaner Manpage
 	rm Manpage cleaner
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

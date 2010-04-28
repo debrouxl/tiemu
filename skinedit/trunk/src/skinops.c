@@ -33,9 +33,6 @@
 #ifndef __WIN32__
 #include <byteswap.h>
 #endif
-#ifdef __WIN32__
-#include <io.h> // _mktemp
-#endif
 
 #include <gtk/gtk.h>
 
@@ -369,29 +366,32 @@ GtkWidget *main_wnd;
 int
 load_image(FILE *fp)
 {
-  char pattern[] = "fnXXXXXX";
-  char *filename;
-  FILE *ft;
+  GdkPixbufLoader *loader;
   GError *error = NULL;
   //GdkGeometry geometry;
   
   /*
-   * Extract image from skin by creating a temp file
+   * Extract image from skin
    */
-  filename = mktemp(pattern); // use tmpfile instead of stdio.h
-  ft = fopen(filename, "wb");
-  if(ft == NULL) {
-		fprintf(stderr, "Unable to open this file: <%s>\n", filename);
-		return -1;
-  }
-  
+  loader = gdk_pixbuf_loader_new();
   while(!feof(fp)) {
-	fputc(fgetc(fp), ft);
+    int c = fgetc(fp);
+    if (c != EOF) {
+      unsigned char buf = c;
+      if(!gdk_pixbuf_loader_write(loader, &buf, 1, &error)) {
+        fprintf(stderr, "Failed to load pixbuf from skin: %s\n", error->message);
+        g_error_free(error);
+        return -1;
+      }
+    }
   }
-	
-  fclose(ft);
+  if(!gdk_pixbuf_loader_close(loader, &error)) {
+    fprintf(stderr, "Failed to load pixbuf from skin: %s\n", error->message);
+    g_error_free(error);
+    return -1;
+  }
 
-  /* 
+  /*
    * Destroy previous pixbuf
    */
   if(pixbuf != NULL) {
@@ -402,14 +402,14 @@ load_image(FILE *fp)
   /*
    * Feed the original pixbuf with our image
    */
-  skin_infos.img_orig = gdk_pixbuf_new_from_file(filename, &error);
+  skin_infos.img_orig = gdk_pixbuf_loader_get_pixbuf(loader);
   if (skin_infos.img_orig == NULL) 
     {
-      fprintf(stderr, "Failed to load pixbuf file: %s: %s\n", filename, error->message);
+      fprintf(stderr, "Failed to load pixbuf from skin: %s\n", error->message);
       g_error_free(error);
       return -1;
     }
-  
+
   /*
    * Set image and drawing area sizes
    */
@@ -437,11 +437,6 @@ load_image(FILE *fp)
    */
   pixbuf = gdk_pixbuf_copy(skin_infos.img_orig);
   //gtk_widget_draw (GTK_DRAWING_AREA(drawingarea1), (GdkRectangle *)&update_rect);
-  
-  /*
-   * Delete temp file
-   */
-  unlink(filename);
 
   return 0;
 }

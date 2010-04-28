@@ -2,8 +2,8 @@ TiEmu 3 (version 3.02)
  *  Copyright (c) 2000-2001, Thomas Corvazier, Romain Lievin
  *  Copyright (c) 2001-2003, Romain Lievin
  *  Copyright (c) 2003, Julien Blache
- *  Copyright (c) 2004, Romain Liévin
- *  Copyright (c) 2005-2008, Romain Liévin, Kevin Kofler
+ *  Copyright (c) 2004, Romain Lievin
+ *  Copyright (c) 2005-2008, Romain Lievin, Kevin Kofler
  *  Copyright (c) 2007, Peter Fernandes
 Licensed under the GNU General Public License version 2 or later.
 

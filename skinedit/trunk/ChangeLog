@@ -1,5 +1,8 @@
 List of changes:
 
+	Use g_object_(un)ref instead of deprecated gtk_widget_(un)ref.
+	Don't use insecure mktemp function, load JPEG without a temporary file.
+
 - 07/12/2007, version 1.27: roms
 	Changed package name from skinedit to tiemu-skinedit.
 	

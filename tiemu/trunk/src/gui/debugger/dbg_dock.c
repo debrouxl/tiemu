@@ -65,10 +65,10 @@ static void gtk_widget_reparent_(GtkWidget* dst, GtkWidget* src)
 #if 1
 	gtk_widget_reparent(child, dst);
 #else
-	gtk_widget_ref(child);
-    gtk_container_remove(GTK_CONTAINER(src), child);
-    gtk_container_add(GTK_CONTAINER(dst), child);
-    gtk_widget_unref(child);
+	g_object_ref(child);
+	gtk_container_remove(GTK_CONTAINER(src), child);
+	gtk_container_add(GTK_CONTAINER(dst), child);
+	g_object_unref(child);
 #endif
 }
 
