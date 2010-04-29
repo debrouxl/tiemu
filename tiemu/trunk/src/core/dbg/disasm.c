@@ -425,8 +425,12 @@ int m68k_dasm(char **line, uint32_t addr)
 			}
 			break;
 		case 20:	/* BRA				*/
-			g_free(split[1]);
-			split[1] = g_strdup("BRA");
+			{
+				gchar *tmp;
+				tmp = g_strdup_printf("BRA.%c", split[1][3]);
+				g_free(split[1]);
+				split[1] = tmp;
+			}
 		break;
 
 		case 19:	/* BTST				*/

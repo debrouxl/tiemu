@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <inttypes.h>
 #include "sysconfig.h"
 #include "sysdeps.h"
 #include "uconfig.h"
@@ -229,8 +230,8 @@ void init_m68k (void)
 	    uae_u32 opcode, count, total;
 	    char name[20];
 	    write_log ("Reading instruction count file...\n");
-	    fscanf (f, "Total: %lu\n", &total);
-	    while (fscanf (f, "%lx: %lu %s\n", &opcode, &count, name) == 3) {
+	    fscanf (f, "Total: %" SCNu32 "\n", &total);
+	    while (fscanf (f, "%" SCNx32 ": %" SCNu32 " %s\n", &opcode, &count, name) == 3) {
 		instrcount[opcode] = count;
 	    }
 	    fclose(f);
@@ -279,7 +280,7 @@ static struct regstruct regs_backup[16];
 static int backup_pointer = 0;
 #endif /* 0 */
 #ifdef NO_GDB
-static long int m68kpc_offset;
+static int64_t m68kpc_offset;
 #endif /* NO_GDB */
 int lastint_no;
 
@@ -299,9 +300,9 @@ char *sym_addr(uae_u32 addr)
 	int rcid = romcalls_is_addr(addr);
 
 	if(rcid == -1)
-		snprintf(buf, sizeof(buf), "$%06lX", (unsigned long)addr);
+		snprintf(buf, sizeof(buf), "$%06" PRIX32, addr);
 	else
-		snprintf(buf, sizeof(buf), "$%06lX -> tios::%s", (unsigned long)addr, romcalls_get_name(rcid)); 
+		snprintf(buf, sizeof(buf), "$%06" PRIX32 " -> tios::%s", addr, romcalls_get_name(rcid)); 
 
 	return buf;
 }
@@ -368,16 +369,14 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	    if (dp & 4) base += dispreg;
 
 	    addr = base + outer;
-	    sprintf (buffer,"(%s%c%d.%c+%ld)+%ld [$%06lX]", name,
+	    sprintf (buffer,"(%s%c%d.%c+%ld)+%ld [$%06" PRIX32 "]", name,
 		    dp & 0x8000 ? 'A' : 'D', (int)r, dp & 0x800 ? 'L' : 'W',
-		    disp,outer,
-		    (unsigned long)addr);
+		    disp, outer, addr);
 	} else {
 	  addr = m68k_areg(regs,reg) + (uae_s32)((uae_s8)disp8) + dispreg;
-	  sprintf (buffer,"(A%d, %c%d.%c, $%02X) [$%06lX]", reg,
+	  sprintf (buffer,"(A%d, %c%d.%c, $%02X) [$%06" PRIX32 "]", reg,
 	       dp & 0x8000 ? 'A' : 'D', (int)r, dp & 0x800 ? 'L' : 'W',
-	       disp8,
-	       (unsigned long)addr);
+	       disp8, addr);
 	}
 	break;
      case PC16:
@@ -429,7 +428,7 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	}
 	break;
      case absw:
-	sprintf (buffer,"$%lX", (unsigned long)(uae_s32)(uae_s16)get_iword_1 (m68kpc_offset));
+	sprintf (buffer,"%s", sym_addr ((uae_s32)(uae_s16)(get_iword_1 (m68kpc_offset) & 0xffff)));
 	m68kpc_offset += 2;
 	break;
      case absl:
@@ -439,15 +438,15 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
      case imm:
 	switch (size){
 	 case sz_byte:
-	    sprintf (buffer,"#$%X", (unsigned int)(get_iword_1 (m68kpc_offset) & 0xff));
+	    sprintf (buffer,"#$%" PRIX32, ((uae_u32)get_iword_1 (m68kpc_offset) & 0xff));
 	    m68kpc_offset += 2;
 	    break;
 	 case sz_word:
-	    sprintf (buffer,"#$%X", (unsigned int)(get_iword_1 (m68kpc_offset) & 0xffff));
+	    sprintf (buffer,"#$%" PRIX32, ((uae_u32)get_iword_1 (m68kpc_offset) & 0xffff));
 	    m68kpc_offset += 2;
 	    break;
 	 case sz_long:
-	    sprintf (buffer,"#$%lX", (unsigned long)(get_ilong_1 (m68kpc_offset)));
+	    sprintf (buffer,"#$%" PRIX32, ((uae_u32)get_ilong_1 (m68kpc_offset)));
 	    m68kpc_offset += 4;
 	    break;
 	 default:
@@ -457,21 +456,21 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
      case imm0:
 	offset = (uae_s32)(uae_s8)get_iword_1 (m68kpc_offset);
 	m68kpc_offset += 2;
-	sprintf (buffer,"#$%X", (unsigned int)(offset & 0xff));
+	sprintf (buffer,"#$%" PRIX32, (uae_u32)offset & 0xff);
 	break;
      case imm1:
 	offset = (uae_s32)(uae_s16)get_iword_1 (m68kpc_offset);
 	m68kpc_offset += 2;
-	sprintf (buffer,"#$%X", (unsigned int)(offset & 0xffff));
+	sprintf (buffer,"#$%" PRIX32, (uae_u32)offset & 0xffff);
 	break;
      case imm2:
 	offset = (uae_s32)get_ilong_1 (m68kpc_offset);
 	m68kpc_offset += 4;
-	sprintf (buffer,"#$%lX", (unsigned long)offset);
+	sprintf (buffer,"#$%" PRIX32, offset);
 	break;
      case immi:
 	offset = (uae_s32)(uae_s8)(reg & 0xff);
-	sprintf (buffer,"#$%lX", (unsigned long)offset);
+	sprintf (buffer,"#$%" PRIX32, offset & 0xff);
 	break;
      default:
 	break;
@@ -1661,20 +1660,20 @@ int DasmFPU(uint16_t code, char *buf);
 
 int m68k_disasm (char *output, uaecptr addr)
 {
-    char buf[273];
-    uaecptr newpc = 0;
+	char buf[273];
+	uint64_t newpc = 0;
 
 	char instrname[20],*ccpt;
 	uae_u32 opcode;
 	struct mnemolookup *lookup;
 	struct instr *dp;
 	uae_u32 orig_opcode;
-	uaecptr nextpc;
+	uint64_t nextpc;
 
-	m68kpc_offset = addr - m68k_getpc ();
+	m68kpc_offset = (int64_t)addr - (int64_t)m68k_getpc ();
 	output[0] = '\0';
 
-	sprintf (buf, "%06lx: ", m68k_getpc () + m68kpc_offset);
+	sprintf (buf, "%06" PRIx32 ": ", addr);
 	strcat (output, buf);
 	opcode = get_iword_1 (m68kpc_offset);
 	orig_opcode = opcode;
@@ -1713,10 +1712,10 @@ int m68k_disasm (char *output, uaecptr addr)
 	}
 	if (ccpt != 0) {
 	    if (cctrue(dp->cc)) {
-		sprintf (buf, " [%06lX] (TRUE)", newpc);
+		sprintf (buf, " [%06" PRIX64 "] (TRUE)", newpc);
 		strcat (output, buf);
 	    } else {
-		sprintf (buf, " [%06lX] (FALSE)", newpc);
+		sprintf (buf, " [%06" PRIX64 "] (FALSE)", newpc);
 		strcat (output, buf);
 	    }
 	} else if ((opcode & 0xff00) == 0x6100) { /* BSR */
@@ -1724,7 +1723,7 @@ int m68k_disasm (char *output, uaecptr addr)
 	    strcat (output, buf);
 	} else if((orig_opcode >= 0xf800) && (orig_opcode <= 0xfff2)) {
 		char *buffer = &(output[8]);
-		unsigned long pm;
+		uint32_t pm;
 		uint32_t pc = m68k_getpc();	/* addr */
 
 		/* F-Line ROM calls (see KerNO doc and thanks to Lionel Debroux) */
@@ -1733,16 +1732,16 @@ int m68k_disasm (char *output, uaecptr addr)
 		case 0xfff0:	/* 6 byte bsr w/long word displacement */
 			pm = get_ilong_1 (m68kpc_offset); m68kpc_offset += 6 - 2;
 			if (pm & 0x8000)
-				sprintf (buffer, "FLINE bsr.l *-$%lX [%lX]", (-(signed long)(int32_t)pm) - 2, pc + (signed long)(int32_t)pm + 2);
+				sprintf (buffer, "FLINE bsr.l *-$%" PRIX32 " [%" PRIX32 "]", (-(int32_t)pm) - 2, pc + (int32_t)pm + 2);
 			else
-				sprintf (buffer, "FLINE bsr.l *+$%lX [%lX]", pm + 2, pc + pm + 2);
+				sprintf (buffer, "FLINE bsr.l *+$%" PRIX32 " [%" PRIX32 "]", pm + 2, pc + pm + 2);
 			break;
 		case 0xfff1:	/* 6 byte bra w/long word displacement */
 			pm = get_ilong_1 (m68kpc_offset); m68kpc_offset += 6 - 2;
 			if (pm & 0x8000)
-				sprintf (buffer, "FLINE bra.l *-$%lX [%lX]", (-(signed long)(int32_t)pm) - 2, pc + (signed long)(int32_t)pm + 2);
+				sprintf (buffer, "FLINE bra.l *-$%" PRIX32 " [%" PRIX32 "]", (-(int32_t)pm) - 2, pc + (int32_t)pm + 2);
 			else
-				sprintf (buffer, "FLINE bra.l *+$%lX [%lX]", pm + 2, pc + pm + 2);
+				sprintf (buffer, "FLINE bra.l *+$%" PRIX32 " [%" PRIX32 "]", pm + 2, pc + pm + 2);
 			break;
 		case 0xfff2:	/* 4 byte ROM CALL */
 			pm = get_iword_1 (m68kpc_offset); m68kpc_offset += 4 - 2;
@@ -1756,7 +1755,7 @@ int m68k_disasm (char *output, uaecptr addr)
 				
 				heap_search_for_address(pc + 2, &handle);
 				if (handle > 0) heap_get_block_addr(handle, &addr); else addr = 0;
-				sprintf (buffer, "FLINE jmp.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + (signed long)(signed short)pm + 0x8000);
+				sprintf (buffer, "FLINE jmp.w *+$%" PRIX32 " [%" PRIX32 "]", (int32_t)(signed short)pm + 0x8000, addr + (int32_t)(signed short)pm + 0x8000);
 			}
 			break;
 		case 0xffef:	/* jsr __ld_entry_point_plus_0x8000+word */
@@ -1767,7 +1766,7 @@ int m68k_disasm (char *output, uaecptr addr)
 				
 				heap_search_for_address(pc + 2, &handle);
 				if (handle > 0) heap_get_block_addr(handle, &addr); else addr = 0;
-				sprintf (buffer, "FLINE jsr.w *+$%lX [%lX]", (signed long)(signed short)pm + 0x8000, addr + (signed long)(signed short)pm + 0x8000);
+				sprintf (buffer, "FLINE jsr.w *+$%" PRIX32 " [%" PRIX32 "]", (int32_t)(signed short)pm + 0x8000, addr + (int32_t)(signed short)pm + 0x8000);
 			}
 			break;
 		case 0xf8b5:	/* 2 byte ROM call followed by an FPU opcode (special case: _bcd_math) */
@@ -1786,11 +1785,11 @@ int m68k_disasm (char *output, uaecptr addr)
 		char *buffer = &(output[8]);
 		sprintf (buffer, "ER_throw %d [%s]", opcode & 0xfff, ercodes_get_name(opcode & 0xfff));
 	} else if (opcode == 0x4AFC && orig_opcode != 0x4AFC) { /* illegal instruction, but not ILLEGAL */
-		sprintf (output, "%06lx: DC.W $%04X", addr, orig_opcode);
+		sprintf (output, "%06" PRIx32 ": DC.W $%04X", addr, orig_opcode);
 		
 	}
 
-	nextpc = m68k_getpc () + m68kpc_offset;	
+	nextpc = m68k_getpc () + m68kpc_offset;
 	return (nextpc - addr);
 }
 #endif /* NO_GDB */
