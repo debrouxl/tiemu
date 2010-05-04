@@ -38,6 +38,13 @@
 #include <windows.h>
 #endif
 
+#if GTK_CHECK_VERSION(2,18,0)
+#undef GTK_WIDGET_SENSITIVE
+#define GTK_WIDGET_SENSITIVE(wid) (gtk_widget_get_sensitive(wid))
+#undef GTK_WIDGET_VISIBLE
+#define GTK_WIDGET_VISIBLE(wid) (gtk_widget_get_visible(wid))
+#endif
+
 #include "ti68k_int.h"
 #include "struct.h"
 #include "dbg_all.h"

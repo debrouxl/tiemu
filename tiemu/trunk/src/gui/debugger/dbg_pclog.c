@@ -31,6 +31,11 @@
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 
+#if GTK_CHECK_VERSION(2,18,0)
+#undef GTK_WIDGET_VISIBLE
+#define GTK_WIDGET_VISIBLE(wid) (gtk_widget_get_visible(wid))
+#endif
+
 #include "intl.h"
 #include "paths.h"
 #include "support.h"

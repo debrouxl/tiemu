@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tiemu\n"
 "Report-Msgid-Bugs-To: tiemu-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-04-28 21:26+0200\n"
+"POT-Creation-Date: 2010-05-04 08:22+0200\n"
 "PO-Revision-Date: 2010-03-01 20:49+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tiemu-devel@lists.sf.net>\n"
@@ -442,7 +442,7 @@ msgid "User Interrupt vectors"
 msgstr "Vecteur User Interrupt"
 
 #: src/core/type2str.c:192 src/core/type2str.c:208 src/core/type2str.c:221
-#: src/gui/debugger/dbg_bkpts.c:296 glade/dbg_cause-2.str:11
+#: src/gui/debugger/dbg_bkpts.c:301 glade/dbg_cause-2.str:11
 msgid "access"
 msgstr "accès"
 
@@ -475,7 +475,7 @@ msgid "unknown"
 msgstr "inconnu"
 
 #: src/core/type2str.c:209 src/core/type2str.c:223
-#: src/gui/debugger/dbg_bkpts.c:296
+#: src/gui/debugger/dbg_bkpts.c:301
 msgid "range"
 msgstr "intervalle"
 
@@ -626,17 +626,17 @@ msgid "Couldn't open destination file for writing!"
 msgstr "Ne peut pas ouvrir le fichier de destination en écriture!"
 
 # #, c-format
-#: src/gui/calc/calc.c:234 src/gui/calc/popup.c:648
-#: src/gui/debugger/dbg_bkpts.c:363 src/gui/debugger/dbg_bits.c:50
+#: src/gui/calc/calc.c:239 src/gui/calc/popup.c:648
+#: src/gui/debugger/dbg_bkpts.c:368 src/gui/debugger/dbg_bits.c:50
 #: src/gui/debugger/dbg_cause.c:60 src/gui/debugger/dbg_cause.c:144
-#: src/gui/debugger/dbg_code.c:357 src/gui/debugger/dbg_code.c:698
-#: src/gui/debugger/dbg_code.c:1160 src/gui/debugger/dbg_data.c:56
-#: src/gui/debugger/dbg_entry.c:207 src/gui/debugger/dbg_heap.c:146
-#: src/gui/debugger/dbg_heap.c:267 src/gui/debugger/dbg_iop.c:430
-#: src/gui/debugger/dbg_mem.c:712 src/gui/debugger/dbg_mem.c:1087
-#: src/gui/debugger/dbg_mem.c:1311 src/gui/debugger/dbg_pclog.c:138
-#: src/gui/debugger/dbg_regs.c:194 src/gui/debugger/dbg_regs.c:539
-#: src/gui/debugger/dbg_stack.c:163 src/gui/debugger/dbg_stack.c:417
+#: src/gui/debugger/dbg_code.c:362 src/gui/debugger/dbg_code.c:703
+#: src/gui/debugger/dbg_code.c:1165 src/gui/debugger/dbg_data.c:56
+#: src/gui/debugger/dbg_entry.c:207 src/gui/debugger/dbg_heap.c:151
+#: src/gui/debugger/dbg_heap.c:272 src/gui/debugger/dbg_iop.c:435
+#: src/gui/debugger/dbg_mem.c:717 src/gui/debugger/dbg_mem.c:1092
+#: src/gui/debugger/dbg_mem.c:1316 src/gui/debugger/dbg_pclog.c:143
+#: src/gui/debugger/dbg_regs.c:199 src/gui/debugger/dbg_regs.c:544
+#: src/gui/debugger/dbg_stack.c:168 src/gui/debugger/dbg_stack.c:422
 #: src/gui/debugger/dbg_vectors.c:145 src/gui/logger/log_link.c:62
 #: src/gui/infos.c:50 src/gui/manpage.c:72 src/gui/pbars.c:63
 #: src/gui/quicksend.c:59 src/gui/release.c:77 src/gui/romversion.c:191
@@ -647,24 +647,24 @@ msgstr "%s: échec de chargement de l'interface graphique !\n"
 
 # ##, c-format
 # #, c-format
-#: src/gui/calc/calc.c:751
+#: src/gui/calc/calc.c:756
 #, c-format
 msgid "screenshot to %s... "
 msgstr "capture écran dans %s..."
 
-#: src/gui/calc/calc.c:770
+#: src/gui/calc/calc.c:775
 msgid "unsupported screenshot options combination, screenshot aborted."
 msgstr ""
 "combinaison d'options de capture écran incompatibles; capture écran avortée."
 
 # ##, c-format
 # #, c-format
-#: src/gui/calc/calc.c:797
+#: src/gui/calc/calc.c:802
 #, c-format
 msgid "failed to save pixbuf file: %s: %s"
 msgstr "n'a pû sauvegarder le fichier pixbuf: %s: %s"
 
-#: src/gui/calc/calc.c:802
+#: src/gui/calc/calc.c:807
 msgid "done!"
 msgstr "fait !"
 
@@ -760,87 +760,87 @@ msgstr ""
 msgid "loading skin: %s (%d x %d)"
 msgstr "chargement du skin: %s(%d x %d)"
 
-#: src/gui/debugger/dbg_bkpts.c:63
+#: src/gui/debugger/dbg_bkpts.c:68
 msgid "Symbol"
 msgstr "Symbole"
 
-#: src/gui/debugger/dbg_bkpts.c:63 src/gui/romversion.c:88
+#: src/gui/debugger/dbg_bkpts.c:68 src/gui/romversion.c:88
 #: glade/dbg_data-2.str:22
 msgid "Type"
 msgstr "Type"
 
-#: src/gui/debugger/dbg_bkpts.c:63
+#: src/gui/debugger/dbg_bkpts.c:68
 msgid "Status"
 msgstr "Statut"
 
-#: src/gui/debugger/dbg_bkpts.c:63 glade/log_link-2.str:9
+#: src/gui/debugger/dbg_bkpts.c:68 glade/log_link-2.str:9
 msgid "Start"
 msgstr "Début"
 
-#: src/gui/debugger/dbg_bkpts.c:63
+#: src/gui/debugger/dbg_bkpts.c:68
 msgid "End"
 msgstr "Fin"
 
-#: src/gui/debugger/dbg_bkpts.c:63 glade/dbg_data-2.str:11
+#: src/gui/debugger/dbg_bkpts.c:68 glade/dbg_data-2.str:11
 msgid "Mode"
 msgstr "Mode"
 
-#: src/gui/debugger/dbg_bkpts.c:140 src/gui/debugger/dbg_bkpts.c:167
-#: src/gui/debugger/dbg_bkpts.c:195 src/gui/debugger/dbg_bkpts.c:224
-#: src/gui/debugger/dbg_bkpts.c:251 src/gui/debugger/dbg_bkpts.c:335
+#: src/gui/debugger/dbg_bkpts.c:145 src/gui/debugger/dbg_bkpts.c:172
+#: src/gui/debugger/dbg_bkpts.c:200 src/gui/debugger/dbg_bkpts.c:229
+#: src/gui/debugger/dbg_bkpts.c:256 src/gui/debugger/dbg_bkpts.c:340
 msgid "enabled"
 msgstr "activé"
 
-#: src/gui/debugger/dbg_bkpts.c:140 src/gui/debugger/dbg_bkpts.c:167
-#: src/gui/debugger/dbg_bkpts.c:195 src/gui/debugger/dbg_bkpts.c:224
-#: src/gui/debugger/dbg_bkpts.c:251 src/gui/debugger/dbg_bkpts.c:335
+#: src/gui/debugger/dbg_bkpts.c:145 src/gui/debugger/dbg_bkpts.c:172
+#: src/gui/debugger/dbg_bkpts.c:200 src/gui/debugger/dbg_bkpts.c:229
+#: src/gui/debugger/dbg_bkpts.c:256 src/gui/debugger/dbg_bkpts.c:340
 msgid "disabled"
 msgstr "désactivé"
 
-#: src/gui/debugger/dbg_bkpts.c:143 src/gui/debugger/dbg_bkpts.c:338
+#: src/gui/debugger/dbg_bkpts.c:148 src/gui/debugger/dbg_bkpts.c:343
 msgid "one-shot"
 msgstr "un coup"
 
-#: src/gui/debugger/dbg_bkpts.c:426
+#: src/gui/debugger/dbg_bkpts.c:431
 msgid "dbg_bkpts-2.glade: GUI loading failed !\n"
 msgstr "dbg_bkpts-2.glade: échec du chargement de l'interface graphique !\n"
 
-#: src/gui/debugger/dbg_code.c:75 src/gui/debugger/dbg_heap.c:55
-#: src/gui/debugger/dbg_iop.c:299 src/gui/debugger/dbg_mem.c:185
-#: src/gui/debugger/dbg_pclog.c:54 src/gui/debugger/dbg_stack.c:58
+#: src/gui/debugger/dbg_code.c:80 src/gui/debugger/dbg_heap.c:60
+#: src/gui/debugger/dbg_iop.c:304 src/gui/debugger/dbg_mem.c:190
+#: src/gui/debugger/dbg_pclog.c:59 src/gui/debugger/dbg_stack.c:63
 msgid "Address"
 msgstr "Adresse"
 
-#: src/gui/debugger/dbg_code.c:75
+#: src/gui/debugger/dbg_code.c:80
 msgid "Opcode"
 msgstr "Code opératoire"
 
-#: src/gui/debugger/dbg_code.c:75
+#: src/gui/debugger/dbg_code.c:80
 msgid "Operand"
 msgstr "Opérande"
 
-#: src/gui/debugger/dbg_code.c:1244
+#: src/gui/debugger/dbg_code.c:1249
 msgid "Choose font..."
 msgstr "Choisir police..."
 
-#: src/gui/debugger/dbg_entry.c:91 src/gui/debugger/dbg_iop.c:264
+#: src/gui/debugger/dbg_entry.c:91 src/gui/debugger/dbg_iop.c:269
 #: src/gui/debugger/dbg_vectors.c:53
 msgid "Name"
 msgstr "Nom"
 
-#: src/gui/debugger/dbg_heap.c:55
+#: src/gui/debugger/dbg_heap.c:60
 msgid "Id"
 msgstr "Id"
 
-#: src/gui/debugger/dbg_heap.c:55 src/gui/romversion.c:88
+#: src/gui/debugger/dbg_heap.c:60 src/gui/romversion.c:88
 msgid "Size"
 msgstr "Taille"
 
-#: src/gui/debugger/dbg_iop.c:272 src/gui/debugger/dbg_stack.c:58
+#: src/gui/debugger/dbg_iop.c:277 src/gui/debugger/dbg_stack.c:63
 msgid "Value"
 msgstr "Valeur"
 
-#: src/gui/debugger/dbg_iop.c:308
+#: src/gui/debugger/dbg_iop.c:313
 msgid "Mask"
 msgstr "Masque"
 

@@ -28,10 +28,15 @@
 #  include <config.h>
 #endif
 
+#include <string.h>
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <gdk/gdkkeysyms.h>
-#include <string.h>
+
+#if GTK_CHECK_VERSION(2,18,0)
+#undef GTK_WIDGET_SENSITIVE
+#define GTK_WIDGET_SENSITIVE(wid) (gtk_widget_get_sensitive(wid))
+#endif
 
 #include "intl.h"
 #include "paths.h"

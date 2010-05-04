@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-04-28 21:14+0200\n"
+"POT-Creation-Date: 2010-05-04 08:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -152,34 +152,34 @@ msgstr ""
 msgid "Select File"
 msgstr ""
 
-#: src/main_cb.c:125
+#: src/main_cb.c:130
 msgid "Select JPEG image"
 msgstr ""
 
-#: src/main_cb.c:209
+#: src/main_cb.c:214
 msgid "Select skin"
 msgstr ""
 
-#: src/main_cb.c:251
+#: src/main_cb.c:256
 msgid "Select destination file"
 msgstr ""
 
-#: src/main_cb.c:274
+#: src/main_cb.c:279
 msgid "Select destination file -- VTi v2.1 export"
 msgstr ""
 
-#: src/main_cb.c:297
+#: src/main_cb.c:302
 msgid "Select destination file -- VTi v2.5 export"
 msgstr ""
 
-#: src/main_cb.c:488
+#: src/main_cb.c:493
 #, c-format
 msgid ""
 "Left click + drag to define LCD position, right click when done. Current "
 "size : %d x %d"
 msgstr ""
 
-#: src/main_cb.c:493
+#: src/main_cb.c:498
 msgid "Left click + drag to define LCD position, right click when done"
 msgstr ""
 

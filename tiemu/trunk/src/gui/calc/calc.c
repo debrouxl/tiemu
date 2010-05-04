@@ -39,6 +39,11 @@
 #include <glade/glade.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
+#if GTK_CHECK_VERSION(2,18,0)
+#undef GTK_WIDGET_STATE
+#define GTK_WIDGET_STATE(wid) (gtk_widget_get_state(wid))
+#endif
+
 #include "intl.h"
 #include "paths.h"
 #include "skinops.h"
