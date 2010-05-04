@@ -167,7 +167,7 @@ AC_SUBST(SDL_CFLAGS)
 AC_SUBST(SDL_LIBS)
 
 # KDE dialogs support
-AC_ARG_WITH(kde, AC_HELP_STRING([--without-kde], [Compile without KDE support]), [kde=$withval], [kde=default])
+AC_ARG_WITH(kde, AC_HELP_STRING([--with-kde], [Compile with KDE support]), [kde=$withval], [kde=no])
 if test "x$kde" = "xdefault"; then
   case $host_os in
     *mingw*)
@@ -183,6 +183,7 @@ if test "x$kde" = "xyes"; then
         AC_PATH_KDE
         AC_DEFINE(WITH_KDE, 1, [Use KDE support])
 fi
+AM_CONDITIONAL(USE_KDE, test "x$kde" = "xyes")
 AC_SUBST(kde)
 
 # Ensure MSVC-compatible struct packing convention is used when

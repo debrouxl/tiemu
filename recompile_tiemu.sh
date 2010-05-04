@@ -36,4 +36,4 @@ echo "=== skinedit ==="
 handle_one_module skinedit || exit 1
 
 echo "=== tiemu ==="
-handle_one_module tiemu --with-dbus --disable-gdb --without-kde || exit 1
+handle_one_module tiemu --with-dbus --disable-gdb || exit 1
