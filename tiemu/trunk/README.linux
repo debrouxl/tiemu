@@ -8,11 +8,10 @@
 REQUIREMENTS
 ------------
 
- - A UNIX computer (Intel x86 or PPC) and C compiler (gcc)
+ - A UNIX computer (Intel x86 or PPC) and C compiler (gcc, clang)
  - X11 (X Window System)
- - GTK+ 2.6 from <http://www.gtk.org>
- - ticables2, tifiles2 and ticalcs2 libraries from the 
-	TiLP 2 project <http://tilp.info>
+ - GTK+ 2.6 or higher from <http://www.gtk.org>
+ - libticonv, libtifiles2, libticables2 and libticalcs2 libraries from the TiLP II project <http://tilp.info>
 
 
 INSTALLATION
@@ -21,7 +20,7 @@ INSTALLATION
 At first, you must have the ticables and ticalcs libraries installed. See
 the documentation of these libraries for the installation procedure.
 
-Untar the tiemu-X.XX.tar.gz archive (tar -xvzf), change directory to
+Untar the tiemu-X.XX.tar.bz2 archive (tar -xvjf), change directory to
 tiemu directory.
 
 Go the tiemu directory and type './configure' in order to be sure
@@ -29,16 +28,18 @@ that all it is OK. If you want to use KDE file dialogs, run
 './configure --with-kde' instead. 
 Next, type 'make' to make a binary for your machine.
 
-If you want does not want to use GDB as debugger or use the odl one (tiemu2),
-run './configure --disable-gdb'.
+If do not want to use GDB as debugger, run
+'./configure --disable-gdb'.
 
-If the compile suceeds without any errors, you can type 'make install' to
-install the binary in /usr/local/bin. This will also copy some necessary
-files to /usr/local/share/tiemu and will install the manpage and the
-help.
+If you want to install it in a prefix different from /usr/local, use
+'./configure --prefix=...' (e.g. $HOME).
 
-If you already have some TiEmu images, you will have to manually copy them
-to the /usr/locale/share/tiemu/images directory.
+If the compilation suceeds without any errors, you can type 'make install' to
+install the binary to /usr/local/bin. This will also copy some necessary
+files to /usr/local/share/tiemu and will install the manpage and the HTML help.
+
+If you already have some TiEmu images, you will have to manually copy them to
+to /usr/local/share/tiemu/images, or ~/.tiemu/images for per-user images.
 
 
 USAGE
@@ -57,10 +58,18 @@ AVAILABILITY
 COPYRIGHT
 ---------
 
-TiEmu is Copyright (C) 2000-2009 by the TiEmu team <tiemu-users@lists.sf.net>
+TiEmu is Copyright (C) 2000-2010 by the TiEmu team <tiemu-users@lists.sf.net>
 
-Copying is allowed under the terms of GNU General Public License (LGPL).  
-See the file COPYING for more details.
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, version 2 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program (in the COPYING file); if not, see <http://www.gnu.org/licenses/>.
 
 
 ---------------------------------------------------------------------------

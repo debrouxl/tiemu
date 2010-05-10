@@ -2,10 +2,10 @@
 
 
 
-Previous version: 3.02		(21/12/2007)
-Current version:  3.03		(08/05/2009)
+Previous version: 3.03		(2009/05/08)
+Current version:  3.04		(2010/xx/xx)
 
-SubVersion (CVS) revision: $Id: RELEASE 2042 2006-05-07 07:46:23Z roms $
+SubVersion (SVN) revision: $Id$
 
 TiEmu is available for 3 platforms:
 Linux (GTK), Windows (GTK), Mac OS X (GTK)

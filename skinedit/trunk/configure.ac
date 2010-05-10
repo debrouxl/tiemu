@@ -3,7 +3,7 @@ dnl $Id$
 
 dnl Init.
 AC_PREREQ(2.57)
-AC_INIT(tiemu-skinedit, 1.27, [tiemu-users@lists.sourceforge.net])
+AC_INIT(tiemu-skinedit, 1.28, [tiemu-users@lists.sourceforge.net])
 
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
@@ -16,6 +16,7 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
   build/Makefile
+  build/mingw/Makefile
   man/Makefile
   pixmaps/Makefile
   src/Makefile
@@ -36,6 +37,7 @@ AC_HEADER_STDC
 AC_C_BIGENDIAN
 AC_CHECK_PROG(GROFF, groff, yes, no)
 AM_CONDITIONAL(USE_GROFF, test "$GROFF" != "no")
+AC_CHECK_TOOL(RC, windres, windres)
 
 # Checks for libraries.
 AM_GNU_GETTEXT(external)
@@ -50,9 +52,6 @@ AC_SUBST(GTK_LIBS)
 
 # Checks for header files.
 AC_CHECK_HEADERS(stdint.h)
-
-# Checks for library functions.
-AC_FUNC_MALLOC
 
 # Ensure MSVC-compatible struct packing convention is used when
 # compiling for Win32 with gcc.
@@ -89,6 +88,56 @@ case $host_os in
     fi
   fi
   ;;
+esac
+
+AM_CONDITIONAL(OS_WIN32, test "$msnative_struct")
+
+# Check for the new -fvisibility=hidden flag introduced in gcc 4.0
+# Allow to reduce shared library size and avoid symbol clash
+case $host_os in
+*mingw*)
+  ;;
+*)
+        if test x$GCC = xyes; then
+           visibility_flag=''
+           AC_MSG_CHECKING([whether gcc accepts -fvisibility])
+           if test -z "$ac_cv_prog_CC"; then
+              our_gcc="$CC"
+           else
+              our_gcc="$ac_cv_prog_CC"
+           fi
+           if $our_gcc -v --help 2>/dev/null | grep "fvisibility" >/dev/null; then
+              visibility_flag='-fvisibility=hidden'
+           fi
+           if test x"$visibility_flag" = x ; then
+              AC_MSG_RESULT([no])
+           else
+              CFLAGS="$CFLAGS $visibility_flag"
+              AC_MSG_RESULT([${visibility_flag}])
+              AC_DEFINE(HAVE_FVISIBILITY, 1, [Use -fvisibility=hidden flag])
+            fi
+        fi
+        ;;
+esac
+
+case "$host" in
+  *-*-linux*) EXFL="-Wl,--export-dynamic" ;;
+  *)          EXFL="" ;;
+esac
+LDFLAGS="$LDFLAGS $EXFL"
+
+# On Darwin, libglade chokes on stripped executables.
+case "$host" in
+  *-apple-darwin*)
+    case "$CFLAGS $CXXFLAGS $LDFLAGS" in
+      *" -s "*|"-s "*|*" -s"|"-s")
+         echo "warning: cannot strip libglade executables on this host"
+         CFLAGS=`echo "$CFLAGS"|sed 's/\( -s\)* / /g;s/^-s //g;s/ -s$//g;s/^-s$//g'`
+         CXXFLAGS=`echo "$CXXFLAGS"|sed 's/\( -s\)* / /g;s/^-s //g;s/ -s$//g;s/^-s$//g'`
+         LDFLAGS=`echo "$LDFLAGS"|sed 's/\( -s\)* / /g;s/^-s //g;s/ -s$//g;s/^-s$//g'`
+         ;;
+    esac
+    ;;
 esac
 
 # Output.

@@ -7,11 +7,11 @@ List of text files:
 - AUTHORS: list of authors
 - COPYING: license
 - LICENSES: list of program included
-- README.linux: specific linux instructions
-- README.win32: specific windows instructions
+- README.linux: linux-specific instructions
+- README.win32: windows-specific instructions
 - RELEASE: what's changed in this release
 - TODO: work to do or planned
 
-Texas Instruments and TI are trademarks of  Texas Instruments Incorporated.
+Texas Instruments and TI are trademarks of Texas Instruments Incorporated.
 For more informations: <http://education.ti.com/educationportal/sites/US/nonProductSingle/global_trademarks.html>
-This document has been written independantly of Texas Instruments.
+This document has been written independently of Texas Instruments.

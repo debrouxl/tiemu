@@ -1,3 +1,4 @@
+SUBDIRS = mingw
 EXTRA_DIST = InnoSetup ipaq mingw msvc nsis
 
 distclean: clean

@@ -7,7 +7,7 @@
 
 [Setup]
 AppName=SkinEdit
-AppVerName=SkinEdit 1.27
+AppVerName=SkinEdit 1.28
 AppPublisher=The TiLP Team
 AppPublisherURL=http://lpg.ticalc.org/prj_tiemu/index.html
 AppSupportURL=http://lpg.ticalc.org/prj_tiemu/index.html

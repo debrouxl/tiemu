@@ -45,5 +45,3 @@ endif
 
 regsvr:
 	cd src && $(MAKE) regsvr DESTDIR="$(DESTDIR)"
-
-ACLOCAL_AMFLAGS = -I m4

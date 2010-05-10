@@ -30,3 +30,7 @@ tiemu_skinedit_SOURCES = \
 	vti_export.c vti_export.h \
 	intl.h
 
+if OS_WIN32
+  tiemu_skinedit_DEPENDENCIES = ../build/mingw/skinedit-rc.o
+  tiemu_skinedit_LDFLAGS = -Wl,../build/mingw/skinedit-rc.o
+endif

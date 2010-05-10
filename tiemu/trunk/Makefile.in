@@ -36,8 +36,7 @@ host_triplet = @host@
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(dist_pkgdata_DATA) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/config.h.in $(srcdir)/tiemu.lsm.in \
-	$(srcdir)/tiemu.spec.in $(top_srcdir)/configure \
+	$(srcdir)/config.h.in $(top_srcdir)/configure \
 	$(top_srcdir)/src/Makefile.in ABOUT-NLS AUTHORS COPYING \
 	ChangeLog INSTALL NEWS TODO compile config.guess config.rpath \
 	config.sub depcomp install-sh ltmain.sh missing mkinstalldirs
@@ -50,7 +49,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = src/Makefile tiemu.lsm tiemu.spec
+CONFIG_CLEAN_FILES = src/Makefile
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -329,7 +328,6 @@ SUBDIRS = build glade help misc pedrom pixmaps po skins src \
 	$(am__append_1)
 dist_pkgdata_DATA = COPYING RELEASE AUTHORS LICENSES
 EXTRA_DIST = BUGS README.* TODO docs desktop sdk po/copy.bat po/TRANSLATORS install.bat
-ACLOCAL_AMFLAGS = -I m4
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -385,10 +383,6 @@ $(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 distclean-hdr:
 	-rm -f config.h stamp-h1
 src/Makefile: $(top_builddir)/config.status $(top_srcdir)/src/Makefile.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-tiemu.lsm: $(top_builddir)/config.status $(srcdir)/tiemu.lsm.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-tiemu.spec: $(top_builddir)/config.status $(srcdir)/tiemu.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:

@@ -31,7 +31,7 @@ SEE ALSO
 
 
 COPYRIGHT
-       Copyright  (C)  2002-2003,  Julien  Blache and Copyright (C) 2004-2005,
+       Copyright  (C)  2002-2009,  Julien  Blache and Copyright (C) 2004-2009,
        Romain Lievin
 
        Permission to use, copy, modify, and distribute this software  and  its
@@ -42,12 +42,11 @@ COPYRIGHT
 
        This program and its source code is distributed under the terms of  the
        terms  of the GNU General Public License as published by the Free Soft-
-       ware Foundation; either version 2 of the License, or (at  your  option)
-       any later version.
+       ware Foundation; only version 2 of the License.
 
-       This  program  is  distributed  in the hope that it will be useful, but
-       WITHOUT ANY  WARRANTY;  without  even  the  implied  warranty  of  MER-
-       CHANTABILITY  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
+       This program is distributed in the hope that it  will  be  useful,  but
+       WITHOUT  ANY  WARRANTY;  without  even  the  implied  warranty  of MER-
+       CHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU  General
        Public License for more details.
 
        You should have received a copy of the GNU General Public License along
@@ -56,14 +55,15 @@ COPYRIGHT
 
 
 SUGGESTIONS AND BUG REPORTS
-       The  canonical place to find skinedit and some  miscellenaous  informa-
-       tions  is  at  <http://lpg.ticalc.org/prj_tiemu>.   You can also take a
-       look at <http://lpg.ticalc.org> and <http://www.ticalc.org> for  others
+       The   canonical  place to find skinedit and some miscellenaous informa-
+       tions is at <http://lpg.ticalc.org/prj_tiemu>.  You  can  also  take  a
+       look  at <http://lpg.ticalc.org> and <http://www.ticalc.org> for others
        TI related programs for Linux.
 
 AUTHORS
-       Julien Blache and Romain Lievin (active).
+       Julien Blache and Romain Lievin (developers); Lionel  Debroux  (current
+       maintainer)
 
 
 
-                                 April 6, 2005                     SKINEDIT(1)
+                                 May 10, 2010                      SKINEDIT(1)

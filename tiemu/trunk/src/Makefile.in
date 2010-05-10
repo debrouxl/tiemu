@@ -10,7 +10,7 @@ CXXFLAGS  = @CXXFLAGS@ @TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICALCS_CFLAGS@ @GLIB
 MOC       = @MOC@
 DCOPIDL   = @DCOPIDL@
 DCOPIDL2CPP = @DCOPIDL2CPP@
-RC       ?= windres
+RC        = @RC@
 
 kde       = @kde@
 dbus      = @dbus@

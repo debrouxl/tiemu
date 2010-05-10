@@ -1,7 +1,7 @@
 #! /bin/sh
 
-# Maintainer script for automating the compilation and installation of tilp & gfm
-# from a checkout of the complete tilp repository over at svn.tilp.info.
+# Maintainer script for automating the compilation and installation of tiemu
+# from a checkout of the complete tiemu repository over at svn.tilp.info.
 #
 # Copyright (C) 2010 Lionel Debroux
 
@@ -34,6 +34,7 @@ sh run_updatepot.sh
 
 echo "=== skinedit ==="
 handle_one_module skinedit || exit 1
+
 
 echo "=== tiemu ==="
 handle_one_module tiemu --with-dbus --disable-gdb || exit 1

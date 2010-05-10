@@ -355,15 +355,15 @@ int df_checkread(void)
     reason why I am explaining the idea and mechanisms.
 
     The idea is to use TiLP's libticalcs since libticalcs contains all the code
-    needed for communicating with a TI (software protocol, file handling). 
+    needed for communicating with a TI calculator (software protocol, file handling). 
     The libticalcs is built on libticables, a library which handles link cables
     (hardware protocol).
-    In fact, I simply reimplement the basic functions of libticables usually 
+    In fact, we simply reimplement the basic functions of libticables usually 
     used by libticalcs for sending/receiving data. These functions exchange
     bytes with the linkport at HW level (ports.c).
     The libticalcs provides the abstraction we need for this.
 
-	Wonderful, isn't it ?! Take a look at the 'TiLP framework' power ;-)
+    Wonderful, isn't it ?! Feel the power of the TiLP framework ;-)
 */
 
 /* libticables functions (link API) */

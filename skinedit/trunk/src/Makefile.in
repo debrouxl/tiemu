@@ -33,6 +33,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = tiemu-skinedit$(EXEEXT)
+@OS_WIN32_FALSE@tiemu_skinedit_DEPENDENCIES =
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -58,7 +59,9 @@ am_tiemu_skinedit_OBJECTS = tiemu_skinedit-main.$(OBJEXT) \
 	tiemu_skinedit-utils.$(OBJEXT) \
 	tiemu_skinedit-vti_export.$(OBJEXT)
 tiemu_skinedit_OBJECTS = $(am_tiemu_skinedit_OBJECTS)
-tiemu_skinedit_DEPENDENCIES =
+tiemu_skinedit_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(tiemu_skinedit_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -152,6 +155,7 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
+RC = @RC@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
@@ -240,6 +244,8 @@ tiemu_skinedit_SOURCES = \
 	vti_export.c vti_export.h \
 	intl.h
 
+@OS_WIN32_TRUE@tiemu_skinedit_DEPENDENCIES = ../build/mingw/skinedit-rc.o
+@OS_WIN32_TRUE@tiemu_skinedit_LDFLAGS = -Wl,../build/mingw/skinedit-rc.o
 all: all-am
 
 .SUFFIXES:
@@ -303,7 +309,7 @@ clean-binPROGRAMS:
 	done
 tiemu-skinedit$(EXEEXT): $(tiemu_skinedit_OBJECTS) $(tiemu_skinedit_DEPENDENCIES) 
 	@rm -f tiemu-skinedit$(EXEEXT)
-	$(LINK) $(tiemu_skinedit_OBJECTS) $(tiemu_skinedit_LDADD) $(LIBS)
+	$(tiemu_skinedit_LINK) $(tiemu_skinedit_OBJECTS) $(tiemu_skinedit_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
