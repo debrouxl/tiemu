@@ -1,0 +1,28 @@
+*****************************************************************
+* File format of the TiEmu v2.xx and 3.xx memmap files          *
+* Documentation by Lionel Debroux <lionel_debroux@yahoo.fr>     *
+*                                                               *
+* Begin: 2010/05/11                                             *
+* Last update:                                                  *
+*****************************************************************
+
+
+This document describes the file format of memmap_*_hw?.txt files.
+Those files contains dynamic definitions of the memory areas
+existing on calculators.
+
+Filename is following this scheme: memmap_[model]_hw[revision].txt.
+
+The file is made up of lines similar to the following ones:
+
+000000-03ffff:RAM (256 KB)
+400000-5fffff:FLASH (2 MB)
+600000-60001f:I/O ports (32 bytes)
+
+- first integer is address of the beginning of the area
+- second integer is address of the end of the area
+- text after the ":" is the description of the area.
+
+Keep in mind that there are very few syntactical checks: write the files with care!
+
+---

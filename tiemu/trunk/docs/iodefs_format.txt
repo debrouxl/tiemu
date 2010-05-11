@@ -1,9 +1,9 @@
 *****************************************************************
-* File format of the TiEmu v2.0 iodefs files					*
-* Documentation by Romain Lievin <roms@tilp.info>				*
-*																*
-* Begin: 29/03/2007												*
-* Last update:													*
+* File format of the TiEmu v2.xx and 3.xx iodefs files          *
+* Documentation by Romain Lievin <roms@tilp.info>               *
+*                                                               *
+* Begin: 2007/03/29                                             *
+* Last update:                                                  *
 *****************************************************************
 
 
@@ -17,17 +17,17 @@ Filename is following this scheme: iodefs_[model]_hw[revision].txt.
 Sections name are placed within brackets. 
 Sections are interpreted as a top node.
 
-2) Within each section, there are on ore items like this:
+2) Within each section, there are items like the following one:
 
-	$600001	| 1	| rw	| <.....2.0>			| Stack overflow	| AI7 enable,Interleave RAM
+$600001	| 1	| rw	| <.....2.0>			| Stack overflow	| AI7 enable,Interleave RAM
 
 - first column is address
 - second one tells how many bytes (1,2,4) are occuppied
 - third one is access (ro,wo,rw)
 - fourth one describes used bits; <all> is a convenient way to describe all bits
 - fifth column is the name of the item (displayed at left)
-- last column is a comma separated list of bit names. You should not write more than 16 chars for bit names
+- last column is a comma separated list of bit names. Don't write more than 16 chars for bit names
 
-Please keep in mind there are very few syntaxical checks. So, write it with care!
+Keep in mind that there are very few syntactical checks: write the files with care!
 
 ---
