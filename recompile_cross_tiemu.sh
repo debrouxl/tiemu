@@ -34,6 +34,7 @@ CCFLAGS="-Os"
 CCPPFLAGS="-I$HOME/lpg/deps/gtk-win32/include"
 CLDFLAGS="-L$HOME/lpg/deps/gtk-win32/lib"
 LIBUSB_DIR="$HOME/lpg/deps/libusb-win32"
+LIBSDL_DIR="$HOME/lpg/deps/sdl-win32"
 CHOST="i586-mingw32msvc"
 
 export PKG_CONFIG_PATH=$HOME/lpg/packages/lib/pkgconfig:$HOME/lpg/deps/gtk-win32/lib/pkgconfig:$PKG_CONFIG_PATH
@@ -47,7 +48,7 @@ handle_one_module() {
   cd "$module_name/trunk"
   echo "Configuring $module_name"
   rm -f config.cache
-  ./configure -C --host="$CHOST" CFLAGS="$CCFLAGS" --prefix="$PREFIX" CPPFLAGS="$CCPPFLAGS" LDFLAGS="$CLDFLAGS" LIBUSB_CFLAGS="-I$LIBUSB_DIR/include" LIBUSB_LIBS="-L$LIBUSB_DIR/lib/gcc -lusb" $@ || return 1
+  PATH="$LIBSDL_DIR/bin:$PATH" ./configure -C --host="$CHOST" CFLAGS="$CCFLAGS -I$LIBSDL_DIR/include/SDL" --prefix="$PREFIX" CPPFLAGS="$CCPPFLAGS" LDFLAGS="$CLDFLAGS -L$LIBSDL_DIR/lib" $@ || return 1
   echo "Building $module_name"
   make clean || return 1
   make || return 1
@@ -73,5 +74,4 @@ handle_one_module skinedit || exit 1
 
 
 echo "=== tiemu ==="
-# XXX need to remove --disable-sound for the final version !
-handle_one_module tiemu --disable-sound --disable-gdb || exit 1
+handle_one_module tiemu --disable-gdb || exit 1

@@ -3,6 +3,11 @@
 ;
 ; (c) Copyright 2001-2010, the TiEmu team
 ;
+; NOTE: this file depends on:
+;     * TILP being available through C:\tilp;
+;     * TIEmu being available through C:\tiemu;
+;     * C:\lpg\packages and C:\lpg\deps containing the layout expected by unmodified recompile_cross_tilp.sh (for libti*) recompile_cross_tiemu.sh script.
+;
 ; $Id$
 
 [Setup]
@@ -15,52 +20,50 @@ AppUpdatesURL=http://lpg.ticalc.org/prj_tiemu/win32_download.html
 DefaultDirName={pf}\TiEmu3-gdb
 DefaultGroupName=TiEmu3-gdb
 AllowNoIcons=yes
-LicenseFile=C:\lpg\tiemu3\COPYING
-InfoBeforeFile=C:\lpg\tiemu3\README.win32
-InfoAfterFile=C:\lpg\tiemu3\RELEASE
+LicenseFile=C:\tiemu\tiemu\trunk\COPYING
+InfoBeforeFile=C:\tiemu\tiemu\trunk\README.win32
+InfoAfterFile=C:\tiemu\tiemu\trunk\RELEASE
 
 PrivilegesRequired = admin
 
 ;--- Shared Stuff ---
 [Files]
 ; TI libraries
-Source: "C:\lpg\tifiles2\tests\libtifiles2-5.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libtifiles2-3.dll');
-Source: "C:\lpg\ticables2\tests\libticables2-2.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libticables2-1.dll');
-Source: "C:\lpg\ticalcs2\tests\libticalcs2-7.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libticalcs2-2.dll');
-Source: "C:\lpg\ticonv\tests\libticonv-3.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libticonv-2.dll');
+Source: "C:\lpg\packages\bin\libtifiles2-7.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libtifiles2-5.dll');
+Source: "C:\lpg\packages\bin\libticables2-4.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libticables2-2.dll');
+Source: "C:\lpg\packages\bin\libticalcs2-9.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libticalcs2-7.dll');
+Source: "C:\lpg\packages\bin\libticonv-5.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: sharedfile; BeforeInstall: DeleteDll('libticonv-3.dll');
 
 ; I18n files
-Source: "C:\lpg\tifiles2\po\fr.gmo"; DestDir: "{cf}\LPG Shared\libs\locale\fr\LC_MESSAGES"; DestName: "libtifiles2.mo"; Flags: ignoreversion sharedfile;
-Source: "C:\lpg\ticables2\po\fr.gmo"; DestDir: "{cf}\LPG Shared\libs\locale\fr\LC_MESSAGES"; DestName: "libticables2.mo"; Flags: ignoreversion sharedfile;
-Source: "C:\lpg\ticalcs2\po\fr.gmo"; DestDir: "{cf}\LPG Shared\libs\locale\fr\LC_MESSAGES"; DestName: "libticalcs2.mo"; Flags: ignoreversion sharedfile;
+Source: "C:\lpg\packages\share\locale\fr\LC_MESSAGES\libtifiles2.mo"; DestDir: "{cf}\LPG Shared\libs\locale\fr\LC_MESSAGES"; DestName: "libtifiles2.mo"; Flags: ignoreversion sharedfile;
+Source: "C:\lpg\packages\share\locale\fr\LC_MESSAGES\libticables2.mo"; DestDir: "{cf}\LPG Shared\libs\locale\fr\LC_MESSAGES"; DestName: "libticables2.mo"; Flags: ignoreversion sharedfile;
+Source: "C:\lpg\packages\share\locale\fr\LC_MESSAGES\libticalcs2.mo"; DestDir: "{cf}\LPG Shared\libs\locale\fr\LC_MESSAGES"; DestName: "libticalcs2.mo"; Flags: ignoreversion sharedfile;
 
 ; Misc
-Source: "C:\lpg\gtk\bin\libxml2.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: onlyifdoesntexist sharedfile; BeforeInstall: DeleteDll('libxml2.dll');
-Source: "C:\lpg\gtk\bin\libglade-2.0-0.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: onlyifdoesntexist sharedfile; BeforeInstall: DeleteDll('libglade-2.0-0.dll');
-
-Source: "C:\lpg\gtk\bin\gtkthemeselector.exe"; DestDir: "{cf}\LPG Shared\bin"; Flags: ignoreversion sharedfile; BeforeInstall: DeleteExe('gtkthemeselector.exe');
-
+Source: "C:\lpg\deps\gtk-win32\bin\libxml2.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: onlyifdoesntexist sharedfile; BeforeInstall: DeleteDll('libxml2.dll');
+Source: "C:\lpg\deps\gtk-win32\bin\libglade-2.0-0.dll"; DestDir: "{cf}\LPG Shared\libs"; Flags: onlyifdoesntexist sharedfile; BeforeInstall: DeleteDll('libglade-2.0-0.dll');
+Source: "C:\lpg\deps\gtk-win32\bin\gtkthemeselector.exe"; DestDir: "{cf}\LPG Shared\bin"; Flags: ignoreversion sharedfile; BeforeInstall: DeleteExe('gtkthemeselector.exe');
+ 
 ; Downloader
-Source: "C:\lpg\tilp2\build\InnoSetup\wget\*.dll"; DestDir: "{cf}\LPG Shared\wget"; Flags: ignoreversion
-Source: "C:\lpg\tilp2\build\InnoSetup\wget\wget.exe"; DestDir: "{cf}\LPG Shared\wget"; Flags: ignoreversion
-Source: "C:\lpg\tilp2\build\InnoSetup\wget\d_and_i.bat"; DestDir: "{cf}\LPG Shared\wget"; Flags: ignoreversion
+Source: "C:\tilp\tilp\trunk\build\InnoSetup\wget\*.dll"; DestDir: "{cf}\LPG Shared\wget"; Flags: ignoreversion
+Source: "C:\tilp\tilp\trunk\build\InnoSetup\wget\wget.exe"; DestDir: "{cf}\LPG Shared\wget"; Flags: ignoreversion
+Source: "C:\tilp\tilp\trunk\build\InnoSetup\wget\d_and_i.bat"; DestDir: "{cf}\LPG Shared\wget"; Flags: ignoreversion
 
 ; DhaHelper driver
-Source: "C:\lpg\ticables2\src\win32\dha\dhahelper.sys"; DestDir: "{cf}\LPG Shared\drivers\dha"; Flags: sharedfile;
-Source: "C:\lpg\ticables2\src\win32\dha\dhasetup.exe";  DestDir: "{cf}\LPG Shared\drivers\dha"; Flags: sharedfile;
+Source: "C:\lpg\packages\bin\dhahelper.sys"; DestDir: "{cf}\LPG Shared\drivers\dha"; Flags: sharedfile; Check: not Is64BitInstallMode
+Source: "C:\lpg\packages\bin\dhasetup.exe";  DestDir: "{cf}\LPG Shared\drivers\dha"; Flags: sharedfile; Check: not Is64BitInstallMode
 
 ; RwPorts driver
-Source: "C:\lpg\ticables2\src\win64\rwp\rwports.sys"; DestDir: "{cf}\LPG Shared\drivers\rwp"; Flags: sharedfile; Check: Is64BitInstallMode
-Source: "C:\lpg\ticables2\src\win64\rwp\rwpsetup.exe";  DestDir: "{cf}\LPG Shared\drivers\rwp"; Flags: sharedfile; Check: Is64BitInstallMode
+Source: "C:\lpg\packages\bin\rwports.sys"; DestDir: "{cf}\LPG Shared\drivers\rwp"; Flags: sharedfile; Check: Is64BitInstallMode
+Source: "C:\lpg\packages\bin\rwpsetup.exe";  DestDir: "{cf}\LPG Shared\drivers\rwp"; Flags: sharedfile; Check: Is64BitInstallMode
 
 ; USB driver
-;Source: "C:\lpg\libusb-win32\bin_modified\libusb0.sys"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
-Source: "C:\lpg\libusb-win32\bin\*.sys"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
-Source: "C:\lpg\libusb-win32\bin\*.dll"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
-Source: "C:\lpg\ticables2\src\win32\usb\*.cat"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
-Source: "C:\lpg\ticables2\src\win32\usb\*.inf"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
-Source: "C:\lpg\libusb-win32\bin\libusb0.dll"; DestDir: "{win}\system32"; Flags: replacesameversion restartreplace uninsneveruninstall;
-Source: "C:\lpg\libusb-win32\bin\libusb0_x64.dll"; DestDir: "{win}\system32"; Flags: replacesameversion restartreplace uninsneveruninstall; Check: Is64BitInstallMode
+Source: "C:\lpg\deps\libusb-win32\bin\*.sys"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
+Source: "C:\lpg\deps\libusb-win32\bin\*.dll"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
+Source: "C:\lpg\packages\share\libticables2\libusb\*.cat"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
+Source: "C:\lpg\packages\share\libticables2\libusb\*.inf"; DestDir: "{cf}\LPG Shared\drivers\usb"; Flags: sharedfile;
+Source: "C:\lpg\deps\libusb-win32\bin\libusb0.dll"; DestDir: "{win}\system32"; Flags: replacesameversion restartreplace uninsneveruninstall;
+Source: "C:\lpg\deps\libusb-win32\bin\libusb0_x64.dll"; DestDir: "{win}\system32"; Flags: replacesameversion restartreplace uninsneveruninstall; Check: Is64BitInstallMode
 
 [Registry]
 ; Create entries for shared libs (needed by other programs)
@@ -80,53 +83,53 @@ Name: "{app}\screenshots"
 
 [Files]
 ; Glade files
-Source: "C:\lpg\tiemu3\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
+Source: "C:\tiemu\tiemu\trunk\glade\*.glade"; DestDir: "{app}\glade"; Flags: ignoreversion;
 
 ; Help files
-Source: "C:\lpg\tiemu3\help\*.jpg"; DestDir: "{app}\help"; Flags: ignoreversion;
-Source: "C:\lpg\tiemu3\help\*.png"; DestDir: "{app}\help"; Flags: ignoreversion;
-Source: "C:\lpg\tiemu3\help\*.htm?"; DestDir: "{app}\help"; Flags: ignoreversion;
+Source: "C:\tiemu\tiemu\trunk\help\*.jpg"; DestDir: "{app}\help"; Flags: ignoreversion;
+Source: "C:\tiemu\tiemu\trunk\help\*.png"; DestDir: "{app}\help"; Flags: ignoreversion;
+Source: "C:\tiemu\tiemu\trunk\help\*.htm?"; DestDir: "{app}\help"; Flags: ignoreversion;
 
 ; Pixmaps files
-Source: "C:\lpg\tiemu3\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
-Source: "C:\lpg\tiemu3\build\msvc\small.ico"; DestDir: "{app}"; DestName: "romdump.ico"; Flags: ignoreversion;
+Source: "C:\tiemu\tiemu\trunk\pixmaps\*.xpm"; DestDir: "{app}\pixmaps"; Flags: ignoreversion;
+Source: "C:\tiemu\tiemu\trunk\build\msvc\small.ico"; DestDir: "{app}"; DestName: "romdump.ico"; Flags: ignoreversion;
 
 ; Skin files
-Source: "C:\lpg\tiemu3\skins\*.skn"; DestDir: "{app}\skins"; Flags: ignoreversion;
+Source: "C:\tiemu\tiemu\trunk\skins\*.skn"; DestDir: "{app}\skins"; Flags: ignoreversion;
 
 ; Keymap files
-Source: "C:\lpg\tiemu3\skins\*.map"; DestDir: "{app}\skins"; Flags: ignoreversion;
-Source: "C:\lpg\tiemu3\skins\ti92.map"; DestDir: "{app}\skins"; DestName: "v200plt.map"; Flags: ignoreversion;
+Source: "C:\tiemu\tiemu\trunk\skins\*.map"; DestDir: "{app}\skins"; Flags: ignoreversion;
+Source: "C:\tiemu\tiemu\trunk\skins\ti92.map"; DestDir: "{app}\skins"; DestName: "v200plt.map"; Flags: ignoreversion;
 
 ; i18n files
-Source: "C:\lpg\tiemu3\po\fr.gmo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tiemu3.mo"; Flags: ignoreversion;
+Source: "C:\lpg\packages\share\locale\fr\LC_MESSAGES\tiemu.mo"; DestDir: "{app}\locale\fr\LC_MESSAGES"; DestName: "tiemu.mo"; Flags: ignoreversion;
 
 ; Misc files
-Source: "C:\lpg\tiemu3\AUTHORS"; DestDir: "{app}"; DestName: "Authors.txt"; Flags: ignoreversion
-Source: "C:\lpg\tiemu3\BUGS"; DestDir: "{app}"; DestName: "Bugs.txt"; Flags: ignoreversion
-Source: "C:\lpg\tiemu3\CHANGELOG"; DestDir: "{app}"; DestName: "ChangeLog.txt"; Flags: ignoreversion
-Source: "C:\lpg\tiemu3\COPYING"; DestDir: "{app}"; DestName: "License.txt"; Flags: ignoreversion
-Source: "C:\lpg\tiemu3\LICENSES"; DestDir: "{app}"; DestName: "Licenses.txt"; Flags: ignoreversion
-Source: "C:\lpg\tiemu3\man\ManPage.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\lpg\tiemu3\README.win32"; DestDir: "{app}"; DestName: "ReadMe.txt"; Flags: ignoreversion isreadme
-Source: "C:\lpg\tiemu3\RELEASE"; DestDir: "{app}"; DestName: "Release.txt"; Flags: ignoreversion
-Source: "C:\lpg\tiemu3\TODO"; DestDir: "{app}"; DestName: "ToDo.txt"; Flags: ignoreversion
+Source: "C:\tiemu\tiemu\trunk\AUTHORS"; DestDir: "{app}"; DestName: "Authors.txt"; Flags: ignoreversion
+Source: "C:\tiemu\tiemu\trunk\BUGS"; DestDir: "{app}"; DestName: "Bugs.txt"; Flags: ignoreversion
+Source: "C:\tiemu\tiemu\trunk\CHANGELOG"; DestDir: "{app}"; DestName: "ChangeLog.txt"; Flags: ignoreversion
+Source: "C:\tiemu\tiemu\trunk\COPYING"; DestDir: "{app}"; DestName: "License.txt"; Flags: ignoreversion
+Source: "C:\tiemu\tiemu\trunk\LICENSES"; DestDir: "{app}"; DestName: "Licenses.txt"; Flags: ignoreversion
+Source: "C:\tiemu\tiemu\trunk\man\ManPage.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\tiemu\tiemu\trunk\README.win32"; DestDir: "{app}"; DestName: "ReadMe.txt"; Flags: ignoreversion isreadme
+Source: "C:\tiemu\tiemu\trunk\RELEASE"; DestDir: "{app}"; DestName: "Release.txt"; Flags: ignoreversion
+Source: "C:\tiemu\tiemu\trunk\TODO"; DestDir: "{app}"; DestName: "ToDo.txt"; Flags: ignoreversion
 
 ; Resource files
-Source: "C:\lpg\tiemu3\misc\romcalls.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
-Source: "C:\lpg\tiemu3\misc\iodefs*.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
-Source: "C:\lpg\tiemu3\misc\memmap*.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
+Source: "C:\tiemu\tiemu\trunk\misc\romcalls.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
+Source: "C:\tiemu\tiemu\trunk\misc\iodefs*.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
+Source: "C:\tiemu\tiemu\trunk\misc\memmap*.txt"; DestDir: "{app}\misc"; Flags: ignoreversion
 
 ; PedRom files
-Source: "C:\lpg\tiemu3\pedrom\pedrom*.tib"; DestDir: "{app}\pedrom"; Flags: ignoreversion
+Source: "C:\tiemu\tiemu\trunk\pedrom\pedrom*.tib"; DestDir: "{app}\pedrom"; Flags: ignoreversion
 
 ; Binaries
-Source: "C:\lpg\tiemu3\build\msvc\tiemu.exe"; DestDir: "{app}"; DestName: "tiemu.exe"; Flags: ignoreversion
-Source: "C:\lpg\SDL\lib\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\lpg\packages\bin\tiemu.exe"; DestDir: "{app}"; DestName: "tiemu.exe"; Flags: ignoreversion
+Source: "C:\lpg\deps\sdl-win32\bin\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 ; COM/OLE object registration
-Source: "C:\lpg\tiemu3\src\ipc\com\tiemups.dll"; DestDir: "{app}"; Flags: regserver;
-Source: "C:\lpg\tiemu3\src\ipc\com\oleaut.tlb"; DestDir: "{app}"; DestName: "tiemu.tlb";
+Source: "C:\lpg\packages\bin\tiemups.dll"; DestDir: "{app}"; Flags: regserver;
+Source: "C:\lpg\packages\bin\tiemu.tlb"; DestDir: "{app}"; DestName: "tiemu.tlb";
 
 [INI]
 Filename: "{app}\tiemu.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://lpg.ticalc.org/prj_tiemu"
@@ -473,3 +476,4 @@ procedure DeleteExe(const FileName: string);
 begin
   DeleteDll(FileName);
 end;
+
