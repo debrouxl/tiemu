@@ -20,6 +20,8 @@
 #include "options.h"
 #include "memory.h"
 #include "newcpu.h"
+#include "romcalls.h"
+#include "handles.h"
 
 // tiemu begin
 #include "tilibs.h"
@@ -369,7 +371,7 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	    if (dp & 4) base += dispreg;
 
 	    addr = base + outer;
-	    sprintf (buffer,"(%s%c%d.%c+%ld)+%ld [$%06" PRIX32 "]", name,
+	    sprintf (buffer,"(%s%c%d.%c+%" PRId32 ")+%" PRId32 " [$%06" PRIX32 "]", name,
 		    dp & 0x8000 ? 'A' : 'D', (int)r, dp & 0x800 ? 'L' : 'W',
 		    disp, outer, addr);
 	} else {
@@ -416,15 +418,15 @@ uae_s32 ShowEA (FILE *f, int reg, amodes mode, wordsizes size, char *buf)
 	    if (dp & 4) base += dispreg;
 
 	    addr = base + outer;
-	    sprintf (buffer,"(%s%c%d.%c+%ld)+%ld [%s]", name,
+	    sprintf (buffer,"(%s%c%d.%c+%" PRId32 ")+%" PRId32 " [%s]", name,
 		    dp & 0x8000 ? 'A' : 'D', (int)r, dp & 0x800 ? 'L' : 'W',
 		    disp,outer,
 		    sym_addr ((uae_u32)addr));
 	} else {
 	  addr += (uae_s32)((uae_s8)disp8) + dispreg;
-	  sprintf (buffer,"(PC, %c%d.%c, $%02X) [%s]", dp & 0x8000 ? 'A' : 'D',
+	  sprintf (buffer, "(PC, %c%d.%c, $%02X) [%s]", dp & 0x8000 ? 'A' : 'D',
 		(int)r, dp & 0x800 ? 'L' : 'W',
-		disp8, sym_addr ((uae_u32)addr));
+		disp8, sym_addr((uae_u32)addr));
 	}
 	break;
      case absw:
@@ -1014,12 +1016,12 @@ int m68k_movec2 (int regno, uae_u32 *regp)
 }
 
 STATIC_INLINE int
-div_unsigned(uae_u32 src_hi, uae_u32 src_lo, uae_u32 div, uae_u32 *quot, uae_u32 *rem)
+div_unsigned(uae_u32 src_hi, uae_u32 src_lo, uae_u32 divisor, uae_u32 *quot, uae_u32 *rem)
 {
 	uae_u32 q = 0, cbit = 0;
 	int i;
 
-	if (div <= src_hi) {
+	if (divisor <= src_hi) {
 	    return 1;
 	}
 	for (i = 0 ; i < 32 ; i++) {
@@ -1028,9 +1030,9 @@ div_unsigned(uae_u32 src_hi, uae_u32 src_lo, uae_u32 div, uae_u32 *quot, uae_u32
 		if (src_lo & 0x80000000ul) src_hi++;
 		src_lo <<= 1;
 		q = q << 1;
-		if (cbit || div <= src_hi) {
+		if (cbit || divisor <= src_hi) {
 			q |= 1;
-			src_hi -= div;
+			src_hi -= divisor;
 		}
 	}
 	*quot = q;
@@ -1265,7 +1267,7 @@ void m68k_mull (uae_u32 opcode, uae_u32 src, uae_u16 extra)
 #endif
 }
 #ifdef NO_GDB
-static char* ccnames[] =
+static const char* ccnames[] =
 { "T","F","HI","LS","CC","CS","NE","EQ",
   "VC","VS","PL","MI","GE","LT","GT","LE" };
 #endif /* NO_GDB */
@@ -1745,28 +1747,34 @@ int m68k_disasm (char *output, uaecptr addr)
 			break;
 		case 0xfff2:	/* 4 byte ROM CALL */
 			pm = get_iword_1 (m68kpc_offset); m68kpc_offset += 4 - 2;
-			sprintf (buffer, "FLINE $%04x.l [%s]", pm/4, romcalls_get_name(pm / 4));
+			{
+				const char * rc_name = romcalls_get_name(pm / 4);
+				if (rc_name != NULL)
+					sprintf (buffer, "FLINE $%04x.l [%s]", pm/4, rc_name);
+				else
+					sprintf (buffer, "FLINE $%04x.l", pm/4);
+			}
 			break;
 		case 0xffee:	/* jmp __ld_entry_point_plus_0x8000+word */
 			pm = get_iword_1 (m68kpc_offset); m68kpc_offset += 4 - 2;
 			{
 				int handle;
-				uint32_t addr;
+				uint32_t addr2;
 				
 				heap_search_for_address(pc + 2, &handle);
-				if (handle > 0) heap_get_block_addr(handle, &addr); else addr = 0;
-				sprintf (buffer, "FLINE jmp.w *+$%" PRIX32 " [%" PRIX32 "]", (int32_t)(signed short)pm + 0x8000, addr + (int32_t)(signed short)pm + 0x8000);
+				if (handle > 0) heap_get_block_addr(handle, &addr2); else addr2 = 0;
+				sprintf (buffer, "FLINE jmp.w *+$%" PRIX32 " [%" PRIX32 "]", (int32_t)(signed short)pm + 0x8000, addr2 + (int32_t)(signed short)pm + 0x8000);
 			}
 			break;
 		case 0xffef:	/* jsr __ld_entry_point_plus_0x8000+word */
 			pm = get_iword_1 (m68kpc_offset); m68kpc_offset += 4 - 2;
 			{
 				int handle;
-				uint32_t addr;
+				uint32_t addr2;
 				
 				heap_search_for_address(pc + 2, &handle);
-				if (handle > 0) heap_get_block_addr(handle, &addr); else addr = 0;
-				sprintf (buffer, "FLINE jsr.w *+$%" PRIX32 " [%" PRIX32 "]", (int32_t)(signed short)pm + 0x8000, addr + (int32_t)(signed short)pm + 0x8000);
+				if (handle > 0) heap_get_block_addr(handle, &addr2); else addr2 = 0;
+				sprintf (buffer, "FLINE jsr.w *+$%" PRIX32 " [%" PRIX32 "]", (int32_t)(signed short)pm + 0x8000, addr2 + (int32_t)(signed short)pm + 0x8000);
 			}
 			break;
 		case 0xf8b5:	/* 2 byte ROM call followed by an FPU opcode (special case: _bcd_math) */
@@ -1778,12 +1786,19 @@ int m68k_disasm (char *output, uaecptr addr)
 				break;
 			}
 		default:		/* 2 byte ROM CALL */
-			sprintf (buffer, "FLINE $%03x.w [%s]", opcode & 0x7ff, romcalls_get_name(opcode & 0x7ff));
+			{
+				const char * rc_name = romcalls_get_name(orig_opcode & 0x7ff);
+				if (rc_name != NULL)
+					sprintf (buffer, "FLINE $%03x.w [%s]", orig_opcode & 0x7ff, rc_name);
+				else
+					sprintf (buffer, "FLINE $%03x.w", orig_opcode & 0x7ff);
+			}
+			
 			break;
 		}
 	} else if ((orig_opcode & 0xf000) == 0xa000) { /* ER_throw */
 		char *buffer = &(output[8]);
-		sprintf (buffer, "ER_throw %d [%s]", opcode & 0xfff, ercodes_get_name(opcode & 0xfff));
+		sprintf (buffer, "ER_throw %d [%s]", orig_opcode & 0xfff, ercodes_get_name(orig_opcode & 0xfff));
 	} else if (opcode == 0x4AFC && orig_opcode != 0x4AFC) { /* illegal instruction, but not ILLEGAL */
 		sprintf (output, "%06" PRIx32 ": DC.W $%04X", addr, orig_opcode);
 		

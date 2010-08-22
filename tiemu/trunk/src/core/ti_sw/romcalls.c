@@ -60,6 +60,12 @@ void romcalls_get_table_infos(uint32_t *base, uint32_t *size)
 
 	*base = rd_long(&tihw.rom[0x12000 + 0x88 + 0xC8]);
 	*size = rd_long(&tihw.rom[((*base-4) & 0x0fffff)]);
+
+	if (*size > sizeof(table)/sizeof(table[0]))
+	{
+		fprintf(stderr,"WARNING: this ROM_CALL table has more entries than those of all known AMS versions !\nWARNING: clamping the number of entries.\n");
+		*size = sizeof(table)/sizeof(table[0]);
+	}
 }
 
 /*
@@ -365,11 +371,24 @@ int romcalls_is_name(const char *name)
 
 const char* romcalls_get_name(int id)
 {
-	if(!loaded)	return "not loaded";
-	return table[id].name;
+	int maxid = (int)g_list_length(list);
+	if (!loaded)	return "not loaded";
+	if (id >= 0)
+	{
+		// Assume maximum number of ROM_CALLs if we're not disassembling an OS.
+		if (maxid == 0)
+		{
+			maxid = sizeof(table)/sizeof(table[0]);
+		}
+		if (id < maxid)
+		{
+			return table[id].name;
+		}
+	}
+	return NULL;
 }
 
-uint32_t romcalls_get_addr(int id)
+/*uint32_t romcalls_get_addr(int id)
 {
 	return table[id].addr;
-}
+}*/
