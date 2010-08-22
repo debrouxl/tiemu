@@ -7,6 +7,7 @@ AC_INIT(tiemu-skinedit, 1.28, [tiemu-users@lists.sourceforge.net])
 
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_PREFIX_DEFAULT(/usr/local)
 
@@ -41,6 +42,7 @@ AC_CHECK_TOOL(RC, windres, windres)
 
 # Checks for libraries.
 AM_GNU_GETTEXT(external)
+AM_GNU_GETTEXT_VERSION([0.16])
 
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.4.0)
 AC_SUBST(GLIB_CFLAGS)

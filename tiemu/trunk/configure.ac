@@ -7,6 +7,7 @@ AC_INIT(TiEmu, 3.04, [tiemu-users@lists.sourceforge.net])
 
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_PREFIX_DEFAULT(/usr/local)
 
@@ -49,6 +50,7 @@ AC_CHECK_TOOL(RC, windres, windres)
 
 # Checks for libraries.
 AM_GNU_GETTEXT(external)
+AM_GNU_GETTEXT_VERSION([0.16])
 AC_SUBST(INCINTL)
 
 PKG_CHECK_MODULES(TICABLES, ticables2 >= 1.3.0)
