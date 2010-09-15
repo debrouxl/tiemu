@@ -1419,7 +1419,11 @@ m68k_scan_mask (bfd_vma memaddr, disassemble_info *info,
                 return 6;
               case 0xfff2:  /* 4 byte ROM CALL */
                 pm = NEXTUWORD(buffer);
-                info->fprintf_func (info->stream, "FLINE 0x%04x.l [%s]", pm/4, romcalls_get_name(pm / 4));
+                const char * rc_name = romcalls_get_name(pm / 4);
+                if (rc_name != NULL)
+                    info->fprintf_func (info->stream, "FLINE 0x%04x.l [%s]", pm/4, rc_name);
+                else
+                    info->fprintf_func (info->stream, "FLINE 0x%04x.l", pm/4);
                 return 4;
               case 0xffee:  /* jmp __ld_entry_point_plus_0x8000+word */
                 pm = NEXTWORD(buffer);
@@ -1456,7 +1460,11 @@ m68k_scan_mask (bfd_vma memaddr, disassemble_info *info,
                   return 4;
                 }
               default:  /* 2 byte ROM CALL */
-                info->fprintf_func (info->stream, "FLINE 0x%03x.w [%s]", op & 0x7ff, romcalls_get_name(op & 0x7ff));
+                const char * rc_name = romcalls_get_name(op & 0x7ff);
+                if (rc_name != NULL)
+                    info->fprintf_func (info->stream, "FLINE 0x%03x.w [%s]", op & 0x7ff, rc_name);
+                else
+                    info->fprintf_func (info->stream, "FLINE 0x%03x.w", op & 0x7ff);
                 return 2;
             }
         }
