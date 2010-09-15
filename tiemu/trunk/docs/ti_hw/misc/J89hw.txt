@@ -10,13 +10,14 @@
 
 .. .  .   .    .     .      .        .        .      .     .    .   .  . ..
 ===========================================================================
-INTRODUCTION                                     File version: 200501150001
+INTRODUCTION                                     File version: 201009150001
 ---------------------------------------------------------------------------
 This document contains (some) information about the TI89 hardware as seen
 from the programmer's point of view.  It is assumed that the reader is very
 familiar with computer hardware and low-level programming on M68000 systems.
-Very much applies to the TI92/+ as well, but no similarities or differences
-are mentioned in the text.
+Much applies to the TI92/+, V200 and 89T as well, but some similarities or
+differences (e.g. the address and size of the Flash memory) are mentioned
+in the text.
 
 This document is messy.  A revised version is underway.
 
@@ -34,7 +35,7 @@ With it I could finally fill in many blanks related to the second hardware
 model.
 
 A link to the most recent version of this document and other interesting
-stuff can be found at Olle's site >>>  http://alh.dhs.org/ti89/
+stuff used to be found at Olle's site >>>  http://alh.dhs.org/ti89/ (dead)
 
 -- 
 Johan Eilert <johei804@student.liu.se>
@@ -42,7 +43,7 @@ Johan Eilert <johei804@student.liu.se>
 --
 Updated by Romain Lievin <roms@tilp.info> from Olivier Armand's informations 
 (7000xx_ports.zip). Needed by the TiEmu project.
-SVN: $Id$ <http://svn.tilp.info/cgi-bin/viewcvs.cgi/tiemu/trunk/docs/ti_hw/misc/J89hw.txt?rev=2847&root=tiemu&view=auto>
+SVN: $Id$ <http://svn.tilp.info/cgi-bin/viewvc.cgi/tiemu/trunk/docs/ti_hw/misc/J89hw.txt?rev=2862&root=tiemu&view=auto>
 
 
 ===========================================================================
@@ -57,7 +58,7 @@ consecutive *addresses*.)
 
 The following protection features are *always* active, they cannot be
 disabled.
-Both HW models:
+All HW models:
   * Write accesses to the boot installer sector ($200000-$20FFFF) are
     filtered and never reach the flash ROM.
     (This sector is *also* permanently write protected by a feature of the
@@ -68,27 +69,27 @@ HW1 specific:
     the "multiple access forbidden" range crashes the calc.  (See Stealth I/O
     section.)  (Effectively inhibits the CPU from fetching instructions from
     the archive memory.)
-HW2 specific:
+HW2, HW3 & HW4 ("HW2+"):
   * An instruction fetch from a flash ROM sector (64K) that is within the
     "execution forbidden" range crashes the calc.  (See $700012.)
   * An instruction fetch from a RAM 4K page that has its "execution
-    forbidden" bit set crashes the calc.  The protection hardware also
-    considers the "shadow RAM" range $040000-$1FFFFF to be part of the last
-    RAM page.  (See $700000.)
+    forbidden" bit set crashes the calc.  On HW2, the protection hardware
+    also considers the "shadow RAM" range $040000-$1FFFFF to be part of the
+    last RAM page.  (See $700000-700007.)
 
 The following protections are enabled only when the Protection is enabled.
-Both HW models:
+All HW models:
   * Write accesses to the flash ROM ($210000-$3FFFFF) are filtered and never
     reach the flash ROM.
   * The certificate memory ($210000-$211FFF) is read protected.
   * The memory at $218000-$219FFF is read protected.  (?)
-HW2 specific:
+HW2, HW3 & HW4 ("HW2+"):
   * Certain memory mapped I/O ports are locked and protected against
     modification.  (These include, of course, the RAM page protection
     bitmask and the flash ROM executable sector limit.)
 
 The following protections can be enabled and disabled at any time.
-Both HW models:
+All HW models:
   * Write accesses to $000000-$00011F are filtered and trigger int 7.
     (See $600001.)
 
@@ -96,29 +97,29 @@ Both HW models:
 ===========================================================================
 OSCILLATORS
 ---------------------------------------------------------------------------
-The TI89 has two (HW2 has three) separate oscillators, they are refered to
-as OSC1 and OSC2 (and OSC3).
+The TI89 HW1 has two separate oscillators, HW2, HW3 & HW4 have three. They
+are refered to as OSC1, OSC2 and OSC3.
 
 OSC1 is the M68000 CPU clock.
   HW1: ~10 MHz
-  HW2: ~12 MHz
+  HW2+: ~12 MHz
 
 OSC2 is the timing base for the timers, the link I/O hardware and (HW1 only)
 the LCD controller.
   HW1: ~680 kHz - ~770 kHz
-  HW2: ??? - (~520 kHz (= 2^19 Hz !)) - ???
+  HW2+: ??? - (~520 kHz (= 2^19 Hz !)) - ???
 
 The speed of OSC2 can be calculated using this formula (assuming the APD
 time is the default):
   HW1: OSC2 speed = 242,688,000 / APD_seconds
-  HW2: OSC2 speed = 162,816,000 / APD_seconds
+  HW2+: OSC2 speed = 162,816,000 / APD_seconds
 APD_seconds should be somewhere in the range 300-360 seconds.  If the APD
-time is way longer than 400 seconds on a HW2, the HW1 formula should be used
-instead.  This will happen if, for example, an ignorant game reprograms the
-HW2 timer with the HW1 settings.
+time is way longer than 400 seconds on a HW2/HW3/HW4, the HW1 formula
+should be used instead.  This will happen if, for example, an ignorant game
+reprograms the HW2 timer with the HW1 settings.
 
-OSC3 (HW2 only) is the timing base for the LCD controller.
-  HW2: ??? - (680 kHz) - ???
+OSC3 (HW2, HW3 & HW4) is the timing base for the LCD controller.
+  HW2+: ??? - (680 kHz) - ???
 
 The speeds of OSC1 and OSC2 seem to be independent of the battery strength,
 but OSC3 runs slower with older batteries.
@@ -137,15 +138,17 @@ Level 2:
   times when the key is pressed and sometimes even when the key is released!
   Write any value to $60001B to acknowledge this interrupt.
 Level 3:
-  Disabled by default by AMS, early versions crash if it is enabled.  When
-  enabled, it is triggered at a fixed rate: OSC2/2^19.  See $600015:2.
+  HW1 & HW2: disabled by default by AMS <= 2.05, early versions crash if it
+             is enabled.  When enabled, it is triggered at a fixed rate:
+             OSC2/2^19.  See $600015:2.
+  HW3 & HW4: USB interrupt.
 Level 4:
   Triggered by the link hardware for various reasons.  Read from $60000C and
   sometimes read/write $60000F to properly acknowledge this interrupt.
 Level 5:
   Triggered by the programmable timer.  The default rate (set by AMS on
-  reset) is OSC2/(K*2^9), where K=79 for HW1 and K=53 for HW2.  See $600015
-  and $600017.
+  reset) is OSC2/(K*2^9), where K=79 for HW1 and K=53 for HW2+.
+  See $600015 and $600017.
 Level 6:
   Triggered when [ON] is pressed.  As with the rest of the keyboard, the
   lack of hardware debouncing sometimes triggers additional interrupts.
@@ -161,7 +164,7 @@ Level 7:
 ADDRESS SPACE
 ---------------------------------------------------------------------------
 Memory.devices..........Size....Description.....................
-$000000-$1FFFFF		2M	RAM (256K, repeats 8 times)
+$000000-$1FFFFF		2M	RAM (256K, repeats 8 times on HW1 & HW2)
   $000000-$00011F	288	(write protected)
 
 $200000-$3FFFFF		2M	flash ROM, (write protected)
@@ -185,7 +188,8 @@ $212000-$217FFF		24K	stealth I/O
 $21A000-$21FFFF		24K	stealth I/O
 
 $600000-$60001F		32	memory mapped I/O
-$700000-$70001F		32	memory mapped I/O (HW2 only)
+$700000-$70001F		32	memory mapped I/O (HW2, HW3 & HW4 only)
+$710000-$7100FF		256	memory mapped I/O (HW3 & HW4 only)
 
 
 ===========================================================================
@@ -270,7 +274,8 @@ $60000D R- Current link status (interrupt reason)
 	:5 SRX	Byte in receive buffer (undefined if :7 =1)
 		Read the byte from $60000F to finish acknowledge
 	:4 SLI	Interrupt pending (always =1 in interrupt handler), never used
-	:3 SA	Link activity (AMS int handler quits immediately if 0), used by AMS >= 208
+	:3 SA	Link activity (AMS int handler quits immediately if 0), used
+		by AMS >= 2.08
 	:2 ??	External activity ("someone's talking to me!")
 	:1 ?? 	Almost always set
 	:0 ??	Always zero?
@@ -308,7 +313,7 @@ $600010 -W ($0980 = $4C00/8)
 		  This address is latched into the LCD controller DMA
 		  address register on each FS (i.e. at the beginning of
 		  every frame).
-		HW2: No function.  See $700017.
+		HW2+: No function.  See $700017.
 
 $600012 -W ($3180 => 240x128 screen)
 	:15-14	-
@@ -333,21 +338,21 @@ $600012 -W ($3180 => 240x128 screen)
 
 $600015 RW ($1B)
 	:7	Master disable timer interrupts (level 1, 3 and 5)
-	:6	- (HW2: ?)
+	:6	- (HW2+: ?)
 	:5-4	Increment rate of $600017
 		%00: OSC2/2^5
 		%01: OSC2/2^9  (AMS default)
 		%10: OSC2/2^12
 		%11: OSC2/2^18
 	:3	Enable incrementing of $600017
-	:2	Trigger interrupt level 3 at OSC2/2^19  (~1 Hz on HW2)
+	:2	Trigger interrupt level 3 at OSC2/2^19  (~1 Hz on HW2+)
 	:1	OSC2 (and OSC3?) enable (bit clear means oscillator stopped!)
 	:0	LCD controller DMA enable, LCD blank ("white") if =0
 		This bit is only examined by the hardware at the start of
 		each frame.
 		HW1: The DMA steals ~10% of the CPU bus bandwidth.
 
-$600017 RW ($B2 = 257-79 for HW1, $CC = 257-53 for HW2)
+$600017 RW ($B2 = 257-79 for HW1, $CC = 257-53 for HW2+)
 	:7-0	READ:  Read the current value
 		WRITE: Set the initial (and current) value for the timer
 	The timer value is incremented at the rate specified at $600015 and
@@ -361,9 +366,10 @@ $600017 RW ($B2 = 257-79 for HW1, $CC = 257-53 for HW2)
 $600018 RW ($0380)
 	:15-10	-
 	:9-7	Battery voltage trigger level (see $600000:2)
-		(HW2: must also enable batt checker at $70001D:3,0)
+		(HW2+: must also enable batt checker at $70001D:3,0)
 		  %000: ~4.6V, %001: ~4.5V, %010: ~4.3V, %011: ~4.0V,
-		  %100: ~3.7V, %101: ~3.4V, %110: ~3.2V, (%111: ~2.9V  calc resetted!)
+		  %100: ~3.7V, %101: ~3.4V, %110: ~3.2V,
+		  (%111: ~2.9V  calc resetted!)
 		Remember to wait a while (~250us) before reading from
 		$600000:2 to make sure that the hardware has stabilized.
 		Keep the trig level set to the lowest voltage (%111) when
@@ -393,15 +399,16 @@ $60001C -W ($21 = 64 cycles/RS = 256 pixels/RS)
 
 $60001D -W ($80+contrast)
 	:7	HW1: Voltage multiplier enable.  Keep set (=1)!
-		HW2: -
+		HW2+: -
 	:6-5	-
 	:4	HW1: Screen disable (power down)
-		HW2: LCD contrast bit 4 (msb)
+		HW2+: LCD contrast bit 4 (msb)
 	:3-0	LCD contrast bits 3-0 (bit 3 is msb on HW1)
 
-These are HW2 only --------------------------------------------------------
 
-$700000 RW ($FFDF FFFF FFFF FFFF = allow exec at $005xxx only)
+These are HW2+ only -------------------------------------------------------
+
+$700000 rw ($FFDF FFFF FFFF FFFF = allow exec at $005xxx only)
 	Bit SET means instruction fetches NOT allowed in that 4K page.
 	The Protection must be disabled for changes to have any effect.
 $700000	:15-0	$00Fxxx-$000xxx  (one bit for each 4K page)
@@ -409,29 +416,31 @@ $700002	:15-0	$01Fxxx-$010xxx
 $700004	:15-0	$02Fxxx-$020xxx
 $700006	:15-0	$03Fxxx-$030xxx  (bit 15 controls $1FFFFF-$040000 too)
 
-$700008 to $700000F RW
-  These ports are the ghosts of the ports for the protection of execution in
-  RAM ($700000 to $700007). Any writing to either the real ports or the ghosts
-  will change both ports (eg $700002 and $70000A).
+$700008 to $700000F rw
+	These ports are the ghosts of the RAM execution protection
+	($700000 to $700007). Any writing to either the real ports or the
+	ghosts will change both ports (e.g $700002 and $70000A).
 
 $700011	-W ($40, $57 by boot installer when 'i' is pressed)
 	:7-0	??? (something to do with link port transfer speed)
 
-$700012	RW (reset: $0018 => $390000-$3FFFFF) Flash ROM execution protection
+$700012	Rw (reset: $0018 => $390000-$3FFFFF) Flash ROM execution protection
 	The Protection must be disabled for changes to have any effect.
 	:15-6	-
 	:5-0	First exec protected flash ROM sector =(n*$10000+$210000)
 
-$700014 RW Real Time Clock
-  Real Time Clock. Incremented every 2^13 = 8192 seconds exactly.
-  The whole word must be read : reading the port byte by byte can return wrong
-  values.
-  The timer is not incremented when the batteries have been removed, but the
-  value it had when they were removed is kept. Removing the lithium battery
-  and putting it back gives a random value to the timer.	
+$700014 Rw Real Time Clock
+	:15-0	Value incremented every 2^13 = 8192 seconds exactly.
+	The whole word must be read : reading the port byte by byte can
+	return wrong values.
+	The timer is not incremented when the batteries have been removed,
+	but the value it had when they were removed is kept. Removing the
+	lithium battery and putting it back gives a random value to
+	the timer.
+	See $70001F.
 
 $700017 RW ($00 = $4C00-$5BFF)
-	The HW2 display controller doesn't fetch pixel data from RAM but
+	The HW2+ display controller doesn't fetch pixel data from RAM but
 	from its own memory.  This memory is 4K and all CPU writes to the
 	selected address range (below) will go to both RAM and this memory.
 	(NOTE: It is not possible to *read* from the display memory.)
@@ -443,7 +452,7 @@ $700017 RW ($00 = $4C00-$5BFF)
 	the display controller is snooping writes to $4C00-$5BFF.
 	Note: For obvious reasons, the contents of the screen does not
 	change when you write to this register.  This register is NOT the
-	HW2 equivalence of the register at $600010 on HW1.
+	HW2+ equivalence of the register at $600010 on HW1.
 
 $70001D RW ($06)
 	:7	Toggles every FS (every time the LCD restarts at line 0)
@@ -458,30 +467,41 @@ $70001D RW ($06)
 	the "rest" voltage value (%111).  Finally, both bits should be
 	cleared.
 
-$70001F RW ($07)
+$70001F Rw ($07)
 	The Protection must be disabled for changes to have any effect.
 	:7-3	-
-	:2	  activates the incrementation of $700014.w when bit 1 is set. Set by
-        AMS on reset.
-	:1		its effect depends on the state of bit 2.
-	:0	Use 5 contrast bits (default for AMS).  When this bit is
-		cleared, the contrast hardware uses $60001D:3-0 only to
-		specify the contrast, effectively emulating a HW1.
-		AND, clearing this bit activate the execution in areas from which the 
-		Protection can be disabled :
-    ROM_BASE+$12000 to ROM_BASE+$17FFF and ROM_BASE+$1A000 to ROM_BASE+$1FFFF.
-    The execution in the boot sector is not protected by the protection
+	:2	Enables the slow incrementation of $700014.w.
+		Bit set by AMS on reset.
+	:1	Dependent on bit 2, see below.
+	:0	* Use 5 contrast bits (default for AMS).  When this bit is
+		  cleared, the contrast hardware uses $60001D:3-0 only to
+		  specify the contrast, effectively emulating a HW1.
+		AND
+		* Clearing this bit activates the execution in areas from
+		  which the Protection can be disabled :
+		  ROM_BASE+$12000 to ROM_BASE+$17FFF
+		  and
+		  ROM_BASE+$1A000 to ROM_BASE+$1FFFF.
+		  The execution in the boot sector is not protected by the
+		  Protection.
 
- bit2/bit1
-   1   1   : State set by AMS on reset. $700014.w is incremented.
-   1   0   : Auto-ints 1, 2, 3 and 5 are inhibited. The RTC is stopped.
-   0   1   : The RTC is stopped. The auto-ints works normally.
-   0   0   : The RTC is stopped. The frequencies of all the auto-ints are
-             lower (OSC2 must be slower).
-             AI1 : ~ 176 Hz instead of 256 Hz. 
-             AI3 : ~ 40 ticks per minute instead of 60.
-             AI5 : ~ 13.2 Hz instead 19.3 Hz.
-   Only AMS initializes theses bits on reset. The boot code does not.
+		bit2/bit1  Effect
+		1    1     $700014.w (the RTC) is incremented.
+		           State set by AMS on reset.
+		1    0     The RTC is stopped.
+		           Auto-ints 1, 2, 3 and 5 are inhibited.
+		0    1     The RTC is stopped.
+		           Auto-ints work normally.
+		0    0     The RTC is stopped. The frequencies of all
+		           auto-ints are lower (OSC2 must be slower).
+		           AI1 : ~ 176 Hz instead of 256 Hz. 
+		           AI3 : ~ 40 ticks per minute instead of 60.
+		           AI5 : ~ 13.2 Hz instead of 19.3 Hz.
+		The boot code does not initialize these bits.
+
+
+These are HW3+ only -------------------------------------------------------
+(to be written)
 
 
 ===========================================================================
@@ -492,7 +512,7 @@ I/O ports that occupy parts of the RAM and the flash ROM address ranges.
 Every access (read or write) to these special address ranges will issue a
 transparent stealth I/O operation as well as performing the usual access to
 RAM or flash ROM.  To make things less complicated, it is only the *address*
-and the *type* of the access (HW1: READ or WRITE, HW2: READ/WRITE and CPU
+and the *type* of the access (HW1: READ or WRITE, HW2+: READ/WRITE and CPU
 function codes FC2-FC0) that matters to a stealth I/O port, not the actual
 data.  Be careful when WRITING to a stealth I/O port that occupies the same
 address range as RAM!
@@ -516,7 +536,7 @@ Three consecutive access to any address >=$390000+'limit'*$10000 and <$400000,
 where 'limit' is the combined value of the three bits above, crashes the
 calculator.  Use 'limit'=%111 to disable this protection altogether.
 
-(HW2:? The CPU must be in supervisor mode for changes to have any effect.)
+(HW2+:? The CPU must be in supervisor mode for changes to have any effect.)
 $180000-$1BFFFF: Screen power control
   READ:  Screen power off
   WRITE: Screen power on
@@ -537,7 +557,7 @@ HW1:
   In order to alter the state of the Protection, THREE consecutive read
   accesses must occur from any of the three ranges above immediately prior
   to the access to the Protection enable/disable range.
-HW2:
+HW2+
   (Note: This is somewhat complicated and I don't know exactly how it works.
    The procedure listed below is probably too strict.  Anyway, this is what
    AMS and the boot sector does.)
@@ -635,9 +655,9 @@ The highest possible (full-screen) frame rate is 4800 OSC2 cycles per frame.
 
 
 ===========================================================================
-HW2 DISPLAY CONTROLLER
+HW2+ DISPLAY CONTROLLER
 ---------------------------------------------------------------------------
-The HW2 display controller works very much like its HW1 counterpart, but
+The HW2+ display controller works very much like its HW1 counterpart, but
 with two major exceptions:
 
 * The timing base is OSC3 which is *completely* unrelated to the timer and
@@ -660,5 +680,3 @@ POWER CONTROL
 ===========================================================================
 END OF FILE
 ---------------------------------------------------------------------------
-
-
