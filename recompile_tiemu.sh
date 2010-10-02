@@ -8,6 +8,9 @@
 # The prefix where the binaries will be installed, e.g. $HOME, /usr, /usr/local, /usr/share.
 PREFIX="$HOME"
 
+# Common flags and definitions.
+CCFLAGS="-Os -g3 -Wall -W -Wno-unused-parameter -Wshadow -Wwrite-strings -Wredundant-decls -fstack-protector-all -Wstack-protector --param=ssp-buffer-size=1 -Wp,-D_FORTIFY_SOURCE=2"
+
 # Configure and build the given module
 handle_one_module() {
   module_name="$1"
@@ -15,8 +18,8 @@ handle_one_module() {
 
   cd "$module_name/trunk"
   echo "Configuring $module_name"
-  rm -f config.cache
-  ./configure "--prefix=$PREFIX" $@ || return 1
+  rm -f `find . -iname config.cache`
+  ./configure CFLAGS="$CCFLAGS" CXXFLAGS="$CCFLAGS" "--prefix=$PREFIX" $@ || return 1
   echo "Building $module_name"
   make clean || return 1
   make || return 1

@@ -1401,29 +1401,35 @@ m68k_scan_mask (bfd_vma memaddr, disassemble_info *info,
             {
               case 0xfff0:  /* 6 byte bsr w/long word displacement */
                 pm = NEXTLONG(buffer);
-                if (pm < 0)
-                  info->fprintf_func (info->stream, "FLINE bsr.l .-0x%x [", (-pm) - 2);
-                else
-                  info->fprintf_func (info->stream, "FLINE bsr.l .+0x%x [", pm + 2);
-                info->print_address_func (memaddr + pm + 2, info);
-                info->fprintf_func (info->stream, "]");
+                {
+                  if (pm < 0)
+                    info->fprintf_func (info->stream, "FLINE bsr.l .-0x%x [", (-pm) - 2);
+                  else
+                    info->fprintf_func (info->stream, "FLINE bsr.l .+0x%x [", pm + 2);
+                  info->print_address_func (memaddr + pm + 2, info);
+                  info->fprintf_func (info->stream, "]");
+                }
                 return 6;
               case 0xfff1:  /* 6 byte bra w/long word displacement */
                 pm = NEXTLONG(buffer);
-                if (pm < 0)
-                  info->fprintf_func (info->stream, "FLINE bra.l .-0x%x [", (-pm) - 2);
-                else
-                  info->fprintf_func (info->stream, "FLINE bra.l .+0x%x [", pm + 2);
-                info->print_address_func (memaddr + pm + 2, info);
-                info->fprintf_func (info->stream, "]");
+                {
+                  if (pm < 0)
+                    info->fprintf_func (info->stream, "FLINE bra.l .-0x%x [", (-pm) - 2);
+                  else
+                    info->fprintf_func (info->stream, "FLINE bra.l .+0x%x [", pm + 2);
+                  info->print_address_func (memaddr + pm + 2, info);
+                  info->fprintf_func (info->stream, "]");
+                }
                 return 6;
               case 0xfff2:  /* 4 byte ROM CALL */
                 pm = NEXTUWORD(buffer);
-                const char * rc_name = romcalls_get_name(pm / 4);
-                if (rc_name != NULL)
-                    info->fprintf_func (info->stream, "FLINE 0x%04x.l [%s]", pm/4, rc_name);
-                else
-                    info->fprintf_func (info->stream, "FLINE 0x%04x.l", pm/4);
+                {
+                  const char * rc_name = romcalls_get_name(pm / 4);
+                  if (rc_name != NULL)
+                      info->fprintf_func (info->stream, "FLINE 0x%04x.l [%s]", pm/4, rc_name);
+                  else
+                      info->fprintf_func (info->stream, "FLINE 0x%04x.l", pm/4);
+                }
                 return 4;
               case 0xffee:  /* jmp __ld_entry_point_plus_0x8000+word */
                 pm = NEXTWORD(buffer);
@@ -1457,14 +1463,16 @@ m68k_scan_mask (bfd_vma memaddr, disassemble_info *info,
                   pm = NEXTUWORD(buffer);
                   DasmFPU(pm, buf);
                   info->fprintf_func (info->stream, "FLINE _bcd_math (FPU: %s)", buf);
-                  return 4;
                 }
+                return 4;
               default:  /* 2 byte ROM CALL */
-                const char * rc_name = romcalls_get_name(op & 0x7ff);
-                if (rc_name != NULL)
-                    info->fprintf_func (info->stream, "FLINE 0x%03x.w [%s]", op & 0x7ff, rc_name);
-                else
-                    info->fprintf_func (info->stream, "FLINE 0x%03x.w", op & 0x7ff);
+                {
+                  const char * rc_name = romcalls_get_name(op & 0x7ff);
+                  if (rc_name != NULL)
+                      info->fprintf_func (info->stream, "FLINE 0x%03x.w [%s]", op & 0x7ff, rc_name);
+                  else
+                      info->fprintf_func (info->stream, "FLINE 0x%03x.w", op & 0x7ff);
+                }
                 return 2;
             }
         }

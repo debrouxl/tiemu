@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tiemu\n"
 "Report-Msgid-Bugs-To: tiemu-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-05-04 08:22+0200\n"
+"POT-Creation-Date: 2010-10-02 13:08+0200\n"
 "PO-Revision-Date: 2010-03-01 20:49+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tiemu-devel@lists.sf.net>\n"
@@ -523,9 +523,9 @@ msgid "PLEASE READ THE DOCUMENTATION FOR DETAILS\n"
 msgstr "VEUILLEZ LIRE LA DOCUMENTATION POUR PLUS DE DETAILS\n"
 
 #: src/misc/files.c:95 src/misc/files.c:107 src/misc/files.c:123
-#: src/gui/calc/keyboard.c:77 src/gui/calc/popup.c:176
+#: src/gui/calc/keyboard.c:75 src/gui/calc/popup.c:176
 #: src/gui/calc/popup.c:179 src/gui/calc/popup.c:191 src/gui/dboxes.c:42
-#: src/gui/fs_misc.c:155 src/gui/fs_misc.c:158
+#: src/gui/fs_misc.c:154 src/gui/fs_misc.c:157
 msgid "Information"
 msgstr "Information"
 
@@ -557,8 +557,8 @@ msgstr ""
 "Le fichier %s existe déjà.\n"
 "L'écraser ?"
 
-#: src/misc/files.c:153 src/gui/dboxes.c:44 src/gui/fs_misc.c:82
-#: src/gui/fs_misc.c:239
+#: src/misc/files.c:153 src/gui/dboxes.c:44 src/gui/fs_misc.c:81
+#: src/gui/fs_misc.c:238
 msgid "Warning"
 msgstr "Avertissement"
 
@@ -582,10 +582,10 @@ msgstr "Renommer le fichier"
 msgid "New name: "
 msgstr "Nouveau nom: "
 
-#: src/misc/files.c:209 src/misc/tie_error.c:78 src/gui/calc/popup.c:790
-#: src/gui/calc/popup.c:840 src/gui/dboxes.c:48 src/gui/fs_misc.c:212
-#: src/gui/fs_misc.c:391 src/gui/fs_misc.c:421 src/gui/fs_misc.c:437
-#: src/gui/fs_misc.c:502 src/gui/main.c:218 src/gui/main.c:226
+#: src/misc/files.c:209 src/misc/tie_error.c:75 src/gui/calc/popup.c:790
+#: src/gui/calc/popup.c:840 src/gui/dboxes.c:48 src/gui/fs_misc.c:211
+#: src/gui/fs_misc.c:390 src/gui/fs_misc.c:420 src/gui/fs_misc.c:436
+#: src/gui/fs_misc.c:506 src/gui/main.c:218 src/gui/main.c:226
 #: src/gui/main.c:234 src/gui/main.c:242 src/gui/quicksend.c:120
 #: src/gui/wizard.c:253 src/gui/wizard.c:289
 msgid "Error"
@@ -629,14 +629,14 @@ msgstr "Ne peut pas ouvrir le fichier de destination en écriture!"
 #: src/gui/calc/calc.c:239 src/gui/calc/popup.c:648
 #: src/gui/debugger/dbg_bkpts.c:368 src/gui/debugger/dbg_bits.c:50
 #: src/gui/debugger/dbg_cause.c:60 src/gui/debugger/dbg_cause.c:144
-#: src/gui/debugger/dbg_code.c:362 src/gui/debugger/dbg_code.c:703
-#: src/gui/debugger/dbg_code.c:1165 src/gui/debugger/dbg_data.c:56
+#: src/gui/debugger/dbg_code.c:363 src/gui/debugger/dbg_code.c:704
+#: src/gui/debugger/dbg_code.c:1166 src/gui/debugger/dbg_data.c:56
 #: src/gui/debugger/dbg_entry.c:207 src/gui/debugger/dbg_heap.c:151
 #: src/gui/debugger/dbg_heap.c:272 src/gui/debugger/dbg_iop.c:435
 #: src/gui/debugger/dbg_mem.c:717 src/gui/debugger/dbg_mem.c:1092
 #: src/gui/debugger/dbg_mem.c:1316 src/gui/debugger/dbg_pclog.c:143
-#: src/gui/debugger/dbg_regs.c:199 src/gui/debugger/dbg_regs.c:544
-#: src/gui/debugger/dbg_stack.c:168 src/gui/debugger/dbg_stack.c:422
+#: src/gui/debugger/dbg_regs.c:199 src/gui/debugger/dbg_regs.c:546
+#: src/gui/debugger/dbg_stack.c:169 src/gui/debugger/dbg_stack.c:423
 #: src/gui/debugger/dbg_vectors.c:145 src/gui/logger/log_link.c:62
 #: src/gui/infos.c:50 src/gui/manpage.c:72 src/gui/pbars.c:63
 #: src/gui/quicksend.c:59 src/gui/release.c:77 src/gui/romversion.c:191
@@ -805,21 +805,21 @@ msgstr "un coup"
 msgid "dbg_bkpts-2.glade: GUI loading failed !\n"
 msgstr "dbg_bkpts-2.glade: échec du chargement de l'interface graphique !\n"
 
-#: src/gui/debugger/dbg_code.c:80 src/gui/debugger/dbg_heap.c:60
+#: src/gui/debugger/dbg_code.c:81 src/gui/debugger/dbg_heap.c:60
 #: src/gui/debugger/dbg_iop.c:304 src/gui/debugger/dbg_mem.c:190
-#: src/gui/debugger/dbg_pclog.c:59 src/gui/debugger/dbg_stack.c:63
+#: src/gui/debugger/dbg_pclog.c:59 src/gui/debugger/dbg_stack.c:64
 msgid "Address"
 msgstr "Adresse"
 
-#: src/gui/debugger/dbg_code.c:80
+#: src/gui/debugger/dbg_code.c:81
 msgid "Opcode"
 msgstr "Code opératoire"
 
-#: src/gui/debugger/dbg_code.c:80
+#: src/gui/debugger/dbg_code.c:81
 msgid "Operand"
 msgstr "Opérande"
 
-#: src/gui/debugger/dbg_code.c:1249
+#: src/gui/debugger/dbg_code.c:1250
 msgid "Choose font..."
 msgstr "Choisir police..."
 
@@ -836,7 +836,7 @@ msgstr "Id"
 msgid "Size"
 msgstr "Taille"
 
-#: src/gui/debugger/dbg_iop.c:277 src/gui/debugger/dbg_stack.c:63
+#: src/gui/debugger/dbg_iop.c:277 src/gui/debugger/dbg_stack.c:64
 msgid "Value"
 msgstr "Valeur"
 
@@ -854,7 +854,7 @@ msgstr "Numéro"
 msgid "Framework version (cables=%s, files=%s, calcs=%s, conv=%s)"
 msgstr "Framework version (cables=%s, files=%s, calcs=%s, conv=%s)"
 
-#: src/gui/device.c:59 src/gui/wizard.c:95 src/gui/wizard.c:180
+#: src/gui/device.c:58 src/gui/wizard.c:95 src/gui/wizard.c:180
 #: src/gui/wizard.c:219
 msgid "comm.c: GUI loading failed !\n"
 msgstr "comm.c : échec du chargement de l'interface graphique !\n"
@@ -867,7 +867,7 @@ msgstr "Sauver un fichier"
 msgid "Open file"
 msgstr "Ouvrir un fichier"
 
-#: src/gui/fs_misc.c:83
+#: src/gui/fs_misc.c:82
 msgid ""
 "The state image you are attempting to load does not match the current "
 "running image. Press OK if you want TiEmu to automatically load the "
@@ -877,7 +877,7 @@ msgstr ""
 "actuellement en train de tourner. Appuyer sur OK si vous voulez que TiEmu "
 "charge automatiquement l'image correspondante; appuyez sur Annuler sinon."
 
-#: src/gui/fs_misc.c:156
+#: src/gui/fs_misc.c:155
 msgid ""
 "You do not seem to have saved your settings. Configuration file saved (in "
 "tiemu.ini)."
@@ -885,7 +885,7 @@ msgstr ""
 "Il semble que vous n'avez pas sauvegardé votre configuration. Configuration "
 "sauvée (dans tiemu.ini)."
 
-#: src/gui/fs_misc.c:159
+#: src/gui/fs_misc.c:158
 msgid ""
 "You do not seem to have saved your settings. Configuration file saved (in ~/."
 "tiemu)."
@@ -893,23 +893,23 @@ msgstr ""
 "Il semble que vous n'avez pas sauvé votre configuration. Sauvé (dans ~/."
 "tiemu)."
 
-#: src/gui/fs_misc.c:173
+#: src/gui/fs_misc.c:172
 msgid "Sending app(s)"
 msgstr "Envoi d'application(s)"
 
-#: src/gui/fs_misc.c:177 src/gui/fs_misc.c:185
+#: src/gui/fs_misc.c:176 src/gui/fs_misc.c:184
 msgid "Sending var(s)"
 msgstr "Envoi de(s) variable(s)"
 
-#: src/gui/fs_misc.c:181 src/gui/fs_misc.c:189
+#: src/gui/fs_misc.c:180 src/gui/fs_misc.c:188
 msgid "Restoring"
 msgstr "Restaurer"
 
-#: src/gui/fs_misc.c:212 src/gui/fs_misc.c:391 src/gui/quicksend.c:120
+#: src/gui/fs_misc.c:211 src/gui/fs_misc.c:390 src/gui/quicksend.c:120
 msgid "This file is not a valid TI file."
 msgstr "Ce fichier n'est pas un fichier TI valide."
 
-#: src/gui/fs_misc.c:236
+#: src/gui/fs_misc.c:235
 #, c-format
 msgid ""
 "The current link cable <%s> port <%s> does not allow direct file loading. Do "
@@ -918,27 +918,27 @@ msgstr ""
 "Le cable <%s> port <%s> actuel ne permet pas le chargement direct de "
 "fichier. Voulez-vous laisser TiEmu le changer pour vous ?"
 
-#: src/gui/fs_misc.c:421
+#: src/gui/fs_misc.c:420
 msgid "Does not seem to be an upgrade."
 msgstr "Le fichier ne semble pas etre une mise à jour."
 
-#: src/gui/fs_misc.c:437
+#: src/gui/fs_misc.c:436
 msgid "Cannot load the upgrade."
 msgstr "Impossible de charger la mise à jour."
 
-#: src/gui/fs_misc.c:473 src/gui/fs_misc.c:483
+#: src/gui/fs_misc.c:476 src/gui/fs_misc.c:486
 msgid "HW type"
 msgstr "HW type"
 
-#: src/gui/fs_misc.c:474
+#: src/gui/fs_misc.c:477
 msgid "The FLASH upgrade can be imported as HW1 or HW2. Please choose..."
 msgstr "La MAJ peut être importé comme HW1 ou HW2. Veuillez choisir..."
 
-#: src/gui/fs_misc.c:484
+#: src/gui/fs_misc.c:487
 msgid "The FLASH upgrade can be imported as HW3 or HW4. Please choose..."
 msgstr "La MAJ peut être importé comme HW3 ou HW4. Veuillez choisir..."
 
-#: src/gui/fs_misc.c:502
+#: src/gui/fs_misc.c:506
 msgid "This is not a valid file"
 msgstr "Ce fichier n'est pas un fichier valide."
 

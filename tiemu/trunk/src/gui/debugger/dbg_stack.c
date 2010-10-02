@@ -29,6 +29,7 @@
 #endif
 
 #include <stdlib.h>
+#include <inttypes.h>
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <gdk/gdkkeysyms.h>
@@ -361,12 +362,12 @@ on_dbgstack_button_press_event     (GtkWidget       *widget,
 		// get address
 		gtk_tree_model_get_iter(model, &iter, path);
 		gtk_tree_model_get(model, &iter, COL_DATA, &row_text[COL_DATA], -1);
-		sscanf(row_text[COL_DATA], "%x", &hi);
+		sscanf(row_text[COL_DATA], "%" SCNx16, &hi);
 
 		if(gtk_tree_model_iter_next(model, &iter) == FALSE)
 			return FALSE;
 		gtk_tree_model_get(model, &iter, COL_DATA, &row_text[COL_DATA], -1);
-		sscanf(row_text[COL_DATA], "%x", &lo);
+		sscanf(row_text[COL_DATA], "%" SCNx16, &lo);
 
 		value = (hi << 16) | lo;
 

@@ -39,8 +39,6 @@
 #include "skinops.h"
 #include "utils.h"
 
-extern struct skinInfos skin_infos;
-
 int
 export_skin_vti(const char *path, unsigned int version)
 {
@@ -49,85 +47,95 @@ export_skin_vti(const char *path, unsigned int version)
   unsigned char *jpeg_data = NULL;
   unsigned int jpeg_length;
   char buf[64];
+  int ret = -1;
 
   fp = fopen(path, "wb");
   
   if (fp != NULL)
     {
       if (skin_infos.type == SKIN_TYPE_NEW)
-	{
-	  jpeg = fopen(skin_infos.jpeg_path, "rb");
-	}
+        {
+          jpeg = fopen(skin_infos.jpeg_path, "rb");
+        }
       else
-	{
-	  jpeg = fopen(skin_infos.skin_path, "rb");
-	}
+        {
+          jpeg = fopen(skin_infos.skin_path, "rb");
+        }
 
       if (jpeg == NULL)
-	{
-	  fclose(fp);
-	  
-	  return -1;
-	}
-      
+        {
+          fclose(fp);
+
+          return -1;
+        }
+
       jpeg_data = read_image(jpeg, &jpeg_length);
-      
-      if (jpeg_data == NULL)
-	{
-	  fclose(fp);
-	  fclose(jpeg);
-	  
-	  return -1;
-	}
+
+      if (jpeg_data == NULL) goto exit;
 
       if (version == EXPORT_VTI_2_1)
-	{
-	  fwrite("VTIv2.1 ", 8, 1, fp);
+        {
+          if (fwrite("VTIv2.1 ", 8, 1, fp) < 1) goto exit;
 
-	  memset(buf, 0, 64);
+          memset(buf, 0, 64);
 
-	  if (skin_infos.name != NULL)
-	    strncpy(buf, skin_infos.name, 64);
+          if (skin_infos.name != NULL)
+            {
+              strncpy(buf, skin_infos.name, 64);
+            }
 
-	  fwrite(buf, 64, 1, fp);
-	}
+          if (fwrite(buf, 64, 1, fp) < 1) goto exit;
+        }
       else if (version == EXPORT_VTI_2_5)
-	{
-	  fwrite("VTIv2.5 ", 8, 1, fp);
+        {
+          if (fwrite("VTIv2.5 ", 8, 1, fp) < 1) goto exit;
 
-	  memset(buf, 0, 64);
+          memset(buf, 0, 64);
 
-	  if (skin_infos.name != NULL)
-	    strncpy(buf, skin_infos.name, 64);
+          if (skin_infos.name != NULL)
+            {
+              strncpy(buf, skin_infos.name, 64);
+            }
 
-	  fwrite(buf, 64, 1, fp);
+          if (fwrite(buf, 64, 1, fp) < 1) goto exit;
 
-	  memset(buf, 0, 64);
+          memset(buf, 0, 64);
 
-	  if (skin_infos.author != NULL)
-	    strncpy(buf, skin_infos.author, 64);
+          if (skin_infos.author != NULL)
+            {
+              strncpy(buf, skin_infos.author, 64);
+            }
 
-	  fwrite(buf, 64, 1, fp);
-	}
+
+          if (fwrite(buf, 64, 1, fp) < 1) goto exit;
+        }
       else
-	return -1;
+        {
+          goto exit;
+        }
 
       write_vti_core(fp);
-      
-      fwrite(jpeg_data, jpeg_length, 1, fp);
-      
+
+      if (fwrite(jpeg_data, jpeg_length, 1, fp) < 1) goto exit;
+
+      ret = 0;
+
+exit:
+      free(jpeg_data); 
       fclose(fp);
       fclose(jpeg);
-      free(jpeg_data); 
     }
   else
     {
       return -1;
     }
 
-  sbar_print(_("Skin exported as %s (%s)"), ((version == EXPORT_VTI_2_1) ? "VTiv2.1" : "VTiv2.5"), g_basename(path));
+  if (ret != -1)
+    {
+      sbar_print(_("Skin exported as %s (%s)"), ((version == EXPORT_VTI_2_1) ? "VTiv2.1" : "VTiv2.5"), g_basename(path));
+    }
 
-  return 0;
+  return ret;
 }
 
 
@@ -136,6 +144,7 @@ write_vti_core(FILE *fp)
 {
   uint32_t tmpint;
   int i;
+  int ret = -1;
 
   if (strcmp(skin_infos.calc, CALC_TI73) == 0)
     {
@@ -176,56 +185,59 @@ write_vti_core(FILE *fp)
 
 #if G_BYTE_ORDER == G_BIG_ENDIAN
   tmpint = bswap_32(tmpint);
-  fwrite(&tmpint, 4, 1, fp); /* calc type */
+  if (fwrite(&tmpint, 4, 1, fp) < 1) goto exit; /* calc type */
 
   tmpint = bswap_32(skin_infos.colortype);
-  fwrite(&tmpint, 4, 1, fp);
+  if (fwrite(&tmpint, 4, 1, fp) < 1) goto exit;
 
   tmpint = bswap_32(skin_infos.lcd_white);
-  fwrite(&tmpint, 4, 1, fp);
+  if (fwrite(&tmpint, 4, 1, fp) < 1) goto exit;
 
   tmpint = bswap_32(skin_infos.lcd_black);
-  fwrite(&tmpint, 4, 1, fp);
+  if (fwrite(&tmpint, 4, 1, fp) < 1) goto exit;
 
   tmpint = bswap_32(skin_infos.lcd_pos.top);
-  fwrite(&tmpint, 4, 1, fp);
+  if (fwrite(&tmpint, 4, 1, fp) < 1) goto exit;
   tmpint = bswap_32(skin_infos.lcd_pos.bottom);
-  fwrite(&tmpint, 4, 1, fp);
+  if (fwrite(&tmpint, 4, 1, fp) < 1) goto exit;
   tmpint = bswap_32(skin_infos.lcd_pos.left);
-  fwrite(&tmpint, 4, 1, fp);
+  if (fwrite(&tmpint, 4, 1, fp) < 1) goto exit;
   bswap_32(skin_infos.lcd_pos.right);
-  fwrite(&tmpint, 4, 1, fp);
+  if (fwrite(&tmpint, 4, 1, fp) < 1) goto exit;
 
   for (i = 0; i < 80; i++)
     {
       tmpint = bswap_32(skin_infos.keys_pos[i].top);
-      fwrite(&tmpint, 4, 1, fp);
+      if (fwrite(&tmpint, 4, 1, fp) < 1) goto exit;
       tmpint = bswap_32(skin_infos.keys_pos[i].bottom);
-      fwrite(&tmpint, 4, 1, fp);
-      tmpint = bswap_32(skin_infos.keys_pos[i].left); 
-      fwrite(&tmpint, 4, 1, fp);
-      tmpint = bswap_32(skin_infos.keys_pos[i].right); 
-      fwrite(&tmpint, 4, 1, fp);
+      if (fwrite(&tmpint, 4, 1, fp) < 1) goto exit;
+      tmpint = bswap_32(skin_infos.keys_pos[i].left);
+      if (fwrite(&tmpint, 4, 1, fp) < 1) goto exit;
+      tmpint = bswap_32(skin_infos.keys_pos[i].right);
+      if (fwrite(&tmpint, 4, 1, fp) < 1) goto exit;
     }
 #else
-  fwrite(&tmpint, 4, 1, fp);
-  fwrite(&skin_infos.colortype, 4, 1, fp);
-  fwrite(&skin_infos.lcd_white, 4, 1, fp);
-  fwrite(&skin_infos.lcd_black, 4, 1, fp);
+  if (fwrite(&tmpint, 4, 1, fp) < 1) goto exit;
+  if (fwrite(&skin_infos.colortype, 4, 1, fp) < 1) goto exit;
+  if (fwrite(&skin_infos.lcd_white, 4, 1, fp) < 1) goto exit;
+  if (fwrite(&skin_infos.lcd_black, 4, 1, fp) < 1) goto exit;
 
-  fwrite(&skin_infos.lcd_pos.left, 4, 1, fp);
-  fwrite(&skin_infos.lcd_pos.top, 4, 1, fp);
-  fwrite(&skin_infos.lcd_pos.right, 4, 1, fp);
-  fwrite(&skin_infos.lcd_pos.bottom, 4, 1, fp);
+  if (fwrite(&skin_infos.lcd_pos.left, 4, 1, fp) < 1) goto exit;
+  if (fwrite(&skin_infos.lcd_pos.top, 4, 1, fp) < 1) goto exit;
+  if (fwrite(&skin_infos.lcd_pos.right, 4, 1, fp) < 1) goto exit;
+  if (fwrite(&skin_infos.lcd_pos.bottom, 4, 1, fp) < 1) goto exit;
 
   for (i = 0; i < 80; i++)
     {
-      fwrite(&skin_infos.keys_pos[i].left, 4, 1, fp);
-      fwrite(&skin_infos.keys_pos[i].top, 4, 1, fp);
-      fwrite(&skin_infos.keys_pos[i].right, 4, 1, fp);
-      fwrite(&skin_infos.keys_pos[i].bottom, 4, 1, fp);
+      if (fwrite(&skin_infos.keys_pos[i].left, 4, 1, fp) < 1) goto exit;
+      if (fwrite(&skin_infos.keys_pos[i].top, 4, 1, fp) < 1) goto exit;
+      if (fwrite(&skin_infos.keys_pos[i].right, 4, 1, fp) < 1) goto exit;
+      if (fwrite(&skin_infos.keys_pos[i].bottom, 4, 1, fp) < 1) goto exit;
     }
 #endif
-  
-  return 0;
+
+  ret = 0;
+ 
+exit:
+  return ret;
 }

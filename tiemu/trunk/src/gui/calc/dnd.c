@@ -40,8 +40,6 @@
 
 void dnd_init(void)
 {
-	extern GtkWidget *main_wnd;
-
 	gtk_drag_dest_set (main_wnd, 0, NULL, 0, 0);
 }
 
@@ -50,14 +48,14 @@ on_calc_wnd_drag_drop              (GtkWidget       *widget,
                                         GdkDragContext  *context,
                                         gint             x,
                                         gint             y,
-                                        guint            time,
+                                        guint            giventime,
                                         gpointer         user_data)
 {
 	if (context->targets)
     {
       gtk_drag_get_data (widget, context, 
 			 GDK_POINTER_TO_ATOM (context->targets->data), 
-			 time);
+			 giventime);
       return TRUE;
     }
 
@@ -73,14 +71,14 @@ on_calc_wnd_drag_data_received     (GtkWidget       *widget,
                                         gint             y,
                                         GtkSelectionData *data,
                                         guint            info,
-                                        guint            time,
+                                        guint            giventime,
                                         gpointer         user_data)
 {
 	gchar **filenames = NULL;
 
 	if ((data->length >= 0) && (data->format == 8))
     {
-		gchar *tok, *str = data->data;
+		gchar *tok, *str = (gchar *)(data->data);
 		gchar **uris, **p;
 		guint length;
 		gchar *fn;
@@ -89,7 +87,7 @@ on_calc_wnd_drag_data_received     (GtkWidget       *widget,
 
 		// is this an URI?
 		if(g_ascii_strncasecmp(str, "file://", 7))
-			gtk_drag_finish (context, FALSE, FALSE, time);
+			gtk_drag_finish (context, FALSE, FALSE, giventime);
 
 		// tails '\r\n' termination
 		if ((tok = strrchr(str, '\r')) || (tok = strrchr(str, '\n')))
@@ -107,8 +105,6 @@ on_calc_wnd_drag_data_received     (GtkWidget       *widget,
 			if (!g_ascii_strncasecmp(*p, "file://", 7)) 
 			{
 				GError *error = NULL;
-				gchar *fn;
-				gchar *tok;
 
 				// convert URI to filename
 				fn = g_filename_from_uri(*p, NULL, &error);
@@ -174,12 +170,12 @@ on_calc_wnd_drag_data_received     (GtkWidget       *widget,
 			engine_start();
 		}
 
-      gtk_drag_finish (context, TRUE, FALSE, time);
+      gtk_drag_finish (context, TRUE, FALSE, giventime);
 	  g_strfreev(filenames);
       return;
     }
   
 ocwwdr_end:
 	g_strfreev(filenames);
-	gtk_drag_finish (context, FALSE, FALSE, time);
+	gtk_drag_finish (context, FALSE, FALSE, giventime);
 }

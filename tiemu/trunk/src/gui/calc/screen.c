@@ -59,10 +59,7 @@
 
 /* Variables */
 
-extern GtkWidget *main_wnd;
 extern GtkWidget *area;
-
-extern SKIN_INFOS skin_infos;
 
 GdkPixbuf *lcd_mem = NULL;
 GdkPixbuf *lcd = NULL;

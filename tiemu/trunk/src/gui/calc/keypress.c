@@ -103,7 +103,7 @@ int kp_recording_key(int key, int action)
 
 int kp_playing_key(int *key, int *action)
 {
-	double time;
+	//float ntime;
 	char line[256];
 	char **split;
 
@@ -116,7 +116,7 @@ int kp_playing_key(int *key, int *action)
 	if(!split[0] || !split[1] || !split[2])
 		return -1;
 
-	sscanf(split[0], "%f", &time);
+	//sscanf(split[0], "%f", &ntime);
 	*key = keymap_string_to_value(tikeys, split[1]);
 	*action = (split[2][0] == '1') ? 1 : 0;	
 

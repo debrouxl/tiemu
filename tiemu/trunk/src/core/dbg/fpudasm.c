@@ -37,7 +37,7 @@
 typedef struct
 {
 	uint16_t	code;
-	char*		name;
+	const char*	name;
 } TUPLE;
 
 // 6 chars max
@@ -162,7 +162,7 @@ int DasmFPU(uint16_t code, char *buf)
 	int src = GET_SRC(code);
 	int dst = GET_DST(code);
 	int idx[4] = { 0 };
-	int i;
+	unsigned int i;
 	int j = 0;
 
 	for(i = 0; i < sizeof(operators) / sizeof(TUPLE); i++)

@@ -39,8 +39,6 @@
 #include "utils.h"
 #include "defs.h"
 
-extern struct skinInfos skin_infos;
-
 
 void
 set_calc_keymap(void)

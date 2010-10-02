@@ -164,7 +164,7 @@ gint display_scroptions_dbox()
 
 void refresh_label(void)
 {
-    gchar *ext = "???";
+    const gchar *ext = "???";
     gchar *str;
 	
     if(label == NULL)

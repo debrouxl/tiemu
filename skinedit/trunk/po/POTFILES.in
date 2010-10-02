@@ -1,9 +1,17 @@
 # List of source files containing translatable strings.
 
+src/boxes_cb.c
 src/main.c
 src/main_intf.c
+src/prop_intf.c
+src/skinops.c
+src/utils.c
+src/boxes_intf.c
 src/main_cb.c
+src/prop_cb.c
+src/rubberbox.c
 src/support.c
+src/vti_export.c
 
 glade/boxes.str
 glade/main.str

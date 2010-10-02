@@ -225,19 +225,19 @@ void
 on_quick_save_state_image1_activate    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	gchar *basename;
+	gchar *file_basename;
 	gchar *dot;
 
 	// build name
-	basename = g_path_get_basename(params.rom_file);
-	dot = strrchr(basename, '.');
+	file_basename = g_path_get_basename(params.rom_file);
+	dot = strrchr(file_basename, '.');
 	if(dot != NULL)
 		*dot = '\0';
 
 	// set path
 	g_free(params.sav_file);
-	params.sav_file = g_strconcat(inst_paths.img_dir, basename, ".sav", NULL);
-	g_free(basename);
+	params.sav_file = g_strconcat(inst_paths.img_dir, file_basename, ".sav", NULL);
+	g_free(file_basename);
 
 	// save state
 	ti68k_state_save(params.sav_file);
@@ -442,7 +442,7 @@ GLADE_CB void
 on_setup_recording1_activate             (GtkMenuItem     *menuitem,
                                           gpointer         user_data)
 {
-	const gchar *filename = create_fsel(inst_paths.base_dir, "keypress.txt", "*.txt", TRUE);
+	const gchar *filename = create_fsel(inst_paths.base_dir, (char *)"keypress.txt", (char *)"*.txt", TRUE);
 	if (!filename)
 		return;
 
@@ -468,7 +468,7 @@ GLADE_CB void
 on_setup_playing1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	const gchar *filename = create_fsel(inst_paths.base_dir, NULL, "*.txt", FALSE);
+	const gchar *filename = create_fsel(inst_paths.base_dir, NULL, (char *)"*.txt", FALSE);
 	if (!filename)
 		return;
 
@@ -807,7 +807,7 @@ static void go_to_bookmark(const char *link)
 	// * /usr/bin/mozilla (old Mozilla Suite)
 	//
 	gboolean result;
-	char *apps[] = { 
+	static const char *apps[] = { 
 			"/usr/bin/xdg-open",
 			"/usr/bin/gnome-open",
 			"/usr/bin/sensible-browser",

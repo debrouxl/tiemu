@@ -14,6 +14,8 @@ gchar *s = N_("The current skin has changed.\n"
 gchar *s = N_("About... Skinedit");
 gchar *s = N_("OK !");
 gchar *s = N_("Skinedit was written by Julien BLACHE <jb@tilp.info>\n"
+              "Improved by Romain Lievin <roms@tilp.info>\n"
+              "Icons designed by Jesse Palmer <jp@jp3d.net>\n"
               "\n"
               "This program is released under the terms of the \n"
               "GNU GENERAL PUBLIC LICENSE\n"

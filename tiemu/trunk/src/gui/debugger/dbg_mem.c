@@ -600,16 +600,16 @@ dbgmem_button6_clicked                     (GtkButton       *button,
 {
 	GtkWidget *menu;
 	guint butt = 0;
-	guint32 time;
+	guint32 time2;
 
-	time = gtk_get_current_event_time();
+	time2 = gtk_get_current_event_time();
 	menu = memmap_menu();
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, butt, time);
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, butt, time2);
 	gtk_widget_show(menu);
 }
 
 GLADE_CB void
-on_notebook1_switch_page               (GtkNotebook     *notebook,
+on_notebook1_switch_page               (GtkNotebook     *notebook2,
                                         GtkNotebookPage *page,
                                         guint            page_num,
                                         gpointer         user_data)
@@ -1243,8 +1243,8 @@ static gint search_highlight(uint32_t blk_beg, uint32_t blk_end, int state)
     // scroll mem
     if(!IS_BOUNDED(tab_adr, blk_beg, tab_adr + DUMP_SIZE))
     {
-        GtkNotebook *nb = GTK_NOTEBOOK(notebook);
-	    gint page = gtk_notebook_get_current_page(nb);
+        nb = GTK_NOTEBOOK(notebook);
+        page = gtk_notebook_get_current_page(nb);
 
         offset = (blk_beg - tab_adr) & 0xfffff0;
         refresh_page(page, offset);

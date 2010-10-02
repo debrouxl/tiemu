@@ -82,7 +82,6 @@ int ti68k_debug_step(void)
 }
 
 static const uint16_t rets[] = { 
-	
 	0x4e77,		// RTR
 	0x4e75,		// RTS
 	0x4e74,		// RTD
@@ -93,8 +92,8 @@ static const uint16_t rets[] = {
 static inline int is_ret_inst(uint16_t inst)
 {
 	int i;
-	for(i = 0; i < sizeof(rets) / sizeof(uint16_t); i++)
-		if(curriword() == rets[i])
+	for(i = 0; i < (int)(sizeof(rets) / sizeof(rets[0])); i++)
+		if(inst == rets[i])
 			return !0;
 	return 0;
 }
@@ -107,7 +106,7 @@ static inline int is_bsr_inst(uint16_t ci)
     t2 = ((ci >> 8) == (0x61ff >> 8));						/* bsr */
     t3 = (ci >= 0xf800 && ci <= 0xffee);						/* fline */
 	t4 = (ci == 0xfff0) || (ci == 0xfff2) ||
-		((ci & 0xf000) == 0x5000) && ((ci & 0x00f8) == 0x00c8);	/* dbcc */
+		(((ci & 0xf000) == 0x5000) && ((ci & 0x00f8) == 0x00c8));	/* dbcc */
 	t5 = ((ci >> 4) == (0x4e40 >> 4));						/* trap */
 
 	//printf("<%i %i %i %i %i>\n", ret1, ret2, ret3, ret4, ret5);

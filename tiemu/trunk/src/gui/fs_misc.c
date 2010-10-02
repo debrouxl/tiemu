@@ -47,13 +47,12 @@
 #include "dbg_all.h"
 #include "files.h"
 #include "ti68k_err.h"
-//"fs_misc.h"
 
 gint display_skin_dbox(void)
 {
 	const gchar *filename;
 
-	filename = (char *)create_fsel(inst_paths.skin_dir, NULL, "*.skn", FALSE);
+	filename = (char *)create_fsel(inst_paths.skin_dir, NULL, (char *)"*.skn", FALSE);
 	if (!filename)
 	{
 		return 0;
@@ -112,7 +111,7 @@ gint display_load_state_dbox(void)
 	const gchar *filename;
 
     // get filename
-	filename = create_fsel(inst_paths.img_dir, NULL, "*.sav", FALSE);
+	filename = create_fsel(inst_paths.img_dir, NULL, (char *)"*.sav", FALSE);
 	if (!filename)
 		return 0;
 
@@ -125,19 +124,19 @@ gint display_save_state_dbox(void)
 {
     const gchar *filename;
 	int err;
-	gchar *basename;
+	gchar *file_basename;
 	gchar *dot;
 	gchar *pattern;
 
     // get filename
-	basename = g_path_get_basename(params.rom_file);
-	dot = strrchr(basename, '.');
+	file_basename = g_path_get_basename(params.rom_file);
+	dot = strrchr(file_basename, '.');
 	if(dot != NULL)
 		*dot = '\0';
-	pattern = g_strconcat(basename, ".sav", NULL);
-	g_free(basename);
+	pattern = g_strconcat(file_basename, ".sav", NULL);
+	g_free(file_basename);
 
-	filename = create_fsel(inst_paths.img_dir, pattern, "*.sav", TRUE);
+	filename = create_fsel(inst_paths.img_dir, pattern, (char *)"*.sav", TRUE);
 	g_free(pattern);
 	if (!filename)
 		return 0;
@@ -230,7 +229,7 @@ gint display_send_files_dbox(void)
 	// Check for null cable
 	if(linkp.cable_model != CABLE_ILP)
 	{
-		int ret, err;
+		int err;
 		gchar *str;
 
 		str = g_strdup_printf(_("The current link cable <%s> port <%s> does not allow direct file loading. Do you let me change link port settings to allow direct file loading?"),
@@ -286,33 +285,33 @@ int display_recv_files_dbox(const char *src, const char *dst)
 	const gchar *fn;
 	gchar *src_folder;
 	gchar *dst_folder;
-	gchar *basename;
+	gchar *file_basename;
 	gchar *ext;
 
 	// get file components
 	src_folder = g_path_get_dirname(src);
 	dst_folder = inst_paths.home_dir;
-	basename = g_path_get_basename(dst);
+	file_basename = g_path_get_basename(dst);
 
 	 // set mask
     switch(tihw.calc_type) 
 	{
     case TI92:
-        ext = "*.92?";
+        ext = (char *)"*.92?";
 		break;
 	default:
-        ext = "*.89?;*.92?;*.9x?;*.9X?;*.v2?;*.V2?";
+        ext = (char *)"*.89?;*.92?;*.9x?;*.9X?;*.v2?;*.V2?";
         break;
     }
 
-	fn = create_fsel(dst_folder, basename, ext, TRUE);
+	fn = create_fsel(dst_folder, file_basename, ext, TRUE);
 	if (fn)
 		tiemu_file_move_with_check(src, fn);
 	else
 		tiemu_file_delete(src);
 
 	g_free(src_folder);
-	g_free(basename);
+	g_free(file_basename);
 
 	return 0;
 }
@@ -412,7 +411,7 @@ gint display_set_tib_dbox(void)
 	int err;
 
     // get filename
-	filename = create_fsel(inst_paths.base_dir, NULL, "*.89u;*.9xu;*.v2u;*.tib", FALSE);
+	filename = create_fsel(inst_paths.base_dir, NULL, (char *)"*.89u;*.9xu;*.v2u;*.tib", FALSE);
 	if (!filename)
 		return 0;
 
@@ -465,31 +464,36 @@ int import_romversion(const char *filename)
 		#else
 		IMG_INFO infos = {};
 		#endif
-		int err = ti68k_get_tib_infos(filename, &infos, 0);
 		int hw_type = HW2;
 
-		if(infos.calc_type == TI92p || infos.calc_type == TI89)
+		err = ti68k_get_tib_infos(filename, &infos, 0);
+		handle_error();
+ 
+		if (!err)
 		{
-			int ret = msg_box3(_("HW type"), 
-				_("The FLASH upgrade can be imported as HW1 or HW2. Please choose..."), 
-				"HW1", "HW2", "Default");
-			if(ret == BUTTON1)
-				hw_type = HW1;
-			else if(ret == BUTTON2)
-				hw_type = HW2;
-		}
-		else if(infos.calc_type == TI89t)
-		{
-			int ret = msg_box3(_("HW type"), 
-				_("The FLASH upgrade can be imported as HW3 or HW4. Please choose..."), 
-				"HW3", "HW4", "Default");
+			if(infos.calc_type == TI92p || infos.calc_type == TI89)
+			{
+				int ret = msg_box3(_("HW type"), 
+					_("The FLASH upgrade can be imported as HW1 or HW2. Please choose..."), 
+					"HW1", "HW2", "Default");
+				if(ret == BUTTON1)
+					hw_type = HW1;
+				else if(ret == BUTTON2)
+					hw_type = HW2;
+			}
+			else if(infos.calc_type == TI89t)
+			{
+				int ret = msg_box3(_("HW type"), 
+					_("The FLASH upgrade can be imported as HW3 or HW4. Please choose..."), 
+					"HW3", "HW4", "Default");
 
-			hw_type = HW3; // default is HW3 for the Titanium, there's no Titanium HW2
+				hw_type = HW3; // default is HW3 for the Titanium, there's no Titanium HW2
 
-			if(ret == BUTTON1)
-				hw_type = HW3;
-			else if(ret == BUTTON2)
-				hw_type = HW4;
+				if(ret == BUTTON1)
+					hw_type = HW3;
+				else if(ret == BUTTON2)
+					hw_type = HW4;
+			}
 		}
 
 		// fake rom
@@ -511,7 +515,7 @@ gint display_import_romversion_dbox(void)
     const gchar *filename;
     
     // get filename
-	filename = create_fsel(inst_paths.base_dir, NULL, "*.rom;*.89u;*.9xu;*.v2u;*.tib", FALSE);
+	filename = create_fsel(inst_paths.base_dir, NULL, (char *)"*.rom;*.89u;*.9xu;*.v2u;*.tib", FALSE);
 	if (!filename)
 		return 0;    
 

@@ -49,8 +49,6 @@
 #include "utils.h"
 
 
-extern struct skinInfos skin_infos;
-
 extern unsigned int keys_mouse_motion; /* main_cb.c */
 extern unsigned int keys_button_press; /* main_cb.c */
 
@@ -82,9 +80,7 @@ on_list_keys_selection_changed (GtkTreeSelection *sel,
 
   clist_row = row;
 
-  if ((skin_infos.keys_pos[row].top >= 0)
-      && (skin_infos.keys_pos[row].left >= 0)
-      && (skin_infos.keys_pos[row].bottom > 0)
+  if ((skin_infos.keys_pos[row].bottom > 0)
       && (skin_infos.keys_pos[row].right > 0))
     {
       key_cur.x = skin_infos.keys_pos[row].left;

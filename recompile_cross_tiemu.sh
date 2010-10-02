@@ -24,20 +24,22 @@
 #   /usr/lib/gcc/i586-mingw32msvc/4.2.1-sjlj/libsupc++.la
 #   /usr/lib/gcc/i586-mingw32msvc/4.2.1-sjlj/debug/libstdc++.la
 #   and remove "-lmingwthrd" and "-lgcc_s".
+#
+# 5) if necessary (cannot find SDL.dll), create a symlink to $LIBSDL_DIR/bin/SDL.dll
+#    in tiemu/trunk/
 
 
 # The prefix where the binaries will be installed, e.g. $HOME, /usr, /usr/local, /usr/share.
 PREFIX="$HOME/lpg/packages"
 
 # Common flags and definitions.
-CCFLAGS="-Os"
-CCPPFLAGS="-I$HOME/lpg/deps/gtk-win32/include"
-CLDFLAGS="-L$HOME/lpg/deps/gtk-win32/lib"
-LIBUSB_DIR="$HOME/lpg/deps/libusb-win32"
+LIBGTK_DIR="$HOME/lpg/deps/gtk-win32"
 LIBSDL_DIR="$HOME/lpg/deps/sdl-win32"
+CCFLAGS="-Os -g3 -Wall -W -Wno-unused-parameter -Wshadow -Wwrite-strings -Wredundant-decls -Wp,-D_FORTIFY_SOURCE=2 -I$LIBGTK_DIR/include -I$LIBSDL_DIR/include/SDL"
+CLDFLAGS="-L$LIBGTK_DIR/lib -L$LIBSDL_DIR/lib"
 CHOST="i586-mingw32msvc"
 
-export PKG_CONFIG_PATH=$HOME/lpg/packages/lib/pkgconfig:$HOME/lpg/deps/gtk-win32/lib/pkgconfig:$PKG_CONFIG_PATH
+export PKG_CONFIG_PATH="$HOME/lpg/packages/lib/pkgconfig:$LIBGTK_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
 export PKG_CONFIG_LIBDIR=$HOME/lpg/pkgconfig
 
 # Configure and build the given module
@@ -47,8 +49,8 @@ handle_one_module() {
 
   cd "$module_name/trunk"
   echo "Configuring $module_name"
-  rm -f config.cache
-  PATH="$LIBSDL_DIR/bin:$PATH" ./configure -C --host="$CHOST" CFLAGS="$CCFLAGS -I$LIBSDL_DIR/include/SDL" --prefix="$PREFIX" CPPFLAGS="$CCPPFLAGS" LDFLAGS="$CLDFLAGS -L$LIBSDL_DIR/lib" $@ || return 1
+  rm -f `find . -iname config.cache`
+  PATH="$LIBSDL_DIR/bin:$PATH" ./configure --host="$CHOST" CFLAGS="$CCFLAGS" CXXFLAGS="$CCFLAGS" LDFLAGS="$CLDFLAGS" --prefix="$PREFIX" $@ || return 1
   echo "Building $module_name"
   make clean || return 1
   make || return 1

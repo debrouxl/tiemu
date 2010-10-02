@@ -125,7 +125,7 @@ int ti68k_config_load_default(void)
   This should be the SECOND function to call. 
   Load a ROM image (images.c).
 */
-int ti68k_load_image(const char *filename);
+//int ti68k_load_image(const char *filename);
 
 /*
   This is the THIRD function to call for completely initializing the

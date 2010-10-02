@@ -175,7 +175,7 @@ static int parse_vat_89(GNode *node_top)
 	for(i=0; i<nfolders; i++)
 	{
 		TI89_SYM_ENTRY se;
-		
+
 		// read struct
 		memcpy(&se, ti68k_get_real_address(fa + i * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
 		se.handle = GUINT16_FROM_BE(se.handle);
@@ -194,8 +194,6 @@ static int parse_vat_89(GNode *node_top)
 
 		for(j=0; j<nvars; j++)
 		{
-			TI89_SYM_ENTRY se;
-
 			// read struct
 			memcpy(&se, ti68k_get_real_address(va + j * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
 			se.handle = GUINT16_FROM_BE(se.handle);
@@ -249,7 +247,7 @@ static int parse_vat_92(GNode *node_top)
 	for(i=0; i<nfolders; i++)
 	{
 		TI92_SYM_ENTRY se;
-		
+
 		// read struct
 		memcpy(&se, ti68k_get_real_address(fa + i * sizeof(TI92_SYM_ENTRY)), sizeof(TI92_SYM_ENTRY));
 		se.handle = GUINT16_FROM_BE(se.handle);
@@ -268,8 +266,6 @@ static int parse_vat_92(GNode *node_top)
 
 		for(j=0; j<nvars; j++)
 		{
-			TI92_SYM_ENTRY se;
-
 			// read struct
 			memcpy(&se, ti68k_get_real_address(va + j * sizeof(TI92_SYM_ENTRY)), sizeof(TI92_SYM_ENTRY));
 			se.handle = GUINT16_FROM_BE(se.handle);
@@ -341,7 +337,7 @@ static int sym_find_handle_89(const char *dirname, const char *filename)
 	for(i=0; i<nfolders; i++)
 	{
 		TI89_SYM_ENTRY se;
-		
+
 		// read struct
 		memcpy(&se, ti68k_get_real_address(fa + i * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
 		se.handle = GUINT16_FROM_BE(se.handle);
@@ -357,8 +353,6 @@ static int sym_find_handle_89(const char *dirname, const char *filename)
 
 		for(j=0; j<nvars; j++)
 		{
-			TI89_SYM_ENTRY se;
-
 			// read struct
 			memcpy(&se, ti68k_get_real_address(va + j * sizeof(TI89_SYM_ENTRY)), sizeof(TI89_SYM_ENTRY));
 			se.handle = GUINT16_FROM_BE(se.handle);
@@ -395,7 +389,7 @@ static int sym_find_handle_92(const char *dirname, const char *filename)
 	for(i=0; i<nfolders; i++)
 	{
 		TI92_SYM_ENTRY se;
-		
+
 		// read struct
 		memcpy(&se, ti68k_get_real_address(fa + i * sizeof(TI92_SYM_ENTRY)), sizeof(TI92_SYM_ENTRY));
 		se.handle = GUINT16_FROM_BE(se.handle);
@@ -411,8 +405,6 @@ static int sym_find_handle_92(const char *dirname, const char *filename)
 
 		for(j=0; j<nvars; j++)
 		{
-			TI92_SYM_ENTRY se;
-
 			// read struct
 			memcpy(&se, ti68k_get_real_address(va + j * sizeof(TI92_SYM_ENTRY)), sizeof(TI92_SYM_ENTRY));
 			se.handle = GUINT16_FROM_BE(se.handle);

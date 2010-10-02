@@ -98,13 +98,13 @@ int skin_read_header_vti(SKIN_INFOS *si, const char *filename)
 
   	if(strncmp(str, "VTIv2.", 6))
   	{
-  		fprintf(stderr, "Bad VTi skin format\n");
+  		fprintf(stderr, "Bad VTI skin format\n");
       	return -1;
   	}
 
 	/* Skin name and author */
 	length = 64;
-  	si->name = (char *)malloc(length + 1);
+  	si->name = malloc(length + 1);
 	if (si->name == NULL)
 		return -1;
 
@@ -113,7 +113,7 @@ int skin_read_header_vti(SKIN_INFOS *si, const char *filename)
 
 	if(si->type == SKIN_TYPE_VTI)
 	{
-		si->author = (char *)malloc(length + 1);
+		si->author = malloc(length + 1);
       	if (si->author == NULL)
 			return -1;
 
@@ -125,9 +125,9 @@ int skin_read_header_vti(SKIN_INFOS *si, const char *filename)
 	fread(&calc, 1, sizeof(calc), fp);
 	switch(calc)
 	{
-	case 89: strcpy(si->calc, SKIN_TI89); break;
-	case 92: strcpy(si->calc, SKIN_TI92); break;
-	case 94: strcpy(si->calc, SKIN_TI92P); break;
+	case 89: strcpy((char *)si->calc, SKIN_TI89); break;
+	case 92: strcpy((char *)si->calc, SKIN_TI92); break;
+	case 94: strcpy((char *)si->calc, SKIN_TI92P); break;
 	default: return -1;
 	}
 
@@ -218,7 +218,7 @@ int skin_read_header_tiemu(SKIN_INFOS *si, const char *filename)
 
   	if (length > 0)
     {
-      	si->name = (char *)malloc(length + 1);
+      	si->name = malloc(length + 1);
 	    if (si->name == NULL)
 			return -1;
 
@@ -233,7 +233,7 @@ int skin_read_header_tiemu(SKIN_INFOS *si, const char *filename)
 
   	if (length > 0)
     {
-      	si->author = (char *)malloc(length + 1);
+      	si->author = malloc(length + 1);
       	if (si->author == NULL)
 			return -1;
 
@@ -334,7 +334,7 @@ int skin_read_image(SKIN_INFOS *si, const char *filename)
 	struct stat st;
 
 	// set lcd size
-	if(!strcmp(si->calc, SKIN_TI89) || !strcmp(si->calc, SKIN_TI89T))
+	if(!strcmp((char *)si->calc, SKIN_TI89) || !strcmp((char *)si->calc, SKIN_TI89T))
 	{
 		lcd_w = 160;
 		lcd_h = 100;

@@ -160,7 +160,7 @@ static void ctree_populate(GtkWidget *widget)
 		for(j = 0; j < (int)g_node_n_children(fol_node); j++)
 		{
 			GNode *var_node = g_node_nth_child(fol_node, j);
-			VatSymEntry *vse = (VatSymEntry *)var_node->data;
+			vse = (VatSymEntry *)var_node->data;
 			GtkTreeIter var_iter;
 
 			gtk_tree_store_append(store, &var_iter, &fol_iter);

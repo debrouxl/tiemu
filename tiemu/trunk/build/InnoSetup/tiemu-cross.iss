@@ -6,7 +6,7 @@
 ; NOTE: this file depends on:
 ;     * TILP being available through C:\tilp;
 ;     * TIEmu being available through C:\tiemu;
-;     * C:\lpg\packages and C:\lpg\deps containing the layout expected by unmodified recompile_cross_tilp.sh (for libti*) recompile_cross_tiemu.sh script.
+;     * C:\lpg\packages and C:\lpg\deps containing the layout expected by unmodified recompile_cross_tilp.sh (for libti*) and recompile_cross_tiemu.sh scripts.
 ;
 ; $Id$
 
@@ -476,4 +476,5 @@ procedure DeleteExe(const FileName: string);
 begin
   DeleteDll(FileName);
 end;
+
 

@@ -29,6 +29,7 @@
 #endif
 
 #include <string.h>
+#include <stdlib.h>
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <gdk/gdkkeysyms.h>
@@ -164,15 +165,15 @@ static void clist_populate(GtkListStore *store, uint32_t addr)
 		else
 			row_text[1] = g_strdup(split[1]);
 		if(split[2] == NULL)
-            row_text[2] = g_strdup("");
+			row_text[2] = g_strdup("");
 		else
 			row_text[2] = g_strdup(split[2]);
 
-		if((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr != pc) ||
-			(g_list_find(bkpts.code, GINT_TO_POINTER(addr | BKPT_TMP_MASK)) != NULL) && (addr != pc))
-            pix = create_pixbuf("bkpt.xpm");
-		else if((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr == pc) ||
-			(g_list_find(bkpts.code, GINT_TO_POINTER(addr | BKPT_TMP_MASK)) != NULL) && (addr == pc))
+		if (((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr != pc)) ||
+		    ((g_list_find(bkpts.code, GINT_TO_POINTER(addr | BKPT_TMP_MASK)) != NULL) && (addr != pc)))
+			pix = create_pixbuf("bkpt.xpm");
+		else if (((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr == pc)) ||
+			 ((g_list_find(bkpts.code, GINT_TO_POINTER(addr | BKPT_TMP_MASK)) != NULL) && (addr == pc)))
 			pix = create_pixbuf("run_2.xpm");
 		else if(addr == pc)
 			pix = create_pixbuf("run_1.xpm");
@@ -228,9 +229,9 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
     uint32_t addr3;
     gint i;
 
-	// Data/Bit bkpt encounter after instruction execution so take care of this
-	addr3 = pc = ti68k_debug_get_pc();
-	old_pc = ti68k_debug_get_old_pc();
+    // Data/Bit bkpt encounter after instruction execution so take care of this
+    addr3 = pc = ti68k_debug_get_pc();
+    old_pc = ti68k_debug_get_old_pc();
 
     // check for refresh (search for pc)
     for(valid = gtk_tree_model_get_iter_first(model, &iter), i = 0;
@@ -251,11 +252,11 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
         g_free(str);
     }
 
-	// pc not found, erase and populate
+    // pc not found, erase and populate
     if(!found && reload)
     {
         gtk_list_store_clear(store);
-		//printf("%06x %06x %i\n", old_pc, pc, abs(old_pc - pc));
+        //printf("%06x %06x %i\n", old_pc, pc, abs(old_pc - pc));
         clist_populate(store, abs((old_pc - pc)) > 8 ? pc : old_pc);
     }
 
@@ -280,24 +281,24 @@ static void clist_refresh(GtkListStore *store, gboolean reload)
         gtk_tree_model_get(model, &iter, COL_ADDR, &str, -1);
         sscanf(str, "%x", &addr);
 
-        if(((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr != pc) ||
-			(g_list_find(bkpts.code, GINT_TO_POINTER(addr | BKPT_TMP_MASK)) != NULL) && (addr != pc)))
+        if ((((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr != pc)) ||
+            ((g_list_find(bkpts.code, GINT_TO_POINTER(addr | BKPT_TMP_MASK)) != NULL) && (addr != pc))))
             pix = create_pixbuf("bkpt.xpm");
-		else if(((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr == pc) ||
-			(g_list_find(bkpts.code, GINT_TO_POINTER(addr | BKPT_TMP_MASK)) != NULL) && (addr == pc)))
+        else if ((((g_list_find(bkpts.code, GINT_TO_POINTER(addr)) != NULL) && (addr == pc)) ||
+                 ((g_list_find(bkpts.code, GINT_TO_POINTER(addr | BKPT_TMP_MASK)) != NULL) && (addr == pc))))
             pix = create_pixbuf("run_2.xpm");
-		else if(addr == pc)
-			pix = create_pixbuf("run_1.xpm");
+        else if(addr == pc)
+            pix = create_pixbuf("run_1.xpm");
         else
             pix = create_pixbuf("void.xpm");
 
         gtk_list_store_set(store, &iter, COL_ICON, pix, -1);
         g_free(str);
-		g_object_unref(pix);
+        g_object_unref(pix);
     }
 
-	// update cycle counter
-	cyccnt_refresh(glade_get("label3"), glade_get("label4"));
+    // update cycle counter
+    cyccnt_refresh(glade_get("label3"), glade_get("label4"));
 }
 
 static GtkWidget *list;
@@ -544,7 +545,7 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
 {
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
-	GtkListStore *store = GTK_LIST_STORE(model);
+	GtkListStore *store2 = GTK_LIST_STORE(model);
     GtkTreeSelection *selection;
     GtkTreeIter iter;
     gboolean valid;
@@ -570,7 +571,7 @@ on_run_to_cursor1_activate             (GtkMenuItem     *menuitem,
 	reset_disabled = FALSE;
     gtk_debugger_enable();
     
-	clist_refresh(store, FALSE);
+	clist_refresh(store2, FALSE);
     dbgregs_refresh_window();
 	dbgpclog_refresh_window();
     dbgmem_refresh_window();
@@ -587,14 +588,14 @@ on_break1_activate                     (GtkMenuItem     *menuitem,
 #ifdef RUN_DBG_OPEN
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
-	GtkListStore *store = GTK_LIST_STORE(model);
+	GtkListStore *store2 = GTK_LIST_STORE(model);
 
     engine_stop();
     gtk_widget_set_sensitive(list, TRUE);
 	tb_set_states(1, 1, 1, 1, 1, 0, 1, 1);
 	reset_disabled = FALSE;
     gtk_debugger_enable();
-    clist_refresh(store, TRUE);
+    clist_refresh(store2, TRUE);
 #else
     ti68k_debug_break();
 #endif
@@ -608,7 +609,7 @@ dbgcode_button6_clicked                     (GtkButton       *button,
 {
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
-	GtkListStore *store = GTK_LIST_STORE(model);
+	GtkListStore *store2 = GTK_LIST_STORE(model);
     GtkTreeSelection *selection;
     GtkTreeIter iter;
     gboolean valid;
@@ -627,7 +628,7 @@ dbgcode_button6_clicked                     (GtkButton       *button,
     else
         ti68k_bkpt_del_address(addr);
 
-    clist_refresh(store, FALSE);
+    clist_refresh(store2, FALSE);
     dbgbkpts_refresh_window();
 }
 
@@ -638,7 +639,7 @@ dbgcode_button7_clicked                     (GtkButton       *button,
 {
 	GtkTreeView *view = GTK_TREE_VIEW(list);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
-	GtkListStore *store = GTK_LIST_STORE(model);
+	GtkListStore *store2 = GTK_LIST_STORE(model);
     GtkTreeSelection *selection;
     GtkTreeIter iter;
     gboolean valid;
@@ -657,7 +658,7 @@ dbgcode_button7_clicked                     (GtkButton       *button,
     else
         ti68k_bkpt_del_address(addr | BKPT_TMP_MASK);
 
-    clist_refresh(store, FALSE);
+    clist_refresh(store2, FALSE);
     dbgbkpts_refresh_window();
 }
 
@@ -693,17 +694,17 @@ on_revert1_activate                    (GtkMenuItem     *menuitem,
 */
 static GtkWidget* display_dbgcode_popup_menu(void)
 {
-	GladeXML *xml;
+	GladeXML *xml2;
 	GtkWidget *menu;
 
-	xml = glade_xml_new
+	xml2 = glade_xml_new
 	    (tilp_paths_build_glade("dbg_code-2.glade"), "dbgcode_popup",
 	     PACKAGE);
-	if (!xml)
+	if (!xml2)
 		g_error(_("%s: GUI loading failed!\n"), __FILE__);
-	glade_xml_signal_autoconnect(xml);
+	glade_xml_signal_autoconnect(xml2);
 
-	menu = glade_xml_get_widget(xml, "dbgcode_popup");
+	menu = glade_xml_get_widget(xml2, "dbgcode_popup");
 	return menu;
 }
 
@@ -811,7 +812,7 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
 {
     GtkTreeView *view = GTK_TREE_VIEW(widget);
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
-	GtkListStore *store = GTK_LIST_STORE(model);
+	GtkListStore *store2 = GTK_LIST_STORE(model);
     GtkTreeSelection *selection;
     GtkTreeIter iter;
     GtkTreePath *path;
@@ -902,8 +903,8 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         if(row_idx > 0)
             break;
 
-        gtk_list_store_clear(store);
-        clist_populate(store, addr - 2);
+        gtk_list_store_clear(store2);
+        clist_populate(store2, addr - 2);
         return FALSE;
 
     case GDK_Down:
@@ -916,8 +917,8 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         offset = ti68k_debug_disassemble(start, &output);
 		g_free(output);
 
-        gtk_list_store_clear(store);
-        clist_populate(store, start + offset);
+        gtk_list_store_clear(store2);
+        clist_populate(store2, start + offset);
     
         str = g_strdup_printf("%i", row_max);
         path = gtk_tree_path_new_from_string(str);	// restore selection
@@ -933,8 +934,8 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         if(row_idx > 0)
             break;
 
-        gtk_list_store_clear(store);
-        clist_populate(store, addr - 0x10);
+        gtk_list_store_clear(store2);
+        clist_populate(store2, addr - 0x10);
 
 		path = gtk_tree_path_new_from_string("0");
         gtk_tree_view_set_cursor(view, path, NULL, FALSE);
@@ -948,8 +949,8 @@ on_treeview1_key_press_event           (GtkWidget       *widget,
         if(row_idx < row_max)
             break;
 
-        gtk_list_store_clear(store);
-        clist_populate(store, addr/* + 0x10*/);
+        gtk_list_store_clear(store2);
+        clist_populate(store2, addr/* + 0x10*/);
 
 		str = g_strdup_printf("%i", row_max);
         path = gtk_tree_path_new_from_string(str);	// restore selection
@@ -1154,39 +1155,39 @@ GLADE_CB void
 on_font_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	GladeXML *xml;
+	GladeXML *xml2;
 	GtkWidget *dbox;
 	gpointer data;
 	gint result;
 	
-	xml = glade_xml_new
+	xml2 = glade_xml_new
 		(tilp_paths_build_glade("dbg_code-2.glade"), "dbgcode_font", PACKAGE);
-	if (!xml)
+	if (!xml2)
 		g_error(_("%s: GUI loading failed!\n"), __FILE__);
-	glade_xml_signal_autoconnect(xml);
+	glade_xml_signal_autoconnect(xml2);
 	
-	dbox = glade_xml_get_widget(xml, "dbgcode_font");
+	dbox = glade_xml_get_widget(xml2, "dbgcode_font");
 	gtk_dialog_set_alternative_button_order(GTK_DIALOG(dbox), GTK_RESPONSE_OK,
 	                                        GTK_RESPONSE_CANCEL,-1);
-	font = glade_xml_get_widget(xml, "label5");
+	font = glade_xml_get_widget(xml2, "label5");
 
 	tmp_type = options3.dbg_font_type;
 	tmp_name = g_strdup(options3.dbg_font_name);
 
 	if(!tmp_type)
 	{
-		data = glade_xml_get_widget(xml, "radiobutton4");
+		data = glade_xml_get_widget(xml2, "radiobutton4");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
-		data = glade_xml_get_widget(xml, "button9");
+		data = glade_xml_get_widget(xml2, "button9");
 		gtk_widget_set_sensitive(GTK_WIDGET(data), FALSE);
 	}
 	else
 	{
-		data = glade_xml_get_widget(xml, "radiobutton6");
+		data = glade_xml_get_widget(xml2, "radiobutton6");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data), TRUE);
 		if(options3.dbg_font_name)
 			gtk_label_set_text(GTK_LABEL(font), tmp_name);
-		data = glade_xml_get_widget(xml, "button9");
+		data = glade_xml_get_widget(xml2, "button9");
 		gtk_widget_set_sensitive(GTK_WIDGET(data), TRUE);
 	}
 

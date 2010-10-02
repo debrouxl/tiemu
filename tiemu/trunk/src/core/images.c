@@ -446,7 +446,7 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
   	int err;
 	IMG_INFO img;
 	char *ext;
-	gchar *basename;
+	gchar *file_basename;
 
 	*dstname = NULL;
 
@@ -466,13 +466,13 @@ int ti68k_convert_rom_to_image(const char *srcname, const char *dirname, char **
 	ti68k_display_rom_infos(&img);
 
 	// Create destination file
-	basename = g_path_get_basename(srcname);
-	ext = strrchr(basename, '.');
+	file_basename = g_path_get_basename(srcname);
+	ext = strrchr(file_basename, '.');
   	*ext='\0';
-	strcat(basename, ".img");
+	strcat(file_basename, ".img");
 
-	*dstname = g_strconcat(dirname, basename, NULL);
-	g_free(basename);
+	*dstname = g_strconcat(dirname, file_basename, NULL);
+	g_free(file_basename);
 
 	// Open dest file
   	f = fopen(*dstname, "wb");
@@ -526,7 +526,7 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
   	int err;
 	IMG_INFO img;
 	char *ext;
-	gchar *basename;
+	gchar *file_basename;
 	int i, j;
 	int num_blocks, last_block;
     int real_size;
@@ -550,13 +550,13 @@ int ti68k_convert_tib_to_image(const char *srcname, const char *dirname, char **
 	ti68k_display_tib_infos(&img);
 
 	// Create destination file
-	basename = g_path_get_basename(srcname);
-	ext = strrchr(basename, '.');
+	file_basename = g_path_get_basename(srcname);
+	ext = strrchr(file_basename, '.');
   	*ext='\0';
-	strcat(basename, ".img");
+	strcat(file_basename, ".img");
 
-	*dstname = g_strconcat(dirname, basename, NULL);
-	g_free(basename);
+	*dstname = g_strconcat(dirname, file_basename, NULL);
+	g_free(file_basename);
 
 	// Open dest file
   	f = fopen(*dstname, "wb");
@@ -732,7 +732,7 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
   	int err;
 	IMG_INFO img;
 	char *ext;
-	gchar *basename;
+	gchar *file_basename;
     int real_size;
 
     *dstname = NULL;
@@ -770,13 +770,13 @@ int ti68k_merge_rom_and_tib_to_image(const char *srcname1, const char *srcname2,
 	ti68k_display_tib_infos(&img);
 
 	// Create destination file
-	basename = g_path_get_basename(srcname1);
-	ext = strrchr(basename, '.');
+	file_basename = g_path_get_basename(srcname1);
+	ext = strrchr(file_basename, '.');
   	*ext='\0';
-	strcat(basename, ".img");
+	strcat(file_basename, ".img");
 
-	*dstname = g_strconcat(dirname, basename, NULL);
-	g_free(basename);
+	*dstname = g_strconcat(dirname, file_basename, NULL);
+	g_free(file_basename);
 
     // Restore size
     img.size = real_size;

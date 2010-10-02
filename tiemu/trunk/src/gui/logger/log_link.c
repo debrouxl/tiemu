@@ -36,7 +36,7 @@
 #include "filesel.h"
 
 static GtkTextBuffer *txtbuf;
-static logger_enabled = 0;
+static int logger_enabled = 0;
 
 
 
@@ -115,7 +115,6 @@ gint display_loglink_dbox()
 			uint8_t byte = LSB(word);
 			uint8_t flags = MSB(word);
 			int s = flags & 1;
-			int r = flags & 2;
 
 			if(flags != old_flags)
 			{
@@ -129,7 +128,6 @@ gint display_loglink_dbox()
 				j = 0;
 				g_free(str);
 				str = g_strdup_printf("%c: ", s ? 'S' : 'R');
-				
 			}
 
 			// Wrap every 16 characters.
@@ -193,7 +191,7 @@ on_button9_clicked                     (GtkButton       *button,
 	gchar *txt;
 	GtkTextIter start, end;
 
-	filename = create_fsel(inst_paths.home_dir, "log_link.txt", "*.txt", TRUE);
+	filename = create_fsel(inst_paths.home_dir, (char *)"log_link.txt", (char *)"*.txt", TRUE);
 	if (!filename)
 		return;
 
@@ -243,12 +241,12 @@ on_button11_clicked                    (GtkButton       *button,
 {
 	GtkTextIter start, end;
 	GtkWidget *text = GTK_WIDGET(button);
-	GtkTextBuffer *txtbuf;
+	GtkTextBuffer *txtbuf2;
 
 	// clear text
-	txtbuf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
-	gtk_text_buffer_get_bounds(txtbuf, &start, &end);
-	gtk_text_buffer_delete(txtbuf, &start, &end);
+	txtbuf2 = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	gtk_text_buffer_get_bounds(txtbuf2, &start, &end);
+	gtk_text_buffer_delete(txtbuf2, &start, &end);
 	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(text), 15);
 
 	// clear buffer

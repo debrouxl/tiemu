@@ -733,8 +733,8 @@ int  hid_screenshot_burst(void)
 int  hid_screenshot_single(void)
 {
 	gchar *outfile;
-	gchar *ext = "";
-	gchar *type = "";
+	const gchar *ext = "";
+	const gchar *type = "";
 
 	GdkPixbuf *pixbuf = { 0 };
 	gboolean result = FALSE;

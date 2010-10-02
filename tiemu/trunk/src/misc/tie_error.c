@@ -40,7 +40,7 @@
   - an error to translate or 0
   - a pure message or NULL
  */
-int tiemu_err(int err_code, char *err_str)
+int tiemu_err(int err_code, const char *err_str)
 {
 	int err = err_code;
 	char *s = NULL;
@@ -54,16 +54,13 @@ int tiemu_err(int err_code, char *err_str)
 		err = ticables_error_get(err, &s);
 		if (err) 
 		{
-			//free(s);
 			err = tifiles_error_get(err, &s);
 			if (err) 
 			{
-				//free(s);
 				err = ticalcs_error_get(err, &s);
 				if (err) 
 				{
 					// next level: error for TiEmu
-					//free(s);
 					err = ti68k_error_get(err, &s);
 				}
 			}
@@ -73,10 +70,10 @@ int tiemu_err(int err_code, char *err_str)
 	{
 		s = strdup(err_str);
 	}
-	
+
 	tiemu_warning("%s", s);
 	msg_box1(_("Error"), s);
 
-	//free(s);
+	//free(s); // Why not ?
 	return err_code;
 }

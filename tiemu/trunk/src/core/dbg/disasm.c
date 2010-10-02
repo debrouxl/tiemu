@@ -358,7 +358,6 @@ int m68k_dasm(char **line, uint32_t addr)
 			{
 				char c = split[1][6];
 				char *p, *q;
-				gchar *tmp;
 				uint16_t mask;
 
 				g_free(split[1]);
@@ -382,7 +381,6 @@ int m68k_dasm(char **line, uint32_t addr)
 			{
 				char c = split[1][6];
 				char *p, *q;
-				gchar *tmp;
 				uint16_t mask;
 
 				g_free(split[1]);
@@ -426,7 +424,6 @@ int m68k_dasm(char **line, uint32_t addr)
 			break;
 		case 20:	/* BRA				*/
 			{
-				gchar *tmp;
 				tmp = g_strdup_printf("BRA.%c", split[1][3]);
 				g_free(split[1]);
 				split[1] = tmp;
@@ -453,7 +450,7 @@ int m68k_dasm(char **line, uint32_t addr)
 		strcpy(p, q);
 		strcat(split[2], tmp);
 	}
-	
+
 	*line = g_strdup_printf("%s %s %s", 
 			split[0] ? split[0] : "", 
 			split[1] ? split[1] : "",

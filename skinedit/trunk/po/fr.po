@@ -6,96 +6,120 @@ msgid ""
 msgstr ""
 "Project-Id-Version: skinedit 1.00\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-05-04 08:35+0200\n"
+"POT-Creation-Date: 2010-10-02 13:08+0200\n"
 "PO-Revision-Date: 2002-05-09 14:00+0200\n"
-"Last-Translator: Julien BLACHE <jb@tilp.info>\n"
-"Language-Team: French <fr@li.org>\n"
+"Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
+"Language-Team: Français <tiemu-devel@lists.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: src/boxes_cb.c:94
+#, c-format
+msgid ""
+"Current size : %d x %d at (%d;%d) -- Left click + drag to define key "
+"position, right click to save and go on. Close the list window when done "
+"(save the key before !)"
+msgstr ""
+"Taille actuelle : %d x %d à (%d;%d) - Bouton gauche + déplacement pour "
+"définir laposition de la touche, bouton droit pour enregistrer et continuer."
+"Fermer la liste quand vous avez fini (sauvez d'abord la touche !)"
+
+#: src/boxes_cb.c:99
+msgid ""
+"Left click + drag to define key position, right click to save and go on. "
+"Close the list window when done (save the key before !)"
+msgstr ""
+"Bouton gauche + déplacement pour définir l'emplacement de la touche, bouton "
+"droit pour enregistrer et continuer. Fermer la liste quand vous avez fini "
+"(sauvez d'abord la touche !)"
+
+#: src/boxes_cb.c:124
+msgid "Ready"
+msgstr "Prêt"
 
 #: src/main.c:36
 #, c-format
 msgid "Usage: skinedit [-options] [filename]\n"
 msgstr "Usage: skinedit [-options] [fichier]\n"
 
-#: src/main.c:39
+#: src/main.c:38
 #, c-format
 msgid "-h, --help    display this information page and exit\n"
 msgstr "-h  --help    affiche cette page d'information et quitte\n"
 
-#: src/main.c:41
+#: src/main.c:39
 #, c-format
 msgid "-v, --version display the version information and exit\n"
 msgstr "-v  --version affiche la version et quitte\n"
 
-#: src/main.c:43
+#: src/main.c:41
 #, c-format
 msgid "filename      a skin file to load\n"
 msgstr "fichier       un skin à charger\n"
 
-#: src/main.c:45
+#: src/main.c:43
 #, c-format
 msgid "See the manpage for more informations...\n"
 msgstr "Voir la page de manuel pour plus d'infos...\n"
 
-#: src/main.c:58
+#: src/main.c:55
 #, c-format
 msgid "Caught SIGINT, exiting ...\n"
 msgstr "SIGINT reçu, quitte ...\n"
 
-#: src/main.c:122
+#: src/main.c:118
 #, c-format
 msgid "SkinEdit v%s, (C) 2002-2003 Julien BLACHE <jb@tilp.info>\n"
 msgstr "Skinedit v%s, (C) 2002-2003 Julien BLACHE <jb@tilp.info>\n"
 
-#: src/main.c:123
+#: src/main.c:119
 #, c-format
 msgid "                  2004-2007 Romain Lievin <roms@tilp.info>\n"
 msgstr "                  2004-2007 Romain LIEVIN <roms@tilp.info>\n"
 
-#: src/main.c:125
+#: src/main.c:121
 #, c-format
 msgid "This program is free software; you can redistribute it and/or modify\n"
 msgstr ""
 "Ce programme est un logiciel libre ; vous pouvez le redistribuer et/ou le\n"
 
-#: src/main.c:126
+#: src/main.c:122
 #, c-format
 msgid "it under the terms of the GNU General Public License as published by\n"
 msgstr ""
 "modifier conformément à la GNU General Public License telle que publiée par\n"
 
-#: src/main.c:127
+#: src/main.c:123
 #, c-format
 msgid "the Free Software Foundation; version 2 of the License\n"
 msgstr "la Free Software Foundation ; dans sa version 2.\n"
 
-#: src/main.c:128
+#: src/main.c:124
 #, c-format
 msgid "This program is distributed in the hope that it will be useful,\n"
 msgstr "Ce logiciel est distribué dans l'espoir qu'il sera utile, mais SANS\n"
 
-#: src/main.c:129
+#: src/main.c:125
 #, c-format
 msgid "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
 msgstr ""
 "AUCUNE GARANTIE ; sans même la garantie implicite de COMMERCIALISATION ou\n"
 
-#: src/main.c:130
+#: src/main.c:126
 #, c-format
 msgid "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
 msgstr "d'ADEQUATION A UNE TACHE QUELCONQUE. Pour plus de détails, voir la\n"
 
-#: src/main.c:131
+#: src/main.c:127
 #, c-format
 msgid "GNU General Public License for more details.\n"
 msgstr "GNU General Public License.\n"
 
-#: src/main.c:135
+#: src/main.c:131
 #, c-format
 msgid "Skinedit v%s -- Supported formats : TiEmu v2.00, VTiv2.1, VTiv2.5"
-msgstr "Skinedit v%s -- Formats reconnus : TiEmu v2.00, VTiv2.1, VTiv2.5 "
+msgstr "Skinedit v%s -- Formats reconnus : TiEmu v2.00, VTiv2.1, VTiv2.5"
 
 #: src/main_intf.c:73 glade/main.str:7
 msgid "Skinedit"
@@ -137,7 +161,7 @@ msgstr "Aide"
 msgid "About"
 msgstr "A propos"
 
-#: src/main_intf.c:190 glade/main.str:17 glade/prop.str:8
+#: src/main_intf.c:190 src/prop_intf.c:134 glade/main.str:17 glade/prop.str:8
 msgid "Properties"
 msgstr "Propriétés"
 
@@ -145,13 +169,169 @@ msgstr "Propriétés"
 msgid "LCD"
 msgstr "LCD"
 
-#: src/main_intf.c:214 glade/boxes.str:7 glade/main.str:19
+#: src/main_intf.c:214 src/boxes_intf.c:38 glade/boxes.str:7 glade/main.str:19
 msgid "Keys"
 msgstr "Touches"
 
 #: src/main_intf.c:343 glade/main.str:20
 msgid "Select File"
 msgstr "Choisissez le fichier"
+
+#: src/prop_intf.c:38 glade/prop.str:7
+msgid "Select Color"
+msgstr "Choisissez la couleur"
+
+#: src/prop_intf.c:159 glade/prop.str:9
+msgid "Title : "
+msgstr "Titre : "
+
+#: src/prop_intf.c:166 glade/prop.str:10
+msgid "Author : "
+msgstr "Auteur : "
+
+#: src/prop_intf.c:202 glade/prop.str:11
+msgid "TI-73"
+msgstr "TI-73"
+
+#: src/prop_intf.c:210 glade/prop.str:12
+msgid "TI-82"
+msgstr "TI-82"
+
+#: src/prop_intf.c:218 glade/prop.str:13
+msgid "TI-83"
+msgstr "TI-83"
+
+#: src/prop_intf.c:226 glade/prop.str:14
+msgid "TI-83+"
+msgstr "TI-83+"
+
+#: src/prop_intf.c:234 glade/prop.str:15
+msgid "TI-92"
+msgstr "TI-92"
+
+#: src/prop_intf.c:242 glade/prop.str:16
+msgid "TI-92 Plus"
+msgstr "TI-92 Plus"
+
+#: src/prop_intf.c:250 glade/prop.str:17
+msgid "Voyage 200"
+msgstr "Voyage 200"
+
+#: src/prop_intf.c:258 glade/prop.str:18
+msgid "TI-89"
+msgstr "TI-89"
+
+#: src/prop_intf.c:267 glade/prop.str:19
+msgid "TI-86"
+msgstr "TI-86"
+
+#: src/prop_intf.c:275 glade/prop.str:20
+msgid "TI-85"
+msgstr "TI-85"
+
+#: src/prop_intf.c:283 glade/prop.str:21
+msgid "TI-84+"
+msgstr "TI-84+"
+
+#: src/prop_intf.c:291 glade/prop.str:22
+msgid "Titanium"
+msgstr "Titanium"
+
+#: src/prop_intf.c:300 glade/prop.str:23
+msgid "Calc type"
+msgstr "Calculatrice"
+
+#: src/prop_intf.c:318 glade/prop.str:24
+msgid "High contrast"
+msgstr "Contraste élevé"
+
+#: src/prop_intf.c:327 glade/prop.str:25
+msgid "Low contrast"
+msgstr "Contraste faible"
+
+#: src/prop_intf.c:335 glade/prop.str:26
+msgid "Custom"
+msgstr "Personnalisé"
+
+#: src/prop_intf.c:379 glade/prop.str:27
+msgid "LCD color"
+msgstr "Couleurs du LCD"
+
+#: src/skinops.c:89
+#, c-format
+msgid "Loaded %s (image size : %d x %d, skin version : %s)"
+msgstr "Chargé %s (taille image : %d x %d, version du skin : %s)"
+
+#: src/skinops.c:699 src/skinops.c:778
+#, c-format
+msgid "Skin saved (%s)"
+msgstr "Skin enregistré (%s)"
+
+#: src/boxes_intf.c:92 glade/boxes.str:8
+msgid "Save changes ?"
+msgstr "Enregistrer les modifications ?"
+
+#: src/boxes_intf.c:98 glade/boxes.str:12
+msgid ""
+"The current skin has changed.\n"
+"Do you want to save your modifications ?"
+msgstr ""
+"Des modifications ont été effectuées.\n"
+"Voulez-vous les enregistrer ?"
+
+#: src/boxes_intf.c:128 glade/boxes.str:9
+msgid "Save"
+msgstr "Enregistrer"
+
+#: src/boxes_intf.c:150
+msgid "Discard"
+msgstr "Rejeter modification"
+
+#: src/boxes_intf.c:172 glade/boxes.str:11
+msgid "Cancel"
+msgstr "Annuler"
+
+#: src/boxes_intf.c:234 glade/boxes.str:14
+msgid "About... Skinedit"
+msgstr "A propos... Skinedit"
+
+#: src/boxes_intf.c:244 glade/boxes.str:16
+msgid ""
+"Skinedit was written by Julien BLACHE <jb@tilp.info>\n"
+"Improved by Romain Lievin <roms@tilp.info>\n"
+"Icons designed by Jesse Palmer <jp@jp3d.net>\n"
+"\n"
+"This program is released under the terms of the \n"
+"GNU GENERAL PUBLIC LICENSE\n"
+"VERSION 2\n"
+"\n"
+"It is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the\n"
+"implied warranty of MERCHANTABILITY or FITNESS\n"
+"FOR A PARTICULAR PURPOSE. See the GNU\n"
+"General Public License for more details."
+msgstr ""
+"Skinedit a été écrit par Julien BLACHE <jb@tilp.info>\n"
+"Amélioré par Romain Lievin <roms@tilp.info>\n"
+"Icônes créés par Jesse Palmer <jp@jp3d.net>\n"
+"\n"
+"Ce logiciel est distribué sous les termes de la\n"
+"GNU GENERAL PUBLIC LICENSE (GPL)\n"
+"VERSION 2\n"
+"\n"
+"Il est distribué dans l'espoir d'être utile,\n"
+"mais SANS AUCUNE GARANTIE ; sans même la\n"
+"garantie implicite de COMMERCIALISATION ou\n"
+"d'ADEQUATION A UNE TACHE QUELCONQUE. Pour\n"
+"plus de détails, voir la GNU GPL."
+
+#: src/boxes_intf.c:249 glade/boxes.str:29
+msgid "Skinedit infos"
+msgstr "Informations sur Skinedit"
+
+#: src/boxes_intf.c:274 glade/boxes.str:15
+msgid "OK !"
+msgstr "OK !"
 
 #: src/main_cb.c:130
 msgid "Select JPEG image"
@@ -173,7 +353,7 @@ msgstr "Choisissez le fichier destination -- export VTi v2.1"
 msgid "Select destination file -- VTi v2.5 export"
 msgstr "Choisissez le fichier destination -- export VTi v2.5"
 
-#: src/main_cb.c:493
+#: src/main_cb.c:492
 #, c-format
 msgid ""
 "Left click + drag to define LCD position, right click when done. Current "
@@ -182,155 +362,39 @@ msgstr ""
 "Bouton gauche + déplacement pour définir l'emplacement du LCD, bouton droit "
 "pour enregistrer. Taille actuelle : %d x %d"
 
-#: src/main_cb.c:498
+#: src/main_cb.c:497
 msgid "Left click + drag to define LCD position, right click when done"
 msgstr ""
 "Bouton gauche + déplacement pour définir l'emplacement du LCD, bouton droit "
 "pour enregistrer."
+
+#: src/prop_cb.c:146
+msgid "Select custom WHITE color"
+msgstr "Choisissez la couleur BLANCHE"
+
+#: src/prop_cb.c:167
+msgid "Select custom BLACK color"
+msgstr "Choisissez la couleur NOIRE"
+
+#: src/rubberbox.c:119
+#, c-format
+msgid "LCD size : %d x %d at (%d;%d)"
+msgstr "Taille du LCD: %d x %d à (%d;%d)"
+
+#: src/rubberbox.c:156
+msgid "Saved LCD coordinates"
+msgstr "Sauvegardé les coordonnées pour le LCD"
 
 #: src/support.c:90 src/support.c:114
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr "Pixmap introuvable : %s"
 
-#: glade/boxes.str:8
-msgid "Save changes ?"
-msgstr "Enregistrer les modifications ?"
-
-#: glade/boxes.str:9
-msgid "Save"
-msgstr "Enregistrer"
+#: src/vti_export.c:135
+#, c-format
+msgid "Skin exported as %s (%s)"
+msgstr "Skin exporté vers %s (%s)"
 
 #: glade/boxes.str:10
 msgid "Ignore"
 msgstr "Ignorer"
-
-#: glade/boxes.str:11
-msgid "Cancel"
-msgstr "Annuler"
-
-#: glade/boxes.str:12
-msgid ""
-"The current skin has changed.\n"
-"Do you want to save your modifications ?"
-msgstr ""
-"Des modifications ont été faites.\n"
-"Voulez-vous les enregistrer ?"
-
-#: glade/boxes.str:14
-msgid "About... Skinedit"
-msgstr "A propos... Skinedit"
-
-#: glade/boxes.str:15
-msgid "OK !"
-msgstr "OK !"
-
-#: glade/boxes.str:16
-msgid ""
-"Skinedit was written by Julien BLACHE <jb@tilp.info>\n"
-"\n"
-"This program is released under the terms of the \n"
-"GNU GENERAL PUBLIC LICENSE\n"
-"VERSION 2\n"
-"\n"
-"It is distributed in the hope that it will be useful,\n"
-"but WITHOUT ANY WARRANTY; without even the\n"
-"implied warranty of MERCHANTABILITY or FITNESS\n"
-"FOR A PARTICULAR PURPOSE. See the GNU\n"
-"General Public License for more details."
-msgstr ""
-"Skinedit a été écrit par Julien BLACHE <jb@tilp.info>\n"
-"\n"
-"Ce logiciel est distribué sous les termes de la\n"
-"GNU GENERAL PUBLIC LICENSE (GPL)\n"
-"VERSION 2\n"
-"\n"
-"Il est distribué dans l'espoir d'être utile,\n"
-"mais SANS AUCUNE GARANTIE ; sans même la\n"
-"garantie implicite de COMMERCIALISATION ou\n"
-"d'ADEQUATION A UNE TACHE QUELCONQUE. Pour\n"
-"plus de détails, voir la GNU GPL."
-
-#: glade/boxes.str:27
-msgid "Skinedit infos"
-msgstr "Informations sur Skinedit"
-
-#: glade/prop.str:7
-msgid "Select Color"
-msgstr "Choisissez la couleur"
-
-#: glade/prop.str:9
-msgid "Title : "
-msgstr "Titre : "
-
-#: glade/prop.str:10
-msgid "Author : "
-msgstr "Auteur : "
-
-#: glade/prop.str:11
-msgid "TI-73"
-msgstr "TI-73"
-
-#: glade/prop.str:12
-msgid "TI-82"
-msgstr "TI-82"
-
-#: glade/prop.str:13
-msgid "TI-83"
-msgstr "TI-83"
-
-#: glade/prop.str:14
-msgid "TI-83+"
-msgstr "TI-83+"
-
-#: glade/prop.str:15
-msgid "TI-92"
-msgstr "TI-92"
-
-#: glade/prop.str:16
-msgid "TI-92 Plus"
-msgstr "TI-92 Plus"
-
-#: glade/prop.str:17
-msgid "Voyage 200"
-msgstr "Voyage 200"
-
-#: glade/prop.str:18
-msgid "TI-89"
-msgstr "TI-89"
-
-#: glade/prop.str:19
-msgid "TI-86"
-msgstr "TI-86"
-
-#: glade/prop.str:20
-msgid "TI-85"
-msgstr "TI-85"
-
-#: glade/prop.str:21
-msgid "TI-84+"
-msgstr "TI-84+"
-
-#: glade/prop.str:22
-msgid "Titanium"
-msgstr "Titanium"
-
-#: glade/prop.str:23
-msgid "Calc type"
-msgstr "Calculatrice"
-
-#: glade/prop.str:24
-msgid "High contrast"
-msgstr "Contraste élevé"
-
-#: glade/prop.str:25
-msgid "Low contrast"
-msgstr "Contraste faible"
-
-#: glade/prop.str:26
-msgid "Custom"
-msgstr "Personnalisé"
-
-#: glade/prop.str:27
-msgid "LCD color"
-msgstr "Couleurs du LCD"

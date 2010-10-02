@@ -185,9 +185,9 @@ void dbgromcall_refresh_window(void)
 void dbgromcall_erase_window(GtkWidget *widget)
 {
 	GtkTreeModel *model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
-	GtkListStore *store = GTK_LIST_STORE(model);
-	
-	gtk_list_store_clear(store);
+	GtkListStore *store2 = GTK_LIST_STORE(model);
+
+	gtk_list_store_clear(store2);
 }
 
 static void goto_romcall(const char *str)
@@ -221,7 +221,7 @@ on_combo_entry1_changed                    (GtkComboBox *combobox,
 	g_free(str);
 }
 
-GLADE_CB gboolean    
+GLADE_CB gboolean
 on_combo_entry1_match_selected             (GtkEntryCompletion *completion,
                                             GtkTreeModel *model,
                                             GtkTreeIter *iter,

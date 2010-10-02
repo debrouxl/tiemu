@@ -48,9 +48,6 @@ write_skin(void);
 int
 write_skin_as(const char *dest);
 
-void
-write_header(FILE *fp);
-
 unsigned char *
 read_image(FILE *fp, unsigned int *length);
 

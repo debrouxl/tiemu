@@ -20,8 +20,6 @@
 #include "options.h"
 #include "memory.h"
 #include "newcpu.h"
-#include "romcalls.h"
-#include "handles.h"
 
 // tiemu begin
 #include "tilibs.h"
@@ -33,6 +31,8 @@ static const struct uae_prefs currprefs = {0, 1, 1};
 extern const char *symfile;
 #endif /* CYGNUS_SIM */
 #define FLOATFORMAT_H /* don't include glib.h in romcalls.h */
+#include "romcalls.h"
+#include "handles.h"
 // tiemu end
 
 /* Opcode of faulting instruction */

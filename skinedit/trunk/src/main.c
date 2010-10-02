@@ -35,10 +35,8 @@ static void help(void)
   fprintf(stdout, "\n");
   fprintf(stdout, _("Usage: skinedit [-options] [filename]\n"));
   fprintf(stdout, "\n");
-  fprintf(stdout, _
-	  ("-h, --help    display this information page and exit\n"));
-  fprintf(stdout, _
-	  ("-v, --version display the version information and exit\n"));
+  fprintf(stdout, _("-h, --help    display this information page and exit\n"));
+  fprintf(stdout, _("-v, --version display the version information and exit\n"));
   fprintf(stdout, "\n");
   fprintf(stdout, _("filename      a skin file to load\n"));
   fprintf(stdout, "\n");
@@ -47,13 +45,12 @@ static void help(void)
   exit(0);
 }
 
-static int strexact(char *p1, char *p2)
+static int strexact(const char *p1, const char *p2)
 {
   return (strstr(p1, p2) && strstr(p2, p1));
 }
 
-void
-signal_handler(int sig)
+void signal_handler(int sig)
 {
   fprintf(stderr, _("Caught SIGINT, exiting ...\n"));
 
@@ -66,8 +63,7 @@ signal_handler(int sig)
 
 #undef main
 
-int
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
   int cnt;
   const char *p;

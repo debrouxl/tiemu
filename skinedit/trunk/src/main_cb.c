@@ -77,7 +77,7 @@ on_new_activate                        (GtkMenuItem     *menuitem,
   GtkWidget *filesel;
   GSList *formats;
   gchar *ext_list = NULL;
-  int i;
+  unsigned int i;
   
   /* must save & destroy pixbuf */
   
@@ -479,8 +479,7 @@ on_lcd_position_activate               (GtkMenuItem     *menuitem,
 
   erase_rubberbox(drawingarea1);
 
-  if ((skin_infos.lcd_pos.top >= 0) && (skin_infos.lcd_pos.left >= 0)
-      && (skin_infos.lcd_pos.bottom > 0) && (skin_infos.lcd_pos.right > 0))
+  if ((skin_infos.lcd_pos.bottom > 0) && (skin_infos.lcd_pos.right > 0))
     {
       lcd_cur.x = skin_infos.lcd_pos.left;
       lcd_cur.y = skin_infos.lcd_pos.top;
@@ -860,15 +859,15 @@ on_drawingarea1_expose_event           (GtkWidget       *widget,
   if (rect.y < 0) 
     rect.y = 0;	
   */
-  if (rect.x > skin_infos.width - 1) 
-    rect.x = skin_infos.width - 1;
-  if (rect.y > skin_infos.height - 1) 
-    rect.y = skin_infos.height - 1;
+  if (rect.x > (gint)skin_infos.width - 1) 
+    rect.x = (gint)skin_infos.width - 1;
+  if (rect.y > (gint)skin_infos.height - 1) 
+    rect.y = (gint)skin_infos.height - 1;
 
-  if (rect.x + rect.w > skin_infos.width - 1) 
-    rect.w = skin_infos.width - rect.x - 1;
-  if (rect.y + rect.h > skin_infos.height - 1) 
-    rect.h = skin_infos.height - rect.y - 1;
+  if (rect.x + rect.w > (gint)skin_infos.width - 1) 
+    rect.w = (gint)skin_infos.width - rect.x - 1;
+  if (rect.y + rect.h > (gint)skin_infos.height - 1) 
+    rect.h = (gint)skin_infos.height - rect.y - 1;
   
   gdk_draw_pixbuf(widget->window,
 		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],

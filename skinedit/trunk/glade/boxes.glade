@@ -470,6 +470,8 @@ Do you want to save your modifications ?</property>
 	    <widget class="GtkLabel" id="label9">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">Skinedit was written by Julien BLACHE &lt;jb@tilp.info&gt;
+Improved by Romain Lievin &lt;roms@tilp.info&gt;
+Icons designed by Jesse Palmer &lt;jp@jp3d.net&gt;
 
 This program is released under the terms of the 
 GNU GENERAL PUBLIC LICENSE

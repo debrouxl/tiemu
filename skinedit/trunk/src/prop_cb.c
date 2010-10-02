@@ -47,8 +47,6 @@
 #include "vti_export.h"
 #include "utils.h"
 
-extern struct skinInfos skin_infos;
-
 GtkWidget *lcd_custom_white;
 GtkWidget *lcd_custom_black;
 

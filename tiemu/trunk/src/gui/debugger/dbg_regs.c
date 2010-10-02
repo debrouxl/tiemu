@@ -509,6 +509,8 @@ on_dbgregs_button_press_event          (GtkWidget       *widget,
 			text = gtk_entry_get_text(GTK_ENTRY(wregs.usp));
 		else if(!strcmp(label, "SSP="))
 			text = gtk_entry_get_text(GTK_ENTRY(wregs.ssp));
+		else
+			text = (char *)"";
 
         sscanf(text, "%x", &value);
 
@@ -552,7 +554,7 @@ GLADE_CB void
 on_go_to_address4_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    if(value == -1)
+    if(value == -1U)
         return;
     
     dbgmem_add_tab(value);

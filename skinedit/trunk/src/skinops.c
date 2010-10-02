@@ -43,8 +43,6 @@
 #include "utils.h"
 
 
-extern struct skinInfos skin_infos;
-
 
 int
 load_skin(const char *path)
@@ -64,7 +62,11 @@ load_skin(const char *path)
    * Determine the type of skin being loaded
    */
 
-  fread(buf, 16, 1, fp);
+  if (fread(buf, 16, 1, fp) < 1)
+    {
+      ret = -1;
+      goto exit;
+    }
   
   if (buf[0] == 'V') /* VTi skin, string is only 8 bytes long */
     buf[7] = 0;
@@ -76,6 +78,7 @@ load_skin(const char *path)
   else
     ret = load_skin_tiemu(fp);
 
+exit:
   fclose(fp);
 
   if (ret != 0)
@@ -84,8 +87,8 @@ load_skin(const char *path)
   set_calc_keymap();
 
   sbar_print(_("Loaded %s (image size : %d x %d, skin version : %s)"),
-	     g_basename(path), skin_infos.width, skin_infos.height, buf);
-  
+             g_basename(path), skin_infos.width, skin_infos.height, buf);
+
   skin_infos.skin_path = strdup(path);
   
   return ret;
@@ -97,6 +100,7 @@ load_skin_old_vti(FILE *fp)
 {
   uint32_t calc;
   int i;
+  int ret = -1;
 
   fseek(fp, 8, SEEK_SET);
 
@@ -105,36 +109,36 @@ load_skin_old_vti(FILE *fp)
   if (skin_infos.name != NULL)
     {
       memset(skin_infos.name, 0, 65);
-      fread(skin_infos.name, 64, 1, fp);
+      if (fread(skin_infos.name, 64, 1, fp) < 1) goto exit;
 
       if (strlen(skin_infos.name) == 0)
-	{
-	  free(skin_infos.name);
-	  skin_infos.name = NULL;
-	}
+        {
+          free(skin_infos.name);
+          skin_infos.name = NULL;
+        }
       else
-	{
-	  skin_infos.name = realloc(skin_infos.name, strlen(skin_infos.name) + 1);
-	}
+        {
+          skin_infos.name = realloc(skin_infos.name, strlen(skin_infos.name) + 1);
+        }
     }
 
-  fread(&calc, 4, 1, fp);
+  if (fread(&calc, 4, 1, fp) < 1) goto exit;
 
-  fread(&skin_infos.colortype, 4, 1, fp);
-  fread(&skin_infos.lcd_white, 4, 1, fp);
-  fread(&skin_infos.lcd_black, 4, 1, fp);
+  if (fread(&skin_infos.colortype, 4, 1, fp) < 1) goto exit;
+  if (fread(&skin_infos.lcd_white, 4, 1, fp) < 1) goto exit;
+  if (fread(&skin_infos.lcd_black, 4, 1, fp) < 1) goto exit;
 
-  fread(&skin_infos.lcd_pos.left, 4, 1, fp);
-  fread(&skin_infos.lcd_pos.top, 4, 1, fp);
-  fread(&skin_infos.lcd_pos.right, 4, 1, fp);
-  fread(&skin_infos.lcd_pos.bottom, 4, 1, fp);
+  if (fread(&skin_infos.lcd_pos.left, 4, 1, fp) < 1) goto exit;
+  if (fread(&skin_infos.lcd_pos.top, 4, 1, fp) < 1) goto exit;
+  if (fread(&skin_infos.lcd_pos.right, 4, 1, fp) < 1) goto exit;
+  if (fread(&skin_infos.lcd_pos.bottom, 4, 1, fp) < 1) goto exit;
 
   for (i = 0; i < 80; i++)
     {
-      fread(&skin_infos.keys_pos[i].left, 4, 1, fp);
-      fread(&skin_infos.keys_pos[i].top, 4, 1, fp);
-      fread(&skin_infos.keys_pos[i].right, 4, 1, fp);
-      fread(&skin_infos.keys_pos[i].bottom, 4, 1, fp);
+      if (fread(&skin_infos.keys_pos[i].left, 4, 1, fp) < 1) goto exit;
+      if (fread(&skin_infos.keys_pos[i].top, 4, 1, fp) < 1) goto exit;
+      if (fread(&skin_infos.keys_pos[i].right, 4, 1, fp) < 1) goto exit;
+      if (fread(&skin_infos.keys_pos[i].bottom, 4, 1, fp) < 1) goto exit;
     }
 
 #if G_BYTE_ORDER == G_BIG_ENDIAN
@@ -151,7 +155,10 @@ load_skin_old_vti(FILE *fp)
 
   fseek(fp, 1384, SEEK_SET);
 
-  return load_image(fp);
+  ret = load_image(fp);
+
+exit:
+  return ret;
 }
 
 
@@ -160,6 +167,7 @@ load_skin_vti(FILE *fp)
 {
   uint32_t calc;
   int i;
+  int ret = -1;
 
   fseek(fp, 8, SEEK_SET);
 
@@ -168,17 +176,17 @@ load_skin_vti(FILE *fp)
   if (skin_infos.name != NULL)
     {
       memset(skin_infos.name, 0, 65);
-      fread(skin_infos.name, 64, 1, fp);
+      if (fread(skin_infos.name, 64, 1, fp) < 1) { free(skin_infos.name); goto exit; }
 
       if (strlen(skin_infos.name) == 0)
-	{
-	  free(skin_infos.name);
-	  skin_infos.name = NULL;
-	}
+        {
+          free(skin_infos.name);
+          skin_infos.name = NULL;
+        }
       else
-	{
-	  skin_infos.name = realloc(skin_infos.name, strlen(skin_infos.name) + 1);
-	}
+        {
+          skin_infos.name = realloc(skin_infos.name, strlen(skin_infos.name) + 1);
+        }
     }
 
   skin_infos.author = (char *)malloc(65);
@@ -186,36 +194,36 @@ load_skin_vti(FILE *fp)
   if (skin_infos.author != NULL)
     {
       memset(skin_infos.author, 0, 65);
-      fread(skin_infos.author, 64, 1, fp);
+      if (fread(skin_infos.author, 64, 1, fp) < 1) goto exit;
 
       if (strlen(skin_infos.author) == 0)
-	{
-	  free(skin_infos.author);
-	  skin_infos.author = NULL;
-	}
+        {
+          free(skin_infos.author);
+          skin_infos.author = NULL;
+        }
       else
-	{
-	  skin_infos.author = realloc(skin_infos.author, strlen(skin_infos.author) + 1);
-	}
+        {
+          skin_infos.author = realloc(skin_infos.author, strlen(skin_infos.author) + 1);
+        }
     }
 
-  fread(&calc, 4, 1, fp);
+  if (fread(&calc, 4, 1, fp) < 1) goto exit;
 
-  fread(&skin_infos.colortype, 4, 1, fp);
-  fread(&skin_infos.lcd_white, 4, 1, fp);
-  fread(&skin_infos.lcd_black, 4, 1, fp);
+  if (fread(&skin_infos.colortype, 4, 1, fp) < 1) goto exit;
+  if (fread(&skin_infos.lcd_white, 4, 1, fp) < 1) goto exit;
+  if (fread(&skin_infos.lcd_black, 4, 1, fp) < 1) goto exit;
 
-  fread(&skin_infos.lcd_pos.left, 4, 1, fp);
-  fread(&skin_infos.lcd_pos.top, 4, 1, fp);
-  fread(&skin_infos.lcd_pos.right, 4, 1, fp);
-  fread(&skin_infos.lcd_pos.bottom, 4, 1, fp);
+  if (fread(&skin_infos.lcd_pos.left, 4, 1, fp) < 1) goto exit;
+  if (fread(&skin_infos.lcd_pos.top, 4, 1, fp) < 1) goto exit;
+  if (fread(&skin_infos.lcd_pos.right, 4, 1, fp) < 1) goto exit;
+  if (fread(&skin_infos.lcd_pos.bottom, 4, 1, fp) < 1) goto exit;
 
   for (i = 0; i < 80; i++)
     {
-      fread(&skin_infos.keys_pos[i].left, 4, 1, fp);
-      fread(&skin_infos.keys_pos[i].top, 4, 1, fp);
-      fread(&skin_infos.keys_pos[i].right, 4, 1, fp);
-      fread(&skin_infos.keys_pos[i].bottom, 4, 1, fp);
+      if (fread(&skin_infos.keys_pos[i].left, 4, 1, fp) < 1) goto exit;
+      if (fread(&skin_infos.keys_pos[i].top, 4, 1, fp) < 1) goto exit;
+      if (fread(&skin_infos.keys_pos[i].right, 4, 1, fp) < 1) goto exit;
+      if (fread(&skin_infos.keys_pos[i].bottom, 4, 1, fp) < 1) goto exit;
     }
 
 #if G_BYTE_ORDER == G_BIG_ENDIAN
@@ -232,22 +240,30 @@ load_skin_vti(FILE *fp)
 
   fseek(fp, 1448, SEEK_SET);
 
-  return load_image(fp);
+  ret = load_image(fp);
+exit:
+  if (ret < 0)
+    {
+      free(skin_infos.name);
+      free(skin_infos.author);
+    }
+  return ret;
 }
 
 int
 load_skin_tiemu(FILE *fp)
 {
-  int i;
+  uint32_t i;
   uint32_t endian;
   uint32_t jpeg_offset;
   uint32_t length;
+  int ret = -1;
 
   fseek(fp, 16, SEEK_SET);
   
-  fread(&endian, 4, 1, fp);
+  if (fread(&endian, 4, 1, fp) < 1) goto exit;
 
-  fread(&jpeg_offset, 4, 1, fp);
+  if (fread(&jpeg_offset, 4, 1, fp) < 1) goto exit;
 
   if (endian != ENDIANNESS_FLAG)
     jpeg_offset = bswap_32(jpeg_offset);
@@ -255,7 +271,7 @@ load_skin_tiemu(FILE *fp)
   /*
    * Skin name
    */
-  fread(&length, 4, 1, fp);
+  if (fread(&length, 4, 1, fp) < 1) goto exit;
 
   if (endian != ENDIANNESS_FLAG)
     length = bswap_32(length);
@@ -265,11 +281,13 @@ load_skin_tiemu(FILE *fp)
       skin_infos.name = (char *)malloc(length + 1);
 
       if (skin_infos.name == NULL)
-	return -1;
+        {
+          return -1;
+        }
 
       memset(skin_infos.name, 0, length + 1);
 
-      fread(skin_infos.name, length, 1, fp);
+      if (fread(skin_infos.name, length, 1, fp) < 1) { free(skin_infos.name); goto exit; }
     }
 
 
@@ -277,7 +295,7 @@ load_skin_tiemu(FILE *fp)
    * Skin author
    */
 
-  fread(&length, 4, 1, fp);
+  if (fread(&length, 4, 1, fp) < 1) goto exit;
 
   if (endian != ENDIANNESS_FLAG)
     length = bswap_32(length);
@@ -287,38 +305,40 @@ load_skin_tiemu(FILE *fp)
       skin_infos.author = (char *)malloc(length + 1);
 
       if (skin_infos.author == NULL)
-	return -1;
+      {
+        return -1;
+      }
 
       memset(skin_infos.author, 0, length + 1);
 
-      fread(skin_infos.author, length, 1, fp);
+      if (fread(skin_infos.author, length, 1, fp) < 1) goto exit;
     }
 
   /*
    * LCD colors
    */
 
-  fread(&skin_infos.colortype, 4, 1, fp);
-  fread(&skin_infos.lcd_white, 4, 1, fp);
-  fread(&skin_infos.lcd_black, 4, 1, fp);
+  if (fread(&skin_infos.colortype, 4, 1, fp) < 1) goto exit;
+  if (fread(&skin_infos.lcd_white, 4, 1, fp) < 1) goto exit;
+  if (fread(&skin_infos.lcd_black, 4, 1, fp) < 1) goto exit;
 
    /*
    * Calc type
    */
 
-  fread(skin_infos.calc, 8, 1, fp);
+  if (fread(skin_infos.calc, 8, 1, fp) < 1) goto exit;
 
   /*
    * LCD position
    */
 
-  fread(&skin_infos.lcd_pos.left, 4, 1, fp);
-  fread(&skin_infos.lcd_pos.top, 4, 1, fp);
-  fread(&skin_infos.lcd_pos.right, 4, 1, fp);
-  fread(&skin_infos.lcd_pos.bottom, 4, 1, fp);
+  if (fread(&skin_infos.lcd_pos.left, 4, 1, fp) < 1) goto exit;
+  if (fread(&skin_infos.lcd_pos.top, 4, 1, fp) < 1) goto exit;
+  if (fread(&skin_infos.lcd_pos.right, 4, 1, fp) < 1) goto exit;
+  if (fread(&skin_infos.lcd_pos.bottom, 4, 1, fp) < 1) goto exit;
 
   /* number of RECT struct to read */
-  fread(&length, 4, 1, fp);
+  if (fread(&length, 4, 1, fp) < 1) goto exit;
 
   if (endian != ENDIANNESS_FLAG)
     length = bswap_32(length);
@@ -328,10 +348,10 @@ load_skin_tiemu(FILE *fp)
 
   for (i = 0; i < length; i++)
     {
-      fread(&skin_infos.keys_pos[i].left, 4, 1, fp);
-      fread(&skin_infos.keys_pos[i].top, 4, 1, fp);
-      fread(&skin_infos.keys_pos[i].right, 4, 1, fp);
-      fread(&skin_infos.keys_pos[i].bottom, 4, 1, fp);
+      if (fread(&skin_infos.keys_pos[i].left, 4, 1, fp) < 1) goto exit;
+      if (fread(&skin_infos.keys_pos[i].top, 4, 1, fp) < 1) goto exit;
+      if (fread(&skin_infos.keys_pos[i].right, 4, 1, fp) < 1) goto exit;
+      if (fread(&skin_infos.keys_pos[i].bottom, 4, 1, fp) < 1) goto exit;
     }
 
   if (endian != ENDIANNESS_FLAG)
@@ -346,19 +366,26 @@ load_skin_tiemu(FILE *fp)
       skin_infos.lcd_pos.right = bswap_32(skin_infos.lcd_pos.right);
 
       for (i = 0; i < length; i++)
-	{
-	  skin_infos.keys_pos[i].top = bswap_32(skin_infos.keys_pos[i].top);
-	  skin_infos.keys_pos[i].bottom = bswap_32(skin_infos.keys_pos[i].bottom);
-	  skin_infos.keys_pos[i].left = bswap_32(skin_infos.keys_pos[i].left);
-	  skin_infos.keys_pos[i].right = bswap_32(skin_infos.keys_pos[i].right);
-	}
+        {
+          skin_infos.keys_pos[i].top = bswap_32(skin_infos.keys_pos[i].top);
+          skin_infos.keys_pos[i].bottom = bswap_32(skin_infos.keys_pos[i].bottom);
+          skin_infos.keys_pos[i].left = bswap_32(skin_infos.keys_pos[i].left);
+          skin_infos.keys_pos[i].right = bswap_32(skin_infos.keys_pos[i].right);
+        }
     }
 
   skin_infos.type = SKIN_TYPE_TIEMU;
 
   fseek(fp, jpeg_offset, SEEK_SET);
   
-  return load_image(fp);
+  ret = load_image(fp);
+exit:
+  if (ret < 0)
+    {
+      free(skin_infos.name);
+      free(skin_infos.author);
+    }
+  return ret;
 }
 
 GtkWidget *main_wnd;
@@ -368,36 +395,40 @@ load_image(FILE *fp)
 {
   GdkPixbufLoader *loader;
   GError *error = NULL;
-  //GdkGeometry geometry;
-  
+
   /*
    * Extract image from skin
    */
   loader = gdk_pixbuf_loader_new();
-  while(!feof(fp)) {
-    int c = fgetc(fp);
-    if (c != EOF) {
-      unsigned char buf = c;
-      if(!gdk_pixbuf_loader_write(loader, &buf, 1, &error)) {
-        fprintf(stderr, "Failed to load pixbuf from skin: %s\n", error->message);
-        g_error_free(error);
-        return -1;
-      }
+  while(!feof(fp))
+    {
+      int c = fgetc(fp);
+      if (c != EOF)
+        {
+          unsigned char buf = c;
+          if(!gdk_pixbuf_loader_write(loader, &buf, 1, &error))
+            {
+              fprintf(stderr, "Failed to load pixbuf from skin: %s\n", error->message);
+              g_error_free(error);
+              return -1;
+            }
+        }
     }
-  }
-  if(!gdk_pixbuf_loader_close(loader, &error)) {
-    fprintf(stderr, "Failed to load pixbuf from skin: %s\n", error->message);
-    g_error_free(error);
-    return -1;
-  }
+  if(!gdk_pixbuf_loader_close(loader, &error))
+    {
+      fprintf(stderr, "Failed to load pixbuf from skin: %s\n", error->message);
+      g_error_free(error);
+      return -1;
+    }
 
   /*
    * Destroy previous pixbuf
    */
-  if(pixbuf != NULL) {
-    g_object_unref(pixbuf);
-    pixbuf = NULL;
-  }
+  if(pixbuf != NULL)
+    {
+      g_object_unref(pixbuf);
+      pixbuf = NULL;
+    }
 
   /*
    * Feed the original pixbuf with our image
@@ -416,20 +447,16 @@ load_image(FILE *fp)
   skin_infos.width = gdk_pixbuf_get_width(skin_infos.img_orig);
   skin_infos.height = gdk_pixbuf_get_height(skin_infos.img_orig);
 
-  gtk_drawing_area_size(GTK_DRAWING_AREA(drawingarea1), 
-			skin_infos.width, skin_infos.height);
+  gtk_drawing_area_size(GTK_DRAWING_AREA(drawingarea1), skin_infos.width, skin_infos.height);
 /*
   geometry.min_width = -1;
   geometry.min_height = -1;
-  geometry.max_width = -1;	//skin_infos.width;
+  geometry.max_width = -1;    //skin_infos.width;
   geometry.max_height = -1; //skin_infos.height;
   geometry.base_height = -1;
   geometry.base_width = -1;
   
-  gtk_window_set_geometry_hints(GTK_WINDOW(main_wnd),
-  GTK_WIDGET(drawingarea1),
-  &geometry,
-  GDK_HINT_MAX_SIZE);
+  gtk_window_set_geometry_hints(GTK_WINDOW(main_wnd), GTK_WIDGET(drawingarea1), &geometry, GDK_HINT_MAX_SIZE);
 */
 
   /*
@@ -441,6 +468,88 @@ load_image(FILE *fp)
   return 0;
 }
 
+
+static int
+write_header(FILE *fp)
+{
+  uint32_t endian = ENDIANNESS_FLAG;
+  uint32_t jpeg_offset;
+  uint32_t length;
+  int i;
+  unsigned char id[16] = TIEMU_SKIN_ID;
+  int ret = -1;
+
+  if (fwrite(id, 16, 1, fp) < 1) goto exit;
+
+  if (fwrite(&endian, 4, 1, fp) < 1) goto exit;
+
+  /* write the jpeg_offset, reserving 4 bytes */
+  if (fwrite(&jpeg_offset, 4, 1, fp) < 1) goto exit;
+
+
+  if (skin_infos.name != NULL)
+    length = strlen(skin_infos.name);
+  else
+    length = 0;
+
+  if (fwrite(&length, 4, 1, fp) < 1) goto exit;
+  
+  if (length > 0)
+    if (fwrite(skin_infos.name, length, 1, fp) < 1) goto exit;
+  
+
+  if (skin_infos.author != NULL)
+    length = strlen(skin_infos.author);
+  else
+    length = 0;
+
+  if (fwrite(&length, 4, 1, fp) < 1) goto exit;
+
+  if (length > 0)
+    if (fwrite(skin_infos.author, length, 1, fp) < 1) goto exit;
+
+
+  if (fwrite(&skin_infos.colortype, 4, 1, fp) < 1) goto exit;
+  if (fwrite(&skin_infos.lcd_white, 4, 1, fp) < 1) goto exit;
+  if (fwrite(&skin_infos.lcd_black, 4, 1, fp) < 1) goto exit;
+
+  if (fwrite(skin_infos.calc, 8, 1, fp) < 1) goto exit;
+
+  if (fwrite(&skin_infos.lcd_pos.left, 4, 1, fp) < 1) goto exit;
+  if (fwrite(&skin_infos.lcd_pos.top, 4, 1, fp) < 1) goto exit;
+  if (fwrite(&skin_infos.lcd_pos.right, 4, 1, fp) < 1) goto exit;
+  if (fwrite(&skin_infos.lcd_pos.bottom, 4, 1, fp) < 1) goto exit;
+
+  /* write the number of RECT structs */
+  length = SKIN_KEYS;
+  if (fwrite(&length, 4, 1, fp) < 1) goto exit;
+
+  for (i = 0; i < SKIN_KEYS; i++)
+    {
+      if (fwrite(&skin_infos.keys_pos[i].left, 4, 1, fp) < 1) goto exit;
+      if (fwrite(&skin_infos.keys_pos[i].top, 4, 1, fp) < 1) goto exit;
+      if (fwrite(&skin_infos.keys_pos[i].right, 4, 1, fp) < 1) goto exit;
+      if (fwrite(&skin_infos.keys_pos[i].bottom, 4, 1, fp) < 1) goto exit;
+    }
+
+  /* get the current position */
+  jpeg_offset = ftell(fp);
+
+  /* go back to the jpeg_offset location */
+  fseek(fp, 20, SEEK_SET);
+
+  if (fwrite(&jpeg_offset, 4, 1, fp) < 1) goto exit;
+
+  /* back to end of file */
+  fseek(fp, jpeg_offset, SEEK_SET);
+
+  ret = 0;
+
+exit:
+  return ret;
+}
+
+
 int
 write_skin(void)
 {
@@ -448,6 +557,7 @@ write_skin(void)
   FILE *jpeg = NULL;
   unsigned char *jpeg_data = NULL;
   unsigned int jpeg_length;
+  int ret = -1;
 
   /*
    * write the skin to skin_infos.skin_path
@@ -455,124 +565,141 @@ write_skin(void)
 
   switch(skin_infos.type)
     {
-       case SKIN_TYPE_NEW:
-	 fp = fopen(skin_infos.skin_path, "wb");
+      case SKIN_TYPE_NEW:
+        fp = fopen(skin_infos.skin_path, "wb");
 
-	 if (fp != NULL)
-	   {
-	     jpeg = fopen(skin_infos.jpeg_path, "rb");
-	     if (jpeg == NULL)
-	       {
-		 fclose(fp);
-		 
-		 return -1;
-	       }
+        if (fp != NULL)
+          {
+            jpeg = fopen(skin_infos.jpeg_path, "rb");
+            if (jpeg == NULL)
+              {
+                fclose(fp);
+                return -1;
+              }
 
-	     write_header(fp);
-	     
-	     jpeg_data = read_image(jpeg, &jpeg_length);
+            if (write_header(fp) < 0) goto exit1;
 
-	     if (jpeg_data == NULL)
-	       {
-		 fclose(jpeg);
-		 fclose(fp);
-		 
-		 return -1;
-	       }
+            jpeg_data = read_image(jpeg, &jpeg_length);
 
-	     fwrite(jpeg_data, jpeg_length, 1, fp);
+            if (jpeg_data == NULL)
+              {
+                fclose(jpeg);
+                fclose(fp);
+                return -1;
+              }
 
-	     free(jpeg_data);
+            if (fwrite(jpeg_data, jpeg_length, 1, fp) < 1) goto exit1;
 
-	     fclose(fp);
-	     fclose(jpeg);
-	     skin_infos.type = SKIN_TYPE_TIEMU;
-	   }
-	 else
-	   {
-	     return -1;
-	   }
-	 break;
-       case SKIN_TYPE_TIEMU:
-	 fp = fopen(skin_infos.skin_path, "rb");
-	 
-	 if (fp != NULL)
-	   {
+            ret = 0;
 
-	     jpeg_data = read_image(fp, &jpeg_length);
+exit1:
+            free(jpeg_data);
 
-	     if (jpeg_data == NULL)
-	       {
-		 fclose(fp);
+            fclose(fp);
+            fclose(jpeg);
+            skin_infos.type = SKIN_TYPE_TIEMU;
+          }
+        else
+          {
+            return -1;
+          }
+        break;
 
-		 return -1;
-	       }
+      case SKIN_TYPE_TIEMU:
+        fp = fopen(skin_infos.skin_path, "rb");
 
-	     fp = freopen(skin_infos.skin_path, "wb", fp);
-	     
-	     if (fp == NULL)
-	       return -1;
+        if (fp != NULL)
+          {
+            jpeg_data = read_image(fp, &jpeg_length);
 
-	     write_header(fp);
-	     
-	     fwrite(jpeg_data, jpeg_length, 1, fp);
+            if (jpeg_data == NULL)
+              {
+                fclose(fp);
+                return -1;
+              }
 
-	     free(jpeg_data);
+            fp = freopen(skin_infos.skin_path, "wb", fp);
 
-	     fclose(fp);
-	   }
-	 else
-	   {
-	     return -1;
-	   }
-	 break;
-       case SKIN_TYPE_VTI:
-       case SKIN_TYPE_OLD_VTI:
-	 fp = fopen(skin_infos.skin_path, "rb");
-	 
-	 if (fp != NULL)
-	   {
-	     if (skin_infos.type == SKIN_TYPE_VTI)
-	       fseek(fp, 1448, SEEK_SET);
-	     else
-	       fseek(fp, 1384, SEEK_SET);
-	     
-	     jpeg_data = read_image(fp, &jpeg_length);
+            if (fp == NULL)
+              {
+                return -1;
+              }
 
-	     if (jpeg_data == NULL)
-	       {
-		 fclose(fp);
+            if (write_header(fp) < 0) goto exit2;
 
-		 return -1;
-	       }
-	     
-	     fp = freopen(skin_infos.skin_path, "wb", fp);
-	     
-	     if (fp == NULL)
-	       return -1;
-	     
-	     write_header(fp);
-	     
-	     fwrite(jpeg_data, jpeg_length, 1, fp);
-	     
-	     fclose(fp);
-	     free(jpeg_data);
-	     
-	     skin_infos.type = SKIN_TYPE_TIEMU;
-	   }
-	 else
-	   {
-	     return -1;
-	   }
+            if (fwrite(jpeg_data, jpeg_length, 1, fp) < 1) goto exit2;
 
-	 break;
-       default: /* should not get there */
-	 return -1;
+            ret = 0;
+
+exit2:
+            free(jpeg_data);
+
+            fclose(fp);
+          }
+        else
+          {
+            return -1;
+          }
+        break;
+
+      case SKIN_TYPE_VTI:
+      case SKIN_TYPE_OLD_VTI:
+        fp = fopen(skin_infos.skin_path, "rb");
+     
+        if (fp != NULL)
+          {
+            if (skin_infos.type == SKIN_TYPE_VTI)
+              {
+                fseek(fp, 1448, SEEK_SET);
+              }
+            else
+              {
+                fseek(fp, 1384, SEEK_SET);
+              }
+         
+            jpeg_data = read_image(fp, &jpeg_length);
+
+            if (jpeg_data == NULL)
+              {
+                fclose(fp);
+                return -1;
+              }
+
+            fp = freopen(skin_infos.skin_path, "wb", fp);
+
+            if (fp == NULL)
+              {
+                return -1;
+              }
+
+            if (write_header(fp) < 0) goto exit3;
+
+            if (fwrite(jpeg_data, jpeg_length, 1, fp) < 1) goto exit3;
+
+            ret = 0;
+
+exit3:
+            fclose(fp);
+            free(jpeg_data);
+
+            skin_infos.type = SKIN_TYPE_TIEMU;
+          }
+        else
+          {
+            return -1;
+          }
+        break;
+
+      default: /* should not get there */
+        return -1;
     }
 
-  sbar_print(_("Skin saved (%s)"), g_basename(skin_infos.skin_path));
+  if (ret != -1)
+    {
+      sbar_print(_("Skin saved (%s)"), g_basename(skin_infos.skin_path));
+    }
 
-  return 0;
+  return ret;
 }
 
 
@@ -583,142 +710,75 @@ write_skin_as(const char *dest)
   FILE *jpeg = NULL;
   unsigned char *jpeg_data = NULL;
   unsigned int jpeg_length;
+  int ret = -1;
 
   if ((skin_infos.skin_path != NULL) && (strcmp(dest, skin_infos.skin_path) == 0))
     return write_skin();
 
   switch(skin_infos.type)
     {
-       case SKIN_TYPE_NEW:
-	 skin_infos.skin_path = strdup(dest);
-	 return write_skin();
-       case SKIN_TYPE_TIEMU:
-       case SKIN_TYPE_VTI:
-       case SKIN_TYPE_OLD_VTI:
-	 fp = fopen(dest, "wb");
-	 
-	 if (fp != NULL)
-	   {
-	     jpeg = fopen(skin_infos.skin_path, "rb");
+      case SKIN_TYPE_NEW:
+        skin_infos.skin_path = strdup(dest);
+        return write_skin();
 
-	     if (jpeg == NULL)
-	       {
-		 fclose(fp);
-		 
-		 return -1;
-	       }
+      case SKIN_TYPE_TIEMU:
+      case SKIN_TYPE_VTI:
+      case SKIN_TYPE_OLD_VTI:
+        fp = fopen(dest, "wb");
 
-	     jpeg_data = read_image(jpeg, &jpeg_length);
+        if (fp != NULL)
+          {
+            jpeg = fopen(skin_infos.skin_path, "rb");
 
-	     if (jpeg_data == NULL)
-	       {
-		 fclose(fp);
-		 fclose(jpeg);
+            if (jpeg == NULL)
+              {
+                fclose(fp);
+                return -1;
+              }
 
-		 return -1;
-	       }
+            jpeg_data = read_image(jpeg, &jpeg_length);
 
-	     write_header(fp);
+            if (jpeg_data == NULL)
+              {
+                fclose(fp);
+                fclose(jpeg);
+                return -1;
+              }
 
-	     fwrite(jpeg_data, jpeg_length, 1, fp);
+            if (write_header(fp) < 0) goto exit;
 
-	     fclose(fp);
-	     fclose(jpeg);
-	     free(jpeg_data);
-	     
-	     if (skin_infos.skin_path != NULL)
-	       free(skin_infos.skin_path);
+            if (fwrite(jpeg_data, jpeg_length, 1, fp) < 1) goto exit;
 
-	     skin_infos.skin_path = strdup(dest);
-	     skin_infos.type = SKIN_TYPE_TIEMU;
-	   }
-	 else
-	   {
-	     return -1;
-	   }
-	 break;
-       default: /* should not get there */
-	 return -1;
+            ret = 0;
+exit:
+            fclose(fp);
+            fclose(jpeg);
+            free(jpeg_data);
+
+            if (skin_infos.skin_path != NULL)
+              {
+                free(skin_infos.skin_path);
+              }
+
+            skin_infos.skin_path = strdup(dest);
+            skin_infos.type = SKIN_TYPE_TIEMU;
+          }
+        else
+          {
+            return -1;
+          }
+        break;
+
+      default: /* should not get there */
+        return -1;
     }
 
-  sbar_print(_("Skin saved (%s)"), g_basename(dest));
-
-  return 0;
-}
-
-
-void
-write_header(FILE *fp)
-{
-  uint32_t endian = ENDIANNESS_FLAG;
-  uint32_t jpeg_offset;
-  uint32_t length;
-  int i;
-  unsigned char id[16] = TIEMU_SKIN_ID;
-
-  fwrite(id, 16, 1, fp);
-
-  fwrite(&endian, 4, 1, fp);  
-
-  /* write the jpeg_offset, reserving 4 bytes */
-  fwrite(&jpeg_offset, 4, 1, fp);
-
-
-  if (skin_infos.name != NULL)
-    length = strlen(skin_infos.name);
-  else
-    length = 0;
-
-  fwrite(&length, 4, 1, fp);
-  
-  if (length > 0)
-    fwrite(skin_infos.name, length, 1, fp);
-  
-
-  if (skin_infos.author != NULL)
-    length = strlen(skin_infos.author);
-  else
-    length = 0;
-
-  fwrite(&length, 4, 1, fp);
-  
-  if (length > 0)
-    fwrite(skin_infos.author, length, 1, fp);
-
-
-  fwrite(&skin_infos.colortype, 4, 1, fp);
-  fwrite(&skin_infos.lcd_white, 4, 1, fp);
-  fwrite(&skin_infos.lcd_black, 4, 1, fp);
-
-  fwrite(skin_infos.calc, 8, 1, fp);
-
-  fwrite(&skin_infos.lcd_pos.left, 4, 1, fp);
-  fwrite(&skin_infos.lcd_pos.top, 4, 1, fp);
-  fwrite(&skin_infos.lcd_pos.right, 4, 1, fp);
-  fwrite(&skin_infos.lcd_pos.bottom, 4, 1, fp);
-
-  /* write the number of RECT structs */
-  length = SKIN_KEYS;
-  fwrite(&length, 4, 1, fp);
-
-  for (i = 0; i < SKIN_KEYS; i++)
+  if (ret != -1)
     {
-      fwrite(&skin_infos.keys_pos[i].left, 4, 1, fp);
-      fwrite(&skin_infos.keys_pos[i].top, 4, 1, fp);
-      fwrite(&skin_infos.keys_pos[i].right, 4, 1, fp);
-      fwrite(&skin_infos.keys_pos[i].bottom, 4, 1, fp);
+      sbar_print(_("Skin saved (%s)"), g_basename(dest));
     }
 
-  /* get the current position */
-  jpeg_offset = ftell(fp);
-
-  /* go back to the jpeg_offset location */
-  fseek(fp, 20, SEEK_SET);
-
-  fwrite(&jpeg_offset, 4, 1, fp);
-
-  /* back to end of file */
-  fseek(fp, jpeg_offset, SEEK_SET);
+  return ret;
 }
 
 
@@ -739,7 +799,9 @@ read_image(FILE *fp, unsigned int *length)
    */
 
   buf = (char *)malloc(16);
-  fread(buf, 16, 1, fp);
+  if (buf == NULL)
+    return NULL;
+  if (fread(buf, 16, 1, fp) < 1) { free(buf); return NULL; }
 
   if (strncmp(buf, "VTIv2.1", 7) == 0)
     fseek(fp, 1384, SEEK_SET);
@@ -749,9 +811,9 @@ read_image(FILE *fp, unsigned int *length)
   {
     fseek(fp, 16, SEEK_SET);
 
-    fread(&endian, 4, 1, fp);
+    if (fread(&endian, 4, 1, fp) < 1) { free(buf); return NULL; }
 
-    fread(&offset, 4, 1, fp);
+    if (fread(&offset, 4, 1, fp) < 1) { free(buf); return NULL; }
 
     if (endian != ENDIANNESS_FLAG)
       offset = bswap_32(offset);
@@ -769,12 +831,12 @@ read_image(FILE *fp, unsigned int *length)
       buf = realloc(data, *length + 2048);
       
       if (buf == NULL)
-	{
-	  if (data != NULL)
-	    free(data);
-	  
-	  return NULL;
-	}
+    {
+      if (data != NULL)
+        free(data);
+      
+      return NULL;
+    }
       
       data = buf;
       buf = NULL;

@@ -26,7 +26,7 @@
 #ifndef __TIEMU_ERROR__
 #define __TIEMU_ERROR__
 
-int tiemu_err(int err_code, char *err_str);
+int tiemu_err(int err_code, const char *err_str);
 
 #define handle_error()	{ if(err) tiemu_err(err, NULL); }
 

@@ -421,17 +421,17 @@ void dbgbkpts_erase_context(void)
 
 static GtkWidget* display_dbgbkpts_popup_menu(void)
 {
-	GladeXML *xml;
+	GladeXML *xml2;
 	GtkWidget *data;
   
-	xml = glade_xml_new
+	xml2 = glade_xml_new
 	    (tilp_paths_build_glade("dbg_bkpts-2.glade"), "dbgbkpts_popup",
 	     PACKAGE);
 	if (!xml)
 		g_error(_("dbg_bkpts-2.glade: GUI loading failed !\n"));
-	glade_xml_signal_autoconnect(xml);
+	glade_xml_signal_autoconnect(xml2);
 
-	data = glade_xml_get_widget(xml, "dbgbkpts_popup");
+	data = glade_xml_get_widget(xml2, "dbgbkpts_popup");
 
 	return data;
 }
@@ -443,11 +443,11 @@ dbgbkpts_button1_clicked                     (GtkButton       *button,
 {
 	GtkWidget *menu;
 	guint butt = 0;
-	guint32 time;
+	guint32 time2;
 
-	time = gtk_get_current_event_time();
+	time2 = gtk_get_current_event_time();
 	menu = display_dbgbkpts_popup_menu();
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, butt, time);
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, butt, time2);
 	gtk_widget_show(menu);
 }
 
@@ -598,14 +598,15 @@ dbgbkpts_button3_clicked                     (GtkButton       *button,
             //  ti68k_bkpt_set_pgmentry(addr, BKPT_DISABLE(n));
             //}
             break;
-		case BK_TYPE_BIT:
-			mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
+        case BK_TYPE_BIT:
+            mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
             sscanf(row_text[COL_START], "%x", &min);
             {
               uint32_t addr = BKPT_ADDR(min);
-              ti68k_bkpt_set_bits(addr, BKPT_DISABLE(addr));
+              uint32_t addr2 = BKPT_DISABLE(addr);
+              ti68k_bkpt_set_bits(addr, addr2);
             }
-			break;
+            break;
 
         }
         g_strfreev(row_text);
@@ -692,14 +693,15 @@ dbgbkpts_button4_clicked                     (GtkButton       *button,
             //  ti68k_bkpt_set_pgmentry(addr, BKPT_ENABLE(n));
             //}
             break;
-		case BK_TYPE_BIT:
-			mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
+        case BK_TYPE_BIT:
+            mode = ti68k_string_to_bkpt_mode(row_text[COL_MODE]);
             sscanf(row_text[COL_START], "%x", &min);
             {
               uint32_t addr = BKPT_ADDR(min);
-              ti68k_bkpt_set_bits(addr, BKPT_ENABLE(addr));
+              uint32_t addr2 = BKPT_ENABLE(addr);
+              ti68k_bkpt_set_bits(addr, addr2);
             }
-			break;
+            break;
         }
         g_strfreev(row_text);
     }

@@ -38,7 +38,6 @@
 #include "tie_error.h"
 #include "ti68k_int.h"
 
-extern DeviceOptions	linkp;
 static DeviceOptions	tmp;
 static DeviceOptions	old;
 

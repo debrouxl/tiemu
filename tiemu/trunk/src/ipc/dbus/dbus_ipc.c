@@ -63,6 +63,8 @@ static gboolean tiemudbus_enter_debugger(TiEmuDBus *this);
 /* M$VC could probably use a #pragma warning for this */
 #endif
 
+G_DEFINE_TYPE(TiEmuDBus, tiemudbus, G_TYPE_OBJECT);
+
 static void tiemudbus_class_init(TiEmuDBusClass *this)
 {
   dbus_g_object_type_install_info(G_TYPE_FROM_CLASS(G_OBJECT_CLASS(this)),
@@ -102,8 +104,6 @@ static void tiemudbus_init(TiEmuDBus *this)
                                       "/org/ticalc/lpg/tiemu/TiEmuDBus",
                                       G_OBJECT(this));
 }
-
-G_DEFINE_TYPE(TiEmuDBus, tiemudbus, G_TYPE_OBJECT);
 
 static gboolean tiemudbus_image_loaded(TiEmuDBus *this UNUSED)
 {

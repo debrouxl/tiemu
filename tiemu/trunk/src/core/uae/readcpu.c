@@ -251,7 +251,6 @@ static void build_insn (int insn)
 	int bitcnt[lastbit];
 	int bitval[lastbit];
 	int bitpos[lastbit];
-	int i;
 	uae_u16 opc = id.bits;
 	uae_u16 msk, vmsk;
 	int pos = 0;
