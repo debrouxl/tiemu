@@ -38,6 +38,12 @@
 #define GTK_WIDGET_VISIBLE(wid) (gtk_widget_get_visible(wid))
 #endif
 
+// Deprecated in GTK 2.22+, but still used by the prototype of the switch-page signal...
+// Our switch-page callback does not use the GtkNotebookPage argument anyway, so let's just make a dummy definition.
+#if GTK_CHECK_VERSION(2,22,0)
+#define GtkNotebookPage GtkNotebook
+#endif
+
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
