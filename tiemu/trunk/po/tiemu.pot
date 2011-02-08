@@ -8,10 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tiemu-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-10-02 13:08+0200\n"
+"POT-Creation-Date: 2011-02-08 09:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -565,8 +566,8 @@ msgstr ""
 #: src/gui/debugger/dbg_code.c:1166 src/gui/debugger/dbg_data.c:56
 #: src/gui/debugger/dbg_entry.c:207 src/gui/debugger/dbg_heap.c:151
 #: src/gui/debugger/dbg_heap.c:272 src/gui/debugger/dbg_iop.c:435
-#: src/gui/debugger/dbg_mem.c:717 src/gui/debugger/dbg_mem.c:1092
-#: src/gui/debugger/dbg_mem.c:1316 src/gui/debugger/dbg_pclog.c:143
+#: src/gui/debugger/dbg_mem.c:723 src/gui/debugger/dbg_mem.c:1098
+#: src/gui/debugger/dbg_mem.c:1322 src/gui/debugger/dbg_pclog.c:143
 #: src/gui/debugger/dbg_regs.c:199 src/gui/debugger/dbg_regs.c:546
 #: src/gui/debugger/dbg_stack.c:169 src/gui/debugger/dbg_stack.c:423
 #: src/gui/debugger/dbg_vectors.c:145 src/gui/logger/log_link.c:62
@@ -714,7 +715,7 @@ msgid "dbg_bkpts-2.glade: GUI loading failed !\n"
 msgstr ""
 
 #: src/gui/debugger/dbg_code.c:81 src/gui/debugger/dbg_heap.c:60
-#: src/gui/debugger/dbg_iop.c:304 src/gui/debugger/dbg_mem.c:190
+#: src/gui/debugger/dbg_iop.c:304 src/gui/debugger/dbg_mem.c:196
 #: src/gui/debugger/dbg_pclog.c:59 src/gui/debugger/dbg_stack.c:64
 msgid "Address"
 msgstr ""
