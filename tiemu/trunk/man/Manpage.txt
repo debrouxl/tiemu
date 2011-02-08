@@ -159,8 +159,8 @@ CONFIG FILE FORMAT
        dbg_font_name= Name of font to use. It must be a valid  Pango  descrip-
        tion  font  name:  a  string  representation in the form "[FAMILY-LIST]
        [STYLE-OPTIONS] [SIZE]", where FAMILY-LIST is a comma separated list of
-       families  optionally  terminated by a comma, STYLE_OPTIONS is a whites-
-       pace separated list of words where each WORD describes  one  of  style,
+       families  optionally  terminated  by a comma, STYLE_OPTIONS is a white-
+       space separated list of words where each WORD describes one  of  style,
        variant,  weight,  or  stretch,  and SIZE is an decimal number (size in
        points). Any one of the  options  may  be  absent.  If  FAMILY-LIST  is
        absent,  then  the  family_name field of the resulting font description
