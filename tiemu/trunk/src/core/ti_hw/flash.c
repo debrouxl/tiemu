@@ -25,10 +25,10 @@
  */
 
 /*
-    FLASH algorithm management:
-	- Sharp's LH28F160S3T: TI89/TI92+
-	- Sharp's LH28F320BF: V200/TI89 Titanium
-*/
+ * FLASH algorithm management:
+ * - Sharp's LH28F160S3T: TI89/TI92+
+ * - Sharp's LH28F320BF: V200/TI89 Titanium
+ */
 
 #include <stdio.h>
 #include <stdint.h>
@@ -59,7 +59,9 @@ int hw_flash_reset(void)
 int hw_flash_exit(void)
 {
 	if(wsm.changed != NULL)
+	{
 		free(wsm.changed);
+	}
 
 	wsm.changed = NULL;
 	return 0;
@@ -70,8 +72,12 @@ int hw_flash_nblocks(void)
 	int i, n = 0;
 
 	for(i = 0; i < wsm.nblocks; i++)
+	{
 		if(wsm.changed[i])
+		{
 			n++;
+		}
+	}
 
 	return n;
 }
@@ -85,14 +91,14 @@ uint8_t FlashReadByte(uint32_t addr)
 	{
 		switch(addr & 0xffff)
 		{
-		case 0:	return (tihw.calc_type == V200 || tihw.calc_type == TI89t) ? 0xb0 : 0x89; // manufacturer code
-		case 1:	return 0x00;
-		case 2: return 0xb5;	// device code
-		case 3: return 0x00;
-		default: return 0xff;
+			case 0:  return (tihw.calc_type == V200 || tihw.calc_type == TI89t) ? 0xb0 : 0x89; // manufacturer code
+			case 1:  return 0x00;
+			case 2:  return 0xb5; // device code
+			case 3:  return 0x00;
+			default: return 0xff;
 		}
 	}
-	
+
 	return get_b(tihw.rom, addr, tihw.rom_size - 1) | wsm.ret_or;
 }
 
@@ -102,9 +108,9 @@ uint16_t FlashReadWord(uint32_t addr)
 	{
 		switch(addr & 0xffff)
 		{
-		case 0:	return (tihw.calc_type == V200 || tihw.calc_type == TI89t) ? 0xb0 : 0x89; // manufacturer code
-		case 2: return 0x00b5;	// device code
-		default: return 0xffff;
+			case 0:  return (tihw.calc_type == V200 || tihw.calc_type == TI89t) ? 0xb0 : 0x89; // manufacturer code
+			case 2:  return 0x00b5; // device code
+			default: return 0xffff;
 		}
 	}
 
@@ -122,77 +128,83 @@ uint32_t FlashReadLong(uint32_t addr)
 void FlashWriteByte(uint32_t addr, uint8_t v)
 {
 	//int i;
-    uint8_t *rom = tihw.rom;
-  
-	if(tihw.calc_type == TI92)
-        return;
+	uint8_t *rom = tihw.rom;
 
-    if(tihw.protect) 
-        return;
+	if(tihw.calc_type == TI92)
+	{
+		return;
+	}
+
+	if(tihw.protect)
+	{
+		return;
+	}
 
 	addr -= tihw.rom_base;
 	addr &= tihw.rom_size - 1;
 
-    // Write State Machine (WSM, Sharp's data sheet)
-    if (wsm.write_ready)
-    {
+	// Write State Machine (WSM, Sharp's data sheet)
+	if (wsm.write_ready)
+	{
 		if(rom[addr] != v)
+		{
 			wsm.changed[addr>>16] = !0;
+		}
 		rom[addr] &= v; /* can't set bits from 0 to 1 with a write! */
-            
+
 		wsm.write_ready--;
-        wsm.ret_or = 0xffffffff;
-    }
-    else if (v == 0x50)
+		wsm.ret_or = 0xffffffff;
+	}
+	else if (v == 0x50)
 	{
 		// clear status register
-        wsm.write_phase = 0x50;
+		wsm.write_phase = 0x50;
 	}
-    else if (v == 0x10)
-    {
+	else if (v == 0x10)
+	{
 		//byte write setup/confirm
-        if (wsm.write_phase == 0x50)
+		if (wsm.write_phase == 0x50)
 		{
-	        wsm.write_phase = 0x51;
+			wsm.write_phase = 0x51;
 		}
-        else if (wsm.write_phase == 0x51)
-        {
-	        wsm.write_ready = 2;
-	        wsm.write_phase = 0x50;
-        }
-    }
-    else if (v == 0x20)
-    {
+		else if (wsm.write_phase == 0x51)
+		{
+			wsm.write_ready = 2;
+			wsm.write_phase = 0x50;
+		}
+	}
+	else if (v == 0x20)
+	{
 		// block erase setup/confirm
-        if (wsm.write_phase == 0x50)
+		if (wsm.write_phase == 0x50)
 		{
-	        wsm.write_phase = 0x20;
+			wsm.write_phase = 0x20;
 		}
-    }
-    else if (v == 0xd0)
-    {
+	}
+	else if (v == 0xd0)
+	{
 		// confirm and block erase
-        if (wsm.write_phase == 0x20)
-        {
-	        wsm.write_phase = 0xd0;
-	        wsm.ret_or = 0xffffffff;
-	        wsm.erase = 0xffffffff;
-	        wsm.erase_phase = 0;
+		if (wsm.write_phase == 0x20)
+		{
+			wsm.write_phase = 0xd0;
+			wsm.ret_or = 0xffffffff;
+			wsm.erase = 0xffffffff;
+			wsm.erase_phase = 0;
 
 			memset(&rom[addr & 0xff0000], 0xff, 64*KB);
 			wsm.changed[addr>>16] = !0;
 			//printf("%i erased\n", addr>>16);
-        } 
-    }
-    else if (v == 0xff)
-    {
+		}
+	}
+	else if (v == 0xff)
+	{
 		// read array/reset
-        if (wsm.write_phase == 0x50)
-        {
-	        wsm.write_ready = 0;
-	        wsm.ret_or = 0;
-        }
-    }
+		if (wsm.write_phase == 0x50)
+		{
+			wsm.write_ready = 0;
+			wsm.ret_or = 0;
+		}
+	}
 	else if (v == 0x90)
 	{
 		// read identifier codes
@@ -214,49 +226,46 @@ void FlashWriteLong(uint32_t addr, uint32_t data)
 }
 
 /*
-	Search for a vector table and get SSP & PC values.
-	This is needed by m68k_reset() for booting.
-*/
+ * Search for a vector table and get SSP & PC values.
+ * This is needed by m68k_reset() for booting.
+ */
 void find_ssp_and_pc(uint32_t *ssp, uint32_t *pc)
 {
-    int vt = 0x000000; // vector table
+	int vt = 0x000000; // vector table
 
-    // find PC reset vector
-    if(tihw.rom_flash)
-    { 
-        // FLASH (TI89, TI92+, V200, ...)
-        for (vt = 0x12000; vt < tihw.rom_size; vt++)
-	    {
+	// find PC reset vector
+	if(tihw.rom_flash)
+	{ 
+		// FLASH (TI89, TI92+, V200, ...)
+		for (vt = 0x12000; vt < tihw.rom_size; vt++)
+		{
 			uint8_t *rom = tihw.rom + vt;
 
-			if(rom[0] == 0xcc && rom[1] == 0xcc && rom[2] == 0xcc && rom[3] == 0xcc)
-            {
-	            vt += 4;
-	            break;
-	        }
-        }
+			// Detect field 807(F), 4 size bytes (skipped) and 4 0xCC bytes.
+			if(rom[0] == 0x80 && rom[1] == 0x7F && rom[6] == 0xcc && rom[7] == 0xcc && rom[8] == 0xcc && rom[9] == 0xcc)
+			{
+				vt += 10;
+				break;
+			}
+		}
 
-		*ssp = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
-            (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
-    
-        vt += 4; // skip SP
-   
-        *pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
-            (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
-    }
+		*ssp = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) | (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
+
+		vt += 4; // skip SP
+
+		*pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) | (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
+	}
 	else
-    { 
+	{
 		// EPROM (TI92)
 		vt = 0;
 
-		*ssp = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
-            (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
+		*ssp = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) | (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
 
 		vt += 4; // skip SP
       
-		*pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) |
-			(tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
-    }
+		*pc = tihw.rom[vt+3] | (tihw.rom[vt+2]<<8) | (tihw.rom[vt+1]<<16) | (tihw.rom[vt]<<24);
+	}
 
 	tiemu_info(_("found SSP=$%06x and PC=$%06x at offset 0x%x"), *ssp, *pc, vt - 0x12000);
 }
