@@ -54,11 +54,10 @@ enum {
 };
 static gint order = SORT_BY_NAME;
 
-GLADE_CB gboolean    
-on_combo_entry1_match_selected             (GtkEntryCompletion *widget,
-                                            GtkTreeModel *model,
-                                            GtkTreeIter *iter,
-                                            gpointer user_data);
+GLADE_CB gboolean on_combo_entry1_match_selected (GtkEntryCompletion *widget,
+                                                  GtkTreeModel *model,
+                                                  GtkTreeIter *iter,
+                                                  gpointer user_data);
 
 static GtkProgressBar *pbar = NULL;
 
@@ -83,12 +82,12 @@ static void clist_populate(GtkListStore *store)
 	// sort rom calls
 	switch(order)
 	{
-	case SORT_BY_NAME: lst = romcalls_sort_by_iname(); break;
-	case SORT_BY_ADDR: lst = romcalls_sort_by_addr(); break;
-	case SORT_BY_ID:   lst = romcalls_sort_by_id(); break;
-	default:lst = romcalls_sort_by_iname(); break;
+		case SORT_BY_NAME: lst = romcalls_sort_by_iname(); break;
+		case SORT_BY_ADDR: lst = romcalls_sort_by_addr();  break;
+		case SORT_BY_ID:   lst = romcalls_sort_by_id();    break;
+		default:           lst = romcalls_sort_by_iname(); break;
 	}
-	if(lst == NULL)	
+	if(lst == NULL)
 		return;
 
 	// show progress bar
@@ -116,19 +115,22 @@ static void clist_populate(GtkListStore *store)
 		//printf("<%s>\n", row_text[3]);
 
 		gtk_list_store_append(store, &iter);
-	    gtk_list_store_set(store, &iter, 
-	    COL_ID, row_text[0], 
-		COL_NAME, row_text[1],
-        COL_ADDR, row_text[2],
-		COL_FULL, row_text[3],
-		-1);
+		gtk_list_store_set(store, &iter, 
+		                   COL_ID, row_text[0], 
+		                   COL_NAME, row_text[1],
+		                   COL_ADDR, row_text[2],
+		                   COL_FULL, row_text[3],
+		                   -1);
 
 		if(!(i % 50))
 		{
 			if(pbar != NULL)
 			{
 				gtk_progress_bar_set_fraction(pbar, (gdouble)i / n);
-				while(gtk_events_pending())	gtk_main_iteration();
+				while(gtk_events_pending())
+				{
+					gtk_main_iteration();
+				}
 			}
 		}
 
@@ -152,19 +154,21 @@ void dbgromcall_create_window(GladeXML *xml)
 
 	pbar = data = glade_xml_get_widget(xml, "progressbar1");
 	combo = data = glade_xml_get_widget(xml, "comboboxentry1");
-	entry = GTK_ENTRY(GTK_BIN(combo)->child);	
+	entry = GTK_ENTRY(GTK_BIN(combo)->child);
 
 	// create storage
 	store = gtk_list_store_new(CLIST_NCOLS,
-				G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
-				-1
-            );
-    model = GTK_TREE_MODEL(store);
+	                           G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+	                           -1);
+	model = GTK_TREE_MODEL(store);
 
 	// and set storage
 	gtk_combo_box_set_model(combo, model);
+#if GTK_CHECK_VERSION(2,24,0)
+	gtk_combo_box_set_entry_text_column(combo, COL_FULL);
+#else
 	gtk_combo_box_entry_set_text_column(GTK_COMBO_BOX_ENTRY(combo), COL_FULL);
-
+#endif
 	/* --- */
 
 	// set auto-completion
@@ -173,7 +177,7 @@ void dbgromcall_create_window(GladeXML *xml)
 	gtk_entry_completion_set_model(completion, model);
 	gtk_entry_completion_set_text_column (completion, COL_FULL);
 	g_signal_connect(G_OBJECT(completion), "match-selected", 
-		G_CALLBACK(on_combo_entry1_match_selected), NULL);
+	                 G_CALLBACK(on_combo_entry1_match_selected), NULL);
 	//gtk_editable_select_region(GTK_EDITABLE(entry), 0, -1);
 }
 
@@ -210,9 +214,7 @@ static void goto_romcall(const char *str)
 	}
 }
 
-GLADE_CB void
-on_combo_entry1_changed                    (GtkComboBox *combobox,
-                                            gpointer user_data)
+GLADE_CB void on_combo_entry1_changed (GtkComboBox *combobox, gpointer user_data)
 {
 	GtkEntry *entry = GTK_ENTRY(GTK_BIN(combobox)->child);
 
@@ -221,11 +223,10 @@ on_combo_entry1_changed                    (GtkComboBox *combobox,
 	g_free(str);
 }
 
-GLADE_CB gboolean
-on_combo_entry1_match_selected             (GtkEntryCompletion *completion,
-                                            GtkTreeModel *model,
-                                            GtkTreeIter *iter,
-                                            gpointer user_data)
+GLADE_CB gboolean on_combo_entry1_match_selected (GtkEntryCompletion *completion,
+                                                  GtkTreeModel *model,
+                                                  GtkTreeIter *iter,
+                                                  gpointer user_data)
 {
 	gchar *str;
 
@@ -236,27 +237,21 @@ on_combo_entry1_match_selected             (GtkEntryCompletion *completion,
 }
 
 
-GLADE_CB void
-on_dbgcode_radiobutton1_toggled        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+GLADE_CB void on_dbgcode_radiobutton1_toggled (GtkToggleButton *togglebutton, gpointer user_data)
 {
 	// by name
 	order = SORT_BY_NAME;
 	dbgromcall_refresh_window();
 }
 
-GLADE_CB void
-on_dbgcode_radiobutton2_toggled        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+GLADE_CB void on_dbgcode_radiobutton2_toggled (GtkToggleButton *togglebutton, gpointer user_data)
 {
 	// by addr
 	order = SORT_BY_ADDR;
 	dbgromcall_refresh_window();
 }
 
-GLADE_CB void
-on_dbgcode_radiobutton3_toggled        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+GLADE_CB void on_dbgcode_radiobutton3_toggled (GtkToggleButton *togglebutton, gpointer user_data)
 {
 	// by id
 	order = SORT_BY_ID;

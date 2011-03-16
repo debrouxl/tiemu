@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tiemu-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-03-13 15:06+0100\n"
+"POT-Creation-Date: 2011-03-16 20:18+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -559,7 +559,7 @@ msgstr ""
 msgid "Couldn't open destination file for writing!"
 msgstr ""
 
-#: src/gui/calc/calc.c:239 src/gui/calc/popup.c:648
+#: src/gui/calc/calc.c:236 src/gui/calc/popup.c:648
 #: src/gui/debugger/dbg_bkpts.c:368 src/gui/debugger/dbg_bits.c:50
 #: src/gui/debugger/dbg_cause.c:60 src/gui/debugger/dbg_cause.c:144
 #: src/gui/debugger/dbg_code.c:363 src/gui/debugger/dbg_code.c:704
@@ -578,21 +578,21 @@ msgstr ""
 msgid "%s: GUI loading failed!\n"
 msgstr ""
 
-#: src/gui/calc/calc.c:756
+#: src/gui/calc/calc.c:739
 #, c-format
 msgid "screenshot to %s... "
 msgstr ""
 
-#: src/gui/calc/calc.c:775
+#: src/gui/calc/calc.c:758
 msgid "unsupported screenshot options combination, screenshot aborted."
 msgstr ""
 
-#: src/gui/calc/calc.c:802
+#: src/gui/calc/calc.c:785
 #, c-format
 msgid "failed to save pixbuf file: %s: %s"
 msgstr ""
 
-#: src/gui/calc/calc.c:807
+#: src/gui/calc/calc.c:790
 msgid "done!"
 msgstr ""
 
