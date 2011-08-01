@@ -1,9 +1,9 @@
-#!/bin/sh
+#! /bin/sh
 
 # Maintainer script for automating the cross-compilation and installation of tiemu
 # from a checkout of the complete tiemu repository over at svn.tilp.info.
 #
-# Copyright (C) 2010 Lionel Debroux
+# Copyright (C) 2010, 2011 Lionel Debroux
 
 
 # REMINDERS: don't forget to:
@@ -29,7 +29,7 @@
 #    in tiemu/trunk/
 
 
-# The prefix where the binaries will be installed, e.g. $HOME, /usr, /usr/local, /usr/share.
+# The prefix where the binaries will be installed, e.g. $HOME, /usr, /usr/local.
 PREFIX="$HOME/lpg/packages"
 
 # Common flags and definitions.
