@@ -52,6 +52,7 @@
 extern unsigned int keys_mouse_motion; /* main_cb.c */
 extern unsigned int keys_button_press; /* main_cb.c */
 
+int clist_row;
 
 /*
  * KEYS LIST

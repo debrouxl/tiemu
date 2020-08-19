@@ -59,6 +59,11 @@ struct skinInfos skin_infos;
 extern GtkWidget *lcd_custom_white; /* prop_cb.c */
 extern GtkWidget *lcd_custom_black; /* prop_cb.c */
 
+GtkWidget *list_keys_dialog;
+GtkWidget *drawingarea1;
+GtkWidget *statusbar;
+int clist_max;
+
 unsigned int lcd_mouse_motion;
 unsigned int lcd_button_press;
 

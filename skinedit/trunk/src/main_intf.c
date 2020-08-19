@@ -63,8 +63,8 @@ create_main_window (void)
   GtkWidget *tb_key_pos;
   GtkWidget *scrolledwindow1;
   GtkWidget *viewport1;
-  //GtkWidget *drawingarea1;
-  //GtkWidget *statusbar;
+  GtkWidget *drawingarea1;
+  GtkWidget *statusbar;
   GtkAccelGroup *accel_group;
 
   accel_group = gtk_accel_group_new ();

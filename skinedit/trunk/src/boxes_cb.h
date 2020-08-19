@@ -26,6 +26,7 @@
 
 #include <gtk/gtk.h>
 
+extern int clist_row;
 
 void
 on_list_keys_selection_changed (GtkTreeSelection *sel,
