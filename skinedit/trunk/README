@@ -20,7 +20,7 @@ FEATURES
 - keys area
 - editing skin properties such as : author, description, colors, model, ...
 
-- informations displayed in the status bar
+- information displayed in the status bar
 
 For documentation about the skin internals and key mapping, 
 see the doc directory.
@@ -40,7 +40,7 @@ INSTALLATION (Win32)
 
 Run the InnoSetup installer...
 
-1°) This setup may download & install some extra libraries (GTK+ 2.6). 
+1) This setup may download & install some extra libraries (GTK+ 2.6). 
 
 The GTK+ package includes the Wimp (Windows IMPersonator) theme engine which gives 
 Windows look & feel (includes XP theming). Is also included the GTK theme selector.
@@ -60,7 +60,7 @@ open your C:\Program Files\Shared Files\Gtk\2.0\etc\gtk-2.0\gtkrc and to add thi
 This forces GTK+ to use a compatible font (Arial) and reportedly fixes both
 the aforementioned problems, and probably others too.
 
-2°) This setup will install the GNU's 'wget' utility for download of GTK+
+2) This setup will install the GNU's 'wget' utility for download of GTK+
 (http://xoomer.virgilio.it/hherold/).
 
 
@@ -74,7 +74,7 @@ COPYRIGHT
 ---------
 
 SkinEdit is Copyright (C) 2002-2003 by Julien Blache <jb@jblache.org>.
-Modifications (C) 2004-2007 by Romain Liévin <gtktiemu-users@lists.sf.net>.
+Modifications (C) 2004-2007 by Romain LiÃ©vin <gtktiemu-users@lists.sf.net>.
 
 
 Copying is allowed under the terms of GNU General Public License.  

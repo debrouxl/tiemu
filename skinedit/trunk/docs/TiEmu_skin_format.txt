@@ -12,7 +12,7 @@ format is inspired from the VTi 2.5 skin format, with some improvements.
 However, it is *not* compatible with the original VTi 2.5 skin format.
 
   Skin files use the ".skn" extension. They consist of a header
-containing LCD and keys positions along with some other informations,
+containing LCD and keys positions along with some other information,
 followed by a JPEG image.
 
   The size of the header is not fixed ; it is determined by the length
