@@ -26,6 +26,11 @@
 
 #include <gtk/gtk.h>
 
+extern GtkWidget *list_keys_dialog;
+extern GtkWidget *drawingarea1;
+extern GtkWidget *statusbar;
+extern int clist_max;
+
 
 void
 on_file_activate                       (GtkMenuItem     *menuitem,

@@ -388,7 +388,7 @@ exit:
   return ret;
 }
 
-GtkWidget *main_wnd;
+//GtkWidget *main_wnd;
 
 int
 load_image(FILE *fp)

@@ -37,7 +37,7 @@ draw_rubberbox(GtkWidget *drawing_area, GdkRect rect);
 void
 erase_rubberbox(GtkWidget *drawing_area);
 
-int clist_row;
-int clist_max;
+extern int clist_row;
+extern int clist_max;
 
 #endif /* __RUBBERBOX_H__ */
