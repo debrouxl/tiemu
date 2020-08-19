@@ -56,7 +56,7 @@ msgstr ""
 
 #: src/main.c:43
 #, c-format
-msgid "See the manpage for more informations...\n"
+msgid "See the manpage for more information...\n"
 msgstr ""
 
 #: src/main.c:55

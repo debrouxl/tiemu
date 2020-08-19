@@ -2,8 +2,8 @@
 * File format of the VTI 2.5 skin files                         *
 * Documentation by Romain Lievin <roms@tilp.info>               *
 *                                                               *
-* These informations have been extracted from the VTI source    *
-* code (rom.cpp) which have been released by R. Wagner.         *
+* These information has been extracted from the VTI source      *
+* code (rom.cpp) which has been released by R. Wagner.          *
 *                                                               *
 * Begin: 2002/04/17                                             *
 * Last update: 2006/03/25                                       *
@@ -14,7 +14,7 @@ Remark: I use the C notation for numbers (12: decimal, 0x1A: hexadecimal,
 'C': character). Moreover, all words are in LSB-MSB format.
 
 This document describes the file format of VTi v2.1 & v2.5 skins.
-A skin file (.skn) is a composite file which contains informations and data 
+A skin file (.skn) is a composite file which contains information and data 
 (image).
 
 

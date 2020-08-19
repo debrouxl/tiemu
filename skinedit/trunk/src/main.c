@@ -40,7 +40,7 @@ static void help(void)
   fprintf(stdout, "\n");
   fprintf(stdout, _("filename      a skin file to load\n"));
   fprintf(stdout, "\n");
-  fprintf(stdout, _("See the manpage for more informations...\n"));
+  fprintf(stdout, _("See the manpage for more information...\n"));
   fprintf(stdout, "\n");
   exit(0);
 }

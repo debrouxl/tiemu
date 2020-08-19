@@ -60,7 +60,7 @@ msgstr "fichier       un skin à charger\n"
 
 #: src/main.c:43
 #, c-format
-msgid "See the manpage for more informations...\n"
+msgid "See the manpage for more information...\n"
 msgstr "Voir la page de manuel pour plus d'infos...\n"
 
 #: src/main.c:55
