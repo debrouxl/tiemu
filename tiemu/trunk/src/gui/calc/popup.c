@@ -547,7 +547,7 @@ on_bugreport1_activate				   (GtkMenuItem     *menuitem,
   
 	dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
 				  GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
-				  message);
+				  "%s", message);
 	gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
 }
@@ -848,7 +848,7 @@ static void go_to_bookmark(const char *link)
 
 		dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
 					   GTK_MESSAGE_INFO,
-					   GTK_BUTTONS_CLOSE, message);
+					   GTK_BUTTONS_CLOSE, "%s", message);
 		g_signal_connect_swapped(GTK_OBJECT(dialog), "response",
 					 G_CALLBACK(gtk_widget_destroy),
 					 GTK_OBJECT(dialog));
