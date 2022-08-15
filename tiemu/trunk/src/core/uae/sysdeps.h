@@ -33,6 +33,7 @@
 #define _GNU_SOURCE
 #endif
 #include <limits.h>
+#include <stdlib.h>
 
 // Make sure that the character types take exactly 1 byte.
 #if UCHAR_MAX != 0xFF
