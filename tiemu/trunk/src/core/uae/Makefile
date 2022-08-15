@@ -5,7 +5,7 @@
 
 # trying to be portable... *TRYING*
 #CFLAGS   = -mms-bitfields
-CPUFLAGS = $(CFLAGS) -fomit-frame-pointer -Wno-unused -Wno-format -W -Wmissing-prototypes -Wstrict-prototypes -D__inline__=inline -DSTATFS_NO_ARGS=2 -DSTATBUF_BAVAIL=f_bavail #-Wall
+CPUFLAGS = $(CFLAGS) -fomit-frame-pointer -Wno-unused -Wno-format -Wno-format-security -W -Wmissing-prototypes -Wstrict-prototypes -D__inline__=inline -DSTATFS_NO_ARGS=2 -DSTATBUF_BAVAIL=f_bavail #-Wall
 
 gen: cpudefs.c cpustbl.c cputbl.h cpuemu.c
 
