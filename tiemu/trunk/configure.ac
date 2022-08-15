@@ -145,7 +145,7 @@ case $host in
   *-apple-darwin*)       ARCH="-D__MACOSX__" ;;
   *)                     ARCH="-D__LINUX__" ;;
 esac
-CFLAGS="$CFLAGS $ARCH"
+CFLAGS="$CFLAGS $CPPFLAGS $LDFLAGS $ARCH"
 
 # Check for SDL if sound support is wanted
 AC_ARG_ENABLE(sound,
