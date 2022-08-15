@@ -64,7 +64,7 @@ int msg_box1(const char *title, const char *message)
 	{
 		dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
 					   msg_type, GTK_BUTTONS_CLOSE,
-					   message);
+					   "%s", message);
 		gtk_dialog_run(GTK_DIALOG(dialog));
 	} 
 	else 
@@ -102,7 +102,7 @@ gint msg_box2(const char *title, const char *message)
 
 	msg_type = str2msg(title);
 	dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, msg_type,
-				   GTK_BUTTONS_OK_CANCEL, message);
+				   GTK_BUTTONS_OK_CANCEL, "%s", message);
 	gtk_dialog_set_alternative_button_order(GTK_DIALOG(dialog), GTK_RESPONSE_OK,
 	                                        GTK_RESPONSE_CANCEL,-1);
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog),
@@ -133,7 +133,7 @@ gint msg_box3(const char *title, const char *message, const char *button1,
 
 	msg_type = str2msg(title);
 	dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, msg_type,
-				   GTK_BUTTONS_NONE, message);
+				   GTK_BUTTONS_NONE, "%s", message);
 	gtk_dialog_add_button(GTK_DIALOG(dialog), button1, GTK_RESPONSE_YES);
 	gtk_dialog_add_button(GTK_DIALOG(dialog), button2, GTK_RESPONSE_NO);
 	gtk_dialog_add_button(GTK_DIALOG(dialog), button3, GTK_RESPONSE_CANCEL);
@@ -171,7 +171,7 @@ gint msg_box4(const char *title, const char *message)
 
 	msg_type = str2msg(title);
 	dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, msg_type,
-				   GTK_BUTTONS_NONE, message);
+				   GTK_BUTTONS_NONE, "%s", message);
 	gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_GO_FORWARD, GTK_RESPONSE_OK);
 	gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 	gtk_dialog_set_alternative_button_order(GTK_DIALOG(dialog), GTK_RESPONSE_OK,
