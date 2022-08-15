@@ -9,7 +9,7 @@ if USE_GROFF
 SUBDIRS += man
 endif
 
-dist_pkgdata_DATA = COPYING RELEASE AUTHORS LICENSES
+dist_doc_DATA = COPYING RELEASE AUTHORS LICENSES
 
 EXTRA_DIST = BUGS README.* TODO docs desktop sdk po/copy.bat po/TRANSLATORS install.bat
 

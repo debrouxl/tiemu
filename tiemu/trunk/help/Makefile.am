@@ -1,10 +1,10 @@
-helpdir = $(pkgdatadir)/help
+helpdir = $(docdir)/help
 dist_help_DATA = *.html *.png *.jpg
 
 uninstall:
-	rm -f $(pkgdatadir)/help/*.html
-	rm -f $(pkgdatadir)/help/*.png
-	rm -f $(pkgdatadir)/help/*.jpg
+	rm -f $(docdir)/help/*.html
+	rm -f $(docdir)/help/*.png
+	rm -f $(docdir)/help/*.jpg
 
 
 dos2unix:
