@@ -14,17 +14,17 @@ all: cpudefs.o cpustbl.o readcpu.o fpp.o missing.o cpuemu1.o cpuemu2.o cpuemu3.o
 
 # For cross-compiling (generators are run on host)
 build68k_host.o: build68k.c
-	C_INCLUDE_PATH="" LIBRARY_PATH="" gcc -c -o $@ $?
+	C_INCLUDE_PATH="" LIBRARY_PATH="" gcc $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -c -o $@ $?
 gencpu_host.o: gencpu.c
-	C_INCLUDE_PATH="" LIBRARY_PATH="" gcc -c -o $@ $?
+	C_INCLUDE_PATH="" LIBRARY_PATH="" gcc $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -c -o $@ $?
 readcpu_host.o: readcpu.c
-	C_INCLUDE_PATH="" LIBRARY_PATH="" gcc -c -o $@ $?
+	C_INCLUDE_PATH="" LIBRARY_PATH="" gcc $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -c -o $@ $?
 cpudefs_host.o: cpudefs.c
-	C_INCLUDE_PATH="" LIBRARY_PATH="" gcc -c -o $@ $?
+	C_INCLUDE_PATH="" LIBRARY_PATH="" gcc $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -c -o $@ $?
 missing_host.o: missing.c
-	C_INCLUDE_PATH="" LIBRARY_PATH="" gcc -c -o $@ $?
+	C_INCLUDE_PATH="" LIBRARY_PATH="" gcc $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -c -o $@ $?
 xmalloc_host.o: xmalloc.c
-	C_INCLUDE_PATH="" LIBRARY_PATH="" gcc -c -o $@ $?
+	C_INCLUDE_PATH="" LIBRARY_PATH="" gcc $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -c -o $@ $?
 
 # Build generators and files to generate
 build68k: build68k_host.o
