@@ -304,7 +304,7 @@ static void fill_prefetch_0 (void)
     insn_n_cycles += 4;
 } 
 
-static void fill_prefetch_next_1 (needcycles)
+static void fill_prefetch_next_1 (int needcycles)
 {
     if (needcycles && using_ce) {
 	printf ("\tint lostcycles;\n");
